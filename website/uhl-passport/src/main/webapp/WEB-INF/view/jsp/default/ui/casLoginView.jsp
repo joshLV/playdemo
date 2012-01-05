@@ -86,7 +86,7 @@
                      <c:when test="${not empty requestScope['isMobile'] and not empty mobileCss}">
                         <form method="get" action="login?${xquery}">
                            <select name="locale">
-                               <option value="en">English</option>
+                               <option value="en">English2dddddddd</option>
                                <option value="es">Spanish</option>
                                <option value="fr">French</option>
                                <option value="ru">Russian</option>
@@ -111,9 +111,9 @@
                      <c:otherwise>
                         <c:set var="loginUrl" value="login?${xquery}${not empty xquery ? '&' : ''}locale=" />
 						<ul
-							><li class="first"><a href="${loginUrl}en">English</a></li
-							><li><a href="${loginUrl}es">Spanish</a></li
-							><li><a href="${loginUrl}fr">French</a></li
+							><li class="first"><a href="${loginUrl}en">Englishwerwerwrw</a></li
+							><li><a href="${loginUrl}es">Spanishwerwerwe</a></li
+							><li><a href="${loginUrl}fr">Frenchwerwe</a></li
 							><li><a href="${loginUrl}ru">Russian</a></li
 							><li><a href="${loginUrl}nl">Nederlands</a></li
 							><li><a href="${loginUrl}sv">Svenskt</a></li
