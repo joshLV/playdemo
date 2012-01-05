@@ -1,0 +1,35 @@
+#{extends 'main.html' /} 
+#{set title:'登录页面' /} 
+    %{
+	    randomID = controllers.Common.genRandomId();
+	}%
+
+  
+	<script type="text/javascript">
+	$(document).ready(function(){
+		 $('a[name=captchaLink]').click(function(){
+			    $(this).prev().attr('src','@{Common.captcha(randomID)}&t='+ Math.random());
+			    });
+	})
+	
+</script>
+#{form @LoginAction.login()}
+<div align="center">用户登录页面</div>
+<div>用户名：</div>
+<div>
+	<input type="text" name="loginname" id="loginname" />
+</div>
+<div>密码：</div>
+<div>
+	<input type="password" name="loginpass" id="loginpass" />
+</div>
+<div>
+	<input type="captcha" id="captcha" name="captcha"	class="{required:true,maxlength:4}" />  
+	<img id="captchaImg"	style="width: 120px; height: 30px;"	src="/captcha?randomID=${randomID}">看不清？
+	<a id="captchaLink"	name="captchaLink" href="javascript:void(0);">点击刷新</a> 
+	 <input	type="hidden" name="randomID" value="${randomID}" />
+</div>
+<div>
+	<input type="button" value="登录" />
+</div>
+#{/form}
