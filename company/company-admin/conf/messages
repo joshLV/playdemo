@@ -1,0 +1,8 @@
+# You can specialize this file for each language.
+# For example, for French create a messages.fr file
+#
+validation.required=请输入%s!
+captcha=验证码
+oldloginpass=原密码
+newloginpass=新密码
+againloginpass=确认新密码

@@ -1,0 +1,7 @@
+06 Jan 2012 10:18:18,461 INFO  ~ Starting /home/pwg/work/company/.
+06 Jan 2012 10:18:18,467 WARN  ~ Declaring modules in application.conf is deprecated. Use dependencies.yml instead (module.cas)
+06 Jan 2012 10:18:18,468 INFO  ~ Module cas is available (/opt/play-1.2.4/modules/cas-3.1)
+06 Jan 2012 10:18:19,738 WARN  ~ You're running Play! in DEV mode
+06 Jan 2012 10:18:21,602 INFO  ~ Module CAS conf : [Mock Server:false]
+06 Jan 2012 10:18:22,418 INFO  ~ Connected to jdbc:mysql://localhost/company?useUnicode=yes&characterEncoding=UTF-8&connectionCollation=utf8_general_ci
+06 Jan 2012 10:18:23,619 INFO  ~ Application 'company' is now started !
