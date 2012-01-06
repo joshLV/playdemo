@@ -27,6 +27,16 @@
             <value>123456</value>
         </property>
     </bean>
+    
+    <bean id = "jdbcTemplate"   
+         class = "org.springframework.jdbc.core.JdbcTemplate">   
+         <property name = "dataSource" ref="dataSource"/>   
+    </bean>
+    
+    <bean  id="usernameLengthAuthnHandler"  class = "org.jasig.cas.userauthentication.UsernameLengthAuthnHandler">   
+         <property name="jdbcTemplate" ref="jdbcTemplate"/>   
+    </bean>
+    
 
     <bean id="md5PasswordEncoder" class="org.jasig.cas.authentication.handler.DefaultPasswordEncoder" p:characterEncoding="UTF-8" >
         <constructor-arg index="0" value="MD5" />
@@ -71,6 +81,7 @@
             CredentialsToPrincipalResolvers identified. CAS will try these handlers in turn | until it finds one that both supports the 
             Credentials presented and succeeds in authenticating. + -->
         <property name="authenticationHandlers">
+            <!--  
             <list>
                 <bean class="org.jasig.cas.adaptors.jdbc.QueryDatabaseAuthenticationHandler">
                     <property name="dataSource" ref="dataSource" />
@@ -78,7 +89,20 @@
                     <property name="passwordEncoder" ref="md5PasswordEncoder" />
                 </bean>
             </list>
+            -->
+            <list> 
+              <bean class="org.jasig.cas.authentication.handler.support.HttpBasedServiceCredentialsAuthenticationHandler" p:httpClient-ref="httpClient" /> 
+                  <!-- 会员登录验证 
+              <bean class = "org.jasig.cas.userauthentication.UsernameLengthAuthnHandler">   
+                   <property name="jdbcTemplate" ref="jdbcTemplate"/>   
+              </bean> --> 
+              <ref bean="usernameLengthAuthnHandler"/>
+             </list> 
+                      
         </property>
+        
+        
+        
     </bean>
 
 
