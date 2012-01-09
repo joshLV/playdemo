@@ -9,9 +9,10 @@ POST     /index                                  Register.index
 GET     /register                                  Register.register
 POST     /register                                  Register.create
 GET     /captcha                                Register.captcha
-GET     /view/{id}                               Register.view
-POST     /view/{id}                               Register.update
-PUT     /update/{id}                               Register.update
+GET    /editpassword																				EditPassword.index
+POST    /editpassword																				EditPassword.index
+POST     /update                              EditPassword.update
+PUT     /update                              EditPassword.index
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

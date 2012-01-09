@@ -28,8 +28,8 @@
 	color: red;
 }
 </style>
-#{form @Register.create()}
 <div id="index_main">
+#{form @Register.create()}
 	<div id="main">
 		<div id="maincontainer"
 			style="overflow: hidden; margin-bottom: 40px; margin-left: 30px;">
@@ -130,7 +130,8 @@
 					</ul>
 				</div>
 			</div>
-			
+			#{/form}
+		<form name="frm1" id="frm1" action="http://localhost:8080/uhl-passport-webapp/login?service=http://localhost:9000/authenticate" method="post">
 			<div style="margin: 145px 18pt 0pt 10px;" class="loginbg">
 				<strong style="font-size: 14px; margin-bottom: 6px; display: block;">登录</strong>
 				<div class="login">
@@ -143,40 +144,22 @@
 						</li>
 						<li class="field">
 							<div class="input">
-								<label>用户名：</label> <input id="useremailname" name="user_name"
-									type="text" tabindex="5" value="邮箱/手机">
+								<label>用户名：</label><input id="username" name="username" tabindex="1" type="text" value="" size="25" autocomplete="false"/>
 							</div>
 						</li>
 
 						<li class="field">
 							<div class="input">
-								<label>密码：</label> <input id="user_pwd" name="user_pwd"
-									type="password" tabindex="6">
-							</div>
-						</li>
-						<li id="showcode1" class="field" style="display: none;">
-							<div class='input showcode_1'>
-
-								<b> <label class='label1'>验证码：</label> <input type='text'
-									size='4' maxlength='4' id='login_captcha' name='login_captcha'
-									tabindex='7' class='input1'> <img id='codesrc'
-									src='registernum.php' style='cursor: pointer;'
-									onClick="this.src='registernum.php?rand='+Math.random()" /> <span
-									id='messcheckcode'></span>
-								</b> <b> <span>看不清？</span> <span id='changecode'
-									onClick="$('#codesrc').attr('src', 'registernum.php?rand='+Math.random())"
-									class='colorblue'>换一张</span>
-								</b>
+								<label>密码：</label> <input id="password" name="password" tabindex="2" type="password" value="" size="25" autocomplete="off"/>
 							</div>
 						</li>
 						<li class="submit-field">
-							<button id="loginbutton" type="submit" onClick="loginCheck()"
-								class="bt colorw bold">登录</button> <a
-							href="user.php?act=forgetpw&logintrade=1">忘记密码</a>
+							<button id="loginbutton" type="submit"
+								class="bt colorw bold">登录</button>
+								   <input type="hidden" name="lt" value="${loginTicket}" />
+                        <input type="hidden" name="execution" value="${flowExecutionKey}" />
+                        <input type="hidden" name="_eventId" value="submit" />
 				</li>
-				<li class="fieldnot"><span>还没有优惠啦账号?</span> <span
-					class="colorred">&nbsp;&nbsp;&nbsp;&nbsp;</span></li>
-
 				</ul>
 				<div class="clear"></div>
 			</div>
@@ -186,13 +169,13 @@
 			</p>
 		</div>
 	</div>
-
+	</form>
 	<div class="agreements">
 		<ul>
 			<li>
 				<div class="acontent">
 					<p>
-						<strong>优惠啦网站服务条款</strong><br /> #{/form}
+						<strong>优惠啦网站服务条款</strong><br /> 
 					<p>
 
 						优惠啦网站（http://www.uhuila.com/）所提供的各项服务的所有权和运作权归视惠信息（上海）科技有限公司。用户必须同意下述所有服务条款并完成注册程序，才能成为优惠啦网站的正式会员并使用优惠啦提供的各项服务。服务条款的修改权归视惠信息（上海）科技有限公司所有。用户应当随时关注本服务条款的修改，并决定是否继续使用本网站提供的各项服务。用户登录并使用优惠啦网站各项服务的行为，将被视为用户对当时的用户注册协议的同意和承诺遵守。<br />

@@ -25,7 +25,7 @@ import controllers.modules.cas.SecureCAS;
  * @author yanjy
  *
  */
-@With(SecureCAS.class)
+//@With(SecureCAS.class)
 public class Register extends Controller{
 
 	/**
@@ -90,12 +90,19 @@ public class Register extends Controller{
 			validation.email(email).message(email);
 		}
 		validation.required(mobile);
+		
 		validation.match(mobile, "^1[3|4|5|8][0-9]\\d{4,8}$");
+		
 		validation.required(password);
+		
 		validation.required(sure_pwd);
+		
 		validation.equals(sure_pwd, password).message("两次密码输入的不一样！！");
+		
 		validation.required(captcha);
+		
 		validation.equals(captcha.toUpperCase(), Cache.get(params.get("randomID"))).message("验证码不对，请重新输入！");
+		
 		if(validation.hasErrors()) {
 			params.flash();
 			validation.keep();
@@ -135,59 +142,4 @@ public class Register extends Controller{
 		return Codec.UUID();
 	}
 
-	/**
-	 * 用户修改密码页面
-	 * 
-	 * @return
-	 */
-	public static void view(Long id){
-		render("Register/view.html",id);
-	}
-
-	/**
-	 * 
-	 * 
-	 * @param id
-	 */
-	public static void update(Long id){
-		//旧密码
-		String oldloginpass=	params.get("oldloginpass");
-		//新密码
-		String newloginpass=params.get("newloginpass");
-		//新确认密码
-		String againloginpass=params.get("againloginpass");
-		//验证码
-		String captcha =params.get("captcha");
-		validation.required(oldloginpass);
-		validation.required(newloginpass);
-		validation.required(againloginpass);
-		validation.equals(againloginpass, newloginpass).message("两次密码输入的不一样！！");
-		validation.required(captcha);
-		if(validation.hasErrors()) {
-			params.flash();
-			validation.keep();
-			render("Register/view.html",params,id);
-		}
-
-		Registers registers= Registers.findById(id);
-		//原密码随机码
-		String old_password_salt=registers.password_salt;
-		//原密码
-		String old_password=registers.crypted_password;
-		//验证输入的原密码是否一致
-		oldloginpass=DigestUtils.md5Hex(oldloginpass+old_password_salt);
-		validation.equals(oldloginpass,old_password).message("原密码不对，请重新输入！");
-		if(validation.hasErrors()) {
-			params.flash();
-			validation.keep();
-			render("Register/view.html",params,id);
-		}
-		//验证通过后，更新新密码
-		String password_salt= CharacterUtil.getRandomString(6);
-		registers.crypted_password=DigestUtils.md5Hex(newloginpass+password_salt);
-		registers.password_salt=password_salt;
-		registers.save();
-		index();
-
-	}
 }
