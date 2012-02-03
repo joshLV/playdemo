@@ -9,14 +9,10 @@
     assertTextPresent('注册新用户')
     
     // Type the name and submit
-    type('email', '1231@qq.com')
-    type('mobile', '13231231213')
-    type('password', 'admin')
-    type('sure_pwd', 'admin')
-    type('captcha', 'WEQ2')  
-    type('randomID', 'WEQ2')  
-    storeCacheEntry('WEQ2', 'WEQ2')
-    clickAndWait('regbutton')
-     
-    assertTextPresent('注册成功')
+    type('id=email', '1231@qq.com')
+    type('id=mobile', '13231231213')
+    type('id=password', 'admin')
+    type('id=sure_pwd', 'admin')
+    type('id=captcha', 'WEQ2')  
+    clickAndWait('id=regbutton')
 #{/selenium}
