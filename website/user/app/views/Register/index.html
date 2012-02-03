@@ -9,7 +9,6 @@
 			<td>手机</td>
 			<td>用户状态</td>
 			<td>用户来源</td>
-			<td>操作</td>
 		</tr>
 		#{list items:list, as:'list'}
 		<tr align="center">
@@ -17,7 +16,6 @@
 			<td bgcolor="#EEEEEE">${list.mobile}</td>
 			<td bgcolor="#EEEEEE">${list.status}</td>
 			<td bgcolor="#EEEEEE">${list.status == '1'?'正常':'冻结'}</td>
-			<td bgcolor="#EEEEEE"><a href="@{Register.view(list.id)}">修改</a></td>
 		</tr>
 		#{/list}
 		#{else}

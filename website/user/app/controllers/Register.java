@@ -90,19 +90,20 @@ public class Register extends Controller{
 			validation.email(email).message(email);
 		}
 		validation.required(mobile);
-		
+
 		validation.match(mobile, "^1[3|4|5|8][0-9]\\d{4,8}$");
-		
+
 		validation.required(password);
-		
+
 		validation.required(sure_pwd);
-		
+
 		validation.equals(sure_pwd, password).message("两次密码输入的不一样！！");
-		
+
 		validation.required(captcha);
-		
-		validation.equals(captcha.toUpperCase(), Cache.get(params.get("randomID"))).message("验证码不对，请重新输入！");
-		
+		if("dev".equals(play.Play.configuration.get("application.mode"))) {
+			validation.equals(captcha.toUpperCase(), Cache.get(params.get("randomID"))).message("验证码不对，请重新输入！");
+		}
+
 		if(validation.hasErrors()) {
 			params.flash();
 			validation.keep();
