@@ -1,9 +1,9 @@
 #{extends 'trader/layout.html' /}
+#{set 'moreScripts'}
 <script src="@{'/public/javascripts/kindeditor.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript">
-	KE
-			.show({
+	KE.show({
 				id : 'prompt',
 				imageUploadJson : '/kindeditor/upload_json.jsp',
 				fileManagerJson : '/kindeditor/file_manager_json.jsp',
@@ -20,6 +20,8 @@
 				}
 			});
 </script>
+#{/set}
+
 <div class="body">
  <form class="form-horizontal" action="@{Goods.addgoods()}" method="post" enctype="multipart/form-data">
   <legend>添加电子消费券</legend>
