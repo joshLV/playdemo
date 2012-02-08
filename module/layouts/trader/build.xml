@@ -29,7 +29,7 @@
                 <include name="**/play.static"/>
             </fileset>
         </copy>
-        <jar destfile="lib/play-trader.jar" basedir="tmp/classes">
+        <jar destfile="lib/layouts-trader.jar" basedir="tmp/classes">
             <manifest>
                 <section name="Play-module">
                     <attribute name="Specification-Title" value="trader"/>
