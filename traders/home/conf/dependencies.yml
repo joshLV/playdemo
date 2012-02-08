@@ -2,3 +2,11 @@
 
 require:
     - play
+    - layout_trader -> layout_trader
+    
+repositories:
+    - layoutTraderCustomModules:
+        type:       local
+        artifact:   "/home/tanglq/seewi/reeb-trunk/module/layout_trader"
+        contains:
+            - layout_trader -> *
