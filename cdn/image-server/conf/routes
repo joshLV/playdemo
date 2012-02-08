@@ -5,6 +5,8 @@
 # Home page
 GET     /                                       Application.index
 
+GET     /p/{firstDir}/{secondDir}/{thirdDir}/{imageName}                                  ImageController.showImage
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
@@ -13,3 +15,4 @@ GET     /public/                                staticDir:public
 
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}
+
