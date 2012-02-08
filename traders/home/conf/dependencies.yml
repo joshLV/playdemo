@@ -7,6 +7,6 @@ require:
 repositories:
     - layoutTraderCustomModules:
         type:       local
-        artifact:   "/home/tanglq/seewi/reeb-trunk/module/layout_trader"
+        artifact:   "${application.path}/../../module/layout_trader"
         contains:
             - layout_trader -> *
