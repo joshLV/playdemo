@@ -1,0 +1,91 @@
+#{extends 'main.html' /}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<div class="body">
+ <form class="form-horizontal">
+  <legend>添加电子消费券</legend>
+  <div class="control-group">
+   <label for="select01" class="control-label">Select list</label>
+   <div class="controls">
+    <select id="select03">
+     <option>something</option>
+    </select>
+   </div>
+  </div>
+ <!--  <div class="control-group">
+   <label for="optionsCheckbox" class="control-label">Checkbox</label>
+   <div class="controls">
+    <label class="checkbox"> <input type="checkbox" value="option1" id="optionsCheckbox" /> Option one is this
+     and that—be sure to include why it's great
+    </label>
+   </div>
+  </div> -->
+  <div class="control-group">
+   <label for="input01" class="control-label">商品编号</label>
+   <div class="controls">
+    <input type="text" id="input01" class="input-xlarge" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="input01" class="control-label">商品名称</label>
+   <div class="controls">
+    <input type="text" id="input01" class="input-xlarge" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="input01" class="control-label">券有效期</label>
+   <div class="controls">
+    <input class="input-medium Wdate" type="text" onfocus="WdatePicker({readOnly:true})" />至 <input
+     class="input-medium Wdate" type="text" onfocus="WdatePicker({readOnly:true})" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="input01" class="control-label">原价</label>
+   <div class="controls">
+    <input type="text" id="input01" class="input-small" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="input01" class="control-label">现价</label>
+   <div class="controls">
+    <input type="text" id="input01" class="input-small" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="input01" class="control-label">库存</label>
+   <div class="controls">
+    <input type="text" id="input01" class="input-small" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="input01" class="control-label">商品图片</label>
+   <div class="controls">
+    <input type="file" id="fileInput" class="input-file" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="textarea" class="control-label">温馨提示</label>
+   <div class="controls">
+    <textarea rows="3" id="textarea" class="input-xlarge"></textarea>
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="textarea" class="control-label">商品详情</label>
+   <div class="controls">
+    <textarea rows="3" id="textarea" class="input-xlarge"></textarea>
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="textarea" class="control-label">使用门店</label>
+   <div class="controls">
+     <input type="radio" checked="" value="option1" id="optionsRadios1" name="optionsRadios" /> 全部门店
+     <input type="radio" value="option2" id="optionsRadios2" name="optionsRadios" />部分门店
+   </div>
+  </div>
+  <div class="form-actions">
+   <button class="btn btn-primary" type="submit">Save changes</button>
+   <button class="btn" type="reset">Cancel</button>
+  </div>
+ </form>
+</div>
+
+
