@@ -1,84 +1,109 @@
 #{extends 'trader/layout.html' /}
+<script src="@{'/public/javascripts/kindeditor.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+	KE
+			.show({
+				id : 'prompt',
+				imageUploadJson : '/kindeditor/upload_json.jsp',
+				fileManagerJson : '/kindeditor/file_manager_json.jsp',
+				allowFileManager : true,
+				afterCreate : function(id) {
+					KE.event.ctrl(document, 13, function() {
+						KE.util.setData(id);
+						document.forms[0].submit();
+					});
+					KE.event.ctrl(KE.g[id].iframeDoc, 13, function() {
+						KE.util.setData(id);
+						document.forms[0].submit();
+					});
+				}
+			});
+</script>
 <div class="body">
- <form class="form-horizontal">
+ <form class="form-horizontal" action="@{Goods.addgoods()}" method="post" enctype="multipart/form-data">
   <legend>添加电子消费券</legend>
   <div class="control-group">
-   <label for="select01" class="control-label">Select list</label>
+   <label for="select01" class="control-label">商品类型</label>
    <div class="controls">
-    <select id="select03">
-     <option>something</option>
+    <select id="ca" class="input-small">
+     <option value="">请选择</option>
+    </select> <select id="select03" class="input-small">
+     <option value="">请选择</option>
+    </select> <select id="select03" class="input-small">
+     <option value="">请选择</option>
     </select>
    </div>
   </div>
- <!--  <div class="control-group">
-   <label for="optionsCheckbox" class="control-label">Checkbox</label>
+  <div class="control-group">
+   <label for="select01" class="control-label">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</label>
    <div class="controls">
-    <label class="checkbox"> <input type="checkbox" value="option1" id="optionsCheckbox" /> Option one is this
-     and that—be sure to include why it's great
-    </label>
+    <select id="select03" class="input-small">
+     <option>哈根达斯</option>
+    </select>
    </div>
-  </div> -->
+  </div>
   <div class="control-group">
    <label for="input01" class="control-label">商品编号</label>
    <div class="controls">
-    <input type="text" id="input01" class="input-xlarge" />
+    <input type="text" id="goods_no" name="goods_no" class="input-xlarge" />
    </div>
   </div>
   <div class="control-group">
    <label for="input01" class="control-label">商品名称</label>
    <div class="controls">
-    <input type="text" id="input01" class="input-xlarge" />
+    <input type="text" id="goods_name" name="goods_name" class="input-xlarge" />
    </div>
   </div>
   <div class="control-group">
    <label for="input01" class="control-label">券有效期</label>
    <div class="controls">
-    <input class="input-medium Wdate" type="text" onfocus="WdatePicker({readOnly:true})" />至 <input
-     class="input-medium Wdate" type="text" onfocus="WdatePicker({readOnly:true})" />
+    <input class="input-medium Wdate" type="text" id="expired_bg_on" name="expired_bg_on"
+     onfocus="WdatePicker({readOnly:true})" />至 <input class="input-medium Wdate" type="text" id="expired_ed_on"
+     name="expired_ed_on" onfocus="WdatePicker({readOnly:true})" />
    </div>
   </div>
   <div class="control-group">
-   <label for="input01" class="control-label">原价</label>
+   <label for="input01" class="control-label">原&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
    <div class="controls">
-    <input type="text" id="input01" class="input-small" />
+    <input type="text" id="original_price" class="input-small" />
    </div>
   </div>
   <div class="control-group">
-   <label for="input01" class="control-label">现价</label>
+   <label for="input01" class="control-label">现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
    <div class="controls">
-    <input type="text" id="input01" class="input-small" />
+    <input type="text" id="sale_price" class="input-small" />
    </div>
   </div>
   <div class="control-group">
-   <label for="input01" class="control-label">库存</label>
+   <label for="input01" class="control-label">库&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</label>
    <div class="controls">
-    <input type="text" id="input01" class="input-small" />
+    <input type="text" id="base_sale" class="input-small" />
    </div>
   </div>
   <div class="control-group">
    <label for="input01" class="control-label">商品图片</label>
    <div class="controls">
-    <input type="file" id="fileInput" class="input-file" />
+    <input type="file" id="image_path" class="input-file" />
    </div>
   </div>
   <div class="control-group">
    <label for="textarea" class="control-label">温馨提示</label>
    <div class="controls">
-    <textarea rows="3" id="textarea" class="input-xlarge"></textarea>
+    <textarea rows="3" id="prompt" class="input-xlarge"></textarea>
    </div>
   </div>
   <div class="control-group">
    <label for="textarea" class="control-label">商品详情</label>
    <div class="controls">
-    <textarea rows="3" id="textarea" class="input-xlarge"></textarea>
+    <textarea rows="3" id="details" class="input-xlarge"></textarea>
    </div>
   </div>
   <div class="control-group">
    <label for="textarea" class="control-label">使用门店</label>
    <div class="controls">
-     <input type="radio" checked="" value="option1" id="optionsRadios1" name="optionsRadios" /> 全部门店
-     <input type="radio" value="option2" id="optionsRadios2" name="optionsRadios" />部分门店
+    <input type="radio" checked value="1" id="radios1" name="optionsRadios" />全部门店
+    <input type="radio" value="2" id="radios2" name="optionsRadios" />部分门店
    </div>
   </div>
   <div class="form-actions">
