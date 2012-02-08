@@ -15,11 +15,14 @@ import java.util.regex.Pattern;
  */
 public class ImageController extends Controller {
 
-    private static final String IMAGE_ROOT = "/home/sujie"; //缩略图根目录
     public static final String SMALL = "small";
     public static final CharSequence MIDDLE = "middle";
     public static final CharSequence LARGE = "large";
-    public static final Pattern pat = Pattern.compile("^([^_]+)_([a-z0-9]+).(jpg|png|gif|jpeg)$");
+    public static final String TINY = "tiny";
+
+    private static final String IMAGE_ROOT = "/home/sujie"; //缩略图根目录
+    private static final Pattern pat = Pattern.compile("^([^_]+)_([a-z0-9]+).(jpg|png|gif|jpeg)$");
+
 
     /**
      * 根据图片路径显示指定规格的缩略图.
@@ -34,15 +37,18 @@ public class ImageController extends Controller {
 
         int width = 0;
         int height = 0;
-        if (imageName.contains(SMALL)) {
-            width = 100;
-            height = 100;
+        if (imageName.contains(TINY)) {
+            width = 60;
+            height = 36;
+        } else if (imageName.contains(SMALL)) {
+            width = 75;
+            height = 45;
         } else if (imageName.contains(MIDDLE)) {
-            width = 200;
-            height = 200;
+            width = 150;
+            height = 90;
         } else if (imageName.contains(LARGE)) {
-            width = 400;
-            height = 400;
+            width = 300;
+            height = 180;
         } else {
             notFound();
         }
