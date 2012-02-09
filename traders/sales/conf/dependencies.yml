@@ -3,10 +3,10 @@
 require:
     - play
     - layout_trader -> layout_trader
-    
+
 repositories:
     - layoutTraderCustomModules:
         type:       local
-        artifact:   "${application.path}/../../module/layout_trader"
+        artifact:   "${application.path}/../../module/[module]"
         contains:
             - layout_trader -> *
