@@ -1,0 +1,35 @@
+#{extends 'trader/layout.html' /}
+#{include 'goods/nav.html' /}
+<div class="body">
+ <form class="form-horizontal" action="@{Shops.create()}" method="post">
+  <legend>添加门店</legend>
+  
+  <div class="control-group">
+   <label for="input01" class="control-label">分店名称</label>
+   <div class="controls">
+    <input type="text" id="input01" name="shop.name" class="input-xlarge" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="input01" class="control-label">分店地址</label>
+   <div class="controls">
+    <input type="text" id="input01" name="shop.address" class="input-xlarge" />
+   </div>
+  </div>
+
+  <div class="control-group">
+   <label for="input01" class="control-label">分店电话</label>
+   <div class="controls">
+    <input type="text" id="input01" name="shop.phone" class="input-xlarge" />
+   </div>
+  </div>
+
+
+  <div class="form-actions">
+   <button class="btn btn-primary" type="submit">保 存</button>
+   <button class="btn" type="reset">取 消</button>
+  </div>
+ </form>
+</div>
+
+
