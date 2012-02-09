@@ -1,0 +1,4 @@
+self: play -> sales 0.1
+
+require:
+    - play
