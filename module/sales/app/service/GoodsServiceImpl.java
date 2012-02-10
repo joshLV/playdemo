@@ -10,11 +10,13 @@ import play.modules.sales.GoodsService;
  * Date: 2/9/12
  * Time: 1:49 PM
  */
-public class GoodsServiceImpl implements GoodsService{
+public class GoodsServiceImpl implements GoodsService {
     @Override
     public void addGoods(Object context) {
-        if (context instanceof Goods){
-            Goods goods = (Goods)context;
+
+        System.out.println("context:" + context);
+        if (context instanceof Goods) {
+            Goods goods = (Goods) context;
             goods.create();
         }
     }

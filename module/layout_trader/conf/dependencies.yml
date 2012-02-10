@@ -1,4 +1,0 @@
-self: play -> trader 0.1
-
-require:
-    - play
