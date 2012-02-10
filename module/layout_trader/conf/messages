@@ -1,0 +1,5 @@
+# Default layout_trader messages
+# You can specialize this file for each language.
+# For exemple, for french create a messages.fr file
+
+#layout_trader.name=layout_trader

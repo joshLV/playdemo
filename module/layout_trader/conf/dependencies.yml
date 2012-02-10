@@ -1,0 +1,4 @@
+self: play -> layout_trader 0.1
+
+require:
+    - play
