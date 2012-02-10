@@ -21,9 +21,9 @@
     });
 </script>
 #{/set}
-#{include 'sales/Goods/nav.html' /}
+#{include 'Goods/nav.html' /}
 <div class="body">
-#{form @sales.Goods.addGoods()}
+#{form @Goods.create()}
 *{<form class="form-horizontal" action="@{Goods.addgoods()}" method="post" enctype="multipart/form-data">}*
     <legend>添加电子消费券</legend>
     <div class="control-group">
