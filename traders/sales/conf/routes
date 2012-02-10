@@ -4,8 +4,8 @@
 
 # Home page
 GET     /                                       Application.index
-GET     /goods                                  sales.Goods.index
-POST    /goods                                  sales.Goods.addGoods
+GET     /goods                                  Goods.index
+POST    /goods                                  Goods.create
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
