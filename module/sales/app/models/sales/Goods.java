@@ -7,6 +7,7 @@ package models.sales;
 import play.db.jpa.Model;
 
 import javax.persistence.Entity;
+import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
 
 @Entity
