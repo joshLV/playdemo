@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                                       Home.index
+GET     /carts                                  Carts.index
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
