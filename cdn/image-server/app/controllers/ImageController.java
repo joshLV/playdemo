@@ -31,8 +31,6 @@ public class ImageController extends Controller {
      * @param imageName
      */
     public static void showImage(int firstDir, int secondDir, int thirdDir, String imageName) {
-
-
         int width = 0;
         int height = 0;
         if (imageName.contains(TINY)) {
@@ -58,13 +56,9 @@ public class ImageController extends Controller {
         }
 
         String toImagePath = IMAGE_ROOT + File.separator + "p" + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + imageName;
-
         String originImagePath = IMAGE_ROOT + File.separator + "o" + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + matcher.group(1)+"."+matcher.group(3);
 
-
         File toFile = new File(toImagePath);
-
-        System.out.println("============"+originImagePath + " " + toImagePath + " " + width + " " + height);
 
         if (!toFile.exists()) {
             //创建缩略图
