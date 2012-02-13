@@ -10,7 +10,7 @@
                 class="zi_gray" href="#">帮助中心</a>|<a class="zi_gray" href="#">收藏夹</a></span></div>
     </div>
     <div id="wrap_top_header" style="margin: 0px">
-        <div id="wrap_top_header_left"><img src="@{'/public/images/logo.jpg'}"/></div>
+        <div id="wrap_top_header_left"><img src="@@{'/public/images/logo.jpg'}"/></div>
         <div id="wrap_top_header_mid">
             <ul class="tab_header">
                 <li><a class="tab_hover" onClick="selectTag('tagContent0',this)" href="javascript:void(0)">首页</a></li>
@@ -28,7 +28,7 @@
                 </li>
             </ul>
         </div>
-        <div id="wrap_top_right"><img src="@{'/public/images/right_tel.jpg'}"/></div>
+        <div id="wrap_top_right"><img src="@@{'/public/images/right_tel.jpg'}"/></div>
     </div>
     <div style="clear:both"></div>
     <div id="research_wrap">
@@ -36,7 +36,7 @@
             <form action="" method="get">
                 <input class="left_input_seach" type="text" value="请输入您想找的优惠劵"/>
                 <input class="left_input_seach2" type="image" name="imageField" id="imageField"
-                       src="@{'/public/images/sumbit_yuhui.jpg'}"/>
+                       src="@@{'/public/images/sumbit_yuhui.jpg'}"/>
             </form>
         </div>
         <!--tag 标签-->
@@ -47,7 +47,7 @@
         </div>
         <!--购物车结算-->
         <div class="seach_right">
-            <span class="seach_right_sp"><img class="gouwu_icon" src="@{'/public/images/gouwu_icon.jpg'}"/></span>
+            <span class="seach_right_sp"><img class="gouwu_icon" src="@@{'/public/images/gouwu_icon.jpg'}"/></span>
             <span class="gouwu_font">购物车：<span class="font_red">12件</span></span>
             <span class="gouwu_jiesuan"><a href="#" class="font_white">去结算</a></span>
         </div>
@@ -56,7 +56,7 @@
             <!--over auto-->
             <div class="over_auto">
                 <div class="car_box">
-                    <div class="car_one"><img src="@{'/public/images/chanpin/car_cp1.jpg'}" width="60" height="41"/>
+                    <div class="car_one"><img src="@@{'/public/images/chanpin/car_cp1.jpg'}" width="60" height="41"/>
                     </div>
                     <div class="car_one_right">
                         <div class="float_title">马可波罗 一千零一夜花茶20g</div>
@@ -66,7 +66,7 @@
                 </div>
 
                 <div class="car_box">
-                    <div class="car_one"><img src="@{'/public/images/chanpin/car_cp1.jpg'}"/></div>
+                    <div class="car_one"><img src="@@{'/public/images/chanpin/car_cp1.jpg'}"/></div>
                     <div class="car_one_right">
                         <div class="float_title">佳宝 无花果35G</div>
                         <div class="font_red">Y:3元<span class="font_gray">x3</span></div>
@@ -74,7 +74,7 @@
                     </div>
                 </div>
                 <div class="car_box">
-                    <div class="car_one"><img src="@{'/public/images/chanpin/car_cp1.jpg'}"/></div>
+                    <div class="car_one"><img src="@@{'/public/images/chanpin/car_cp1.jpg'}"/></div>
                     <div class="car_one_right">
                         <div class="float_title">超值试用装 修护眼膜贴2对+便携装小</div>
                         <div class="font_red">Y:0.01<span class="font_gray">x1</span></div>
@@ -82,7 +82,7 @@
                     </div>
                 </div>
                 <div class="car_box">
-                    <div class="car_one"><img src="@{'/public/images/chanpin/car_cp1.jpg'}"/></div>
+                    <div class="car_one"><img src="@@{'/public/images/chanpin/car_cp1.jpg'}"/></div>
                     <div class="car_one_right">
                         <div class="float_title">和田 一品玉枣（四星）500克/袋</div>
                         <div class="font_red">Y:35<span class="font_gray">x1</span></div>
@@ -93,7 +93,7 @@
 
             <div class="gouwu_car_haha">共<span class="font_red">6</span>件商品</div>
             <div class="gouwu_car_haha">金额总计（预估）：<span class="font_red">59.61元</span></div>
-            <div class="gouwu_car_haha bottom_car"><a href="#"><img src="@{'/public/images/go_gouwu_car.jpg'}"/></a>
+            <div class="gouwu_car_haha bottom_car"><a href="#"><img src="@@{'/public/images/go_gouwu_car.jpg'}"/></a>
             </div>
         </div>
     </div>
@@ -108,11 +108,16 @@
                 <TABLE id=idSlider2 border=0 cellSpacing=0 cellPadding=0>
                     <TBODY>
                     <TR>
-                        <TD class=td_f><A href="#" target="_blank"><IMG src="@{'/public/images/flash/01.jpg'}"></A></TD>
-                        <TD class=td_f><A href="#" target="_blank"><IMG src="@{'/public/images/flash/02.jpg'}"></A></TD>
-                        <TD class=td_f><A href="#" target="_blank"><IMG src="@{'/public/images/flash/03.jpg'}"></A></TD>
-                        <TD class=td_f><A href="#" target="_blank"><IMG src="@{'/public/images/flash/04.jpg'}"></A></TD>
-                        <TD class=td_f><A href="#" target="_blank"><IMG src="@{'/public/images/flash/05.jpg'}"></A></TD>
+                        <TD class=td_f><A href="#" target="_blank"><IMG src="@@{'/public/images/flash/01.jpg'}"></A>
+                        </TD>
+                        <TD class=td_f><A href="#" target="_blank"><IMG src="@@{'/public/images/flash/02.jpg'}"></A>
+                        </TD>
+                        <TD class=td_f><A href="#" target="_blank"><IMG src="@@{'/public/images/flash/03.jpg'}"></A>
+                        </TD>
+                        <TD class=td_f><A href="#" target="_blank"><IMG src="@@{'/public/images/flash/04.jpg'}"></A>
+                        </TD>
+                        <TD class=td_f><A href="#" target="_blank"><IMG src="@@{'/public/images/flash/05.jpg'}"></A>
+                        </TD>
                     </TR>
                     </TBODY>
                 </TABLE>
@@ -207,7 +212,7 @@
                     <div class="shop_li_box">
                     #{/if}
                     <li class="shop_box">
-                        <div><a href="#"><img src="http://localhost:9007${one_goods.image_path?one_goods.image_middle_path:"/p/1/1/1/default_middle.png"}"/></a></div>
+                        <div><a href="#"><img src="${one_goods.image_middle_path}"/></a></div>
                         <div class="margin_top5px"><span
                                 class="strong_gray font_14px">${one_goods.name} </span><span
                                 class="pri_jiage font_14px">Y${one_goods.sale_price}</span></div>
@@ -239,7 +244,7 @@
         <div id="right_content_top2" class="ones border_div">
             <dl class="right_top2">
                 <dt><span><a href="#">更多>></a></span>优惠团购</dt>
-                <dd class="right_top2_dd1"><img src="@{'/public/images/adv/1.jpg'}"/></dd>
+                <dd class="right_top2_dd1"><img src="@@{'/public/images/adv/1.jpg'}"/></dd>
                 <dd class="right_top2_dd2">
                     <div>还有<span class="span_font_red">0</span>天<span class="span_font_red">6</span>小时<span
                             class="span_font_red">6</span>分<span class="span_font_red">35</span>秒结束
@@ -269,32 +274,9 @@
                 <dd class="right_lists"><a href="#">【维罗纳意式私房菜】[牛奶棚]</a></dd>
                 <dd class="right_lists right_list2"><a href="#">【牛奶棚】[牛奶棚]大社区开心..</a></dd>
                 <dd class="right_lists"><a href="#">【牛奶棚】[牛奶棚]大社区开心..</a></dd>
-                <dd class="right_dd_adv"><a href="#"><img src="@{'/public/images/adv/2.jpg'}"/></a></dd>
+                <dd class="right_dd_adv"><a href="#"><img src="@@{'/public/images/adv/2.jpg'}"/></a></dd>
             </dl>
         </div>
     </div>
 </div>
-
-<!--底部注脚部分-->
-<div style="clear:both"></div>
-<div id="footer_nav"><span class="strong_firend">友情链接：</span><a href="#" class="fenge_footer">关于我们</a>|<a href="#"
-                                                                                                          class="fenge_footer">团购</a>|<a
-        href="#" class="fenge_footer">电子优惠劵</a>|<a href="#" class="fenge_footer">优惠劵</a>|<a href="#"
-                                                                                            class="fenge_footer">活动交友网</a>|<a
-        href="#" class="fenge_footer">天津优惠劵</a>|<a href="#" class="fenge_footer">591结婚网</a>|<a href="#"
-                                                                                               class="fenge_footer">上海旅游</a>|<a
-        href="#" class="fenge_footer">KFC优惠劵</a>|<a href="#" class="fenge_footer">团购大全</a></div>
 </div>
-<div id="footer">
-    <div><a href="#" class="fenge_footer">关于我们</a>|<a href="#" class="fenge_footer">诚聘英才</a>|<a href="#"
-                                                                                                class="fenge_footer">联系我们</a>|<a
-            href="#" class="fenge_footer">免责声明</a>|<a href="#" class="fenge_footer">服务条款</a>|<a href="#"
-                                                                                                class="fenge_footer">帮助中心</a>
-    </div>
-    <div>Copyright@2005-2009 iModia Network CO.,LTD. ALL Rights Reserved</div>
-    <div><span><a href="#">优惠啦</a></span><span class="fenge_footer">|</span><span><a href="#">优惠打折网</a></span><span
-            class="fenge_footer">|</span><span>联系我们：uhuila@seewi.com.cn</span></div>
-    <div>泸ICP备08114451号</div>
-</div>
-<div id="bottom_footer"><img src="@{'/public/images/footer/footer_two.jpg'}"/><img
-        src="@{'/public/images/footer/footer_one.jpg'}"/></div>
