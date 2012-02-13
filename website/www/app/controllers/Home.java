@@ -17,7 +17,6 @@ public class Home extends Controller {
     public static void index() {
         List<Goods> goodsList = Goods.findTopByCategory(0,12);
 
-        System.out.println(goodsList.size());
         render(goodsList);
     }
 
