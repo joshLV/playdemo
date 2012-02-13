@@ -6,7 +6,7 @@
 GET     /                                       Home.index
 GET     /goods/{id}                             Goods.show
 GET     /carts                                  Carts.index
-POST    /carts                                  Cart.order
+POST    /carts                                  Carts.order
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

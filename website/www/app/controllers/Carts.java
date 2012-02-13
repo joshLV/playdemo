@@ -35,13 +35,13 @@ public class Carts extends Controller {
         render();
     }
     
-    public static void order(int goodsId, int number) {
+    public static void order(long goodsId, int number) {
 
         String username = session.get("username");
         User user = User.find("byLoginName", username).first();
         Http.Cookie cookieIdentity = request.cookies.get("identity");
 
-        Goods goods = Goods.findById(goodsId);
+        models.sales.Goods goods = models.sales.Goods.findById(goodsId);
 
         if ( (user == null && cookieIdentity == null) || goods == null){
             renderJSON(null);
@@ -71,13 +71,13 @@ public class Carts extends Controller {
         renderJSON(null);
     }
 
-    public static void delete(int goodsId) {
+    public static void delete(long goodsId) {
 
         String username = session.get("username");
         User user = User.find("byLoginName", username).first();
         Http.Cookie cookieIdentity = request.cookies.get("identity");
 
-        Goods goods = Goods.findById(goodsId);
+        models.sales.Goods goods = models.sales.Goods.findById(goodsId);
 
         if ( (user == null && cookieIdentity == null) || goods == null){
             renderJSON(null);
@@ -112,7 +112,7 @@ public class Carts extends Controller {
         Cart cart = null;
         if (user != null) {
             for (long goodsId : goodsIds) {
-                Goods goods = Goods.findById(goodsId);
+                models.sales.Goods goods = models.sales.Goods.findById(goodsId);
                 cart = Cart.find("byUserAndGoods", user, goods).first();
                 if (cart != null) {
                     cart.delete();
@@ -120,7 +120,7 @@ public class Carts extends Controller {
             }
         }else {
             for (long goodsId : goodsIds) {
-                Goods goods = Goods.findById(goodsId);
+                models.sales.Goods goods = models.sales.Goods.findById(goodsId);
                 cart = Cart.find("byCookieIdentityAndGoods", cookieIdentity.value,goods).first();
                 if (cart != null) {
                     cart.delete();

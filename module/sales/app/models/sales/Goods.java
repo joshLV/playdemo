@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 public class Goods extends Model {
 
     private static final Pattern imagePat = Pattern.compile("^/o/([0-9]+)/([0-9]+)/([0-9]+)/([^_]+).(jpg|png|gif|jpeg)$");
+    private static final String IMAGE_SERVER = "http://localhost:9007";
 
     /**
      * 商品编号
@@ -37,15 +38,48 @@ public class Goods extends Model {
     /**
      * 中等规格图片路径
      */
+    private String image_tiny_path;
+    /**
+     * 中等规格图片路径
+     */
+    private String image_small_path;
+    /**
+     * 中等规格图片路径
+     */
     private String image_middle_path;
+    /**
+     * 中等规格图片路径
+     */
+    private String image_large_path;
+
+    public String getImage_tiny_path() {
+        return getImageBySizeType("tiny");
+    }
+
+    public String getImage_small_path() {
+        return getImageBySizeType("small");
+    }
 
     public String getImage_middle_path() {
+        return getImageBySizeType("middle");
+    }
+
+    public String getImage_large_path() {
+        return getImageBySizeType("large");
+    }
+
+    private String getImageBySizeType(String sizeType) {
+        String defaultImage = IMAGE_SERVER + "/p/1/1/1/default_" + sizeType + ".png";
+        if (image_path == null || image_path.equals("")){
+            return defaultImage;
+        }
         Matcher matcher = imagePat.matcher(image_path);
         if (!matcher.matches()) {
-            return null;
+
+            return defaultImage;
         }
         String imageHeadStr = image_path.replace("/o/", "/p/");
-        return imageHeadStr.replace("/" + matcher.group(4), "/" + matcher.group(4) + "_middle");
+        return IMAGE_SERVER + imageHeadStr.replace("/" + matcher.group(4), "/" + matcher.group(4) + "_" + sizeType);
     }
 
 

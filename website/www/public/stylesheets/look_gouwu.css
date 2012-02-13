@@ -29,7 +29,7 @@ table {
 .buzou_text_two{width:23px; height:23px; background:#EFEFEF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px; font-size:16px; font-weight:700}
 .buzou_text_four{width:23px; height:23px; background:#CF1F1F; color:#FFFFFF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;}
 
-#gouwucar{ margin:0 auto; width:996px; border:solid 1px #EEEEEE; height:490px; overflow:hidden}
+#gouwucar{ margin:0 auto; width:996px; border:solid 1px #EEEEEE; overflow:hidden}
 *+html #gouwucar{ margin:0 auto; width:996px; border:solid 1px #EEEEEE; height:426px; overflow:hidden}
 *html #gouwucar{ height:422px;} 
 #gouwucar_buttom_info{ margin:0 auto; width:996px; height:auto; margin-top:7px; line-height:30px; margin-bottom:30px}

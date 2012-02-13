@@ -6,7 +6,7 @@
 #{set 'moreScripts'}
 <SCRIPT type=text/javascript>
     function addCart() {
-        var addAction = #{jsAction @Cart.order(':id', ':count')/}
+        var addAction = #{jsAction @Carts.order(':id', ':count')/}
         $.post(addAction({id:'${goods.id}', count:$('#count').value}),
                 function (data) {
                     $('#result').json(data);
