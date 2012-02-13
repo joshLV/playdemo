@@ -1,0 +1,13 @@
+# Application dependencies
+
+require:
+    - play
+    - sales -> sales
+
+repositories:
+    - customModules:
+        type:       local
+        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
+        artifact:   "${application.path}/../[module]"
+        contains:
+            - sales -> *

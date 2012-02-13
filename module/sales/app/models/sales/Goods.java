@@ -9,10 +9,15 @@ import play.db.jpa.Model;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Entity
 @Table(name = "goods")
 public class Goods extends Model {
+
+    private static final Pattern imagePat = Pattern.compile("^/o/([0-9]+)/([0-9]+)/([0-9]+)/([^_]+).(jpg|png|gif|jpeg)$");
+
     /**
      * 商品编号
      */
@@ -26,9 +31,24 @@ public class Goods extends Model {
      */
     public String company_id;
     /**
-     * 图片
+     * 原始图片路径
      */
-    public String image_path="default_path";
+    public String image_path;
+    /**
+     * 中等规格图片路径
+     */
+    private String image_middle_path;
+
+    public String getImage_middle_path() {
+        Matcher matcher = imagePat.matcher(image_path);
+        if (!matcher.matches()) {
+            return null;
+        }
+        String imageHeadStr = image_path.replace("/o/", "/p/");
+        return imageHeadStr.replace("/" + matcher.group(4), "/" + matcher.group(4) + "_middle");
+    }
+
+
     /**
      * 进货量
      */
@@ -97,9 +117,6 @@ public class Goods extends Model {
      * 手工排序
      */
     public String display_order;
-    /**
-     * 根据时间
-     */
 
 
     public static List<Goods> findTopByCategory(int categoryId, int limit) {

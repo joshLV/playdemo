@@ -1,6 +1,5 @@
 package controllers;
 
-import play.libs.Images;
 import play.mvc.Controller;
 
 import java.io.File;
@@ -20,9 +19,8 @@ public class ImageController extends Controller {
     public static final CharSequence LARGE = "large";
     public static final String TINY = "tiny";
 
-    private static final String IMAGE_ROOT = "/home/sujie"; //缩略图根目录
-    private static final Pattern pat = Pattern.compile("^([^_]+)_([a-z0-9]+).(jpg|png|gif|jpeg)$");
-
+    private static final String IMAGE_ROOT = "/nfs/images"; //缩略图根目录
+    private static final Pattern toImagePat = Pattern.compile("^([^_]+)_([a-z0-9]+).(jpg|png|gif|jpeg)$");
 
     /**
      * 根据图片路径显示指定规格的缩略图.
@@ -53,22 +51,25 @@ public class ImageController extends Controller {
             notFound();
         }
 
-        Matcher matcher = pat.matcher(imageName);
+        Matcher matcher = toImagePat.matcher(imageName);
 
         if (!matcher.matches()) {
             notFound();
         }
-        String originImageName = matcher.group(0);
 
-        String toImagePath = IMAGE_ROOT + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + imageName;
+        String toImagePath = IMAGE_ROOT + File.separator + "p" + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + imageName;
 
-        String originImagePath = IMAGE_ROOT + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + originImageName + imageName.substring(imageName.indexOf("."));
+        String originImagePath = IMAGE_ROOT + File.separator + "o" + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + matcher.group(1)+"."+matcher.group(3);
 
 
         File toFile = new File(toImagePath);
+
+        System.out.println("============"+originImagePath + " " + toImagePath + " " + width + " " + height);
+
         if (!toFile.exists()) {
             //创建缩略图
-            Images.resize(new File(originImagePath), toFile, width, height);
+            File originImage = new File(originImagePath);
+            play.libs.Images.resize(originImage, toFile, width, height);
         }
         renderBinary(toFile);
     }
