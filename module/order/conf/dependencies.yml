@@ -1,0 +1,4 @@
+self: play -> order 0.1
+
+require:
+    - play

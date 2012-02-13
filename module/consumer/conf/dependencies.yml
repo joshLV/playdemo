@@ -1,0 +1,4 @@
+self: play -> consumer 0.1
+
+require:
+    - play

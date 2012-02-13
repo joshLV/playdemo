@@ -3,7 +3,10 @@
 require:
     - play
     - sales -> sales
+    - consumer -> consumer
+    - order -> order 
     - com.uhuila.common - file 1.0.0
+    - web_trace -> web_trace
 
 repositories:
     - customModules:
@@ -12,4 +15,7 @@ repositories:
         artifact:   "${application.path}/../../module/[module]"
         contains:
             - sales -> *
+            - consumer -> *
+            - order -> *
             - com.uhuila.common -> *
+            - web_trace -> *

@@ -1,0 +1,104 @@
+#{extends 'main.html' /}
+#{set title:'优惠啦 - 购物车' /}
+
+<body>
+<div id="wrap_main">
+	<div id="wrap_top">
+<!--    最顶部导航-->    	
+		<div id="wrap_top_top"><div class="top_margin_left" ><div class="wellcome">您好，欢迎您来到优惠啦！<a class="zi_gray" href="#">请登录</a></div>
+        <div class="top_ul_box">
+        <div class="user_reg_div_top">
+        	<ul class="re_top_top_ul">
+        	<li class="re_top_top_li"><a class="zi_gray"  href="#">新用户注册</a></li>
+            <li class="re_top_top_li">|</li>
+            <li class="re_top_top_li"><div class="top_car_icon"></div><a class="zi_gray"  href="#">购物车</a></li>
+            <li class="re_top_top_li">|</li>
+            <li class="re_top_top_li"><a class="zi_gray"  href="#" >收藏夹</a></li>
+            <li class="re_top_top_li">|</li>
+            <li class="re_top_top_li"><a class="zi_gray"  href="#">网站导航</a></li>
+         </ul>
+        </div>
+         <div class="font_16_red">400-6262-166</div>
+         </div>
+         </div>
+		</div>
+		</div>
+        <div id="wrap_top_header">
+        	<div id="wrap_top_header_left"><img src="@{'/public/images/logo.jpg'}" /></div>
+            <div id="wrap_top_middle">卷生活-惠生活</div>
+                    
+      </div>
+        <div style="clear:both"></div>
+        <div  class="fen_g"></div>
+        </div>
+	<!--主体内容部分-->
+<div id="wrap_content">
+		<div class="buzou_one"><div class="buzou_text_four">1</div> <div class="buzou_text_four_rig">查看购物车<span class="no_xiuzhen" >>></span></div>  <div class="buzou_text_two" >2</div> <div class="buzou_text_one">确认订单信息<span >>></span></div> <div  class="buzou_text_two">3</div> <div class="buzou_text_one">确认付款<span >>></span>	</div><div class="buzou_one_2">4</div> <div class="buzou_text_one">成功提交订单</div></div>
+        
+  </div>
+  <div style="clear:both"></div>
+<div id="gouwucar">
+	<div class="block_fense">购物</div>
+	<table width="996" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE"  frame="void">
+<tr bgcolor="F6F6F6">
+              <th width="374"><span class="th_one">
+              <label>
+              <input class="th_one_input" type="checkbox" name="checkbox3" id="checkbox3" />全选              </label>
+              </span><span class="th_shop_text">商品</span></th>
+              <th width="120">类型</th>
+              <th width="115" height="30" bgcolor="F6F6F6">单价（元）</th>
+              <th width="83">数量</th>
+              <th width="187">小计</th>
+              <th width="103">操作</th>
+            </tr>
+            <tr>
+              <td height="25" align="center" valign="middle" >
+              <div class="col_one"><input  type="checkbox" name="checkbox2" id="checkbox2" />
+              </div><div class="col_one_text">暖暖冬日羊羔烟灰暖暖冬日羊羔烟灰
+              </div>			  </td>
+              <td width="120" height="25" align="center" valign="middle">电子劵</td>
+              <td width="115" height="25" align="center" valign="middle">20.00</td>
+              <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img src="@{'/public/images/add_anniu.jpg'}" /></a>
+                <input class="num_input" type="text" value="1" />
+              <a href="#" class="add_box"><img src="@{'/public/images/sub_anniu.jpg'}" width="9" height="9" /></a></td>
+              <td width="187" height="25" align="center" valign="middle"><span class="strong_gray">劵号：45212145</span></td>
+              <td width="103" height="25" align="center" valign="middle"><a href="#">删除</a></td>
+      </tr>
+      <tr>
+              <td height="25" align="center" valign="middle" >
+              <div class="col_one"><input  type="checkbox" name="checkbox2" id="checkbox2" />
+              </div><div class="col_one_text">暖暖冬日羊羔烟灰暖暖冬日羊羔烟灰
+              </div>			  </td>
+              <td width="120" height="25" align="center" valign="middle">电子劵</td>
+              <td width="115" height="25" align="center" valign="middle">20.00</td>
+              <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img src="@{'/public/images/add_anniu.jpg'}" /></a>
+                <input class="num_input" type="text" value="1" />
+              <a href="#" class="add_box"><img src="@{'/public/images/sub_anniu.jpg'}" width="9" height="9" /></a></td>
+              <td width="187" height="25" align="center" valign="middle"><span class="strong_gray">劵号：45212145</span></td>
+              <td width="103" height="25" align="center" valign="middle"><a href="#">删除</a></td>
+      </tr>
+      
+          </table>
+</div>	
+<div id="gouwucar_buttom_info">
+<div class="bottom_info_one"><input name="" type="checkbox" value="" />
+全选</div>
+    <div class="bottom_info_two"><a class="piliang_del_bg" href="#">批量删除</a></div>
+  <div  class="both_clear"></div>
+    <div class="bottom_info_three">商品共<span class="font_red_one">5件</span>，总合计（不含运费）：<span class="font_red_one">Y222.00</span></div>
+    <div class="both_clear"></div>
+    <div class="bottom_info_four"><a class="queren_bg" href="#">确认结账</a></div>
+  <div class="both_clear"></div>
+</div>
+    <!--底部注脚部分-->
+    <div style="clear:both"></div>
+    <div id="footer_nav"><span  class="strong_firend">友情链接：</span><a href="#" class="fenge_footer">关于我们</a>|<a href="#" class="fenge_footer">团购</a>|<a href="#" class="fenge_footer">电子优惠劵</a>|<a href="#" class="fenge_footer">优惠劵</a>|<a href="#" class="fenge_footer">活动交友网</a>|<a href="#" class="fenge_footer">天津优惠劵</a>|<a href="#" class="fenge_footer">591结婚网</a>|<a href="#" class="fenge_footer">上海旅游</a>|<a href="#" class="fenge_footer">KFC优惠劵</a>|<a href="#" class="fenge_footer">团购大全</a></div>
+</div>
+<div id="footer">
+	<div><a href="#" class="fenge_footer">关于我们</a>|<a href="#" class="fenge_footer">诚聘英才</a>|<a href="#" class="fenge_footer">联系我们</a>|<a href="#" class="fenge_footer">免责声明</a>|<a href="#" class="fenge_footer">服务条款</a>|<a href="#" class="fenge_footer">帮助中心</a></div>
+    <div>Copyright@2005-2009 iModia Network CO.,LTD. ALL Rights Reserved</div>
+    <div><span><a href="#">优惠啦</a></span><span class="fenge_footer">|</span><span><a href="#">优惠打折网</a></span><span class="fenge_footer">|</span><span>联系我们：uhuila@seewi.com.cn</span></div>
+    <div>泸ICP备08114451号</div>
+</div>
+    <div id="bottom_footer"><img src="@{'/public/images/footer/footer_two.jpg'}" /><img src="@{'/public/images/footer/footer_one.jpg'}" /></div>
+

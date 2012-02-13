@@ -1,0 +1,4 @@
+self: play -> web_trace 0.1
+
+require:
+    - play
