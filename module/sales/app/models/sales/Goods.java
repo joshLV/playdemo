@@ -7,8 +7,8 @@ package models.sales;
 import play.db.jpa.Model;
 
 import javax.persistence.Entity;
-import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "goods")
@@ -28,7 +28,7 @@ public class Goods extends Model {
     /**
      * 图片
      */
-    public String image_path;
+    public String image_path="default_path";
     /**
      * 进货量
      */
@@ -44,7 +44,7 @@ public class Goods extends Model {
     /**
      * 商品标题
      */
-    public String title;
+//    public String title;
     /**
      * 商品原价
      */
@@ -70,7 +70,7 @@ public class Goods extends Model {
      */
     public String base_sale;
     /**
-     * 商品状态
+     * 商品状态,
      */
     public String status;
     /**
@@ -97,4 +97,13 @@ public class Goods extends Model {
      * 手工排序
      */
     public String display_order;
+    /**
+     * 根据时间
+     */
+
+
+    public static List<Goods> findTopByCategory(int categoryId, int limit) {
+        //todo 商品状态判断
+        return find("").fetch(limit);
+    }
 }

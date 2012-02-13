@@ -15,7 +15,7 @@ import java.util.List;
 public class Home extends Controller {
 
     public static void index() {
-        List<Goods> goodsList = Goods.findAll();
+        List<Goods> goodsList = Goods.findTopByCategory(0,12);
 
         render(goodsList);
     }

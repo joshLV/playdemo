@@ -3,10 +3,13 @@
 require:
     - play
     - sales -> sales
+    - com.uhuila.common - file 1.0.0
 
 repositories:
     - customModules:
         type:       local
+        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
         artifact:   "${application.path}/../../module/[module]"
         contains:
             - sales -> *
+            - com.uhuila.common -> *
