@@ -10,15 +10,55 @@
 
     <dependencies>
         <dependency>
-
             <groupId>junit</groupId>
-
             <artifactId>junit</artifactId>
-
             <version>4.7</version>
-
             <scope>test</scope>
-
         </dependency>
     </dependencies>
+    <distributionManagement>
+        <!--部署项目产生的构件到远程仓库需要的信息-->
+        <repository>
+            <!--是分配给快照一个唯一的版本号（由时间戳和构建流水号）？还是每次都使用相同的版本号？参见repositories/repository元素-->
+            <uniqueVersion/>
+            <id>banseon-maven2</id>
+            <name>banseon maven2</name>
+            <url>file://${basedir}/target/deploy</url>
+            <layout/>
+        </repository>
+        <!--构件的快照部署到哪里？如果没有配置该元素，默认部署到repository元素配置的仓库，参见distributionManagement/repository元素-->
+        <snapshotRepository>
+            <uniqueVersion/>
+            <id>banseon-maven2</id>
+            <name>Banseon-maven2 Snapshot Repository</name>
+            <url>scp://svn.baidu.com/banseon:/usr/local/maven-snapshot</url>
+            <layout/>
+        </snapshotRepository>
+        <!--部署项目的网站需要的信息-->
+        <site>
+            <!--部署位置的唯一标识符，用来匹配站点和settings.xml文件里的配置-->
+            <id>banseon-site</id>
+            <!--部署位置的名称-->
+            <name>business api website</name>
+            <!--部署位置的URL，按protocol://hostname/path形式-->
+            <url>
+                scp://svn.baidu.com/banseon:/var/www/localhost/banseon-web
+            </url>
+        </site>
+        <!--项目下载页面的URL。如果没有该元素，用户应该参考主页。使用该元素的原因是：帮助定位那些不在仓库里的构件（由于license限制）。-->
+        <downloadUrl/>
+        <!--如果构件有了新的group ID和artifact ID（构件移到了新的位置），这里列出构件的重定位信息。-->
+        <relocation>
+            <!--构件新的group ID-->
+            <groupId/>
+            <!--构件新的artifact ID-->
+            <artifactId/>
+            <!--构件新的版本号-->
+            <version/>
+            <!--显示给用户的，关于移动的额外信息，例如原因。-->
+            <message/>
+        </relocation>
+        <!--给出该构件在远程仓库的状态。不得在本地项目中设置该元素，因为这是工具自动更新的。有效的值有：none（默认），converted（仓库管理员从Maven 1 POM转换过来），partner（直接从伙伴Maven 2仓库同步过来），deployed（从Maven 2实例部署），verified（被核实时正确的和最终的）。-->
+        <status/>
+    </distributionManagement>
 </project>
