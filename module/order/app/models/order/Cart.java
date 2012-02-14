@@ -32,7 +32,7 @@ public class Cart extends Model {
     @Column(name="updated_at")
     public Date updatedAt;
 
-    public Cart(User user, String cookieIdentity, Goods goods, int number) {
+    public Cart(User user, String cookieIdentity, Goods goods, int number,String materialType) {
         this.user = user;
         this.cookieIdentity = cookieIdentity;
         this.goods= goods;
@@ -40,6 +40,7 @@ public class Cart extends Model {
         this.lockVersion = 0;
         this.createdAt = new Date();
         this.updatedAt = this.createdAt;
+        this.materialType = materialType;
     }
 
     public static List<Cart> findECart() {

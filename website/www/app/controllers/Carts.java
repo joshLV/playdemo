@@ -69,13 +69,14 @@ public class Carts extends Controller {
         if (cart != null) {
             if (cart.number != number) {
                 cart.number += number;
+                cart.materialType = goods.materialType;
                 cart.save();
             }
         } else {
             if (user != null) {
-                new Cart(user, null, goods, number).save();
+                new Cart(user, null, goods, number, goods.materialType).save();
             } else {
-                new Cart(user, cookieIdentity.value, goods, number).save();
+                new Cart(user, cookieIdentity.value, goods, number, goods.materialType).save();
             }
         }
 
