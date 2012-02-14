@@ -1,0 +1,156 @@
+#{extends 'layout_trader/layout.html' /}
+#{get 'moreScripts'}
+<script src="@{'/public/javascripts/kindeditor.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/plugins/code/prettify.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/get}
+#{include 'sales/Goods/nav.html' /}
+<div class="body">
+ <form class="form-horizontal" name="frm" action="@{Goods.create()}" method="post" enctype="multipart/form-data">
+  <legend>添加电子消费券</legend>
+  <div class="control-group">
+   <label for="select01" class="control-label">商品类型</label>
+   <div class="controls">
+    <select id="ca" class="input-small">
+     <option value="">请选择</option>
+    </select> <select id="select03" class="input-small">
+     <option value="">请选择</option>
+    </select> <select id="select03" class="input-small">
+     <option value="">请选择</option>
+    </select>
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="select01" class="control-label">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</label>
+   <div class="controls">
+    <select id="select03" class="input-small">
+     <option>哈根达斯</option>
+    </select>
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="input01" class="control-label">商品编号</label>
+   <div class="controls">
+    <input type="text" id="no" name="goods.no" class="input-xlarge" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="input01" class="control-label">商品名称</label>
+   <div class="controls">
+    <input type="text" id="goods_name" name="goods.name" class="input-xlarge" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="input01" class="control-label">券有效期</label>
+   <div class="controls">
+    <input class="input-medium Wdate" type="text" id="expired_bg_on" name="goods.expired_bg_on"
+     onfocus="WdatePicker({readOnly:true})" />至 <input class="input-medium Wdate" type="text" id="expired_ed_on"
+     name="goods.expired_ed_on" onfocus="WdatePicker({readOnly:true})" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="input01" class="control-label">原&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
+   <div class="controls">
+    <input type="text" id="original_price" name="goods.original_price" class="input-small" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="input01" class="control-label">现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
+   <div class="controls">
+    <input type="text" id="sale_price" name="goods.sale_price" class="input-small" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="input01" class="control-label">库&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</label>
+   <div class="controls">
+    <input type="text" id="base_sale" name="goods.base_sale" class="input-small" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="input01" class="control-label">商品图片</label>
+   <div class="controls">
+    <input type="file" id="image_path" name="image_path" class="input-file" />
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="textarea" class="control-label">温馨提示</label>
+   <div class="controls">
+     <textarea name="goods.prompt" cols="100" rows="8" style="width:700px;height:200px;visibility:hidden;"></textarea>
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="textarea" class="control-label">商品详情</label>
+   <div class="controls">
+    <textarea name="goods.details" cols="100" rows="8" style="width:700px;height:200px;visibility:hidden;"></textarea>
+   </div>
+  </div>
+  <div class="control-group">
+   <label for="textarea" class="control-label">使用门店</label>
+   <div class="controls">
+    <input type="radio" checked value="1" id="radios1" name="optionsRadios" />全部门店
+    <input type="radio" value="2" id="radios2" name="optionsRadios" />部分门店
+   </div>
+  </div>
+  <div class="form-actions">
+   <button class="btn btn-primary"  type="submit">保存</button>
+   <button class="btn btn-primary" id="onsales" type="submit">保存并上架</button>
+   <button class="btn" type="reset">浏览</button>
+   <input type="hidden" id="flag" name="flag"  value="0"/>
+  </div>
+ </form>
+ #{get 'moreScripts'}
+<script type="text/javascript">
+    KindEditor.ready(function(K) {
+        var editor1 = K.create('textarea[name="goods.prompt"]', {
+            cssPath : '/public/javascripts/plugins/code/prettify.css',
+            uploadJson : 'kindeditor/upload_json.jsp',
+            fileManagerJson : '/kindeditor/file_manager_json.jsp',
+            allowFileManager : true,
+            afterCreate : function() {
+                var self = this;
+                K.ctrl(document, 13, function() {
+                    self.sync();
+                    document.forms['frm'].submit();
+                });
+                K.ctrl(self.edit.doc, 13, function() {
+                    self.sync();
+                    document.forms['frm'].submit();
+                });
+            }
+        });
+        prettyPrint();
+    });
+    
+    KindEditor.ready(function(K) {
+        var editor1 = K.create('textarea[name="goods.details"]', {
+             cssPath : '/public/javascripts/plugins/code/prettify.css',
+            uploadJson : '/kindeditor/upload_json.jsp',
+            fileManagerJson : 'kindeditor/file_manager_json.jsp',
+            allowFileManager : true,
+            afterCreate : function() {
+                var self = this;
+                K.ctrl(document, 13, function() {
+                    self.sync();
+                    document.forms['frm'].submit();
+                });
+                K.ctrl(self.edit.doc, 13, function() {
+                    self.sync();
+                    document.forms['frm'].submit();
+                });
+            }
+        });
+        prettyPrint();
+    });
+    
+    $("#onsales").click(function() {
+    	 $("#flag").val("1");
+    	 $("#frm").action="@{Goods.create()}";
+      $("#frm").submit();
+         });  
+    
+</script>
+#{/get}
+</div>
+
+
