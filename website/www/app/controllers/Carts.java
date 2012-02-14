@@ -21,7 +21,7 @@ public class Carts extends Controller {
         List<Cart> cartList = new ArrayList<Cart>();
         if (user != null) {
             List<Cart> userCarts = Cart.find("byUser", user).fetch();
-            if (userCarts != null) cartList.addAll(userCarts);
+            cartList.addAll(userCarts);
         }
         //查询未登陆情况下已保存的购物车
         if (cookieIdentity != null) {
@@ -142,5 +142,4 @@ public class Carts extends Controller {
 
         renderJSON(null);
     }
-
 }

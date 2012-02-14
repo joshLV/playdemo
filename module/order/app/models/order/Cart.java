@@ -17,6 +17,8 @@ public class Cart extends Model {
     public Goods goods;
 
     public int number;
+    @Column(name="material_type")
+    public String materialType;
 
     @Column(name="cookie_identity")
     public String cookieIdentity;
@@ -38,5 +40,13 @@ public class Cart extends Model {
         this.lockVersion = 0;
         this.createdAt = new Date();
         this.updatedAt = this.createdAt;
+    }
+
+    public static List<Cart> findECart() {
+        return Cart.find("byMaterialType","e").fetch();
+    }
+
+    public static List<Cart> findRCart() {
+        return Cart.find("byMaterialType","r").fetch();
     }
 }

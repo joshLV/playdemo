@@ -3,227 +3,226 @@
 #{set 'moreStyles'}
 <link href="@@{'/public/stylesheets/order_info.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
+#{set 'moreScripts'}
+<script type=text/javascript>
+    function addAddress() {
+        var addAction = #{jsAction @Addresses.create()/}
+                $.post(addAction(), {'address.name':$("#address_name").val(), 'address.address':$("#address_address").val()},
+                        function (data) {
+                            $('#result').html(data);
+//                            if (data.resultCode == "ok") {
+//                                $('#add_cart_result').css("display", "");
+//                            }
+                        });
+//        $('#add_cart_result').css("display", "");
+    }
+</script>
+#{/set}
 <div id="wrap_main">
     <div id="wrap_top">
-        #{topNavigator/}
+    #{topNavigator/}
     </div>
     <div id="wrap_top_header">
-        <div id="wrap_top_header_left"><img src="@@{'/public/images/logo.jpg'}" /></div>
+        <div id="wrap_top_header_left"><img src="@@{'/public/images/logo.jpg'}"/></div>
         <div id="wrap_top_middle">卷生活-惠生活</div>
     </div>
     <div style="clear:both"></div>
-    <div  class="fen_g"></div>
+    <div class="fen_g"></div>
 </div>
 <!--主体内容部分-->
 <div id="wrap_content">
-<div>
-    <div class="buzou_one"><div  class="buzou_text_two"  >1</div> <div class="buzou_text_one">查看购物车<span>>></span></div>  <div class="buzou_text_four buzou_text_four_xz">2</div> <div class="buzou_text_four_rig">确认订单信息<span class="no_xiuzhen" >>></span></div> <div  class="buzou_text_two">3</div> <div class="buzou_text_one">确认付款<span >>></span>	</div><div class="buzou_one_2">4</div> <div class="buzou_text_one">成功提交订单</div></div>
-</div>
-<div id="gouwu_modify_info" class="xiuzheng_table">
-    <dl class="left_one_dl">
-        <dt class="font_blue"><div class="title_nav"><a href="#">确认收货地址</a></div>
-        <div class="font_blue"><a class="font_blue5" href="#">取消</a></div>
-        </dt>
-        <dd class="left_one_dl_dd">
-            <ul  class="adress_mod">
-                <li class="adress_modify"><input name="adress" type="radio" value="" />
-                    <span class="span_name">庚京月</span> <span class="span_adress">上海市徐汇区桂平路291号2楼</span> <span class="span_tel">211134</span>  <span class="span_tel">13874156398</span> <span class="span_tel">021-5694833</span><span class="mod_span_d"><a  class="mod_span_d2" href="#">修改</a>|<a class="mod_span_d2" href="#">删除</a></span></li>
-                <li class="adress_modify"><input name="adress" type="radio" value="" />
-                    <span class="span_name">庚京月</span> <span class="span_adress">上海市徐汇区桂平路291号2楼</span> <span class="span_tel">211134</span>  <span class="span_tel">13874156398</span> <span class="span_tel">021-5694833</span><span class="mod_span_d"><a  class="mod_span_d2" href="#">修改</a>|<a class="mod_span_d2" href="#">删除</a></span></li>
-                <li class="adress_modify chongxie"><input name="adress" type="radio" value="" />
-                    <div class="right_table"><table class="table_height" width="700" border="0" cellpadding="0" cellspacing="0">
-                        <tr>
-                            <td width="71" height="30" align="right"><span class="font_red">*</span>选择地区：</td>
-                            <td width="613" align="left">
-                                <select name="select" size="1" class="area_select" id="select">
-                                    <option value="-ALL-">-ALL-</option>
-                                    <option>two</option>
-                                </select>
-                                <select class="area_select"  name="select2" id="select2">
-                                    <option>-ALL-</option>
-                                </select>
-                                <select class="area_select"   name="select3" id="select3">
-                                    <option>-ALL-</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td height="30" align="right"><span class="font_red">*</span>详细地址：</td>
-                            <td align="left">
-                                <input  class="input_height input_adress"  type="text" name="textfield3" id="textfield3" />    </td>
-                        </tr>
-                        <tr>
-                            <td height="30" align="right"><span class="font_red">*</span>邮政编码：</td>
-                            <td align="left"><input class="input_height" type="text" name="textfield4" id="textfield4" /></td>
-                        </tr>
-                        <tr>
-                            <td height="30" align="right"><span class="font_red" >*</span>收&nbsp;货&nbsp;人：</td>
-                            <td align="left">
-                                <input  class="input_height" type="text" name="textfield5" id="textfield5" />    </td>
-                        </tr>
-                        <tr>
-                            <td height="30" align="right"><span class="font_red">*</span>手　　机：</td>
-                            <td align="left" class="font_yanse">
-                                <input name="textfield6"  type="text"  class="input_height" id="textfield6" value="如133421433434" />
-                                或固定电话
+    <div>
+        <div class="buzou_one">
+            <div class="buzou_text_two">1</div>
+            <div class="buzou_text_one">查看购物车<span>>></span></div>
+            <div class="buzou_text_four buzou_text_four_xz">2</div>
+            <div class="buzou_text_four_rig">确认订单信息<span class="no_xiuzhen">>></span></div>
+            <div class="buzou_text_two">3</div>
+            <div class="buzou_text_one">确认付款<span>>></span></div>
+            <div class="buzou_one_2">4</div>
+            <div class="buzou_text_one">成功提交订单</div>
+        </div>
+    </div>
+    <div id="gouwu_modify_info" class="xiuzheng_table">
+        <dl class="left_one_dl">
+            <dt class="font_blue">
+            <div class="title_nav"><a href="#">确认收货地址</a></div>
+            <div class="font_blue"><a class="font_blue5" href="#">取消</a></div>
+            </dt>
+            <dd class="left_one_dl_dd">
+                <ul class="adress_mod">
+                #{list addressList, as:'address'}
+                    <li class="adress_modify"><input name="address" type="radio" value="${address.id}"
+                                                     #{if address.isDefault.equals("T")}checked#{/if}/>
+                        <span class="span_name">${address.name}</span> <span
+                                class="span_adress">${address.address}</span> <span
+                                class="span_tel">${address.postcode}</span> <span
+                                class="span_tel">${address.mobile}</span> <span
+                                class="span_tel">${address.phone}</span><span class="mod_span_d"><a class="mod_span_d2"
+                                                                                                    href="#">修改</a>|<a
+                                class="mod_span_d2" href="#">删除</a></span></li>
+                #{/list}
 
-                                -
-                                <input name="textfield7"   type="text" class="input_height area_input" id="textfield7" value="区号" />
-                                <input name="textfield8"   type="text" class="input_height" id="textfield8" value="电话号码" />
-                                -
-                                <input type="text" class="input_height" value="分机号（可选）" /> 两者至少填写一项 </td>
-                        </tr>
-                        <tr>
-                            <td height="50" colspan="2"><span class="magin_left"><a class="queren_bg" href="#">确认收货信息</a></span></td>
-                        </tr>
-                    </table>
-                        <div class="clear_both"></div>
-                    </div>
-                </li>
+                    <li class="adress_modify chongxie"><input name="address" type="radio" value=""
+                                                              #{if addressList.size() == 0}checked#{/if}/>
+
+                        <div class="right_table">
+                            <table class="table_height" width="700" border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td width="71" height="30" align="right"><span class="font_red">*</span>选择地区：</td>
+                                    <td width="613" align="left">
+                                        <select class="area_select" name="address.province" id="address_province">
+                                            <option value="-ALL-">-ALL-</option>
+                                            <option>two</option>
+                                        </select>
+                                        <select class="area_select" name="address.city" id="address_city">
+                                            <option>-ALL-</option>
+                                        </select>
+                                        <select class="area_select" name="address.district" id="address_district">
+                                            <option>-ALL-</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="30" align="right"><span class="font_red">*</span>详细地址：</td>
+                                    <td align="left">
+                                        <input class="input_height input_adress" type="text" name="address.address"
+                                               id="address_address"/></td>
+                                </tr>
+                                <tr>
+                                    <td height="30" align="right"><span class="font_red">*</span>邮政编码：</td>
+                                    <td align="left"><input class="input_height" type="text" name="address.postcode"
+                                                            id="address_postcode"/></td>
+                                </tr>
+                                <tr>
+                                    <td height="30" align="right"><span class="font_red">*</span>收&nbsp;货&nbsp;人：</td>
+                                    <td align="left">
+                                        <input class="input_height" type="text" name="address.name" id="address_name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="30" align="right"><span class="font_red">*</span>手　　机：</td>
+                                    <td align="left" class="font_yanse">
+                                        <input name="address.mobile" type="text" class="input_height"
+                                               id="address_mobile"
+                                               value="如133421433434"/>
+                                        或固定电话
+
+                                        -
+                                        <input name="address.areaCode" type="text" class="input_height area_input"
+                                               id="address_areacode"
+                                               value="区号"/>
+                                        <input name="address.phoneNumber" type="text" class="input_height"
+                                               id="address_phoneNumber"
+                                               value="电话号码"/>
+                                        -
+                                        <input type="text" class="input_height" value="分机号（可选）"/> 两者至少填写一项
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="50" colspan="2"><span class="magin_left"><a class="queren_bg"
+                                                                                            href="javascript:addAddress();">确认收货信息</a></span>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="clear_both"></div>
+                        </div>
+                    </li>
 
 
-            </ul>
+                </ul>
 
-        </dd>
-    </dl>
-</div>
+            </dd>
+        </dl>
+    </div>
 
-<div id="gouwu_modify_info">
-    <dl class="left_one_dl">
-        <dt>
-        <div class="title_nav">确认购买信息</div>
-        <div><span class="spance_nav"></span></div></dt>
-        <dd class="border_dd">
-            <table width="970" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE"  frame="void">
-                <tr bgcolor="F6F6F6">
-                    <th width="374"><span class="th_shop_text">商品名称</span></th>
-                    <th width="120">类型</th>
-                    <th width="115" height="30" bgcolor="F6F6F6">单价</th>
-                    <th width="83">数量</th>
-                    <th width="187">小计</th>
-                </tr>
-                <tr>
-                    <td height="25" align="center" valign="middle" ><div class="col_one_text">暖暖冬日羊羔烟灰暖暖冬日羊羔烟灰
-                    </div>			  </td>
-                    <td width="120" height="25" align="center" valign="middle">电子劵</td>
-                    <td width="115" height="25" align="center" valign="middle">20.00</td>
-                    <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img src="@@{'/public/images/add_anniu.jpg'}" /></a>
-                        <input class="num_input" type="text" value="1" />
-                        <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9" height="9" /></a></td>
-                    <td width="187" rowspan="5" align="center" valign="middle">22元<br />
-                        （含5元运费）<span class="strong_gray"></span></td>
-                </tr>
-                <tr>
-                    <td height="25" align="center" valign="middle" ><div class="col_one_text">暖暖冬日羊羔烟灰暖暖冬日羊羔烟灰
-                    </div>			  </td>
-                    <td width="120" height="25" align="center" valign="middle">电子劵</td>
-                    <td width="115" height="25" align="center" valign="middle">20.00</td>
-                    <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img src="@@{'/public/images/add_anniu.jpg'}" /></a>
-                        <input class="num_input" type="text" value="1" />
-                        <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9" height="9" /></a></td>
-                </tr>
-                <tr>
-                    <td height="25" align="center" valign="middle" ><div class="col_one_text">暖暖冬日羊羔烟灰暖暖冬日羊羔烟灰
-                    </div>			  </td>
-                    <td width="120" height="25" align="center" valign="middle">电子劵</td>
-                    <td width="115" height="25" align="center" valign="middle">20.00</td>
-                    <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img src="@@{'/public/images/add_anniu.jpg'}" /></a>
-                        <input class="num_input" type="text" value="1" />
-                        <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9" height="9" /></a></td>
-                </tr>
-                <tr>
-                    <td height="25" align="center" valign="middle" ><div class="col_one_text">暖暖冬日羊羔烟灰暖暖冬日羊羔烟灰
-                    </div>			  </td>
-                    <td width="120" height="25" align="center" valign="middle">电子劵</td>
-                    <td width="115" height="25" align="center" valign="middle">20.00</td>
-                    <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img src="@@{'/public/images/add_anniu.jpg'}" /></a>
-                        <input class="num_input" type="text" value="1" />
-                        <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9" height="9" /></a></td>
-                </tr>
-                <tr>
-                    <td height="25" align="center" valign="middle" ><div class="col_one_text">暖暖冬日羊羔烟灰暖暖冬日羊羔烟灰
-                    </div>			  </td>
-                    <td width="120" height="25" align="center" valign="middle">电子劵</td>
-                    <td width="115" height="25" align="center" valign="middle">20.00</td>
-                    <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img src="@@{'/public/images/add_anniu.jpg'}" /></a>
-                        <input class="num_input" type="text" value="1" />
-                        <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9" height="9" /></a></td>
-                </tr>
-            </table>
-        </dd>
-    </dl>
-</div>
-<div class="border_bottom"></div>
-<div id="gouwu_modify_info">
-    <dl class="left_one_dl">
-        <dt>
-        <div class="title_nav">确认收货手机</div>
-        <div><span class="spance_nav"></span></div></dt>
-        <dd class="shouji_text">手机号码：
-            <!--手机号码修改的输入框input-->
-            <input class="num_input_bg" type="text" name="textfield2" id="textfield2" />
-            <span><a class="font_blue jianju" href="#">确认</a></span></dd>
-        <dd class="border_dd">
-            <table width="970" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE"  frame="void">
-                <tr bgcolor="F6F6F6">
-                    <th width="374"><span class="th_shop_text">商品名称</span></th>
-                    <th width="120">类型</th>
-                    <th width="115" height="30" bgcolor="F6F6F6">单价</th>
-                    <th width="83">数量</th>
-                    <th width="187">小计</th>
-                </tr>
-                <tr>
-                    <td height="25" align="center" valign="middle" ><div class="col_one_text">暖暖冬日羊羔烟灰暖暖冬日羊羔烟灰
-                    </div>			  </td>
-                    <td width="120" height="25" align="center" valign="middle">电子劵</td>
-                    <td width="115" height="25" align="center" valign="middle">20.00</td>
-                    <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img src="@@{'/public/images/add_anniu.jpg'}" /></a>
-                        <input class="num_input" type="text" value="1" />
-                        <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9" height="9" /></a></td>
-                    <td width="187" rowspan="5" align="center" valign="middle">22元<br />
-                        （含5元运费）<span class="strong_gray"></span></td>
-                </tr>
-                <tr>
-                    <td height="25" align="center" valign="middle" ><div class="col_one_text">暖暖冬日羊羔烟灰暖暖冬日羊羔烟灰
-                    </div>			  </td>
-                    <td width="120" height="25" align="center" valign="middle">电子劵</td>
-                    <td width="115" height="25" align="center" valign="middle">20.00</td>
-                    <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img src="@@{'/public/images/add_anniu.jpg'}" /></a>
-                        <input class="num_input" type="text" value="1" />
-                        <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9" height="9" /></a></td>
-                </tr>
-                <tr>
-                    <td height="25" align="center" valign="middle" ><div class="col_one_text">暖暖冬日羊羔烟灰暖暖冬日羊羔烟灰
-                    </div>			  </td>
-                    <td width="120" height="25" align="center" valign="middle">电子劵</td>
-                    <td width="115" height="25" align="center" valign="middle">20.00</td>
-                    <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img src="@@{'/public/images/add_anniu.jpg'}" /></a>
-                        <input class="num_input" type="text" value="1" />
-                        <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9" height="9" /></a></td>
-                </tr>
-                <tr>
-                    <td height="25" align="center" valign="middle" ><div class="col_one_text">暖暖冬日羊羔烟灰暖暖冬日羊羔烟灰
-                    </div>			  </td>
-                    <td width="120" height="25" align="center" valign="middle">电子劵</td>
-                    <td width="115" height="25" align="center" valign="middle">20.00</td>
-                    <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img src="@@{'/public/images/add_anniu.jpg'}" /></a>
-                        <input class="num_input" type="text" value="1" />
-                        <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9" height="9" /></a></td>
-                </tr>
-                <tr>
-                    <td height="25" align="center" valign="middle" ><div class="col_one_text">暖暖冬日羊羔烟灰暖暖冬日羊羔烟灰
-                    </div>			  </td>
-                    <td width="120" height="25" align="center" valign="middle">电子劵</td>
-                    <td width="115" height="25" align="center" valign="middle">20.00</td>
-                    <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img src="@@{'/public/images/add_anniu.jpg'}" /></a>
-                        <input class="num_input" type="text" value="1" />
-                        <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9" height="9" /></a></td>
-                </tr>
-            </table>
-        </dd>
-    </dl>
-</div>
-<div class="sp_height">商品总金额:<span class="font_red_one">39元</span> 运费：<span class="font_red_one">5元</span> 合计：<span class="font_red_one">49元</span></div>
-<div class="sp_height_one"><a class="que_pay_bg" href="#">确认付款</a></div>
+    <div id="gouwu_modify_info">
+        <dl class="left_one_dl">
+            <dt>
+            <div class="title_nav">确认购买信息</div>
+            <div><span class="spance_nav"></span></div>
+            </dt>
+            <dd class="border_dd">
+                <table width="970" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
+                    <tr bgcolor="F6F6F6">
+                        <th width="494"><span class="th_shop_text">商品名称(实物)</span></th>
+                        <th width="115" height="30" bgcolor="F6F6F6">单价</th>
+                        <th width="83">数量</th>
+                        <th width="187">小计</th>
+                    </tr>
+
+
+                #{list rCartList, as:'rCart'}
+                    <tr>
+                        <td height="25" align="center" valign="middle">
+                            <div class="col_one_text">${rCart.goods.name}
+                            </div>
+                        </td>
+                        <td width="115" height="25" align="center" valign="middle">${rCart.goods.sale_price}</td>
+                        <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img
+                                src="@@{'/public/images/add_anniu.jpg'}"/></a>
+                            <input class="num_input" type="text" value="${rCart.goods.number}"/>
+                            <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9"
+                                                             height="9"/></a>
+                        </td>
+                        <td width="187" rowspan="5" align="center" valign="middle">${rCartAmount}元<br/>
+                            （含5元运费）<span class="strong_gray"></span></td>
+                    </tr>
+                #{/list}
+
+
+                </table>
+            </dd>
+        </dl>
+    </div>
+    <div class="border_bottom"></div>
+    <div id="gouwu_modify_info">
+        <dl class="left_one_dl">
+            <dt>
+            <div class="title_nav">确认收货手机</div>
+            <div><span class="spance_nav"></span></div>
+            </dt>
+            <dd class="shouji_text">手机号码：
+                <!--手机号码修改的输入框input-->
+                <input class="num_input_bg" type="text" name="textfield2" id="textfield2"/>
+                <span><a class="font_blue jianju" href="#">确认</a></span></dd>
+            <dd class="border_dd">
+                <table width="970" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
+                    <tr bgcolor="F6F6F6">
+                        <th width="374"><span class="th_shop_text">商品名称(电子券)</span></th>
+                    *{<th width="120">类型</th>}*
+                        <th width="115" height="30" bgcolor="F6F6F6">单价</th>
+                        <th width="83">数量</th>
+                        <th width="187">小计</th>
+                    </tr>
+
+
+                #{list eCartList, as:'eCart'}
+                    <tr>
+                        <td height="25" align="center" valign="middle">
+                            <div class="col_one_text">${eCart.goods.name}
+                            </div>
+                        </td>
+                        <td width="115" height="25" align="center" valign="middle">${eCart.goods.sale_price}</td>
+                        <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img
+                                src="@@{'/public/images/add_anniu.jpg'}"/></a>
+                            <input class="num_input" type="text" value="${eCart.goods.number}"/>
+                            <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9"
+                                                             height="9"/></a>
+                        </td>
+                        <td width="187" rowspan="5" align="center" valign="middle">${eCartAmount}元<br/>
+                            （含5元运费）<span class="strong_gray"></span></td>
+                    </tr>
+                #{/list}
+
+
+                </table>
+            </dd>
+        </dl>
+    </div>
+    <div class="sp_height">商品总金额:<span class="font_red_one">${eCartAmount+rCartAmount-5}元</span> 运费：<span
+            class="font_red_one">5元</span> 合计：<span
+            class="font_red_one">${eCartAmount+rCartAmount}元</span></div>
+    <div class="sp_height_one"><a class="que_pay_bg" href="#">确认付款</a></div>
 </div>
 <div style="clear:both"></div>

@@ -6,6 +6,7 @@ package models.sales;
 
 import play.db.jpa.Model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.List;
@@ -36,34 +37,26 @@ public class Goods extends Model {
      */
     public String image_path;
     /**
-     * 中等规格图片路径
+     * 最小规格图片路径
      */
-    private String image_tiny_path;
-    /**
-     * 中等规格图片路径
-     */
-    private String image_small_path;
-    /**
-     * 中等规格图片路径
-     */
-    private String image_middle_path;
-    /**
-     * 中等规格图片路径
-     */
-    private String image_large_path;
-
     public String getImage_tiny_path() {
         return getImageBySizeType("tiny");
     }
-
+    /**
+     * 小规格图片路径
+     */
     public String getImage_small_path() {
         return getImageBySizeType("small");
     }
-
+    /**
+     * 中等规格图片路径
+     */
     public String getImage_middle_path() {
         return getImageBySizeType("middle");
     }
-
+    /**
+     * 大规格图片路径
+     */
     public String getImage_large_path() {
         return getImageBySizeType("large");
     }
@@ -102,11 +95,11 @@ public class Goods extends Model {
     /**
      * 商品原价
      */
-    public String original_price;
+    public float original_price;
     /**
      * 商品现价
      */
-    public String sale_price;
+    public float sale_price;
     /**
      * 温馨提示
      */
@@ -151,8 +144,18 @@ public class Goods extends Model {
      * 手工排序
      */
     public String display_order;
-
-
+    /**
+     * 商品类型，e:电子券，r:实物
+     */
+    @Column(name="material_type")
+    public String materialType;
+    /**
+     * 根据商品分类和数量取出指定数量的商品.
+     * 
+     * @param categoryId
+     * @param limit
+     * @return
+     */
     public static List<Goods> findTopByCategory(int categoryId, int limit) {
         //todo 商品状态判断
         return find("").fetch(limit);

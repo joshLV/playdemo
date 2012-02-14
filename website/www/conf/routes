@@ -8,6 +8,7 @@ GET     /goods/{id}                             Goods.show
 GET     /carts                                  Carts.index
 POST    /carts                                  Carts.order
 GET     /orders                                 Orders.index
+POST    /order/addresses                              Addresses.create
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

@@ -9,7 +9,7 @@
 
 <div id="wrap_main">
     <div id="wrap_top">
-        #{topNavigator/}
+    #{topNavigator/}
     </div>
     <div id="wrap_top_header">
         <div id="wrap_top_header_left"><img src="@{'/public/images/logo.jpg'}"/></div>
@@ -51,45 +51,26 @@
             <th width="103">操作</th>
         </tr>
 
-    #{if carts.size()}
-        #{list items:carts, as:'cartItem'}
-            <tr>
-                <td height="25" align="center" valign="middle">
-                    <div class="col_one"><input type="checkbox" name="checkbox2" id="checkbox2"/>
-                    </div>
-                    <div class="col_one_text">${cartItem.goods.name}
-                    </div>
-                </td>
-                <td width="120" height="25" align="center" valign="middle">电子劵</td>
-                <td width="115" height="25" align="center" valign="middle">20.00</td>
-                <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img
-                        src="@{'/public/images/add_anniu.jpg'}"/></a>
-                    <input class="num_input" type="text" value="${cartItem.number}"/>
-                    <a href="#" class="add_box"><img src="@{'/public/images/sub_anniu.jpg'}" width="9" height="9"/></a>
-                </td>
-                <td width="187" height="25" align="center" valign="middle"><span class="strong_gray">劵号：45212145</span>
-                </td>
-                <td width="103" height="25" align="center" valign="middle"><a href="#">删除</a></td>
-            </tr>
-
-        #{/list}
-    #{/if}
+    #{list items:carts, as:'cartItem'}
         <tr>
             <td height="25" align="center" valign="middle">
                 <div class="col_one"><input type="checkbox" name="checkbox2" id="checkbox2"/>
                 </div>
-                <div class="col_one_text">暖暖冬日羊羔烟灰暖暖冬日羊羔烟灰
+                <div class="col_one_text">#{cartItem.goods.name/}
                 </div>
             </td>
-            <td width="120" height="25" align="center" valign="middle">电子劵</td>
-            <td width="115" height="25" align="center" valign="middle">20.00</td>
+            <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType.equals("e")  ? '电子券' : '实物' }</td>
+            <td width="115" height="25" align="center" valign="middle">${cartItem.goods.sale_price}</td>
             <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img
                     src="@{'/public/images/add_anniu.jpg'}"/></a>
-                <input class="num_input" type="text" value="1"/>
-                <a href="#" class="add_box"><img src="@{'/public/images/sub_anniu.jpg'}" width="9" height="9"/></a></td>
-            <td width="187" height="25" align="center" valign="middle"><span class="strong_gray">劵号：45212145</span></td>
+                <input class="num_input" type="text" value="#{cartItem.number/}"/>
+                <a href="#" class="add_box"><img src="@{'/public/images/sub_anniu.jpg'}" width="9" height="9"/></a>
+            </td>
+            <td width="187" height="25" align="center" valign="middle"><span class="strong_gray">劵号：${cartItem.goods.no}</span>
+            </td>
             <td width="103" height="25" align="center" valign="middle"><a href="#">删除</a></td>
         </tr>
+    #{/list}
 
     </table>
 </div>
