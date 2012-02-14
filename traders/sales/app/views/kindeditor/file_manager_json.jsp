@@ -11,13 +11,27 @@
  * 如果您确定直接使用本程序，使用之前请仔细确认相关安全设置。
  *
  */
+
 //根目录路径，可以指定绝对路径，比如 /var/www/attached/
-String rootPath = "/opt/image";
+String rootPath = pageContext.getServletContext().getRealPath("/") + "attached/";
 //根目录URL，可以指定绝对路径，比如 http://www.yoursite.com/attached/
-String rootUrl  ="http://localhost:9000/attached/";
+String rootUrl  = request.getContextPath() + "/attached/";
 //图片扩展名
 String[] fileTypes = new String[]{"gif", "jpg", "jpeg", "png", "bmp"};
 
+String dirName = request.getParameter("dir");
+if (dirName != null) {
+	if(!Arrays.<String>asList(new String[]{"image", "flash", "media", "file"}).contains(dirName)){
+		out.println("Invalid Directory name.");
+		return;
+	}
+	rootPath += dirName + "/";
+	rootUrl += dirName + "/";
+	File saveDirFile = new File(rootPath);
+	if (!saveDirFile.exists()) {
+		saveDirFile.mkdirs();
+	}
+}
 //根据path参数，设置各路径和URL
 String path = request.getParameter("path") != null ? request.getParameter("path") : "";
 String currentPath = rootPath + path;
