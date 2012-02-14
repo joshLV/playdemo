@@ -2,6 +2,7 @@ package controllers;
 
 import models.sales.Goods;
 import play.mvc.Controller;
+import play.mvc.With;
 
 import java.util.List;
 import controllers.modules.webtrace.WebTrace;
