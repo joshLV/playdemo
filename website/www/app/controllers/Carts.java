@@ -7,8 +7,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @With(WebTrace.class)
 public class Carts extends Controller {
@@ -22,12 +21,12 @@ public class Carts extends Controller {
         List<Cart> cartList = new ArrayList<Cart>();
         if (user != null) {
             List<Cart> userCarts = Cart.find("byUser", user).fetch();
-            if (userCarts != null) carts.addAll(userCarts);
+            if (userCarts != null) cartList.addAll(userCarts);
         }
         //查询未登陆情况下已保存的购物车
         if (cookieIdentity != null) {
             List<Cart> cookieCarts = Cart.find("byCookieIdentity", cookieIdentity.value).fetch();
-            if (cookieCarts != null) carts.addAll(cookieCarts);
+            if (cookieCarts != null) cartList.addAll(cookieCarts);
         }
         //合并结果集
         List<Cart> carts = new ArrayList<Cart>();
