@@ -40,6 +40,12 @@ public class Pager {
             numsize = 10;
         }
         totalpage = totalCount/pageSize;
+        
+        if(totalpage<=0){
+            totalpage = 1;
+        }
+        
+        
         if(currPage > totalpage){
             currPage =  Integer.parseInt(String.valueOf(totalpage));
         }
@@ -57,6 +63,10 @@ public class Pager {
         endNum = startNum + numsize -1;
         if(endNum > totalpage){
             endNum = Integer.parseInt(String.valueOf(totalpage));
+        }
+        
+        if(endNum <=0){
+            endNum = 1;
         }
         
         
