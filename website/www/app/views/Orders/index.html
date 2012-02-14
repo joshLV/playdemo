@@ -7,7 +7,7 @@
 <script type=text/javascript>
     function addAddress() {
         var addAction = #{jsAction @Addresses.create()/}
-                $.post(addAction(), {'address.name':$("#address_name").val(), 'address.address':$("#address_address").val()},
+                $.post(addAction(), {selectedAddressId:$("#address_name").val(), 'address.name':$("#address_name").val(), 'address.address':$("#address_address").val()},
                         function (data) {
                             $('#result').html(data);
 //                            if (data.resultCode == "ok") {
@@ -45,14 +45,14 @@
     </div>
     <div id="gouwu_modify_info" class="xiuzheng_table">
         <dl class="left_one_dl">
-            <dt class="font_blue">
-            <div class="title_nav"><a href="#">确认收货地址</a></div>
-            <div class="font_blue"><a class="font_blue5" href="#">取消</a></div>
+            <dt>
+            <div class="title_nav">确认收货地址</div>
+            <div><span class="spance_nav"></span></div>
             </dt>
-            <dd class="left_one_dl_dd">
+            <dd class="border_dd">
                 <ul class="adress_mod">
                 #{list addressList, as:'address'}
-                    <li class="adress_modify"><input name="address" type="radio" value="${address.id}"
+                    <li class="adress_modify"><input name="selectedAddressId" type="radio" value="${address.id}"
                                                      #{if address.isDefault.equals("T")}checked#{/if}/>
                         <span class="span_name">${address.name}</span> <span
                                 class="span_adress">${address.address}</span> <span
@@ -63,7 +63,7 @@
                                 class="mod_span_d2" href="#">删除</a></span></li>
                 #{/list}
 
-                    <li class="adress_modify chongxie"><input name="address" type="radio" value=""
+                    <li class="adress_modify chongxie"><input name="selectedAddressId" type="radio" value="0"
                                                               #{if addressList.size() == 0}checked#{/if}/>
 
                         <div class="right_table">
@@ -122,7 +122,10 @@
                                 <tr>
                                     <td height="50" colspan="2"><span class="magin_left"><a class="queren_bg"
                                                                                             href="javascript:addAddress();">确认收货信息</a></span>
+                                        <span class="magin_left"><a class="queren_bg"
+                                                                                            href="javascript:addAddress();">取消</a></span>
                                     </td>
+
                                 </tr>
                             </table>
                             <div class="clear_both"></div>
@@ -152,6 +155,7 @@
                     </tr>
 
 
+                #{set i:0} #{/set}
                 #{list rCartList, as:'rCart'}
                     <tr>
                         <td height="25" align="center" valign="middle">
@@ -161,12 +165,14 @@
                         <td width="115" height="25" align="center" valign="middle">${rCart.goods.sale_price}</td>
                         <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img
                                 src="@@{'/public/images/add_anniu.jpg'}"/></a>
-                            <input class="num_input" type="text" value="${rCart.goods.number}"/>
+                            <input class="num_input" type="text" value="${rCart.number}"/>
                             <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9"
                                                              height="9"/></a>
                         </td>
-                        <td width="187" rowspan="5" align="center" valign="middle">${rCartAmount}元<br/>
-                            （含5元运费）<span class="strong_gray"></span></td>
+                        #{if (++i) == 1 }
+                            <td width="187" rowspan="5" align="center" valign="middle">${rCartAmount} 元<br/>
+                                （含5元运费）<span class="strong_gray"></span></td>
+                        #{/if}
                     </tr>
                 #{/list}
 
@@ -195,7 +201,7 @@
                         <th width="187">小计</th>
                     </tr>
 
-
+                #{set j:0} #{/set}
                 #{list eCartList, as:'eCart'}
                     <tr>
                         <td height="25" align="center" valign="middle">
@@ -205,12 +211,14 @@
                         <td width="115" height="25" align="center" valign="middle">${eCart.goods.sale_price}</td>
                         <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img
                                 src="@@{'/public/images/add_anniu.jpg'}"/></a>
-                            <input class="num_input" type="text" value="${eCart.goods.number}"/>
+                            <input class="num_input" type="text" value="${eCart.number}"/>
                             <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9"
                                                              height="9"/></a>
                         </td>
-                        <td width="187" rowspan="5" align="center" valign="middle">${eCartAmount}元<br/>
-                            （含5元运费）<span class="strong_gray"></span></td>
+                        #{if (++j) == 1 }
+                            <td width="187" rowspan="5" align="center" valign="middle">${eCartAmount}元<br/>
+                                （含5元运费）<span class="strong_gray"></span></td>
+                        #{/if}
                     </tr>
                 #{/list}
 

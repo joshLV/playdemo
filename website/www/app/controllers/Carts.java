@@ -47,7 +47,6 @@ public class Carts extends Controller {
     }
 
     public static void order(long goodsId, int number) {
-        System.out.println("order====");
         String username = session.get("username");
         User user = User.find("byLoginName", username).first();
         Http.Cookie cookieIdentity = request.cookies.get("identity");

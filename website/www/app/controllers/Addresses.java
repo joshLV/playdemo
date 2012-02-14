@@ -3,8 +3,6 @@ package controllers;
 import models.consumer.address.Address;
 import play.mvc.Controller;
 
-import java.util.List;
-
 /**
  * 用户地址控制器.
  * <p/>
@@ -18,17 +16,20 @@ public class Addresses extends Controller {
 
     }
 
-    public static void create(Address address){
-        System.out.println("invoke Address.create success");
-        address.save();
-
+    public static void create(long selectedAddressId, Address address) {
+        if (selectedAddressId == 0) {
+            address.save();
+            render(address);
+        }
+        Address selectedAddress = Address.findById(selectedAddressId);
+        render(selectedAddress);
     }
 
-    public static void update(Address address){
+    public static void update(Address address) {
         address.save();
     }
-    
-    public static void delete(long id){
-        Address.delete("id = ?",id);
+
+    public static void delete(long id) {
+        Address.delete("id = ?", id);
     }
 }
