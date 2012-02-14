@@ -1,5 +1,7 @@
 package models.sales;
 
+import java.util.List;
+
 import play.db.jpa.Model;
 import javax.persistence.Entity;
 import javax.persistence.PersistenceUnit;
@@ -11,7 +13,6 @@ import javax.persistence.Table;
 public class Shop extends Model {
 
     public long company_id;
-    
 
     public long area_id;
     
@@ -44,5 +45,28 @@ public class Shop extends Model {
     public String lock_version;
     
     public String display_order;
+    
+    
+    /**
+     * 读取某商户的全部门店记录
+     * @param companyId
+     * @return 
+     */
+    public static List<Shop> findShopByConpany(long companyId){
+        List<Shop> list = Shop.find("company_id=? and deleted=0",companyId).fetch();
+        return list;
+    }
+    
+    /**
+     * 虚拟删除
+     * @param id
+     * @return
+     */
+    public static boolean deleted(long id){
+        Shop shop  = Shop.findById(id);
+        shop.deleted = 1;
+        shop.save();
+        return true;
+    }
     
 }
