@@ -1,20 +1,19 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 商品详情' /}
 #{set 'moreStyles'}
-<link href="@@{'/public/stylesheets/chanpin_show.css'}" rel="stylesheet" type="text/css"/>
+<link href="@@{'/public/stylesheets/goods_show.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
 #{set 'moreScripts'}
 <script>
     function addCart() {
-        *{var addAction = #{jsAction @Carts.order()/}}*
-                *{$.post(addAction(), {goodsId:'${goods.id}',number:$("#number").val()},}*
-*{//                        function (data) {}*
-*{//                            alert("ok");}*
-*{//                    $('#result').json(data);}*
-*{//                    if (data.resultCode == "ok"){}*
-                            *{$('#add_cart_result').visible(true);}*
-*{//                    }}*
-                        *{});}*
+        var addAction = #{jsAction @Carts.order()/}
+                $.post(addAction(), {goodsId:'${goods.id}', number:$("#number").val()},
+                        function (data) {
+                            //                    $('#result').json(data);
+                            if (data.resultCode == "ok") {
+                                $('#add_cart_result').css("display", "");
+                            }
+                        });
         $('#add_cart_result').css("display", "");
     }
 
@@ -30,29 +29,7 @@
 
 <div id="wrap_main">
     <div id="wrap_top">
-        <!--    最顶部导航-->
-        <div id="wrap_top_top">
-            <div class="top_margin_left">
-                <div class="wellcome">您好，欢迎您来到优惠啦！<a class="zi_gray" href="#">请登录</a><a class="zi_gray"
-                                                                                        href="#">免费注册</a></div>
-                <div class="top_ul_box">
-                    <div class="user_reg_div_top">
-                        <ul class="re_top_top_ul">
-                            <li class="re_top_top_li"><a class="zi_gray" href="#">我的优惠啦</a></li>
-                            <li class="re_top_top_li">|</li>
-                            <li class="re_top_top_li">
-                                <div class="top_car_icon"></div>
-                                <a class="zi_gray" href="#">购物车</a></li>
-                            <li class="re_top_top_li">|</li>
-                            <li class="re_top_top_li"><a class="zi_gray" href="#">收藏夹</a></li>
-                            <li class="re_top_top_li">|</li>
-                            <li class="re_top_top_li"><a class="zi_gray" href="#">网站导航</a></li>
-                        </ul>
-                    </div>
-                    <div class="font_16_red">400-6262-166</div>
-                </div>
-            </div>
-        </div>
+    #{topNavigator/}
     </div>
     <div id="wrap_top_header">
         <div id="wrap_top_header_left"><img src="@@{'/public/images/logo.jpg'}"/></div>
