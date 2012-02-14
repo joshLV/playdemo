@@ -56,14 +56,14 @@
             <td height="25" align="center" valign="middle">
                 <div class="col_one"><input type="checkbox" name="checkbox2" id="checkbox2"/>
                 </div>
-                <div class="col_one_text">#{cartItem.goods.name/}
+                <div class="col_one_text">${cartItem.goods.name}
                 </div>
             </td>
             <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType.equals("e")  ? '电子券' : '实物' }</td>
             <td width="115" height="25" align="center" valign="middle">${cartItem.goods.sale_price}</td>
             <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img
                     src="@{'/public/images/add_anniu.jpg'}"/></a>
-                <input class="num_input" type="text" value="#{cartItem.number/}"/>
+                <input class="num_input" type="text" value="${cartItem.number}"/>
                 <a href="#" class="add_box"><img src="@{'/public/images/sub_anniu.jpg'}" width="9" height="9"/></a>
             </td>
             <td width="187" height="25" align="center" valign="middle"><span class="strong_gray">劵号：${cartItem.goods.no}</span>
