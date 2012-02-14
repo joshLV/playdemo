@@ -3,7 +3,10 @@ package controllers;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import models.Shop;
+import java.util.Map;
+
+import models.sales.Shop;
+import models.sales.Pager;
 import play.mvc.Controller;
 
 public class Shops extends Controller {
@@ -62,24 +65,45 @@ public class Shops extends Controller {
     }
     
     public static void delete(long id){
-        Shop shop  = Shop.findById(id);
-        shop.deleted = 1;
-        shop.save();
         
+        Shop.deleted(id);
         list();
     }
     
     public static void list(){
         
-        int size = 10;
-        int page = 0;
-        if(params.get("page") != null){
-             page = Integer.parseInt(params.get("page"));
-        }
+        StringBuffer search = new StringBuffer();
+        search.append("company_id=? and deleted=?");
+        ArrayList queryparams = new ArrayList();
         
         long company_id = 1;
-        List<Shop> list = Shop.find("company_id=? and deleted=?", company_id,0).fetch(page, size);
-        renderTemplate("shop-list.html",list);
+        queryparams.add(company_id);
+        queryparams.add(0);
+        
+        if(params.get("shopname") != null){
+            search.append(" and name like ?");
+            queryparams.add("%"+params.get("shopname").trim()+"%");
+        }
+        
+        if(params.get("shopaddr") != null){
+            search.append(" and address like ?");
+            queryparams.add("%"+params.get("shopaddr").trim()+"%");
+        }
+        
+        
+        Pager pager = new Pager();
+        //pager.params = params.all().;
+        pager.pageSize = 3;
+        pager.numsize = 4;
+        if(params.get("page") != null){
+            pager.currPage = Integer.parseInt(params.get("page"));
+        }
+        pager.totalCount = Shop.count(search.toString(),queryparams.toArray());
+
+        List<Shop> list = Shop.find(search.toString(), queryparams.toArray()).fetch(pager.currPage, pager.pageSize);
+        pager.list = list;
+        pager.totalPager();
+        renderTemplate("shop-list.html",pager);
         
         
     }

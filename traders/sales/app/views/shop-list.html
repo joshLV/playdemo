@@ -12,7 +12,26 @@ fucntion showmsg(){
 #{/get}
 <div class="body">
 
-  <legend>门店管理</legend>
+  <legend>门店列表</legend>
+  <form class="form-horizontal" action="@{Shops.list()}" method="post">
+  <table class="table table-striped"> 
+ 
+    <tbody> 
+      <tr>
+      <td>门店名称</td> 
+      <td><input type="text" id="input01" name="shopname" class="input-large" /></td>
+      <td>门店地址</td> 
+      <td><input type="text" id="input01" name="shopaddr" class="input-large" /></td>
+      <td><button class="btn btn-primary" type="submit">搜 索</button></td>
+      </tr>
+      
+      <tr> 
+       <td><a href="@{Shops.add()}" class="btn btn-primary">添加门店</a></td>
+       </tr>
+       
+    </tbody>
+  </table>
+  </form>
   
   <table class="table table-striped"> 
        <thead> 
@@ -22,7 +41,7 @@ fucntion showmsg(){
       </thead>
     
     <tbody> 
-    #{list items:list, as:'row' }
+    #{list items:pager.list, as:'row' }
       <tr>
       <td>${row.id}</td> 
       <td>${row.name}</td>
@@ -34,17 +53,25 @@ fucntion showmsg(){
     </tbody>
   </table>
 
-  <div class="pagination">
+
+<div stlye=""><a href="@{shops.list()}?page=${pager.prevPage}" class="btn btn-primary">上一页</a> <a href="@{shops.list()}?page=${pager.nextPage}" class="btn btn-primary">下一页</a></div>
+ <div class="pagination">
+  
   <ul>
-    <li><a href="#">Prev</a></li>
-    <li class="active">
-      <a href="#">1</a>
-    </li>
-    <li><a href="#">2</a></li>
-    <li><a href="#">3</a></li>
-    <li><a href="#">4</a></li>
-    <li><a href="#">Next</a></li>
+
+    
+    #{list items:pager.startNum..pager.endNum, as:'i'}
+      #{if pager.currPage == i}
+        <li class="active"><a>${i}</a></li>
+      #{/if}  
+      #{else}
+        <li><a href="@{shops.list()}?page=${i}">${i}</a></li>
+      #{/else}
+    #{/list}
+
+    <li><a>共${pager.totalpage}页/${pager.pageSize} 共${pager.totalCount}条记录</a> </li>
   </ul>
+  
   </div>
 
 </div>
