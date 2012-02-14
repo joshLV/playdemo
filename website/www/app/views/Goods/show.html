@@ -6,19 +6,24 @@
 #{set 'moreScripts'}
 <script>
     function addCart() {
-        var addAction = #{jsAction @Carts.order()/}
-                $.post(addAction(), {goodsId:'${goods.id}',number:$("#number").val()},
-                        function (data) {
-                            alert("ok");
-//                    $('#result').json(data);
-//                    if (data.resultCode == "ok"){
-                            $('#add_cart_result').visible(true);
-//                    }
-                        });
+        *{var addAction = #{jsAction @Carts.order()/}}*
+                *{$.post(addAction(), {goodsId:'${goods.id}',number:$("#number").val()},}*
+*{//                        function (data) {}*
+*{//                            alert("ok");}*
+*{//                    $('#result').json(data);}*
+*{//                    if (data.resultCode == "ok"){}*
+                            *{$('#add_cart_result').visible(true);}*
+*{//                    }}*
+                        *{});}*
+        $('#add_cart_result').css("display", "");
     }
 
     function buy() {
 
+    }
+
+    function hideCartBar() {
+        $('#add_cart_result').css("display", "none");
     }
 </script>
 #{/set}
@@ -148,7 +153,9 @@
                     </div>
                 </div>
                 <div style="clear:both"></div>
-                <div id="add_cart_result" class="buttom_dibu" style="visibility: hidden;">已成功添加到购物车！</div>
+                <div id="add_cart_result" class="buttom_dibu" style="display: none;">已成功添加到购物车！
+                    <a href="javascript:hideCartBar()"><span class="zi_gray">继续购物</span></a>
+                    <a href="/carts"><span class="zi_gray">查看购物车</span></a></div>
             </div>
             <div class="right_content_two">
                 <dl class="right_one_dl">
