@@ -42,9 +42,8 @@ public class Carts extends Controller {
                 }
             }
         }
-
-        
-        render(carts);
+        String cartCookieId = cookieIdentity.value;
+        render(carts, cartCookieId);
     }
 
     public static void order(long goodsId, int number) {
