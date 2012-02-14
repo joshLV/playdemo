@@ -30,7 +30,7 @@ public class Carts extends Controller {
         }
         //合并结果集
         List<Cart> carts = new ArrayList<Cart>();
-        if(carts.size() > 0) {
+        if(cartList.size() > 0) {
             Map<Long,Cart> mapCarts = new HashMap<Long,Cart>();
             for(Cart cart : cartList) {
                 Cart tmp = mapCarts.get(cart.goods.getId());
@@ -42,11 +42,13 @@ public class Carts extends Controller {
                 }
             }
         }
+
         
         render(carts);
     }
 
     public static void order(long goodsId, int number) {
+        System.out.println("order====");
         String username = session.get("username");
         User user = User.find("byLoginName", username).first();
         Http.Cookie cookieIdentity = request.cookies.get("identity");
