@@ -13,24 +13,38 @@ import java.util.List;
 @With(WebTrace.class)
 public class Carts extends Controller {
 
-
     public static void index() {
         String username = session.get("username");
         User user = User.find("byLoginName", username).first();
         Http.Cookie cookieIdentity = request.cookies.get("identity");
 
-        List<Cart> carts = new ArrayList<Cart>();
+        //查询登陆用户已保存的购物车
+        List<Cart> cartList = new ArrayList<Cart>();
         if (user != null) {
             List<Cart> userCarts = Cart.find("byUser", user).fetch();
             if (userCarts != null) carts.addAll(userCarts);
         }
+        //查询未登陆情况下已保存的购物车
         if (cookieIdentity != null) {
             List<Cart> cookieCarts = Cart.find("byCookieIdentity", cookieIdentity.value).fetch();
             if (cookieCarts != null) carts.addAll(cookieCarts);
         }
-
-
-        render();
+        //合并结果集
+        List<Cart> carts = new ArrayList<Cart>();
+        if(carts.size() > 0) {
+            Map<Long,Cart> mapCarts = new HashMap<Long,Cart>();
+            for(Cart cart : cartList) {
+                Cart tmp = mapCarts.get(cart.goods.getId());
+                if(tmp != null) {
+                    tmp.number += cart.number;
+                }else {
+                    mapCarts.put(cart.goods.getId(), cart);
+                    carts.add(cart);
+                }
+            }
+        }
+        
+        render(carts);
     }
 
     public static void order(long goodsId, int number) {
