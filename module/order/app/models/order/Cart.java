@@ -13,18 +13,21 @@ public class Cart extends Model {
     @ManyToOne
     public User user;    
 
-    public String cookieIdentity;
-
     @ManyToOne
     public Goods goods;
 
-
     public int number;
 
+    @Column(name="cookie_identity")
+    public String cookieIdentity;
+
+    @Column(name="lock_version")
     public int lockVersion;
 
+    @Column(name="created_at")
     public Date createdAt;
 
+    @Column(name="updated_at")
     public Date updatedAt;
 
     public Cart(User user, String cookieIdentity, Goods goods, int number) {
