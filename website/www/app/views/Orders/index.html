@@ -30,11 +30,7 @@
                             },
                             function (data) {
                                 //设置form中的addressId
-                                $("#addressId").val(data.address.id);
-//                                $('#result').html(data);
-                                //                            if (data.resultCode == "ok") {
-                                //                                $('#add_cart_result').css("display", "");
-                                //                            }
+                                $("#addressId").val(data.id);
                                 //在收货地址列表中增加一行
                                 addAddressToList(data);
                             });
@@ -46,17 +42,14 @@
     }
     function addAddressToList(data) {
         var listAddressUl = $('#list_address_ul');
-        var li = listAddressUl.find('ul>li');
-        var row = $("<li></li>");
 
-        row.append($("<input name=\"selectedAddressId\" type=\"radio\" value=\"" + data.address.id + "\" checked/>" +
-                "<span class=\"span_name\" id=\"address_name" + data.address.name + "\">" + data.address.name + "</span>" +
-                "<span class=\"span_adress\">" + data.address.address + "</span>" +
-                "<span class=\"span_tel\">" + data.address.postcode + "</span>" +
-                "<span class=\"span_tel\">" + data.address.mobile + "</span>" +
-                "<span class=\"span_tel\">" + data.address.phone + "</span>" +
-                "<span class=\"mod_span_d\"><a class=\"mod_span_d2\" href=\"\#\">修改</a>|<a class=\"mod_span_d2\" href=\"\#\">删除</a></span>"));
-        li.append(row);
+        listAddressUl.append($("<li><input name=\"selectedAddressId\" type=\"radio\" value=\"" + data.id + "\" checked/>" +
+                "<span class=\"span_name\" id=\"address_name" + data.name + "\">" + data.name + "</span>" +
+                "<span class=\"span_adress\">" + data.address + "</span>" +
+                "<span class=\"span_tel\">" + data.postcode + "</span>" +
+                "<span class=\"span_tel\">" + data.mobile + "</span>" +
+                "<span class=\"span_tel\">" + data.phone + "</span>" +
+                "<span class=\"mod_span_d\"><a class=\"mod_span_d2\" href=\"\#\">修改</a>|<a class=\"mod_span_d2\" href=\"\#\">删除</a></span></li>"));
     }
 
     function setAddress(addressId) {
@@ -76,7 +69,7 @@
             $("#show_postcode").html($("#address_postcode" + addressId).val());
             var areaCode = $("#address_areaCode" + addressId).val() == null ? "" : $("#address_areaCode" + addressId).val() + "-";
             var phone = $("#address_mobile" + addressId).val() + "   " + areaCode + $("#address_phoneNumber" + addressId).val();
-            if ($("#address_phoneExtNumber" + addressId).val() == null) {
+            if ($("#address_phoneExtNumber" + addressId).val() != null) {
                 phone += "-" + $("#address_phoneExtNumber" + addressId).val();
             }
             $("#show_phone").html(phone);

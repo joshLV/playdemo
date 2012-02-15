@@ -22,10 +22,11 @@ public class Addresses extends Controller {
     public static void create(long selectedAddressId, Address address) {
         if (selectedAddressId == 0) {
             address.save();
-            render(address);
+            renderJSON(address);
         }
+
         Address selectedAddress = Address.findById(selectedAddressId);
-        render(selectedAddress);
+        renderJSON(selectedAddress);
     }
 
     public static void update(Address address) {
