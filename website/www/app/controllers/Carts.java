@@ -26,10 +26,10 @@ public class Carts extends Controller {
         //查询未登陆情况下已保存的购物车
         if (cookieIdentity != null) {
             List<Cart> cookieCarts = Cart.find("byCookieIdentity", cookieIdentity.value).fetch();
-            if (cookieCarts != null) cartList.addAll(cookieCarts);
+            cartList.addAll(cookieCarts);
         }
         //合并结果集
-        List<Cart> carts = new ArrayList<Cart>();
+        List<Cart> cartMergeList = new ArrayList<Cart>();
         if(cartList.size() > 0) {
             Map<Long,Cart> mapCarts = new HashMap<Long,Cart>();
             for(Cart cart : cartList) {
@@ -38,12 +38,12 @@ public class Carts extends Controller {
                     tmp.number += cart.number;
                 }else {
                     mapCarts.put(cart.goods.getId(), cart);
-                    carts.add(cart);
+                    cartMergeList.add(cart);
                 }
             }
         }
-        String cartCookieId = cookieIdentity.value;
-        render(carts, cartCookieId);
+        
+        render(cartMergeList);
     }
 
     public static void order(long goodsId, int number) {
@@ -65,9 +65,8 @@ public class Carts extends Controller {
         }
 
         if (cart != null) {
-            if (cart.number != number) {
+            if (cart.number + number >=0 ) {
                 cart.number += number;
-                cart.materialType = goods.materialType;
                 cart.save();
             }
         } else {
