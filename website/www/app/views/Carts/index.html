@@ -60,11 +60,12 @@
                     </div>
                 </td>
                 <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType.equals("e") ? '电子券' : '实物'}</td>
-                <td width="115" height="25" align="center" valign="middle">${cartItem.goods.sale_price}</td>
+                <td width="115" height="25" align="center" valign="middle" id="price_${cartItem.goods.id}">${cartItem.goods.sale_price}</td>
                 <td width="83" height="25" align="center" valign="middle">
                     <a class="add_box" href="#" name="${cartItem.goods.id}"><img src="@{'/public/images/add_anniu.jpg'}"/></a>
                     <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}" />
                     <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}"/>
+                    <input type="hidden" value="${cartItem.number * cartItem.goods.sale_price}" id="subtotal_${cartItem.goods.id}"/>
                     <a href="#" class="reduce_box" name="${cartItem.goods.id}"><img src="@{'/public/images/sub_anniu.jpg'}" /></a>
                 </td>
                 <td idth="187" height="25" align="center" valign="middle"><span class="strong_gray">劵号：${cartItem.goods.no}</span>
@@ -89,8 +90,8 @@
     </div>
     <div class="bottom_info_two"><a class="piliang_del_bg" href="#">批量删除</a></div>
     <div class="both_clear"></div>
-    <div class="bottom_info_three">商品共<span class="font_red_one">5件</span>，总合计（不含运费）：<span
-            class="font_red_one">Y222.00</span></div>
+    <div class="bottom_info_three">商品共<span class="font_red_one" id="total_num">0</span>件，总合计（不含运费）：<span
+            class="font_red_one" id="carts_amount"></span>元</div>
     <div class="both_clear"></div>
     <div class="bottom_info_four"><a class="queren_bg" href="/orders/">确认结账</a></div>
     <div class="both_clear"></div>
