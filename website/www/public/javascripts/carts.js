@@ -55,13 +55,12 @@ $(window).load(
         });
         $("a.delete_gift").click(function(){  
             var goods_id = $(this).attr("name");
-            $.post('/carts/del',
-                {
-                    goodsId:goods_id
-                },
-                function(data){
+            $.ajax({
+                type:'DELETE',
+                url:'/carts/' + goods_id,
+                success:function(data){
                     $("#row_" + goods_id).remove()
-                });
+                }});
             
             return false;
         });

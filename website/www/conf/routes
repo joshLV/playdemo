@@ -7,8 +7,8 @@ GET     /                                       Home.index
 GET     /goods/{id}                             Goods.show
 GET     /carts                                  Carts.index
 POST    /carts                                  Carts.order
-POST    /carts/del                              Carts.delete
-POST    /carts/batch_del                        Carts.batchDel
+DELETE  /carts/{goodsId}                        Carts.delete
+DELETE  /carts                                  Carts.batchDel
 
 GET     /orders/{cartId}                                 Orders.index
 POST    /order/addresses                              Addresses.create
