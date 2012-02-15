@@ -42,7 +42,7 @@
         <tr bgcolor="F6F6F6">
             <th width="374"><span class="th_one">
               <label>
-                  <input class="th_one_input" type="checkbox" name="checkbox3" id="checkbox3"/>全选 </label>
+                  <input class="th_one_input" type="checkbox" name="select_all_checkbox" />全选 </label>
               </span><span class="th_shop_text">商品</span></th>
             <th width="120">类型</th>
             <th width="115" height="30" bgcolor="F6F6F6">单价（元）</th>
@@ -54,7 +54,7 @@
         #{list items:cartMergeList, as:'cartItem'}
         <tr id="row_${cartItem.goods.id}">
                 <td height="25" align="center" valign="middle">
-                    <div class="col_one"><input type="checkbox" name="checkbox2" id="checkbox2"/>
+                    <div class="col_one"><input type="checkbox" id="check_goods_${cartItem.goods.id}"/>
                     </div>
                     <div class="col_one_text">${cartItem.goods.name}
                     </div>
@@ -85,10 +85,10 @@
     </table>
 </div>
 <div id="gouwucar_buttom_info">
-    <div class="bottom_info_one"><input name="" type="checkbox" value=""/>
+    <div class="bottom_info_one"><input type="checkbox" id="uuuu" value="" name="select_all_checkbox"/>
         全选
     </div>
-    <div class="bottom_info_two"><a class="piliang_del_bg" href="#">批量删除</a></div>
+    <div class="bottom_info_two"><a class="piliang_del_bg" href="#" id="batch_delete">批量删除</a></div>
     <div class="both_clear"></div>
     <div class="bottom_info_three">商品共<span class="font_red_one" id="total_num">0</span>件，总合计（不含运费）：<span
             class="font_red_one" id="carts_amount"></span>元</div>
