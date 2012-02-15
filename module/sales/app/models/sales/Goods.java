@@ -6,6 +6,7 @@ package models.sales;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -156,6 +157,10 @@ public class Goods extends Model {
 	 * 手工排序
 	 */
 	public String display_order;
+	public String sale_price_s;
+	public String sale_price_e;
+	public String sale_count_s;
+	public String sale_count_e;
 	/**
 	 * 商品类型，e:电子券，r:实物
 	 */
@@ -219,11 +224,58 @@ public class Goods extends Model {
 		if (file !=null && file.getName() !=null ) {
 			goods.image_path="/1/1/1/"+file.getName();
 		}
+		goods.deleted="0";
 		SimpleDateFormat sdf  =   new  SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
 		String datestr = sdf.format( new  Date());  
 		goods.created_at=datestr;
 		goods.created_by="yanjy";
 		goods.create();		
+	}
+
+	/**
+	 * 查询商品一览
+	 * 
+	 * @param goods
+	 * @return
+	 */
+	public List query(models.sales.Goods goods){
+		StringBuffer condtion=new StringBuffer();
+		condtion.append(" deleted= ? ");
+		List params=new ArrayList();
+		params.add("0");
+		if (goods.name !=null && !"".equals(goods.name)) {
+			condtion.append(" and name like ? ");
+			params.add("%"+goods.name+"%");
+		}
+		if (goods.no !=null && !"".equals(goods.no)) {
+			condtion.append(" and no like ? ");
+			params.add("%"+goods.no+"%");
+		}
+		if (goods.status !=null && !"".equals(goods.status)) {
+			condtion.append(" and status = ? ");
+			params.add(goods.status);
+		}
+		if (goods.sale_price_s !=null && !"".equals(goods.sale_price_s)) {
+			condtion.append(" and sale_price >= ?");
+			params.add(goods.sale_price_s);
+		}
+		if (goods.sale_price_e !=null && !"".equals(goods.sale_price_e)) {
+			condtion.append(" and sale_price <= ?");
+			params.add(goods.sale_price_e);
+		}
+		if (sale_count_s !=null && !"".equals(sale_count_s)) {
+			condtion.append(" and sale_count >= ?");
+			params.add(sale_count_s);
+		}
+		if (sale_count_e !=null && !"".equals(sale_count_e)) {
+			condtion.append(" and sale_count <= ?");
+			params.add(sale_count_e);
+		}
+		JPAQuery query=null;
+		List list= null;
+		query = goods.find(condtion.toString(),params.toArray());
+		list = query.fetch();
+		return list;
 	}
 
 }

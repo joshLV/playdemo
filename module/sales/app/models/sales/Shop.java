@@ -52,7 +52,7 @@ public class Shop extends Model {
      * @param companyId
      * @return 
      */
-    public static List<Shop> findShopByConpany(long companyId){
+    public static List<Shop> findShopByCompany(long companyId){
         List<Shop> list = Shop.find("company_id=? and deleted=0",companyId).fetch();
         return list;
     }
