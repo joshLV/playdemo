@@ -147,9 +147,13 @@ public class Goods extends Model {
 	 * 手工排序
 	 */
 	public String display_order;
+	@Transient
 	public String sale_price_s;
+	@Transient
 	public String sale_price_e;
+	@Transient
 	public String sale_count_s;
+	@Transient
 	public String sale_count_e;
 	/**
 	 * 商品类型，e:电子券，r:实物
