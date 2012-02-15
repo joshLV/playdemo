@@ -104,7 +104,7 @@ public class Carts extends Controller {
             cart.delete();
         }
 
-        renderJSON(null);
+        renderJSON(cart);
     }
 
     public static void batchDel(long[] goodsIds) {

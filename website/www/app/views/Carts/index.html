@@ -4,9 +4,6 @@
 <link href="@@{'/public/stylesheets/carts_index.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
 #{set 'moreScripts'}
-<script>
-  var orderAction = #{jsAction @Carts.order()/};
-</script>
 <script src="@@{'/public/javascripts/carts.js'}"></script>
 #{/set}
 
@@ -72,7 +69,9 @@
                 </td>
                 <td idth="187" height="25" align="center" valign="middle"><span class="strong_gray">劵号：${cartItem.goods.no}</span>
                 </td>
-                <td width="103" height="25" align="center" valign="middle"><a href="#" class="delete_gift">删除</a></td>
+                <td width="103" height="25" align="center" valign="middle">
+                    <a href="#" class="delete_gift" name="${cartItem.goods.id}"">删除</a>
+                </td>
             </tr>
         #{/list}
 

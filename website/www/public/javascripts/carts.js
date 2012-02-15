@@ -8,7 +8,7 @@ function reorder(element,indent){
     if(new_num < 0){
         return;
     }
-    $.post(orderAction(),
+    $.post('/carts',
             {goodsId:goods_id,number:indent},
             function(data){
                 element.val(new_num);
@@ -35,9 +35,18 @@ $(window).load(
             }
             reorder($(this), Number($(this).val()) - Number(last_num.val()));
         });
-        $("a.delete_gift").click=function(){  
+        $("a.delete_gift").click(function(){  
+            var goods_id = $(this).attr("name");
+            $.post('/carts/del',
+                {
+                    goodsId:goods_id
+                },
+                function(data){
+                    $("#row_" + goods_id).remove()
+                });
             
-            return false;};
+            return false;
+        });
     }
 );
 
