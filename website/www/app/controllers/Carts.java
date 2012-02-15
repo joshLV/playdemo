@@ -6,6 +6,7 @@ import models.order.*;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
+import play.data.binding.As;
 
 import java.util.*;
 
@@ -80,34 +81,7 @@ public class Carts extends Controller {
         renderJSON(cart);
     }
 
-    public static void delete(long goodsId) {
-
-        String username = session.get("username");
-        User user = User.find("byLoginName", username).first();
-        Http.Cookie cookieIdentity = request.cookies.get("identity");
-
-        models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-
-        if ((user == null && cookieIdentity == null) || goods == null) {
-            renderJSON(null);
-            return;
-        }
-
-        Cart cart = null;
-        if (user != null) {
-            cart = Cart.find("byUserAndGoods", user, goods).first();
-        } else {
-            cart = Cart.find("byCookieIdentityAndGoods", cookieIdentity.value, goods).first();
-        }
-
-        if (cart != null) {
-            cart.delete();
-        }
-
-        renderJSON(cart);
-    }
-
-    public static void batchDel(long[] goodsIds) {
+    public static void delete(@As(",") List<Long> goodsIds) {
         String username = session.get("username");
         User user = User.find("byLoginName", username).first();
         Http.Cookie cookieIdentity = request.cookies.get("identity");
@@ -138,6 +112,6 @@ public class Carts extends Controller {
         }
 
 
-        renderJSON(null);
+        renderJSON(cart);
     }
 }
