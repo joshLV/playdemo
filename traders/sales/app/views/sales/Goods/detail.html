@@ -41,10 +41,7 @@
   </div>
   <div class="control-group">
    <label for="input01" class="control-label">券有效期</label>
-   <div class="controls">
-    <input class="input-medium" type="text" id="expired_bg_on" name="goods.expired_bg_on" value="${goods.expired_bg_on}" 
-     onfocus="WdatePicker({readOnly:true})" />至 <input class="input-medium" type="text" id="expired_ed_on"
-     name="goods.expired_ed_on" value="${goods.expired_ed_on}" onfocus="WdatePicker({readOnly:true})" />
+   <div class="controls">${goods.expired_bg_on}至 ${goods.expired_ed_on}
    </div>
   </div>
   <div class="control-group">
@@ -88,7 +85,6 @@
    </div>
   </div>
   <div class="form-actions">
-   <button class="btn btn-primary" type="submit">Save changes</button>
    <button class="btn" type="reset">Cancel</button>
   </div>
  </form>

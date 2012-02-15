@@ -49,11 +49,11 @@ public class Shops extends Controller {
             validation.keep();
             edit(shop.id);
         }
-
+System.out.println("aaaaaaaa");
         sp.name = shop.name;
         sp.address = shop.address;
         sp.phone = shop.phone;
-        sp.save();
+        sp.create();
         list();
     }
     

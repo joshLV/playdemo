@@ -57,6 +57,12 @@
 			}
 		});
 
+		
+		$("#search").click(function() {
+       $("#frmlist").attr("method", "post");
+       $("#frmlist").attr("action", "@{Goods.index()}");
+       $("#frmlist").submit();
+		  });
 	});
 </script>
 #{/get}
@@ -77,7 +83,7 @@
      class="input-medium" />至 <input type="text" id="no" name="goods.sale_price_e" class="input-medium" /></td>
     <td>销&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：<input type="text" id="no" name="goods.sale_count_s"
      class="input-medium" />至 <input type="text" id="no" name="goods.sale_count_e" class="input-medium" /></td>
-    <td><button class="btn" type="submit">搜索</button></td>
+    <td><button class="btn" id="search" type="submit">搜索</button></td>
    </tr>
   </table>
  </form>

@@ -85,16 +85,33 @@
     <textarea name="goods.details" cols="100" rows="8" style="width:700px;height:200px;visibility:hidden;">${goods.details}</textarea>
    </div>
   </div>
-  <div class="control-group">
+   <div class="control-group">
    <label for="textarea" class="control-label">使用门店</label>
    <div class="controls">
-    <input type="radio" checked value="1" id="radios1" name="optionsRadios" />全部门店
-    <input type="radio" value="2" id="radios2" name="optionsRadios" />部分门店
+    <input type="radio" checked value="1" id="radios1" name="radios" />全部门店
+    <input type="radio" value="2" id="radios2" name="radios" />部分门店
    </div>
+   <div class="controls" id="shop" style="display:none">
+     <table class="table table-striped table-bordered table-condensed">
+     <tbody>
+      #{list items:list, as:'row' }
+      <tr>
+       <td><input type="checkbox" id="checkoption" value="${row.id}" name="checkoption[]" /></td>
+       <td>${row.name}</td>
+       <td>${row.address}</td>
+       <td>${row.phone}</td>
+      </tr>
+      #{/list}
+     </tbody>
+    </table>
+   </div>
+   
   </div>
   <div class="form-actions">
-   <button class="btn btn-primary" type="submit">Save changes</button>
-   <button class="btn" type="reset">Cancel</button>
+   <button class="btn btn-primary"  type="submit">保存</button>
+   <button class="btn btn-primary" id="onsales" type="submit">保存并上架</button>
+   <button class="btn" type="reset">浏览</button>
+   <input type="hidden" id="status" name="status"  value="0"/>
   </div>
  </form>
  #{get 'moreScripts'}
@@ -140,6 +157,20 @@
         });
         prettyPrint();
     });
+    
+    $("#onsales").click(function() {
+        $("#status").val("1");
+        $("#frm").action="@{Goods.create()}";
+     $("#frm").submit();
+        });  
+   
+   
+   $("#radios2").click(function() {
+        $("#shop").show();//显示
+         });
+   $("#radios1").click(function() {
+       $("#shop").hide();//隐藏
+        });
 </script>
 #{/get}
 </div>
