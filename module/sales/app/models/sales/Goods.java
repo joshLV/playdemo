@@ -265,11 +265,11 @@ public class Goods extends Model {
 		}
 		if (sale_count_s !=null && !"".equals(sale_count_s)) {
 			condtion.append(" and sale_count >= ?");
-			params.add(sale_count_s);
+			params.add(goods.sale_count_s);
 		}
 		if (sale_count_e !=null && !"".equals(sale_count_e)) {
 			condtion.append(" and sale_count <= ?");
-			params.add(sale_count_e);
+			params.add(goods.sale_count_e);
 		}
 		JPAQuery query=null;
 		List list= null;
