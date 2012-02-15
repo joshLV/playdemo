@@ -20,7 +20,7 @@ public class Address extends Model {
     public String address;
     public String name;
     public String postcode;
-    public String phone;
+    private String phone;
     public String mobile;
     @Column(name = "is_default")
     public String isDefault;
@@ -35,6 +35,9 @@ public class Address extends Model {
     public String areaCode;
     @Transient
     public String phoneNumber;
+    @Transient
+    public String phoneExtNumber;
+
 
     public String getPhone() {
         return phone;

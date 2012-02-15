@@ -4,6 +4,7 @@ import controllers.modules.webtrace.WebTrace;
 import models.consumer.address.Address;
 import models.order.Cart;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.With;
 
 import java.util.List;
@@ -21,24 +22,14 @@ public class Orders extends Controller {
     public static void index() {
         List<Address> addressList = Address.findByOrder();
 
-        List<Cart> eCartList = Cart.findECart();
+        Http.Cookie cookieIdentity = request.cookies.get("identity");
+        //todo 处理cookieIdentity为空的时候，即立即购买的
+
+        List<Cart> eCartList = Cart.findECart(cookieIdentity.value);
         float eCartAmount = amount(eCartList);
 
 
-        List<Cart> rCartList = Cart.findRCart();
-        float rCartAmount = amount(rCartList) + 5;
-
-        render(addressList, eCartList, eCartAmount, rCartList, rCartAmount);
-    }
-
-    public static void index(String cartCookieId) {
-        List<Address> addressList = Address.findByOrder();
-
-        List<Cart> eCartList = Cart.findECart(cartCookieId);
-        float eCartAmount = amount(eCartList);
-
-
-        List<Cart> rCartList = Cart.findRCart(cartCookieId);
+        List<Cart> rCartList = Cart.findRCart(cookieIdentity.value);
         float rCartAmount = amount(rCartList) + 5;
 
         render(addressList, eCartList, eCartAmount, rCartList, rCartAmount);
