@@ -119,7 +119,7 @@
     KindEditor.ready(function(K) {
         var editor1 = K.create('textarea[name="goods.prompt"]', {
             cssPath : '/public/javascripts/plugins/code/prettify.css',
-            uploadJson : '@{Goods.uploadjson}',
+            uploadJson : '/kindeditor/upload_json.jsp',
             fileManagerJson : '/kindeditor/file_manager_json.jsp',
             allowFileManager : true,
             afterCreate : function() {
