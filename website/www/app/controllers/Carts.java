@@ -43,7 +43,6 @@ public class Carts extends Controller {
                 }
             }
         }
-        
         render(cartMergeList);
     }
 
@@ -55,7 +54,7 @@ public class Carts extends Controller {
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
 
         if ((user == null && cookieIdentity == null) || goods == null) {
-            renderJSON(null);
+            error(500,"can not identity user");
         }
 
         Cart cart = null;
@@ -78,7 +77,7 @@ public class Carts extends Controller {
             }
         }
 
-        renderJSON(cart);
+        ok();
     }
 
     public static void delete(@As(",") List<Long> goodsIds) {
@@ -88,7 +87,7 @@ public class Carts extends Controller {
 
 
         if (user == null && cookieIdentity == null) {
-            renderJSON(null);
+            error(500, "can not identity user");
             return;
         }
 
@@ -112,6 +111,6 @@ public class Carts extends Controller {
         }
 
 
-        renderJSON(cart);
+        ok();
     }
 }

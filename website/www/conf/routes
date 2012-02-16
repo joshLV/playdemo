@@ -5,14 +5,20 @@
 # Home page
 GET     /                                       Home.index
 GET     /goods/{id}                             Goods.show
+
 GET     /carts                                  Carts.index
 POST    /carts                                  Carts.order
 DELETE  /carts/{goodsIds}                       Carts.delete
+
+GET     /payment_info/{id}                      PaymentInfo.index
 
 GET     /orders                                 Orders.index
 GET     /orders/addresses/new                   Addresses.add
 POST    /orders/addresses                       Addresses.create
 DELETE  /orders/addresses/{id}                  Addresses.delete
+
+GET     /orders/{cartId}                        Orders.index
+POST    /order/addresses                        Addresses.create
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

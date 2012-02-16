@@ -2,11 +2,13 @@
 
 require:
     - play
+    - play -> cas 3.1
     - sales -> sales
     - consumer -> consumer
     - order -> order 
     - com.uhuila.common - file 1.0.0
     - web_trace -> web_trace
+    - accounts  -> accounts
 
 repositories:
     - customModules:
@@ -19,3 +21,4 @@ repositories:
             - order -> *
             - com.uhuila.common -> *
             - web_trace -> *
+            - accounts  -> *
