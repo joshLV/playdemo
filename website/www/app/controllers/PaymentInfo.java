@@ -23,14 +23,28 @@ public class PaymentInfo extends Controller {
 
         models.order.Orders order = models.order.Orders.findById(id);
 
-        Long goodsNumber = (Long)OrderItems.em().createNativeQuery("select sum(number) from order_items where order_id =" + order.getId()).getSingleResult();
-        if (goodsNumber ==null) goodsNumber = 0L;
+        long goodsNumber = 0L;
+        if (order != null){
+            Object result = OrderItems.em().createNativeQuery("select sum(number) from order_items where order_id =" + order.getId()).getSingleResult();
+            if (result != null) goodsNumber = (Long)result;
+        }
 
         render(user, account, order, goodsNumber);
     }
 
-    public static void useDiscount(long orderId, long discountId) {
-        
+    public static void confirm(long orderId, boolean useBalance) {
+        String username = session.get("username");
+        username = "likang";
+        User user = User.find("byLoginName", username).first();
+        Accounts account = Accounts.find("byUid",user.getId()).first();
+        models.order.Orders order = models.order.Orders.findById(orderId);
+
+        if (order == null){
+            error(500,"no such order");
+            return;
+        }
+
+        ok();
     }
 }
 

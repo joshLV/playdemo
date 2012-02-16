@@ -48,7 +48,7 @@
 
             <div  class="div_step_2">3</div> 
             <div class="div_step_text_2">确认付款信息<span class="no_xiuzhen">>></span>	</div><div class="div_step_3">4</div> <div class="div_step_text_1">成功提交订单</div></div>
-       
+        #{if order} 
        <div id="pay_mothod_box">
        		<div  class="top_bg_fense"><div class="arrow_left"></div>付款方式 <a  class="font_blue noral_zhe" href="#">了解详情</a></div>
             <div class="dottod_line"></div>
@@ -67,13 +67,12 @@
     </tr>
   <tr>
     <td height="50" align="left"><div class="top_youhui2">
-<input type="checkbox" name="checkbox2" id="checkbox2" />    
-用余额付款<span class="font_red_one font_weigh">1.00</span>元。剩余<span class="font_red_one font_weigh">106.20</span>元可选择其他付款方式付款。</div></td>
+        <input type="checkbox" name="checkbox2" id="use_balance" disabled="disabled"/>用余额付款<span class="font_red_one font_weigh">0.00</span>元。剩余<span class="font_red_one font_weigh">${order.amount}</span>元可选择其他付款方式付款。</div></td>
   </tr>
   <tr>
     <td height="75" align="left" valign="bottom">
     <div class="top_youhui">
-      <input type="checkbox" name="checkbox" id="checkbox" />
+      <input type="checkbox" name="checkbox" id="checkbox" disabled="disabled"/>
       使用抵用券&nbsp;&nbsp;&nbsp;&nbsp;
       <input class="youhui_input" type="text" name="textfield" id="textfield" />
       <a href="#" class="shiyong_bg">使用</a>    
@@ -82,24 +81,34 @@
 
 </td>
   </tr>
+
+  *{
   <tr>
     <td height="43" bgcolor="#F9F9F9"><table width="930" height="15" border="0" cellpadding="0" cellspacing="0">
    <tr>
     <td width="400" align="left"><div class="margin_left_text">说明</div></td>
-    <td width="300" align="center">低值</td>
+    <td width="300" align="center">抵值（元）</td>
     <td width="233" align="center">使用/取消</td>
   </tr>
 </table></td>
   </tr>
+
   <tr>
-    <td height="43"><table width="930" border="0" cellpadding="0" cellspacing="0">
-  <tr>
-    <td width="400" align="left"><div class="margin_left_text">78888u8888优惠劵</div></td>
-    <td width="300" align="center">Y:35元</td>
-    <td width="233" align="center"><a href="#"><img src="@{'/public/images/cancel.jpg'}" width="60" height="24" /></a></td>
+      <td height="43">
+        <table width="930" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td width="400" align="left"><div class="margin_left_text">78888u8888优惠劵</div></td>
+                <td width="300" align="center">Y:35元</td>
+                <td width="233" align="center">
+                    <a href="#"><img src="@{'/public/images/cancel.jpg'}" width="60" height="24" /></a>
+                </td>
+            </tr>
+        </table>
+    </td>
   </tr>
-</table></td>
-  </tr>
+  }*
+
+
   <tr>
     <td height="43" align="center">
       <table width="600" border="0" cellpadding="0" cellspacing="0">
@@ -118,13 +127,13 @@
   <tr>
     <td height="43" align="center"><table width="600" border="0" cellpadding="0" cellspacing="0">
       <tr>
-        <td width="98" align="center"><span class="font_red font_weigh">Y12</span></td>
+          <td width="98" align="center"><span class="font_red font_weigh">￥${order.amount}</span></td>
         <td width="95" align="center"><img src="@{'/public/images/add_icon.jpg'}" width="16" height="12" /></td>
-        <td width="96" align="center"><span class="font_red font_weigh">Y0</span></td>
+        <td width="96" align="center"><span class="font_red font_weigh">￥0.00</span></td>
         <td width="79" align="center"><img src="@{'/public/images/add_icon.jpg'}" alt="" width="16" height="12" /></td>
-        <td width="104" align="center"><span class="font_red font_weigh">Y2</span></td>
+        <td width="104" align="center"><span class="font_red font_weigh">￥0.00</span></td>
         <td width="68" align="center"><img src="@{'/public/images/deng_icon.jpg'}" width="16" height="12" /></td>
-        <td width="60" align="center"><span class="font_red font_weigh2">Y10</span></td>
+        <td width="60" align="center"><span class="font_red font_weigh2">￥${order.amount}</span></td>
       </tr>
     </table></td>
   </tr>
@@ -132,10 +141,16 @@
 			  </div>
          </div>
             
+        <div>
+        	<div class="zhifu_arrow">选择支付方式</div>
             <div>
-            	<div class="zhifu_arrow">选择支付方式</div>
-                <div>
-                	<div class="zhifubao_pay"><div class="zhifubao_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/zhifubao_pay.jpg'}" /></div></div>
+                <div class="zhifubao_pay">
+                    <div class="zhifubao_input">
+                        <input name="pay_method" type="radio" checked="checked"/>
+                    </div>
+                    <div><img src="@{'/public/images/pay_icon/zhifubao_pay.jpg'}" /></div>
+                </div>
+                    *{
                 	<ul class="pay_company_ul">
                     	<li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
                         <li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
@@ -150,9 +165,19 @@
                         <li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
                         <li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
                     </ul>
+                    }*
                 </div>
             </div>
             <div class="buttom_queren"> <a class="suc_ok_bg" href="#">确认订单，付款</a></div>
       </div>
       
   </div>
+  #{/if}
+
+  #{if !order}
+  <div style="padding:20px auto">
+    对不起，找不到您所需要的订单:(
+</div>
+  #{/if}
+
+
