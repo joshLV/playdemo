@@ -44,7 +44,7 @@
         <dd class="border_dd">
             <ul class="address_mod" id="list_address_ul">
             #{list addressList, as:'address'}
-                <li class="li_address_modify" id="li_address_${address.id}" addressId="${address.id}"><include
+                <li class="li_address_modify" id="li_address_${address.id}" addressId="${address.id}">#{include '../Addresses/add.html' /}
                 </li>
             #{/list}
             </ul>

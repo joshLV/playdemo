@@ -39,7 +39,7 @@ public class Goods extends Model {
 	/**
 	 * 原始图片路径
 	 */
-    @Column(name = "imagePath")
+    @Column(name = "image_path")
 	public String imagePath;
 
 	//    @Transient
@@ -74,7 +74,7 @@ public class Goods extends Model {
 	/**
 	 * 进货量
 	 */
-    @Column(name = "incomeGoodsCount")
+    @Column(name = "income_goods_count")
 	public String incomeGoodsCount;
 	/**
 	 * 券有效开始日
@@ -135,7 +135,7 @@ public class Goods extends Model {
 	/**
 	 * 创建人
 	 */
-    @Column(name = "createdBy")
+    @Column(name = "created_by")
 	public String createdBy;
 	/**
 	 * 修改时间
@@ -154,12 +154,12 @@ public class Goods extends Model {
 	/**
 	 * 乐观锁
 	 */
-    @Column(name = "lockVersion")
+    @Column(name = "lock_version")
     public int lockVersion;
 	/**
 	 * 手工排序
 	 */
-    @Column(name = "displayOrder")
+    @Column(name = "display_order")
 	public String displayOrder;
 	@Transient
 	public String salePriceBegin;

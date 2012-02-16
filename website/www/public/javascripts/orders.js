@@ -78,6 +78,10 @@ $(window).load(
         //地址表格的修改按钮事件
         $(".address_span_modify").click(function () {
             addressId = $(this).attr('addressId');
+            $.load("/orders/addresses/new",function(data){
+                $("#li_address_"+addressId).appendHtml(data);
+            });
+            addressId = $(this).attr('addressId');
 
         });
 
