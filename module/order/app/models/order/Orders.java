@@ -67,7 +67,7 @@ public class Orders extends Model {
     @Column(name="updatedAt")
     public Date updatedAt;
 
-    @Column(name="lockVersion")
+    @Column(name="lock_version")
     public int lockVersion;
 
     public int deleted;
