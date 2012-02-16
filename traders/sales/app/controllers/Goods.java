@@ -52,6 +52,7 @@ public class Goods extends Controller {
 		//添加商品处理
 		goods.status = status;
 		goods.companyId = "1";
+		goods.lockVersion=0;
 		if (image_path !=null && image_path.getName() !=null ) {
 			//取得文件存储路径
 			String storepath = play.Play.configuration.get("upload.imagepath").toString();
