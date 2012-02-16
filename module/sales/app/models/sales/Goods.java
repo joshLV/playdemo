@@ -4,73 +4,71 @@
  */
 package models.sales;
 
-import play.db.jpa.Model;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import play.db.jpa.Model;
 
 @Entity
 @Table(name = "goods")
 public class Goods extends Model {
 
-    private static final Pattern imagePat = Pattern.compile("^/o/([0-9]+)/([0-9]+)/([0-9]+)/([^_]+).(jpg|png|gif|jpeg)$");
-    private static final String IMAGE_SERVER = "http://localhost:9007";
+	private static final Pattern imagePat = Pattern.compile("^/o/([0-9]+)/([0-9]+)/([0-9]+)/([^_]+).(jpg|png|gif|jpeg)$");
+	private static final String IMAGE_SERVER = "http://localhost:9007";
 
-    /**
-     * 商品编号
-     */
-    public String no;
-    /**
-     * 商品名称
-     */
-    public String name;
-    /**
-     * 所属商户ID
-     */
-    public String company_id;
-    /**
-     * 原始图片路径
-     */
-    public String image_path;
+	/**
+	 * 商品编号
+	 */
+	public String no;
+	/**
+	 * 商品名称
+	 */
+	public String name;
+	/**
+	 * 所属商户ID
+	 */
+	public String company_id;
+	/**
+	 * 原始图片路径
+	 */
+	public String image_path;
 
-//    @Transient
-//    private String image_tiny_path;
-//    private String image_small_path;
-//    private String image_middle_path;
-//    private String image_large_path;
+	//    @Transient
+	//    private String image_tiny_path;
+	//    private String image_small_path;
+	//    private String image_middle_path;
+	//    private String image_large_path;
 
-    /**
-     * 最小规格图片路径
-     */
-    @Transient
-    public String getImage_tiny_path() {
-        return getImageBySizeType("tiny");
-    }
+	/**
+	 * 最小规格图片路径
+	 */
+	@Transient
+	public String getImage_tiny_path() {
+		return getImageBySizeType("tiny");
+	}
 
-    /**
-     * 小规格图片路径
-     */
-    @Transient
-    public String getImage_small_path() {
-        return getImageBySizeType("small");
-    }
+	/**
+	 * 小规格图片路径
+	 */
+	@Transient
+	public String getImage_small_path() {
+		return getImageBySizeType("small");
+	}
 
-    /**
-     * 中等规格图片路径
-     */
-    @Transient
-    public String getImage_middle_path() {
-        return getImageBySizeType("middle");
-    }
+	/**
+	 * 中等规格图片路径
+	 */
+	@Transient
+	public String getImage_middle_path() {
+		return getImageBySizeType("middle");
+	}
 	/**
 	 * 进货量
 	 */
@@ -172,80 +170,28 @@ public class Goods extends Model {
 		return find("").fetch(limit);
 	}
 
-    /**
-     * 大规格图片路径
-     */
-    @Transient
-    public String getImage_large_path() {
-        return getImageBySizeType("large");
-    }
+	/**
+	 * 大规格图片路径
+	 */
+	@Transient
+	public String getImage_large_path() {
+		return getImageBySizeType("large");
+	}
 
-    private String getImageBySizeType(String sizeType) {
-        String defaultImage = IMAGE_SERVER + "/p/1/1/1/default_" + sizeType + ".png";
-        if (image_path == null || image_path.equals("")) {
-            return defaultImage;
-        }
-        Matcher matcher = imagePat.matcher(image_path);
-        if (!matcher.matches()) {
+	private String getImageBySizeType(String sizeType) {
+		String defaultImage = IMAGE_SERVER + "/p/1/1/1/default_" + sizeType + ".png";
+		if (image_path == null || image_path.equals("")) {
+			return defaultImage;
+		}
+		Matcher matcher = imagePat.matcher(image_path);
+		if (!matcher.matches()) {
 
-            return defaultImage;
-        }
-        String imageHeadStr = image_path.replace("/o/", "/p/");
-        return IMAGE_SERVER + imageHeadStr.replace("/" + matcher.group(4), "/" + matcher.group(4) + "_" + sizeType);
-    }
+			return defaultImage;
+		}
+		String imageHeadStr = image_path.replace("/o/", "/p/");
+		return IMAGE_SERVER + imageHeadStr.replace("/" + matcher.group(4), "/" + matcher.group(4) + "_" + sizeType);
+	}
 
-    /**
-     * 更新商品处理
-     *
-     * @param id
-     * @param file
-     * @param goods
-     */
-    public static void updateGoods(String id, File file,
-                                   models.sales.Goods goods) {
-        models.sales.Goods update_goods = models.sales.Goods.findById(Long.parseLong(id));
-
-        if (file != null && file.getName() != null) {
-            update_goods.image_path = "/1/1/1/" + file.getName();
-        }
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String datestr = sdf.format(new Date());
-        update_goods.name = goods.name;
-        update_goods.no = goods.no;
-        update_goods.expired_bg_on = goods.expired_bg_on;
-        update_goods.expired_ed_on = goods.expired_ed_on;
-        update_goods.original_price = goods.original_price;
-        update_goods.sale_price = goods.sale_price;
-        update_goods.base_sale = goods.base_sale;
-        update_goods.prompt = goods.prompt;
-        update_goods.details = goods.details;
-        update_goods.update_at = datestr;
-        update_goods.update_by = "ytrr";
-
-        update_goods.save();
-    }
-
-    /**
-     * 添加商品处理
-     *
-     * @param file
-     * @param goods
-     */
-    public static void addGoods(File file, models.sales.Goods goods, String status) {
-
-        //默认商品下架状态
-        goods.status = status;
-        goods.company_id = "1";
-        if (file != null && file.getName() != null) {
-            goods.image_path = "/1/1/1/" + file.getName();
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String datestr = sdf.format(new Date());
-        goods.created_at = datestr;
-        goods.created_by = "yanjy";
-        goods.create();
-    }
 
 	/**
 	 * 查询商品一览
