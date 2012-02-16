@@ -14,9 +14,11 @@ import javax.persistence.Table;
 @Table(name="shops")
 public class Shop extends Model {
 
-    public long company_id;
+    @Column(name = "company_id")
+    public long companyId;
 
-    public long area_id;
+    @Column(name = "area_id")
+    public long areaId;
     
     public String no;
     

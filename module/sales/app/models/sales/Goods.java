@@ -34,7 +34,7 @@ public class Goods extends Model {
 	/**
 	 * 所属商户ID
 	 */
-    @Column(name="company_id")
+    @Column(name="companyId")
 	public String companyId;
 	/**
 	 * 原始图片路径

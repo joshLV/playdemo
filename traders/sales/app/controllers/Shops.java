@@ -1,9 +1,7 @@
 package controllers;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import models.sales.Shop;
 import models.sales.Pager;
@@ -25,8 +23,8 @@ public class Shops extends Controller {
             renderTemplate("shop-add.html",params);
         }
         
-        shop.company_id = 1;
-        shop.area_id= 1;
+        shop.companyId = 1;
+        shop.areaId = 1;
         shop.deleted = 0;
         shop.create();
         list();
