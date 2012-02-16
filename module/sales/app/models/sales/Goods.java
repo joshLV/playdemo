@@ -130,12 +130,12 @@ public class Goods extends Model {
 	/**
 	 * 创建时间
 	 */
-    @Column(name = "created_at")
+    @Column(name = "createdAt")
 	public String createdAt;
 	/**
 	 * 创建人
 	 */
-    @Column(name = "created_by")
+    @Column(name = "createdBy")
 	public String createdBy;
 	/**
 	 * 修改时间
@@ -154,12 +154,12 @@ public class Goods extends Model {
 	/**
 	 * 乐观锁
 	 */
-    @Column(name = "lock_version")
+    @Column(name = "lockVersion")
     public int lockVersion;
 	/**
 	 * 手工排序
 	 */
-    @Column(name = "display_order")
+    @Column(name = "displayOrder")
 	public String displayOrder;
 	@Transient
 	public String salePriceBegin;

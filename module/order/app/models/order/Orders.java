@@ -61,13 +61,13 @@ public class Orders extends Model {
 
     public String postcode;
 
-    @Column(name="created_at")
+    @Column(name="createdAt")
     public Date createdAt;
 
-    @Column(name="updated_at")
+    @Column(name="updatedAt")
     public Date updatedAt;
 
-    @Column(name="lock_version")
+    @Column(name="lockVersion")
     public int lockVersion;
 
     public int deleted;

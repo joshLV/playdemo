@@ -27,13 +27,13 @@ public class Cart extends Model {
     @Column(name = "cookie_identity")
     public String cookieIdentity;
 
-    @Column(name = "lock_version")
+    @Column(name = "lockVersion")
     public int lockVersion;
 
-    @Column(name = "created_at")
+    @Column(name = "createdAt")
     public Date createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updatedAt")
     public Date updatedAt;
 
     public Cart(User user, String cookieIdentity, Goods goods, int number, String materialType) {

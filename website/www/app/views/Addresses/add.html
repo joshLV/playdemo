@@ -1,0 +1,10 @@
+<input name="selectedAddressId" type="radio" id="radio_address_${address.id}"
+       value="${address.id}"
+       #{if address.isDefault.equals("T")}checked#{/if}/>
+<span class="span_name" id="address_name_${address.id}">${address.name}</span>
+<span class="span_address" id="address_address_${address.id}">${address.address}</span>
+<span class="span_tel" id="address_postcode_${address.id}">${address.postcode}</span>
+<span class="span_tel" id="address_mobile_${address.id}">${address.mobile}</span>
+<span class="span_tel" id="address_phone_${address.id}">${address.phone}</span>
+<span class="mod_span_d"><a class="address_span_modify" href="#" addressId="${address.id}">修改</a>|<a
+        class="address_span_delete" href="#" addressId="${address.id}">删除</a></span>

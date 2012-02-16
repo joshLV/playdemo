@@ -3,6 +3,8 @@ package models.sales;
 import java.util.List;
 
 import play.db.jpa.Model;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
@@ -25,26 +27,33 @@ public class Shop extends Model {
     public String phone;
     
     public String traffic;
-    
-    public String is_close;
+
+    @Column(name = "is_close")
+    public String isClose;
     
     public float latitude;
-    
+
     public float longitude;
-    
-    public String created_at;
-    
-    public String created_by;
-    
-    public String updated_at;
-    
-    public String updated_by;
+
+    @Column(name = "created_at")
+    public String createdAt;
+
+    @Column(name = "created_by")
+    public String createdBy;
+
+    @Column(name = "updated_at")
+    public String updatedAt;
+
+    @Column(name = "updated_by")
+    public String updatedBy;
     
     public int deleted;
-   
-    public String lock_version;
-    
-    public String display_order;
+
+    @Column(name = "lock_version")
+    public int lockVersion;
+
+    @Column(name = "display_order")
+    public String displayOrder;
     
     
     /**
