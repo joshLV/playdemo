@@ -1,4 +1,4 @@
-package models.consumer.address;
+package models.consumer;
 
 import play.db.jpa.Model;
 
