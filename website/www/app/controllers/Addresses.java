@@ -18,24 +18,33 @@ public class Addresses extends Controller {
     public static void index() {
 
     }
-    
+
     public static void add(){
-         render();
+        render();
+    }
+    
+    public static void edit(long id){
+        Address address = Address.findById(id);
+        render(address);
+    }
+    
+    public static void show(long id){
+        Address address = Address.findById(id);
+        render(address);
     }
 
     public static void create(long selectedAddressId, Address address) {
         if (selectedAddressId == 0) {
             address.save();
-            renderJSON(address);
+            render(address);
         }
 
         Address selectedAddress = Address.findById(selectedAddressId);
-        renderJSON(selectedAddress);
+        render(selectedAddress);
     }
 
     public static void update(Address address) {
         address.save();
-//        renderJSON(address);
         ok();
     }
 

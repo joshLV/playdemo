@@ -3,15 +3,20 @@
  * @param data
  */
 function addAddressToList(data) {
+
     var listAddressUl = $('#list_address_ul');
 
-    listAddressUl.append($("<li class='li_address_modify' id='li_address_'" + data.id + "' addressId='" + data.id + "'><input name=\"selectedAddressId\" id=\"radio_address_" + data.id + "\" type='radio' value='" + data.id + "' checked/>" +
-        "<span class=\"span_name\" id=\"address_name_" + data.id + "\">" + data.name + "</span>" +
-        "<span class=\"span_address\" id=\"address_address_" + data.id + ">" + data.address + "</span>" +
-        "<span class=\"span_tel\" id=\"address_postcode_" + data.id + ">" + data.postcode + "</span>" +
-        "<span class=\"span_tel\" id=\"address_mobile_" + data.id + ">" + data.mobile + "</span>" +
-        "<span class=\"span_tel\" id=\"address_phone_" + data.id + ">" + data.phone + "</span>" +
-        "<span class=\"mod_span_d\"><a class=\"address_span_modify\" href='#'>修改</a>|<a class=\"address_span_delete\" href='#'>删除</a></span></li>"));
+    listAddressUl.append($("<li class='li_address_modify' id='li_address_'" + data.id + "' addressId='" + data.id + "'>"));
+    listAddressUl.append(data);
+    listAddressUl.append("</li>");
+
+//    listAddressUl.append($("<li class='li_address_modify' id='li_address_'" + data.id + "' addressId='" + data.id + "'><input name=\"selectedAddressId\" id=\"radio_address_" + data.id + "\" type='radio' value='" + data.id + "' checked/>" +
+//        "<span class=\"span_name\" id=\"address_name_" + data.id + "\">" + data.name + "</span>" +
+//        "<span class=\"span_address\" id=\"address_address_" + data.id + ">" + data.address + "</span>" +
+//        "<span class=\"span_tel\" id=\"address_postcode_" + data.id + ">" + data.postcode + "</span>" +
+//        "<span class=\"span_tel\" id=\"address_mobile_" + data.id + ">" + data.mobile + "</span>" +
+//        "<span class=\"span_tel\" id=\"address_phone_" + data.id + ">" + data.phone + "</span>" +
+//        "<span class=\"mod_span_d\"><a class=\"address_span_modify\" href='#'>修改</a>|<a class=\"address_span_delete\" href='#'>删除</a></span></li>"));
 }
 
 function setAddress(addressId) {
@@ -29,12 +34,11 @@ function setAddress(addressId) {
         }
         $("#show_phone").html(phone);
     } else {//数据库中原有的地址
-        alert($("#address_name_" + addressId).val());
-        $("#show_name").html($("#address_name_" + addressId).val());
+        $("#show_name").html($("#address_name_" + addressId).html());
 //            $("#show_address").html($("#address_province_" + addressId).val() + " " + $("#address_city_" + addressId).val() + " " + $("#address_district_" + addressId).val() + $("#address_address_" + addressId).val());
-        $("#show_address").html($("#address_address_" + addressId).val());
-        $("#show_postcode").html($("#address_postcode_" + addressId).val());
-        $("#show_phone").html($("#address_mobile_" + addressId).val() + " " + $("#address_phone_" + addressId).val());
+        $("#show_address").html($("#address_address_" + addressId).html());
+        $("#show_postcode").html($("#address_postcode_" + addressId).html());
+        $("#show_phone").html($("#address_mobile_" + addressId).html() + " " + $("#address_phone_" + addressId).html());
 //            var areaCode = $("#address_areaCode_" + addressId).val() == null ? "" : $("#address_areaCode_" + addressId).val() + "-";
 //            var phone = $("#address_mobile_" + addressId).val() + "   " + areaCode + $("#address_phoneNumber_" + addressId).val();
 //            if ($("#address_phoneExtNumber_" + addressId).val() != null) {
@@ -46,20 +50,16 @@ function setAddress(addressId) {
 }
 
 function showAddress() {
-    $("#list_address_ul").css("display", "none");
-    $("#edit_address_ul").css("display", "none");
-    $("#show_address_ul").css("display", "");
+    $("#list_address_ul").hide();
+    $("#show_address_ul").show();
 }
 
 
 function showCreateAddressEdit() {
     $("#radio_address_0").attr("checked", true);
-    if ($("#div_edit_address").css("display") == "none") {
-        $("#div_edit_address").css("display", "");
-    } else {
-        $("#div_edit_address").css("display", "none");
-    }
+    $("#div_edit_address").show();
 }
+
 $(window).load(
     function () {
         //地址表格的删除按钮事件
@@ -78,30 +78,34 @@ $(window).load(
         //地址表格的修改按钮事件
         $(".address_span_modify").click(function () {
             addressId = $(this).attr('addressId');
-            $.load("/orders/addresses/new",function(data){
-                $("#li_address_"+addressId).appendHtml(data);
+            $("#li_address_" + addressId).load("/orders/addresses/" + addressId + "/edit", "", function (data) {
+                $("#bottom_buttons").hide();
+                $("#radio_address_" + addressId).attr("checked", true);
             });
-            addressId = $(this).attr('addressId');
 
-        });
-
-        $(".li_address_modify").click(function () {
-            addressId = $(this).attr('addressId');
-            $("#radio_address_" + addressId).attr("checked", true);
-            showCreateAddressEdit();
         });
 
         /**
-         * 使用新地址层的显示和隐藏事件
+         * 地址表格的行点击事件
          */
-        $("#radio_address_0").click(function () {
-            showCreateAddressEdit();
+        $(".li_address_modify").click(function () {
+            addressId = $(this).attr('addressId');
+            $("#radio_address_" + addressId).attr("checked", true);
+
+            $("#div_edit_address_" + addressId).hide();
+            $("#div_edit_address" ).hide();
         });
 
         /**
          * 使用新地址层的显示和隐藏事件
          */
         $("#span_use_new_address").click(function () {
+            showCreateAddressEdit();
+        });
+        /**
+         * 使用新地址radio的显示和隐藏事件
+         */
+        $("#span_radio_new_address").click(function () {
             showCreateAddressEdit();
         });
 
@@ -132,6 +136,7 @@ $(window).load(
                         //设置form中的addressId
                         $("#addressId").val(data.id);
                         //在收货地址列表中增加一行
+
                         addAddressToList(data);
                     });
 
@@ -143,25 +148,32 @@ $(window).load(
 
         });
 
+        /**
+         * 确认后的地址信息修改点击事件
+         */
         $("#link_edit_show_address").click(function () {
-            $("#list_address_ul").css("display", "");
-            $("#edit_address_ul").css("display", "");
-            $("#show_address_ul").css("display", "none");
+            $("#list_address_ul").show();
+            $("#show_address_ul").hide();
             $("#address_province").focus();
         });
 
-
+        /**
+         * 电子优惠券的手机号 确认点击事件
+         */
         $("#link_mobile_confirm").click(function () {
             $("#ecart_mobile_show_span").html($("#ecart_mobile").val());
-            $("#ecart_mobile_show_dd").css("display", "");
-            $("#ecart_mobile_update_dd").css("display", "none");
+            $("#ecart_mobile_show_dd").show();
+            $("#ecart_mobile_update_dd").hide();
         });
 
+        /**
+         * 电子优惠券的手机号 修改点击事件
+         */
         $("#link_edit_mobile").click(function () {
             $("#ecart_mobile").val($("#ecart_mobile_show_span").html());
 
-            $("#ecart_mobile_show_dd").css("display", "none");
-            $("#ecart_mobile_update_dd").css("display", "");
+            $("#ecart_mobile_show_dd").hide();
+            $("#ecart_mobile_update_dd").show();
         });
     }
 );

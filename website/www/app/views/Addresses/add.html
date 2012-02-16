@@ -1,10 +1,66 @@
-<input name="selectedAddressId" type="radio" id="radio_address_${address.id}"
-       value="${address.id}"
-       #{if address.isDefault.equals("T")}checked#{/if}/>
-<span class="span_name" id="address_name_${address.id}">${address.name}</span>
-<span class="span_address" id="address_address_${address.id}">${address.address}</span>
-<span class="span_tel" id="address_postcode_${address.id}">${address.postcode}</span>
-<span class="span_tel" id="address_mobile_${address.id}">${address.mobile}</span>
-<span class="span_tel" id="address_phone_${address.id}">${address.phone}</span>
-<span class="mod_span_d"><a class="address_span_modify" href="#" addressId="${address.id}">修改</a>|<a
-        class="address_span_delete" href="#" addressId="${address.id}">删除</a></span>
+<div class="right_table" id="div_edit_address" >
+    <table class="table_height" width="700" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td width="71" height="30" align="right"><span class="font_red">*</span>选择地区：</td>
+            <td width="613" align="left">
+                <select class="area_select" name="address.province" id="address_province">
+                    <option value="ALL">-全部-</option>
+                    <option>two</option>
+                </select>
+                <select class="area_select" name="address.city" id="address_city">
+                    <option value="ALL">-全部-</option>
+                </select>
+                <select class="area_select" name="address.district" id="address_district">
+                    <option value="ALL">-全部-</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td height="30" align="right"><span class="font_red">*</span>详细地址：</td>
+            <td align="left">
+                <input class="input_height input_adress" type="text" name="address.address"
+                       id="address_address"/></td>
+        </tr>
+        <tr>
+            <td height="30" align="right"><span class="font_red">*</span>邮政编码：</td>
+            <td align="left"><input class="input_height" type="text" name="address.postcode"
+                                    id="address_postcode"/></td>
+        </tr>
+        <tr>
+            <td height="30" align="right"><span class="font_red">*</span>收&nbsp;货&nbsp;&nbsp;人：</td>
+            <td align="left">
+                <input class="input_height" type="text" name="address.name" id="address_name"/>
+            </td>
+        </tr>
+        <tr>
+            <td height="30" align="right"><span class="font_red">*</span>手　　机：</td>
+            <td align="left" class="font_yanse">
+                <input name="address.mobile" type="text" class="input_height"
+                       id="address_mobile"
+                       value="如133421433434"/>
+                或固定电话
+
+                -
+                <input name="address.areaCode" type="text" class="input_height area_input"
+                       id="address_areaCode"
+                       value="区号"/>
+                <input name="address.phoneNumber" type="text" class="input_height"
+                       id="address_phoneNumber"
+                       value="电话号码"/>
+                -
+                <input name="address.phoneExtNumber" type="text" class="input_height"
+                       id="address_phoneExtNumber"
+                       value="分机号（可选）"/> 两者至少填写一项
+            </td>
+        </tr>
+       *{ <tr>
+            <td height="50" colspan="2"><span class="margin_left"><a class="queren_bg" id="link_confirm"
+                                                                     href="#">确认收货信息</a></span>
+                                        <span class="margin_left"><a class="queren_bg" id="link_cancel"
+                                                                     href="javascript:showAddress();">取消</a></span>
+            </td>
+
+        </tr>}*
+    </table>
+    <div class="clear_both"></div>
+</div>

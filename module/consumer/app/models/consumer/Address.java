@@ -20,7 +20,7 @@ public class Address extends Model {
     public String address;
     public String name;
     public String postcode;
-    private String phone;
+
     public String mobile;
     @Column(name = "is_default")
     public String isDefault;
@@ -31,24 +31,26 @@ public class Address extends Model {
     @Column(name = "updated_at")
     public Date updatedAt;
 
-    @Transient
     public String areaCode;
-    @Transient
     public String phoneNumber;
-    @Transient
     public String phoneExtNumber;
 
-
+    @Transient
     public String getPhone() {
-        return phone;
+        StringBuilder phoneStr = new StringBuilder();
+        if (areaCode != null && !areaCode.equals("")) {
+            phoneStr.append(areaCode);
+            phoneStr.append("-");
+        }
+        phoneStr.append(phoneNumber == null ? "" : phoneNumber);
+        if (phoneExtNumber != null && !phoneExtNumber.equals("")) {
+            phoneStr.append("-");
+            phoneStr.append(phoneExtNumber);
+        }
+        return phoneStr.toString();
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-
-    }
-
-    public static List<Address> findByOrder(){
+    public static List<Address> findByOrder() {
         return Address.find("order by is_default").fetch();
     }
 }

@@ -13,6 +13,9 @@ DELETE  /carts/{goodsIds}                       Carts.delete
 GET     /payment_info/{id}                      PaymentInfo.index
 
 GET     /orders                                 Orders.index
+GET     /orders/addresses/{id}                  Addresses.show
+GET     /orders/addresses/{id}/edit             Addresses.edit
+PUT     /orders/addresses/{id}                  Addresses.update
 GET     /orders/addresses/new                   Addresses.add
 POST    /orders/addresses                       Addresses.create
 DELETE  /orders/addresses/{id}                  Addresses.delete
