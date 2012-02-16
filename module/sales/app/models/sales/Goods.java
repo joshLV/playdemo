@@ -130,7 +130,7 @@ public class Goods extends Model {
 	/**
 	 * 创建时间
 	 */
-    @Column(name = "createdAt")
+    @Column(name = "created_at")
 	public String createdAt;
 	/**
 	 * 创建人
