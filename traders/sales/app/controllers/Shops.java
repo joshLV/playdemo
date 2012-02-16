@@ -19,6 +19,7 @@ public class Shops extends Controller {
         validation.required(shop.phone);
         
         if(validation.hasErrors()) {
+           
             params.flash();
             validation.keep();
             renderTemplate("shop-add.html",params);
@@ -27,7 +28,7 @@ public class Shops extends Controller {
         shop.company_id = 1;
         shop.area_id= 1;
         shop.deleted = 0;
-        shop.save();
+        shop.create();
         list();
         
     }
@@ -36,9 +37,9 @@ public class Shops extends Controller {
         renderTemplate("shop-add.html");
     }
     
-    public static void  update(Shop shop){
+    public static void  update(long id,Shop shop){
         
-        Shop sp = Shop.findById(shop.id);
+        Shop sp = Shop.findById(id);
         
         validation.required(shop.name);
         validation.required(shop.address);

@@ -20,35 +20,28 @@ public class ShopFunctionTest extends FunctionalTest {
     @Test
     public void create(){
         
-        //List<Shop> list = Shop.findAll();
-        
+        List<Shop> list = Shop.findAll();
+
         Map<String,String> shop = new HashMap<String,String>();
-        
-       // Shop sh = new Shop();
-//        sh.name = "用户名称";
-//        sh.address = "用户地址";
-//        sh.phone = "用户手机";
-//        sh.company_id = 1;
-//        shop.put("shop", sh);
-//        
-        shop.put("shop.name","用户名称");
-        shop.put("shop.address","用户名称");
-        shop.put("shop.phone","用户名称");
+           
+        shop.put("shop.name","xxxxx");
+        shop.put("shop.address","bbbbb");
+        shop.put("shop.phone","ccccc");
         shop.put("shop.company_id","1");
         
-        
-        System.out.println("ddddddd");
-        
-        Response response2 = POST("shops/create",shop);
-        
+//        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>"+list.size());
 //        
-//        System.out.println(response2.status);
-//        Assert.assertTrue(response2.status == 302);
-//        
-//        List<Shop> list2 = Shop.findAll();
-//        System.out.println(list2.size());
-//        
-//        Assert.assertTrue(list.size() + 1 == list2.size());
+//        System.out.println("xxx"+list.size());
+        
+        Response response2 = POST("/shops/create",shop);
+        
+        
+        Assert.assertTrue(response2.status == 302);
+        
+        List<Shop> list2 = Shop.findAll();
+//        System.out.println("bbbb"+list2.size());
+        
+        Assert.assertTrue(list.size() + 1 == list2.size());
         
     }
 

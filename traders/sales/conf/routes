@@ -14,6 +14,15 @@ POST    /goods/{id}                             Goods.update
 POST    /updatestatus                          Goods.updateStatus
 DELETE    /goods/delete                      Goods.delete
 
+
+GET     /shops                                  Shops.list
+GET     /shops/new                              Shops.add
+POST    /shops                                  Shops.create
+GET     /shops/{id}/edit                        Shops.edit
+POST    /shops/{id}                             Shops.update
+DELETE  /shops/delete                           Shops.delete
+
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

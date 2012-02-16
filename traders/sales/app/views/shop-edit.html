@@ -1,8 +1,7 @@
 #{extends 'layout_trader/layout.html' /}
 #{include 'sales/Goods/nav.html' /}
 <div class="body">
- <form class="form-horizontal" action="@{Shops.update()}" method="post">
-  <input type="hidden" id="input01" name="shop.id" value="${shop.id}" />
+ <form class="form-horizontal" action="@{Shops.update(shop.id)}" method="post">
   <legend>编辑门店</legend>
   
   <div class="control-group">
