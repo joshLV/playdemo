@@ -3,7 +3,7 @@
  * @param data
  */
 function addAddressToList(data) {
-
+    alert(data);
     var listAddressUl = $('#list_address_ul');
 
     listAddressUl.append($("<li class='li_address_modify' id='li_address_'" + data.id + "' addressId='" + data.id + "'>"));

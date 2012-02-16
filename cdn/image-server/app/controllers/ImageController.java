@@ -55,17 +55,24 @@ public class ImageController extends Controller {
             notFound();
         }
 
-        String toImagePath = IMAGE_ROOT + File.separator + "p" + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + imageName;
-        String originImagePath = IMAGE_ROOT + File.separator + "o" + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + matcher.group(1)+"."+matcher.group(3);
+        String targetImagePath = IMAGE_ROOT + File.separator + "p" + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + imageName;
+        String originImagePath = IMAGE_ROOT + File.separator + "o" + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + matcher.group(1) + "." + matcher.group(3);
 
-        File toFile = new File(toImagePath);
 
-        if (!toFile.exists()) {
+        System.out.println("targetImagePath:" + targetImagePath);
+        System.out.println("originImagePath:" + originImagePath);
+
+        File targetImage = new File(targetImagePath);
+
+        if (!targetImage.exists()) {
             //创建缩略图
             File originImage = new File(originImagePath);
-            play.libs.Images.resize(originImage, toFile, width, height);
+            if (!originImage.exists()){
+                originImage = new File(IMAGE_ROOT+"/o/1/1/1/default.png");
+            }
+            play.libs.Images.resize(originImage, targetImage, width, height);
         }
-        renderBinary(toFile);
+        renderBinary(targetImage);
     }
 
 }
