@@ -4,105 +4,7 @@
 <link href="@@{'/public/stylesheets/order_info.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
 #{set 'moreScripts'}
-<script type=text/javascript>
-    /**
-     * 点击确认收货信息按钮.
-     */
-    function confirmAddress() {
-        //添加收货地址信息到数据库中
-        var addressId = $("input[name='selectedAddressId']:checked").val();
-        var addNew = addressId == 0;
-        if (addNew) {
-            var addAction = #{jsAction @Addresses.create()/}
-                    $.post(addAction(),
-                            {selectedAddressId:$("#selectedAddressId").val(),
-                                'address.name':$("#address_name").val(),
-                                'address.postcode':$("#address_postcode").val(),
-                                'address.province':$("#address_province").val(),
-                                'address.city':$("#address_city").val(),
-                                'address.district':$("#address_district").val(),
-                                'address.address':$("#address_address").val(),
-                                'address.mobile':$("#address_mobile").val(),
-                                'address.areaCode':$("#address_areacode").val(),
-                                'address.phoneNumber':$("#address_phoneNumber").val(),
-                                'address.phoneExtNumber':$("#address_phoneExtNumber").val(),
-                                'address.isDefault':true
-                            },
-                            function (data) {
-                                //设置form中的addressId
-                                $("#addressId").val(data.id);
-                                //在收货地址列表中增加一行
-                                addAddressToList(data);
-                            });
-
-        }
-        //设置当前用户的收货地址信息
-        setAddress(addressId);
-        showAddress();
-    }
-    function addAddressToList(data) {
-        var listAddressUl = $('#list_address_ul');
-
-        listAddressUl.append($("<li><input name=\"selectedAddressId\" type=\"radio\" value=\"" + data.id + "\" checked/>" +
-                "<span class=\"span_name\" id=\"address_name" + data.name + "\">" + data.name + "</span>" +
-                "<span class=\"span_adress\">" + data.address + "</span>" +
-                "<span class=\"span_tel\">" + data.postcode + "</span>" +
-                "<span class=\"span_tel\">" + data.mobile + "</span>" +
-                "<span class=\"span_tel\">" + data.phone + "</span>" +
-                "<span class=\"mod_span_d\"><a class=\"mod_span_d2\" href=\"\#\">修改</a>|<a class=\"mod_span_d2\" href=\"\#\">删除</a></span></li>"));
-    }
-
-    function setAddress(addressId) {
-        if (addressId == 0) {//如果是新增的地址
-            $("#show_name").html($("#address_name").val());
-            $("#show_address").html($("#address_province").val() + " " + $("#address_city").val() + " " + $("#address_district").val() + $("#address_address").val());
-            $("#show_postcode").html($("#address_postcode").val());
-            var areaCode = $("#address_areaCode").val() == null ? "" : $("#address_areaCode").val() + "-";
-            var phone = $("#address_mobile").val() + "   " + areaCode + $("#address_phoneNumber").val();
-            if ($("#address_phoneExtNumber").val() == null) {
-                phone += "-" + $("#address_phoneExtNumber").val();
-            }
-            $("#show_phone").html(phone);
-        } else {//数据库中原有的地址
-            $("#show_name").html($("#address_name" + addressId).val());
-            $("#show_address").html($("#address_province" + addressId).val() + " " + $("#address_city" + addressId).val() + " " + $("#address_district" + addressId).val() + $("#address_address" + addressId).val());
-            $("#show_postcode").html($("#address_postcode" + addressId).val());
-            var areaCode = $("#address_areaCode" + addressId).val() == null ? "" : $("#address_areaCode" + addressId).val() + "-";
-            var phone = $("#address_mobile" + addressId).val() + "   " + areaCode + $("#address_phoneNumber" + addressId).val();
-            if ($("#address_phoneExtNumber" + addressId).val() != null) {
-                phone += "-" + $("#address_phoneExtNumber" + addressId).val();
-            }
-            $("#show_phone").html(phone);
-        }
-    }
-
-    function showAddress() {
-        $("#list_address_ul").css("display", "none");
-        $("#edit_address_ul").css("display", "none");
-        $("#show_address_ul").css("display", "");
-    }
-
-    function editAddress() {
-        $("#list_address_ul").css("display", "");
-        $("#edit_address_ul").css("display", "");
-        $("#show_address_ul").css("display", "none");
-        $("#address_province").focus();
-    }
-
-    function setMobileToForm() {
-//        $.cookie('ecart_mobile', $("#ecart_mobile").val());
-        $("#ecart_mobile_show_span").html($("#ecart_mobile").val());
-        $("#ecart_mobile_show_dd").css("display", "");
-        $("#ecart_mobile_update_dd").css("display", "none");
-    }
-
-    function editMobile() {
-        $("#ecart_mobile").val($("#ecart_mobile_show_span").html());
-
-        $("#ecart_mobile_show_dd").css("display", "none");
-        $("#ecart_mobile_update_dd").css("display", "");
-    }
-</script>
+<script src="@@{'/public/javascripts/orders.js'}"></script>
 #{/set}
 <div id="wrap_main">
     <div id="wrap_top">
@@ -118,47 +20,51 @@
 <!--主体内容部分-->
 <div id="wrap_content">
 <div>
-    <div class="buzou_one">
-        <div class="buzou_text_two">1</div>
-        <div class="buzou_text_one">查看购物车<span>>></span></div>
-        <div class="buzou_text_four buzou_text_four_xz">2</div>
-        <div class="buzou_text_four_rig">确认订单信息<span class="no_xiuzhen">>></span></div>
-        <div class="buzou_text_two">3</div>
-        <div class="buzou_text_one">确认付款<span>>></span></div>
-        <div class="buzou_one_2">4</div>
-        <div class="buzou_text_one">成功提交订单</div>
+    <div class="div_step_title">
+        <div class="div_step_3">1</div>
+        <div class="div_step_text_1">查看购物车<span>>></span></div>
+        <div class="div_step_2 buzou_text_four_xz">2</div>
+        <div class="div_step_text_2">确认订单信息<span class="no_xiuzhen">>></span></div>
+        <div class="div_step_3">3</div>
+        <div class="div_step_text_1">确认付款<span>>></span></div>
+        <div class="div_step_text_4">4</div>
+        <div class="div_step_text_1">成功提交订单</div>
     </div>
 </div>
 
 <form>
 <input type="hidden" id="addressId"/>
 
-<div id="gouwu_modify_info" class="xiuzheng_table">
+<div id="order_modify_info1" class="div_address_modify">
     <dl class="left_one_dl">
         <dt>
         <div class="title_nav">确认收货地址</div>
         <div><span class="spance_nav"></span></div>
         </dt>
         <dd class="border_dd">
-            <ul class="adress_mod" id="list_address_ul">
+            <ul class="address_mod" id="list_address_ul">
             #{list addressList, as:'address'}
-                <li class="adress_modify"><input name="selectedAddressId" type="radio" value="${address.id}"
-                                                 #{if address.isDefault.equals("T")}checked#{/if}/>
-                    <span class="span_name">${address.name}</span> <span
-                            class="span_adress">${address.address}</span> <span
-                            class="span_tel">${address.postcode}</span> <span
-                            class="span_tel">${address.mobile}</span> <span
-                            class="span_tel">${address.phone}</span><span class="mod_span_d"><a class="mod_span_d2"
-                                                                                                href="#">修改</a>|<a
-                            class="mod_span_d2" href="#">删除</a></span></li>
+                <li class="li_address_modify" id="li_address_${address.id}" addressId="${address.id}"><input name="selectedAddressId" type="radio" id="radio_address_${address.id}"
+                                                                                   value="${address.id}"
+                                                                                   #{if address.isDefault.equals("T")}checked#{/if}/>
+                    <span class="span_name" id="address_name_${address.id}">${address.name}</span>
+                    <span class="span_address" id="address_address_${address.id}">${address.address}</span>
+                    <span class="span_tel" id="address_postcode_${address.id}">${address.postcode}</span>
+                    <span class="span_tel" id="address_mobile_${address.id}">${address.mobile}</span>
+                    <span class="span_tel" id="address_phone_${address.id}">${address.phone}</span>
+                    <span class="mod_span_d"><a class="address_span_modify" href="#" addressId="${address.id}">修改</a>|<a
+                            class="address_span_delete" href="#" addressId="${address.id}">删除</a></span>
+                </li>
             #{/list}
             </ul>
-            <ul class="adress_mod" id="edit_address_ul">
+            <ul class="address_mod" id="edit_address_ul">
 
-                <li class="adress_modify chongxie"><input name="selectedAddressId" type="radio" value="0"
-                                                          #{if addressList.size() == 0}checked#{/if}/>
+                <li class="li_address_modify chongxie"><input name="selectedAddressId" type="radio" value="0" id="radio_address_0"
+                                                              #{if addressList.size() == 0}checked#{/if}/> <span
+                        id="span_use_new_address" listSize="${addressList.size()}">使用新地址</span>
 
-                    <div class="right_table">
+                    <div class="right_table" id="div_edit_address"
+                         style="display: #{if addressList.size() > 0}none#{/if}">
                         <table class="table_height" width="700" border="0" cellpadding="0" cellspacing="0">
                             <tr>
                                 <td width="71" height="30" align="right"><span class="font_red">*</span>选择地区：</td>
@@ -202,7 +108,7 @@
 
                                     -
                                     <input name="address.areaCode" type="text" class="input_height area_input"
-                                           id="address_areacode"
+                                           id="address_areaCode"
                                            value="区号"/>
                                     <input name="address.phoneNumber" type="text" class="input_height"
                                            id="address_phoneNumber"
@@ -214,9 +120,9 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td height="50" colspan="2"><span class="magin_left"><a class="queren_bg"
-                                                                                        href="javascript:confirmAddress();">确认收货信息</a></span>
-                                        <span class="magin_left"><a class="queren_bg"
+                                <td height="50" colspan="2"><span class="margin_left"><a class="queren_bg" id="link_confirm"
+                                                                                        href="#">确认收货信息</a></span>
+                                        <span class="margin_left"><a class="queren_bg" id="link_cancel"
                                                                     href="javascript:showAddress();">取消</a></span>
                                 </td>
 
@@ -251,8 +157,8 @@
                                 <td><span id="show_phone"></span></td>
                             </tr>
                             <tr>
-                                <td height="50" colspan="2"><span class="magin_left"><a class="queren_bg"
-                                                                                        href="javascript:editAddress();">修改</a></span>
+                                <td height="50" colspan="2"><span class="margin_left"><a class="font_blue jianju" id="link_edit_show_address"
+                                                                                        href="#">修改</a></span>
                                 </td>
                             </tr>
                         </table>
@@ -262,7 +168,7 @@
         </dd>
     </dl>
 </div>
-<div id="gouwu_modify_info">
+<div id="order_modify_info2">
     <dl class="left_one_dl">
         <dt>
         <div class="title_nav">确认购买信息</div>
@@ -305,7 +211,7 @@
     </dl>
 </div>
 <div class="border_bottom"></div>
-<div id="gouwu_modify_info">
+<div id="order_modify_info3">
     <dl class="left_one_dl">
         <dt>
         <div class="title_nav">确认收货手机</div>
@@ -314,9 +220,9 @@
         <dd class="shouji_text" id="ecart_mobile_update_dd">手机号码：
             <!--手机号码修改的输入框input-->
             <input class="num_input_bg" type="text" name="ecart_mobile" id="ecart_mobile"/>
-            <span><a class="font_blue jianju" href="javascript:setMobileToForm()">确认</a></span></dd>
+            <span><a class="font_blue jianju" id="link_mobile_confirm" href="#">确认</a></span></dd>
         <dd class="shouji_text" id="ecart_mobile_show_dd">手机号码：<span id="ecart_mobile_show_span"></span><span><a
-                class="font_blue jianju" href="javascript:editMobile()">修改</a></span></dd>
+                class="font_blue jianju" id="link_edit_mobile" href="#">修改</a></span></dd>
 
         <dd class="border_dd">
             <table width="970" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">

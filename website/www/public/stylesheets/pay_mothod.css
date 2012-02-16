@@ -4,16 +4,16 @@
 #wrap_top_middle{float:left;line-height:89px; font-size:17px; color:#666666; font-weight:700}
 .fen_g{width:1000px; overflow:hidden; height:2px; background:#D72828} /*hengxian red*/
 
-.buzou_one{height:85px; width:950px; line-height:85px; padding-left:50px; font-size:14px;}
-.buzou_one_2{width:23px; height:23px; background:#EFEFEF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;}
+.div_step_title {height:85px; width:950px; line-height:85px; padding-left:50px; font-size:14px;}
+.div_step_text_4 {width:23px; height:23px; background:#EFEFEF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;}
 
-.buzou_text_one{float:left; font-weight:700; letter-spacing:0.1em; font-size:14px;}
-.buzou_text_one span{padding-left:15px; padding-right:0px; font-weight:700px; color:#999999}
+.div_step_text_1 {float:left; font-weight:700; letter-spacing:0.1em; font-size:14px;}
+.div_step_text_1 span{padding-left:15px; padding-right:0px; font-weight:700px; color:#999999}
 
-.buzou_text_two{width:23px; height:23px; background:#EFEFEF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;}
-.buzou_text_four{width:23px; height:23px; background:#CF1F1F; color:#FFFFFF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;}
+.div_step_3 {width:23px; height:23px; background:#EFEFEF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;}
+.div_step_2 {width:23px; height:23px; background:#CF1F1F; color:#FFFFFF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;}
 
-.buzou_text_four_rig{float:left; color:#CF1F1F}
+.div_step_text_2 {float:left; color:#CF1F1F}
 .dingdan_info{width:967px; height:227px; border:solid 1px #D3D3D3; line-height:22px; padding-left:31px;}
 .success_dingdan{height:39px; line-height:39px; vertical-align:middle; margin-top:13px; background:url(../images/gou_icon2.jpg) no-repeat; padding-left:40px; font-size:21px;}
 .chakan_info{padding-left:40px;line-height:32px;}
@@ -60,8 +60,8 @@ table{ border-collapse:collapse}
 
 
 /*gouwu _4_buzou style*/
-.buzou_text_four{width:27px; height:28px; background:#CF1F1F; color:#FFFFFF; line-height:28px; text-align:center; float:left; margin-top:28px; margin-bottom:31px; margin-right:10px; margin-left:10px; font-size:22px; font-weight:700}
+.div_step_2 {width:27px; height:28px; background:#CF1F1F; color:#FFFFFF; line-height:28px; text-align:center; float:left; margin-top:28px; margin-bottom:31px; margin-right:10px; margin-left:10px; font-size:22px; font-weight:700}
 
-.buzou_text_four_rig{float:left; color:#CF1F1F; font-size:18px; font-weight:700}
+.div_step_text_2 {float:left; color:#CF1F1F; font-size:18px; font-weight:700}
 .shiyong_bg{background:url(../images/shhiyong_buttom.jpg) no-repeat;color:#FFFFFF; text-align:center; font-weight:700;line-height:24px;letter-spacing:0.1em; width:77px; height:24px; display:block; margin-left:40px; float:right; margin-right:460px; margin-top:-21px;}
 .suc_ok_bg{ width:152px; height:33px; background:url(../images/queren_bottom.jpg) no-repeat;color:#FFFFFF; text-align:center; font-weight:700;line-height:33px; font-size:16px;}

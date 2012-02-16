@@ -27,7 +27,7 @@ public class ShopFunctionTest extends FunctionalTest {
         shop.put("shop.name","xxxxx");
         shop.put("shop.address","bbbbb");
         shop.put("shop.phone","ccccc");
-        shop.put("shop.company_id","1");
+        shop.put("shop.companyId","1");
         
 //        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>"+list.size());
 //        

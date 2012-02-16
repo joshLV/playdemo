@@ -9,8 +9,10 @@ GET     /carts                                  Carts.index
 POST    /carts                                  Carts.order
 DELETE  /carts/{goodsIds}                       Carts.delete
 
-GET     /orders/{id}                                 Orders.index
+GET     /orders                                 Orders.index
+GET     /orders/addresses/new                   Addresses.add
 POST    /orders/addresses                       Addresses.create
+DELETE  /orders/addresses/{id}                  Addresses.delete
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

@@ -73,10 +73,10 @@
     </select></td>
    </tr>
    <tr>
-    <td>现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：<input type="text" id="no" name="goods.sale_price_s"
-     class="input-medium" />至 <input type="text" id="no" name="goods.sale_price_e" class="input-medium" /></td>
-    <td>销&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：<input type="text" id="no" name="goods.sale_count_s"
-     class="input-medium" />至 <input type="text" id="no" name="goods.sale_count_e" class="input-medium" /></td>
+    <td>现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：<input type="text" id="no" name="goods.salePriceBegin"
+     class="input-medium" />至 <input type="text" id="no" name="goods.salePriceEnd" class="input-medium" /></td>
+    <td>销&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：<input type="text" id="no" name="goods.saleCountBegin"
+     class="input-medium" />至 <input type="text" id="no" name="goods.saleCountEnd" class="input-medium" /></td>
     <td><button class="btn btn-primary" id="searchbtn" type="submit">搜索</button></td>
    </tr>
   </table>
@@ -117,7 +117,7 @@
      <td>${row.name}</td>
      <td>${row.sale_price}</td>
      <td>${row.base_sale}</td>
-     <td>sale_count</td>
+     <td>saleCount</td>
      <td>${row.status}</td>
      <td>${row.created_at}</td>
      <td><a href="@{Goods.edit(row.id)}">修改</a>/<a href="@{Goods.detail(row.id)}">查看</a></td>

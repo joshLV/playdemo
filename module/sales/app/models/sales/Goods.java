@@ -34,11 +34,13 @@ public class Goods extends Model {
 	/**
 	 * 所属商户ID
 	 */
-	public String company_id;
+    @Column(name="company_id")
+	public String companyId;
 	/**
 	 * 原始图片路径
 	 */
-	public String image_path;
+    @Column(name = "imagePath")
+	public String imagePath;
 
 	//    @Transient
 	//    private String image_tiny_path;
@@ -50,7 +52,7 @@ public class Goods extends Model {
 	 * 最小规格图片路径
 	 */
 	@Transient
-	public String getImage_tiny_path() {
+	public String getImageTinyPath() {
 		return getImageBySizeType("tiny");
 	}
 
@@ -58,7 +60,7 @@ public class Goods extends Model {
 	 * 小规格图片路径
 	 */
 	@Transient
-	public String getImage_small_path() {
+	public String getImageSmallPath() {
 		return getImageBySizeType("small");
 	}
 
@@ -66,21 +68,24 @@ public class Goods extends Model {
 	 * 中等规格图片路径
 	 */
 	@Transient
-	public String getImage_middle_path() {
+	public String getImageMiddlePath() {
 		return getImageBySizeType("middle");
 	}
 	/**
 	 * 进货量
 	 */
-	public String income_goods_count;
+    @Column(name = "incomeGoodsCount")
+	public String incomeGoodsCount;
 	/**
 	 * 券有效开始日
 	 */
-	public String expired_bg_on;
+    @Column(name = "expired_bg_on")
+	public String expiredBeginOn;
 	/**
 	 * 券有效结束日
 	 */
-	public String expired_ed_on;
+    @Column(name = "expired_ed_on")
+	public String expiredEndOn;
 	/**
 	 * 商品标题
 	 */
@@ -88,11 +93,13 @@ public class Goods extends Model {
 	/**
 	 * 商品原价
 	 */
-	public float original_price;
+    @Column(name = "original_price")
+	public float originalPrice;
 	/**
 	 * 商品现价
 	 */
-	public float sale_price;
+    @Column(name = "sale_price")
+	public float salePrice;
 	/**
 	 * 温馨提示
 	 */
@@ -104,11 +111,13 @@ public class Goods extends Model {
 	/**
 	 * 售出数量
 	 */
-	public String sale_count;
+    @Column(name = "sale_count")
+	public String saleCount;
 	/**
 	 * 售出基数
 	 */
-	public String base_sale;
+    @Column(name = "base_sale")
+	public String baseSale;
 	/**
 	 * 商品状态,
 	 */
@@ -116,23 +125,28 @@ public class Goods extends Model {
 	/**
 	 * 创建来源
 	 */
-	public String created_from;
+    @Column(name = "created_from")
+	public String createdFrom;
 	/**
 	 * 创建时间
 	 */
-	public String created_at;
+    @Column(name = "created_at")
+	public String createdAt;
 	/**
 	 * 创建人
 	 */
-	public String created_by;
+    @Column(name = "created_by")
+	public String createdBy;
 	/**
 	 * 修改时间
 	 */
-	public String update_at;
+    @Column(name = "update_at")
+	public String updateAt;
 	/**
 	 * 修改人
 	 */
-	public String update_by;
+    @Column(name = "update_by")
+	public String updateBy;
 	/**
 	 * 逻辑删除
 	 */
@@ -140,19 +154,21 @@ public class Goods extends Model {
 	/**
 	 * 乐观锁
 	 */
-	public String lock_version;
+    @Column(name = "lock_version")
+    public int lockVersion;
 	/**
 	 * 手工排序
 	 */
-	public String display_order;
+    @Column(name = "display_order")
+	public String displayOrder;
 	@Transient
-	public String sale_price_s;
+	public String salePriceBegin;
 	@Transient
-	public String sale_price_e;
+	public String salePriceEnd;
 	@Transient
-	public String sale_count_s;
+	public String saleCountBegin;
 	@Transient
-	public String sale_count_e;
+	public String saleCountEnd;
 	/**
 	 * 商品类型，e:电子券，r:实物
 	 */
@@ -180,15 +196,15 @@ public class Goods extends Model {
 
 	private String getImageBySizeType(String sizeType) {
 		String defaultImage = IMAGE_SERVER + "/p/1/1/1/default_" + sizeType + ".png";
-		if (image_path == null || image_path.equals("")) {
+		if (imagePath == null || imagePath.equals("")) {
 			return defaultImage;
 		}
-		Matcher matcher = imagePat.matcher(image_path);
+		Matcher matcher = imagePat.matcher(imagePath);
 		if (!matcher.matches()) {
 
 			return defaultImage;
 		}
-		String imageHeadStr = image_path.replace("/o/", "/p/");
+		String imageHeadStr = imagePath.replace("/o/", "/p/");
 		return IMAGE_SERVER + imageHeadStr.replace("/" + matcher.group(4), "/" + matcher.group(4) + "_" + sizeType);
 	}
 
@@ -216,21 +232,21 @@ public class Goods extends Model {
 			condtion.append(" and status = ? ");
 			params.add(goods.status);
 		}
-		if (goods.sale_price_s !=null && !"".equals(goods.sale_price_s)) {
-			condtion.append(" and sale_price >= ?");
-			params.add(goods.sale_price_s);
+		if (goods.salePriceBegin !=null && !"".equals(goods.salePriceBegin)) {
+			condtion.append(" and salePrice >= ?");
+			params.add(goods.salePriceBegin);
 		}
-		if (goods.sale_price_e !=null && !"".equals(goods.sale_price_e)) {
-			condtion.append(" and sale_price <= ?");
-			params.add(goods.sale_price_e);
+		if (goods.salePriceEnd !=null && !"".equals(goods.salePriceEnd)) {
+			condtion.append(" and salePrice <= ?");
+			params.add(goods.salePriceEnd);
 		}
-		if (goods.sale_count_s !=null && !"".equals(goods.sale_count_s)) {
-			condtion.append(" and sale_count >= ?");
-			params.add(goods.sale_count_s);
+		if (goods.saleCountBegin !=null && !"".equals(goods.saleCountBegin)) {
+			condtion.append(" and saleCount >= ?");
+			params.add(goods.saleCountBegin);
 		}
-		if (goods.sale_count_e !=null && !"".equals(goods.sale_count_e)) {
-			condtion.append(" and sale_count <= ?");
-			params.add(goods.sale_count_e);
+		if (goods.saleCountEnd !=null && !"".equals(goods.saleCountEnd)) {
+			condtion.append(" and saleCount <= ?");
+			params.add(goods.saleCountEnd);
 		}
 		JPAQuery query=null;
 		List list= null;

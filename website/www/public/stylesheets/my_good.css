@@ -20,14 +20,14 @@ table {
 .left_top_two{ width:238px; height:609px; border:solid 1px #CECECE; margin-top:11px;}
 
 
-.buzou_one{height:85px; width:950px; line-height:85px; padding-left:50px; font-size:14px;}
-.buzou_one_2{width:23px; height:23px; background:#EFEFEF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;}
+.div_step_title {height:85px; width:950px; line-height:85px; padding-left:50px; font-size:14px;}
+.div_step_text_4 {width:23px; height:23px; background:#EFEFEF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;}
 
-.buzou_text_one{float:left}
-.buzou_text_one span{padding-left:15px; padding-right:0px; font-weight:700px; color:#999999}
+.div_step_text_1 {float:left}
+.div_step_text_1 span{padding-left:15px; padding-right:0px; font-weight:700px; color:#999999}
 
-.buzou_text_two{width:23px; height:23px; background:#EFEFEF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;}
-.buzou_text_four{width:23px; height:23px; background:#CF1F1F; color:#FFFFFF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;}
+.div_step_3 {width:23px; height:23px; background:#EFEFEF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;}
+.div_step_2 {width:23px; height:23px; background:#CF1F1F; color:#FFFFFF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;}
 
 #gouwucar{ margin:0 auto; width:996px; border:solid 1px #EEEEEE; height:490px;}
 *html #gouwucar{ height:422px;} 

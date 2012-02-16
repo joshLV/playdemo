@@ -74,7 +74,7 @@ System.out.println("aaaaaaaa");
     public static void list(){
         
         StringBuffer search = new StringBuffer();
-        search.append("company_id=? and deleted=?");
+        search.append("companyId=? and deleted=?");
         ArrayList queryparams = new ArrayList();
         
         long company_id = 1;

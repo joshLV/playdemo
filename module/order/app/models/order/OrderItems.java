@@ -20,10 +20,10 @@ public class OrderItems extends Model {
     @ManyToMany
     Goods goods;
 
-    @Column(name="original_price")
+    @Column(name="originalPrice")
     Float originalPrice;
 
-    @Column(name="sale_price")
+    @Column(name="salePrice")
     Float salePrice;
 
     @Column(name="goods_name")
@@ -31,7 +31,7 @@ public class OrderItems extends Model {
 
     Long number;
 
-    @Column(name="created_at")
+    @Column(name="createdAt")
     public Date  createdAt;
 
     public OrderItems(Orders order, Goods goods, long number){

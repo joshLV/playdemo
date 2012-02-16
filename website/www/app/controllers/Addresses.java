@@ -1,7 +1,7 @@
 package controllers;
 
 import controllers.modules.webtrace.WebTrace;
-import models.consumer.address.Address;
+import models.consumer.Address;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -18,6 +18,10 @@ public class Addresses extends Controller {
     public static void index() {
 
     }
+    
+    public static void add(){
+         render();
+    }
 
     public static void create(long selectedAddressId, Address address) {
         if (selectedAddressId == 0) {
@@ -31,10 +35,18 @@ public class Addresses extends Controller {
 
     public static void update(Address address) {
         address.save();
+//        renderJSON(address);
+        ok();
     }
 
     public static void delete(long id) {
-        Address.delete("id = ?", id);
+        Address address = Address.findById(id);
+        if (address != null) {
+            address.delete();
+        }
+//        Address.delete("id=?", id);
+
+        ok();
     }
 
 }

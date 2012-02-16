@@ -1,7 +1,5 @@
 import models.sales.Goods;
 import org.junit.Test;
-import play.mvc.Http;
-import play.test.FunctionalTest;
 import play.test.UnitTest;
 
 /**
@@ -17,8 +15,8 @@ public class GoodsTest
     @Test
     public void testShowImage() throws Exception {
         Goods goods = new Goods();
-        goods.image_path = "/o/1/1/1/3.jpg";
-        String path = goods.getImage_middle_path();
+        goods.imagePath = "/o/1/1/1/3.jpg";
+        String path = goods.getImageMiddlePath();
         assertEquals("/p/1/1/1/3_middle.jpg", path);
     }
 

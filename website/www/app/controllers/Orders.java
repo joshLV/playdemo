@@ -1,7 +1,7 @@
 package controllers;
 
 import controllers.modules.webtrace.WebTrace;
-import models.consumer.address.Address;
+import models.consumer.Address;
 import models.order.Cart;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -38,7 +38,7 @@ public class Orders extends Controller {
     private static float amount(List<Cart> cartList) {
         float cartAmount = 0;
         for (Cart cart : cartList) {
-            cartAmount += cart.goods.sale_price * cart.number;
+            cartAmount += cart.goods.salePrice * cart.number;
         }
         return cartAmount;
     }
