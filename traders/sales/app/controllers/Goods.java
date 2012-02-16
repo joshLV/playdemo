@@ -5,6 +5,8 @@
 package controllers;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import models.sales.Goods_shops;
@@ -47,15 +49,23 @@ public class Goods extends Controller {
 			error("Validation errors");
 		}
 
+		//添加商品处理
+		goods.status = status;
+		goods.company_id = "1";
 		if (image_path !=null && image_path.getName() !=null ) {
 			//取得文件存储路径
 			String storepath = play.Play.configuration.get("upload.imagepath").toString();
 			//上传文件
 			new Common().storeImage(image_path,storepath+"/1/1/1/");
+			goods.image_path = "/1/1/1/" + image_path.getName();
 		}
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String datestr = sdf.format(new Date());
+		goods.deleted="0";
+		goods.created_at = datestr;
+		goods.created_by = "yanjy";
+		goods.create();
 
-		//添加商品处理
-		models.sales.Goods.addGoods(image_path,goods,status);
 		//全部门店的场合
 		Goods_shops goods_shops = new Goods_shops();
 		if ("1".equals(radios)) {
@@ -101,14 +111,31 @@ public class Goods extends Controller {
 	 * @param id
 	 */
 	public static void update(String id,File image_path,models.sales.Goods goods) {
+		models.sales.Goods update_goods = models.sales.Goods.findById(Long.parseLong(id));
+
 		if (image_path !=null && image_path.getName() !=null ) {
 			//取得文件存储路径
 			String storepath = play.Play.configuration.get("upload.imagepath").toString();
 			//上传文件
 			new Common().storeImage(image_path,storepath+"/1/1/1/");
+			update_goods.image_path = "/1/1/1/" + image_path.getName();
 		}
-		//更新处理
-		models.sales.Goods.updateGoods(id,image_path,goods);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String datestr = sdf.format(new Date());
+		update_goods.name = goods.name;
+		update_goods.no = goods.no;
+		update_goods.expired_bg_on = goods.expired_bg_on;
+		update_goods.expired_ed_on = goods.expired_ed_on;
+		update_goods.original_price = goods.original_price;
+		update_goods.sale_price = goods.sale_price;
+		update_goods.base_sale = goods.base_sale;
+		update_goods.prompt = goods.prompt;
+		update_goods.details = goods.details;
+		update_goods.update_at = datestr;
+		update_goods.update_by = "ytrr";
+		update_goods.save();
+
 		index(null);
 	}
 
