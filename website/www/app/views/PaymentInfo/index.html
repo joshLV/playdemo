@@ -7,7 +7,14 @@
 <script src="@@{'/public/javascripts/payment_info.js'}"></script>
 #{/set}
 
-
+<div id="full_bg"></div>
+<div id="payment_result">
+    <div style="text-align:center;"> 
+        <a href="#" onclick="close_result_dialog();">关闭</a><br/><br />
+        <a href="#">遇到问题，重新选择付款信息</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="#">完成付款，查看结果</a>
+    </div>
+</div>
 <div id="wrap_main">
 	<div id="wrap_top">
 <!--    最顶部导航-->    	
@@ -168,7 +175,7 @@
                     }*
                 </div>
             </div>
-            <div class="buttom_queren"> <a class="suc_ok_bg" href="#">确认订单，付款</a></div>
+            <div class="buttom_queren"> <a class="suc_ok_bg" href="#" id="confirm">确认订单，付款</a></div>
       </div>
       
   </div>

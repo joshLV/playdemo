@@ -23,10 +23,10 @@ public class PaymentInfo extends Controller {
 
         models.order.Orders order = models.order.Orders.findById(id);
 
-        long goodsNumber = 0L;
+        long goodsNumber = 0;
         if (order != null){
             Object result = OrderItems.em().createNativeQuery("select sum(number) from order_items where order_id =" + order.getId()).getSingleResult();
-            if (result != null) goodsNumber = (Long)result;
+            if (result != null) goodsNumber = ((java.math.BigDecimal)result).longValue();
         }
 
         render(user, account, order, goodsNumber);
