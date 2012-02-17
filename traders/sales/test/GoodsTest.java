@@ -117,7 +117,7 @@ public class GoodsTest extends FunctionalTest {
 	@Test
 	public void delete() {
 		Map<String, String> goodsParams = new HashMap<String,String>();
-		Response response = DELETE("/goods/{id}/delete?checkoption[]=6");
+		Response response = DELETE("/goods/{id}/delete?checkoption[]=8");
 		assertStatus(302,response);
 	}
 }
