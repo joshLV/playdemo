@@ -1,0 +1,87 @@
+#{extends 'layout_trader/layout.html' /}
+ #{include 'Orders/nav.html' /} #{get 'moreScripts'}
+<script type="text/javascript">
+</script>
+#{/get}
+
+<div class="body">
+ <legend>商品订单</legend>
+ <form class="form-horizontal" name="frmlist" action="@{Orders.index()}" method="GET">
+  <table width="80%">
+   <tr>
+    <td>成交时间：<input type="text" id="no" name="goods.salePriceBegin"
+     class="input-medium" />至 <input type="text" id="no" name="goods.salePriceEnd" class="input-medium" /></td>
+      <td>物流方式： <select id="ca" id="goods.status" class="input-small">
+      <option value="">请选择</option>
+    </select></td>
+    </tr>
+    <tr>
+    <td>退款时间：<input type="text" id="no" name="goods.saleCountBegin"
+     class="input-medium" />至 <input type="text" id="no" name="goods.saleCountEnd" class="input-medium" /></td>
+      <td>支付方式： <select id="ca" id="goods.status" class="input-small">
+      <option value="">请选择</option>
+    </select></td>
+   </tr>
+   <tr>
+    <td>关&nbsp;键&nbsp;字： 
+    <select id="ca" id="goods.status" class="input-small">
+      <option value="">请选择</option>
+    </select>
+     <input type="text" id="no" name="goods.salePriceEnd" class="input-medium" /></td>
+     <td>订单状态： <select id="ca" id="goods.status" class="input-small">
+      <option value="">请选择</option>
+    </select>
+    <td><button class="btn btn-primary" id="searchbtn" type="submit">搜索</button></td>
+   </tr>
+  </table>
+ </form>
+  <input type="hidden" id="status" name="status" value="0" />
+  <div style="margin-bottom: 12px">
+  <button class="btn btn-primary" type="button">导出报表</button> 
+  </div>
+
+  <table class="table table-striped table-bordered table-condensed">
+   <thead>
+    <tr>
+     <th>商品编号</th>
+     <th>物流方式</th>
+     <th>订单/运单号</th>
+     <th>商品名称</th>
+     <th>销量</th>
+     <th>总金额</th>
+     <th>成交时间</th>
+     <th>退款时间</th>
+     <th>操 作</th>
+    </tr>
+   </thead>
+
+   <tbody>
+
+    #{list items:list, as:'row' }
+    <tr>
+     <td>${row.no}</td>
+     <td>${row.name}</td>
+     <td>${row.name}</td>
+     <td>${row.salePrice}</td>
+     <td>${row.baseSale}</td>
+     <td>saleCount</td>
+     <td>${row.status}</td>
+     <td>${row.createdAt}</td>
+     <td><a href="@{Goods.edit(row.id)}">修改</a>/<a href="@{Goods.detail(row.id)}">查看</a></td>
+    </tr>
+    #{/list}
+   </tbody>
+  </table>
+ <div class="pagination">
+  <ul>
+   <li><a href="#">Prev</a></li>
+   <li class="active"><a href="#">1</a></li>
+   <li><a href="#">2</a></li>
+   <li><a href="#">3</a></li>
+   <li><a href="#">4</a></li>
+   <li><a href="#">Next</a></li>
+  </ul>
+ </div>
+
+</div>
+

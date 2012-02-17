@@ -2,3 +2,16 @@
 
 require:
     - play
+    - layout_trader -> layout_trader
+    - order -> order
+    - consumer -> consumer
+    - sales -> sales
+repositories:
+    - customModules:
+        type:       local
+        artifact:   "${application.path}/../../module/[module]"
+        contains:
+            - layout_trader -> *
+            - order -> *
+            - consumer -> *
+            - sales -> *
