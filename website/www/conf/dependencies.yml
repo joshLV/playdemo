@@ -3,7 +3,6 @@
 require:
     - play
     - play -> cas 3.1
-    - play -> capistrano 1.0.0
     - sales -> sales
     - consumer -> consumer
     - order -> order
