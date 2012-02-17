@@ -3,10 +3,16 @@
 require:
     - play
     - layout_trader -> layout_trader
+    - sales -> sales
+    - order -> order
+    - consumer -> consumer
     
 repositories:
     - layoutTraderCustomModules:
         type:       local
-        artifact:   "${application.path}/../../module/layout_trader"
+        artifact:   "${application.path}/../../module/[module]"
         contains:
             - layout_trader -> *
+            - sales -> *
+            - consumer -> *
+            - order -> *
