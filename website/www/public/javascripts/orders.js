@@ -118,7 +118,7 @@ $(window).load(
             var addNew = addressId == 0;
             if (addNew) {
 //                var addAction = #{jsAction @Addresses.create()/}
-                $.post("/orders/addresses",
+                $.post("/orders/addresses/news",
                     {selectedAddressId:$("#selectedAddressId").val(),
                         'address.name':$("#address_name").val(),
                         'address.postcode':$("#address_postcode").val(),

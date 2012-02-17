@@ -17,7 +17,7 @@ GET     /orders/addresses/{id}                  Addresses.show
 GET     /orders/addresses/{id}/edit             Addresses.edit
 PUT     /orders/addresses/{id}                  Addresses.update
 GET     /orders/addresses/new                   Addresses.add
-POST    /orders/addresses                       Addresses.create
+POST    /orders/addresses/show                  Addresses.create
 DELETE  /orders/addresses/{id}                  Addresses.delete
 
 GET     /orders/{cartId}                        Orders.index
