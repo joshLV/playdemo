@@ -6,9 +6,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.uhuila.cas</groupId>
-    <artifactId>uhl-passport-webapp</artifactId>
+    <artifactId>traders-cas</artifactId>
     <packaging>war</packaging>
-    <name>uhl-passport-webapp</name>
+    <name>${project.artifactId} - ${project.version}</name>
     <dependencies>
 
         <dependency>
