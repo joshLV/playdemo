@@ -6,7 +6,7 @@ require:
     - sales -> sales
     - consumer -> consumer
     - order -> order
-    - com.uhuila.common - file 1.0.0
+    - com.uhuila.utils - file 1.0.0
     - web_trace -> web_trace
     - accounts  -> accounts
 
@@ -15,7 +15,7 @@ repositories:
         type:       iBiblio
         root:       "http://dev.uhuila.cn/nexus/content/groups/public"
         contains:
-            - com.uhuila.common -> *
+            - com.uhuila.utils -> *
     - customModules:
         type:       local
         artifact:   "${application.path}/../../module/[module]"
