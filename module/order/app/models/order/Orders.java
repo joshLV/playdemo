@@ -71,7 +71,11 @@ public class Orders extends Model {
     public int lockVersion;
 
     public int deleted;
-
+    @Column(name="delivery_no")
+    public String deliveryNo;
+    @Column(name="delivery_type")
+    public int deliveryType;
+    
     public Orders(User user){
         this.user = user;
         this.status = OrderStatus.UNPAID.toString();
