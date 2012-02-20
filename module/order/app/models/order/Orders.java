@@ -2,6 +2,7 @@ package models.order;
 
 import java.util.Date;
 import java.util.List;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,16 +25,16 @@ public class Orders extends Model {
 
 	public String status;
 
-	public float amount;
+	public BigDecimal amount;
 
 	@Column(name="account_pay")
-	public float accountPay;
+	public BigDecimal accountPay;
 
 	@Column(name="discount_pay")
-	public float discountPay;
+	public BigDecimal discountPay;
 
 	@Column(name="need_pay")
-	public float needPay;
+	public BigDecimal needPay;
 
 	@Column(name="buyer_phone")
 	public String buyerPhone;
@@ -98,10 +99,10 @@ public class Orders extends Model {
 		this.orderNumber = "";
 
 
-		this.amount         = 0;
-		this.accountPay     = 0;
-		this.needPay        = 0;
-		this.discountPay    = 0;
+		this.amount         = new BigDecimal(0);
+		this.accountPay     = new BigDecimal(0);
+		this.needPay        = new BigDecimal(0);
+		this.discountPay    = new BigDecimal(0);
 
 		this.lockVersion    = 0;
 
