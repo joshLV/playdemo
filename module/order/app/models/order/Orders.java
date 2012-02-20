@@ -7,7 +7,10 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -19,7 +22,10 @@ import play.db.jpa.Model;
 public class Orders extends Model {
 	@ManyToOne
 	public User user;
-
+	
+	@OneToMany(fetch=FetchType.LAZY,mappedBy="order")
+	public List<OrderItems> orderItems;
+	
 	@Column(name="order_no")
 	public String orderNumber;
 
@@ -118,25 +124,19 @@ public class Orders extends Model {
 	public static List query(Orders orders) {
 		EntityManager entityManager = play.db.jpa.JPA.em();
 		StringBuffer sql= new StringBuffer();
-		sql.append("SELECT c.no,a.delivery_type,a.order_no,a.delivery_no,c.name,b.number,a.amount,a.created_at,a.pay_method,a.status  FROM orders a");
+		sql.append("SELECT c.no,a.delivery_type,a.order_no,a.delivery_no,c.name,b.number,a.amount,a.created_at,a.pay_method,a.status,a.id  FROM orders a");
 		sql.append(" LEFT JOIN order_items b ON a.id = b.order_id ");
 		sql.append(" LEFT JOIN goods c ON b.goods_id=c.id");
 		//指定某商户
 		sql.append(" WHERE c.company_id=1");
-		if(orders.createdAtBegin !=null) {
+		if(orders.createdAtBegin !=null && !"".equals(orders.createdAtBegin)) {
 			sql.append(" and a.created_at >='"+orders.createdAtBegin+" 00:00:00'");
 		}
-		if(orders.createdAtEnd !=null) {
+		if(orders.createdAtEnd !=null && !"".equals(orders.createdAtEnd)) {
 			sql.append(" and a.created_at <='"+orders.createdAtEnd+" 23:59:59'");
 		}
-		//		if(orders.refundAtBegin !=null) {
-		//			sql.append(" and a.created_at >='"+orders.refundAtBegin+" 00:00:00'");
-		//		}
-		//		if(orders.refundAtEnd !=null) {
-		//			sql.append(" and a.created_at <='"+orders.refundAtEnd+" 23:59:59'");
-		//		}
 		if(orders.status !=null && !"".equals(orders.status)) {
-			sql.append(" and a.status ="+orders.status);
+			sql.append(" and a.status ='"+orders.status+"'");
 		}
 		if(orders.deliveryType !=0) {
 			sql.append(" and a.delivery_type ="+orders.deliveryType);
@@ -150,11 +150,14 @@ public class Orders extends Model {
 		return orderList;
 	}
 
+	/**
+	 * 券号列表
+	 * @return
+	 */
 	public static List queryQ() {
-
 		EntityManager entityManager = play.db.jpa.JPA.em();
 		StringBuffer sql= new StringBuffer();
-		sql.append("SELECT a.order_no,c.no,c.name,d.discount_sn,d.discount_price,a.created_at,d.refund_price,d.refund_at,d.status FROM discount d");
+		sql.append("SELECT a.order_no,c.no,c.name,d.discount_price,d.discount_sn,c.expired_bg_on,c.expired_ed_on,a.created_at,d.refund_price,d.refund_at,d.status FROM discount d");
 		sql.append(" LEFT JOIN orders a ON a.id = d.order_id ");
 		sql.append(" LEFT JOIN order_items b ON a.id = b.order_id ");
 		sql.append(" LEFT JOIN goods c ON b.goods_id=c.id");
