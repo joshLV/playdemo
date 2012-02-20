@@ -1,6 +1,7 @@
 package controllers;
 
 import controllers.modules.webtrace.WebTrace;
+import controllers.modules.cas.*;
 import models.consumer.Address;
 import models.order.Cart;
 import models.order.NotEnoughInventoryException;
@@ -18,7 +19,8 @@ import java.util.List;
  * Date: 2/14/12
  * Time: 11:31 AM
  */
-@With(WebTrace.class)
+@With(SecureCAS.class)
+//@With(WebTrace.class)
 public class Orders extends AbstractLoginController {
     /**
      * 订单确认.
@@ -38,14 +40,14 @@ public class Orders extends AbstractLoginController {
             Cart cart = new Cart(getUser(), null, goods, number, goods.materialType);
 
             switch (goods.materialType) {
-                case Electronic:
-                    eCartList.add(cart);
-                    eCartAmount = Cart.amount(eCartList);
-                    break;
-                case Real:
-                    rCartList.add(cart);
-                    rCartAmount = Cart.amount(rCartList).add(new BigDecimal(5));
-                    break;
+            case Electronic:
+                eCartList.add(cart);
+                eCartAmount = Cart.amount(eCartList);
+                break;
+            case Real:
+                rCartList.add(cart);
+                rCartAmount = Cart.amount(rCartList).add(new BigDecimal(5));
+                break;
             }
             render(addressList, eCartList, eCartAmount, rCartList, rCartAmount);
         }
