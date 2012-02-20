@@ -12,7 +12,9 @@ DELETE  /carts/{goodsIds}                       Carts.delete
 
 GET     /payment_info/{id}                      PaymentInfo.index
 
+
 GET     /orders                                 Orders.index
+POST    /orders                                 Orders.buy
 GET     /orders/addresses/{id}                  Addresses.show
 GET     /orders/addresses/{id}/edit             Addresses.edit
 PUT     /orders/addresses/{id}                  Addresses.update
@@ -21,8 +23,6 @@ GET     /orders/addresses/new                   Addresses.add
 POST    /orders/addresses/new                   Addresses.create
 DELETE  /orders/addresses/{id}                  Addresses.delete
 
-GET     /orders/{cartId}                        Orders.index
-POST    /order/addresses                        Addresses.create
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

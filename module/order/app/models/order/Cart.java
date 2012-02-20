@@ -2,12 +2,10 @@ package models.order;
 
 import models.consumer.User;
 import models.sales.Goods;
+import models.sales.MaterialType;
 import play.db.jpa.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
@@ -21,8 +19,9 @@ public class Cart extends Model {
     public Goods goods;
 
     public int number;
+    @Enumerated(EnumType.STRING)
     @Column(name = "material_type")
-    public String materialType;
+    public MaterialType materialType;
 
     @Column(name = "cookie_identity")
     public String cookieIdentity;
@@ -36,7 +35,7 @@ public class Cart extends Model {
     @Column(name = "updated_at")
     public Date updatedAt;
 
-    public Cart(User user, String cookieIdentity, Goods goods, int number, String materialType) {
+    public Cart(User user, String cookieIdentity, Goods goods, int number, MaterialType materialType) {
         this.user = user;
         this.cookieIdentity = cookieIdentity;
         this.goods = goods;
@@ -48,18 +47,18 @@ public class Cart extends Model {
     }
 
     public static List<Cart> findECart() {
-        return Cart.find("byMaterialType", "e").fetch();
+        return Cart.find("byMaterialType", MaterialType.Electronic).fetch();
     }
 
     public static List<Cart> findRCart() {
-        return Cart.find("byMaterialType", "r").fetch();
+        return Cart.find("byMaterialType", MaterialType.Real).fetch();
     }
 
     public static List<Cart> findECart(String cartCookieId) {
-        return Cart.find("cookie_identity=? and materialType = ?", cartCookieId, "e").fetch();
+        return Cart.find("cookieIdentity=? and materialType = ?", cartCookieId, MaterialType.Electronic).fetch();
     }
 
     public static List<Cart> findRCart(String cartCookieId) {
-        return Cart.find("cookie_identity=? and materialType = ?", cartCookieId, "r").fetch();
+        return Cart.find("cookieIdentity=? and materialType = ?", cartCookieId, "Real").fetch();
     }
 }

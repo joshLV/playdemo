@@ -34,6 +34,7 @@
 
     <form>
         <input type="hidden" id="addressId"/>
+    #{if rCartList.size() >0}
 
         <div id="order_modify_info1" class="div_address_modify">
             <dl class="left_one_dl">
@@ -43,11 +44,11 @@
                 </dt>
                 <dd class="border_dd">
                     <ul class="address_mod" id="list_address_ul">
-                    #{list addressList, as:'address'}
-                        <li class="li_address_modify" id="li_address_${address.id}"
-                            addressId="${address.id}">#{include '/Addresses/show.html' /}
-                        </li>
-                    #{/list}
+                        #{list addressList, as:'address'}
+                            <li class="li_address_modify" id="li_address_${address.id}"
+                                addressId="${address.id}">#{include '/Addresses/show.html' /}
+                            </li>
+                        #{/list}
                         <li class="chongxie" id="use_new_address_li"><span class="span_name" id="span_radio_new_address"
                                                                            listSize="${addressList.size()}"><input
                                 name="selectedAddressId"
@@ -55,8 +56,9 @@
                                 id="radio_address_0"
                                 #{if addressList.size() == 0}checked#{/if}
                                 onclick="javascript:showCreateAddressEdit();"/></span>
-                            <span class="span_name" id="span_use_new_address" onclick="javascript:showCreateAddressEdit();">使用新地址</span>
-                        #{include '/Addresses/add.html'/}
+                            <span class="span_name" id="span_use_new_address"
+                                  onclick="javascript:showCreateAddressEdit();">使用新地址</span>
+                            #{include '/Addresses/add.html'/}
 
                         </li>
                         <li class="chongxie" id="bottom_buttons"><span class="margin_left"><a class="queren_bg"
@@ -118,26 +120,28 @@
                         </tr>
 
 
-                    #{set i:0} #{/set}
-                    #{list rCartList, as:'rCart'}
-                        <tr>
-                            <td height="25" align="center" valign="middle">
-                                <div class="col_one_text">${rCart.goods.name}
-                                </div>
-                            </td>
-                            <td width="115" height="25" align="center" valign="middle">${rCart.goods.sale_price}</td>
-                            <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img
-                                    src="@@{'/public/images/add_anniu.jpg'}"/></a>
-                                <input class="num_input" type="text" value="${rCart.number}"/>
-                                <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9"
-                                                                 height="9"/></a>
-                            </td>
-                            #{if (++i) == 1 }
-                                <td width="187" rowspan="5" align="center" valign="middle">${rCartAmount} 元<br/>
-                                    （含5元运费）<span class="strong_gray"></span></td>
-                            #{/if}
-                        </tr>
-                    #{/list}
+                        #{set i:0} #{/set}
+                        #{list rCartList, as:'rCart'}
+                            <tr>
+                                <td height="25" align="center" valign="middle">
+                                    <div class="col_one_text">${rCart.goods.name}
+                                    </div>
+                                </td>
+                                <td width="115" height="25" align="center"
+                                    valign="middle">${rCart.goods.salePrice}</td>
+                                <td width="83" height="25" align="center" valign="middle"><a class="add_box"
+                                                                                             href="#"><img
+                                        src="@@{'/public/images/add_anniu.jpg'}"/></a>
+                                    <input class="num_input" type="text" value="${rCart.number}"/>
+                                    <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9"
+                                                                     height="9"/></a>
+                                </td>
+                                #{if (++i) == 1 }
+                                    <td width="187" rowspan="5" align="center" valign="middle">${rCartAmount} 元<br/>
+                                        （含5元运费）<span class="strong_gray"></span></td>
+                                #{/if}
+                            </tr>
+                        #{/list}
 
 
                     </table>
@@ -145,6 +149,8 @@
             </dl>
         </div>
         <div class="border_bottom"></div>
+    #{/if}
+    #{if eCartList.size() >0}
         <div id="order_modify_info3">
             <dl class="left_one_dl">
                 <dt>
@@ -167,35 +173,38 @@
                             <th width="187">小计</th>
                         </tr>
 
-                    #{set j:0/}
-                    #{list eCartList, as:'eCart'}
-                        <tr>
-                            <td height="25" align="center" valign="middle">
-                                <div class="col_one_text">${eCart.goods.name}
-                                </div>
-                            </td>
-                            <td width="115" height="25" align="center" valign="middle">${eCart.goods.sale_price}</td>
-                            <td width="83" height="25" align="center" valign="middle"><a class="add_box" href="#"><img
-                                    src="@@{'/public/images/add_anniu.jpg'}"/></a>
-                                <input class="num_input" type="text" value="${eCart.number}"/>
-                                <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9"
-                                                                 height="9"/></a>
-                            </td>
-                            #{if (++j) == 1 }
-                                <td width="187" rowspan="5" align="center" valign="middle">${eCartAmount}元<br/><span
-                                        class="strong_gray"></span></td>
-                            #{/if}
-                        </tr>
-                    #{/list}
+                        #{set j:0/}
+                        #{list eCartList, as:'eCart'}
+                            <tr>
+                                <td height="25" align="center" valign="middle">
+                                    <div class="col_one_text">${eCart.goods.name}
+                                    </div>
+                                </td>
+                                <td width="115" height="25" align="center"
+                                    valign="middle">${eCart.goods.salePrice}</td>
+                                <td width="83" height="25" align="center" valign="middle"><a class="add_box"
+                                                                                             href="#"><img
+                                        src="@@{'/public/images/add_anniu.jpg'}"/></a>
+                                    <input class="num_input" type="text" value="${eCart.number}"/>
+                                    <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9"
+                                                                     height="9"/></a>
+                                </td>
+                                #{if (++j) == 1 }
+                                    <td width="187" rowspan="5" align="center" valign="middle">${eCartAmount}元<br/><span
+                                            class="strong_gray"></span></td>
+                                #{/if}
+                            </tr>
+                        #{/list}
 
 
                     </table>
                 </dd>
             </dl>
         </div>
-        <div class="sp_height">商品总金额:<span class="font_red_one">${eCartAmount+rCartAmount-5}元</span> 运费：<span
+    #{/if}
+        <div class="sp_height">商品总金额:<span class="font_red_one">${eCartAmount + rCartAmount - 5}元</span> 运费：<span
                 class="font_red_one">5元</span> 合计：<span
-                class="font_red_one">${eCartAmount+rCartAmount}元</span></div>
+                class="font_red_one">${eCartAmount + rCartAmount}元</span></div>
         <div class="sp_height_one"><a class="que_pay_bg" href="#">确认付款</a></div>
 
         <div style="clear:both"></div>

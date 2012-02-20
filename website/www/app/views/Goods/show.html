@@ -4,27 +4,7 @@
 <link href="@@{'/public/stylesheets/goods_show.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
 #{set 'moreScripts'}
-<script>
-    function addCart() {
-        var addAction = #{jsAction @Carts.order()/}
-                $.post(addAction(), {goodsId:'${goods.id}', number:$("#number").val()},
-                        function (data) {
-                            //                    $('#result').json(data);
-                            if (data.resultCode == "ok") {
-                                $('#add_cart_result').show();
-                            }
-                        });
-        $('#add_cart_result').show();
-    }
-
-    function buy() {
-
-    }
-
-    function hideCartBar() {
-        $('#add_cart_result').hide();
-    }
-</script>
+<script src="@@{'/public/javascripts/goods_show.js'}"></script>
 #{/set}
 
 <div id="wrap_main">
@@ -105,12 +85,13 @@
         </div>
         <!--右侧主体内容部分-->
         <div id="right_content">
+        #{form @Orders.buy()}
             <div class="right_content_show">
                 <div><h1 class="show_h1 font_block">${goods.name}</h1></div>
-                <input type="hidden" id="goodsId" name="goodsId" value="${goods.name}">
+                <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
 
                 <div class="shangpin_box">
-                    <div class="left_shangpin"><img src="${goods.image_large_path}" width="280"
+                    <div class="left_shangpin"><img src="${goods.imageLargePath}" width="280"
                                                     height="168'}"/></div>
                     <div class="right_shangpin">
                         <div class="right_shangpin_one">原价：${goods.originalPrice}元</div>
@@ -122,18 +103,20 @@
                                                                            name="number" type="text"
                                                                            value="1"/>&nbsp;件
                         </div>
-                        <div class="right_shangpin_five"><a class="ligm_bg" href="javascript:buy()">立即购买</a><a
-                                class="wai_juli"
-                                href="javascript:addCart()">加入购物车</a><a
+                        <div class="right_shangpin_five">
+                            <input type="submit" class="ligm_bg" value="立即购买"/><a
+                                class="wai_juli" id="link_add_cart"
+                                href="#">加入购物车</a><a
                                 href="#" class="shoucang_font">收藏</a></div>
                         <div></div>
                     </div>
                 </div>
                 <div style="clear:both"></div>
                 <div id="add_cart_result" class="buttom_dibu" style="display: none;">已成功添加到购物车！
-                    <a href="javascript:hideCartBar()"><span class="zi_gray">继续购物</span></a>
+                    <a id="link_buy_more" href="#"><span class="zi_gray">继续购物</span></a>
                     <a href="/carts"><span class="zi_gray">查看购物车</span></a></div>
             </div>
+        #{/form}
             <div class="right_content_two">
                 <dl class="right_one_dl">
                     <dt>
