@@ -20,6 +20,9 @@ import java.util.List;
 @With(WebTrace.class)
 public class Orders extends AbstractLoginController {
 
+    /**
+     * 订单确认.
+     */
     public static void index() {
         List<Address> addressList = Address.findByOrder();
 
@@ -67,6 +70,12 @@ public class Orders extends AbstractLoginController {
         return cartAmount;
     }
 
+    /**
+     * 立即购买操作.
+     *
+     * @param goodsId   购买商品
+     * @param number    购买数量
+     */
     public static void buy(long goodsId, int number) {
         session.put("buyNow", true);
         session.put("goodsId", goodsId);
@@ -74,4 +83,10 @@ public class Orders extends AbstractLoginController {
         redirect("/orders");
     }
 
+    /**
+     * 提交订单.
+     */
+    public static void create() {
+
+    }
 }

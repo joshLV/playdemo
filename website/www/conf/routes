@@ -15,6 +15,7 @@ GET     /payment_info/{id}                      PaymentInfo.index
 
 GET     /orders                                 Orders.index
 POST    /orders                                 Orders.buy
+POST    /orders/new                             Orders.create
 GET     /orders/addresses/{id}                  Addresses.show
 GET     /orders/addresses/{id}/edit             Addresses.edit
 PUT     /orders/addresses/{id}                  Addresses.update

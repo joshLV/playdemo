@@ -32,7 +32,7 @@
         </div>
     </div>
 
-    <form>
+    #{form @Orders.create}
         <input type="hidden" id="addressId"/>
     #{if rCartList.size() >0}
 
@@ -129,12 +129,7 @@
                                 </td>
                                 <td width="115" height="25" align="center"
                                     valign="middle">${rCart.goods.salePrice}</td>
-                                <td width="83" height="25" align="center" valign="middle"><a class="add_box"
-                                                                                             href="#"><img
-                                        src="@@{'/public/images/add_anniu.jpg'}"/></a>
-                                    <input class="num_input" type="text" value="${rCart.number}"/>
-                                    <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9"
-                                                                     height="9"/></a>
+                                <td width="83" height="25" align="center" valign="middle"><input class="num_input" type="text" value="${rCart.number}"/>
                                 </td>
                                 #{if (++i) == 1 }
                                     <td width="187" rowspan="5" align="center" valign="middle">${rCartAmount} 元<br/>
@@ -182,12 +177,7 @@
                                 </td>
                                 <td width="115" height="25" align="center"
                                     valign="middle">${eCart.goods.salePrice}</td>
-                                <td width="83" height="25" align="center" valign="middle"><a class="add_box"
-                                                                                             href="#"><img
-                                        src="@@{'/public/images/add_anniu.jpg'}"/></a>
-                                    <input class="num_input" type="text" value="${eCart.number}"/>
-                                    <a href="#" class="add_box"><img src="@@{'/public/images/sub_anniu.jpg'}" width="9"
-                                                                     height="9"/></a>
+                                <td width="83" height="25" align="center" valign="middle"><input class="num_input" type="text" value="${eCart.number}"/>
                                 </td>
                                 #{if (++j) == 1 }
                                     <td width="187" rowspan="5" align="center" valign="middle">${eCartAmount}元<br/><span
@@ -208,7 +198,7 @@
         <div class="sp_height_one"><a class="que_pay_bg" href="#">确认付款</a></div>
 
         <div style="clear:both"></div>
-    </form>
+    #{/form}
 
 </div>
 <SCRIPT type=text/javascript>
