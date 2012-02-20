@@ -19,8 +19,8 @@ import java.util.List;
  * Date: 2/14/12
  * Time: 11:31 AM
  */
-@With(SecureCAS.class)
-//@With(WebTrace.class)
+//@With(SecureCAS.class)
+@With(WebTrace.class)
 public class Orders extends AbstractLoginController {
     /**
      * 订单确认.
