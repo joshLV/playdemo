@@ -4,8 +4,8 @@
 
 # Home page
 GET     /                                       Orders.index
-GET     /quanlist                                 Orders.quan
-
+GET     /tickets                                Orders.tickets
+GET     /orders/{id}                            Orders.details
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

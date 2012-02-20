@@ -6,7 +6,7 @@
 
 <div class="body">
  <legend>券号列表</legend>
- <form class="form-horizontal" name="frmlist" action="@{Orders.quan()}" method="GET">
+ <form class="form-horizontal" name="frmlist" action="@{Orders.tickets()}" method="GET">
   <input type="hidden" id="status" name="status" value="0" />
   <div style="margin-bottom: 12px">
   <button class="btn btn-primary" type="button">导出报表</button> 
@@ -30,17 +30,18 @@
 
    <tbody>
 
-    #{list items:list, as:'row' }
+    #{list items:ticketList, as:'row' }
     <tr>
-     <td>${row.no}</td>
-     <td>${row.name}</td>
-     <td>${row.name}</td>
-     <td>${row.salePrice}</td>
-     <td>${row.baseSale}</td>
-     <td>saleCount</td>
-     <td>${row.status}</td>
-     <td>${row.createdAt}</td>
-     <td><a href="@{Goods.edit(row.id)}">修改</a>/<a href="@{Goods.detail(row.id)}">查看</a></td>
+    <td>${row[0]}</td>
+     <td>${row[1]}</td>
+     <td>${row[2]}</td>
+     <td>${row[3]}</td>
+     <td>${row[4]}</td>
+     <td>${row[5]}-${row[6]}</td>
+     <td>${row[7]}</td>
+     <td>${row[9]}</td>
+     <td>${row[8]}</td>
+     <td>${row[10]==1?'已消费':'未消费'}</td>
     </tr>
     #{/list}
    </tbody>

@@ -1,6 +1,9 @@
 #{extends 'layout_trader/layout.html' /}
- #{include 'Orders/nav.html' /} #{get 'moreScripts'}
+ #{include 'Orders/nav.html' /}
+ #{get 'moreScripts'}
+  <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript">
+
 </script>
 #{/get}
 
@@ -9,33 +12,44 @@
  <form class="form-horizontal" name="frmlist" action="@{Orders.index()}" method="GET">
   <table width="80%">
    <tr>
-    <td>成交时间：<input type="text" id="no" name="goods.salePriceBegin"
-     class="input-medium" />至 <input type="text" id="no" name="goods.salePriceEnd" class="input-medium" /></td>
-      <td>物流方式： <select id="ca" id="goods.status" class="input-small">
+    <td>成交时间：<input type="text" id="createdAtBegin" name="orders.createdAtBegin" onfocus="WdatePicker({readOnly:true})"
+     class="input-medium Wdate" />至 <input type="text" id="createdAtEnd" name="orders.createdAtEnd" onfocus="WdatePicker({readOnly:true})"
+     class="input-medium Wdate" /></td>
+      <td>物流方式： <select id="ca" id="deliveryType" name="orders.deliveryType" class="input-small">
       <option value="">请选择</option>
+      <option value="1">无物流</option>
+      <option value="2">有物流</option>
     </select></td>
     </tr>
     <tr>
-    <td>退款时间：<input type="text" id="no" name="goods.saleCountBegin"
-     class="input-medium" />至 <input type="text" id="no" name="goods.saleCountEnd" class="input-medium" /></td>
-      <td>支付方式： <select id="ca" id="goods.status" class="input-small">
+    <td>退款时间：<input type="text" id="no" name="orders.refundBegin" onfocus="WdatePicker({readOnly:true})"
+     class="input-medium Wdate" />至 <input type="text" id="no" name="orders.refundEnd" onfocus="WdatePicker({readOnly:true})"
+     class="input-medium Wdate" /></td>
+      <td>支付方式： <select id="payMethod" name="orders.payMethod" class="input-small">
       <option value="">请选择</option>
+      <option value="1">支付宝</option>
+      <option value="2">网银</option>
     </select></td>
    </tr>
    <tr>
     <td>关&nbsp;键&nbsp;字： 
-    <select id="ca" id="goods.status" class="input-small">
+    <select id="ca" name="orders.key" class="input-small">
       <option value="">请选择</option>
     </select>
-     <input type="text" id="no" name="goods.salePriceEnd" class="input-medium" /></td>
-     <td>订单状态： <select id="ca" id="goods.status" class="input-small">
-      <option value="">请选择</option>
+     <input type="text" id="no" name="orders.item" class="input-medium" /></td>
+     <td>订单状态： <select id="status" name="orders.status" class="input-small">
+     <option value="">请选择</option>
+      <option value="UNPAID">未支付</option>
+      <option value="PAID">已支付</option>
+      <option value="CANCELED">取消订单</option>
+      <option value="SENT">交易成功</option>
+      <option value="RETURNED">退款</option>
+      <option value="RECEIPT">交易失败</option>
     </select>
     <td><button class="btn btn-primary" id="searchbtn" type="submit">搜索</button></td>
    </tr>
   </table>
  </form>
-  <input type="hidden" id="status" name="status" value="0" />
   <div style="margin-bottom: 12px">
   <button class="btn btn-primary" type="button">导出报表</button> 
   </div>
@@ -49,6 +63,7 @@
      <th>商品名称</th>
      <th>销量</th>
      <th>总金额</th>
+     <th>订单状态</th>
      <th>成交时间</th>
      <th>退款时间</th>
      <th>操 作</th>
@@ -56,18 +71,18 @@
    </thead>
 
    <tbody>
-
-    #{list items:list, as:'row' }
+    #{list items:orderList, as:'row' }
     <tr>
-     <td>${row.no}</td>
-     <td>${row.name}</td>
-     <td>${row.name}</td>
-     <td>${row.salePrice}</td>
-     <td>${row.baseSale}</td>
-     <td>saleCount</td>
-     <td>${row.status}</td>
-     <td>${row.createdAt}</td>
-     <td><a href="@{Goods.edit(row.id)}">修改</a>/<a href="@{Goods.detail(row.id)}">查看</a></td>
+     <td>${row[0]}</td>
+     <td>${row[1]}</td>
+     <td>${row[2]}/${row[3]}</td>
+     <td>${row[4]}</td>
+     <td>${row[5]}</td>
+     <td>${row[6]}</td>
+     <td>${row[9]}</td>
+     <td>${row[7]}</td>
+     <td></td>
+    <td><a href="@{Orders.details(row[10])}">查看</a></td>
     </tr>
     #{/list}
    </tbody>

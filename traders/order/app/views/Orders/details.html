@@ -1,0 +1,75 @@
+#{extends 'layout_trader/layout.html' /}
+ #{include 'Orders/nav.html' /}
+ #{get 'moreScripts'}
+  <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+
+</script>
+#{/get}
+
+<div class="body">
+ <legend>订单详细</legend>
+  <table width="80%">
+   <tr><td>订单号：${orders.orderNumber}</td>
+   <td>订单时间：${orders.createdAt}</td>
+   <td>支付时间：${orders.createdAt}</td>
+   </tr>
+   </table>
+   
+ <legend>商品信息</legend>
+  <table class="table">
+   <thead>
+    <tr>
+     <th>商品编号</th>
+     <th>商品名称</th>
+     <th>单价</th>
+     <th>数量</th>
+     <th>需要支付金额</th>
+     <th>获得积分</th>
+    </tr>
+   </thead>
+   <tbody>
+    #{list items:orderItems, as:'row' }
+    <tr>
+     <td>${row.goods.no}</td>
+     <td>${row.goodsName}</td>
+     <td>${row.salePrice}</td>
+     <td>${row.number}</td>
+     <td>${orders.needPay}</td>
+     <td>${row.number}</td>
+    </tr>
+    #{/list}
+   </tbody>
+   <tr><td colspan="6">商品金额： ${orders.amount} &nbsp;元 &nbsp;+运费：0 &nbsp;-折扣：0 &nbsp;元= &nbsp;总金额： ${orders.amount} 元</td></tr>
+   </table>
+    <table class="table">
+   <tr><td>支付方式： ${orders.payMethod=='1'?'支付宝':'网银'}</td></tr>
+   <tr><td>订单状态： ${orders.status=='1'?'处理中':'处理成功'}</td></tr>
+   <tr><td>物流方式： ${orders.deliveryType=='2'?'有物流':'无物流'}</td></tr>
+  </table>
+  
+   <table class="table">
+   <tr><td>支付方式： ${orders.payMethod=='1'?'支付宝':'网银'}</td></tr>
+   <tr><td>订单状态： ${orders.status=='1'?'处理中':'处理成功'}</td></tr>
+   <tr><td>物流方式： ${orders.deliveryType}</td></tr>
+  </table>
+   <table class="table">
+   <tr><td>收货信息</td></tr>
+   <tr><td>收货人姓名： ${orders.receivName}</td></tr>
+   <tr><td>收货地址： ${orders.receivAddress}</td></tr>
+   <tr><td>联系电话： ${orders.receivMobile}/ ${orders.receiverPhone}</td></tr>
+  </table>
+   <table class="table">
+   <tr><td>订购者信息</td></tr>
+   <tr><td>订购者帐号： ${orders.payMethod}</td></tr>
+   <tr><td>订购者手机： ${orders.buyerMobile}/ ${orders.buyerPhone}</td></tr>
+   <tr><td>备注： ${orders.remark}</td></tr>
+  </table>
+   <table class="table">
+   <tr><td>退款信息</td></tr>
+   <tr><td>申请退款时间：</td></tr>
+   <tr><td>退款时间</td></tr>
+   <tr><td>退款金额</td></tr>
+  </table>
+</div>
+
