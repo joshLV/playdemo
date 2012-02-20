@@ -11,11 +11,10 @@ import play.data.binding.As;
 import java.util.*;
 
 @With(WebTrace.class)
-public class Carts extends Controller {
+public class Carts extends AbstractLoginController {
 
     public static void index() {
-        String username = session.get("username");
-        User user = User.find("byLoginName", username).first();
+        User user = getUser();
         Http.Cookie cookieIdentity = request.cookies.get("identity");
 
         //查询登陆用户已保存的购物车
@@ -47,8 +46,7 @@ public class Carts extends Controller {
     }
 
     public static void order(long goodsId, int number) {
-        String username = session.get("username");
-        User user = User.find("byLoginName", username).first();
+        User user = getUser();
         Http.Cookie cookieIdentity = request.cookies.get("identity");
 
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
@@ -81,8 +79,7 @@ public class Carts extends Controller {
     }
 
     public static void delete(@As(",") List<Long> goodsIds) {
-        String username = session.get("username");
-        User user = User.find("byLoginName", username).first();
+        User user = getUser();
         Http.Cookie cookieIdentity = request.cookies.get("identity");
 
 

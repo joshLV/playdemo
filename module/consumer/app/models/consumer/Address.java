@@ -2,18 +2,15 @@ package models.consumer;
 
 import play.db.jpa.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "address")
 public class Address extends Model {
-    @Column(name = "user_id")
-    public long userId;
+    @ManyToOne
+    public User user;
     public String province;
     public String city;
     public String district;
@@ -30,10 +27,34 @@ public class Address extends Model {
     public int lockVersion;
     @Column(name = "updated_at")
     public Date updatedAt;
-
+    @Column(name = "area_code")
     public String areaCode;
+    @Column(name = "phone_number")
     public String phoneNumber;
+    @Column(name = "phone_ext_number")
     public String phoneExtNumber;
+
+    @Transient
+    public String getFullAddress() {
+        String fullAddress = "";
+        if (!"ALL".equals(province) && !"".equals(province)) {
+            fullAddress += province;
+        }
+        if (!"ALL".equals(city) && !"".equals(city)) {
+            fullAddress += " " + city;
+        }
+        if (!"ALL".equals(district) && !"".equals(district)) {
+            fullAddress += " " + district;
+        }
+        if (!"".equals(fullAddress)) {
+            fullAddress += " ";
+        }
+        if (!"".equals(address)) {
+            fullAddress += address;
+        }
+        return fullAddress;
+
+    }
 
     @Transient
     public String getPhone() {
@@ -42,15 +63,26 @@ public class Address extends Model {
             phoneStr.append(areaCode);
             phoneStr.append("-");
         }
-        phoneStr.append(phoneNumber == null ? "" : phoneNumber);
+        phoneStr.append(phoneNumber == null ? " " : phoneNumber);
         if (phoneExtNumber != null && !phoneExtNumber.equals("")) {
             phoneStr.append("-");
             phoneStr.append(phoneExtNumber);
+        }
+        if (mobile != null && !mobile.equals("")) {
+            return mobile + " " + phoneStr.toString();
         }
         return phoneStr.toString();
     }
 
     public static List<Address> findByOrder() {
         return Address.find("order by is_default").fetch();
+    }
+
+    public static void updateToUnDefault(User user) {
+        List<Address> addressList = Address.find("byUserAndIsDefault", user, "true").fetch();
+        for (Address address : addressList) {
+            address.isDefault = "false";
+            address.save();
+        }
     }
 }

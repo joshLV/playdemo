@@ -580,3 +580,29 @@ ul {
     float: left;
     font-size: 13px;
 }
+
+.address_confirm_button {
+    background: url(../images/shouhuo_info_buttom.jpg) no-repeat;
+    color: #666666;
+    text-align: center;
+    font-weight: 700;
+    line-height: 29px;
+    letter-spacing: 0.2em;
+    width: 119px;
+    height: 28px;
+    float: left;
+    font-size: 13px;
+}
+
+.address_cancel_button {
+    background: url(../images/shouhuo_info_buttom.jpg) no-repeat;
+    color: #666666;
+    text-align: center;
+    font-weight: 700;
+    line-height: 29px;
+    letter-spacing: 0.2em;
+    width: 119px;
+    height: 28px;
+    float: left;
+    font-size: 13px;
+}

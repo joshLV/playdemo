@@ -48,19 +48,24 @@
                             addressId="${address.id}">#{include '/Addresses/show.html' /}
                         </li>
                     #{/list}
-                        <li class="chongxie"><span class="span_name" id="span_radio_new_address" listSize="${addressList.size()}"><input name="selectedAddressId" type="radio" value="0"
-                                                                      id="radio_address_0"
-                                                                      #{if addressList.size() == 0}checked#{/if}/></span>
-                            <span class="span_name" id="span_use_new_address" >使用新地址</span>
+                        <li class="chongxie" id="use_new_address_li"><span class="span_name" id="span_radio_new_address"
+                                                                           listSize="${addressList.size()}"><input
+                                name="selectedAddressId"
+                                type="radio" value="0"
+                                id="radio_address_0"
+                                #{if addressList.size() == 0}checked#{/if}
+                                onclick="javascript:showCreateAddressEdit();"/></span>
+                            <span class="span_name" id="span_use_new_address" onclick="javascript:showCreateAddressEdit();">使用新地址</span>
                         #{include '/Addresses/add.html'/}
 
                         </li>
-                        <li class="chongxie" id="bottom_buttons"><span class="margin_left"><a class="queren_bg" id="link_confirm"
-                                                                          href="#">确认收货信息</a></span>
+                        <li class="chongxie" id="bottom_buttons"><span class="margin_left"><a class="queren_bg"
+                                                                                              id="link_confirm"
+                                                                                              href="#">确认收货信息</a></span>
                                         <span class="margin_left"><a class="queren_bg" id="link_cancel"
-                                                                     href="javascript:showAddress();">取消</a></span></li>
+                                                                     href="#">取消</a></span></li>
                     </ul>
-                    <ul id="show_address_ul" style="display: none">
+                    <ul id="show_address_ul">
                         <li>
                             <div class="right_table">
                                 <table class="table_height" width="700" border="0" cellpadding="0" cellspacing="0">
@@ -195,14 +200,20 @@
 
         <div style="clear:both"></div>
     </form>
-    <SCRIPT type=text/javascript>
-        if ($.cookie != null && $.cookie('ecart_mobile', 'null') != null) {
-            $("#ecart_mobile_show_span").text($("#ecart_mobile").val());
-            $("#ecart_mobile_show_dd").css("display", "");
-            $("#ecart_mobile_update_dd").css("display", "none");
-        } else {
-            $("#ecart_mobile_show_dd").css("display", "none");
-            $("#ecart_mobile_update_dd").css("display", "");
-            $("#ecart_mobile").val("");
-        }
-    </SCRIPT>
+
+</div>
+<SCRIPT type=text/javascript>
+
+    initAddress();
+    //todo
+    if ($.cookie != null && $.cookie('ecart_mobile', 'null') != null) {
+        $("#ecart_mobile_show_span").text($("#ecart_mobile").val());
+        $("#ecart_mobile_show_dd").show();
+        $("#ecart_mobile_update_dd").hide();
+    } else {
+        $("#ecart_mobile_show_dd").hide();
+        $("#ecart_mobile_update_dd").show();
+        $("#ecart_mobile").val("");
+    }
+
+</SCRIPT>

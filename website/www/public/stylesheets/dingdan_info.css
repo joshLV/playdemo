@@ -116,7 +116,7 @@ ul{ list-style:none}
 .right_table{ float:right}
 /*.right_table{ position:relative; left:25px; top:-15px;}*/
 *html .right_table{  margin-top:-15px;} /*IE6 hack*/
-.input_height{ height:22px; border:solid 1px #939496; line-height:22px; width:110px; color:#A6A6A6}
+.input_height{ height:22px; border:solid 1px #939496; line-height:22px; width:110px; color: #000000}
 .input_adress{ width:300px;}
 .area_input{ width:62px;}
 .area_select{ width:130px; height:22px; border:solid 1px #939496; color:#341527; line-height:22px;}

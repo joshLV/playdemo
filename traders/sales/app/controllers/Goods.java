@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import models.sales.Goods_shops;
+import models.sales.GoodsShop;
 import models.sales.Shop;
 import play.mvc.Controller;
 import util.FileUploadUtil;
@@ -68,22 +68,22 @@ public class Goods extends Controller {
 		goods.create();
 
 		//全部门店的场合
-		Goods_shops goods_shops = new Goods_shops();
+		GoodsShop goods_shop = new GoodsShop();
 		if ("1".equals(radios)) {
 			List<Shop> list = Shop.findShopByCompany(Long.parseLong("1"));
 			for (Shop shop:list) {
-				goods_shops = new Goods_shops();
-				goods_shops.shop_id=shop.id;
-				goods_shops.good_id=goods.id;
-				goods_shops.save();
+				goods_shop = new GoodsShop();
+				goods_shop.shopId =shop.id;
+				goods_shop.goodsId =goods.id;
+				goods_shop.save();
 			}
 		}else{
 			//部分门店
 			for (Long id:checkoption) {
-				goods_shops = new Goods_shops();
-				goods_shops.shop_id=id;
-				goods_shops.good_id=goods.id;
-				goods_shops.create();
+				goods_shop = new GoodsShop();
+				goods_shop.shopId =id;
+				goods_shop.goodsId =goods.id;
+				goods_shop.create();
 			}
 		}
 		index(null);

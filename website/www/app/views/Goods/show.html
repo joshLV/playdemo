@@ -11,10 +11,10 @@
                         function (data) {
                             //                    $('#result').json(data);
                             if (data.resultCode == "ok") {
-                                $('#add_cart_result').css("display", "");
+                                $('#add_cart_result').show();
                             }
                         });
-        $('#add_cart_result').css("display", "");
+        $('#add_cart_result').show();
     }
 
     function buy() {
@@ -22,7 +22,7 @@
     }
 
     function hideCartBar() {
-        $('#add_cart_result').css("display", "none");
+        $('#add_cart_result').hide();
     }
 </script>
 #{/set}
@@ -171,41 +171,13 @@
                     </dt>
                     <dd class="table_dd">
                         <table width="700" border="0" cellpadding="0" cellspacing="0">
+                        #{list goods.shops, as:'shop'}
                             <tr>
-                                <td width="120" height="30" class="table_td">董大师延庆路店</td>
-                                <td class="table_td">徐汇延庆路92号</td>
-                                <td class="table_td">021-54040388</td>
+                                <td width="120" height="30" class="table_td">${shop.name}</td>
+                                <td class="table_td">${shop.address}</td>
+                                <td class="table_td">${shop.phone}</td>
                             </tr>
-                            <tr>
-                                <td height="30" class="table_td">董大师延庆路店</td>
-                                <td class="table_td">徐汇延庆路92号</td>
-                                <td class="table_td">021-54040388</td>
-                            </tr>
-                            <tr>
-                                <td height="30" class="table_td">董大师延庆路店</td>
-                                <td class="table_td">徐汇延庆路92号</td>
-                                <td class="table_td">021-54040388</td>
-                            </tr>
-                            <tr>
-                                <td height="30" class="table_td">董大师延庆路店</td>
-                                <td class="table_td">徐汇延庆路92号</td>
-                                <td class="table_td">021-54040388</td>
-                            </tr>
-                            <tr>
-                                <td height="30" class="table_td">董大师延庆路店</td>
-                                <td class="table_td">徐汇延庆路92号</td>
-                                <td class="table_td">021-54040388</td>
-                            </tr>
-                            <tr>
-                                <td height="30" class="table_td">董大师延庆路店</td>
-                                <td class="table_td">徐汇延庆路92号</td>
-                                <td class="table_td">021-54040388</td>
-                            </tr>
-                            <tr>
-                                <td height="30" class="table_td">董大师延庆路店</td>
-                                <td class="table_td">徐汇延庆路92号</td>
-                                <td class="table_td">021-54040388</td>
-                            </tr>
+                        #{/list}
                         </table>
                     </dd>
                 </dl>

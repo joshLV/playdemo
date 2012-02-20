@@ -1,113 +1,240 @@
+var lastUpdateAddressId = -1;
 /**
  * 添加地址行显示到地址列表中
  * @param data
  */
 function addAddressToList(data) {
-    alert(data);
-    var listAddressUl = $('#list_address_ul');
+    var useNewAddressLi = $('#use_new_address_li');
+    var addAddressLi = $("<li class='li_address_modify' id='li_address_'" + data.id + "' addressId='" + data.id + "'>" + data + "</li>");
 
-    listAddressUl.append($("<li class='li_address_modify' id='li_address_'" + data.id + "' addressId='" + data.id + "'>"));
-    listAddressUl.append(data);
-    listAddressUl.append("</li>");
+    useNewAddressLi.before(addAddressLi);
+}
 
-//    listAddressUl.append($("<li class='li_address_modify' id='li_address_'" + data.id + "' addressId='" + data.id + "'><input name=\"selectedAddressId\" id=\"radio_address_" + data.id + "\" type='radio' value='" + data.id + "' checked/>" +
-//        "<span class=\"span_name\" id=\"address_name_" + data.id + "\">" + data.name + "</span>" +
-//        "<span class=\"span_address\" id=\"address_address_" + data.id + ">" + data.address + "</span>" +
-//        "<span class=\"span_tel\" id=\"address_postcode_" + data.id + ">" + data.postcode + "</span>" +
-//        "<span class=\"span_tel\" id=\"address_mobile_" + data.id + ">" + data.mobile + "</span>" +
-//        "<span class=\"span_tel\" id=\"address_phone_" + data.id + ">" + data.phone + "</span>" +
-//        "<span class=\"mod_span_d\"><a class=\"address_span_modify\" href='#'>修改</a>|<a class=\"address_span_delete\" href='#'>删除</a></span></li>"));
+function mergeAddress(province, city, district, address) {
+    var fullAddress = "";
+    if (province != 'ALL' && province != "" && province != undefined) {
+        fullAddress += province;
+    }
+    if (city != "ALL" && city != "" && city != undefined) {
+        fullAddress += " " + city;
+    }
+    if (district != "ALL" && district != "" && district != undefined) {
+        fullAddress += " " + district;
+    }
+    if (fullAddress != "") {
+        fullAddress += " ";
+    }
+    if (address != "") {
+        fullAddress += address;
+    }
+    return fullAddress;
+}
+
+function mergePhone(mobile, areaCode, phoneNumber, phoneExtNumber) {
+    var phone = "";
+
+    if (areaCode != null && areaCode != "") {
+        phone += areaCode + "-";
+    }
+    if (phoneNumber != null && phoneNumber != "") {
+        phone += phoneNumber;
+    }
+    if (phoneExtNumber != null && phoneExtNumber != "") {
+        phone += "-" + phoneExtNumber;
+    }
+    if (mobile != null && mobile != "") {
+        phone = mobile + "   " + phone;
+    }
+    return phone;
 }
 
 function setAddress(addressId) {
     if (addressId == 0) {//如果是新增的地址
-        $("#show_name").html($("#address_name").val());
-        $("#show_address").html($("#address_province").val() + " " + $("#address_city").val() + " " + $("#address_district").val() + " " + $("#address_address").val());
-        $("#show_postcode").html($("#address_postcode").val());
-        alert("areaCode=" + $("#address_areaCode").val());
-        alert("address_phoneNumber=" + $("#address_phoneNumber").val());
-        alert("address_phoneExtNumber=" + $("#address_phoneExtNumber").val());
-        var areaCode = $("#address_areaCode").val() == "" ? "" : $("#address_areaCode").val() + "-";
-        var phone = $("#address_mobile").val() + "   " + areaCode + $("#address_phoneNumber").val();
-        if ($("#address_phoneExtNumber").val() != "") {
-            phone += "-" + $("#address_phoneExtNumber").val();
-        }
-        $("#show_phone").html(phone);
-    } else {//数据库中原有的地址
-        $("#show_name").html($("#address_name_" + addressId).html());
-//            $("#show_address").html($("#address_province_" + addressId).val() + " " + $("#address_city_" + addressId).val() + " " + $("#address_district_" + addressId).val() + $("#address_address_" + addressId).val());
-        $("#show_address").html($("#address_address_" + addressId).html());
-        $("#show_postcode").html($("#address_postcode_" + addressId).html());
-        $("#show_phone").html($("#address_mobile_" + addressId).html() + " " + $("#address_phone_" + addressId).html());
-//            var areaCode = $("#address_areaCode_" + addressId).val() == null ? "" : $("#address_areaCode_" + addressId).val() + "-";
-//            var phone = $("#address_mobile_" + addressId).val() + "   " + areaCode + $("#address_phoneNumber_" + addressId).val();
-//            if ($("#address_phoneExtNumber_" + addressId).val() != null) {
-//                phone += "-" + $("#address_phoneExtNumber_" + addressId).val();
-//            }
-//            $("#show_phone").html(phone);
 
+        $("#show_name").html($("#address_name").val());
+        var province = $("select[name='address.province']:checked").val();
+        var city = $("select[name='address.city']:checked").val();
+        var district = $("select[name='address.district']:checked").val();
+        var address = $("#address_address").val();
+        var fullAddress = mergeAddress(province, city, district, address);
+        $("#show_address").html(fullAddress);
+
+        $("#show_postcode").html($("#address_postcode").val());
+        var areaCode = $("#address_areaCode").val();
+        var mobile = $("#address_mobile").val();
+        var phoneNumber = $("#address_phoneNumber").val();
+        var phoneExtNumber = $("#address_phoneExtNumber").val();
+
+        $("#show_phone").html(mergePhone(mobile, areaCode, phoneNumber, phoneExtNumber));
+    } else {//数据库中原有的地址
+        $("#addressId").val(addressId);
+        $("#show_name").html($("#address_name_" + addressId).html());
+//        var province = $("select[name='address.province_' + addressId]:checked").val();
+//        var city = $("select[name='address.city_' + addressId]:checked").val();
+//        var district = $("select[name='address.district_' + addressId]:checked").val();
+//        var address = $("#address_address_" + addressId).html();
+//        var fullAddress = mergeAddress(province, city, district, address);
+        $("#show_address").html($("#address_address_" + addressId).html());
+//        $("#show_address").html($("#address_address_" + addressId).html());
+        $("#show_postcode").html($("#address_postcode_" + addressId).html());
+//        var areaCode = $("#address_areaCode_" + addressId).html();
+//        var mobile = $("#address_mobile_" + addressId).html();
+//        var phoneNumber = $("#address_phoneNumber_" + addressId).html();
+//        var phoneExtNumber = $("#address_phoneExtNumber_" + addressId).html();
+
+        $("#show_phone").html($("#address_phone_" + addressId).html());//mergePhone(mobile, areaCode, phoneNumber, phoneExtNumber));
+    }
+}
+/**
+ * 显示地址详细信息
+ */
+function showAddress(show) {
+    if (show) {
+        $("#list_address_ul").hide();
+        $("#show_address_ul").show();
+        $("#div_add_address").hide();
+    } else {
+        $("#list_address_ul").show();
+        $("#show_address_ul").hide();
+        $("#div_add_address").show();
     }
 }
 
-function showAddress() {
-    $("#list_address_ul").hide();
-    $("#show_address_ul").show();
+/**
+ * 显示新增地址的输入框
+ */
+function showCreateAddressEdit() {
+    hideLastEdit();
+    $("#radio_address_0").attr("checked", true);
+    $("#div_add_address").show();
 }
 
+/**
+ * 初始化地址层的显示和隐藏
+ *
+ * 1、判断是否已有默认地址，如果有，只显示默认地址，不显示地址列表
+ * 2、判断是否显示新增地址的输入框
+ */
+function initAddress() {
+    var addressId = $("input[name='selectedAddressId']:checked").val();
+    setAddress(addressId);
+    if (addressId == 0) {
+        $("#list_address_ul").show();
+        $("#show_address_ul").hide();
+        $("#div_add_address").show();
+        $("#link_cancel").hide();
+    }
+    else {
+        $("#list_address_ul").hide();
+        $("#show_address_ul").show();
+        $("#div_add_address").hide();
+    }
+    //设置当前用户的收货地址信息
+}
 
-function showCreateAddressEdit() {
-    $("#radio_address_0").attr("checked", true);
-    $("#div_edit_address").show();
+function updateAddress(addressId) {
+//    addressId = $(this).attr('addressId');
+    $.ajax({
+        type:'PUT',
+        data:{
+            'address.id':addressId,
+            'address.name':$("#address_name_" + addressId).val(),
+            'address.postcode':$("#address_postcode_" + addressId).val(),
+            'address.province':$("#address_province_" + addressId).val(),
+            'address.city':$("#address_city_" + addressId).val(),
+            'address.district':$("#address_district_" + addressId).val(),
+            'address.address':$("#address_address_" + addressId).val(),
+            'address.mobile':$("#address_mobile_" + addressId).val(),
+            'address.areaCode':$("#address_areacode_" + addressId).val(),
+            'address.phoneNumber':$("#address_phoneNumber_" + addressId).val(),
+            'address.phoneExtNumber':$("#address_phoneExtNumber_" + addressId).val(),
+            'address.isDefault':'true'},
+        url:'/orders/addresses/' + addressId,
+        success:function (data) {
+            //将编辑框重新设置为li
+            $("#li_address_" + addressId).html(data);
+            //设置当前用户的收货地址信息
+            setAddress(addressId);
+            showAddress(true);
+        }});
+}
+
+function hideLastEdit() {
+    if (lastUpdateAddressId > 0) {
+        $("#li_address_" + lastUpdateAddressId).load("/orders/addresses/" + lastUpdateAddressId, "", function (data) {
+
+        });
+    }
+}
+
+function editAddress(addressId) {
+
+//    addressId = $(this).attr('addressId');
+    $("#li_address_" + addressId).load("/orders/addresses/" + addressId + "/edit", "", function (data) {
+        hideLastEdit();
+        $("#bottom_buttons").hide();
+        $("#radio_address_" + addressId).attr("checked", true);
+        $("#div_add_address").hide();
+        lastUpdateAddressId = addressId;
+    });
+//    event.cancelBubble = true;
+//    event.stopPropagation();
+}
+
+function deleteAddress(addressId) {
+    if (confirm("您确定要删除这个地址吗?")) {
+//        addressId = $(this).attr('addressId');
+        $.ajax({
+            type:'DELETE',
+            url:'/orders/addresses/' + addressId,
+            success:function (data) {
+                $("#li_address_" + addressId).remove();
+                $("#radio_address_" + data).attr("checked", true);
+                if (data == "") {
+                    $("#list_address_ul").show();
+                    $("#show_address_ul").hide();
+                    $("#div_add_address").show();
+                    $("#link_cancel").hide();
+                    $("#radio_address_0").attr("checked", true);
+                }
+            }});
+    }
+//    event.cancelBubble = true;
+//    event.stopPropagation();
 }
 
 $(window).load(
     function () {
-        //地址表格的删除按钮事件
-        $(".address_span_delete").click(function () {
-            if (confirm("您确定要删除这个地址吗?")) {
-                addressId = $(this).attr('addressId');
-                $.ajax({
-                    type:'DELETE',
-                    url:'/orders/addresses/' + addressId,
-                    success:function (data) {
-                        //todo 判断删除结果
-                        $("#li_address_" + addressId).remove();
-                    }});
-            }
-        });
-        //地址表格的修改按钮事件
-        $(".address_span_modify").click(function () {
-            addressId = $(this).attr('addressId');
-            $("#li_address_" + addressId).load("/orders/addresses/" + addressId + "/edit", "", function (data) {
-                $("#bottom_buttons").hide();
-                $("#radio_address_" + addressId).attr("checked", true);
-            });
-
-        });
-
         /**
-         * 地址表格的行点击事件
+         * 地址表格的 行点击事件
          */
-        $(".li_address_modify").click(function () {
+        $(".li_address_modify").click(function (event) {
+            if (event.srcElement == undefined) {
+                return;
+            }
+            var src = event.srcElement.tagName.toLowerCase();
+            if (src == 'input' || src == 'select' || src == 'a') { //过滤修改时的控件，使这些控件不执行行点击事件
+                return;
+            }
             addressId = $(this).attr('addressId');
             $("#radio_address_" + addressId).attr("checked", true);
 
             $("#div_edit_address_" + addressId).hide();
-            $("#div_edit_address" ).hide();
+            $("#div_add_address").hide();
         });
 
         /**
          * 使用新地址层的显示和隐藏事件
          */
-        $("#span_use_new_address").click(function () {
-            showCreateAddressEdit();
-        });
+//        $("#span_use_new_address").click(function () {
+//            showCreateAddressEdit();
+//        });
         /**
          * 使用新地址radio的显示和隐藏事件
          */
-        $("#span_radio_new_address").click(function () {
-            showCreateAddressEdit();
-        });
+//        $("#span_radio_new_address").click(function () {
+//            showCreateAddressEdit();
+//        });
 
         /**
          * 点击确认收货信息按钮.
@@ -117,8 +244,7 @@ $(window).load(
             var addressId = $("input[name='selectedAddressId']:checked").val();
             var addNew = addressId == 0;
             if (addNew) {
-//                var addAction = #{jsAction @Addresses.create()/}
-                $.post("/orders/addresses/news",
+                $.post("/orders/addresses/new",
                     {selectedAddressId:$("#selectedAddressId").val(),
                         'address.name':$("#address_name").val(),
                         'address.postcode':$("#address_postcode").val(),
@@ -127,7 +253,7 @@ $(window).load(
                         'address.district':$("#address_district").val(),
                         'address.address':$("#address_address").val(),
                         'address.mobile':$("#address_mobile").val(),
-                        'address.areaCode':$("#address_areacode").val(),
+                        'address.areaCode':$("#address_areaCode").val(),
                         'address.phoneNumber':$("#address_phoneNumber").val(),
                         'address.phoneExtNumber':$("#address_phoneExtNumber").val(),
                         'address.isDefault':true
@@ -136,16 +262,24 @@ $(window).load(
                         //设置form中的addressId
                         $("#addressId").val(data.id);
                         //在收货地址列表中增加一行
-
                         addAddressToList(data);
                     });
 
+            } else {//修改用户的默认地址设置
+                $.ajax({
+                        type:'PUT',
+                        url:'/orders/addresses/' + addressId + "/default",
+                        success:function (data) {
+                        }}
+                );
             }
             //设置当前用户的收货地址信息
             setAddress(addressId);
-            showAddress();
-            showCreateAddressEdit();
+            showAddress(true);
+        });
 
+        $("#link_cancel").click(function () {
+            showAddress(true);
         });
 
         /**
@@ -154,7 +288,9 @@ $(window).load(
         $("#link_edit_show_address").click(function () {
             $("#list_address_ul").show();
             $("#show_address_ul").hide();
-            $("#address_province").focus();
+            $("#div_add_address").hide();
+            $("#link_cancel").show();
+            $("#radio_address_" + $("#addressId").val()).attr("checked", true);
         });
 
         /**
@@ -176,4 +312,4 @@ $(window).load(
             $("#ecart_mobile_update_dd").show();
         });
     }
-);
+)
