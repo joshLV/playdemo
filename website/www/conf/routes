@@ -11,6 +11,9 @@ POST    /carts                                  Carts.order
 DELETE  /carts/{goodsIds}                       Carts.delete
 
 GET     /payment_info/{id}                      PaymentInfo.index
+POST    /pay/alipay_notify                      AliPay.notify
+
+GET     /orders/alipay_result                   OrderResult.alipayReturn
 
 
 GET     /orders                                 Orders.index
@@ -23,6 +26,7 @@ PUT     /orders/addresses/{id}/default          Addresses.updateDefault
 GET     /orders/addresses/new                   Addresses.add
 POST    /orders/addresses/new                   Addresses.create
 DELETE  /orders/addresses/{id}                  Addresses.delete
+
 
 
 # Ignore favicon requests
