@@ -1,17 +1,23 @@
 package models.sales;
 
-import play.db.jpa.Model;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.List;
+
+import play.db.jpa.Model;
 
 
 @Entity
 @Table(name = "shops")
 public class Shop extends Model {
+	
+	
     @Column(name = "company_id")
     public long companyId;
 
@@ -54,8 +60,42 @@ public class Shop extends Model {
 
     @Column(name = "display_order")
     public String displayOrder;
-
-
+    
+    @ManyToMany(cascade={CascadeType.PERSIST},mappedBy="shops")//这里说明了关系维护端是shop，goods是关系被维护端 
+    private Set<Goods> goods = new HashSet<Goods>(); 
+    public Set<Goods> getGoods() {  
+        return goods;  
+    }  
+  
+    public void setGoods(Set<Goods> goods) {  
+        this.goods = goods;  
+    }  
+    
+    @Override  
+    public int hashCode() {  
+        final int prime = 31;  
+        int result = 1;  
+        result = prime * result + ((id == null) ? 0 : id.hashCode());  
+        return result;  
+    }  
+  
+    @Override  
+    public boolean equals(Object obj) {  
+        if (this == obj)  
+            return true;  
+        if (obj == null)  
+            return false;  
+        if (getClass() != obj.getClass())  
+            return false;  
+        Shop other = (Shop) obj;  
+        if (id == null) {  
+            if (other.id != null)  
+                return false;  
+        } else if (!id.equals(other.id))  
+            return false;  
+        return true;  
+    }  
+    
     /**
      * 读取某商户的全部门店记录
      *
