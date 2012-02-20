@@ -6,6 +6,7 @@ import models.sales.MaterialType;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class Cart extends Model {
     @ManyToOne
     public Goods goods;
 
-    public int number;
+    public long number;
     @Enumerated(EnumType.STRING)
     @Column(name = "material_type")
     public MaterialType materialType;
@@ -35,7 +36,7 @@ public class Cart extends Model {
     @Column(name = "updated_at")
     public Date updatedAt;
 
-    public Cart(User user, String cookieIdentity, Goods goods, int number, MaterialType materialType) {
+    public Cart(User user, String cookieIdentity, Goods goods, long number, MaterialType materialType) {
         this.user = user;
         this.cookieIdentity = cookieIdentity;
         this.goods = goods;
@@ -61,4 +62,18 @@ public class Cart extends Model {
     public static List<Cart> findRCart(String cartCookieId) {
         return Cart.find("cookieIdentity=? and materialType = ?", cartCookieId, "Real").fetch();
     }
+    
+    public static List<Cart> findByCookie(String cartCookieId){
+        return Cart.find("cookieIdentity=?",cartCookieId).fetch();
+    }
+
+
+    public static BigDecimal amount(List<Cart> cartList) {
+        BigDecimal cartAmount = new BigDecimal(0);
+        for (Cart cart : cartList) {
+            cartAmount = cart.goods.salePrice.multiply(new BigDecimal(cart.number)).add(cartAmount);
+        }
+        return cartAmount;
+    }
+
 }

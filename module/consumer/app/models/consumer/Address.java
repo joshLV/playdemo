@@ -85,4 +85,8 @@ public class Address extends Model {
             address.save();
         }
     }
+
+    public static Address findDefault(User user) {
+        return Address.find("byUserAndIsDefault", user, "true").first();
+    }
 }

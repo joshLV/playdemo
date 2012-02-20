@@ -151,7 +151,7 @@ public class Goods extends Model {
      * 售出基数
      */
     @Column(name = "base_sale")
-    public String baseSale;
+    public long baseSale;
     /**
      * 商品状态,
      */

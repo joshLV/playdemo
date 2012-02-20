@@ -3,6 +3,7 @@ package controllers;
 import controllers.modules.webtrace.WebTrace;
 import models.consumer.Address;
 import models.order.Cart;
+import models.order.NotEnoughInventoryException;
 import play.mvc.Http;
 import play.mvc.With;
 
@@ -19,7 +20,6 @@ import java.util.List;
  */
 @With(WebTrace.class)
 public class Orders extends AbstractLoginController {
-
     /**
      * 订单确认.
      */
@@ -33,18 +33,18 @@ public class Orders extends AbstractLoginController {
             List<Cart> rCartList = new ArrayList<>();
             BigDecimal rCartAmount = new BigDecimal(0);
             long goodsId = Long.parseLong(session.get("goodsId"));
-            int number = Integer.parseInt(session.get("number"));
+            long number = Long.parseLong(session.get("number"));
             models.sales.Goods goods = models.sales.Goods.findById(goodsId);
             Cart cart = new Cart(getUser(), null, goods, number, goods.materialType);
 
             switch (goods.materialType) {
                 case Electronic:
                     eCartList.add(cart);
-                    eCartAmount = amount(eCartList);
+                    eCartAmount = Cart.amount(eCartList);
                     break;
                 case Real:
                     rCartList.add(cart);
-                    rCartAmount = amount(rCartList).add(new BigDecimal(5));
+                    rCartAmount = Cart.amount(rCartList).add(new BigDecimal(5));
                     break;
             }
             render(addressList, eCartList, eCartAmount, rCartList, rCartAmount);
@@ -53,30 +53,22 @@ public class Orders extends AbstractLoginController {
         Http.Cookie cookieIdentity = request.cookies.get("identity");
 
         List<Cart> eCartList = Cart.findECart(cookieIdentity.value);
-        BigDecimal eCartAmount = amount(eCartList);
+        BigDecimal eCartAmount = Cart.amount(eCartList);
 
 
         List<Cart> rCartList = Cart.findRCart(cookieIdentity.value);
-        BigDecimal rCartAmount = amount(rCartList).add(new BigDecimal(5));
+        BigDecimal rCartAmount = Cart.amount(rCartList).add(new BigDecimal(5));
 
         render(addressList, eCartList, eCartAmount, rCartList, rCartAmount);
-    }
-
-    private static BigDecimal amount(List<Cart> cartList) {
-        BigDecimal cartAmount = new BigDecimal(0);
-        for (Cart cart : cartList) {
-            cartAmount = cart.goods.salePrice.multiply(new BigDecimal(cart.number)).add(cartAmount);
-        }
-        return cartAmount;
     }
 
     /**
      * 立即购买操作.
      *
-     * @param goodsId   购买商品
-     * @param number    购买数量
+     * @param goodsId 购买商品
+     * @param number  购买数量
      */
-    public static void buy(long goodsId, int number) {
+    public static void buy(long goodsId, long number) {
         session.put("buyNow", true);
         session.put("goodsId", goodsId);
         session.put("number", number);
@@ -86,7 +78,27 @@ public class Orders extends AbstractLoginController {
     /**
      * 提交订单.
      */
-    public static void create() {
+    public static void create(String mobile) {
+        boolean buyNow = Boolean.parseBoolean(session.get("buyNow"));
+        Address defaultAddress = Address.findDefault(getUser());
+        models.order.Orders orders;
+        try {
+            if (buyNow) {
+                long goodsId = Long.parseLong(session.get("goodsId"));
+                long number = Integer.parseInt(session.get("number"));
+                orders = new models.order.Orders(getUser(), goodsId, number, defaultAddress, mobile);
 
+            } else {
+                Http.Cookie cookieIdentity = request.cookies.get("identity");
+
+                List<Cart> eCartList = Cart.findByCookie(cookieIdentity.value);
+                orders = new models.order.Orders(getUser(), eCartList, defaultAddress);
+            }
+            orders.save();
+            redirect("/payment_info/" + orders.id);
+        } catch (NotEnoughInventoryException e) {
+            //todo 缺少库存
+
+        }
     }
 }
