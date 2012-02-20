@@ -9,6 +9,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import models.sales.GoodsShop;
 import models.sales.Shop;
 import play.mvc.Controller;
@@ -49,6 +53,7 @@ public class Goods extends Controller {
 			error("Validation errors");
 		}
 
+		System.out.println(">>>>>"+goods.materialType);
 		//添加商品处理
 		goods.status = status;
 		goods.companyId = "1";
@@ -162,6 +167,7 @@ public class Goods extends Controller {
 	 */
 	public static void delete(Long checkoption[]) {
 		for (Long id:checkoption) {
+			GoodsShop.delete("goods_id=?",id);
 			models.sales.Goods.delete("id=?",id);
 		}
 		index(null);
