@@ -53,7 +53,6 @@ public class Goods extends Controller {
 			error("Validation errors");
 		}
 
-		System.out.println(">>>>>"+goods.materialType);
 		//添加商品处理
 		goods.status = status;
 		goods.companyId = "1";
