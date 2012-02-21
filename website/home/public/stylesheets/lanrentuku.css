@@ -1,0 +1,49 @@
+.container {
+	WIDTH: 754px;
+	HEIGHT: 151px
+}
+.container A IMG {
+	WIDTH: 610px;
+	HEIGHT: 205px
+}
+.container IMG {
+	BORDER-BOTTOM-STYLE: none;
+	BORDER-RIGHT-STYLE: none;
+	BORDER-TOP-STYLE: none;
+	BORDER-LEFT-STYLE: none
+}
+.td_f A IMG {
+	PADDING-BOTTOM: 0px;
+	MARGIN: 0px;
+	PADDING-LEFT: 0px;
+	PADDING-RIGHT: 0px;
+	PADDING-TOP: 0px
+}
+.num {
+	POSITION: absolute;
+	WIDTH: 120px;
+	FLOAT: right;
+	TOP: 126px;
+	LEFT: 640px
+}
+.num LI {
+	TEXT-ALIGN: center;
+	LINE-HEIGHT: 15px;
+	LIST-STYLE-TYPE: none;
+	MARGIN: 2px;
+	WIDTH: 15px;
+	FONT-FAMILY: Arial;
+	background:#919191;
+	FLOAT: left;
+	HEIGHT: 15px;
+	COLOR: #86a2b8;
+	FONT-SIZE: 12px;
+	CURSOR: pointer
+}
+.num LI.on {
+	LINE-HEIGHT: 15px;
+	WIDTH: 15px;
+	background:#0A72C0;
+	HEIGHT: 15px;
+	COLOR: #ffffff
+}
