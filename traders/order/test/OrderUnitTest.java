@@ -13,14 +13,13 @@ import play.test.UnitTest;
 public class OrderUnitTest extends UnitTest {
 	@Test
 	public void testOrder(){
-		Orders orders= new Orders(null);
+		Orders orders=new Orders();
 		orders.createdAtBegin="2012-02-20 00:00:00";
 		orders.createdAtEnd="2012-02-20 23:59:59";
 		orders.status="UPPAID";
 		orders.deliveryType=1;
 		orders.payMethod="1";
-
-		List<Goods> list = 	Orders.query(orders);  
+		List<Orders> list = 	Orders.query(orders);  
 		Assert.assertEquals(0,list.size());  
 
 	}
