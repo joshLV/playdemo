@@ -115,7 +115,7 @@ public class Orders extends AbstractLoginController {
                 List<Cart> eCartList = Cart.findByCookie(cookieIdentity.value);
                 orders = new models.order.Orders(getUser(), eCartList, defaultAddress);
             }
-            //orders.createAndUpdateInventory();
+            orders.createAndUpdateInventory();
 
             session.put("buyNow", false);
             redirect("/payment_info/" + orders.id);
