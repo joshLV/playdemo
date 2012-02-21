@@ -1,7 +1,13 @@
 <!--    最顶部导航-->
 <div id="wrap_top_top">
     <div class="top_margin_left">
-        <div class="wellcome">您好，欢迎您来到优惠啦！<a class="zi_gray" href="#">请登录</a></div>
+        <div class="wellcome">
+%{ if (session.contains("username")) { }%
+     欢迎您，${session.get("username")}
+%{ } else { }%
+     您好，欢迎您来到优惠啦！<a class="zi_gray" href="/login">请登录</a>
+%{ } }%
+        </div>
         <div class="top_ul_box">
             <div class="user_reg_div_top">
                 <ul class="re_top_top_ul">

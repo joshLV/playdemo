@@ -1,6 +1,7 @@
 package controllers;
 
 import controllers.modules.webtrace.WebTrace;
+import controllers.modules.cas.*;
 import models.consumer.Address;
 import models.order.Cart;
 import models.order.NotEnoughInventoryException;
@@ -20,8 +21,7 @@ import java.util.List;
  * Date: 2/14/12
  * Time: 11:31 AM
  */
-//@With(SecureCAS.class)
-@With(WebTrace.class)
+@With({SecureCAS.class, WebTrace.class})
 public class Orders extends AbstractLoginController {
     /**
      * 订单确认.
@@ -115,7 +115,7 @@ public class Orders extends AbstractLoginController {
                 List<Cart> eCartList = Cart.findByCookie(cookieIdentity.value);
                 orders = new models.order.Orders(getUser(), eCartList, defaultAddress);
             }
-            orders.createAndUpdateInventory();
+            //orders.createAndUpdateInventory();
 
             session.put("buyNow", false);
             redirect("/payment_info/" + orders.id);

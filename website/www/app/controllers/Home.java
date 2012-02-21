@@ -6,6 +6,7 @@ import play.mvc.With;
 
 import java.util.List;
 import controllers.modules.webtrace.WebTrace;
+import controllers.modules.cas.*;
 
 /**
  * 首页控制器.
@@ -14,7 +15,7 @@ import controllers.modules.webtrace.WebTrace;
  * Date: 2/13/12
  * Time: 9:57 AM
  */
-@With(WebTrace.class)
+@With({SecureCAS.class, WebTrace.class})
 public class Home extends Controller {
 
     public static void index() {

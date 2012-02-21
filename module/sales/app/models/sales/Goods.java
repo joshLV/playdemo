@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 public class Goods extends Model {
 
     private static final Pattern imagePat = Pattern.compile("^/o/([0-9]+)/([0-9]+)/([0-9]+)/([^_]+).(jpg|png|gif|jpeg)$");
-    private static final String IMAGE_SERVER = "http://localhost:9007";
+    private static final String IMAGE_SERVER = play.Play.configuration.get("image.server").toString();
 
     @ManyToMany(cascade = CascadeType.REFRESH)
     private Set<Shop> shops = new HashSet<Shop>();//用集合类来存放Shop
