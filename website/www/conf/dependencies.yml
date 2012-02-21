@@ -1,0 +1,32 @@
+# Application dependencies
+
+require:
+    - play
+    - play -> cas 3.1
+    - sales -> sales
+    - consumer -> consumer
+    - order -> order
+    - com.uhuila.utils -> file 1.0
+    - commons-httpclient -> commons-httpclient 3.1
+    - web_trace -> web_trace
+    - accounts  -> accounts
+
+repositories:
+
+    - mavenRepository:
+        type:       iBiblio
+        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
+        contains:
+            - com.uhuila.utils -> *
+            - commons-httpclient -> *
+        m2compatible: true
+
+    - customModules:
+        type:       local
+        artifact:   "${application.path}/../../module/[module]"
+        contains:
+            - sales -> *
+            - consumer -> *
+            - order -> *
+            - web_trace -> *
+            - accounts  -> *

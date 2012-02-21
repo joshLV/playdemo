@@ -1,0 +1,19 @@
+*{ You can use plain selenium command using the selenium tag }*
+
+#{selenium}
+    // Open the home page, and check that no error occured
+    open('/register')
+    assertNotTitle('Application error')
+    
+    // Check that it is the form
+    assertTextPresent('注册新用户')
+    
+    // Type the name and submit
+    type('id=email','1231@qq.com')
+    type('id=mobile','13231231213')
+    type('id=password','123456')
+    type('id=sure_pwd','123456')
+    type('id=captcha','yslz')
+    clickAndWait('id=regbutton')
+    
+#{/selenium}

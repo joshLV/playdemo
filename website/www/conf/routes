@@ -1,0 +1,39 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                                       Home.index
+GET     /goods/{id}                             Goods.show
+
+GET     /carts                                  Carts.index
+POST    /carts                                  Carts.order
+DELETE  /carts/{goodsIds}                       Carts.delete
+
+GET     /payment_info/{id}                      PaymentInfo.index
+POST    /pay/alipay_notify                      AliPay.notify
+
+GET     /orders/alipay_result                   OrderResult.alipayReturn
+
+
+GET     /orders                                 Orders.index
+POST    /orders                                 Orders.buy
+POST    /orders/new                             Orders.create
+GET     /orders/addresses/{id}                  Addresses.show
+GET     /orders/addresses/{id}/edit             Addresses.edit
+PUT     /orders/addresses/{id}                  Addresses.update
+PUT     /orders/addresses/{id}/default          Addresses.updateDefault
+GET     /orders/addresses/new                   Addresses.add
+POST    /orders/addresses/new                   Addresses.create
+DELETE  /orders/addresses/{id}                  Addresses.delete
+
+
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+
+# Catch all
+*       /{controller}/{action}                  {controller}.{action}

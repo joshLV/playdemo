@@ -1,0 +1,27 @@
+#{extends 'main.html' /}
+<form name="f" action="@{Register.index()}" method="post">
+<div>邮箱：<input type="text" name="email" id="email" />
+<input type="submit" value="查询"/>&nbsp;
+</div>
+	<table width="60%" border="1" bordercolor="#000000" cellspacing="0"	cellpadding="3">
+		<tr align="center">
+			<td>邮箱</td>
+			<td>手机</td>
+			<td>用户状态</td>
+			<td>用户来源</td>
+		</tr>
+		#{list items:list, as:'list'}
+		<tr align="center">
+			<td bgcolor="#EEEEEE">${list.email}</td>
+			<td bgcolor="#EEEEEE">${list.mobile}</td>
+			<td bgcolor="#EEEEEE">${list.status}</td>
+			<td bgcolor="#EEEEEE">${list.status == '1'?'正常':'冻结'}</td>
+		</tr>
+		#{/list}
+		#{else}
+		<tr align="center"><td colspan="5">	对不起，没有查询到数据！</td></tr>
+		#{/else}
+	</table>
+	<script>
+	</script>
+</form>
