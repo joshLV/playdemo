@@ -40,7 +40,7 @@ table{border-collapse:collapse;}
 .shangpin_box{}
 .left_shangpin{ float:left}
 .right_shangpin{ font-size:14px; color:#666666; margin-left:15px; float:left}
-.right_shangpin_one{ margin-top:8px; margin-bottom:22px;}
+.right_shangpin_one{ text-decoration:line-through; margin-top:8px; margin-bottom:22px;}
 .right_shangpin_two{ margin-bottom:22px;}
 
 .right_shangpin_three{ font-weight:700; font-size:17px; color:#000000; margin-bottom:22px;}

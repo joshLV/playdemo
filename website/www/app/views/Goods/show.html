@@ -85,7 +85,7 @@
         </div>
         <!--右侧主体内容部分-->
         <div id="right_content">
-        #{form @Orders.buy()}
+        #{form @Orders.buy() , id:'buy_now_form'}
             <div class="right_content_show">
                 <div><h1 class="show_h1 font_block">${goods.name}</h1></div>
                 <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
@@ -95,16 +95,20 @@
                                                     height="168'}"/></div>
                     <div class="right_shangpin">
                         <div class="right_shangpin_one">原价：${goods.originalPrice}元</div>
-                        <div class="right_shangpin_two">折扣：${goods.salePrice}元</div>
+                        <div class="right_shangpin_two">折扣：#{if goods.discount.equals("")}
+                            无优惠#{/if}#{else}${goods.discount}折#{/else}</div>
                         <div class="right_shangpin_three">现价：<span
                                 class="font_red font_size18">${goods.salePrice}</span>元
                         </div>
+                        <div class="right_shangpin_two">库存：<span
+                                class="font_red font_size18">${goods.baseSale}</span>&nbsp;件
+                        </div>
                         <div class="right_shangpin_four">购买数量:&nbsp;<input class="num_input_bg" id="number"
                                                                            name="number" type="text"
-                                                                           value="1"/>&nbsp;件
+                                                                           value="1"/>&nbsp;件 <span
+                                class="error">#{error 'number' /}</span>
                         </div>
-                        <div class="right_shangpin_five">
-                            <input type="submit" class="ligm_bg" value="立即购买"/><a
+                        <div class="right_shangpin_five"><a class="ligm_bg" href="#" id="link_buy_now">立即购买</a> <a
                                 class="wai_juli" id="link_add_cart"
                                 href="#">加入购物车</a><a
                                 href="#" class="shoucang_font">收藏</a></div>

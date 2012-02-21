@@ -4,6 +4,8 @@ import controllers.modules.webtrace.WebTrace;
 import models.consumer.Address;
 import models.order.Cart;
 import models.order.NotEnoughInventoryException;
+import play.data.validation.Min;
+import play.data.validation.Required;
 import play.mvc.Http;
 import play.mvc.With;
 
@@ -28,6 +30,7 @@ public class Orders extends AbstractLoginController {
         List<Address> addressList = Address.findByOrder();
 
         boolean buyNow = Boolean.parseBoolean(session.get("buyNow"));
+        System.out.println("buyNow=" + buyNow);
         if (buyNow) {//立即购买，则不从购物车取购买的商品信息，而直接从session中获取
             List<Cart> eCartList = new ArrayList<>();
             BigDecimal eCartAmount = new BigDecimal(0);
@@ -69,7 +72,12 @@ public class Orders extends AbstractLoginController {
      * @param goodsId 购买商品
      * @param number  购买数量
      */
-    public static void buy(long goodsId, long number) {
+    public static void buy(@Required long goodsId, @Required(message = "购买数量应大于0") @Min(value = 1, message = "购买数量应大于或等于0") long number) {
+        if (validation.hasErrors()) {
+            params.flash(); // add http parameters to the flash scope
+            validation.keep(); // keep the errors for the next request
+            Goods.show(goodsId);
+        }
         session.put("buyNow", true);
         session.put("goodsId", goodsId);
         session.put("number", number);

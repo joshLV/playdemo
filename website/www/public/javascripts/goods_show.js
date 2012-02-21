@@ -9,10 +9,9 @@ $(window).load(
         /**
          *点击加入购物车按钮
          */
-        $(link_add_cart).click(function () {
+        $("#link_add_cart").click(function () {
             $.post("/carts", {'goodsId':$("#goodsId").val(), 'number':$("#number").val()},
                 function (data) {
-                    //                    $('#result').json(data);
                     if (data.resultCode == "ok") {
                         $('#add_cart_result').show();
                     }
@@ -20,8 +19,12 @@ $(window).load(
             $('#add_cart_result').show();
         });
 
-        $("link_buy_more").click(function () {
+        $("#link_buy_more").click(function () {
             $('#add_cart_result').hide();
+        });
+
+        $("#link_buy_now").click(function () {
+            $('#buy_now_form').submit();
         });
     }
 );

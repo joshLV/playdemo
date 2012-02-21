@@ -311,5 +311,12 @@ $(window).load(
             $("#ecart_mobile_show_dd").hide();
             $("#ecart_mobile_update_dd").show();
         });
+
+        /**
+         * form提交事件
+         */
+        $("#link_confirm_pay").click(function () {
+            $("#order_create_form").submit();
+        });
     }
 )
