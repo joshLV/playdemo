@@ -213,4 +213,14 @@ public class Orders extends Model {
 		sql.append(" ORDER BY a.created_at DESC");
 		return entityManager.createNativeQuery(sql.toString()).getResultList();
 	}
+
+    public void createAndUpdateInventory() {
+        if (create()) {
+            for (OrderItems orderItem : orderItems) {
+                orderItem.goods.baseSale -= orderItem.number;
+                orderItem.save();
+            }
+        }
+
+    }
 }

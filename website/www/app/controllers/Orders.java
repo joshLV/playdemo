@@ -1,7 +1,6 @@
 package controllers;
 
 import controllers.modules.webtrace.WebTrace;
-import controllers.modules.cas.*;
 import models.consumer.Address;
 import models.order.Cart;
 import models.order.NotEnoughInventoryException;
@@ -40,14 +39,14 @@ public class Orders extends AbstractLoginController {
             Cart cart = new Cart(getUser(), null, goods, number, goods.materialType);
 
             switch (goods.materialType) {
-            case Electronic:
-                eCartList.add(cart);
-                eCartAmount = Cart.amount(eCartList);
-                break;
-            case Real:
-                rCartList.add(cart);
-                rCartAmount = Cart.amount(rCartList).add(new BigDecimal(5));
-                break;
+                case Electronic:
+                    eCartList.add(cart);
+                    eCartAmount = Cart.amount(eCartList);
+                    break;
+                case Real:
+                    rCartList.add(cart);
+                    rCartAmount = Cart.amount(rCartList).add(new BigDecimal(5));
+                    break;
             }
             render(addressList, eCartList, eCartAmount, rCartList, rCartAmount);
         }
@@ -81,7 +80,6 @@ public class Orders extends AbstractLoginController {
      * 提交订单.
      */
     public static void create() {
-        System.out.println("create null");
         create0(null);
     }
 
@@ -89,7 +87,6 @@ public class Orders extends AbstractLoginController {
      * 提交订单.
      */
     public static void create(String mobile) {
-        System.out.println("create mobile=" + mobile);
         create0(mobile);
     }
 
@@ -110,7 +107,8 @@ public class Orders extends AbstractLoginController {
                 List<Cart> eCartList = Cart.findByCookie(cookieIdentity.value);
                 orders = new models.order.Orders(getUser(), eCartList, defaultAddress);
             }
-            orders.save();
+            orders.createAndUpdateInventory();
+
             session.put("buyNow", false);
             redirect("/payment_info/" + orders.id);
         } catch (NotEnoughInventoryException e) {

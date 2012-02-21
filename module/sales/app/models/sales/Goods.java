@@ -189,7 +189,9 @@ public class Goods extends Model {
      * 乐观锁
      */
     @Column(name = "lock_version")
+    @Version
     public int lockVersion;
+
     /**
      * 手工排序
      */
