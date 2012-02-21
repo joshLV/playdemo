@@ -138,7 +138,6 @@
 }
 .login .bt {
 	vertical-align:middle;
-	background:url(../images/uhl/bt.gif) 0 0 no-repeat;
 	height:24px;
 	width:78px;
 	line-height:24px;
@@ -197,7 +196,6 @@
 	vertical-align:middle;
 }
 .login li.field input {
-	background:url(../images/uhl/input.gif) no-repeat scroll 0 0 white;
 }
 .login li.submit-field .input {
 	margin-left:52px;
@@ -295,7 +293,6 @@
 	margin:20px 0 20px 0;
 	overflow:hidden;
 	zoom:1;
-	background:url(../images/uhl/flow_steps_bg1.png) no-repeat scroll 100% 0 #E4E4E4;
 
 }
 
@@ -375,7 +372,6 @@
 	vertical-align:middle;
 }
 .reg-form li.field input {
-	background:url(../images/uhl/input.gif) no-repeat scroll 0 0 white;
 }
 li.field input.showcode_2 {
 	width:40px;
@@ -407,7 +403,6 @@ li.field input.showcode_2 {
 	position:relative;
 }
 .msg .error, .msg .stop, .msg .alert, .msg .attention, .msg .tips, .msg .ok, .msg .notice, .msg .question, .msg .help, .msg .small-help {
-	background:url(../images/uhl/usericon.gif) no-repeat scroll 3px 3px transparent;
 	border:1px solid #cccccc;
 	color:#404040;
 	float:left;
@@ -419,7 +414,6 @@ li.field input.showcode_2 {
 	clear:both;
 }
 .reg-form li.submit-field button {
-	background:url(../images/uhl/bt.gif) no-repeat scroll 0 -32px transparent;
 	border:0 none;
 	color:#fff;
 	cursor:pointer;
@@ -448,7 +442,6 @@ li.field input.showcode_2 {
 .reg_phonebd {
 	width:593px;
 	height:66px;
-	background:url(../images/uhl/userbg.gif) 0 0 no-repeat;
 	margin-top:26px;
 }
 .reg_phonebd .ptext {
@@ -462,7 +455,6 @@ li.field input.showcode_2 {
 }
 .reg_phonebd .ptext .clickbt {
 	display:block;
-	background:url(../images/uhl/bt.gif) no-repeat scroll 0 0 transparent;
 	border:0 none;
 	color:#fff;
 	cursor:pointer;
@@ -522,8 +514,6 @@ li.field input.showcode_2 {
 	text-align:center;
 	overflow:hidden;
 	zoom:1;
-	background:url(../images/uhl/flowstep1.gif) no-repeat;
-
 }
 .flow-steps2 {
 	margin:40px auto 8px;
@@ -531,7 +521,6 @@ li.field input.showcode_2 {
 	text-align:center;
 	overflow:hidden;
 	zoom:1;
-	background:url(../images/uhl/flowstep2.gif) no-repeat;
 }
 .flow-steps2 li {
 	color:#FFF;
@@ -599,7 +588,6 @@ li.field input.showcode_2 {
 	text-decoration:none;
 }
 .bcbt {
-	background:url(../images/uhl/bt.gif) 0 -64px no-repeat;
 	height:26px;
 	width:100px;
 	line-height:25px;
@@ -660,12 +648,10 @@ li.field input.showcode_2 {
 	position:relative
 }
 .hyk01 .phonebdt {
-	background: url(../images/uhl/kbg.gif) 0 0 no-repeat;
 	width:309px;
 	height:34px;
 }
 .hyk01 .phonebdm {
-	background: url(../images/uhl/kbg.gif) 0 -35px repeat-y;
 	width:309px;
 	height:113px;
 }
@@ -679,7 +665,6 @@ li.field input.showcode_2 {
 	text-align:center
 }
 .hyk01 .phonebdb {
-	background: url(../images/uhl/kbg.gif) 0 -142px no-repeat;
 	width:309px;
 	height:13px;
 }
@@ -736,7 +721,6 @@ li.field input.showcode_2 {
 	text-align:center;
 	overflow:hidden;
 	zoom:1;
-	background:url(../images/uhl/flowstep2.gif) no-repeat;
 }
 .flow-steps2 li {
 	color:#FFF;
@@ -791,7 +775,6 @@ li.field input.showcode_2 {
 .fmeans {
 	width:470px;
 	height:217px;
-	background:url(../images/uhl/slinebg.gif) no-repeat center;
 	text-align:center;
 	margin:0 auto;
 }
@@ -819,7 +802,6 @@ li.field input.showcode_2 {
 	text-align:left;
 }
 .findbt {
-	background:url(../images/uhl/bt.gif) 0 -98px no-repeat;
 	border:0;
 	height:24px;
 	width:101px;
@@ -834,7 +816,6 @@ li.field input.showcode_2 {
 	padding-top:20px;
 }
 .findbt140 {
-	background:url(../images/uhl/bt.gif) 0 -138px no-repeat;
 	border:0;
 	height:25px;
 	width:150px;
@@ -890,11 +871,11 @@ li.field input.showcode_2 {
 	vertical-align:middle;
 }
 .inputbg {
-	background:url(../images/uhl/input.gif) no-repeat scroll 0 0 white;
+
 }
 /*修改手机密码找回*/
 .redInfo b, .yellowInfo b, .allstep_yzm, .allstep_count {
-	background:url(../images/uhl/fpwd.png) no-repeat;
+
 }
 .redInfo, .yellowInfo {
 	border:1px solid #e08a78;
@@ -971,7 +952,6 @@ span.allstep_info {
 	border:0px;
 	color:#fff;
 	font-weight:bold;
-	background:url(../images/uhl/bg_nav.gif) no-repeat -320px -30px;
 }
 /*密码找回样式结束*/
 
@@ -1023,12 +1003,10 @@ span.allstep_info {
 	position:relative
 }
 .phonebdt {
-	background: url(../images/uhl/kbg.gif) 0 0 no-repeat;
 	width:309px;
 	height:34px;
 }
 .phonebdm {
-	background: url(../images/uhl/kbg.gif) 0 -35px repeat-y;
 	width:309px;
 	height:113px;
 }
@@ -1042,7 +1020,6 @@ span.allstep_info {
 	text-align:center
 }
 .phonebdb {
-	background: url(../images/uhl/kbg.gif) 0 -142px no-repeat;
 	width:309px;
 	height:13px;
 }
@@ -1080,12 +1057,10 @@ span.allstep_info {
 	height:auto;
 	overflow:hidden;
 	padding:8px;
-	background:#fff url(../images/uhl/xbg.gif) repeat-y -168px 0px;
 }
 .usernav {
 	width:1000px;
 	height:28px;
-	background:url(../images/uhl/usernavbg.gif) repeat-x #b73a24;
 }
 .usernav .current a, .usernav .current:link, .usernav .current:visited {
 	color:#fff;
@@ -1113,7 +1088,6 @@ span.allstep_info {
 }
 .userbg {
 	margin-left:3px;
-	background:url(../images/uhl/userbg.gif) 0px -68px no-repeat;
 	width:174px;
 	height:160px;
 }
@@ -1129,7 +1103,6 @@ span.allstep_info {
 .userright {
 	width:820px;
 	float:left;
-	background:url(../images/uhl/detailbg.gif) no-repeat;
 	height:626px;
 }
 .tdetail {
@@ -1150,7 +1123,6 @@ span.allstep_info {
 	height:14px;
 }
 .bt {
-	background:url(../images/uhl/bt.gif) 0 -98px no-repeat;
 	border:0;
 	height:24px;
 	width:101px;
@@ -1161,7 +1133,6 @@ span.allstep_info {
 	font-weight:bold
 }
 .bt1 {
-	background:url(../images/uhl/bt.gif) 0 0 no-repeat;
 	border:0;
 	height:24px;
 	width:78px;
@@ -1184,7 +1155,6 @@ span.allstep_info {
 	text-decoration:none;
 	color:#ffffff;
 	font-weight:bold;
-	background:url(../images/uhl/unavbg.gif) no-repeat 0px 0px #b73a24;
 }
 .infodetail {
 	margin-top:17px;
@@ -1283,13 +1253,11 @@ span.allstep_info {
 .usercenter {
 	width:820px;
 	margin-left:90px;
-	background:url(../images/uhl/detailbg.gif) no-repeat;
 	height:626px;
 }
 .userrightupdate {
 	width:820px;
 	float:left;
-	background:url(../images/uhl/detailglbgupdate.gif) no-repeat;
 	height:373px;
 }
 .changepwd {
@@ -1451,7 +1419,6 @@ span.allstep_info {
 	height:354px;
 	color:#ccc;
 	padding-top:20px;
-	background:url(../images/uhl/ukstylebg.gif) top center no-repeat;
 }
 .ukstylec {
 	position: relative;
@@ -1531,7 +1498,6 @@ span.allstep_info {
 	height:28px;
 }
 .ukgltext li div a {
-	background:url(../images/uhl/bt.gif) 0 -205px no-repeat;
 	border:0;
 	height:24px;
 	width:70px;
@@ -1545,11 +1511,9 @@ span.allstep_info {
 }
 .ukgltext li div a:hover {
 	text-decoration:none;
-	background:url(../images/uhl/bt.gif) 0px -239px;
 }
 .ukgltext div.card_default a, .ukgltext div.card_default a:hover {
 	color:#fff;
-	background:url(../images/uhl/bt.gif) 0 0 no-repeat;
 	width:78px;
 	font-weight:bold;
 	margin-right:5px;
@@ -1661,7 +1625,6 @@ span.allstep_info {
 	line-height:22px;
 }
 .phone-tips .close, .safe-info .state .over, .account-info .bind, .phone-tips .close, .phone-tips .arror, .sub-phone .pinch, .sub-phone .collapse {
-	background: url(../images/uhl/safebt2.gif) no-repeat scroll 0 0 transparent;
 }
 .safe-info .state span {
 	display:block;
@@ -1672,7 +1635,6 @@ span.allstep_info {
 	text-indent:-23556px;
 }
 .safe-info .state .alert {
-	background:url(../images/uhl/msg_bg.gif);
 	background-position:40px -197px;
 	padding-top:20px;
 }
@@ -1746,7 +1708,6 @@ span.allstep_info {
 	width:370px;
 }
 .tc370 li.t {
-	background:url("../images/uhl/bg_nav.gif") no-repeat scroll -171px -70px transparent;
 	float:left;
 	height:29px;
 	line-height:29px;
@@ -1760,7 +1721,6 @@ span.allstep_info {
 	width:368px;
 }
 .tc370 li.b {
-	background:url("../images/uhl/bg_nav.gif") no-repeat scroll -2px -250px transparent;
 	float:left;
 	font-size:1px;
 	height:6px;
@@ -1844,7 +1804,6 @@ span.allstep_info {
 	line-height:34px;
 }
 .mem_update_hqbt {
-	background:url("../images/uhl/bt.gif") no-repeat scroll -101px -62px transparent;
 	border:0 none;
 	color:#FFFFFF;
 	font-size:12px;
@@ -1908,7 +1867,6 @@ span.allstep_info {
 	overflow:hidden;
 	padding-left:1px;
 	padding-right:6px;
-	background:#fff url(../images/uhl/xbg.gif) repeat-y -168px 0px;
 }
 .message {
 	height:16px;
@@ -1972,7 +1930,6 @@ span.allstep_info {
 	width:14px;
 	height:21px;
 	position:absolute;
-	background:url(../images/uhl/icon_s.gif) -1px -30px;
 	left: -18px;
 	top: 0px;
 }
@@ -2056,7 +2013,6 @@ span.allstep_info {
 	overflow:hidden;
 	position:relative;
 	z-index:2;
-	background:url(../images/uhl/bg_nav_h.gif) no-repeat 0px -161px;
 }
 #collect_center .t .list {
 	height:26px;
@@ -2084,7 +2040,6 @@ span.allstep_info {
 #collect_center .list a:hover, #collect_center .list a.current {
 	color:#c43f27;
 	text-decoration:none;
-	background:url(../images/uhl/bg_nav_h.gif) no-repeat -500px -30px;
 }
 #collect_center .collectmain {
 	width:582px;
@@ -2093,7 +2048,6 @@ span.allstep_info {
 	margin-top:-4px;
 	position:relative;
 	z-index:1;
-	background:#fff url(../images/uhl/collectk.gif) repeat-y;
 }
 #collect_center .b {
 	width:100%;
@@ -2101,7 +2055,6 @@ span.allstep_info {
 	overflow:hidden;
 	margin:0px;
 	font-size:1px;
-	background:url(../images/uhl/bg_nav_h.gif) no-repeat -175px -96px;
 }
 .collectmain .fd {
 	width:556px;
@@ -2144,7 +2097,6 @@ auto;
 	padding-left:12px;
 }
 .mem_sc_fd_bts {
-	background:url(../images/uhl/bt.gif) -161px -209px no-repeat;
 	border:0;
 	height:25px;
 	width:70px;
@@ -2158,7 +2110,6 @@ auto;
 }
 .mem_sc_sp_bts {
 	float:left;
-	background:url(../images/uhl/bt.gif) -212px -268px no-repeat;
 	border:0;
 	height:25px;
 	width:70px;
@@ -2169,7 +2120,6 @@ auto;
 }
 .mem_sc_sp_bts1 {
 	float:left;
-	background:url(../images/uhl/bt.gif) -161px -209px no-repeat;
 	border:0;
 	height:25px;
 	width:70px;
@@ -2254,7 +2204,6 @@ auto;
 	padding-left:16px;
 }
 .mem_sc_fd_btp {
-	background:url(../images/uhl/bt.gif) -270px -209px no-repeat;
 	border:0;
 	height:25px;
 	width:70px;
@@ -2282,7 +2231,6 @@ auto;
 	height:auto;
 }
 #collect_img_center .prebt {
-	background:url(../images/uhl/bt.gif) -218px -32px no-repeat;
 	border:0;
 	height:24px;
 	width:78px;
@@ -2292,7 +2240,6 @@ auto;
 	color:#333;
 }
 #collect_img_center .nextbt {
-	background:url(../images/uhl/bt.gif) -218px -61px no-repeat;
 	border:0;
 	height:24px;
 	width:78px;
@@ -2417,41 +2364,35 @@ auto;
 #layout #left #lt {
 	width:9px;
 	height:35px;
-	background-image:url(../images/uhl/g_01.jpg);
 }
 #layout #left #lc {
 	width:9px;
 	height:100%;
-	background-image:url(../images/uhl/left.jpg);
+
 	bakcground-repeat:repeat-y;
 }
 #layout #left #lb {
 	width:9px;
 	height:8px;
-	background-image:url(../images/uhl/g_07.jpg);
 	background-repeat:no-repeat;
 }
 #layout #right #rt {
 	width:28px;
 	height:35px;
-	background-image:url(../images/uhl/g_03.jpg);
 }
 #layout #right #rc {
 	width:28px;
 	height:100%;
-	background-image:url(../images/uhl/right.jpg);
 	bakcground-repeat:repeat-y;
 }
 #layout #right #rb {
 	width:28px;
 	height:8px;
-	background-image:url(../images/uhl/g_09.jpg);
 	background-repeat:no-repeat;
 }
 #layout #center #ct {
 	width:100%;
 	height:35px;
-	background-image:url(../images/uhl/g_02.jpg);
 	background-position:right top;
 	background-repeat: repeat-x;
 }
@@ -2462,7 +2403,6 @@ auto;
 #layout #center #cb {
 	width:100%;
 	height:8px;
-	background-image:url(../images/uhl/g_08.jpg);
 	background-repeat:repeat-x;
 }
 /**/
@@ -2475,7 +2415,6 @@ auto;
 	display:none
 }
 .mem_sh_feed .mem_sh_feed_se {
-	background:url(../images/uhl/icon_s.gif) 0 -579px;
 	width:20px;
 	height:7px;
 	position:relative;
@@ -2531,8 +2470,6 @@ auto;
 }
 .messagesort_ti_t b {
 	display:inline-block;
-	background: url(../images/uhl/list.gif) no-repeat 3px -4px !important;
-	background: url(../images/uhl/list.gif) no-repeat 3px 3px;
 	width:12px;
 	height:5px;
 }
@@ -2549,7 +2486,6 @@ auto;
 .messagesort_ti_0 b {
 	display: inline-block;
 	margin-left:8px;
-	background: url(../images/uhl/list.gif) no-repeat -2px -14px;
 	width:13px;
 	height:17px;
 }
@@ -2559,7 +2495,6 @@ auto;
 	padding-left:16px;
 }
 .mem_sc_fd_btp {
-	background:url(../images/uhl/bt.gif) -270px -209px no-repeat;
 	border:0;
 	height:25px;
 	width:70px;
@@ -2602,13 +2537,11 @@ auto;
 .Wdate2 {
 	border:#bababa 1px solid;
 	height:20px;
-	background:#fff url(../images/uhl/datePicker.gif) no-repeat right;
 }
 .Wdate {
 	border:#bababa 1px solid;
 	height:20px;
 	width:95px;
-	background:#fff url(../images/uhl/datePicker.gif) no-repeat right;
 }
 /*收藏优惠券添加评论弹出框
 * szw 2011-2-16
