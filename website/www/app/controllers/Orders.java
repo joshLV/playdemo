@@ -80,11 +80,25 @@ public class Orders extends AbstractLoginController {
     /**
      * 提交订单.
      */
+    public static void create() {
+        System.out.println("create null");
+        create0(null);
+    }
+
+    /**
+     * 提交订单.
+     */
     public static void create(String mobile) {
+        System.out.println("create mobile=" + mobile);
+        create0(mobile);
+    }
+
+    private static void create0(String mobile) {
         boolean buyNow = Boolean.parseBoolean(session.get("buyNow"));
         Address defaultAddress = Address.findDefault(getUser());
         models.order.Orders orders;
         try {
+            System.out.println("buyNow=" + buyNow);
             if (buyNow) {
                 long goodsId = Long.parseLong(session.get("goodsId"));
                 long number = Integer.parseInt(session.get("number"));
@@ -97,8 +111,10 @@ public class Orders extends AbstractLoginController {
                 orders = new models.order.Orders(getUser(), eCartList, defaultAddress);
             }
             orders.save();
+            session.put("buyNow", false);
             redirect("/payment_info/" + orders.id);
         } catch (NotEnoughInventoryException e) {
+            System.out.println(e);
             //todo 缺少库存
 
         }

@@ -1,14 +1,16 @@
 package controllers;
 
 import controllers.modules.webtrace.WebTrace;
-import models.consumer.*;
-import models.order.*;
-import play.mvc.Controller;
+import models.consumer.User;
+import models.order.Cart;
+import play.data.binding.As;
 import play.mvc.Http;
 import play.mvc.With;
-import play.data.binding.As;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @With(WebTrace.class)
 public class Carts extends AbstractLoginController {
@@ -30,13 +32,13 @@ public class Carts extends AbstractLoginController {
         }
         //合并结果集
         List<Cart> cartMergeList = new ArrayList<Cart>();
-        if(cartList.size() > 0) {
-            Map<Long,Cart> mapCarts = new HashMap<Long,Cart>();
-            for(Cart cart : cartList) {
+        if (cartList.size() > 0) {
+            Map<Long, Cart> mapCarts = new HashMap<Long, Cart>();
+            for (Cart cart : cartList) {
                 Cart tmp = mapCarts.get(cart.goods.getId());
-                if(tmp != null) {
+                if (tmp != null) {
                     tmp.number += cart.number;
-                }else {
+                } else {
                     mapCarts.put(cart.goods.getId(), cart);
                     cartMergeList.add(cart);
                 }
@@ -52,10 +54,10 @@ public class Carts extends AbstractLoginController {
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
 
         if ((user == null && cookieIdentity == null) || goods == null) {
-            error(500,"can not identity user");
+            error(500, "can not identity user");
         }
 
-        Cart cart = null;
+        Cart cart;
         if (user != null) {
             cart = Cart.find("byUserAndGoods", user, goods).first();
         } else {
@@ -63,7 +65,7 @@ public class Carts extends AbstractLoginController {
         }
 
         if (cart != null) {
-            if (cart.number + number >=0 ) {
+            if (cart.number + number >= 0) {
                 cart.number += number;
                 cart.save();
             }

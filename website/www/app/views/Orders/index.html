@@ -32,8 +32,8 @@
         </div>
     </div>
 
-    #{form @Orders.create}
-        <input type="hidden" id="addressId"/>
+#{form @Orders.create()}
+    <input type="hidden" id="addressId"/>
     #{if rCartList.size() >0}
 
         <div id="order_modify_info1" class="div_address_modify">
@@ -129,7 +129,9 @@
                                 </td>
                                 <td width="115" height="25" align="center"
                                     valign="middle">${rCart.goods.salePrice}</td>
-                                <td width="83" height="25" align="center" valign="middle"><input class="num_input" type="text" value="${rCart.number}"/>
+                                <td width="83" height="25" align="center" valign="middle"><input class="num_input"
+                                                                                                 type="text"
+                                                                                                 value="${rCart.number}"/>
                                 </td>
                                 #{if (++i) == 1 }
                                     <td width="187" rowspan="5" align="center" valign="middle">${rCartAmount} 元<br/>
@@ -177,7 +179,9 @@
                                 </td>
                                 <td width="115" height="25" align="center"
                                     valign="middle">${eCart.goods.salePrice}</td>
-                                <td width="83" height="25" align="center" valign="middle"><input class="num_input" type="text" value="${eCart.number}"/>
+                                <td width="83" height="25" align="center" valign="middle"><input class="num_input"
+                                                                                                 type="text"
+                                                                                                 value="${eCart.number}"/>
                                 </td>
                                 #{if (++j) == 1 }
                                     <td width="187" rowspan="5" align="center" valign="middle">${eCartAmount}元<br/><span
@@ -192,13 +196,13 @@
             </dl>
         </div>
     #{/if}
-        <div class="sp_height">商品总金额:<span class="font_red_one">${eCartAmount + rCartAmount - 5}元</span> 运费：<span
-                class="font_red_one">5元</span> 合计：<span
-                class="font_red_one">${eCartAmount + rCartAmount}元</span></div>
-        <div class="sp_height_one"><a class="que_pay_bg" href="#">确认付款</a></div>
+    <div class="sp_height">商品总金额:<span class="font_red_one">${eCartAmount + rCartAmount - 5}元</span> 运费：<span
+            class="font_red_one">5元</span> 合计：<span
+            class="font_red_one">${eCartAmount + rCartAmount}元</span></div>
+    <div class="sp_height_one"><input type="submit" class="que_pay_bg" value="确认付款"/> <a class="que_pay_bg" href="#">确认付款</a></div>
 
-        <div style="clear:both"></div>
-    #{/form}
+    <div style="clear:both"></div>
+#{/form}
 
 </div>
 <SCRIPT type=text/javascript>

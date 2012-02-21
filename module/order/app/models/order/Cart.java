@@ -60,7 +60,7 @@ public class Cart extends Model {
     }
 
     public static List<Cart> findRCart(String cartCookieId) {
-        return Cart.find("cookieIdentity=? and materialType = ?", cartCookieId, "Real").fetch();
+        return Cart.find("cookieIdentity=? and materialType = ?", cartCookieId, MaterialType.Real).fetch();
     }
     
     public static List<Cart> findByCookie(String cartCookieId){
