@@ -8,6 +8,7 @@ import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -66,12 +67,6 @@ public class Goods extends Model {
      */
     @Column(name = "image_path")
     public String imagePath;
-
-    //    @Transient
-    //    private String image_tiny_path;
-    //    private String image_small_path;
-    //    private String image_middle_path;
-    //    private String image_large_path;
 
     /**
      * 最小规格图片路径
@@ -134,6 +129,22 @@ public class Goods extends Model {
      */
     @Column(name = "sale_price")
     public BigDecimal salePrice;
+
+    @Transient
+    public String getDiscount() {
+        if (originalPrice.compareTo(new BigDecimal(0)) > 0) {
+            BigInteger discount = salePrice.divide(originalPrice).multiply(new BigDecimal(100)).toBigInteger();
+            if (discount.intValue() == 100) {
+                return "";
+            }
+            if (discount.mod(new BigInteger("10")).intValue() == 0) {
+                return discount.divide(new BigInteger("10")).toString();
+            }
+            return discount.toString();
+        }
+        return "";
+    }
+
     /**
      * 温馨提示
      */

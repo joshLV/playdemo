@@ -1,8 +1,7 @@
 *{<span class="span_line_address" addressId="${address.id}">}*
-<span class="span_name" id="address_selectedAddressId"><input name="selectedAddressId" type="radio"
-                                                              id="radio_address_${address.id}"
-                                                              value="${address.id}"
-                                                              #{if "true".equals(address.isDefault)}checked#{/if}/></span>
+<span class="span_name" id="address_selectedAddressId_${address.id}">
+    <input name="selectedAddressId" type="radio" id="radio_address_${address.id}" value="${address.id}"
+           #{if "true".equals(address.isDefault)}checked#{/if} onclick="radioClick()"/></span>
 <span
         class="span_name" id="address_name_${address.id}">${address.name}</span><span class="span_address"
                                                                                       id="address_address_${address.id}">${address.fullAddress}</span>
@@ -14,5 +13,6 @@
 *{</span>}*
 <span><span class="mod_span_d"><a class="address_span_modify" href="javascript:editAddress(${address.id});"
                                   addressId="${address.id}">修改</a> | <a
-        class="address_span_delete" href="javascript:deleteAddress(${address.id});" addressId="${address.id}">删除</a></span>
+        class="address_span_delete" href="javascript:deleteAddress(${address.id});"
+        addressId="${address.id}">删除</a></span>
 </span>

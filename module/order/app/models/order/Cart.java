@@ -56,15 +56,15 @@ public class Cart extends Model {
     }
 
     public static List<Cart> findECart(String cartCookieId) {
-        return Cart.find("cookieIdentity=? and materialType = ?", cartCookieId, MaterialType.Electronic).fetch();
+        return Cart.find("cookieIdentity=? and materialType = ? and number >0", cartCookieId, MaterialType.Electronic).fetch();
     }
 
     public static List<Cart> findRCart(String cartCookieId) {
-        return Cart.find("cookieIdentity=? and materialType = ?", cartCookieId, MaterialType.Real).fetch();
+        return Cart.find("cookieIdentity=? and materialType = ? and number >0", cartCookieId, MaterialType.Real).fetch();
     }
-    
-    public static List<Cart> findByCookie(String cartCookieId){
-        return Cart.find("cookieIdentity=?",cartCookieId).fetch();
+
+    public static List<Cart> findByCookie(String cartCookieId) {
+        return Cart.find("cookieIdentity=?", cartCookieId).fetch();
     }
 
 

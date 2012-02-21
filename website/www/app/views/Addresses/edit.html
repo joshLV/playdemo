@@ -2,14 +2,14 @@
     <tr>
         <td valign="top">
             <input name="selectedAddressId" type="radio" id="radio_address_${address.id}"
-                   value="${address.id}" #{if "true".equals(address.isDefault)}checked#{/if}/>
+                   value="${address.id}" #{if "true".equals(address.isDefault)}checked#{/if} onclick="radioClick()"/>
         </td>
         <td>
             <div class="right_table" id="div_edit_address_${address.id}">
                 <table class="table_height" width="700" border="0" cellpadding="0" cellspacing="0">
                     <tr>
                         <td width="71" height="30" align="right"><span class="font_red">*</span>选择地区：</td>
-                        <td width="613" align="left">
+                        <td width="613" align="left"><div id="china_area">
                         #{select 'address.province', valueProperty:'id', labelProperty:'name', value:address.province, class:"area_select", id:"address_province_"+ address.id }
                             #{option 'ALL'}-全部-#{/option}
                             #{option '浙江'}浙江#{/option}
@@ -21,7 +21,7 @@
                         #{select 'address.district', valueProperty:'id', labelProperty:'name', value:address.district, class:"area_select", id:"address_district_"+ address.id }
                             #{option 'ALL'}-全部-#{/option}
                             #{option 'NN区'}NN区#{/option}
-                        #{/select}
+                        #{/select}</div>
                         </td>
                     </tr>
                     <tr>

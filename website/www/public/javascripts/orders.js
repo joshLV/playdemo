@@ -1,4 +1,8 @@
 var lastUpdateAddressId = -1;
+
+$.ready(function () {
+    $("#china_area").jChinaArea();
+});
 /**
  * 添加地址行显示到地址列表中
  * @param data
@@ -104,9 +108,20 @@ function showAddress(show) {
  * 显示新增地址的输入框
  */
 function showCreateAddressEdit() {
-    hideLastEdit();
-    $("#radio_address_0").attr("checked", true);
-    $("#div_add_address").show();
+    if (lastUpdateAddressId > 0) {
+        $("#li_address_" + lastUpdateAddressId).load("/orders/addresses/" + lastUpdateAddressId, "", function (data) {
+            $("#china_area").jChinaArea({aspnet:false, s1:"上海市", s2:"上海市", s3:"黄浦区"});
+            $("#radio_address_0").attr("checked", true);
+            $("#div_add_address").show();
+            $("#bottom_buttons").show();
+            lastUpdateAddressId = -1;
+        });
+    } else {
+        $("#china_area").jChinaArea({aspnet:false, s1:"上海市", s2:"上海市", s3:"黄浦区"});
+        $("#radio_address_0").attr("checked", true);
+        $("#div_add_address").show();
+        $("#bottom_buttons").show();
+    }
 }
 
 /**
@@ -133,7 +148,6 @@ function initAddress() {
 }
 
 function updateAddress(addressId) {
-//    addressId = $(this).attr('addressId');
     $.ajax({
         type:'PUT',
         data:{
@@ -159,31 +173,27 @@ function updateAddress(addressId) {
         }});
 }
 
-function hideLastEdit() {
-    if (lastUpdateAddressId > 0) {
-        $("#li_address_" + lastUpdateAddressId).load("/orders/addresses/" + lastUpdateAddressId, "", function (data) {
-
-        });
-    }
-}
-
 function editAddress(addressId) {
-
-//    addressId = $(this).attr('addressId');
-    $("#li_address_" + addressId).load("/orders/addresses/" + addressId + "/edit", "", function (data) {
-        hideLastEdit();
-        $("#bottom_buttons").hide();
-        $("#radio_address_" + addressId).attr("checked", true);
-        $("#div_add_address").hide();
+    $("#li_address_" + addressId).load("/orders/addresses/" + addressId + "/edit", function (data) {
+        if (lastUpdateAddressId > 0) {
+            $("#li_address_" + lastUpdateAddressId).load("/orders/addresses/" + lastUpdateAddressId, "", function (data) {
+                $("#china_area").jChinaArea({aspnet:false, s1:"上海市", s2:"上海市", s3:"黄浦区"});
+                $("#bottom_buttons").hide();
+                $("#radio_address_" + addressId).attr("checked", true);
+                $("#div_add_address").hide();
+            });
+        } else {
+            $("#china_area").jChinaArea({aspnet:false, s1:"上海市", s2:"上海市", s3:"黄浦区"});
+            $("#bottom_buttons").hide();
+            $("#radio_address_" + addressId).attr("checked", true);
+            $("#div_add_address").hide();
+        }
         lastUpdateAddressId = addressId;
     });
-//    event.cancelBubble = true;
-//    event.stopPropagation();
 }
 
 function deleteAddress(addressId) {
     if (confirm("您确定要删除这个地址吗?")) {
-//        addressId = $(this).attr('addressId');
         $.ajax({
             type:'DELETE',
             url:'/orders/addresses/' + addressId,
@@ -199,8 +209,22 @@ function deleteAddress(addressId) {
                 }
             }});
     }
-//    event.cancelBubble = true;
-//    event.stopPropagation();
+}
+
+function radioClick() {
+
+    var addressId = $("input[name='selectedAddressId']:checked").val();
+    if (lastUpdateAddressId > 0) {
+        $("#li_address_" + lastUpdateAddressId).load("/orders/addresses/" + lastUpdateAddressId, "", function (data) {
+            $("#china_area").jChinaArea({aspnet:false, s1:"上海市", s2:"上海市", s3:"黄浦区"});
+            $("#radio_address_" + addressId).attr("checked", true);
+            $("#bottom_buttons").show();
+            lastUpdateAddressId = addressId;
+            registerClick();
+        });
+    }
+    $("#div_add_address").hide();
+
 }
 
 $(window).load(
@@ -208,32 +232,53 @@ $(window).load(
         /**
          * 地址表格的 行点击事件
          */
-        $(".li_address_modify").click(function (event) {
-            if (event.srcElement == undefined) {
-                return;
-            }
-            var src = event.srcElement.tagName.toLowerCase();
-            if (src == 'input' || src == 'select' || src == 'a') { //过滤修改时的控件，使这些控件不执行行点击事件
-                return;
-            }
-            addressId = $(this).attr('addressId');
-            $("#radio_address_" + addressId).attr("checked", true);
-
-            $("#div_edit_address_" + addressId).hide();
-            $("#div_add_address").hide();
-        });
-
-        /**
-         * 使用新地址层的显示和隐藏事件
-         */
-//        $("#span_use_new_address").click(function () {
-//            showCreateAddressEdit();
+//        $(".li_address_modify").click(function (event) {
+//            if (event.srcElement == undefined) {
+//                return;
+//            }
+//            var src = event.srcElement.tagName.toLowerCase();
+//            if (src == 'input' || src == 'select' || src == 'a' || src == 'span') { //过滤修改时的控件，使这些控件不执行行点击事件
+//                return;
+//            }
+//            addressId = $(this).attr('addressId');
+//            $("#radio_address_" + addressId).attr("checked", true);
+//
+//            $("#div_edit_address_" + addressId).hide();
+//            $("#div_add_address").hide();
+//            alert("li_address_modify");
 //        });
+
+
+        /*
+         $("input[name='selectedAddressId']").click(function () {
+         var addressId = $("input[name='selectedAddressId']:checked").val();
+         if (lastUpdateAddressId > 0) {
+         $("#li_address_" + lastUpdateAddressId).load("/orders/addresses/" + lastUpdateAddressId, "", function (data) {
+         $("#china_area").jChinaArea({aspnet:false, s1:"上海市", s2:"上海市", s3:"黄浦区"});
+         $("#radio_address_" + addressId).attr("checked", true);
+         $("#bottom_buttons").show();
+         lastUpdateAddressId = addressId;
+         });
+         }
+         $("#div_add_address").hide();
+         });            */
+
         /**
-         * 使用新地址radio的显示和隐藏事件
+         * 选择地址的单选框点击事件
          */
-//        $("#span_radio_new_address").click(function () {
-//            showCreateAddressEdit();
+//        $("input[name='selectedAddressId']").each(function () {
+//            $(this).click(function () {
+//                var addressId = $("input[name='selectedAddressId']:checked").val();
+//                if (lastUpdateAddressId > 0) {
+//                    $("#li_address_" + lastUpdateAddressId).load("/orders/addresses/" + lastUpdateAddressId, "", function (data) {
+//                        $("#china_area").jChinaArea({aspnet:false, s1:"上海市", s2:"上海市", s3:"黄浦区"});
+//                        $("#radio_address_" + addressId).attr("checked", true);
+//                        $("#bottom_buttons").show();
+//                        lastUpdateAddressId = addressId;
+//                    });
+//                }
+//                $("#div_add_address").hide();
+//            });
 //        });
 
         /**
@@ -242,7 +287,8 @@ $(window).load(
         $("#link_confirm").click(function () {
             //添加收货地址信息到数据库中
             var addressId = $("input[name='selectedAddressId']:checked").val();
-            var addNew = addressId == 0;
+//            var addNew = addressId == 0;
+            var addNew = $("#div_add_address").show();
             if (addNew) {
                 $.post("/orders/addresses/new",
                     {selectedAddressId:$("#selectedAddressId").val(),
@@ -270,6 +316,7 @@ $(window).load(
                         type:'PUT',
                         url:'/orders/addresses/' + addressId + "/default",
                         success:function (data) {
+
                         }}
                 );
             }
@@ -290,7 +337,16 @@ $(window).load(
             $("#show_address_ul").hide();
             $("#div_add_address").hide();
             $("#link_cancel").show();
-            $("#radio_address_" + $("#addressId").val()).attr("checked", true);
+            var addressId = $("#addressId").val();
+            $("#radio_address_" + addressId).attr("checked", true);
+            $("#li_address_" + addressId).load("/orders/addresses/" + addressId + "/edit", function (data) {
+
+                $("#china_area").jChinaArea({aspnet:false, s1:"上海市", s2:"上海市", s3:"黄浦区"});
+                $("#bottom_buttons").hide();
+                $("#radio_address_" + addressId).attr("checked", true);
+                $("#div_add_address").hide();
+                lastUpdateAddressId = addressId;
+            });
         });
 
         /**
@@ -319,4 +375,4 @@ $(window).load(
             $("#order_create_form").submit();
         });
     }
-)
+);
