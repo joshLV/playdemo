@@ -2,3 +2,15 @@
 
 require:
     - play
+    - sales -> sales
+    - order -> order
+    - consumer -> consumer
+
+repositories:
+    - customModules:
+        type:       local
+        artifact:   "${application.path}/../../module/[module]"
+        contains:
+            - sales -> *
+            - order -> *
+            - consumer -> *
