@@ -1,9 +1,17 @@
+//发送订单数量变更请求，若数量变为非正整数，则视为删除
 function reorder(goods_id,indent){
     var element = $("#num_" + goods_id);
     var last_num = $("#last_num_" + goods_id);
 
     var new_num = Number(last_num.val()) + indent;
-    if(new_num < 0){
+    if(new_num <= 0){
+        $.ajax({
+            type:'DELETE',
+            url:'/carts/' + goods_id,
+            success:function(data){
+                $("#row_" + goods_id).remove();
+                refreshAmount();
+            }});
         return;
     }
     $.post('/carts',
@@ -11,16 +19,16 @@ function reorder(goods_id,indent){
             function(data){
                 element.val(new_num);
                 last_num.val(new_num);
+                calItem(goods_id);
+                refreshAmount();
             });
-    calItem(goods_id);
-    refreshAmount();
 }
-
+//计算单行的总价
 function calItem(goods_id){
     var total_price = Number($("#price_" + goods_id).text()) * Number($("#num_" + goods_id).val());
     $("#subtotal_" + goods_id).val(total_price);
 }
-
+//计算订单总价
 function refreshAmount(){
     var number = 0;
     $("input.num_input").each(function(){number += Number($(this).val())});
@@ -141,8 +149,6 @@ $(window).load(
                 }});
             
             });
-
-        refreshAmount();
     }
 );
 
