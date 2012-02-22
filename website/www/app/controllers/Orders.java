@@ -44,10 +44,15 @@ public class Orders extends AbstractLoginController {
                 case Electronic:
                     eCartList.add(cart);
                     eCartAmount = Cart.amount(eCartList);
+                    renderArgs.put("goodsAmount", eCartAmount);
+                    renderArgs.put("totalAmount", eCartAmount);
                     break;
                 case Real:
                     rCartList.add(cart);
-                    rCartAmount = Cart.amount(rCartList).add(new BigDecimal(5));
+                    BigDecimal goodsAmount = Cart.amount(rCartList);
+                    rCartAmount = goodsAmount.add(new BigDecimal(5));
+                    renderArgs.put("goodsAmount", goodsAmount);
+                    renderArgs.put("totalAmount", rCartAmount);
                     break;
             }
             render(addressList, eCartList, eCartAmount, rCartList, rCartAmount);
