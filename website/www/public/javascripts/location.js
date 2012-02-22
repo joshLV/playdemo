@@ -392,7 +392,7 @@ Location.prototype.fillOption	= function(el_id , loc_id , selectedText) {
 		var index	= 0;
 		var selected_index	= 0;
 		$.each(json , function(k , v) {
-			var option	= '<option value="'+k+'">'+v+'</option>';
+			var option	= '<option value="'+v+ '" loc="' + k + '">'+v+'</option>';
 			el.append(option);
 			if (v == selectedText) {
 				selected_index	= index;

@@ -211,6 +211,9 @@ function deleteAddress(addressId) {
     }
 }
 
+/**
+ * 选择地址的单选框点击事件
+ */
 function radioClick() {
 
     var addressId = $("input[name='selectedAddressId']:checked").val();
@@ -262,24 +265,6 @@ $(window).load(
          }
          $("#div_add_address").hide();
          });            */
-
-        /**
-         * 选择地址的单选框点击事件
-         */
-//        $("input[name='selectedAddressId']").each(function () {
-//            $(this).click(function () {
-//                var addressId = $("input[name='selectedAddressId']:checked").val();
-//                if (lastUpdateAddressId > 0) {
-//                    $("#li_address_" + lastUpdateAddressId).load("/orders/addresses/" + lastUpdateAddressId, "", function (data) {
-//                        $("#china_area").jChinaArea({aspnet:false, s1:"上海市", s2:"上海市", s3:"黄浦区"});
-//                        $("#radio_address_" + addressId).attr("checked", true);
-//                        $("#bottom_buttons").show();
-//                        lastUpdateAddressId = addressId;
-//                    });
-//                }
-//                $("#div_add_address").hide();
-//            });
-//        });
 
         /**
          * 点击确认收货信息按钮.

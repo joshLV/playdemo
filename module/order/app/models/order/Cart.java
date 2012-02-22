@@ -64,7 +64,7 @@ public class Cart extends Model {
     }
 
     public static List<Cart> findByCookie(String cartCookieId) {
-        return Cart.find("cookieIdentity=?", cartCookieId).fetch();
+        return Cart.find("byCookieIdentity", cartCookieId).fetch();
     }
 
 
