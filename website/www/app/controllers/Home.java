@@ -16,7 +16,7 @@ import controllers.modules.cas.*;
  * Date: 2/13/12
  * Time: 9:57 AM
  */
-@With({SecureCAS.class, WebCAS.class})
+@With(WebCAS.class)
 public class Home extends Controller {
 
     public static void index() {
