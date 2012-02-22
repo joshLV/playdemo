@@ -29,18 +29,13 @@ public class ShopFunctionTest extends FunctionalTest {
         shop.put("shop.phone","ccccc");
         shop.put("shop.companyId","1");
         
-//        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>"+list.size());
-//        
-//        System.out.println("xxx"+list.size());
-        
         Response response2 = POST("/shops/create",shop);
         
         
         Assert.assertTrue(response2.status == 302);
         
         List<Shop> list2 = Shop.findAll();
-//        System.out.println("bbbb"+list2.size());
-        
+
         Assert.assertTrue(list.size() + 1 == list2.size());
         
     }

@@ -194,9 +194,9 @@
             </dl>
         </div>
     #{/if}
-    <div class="sp_height">商品总金额:<span class="font_red_one">${eCartAmount + rCartAmount - 5}元</span> 运费：<span
-            class="font_red_one">5元</span> 合计：<span
-            class="font_red_one">${eCartAmount + rCartAmount}元</span></div>
+    <div class="sp_height">#{if rCartList.size() >0}商品总金额:<span class="font_red_one">${goodsAmount}元</span> 运费：<span
+            class="font_red_one">5元</span>#{/if} 合计：<span
+            class="font_red_one">${totalAmount}元</span></div>
     <div class="sp_height_one"><a id="link_confirm_pay" class="que_pay_bg" href="#">确认付款</a></div>
 
     <div style="clear:both"></div>

@@ -63,10 +63,6 @@ public class ImageController extends Controller {
         String targetImagePath = IMAGE_ROOT + File.separator + "p" + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + imageName;
         String originImagePath = IMAGE_ROOT + File.separator + "o" + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + matcher.group(1) + "." + matcher.group(3);
 
-
-        System.out.println("targetImagePath:" + targetImagePath);
-        System.out.println("originImagePath:" + originImagePath);
-
         File targetImage = new File(targetImagePath);
 
         if (!targetImage.exists()) {

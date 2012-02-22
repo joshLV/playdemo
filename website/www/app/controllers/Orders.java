@@ -1,7 +1,7 @@
 package controllers;
 
-import controllers.modules.webtrace.WebTrace;
 import controllers.modules.cas.*;
+import controllers.modules.webtrace.WebTrace;
 import models.consumer.Address;
 import models.order.Cart;
 import models.order.NotEnoughInventoryException;
@@ -30,7 +30,6 @@ public class Orders extends AbstractLoginController {
         List<Address> addressList = Address.findByOrder();
 
         boolean buyNow = Boolean.parseBoolean(session.get("buyNow"));
-        System.out.println("buyNow=" + buyNow);
         if (buyNow) {//立即购买，则不从购物车取购买的商品信息，而直接从session中获取
             List<Cart> eCartList = new ArrayList<>();
             BigDecimal eCartAmount = new BigDecimal(0);
@@ -61,8 +60,17 @@ public class Orders extends AbstractLoginController {
 
 
         List<Cart> rCartList = Cart.findRCart(cookieIdentity.value);
-        BigDecimal rCartAmount = Cart.amount(rCartList).add(new BigDecimal(5));
+        BigDecimal rCartAmount;
+        if (rCartList.size() == 0) {
+            rCartAmount = new BigDecimal(0);
+        } else {
+            rCartAmount = Cart.amount(rCartList).add(new BigDecimal(5));
+        }
+        BigDecimal totalAmount = eCartAmount.add(rCartAmount);
+        BigDecimal goodsAmount = rCartList.size() == 0 ? eCartAmount : totalAmount.remainder(new BigDecimal(5));
 
+        renderArgs.put("goodsAmount", goodsAmount);
+        renderArgs.put("totalAmount", totalAmount);
         render(addressList, eCartList, eCartAmount, rCartList, rCartAmount);
     }
 
@@ -103,7 +111,6 @@ public class Orders extends AbstractLoginController {
         Address defaultAddress = Address.findDefault(getUser());
         models.order.Orders orders;
         try {
-            System.out.println("buyNow=" + buyNow);
             if (buyNow) {
                 long goodsId = Long.parseLong(session.get("goodsId"));
                 long number = Integer.parseInt(session.get("number"));
@@ -120,8 +127,9 @@ public class Orders extends AbstractLoginController {
             session.put("buyNow", false);
             redirect("/payment_info/" + orders.id);
         } catch (NotEnoughInventoryException e) {
-            System.out.println(e);
             //todo 缺少库存
+            System.out.println(e);
+
 
         }
     }

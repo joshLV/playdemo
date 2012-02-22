@@ -28,8 +28,6 @@ public class WebTrace extends Controller {
             cas.loginName = user.loginName;
             cas.user = user;
         }
-        System.out.println(cas.isLogin);
-        System.out.println(cas.loginName);
         renderArgs.put("cas", cas);
     }
 
