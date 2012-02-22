@@ -8,7 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import play.db.jpa.Model;
 
@@ -16,8 +16,8 @@ import play.db.jpa.Model;
 @Entity
 @Table(name = "shops")
 public class Shop extends Model {
-	
-	
+
+
     @Column(name = "company_id")
     public long companyId;
 
@@ -60,7 +60,11 @@ public class Shop extends Model {
 
     @Column(name = "display_order")
     public String displayOrder;
-    
+
+    @ManyToMany(cascade = CascadeType.REFRESH)
+    @JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name = "goods_id"), joinColumns = @JoinColumn(name = "shop_id"))
+    public Set<Goods> goods;
+
     /**
      * 读取某商户的全部门店记录
      *

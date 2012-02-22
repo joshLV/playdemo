@@ -46,8 +46,12 @@ public class Goods extends Model {
      */
     @Column(name = "company_id")
     public String companyId;
-    //    @OneToMany(mappedBy = "companyId")
-    //    public Set<Shop> shops = new HashSet<Shop>(0);
+
+    @ManyToMany(cascade = CascadeType.REFRESH)
+    @JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))
+    public Set<Shop> shops;
+
+
     /**
      * 原始图片路径
      */
