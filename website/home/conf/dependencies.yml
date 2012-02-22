@@ -5,6 +5,8 @@ require:
     - sales -> sales
     - order -> order
     - consumer -> consumer
+     - play -> cas 3.1
+    
 
 repositories:
     - customModules:
