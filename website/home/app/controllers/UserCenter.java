@@ -2,11 +2,14 @@ package controllers;
 
 import java.util.List;
 
+import controllers.modules.webtrace.WebTrace;
+
 import models.consumer.User;
 import models.order.OrderItems;
 import models.order.Orders;
 import play.mvc.Controller;
-
+import play.mvc.With;
+@With({SecureCAS.class, WebTrace.class})
 public class UserCenter extends Controller {
 
 	/**
