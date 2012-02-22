@@ -72,15 +72,16 @@ public class Cart extends Model {
     public static BigDecimal amount(List<Cart> cartList) {
         BigDecimal cartAmount = new BigDecimal(0);
         for (Cart cart : cartList) {
-            cartAmount = cart.goods.salePrice.multiply(new BigDecimal(cart.number)).add(cartAmount);
+            cartAmount = cartAmount.add(cart.goods.salePrice.multiply(new BigDecimal(cart.number)));
+            System.out.println("cartAmount=" + cartAmount);
         }
-
+        System.out.println("cartAmount1=" + cartAmount);
         return cartAmount;
     }
 
     public static void clear(User user, String cookieIdentity) {
+        System.out.println("clear cart:user=" + user.loginName);
         List<Cart> cartList = Cart.find("user=? or cookieIdentity=?", user, cookieIdentity).fetch();
-        System.out.println("cartList.size()=" + cartList.size());
         for (Cart cart : cartList) {
             cart.delete();
         }

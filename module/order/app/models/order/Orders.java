@@ -154,13 +154,17 @@ public class Orders extends Model {
     public Orders(User user, List<Cart> cartList, Address address) throws NotEnoughInventoryException {
         this(user, address);
 
+        System.out.println("begin amount");
         this.amount = Cart.amount(cartList);
+        System.out.println("amount1=" + amount.toBigInteger());
+        System.out.println("=======cartList.size()=" + cartList.size());
         for (Cart cart : cartList) {
             if (cart.materialType == MaterialType.Real) {
                 this.amount = this.amount.add(new BigDecimal(5));
                 break;
             }
         }
+        System.out.println("amount2=" + amount);
         this.needPay = amount;
 
         for (Cart cart : cartList) {
@@ -254,14 +258,13 @@ public class Orders extends Model {
         return entityManager.createNativeQuery(sql.toString()).getResultList();
     }
 
-    public void createAndUpdateInventory(User user,String cookieIdentity) {
-        if (create()) {
-            for (OrderItems orderItem : orderItems) {
-                orderItem.goods.baseSale -= orderItem.number;
-                orderItem.save();
-            }
-            Cart.clear(user,cookieIdentity);
+    public void createAndUpdateInventory(User user, String cookieIdentity) {
+        save();
+        for (OrderItems orderItem : orderItems) {
+            orderItem.goods.baseSale -= orderItem.number;
+            orderItem.save();
         }
+//        Cart.clear(user, cookieIdentity);
 
     }
 

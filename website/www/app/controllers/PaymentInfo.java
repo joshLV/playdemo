@@ -1,5 +1,6 @@
 package controllers;
 
+import controllers.modules.webcas.WebCAS;
 import models.consumer.*;
 import models.accounts.*;
 import models.order.*;
@@ -15,7 +16,7 @@ import java.util.*;
 
 import controllers.modules.cas.SecureCAS;
 
-@With(SecureCAS.class)
+@With({SecureCAS.class, WebCAS.class})
 public class PaymentInfo extends Controller {
 
     public static void index(long id) {
