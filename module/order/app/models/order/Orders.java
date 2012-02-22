@@ -201,22 +201,39 @@ public class Orders extends Model {
         return orderList;
     }
 
-    /**
-     * 券号列表
-     *
-     * @return
-     */
-    public static List queryQ() {
-        EntityManager entityManager = play.db.jpa.JPA.em();
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT a.order_no,c.no,c.name,d.discount_price,d.discount_sn,c.expired_bg_on,c.expired_ed_on,a.created_at,d.refund_price,d.refund_at,d.status FROM discount d");
-        sql.append(" LEFT JOIN orders a ON a.id = d.order_id ");
-        sql.append(" LEFT JOIN order_items b ON a.id = b.order_id ");
-        sql.append(" LEFT JOIN goods c ON b.goods_id=c.id");
-        sql.append(" WHERE c.company_id=1");
-        sql.append(" ORDER BY a.created_at DESC");
-        return entityManager.createNativeQuery(sql.toString()).getResultList();
-    }
+	/**
+	 * 商家券号列表
+	 *
+	 * @return
+	 */
+	public static List queryQ() {
+		EntityManager entityManager = play.db.jpa.JPA.em();
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT a.order_no,c.no,c.name,d.discount_price,d.discount_sn,c.expired_bg_on,c.expired_ed_on,a.created_at,d.refund_price,d.refund_at,d.status FROM discount d");
+		sql.append(" LEFT JOIN orders a ON a.id = d.order_id ");
+		sql.append(" LEFT JOIN order_items b ON a.id = b.order_id ");
+		sql.append(" LEFT JOIN goods c ON b.goods_id=c.id");
+		sql.append(" WHERE c.company_id=1");
+		sql.append(" ORDER BY a.created_at DESC");
+		return entityManager.createNativeQuery(sql.toString()).getResultList();
+	}
+
+	/**
+	 * 会员中心 券号列表
+	 *
+	 * @return
+	 */
+	public static List userTicketsQuery(Long id) {
+		EntityManager entityManager = play.db.jpa.JPA.em();
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT a.order_no,c.name,d.discount_sn,a.created_at,c.expired_bg_on,c.expired_ed_on,d.status FROM discount d");
+		sql.append(" LEFT JOIN orders a ON a.id = d.order_id ");
+		sql.append(" LEFT JOIN order_items b ON a.id = b.order_id ");
+		sql.append(" LEFT JOIN goods c ON b.goods_id=c.id");
+		sql.append(" WHERE a.user_id="+id);
+		sql.append(" ORDER BY a.created_at DESC");
+		return entityManager.createNativeQuery(sql.toString()).getResultList();
+	}
 
     public void createAndUpdateInventory() {
         if (create()) {
