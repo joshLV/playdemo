@@ -3,9 +3,9 @@
 # ~~~~
 
 # Home page
-GET     /                                       MyOrders.index
-GET     /details                                       MyOrders.details
-
+GET     /orders                                       UserCenter.index
+GET     /orders/{id}                                       UserCenter.details
+GET     /tickets                                       UserCenter.tickets
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
