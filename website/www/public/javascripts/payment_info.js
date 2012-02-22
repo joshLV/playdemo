@@ -14,8 +14,11 @@ function reset_result_dialog(){
     if($("#full_bg").css("display") == "block"){
         var body_height = $("body").height();
         var body_width  = $("body").width();
-        $("#full_bg").css({width:body_height,height:body_width});
-        $("#payment_result").css({top:cal_position_top("payment_result"),left:cal_position_left("payment_result"),display:"block"});
+        $("#full_bg").css({width:body_width,height:body_height});
+        $("#payment_result").css({
+            top:cal_position_top("payment_result"),
+            left:cal_position_left("payment_result"),
+            display:"block"});
 
     }
 }
@@ -31,6 +34,7 @@ $(window).load(
         $("#confirm").click(function(){
             $("#full_bg").css({display:"block"});
             reset_result_dialog();
+            $("#confirm_form").submit();
         });    
         
     });

@@ -153,29 +153,38 @@
             <div>
                 <div class="zhifubao_pay">
                     <div class="zhifubao_input">
-                        <input name="pay_method" type="radio" checked="checked"/>
+                        <input name="payment_way" type="radio" checked="checked"/>
                     </div>
                     <div><img src="@{'/public/images/pay_icon/zhifubao_pay.jpg'}" /></div>
                 </div>
                     *{
                 	<ul class="pay_company_ul">
-                    	<li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
-                        <li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
-                        <li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
-                        <li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
-                        <li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
-                        <li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
-                        <li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
-                        <li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
-                        <li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
-                        <li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
-                        <li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
-                        <li class="pay_company"><div class="pay_input"><input name="" type="radio" value="" /></div><div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div></li>
+                        <li class="pay_company">
+                        <div class="pay_input">
+                            <input name="" type="radio" value="" />
+                        </div>
+                        <div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div>
+                        </li>
+                        <li class="pay_company">
+                        <div class="pay_input"><input name="" type="radio" value="" /></div>
+                        <div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div>
+                        </li>
+                        <li class="pay_company">
+                        <div class="pay_input"><input name="" type="radio" value="" /></div>
+                        <div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div>
+                        </li>
+                        <li class="pay_company">
+                        <div class="pay_input"><input name="" type="radio" value="" /></div>
+                        <div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div>
+                        </li>
                     </ul>
                     }*
                 </div>
             </div>
-            <div class="buttom_queren"> <a class="suc_ok_bg" href="#" id="confirm">确认订单，付款</a></div>
+            #{form @confirm() ,target:"_blank", id:"confirm_form"}
+            <input type="hidden" value="${order.id}" name="orderId"/>
+            <div class="buttom_queren"> <a class="suc_ok_bg" href="#" id="confirm" on>确认订单，付款</a></div>
+            #{/form}
       </div>
       
   </div>

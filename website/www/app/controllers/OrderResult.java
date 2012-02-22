@@ -6,6 +6,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
 import java.math.BigDecimal;
+import thirdpart.alipay.util.AlipayNotify;
 
 import java.util.*;
 import controllers.modules.cas.SecureCAS;
@@ -44,18 +45,23 @@ public class OrderResult extends Controller {
             //乱码解决，这段代码在出现乱码时使用。
             //如果mysign和sign不相等也可以使用这段代码转化
             //valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
+            if(name.equals("body")){
+                continue;
+            }
             verifyParams.put(name, valueStr);
         }   
 
         String errorMessage = null;
         models.order.Orders order =  null;
         //验证通知结果
-        /*
-        if(!AlipayNotify.verify(veryfiParams)){
+        
+        if(!AlipayNotify.verify(verifyParams)){
             errorMessage = "支付宝参数非法，请您稍后再试";
 
-        }else */if(trade_status !=null && 
-                !trade_status.equals("TRADE_FINISHED") && 
+        }else if(trade_status == null){
+            errorMessage = "订单状态未知，请稍后再试";
+
+        }else if(!trade_status.equals("TRADE_FINISHED") && 
                 !trade_status.equals("TRADE_SUCCESS")){
             errorMessage = "订单返回状态异常，请您稍后再试";
 
@@ -69,7 +75,7 @@ public class OrderResult extends Controller {
             if(order == null){
                 errorMessage = "无此订单，请您稍后再试";
 
-            }else if( total_fee.compareTo(order.needPay) <= 0){
+            }else if( total_fee.compareTo(order.needPay) < 0){
                 errorMessage = "订单金额不符，请您稍后再试";
 
             }else if(!order.status.equals(OrderStatus.PAID.toString())){
@@ -81,7 +87,4 @@ public class OrderResult extends Controller {
 
     }
 
-    public static void alipayNotify(){
-
-    }
 }

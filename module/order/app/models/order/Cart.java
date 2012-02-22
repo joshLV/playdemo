@@ -36,7 +36,8 @@ public class Cart extends Model {
     @Column(name = "updated_at")
     public Date updatedAt;
 
-    public Cart(User user, String cookieIdentity, Goods goods, long number, MaterialType materialType) {
+    public Cart(User user, String cookieIdentity, Goods goods, 
+            long number, MaterialType materialType) {
         this.user = user;
         this.cookieIdentity = cookieIdentity;
         this.goods = goods;

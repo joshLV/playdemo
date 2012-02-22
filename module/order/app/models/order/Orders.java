@@ -62,7 +62,9 @@ public class Orders extends Model {
 	@Column(name = "receiver_name")
 	public String receiverName;
 
-	public String postcode;
+    @Column(name = "paid_at")
+    public Date paidAt;
+    public String postcode;
 
 	@Column(name = "createdAt")
 	public Date createdAt;
@@ -109,6 +111,7 @@ public class Orders extends Model {
 		this.deleted = 0;
 		this.orderNumber = OrdersNumber.generateOrderNumber();
 		this.orderItems = new ArrayList();
+        this.paidAt = null;
 
 		this.amount = new BigDecimal(0);
 		this.accountPay = new BigDecimal(0);
