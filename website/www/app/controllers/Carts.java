@@ -100,16 +100,14 @@ public class Carts extends Controller {
                     cart.delete();
                 }
             }
-        } else {
-            for (long goodsId : goodsIds) {
-                models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-                cart = Cart.find("byCookieIdentityAndGoods", cookieIdentity.value, goods).first();
-                if (cart != null) {
-                    cart.delete();
-                }
+        }
+        for (long goodsId : goodsIds) {
+            models.sales.Goods goods = models.sales.Goods.findById(goodsId);
+            cart = Cart.find("byCookieIdentityAndGoods", cookieIdentity.value, goods).first();
+            if (cart != null) {
+                cart.delete();
             }
         }
-
 
         ok();
     }
