@@ -16,12 +16,12 @@ public class PathUtil {
      * @param id 图片id
      * @return 三级目录的路径
      */
-    public static String getPathById(int id) {
-        int firstDir = id >> 20;
-        int secondTmpNum = id >> 10;
-        int secondDir = (~(firstDir << 10)) & (secondTmpNum);
+    public static String getPathById(long id) {
+        long firstDir = id >> 20;
+        long secondTmpNum = id >> 10;
+        long secondDir = (~(firstDir << 10)) & (secondTmpNum);
 
-        int thirdDir = (~(secondTmpNum << 10)) & id;
+        long thirdDir = (~(secondTmpNum << 10)) & id;
         return String.valueOf(firstDir) + "/" + secondDir + "/" + thirdDir + "/";
     }
     
