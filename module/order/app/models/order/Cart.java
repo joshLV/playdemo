@@ -68,19 +68,19 @@ public class Cart extends Model {
         return Cart.find("byCookieIdentity", cartCookieId).fetch();
     }
 
+    public static List<Cart> findByUser(User user) {
+        return Cart.find("byUser", user).fetch();
+    }
 
     public static BigDecimal amount(List<Cart> cartList) {
         BigDecimal cartAmount = new BigDecimal(0);
         for (Cart cart : cartList) {
             cartAmount = cartAmount.add(cart.goods.salePrice.multiply(new BigDecimal(cart.number)));
-            System.out.println("cartAmount=" + cartAmount);
         }
-        System.out.println("cartAmount1=" + cartAmount);
         return cartAmount;
     }
 
     public static void clear(User user, String cookieIdentity) {
-        System.out.println("clear cart:user=" + user.loginName);
         List<Cart> cartList = Cart.find("user=? or cookieIdentity=?", user, cookieIdentity).fetch();
         for (Cart cart : cartList) {
             cart.delete();

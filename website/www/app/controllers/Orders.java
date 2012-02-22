@@ -124,7 +124,7 @@ public class Orders extends Controller {
 
             } else {
 
-                List<Cart> eCartList = Cart.findByCookie(cookieIdentity.value);
+                List<Cart> eCartList = Cart.findByUser(WebCAS.getUser());
                 orders = new models.order.Orders(WebCAS.getUser(), eCartList, defaultAddress);
             }
             orders.createAndUpdateInventory(WebCAS.getUser(), cookieIdentity.value);
