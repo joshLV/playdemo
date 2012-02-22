@@ -11,12 +11,10 @@ import play.mvc.Controller;
  * Time: 10:41 AM
  */
 public class AbstractLoginController extends Controller {
-    
-    public static User getUser(){
+
+    public static User getUser() {
         String username = session.get("username");
-//        return User.find("byLoginName", username).first();
-        //todo
-        return User.findById(1L);
+        return User.find("byLoginName", username).first();
     }
-    
+
 }

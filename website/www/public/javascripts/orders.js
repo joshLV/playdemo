@@ -56,9 +56,9 @@ function setAddress(addressId) {
     if (addressId == 0) {//如果是新增的地址
 
         $("#show_name").html($("#address_name").val());
-        var province = $("select[name='address.province']:checked").val();
-        var city = $("select[name='address.city']:checked").val();
-        var district = $("select[name='address.district']:checked").val();
+        var province = $("select[name='address.province']").val();
+        var city = $("select[name='address.city']").val();
+        var district = $("select[name='address.district']").val();
         var address = $("#address_address").val();
         var fullAddress = mergeAddress(province, city, district, address);
         $("#show_address").html(fullAddress);
@@ -73,20 +73,10 @@ function setAddress(addressId) {
     } else {//数据库中原有的地址
         $("#addressId").val(addressId);
         $("#show_name").html($("#address_name_" + addressId).html());
-//        var province = $("select[name='address.province_' + addressId]:checked").val();
-//        var city = $("select[name='address.city_' + addressId]:checked").val();
-//        var district = $("select[name='address.district_' + addressId]:checked").val();
-//        var address = $("#address_address_" + addressId).html();
-//        var fullAddress = mergeAddress(province, city, district, address);
         $("#show_address").html($("#address_address_" + addressId).html());
-//        $("#show_address").html($("#address_address_" + addressId).html());
         $("#show_postcode").html($("#address_postcode_" + addressId).html());
-//        var areaCode = $("#address_areaCode_" + addressId).html();
-//        var mobile = $("#address_mobile_" + addressId).html();
-//        var phoneNumber = $("#address_phoneNumber_" + addressId).html();
-//        var phoneExtNumber = $("#address_phoneExtNumber_" + addressId).html();
 
-        $("#show_phone").html($("#address_phone_" + addressId).html());//mergePhone(mobile, areaCode, phoneNumber, phoneExtNumber));
+        $("#show_phone").html($("#address_phone_" + addressId).html());
     }
 }
 /**
@@ -177,13 +167,13 @@ function editAddress(addressId) {
     $("#li_address_" + addressId).load("/orders/addresses/" + addressId + "/edit", function (data) {
         if (lastUpdateAddressId > 0) {
             $("#li_address_" + lastUpdateAddressId).load("/orders/addresses/" + lastUpdateAddressId, "", function (data) {
-                $("#china_area").jChinaArea({aspnet:false, s1:"上海市", s2:"上海市", s3:"黄浦区"});
+                setAreaValue(addressId);
                 $("#bottom_buttons").hide();
                 $("#radio_address_" + addressId).attr("checked", true);
                 $("#div_add_address").hide();
             });
         } else {
-            $("#china_area").jChinaArea({aspnet:false, s1:"上海市", s2:"上海市", s3:"黄浦区"});
+            setAreaValue(addressId);
             $("#bottom_buttons").hide();
             $("#radio_address_" + addressId).attr("checked", true);
             $("#div_add_address").hide();
@@ -223,13 +213,15 @@ function radioClick() {
             $("#radio_address_" + addressId).attr("checked", true);
             $("#bottom_buttons").show();
             lastUpdateAddressId = addressId;
-            registerClick();
         });
     }
     $("#div_add_address").hide();
 
 }
 
+function setAreaValue(addressId) {
+    $("#china_area").jChinaArea({aspnet:false, s1:$("#address_province_" + addressId).attr("selectedValue"), s2:$("#address_city_" + addressId).attr("selectedValue"), s3:$("#address_district_" + addressId).attr("selectedValue")});
+}
 $(window).load(
     function () {
         /**
@@ -250,21 +242,6 @@ $(window).load(
 //            $("#div_add_address").hide();
 //            alert("li_address_modify");
 //        });
-
-
-        /*
-         $("input[name='selectedAddressId']").click(function () {
-         var addressId = $("input[name='selectedAddressId']:checked").val();
-         if (lastUpdateAddressId > 0) {
-         $("#li_address_" + lastUpdateAddressId).load("/orders/addresses/" + lastUpdateAddressId, "", function (data) {
-         $("#china_area").jChinaArea({aspnet:false, s1:"上海市", s2:"上海市", s3:"黄浦区"});
-         $("#radio_address_" + addressId).attr("checked", true);
-         $("#bottom_buttons").show();
-         lastUpdateAddressId = addressId;
-         });
-         }
-         $("#div_add_address").hide();
-         });            */
 
         /**
          * 点击确认收货信息按钮.
@@ -325,8 +302,7 @@ $(window).load(
             var addressId = $("#addressId").val();
             $("#radio_address_" + addressId).attr("checked", true);
             $("#li_address_" + addressId).load("/orders/addresses/" + addressId + "/edit", function (data) {
-
-                $("#china_area").jChinaArea({aspnet:false, s1:"上海市", s2:"上海市", s3:"黄浦区"});
+                setAreaValue(addressId);
                 $("#bottom_buttons").hide();
                 $("#radio_address_" + addressId).attr("checked", true);
                 $("#div_add_address").hide();
