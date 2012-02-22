@@ -1,6 +1,6 @@
 package controllers;
 
-import controllers.modules.webtrace.WebTrace;
+import controllers.modules.webcas.WebCAS;
 import models.consumer.Address;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -14,7 +14,7 @@ import java.util.List;
  * Date: 2/14/12
  * Time: 1:43 PM
  */
-@With(WebTrace.class)
+@With(WebCAS.class)
 public class Addresses extends Controller {
 
     public static void index() {
@@ -37,7 +37,7 @@ public class Addresses extends Controller {
 
     public static void create(long selectedAddressId, Address address) {
         if (selectedAddressId == 0) {
-            address.user = WebTrace.getUser();
+            address.user = WebCAS.getUser();
             address.save();
             render("Addresses/show.html", address);
         }
@@ -47,9 +47,9 @@ public class Addresses extends Controller {
     }
 
     public static void update(Address address) {
-        address.user = getUser();
+        address.user = WebCAS.getUser();
         if ("true".equals(address.isDefault)) {
-            Address.updateToUnDefault(getUser());
+            Address.updateToUnDefault(WebCAS.getUser());
         }
         address.isDefault = "true";
         address.save();
@@ -59,7 +59,7 @@ public class Addresses extends Controller {
     public static void updateDefault(long id) {
         Address address = Address.findById(id);
         if (address != null) {
-            Address.updateToUnDefault(getUser());
+            Address.updateToUnDefault(WebCAS.getUser());
             address.isDefault = "true";
             address.save();
         }

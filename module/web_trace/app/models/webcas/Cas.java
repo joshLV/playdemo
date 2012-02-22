@@ -1,4 +1,4 @@
-package models.web_trace;
+package models.webcas;
 
 import models.consumer.User;
 

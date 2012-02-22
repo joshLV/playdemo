@@ -1,6 +1,6 @@
 package controllers;
 
-import controllers.modules.webtrace.WebTrace;
+import controllers.modules.webcas.WebCAS;
 import models.consumer.User;
 import models.order.Cart;
 import play.data.binding.As;
@@ -13,11 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@With(WebTrace.class)
+@With(WebCAS.class)
 public class Carts extends Controller {
 
     public static void index() {
-        User user = WebTrace.getUser();
+        User user = WebCAS.getUser();
         Http.Cookie cookieIdentity = request.cookies.get("identity");
 
         //查询登陆用户已保存的购物车
@@ -49,7 +49,7 @@ public class Carts extends Controller {
     }
 
     public static void order(long goodsId, int number) {
-        User user = WebTrace.getUser();
+        User user = WebCAS.getUser();
         Http.Cookie cookieIdentity = request.cookies.get("identity");
 
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
@@ -82,7 +82,7 @@ public class Carts extends Controller {
     }
 
     public static void delete(@As(",") List<Long> goodsIds) {
-        User user = WebTrace.getUser();
+        User user = WebCAS.getUser();
         Http.Cookie cookieIdentity = request.cookies.get("identity");
 
 

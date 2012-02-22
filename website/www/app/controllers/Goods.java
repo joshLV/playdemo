@@ -1,8 +1,8 @@
 package controllers;
 
+import controllers.modules.webcas.WebCAS;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.webtrace.WebTrace;
 
 /**
  * 商品控制器.
@@ -11,7 +11,7 @@ import controllers.modules.webtrace.WebTrace;
  * Date: 2/13/12
  * Time: 5:32 PM
  */
-@With(WebTrace.class)
+@With(WebCAS.class)
 public class Goods extends Controller {
 
     public static void show(long id) {

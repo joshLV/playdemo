@@ -1,11 +1,12 @@
 package controllers;
 
+import controllers.modules.webcas.WebCAS;
 import models.sales.Goods;
 import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.List;
-import controllers.modules.webtrace.WebTrace;
+
 import controllers.modules.cas.*;
 
 /**
@@ -15,7 +16,7 @@ import controllers.modules.cas.*;
  * Date: 2/13/12
  * Time: 9:57 AM
  */
-@With({SecureCAS.class, WebTrace.class})
+@With({SecureCAS.class, WebCAS.class})
 public class Home extends Controller {
 
     public static void index() {

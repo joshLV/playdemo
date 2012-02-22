@@ -1,7 +1,7 @@
 package controllers;
 
 import controllers.modules.cas.*;
-import controllers.modules.webtrace.WebTrace;
+import controllers.modules.webcas.WebCAS;
 import models.consumer.Address;
 import models.order.Cart;
 import models.order.NotEnoughInventoryException;
@@ -22,7 +22,7 @@ import java.util.List;
  * Date: 2/14/12
  * Time: 11:31 AM
  */
-@With({SecureCAS.class, WebTrace.class})
+@With({SecureCAS.class, WebCAS.class})
 public class Orders extends Controller {
     /**
      * 订单确认.
@@ -39,7 +39,7 @@ public class Orders extends Controller {
             long goodsId = Long.parseLong(session.get("goodsId"));
             long number = Long.parseLong(session.get("number"));
             models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-            Cart cart = new Cart(WebTrace.getUser(), null, goods, number, goods.materialType);
+            Cart cart = new Cart(WebCAS.getUser(), null, goods, number, goods.materialType);
 
             switch (goods.materialType) {
                 case Electronic:
@@ -114,19 +114,19 @@ public class Orders extends Controller {
 
     private static void create0(String mobile) {
         boolean buyNow = Boolean.parseBoolean(session.get("buyNow"));
-        Address defaultAddress = Address.findDefault(WebTrace.getUser());
+        Address defaultAddress = Address.findDefault(WebCAS.getUser());
         models.order.Orders orders;
         try {
             if (buyNow) {
                 long goodsId = Long.parseLong(session.get("goodsId"));
                 long number = Integer.parseInt(session.get("number"));
-                orders = new models.order.Orders(WebTrace.getUser(), goodsId, number, defaultAddress, mobile);
+                orders = new models.order.Orders(WebCAS.getUser(), goodsId, number, defaultAddress, mobile);
 
             } else {
                 Http.Cookie cookieIdentity = request.cookies.get("identity");
 
                 List<Cart> eCartList = Cart.findByCookie(cookieIdentity.value);
-                orders = new models.order.Orders(WebTrace.getUser(), eCartList, defaultAddress);
+                orders = new models.order.Orders(WebCAS.getUser(), eCartList, defaultAddress);
             }
             orders.createAndUpdateInventory();
 

@@ -1,20 +1,20 @@
-package controllers.modules.webtrace;
+package controllers.modules.webcas;
 
 import models.consumer.User;
-import models.web_trace.Cas;
+import models.webcas.Cas;
 import play.Logger;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
 
-public class WebTrace extends Controller {
+public class WebCAS extends Controller {
 
     @Before
     public static void addTrace() {
-        Logger.debug("[WebTrace]: check cookie identity");
+        Logger.debug("[WebCAS]: check cookie identity");
         Http.Cookie cookieId = request.cookies.get("identity");
         if (cookieId == null) {
-            Logger.debug("[WebTrace]: set a new cookie identity");
+            Logger.debug("[WebCAS]: set a new cookie identity");
             response.setCookie("identity", session.getId(), "365d");
         }
     }
