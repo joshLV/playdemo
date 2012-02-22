@@ -6,7 +6,7 @@
 
   <groupId>com.uhuila.utils</groupId>
   <artifactId>file</artifactId>
-  <version>1.0</version>
+  <version>1.0.1-SNAPSHOT</version>
 
   <dependencies>
     <dependency>

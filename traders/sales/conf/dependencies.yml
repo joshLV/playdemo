@@ -2,10 +2,20 @@
 
 require:
     - play
+    - com.uhuila.utils -> file 1.0.1-SNAPSHOT
     - layout_trader -> layout_trader
     - sales -> sales
 
 repositories:
+    - mavenRepository:
+        type:       iBiblio
+        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
+        contains:
+            - com.uhuila.utils -> *
+            - commons-httpclient -> *
+            - dom4j -> *
+        m2compatible: true
+
     - customModules:
         type:       local
         artifact:   "${application.path}/../../module/[module]"

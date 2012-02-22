@@ -6,7 +6,6 @@ require:
     - sales -> sales
     - consumer -> consumer
     - order -> order
-    - com.uhuila.utils -> file 1.0
     - commons-httpclient -> commons-httpclient 3.1
     - dom4j -> dom4j 1.6.1
     - web_trace -> web_trace
@@ -23,7 +22,7 @@ repositories:
             - dom4j -> *
         m2compatible: true
 
-    - customModules:
+    - customModules:                                              de
         type:       local
         artifact:   "${application.path}/../../module/[module]"
         contains:
