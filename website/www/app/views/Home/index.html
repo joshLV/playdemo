@@ -153,12 +153,13 @@
 
 <div id="wrap_main">
 <div id="wrap_top">
-    #{topNavigator/}
+#{include "share/topNavigator.html"/}
     <div id="wrap_top_header" style="margin: 0px">
         <div id="wrap_top_header_left"><img src="@@{'/public/images/logo.jpg'}"/></div>
         <div id="wrap_top_header_mid">
             <ul class="tab_header">
-                <li><a class="tab_hover" onClick="selectTag('tagContent0',this)" href="javascript:void(0)">首页</a></li>
+                <li><a class="tab_hover" onClick="selectTag('tagContent0',this)"
+                       href="javascript:void(0)">首页</a></li>
                 <li><a class="tab_nohover" onClick="selectTag('tagContent0',this)" href="javascript:void(0)">劵商城</a>
                 </li>
                 <li><a class="tab_nohover" onClick="selectTag('tagContent0',this)" href="javascript:void(0)">优惠劵</a>

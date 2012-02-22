@@ -6,22 +6,18 @@ import javax.persistence.*;
 import play.db.jpa.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "webusers.users")
 public class User extends Model {
 
-    @Column(name="login_name")
+    @Column(name="email")
     public String loginName;
-
-    public String email;
 
     public String mobile;
 
     @Column(name="openid_source")
     public String openIdSource;
 
-    public String password;
-
-    @Column(name="pwd_salt")
+    @Column(name="password_salt")
     public String passwordSalt;
 
     @Column(name="last_login_at")

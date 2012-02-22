@@ -17,7 +17,6 @@ public class PaymentInfo extends Controller {
 
     public static void index(long id) {
         String username = session.get("username");
-        username = "likang";
         User user = User.find("byLoginName", username).first();
         Accounts account = Accounts.find("byUid",user.getId()).first();
 
@@ -34,7 +33,6 @@ public class PaymentInfo extends Controller {
 
     public static void confirm(long orderId, boolean useBalance) {
         String username = session.get("username");
-        username = "likang";
         User user = User.find("byLoginName", username).first();
         Accounts account = Accounts.find("byUid",user.getId()).first();
         models.order.Orders order = models.order.Orders.findById(orderId);
