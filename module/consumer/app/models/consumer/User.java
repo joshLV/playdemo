@@ -16,7 +16,7 @@ public class User extends Model {
 
     public String mobile;
 
-    @Column(name="openid_souce")
+    @Column(name="openid_source")
     public String openIdSource;
 
     public String password;
