@@ -1,17 +1,17 @@
-#{extends 'main.html' /} 
+#{extends 'main.html' /}
 #{set title:'优惠啦 - 券订单' /}
 #{set 'moreStyles'}
 <link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
 <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
-#{/set} 
-#{set 'moreScripts'} 
+#{/set}
+#{set 'moreScripts'}
 #{/set}
 
 <body>
  <div id="wrap_main">
    <!--    最顶部导航-->
-  <div id="wrap_top">#{topNavigator/}</div>
-  <div id="wrap_top_header">
+   <div id="wrap_top">#{include "share/topNavigator.html"/}</div>
+   <div id="wrap_top_header">
    <div id="wrap_top_header_left">
     <img src="@{'/public/images/logo.jpg'}" />
    </div>
@@ -128,7 +128,7 @@
         <select class="dingdan_stauts_bg" name="status" >
         <option value=""></option>
         <option value="UNPAID">未付款</option>
-        <option value="PAID">已付款</option> 
+        <option value="PAID">已付款</option>
         <option value="CANCELED">订单取消</option>
         <option value="SENT">已发货</option>
         <option value="RETURNED">已退货</option>

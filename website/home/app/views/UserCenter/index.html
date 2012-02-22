@@ -1,15 +1,15 @@
-#{extends 'main.html' /} 
+#{extends 'main.html' /}
 #{set title:'优惠啦 - 我购买的商品' /}
 #{set 'moreStyles'}
 <link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
 <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
-#{/set} 
-#{set 'moreScripts'} 
+#{/set}
+#{set 'moreScripts'}
 #{/set}
 
  <div id="wrap_main">
   <!--    最顶部导航-->
-  <div id="wrap_top">#{topNavigator/}</div>
+  <div id="wrap_top">#{include "share/topNavigator.html"/}</div>
   <div id="wrap_top_header">
    <div id="wrap_top_header_left">
     <img src="@{'/public/images/logo.jpg'}" />
@@ -126,7 +126,7 @@
         <select class="dingdan_stauts_bg" name="status" >
         <option value=""></option>
         <option value="UNPAID">未付款</option>
-        <option value="PAID">已付款</option> 
+        <option value="PAID">已付款</option>
         <option value="CANCELED">订单取消</option>
         <option value="SENT">已发货</option>
         <option value="RETURNED">已退货</option>
@@ -154,25 +154,25 @@
       <td width="80" align="center"><span class="font_strong">操作</span></td>
      </tr>
     </table>
-    
+
       #{list items:orderList, as:'row' }
     <div class="tab_top_info">
      <span class="tab_one">订单号：${row.orderNumber}</span><span class="tab_two">成交时间：${row.createdAt}</span>
     </div>
     <table width="798" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="hsides">
      #{set m=0/}
-    #{list row.orderItems, as:'row0'}
+    #{list row.orderItems, as:'rowItem'}
      <tr>
       <td width="340" height="80" align="left">
        <div class="left_shangpin">
-        <img src="images/chanpin/shop_thumb.jpg" width="62" height="63" />
+        <img src="${rowItem.goods.imageTinyPath}"/>
        </div>
        <div class="right_shangpin">
-        ${row0.goodsName}
+        ${rowItem.goodsName}
        </div>
       </td>
-      <td width="100" align="center">${row0.salePrice}</td>
-      <td width="78" align="center" >${row0.number}</td>
+      <td width="100" align="center">${rowItem.salePrice}</td>
+      <td width="78" align="center" >${rowItem.number}</td>
         #{if (++m == 1) }
       <td width="108"align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
       <td width="85" align="center" rowspan="${row.orderItems.size()}">
@@ -199,7 +199,7 @@
       #{/list}
     </table>
       #{/list}
-    
+
    </div>
    <div class="tab_top3">
     <div class="width200px" align="center">
@@ -221,4 +221,4 @@
    </div>
   </div>
  </div>
- 
+

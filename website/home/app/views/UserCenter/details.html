@@ -1,14 +1,14 @@
-#{extends 'main.html' /} 
+#{extends 'main.html' /}
 #{set title:'优惠啦 - 商品详情' /}
 #{set 'moreStyles'}
 <link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
 <link href="@{'/public/stylesheets/lanrentuku.css'}" rel="stylesheet" type="text/css" />
 <link href="@{'/public/stylesheets/shop_info_more.css'}" rel="stylesheet" type="text/css" />
-#{/set} 
+#{/set}
 <body>
  <div id="wrap_main">
    <!--    最顶部导航-->
-  <div id="wrap_top">#{topNavigator/}</div>
+  <div id="wrap_top">#{include "share/topNavigator.html"/}</div>
   <div id="wrap_top_header">
    <div id="wrap_top_header_left">
     <img src="@{'/public/images/logo.jpg'}" />
@@ -33,7 +33,7 @@
      <span class="tab_one">订单号：${orders.orderNumber}</span><span class="tab_two">成交时间：${orders.createdAt}</span><span>付款时间：${orders.createdAt}
      </span>
     </div>
-    
+
     <table width="975" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
      <tr bgcolor="F6F6F6">
       <th width="369"><span class="th_shop_text">商品</span></th>
