@@ -33,30 +33,6 @@ public class Goods extends Model {
     }
 
 
-    @ManyToMany(cascade = CascadeType.REFRESH)
-    private Set<Shop> shops = new HashSet<Shop>();//用集合类来存放Shop
-
-    @JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))
-    //JoinTable就是定义中间表的名字以及关联字段名
-    public Set<Shop> getShops() {
-        return shops;
-    }
-
-    public void setShops(Set<Shop> shop) {
-        this.shops = shop;
-    }
-
-    public void removeShop(Shop shop) {
-        // 要能判断出是否包含在Set中，必须重写shop中的hashCode方法和equals方法
-        if (shops.contains(shop)) {
-            shops.remove(shop);
-        }
-    }
-
-    public void addShop(Shop shop) {
-        shops.add(shop);
-    }
-
     /**
      * 商品编号
      */
