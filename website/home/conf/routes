@@ -4,8 +4,8 @@
 
 # Home page
 GET     /orders                                       UserCenter.index
-GET     /orders/{id}                                       UserCenter.details
-GET     /tickets                                       UserCenter.tickets
+GET     /orders/{id}                                  UserCenter.details
+GET     /tickets                                      UserCenter.tickets
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
