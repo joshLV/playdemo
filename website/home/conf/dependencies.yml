@@ -7,7 +7,6 @@ require:
     - consumer -> consumer
     - play -> cas 3.1
     - web_trace -> web_trace
-    
 
 repositories:
     - customModules:
