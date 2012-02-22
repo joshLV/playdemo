@@ -13,11 +13,11 @@ import org.junit.Test;
 public class PathUtilTest extends TestCase {
     @Test
     public void testGetPathById() throws Exception {
-        assertEquals("0/0/0/", PathUtil.getPathById(0));
-        assertEquals("0/0/1/", PathUtil.getPathById(1));
-        assertEquals("0/1/0/", PathUtil.getPathById(1024));
-        assertEquals("0/10/0/", PathUtil.getPathById(10240));
-        assertEquals("1/0/0/", PathUtil.getPathById(1024 * 1024));
-        assertEquals("1/0/123/", PathUtil.getPathById(1024 * 1024 + 123));
+        assertEquals("/0/0/0/", PathUtil.getPathById(0));
+        assertEquals("/0/0/1/", PathUtil.getPathById(1));
+        assertEquals("/0/1/0/", PathUtil.getPathById(1024));
+        assertEquals("/0/10/0/", PathUtil.getPathById(10240));
+        assertEquals("/1/0/0/", PathUtil.getPathById(1024 * 1024));
+        assertEquals("/1/0/123/", PathUtil.getPathById(1024 * 1024 + 123));
     }
 }

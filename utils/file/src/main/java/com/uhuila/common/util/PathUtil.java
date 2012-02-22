@@ -1,7 +1,5 @@
 package com.uhuila.common.util;
 
-import java.io.File;
-
 /**
  * 文件路径生成工具.
  * User: sujie
@@ -22,7 +20,7 @@ public class PathUtil {
         long secondDir = (~(firstDir << 10)) & (secondTmpNum);
 
         long thirdDir = (~(secondTmpNum << 10)) & id;
-        return String.valueOf(firstDir) + "/" + secondDir + "/" + thirdDir + "/";
+        return "/" + String.valueOf(firstDir) + "/" + secondDir + "/" + thirdDir + "/";
     }
-    
+
 }

@@ -92,6 +92,8 @@ public class Goods extends Controller {
             String storepath = play.Play.configuration.get("upload.imagepath").toString();
             //上传文件
             String path = PathUtil.getPathById(goods.id);
+            System.out.println("path=" + path);
+            System.out.println("imagePath=" + imagePath);
             new FileUploadUtil().storeImage(imagePath, storepath + path);
             goods.imagePath = path + imagePath.getName();
         }
