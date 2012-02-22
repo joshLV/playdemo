@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 @Table(name = "goods")
 public class Goods extends Model {
 
-    private static final Pattern imagePat = Pattern.compile("^/o/([0-9]+)/([0-9]+)/([0-9]+)/([^_]+).(jpg|png|gif|jpeg)$");
+    private static final Pattern imagePat = Pattern.compile("^/([0-9]+)/([0-9]+)/([0-9]+)/([^_]+).(jpg|png|gif|jpeg)$");
     private static final String IMAGE_SERVER;
 
     static {
@@ -215,16 +215,17 @@ public class Goods extends Model {
 
     private String getImageBySizeType(String sizeType) {
         String defaultImage = IMAGE_SERVER + "/p/1/1/1/default_" + sizeType + ".png";
+        System.out.println("defaultImage=" + defaultImage);
         if (imagePath == null || imagePath.equals("")) {
             return defaultImage;
         }
+        System.out.println("filePath=" + imagePath);
         Matcher matcher = imagePat.matcher(imagePath);
         if (!matcher.matches()) {
-
-
+            System.out.println("filePat not match");
             return defaultImage;
         }
-        String imageHeadStr = imagePath.replace("/o/", "/p/");
+        String imageHeadStr = "/p/" + imagePath;
         return IMAGE_SERVER + imageHeadStr.replace("/" + matcher.group(4), "/" + matcher.group(4) + "_" + sizeType);
     }
 

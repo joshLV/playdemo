@@ -60,7 +60,13 @@ public class ImageController extends Controller {
             notFound();
         }
 
-        String targetImagePath = IMAGE_ROOT + File.separator + "p" + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + imageName;
+        String targetImageParent = IMAGE_ROOT + File.separator + "p" + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir;
+
+        if(!(new File(targetImageParent).isDirectory())){
+            new File(targetImageParent).mkdirs();
+        }
+
+        String targetImagePath = targetImageParent + File.separator + imageName;
         String originImagePath = IMAGE_ROOT + File.separator + "o" + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + matcher.group(1) + "." + matcher.group(3);
 
         File targetImage = new File(targetImagePath);

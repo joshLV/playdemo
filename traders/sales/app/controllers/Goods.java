@@ -86,16 +86,22 @@ public class Goods extends Controller {
         index(null);
     }
 
-    private static void uploadImagePath(File imagePath, models.sales.Goods goods) {
-        if (imagePath != null && imagePath.getName() != null) {
+    private static void uploadImagePath(File uploadImageFile, models.sales.Goods goods) {
+        if (uploadImageFile != null && uploadImageFile.getName() != null) {
             //取得文件存储路径
             String storepath = play.Play.configuration.get("upload.imagepath").toString();
             //上传文件
             String path = PathUtil.getPathById(goods.id);
             System.out.println("path=" + path);
-            System.out.println("imagePath=" + imagePath);
-            new FileUploadUtil().storeImage(imagePath, storepath + path);
-            goods.imagePath = path + imagePath.getName();
+            System.out.println("uploadImageFile=" + uploadImageFile);
+            String uploadImageFileName = uploadImageFile.getName();
+            String extName = ".jpg";
+            if (uploadImageFileName.indexOf(".") > 0) {
+                extName = uploadImageFileName.substring(uploadImageFileName.lastIndexOf(".") + 1, uploadImageFileName.length());
+            }
+            String baseFileName = "origin." + extName;
+            new FileUploadUtil().storeImage(uploadImageFile, storepath + path, baseFileName);
+            goods.imagePath = path + baseFileName;
         }
     }
 
@@ -122,10 +128,10 @@ public class Goods extends Controller {
      *
      * @param id
      */
-    public static void update(String id, File imagePath, models.sales.Goods goods) {
+    public static void update(String id, File uploadImageFile, models.sales.Goods goods) {
         models.sales.Goods updateGoods = models.sales.Goods.findById(Long.parseLong(id));
 
-        uploadImagePath(imagePath, updateGoods);
+        uploadImagePath(uploadImageFile, updateGoods);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String datestr = sdf.format(new Date());

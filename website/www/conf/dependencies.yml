@@ -22,7 +22,7 @@ repositories:
             - dom4j -> *
         m2compatible: true
 
-    - customModules:                                              de
+    - customModules:
         type:       local
         artifact:   "${application.path}/../../module/[module]"
         contains:
