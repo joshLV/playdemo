@@ -34,11 +34,11 @@ public class UserCenter extends Controller {
 	/**
 	 * 订单详情
 	 */
-	public static void tickets() {
+	public static void tickets(String createdAt,String status) {
 		String username = session.get("username");
 		username = "yjy";
 		User user = User.find("byLoginName", username).first();
-		List<Orders> ticketList = Orders.userTicketsQuery(user.id);
+		List<Orders> ticketList = Orders.userTicketsQuery(user.id,createdAt,status);
 		render(ticketList);
 	}
 

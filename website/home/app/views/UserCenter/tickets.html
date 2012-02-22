@@ -13,7 +13,7 @@
   <div id="wrap_top">#{topNavigator/}</div>
   <div id="wrap_top_header">
    <div id="wrap_top_header_left">
-    <img src="images/logo.jpg" />
+    <img src="@{'/public/images/logo.jpg'}" />
    </div>
    <div id="wrap_top_middle">卷生活-惠生活</div>
 
@@ -36,7 +36,6 @@
      <div class="left_nav_li_div">
       <div class="focu_chick_left">我的商城</div>
       <div class="focu_click">
-       <a href="#"><img src="images/focu_click.jpg" /></a>
       </div>
      </div>
      <div class=" left_nav_text">
@@ -56,7 +55,6 @@
      <div class="left_nav_li_div">
       <div class="focu_chick_left">我的收藏</div>
       <div class="focu_click">
-       <a href="#"><img src="images/focu_click.jpg" /></a>
       </div>
      </div>
      <div class=" left_nav_text">
@@ -73,7 +71,6 @@
      <div class="left_nav_li_div">
       <div class="focu_chick_left">我的积分</div>
       <div class="focu_click">
-       <a href="#"><img src="images/focu_click.jpg" /></a>
       </div>
      </div>
      <div class=" left_nav_text">
@@ -93,7 +90,6 @@
      <div class="left_nav_li_div">
       <div class="focu_chick_left">资料管理</div>
       <div class="focu_click">
-       <a href="#"><img src="images/focu_click.jpg" /></a>
       </div>
      </div>
      <div class=" left_nav_text">
@@ -110,7 +106,6 @@
      <div class="left_nav_li_div margin_top11">
       <div class="focu_chick_left margin_top11">我的商城</div>
       <div class="focu_click margin_top11">
-       <a href="#"><img src="images/focu_click.jpg" /></a>
       </div>
      </div>
      <div>&nbsp;</div>
@@ -121,16 +116,24 @@
   <div id="right_content_box">
    <div class="tab_top">我的商品订单</div>
    <div class="tab_top2">
+    <form class="form-horizontal" name="frm" action="@{UserCenter.tickets()}" method="GET">
     <table width="774" border="0" cellpadding="0" cellspacing="0">
      <tr>
       <td width="12">&nbsp;</td>
       <td width="61" align="right">成交时间：</td>
-      <td width="259" height="35"><input class="long_input" type="text" name="textfield2" id="textfield2" /></td>
+      <td width="259" height="35"><input class="long_input" type="text" name="createdAt" id="textfield2" /></td>
       <td width="77">订单状态：</td>
       <td width="353">
        <div class="pos_abs">
-        <input class="dingdan_stauts_bg" type="text" name="text" size="1" id="select" />
-        <div class="select_xuanze"></div>
+        <select class="dingdan_stauts_bg" name="status" >
+        <option value=""></option>
+        <option value="UNPAID">未付款</option>
+        <option value="PAID">已付款</option> 
+        <option value="CANCELED">订单取消</option>
+        <option value="SENT">已发货</option>
+        <option value="RETURNED">已退货</option>
+        <option value="RECEIPT">已确认收货</option>
+        </select>
        </div>
       </td>
      </tr>
@@ -139,10 +142,10 @@
       <td align="right">商品名称：</td>
       <td height="35"><label> <input class="long_input" type="text" name="textfield4" id="textfield4" />
       </label></td>
-      <td colspan="2" align="left" valign="middle"><a class="seach_bg" href="#">搜素</a></td>
+      <td colspan="2" align="left" valign="middle"><a class="seach_bg" href="@{UserCenter.tickets()}">搜素</a></td>
      </tr>
     </table>
-    
+    </form>
     <table width="798" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
      <tr bgcolor="#FBE8E4">
       <td width="100" height="28" align="center" bgcolor="#FBE8E4">订单号</td>
@@ -158,30 +161,13 @@
       <td width="100" height="31" align="center">${row[0]}</td>
       <td width="177" align="center">${row[1]}</td>
       <td width="106" align="center">${row[2]}</td>
-      <td width="108" height="30" align="center">${row[3]}</td>
-      <td width="103" align="center">${row[4]}-${row[5]}</td>
-      <td width="95" align="center">${row[6]==1?'已消费':'未消费'}</td>
+      <td width="118" height="30" align="center">${row[3]}</td>
+      <td width="123" align="center">${row[5]}</td>
+      <td width="95" align="center">${row[6]=='PAID'?'已消费':'未消费'}</td>
       <td width="103" align="center"><a href="#">申请退款</a></td>
      </tr>
       #{/list}
     </table>
-   </div>
-   <div class="tab_top3">
-    <div class="width200px" align="center">
-     <a class="pre_bg" href="#">上一页</a><a class="next_bg" href="#">下一页</a>
-    </div>
-   </div>
-   <div class="tab_top4">
-    <a class="page_a_box" href="">1</a><a class="curr_page_a_box" href="">2</a><a class="page_a_box" href="">3</a><a
-     class="page_a_box" href="">4</a><a class="page_a_box" href="">5</a><a class="page_a_box" href="">6</a><a
-     class="page_a_box" href="">7</a><a class="page_a_box" href="">...</a>
-    <div class="page_text_info font_gray2">共100页</div>
-    <div class="page_text_info font_gray">
-     转至第<input name="" type="text" />页
-    </div>
-    <div class="page_text_info">
-     <a href="#"><img src="images/queding_page.jpg" /></a>
-    </div>
    </div>
   </div>
  </div>

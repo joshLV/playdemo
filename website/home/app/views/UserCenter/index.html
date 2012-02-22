@@ -114,11 +114,12 @@
   <div id="right_content_box">
    <div class="tab_top">我的商品订单</div>
    <div class="tab_top2">
+   <form class="form-horizontal" name="frm" action="@{UserCenter.index()}" method="GET">
     <table width="774" border="0" cellpadding="0" cellspacing="0">
      <tr>
       <td width="12">&nbsp;</td>
       <td width="61" align="right">下单时间：</td>
-      <td width="259" height="35"><input class="long_input" type="text" name="createAt" id="textfield2" /></td>
+      <td width="259" height="35"><input class="long_input" type="text" name="createdAt" id="textfield2" /></td>
       <td width="77">订单状态：</td>
       <td width="353">
        <div class="pos_abs">
@@ -137,11 +138,12 @@
      <tr>
       <td>&nbsp;</td>
       <td align="right">商品名称：</td>
-      <td height="35"><label> <input class="long_input" type="text" name="textfield4" id="textfield4" />
+      <td height="35"><label> <input class="long_input" type="text" name="goodsName" id="textfield4" />
       </label></td>
       <td colspan="2" align="left" valign="middle"><a class="seach_bg" href="#">搜素</a></td>
      </tr>
     </table>
+    </form>
     <table width="798" border="0" cellpadding="0" cellspacing="0" bgcolor="#F6F6F6">
      <tr>
       <td width="340" align="center"><span class="font_strong">商品</span></td>
