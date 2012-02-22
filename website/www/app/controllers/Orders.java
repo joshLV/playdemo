@@ -7,6 +7,7 @@ import models.order.Cart;
 import models.order.NotEnoughInventoryException;
 import play.data.validation.Min;
 import play.data.validation.Required;
+import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
 
@@ -22,7 +23,7 @@ import java.util.List;
  * Time: 11:31 AM
  */
 @With({SecureCAS.class, WebTrace.class})
-public class Orders extends AbstractLoginController {
+public class Orders extends Controller {
     /**
      * 订单确认.
      */
@@ -38,7 +39,7 @@ public class Orders extends AbstractLoginController {
             long goodsId = Long.parseLong(session.get("goodsId"));
             long number = Long.parseLong(session.get("number"));
             models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-            Cart cart = new Cart(getUser(), null, goods, number, goods.materialType);
+            Cart cart = new Cart(WebTrace.getUser(), null, goods, number, goods.materialType);
 
             switch (goods.materialType) {
                 case Electronic:
@@ -113,19 +114,19 @@ public class Orders extends AbstractLoginController {
 
     private static void create0(String mobile) {
         boolean buyNow = Boolean.parseBoolean(session.get("buyNow"));
-        Address defaultAddress = Address.findDefault(getUser());
+        Address defaultAddress = Address.findDefault(WebTrace.getUser());
         models.order.Orders orders;
         try {
             if (buyNow) {
                 long goodsId = Long.parseLong(session.get("goodsId"));
                 long number = Integer.parseInt(session.get("number"));
-                orders = new models.order.Orders(getUser(), goodsId, number, defaultAddress, mobile);
+                orders = new models.order.Orders(WebTrace.getUser(), goodsId, number, defaultAddress, mobile);
 
             } else {
                 Http.Cookie cookieIdentity = request.cookies.get("identity");
 
                 List<Cart> eCartList = Cart.findByCookie(cookieIdentity.value);
-                orders = new models.order.Orders(getUser(), eCartList, defaultAddress);
+                orders = new models.order.Orders(WebTrace.getUser(), eCartList, defaultAddress);
             }
             orders.createAndUpdateInventory();
 

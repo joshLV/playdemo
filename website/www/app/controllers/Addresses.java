@@ -2,6 +2,7 @@ package controllers;
 
 import controllers.modules.webtrace.WebTrace;
 import models.consumer.Address;
+import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  * Time: 1:43 PM
  */
 @With(WebTrace.class)
-public class Addresses extends AbstractLoginController {
+public class Addresses extends Controller {
 
     public static void index() {
 
@@ -36,7 +37,7 @@ public class Addresses extends AbstractLoginController {
 
     public static void create(long selectedAddressId, Address address) {
         if (selectedAddressId == 0) {
-            address.user = getUser();
+            address.user = WebTrace.getUser();
             address.save();
             render("Addresses/show.html", address);
         }

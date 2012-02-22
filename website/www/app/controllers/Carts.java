@@ -4,6 +4,7 @@ import controllers.modules.webtrace.WebTrace;
 import models.consumer.User;
 import models.order.Cart;
 import play.data.binding.As;
+import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
 
@@ -13,10 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 @With(WebTrace.class)
-public class Carts extends AbstractLoginController {
+public class Carts extends Controller {
 
     public static void index() {
-        User user = getUser();
+        User user = WebTrace.getUser();
         Http.Cookie cookieIdentity = request.cookies.get("identity");
 
         //查询登陆用户已保存的购物车
@@ -48,7 +49,7 @@ public class Carts extends AbstractLoginController {
     }
 
     public static void order(long goodsId, int number) {
-        User user = getUser();
+        User user = WebTrace.getUser();
         Http.Cookie cookieIdentity = request.cookies.get("identity");
 
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
@@ -81,7 +82,7 @@ public class Carts extends AbstractLoginController {
     }
 
     public static void delete(@As(",") List<Long> goodsIds) {
-        User user = getUser();
+        User user = WebTrace.getUser();
         Http.Cookie cookieIdentity = request.cookies.get("identity");
 
 
