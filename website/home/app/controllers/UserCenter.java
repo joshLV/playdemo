@@ -8,9 +8,9 @@ import models.order.Orders;
 import play.mvc.Controller;
 import play.mvc.With;
 import controllers.modules.cas.SecureCAS;
-import controllers.modules.webtrace.WebTrace;
+import controllers.modules.webcas.WebCAS;
 
-@With({SecureCAS.class, WebTrace.class})
+@With({SecureCAS.class, WebCAS.class})
 public class UserCenter extends Controller {
 
 	/**
