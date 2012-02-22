@@ -28,7 +28,8 @@ public class Orders extends Controller {
      * 订单确认.
      */
     public static void index() {
-        List<Address> addressList = Address.findByOrder();
+
+        List<Address> addressList = Address.findByOrder(WebCAS.getUser());
 
         boolean buyNow = Boolean.parseBoolean(session.get("buyNow"));
         if (buyNow) {//立即购买，则不从购物车取购买的商品信息，而直接从session中获取
@@ -59,13 +60,11 @@ public class Orders extends Controller {
             render(addressList, eCartList, eCartAmount, rCartList, rCartAmount);
         }
         //从购物车结算购买
-        Http.Cookie cookieIdentity = request.cookies.get("identity");
-
-        List<Cart> eCartList = Cart.findECart(cookieIdentity.value);
+        List<Cart> eCartList = Cart.findECart(WebCAS.getUser());
         BigDecimal eCartAmount = Cart.amount(eCartList);
 
 
-        List<Cart> rCartList = Cart.findRCart(cookieIdentity.value);
+        List<Cart> rCartList = Cart.findRCart(WebCAS.getUser());
         BigDecimal rCartAmount;
         if (rCartList.size() == 0) {
             rCartAmount = new BigDecimal(0);
@@ -73,7 +72,7 @@ public class Orders extends Controller {
             rCartAmount = Cart.amount(rCartList).add(new BigDecimal(5));
         }
         BigDecimal totalAmount = eCartAmount.add(rCartAmount);
-        BigDecimal goodsAmount = rCartList.size() == 0 ? eCartAmount : totalAmount.remainder(new BigDecimal(5));
+        BigDecimal goodsAmount = rCartList.size() == 0 ? eCartAmount : totalAmount.subtract(new BigDecimal(5));
 
         renderArgs.put("goodsAmount", goodsAmount);
         renderArgs.put("totalAmount", totalAmount);
@@ -113,6 +112,7 @@ public class Orders extends Controller {
     }
 
     private static void create0(String mobile) {
+        Http.Cookie cookieIdentity = request.cookies.get("identity");
         boolean buyNow = Boolean.parseBoolean(session.get("buyNow"));
         Address defaultAddress = Address.findDefault(WebCAS.getUser());
         models.order.Orders orders;
@@ -123,12 +123,11 @@ public class Orders extends Controller {
                 orders = new models.order.Orders(WebCAS.getUser(), goodsId, number, defaultAddress, mobile);
 
             } else {
-                Http.Cookie cookieIdentity = request.cookies.get("identity");
 
                 List<Cart> eCartList = Cart.findByCookie(cookieIdentity.value);
                 orders = new models.order.Orders(WebCAS.getUser(), eCartList, defaultAddress);
             }
-            orders.createAndUpdateInventory();
+            orders.createAndUpdateInventory(WebCAS.getUser(), cookieIdentity.value);
 
             session.put("buyNow", false);
             redirect("/payment_info/" + orders.id);

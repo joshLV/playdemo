@@ -74,8 +74,8 @@ public class Address extends Model {
         return phoneStr.toString();
     }
 
-    public static List<Address> findByOrder() {
-        return Address.find("order by is_default").fetch();
+    public static List<Address> findByOrder(User user) {
+        return Address.find("user=? order by isDefault",user).fetch();
     }
 
     public static void updateToUnDefault(User user) {

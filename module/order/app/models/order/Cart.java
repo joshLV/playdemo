@@ -36,8 +36,8 @@ public class Cart extends Model {
     @Column(name = "updated_at")
     public Date updatedAt;
 
-    public Cart(User user, String cookieIdentity, Goods goods, 
-            long number, MaterialType materialType) {
+    public Cart(User user, String cookieIdentity, Goods goods,
+                long number, MaterialType materialType) {
         this.user = user;
         this.cookieIdentity = cookieIdentity;
         this.goods = goods;
@@ -56,12 +56,12 @@ public class Cart extends Model {
         return Cart.find("byMaterialType", MaterialType.Real).fetch();
     }
 
-    public static List<Cart> findECart(String cartCookieId) {
-        return Cart.find("cookieIdentity=? and materialType = ? and number >0", cartCookieId, MaterialType.Electronic).fetch();
+    public static List<Cart> findECart(User user) {
+        return Cart.find("user=? and materialType = ? and number >0", user, MaterialType.Electronic).fetch();
     }
 
-    public static List<Cart> findRCart(String cartCookieId) {
-        return Cart.find("cookieIdentity=? and materialType = ? and number >0", cartCookieId, MaterialType.Real).fetch();
+    public static List<Cart> findRCart(User user) {
+        return Cart.find("user=? and materialType = ? and number >0", user, MaterialType.Real).fetch();
     }
 
     public static List<Cart> findByCookie(String cartCookieId) {
@@ -74,7 +74,15 @@ public class Cart extends Model {
         for (Cart cart : cartList) {
             cartAmount = cart.goods.salePrice.multiply(new BigDecimal(cart.number)).add(cartAmount);
         }
+
         return cartAmount;
     }
 
+    public static void clear(User user, String cookieIdentity) {
+        List<Cart> cartList = Cart.find("user=? or cookieIdentity=?", user, cookieIdentity).fetch();
+        System.out.println("cartList.size()=" + cartList.size());
+        for (Cart cart : cartList) {
+            cart.delete();
+        }
+    }
 }
