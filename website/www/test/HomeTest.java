@@ -1,8 +1,6 @@
-import org.junit.*;
-import play.test.*;
-import play.mvc.*;
-import play.mvc.Http.*;
-import models.*;
+import org.junit.Test;
+import play.mvc.Http.Response;
+import play.test.FunctionalTest;
 
 public class HomeTest extends FunctionalTest {
 
@@ -12,7 +10,10 @@ public class HomeTest extends FunctionalTest {
         assertIsOk(response);
         assertContentType("text/html", response);
         assertCharset(play.Play.defaultWebEncoding, response);
-        assertHeaderEquals("title","优惠啦 - 首页",response);
+        assertHeaderEquals("title", "优惠啦 - 首页", response);
+
+        //todo 测试商品的筛选
+
     }
-    
+
 }

@@ -239,7 +239,7 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTop(int limit) {
-        return find("byStatusAndDeleted order by update_at,create_at",
+        return find("byStatusAndDeleted order by updateAt,createAt DESC",
                 GoodsStatus.ONSALE,
                 UNDELETED).fetch(limit);
     }
@@ -251,42 +251,39 @@ public class Goods extends Model {
      * @return
      */
     public List query(models.sales.Goods goods) {
-        StringBuffer condtion = new StringBuffer();
-        condtion.append(" deleted= ? ");
-        List params = new ArrayList();
+        StringBuilder condition = new StringBuilder();
+        condition.append(" deleted= ? ");
+        List<Object> params = new ArrayList<>();
         params.add("0");
         if (goods.name != null && !"".equals(goods.name)) {
-            condtion.append(" and name like ? ");
+            condition.append(" and name like ? ");
             params.add("%" + goods.name + "%");
         }
         if (goods.no != null && !"".equals(goods.no)) {
-            condtion.append(" and no like ? ");
+            condition.append(" and no like ? ");
             params.add("%" + goods.no + "%");
         }
         if (goods.status != null && !"".equals(goods.status)) {
-            condtion.append(" and status = ? ");
+            condition.append(" and status = ? ");
             params.add(goods.status);
         }
         if (goods.salePriceBegin != null && !"".equals(goods.salePriceBegin)) {
-            condtion.append(" and salePrice >= ?");
+            condition.append(" and salePrice >= ?");
             params.add(goods.salePriceBegin);
         }
         if (goods.salePriceEnd != null && !"".equals(goods.salePriceEnd)) {
-            condtion.append(" and salePrice <= ?");
+            condition.append(" and salePrice <= ?");
             params.add(goods.salePriceEnd);
         }
         if (goods.saleCountBegin != null && !"".equals(goods.saleCountBegin)) {
-            condtion.append(" and saleCount >= ?");
+            condition.append(" and saleCount >= ?");
             params.add(goods.saleCountBegin);
         }
         if (goods.saleCountEnd != null && !"".equals(goods.saleCountEnd)) {
-            condtion.append(" and saleCount <= ?");
+            condition.append(" and saleCount <= ?");
             params.add(goods.saleCountEnd);
         }
-        JPAQuery query = null;
-        List list = null;
-        query = goods.find(condtion.toString(), params.toArray());
-        list = query.fetch();
-        return list;
+        System.out.println(condition);
+        return find(condition.toString(), params.toArray()).fetch();
     }
 }

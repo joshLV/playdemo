@@ -173,7 +173,6 @@ public class Goods extends Controller {
      */
     public static void delete(Long checkoption[]) {
         for (Long id : checkoption) {
-            GoodsShop.delete("goods_id=?", id);
             models.sales.Goods.delete("id=?", id);
         }
         index(null);
