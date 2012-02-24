@@ -8,5 +8,6 @@ package models.sales;
  * Time: 12:37 PM
  */
 public enum MaterialType {
-     Real, Electronic
+    REAL,
+    ELECTRONIC
 }

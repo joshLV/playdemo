@@ -48,20 +48,12 @@ public class Cart extends Model {
         this.materialType = materialType;
     }
 
-    public static List<Cart> findECart() {
-        return Cart.find("byMaterialType", MaterialType.Electronic).fetch();
-    }
-
-    public static List<Cart> findRCart() {
-        return Cart.find("byMaterialType", MaterialType.Real).fetch();
-    }
-
     public static List<Cart> findECart(User user) {
-        return Cart.find("user=? and materialType = ? and number >0", user, MaterialType.Electronic).fetch();
+        return Cart.find("user=? and materialType = ? and number >0", user, MaterialType.ELECTRONIC).fetch();
     }
 
     public static List<Cart> findRCart(User user) {
-        return Cart.find("user=? and materialType = ? and number >0", user, MaterialType.Real).fetch();
+        return Cart.find("user=? and materialType = ? and number >0", user, MaterialType.REAL).fetch();
     }
 
     public static List<Cart> findByCookie(String cartCookieId) {

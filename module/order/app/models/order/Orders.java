@@ -139,7 +139,7 @@ public class Orders extends Model {
         checkInventory(goods, number);
         if (goods.salePrice.compareTo(new BigDecimal(0)) > 0) {
             this.amount = goods.salePrice.multiply(new BigDecimal(number));
-            if (goods.materialType == MaterialType.Real) {
+            if (goods.materialType == MaterialType.REAL) {
                 this.amount = this.amount.add(new BigDecimal(5));
             }
             //todo 目前没考虑支付优惠
@@ -156,7 +156,7 @@ public class Orders extends Model {
 
         this.amount = Cart.amount(cartList);
         for (Cart cart : cartList) {
-            if (cart.materialType == MaterialType.Real) {
+            if (cart.materialType == MaterialType.REAL) {
                 this.amount = this.amount.add(new BigDecimal(5));
                 break;
             }

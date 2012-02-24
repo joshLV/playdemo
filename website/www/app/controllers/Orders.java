@@ -43,13 +43,13 @@ public class Orders extends Controller {
             Cart cart = new Cart(WebCAS.getUser(), null, goods, number, goods.materialType);
 
             switch (goods.materialType) {
-                case Electronic:
+                case ELECTRONIC:
                     eCartList.add(cart);
                     eCartAmount = Cart.amount(eCartList);
                     renderArgs.put("goodsAmount", eCartAmount);
                     renderArgs.put("totalAmount", eCartAmount);
                     break;
-                case Real:
+                case REAL:
                     rCartList.add(cart);
                     BigDecimal goodsAmount = Cart.amount(rCartList);
                     rCartAmount = goodsAmount.add(new BigDecimal(5));

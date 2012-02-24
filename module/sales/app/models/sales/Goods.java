@@ -10,7 +10,6 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -20,6 +19,8 @@ import java.util.regex.Pattern;
 @Table(name = "goods")
 public class Goods extends Model {
 
+    public static final int UNDELETED = 0;
+    public static final int DELETED = 1;
     private static final Pattern imagePat = Pattern.compile("^/([0-9]+)/([0-9]+)/([0-9]+)/([^_]+).(jpg|png|gif|jpeg)$");
     private static final String IMAGE_SERVER;
 
@@ -156,7 +157,7 @@ public class Goods extends Model {
     /**
      * 商品状态,
      */
-    public String status;
+    public GoodsStatus status;
     /**
      * 创建来源
      */
@@ -183,9 +184,9 @@ public class Goods extends Model {
     @Column(name = "update_by")
     public String updateBy;
     /**
-     * 逻辑删除
+     * 逻辑删除,0:未删除，1:已删除
      */
-    public String deleted;
+    public int deleted;
     /**
      * 乐观锁
      */
@@ -237,8 +238,7 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTopByCategory(int categoryId, int limit) {
-        //todo 商品状态判断
-        return find("").fetch(limit);
+        return find("byStatusAndDeleted", GoodsStatus.ONSALE, UNDELETED).fetch(limit);
     }
 
     /**
