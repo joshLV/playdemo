@@ -6,6 +6,7 @@ package controllers;
 
 import com.uhuila.common.util.PathUtil;
 import models.sales.GoodsShop;
+import models.sales.GoodsStatus;
 import models.sales.Shop;
 import play.mvc.Controller;
 import util.FileUploadUtil;
@@ -46,7 +47,9 @@ public class Goods extends Controller {
      * @param imagePath
      * @param goods
      */
-    public static void create(File imagePath, models.sales.Goods goods, String radios, String status, Long checkoption[]) {
+    public static void create(File imagePath, models.sales.Goods goods,
+                              String radios, GoodsStatus status,
+                              Long checkoption[]) {
         if (validation.hasErrors()) {
             error("Validation errors");
         }
@@ -58,7 +61,7 @@ public class Goods extends Controller {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String datestr = sdf.format(new Date());
-        goods.deleted = "0";
+        goods.deleted = models.sales.Goods.UNDELETED;
         goods.createdAt = datestr;
         goods.createdBy = "yanjy";
         goods.create();
@@ -153,10 +156,8 @@ public class Goods extends Controller {
 
     /**
      * 上下架指定商品
-     *
-     * @param id
      */
-    public static void updateStatus(Long checkoption[], String status) {
+    public static void updateStatus(Long checkoption[], GoodsStatus status) {
         //更新处理
         for (Long id : checkoption) {
             models.sales.Goods goods = models.sales.Goods.findById(id);
@@ -169,8 +170,6 @@ public class Goods extends Controller {
 
     /**
      * 删除指定商品
-     *
-     * @param id
      */
     public static void delete(Long checkoption[]) {
         for (Long id : checkoption) {

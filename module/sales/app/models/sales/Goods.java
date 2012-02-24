@@ -21,6 +21,7 @@ public class Goods extends Model {
 
     public static final int UNDELETED = 0;
     public static final int DELETED = 1;
+
     private static final Pattern imagePat = Pattern.compile("^/([0-9]+)/([0-9]+)/([0-9]+)/([^_]+).(jpg|png|gif|jpeg)$");
     private static final String IMAGE_SERVER;
 
@@ -157,6 +158,7 @@ public class Goods extends Model {
     /**
      * 商品状态,
      */
+    @Enumerated(EnumType.STRING)
     public GoodsStatus status;
     /**
      * 创建来源
@@ -233,12 +235,13 @@ public class Goods extends Model {
     /**
      * 根据商品分类和数量取出指定数量的商品.
      *
-     * @param categoryId
      * @param limit
      * @return
      */
-    public static List<Goods> findTopByCategory(int categoryId, int limit) {
-        return find("byStatusAndDeleted", GoodsStatus.ONSALE, UNDELETED).fetch(limit);
+    public static List<Goods> findTop(int limit) {
+        return find("byStatusAndDeleted order by update_at,create_at",
+                GoodsStatus.ONSALE,
+                UNDELETED).fetch(limit);
     }
 
     /**

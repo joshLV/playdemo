@@ -20,7 +20,7 @@ import controllers.modules.cas.*;
 public class Home extends Controller {
 
     public static void index() {
-        List<Goods> goodsList = Goods.findTopByCategory(0,12);
+        List<Goods> goodsList = Goods.findTop(12);
 
         render(goodsList);
     }
