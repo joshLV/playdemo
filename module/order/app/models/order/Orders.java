@@ -156,7 +156,7 @@ public class Orders extends Model {
 
         this.amount = Cart.amount(cartList);
         for (Cart cart : cartList) {
-            if (cart.materialType == MaterialType.REAL) {
+            if (cart.goods.materialType == MaterialType.REAL) {
                 this.amount = this.amount.add(new BigDecimal(5));
                 break;
             }

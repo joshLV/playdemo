@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.*;
 
 @With(WebCAS.class)
 public class Carts extends Controller {
@@ -20,32 +21,8 @@ public class Carts extends Controller {
         User user = WebCAS.getUser();
         Http.Cookie cookieIdentity = request.cookies.get("identity");
 
-        //查询登陆用户已保存的购物车
-        List<Cart> cartList = new ArrayList<Cart>();
-        if (user != null) {
-            List<Cart> userCarts = Cart.find("byUser", user).fetch();
-            cartList.addAll(userCarts);
-        }
-        //查询未登陆情况下已保存的购物车
-        if (cookieIdentity != null) {
-            List<Cart> cookieCarts = Cart.find("byCookieIdentity", cookieIdentity.value).fetch();
-            cartList.addAll(cookieCarts);
-        }
-        //合并结果集
-        List<Cart> cartMergeList = new ArrayList<Cart>();
-        if (cartList.size() > 0) {
-            Map<Long, Cart> mapCarts = new HashMap<Long, Cart>();
-            for (Cart cart : cartList) {
-                Cart tmp = mapCarts.get(cart.goods.getId());
-                if (tmp != null) {
-                    tmp.number += cart.number;
-                } else {
-                    mapCarts.put(cart.goods.getId(), cart);
-                    cartMergeList.add(cart);
-                }
-            }
-        }
-        render(cartMergeList);
+        List<Cart> carts = Cart.findAll(user, cookieIdentity.value);
+        render(carts);
     }
 
     public static void order(long goodsId, int number) {
@@ -72,9 +49,9 @@ public class Carts extends Controller {
             }
         } else {
             if (user != null) {
-                new Cart(user, null, goods, number, goods.materialType).save();
+                new Cart(user, null, goods, number).save();
             } else {
-                new Cart(user, cookieIdentity.value, goods, number, goods.materialType).save();
+                new Cart(user, cookieIdentity.value, goods, number).save();
             }
         }
 

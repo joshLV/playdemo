@@ -51,7 +51,7 @@
             <th width="103">操作</th>
         </tr>
 
-        #{list items:cartMergeList, as:'cartItem'}
+        #{list items:carts, as:'cartItem'}
         <tr id="row_${cartItem.goods.id}">
                 <td height="25" align="center" valign="middle">
                     <div class="col_one"><input type="checkbox" id="check_goods_${cartItem.goods.id}"/>
@@ -76,7 +76,7 @@
             </tr>
         #{/list}
 
-        #{if cartMergeList.size() == 0}
+        #{if carts.size() == 0}
             <tr>
                 <td colspan="6" style="text-align:center;padding:10px 0">您还没有添加商品哦，再逛逛吧:)</td>
             </tr>

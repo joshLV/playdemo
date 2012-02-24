@@ -40,7 +40,7 @@ public class Orders extends Controller {
             long goodsId = Long.parseLong(session.get("goodsId"));
             long number = Long.parseLong(session.get("number"));
             models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-            Cart cart = new Cart(WebCAS.getUser(), null, goods, number, goods.materialType);
+            Cart cart = new Cart(WebCAS.getUser(), null, goods, number);
 
             switch (goods.materialType) {
                 case ELECTRONIC:
@@ -59,12 +59,13 @@ public class Orders extends Controller {
             }
             render(addressList, eCartList, eCartAmount, rCartList, rCartAmount);
         }
+        Http.Cookie cookieIdentity = request.cookies.get("identity");
         //从购物车结算购买
-        List<Cart> eCartList = Cart.findECart(WebCAS.getUser());
+        List<Cart> eCartList = Cart.findECart(WebCAS.getUser(), cookieIdentity.value);
         BigDecimal eCartAmount = Cart.amount(eCartList);
 
 
-        List<Cart> rCartList = Cart.findRCart(WebCAS.getUser());
+        List<Cart> rCartList = Cart.findRCart(WebCAS.getUser(), cookieIdentity.value);
         BigDecimal rCartAmount;
         if (rCartList.size() == 0) {
             rCartAmount = new BigDecimal(0);
@@ -124,7 +125,7 @@ public class Orders extends Controller {
 
             } else {
 
-                List<Cart> eCartList = Cart.findByUser(WebCAS.getUser());
+                List<Cart> eCartList = Cart.findAll(WebCAS.getUser(), cookieIdentity.value);
                 orders = new models.order.Orders(WebCAS.getUser(), eCartList, defaultAddress);
             }
             orders.createAndUpdateInventory(WebCAS.getUser(), cookieIdentity.value);
