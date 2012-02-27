@@ -46,7 +46,18 @@ public class Cart extends Model {
         this.createdAt = new Date();
         this.updatedAt = this.createdAt;
     }
-    
+
+    /**
+     * 加入或修改购物车列表
+     *
+     * @param user  用户
+     * @param cookie 用户cookie
+     * @param goods  商品
+     * @param increment 购物车中商品数增量，
+     * 若购物车中无此商品，则新建条目
+     * 若购物车中有此商品，且商品数量加增量小于等于0，视为无效
+     */
+
     public static Cart order(User user, String cookie, 
             Goods goods, int increment) {
         if ((user == null && cookie == null) || goods == null) {
@@ -83,6 +94,14 @@ public class Cart extends Model {
             
     }
 
+    /**
+     * 从购物车中删除指定商品列表
+     *
+     * @param user      用户
+     * @param cookie    用户cookie
+     * @param goodsIds  商品列表，若未指定，则删除该用户所有的购物车条目
+     * @return          成功删除的数量
+     */
     public static int delete(User user, String cookie, List<Long> goodsIds) {
         if(user == null && cookie == null) {
             return 0;
@@ -110,6 +129,14 @@ public class Cart extends Model {
         return query.executeUpdate();
     }
 
+    /**
+     * 列出所有符合条件的购物车条目，合并数量后输出
+     *
+     * @param user    用户
+     * @param cookie  用户cookie
+     * @param type    商品类型
+     * @return        合并数量后的购物车条目列表
+     */
     public static List<Cart> findAll(User user, String cookie, 
             MaterialType type) {
         if (user == null && cookie == null && type == null) {
@@ -142,15 +169,24 @@ public class Cart extends Model {
         
         return query.getResultList();
     }
-    
+
+    /**
+     * 用户所有的购物车列表
+     */
     public static List<Cart> findAll(User user, String cookie){
         return findAll(user, cookie, null);
     }
-    
+
+    /**
+     * 用户购物车中电子券列表
+     */
     public static List<Cart> findECart(User user, String cookie) {
         return findAll(user, cookie, MaterialType.ELECTRONIC);
     }
 
+    /**
+     * 用户购物车中实物列表
+     */
     public static List<Cart> findRCart(User user, String cookie) {
         return findAll(user, cookie, MaterialType.REAL);
     }
@@ -164,6 +200,9 @@ public class Cart extends Model {
         return cartAmount;
     }
 
+    /**
+     * 清除用户购物车中所有条目
+     */
     public static void clear(User user, String cookie) {
         delete(user, cookie, null);
     }

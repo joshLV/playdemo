@@ -1,17 +1,20 @@
-//发送订单数量变更请求，若数量变为非正整数，则视为删除
+/**
+ *
+ * @author likang
+ */
+
+/**
+ * 发送订单数量变更请求，若数量变为非正整数，则拒绝操作
+ *
+ * @param goods_id  商品ID
+ * @param increment 增量
+ */
 function reorder(goods_id,increment){
     var element = $("#num_" + goods_id);
     var last_num = $("#last_num_" + goods_id);
 
     var new_num = Number(last_num.val()) + increment;
     if(new_num <= 0){
-        $.ajax({
-            type:'DELETE',
-            url:'/carts/' + goods_id,
-            success:function(data){
-                $("#row_" + goods_id).remove();
-                refreshAmount();
-            }});
         return;
     }
     $.post('/carts',

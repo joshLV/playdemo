@@ -8,15 +8,20 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import javax.persistence.*;
 
+/**
+ * 购物车控制器，提供http接口对购物车进行增删该查
+ *
+ * @author likang
+ *
+ */
 @With(WebCAS.class)
 public class Carts extends Controller {
 
+    /**
+     * 购物车主界面
+     */
     public static void index() {
         User user = WebCAS.getUser();
         Http.Cookie cookie= request.cookies.get("identity");
@@ -58,6 +63,9 @@ public class Carts extends Controller {
         ok();
     }
 
+    /**
+     * 以JSON格式展示所有购物车内容
+     */
     public static void allJSON() {
         User user = WebCAS.getUser();
         Http.Cookie cookie= request.cookies.get("identity");
@@ -67,11 +75,15 @@ public class Carts extends Controller {
         render(carts);
     }
 
+    /**
+     * 从购物车中删除指定商品列表
+     *
+     * @param goodsIds 商品列表
+     */
     public static void delete(@As(",") List<Long> goodsIds) {
         User user = WebCAS.getUser();
         Http.Cookie cookie= request.cookies.get("identity");
         String cookieValue = cookie == null ? null : cookie.value;
-
 
         if (user == null && cookie == null) {
             error(500, "can not identity current user");

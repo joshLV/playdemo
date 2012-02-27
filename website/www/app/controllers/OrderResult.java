@@ -1,17 +1,12 @@
 package controllers;
 
-import models.consumer.*;
 import models.order.*;
 import play.mvc.Controller;
-import play.mvc.Http;
-import play.mvc.With;
 import java.math.BigDecimal;
 import thirdpart.alipay.util.AlipayNotify;
 
 import java.util.*;
-import controllers.modules.cas.SecureCAS;
 
-//@With(SecureCAS.class)
 public class OrderResult extends Controller {
 
     public static void alipayReturn(
