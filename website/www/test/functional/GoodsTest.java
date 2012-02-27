@@ -1,3 +1,5 @@
+package functional;
+
 import models.sales.Goods;
 import org.junit.Test;
 import play.Play;
@@ -16,7 +18,7 @@ public class GoodsTest extends FunctionalTest {
     @org.junit.Before
     public void setup() {
         Fixtures.delete(Goods.class);
-        Fixtures.loadModels("goods.yml");
+        Fixtures.loadModels("fixture/goods.yml");
     }
 
     @Test

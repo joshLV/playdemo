@@ -1,7 +1,0 @@
-consumer.Address(test1):
-  name: sujie
-  address: test
-
-sales.Goods(goods1):
-  name: 测试商品1
-  deleted:

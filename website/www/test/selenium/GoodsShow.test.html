@@ -1,8 +1,10 @@
-#{fixture delete:'all', load:'goods.yml' /}
+#{fixture delete:'all', load:'fixture/goods.yml' /}
 #{selenium 'Test Goods/show1.html'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods1")}')
 verifyTitle('优惠啦 - 商品详情')
 verifyTextPresent('测试商品1')
+verifyTextPresent('2012-02-01')
+verifyTextPresent('2012-02-02')
 #{/selenium}
 #{selenium 'Test Goods/show2.html'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods2")}')

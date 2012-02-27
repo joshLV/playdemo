@@ -1,3 +1,5 @@
+package functional;
+
 import models.sales.Goods;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +12,7 @@ public class HomeTest extends FunctionalTest {
     @Before
     public void setup() {
         Fixtures.delete(Goods.class);
-        Fixtures.loadModels("goods.yml");
+        Fixtures.loadModels("fixture/goods.yml");
     }
 
     @Test

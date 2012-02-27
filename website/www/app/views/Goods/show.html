@@ -1,7 +1,8 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 商品详情' /}
 #{set 'moreStyles'}
-<link href="@@{'/public/stylesheets/goods_show.css'}" rel="stylesheet" type="text/css"/>
+<link href="@@{'/public/stylesheets/goods_show.css'}" rel="stylesheet"
+      type="text/css"/>
 #{/set}
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/goods_show.js'}"></script>
@@ -12,7 +13,8 @@
     #{include "share/topNavigator.html"/}
     </div>
     <div id="wrap_top_header">
-        <div id="wrap_top_header_left"><img src="@@{'/public/images/logo.jpg'}"/></div>
+        <div id="wrap_top_header_left"><img
+                src="@@{'/public/images/logo.jpg'}"/></div>
         <div id="wrap_top_middle">卷生活-惠生活</div>
 
     </div>
@@ -31,11 +33,14 @@
                     <div class="title_nav font_block">承诺/保障</div>
                     <div></div>
                     </dt>
-                    <dd><img src="@@{'/public/images/adv/xiaofei.jpg'}" border="0" usemap="#Map'}"/>
+                    <dd><img src="@@{'/public/images/adv/xiaofei.jpg'}"
+                             border="0" usemap="#Map'}"/>
                         <map name="Map" id="Map">
                             <area shape="rect" coords="9,8,202,64" href="#'}"/>
-                            <area shape="rect" coords="10,72,204,124" href="#'}"/>
-                            <area shape="rect" coords="11,130,206,183" href="#'}"/>
+                            <area shape="rect" coords="10,72,204,124"
+                                  href="#'}"/>
+                            <area shape="rect" coords="11,130,206,183"
+                                  href="#'}"/>
                         </map>
                     </dd>
                 </dl>
@@ -47,7 +52,9 @@
                     <div></div>
                     </dt>
                     <dd class="shop_dd">
-                        <div class="img_cp"><a href="#"><img src="@@{'/public/images/chanpin/1.jpg'}"/></a></div>
+                        <div class="img_cp"><a href="#"><img
+                                src="@@{'/public/images/chanpin/1.jpg'}"/></a>
+                        </div>
                         <div>
                             <a href="#"><span class="strong_gray">来伊价</span>
                                 <span class="pri_jiage">14.8</span></a>
@@ -55,7 +62,9 @@
                         <div class="text_decorat">市场价格：Y:20.00</div>
                     </dd>
                     <dd class="shop_dd">
-                        <div class="img_cp"><a href="#"><img src="@@{'/public/images/chanpin/1.jpg'}"/></a></div>
+                        <div class="img_cp"><a href="#"><img
+                                src="@@{'/public/images/chanpin/1.jpg'}"/></a>
+                        </div>
                         <div>
                             <a href="#"><span class="strong_gray">来伊价</span>
                                 <span class="pri_jiage">14.8</span></a>
@@ -64,7 +73,9 @@
                     </dd>
 
                     <dd class="shop_dd">
-                        <div class="img_cp"><a href="#"><img src="@@{'/public/images/chanpin/1.jpg'}"/></a></div>
+                        <div class="img_cp"><a href="#"><img
+                                src="@@{'/public/images/chanpin/1.jpg'}"/></a>
+                        </div>
                         <div>
                             <a href="#"><span class="strong_gray">来伊价</span>
                                 <span class="pri_jiage">14.8</span></a>
@@ -72,7 +83,9 @@
                         <div class="text_decorat">市场价格：Y:20.00</div>
                     </dd>
                     <dd class="shop_dd">
-                        <div class="img_cp"><a href="#"><img src="@@{'/public/images/chanpin/1.jpg'}"/></a></div>
+                        <div class="img_cp"><a href="#"><img
+                                src="@@{'/public/images/chanpin/1.jpg'}"/></a>
+                        </div>
                         <div>
                             <a href="#"><span class="strong_gray">来伊价</span>
                                 <span class="pri_jiage">14.8</span></a>
@@ -88,14 +101,19 @@
         #{form @Orders.buy() , id:'buy_now_form'}
             <div class="right_content_show">
                 <div><h1 class="show_h1 font_block">${goods.name}</h1></div>
-                <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
+                <input type="hidden" id="goodsId" name="goodsId"
+                       value="${goods.id}">
 
                 <div class="shangpin_box">
-                    <div class="left_shangpin"><img src="${goods.imageLargePath}" width="280"
-                                                    height="168"/></div>
+                    <div class="left_shangpin"><img
+                            src="${goods.imageLargePath}" width="280"
+                            height="168"/></div>
                     <div class="right_shangpin">
-                        <div class="right_shangpin_one">原价：${goods.originalPrice}元</div>
-                        <div class="right_shangpin_two">折扣：#{if goods.discount.equals("")}
+                        <div class="right_shangpin_one">
+                            原价：${goods.originalPrice}元
+                        </div>
+                        <div class="right_shangpin_two">
+                            折扣：#{if goods.discount.equals("")}
                             无优惠#{/if}#{else}${goods.discount}折#{/else}</div>
                         <div class="right_shangpin_three">现价：<span
                                 class="font_red font_size18">${goods.salePrice}</span>元
@@ -103,22 +121,29 @@
                         <div class="right_shangpin_two">库存：<span
                                 class="right_shangpin_two">${goods.baseSale}</span>&nbsp;件
                         </div>
-                        <div class="right_shangpin_four">购买数量:&nbsp;<input class="num_input_bg" id="number"
-                                                                           name="number" type="text"
-                                                                           value="1"/>&nbsp;件 <span
+                        <div class="right_shangpin_four">购买数量:&nbsp;<input
+                                class="num_input_bg" id="number"
+                                name="number" type="text"
+                                value="1"/>&nbsp;件 <span
                                 class="error">#{error 'number' /}</span>
                         </div>
-                        <div class="right_shangpin_five"><a class="ligm_bg" href="#" id="link_buy_now">立即购买</a> <a
-                                class="wai_juli" id="link_add_cart"
-                                href="#">加入购物车</a><a
-                                href="#" class="shoucang_font">收藏</a></div>
+                        <div class="right_shangpin_five"><a class="ligm_bg"
+                                                            href="#"
+                                                            id="link_buy_now">立即购买</a>
+                            <a
+                                    class="wai_juli" id="link_add_cart"
+                                    href="#">加入购物车</a><a
+                                    href="#" class="shoucang_font">收藏</a></div>
                         <div></div>
                     </div>
                 </div>
                 <div style="clear:both"></div>
-                <div id="add_cart_result" class="buttom_dibu" style="display: none;">已成功添加到购物车！
-                    <a id="link_buy_more" href="#"><span class="zi_gray">继续购物</span></a>
-                    <a href="/carts"><span class="zi_gray">查看购物车</span></a></div>
+                <div id="add_cart_result" class="buttom_dibu"
+                     style="display: none;">已成功添加到购物车！
+                    <a id="link_buy_more" href="#"><span
+                            class="zi_gray">继续购物</span></a>
+                    <a href="/carts"><span class="zi_gray">查看购物车</span></a>
+                </div>
             </div>
         #{/form}
             <div class="right_content_two">
@@ -133,7 +158,6 @@
                         </ul>
                     </dd>
                 </dl>
-
             </div>
             <div class="right_content_three">
                 <dl class="right_one_dl">
@@ -148,7 +172,17 @@
 
                     </dd>
                 </dl>
-
+            </div>
+            <div class="right_content_three">
+                <dl class="right_one_dl">
+                    <dt>
+                    <div class="title_nav">有效期</div>
+                    <div></div>
+                    </dt>
+                    <dd class="three_dd">
+                        <p>${goods.expiredBeginOn} 至 ${goods.expiredEndOn}</p>
+                    </dd>
+                </dl>
             </div>
             <div class="right_content_four">
                 <dl class="right_one_dl">
@@ -157,11 +191,13 @@
                     <div></div>
                     </dt>
                     <dd class="table_dd">
-                        <table width="700" border="0" cellpadding="0" cellspacing="0">
+                        <table width="700" border="0" cellpadding="0"
+                               cellspacing="0">
                         #{if goods.shops.size() >0}
                             #{list goods.shops, as:'shop'}
                                 <tr>
-                                    <td width="120" height="30" class="table_td">${shop.name}</td>
+                                    <td width="120" height="30"
+                                        class="table_td">${shop.name}</td>
                                     <td class="table_td">${shop.address}</td>
                                     <td class="table_td">${shop.phone}</td>
                                 </tr>

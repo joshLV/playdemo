@@ -1,3 +1,5 @@
+package functional;
+
 import models.consumer.Address;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -22,7 +24,7 @@ public class AddressesTest extends FunctionalTest {
     @Before
     public void setup() {
         Fixtures.delete(Address.class);
-        Fixtures.loadModels("addresses.yml");
+        Fixtures.loadModels("fixture/addresses.yml");
     }
 
     @Ignore
