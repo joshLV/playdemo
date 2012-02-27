@@ -10,7 +10,7 @@ $(window).load(
          *点击加入购物车按钮
          */
         $("#link_add_cart").click(function () {
-            $.post("/carts", {'goodsId':$("#goodsId").val(), 'number':$("#number").val()},
+            $.post("/carts", {'goodsId':$("#goodsId").val(), 'increment':$("#number").val()},
                 function (data) {
                     if (data.resultCode == "ok") {
                         $('#add_cart_result').show();

@@ -25,66 +25,54 @@ public class Carts extends Controller {
         render(carts);
     }
 
-    public static void order(long goodsId, int number) {
+    /**
+     * 加入或修改购物车列表
+     *
+     * @param goodsId  商品ID
+     * @param increment 购物车中商品数增量，
+     * 若购物车中无此商品，则新建条目
+     * 若购物车中有此商品，且商品数量加增量小于等于0，视为无效
+     */
+    public static void order(long goodsId, int increment) {
         User user = WebCAS.getUser();
-        Http.Cookie cookieIdentity = request.cookies.get("identity");
+        Http.Cookie cookie= request.cookies.get("identity");
+        String cookieValue = cookie == null ? null : cookie.value;
 
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-
-        if ((user == null && cookieIdentity == null) || goods == null) {
-            error(500, "can not identity user");
+        if (goods == null) {
+            error(500, "no such goods: " + goodsId);
+            return;
         }
-
-        Cart cart;
-        if (user != null) {
-            cart = Cart.find("byUserAndGoods", user, goods).first();
-        } else {
-            cart = Cart.find("byCookieIdentityAndGoods", cookieIdentity.value, goods).first();
+        if (user == null && cookie == null) {
+            error(500, "can not identity current user");
+            return;
         }
+        
+        Cart cart = Cart.order(user, cookieValue, goods, increment);
 
-        if (cart != null) {
-            if (cart.number + number >= 0) {
-                cart.number += number;
-                cart.save();
-            }
-        } else {
-            if (user != null) {
-                new Cart(user, null, goods, number).save();
-            } else {
-                new Cart(user, cookieIdentity.value, goods, number).save();
-            }
+        if(cart == null){
+            error(500, "illegal increment");
+            return;
         }
-
         ok();
     }
 
     public static void delete(@As(",") List<Long> goodsIds) {
         User user = WebCAS.getUser();
-        Http.Cookie cookieIdentity = request.cookies.get("identity");
+        Http.Cookie cookie= request.cookies.get("identity");
+        String cookieValue = cookie == null ? null : cookie.value;
 
 
-        if (user == null && cookieIdentity == null) {
-            error(500, "can not identity user");
+        if (user == null && cookie == null) {
+            error(500, "can not identity current user");
+            return;
+        }
+        if (goodsIds == null || goodsIds.size() == 0){
+            error(500, "no goods specified");
             return;
         }
 
-        Cart cart = null;
-        if (user != null) {
-            for (long goodsId : goodsIds) {
-                models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-                cart = Cart.find("byUserAndGoods", user, goods).first();
-                if (cart != null) {
-                    cart.delete();
-                }
-            }
-        }
-        for (long goodsId : goodsIds) {
-            models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-            cart = Cart.find("byCookieIdentityAndGoods", cookieIdentity.value, goods).first();
-            if (cart != null) {
-                cart.delete();
-            }
-        }
+        Cart.delete(user, cookieValue, goodsIds);
 
         ok();
     }

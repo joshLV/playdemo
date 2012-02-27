@@ -1,9 +1,9 @@
 //发送订单数量变更请求，若数量变为非正整数，则视为删除
-function reorder(goods_id,indent){
+function reorder(goods_id,increment){
     var element = $("#num_" + goods_id);
     var last_num = $("#last_num_" + goods_id);
 
-    var new_num = Number(last_num.val()) + indent;
+    var new_num = Number(last_num.val()) + increment;
     if(new_num <= 0){
         $.ajax({
             type:'DELETE',
@@ -15,7 +15,7 @@ function reorder(goods_id,indent){
         return;
     }
     $.post('/carts',
-            {goodsId:goods_id,number:indent},
+            {goodsId:goods_id,increment:increment},
             function(data){
                 element.val(new_num);
                 last_num.val(new_num);
