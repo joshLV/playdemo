@@ -1,0 +1,16 @@
+[
+#{list items:carts, as:'cart'}
+{
+"number":${cart.number},
+"goods":{
+"id": ${cart.goods.getId()},
+"no": ${cart.goods.no},
+"material_type":${cart.goods.materialType},
+"name":"${cart.goods.name}",
+"image_path","${cart.goods.imagePath}",
+"original_price","${cart.goods.originalPrice}",
+"sale_price","${cart.goods.salePrice}",
+"status","${cart.goods.status}"
+}},
+#{/list}
+]
