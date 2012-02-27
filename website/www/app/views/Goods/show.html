@@ -118,6 +118,9 @@
                         <div class="right_shangpin_three">现价：<span
                                 class="font_red font_size18">${goods.salePrice}</span>元
                         </div>
+                        <div class="right_shangpin_two">有效期：<span
+                                class="right_shangpin_two">${goods.expiredBeginOn} 至 ${goods.expiredEndOn}</span>
+                        </div>
                         <div class="right_shangpin_two">库存：<span
                                 class="right_shangpin_two">${goods.baseSale}</span>&nbsp;件
                         </div>
@@ -170,17 +173,6 @@
                         ${goods.details}
                         </p>
 
-                    </dd>
-                </dl>
-            </div>
-            <div class="right_content_three">
-                <dl class="right_one_dl">
-                    <dt>
-                    <div class="title_nav">有效期</div>
-                    <div></div>
-                    </dt>
-                    <dd class="three_dd">
-                        <p>${goods.expiredBeginOn} 至 ${goods.expiredEndOn}</p>
                     </dd>
                 </dl>
             </div>
