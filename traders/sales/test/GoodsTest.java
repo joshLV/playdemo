@@ -101,8 +101,8 @@ public class GoodsTest extends FunctionalTest {
 		goodsParams.put("imagePath", "/opt/3.jpg");
 		SimpleDateFormat sdf  =   new  SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
 		String datestr = sdf.format( new  Date()); 
-		goodsParams.put("goods.updateAt", datestr);
-		goodsParams.put("goods.updateBy", "yyyy");
+		goodsParams.put("goods.updatedAt", datestr);
+		goodsParams.put("goods.updatedBy", "yyyy");
 		goodsParams.put("id", "1");
 		Response response = POST("/update", goodsParams);
 		assertStatus(302,response);

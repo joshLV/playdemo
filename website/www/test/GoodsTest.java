@@ -1,4 +1,4 @@
-import models.consumer.Address;
+import models.sales.Goods;
 import org.junit.Test;
 import play.Play;
 import play.mvc.Http;
@@ -15,7 +15,7 @@ import play.test.FunctionalTest;
 public class GoodsTest extends FunctionalTest {
     @org.junit.Before
     public void setup() {
-        Fixtures.delete(Address.class);
+        Fixtures.delete(Goods.class);
         Fixtures.loadModels("goods.yml");
     }
 
@@ -23,11 +23,11 @@ public class GoodsTest extends FunctionalTest {
     public void testShow() {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
                 ".Goods-goods1");
+
         Http.Response response = GET("/goods/" + goodsId);
         assertIsOk(response);
         assertContentType("text/html", response);
         assertCharset(Play.defaultWebEncoding, response);
-        assertHeaderEquals("title", "优惠啦 - 商品详情", response);
     }
 
 }

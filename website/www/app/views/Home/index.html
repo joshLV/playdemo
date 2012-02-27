@@ -214,7 +214,8 @@
                     <li class="shop_box">
                         <div><a href="/goods/${one_goods.id}"><img src="${one_goods.imageMiddlePath}"/></a></div>
                         <div class="margin_top5px"><span
-                                class="strong_gray font_14px">${one_goods.name} </span><span
+                                id="recommend_goods_${one_goods.id}"
+                                                                 class="strong_gray font_14px">${one_goods.name} </span><span
                                 class="pri_jiage font_14px">Y${one_goods.salePrice}</span></div>
                         <div class="text_decorat">市场价格：Y:${one_goods.originalPrice}</div>
                     </li>

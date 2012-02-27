@@ -142,8 +142,8 @@ public class Goods extends Controller {
         updateGoods.baseSale = goods.baseSale;
         updateGoods.prompt = goods.prompt;
         updateGoods.details = goods.details;
-        updateGoods.updateAt = datestr;
-        updateGoods.updateBy = "ytrr";
+        updateGoods.updatedAt = datestr;
+        updateGoods.updatedBy = "ytrr";
         updateGoods.save();
 
         index(null);

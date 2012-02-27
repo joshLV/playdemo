@@ -177,13 +177,13 @@ public class Goods extends Model {
     /**
      * 修改时间
      */
-    @Column(name = "update_at")
-    public String updateAt;
+    @Column(name = "updated_at")
+    public String updatedAt;
     /**
      * 修改人
      */
-    @Column(name = "update_by")
-    public String updateBy;
+    @Column(name = "updated_by")
+    public String updatedBy;
     /**
      * 逻辑删除,0:未删除，1:已删除
      */
@@ -239,7 +239,7 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTop(int limit) {
-        return find("status=? and deleted=? order by updateAt,createdAt DESC",
+        return find("status=? and deleted=? order by updatedAt,createdAt DESC",
                 GoodsStatus.ONSALE,
                 DeletedStatus.UN_DELETED).fetch(limit);
     }

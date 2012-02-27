@@ -1,7 +1,7 @@
 #{fixture delete:'all', load:'goods.yml' /}
-#{selenium 'Test Home'}
+#{selenium 'Test Home/index.html'}
     open('/')
-    assertTitle('优惠啦 - 首页')
-    assertTextPresent('测试商品1')
-    assertTextPresent('测试商品3')
+    verifyTitle('优惠啦 - 首页')
+    verifyTextPresent('测试商品1')
+    verifyTextPresent('测试商品4')
 #{/selenium}

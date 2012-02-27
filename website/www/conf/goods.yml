@@ -1,17 +1,38 @@
 sales.Goods(goods1):
-  name: 测试商品1
-  deleted: 0
-
+  name: "测试商品1"
+  originalPrice: 100
+  salePrice: 80
+  baseSale: 1000
+  createdAt: 2012-02-27
+  status: ONSALE
+  deleted: UN_DELETED
+  companyId: 1
 sales.Goods(goods2):
-  name: 删除商品2
-  deleted: 1
-
+  name: "测试商品2"
+  originalPrice: 100
+  salePrice: 80
+  baseSale: 1000
+  createdAt: 2012-02-27
+  status: ONSALE
+  deleted: DELETED
+  companyId: 1
 sales.Goods(goods3):
-  name: 测试商品3
-  expiredBeginOn: 2012-02-27
-  expiredEndOn: 2013-02-27
-
+  name: "测试商品3"
+  originalPrice: 100
+  salePrice: 80
+  baseSale: 1000
+  createdAt: 2012-02-27
+  status: OFFSALE
+  deleted: UN_DELETED
+  companyId: 1
 sales.Goods(goods4):
-  name: 测试商品3
-  expiredBeginOn: 2011-02-27
-  expiredEndOn: 2011-02-27
+  name: "测试商品4"
+  originalPrice: 100
+  salePrice: 80
+  baseSale: 1000
+  createdAt: 2012-02-27
+  status: ONSALE
+  deleted: UN_DELETED
+  companyId: 1
+  expiredBgOn: 2012-02-01
+  expiredEdOn: 2012-02-02

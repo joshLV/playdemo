@@ -1,0 +1,24 @@
+#{fixture delete:'all', load:'goods.yml' /}
+#{selenium 'Test Goods/show1.html'}
+open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods1")}')
+verifyTitle('优惠啦 - 商品详情')
+verifyTextPresent('测试商品1')
+#{/selenium}
+#{selenium 'Test Goods/show2.html'}
+open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods2")}')
+verifyTitle('Not found')
+#{/selenium}
+#{selenium 'Test Goods/show3.html'}
+open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods3")}')
+verifyTitle('优惠啦 - 商品详情')
+verifyTextPresent('测试商品3')
+#{/selenium}
+#{selenium 'Test Goods/show4.html'}
+open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods4")}')
+verifyTitle('优惠啦 - 商品详情')
+verifyTextPresent('测试商品4')
+#{/selenium}
+#{selenium 'Test Goods/show4.html'}
+open('/goods/10000000000000')
+verifyTitle('Not found')
+#{/selenium}

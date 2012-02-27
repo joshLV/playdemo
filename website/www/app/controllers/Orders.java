@@ -86,7 +86,9 @@ public class Orders extends Controller {
      * @param goodsId 购买商品
      * @param number  购买数量
      */
-    public static void buy(@Required long goodsId, @Required(message = "购买数量应大于0") @Min(value = 1, message = "购买数量应大于或等于0") long number) {
+    public static void buy(@Required long goodsId,
+                           @Required(message = "购买数量应大于0")
+                           @Min(value = 1, message = "购买数量应大于或等于0") long number) {
         if (validation.hasErrors()) {
             params.flash(); // add http parameters to the flash scope
             validation.keep(); // keep the errors for the next request
