@@ -1,4 +1,5 @@
-#{extends 'layout_trader/layout.html' /} #{include 'sales/Goods/nav.html' /} #{get 'moreScripts'}
+#{extends 'layout_trader/layout.html' /} #{include 'sales/Goods/nav.html' /}
+#{get 'moreScripts'}
 <script type="text/javascript">
 	$(function() {
 		$("#selectall").click(function() {
@@ -19,9 +20,11 @@
 			if (checkedcnt == 0) {
 				alert("请至少选择一条数据！");
 			} else {
-				$("#deletefrm").attr("method", "delete");
-				$("#deletefrm").attr("action", "@{Goods.delete()}");
-				$("#deletefrm").submit();
+				if(confirm("确定删除吗？")) {
+				   $("#deletefrm").attr("method", "delete");
+         $("#deletefrm").attr("action", "@{Goods.delete()}");
+         $("#deletefrm").submit();
+				}
 			}
 		});
 
@@ -35,7 +38,7 @@
 				alert("请至少选择一条数据！");
 			} else {
 				$("#deletefrm").attr("method", "POST");
-				$("#status").val("1");
+				$("#status").val("ONSALE");
 				$("#deletefrm").action = "@{Goods.updateStatus()}";
 				$("#deletefrm").submit();
 			}
@@ -50,7 +53,7 @@
 			if (checkedcnt == 0) {
 				alert("请至少选择一条数据！");
 			} else {
-				$("#status").val("0");
+				$("#status").val("OFFSALE");
 				$("#deletefrm").attr("method", "POST");
 				$("#deletefrm").action = "@{Goods.updateStatus()}";
 				$("#deletefrm").submit();
@@ -68,8 +71,10 @@
    <tr>
     <td width="30%">商品名称：<input type="text" id="no" name="goods.name" class="input-medium" /></td>
     <td width="30%">商品编号：<input type="text" id="no" name="goods.no" class="input-medium" /></td>
-    <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态： <select id="ca" id="goods.status" class="input-small">
+    <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态： <select id="ca" name="goods.status" class="input-small">
       <option value="">请选择</option>
+      <option value="ONSALE">已上架</option>
+      <option value="OFFSALE">已下架</option>
     </select></td>
    </tr>
    <tr>
@@ -117,8 +122,8 @@
      <td>${row.name}</td>
      <td>${row.salePrice}</td>
      <td>${row.baseSale}</td>
-     <td>saleCount</td>
-     <td>${row.status}</td>
+     <td>${row.saleCount}</td>
+     <td>&{'goods.'+row.status}</td>
      <td>${row.createdAt}</td>
      <td><a href="@{Goods.edit(row.id)}">修改</a>/<a href="@{Goods.detail(row.id)}">查看</a></td>
     </tr>
@@ -126,16 +131,18 @@
    </tbody>
   </table>
  </form>
- <div class="pagination">
+ <div class="pagination" align="center">
   <ul>
-   <li><a href="#">Prev</a></li>
-   <li class="active"><a href="#">1</a></li>
-   <li><a href="#">2</a></li>
-   <li><a href="#">3</a></li>
-   <li><a href="#">4</a></li>
-   <li><a href="#">Next</a></li>
+    #{list items:pager.startNum..pager.endNum, as:'i'}
+      #{if pager.currPage == i}
+        <li class="active"><a>${i}</a></li>
+      #{/if}  
+      #{else}
+        <li><a href="@{Goods.index()}?page=${i}">${i}</a></li>
+      #{/else}
+    #{/list}
+
+    <li><a>共${pager.totalpage}页/ 共${pager.totalCount}条记录</a> </li>
   </ul>
- </div>
-
-</div>
-
+  
+  </div>
