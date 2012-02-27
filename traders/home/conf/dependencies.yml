@@ -2,11 +2,12 @@
 
 require:
     - play
+    - play -> cobertura 2.4
     - layout_trader -> layout_trader
     - sales -> sales
     - order -> order
     - consumer -> consumer
-    
+
 repositories:
     - layoutTraderCustomModules:
         type:       local

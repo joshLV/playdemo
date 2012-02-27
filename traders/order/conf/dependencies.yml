@@ -2,6 +2,7 @@
 
 require:
     - play
+    - play -> cobertura 2.4
     - layout_trader -> layout_trader
     - order -> order
     - consumer -> consumer
