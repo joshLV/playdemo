@@ -25,26 +25,19 @@
 
 <%@ page contentType="text/html; charset=UTF-8" %>
 <jsp:directive.include file="includes/top.jsp" />
-
-<c:if test="${not pageContext.request.secure}">
-<div id="msg" class="errors">
-    <h2>Non-secure Connection</h2>
-    <p>You are currently accessing CAS over a non-secure connection.  Single Sign On WILL NOT WORK.  In order to have single sign on work, you MUST log in over HTTPS.</p>
-</div>
-</c:if>
-
+<script>
+function submitLogin(form) {
+    form.username.value = form.username.value + "@lyf";
+    return true;
+}
+</script>
   <div class="box fl-panel" id="login">
-			<form:form method="post" id="fm1" cssClass="fm-v clearfix" commandName="${commandName}" htmlEscape="true">
+			<form:form method="post" id="fm1" cssClass="fm-v clearfix" commandName="${commandName}" htmlEscape="true" onSubmit="return submitLogin(this);">
                   <form:errors path="*" id="msg" cssClass="errors" element="div" />
                 <!-- <spring:message code="screen.welcome.welcome" /> -->
                     <h2><spring:message code="screen.welcome.instructions" /></h2>
                     <div class="row fl-controls-left">
                         <label for="username" class="fl-label"><spring:message code="screen.welcome.label.netid" /></label>
-						<c:if test="${not empty sessionScope.openIdLocalId}">
-						<strong>${sessionScope.openIdLocalId}</strong>
-						<input type="hidden" id="username" name="username" value="${sessionScope.openIdLocalId}" />
-						</c:if>
-
 						<c:if test="${empty sessionScope.openIdLocalId}">
 						<spring:message code="screen.welcome.label.netid.accesskey" var="userNameAccessKey" />
 						<form:input cssClass="required" cssErrorClass="error" id="username" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="false" htmlEscape="true" />
@@ -75,63 +68,4 @@
                     </div>
             </form:form>
           </div>
-            <div id="sidebar">
-                <p class="fl-panel fl-note fl-bevel-white fl-font-size-80"><spring:message code="screen.welcome.security" /></p>
-                <div id="list-languages" class="fl-panel">
-                <%final String queryString = request.getQueryString() == null ? "" : request.getQueryString().replaceAll("&locale=([A-Za-z][A-Za-z]_)?[A-Za-z][A-Za-z]|^locale=([A-Za-z][A-Za-z]_)?[A-Za-z][A-Za-z]", "");%>
-					<c:set var='query' value='<%=queryString%>' />
-                    <c:set var="xquery" value="${fn:escapeXml(query)}" />
-                  <h3>Languages:</h3>
-                  <c:choose>
-                     <c:when test="${not empty requestScope['isMobile'] and not empty mobileCss}">
-                        <form method="get" action="login?${xquery}">
-                           <select name="locale">
-                               <option value="en">English2dddddddd</option>
-                               <option value="es">Spanish</option>
-                               <option value="fr">French</option>
-                               <option value="ru">Russian</option>
-                               <option value="nl">Nederlands</option>
-                               <option value="sv">Svenskt</option>
-                               <option value="it">Italiano</option>
-                               <option value="ur">Urdu</option>
-                               <option value="zh_CN">Chinese (Simplified)</option>
-                               <option value="zh_TW">Chinese (Traditional)</option>
-                               <option value="de">Deutsch</option>
-                               <option value="ja">Japanese</option>
-                               <option value="hr">Croatian</option>
-                               <option value="cs">Czech</option>
-                               <option value="sl">Slovenian</option>
-                               <option value="pl">Polish</option>
-                               <option value="ca">Catalan</option>
-                               <option value="mk">Macedonian</option>
-                           </select>
-                           <input type="submit" value="Switch">
-                        </form>
-                     </c:when>
-                     <c:otherwise>
-                        <c:set var="loginUrl" value="login?${xquery}${not empty xquery ? '&' : ''}locale=" />
-						<ul
-							><li class="first"><a href="${loginUrl}en">Englishwerwerwrw</a></li
-							><li><a href="${loginUrl}es">Spanishwerwerwe</a></li
-							><li><a href="${loginUrl}fr">Frenchwerwe</a></li
-							><li><a href="${loginUrl}ru">Russian</a></li
-							><li><a href="${loginUrl}nl">Nederlands</a></li
-							><li><a href="${loginUrl}sv">Svenskt</a></li
-							><li><a href="${loginUrl}it">Italiano</a></li
-							><li><a href="${loginUrl}ur">Urdu</a></li
-							><li><a href="${loginUrl}zh_CN">Chinese (Simplified)</a></li
-                            ><li><a href="${loginUrl}zh_TW">Chinese (Traditional)</a></li
-							><li><a href="${loginUrl}de">Deutsch</a></li
-							><li><a href="${loginUrl}ja">Japanese</a></li
-							><li><a href="${loginUrl}hr">Croatian</a></li
-							><li><a href="${loginUrl}cs">Czech</a></li
-							><li><a href="${loginUrl}sl">Slovenian</a></li
-                            ><li><a href="${loginUrl}ca">Catalan</a></li
-                            ><li><a href="${loginUrl}mk">Macedonian</a></li
-							><li class="last"><a href="${loginUrl}pl">Polish</a></li
-						></ul>
-                     </c:otherwise>
-                   </c:choose>
-                </div>
-            </div>
 <jsp:directive.include file="includes/bottom.jsp" />
