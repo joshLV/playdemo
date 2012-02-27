@@ -228,7 +228,7 @@ public class Goods extends Model {
             System.out.println("filePat not match");
             return defaultImage;
         }
-        String imageHeadStr = "/p/" + imagePath;
+        String imageHeadStr = "/p" + imagePath;
         return IMAGE_SERVER + imageHeadStr.replace("/" + matcher.group(4), "/" + matcher.group(4) + "_" + sizeType);
     }
 
