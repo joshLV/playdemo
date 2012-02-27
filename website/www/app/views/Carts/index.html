@@ -62,11 +62,11 @@
                 <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType.equals("e") ? '电子券' : '实物'}</td>
                 <td width="115" height="25" align="center" valign="middle" id="price_${cartItem.goods.id}">${cartItem.goods.salePrice}</td>
                 <td width="83" height="25" align="center" valign="middle">
-                    <a class="add_box" href="#" name="${cartItem.goods.id}"><img src="@{'/public/images/add_anniu.jpg'}"/></a>
+                    <a href="#" class="reduce_box" name="${cartItem.goods.id}"><img src="@{'/public/images/sub_anniu.jpg'}" /></a>
                     <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}" />
                     <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}"/>
                     <input type="hidden" value="${cartItem.number * cartItem.goods.salePrice}" id="subtotal_${cartItem.goods.id}"/>
-                    <a href="#" class="reduce_box" name="${cartItem.goods.id}"><img src="@{'/public/images/sub_anniu.jpg'}" /></a>
+                    <a class="add_box" href="#" name="${cartItem.goods.id}"><img src="@{'/public/images/add_anniu.jpg'}"/></a>
                 </td>
                 <td idth="187" height="25" align="center" valign="middle"><span class="strong_gray">劵号：${cartItem.goods.no}</span>
                 </td>
