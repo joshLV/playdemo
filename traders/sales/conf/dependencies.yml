@@ -13,8 +13,6 @@ repositories:
         root:       "http://dev.uhuila.cn/nexus/content/groups/public"
         contains:
             - com.uhuila.utils -> *
-            - commons-httpclient -> *
-            - dom4j -> *
         m2compatible: true
 
     - customModules:

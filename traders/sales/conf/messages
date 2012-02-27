@@ -1,3 +1,18 @@
 # You can specialize this file for each language.
 # For example, for French create a messages.fr file
 #
+
+goods.ONSALE=已上架
+goods.OFFSALE=已下架
+goods.REAL=实物
+goods.ELECTRONIC=电子券
+
+validation.required=请输入%s!
+goods.name=商品名称
+goods.expiredBeginOn=商品有效期
+goods.expiredEndOn=商品有效期
+goods.originalPrice=商品原价
+goods.salePrice=商品现价
+goods.baseSale=库存
+goods.imagePath=商品图片
+goods.details=商品详情
