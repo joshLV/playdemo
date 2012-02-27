@@ -7,7 +7,7 @@
 #{/get}
 #{include 'sales/Goods/nav.html' /}
 <div class="body">
- <form class="form-horizontal" name="frm" action="@{Goods.update(goods.id)}" method="post" enctype="multipart/form-data">
+ <form class="form-horizontal" id="frm" name="frm"  action="@{Goods.update(goods.id)}" method="post" enctype="multipart/form-data">
   <legend>修改电子消费券</legend>
   <div class="control-group">
    <label for="select01" class="control-label">商品类型</label>
@@ -109,11 +109,11 @@
   </div>
   <div class="form-actions">
    <button class="btn btn-primary"  type="submit">保存</button>
-   <button class="btn btn-primary" id="onsales" type="submit">保存并上架</button>
-   <button class="btn" type="reset">浏览</button>
    <input type="hidden" id="status" name="status"  value="0"/>
-  </div>
- </form>
+   <button class="btn btn-primary" id="view" type="submit">浏览</button>
+   </div>
+  </form>
+  
  #{get 'moreScripts'}
 <script type="text/javascript">
     KindEditor.ready(function(K) {
@@ -158,12 +158,13 @@
         prettyPrint();
     });
     
-    $("#onsales").click(function() {
-        $("#status").val("1");
-        $("#frm").action="@{Goods.create()}";
-     $("#frm").submit();
+    $("#view").click(function() {
+    	var fm = $("#frm");
+      fm.attr("method", "GET");
+      fm.attr("action", "@{Goods.preview(goods.id)}");
+      fm.submit();
+      return false;
         });  
-   
    
    $("#radios2").click(function() {
         $("#shop").show();//显示

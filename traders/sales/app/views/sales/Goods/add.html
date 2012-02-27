@@ -4,18 +4,24 @@
 <script src="@{'/public/javascripts/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/plugins/code/prettify.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<style type="text/css">
+.error {
+    padding-left: 10px;
+    color: red;
+}
+</style>
 #{/get}
 #{include 'sales/Goods/nav.html' /}
+
 <div class="body">
  <form class="form-horizontal" name="frm" action="@{Goods.create()}" method="post" enctype="multipart/form-data">
   <legend>添加电子消费券</legend>
   <div class="control-group">
-   <label for="select01" class="control-label">商品类型</label>
+   <label for="select01" class="control-label"><font color="red">*</font>商品类型</label>
    <div class="controls">
     <select id="ca" name="goods.materialType" class="input-small">
-     <option value="">请选择</option>
-     <option value="ELECTRONIC">电子券</option>
-     <option value="REAL">实物</option>
+     <option value="ELECTRONIC">&{'goods.ELECTRONIC'}</option>
+     <option value="REAL">&{'goods.REAL'}</option>
     </select> <select id="select03" class="input-small">
      <option value="">请选择</option>
     </select> <select id="select03" class="input-small">
@@ -24,7 +30,7 @@
    </div>
   </div>
   <div class="control-group">
-   <label for="select01" class="control-label">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</label>
+   <label for="select01" class="control-label"><font color="red">*</font>品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</label>
    <div class="controls">
     <select id="select03" class="input-small">
      <option>哈根达斯</option>
@@ -38,42 +44,49 @@
    </div>
   </div>
   <div class="control-group">
-   <label for="input01" class="control-label">商品名称</label>
+   <label for="input01" class="control-label"><font color="red">*</font>商品名称</label>
    <div class="controls">
     <input type="text" id="goods_name" name="goods.name" class="input-xlarge" />
+     <span class="error">#{error 'goods.name' /}</span>
    </div>
   </div>
   <div class="control-group">
-   <label for="input01" class="control-label">券有效期</label>
+   <label for="input01" class="control-label"><font color="red">*</font>券有效期</label>
    <div class="controls">
     <input class="input-medium Wdate" type="text" id="expiredBeginOn" name="goods.expiredBeginOn"
      onfocus="WdatePicker({readOnly:true})" />至 <input class="input-medium Wdate" type="text" id="expiredEndOn"
      name="goods.expiredEndOn" onfocus="WdatePicker({readOnly:true})" />
+     <span class="error">#{error 'goods.expiredBeginOn' /}</span>
    </div>
   </div>
   <div class="control-group">
-   <label for="input01" class="control-label">原&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
+   <label for="input01" class="control-label"><font color="red">*</font>原&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
    <div class="controls">
     <input type="text" id="originalPrice" name="goods.originalPrice" class="input-small" />
+    <span class="error">#{error 'goods.originalPrice' /}</span>
    </div>
   </div>
   <div class="control-group">
-   <label for="input01" class="control-label">现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
+   <label for="input01" class="control-label"><font color="red">*</font>现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
    <div class="controls">
     <input type="text" id="salePrice" name="goods.salePrice" class="input-small" />
+    <span class="error">#{error 'goods.salePrice' /}</span>
    </div>
   </div>
   <div class="control-group">
-   <label for="input01" class="control-label">库&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</label>
+   <label for="input01" class="control-label"><font color="red">*</font>库&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</label>
    <div class="controls">
     <input type="text" id="baseSale" name="goods.baseSale" class="input-small" />
+    <span class="error">#{error 'goods.baseSale' /}</span>
    </div>
   </div>
   <div class="control-group">
-   <label for="input01" class="control-label">商品图片</label>
+   <label for="input01" class="control-label"><font color="red">*</font>商品图片</label>
    <div class="controls">
     <input type="file" id="imagePath" name="imagePath" class="input-file" />
    </div>
+   <div class="controls">
+   <span class="error">#{error 'goods.imagePath'/}</span></div>
   </div>
   <div class="control-group">
    <label for="textarea" class="control-label">温馨提示</label>
@@ -82,9 +95,10 @@
    </div>
   </div>
   <div class="control-group">
-   <label for="textarea" class="control-label">商品详情</label>
+   <label for="textarea" class="control-label"><font color="red">*</font>商品详情</label>
    <div class="controls">
     <textarea name="goods.details" cols="100" rows="8" style="width:700px;height:200px;visibility:hidden;"></textarea>
+    <span class="error">#{error 'goods.details' /}</span>
    </div>
   </div>
   <div class="control-group">
@@ -112,10 +126,11 @@
   <div class="form-actions">
    <button class="btn btn-primary"  type="submit">保存</button>
    <button class="btn btn-primary" id="onsales" type="submit">保存并上架</button>
-   <button class="btn" type="reset">浏览</button>
    <input type="hidden" id="status" name="status"  value="0"/>
-  </div>
- </form>
+   <button class="btn btn-primary" id="view" type="submit">浏览</button>
+    </div>
+  </form>
+
  #{get 'moreScripts'}
 <script type="text/javascript">
     KindEditor.ready(function(K) {
@@ -162,16 +177,15 @@
     
     $("#onsales").click(function() {
     	 $("#status").val("1");
-    	 $("#frm").action="@{Goods.create()}";
-      $("#frm").submit();
          });  
-    
-    
     $("#radios2").click(function() {
          $("#shop").show();//显示
           });
     $("#radios1").click(function() {
         $("#shop").hide();//隐藏
+         });
+    $("#view").click(function() {
+    	$("#status").val("2");
          });
 </script>
 #{/get}
