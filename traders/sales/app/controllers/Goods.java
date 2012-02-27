@@ -6,7 +6,6 @@ package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.PathUtil;
-import models.sales.GoodsShop;
 import models.sales.GoodsStatus;
 import models.sales.Shop;
 import play.mvc.Controller;
@@ -50,7 +49,7 @@ public class Goods extends Controller {
      */
     public static void create(File imagePath, models.sales.Goods goods,
                               String radios, GoodsStatus status,
-                              Long checkoption[]) {
+                              Long checkOptions[]) {
         if (validation.hasErrors()) {
             error("Validation errors");
         }
@@ -69,24 +68,19 @@ public class Goods extends Controller {
         uploadImagePath(imagePath, goods);
         goods.save();
         //全部门店的场合
-        GoodsShop goods_shop = new GoodsShop();
         if ("1".equals(radios)) {
             List<Shop> list = Shop.findShopByCompany(Long.parseLong("1"));
             for (Shop shop : list) {
-                goods_shop = new GoodsShop();
-                goods_shop.shopId = shop.id;
-                goods_shop.goodsId = goods.id;
-                goods_shop.save();
+                goods.shops.add(shop);
             }
         } else {
             //部分门店
-            for (Long id : checkoption) {
-                goods_shop = new GoodsShop();
-                goods_shop.shopId = id;
-                goods_shop.goodsId = goods.id;
-                goods_shop.create();
+            for (Long id : checkOptions) {
+                Shop shop = Shop.findById(id);
+                goods.shops.add(shop);
             }
         }
+        goods.save();
         index(null);
     }
 
@@ -104,7 +98,7 @@ public class Goods extends Controller {
                 extName = uploadImageFileName.substring(uploadImageFileName.lastIndexOf(".") + 1, uploadImageFileName.length());
             }
             String baseFileName = "origin." + extName;
-            new FileUploadUtil().storeImage(uploadImageFile, storepath + path, baseFileName);
+            FileUploadUtil.storeImage(uploadImageFile, storepath + path, baseFileName);
             goods.imagePath = path + baseFileName;
         }
     }
