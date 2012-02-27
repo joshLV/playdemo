@@ -11,22 +11,12 @@
   <legend>查看电子消费券</legend>
   <div class="control-group">
    <label for="select01" class="control-label">商品类型</label>
-   <div class="controls">
-    <select id="ca" class="input-small">
-     <option value="">请选择</option>
-    </select> <select id="select03" class="input-small">
-     <option value="">请选择</option>
-    </select> <select id="select03" class="input-small">
-     <option value="">请选择</option>
-    </select>
+   <div class="controls">&{'goods.'+goods.materialType}
    </div>
   </div>
   <div class="control-group">
    <label for="select01" class="control-label">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</label>
-   <div class="controls">
-    <select id="select03" class="input-small">
-     <option>哈根达斯</option>
-    </select>
+   <div class="controls">哈根达斯
    </div>
   </div>
   <div class="control-group">
@@ -46,7 +36,7 @@
   </div>
   <div class="control-group">
    <label for="input01" class="control-label">原&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
-   <div class="controls">${goods.expiredEndOn}}
+   <div class="controls">${goods.originalPrice}
    </div>
   </div>
   <div class="control-group">
@@ -62,77 +52,36 @@
   <div class="control-group">
    <label for="input01" class="control-label">商品图片</label>
    <div class="controls">
-    <input type="file" id="imagePath" name="imagePath" class="input-file" />
+   <img src="${goods.imageTinyPath}"/>
    </div>
   </div>
   <div class="control-group">
    <label for="textarea" class="control-label">温馨提示</label>
-   <div class="controls">
-     <textarea name="goods.prompt" cols="100" rows="8" style="width:700px;height:200px;visibility:hidden;">${goods.prompt}</textarea>
+   <div class="controls">${goods.prompt}
    </div>
   </div>
   <div class="control-group">
    <label for="textarea" class="control-label">商品详情</label>
-   <div class="controls">
-    <textarea name="goods.details" cols="100" rows="8" style="width:700px;height:200px;visibility:hidden;">${goods.details}</textarea>
+   <div class="controls">${goods.details}
    </div>
   </div>
   <div class="control-group">
    <label for="textarea" class="control-label">使用门店</label>
    <div class="controls">
-    <input type="radio" checked value="1" id="radios1" name="optionsRadios" />全部门店
-    <input type="radio" value="2" id="radios2" name="optionsRadios" />部分门店
+     <table class="table table-striped table-bordered table-condensed">
+      #{list items:list, as:'row' }
+      <tr>
+       <td><input type="checkbox" id="checkoption" value="${row.id}" name="checkoption[]" /></td>
+       <td>${row.name}</td>
+       <td>${row.address}</td>
+       <td>${row.phone}</td>
+      </tr>
+      #{/list}
+    </table>
    </div>
-  </div>
+   </div>
   <div class="form-actions">
-   <button class="btn" type="reset">Cancel</button>
+  <button class="btn btn-primary" onclick="javascript:window.history.back(-1)" type="button">返回</button>
   </div>
  </form>
- #{get 'moreScripts'}
-<script type="text/javascript">
-    KindEditor.ready(function(K) {
-        var editor1 = K.create('textarea[name="goods.prompt"]', {
-            cssPath : '/public/javascripts/plugins/code/prettify.css',
-            uploadJson : 'kindeditor/upload_json.jsp',
-            fileManagerJson : '/kindeditor/file_manager_json.jsp',
-            allowFileManager : true,
-            afterCreate : function() {
-                var self = this;
-                K.ctrl(document, 13, function() {
-                    self.sync();
-                    document.forms['frm'].submit();
-                });
-                K.ctrl(self.edit.doc, 13, function() {
-                    self.sync();
-                    document.forms['frm'].submit();
-                });
-            }
-        });
-        prettyPrint();
-    });
-    
-    KindEditor.ready(function(K) {
-        var editor1 = K.create('textarea[name="goods.details"]', {
-             cssPath : '/public/javascripts/plugins/code/prettify.css',
-            uploadJson : '/kindeditor/upload_json.jsp',
-            fileManagerJson : 'kindeditor/file_manager_json.jsp',
-            allowFileManager : true,
-            afterCreate : function() {
-                var self = this;
-                K.ctrl(document, 13, function() {
-                    self.sync();
-                    document.forms['frm'].submit();
-                });
-                K.ctrl(self.edit.doc, 13, function() {
-                    self.sync();
-                    document.forms['frm'].submit();
-                });
-            }
-        });
-        prettyPrint();
-    });
-</script>
-#{/get}
 </div>
-
-
