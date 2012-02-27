@@ -11,6 +11,7 @@ require:
     - dom4j -> dom4j 1.6.1
     - web_trace -> web_trace
     - accounts  -> accounts
+    - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
 
 repositories:
 

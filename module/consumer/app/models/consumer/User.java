@@ -6,7 +6,7 @@ import javax.persistence.*;
 import play.db.jpa.*;
 
 @Entity
-@Table(name = "webusers.users")
+@Table(name = "users")
 public class User extends Model {
 
     @Column(name="email")

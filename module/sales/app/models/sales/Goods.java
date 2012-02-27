@@ -4,6 +4,7 @@
  */
 package models.sales;
 
+import com.uhuila.common.constants.DeletedStatus;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
@@ -18,9 +19,6 @@ import java.util.regex.Pattern;
 @Entity
 @Table(name = "goods")
 public class Goods extends Model {
-
-    public static final int UNDELETED = 0;
-    public static final int DELETED = 1;
 
     private static final Pattern imagePat = Pattern.compile("^/([0-9]+)/([0-9]+)/([0-9]+)/([^_]+).(jpg|png|gif|jpeg)$");
     private static final String IMAGE_SERVER;
@@ -124,7 +122,8 @@ public class Goods extends Model {
 
     @Transient
     public String getDiscount() {
-        if (originalPrice.compareTo(new BigDecimal(0)) > 0) {
+        if (originalPrice != null && originalPrice.compareTo(new BigDecimal(0)) >
+                0) {
             BigInteger discount = salePrice.divide(originalPrice).multiply(new BigDecimal(100)).toBigInteger();
             if (discount.intValue() == 100) {
                 return "";
@@ -188,7 +187,8 @@ public class Goods extends Model {
     /**
      * 逻辑删除,0:未删除，1:已删除
      */
-    public int deleted;
+    @Enumerated(EnumType.ORDINAL)
+    public DeletedStatus deleted;
     /**
      * 乐观锁
      */
@@ -239,9 +239,9 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTop(int limit) {
-        return find("byStatusAndDeleted order by updateAt,createAt DESC",
+        return find("status=? and deleted=? order by updateAt,createdAt DESC",
                 GoodsStatus.ONSALE,
-                UNDELETED).fetch(limit);
+                DeletedStatus.UN_DELETED).fetch(limit);
     }
 
     /**
@@ -254,7 +254,7 @@ public class Goods extends Model {
         StringBuilder condition = new StringBuilder();
         condition.append(" deleted= ? ");
         List<Object> params = new ArrayList<>();
-        params.add("0");
+        params.add(DeletedStatus.UN_DELETED);
         if (goods.name != null && !"".equals(goods.name)) {
             condition.append(" and name like ? ");
             params.add("%" + goods.name + "%");

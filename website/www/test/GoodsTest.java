@@ -1,6 +1,8 @@
+import models.consumer.Address;
 import org.junit.Test;
 import play.Play;
 import play.mvc.Http;
+import play.test.Fixtures;
 import play.test.FunctionalTest;
 
 /**
@@ -11,9 +13,17 @@ import play.test.FunctionalTest;
  * Time: 5:22 PM
  */
 public class GoodsTest extends FunctionalTest {
+    @org.junit.Before
+    public void setup() {
+        Fixtures.delete(Address.class);
+        Fixtures.loadModels("goods.yml");
+    }
+
     @Test
     public void testShow() {
-        Http.Response response = GET("/goods/1");
+        Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
+                ".Goods-goods1");
+        Http.Response response = GET("/goods/" + goodsId);
         assertIsOk(response);
         assertContentType("text/html", response);
         assertCharset(Play.defaultWebEncoding, response);

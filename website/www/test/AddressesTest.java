@@ -22,7 +22,7 @@ public class AddressesTest extends FunctionalTest {
     @Before
     public void setup() {
         Fixtures.delete(Address.class);
-        Fixtures.loadModels("initial-data.yml");
+        Fixtures.loadModels("addresses.yml");
     }
 
     @Ignore

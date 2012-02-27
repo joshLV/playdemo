@@ -1,3 +1,4 @@
+import com.uhuila.common.constants.DeletedStatus;
 import models.sales.Goods;
 import models.sales.GoodsStatus;
 import org.junit.Test;
@@ -19,7 +20,7 @@ public class GoodsUnitTest extends UnitTest {
         goods.prompt = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         goods.details = "aaaaaaaaaasssssssssssssssssss";
         goods.imagePath = "/1/1/1/" + "111.jpg";
-        goods.deleted = Goods.UNDELETED;
+        goods.deleted = DeletedStatus.UN_DELETED;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String datestr = sdf.format(new Date());
         goods.createdAt = datestr;

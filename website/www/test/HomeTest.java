@@ -11,7 +11,7 @@ public class HomeTest extends FunctionalTest {
     @Before
     public void setup() {
         Fixtures.delete(Goods.class);
-        Fixtures.loadModels("initial-data.yml");
+        Fixtures.loadModels("goods.yml");
     }
 
     @Test
@@ -20,10 +20,6 @@ public class HomeTest extends FunctionalTest {
         assertIsOk(response);
         assertContentType("text/html", response);
         assertCharset(play.Play.defaultWebEncoding, response);
-        assertHeaderEquals("title", "优惠啦 - 首页", response);
-
-        //todo 测试商品的筛选
-
     }
 
 }

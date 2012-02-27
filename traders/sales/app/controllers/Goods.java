@@ -4,6 +4,7 @@
  */
 package controllers;
 
+import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.PathUtil;
 import models.sales.GoodsShop;
 import models.sales.GoodsStatus;
@@ -61,7 +62,7 @@ public class Goods extends Controller {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String datestr = sdf.format(new Date());
-        goods.deleted = models.sales.Goods.UNDELETED;
+        goods.deleted = DeletedStatus.UN_DELETED;
         goods.createdAt = datestr;
         goods.createdBy = "yanjy";
         goods.create();

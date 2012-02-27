@@ -2,3 +2,12 @@ self: play -> sales 0.1
 
 require:
     - play
+    - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+
+repositories:
+    - mavenRepository:
+        type:       iBiblio
+        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
+        contains:
+            - com.uhuila.utils -> *
+        m2compatible: true
