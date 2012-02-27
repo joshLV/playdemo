@@ -5,11 +5,14 @@ require:
     - play -> cobertura 2.4
     - play -> cas 3.1
     - play -> logisimayml 1.8
+    - play -> rabbitmq 0.3
     - sales -> sales
     - consumer -> consumer
     - order -> order
     - commons-httpclient -> commons-httpclient 3.1
     - dom4j -> dom4j 1.6.1
+    - sms -> sms
+#    - org.apache.activemq -> activemq-core 5.4.3
     - web_trace -> web_trace
     - accounts  -> accounts
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
@@ -23,6 +26,7 @@ repositories:
             - com.uhuila.utils -> *
             - commons-httpclient -> *
             - dom4j -> *
+#            - activemq-core -> *
         m2compatible: true
 
     - customModules:
@@ -34,3 +38,4 @@ repositories:
             - order -> *
             - web_trace -> *
             - accounts  -> *
+            - sms -> *

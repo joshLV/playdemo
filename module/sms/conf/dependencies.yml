@@ -1,0 +1,4 @@
+self: play -> sms 0.1
+
+require:
+    - play
