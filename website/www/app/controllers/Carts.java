@@ -19,9 +19,10 @@ public class Carts extends Controller {
 
     public static void index() {
         User user = WebCAS.getUser();
-        Http.Cookie cookieIdentity = request.cookies.get("identity");
+        Http.Cookie cookie= request.cookies.get("identity");
+        String cookieValue = cookie == null ? null : cookie.value;
 
-        List<Cart> carts = Cart.findAll(user, cookieIdentity.value);
+        List<Cart> carts = Cart.findAll(user, cookieValue);
         render(carts);
     }
 
@@ -55,6 +56,15 @@ public class Carts extends Controller {
             return;
         }
         ok();
+    }
+
+    public static void allJSON() {
+        User user = WebCAS.getUser();
+        Http.Cookie cookie= request.cookies.get("identity");
+        String cookieValue = cookie == null ? null : cookie.value;
+
+        List<Cart> carts = Cart.findAll(user, cookieValue);
+        render(carts);
     }
 
     public static void delete(@As(",") List<Long> goodsIds) {

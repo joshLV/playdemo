@@ -8,6 +8,7 @@ GET     /goods/{id}                             Goods.show
 
 # 购物车
 GET     /carts                                  Carts.index
+GET     /carts/all.json                         Carts.allJSON
 POST    /carts                                  Carts.order
 DELETE  /carts/{goodsIds}                       Carts.delete
 
