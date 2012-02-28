@@ -7,8 +7,8 @@ sales.Goods(goods1):
   status: ONSALE
   deleted: UN_DELETED
   companyId: 1
-  expiredBeginOn: 2012-02-01
-  expiredEndOn: 2012-02-02
+  effectiveAt: 2012-02-01
+  expireAt: 2012-02-02
 sales.Goods(goods2):
   name: "测试商品2"
   originalPrice: 100
@@ -36,5 +36,5 @@ sales.Goods(goods4):
   status: ONSALE
   deleted: UN_DELETED
   companyId: 1
-  expiredBeginOn: 2012-02-01
-  expiredEndOn: 2012-02-02
+  effectiveAt: 2012-02-01
+  expireAt: 2012-02-02

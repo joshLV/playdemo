@@ -22,36 +22,11 @@ import java.util.Map;
 public class AddressesTest extends FunctionalTest {
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() {
         Fixtures.delete(Address.class);
         Fixtures.loadModels("fixture/addresses.yml");
     }
-
-    @Ignore
-    @Test
-    public void testCreate() {
-        Map<String, String> params = new HashMap<String, String>();
-//        params.put("selectedAddressId", "0");
-        params.put("address.name", "testName");
-        params.put("address.address", "testAddress");
-        Http.Response response = POST("/orders/addresses", params);
-//        assertContentType("application/json", response);
-
-
-//        assertThat(renderArgs("name"), is(notNullValue()));
-//        name = (String) renderArgs("testName");
-//        id = (Long) renderArgs("id");
-//        assertThat(name, is("testName"));
-    }
-/*
-
-    @Test
-    public void testUpdate() {
-        Http.Response response = DELETE("/orders/addresses/1");
-        assertIsOk(response);
-        assertContentType("application/json", response);
-    }
-*/
 
     @Test
     public void testDelete() {

@@ -54,6 +54,10 @@ public class Goods extends Model {
 	@JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))
 	public Set<Shop> shops;
 
+    @ManyToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+    @JoinTable(name = "goods_categories", inverseJoinColumns = @JoinColumn(name
+            = "category_id"), joinColumns = @JoinColumn(name = "goods_id"))
+    public Set<Category> categories;
 
 	/**
 	 * 原始图片路径
