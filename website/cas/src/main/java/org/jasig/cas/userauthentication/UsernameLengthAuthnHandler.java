@@ -48,7 +48,7 @@ public class UsernameLengthAuthnHandler extends AbstractUsernamePasswordAuthenti
         }
         Map<String, Object> user = userlist.get(0);
 
-        if (!DigestUtils.md5Hex(password + user.get("password_salt")).equals(user.get("crypted_password"))) {
+        if (!DigestUtils.md5Hex(password + user.get("password_salt")).equals(user.get("encrypted_password"))) {
             return false;
         }
 
