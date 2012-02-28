@@ -9,8 +9,7 @@ import play.test.UnitTest;
  * Date: 2/13/12
  * Time: 3:54 PM
  */
-public class GoodsTest
-    extends UnitTest {
+public class GoodsTest extends UnitTest {
 
     @Test
     public void testShowImage() throws Exception {

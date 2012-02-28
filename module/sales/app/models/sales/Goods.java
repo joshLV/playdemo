@@ -4,19 +4,32 @@
  */
 package models.sales;
 
-import com.uhuila.common.constants.DeletedStatus;
-
-import play.data.validation.Required;
-import play.db.jpa.Model;
-
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+
+import play.data.validation.Required;
+import play.db.jpa.Model;
+
+import com.uhuila.common.constants.DeletedStatus;
 
 @Entity
 @Table(name = "goods")
@@ -54,10 +67,15 @@ public class Goods extends Model {
 	@JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))
 	public Set<Shop> shops;
 
-    @ManyToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
-    @JoinTable(name = "goods_categories", inverseJoinColumns = @JoinColumn(name
-            = "category_id"), joinColumns = @JoinColumn(name = "goods_id"))
-    public Set<Category> categories;
+	public void addValues(Shop shop) {  
+		if (!this.shops.contains(shop)) {
+			this.shops.add(shop); 
+		}  
+	}  
+	@ManyToMany(cascade = CascadeType.REFRESH,fetch = FetchType.LAZY)
+	@JoinTable(name = "goods_categories", inverseJoinColumns = @JoinColumn(name
+			= "category_id"), joinColumns = @JoinColumn(name = "goods_id"))
+	public Set<Category> categories;
 
 	/**
 	 * 原始图片路径
@@ -97,35 +115,35 @@ public class Goods extends Model {
 		return getImageBySizeType("large");
 	}
 
-    /**
-     * 进货量
-     */
-    @Column(name = "income_goods_count")
-    public String incomeGoodsCount;
-    /**
-     * 券有效开始日
-     */
-    @Column(name = "effective_at")
-    public String effectiveAt;
-    /**
-     * 券有效结束日
-     */
-    @Column(name = "expire_at")
-    public String expireAt;
-    /**
-     * 商品标题
-     */
-    //    public String title;
-    /**
-     * 商品原价
-     */
-    @Column(name = "original_price")
-    public BigDecimal originalPrice;
-    /**
-     * 商品现价
-     */
-    @Column(name = "sale_price")
-    public BigDecimal salePrice;
+	/**
+	 * 进货量
+	 */
+	@Column(name = "income_goods_count")
+	public String incomeGoodsCount;
+	/**
+	 * 券有效开始日
+	 */
+	@Column(name = "effective_at")
+	public Date effectiveAt;
+	/**
+	 * 券有效结束日
+	 */
+	@Column(name = "expire_at")
+	public Date expireAt;
+	/**
+	 * 商品标题
+	 */
+	//    public String title;
+	/**
+	 * 商品原价
+	 */
+	@Column(name = "original_price")
+	public BigDecimal originalPrice;
+	/**
+	 * 商品现价
+	 */
+	@Column(name = "sale_price")
+	public BigDecimal salePrice;
 
 	@Transient
 	public String getDiscount() {
@@ -155,7 +173,7 @@ public class Goods extends Model {
 	 * 售出数量
 	 */
 	@Column(name = "sale_count")
-	public String saleCount;
+	public int saleCount;
 	/**
 	 * 售出基数
 	 */
@@ -176,7 +194,7 @@ public class Goods extends Model {
 	 * 创建时间
 	 */
 	@Column(name = "created_at")
-	public String createdAt;
+	public Date createdAt;
 	/**
 	 * 创建人
 	 */
@@ -186,7 +204,7 @@ public class Goods extends Model {
 	 * 修改时间
 	 */
 	@Column(name = "updated_at")
-	public String updatedAt;
+	public Date updatedAt;
 	/**
 	 * 修改人
 	 */
@@ -214,9 +232,9 @@ public class Goods extends Model {
 	@Transient
 	public String salePriceEnd;
 	@Transient
-	public String saleCountBegin;
+	public int saleCountBegin;
 	@Transient
-	public String saleCountEnd;
+	public int saleCountEnd;
 	/**
 	 * 商品类型
 	 */
@@ -262,7 +280,7 @@ public class Goods extends Model {
 		StringBuilder condition = new StringBuilder();
 		condition.append(" deleted= ? ");
 		List<Object> params = new ArrayList();
-		params.add(Integer.parseInt("0"));
+		params.add(DeletedStatus.UN_DELETED);
 		if (goods.name != null && !"".equals(goods.name)) {
 			condition.append(" and name like ? ");
 			params.add("%" + goods.name + "%");
@@ -283,15 +301,14 @@ public class Goods extends Model {
 			condition.append(" and salePrice <= ?");
 			params.add(new BigDecimal(goods.salePriceEnd));
 		}
-		if (goods.saleCountBegin != null && !"".equals(goods.saleCountBegin)) {
+		if (goods.saleCountBegin > 0) {
 			condition.append(" and saleCount >= ?");
 			params.add(goods.saleCountBegin);
 		}
-		if (goods.saleCountEnd != null && !"".equals(goods.saleCountEnd)) {
+		if (goods.saleCountEnd > 0) {
 			condition.append(" and saleCount <= ?");
 			params.add(goods.saleCountEnd);
 		}
-		condition.append(" order by created_at desc");
 		pager.totalCount = goods.count(condition.toString(),params.toArray());
 		pager.totalPager();
 		return goods.find(condition.toString(), params.toArray()).fetch(pager.currPage, pager.pageSize);

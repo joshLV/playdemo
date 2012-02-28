@@ -1,14 +1,16 @@
 package models.sales;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.*;
+import javax.persistence.Table;
 
 import play.db.jpa.Model;
 
@@ -61,8 +63,7 @@ public class Shop extends Model {
     @Column(name = "display_order")
     public String displayOrder;
 
-    @ManyToMany(cascade = CascadeType.REFRESH)
-    @JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name = "goods_id"), joinColumns = @JoinColumn(name = "shop_id"))
+    @ManyToMany(cascade = CascadeType.REFRESH,mappedBy="shops",fetch=FetchType.LAZY)
     public Set<Goods> goods;
 
     /**

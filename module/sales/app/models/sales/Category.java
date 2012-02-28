@@ -1,11 +1,21 @@
 package models.sales;
 
-import play.db.jpa.Model;
-
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import play.db.jpa.Model;
 
 /**
  * 商品分类.
@@ -46,7 +56,7 @@ public class Category extends Model {
     public Set<Brand> brands;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    public Set<CategoryProperty> properties = new HashSet<>();
+    public Set<CategoryProperty> properties = new HashSet<CategoryProperty>();
 
     public Category() {
     }
