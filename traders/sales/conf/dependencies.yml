@@ -3,7 +3,6 @@
 require:
     - play
     - play -> cobertura 2.4
-    - play -> logisimayml 1.8
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - layout_trader -> layout_trader
     - sales -> sales
