@@ -75,6 +75,7 @@ $(window).load(
                 url:'/carts/' + goods_id,
                 success:function(data){
                     $("#row_" + goods_id).remove()
+                    refreshAmount();
                 }});
             
             return false;
