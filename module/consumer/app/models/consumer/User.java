@@ -17,6 +17,9 @@ public class User extends Model {
     @Column(name="openid_source")
     public String openIdSource;
 
+    @Column(name = "encrypted_password")
+    public String password;
+
     @Column(name="password_salt")
     public String passwordSalt;
 
