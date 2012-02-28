@@ -63,7 +63,7 @@ public class Goods extends Controller {
 	 * @param imagePath
 	 * @param goods
 	 */
-	public static void create(@Required File imagePath, @Valid models.sales.Goods goods,String radios,String status,
+	public static void create(@Required File imagePath, @Valid models.sales.Goods goods,String radios, int status,
 			Long checkoption[]) {
 		if (validation.hasErrors()) {
 			params.flash();
@@ -72,11 +72,12 @@ public class Goods extends Controller {
 		}
 		String companyId="1";
 		//添加商品处理
-		goods.status = "1".equals(status) ? GoodsStatus.ONSALE:GoodsStatus.OFFSALE;
+		goods.status = status == 1 ? GoodsStatus.ONSALE:GoodsStatus.OFFSALE;
 		goods.companyId = companyId;
-		goods.lockVersion = 0;
 		goods.deleted = DeletedStatus.UN_DELETED;
-		goods.saleCount=0;
+		goods.saleCount = 1;
+		goods.details=	htmlspecialchars(goods.details);
+		goods.prompt=	htmlspecialchars(goods.prompt);
 		goods.createdAt = new Date();
 		goods.createdBy = "yanjy";
 		goods.create();
@@ -105,6 +106,14 @@ public class Goods extends Controller {
 		index(null,"1");
 	}
 
+	
+	private static String htmlspecialchars(String str) {
+		str = str.replaceAll("&", "&amp;");
+		str = str.replaceAll("<", "&lt;");
+		str = str.replaceAll(">", "&gt;");
+		str = str.replaceAll("\"", "&quot;");
+		return str;
+	}
 	/**
 	 * 上传图片
 	 * 
@@ -133,6 +142,10 @@ public class Goods extends Controller {
 	 */
 	public static void edit(Long id) {
 		models.sales.Goods goods = models.sales.Goods.findById(id);
+		System.out.println(goods.details);
+		System.out.println(">>>>"+htmlspecialchars(goods.details));
+		goods.details=	htmlspecialchars(goods.details);
+		goods.prompt=	htmlspecialchars(goods.prompt);
 		List<Shop> list = Shop.findShopByCompany(Long.parseLong(goods.companyId));
 		renderTemplate("sales/Goods/edit.html", goods, list);
 	}
