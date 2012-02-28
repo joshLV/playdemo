@@ -1,4 +1,5 @@
 #{extends 'layout_trader/layout.html' /}
+#{set title:'查看电子消费券' /}
 #{get 'moreScripts'}
 <script src="@{'/public/javascripts/kindeditor.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -31,7 +32,7 @@
   </div>
   <div class="control-group">
    <label for="input01" class="control-label">券有效期</label>
-   <div class="controls">${goods.expiredBeginOn}至 ${goods.expiredEndOn}
+   <div class="controls">${goods.effectiveAt}至 ${goods.expireAt}
    </div>
   </div>
   <div class="control-group">

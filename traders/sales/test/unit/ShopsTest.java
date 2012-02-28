@@ -1,3 +1,4 @@
+package unit;
 import models.sales.Shop;
 import org.junit.Assert;
 import org.junit.Test;

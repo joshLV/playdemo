@@ -1,4 +1,5 @@
 #{extends 'layout_trader/layout.html' /}
+#{set title:'添加电子消费券' /}
 #{get 'moreScripts'}
 <script src="@{'/public/javascripts/kindeditor.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -19,7 +20,7 @@
   <div class="control-group">
    <label for="select01" class="control-label"><font color="red">*</font>商品类型</label>
    <div class="controls">
-    <select id="ca" name="goods.materialType" class="input-small">
+    <select id="materialtype" name="goods.materialType" class="input-small">
      <option value="ELECTRONIC">&{'goods.ELECTRONIC'}</option>
      <option value="REAL">&{'goods.REAL'}</option>
     </select> <select id="select03" class="input-small">
@@ -53,9 +54,9 @@
   <div class="control-group">
    <label for="input01" class="control-label"><font color="red">*</font>券有效期</label>
    <div class="controls">
-    <input class="input-medium Wdate" type="text" id="expiredBeginOn" name="goods.expiredBeginOn"
-     onfocus="WdatePicker({readOnly:true})" />至 <input class="input-medium Wdate" type="text" id="expiredEndOn"
-     name="goods.expiredEndOn" onfocus="WdatePicker({readOnly:true})" />
+    <input class="input-medium Wdate" type="text" id="effectiveAt" name="goods.effectiveAt"
+     onfocus="WdatePicker({readOnly:true})" />至 <input class="input-medium Wdate" type="text" id="expireAt"
+     name="goods.expireAt" onfocus="WdatePicker({readOnly:true})" />
      <span class="error">#{error 'goods.expiredBeginOn' /}</span>
    </div>
   </div>
@@ -91,13 +92,13 @@
   <div class="control-group">
    <label for="textarea" class="control-label">温馨提示</label>
    <div class="controls">
-     <textarea name="goods.prompt" cols="100" rows="8" style="width:700px;height:200px;visibility:hidden;"></textarea>
+     <textarea name="goods.prompt" id="prompt" cols="100" rows="8" style="width:700px;height:200px;visibility:hidden;"></textarea>
    </div>
   </div>
   <div class="control-group">
    <label for="textarea" class="control-label"><font color="red">*</font>商品详情</label>
    <div class="controls">
-    <textarea name="goods.details" cols="100" rows="8" style="width:700px;height:200px;visibility:hidden;"></textarea>
+    <textarea name="goods.details" id="details" cols="100" rows="8" style="width:700px;height:200px;visibility:hidden;"></textarea>
     <span class="error">#{error 'goods.details' /}</span>
    </div>
   </div>
@@ -124,10 +125,10 @@
    
   </div>
   <div class="form-actions">
-   <button class="btn btn-primary"  type="submit">保存</button>
+   <button class="btn btn-primary" id="save" type="submit">保存</button>
    <button class="btn btn-primary" id="onsales" type="submit">保存并上架</button>
    <input type="hidden" id="status" name="status"  value="0"/>
-   <button class="btn btn-primary" id="view" type="submit">浏览</button>
+   <button class="btn btn-primary" id="view" type="submit">保存预览</button>
     </div>
   </form>
 
@@ -186,6 +187,9 @@
          });
     $("#view").click(function() {
     	$("#status").val("2");
+         });
+    $("#save").click(function() {
+        $("#status").val("0");
          });
 </script>
 #{/get}

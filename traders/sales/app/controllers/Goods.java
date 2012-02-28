@@ -5,11 +5,10 @@
 package controllers;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
-import models.sales.GoodsShop;
 import models.sales.GoodsStatus;
 import models.sales.Pager;
 import models.sales.Shop;
@@ -18,6 +17,7 @@ import play.data.validation.Valid;
 import play.mvc.Controller;
 import util.FileUploadUtil;
 
+import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.PathUtil;
 
 
@@ -34,7 +34,6 @@ public class Goods extends Controller {
 	 * 展示商品一览页面
 	 */
 	public static void index(models.sales.Goods goods,String page) {
-		System.out.println("index");
 		Pager pager = new Pager();
 		if(page != null){
 			pager.currPage = Integer.parseInt(page);
@@ -73,37 +72,32 @@ public class Goods extends Controller {
 		}
 		String companyId="1";
 		//添加商品处理
-		goods.status = "OFFSALE".equals(status) ? GoodsStatus.OFFSALE:GoodsStatus.ONSALE;
+		goods.status = "1".equals(status) ? GoodsStatus.ONSALE:GoodsStatus.OFFSALE;
 		goods.companyId = companyId;
 		goods.lockVersion = 0;
-
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String datestr = sdf.format(new Date());
-		goods.deleted = models.sales.Goods.UNDELETED;
-		goods.createdAt = datestr;
+		goods.deleted = DeletedStatus.UN_DELETED;
+		goods.saleCount=0;
+		goods.createdAt = new Date();
 		goods.createdBy = "yanjy";
 		goods.create();
 		uploadImagePath(imagePath, goods);
 		goods.save();
+
 		//全部门店的场合
-		GoodsShop goods_shop = new GoodsShop();
 		if ("1".equals(radios)) {
 			List<Shop> list = Shop.findShopByCompany(Long.parseLong(companyId));
 			for (Shop shop : list) {
-				goods_shop = new GoodsShop();
-				goods_shop.shopId = shop.id;
-				goods_shop.goodsId = goods.id;
-				goods_shop.save();
+				goods.addValues(shop);
 			}
 		} else {
+			Shop shop = new Shop();
 			//部分门店
 			for (Long id : checkoption) {
-				goods_shop = new GoodsShop();
-				goods_shop.shopId = id;
-				goods_shop.goodsId = goods.id;
-				goods_shop.create();
+				shop.id=id;
+				goods.addValues(shop);
 			}
 		}
+
 		//预览的情况
 		if ("2".equals(status)) {
 			redirect("http://www.uhuiladev.com/goods/"+goods.id+"?preview=true");
@@ -161,19 +155,17 @@ public class Goods extends Controller {
 
 		uploadImagePath(uploadImageFile, updateGoods);
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String datestr = sdf.format(new Date());
 		updateGoods.name = goods.name;
 		updateGoods.no = goods.no;
-		updateGoods.expiredBeginOn = goods.expiredBeginOn;
-		updateGoods.expiredEndOn = goods.expiredEndOn;
+		updateGoods.effectiveAt = goods.effectiveAt;
+		updateGoods.expireAt = goods.expireAt;
 		updateGoods.originalPrice = goods.originalPrice;
 		updateGoods.salePrice = goods.salePrice;
 		updateGoods.baseSale = goods.baseSale;
 		updateGoods.prompt = goods.prompt;
 		updateGoods.details = goods.details;
-		updateGoods.updateAt = datestr;
-		updateGoods.updateBy = "ytrr";
+		updateGoods.updatedAt = new Date();
+		updateGoods.updatedBy = "ytrr";
 		updateGoods.save();
 
 		index(null,"1");
@@ -197,9 +189,11 @@ public class Goods extends Controller {
 	 * 删除指定商品
 	 */
 	public static void delete(Long checkoption[]) {
+		System.out.println("<<<<<<<<<<<<"+checkoption);
 		for (Long id : checkoption) {
+			System.out.println(">>>>>>>>>>>>>>."+id);
 			models.sales.Goods goods =	models.sales.Goods.findById(id);
-			goods.deleted=goods.DELETED;
+			goods.deleted=DeletedStatus.DELETED;
 			goods.save();
 		}
 		index(null,"1");

@@ -6,13 +6,13 @@
 GET     /                                       Application.index
 GET     /goods                                  Goods.index
 GET     /goods/new                              Goods.add
-POST    /goods                           Goods.create
+POST    /goods                                  Goods.create
 GET     /goods/{id}/edit                        Goods.edit
 GET     /goods/{id}/view                        Goods.detail
-GET     /goods/{id}/preview                  Goods.preview
-POST    /update                             Goods.update
-POST    /updatestatus                          Goods.updateStatus
-DELETE    /goods/{id}/delete                      Goods.delete
+GET     /goods/{id}/preview                     Goods.preview
+POST    /goods/{id}/update                      Goods.update
+POST    /updatestatus                           Goods.updateStatus
+DELETE  /goods/{id}/delete                      Goods.delete
 
 GET     /shops                                  Shops.list
 GET     /shops/new                              Shops.add

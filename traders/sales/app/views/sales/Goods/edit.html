@@ -1,4 +1,5 @@
 #{extends 'layout_trader/layout.html' /}
+#{set title:'修改电子消费券' /}
 #{get 'moreScripts'}
 <script src="@{'/public/javascripts/kindeditor.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -44,9 +45,9 @@
   <div class="control-group">
    <label for="input01" class="control-label">券有效期</label>
    <div class="controls">
-    <input class="input-medium Wdate" type="text" id="expiredBeginOn" name="goods.expiredBeginOn" value="${goods.expiredBeginOn}"
-     onfocus="WdatePicker({readOnly:true})" />至 <input class="input-medium Wdate" type="text" id="expiredEndOn"
-     name="goods.expiredEndOn" value="${goods.expiredEndOn}" onfocus="WdatePicker({readOnly:true})" />
+    <input class="input-medium Wdate" type="text" id="effectiveAt" name="goods.effectiveAt" value="${goods.effectiveAt}"
+     onfocus="WdatePicker({readOnly:true})" />至 <input class="input-medium Wdate" type="text" id="expireAt"
+     name="goods.expireAt" value="${goods.expireAt}" onfocus="WdatePicker({readOnly:true})" />
    </div>
   </div>
   <div class="control-group">
@@ -110,7 +111,7 @@
   <div class="form-actions">
    <button class="btn btn-primary"  type="submit">保存</button>
    <input type="hidden" id="status" name="status"  value="0"/>
-   <button class="btn btn-primary" id="view" type="submit">浏览</button>
+   <button class="btn btn-primary" id="view" type="submit">预览</button>
    </div>
   </form>
   

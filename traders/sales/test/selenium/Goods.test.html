@@ -1,0 +1,57 @@
+#添加商品数据-保存按钮
+#{selenium}
+    open('/goods/new')
+    verifyTitle('添加电子消费券')
+    verifyTextPresent('添加电子消费券')
+    select('id=materialtype','label=实物')
+    type('id=no','001')
+    type('id=goods_name','书本')
+    type('id=effectiveAt','2012-02-28')
+    type('id=expireAt','2012-02-29')
+    type('id=originalPrice','100')
+    type('id=salePrice','10.0')
+    type('id=baseSale','2')
+    type('id=details','test')
+    clickAndWait('id=save')
+    open('/goods?page=1')
+    
+#{/selenium}
+
+#添加商品数据-保存并上架按钮
+#{selenium}
+    open('/goods/new')
+    verifyTitle('添加电子消费券')
+    verifyTextPresent('添加电子消费券')
+    select('id=materialtype','label=电子券')
+    type('id=no','002')
+    type('id=goods_name','书本3')
+    type('id=effectiveAt','2012-02-28')
+    type('id=expireAt','2012-02-29')
+    type('id=originalPrice','100')
+    type('id=salePrice','10.0')
+    type('id=baseSale','2')
+    type('id=details','test')
+    clickAndWait('id=onsales')
+    open('/goods?page=1')
+#{/selenium}
+
+#添加商品数据-保存预览按钮
+#{selenium}
+    open('/goods/new')
+    verifyTitle('添加电子消费券')
+    verifyTextPresent('添加电子消费券')
+    select('id=materialtype','label=电子券')
+    type('id=no','003')
+    type('id=goods_name','书本3')
+    type('id=effectiveAt','2012-02-28')
+    type('id=expireAt','2012-02-29')
+    type('id=originalPrice','100')
+    type('id=salePrice','10.0')
+    type('id=baseSale','2')
+    type('id=details','test')
+    clickAndWait('id=view')
+    open('/goods?page=1')
+#{/selenium}
+
+
+

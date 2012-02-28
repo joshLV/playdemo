@@ -1,4 +1,6 @@
-#{extends 'layout_trader/layout.html' /} #{include 'sales/Goods/nav.html' /}
+#{extends 'layout_trader/layout.html' /} 
+#{set title:'电子消费券一览' /}
+#{include 'sales/Goods/nav.html' /}
 #{get 'moreScripts'}
 <script type="text/javascript">
 	$(function() {
@@ -102,7 +104,6 @@
      <th><input type="checkbox" id="selectall" name="selectall">全选</th>
      <th>商品编号</th>
      <th>商品名称</th>
-     <th>物流方式</th>
      <th>现价</th>
      <th>库存</th>
      <th>销量</th>
@@ -118,7 +119,6 @@
     <tr>
      <td><input type="checkbox" id="checkoption" value="${row.id}" name="checkoption[]" /></td>
      <td>${row.no}</td>
-     <td>${row.name}</td>
      <td>${row.name}</td>
      <td>${row.salePrice}</td>
      <td>${row.baseSale}</td>
