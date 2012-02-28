@@ -93,37 +93,35 @@ public class Goods extends Model {
 		return getImageBySizeType("large");
 	}
 
-	/**
-	 * 进货量
-	 */
-	@Column(name = "income_goods_count")
-	public String incomeGoodsCount;
-	/**
-	 * 券有效开始日
-	 */
-	@Column(name = "expired_bg_on")
-	public String expiredBeginOn;
-	/**
-	 * 券有效结束日
-	 */
-	@Column(name = "expired_ed_on")
-	public String expiredEndOn;
-	/**
-	 * 商品标题
-	 */
-	//    public String title;
-	/**
-	 * 商品原价
-	 */
-	@Column(name = "original_price")
-	@Required
-	public BigDecimal originalPrice;
-	/**
-	 * 商品现价
-	 */
-	@Column(name = "sale_price")
-	@Required
-	public BigDecimal salePrice;
+    /**
+     * 进货量
+     */
+    @Column(name = "income_goods_count")
+    public String incomeGoodsCount;
+    /**
+     * 券有效开始日
+     */
+    @Column(name = "effective_at")
+    public String effectiveAt;
+    /**
+     * 券有效结束日
+     */
+    @Column(name = "expire_at")
+    public String expireAt;
+    /**
+     * 商品标题
+     */
+    //    public String title;
+    /**
+     * 商品原价
+     */
+    @Column(name = "original_price")
+    public BigDecimal originalPrice;
+    /**
+     * 商品现价
+     */
+    @Column(name = "sale_price")
+    public BigDecimal salePrice;
 
 	@Transient
 	public String getDiscount() {
