@@ -8,7 +8,7 @@ table{border-collapse:collapse;}
 #content_zhuti{padding-left:12px; margin-top:26px;}
 .tab_top{background:url(../images/sq_tuikuan.jpg) no-repeat; width:975px; position:relative; top:1px; height:26px; line-height:26px;}
 .tab_top span{padding-left:20px; font-weight:700}
-.tab_top_box{width:975px; border:solid 1px #D4D4D4; height:474px;}
+.tab_top_box{width:975px; border:solid 1px #D4D4D4; height:auto;}
 
 .tab_top_info{width:975px; height:32px; line-height:32px; background:#FBE8E4; margin-top:7px; margin-bottom:2px; padding-left:}
 .tab_one{padding-left:16px;}
