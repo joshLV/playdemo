@@ -1,5 +1,3 @@
-# --- !Ups
- 
 insert into areas (id,area_type,display_order,name,parent_id)
   values('021','CITY', 100, '上海',  null);
 
@@ -20,5 +18,3 @@ insert into areas (id,area_type,display_order,name,parent_id)
 insert into areas (id,area_type,display_order,name,parent_id)
   values('02102001','AREA', 300, '徐家汇', '02102');
 
-# --- !Downs
-delete from areas;

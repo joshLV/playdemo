@@ -28,22 +28,36 @@ public class AreasTest extends FunctionalTest {
     }
 
     @Test
-    public void testTopCities() {
+    public void testShowTopCities() {
         Http.Response response = GET("/areas/cities/top/6");
         assertIsOk(response);
         assertContentType("application/json", response);
     }
 
     @Test
-    public void testTopDistricts() {
+    public void testShowTopDistricts() {
         Http.Response response = GET("/areas/districts/top/6");
         assertIsOk(response);
         assertContentType("application/json", response);
     }
 
     @Test
-    public void testTopAreas() {
+    public void testShowTopAreas() {
         Http.Response response = GET("/areas/areas/top/6");
+        assertIsOk(response);
+        assertContentType("application/json", response);
+    }
+
+    @Test
+    public void testShowAllSubAreas() {
+        Http.Response response = GET("/areas/subs/021");
+        assertIsOk(response);
+        assertContentType("application/json", response);
+    }
+
+    @Test
+    public void testTopAreas() {
+        Http.Response response = GET("/areas/subs/021/6");
         assertIsOk(response);
         assertContentType("application/json", response);
     }

@@ -78,7 +78,7 @@ public class Area extends GenericModel {
     }
 
     private static List<Area> findTopByAreaType(int limit, AreaType type) {
-        return find("areaType=? order by displayOrder desc",
+        return find("areaType=? order by displayOrder",
                 type).fetch(limit);
     }
 
@@ -89,7 +89,7 @@ public class Area extends GenericModel {
      * @return 所有子区域
      */
     public static List<Area> findAllSubAreas(String areaId) {
-        return find("parent=? order by displayOrder desc",
+        return find("parent=? order by displayOrder",
                 new Area(areaId)).fetch();
     }
 
@@ -99,7 +99,7 @@ public class Area extends GenericModel {
      * @param limit 获取的条数限制
      */
     public static List<Area> findTopAreas(String areaId, int limit) {
-        return find("parent=? order by displayOrder desc",
+        return find("parent=? order by displayOrder",
                 new Area(areaId)).fetch(limit);
     }
 }

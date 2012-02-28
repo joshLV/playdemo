@@ -14,17 +14,17 @@ import java.util.List;
  */
 public class Areas extends Controller {
 
-    public static void topCities(int limit) {
+    public static void showTopCities(int limit) {
         List<Area> cities = Area.findTopCities(limit);
         renderJSON(cities);
     }
 
-    public static void topDistricts(int limit) {
+    public static void showTopDistricts(int limit) {
         List<Area> areas = Area.findTopDistricts(limit);
         renderJSON(areas);
     }
 
-    public static void topAreas(int limit) {
+    public static void showTopAreas(int limit) {
         List<Area> businessAreas = Area.findTopAreas(limit);
         renderJSON(businessAreas);
     }
@@ -32,5 +32,15 @@ public class Areas extends Controller {
     public static void showArea(String areaId) {
         Area area = Area.findById(areaId);
         renderJSON(area);
+    }
+
+    public static void showTopSubAreas(String id, int limit) {
+        List<Area> areas = Area.findTopAreas(id, limit);
+        renderJSON(areas);
+    }
+
+    public static void showAllSubAreas(String id) {
+        List<Area> areas = Area.findAllSubAreas(id);
+        renderJSON(areas);
     }
 }

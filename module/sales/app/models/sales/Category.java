@@ -4,6 +4,7 @@ import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -46,4 +47,21 @@ public class Category extends Model {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public Set<CategoryProperty> properties = new HashSet<>();
+
+    public Category() {
+    }
+
+    public Category(long categoryId) {
+        this.id = categoryId;
+    }
+
+    /**
+     * 获取前n个分类.
+     *
+     * @param limit 获取的条数限制
+     * @return 前n个分类
+     */
+    public static List<Category> findTop(int limit) {
+        return find("order by displayOrder").fetch(limit);
+    }
 }
