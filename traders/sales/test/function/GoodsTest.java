@@ -117,7 +117,5 @@ public class GoodsTest extends FunctionalTest {
 		assertStatus(302,response);
 		Goods goods = Goods.findById(goodsId);
 		Assert.assertEquals(goods.status,GoodsStatus.ONSALE);  
-
 	}
-
 }

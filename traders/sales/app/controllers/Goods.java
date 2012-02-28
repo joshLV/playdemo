@@ -63,7 +63,7 @@ public class Goods extends Controller {
 	 * @param imagePath
 	 * @param goods
 	 */
-	public static void create(@Required File imagePath, @Valid models.sales.Goods goods,String radios, int status,
+	public static void create(@Required File imagePath, @Valid models.sales.Goods goods,String radios,String status,
 			Long checkoption[]) {
 		if (validation.hasErrors()) {
 			params.flash();
@@ -72,10 +72,10 @@ public class Goods extends Controller {
 		}
 		String companyId="1";
 		//添加商品处理
-		goods.status = status == 1 ? GoodsStatus.ONSALE:GoodsStatus.OFFSALE;
+		goods.status = "1".equals(status) ? GoodsStatus.ONSALE:GoodsStatus.OFFSALE;
 		goods.companyId = companyId;
 		goods.deleted = DeletedStatus.UN_DELETED;
-		goods.saleCount = 1;
+		goods.saleCount = 0;
 		goods.details=	htmlspecialchars(goods.details);
 		goods.prompt=	htmlspecialchars(goods.prompt);
 		goods.createdAt = new Date();
@@ -143,7 +143,6 @@ public class Goods extends Controller {
 	public static void edit(Long id) {
 		models.sales.Goods goods = models.sales.Goods.findById(id);
 		System.out.println(goods.details);
-		System.out.println(">>>>"+htmlspecialchars(goods.details));
 		goods.details=	htmlspecialchars(goods.details);
 		goods.prompt=	htmlspecialchars(goods.prompt);
 		List<Shop> list = Shop.findShopByCompany(Long.parseLong(goods.companyId));
@@ -202,9 +201,7 @@ public class Goods extends Controller {
 	 * 删除指定商品
 	 */
 	public static void delete(Long checkoption[]) {
-		System.out.println("<<<<<<<<<<<<"+checkoption);
 		for (Long id : checkoption) {
-			System.out.println(">>>>>>>>>>>>>>."+id);
 			models.sales.Goods goods =	models.sales.Goods.findById(id);
 			goods.deleted=DeletedStatus.DELETED;
 			goods.save();
