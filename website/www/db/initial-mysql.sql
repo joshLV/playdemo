@@ -7,9 +7,9 @@ insert into areas (id,area_type,display_order,name,parent_id)
 
 
 insert into areas (id,area_type,display_order,name,parent_id)
-  values('02101','AREA', 100, '浦东新区', '021');
+  values('02101','DISTRICT', 100, '浦东新区', '021');
 insert into areas (id,area_type,display_order,name,parent_id)
-  values('02102','AREA', 200, '徐汇区', '021');
+  values('02102','DISTRICT', 200, '徐汇区', '021');
 
 
 

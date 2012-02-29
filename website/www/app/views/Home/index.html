@@ -7,93 +7,99 @@
 
 <div id="wrap_main">
 <div id="wrap_top">
-#{include "share/topNavigator.html"/}
-    <div id="wrap_top_header" style="margin: 0px">
-        <div id="wrap_top_header_left"><img src="@@{'/public/images/logo.jpg'}"/></div>
-        <div id="wrap_top_header_mid">
-            <ul class="tab_header">
-                <li><a class="tab_hover" onClick="selectTag('tagContent0',this)"
-                       href="javascript:void(0)">首页</a></li>
-                <li><a class="tab_nohover" onClick="selectTag('tagContent0',this)" href="javascript:void(0)">劵商城</a>
-                </li>
-                <li><a class="tab_nohover" onClick="selectTag('tagContent0',this)" href="javascript:void(0)">优惠劵</a>
-                </li>
-                <li><a class="tab_nohover" onClick="selectTag('tagContent0',this)" href="javascript:void(0)">优惠团购</a>
-                </li>
-                <li><a class="tab_nohover" onClick="selectTag('tagContent0',this)" href="javascript:void(0)">积分乐园</a>
-                </li>
-                <li><a class="tab_nohover" onClick="selectTag('tagContent0',this)" href="javascript:void(0)">优惠终端</a>
-                </li>
-                <li><a class="tab_nohover" onClick="selectTag('tagContent0',this)" href="javascript:void(0)">电影票</a>
-                </li>
-            </ul>
-        </div>
-        <div id="wrap_top_right"><img src="@@{'/public/images/right_tel.jpg'}"/></div>
-    </div>
-    <div style="clear:both"></div>
+    #{include "share/topNavigator.html"/}
+    #{include "share/topTabs.html"/}
+
     <div id="research_wrap">
         <div id="research_box">
             <form action="" method="get">
                 <input class="left_input_seach" type="text" value="请输入您想找的优惠劵"/>
-                <input class="left_input_seach2" type="image" name="imageField" id="imageField"
+                <input class="left_input_seach2" type="image" name="imageField"
+                       id="imageField"
                        src="@@{'/public/images/sumbit_yuhui.jpg'}"/>
             </form>
         </div>
         <!--tag 标签-->
-        <div class="tag_box"><strong>热门搜素：</strong><span class="tag_hot"><a href="#" class="font_white">真功夫</a>&nbsp;&nbsp;&nbsp;<a
-                href="#" class="font_white">爱西西里</a>&nbsp;&nbsp;&nbsp;<a href="#" class="font_white">西提牛排</a>&nbsp;&nbsp;&nbsp;<a
-                href="#" class="font_white">西提牛排</a>&nbsp;&nbsp;&nbsp;<a href="#" class="font_white">西提牛排</a>&nbsp;&nbsp;&nbsp;<a
-                href="#" class="font_white">西提牛排</a>&nbsp;&nbsp;&nbsp;<a href="#" class="font_white">西提牛排</a></span>
+        <div class="tag_box"><strong>热门搜素：</strong><span class="tag_hot"><a
+                href="#" class="font_white">真功夫</a>&nbsp;&nbsp;&nbsp;<a
+                href="#" class="font_white">爱西西里</a>&nbsp;&nbsp;&nbsp;<a
+                href="#" class="font_white">西提牛排</a>&nbsp;&nbsp;&nbsp;<a
+                href="#" class="font_white">西提牛排</a>&nbsp;&nbsp;&nbsp;<a
+                href="#" class="font_white">西提牛排</a>&nbsp;&nbsp;&nbsp;<a
+                href="#" class="font_white">西提牛排</a>&nbsp;&nbsp;&nbsp;<a
+                href="#" class="font_white">西提牛排</a></span>
         </div>
         <!--购物车结算-->
         <div class="seach_right">
-            <span class="seach_right_sp"><img class="gouwu_icon" src="@@{'/public/images/gouwu_icon.jpg'}"/></span>
-            <span class="gouwu_font">购物车：<span class="font_red">12件</span></span>
-            <span class="gouwu_jiesuan"><a href="#" class="font_white">去结算</a></span>
+            <span class="seach_right_sp"><img class="gouwu_icon"
+                                              src="@@{'/public/images/gouwu_icon.jpg'}"/></span>
+            <span class="gouwu_font">购物车：<span
+                    class="font_red">12件</span></span>
+            <span class="gouwu_jiesuan"><a href="#"
+                                           class="font_white">去结算</a></span>
         </div>
         <!--下拉购物车-->
         <div class="abs_gouwu_car" style="display:none">
             <!--over auto-->
             <div class="over_auto">
                 <div class="car_box">
-                    <div class="car_one"><img src="@@{'/public/images/chanpin/car_cp1.jpg'}" width="60" height="41"/>
+                    <div class="car_one"><img
+                            src="@@{'/public/images/chanpin/car_cp1.jpg'}"
+                            width="60" height="41"/>
                     </div>
                     <div class="car_one_right">
                         <div class="float_title">马可波罗 一千零一夜花茶20g</div>
-                        <div class="font_red">Y:12.9<span class="font_gray">x1</span></div>
-                        <div class="font_gray delete_font"><a href="#">删除</a></div>
+                        <div class="font_red">Y:12.9<span
+                                class="font_gray">x1</span></div>
+                        <div class="font_gray delete_font"><a href="#">删除</a>
+                        </div>
                     </div>
                 </div>
 
                 <div class="car_box">
-                    <div class="car_one"><img src="@@{'/public/images/chanpin/car_cp1.jpg'}"/></div>
+                    <div class="car_one"><img
+                            src="@@{'/public/images/chanpin/car_cp1.jpg'}"/>
+                    </div>
                     <div class="car_one_right">
                         <div class="float_title">佳宝 无花果35G</div>
-                        <div class="font_red">Y:3元<span class="font_gray">x3</span></div>
-                        <div class="font_gray delete_font"><a href="#">删除</a></div>
+                        <div class="font_red">Y:3元<span
+                                class="font_gray">x3</span></div>
+                        <div class="font_gray delete_font"><a href="#">删除</a>
+                        </div>
                     </div>
                 </div>
                 <div class="car_box">
-                    <div class="car_one"><img src="@@{'/public/images/chanpin/car_cp1.jpg'}"/></div>
+                    <div class="car_one"><img
+                            src="@@{'/public/images/chanpin/car_cp1.jpg'}"/>
+                    </div>
                     <div class="car_one_right">
                         <div class="float_title">超值试用装 修护眼膜贴2对+便携装小</div>
-                        <div class="font_red">Y:0.01<span class="font_gray">x1</span></div>
-                        <div class="font_gray delete_font"><a href="#">删除</a></div>
+                        <div class="font_red">Y:0.01<span
+                                class="font_gray">x1</span></div>
+                        <div class="font_gray delete_font"><a href="#">删除</a>
+                        </div>
                     </div>
                 </div>
                 <div class="car_box">
-                    <div class="car_one"><img src="@@{'/public/images/chanpin/car_cp1.jpg'}"/></div>
+                    <div class="car_one"><img
+                            src="@@{'/public/images/chanpin/car_cp1.jpg'}"/>
+                    </div>
                     <div class="car_one_right">
                         <div class="float_title">和田 一品玉枣（四星）500克/袋</div>
-                        <div class="font_red">Y:35<span class="font_gray">x1</span></div>
-                        <div class="font_gray delete_font"><a href="#">删除</a></div>
+                        <div class="font_red">Y:35<span
+                                class="font_gray">x1</span></div>
+                        <div class="font_gray delete_font"><a href="#">删除</a>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="gouwu_car_haha">共<span class="font_red">6</span>件商品</div>
-            <div class="gouwu_car_haha">金额总计（预估）：<span class="font_red">59.61元</span></div>
-            <div class="gouwu_car_haha bottom_car"><a href="#"><img src="@@{'/public/images/go_gouwu_car.jpg'}"/></a>
+            <div class="gouwu_car_haha">共<span class="font_red">6</span>件商品
+            </div>
+            <div class="gouwu_car_haha">金额总计（预估）：<span
+                    class="font_red">59.61元</span></div>
+            <div class="gouwu_car_haha bottom_car"><a href="#"><img
+                    src="@@{'/public/images/go_gouwu_car.jpg'}"/></a>
             </div>
         </div>
     </div>
@@ -108,15 +114,20 @@
                 <TABLE id=idSlider2 border=0 cellSpacing=0 cellPadding=0>
                     <TBODY>
                     <TR>
-                        <TD class=td_f><A href="#" target="_blank"><IMG src="@@{'/public/images/flash/01.jpg'}"></A>
+                        <TD class=td_f><A href="#" target="_blank"><IMG
+                                src="@@{'/public/images/flash/01.jpg'}"></A>
                         </TD>
-                        <TD class=td_f><A href="#" target="_blank"><IMG src="@@{'/public/images/flash/02.jpg'}"></A>
+                        <TD class=td_f><A href="#" target="_blank"><IMG
+                                src="@@{'/public/images/flash/02.jpg'}"></A>
                         </TD>
-                        <TD class=td_f><A href="#" target="_blank"><IMG src="@@{'/public/images/flash/03.jpg'}"></A>
+                        <TD class=td_f><A href="#" target="_blank"><IMG
+                                src="@@{'/public/images/flash/03.jpg'}"></A>
                         </TD>
-                        <TD class=td_f><A href="#" target="_blank"><IMG src="@@{'/public/images/flash/04.jpg'}"></A>
+                        <TD class=td_f><A href="#" target="_blank"><IMG
+                                src="@@{'/public/images/flash/04.jpg'}"></A>
                         </TD>
-                        <TD class=td_f><A href="#" target="_blank"><IMG src="@@{'/public/images/flash/05.jpg'}"></A>
+                        <TD class=td_f><A href="#" target="_blank"><IMG
+                                src="@@{'/public/images/flash/05.jpg'}"></A>
                         </TD>
                     </TR>
                     </TBODY>
@@ -177,15 +188,18 @@
                     <li><a href="#">地区名称</a></li>
                     <li><a href="#">地区名称</a></li>
                     <li><a href="#">地区名称</a></li>
-                    <span class="three_ie6"><a href="#" class="font_hei">全部商圈</a></span>
+                    <span class="three_ie6"><a href="#"
+                                               class="font_hei">全部商圈</a></span>
                 </ul>
             </div>
         </div>
         <div id="left_content_top3">
             <div>
                 <ul class="hot_shangpin">
-                    <li class="hot_shangpin_li"><a class="tab2_a" href="#">热门</a></li>
-                    <li class="hot_shangpin_li"><a class="current_tab2" href="#">美食</a></li>
+                    <li class="hot_shangpin_li"><a class="tab2_a"
+                                                   href="#">热门</a></li>
+                    <li class="hot_shangpin_li"><a class="current_tab2"
+                                                   href="#">美食</a></li>
                     <li class="hot_sp_r"><a href="#">更多>></a></li>
                 </ul>
             </div>
@@ -200,12 +214,15 @@
                     <div class="shop_li_box">
                     #{/if}
                     <li class="shop_box">
-                        <div><a href="/goods/${one_goods.id}"><img src="${one_goods.imageMiddlePath}"/></a></div>
+                        <div><a href="/goods/${one_goods.id}"><img
+                                src="${one_goods.imageMiddlePath}"/></a></div>
                         <div class="margin_top5px"><span
                                 id="recommend_goods_${one_goods.id}"
-                                                                 class="strong_gray font_14px">${one_goods.name} </span><span
-                                class="pri_jiage font_14px">Y${one_goods.salePrice}</span></div>
-                        <div class="text_decorat">市场价格：Y:${one_goods.originalPrice}</div>
+                                class="strong_gray font_14px">${one_goods.name} </span><span
+                                class="pri_jiage font_14px">Y${one_goods.salePrice}</span>
+                        </div>
+                        <div class="text_decorat">
+                            市场价格：Y:${one_goods.originalPrice}</div>
                     </li>
                     #{if ((i%4 == 3))}
                     </div>
@@ -223,32 +240,44 @@
         <div id="right_content_top1" class="ones border_div">
             <dl>
                 <dt class="right_one_dt">公&nbsp;告</dt>
-                <dd class="right_one_dd"><span>10-08-5</span><a href="#">优惠啦改版啦优惠啦改版啦！</a></dd>
-                <dd class="right_one_dd right_one_dd2"><span>10-08-5</span><a href="#">优惠啦改版啦优惠啦改版啦！</a></dd>
-                <dd class="right_one_dd"><span>10-08-5</span><a href="#">优惠啦改版啦优惠啦改版啦！</a></dd>
-                <dd class="right_one_dd right_one_dd2"><span>10-08-5</span><a href="#">优惠啦改版啦优惠啦改版啦！</a></dd>
-                <dd class="right_one_dd"><span>10-08-5</span><a href="#">优惠啦改版啦优惠啦改版啦！</a></dd>
+                <dd class="right_one_dd"><span>10-08-5</span><a href="#">优惠啦改版啦优惠啦改版啦！</a>
+                </dd>
+                <dd class="right_one_dd right_one_dd2"><span>10-08-5</span><a
+                        href="#">优惠啦改版啦优惠啦改版啦！</a></dd>
+                <dd class="right_one_dd"><span>10-08-5</span><a href="#">优惠啦改版啦优惠啦改版啦！</a>
+                </dd>
+                <dd class="right_one_dd right_one_dd2"><span>10-08-5</span><a
+                        href="#">优惠啦改版啦优惠啦改版啦！</a></dd>
+                <dd class="right_one_dd"><span>10-08-5</span><a href="#">优惠啦改版啦优惠啦改版啦！</a>
+                </dd>
             </dl>
         </div>
         <div id="right_content_top2" class="ones border_div">
             <dl class="right_top2">
                 <dt><span><a href="#">更多>></a></span>优惠团购</dt>
-                <dd class="right_top2_dd1"><img src="@@{'/public/images/adv/1.jpg'}"/></dd>
+                <dd class="right_top2_dd1"><img
+                        src="@@{'/public/images/adv/1.jpg'}"/></dd>
                 <dd class="right_top2_dd2">
-                    <div>还有<span class="span_font_red">0</span>天<span class="span_font_red">6</span>小时<span
-                            class="span_font_red">6</span>分<span class="span_font_red">35</span>秒结束
+                    <div>还有<span class="span_font_red">0</span>天<span
+                            class="span_font_red">6</span>小时<span
+                            class="span_font_red">6</span>分<span
+                            class="span_font_red">35</span>秒结束
                     </div>
                 </dd>
                 <dd class="right_top2_dd3">
-                    <div><span>[优惠团]</span><b class="strong_gray">仅35元！原价67元的</b></div>
+                    <div><span>[优惠团]</span><b
+                            class="strong_gray">仅35元！原价67元的</b></div>
                 </dd>
                 <dd class="right_top2_dd4">
-                    <div class="right_dd4_div2"><span class="strong_font font_size14px">团购价：</span><span
-                            class="font_14px font_red_one font_weight">156</span>元<span class="right_dd4_span"><a
+                    <div class="right_dd4_div2"><span
+                            class="strong_font font_size14px">团购价：</span><span
+                            class="font_14px font_red_one font_weight">156</span>元<span
+                            class="right_dd4_span"><a
                             class="li_goumai_bg" href="#">立即购买</a></span>
                     </div>
                     <div class="right_dd4_div">
-                        原价：234元<span class="ones_ie6"><span>52</span>人已经购买</span>
+                        原价：234元<span
+                            class="ones_ie6"><span>52</span>人已经购买</span>
                     </div>
                 </dd>
             </dl>
@@ -256,14 +285,19 @@
         </div>
         <div id="right_content_top3" class="ones border_div">
             <dl>
-                <dt class="right_list_dt"><span><a href="#">更多>></a></span>热门优惠劵</dt>
-                <dd class="right_lists right_list2"><a href="#">【牛奶棚】[牛奶棚]大社区开心...</a></dd>
+                <dt class="right_list_dt"><span><a href="#">更多>></a></span>热门优惠劵
+                </dt>
+                <dd class="right_lists right_list2"><a href="#">【牛奶棚】[牛奶棚]大社区开心...</a>
+                </dd>
                 <dd class="right_lists"><a href="#">【河河亭铁板烧】[河河亭铁板烧]</a></dd>
-                <dd class="right_lists right_list2"><a href="#">【牛奶棚】[牛奶棚]大社区开心..</a></dd>
+                <dd class="right_lists right_list2"><a href="#">【牛奶棚】[牛奶棚]大社区开心..</a>
+                </dd>
                 <dd class="right_lists"><a href="#">【维罗纳意式私房菜】[牛奶棚]</a></dd>
-                <dd class="right_lists right_list2"><a href="#">【牛奶棚】[牛奶棚]大社区开心..</a></dd>
+                <dd class="right_lists right_list2"><a href="#">【牛奶棚】[牛奶棚]大社区开心..</a>
+                </dd>
                 <dd class="right_lists"><a href="#">【牛奶棚】[牛奶棚]大社区开心..</a></dd>
-                <dd class="right_dd_adv"><a href="#"><img src="@@{'/public/images/adv/2.jpg'}"/></a></dd>
+                <dd class="right_dd_adv"><a href="#"><img
+                        src="@@{'/public/images/adv/2.jpg'}"/></a></dd>
             </dl>
         </div>
     </div>

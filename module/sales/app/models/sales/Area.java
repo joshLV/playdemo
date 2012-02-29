@@ -89,6 +89,10 @@ public class Area extends GenericModel {
      * @return 所有子区域
      */
     public static List<Area> findAllSubAreas(String areaId) {
+        if (areaId == null || "".equals(areaId)) {
+            return find("areaType=? order by displayOrder",
+                    AreaType.CITY, new Area(areaId)).fetch();
+        }
         return find("parent=? order by displayOrder",
                 new Area(areaId)).fetch();
     }
