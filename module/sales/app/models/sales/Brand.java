@@ -17,7 +17,7 @@ public class Brand extends Model {
     @JoinColumn(name = "category_id", nullable = true)
     public Category category;
 
-    public List<Brand> findTop(int limit) {
+    public static List<Brand> findTop(int limit) {
         return find("order by displayOrder").fetch(limit);
     }
 

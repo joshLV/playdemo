@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                                       Home.index
+GET     /goods                                  Goods.index
 GET     /goods/{id}                             Goods.show
 
 # 购物车
@@ -36,7 +37,7 @@ DELETE  /orders/addresses/{id}                  Addresses.delete
 
 # 商圈区域
 GET     /areas/cities/top/{limit}               Areas.showTopCities
-GET     /areas/districts/top/{limit}            Areas.showTopDistricts
+GET     /areas/districts/top/{areaId}/{limit}   Areas.showTopDistricts
 GET     /areas/areas/top/{limit}                Areas.showTopAreas
 GET     /areas/areas/{areaId}                   Areas.showArea
 GET     /areas/subs/{areaId}                    Areas.showAllSubAreas

@@ -63,8 +63,8 @@ public class Area extends GenericModel {
      * @param limit 获取的条数限制
      * @return 前n个区域
      */
-    public static List<Area> findTopDistricts(int limit) {
-        return findTopByAreaType(limit, AreaType.DISTRICT);
+    public static List<Area> findTopDistricts(String areaId, int limit) {
+        return findTopAreas(areaId, limit);
     }
 
     /**

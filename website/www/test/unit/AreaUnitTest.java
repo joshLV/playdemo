@@ -27,28 +27,28 @@ public class AreaUnitTest extends UnitTest {
     public void testFindTopAreas() {
         List<Area> areaList = Area.findTopAreas(2);
         assertEquals(2, areaList.size());
-        assertEquals("area10", areaList.get(0).name);
+        assertEquals("area1", areaList.get(0).name);
     }
 
     @Test
     public void testFindTopCities() {
         List<Area> areaList = Area.findTopCities(6);
         assertEquals(6, areaList.size());
-        assertEquals("city7", areaList.get(0).name);
+        assertEquals("city1", areaList.get(0).name);
     }
 
     @Test
     public void testFindTopDistricts() {
-        List<Area> areaList = Area.findTopDistricts(6);
+        List<Area> areaList = Area.findTopDistricts("1", 6);
         assertEquals(6, areaList.size());
-        assertEquals("district7", areaList.get(0).name);
+        assertEquals("district1", areaList.get(0).name);
     }
 
     @Test
     public void testFindAllSubAreas() {
         List<Area> areaList = Area.findAllSubAreas("1");
         assertEquals(7, areaList.size());
-        assertEquals("district7", areaList.get(0).name);
+        assertEquals("district1", areaList.get(0).name);
     }
 
 

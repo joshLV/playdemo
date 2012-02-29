@@ -36,7 +36,7 @@ public class AreasTest extends FunctionalTest {
 
     @Test
     public void testShowTopDistricts() {
-        Http.Response response = GET("/areas/districts/top/6");
+        Http.Response response = GET("/areas/districts/top/1/6");
         assertIsOk(response);
         assertContentType("application/json", response);
     }
@@ -50,14 +50,14 @@ public class AreasTest extends FunctionalTest {
 
     @Test
     public void testShowAllSubAreas() {
-        Http.Response response = GET("/areas/subs/021");
+        Http.Response response = GET("/areas/subs/1");
         assertIsOk(response);
         assertContentType("application/json", response);
     }
 
     @Test
     public void testTopAreas() {
-        Http.Response response = GET("/areas/subs/021/6");
+        Http.Response response = GET("/areas/subs/1/6");
         assertIsOk(response);
         assertContentType("application/json", response);
     }

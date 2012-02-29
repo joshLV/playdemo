@@ -24,14 +24,4 @@ public class Home extends Controller {
 
         render(goodsList);
     }
-
-    public static void showCategories() {
-        List<Goods> goodsList = Goods.findTop(12);
-        List<Area> districts = Area.findTopDistricts(8);
-        List<Area> areas = Area.findTopAreas(8);
-        List<Category> categories = Category.findTop(8);
-
-        render(goodsList, areas, districts);
-    }
-
 }

@@ -19,8 +19,8 @@ public class Areas extends Controller {
         renderJSON(cities);
     }
 
-    public static void showTopDistricts(int limit) {
-        List<Area> areas = Area.findTopDistricts(limit);
+    public static void showTopDistricts(String areaId, int limit) {
+        List<Area> areas = Area.findTopDistricts(areaId, limit);
         renderJSON(areas);
     }
 
@@ -34,13 +34,13 @@ public class Areas extends Controller {
         renderJSON(area);
     }
 
-    public static void showTopSubAreas(String id, int limit) {
-        List<Area> areas = Area.findTopAreas(id, limit);
+    public static void showTopSubAreas(String areaId, int limit) {
+        List<Area> areas = Area.findTopAreas(areaId, limit);
         renderJSON(areas);
     }
 
-    public static void showAllSubAreas(String id) {
-        List<Area> areas = Area.findAllSubAreas(id);
+    public static void showAllSubAreas(String areaId) {
+        List<Area> areas = Area.findAllSubAreas(areaId);
         renderJSON(areas);
     }
 }
