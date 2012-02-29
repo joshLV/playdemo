@@ -302,6 +302,6 @@ public class Goods extends Model {
     }
 
     public static List<Goods> findByCondition(GoodsCondition condition) {
-
+        return null;
     }
 }
