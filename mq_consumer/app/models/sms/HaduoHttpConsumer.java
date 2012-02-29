@@ -62,7 +62,7 @@ public class HaduoHttpConsumer extends RabbitMQConsumer<SMSMessage> {
         List<NameValuePair> qparams = new ArrayList<NameValuePair>();
         qparams.add(new BasicNameValuePair("content", message.getContent()));
         qparams.add(new BasicNameValuePair("phonestr", phonesBuffer.toString()));
-        String url = SEND_URL.replace(":sms_info", URLEncodedUtils.format(qparams, "GBK"));
+        String url = SEND_URL.replace(":sms_info", URLEncodedUtils.format(qparams, "UTF-8"));
 
         //准备http请求
         AbstractHttpClient httpclient = new DefaultHttpClient();
