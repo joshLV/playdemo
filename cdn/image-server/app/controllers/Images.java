@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * Date: 2/8/12
  * Time: 11:42 AM
  */
-public class ImageController extends Controller {
+public class Images extends Controller {
 
     public static final String SMALL = "small";
     public static final String MIDDLE = "middle";

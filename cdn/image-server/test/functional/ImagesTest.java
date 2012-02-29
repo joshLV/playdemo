@@ -1,3 +1,5 @@
+package functional;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
@@ -10,7 +12,7 @@ import play.test.FunctionalTest;
  * Date: 2/8/12
  * Time: 11:33 AM
  */
-public class ImageControllerTest extends FunctionalTest {
+public class ImagesTest extends FunctionalTest {
 
     @Test
     public void testShowImage() {

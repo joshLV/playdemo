@@ -5,7 +5,7 @@
 # Home page
 # GET     /                                       Application.index
 
-GET     /p/{firstDir}/{secondDir}/{thirdDir}/{imageName}                                  ImageController.showImage
+GET     /p/{firstDir}/{secondDir}/{thirdDir}/{imageName}                                  Images.showImage
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
