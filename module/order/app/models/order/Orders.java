@@ -67,10 +67,10 @@ public class Orders extends Model {
     public Date paidAt;
     public String postcode;
 
-    @Column(name = "createdAt")
+    @Column(name = "created_at")
     public Date createdAt;
 
-    @Column(name = "updatedAt")
+    @Column(name = "updated_at")
     public Date updatedAt;
 
     @Column(name = "lock_version")

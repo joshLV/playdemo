@@ -1,3 +1,5 @@
+package functional;
+
 import org.junit.Test;
 
 import play.mvc.Http.Response;
