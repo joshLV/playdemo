@@ -2,12 +2,14 @@ package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.modules.webcas.WebCAS;
+import models.GoodsCondition;
 import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -45,17 +47,18 @@ public class Goods extends Controller {
 
     public static void list(String condition) {
         String[] args = condition.split("-");
-        String categoryId = args[0];
-        String cityId = args[1];
-        String districtId = args[2];
-        String areaId = args[3];
-        String brandId = args[4];
-        String priceFrom = args[5];
-        String priceTo = args[6];
-        String order = args[7];
+        GoodsCondition goodsCondition = new GoodsCondition();
+        goodsCondition.categoryId = Long.parseLong(args[0]);
+        goodsCondition.cityId = args[1];
+        goodsCondition.districtId = args[2];
+        goodsCondition.areaId = args[3];
+        goodsCondition.brandId = Long.parseLong(args[4]);
+        goodsCondition.priceFrom = new BigDecimal(args[5]);
+        goodsCondition.priceTo = new BigDecimal(args[6]);
+        goodsCondition.order = args[7];
 
         List<models.sales.Goods> goodsList = models.sales.Goods.findByCondition
-                (condition);
+                (goodsCondition);
 
     }
 
