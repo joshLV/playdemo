@@ -24,6 +24,9 @@ POST    /pay/alipay_notify                      AliPay.notify
 # 显示支付结果
 GET     /orders/alipay_result                   OrderResult.alipayReturn
 
+GET     /sms                                    SMS.index
+POST    /sms/send                               SMS.send
+
 # 订单
 GET     /orders                                 Orders.index
 POST    /orders                                 Orders.buy

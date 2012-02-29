@@ -13,7 +13,6 @@ require:
     - commons-lang -> commons-lang 2.6
     - dom4j -> dom4j 1.6.1
     - sms -> sms
-#    - org.apache.activemq -> activemq-core 5.4.3
     - web_trace -> web_trace
     - accounts  -> accounts
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
@@ -29,7 +28,6 @@ repositories:
             - commons-httpclient -> *
             - commons-lang -> *
             - dom4j -> *
-#            - activemq-core -> *
         m2compatible: true
 
     - customModules:
