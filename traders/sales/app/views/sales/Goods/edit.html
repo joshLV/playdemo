@@ -13,8 +13,9 @@
   <div class="control-group">
    <label for="select01" class="control-label">商品类型</label>
    <div class="controls">
-    <select id="ca" class="input-small">
-     <option value="">请选择</option>
+     <select id="materialtype" name="goods.materialType" class="input-small">
+     <option value="ELECTRONIC" ${goods.materialType =='ELECTRONIC'?'seclected':''}> &{'goods.ELECTRONIC'}</option>
+     <option value="REAL"  ${goods.materialType =='REAL'?'seclected':''} >&{'goods.REAL'}</option>
     </select> <select id="select03" class="input-small">
      <option value="">请选择</option>
     </select> <select id="select03" class="input-small">
@@ -71,7 +72,7 @@
   <div class="control-group">
    <label for="input01" class="control-label">商品图片</label>
    <div class="controls">
-    <input type="file" id="imagePath" name="imagePath" class="input-file" />
+    <input type="file" id="imagePath" name="imagePath" class="input-file" /> 
    </div>
   </div>
   <div class="control-group">
