@@ -19,8 +19,27 @@ public class Images extends Controller {
     public static final String LARGE = "large";
     public static final String TINY = "tiny";
 
-    private static final String IMAGE_ROOT = "/nfs/images"; //缩略图根目录
     private static final Pattern targetImagePattern = Pattern.compile("^([^_]+)_([a-z0-9]+).(jpg|png|gif|jpeg)$");
+    private static final String IMAGE_ROOT_ORIGINAL; //原始图根目录
+    private static final String IMAGE_ROOT_GENERATED;
+
+    static {
+        Object oImageRootOriginal = play.Play.configuration.get("image.root" +
+                ".original");
+        if (oImageRootOriginal != null) {
+            IMAGE_ROOT_ORIGINAL = oImageRootOriginal.toString();
+        } else {
+            IMAGE_ROOT_ORIGINAL = "/nfs/images/o";
+        }
+
+        Object oImageRootGenerated = play.Play.configuration.get("image.root" +
+                ".generated");
+        if (oImageRootOriginal != null) {
+            IMAGE_ROOT_GENERATED = oImageRootGenerated.toString();
+        } else {
+            IMAGE_ROOT_GENERATED = "/nfs/images/p";
+        }
+    }
 
     /**
      * 根据图片路径显示指定规格的缩略图.
@@ -60,14 +79,14 @@ public class Images extends Controller {
             notFound();
         }
 
-        String targetImageParent = IMAGE_ROOT + File.separator + "p" + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir;
+        String targetImageParent = IMAGE_ROOT_GENERATED + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir;
 
-        if(!(new File(targetImageParent).isDirectory())){
+        if (!(new File(targetImageParent).isDirectory())) {
             new File(targetImageParent).mkdirs();
         }
 
         String targetImagePath = targetImageParent + File.separator + imageName;
-        String originImagePath = IMAGE_ROOT + File.separator + "o" + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + matcher.group(1) + "." + matcher.group(3);
+        String originImagePath = IMAGE_ROOT_ORIGINAL + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + matcher.group(1) + "." + matcher.group(3);
 
         File targetImage = new File(targetImagePath);
 
@@ -75,9 +94,9 @@ public class Images extends Controller {
             File originImage = new File(originImagePath);
             if (!originImage.exists()) {
                 //访问的原始文件不存在时直接返回默认图片的相应规格的图片
-                originImage = new File(IMAGE_ROOT + "/o/1/1/1/default.png");
-                targetImage = new File(IMAGE_ROOT + "/p/1/1/1/default_" + imageSizeType + ".png");
-                if (targetImage.exists()){
+                originImage = new File(IMAGE_ROOT_ORIGINAL + "/1/1/1/default.png");
+                targetImage = new File(IMAGE_ROOT_GENERATED + "/1/1/1/default_" + imageSizeType + ".png");
+                if (targetImage.exists()) {
                     renderBinary(targetImage);
                 }
             }
