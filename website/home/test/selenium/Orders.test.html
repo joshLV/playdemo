@@ -1,0 +1,7 @@
+#{fixture delete:'all', load:['fixture/user.yml'] /}
+
+#{selenium "查看我购买的商品"}
+    #{include 'test/selenium/step/login.selenium' /}
+    openAndWait('/orders')
+    assertTitle('优惠啦 - 我购买的商品')
+#{/selenium}
