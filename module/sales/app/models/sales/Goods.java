@@ -23,6 +23,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
@@ -124,11 +126,13 @@ public class Goods extends Model {
 	 * 券有效开始日
 	 */
 	@Column(name = "effective_at")
+	@Temporal(TemporalType.DATE)
 	public Date effectiveAt;
 	/**
 	 * 券有效结束日
 	 */
 	@Column(name = "expire_at")
+	@Temporal(TemporalType.DATE)
 	public Date expireAt;
 	/**
 	 * 商品标题
@@ -311,6 +315,7 @@ public class Goods extends Model {
 		}
 		pager.totalCount = goods.count(condition.toString(),params.toArray());
 		pager.totalPager();
+		condition.append(" order by created_at desc");
 		return goods.find(condition.toString(), params.toArray()).fetch(pager.currPage, pager.pageSize);
 	}
 }
