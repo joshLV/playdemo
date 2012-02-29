@@ -1,17 +1,21 @@
 package models.sales;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.uhuila.common.constants.DeletedStatus;
+
+import play.data.validation.Required;
 import play.db.jpa.Model;
 
 
@@ -24,12 +28,14 @@ public class Shop extends Model {
     public long companyId;
 
     @Column(name = "area_id")
-    public long areaId;
+    public String areaId;
 
     public String no;
 
+    @Required
     public String name;
 
+    @Required
     public String address;
 
     public String phone;
@@ -44,18 +50,22 @@ public class Shop extends Model {
     public float longitude;
 
     @Column(name = "created_at")
-    public String createdAt;
+    public Date createdAt;
 
     @Column(name = "created_by")
     public String createdBy;
 
     @Column(name = "updated_at")
-    public String updatedAt;
+    public Date updatedAt;
 
     @Column(name = "updated_by")
     public String updatedBy;
 
-    public int deleted;
+	/**
+	 * 逻辑删除,0:未删除，1:已删除
+	 */
+	@Enumerated(EnumType.ORDINAL)
+	public DeletedStatus deleted;
 
     @Column(name = "lock_version")
     public int lockVersion;
@@ -84,7 +94,7 @@ public class Shop extends Model {
      */
     public static boolean deleted(long id) {
         Shop shop = Shop.findById(id);
-        shop.deleted = 1;
+        shop.deleted = DeletedStatus.DELETED;
         shop.save();
         return true;
     }

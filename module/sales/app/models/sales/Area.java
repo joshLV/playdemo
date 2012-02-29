@@ -91,7 +91,7 @@ public class Area extends GenericModel {
     public static List<Area> findAllSubAreas(String areaId) {
         if (areaId == null || "".equals(areaId)) {
             return find("areaType=? order by displayOrder",
-                    AreaType.CITY, new Area(areaId)).fetch();
+                    AreaType.CITY).fetch();
         }
         return find("parent=? order by displayOrder",
                 new Area(areaId)).fetch();
