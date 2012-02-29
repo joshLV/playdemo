@@ -1,0 +1,11 @@
+#{fixture delete:'all', load:'fixture/areas.yml' /}
+#{selenium}
+    open('/shops/new')
+    verifyTitle('添加门店')
+    type('id=name','宛平南路店')
+    type('id=address','宛平南路1号')
+    type('id=phone','02100000')
+    assertText('css=button.btn.btn-primary','保 存')
+    clickAndWait('css=button.btn.btn-primary')
+    assertNotTitle('添加门店')
+#{/selenium}

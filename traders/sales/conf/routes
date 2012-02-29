@@ -13,13 +13,15 @@ GET     /goods/{id}/preview                     Goods.preview
 POST    /goods/{id}/update                      Goods.update
 POST    /updatestatus                           Goods.updateStatus
 DELETE  /goods/{id}/delete                      Goods.delete
+POST    /uploadjson                             Goods.uploadjson
 
 GET     /shops                                  Shops.list
 GET     /shops/new                              Shops.add
 POST    /shops                                  Shops.create
 GET     /shops/{id}/edit                        Shops.edit
 POST    /shops/{id}                             Shops.update
-DELETE  /shops/delete                           Shops.delete
+DELETE  /shops/{id}                           Shops.delete
+GET     /shops/area                             Shops.relation
 
 
 # Ignore favicon requests

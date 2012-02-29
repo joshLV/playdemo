@@ -1,6 +1,6 @@
 #{extends 'layout_trader/layout.html' /}
 #{include 'sales/Goods/nav.html' /}
-
+#{set title:'门店列表' /}
 #{get 'moreScripts'}
 <script type="text/javascript">
 fucntion showmsg(){
@@ -24,11 +24,9 @@ fucntion showmsg(){
       <td><input type="text" id="input01" name="shopaddr" class="input-large" /></td>
       <td><button class="btn btn-primary" type="submit">搜 索</button></td>
       </tr>
-      
       <tr> 
        <td><a href="@{Shops.add()}" class="btn btn-primary">添加门店</a></td>
        </tr>
-       
     </tbody>
   </table>
   </form>
@@ -41,7 +39,7 @@ fucntion showmsg(){
       </thead>
     
     <tbody> 
-    #{list items:pager.list, as:'row' }
+    #{list items:list, as:'row' }
       <tr>
       <td>${row.id}</td> 
       <td>${row.name}</td>
@@ -52,14 +50,8 @@ fucntion showmsg(){
     #{/list}   
     </tbody>
   </table>
-
-
-<div stlye=""><a href="@{shops.list()}?page=${pager.prevPage}" class="btn btn-primary">上一页</a> <a href="@{shops.list()}?page=${pager.nextPage}" class="btn btn-primary">下一页</a></div>
- <div class="pagination">
-  
+   <div class="pagination" align="center">
   <ul>
-
-    
     #{list items:pager.startNum..pager.endNum, as:'i'}
       #{if pager.currPage == i}
         <li class="active"><a>${i}</a></li>
@@ -69,11 +61,8 @@ fucntion showmsg(){
       #{/else}
     #{/list}
 
-    <li><a>共${pager.totalpage}页/${pager.pageSize} 共${pager.totalCount}条记录</a> </li>
+    <li><a>共${pager.totalpage}页/ 共${pager.totalCount}条记录</a> </li>
   </ul>
-  
-  </div>
-
 </div>
 
 

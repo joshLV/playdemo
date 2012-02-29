@@ -1,0 +1,13 @@
+#{fixture delete:'all', load:['fixture/shops.yml','fixture/areas.yml'] /}
+#{selenium '门店列表'}
+    open('/shops')
+    assertTextPresent('门店列表')
+#{/selenium}   
+
+#{selenium '编辑门店'}    
+    open('/shops/${play.test.Fixtures.idCache.get("models.sales.Shop-shop1")}/edit')
+    assertTextPresent('编辑门店')
+#{/selenium}
+
+
+
