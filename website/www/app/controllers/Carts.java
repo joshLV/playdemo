@@ -56,10 +56,6 @@ public class Carts extends Controller {
         
         Cart cart = Cart.order(user, cookieValue, goods, increment);
 
-        if(cart == null){
-            error(500, "illegal increment");
-            return;
-        }
         ok();
     }
 
