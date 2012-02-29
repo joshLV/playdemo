@@ -3,11 +3,18 @@
 require:
     - play
     - play -> cobertura 2.4
+    - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - layout_trader -> layout_trader
     - order -> order
     - consumer -> consumer
     - sales -> sales
 repositories:
+    - mavenRepository:
+        type:       iBiblio
+        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
+        contains:
+            - com.uhuila.utils -> *
+        m2compatible: true
     - customModules:
         type:       local
         artifact:   "${application.path}/../../module/[module]"

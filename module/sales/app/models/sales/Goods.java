@@ -5,6 +5,7 @@
 package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
+import models.GoodsCondition;
 import play.Play;
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -26,6 +27,8 @@ public class Goods extends Model {
     private static final Pattern imagePat = Pattern.compile("^/([0-9]+)/([0-9]+)/([0-9]+)/([^_]+).(jpg|png|gif|jpeg)$");
     private static final String IMAGE_SERVER = Play.configuration.getProperty
             ("image.server", "http://img0.uhlcdndev.net");
+    private static final String IMAGE_ROOT_GENERATED = Play.configuration
+            .getProperty("image.root", "/p");
 
     /**
      * 商品编号
@@ -225,7 +228,8 @@ public class Goods extends Model {
     public MaterialType materialType;
 
     private String getImageBySizeType(String sizeType) {
-        String defaultImage = IMAGE_SERVER + "/p/1/1/1/default_" + sizeType + ".png";
+        String defaultImage = IMAGE_SERVER + IMAGE_ROOT_GENERATED +
+                "/1/1/1/default_" + sizeType + ".png";
         System.out.println("defaultImage=" + defaultImage);
         if (imagePath == null || imagePath.equals("")) {
             return defaultImage;
@@ -236,7 +240,7 @@ public class Goods extends Model {
             System.out.println("filePat not match");
             return defaultImage;
         }
-        String imageHeadStr = "/p" + imagePath;
+        String imageHeadStr = IMAGE_ROOT_GENERATED + imagePath;
         return IMAGE_SERVER + imageHeadStr.replace("/" + matcher.group(4), "/" + matcher.group(4) + "_" + sizeType);
     }
 
@@ -295,5 +299,9 @@ public class Goods extends Model {
         pager.totalPager();
         condition.append(" order by created_at desc");
         return goods.find(condition.toString(), params.toArray()).fetch(pager.currPage, pager.pageSize);
+    }
+
+    public static List<Goods> findByCondition(GoodsCondition condition) {
+
     }
 }

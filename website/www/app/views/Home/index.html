@@ -200,7 +200,7 @@
                                                    href="#">热门</a></li>
                     <li class="hot_shangpin_li"><a class="current_tab2"
                                                    href="#">美食</a></li>
-                    <li class="hot_sp_r"><a href="#">更多>></a></li>
+                    <li class="hot_sp_r"><a href="/goods">更多>></a></li>
                 </ul>
             </div>
 
@@ -209,20 +209,20 @@
             <div id="" class="shop_wrap">
                 <ul>
                 #{set i:-1/}
-                #{list goodsList, as:'one_goods'}
+                #{list goodsList, as:'aGoods'}
                     #{if (++i%4) == 0 }
                     <div class="shop_li_box">
                     #{/if}
                     <li class="shop_box">
-                        <div><a href="/goods/${one_goods.id}"><img
-                                src="${one_goods.imageMiddlePath}"/></a></div>
+                        <div><a href="/goods/${aGoods.id}"><img
+                                src="${aGoods.imageMiddlePath}"/></a></div>
                         <div class="margin_top5px"><span
-                                id="recommend_goods_${one_goods.id}"
-                                class="strong_gray font_14px">${one_goods.name} </span><span
-                                class="pri_jiage font_14px">Y${one_goods.salePrice}</span>
+                                id="recommend_goods_${aGoods.id}"
+                                class="strong_gray font_14px">${aGoods.name} </span><span
+                                class="pri_jiage font_14px">Y${aGoods.salePrice}</span>
                         </div>
                         <div class="text_decorat">
-                            市场价格：Y:${one_goods.originalPrice}</div>
+                            市场价格：Y:${aGoods.originalPrice}</div>
                     </li>
                     #{if ((i%4 == 3))}
                     </div>

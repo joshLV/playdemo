@@ -22,6 +22,7 @@
     <orderEntry type="library" name="persistence-api-1.0.2" level="project" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="tools" />
+    <orderEntry type="module" module-name="www" />
   </component>
 </module>
 
