@@ -20,26 +20,12 @@ public class Images extends Controller {
     public static final String TINY = "tiny";
 
     private static final Pattern targetImagePattern = Pattern.compile("^([^_]+)_([a-z0-9]+).(jpg|png|gif|jpeg)$");
-    private static final String IMAGE_ROOT_ORIGINAL; //原始图根目录
-    private static final String IMAGE_ROOT_GENERATED;
-
-    static {
-        Object oImageRootOriginal = play.Play.configuration.get("image.root" +
-                ".original");
-        if (oImageRootOriginal != null) {
-            IMAGE_ROOT_ORIGINAL = oImageRootOriginal.toString();
-        } else {
-            IMAGE_ROOT_ORIGINAL = "/nfs/images/o";
-        }
-
-        Object oImageRootGenerated = play.Play.configuration.get("image.root" +
-                ".generated");
-        if (oImageRootOriginal != null) {
-            IMAGE_ROOT_GENERATED = oImageRootGenerated.toString();
-        } else {
-            IMAGE_ROOT_GENERATED = "/nfs/images/p";
-        }
-    }
+    private static final String IMAGE_ROOT_ORIGINAL = play.Play
+            .configuration.getProperty("image.root.original",
+                    "/nfs/images/o"); //原始图根目录
+    private static final String IMAGE_ROOT_GENERATED = play.Play
+            .configuration.getProperty("image.root.generated",
+                    "/nfs/images/p"); //缩略图根目录
 
     /**
      * 根据图片路径显示指定规格的缩略图.
@@ -87,6 +73,7 @@ public class Images extends Controller {
 
         String targetImagePath = targetImageParent + File.separator + imageName;
         String originImagePath = IMAGE_ROOT_ORIGINAL + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + matcher.group(1) + "." + matcher.group(3);
+
 
         File targetImage = new File(targetImagePath);
 
