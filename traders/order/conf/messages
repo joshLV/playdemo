@@ -1,3 +1,9 @@
 # You can specialize this file for each language.
 # For example, for French create a messages.fr file
 #
+order.UNPAID=未支付
+order.PAID=已支付
+order.CANCELED=取消订单
+order.SENT=交易成功
+order.RETURNED=退款
+order.RECEIPT=确认取货
