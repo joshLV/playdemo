@@ -232,7 +232,7 @@ public class Orders extends Model {
 			params.put("status",orders.status);
 		}
 		if (orders.deliveryType != 0) {
-			sql.append(" and a.delivery_type = :deliveryType");
+			sql.append(" and delivery_type = :deliveryType");
 			params.put("deliveryType", orders.deliveryType);
 		}
 		if (!StringUtils.isBlank(orders.payMethod)) {
