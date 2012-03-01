@@ -1,13 +1,22 @@
 package models.order;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+
 import models.consumer.User;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import play.db.jpa.Model;
-
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.*;
 
 @Entity
 @Table(name = "cart")
@@ -107,7 +116,7 @@ public class Cart extends Model {
             return 0;
         }
         StringBuilder sql = new StringBuilder("delete from Cart c where (1=2");
-        Map<String,Object> params = new HashMap<>();
+        Map<String,Object> params = new HashMap<String,Object>();
         if (user !=null ) {
             sql.append(" or c.user = :user" );
             params.put("user", user);
@@ -145,7 +154,7 @@ public class Cart extends Model {
         //构建查询条件
         StringBuilder sql = new StringBuilder(
             "select new Cart(c.goods, SUM(c.number)) from Cart c where ( 1=2 ");
-        Map<String,Object> params = new HashMap<>();
+        Map<String,Object> params = new HashMap<String,Object>();
 
         if (user != null) {
             sql.append("or c.user = :user ");
