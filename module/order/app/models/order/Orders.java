@@ -240,7 +240,7 @@ public class Orders extends Model {
 			params.put("payMethod", orders.payMethod);
 		}
 
-		Query orderQery = entityManager.createQuery(sql.toString(), models.order.Orders.class);
+		Query orderQery = entityManager.createQuery(sql.toString());
 		for(Map.Entry<String,Object> entry : params.entrySet()){
 			System.out.println(" entry.getValue()==="+ entry.getKey());
 			orderQery.setParameter(entry.getKey(), entry.getValue());
