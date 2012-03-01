@@ -2,6 +2,7 @@ package unit;
 
 import java.util.List;
 
+import models.order.OrderStatus;
 import models.order.Orders;
 import models.sales.Goods;
 
@@ -18,7 +19,7 @@ public class OrderUnitTest extends UnitTest {
 		Orders orders=new Orders();
 		orders.createdAtBegin="2012-02-20 00:00:00";
 		orders.createdAtEnd="2012-02-20 23:59:59";
-		orders.status="UPPAID";
+		orders.status=OrderStatus.UNPAID;
 		orders.deliveryType=1;
 		orders.payMethod="1";
 		List<Orders> list = 	Orders.query(orders);  
