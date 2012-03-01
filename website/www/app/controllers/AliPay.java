@@ -1,15 +1,14 @@
 package controllers;
 
-import models.consumer.*;
-import models.order.*;
-import play.mvc.Controller;
-import play.mvc.Http;
-import play.mvc.With;
 import java.math.BigDecimal;
-import thirdpart.alipay.util.AlipayNotify;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-import java.util.*;
-import controllers.modules.cas.SecureCAS;
+import models.order.OrderStatus;
+import play.mvc.Controller;
+import thirdpart.alipay.util.AlipayNotify;
 
 public class AliPay extends Controller {
 
@@ -83,7 +82,7 @@ public class AliPay extends Controller {
             logger.info("alipay_notify:订单已被处理:" + out_trade_no);
             return;
         }
-        order.status = OrderStatus.PAID.toString();
+        order.status = OrderStatus.PAID;
         order.paidAt = new Date();
         order.save();
     }

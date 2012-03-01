@@ -1,7 +1,8 @@
 package controllers;
 
-import com.uhuila.common.constants.DeletedStatus;
-import controllers.modules.webcas.WebCAS;
+import java.math.BigDecimal;
+import java.util.List;
+
 import models.GoodsCondition;
 import models.sales.Area;
 import models.sales.Brand;
@@ -9,8 +10,9 @@ import models.sales.Category;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.math.BigDecimal;
-import java.util.List;
+import com.uhuila.common.constants.DeletedStatus;
+
+import controllers.modules.webcas.WebCAS;
 
 /**
  * 商品控制器.
