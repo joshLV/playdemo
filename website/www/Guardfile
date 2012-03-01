@@ -1,0 +1,10 @@
+# More info at https://github.com/guard/guard#readme
+interactor :readline
+
+notification :notifysend
+
+guard 'play' do
+  watch(%r{^app/})
+  watch(%r{^conf/})
+  watch(%r{^test/})
+end
