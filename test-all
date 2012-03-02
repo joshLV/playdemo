@@ -1,0 +1,18 @@
+#!/bin/bash
+PWD=`pwd`
+function run_auto_test() {
+    if [[ -d $1 ]]; then
+        cd $1
+        play clean
+        play auto-test --deps
+        cd $PWD
+    else
+        echo "$1 Not Exists!"
+    fi
+}
+
+run_auto_test website/www
+run_auto_test website/home
+run_auto_test traders/sales
+run_auto_test traders/order
+run_auto_test cdn/image-server
