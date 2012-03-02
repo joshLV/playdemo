@@ -7,6 +7,9 @@ require:
     - play -> logisimayml 1.8
     - play -> rabbitmq 0.3
     - play -> paginate 0.14
+#    - org.powermock -> powermock-module-junit4 1.4.11
+#    - org.powermock -> powermock-api-mockito 1.4.11
+#    - play -> mockito 0.1
     - sales -> sales
     - consumer -> consumer
     - order -> order

@@ -5,11 +5,8 @@ import models.consumer.*;
 import models.accounts.*;
 import models.order.*;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.With;
-import play.data.binding.As;
 
-import thirdpart.alipay.util.*;
 import thirdpart.alipay.services.*;
 
 import java.util.*;
@@ -22,7 +19,7 @@ public class PaymentInfo extends Controller {
     public static void index(long id) {
         String username = session.get("username");
         User user = User.find("byLoginName", username).first();
-        Accounts account = Accounts.find("byUid",user.getId()).first();
+        Account account = Account.find("byUid", user.getId()).first();
 
         models.order.Orders order = models.order.Orders.findById(id);
 
@@ -42,7 +39,7 @@ public class PaymentInfo extends Controller {
     public static void confirm(long orderId, boolean useBalance) {
         String username = session.get("username");
         User user = User.find("byLoginName", username).first();
-        Accounts account = Accounts.find("byUid",user.getId()).first();
+        Account account = Account.find("byUid", user.getId()).first();
         models.order.Orders order = models.order.Orders.findById(orderId);
 
         if (order == null){

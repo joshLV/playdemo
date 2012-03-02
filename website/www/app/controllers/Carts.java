@@ -54,7 +54,7 @@ public class Carts extends Controller {
             return;
         }
         
-        Cart cart = Cart.order(user, cookieValue, goods, increment);
+        Cart.order(user, cookieValue, goods, increment);
 
         ok();
     }
