@@ -37,7 +37,7 @@ public class DomainUserAuthnHandler extends AbstractUsernamePasswordAuthenticati
             log.debug("email=" + fullUserName);
         }
         
-        String[] domainUsers = getDomainUser(fullUserName);
+        String[] domainUsers = DomainNameUtil.getDomainUser(fullUserName);
         if (domainUsers == null) {
             return false;
         }
@@ -62,11 +62,5 @@ public class DomainUserAuthnHandler extends AbstractUsernamePasswordAuthenticati
         return true;
     }
 
-    public String[] getDomainUser(String fullUserName) {
-        if (fullUserName.indexOf("@") < 0) {
-            return null;
-        }
-        return fullUserName.split("@", 2);
-    }
 
 }
