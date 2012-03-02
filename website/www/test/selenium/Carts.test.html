@@ -2,8 +2,10 @@
 #{selenium 'Test Carts/index.html'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}')
 click('id=link_add_cart')
+waitForElementPresent('id=add_cart_result')
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
 click('id=link_add_cart')
+waitForElementPresent('id=add_cart_result')
 open('/carts')
 verifyValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}','1')
 verifyValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}','1')
