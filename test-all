@@ -1,13 +1,12 @@
 #!/bin/bash
-PWD=`pwd`
+CURR_DIR=`pwd`
 function run_auto_test() {
-    if [[ -d $PWD/$1 ]]; then
-        echo "Runing Play on $PWD/$1 ..."
-        cd $PWD/$1
-        play clean
-        play auto-test --deps
+    if [[ -d $CURR_DIR/$1 ]]; then
+        echo "Runing Play on $CURR_DIR/$1 ..."
+        play clean $CURR_DIR/$1
+        play auto-test $CURR_DIR/$1 --deps
     else
-        echo "$1 Not Exists!"
+        echo "$CURR_DIR/$1 Not Exists!"
     fi
 }
 
