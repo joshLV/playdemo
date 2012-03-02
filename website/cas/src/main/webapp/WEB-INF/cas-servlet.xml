@@ -234,7 +234,7 @@
 		p:commandName="registeredService"
 		p:validator-ref="registeredServiceValidator"
 		p:sessionForm="true">
-		<constructor-arg index="0" ref="servicesManager" />authenticationViaFormAction
+		<constructor-arg index="0" ref="servicesManager" />
 		<constructor-arg index="1" ref="attributeRepository" />
 	</bean>
 	
