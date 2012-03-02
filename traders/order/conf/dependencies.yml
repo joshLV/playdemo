@@ -8,6 +8,7 @@ require:
     - layout_trader -> layout_trader
     - order -> order
     - consumer -> consumer
+    - supplier-cas -> supplier-cas
     - sales -> sales
 repositories:
     - mavenRepository:
@@ -24,3 +25,4 @@ repositories:
             - order -> *
             - consumer -> *
             - sales -> *
+            - supplier-cas -> *
