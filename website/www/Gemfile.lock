@@ -5,7 +5,7 @@ GEM
     guard (1.0.0)
       ffi (>= 0.5.0)
       thor (~> 0.14.6)
-    guard-play (0.1.0)
+    guard-play (0.1.2)
       guard
     libnotify (0.7.2)
     rb-inotify (0.8.8)
