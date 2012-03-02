@@ -1,11 +1,11 @@
 #!/bin/bash
 PWD=`pwd`
 function run_auto_test() {
-    if [[ -d $1 ]]; then
-        cd $1
+    if [[ -d $PWD/$1 ]]; then
+        echo "Runing Play on $PWD/$1 ..."
+        cd $PWD/$1
         play clean
         play auto-test --deps
-        cd $PWD
     else
         echo "$1 Not Exists!"
     fi
