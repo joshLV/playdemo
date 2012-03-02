@@ -1,3 +1,4 @@
+deleteAllVisibleCookies()
 clearSession()
 openAndWait('/@cas/login?service=/modules.cas.securecas/authenticate&gateway=true')
 assertTitle('CAS Mock Server - Login')
