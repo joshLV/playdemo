@@ -82,7 +82,6 @@ public class Goods extends Controller {
 		goods.createdBy = "yanjy";
 		goods.create();
 		uploadImagePath(imagePath, goods);
-		goods.save();
 
 		//全部门店的场合
 		if ("1".equals(radios)) {
@@ -91,13 +90,15 @@ public class Goods extends Controller {
 				goods.addValues(shop);
 			}
 		} else {
-			Shop shop = new Shop();
 			//部分门店
 			for (Long id : checkoption) {
+                Shop shop = new Shop();
 				shop.id=id;
 				goods.addValues(shop);
 			}
 		}
+
+        goods.save();
 
 		//预览的情况
 		if ("2".equals(status)) {
@@ -106,7 +107,7 @@ public class Goods extends Controller {
 		index(null,"1");
 	}
 
-	
+
 	private static String htmlspecialchars(String str) {
 		str = str.replaceAll("&", "&amp;");
 		str = str.replaceAll("<", "&lt;");

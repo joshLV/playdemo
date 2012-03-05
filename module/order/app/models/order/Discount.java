@@ -2,10 +2,7 @@ package models.order;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import play.db.jpa.Model;
 
@@ -13,14 +10,11 @@ import play.db.jpa.Model;
 @Table(name = "discount")
 public class Discount extends Model {
 
-	@ManyToOne
-	public Orders orders;
-
+	@ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="order_id",nullable=true)
+    public Orders order;
 	@Column(name="discount_sn")
 	public String discountSn;
-
-	@Column(name="order_id")
-	public Long orderId;
 
 	@Column(name="discount_price")
 	public Float discountPrice;
@@ -32,5 +26,6 @@ public class Discount extends Model {
 	public Date createdAt;
 	@Column(name="refund_at")
 	public Date refundAt;
+    @Column(name="status")
 	public String status;
 }

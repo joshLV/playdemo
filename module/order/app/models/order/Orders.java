@@ -196,68 +196,72 @@ public class Orders extends Model {
         }
     }
 
-    /**
-     * 订单查询
-     *
-     * @param orders
-     * @return
-     */
-    public static List query(Orders orders) {
-        EntityManager entityManager = play.db.jpa.JPA.em();
-        StringBuilder sql = new StringBuilder();
-        sql.append("select distinct o from Orders o, OrderItems oi  WHERE oi member of o.orderItems");
+	/**
+	 * 订单查询
+	 *
+	 * @param orders 订单信息
+     * @param companyId 商户ID
+	 * @return List
+	 */
+	public static List query(Orders orders,String companyId) {
+		EntityManager entityManager = play.db.jpa.JPA.em();
+		StringBuilder sql = new StringBuilder();
+		sql.append("select distinct o from Orders o, OrderItems oi  WHERE oi member of o.orderItems");
 
-        Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, Object> params = new HashMap<String, Object>();
+		sql.append(" and oi.goods.companyId = :companyId");
+		params.put("companyId", companyId);
+		if (orders.createdAtBegin != null) {
+			sql.append(" and o.createdAt >= :createdAtBegin");
+			params.put("createdAtBegin", orders.createdAtBegin);
+		}
+		if (orders.createdAtEnd != null) {
+			sql.append(" and o.createdAt <= :createdAtEnd");
+			params.put("createdAtEnd", orders.createdAtEnd);
+		}
+        if (orders.refundAtBegin != null) {
+            sql.append(" and o.paidAt >= :refundAtBegin");
+            params.put("refundAtBegin", orders.refundAtBegin);
+        }
+        if (orders.refundAtEnd != null) {
+            sql.append(" and o.paidAt <= :refundAtEnd");
+            params.put("refundAtEnd", orders.refundAtEnd);
+        }
+		if (orders.status != null) {
+			sql.append(" and o.status = :status");
+			params.put("status",orders.status);
+		}
+		if (orders.deliveryType != 0) {
+			sql.append(" and o.deliveryType = :deliveryType");
+			params.put("deliveryType", orders.deliveryType);
+		}
+		if (StringUtils.isNotBlank(orders.payMethod)) {
+			sql.append(" and o.payMethod = :payMethod");
+			params.put("payMethod", orders.payMethod);
+		}
 
-        if (!StringUtils.isBlank(orders.createdAtBegin)) {
-            sql.append(" and createdAt >= :createdAtBegin");
-            params.put("createdAtBegin", orders.createdAtBegin);
-        }
-        if (!StringUtils.isBlank(orders.createdAtEnd)) {
-            sql.append(" and createdAt <= :createdAtEnd");
-            params.put("createdAtEnd", orders.createdAtEnd);
-        }
-        if (orders.status != null) {
-            sql.append(" and status = :status");
-            params.put("status", orders.status);
-        }
-        if (orders.deliveryType != 0) {
-            sql.append(" and delivery_type = :deliveryType");
-            params.put("deliveryType", orders.deliveryType);
-        }
-        if (!StringUtils.isBlank(orders.payMethod)) {
-            sql.append(" and pay_method = :payMethod");
-            params.put("payMethod", orders.payMethod);
-        }
+        sql.append(" order by o.createdAt desc");
+		Query orderQery = entityManager.createQuery(sql.toString());
+		for(Map.Entry<String,Object> entry : params.entrySet()){
+			orderQery.setParameter(entry.getKey(), entry.getValue());
+		}
 
+		return orderQery.getResultList();
+
+	}
+
+	/**
+	 * 商家券号列表
+	 *
+	 * @return
+	 */
+	public static List queryCoupons() {
+		EntityManager entityManager = play.db.jpa.JPA.em();
+		StringBuilder sql = new StringBuilder();
+        sql.append("select distinct o from Orders o join o.ECoupons e ") ;
         Query orderQery = entityManager.createQuery(sql.toString());
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
-            System.out.println(" entry.getValue()===" + entry.getKey());
-            orderQery.setParameter(entry.getKey(), entry.getValue());
-        }
-
-        List<models.order.Orders> orderList = orderQery.getResultList();
-
-        return orderList;
-
-    }
-
-    /**
-     * 商家券号列表
-     *
-     * @return
-     */
-    public static List queryQ() {
-        EntityManager entityManager = play.db.jpa.JPA.em();
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT a.order_no,c.no,c.name,d.discount_price,d.discount_sn,c.expired_bg_on,c.expired_ed_on,a.created_at,d.refund_price,d.refund_at,d.status FROM discount d");
-        sql.append(" LEFT JOIN orders a ON a.id = d.order_id ");
-        sql.append(" LEFT JOIN order_items b ON a.id = b.order_id ");
-        sql.append(" LEFT JOIN goods c ON b.goods_id=c.id");
-        sql.append(" WHERE c.company_id=1");
-        sql.append(" ORDER BY a.created_at DESC");
-        return entityManager.createNativeQuery(sql.toString()).getResultList();
-    }
+		return  orderQery.getResultList();
+	}
 
     /**
      * 会员中心 券号列表

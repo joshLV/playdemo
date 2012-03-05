@@ -1,0 +1,18 @@
+sales.Goods(Goods1):
+ no: 001
+ name: 测试商品1
+ companyId: 1
+ imagePath: /0/0/114/origin.jpg
+ effectiveAt: 2012-02-28
+ expireAt: 2012-02-29
+ originalPrice: 100
+ salePrice: 10
+ prompt: test
+ details: test
+ baseSale: 10
+ status: ONSALE
+ createdAt: 2012-02-27
+ createdBy: yanjy
+ deleted: UN_DELETED
+ lockVersion: 2
+ materialType: ELECTRONIC

@@ -6,8 +6,9 @@ require:
     - play -> paginate head
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - layout_trader -> layout_trader
+    - commons-lang -> commons-lang 2.6
     - sales -> sales
-    - supplier-cas -> supplier-cas
+    - supplier_cas -> supplier_cas
 
 repositories:
     - mavenRepository:
@@ -15,6 +16,7 @@ repositories:
         root:       "http://dev.uhuila.cn/nexus/content/groups/public"
         contains:
             - com.uhuila.utils -> *
+            - commons-lang -> *
         m2compatible: true
 
     - customModules:
@@ -23,4 +25,4 @@ repositories:
         contains:
             - layout_trader -> *
             - sales -> *
-            - supplier-cas -> *
+            - supplier_cas -> *

@@ -5,6 +5,7 @@
 package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
+import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -12,10 +13,7 @@ import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,8 +48,11 @@ public class Goods extends Model {
     public Set<Shop> shops;
 
     public void addValues(Shop shop) {
-        if (shops != null && !shops.contains(shop)) {
-            shops.add(shop);
+        if (this.shops ==null) {
+            this.shops = new HashSet<>();
+        }
+        if (!this.shops.contains(shop)) {
+            this.shops.add(shop);
         }
     }
 
@@ -289,25 +290,25 @@ public class Goods extends Model {
     public List query(models.sales.Goods goods, Pager pager) {
         StringBuilder condition = new StringBuilder();
         condition.append(" deleted = ? ");
-        List<Object> params = new ArrayList<>();
+        List<Object> params = new ArrayList();
         params.add(DeletedStatus.UN_DELETED);
-        if (goods.name != null && !"".equals(goods.name)) {
+        if (StringUtils.isNotBlank(goods.name)) {
             condition.append(" and name like ? ");
             params.add("%" + goods.name + "%");
         }
-        if (goods.no != null && !"".equals(goods.no)) {
+        if (StringUtils.isNotBlank(goods.no)) {
             condition.append(" and no like ? ");
             params.add("%" + goods.no + "%");
         }
-        if (goods.status != null && !"".equals(goods.status)) {
+        if (goods.status !=null) {
             condition.append(" and status = ? ");
             params.add(goods.status);
         }
-        if (goods.salePriceBegin != null && !"".equals(goods.salePriceBegin)) {
+        if (StringUtils.isNotBlank(goods.salePriceBegin)) {
             condition.append(" and salePrice >= ?");
             params.add(new BigDecimal(goods.salePriceBegin));
         }
-        if (goods.salePriceEnd != null && !"".equals(goods.salePriceEnd)) {
+        if (StringUtils.isNotBlank(goods.salePriceEnd)) {
             condition.append(" and salePrice <= ?");
             params.add(new BigDecimal(goods.salePriceEnd));
         }

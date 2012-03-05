@@ -1,9 +1,17 @@
 # You can specialize this file for each language.
 # For example, for French create a messages.fr file
 #
+#订单状态
 order.UNPAID=未支付
 order.PAID=已支付
 order.CANCELED=取消订单
 order.SENT=交易成功
 order.RETURNED=退款
 order.RECEIPT=确认取货
+
+#券状态
+coupon.DEALING=处理中
+coupon.CONSUMED=已消费
+coupon.UNCONSUMED=未消费
+coupon.REFUND=已退款
+coupon.EXPIRED=已过期,
