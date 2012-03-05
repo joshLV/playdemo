@@ -71,8 +71,8 @@
  <form class="form-horizontal" name="frmlist" action="@{Goods.index()}" method="GET">
   <table width="100%">
    <tr>
-    <td width="30%">商品名称：<input type="text" id="no" name="goods.name" class="input-medium" /></td>
-    <td width="30%">商品编号：<input type="text" id="no" name="goods.no" class="input-medium" /></td>
+    <td width="30%">商品名称：<input type="text" name="goods.name" class="input-medium" /></td>
+    <td width="30%">商品编号：<input type="text" name="goods.no" class="input-medium" /></td>
     <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态： <select id="ca" name="goods.status" class="input-small">
       <option value="">请选择</option>
       <option value="ONSALE">已上架</option>
@@ -80,10 +80,10 @@
     </select></td>
    </tr>
    <tr>
-    <td>现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：<input type="text" id="no" name="goods.salePriceBegin"
-     class="input-medium" />至 <input type="text" id="no" name="goods.salePriceEnd" class="input-medium" /></td>
-    <td>销&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：<input type="text" id="no" name="goods.saleCountBegin"
-     class="input-medium" />至 <input type="text" id="no" name="goods.saleCountEnd" class="input-medium" /></td>
+    <td>现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：<input type="text" name="goods.salePriceBegin"
+     class="input-medium" />至 <input type="text" name="goods.salePriceEnd" class="input-medium" /></td>
+    <td>销&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：<input type="text" name="goods.saleCountBegin"
+     class="input-medium" />至 <input type="text" name="goods.saleCountEnd" class="input-medium" /></td>
     <td><button class="btn btn-primary" id="searchbtn" type="submit">搜索</button></td>
    </tr>
   </table>
@@ -146,3 +146,4 @@
   </ul>
   
   </div>
+</div>
