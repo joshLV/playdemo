@@ -1,19 +1,37 @@
 package unit;
 
-import models.sales.Goods;
+import models.sales.*;
+import org.junit.Before;
 import org.junit.Test;
+import play.modules.paginate.JPAExtPaginator;
+import play.test.Fixtures;
 import play.test.UnitTest;
 
-import static junit.framework.Assert.assertEquals;
+import java.util.List;
 
 /**
- * TODO.
+ * 商品Model的单元测试.
  * <p/>
  * User: sujie
  * Date: 2/27/12
  * Time: 5:59 PM
  */
 public class GoodsUnitTest extends UnitTest {
+    @Before
+    @SuppressWarnings("unchecked")
+    public void setup() {
+        Fixtures.delete(Shop.class);
+        Fixtures.delete(Goods.class);
+        Fixtures.delete(Category.class);
+        Fixtures.delete(Brand.class);
+        Fixtures.delete(Area.class);
+        Fixtures.loadModels("fixture/areas_unit.yml");
+        Fixtures.loadModels("fixture/categories_unit.yml");
+        Fixtures.loadModels("fixture/brands_unit.yml");
+        Fixtures.loadModels("fixture/shops_unit.yml");
+        Fixtures.loadModels("fixture/goods_unit.yml");
+    }
+
     @Test
     public void testGetImageBySizeType() {
         models.sales.Goods goods = new Goods();
@@ -22,4 +40,17 @@ public class GoodsUnitTest extends UnitTest {
         assertEquals("http://img0.uhlcdndev.net/p/1/1/1/3_large.jpg", path);
     }
 
+    /**
+     * 测试各种查询条件都指定的情况.
+     */
+    @Test
+    public void testList() {
+        String condition = "0-021- - -0-0-0-0-1";
+        GoodsCondition goodsCond = new GoodsCondition(condition);
+
+        JPAExtPaginator<Goods> goodsPage = models.sales.Goods.findByCondition
+                (goodsCond, 1, 50);
+        System.out.println("goodsPage.size=" + goodsPage.size());
+        assertEquals(17, goodsPage.size());
+    }
 }

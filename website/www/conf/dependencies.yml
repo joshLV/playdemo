@@ -6,10 +6,11 @@ require:
     - play -> cas 3.1
     - play -> logisimayml 1.8
     - play -> rabbitmq 0.3
-    - play -> paginate 0.14
+    - play -> paginate head
 #    - org.powermock -> powermock-module-junit4 1.4.11
 #    - org.powermock -> powermock-api-mockito 1.4.11
 #    - play -> mockito 0.1
+    - paginate_ext -> paginate_ext
     - sales -> sales
     - consumer -> consumer
     - order -> order
@@ -38,6 +39,7 @@ repositories:
         type:       local
         artifact:   "${application.path}/../../module/[module]"
         contains:
+            - paginate_ext -> *
             - sales -> *
             - consumer -> *
             - order -> *

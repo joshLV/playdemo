@@ -1,18 +1,18 @@
 package controllers;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import models.GoodsCondition;
+import controllers.modules.webcas.WebCAS;
 import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
+import models.sales.GoodsCondition;
+import org.apache.commons.lang.StringUtils;
+import play.modules.paginate.JPAExtPaginator;
+import play.modules.paginate.Paginator;
+import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import com.uhuila.common.constants.DeletedStatus;
-
-import controllers.modules.webcas.WebCAS;
+import java.util.List;
 
 /**
  * 商品控制器.
@@ -24,22 +24,33 @@ import controllers.modules.webcas.WebCAS;
 @With(WebCAS.class)
 public class Goods extends Controller {
 
+    public static String SHANGHAI = "021";
+    public static int LIMIT = 8;
+
     public static void index() {
         //默认取出5页产品
         List<models.sales.Goods> goodsList = models.sales.Goods.findTop(80);
         //默认取出前8个上海的区
-        List<Area> districts = Area.findTopDistricts("021", 8);
-        List<Area> areas = Area.findTopAreas(8);
-        List<Category> categories = Category.findTop(8);
-        List<Brand> brands = Brand.findTop(8);
+        List<Area> districts = Area.findTopDistricts(SHANGHAI, LIMIT);
+        List<Area> areas = Area.findTopAreas(LIMIT);
+        List<Category> categories = Category.findTop(LIMIT);
+        List<Brand> brands = Brand.findTop(LIMIT);
 
-        render(goodsList, areas, districts, categories, brands);
+        renderArgs.put("categoryId", 0);
+        renderArgs.put("cityId", SHANGHAI);
+        renderArgs.put("districtId", " ");
+        renderArgs.put("areaId", " ");
+        renderArgs.put("brandId", 0);
+        renderArgs.put("priceFrom", 0);
+        renderArgs.put("priceTo", 0);
+        renderArgs.put("orderBy", 0);
+        renderArgs.put("orderByType", 1);
+        ValuePaginator goodsPage = new ValuePaginator(goodsList);
+        render(goodsPage, areas, districts, categories, brands);
     }
 
     public static void show(long id) {
-        models.sales.Goods goods = models.sales.Goods.find(
-                "id=? and deleted=?",
-                id, DeletedStatus.UN_DELETED).first();
+        models.sales.Goods goods = models.sales.Goods.findUnDeletedById(id);
         if (goods == null) {
             notFound();
         }
@@ -48,20 +59,37 @@ public class Goods extends Controller {
     }
 
     public static void list(String condition) {
-        String[] args = condition.split("-");
-        GoodsCondition goodsCondition = new GoodsCondition();
-        goodsCondition.categoryId = Long.parseLong(args[0]);
-        goodsCondition.cityId = args[1];
-        goodsCondition.districtId = args[2];
-        goodsCondition.areaId = args[3];
-        goodsCondition.brandId = Long.parseLong(args[4]);
-        goodsCondition.priceFrom = new BigDecimal(args[5]);
-        goodsCondition.priceTo = new BigDecimal(args[6]);
-        goodsCondition.order = args[7];
+        String page = request.params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        int pageSize = 12;
 
-        List<models.sales.Goods> goodsList = models.sales.Goods.findByCondition
-                (goodsCondition);
+        try {
+            GoodsCondition goodsCond = new GoodsCondition(condition);
+            JPAExtPaginator<models.sales.Goods> goodsPage = models.sales
+                    .Goods
+                    .findByCondition
+                            (goodsCond, pageNumber, pageSize);
 
+            //默认取出前8个上海的区
+            List<Area> districts = Area.findTopDistricts(SHANGHAI, LIMIT, goodsCond.districtId);
+            List<Area> areas = Area.findTopAreas(goodsCond.districtId, LIMIT, goodsCond.areaId);
+            List<Category> categories = Category.findTop(LIMIT, goodsCond.categoryId);
+            List<Brand> brands = Brand.findTop(LIMIT, goodsCond.brandId);
+
+            renderArgs.put("categoryId", goodsCond.categoryId);
+            renderArgs.put("cityId", SHANGHAI);
+            renderArgs.put("districtId", goodsCond.districtId);
+            renderArgs.put("areaId", goodsCond.areaId);
+            renderArgs.put("brandId", goodsCond.brandId);
+            renderArgs.put("priceFrom", goodsCond.priceFrom);
+            renderArgs.put("priceTo", goodsCond.priceTo);
+            renderArgs.put("orderBy", goodsCond.orderByNum);
+            renderArgs.put("orderByType", goodsCond.orderByTypeNum);
+
+            render("/Goods/index.html", goodsPage, areas, districts, categories, brands);
+        } catch (Exception e) {
+            e.printStackTrace();
+            index();
+        }
     }
-
 }

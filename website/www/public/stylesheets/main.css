@@ -81,9 +81,9 @@ ul{ list-style:none}
 .bottom_car{ margin-bottom:5px;}
 .bottom_car{ margin-bottom:15px\0;}
 
-.bottom_fenge{ border-bottom: dotted 1px #CCCCCC; height:33px; font-size:14px; line-height:33px;}
-.bottom_fenge a{ display:inline-block;margin-left:5px; margin-right:5px;}
-.cate_fenlei{ color:#666666; font-weight:700; margin-left:15px;}
+.query_items { border-bottom: dotted 1px #CCCCCC; height:33px; font-size:14px; line-height:33px;}
+.query_items a{ display:inline-block;margin-left:5px; margin-right:5px;}
+.query_item_title { color:#666666; font-weight:700; margin-left:15px;}
 .gouwu_car_haha{ line-height:22px; text-align:right; width:175px;}
 .three_ie6 .font_hei{ color:#000000}
 .font_14px{ font-size:13px; }
