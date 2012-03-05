@@ -4,18 +4,38 @@
  */
 package models.sales;
 
-import com.uhuila.common.constants.DeletedStatus;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+
 import org.apache.commons.lang.StringUtils;
+
 import play.Play;
 import play.data.validation.Required;
 import play.db.jpa.Model;
-import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.uhuila.common.constants.DeletedStatus;
 
 @Entity
 @Table(name = "goods")
@@ -326,37 +346,37 @@ public class Goods extends Model {
         return find(condition.toString(), params.toArray()).fetch(pager.currPage, pager.pageSize);
     }
 
-    public static JPAExtPaginator<Goods> findByCondition(GoodsCondition condition,
-                                                         int pageNumber, int pageSize) {
-//        EntityManager entityManager = JPA.em();
-//        StringBuilder hql = new StringBuilder("select g from Goods g ");
-//        hql.append(condition.getFilter());
-//        hql.append(condition.getOrderByExpress());
-
-//        ModelPaginator page = new ModelPaginator(Goods.class,
-//                condition.getFilter(),condition.getParams());
-
-
-//        System.out.println(hql.toString());
-//        Query q = entityManager.createQuery(hql.toString());
-//        Map<String, Object> paramMap = condition.getParamMap();
-//        for (String param : paramMap.keySet()) {
-//            q.setParameter(param, paramMap.get(param));
-//        }
-//        int offset = (pageNumber - 1) * pageSize;
-//        q.setFirstResult(offset).setMaxResults(pageSize);
-//        List<models.sales.Goods> goodsList = q.getResultList();
-//                ().getName());
-//        System.out.println("===========offset=" + offset);
-//        System.out.println("===========pageNumber=" + pageNumber);
-//        System.out.println("===========pageSize=" + pageSize);
-        JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>
-                ("Goods g", "g", Goods.class, condition.getFilter(),
-                        condition.getParamMap())
-                .orderBy(condition.getOrderByExpress());
-        goodsPage.setPageNumber(pageNumber);
-        goodsPage.setPageSize(pageSize);
-        goodsPage.setBoundaryControlsEnabled(false);
-        return goodsPage;
-    }
+//    public static JPAExtPaginator<Goods> findByCondition(GoodsCondition condition,
+//                                                         int pageNumber, int pageSize) {
+////        EntityManager entityManager = JPA.em();
+////        StringBuilder hql = new StringBuilder("select g from Goods g ");
+////        hql.append(condition.getFilter());
+////        hql.append(condition.getOrderByExpress());
+//
+////        ModelPaginator page = new ModelPaginator(Goods.class,
+////                condition.getFilter(),condition.getParams());
+//
+//
+////        System.out.println(hql.toString());
+////        Query q = entityManager.createQuery(hql.toString());
+////        Map<String, Object> paramMap = condition.getParamMap();
+////        for (String param : paramMap.keySet()) {
+////            q.setParameter(param, paramMap.get(param));
+////        }
+////        int offset = (pageNumber - 1) * pageSize;
+////        q.setFirstResult(offset).setMaxResults(pageSize);
+////        List<models.sales.Goods> goodsList = q.getResultList();
+////                ().getName());
+////        System.out.println("===========offset=" + offset);
+////        System.out.println("===========pageNumber=" + pageNumber);
+////        System.out.println("===========pageSize=" + pageSize);
+//        JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>
+//                ("Goods g", "g", Goods.class, condition.getFilter(),
+//                        condition.getParamMap())
+//                .orderBy(condition.getOrderByExpress());
+//        goodsPage.setPageNumber(pageNumber);
+//        goodsPage.setPageSize(pageSize);
+//        goodsPage.setBoundaryControlsEnabled(false);
+//        return goodsPage;
+//    }
 }

@@ -92,18 +92,18 @@ public class Orders extends Model {
      * 成交开始时间
      */
     @Transient
-    public String createdAtBegin;
+    public Date createdAtBegin;
     /**
      * 成交开始时间
      */
     @Transient
-    public String createdAtEnd;
+    public Date createdAtEnd;
     /**
      * 退款开始时间
      */
     @Transient
     @Temporal(TemporalType.DATE)
-    public String refundAtBegin;
+    public Date refundAtBegin;
     /**
      * 退款开始时间
      */
