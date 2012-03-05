@@ -28,15 +28,17 @@ import play.mvc.Router;
 /**
  * This class is a part of the play module secure-cas. It add the ability to check if the user have access to the
  * request. If the user is note logged, it redirect the user to the CAS login page and authenticate it.
- * 
+ *
  * @author bsimard
- * 
+ *
  */
 public class SecureCAS extends Controller {
 
+    public static final String SESSION_USER_KEY = "supplier_login";
+
     /**
      * Action for the login route. We simply redirect to CAS login page.
-     * 
+     *
      * @throws Throwable
      */
     public static void login() throws Throwable {
@@ -53,12 +55,12 @@ public class SecureCAS extends Controller {
 
     /**
      * Action for the logout route. We clear cache & session and redirect the user to CAS logout page.
-     * 
+     *
      * @throws Throwable
      */
     public static void logout() throws Throwable {
 
-        String username = session.get("username");
+        String username = session.get(SESSION_USER_KEY);
 
         // we clear cache
         Cache.delete("pgt_" + username);
@@ -76,7 +78,7 @@ public class SecureCAS extends Controller {
 
     /**
      * Action when the user authentification or checking rights fails.
-     * 
+     *
      * @throws Throwable
      */
     public static void fail() throws Throwable {
@@ -85,7 +87,7 @@ public class SecureCAS extends Controller {
 
     /**
      * Action for the CAS return.
-     * 
+     *
      * @throws Throwable
      */
     public static void authenticate() throws Throwable {
@@ -96,7 +98,7 @@ public class SecureCAS extends Controller {
             CASUser user = CASUtils.valideCasTicket(ticket);
             if (user != null) {
                 isAuthenticated = Boolean.TRUE;
-                session.put("username", user.getUsername());
+                session.put(SESSION_USER_KEY, user.getUsername());
                 // we invoke the implementation of onAuthenticate
                 Security.invoke("onAuthenticated", user);
             }
@@ -133,7 +135,7 @@ public class SecureCAS extends Controller {
 
     /**
      * Method that do CAS Filter and check rights.
-     * 
+     *
      * @throws Throwable
      */
     @Before(unless = { "login", "logout", "fail", "authenticate", "pgtCallBack" })
@@ -141,7 +143,7 @@ public class SecureCAS extends Controller {
         Logger.debug("[SecureCAS]: CAS Filter for URL -> " + request.url);
 
         // if user is authenticated, the username is in session !
-        if (session.contains("username")) {
+        if (session.contains(SESSION_USER_KEY)) {
             // We check the user's profile with class annotation
             Check controllerCheck = getControllerInheritedAnnotation(Check.class);
             if (controllerCheck != null) {
@@ -166,7 +168,7 @@ public class SecureCAS extends Controller {
 
     /**
      * Function to check the rights of the user. See your implementation of the Security class with the method check.
-     * 
+     *
      * @param check
      * @throws Throwable
      */

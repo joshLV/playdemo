@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="supplier-cas" default="build" basedir=".">
+<project name="supplier_cas" default="build" basedir=".">
 
     <property name="debug" value="on" />
     <property name="optimize" value="true" />
@@ -28,10 +28,10 @@
                 <include name="**/play.static"/>
             </fileset>
         </copy>
-        <jar destfile="lib/supplier-cas.jar" basedir="tmp/classes">
+        <jar destfile="lib/supplier_cas.jar" basedir="tmp/classes">
             <manifest>
                 <section name="Play-module">
-                    <attribute name="Specification-Title" value="supplier-cas"/>
+                    <attribute name="Specification-Title" value="supplier_cas"/>
                 </section>
             </manifest>
         </jar>
@@ -48,7 +48,7 @@
         <target name="test" depends="build" description="Test the module">
                 <exec executable="play">
                         <arg value="auto-test"/>
-                        <arg value="samples-and-tests/supplier-cas-test"/>
+                        <arg value="samples-and-tests/supplier_cas-test"/>
                 </exec>
     </target>
 

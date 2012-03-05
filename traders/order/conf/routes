@@ -4,6 +4,8 @@
 
 # Home page
 GET     /                                       Orders.index
+GET     /orders                                 Orders.index
+
 GET     /tickets                                Orders.tickets
 GET     /orders/{id}                            Orders.details
 # Ignore favicon requests
@@ -12,7 +14,7 @@ GET     /favicon.ico                            404
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public
 
-*		/										module:supplier-cas
+ *               /                                                                               module:supplier_cas
 
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}

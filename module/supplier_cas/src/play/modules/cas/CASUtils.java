@@ -47,8 +47,8 @@ import play.mvc.Router;
  */
 public class CASUtils {
 
-    private static final Pattern hostPattern = Pattern.compile("([^\\.]+)(\\.([^\\.]+)\\.([^\\.]+)\\.com)?");
-    
+    private static final Pattern hostPattern = Pattern.compile("([^\\.]+)(\\.([^\\.]+)\\.([^\\.]+)\\.com)?(:[\\d]+)?");
+
     /**
      * Method that generate the CAS login page URL.
      *
@@ -67,7 +67,7 @@ public class CASUtils {
         else {
             casLoginUrl = Play.configuration.getProperty("cas.loginUrl");
         }
-        
+
         casLoginUrl = replaceCasUrl(casLoginUrl);
 
         // we add the service URL (the reverse route for SecureCas.
@@ -311,13 +311,16 @@ public class CASUtils {
 
     public static String replaceCasUrl(String casUrlTemp) {
         String hostName = Http.Request.current().host;
-        
+
+        System.out.println("hostName=" + hostName);
+
         Matcher m = hostPattern.matcher(hostName);
         if (m.matches()) {
-            String subDomain = m.group(1);
+            String subDomain = m.group(2);
+            System.out.println("subDomain=" + subDomain);
             return casUrlTemp.replaceAll("\\{domain\\}", subDomain);
         }
-        
+
         return null;
     }
 

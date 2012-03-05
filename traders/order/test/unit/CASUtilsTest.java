@@ -29,7 +29,7 @@ public class CASUtilsTest extends UnitTest {
         Play.configuration.setProperty("cas.logoutUrl", "http://{domain}.cas.supplierdev.com/logout");
         Play.configuration.setProperty("application.baseUrl", "http://{domain}.order.supplierdev.com");
 
-        Http.Request.current.set(Http.Request.createRequest("127.0.0.1", "GET", "/login", null, null, null, null, "lyf.order.supplierdev.com", false, 80, "lyf.order.supplierdev.com", false, null, null)); 
+        Http.Request.current.set(Http.Request.createRequest("127.0.0.1", "GET", "/login", null, null, null, null, "lyf.order.supplierdev.com", false, 80, "lyf.order.supplierdev.com", false, null, null));
     }
 
 
@@ -46,12 +46,12 @@ public class CASUtilsTest extends UnitTest {
     public void getCasLoginUrlTest1() {
         Play.configuration.setProperty("cas.mockserver", "false");
         String casLoginUrl = CASUtils.getCasLoginUrl(Boolean.TRUE);
-        assertEquals("http://lyf.cas.supplierdev.com/login?service=http://lyf.order.supplierdev.com/modules.cas.securecas/authenticate", casLoginUrl);
+        assertEquals("http://lyf.cas.supplierdev.com/login?service=http://lyf.order.supplierdev.com/authenticate", casLoginUrl);
 
         Play.configuration.setProperty("cas.gateway", "true");
         casLoginUrl = CASUtils.getCasLoginUrl(Boolean.TRUE);
         assertEquals(
-                "http://lyf.cas.supplierdev.com/login?service=http://lyf.order.supplierdev.com/modules.cas.securecas/authenticate&gateway=true",
+                "http://lyf.cas.supplierdev.com/login?service=http://lyf.order.supplierdev.com/authenticate&gateway=true",
                 casLoginUrl);
     }
 
@@ -59,10 +59,10 @@ public class CASUtilsTest extends UnitTest {
     public void getCasLoginUrlTest2() {
         Play.configuration.setProperty("cas.mockserver", "false");
         String casLoginUrl = CASUtils.getCasLoginUrl(Boolean.FALSE);
-        assertEquals("http://lyf.cas.supplierdev.com/login?service=http://lyf.order.supplierdev.com/modules.cas.securecas/authenticate", casLoginUrl);
+        assertEquals("http://lyf.cas.supplierdev.com/login?service=http://lyf.order.supplierdev.com/authenticate", casLoginUrl);
         casLoginUrl = CASUtils.getCasLoginUrl(Boolean.TRUE);
         assertEquals(
-                "http://lyf.cas.supplierdev.com/login?service=http://lyf.order.supplierdev.com/modules.cas.securecas/authenticate",
+                "http://lyf.cas.supplierdev.com/login?service=http://lyf.order.supplierdev.com/authenticate",
                 casLoginUrl);
     }
 
