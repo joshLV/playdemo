@@ -5,6 +5,7 @@ require:
     - play -> paginate head
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
 
+
 repositories:
     - mavenRepository:
         type:       iBiblio
