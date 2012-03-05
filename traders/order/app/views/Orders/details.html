@@ -1,11 +1,9 @@
 #{extends 'layout_trader/layout.html' /}
- #{include 'Orders/nav.html' /}
- #{get 'moreScripts'}
+#{include 'Orders/nav.html' /}
+#{set title:'订单详细信息' /}
+#{set 'moreScripts'}
   <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-<script type="text/javascript">
-
-</script>
-#{/get}
+#{/set}
 
 <div class="body">
  <legend>订单详细</legend>
@@ -24,6 +22,7 @@
      <th>商品名称</th>
      <th>单价</th>
      <th>数量</th>
+     <th>有效期</th>
      <th>需要支付金额</th>
      <th>获得积分</th>
     </tr>
@@ -35,6 +34,7 @@
      <td>${row.goodsName}</td>
      <td>${row.salePrice}</td>
      <td>${row.number}</td>
+     <td>${row.goods.effectiveAt}/${row.goods.expireAt}</td>
      <td>${orders.needPay}</td>
      <td>${row.number}</td>
     </tr>
@@ -47,17 +47,14 @@
    <tr><td>订单状态： ${orders.status=='1'?'处理中':'处理成功'}</td></tr>
    <tr><td>物流方式： ${orders.deliveryType=='2'?'有物流':'无物流'}</td></tr>
   </table>
-  
-   <table class="table">
-   <tr><td>支付方式： ${orders.payMethod=='1'?'支付宝':'网银'}</td></tr>
-   <tr><td>订单状态： ${orders.status=='1'?'处理中':'处理成功'}</td></tr>
-   <tr><td>物流方式： ${orders.deliveryType}</td></tr>
-  </table>
+
    <table class="table">
    <tr><td>收货信息</td></tr>
-   <tr><td>收货人姓名： ${orders.receivName}</td></tr>
-   <tr><td>收货地址： ${orders.receivAddress}</td></tr>
-   <tr><td>联系电话： ${orders.receivMobile}/ ${orders.receiverPhone}</td></tr>
+   #{if (orders.orderItems.goods.materialType.toString().equals("[REAL]"))}
+   <tr><td>收货人姓名： ${orders.receiverName}</td></tr>
+   <tr><td>收货地址： ${orders.receiverAddress}</td></tr>
+   #{/if}
+   <tr><td>联系方式： ${orders.receiverMobile}  ${orders.receiverPhone==null ? '':'/'+orders.receiverPhone}</td></tr>
   </table>
    <table class="table">
    <tr><td>订购者信息</td></tr>
@@ -72,4 +69,3 @@
    <tr><td>退款金额</td></tr>
   </table>
 </div>
-

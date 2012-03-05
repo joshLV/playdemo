@@ -1,12 +1,9 @@
 #{extends 'layout_trader/layout.html' /}
- #{include 'Orders/nav.html' /} #{get 'moreScripts'}
-<script type="text/javascript">
-</script>
-#{/get}
-
+ #{include 'Orders/nav.html' /}
+#{set title:'券号列表' /}
 <div class="body">
  <legend>券号列表</legend>
- <form class="form-horizontal" name="frmlist" action="@{Orders.tickets()}" method="GET">
+ <form class="form-horizontal" name="frmlist" action="@{Orders.coupons()}" method="GET">
   <input type="hidden" id="status" name="status" value="0" />
   <div style="margin-bottom: 12px">
   <button class="btn btn-primary" type="button">导出报表</button> 
@@ -16,7 +13,6 @@
    <thead>
     <tr>
      <th>订单号</th>
-     <th>商品编号</th>
      <th>商品名称</th>
      <th>单价</th>
      <th>券号</th>
@@ -30,20 +26,22 @@
 
    <tbody>
 
-    #{list items:ticketList, as:'row' }
+    #{list items:couponsList, as:'couponsList' }
+    #{list items:couponsList.ECoupons, as:'coupon'  }
     <tr>
-    <td>${row[0]}</td>
-     <td>${row[1]}</td>
-     <td>${row[2]}</td>
-     <td>${row[3]}</td>
-     <td>${row[4]}</td>
-     <td>${row[5]}-${row[6]}</td>
-     <td>${row[7]}</td>
-     <td>${row[9]}</td>
-     <td>${row[8]}</td>
-     <td>${row[10]==1?'已消费':'未消费'}</td>
+    <td>${couponsList.orderNumber}</td>
+     <td>${coupon.goods.name}</td>
+     <td>${coupon.eCouponPrice}</td>
+     <td>${coupon.eCouponSn}</td>
+     <td>${coupon.goods.effectiveAt}/${coupon.goods.expireAt}</td>
+     <td>${coupon.consumedAt}</td>
+     <td>${coupon.refundAt}</td>
+     <td>${coupon.refundPrice}</td>
+     <td>&{'coupon.'+coupon.status}</td>
     </tr>
     #{/list}
+    #{/list}
+
    </tbody>
   </table>
    </form>

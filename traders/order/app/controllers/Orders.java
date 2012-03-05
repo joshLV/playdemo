@@ -16,30 +16,34 @@ public class Orders extends Controller {
 
     /**
      * 商户订单信息一览
+     * @param orders 页面信息
      */
-    public static void index(models.order.Orders orders) {
-        List orderList= models.order.Orders.query(orders);
-        render(orderList);
-
-    }
+	public static void index(models.order.Orders orders) {
+        //该商户ID
+		String compnayId="1";
+		List orderList= models.order.Orders.query(orders,compnayId);
+		render(orderList);
+		
+	}
 
     /**
      * 商户订单详细
+     * @param id 订单ID
      */
-    public static void details(Long id) {
-
-        //订单信息
-        models.order.Orders orders= models.order.Orders.findById(Long.parseLong("1"));
-         List<OrderItems> orderItems= orders.orderItems;
-        //收货信息
-        render(orders,orderItems);
-    }
+	public static void details(Long id) {
+		//订单信息
+		models.order.Orders	orders= models.order.Orders.findById(id);
+		 List<OrderItems> orderItems= orders.orderItems;
+		//收货信息
+		render(orders,orderItems);
+	}
 
     /**
      * 券号列表
      */
-    public static void tickets() {
-        List ticketList= models.order.Orders.queryQ();
-        render(ticketList);
-    }
+	public static void coupons() {
+		List couponsList= models.order.Orders.queryCoupons();
+		render("Orders/e_coupons.html",couponsList);
+	}
+
 }
