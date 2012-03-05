@@ -15,10 +15,15 @@ import play.test.UnitTest;
 
 public class CASUtilsTest extends UnitTest {
 
+    @Before
+    public void setUp() {
+        Play.configuration.setProperty("cas.gateway", "false");
+        Play.configuration.setProperty("cas.mockserver", "false");
+    }
+
     @Test
     public void getCasLoginUrlTest1() {
         Play.configuration.setProperty("cas.mockserver", "true");
-        Play.configuration.setProperty("cas.gateway", "false");
         String casLoginUrl = CASUtils.getCasLoginUrl(Boolean.TRUE);
         assertEquals(casLoginUrl, "http://localhost:9000/@cas/login?service=http://localhost:9000/authenticate");
         Play.configuration.setProperty("cas.gateway", "true");
@@ -29,6 +34,7 @@ public class CASUtilsTest extends UnitTest {
 
     @Test
     public void getCasLoginUrlTest2() {
+
         Play.configuration.setProperty("cas.mockserver", "false");
         String casLoginUrl = CASUtils.getCasLoginUrl(Boolean.FALSE);
         assertEquals(casLoginUrl, "http://www.logisima.com/cas/login?service=http://localhost:9000/authenticate");

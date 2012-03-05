@@ -1,4 +1,5 @@
-#{selenium}
+#{selenium "查看订单界面"}
+    #{include 'test/selenium/step/login.selenium' /}
     open('/')
     clickAndWait('link=商品订单列表')
     clickAndWait('link=券号列表')

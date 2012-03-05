@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -34,21 +36,24 @@ import play.Play.Mode;
 import play.cache.Cache;
 import play.libs.WS;
 import play.modules.cas.models.CASUser;
+import play.mvc.Http;
 import play.mvc.Router;
 
 /**
  * Utils class for CAS.
- * 
+ *
  * @author bsimard
- * 
+ *
  */
 public class CASUtils {
 
+    private static final Pattern hostPattern = Pattern.compile("([^\\.]+)(\\.([^\\.]+)\\.([^\\.]+)\\.com)?");
+    
     /**
      * Method that generate the CAS login page URL.
-     * 
+     *
      * @param request
-     * 
+     *
      * @param possibleGateway
      * @throws Throwable
      */
@@ -62,6 +67,8 @@ public class CASUtils {
         else {
             casLoginUrl = Play.configuration.getProperty("cas.loginUrl");
         }
+        
+        casLoginUrl = replaceCasUrl(casLoginUrl);
 
         // we add the service URL (the reverse route for SecureCas.
         casLoginUrl += "?service=" + getCasServiceUrl();
@@ -77,7 +84,7 @@ public class CASUtils {
 
     /**
      * Method that generate the CAS logout page URL.
-     * 
+     *
      * @throws Throwable
      */
     public static String getCasLogoutUrl() {
@@ -85,13 +92,13 @@ public class CASUtils {
             return Router.getFullUrl("modules.cas.MockServer.logout");
         }
         else {
-            return Play.configuration.getProperty("cas.logoutUrl");
+            return replaceCasUrl(Play.configuration.getProperty("cas.logoutUrl"));
         }
     }
 
     /**
      * Method that return service url.
-     * 
+     *
      * @throws Throwable
      */
     private static String getCasServiceUrl() {
@@ -101,7 +108,7 @@ public class CASUtils {
 
     /**
      * Method that return service validation url.
-     * 
+     *
      * @throws Throwable
      */
     private static String getCasServiceValidateUrl() {
@@ -117,7 +124,7 @@ public class CASUtils {
 
     /**
      * Method that return proxy call back url.
-     * 
+     *
      * @throws Throwable
      */
     private static String getCasProxyCallBackUrl() {
@@ -141,7 +148,7 @@ public class CASUtils {
 
     /**
      * Method that return cas proxy url.
-     * 
+     *
      * @return
      */
     private static String getCasProxyUrl() {
@@ -157,7 +164,7 @@ public class CASUtils {
 
     /**
      * Method to know if proxy cas is enabled (by testing conf).
-     * 
+     *
      * @return
      */
     private static Boolean isProxyCas() {
@@ -171,7 +178,7 @@ public class CASUtils {
 
     /**
      * Method to know if CAS Mock server is enabled (by testing conf).
-     * 
+     *
      * @return
      */
     public static Boolean isCasMockServer() {
@@ -185,7 +192,7 @@ public class CASUtils {
 
     /**
      * Method that verify if the cas ticket is valid.
-     * 
+     *
      * @param ticket cas tickets
      * @throws ParserConfigurationException
      * @throws SAXException
@@ -242,7 +249,7 @@ public class CASUtils {
 
     /**
      * Method to get CAS atribut from cas response.
-     * 
+     *
      * @param xml
      * @return
      * @throws SAXException
@@ -267,7 +274,7 @@ public class CASUtils {
 
     /**
      * Method to get a proxy ticket.
-     * 
+     *
      * @param username
      * @param serviceName
      * @return
@@ -300,6 +307,18 @@ public class CASUtils {
         }
         Logger.debug("[SecureCAS]: PT for user " + username + " and service " + serviceName + " is " + proxyTicket);
         return proxyTicket;
+    }
+
+    public static String replaceCasUrl(String casUrlTemp) {
+        String hostName = Http.Request.current().host;
+        
+        Matcher m = hostPattern.matcher(hostName);
+        if (m.matches()) {
+            String subDomain = m.group(1);
+            return casUrlTemp.replaceAll("\\{domain\\}", subDomain);
+        }
+        
+        return null;
     }
 
 }
