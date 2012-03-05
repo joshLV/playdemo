@@ -14,16 +14,16 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "account_charge_bill")
-public class AccountChargeBill extends Model {
+public class ChargeBill extends Model {
 
     public String  serial;
 
     @ManyToOne
     public Account account;                 //充值账户
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "charge_type")
-    public AccountChargeType chargeType;    //充值类型
+    public ChargeType chargeType;           //充值类型
 
     @ManyToOne
     @JoinColumn(name = "payment_source")
@@ -45,13 +45,12 @@ public class AccountChargeBill extends Model {
     @Column(name = "return_at")
     public Date  returnAt;                  //返回时间
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "charge_status")
-    public AccountChargeStatus chargeStatus;    //充值状态
+    public ChargeStatus chargeStatus;       //充值状态
 
-    public AccountChargeBill(Account account, AccountChargeType chargeType,PaymentSource paymentSource,
-                             BigDecimal amount, String remark){
-        this.serial = SerialUtil.generateSerialNumber();
+    public ChargeBill(Account account, ChargeType chargeType, PaymentSource paymentSource,
+                      BigDecimal amount, String remark){
 
         this.account = account;
         this.chargeType = chargeType;
@@ -62,8 +61,9 @@ public class AccountChargeBill extends Model {
         this.resultCode = null;
         this.resultNote = null;
         this.createdAt = new Date();
+        this.serial = SerialUtil.generateSerialNumber(this.createdAt);
         this.returnAt = null;
-        this.chargeStatus = AccountChargeStatus.UNCHARGED;
+        this.chargeStatus = ChargeStatus.UNCHARGED;
     }
 
 }

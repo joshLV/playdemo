@@ -4,7 +4,7 @@ package models.accounts;
  * User: likang
  */
 public enum PaymentStatus {
-    OK,
+    UNPAID,
+    SUCCESS,
     FAILED,
-    DUPLICATE
 }

@@ -3,7 +3,7 @@ package models.accounts;
 /**
  * User: likang
  */
-public enum AccountChargeType {
+public enum ChargeType {
     EBANKING,
     INNER_TRANSFER
 }

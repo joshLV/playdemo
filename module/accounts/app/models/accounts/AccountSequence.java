@@ -24,11 +24,11 @@ public class AccountSequence extends Model {
     @ManyToOne
     public Account account;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "sequence_flag")
     public AccountSequenceFlag sequenceFlag;    //账务变动方向：来账，往账
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "change_type")
     public AccountChangeType changeType;        //资金变动类型
 
@@ -57,8 +57,7 @@ public class AccountSequence extends Model {
     public AccountSequence(Account account, AccountSequenceFlag sequenceFlag, AccountChangeType changeType,
                            BigDecimal preAmount, BigDecimal amount, BigDecimal cashAmount, BigDecimal uncashAmount,
                            long referenceSerialId){
-        this.serial = SerialUtil.generateSerialNumber();
-        
+
         this.account = account;
         this.sequenceFlag = sequenceFlag;
         this.changeType = changeType;
@@ -69,6 +68,7 @@ public class AccountSequence extends Model {
         this.referenceSerialId = referenceSerialId;
 
         this.createdAt = new Date();
+        this.serial = SerialUtil.generateSerialNumber(this.createdAt);
         this.remark = null;
 
     }

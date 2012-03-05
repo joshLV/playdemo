@@ -5,7 +5,7 @@ package models.accounts;
  *
  * User: likang
  */
-public enum AccountChargeStatus {
+public enum ChargeStatus {
     UNCHARGED,  //待充值
     CHARGING,   //正在充值
     SUCCESS,    //成功

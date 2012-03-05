@@ -26,7 +26,7 @@ public class Account extends Model {
     public AccountStatus status;
 
     @Column(name = "create_at")
-    public Date createAt;
+    public Date createdAt;
 
     public Account(long uid, AccountType type){
         this.uid = uid;
@@ -35,7 +35,7 @@ public class Account extends Model {
         this.cashAmount = new BigDecimal(0);
         this.uncashAmount = new BigDecimal(0);
         this.status = AccountStatus.NORMAL;
-        this.createAt = new Date();
+        this.createdAt = new Date();
     }
 
     public Account addCash(BigDecimal augend){
