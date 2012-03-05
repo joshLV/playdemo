@@ -77,7 +77,7 @@ public class CASUtilsTest extends UnitTest {
     public void getCasLogoutUrlTest2() {
         Play.configuration.setProperty("cas.mockserver", "true");
         String casLogoutUrl = CASUtils.getCasLogoutUrl();
-        assertEquals("http://lyf.order.supplierdev.com/@cas/logout", casLogoutUrl);
+        assertEquals("http://lyf.order.supplierdev.com/modules.cas.mockserver/logout", casLogoutUrl);
     }
 
     @Test

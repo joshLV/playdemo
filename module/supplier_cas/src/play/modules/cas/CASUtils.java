@@ -47,7 +47,7 @@ import play.mvc.Router;
  */
 public class CASUtils {
 
-    private static final Pattern hostPattern = Pattern.compile("([^\\.]+)(\\.([^\\.]+)\\.([^\\.]+)\\.com)?(:[\\d]+)?");
+    private static final Pattern hostPattern = Pattern.compile("([^\\.:]+)(\\.([^\\.]+)\\.([^\\.]+)\\.com)?(:[\\d]+)?");
 
     /**
      * Method that generate the CAS login page URL.
@@ -103,7 +103,7 @@ public class CASUtils {
      */
     private static String getCasServiceUrl() {
         String casServiceUrl = Router.getFullUrl("modules.cas.SecureCAS.authenticate");
-        return casServiceUrl;
+        return replaceCasUrl(casServiceUrl);
     }
 
     /**
@@ -119,7 +119,7 @@ public class CASUtils {
         else {
             casServiceValidateUrl = Play.configuration.getProperty("cas.validateUrl");
         }
-        return casServiceValidateUrl;
+        return replaceCasUrl(casServiceValidateUrl);
     }
 
     /**
@@ -143,7 +143,7 @@ public class CASUtils {
             }
         }
 
-        return casProxyCallBackUrl;
+        return replaceCasUrl(casProxyCallBackUrl);
     }
 
     /**
@@ -311,13 +311,9 @@ public class CASUtils {
 
     public static String replaceCasUrl(String casUrlTemp) {
         String hostName = Http.Request.current().host;
-
-        System.out.println("hostName=" + hostName);
-
         Matcher m = hostPattern.matcher(hostName);
         if (m.matches()) {
-            String subDomain = m.group(2);
-            System.out.println("subDomain=" + subDomain);
+            String subDomain = m.group(1);
             return casUrlTemp.replaceAll("\\{domain\\}", subDomain);
         }
 

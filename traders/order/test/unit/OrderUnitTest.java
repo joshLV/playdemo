@@ -5,14 +5,11 @@ import java.util.List;
 
 import models.order.OrderStatus;
 import models.order.Orders;
-import models.sales.Area;
-import models.sales.Goods;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.UnitTest;
 

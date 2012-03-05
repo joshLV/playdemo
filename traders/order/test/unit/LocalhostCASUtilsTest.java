@@ -29,7 +29,7 @@ public class LocalhostCASUtilsTest extends UnitTest {
         Play.configuration.setProperty("cas.logoutUrl", "http://{domain}.cas.supplierdev.com/logout");
         Play.configuration.setProperty("application.baseUrl", "http://{domain}.order.supplierdev.com");
 
-        Http.Request.current.set(Http.Request.createRequest("127.0.0.1", "GET", "/login", null, null, null, null, "localhost:8080", false, 8080, "localhost:8080", false, null, null));
+        Http.Request.current.set(Http.Request.createRequest("127.0.0.1", "GET", "/login", null, null, null, null, "localhost:8080", false, 8080, "localhost", false, null, null));
     }
 
 
@@ -77,7 +77,7 @@ public class LocalhostCASUtilsTest extends UnitTest {
     public void getCasLogoutUrlTest2() {
         Play.configuration.setProperty("cas.mockserver", "true");
         String casLogoutUrl = CASUtils.getCasLogoutUrl();
-        assertEquals("http://localhost:8080/@cas/logout", casLogoutUrl);
+        assertEquals("http://localhost:8080/modules.cas.mockserver/logout", casLogoutUrl);
     }
 
     @Test

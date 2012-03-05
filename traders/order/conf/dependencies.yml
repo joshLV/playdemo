@@ -3,10 +3,12 @@
 require:
     - play
     - play -> cobertura 2.4
+    - play -> paginate head
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - layout_trader -> layout_trader
     - order -> order
     - consumer -> consumer
+    - paginate_ext -> paginate_ext
     - supplier_cas -> supplier_cas
     - sales -> sales
 repositories:
@@ -25,3 +27,4 @@ repositories:
             - consumer -> *
             - sales -> *
             - supplier_cas -> *
+            - paginate_ext -> *
