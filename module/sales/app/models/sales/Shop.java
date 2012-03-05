@@ -73,7 +73,8 @@ public class Shop extends Model {
     @Column(name = "display_order")
     public String displayOrder;
 
-    @ManyToMany(cascade = CascadeType.REFRESH,mappedBy="shops",fetch=FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.REFRESH,mappedBy="shops",
+            fetch=FetchType.LAZY)
     public Set<Goods> goods;
 
     /**

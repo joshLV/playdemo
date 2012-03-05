@@ -1,21 +1,12 @@
 package models.sales;
 
+import play.db.jpa.Model;
+
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import play.db.jpa.Model;
 
 /**
  * 商品分类.
@@ -73,5 +64,28 @@ public class Category extends Model {
      */
     public static List<Category> findTop(int limit) {
         return find("order by displayOrder").fetch(limit);
+    }
+
+    public static List<Category> findTop(int limit, long categoryId) {
+        List<Category> categories = findTop(limit);
+        if (categoryId != 0) {
+            boolean containsCategory = false;
+            for (Category category : categories) {
+                if (category.id == categoryId) {
+                    containsCategory = true;
+                    break;
+                }
+            }
+            if (!containsCategory) {
+                List<Category> showCategories = new ArrayList<>();
+                showCategories.add((Category) findById(categoryId));
+                if (categories.size() == limit) {
+                    categories.remove(limit-1);
+                }
+                showCategories.addAll(categories);
+                categories = showCategories;
+            }
+        }
+        return categories;
     }
 }

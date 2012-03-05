@@ -1,8 +1,10 @@
 package models.sales;
 
+import org.apache.commons.lang.StringUtils;
 import play.db.jpa.GenericModel;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -105,5 +107,77 @@ public class Area extends GenericModel {
     public static List<Area> findTopAreas(String areaId, int limit) {
         return find("parent=? order by displayOrder",
                 new Area(areaId)).fetch(limit);
+    }
+
+    /**
+     * 返回包含指定区域的前n个区域.
+     * 如果之前所选的区域未在返回列表中，则将返回的列表的开头加上之前所选的区域，并删除列表中末尾的
+     *
+     * @param cityId     城市id
+     * @param limit      条数限制
+     * @param districtId 需要包含的区域的id
+     * @return n个区域
+     */
+    public static List<Area> findTopDistricts(String cityId, int limit,
+                                              String districtId) {
+        List<Area> districts = findTopDistricts(cityId, limit);
+        if (StringUtils.isNotBlank(districtId)) {
+            boolean containsSelectedDistrict = false;
+            for (Area district : districts) {
+                if (district.id.equals(districtId)) {
+                    containsSelectedDistrict = true;
+                    break;
+                }
+            }
+            if (!containsSelectedDistrict) {
+                List<Area> showDistricts = new ArrayList<>();
+                showDistricts.add((Area) Area.findById(districtId));
+                if (districts.size() == limit) {
+                    districts.remove(limit - 1);
+                }
+                showDistricts.addAll(districts);
+                districts = showDistricts;
+            }
+        }
+        return districts;
+    }
+
+    /**
+     * 返回包含指定商圈的前n个商圈.
+     * 如果之前所选的商圈未在返回列表中，则将返回的列表的开头加上之前所选的商圈，并删除列表中末尾的
+     *
+     * @param districtId 区域id
+     * @param limit      条数限制
+     * @param areaId     需要包含的商圈的id
+     * @return n个商圈
+     */
+    public static List<Area> findTopAreas(String districtId, int limit,
+                                          String areaId) {
+        List<Area> areas;
+        if (StringUtils.isBlank(districtId)) {
+            areas = findTopAreas(limit);
+        } else {
+            areas = findTopAreas(districtId, limit);
+        }
+        if (StringUtils.isNotBlank(areaId)) {
+            boolean containsSelectedArea = false;
+            for (Area area : areas) {
+                if (area.id.equals(areaId)) {
+                    containsSelectedArea = true;
+                    break;
+                }
+            }
+            if (!containsSelectedArea) {
+                Area area = (Area) Area.findById(areaId);
+                List<Area> showAreas = new ArrayList<>();
+                showAreas.add(area);
+                if (areas.size() == limit) {
+                    areas.remove(limit - 1);
+                }
+                showAreas.addAll(areas);
+                areas = showAreas;
+            }
+        }
+        return areas;
     }
 }

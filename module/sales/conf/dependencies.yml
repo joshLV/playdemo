@@ -2,6 +2,7 @@ self: play -> sales 0.1
 
 require:
     - play
+    - play -> paginate head
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
 
 repositories:
