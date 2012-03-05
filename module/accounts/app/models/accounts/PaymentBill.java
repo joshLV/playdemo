@@ -56,8 +56,8 @@ public class PaymentBill extends Model {
     @Column(name = "create_at")
     public Date createdAt;                   //创建时间
 
-    @ManyToOne
-    @JoinColumn(name = "payment_type")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_type")
     public PaymentType paymentType;         //交易类型
 
     @Column(name = "return_code")
