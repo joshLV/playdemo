@@ -3,8 +3,16 @@
 #{set 'moreStyles'}
 <link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
 <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 #{set 'moreScripts'}
+<script>
+$(window).load(function () {
+ $("#search").click(function () {
+     $('#couponsFrm').submit();
+ });
+});
+</script>
 #{/set}
 
 <body>
@@ -39,10 +47,10 @@
       </div>
      </div>
      <div class=" left_nav_text">
-      <a class="current_font_red" href="@{UserCenter.index()}">我的商品订购</a>
+      <a class="current_font_red" href="@{MyOrders.index()}">我的商品订购</a>
      </div>
      <div class=" left_nav_text">
-      <a class="left_font_a" href="@{UserCenter.tickets()}">我的劵订单</a>
+      <a class="left_font_a" href="@{MyOrders.coupons()}">我的劵订单</a>
      </div>
      <div class=" left_nav_text">
       <a class="left_font_a" href="#">我的购团</a>
@@ -116,23 +124,25 @@
   <div id="right_content_box">
    <div class="tab_top">我的商品订单</div>
    <div class="tab_top2">
-    <form class="form-horizontal" name="frm" action="@{UserCenter.tickets()}" method="GET">
+    <form class="form-horizontal" id="couponsFrm" action="@{MyOrders.coupons()}" method="GET">
     <table width="774" border="0" cellpadding="0" cellspacing="0">
      <tr>
       <td width="12">&nbsp;</td>
       <td width="61" align="right">成交时间：</td>
-      <td width="259" height="35"><input class="long_input" type="text" name="createdAt" id="textfield2" /></td>
+      <td width="259" height="35">
+      <input class="short_input Wdate" type="text" name="createdAtBegin" onfocus="WdatePicker({readOnly:true})" /> -
+     <input class="short_input Wdate" type="text" name="createdAtEnd" onfocus="WdatePicker({readOnly:true})" />
+     </td>
       <td width="77">订单状态：</td>
       <td width="353">
        <div class="pos_abs">
         <select class="dingdan_stauts_bg" name="status" >
         <option value=""></option>
-        <option value="UNPAID">未付款</option>
-        <option value="PAID">已付款</option>
-        <option value="CANCELED">订单取消</option>
-        <option value="SENT">已发货</option>
-        <option value="RETURNED">已退货</option>
-        <option value="RECEIPT">已确认收货</option>
+        <option value="DEALING">处理中</option>
+        <option value="CONSUMED">已消费</option>
+        <option value="UNCONSUMED">未消费</option>
+        <option value="REFUND">已退款</option>
+        <option value="EXPIRED">已过期</option>
         </select>
        </div>
       </td>
@@ -140,33 +150,42 @@
      <tr>
       <td>&nbsp;</td>
       <td align="right">商品名称：</td>
-      <td height="35"><label> <input class="long_input" type="text" name="textfield4" id="textfield4" />
+      <td height="35"><label> <input class="long_input" type="text" name="goodsName" id="textfield4" />
       </label></td>
-      <td colspan="2" align="left" valign="middle"><a class="seach_bg" href="@{UserCenter.tickets()}">搜素</a></td>
+      <td colspan="2" align="left" valign="middle"><a class="seach_bg" href="#" id="search">搜素</a></td>
      </tr>
     </table>
     </form>
     <table width="798" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
      <tr bgcolor="#FBE8E4">
+      <td align="center">劵号</td>
       <td width="100" height="28" align="center" bgcolor="#FBE8E4">订单号</td>
       <td align="center">商品名称</td>
-      <td align="center">劵号</td>
-      <td height="30" align="center">购买时间</td>
-      <td align="center">过期时间</td>
+      <td height="30" align="center">价格</td>
+       <td align="center">购买数量</td>
+      <td height="30" align="center">成交时间</td>
+      <td align="center">消费时间</td>
       <td align="center">状态</td>
       <td align="center">操作</td>
      </tr>
-      #{list items:ticketList, as:'row' }
-       <tr>
-      <td width="100" height="31" align="center">${row[0]}</td>
-      <td width="177" align="center">${row[1]}</td>
-      <td width="106" align="center">${row[2]}</td>
-      <td width="118" height="30" align="center">${row[3]}</td>
-      <td width="123" align="center">${row[5]}</td>
-      <td width="95" align="center">${row[6]=='PAID'?'已消费':'未消费'}</td>
-      <td width="103" align="center"><a href="#">申请退款</a></td>
+    
+     #{list items:couponsList, as:'coupon'  }
+      <tr>
+      <td width="118" height="30" align="center">${coupon.eCouponSn}</td>
+      <td width="100" height="31" align="center">${coupon.order.orderNumber}</td>
+      <td width="177" align="center">${coupon.goods.name}</td>
+      <td width="177" align="center">${coupon.eCouponPrice}</td>
+      <td width="177" align="center">${coupon.buyNumber}</td>
+      <td width="106" align="center">${coupon.createdAt}</td>     
+      <td width="123" align="center">${coupon.consumedAt}</td>
+      <td width="95" align="center">&{'coupon.'+coupon.status}</td>
+      <td width="103" align="center">
+      #{if (coupon.status.toString().equals("DEALING") || coupon.status.toString().equals("UNCONSUMED"))}
+      <a href="#">申请退款</a>
+      #{/if}
+      </td>
      </tr>
-      #{/list}
+     #{/list}
     </table>
    </div>
   </div>

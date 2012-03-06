@@ -3,10 +3,10 @@
 # ~~~~
 
 # Home page
-GET     /                                             UserCenter.index
-GET     /orders                                       UserCenter.index
-GET     /orders/{id}                                  UserCenter.details
-GET     /tickets                                      UserCenter.tickets
+GET     /orders                                       MyOrders.index
+GET     /orders/{id}                                  MyOrders.details
+GET     /coupons                                      MyOrders.coupons
+GET     /payment/{id}                                  MyOrders.pay
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

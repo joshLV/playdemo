@@ -30,7 +30,7 @@
    </div>
    <div class="tab_top_box">
     <div class="tab_top_info">
-     <span class="tab_one">订单号：${orders.orderNumber}</span><span class="tab_two">成交时间：${orders.createdAt}</span><span>付款时间：${orders.createdAt}
+     <span class="tab_one">订单号：${orders.orderNumber}</span><span class="tab_two">成交时间：${orders.createdAt}</span><span>付款时间：${orders.paidAt}
      </span>
     </div>
 
@@ -50,22 +50,16 @@
       <td align="center" valign="middle"><div class="shop_img">
         <img src="" />
        </div>
-       <div class="col_one_text">${row.goodsName}
-       </div></td>
-      <td width="69" align="center" valign="middle">${row.goods.materialType}</td>
+       <div class="col_one_text">${row.goodsName}</div></td>
+      <td width="69" align="center" valign="middle">&{'goods.'+row.goods.materialType}</td>
       <td width="81" align="center" valign="middle">${row.salePrice}</td>
-      <td width="66" align="center" valign="middle">${row.number}</td>
+      <td width="66" align="center" valign="middle">${row.buyNumber}</td>
       <td width="118" align="center" valign="middle"><span class="strong_gray">劵号：45212145</span></td>
        #{if (++m == 1) }
       <td rowspan="${orderItems.size()}" align="center" valign="middle">${orders.amount}<br /> (含运费)
       </td>
       <td rowspan="${orderItems.size()}" align="center" valign="middle">
-       #{if (orders.status=='UNPAID') } 未付款#{/if}
-       #{elseif orders.status=='PAID'}已付款#{/elseif}
-       #{elseif orders.status=='CANCELED'}取消订单#{/elseif}
-       #{elseif orders.status=='SENT'}已发货#{/elseif}
-       #{elseif orders.status=='RETURNED'}已退货#{/elseif}
-       #{elseif orders.status=='RECEIPT'}已确认收货#{/elseif}
+        &{'order.'+orders.status}
        </td>
       #{/if}
      </tr>
@@ -83,6 +77,7 @@
    <div class="tab_top_box ren_info">
 
     <table width="975" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
+     #{if (orderItems.goods.materialType.toString().equals("[REAL]"))}
      <tr bgcolor="F6F6F6">
       <th width="112" height="30">收货人</th>
       <th width="878" align="left"><div class="margin_left_30">${orders.receiverName}</div></th>
@@ -96,9 +91,10 @@
       <td align="left" valign="middle"><div class="margin_left_10">${orders.deliveryNo}<a class="blue_alink" href="#">查看物流信息</a>
        </div></td>
      </tr>
+     #{/if}
      <tr>
       <td height="28" align="center" valign="middle">收货手机</td>
-      <td align="left" valign="middle"><div class="margin_left_10">${orders.receiverMobile}&nbsp;&nbsp;${orders.receiverPhone}</div></td>
+      <td align="left" valign="middle"><div class="margin_left_10">${orders.receiverMobile}  ${orders.receiverPhone==null ? '':'/'+orders.receiverPhone}</div></td>
      </tr>
     </table>
    </div>
