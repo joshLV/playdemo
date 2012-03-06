@@ -7,7 +7,6 @@ import models.sales.Category;
 import models.sales.GoodsCondition;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
-import play.modules.paginate.Paginator;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -26,10 +25,11 @@ public class Goods extends Controller {
 
     public static String SHANGHAI = "021";
     public static int LIMIT = 8;
+    public static int PAGE_SIZE = 12;
 
     public static void index() {
-        //默认取出5页产品
-        List<models.sales.Goods> goodsList = models.sales.Goods.findTop(80);
+        //todo 默认取出5页产品
+        List<models.sales.Goods> goodsList = models.sales.Goods.findTop(PAGE_SIZE * 5);
         //默认取出前8个上海的区
         List<Area> districts = Area.findTopDistricts(SHANGHAI, LIMIT);
         List<Area> areas = Area.findTopAreas(LIMIT);
@@ -46,6 +46,9 @@ public class Goods extends Controller {
         renderArgs.put("orderBy", 0);
         renderArgs.put("orderByType", 1);
         ValuePaginator goodsPage = new ValuePaginator(goodsList);
+        goodsPage.setPageNumber(1);
+        goodsPage.setPageSize(PAGE_SIZE);
+        goodsPage.setBoundaryControlsEnabled(false);
         render(goodsPage, areas, districts, categories, brands);
     }
 
@@ -61,12 +64,11 @@ public class Goods extends Controller {
     public static void list(String condition) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        int pageSize = 12;
 
         try {
             GoodsCondition goodsCond = new GoodsCondition(condition);
             JPAExtPaginator<models.sales.Goods> goodsPage = models.sales
-                    .Goods.findByCondition(goodsCond, pageNumber, pageSize);
+                    .Goods.findByCondition(goodsCond, pageNumber, PAGE_SIZE);
 
             //默认取出前8个上海的区
             List<Area> districts = Area.findTopDistricts(SHANGHAI, LIMIT, goodsCond.districtId);
