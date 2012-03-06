@@ -19,7 +19,10 @@ public class OrderUnitTest extends UnitTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         Fixtures.delete(models.order.Orders.class);
-        Fixtures.loadModels("fixture/orders.yml","fixture/user.yml");
+        Fixtures.delete(models.order.OrderItems.class);
+        Fixtures.delete(models.sales.Goods.class);
+        Fixtures.delete(models.consumer.User.class);
+        Fixtures.loadModels("fixture/goods_base.yml","fixture/orders.yml","fixture/user.yml");
     }
 
     /**
@@ -34,6 +37,8 @@ public class OrderUnitTest extends UnitTest {
 		orders.deliveryType=1;
 		orders.payMethod="1";
 		String compnayId ="1";
+		orders.searchKey="2";
+		orders.searchItems="2012";
 		List<Orders> list = Orders.query(orders,compnayId);
 		Assert.assertEquals(0,list.size());  
 

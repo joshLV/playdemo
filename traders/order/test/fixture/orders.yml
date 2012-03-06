@@ -2,23 +2,30 @@
 # This module is a part of LogiSima (http://www.logisima.com).
 
 order.Orders(order1):
- "user_id": 1
- "company_id": 1
- "orderNumber": "201202220324134991598"
- "status": "UNPAID"
- "amount": "0"
- "accountPay": "0"
- "discountPay": "0"
- "needPay": "0"
- "receiverPhone": "13512341234 "
- "receiverMobile": "13512341234"
- "receiverAddress": "内蒙古 呼和浩特市 玉泉区 凌兆路"
- "receiverName": "苏杰1"
- "postcode": "200120"
- "lockVersion": "0"
- "deleted": "UN_DELETED"
- "deliveryType": "0"
+  "user_id": 1
+  "company_id": 1
+  "orderNumber": "201202220324134991598"
+  "status": "UNPAID"
+  "amount": "0"
+  "accountPay": "0"
+  "discountPay": "0"
+  "needPay": "0"
+  "receiverPhone": "13512341234"
+  "eceiverMobile": "13512341234"
+  "receiverAddress": "内蒙古 呼和浩特市 玉泉区 凌兆路"
+  "receiverName": "苏杰1"
+  "postcode": "200120"
+  "lockVersion": "0"
+  "deleted": "UN_DELETED"
+  "deliveryType": "0"
 
+order.OrderItems(orderItems1):
+  "buyNumber": 2
+  "salePrice": "10"
+  "originalPrice": "20"
+  "goodsName": "哈根达斯100元抵用券"
+  "createdAt": "2012-03-05T00:00:00"
+ 
 order.ECoupon(coupon1):
   "order": "order1"
   "eCouponSn": "001"
@@ -27,4 +34,4 @@ order.ECoupon(coupon1):
   "createdAt": "2012-03-05T00:00:00"
   "consumedAt": "2012-03-05T00:00:00"
   "status": "DEALING"
-  "goods_id": 1
+  "goods_id": "1"

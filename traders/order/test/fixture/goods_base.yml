@@ -1,0 +1,462 @@
+sales.Category(Category_1):
+ "name": "饮食"
+ "displayOrder": "100"
+sales.Category(Category_2):
+ "name": "旅游"
+ "displayOrder": "200"
+ 
+sales.Brand(Brand_1):
+ "name": "来一份"
+ "displayOrder": "100"
+ "category": "Category_1"
+
+sales.Brand(Brand_2):
+ "name": "豆捞坊"
+ "displayOrder": "200"
+ "category": "Category_1"
+
+sales.Area(Area_021):
+ id: "021"
+ name: "上海"
+ displayOrder: "100"
+ areaType: CITY
+
+sales.Area(Area_02101):
+ id: "02101"
+ name: "浦东新区"
+ parent: Area_021
+ displayOrder: "100"
+ areaType: DISTRICT
+
+sales.Area(Area_02101001):
+ id: "02101001"
+ name: "陆家嘴"
+ parent: Area_02101
+ displayOrder: "100"
+ areaType: AREA
+
+sales.Area(Area_02101002):
+ id: "02101002"
+ name: "96广场"
+ parent: Area_02101
+ displayOrder: "200"
+ areaType: AREA
+ 
+sales.Shop(Shop_5):
+ "companyId": "1"
+ "areaId": "02102001"
+ "name": "宛平南路店2"
+ "address": "宛平南路2号"
+ "phone": "02100000"
+ "latitude": "0.0"
+ "longitude": "0.0"
+ "createdAt": "2012-02-29T16:33:18"
+ "updatedAt": "2012-02-29T16:44:33"
+ "deleted": UN_DELETED
+ "lockVersion": "0"
+
+sales.Shop(Shop_4):
+ "companyId": "1"
+ "areaId": "02102001"
+ "name": "优惠拉"
+ "address": "优惠啦2店"
+ "phone": "02100000"
+ "latitude": "0.0"
+ "longitude": "0.0"
+ "createdAt": "2012-02-29T16:11:43"
+ "updatedAt": "2012-02-29T16:17:28"
+ "deleted": UN_DELETED
+ "lockVersion": "0"
+ 
+sales.Goods(Goods_001):
+ "no": "001"
+ "name": "哈根达斯100元抵用券"
+ "companyId": "1"
+ "brand": "Brand_2"
+ "imagePath": "/0/0/133/origin.jpg"
+ "effectiveAt": "2012-03-01T00:00:00"
+ "expireAt": "2012-03-30T00:00:00"
+ "originalPrice": "100"
+ "salePrice": "50"
+ "prompt": "提示测试"
+ "details": "商品详情"
+ "saleCount": "0"
+ "baseSale": "10000"
+ "status": "ONSALE"
+ "createdAt": "2012-03-01T15:02:02"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_2]
+
+sales.Goods(Goods_002):
+ "no": "002"
+ "name": "书本"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]
+
+sales.Goods(Goods_003):
+ "no": "003"
+ "name": "一号店抵用券"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]
+
+sales.Goods(Goods_004):
+ "no": "004"
+ "name": "京东商城50元京券"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]
+
+sales.Goods(Goods_005):
+ "no": "005"
+ "name": "京东商城100元京券"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]
+
+sales.Goods(Goods_006):
+ "no": "006"
+ "name": "京东商城200元京券"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]
+
+sales.Goods(Goods_007):
+ "no": "007"
+ "name": "京东商城300元京券"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]
+
+sales.Goods(Goods_008):
+ "no": "008"
+ "name": "京东商城400元京券"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]
+
+sales.Goods(Goods_009):
+ "no": "009"
+ "name": "京东商城500元京券"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]
+
+sales.Goods(Goods_010):
+ "no": "010"
+ "name": "京东商城550元京券"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]
+
+sales.Goods(Goods_011):
+ "no": "011"
+ "name": "京东商城600元京券"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]
+
+sales.Goods(Goods_012):
+ "no": "012"
+ "name": "京东商城650元京券"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]
+
+sales.Goods(Goods_013):
+ "no": "013"
+ "name": "京东商城700元京券"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]
+
+sales.Goods(Goods_014):
+ "no": "014"
+ "name": "京东商城800元京券"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]
+
+sales.Goods(Goods_015):
+ "no": "015"
+ "name": "京东商城900元京券"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]
+
+sales.Goods(Goods_016):
+ "no": "016"
+ "name": "京东商城1000元京券"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]
+
+sales.Goods(Goods_017):
+ "no": "017"
+ "name": "京东商城1500元京券"
+ "companyId": "1"
+ "brand": "Brand_1"
+ "imagePath": "/0/0/125/origin.jpg"
+ "originalPrice": "100"
+ "salePrice": "10"
+ "prompt": "阿斯顿<br />"
+ "details": "阿斯<br />"
+ "saleCount": "0"
+ "baseSale": "10"
+ "status": "ONSALE"
+ "createdAt": "2012-02-28T14:41:33"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_1]    
