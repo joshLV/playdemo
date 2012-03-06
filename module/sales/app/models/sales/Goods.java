@@ -36,6 +36,7 @@ import play.data.validation.Required;
 import play.db.jpa.Model;
 
 import com.uhuila.common.constants.DeletedStatus;
+import play.modules.paginate.JPAExtPaginator;
 
 @Entity
 @Table(name = "goods")
@@ -346,37 +347,15 @@ public class Goods extends Model {
         return find(condition.toString(), params.toArray()).fetch(pager.currPage, pager.pageSize);
     }
 
-//    public static JPAExtPaginator<Goods> findByCondition(GoodsCondition condition,
-//                                                         int pageNumber, int pageSize) {
-////        EntityManager entityManager = JPA.em();
-////        StringBuilder hql = new StringBuilder("select g from Goods g ");
-////        hql.append(condition.getFilter());
-////        hql.append(condition.getOrderByExpress());
-//
-////        ModelPaginator page = new ModelPaginator(Goods.class,
-////                condition.getFilter(),condition.getParams());
-//
-//
-////        System.out.println(hql.toString());
-////        Query q = entityManager.createQuery(hql.toString());
-////        Map<String, Object> paramMap = condition.getParamMap();
-////        for (String param : paramMap.keySet()) {
-////            q.setParameter(param, paramMap.get(param));
-////        }
-////        int offset = (pageNumber - 1) * pageSize;
-////        q.setFirstResult(offset).setMaxResults(pageSize);
-////        List<models.sales.Goods> goodsList = q.getResultList();
-////                ().getName());
-////        System.out.println("===========offset=" + offset);
-////        System.out.println("===========pageNumber=" + pageNumber);
-////        System.out.println("===========pageSize=" + pageSize);
-//        JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>
-//                ("Goods g", "g", Goods.class, condition.getFilter(),
-//                        condition.getParamMap())
-//                .orderBy(condition.getOrderByExpress());
-//        goodsPage.setPageNumber(pageNumber);
-//        goodsPage.setPageSize(pageSize);
-//        goodsPage.setBoundaryControlsEnabled(false);
-//        return goodsPage;
-//    }
+    public static JPAExtPaginator<Goods> findByCondition(GoodsCondition condition,
+                                                         int pageNumber, int pageSize) {
+        JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>
+                ("Goods g", "g", Goods.class, condition.getFilter(),
+                        condition.getParamMap())
+                .orderBy(condition.getOrderByExpress());
+        goodsPage.setPageNumber(pageNumber);
+        goodsPage.setPageSize(pageSize);
+        goodsPage.setBoundaryControlsEnabled(false);
+        return goodsPage;
+    }
 }
