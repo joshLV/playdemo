@@ -22,7 +22,7 @@ public class LocalhostCASUtilsTest extends UnitTest {
     @Before
     public void setUp() {
         Play.configuration.setProperty("cas.gateway", "false");
-        Play.configuration.setProperty("cas.mockserver", "false");
+        Play.configuration.setProperty("cas.mockserver", "true");
 
         Play.configuration.setProperty("cas.validateUrl", "http://{domain}.cas.supplierdev.com/serviceValidate");
         Play.configuration.setProperty("cas.loginUrl", "http://{domain}.cas.supplierdev.com/login");
@@ -75,21 +75,9 @@ public class LocalhostCASUtilsTest extends UnitTest {
 
     @Test
     public void getCasLogoutUrlTest2() {
-        Play.configuration.setProperty("cas.mockserver", "true");
         String casLogoutUrl = CASUtils.getCasLogoutUrl();
-        assertEquals("http://localhost:8080/modules.cas.mockserver/logout", casLogoutUrl);
+        assertEquals("http://localhost:8080/@cas/logout", casLogoutUrl);
     }
 
-    @Test
-    public void isMockSeverTest1() {
-        Play.configuration.setProperty("cas.mockserver", "true");
-        assertTrue(CASUtils.isCasMockServer());
-    }
-
-    @Test
-    public void isMockSeverTest2() {
-        Play.configuration.setProperty("cas.mockserver", "false");
-        assertFalse(CASUtils.isCasMockServer());
-    }
 
 }
