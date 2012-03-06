@@ -1,6 +1,6 @@
 package models.accounts;
 
-import models.accounts.util.SerialUtil;
+import models.accounts.util.SerialNumberUtil;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
@@ -17,23 +17,24 @@ import java.util.Date;
 @Table(name = "subject")
 public class SubjectDetail extends Model {
 
-    public String serial;
+    @Column(name = "serial_number")
+    public String serialNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
-    public SubjectType subjectType;         //科目类型
+    public SubjectType subjectType;                 //科目类型
 
     @ManyToOne
     @JoinColumn(name = "certificate_detail")
     public CertificateDetail certificateDetail;     //关联的明细
 
     @Column(name = "debit_amount")
-    public BigDecimal debitAmount;          //借记发生额
+    public BigDecimal debitAmount;                  //借记发生额
 
     @Column(name = "credit_amount")
-    public BigDecimal creditAmount;         //贷记发生额
+    public BigDecimal creditAmount;                 //贷记发生额
 
-    public String summary;                  //摘要
+    public String summary;                          //摘要
 
     @Column(name = "created_at")
     public Date createdAt;
@@ -47,7 +48,7 @@ public class SubjectDetail extends Model {
         this.creditAmount = creditAmount;
         this.summary = summary;
         this.createdAt = new Date();
-        this.serial = SerialUtil.generateSerialNumber(this.createdAt);
+        this.serialNumber = SerialNumberUtil.generateSerialNumber(this.createdAt);
     }
 
 }

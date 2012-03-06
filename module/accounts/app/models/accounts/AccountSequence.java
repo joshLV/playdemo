@@ -1,14 +1,11 @@
 package models.accounts;
 
-import models.accounts.util.SerialUtil;
+import models.accounts.util.SerialNumberUtil;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 
 /**
  * 账户资金变动流水
@@ -19,7 +16,8 @@ import java.util.Random;
 @Table(name = "account_sequence")
 public class AccountSequence extends Model {
 
-    public String serial;
+    @Column(name = "serial_number")
+    public String serialNumber;
 
     @ManyToOne
     public Account account;
@@ -29,8 +27,8 @@ public class AccountSequence extends Model {
     public AccountSequenceFlag sequenceFlag;    //账务变动方向：来账，往账
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "change_type")
-    public AccountChangeType changeType;        //资金变动类型
+    @Column(name = "sequence_type")
+    public AccountSequenceType sequenceType;    //资金变动类型
 
     @Column(name = "pre_amount")
     public BigDecimal preAmount;                //变动前金额
@@ -47,20 +45,20 @@ public class AccountSequence extends Model {
     public Long referenceSerialId;              //关联交易流水ID
 
     @Column(name = "order_id")
-    public Long orderId;                         //冗余订单ID
+    public Long orderId;                        //冗余订单ID
 
     @Column(name = "created_at")
     public Date createdAt;                      //创建时间
 
     public String remark;                       //备注
 
-    public AccountSequence(Account account, AccountSequenceFlag sequenceFlag, AccountChangeType changeType,
+    public AccountSequence(Account account, AccountSequenceFlag sequenceFlag, AccountSequenceType sequenceType,
                            BigDecimal preAmount, BigDecimal amount, BigDecimal cashAmount, BigDecimal uncashAmount,
                            long referenceSerialId){
 
         this.account = account;
         this.sequenceFlag = sequenceFlag;
-        this.changeType = changeType;
+        this.sequenceType = sequenceType;
         this.preAmount = preAmount;
         this.amount = amount;
         this.cashAmount = cashAmount;
@@ -68,7 +66,7 @@ public class AccountSequence extends Model {
         this.referenceSerialId = referenceSerialId;
 
         this.createdAt = new Date();
-        this.serial = SerialUtil.generateSerialNumber(this.createdAt);
+        this.serialNumber = SerialNumberUtil.generateSerialNumber(this.createdAt);
         this.remark = null;
 
     }

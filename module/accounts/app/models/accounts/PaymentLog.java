@@ -15,7 +15,7 @@ public class PaymentLog extends Model {
     public PaymentSource paymentSource;
 
     @OneToOne
-    public PaymentBill paymentBill;
+    public TradeBill tradeBill;
 
     public BigDecimal amount;
 
@@ -28,10 +28,10 @@ public class PaymentLog extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
-    public PaymentLog(PaymentSource paymentSource, PaymentBill paymentBill, BigDecimal amount,
+    public PaymentLog(PaymentSource paymentSource, TradeBill tradeBill, BigDecimal amount,
                       String paymentStatus, String returnMessage){
         this.paymentSource = paymentSource;
-        this.paymentBill = paymentBill;
+        this.tradeBill = tradeBill;
         this.amount = amount;
         this.paymentStatus = paymentStatus;
         this.returnMessage = returnMessage;

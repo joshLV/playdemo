@@ -9,6 +9,7 @@ import play.db.jpa.Model;
 @Entity
 @Table(name="accounts")
 public class Account extends Model {
+    private static final long uhuilaUid = 1;
     public long uid;
 
     @Enumerated(EnumType.STRING)
@@ -27,6 +28,14 @@ public class Account extends Model {
 
     @Column(name = "create_at")
     public Date createdAt;
+
+    public static Account getUhuilaAccount(){
+        Account account =  Account.find("byUid", uhuilaUid).first();
+        if(account == null){
+            throw new RuntimeException("can not get uhuila account");
+        }
+        return account;
+    }
 
     public Account(long uid, AccountType type){
         this.uid = uid;

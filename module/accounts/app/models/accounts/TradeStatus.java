@@ -3,7 +3,7 @@ package models.accounts;
 /**
  * User: likang
  */
-public enum PaymentStatus {
+public enum TradeStatus {
     UNPAID,
     SUCCESS,
     FAILED,

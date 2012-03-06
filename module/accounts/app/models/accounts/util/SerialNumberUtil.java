@@ -8,7 +8,7 @@ import java.util.Random;
 /**
  * User: likang
  */
-public class SerialUtil {
+public class SerialNumberUtil {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmssSSS");
     private static DecimalFormat decimalFormat = new DecimalFormat("00000");
     

@@ -11,17 +11,18 @@ import java.util.Date;
 @Entity
 @Table(name = "account_operation")
 public class AccountOperation extends Model {
+
     @ManyToOne
-    public Account account;
+    public Account account;                        //目标账户
 
     @Enumerated(EnumType.STRING)
     @Column(name = "operation_type")
-    public AccountOperationType operationType;
+    public AccountOperationType operationType;     //操作类型
 
     @Column(name = "created_at")
     public Date createdAt;
 
-    public String remark;
+    public String remark;                          //操作备注
     
     @Column(name = "operator_id")
     public Long operatorId;       //todo 改成运营人员 entity

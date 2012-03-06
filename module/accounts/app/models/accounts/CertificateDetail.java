@@ -1,6 +1,6 @@
 package models.accounts;
 
-import models.accounts.util.SerialUtil;
+import models.accounts.util.SerialNumberUtil;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
@@ -17,7 +17,8 @@ import java.util.Date;
 @Table(name = "certificate_detail")
 public class CertificateDetail extends Model {
 
-    public String serial;
+    @Column(name = "serial_number")
+    public String serialNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
@@ -39,7 +40,7 @@ public class CertificateDetail extends Model {
         this.tradeId = tradeId;
         this.summary = summary;
         this.createdAt = new Date();
-        this.serial = SerialUtil.generateSerialNumber(this.createdAt);
+        this.serialNumber = SerialNumberUtil.generateSerialNumber(this.createdAt);
     }
     
 }
