@@ -1,206 +1,240 @@
 package models.order;
 
-import com.uhuila.common.constants.DeletedStatus;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
 import models.consumer.Address;
 import models.consumer.User;
 import models.sales.Goods;
 import models.sales.MaterialType;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
+
 import play.db.jpa.Model;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.*;
+import com.uhuila.common.constants.DeletedStatus;
 
 
 @Entity
 @Table(name = "orders")
 public class Orders extends Model {
-    @ManyToOne
-    public User user;
+	@ManyToOne
+	public User user;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
-    public List<OrderItems> orderItems;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+	public List<OrderItems> orderItems;
 
-    @Column(name = "order_no")
-    public String orderNumber;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+	public List<ECoupon> eCoupons;
 
-    public OrderStatus status;
+	@Column(name = "order_no")
+	public String orderNumber;
 
-    public BigDecimal amount;
+	public OrderStatus status;
 
-    @Column(name = "account_pay")
-    public BigDecimal accountPay;
+	public BigDecimal amount;
 
-    @Column(name = "discount_pay")
-    public BigDecimal discountPay;
+	@Column(name = "account_pay")
+	public BigDecimal accountPay;
 
-    @Column(name = "need_pay")
-    public BigDecimal needPay;
+	@Column(name = "discount_pay")
+	public BigDecimal discountPay;
 
-    @Column(name = "buyer_phone")
-    public String buyerPhone;
+	@Column(name = "need_pay")
+	public BigDecimal needPay;
 
-    @Column(name = "buyer_mobile")
-    public String buyerMobile;
+	@Column(name = "buyer_phone")
+	public String buyerPhone;
 
-    public String remark;
+	@Column(name = "buyer_mobile")
+	public String buyerMobile;
 
-    @Column(name = "pay_method")
-    public String payMethod;
+	public String remark;
 
-    @Column(name = "pay_request_id")
-    public Long payRequestId;
+	@Column(name = "pay_method")
+	public String payMethod;
 
-    @Column(name = "receiver_phone")
-    public String receiverPhone;
+	@Column(name = "pay_request_id")
+	public Long payRequestId;
 
-    @Column(name = "receiver_mobile")
-    public String receiverMobile;
+	@Column(name = "receiver_phone")
+	public String receiverPhone;
 
-    @Column(name = "receiver_address")
-    public String receiverAddress;
+	@Column(name = "receiver_mobile")
+	public String receiverMobile;
 
-    @Column(name = "receiver_name")
-    public String receiverName;
+	@Column(name = "receiver_address")
+	public String receiverAddress;
 
-    @Column(name = "paid_at")
-    public Date paidAt;
-    public String postcode;
+	@Column(name = "receiver_name")
+	public String receiverName;
 
-    @Column(name = "created_at")
-    public Date createdAt;
+	@Column(name = "paid_at")
+	public Date paidAt;
 
-    @Column(name = "updated_at")
-    public Date updatedAt;
+	@Column(name = "refund_at")
+	public Date refundAt;
 
-    @Column(name = "lock_version")
-    public int lockVersion;
+	public String postcode;
 
-    /**
-     * 逻辑删除,0:未删除，1:已删除
-     */
-    @Enumerated(EnumType.ORDINAL)
-    public DeletedStatus deleted;
+	@Column(name = "created_at")
+	public Date createdAt;
 
-    @Column(name = "delivery_no")
-    public String deliveryNo;
-    @Column(name = "delivery_type")
-    public int deliveryType;
-    /**
-     * 成交开始时间
-     */
-    @Transient
-    public Date createdAtBegin;
-    /**
-     * 成交开始时间
-     */
-    @Transient
-    public Date createdAtEnd;
-    /**
-     * 退款开始时间
-     */
-    @Transient
-    @Temporal(TemporalType.DATE)
-    public Date refundAtBegin;
-    /**
-     * 退款开始时间
-     */
-    @Transient
-    @Temporal(TemporalType.DATE)
-    public String refundAtEnd;
+	@Column(name = "updated_at")
+	public Date updatedAt;
 
-    public Orders() {
-    }
+	@Column(name = "lock_version")
+	public int lockVersion;
 
-    public Orders(User user, Address address) {
-        this.user = user;
-        this.status = OrderStatus.UNPAID;
-        this.deleted = DeletedStatus.UN_DELETED;
-        this.orderNumber = OrdersNumber.generateOrderNumber();
-        this.orderItems = new ArrayList();
-        this.paidAt = null;
-        this.amount = new BigDecimal(0);
-        this.accountPay = new BigDecimal(0);
-        this.needPay = new BigDecimal(0);
-        this.discountPay = new BigDecimal(0);
+	/**
+	 * 逻辑删除,0:未删除，1:已删除
+	 */
+	@Enumerated(EnumType.ORDINAL)
+	public DeletedStatus deleted;
 
-        this.lockVersion = 0;
+	@Column(name = "delivery_no")
+	public String deliveryNo;
+	@Column(name = "delivery_type")
+	public int deliveryType;
+	/**
+	 * 成交开始时间
+	 */
+	@Transient
+	public Date createdAtBegin;
+	/**
+	 * 成交开始时间
+	 */
+	@Transient
+	public Date createdAtEnd;
+	/**
+	 * 退款开始时间
+	 */
+	@Transient
+	@Temporal(TemporalType.DATE)
+	public Date refundAtBegin;
+	/**
+	 * 退款开始时间
+	 */
+	@Transient
+	@Temporal(TemporalType.DATE)
+	public Date refundAtEnd;
 
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
-        if (address != null) {
-            this.receiverAddress = address.getFullAddress();
-            this.receiverMobile = address.mobile;
-            this.receiverName = address.name;
-            this.receiverPhone = address.getPhone();
-            this.postcode = address.postcode;
-        }
-    }
+	@Transient
+	public String searchKey;
 
-    public Orders(User user, long goodsId, long number, Address address, String mobile) throws NotEnoughInventoryException {
-        this(user, address);
+	@Transient
+	public String searchItems;
 
-        Goods goods = Goods.findById(goodsId);
-        checkInventory(goods, number);
-        if (goods.salePrice.compareTo(new BigDecimal(0)) > 0) {
-            this.amount = goods.salePrice.multiply(new BigDecimal(number));
-            if (goods.materialType == MaterialType.REAL) {
-                this.amount = this.amount.add(new BigDecimal(5));
-            }
-            //todo 目前没考虑支付优惠
-            this.needPay = amount;
-        }
-        this.receiverMobile = mobile;
+	public Orders() {
+	}
 
-        OrderItems orderItems = new OrderItems(this, goods, number);
-        this.orderItems.add(orderItems);
-    }
+	public Orders(User user, Address address) {
+		this.user = user;
+		this.status = OrderStatus.UNPAID;
+		this.deleted = DeletedStatus.UN_DELETED;
+		this.orderNumber = OrdersNumber.generateOrderNumber();
+		this.orderItems = new ArrayList();
+		this.paidAt = null;
+		this.amount = new BigDecimal(0);
+		this.accountPay = new BigDecimal(0);
+		this.needPay = new BigDecimal(0);
+		this.discountPay = new BigDecimal(0);
 
-    public Orders(User user, List<Cart> cartList, Address address) throws NotEnoughInventoryException {
-        this(user, address);
+		this.lockVersion = 0;
 
-        this.amount = Cart.amount(cartList);
-        for (Cart cart : cartList) {
-            if (cart.goods.materialType == MaterialType.REAL) {
-                this.amount = this.amount.add(new BigDecimal(5));
-                break;
-            }
-        }
-        this.needPay = amount;
+		this.createdAt = new Date();
+		this.updatedAt = new Date();
+		if (address != null) {
+			this.receiverAddress = address.getFullAddress();
+			this.receiverMobile = address.mobile;
+			this.receiverName = address.name;
+			this.receiverPhone = address.getPhone();
+			this.postcode = address.postcode;
+		}
+	}
 
-        for (Cart cart : cartList) {
-            if (cart.number <= 0) {
-                continue;
-            }
-            checkInventory(cart.goods, cart.number);
-            OrderItems orderItems = new OrderItems(this, cart.goods, cart.number);
-            this.orderItems.add(orderItems);
-        }
-    }
+	public Orders(User user, long goodsId, long number, Address address, String mobile) throws NotEnoughInventoryException {
+		this(user, address);
 
-    /**
-     * 生成订单编号.
-     *
-     * @return 订单编号
-     */
-    public static String generateOrderNumber() {
-        int random = new Random().nextInt() % 10000;
-        return DateFormatUtils.format(new Date(), "yyyyMMddhhmmssSSS") + random;
-    }
+		Goods goods = Goods.findById(goodsId);
+		checkInventory(goods, number);
+		if (goods.salePrice.compareTo(new BigDecimal(0)) > 0) {
+			this.amount = goods.salePrice.multiply(new BigDecimal(number));
+			if (goods.materialType == MaterialType.REAL) {
+				this.amount = this.amount.add(new BigDecimal(5));
+			}
+			//todo 目前没考虑支付优惠
+			this.needPay = amount;
+		}
+		this.receiverMobile = mobile;
 
-    public void checkInventory(Goods goods, long number) throws NotEnoughInventoryException {
-        if (goods.baseSale < number) {
-            throw new NotEnoughInventoryException();
-        }
-    }
+		OrderItems orderItems = new OrderItems(this, goods, number);
+		this.orderItems.add(orderItems);
+	}
+
+	public Orders(User user, List<Cart> cartList, Address address) throws NotEnoughInventoryException {
+		this(user, address);
+
+		this.amount = Cart.amount(cartList);
+		for (Cart cart : cartList) {
+			if (cart.goods.materialType == MaterialType.REAL) {
+				this.amount = this.amount.add(new BigDecimal(5));
+				break;
+			}
+		}
+		this.needPay = amount;
+
+		for (Cart cart : cartList) {
+			if (cart.number <= 0) {
+				continue;
+			}
+			checkInventory(cart.goods, cart.number);
+			OrderItems orderItems = new OrderItems(this, cart.goods, cart.number);
+			this.orderItems.add(orderItems);
+		}
+	}
+
+	/**
+	 * 生成订单编号.
+	 *
+	 * @return 订单编号
+	 */
+	public static String generateOrderNumber() {
+		int random = new Random().nextInt() % 10000;
+		return DateFormatUtils.format(new Date(), "yyyyMMddhhmmssSSS") + random;
+	}
+
+	public void checkInventory(Goods goods, long number) throws NotEnoughInventoryException {
+		if (goods.baseSale < number) {
+			throw new NotEnoughInventoryException();
+		}
+	}
 
 	/**
 	 * 订单查询
 	 *
 	 * @param orders 订单信息
-     * @param companyId 商户ID
+	 * @param companyId 商户ID
 	 * @return List
 	 */
 	public static List query(Orders orders,String companyId) {
@@ -219,14 +253,14 @@ public class Orders extends Model {
 			sql.append(" and o.createdAt <= :createdAtEnd");
 			params.put("createdAtEnd", orders.createdAtEnd);
 		}
-        if (orders.refundAtBegin != null) {
-            sql.append(" and o.paidAt >= :refundAtBegin");
-            params.put("refundAtBegin", orders.refundAtBegin);
-        }
-        if (orders.refundAtEnd != null) {
-            sql.append(" and o.paidAt <= :refundAtEnd");
-            params.put("refundAtEnd", orders.refundAtEnd);
-        }
+		if (orders.refundAtBegin != null) {
+			sql.append(" and o.refundAt >= :refundAtBegin");
+			params.put("refundAtBegin", orders.refundAtBegin);
+		}
+		if (orders.refundAtEnd != null) {
+			sql.append(" and o.refundAt <= :refundAtEnd");
+			params.put("refundAtEnd", orders.refundAtEnd);
+		}
 		if (orders.status != null) {
 			sql.append(" and o.status = :status");
 			params.put("status",orders.status);
@@ -240,7 +274,22 @@ public class Orders extends Model {
 			params.put("payMethod", orders.payMethod);
 		}
 
-        sql.append(" order by o.createdAt desc");
+		if (StringUtils.isNotBlank(orders.searchKey)) {
+			System.out.println(">>>>>>>>>>>>>>>.."+orders.searchItems);
+			//按照商品名称检索
+			if ("1".equals(orders.searchKey)) {
+				sql.append(" and oi.goods.name like :name");
+				params.put("name", "%"+orders.searchItems+"%");
+			}
+			//按照商品订单检索
+			if ("2".equals(orders.searchKey)) {
+				sql.append(" and o.orderNumber like :orderNumber");
+				params.put("orderNumber", "%"+orders.searchItems+"%");
+			}
+
+		}
+
+		sql.append(" order by o.createdAt desc");
 		Query orderQery = entityManager.createQuery(sql.toString());
 		for(Map.Entry<String,Object> entry : params.entrySet()){
 			orderQery.setParameter(entry.getKey(), entry.getValue());
@@ -258,42 +307,42 @@ public class Orders extends Model {
 	public static List queryCoupons() {
 		EntityManager entityManager = play.db.jpa.JPA.em();
 		StringBuilder sql = new StringBuilder();
-        sql.append("select distinct o from Orders o join o.ECoupons e ") ;
-        Query orderQery = entityManager.createQuery(sql.toString());
+		sql.append("select distinct o from Orders o join o.eCoupons e ") ;
+		Query orderQery = entityManager.createQuery(sql.toString());
 		return  orderQery.getResultList();
 	}
 
-    /**
-     * 会员中心 券号列表
-     *
-     * @return
-     */
-    public static List userTicketsQuery(Long id, String createdAt, String status) {
-        EntityManager entityManager = play.db.jpa.JPA.em();
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT a.order_no,c.name,d.discount_sn,a.created_at,c.expired_bg_on,c.expired_ed_on,d.status FROM discount d");
-        sql.append(" LEFT JOIN orders a ON a.id = d.order_id ");
-        sql.append(" LEFT JOIN order_items b ON a.id = b.order_id ");
-        sql.append(" LEFT JOIN goods c ON b.goods_id=c.id");
-        sql.append(" WHERE a.user_id=" + id);
-        if (createdAt != null && !"".equals(createdAt)) {
-            sql.append(" and a.created_at <=" + createdAt);
-        }
-        if (status != null && !"".equals(status)) {
-            sql.append(" and a.status ='" + status + "'");
-        }
-        sql.append(" ORDER BY a.created_at DESC");
-        return entityManager.createNativeQuery(sql.toString()).getResultList();
-    }
+	/**
+	 * 会员中心 券号列表
+	 *
+	 * @return
+	 */
+	public static List userTicketsQuery(Long id, String createdAt, String status) {
+		EntityManager entityManager = play.db.jpa.JPA.em();
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT a.order_no,c.name,d.discount_sn,a.created_at,c.expired_bg_on,c.expired_ed_on,d.status FROM discount d");
+		sql.append(" LEFT JOIN orders a ON a.id = d.order_id ");
+		sql.append(" LEFT JOIN order_items b ON a.id = b.order_id ");
+		sql.append(" LEFT JOIN goods c ON b.goods_id=c.id");
+		sql.append(" WHERE a.user_id=" + id);
+		if (createdAt != null && !"".equals(createdAt)) {
+			sql.append(" and a.created_at <=" + createdAt);
+		}
+		if (status != null && !"".equals(status)) {
+			sql.append(" and a.status ='" + status + "'");
+		}
+		sql.append(" ORDER BY a.created_at DESC");
+		return entityManager.createNativeQuery(sql.toString()).getResultList();
+	}
 
-    public void createAndUpdateInventory(User user, String cookieIdentity) {
-        save();
-        for (OrderItems orderItem : orderItems) {
-            orderItem.goods.baseSale -= orderItem.number;
-            orderItem.save();
-        }
-        Cart.clear(user, cookieIdentity);
+	public void createAndUpdateInventory(User user, String cookieIdentity) {
+		save();
+		for (OrderItems orderItem : orderItems) {
+			orderItem.goods.baseSale -= orderItem.buyNumber;
+			orderItem.save();
+		}
+		Cart.clear(user, cookieIdentity);
 
-    }
+	}
 
 }

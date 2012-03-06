@@ -20,21 +20,23 @@ public class OrderItems extends Model {
 	@JoinColumn(name="order_id",nullable=true)
 	Orders order;
 
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="goods_id",nullable=true)
 	Goods goods;
 
-	@Column(name="originalPrice")
+	@Column(name="original_price")
 	BigDecimal originalPrice;
 
-	@Column(name="salePrice")
+	@Column(name="sale_price")
 	BigDecimal salePrice;
 
 	@Column(name="goods_name")
 	String goodsName;
+	
+	@Column(name="buy_number")
+	Long buyNumber;
 
-	Long number;
-
-	@Column(name="createdAt")
+	@Column(name="created_at")
 	public Date  createdAt;
 
 	public OrderItems(Orders order, Goods goods, long number){
@@ -43,7 +45,7 @@ public class OrderItems extends Model {
 		this.originalPrice = goods.originalPrice;
 		this.salePrice = goods.salePrice;
 		this.goodsName = goods.name;
-		this.number = number;
+		this.buyNumber = number;
 		this.createdAt = new Date();
 	}
 

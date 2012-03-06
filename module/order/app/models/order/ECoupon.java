@@ -14,7 +14,7 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@Table(name = "ECoupon")
+@Table(name = "e_coupon")
 public class ECoupon extends Model {
 
     @ManyToOne(fetch= FetchType.LAZY)
