@@ -1,0 +1,24 @@
+# Application dependencies
+
+require:
+    - play
+    - play -> cobertura 2.4
+    - play -> paginate head
+    - layout_trader -> layout_trader
+    - paginate_ext -> paginate_ext
+    - supplier_cas -> supplier_cas
+
+repositories:
+    - mavenRepository:
+        type:       iBiblio
+        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
+        contains:
+            - com.uhuila.utils -> *
+        m2compatible: true
+    - customModules:
+        type:       local
+        artifact:   "${application.path}/../../module/[module]"
+        contains:
+            - layout_trader -> *
+            - supplier_cas -> *
+            - paginate_ext -> *
