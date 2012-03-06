@@ -3,7 +3,8 @@
 require:
     - play
     - play -> cobertura 2.4
-    - play -> paginate 0.14
+    - play -> paginate head
+    - paginate_ext -> paginate_ext
     - sales -> sales
     - order -> order
     - consumer -> consumer
@@ -30,3 +31,4 @@ repositories:
             - order -> *
             - consumer -> *
             - web_trace -> *
+            - paginate_ext -> *
