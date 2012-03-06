@@ -38,6 +38,15 @@ public class GoodsUnitTest extends UnitTest {
         goods.imagePath = "/1/1/1/3.jpg";
         String path = goods.getImageLargePath();
         assertEquals("http://img0.uhlcdndev.net/p/1/1/1/3_large.jpg", path);
+
+         path = goods.getImageTinyPath();
+        assertEquals("http://img0.uhlcdndev.net/p/1/1/1/3_tiny.jpg", path);
+
+         path = goods.getImageMiddlePath();
+        assertEquals("http://img0.uhlcdndev.net/p/1/1/1/3_middle.jpg", path);
+
+         path = goods.getImageSmallPath();
+        assertEquals("http://img0.uhlcdndev.net/p/1/1/1/3_small.jpg", path);
     }
 
     /**
@@ -50,7 +59,8 @@ public class GoodsUnitTest extends UnitTest {
 
         JPAExtPaginator<Goods> goodsPage = models.sales.Goods.findByCondition
                 (goodsCond, 1, 50);
-        System.out.println("goodsPage.size=" + goodsPage.size());
         assertEquals(17, goodsPage.size());
+        models.sales.Goods goods = goodsPage.get(0);
+        goods.getDiscountExpress();
     }
 }
