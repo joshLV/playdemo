@@ -66,9 +66,7 @@ public class Goods extends Controller {
         try {
             GoodsCondition goodsCond = new GoodsCondition(condition);
             JPAExtPaginator<models.sales.Goods> goodsPage = models.sales
-                    .Goods
-                    .findByCondition
-                            (goodsCond, pageNumber, pageSize);
+                    .Goods.findByCondition(goodsCond, pageNumber, pageSize);
 
             //默认取出前8个上海的区
             List<Area> districts = Area.findTopDistricts(SHANGHAI, LIMIT, goodsCond.districtId);
