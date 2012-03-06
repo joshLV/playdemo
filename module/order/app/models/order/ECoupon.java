@@ -4,6 +4,7 @@ import models.sales.Goods;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
+
 import java.util.Date;
 
 /**
@@ -34,6 +35,7 @@ public class ECoupon extends Model {
     public Float refundPrice;
 
     @Column(name="created_at")
+    @Temporal(TemporalType.DATE)
     public Date createdAt;
 
     @Column(name="consumed_at")
@@ -41,6 +43,10 @@ public class ECoupon extends Model {
 
     @Column(name="refund_at")
     public Date refundAt;
+    
+    @Column(name="buy_number")
+    public int buyNumber;
+    
     @Enumerated(EnumType.STRING)
     public ECouponStatus status;
 }

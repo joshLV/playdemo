@@ -275,7 +275,6 @@ public class Orders extends Model {
 		}
 
 		if (StringUtils.isNotBlank(orders.searchKey)) {
-			System.out.println(">>>>>>>>>>>>>>>.."+orders.searchItems);
 			//按照商品名称检索
 			if ("1".equals(orders.searchKey)) {
 				sql.append(" and oi.goods.name like :name");
@@ -314,25 +313,49 @@ public class Orders extends Model {
 
 	/**
 	 * 会员中心 券号列表
-	 *
+	 * 
+	 * @param user
+	 * @param createdAtBegin
+	 * @param createdAtEnd
+	 * @param status
+	 * @param goodsName
 	 * @return
 	 */
-	public static List userTicketsQuery(Long id, String createdAt, String status) {
+	public static List userCuponsQuery(User user,Date createdAtBegin,Date createdAtEnd,ECouponStatus status,String goodsName) {
 		EntityManager entityManager = play.db.jpa.JPA.em();
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT a.order_no,c.name,d.discount_sn,a.created_at,c.expired_bg_on,c.expired_ed_on,d.status FROM discount d");
-		sql.append(" LEFT JOIN orders a ON a.id = d.order_id ");
-		sql.append(" LEFT JOIN order_items b ON a.id = b.order_id ");
-		sql.append(" LEFT JOIN goods c ON b.goods_id=c.id");
-		sql.append(" WHERE a.user_id=" + id);
-		if (createdAt != null && !"".equals(createdAt)) {
-			sql.append(" and a.created_at <=" + createdAt);
+		Map<String, Object> params = new HashMap<String, Object>();
+		sql.append("select distinct e from ECoupon e where 1=1 ") ;
+		if (user != null) {
+			sql.append(" and e.order.user = :user");
+			params.put("user", user);
 		}
-		if (status != null && !"".equals(status)) {
-			sql.append(" and a.status ='" + status + "'");
+
+		if (createdAtBegin != null) {
+			sql.append(" and e.createdAt >= :createdAtBegin");
+			params.put("createdAtBegin", createdAtBegin);
 		}
-		sql.append(" ORDER BY a.created_at DESC");
-		return entityManager.createNativeQuery(sql.toString()).getResultList();
+
+		if (createdAtEnd != null) {
+			sql.append(" and e.createdAt <= :createdAtEnd");
+			params.put("createdAtEnd", createdAtEnd);
+		}
+
+		if (StringUtils.isNotBlank(goodsName)) {
+			sql.append(" and e.goods.name like :name");
+			params.put("name", "%"+goodsName+"%");
+		}
+
+		if (status != null) {
+			sql.append(" and e.status = :status");
+			params.put("status",status);
+		}
+		Query couponQery = entityManager.createQuery(sql.toString());
+		for(Map.Entry<String,Object> entry : params.entrySet()){
+			couponQery.setParameter(entry.getKey(), entry.getValue());
+		}
+		sql.append(" order by e.createdAt desc");
+		return  couponQery.getResultList();
 	}
 
 	public void createAndUpdateInventory(User user, String cookieIdentity) {
@@ -343,6 +366,53 @@ public class Orders extends Model {
 		}
 		Cart.clear(user, cookieIdentity);
 
+	}
+
+	/**
+	 * 我的订单查询
+	 * 
+	 * @param user
+	 * @param createdAtBegin
+	 * @param createdAtEnd
+	 * @param status
+	 * @param goodsName
+	 * @return
+	 */
+	public static List<Orders> findMyOrders(User user,Date createdAtBegin,Date createdAtEnd,OrderStatus status,String goodsName) {
+		EntityManager entityManager = play.db.jpa.JPA.em();
+		StringBuilder sql = new StringBuilder();
+		sql.append("select distinct o from Orders o, OrderItems oi  WHERE oi member of o.orderItems");
+		Map<String, Object> params = new HashMap<String, Object>();
+		if (user != null) {
+			sql.append(" and o.user = :user");
+			params.put("user", user);
+		}
+		if (createdAtBegin != null) {
+			sql.append(" and o.createdAt >= :createdAtBegin");
+			params.put("createdAtBegin", createdAtBegin);
+		}
+		if (createdAtEnd != null) {
+			sql.append(" and o.createdAt <= :createdAtEnd");
+			params.put("createdAtEnd", createdAtEnd);
+		}
+		if (status != null) {
+			sql.append(" and o.status = :status");
+			params.put("status",status);
+		}
+
+		//按照商品名称检索
+		if (StringUtils.isNotBlank(goodsName)) {
+			sql.append(" and oi.goods.name like :goodsName");
+			params.put("goodsName", "%"+goodsName+"%");
+		}
+		
+		sql.append(" order by o.createdAt desc");
+		Query orderQery = entityManager.createQuery(sql.toString());
+		for(Map.Entry<String,Object> entry : params.entrySet()){
+			orderQery.setParameter(entry.getKey(), entry.getValue());
+		}
+
+		return orderQery.getResultList();
 	}
 
 }
