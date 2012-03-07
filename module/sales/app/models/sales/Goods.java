@@ -13,26 +13,13 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.Version;
+import javax.persistence.*;
 
 import org.apache.commons.lang.StringUtils;
 
 import play.Play;
 import play.data.validation.Required;
+import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
 import com.uhuila.common.constants.DeletedStatus;
@@ -296,6 +283,26 @@ public class Goods extends Model {
                 DeletedStatus.UN_DELETED).fetch(limit);
     }
 
+    /**
+     * 根据商品分类和数量取出指定数量的商品.
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Goods> findTopByCategory(long categoryId,int limit) {
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
+                "and g.id in (select g.id from g.categories c where c.id = :categoryId) order by g.updatedAt, g.createdAt DESC");
+        q.setParameter("status",GoodsStatus.ONSALE);
+        q.setParameter("deleted",DeletedStatus.UN_DELETED);
+        q.setParameter("categoryId",categoryId);
+        q.setMaxResults(limit);
+        return q.getResultList();
+//        return find("status=? and deleted=? and categories.id=? order by updatedAt,createdAt DESC",
+//                GoodsStatus.ONSALE,
+//                DeletedStatus.UN_DELETED,
+//                Category.findById(categoryId)).fetch(limit);
+    }
 
     public static Goods findUnDeletedById(long id) {
         return find("id=? and deleted=?", id, DeletedStatus.UN_DELETED).first();

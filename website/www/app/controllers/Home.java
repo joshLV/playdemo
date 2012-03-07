@@ -3,7 +3,6 @@ package controllers;
 import controllers.modules.webcas.WebCAS;
 import models.sales.Area;
 import models.sales.Category;
-import models.sales.Goods;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -19,9 +18,17 @@ import java.util.List;
 @With(WebCAS.class)
 public class Home extends Controller {
 
-    public static void index() {
-        List<Goods> goodsList = Goods.findTop(12);
+    public static void index(long categoryId) {
+        List<models.sales.Goods> goodsList;
+        if (categoryId==0){
+            goodsList = models.sales.Goods.findTop(12);
+        }else{
+            goodsList = models.sales.Goods.findTopByCategory(categoryId, 12);
+        }
+        List<Area> areas = Area.findTopAreas(8);
+        List<Category> categories = Category.findTop(8);
 
-        render(goodsList);
+        renderArgs.put("categoryId", new Long(categoryId));
+        render(goodsList, categories, areas);
     }
 }

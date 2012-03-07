@@ -32,8 +32,8 @@ ul{ list-style:none}
 #left_content_wrap{ float:left; width:754px; height:auto; overflow:hidden}
 #left_content_top2{ width:752px; height:77px; border:solid 1px #D5D5D5; margin-top:12px; overflow:hidden;padding-top:14px;}
 #left_content_top3{ width:752px; height:508px; border:solid 1px #D5D5D5; margin-top:12px; overflow:hidden}
-.tab2_a{display:block; width:77px; height:31px;line-height:25px; text-decoration:none; color:#666666; font-weight:700;}
-.current_tab2{ color:#C60909; font-weight:700; text-decoration:none;display:block; width:77px; height:31px;line-height:26px;background:url(../images/tab_current.jpg) no-repeat;}
+.tab_unselected {display:block; width:77px; height:31px;line-height:25px; text-decoration:none; color:#666666; font-weight:700;}
+.tab_selected { color:#C60909; font-weight:700; text-decoration:none;display:block; width:77px; height:31px;line-height:26px;background:url(../images/tab_current.jpg) no-repeat;}
 
 
 .hot_sq{width:70px; height:77px; float:left;padding-left:10px; padding-top:2px; color:#666666; font-weight:700}

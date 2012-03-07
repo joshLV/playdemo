@@ -180,14 +180,9 @@
             <div class="hot_sq">热门商圈：</div>
             <div class="area_name">
                 <ul class="area_ul">
-                    <li><a href="#">地区名称</a></li>
-                    <li><a href="#">地区名称</a></li>
-                    <li><a href="#">地区名称</a></li>
-                    <li><a href="#">地区名称</a></li>
-                    <li><a href="#">地区名称</a></li>
-                    <li><a href="#">地区名称</a></li>
-                    <li><a href="#">地区名称</a></li>
-                    <li><a href="#">地区名称</a></li>
+                    #{list areas, as:'area'}
+                    <li><a href="/goods/list/0-021-0-${area.id}">${area.name}</a></li>
+                    #{/list}
                     <span class="three_ie6"><a href="#"
                                                class="font_hei">全部商圈</a></span>
                 </ul>
@@ -196,11 +191,14 @@
         <div id="left_content_top3">
             <div>
                 <ul class="hot_shangpin">
-                    <li class="hot_shangpin_li"><a class="tab2_a"
-                                                   href="#">热门</a></li>
-                    <li class="hot_shangpin_li"><a class="current_tab2"
-                                                   href="#">美食</a></li>
-                    <li class="hot_sp_r"><a href="/goods">更多>></a></li>
+                    <li class="hot_shangpin_li"><a #{if categoryId == 0}class="tab_selected"#{/if}
+                                                   #{else}class="tab_unselected"#{/else}
+                                                   href="/">热门</a></li>
+                    #{list categories, as: 'category'}
+                    <li class="hot_shangpin_li"><a #{if categoryId == category.id}class="tab_selected"#{/if}
+                                                   #{else}class="tab_unselected"#{/else}
+                                                   href="/${category.id}">${category.name}</a></li>
+                    #{/list}
                 </ul>
             </div>
 
