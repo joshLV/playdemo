@@ -5,7 +5,7 @@ table{border-collapse:collapse;}
 #wrap_top_middle{float:left;line-height:89px; font-size:17px; color:#666666; font-weight:700}
 .fen_g{width:1000px; overflow:hidden; height:2px; background:#D72828} /*hengxian red*/
 
-#content_zhuti{padding-left:12px; margin-top:26px;}
+#main_content {padding-left:12px; margin-top:26px;}
 .tab_top{background:url(../images/sq_tuikuan.jpg) no-repeat; width:975px; position:relative; top:1px; height:26px; line-height:26px;}
 .tab_top span{padding-left:20px; font-weight:700}
 .tab_top_box{width:975px; border:solid 1px #D4D4D4; height:474px;}

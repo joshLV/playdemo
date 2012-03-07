@@ -14,7 +14,7 @@ table{border-collapse:collapse;}
 .seach_input_div{ margin-left:3px; float:left;}
 .seach_subimt{ width:63px; height:25px; background:url(../images/subimt_bg.jpg) repeat-x; float:left; border:solid 1px #D1D1D1; margin-left:3px; line-height:25px;  text-align:center; color:#FFFFFF; font-weight:700 }
 
-#content_zhuti{ width:1000px; margin:0 auto}
+#main_content { width:1000px; margin:0 auto}
 /*content*/
 #show_pr_box{ width:1000px; height:auto}
 #left_nav{ width:240px; height:auto; float:left; margin-right:10px;}

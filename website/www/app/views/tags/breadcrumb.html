@@ -1,7 +1,0 @@
-%{
-  breadcrumbs = _arg;
-}%
-<div class="zhu_nav_title">您的位置：<a href="/">首页</a>
-#{list breadcrumbs, as:'breadcrumb'}
-    > <a href="${breadcrumb.url}">${breadcrumb.desc}</a>
-#{/list}</div>

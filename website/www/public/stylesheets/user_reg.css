@@ -6,7 +6,7 @@ table{border-collapse:collapse;}
 #wrap_top_middle{float:left;line-height:89px; font-size:17px; color:#666666; font-weight:700}
 .fen_g{width:1000px; overflow:hidden; height:2px; background:#D72828} /*hengxian red*/
 
-#content_zhuti{padding-left:12px; margin-top:26px;}
+#main_content {padding-left:12px; margin-top:26px;}
 .left_nate{ background:url(../images/uer_reg_left.jpg) no-repeat; width:327px; height:278px;}
 .right_nate{ float:left;width:340px; margin-left:30px; }
 *html .right_nate{ margin-left:0px;}

@@ -6,6 +6,8 @@ import models.sales.Brand;
 import models.sales.Category;
 import models.sales.GoodsCondition;
 import org.apache.commons.lang.StringUtils;
+import play.modules.breadcrumbs.Breadcrumb;
+import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
@@ -29,6 +31,9 @@ public class Goods extends Controller {
     public static int LIMIT = 8;
     public static int PAGE_SIZE = 12;
 
+    /**
+     * 商品列表初始页
+     */
     public static void index() {
         //默认取出5页产品
         List<models.sales.Goods> goodsList = models.sales.Goods.findTop(PAGE_SIZE * 5);
@@ -39,33 +44,37 @@ public class Goods extends Controller {
         List<Brand> brands = Brand.findTop(LIMIT);
 
         GoodsCondition goodsCond = new GoodsCondition();
-        renderArgs.put("categoryId", goodsCond.categoryId);
-        renderArgs.put("cityId", goodsCond.cityId);
-        renderArgs.put("districtId", goodsCond.districtId);
-        renderArgs.put("areaId", goodsCond.areaId);
-        renderArgs.put("brandId", goodsCond.brandId);
-        renderArgs.put("priceFrom", goodsCond.priceFrom);
-        renderArgs.put("priceTo", goodsCond.priceTo);
-        renderArgs.put("orderBy", goodsCond.orderByNum);
-        renderArgs.put("orderByType", goodsCond.orderByTypeNum);
         ValuePaginator goodsPage = new ValuePaginator(goodsList);
         goodsPage.setPageNumber(1);
         goodsPage.setPageSize(PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(false);
-        List<Breadcrumb> breadcrumbs = createBreadcrumbs(goodsCond);
+        BreadcrumbList breadcrumbs = createBreadcrumbs(goodsCond);
 
+        renderGoodsCond(goodsCond);
         render(goodsPage, areas, districts, categories, brands, breadcrumbs);
     }
 
+    /**
+     * 商品详情.
+     *
+     * @param id    商品
+     */
     public static void show(long id) {
         models.sales.Goods goods = models.sales.Goods.findUnDeletedById(id);
         if (goods == null) {
             notFound();
         }
 
-        render(goods);
+        BreadcrumbList breadcrumbs = new BreadcrumbList("商品列表","#");
+
+        render(goods,breadcrumbs);
     }
 
+    /**
+     * 商品列表按条件查询页.
+     *
+     * @param condition 查询条件
+     */
     public static void list(String condition) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
@@ -81,20 +90,10 @@ public class Goods extends Controller {
             List<Category> categories = Category.findTop(LIMIT, goodsCond.categoryId);
             List<Brand> brands = Brand.findTop(LIMIT, goodsCond.brandId);
 
-            renderArgs.put("categoryId", goodsCond.categoryId);
-            renderArgs.put("cityId", goodsCond.cityId);
-            renderArgs.put("districtId", goodsCond.districtId);
-            renderArgs.put("areaId", goodsCond.areaId);
-            renderArgs.put("brandId", goodsCond.brandId);
-            renderArgs.put("priceFrom", goodsCond.priceFrom);
-            renderArgs.put("priceTo", goodsCond.priceTo);
-            renderArgs.put("orderBy", goodsCond.orderByNum);
-            renderArgs.put("orderByType", goodsCond.orderByTypeNum);
 
-            List<Breadcrumb> breadcrumbs = createBreadcrumbs(goodsCond);
+            BreadcrumbList breadcrumbs = createBreadcrumbs(goodsCond);
 
-            System.out.println("----------");
-            System.out.println(breadcrumbs.size());
+            renderGoodsCond(goodsCond);
             render("/Goods/index.html", goodsPage, areas, districts, categories, brands, breadcrumbs);
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,11 +101,22 @@ public class Goods extends Controller {
         }
     }
 
+    private static void renderGoodsCond(GoodsCondition goodsCond) {
+        renderArgs.put("categoryId", goodsCond.categoryId);
+        renderArgs.put("cityId", goodsCond.cityId);
+        renderArgs.put("districtId", goodsCond.districtId);
+        renderArgs.put("areaId", goodsCond.areaId);
+        renderArgs.put("brandId", goodsCond.brandId);
+        renderArgs.put("priceFrom", goodsCond.priceFrom);
+        renderArgs.put("priceTo", goodsCond.priceTo);
+        renderArgs.put("orderBy", goodsCond.orderByNum);
+        renderArgs.put("orderByType", goodsCond.orderByTypeNum);
+    }
+
     private static final String LIST_URL_HEAD = "/goods/list/";
 
-    private static List<Breadcrumb> createBreadcrumbs(GoodsCondition goodsCond) {
-        List<Breadcrumb> breadcrumbs = new ArrayList<>();
-        breadcrumbs.add(new Breadcrumb("商品列表", "/goods"));
+    private static BreadcrumbList createBreadcrumbs(GoodsCondition goodsCond) {
+        BreadcrumbList breadcrumbs = new BreadcrumbList("商品列表", "/goods");
         if (goodsCond.isDefault()) {
             return breadcrumbs;
         }

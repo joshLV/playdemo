@@ -35,6 +35,11 @@ public class GoodsCondition {
 
     }
 
+    /**
+     * 拼接hql的查询条件.
+     *
+     * @param condStr   hql的查询条件
+     */
     public GoodsCondition(String condStr) {
         String[] args = condStr.split("-");
 
@@ -57,7 +62,6 @@ public class GoodsCondition {
         }
         if (args.length > 4) {
             if (isValidAreaId(districtId) && !areaId.contains(districtId)) {
-                System.out.println("districtid is valid:" + areaId + "    " + districtId);
                 areaId = "0";
             }
             brandId = StringUtils.isBlank(args[4]) ? 0 : Long
