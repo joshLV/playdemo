@@ -12,6 +12,8 @@ import java.util.Set;
 public class Brand extends Model {
     public String name;
     public String logo;
+    @Column(name = "company_id")
+    public Long companyId;
     @Column(name = "display_order")
     public int displayOrder;
 
@@ -28,6 +30,11 @@ public class Brand extends Model {
                 new Category(categoryId)).fetch(limit);
     }
 
+
+    public static List<Brand> findByCompanyId(long companyId) {
+        return find("companyId=? order by displayOrder",companyId).fetch();
+    }
+    
     public static List<Brand> findTop(int limit, long brandId) {
         List<Brand> brands = findTop(limit);
         if (brandId != 0) {
