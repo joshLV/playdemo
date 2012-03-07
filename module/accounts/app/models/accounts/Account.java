@@ -32,7 +32,7 @@ public class Account extends Model {
     public static Account getUhuilaAccount(){
         Account account =  Account.find("byUid", uhuilaUid).first();
         if(account == null){
-            throw new RuntimeException("can not get uhuila account");
+            throw new RuntimeException("can not get uhuila account"); //未建立uhuila账户
         }
         return account;
     }
@@ -47,19 +47,4 @@ public class Account extends Model {
         this.createdAt = new Date();
     }
 
-    public Account addCash(BigDecimal augend){
-        if ( this.cashAmount.add(augend).compareTo(BigDecimal.ZERO) >= 0 ){
-            this.cashAmount = this.cashAmount.add(augend);
-            this.amount = this.amount.add(augend);
-        }
-        return this;
-    }
-
-    public Account addUncash(BigDecimal augend){
-        if( this.uncashAmount.add(augend).compareTo(BigDecimal.ZERO) >= 0){
-            this.uncashAmount = this.uncashAmount.add(augend);
-            this.amount = this.amount.add(augend);
-        }
-        return this;
-    }
 }

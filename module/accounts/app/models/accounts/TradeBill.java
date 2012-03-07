@@ -60,13 +60,26 @@ public class TradeBill extends Model {
     @Column(name = "payment_status")
     public TradeStatus tradeStatus;
 
-    public TradeBill(Account fromAccount,Account toAccount, BigDecimal amount, BigDecimal balancePaymentAmount,
+    public TradeBill(Account fromAccount,Account toAccount, BigDecimal balancePaymentAmount,
                      BigDecimal ebankPaymentAmount, TradeType tradeType, PaymentSource paymentSource, Long orderId){
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
-        this.amount = amount;
-        this.balancePaymentAmount = balancePaymentAmount;
+
+        if(balancePaymentAmount == null){
+            this.balancePaymentAmount = BigDecimal.ZERO;
+        }else {
+            this.balancePaymentAmount = balancePaymentAmount;
+        }
+
         this.ebankPaymentAmount = ebankPaymentAmount;
+        if(ebankPaymentAmount == null){
+            this.ebankPaymentAmount = BigDecimal.ZERO;
+        }else {
+            this.ebankPaymentAmount = ebankPaymentAmount;
+        }
+
+        this.amount = this.balancePaymentAmount.add(this.ebankPaymentAmount);
+
         this.tradeType = tradeType;
         this.tradeStatus = TradeStatus.UNPAID;
         this.paymentSource = paymentSource;
@@ -79,44 +92,7 @@ public class TradeBill extends Model {
         this.returnNote = null;
     }
 
-    public static TradeBill createNormalTrade(
-            Account fromAccount, BigDecimal amount, BigDecimal balancePaymentAmount,
-            BigDecimal ebankPaymentAmount, TradeType tradeType, PaymentSource paymentSource, Long orderId){
-        return new TradeBill(fromAccount,
-                Account.getUhuilaAccount(),  //默认使用uhuila账户作为收款账户
-                amount,
-                balancePaymentAmount,
-                ebankPaymentAmount,
-                tradeType,
-                paymentSource,
-                orderId);
-    }
 
-
-    //网银支付成功
-    public static TradeBill success(TradeBill tradeBill){
-        //重新加载账户信息
-        Account fromAccount = Account.findById(tradeBill.fromAccount.getId());
-        Account toAccount = Account.findById(tradeBill.toAccount.getId());
-
-        //余额不足以支付订单中指定的使用余额付款的金额
-        //则将充值的钱打入发起人账户里
-        if(tradeBill.balancePaymentAmount != null
-                && fromAccount.amount.compareTo(tradeBill.balancePaymentAmount) < 0){
-            tradeBill.tradeStatus = TradeStatus.FAILED;
-
-            return tradeBill;
-        }
-
-        tradeBill.tradeStatus = TradeStatus.SUCCESS;
-        tradeBill.save();
-
-        //记录AccountSequence
-
-        //更新账户余额
-
-        return tradeBill;
-    }
 
 }
 

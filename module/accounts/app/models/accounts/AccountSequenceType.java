@@ -1,5 +1,6 @@
 package models.accounts;
 
+
 /**
  * @author likang
  * Date: 12-3-6
@@ -9,5 +10,6 @@ public enum AccountSequenceType {
     WITHDRAW,   //提现
     PAY,        //支付
     REFUND,     //交易退款
-    CANCEL      //交易取消
+    CANCEL,     //交易取消
+    RECEIVE     //收款
 }

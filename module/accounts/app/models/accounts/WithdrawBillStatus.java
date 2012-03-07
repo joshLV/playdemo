@@ -5,6 +5,7 @@ package models.accounts;
  * Date: 12-3-6
  */
 public enum WithdrawBillStatus {
+    APPLIED,
     SUCCESS,
     FAILED
 }
