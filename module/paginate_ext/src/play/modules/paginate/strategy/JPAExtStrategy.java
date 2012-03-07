@@ -132,8 +132,6 @@ public class JPAExtStrategy<T> extends JPARecordLocatorStrategy {
             }
         }
 
-        System.out.println(">>HQL=" + hql.toString());
-
         Query query = em.createQuery(hql.toString());
         if (useQueryCache) {
             query.setHint("org.hibernate.cacheable", true);

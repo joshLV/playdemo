@@ -54,7 +54,7 @@ public class GoodsUnitTest extends UnitTest {
      */
     @Test
     public void testList() {
-        String condition = "0-021- - -0-0-0-0-1";
+        String condition = "0-021-0-0-0-0-0-0-1";
         GoodsCondition goodsCond = new GoodsCondition(condition);
 
         JPAExtPaginator<Goods> goodsPage = models.sales.Goods.findByCondition

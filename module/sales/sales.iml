@@ -87,7 +87,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="paginate_ext" />
+    <orderEntry type="module" module-name="Paginate_ext" />
   </component>
 </module>
 

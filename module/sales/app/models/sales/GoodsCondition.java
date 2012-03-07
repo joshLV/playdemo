@@ -1,6 +1,7 @@
 package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
@@ -15,61 +16,86 @@ import java.util.Map;
  * Time: 4:25 PM
  */
 public class GoodsCondition {
-    public long categoryId;
-    public String cityId;
-    public String districtId;
-    public String areaId;
-    public long brandId;
-    public BigDecimal priceFrom;
-    public BigDecimal priceTo;
-    public String orderBy;
-    public String orderByType;
-    public int orderByNum;
-    public int orderByTypeNum;
+    public long categoryId = 0;
+    public String cityId = SHANGHAI;
+    public String districtId = "0";
+    public String areaId = "0";
+    public long brandId = 0;
+    public BigDecimal priceFrom = new BigDecimal(0);
+    public BigDecimal priceTo = new BigDecimal(0);
+    public String orderBy = getOrderBy(0);
+    public String orderByType = "ASC";
+    public int orderByNum = 0;
+    public int orderByTypeNum = 0;
 
+    public static final String SHANGHAI = "021";
     private Map<String, Object> paramMap = new HashMap<>();
+
+    public GoodsCondition() {
+
+    }
 
     public GoodsCondition(String condStr) {
         String[] args = condStr.split("-");
-        if (args == null || args.length < 9) {
+
+        if (args == null || args.length < 1) {
             throw new IllegalArgumentException("GoodsCondition is illegal!");
         }
-        categoryId = StringUtils.isBlank(args[0]) ? 0 : Long
-                .parseLong(args[0]);
-        cityId = StringUtils.isBlank(args[1]) ? "021" : args[1];
-        districtId = args[2];
-        areaId = args[3];
-        if (!StringUtils.isBlank(districtId) && !areaId.contains(districtId)) {
-            areaId = " ";
-        }
-        brandId = StringUtils.isBlank(args[4]) ? 0 : Long
-                .parseLong(args[4]);
-        priceFrom = StringUtils.isBlank(args[5]) ? new
-                BigDecimal(0) : new BigDecimal(args[5]);
-        priceTo = StringUtils.isBlank(args[6]) ? new
-                BigDecimal(0) : new BigDecimal(args[6]);
-        orderByNum = StringUtils.isBlank(args[7]) ? 0 : Integer.parseInt(args[7]);
-        orderBy = StringUtils.isBlank(args[7]) ? getOrderBy(0)
-                : getOrderBy(Integer.parseInt(args[7]));
-        orderByTypeNum = StringUtils.isBlank(args[8]) ? 1 : Integer.parseInt
-                (args[8]);
-        orderByType = "1".equals(args[8]) ? "DESC" : "ASC";
 
+        if (args.length > 0) {
+            categoryId = StringUtils.isBlank(args[0]) ? 0 : Long
+                    .parseLong(args[0]);
+        }
+        if (args.length > 1) {
+            cityId = StringUtils.isBlank(args[1]) ? SHANGHAI : args[1];
+        }
+        if (args.length > 2) {
+            districtId = args[2];
+        }
+        if (args.length > 3) {
+            areaId = args[3];
+        }
+        if (args.length > 4) {
+            if (isValidAreaId(districtId) && !areaId.contains(districtId)) {
+                System.out.println("districtid is valid:" + areaId + "    " + districtId);
+                areaId = "0";
+            }
+            brandId = StringUtils.isBlank(args[4]) ? 0 : Long
+                    .parseLong(args[4]);
+        }
+        if (args.length > 5) {
+            priceFrom = StringUtils.isBlank(args[5]) ? new
+                    BigDecimal(0) : new BigDecimal(args[5]);
+        }
+        if (args.length > 6) {
+            priceTo = StringUtils.isBlank(args[6]) ? new
+                    BigDecimal(0) : new BigDecimal(args[6]);
+        }
+        if (args.length > 7) {
+            orderByNum = StringUtils.isBlank(args[7]) ? 0 : Integer.parseInt(args[7]);
+            orderBy = StringUtils.isBlank(args[7]) ? getOrderBy(0)
+                    : getOrderBy(Integer.parseInt(args[7]));
+        }
+        if (args.length > 8) {
+            orderByTypeNum = StringUtils.isBlank(args[8]) ? 1 : Integer.parseInt
+                    (args[8]);
+            orderByType = "1".equals(args[8]) ? "DESC" : "ASC";
+        }
     }
 
     public String getFilter() {
         StringBuilder condBuilder = new StringBuilder();
         condBuilder.append(" g.deleted = :deleted");
         paramMap.put("deleted", DeletedStatus.UN_DELETED);
-        if (StringUtils.isNotBlank(areaId)) {
+        if (isValidAreaId(areaId)) {
             condBuilder.append(" and g.id in (select g.id from g.shops s " +
                     "where s.areaId = :areaId)");
             paramMap.put("areaId", areaId);
-        } else if (StringUtils.isNotBlank(districtId)) {
+        } else if (isValidAreaId(districtId)) {
             condBuilder.append(" and g.id in (select g.id from g.shops s " +
                     "where s.areaId like :areaId)");
             paramMap.put("areaId", districtId + "%");
-        } else if (StringUtils.isNotBlank(cityId)) {
+        } else if (isValidAreaId(cityId)) {
             condBuilder.append(" and g.id in (select g.id from g.shops s " +
                     "where s.areaId like :areaId)");
             paramMap.put("areaId", cityId + "%");
@@ -97,11 +123,8 @@ public class GoodsCondition {
     }
 
     public String getOrderByExpress() {
-        String orderType = StringUtils.isBlank(orderByType)
-                ? "ASC" : orderByType;
-        String order = StringUtils.isBlank(orderBy) ? "g.createdAt " +
-                "DESC" : orderBy + " " + orderType;
-        return order;
+        String orderType = StringUtils.isBlank(orderByType) ? "ASC" : orderByType;
+        return StringUtils.isBlank(orderBy) ? "g.createdAt ASC" : orderBy + " " + orderType;
     }
 
     public Map<String, Object> getParamMap() {
@@ -131,7 +154,34 @@ public class GoodsCondition {
         return orderBy;
     }
 
-    public String getParams() {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+
+    public static boolean isValidAreaId(String id) {
+        if (StringUtils.contains(id, ' ')) {
+            return false;
+        }
+        if ("0".equals(id)) {
+            return false;
+        }
+        return true;
+    }
+
+    public String getPriceScopeExpress() {
+        if (priceFrom.compareTo(BigDecimal.ZERO) == 0 && priceTo.compareTo(BigDecimal.ZERO) == 0) {
+            return "全部";
+        }
+        if (priceTo.compareTo(BigDecimal.ZERO) == 0) {
+            return priceFrom + "元以上";
+        }
+        return priceFrom + "-" + priceTo + "元";
+    }
+
+    public String getUrl() {
+        return "/goods/list/" + categoryId + '-' + cityId + '-' + districtId + '-' + areaId + '-' + brandId + '-' + priceFrom + '-' + priceTo
+                + '-' + orderByNum + '-' + orderByTypeNum;
+    }
+
+    public boolean isDefault() {
+        return categoryId == 0 && SHANGHAI.equals(cityId) && !isValidAreaId(districtId) && !isValidAreaId(areaId) &&
+                brandId == 0 && priceFrom.compareTo(BigDecimal.ZERO) == 0 && priceTo.compareTo(BigDecimal.ZERO) == 0;
     }
 }

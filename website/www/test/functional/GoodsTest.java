@@ -46,7 +46,7 @@ public class GoodsTest extends FunctionalTest {
 
     @Test
     public void testList() {
-        Http.Response response = GET("/goods/list/0-021- - -0-0-0-0-1?page=1");
+        Http.Response response = GET("/goods/list/0-021-0-0-0-0-0-0-1?page=1");
         assertIsOk(response);
         assertContentType("text/html", response);
         assertCharset(Play.defaultWebEncoding, response);

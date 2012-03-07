@@ -39,13 +39,13 @@ public class OrderItems extends Model {
 	@Column(name="created_at")
 	public Date  createdAt;
 
-	public OrderItems(Orders order, Goods goods, long number){
+	public OrderItems(Orders order, Goods goods, long buyNumber){
 		this.order = order;
 		this.goods = goods;
 		this.originalPrice = goods.originalPrice;
 		this.salePrice = goods.salePrice;
 		this.goodsName = goods.name;
-		this.buyNumber = number;
+		this.buyNumber = buyNumber;
 		this.createdAt = new Date();
 	}
 

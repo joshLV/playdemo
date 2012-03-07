@@ -14,6 +14,7 @@
 <div id="wrap_top">
 #{include "share/topNavigator.html"/}
 #{include "share/topTabs.html"/}
+
     <div id="sereach_wrap">
         <!--购物车结算-->
         <div class="seach_right">
@@ -104,6 +105,7 @@
 <div id="wrap_content">
 <div style="clear:both"></div>
 <div id="content_zhuti">
+#{breadcrumb breadcrumbs/}
 <!--左侧导航部分-->
 <div id="left_nav">
     <div class="left_top_one">
@@ -223,38 +225,42 @@
     </div>
     <div class="query_items"><span
             class="query_item_title">搜索地区：</span>
-    #{if districtId.equals(" ")}<span class="selected_box">全部</span>
+    #{if "0".equals(districtId)}<span class="selected_box">全部</span>
     #{/if}
     #{else}<a id="district"
-              href="/goods/list/${categoryId}-${cityId}-%20-${areaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+              href="/goods/list/${categoryId}-${cityId}-0-${areaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
               class="font_blue">全部</a>
     #{/else}
     #{list districts, as:'district'}
-        #{if districtId.equals(district.id)}
-            <span id="district" class="selected_box">${district.name}</span>
+        #{if district != null}
+            #{if district.id.equals(districtId)}
+                <span id="district" class="selected_box">${district.name}</span>
+            #{/if}
+            #{else}<a
+                    href="/goods/list/${categoryId}-${cityId}-${district.id}-${areaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                    class="font_blue">${district.name}</a>
+            #{/else}
         #{/if}
-        #{else}<a
-                href="/goods/list/${categoryId}-${cityId}-${district.id}-${areaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
-                class="font_blue">${district.name}</a>
-        #{/else}
     #{/list}
     </div>
     <div class="query_items"><span
             class="query_item_title">推荐商圈：</span>
-    #{if areaId.equals(" ")}<span class="selected_box">全部</span>
+    #{if "0".equals(areaId)}<span class="selected_box">全部</span>
     #{/if}
     #{else}<a
-            href="/goods/list/${categoryId}-${cityId}-${districtId}-%20-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+            href="/goods/list/${categoryId}-${cityId}-${districtId}-0-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
             class="font_blue">全部</a>
     #{/else}
     #{list areas, as:'area'}
-        #{if areaId.equals(area.id)}
-            <span id="area" class="selected_box">${area.name}</span>
+        #{if area != null}
+            #{if areaId.equals(area.id)}
+                <span id="area" class="selected_box">${area.name}</span>
+            #{/if}
+            #{else}<a
+                    href="/goods/list/${categoryId}-${cityId}-${districtId}-${area.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                    class="font_blue">${area.name}</a>
+            #{/else}
         #{/if}
-        #{else}<a
-                href="/goods/list/${categoryId}-${cityId}-${districtId}-${area.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
-                class="font_blue">${area.name}</a>
-        #{/else}
     #{/list}
     </div>
     <div class="query_items xiuzheng"><span
@@ -378,7 +384,6 @@
     <ul class="shop_more_box">
     #{set i:-1/}
     #{paginate.list items:goodsPage, as:'aGoods'}
-    *{#{list goodsList, as:'aGoods'}}*
         #{if (++i%4) == 0 }
         <div class="shangpin_more">
         #{/if}
@@ -401,7 +406,6 @@
         </div>
         #{/if}
     #{/paginate.list}
-    *{#{/list}}*
     </ul>
     <ul class="shop_more_box">
     #{paginate.controls items:goodsPage /}

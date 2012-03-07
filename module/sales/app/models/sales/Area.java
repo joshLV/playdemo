@@ -154,12 +154,12 @@ public class Area extends GenericModel {
     public static List<Area> findTopAreas(String districtId, int limit,
                                           String areaId) {
         List<Area> areas;
-        if (StringUtils.isBlank(districtId)) {
-            areas = findTopAreas(limit);
-        } else {
+        if (GoodsCondition.isValidAreaId(districtId)) {
             areas = findTopAreas(districtId, limit);
+        } else {
+            areas = findTopAreas(limit);
         }
-        if (StringUtils.isNotBlank(areaId)) {
+        if (GoodsCondition.isValidAreaId(areaId)) {
             boolean containsSelectedArea = false;
             for (Area area : areas) {
                 if (area.id.equals(areaId)) {

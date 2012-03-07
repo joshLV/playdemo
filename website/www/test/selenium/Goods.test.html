@@ -1,0 +1,44 @@
+#{fixture delete:'all', load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_unit.yml',
+'fixture/shops_unit.yml','fixture/goods_unit.yml'] /}
+#{selenium 'Test Goods/index.html Normal'}
+open('/goods')
+verifyTextPresent('全部 饮食 旅游')
+verifyTextPresent('搜索地区： 全部 浦东新区')
+verifyTextPresent('推荐商圈： 全部 陆家嘴 96广场')
+verifyTextPresent('推荐品牌： 全部 来一份 豆捞坊')
+verifyTextPresent('价格： 全部 0-30元30-60元60-90元90-120元120-160元160元以上 至 确定')
+verifyTextPresent('排序： 默认 销量 价格 折扣 最新')
+verifyTextPresent('上一页')
+verifyTextPresent('下一页')
+
+assertText('//div[@id='right_content']/div/div[2]/span[2]','全部')
+assertText('//div[@id='right_content']/div/div[3]/span[2]','全部')
+assertText('css=div.query_items.xiuzheng > span.selected_box','全部')
+assertText('css=div.selected_box','全部')
+assertText('css=span.sort_box.selected_border','默认')
+
+
+clickAndWait('link=饮食')
+assertText('css=span.selected_box','饮食')
+
+clickAndWait('link=浦东新区')
+assertText('//span[@id='district']','浦东新区')
+assertText('//div[@id='right_content']/div/div[3]/span[2]','全部')
+assertText('link=陆家嘴','陆家嘴')
+assertText('link=96广场','96广场')
+verifyTextPresent('首页 > 商品列表 > 饮食 > 浦东新区')
+
+open('/goods/list/0-021-0-0-0-0-0-1-1')
+verifyTextPresent('    ‹ 上一页 1 2 下一页 ›  ')
+
+open('/goods/list/0-021-0-0-0-0-30-1-1')
+assertText('link=1','1')
+verifyTextPresent('    ‹ 上一页 1 2 下一页 ›  ')
+
+open('/goods/list/0-021-0-0-0-30-60-1-1')
+assertText('link=1','1')
+verifyTextPresent('    ‹ 上一页 1 下一页 ›  ')
+verifyValue('id=input_price_from','30')
+verifyValue('id=input_price_to','60')
+verifyTextPresent('首页 > 商品列表 > 全部分类 > 全部地区 > 全部商圈 > 全部品牌 > 30-60元')
+#{/selenium}
