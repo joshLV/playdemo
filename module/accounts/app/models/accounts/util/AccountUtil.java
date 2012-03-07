@@ -13,6 +13,16 @@ import java.math.BigDecimal;
  */
 
 public class AccountUtil {
+    private static final long uhuilaUid = 1;
+
+    public static Account getUhuilaAccount(){
+        Account account =  Account.find("byUid", uhuilaUid).first();
+        if(account == null){
+            throw new RuntimeException("can not get uhuila account"); //未建立uhuila账户
+        }
+        return account;
+    }
+
 
     /**
      * 变更账户可提现余额，同时保存凭证相关信息.
@@ -69,7 +79,8 @@ public class AccountUtil {
                                        AccountSequenceType sequenceType, String note){
         //保存账户变动信息
         AccountSequence accountSequence = new AccountSequence(
-                account,AccountSequenceFlag.VOSTRO,                   //账务变动方向：来帐
+                account,
+                AccountSequenceFlag.VOSTRO,                           //账务变动方向：来帐
                 sequenceType,                                         //变动类型
                 account.amount.multiply(amount),                      //变动前资金
                 account.amount,                                       //变动后资金

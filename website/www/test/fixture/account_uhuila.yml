@@ -1,0 +1,7 @@
+accounts.Account(account_uhuila):
+    uid: 1
+    type: ENTERPRISE
+    amount: 10.2
+    cashAmount: 5.1
+    uncashAmount: 5.1
+    status: NORMAL

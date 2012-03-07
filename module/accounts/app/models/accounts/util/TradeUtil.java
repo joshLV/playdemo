@@ -48,7 +48,7 @@ public class TradeUtil {
         }
 
         return new TradeBill(account,
-                Account.getUhuilaAccount(),  //默认使用uhuila账户作为收款账户
+                AccountUtil.getUhuilaAccount(),  //默认使用uhuila账户作为收款账户
                 balancePaymentAmount,
                 ebankPaymentAmount,
                 TradeType.PAY,
