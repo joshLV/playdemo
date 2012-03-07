@@ -4,7 +4,7 @@
 
 # Home page
 GET     /                                       Home.index
-GET     /{categoryId}                           Home.index
+GET     /{<[0-9]+>categoryId}                   Home.index
 GET     /goods                                  Goods.index
 GET     /goods/list/{condition}                 Goods.list
 GET     /goods/{id}                             Goods.show
