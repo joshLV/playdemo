@@ -1,0 +1,98 @@
+#{extends 'layout_trader/layout.html' /}
+#{set title:'资金明细' /}
+<!--主体内容部分-->
+#{set 'moreScripts' }
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<div class="body">
+    <legend>资金明细(最近三个月)</legend>
+    <table width="100%">
+        <tr>
+            <td width="20%">总余额：${account.amount}元</td>
+            <td width="20%">现金余额：${account.cashAmount}元</td>
+            <td width="60%">非现金余额：${account.uncashAmount}元</td>
+        </tr>
+    </table>
+    <form class="form-horizontal" name="form" action="@{AccountSequences.index()}" method="GET">
+        <table>
+            <tr>
+                <td width="50%">创建时间:<input class="input-medium Wdate" type="text" id="createdAtBegin"
+                                            name="condition.createdAtBegin"
+                                            onfocus="WdatePicker({readOnly:true})"
+                                            #{if condition.createdAtBegin != null}
+                                            value="${condition.createdAtBegin.format('yyyy-MM-dd')}"
+                                            #{/if}/> 至
+                    <input class="input-medium Wdate" type="text" id="createdAtEnd" name="condition.createdAtEnd"
+                           onfocus="WdatePicker({readOnly:true})"
+                           #{if condition.createdAtEnd != null}value="${condition.createdAtEnd.format('yyyy-MM-dd')}"
+                           #{/if}/>
+                </td>
+                <td width="20%">资金流向:<input type="radio" name="condition.sequenceFlag" value=""
+                #{if condition.sequenceFlag == null}checked#{/if}>不限</radio>
+                    <input type="radio" name="condition.sequenceFlag" value="VOSTRO"
+                           #{if models.accounts.AccountSequenceFlag.VOSTRO.equals(condition.sequenceFlag)}checked#{/if}/>收入
+                    <input type="radio" name="condition.sequenceFlag" value="NOSTRO"
+                           #{if models.accounts.AccountSequenceFlag.NOSTRO.equals(condition.sequenceFlag)}checked#{/if}/>支出
+                </td>
+                <td width="25%">交易类型:
+                #{select 'condition.sequenceType', value:condition.sequenceType, id:'select1', class:"input-small"}
+                    #{option ""}不限#{/option}
+                    #{option "CHARGE"}&{'account_sequence.CHARGE'}#{/option}
+                    #{option "WITHDRAW"}&{'account_sequence.WITHDRAW'}#{/option}
+                    #{option "PAY"}&{'account_sequence.PAY'}#{/option}
+                    #{option "REFUND"}&{'account_sequence.REFUND'}#{/option}
+                    #{option "CANCEL"}&{'account_sequence.CANCEL'}#{/option}
+                #{/select}
+                </td>
+                <td width="5%" align="right">
+                    <button class="btn btn-primary" id="search" type="submit">搜索</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <table width="100%">
+        <tr>
+            <td width="10%">流水号</td>
+            <td width="10%">订单号</td>
+            <td width="30%">备注</td>
+            <td width="10%">创建时间</td>
+            <td width="10%">交易类型</td>
+            <td width="10%">收入(元)</td>
+            <td width="10%">支出(元)</td>
+        *{<td width="5%">支付方式</td>}*
+            <td width="10%">账户余额(元)</td>
+        </tr>
+    #{paginate.list items:accountSequences, as:'accountSequence'}
+        <tr>
+            <td>${accountSequence.serialNumber}</td>
+            <td>${accountSequence.orderId}</td>
+            <td>${accountSequence.remark}</td>
+            <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>&{'account_sequence.'+accountSequence.sequenceType}</td>
+            <td>#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
+                    ${accountSequence.cashAmount.plus(accountSequence.uncashAmount)}
+                #{/if}</td>
+            <td>#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
+                #{if accountSequence
+                .cashAmount>0}现金￥${accountSequence
+                    .cashAmount}#{/if}
+                #{if accountSequence
+                .cashAmount>0}非现金：${accountSequence
+                    .uncashAmount}#{/if}
+            #{/if}</td>
+        *{<td>&{'account_sequence.'+accountSequence.sequenceType}</td>}*
+            <td>${accountSequence.amount}</td>
+        </tr>
+    #{/paginate.list}
+
+    </table>
+    <div>#{paginate.controls items:accountSequences /}</div>
+</div>
+
+
+
+
+
+
+
+
