@@ -4,6 +4,8 @@
 
 # Home page
 GET     /                                       Home.index
+# 资金帐户
+GET     /account-sequences                               AccountSequences.index
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

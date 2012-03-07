@@ -3,17 +3,25 @@
 require:
     - play
     - play -> cobertura 2.4
+    - play -> paginate head
+    - paginate_ext -> paginate_ext
     - layout_trader -> layout_trader
     - sales -> sales
-    - order -> order
-    - consumer -> consumer
+    - accounts -> accounts
+    - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
 
 repositories:
+    - mavenRepository:
+        type:       iBiblio
+        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
+        contains:
+            - com.uhuila.utils -> *
+        m2compatible: true
     - layoutTraderCustomModules:
         type:       local
         artifact:   "${application.path}/../../module/[module]"
         contains:
             - layout_trader -> *
+            - paginate_ext -> *
             - sales -> *
-            - consumer -> *
-            - order -> *
+            - accounts -> *

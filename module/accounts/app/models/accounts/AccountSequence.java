@@ -1,7 +1,10 @@
 package models.accounts;
 
 import models.accounts.util.SerialNumberUtil;
+import org.apache.commons.lang.time.DateUtils;
 import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
+import play.modules.paginate.ModelPaginator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,7 +12,7 @@ import java.util.Date;
 
 /**
  * 账户资金变动流水
- *
+ * <p/>
  * User: likang
  */
 @Entity
@@ -52,9 +55,13 @@ public class AccountSequence extends Model {
 
     public String remark;                       //备注
 
+    public AccountSequence() {
+
+    }
+
     public AccountSequence(Account account, AccountSequenceFlag sequenceFlag, AccountSequenceType sequenceType,
                            BigDecimal preAmount, BigDecimal amount, BigDecimal cashAmount, BigDecimal uncashAmount,
-                           long referenceSerialId){
+                           long referenceSerialId) {
 
         this.account = account;
         this.sequenceFlag = sequenceFlag;
@@ -71,4 +78,12 @@ public class AccountSequence extends Model {
 
     }
 
+    public static JPAExtPaginator<AccountSequence> findByAccount(AccountSequenceCondition condition, int pageNumber, int pageSize) {
+        JPAExtPaginator<AccountSequence> page = new JPAExtPaginator<>(null, null, AccountSequence.class, condition.getFilter(),
+                condition.getParams());
+        page.orderBy("createdAt DESC");
+        page.setPageNumber(pageNumber);
+        page.setPageSize(pageSize);
+        return page;
+    }
 }

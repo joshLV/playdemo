@@ -2,3 +2,4 @@ self: play -> accounts 0.1
 
 require:
     - play
+    - play -> paginate head

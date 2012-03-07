@@ -309,7 +309,8 @@ public class Goods extends Model {
     public static List<Goods> findTopByCategory(long categoryId,int limit) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
-                "and g.id in (select g.id from g.categories c where c.id = :categoryId) order by g.updatedAt, g.createdAt DESC");
+                "and g.id in (select g.id from g.categories c where c.id = :categoryId) " +
+                "order by g.updatedAt, g.createdAt DESC");
         q.setParameter("status",GoodsStatus.ONSALE);
         q.setParameter("deleted",DeletedStatus.UN_DELETED);
         q.setParameter("categoryId",categoryId);
