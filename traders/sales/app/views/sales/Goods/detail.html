@@ -1,11 +1,5 @@
 #{extends 'layout_trader/layout.html' /}
 #{set title:'查看电子消费券' /}
-#{get 'moreScripts'}
-<script src="@{'/public/javascripts/kindeditor.js'}" type="text/javascript" charset="UTF-8"></script>
-<script src="@{'/public/javascripts/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
-<script src="@{'/public/javascripts/plugins/code/prettify.js'}" type="text/javascript" charset="UTF-8"></script>
-<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-#{/get}
 #{include 'sales/Goods/nav.html' /}
 <div class="body">
  <form class="form-horizontal" name="frm" action="" method="post">
@@ -17,7 +11,7 @@
   </div>
   <div class="control-group">
    <label for="select01" class="control-label">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</label>
-   <div class="controls">哈根达斯
+   <div class="controls">${goods.brand.name}
    </div>
   </div>
   <div class="control-group">

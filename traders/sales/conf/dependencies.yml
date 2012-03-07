@@ -9,6 +9,7 @@ require:
     - commons-lang -> commons-lang 2.6
     - sales -> sales
     - supplier_cas -> supplier_cas
+    - paginate_ext -> paginate_ext
 
 repositories:
     - mavenRepository:
@@ -26,3 +27,4 @@ repositories:
             - layout_trader -> *
             - sales -> *
             - supplier_cas -> *
+            - paginate_ext -> *

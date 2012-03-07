@@ -19,6 +19,7 @@ sales.Goods(Goods1):
  deleted: UN_DELETED
  lockVersion: 2
  materialType: ELECTRONIC
+ brand: Brand_1
 
 sales.Goods(Goods2):
  no: 002
@@ -38,3 +39,4 @@ sales.Goods(Goods2):
  deleted: UN_DELETED
  lockVersion: 2
  materialType: ELECTRONIC
+ brand: Brand_2

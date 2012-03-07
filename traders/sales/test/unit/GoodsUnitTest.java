@@ -17,7 +17,7 @@ public class GoodsUnitTest extends UnitTest {
 		Goods goods = new Goods();
 		//默认商品下架状态
 		goods.status = GoodsStatus.OFFSALE;
-		goods.companyId = "1";
+		goods.companyId = 1l;
 		goods.prompt = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 		goods.details = "aaaaaaaaaasssssssssssssssssss";
 		goods.imagePath = "/1/1/1/" + "111.jpg";

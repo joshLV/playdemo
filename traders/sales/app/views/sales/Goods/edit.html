@@ -2,8 +2,6 @@
 #{set title:'修改电子消费券' /}
 #{get 'moreScripts'}
 <script src="@{'/public/javascripts/kindeditor.js'}" type="text/javascript" charset="UTF-8"></script>
-<script src="@{'/public/javascripts/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
-<script src="@{'/public/javascripts/plugins/code/prettify.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/get}
 #{include 'sales/Goods/nav.html' /}
@@ -26,8 +24,10 @@
   <div class="control-group">
    <label for="select01" class="control-label">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</label>
    <div class="controls">
-    <select id="select03" class="input-small">
-     <option>哈根达斯</option>
+    <select id="select03" name="goods.brand.id" class="input-small">
+    #{list items:brandList, as:'brand' }
+    <option value="${brand.id}" ${brand.id == goods.brand.id ?'seclected':''}>${brand.name}</option>
+    #{/list}
     </select>
    </div>
   </div>
@@ -78,13 +78,13 @@
   <div class="control-group">
    <label for="textarea" class="control-label">温馨提示</label>
    <div class="controls">
-     <textarea name="goods.prompt" cols="100" rows="8" style="width:700px;height:200px;visibility:hidden;">${goods.prompt}</textarea>
+   <textarea name="goods.prompt" id="prompt" cols="100" rows="8" style="width:700px;height:200px;visibility:hidden;">${goods.prompt}</textarea>
    </div>
   </div>
   <div class="control-group">
    <label for="textarea" class="control-label">商品详情</label>
    <div class="controls">
-    <textarea name="goods.details" cols="100" rows="8" style="width:700px;height:200px;visibility:hidden;">${goods.details}</textarea>
+    <textarea name="goods.details" id="details" cols="100" rows="8" style="width:700px;height:200px;visibility:hidden;">${goods.details}</textarea>
    </div>
   </div>
    <div class="control-group">
@@ -115,51 +115,43 @@
    <button class="btn btn-primary" id="view" type="submit">预览</button>
    </div>
   </form>
-  
+
  #{get 'moreScripts'}
 <script type="text/javascript">
-    KindEditor.ready(function(K) {
-        var editor1 = K.create('textarea[name="goods.prompt"]', {
-            cssPath : '/public/javascripts/plugins/code/prettify.css',
-            uploadJson : 'kindeditor/upload_json.jsp',
-            fileManagerJson : '/kindeditor/file_manager_json.jsp',
-            allowFileManager : true,
-            afterCreate : function() {
-                var self = this;
-                K.ctrl(document, 13, function() {
-                    self.sync();
-                    document.forms['frm'].submit();
-                });
-                K.ctrl(self.edit.doc, 13, function() {
-                    self.sync();
-                    document.forms['frm'].submit();
-                });
-            }
+KE.show({
+    id : 'prompt',
+    imageUploadJson : '@{UploadFile.uploadJson()}',
+    fileManagerJson : '@{UploadFile.fileManagerJson()}',
+    allowFileManager : true,
+    afterCreate : function(id) {
+        KE.event.ctrl(document, 13, function() {
+            KE.util.setData(id);
+            document.forms['frm'].submit();
         });
-        prettyPrint();
-    });
-    
-    KindEditor.ready(function(K) {
-        var editor1 = K.create('textarea[name="goods.details"]', {
-             cssPath : '/public/javascripts/plugins/code/prettify.css',
-            uploadJson : '/kindeditor/upload_json.jsp',
-            fileManagerJson : 'kindeditor/file_manager_json.jsp',
-            allowFileManager : true,
-            afterCreate : function() {
-                var self = this;
-                K.ctrl(document, 13, function() {
-                    self.sync();
-                    document.forms['frm'].submit();
-                });
-                K.ctrl(self.edit.doc, 13, function() {
-                    self.sync();
-                    document.forms['frm'].submit();
-                });
-            }
+        KE.event.ctrl(KE.g[id].iframeDoc, 13, function() {
+            KE.util.setData(id);
+            document.forms['frm'].submit();
         });
-        prettyPrint();
-    });
-    
+    }
+});
+
+KE.show({
+    id : 'details',
+    imageUploadJson : '@{UploadFile.uploadJson()}',
+    fileManagerJson : '@{UploadFile.fileManagerJson()}',
+    allowFileManager : true,
+    afterCreate : function(id) {
+        KE.event.ctrl(document, 13, function() {
+            KE.util.setData(id);
+            document.forms['frm'].submit();
+        });
+        KE.event.ctrl(KE.g[id].iframeDoc, 13, function() {
+            KE.util.setData(id);
+            document.forms['frm'].submit();
+        });
+    }
+});
+
     $("#view").click(function() {
     	var fm = $("#frm");
       fm.attr("method", "GET");

@@ -26,6 +26,8 @@ public class GoodsTest extends FunctionalTest {
 	@org.junit.Before
 	public void setup() {
 		Fixtures.delete(Goods.class);
+		Fixtures.loadModels("fixture/areas.yml");
+		Fixtures.loadModels("fixture/base_data.yml");
 		Fixtures.loadModels("fixture/goods.yml");
 	}
 

@@ -6,14 +6,18 @@ package controllers;
 
 import java.io.File;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
+import models.sales.Brand;
+import models.sales.Category;
 import models.sales.GoodsStatus;
-import models.sales.Pager;
 import models.sales.Shop;
+
+import org.apache.commons.lang.StringUtils;
+
 import play.data.validation.Required;
 import play.data.validation.Valid;
+import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import util.FileUploadUtil;
 
@@ -30,25 +34,26 @@ import com.uhuila.common.util.PathUtil;
  */
 public class Goods extends Controller {
 
+	public static int PAGE_SIZE = 15;
+
 	/**
 	 * 展示商品一览页面
 	 */
-	public static void index(models.sales.Goods goods,String page) {
-		Pager pager = new Pager();
-		if(page != null){
-			pager.currPage = Integer.parseInt(page);
-		}
-		List list = goods.query(goods,pager);
-		renderTemplate("sales/Goods/index.html", list,pager);
+	public static void index(models.sales.Goods goods) {
+		String page = request.params.get("page");
+		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+		JPAExtPaginator<models.sales.Goods> list = models.sales.Goods.query1(goods, pageNumber, PAGE_SIZE);
+		renderTemplate("sales/Goods/index.html", list);
 	}
 
 	/**
 	 * 展示添加商品页面
 	 */
 	public static void add() {
-		String companyId="1";
-		List<Shop> list = Shop.findShopByCompany(Long.parseLong(companyId));
-		renderTemplate("sales/Goods/add.html", list);
+		Long companyId=1l;
+		List<Shop> shopList = Shop.findShopByCompany(companyId);
+		List<Brand> brandList = Brand.findByCompanyId(companyId);
+		renderTemplate("sales/Goods/add.html", shopList,brandList);
 	}
 	/**
 	 * 展示添加商品页面
@@ -70,14 +75,14 @@ public class Goods extends Controller {
 			validation.keep();
 			renderTemplate("sales/Goods/add.html");
 		}
-		String companyId="1";
+		Long companyId=1l;
 		//添加商品处理
 		goods.status = "1".equals(status) ? GoodsStatus.ONSALE:GoodsStatus.OFFSALE;
 		goods.companyId = companyId;
 		goods.deleted = DeletedStatus.UN_DELETED;
 		goods.saleCount = 0;
-		goods.details=	htmlspecialchars(goods.details);
-		goods.prompt=	htmlspecialchars(goods.prompt);
+		goods.details=	goods.details;
+		goods.prompt=	goods.prompt;
 		goods.createdAt = new Date();
 		goods.createdBy = "yanjy";
 		goods.create();
@@ -85,36 +90,28 @@ public class Goods extends Controller {
 
 		//全部门店的场合
 		if ("1".equals(radios)) {
-			List<Shop> list = Shop.findShopByCompany(Long.parseLong(companyId));
+			List<Shop> list = Shop.findShopByCompany(companyId);
 			for (Shop shop : list) {
 				goods.addValues(shop);
 			}
 		} else {
 			//部分门店
 			for (Long id : checkoption) {
-                Shop shop = new Shop();
+				Shop shop = new Shop();
 				shop.id=id;
 				goods.addValues(shop);
 			}
 		}
 
-        goods.save();
+		goods.save();
 
 		//预览的情况
 		if ("2".equals(status)) {
 			redirect("http://www.uhuiladev.com/goods/"+goods.id+"?preview=true");
 		}
-		index(null,"1");
+		index(null);
 	}
 
-
-	private static String htmlspecialchars(String str) {
-		str = str.replaceAll("&", "&amp;");
-		str = str.replaceAll("<", "&lt;");
-		str = str.replaceAll(">", "&gt;");
-		str = str.replaceAll("\"", "&quot;");
-		return str;
-	}
 	/**
 	 * 上传图片
 	 * 
@@ -143,11 +140,9 @@ public class Goods extends Controller {
 	 */
 	public static void edit(Long id) {
 		models.sales.Goods goods = models.sales.Goods.findById(id);
-		System.out.println(goods.details);
-		goods.details=	htmlspecialchars(goods.details);
-		goods.prompt=	htmlspecialchars(goods.prompt);
-		List<Shop> list = Shop.findShopByCompany(Long.parseLong(goods.companyId));
-		renderTemplate("sales/Goods/edit.html", goods, list);
+		List<Shop> shopList = Shop.findShopByCompany(goods.companyId);
+		List<Brand> brandList = Brand.findByCompanyId(goods.companyId);
+		renderTemplate("sales/Goods/edit.html", goods, shopList,brandList);
 	}
 
 	/**
@@ -179,9 +174,10 @@ public class Goods extends Controller {
 		updateGoods.details = goods.details;
 		updateGoods.updatedAt = new Date();
 		updateGoods.updatedBy = "ytrr";
+		updateGoods.brand = goods.brand;
 		updateGoods.save();
 
-		index(null,"1");
+		index(null);
 	}
 
 	/**
@@ -195,7 +191,7 @@ public class Goods extends Controller {
 			goods.save();
 		}
 
-		index(null,"1");
+		index(null);
 	}
 
 	/**
@@ -207,7 +203,7 @@ public class Goods extends Controller {
 			goods.deleted=DeletedStatus.DELETED;
 			goods.save();
 		}
-		index(null,"1");
+		index(null);
 	}
 
 }

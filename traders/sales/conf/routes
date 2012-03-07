@@ -13,7 +13,8 @@ GET     /goods/{id}/preview                     Goods.preview
 POST    /goods/{id}/update                      Goods.update
 POST    /updatestatus                           Goods.updateStatus
 DELETE  /goods/{id}/delete                      Goods.delete
-POST    /uploadjson                             Goods.uploadjson
+POST    /goods/upload                           UploadFile.uploadJson
+POST    /goods/filemanager                      UploadFile.fileManagerJson
 
 GET     /shops                                  Shops.list
 GET     /shops/new                              Shops.add

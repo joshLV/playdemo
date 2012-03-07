@@ -1,0 +1,16 @@
+sales.Category(Category_1):
+ "name": "饮食"
+ "displayOrder": "100"
+sales.Category(Category_2):
+ "name": "旅游"
+ "displayOrder": "200"
+
+sales.Brand(Brand_1):
+ "name": "来一份"
+ "displayOrder": "100"
+ "category": "Category_1"
+
+sales.Brand(Brand_2):
+ "name": "豆捞坊"
+ "displayOrder": "200"
+ "category": "Category_1"

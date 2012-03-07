@@ -1,4 +1,5 @@
-#{fixture delete:'all', load:'fixture/goods.yml' /}
+#{fixture delete:'all', load:['fixture/areas.yml','fixture/base_data.yml','fixture/goods.yml'] /}
+
 
 #{selenium '电子消费券一览'}
     open('/goods')
