@@ -1,0 +1,4 @@
+self: play -> breadcrumbs 0.1
+
+require:
+    - play
