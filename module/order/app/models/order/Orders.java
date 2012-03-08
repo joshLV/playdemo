@@ -50,6 +50,7 @@ public class Orders extends Model {
 	@Column(name = "order_no")
 	public String orderNumber;
 
+    @Enumerated(EnumType.STRING)
 	public OrderStatus status;
 
 	public BigDecimal amount;
