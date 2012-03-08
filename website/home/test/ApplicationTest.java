@@ -20,6 +20,8 @@ public class ApplicationTest extends FunctionalTest {
         Fixtures.loadModels("fixture/user.yml");
     }
 
+
+    @Ignore
     @Test
     public void testThatIndexPageWorks() {
         System.out.println("hello");
