@@ -1,0 +1,7 @@
+Menu(main):
+  text: 主菜单
+
+Menu(home):
+  text: 主页
+  action: Application.index
+  parent: main
