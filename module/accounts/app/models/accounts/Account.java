@@ -16,12 +16,6 @@ public class Account extends Model {
 
     public BigDecimal amount;       //总金额
 
-    @Column(name = "cash_amount")
-    public BigDecimal cashAmount;   //可提现金额
-
-    @Column(name = "uncash_amount")
-    public BigDecimal uncashAmount; //不可提现金额
-
     @Enumerated(EnumType.STRING)
     public AccountStatus status;
 
@@ -32,8 +26,6 @@ public class Account extends Model {
         this.uid = uid;
         this.type = type;
         this.amount = new BigDecimal(0);
-        this.cashAmount = new BigDecimal(0);
-        this.uncashAmount = new BigDecimal(0);
         this.status = AccountStatus.NORMAL;
         this.createdAt = new Date();
     }

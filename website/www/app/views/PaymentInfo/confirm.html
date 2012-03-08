@@ -1,10 +1,80 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=gbk">
-        <title>支付宝即时到帐接口</title>
-    </head>
-    <body>
-        ${sHtmlText.raw()}
-    </body>
-</html>
+#{extends 'main.html' /}
+#{set title:'优惠啦 - 确认付款' /}
+#{set 'moreStyles'}
+<link href="@@{'/public/stylesheets/payment_info.css'}" rel="stylesheet" type="text/css"/>
+#{/set}
+#{set 'moreScripts'}
+<script src="@@{'/public/javascripts/payment_info.js'}"></script>
+#{/set}
+
+<div id="full_bg"></div>
+<div id="payment_result">
+    <div style="text-align:center;">
+        <a href="#" onclick="close_result_dialog();">关闭</a><br/><br/>
+        <a href="#">遇到问题，重新选择付款信息</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="#">完成付款，查看结果</a>
+    </div>
+</div>
+<div id="wrap_main">
+    <div id="wrap_top">
+    #{include "share/topNavigator.html"/}
+    </div>
+
+    <div id="wrap_top_header">
+        <div id="wrap_top_header_left"><img src="@{'/public/images/logo.jpg'}"/></div>
+        <div id="wrap_top_middle">卷生活-惠生活</div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="fen_g"></div>
+</div>
+<!--主体内容部分-->
+<div id="wrap_content">
+    <div class="div_step_title">
+        <div class="div_step_text_4">1</div>
+        <div class="div_step_text_1">查看购物车 <span>>></span></div>
+
+        <div class="div_step_3">2</div>
+        <div class="div_step_text_1">确认订单信息<span>>></span></div>
+
+        <div class="div_step_2">3</div>
+        <div class="div_step_text_2">确认付款信息<span class="no_xiuzhen">>></span></div>
+        <div class="div_step_3">4</div>
+        <div class="div_step_text_1">成功</div>
+    </div>
+#{if order}
+#{if order.status == models.order.OrderStatus.PAID}
+<div>恭喜您付款成功</div>
+#{/if}
+#{else }
+
+
+#{/else}
+<div>等待付款结果</div>
+
+#{form @payIt(), target:"_blank", id: "pay_it", style: "display:none"}
+<input name="orderId" value="${order.id}">
+#{/form}
+
+    <script type="text/javascript">
+        $(window).load(
+                function(){
+                    $(window).scroll(function(){reset_result_dialog()});
+                    $(window).resize(function(){reset_result_dialog()});
+
+                    $("#full_bg").css({display:"block"});
+                    reset_result_dialog();
+                    $("#pay_it").submit();
+
+                });
+    </script>
+
+
+#{/if}
+
+#{if !order}
+<div style="padding:20px auto">
+    对不起，找不到您所需要的订单:(
+</div>
+#{/if}
+
+</div>

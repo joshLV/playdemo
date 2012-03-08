@@ -55,12 +55,10 @@ public class AccountUtilTest extends FunctionalTest{
         if(!exception){
             fail();
         }
-        BigDecimal originCash = account.cashAmount;
         BigDecimal originAmount = account.amount;
 
         BigDecimal augend = new BigDecimal(1);
         AccountUtil.addCash(account,augend,new Long(1), AccountSequenceType.CHARGE,"test note");
-        assertEquals(originCash.add(augend), account.cashAmount);
         assertEquals(originAmount.add(augend), account.amount);
 
         assertEquals(1, AccountSequence.findAll().size());

@@ -10,14 +10,16 @@ import play.db.jpa.Model;
 public class PaymentSource extends Model {
     public String name;
     public String detail;
-    public long port;
+    public String code;
     public String logo;
+    public int order;
 
-    public PaymentSource(String name, String detail, long port, String logo){
+    public PaymentSource(String name, String detail, String code, String logo){
         this.name   = name;
         this.detail = detail;
-        this.port   = port;
         this.logo   = logo;
+        this.code = code;
+        this.order = 0;
     }
 }
 

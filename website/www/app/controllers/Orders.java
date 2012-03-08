@@ -58,6 +58,7 @@ public class Orders extends Controller {
                     break;
             }
             render(addressList, eCartList, eCartAmount, rCartList, rCartAmount);
+            return;
         }
         Http.Cookie cookieIdentity = request.cookies.get("identity");
         //从购物车结算购买

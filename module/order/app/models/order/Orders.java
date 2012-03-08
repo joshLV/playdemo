@@ -22,6 +22,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import models.accounts.PaymentSource;
 import models.consumer.Address;
 import models.consumer.User;
 import models.sales.Goods;
@@ -107,6 +108,8 @@ public class Orders extends Model {
 	@Column(name = "lock_version")
 	public int lockVersion;
 
+    public String paymentSourceCode;
+
 	/**
 	 * 逻辑删除,0:未删除，1:已删除
 	 */
@@ -115,6 +118,7 @@ public class Orders extends Model {
 
 	@Column(name = "delivery_no")
 	public String deliveryNo;
+
 	@Column(name = "delivery_type")
 	public int deliveryType;
 	/**
@@ -214,6 +218,20 @@ public class Orders extends Model {
 			this.orderItems.add(orderItems);
 		}
 	}
+
+    public static long itemsNumber(Orders orders){
+        long itemsNumber = 0L;
+        if(orders == null){
+            return itemsNumber;
+        }
+        Object result = OrderItems.em().createNativeQuery(
+                "select sum(buy_number) from order_items where order_id ="
+                        + orders.getId()).getSingleResult();
+        if (result != null) {
+            itemsNumber = ((java.math.BigDecimal)result).longValue();
+        }
+        return itemsNumber;
+    }
 
 	/**
 	 * 生成订单编号.

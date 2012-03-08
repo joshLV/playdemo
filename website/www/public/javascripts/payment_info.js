@@ -26,15 +26,3 @@ function close_result_dialog(){
     $("#full_bg").css({display:"none"});
     $("#payment_result").css({display:"none"});
 }
-$(window).load(
-    function(){
-        $(window).scroll(function(){reset_result_dialog()});
-        $(window).resize(function(){reset_result_dialog()});
-
-        $("#confirm").click(function(){
-            $("#full_bg").css({display:"block"});
-            reset_result_dialog();
-            $("#confirm_form").submit();
-        });    
-        
-    });

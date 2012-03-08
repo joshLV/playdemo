@@ -37,12 +37,6 @@ public class RefundBill extends Model {
 
     public String remark;                   //对于此退款申请的反馈
 
-    @Column(name = "cash_amount")
-    public BigDecimal cashAmount;           //可提现金额
-
-    @Column(name = "uncash_amount")
-    public BigDecimal uncashAmount;         //不可提现金额
-
     public BigDecimal amount;               //总金额
 
     @Enumerated(EnumType.STRING)
@@ -53,27 +47,15 @@ public class RefundBill extends Model {
     @Column(name = "create_at")
     public Date createdAt;
     
-    public RefundBill(TradeBill tradeBill, Long orderId, String applyNote, BigDecimal cashAmount,
-                      BigDecimal uncashAmount){
+    public RefundBill(TradeBill tradeBill, Long orderId, String applyNote, BigDecimal amount){
 
         this.account = tradeBill.fromAccount;
         this.tradeBill = tradeBill;
         this.orderId = orderId;
         this.applyNote = applyNote;
+        this.amount = amount;
+
         this.remark = null;
-        if(cashAmount == null){
-            this.cashAmount = BigDecimal.ZERO;
-        }else {
-            this.cashAmount = cashAmount;
-        }
-
-        if(uncashAmount == null){
-            this.uncashAmount = BigDecimal.ZERO;
-        }else {
-            this.uncashAmount = uncashAmount;
-        }
-
-        this.amount = this.cashAmount.add(this.uncashAmount);
         this.createdAt = new Date();
         this.serialNumber = SerialNumberUtil.generateSerialNumber(this.createdAt);
         this.refundStatus = RefundStatus.APPLIED;

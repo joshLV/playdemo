@@ -1,6 +1,8 @@
 package controllers;
 
 import controllers.modules.webcas.WebCAS;
+import models.accounts.util.AccountUtil;
+import models.accounts.util.TradeUtil;
 import models.consumer.*;
 import models.accounts.*;
 import models.order.*;
@@ -9,6 +11,7 @@ import play.mvc.With;
 
 import thirdpart.alipay.services.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import controllers.modules.cas.SecureCAS;
@@ -16,40 +19,101 @@ import controllers.modules.cas.SecureCAS;
 @With({SecureCAS.class, WebCAS.class})
 public class PaymentInfo extends Controller {
 
+    /**
+     * 展示确认支付信息页.
+     *
+     * @param id 订单ID
+     */
     public static void index(long id) {
-        String username = session.get("username");
-        User user = User.find("byLoginName", username).first();
+        //加载用户账户信息
+        User user = WebCAS.getUser();
         Account account = Account.find("byUid", user.getId()).first();
 
-        models.order.Orders order = models.order.Orders.findById(id);
+        //加载订单信息
+        models.order.Orders order = models.order.Orders.find("byIdAndUser",id, user).first();
+        long goodsNumber = models.order.Orders.itemsNumber(order);
+        
+        List<PaymentSource> paymentSources = PaymentSource.find("order by order desc").fetch();
 
-        long goodsNumber = 0;
-        if (order != null){
-            Object result = OrderItems.em().createNativeQuery(
-                    "select sum(number) from order_items where order_id =" 
-                    + order.getId()).getSingleResult();
-            if (result != null) {
-                goodsNumber = ((java.math.BigDecimal)result).longValue();
-            }
-        }
-
-        render(user, account, order, goodsNumber);
+        render(user, account, order, goodsNumber, paymentSources);
     }
 
-    public static void confirm(long orderId, boolean useBalance) {
-        String username = session.get("username");
-        User user = User.find("byLoginName", username).first();
+
+    /**
+     * 接收用户反馈的订单的支付信息.
+     *
+     * @param orderId           订单ID
+     * @param useBalance        是否使用余额
+     * @param paymentSourceCode 网银代码
+     */
+    public static void confirm(long orderId, boolean useBalance, String paymentSourceCode) {
+        User user = WebCAS.getUser();
+        models.order.Orders order = models.order.Orders.find("byIdAndUser",orderId,user).first();
+        
+        if (order == null){
+            error(500,"no such order");
+            return;
+        }
+
         Account account = Account.find("byUid", user.getId()).first();
-        models.order.Orders order = models.order.Orders.findById(orderId);
+
+        //计算使用余额支付和使用银行卡支付的金额
+        BigDecimal balancePaymentAmount = BigDecimal.ZERO;
+        BigDecimal ebankPaymentAmount = BigDecimal.ZERO;
+        if (useBalance){
+            balancePaymentAmount = account.amount.min(order.needPay);
+            ebankPaymentAmount = order.needPay.subtract(balancePaymentAmount);
+        }else {
+            ebankPaymentAmount = order.needPay;
+        }
+        order.accountPay = balancePaymentAmount;
+        order.discountPay = ebankPaymentAmount;
+
+        //创建订单交易
+        PaymentSource paymentSource = PaymentSource.find("byCode", paymentSourceCode).first();
+        TradeBill tradeBill =
+                TradeUtil.createOrderTrade(account, balancePaymentAmount,ebankPaymentAmount,paymentSource, orderId);
+        if(tradeBill == null){
+            error(500, "error create trade bill");
+            return;
+        }
+        order.payRequestId = tradeBill.getId();
+        order.paymentSourceCode = paymentSourceCode;
+
+        //如果使用余额足以支付，则付款直接成功
+        if (ebankPaymentAmount.compareTo(BigDecimal.ZERO) == 0){
+            order.status = OrderStatus.PAID;
+            TradeUtil.success(tradeBill);
+            order.save();
+            return;
+        }
+
+        /*网银付款*/
+
+        //无法确定支付渠道
+        if(paymentSource == null){
+            error(500, "can not get paymentSource");
+            return;
+        }
+
+        order.save();
+        render(order);
+
+    }
+
+    /**
+     * 生成网银跳转页.
+     *
+     * @param orderId               订单
+     */
+    public static void payIt(long orderId){
+        User user = WebCAS.getUser();
+        models.order.Orders order = models.order.Orders.find("byIdAndUser",orderId,user).first();
 
         if (order == null){
             error(500,"no such order");
             return;
         }
-        
-        order.needPay = order.amount;
-        order.save();
-
 
         //必填参数//
 
@@ -86,7 +150,7 @@ public class PaymentInfo extends Controller {
         //请配置好该环境。
         //4.建议使用POST方式请求数据
         //示例：
-        //anti_phishing_key = AlipayService.query_timestamp();  
+        //anti_phishing_key = AlipayService.query_timestamp();
         //获取防钓鱼时间戳函数
         //exter_invoke_ip = "202.1.1.1";
 
@@ -119,7 +183,7 @@ public class PaymentInfo extends Controller {
         sParaTemp.put("payment_type", "1");
         sParaTemp.put("out_trade_no", out_trade_no);
         sParaTemp.put("subject", subject);
-//        sParaTemp.put("body", body);
+//        sParaTemp.put("body", body);    //play 无法方便的获得传回的body参数，因此干脆不请求此参数
         sParaTemp.put("total_fee", total_fee);
         sParaTemp.put("show_url", show_url);
         sParaTemp.put("paymethod", paymethod);
@@ -134,6 +198,9 @@ public class PaymentInfo extends Controller {
         //构造函数，生成请求URL
         String sHtmlText = AlipayService.create_direct_pay_by_user(sParaTemp);
         render(sHtmlText);
+
     }
+
+
 }
 

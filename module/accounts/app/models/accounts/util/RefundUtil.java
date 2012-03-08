@@ -22,12 +22,10 @@ public class RefundUtil {
      * @param tradeBill     原交易流水
      * @param orderId       原订单号
      * @param applyNote     退款申请
-     * @param cashAmount    可提现金额
-     * @param uncashAmount  不可提现金额
+     * @param amount        退款金额
      * @return              创建成功的退款流水
      */
-    public static RefundBill create(TradeBill tradeBill, Long orderId, String applyNote,
-                                    BigDecimal cashAmount, BigDecimal uncashAmount){
+    public static RefundBill create(TradeBill tradeBill, Long orderId, String applyNote,BigDecimal amount){
         if(tradeBill == null){
             Logger.error("error while create refund bill: invalid tradeBill");
             return null;
@@ -37,8 +35,7 @@ public class RefundUtil {
             return null;
         }
 
-        return new RefundBill(tradeBill, orderId, applyNote, cashAmount,uncashAmount)
-                .save();
+        return new RefundBill(tradeBill, orderId, applyNote, amount).save();
 
     }
 
@@ -52,13 +49,8 @@ public class RefundUtil {
         refundBill.refundStatus = RefundStatus.SUCCESS;
 
         //更新账户余额
-        AccountUtil.addCash(refundBill.account, refundBill.cashAmount,refundBill.getId(),
+        AccountUtil.addCash(refundBill.account, refundBill.amount,refundBill.getId(),
                 AccountSequenceType.REFUND,"退款");
-
-        if(refundBill.uncashAmount.compareTo(BigDecimal.ZERO) > 0){
-            AccountUtil.addUncash(refundBill.account, refundBill.uncashAmount, refundBill.getId(),
-                    AccountSequenceType.REFUND, "退款");
-        }
 
         return refundBill.save();
     }

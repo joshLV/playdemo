@@ -25,7 +25,7 @@ public class AccountUtil {
 
 
     /**
-     * 变更账户可提现余额，同时保存凭证相关信息.
+     * 变更账户可余额，同时保存凭证相关信息.
      *
      * @param account       需要变更的账户
      * @param augend        变更额度
@@ -40,8 +40,7 @@ public class AccountUtil {
             throw new RuntimeException("error while add cash to account: miss parameter");
         }
 
-        if ( account.cashAmount.add(augend).compareTo(BigDecimal.ZERO) >= 0 ){
-            account.cashAmount = account.cashAmount.add(augend);
+        if ( account.amount.add(augend).compareTo(BigDecimal.ZERO) >= 0 ){
             account.amount = account.amount.add(augend);
         }
         account.save();
@@ -49,32 +48,6 @@ public class AccountUtil {
         return account;
     }
 
-
-    /**
-     * 变更账户不可提现余额，同时保存凭证相关信息.
-     *
-     * @param account       需要变更的账户
-     * @param augend        变更额度
-     * @param billId        关联的交易ID
-     * @param sequenceType  账户资金变动类型
-     * @param note          变动备注
-     * @return              变更后的账户
-     */
-    public static Account addUncash(Account account, BigDecimal augend, Long billId, AccountSequenceType sequenceType,
-                                    String note){
-        if(billId == null || sequenceType == null){
-            throw new RuntimeException("error while add cash to account: miss parameter");
-        }
-
-        if( account.uncashAmount.add(augend).compareTo(BigDecimal.ZERO) >= 0){
-            account.uncashAmount = account.uncashAmount.add(augend);
-            account.amount = account.amount.add(augend);
-        }
-        account.save();
-        accountChanged(account, augend, billId, sequenceType, note);
-        return account;
-    }
-    
     private static void accountChanged(Account account, BigDecimal amount, Long billId,
                                        AccountSequenceType sequenceType, String note){
         //保存账户变动信息

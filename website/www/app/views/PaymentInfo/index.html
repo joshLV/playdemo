@@ -5,6 +5,14 @@
 #{/set}
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/payment_info.js'}"></script>
+<script type="text/javascript">
+    $(window).load(
+            function(){
+                $("#confirm").click(function(){$("#confirm_form").submit()});
+
+            });
+</script>
+
 #{/set}
 
 <div id="full_bg"></div>
@@ -43,6 +51,8 @@
     </div>
 #{if order}
     <div id="pay_mothod_box">
+        #{form @confirm() ,target:"_blank", id:"confirm_form"}
+
         <div class="top_bg_fense">
             <div class="arrow_left"></div>
             付款方式 <a class="font_blue noral_zhe" href="#">了解详情</a></div>
@@ -74,9 +84,12 @@
                     <tr>
                         <td height="50" align="left">
                             <div class="top_youhui2">
-                                <input type="checkbox" name="checkbox2" id="use_balance" disabled="disabled"/>用余额付款<span
-                                    class="font_red_one font_weigh">0.00</span>元。剩余<span
-                                    class="font_red_one font_weigh">${order.amount}</span>元可选择其他付款方式付款。
+                                <input type="checkbox" name="useBalance" id="use_balance" />用余额付款<span
+                                    class="font_red_one font_weigh">${account.amount.min(order.needPay)}</span>元。
+                                #{if account.amount.compareTo(order.needPay) < 0}
+                                    剩余<span
+                                        class="font_red_one font_weigh">${order.amount}</span>元可选择其他付款方式付款。
+                                #{/if}
                             </div>
                         </td>
                     </tr>
@@ -164,7 +177,7 @@
             <div>
                 <div class="zhifubao_pay">
                     <div class="zhifubao_input">
-                        <input name="payment_way" type="radio" checked="checked"/>
+                        <input name="paymentSourceCode" type="radio" checked="checked" value="alipay"/>
                     </div>
                     <div><img src="@{'/public/images/pay_icon/zhifubao_pay.jpg'}"/></div>
                 </div>
@@ -192,10 +205,9 @@
                     }*
             </div>
         </div>
-        #{form @confirm() ,target:"_blank", id:"confirm_form"}
             <input type="hidden" value="${order.id}" name="orderId"/>
 
-            <div class="buttom_queren"><a class="suc_ok_bg" href="#" id="confirm" on>确认订单，付款</a></div>
+            <div class="buttom_queren"><a class="suc_ok_bg" href="#" id="confirm" >确认订单，付款</a></div>
         #{/form}
     </div>
 

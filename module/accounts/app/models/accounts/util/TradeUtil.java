@@ -30,11 +30,11 @@ public class TradeUtil {
             Logger.error("error while create order trade: no account specified");
             return null;
         }
-        if(balancePaymentAmount != null && balancePaymentAmount.compareTo(BigDecimal.ZERO) <= 0){
+        if(balancePaymentAmount != null && balancePaymentAmount.compareTo(BigDecimal.ZERO) < 0){
             Logger.error("error while create order trade: invalid balancePaymentAmount");
             return null;
         }
-        if(ebankPaymentAmount != null && ebankPaymentAmount.compareTo(BigDecimal.ZERO) <= 0){
+        if(ebankPaymentAmount != null && ebankPaymentAmount.compareTo(BigDecimal.ZERO) < 0){
             Logger.error("error while create order trade: invalid ebankPaymentAmount");
             return null;
         }
@@ -132,7 +132,7 @@ public class TradeUtil {
 
 
     /**
-     * 网银支付成功
+     * 交易成功
      *
      * @param tradeBill     需变更的交易记录
      * @return              更新后的交易记录
@@ -158,11 +158,9 @@ public class TradeUtil {
             return tradeBill;
         }
 
-        tradeBill.save();
-
         AccountUtil.addCash(
                 tradeBill.fromAccount,
-                BigDecimal.ZERO.subtract(tradeBill.balancePaymentAmount),
+                tradeBill.balancePaymentAmount.negate(),
                 tradeBill.getId(),
                 AccountSequenceType.PAY,
                 "支付");
@@ -173,6 +171,6 @@ public class TradeUtil {
                 AccountSequenceType.RECEIVE,
                 "收款");
 
-        return tradeBill;
+        return tradeBill.save();
     }
 }
