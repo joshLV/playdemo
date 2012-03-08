@@ -118,6 +118,10 @@ public class Navigation {
         nav.loadVersion = currentLoadVersion;
         nav.updatedAt = new Date();
 
+        if (entry.parent != null) {
+            nav.parent = SupplierNavigation.find("byName", entry.parent.name).first();
+        }
+
         nav.save();
     }
 
