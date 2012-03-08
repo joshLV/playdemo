@@ -7,6 +7,7 @@ require:
     - layout_trader -> layout_trader
     - paginate_ext -> paginate_ext
     - supplier_cas -> supplier_cas
+    - supplier_navigation -> supplier_navigation
 
 repositories:
     - mavenRepository:
@@ -15,6 +16,7 @@ repositories:
         contains:
             - com.uhuila.utils -> *
         m2compatible: true
+
     - customModules:
         type:       local
         artifact:   "${application.path}/../../module/[module]"
@@ -22,3 +24,4 @@ repositories:
             - layout_trader -> *
             - supplier_cas -> *
             - paginate_ext -> *
+            - supplier_navigation -> *
