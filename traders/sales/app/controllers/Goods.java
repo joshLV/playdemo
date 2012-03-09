@@ -81,8 +81,6 @@ public class Goods extends Controller {
 		goods.companyId = companyId;
 		goods.deleted = DeletedStatus.UN_DELETED;
 		goods.saleCount = 0;
-		goods.details=	goods.details;
-		goods.prompt=	goods.prompt;
 		goods.createdAt = new Date();
 		goods.createdBy = "yanjy";
 		goods.create();

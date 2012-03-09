@@ -183,8 +183,6 @@
                     #{list areas, as:'area'}
                     <li><a href="/goods/list/0-021-0-${area.id}">${area.name}</a></li>
                     #{/list}
-                    <span class="three_ie6"><a href="#"
-                                               class="font_hei">全部商圈</a></span>
                 </ul>
             </div>
         </div>
@@ -199,6 +197,8 @@
                                                    #{else}class="tab_unselected"#{/else}
                                                    href="/${category.id}">${category.name}</a></li>
                     #{/list}
+                    <li width="235px" class="hot_shangpin_li" align="right"><a href="/goods"
+                                                                      class="tab_unselected">更多>></a></li>
                 </ul>
             </div>
 
