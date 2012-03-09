@@ -4,43 +4,19 @@
  */
 package models.sales;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
+import com.uhuila.common.constants.DeletedStatus;
 import org.apache.commons.lang.StringUtils;
-
 import play.Play;
 import play.data.validation.Required;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import com.uhuila.common.constants.DeletedStatus;
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Entity
 @Table(name = "goods")
@@ -73,7 +49,7 @@ public class Goods extends Model {
     public Set<Shop> shops;
 
     public void addValues(Shop shop) {
-        if (this.shops ==null) {
+        if (this.shops == null) {
             this.shops = new HashSet<>();
         }
         if (!this.shops.contains(shop)) {
@@ -167,24 +143,22 @@ public class Goods extends Model {
         if (originalPrice != null && originalPrice.compareTo(new BigDecimal(0)) > 0) {
             this.discount = salePrice.divide(originalPrice).multiply
                     (new BigDecimal(100)).toBigInteger().intValue();
+        } else {
+            this.discount = 0;
         }
-        this.discount = 0;
         return discount;
     }
 
     @Transient
     public String getDiscountExpress() {
-        if (originalPrice != null && originalPrice.compareTo(new BigDecimal(0)) > 0) {
-            int discount = getDiscount();
-            if (discount == 100) {
-                return "";
-            }
-            if (discount % 10 == 0) {
-                return String.valueOf(discount / 10);
-            }
-            return String.valueOf(discount);
+        int discount = getDiscount();
+        if (discount == 100) {
+            return "";
         }
-        return "";
+        if (discount % 10 == 0) {
+            return String.valueOf(discount / 10);
+        }
+        return String.valueOf(discount);
     }
 
     /**
@@ -306,14 +280,14 @@ public class Goods extends Model {
      * @param limit
      * @return
      */
-    public static List<Goods> findTopByCategory(long categoryId,int limit) {
+    public static List<Goods> findTopByCategory(long categoryId, int limit) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
                 "and g.id in (select g.id from g.categories c where c.id = :categoryId) " +
                 "order by g.updatedAt, g.createdAt DESC");
-        q.setParameter("status",GoodsStatus.ONSALE);
-        q.setParameter("deleted",DeletedStatus.UN_DELETED);
-        q.setParameter("categoryId",categoryId);
+        q.setParameter("status", GoodsStatus.ONSALE);
+        q.setParameter("deleted", DeletedStatus.UN_DELETED);
+        q.setParameter("categoryId", categoryId);
         q.setMaxResults(limit);
         return q.getResultList();
 //        return find("status=? and deleted=? and categories.id=? order by updatedAt,createdAt DESC",
@@ -328,56 +302,56 @@ public class Goods extends Model {
     }
 
     /**
-	 * 商品一览
-	 * 
-	 * @param goods
-	 * @param pageNumber
-	 * @param pageSize
-	 * @return
-	 */
-	public static JPAExtPaginator<Goods> query1(models.sales.Goods goods, int pageNumber, int pageSize) {
+     * 商品一览
+     *
+     * @param goods
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    public static JPAExtPaginator<Goods> query1(models.sales.Goods goods, int pageNumber, int pageSize) {
 
-		StringBuilder condition = new StringBuilder();
-		condition.append(" deleted = :deleted ");
-		Map<String, Object> params = new HashMap<>();
-		params.put("deleted",DeletedStatus.UN_DELETED);
+        StringBuilder condition = new StringBuilder();
+        condition.append(" deleted = :deleted ");
+        Map<String, Object> params = new HashMap<>();
+        params.put("deleted", DeletedStatus.UN_DELETED);
 
-		if (StringUtils.isNotBlank(goods.name)) {
-			condition.append(" and name like :name");
-			params.put("name" , "%"+ goods.name + "%");
-		}
-		if (StringUtils.isNotBlank(goods.no)) {
-			condition.append(" and no like :no ");
-			params.put("no","%" + goods.no + "%");
-		}
-		if (goods.status !=null) {
-			condition.append(" and status = :status ");
-			params.put("status",goods.status);
-		}
-		if (StringUtils.isNotBlank(goods.salePriceBegin)) {
-			condition.append(" and salePrice >= :salePriceBegin");
-			params.put("salePriceBegin",new BigDecimal(goods.salePriceBegin));
-		}
-		if (StringUtils.isNotBlank(goods.salePriceEnd)) {
-			condition.append(" and salePrice <= :salePriceEnd");
-			params.put("salePriceEnd",new BigDecimal(goods.salePriceEnd));
-		}
-		if (goods.saleCountBegin > 0) {
-			condition.append(" and saleCount >= :saleCountBegin");
-			params.put("saleCountBegin",goods.saleCountBegin);
-		}
-		if (goods.saleCountEnd > 0) {
-			condition.append(" and saleCount <= :saleCountEnd");
-			params.put("saleCountEnd",goods.saleCountEnd);
-		}
+        if (StringUtils.isNotBlank(goods.name)) {
+            condition.append(" and name like :name");
+            params.put("name", "%" + goods.name + "%");
+        }
+        if (StringUtils.isNotBlank(goods.no)) {
+            condition.append(" and no like :no ");
+            params.put("no", "%" + goods.no + "%");
+        }
+        if (goods.status != null) {
+            condition.append(" and status = :status ");
+            params.put("status", goods.status);
+        }
+        if (StringUtils.isNotBlank(goods.salePriceBegin)) {
+            condition.append(" and salePrice >= :salePriceBegin");
+            params.put("salePriceBegin", new BigDecimal(goods.salePriceBegin));
+        }
+        if (StringUtils.isNotBlank(goods.salePriceEnd)) {
+            condition.append(" and salePrice <= :salePriceEnd");
+            params.put("salePriceEnd", new BigDecimal(goods.salePriceEnd));
+        }
+        if (goods.saleCountBegin > 0) {
+            condition.append(" and saleCount >= :saleCountBegin");
+            params.put("saleCountBegin", goods.saleCountBegin);
+        }
+        if (goods.saleCountEnd > 0) {
+            condition.append(" and saleCount <= :saleCountEnd");
+            params.put("saleCountEnd", goods.saleCountEnd);
+        }
 
-		JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>("Goods g", "g", Goods.class, condition.toString(),
-				params).orderBy("created_at desc");
-		goodsPage.setPageNumber(pageNumber);
-		goodsPage.setPageSize(pageSize);
-		goodsPage.setBoundaryControlsEnabled(false);
-		return goodsPage;
-	}
+        JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>("Goods g", "g", Goods.class, condition.toString(),
+                params).orderBy("created_at desc");
+        goodsPage.setPageNumber(pageNumber);
+        goodsPage.setPageSize(pageSize);
+        goodsPage.setBoundaryControlsEnabled(false);
+        return goodsPage;
+    }
 
     public static JPAExtPaginator<Goods> findByCondition(GoodsCondition condition,
                                                          int pageNumber, int pageSize) {
