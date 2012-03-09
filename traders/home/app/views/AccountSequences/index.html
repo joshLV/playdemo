@@ -5,18 +5,17 @@
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 <div class="body">
-    <legend>资金明细(最近三个月)</legend>
-    <table width="100%">
+    <legend>资金明细</legend>
+    <table class="table">
         <tr>
-            <td width="20%">总余额：${account.amount}元</td>
-            <td width="20%">现金余额：${account.cashAmount}元</td>
-            <td width="60%">非现金余额：${account.uncashAmount}元</td>
+            <td width="20%">余额：${account.amount}元</td>
         </tr>
     </table>
-    <form class="form-horizontal" name="form" action="@{AccountSequences.index()}" method="GET">
+    <form class="well form-search" name="form" action="@{AccountSequences.index()}" method="GET">
         <table>
             <tr>
-                <td width="50%">创建时间:<input class="input-medium Wdate" type="text" id="createdAtBegin"
+                <td width="50%"><label>创建时间:</label><input class="input-medium Wdate"
+                                            type="text" id="createdAtBegin"
                                             name="condition.createdAtBegin"
                                             onfocus="WdatePicker({readOnly:true})"
                                             #{if condition.createdAtBegin != null}
@@ -27,14 +26,14 @@
                            #{if condition.createdAtEnd != null}value="${condition.createdAtEnd.format('yyyy-MM-dd')}"
                            #{/if}/>
                 </td>
-                <td width="20%">资金流向:<input type="radio" name="condition.sequenceFlag" value=""
+                <td width="25%"><label>资金流向:</label><input type="radio" name="condition.sequenceFlag" value=""
                 #{if condition.sequenceFlag == null}checked#{/if}>不限</radio>
                     <input type="radio" name="condition.sequenceFlag" value="VOSTRO"
                            #{if models.accounts.AccountSequenceFlag.VOSTRO.equals(condition.sequenceFlag)}checked#{/if}/>收入
                     <input type="radio" name="condition.sequenceFlag" value="NOSTRO"
                            #{if models.accounts.AccountSequenceFlag.NOSTRO.equals(condition.sequenceFlag)}checked#{/if}/>支出
                 </td>
-                <td width="25%">交易类型:
+                <td width="20%"><label class="control-label">交易类型:</label>
                 #{select 'condition.sequenceType', value:condition.sequenceType, id:'select1', class:"input-small"}
                     #{option ""}不限#{/option}
                     #{option "CHARGE"}&{'account_sequence.CHARGE'}#{/option}
@@ -44,13 +43,13 @@
                     #{option "CANCEL"}&{'account_sequence.CANCEL'}#{/option}
                 #{/select}
                 </td>
-                <td width="5%" align="right">
+                <td width="5%">
                     <button class="btn btn-primary" id="search" type="submit">搜索</button>
                 </td>
             </tr>
         </table>
     </form>
-    <table width="100%">
+    <table class="table table-striped table-bordered table-condensed">
         <tr>
             <td width="10%">流水号</td>
             <td width="10%">订单号</td>
@@ -70,15 +69,12 @@
             <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>&{'account_sequence.'+accountSequence.sequenceType}</td>
             <td>#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
-                    ${accountSequence.cashAmount.plus(accountSequence.uncashAmount)}
+                    ${accountSequence.cashAmount.add(accountSequence.uncashAmount)}
                 #{/if}</td>
             <td>#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
-                #{if accountSequence
-                .cashAmount>0}现金￥${accountSequence
-                    .cashAmount}#{/if}
-                #{if accountSequence
-                .cashAmount>0}非现金：${accountSequence
-                    .uncashAmount}#{/if}
+                ${accountSequence
+                .cashAmount.add(accountSequence
+                .uncashAmount)}
             #{/if}</td>
         *{<td>&{'account_sequence.'+accountSequence.sequenceType}</td>}*
             <td>${accountSequence.amount}</td>
