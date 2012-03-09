@@ -1,16 +1,14 @@
 package models.order;
 
 import models.sales.Goods;
-import play.data.validation.Required;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,6 +20,8 @@ import java.util.Map;
 @Entity
 @Table(name = "e_coupon")
 public class ECoupon extends Model {
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmssSSS");
+    private static DecimalFormat decimalFormat = new DecimalFormat("00000");
 
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="order_id",nullable=true)
@@ -30,15 +30,14 @@ public class ECoupon extends Model {
     @ManyToOne
     Goods goods;
 
-    @Required
     @Column(name="e_coupon_sn")
     public String eCouponSn;
 
     @Column(name="e_coupon_price")
-    public Float eCouponPrice;
+    public BigDecimal eCouponPrice;
 
     @Column(name="refund_price")
-    public Float refundPrice;
+    public BigDecimal refundPrice;
 
     @Column(name="created_at")
     @Temporal(TemporalType.DATE)
@@ -50,11 +49,27 @@ public class ECoupon extends Model {
     @Column(name="refund_at")
     public Date refundAt;
     
-    @Column(name="buy_number")
-    public int buyNumber;
-    
     @Enumerated(EnumType.STRING)
     public ECouponStatus status;
+
+    public ECoupon(Orders order, Goods goods, BigDecimal eCouponPrice){
+        this.order = order;
+        this.goods = goods;
+        this.eCouponPrice = eCouponPrice;
+        this.refundPrice = eCouponPrice;
+        this.createdAt = new Date();
+
+        this.consumedAt = null;
+        this.refundAt = null;
+        this.status = ECouponStatus.UNCONSUMED;
+        this.eCouponSn = generateSerialNumber();
+    }
+
+    private String generateSerialNumber() {
+        int random = new Random().nextInt() % 10000;
+        return dateFormat.format(new Date()) + decimalFormat.format(random);
+
+    }
 
     /**
      * 根据页面录入券号查询对应信息

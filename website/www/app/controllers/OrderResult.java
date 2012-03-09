@@ -73,7 +73,7 @@ public class OrderResult extends Controller {
             }else if( total_fee.compareTo(order.needPay) < 0){
                 errorMessage = "订单金额不符，请您稍后再试";
 
-            }else if(!order.status.equals(OrderStatus.PAID.toString())){
+            }else if(order.status != OrderStatus.PAID){
                 errorMessage = "等待支付返回，请您稍后再试";
             }
         }

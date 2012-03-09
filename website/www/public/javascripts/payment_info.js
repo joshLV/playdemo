@@ -12,9 +12,13 @@ function cal_position_left(id){
 }
 function reset_result_dialog(){
     if($("#full_bg").css("display") == "block"){
-        var body_height = $("body").height();
-        var body_width  = $("body").width();
-        $("#full_bg").css({width:body_width,height:body_height});
+        var body_height=document.documentElement.clientHeight;//屏幕的高度
+        var body_width=document.documentElement.clientWidth;//屏幕的宽度
+//        var body_height = $("body").height();
+//        var body_width  = $("body").width();
+        $("#full_bg").css({
+            width:body_width,
+            height:body_height});
         $("#payment_result").css({
             top:cal_position_top("payment_result"),
             left:cal_position_left("payment_result"),

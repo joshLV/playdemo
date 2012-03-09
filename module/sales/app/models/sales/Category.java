@@ -60,7 +60,7 @@ public class Category extends Model {
      * @return 前n个分类
      */
     public static List<Category> findTop(int limit) {
-        return find("parent = null order by displayOrder").fetch(limit);
+        return find("parentCategory = null order by displayOrder").fetch(limit);
     }
 
     public static List<Category> findTop(int limit, long categoryId) {

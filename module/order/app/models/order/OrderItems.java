@@ -18,23 +18,23 @@ import play.db.jpa.Model;
 public class OrderItems extends Model {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="order_id",nullable=true)
-	Orders order;
+	public Orders order;
 
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="goods_id",nullable=true)
-	Goods goods;
+	public Goods goods;
 
 	@Column(name="original_price")
-	BigDecimal originalPrice;
+	public BigDecimal originalPrice;
 
 	@Column(name="sale_price")
-	BigDecimal salePrice;
+	public BigDecimal salePrice;
 
 	@Column(name="goods_name")
-	String goodsName;
+	public String goodsName;
 	
 	@Column(name="buy_number")
-	Long buyNumber;
+	public Long buyNumber;
 
 	@Column(name="created_at")
 	public Date  createdAt;
