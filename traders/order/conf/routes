@@ -6,8 +6,12 @@
 GET     /orders                                 Orders.index
 GET     /coupons                                Orders.coupons
 GET     /orders/{id}                            Orders.details
+#验证电子券页面
 GET     /coupons/verify                         VerificationCoupons.index
-POST     /coupons/query                          VerificationCoupons.queryCoupons
+#验证电子券有效性
+POST    /coupons/query                          VerificationCoupons.queryCoupons
+#更新电子券状态及产生交易
+POST    /coupons/update                         VerificationCoupons.update
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

@@ -2,56 +2,21 @@
 #{include 'Share/nav.html' /}
 #{set title:'商户验证消费券' /}
 #{set 'moreScripts'}
-<script type="text/javascript">
-	$("#query").click(function() {
-		var vir_sn = $("#eCouponSn").val();
-		alert("aaaaa"+eCouponSn);
-	    if(eCouponSn==''){
-	        $("#checksn").html("请输入券号!");
-	        return false;
-	    }
-	    $.post(
-	            "@{VerificationCoupons.queryCoupons()}",
-	            {eCouponSn:vir_sn},
-	            function(data){
-	                if(data !=null){
-	                    if(data.status.toString.equals("CONSUMED")){
-	                    	$("#checksn").html("此券已消费!");
-	                        $("#showinfo").html('券编号: '+vir_sn+'<br />商品名称: '+data.name+'<br />优惠截止日期：'+data.expireAt);
-	                    }else if(data.status.toString.equals("EXPIRED")){
-	                    	 $("#checksn").html("此券已过期!");
-	                    	 $("#showinfo").html('券编号: '+vir_sn+'<br />商品名称: '+data.name+'<br />优惠截止日期：'+data.expireAt);
-	                    }else if(data.status.toString.equals("REFUND")){
-                            $("#checksn").html("此券已经退款，无法再使用该券号进行消费!");
-                            $("#showinfo").html('券编号: '+vir_sn+'<br />商品名称: '+data.name+'<br />优惠截止日期：'+data.expireAt);
-	                    }else if(data.status.toString.equals("REFUND")){
-                            $("#showinfo").html('券编号: '+vir_sn+'<br />商品名称: '+data.name+'<br />优惠截止日期：'+data.expireAt);
-                        }
-	                }
-	            },
-	            "json"
-	        );
-    });
-	
-</script>
+ <script src="@{'/public/javascripts/coupons.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 <div>
  <legend>商户验证消费券</legend>
- <form class="form-horizontal" id="vertifyForm" action="@{VerificationCoupons.queryCoupons()}">
+
   <div class="control-group">
-   <label for="input01" class="control-label">券号</label>
-   <div class="controls">
-    <input type="text" name="eCouponSn" class="input-large" />
-    <span id="query">查询</span>
-    <button class="btn btn-primary" id="query">查询</button>
-    <button class="btn btn-primary" id="sure" type="submit">确定</button>
-   </div>
-   <div class="controls">
-   <span class="error" id="checksn"></span>
+  <table>
+  <tr><td>券号</td>
+  <td><input type="text" name="eCouponSn" id="eCouponSn" class="input-large" />
+    <button class="btn btn-primary" id="query" >查询</button>
+    <button class="btn btn-primary" id="sure" disabled>确定</button></td></tr>
+  </table>
+   <div class="controls"><span class="error" id="checksn"></span></div>
    <div class="controls" id="showinfo"> 
    </div>
-   </div>
   </div>
- </form>
  </div>
  

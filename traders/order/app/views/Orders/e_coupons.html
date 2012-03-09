@@ -25,24 +25,28 @@
 
    <tbody>
 
-    #{list items:couponsList, as:'couponsList' }
-    #{list items:couponsList.eCoupons, as:'coupon'  }
+    #{paginate.list items:couponsList, as:'coupon'}
     <tr>
-    <td>${couponsList.orderNumber}</td>
+    <td>${coupon.order.orderNumber}</td>
      <td>${coupon.goods.name}</td>
      <td>${coupon.eCouponPrice}</td>
      <td>${coupon.eCouponSn}</td>
-     <td>${coupon.goods.effectiveAt}/${coupon.goods.expireAt}</td>
-     <td>${coupon.consumedAt}</td>
-     <td>${coupon.refundAt}</td>
+     <td>${coupon.goods.effectiveAt == null ?'':coupon.goods.effectiveAt.format("yyyy-MM-dd")}/
+         ${coupon.goods.expireAt == null ?'':coupon.goods.expireAt.format("yyyy-MM-dd")}</td>
+     <td>${coupon.consumedAt == null ?'':coupon.consumedAt.format("yyyy-MM-dd HH:mm:ss")}</td>
+     <td>${coupon.refundAt == null ?'':coupon.refundAt.format("yyyy-MM-dd HH:mm:ss")}</td>
      <td>${coupon.refundPrice}</td>
      <td>&{'coupon.'+coupon.status}</td>
     </tr>
-    #{/list}
-    #{/list}
+    #{/paginate.list}
 
    </tbody>
   </table>
+  <div class="pagination" align="center">
+     <ul>
+    #{paginate.controls items:couponsList /}
+    </ul>
+  </div>
    </form>
 
 </div>

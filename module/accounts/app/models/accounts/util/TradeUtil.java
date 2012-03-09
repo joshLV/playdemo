@@ -90,6 +90,33 @@ public class TradeUtil {
     }
 
     /**
+     * 创建消费交易，
+     * 消费者消费成功,资金从优惠啦转到商户
+     * 
+     * @param couponSn 券号
+     * @param account 充值账户
+     * @return 消费交易记录
+     */
+    public static TradeBill createConsumeTrade(String couponSn, Account account,BigDecimal consumedPrice,Long orderId){
+    	  if(couponSn == null) {
+              Logger.error("error while create order trade: invalid couponSn");
+              return null;
+          }
+          if(consumedPrice.compareTo(BigDecimal.ZERO) <= 0){
+              Logger.error("error while create order trade: invalid balancePaymentAmount");
+              return null;
+          }
+          
+    	return new TradeBill(AccountUtil.getUhuilaAccount(),
+    			account,
+    			consumedPrice,
+    			BigDecimal.ZERO,
+    			TradeType.CONSUME,
+    			null,
+    			orderId).save();
+    }
+    
+    /**
      * 创建转账交易.
      *
      * @param fromAccount          //发起人账户

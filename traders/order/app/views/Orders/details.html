@@ -9,8 +9,8 @@
  <legend>订单详细</legend>
   <table width="80%">
    <tr><td>订单号：${orders.orderNumber}</td>
-   <td>订单时间：${orders.createdAt}</td>
-   <td>支付时间：${orders.createdAt}</td>
+   <td>订单时间：${orders.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
+   <td>支付时间：${orders.paidAt.format("yyyy-MM-dd HH:mm:ss")}</td>
    </tr>
    </table>
    
@@ -33,10 +33,10 @@
      <td>${row.goods.no}</td>
      <td>${row.goodsName}</td>
      <td>${row.salePrice}</td>
-     <td>${row.number}</td>
-     <td>${row.goods.effectiveAt}/${row.goods.expireAt}</td>
+     <td>${row.buyNumber}</td>
+     <td>${row.goods.effectiveAt.format("yyyy-MM-dd HH:mm:ss")}/${row.goods.expireAt.format("yyyy-MM-dd HH:mm:ss")}</td>
      <td>${orders.needPay}</td>
-     <td>${row.number}</td>
+     <td>0</td>
     </tr>
     #{/list}
    </tbody>

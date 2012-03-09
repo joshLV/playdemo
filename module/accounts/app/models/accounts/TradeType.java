@@ -8,5 +8,6 @@ public enum TradeType {
     WITHDRAW,   //提现
     PAY,        //支付
     REFUND,     //交易退款
-    TRANSFER    //转账
+    TRANSFER,   //转账
+    CONSUME     //消费
 }

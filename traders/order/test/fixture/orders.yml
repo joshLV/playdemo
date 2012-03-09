@@ -33,5 +33,15 @@ order.ECoupon(coupon1):
   "refundPrice": "1.0"
   "createdAt": "2012-03-05T00:00:00"
   "consumedAt": "2012-03-05T00:00:00"
-  "status": "DEALING"
+  "status": "UNCONSUMED"
+  "goods_id": "1"
+  
+  order.ECoupon(coupon2):
+  "order": "order1"
+  "eCouponSn": "002"
+  "eCouponPrice": "10.0"
+  "refundPrice": "1.0"
+  "createdAt": "2012-03-05T00:00:00"
+  "consumedAt": "2012-03-05T00:00:00"
+  "status": "CONSUMED"
   "goods_id": "1"
