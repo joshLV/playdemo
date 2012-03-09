@@ -7,144 +7,163 @@
 #{/get}
 #{include 'sales/Goods/nav.html' /}
 <div class="body">
-    <form class="form-horizontal" name="frm" action="@{Goods.create()}" method="post" enctype="multipart/form-data">
-        <legend>添加电子消费券</legend>
-        <div class="control-group">
-            <label for="select01" class="control-label"><font color="red">*</font>商品分类</label>
+#{form @Goods.create() , id:'creationForm',enctype:'multipart/form-data',class:"form-horizontal" }
+    <legend>添加电子消费券</legend>
+    <div class="control-group">
+        <label for="select01" class="control-label"><font color="red">*</font>商品分类</label>
 
-            <div class="controls">
-                <select id="topCategoryId" name="topCategoryId" class="input-small">
+        <div class="controls">
+            #{select 'topCategoryId', value:topCategoryId, id:'topCategoryId', class:'input-small'}
                 #{list items:categoryList, as:'category' }
-                    <option value="${category.id}">${category.name}</option>
+                    #{option category.id}${category.name}#{/option}
                 #{/list}
-                </select>
-                <select id="categoryId" name="goods.categories.id" class="input-small">
+            #{/select}
+            #{select 'goods.categories.id',value:categoryId, id:'categoryId', class:'input-small'}
                 #{list items:subCategoryList, as:'category' }
-                    <option value="${category.id}">${category.name}</option>
+                    #{option category.id}${category.name}#{/option}
                 #{/list}
-                </select>
-                <span class="error">#{error 'goods.category'/}</span>
-            </div>
+            #{/select}
+        *{<select id="topCategoryId" name="topCategoryId" class="input-small">}*
+        *{<option value="${category.id}">${category.name}</option>}*
+        *{</select>}*
+        *{<select id="categoryId" name="goods.categories.id" class="input-small">}*
+        *{#{list items:subCategoryList, as:'category' }}*
+        *{<option value="${category.id}">${category.name}</option>}*
+        *{#{/list}}*
+        *{</select>}*
+            <span class="error">#{error 'goods.category'/}</span>
         </div>
-        <div class="control-group">
-            <label for="select01" class="control-label"><font color="red">*</font>品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</label>
+    </div>
+    <div class="control-group">
+        <label for="select01" class="control-label"><font color="red">*</font>品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</label>
 
-            <div class="controls">
-                <select id="select03" name="goods.brand.id" class="input-small">
+        <div class="controls">
+            <select id="select03" name="goods.brand.id" class="input-small">
                 #{list items:brandList, as:'brand' }
                     <option value="${brand.id}">${brand.name}</option>
                 #{/list}
-                </select>
-                <span class="error">#{error 'goods.brand' /}</span>
-            </div>
+            </select>
+            <span class="error">#{error 'goods.brand' /}</span>
         </div>
-        <div class="control-group">
-            <label for="input01" class="control-label">商品编号</label>
+    </div>
+    <div class="control-group">
+        <label for="input01" class="control-label">商品编号</label>
 
-            <div class="controls">
-                <input type="text" id="no" name="goods.no" class="input-xlarge"/>
-            </div>
+        <div class="controls">
+            <input type="text" id="no" name="goods.no" class="input-xlarge" value="${goods?.no}"/>
+            <span class="error">#{error 'goods.no' /}</span>
         </div>
-        <div class="control-group">
-            <label for="input01" class="control-label"><font color="red">*</font>商品名称</label>
+    </div>
+    <div class="control-group">
+        <label for="input01" class="control-label"><font color="red">*</font>商品名称</label>
 
-            <div class="controls">
-                <input type="text" id="goods_name" name="goods.name" class="input-xlarge"/>
-                <span class="error">#{error 'goods.name' /}</span>
-            </div>
+        <div class="controls">
+            <input type="text" id="goods_name" name="goods.name" class="input-xlarge" value="${goods?.name}"/>
+            <span class="error">#{error 'goods.name' /}</span>
         </div>
-        <div class="control-group">
-            <label for="input01" class="control-label"><font color="red">*</font>券有效期</label>
+    </div>
+    <div class="control-group">
+        <label for="input01" class="control-label"><font color="red">*</font>券有效期</label>
 
-            <div class="controls">
-                <input class="input-medium Wdate" type="text" id="effectiveAt" name="goods.effectiveAt"
-                       onfocus="WdatePicker({readOnly:true})"/> 至
-                <input class="input-medium Wdate" type="text" id="expireAt" name="goods.expireAt"
-                                                                        onfocus="WdatePicker({readOnly:true})"/>
-                <span class="error">#{error 'goods.effectiveAt' /}</span>
-                <span class="error">#{error 'goods.expireAt' /}</span>
-            </div>
+        <div class="controls">
+            <input class="input-medium Wdate" type="text" id="effectiveAt" name="goods.effectiveAt"
+                   value="${goods?.effectiveAt?.format("yyyy-MM-dd")}"
+                   onfocus="WdatePicker({readOnly:true})"/> 至
+            <input class="input-medium Wdate" type="text" id="expireAt" name="goods.expireAt"
+                   value="${goods?.expireAt?.format("yyyy-MM-dd")}"
+                   onfocus="WdatePicker({readOnly:true})"/>
+            <span class="error">#{error 'goods.effectiveAt' /}</span>
+            <span class="error">#{error 'goods.expireAt' /}</span>
         </div>
-        <div class="control-group">
-            <label for="input01" class="control-label"><font color="red">*</font>原&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
+    </div>
+    <div class="control-group">
+        <label for="input01" class="control-label"><font color="red">*</font>原&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
 
-            <div class="controls">
-                <input type="text" id="originalPrice" name="goods.originalPrice" class="input-small"/>元
-                <span class="error">#{error 'goods.originalPrice' /}</span>
-            </div>
+        <div class="controls">
+            <input type="text" id="originalPrice" name="goods.originalPrice" class="input-small"
+                   value="${goods?.originalPrice}"/>元
+            <span class="error">#{error 'goods.originalPrice' /}</span>
         </div>
-        <div class="control-group">
-            <label for="input01" class="control-label"><font color="red">*</font>现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
+    </div>
+    <div class="control-group">
+        <label for="input01" class="control-label"><font color="red">*</font>现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
 
-            <div class="controls">
-                <input type="text" id="salePrice" name="goods.salePrice" class="input-small"/>元
-                <span class="error">#{error 'goods.salePrice' /}</span>
-            </div>
+        <div class="controls">
+            <input type="text" id="salePrice" name="goods.salePrice" class="input-small"
+                   value="${goods?.salePrice}"/>元
+            <span class="error">#{error 'goods.salePrice' /}</span>
         </div>
-        <div class="control-group">
-            <label for="input01" class="control-label"><font color="red">*</font>库&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</label>
+    </div>
+    <div class="control-group">
+        <label for="input01" class="control-label"><font color="red">*</font>库&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</label>
 
-            <div class="controls">
-                <input type="text" id="baseSale" name="goods.baseSale" class="input-small"/>元
-                <span class="error">#{error 'goods.baseSale' /}</span>
-            </div>
+        <div class="controls">
+            <input type="text" id="baseSale" name="goods.baseSale" class="input-small" value="${goods?.baseSale}"/>元
+            <span class="error">#{error 'goods.baseSale' /}</span>
         </div>
-        <div class="control-group">
-            <label for="input01" class="control-label"><font color="red">*</font>商品图片</label>
+    </div>
+    <div class="control-group">
+        <label for="input01" class="control-label"><font color="red">*</font>商品图片</label>
 
-            <div class="controls">
-                <input type="file" id="imagePath" name="imagePath" class="input-file"/>
-            </div>
-            <div class="controls">
-                <span class="error">#{error 'goods.imagePath'/}</span></div>
+        <div class="controls">
+            <input type="file" id="imagePath" name="imagePath" class="input-file"/>
         </div>
-        <div class="control-group">
-            <label for="textarea" class="control-label">温馨提示</label>
+        <div class="controls">
+            <span class="error">#{error 'imagePath'/}</span></div>
+    </div>
+    <div class="control-group">
+        <label for="textarea" class="control-label">温馨提示</label>
 
-            <div class="controls">
-                <textarea name="goods.prompt" id="prompt" cols="100" rows="8"
-                          style="width:700px;height:200px;visibility:hidden;"></textarea>
-            </div>
+        <div class="controls">
+            <textarea name="goods.prompt" id="prompt" cols="100" rows="8"
+                      style="width:700px;height:200px;visibility:hidden;">${goods?.prompt}</textarea>
         </div>
-        <div class="control-group">
-            <label for="textarea" class="control-label"><font color="red">*</font>商品详情</label>
+    </div>
+    <div class="control-group">
+        <label for="textarea" class="control-label"><font color="red">*</font>商品详情</label>
 
-            <div class="controls">
-                <textarea name="goods.details" id="details" cols="100" rows="8"
-                          style="width:700px;height:200px;visibility:hidden;"></textarea>
-                <span class="error">#{error 'goods.details' /}</span>
-            </div>
+        <div class="controls">
+            <textarea name="goods.details" id="details" cols="100" rows="8"
+                      style="width:700px;height:200px;visibility:hidden;">${goods?.details}</textarea>
+            <span class="error">#{error 'goods.details' /}</span>
         </div>
-        <div class="control-group">
-            <label for="textarea" class="control-label"><font color="red">*</font>使用门店</label>
+    </div>
+    <div class="control-group">
+        <label for="textarea" class="control-label"><font color="red">*</font>使用门店</label>
 
-            <div class="controls">
-                <input type="radio" checked value="true" id="isAllShop1" name="isAllShop"/>全部门店
-                <input type="radio" value="false" id="isAllShop2" name="isAllShop"/>部分门店
-            </div>
-            <div class="controls" id="shop" style="display:none">
-                <table class="table table-striped table-bordered table-condensed">
-                    <tbody>
+        <div class="controls">
+            <input type="radio" value="true" id="isAllShop1" name="isAllShop"
+                   #{if isAllShop}checked#{/if}/>全部门店
+            <input type="radio" value="false" id="isAllShop2" name="isAllShop"
+                   #{if !isAllShop}checked#{/if}/>部分门店
+        </div>
+        <div class="controls" id="shop" style="display:none">
+            <table class="table table-striped table-bordered table-condensed">
+                <tbody>
                     #{list items:shopList, as:'shop' }
                     <tr>
-                        <td><input type="checkbox" id="shops" value="${shop.id}" name="goods.shops.id"/></td>
+                        <td><input type="checkbox" id="shops" value="${shop?.id}" name="goods.shops.id"
+                                   #{if shopIds?.contains(String.valueOf(shop?.id))}checked#{/if}/></td>
                         <td>${shop.name}</td>
                         <td>${shop.address}</td>
                         <td>${shop.phone}</td>
-                    </tr>
+                  </tr>
                     #{/list}
-                    </tbody>
-                </table>
-            </div>
+                </tbody>
+            </table>
+        </div>
 
-        </div>
-        <div class="form-actions">
-            <button class="btn btn-primary" id="save" type="submit">保存</button>
-            <button class="btn btn-primary" id="onsales" type="submit">保存并上架</button>
-            <button class="btn btn-primary" id="view" type="submit">预览</button>
-            <input type="hidden" id="status" name="goods.status"/>
-        </div>
-    </form>
+    </div>
+    <div class="form-actions">
+        <button class="btn btn-primary" id="save" type="submit">保存</button>
+        <button class="btn btn-primary" id="onsales" type="submit">保存并上架</button>
+        <button class="btn btn-primary" id="view" type="submit">预览</button>
+        <input type="hidden" id="status" name="goods.status"/>
+    </div>
+#{/form}
 </div>
+<script type="text/javascript">
+    $("input[name='isAllShop']:checked").val() == 'false' ? $("#shop").show() : $("#shop").hide();
+</script>
 
 

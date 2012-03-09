@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.InFuture;
 import play.data.validation.MaxSize;
+import play.data.validation.Min;
 import play.data.validation.Required;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
@@ -44,7 +45,6 @@ public class Goods extends Model {
     /**
      * 所属商户ID
      */
-    @Required
     @Column(name = "company_id")
     public Long companyId;
 
@@ -78,7 +78,6 @@ public class Goods extends Model {
      * 原始图片路径
      */
     @Column(name = "image_path")
-    @Required
     public String imagePath;
 
     /**
@@ -116,9 +115,8 @@ public class Goods extends Model {
     /**
      * 进货量
      */
-    @Required
     @Column(name = "income_goods_count")
-    public String incomeGoodsCount;
+    public Long incomeGoodsCount;
     /**
      * 券有效开始日
      */
@@ -130,6 +128,7 @@ public class Goods extends Model {
      * 券有效结束日
      */
     @Required
+    @InFuture
     @Column(name = "expire_at")
     @Temporal(TemporalType.DATE)
     public Date expireAt;
@@ -141,13 +140,14 @@ public class Goods extends Model {
      * 商品原价
      */
     @Required
-    @InFuture
+    @Min(value=0.01)
     @Column(name = "original_price")
     public BigDecimal originalPrice;
     /**
      * 商品现价
      */
     @Required
+    @Min(value=0.01)
     @Column(name = "sale_price")
     public BigDecimal salePrice;
 
@@ -207,25 +207,21 @@ public class Goods extends Model {
     /**
      * 商品状态,
      */
-    @Required
     @Enumerated(EnumType.STRING)
     public GoodsStatus status;
     /**
      * 创建来源
      */
-    @Required
     @Column(name = "created_from")
     public String createdFrom;
     /**
      * 创建时间
      */
-    @Required
     @Column(name = "created_at")
     public Date createdAt;
     /**
      * 创建人
      */
-    @Required
     @Column(name = "created_by")
     public String createdBy;
     /**
@@ -241,7 +237,6 @@ public class Goods extends Model {
     /**
      * 逻辑删除,0:未删除，1:已删除
      */
-    @Required
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
     /**

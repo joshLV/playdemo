@@ -13,12 +13,14 @@ import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
+import play.mvc.Scope;
 import util.FileUploadUtil;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -38,7 +40,7 @@ public class Goods extends Controller {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<models.sales.Goods> list = models.sales.Goods.query1(goods, pageNumber, PAGE_SIZE);
-        
+
         renderTemplate("sales/Goods/index.html", list);
     }
 
@@ -55,6 +57,8 @@ public class Goods extends Controller {
             subCategoryList = Category.findByParent(categoryList.get(0).id);
         }
 
+        Goods goods = new Goods();
+        Scope.Flash.current().put("goods", goods);
         render("sales/Goods/add.html", shopList, brandList, categoryList, subCategoryList);
     }
 
@@ -77,13 +81,28 @@ public class Goods extends Controller {
      * @param imagePath
      * @param goods
      */
-    public static void create(@Required File imagePath, @Valid models.sales.Goods goods) {
-        System.out.println("goods.status:" + goods.status);
-
+    public static void create(@Required File imagePath, @Valid models.sales.Goods goods, Long topCategoryId, boolean isAllShop) {
         Long companyId = getCompanyId();
+        //添加商品处理
+        goods.companyId = companyId;
+        goods.createdBy = getCompanyUser();
+        goods.deleted = DeletedStatus.UN_DELETED;
+        goods.saleCount = 0;
+        goods.incomeGoodsCount = 0L;
+        goods.createdAt = new Date();
+        goods.materialType = MaterialType.ELECTRONIC;
+        String shopIds = "";
+        if (goods.shops != null) {
+            for (Shop shop : goods.shops) {
+                shopIds += shop.id + ",";
+            }
+        }
         if (Validation.hasErrors()) {
-            params.flash();
-            Validation.keep();
+            Map<String, List<play.data.validation.Error>> errorMap = validation.errorsMap();
+            for (String key : errorMap.keySet()) {
+                System.out.println(key + ":  " + errorMap.get(key));
+            }
+
             List<Shop> shopList = Shop.findShopByCompany(companyId);
             List<Brand> brandList = Brand.findByCompanyId(companyId);
             List<Category> categoryList = Category.findByParent(0);
@@ -91,16 +110,11 @@ public class Goods extends Controller {
             if (categoryList.size() > 0) {
                 subCategoryList = Category.findByParent(categoryList.get(0).id);
             }
-            render("sales/Goods/add.html", shopList, brandList, categoryList, subCategoryList);
+            Long categoryId = goods.categories.iterator().next().id;
+            render("sales/Goods/add.html", shopList, brandList, categoryList, subCategoryList, goods, topCategoryId,
+                    categoryId, shopIds, isAllShop);
         }
 
-        //添加商品处理
-        goods.companyId = companyId;
-        goods.createdBy = getCompanyUser();
-        goods.deleted = DeletedStatus.UN_DELETED;
-        goods.saleCount = 0;
-        goods.createdAt = new Date();
-        goods.materialType = MaterialType.ELECTRONIC;
         goods.create();
         uploadImagePath(imagePath, goods);
 
