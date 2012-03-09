@@ -26,6 +26,7 @@ $(window).load(
         $("#link_buy_now").click(function () {
             $('#buy_now_form').submit();
         });
+
     }
 );
 

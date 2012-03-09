@@ -24,7 +24,7 @@
 <div id="wrap_content">
     <div style="clear:both"></div>
     <div id="main_content">
-        #{breadcrumbs/breadcrumb breadcrumbs/}
+    #{breadcrumbs/breadcrumb breadcrumbs/}
         <!--左侧导航部分-->
         <div id="left_nav">
             <div class="left_top_one">
@@ -113,7 +113,7 @@
                             原价：${goods.originalPrice}元
                         </div>
                         <div class="right_shangpin_two">
-                            折扣：${goods.discountExpress.yesno(goods.discountExpress,'无优惠')}</div>
+                            折扣：${goods.discountExpress.yesno(goods.discountExpress+'折','无优惠')}</div>
                         <div class="right_shangpin_three">现价：<span
                                 class="font_red font_size18">${goods.salePrice}</span>元
                         </div>
@@ -133,7 +133,7 @@
                                                             href="#"
                                                             id="link_buy_now">立即购买</a>
                             <a class="wai_juli" id="link_add_cart"
-                                    href="#">加入购物车</a><a
+                               href="#">加入购物车</a><a
                                     href="#" class="shoucang_font">收藏</a></div>
                         <div></div>
                     </div>
@@ -160,18 +160,16 @@
                     </dd>
                 </dl>
             </div>
-            <div class="right_content_three">
+            <div class="right_content_two">
                 <dl class="right_one_dl">
                     <dt>
                     <div class="title_nav">商品详情</div>
                     <div></div>
                     </dt>
-                    <dd class="three_dd">
+                    <dd>
                         <ul class="tishi_ul">
-                            <li class="tishi_li" id="details">${goods.details.raw()}
-                            </li>
+                            <li class="tishi_li" id="details">${goods.details.raw()}</li>
                         </ul>
-
                     </dd>
                 </dl>
             </div>
@@ -204,6 +202,6 @@
     </div>
 </div>
 <script type="text/javascript">
-    prompt = $("#prompt").val();
-    $("#prompt").text(prompt.html().text());
+    $("#prompt").html($("#prompt").text()).text();
+    $("#details").html($("#details").text()).text();
 </script>
