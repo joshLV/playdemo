@@ -53,10 +53,10 @@ public class ContextedMenu {
     }
 
     public boolean isVisible() {
-        if(menu.labels.isEmpty()) {
+        if(menu.getLabels().isEmpty()) {
             return true;
         } else {
-            return CollectionUtils.containsAny(menu.labels, menuContext.activeLabels);
+            return CollectionUtils.containsAny(menu.getLabels(), menuContext.activeLabels);
         }
     }
 

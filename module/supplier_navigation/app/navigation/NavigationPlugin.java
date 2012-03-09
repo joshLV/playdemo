@@ -10,6 +10,7 @@ import play.PlayPlugin;
 import play.db.jpa.JPAPlugin;
 import play.vfs.VirtualFile;
 
+
 /**
  * Initialize and reload the navigation structure.
  */
@@ -18,11 +19,17 @@ public class NavigationPlugin extends PlayPlugin {
     // Timestamp the navigation was last loaded
     long lastLoaded = -1;
     List<VirtualFile> navigationFiles;
+    
+    
+    @Override
+    public void onLoad() {
+
+    }
 
     @Override
     public void afterApplicationStart() {
         navigationFiles = new LinkedList<VirtualFile>();
-        navigationFiles.add(VirtualFile.fromRelativePath("conf/navigation.yml"));
+        navigationFiles.add(VirtualFile.fromRelativePath("conf/rbac.xml"));
         detectChange();
     }
 

@@ -1,6 +1,5 @@
 package models.admin;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import play.Play;
 import play.db.jpa.Model;
 
 @Entity
@@ -54,7 +52,7 @@ public class SupplierNavigation extends Model {
     public Date updatedAt;
 
     /**
-     * 删除不是当前loadVersion的记录，这样可以保证只有一个版本的navigation.yml的数据在数据库中.
+     * 删除不是当前loadVersion的记录，这样可以保证只有一个版本的rbac.xml的数据在数据库中.
      * @param applicationName
      * @param loadVersion
      */
