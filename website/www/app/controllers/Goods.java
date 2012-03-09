@@ -14,7 +14,6 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,7 +56,7 @@ public class Goods extends Controller {
     /**
      * 商品详情.
      *
-     * @param id    商品
+     * @param id 商品
      */
     public static void show(long id) {
         models.sales.Goods goods = models.sales.Goods.findUnDeletedById(id);
@@ -65,9 +64,19 @@ public class Goods extends Controller {
             notFound();
         }
 
-        BreadcrumbList breadcrumbs = new BreadcrumbList("商品列表","#");
+        BreadcrumbList breadcrumbs = new BreadcrumbList();
+        long categoryId = 0;
+        if (goods.categories != null && goods.categories.size() > 0) {
+            Category category = goods.categories.iterator().next();
+            categoryId = category.id;
+            breadcrumbs.append(category.name, "/goods/list/" + category.id);
+        }
+        if (goods.brand != null) {
+            breadcrumbs.append(goods.brand.name, "/goods/list/" + categoryId + "-" + SHANGHAI + "-0-0-" + goods.brand
+                    .id);
+        }
 
-        render(goods,breadcrumbs);
+        render(goods, breadcrumbs);
     }
 
     /**
@@ -116,7 +125,7 @@ public class Goods extends Controller {
     private static final String LIST_URL_HEAD = "/goods/list/";
 
     private static BreadcrumbList createBreadcrumbs(GoodsCondition goodsCond) {
-        BreadcrumbList breadcrumbs = new BreadcrumbList("商品列表", "/goods");
+        BreadcrumbList breadcrumbs = new BreadcrumbList();
         if (goodsCond.isDefault()) {
             return breadcrumbs;
         }

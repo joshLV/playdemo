@@ -155,7 +155,7 @@
                     </dt>
                     <dd>
                         <ul class="tishi_ul">
-                            <li class="tishi_li" id="prompt">${goods.prompt.raw()}</li>
+                            <li class="tishi_li" id="prompt">#{if goods.prompt != null}${goods.prompt.raw()}#{/if}</li>
                         </ul>
                     </dd>
                 </dl>
@@ -168,7 +168,7 @@
                     </dt>
                     <dd>
                         <ul class="tishi_ul">
-                            <li class="tishi_li" id="details">${goods.details.raw()}</li>
+                            <li class="tishi_li" id="details">#{if goods.details != null}${goods.details.raw()}#{/if}</li>
                         </ul>
                     </dd>
                 </dl>

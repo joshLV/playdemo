@@ -140,9 +140,11 @@ public class Goods extends Model {
 
     @Column(name = "discount")
     public Integer getDiscount() {
-        if (originalPrice != null && originalPrice.compareTo(new BigDecimal(0)) > 0) {
-            this.discount = salePrice.divide(originalPrice).multiply
-                    (new BigDecimal(100)).toBigInteger().intValue();
+        if (discount != null && discount > 0){
+            return discount;
+        }
+        if (originalPrice != null && salePrice != null && originalPrice.compareTo(new BigDecimal(0)) > 0) {
+            this.discount = salePrice.divide(originalPrice).multiply(new BigDecimal(100)).toBigInteger().intValue();
         } else {
             this.discount = 0;
         }
