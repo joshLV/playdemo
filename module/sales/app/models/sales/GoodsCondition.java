@@ -16,6 +16,8 @@ import java.util.Map;
  * Time: 4:25 PM
  */
 public class GoodsCondition {
+    public static final String SHANGHAI = "021";
+
     public long categoryId = 0;
     public String cityId = SHANGHAI;
     public String districtId = "0";
@@ -28,7 +30,6 @@ public class GoodsCondition {
     public int orderByNum = 0;
     public int orderByTypeNum = 0;
 
-    public static final String SHANGHAI = "021";
     private Map<String, Object> paramMap = new HashMap<>();
 
     public GoodsCondition() {

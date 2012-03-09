@@ -4,26 +4,21 @@
  */
 package controllers;
 
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.GoodsStatus;
-import models.sales.Shop;
-
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.PathUtil;
+import models.sales.*;
 import org.apache.commons.lang.StringUtils;
-
 import play.data.validation.Required;
 import play.data.validation.Valid;
+import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import util.FileUploadUtil;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.PathUtil;
-
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -34,174 +29,190 @@ import com.uhuila.common.util.PathUtil;
  */
 public class Goods extends Controller {
 
-	public static int PAGE_SIZE = 15;
+    public static int PAGE_SIZE = 15;
 
-	/**
-	 * 展示商品一览页面
-	 */
-	public static void index(models.sales.Goods goods) {
-		String page = request.params.get("page");
-		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-		JPAExtPaginator<models.sales.Goods> list = models.sales.Goods.query1(goods, pageNumber, PAGE_SIZE);
-		renderTemplate("sales/Goods/index.html", list);
-	}
+    /**
+     * 展示商品一览页面
+     */
+    public static void index(models.sales.Goods goods) {
+        String page = request.params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        JPAExtPaginator<models.sales.Goods> list = models.sales.Goods.query1(goods, pageNumber, PAGE_SIZE);
+        
+        renderTemplate("sales/Goods/index.html", list);
+    }
 
-	/**
-	 * 展示添加商品页面
-	 */
-	public static void add() {
-		Long companyId=1l;
-		List<Shop> shopList = Shop.findShopByCompany(companyId);
-		List<Brand> brandList = Brand.findByCompanyId(companyId);
-		renderTemplate("sales/Goods/add.html", shopList,brandList);
-	}
-	/**
-	 * 展示添加商品页面
-	 */
-	public static void preview(Long id) {
-		redirect("http://www.uhuiladev.com/goods/"+id+"?preview=true");
-	}
+    /**
+     * 展示添加商品页面
+     */
+    public static void add() {
+        Long companyId = getCompanyId();
+        List<Shop> shopList = Shop.findShopByCompany(companyId);
+        List<Brand> brandList = Brand.findByCompanyId(companyId);
+        List<Category> categoryList = Category.findByParent(0);
+        List<Category> subCategoryList = new ArrayList<>();
+        if (categoryList.size() > 0) {
+            subCategoryList = Category.findByParent(categoryList.get(0).id);
+        }
 
-	/**
-	 * 添加商品
-	 *
-	 * @param imagePath
-	 * @param goods
-	 */
-	public static void create(@Required File imagePath, @Valid models.sales.Goods goods,String radios,String status,
-			Long checkoption[]) {
-		if (validation.hasErrors()) {
-			params.flash();
-			validation.keep();
-			renderTemplate("sales/Goods/add.html");
-		}
-		Long companyId=1l;
-		//添加商品处理
-		goods.status = "1".equals(status) ? GoodsStatus.ONSALE:GoodsStatus.OFFSALE;
-		goods.companyId = companyId;
-		goods.deleted = DeletedStatus.UN_DELETED;
-		goods.saleCount = 0;
-		goods.createdAt = new Date();
-		goods.createdBy = "yanjy";
-		goods.create();
-		uploadImagePath(imagePath, goods);
+        render("sales/Goods/add.html", shopList, brandList, categoryList, subCategoryList);
+    }
 
-		//全部门店的场合
-		if ("1".equals(radios)) {
-			List<Shop> list = Shop.findShopByCompany(companyId);
-			for (Shop shop : list) {
-				goods.addValues(shop);
-			}
-		} else {
-			//部分门店
-			for (Long id : checkoption) {
-				Shop shop = new Shop();
-				shop.id=id;
-				goods.addValues(shop);
-			}
-		}
+    private static Long getCompanyId() {
+        //todo
+        return 1l;
+    }
 
-		goods.save();
+    /**
+     * 展示添加商品页面
+     */
+    public static void preview(Long id) {
+        redirect("http://www.uhuiladev.com/goods/" + id + "?preview=true");
+    }
 
-		//预览的情况
-		if ("2".equals(status)) {
-			redirect("http://www.uhuiladev.com/goods/"+goods.id+"?preview=true");
-		}
-		index(null);
-	}
+    /**
+     * 添加商品
+     * 商户只能添加电子券.
+     *
+     * @param imagePath
+     * @param goods
+     */
+    public static void create(@Required File imagePath, @Valid models.sales.Goods goods) {
+        System.out.println("goods.status:" + goods.status);
 
-	/**
-	 * 上传图片
-	 * 
-	 * @param uploadImageFile
-	 * @param goods
-	 */
-	private static void uploadImagePath(File uploadImageFile, models.sales.Goods goods) {
-		if (uploadImageFile != null && uploadImageFile.getName() != null) {
-			//取得文件存储路径
-			String storepath = play.Play.configuration.get("upload.imagepath").toString();
-			//上传文件
-			String path = PathUtil.getPathById(goods.id);
-			String uploadImageFileName = uploadImageFile.getName();
-			String extName = play.Play.configuration.get("imageExtName").toString();;
-			if (uploadImageFileName.indexOf(".") > 0) {
-				extName = uploadImageFileName.substring(uploadImageFileName.lastIndexOf(".") + 1, uploadImageFileName.length());
-			}
-			String baseFileName = "origin." + extName;
-			new FileUploadUtil().storeImage(uploadImageFile, storepath + path, baseFileName);
-			goods.imagePath = path + baseFileName;
-		}
-	}
+        Long companyId = getCompanyId();
+        if (Validation.hasErrors()) {
+            params.flash();
+            Validation.keep();
+            List<Shop> shopList = Shop.findShopByCompany(companyId);
+            List<Brand> brandList = Brand.findByCompanyId(companyId);
+            List<Category> categoryList = Category.findByParent(0);
+            List<Category> subCategoryList = new ArrayList<>();
+            if (categoryList.size() > 0) {
+                subCategoryList = Category.findByParent(categoryList.get(0).id);
+            }
+            render("sales/Goods/add.html", shopList, brandList, categoryList, subCategoryList);
+        }
 
-	/**
-	 * 取得指定商品信息
-	 */
-	public static void edit(Long id) {
-		models.sales.Goods goods = models.sales.Goods.findById(id);
-		List<Shop> shopList = Shop.findShopByCompany(goods.companyId);
-		List<Brand> brandList = Brand.findByCompanyId(goods.companyId);
-		renderTemplate("sales/Goods/edit.html", goods, shopList,brandList);
-	}
+        //添加商品处理
+        goods.companyId = companyId;
+        goods.createdBy = getCompanyUser();
+        goods.deleted = DeletedStatus.UN_DELETED;
+        goods.saleCount = 0;
+        goods.createdAt = new Date();
+        goods.materialType = MaterialType.ELECTRONIC;
+        goods.create();
+        uploadImagePath(imagePath, goods);
 
-	/**
-	 * 取得指定商品信息
-	 */
-	public static void detail(Long id) {
-		models.sales.Goods goods = models.sales.Goods.findById(id);
-		renderTemplate("sales/Goods/detail.html", goods);
-	}
+        goods.filterShops();
 
-	/**
-	 * 更新指定商品信息
-	 *
-	 * @param id
-	 */
-	public static void update(Long id, File uploadImageFile, models.sales.Goods goods) {
-		models.sales.Goods updateGoods = models.sales.Goods.findById(id);
+        goods.save();
 
-		uploadImagePath(uploadImageFile, updateGoods);
+//        预览的情况
+//        if ("2".equals(goods.status)) {
+//            redirect("http://www.uhuiladev.com/goods/" + goods.id + "?preview=true");
+//        }
+        index(null);
+    }
 
-		updateGoods.name = goods.name;
-		updateGoods.no = goods.no;
-		updateGoods.effectiveAt = goods.effectiveAt;
-		updateGoods.expireAt = goods.expireAt;
-		updateGoods.originalPrice = goods.originalPrice;
-		updateGoods.salePrice = goods.salePrice;
-		updateGoods.baseSale = goods.baseSale;
-		updateGoods.prompt = goods.prompt;
-		updateGoods.details = goods.details;
-		updateGoods.updatedAt = new Date();
-		updateGoods.updatedBy = "ytrr";
-		updateGoods.brand = goods.brand;
-		updateGoods.save();
+    /**
+     * 上传图片
+     *
+     * @param uploadImageFile
+     * @param goods
+     */
+    private static void uploadImagePath(File uploadImageFile, models.sales.Goods goods) {
+        if (uploadImageFile != null && uploadImageFile.getName() != null) {
+            //取得文件存储路径
+            String storepath = play.Play.configuration.get("upload.imagepath").toString();
+            //上传文件
+            String path = PathUtil.getPathById(goods.id);
+            String uploadImageFileName = uploadImageFile.getName();
+            String extName = play.Play.configuration.get("imageExtName").toString();
+            if (uploadImageFileName.indexOf(".") > 0) {
+                extName = uploadImageFileName.substring(uploadImageFileName.lastIndexOf(".") + 1, uploadImageFileName.length());
+            }
+            String baseFileName = "origin." + extName;
+            new FileUploadUtil().storeImage(uploadImageFile, storepath + path, baseFileName);
+            goods.imagePath = path + baseFileName;
+        }
+    }
 
-		index(null);
-	}
+    /**
+     * 取得指定商品信息
+     */
+    public static void edit(Long id) {
+        models.sales.Goods goods = models.sales.Goods.findById(id);
+        List<Shop> shopList = Shop.findShopByCompany(goods.companyId);
+        List<Brand> brandList = Brand.findByCompanyId(goods.companyId);
+        renderTemplate("sales/Goods/edit.html", goods, shopList, brandList);
+    }
 
-	/**
-	 * 上下架指定商品
-	 */
-	public static void updateStatus(Long checkoption[], GoodsStatus status) {
-		//更新处理
-		for (Long id : checkoption) {
-			models.sales.Goods goods = models.sales.Goods.findById(id);
-			goods.status = status;
-			goods.save();
-		}
+    /**
+     * 取得指定商品信息
+     */
+    public static void detail(Long id) {
+        models.sales.Goods goods = models.sales.Goods.findById(id);
+        renderTemplate("sales/Goods/detail.html", goods);
+    }
 
-		index(null);
-	}
+    /**
+     * 更新指定商品信息
+     *
+     * @param id
+     */
+    public static void update(Long id, File uploadImageFile, models.sales.Goods goods) {
+        String companyUser = getCompanyUser();
+        models.sales.Goods updateGoods = models.sales.Goods.findById(id);
 
-	/**
-	 * 删除指定商品
-	 */
-	public static void delete(Long checkoption[]) {
-		for (Long id : checkoption) {
-			models.sales.Goods goods =	models.sales.Goods.findById(id);
-			goods.deleted=DeletedStatus.DELETED;
-			goods.save();
-		}
-		index(null);
-	}
+        uploadImagePath(uploadImageFile, updateGoods);
+
+        updateGoods.name = goods.name;
+        updateGoods.no = goods.no;
+        updateGoods.effectiveAt = goods.effectiveAt;
+        updateGoods.expireAt = goods.expireAt;
+        updateGoods.originalPrice = goods.originalPrice;
+        updateGoods.salePrice = goods.salePrice;
+        updateGoods.baseSale = goods.baseSale;
+        updateGoods.prompt = goods.prompt;
+        updateGoods.details = goods.details;
+        updateGoods.updatedAt = new Date();
+        updateGoods.updatedBy = companyUser;
+        updateGoods.brand = goods.brand;
+        updateGoods.save();
+
+        index(null);
+    }
+
+    private static String getCompanyUser() {
+        //todo
+        return "燕井允";
+    }
+
+    /**
+     * 上下架指定商品
+     */
+    public static void updateStatus(Long checkoption[], GoodsStatus status) {
+        //更新处理
+        for (Long id : checkoption) {
+            models.sales.Goods goods = models.sales.Goods.findById(id);
+            goods.status = status;
+            goods.save();
+        }
+
+        index(null);
+    }
+
+    /**
+     * 删除指定商品
+     */
+    public static void delete(Long checkoption[]) {
+        for (Long id : checkoption) {
+            models.sales.Goods goods = models.sales.Goods.findById(id);
+            goods.deleted = DeletedStatus.DELETED;
+            goods.save();
+        }
+        index(null);
+    }
 
 }

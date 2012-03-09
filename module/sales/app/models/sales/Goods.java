@@ -7,6 +7,8 @@ package models.sales;
 import com.uhuila.common.constants.DeletedStatus;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
+import play.data.validation.InFuture;
+import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
@@ -31,15 +33,18 @@ public class Goods extends Model {
     /**
      * 商品编号
      */
+    @MaxSize(value = 30)
     public String no;
     /**
      * 商品名称
      */
     @Required
+    @MaxSize(value = 80)
     public String name;
     /**
      * 所属商户ID
      */
+    @Required
     @Column(name = "company_id")
     public Long companyId;
 
@@ -48,24 +53,32 @@ public class Goods extends Model {
             = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))
     public Set<Shop> shops;
 
-    public void addValues(Shop shop) {
-        if (this.shops == null) {
-            this.shops = new HashSet<>();
+    public void filterShops() {
+        if (shops == null) {
+            List<Shop> shopList = Shop.findShopByCompany(companyId);
+            shops.addAll(shopList);
+            return;
         }
-        if (!this.shops.contains(shop)) {
-            this.shops.add(shop);
+        Set<Shop> uniqueShops = new HashSet<>();
+        for (Shop shop : shops) {
+            if (!uniqueShops.contains(shop)) {
+                uniqueShops.add(shop);
+            }
         }
+        this.shops = uniqueShops;
     }
 
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinTable(name = "goods_categories", inverseJoinColumns = @JoinColumn(name
             = "category_id"), joinColumns = @JoinColumn(name = "goods_id"))
+    @Required
     public Set<Category> categories;
 
     /**
      * 原始图片路径
      */
     @Column(name = "image_path")
+    @Required
     public String imagePath;
 
     /**
@@ -103,17 +116,20 @@ public class Goods extends Model {
     /**
      * 进货量
      */
+    @Required
     @Column(name = "income_goods_count")
     public String incomeGoodsCount;
     /**
      * 券有效开始日
      */
+    @Required
     @Column(name = "effective_at")
     @Temporal(TemporalType.DATE)
     public Date effectiveAt;
     /**
      * 券有效结束日
      */
+    @Required
     @Column(name = "expire_at")
     @Temporal(TemporalType.DATE)
     public Date expireAt;
@@ -124,11 +140,14 @@ public class Goods extends Model {
     /**
      * 商品原价
      */
+    @Required
+    @InFuture
     @Column(name = "original_price")
     public BigDecimal originalPrice;
     /**
      * 商品现价
      */
+    @Required
     @Column(name = "sale_price")
     public BigDecimal salePrice;
 
@@ -140,7 +159,7 @@ public class Goods extends Model {
 
     @Column(name = "discount")
     public Integer getDiscount() {
-        if (discount != null && discount > 0){
+        if (discount != null && discount > 0) {
             return discount;
         }
         if (originalPrice != null && salePrice != null && originalPrice.compareTo(new BigDecimal(0)) > 0) {
@@ -166,11 +185,13 @@ public class Goods extends Model {
     /**
      * 温馨提示
      */
+    @MaxSize(value = 65535)
     public String prompt;
     /**
      * 商品详情
      */
     @Required
+    @MaxSize(value = 65535)
     public String details;
     /**
      * 售出数量
@@ -180,27 +201,31 @@ public class Goods extends Model {
     /**
      * 售出基数
      */
-    @Column(name = "base_sale")
     @Required
-    public long baseSale;
+    @Column(name = "base_sale")
+    public Long baseSale;
     /**
      * 商品状态,
      */
+    @Required
     @Enumerated(EnumType.STRING)
     public GoodsStatus status;
     /**
      * 创建来源
      */
+    @Required
     @Column(name = "created_from")
     public String createdFrom;
     /**
      * 创建时间
      */
+    @Required
     @Column(name = "created_at")
     public Date createdAt;
     /**
      * 创建人
      */
+    @Required
     @Column(name = "created_by")
     public String createdBy;
     /**
@@ -216,6 +241,7 @@ public class Goods extends Model {
     /**
      * 逻辑删除,0:未删除，1:已删除
      */
+    @Required
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
     /**
@@ -231,8 +257,9 @@ public class Goods extends Model {
     @Column(name = "display_order")
     public String displayOrder;
 
+    @Required
     @ManyToOne
-    @JoinColumn(name = "brand_id", nullable = true)
+    @JoinColumn(name = "brand_id")
     public Brand brand;
 
     @Transient

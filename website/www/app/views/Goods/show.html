@@ -147,7 +147,9 @@
                 </div>
             </div>
         #{/form}
+        #{if goods.prompt != null}
             <div class="right_content_two">
+
                 <dl class="right_one_dl">
                     <dt>
                     <div class="title_nav">温馨提示</div>
@@ -155,11 +157,12 @@
                     </dt>
                     <dd>
                         <ul class="tishi_ul">
-                            <li class="tishi_li" id="prompt">#{if goods.prompt != null}${goods.prompt.raw()}#{/if}</li>
+                            <li class="tishi_li" id="prompt">${goods.prompt.raw()}</li>
                         </ul>
                     </dd>
                 </dl>
             </div>
+        #{/if}
             <div class="right_content_two">
                 <dl class="right_one_dl">
                     <dt>
@@ -168,7 +171,8 @@
                     </dt>
                     <dd>
                         <ul class="tishi_ul">
-                            <li class="tishi_li" id="details">#{if goods.details != null}${goods.details.raw()}#{/if}</li>
+                            <li class="tishi_li"
+                                id="details">#{if goods.details != null}${goods.details.raw()}#{/if}</li>
                         </ul>
                     </dd>
                 </dl>

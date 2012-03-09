@@ -43,9 +43,6 @@ public class Category extends Model {
             = "goods_id"), joinColumns = @JoinColumn(name = "category_id"))
     public Set<Goods> goodsSet;
 
-    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    public Set<Brand> brands;
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public Set<CategoryProperty> properties = new HashSet<CategoryProperty>();
 
@@ -57,35 +54,57 @@ public class Category extends Model {
     }
 
     /**
-     * 获取前n个分类.
+     * 获取顶层的前n个分类.
      *
      * @param limit 获取的条数限制
      * @return 前n个分类
      */
     public static List<Category> findTop(int limit) {
-        return find("order by displayOrder").fetch(limit);
+        return find("parent = null order by displayOrder").fetch(limit);
     }
 
     public static List<Category> findTop(int limit, long categoryId) {
-        List<Category> categories = findTop(limit);
-        if (categoryId != 0) {
-            boolean containsCategory = false;
-            for (Category category : categories) {
-                if (category.id == categoryId) {
-                    containsCategory = true;
-                    break;
-                }
-            }
-            if (!containsCategory) {
-                List<Category> showCategories = new ArrayList<>();
-                showCategories.add((Category) findById(categoryId));
-                if (categories.size() == limit) {
-                    categories.remove(limit-1);
-                }
-                showCategories.addAll(categories);
-                categories = showCategories;
+        if (categoryId == 0) {
+            return findTop(limit);
+        }
+        List<Category> categories = findByParent(limit, categoryId);
+        boolean containsCategory = false;
+        for (Category category : categories) {
+            if (category.id == categoryId) {
+                containsCategory = true;
+                break;
             }
         }
+        if (!containsCategory) {
+            List<Category> showCategories = new ArrayList<>();
+            showCategories.add((Category) findById(categoryId));
+            if (categories.size() == limit) {
+                categories.remove(limit - 1);
+            }
+            showCategories.addAll(categories);
+            categories = showCategories;
+        }
         return categories;
+    }
+
+    public static List<Category> findByParent(int limit, long categoryId) {
+        Category category = categoryId == 0 ? null : new Category(categoryId);
+        if (limit > 0) {
+            if (category != null) {
+                return find("parentCategory = ? order by displayOrder", category).fetch(limit);
+            } else {
+                return find("parentCategory = null order by displayOrder").fetch(limit);
+            }
+        } else {
+            if (category != null) {
+                return find("parentCategory = ? order by displayOrder", category).fetch();
+            } else {
+                return find("parentCategory = null order by displayOrder").fetch();
+            }
+        }
+    }
+
+    public static List<Category> findByParent(long categoryId) {
+        return findByParent(0, categoryId);
     }
 }
