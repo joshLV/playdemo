@@ -1,11 +1,11 @@
 package play.modules.paginate;
 
-import play.db.jpa.GenericModel;
-import play.modules.paginate.strategy.JPAExtStrategy;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+
+import play.db.jpa.GenericModel;
+import play.modules.paginate.strategy.JPAExtStrategy;
 
 /**
  * JPA的play的翻页.

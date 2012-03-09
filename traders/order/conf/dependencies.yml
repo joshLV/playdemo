@@ -11,6 +11,7 @@ require:
     - paginate_ext -> paginate_ext
     - supplier_cas -> supplier_cas
     - sales -> sales
+    - accounts -> accounts
 repositories:
     - mavenRepository:
         type:       iBiblio
@@ -26,5 +27,6 @@ repositories:
             - order -> *
             - consumer -> *
             - sales -> *
+            - accounts -> *
             - supplier_cas -> *
             - paginate_ext -> *

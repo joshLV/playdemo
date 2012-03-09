@@ -1,9 +1,9 @@
 package models.order;
 
-import org.apache.commons.lang.time.DateFormatUtils;
-
 import java.util.Date;
 import java.util.Random;
+
+import org.apache.commons.lang.time.DateFormatUtils;
 
 /**
  * TODO.

@@ -36,7 +36,7 @@ public class OrderUnitTest extends UnitTest {
 		orders.status=OrderStatus.UNPAID;
 		orders.deliveryType=1;
 		orders.payMethod="1";
-		String compnayId ="1";
+		Long compnayId =1l;
 		orders.searchKey="2";
 		orders.searchItems="2012";
 		List<Orders> list = Orders.query(orders,compnayId);

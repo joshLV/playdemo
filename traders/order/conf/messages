@@ -1,6 +1,9 @@
 # You can specialize this file for each language.
 # For example, for French create a messages.fr file
 #
+validation.required=请输入%s!
+coupon.eCouponSn=券号
+
 #订单状态
 order.UNPAID=未支付
 order.PAID=已支付

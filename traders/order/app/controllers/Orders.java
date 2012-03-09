@@ -17,7 +17,7 @@ public class Orders extends Controller {
      */
 	public static void index(models.order.Orders orders) {
         //该商户ID
-		String compnayId="1";
+		Long compnayId=1l;
 		List orderList= models.order.Orders.query(orders,compnayId);
 		render(orderList);
 		

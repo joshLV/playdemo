@@ -6,6 +6,9 @@
 GET     /orders                                 Orders.index
 GET     /coupons                                Orders.coupons
 GET     /orders/{id}                            Orders.details
+GET     /coupons/verify                         VerificationCoupons.index
+POST     /coupons/query                          VerificationCoupons.queryCoupons
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
