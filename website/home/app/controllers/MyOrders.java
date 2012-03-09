@@ -54,5 +54,9 @@ public class MyOrders extends Controller {
         BreadcrumbList breadcrumbs = new BreadcrumbList("我的券订单", "/coupons");
         render("MyOrders/e_coupons.html", couponsList, breadcrumbs);
     }
+    
+    public static void applyRefund(Long id){
+
+    }
 
 }
