@@ -21,11 +21,15 @@ public class MenuContext {
 
     public Set<String> activeActions = new HashSet<String>();
     public Set<String> activeLabels = new HashSet<String>();
+    public Set<String> activeNames = new HashSet<String>();
     public Map<String, Object> substitutions = new HashMap<String, Object>();
 
-    public MenuContext(Request request) {
+    public MenuContext(Request request, Set<String> _activeNames) {
         addActiveAction(request.action);
         addActiveAnnotatedActions(request);
+        if (_activeNames != null) {
+            activeNames.addAll(_activeNames);
+        }
     }
 
     public void addActiveAction(String action) {
@@ -44,6 +48,10 @@ public class MenuContext {
 
     public boolean hasActiveAction(String action) {
         return activeActions.contains(action);
+    }
+    
+    public boolean hasActiveName(String name) {
+        return activeNames.contains(name);
     }
 
     protected void addActiveAnnotatedActions(Request request) {
@@ -67,6 +75,11 @@ public class MenuContext {
     public void setActiveLabel(String label) {
         activeLabels.clear();
         addActiveLabel(label);
+    }
+    
+    
+    public void addActiveNames(String name) {
+        activeNames.add(name);
     }
 
     public void setActiveLabels(Collection<String> labels) {

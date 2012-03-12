@@ -21,6 +21,9 @@ public class SupplierPermission extends Model {
 
     public String description;
 
+    @Column(name="display_order")
+    public int displayOrder;
+    
     @Column(name="application_name")
     public String applicationName;
 

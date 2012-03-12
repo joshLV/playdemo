@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * http://groups.google.com/group/play-framework/browse_thread/thread/09e9aeb8afdaf4fb?fwc=1
  */
 @Retention(RetentionPolicy.RUNTIME) 
-@Target(ElementType.METHOD) 
+@Target({ElementType.METHOD, ElementType.TYPE}) 
 public @interface ActiveNavigation {
 	String value();
 }

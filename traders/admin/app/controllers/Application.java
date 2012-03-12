@@ -1,14 +1,13 @@
 package controllers;
 
-import play.*;
-import play.mvc.*;
+import navigation.annotations.ActiveNavigation;
+import play.mvc.Controller;
+import play.mvc.With;
 
-import java.util.*;
-
-import models.*;
-
+@With({MenuInjector.class})
 public class Application extends Controller {
 
+    @ActiveNavigation("user_add")
     public static void index() {
         render();
     }

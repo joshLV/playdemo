@@ -11,9 +11,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import models.admin.SupplierNavigation;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -59,6 +60,9 @@ public class Menu {
     }
     
     @XmlTransient
+    public String applicationName;
+    
+    @XmlTransient
     public Map<String, String> params = new HashMap<String, String>();
     
     @XmlTransient
@@ -66,5 +70,37 @@ public class Menu {
     
     public boolean hasLink() {
         return url != null || action != null;
+    }
+    
+    public String menuKey() {
+        return applicationName + "." + name;
+    }
+    
+     public static Menu from(SupplierNavigation navigation) {
+         return from(navigation, true);
+     }
+    public static Menu from(SupplierNavigation navigation, boolean recure) {
+        if (navigation == null) {
+            return null;
+        }
+        Menu menu = new Menu();
+        menu.text = navigation.text;
+        menu.name = navigation.name;
+        menu.action = navigation.action;
+        menu.url = navigation.url;
+        if (navigation.parent != null && recure) {
+            menu.parent = from(navigation.parent, false);
+        }
+        menu.labelValue = navigation.labels;
+        menu.applicationName = navigation.applicationName;
+        
+        if (navigation.children != null && recure) {
+            menu.children = new ArrayList<Menu>();
+            for (SupplierNavigation nav : navigation.children) {
+                menu.children.add(from(nav, false)); 
+            }
+        }
+        
+        return menu;
     }
 }

@@ -1,9 +1,7 @@
 package navigation;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -11,27 +9,25 @@ import javax.xml.bind.Unmarshaller;
 import models.admin.SupplierNavigation;
 import models.admin.SupplierPermission;
 import models.admin.SupplierRole;
+
+import org.apache.commons.lang.StringUtils;
+
 import play.Logger;
 import play.Play;
-import play.mvc.Http.Request;
+import play.mvc.Router;
 import play.vfs.VirtualFile;
 
 /**
  * Keeper of the bare RBAC all defines.
  * 
- * TODO: 此类需要重命名为Rbac
- *
  * This class holds a static reference to all the Menus. You can retrive a Menu from this class,
  * which will be automatically wrapped in a ContextedMenu, ready to be inserted into your view.
  */
-public class Navigation {
+public class RbacLoader {
 
-    private static Map<String, Menu> namedMenus;
-    private static ThreadLocal<MenuContext> menuContext = new ThreadLocal<MenuContext>();
-    
     public static void init(VirtualFile file)  {
         JAXBContext jaxbContext;
-        Logger.info(Navigation.class.getName() + " init.");
+        Logger.info(RbacLoader.class.getName() + " init.");
         try {
             Class[] clazzes = new Class[] {
                     Application.class,
@@ -50,7 +46,6 @@ public class Navigation {
     }
 
     public static void init(Application application) {
-        namedMenus = new HashMap<String, Menu>();
         long loadVersion = System.currentTimeMillis();
         String applicationName = Play.configuration.getProperty("application.name");
         loadMenusToDB(null, application.menus, applicationName, loadVersion);
@@ -150,7 +145,6 @@ public class Navigation {
         for (Menu menu : menus) {
             menu.parent = parentMenu;
             saveMenuToDB(applicationName, loadVersion, menu, parentMenu);
-            namedMenus.put(menu.name, menu);
             if (!menu.children.isEmpty()) {
                 loadMenusToDB(menu, menu.children, applicationName, loadVersion);
             }
@@ -167,6 +161,7 @@ public class Navigation {
         supplierNavigation.text = menu.text;
         supplierNavigation.action = menu.action;
         supplierNavigation.url = menu.url;
+        supplierNavigation.labels = menu.labelValue;
         // TODO: nav.parent
         supplierNavigation.applicationName = applicationName;
         supplierNavigation.loadVersion = currentLoadVersion;
@@ -184,28 +179,4 @@ public class Navigation {
     }
 
 
-    public static ContextedMenu getMenu(String name) {
-        if(!namedMenus.containsKey(name)) {
-            throw new IllegalArgumentException("Menu '" + name + "' not defined.");
-        }
-        return new ContextedMenu(namedMenus.get(name), getMenuContext());
-    }
-
-    public static void clearMenuContext() {
-        menuContext.set(null);
-    }
-
-    public static MenuContext getMenuContext() {
-        MenuContext context = menuContext.get();
-        if(context == null) {
-            context = buildMenuContext();
-            menuContext.set(context);
-        }
-        return context;
-    }
-
-    protected static MenuContext buildMenuContext() {
-        MenuContext menuContext = new MenuContext(Request.current());
-        return menuContext;
-    }
 }

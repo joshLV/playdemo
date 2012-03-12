@@ -1,0 +1,59 @@
+%{ 
+secendLevelMenus = _secendLevelMenus ?: _arg
+if (secendLevelMenus == null) {
+  throw new NullPointerException("The secendLevelMenus is null");
+}
+
+if (_level == null) {
+  _level = 1
+}
+
+if (_showLevels == null) {
+  _showLevels = 99;
+}
+
+if (_expandLevels == null) {
+  _expandLevels = 99;
+} 
+
+if (_ulClass == null) {
+   _ulClass = "nav nav-list"
+}
+
+}%
+#{if !secendLevelMenus.isEmpty() &&
+     _level <= _showLevels && 
+     (_level <= _expandLevels || menuItem.hasActiveDescendant()) }
+<ul${_ulClass == null ? '' : (' class="' + _ulClass + '"').raw()}>
+#{list items:secendLevelMenus, as:'child'}
+  %{
+    linkClasses = ["nav-header"]
+  }%
+  <li class="${linkClasses.join(' ')}">
+    #{if child.hasLink()}
+      <a href="${child.getLink()}">${child.getText()}</a>
+    #{/if}
+    #{else}
+      ${child.getText()}
+    #{/else}
+  </li>
+  
+  #{list items:child.children, as:'subItem'}
+  %{
+    subLinkClasses = []
+    if(subItem.isActive()) { subLinkClasses.push("active"); }
+    if(subItem.hasActiveDescendant()) { subLinkClasses.push("activePath"); }
+    if(subItem.getProperty('external')) { subLinkClasses.push("external"); }
+  }%  
+      <li class="${subLinkClasses.join(' ')}">
+        #{if subItem.hasLink()}
+          <a href="${subItem.getLink()}">${subItem.getText()}</a>
+        #{/if}
+        #{else}
+          <a href="#">${subItem.getText()}</a>
+        #{/else}
+      </li>  
+  #{/list}
+#{/list}
+</ul>
+#{/if}

@@ -13,6 +13,8 @@ import play.vfs.VirtualFile;
 
 /**
  * Initialize and reload the navigation structure.
+ * 
+ * TODO: 重命名为RBACPlugin.
  */
 public class NavigationPlugin extends PlayPlugin {
 
@@ -20,12 +22,6 @@ public class NavigationPlugin extends PlayPlugin {
     long lastLoaded = -1;
     List<VirtualFile> navigationFiles;
     
-    
-    @Override
-    public void onLoad() {
-
-    }
-
     @Override
     public void afterApplicationStart() {
         navigationFiles = new LinkedList<VirtualFile>();
@@ -52,7 +48,10 @@ public class NavigationPlugin extends PlayPlugin {
             if (reload) {
                 Logger.info("Reloading navigation file");
                 // TODO: Support multiple files
-                Navigation.init(navigationFiles.get(0));
+                RbacLoader.init(navigationFiles.get(0));
+                
+                // 初始化菜单名称
+                NavigationHandler.initNamedMenus();
             }
         } finally {
             JPAPlugin.closeTx(false);
@@ -61,6 +60,6 @@ public class NavigationPlugin extends PlayPlugin {
 
     @Override
     public void beforeInvocation() {
-        Navigation.clearMenuContext();
+        NavigationHandler.clearMenuContext();
     }
 }

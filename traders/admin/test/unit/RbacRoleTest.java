@@ -6,7 +6,7 @@ import models.admin.SupplierNavigation;
 import models.admin.SupplierRole;
 
 import navigation.ContextedMenu;
-import navigation.Navigation;
+import navigation.RbacLoader;
 
 import org.junit.Test;
 

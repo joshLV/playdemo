@@ -31,7 +31,8 @@ public class ContextedMenu {
     }
 
     public boolean isActive() {
-        return menu.action != null && menuContext.hasActiveAction(menu.action);
+        return (menu.action != null && menuContext.hasActiveAction(menu.action))
+               || (menuContext.hasActiveName(menu.name));
     }
 
     public boolean hasActiveDescendant() {

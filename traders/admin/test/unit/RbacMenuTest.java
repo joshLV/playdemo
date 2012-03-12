@@ -12,8 +12,10 @@ import models.admin.SupplierNavigation;
 import navigation.Application;
 import navigation.ContextedMenu;
 import navigation.Menu;
-import navigation.Navigation;
+import navigation.NavigationHandler;
+import navigation.RbacLoader;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import play.test.Fixtures;
@@ -22,6 +24,7 @@ import play.vfs.VirtualFile;
 
 public class RbacMenuTest extends UnitTest {
 
+    @Before
     @SuppressWarnings("unchecked")
     public void setupDatabase() {
         Fixtures.delete(SupplierNavigation.class);
@@ -29,11 +32,14 @@ public class RbacMenuTest extends UnitTest {
 
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
-        Navigation.init(file);
+        RbacLoader.init(file);
     }
 
     @Test
     public void theNoDefinedNavigationWillBeDeleted() {
+        SupplierNavigation mainNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "main").first();
+        assertNotNull(mainNav);
+        
         // 加载后，数据库中没有在yml定义的导航记录必须被删除
         SupplierNavigation toDeleteNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "to_delete").first();
         assertNull(toDeleteNav);
@@ -41,8 +47,8 @@ public class RbacMenuTest extends UnitTest {
     
     @Test
     public void canLoadNavigationYamlFile() {
-        assertNotNull(Navigation.getMenuContext());
-        ContextedMenu menu = Navigation.getMenu("main");
+        assertNotNull(NavigationHandler.getMenuContext());
+        ContextedMenu menu = NavigationHandler.getMenu("main");
         assertNotNull(menu);
 
         // 加载后，数据库中必须有相关的记录
