@@ -12,6 +12,7 @@ require:
     - web_trace -> web_trace
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - breadcrumbs -> breadcrumbs
+    - accounts -> accounts
 
 repositories:
     - mavenRepository:
@@ -34,3 +35,4 @@ repositories:
             - web_trace -> *
             - paginate_ext -> *
             - breadcrumbs -> *
+            - accounts -> *
