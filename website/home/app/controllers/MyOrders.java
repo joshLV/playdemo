@@ -80,17 +80,8 @@ public class MyOrders extends Controller {
         OrderItems orderItem = null;
 
         if(order != null){
-            System.out.println("orderid:" + order.getId());
-        }
-        if(order != null){
             tradeBill = TradeBill.find("byOrderIdAndTradeStatus", order.getId(), TradeStatus.SUCCESS).first();
-            if(tradeBill != null){
-                System.out.println("orderid:" + tradeBill.getId());
-            }
             orderItem = OrderItems.find("byOrderAndGoods",order, eCoupon.goods).first();
-            if(orderItem != null){
-                System.out.println("orderid:" + orderItem.getId());
-            }
         }
         if(order == null || tradeBill == null || orderItem == null){
             renderJSON("{\"error\":\"can not get the trade bill\"}");
