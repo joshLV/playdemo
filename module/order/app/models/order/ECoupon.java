@@ -91,7 +91,10 @@ public class ECoupon extends Model {
         this.eCouponSn = generateSerialNumber();
     }
 
-    private String generateSerialNumber() {
+    public ECoupon() {
+	}
+
+	private String generateSerialNumber() {
         int random = new Random().nextInt() % 10000;
         return dateFormat.format(new Date()) + decimalFormat.format(random);
 
