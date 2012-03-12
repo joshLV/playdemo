@@ -137,9 +137,7 @@ public class Orders extends Controller {
             redirect("/payment_info/" + orders.id);
         } catch (NotEnoughInventoryException e) {
             //todo 缺少库存
-            System.out.println(e);
-
-
+            e.printStackTrace();
         }
     }
 }

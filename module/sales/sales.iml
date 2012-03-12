@@ -88,6 +88,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="Paginate_ext" />
+    <orderEntry type="library" name="jsoup-1.6.1" level="project" />
   </component>
 </module>
 

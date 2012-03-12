@@ -15,8 +15,9 @@ goods.ELECTRONIC=电子券
 
 validation.required=请输入%s!
 validation.future=%s必须填写未来的时间!
-validation.maxSize=%s的长度不能超过%d。
-validation.min=%s必须大于0
+validation.maxSize=%s的长度不能超过%d!
+validation.min=%s必须大于或等于%d!
+validation.invalid=无效的%s!
 imagePath=商品图片
 goods.no=商品编号
 goods.name=商品名称

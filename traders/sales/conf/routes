@@ -16,12 +16,14 @@ DELETE  /goods/{id}/delete                      Goods.delete
 POST    /goods/upload                           UploadFile.uploadJson
 POST    /goods/filemanager                      UploadFile.fileManagerJson
 
+GET     /category/sub/{id}                      Categories.showSubs
+
 GET     /shops                                  Shops.list
 GET     /shops/new                              Shops.add
 POST    /shops                                  Shops.create
 GET     /shops/{id}/edit                        Shops.edit
 POST    /shops/{id}                             Shops.update
-DELETE  /shops/{id}                           Shops.delete
+DELETE  /shops/{id}                             Shops.delete
 GET     /shops/area                             Shops.relation
 
 

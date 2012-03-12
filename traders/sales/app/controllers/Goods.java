@@ -17,10 +17,10 @@ import play.mvc.Scope;
 import util.FileUploadUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -59,6 +59,7 @@ public class Goods extends Controller {
 
         Goods goods = new Goods();
         Scope.Flash.current().put("goods", goods);
+        renderArgs.put("isAllShop", true);
         render("sales/Goods/add.html", shopList, brandList, categoryList, subCategoryList);
     }
 
@@ -80,27 +81,25 @@ public class Goods extends Controller {
      *
      * @param imagePath
      * @param goods
+     * @param topCategoryId 顶层分类Id
+     * @param isAllShop     是否全部门店
      */
-    public static void create(@Required File imagePath, @Valid models.sales.Goods goods, Long topCategoryId, boolean isAllShop) {
+    public static void create(@Required File imagePath, @Valid models.sales.Goods goods, Long topCategoryId,
+                              boolean isAllShop) {
         Long companyId = getCompanyId();
-        //添加商品处理
-        goods.companyId = companyId;
-        goods.createdBy = getCompanyUser();
-        goods.deleted = DeletedStatus.UN_DELETED;
-        goods.saleCount = 0;
-        goods.incomeGoodsCount = 0L;
-        goods.createdAt = new Date();
-        goods.materialType = MaterialType.ELECTRONIC;
-        String shopIds = "";
-        if (goods.shops != null) {
-            for (Shop shop : goods.shops) {
-                shopIds += shop.id + ",";
-            }
+        if (isAllShop && goods.shops != null) {
+            goods.shops = null;
         }
+
         if (Validation.hasErrors()) {
-            Map<String, List<play.data.validation.Error>> errorMap = validation.errorsMap();
-            for (String key : errorMap.keySet()) {
-                System.out.println(key + ":  " + errorMap.get(key));
+            String shopIds = "";
+            if (goods.shops != null) {
+                for (Shop shop : goods.shops) {
+                    shopIds += shop.id + ",";
+                    renderArgs.put("isAllShop", false);
+                }
+            } else {
+                renderArgs.put("isAllShop", true);
             }
 
             List<Shop> shopList = Shop.findShopByCompany(companyId);
@@ -110,22 +109,41 @@ public class Goods extends Controller {
             if (categoryList.size() > 0) {
                 subCategoryList = Category.findByParent(categoryList.get(0).id);
             }
-            Long categoryId = goods.categories.iterator().next().id;
+            Long categoryId = 0L;
+            if (goods.categories != null && goods.categories.size() > 0 && goods.categories.iterator() != null && goods
+                    .categories.iterator().hasNext()) {
+                categoryId = goods.categories.iterator().next().id;
+            }
             render("sales/Goods/add.html", shopList, brandList, categoryList, subCategoryList, goods, topCategoryId,
-                    categoryId, shopIds, isAllShop);
+                    categoryId, shopIds);
         }
+        //添加商品处理
+        goods.companyId = companyId;
+        goods.createdBy = getCompanyUser();
+        goods.deleted = DeletedStatus.UN_DELETED;
+        goods.saleCount = 0;
+        goods.incomeGoodsCount = 0L;
+        goods.createdAt = new Date();
+        goods.materialType = MaterialType.ELECTRONIC;
 
+
+        if (goods.baseSale == 0) {
+            goods.status = GoodsStatus.OFFSALE;
+        }
         goods.create();
-        uploadImagePath(imagePath, goods);
-
+        try {
+            uploadImagePath(imagePath, goods);
+        } catch (IOException e) {
+            error("goods.image_upload_failed");
+        }
         goods.filterShops();
-
         goods.save();
 
-//        预览的情况
-//        if ("2".equals(goods.status)) {
-//            redirect("http://www.uhuiladev.com/goods/" + goods.id + "?preview=true");
-//        }
+
+        //预览的情况
+        if (GoodsStatus.PREVIEW.equals(goods.status)) {
+            redirect("http://www.uhuiladev.com/goods/" + goods.id + "?preview=true");
+        }
         index(null);
     }
 
@@ -135,21 +153,22 @@ public class Goods extends Controller {
      * @param uploadImageFile
      * @param goods
      */
-    private static void uploadImagePath(File uploadImageFile, models.sales.Goods goods) {
-        if (uploadImageFile != null && uploadImageFile.getName() != null) {
-            //取得文件存储路径
-            String storepath = play.Play.configuration.get("upload.imagepath").toString();
-            //上传文件
-            String path = PathUtil.getPathById(goods.id);
-            String uploadImageFileName = uploadImageFile.getName();
-            String extName = play.Play.configuration.get("imageExtName").toString();
-            if (uploadImageFileName.indexOf(".") > 0) {
-                extName = uploadImageFileName.substring(uploadImageFileName.lastIndexOf(".") + 1, uploadImageFileName.length());
-            }
-            String baseFileName = "origin." + extName;
-            new FileUploadUtil().storeImage(uploadImageFile, storepath + path, baseFileName);
-            goods.imagePath = path + baseFileName;
+    private static void uploadImagePath(File uploadImageFile, models.sales.Goods goods) throws IOException {
+        if (uploadImageFile == null || uploadImageFile.getName() == null) {
+            return;
         }
+        //取得文件存储路径
+        String storepath = play.Play.configuration.get("upload.imagepath").toString();
+        //上传文件
+        String path = PathUtil.getPathById(goods.id);
+        String uploadImageFileName = uploadImageFile.getName();
+        String extName = play.Play.configuration.get("imageExtName").toString();
+        if (uploadImageFileName.indexOf(".") > 0) {
+            extName = uploadImageFileName.substring(uploadImageFileName.lastIndexOf(".") + 1, uploadImageFileName.length());
+        }
+        String baseFileName = "origin." + extName;
+        FileUploadUtil.storeImage(uploadImageFile, storepath + path, baseFileName);
+        goods.imagePath = path + baseFileName;
     }
 
     /**
@@ -179,7 +198,11 @@ public class Goods extends Controller {
         String companyUser = getCompanyUser();
         models.sales.Goods updateGoods = models.sales.Goods.findById(id);
 
-        uploadImagePath(uploadImageFile, updateGoods);
+        try {
+            uploadImagePath(uploadImageFile, updateGoods);
+        } catch (IOException e) {
+            error("goods.image_upload_failed");
+        }
 
         updateGoods.name = goods.name;
         updateGoods.no = goods.no;
@@ -188,8 +211,8 @@ public class Goods extends Controller {
         updateGoods.originalPrice = goods.originalPrice;
         updateGoods.salePrice = goods.salePrice;
         updateGoods.baseSale = goods.baseSale;
-        updateGoods.prompt = goods.prompt;
-        updateGoods.details = goods.details;
+        updateGoods.setPrompt(goods.getPrompt());
+        updateGoods.setDetails(goods.getDetails());
         updateGoods.updatedAt = new Date();
         updateGoods.updatedBy = companyUser;
         updateGoods.brand = goods.brand;
@@ -206,13 +229,9 @@ public class Goods extends Controller {
     /**
      * 上下架指定商品
      */
-    public static void updateStatus(Long checkoption[], GoodsStatus status) {
+    public static void updateStatus(GoodsStatus status, Long... ids) {
         //更新处理
-        for (Long id : checkoption) {
-            models.sales.Goods goods = models.sales.Goods.findById(id);
-            goods.status = status;
-            goods.save();
-        }
+        models.sales.Goods.updateStatus(status, ids);
 
         index(null);
     }
@@ -220,12 +239,9 @@ public class Goods extends Controller {
     /**
      * 删除指定商品
      */
-    public static void delete(Long checkoption[]) {
-        for (Long id : checkoption) {
-            models.sales.Goods goods = models.sales.Goods.findById(id);
-            goods.deleted = DeletedStatus.DELETED;
-            goods.save();
-        }
+    public static void delete(Long... ids) {
+        models.sales.Goods.delete(ids);
+
         index(null);
     }
 

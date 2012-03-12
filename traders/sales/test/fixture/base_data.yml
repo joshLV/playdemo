@@ -4,13 +4,19 @@ sales.Category(Category_1):
 sales.Category(Category_2):
  "name": "旅游"
  "displayOrder": "200"
+sales.Category(Category_21):
+ "name": "上海"
+ "displayOrder": "210"
+ "parentCategory": Category_2
+sales.Category(Category_22):
+ "name": "香港"
+ "displayOrder": "220"
+ "parentCategory": Category_2
 
 sales.Brand(Brand_1):
  "name": "来一份"
  "displayOrder": "100"
- "category": "Category_1"
 
 sales.Brand(Brand_2):
  "name": "豆捞坊"
  "displayOrder": "200"
- "category": "Category_1"

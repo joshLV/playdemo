@@ -4,6 +4,8 @@ require:
     - play
     - play -> paginate head
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - commons-lang -> commons-lang 2.6
+    - org.jsoup -> jsoup 1.6.1
 
 
 repositories:
@@ -12,4 +14,6 @@ repositories:
         root:       "http://dev.uhuila.cn/nexus/content/groups/public"
         contains:
             - com.uhuila.utils -> *
+            - commons-lang -> *
+            - org.jsoup -> *
         m2compatible: true

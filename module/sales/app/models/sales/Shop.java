@@ -1,22 +1,14 @@
 package models.sales;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
 import com.uhuila.common.constants.DeletedStatus;
-
 import play.data.validation.Required;
 import play.db.jpa.Model;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -61,11 +53,11 @@ public class Shop extends Model {
     @Column(name = "updated_by")
     public String updatedBy;
 
-	/**
-	 * 逻辑删除,0:未删除，1:已删除
-	 */
-	@Enumerated(EnumType.ORDINAL)
-	public DeletedStatus deleted;
+    /**
+     * 逻辑删除,0:未删除，1:已删除
+     */
+    @Enumerated(EnumType.ORDINAL)
+    public DeletedStatus deleted;
 
     @Column(name = "lock_version")
     public int lockVersion;
@@ -73,9 +65,8 @@ public class Shop extends Model {
     @Column(name = "display_order")
     public String displayOrder;
 
-    @ManyToMany(cascade = CascadeType.REFRESH,mappedBy="shops",
-            fetch=FetchType.LAZY)
-    public Set<Goods> goods;
+    @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = "shops", fetch = FetchType.LAZY)
+    public Set<Goods> goods = new HashSet<>();
 
     /**
      * 读取某商户的全部门店记录

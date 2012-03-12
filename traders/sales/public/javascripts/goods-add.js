@@ -42,10 +42,26 @@ KE.show({
 
 $(window).load(
     function () {
+        $("#topCategoryId").change(function () {
+            $("#categoryId").load("/category/sub/" + $("#topCategoryId").val(), function (data) {
+                var categoryList = $.parseJSON(data);
+                $("#categoryId").empty();
+                $.each(categoryList, function (i, category) {
+                    $("#categoryId").append("<option value='" + category.id + "'>" + category.name + "</option>");
+                });
+            });
+        });
 
         $("#onsales").click(function () {
-            $("#status").val("ONSALE");
-        });
+                if ($("#baseSale").val() > 0) {
+                    $("#status").val("ONSALE");
+                } else {
+                    $("#errorBaseSale").text("上架商品的库存不能为0！");
+                    return false;
+                }
+            }
+        )
+        ;
         $("#isAllShop2").click(function () {
             $("#shop").show();//显示门店列表
         });
@@ -57,6 +73,9 @@ $(window).load(
         });
         $("#save").click(function () {
             $("#status").val("OFFSALE");
+        });
+        $("#preview").click(function () {
+            $("#status").val("PREVIEW");
         });
     }
 );

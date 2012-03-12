@@ -6,6 +6,8 @@ package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
 import org.apache.commons.lang.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import play.Play;
 import play.data.validation.InFuture;
 import play.data.validation.MaxSize;
@@ -30,6 +32,17 @@ public class Goods extends Model {
             ("image.server", "http://img0.uhlcdndev.net");
     private static final String IMAGE_ROOT_GENERATED = Play.configuration
             .getProperty("image.root", "/p");
+    public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
+
+    static {
+        //增加可信标签到白名单
+        HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div");
+        //增加可信属性
+        HTML_WHITE_TAGS.addAttributes(":all", "style", "class", "id", "name");
+        HTML_WHITE_TAGS.addAttributes("object", "width", "height", "classid", "codebase");
+        HTML_WHITE_TAGS.addAttributes("param", "name", "value");
+        HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen", "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
+    }
 
     /**
      * 商品编号
@@ -48,7 +61,7 @@ public class Goods extends Model {
     @Column(name = "company_id")
     public Long companyId;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name
             = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))
     public Set<Shop> shops;
@@ -56,6 +69,7 @@ public class Goods extends Model {
     public void filterShops() {
         if (shops == null) {
             List<Shop> shopList = Shop.findShopByCompany(companyId);
+            shops = new HashSet<>();
             shops.addAll(shopList);
             return;
         }
@@ -140,14 +154,14 @@ public class Goods extends Model {
      * 商品原价
      */
     @Required
-    @Min(value=0.01)
+    @Min(value = 0)
     @Column(name = "original_price")
     public BigDecimal originalPrice;
     /**
      * 商品现价
      */
     @Required
-    @Min(value=0.01)
+    @Min(value = 0)
     @Column(name = "sale_price")
     public BigDecimal salePrice;
 
@@ -186,13 +200,39 @@ public class Goods extends Model {
      * 温馨提示
      */
     @MaxSize(value = 65535)
-    public String prompt;
-    /**
-     * 商品详情
-     */
+    private String prompt;
+
+    public String getPrompt() {
+        if (StringUtils.isBlank(prompt)) {
+            return "";
+        }
+        return Jsoup.clean(prompt, HTML_WHITE_TAGS);
+    }
+
+    public void setPrompt(String prompt) {
+        this.prompt = Jsoup.clean(prompt, HTML_WHITE_TAGS);
+    }
+
     @Required
     @MaxSize(value = 65535)
-    public String details;
+    private String details;
+
+    /**
+     * 商品详情
+     *
+     * @return
+     */
+    public String getDetails() {
+        if (StringUtils.isBlank(details)) {
+            return "";
+        }
+        return Jsoup.clean(details, HTML_WHITE_TAGS);
+    }
+
+    public void setDetails(String details) {
+        this.details = Jsoup.clean(details, HTML_WHITE_TAGS);
+    }
+
     /**
      * 售出数量
      */
@@ -202,6 +242,7 @@ public class Goods extends Model {
      * 售出基数
      */
     @Required
+    @Min(value = 0)
     @Column(name = "base_sale")
     public Long baseSale;
     /**
@@ -336,9 +377,11 @@ public class Goods extends Model {
     public static JPAExtPaginator<Goods> query1(models.sales.Goods goods, int pageNumber, int pageSize) {
 
         StringBuilder condition = new StringBuilder();
-        condition.append(" deleted = :deleted ");
         Map<String, Object> params = new HashMap<>();
+        condition.append(" deleted = :deleted ");
         params.put("deleted", DeletedStatus.UN_DELETED);
+        condition.append(" and status != :notMatchStatus ");
+        params.put("notMatchStatus", GoodsStatus.PREVIEW);
 
         if (StringUtils.isNotBlank(goods.name)) {
             condition.append(" and name like :name");
@@ -388,4 +431,84 @@ public class Goods extends Model {
         goodsPage.setBoundaryControlsEnabled(false);
         return goodsPage;
     }
+
+    public static void delete(Long... ids) {
+        for (Long id : ids) {
+            models.sales.Goods goods = models.sales.Goods.findById(id);
+            if (goods != null) {
+                goods.deleted = DeletedStatus.DELETED;
+                goods.save();
+            }
+        }
+    }
+
+    public static void updateStatus(GoodsStatus status, Long... ids) {
+        for (Long id : ids) {
+            models.sales.Goods goods = models.sales.Goods.findById(id);
+            goods.status = status;
+            goods.save();
+        }
+    }
+
+}
+
+class ContentSafeFilter {
+    public final static Whitelist user_content_filter = Whitelist.relaxed();
+
+    static {
+        //增加可信标签到白名单
+        user_content_filter.addTags("embed", "object", "param", "span", "div");
+        //增加可信属性
+        user_content_filter.addAttributes(":all", "style", "class", "id", "name");
+        user_content_filter.addAttributes("object", "width", "height", "classid", "codebase");
+        user_content_filter.addAttributes("param", "name", "value");
+        user_content_filter.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen", "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
+    }
+
+    /**
+     * 对用户输入内容进行过滤
+     *
+     * @param html
+     * @return
+     */
+    public static String filter(String html) {
+        if (StringUtils.isBlank(html)) return "";
+        return Jsoup.clean(html, user_content_filter);
+        //return filterScriptAndStyle(html);
+    }
+
+    /**
+     * 比较宽松的过滤，但是会过滤掉object，script， span,div等标签，适用于富文本编辑器内容或其他html内容
+     *
+     * @param html
+     * @return
+     */
+    public static String relaxed(String html) {
+        return Jsoup.clean(html, Whitelist.relaxed());
+    }
+
+    /**
+     * 去掉所有标签，返回纯文字.适用于textarea，input
+     *
+     * @param html
+     * @return
+     */
+    public static String pureText(String html) {
+        return Jsoup.clean(html, Whitelist.none());
+    }
+
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        String unsafe = "<table><tr><td>1</td></tr></table>" +
+                "<img src='' alt='' />" +
+                "<p><a href='http://example.com/' onclick='stealCookies()'>Link</a>" +
+                "<object></object>" +
+                "<script>alert(1);</script>" +
+                "</p>";
+        String safe = ContentSafeFilter.filter(unsafe);
+        System.out.println("safe: " + safe);
+    }
+
 }

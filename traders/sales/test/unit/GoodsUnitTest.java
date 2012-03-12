@@ -18,8 +18,9 @@ public class GoodsUnitTest extends UnitTest {
 		//默认商品下架状态
 		goods.status = GoodsStatus.OFFSALE;
 		goods.companyId = 1l;
-		goods.prompt = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-		goods.details = "aaaaaaaaaasssssssssssssssssss";
+		goods.setPrompt("<script>jkjlkjlk</script>hello");
+//		goods.details = "<a href='www.taobao.com'>detail</a>";
+		goods.setDetails("<a href='www.taobao.com'>detail</a>hello detail");
 		goods.imagePath = "/1/1/1/" + "111.jpg";
 		goods.deleted = DeletedStatus.UN_DELETED;
 		goods.createdAt = new Date();
@@ -27,9 +28,10 @@ public class GoodsUnitTest extends UnitTest {
 		goods.originalPrice = new BigDecimal(100);
 		goods.salePrice = new BigDecimal(0.01);
 		goods.save();
-		List<Goods> list = Goods.findAll();
+		Goods result = Goods.findById(goods.id);
 
-		assertNotNull(list);
-		assertEquals(Goods.count(), list.size());
+		assertNotNull(result);
+		assertEquals(result.getDetails(),"<a>detail</a>hello detail");
+		assertEquals(result.getPrompt(),"hello");
 	}
 }

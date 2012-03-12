@@ -23,14 +23,6 @@
                     #{option category.id}${category.name}#{/option}
                 #{/list}
             #{/select}
-        *{<select id="topCategoryId" name="topCategoryId" class="input-small">}*
-        *{<option value="${category.id}">${category.name}</option>}*
-        *{</select>}*
-        *{<select id="categoryId" name="goods.categories.id" class="input-small">}*
-        *{#{list items:subCategoryList, as:'category' }}*
-        *{<option value="${category.id}">${category.name}</option>}*
-        *{#{/list}}*
-        *{</select>}*
             <span class="error">#{error 'goods.category'/}</span>
         </div>
     </div>
@@ -38,7 +30,7 @@
         <label for="select01" class="control-label"><font color="red">*</font>品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</label>
 
         <div class="controls">
-            <select id="select03" name="goods.brand.id" class="input-small">
+            <select id="goods_brand_id" name="goods.brand.id" class="input-small">
                 #{list items:brandList, as:'brand' }
                     <option value="${brand.id}">${brand.name}</option>
                 #{/list}
@@ -98,8 +90,8 @@
         <label for="input01" class="control-label"><font color="red">*</font>库&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</label>
 
         <div class="controls">
-            <input type="text" id="baseSale" name="goods.baseSale" class="input-small" value="${goods?.baseSale}"/>元
-            <span class="error">#{error 'goods.baseSale' /}</span>
+            <input type="text" id="baseSale" name="goods.baseSale" class="input-small" value="${goods?.baseSale}"/>件
+            <span id="errorBaseSale" class="error">#{error 'goods.baseSale' /}</span>
         </div>
     </div>
     <div class="control-group">
@@ -157,7 +149,7 @@
     <div class="form-actions">
         <button class="btn btn-primary" id="save" type="submit">保存</button>
         <button class="btn btn-primary" id="onsales" type="submit">保存并上架</button>
-        <button class="btn btn-primary" id="view" type="submit">预览</button>
+        <button class="btn btn-primary" id="preview" type="submit">预览</button>
         <input type="hidden" id="status" name="goods.status"/>
     </div>
 #{/form}

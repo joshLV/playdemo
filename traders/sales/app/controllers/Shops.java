@@ -81,8 +81,6 @@ public class Shops extends Controller {
 	 * @param id
 	 */
 	public static void  edit(long id){
-		System.out.println(">>>>>>>>>>>>>>>>"+id);
-
 		Shop shop = Shop.findById(id);
 		//城市列表
 		List<Area> citylist = Area.findAllSubAreas(null);

@@ -177,7 +177,7 @@ public class Orders extends Model {
 		this.orderItems.add(orderItems);
 	}
 
-	public Orders(User user, List<Cart> cartList, Address address) throws NotEnoughInventoryException {
+	public Orders(User user, List<Cart> cartList, Address address, String mobile) throws NotEnoughInventoryException {
 		this(user, address);
 
 		this.amount = Cart.amount(cartList);
@@ -188,6 +188,7 @@ public class Orders extends Model {
 			}
 		}
 		this.needPay = amount;
+        this.receiverMobile = mobile;
 
 		for (Cart cart : cartList) {
 			if (cart.number <= 0) {

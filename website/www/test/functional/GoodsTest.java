@@ -36,7 +36,6 @@ public class GoodsTest extends FunctionalTest {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
                 ".Goods-Goods_001");
 
-        System.out.println("long id = " + goodsId);
         Http.Response response = GET("/goods/" + goodsId);
         assertIsOk(response);
         assertContentType("text/html", response);

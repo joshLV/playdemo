@@ -135,7 +135,6 @@
                             <a class="wai_juli" id="link_add_cart"
                                href="#">加入购物车</a><a
                                     href="#" class="shoucang_font">收藏</a></div>
-                        <div></div>
                     </div>
                 </div>
                 <div style="clear:both"></div>
@@ -157,7 +156,7 @@
                     </dt>
                     <dd>
                         <ul class="tishi_ul">
-                            <li class="tishi_li" id="prompt">${goods.prompt.raw()}</li>
+                            <li class="tishi_li" id="prompt">${goods?.prompt?.raw()}</li>
                         </ul>
                     </dd>
                 </dl>
@@ -172,7 +171,7 @@
                     <dd>
                         <ul class="tishi_ul">
                             <li class="tishi_li"
-                                id="details">#{if goods.details != null}${goods.details.raw()}#{/if}</li>
+                                id="details">${goods?.details?.raw()}</li>
                         </ul>
                     </dd>
                 </dl>

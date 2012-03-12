@@ -1,5 +1,6 @@
 package models.sales;
 
+import com.google.gson.annotations.Expose;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
