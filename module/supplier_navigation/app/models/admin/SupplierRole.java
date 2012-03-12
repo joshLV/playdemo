@@ -2,9 +2,13 @@ package models.admin;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import play.db.jpa.Model;
@@ -34,6 +38,11 @@ public class SupplierRole extends Model {
     @Column(name = "updated_at")
     public Date updatedAt;
 
+    @ManyToMany(cascade = CascadeType.REFRESH,mappedBy="roles",
+            fetch=FetchType.LAZY)
+    public Set<SupplierUser> cusers;
+
+    
     public static void deleteUndefinedRoles(long loadVersion) {
         List<SupplierRole> list = SupplierRole.find("loadVersion <> ?", loadVersion).fetch();
         for (SupplierRole role : list) {

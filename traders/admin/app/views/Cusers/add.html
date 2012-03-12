@@ -1,0 +1,44 @@
+#{extends 'layout_trader/layout.html' /} 
+#{set title:'操作员添加' /}
+#{set 'moreScripts'}
+  <script src="@{'/public/javascripts/cuser.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{form @Cusers.create() , id:'operForm',class:"form-horizontal" }
+ <legend>操作员添加</legend>
+  <div class="control-group">
+  <label for="input01" class="control-label">角色</label>
+  <div class="controls">
+  #{list items:rolesList, as:'role'}
+   <label class="checkbox inline">
+       <input type="checkbox" value="${role.id}" name="cuser.roles.id" #{if roleIds?.contains(String.valueOf(role?.id))}checked#{/if}/> ${role.text}
+     </label>
+  #{/list}
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span class="error">#{error 'cuser.roles' /}</span>
+   </div>
+ </div>
+ <div class="control-group">
+  <label for="input01" class="control-label">用户名</label>
+  <div class="controls">
+   <input type="text" name="cuser.loginName" class="input-large" id="loginName" value="${cuser?.loginName}"/>
+    <span class="error" id="checkName">#{error 'cuser.loginName' /}</span>
+  </div>
+ </div>
+ <div class="control-group">
+  <label for="input01" class="control-label">密码</label>
+  <div class="controls">
+   <input type="password" name="cuser.encryptedPassword" class="input-large" value="${cuser?.encryptedPassword}" />
+    <span class="error">#{error 'cuser.encryptedPassword' /}</span>
+  </div>
+ </div>
+ <div class="control-group">
+  <label for="input01" class="control-label">联系电话</label>
+  <div class="controls">
+   <input type="text" name="cuser.mobile" class="input-large" maxlength="11" value="${cuser?.mobile}"/>
+   <span class="error">#{error 'cuser.mobile' /}</span>
+  </div>
+ </div>
+ <div class="form-actions">
+  <button class="btn btn-primary" type="submit">保 存</button>
+ </div>
+#{/form}

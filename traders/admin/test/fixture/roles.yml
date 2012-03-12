@@ -1,0 +1,15 @@
+admin.SupplierRole(SupplierRole_1):
+ "text": "销售人员"
+ "key": "sales"
+ "loadVersion": "1331545508967"
+ "lockVersion": "0"
+ "createdAt": "2012-03-12T11:14:56"
+ "updatedAt": "2012-03-12T17:45:09"
+
+admin.SupplierRole(SupplierRole_2):
+ "text": "系统管理员"
+ "key": "admin"
+ "loadVersion": "1331545508967"
+ "lockVersion": "0"
+ "createdAt": "2012-03-12T11:14:56"
+ "updatedAt": "2012-03-12T17:45:09"

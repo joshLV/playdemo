@@ -8,6 +8,7 @@ require:
     - paginate_ext -> paginate_ext
     - supplier_cas -> supplier_cas
     - supplier_navigation -> supplier_navigation
+    - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
 
 repositories:
     - mavenRepository:
