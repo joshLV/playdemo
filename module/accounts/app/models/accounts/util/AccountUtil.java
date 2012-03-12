@@ -55,7 +55,7 @@ public class AccountUtil {
                 account,
                 AccountSequenceFlag.VOSTRO,                           //账务变动方向：来帐
                 sequenceType,                                         //变动类型
-                account.amount.multiply(amount),                      //变动前资金
+                account.amount.subtract(amount),                      //变动前资金
                 account.amount,                                       //变动后资金
                 amount,                                               //可提现金额
                 BigDecimal.ZERO,                                      //不可提现金额

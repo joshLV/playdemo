@@ -26,7 +26,7 @@ public class RefundBill extends Model {
     public Account account;
 
     @ManyToOne
-    @JoinColumn(name = "payment_bill")
+    @JoinColumn(name = "trade_bill")
     public TradeBill tradeBill;             //原支付流水
 
     @Column(name = "order_id")

@@ -75,14 +75,22 @@ public class MyOrders extends Controller {
         }
 
         //查找原订单信息
-        Orders order = null;
+        Orders order = eCoupon.order;
         TradeBill tradeBill = null;
         OrderItems orderItem = null;
 
-        order = Orders.find("byIdAndUser", id, user).first();
+        if(order != null){
+            System.out.println("orderid:" + order.getId());
+        }
         if(order != null){
             tradeBill = TradeBill.find("byOrderIdAndTradeStatus", order.getId(), TradeStatus.SUCCESS).first();
+            if(tradeBill != null){
+                System.out.println("orderid:" + tradeBill.getId());
+            }
             orderItem = OrderItems.find("byOrderAndGoods",order, eCoupon.goods).first();
+            if(orderItem != null){
+                System.out.println("orderid:" + orderItem.getId());
+            }
         }
         if(order == null || tradeBill == null || orderItem == null){
             renderJSON("{\"error\":\"can not get the trade bill\"}");
