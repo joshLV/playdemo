@@ -12,12 +12,16 @@ require:
     - supplier_cas -> supplier_cas
     - sales -> sales
     - accounts -> accounts
+    - supplier_navigation -> supplier_navigation
+    - org.jsoup -> jsoup 1.6.1
+
 repositories:
     - mavenRepository:
         type:       iBiblio
         root:       "http://dev.uhuila.cn/nexus/content/groups/public"
         contains:
             - com.uhuila.utils -> *
+            - org.jsoup -> *
         m2compatible: true
     - customModules:
         type:       local
@@ -30,3 +34,4 @@ repositories:
             - accounts -> *
             - supplier_cas -> *
             - paginate_ext -> *
+            - supplier_navigation -> *
