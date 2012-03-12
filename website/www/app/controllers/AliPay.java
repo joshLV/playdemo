@@ -95,10 +95,15 @@ public class AliPay extends Controller {
                     if (order.orderItems != null){
                         for (OrderItems orderItem : order.orderItems){
                             models.sales.Goods goods = orderItem.goods;
-                            if(goods != null && goods.materialType == MaterialType.ELECTRONIC){
+                            if(goods == null){
+                                continue;
+                            }
+                            goods.baseSale -= 1;
+                            if(goods.materialType == MaterialType.ELECTRONIC){
                                 ECoupon eCoupon = new ECoupon(order, goods, orderItem.salePrice).save();
                                 SMSUtil.send(goods.name + "券号:"+eCoupon.eCouponSn, order.receiverMobile);
                             }
+                            goods.save();
                         }
                     }
                     

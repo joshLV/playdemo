@@ -1,10 +1,9 @@
 package models.order;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,6 +38,8 @@ import play.db.jpa.Model;
 @Entity
 @Table(name = "e_coupon")
 public class ECoupon extends Model {
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmssSSS");
+    private static DecimalFormat decimalFormat = new DecimalFormat("00000");
 
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="order_id",nullable=true)
@@ -55,7 +56,7 @@ public class ECoupon extends Model {
     public BigDecimal eCouponPrice;
     
     @Column(name="income_price")
-    public BigDecimal incomePrice;
+    public BigDecimal incomePrice;      //进货价
 
     @Column(name="refund_price")
     public BigDecimal refundPrice;
@@ -75,6 +76,26 @@ public class ECoupon extends Model {
     
     @Enumerated(EnumType.STRING)
     public ECouponStatus status;
+
+
+    public ECoupon(Orders order, Goods goods, BigDecimal eCouponPrice){
+        this.order = order;
+        this.goods = goods;
+        this.eCouponPrice = eCouponPrice;
+        this.refundPrice = eCouponPrice;
+        this.createdAt = new Date();
+
+        this.consumedAt = null;
+        this.refundAt = null;
+        this.status = ECouponStatus.UNCONSUMED;
+        this.eCouponSn = generateSerialNumber();
+    }
+
+    private String generateSerialNumber() {
+        int random = new Random().nextInt() % 10000;
+        return dateFormat.format(new Date()) + decimalFormat.format(random);
+
+    }
 
 	/**
 	 * 根据页面录入券号查询对应信息
