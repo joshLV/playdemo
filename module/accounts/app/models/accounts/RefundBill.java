@@ -31,6 +31,9 @@ public class RefundBill extends Model {
 
     @Column(name = "order_id")
     public Long orderId;                    //订单号
+    
+    @Column(name = "order_item_id")
+    public Long orderItemId;                //订单条目编号
 
     @Column(name = "apply_note")
     public String applyNote;                //退款说明
@@ -47,12 +50,13 @@ public class RefundBill extends Model {
     @Column(name = "create_at")
     public Date createdAt;
     
-    public RefundBill(TradeBill tradeBill, Long orderId, String applyNote, BigDecimal amount){
+    public RefundBill(TradeBill tradeBill, Long orderId, Long orderItemId, BigDecimal amount){
 
         this.account = tradeBill.fromAccount;
         this.tradeBill = tradeBill;
         this.orderId = orderId;
-        this.applyNote = applyNote;
+        this.orderItemId = orderItemId;
+        this.applyNote = null;
         this.amount = amount;
 
         this.remark = null;

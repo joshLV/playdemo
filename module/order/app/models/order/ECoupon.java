@@ -46,7 +46,7 @@ public class ECoupon extends Model {
     public Orders order;
 
     @ManyToOne
-    Goods goods;
+    public Goods goods;
 
     @Required
     @Column(name="e_coupon_sn")

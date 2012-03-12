@@ -179,8 +179,9 @@ $(window).load(function () {
       <td width="123" align="center">${coupon.consumedAt}</td>
       <td width="95" align="center">&{'coupon.'+coupon.status}</td>
       <td width="103" align="center">
-      #{if (coupon.status.toString().equals("DEALING") || coupon.status.toString().equals("UNCONSUMED"))}
-      <a href="#">申请退款</a>
+      #{if (coupon.status == models.order.ECouponStatus.UNCONSUMED 
+      || coupon.status == models.order.ECouponStatus.EXPIRED)}
+      <a href="/orders/refund/coupon.id" name="apply_refund">申请退款</a>
       #{/if}
       </td>
      </tr>

@@ -2,6 +2,10 @@ package controllers;
 
 import controllers.modules.cas.SecureCAS;
 import controllers.modules.webcas.WebCAS;
+import models.accounts.RefundBill;
+import models.accounts.TradeBill;
+import models.accounts.TradeStatus;
+import models.accounts.util.RefundUtil;
 import models.consumer.User;
 import models.order.*;
 import play.modules.breadcrumbs.BreadcrumbList;
@@ -56,6 +60,45 @@ public class MyOrders extends Controller {
     }
     
     public static void applyRefund(Long id){
+
+        User user = WebCAS.getUser();
+        ECoupon eCoupon = ECoupon.findById(id);
+        if(eCoupon == null || !eCoupon.order.user.getId().equals(user.getId())){
+            error(500,"no such eCoupon");
+            return;
+        }
+        if(!(eCoupon.status == ECouponStatus.UNCONSUMED || eCoupon.status == ECouponStatus.EXPIRED)){
+            error(500,"can not apply refund with this goods");
+            return;
+        }
+
+        //查找原订单信息
+        Orders order = null;
+        TradeBill tradeBill = null;
+        OrderItems orderItem = null;
+
+        order = Orders.find("byIdAndUser", id, user).first();
+        if(order != null){
+            tradeBill = TradeBill.find("byOrderIdAndTradeStatus", order.getId(), TradeStatus.SUCCESS).first();
+            orderItem = OrderItems.find("byOrderAndGoods",order, eCoupon.goods).first();
+        }
+        if(order == null || tradeBill == null || orderItem == null){
+            error(500, "can not get the trade bill");
+            return;
+        }
+
+        //创建退款流程
+        RefundBill refundBill = RefundUtil.create(tradeBill, order.getId(), orderItem.getId(), orderItem.salePrice);
+        RefundUtil.success(refundBill);
+
+        //更改库存
+        eCoupon.goods.baseSale += 1;
+        eCoupon.goods.saleCount -= 1;
+        eCoupon.goods.save();
+
+        //更改订单状态
+        eCoupon.status = ECouponStatus.REFUND;
+        eCoupon.save();
 
     }
 

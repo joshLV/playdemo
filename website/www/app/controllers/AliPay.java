@@ -99,6 +99,7 @@ public class AliPay extends Controller {
                                 continue;
                             }
                             goods.baseSale -= 1;
+                            goods.saleCount +=1;
                             if(goods.materialType == MaterialType.ELECTRONIC){
                                 ECoupon eCoupon = new ECoupon(order, goods, orderItem.salePrice).save();
                                 SMSUtil.send(goods.name + "券号:"+eCoupon.eCouponSn, order.receiverMobile);

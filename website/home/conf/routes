@@ -4,9 +4,10 @@
 
 # Home page
 GET     /orders                                       MyOrders.index
+POST    /orders/refund/{id}                           MyOrders.applyRefund
 GET     /orders/{id}                                  MyOrders.details
 GET     /coupons                                      MyOrders.coupons
-GET     /payment/{id}                                  MyOrders.pay
+GET     /payment/{id}                                 MyOrders.pay
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
