@@ -25,7 +25,8 @@ public class RefundUtil {
      * @param amount        退款金额
      * @return              创建成功的退款流水
      */
-    public static RefundBill create(TradeBill tradeBill, Long orderId, Long orderItemId, BigDecimal amount){
+    public static RefundBill create(TradeBill tradeBill, Long orderId, Long orderItemId, BigDecimal amount,
+                                    String applyNote){
         if(tradeBill == null){
             Logger.error("error while create refund bill: invalid tradeBill");
             return null;
@@ -35,7 +36,7 @@ public class RefundUtil {
             return null;
         }
 
-        return new RefundBill(tradeBill, orderId, orderItemId, amount).save();
+        return new RefundBill(tradeBill, orderId, orderItemId, amount, applyNote).save();
 
     }
 

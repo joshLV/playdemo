@@ -61,7 +61,7 @@ public class MyOrders extends Controller {
         render("MyOrders/e_coupons.html", couponsList, breadcrumbs);
     }
     
-    public static void applyRefund(Long id){
+    public static void applyRefund(Long id, String applyNote){
 
         User user = WebCAS.getUser();
         ECoupon eCoupon = ECoupon.findById(id);
@@ -98,7 +98,8 @@ public class MyOrders extends Controller {
         }
 
         //创建退款流程
-        RefundBill refundBill = RefundUtil.create(tradeBill, order.getId(), orderItem.getId(), orderItem.salePrice);
+        RefundBill refundBill = RefundUtil.create(tradeBill, order.getId(), orderItem.getId(),
+                orderItem.salePrice, applyNote);
         RefundUtil.success(refundBill);
 
         //更改库存

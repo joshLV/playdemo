@@ -50,13 +50,13 @@ public class RefundBill extends Model {
     @Column(name = "create_at")
     public Date createdAt;
     
-    public RefundBill(TradeBill tradeBill, Long orderId, Long orderItemId, BigDecimal amount){
+    public RefundBill(TradeBill tradeBill, Long orderId, Long orderItemId, BigDecimal amount, String applyNote){
 
         this.account = tradeBill.fromAccount;
         this.tradeBill = tradeBill;
         this.orderId = orderId;
         this.orderItemId = orderItemId;
-        this.applyNote = null;
+        this.applyNote = applyNote;
         this.amount = amount;
 
         this.remark = null;
