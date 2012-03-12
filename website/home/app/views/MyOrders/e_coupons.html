@@ -11,6 +11,23 @@ $(window).load(function () {
  $("#search").click(function () {
      $('#couponsFrm').submit();
  });
+ $("a[name='apply_refund']").each(function(){
+     $(this).click(function(){
+        $.post(
+                $(this).attr('href'),
+                {},
+                function(data){
+                    if(data.error != 'ok'){
+                        alert("申请失败: " + data.error);
+                    }else{
+                        $(this).text("");
+                    }
+                }
+        );
+         return false;
+     });
+ });
+
 });
 </script>
 #{/set}
@@ -181,7 +198,7 @@ $(window).load(function () {
       <td width="103" align="center">
       #{if (coupon.status == models.order.ECouponStatus.UNCONSUMED 
       || coupon.status == models.order.ECouponStatus.EXPIRED)}
-      <a href="/orders/refund/coupon.id" name="apply_refund">申请退款</a>
+      <a href="/orders/refund/${coupon.id}" name="apply_refund">申请退款</a>
       #{/if}
       </td>
      </tr>

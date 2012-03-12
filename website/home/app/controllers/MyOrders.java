@@ -13,7 +13,9 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @With({SecureCAS.class, WebCAS.class})
 public class MyOrders extends Controller {
@@ -64,11 +66,11 @@ public class MyOrders extends Controller {
         User user = WebCAS.getUser();
         ECoupon eCoupon = ECoupon.findById(id);
         if(eCoupon == null || !eCoupon.order.user.getId().equals(user.getId())){
-            error(500,"no such eCoupon");
+            renderJSON("{\"error\":\"no such eCoupon\"}");
             return;
         }
         if(!(eCoupon.status == ECouponStatus.UNCONSUMED || eCoupon.status == ECouponStatus.EXPIRED)){
-            error(500,"can not apply refund with this goods");
+            renderJSON("{\"error\":\"can not apply refund with this goods\"}");
             return;
         }
 
@@ -83,7 +85,7 @@ public class MyOrders extends Controller {
             orderItem = OrderItems.find("byOrderAndGoods",order, eCoupon.goods).first();
         }
         if(order == null || tradeBill == null || orderItem == null){
-            error(500, "can not get the trade bill");
+            renderJSON("{\"error\":\"can not get the trade bill\"}");
             return;
         }
 
@@ -100,6 +102,7 @@ public class MyOrders extends Controller {
         eCoupon.status = ECouponStatus.REFUND;
         eCoupon.save();
 
+        renderJSON("{\"error\":\"ok\"}");
     }
 
 }
