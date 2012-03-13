@@ -13,6 +13,7 @@ require:
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - breadcrumbs -> breadcrumbs
     - accounts -> accounts
+    - org.jsoup -> jsoup 1.6.1
 
 repositories:
     - mavenRepository:
@@ -22,6 +23,7 @@ repositories:
             - com.uhuila.utils -> *
             - commons-httpclient -> *
             - dom4j -> *
+            - jsoup -> *
 #            - activemq-core -> *
         m2compatible: true
 
