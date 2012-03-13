@@ -33,7 +33,7 @@ public class Cusers extends Controller{
 	 * 
 	 */
 	public static void index() {
-		Long companyId=1l;
+		Long companyId=2l;
 		String page = request.params.get("page");
 		String loginName = request.params.get("loginName");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
@@ -77,7 +77,7 @@ public class Cusers extends Controller{
 		cuser.lastLoginAt = new Date();
 		cuser.createdAt = new Date();
 		cuser.lockVersion = 0;
-		cuser.companyId = 1l;
+		cuser.companyId = 2l;
 		cuser.deleted = DeletedStatus.UN_DELETED;
 		//获得本机IP
 		InetAddress addr;
@@ -103,6 +103,7 @@ public class Cusers extends Controller{
 		cuser.save();
 		index();
 	}
+	
 	/**
 	 * 操作员添加页面
 	 * 
@@ -135,9 +136,7 @@ public class Cusers extends Controller{
 			render("Cusers/add.html",cuser,roleIds,rolesList);
 			return;
 		}
-		System.out.println("Oooooooooooooo"+id);
 		SupplierUser updCuser = SupplierUser.findById(id);
-		System.out.println("&&&&&&&&&&&&&&&&&&&&&&"+updCuser);
 		updCuser.loginName=cuser.loginName;
 		updCuser.mobile=cuser.mobile;
 		Images.Captcha captcha = Images.captcha();
@@ -157,7 +156,6 @@ public class Cusers extends Controller{
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Oooooooooooooo");
 		updCuser.save();
 		index();
 	}

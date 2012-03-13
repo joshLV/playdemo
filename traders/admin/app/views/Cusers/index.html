@@ -2,11 +2,10 @@
 #{set title:'操作员一览' /}
 <script>
 function deleteData(id){
+	alert("111111");
     if(confirm("确定删除吗？")) {
-    	var url='@{Cusers.delete("'+id+'")}';
-        $("#operForm").attr("method", "DELETE");
-        $("#operForm").attr("action", url);
-        $("#operForm").submit();
+    	var url="/cusers/delete?id="+id;
+    	window.location.href=url;
     }
 }
 </script>
@@ -21,6 +20,7 @@ function deleteData(id){
     </td>
    </tr>
   </table>
+  #{/form}
   <table class="table table-striped table-bordered table-condensed">
    
    <thead>
@@ -41,7 +41,7 @@ function deleteData(id){
      <td>${row.roles.text ==[] ?'':row.roles.text}</td>
      <td>${row.createdAt == null ? '':row.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
      <td>${row.lastLoginAt == null ? '':row.lastLoginAt.format("yyyy-MM-dd HH:mm:ss")}</td>
-     <td><a href="@{Cusers.edit(row.id)}">修改</a>/<a href="#" onclick="if(confirm('确定删除吗？')) window.location.href='@{Cusers.delete(row.id)}'">删除</a></td>
+     <td><a href="@{Cusers.edit(row.id)}">修改</a>/<a href="#" onclick="deleteData(${row.id})">删除</a></td>
     </tr>
     #{/paginate.list}
    </tbody>
@@ -51,4 +51,3 @@ function deleteData(id){
     #{paginate.controls items:cusersPage /}
     </ul>
   </div>
-  #{/form}
