@@ -450,9 +450,8 @@ public class Goods extends Model {
         }
     }
 
-}
 
-class ContentSafeFilter {
+static class ContentSafeFilter {
     public final static Whitelist user_content_filter = Whitelist.relaxed();
 
     static {
@@ -511,4 +510,4 @@ class ContentSafeFilter {
         System.out.println("safe: " + safe);
     }
 
-}
+}  }
