@@ -8,7 +8,6 @@ import java.util.Set;
 
 import navigation.annotations.ActiveNavigation;
 import navigation.annotations.ActiveNavigations;
-
 import play.mvc.Http.Request;
 
 /**

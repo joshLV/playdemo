@@ -21,12 +21,14 @@ import javax.persistence.TemporalType;
 import models.accounts.Account;
 import models.accounts.TradeBill;
 import models.accounts.util.TradeUtil;
+import models.consumer.User;
 import models.sales.Goods;
 
 import org.apache.commons.lang.StringUtils;
 
 import play.data.validation.Required;
 import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -175,5 +177,71 @@ public class ECoupon extends Model {
 		TradeUtil.success(tradeBill);
 	}
 
-    
+	/**
+	 * 商家券号列表
+	 *
+	 * @return
+	 */
+	public static JPAExtPaginator<ECoupon> queryCoupons( Long companyId,int pageNumber, int pageSize) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" e.goods.companyId = :companyId)");
+		Map<String, Object> paramsMap = new HashMap<>();
+		paramsMap.put("companyId", companyId);		
+		JPAExtPaginator<ECoupon> ordersPage = new JPAExtPaginator<>
+		("ECoupon e", "e", ECoupon.class, sql.toString(),
+				paramsMap)
+				.orderBy(" e.consumedAt desc");
+
+		ordersPage.setPageNumber(pageNumber);
+		ordersPage.setPageSize(pageSize);
+		ordersPage.setBoundaryControlsEnabled(false);
+		return ordersPage;
+	}
+
+	/**
+	 * 会员中心 券号列表
+	 *
+	 * @param user
+	 * @param createdAtBegin
+	 * @param createdAtEnd
+	 * @param status
+	 * @param goodsName
+	 * @return
+	 */
+	public static List userCuponsQuery(User user, Date createdAtBegin, Date createdAtEnd, ECouponStatus status, String goodsName) {
+		EntityManager entityManager = play.db.jpa.JPA.em();
+		StringBuilder sql = new StringBuilder();
+		Map<String, Object> params = new HashMap<String, Object>();
+		sql.append("select distinct e from ECoupon e where 1=1 ");
+		if (user != null) {
+			sql.append(" and e.order.user = :user");
+			params.put("user", user);
+		}
+
+		if (createdAtBegin != null) {
+			sql.append(" and e.createdAt >= :createdAtBegin");
+			params.put("createdAtBegin", createdAtBegin);
+		}
+
+		if (createdAtEnd != null) {
+			sql.append(" and e.createdAt <= :createdAtEnd");
+			params.put("createdAtEnd", createdAtEnd);
+		}
+
+		if (StringUtils.isNotBlank(goodsName)) {
+			sql.append(" and e.goods.name like :name");
+			params.put("name", "%" + goodsName + "%");
+		}
+
+		if (status != null) {
+			sql.append(" and e.status = :status");
+			params.put("status", status);
+		}
+		Query couponQery = entityManager.createQuery(sql.toString());
+		for (Map.Entry<String, Object> entry : params.entrySet()) {
+			couponQery.setParameter(entry.getKey(), entry.getValue());
+		}
+		sql.append(" order by e.createdAt desc");
+		return couponQery.getResultList();
+	}
 }

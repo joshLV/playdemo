@@ -34,6 +34,7 @@ public class SupplierUser extends Model {
 	@Required
 	public String loginName;
 
+	@Required
 	@Match(value="^1[3|4|5|8][0-9]\\d{4,8}$",message="手机格式不对！")
 	public String mobile;
 
@@ -68,7 +69,6 @@ public class SupplierUser extends Model {
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "cusers_roles", inverseJoinColumns = @JoinColumn(name
 			= "role_id"), joinColumns = @JoinColumn(name = "cuser_id"))
-	@Required
 	public Set<SupplierRole> roles;
 
 	public static JPAExtPaginator<SupplierUser> getCuserList(String loginName,Long companyId,
@@ -91,7 +91,6 @@ public class SupplierUser extends Model {
 		cusersPage.setPageNumber(pageNumber);
 		cusersPage.setPageSize(pageSize);
 		cusersPage.setBoundaryControlsEnabled(false);
-		System.out.println(">>>>>>>>>>>>..."+cusersPage.size());
 		return cusersPage;
 	}
 

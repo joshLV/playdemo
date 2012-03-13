@@ -14,7 +14,7 @@ public class ShopsTest extends UnitTest {
     @Test
     public void testCreate(){
         Shop shop = new Shop();
-        shop.companyId = 1;
+        shop.companyId = 1l;
         shop.areaId = "02101001";
         shop.name = "北京";
         shop.address = "上海";

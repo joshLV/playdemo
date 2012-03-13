@@ -21,7 +21,7 @@ public class OrdersCondition {
 		paramsMap.put("deleted", DeletedStatus.UN_DELETED);
 		sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.companyId = :companyId)");
 		paramsMap.put("companyId", companyId);		
-	
+
 		if (orders.createdAtBegin != null) {
 			sql.append(" and o.createdAt >= :createdAtBegin");
 			paramsMap.put("createdAtBegin", orders.createdAtBegin);
@@ -54,7 +54,7 @@ public class OrdersCondition {
 		if (StringUtils.isNotBlank(orders.searchKey)) {
 			//按照商品名称检索
 			if ("1".equals(orders.searchKey)) {
-				sql.append(" and o.id in (select o.id from o.OrderItems oi where oi.goods.name like :name)");
+				sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.name like :name)");
 				paramsMap.put("name", "%" + orders.searchItems + "%");
 			}
 			//按照商品订单检索
@@ -72,34 +72,34 @@ public class OrdersCondition {
 		return orderBySql;
 	}
 
-	public Object getFilter(User user, Date createdAtBegin, Date createdAtEnd,
-			ECouponStatus status, String goodsName) {
+	public String getFilter(User user, Date createdAtBegin, Date createdAtEnd,
+			OrderStatus status, String goodsName) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("select distinct e from ECoupon e where 1=1 ");
+		sql.append(" o.deleted = :deleted");
+		paramsMap.put("deleted", DeletedStatus.UN_DELETED);
 		if (user != null) {
-			sql.append(" and e.order.user = :user");
-			couponsMap.put("user", user);
+			sql.append(" and o.user = :user");
+			paramsMap.put("user", user);
 		}
-
 		if (createdAtBegin != null) {
-			sql.append(" and e.createdAt >= :createdAtBegin");
-			couponsMap.put("createdAtBegin", createdAtBegin);
+			sql.append(" and o.createdAt >= :createdAtBegin");
+			paramsMap.put("createdAtBegin", createdAtBegin);
 		}
-
 		if (createdAtEnd != null) {
-			sql.append(" and e.createdAt <= :createdAtEnd");
-			couponsMap.put("createdAtEnd", createdAtEnd);
+			sql.append(" and o.createdAt <= :createdAtEnd");
+			paramsMap.put("createdAtEnd", createdAtEnd);
 		}
-
-		if (StringUtils.isNotBlank(goodsName)) {
-			sql.append(" and e.goods.name like :name");
-			couponsMap.put("name", "%" + goodsName + "%");
-		}
-
 		if (status != null) {
-			sql.append(" and e.status = :status");
-			couponsMap.put("status", status);
+			sql.append(" and o.status = :status");
+			paramsMap.put("status", status);
 		}
+
+		//按照商品名称检索
+		if (StringUtils.isNotBlank(goodsName)) {
+			sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.name like :goodsName)");
+			paramsMap.put("goodsName", "%" + goodsName + "%");
+		}
+
 		return sql.toString();
 	}
 }
