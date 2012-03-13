@@ -75,7 +75,7 @@ public class Shop extends Model {
      * @return
      */
     public static List<Shop> findShopByCompany(long companyId) {
-        return Shop.find("company_id=? and deleted=0", companyId).fetch();
+        return Shop.find("byCompanyIdAndDeleted", companyId, DeletedStatus.UN_DELETED).fetch();
     }
 
     /**

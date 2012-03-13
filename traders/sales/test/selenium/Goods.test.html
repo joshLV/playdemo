@@ -1,6 +1,12 @@
-#{fixture delete:'all', load:['fixture/areas.yml','fixture/base_data.yml','fixture/goods.yml'] /}
+#{fixture delete:[
+models.sales.Category.class,
+models.sales.Area.class,
+models.sales.Goods.class,
+models.sales.Brand.class],
+load:['fixture/areas.yml','fixture/base_data.yml','fixture/goods.yml'] /}
 #添加商品数据-保存按钮
 #{selenium}
+    #{include 'test/selenium/step/login.selenium' /}
     open('/goods/new')
     verifyTitle('添加电子消费券')
     verifyTextPresent('添加电子消费券')
@@ -18,6 +24,7 @@
 
 #添加商品数据-保存并上架按钮
 #{selenium}
+    #{include 'test/selenium/step/login.selenium' /}
     open('/goods/new')
     verifyTitle('添加电子消费券')
     verifyTextPresent('添加电子消费券')
@@ -34,6 +41,7 @@
 
 #添加商品数据-保存预览按钮
 #{selenium}
+    #{include 'test/selenium/step/login.selenium' /}
     open('/goods/new')
     verifyTitle('添加电子消费券')
     verifyTextPresent('添加电子消费券')

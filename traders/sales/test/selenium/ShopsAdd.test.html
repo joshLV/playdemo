@@ -1,4 +1,4 @@
-#{fixture delete:'all', load:'fixture/areas.yml' /}
+#{fixture delete:[models.sales.Area.class], load:'fixture/areas.yml' /}
 #{selenium}
     open('/shops/new')
     verifyTitle('添加门店')

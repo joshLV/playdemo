@@ -134,7 +134,7 @@ public class Shops extends Controller {
             pager.currPage = Integer.parseInt(params.get("page"));
         }
         pager.totalCount = Shop.count(search.toString(),queryparams.toArray());
-        search.append(" order by created_at desc ");
+        search.append(" order by createdAt desc ");
         List<Shop> list = Shop.find(search.toString(), queryparams.toArray()).fetch(pager.currPage, pager.pageSize);
         pager.totalPager();
         renderTemplate("shop-list.html",list,pager);

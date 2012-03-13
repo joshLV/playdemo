@@ -3,6 +3,7 @@ package function;
 import com.uhuila.common.constants.DeletedStatus;
 import models.sales.*;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.Play;
 import play.mvc.Http;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Ignore
 public class GoodsTest extends FunctionalTest {
 
     @org.junit.Before

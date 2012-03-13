@@ -1,4 +1,7 @@
-#{fixture delete:'all', load:['fixture/shops.yml','fixture/areas.yml'] /}
+#{fixture delete:[
+models.sales.Shop.class,
+models.sales.Area.class],
+load:['fixture/shops.yml','fixture/areas.yml'] /}
 #{selenium '门店列表'}
     open('/shops')
     assertTextPresent('门店列表')
