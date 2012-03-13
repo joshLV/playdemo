@@ -44,19 +44,16 @@
         <div class="div_step_text_1">成功</div>
     </div>
 #{if order}
-#{if order.status == models.order.OrderStatus.PAID}
-<div>恭喜您付款成功</div>
-#{/if}
+    #{if order.status == models.order.OrderStatus.PAID}
+    <div>恭喜您付款成功</div>
+    #{/if}
 #{else }
-
-
-#{/else}
     <div>已选择 ${paymentSource.name} 支付 ${order.discountPay} 元</div>
 
-#{form @payIt(), target:"_blank", id: "pay_it_form"}
-    <input name="orderId" value="${order.id}" type="hidden"/>
-    <input type="submit" value="确认支付" id="confirm_pay_it"/>
-#{/form}
+    #{form @payIt(), target:"_blank", id: "pay_it_form"}
+        <input name="orderId" value="${order.id}" type="hidden"/>
+        <input type="submit" value="确认支付" id="confirm_pay_it"/>
+    #{/form}
 
     <script type="text/javascript">
         $(window).load(
@@ -73,6 +70,9 @@
 
                 });
     </script>
+
+
+#{/else}
 
 
 #{/if}

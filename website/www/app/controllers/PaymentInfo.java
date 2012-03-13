@@ -6,6 +6,8 @@ import models.accounts.util.TradeUtil;
 import models.consumer.*;
 import models.accounts.*;
 import models.order.*;
+import models.sales.MaterialType;
+import models.sms.SMSUtil;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -82,9 +84,30 @@ public class PaymentInfo extends Controller {
 
         //如果使用余额足以支付，则付款直接成功
         if (ebankPaymentAmount.compareTo(BigDecimal.ZERO) == 0){
-            order.status = OrderStatus.PAID;
             TradeUtil.success(tradeBill);
+            order.status = OrderStatus.PAID;
+            order.paidAt = new Date();
             order.save();
+
+            //如果是电子券
+            if (order.orderItems != null){
+                for (OrderItems orderItem : order.orderItems){
+                    models.sales.Goods goods = orderItem.goods;
+                    if(goods == null){
+                        continue;
+                    }
+                    goods.baseSale -= 1;
+                    goods.saleCount +=1;
+                    if(goods.materialType == MaterialType.ELECTRONIC){
+                        ECoupon eCoupon = new ECoupon(order, goods, orderItem.salePrice).save();
+                        SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, order.receiverMobile);
+                    }
+                    goods.save();
+                }
+            }
+
+
+            render(order,paymentSource);
             return;
         }
 
