@@ -3,6 +3,8 @@
 #{set 'moreStyles'}
 <link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
 <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" media="screen"
+      href="@{'/public/stylesheets/play-pagination.css'}">
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 
@@ -49,7 +51,7 @@ $(window).load(function () {
       <a class="current_font_red" href="@{MyOrders.index()}">我的商品订购</a>
      </div>
      <div class=" left_nav_text">
-      <a class="left_font_a" href="@{MyOrders.coupons()}">我的劵订单</a>
+      <a class="left_font_a" href="@{MyCoupons.coupons()}">我的劵订单</a>
      </div>
      <div class=" left_nav_text">
       <a class="left_font_a" href="#">我的购团</a>
@@ -166,8 +168,7 @@ $(window).load(function () {
       <td width="80" align="center"><span class="font_strong">操作</span></td>
      </tr>
     </table>
-
-      #{list items:orderList, as:'row' }
+   #{paginate.list items:orderList, as:'row'}
     <div class="tab_top_info">
      <span class="tab_one">订单号：${row.orderNumber}</span><span class="tab_two">成交时间：${row.createdAt}</span>
     </div>
@@ -180,7 +181,7 @@ $(window).load(function () {
         <img src="${rowItem.goods.imageTinyPath}"/>
        </div>
        <div class="right_shangpin">
-        ${rowItem.goodsName}
+        ${rowItem.goods.name}
        </div>
       </td>
       <td width="100" align="center">${rowItem.salePrice}</td>
@@ -191,9 +192,19 @@ $(window).load(function () {
         &{'order.'+row.status}
       </td>
       <td width="80" align="center" rowspan="${row.orderItems.size()}">
+       #{if (row.status == models.order.OrderStatus.UNPAID)}
        <div class="caozuo_std">
         <a class="font_red_one" href="@{MyOrders.pay(row.id)}">付款</a>
        </div>
+       #{/if}
+     *{ #{if (row.status == models.order.OrderStatus.PAID 
+      || row.status == models.order.OrderStatus.RECEIPT) && rowItem.goods.materialType.toString().equals('REAL')}
+     <div class="caozuo_std">
+        <a class="font_red_one" href="/orders/refund/${row.id}"  id="apply_${row.id}">申请退款</a>
+       </div>
+      #{/if}
+      }*
+      
        <div class="caozuo_std">
         <a class="font_blue" href="@{MyOrders.details(row.id)}">查看详情</a>
        </div>
@@ -205,27 +216,13 @@ $(window).load(function () {
      </tr>
       #{/list}
     </table>
-      #{/list}
-
-   </div>
-   <div class="tab_top3">
-    <div class="width200px" align="center">
-     <a class="pre_bg" href="#">上一页</a><a class="next_bg" href="#">下一页</a>
-    </div>
-   </div>
-   <div class="clear_both"></div>
-   <div class="tab_top4">
-    <a class="page_a_box" href="">1</a><a class="curr_page_a_box" href="">2</a><a class="page_a_box" href="">3</a><a
-     class="page_a_box" href="">4</a><a class="page_a_box" href="">5</a><a class="page_a_box" href="">6</a><a
-     class="page_a_box" href="">7</a><a class="page_a_box" href="">...</a>
-    <div class="page_text_info font_gray2">共100页</div>
-    <div class="page_text_info font_gray">
-     转至第<input name="" type="text" />页
-    </div>
-    <div class="page_text_info">
-     <a href="#"><img src="@{'/public/images/queding_page.jpg'}" /></a>
-    </div>
-   </div>
+  #{/paginate.list}
+   <div class="pagination">
+     <ul>
+    #{paginate.controls items:orderList /}
+    </ul>
   </div>
- </div>
 
+ </div>
+ </div>
+ </div>

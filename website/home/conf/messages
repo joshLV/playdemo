@@ -1,6 +1,11 @@
 # You can specialize this file for each language.
 # For example, for French create a messages.fr file
 #
+play-paginate.first=&laquo;&nbsp;首页
+play-paginate.prev=&lsaquo;&nbsp;上一页
+play-paginate.next=下一页&nbsp;&rsaquo;
+play-paginate.last=尾页&nbsp;&raquo;
+
 #订单状态
 order.UNPAID=未支付
 order.PAID=已支付

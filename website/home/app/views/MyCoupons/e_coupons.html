@@ -152,7 +152,7 @@ $(window).load(function () {
       <a class="current_font_red" href="@{MyOrders.index()}">我的商品订购</a>
      </div>
      <div class=" left_nav_text">
-      <a class="left_font_a" href="@{MyOrders.coupons()}">我的劵订单</a>
+      <a class="left_font_a" href="@{MyCoupons.coupons()}">我的劵订单</a>
      </div>
      <div class=" left_nav_text">
       <a class="left_font_a" href="#">我的购团</a>
@@ -226,7 +226,7 @@ $(window).load(function () {
   <div id="right_content_box">
    <div class="tab_top">我的商品订单</div>
    <div class="tab_top2">
-    <form class="form-horizontal" id="couponsFrm" action="@{MyOrders.coupons()}" method="GET">
+    <form class="form-horizontal" id="couponsFrm" action="@{MyCoupons.coupons()}" method="GET">
     <table width="774" border="0" cellpadding="0" cellspacing="0">
      <tr>
       <td width="12">&nbsp;</td>
@@ -282,7 +282,7 @@ $(window).load(function () {
       <td width="103" align="center">
       #{if (coupon.status == models.order.ECouponStatus.UNCONSUMED 
       || coupon.status == models.order.ECouponStatus.EXPIRED)}
-      <a href="/orders/refund/${coupon.id}" name="apply_refund" id="apply_${coupon.id}">申请退款</a>
+      <a href="/coupons/refund/${coupon.id}" name="apply_refund" id="apply_${coupon.id}">申请退款</a>
       #{/if}
       </td>
      </tr>
