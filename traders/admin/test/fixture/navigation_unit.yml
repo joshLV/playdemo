@@ -20,12 +20,14 @@ models.admin.SupplierNavigation(user_add):
   text: "添加用户"
   parent: user
   displayOrder: 1
+  applicationName: traders-admin
   
 models.admin.SupplierNavigation(user_edit):
   name: "user_edit"
   text: "修改用户"
   parent: user
   displayOrder: 2
+  applicationName: traders-admin
 
 models.admin.SupplierNavigation(role):
   name: "role"
