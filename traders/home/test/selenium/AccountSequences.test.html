@@ -1,4 +1,6 @@
-#{fixture delete:'all', load:'fixture/data.yml' /}
+#{fixture delete:[models.sales.Category.class,models.sales.Area.class,
+      models.sales.Shop.class, models.sales.Goods.class, models.accounts.AccountSequence.class] ,
+  load:'fixture/data.yml' /}
 #{selenium 'Test Home/AccountSequences/index.html'}
 open('/account-sequences')
 verifyTitle('资金明细')

@@ -6,8 +6,8 @@
     <permission key="HOME" text="系统主面板">
     </permission>
 
-    <navigation key="homeapp" text="面板" action="Application.index">
-      <navigation key="home" text="主面板" action="Application.index"/>
+    <navigation key="homeapp" text="面板">
+      <navigation key="home" text="主面板" action="Home.index"/>
       <navigation key="account_sequence" text="现金帐户查询" action="AccountSequences.index"/>
     </navigation>
 </application>
