@@ -1,15 +1,5 @@
 #{extends 'layout_trader/layout.html' /} 
 #{set title:'操作员一览' /}
-<script>
-function deleteData(id){
-	alert("111111");
-    if(confirm("确定删除吗？")) {
-    	var url="/cusers/delete?id="+id;
-    	window.location.href=url;
-    }
-}
-</script>
-
  <legend>操作员一览</legend>
  #{form @Cusers.index() , id:'operForm',class:"form-horizontal" }
   <table class="table table-striped table-bordered table-condensed">

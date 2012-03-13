@@ -16,6 +16,8 @@ import play.libs.Images;
 import play.test.Fixtures;
 import play.test.UnitTest;
 
+import com.uhuila.common.constants.DeletedStatus;
+
 public class CuserUnitTest extends UnitTest {
 
 	@org.junit.Before

@@ -6,9 +6,3 @@ play-paginate.prev=&lsaquo;&nbsp;上一页
 play-paginate.next=下一页&nbsp;&rsaquo;
 play-paginate.last=尾页&nbsp;&raquo;
 
-validation.required=请输入%s!
-cuser.loginName=操作员姓名
-cuser.encryptedPassword=密码
-cuser.password=确认密码
-cuser.mobile=操作员联系电话
-cuser.roles=角色

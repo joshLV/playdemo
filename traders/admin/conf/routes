@@ -8,8 +8,8 @@ GET     /cusers                               Cusers.index
 POST    /cusers                               Cusers.create
 POST    /cusers/checkLoginName                Cusers.checkLoginName
 GET     /cusers/{id}/edit                     Cusers.edit
-POST    /cusers/{id}/delete                   Cusers.delete
 POST    /cusers/{id}                          Cusers.update
+DELETE  /cusers/{id}                          Cusers.delete
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

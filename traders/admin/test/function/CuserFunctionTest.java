@@ -60,11 +60,12 @@ public class CuserFunctionTest extends FunctionalTest {
 				".SupplierRole-SupplierRole_2");
 		Map<String, String> cuserParams = new HashMap<String,String>();
 		cuserParams.put("cuser.loginName", "Hello");
+		cuserParams.put("cuser.mobile","13764081568");
 		Images.Captcha captcha = Images.captcha();
 		String password_salt =captcha.getText(6);
 		cuserParams.put("cuser.encryptedPassword", DigestUtils.md5Hex("123456"+password_salt));
 		cuserParams.put("cuser.companyId", "2");
-		cuserParams.put("cuser.roles", String.valueOf(roleId));
+		cuserParams.put("cuser.roles.id", String.valueOf(roleId));
 		cuserParams.put("cuser.password_salt", password_salt);
 		cuserParams.put("cuser.lockVersion","1");
 		cuserParams.put("cuser.deleted",DeletedStatus.DELETED.toString());
