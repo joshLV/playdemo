@@ -161,11 +161,11 @@ public class Orders extends Model {
 	public Orders(User user, long goodsId, long number, Address address, String mobile) throws NotEnoughInventoryException {
 		this(user, address);
 
-		Goods goods = Goods.findById(goodsId);
+	    models.sales.Goods goods = Goods.findById(goodsId);
 		checkInventory(goods, number);
 		if (goods.salePrice.compareTo(new BigDecimal(0)) > 0) {
 			this.amount = goods.salePrice.multiply(new BigDecimal(number));
-			if (goods.materialType == MaterialType.REAL) {
+			if ( goods.materialType == MaterialType.REAL) {
 				this.amount = this.amount.add(new BigDecimal(5));
 			}
 			//todo 目前没考虑支付优惠

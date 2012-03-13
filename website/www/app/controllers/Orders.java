@@ -42,7 +42,7 @@ public class Orders extends Controller {
             models.sales.Goods goods = models.sales.Goods.findById(goodsId);
             Cart cart = new Cart(WebCAS.getUser(), null, goods, number);
 
-            switch (goods.materialType) {
+            switch ( goods.materialType) {
                 case ELECTRONIC:
                     eCartList.add(cart);
                     eCartAmount = Cart.amount(eCartList);
