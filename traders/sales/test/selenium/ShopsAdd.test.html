@@ -1,5 +1,6 @@
 #{fixture delete:[models.sales.Area.class], load:'fixture/areas.yml' /}
 #{selenium}
+    #{include 'test/selenium/step/login.selenium' /}
     open('/shops/new')
     verifyTitle('添加门店')
     type('id=name','宛平南路店')
