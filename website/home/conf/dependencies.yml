@@ -23,7 +23,7 @@ repositories:
             - com.uhuila.utils -> *
             - commons-httpclient -> *
             - dom4j -> *
-            - jsoup -> *
+            - org.jsoup -> *
 #            - activemq-core -> *
         m2compatible: true
 
