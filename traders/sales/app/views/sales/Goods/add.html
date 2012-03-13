@@ -33,7 +33,7 @@
         <div class="controls">
             <select id="goods_brand_id" name="goods.brand.id" class="input-small">
                 #{list items:brandList, as:'brand' }
-                    <option value="${brand.id}">${brand.name}</option>
+                    <option value="${brand?.id}" ${brand?.id == goods?.brand?.id ?'selected':''}>${brand?.name}</option>
                 #{/list}
             </select>
             <span class="error">#{error 'goods.brand' /}</span>
