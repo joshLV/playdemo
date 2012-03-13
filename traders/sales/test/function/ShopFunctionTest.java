@@ -22,7 +22,6 @@ import play.test.FunctionalTest;
  *
  */
 @Ignore
-@Ignore
 public class ShopFunctionTest extends FunctionalTest {
 
 
