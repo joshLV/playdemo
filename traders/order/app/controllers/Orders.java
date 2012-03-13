@@ -3,11 +3,12 @@ package controllers;
 
 import java.util.List;
 
+import models.order.ECoupon;
+import models.order.OrderItems;
 import navigation.annotations.ActiveNavigation;
 
 import org.apache.commons.lang.StringUtils;
 
-import models.order.OrderItems;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -52,7 +53,7 @@ public class Orders extends Controller {
         Long companyId=1l;
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        JPAExtPaginator<models.order.ECoupon> couponsList= models.order.Orders.queryCoupons(companyId,pageNumber, PAGE_SIZE);
+        JPAExtPaginator<models.order.ECoupon> couponsList= ECoupon.queryCoupons(companyId,pageNumber, PAGE_SIZE);
         render("Orders/e_coupons.html",couponsList);
     }
 

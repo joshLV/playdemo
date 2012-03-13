@@ -59,7 +59,7 @@
     <tr>
      <th>订单</th>
      <th>商品名称</th>
-     <th>销量</th>
+     <th>购买数量</th>
      <th>运单号</th>
      <th>总金额</th>
      <th>订单状态</th>
@@ -75,7 +75,7 @@
     <tr>
      <td>${order.orderNumber}</td>
      <td>${item.goods.name}</td>
-     <td>${order.sale_count}</td>
+     <td>${item.buyNumber}</td>
      <td>${order.deliveryNo}</td>
      <td>${order.amount}</td>
      <td>&{'order.'+order.status}</td>

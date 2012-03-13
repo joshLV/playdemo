@@ -55,7 +55,7 @@ public class OrderUnitTest extends UnitTest {
 		Long compnayId =1l;
 		int pageNumber =1;
 		int pageSize =15;
-		List<ECoupon> list = Orders.queryCoupons(compnayId,pageNumber,pageSize);
+		List<ECoupon> list = ECoupon.queryCoupons(compnayId,pageNumber,pageSize);
 		Assert.assertEquals(0,list.size());
 
 	}
