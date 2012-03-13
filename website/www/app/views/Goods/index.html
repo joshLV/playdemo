@@ -388,19 +388,24 @@
         <div class="shangpin_more">
         #{/if}
         <li #{if (i%4 == 3)}class="no_margin_right"#{/if}>
-            <div><a href="/goods/${aGoods.id}"><img
-                    src="${aGoods.imageMiddlePath}"/></a></div>
-            <div class="margin_text"><span
-                    class="strong_gray font_14px">${aGoods.name}</span>
-            </div>
-            <div class="margin_text"><span
-                    class="pri_jiage font_14px">Y:${aGoods.salePrice}</span>
-            </div>
-            <div class="text_decorat margin_text">
-                市场价格：Y:${aGoods.originalPrice}</div>
-            <div class="margin_text margin_bottom"><a
-                    class="goumai_bg"
-                    href="#">立即购买</a></div>
+            #{form @Orders.buy() , id:'buy_now_form_'+aGoods.id}
+                <input type="hidden" id="goodsId" name="goodsId" value="${aGoods.id}">
+                <input type="hidden" id="number" name="number" value="1">
+
+                <div><a href="/goods/${aGoods.id}"><img
+                        src="${aGoods.imageMiddlePath}"/></a></div>
+                <div class="margin_text"><span
+                        class="strong_gray font_14px">${aGoods.name}</span>
+                </div>
+                <div class="margin_text"><span
+                        class="pri_jiage font_14px">Y:${aGoods.salePrice}</span>
+                </div>
+                <div class="text_decorat margin_text">
+                    市场价格：Y:${aGoods.originalPrice}</div>
+                <div class="margin_text margin_bottom"><a
+                        class="buy_now" name="link_buy_now" id="link_buy_now_${aGoods.id}"
+                        href="#" onclick="javascript:buyNow(${aGoods.id})">立即购买</a></div>
+            #{/form}
         </li>
         #{if (i%4 == 3)}
         </div>

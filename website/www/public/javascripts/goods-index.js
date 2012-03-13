@@ -4,8 +4,9 @@
  * Date: 2/29/12
  * Time: 11:25 AM
  */
-function endsWith(str, subStr) {
 
+function buyNow(goodsId){
+    $('#buy_now_form_'+goodsId).submit();
 }
 
 $(window).load(

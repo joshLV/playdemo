@@ -72,5 +72,5 @@ ul{ list-style:none}
 /*qudiao*/
 .xiuzheng{ border-bottom:none}
 .over_auto{ height:310px; overflow:auto}
-.goumai_bg{ background:url(../images/buttom.jpg) no-repeat; width:82px; height:20px; float:left;color:#FFFFFF; text-align:center; font-weight:700;line-height:20px;letter-spacing:0.1em; font-size:11px; margin-bottom:15px}
+.buy_now { background:url(../images/buttom.jpg) no-repeat; width:82px; height:20px; float:left;color:#FFFFFF; text-align:center; font-weight:700;line-height:20px;letter-spacing:0.1em; font-size:11px; margin-bottom:15px}
 .go_car_bg{background:url(../images/go_gouwu_car.jpg) no-repeat; width:116px; height:24px; float:right;color:#FFFFFF; text-align:center; font-weight:700;line-height:24px;letter-spacing:0.1em; font-size:12px; }

@@ -142,7 +142,7 @@ ul{ list-style:none}
 .input_select{ height:22px; line-height:22px}
 
 #wrap_content .xiuzheng_table{ height:370px;}
-.goumai_bg{ text-align:center; float:right; background:url(../images/queren_bottom_j.jpg) no-repeat; font-weight:700; width:139px; height:33px; line-height:33px; color:#FFFFFF; font-size:16px}
+.buy_now { text-align:center; float:right; background:url(../images/queren_bottom_j.jpg) no-repeat; font-weight:700; width:139px; height:33px; line-height:33px; color:#FFFFFF; font-size:16px}
 
 .que_pay_bg{ background:url(../images/queren_bottom_j.jpg) no-repeat; color:#FFFFFF; text-align:center; font-weight:700;line-height:33px;letter-spacing:0.2em; width:139px; height:33px; float:right; font-size:14px;}
 .queren_bg{  background:url(../images/shouhuo_info_buttom.jpg) no-repeat; color:#666666; text-align:center; font-weight:700;line-height:29px;letter-spacing:0.2em; width:119px; height:28px; float:left; font-size:13px;}
