@@ -5,38 +5,56 @@
  * Date: 3/9/12
  * Time: 7:00 PM
  */
-KE.show({
-    id:'prompt',
-    imageUploadJson:'@{UploadFile.uploadJson()}',
-    fileManagerJson:'@{UploadFile.fileManagerJson()}',
-    allowFileManager:true,
-    afterCreate:function (id) {
-        KE.event.ctrl(document, 13, function () {
-            KE.util.setData(id);
-            document.forms['frm'].submit();
-        });
-        KE.event.ctrl(KE.g[id].iframeDoc, 13, function () {
-            KE.util.setData(id);
-            document.forms['frm'].submit();
-        });
-    }
-});
+//KE.show({
+//    id:'prompt',
+//    imageUploadJson:'@{UploadFiles.uploadJson()}',
+//    fileManagerJson:'@{UploadFiles.fileManagerJson()}',
+//    allowFileManager:true,
+//    afterCreate:function (id) {
+//        KE.event.ctrl(document, 13, function () {
+//            KE.util.setData(id);
+//            document.forms['frm'].submit();
+//        });
+//        KE.event.ctrl(KE.g[id].iframeDoc, 13, function () {
+//            KE.util.setData(id);
+//            document.forms['frm'].submit();
+//        });
+//    }
+//});
+//
+//KE.show({
+//    id:'details',
+//    imageUploadJson:'@{UploadFiles.uploadJson()}',
+//    fileManagerJson:'@{UploadFiles.fileManagerJson()}',
+//    allowFileManager:true,
+//    afterCreate:function (id) {
+//        KE.event.ctrl(document, 13, function () {
+//            KE.util.setData(id);
+//            document.forms['frm'].submit();
+//        });
+//        KE.event.ctrl(KE.g[id].iframeDoc, 13, function () {
+//            KE.util.setData(id);
+//            document.forms['frm'].submit();
+//        });
+//    }
+//});
 
-KE.show({
-    id:'details',
-    imageUploadJson:'@{UploadFile.uploadJson()}',
-    fileManagerJson:'@{UploadFile.fileManagerJson()}',
-    allowFileManager:true,
-    afterCreate:function (id) {
-        KE.event.ctrl(document, 13, function () {
-            KE.util.setData(id);
-            document.forms['frm'].submit();
-        });
-        KE.event.ctrl(KE.g[id].iframeDoc, 13, function () {
-            KE.util.setData(id);
-            document.forms['frm'].submit();
-        });
-    }
+$(function () {
+    var editorPrompt = KindEditor.create('textarea[name="goods.prompt"]',
+        {
+            cssPath:'/public/javascripts/plugins/code/prettify.css',
+            uploadJson:'/goods/images',
+            allowFileManager:false
+        }
+    );
+    var editorDetails = KindEditor.create('textarea[name="goods.details"]',
+        {
+            cssPath:'/public/javascripts/plugins/code/prettify.css',
+            uploadJson:'/goods/images',
+            allowFileManager:false
+        }
+    );
+
 });
 
 

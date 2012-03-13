@@ -138,7 +138,7 @@ public class Orders extends Model {
 		this.status = OrderStatus.UNPAID;
 		this.deleted = DeletedStatus.UN_DELETED;
 		this.orderNumber = OrdersNumber.generateOrderNumber();
-		this.orderItems = new ArrayList();
+		this.orderItems = new ArrayList<>();
 		this.paidAt = null;
 		this.amount = new BigDecimal(0);
 		this.accountPay = new BigDecimal(0);
@@ -221,7 +221,7 @@ public class Orders extends Model {
 	 */
 	public static String generateOrderNumber() {
 		int random = new Random().nextInt() % 10000;
-		return DateFormatUtils.format(new Date(), "yyyyMMddhhmmssSSS") + random;
+		return DateFormatUtils.format(new Date(), "yyyyMMddhhmmssSSS") + Math.abs(random);
 	}
 
 	public void checkInventory(Goods goods, long number) throws NotEnoughInventoryException {

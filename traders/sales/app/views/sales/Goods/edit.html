@@ -120,8 +120,8 @@
 <script type="text/javascript">
 KE.show({
     id : 'prompt',
-    imageUploadJson : '@{UploadFile.uploadJson()}',
-    fileManagerJson : '@{UploadFile.fileManagerJson()}',
+    imageUploadJson : '@{UploadFiles.uploadJson()}',
+    fileManagerJson : '@{UploadFiles.fileManagerJson()}',
     allowFileManager : true,
     afterCreate : function(id) {
         KE.event.ctrl(document, 13, function() {
@@ -137,8 +137,8 @@ KE.show({
 
 KE.show({
     id : 'details',
-    imageUploadJson : '@{UploadFile.uploadJson()}',
-    fileManagerJson : '@{UploadFile.fileManagerJson()}',
+    imageUploadJson : '@{UploadFiles.uploadJson()}',
+    fileManagerJson : '@{UploadFiles.fileManagerJson()}',
     allowFileManager : true,
     afterCreate : function(id) {
         KE.event.ctrl(document, 13, function() {

@@ -21,7 +21,7 @@ import play.test.FunctionalTest;
  * @author xuefuwei
  *
  */
-
+@Ignore
 @Ignore
 public class ShopFunctionTest extends FunctionalTest {
 

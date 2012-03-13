@@ -5,22 +5,24 @@
 package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.PathUtil;
+import com.uhuila.common.util.FileUploadUtil;
 import models.sales.*;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.data.validation.Required;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.Scope;
-import util.FileUploadUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
 import play.mvc.With;
 import navigation.annotations.ActiveNavigation;
 import controllers.modules.cas.SecureCAS;
@@ -51,6 +53,7 @@ public class Goods extends Controller {
     /**
      * 展示添加商品页面
      */
+    @ActiveNavigation("goods_add")
     public static void add() {
         Long companyId = getCompanyId();
         List<Shop> shopList = Shop.findShopByCompany(companyId);
@@ -93,6 +96,30 @@ public class Goods extends Controller {
         Long companyId = getCompanyId();
         if (isAllShop && goods.shops != null) {
             goods.shops = null;
+        }
+
+        //检查目录
+        File uploadDir = new File(UploadFiles.ROOT_PATH);
+        if (!uploadDir.isDirectory()) {
+            Validation.addError("goods.imagePath", "validation.write");
+        }
+
+        //检查目录写权限
+        if (!uploadDir.canWrite()) {
+            Validation.addError("goods.imagePath", "validation.write");
+        }
+
+        //检查文件大小
+        if (imagePath.length() > UploadFiles.MAX_SIZE) {
+            Validation.addError("goods.imagePath", "validation.maxFileSize");
+        }
+
+        //检查扩展名
+        //定义允许上传的文件扩展名
+        String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
+        String fileExt = imagePath.getName().substring(imagePath.getName().lastIndexOf(".") + 1).toLowerCase();
+        if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
+            Validation.addError("goods.imagePath", "validation.invalidType", StringUtils.join(fileTypes));
         }
 
         if (Validation.hasErrors()) {
@@ -162,17 +189,9 @@ public class Goods extends Controller {
             return;
         }
         //取得文件存储路径
-        String storepath = play.Play.configuration.get("upload.imagepath").toString();
-        //上传文件
-        String path = PathUtil.getPathById(goods.id);
-        String uploadImageFileName = uploadImageFile.getName();
-        String extName = play.Play.configuration.get("imageExtName").toString();
-        if (uploadImageFileName.indexOf(".") > 0) {
-            extName = uploadImageFileName.substring(uploadImageFileName.lastIndexOf(".") + 1, uploadImageFileName.length());
-        }
-        String baseFileName = "origin." + extName;
-        FileUploadUtil.storeImage(uploadImageFile, storepath + path, baseFileName);
-        goods.imagePath = path + baseFileName;
+
+        String absolutePath = FileUploadUtil.storeImage(uploadImageFile, goods.id, UploadFiles.ROOT_PATH);
+        goods.imagePath = absolutePath.substring(UploadFiles.ROOT_PATH.length(), absolutePath.length());
     }
 
     /**
