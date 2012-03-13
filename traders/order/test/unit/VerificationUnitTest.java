@@ -31,10 +31,10 @@ public class VerificationUnitTest extends UnitTest {
 		@Test
 		public void queryInfo(){
 			ECoupon eCoupon=new ECoupon();
-			String eCouponSn="002";
+			String eCouponSn="003";
 			Long compnayId=1l;
 			Map<String,Object> map = eCoupon.queryInfo(eCouponSn,compnayId);
-			Assert.assertEquals("002",map.get("eCouponSn"));  
+			Assert.assertEquals(0,map.size());  
 
 		}
 
