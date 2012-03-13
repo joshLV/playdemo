@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<application text="订单管理">
+    <permission key="ORDER" text="订单管理">
+        <permission key="ORDER_EDIT" text="修改订单" />
+    </permission>
+
+    <navigation key="order_app" text="订单管理" action="Application.index">
+        <navigation key="order" text="订单" permission="ORDER">
+          <navigation key="order_index" action="Orders.index" text="订单管理"/>
+        </navigation>
+        <navigation key="coupon" text="验证" permission="ORDER">
+          <navigation key="coupon_verify" action="VerificationCoupons.index" text="验证消费券"/>
+        </navigation>
+    </navigation>
+</application>

@@ -7,6 +7,10 @@ import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 
+import navigation.annotations.ActiveNavigation;
+import play.mvc.With;
+
+
 /**
  * 商户的现金账户控制器.
  * <p/>
@@ -14,10 +18,12 @@ import play.mvc.Controller;
  * Date: 3/7/12
  * Time: 3:35 PM
  */
+@With({MenuInjector.class})
 public class AccountSequences extends Controller {
 
     private static final int PAGE_SIZE = 20;
 
+    @ActiveNavigation("account_sequence")
     public static void index(AccountSequenceCondition condition) {
         long accountId = 1; //todo 管理员登录做完后修改此处
 

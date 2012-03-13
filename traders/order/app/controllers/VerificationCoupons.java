@@ -2,10 +2,15 @@ package controllers;
 
 import java.util.Map;
 
-import models.accounts.Account;
 import models.order.ECoupon;
+import navigation.annotations.ActiveNavigation;
 import play.mvc.Controller;
+import play.mvc.With;
+import controllers.modules.cas.SecureCAS;
 
+
+@With({SecureCAS.class, MenuInjector.class})
+@ActiveNavigation("coupon_verify")
 public class VerificationCoupons  extends Controller {
 
 	/**

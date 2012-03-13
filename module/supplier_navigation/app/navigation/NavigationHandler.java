@@ -15,22 +15,25 @@ public class NavigationHandler {
 
     private static Map<String, Menu> namedMenus;
     private static ThreadLocal<MenuContext> menuContext = new ThreadLocal<MenuContext>();
-    
+
     static ThreadLocal<List<ContextedMenu>> topMenus = new ThreadLocal<>();
     static ThreadLocal<List<ContextedMenu>> secendLevelMenus = new ThreadLocal<>();
     static ThreadLocal<Set<String>> stackMenuNames = new ThreadLocal<>();
 
-    public static void initContextMenu(String activeNavigationName) {
+    public static void initContextMenu(String applicationName, String activeNavigationName) {
         System.out.println("activeNavName=" + activeNavigationName);
-        initStackMenuNamesThreadLocal(activeNavigationName);
-        initSecendLevelMenusThreadLocal(activeNavigationName);
+        initStackMenuNamesThreadLocal(applicationName, activeNavigationName);
+        initSecendLevelMenusThreadLocal(applicationName, activeNavigationName);
         initTopMenusThreadLocal();
     }
 
 
-    private static void initStackMenuNamesThreadLocal(String activeNavigationName) {
+    private static void initStackMenuNamesThreadLocal(String applicationName, String activeNavigationName) {
         List<SupplierNavigation> navigateionStackList = SupplierNavigation
-                .getNavigationParentStack(activeNavigationName);
+                .getNavigationParentStack(applicationName, activeNavigationName);
+        if (navigateionStackList == null) {
+            return;
+        }
         Set<String> navigationNameStackSets = new HashSet<>();
         for (SupplierNavigation nav : navigateionStackList) {
             navigationNameStackSets.add(nav.name);
@@ -39,9 +42,12 @@ public class NavigationHandler {
     }
 
 
-    private static void initSecendLevelMenusThreadLocal(String activeNavigationName) {
+    private static void initSecendLevelMenusThreadLocal(String applicationName, String activeNavigationName) {
         List<SupplierNavigation> secendLevelNavigations = SupplierNavigation
-                .getSecendLevelNavigations(activeNavigationName);
+                .getSecendLevelNavigations(applicationName, activeNavigationName);
+        if (secendLevelNavigations == null) {
+            return;
+        }
         List<ContextedMenu> _secendLevelMenus = new ArrayList<>();
         for (SupplierNavigation topNavitagion : secendLevelNavigations) {
             Menu menu = Menu.from(topNavitagion);
@@ -63,11 +69,11 @@ public class NavigationHandler {
         }
         topMenus.set(_topMenus);
     }
-    
-    
+
+
     /// ================ ================
-    
-    
+
+
     /**
      * 把数据库中的所有Navigation转化为菜单.
      */
@@ -117,8 +123,8 @@ public class NavigationHandler {
     public static List<ContextedMenu> getTopMenus() {
         return topMenus.get();
     }
-    
+
     public static List<ContextedMenu> getSecendLevelMenus() {
         return secendLevelMenus.get();
-    }    
+    }
 }

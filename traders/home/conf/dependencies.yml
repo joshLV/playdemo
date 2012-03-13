@@ -8,7 +8,9 @@ require:
     - layout_trader -> layout_trader
     - sales -> sales
     - accounts -> accounts
+    - supplier_navigation -> supplier_navigation
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - org.jsoup -> jsoup 1.6.1
 
 repositories:
     - mavenRepository:
@@ -16,7 +18,9 @@ repositories:
         root:       "http://dev.uhuila.cn/nexus/content/groups/public"
         contains:
             - com.uhuila.utils -> *
+            - org.jsoup -> *
         m2compatible: true
+
     - layoutTraderCustomModules:
         type:       local
         artifact:   "${application.path}/../../module/[module]"
@@ -25,3 +29,4 @@ repositories:
             - paginate_ext -> *
             - sales -> *
             - accounts -> *
+            - supplier_navigation -> *

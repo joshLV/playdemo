@@ -85,22 +85,22 @@ public class RbacLoader {
         }
     }
 
-    private static void savePermissionToDB(String applicationName, long loadVersion, Permission menu,
+    private static void savePermissionToDB(String applicationName, long loadVersion, Permission permission,
             Permission parentPermission) {
-        SupplierPermission supplierPermission = SupplierPermission.find("byKey", menu.key).first();
+        SupplierPermission supplierPermission = SupplierPermission.find("byApplicationNameAndKey", applicationName, permission.key).first();
         if (supplierPermission == null) {
             supplierPermission = new SupplierPermission();
-            supplierPermission.key = menu.key;
+            supplierPermission.key = permission.key;
             supplierPermission.createdAt = new Date();
         }
-        supplierPermission.text = menu.text;
+        supplierPermission.text = permission.text;
         // TODO: nav.parent
         supplierPermission.applicationName = applicationName;
         supplierPermission.loadVersion = loadVersion;
         supplierPermission.updatedAt = new Date();
 
         if (parentPermission != null) {
-            supplierPermission.parent = SupplierPermission.find("byKey", parentPermission.key).first();
+            supplierPermission.parent = SupplierPermission.find("byApplicationNameAndKey", applicationName, parentPermission.key).first();
         }
 
         supplierPermission.save();

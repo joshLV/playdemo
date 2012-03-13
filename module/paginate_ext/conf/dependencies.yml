@@ -3,12 +3,3 @@ self: play -> paginate_ext 0.1
 require:
     - play
     - play -> paginate head
-    - commons-lang -> commons-lang 2.6
-repositories:
-
-    - mavenRepository:
-        type:       iBiblio
-        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
-        contains:
-            - commons-lang -> *
-        m2compatible: true

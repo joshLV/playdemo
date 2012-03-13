@@ -12,7 +12,6 @@
     <permission key="ROLE" text="角色管理">
         <permission key="ROLE_ADD" text="新增" roles="admin,system" />
         <permission key="ROLE_EDIT" text="修改" />
-        <permission key="ROLE_ACTIVITY" text="用户操作历史" />
     </permission>
 
     <navigation key="main" text="系统管理" action="Application.index">

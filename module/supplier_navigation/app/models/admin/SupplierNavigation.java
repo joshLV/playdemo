@@ -100,7 +100,7 @@ public class SupplierNavigation extends Model {
      * @param currentMenuName
      * @return
      */
-    public static List<SupplierNavigation> getNavigationParentStack(String currentMenuName) {
+    public static List<SupplierNavigation> getNavigationParentStack(String applicationName, String currentMenuName) {
         
         if (currentMenuName == null) {
             throw new IllegalAccessError("必须在Controller中定义" + ActiveNavigation.class.getName() + " Annotation。");
@@ -108,7 +108,7 @@ public class SupplierNavigation extends Model {
         
         Stack<SupplierNavigation> stack = new Stack<>();
 
-        SupplierNavigation nav = SupplierNavigation.find("byName", currentMenuName).first();
+        SupplierNavigation nav = SupplierNavigation.find("byApplicationNameAndName", applicationName, currentMenuName).first();
         
         if (nav == null) {
             return null;
@@ -127,8 +127,8 @@ public class SupplierNavigation extends Model {
         return parentStackList;
     }
     
-    public static List<SupplierNavigation> getSecendLevelNavigations(String name) {
-        List<SupplierNavigation> parentStack = getNavigationParentStack(name);
+    public static List<SupplierNavigation> getSecendLevelNavigations(String applicationName, String navName) {
+        List<SupplierNavigation> parentStack = getNavigationParentStack(applicationName, navName);
         
         if (parentStack == null || parentStack.size() < 2) {
             return null;

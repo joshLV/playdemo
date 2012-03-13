@@ -1,6 +1,7 @@
 package controllers;
 
 import navigation.annotations.ActiveNavigation;
+import navigation.annotations.Right;
 import play.mvc.Controller;
 import play.mvc.With;
 

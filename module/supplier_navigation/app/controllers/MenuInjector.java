@@ -44,7 +44,8 @@ public class MenuInjector extends Controller {
                 currentMenuName = controllerNavigation.value();
             }
         }
-        NavigationHandler.initContextMenu(currentMenuName);
+        String applicationName = Play.configuration.getProperty("application.name");
+        NavigationHandler.initContextMenu(applicationName, currentMenuName);
         renderArgs.put("topMenus", NavigationHandler.getTopMenus());
         renderArgs.put("secendLevelMenu", NavigationHandler.getSecendLevelMenus());
     }
