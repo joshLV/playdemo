@@ -28,7 +28,7 @@ public class SupplierRole extends Model {
      */
     @Column(name = "load_version")
     public long loadVersion;
-    
+
     @Column(name = "lock_version")
     public int lockVersion;
 
@@ -41,14 +41,6 @@ public class SupplierRole extends Model {
     @ManyToMany(cascade = CascadeType.REFRESH,mappedBy="roles",
             fetch=FetchType.LAZY)
     public Set<SupplierUser> cusers;
-
-    
-    public static void deleteUndefinedRoles(long loadVersion) {
-        List<SupplierRole> list = SupplierRole.find("loadVersion <> ?", loadVersion).fetch();
-        for (SupplierRole role : list) {
-            SupplierRole.em().remove(role);
-        } 
-    }
 
 }
 

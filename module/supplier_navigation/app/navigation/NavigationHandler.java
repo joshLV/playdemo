@@ -21,7 +21,6 @@ public class NavigationHandler {
     static ThreadLocal<Set<String>> stackMenuNames = new ThreadLocal<>();
 
     public static void initContextMenu(String applicationName, String activeNavigationName) {
-        System.out.println("activeNavName=" + activeNavigationName);
         initStackMenuNamesThreadLocal(applicationName, activeNavigationName);
         initSecendLevelMenusThreadLocal(applicationName, activeNavigationName);
         initTopMenusThreadLocal();

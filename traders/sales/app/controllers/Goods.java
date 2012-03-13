@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import play.mvc.With;
+import navigation.annotations.ActiveNavigation;
+import controllers.modules.cas.SecureCAS;
 
 /**
  * 通用说明：
@@ -29,6 +31,8 @@ import java.util.List;
  * @author yanjy
  * @version 1.0 02/8/12
  */
+@With({SecureCAS.class, MenuInjector.class})
+@ActiveNavigation("goods_index")
 public class Goods extends Controller {
 
     public static int PAGE_SIZE = 15;

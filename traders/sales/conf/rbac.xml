@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<application text="商品管理">
+    <role key="admin" text="系统管理员"/>
+
+    <permission key="GOODS" text="商品管理">
+    </permission>
+    <permission key="SHOPS" text="门店管理">
+    </permission>
+
+    <navigation key="sales_app" text="商品管理" action="Application.index">
+        <navigation key="goods" text="商品" permission="GOODS">
+          <navigation key="goods_index" action="Goods.index" text="商品管理"/>
+        </navigation>
+        <navigation key="shops" text="门店" permission="SHOPS">
+          <navigation key="shops_index" action="Shops.list" text="门店管理"/>
+        </navigation>
+    </navigation>
+</application>

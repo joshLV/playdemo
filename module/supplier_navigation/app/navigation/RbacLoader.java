@@ -52,7 +52,6 @@ public class RbacLoader {
         deleteUndefinedMenus(applicationName, loadVersion);    
         
         loadRolesToDB(application.roles, loadVersion);
-        deleteUndefinedRoles(loadVersion);    
         
         loadPermissionsToDB(null, application.permissions, applicationName, loadVersion);
         deleteUndefinedPermissions(applicationName, loadVersion);    
@@ -104,15 +103,6 @@ public class RbacLoader {
         }
 
         supplierPermission.save();
-    }
-
-    /**
-     * 删除之前版本的Roles.
-     * @param applicationName
-     * @param loadVersion
-     */
-    private static void deleteUndefinedRoles(long loadVersion) {
-        SupplierRole.deleteUndefinedRoles(loadVersion);
     }
 
     /**

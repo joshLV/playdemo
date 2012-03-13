@@ -8,6 +8,12 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import controllers.modules.cas.SecureCAS;
+import play.mvc.With;
+import navigation.annotations.ActiveNavigation;
+
+@With({SecureCAS.class, MenuInjector.class})
+@ActiveNavigation("goods_index")
 public class UploadFile extends Controller {
 
     /**
