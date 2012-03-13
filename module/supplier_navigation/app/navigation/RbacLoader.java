@@ -87,6 +87,7 @@ public class RbacLoader {
             supplierPermission = new SupplierPermission();
             supplierPermission.key = permission.key;
             supplierPermission.createdAt = new Date();
+            supplierPermission.displayOrder = 999;   // FIXME: 使用顺序值
         }
         supplierPermission.text = permission.text;
         // TODO: nav.parent

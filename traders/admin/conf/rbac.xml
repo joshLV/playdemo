@@ -17,8 +17,8 @@
     <navigation key="main" text="系统管理" action="Application.index">
         <navigation key="home" text="主页" permission="USER" />
         <navigation key="user" text="用户管理" permission="USER">
-          <navigation key="user_add" text="新增用户" action="Application.index" permission="USER"/>
-          <navigation key="user_search" text="查询用户" permission="USER"/>
+          <navigation key="user_add" text="新增用户" action="Cusers.add" permission="USER"/>
+          <navigation key="user_search" text="查询用户" action="Cusers.index" permission="USER"/>
         </navigation>
         <navigation key="role" text="角色管理" permission="ROLE" />
         <navigation key="google" text="Google" url="http://www.google.com" />

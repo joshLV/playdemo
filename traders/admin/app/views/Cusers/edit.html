@@ -1,4 +1,12 @@
-#{extends 'layout_trader/layout.html' /} 
+#{extends 'layout_trader/layout.html' /}
+
+#{set 'topbar-nav'}
+#{include 'share/topbar-nav.html'/}
+#{/set}
+#{set 'sidebar-nav'}
+#{include 'share/sidebar-nav.html'/}
+#{/set}
+
 #{set title:'操作员编辑' /}
 #{set 'moreScripts'}
   <script src="@{'/public/javascripts/cuser.js'}" type="text/javascript" charset="UTF-8"></script>

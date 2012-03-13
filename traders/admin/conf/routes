@@ -5,6 +5,7 @@
 # Home page
 GET     /                                       Application.index
 GET     /cusers                               Cusers.index
+GET     /cusers/new                           Cusers.add
 POST    /cusers                               Cusers.create
 POST    /cusers/checkLoginName                Cusers.checkLoginName
 GET     /cusers/{id}/edit                     Cusers.edit
