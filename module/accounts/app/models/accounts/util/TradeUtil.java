@@ -92,7 +92,7 @@ public class TradeUtil {
     /**
      * 创建消费交易，
      * 消费者消费成功,资金从优惠啦转到商户
-     * 
+     *
      * @param couponSn 券号
      * @param account 充值账户
      * @return 消费交易记录
@@ -111,13 +111,13 @@ public class TradeUtil {
             return null;
         }
 
-        return new TradeBill(AccountUtil.getUhuilaAccount(),
-                account,
-                consumedPrice,
-                BigDecimal.ZERO,
-                TradeType.CONSUME,
-                null,
-                orderId).save();
+        return new TradeBill(AccountUtil.getUhuilaAccount(), //付款方为优惠啦账户
+                account,                        //收款方账户为商户
+                consumedPrice,                  //消费金额
+                BigDecimal.ZERO,                //未使用银行支付
+                TradeType.CONSUME,              //消费
+                null,                           //无银行信息
+                orderId).save();                //订单ID
     }
 
     /**

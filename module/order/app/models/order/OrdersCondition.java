@@ -1,26 +1,28 @@
 package models.order;
 
+import com.uhuila.common.constants.DeletedStatus;
+import models.consumer.User;
+import org.apache.commons.lang.StringUtils;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.Query;
-
-import models.consumer.User;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.uhuila.common.constants.DeletedStatus;
-
 public class OrdersCondition {
 	public Map<String, Object> paramsMap = new HashMap<>();
-	public Map<String, Object> couponsMap = new HashMap<>();
+
+    /**
+     *
+     * @param orders 订单信息
+     * @param companyId 商户ID
+     * @return sql 查询条件
+     */
 	public String getFilter(Orders orders,Long companyId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" o.deleted = :deleted");
 		paramsMap.put("deleted", DeletedStatus.UN_DELETED);
 		sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.companyId = :companyId)");
-		paramsMap.put("companyId", companyId);		
+		paramsMap.put("companyId", companyId);
 
 		if (orders.createdAtBegin != null) {
 			sql.append(" and o.createdAt >= :createdAtBegin");
@@ -72,6 +74,16 @@ public class OrdersCondition {
 		return orderBySql;
 	}
 
+    /**
+     *
+     *
+     * @param user 用户信息
+     * @param createdAtBegin 下单开始时间
+     * @param createdAtEnd 下单结束时间
+     * @param status 状态
+     * @param goodsName 商品名
+     * @return sql 查询条件
+     */
 	public String getFilter(User user, Date createdAtBegin, Date createdAtEnd,
 			OrderStatus status, String goodsName) {
 		StringBuilder sql = new StringBuilder();

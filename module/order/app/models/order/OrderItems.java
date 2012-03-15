@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import models.sales.Goods;
@@ -20,6 +21,9 @@ public class OrderItems extends Model {
 	@JoinColumn(name="order_id",nullable=true)
 	public Orders order;
 
+	@OneToOne(mappedBy = "orderItems")
+	public ECoupon eCoupon;
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="goods_id",nullable=true)
 	public Goods goods;
