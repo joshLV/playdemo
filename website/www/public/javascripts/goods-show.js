@@ -17,6 +17,8 @@ $(window).load(
                     }
                 });
             $('#add_cart_result').show();
+            //5秒后自动消失
+            setTimeout("$('#add_cart_result').css('display','none')", 5000);
         });
 
         $("#link_buy_more").click(function () {

@@ -44,9 +44,9 @@ public class Goods extends Controller {
     public static void index(models.sales.Goods goods) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        JPAExtPaginator<models.sales.Goods> list = models.sales.Goods.query(goods, pageNumber, PAGE_SIZE);
+        JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.query(goods, pageNumber, PAGE_SIZE);
 
-        render(list);
+        render(goodsPage);
     }
 
     /**

@@ -135,11 +135,12 @@ public class Orders extends Model {
     public Orders() {
     }
 
+
     public Orders(User user, Address address) {
         this.user = user;
         this.status = OrderStatus.UNPAID;
         this.deleted = DeletedStatus.UN_DELETED;
-        this.orderNumber = OrdersNumber.generateOrderNumber();
+        this.orderNumber = generateOrderNumber();
         this.orderItems = new ArrayList<>();
         this.paidAt = null;
         this.amount = new BigDecimal(0);
@@ -160,7 +161,8 @@ public class Orders extends Model {
         }
     }
 
-    public Orders(User user, long goodsId, long number, Address address, String mobile) throws NotEnoughInventoryException {
+    public Orders(User user, long goodsId, long number, Address address, String mobile)
+            throws NotEnoughInventoryException {
         this(user, address);
 
         models.sales.Goods goods = Goods.findById(goodsId);
@@ -222,7 +224,7 @@ public class Orders extends Model {
      * @return 订单编号
      */
     public static String generateOrderNumber() {
-        int random = new Random().nextInt() % 10000;
+        int random = new Random().nextInt() % 100;
         return DateFormatUtils.format(new Date(), "yyyyMMddhhmmssSSS") + Math.abs(random);
     }
 
@@ -261,24 +263,24 @@ public class Orders extends Model {
         }
         Cart.clear(user, cookieIdentity);
 
-	}
+    }
 
-    public void paid(){
+    public void paid() {
         this.status = OrderStatus.PAID;
         this.paidAt = new Date();
         this.save();
 
         //如果是电子券
-        if (this.orderItems != null){
-            for (OrderItems orderItem : this.orderItems){
+        if (this.orderItems != null) {
+            for (OrderItems orderItem : this.orderItems) {
                 models.sales.Goods goods = orderItem.goods;
-                if(goods == null){
+                if (goods == null) {
                     continue;
                 }
                 goods.baseSale -= 1;
-                goods.saleCount +=1;
-                if(goods.materialType == MaterialType.ELECTRONIC){
-                    ECoupon eCoupon = new ECoupon(this, goods,orderItem).save();
+                goods.saleCount += 1;
+                if (goods.materialType == MaterialType.ELECTRONIC) {
+                    ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
                     SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, this.receiverMobile);
                 }
                 goods.save();
@@ -286,30 +288,33 @@ public class Orders extends Model {
         }
     }
 
-	/**
-	 * 会员中心订单查询
-	 *
-	 * @param user 用户信息
-	 * @param createdAtBegin 下单开始时间
-	 * @param createdAtEnd 下单结束时间
-	 * @param status 状态
-	 * @param goodsName 商品名
-	 * @param pageNumber 第几页
-	 * @param pageSize 每页记录
-	 *
-	 * @return ordersPage 订单信息
-	 */
-	public static JPAExtPaginator<Orders> findMyOrders(User user, Date createdAtBegin, Date createdAtEnd, OrderStatus status, String goodsName,int pageNumber, int pageSize) {
-		OrdersCondition condition= new OrdersCondition();
-		JPAExtPaginator<Orders> ordersPage = new JPAExtPaginator<>
-		("Orders o", "o", Orders.class, condition.getFilter(user,createdAtBegin,createdAtEnd,
-				status,goodsName),
-				condition.paramsMap)
-				.orderBy(condition.getOrderByExpress());
-		ordersPage.setPageNumber(pageNumber);
-		ordersPage.setPageSize(pageSize);
-		ordersPage.setBoundaryControlsEnabled(false);
-		return ordersPage;
+
+    /**
+     * 会员中心订单查询
+     *
+     * @param user           用户信息
+     * @param createdAtBegin 下单开始时间
+     * @param createdAtEnd   下单结束时间
+     * @param status         状态
+     * @param goodsName      商品名
+     * @param pageNumber     第几页
+     * @param pageSize       每页记录
+     * @return ordersPage 订单信息
+     */
+    public static JPAExtPaginator<Orders> findMyOrders(User user, Date createdAtBegin, Date createdAtEnd,
+                                                       OrderStatus status, String goodsName,
+                                                       int pageNumber, int pageSize) {
+        OrdersCondition condition = new OrdersCondition();
+        JPAExtPaginator<Orders> ordersPage = new JPAExtPaginator<>
+                ("Orders o", "o", Orders.class, condition.getFilter(user, createdAtBegin, createdAtEnd,
+                        status, goodsName),
+                        condition.paramsMap)
+                .orderBy(condition.getOrderByExpress());
+        ordersPage.setPageNumber(pageNumber);
+        ordersPage.setPageSize(pageSize);
+        ordersPage.setBoundaryControlsEnabled(false);
+        return ordersPage;
     }
+
 
 }
