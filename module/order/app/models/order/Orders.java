@@ -5,6 +5,7 @@ import models.consumer.Address;
 import models.consumer.User;
 import models.sales.Goods;
 import models.sales.MaterialType;
+import models.sms.SMSUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import play.db.jpa.Model;
@@ -259,6 +260,29 @@ public class Orders extends Model {
 		Cart.clear(user, cookieIdentity);
 
 	}
+
+    public void paid(){
+        this.status = OrderStatus.PAID;
+        this.paidAt = new Date();
+        this.save();
+
+        //如果是电子券
+        if (this.orderItems != null){
+            for (OrderItems orderItem : this.orderItems){
+                models.sales.Goods goods = orderItem.goods;
+                if(goods == null){
+                    continue;
+                }
+                goods.baseSale -= 1;
+                goods.saleCount +=1;
+                if(goods.materialType == MaterialType.ELECTRONIC){
+                    ECoupon eCoupon = new ECoupon(this, goods, orderItem.salePrice).save();
+                    SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, this.receiverMobile);
+                }
+                goods.save();
+            }
+        }
+    }
 
 	/**
 	 * 会员中心订单查询

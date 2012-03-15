@@ -86,28 +86,8 @@ public class AliPay extends Controller {
                 if(tradeBill != null){
                     //最终所有条件满足
                     TradeUtil.success(tradeBill);
+                    order.paid();
 
-                    order.status = OrderStatus.PAID;
-                    order.paidAt = new Date();
-                    order.save();
-
-                    //如果是电子券
-                    if (order.orderItems != null){
-                        for (OrderItems orderItem : order.orderItems){
-                            models.sales.Goods goods = orderItem.goods;
-                            if(goods == null){
-                                continue;
-                            }
-                            goods.baseSale -= 1;
-                            goods.saleCount +=1;
-                            if(goods.materialType == MaterialType.ELECTRONIC){
-                                ECoupon eCoupon = new ECoupon(order, goods, orderItem.salePrice).save();
-                                SMSUtil.send(goods.name + "券号:"+eCoupon.eCouponSn, order.receiverMobile);
-                            }
-                            goods.save();
-                        }
-                    }
-                    
                 }else {
                     callbackLog.status = "no_trade_found";
                 }
