@@ -28,7 +28,7 @@ $(window).load(function(){
                         	 $("#showinfo").html('券编号: '+data.eCouponSn+'<br />商品名称: '+data.name+'<br />截止日期：'+data.expireAt);
                         } 
                     } else{
-                            $("#checksn").html("<font color=red>对不起，没有该券的信息!</font");
+                            $("#checksn").html("<font color=red>对不起，没有该券的信息!</font>");
                     }
                 },
                 "json"
@@ -46,10 +46,16 @@ $(window).load(function(){
              url: "/coupons/update",
              data:"eCouponSn="+eCouponSn,
              type: 'POST',
-             error: function() { alert('Error loading data!'); },
-             success: function() {
-                 $("#checksn").html("<font color=red>该券消费成功！</font>");
-                 $("#sure").attr("disabled",false);
+             error: function() { alert('消费失败!'); },
+             success: function(data) {
+                 alert(data)
+                 if (data == '0') {
+                     $("#checksn").html("<font color=red>该券消费成功！</font>");
+                     $("#sure").attr("disabled",false);
+                 } else {
+                     alert("消费失败！");
+                 }
+
              }
          });
     });

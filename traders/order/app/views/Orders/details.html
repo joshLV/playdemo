@@ -9,11 +9,11 @@
  <legend>订单详细</legend>
   <table width="80%">
    <tr><td>订单号：${orders.orderNumber}</td>
-   <td>订单时间：${orders.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
-   <td>支付时间：${orders.paidAt.format("yyyy-MM-dd HH:mm:ss")}</td>
+   <td>订单时间：${orders.createdAt == null ?'':orders.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
+   <td>支付时间：${orders.paidAt == null ?'':orders.paidAt.format("yyyy-MM-dd HH:mm:ss")}</td>
    </tr>
    </table>
-   
+
  <legend>商品信息</legend>
   <table class="table">
    <thead>
@@ -34,7 +34,9 @@
      <td>${row.goodsName}</td>
      <td>${row.salePrice}</td>
      <td>${row.buyNumber}</td>
-     <td>${row.goods.effectiveAt.format("yyyy-MM-dd HH:mm:ss")}/${row.goods.expireAt.format("yyyy-MM-dd HH:mm:ss")}</td>
+     <td>${row.goods.effectiveAt == null ?'':row.goods.effectiveAt.format("yyyy-MM-dd")}  /
+         ${row.goods.expireAt == null ?'':row.goods.expireAt.format("yyyy-MM-dd")}
+     </td>
      <td>${orders.needPay}</td>
      <td>0</td>
     </tr>
@@ -54,7 +56,7 @@
    <tr><td>收货人姓名： ${orders.receiverName}</td></tr>
    <tr><td>收货地址： ${orders.receiverAddress}</td></tr>
    #{/if}
-   <tr><td>联系方式： ${orders.receiverMobile}  ${orders.receiverPhone==null ? '':'/'+orders.receiverPhone}</td></tr>
+   <tr><td>联系方式： ${orders.receiverMobile}</td></tr>
   </table>
    <table class="table">
    <tr><td>订购者信息</td></tr>
@@ -62,10 +64,12 @@
    <tr><td>订购者手机： ${orders.buyerMobile}/ ${orders.buyerPhone}</td></tr>
    <tr><td>备注： ${orders.remark}</td></tr>
   </table>
+#{if orders.refundAt != null }
    <table class="table">
    <tr><td>退款信息</td></tr>
-   <tr><td>申请退款时间：</td></tr>
-   <tr><td>退款时间</td></tr>
-   <tr><td>退款金额</td></tr>
+   <tr><td>申请退款时间：${orders.refundAt == null ?'':orders.refundAt.format("yyyy-MM-dd HH:mm:ss")}</td></tr>
+   <tr><td>退款时间： ${orders.refundAt == null ?'':orders.refundAt.format("yyyy-MM-dd HH:mm:ss")}</td></tr>
+   <tr><td>退款金额：</td></tr>
   </table>
+#{/if}
 </div>
