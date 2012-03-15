@@ -30,7 +30,8 @@
    </div>
    <div class="tab_top_box">
     <div class="tab_top_info">
-     <span class="tab_one">订单号：${orders.orderNumber}</span><span class="tab_two">成交时间：${orders.createdAt}</span><span>付款时间：${orders.paidAt}
+     <span class="tab_one">订单号：${orders.orderNumber}</span><span class="tab_two">成交时间：${orders.createdAt==null ?'':orders.createdAt.format("yyyy-MM-dd HH:mm:ss")}</span>
+     <span>付款时间：${orders.paidAt== null ? '':orders.paidAt.format("yyyy-MM-dd HH:mm:ss")}
      </span>
     </div>
 
@@ -50,11 +51,11 @@
       <td align="center" valign="middle"><div class="shop_img">
         <img src="" />
        </div>
-       <div class="col_one_text">${row.goodsName}</div></td>
+       <div class="col_one_text">${row.goods.name}</div></td>
       <td width="69" align="center" valign="middle">&{'goods.'+row.goods.materialType}</td>
       <td width="81" align="center" valign="middle">${row.salePrice}</td>
       <td width="66" align="center" valign="middle">${row.buyNumber}</td>
-      <td width="118" align="center" valign="middle"><span class="strong_gray">劵号：45212145</span></td>
+      <td width="118" align="center" valign="middle"><span class="strong_gray">劵号：${row.eCoupon==null ?'':row.eCoupon.eCouponSn}</span></td>
        #{if (++m == 1) }
       <td rowspan="${orderItems.size()}" align="center" valign="middle">${orders.amount}<br /> (含运费)
       </td>
@@ -94,7 +95,7 @@
      #{/if}
      <tr>
       <td height="28" align="center" valign="middle">收货手机</td>
-      <td align="left" valign="middle"><div class="margin_left_10">${orders.receiverMobile}  ${orders.receiverPhone==null ? '':'/'+orders.receiverPhone}</div></td>
+      <td align="left" valign="middle"><div class="margin_left_10">${orders.receiverMobile}</div></td>
      </tr>
     </table>
    </div>

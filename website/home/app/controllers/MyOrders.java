@@ -55,47 +55,6 @@ public class MyOrders extends Controller {
 		List<OrderItems> orderItems = orders.orderItems;
 		//收货信息
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "订单详情", "/orders/" + id);
-		render(orders, orderItems, breadcrumbs);
+		render(orders, orderItems,breadcrumbs);
 	}
-
-
-	public static void applyRefund(Long id, String applyNote){
-
-		User user = WebCAS.getUser();
-		models.order.Orders order = models.order.Orders.findById(id);
-		if(order == null || !order.user.getId().equals(user.getId())){
-			renderJSON("{\"error\":\"no such order\"}");
-			return;
-		}
-
-		//查找原订单信息
-		TradeBill tradeBill = null;
-		List<OrderItems> orderItems = order.orderItems;
-
-		if(order != null){
-			tradeBill = TradeBill.find("byOrderIdAndTradeStatus", order.getId(), TradeStatus.SUCCESS).first();
-		}
-		if(order == null || tradeBill == null || orderItems == null){
-			renderJSON("{\"error\":\"can not get the trade bill\"}");
-			return;
-		}
-
-		for (OrderItems orderItem:orderItems) {
-			//创建退款流程
-			RefundBill refundBill = RefundUtil.create(tradeBill, order.getId(), orderItem.getId(),
-					orderItem.salePrice, applyNote);
-			RefundUtil.success(refundBill);
-			//更改库存
-			orderItem.goods.baseSale += 1;
-			orderItem.goods.saleCount -= 1;
-			orderItem.goods.save();
-
-
-		}
-		//更改订单状态
-		order.status = OrderStatus.RETURNED;
-		order.save();
-		renderJSON("{\"error\":\"ok\"}");
-	}
-
 }

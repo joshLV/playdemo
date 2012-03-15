@@ -14,6 +14,8 @@ require:
     - breadcrumbs -> breadcrumbs
     - accounts -> accounts
     - org.jsoup -> jsoup 1.6.1
+    - sms -> sms
+    
 
 repositories:
     - mavenRepository:
@@ -38,3 +40,4 @@ repositories:
             - paginate_ext -> *
             - breadcrumbs -> *
             - accounts -> *
+            - sms -> *

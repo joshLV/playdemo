@@ -3,6 +3,8 @@
 #{set 'moreStyles'}
 <link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
 <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" media="screen"
+      href="@{'/public/stylesheets/play-pagination.css'}">
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <style type="text/css">
     #full_bg{
@@ -110,6 +112,7 @@ $(window).load(function () {
 <div id="apply_dialog">
     <div style="text-align:center;">
         <a href="#" onclick="close_result_dialog();">关闭</a><br/><br/>
+        <label for="refund">退款金额</label><input type="text" id="refund" /><br/><br/>
         <label for="apply_note">申请理由</label><textarea rows="5" id="apply_note"></textarea> <br/>
         <a  href="#" id="confirm_apply">确定</a>
     </div>
@@ -269,13 +272,12 @@ $(window).load(function () {
       <td align="center">状态</td>
       <td align="center">操作</td>
      </tr>
-    
-     #{list items:couponsList, as:'coupon'  }
+     #{paginate.list items:couponsList, as:'coupon'}
       <tr>
       <td width="118" height="30" align="center">${coupon.eCouponSn}</td>
       <td width="100" height="31" align="center">${coupon.order.orderNumber}</td>
       <td width="177" align="center">${coupon.goods.name}</td>
-      <td width="177" align="center">${coupon.eCouponPrice}</td>
+      <td width="177" align="center" id="price_${coupon.id}">${coupon.eCouponPrice}</td>
       <td width="106" align="center">${coupon.createdAt}</td>
       <td width="123" align="center">${coupon.consumedAt}</td>
       <td width="95" align="center"><span id="status_apply_${coupon.id}">&{'coupon.'+coupon.status}</span></td>
@@ -286,8 +288,13 @@ $(window).load(function () {
       #{/if}
       </td>
      </tr>
-     #{/list}
+     #{/paginate.list}
     </table>
+     <div class="pagination">
+     <ul>
+    #{paginate.controls items:couponsList /}
+    </ul>
+  </div>
    </div>
   </div>
  </div>
