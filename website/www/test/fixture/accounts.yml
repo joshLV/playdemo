@@ -5,3 +5,11 @@ accounts.Account(account_1):
     cashAmount: 10.2
     uncashAmount: 10.2
     status: NORMAL
+
+accounts.Account(account_2):
+    uid: 3
+    type: ENTERPRISE
+    amount: 22.4
+    cashAmount: 11.2
+    uncashAmount: 11.2
+    status: NORMAL

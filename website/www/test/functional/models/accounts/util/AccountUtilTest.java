@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 
 /**
  * @author likang
- *         Date: 12-3-7
+ * Date: 12-3-7
  */
 public class AccountUtilTest extends FunctionalTest{
 

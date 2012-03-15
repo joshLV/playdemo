@@ -355,7 +355,7 @@ public class Goods extends Model {
         q.setParameter("categoryId", categoryId);
         q.setMaxResults(limit);
         return q.getResultList();
-//        return find("status=? and deleted=? and categories.id=? order by updatedAt,createdAt DESC",
+//        return find("status=? and deleted=? and categories.id=? showOrder by updatedAt,createdAt DESC",
 //                GoodsStatus.ONSALE,
 //                DeletedStatus.UN_DELETED,
 //                Category.findById(categoryId)).fetch(limit);

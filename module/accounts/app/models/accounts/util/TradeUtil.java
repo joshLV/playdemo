@@ -98,24 +98,28 @@ public class TradeUtil {
      * @return 消费交易记录
      */
     public static TradeBill createConsumeTrade(String couponSn, Account account,BigDecimal consumedPrice,Long orderId){
-    	  if(couponSn == null) {
-              Logger.error("error while create order trade: invalid couponSn");
-              return null;
-          }
-          if(consumedPrice.compareTo(BigDecimal.ZERO) <= 0){
-              Logger.error("error while create order trade: invalid balancePaymentAmount");
-              return null;
-          }
-          
-    	return new TradeBill(AccountUtil.getUhuilaAccount(),
-    			account,
-    			consumedPrice,
-    			BigDecimal.ZERO,
-    			TradeType.CONSUME,
-    			null,
-    			orderId).save();
+        if(account == null) {
+            Logger.error("error while create consume trade: invalid account");
+            return null;
+        }
+        if(couponSn == null) {
+            Logger.error("error while create consume trade: invalid couponSn");
+            return null;
+        }
+        if(consumedPrice != null && consumedPrice.compareTo(BigDecimal.ZERO) <= 0){
+            Logger.error("error while create consume trade: invalid consumePrice");
+            return null;
+        }
+
+        return new TradeBill(AccountUtil.getUhuilaAccount(),
+                account,
+                consumedPrice,
+                BigDecimal.ZERO,
+                TradeType.CONSUME,
+                null,
+                orderId).save();
     }
-    
+
     /**
      * 创建转账交易.
      *
@@ -127,7 +131,7 @@ public class TradeUtil {
      * @return //创建的转账交易记录
      */
     public static TradeBill createTransferTrade(Account fromAccount, Account toAccount,
-                                                BigDecimal balancePaymentAmount, BigDecimal ebankPaymentAmount, PaymentSource paymentSource) {
+            BigDecimal balancePaymentAmount, BigDecimal ebankPaymentAmount, PaymentSource paymentSource) {
 
         if (fromAccount == null || toAccount == null) {
             Logger.error("error while create transfer trade: invalid fromAccount or toAccount");
@@ -154,7 +158,7 @@ public class TradeUtil {
                 TradeType.TRANSFER,
                 paymentSource,
                 null
-        ).save();
+                ).save();
     }
 
 
@@ -171,15 +175,8 @@ public class TradeUtil {
         //则将充值的钱打入发起人账户里
         if (tradeBill.fromAccount.amount.compareTo(tradeBill.balancePaymentAmount) < 0) {
 
-            AccountUtil.addCash(
-                    tradeBill.fromAccount,
-                    tradeBill.ebankPaymentAmount,
-                    tradeBill.getId(),
-                    AccountSequenceType.CHARGE,
-                    "账户充值");
-
             ChargeBill chargeBill
-                    = ChargeUtil.createWithTrade(tradeBill.fromAccount, tradeBill.ebankPaymentAmount, tradeBill);
+                = ChargeUtil.createWithTrade(tradeBill.fromAccount, tradeBill.ebankPaymentAmount, tradeBill);
             ChargeUtil.success(chargeBill);
 
             return tradeBill;
