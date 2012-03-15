@@ -113,7 +113,6 @@ public class Orders extends Controller {
         boolean buyNow = Boolean.parseBoolean(session.get("buyNow"));
         Address defaultAddress = Address.findDefault(WebCAS.getUser());
         models.order.Orders orders;
-        System.out.println("######"+mobile);
         try {
             if (buyNow) {
                 long goodsId = Long.parseLong(session.get("goodsId"));
@@ -126,7 +125,6 @@ public class Orders extends Controller {
                 orders = new models.order.Orders(WebCAS.getUser(), eCartList, defaultAddress, mobile);
             }
             orders.createAndUpdateInventory(WebCAS.getUser(), cookieIdentity.value);
-            System.out.println("########"+orders.receiverMobile);
             session.put("buyNow", false);
             redirect("/payment_info/" + orders.id);
         } catch (NotEnoughInventoryException e) {
