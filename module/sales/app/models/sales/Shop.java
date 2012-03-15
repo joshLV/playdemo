@@ -3,13 +3,12 @@ package models.sales;
 import com.uhuila.common.constants.DeletedStatus;
 import play.data.validation.Required;
 import play.db.jpa.Model;
+import play.modules.paginate.ModelPaginator;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import org.apache.commons.lang.StringUtils;
 
 @Entity
 @Table(name = "shops")
@@ -76,6 +75,31 @@ public class Shop extends Model {
      */
     public static List<Shop> findShopByCompany(long companyId) {
         return Shop.find("byCompanyIdAndDeleted", companyId, DeletedStatus.UN_DELETED).fetch();
+    }
+
+    public static ModelPaginator<Shop> query(Shop shopCondition, int pageNumber, int pageSize) {
+        StringBuilder search = new StringBuilder();
+        search.append("companyId=? and deleted=?");
+        ArrayList queryParams = new ArrayList();
+
+        queryParams.add(shopCondition.companyId);
+        queryParams.add(DeletedStatus.UN_DELETED);
+
+        if (!StringUtils.isBlank(shopCondition.name)) {
+            search.append(" and name like ?");
+            queryParams.add("%" + shopCondition.name.trim() + "%");
+        }
+
+        if (!StringUtils.isBlank(shopCondition.address)) {
+            search.append(" and address like ?");
+            queryParams.add("%" + shopCondition.address.trim() + "%");
+        }
+
+        ModelPaginator<Shop> shopPage = new ModelPaginator<>(Shop.class, search.toString(),
+                queryParams.toArray()).orderBy("createdAt desc");
+        shopPage.setPageNumber(pageNumber);
+        shopPage.setPageSize(pageSize);
+        return shopPage;
     }
 
     /**

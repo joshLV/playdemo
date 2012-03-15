@@ -10,7 +10,9 @@ import models.sales.Area;
 import models.sales.AreaType;
 import models.sales.Shop;
 import models.sales.Pager;
+import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
+import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
 
 import play.mvc.With;
@@ -21,12 +23,31 @@ import controllers.modules.cas.SecureCAS;
 @ActiveNavigation("shops_index")
 public class Shops extends Controller {
 
+    private static final int PAGE_SIZE = 20;
+
+    /**
+     * 门店一览信息
+     */
+    public static void index() {
+        String page = params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+
+        long companyId = getCompanyId();
+        Shop shopCondition = new Shop();
+        shopCondition.companyId = companyId;
+        shopCondition.name = params.get("shopname");
+        shopCondition.address = params.get("shopaddr");
+        ModelPaginator<Shop> shopPage = Shop.query(shopCondition,pageNumber,PAGE_SIZE);
+        render(shopPage);
+    }
+
     /**
      * 添加门店
-     * @param shop
+     *
+     * @param shop 门店对象
      */
-    public static void create(@Valid Shop shop){
-        if(validation.hasErrors()) {
+    public static void create(@Valid Shop shop) {
+        if (validation.hasErrors()) {
             params.flash();
             validation.keep();
             add();
@@ -36,39 +57,43 @@ public class Shops extends Controller {
         shop.deleted = DeletedStatus.UN_DELETED;
         shop.createdAt = new Date();
         shop.create();
-        list();
+        index();
 
     }
 
     /**
      * 添加门店页面展示
      */
-    public static void add(){
+    @ActiveNavigation("shops_add")
+    public static void add() {
         //城市列表
         List<Area> citylist = Area.findAllSubAreas(null);
         //区域列表
         List<Area> districtslist = Area.findAllSubAreas(citylist.get(0).getId());
         //商圈列表
         List<Area> arealist = Area.findAllSubAreas(districtslist.get(0).getId());
-        renderTemplate("shop-add.html",citylist,districtslist,arealist);
+        render(citylist, districtslist, arealist);
     }
 
     /**
      * 区域商圈的联动
+     *
+     * @param areaId
      */
-    public static void relation(String areaId){
+    public static void relation(String areaId) {
         //商圈列表
-        List<Area> arealist = Area.findAllSubAreas(areaId);
-        renderJSON(arealist);
+        renderJSON(Area.findAllSubAreas(areaId));
     }
+
     /**
      * 修改门店信息
-     * @param id
-     * @param shop
+     *
+     * @param id   门店标识
+     * @param shop 修改后的门店
      */
-    public static void  update(long id,Shop shop){
+    public static void update(long id, Shop shop) {
         Shop sp = Shop.findById(id);
-        if(validation.hasErrors()) {
+        if (validation.hasErrors()) {
             params.flash();
             validation.keep();
             edit(shop.id);
@@ -79,64 +104,37 @@ public class Shops extends Controller {
         sp.phone = shop.phone;
         sp.updatedAt = new Date();
         sp.save();
-        list();
+        index();
     }
 
     /**
      * 编辑门店页面展示
-     * @param id
+     *
+     * @param id 门店标识
      */
-    public static void  edit(long id){
+    public static void edit(long id) {
         Shop shop = Shop.findById(id);
         //城市列表
-        List<Area> citylist = Area.findAllSubAreas(null);
+        List<Area> cities = Area.findAllSubAreas(null);
         //区域列表
-        List<Area> districtslist = Area.findAllSubAreas(citylist.get(0).getId());
+        List<Area> districts = Area.findAllSubAreas(cities.get(0).getId());
         //商圈列表
-        List<Area> arealist = Area.findAllSubAreas(districtslist.get(0).getId());
-        renderTemplate("shop-edit.html",shop,citylist,districtslist,arealist);
+        List<Area> areas = Area.findAllSubAreas(districts.get(0).getId());
+        render(shop, cities, districts, areas);
     }
 
     /**
      * 逻辑删除门店
-     * @param id
+     *
+     * @param id 门店标识
      */
-    public static void delete(long id){
-
+    public static void delete(long id) {
         Shop.deleted(id);
-        list();
+        index();
     }
 
-    /**
-     * 门店一览信息
-     */
-    public static void list(){
-        StringBuffer search = new StringBuffer();
-        search.append("companyId=? and deleted=?");
-        ArrayList queryparams = new ArrayList();
-
-        long company_id = 1;
-        queryparams.add(company_id);
-        queryparams.add(DeletedStatus.UN_DELETED);
-
-        if(params.get("shopname") != null){
-            search.append(" and name like ?");
-            queryparams.add("%"+params.get("shopname").trim()+"%");
-        }
-
-        if(params.get("shopaddr") != null){
-            search.append(" and address like ?");
-            queryparams.add("%"+params.get("shopaddr").trim()+"%");
-        }
-
-        Pager pager = new Pager();
-        if(params.get("page") != null){
-            pager.currPage = Integer.parseInt(params.get("page"));
-        }
-        pager.totalCount = Shop.count(search.toString(),queryparams.toArray());
-        search.append(" order by createdAt desc ");
-        List<Shop> list = Shop.find(search.toString(), queryparams.toArray()).fetch(pager.currPage, pager.pageSize);
-        pager.totalPager();
-        renderTemplate("shop-list.html",list,pager);
+    private static long getCompanyId() {
+        //todo
+        return 1;
     }
 }

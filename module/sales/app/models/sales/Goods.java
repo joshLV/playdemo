@@ -177,7 +177,7 @@ public class Goods extends Model {
             return discount;
         }
         if (originalPrice != null && salePrice != null && originalPrice.compareTo(new BigDecimal(0)) > 0) {
-            this.discount = salePrice.divide(originalPrice,2,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).intValue();
+            this.discount = salePrice.divide(originalPrice, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).intValue();
         } else {
             this.discount = 0;
         }
@@ -187,8 +187,11 @@ public class Goods extends Model {
     @Transient
     public String getDiscountExpress() {
         int discount = getDiscount();
-        if (discount == 100) {
+        if (discount >= 100 || discount <= 0) {
             return "";
+        }
+        if (discount < 10) {
+            return String.valueOf(discount / 10.0);
         }
         if (discount % 10 == 0) {
             return String.valueOf(discount / 10);
@@ -334,7 +337,7 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTop(int limit) {
-        return find("status=? and deleted=? order by updatedAt,createdAt DESC",
+        return find("status=? and deleted=? order by createdAt DESC",
                 GoodsStatus.ONSALE,
                 DeletedStatus.UN_DELETED).fetch(limit);
     }
@@ -355,10 +358,6 @@ public class Goods extends Model {
         q.setParameter("categoryId", categoryId);
         q.setMaxResults(limit);
         return q.getResultList();
-//        return find("status=? and deleted=? and categories.id=? showOrder by updatedAt,createdAt DESC",
-//                GoodsStatus.ONSALE,
-//                DeletedStatus.UN_DELETED,
-//                Category.findById(categoryId)).fetch(limit);
     }
 
     public static Goods findUnDeletedById(long id) {
@@ -374,7 +373,7 @@ public class Goods extends Model {
      * @param pageSize
      * @return
      */
-    public static JPAExtPaginator<Goods> query1(models.sales.Goods goods, int pageNumber, int pageSize) {
+    public static JPAExtPaginator<Goods> query(models.sales.Goods goods, int pageNumber, int pageSize) {
 
         StringBuilder condition = new StringBuilder();
         Map<String, Object> params = new HashMap<>();
@@ -450,4 +449,4 @@ public class Goods extends Model {
         }
     }
 
-  }
+}

@@ -85,7 +85,7 @@ public class Goods extends Controller {
      * @param condition 查询条件
      */
     public static void list(String condition) {
-        String page = request.params.get("page");
+        String page = params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
         try {

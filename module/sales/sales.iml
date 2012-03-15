@@ -10,6 +10,7 @@
       <excludeFolder url="file://$MODULE_DIR$/sales-sample" />
     </content>
     <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
+    <orderEntry type="library" name="commons-lang-2.5" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -20,11 +21,9 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="persistence-api-1.0.2" level="project" />
-    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="tools" />
     <orderEntry type="module" module-name="www" />
     <orderEntry type="library" name="play-paginate" level="project" />
-    <orderEntry type="library" name="commons-lang-2.5" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -89,6 +88,7 @@
     </orderEntry>
     <orderEntry type="module" module-name="Paginate_ext" />
     <orderEntry type="library" name="jsoup-1.6.1" level="project" />
+    <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
 

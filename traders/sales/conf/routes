@@ -17,7 +17,7 @@ POST    /goods/filemanager                      UploadFiles.fileManagerJson
 
 GET     /category/sub/{id}                      Categories.showSubs
 
-GET     /shops                                  Shops.list
+GET     /shops                                  Shops.index
 GET     /shops/new                              Shops.add
 POST    /shops                                  Shops.create
 GET     /shops/{id}/edit                        Shops.edit

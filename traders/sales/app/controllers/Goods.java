@@ -8,7 +8,6 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
 import models.sales.*;
 import org.apache.commons.lang.StringUtils;
-import play.Play;
 import play.data.validation.Required;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
@@ -45,9 +44,9 @@ public class Goods extends Controller {
     public static void index(models.sales.Goods goods) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        JPAExtPaginator<models.sales.Goods> list = models.sales.Goods.query1(goods, pageNumber, PAGE_SIZE);
+        JPAExtPaginator<models.sales.Goods> list = models.sales.Goods.query(goods, pageNumber, PAGE_SIZE);
 
-        renderTemplate("sales/Goods/index.html", list);
+        render(list);
     }
 
     /**
@@ -67,7 +66,7 @@ public class Goods extends Controller {
         Goods goods = new Goods();
         Scope.Flash.current().put("goods", goods);
         renderArgs.put("isAllShop", true);
-        render("sales/Goods/add.html", shopList, brandList, categoryList, subCategoryList);
+        render(shopList, brandList, categoryList, subCategoryList);
     }
 
     private static Long getCompanyId() {
@@ -148,7 +147,7 @@ public class Goods extends Controller {
                     .categories.iterator().hasNext()) {
                 categoryId = goods.categories.iterator().next().id;
             }
-            render("sales/Goods/add.html", shopList, brandList, categoryList, subCategoryList, goods, topCategoryId,
+            render("Goods/add.html", shopList, brandList, categoryList, subCategoryList, goods, topCategoryId,
                     categoryId, shopIds);
         }
         //添加商品处理
@@ -204,7 +203,7 @@ public class Goods extends Controller {
         models.sales.Goods goods = models.sales.Goods.findById(id);
         List<Shop> shopList = Shop.findShopByCompany(goods.companyId);
         List<Brand> brandList = Brand.findByCompanyId(goods.companyId);
-        renderTemplate("sales/Goods/edit.html", goods, shopList, brandList);
+        render(goods, shopList, brandList);
     }
 
     /**
@@ -212,7 +211,7 @@ public class Goods extends Controller {
      */
     public static void detail(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
-        renderTemplate("sales/Goods/detail.html", goods);
+        renderTemplate("Goods/detail.html", goods);
     }
 
     /**
