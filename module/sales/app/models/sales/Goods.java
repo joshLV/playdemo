@@ -177,7 +177,7 @@ public class Goods extends Model {
             return discount;
         }
         if (originalPrice != null && salePrice != null && originalPrice.compareTo(new BigDecimal(0)) > 0) {
-            this.discount = salePrice.divide(originalPrice).multiply(new BigDecimal(100)).toBigInteger().intValue();
+            this.discount = salePrice.divide(originalPrice,2,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).intValue();
         } else {
             this.discount = 0;
         }
