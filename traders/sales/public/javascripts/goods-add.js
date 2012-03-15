@@ -42,14 +42,14 @@
 $(function () {
     var editorPrompt = KindEditor.create('textarea[name="goods.prompt"]',
         {
-            cssPath:'/public/javascripts/plugins/code/prettify.css',
+            filterMode:true,
             uploadJson:'/goods/images',
             allowFileManager:false
         }
     );
     var editorDetails = KindEditor.create('textarea[name="goods.details"]',
         {
-            cssPath:'/public/javascripts/plugins/code/prettify.css',
+            filterMode:true,
             uploadJson:'/goods/images',
             allowFileManager:false
         }

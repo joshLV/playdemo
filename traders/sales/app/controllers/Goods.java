@@ -110,17 +110,20 @@ public class Goods extends Controller {
         }
 
         //检查文件大小
-        if (imagePath.length() > UploadFiles.MAX_SIZE) {
-            Validation.addError("goods.imagePath", "validation.maxFileSize");
+        if (imagePath != null) {
+            if (imagePath.length() > UploadFiles.MAX_SIZE) {
+                Validation.addError("goods.imagePath", "validation.maxFileSize");
+            }
+
+            //检查扩展名
+            //定义允许上传的文件扩展名
+            String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
+            String fileExt = imagePath.getName().substring(imagePath.getName().lastIndexOf(".") + 1).toLowerCase();
+            if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
+                Validation.addError("goods.imagePath", "validation.invalidType", StringUtils.join(fileTypes));
+            }
         }
 
-        //检查扩展名
-        //定义允许上传的文件扩展名
-        String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
-        String fileExt = imagePath.getName().substring(imagePath.getName().lastIndexOf(".") + 1).toLowerCase();
-        if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
-            Validation.addError("goods.imagePath", "validation.invalidType", StringUtils.join(fileTypes));
-        }
 
         if (Validation.hasErrors()) {
             String shopIds = "";
