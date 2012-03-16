@@ -93,7 +93,7 @@ $(window).load(
             $("#status").val("OFFSALE");
         });
         $("#preview").click(function () {
-            $("#status").val("PREVIEW");
+            $("#status").val("UNCREATED");
         });
     }
 );

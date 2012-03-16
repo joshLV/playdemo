@@ -174,7 +174,7 @@ public class Goods extends Controller {
 
 
         //预览的情况
-        if (GoodsStatus.PREVIEW.equals(goods.status)) {
+        if (GoodsStatus.UNCREATED.equals(goods.status)) {
             redirect("http://www.uhuiladev.com/goods/" + goods.id + "?preview=true");
         }
         index(null);
