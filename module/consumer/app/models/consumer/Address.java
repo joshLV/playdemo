@@ -75,7 +75,7 @@ public class Address extends Model {
     }
 
     public static List<Address> findByOrder(User user) {
-        return Address.find("user=? order by isDefault",user).fetch();
+        return Address.find("user=? order by isDefault DESC",user).fetch();
     }
 
     public static void updateToUnDefault(User user) {

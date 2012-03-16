@@ -7,6 +7,8 @@ import org.junit.Test;
 import play.test.Fixtures;
 import play.test.UnitTest;
 
+import java.util.List;
+
 /**
  * 地址对象的测试.
  * <p/>
@@ -41,6 +43,37 @@ public class AddressUnitTest extends UnitTest {
         user.id = (Long) Fixtures.idCache.get("models.consumer.User-User1");
         Address address = Address.findDefault(user);
         assertEquals("test2", address.address);
+    }
+
+    @Test
+    public void testFindByOrder() {
+        User user = new User();
+        user.id = (Long) Fixtures.idCache.get("models.consumer.User-User1");
+        List<Address> addressList = Address.findByOrder(user);
+        assertEquals(2, addressList.size());
+        assertEquals("test2", addressList.get(0).address);
+        assertEquals("test1", addressList.get(1).address);
+    }
+
+
+    @Test
+    public void testUpdateToUnDefault() {
+        User user = new User();
+        user.id = (Long) Fixtures.idCache.get("models.consumer.User-User1");
+        Address.updateToUnDefault(user);
+
+        Address address = Address.findDefault(user);
+        assertNull(address);
+    }
+
+    @Test
+    public void testGetPhone() {
+        Address address = new Address();
+        address.areaCode = "021";
+        address.phoneNumber = "1234567";
+        address.phoneExtNumber = "123";
+        address.mobile = "13412341234";
+        assertEquals("13412341234 021-1234567-123", address.getPhone());
     }
 
 }
