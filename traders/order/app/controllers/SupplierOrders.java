@@ -1,22 +1,20 @@
 package controllers;
 
 
-import java.util.List;
-
+import controllers.supplier.cas.SecureCAS;
 import models.order.ECoupon;
 import models.order.OrderItems;
 import navigation.annotations.ActiveNavigation;
-
 import org.apache.commons.lang.StringUtils;
-
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.supplier.cas.SecureCAS;
+
+import java.util.List;
 
 @With({SecureCAS.class, MenuInjector.class})
 @ActiveNavigation("order_index")
-public class Orders extends Controller {
+public class SupplierOrders extends Controller {
 
     public static int PAGE_SIZE = 15;
 
@@ -56,7 +54,7 @@ public class Orders extends Controller {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<models.order.ECoupon> couponsList = ECoupon.queryCoupons(companyId, pageNumber, PAGE_SIZE);
-        render("Orders/e_coupons.html", couponsList);
+        render("SupplierOrders/e_coupons.html", couponsList);
     }
 
 }

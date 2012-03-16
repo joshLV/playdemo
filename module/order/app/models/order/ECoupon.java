@@ -180,7 +180,6 @@ public class ECoupon extends Model {
 			TradeBill tradeBill = TradeUtil.createConsumeTrade(eCouponSn, account.get(0), eCoupon.incomePrice, eCoupon.order.id);
 			if (tradeBill != null) {
 				TradeUtil.success(tradeBill);
-
 				eCoupon.status = ECouponStatus.CONSUMED;
 				eCoupon.save();
 

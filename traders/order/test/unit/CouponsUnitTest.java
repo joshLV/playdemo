@@ -23,7 +23,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
 
-public class VerificationUnitTest extends UnitTest {
+public class CouponsUnitTest extends UnitTest {
 	@Before
 	public void setup() {
 		Fixtures.delete(Category.class);
@@ -35,7 +35,7 @@ public class VerificationUnitTest extends UnitTest {
 		Fixtures.delete(User.class);
 		Fixtures.delete(ECoupon.class);
 		Fixtures.delete(Account.class);
-		Fixtures.loadModels("fixture/goods_base.yml", "fixture/user.yml", 
+		Fixtures.loadModels("fixture/goods_base.yml","fixture/user.yml", 
 				"fixture/goods.yml","fixture/accounts.yml",
 				"fixture/orders.yml");
 	}
@@ -93,7 +93,26 @@ public class VerificationUnitTest extends UnitTest {
 		int pageSize =15;
 		ECouponStatus status =null;
 		JPAExtPaginator<ECoupon> list = ECoupon.userCouponsQuery(user,createdAtBegin,createdAtEnd, status, goodsName,pageNumber, pageSize);
-		Assert.assertEquals(0,list.size());
+		assertEquals(0,list.size());
+
+	}
+	
+	/**
+	 * 测试用户中心券列表
+	 */
+	@Test
+	public void testECoupon(){
+		Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
+				".Goods-Goods_001");
+		Goods goods = Goods.findById(goodsId);
+		Long orderId = (Long) Fixtures.idCache.get("models.order" +
+				".Orders-order1");
+		Orders orders = Orders.findById(orderId);
+		ECoupon coupon = null;
+		for (OrderItems orderItem:orders.orderItems) {
+			coupon = new ECoupon(orders,goods,orderItem);
+		}
+		assertNotNull(coupon);
 
 	}
 }

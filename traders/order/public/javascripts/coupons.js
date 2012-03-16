@@ -48,7 +48,6 @@ $(window).load(function(){
              type: 'POST',
              error: function() { alert('消费失败!'); },
              success: function(data) {
-                 alert(data)
                  if (data == '0') {
                      $("#checksn").html("<font color=red>该券消费成功！</font>");
                      $("#sure").attr("disabled",false);

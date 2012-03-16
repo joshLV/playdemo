@@ -3,9 +3,9 @@
 # ~~~~
 
 # Home page
-GET     /orders                                 Orders.index
-GET     /coupons                                Orders.coupons
-GET     /orders/{id}                            Orders.details
+GET     /orders                                 SupplierOrders.index
+GET     /coupons                                SupplierOrders.coupons
+GET     /orders/{id}                            SupplierOrders.details
 #验证电子券页面
 GET     /coupons/verify                         VerificationCoupons.index
 #验证电子券有效性
