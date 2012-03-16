@@ -21,7 +21,7 @@ public class OrderUnitTest extends UnitTest {
 	@Before
 	public void loadData() {
 		Fixtures.deleteAllModels();
-		Fixtures.loadModels("fixture/base_data.yml");
+		Fixtures.loadModels("fixture/goods_base.yml");
 		Fixtures.loadModels("fixture/user.yml");
 		Fixtures.loadModels("fixture/goods.yml");
 		Fixtures.loadModels("fixture/orders.yml");

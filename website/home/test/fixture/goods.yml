@@ -23,7 +23,7 @@ sales.Goods(Goods_001):
  "shops": [Shop_4, Shop_5]
  "categories": [Category_2]
  
- sales.Goods(Goods_002):
+sales.Goods(Goods_002):
  "no": "002"
  "name": "哈根达斯200元抵用券"
  "companyId": "1"

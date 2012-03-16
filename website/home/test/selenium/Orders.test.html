@@ -1,4 +1,6 @@
-#{fixture delete:'all', load:['fixture/user.yml'] /}
+#{fixture delete:[models.order.Orders.class,models.sales.Category.class,models.sales.Area.class,
+models.sales.Shop.class, models.sales.Goods.class,models.order.OrderItems.class,models.order.ECoupon.class] ,
+load:['fixture/goods_base.yml','fixture/goods.yml','fixture/orders.yml'] /}
 
 #{selenium "查看我购买的商品"}
     #{include 'test/selenium/step/login.selenium' /}
@@ -13,6 +15,7 @@
 
 #{selenium '查看订单详细信息'}
     open('/orders/${play.test.Fixtures.idCache.get("models.order.Orders-order1")}')
-    assertTitle('订单详细信息')
-    verifyTextPresent('201202220324134991598')
+    assertTitle('优惠啦 - 商品详情')
+    verifyTextPresent('您的位置：首页>我的优惠啦>我购买的商品>商品详情')
 #{/selenium}
+
