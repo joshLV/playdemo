@@ -1,14 +1,13 @@
 package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
+import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
 
 import javax.persistence.*;
 import java.util.*;
-
-import org.apache.commons.lang.StringUtils;
 
 @Entity
 @Table(name = "shops")
@@ -81,7 +80,6 @@ public class Shop extends Model {
         StringBuilder search = new StringBuilder();
         search.append("companyId=? and deleted=?");
         ArrayList queryParams = new ArrayList();
-
         queryParams.add(shopCondition.companyId);
         queryParams.add(DeletedStatus.UN_DELETED);
 
@@ -94,7 +92,6 @@ public class Shop extends Model {
             search.append(" and address like ?");
             queryParams.add("%" + shopCondition.address.trim() + "%");
         }
-
         ModelPaginator<Shop> shopPage = new ModelPaginator<>(Shop.class, search.toString(),
                 queryParams.toArray()).orderBy("createdAt desc");
         shopPage.setPageNumber(pageNumber);
@@ -108,11 +105,14 @@ public class Shop extends Model {
      * @param id
      * @return
      */
-    public static boolean deleted(long id) {
+    public static boolean delete(long id) {
         Shop shop = Shop.findById(id);
-        shop.deleted = DeletedStatus.DELETED;
-        shop.save();
-        return true;
+        if (shop != null) {
+            shop.deleted = DeletedStatus.DELETED;
+            shop.save();
+            return true;
+        }
+        return false;
     }
 
 }

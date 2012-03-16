@@ -51,5 +51,16 @@ public class AreaUnitTest extends UnitTest {
         assertEquals("district1", areaList.get(0).name);
     }
 
+    @Test
+    public void testFindTopAreasByDistrict() {
+        String districtId = (String) Fixtures.idCache.get("models.sales.Area-district1");
+        int limit = 8;
+        String areaId = (String) Fixtures.idCache.get("models.sales.Area-area1");
+        List<Area> areaList = Area.findTopAreas(districtId, limit, areaId);
+        assertEquals(3, areaList.size());
 
+        areaId = (String) Fixtures.idCache.get("models.sales.Area-area10");
+        areaList = Area.findTopAreas(districtId, limit, areaId);
+        assertEquals(4, areaList.size());
+    }
 }

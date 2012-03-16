@@ -128,7 +128,7 @@ public class Shops extends Controller {
      * @param id 门店标识
      */
     public static void delete(long id) {
-        Shop.deleted(id);
+        Shop.delete(id);
         index();
     }
 
