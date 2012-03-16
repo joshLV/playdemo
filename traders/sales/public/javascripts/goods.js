@@ -23,7 +23,7 @@ $(function () {
         if (checkedcnt == 0) {
             alert("请至少选择一条数据！");
         } else {
-            if (confirm("确定删除吗？")) {
+            if (confirm("您确定要删除吗？")) {
                 $("#deletefrm").attr("method", "delete");
                 $("#deletefrm").attr("action", "@{Goods.delete()}");
                 $("#deletefrm").submit();
@@ -38,7 +38,7 @@ $(function () {
             }
         });
         if (checkedcnt == 0) {
-            alert("请至少选择一条数据！");
+            alert("请至少选择一条记录！");
         } else {
             $("#deletefrm").attr("method", "POST");
             $("#status").val("ONSALE");
@@ -47,14 +47,14 @@ $(function () {
         }
     });
 
-    $("#offsalse").click(function () {
+    $("#offsales").click(function () {
         $("input[name='ids[]']").each(function () {
             if (this.checked) {
                 checkedcnt++;
             }
         });
         if (checkedcnt == 0) {
-            alert("请至少选择一条数据！");
+            alert("请至少选择一条记录！");
         } else {
             $("#status").val("OFFSALE");
             $("#deletefrm").attr("method", "POST");

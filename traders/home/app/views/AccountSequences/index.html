@@ -16,19 +16,16 @@
         <table>
             <tr>
                 <td width="50%"><label>创建时间:</label><input class="input-medium Wdate"
-                                            type="text" id="createdAtBegin"
-                                            name="condition.createdAtBegin"
-                                            onfocus="WdatePicker({readOnly:true})"
-                                            #{if condition.createdAtBegin != null}
-                                            value="${condition.createdAtBegin.format('yyyy-MM-dd')}"
-                                            #{/if}/> 至
+                                                           type="text" id="createdAtBegin"
+                                                           name="condition.createdAtBegin"
+                                                           onfocus="WdatePicker({readOnly:true})"
+                                                           value="${condition.createdAtBegin?.format('yyyy-MM-dd')}"/> 至
                     <input class="input-medium Wdate" type="text" id="createdAtEnd" name="condition.createdAtEnd"
                            onfocus="WdatePicker({readOnly:true})"
-                           #{if condition.createdAtEnd != null}value="${condition.createdAtEnd.format('yyyy-MM-dd')}"
-                           #{/if}/>
+                           value="${condition.createdAtEnd?.format('yyyy-MM-dd')}"/>
                 </td>
                 <td width="25%"><label>资金流向:</label><input type="radio" name="condition.sequenceFlag" value=""
-                #{if condition.sequenceFlag == null}checked#{/if}>不限</radio>
+                                                           #{if condition.sequenceFlag == null}checked#{/if}>不限</radio>
                     <input type="radio" name="condition.sequenceFlag" value="VOSTRO"
                            #{if models.accounts.AccountSequenceFlag.VOSTRO.equals(condition.sequenceFlag)}checked#{/if}/>收入
                     <input type="radio" name="condition.sequenceFlag" value="NOSTRO"
@@ -75,7 +72,7 @@
             <td>#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
                 ${accountSequence
                 .cashAmount.add(accountSequence
-                .uncashAmount)}
+            .uncashAmount)}
             #{/if}</td>
         *{<td>&{'account_sequence.'+accountSequence.sequenceType}</td>}*
             <td>${accountSequence.amount}</td>

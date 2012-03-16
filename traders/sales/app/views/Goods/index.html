@@ -10,25 +10,29 @@
     <form class="form-horizontal" name="frmlist" action="@{Goods.index()}" method="GET">
         <table width="100%">
             <tr>
-                <td width="30%">商品名称：<input type="text" name="goods.name" class="input-medium"/></td>
-                <td width="30%">商品编号：<input type="text" name="goods.no" class="input-medium"/></td>
-                <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态： <select id="ca" name="goods.status"
-                                                                                class="input-small">
-                    <option value="">请选择</option>
-                    <option value="ONSALE">已上架</option>
-                    <option value="OFFSALE">已下架</option>
-                </select></td>
+                <td width="30%">商品名称：<input type="text" name="condition.name" class="input-medium"
+                                            value="${condition?.name}"/></td>
+                <td width="30%">商品编号：<input type="text" name="condition.no" class="input-medium"
+                                            value="${condition?.no}"/></td>
+                <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
+                #{select 'condition.status', id:ca, class:'input-small', value:condition?.status}
+                    #{option ""}不限#{/option}
+                    #{option "ONSALE"}&{'goods.ONSALE'}#{/option}
+                    #{option "OFFSALE"}&{'goods.OFFSALE'}#{/option}
+                #{/select}</td>
             </tr>
             <tr>
-                <td>现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：<input type="text" name="goods.salePriceBegin"
-                                                                  class="input-medium"/>至 <input type="text"
-                                                                                                 name="goods.salePriceEnd"
-                                                                                                 class="input-medium"/>
+                <td>现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：<input type="text" name="condition.salePriceBegin"
+                                                                  class="input-medium"
+                                                                  value="${condition?.salePriceBegin}"/>
+                    至 <input type="text" name="condition.salePriceEnd" class="input-medium"
+                             value="${condition?.salePriceEnd}"/>
                 </td>
-                <td>销&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：<input type="text" name="goods.saleCountBegin"
-                                                                  class="input-medium"/>至 <input type="text"
-                                                                                                 name="goods.saleCountEnd"
-                                                                                                 class="input-medium"/>
+                <td>销&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：<input type="text" name="condition.saleCountBegin"
+                                                                  class="input-medium"
+                                                                  value="#{if condition?.saleCountBegin >=0}${condition?.saleCountBegin}#{/if}"/>
+                    至 <input type="text" name="condition.saleCountEnd" class="input-medium"
+                             value="#{if condition?.saleCountEnd >=0}${condition?.saleCountEnd}#{/if}"/>
                 </td>
                 <td>
                     <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
@@ -41,7 +45,7 @@
 
         <div style="margin-bottom: 12px">
             <button class="btn btn-primary" id="onsales" type="button">上架</button>
-            <button class="btn btn-primary" id="offsalse" type="button">下架</button>
+            <button class="btn btn-primary" id="offsales" type="button">下架</button>
             <button class="btn btn-primary" id="deletebtn" type="button">删除</button>
             <!-- <button class="btn btn-primary" type="button">导出报表</button> -->
         </div>
@@ -73,7 +77,7 @@
                 <td>${goods.baseSale}</td>
                 <td>${goods.saleCount}</td>
                 <td>&{'goods.'+goods.status}</td>
-                <td>${goods.createdAt}</td>
+                <td>${goods.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td><a href="@{Goods.edit(goods.id)}">修改</a>/<a href="@{Goods.detail(goods.id)}">查看</a></td>
             </tr>
             #{/paginate.list}

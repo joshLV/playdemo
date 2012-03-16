@@ -41,11 +41,19 @@ public class Goods extends Controller {
     /**
      * 展示商品一览页面
      */
-    public static void index(models.sales.Goods goods) {
+    public static void index(models.sales.GoodsCondition condition) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.query(goods, pageNumber, PAGE_SIZE);
 
+        if (condition == null){
+            condition = new GoodsCondition();
+        }
+
+        JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
+                PAGE_SIZE);
+        goodsPage.setBoundaryControlsEnabled(true);
+
+        renderArgs.put("condition", condition);
         render(goodsPage);
     }
 
@@ -101,6 +109,7 @@ public class Goods extends Controller {
         File uploadDir = new File(UploadFiles.ROOT_PATH);
         if (!uploadDir.isDirectory()) {
             Validation.addError("goods.imagePath", "validation.write");
+            System.out.println(uploadDir.getAbsolutePath());
         }
 
         //检查目录写权限
@@ -125,6 +134,10 @@ public class Goods extends Controller {
 
 
         if (Validation.hasErrors()) {
+            System.out.println("has Error");
+            for (String key : validation.errorsMap().keySet()) {
+                System.out.println(key+": "+validation.errorsMap().get(key));
+            }
             String shopIds = "";
             if (goods.shops != null) {
                 for (Shop shop : goods.shops) {
@@ -150,6 +163,8 @@ public class Goods extends Controller {
             render("Goods/add.html", shopList, brandList, categoryList, subCategoryList, goods, topCategoryId,
                     categoryId, shopIds);
         }
+
+        System.out.println("Begin to add goods");
         //添加商品处理
         goods.companyId = companyId;
         goods.createdBy = getCompanyUser();
@@ -167,6 +182,7 @@ public class Goods extends Controller {
         try {
             uploadImagePath(imagePath, goods);
         } catch (IOException e) {
+            e.printStackTrace();
             error("goods.image_upload_failed");
         }
         goods.filterShops();

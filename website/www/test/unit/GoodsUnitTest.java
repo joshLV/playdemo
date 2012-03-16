@@ -99,7 +99,7 @@ public class GoodsUnitTest extends UnitTest {
      * 测试各种查询条件都指定的情况.
      */
     @Test
-    public void testList() {
+    public void testFindByCondition() {
         String condition = "0-021-0-0-0-0-0-0-1";
         GoodsCondition goodsCond = new GoodsCondition(condition);
 
@@ -125,6 +125,11 @@ public class GoodsUnitTest extends UnitTest {
         Goods.delete(goodsId);
         models.sales.Goods goods = Goods.findById(goodsId);
         assertEquals(DeletedStatus.DELETED, goods.deleted);
+
+        Long errGoodsId = -1L;
+        Goods.delete(errGoodsId);
+        goods = Goods.findById(errGoodsId);
+        assertNull(goods);
     }
 
     @Test
@@ -143,8 +148,6 @@ public class GoodsUnitTest extends UnitTest {
         goods.shops = null;
         goods.filterShops();
         assertNotNull(goods.shops);
-        assertEquals(2,goods.shops.size());
+        assertEquals(2, goods.shops.size());
     }
-
-
 }

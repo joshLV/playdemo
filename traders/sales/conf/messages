@@ -22,6 +22,7 @@ validation.maxFileSize=%s的长度不能超过%d个字节!
 validation.min=%s必须大于或等于%d!
 validation.invalid=无效的%s!
 validation.invalidType=%s的类型必须是%s!
+validation.write=%s没有权限保存!
 validation.save=%s保存失败!
 goods.no=商品编号
 goods.name=商品名称

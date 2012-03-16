@@ -1,7 +1,6 @@
 package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
@@ -26,9 +25,16 @@ public class GoodsCondition {
     public BigDecimal priceFrom = new BigDecimal(0);
     public BigDecimal priceTo = new BigDecimal(0);
     public String orderBy = getOrderBy(0);
-    public String orderByType = "ASC";
+    public String orderByType = "DESC";
     public int orderByNum = 0;
     public int orderByTypeNum = 0;
+    public String name;
+    public String no;
+    public BigDecimal salePriceBegin;
+    public BigDecimal salePriceEnd;
+    public Integer saleCountBegin;
+    public Integer saleCountEnd;
+    public GoodsStatus status;
 
     private Map<String, Object> paramMap = new HashMap<>();
 
@@ -39,7 +45,7 @@ public class GoodsCondition {
     /**
      * 拼接hql的查询条件.
      *
-     * @param condStr   hql的查询条件
+     * @param condStr hql的查询条件
      */
     public GoodsCondition(String condStr) {
         String[] args = condStr.split("-");
@@ -90,8 +96,10 @@ public class GoodsCondition {
 
     public String getFilter() {
         StringBuilder condBuilder = new StringBuilder();
-        condBuilder.append(" g.deleted = :deleted");
+        condBuilder.append(" g.deleted = :deleted and g.status != :notMatchStatus");
         paramMap.put("deleted", DeletedStatus.UN_DELETED);
+        paramMap.put("notMatchStatus", GoodsStatus.UNCREATED);
+
         if (isValidAreaId(areaId)) {
             condBuilder.append(" and g.id in (select g.id from g.shops s " +
                     "where s.areaId = :areaId)");
@@ -124,12 +132,47 @@ public class GoodsCondition {
             condBuilder.append(" and g.salePrice <= :priceTo");
             paramMap.put("priceTo", priceTo);
         }
+
+        if (StringUtils.isNotBlank(name)) {
+            condBuilder.append(" and name like :name");
+            paramMap.put("name", "%" + name.trim() + "%");
+        }
+
+        if (StringUtils.isNotBlank(no)) {
+            condBuilder.append(" and no like :no ");
+            paramMap.put("no", "%" + no.trim() + "%");
+        }
+
+        if (status != null) {
+            condBuilder.append(" and status = :status ");
+            paramMap.put("status", status);
+        }
+
+        if (salePriceBegin != null) {
+            condBuilder.append(" and salePrice >= :salePriceBegin");
+            paramMap.put("salePriceBegin", salePriceBegin);
+        }
+
+        if (salePriceEnd != null) {
+            condBuilder.append(" and salePrice <= :salePriceEnd");
+            paramMap.put("salePriceEnd", salePriceEnd);
+        }
+
+        if (saleCountBegin != null && saleCountBegin >= 0) {
+            condBuilder.append(" and saleCount >= :saleCountBegin");
+            paramMap.put("saleCountBegin", saleCountBegin);
+        }
+
+        if (saleCountEnd != null && saleCountEnd >= 0) {
+            condBuilder.append(" and saleCount <= :saleCountEnd");
+            paramMap.put("saleCountEnd", saleCountEnd);
+        }
         return condBuilder.toString();
     }
 
     public String getOrderByExpress() {
-        String orderType = StringUtils.isBlank(orderByType) ? "ASC" : orderByType;
-        return StringUtils.isBlank(orderBy) ? "g.createdAt ASC" : orderBy + " " + orderType;
+        String orderType = StringUtils.isBlank(orderByType) ? "DESC" : orderByType;
+        return StringUtils.isBlank(orderBy) ? "g.createdAt DESC" : orderBy + " " + orderType;
     }
 
     public Map<String, Object> getParamMap() {
