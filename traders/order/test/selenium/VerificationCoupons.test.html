@@ -1,6 +1,6 @@
 #{fixture delete:[models.order.Orders.class,models.sales.Category.class,models.sales.Area.class,
 models.sales.Shop.class, models.sales.Goods.class,models.order.OrderItems.class,models.order.ECoupon.class] ,
-load:['fixture/goods_base.yml','fixture/goods.yml','fixture/orders.yml'] /}
+load:['fixture/goods_base.yml','fixture/goods.yml','fixture/user.yml','fixture/orders.yml'] /}
 #{selenium "商户验证消费券界面"}
     open('/coupons/verify')
     clickAndWait('link=验证消费券')

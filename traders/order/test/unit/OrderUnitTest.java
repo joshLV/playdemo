@@ -11,6 +11,7 @@ import models.consumer.User;
 import models.order.Cart;
 import models.order.ECoupon;
 import models.order.NotEnoughInventoryException;
+import models.order.OrderItems;
 import models.order.OrderStatus;
 import models.order.Orders;
 import models.sales.Goods;
@@ -30,7 +31,8 @@ public class OrderUnitTest extends UnitTest {
 		Fixtures.delete(models.order.OrderItems.class);
 		Fixtures.delete(models.sales.Goods.class);
 		Fixtures.delete(models.consumer.User.class);
-		Fixtures.loadModels("fixture/goods_base.yml","fixture/goods.yml", "fixture/orders.yml", "fixture/user.yml");
+		Fixtures.loadModels("fixture/goods_base.yml","fixture/user.yml","fixture/goods.yml",
+				"fixture/orders.yml");
 	}
 
 	/**
@@ -55,7 +57,7 @@ public class OrderUnitTest extends UnitTest {
 		orders = new Orders();
 		SimpleDateFormat sdf  =   new  SimpleDateFormat( "yyyy-MM-dd" );  
 		try {
-			orders.createdAtBegin = sdf.parse("2012-03-01 12:31:02");
+			orders.createdAtBegin = sdf.parse("2012-03-01");
 			orders.createdAtEnd = new Date();
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -111,13 +113,15 @@ public class OrderUnitTest extends UnitTest {
 		address.postcode = "200120";
 		Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
 				".Goods-Goods_001");
+		boolean isok= false;
 		try {
 			Orders orders = new Orders(user, goodsId, 2l, address, mobile);
 			assertNotNull(orders);
+			new Orders(user, goodsId, 200000l, address, mobile);
 		} catch (NotEnoughInventoryException e) {
-			e.printStackTrace();
+			isok =true;
 		}
-
+		assertEquals(true,isok);
 	}
 
 	@Test
@@ -149,12 +153,14 @@ public class OrderUnitTest extends UnitTest {
 				".Goods-Goods_001");
 		Goods goods = Goods.findById(goodsId);
 		int saleCount= goods.saleCount;
-		Long baseSale = goods.baseSale;
-		Orders orders =  new Orders();
+		int baseSale = goods.baseSale.intValue();
+		Long orderId = (Long) Fixtures.idCache.get("models.order" +
+				".Orders-order1");
+		Orders orders = Orders.findById(orderId);
 		orders.paid();
 		assertEquals(OrderStatus.PAID,orders.status);
-		assertEquals(saleCount++,goods.saleCount);
-		assertEquals(baseSale--,goods.baseSale);
+		assertEquals(saleCount+1,goods.saleCount);
+		assertEquals(baseSale-1,goods.baseSale.intValue());
 	}
 
 }

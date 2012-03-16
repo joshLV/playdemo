@@ -7,6 +7,8 @@ import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sms.SMSUtil;
 import org.apache.commons.lang.time.DateFormatUtils;
+
+import play.Play;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
@@ -267,7 +269,6 @@ public class Orders extends Model {
         this.status = OrderStatus.PAID;
         this.paidAt = new Date();
         this.save();
-
         //如果是电子券
         if (this.orderItems != null) {
             for (OrderItems orderItem : this.orderItems) {
@@ -279,7 +280,10 @@ public class Orders extends Model {
                 goods.saleCount += 1;
                 if (goods.materialType == MaterialType.ELECTRONIC) {
                     ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
-                    SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, this.receiverMobile);
+                    if (!"dev".equals(Play.configuration.get("application.mode"))) {
+                    	 SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, this.receiverMobile);
+                    }
+                   
                 }
                 goods.save();
             }

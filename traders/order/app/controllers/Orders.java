@@ -19,7 +19,6 @@ import controllers.supplier.cas.SecureCAS;
 public class Orders extends Controller {
 
     public static int PAGE_SIZE = 15;
-    private static models.order.Orders orders;
 
     /**
      * 商户订单信息一览
@@ -27,7 +26,6 @@ public class Orders extends Controller {
      * @param orders 页面信息
      */
     public static void index(models.order.Orders orders) {
-        Orders.orders = orders;
         //该商户ID
         Long companyId = 1l;
         String page = request.params.get("page");
