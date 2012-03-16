@@ -4,10 +4,9 @@ import com.google.gson.*;
 
 import javax.persistence.ManyToMany;
 import java.lang.reflect.Type;
-import java.util.List;
 
 /**
- * TODO.
+ * 分类的序列化.
  * <p/>
  * User: sujie
  * Date: 3/12/12

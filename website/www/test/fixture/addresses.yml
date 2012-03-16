@@ -1,4 +1,11 @@
 consumer.Address(test1):
   name: sujie
-  address: test
+  address: test1
+  isDefault: false
+  user: User1
+consumer.Address(test2):
+  name: sujie
+  address: test2
+  isDefault: true
+  user: User1
 

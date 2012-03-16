@@ -1,0 +1,32 @@
+models.sales.Category(models_sales_Category_1):
+ "name": "饮食"
+ "displayOrder": "100"
+
+models.sales.Category(models_sales_Category_2):
+ "name": "旅游"
+ "displayOrder": "200"
+
+models.sales.Category(models_sales_Category_3):
+ "name": "川菜"
+ "displayOrder": "110"
+ "parentCategory": "models_sales_Category_1"
+
+models.sales.Category(models_sales_Category_5):
+ "name": "上海"
+ "displayOrder": "110"
+ "parentCategory": "models_sales_Category_2"
+
+models.sales.Category(models_sales_Category_7):
+ "name": "杭州"
+ "displayOrder": "120"
+ "parentCategory": "models_sales_Category_2"
+
+models.sales.Category(models_sales_Category_6):
+ "name": "苏州"
+ "displayOrder": "120"
+ "parentCategory": "models_sales_Category_2"
+
+models.sales.Category(models_sales_Category_4):
+ "name": "湘菜"
+ "displayOrder": "120"
+ "parentCategory": "models_sales_Category_1"

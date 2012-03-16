@@ -1,15 +1,12 @@
 package functional;
 
 import models.consumer.Address;
+import models.consumer.User;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -25,6 +22,8 @@ public class AddressesTest extends FunctionalTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         Fixtures.delete(Address.class);
+        Fixtures.delete(User.class);
+        Fixtures.loadModels("fixture/users.yml");
         Fixtures.loadModels("fixture/addresses.yml");
     }
 

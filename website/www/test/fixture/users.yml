@@ -1,0 +1,4 @@
+consumer.User(User1):
+   mobile: 13012341234
+   email: admin@uhuila.com
+   status: 0;

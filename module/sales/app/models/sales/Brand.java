@@ -2,10 +2,11 @@ package models.sales;
 
 import play.db.jpa.Model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "brands")
@@ -22,9 +23,9 @@ public class Brand extends Model {
     }
 
     public static List<Brand> findByCompanyId(long companyId) {
-        return find("companyId=? order by displayOrder",companyId).fetch();
+        return find("companyId=? order by displayOrder", companyId).fetch();
     }
-    
+
     public static List<Brand> findTop(int limit, long brandId) {
         List<Brand> brands = findTop(limit);
         if (brandId != 0) {
@@ -39,7 +40,7 @@ public class Brand extends Model {
                 List<Brand> showBrands = new ArrayList<>();
                 showBrands.add((Brand) findById(brandId));
                 if (brands.size() == limit) {
-                    brands.remove(limit-1);
+                    brands.remove(limit - 1);
                 }
                 showBrands.addAll(brands);
                 brands = showBrands;
