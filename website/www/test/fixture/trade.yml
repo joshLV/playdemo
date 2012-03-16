@@ -1,0 +1,12 @@
+#依赖 categories.xml shops_unit.xml brands_unit.xml user.yml goods_unit.xml orders.xml
+accounts.TradeBill(tradebill):
+  "serialNumber": "201202220324134991598"
+  "amount": 10.2
+  "fromAccount": "account_1"
+  "toAccount": "account_uhuila"
+  "orderId": "order1.id"
+  "balancePaymentAmount": 5.1
+  "ebankPaymentAmount": 5.1
+  "paymentSource": "alipay"
+  "tradeType": "PAY"
+  "tradeStatus": "SUCCESS"
