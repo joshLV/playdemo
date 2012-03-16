@@ -162,5 +162,14 @@ public class OrderUnitTest extends UnitTest {
 		assertEquals(saleCount+1,goods.saleCount);
 		assertEquals(baseSale-1,goods.baseSale.intValue());
 	}
+	@Test
+	public void testItemsNumber() {
+		Long orderId = (Long) Fixtures.idCache.get("models.order" +
+				".Orders-order1");
+		Orders orders = Orders.findById(orderId);
+		Long itemsNumber = Orders.itemsNumber(orders);
+		assertEquals(itemsNumber.intValue(),2);
+	}
+	
 
 }

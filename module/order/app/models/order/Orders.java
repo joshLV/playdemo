@@ -210,7 +210,7 @@ public class Orders extends Model {
             return itemsNumber;
         }
         Object result = OrderItems.em().createNativeQuery(
-                "select sum(buy_number) from order_items where order_id ="
+                "SELECT sum( buy_number ) FROM order_items WHERE order_id ="
                         + orders.getId()).getSingleResult();
         if (result != null) {
             itemsNumber = ((java.math.BigDecimal) result).longValue();
