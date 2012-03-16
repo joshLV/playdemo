@@ -13,5 +13,5 @@ public enum GoodsStatus {
     //已下架
     OFFSALE,
     //预览
-    PREVIEW
+    UNCREATED
 }

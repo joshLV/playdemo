@@ -72,7 +72,7 @@
                 <td>${goods.salePrice}</td>
                 <td>${goods.baseSale}</td>
                 <td>${goods.saleCount}</td>
-                <td>&{'goods.'+row.status}</td>
+                <td>&{'goods.'+goods.status}</td>
                 <td>${goods.createdAt}</td>
                 <td><a href="@{Goods.edit(goods.id)}">修改</a>/<a href="@{Goods.detail(goods.id)}">查看</a></td>
             </tr>

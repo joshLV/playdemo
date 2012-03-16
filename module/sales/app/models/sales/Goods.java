@@ -380,7 +380,7 @@ public class Goods extends Model {
         condition.append(" deleted = :deleted ");
         params.put("deleted", DeletedStatus.UN_DELETED);
         condition.append(" and status != :notMatchStatus ");
-        params.put("notMatchStatus", GoodsStatus.PREVIEW);
+        params.put("notMatchStatus", GoodsStatus.UNCREATED);
 
         if (StringUtils.isNotBlank(goods.name)) {
             condition.append(" and name like :name");
