@@ -9,7 +9,6 @@ import com.uhuila.common.constants.DeletedStatus;
 import models.sales.Area;
 import models.sales.AreaType;
 import models.sales.Shop;
-import models.sales.Pager;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
 import play.modules.paginate.ModelPaginator;
@@ -37,7 +36,7 @@ public class Shops extends Controller {
         shopCondition.companyId = companyId;
         shopCondition.name = params.get("shopname");
         shopCondition.address = params.get("shopaddr");
-        ModelPaginator<Shop> shopPage = Shop.query(shopCondition,pageNumber,PAGE_SIZE);
+        ModelPaginator<Shop> shopPage = Shop.query(shopCondition, pageNumber, PAGE_SIZE);
         render(shopPage);
     }
 
