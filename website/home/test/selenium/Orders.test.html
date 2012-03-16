@@ -6,9 +6,13 @@
     assertTitle('优惠啦 - 我购买的商品')
     verifyTextPresent('您的位置：首页 > 我的订单')
 
-
     openAndWait('/coupons')
     assertTitle('优惠啦 - 券订单')
     verifyTextPresent('您的位置：首页 > 我的券订单')
+#{/selenium}
 
+#{selenium '查看订单详细信息'}
+    open('/orders/${play.test.Fixtures.idCache.get("models.order.Orders-order1")}')
+    assertTitle('订单详细信息')
+    verifyTextPresent('201202220324134991598')
 #{/selenium}
