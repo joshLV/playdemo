@@ -14,4 +14,6 @@ run_auto_test website/www
 run_auto_test website/home
 run_auto_test traders/sales
 run_auto_test traders/order
+run_auto_test traders/home
+run_auto_test traders/admin
 run_auto_test cdn/image-server
