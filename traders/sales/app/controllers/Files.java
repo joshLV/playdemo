@@ -7,7 +7,7 @@ import play.mvc.With;
 import java.io.File;
 
 import navigation.annotations.ActiveNavigation;
-import controllers.modules.cas.SecureCAS;
+import controllers.supplier.cas.SecureCAS;
 
 /**
  * 图片文件的访问控制.

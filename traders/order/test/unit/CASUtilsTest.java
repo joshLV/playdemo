@@ -11,8 +11,8 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import play.Play;
-import play.modules.cas.CASUtils;
-import play.modules.cas.models.CASUser;
+import play.supplier.cas.CASUtils;
+import play.supplier.cas.models.CASUser;
 import play.mvc.Http;
 import play.test.UnitTest;
 

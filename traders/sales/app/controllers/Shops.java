@@ -16,7 +16,7 @@ import play.mvc.Controller;
 
 import play.mvc.With;
 import navigation.annotations.ActiveNavigation;
-import controllers.modules.cas.SecureCAS;
+import controllers.supplier.cas.SecureCAS;
 
 @With({SecureCAS.class, MenuInjector.class})
 @ActiveNavigation("shops_index")

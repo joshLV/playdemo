@@ -8,7 +8,7 @@ import navigation.annotations.ActiveNavigation;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.cas.SecureCAS;
+import controllers.supplier.cas.SecureCAS;
 
 
 @With({SecureCAS.class, MenuInjector.class})

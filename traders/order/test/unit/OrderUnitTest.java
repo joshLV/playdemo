@@ -55,7 +55,7 @@ public class OrderUnitTest extends UnitTest {
 		orders = new Orders();
 		SimpleDateFormat sdf  =   new  SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );  
 		try {
-			orders.createdAtBegin = sdf.parse("2012-03-01");
+			orders.createdAtBegin = sdf.parse("2012-03-01 12:31:02");
 			orders.createdAtEnd = new Date();
 		} catch (ParseException e) {
 			e.printStackTrace();

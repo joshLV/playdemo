@@ -4,3 +4,4 @@ expect "What are the playframework versions required?"
 send "1.2.4"
 send "\n"
 interact
+

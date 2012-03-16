@@ -45,11 +45,5 @@
         </javac>
     </target>
 
-        <target name="test" depends="build" description="Test the module">
-                <exec executable="play">
-                        <arg value="auto-test"/>
-                        <arg value="samples-and-tests/supplier_cas-test"/>
-                </exec>
-    </target>
 
 </project>

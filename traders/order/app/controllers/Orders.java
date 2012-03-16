@@ -12,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.cas.SecureCAS;
+import controllers.supplier.cas.SecureCAS;
 
 @With({SecureCAS.class, MenuInjector.class})
 @ActiveNavigation("order_index")
