@@ -22,3 +22,28 @@ sales.Goods(Goods_001):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_2]
+ 
+sales.Goods(Goods_002):
+ "no": "002"
+ "name": "哈根达斯200元抵用券"
+ "companyId": "1"
+ "brand": "Brand_2"
+ "imagePath": "/0/0/133/origin.jpg"
+ "effectiveAt": "2012-03-01T00:00:00"
+ "expireAt": "2012-03-30T00:00:00"
+ "originalPrice": "100"
+ "salePrice": "50"
+ "prompt": "提示测试"
+ "details": "商品详情"
+ "saleCount": "0"
+ "baseSale": "10000"
+ "status": "ONSALE"
+ "createdAt": "2012-03-01T15:02:02"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_2]

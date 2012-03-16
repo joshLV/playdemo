@@ -1,14 +1,24 @@
 #{fixture delete:[models.order.Orders.class,models.sales.Category.class,models.sales.Area.class,
 models.sales.Shop.class, models.sales.Goods.class,models.order.OrderItems.class,models.order.ECoupon.class] ,
-load:['fixture/goods_base.yml','fixture/goods.yml',
-'fixture/orders.yml'] /}
+load:['fixture/goods_base.yml','fixture/goods.yml','fixture/orders.yml'] /}
 #{selenium "商户验证消费券界面"}
     open('/coupons/verify')
+    clickAndWait('link=验证消费券')
     assertTitle('商户验证消费券')
-    type('id=eCouponSn','001')
+#{/selenium}
+
+#{selenium "验证券号是否消费"}
+    open('/coupons/verify')
+    clickAndWait('link=验证消费券')
+    type('id=eCouponSn','002')
     click('id=query')
+#{/selenium}
+
+#{selenium "更新消费状态"}
+    open('/coupons/verify')
+    clickAndWait('link=验证消费券')
+    type('id=eCouponSn','002')
     click('id=sure')
     verifyTextPresent('商户验证消费券')
-
 #{/selenium}
 
