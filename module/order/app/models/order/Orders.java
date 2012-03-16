@@ -90,8 +90,6 @@ public class Orders extends Model {
     @Column(name = "lock_version")
     public int lockVersion;
 
-    public String paymentSourceCode;
-
     /**
      * 逻辑删除,0:未删除，1:已删除
      */

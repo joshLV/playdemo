@@ -9,16 +9,11 @@ import play.db.jpa.Model;
 public class PaymentSource extends Model {
     public String name;
     public String detail;
-    public String code;
+    public String code;                 //银行代码
     public String logo;
     public int showOrder;
 
-    public PaymentSource(String name, String detail, String code, String logo){
-        this.name   = name;
-        this.detail = detail;
-        this.logo   = logo;
-        this.code = code;
-        this.showOrder = 0;
-    }
+    @Column(name = "payment_code")
+    public String paymentCode;          //最终用哪个支付渠道支付
 }
 

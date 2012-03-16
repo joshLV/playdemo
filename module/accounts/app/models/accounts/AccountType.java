@@ -4,6 +4,7 @@ package models.accounts;
  * User: likang
  */
 public enum AccountType {
-    INDIVIDUAL, //个人
-    ENTERPRISE  //企业
+    CONSUMER,   //个人
+    DISTRIBUTOR,//分销商
+    PLATFORM,   //平台账户
 }

@@ -63,7 +63,7 @@ public class OrderUnitTest extends UnitTest {
 
 		orders.status = OrderStatus.PAID;
 		orders.deliveryType = 1;
-		orders.paymentSourceCode = "alipay";
+		orders.payMethod = "alipay";
 		orders.searchKey = "2";
 		orders.searchItems = "2012";
 		list = Orders.query(orders, compnayId, pageNumber, pageSize);

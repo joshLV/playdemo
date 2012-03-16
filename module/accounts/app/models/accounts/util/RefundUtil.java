@@ -4,6 +4,7 @@ import models.accounts.AccountSequenceType;
 import models.accounts.RefundBill;
 import models.accounts.RefundStatus;
 import models.accounts.TradeBill;
+import models.accounts.TradeStatus;
 import play.Logger;
 
 import java.math.BigDecimal;
@@ -27,6 +28,10 @@ public class RefundUtil {
      */
     public static RefundBill create(TradeBill tradeBill, Long orderId, Long orderItemId, BigDecimal amount,
                                     String applyNote){
+        if(tradeBill.tradeStatus != TradeStatus.SUCCESS) {
+            Logger.error("error while create refund bill: tradebill is not paid");
+            return null;
+        }
         if(tradeBill == null){
             Logger.error("error while create refund bill: invalid tradeBill");
             return null;
