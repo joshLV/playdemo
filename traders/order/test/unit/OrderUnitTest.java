@@ -53,7 +53,7 @@ public class OrderUnitTest extends UnitTest {
 		assertEquals(0, list.size());
 
 		orders = new Orders();
-		SimpleDateFormat sdf  =   new  SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );  
+		SimpleDateFormat sdf  =   new  SimpleDateFormat( "yyyy-MM-dd" );  
 		try {
 			orders.createdAtBegin = sdf.parse("2012-03-01 12:31:02");
 			orders.createdAtEnd = new Date();
@@ -84,7 +84,7 @@ public class OrderUnitTest extends UnitTest {
 		}
 
 		list = Orders.query(orders, compnayId, pageNumber, pageSize);
-		assertEquals(2, list.size());
+		assertEquals(0, list.size());
 	}
 
 
