@@ -6,6 +6,7 @@ gem 'guard-play'
 group :linux do
   gem 'rb-inotify', require: nil
   gem 'libnotify', require: nil
+  gem 'ruby_gntp', require: nil
 end
 
 group :darwin do
