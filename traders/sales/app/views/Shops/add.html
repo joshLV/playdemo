@@ -1,100 +1,13 @@
-#{set title:'添加门店' /}
 #{extends 'layout_trader/layout.html' /}
+#{set title:'添加门店' /}
 #{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/shops-add.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
 <div class="body">
     <form class="form-horizontal" id="shopForm" action="@{Shops.create()}" method="post">
         <legend>添加门店</legend>
-        <div class="control-group">
-            <label for="city" class="control-label">城&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;市</label>
-
-            <div class="controls">
-                <select id="city" name="city" class="input-large">
-                #{list items:citylist, as:'city' }
-                    <option value="${city.id}">${city.name}</option>
-                #{/list}
-                </select>
-            </div>
-        </div>
-        <div class="control-group">
-            <label for="district" class="control-label">区&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;域</label>
-
-            <div class="controls">
-                <select id="district" name="district" class="input-large">
-                #{list districtslist, as:'district' }
-                    <option value="${district.id}">${district.name}</option>
-                #{/list}
-                </select>
-            </div>
-        </div>
-        <div class="control-group">
-            <label for="area" class="control-label">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;圈</label>
-
-            <div class="controls">
-                <select id="area" name="shop.areaId" class="input-large">
-                #{list arealist, as:'area' }
-                    <option value="${area.id}">${area.name}</option>
-                #{/list}
-                </select>
-            </div>
-        </div>
-        <div class="control-group">
-            <label for="name" class="control-label"><span style="color: red; ">*</span>门店名称</label>
-
-            <div class="controls">
-                <input type="text" id="name" name="shop.name" class="input-xlarge"/>
-                <span class="error">#{error 'shop.name' /}</span>
-            </div>
-        </div>
-        <div class="control-group">
-            <label for="address" class="control-label"><span style="color: red; ">*</span>门店地址</label>
-
-            <div class="controls">
-                <input type="text" id="address" name="shop.address" class="input-xlarge"/>
-                <span class="error">#{error 'shop.address' /}</span>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label for="phone" class="control-label">门店电话</label>
-
-            <div class="controls">
-                <input type="text" id="phone" name="shop.phone" class="input-xlarge"/>
-            </div>
-        </div>
-        <div class="form-actions">
-            <button class="btn btn-primary" type="submit">保 存</button>
-            <button class="btn" type="reset">取 消</button>
-        </div>
+        #{include '/share/edit_shop.html' /}
     </form>
 </div>
-#{get 'moreScripts'}
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("#district").change(function () {
-            loadArea($("#district").val());
-        });
-
-        function loadArea(areaId) {
-            var url = "@{Shops.relation()}";
-            $.ajax({
-                url:url,
-                data:"areaId=" + areaId,
-                type:'GET',
-                dataType:'JSON',
-                error:function () {
-                    alert('Error loading data!');
-                },
-                success:function (msg) {
-                    $("#area").empty();
-                    $.each(eval(msg), function (i, item) {
-                        $("<option value='" + item.id + "'>" + item.name + "</option>").appendTo($("#area"));
-                    });
-                }
-            });
-            $("#area").change();
-        }
-
-    });
-</script>
-#{/get}
-
+<script type="text/javascript">loadArea($("#district").val());</script>

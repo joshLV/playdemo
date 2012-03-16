@@ -49,7 +49,7 @@ public class Shops extends Controller {
         if (validation.hasErrors()) {
             params.flash();
             validation.keep();
-            add();
+            add(shop);
         }
 
         shop.companyId = 1;
@@ -64,14 +64,15 @@ public class Shops extends Controller {
      * 添加门店页面展示
      */
     @ActiveNavigation("shops_add")
-    public static void add() {
+    public static void add(Shop shop) {
         //城市列表
-        List<Area> citylist = Area.findAllSubAreas(null);
+        List<Area> cities = Area.findAllSubAreas(null);
         //区域列表
-        List<Area> districtslist = Area.findAllSubAreas(citylist.get(0).getId());
+        List<Area> districts = Area.findAllSubAreas(cities.get(0).getId());
         //商圈列表
-        List<Area> arealist = Area.findAllSubAreas(districtslist.get(0).getId());
-        render(citylist, districtslist, arealist);
+        List<Area> areas = Area.findAllSubAreas(districts.get(0).getId());
+        renderArgs.put("shop", shop);
+        render(cities, districts, areas);
     }
 
     /**
@@ -79,7 +80,7 @@ public class Shops extends Controller {
      *
      * @param areaId
      */
-    public static void relation(String areaId) {
+    public static void showAreas(String areaId) {
         //商圈列表
         renderJSON(Area.findAllSubAreas(areaId));
     }
@@ -90,12 +91,12 @@ public class Shops extends Controller {
      * @param id   门店标识
      * @param shop 修改后的门店
      */
-    public static void update(long id, Shop shop) {
+    public static void update(long id, @Valid Shop shop) {
         Shop sp = Shop.findById(id);
         if (validation.hasErrors()) {
             params.flash();
             validation.keep();
-            edit(shop.id);
+            edit(sp.id, shop);
         }
         sp.areaId = shop.areaId;
         sp.name = shop.name;
@@ -111,15 +112,21 @@ public class Shops extends Controller {
      *
      * @param id 门店标识
      */
-    public static void edit(long id) {
-        Shop shop = Shop.findById(id);
+    public static void edit(long id, Shop shop) {
+        Shop originalShop = shop;
+        originalShop.id = id;
+        if (originalShop.areaId == null) {
+            originalShop = Shop.findById(id);
+        }
+
         //城市列表
         List<Area> cities = Area.findAllSubAreas(null);
         //区域列表
         List<Area> districts = Area.findAllSubAreas(cities.get(0).getId());
         //商圈列表
         List<Area> areas = Area.findAllSubAreas(districts.get(0).getId());
-        render(shop, cities, districts, areas);
+        renderArgs.put("shop", originalShop);
+        render(cities, districts, areas);
     }
 
     /**
