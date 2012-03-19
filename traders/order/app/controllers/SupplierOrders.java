@@ -1,7 +1,7 @@
 package controllers;
 
 
-import controllers.modules.cas.SecureCAS;
+import controllers.supplier.cas.SecureCAS;
 import models.order.ECoupon;
 import models.order.OrderItems;
 import navigation.annotations.ActiveNavigation;

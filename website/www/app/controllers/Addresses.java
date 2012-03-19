@@ -18,7 +18,7 @@ import java.util.List;
 public class Addresses extends Controller {
 
     public static void index() {
-
+        render();
     }
 
     public static void add() {
