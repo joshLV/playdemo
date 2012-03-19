@@ -36,7 +36,7 @@ public class PaymentInfo extends Controller {
         Order order = Order.find("byIdAndUser", id, user).first();
         long goodsNumber = OrderItems.itemsNumber(order);
         
-        List<PaymentSource> paymentSources = PaymentSource.find("order by order desc").fetch();
+        List<PaymentSource> paymentSources = PaymentSource.find("order by showOrder desc").fetch();
 
         render(user, account, order, goodsNumber, paymentSources);
     }

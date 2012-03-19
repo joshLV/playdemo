@@ -59,7 +59,7 @@
                     <div class="col_one_text">${cartItem.goods.name}
                     </div>
                 </td>
-                <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType.equals("e") ? '电子券' : '实物'}</td>
+                <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType == MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
                 <td width="115" height="25" align="center" valign="middle" id="price_${cartItem.goods.id}">${cartItem.goods.salePrice}</td>
                 <td width="83" height="25" align="center" valign="middle">
                     <a href="#" class="reduce_box" name="${cartItem.goods.id}"><img src="@{'/public/images/sub_anniu.jpg'}" /></a>
