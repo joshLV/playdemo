@@ -9,3 +9,34 @@
    open('/cusers/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-SupplierUser_1")}/edit')
    assertTitle('操作员编辑')
 #{/selenium}
+
+
+#{selenium}
+   open('/cusers/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-SupplierUser_3")}/edit')
+   click('xpath=(//input[@id='cuser.roles.id'])[2]')
+   type('id=loginName','yan1')
+   type('id=mobile','13012012011')
+   type('name=cuser.encryptedPassword','')
+   clickAndWait('id=save')
+   verifyTextPresent('请输入密码!')
+#{/selenium}
+
+#{selenium}
+   open('/cusers/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-SupplierUser_3")}/edit')
+   click('xpath=(//input[@id='cuser.roles.id'])[2]')
+   type('id=loginName','yan1')
+   type('id=mobile','13012012011')
+   type('name=cuser.encryptedPassword','123')
+   clickAndWait('id=save')
+   assertNotTitle('操作员编辑')
+#{/selenium}
+
+#{selenium}
+  open('/cusers')
+  assertTitle('操作员一览')
+  click('id=del_${play.test.Fixtures.idCache.get("models.admin.SupplierUser-SupplierUser_3")}')
+  assertConfirmation('确定删除吗？')
+  verifyTextPresent('操作员一览')
+#{/selenium}
+
+

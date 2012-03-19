@@ -41,7 +41,7 @@
      <td>${row.roles.text ==[] ?'':row.roles.text}</td>
      <td>${row.createdAt == null ? '':row.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
      <td>${row.lastLoginAt == null ? '':row.lastLoginAt.format("yyyy-MM-dd HH:mm:ss")}</td>
-     <td><a href="@{Cusers.edit(row.id)}">修改</a>/<a href="#" onclick="deleteData(${row.id})">删除</a></td>
+     <td><a href="@{Cusers.edit(row.id)}">修改</a>/<a href="#" id="del_${row.id}" onclick="deleteData(${row.id})">删除</a></td>
     </tr>
     #{/paginate.list}
    </tbody>

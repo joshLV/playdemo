@@ -91,7 +91,6 @@ public class Cusers extends Controller {
         // 获得IP
         cuser.lastLoginIP = request.remoteAddress;
         cuser.save();
-
         index();
     }
 
@@ -100,6 +99,8 @@ public class Cusers extends Controller {
      * 
      */
     public static void delete(Long id) {
+        System.out.println("cccccccccccccccccc");
+
         SupplierUser cuser = SupplierUser.findById(id);
         cuser.deleted = DeletedStatus.DELETED;
         cuser.save();
@@ -145,7 +146,6 @@ public class Cusers extends Controller {
             render("Cusers/add.html", cuser, roleIds, rolesList);
             return;
         }
-
         // 更新用户信息
         SupplierUser.update(id, cuser);
 

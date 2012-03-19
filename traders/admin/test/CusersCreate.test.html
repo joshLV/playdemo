@@ -13,12 +13,13 @@
 #{selenium}
     open('/cusers/new')
     assertTitle('操作员添加')
-    click('name=cuser.roles.id')
+    click('xpath=(//input[@id='cuser.roles.id'])[2]')
     type('id=loginName','小王')
     type('id=mobile','13012012011')
     type('name=cuser.encryptedPassword','123')
     clickAndWait('id=save')
     assertNotTitle('操作员添加')
 #{/selenium}
+
 
    
