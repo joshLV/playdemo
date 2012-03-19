@@ -12,7 +12,7 @@
           enctype="multipart/form-data">
         <legend>修改电子消费券</legend>
         <div class="control-group">
-        <label for="select01" class="control-label"><font color="red">*</font>商品分类</label>
+        <label class="control-label"><font color="red">*</font>商品分类</label>
 
         <div class="controls">
             #{select 'topCategoryId', value:topCategoryId, id:'topCategoryId', class:'input-small'}
@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="control-group">
-        <label for="select01" class="control-label"><font color="red">*</font>品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</label>
+        <label class="control-label"><font color="red">*</font>品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</label>
 
             <div class="controls">
             <select id="goods_brand_id" name="goods.brand.id" class="input-small">
@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="control-group">
-            <label for="input01" class="control-label">商品编号</label>
+            <label class="control-label">商品编号</label>
 
         <div class="controls">
             <input type="text" id="no" name="goods.no" class="input-xlarge" value="${goods?.no}"/>
@@ -49,7 +49,7 @@
         </div>
     </div>
     <div class="control-group">
-        <label for="input01" class="control-label"><font color="red">*</font>商品名称</label>
+        <label class="control-label"><font color="red">*</font>商品名称</label>
 
         <div class="controls">
             <input type="text" id="goods_name" name="goods.name" class="input-xlarge" value="${goods?.name}"/>
@@ -57,7 +57,7 @@
         </div>
     </div>
     <div class="control-group">
-        <label for="input01" class="control-label"><font color="red">*</font>券有效期</label>
+        <label class="control-label"><font color="red">*</font>券有效期</label>
 
         <div class="controls">
             <input class="input-medium Wdate" type="text" id="effectiveAt" name="goods.effectiveAt"
@@ -71,7 +71,7 @@
         </div>
     </div>
     <div class="control-group">
-        <label for="input01" class="control-label"><font color="red">*</font>原&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
+        <label class="control-label"><font color="red">*</font>原&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
 
         <div class="controls">
             <input type="text" id="originalPrice" name="goods.originalPrice" class="input-small"
@@ -80,7 +80,7 @@
         </div>
     </div>
     <div class="control-group">
-        <label for="input01" class="control-label"><font color="red">*</font>现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
+        <label class="control-label"><font color="red">*</font>现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
 
         <div class="controls">
             <input type="text" id="salePrice" name="goods.salePrice" class="input-small"
@@ -89,7 +89,7 @@
         </div>
     </div>
     <div class="control-group">
-        <label for="input01" class="control-label"><font color="red">*</font>库&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</label>
+        <label class="control-label"><font color="red">*</font>库&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</label>
 
         <div class="controls">
             <input type="text" id="baseSale" name="goods.baseSale" class="input-small" value="${goods?.baseSale}"/>件
@@ -97,7 +97,7 @@
         </div>
     </div>
     <div class="control-group">
-        <label for="input01" class="control-label"><font color="red">*</font>商品图片</label>
+        <label class="control-label"><font color="red">*</font>商品图片</label>
 
         <div class="controls">
             <input type="file" id="imagePath" name="imagePath" class="input-file"/>
@@ -106,7 +106,7 @@
             <span class="error">#{error 'imagePath'/}</span></div>
     </div>
     <div class="control-group">
-        <label for="textarea" class="control-label">温馨提示</label>
+        <label class="control-label">温馨提示</label>
 
         <div class="controls">
             <textarea name="goods.prompt" id="prompt" cols="100" rows="8"
@@ -114,7 +114,7 @@
         </div>
     </div>
     <div class="control-group">
-        <label for="textarea" class="control-label"><font color="red">*</font>商品详情</label>
+        <label class="control-label"><font color="red">*</font>商品详情</label>
 
         <div class="controls">
             <textarea name="goods.details" id="details" cols="100" rows="8"
@@ -123,7 +123,7 @@
         </div>
     </div>
     <div class="control-group">
-        <label for="textarea" class="control-label"><font color="red">*</font>使用门店</label>
+        <label class="control-label"><font color="red">*</font>使用门店</label>
 
         <div class="controls">
             <input type="radio" value="true" id="isAllShop1" name="isAllShop"

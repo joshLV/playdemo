@@ -45,7 +45,7 @@ public class Goods extends Controller {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
-        if (condition == null){
+        if (condition == null) {
             condition = new GoodsCondition();
         }
 
@@ -93,44 +93,43 @@ public class Goods extends Controller {
      * 添加商品
      * 商户只能添加电子券.
      *
-     * @param imagePath
+     * @param image
      * @param goods
      * @param topCategoryId 顶层分类Id
      * @param isAllShop     是否全部门店
      */
-    public static void create(@Required File imagePath, @Valid models.sales.Goods goods, Long topCategoryId,
+    public static void create(@Valid models.sales.Goods goods, @Required File image, Long topCategoryId,
                               boolean isAllShop) {
         Long companyId = getCompanyId();
         if (isAllShop && goods.shops != null) {
             goods.shops = null;
         }
 
+        //检查文件大小
+//        if (image != null) {
         //检查目录
         File uploadDir = new File(UploadFiles.ROOT_PATH);
         if (!uploadDir.isDirectory()) {
-            Validation.addError("goods.imagePath", "validation.write");
-            System.out.println(uploadDir.getAbsolutePath());
+            Validation.addError("goods.image", "validation.write");
         }
 
         //检查目录写权限
         if (!uploadDir.canWrite()) {
-            Validation.addError("goods.imagePath", "validation.write");
+            Validation.addError("goods.image", "validation.write");
         }
 
-        //检查文件大小
-        if (imagePath != null) {
-            if (imagePath.length() > UploadFiles.MAX_SIZE) {
-                Validation.addError("goods.imagePath", "validation.maxFileSize");
-            }
-
-            //检查扩展名
-            //定义允许上传的文件扩展名
-            String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
-            String fileExt = imagePath.getName().substring(imagePath.getName().lastIndexOf(".") + 1).toLowerCase();
-            if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
-                Validation.addError("goods.imagePath", "validation.invalidType", StringUtils.join(fileTypes));
-            }
+        if (image.length() > UploadFiles.MAX_SIZE) {
+            Validation.addError("goods.image", "validation.maxFileSize");
         }
+
+        //检查扩展名
+        //定义允许上传的文件扩展名
+        String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
+        String fileExt = image.getName().substring(image.getName().lastIndexOf(".") + 1).toLowerCase();
+        if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
+            Validation.addError("goods.image", "validation.invalidType", StringUtils.join(fileTypes, ','));
+        }
+//        }
 
 
         if (Validation.hasErrors()) {
@@ -156,6 +155,9 @@ public class Goods extends Controller {
                     .categories.iterator().hasNext()) {
                 categoryId = goods.categories.iterator().next().id;
             }
+            for (Object key : validation.errorsMap().keySet()) {
+                System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
+            }
             render("Goods/add.html", shopList, brandList, categoryList, subCategoryList, goods, topCategoryId,
                     categoryId, shopIds);
         }
@@ -175,14 +177,13 @@ public class Goods extends Controller {
         }
         goods.create();
         try {
-            uploadImagePath(imagePath, goods);
+            uploadImagePath(image, goods);
         } catch (IOException e) {
             e.printStackTrace();
             error("goods.image_upload_failed");
         }
         goods.filterShops();
         goods.save();
-
 
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {

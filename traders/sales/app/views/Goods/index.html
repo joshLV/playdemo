@@ -57,9 +57,9 @@
                 <th><input type="checkbox" id="selectall" name="selectall">全选</th>
                 <th>商品编号</th>
                 <th>商品名称</th>
-                <th>现价</th>
-                <th>库存</th>
-                <th>销量</th>
+                <th>现价(元)</th>
+                <th>库存(件)</th>
+                <th>销量(件)</th>
                 <th>状态</th>
                 <th>创建时间</th>
                 <th>操 作</th>
@@ -73,9 +73,9 @@
                 <td><input type="checkbox" id="checkoption" value="${goods.id}" name="ids[]"/></td>
                 <td>${goods.no}</td>
                 <td>${goods.name}</td>
-                <td>${goods.salePrice}</td>
-                <td>${goods.baseSale}</td>
-                <td>${goods.saleCount}</td>
+                <td class="amount">${goods.salePrice?.formatCurrency('CNY').raw()}</td>
+                <td class="amount">${goods.baseSale}</td>
+                <td class="amount">${goods.saleCount}</td>
                 <td>&{'goods.'+goods.status}</td>
                 <td>${goods.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td><a href="@{Goods.edit(goods.id)}">修改</a>/<a href="@{Goods.detail(goods.id)}">查看</a></td>

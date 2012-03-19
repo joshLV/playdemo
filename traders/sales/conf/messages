@@ -27,6 +27,7 @@ validation.save=%s保存失败!
 goods.no=商品编号
 goods.name=商品名称
 goods.category=商品分类
+goods.brand=品牌
 goods.effectiveAt=开始时间
 goods.expireAt=到期时间
 goods.originalPrice=商品原价

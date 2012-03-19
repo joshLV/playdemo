@@ -134,7 +134,7 @@
                                 <td width="83" height="25" align="center" valign="middle">${rCart.number}
                                 </td>
                                 #{if (++i) == 1 }
-                                    <td width="187" rowspan="5" align="center" valign="middle">${rCartAmount} 元<br/>
+                                    <td width="187" rowspan="5" align="center" valign="middle">${rCartAmount.formatCurrency('CNY').raw()}<br/>
                                         （含5元运费）<span class="strong_gray"></span></td>
                                 #{/if}
                             </tr>
@@ -178,11 +178,11 @@
                                     </div>
                                 </td>
                                 <td width="115" height="25" align="center"
-                                    valign="middle">${eCart.goods.salePrice}</td>
-                                <td width="83" height="25" align="center" valign="middle">${eCart.number}
+                                    valign="middle">${eCart.goods.salePrice.formatCurrency('CNY').raw()}</td>
+                                <td width="83" height="25" align="center" valign="middle">${eCart.number}件
                                 </td>
                                 #{if (++j) == 1 }
-                                    <td width="187" rowspan="5" align="center" valign="middle">${eCartAmount}元<br/><span
+                                    <td width="187" rowspan="5" align="center" valign="middle">${eCartAmount.formatCurrency('CNY').raw()}<br/><span
                                             class="strong_gray"></span></td>
                                 #{/if}
                             </tr>
@@ -194,9 +194,9 @@
             </dl>
         </div>
     #{/if}
-    <div class="sp_height">#{if rCartList.size() >0}商品总金额:<span class="font_red_one">${goodsAmount}元</span> 运费：<span
-            class="font_red_one">5元</span>#{/if} 合计：<span
-            class="font_red_one">${totalAmount}元</span></div>
+    <div class="sp_height">#{if rCartList.size() >0}商品总金额:<span class="font_red_one">${goodsAmount.formatCurrency('CNY').raw()}</span> 运费：<span
+            class="font_red_one">${5.formatCurrency('CNY').raw()}</span>#{/if} 合计：<span
+            class="font_red_one">${totalAmount.formatCurrency('CNY').raw()}</span></div>
     <div class="sp_height_one"><a id="link_confirm_pay" class="que_pay_bg" href="#">确认付款</a></div>
 
     <div style="clear:both"></div>
