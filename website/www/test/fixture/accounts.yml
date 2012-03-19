@@ -1,5 +1,5 @@
 accounts.Account(account_1):
-    uid: 2
+    uid: user
     type: ENTERPRISE
     amount: 20.4
     cashAmount: 10.2

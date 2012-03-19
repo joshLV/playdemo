@@ -2,6 +2,7 @@ package functional;
 
 import models.sales.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.Play;
 import play.mvc.Http;
@@ -34,7 +35,6 @@ public class GoodsTest extends FunctionalTest {
     @Test
     public void testShow() {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-
         Http.Response response = GET("/goods/" + goodsId);
         assertIsOk(response);
         assertContentType("text/html", response);

@@ -11,6 +11,7 @@ public class PaymentSource extends Model {
     public String detail;
     public String code;                 //银行代码
     public String logo;
+    @Column(name = "show_order")
     public int showOrder;
 
     @Column(name = "payment_code")

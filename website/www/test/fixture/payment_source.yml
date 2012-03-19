@@ -4,3 +4,4 @@ accounts.PaymentSource(alipay):
   code: "alipay"
   logo: "abc"
   showOrder: 1
+  paymentCode: "alipay"
