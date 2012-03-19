@@ -1,19 +1,16 @@
-import java.util.Date;
-import java.util.List;
-
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.Order;
 import models.order.OrderStatus;
-import models.order.Orders;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
+
+import java.util.Date;
 
 
 public class OrderUnitTest extends UnitTest {
@@ -40,7 +37,7 @@ public class OrderUnitTest extends UnitTest {
 		String goodsName="";
 		int pageNumber =1;
 		int pageSize =15;
-		JPAExtPaginator<Orders> list = Orders.findMyOrders(user, createdAtBegin, createdAtEnd, status, goodsName,pageNumber, pageSize);
+		JPAExtPaginator<Order> list = Order.findMyOrders(user, createdAtBegin, createdAtEnd, status, goodsName,pageNumber, pageSize);
 		Assert.assertEquals(0,list.size());
 
 	}

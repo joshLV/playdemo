@@ -1,10 +1,9 @@
 package functional.models.accounts.util;
 
 import models.accounts.*;
-import models.accounts.util.AccountUtil;
 import models.accounts.util.RefundUtil;
-import models.accounts.util.TradeUtil;
 import models.consumer.User;
+import models.order.Order;
 import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Shop;
@@ -28,7 +27,7 @@ public class RefundUtilTest extends FunctionalTest{
         Fixtures.delete(PaymentSource.class);
 
 
-        Fixtures.delete(models.order.Orders.class);
+        Fixtures.delete(Order.class);
         Fixtures.delete(models.sales.Goods.class);
         Fixtures.delete(Category.class);
         Fixtures.delete(Shop.class);

@@ -33,7 +33,7 @@ public class MyOrders extends Controller {
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
-		JPAExtPaginator<models.order.Orders>  orderList = Orders.findMyOrders(user, createdAtBegin, createdAtEnd, status, goodsName,pageNumber, PAGE_SIZE);
+		JPAExtPaginator<models.order.Order>  orderList = Order.findMyOrders(user, createdAtBegin, createdAtEnd, status, goodsName,pageNumber, PAGE_SIZE);
 
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders");
 		render(orderList, breadcrumbs);
@@ -51,10 +51,10 @@ public class MyOrders extends Controller {
 	 */
 	public static void details(Long id) {
 		//订单信息
-		models.order.Orders orders = models.order.Orders.findById(id);
-		List<OrderItems> orderItems = orders.orderItems;
+		models.order.Order order = models.order.Order.findById(id);
+		List<OrderItems> orderItems = order.orderItems;
 		//收货信息
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "订单详情", "/orders/" + id);
-		render(orders, orderItems,breadcrumbs);
+		render(order, orderItems,breadcrumbs);
 	}
 }

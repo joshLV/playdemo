@@ -1,27 +1,25 @@
 package unit;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import models.accounts.Account;
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.Order;
 import models.order.OrderItems;
-import models.order.Orders;
 import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class VerificationUnitTest extends UnitTest {
 	@Before
@@ -29,7 +27,7 @@ public class VerificationUnitTest extends UnitTest {
 		Fixtures.delete(Category.class);
 		Fixtures.delete(Brand.class);
 		Fixtures.delete(Area.class);
-		Fixtures.delete(Orders.class);
+		Fixtures.delete(Order.class);
 		Fixtures.delete(OrderItems.class);
 		Fixtures.delete(Goods.class);
 		Fixtures.delete(User.class);
@@ -37,7 +35,8 @@ public class VerificationUnitTest extends UnitTest {
 		Fixtures.delete(Account.class);
 		Fixtures.loadModels("fixture/goods_base.yml", "fixture/user.yml", 
 				"fixture/goods.yml","fixture/accounts.yml",
-				"fixture/orders.yml");
+				"fixture/orders.yml",
+				"fixture/orderItems.yml");
 	}
 
 	/**
@@ -71,10 +70,10 @@ public class VerificationUnitTest extends UnitTest {
 	 */
 	@Test
 	public void testQueryCoupons() {
-		Long compnayId = 1l;
+		Long companyId = 1l;
 		int pageNumber = 1;
 		int pageSize = 15;
-		List<ECoupon> list = ECoupon.queryCoupons(compnayId, pageNumber, pageSize);
+		List<ECoupon> list = ECoupon.queryCoupons(companyId, pageNumber, pageSize);
 		assertEquals(2, list.size());
 
 	}

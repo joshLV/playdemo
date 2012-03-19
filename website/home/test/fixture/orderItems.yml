@@ -5,6 +5,6 @@ order.OrderItems(orderItems):
  number: 2
  salePrice: 10
  originalPrice: 20.5
- orders: order1
+ order: order1
  createdAt: 2012-03-01
  goods_id: 1

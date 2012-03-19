@@ -10,20 +10,20 @@
  <form class="form-horizontal" name="frmlist" action="@{SupplierOrders.index()}" method="GET">
   <table width="80%">
    <tr>
-    <td>成交时间：<input type="text" id="createdAtBegin" name="orders.createdAtBegin" onfocus="WdatePicker({readOnly:true})"
-     class="input-medium Wdate" />至 <input type="text" id="createdAtEnd" name="orders.createdAtEnd" onfocus="WdatePicker({readOnly:true})"
+    <td>成交时间：<input type="text" id="createdAtBegin" name="order.createdAtBegin" onfocus="WdatePicker({readOnly:true})"
+     class="input-medium Wdate" />至 <input type="text" id="createdAtEnd" name="order.createdAtEnd" onfocus="WdatePicker({readOnly:true})"
      class="input-medium Wdate" /></td>
-      <td>物流方式： <select id="deliveryType" name="orders.deliveryType" class="input-small">
+      <td>物流方式： <select id="deliveryType" name="order.deliveryType" class="input-small">
       <option value="">请选择</option>
       <option value="1">无物流</option>
       <option value="2">有物流</option>
     </select></td>
     </tr>
     <tr>
-    <td>退款时间：<input type="text" name="orders.refundAtBegin" onfocus="WdatePicker({readOnly:true})"
-     class="input-medium Wdate" />至 <input type="text" name="orders.refundAtEnd" onfocus="WdatePicker({readOnly:true})"
+    <td>退款时间：<input type="text" name="order.refundAtBegin" onfocus="WdatePicker({readOnly:true})"
+     class="input-medium Wdate" />至 <input type="text" name="order.refundAtEnd" onfocus="WdatePicker({readOnly:true})"
      class="input-medium Wdate" /></td>
-      <td>支付方式： <select id="payMethod" name="orders.payMethod" class="input-small">
+      <td>支付方式： <select id="payMethod" name="order.payMethod" class="input-small">
       <option value="">请选择</option>
       <option value="1">支付宝</option>
       <option value="2">网银</option>
@@ -31,13 +31,13 @@
    </tr>
    <tr>
     <td>关&nbsp;键&nbsp;字：
-    <select name="orders.searchKey" class="input-small">
+    <select name="order.searchKey" class="input-small">
       <option value="">请选择</option>
       <option value="1">商品名称</option>
       <option value="2">订单号</option>
     </select>
-     <input type="text" name="orders.searchItems" class="input-medium" /></td>
-     <td>订单状态： <select id="status" name="orders.status" class="input-small">
+     <input type="text" name="order.searchItems" class="input-medium" /></td>
+     <td>订单状态： <select id="status" name="order.status" class="input-small">
      <option value="">请选择</option>
       <option value="UNPAID">未支付</option>
       <option value="PAID">已支付</option>

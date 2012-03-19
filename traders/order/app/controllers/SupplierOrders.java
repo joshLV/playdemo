@@ -23,12 +23,12 @@ public class SupplierOrders extends Controller {
      *
      * @param orders 页面信息
      */
-    public static void index(models.order.Orders orders) {
+    public static void index(models.order.Order orders) {
         //该商户ID
         Long companyId = 1l;
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        JPAExtPaginator<models.order.Orders> orderList = models.order.Orders.query(orders, companyId, pageNumber, PAGE_SIZE);
+        JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(orders, companyId, pageNumber, PAGE_SIZE);
         render(orderList);
 
     }
@@ -40,7 +40,7 @@ public class SupplierOrders extends Controller {
      */
     public static void details(Long id) {
         //订单信息
-        models.order.Orders orders = models.order.Orders.findById(id);
+        models.order.Order orders = models.order.Order.findById(id);
         List<OrderItems> orderItems = orders.orderItems;
         //收货信息
         render(orders, orderItems);

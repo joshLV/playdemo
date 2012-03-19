@@ -13,55 +13,55 @@ public class OrdersCondition {
 
 	/**
 	 *
-	 * @param orders 订单信息
+	 * @param order 订单信息
 	 * @param companyId 商户ID
 	 * @return sql 查询条件
 	 */
-	public String getFilter(Orders orders,Long companyId) {
+	public String getFilter(Order order,Long companyId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" o.deleted = :deleted");
 		paramsMap.put("deleted", DeletedStatus.UN_DELETED);
 		sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.companyId = :companyId)");
 		paramsMap.put("companyId", companyId);
 
-		if (orders.createdAtBegin != null) {
+		if (order.createdAtBegin != null) {
 			sql.append(" and o.createdAt >= :createdAtBegin");
-			paramsMap.put("createdAtBegin", orders.createdAtBegin);
+			paramsMap.put("createdAtBegin", order.createdAtBegin);
 		}
-		if (orders.createdAtEnd != null) {
+		if (order.createdAtEnd != null) {
 			sql.append(" and o.createdAt <= :createdAtEnd");
-			paramsMap.put("createdAtEnd", orders.createdAtEnd);
+			paramsMap.put("createdAtEnd", order.createdAtEnd);
 		}
-		if (orders.refundAtBegin != null) {
+		if (order.refundAtBegin != null) {
 			sql.append(" and o.refundAt >= :refundAtBegin");
-			paramsMap.put("refundAtBegin", orders.refundAtBegin);
+			paramsMap.put("refundAtBegin", order.refundAtBegin);
 		}
-		if (orders.refundAtEnd != null) {
+		if (order.refundAtEnd != null) {
 			sql.append(" and o.refundAt <= :refundAtEnd");
-			paramsMap.put("refundAtEnd", orders.refundAtEnd);
+			paramsMap.put("refundAtEnd", order.refundAtEnd);
 		}
-		if (orders.status != null) {
+		if (order.status != null) {
 			sql.append(" and o.status = :status");
-			paramsMap.put("status", orders.status);
+			paramsMap.put("status", order.status);
 		}
-		if (orders.deliveryType != 0) {
+		if (order.deliveryType != 0) {
 			sql.append(" and o.deliveryType = :deliveryType");
-			paramsMap.put("deliveryType", orders.deliveryType);
+			paramsMap.put("deliveryType", order.deliveryType);
 		}
-		if (StringUtils.isNotBlank(orders.payMethod)) {
+		if (StringUtils.isNotBlank(order.payMethod)) {
 			sql.append(" and o.payMethod = :payMethod");
-			paramsMap.put("payMethod", orders.payMethod);
+			paramsMap.put("payMethod", order.payMethod);
 		}
 
 		//按照商品名称检索
-		if ("1".equals(orders.searchKey)) {
+		if ("1".equals(order.searchKey)) {
 			sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.name like :name)");
-			paramsMap.put("name", "%" + orders.searchItems + "%");
+			paramsMap.put("name", "%" + order.searchItems + "%");
 		}
 		//按照商品订单检索
-		if ("2".equals(orders.searchKey)) {
+		if ("2".equals(order.searchKey)) {
 			sql.append(" and o.orderNumber like :orderNumber");
-			paramsMap.put("orderNumber", "%" + orders.searchItems + "%");
+			paramsMap.put("orderNumber", "%" + order.searchItems + "%");
 		}
 
 		return sql.toString();

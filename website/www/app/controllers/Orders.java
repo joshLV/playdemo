@@ -1,10 +1,11 @@
 package controllers;
 
-import controllers.modules.cas.*;
+import controllers.modules.cas.SecureCAS;
 import controllers.modules.webcas.WebCAS;
 import models.consumer.Address;
 import models.order.Cart;
 import models.order.NotEnoughInventoryException;
+import models.order.Order;
 import play.data.validation.Min;
 import play.data.validation.Required;
 import play.mvc.Controller;
@@ -112,21 +113,21 @@ public class Orders extends Controller {
         Http.Cookie cookieIdentity = request.cookies.get("identity");
         boolean buyNow = Boolean.parseBoolean(session.get("buyNow"));
         Address defaultAddress = Address.findDefault(WebCAS.getUser());
-        models.order.Orders orders;
+        Order order;
         try {
             if (buyNow) {
                 long goodsId = Long.parseLong(session.get("goodsId"));
                 long number = Integer.parseInt(session.get("number"));
-                orders = new models.order.Orders(WebCAS.getUser(), goodsId, number, defaultAddress, mobile);
+                order = new Order(WebCAS.getUser(), goodsId, number, defaultAddress, mobile);
 
             } else {
 
                 List<Cart> eCartList = Cart.findAll(WebCAS.getUser(), cookieIdentity.value);
-                orders = new models.order.Orders(WebCAS.getUser(), eCartList, defaultAddress, mobile);
+                order = new Order(WebCAS.getUser(), eCartList, defaultAddress, mobile);
             }
-            orders.createAndUpdateInventory(WebCAS.getUser(), cookieIdentity.value);
+            order.createAndUpdateInventory(WebCAS.getUser(), cookieIdentity.value);
             session.put("buyNow", false);
-            redirect("/payment_info/" + orders.id);
+            redirect("/payment_info/" + order.id);
         } catch (NotEnoughInventoryException e) {
             //todo 缺少库存
             e.printStackTrace();

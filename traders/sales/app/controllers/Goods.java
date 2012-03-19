@@ -134,10 +134,6 @@ public class Goods extends Controller {
 
 
         if (Validation.hasErrors()) {
-            System.out.println("has Error");
-            for (String key : validation.errorsMap().keySet()) {
-                System.out.println(key+": "+validation.errorsMap().get(key));
-            }
             String shopIds = "";
             if (goods.shops != null) {
                 for (Shop shop : goods.shops) {
@@ -164,7 +160,6 @@ public class Goods extends Controller {
                     categoryId, shopIds);
         }
 
-        System.out.println("Begin to add goods");
         //添加商品处理
         goods.companyId = companyId;
         goods.createdBy = getCompanyUser();

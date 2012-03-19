@@ -1,35 +1,20 @@
 package models.order;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import models.accounts.Account;
 import models.accounts.TradeBill;
 import models.accounts.util.TradeUtil;
 import models.consumer.User;
 import models.sales.Goods;
-
 import org.apache.commons.lang.StringUtils;
-
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * User: pwg
@@ -44,7 +29,7 @@ public class ECoupon extends Model {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id", nullable = true)
-	public Orders order;
+	public Order order;
 
 	@ManyToOne
 	public Goods goods;
@@ -83,7 +68,7 @@ public class ECoupon extends Model {
 	public ECouponStatus status;
 
 
-	public ECoupon(Orders order, Goods goods,OrderItems orderItems) {
+	public ECoupon(Order order, Goods goods,OrderItems orderItems) {
 		this.order = order;
 		this.goods = goods;
 		this.eCouponPrice = orderItems.originalPrice;
@@ -177,7 +162,9 @@ public class ECoupon extends Model {
 		//产生消费记录
 		List<Account> account = Account.find("uid = ?",companyId).fetch();
 		if(account.size()>0) {
+            System.out.println("account.size():" + account.size());
 			TradeBill tradeBill = TradeUtil.createConsumeTrade(eCouponSn, account.get(0), eCoupon.incomePrice, eCoupon.order.id);
+            System.out.println("tradeBill:" + tradeBill);
 			if (tradeBill != null) {
 				TradeUtil.success(tradeBill);
 				eCoupon.status = ECouponStatus.CONSUMED;

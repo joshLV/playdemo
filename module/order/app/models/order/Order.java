@@ -9,6 +9,7 @@ import models.sms.SMSUtil;
 import org.apache.commons.lang.time.DateFormatUtils;
 
 import play.Play;
+import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
@@ -22,7 +23,7 @@ import java.util.Random;
 
 @Entity
 @Table(name = "orders")
-public class Orders extends Model {
+public class Order extends Model {
     @ManyToOne
     public User user;
 
@@ -132,11 +133,11 @@ public class Orders extends Model {
     @Transient
     public String searchItems;
 
-    public Orders() {
+    public Order() {
     }
 
 
-    public Orders(User user, Address address) {
+    public Order(User user, Address address) {
         this.user = user;
         this.status = OrderStatus.UNPAID;
         this.deleted = DeletedStatus.UN_DELETED;
@@ -161,7 +162,7 @@ public class Orders extends Model {
         }
     }
 
-    public Orders(User user, long goodsId, long number, Address address, String mobile)
+    public Order(User user, long goodsId, long number, Address address, String mobile)
             throws NotEnoughInventoryException {
         this(user, address);
 
@@ -181,7 +182,7 @@ public class Orders extends Model {
         this.orderItems.add(orderItems);
     }
 
-    public Orders(User user, List<Cart> cartList, Address address, String mobile) throws NotEnoughInventoryException {
+    public Order(User user, List<Cart> cartList, Address address, String mobile) throws NotEnoughInventoryException {
         this(user, address);
 
         this.amount = Cart.amount(cartList);
@@ -204,14 +205,14 @@ public class Orders extends Model {
         }
     }
 
-    public static long itemsNumber(Orders orders) {
+    public static long itemsNumber(Order order) {
         long itemsNumber = 0L;
-        if (orders == null) {
+        if (order == null) {
             return itemsNumber;
         }
-        Object result = OrderItems.em().createNativeQuery(
-                "SELECT sum( buy_number ) FROM order_items WHERE order_id ="
-                        + orders.getId()).getSingleResult();
+        EntityManager entityManager = JPA.em();
+        Object result = entityManager.createQuery("SELECT sum( buyNumber ) FROM Order o,o.orderItems WHERE Order.id ="
+                + order.getId()).getSingleResult();
         if (result != null) {
             itemsNumber = ((java.math.BigDecimal) result).longValue();
         }
@@ -237,22 +238,22 @@ public class Orders extends Model {
     /**
      * 订单查询
      *
-     * @param orders     订单信息
+     * @param order      订单信息
      * @param companyId  商户ID
      * @param pageNumber 第几页
      * @param pageSize   每页记录
      * @return ordersPage 订单信息
      */
-    public static JPAExtPaginator<Orders> query(Orders orders, Long companyId, int pageNumber, int pageSize) {
+    public static JPAExtPaginator<Order> query(Order order, Long companyId, int pageNumber, int pageSize) {
         OrdersCondition condition = new OrdersCondition();
-        JPAExtPaginator<Orders> ordersPage = new JPAExtPaginator<>
-                ("Orders o", "o", Orders.class, condition.getFilter(orders, companyId),
+        JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
+                ("Order o", "o", Order.class, condition.getFilter(order, companyId),
                         condition.paramsMap)
                 .orderBy(condition.getOrderByExpress());
-        ordersPage.setPageNumber(pageNumber);
-        ordersPage.setPageSize(pageSize);
-        ordersPage.setBoundaryControlsEnabled(false);
-        return ordersPage;
+        orderPage.setPageNumber(pageNumber);
+        orderPage.setPageSize(pageSize);
+        orderPage.setBoundaryControlsEnabled(false);
+        return orderPage;
     }
 
     public void createAndUpdateInventory(User user, String cookieIdentity) {
@@ -281,9 +282,9 @@ public class Orders extends Model {
                 if (goods.materialType == MaterialType.ELECTRONIC) {
                     ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
                     if (!"dev".equals(Play.configuration.get("application.mode"))) {
-                    	 SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, this.receiverMobile);
+                        SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, this.receiverMobile);
                     }
-                   
+
                 }
                 goods.save();
             }
@@ -303,19 +304,19 @@ public class Orders extends Model {
      * @param pageSize       每页记录
      * @return ordersPage 订单信息
      */
-    public static JPAExtPaginator<Orders> findMyOrders(User user, Date createdAtBegin, Date createdAtEnd,
-                                                       OrderStatus status, String goodsName,
-                                                       int pageNumber, int pageSize) {
+    public static JPAExtPaginator<Order> findMyOrders(User user, Date createdAtBegin, Date createdAtEnd,
+                                                      OrderStatus status, String goodsName,
+                                                      int pageNumber, int pageSize) {
         OrdersCondition condition = new OrdersCondition();
-        JPAExtPaginator<Orders> ordersPage = new JPAExtPaginator<>
-                ("Orders o", "o", Orders.class, condition.getFilter(user, createdAtBegin, createdAtEnd,
+        JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
+                ("Order o", "o", Order.class, condition.getFilter(user, createdAtBegin, createdAtEnd,
                         status, goodsName),
                         condition.paramsMap)
                 .orderBy(condition.getOrderByExpress());
-        ordersPage.setPageNumber(pageNumber);
-        ordersPage.setPageSize(pageSize);
-        ordersPage.setBoundaryControlsEnabled(false);
-        return ordersPage;
+        orderPage.setPageNumber(pageNumber);
+        orderPage.setPageSize(pageSize);
+        orderPage.setBoundaryControlsEnabled(false);
+        return orderPage;
     }
 
 

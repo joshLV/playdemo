@@ -50,14 +50,12 @@ public class AccountSequenceCondition implements Serializable {
             hasCond = true;
         }
         if (sequenceFlag != null) {
-            System.out.println("sequenceFlag:" + sequenceFlag);
             appendAndIfNeeded(filter, hasCond);
             filter.append("sequenceFlag=:sequenceFlag");
             params.put("sequenceFlag", sequenceFlag);
             hasCond = true;
         }
         if (sequenceType != null) {
-            System.out.println("sequenceType:" + sequenceType);
             appendAndIfNeeded(filter, hasCond);
             filter.append("sequenceType=:sequenceType");
             params.put("sequenceType", sequenceType);

@@ -94,23 +94,23 @@ public class TradeUtil {
      * 消费者消费成功,资金从优惠啦转到商户
      *
      * @param couponSn 券号
-     * @param account 充值账户
+     * @param account  充值账户
      * @return 消费交易记录
      */
-    public static TradeBill createConsumeTrade(String couponSn, Account account,BigDecimal consumedPrice,Long orderId){
-        if(account == null) {
+    public static TradeBill createConsumeTrade(String couponSn, Account account, BigDecimal consumedPrice, Long orderId) {
+        if (account == null) {
             Logger.error("error while create consume trade: invalid account");
             return null;
         }
-        if(couponSn == null) {
+        if (couponSn == null) {
             Logger.error("error while create consume trade: invalid couponSn");
             return null;
         }
-        if(consumedPrice != null && consumedPrice.compareTo(BigDecimal.ZERO) <= 0){
+        if (consumedPrice != null && consumedPrice.compareTo(BigDecimal.ZERO) <= 0) {
             Logger.error("error while create consume trade: invalid consumePrice");
             return null;
         }
-
+        System.out.println("consumedPrice:" + consumedPrice);
         return new TradeBill(AccountUtil.getUhuilaAccount(), //付款方为优惠啦账户
                 account,                        //收款方账户为商户
                 consumedPrice,                  //消费金额
@@ -131,7 +131,7 @@ public class TradeUtil {
      * @return //创建的转账交易记录
      */
     public static TradeBill createTransferTrade(Account fromAccount, Account toAccount,
-            BigDecimal balancePaymentAmount, BigDecimal ebankPaymentAmount, PaymentSource paymentSource) {
+                                                BigDecimal balancePaymentAmount, BigDecimal ebankPaymentAmount, PaymentSource paymentSource) {
 
         if (fromAccount == null || toAccount == null) {
             Logger.error("error while create transfer trade: invalid fromAccount or toAccount");
@@ -158,7 +158,7 @@ public class TradeUtil {
                 TradeType.TRANSFER,
                 paymentSource,
                 null
-                ).save();
+        ).save();
     }
 
 
@@ -176,7 +176,7 @@ public class TradeUtil {
         if (tradeBill.fromAccount.amount.compareTo(tradeBill.balancePaymentAmount) < 0) {
 
             ChargeBill chargeBill
-                = ChargeUtil.createWithTrade(tradeBill.fromAccount, tradeBill.ebankPaymentAmount, tradeBill);
+                    = ChargeUtil.createWithTrade(tradeBill.fromAccount, tradeBill.ebankPaymentAmount, tradeBill);
             ChargeUtil.success(chargeBill);
 
             return tradeBill;

@@ -1,21 +1,17 @@
 package controllers;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import models.accounts.PaymentCallbackLog;
 import models.accounts.TradeBill;
 import models.accounts.util.TradeUtil;
-import models.order.*;
-import models.order.Orders;
-import models.sales.MaterialType;
-import models.sms.SMSUtil;
+import models.order.Order;
+import models.order.OrderStatus;
 import play.Logger;
 import play.mvc.Controller;
 import thirdpart.alipay.util.AlipayNotify;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AliPay extends Controller {
 
@@ -69,8 +65,7 @@ public class AliPay extends Controller {
             Logger.error("alipay_notify:订单编号或订单金额非法");
             callbackLog.status = "invalid_trade";
         } else {
-            Orders order =
-                    Orders.find("byOrderNumber", out_trade_no).first();
+            Order order = Order.find("byOrderNumber", out_trade_no).first();
             if (order == null) {
                 Logger.error("alipay_notify:查无此订单:" + out_trade_no);
                 callbackLog.status = "invalid_order";

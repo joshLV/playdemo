@@ -1,4 +1,5 @@
 #{selenium "Need Login"}
-    open('/orders')
-    assertTitle('CAS Mock Server - Login')
+openAndWait('/logout')
+open('/orders')
+assertTitle('CAS Mock Server - Login')
 #{/selenium}

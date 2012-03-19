@@ -1,12 +1,10 @@
 package controllers;
 
 import controllers.modules.webcas.WebCAS;
-import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.consumer.*;
 import models.accounts.*;
 import models.order.*;
-import models.sales.MaterialType;
 import models.sms.SMSUtil;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -32,8 +30,8 @@ public class PaymentInfo extends Controller {
         Account account = Account.find("byUid", user.getId()).first();
 
         //加载订单信息
-        models.order.Orders order = models.order.Orders.find("byIdAndUser",id, user).first();
-        long goodsNumber = models.order.Orders.itemsNumber(order);
+        Order order = Order.find("byIdAndUser", id, user).first();
+        long goodsNumber = OrderItems.itemsNumber(order);
         
         List<PaymentSource> paymentSources = PaymentSource.find("order by order desc").fetch();
 
@@ -50,7 +48,7 @@ public class PaymentInfo extends Controller {
      */
     public static void confirm(long orderId, boolean useBalance, String paymentSourceCode) {
         User user = WebCAS.getUser();
-        models.order.Orders order = models.order.Orders.find("byIdAndUser",orderId,user).first();
+        Order order = Order.find("byIdAndUser", orderId, user).first();
         
         if (order == null){
             error(500,"no such order");
@@ -111,7 +109,7 @@ public class PaymentInfo extends Controller {
      */
     public static void payIt(long orderId){
         User user = WebCAS.getUser();
-        models.order.Orders order = models.order.Orders.find("byIdAndUser",orderId,user).first();
+        Order order = Order.find("byIdAndUser", orderId, user).first();
 
         if (order == null){
             error(500,"no such order");

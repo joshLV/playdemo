@@ -13,7 +13,7 @@ import models.consumer.User;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.OrderItems;
-import models.order.Orders;
+import models.order.Order;
 import controllers.modules.cas.SecureCAS;
 import controllers.modules.webcas.WebCAS;
 import play.modules.breadcrumbs.BreadcrumbList;
@@ -58,7 +58,7 @@ public class MyCoupons extends Controller {
 		}
 
 		//查找原订单信息
-		Orders order = eCoupon.order;
+		Order order = eCoupon.order;
 		TradeBill tradeBill = null;
 		OrderItems orderItem = null;
 

@@ -1,4 +1,4 @@
-#{fixture delete:[models.order.Orders.class,models.sales.Category.class,models.sales.Area.class,
+#{fixture delete:[models.order.Order.class,models.sales.Category.class,models.sales.Area.class,
 models.sales.Shop.class, models.sales.Goods.class,models.order.OrderItems.class,models.order.ECoupon.class] ,
 load:['fixture/goods_base.yml','fixture/goods.yml','fixture/user.yml','fixture/orders.yml'] /}
 #{selenium "查看订单界面"}
@@ -8,7 +8,7 @@ load:['fixture/goods_base.yml','fixture/goods.yml','fixture/user.yml','fixture/o
     clickAndWait('link=订单管理')
 #{/selenium}
 #{selenium '查看订单详细信息'}
-    open('/orders/${play.test.Fixtures.idCache.get("models.order.Orders-order1")}')
+    open('/orders/${play.test.Fixtures.idCache.get("models.order.Order-order1")}')
     assertTitle('订单详细信息')
     verifyTextPresent('201202220324134991598')
 #{/selenium}

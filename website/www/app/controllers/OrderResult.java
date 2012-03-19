@@ -47,7 +47,7 @@ public class OrderResult extends Controller {
         }   
 
         String errorMessage = null;
-        models.order.Orders order =  null;
+        Order order =  null;
         //验证通知结果
         
         if(!AlipayNotify.verify(verifyParams)){
@@ -64,8 +64,8 @@ public class OrderResult extends Controller {
             errorMessage = "订单信息有误，请您稍后再试";
 
         }else {
-            order = models.order.Orders
-                .find("byOrderNumber",out_trade_no)
+            order = Order
+                .find("byOrderNumber", out_trade_no)
                 .first();
             if(order == null){
                 errorMessage = "无此订单，请您稍后再试";

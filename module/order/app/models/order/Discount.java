@@ -12,7 +12,7 @@ public class Discount extends Model {
 
 	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="order_id",nullable=true)
-    public Orders order;
+    public Order order;
 	@Column(name="discount_sn")
 	public String discountSn;
 
