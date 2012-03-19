@@ -10,13 +10,22 @@ load:['fixture/goods_base.yml','fixture/goods.yml','fixture/user.yml','fixture/o
 #{selenium "验证券号是否消费"}
     open('/coupons/verify')
     clickAndWait('link=验证消费券')
+    type('id=eCouponSn','')
+    click('id=query')
+    verifyTextPresent('请输入券号!')
+  
     type('id=eCouponSn','002')
     click('id=query')
+    assertTitle('商户验证消费券')
 #{/selenium}
 
 #{selenium "更新消费状态"}
     open('/coupons/verify')
     clickAndWait('link=验证消费券')
+    type('id=eCouponSn','')
+    click('id=query')
+    verifyTextPresent('请输入券号!')
+    
     type('id=eCouponSn','002')
     click('id=sure')
     verifyTextPresent('商户验证消费券')

@@ -99,8 +99,6 @@ public class Cusers extends Controller {
      * 
      */
     public static void delete(Long id) {
-        System.out.println("cccccccccccccccccc");
-
         SupplierUser cuser = SupplierUser.findById(id);
         cuser.deleted = DeletedStatus.DELETED;
         cuser.save();
