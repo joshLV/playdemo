@@ -3,13 +3,16 @@ package unit;
 import java.util.List;
 
 import models.admin.SupplierNavigation;
+import navigation.RbacLoader;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import play.Play;
 import play.test.Fixtures;
 import play.test.UnitTest;
+import play.vfs.VirtualFile;
 
 public class SupplierNavigationTest extends UnitTest {
 	public String applicationName = Play.configuration.get("application.name").toString();
@@ -20,6 +23,13 @@ public class SupplierNavigationTest extends UnitTest {
 		Fixtures.delete(SupplierNavigation.class);
 		Fixtures.loadModels("fixture/navigation_unit.yml");
 	}
+	
+    @After
+    public void  initPluginAgain() {
+        // 重新加载配置文件
+        VirtualFile file = VirtualFile.open("conf/rbac.xml");
+        RbacLoader.init(file);
+    }
 
 	@Test
 	public void testGetTopNavigations() {
@@ -33,7 +43,6 @@ public class SupplierNavigationTest extends UnitTest {
 	@Test
 	public void testGetNavigationParentStack() {
 		List<SupplierNavigation> navigationStack = SupplierNavigation.getNavigationParentStack(applicationName,"user_add");
-System.out.println(">>>>>>>>>>>.."+navigationStack);
 		assertEquals(3, navigationStack.size());
 		// navigation stack order test
 		assertEquals("main", navigationStack.get(0).name);

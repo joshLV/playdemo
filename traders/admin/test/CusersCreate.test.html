@@ -1,0 +1,24 @@
+*{ You can use plain selenium command using the selenium tag }*
+#{selenium}
+    open('/cusers/new')
+    assertTitle('操作员添加')
+    click('xpath=(//input[@id='cuser.roles.id'])[2]')
+    type('id=loginName','小王')
+    type('id=mobile','13112312417')
+    type('name=cuser.encryptedPassword','')
+    clickAndWait('id=save')
+    verifyTextPresent('请输入密码!')
+#{/selenium}
+
+#{selenium}
+    open('/cusers/new')
+    assertTitle('操作员添加')
+    click('name=cuser.roles.id')
+    type('id=loginName','小王')
+    type('id=mobile','13012012011')
+    type('name=cuser.encryptedPassword','123')
+    clickAndWait('id=save')
+    assertNotTitle('操作员添加')
+#{/selenium}
+
+   

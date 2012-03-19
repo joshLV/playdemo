@@ -7,6 +7,9 @@
 #{/set}
 
 #{set title:'操作员一览' /}
+#{set 'moreScripts'}
+  <script src="@{'/public/javascripts/cuser.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
  <legend>操作员一览</legend>
  #{form @Cusers.index() , id:'operForm',class:"form-horizontal" }
   <table class="table table-striped table-bordered table-condensed">

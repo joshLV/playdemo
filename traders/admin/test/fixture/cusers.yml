@@ -1,6 +1,7 @@
 admin.SupplierUser(SupplierUser_1):
  "companyId": "2"
  "loginName": "1"
+ "mobile": "1300000000"
  "passwordSalt": "gXP0W9"
  "lastLoginAt": "2012-03-12T14:39:20"
  "lockVersion": "1"
@@ -10,6 +11,7 @@ admin.SupplierUser(SupplierUser_1):
 admin.SupplierUser(SupplierUser_2):
  "companyId": "2"
  "loginName": "2"
+ "mobile": "1300000001"
  "passwordSalt": "gXP0W9"
  "lastLoginAt": "2012-03-12T14:39:20"
  "lockVersion": "1"

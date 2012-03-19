@@ -1,0 +1,11 @@
+*{ You can use plain selenium command using the selenium tag }*
+#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class],load:['fixture/roles.yml','fixture/cusers.yml'] /}
+#{selenium}
+   open('/cusers')
+   assertTitle('操作员一览')
+#{/selenium}
+
+#{selenium}
+   open('/cusers/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-SupplierUser_1")}/edit')
+   assertTitle('操作员编辑')
+#{/selenium}

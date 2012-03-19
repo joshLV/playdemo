@@ -15,6 +15,7 @@ import navigation.Menu;
 import navigation.NavigationHandler;
 import navigation.RbacLoader;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,6 +36,13 @@ public class RbacMenuTest extends UnitTest {
         RbacLoader.init(file);
     }
 
+    @After
+    public void  initPluginAgain() {
+        // 重新加载配置文件
+        VirtualFile file = VirtualFile.open("conf/rbac.xml");
+        RbacLoader.init(file);
+    }
+    
     @Test
     public void theNoDefinedNavigationWillBeDeleted() {
         SupplierNavigation mainNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "main").first();

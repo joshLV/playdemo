@@ -19,9 +19,10 @@ $(window).load(function(){
 			$("#checkMobile").html("<font color=red>请输入手机!</font>");
 			return false;
 		}
+		var hiddenId = $("#hiddenId").val();
 		$.post(
 				"/cusers/checkLoginName",
-				{loginName:loginName,mobile:mobile},
+				{id:hiddenId,loginName:loginName,mobile:mobile},
 				function(data){
 					if(data == 1 ){
 						$("#checkName").html("<font color=red>对不起，该用户名已经存在!</font");
@@ -46,6 +47,7 @@ $(window).load(function(){
 function checkLoginNameAndMobile(){
 	var loginName = $("#loginName").val();
 	var mobile = $("#mobile").val();
+	var hiddenId = $("#hiddenId").val();
 	if(loginName ==""){
 		$("#checkName").html("<font color=red>请输入用户名!</font>");
 		return false;
@@ -60,7 +62,7 @@ function checkLoginNameAndMobile(){
 	}
 	$.post(
 			"/cusers/checkLoginName",
-			{loginName:loginName,mobile:mobile},
+			{id:hiddenId,loginName:loginName,mobile:mobile},
 			function(data){
 				if(data == 1 ){
 					$("#checkName").html("<font color=red>对不起，该用户名已经存在!</font");

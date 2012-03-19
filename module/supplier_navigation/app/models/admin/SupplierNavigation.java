@@ -105,7 +105,6 @@ public class SupplierNavigation extends Model {
         if (currentMenuName == null) {
             throw new IllegalAccessError("必须在Controller中定义" + ActiveNavigation.class.getName() + " Annotation。");
         }
-        
         Stack<SupplierNavigation> stack = new Stack<>();
 
         SupplierNavigation nav = SupplierNavigation.find("byApplicationNameAndName", applicationName, currentMenuName).first();
