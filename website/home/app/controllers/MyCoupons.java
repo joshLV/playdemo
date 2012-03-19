@@ -45,46 +45,9 @@ public class MyCoupons extends Controller {
 	 * @param applyNote 退款原因
 	 */
 	public static void applyRefund(Long id, String applyNote){
-
 		User user = WebCAS.getUser();
 		ECoupon eCoupon = ECoupon.findById(id);
-		if(eCoupon == null || !eCoupon.order.user.getId().equals(user.getId())){
-			renderJSON("{\"error\":\"no such eCoupon\"}");
-			return;
-		}
-		if(!(eCoupon.status == ECouponStatus.UNCONSUMED || eCoupon.status == ECouponStatus.EXPIRED)){
-			renderJSON("{\"error\":\"can not apply refund with this goods\"}");
-			return;
-		}
-
-		//查找原订单信息
-		Order order = eCoupon.order;
-		TradeBill tradeBill = null;
-		OrderItems orderItem = null;
-
-		if(order != null){
-			tradeBill = TradeBill.find("byOrderIdAndTradeStatus", order.getId(), TradeStatus.SUCCESS).first();
-			orderItem = OrderItems.find("byOrderAndGoods",order, eCoupon.goods).first();
-		}
-		if(order == null || tradeBill == null || orderItem == null){
-			renderJSON("{\"error\":\"can not get the trade bill\"}");
-			return;
-		}
-
-		//创建退款流程
-		RefundBill refundBill = RefundUtil.create(tradeBill, order.getId(), orderItem.getId(),
-				orderItem.salePrice, applyNote);
-		RefundUtil.success(refundBill);
-
-		//更改库存
-		eCoupon.goods.baseSale += 1;
-		eCoupon.goods.saleCount -= 1;
-		eCoupon.goods.save();
-
-		//更改订单状态
-		eCoupon.status = ECouponStatus.REFUND;
-		eCoupon.save();
-
-		renderJSON("{\"error\":\"ok\"}");
+		String returnFlg = ECoupon.applyRefund(eCoupon,user.getId(),applyNote);
+		renderJSON(returnFlg);
 	}
 }

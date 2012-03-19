@@ -1,7 +1,10 @@
 package models.order;
 
 import models.accounts.Account;
+import models.accounts.RefundBill;
 import models.accounts.TradeBill;
+import models.accounts.TradeStatus;
+import models.accounts.util.RefundUtil;
 import models.accounts.util.TradeUtil;
 import models.consumer.User;
 import models.sales.Goods;
@@ -151,22 +154,24 @@ public class ECoupon extends Model {
     }
 
 
-    /**
-     * 修改券状态,并产生消费交易记录
-     *
-     * @param eCouponSn 券号
-     * @param companyId 商户ID
-     */
-    public static boolean update(String eCouponSn, Long companyId) {
-        ECoupon eCoupon = query(eCouponSn, companyId);
-        //产生消费记录
-        List<Account> account = Account.find("uid = ?", companyId).fetch();
-        if (account.size() > 0) {
-            TradeBill tradeBill = TradeUtil.createConsumeTrade(eCouponSn, account.get(0), eCoupon.incomePrice, eCoupon.order.id);
-            if (tradeBill != null) {
-                TradeUtil.success(tradeBill);
-                eCoupon.status = ECouponStatus.CONSUMED;
-                eCoupon.save();
+	/**
+	 * 修改券状态,并产生消费交易记录
+	 *
+	 * @param eCouponSn 券号
+	 * @param companyId 商户ID
+	 */
+	public static boolean update(String eCouponSn, Long companyId) {
+		ECoupon eCoupon = query(eCouponSn, companyId);
+		//产生消费记录
+		List<Account> account = Account.find("uid = ?",companyId).fetch();
+		if(account.size()>0) {
+			System.out.println("account.size():" + account.size());
+			TradeBill tradeBill = TradeUtil.createConsumeTrade(eCouponSn, account.get(0), eCoupon.incomePrice, eCoupon.order.id);
+			System.out.println("tradeBill:" + tradeBill);
+			if (tradeBill != null) {
+				TradeUtil.success(tradeBill);
+				eCoupon.status = ECouponStatus.CONSUMED;
+				eCoupon.save();
 
                 return true;
             }
@@ -221,4 +226,54 @@ public class ECoupon extends Model {
         couponsPage.setBoundaryControlsEnabled(false);
         return couponsPage;
     }
+
+	/**
+	 * 退款
+	 * 
+	 * @param eCoupon 券信息
+	 * @param user 用户信息
+	 * @param applyNote 退款原因
+	 * @return
+	 */
+	public static String applyRefund(ECoupon eCoupon,Long userId,String applyNote) {
+		String returnFlg ="{\"error\":\"ok\"}";
+		if(eCoupon == null || !eCoupon.order.user.getId().equals(userId)){
+			returnFlg="{\"error\":\"no such eCoupon\"}";
+			return returnFlg;
+		}
+		if(eCoupon.status == ECouponStatus.UNCONSUMED ){
+			returnFlg = "{\"error\":\"can not apply refund with this goods\"}";
+			return returnFlg;
+		}
+
+		//查找原订单信息
+		Order order = eCoupon.order;
+		TradeBill tradeBill = null;
+		OrderItems orderItem = null;
+
+		if(order != null){
+			tradeBill = TradeBill.find("byOrderIdAndTradeStatus", order.getId(), TradeStatus.SUCCESS).first();
+			orderItem = OrderItems.find("byOrderAndGoods",order, eCoupon.goods).first();
+		}
+		if(order == null || tradeBill == null || orderItem == null){
+			returnFlg = "{\"error\":\"can not get the trade bill\"}";
+			return returnFlg;
+		}
+
+		//创建退款流程
+		RefundBill refundBill = RefundUtil.create(tradeBill, order.getId(), orderItem.getId(),
+				orderItem.salePrice, applyNote);
+		RefundUtil.success(refundBill);
+
+		//更改库存
+		eCoupon.goods.baseSale += 1;
+		eCoupon.goods.saleCount -= 1;
+		eCoupon.goods.save();
+
+		//更改订单状态
+		eCoupon.status = ECouponStatus.REFUND;
+		eCoupon.save();
+
+		return returnFlg;
+	}
 }
