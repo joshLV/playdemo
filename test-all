@@ -3,8 +3,10 @@ CURR_DIR=`pwd`
 function run_auto_test() {
     if [[ -d $CURR_DIR/$1 ]]; then
         echo "Runing Play on $CURR_DIR/$1 ..."
-        play clean $CURR_DIR/$1
-        play auto-test $CURR_DIR/$1 --deps
+        cd $CURR_DIR/$1
+        play clean 
+        play auto-test --deps
+        cd $CURR_DIR
     else
         echo "$CURR_DIR/$1 Not Exists!"
     fi
@@ -17,3 +19,5 @@ run_auto_test traders/order
 run_auto_test traders/home
 run_auto_test traders/admin
 run_auto_test cdn/image-server
+
+cd $CURR_DIR
