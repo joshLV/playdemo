@@ -56,7 +56,8 @@ public class OrderItems extends Model {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE order = :order");
         q.setParameter("order", order);
-        return (Long) q.getSingleResult();
+        Object result = q.getSingleResult();
+        return result == null ? 0 : (Long) result;
     }
 
 
