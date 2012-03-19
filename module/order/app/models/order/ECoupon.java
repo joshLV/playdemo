@@ -1,6 +1,7 @@
 package models.order;
 
 import models.accounts.Account;
+import models.accounts.AccountType;
 import models.accounts.RefundBill;
 import models.accounts.TradeBill;
 import models.accounts.TradeStatus;
@@ -163,11 +164,9 @@ public class ECoupon extends Model {
 	public static boolean update(String eCouponSn, Long companyId) {
 		ECoupon eCoupon = query(eCouponSn, companyId);
 		//产生消费记录
-		List<Account> account = Account.find("uid = ?",companyId).fetch();
-		if(account.size()>0) {
-			System.out.println("account.size():" + account.size());
-			TradeBill tradeBill = TradeUtil.createConsumeTrade(eCouponSn, account.get(0), eCoupon.incomePrice, eCoupon.order.id);
-			System.out.println("tradeBill:" + tradeBill);
+		Account account = Account.getAccount(companyId, AccountType.DISTRIBUTOR);
+		if(account != null) {
+			TradeBill tradeBill = TradeUtil.createConsumeTrade(eCouponSn, account, eCoupon.incomePrice, eCoupon.order.id);
 			if (tradeBill != null) {
 				TradeUtil.success(tradeBill);
 				eCoupon.status = ECouponStatus.CONSUMED;

@@ -30,8 +30,13 @@ public class PaymentInfo extends Controller {
     public static void index(long id) {
         //加载用户账户信息
         User user = WebCAS.getUser();
-        Account account = Account.find("byUid", user.getId()).first();
+        Account account = Account.getAccount(user.getId(), AccountType.CONSUMER);
 
+        List<Account> accounts = Account.findAll();
+        System.out.println("user:" + user.getId());
+        for(Account a : accounts){
+        	System.out.println("account:" + a.getId() + ","+ a.uid);
+        }
         //加载订单信息
         Order order = Order.find("byIdAndUser", id, user).first();
         long goodsNumber = OrderItems.itemsNumber(order);
@@ -57,7 +62,7 @@ public class PaymentInfo extends Controller {
             error(500,"no such order");
         }
 
-        Account account = Account.find("byUid", user.getId()).first();
+        Account account = Account.getAccount(user.getId(), AccountType.CONSUMER);
 
         //计算使用余额支付和使用银行卡支付的金额
         BigDecimal balancePaymentAmount = BigDecimal.ZERO;
