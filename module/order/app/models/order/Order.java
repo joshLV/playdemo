@@ -266,6 +266,9 @@ public class Order extends Model {
 
     }
 
+    /**
+     * 订单已支付，修改支付状态、时间，更改库存，发送电子券密码
+     */
     public void paid() {
         this.status = OrderStatus.PAID;
         this.paidAt = new Date();
