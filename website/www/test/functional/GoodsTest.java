@@ -39,7 +39,7 @@ public class GoodsTest extends FunctionalTest {
         assertIsOk(response);
         assertContentType("text/html", response);
         assertCharset(Play.defaultWebEncoding, response);
-    }
+    }	
 
 
     @Test

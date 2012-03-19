@@ -1,0 +1,14 @@
+#{fixture delete:[models.order.Order.class,models.sales.Category.class,models.sales.Area.class,
+models.sales.Shop.class, models.sales.Goods.class,models.order.OrderItems.class,models.order.ECoupon.class,
+models.accounts.Account.class] ,
+load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_unit.yml',
+'fixture/user.yml',
+'fixture/shops_unit.yml','fixture/goods_unit.yml', 'fixture/orders.yml',
+'fixture/accounts.yml', 'fixture/account_uhuila.yml','fixture/payment_source.yml'] /}
+
+#{selenium "测试打开支付页"}
+    #{include 'test/selenium/step/login.selenium' /}
+	open('/payment_info/${play.test.Fixtures.idCache.get("models.order.Order-order_unpaid")}')
+    assertTitle('优惠啦 - 确认付款')
+    verifyTextNotPresent('对不起，找不到您所需要的订单:(')
+#{/selenium}
