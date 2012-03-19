@@ -35,6 +35,34 @@ import play.utils.Java;
  */
 public class Security {
 
+    private static String _loginNameForTest = null;
+    
+    /**
+     * 设置当前线程为已经登录。只在DEV模式下有效。
+     * 注意: 只应用于FunctionTest!
+     * @param logined
+     */
+    public static void setLoginUserForTest(String login) {
+        if (Play.mode == Play.Mode.DEV) {
+            System.out.println("b2");
+            _loginNameForTest = login;
+        }
+    }
+      
+    public static String getLoginUserForTest() {
+        if (Play.mode == Play.Mode.DEV) {
+            return _loginNameForTest;
+        }
+        return null;
+    }
+    
+    public static boolean isTestLogined() {
+        if (Play.mode != Play.Mode.DEV) {
+            return false;
+        }
+        return _loginNameForTest != null;
+    }
+    
     /**
      * Method to check user's profile.
      * 

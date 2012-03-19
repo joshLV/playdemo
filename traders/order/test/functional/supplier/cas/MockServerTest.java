@@ -11,7 +11,7 @@ import controllers.supplier.cas.MockServer;
 
 /**
  * 这个类用于测试一些在selenium中没有覆盖的Mock方法。
- * 
+ *
  * @author <a href="mailto:tangliqun@snda.com">唐力群</a>
  */
 public class MockServerTest extends FunctionalTest {
@@ -24,10 +24,10 @@ public class MockServerTest extends FunctionalTest {
         Response response = GET("/@cas/proxy?pgt=" + pgt);
         assertContentMatch("PT-", response);
     }
-    
+
     @Test
     public void testServiceValidate() {
-        
+
         String ticket = "12345678";
         // Router.addRoute("GET", "/@cas/serviceValidate", "supplier.cas.MockServer.serviceValidate");
         Response response = GET("/@cas/serviceValidate?ticket=" + ticket);

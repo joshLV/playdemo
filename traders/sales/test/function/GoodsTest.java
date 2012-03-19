@@ -1,21 +1,30 @@
 package function;
 
-import com.uhuila.common.constants.DeletedStatus;
-import models.sales.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import models.sales.Area;
+import models.sales.Brand;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.GoodsStatus;
+import models.sales.Shop;
+
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+
 import play.Play;
 import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.uhuila.common.constants.DeletedStatus;
 
-@Ignore
+import controllers.supplier.cas.Security;
+
 public class GoodsTest extends FunctionalTest {
 
     @org.junit.Before
@@ -30,8 +39,11 @@ public class GoodsTest extends FunctionalTest {
         Fixtures.loadModels("fixture/brands_unit.yml");
         Fixtures.loadModels("fixture/shops_unit.yml");
         Fixtures.loadModels("fixture/goods_unit.yml");
+        
+		// 设置测试登录的用户名
+        Security.setLoginUserForTest("test1");
     }
-
+    
     /**
      * 查看商品信息
      */
@@ -70,6 +82,7 @@ public class GoodsTest extends FunctionalTest {
      * 添加商品信息
      */
     @Test
+    @Ignore
     public void testCreate() {
         Map<String, String> goodsParams = new HashMap<>();
         goodsParams.put("goods.name", "laiyifen1");

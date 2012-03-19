@@ -22,9 +22,9 @@ import play.mvc.Router;
 
 /**
  * Integrate CAS module to the play lifecycle, to add mock CAS server routes.
- * 
+ *
  * @author bsimard
- * 
+ *
  */
 public class CASPlugin extends PlayPlugin {
 

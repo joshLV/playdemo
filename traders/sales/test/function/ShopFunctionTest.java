@@ -3,25 +3,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 import junit.framework.Assert;
 import models.sales.Goods;
-import models.sales.GoodsStatus;
 import models.sales.Shop;
-import play.Play;
-import play.mvc.Http;
+
+import org.junit.Test;
+
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
+import controllers.supplier.cas.Security;
 
 /**
  * 门店功能测试
  * @author xuefuwei
  *
  */
-@Ignore
 public class ShopFunctionTest extends FunctionalTest {
 
 
@@ -29,6 +26,9 @@ public class ShopFunctionTest extends FunctionalTest {
 	public void setup() {
 		Fixtures.delete(Goods.class);
 		Fixtures.loadModels("fixture/shops.yml");
+		
+		// 设置测试登录的用户名
+        Security.setLoginUserForTest("test1");
 	}
 	
     @Test
@@ -63,7 +63,7 @@ public class ShopFunctionTest extends FunctionalTest {
 		Response response = POST("/shops/"+shopId, goodsParams);
 		assertStatus(302,response);
 		Shop shop = Shop.findById(shopId);
-		Assert.assertEquals(shop.name,"test");  
+		Assert.assertEquals("优惠啦二店", shop.name);  
 	}
 
 }

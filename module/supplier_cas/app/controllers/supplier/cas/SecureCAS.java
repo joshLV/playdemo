@@ -17,6 +17,7 @@
 package controllers.supplier.cas;
 
 import play.Logger;
+import play.Play;
 import play.cache.Cache;
 import play.supplier.cas.CASUtils;
 import play.supplier.cas.annotation.Check;
@@ -24,6 +25,7 @@ import play.supplier.cas.models.CASUser;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Router;
+import play.mvc.Scope;
 
 /**
  * This class is a part of the play module secure-cas. It add the ability to check if the user have access to the
@@ -36,6 +38,7 @@ public class SecureCAS extends Controller {
 
     public static final String SESSION_USER_KEY = "supplier_login";
 
+    
     /**
      * Action for the login route. We simply redirect to CAS login page.
      *
@@ -138,10 +141,14 @@ public class SecureCAS extends Controller {
      *
      * @throws Throwable
      */
-    @Before(unless = { "login", "logout", "fail", "authenticate", "pgtCallBack" })
+    @Before(unless = { "login", "logout", "fail", "authenticate", "pgtCallBack", "setLoginUserForTest" })
     public static void filter() throws Throwable {
         Logger.debug("[SecureCAS]: CAS Filter for URL -> " + request.url);
 
+        if (Security.isTestLogined()) {
+            session.put(SESSION_USER_KEY, Security.getLoginUserForTest());
+        }
+        
         // if user is authenticated, the username is in session !
         if (session.contains(SESSION_USER_KEY)) {
             // We check the user's profile with class annotation
@@ -165,6 +172,7 @@ public class SecureCAS extends Controller {
             redirect(casLoginUrl);
         }
     }
+
 
     /**
      * Function to check the rights of the user. See your implementation of the Security class with the method check.

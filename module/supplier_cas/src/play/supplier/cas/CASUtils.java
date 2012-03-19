@@ -66,9 +66,8 @@ public class CASUtils {
         }
         else {
             casLoginUrl = Play.configuration.getProperty("cas.loginUrl");
+            casLoginUrl = replaceCasUrl(casLoginUrl);
         }
-
-        casLoginUrl = replaceCasUrl(casLoginUrl);
 
         // we add the service URL (the reverse route for SecureCas.
         casLoginUrl += "?service=" + getCasServiceUrl();
@@ -311,6 +310,9 @@ public class CASUtils {
 
     public static String replaceCasUrl(String casUrlTemp) {
         String hostName = Http.Request.current().host;
+        if (Play.mode == Play.Mode.DEV && hostName == null) {
+            hostName = "localhost";
+        }
         Matcher m = hostPattern.matcher(hostName);
         if (m.matches()) {
             String subDomain = m.group(1);

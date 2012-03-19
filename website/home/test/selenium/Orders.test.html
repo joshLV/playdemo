@@ -7,7 +7,6 @@ load:['fixture/user.yml','fixture/goods_base.yml','fixture/goods.yml','fixture/o
     openAndWait('/orders')
     assertTitle('优惠啦 - 我购买的商品')
     verifyTextPresent('您的位置：首页 > 我的订单')
-
     openAndWait('/coupons')
     assertTitle('优惠啦 - 券订单')
     verifyTextPresent('您的位置：首页 > 我的券订单')
