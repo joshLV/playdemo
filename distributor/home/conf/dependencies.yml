@@ -1,0 +1,43 @@
+# Application dependencies
+
+require:
+    - play
+    - play -> cobertura 2.4
+    - play -> paginate head
+    - paginate_ext -> paginate_ext
+    - sales -> sales
+    - order -> order
+    - consumer -> consumer
+    - play -> cas 3.1
+    - web_trace -> web_trace
+    - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - breadcrumbs -> breadcrumbs
+    - accounts -> accounts
+    - org.jsoup -> jsoup 1.6.1
+    - sms -> sms
+    - play -> rabbitmq 0.3
+    
+
+repositories:
+    - mavenRepository:
+        type:       iBiblio
+        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
+        contains:
+            - com.uhuila.utils -> *
+            - commons-httpclient -> *
+            - dom4j -> *
+            - org.jsoup -> *
+        m2compatible: true
+
+    - customModules:
+        type:       local
+        artifact:   "${application.path}/../../module/[module]"
+        contains:
+            - sales -> *
+            - order -> *
+            - consumer -> *
+            - web_trace -> *
+            - paginate_ext -> *
+            - breadcrumbs -> *
+            - accounts -> *
+            - sms -> *

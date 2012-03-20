@@ -110,9 +110,7 @@ public class Address extends Model {
                     Address defaultAddress = addressList.get(0);
                     defaultAddress.isDefault = "true";
                     defaultAddress.save();
-                    renderJSON(defaultAddress.id);
                 }
-                ok();
             }
             address.delete();
         }

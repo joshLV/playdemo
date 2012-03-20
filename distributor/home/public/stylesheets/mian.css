@@ -1,0 +1,98 @@
+@charset "utf-8";
+/* CSS Document */
+/*right dt dd style*/
+.right_one_dt{height:29px; line-height:29px; font-weight:700; color:#000000; padding-left:16px; background:url(../images/right_gg.jpg) no-repeat;}
+.right_one_dd{line-height:28px; height:28px; padding-left:6px; padding-right:8px;}
+.right_one_dd span{float:right;color:#666666}
+.right_one_dd2{line-height:28px; background:#F5F5F5; height:28px; padding-left:6px; padding-right:8px;}
+.right_top2 dt{height:29px; line-height:29px; font-weight:700;  color:#000000; padding-left:16px; background:url(../images/right_gg1.jpg) no-repeat;}
+.right_top2 dt span{float:right; margin-right:5px; color:#000000; font-weight:normal;}
+.right_list_dt{height:29px; line-height:29px; font-weight:700; color:#990000; padding-left:20px; background:url(../images/right_gg2.jpg) no-repeat; color:#000000;}
+.right_top2_dd1{margin-top:7px;}
+.right_top2_dd2{padding-left:4px; padding-right:6px;}
+.right_top2_dd2 div{width:210px; height:25px; padding-left:12px; background:#EFEFEF; line-height:25px;}
+.span_font_red{color:#FC2F2F}
+.right_top2_dd3{margin-top:5px;}
+.right_top2_dd3 div{ padding-right:12px; line-height:21px;padding-left:4px; font-size:14px;}
+.right_top2_dd3 div span{font-weight:700; color:#28428F}
+.right_top2_dd4 div{padding-left:5px; line-height:21px">团购价：0.00元<span style="padding-left:27px;}
+.right_dd4_div{ margin-top:10px;color:#666666}
+.right_dd4_div2{ margin-top:0px;}
+.ones_ie6{float:right; margin-right:17px; margin-top:-5px}
+.ones_ie6 span{font-weight:700; color:#FF0000; font-size:17px;}
+.modifiy_img{position:relative; top:5px;}
+.right_dd4_span{padding-left:27px;}
+
+.right_lists{line-height:28px; background:#F5F5F5; height:28px; padding-left:20px; padding-right:8px;}
+.right_list2{line-height:28px; background:#ffffff; height:28px; padding-left:20px; padding-right:8px;}
+.right_lists a{color:#666666}
+.right_dd_adv{ margin-left:12px; margin-top:2px;}
+
+ul{ list-style:none}
+#left_content_wrap{ float:left; width:754px; height:auto; overflow:hidden}
+#left_content_top2{ width:752px; height:77px; border:solid 1px #D5D5D5; margin-top:12px; overflow:hidden;padding-top:14px;}
+#left_content_top3{ width:752px; height:508px; border:solid 1px #D5D5D5; margin-top:12px; overflow:hidden}
+.tab_unselected {display:block; width:77px; height:31px;line-height:25px; text-decoration:none; color:#666666; font-weight:700;}
+.tab_selected { color:#C60909; font-weight:700; text-decoration:none;display:block; width:77px; height:31px;line-height:26px;background:url(../images/tab_current.jpg) no-repeat;}
+
+
+.hot_sq{width:70px; height:77px; float:left;padding-left:10px; padding-top:2px; color:#666666; font-weight:700}
+.area_name{float:left; width:650px;line-height:21px; overflow:hidden}
+.font_hei{ color:#000000}
+.hot_shangpin{width:752px; height:31px; list-style:none; text-align:center; background:url(../images/ul_li_bg.jpg) repeat-x;}
+.hot_shangpin_li{ float:left; height:31px;}
+.hot_sp_r{ float:right}
+.hot_sp_r a{text-decoration:none; color:#666666; line-height:28px; margin-right:5px;}
+.text_decorat{text-decoration:line-through; padding-left:5px; color:#666666}
+.shop_wrap{padding-top:20px; padding-left:20px;}
+.shop_box{line-height:20px; width:180px; float:left}
+.shop_li_box{background:url(../images/dotted_line.jpg) no-repeat bottom left; height:140px; padding-left:10px;; margin-bottom:15px}
+.shop_li_box1{height:135px; padding-left:10px;; margin-bottom:15px}
+.pri_jiage{color:#FF6600; font-weight:700}
+#right_content_wrap{ float:left; width:237px; margin-left:9px; overflow:hidden}
+#right_content_top1{width:235px; height:161px; height:170px; border:solid 1px #D5D5D5;overflow:hidden}
+#right_content_top2{ width:235px; height:302px; margin-top:7px; overflow:hidden; }
+#right_content_top3{ width:235px; height:281px; margin-top:12px; overflow:hidden}
+.right_list_dt span{float:right; margin-right:5px; color:#000000; font-weight:normal;}
+
+.area_ul li{padding-left:15px; padding-right:15px; float:left;list-style:none}
+.area_ul li a{ color:#1A488C}
+.three_ie6{float:right; margin-right:42px; display:inline}
+*html .ones_ie6{ position:relative; top:-18px;}
+*+html .ones_ie6{ position:relative; top:-18px;}
+*html .two_ie6{ margin-top:-15px;}
+*html .three_ie6{ margin-top:-20px; margin-right:26px;}
+*+html .three_ie6{ margin-top:-20px; margin-right:26px;}
+
+.strong_gray{color:#666666; font-weight:700}
+.abs_gouwu_car{ position:absolute; right:6px; top:34px; background:#FFFFFF; border:solid 1px #EE4343; border-top:none; width:192px; height:405px; overflow:hidden }
+*html .abs_gouwu_car{ right:12px; z-index:777;}
+*html .abs_gouwu_car{ position:absolute; left:0;}
+.car_box{ width:175px; height:auto; border-bottom:dotted 1px #C7C7C7; float:left; margin-top:10px;}
+*+html .car_box{ padding-bottom:17px;}
+.car_one{ float:left; border:solid 1px #666666; width:60px; height:41px; margin-left:8px; overflow:hidden; margin-top:6px; margin-bottom:15px;}
+.car_one_right{ float:left; width:100px; height:auto; margin-left:5px;line-height:17px; color:#60625D}
+.float_title{ float:left; text-align:left; width:100px;}
+
+.font_gray a{ color:#60605E;}
+.delete_font{ padding-left:71px; clear:right}
+
+.gouwu_car_haha{ line-height:22px; float:right;}
+.bottom_car{ margin-bottom:5px;}
+.bottom_car{ margin-bottom:15px\0;}
+
+.bottom_fenge{ border-bottom: dotted 1px #CCCCCC; height:33px; font-size:14px; line-height:33px;}
+.bottom_fenge a{ display:inline-block;margin-left:5px; margin-right:5px;}
+.cate_fenlei{ color:#666666; font-weight:700; margin-left:15px;}
+.gouwu_car_haha{ line-height:22px; text-align:right; width:175px;}
+.three_ie6 .font_hei{ color:#000000}
+.font_14px{ font-size:13px; }
+.margin_top5px{margin-top:2px; padding-left:5px;}
+.font_weight{ font-weight:700; font-size:18px}
+.strong_font{ font-weight:700} 
+.font_size14px{ font-size:14px}
+.over_auto{ height:310px; overflow:auto}
+.li_goumai_bg{ background:url(../images/buttom.gif) no-repeat; width:78px; height:24px; float:right; margin-right:15px;color:#FFFFFF; text-align:center; font-weight:700;line-height:24px;letter-spacing:0.2em }
+*+html .li_goumai_bg{ margin-top:-20px}
+*+html .ones_ie6{ margin-top:0px}
+.right_dd4_div2{ margin-top:7px\0}
