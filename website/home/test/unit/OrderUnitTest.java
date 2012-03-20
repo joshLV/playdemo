@@ -20,10 +20,11 @@ public class OrderUnitTest extends UnitTest {
 	@Before
 	public void loadData() {
 		Fixtures.deleteAllModels();
-		Fixtures.loadModels("fixture/goods_base.yml");
 		Fixtures.loadModels("fixture/user.yml");
+		Fixtures.loadModels("fixture/goods_base.yml");
 		Fixtures.loadModels("fixture/goods.yml");
 		Fixtures.loadModels("fixture/orders.yml");
+		Fixtures.loadModels("fixture/orderItems.yml");
 	}
 
 	/**
@@ -60,6 +61,28 @@ public class OrderUnitTest extends UnitTest {
 		JPAExtPaginator<ECoupon> list = ECoupon.userCouponsQuery(user,createdAtBegin,createdAtEnd, status, goodsName,pageNumber, pageSize);
 		assertEquals(0,list.size());
 
+	}
+
+
+	/**
+	 * 测试退款
+	 */
+	@Test
+	public void applyRefund(){
+		Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
+		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
+		ECoupon eCoupon=ECoupon.findById(id);
+		String applyNote="不想要了";
+		String ret = ECoupon.applyRefund(eCoupon,userId,applyNote);
+		assertEquals("{\"error\":\"can not get the trade bill\"}",ret);
+
+		ret = ECoupon.applyRefund(null,userId,applyNote);
+		assertEquals("{\"error\":\"no such eCoupon\"}",ret);
+
+		id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
+		eCoupon=ECoupon.findById(id);
+		ret = ECoupon.applyRefund(eCoupon,userId,applyNote);
+		assertEquals("{\"error\":\"can not apply refund with this goods\"}",ret);
 	}
 
 }
