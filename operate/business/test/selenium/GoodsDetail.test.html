@@ -1,0 +1,31 @@
+#{fixture delete:[
+models.sales.Category.class,
+models.sales.Area.class,
+models.sales.Goods.class,
+models.sales.Brand.class],
+load:['fixture/areas.yml','fixture/base_data.yml','fixture/goods.yml'] /}
+
+
+#{selenium '电子消费券一览'}
+    #{include 'test/selenium/step/login.selenium' /}
+    open('/goods')
+    assertTextPresent('电子消费券一览')
+#{/selenium}
+
+#{selenium '查看电子消费券'}
+    #{include 'test/selenium/step/login.selenium' /}
+    open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods1")}/view')
+    verifyTitle('查看电子消费券')
+    verifyTextPresent('测试商品1')
+#{/selenium}
+
+#{selenium '修改电子消费券'}
+    #{include 'test/selenium/step/login.selenium' /}
+    open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods2")}/edit')
+    verifyTitle('修改电子消费券')
+    type('id=no','002')
+    type('id=goods_name','测试商品2')
+    assertTextPresent('保存')
+    open('/goods?page=1')
+#{/selenium}
+

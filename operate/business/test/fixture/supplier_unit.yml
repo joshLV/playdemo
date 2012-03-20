@@ -1,0 +1,12 @@
+supplier.Supplier(Supplier1):
+    domainName: 'lyf'
+    fullName: 来一份
+    status: NORMAL
+    registedAt: "2012-02-29T16:33:18"
+    deleted: UN_DELETED
+supplier.Supplier(Supplier2):
+    domainName: 'localhost'
+    fullName: 本地
+    status: NORMAL
+    registedAt: "2012-03-19T16:33:18"
+    deleted: UN_DELETED

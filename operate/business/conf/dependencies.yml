@@ -1,4 +1,36 @@
-self: play -> business 0.1
+# Application dependencies
 
 require:
     - play
+    - play -> cobertura 2.4
+    - play -> paginate head
+    - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - layout_trader -> layout_trader
+    - commons-lang -> commons-lang 2.6
+    - sales -> sales
+    - supplier_cas -> supplier_cas
+    - paginate_ext -> paginate_ext
+    - org.jsoup -> jsoup 1.6.1
+    - supplier -> supplier
+    - supplier_navigation -> supplier_navigation
+
+repositories:
+    - mavenRepository:
+        type:       iBiblio
+        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
+        contains:
+            - com.uhuila.utils -> *
+            - commons-lang -> *
+            - org.jsoup -> *
+        m2compatible: true
+
+    - customModules:
+        type:       local
+        artifact:   "${application.path}/../../module/[module]"
+        contains:
+            - layout_trader -> *
+            - sales -> *
+            - supplier_cas -> *
+            - paginate_ext -> *
+            - supplier -> *
+            - supplier_navigation -> *

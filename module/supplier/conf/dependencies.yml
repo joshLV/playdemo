@@ -1,0 +1,4 @@
+self: play -> supplier 0.1
+
+require:
+    - play

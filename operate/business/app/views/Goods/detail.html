@@ -1,0 +1,95 @@
+#{extends 'layout_trader/layout.html' /}
+#{set title:'查看电子消费券' /}
+#{include '/share/nav.html' /}
+<div class="body">
+    <form class="form-horizontal" name="frm" action="" method="post">
+        <legend>查看电子消费券</legend>
+        <div class="control-group">
+            <label class="control-label">商品类型</label>
+
+            <div class="controls">${goods?.categories?.name}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌</label>
+
+            <div class="controls">${goods?.brand?.name}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">商品编号</label>
+
+            <div class="controls">${goods?.no}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">商品名称</label>
+
+            <div class="controls">${goods?.name}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">券有效期</label>
+
+            <div class="controls">${goods?.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}
+                至 ${goods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">原&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
+
+            <div class="controls">${goods?.originalPrice.formatCurrency('CNY').raw()}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
+
+            <div class="controls">${goods?.salePrice.formatCurrency('CNY').raw()}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">库&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</label>
+
+            <div class="controls">${goods?.baseSale}件
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">商品图片</label>
+
+            <div class="controls">
+                <img src="${goods?.imageTinyPath}"/>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">温馨提示</label>
+
+            <div class="controls">${goods?.prompt?.raw()}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">商品详情</label>
+
+            <div class="controls">${goods?.details?.raw()}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">使用门店</label>
+
+            <div class="controls">
+                <table class="table table-striped table-bordered table-condensed">
+                #{list items:shops, as:'shop' }
+                    <tr>
+                        <td><input type="checkbox" id="checkoption" value="${shop?.id}"/></td>
+                        <td>${shop?.name}</td>
+                        <td>${shop?.address}</td>
+                        <td>${shop?.phone}</td>
+                    </tr>
+                #{/list}
+                </table>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" onclick="javascript:window.history.back(-1)" type="button">返回</button>
+        </div>
+    </form>
+</div>

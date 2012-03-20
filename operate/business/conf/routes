@@ -1,8 +1,46 @@
-# This file defines all module routes (Higher priority routes first)
-#
-# import these routes in the main app as :
-# *     /                       module:business
-#
+# Routes
+# This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /?                      Module.index
+# Home page
+GET     /goods                                  Goods.index
+GET     /goods/new                              Goods.add
+POST    /goods                                  Goods.create
+GET     /goods/{id}/edit                        Goods.edit
+GET     /goods/{id}/view                        Goods.detail
+GET     /goods/{id}/preview                     Goods.preview
+POST    /goods/{id}/update                      Goods.update
+POST    /updatestatus                           Goods.updateStatus
+DELETE  /goods/{id}/delete                      Goods.delete
+POST    /goods/images                           UploadFiles.uploadJson
+POST    /goods/filemanager                      UploadFiles.fileManagerJson
+
+GET     /category/sub/{id}                      Categories.showSubs
+
+GET     /shops                                  Shops.index
+GET     /shops/new                              Shops.add
+POST    /shops                                  Shops.create
+GET     /shops/{id}/edit                        Shops.edit
+POST    /shops/{id}                             Shops.update
+DELETE  /shops/{id}                             Shops.delete
+GET     /shops/area                             Shops.showAreas
+
+GET     /suppliers                              Suppliers.index
+GET     /suppliers/new                          Suppliers.add
+POST    /suppliers                              Suppliers.create
+GET     /suppliers/{id}/edit                    Suppliers.edit
+POST    /suppliers/{id}/update                  Suppliers.update
+DELETE  /suppliers/{id}/delete                  Suppliers.delete
+
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+GET     /o/{path1}/{path2}/{path3}/{path4}      Files.getImage
+
+*  	/					module:supplier_cas
+
+# Catch all
+*       /{controller}/{action}                  {controller}.{action}

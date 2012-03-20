@@ -105,7 +105,6 @@ public class Goods extends Controller {
             goods.shops = null;
         }
 
-        //检查文件大小
 //        if (image != null) {
         //检查目录
         File uploadDir = new File(UploadFiles.ROOT_PATH);

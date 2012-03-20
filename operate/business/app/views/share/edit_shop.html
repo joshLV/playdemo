@@ -1,0 +1,61 @@
+<div class="control-group">
+    <label for="city" class="control-label">城&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;市</label>
+
+    <div class="controls">
+        <select id="city" name="city" class="input-large">
+        #{list items:cities, as:'city' }
+            <option value="${city.id}">${city.name}</option>
+        #{/list}
+        </select>
+    </div>
+</div>
+<div class="control-group">
+    <label for="district" class="control-label">区&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;域</label>
+
+    <div class="controls">
+        <select id="district" name="district" class="input-large">
+        #{list districts, as:'district' }
+            <option value="${district.id}">${district.name}</option>
+        #{/list}
+        </select>
+    </div>
+</div>
+<div class="control-group">
+    <label for="area" class="control-label">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;圈</label>
+
+    <div class="controls">
+        <select id="area" name="shop.areaId" class="input-large">
+        #{list areas, as:'area' }
+            <option value="${area.id}">${area.name}</option>
+        #{/list}
+        </select>
+    </div>
+</div>
+<div class="control-group">
+    <label for="name" class="control-label"><span style="color: red; ">*</span>门店名称</label>
+
+    <div class="controls">
+        <input type="text" id="name" name="shop.name" class="input-xlarge" value="${shop?.name}"/>
+        <span class="error">#{error 'shop.name' /}</span>
+    </div>
+</div>
+<div class="control-group">
+    <label for="address" class="control-label"><span style="color: red; ">*</span>门店地址</label>
+
+    <div class="controls">
+        <input type="text" id="address" name="shop.address" class="input-xlarge" value="${shop?.address}"/>
+        <span class="error">#{error 'shop.address' /}</span>
+    </div>
+</div>
+
+<div class="control-group">
+    <label for="phone" class="control-label">门店电话</label>
+
+    <div class="controls">
+        <input type="text" id="phone" name="shop.phone" class="input-xlarge" value="${shop?.phone}"/>
+    </div>
+</div>
+<div class="form-actions">
+    <button class="btn btn-primary" type="submit">保 存</button>
+    <button class="btn" type="reset">取 消</button>
+</div>

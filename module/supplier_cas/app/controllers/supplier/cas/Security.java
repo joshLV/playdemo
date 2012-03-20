@@ -44,7 +44,6 @@ public class Security {
      */
     public static void setLoginUserForTest(String login) {
         if (Play.mode == Play.Mode.DEV) {
-            System.out.println("b2");
             _loginNameForTest = login;
         }
     }
