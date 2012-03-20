@@ -1,0 +1,79 @@
+#{extends 'main.html' /} #{set title:'优惠啦 - 注册新用户' /}
+#{set 'moreStyles'}
+<link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
+<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
+#{/set}
+ %{ randomID = controllers.Register.genRandomId(); }%
+#{set 'moreScripts'}
+  <script src="@{'/public/javascripts/register.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<div id="wrap_main">
+	<!--    最顶部导航-->
+	<div id="wrap_top">#{include "share/topNavigator.html"/}</div>
+	<div id="wrap_top_header">
+		<div id="wrap_top_header_left">
+			<img src="@{'/public/images/logo.jpg'}" />
+		</div>
+		<div id="wrap_top_middle">卷生活-惠生活</div>
+		<div style="clear: both"></div>
+		<div class="nav_hengfu">
+			<ul class="nav_bg_ul">
+				<li class="nav_bg_li"><a class="current_nav_bg_a" href="#">我的优惠啦</a></li>
+				<li class="nav_bg_li"><a class="nav_bg_a nodisplay" href="#">我的优惠啦</a></li>
+				<li class="nav_bg_li"><a class="nav_bg_a nodisplay" href="#">我的优惠啦</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<!--主体内容部分-->
+<div id="wrap_content">
+	<div id="right_content_box">
+		<div class="tab_top">用户注册</div>
+		<div class="tab_top2">
+			<form class="form-horizontal" id="regForm" action="@{Register.create()}" method="GET">
+				<table width="774" border="0" cellpadding="0" cellspacing="0">
+					<tr>
+						<td width="12">&nbsp;</td>
+						<td>用&nbsp;&nbsp;户&nbsp;&nbsp;名：</td>
+						<td width="259" height="35"><input type="text" name="user.loginName" id="loginName" value="${user?.loginName}" />
+							<span class="error" id="checkName">#{error 'user.loginName' /}</span></td>
+					</tr>
+					<tr>
+						<td width="12">&nbsp;</td>
+						<td >手&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;机：</td>
+						<td width="259" height="35"><input type="text" name="user.mobile" id="mobile" maxlength="11"
+							value="${user?.mobile}" /> <span class="error" id="checkMobile" >#{error 'user.mobile' /}</span></td>
+					</tr>
+					<tr>
+						<td width="12">&nbsp;</td>
+						<td >密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：</td>
+						<td width="259" height="35"><input type="password" name="user.password" id="password"  value="${user?.password}"/>
+						 <span class="error">#{error 'user.password' /}</span></td>
+					</tr>
+					<tr>
+						<td width="12">&nbsp;</td>
+						<td >确认密码：</td>
+						<td width="259" height="35"> 
+						<input type="password" name="user.confirmPassword" id="confirmPassword" value="${user?.confirmPassword}"/> 
+							<span class="error">#{error 'user.confirmPassword' /}</span></td>
+					</tr>
+					<tr>
+						<td width="12">&nbsp;</td>
+						<td >验&nbsp;&nbsp;证&nbsp;&nbsp;码：</td>
+						<td width="259" height="35">
+						<input type="captcha" id="captcha" name="user.captcha"
+							class="{required:true,maxlength:4}" /> 
+							<img id="captchaImg" style="width: 100px; height: 30px;" src="/captcha?randomID=${randomID}"> 
+							<a id="captchaLink" name="captchaLink" href="javascript:void(0);">换一个</a>
+							<input type="hidden" name="randomID" id="randomID" value="${randomID}" /> <br/>
+							<span class="error">#{error 'user.captcha' /}</span></td>
+					</tr>
+					<tr><td width="12">&nbsp;</td>
+					<td width="12">&nbsp;</td>
+						<td align="center" height="35"><a class="seach_bg" href="#" onclick="register()">注册</a></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+</div>

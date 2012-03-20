@@ -1,21 +1,16 @@
 package models.payment;
 
 import java.math.BigDecimal;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import models.accounts.PaymentCallbackLog;
 import models.accounts.TradeBill;
-import models.order.OrderStatus;
-
 import models.accounts.util.TradeUtil;
-
 import models.order.Order;
-
+import models.order.OrderStatus;
 import play.Logger;
-
 import thirdpart.alipay.services.AlipayService;
 import thirdpart.alipay.util.AlipayNotify;
 

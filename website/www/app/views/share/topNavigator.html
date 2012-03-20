@@ -2,7 +2,7 @@
 <div id="wrap_top_top">
     <div class="top_margin_left">
         <div class="wellcome">
-        #{if cas.isLogin}
+        #{if cas?.isLogin}
             欢迎您，${cas.loginName}  <a class="zi_gray" href="/logout">退出</a>
         #{/if}
         #{else}

@@ -1,14 +1,8 @@
 package controllers;
 
-import models.order.*;
-
 import models.payment.AliPaymentFlow;
 import models.payment.PaymentFlow;
 import play.mvc.Controller;
-import java.math.BigDecimal;
-import thirdpart.alipay.util.AlipayNotify;
-
-import java.util.*;
 
 public class OrderResult extends Controller {
 	private static PaymentFlow paymentFlow = new AliPaymentFlow();

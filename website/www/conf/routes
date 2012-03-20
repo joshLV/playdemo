@@ -2,6 +2,11 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+#注册
+GET     /register                               Register.index
+POST    /register                               Register.create
+GET     /captcha                                Register.captcha
+
 # Home page
 GET     /                                       Home.index
 GET     /{<[0-9]+>categoryId}                   Home.index

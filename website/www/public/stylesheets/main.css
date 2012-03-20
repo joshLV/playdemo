@@ -96,3 +96,8 @@ ul{ list-style:none}
 *+html .li_goumai_bg{ margin-top:-20px}
 *+html .ones_ie6{ margin-top:0px}
 .right_dd4_div2{ margin-top:7px\0}
+
+.error {
+    padding-left: 10px;
+    color: red;
+}

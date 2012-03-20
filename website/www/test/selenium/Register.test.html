@@ -1,0 +1,11 @@
+#{fixture delete:'all'/}
+#{selenium 'Test Register/index.html'}
+    open('/register')
+    verifyTitle('优惠啦 - 注册新用户')
+    type('id=loginName','admin@uhuila.com')
+    type('id=mobile','13111111116')
+    type('id=password','1')
+    type('id=confirmPassword','1')
+    type('id=captcha','zuet')
+    click('link=注册')
+#{/selenium}
