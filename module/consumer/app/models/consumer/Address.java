@@ -75,7 +75,7 @@ public class Address extends Model {
     }
 
     public static List<Address> findByOrder(User user) {
-        return Address.find("user=? order by isDefault DESC",user).fetch();
+        return Address.find("user=? order by isDefault DESC", user).fetch();
     }
 
     public static void updateToUnDefault(User user) {
@@ -88,5 +88,33 @@ public class Address extends Model {
 
     public static Address findDefault(User user) {
         return Address.find("byUserAndIsDefault", user, "true").first();
+    }
+
+    public static void updateDefault(long id, User user) {
+        Address address = Address.findById(id);
+        if (address != null) {
+            Address.updateToUnDefault(user);
+            address.isDefault = "true";
+            address.save();
+        }
+    }
+
+
+    public static void delete(long id) {
+        Address address = Address.findById(id);
+        if (address != null) {
+            if ("true".equals(address.isDefault)) {
+                address.delete();
+                List<Address> addressList = Address.findAll();
+                if (addressList.size() > 0) {
+                    Address defaultAddress = addressList.get(0);
+                    defaultAddress.isDefault = "true";
+                    defaultAddress.save();
+                    renderJSON(defaultAddress.id);
+                }
+                ok();
+            }
+            address.delete();
+        }
     }
 }

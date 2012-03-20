@@ -57,12 +57,8 @@ public class Addresses extends Controller {
     }
 
     public static void updateDefault(long id) {
-        Address address = Address.findById(id);
-        if (address != null) {
-            Address.updateToUnDefault(WebCAS.getUser());
-            address.isDefault = "true";
-            address.save();
-        }
+        Address.updateDefault(id, WebCAS.getUser());
+
         ok();
     }
 
