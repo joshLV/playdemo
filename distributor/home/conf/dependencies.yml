@@ -13,6 +13,7 @@ require:
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - breadcrumbs -> breadcrumbs
     - accounts -> accounts
+    - distributor -> distributor
     - org.jsoup -> jsoup 1.6.1
     - sms -> sms
     - play -> rabbitmq 0.3
@@ -41,3 +42,4 @@ repositories:
             - breadcrumbs -> *
             - accounts -> *
             - sms -> *
+            - distributor -> *

@@ -1,5 +1,6 @@
+package models.distributor;
 
-public class AccountType {
+public enum AccountType {
 	CONSUMER,   //个人
-	COMPANY,//公司
+	COMPANY//公司
 }

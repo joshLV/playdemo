@@ -1,3 +1,5 @@
+package models.distributor;
+
 
 public enum DistributorLevel {
 	VIP1,

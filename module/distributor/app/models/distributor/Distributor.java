@@ -1,13 +1,16 @@
+package models.distributor;
+
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import models.accounts.AccountType;
-import models.accounts.Column;
-import models.accounts.Entity;
-import models.accounts.Enumerated;
-import models.accounts.Model;
-import models.accounts.Table;
+import play.db.jpa.Model;
 
 @Entity
 @Table(name="distributor")
