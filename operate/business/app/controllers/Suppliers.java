@@ -109,7 +109,6 @@ public class Suppliers extends Controller {
             Validation.keep();
             edit(supplier.id, supplier);
         }
-        System.out.println("11111111111supplier.description:" + supplier.description);
         try {
             uploadImagePath(image, supplier);
         } catch (IOException e) {

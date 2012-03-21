@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 public class Goods extends Model {
 
     private static final String IMAGE_SERVER = Play.configuration.getProperty
-            ("image.server", "http://img0.uhlcdndev.net");
+            ("image.server", "img0.uhlcdndev.net");
     //    private static final String IMAGE_ROOT_GENERATED = Play.configuration
 //            .getProperty("image.root", "/p");
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();

@@ -24,6 +24,8 @@ public class PathUtilTest extends TestCase {
 
     @Test
     public void testGetImageUrl() {
+        assertEquals("http://imgserver/p/1/1/1/default.png", PathUtil.getImageUrl("http://imgserver","/1/1/1/1.abc",
+                null));
         assertEquals("http://imgserver/p/1/1/1/default.png", PathUtil.getImageUrl("imgserver","/1/1/1/1.abc",
                 null));
         assertEquals("http://imgserver/o/1/1/1/1.jpg", PathUtil.getImageUrl("imgserver","/1/1/1/1.jpg",

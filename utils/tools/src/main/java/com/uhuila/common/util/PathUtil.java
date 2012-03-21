@@ -42,7 +42,8 @@ public class PathUtil {
      */
     public static String getImageUrl(String imageServer, String imagePath, ImageSize size) {
         String sizeType = size == null || ImageSize.ORIGINAL.equals(size) ? "" : "_" + size.toString();
-        String defaultImage = HTTP_HEAD + imageServer + IMAGE_ROOT_GENERATED +
+        String server = imageServer != null && imageServer.startsWith("http://") ? imageServer : HTTP_HEAD + imageServer;
+        String defaultImage = server + IMAGE_ROOT_GENERATED +
                 "/1/1/1/default" + sizeType + ".png";
         if (imagePath == null || imagePath.equals("")) {
             return defaultImage;
@@ -52,11 +53,11 @@ public class PathUtil {
             return defaultImage;
         }
         if (size == null || ImageSize.ORIGINAL.equals(size)) {
-            return HTTP_HEAD + imageServer + "/o" + imagePath;
+            return server + "/o" + imagePath;
         }
 
         String imageHeadStr = IMAGE_ROOT_GENERATED + imagePath;
-        return HTTP_HEAD + imageServer + imageHeadStr.replace("/" + matcher.group(4) + "." + matcher.group(5),
+        return server + imageHeadStr.replace("/" + matcher.group(4) + "." + matcher.group(5),
                 "/" + matcher.group(4) + sizeType + "." + matcher.group(5));
     }
 }
