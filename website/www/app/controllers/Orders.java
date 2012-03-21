@@ -106,10 +106,6 @@ public class Orders extends Controller {
      * 提交订单.
      */
     public static void create(String mobile) {
-        create0(mobile);
-    }
-
-    private static void create0(String mobile) {
         Http.Cookie cookieIdentity = request.cookies.get("identity");
         boolean buyNow = Boolean.parseBoolean(session.get("buyNow"));
         Address defaultAddress = Address.findDefault(WebCAS.getUser());
