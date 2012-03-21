@@ -5,8 +5,6 @@ current_dir = Pathname.new(File.dirname(__FILE__)).realpath
 
 puts current_dir
 failed_result = []
-had_test_pass = false
-
 app_dirs = [
             'website/www',
             'website/home',
@@ -28,17 +26,16 @@ END
   IO.popen(cmd) { |output|
     output.each_line { |line|
       if line =~ /(FAILED|errors|ERROR)/
-        failed_result << line
+        failed_result << "#{dir}: #{line}"
       else
         puts "#{line}"
-        if line =~ /PASSED/
-          had_test_pass = true
-        end
       end
     }
   }
 end
 
-if had_test_pass
+unless failed_result.empty?
+  puts "Test Failured!"
+  failed_result.each {|line| puts "    " + line}
   exit(1)
 end
