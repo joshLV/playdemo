@@ -1,0 +1,51 @@
+@charset "utf-8";
+/* CSS Document */
+table{border-collapse:collapse;}
+#wrap_top_header_left{float:left}
+#wrap_top_middle{float:left;line-height:89px; font-size:17px; color:#666666; font-weight:700}
+.fen_g{width:1000px; overflow:hidden; height:2px; background:#D72828} /*hengxian red*/
+
+#content_zhuti{padding-left:12px; margin-top:26px;}
+.tab_top{background:url(../images/sq_tuikuan.jpg) no-repeat; width:975px; position:relative; top:1px; height:26px; line-height:26px;}
+.tab_top span{padding-left:20px; font-weight:700}
+.tab_top_box{width:975px; border:solid 1px #D4D4D4; height:auto;}
+
+.tab_top_info{width:975px; height:32px; line-height:32px; background:#FBE8E4; margin-top:7px; margin-bottom:2px; padding-left:}
+.tab_one{padding-left:16px;}
+.tab_two{padding:0 50px;}
+
+.th_one{float:left; font-weight:normal; padding-left:7px;}
+.th_one_input{position:relative; top:2px; margin-right:5px;}
+.th_shop_text{position:relative; top:3px; font-weight:700}
+
+.col_one{float:left; padding-left:30px; height:30px; margin:35px 0px; margin-top:43px; margin-bottom:18px;}
+.col_one input{position:relative; margin-right:5px; top:-1px; vertical-align:middle}
+.col_one_text{width:230px; float:left; height:60px; font-weight:700; line-height:22px; padding:20px 0px; vertical-align:middle; text-align:center; padding-top:25px; padding-bottom:15px}
+.buttom_tab_info{vertical-align:middle; margin-top:11px; padding-left:8px;}
+.buttom_tab_info span{position:relative;top:-2px; padding-left:5px;}
+.buttom_tab_info2{float:right;font-size:15px; font-weight:700; margin-right:26px; margin-top:25px; margin-bottom:24px;}
+.buttom_img{float:right; margin-bottom:50px; margin-right:17px;}
+
+.zhu_nav_title{ margin-top:-15px; margin-bottom:11px; color:#666666; letter-spacing:0.1em}
+.shop_img{ width:62px; height:63px; float:left; margin-top:15px; margin-left:50px}
+.ren_info{ padding-top:9px; height:114px;}
+th{ font-weight:normal}
+.blue_alink{ margin-left:15px; text-decoration:underline; color:#3366CC}
+.margin_left_10{ margin-left:10px;}
+
+/*search*/
+#wrap_top_right{float:right; width:550px; height:30px; margin-top:43px; }
+.seach_area{ float:left; width:103px; height:25px; border:solid 1px #D1D1D1; line-height:25px; padding-left:5px;color:#999999; margin-left:15px;}
+.seach_area div{float:right; height:15px; padding-bottom:4px; line-height:25px;padding-top:4px; margin-right:5px;}
+*html .seach_area div{ margin-top:-25px;} /*Ie6 hack*/
+.seach_input{ border:solid 1px #D1D1D1; width:250px; height:25px; line-height:25px; padding-left:6px; color:#999999}
+.seach_input_div{ margin-left:3px; float:left;}
+.seach_subimt{ width:63px; height:25px; background:url(../images/subimt_bg.jpg) repeat-x; float:left; border:solid 1px #D1D1D1; margin-left:3px; line-height:25px;  text-align:center; color:#FFFFFF; font-weight:700 }
+.left_top_one{ width:238px; height:224px; border:solid 1px #CECECE;}
+.left_top_two{ width:238px; height:609px; border:solid 1px #CECECE; margin-top:11px;}
+
+*html .shop_img{ margin-left:30px;}
+*+html .shop_img{ margin-left:30px;}
+th{ font-weight:700}
+.margin_left_30{ margin-left:30px}
+.font_weight{ font-weight:700}

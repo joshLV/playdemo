@@ -1,0 +1,76 @@
+@charset "utf-8";
+/* CSS Document */
+/*content*/
+ul{ list-style:none}
+#show_pr_box{ width:1000px; height:auto}
+#left_nav{ width:240px; height:auto; float:left; margin-right:10px;}
+.left_top_one{ width:238px; height:224px; border:solid 1px #CECECE;}
+.left_top_two{ width:238px; height:410px; border:solid 1px #CECECE; margin-top:11px;}
+
+/*more*/
+.left_one_dl{ height:auto}
+.left_one_dl dt{ height:31px; line-height:30px; font-weight:700; color:#B13D29; border-bottom:solid 1px #CECECE}
+.title_nav{ border-bottom:solid 1px #B13D29; position:relative; top:1px; float:left; padding-left:10px; padding-right:10px;}
+.xiuzheng_dt{ margin-bottom:12px;}
+.shop_dd{ width:215px; float:left; margin:0 auto; margin-bottom:7px; margin-left:0px; padding-left:8px; clear:both; height:55px; height:auto}
+
+.img_cp{ float:left}
+.right_hot_cp{ float:left; line-height:17px; margin-left:11px; padding-top:1px; overflow:hidden; width:121px;}
+.strong_gray2{ color:#666666; font-weight:700}
+.text_decorat{ font-size:10px;}
+
+
+/*frame right_content*/
+#right_content{ width:749px; height:auto;float:left}
+*html #right_content{ overflow:hidden}
+.right_content_one{ width:749px;border:solid 1px #D4D4D4; height:130px; }
+.right_content_two{ height:45px; width:749px; margin-top:5px; margin-bottom:5px;}
+
+.right_content_three{ height:32px; width:749px;border:solid 1px #D4D4D4;  margin-top:5px; margin-bottom:5px;}
+.right_content_four{ height:826px; width:749px; border:solid 1px #d4d4d4; margin-top:5px; margin-bottom:5px; overflow:auto;}
+
+.abs_gouwu_car{ position:absolute; right:6px; top:34px; background:#FFFFFF; border:solid 1px #EE4343; border-top:none; width:192px; height:405px; overflow:hidden }
+*html .abs_gouwu_car{ right:12px; z-index:777; background:#000099}
+.car_box{ width:175px; height:auto; border-bottom:dotted 1px #C7C7C7; float:left; margin-top:10px;}
+*+html .car_box{ padding-bottom:17px;}
+.car_one{ float:left; border:solid 1px #666666; width:60px; height:41px; margin-left:8px; overflow:hidden; margin-top:6px; margin-bottom:15px;}
+.car_one_right{ float:left; width:100px; height:auto; margin-left:5px;line-height:17px; color:#60625D}
+.float_title{ float:left; text-align:left; width:100px; height:32px; overflow:hidden}
+
+.font_gray a{ color:#60605E;}
+.delete_font{ padding-left:71px; clear:right}
+
+.gouwu_car_haha{ line-height:22px; float:right; width:175px; text-align:right; margin-right:10px}
+.bottom_car{ margin-bottom:5px;}
+.bottom_car{ margin-bottom:15px\0;}
+
+.bottom_fenge{ border-bottom: dotted 1px #CCCCCC; height:33px; font-size:14px; line-height:33px;}
+.bottom_fenge a{ display:inline-block;margin-left:5px; margin-right:5px;width:80px;}
+.cate_fenlei{ color:#666666; font-weight:700; margin-left:15px; float:left;width:80px; }
+
+.right_content_two{ width:749px; height:32px; line-height:32px;}
+.right_content_two div{float:left; margin-left:8px;}
+.block_jiage{ float:left; height:18px; padding-left:6px; padding-right:6px; margin-top:7px; line-height:18px; color:#0066CC}
+.block_jiage:hover{ float:left; height:18px; padding-left:6px; padding-right:6px; background:#E21515; color:#FFFFFF; margin-top:7px; line-height:18px;}
+
+.range_input{}
+.fanwei_input{ width:50px; height:18px; border:solid 1px #CBCBCB; margin-left:5px; margin-right:5px;}
+.r_c_three_title{ font-weight:700; line-height:32px; padding-left:16px; float:left}
+
+.sort_box{ float:left; border:solid 1px #CBCBCB; padding-left:13px; padding-right:13px; height:20px; line-height:20px; margin-top:5px; margin-left:5px; margin-right:5px;}
+.box_sort{ background:url(../images/sort_buttom_bg.jpg) no-repeat; width:36px; height:20px;}
+
+.shop_more_box{}
+.shangpin_more{ width:708px; height:auto; border-bottom:dotted 1px #C8C8C8; margin-left:15px; padding-left:2px; margin-top:12px; float:left}
+.shangpin_more li{ float:left; margin-right:35px;}
+.shangpin_more .no_margin_right{ margin-right:0px;}
+.text_decorat{font-size:12px}
+.margin_text{ padding-left:5px; line-height:18px; margin-top:5px;}
+.margin_bottom{ margin-bottom:15px; margin-top:5px;}
+.more_buttom_more{ float:left; width:720px; margin-top:5px; text-align:center; margin-bottom:15px;}
+.more_buttom_mid{ }
+/*qudiao*/
+.xiuzheng{ border-bottom:none}
+.over_auto{ height:310px; overflow:auto}
+.buy_now { background:url(../images/buttom.jpg) no-repeat; width:82px; height:20px; float:left;color:#FFFFFF; text-align:center; font-weight:700;line-height:20px;letter-spacing:0.1em; font-size:11px; margin-bottom:15px}
+.go_car_bg{background:url(../images/go_gouwu_car.jpg) no-repeat; width:116px; height:24px; float:right;color:#FFFFFF; text-align:center; font-weight:700;line-height:24px;letter-spacing:0.1em; font-size:12px; }

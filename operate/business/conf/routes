@@ -29,7 +29,7 @@ GET     /suppliers                              Suppliers.index
 GET     /suppliers/new                          Suppliers.add
 POST    /suppliers                              Suppliers.create
 GET     /suppliers/{id}/edit                    Suppliers.edit
-POST    /suppliers/{id}/update                  Suppliers.update
+PUT     /suppliers/{id}/update                  Suppliers.update
 DELETE  /suppliers/{id}/delete                  Suppliers.delete
 
 

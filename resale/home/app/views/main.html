@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="${_response_encoding}">
+    <title>#{get 'title' /}</title>
+    <link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css"/>
+    <link href="@{'/public/stylesheets/lanrentuku.css'}" rel="stylesheet" type="text/css"/>
+#{get 'moreStyles' /}
+    <script src="@{'/public/javascripts/jquery-1.6.4.min.js'}" type="text/javascript"
+            charset="${_response_encoding}"></script>
+#{get 'moreScripts' /}
+    <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
+</head>
+
+<body>
+#{doLayout /}
+<!--底部注脚部分-->
+<div style="clear:both"></div>
+<div id="footer_nav"><span class="strong_firend">友情链接：</span><a href="#" class="fenge_footer">关于我们</a>|<a href="#"
+                                                                                                          class="fenge_footer">团购</a>|<a
+        href="#" class="fenge_footer">电子优惠劵</a>|<a href="#" class="fenge_footer">优惠劵</a>|<a href="#"
+                                                                                            class="fenge_footer">活动交友网</a>|<a
+        href="#" class="fenge_footer">天津优惠劵</a>|<a href="#" class="fenge_footer">591结婚网</a>|<a href="#"
+                                                                                               class="fenge_footer">上海旅游</a>|<a
+        href="#" class="fenge_footer">KFC优惠劵</a>|<a href="#" class="fenge_footer">团购大全</a></div>
+<div id="footer">
+    <div><a href="#" class="fenge_footer">关于我们</a>|<a href="#" class="fenge_footer">诚聘英才</a>|<a href="#"
+                                                                                                class="fenge_footer">联系我们</a>|<a
+            href="#" class="fenge_footer">免责声明</a>|<a href="#" class="fenge_footer">服务条款</a>|<a href="#"
+                                                                                                class="fenge_footer">帮助中心</a>
+    </div>
+    <div>Copyright@2005-2009 iModia Network CO.,LTD. ALL Rights Reserved</div>
+    <div><span><a href="#">优惠啦</a></span><span class="fenge_footer">|</span><span><a href="#">优惠打折网</a></span><span
+            class="fenge_footer">|</span><span>联系我们：uhuila@seewi.com.cn</span></div>
+    <div>泸ICP备08114451号</div>
+</div>
+<div id="bottom_footer"><img src="@{'/public/images/footer/footer_two.jpg'}"/><img
+        src="@{'/public/images/footer/footer_one.jpg'}"/></div>
+
+</body>
+</html>
