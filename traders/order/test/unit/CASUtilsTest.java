@@ -24,19 +24,19 @@ public class CASUtilsTest extends UnitTest {
         Play.configuration.setProperty("cas.gateway", "false");
         Play.configuration.setProperty("cas.mockserver", "true");
 
-        Play.configuration.setProperty("cas.validateUrl", "http://{domain}.cas.supplierdev.com/serviceValidate");
-        Play.configuration.setProperty("cas.loginUrl", "http://{domain}.cas.supplierdev.com/login");
-        Play.configuration.setProperty("cas.logoutUrl", "http://{domain}.cas.supplierdev.com/logout");
-        Play.configuration.setProperty("application.baseUrl", "http://{domain}.order.supplierdev.com");
+        Play.configuration.setProperty("cas.validateUrl", "http://{domain}.cas.uhuila.net/serviceValidate");
+        Play.configuration.setProperty("cas.loginUrl", "http://{domain}.cas.uhuila.net/login");
+        Play.configuration.setProperty("cas.logoutUrl", "http://{domain}.cas.uhuila.net/logout");
+        Play.configuration.setProperty("application.baseUrl", "http://{domain}.order.uhuila.net");
 
-        Http.Request.current.set(Http.Request.createRequest("127.0.0.1", "GET", "/login", null, null, null, null, "lyf.order.supplierdev.com", false, 80, "lyf.order.supplierdev.com", false, null, null));
+        Http.Request.current.set(Http.Request.createRequest("127.0.0.1", "GET", "/login", null, null, null, null, "lyf.order.uhuila.net", false, 80, "lyf.order.uhuila.net", false, null, null));
     }
 
 
     @Test
     public void testGetDomainName(){
-        String casUrlTemp = "http://{domain}.cas.supplierdev.com/login";
-        assertEquals("http://lyf.cas.supplierdev.com/login",
+        String casUrlTemp = "http://{domain}.cas.uhuila.net/login";
+        assertEquals("http://lyf.cas.uhuila.net/login",
                      CASUtils.replaceCasUrl(casUrlTemp)
                      );
 
@@ -46,12 +46,12 @@ public class CASUtilsTest extends UnitTest {
     public void getCasLoginUrlTest1() {
         Play.configuration.setProperty("cas.mockserver", "false");
         String casLoginUrl = CASUtils.getCasLoginUrl(Boolean.TRUE);
-        assertEquals("http://lyf.cas.supplierdev.com/login?service=http://lyf.order.supplierdev.com/authenticate", casLoginUrl);
+        assertEquals("http://lyf.cas.uhuila.net/login?service=http://lyf.order.uhuila.net/authenticate", casLoginUrl);
 
         Play.configuration.setProperty("cas.gateway", "true");
         casLoginUrl = CASUtils.getCasLoginUrl(Boolean.TRUE);
         assertEquals(
-                "http://lyf.cas.supplierdev.com/login?service=http://lyf.order.supplierdev.com/authenticate&gateway=true",
+                "http://lyf.cas.uhuila.net/login?service=http://lyf.order.uhuila.net/authenticate&gateway=true",
                 casLoginUrl);
     }
 
@@ -59,10 +59,10 @@ public class CASUtilsTest extends UnitTest {
     public void getCasLoginUrlTest2() {
         Play.configuration.setProperty("cas.mockserver", "false");
         String casLoginUrl = CASUtils.getCasLoginUrl(Boolean.FALSE);
-        assertEquals("http://lyf.cas.supplierdev.com/login?service=http://lyf.order.supplierdev.com/authenticate", casLoginUrl);
+        assertEquals("http://lyf.cas.uhuila.net/login?service=http://lyf.order.uhuila.net/authenticate", casLoginUrl);
         casLoginUrl = CASUtils.getCasLoginUrl(Boolean.TRUE);
         assertEquals(
-                "http://lyf.cas.supplierdev.com/login?service=http://lyf.order.supplierdev.com/authenticate",
+                "http://lyf.cas.uhuila.net/login?service=http://lyf.order.uhuila.net/authenticate",
                 casLoginUrl);
     }
 
@@ -70,13 +70,13 @@ public class CASUtilsTest extends UnitTest {
     public void getCasLogoutUrlTest() {
         Play.configuration.setProperty("cas.mockserver", "false");
         String casLogoutUrl = CASUtils.getCasLogoutUrl();
-        assertEquals("http://lyf.cas.supplierdev.com/logout", casLogoutUrl);
+        assertEquals("http://lyf.cas.uhuila.net/logout", casLogoutUrl);
     }
 
     @Test
     public void getCasLogoutUrlTest2() {
         String casLogoutUrl = CASUtils.getCasLogoutUrl();
-        assertEquals("http://lyf.order.supplierdev.com/@cas/logout", casLogoutUrl);
+        assertEquals("http://lyf.order.uhuila.net/@cas/logout", casLogoutUrl);
     }
 
     @Test

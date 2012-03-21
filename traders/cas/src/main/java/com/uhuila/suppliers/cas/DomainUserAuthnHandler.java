@@ -36,16 +36,16 @@ public class DomainUserAuthnHandler extends AbstractUsernamePasswordAuthenticati
         if (log.isDebugEnabled()) {
             log.debug("email=" + fullUserName);
         }
-        
+
         String[] domainUsers = DomainNameUtil.getDomainUser(fullUserName);
         if (domainUsers == null) {
             return false;
         }
-        
+
         String loginName = domainUsers[0];
         String domainName = domainUsers[1];
-        
-        String sql = "select a.* from cusers a inner join companies b on a.company_id=b.id where a.login_name = ? and b.domain_name = ?";
+
+        String sql = "select a.* from cusers a inner join suppliers b on a.company_id=b.id where a.login_name = ? and b.domain_name = ?";
         Object[] params = new Object[] { loginName, domainName };
 
         List<Map<String, Object>> userlist = getJdbcTemplate().queryForList(sql, params);
@@ -55,7 +55,7 @@ public class DomainUserAuthnHandler extends AbstractUsernamePasswordAuthenticati
         }
         Map<String, Object> user = userlist.get(0);
 
-        if (!DigestUtils.md5Hex(password + user.get("password_salt")).equals(user.get("crypted_password"))) {
+        if (!DigestUtils.md5Hex(password + user.get("password_salt")).equals(user.get("encrypted_password"))) {
             return false;
         }
 
