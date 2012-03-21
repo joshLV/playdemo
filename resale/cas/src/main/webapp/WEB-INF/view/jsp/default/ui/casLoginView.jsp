@@ -6,7 +6,7 @@
 
 <html>
     <head>
-        <title>优惠啦会员登录</title>
+        <title>分销会员登录</title>
         <meta charset="">
         <link rel="stylesheet" type="text/css" media="screen"   href="public/stylesheets/main.css">
         <link rel="stylesheet" type="text/css" media="screen"   href="public/stylesheets/updateinfo.css">
