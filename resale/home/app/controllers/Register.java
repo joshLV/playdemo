@@ -2,13 +2,11 @@ package controllers;
 
 import java.util.Date;
 
-import models.resale.Resale;
-import models.resale.ResaleStatus;
+import models.resale.Resaler;
+import models.resale.ResalerStatus;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.StringUtils;
 
-import play.cache.Cache;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.libs.Images;
@@ -33,7 +31,7 @@ public class Register extends Controller {
 	 * 
 	 * @param resaler 用户信息
 	 */
-	public static void create(@Valid Resale resaler) {
+	public static void create(@Valid Resaler resaler) {
 		if(!resaler.password.equals(resaler.confirmPassword)){
 			Validation.addError("resaler.confirmPassword", "两次密码输入的不一样！！");
 		}
@@ -46,7 +44,7 @@ public class Register extends Controller {
 		//密码加密
 		resaler.password=DigestUtils.md5Hex(resaler.password+passwordSalt);
 		//正常
-		resaler.status=ResaleStatus.NOMAL;
+		resaler.status=ResalerStatus.NOMAL;
 		//随机吗
 		resaler.passwordSalt=passwordSalt;
 		//获得IP
@@ -58,5 +56,16 @@ public class Register extends Controller {
 		redirect("http://www.uhuiladev.com");
 	}
 
-
+	/**
+	 * 判断用户名和手机是否唯一
+	 * 
+	 * @param loginName
+	 *            用户名
+	 * @param mobile
+	 *            手机
+	 */
+	public static void checkLoginName(String loginName, String mobile) {
+		String returnFlag = Resaler.checkValue(loginName, mobile);
+		renderJSON(returnFlag);
+	}
 }
