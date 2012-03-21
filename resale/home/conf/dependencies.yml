@@ -9,7 +9,7 @@ require:
     - order -> order
     - consumer -> consumer
     - play -> cas 3.1
-    - web_trace -> web_trace
+    - resale_trace -> resale_trace
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - breadcrumbs -> breadcrumbs
     - accounts -> accounts
@@ -38,7 +38,7 @@ repositories:
             - sales -> *
             - order -> *
             - consumer -> *
-            - web_trace -> *
+            - resale_trace -> *
             - paginate_ext -> *
             - breadcrumbs -> *
             - accounts -> *

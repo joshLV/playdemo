@@ -11,6 +11,8 @@ import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.libs.Images;
 import play.mvc.Controller;
+import play.mvc.With;
+import controllers.resaletrace.ResaleCAS;
 /**
  * 分销商注册
  * 
