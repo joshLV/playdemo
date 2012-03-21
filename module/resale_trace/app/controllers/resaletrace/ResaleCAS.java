@@ -1,10 +1,11 @@
-package controllers.modules.resalecas;
+package controllers.resaletrace;
 
-import models.resale.Resaler;
-import play.Logger;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
+import models.resale.Resaler;
+import models.resaletrace.Cas;
+import play.Logger;
 
 public class ResaleCAS extends Controller {
 

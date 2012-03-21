@@ -1,14 +1,13 @@
-package models.resalecas;
-
-import models.resale.Resaler;
+package models.resaletrace;
 
 import java.io.Serializable;
 
+import models.resale.Resaler;
+
 /**
- * TODO.
  * <p/>
- * User: sujie
- * Date: 2/22/12
+ * User: yjy
+ * Date: 3/22/12
  * Time: 11:21 AM
  */
 public class Cas implements Serializable {
