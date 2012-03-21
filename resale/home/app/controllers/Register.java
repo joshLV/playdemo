@@ -53,7 +53,7 @@ public class Register extends Controller {
 		resaler.createdAt = new Date();
 		resaler.save();
 
-		redirect("http://www.uhuiladev.com");
+		redirect("http://www.114bsgo.com");
 	}
 
 	/**

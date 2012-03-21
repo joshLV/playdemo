@@ -43,7 +43,7 @@ public class MyOrders extends Controller {
 	 * 付款
 	 */
 	public static void pay(Long id) {
-		redirect("http://www.uhuiladev.com/payment_info/" + id);
+		redirect("http://www.uhuila.cn/payment_info/" + id);
 	}
 
 	/**

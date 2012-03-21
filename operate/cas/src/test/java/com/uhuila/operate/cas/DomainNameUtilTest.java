@@ -18,8 +18,8 @@ public class DomainNameUtilTest {
 	
     @Test
     public void testGetSubdomain() {
-        assertEquals("lyf", DomainNameUtil.getSubdomain("lyf.supplierdev.com"));
-        assertEquals("test1", DomainNameUtil.getSubdomain("test1.supplierdev.com"));
+        assertEquals("lyf", DomainNameUtil.getSubdomain("lyf.uhuila.net"));
+        assertEquals("test1", DomainNameUtil.getSubdomain("test1.uhuila.net"));
         
         assertEquals("localhost", DomainNameUtil.getSubdomain("localhost"));
     }

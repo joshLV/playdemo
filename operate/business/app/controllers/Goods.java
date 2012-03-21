@@ -87,7 +87,7 @@ public class Goods extends Controller {
      * 展示添加商品页面
      */
     public static void preview(Long id) {
-        redirect("http://www.uhuiladev.com/goods/" + id + "?preview=true");
+        redirect("http://www.uhuila.cn/goods/" + id + "?preview=true");
     }
 
     /**
@@ -188,7 +188,7 @@ public class Goods extends Controller {
 
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            redirect("http://www.uhuiladev.com/goods/" + goods.id + "?preview=true");
+            redirect("http://www.uhuila.cn/goods/" + goods.id + "?preview=true");
         }
         index(null);
     }

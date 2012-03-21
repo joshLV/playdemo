@@ -63,7 +63,7 @@ public class Register extends Controller{
 		user.createdAt = new Date();
 		user.save();
 
-		redirect("http://www.uhuiladev.com");
+		redirect("http://www.uhuila.cn");
 	}
 
 
