@@ -55,6 +55,7 @@
             <thead>
             <tr>
                 <th><input type="checkbox" id="selectall" name="selectall">全选</th>
+                <th>商品图片</th>
                 <th>商品编号</th>
                 <th>商品名称</th>
                 <th>现价(元)</th>
@@ -71,6 +72,7 @@
             #{paginate.list items:goodsPage, as:'goods'}
             <tr>
                 <td><input type="checkbox" id="checkoption" value="${goods.id}" name="ids[]"/></td>
+                <td><a href="${goods.imageLargePath}" target="_blank"><img src="${goods.imageTinyPath}"/></a></td>
                 <td>${goods.no}</td>
                 <td>${goods.name}</td>
                 <td class="amount">${goods.salePrice?.formatCurrency('CNY').raw()}</td>

@@ -2,7 +2,7 @@
 #{set title:'商户一览' /}
 #{include '/share/nav.html' /}
 #{set 'moreScripts'}
-<script src="@{'/public/javascripts/goods.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/suppliers.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 
 <div class="body">
@@ -11,7 +11,7 @@
     <table class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>
-            <th>商户名称</th>
+            <th>名称</th>
             <th>域名</th>
             <th>描述</th>
             <th>状态</th>
@@ -25,15 +25,20 @@
 
         #{paginate.list items:suppliers, as:'supplier'}
         <tr>
-            <td>${supplier?.fullName}</td>
-            <td>${supplier?.domainName}</td>
+            <td><a href="${supplier?.smallLogo}" target="_blank"><img src="${supplier?.originalLogo}"/></a>
+            ${supplier?.fullName}</td>
+            <td>${supplier?.domainName}.uhuila.com</td>
             <td>${supplier?.description}</td>
             <td>&{'supplier.'+supplier.status}</td>
-            <td>${supplier?.registedAt}</td>
-            <td>${supplier?.updatedAt}</td>
-            <td><a href="@{Suppliers.edit(supplier.id)}">修改</a>/<a href="@{Suppliers.delete(supplier.id)}">删除</a>
-                #{if models.supplier.SupplierStatus.NORMAL.equals(supplier.status)}/<a href="@{Suppliers.freeze(supplier.id)}">冻结</a>#{/if}
-                #{if models.supplier.SupplierStatus.FREEZE.equals(supplier.status)}/<a href="@{Suppliers.unfreeze(supplier.id)}">解冻</a>#{/if}
+            <td>${supplier?.createdAt?.format()}</td>
+            <td>${supplier?.updatedAt?.format()}</td>
+            <td><a href="@{Suppliers.edit(supplier.id)}">修改</a>
+                / <a id="${supplier.id}" name="${supplier.fullName}" href="#"
+                     onclick="javascript:return deleteSupplier(this);">删除</a>
+                #{if models.supplier.SupplierStatus.NORMAL.equals(supplier.status)}
+                / <a href="@{Suppliers.freeze(supplier.id)}">冻结</a>#{/if}
+                #{if models.supplier.SupplierStatus.FREEZE.equals(supplier.status)}
+                / <a href="@{Suppliers.unfreeze(supplier.id)}">解冻</a>#{/if}
             </td>
         </tr>
         #{/paginate.list}

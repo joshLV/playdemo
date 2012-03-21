@@ -1,7 +1,10 @@
 package models.supplier;
 
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.constants.ImageSize;
+import com.uhuila.common.util.PathUtil;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -11,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "companies")
+@Table(name = "suppliers")
 public class Supplier extends Model {
     @Required
     @MaxSize(100)
@@ -21,8 +24,8 @@ public class Supplier extends Model {
     @MaxSize(50)
     @Column(name = "full_name")
     public String fullName;
-    @Column(name = "registed_at")
-    public Date registedAt;
+    @Column(name = "created_at")
+    public Date createdAt;
     @Column(name = "updated_at")
     public Date updatedAt;
     @Enumerated(EnumType.STRING)
@@ -32,8 +35,24 @@ public class Supplier extends Model {
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
 
-    public static void update(long id, Supplier supplier) {
-        Supplier sp = findById(id);
+    @Transient
+    public String getSmallLogo() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, logo, ImageSize.SMALL);
+    }
+
+    @Transient
+    public String getOriginalLogo() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, logo, ImageSize.ORIGINAL);
+    }
+
+    private static final String IMAGE_SERVER = Play.configuration.getProperty
+            ("image.server", "http://img0.uhlcdndev.net");
+
+    public static void update(Supplier supplier) {
+        Supplier sp = findById(supplier.id);
+        if (sp == null) {
+            return;
+        }
         if (StringUtils.isNotBlank(supplier.logo)) {
             sp.logo = supplier.logo;
         }
@@ -56,7 +75,7 @@ public class Supplier extends Model {
     }
 
     public static List<Supplier> findUnDeleted() {
-        return find("deleted=? order by registedAt DESC", DeletedStatus.UN_DELETED).fetch();
+        return find("deleted=? order by createdAt DESC", DeletedStatus.UN_DELETED).fetch();
     }
 
     public static void freeze(long id) {

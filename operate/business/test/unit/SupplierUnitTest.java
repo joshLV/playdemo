@@ -52,8 +52,9 @@ public class SupplierUnitTest extends UnitTest {
     public void testUpdate() {
         Long id = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
         Supplier supplier = new Supplier();
+        supplier.id = id;
         supplier.domainName = "updated.localhost";
-        Supplier.update(id, supplier);
+        Supplier.update(supplier);
         Supplier updatedSupplier = Supplier.findById(id);
         assertEquals("updated.localhost", updatedSupplier.domainName);
     }

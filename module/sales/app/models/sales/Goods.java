@@ -5,6 +5,8 @@
 package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.constants.ImageSize;
+import com.uhuila.common.util.PathUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -27,11 +29,10 @@ import java.util.regex.Pattern;
 @Table(name = "goods")
 public class Goods extends Model {
 
-    private static final Pattern imagePat = Pattern.compile("^/([0-9]+)/([0-9]+)/([0-9]+)/([^_]+).(jpg|png|gif|jpeg)$");
     private static final String IMAGE_SERVER = Play.configuration.getProperty
             ("image.server", "http://img0.uhlcdndev.net");
-    private static final String IMAGE_ROOT_GENERATED = Play.configuration
-            .getProperty("image.root", "/p");
+    //    private static final String IMAGE_ROOT_GENERATED = Play.configuration
+//            .getProperty("image.root", "/p");
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
 
     static {
@@ -99,7 +100,7 @@ public class Goods extends Model {
      */
     @Transient
     public String getImageTinyPath() {
-        return getImageBySizeType("tiny");
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.TINY);
     }
 
     /**
@@ -107,7 +108,7 @@ public class Goods extends Model {
      */
     @Transient
     public String getImageSmallPath() {
-        return getImageBySizeType("small");
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.SMALL);
     }
 
     /**
@@ -115,7 +116,7 @@ public class Goods extends Model {
      */
     @Transient
     public String getImageMiddlePath() {
-        return getImageBySizeType("middle");
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.MIDDLE);
     }
 
     /**
@@ -123,7 +124,7 @@ public class Goods extends Model {
      */
     @Transient
     public String getImageLargePath() {
-        return getImageBySizeType("large");
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.LARGE);
     }
 
     /**
@@ -315,20 +316,6 @@ public class Goods extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "material_type")
     public MaterialType materialType;
-
-    private String getImageBySizeType(String sizeType) {
-        String defaultImage = IMAGE_SERVER + IMAGE_ROOT_GENERATED +
-                "/1/1/1/default_" + sizeType + ".png";
-        if (imagePath == null || imagePath.equals("")) {
-            return defaultImage;
-        }
-        Matcher matcher = imagePat.matcher(imagePath);
-        if (!matcher.matches()) {
-            return defaultImage;
-        }
-        String imageHeadStr = IMAGE_ROOT_GENERATED + imagePath;
-        return IMAGE_SERVER + imageHeadStr.replace("/" + matcher.group(4), "/" + matcher.group(4) + "_" + sizeType);
-    }
 
     /**
      * 根据商品分类和数量取出指定数量的商品.

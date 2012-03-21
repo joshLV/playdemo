@@ -6,7 +6,6 @@ import controllers.supplier.cas.SecureCAS;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import org.apache.commons.lang.StringUtils;
-import play.data.validation.Required;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
@@ -19,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import navigation.annotations.ActiveNavigation;
+
 /**
  * 商户管理的控制器.
  * <p/>
@@ -65,16 +65,17 @@ public class Suppliers extends Controller {
             }
         }
         if (Validation.hasErrors()) {
+            Validation.keep();
             add(supplier);
         }
-
         supplier.deleted = DeletedStatus.UN_DELETED;
         supplier.status = SupplierStatus.NORMAL;
-        supplier.registedAt = new Date();
+        supplier.createdAt = new Date();
 
+        supplier.create();
         try {
             uploadImagePath(image, supplier);
-            supplier.create();
+            supplier.save();
         } catch (IOException e) {
             error("supplier.image_upload_failed");
         }
@@ -97,22 +98,24 @@ public class Suppliers extends Controller {
      * @param id 门店标识
      */
     public static void edit(long id, Supplier supplier) {
-        if (supplier == null) {
+        if (supplier == null || supplier.id == null) {
             supplier = Supplier.findById(id);
         }
         render(supplier);
     }
 
-    public static void update(long id, @Valid Supplier supplier, File image) {
+    public static void update(@Valid Supplier supplier, File image) {
         if (validation.hasErrors()) {
-            edit(id, supplier);
+            Validation.keep();
+            edit(supplier.id, supplier);
         }
+        System.out.println("11111111111supplier.description:" + supplier.description);
         try {
             uploadImagePath(image, supplier);
         } catch (IOException e) {
             error("supplier.image_upload_failed");
         }
-        Supplier.update(id, supplier);
+        Supplier.update(supplier);
         index();
     }
 
@@ -127,7 +130,8 @@ public class Suppliers extends Controller {
     }
 
     public static void delete(long id) {
+        System.out.println("id:" + id);
         Supplier.delete(id);
-        index();
+        ok();
     }
 }
