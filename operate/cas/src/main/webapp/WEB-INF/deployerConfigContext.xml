@@ -33,7 +33,7 @@
          <property name = "dataSource" ref="dataSource"/>
     </bean>
 
-    <bean  id="domainUserAuthnHandler"  class="com.uhuila.operate.cas.DomainUserAuthnHandler">
+    <bean  id="usernameLengthAuthnHandler"  class = "org.jasig.cas.userauthentication.UsernameLengthAuthnHandler">
          <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
 
@@ -96,7 +96,7 @@
               <bean class = "org.jasig.cas.userauthentication.UsernameLengthAuthnHandler">
                    <property name="jdbcTemplate" ref="jdbcTemplate"/>
               </bean> -->
-              <ref bean="domainUserAuthnHandler"/>
+              <ref bean="usernameLengthAuthnHandler"/>
              </list>
 
         </property>

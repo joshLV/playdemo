@@ -1,66 +1,91 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<%--
-
-    Licensed to Jasig under one or more contributor license
-    agreements. See the NOTICE file distributed with this work
-    for additional information regarding copyright ownership.
-    Jasig licenses this file to you under the Apache License,
-    Version 2.0 (the "License"); you may not use this file
-    except in compliance with the License. You may obtain a
-    copy of the License at:
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on
-    an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, either express or implied. See the License for the
-    specific language governing permissions and limitations
-    under the License.
-
---%>
-
 <%@ page contentType="text/html; charset=UTF-8" %>
-<jsp:directive.include file="includes/top.jsp" />
-  <div class="box fl-panel" id="login">
-			<form:form method="post" id="fm1" cssClass="fm-v clearfix" commandName="${commandName}" htmlEscape="true">
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>优惠啦会员登录</title>
+        <meta charset="">
+        <link rel="stylesheet" type="text/css" media="screen"   href="public/stylesheets/main.css">
+        <link rel="stylesheet" type="text/css" media="screen"   href="public/stylesheets/updateinfo.css">
+        <link rel="shortcut icon" type="image/png" href="public/images/favicon.png">
+        <script src="public/javascripts/jquery-1.6.4.min.js" type="text/javascript"></script>
+    </head>
+    <body>
+<style type="text/css">
+#header {
+    height: 123px;
+}
+
+.headmain {
+    border-bottom: #b73a24 2px solid;
+    height: 98px;
+    padding-bottom: 10px;
+}
+
+.error {
+    padding-left: 10px;
+    color: red;
+}
+</style>
+
+<div id="index_main">
+    <div id="main">
+        <div id="maincontainer" style="overflow: hidden; margin-bottom: 40px; margin-left: 30px;">
+
+            <form:form method="post" id="fm1"  commandName="${commandName}" htmlEscape="true">
                   <form:errors path="*" id="msg" cssClass="errors" element="div" />
-                <!-- <spring:message code="screen.welcome.welcome" /> -->
-                    <h2><spring:message code="screen.welcome.instructions" /></h2>
-                    <div class="row fl-controls-left">
-                        <label for="username" class="fl-label"><spring:message code="screen.welcome.label.netid" /></label>
-						<c:if test="${empty sessionScope.openIdLocalId}">
-						<spring:message code="screen.welcome.label.netid.accesskey" var="userNameAccessKey" />
-						<form:input cssClass="required" cssErrorClass="error" id="username" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="false" htmlEscape="true" />
-						</c:if>
-                    </div>
-                    <div class="row fl-controls-left">
-                        <label for="password" class="fl-label"><spring:message code="screen.welcome.label.password" /></label>
-						<%--
-						NOTE: Certain browsers will offer the option of caching passwords for a user.  There is a non-standard attribute,
-						"autocomplete" that when set to "off" will tell certain browsers not to prompt to cache credentials.  For more
-						information, see the following web page:
-						http://www.geocities.com/technofundo/tech/web/ie_autocomplete.html
-						--%>
-						<spring:message code="screen.welcome.label.password.accesskey" var="passwordAccessKey" />
-						<form:password cssClass="required" cssErrorClass="error" id="password" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
-                    </div>
-  
-  
-  
-                    <div class="row btn-row">
-						<input type="hidden" name="lt" value="${loginTicket}" />
-						<input type="hidden" name="execution" value="${flowExecutionKey}" />
-						<input type="hidden" name="_eventId" value="submit" />
-                        
-                        <input id="warn" name="warn" value="true" tabindex="3" accesskey="<spring:message code="screen.welcome.label.warn.accesskey" />" type="hidden" />   
-                        
-                        <input class="btn-submit" name="submit" accesskey="l" value="<spring:message code="screen.welcome.button.login" />" tabindex="4" type="submit" />
-                        <input class="btn-reset" name="reset" accesskey="c" value="<spring:message code="screen.welcome.button.clear" />" tabindex="5" type="reset" />
-                    </div>
+            <div style="margin: 145px 18pt 0pt 10px;" class="loginbg">
+                <strong style="font-size: 14px; margin-bottom: 6px; display: block;">登录</strong>
+                <div class="login">
+                    <ul class="loginUl">
+                        <li class="field" id="showmess">
+                            <div class="pwderror">
+                                <h1 class="colorred"></h1>
+
+                            </div>
+                        </li>
+                        <li class="field">
+                            <div class="input">
+                                <label>用户名：</label> 
+                                <form:input  cssErrorClass="error" id="username" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="false" htmlEscape="true" />
+                            </div>
+                        </li>
+
+                        <li class="field">
+                            <div class="input">
+                                <label>密码：</label> 
+                                <form:password  cssErrorClass="error" id="password" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
+                            </div>
+                        </li>
+                        <li class="submit-field">
+                        <input type="hidden" name="lt" value="${loginTicket}" />
+                        <input type="hidden" name="execution" value="${flowExecutionKey}" />
+                        <input type="hidden" name="_eventId" value="submit" />
+
+                        <button id="loginbutton" type="submit" 
+                                class="bt colorw bold">登录</button> 
+                </li>
+                <li class="fieldnot"><span>还没有优惠啦账号?</span> <span
+                    class="colorred">&nbsp;&nbsp;&nbsp;&nbsp;</span></li>
+
+                </ul>
+                <div class="clear"></div>
+            </div>
             </form:form>
-          </div>
-<jsp:directive.include file="includes/bottom.jsp" />
+            
+            <p class="loginfj">
+                <span class="colorred">注：</span>如您手机已经绑定过优惠啦"优卡"(会员卡)，<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;并且首次登录网站请<a href="#">点击</a>
+            </p>
+        </div>
+    </div>
+
+</div>
+        
+    </body>
+</html>
+
+
