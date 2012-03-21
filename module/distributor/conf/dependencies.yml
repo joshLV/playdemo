@@ -1,4 +1,0 @@
-self: play -> distributor 0.1
-
-require:
-    - play
