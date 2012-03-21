@@ -1,6 +1,6 @@
 package models.resale;
 
-public enum ResaleStatus {
+public enum ResalerStatus {
 	NOMAL,   //正常
 	FROZEN,//冻结
 }

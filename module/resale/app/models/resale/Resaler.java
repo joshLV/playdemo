@@ -1,6 +1,7 @@
 package models.resale;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,11 +11,12 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import models.accounts.AccountType;
+import models.consumer.User;
 import play.db.jpa.Model;
 
 @Entity
 @Table(name="resaler")
-public class Resale extends Model {
+public class Resaler extends Model {
 
 	/**
 	 * 分销商账户类型
@@ -63,13 +65,13 @@ public class Resale extends Model {
 	 * 分销商状态
 	 */
 	@Enumerated(EnumType.STRING)
-	public ResaleStatus status;
+	public ResalerStatus status;
 
 	/**
 	 * 分销商等级
 	 */
 	@Enumerated(EnumType.STRING)
-	public ResaleLevel level;
+	public ResalerLevel level;
 
 	@Column(name="login_ip")
 	public String loginIp;
@@ -79,4 +81,25 @@ public class Resale extends Model {
 
 	@Column(name = "updated_at")
 	public Date updatedAt;
+	
+	/**
+	 * 判断用户名和手机是否唯一
+	 *
+	 * @param loginName 用户名
+	 * @param mobile 手机
+	 */
+	public static String checkValue(String loginName, String mobile) {
+
+		List<Resaler> cuserList = Resaler.find("byLoginName", loginName).fetch();
+		String returnFlag = "0";
+		//用户名存在的情况
+		if (cuserList.size() >0) returnFlag = "1";
+		else {
+			//手机存在的情况
+			List<User> mList = User.find("byMobile", mobile).fetch();
+			if(mList.size()>0) returnFlag = "2";
+		}
+
+		return returnFlag;
+	}
 }
