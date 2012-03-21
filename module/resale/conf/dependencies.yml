@@ -1,0 +1,4 @@
+self: play -> resale 0.1
+
+require:
+    - play
