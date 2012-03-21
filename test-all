@@ -1,23 +1,44 @@
-#!/bin/bash
-CURR_DIR=`pwd`
-function run_auto_test() {
-    if [[ -d $CURR_DIR/$1 ]]; then
-        echo "Runing Play on $CURR_DIR/$1 ..."
-        cd $CURR_DIR/$1
-        play clean 
+#!/usr/bin/env ruby
+
+require 'pathname'
+current_dir = Pathname.new(File.dirname(__FILE__)).realpath
+
+puts current_dir
+failed_result = []
+had_test_pass = false
+
+app_dirs = [
+            'website/www',
+            'website/home',
+            'traders/sales',
+            'traders/order',
+            'traders/home',
+            'traders/admin',
+            'cdn/image-server'
+           ]
+
+
+app_dirs.each do |dir|
+  # Dir.chdir("#{current_dir}/#{dir}")
+  cmd =<<END
+        cd #{current_dir}/#{dir}
+        play clean;
         play auto-test --deps
-        cd $CURR_DIR
-    else
-        echo "$CURR_DIR/$1 Not Exists!"
-    fi
-}
+END
+  IO.popen(cmd) { |output|
+    output.each_line { |line|
+      if line =~ /(FAILED|errors|ERROR)/
+        failed_result << line
+      else
+        puts "#{line}"
+        if line =~ /PASSED/
+          had_test_pass = true
+        end
+      end
+    }
+  }
+end
 
-run_auto_test website/www
-run_auto_test website/home
-run_auto_test traders/sales
-run_auto_test traders/order
-run_auto_test traders/home
-run_auto_test traders/admin
-run_auto_test cdn/image-server
-
-cd $CURR_DIR
+if had_test_pass
+  exit(1)
+end
