@@ -14,6 +14,7 @@ import models.consumer.User;
 import play.data.validation.Email;
 import play.data.validation.Match;
 import play.data.validation.MaxSize;
+import play.data.validation.Min;
 import play.data.validation.MinSize;
 import play.data.validation.Phone;
 import play.data.validation.Required;
@@ -75,6 +76,7 @@ public class Resaler extends Model {
 	public String address; 
 
 	@Column(name="postcode")
+	@Min(value=0)
 	public String postCode; 
 
 	@Column(name="identity_no")
@@ -116,7 +118,7 @@ public class Resaler extends Model {
 		if (cuserList.size() >0) returnFlag = "1";
 		else {
 			//手机存在的情况
-			List<User> mList = User.find("byMobile", mobile).fetch();
+			List<Resaler> mList = Resaler.find("byMobile", mobile).fetch();
 			if(mList.size()>0) returnFlag = "2";
 		}
 
