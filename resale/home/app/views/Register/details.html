@@ -1,0 +1,120 @@
+#{extends 'main.html' /}
+#{set title:'优惠啦 - 商品详情' /}
+#{set 'moreStyles'}
+<link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css"/>
+<link href="@{'/public/stylesheets/lanrentuku.css'}" rel="stylesheet" type="text/css"/>
+<link href="@{'/public/stylesheets/shop_info_more.css'}" rel="stylesheet" type="text/css"/>
+#{/set}
+<body>
+<div id="wrap_main">
+    <!--    最顶部导航-->
+    <div id="wrap_top">#{include "share/topNavigator.html"/}</div>
+    <div id="wrap_top_header">
+        <div id="wrap_top_header_left">
+            <img src="@{'/public/images/logo.jpg'}"/>
+        </div>
+        <div id="wrap_top_middle">卷生活-惠生活</div>
+
+    </div>
+    <div style="clear: both"></div>
+    <div class="fen_g"></div>
+</div>
+<!--主体内容部分-->
+<div id="wrap_content">
+    <div id="content_zhuti">
+        <div class="zhu_nav_title">
+            您的位置：首页>我的优惠啦>我购买的商品><span class="font_weight">商品详情</span>
+        </div>
+        <div class="tab_top">
+            <span>商品详情</span>
+        </div>
+        <div class="tab_top_box">
+            <div class="tab_top_info">
+                <span class="tab_one">订单号：${order.orderNumber}</span><span
+                    class="tab_two">成交时间：${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
+     <span>付款时间：${order.paidAt?.format("yyyy-MM-dd HH:mm:ss")}
+     </span>
+            </div>
+
+            <table width="975" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
+                <tr bgcolor="F6F6F6">
+                    <th width="369"><span class="th_shop_text">商品</span></th>
+                    <th width="69">类型</th>
+                    <th width="81" height="30" bgcolor="F6F6F6">单价（元）</th>
+                    <th width="66">数量</th>
+                    <th width="118">劵号</th>
+                    <th width="163">实付款（元）</th>
+                    <th width="93">订单状态</th>
+                </tr>
+            #{set m=0/}
+            #{list items:orderItems, as:'row' }
+                <tr>
+                    <td align="center" valign="middle">
+                        <div class="shop_img">
+                            <img src=""/>
+                        </div>
+                        <div class="col_one_text">${row.goods.name}</div>
+                    </td>
+                    <td width="69" align="center" valign="middle">&{'goods.'+row.goods.materialType}</td>
+                    <td width="81" align="center" valign="middle">${row.salePrice}</td>
+                    <td width="66" align="center" valign="middle">${row.buyNumber}</td>
+                    <td width="118" align="center" valign="middle"><span
+                            class="strong_gray">劵号：${row.eCoupon==null ?'':row.eCoupon.eCouponSn}</span></td>
+                    #{if (++m == 1) }
+                        <td rowspan="${orderItems.size()}" align="center" valign="middle">${order.amount}<br/> (含运费)
+                        </td>
+                        <td rowspan="${orderItems.size()}" align="center" valign="middle">
+                        &{'order.'+order.status}
+                        </td>
+                    #{/if}
+                </tr>
+            #{/list}
+            </table>
+        </div>
+        <div class="buttom_tab_info2">
+            商品共：<span class="font_cheng">${orderItems.size()}件</span> 申请退款商品共：<span class="font_cheng">0件</span> 合计退款金额：<span
+                class="font_cheng">0元</span>
+        </div>
+        <div style="clear: both"></div>
+        <div style="clear: both"></div>
+        <div class="tab_top">
+            <span>收货人信息</span>
+        </div>
+        <div class="tab_top_box ren_info">
+
+            <table width="975" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
+            #{if "[REAL]".equals(orderItems.goods.materialType)}
+                <tr bgcolor="F6F6F6">
+                    <th width="112" height="30">收货人</th>
+                    <th width="878" align="left">
+                        <div class="margin_left_30">${order.receiverName}</div>
+                    </th>
+                </tr>
+                <tr>
+                    <td width="112" height="28" align="center" valign="middle">详细地址</td>
+                    <td width="878" align="left" valign="middle">
+                        <div class="margin_left_10">${order.receiverAddress}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="112" height="28" align="center" valign="middle">运单号</td>
+                    <td align="left" valign="middle">
+                        <div class="margin_left_10">${order.deliveryNo}<a class="blue_alink" href="#">查看物流信息</a>
+                        </div>
+                    </td>
+                </tr>
+            #{/if}
+                <tr>
+                    <td height="28" align="center" valign="middle">收货手机</td>
+                    <td align="left" valign="middle">
+                        <div class="margin_left_10">${order.receiverMobile}</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+    </div>
+</div>
+</body>
+</html>
