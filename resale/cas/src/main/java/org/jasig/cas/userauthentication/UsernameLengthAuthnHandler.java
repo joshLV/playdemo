@@ -38,7 +38,7 @@ public class UsernameLengthAuthnHandler extends AbstractUsernamePasswordAuthenti
         if (log.isDebugEnabled()) {
             log.debug("email=" + username);
         }
-        String sql = "select * from users where  email= ?";
+        String sql = "select * from resaler where  email= ?";
         Object[] params = new Object[] { username };
 
         List<Map<String, Object>> userlist = getJdbcTemplate().queryForList(sql, params);
