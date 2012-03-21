@@ -17,6 +17,7 @@ require:
     - org.jsoup -> jsoup 1.6.1
     - sms -> sms
     - play -> rabbitmq 0.3
+    - play -> logisimayml 1.8
     
 
 repositories:

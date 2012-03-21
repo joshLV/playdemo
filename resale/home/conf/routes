@@ -5,7 +5,7 @@
 #注册
 GET     /register                               Register.index
 POST    /register                               Register.create
-GET     /captcha                                Register.captcha
+POST    /register/checkLoginName                Register.checkLoginName
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

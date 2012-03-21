@@ -9,6 +9,7 @@ resaler.CONSUMER=个人
 resaler.COMPANY=公司
 
 validation.required=请输入%s!
+validation.min=只能是数字！
 validation.minSize=%s的长度至少%d位!
 validation.maxSize=%s的长度不能超过%d!
 validation.maxFileSize=%s的长度不能超过%d个字节!
