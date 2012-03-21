@@ -47,7 +47,7 @@ import play.mvc.Router;
  */
 public class CASUtils {
 
-    private static final Pattern hostPattern = Pattern.compile("([^\\.:]+)(\\.([^\\.]+)\\.([^\\.]+)\\.com)?(:[\\d]+)?");
+    private static final Pattern hostPattern = Pattern.compile("([^\\.:]+)(\\.([^\\.]+)\\.([^\\.]+)\\.\\w+)?(:[\\d]+)?");
 
     /**
      * Method that generate the CAS login page URL.
