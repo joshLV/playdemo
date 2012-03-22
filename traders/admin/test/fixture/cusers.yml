@@ -1,5 +1,5 @@
 admin.SupplierUser(SupplierUser_1):
- "companyId": "2"
+ "supplierId": "2"
  "loginName": "1"
  "mobile": "1300000000"
  "passwordSalt": "gXP0W9"
@@ -9,7 +9,7 @@ admin.SupplierUser(SupplierUser_1):
  "deleted": "UN_DELETED"
 
 admin.SupplierUser(SupplierUser_2):
- "companyId": "2"
+ "supplierId": "2"
  "loginName": "2"
  "mobile": "1300000001"
  "passwordSalt": "gXP0W9"
@@ -19,7 +19,7 @@ admin.SupplierUser(SupplierUser_2):
  "deleted": "UN_DELETED"
  
 admin.SupplierUser(SupplierUser_3):
- "companyId": "2"
+ "supplierId": "2"
  "loginName": "yan"
  "mobile": "13211111111"
  "encryptedPassword": "ff7edd82576fd2b9066cdf9a978f6ab5"

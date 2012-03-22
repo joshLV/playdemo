@@ -21,7 +21,7 @@ public class ShopUnitTest extends UnitTest {
     @Test
     public void testCreate() {
         Shop shop = new Shop();
-        shop.companyId = 1l;
+        shop.supplierId = 1l;
         shop.areaId = "02101001";
         shop.name = "北京";
         shop.address = "上海";
@@ -36,7 +36,7 @@ public class ShopUnitTest extends UnitTest {
         Shop condition = new Shop();
         condition.name = "宛平南路";
         condition.address = "宛平南路";
-        condition.companyId = 1;
+        condition.supplierId = 1;
         ModelPaginator<Shop> shops = Shop.query(condition, 1, 10);
         assertEquals(1, shops.size());
     }

@@ -1,7 +1,7 @@
 sales.Goods(Goods_001):
  "no": "001"
  "name": "哈根达斯100元抵用券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_2"
  "imagePath": "/0/0/133/origin.jpg"
  "effectiveAt": "2012-03-01T00:00:00"
@@ -26,7 +26,7 @@ sales.Goods(Goods_001):
 sales.Goods(Goods_002):
  "no": "002"
  "name": "书本"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
@@ -49,7 +49,7 @@ sales.Goods(Goods_002):
 sales.Goods(Goods_003):
  "no": "003"
  "name": "一号店抵用券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
@@ -72,7 +72,7 @@ sales.Goods(Goods_003):
 sales.Goods(Goods_004):
  "no": "004"
  "name": "京东商城50元京券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
@@ -95,7 +95,7 @@ sales.Goods(Goods_004):
 sales.Goods(Goods_005):
  "no": "005"
  "name": "京东商城100元京券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
@@ -118,7 +118,7 @@ sales.Goods(Goods_005):
 sales.Goods(Goods_006):
  "no": "006"
  "name": "京东商城200元京券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
@@ -141,7 +141,7 @@ sales.Goods(Goods_006):
 sales.Goods(Goods_007):
  "no": "007"
  "name": "京东商城300元京券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
@@ -164,7 +164,7 @@ sales.Goods(Goods_007):
 sales.Goods(Goods_008):
  "no": "008"
  "name": "京东商城400元京券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
@@ -187,7 +187,7 @@ sales.Goods(Goods_008):
 sales.Goods(Goods_009):
  "no": "009"
  "name": "京东商城500元京券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
@@ -210,7 +210,7 @@ sales.Goods(Goods_009):
 sales.Goods(Goods_010):
  "no": "010"
  "name": "京东商城550元京券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
@@ -233,7 +233,7 @@ sales.Goods(Goods_010):
 sales.Goods(Goods_011):
  "no": "011"
  "name": "京东商城600元京券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
@@ -256,7 +256,7 @@ sales.Goods(Goods_011):
 sales.Goods(Goods_012):
  "no": "012"
  "name": "京东商城650元京券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
@@ -279,7 +279,7 @@ sales.Goods(Goods_012):
 sales.Goods(Goods_013):
  "no": "013"
  "name": "京东商城700元京券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
@@ -302,7 +302,7 @@ sales.Goods(Goods_013):
 sales.Goods(Goods_014):
  "no": "014"
  "name": "京东商城800元京券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
@@ -325,7 +325,7 @@ sales.Goods(Goods_014):
 sales.Goods(Goods_015):
  "no": "015"
  "name": "京东商城900元京券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
@@ -348,7 +348,7 @@ sales.Goods(Goods_015):
 sales.Goods(Goods_016):
  "no": "016"
  "name": "京东商城1000元京券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
@@ -371,7 +371,7 @@ sales.Goods(Goods_016):
 sales.Goods(Goods_017):
  "no": "017"
  "name": "京东商城1500元京券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"

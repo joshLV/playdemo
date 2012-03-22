@@ -2,58 +2,58 @@ sales.Brand(Brand_1):
  "name": "来一份"
  "displayOrder": "100"
  "category": "Category_1"
- "companyId": 1
+ "supplierId": 1
 
 sales.Brand(Brand_2):
  "name": "豆捞坊"
  "displayOrder": "200"
  "category": "Category_1"
- "companyId": 1
+ "supplierId": 1
 
 sales.Brand(Brand_3):
  "name": "来一份1"
  "displayOrder": "100"
  "category": "Category_1"
- "companyId": 1
+ "supplierId": 1
 
 sales.Brand(Brand_4):
  "name": "豆捞坊1"
  "displayOrder": "200"
  "category": "Category_1"
- "companyId": 2
+ "supplierId": 2
 
 sales.Brand(Brand_5):
  "name": "来一份2"
  "displayOrder": "100"
  "category": "Category_1"
- "companyId": 2
+ "supplierId": 2
 
 sales.Brand(Brand_6):
  "name": "豆捞坊2"
  "displayOrder": "200"
  "category": "Category_1"
- "companyId": 2
+ "supplierId": 2
 
 sales.Brand(Brand_7):
  "name": "来一份3"
  "displayOrder": "100"
  "category": "Category_1"
- "companyId": 2
+ "supplierId": 2
 
 sales.Brand(Brand_8):
  "name": "豆捞坊3"
  "displayOrder": "200"
  "category": "Category_1"
- "companyId": 2
+ "supplierId": 2
 
 sales.Brand(Brand_9):
  "name": "来一份4"
  "displayOrder": "100"
  "category": "Category_1"
- "companyId": 2
+ "supplierId": 2
 
 sales.Brand(Brand_10):
  "name": "豆捞坊4"
  "displayOrder": "200"
  "category": "Category_1"
- "companyId": 2
+ "supplierId": 2

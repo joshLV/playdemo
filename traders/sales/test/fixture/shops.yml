@@ -2,7 +2,7 @@
 # This module is a part of LogiSima (http://www.logisima.com).
 
 sales.Shop(shop1):
- companyId: 1
+ supplierId: 1
  areaId: "02101001"
  name: 优惠啦
  address: 宛平南路
@@ -13,7 +13,7 @@ sales.Shop(shop1):
  lockVersion: 0
 
 sales.Shop(shop2):
- companyId: 1
+ supplierId: 1
  areaId: "02101002"
  name: 优惠啦二店
  address: 宛平南路二号

@@ -1,7 +1,7 @@
 package controllers;
 
 import com.uhuila.common.util.FileUploadUtil;
-import controllers.supplier.cas.SecureCAS;
+import controllers.modules.cas.SecureCAS;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;

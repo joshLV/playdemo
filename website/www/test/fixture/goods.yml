@@ -6,7 +6,7 @@ sales.Goods(goods1):
   createdAt: 2012-02-27
   status: ONSALE
   deleted: UN_DELETED
-  companyId: 1
+  supplierId: 1
   effectiveAt: 2012-02-01
   expireAt: 2012-02-02
 sales.Goods(goods2):
@@ -17,7 +17,7 @@ sales.Goods(goods2):
   createdAt: 2012-02-27
   status: ONSALE
   deleted: DELETED
-  companyId: 1
+  supplierId: 1
 sales.Goods(goods3):
   name: "测试商品3"
   originalPrice: 100
@@ -26,7 +26,7 @@ sales.Goods(goods3):
   createdAt: 2012-02-27
   status: OFFSALE
   deleted: UN_DELETED
-  companyId: 1
+  supplierId: 1
 sales.Goods(goods4):
   name: "测试商品4"
   originalPrice: 100
@@ -35,6 +35,6 @@ sales.Goods(goods4):
   createdAt: 2012-02-27
   status: ONSALE
   deleted: UN_DELETED
-  companyId: 1
+  supplierId: 1
   effectiveAt: 2012-02-01
   expireAt: 2012-02-02

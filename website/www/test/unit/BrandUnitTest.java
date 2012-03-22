@@ -34,12 +34,11 @@ public class BrandUnitTest extends UnitTest {
     }
 
     @Test
-    public void testFindByCompanyId() {
-        long companyId = 1;
+    public void testFindByOrder() {
 
-        List<Brand> brands = Brand.findByCompanyId(companyId);
+        List<Brand> brands = Brand.findByOrder();
 
-        assertEquals(3, brands.size());
+        assertEquals(10, brands.size());
     }
 
 }

@@ -62,9 +62,9 @@ public class Goods extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void add() {
-        Long companyId = getCompanyId();
-        List<Shop> shopList = Shop.findShopByCompany(companyId);
-        List<Brand> brandList = Brand.findByCompanyId(companyId);
+        Long supplierId = getSupplierId();
+        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+        List<Brand> brandList = Brand.findByOrder();
         List<Category> categoryList = Category.findByParent(0);
         List<Category> subCategoryList = new ArrayList<>();
         if (categoryList.size() > 0) {
@@ -77,7 +77,7 @@ public class Goods extends Controller {
         render(shopList, brandList, categoryList, subCategoryList);
     }
 
-    private static Long getCompanyId() {
+    private static Long getSupplierId() {
         //todo
         return 1l;
     }
@@ -100,7 +100,7 @@ public class Goods extends Controller {
      */
     public static void create(@Valid models.sales.Goods goods, @Required File image, Long topCategoryId,
                               boolean isAllShop) {
-        Long companyId = getCompanyId();
+        Long supplierId = getSupplierId();
         if (isAllShop && goods.shops != null) {
             goods.shops = null;
         }
@@ -142,8 +142,8 @@ public class Goods extends Controller {
                 renderArgs.put("isAllShop", true);
             }
 
-            List<Shop> shopList = Shop.findShopByCompany(companyId);
-            List<Brand> brandList = Brand.findByCompanyId(companyId);
+            List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+            List<Brand> brandList = Brand.findByOrder();
             List<Category> categoryList = Category.findByParent(0);
             List<Category> subCategoryList = new ArrayList<>();
             if (categoryList.size() > 0) {
@@ -162,7 +162,7 @@ public class Goods extends Controller {
         }
 
         //添加商品处理
-        goods.companyId = companyId;
+        goods.supplierId = supplierId;
         goods.createdBy = getCompanyUser();
         goods.deleted = DeletedStatus.UN_DELETED;
         goods.saleCount = 0;
@@ -212,8 +212,8 @@ public class Goods extends Controller {
      */
     public static void edit(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
-        List<Shop> shopList = Shop.findShopByCompany(goods.companyId);
-        List<Brand> brandList = Brand.findByCompanyId(goods.companyId);
+        List<Shop> shopList = Shop.findShopBySupplier(goods.supplierId);
+        List<Brand> brandList = Brand.findByOrder();
         render(goods, shopList, brandList);
     }
 

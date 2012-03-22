@@ -4,7 +4,7 @@
 models.sales.Goods(models_sales_Goods_125):
  "no": "5346"
  "name": "书本"
- "companyId": "1"
+ "supplierId": "1"
  "imagePath": "/0/0/125/origin.jpg"
  "originalPrice": "100"
  "salePrice": "10"
@@ -24,7 +24,7 @@ models.sales.Goods(models_sales_Goods_125):
 models.sales.Goods(models_sales_Goods_126):
  "no": "002"
  "name": "测试商品2"
- "companyId": "1"
+ "supplierId": "1"
  "imagePath": "/0/0/126/origin.jpg"
  "originalPrice": "100"
  "salePrice": "10"
@@ -46,7 +46,7 @@ models.sales.Goods(models_sales_Goods_126):
 models.sales.Goods(models_sales_Goods_127):
  "no": "001"
  "name": "书本"
- "companyId": "1"
+ "supplierId": "1"
  "imagePath": "/0/0/127/origin.jpg"
  "effectiveAt": "2012-02-28T00:00:00"
  "expireAt": "2012-02-29T00:00:00"
@@ -73,7 +73,7 @@ models.sales.Goods(models_sales_Goods_127):
 models.sales.Goods(models_sales_Goods_128):
  "no": "5346"
  "name": "书本"
- "companyId": "1"
+ "supplierId": "1"
  "imagePath": "/0/0/93/origin.jpg"
  "originalPrice": "100"
  "salePrice": "10"
@@ -97,7 +97,7 @@ models.sales.Category(models_sales_Category_2):
 models.sales.Goods(models_sales_Goods_129):
  "no": "002"
  "name": "测试商品2"
- "companyId": "1"
+ "supplierId": "1"
  "imagePath": "/0/0/126/origin.jpg"
  "originalPrice": "100"
  "salePrice": "10"
@@ -168,7 +168,7 @@ models.sales.Area(models_sales_Area_02102001):
 models.sales.Goods(models_sales_Goods_93):
  "no": "5346"
  "name": "书本"
- "companyId": "1"
+ "supplierId": "1"
  "imagePath": "/0/0/93/origin.jpg"
  "originalPrice": "100"
  "salePrice": "10"
@@ -186,7 +186,7 @@ models.sales.Goods(models_sales_Goods_93):
  "materialType": "ELECTRONIC"
 
 models.sales.Shop(models_sales_Shop_5):
- "companyId": "1"
+ "supplierId": "1"
  "areaId": "2102001"
  "name": "宛平南路店2"
  "address": "宛平南路2号"
@@ -201,7 +201,7 @@ models.sales.Shop(models_sales_Shop_5):
 models.sales.Goods(models_sales_Goods_130):
  "no": "5346"
  "name": "书本"
- "companyId": "1"
+ "supplierId": "1"
  "imagePath": "/0/0/130/origin.jpg"
  "effectiveAt": "2012-02-29T00:00:00"
  "expireAt": "2012-03-03T00:00:00"
@@ -221,7 +221,7 @@ models.sales.Goods(models_sales_Goods_130):
  "materialType": "REAL"
 
 models.sales.Shop(models_sales_Shop_4):
- "companyId": "1"
+ "supplierId": "1"
  "areaId": "2102001"
  "name": "优惠拉"
  "address": "优惠啦2店"
@@ -234,7 +234,7 @@ models.sales.Shop(models_sales_Shop_4):
  "lockVersion": "0"
 
 models.sales.Shop(models_sales_Shop_2):
- "companyId": "1"
+ "supplierId": "1"
  "areaId": "1"
  "name": "优惠啦1店"
  "address": "优惠啦1店"
@@ -247,7 +247,7 @@ models.sales.Shop(models_sales_Shop_2):
 models.sales.Goods(models_sales_Goods_131):
  "no": "001"
  "name": "书本"
- "companyId": "1"
+ "supplierId": "1"
  "imagePath": "/0/0/131/origin.jpg"
  "effectiveAt": "2012-02-29T00:00:00"
  "expireAt": "2012-03-02T00:00:00"
@@ -267,7 +267,7 @@ models.sales.Goods(models_sales_Goods_131):
  "materialType": "ELECTRONIC"
 
 models.sales.Shop(models_sales_Shop_1):
- "companyId": "1"
+ "supplierId": "1"
  "areaId": "1"
  "name": "优惠拉"
  "address": "宛平南路"

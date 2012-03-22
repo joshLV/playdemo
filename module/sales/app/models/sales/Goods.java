@@ -22,8 +22,6 @@ import play.modules.paginate.JPAExtPaginator;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Entity
 @Table(name = "goods")
@@ -59,8 +57,8 @@ public class Goods extends Model {
     /**
      * 所属商户ID
      */
-    @Column(name = "company_id")
-    public Long companyId;
+    @Column(name = "supplier_id")
+    public Long supplierId;
 
     @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name
@@ -69,7 +67,7 @@ public class Goods extends Model {
 
     public void filterShops() {
         if (shops == null) {
-            List<Shop> shopList = Shop.findShopByCompany(companyId);
+            List<Shop> shopList = Shop.findShopBySupplier(supplierId);
             shops = new HashSet<>();
             shops.addAll(shopList);
             return;

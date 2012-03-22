@@ -1,15 +1,22 @@
 #{extends 'layout_trader/layout.html' /}
-#{set title:'电子消费券一览' /}
+#{set title:'消费券一览' /}
 #{include '/share/nav.html' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/goods.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 
 <div class="body">
-    <legend>电子消费券一览</legend>
+    <legend>消费券一览</legend>
     <form class="form-horizontal" name="frmlist" action="@{Goods.index()}" method="GET">
         <table width="100%">
             <tr>
+                <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
+                #{select 'condition.supplier', id:supplier, class:'input-small', value:condition?.supplier}
+
+                    #{option ""}不限#{/option}
+                    #{option "ONSALE"}&{'goods.ONSALE'}#{/option}
+                    #{option "OFFSALE"}&{'goods.OFFSALE'}#{/option}
+                #{/select}</td>
                 <td width="30%">商品名称：<input type="text" name="condition.name" class="input-medium"
                                             value="${condition?.name}"/></td>
                 <td width="30%">商品编号：<input type="text" name="condition.no" class="input-medium"

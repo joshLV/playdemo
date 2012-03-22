@@ -2,7 +2,7 @@ package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
-import controllers.supplier.cas.SecureCAS;
+import controllers.modules.cas.SecureCAS;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import org.apache.commons.lang.StringUtils;
@@ -129,7 +129,6 @@ public class Suppliers extends Controller {
     }
 
     public static void delete(long id) {
-        System.out.println("id:" + id);
         Supplier.delete(id);
         ok();
     }

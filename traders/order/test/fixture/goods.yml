@@ -1,7 +1,7 @@
 sales.Goods(Goods_001):
  "no": "001"
  "name": "哈根达斯100元抵用券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_2"
  "imagePath": "/0/0/133/origin.jpg"
  "effectiveAt": "2012-03-01T00:00:00"
@@ -26,7 +26,7 @@ sales.Goods(Goods_001):
 sales.Goods(Goods_002):
  "no": "002"
  "name": "哈根达斯200元抵用券"
- "companyId": "1"
+ "supplierId": "1"
  "brand": "Brand_2"
  "imagePath": "/0/0/133/origin.jpg"
  "effectiveAt": "2012-03-01T00:00:00"

@@ -18,7 +18,7 @@ sales.Goods(Goods_1):
   createdAt: 2012-02-27
   status: ONSALE
   deleted: UN_DELETED
-  companyId: 1
+  supplierId: 1
   effectiveAt: 2012-02-01
   expireAt: 2012-02-02
 
@@ -30,6 +30,6 @@ sales.Goods(Goods_2):
   createdAt: 2012-02-27
   status: ONSALE
   deleted: UN_DELETED
-  companyId: 1
+  supplierId: 1
   effectiveAt: 2012-02-01
   expireAt: 2012-02-02

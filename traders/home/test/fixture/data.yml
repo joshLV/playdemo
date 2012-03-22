@@ -3,7 +3,7 @@
 
 
 models.sales.Shop(models_sales_Shop_1):
- "companyId": "1"
+ "supplierId": "1"
  "areaId": "02102001"
  "name": "优惠拉"
  "address": "宛平南路"
@@ -50,7 +50,7 @@ models.accounts.Account(models_accounts_Account_1):
 models.sales.Goods(models_sales_Goods_142):
  "no": "033"
  "name": "来一份"
- "companyId": "1"
+ "supplierId": "1"
  "imagePath": "/0/0/142/origin.jpg"
  "effectiveAt": "2012-03-05T00:00:00"
  "expireAt": "2012-03-08T00:00:00"
@@ -72,7 +72,7 @@ models.sales.Goods(models_sales_Goods_142):
 models.sales.Goods(models_sales_Goods_143):
  "no": "033"
  "name": "来一份"
- "companyId": "1"
+ "supplierId": "1"
  "imagePath": "/0/0/143/origin.jpg"
  "effectiveAt": "2012-03-05T00:00:00"
  "expireAt": "2012-03-08T00:00:00"
@@ -92,7 +92,7 @@ models.sales.Goods(models_sales_Goods_143):
  "materialType": "REAL"
 
 models.sales.Shop(models_sales_Shop_2):
- "companyId": "1"
+ "supplierId": "1"
  "areaId": "021"
  "name": "优惠啦1店"
  "address": "优惠啦1店"
@@ -103,7 +103,7 @@ models.sales.Shop(models_sales_Shop_2):
  "lockVersion": "0"
 
 models.sales.Shop(models_sales_Shop_4):
- "companyId": "1"
+ "supplierId": "1"
  "areaId": "021"
  "name": "优惠拉"
  "address": "优惠啦2店"
@@ -116,7 +116,7 @@ models.sales.Shop(models_sales_Shop_4):
  "lockVersion": "0"
 
 models.sales.Shop(models_sales_Shop_5):
- "companyId": "1"
+ "supplierId": "1"
  "areaId": "02101001"
  "name": "宛平南路店2"
  "address": "宛平南路2号"
@@ -131,7 +131,7 @@ models.sales.Shop(models_sales_Shop_5):
 models.sales.Goods(models_sales_Goods_149):
  "no": "334"
  "name": "345"
- "companyId": "1"
+ "supplierId": "1"
  "shops":
  - "models_sales_Shop_1"
  - "models_sales_Shop_2"
@@ -160,7 +160,7 @@ models.sales.Goods(models_sales_Goods_149):
 models.sales.Goods(models_sales_Goods_148):
  "no": "003"
  "name": "书本3"
- "companyId": "1"
+ "supplierId": "1"
  "shops":
  - "models_sales_Shop_1"
  - "models_sales_Shop_2"
@@ -188,7 +188,7 @@ models.sales.Goods(models_sales_Goods_148):
 models.sales.Goods(models_sales_Goods_145):
  "no": "033"
  "name": "来一份"
- "companyId": "1"
+ "supplierId": "1"
  "imagePath": "/0/0/145/origin.jpg"
  "effectiveAt": "2012-03-05T00:00:00"
  "expireAt": "2012-03-08T00:00:00"
@@ -210,7 +210,7 @@ models.sales.Goods(models_sales_Goods_145):
 models.sales.Goods(models_sales_Goods_144):
  "no": "033"
  "name": "来一份"
- "companyId": "1"
+ "supplierId": "1"
  "imagePath": "/0/0/144/origin.jpg"
  "effectiveAt": "2012-03-05T00:00:00"
  "expireAt": "2012-03-08T00:00:00"
@@ -232,7 +232,7 @@ models.sales.Goods(models_sales_Goods_144):
 models.sales.Goods(models_sales_Goods_147):
  "no": "006"
  "name": "书本1"
- "companyId": "1"
+ "supplierId": "1"
  "shops":
  - "models_sales_Shop_1"
  - "models_sales_Shop_2"
@@ -259,7 +259,7 @@ models.sales.Goods(models_sales_Goods_147):
 models.sales.Goods(models_sales_Goods_146):
  "no": "006"
  "name": "书本1"
- "companyId": "1"
+ "supplierId": "1"
  "shops":
  - "models_sales_Shop_2"
  - "models_sales_Shop_4"
@@ -284,7 +284,7 @@ models.sales.Goods(models_sales_Goods_146):
 models.sales.Goods(models_sales_Goods_150):
  "no": "1231"
  "name": "书本1"
- "companyId": "1"
+ "supplierId": "1"
  "shops":
  - "models_sales_Shop_1"
  - "models_sales_Shop_2"

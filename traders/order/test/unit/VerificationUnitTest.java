@@ -45,20 +45,20 @@ public class VerificationUnitTest extends UnitTest {
 	@Test
 	public void queryInfo() {
 		String eCouponSn = "003";
-		Long companyId = 1l;
-		Map<String, Object> map = ECoupon.queryInfo(eCouponSn, companyId);
+		Long supplierId = 1l;
+		Map<String, Object> map = ECoupon.queryInfo(eCouponSn, supplierId);
 		assertEquals(0, map.size());
 
 		eCouponSn = "002";
-		map = ECoupon.queryInfo(eCouponSn, companyId);
+		map = ECoupon.queryInfo(eCouponSn, supplierId);
 		assertEquals("哈根达斯200元抵用券", map.get("name"));
 	}
 
 	@Test
 	public void testUpdate() {
 		String eCouponSn = "002";
-		Long companyId = 1l;
-		assertTrue(ECoupon.update(eCouponSn, companyId));
+		Long supplierId = 1l;
+		assertTrue(ECoupon.update(eCouponSn, supplierId));
 		List<ECoupon> couponList= ECoupon.find("byECouponSn", eCouponSn).fetch();
 		assertEquals(couponList.get(0).status ,ECouponStatus.CONSUMED);
 	}
@@ -70,10 +70,10 @@ public class VerificationUnitTest extends UnitTest {
 	 */
 	@Test
 	public void testQueryCoupons() {
-		Long companyId = 1l;
+		Long supplierId = 1l;
 		int pageNumber = 1;
 		int pageSize = 15;
-		List<ECoupon> list = ECoupon.queryCoupons(companyId, pageNumber, pageSize);
+		List<ECoupon> list = ECoupon.queryCoupons(supplierId, pageNumber, pageSize);
 		assertEquals(2, list.size());
 
 	}

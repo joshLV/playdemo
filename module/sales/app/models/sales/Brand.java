@@ -13,8 +13,8 @@ import java.util.List;
 public class Brand extends Model {
     public String name;
     public String logo;
-    @Column(name = "company_id")
-    public Long companyId;
+    @Column(name = "supplier_id")
+    public Long supplierId;
     @Column(name = "display_order")
     public int displayOrder;
 
@@ -22,8 +22,8 @@ public class Brand extends Model {
         return find("order by displayOrder").fetch(limit);
     }
 
-    public static List<Brand> findByCompanyId(long companyId) {
-        return find("companyId=? order by displayOrder", companyId).fetch();
+    public static List<Brand> findByOrder() {
+        return find("order by displayOrder").fetch();
     }
 
     public static List<Brand> findTop(int limit, long brandId) {

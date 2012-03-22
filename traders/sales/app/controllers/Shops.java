@@ -1,13 +1,11 @@
 package controllers;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.uhuila.common.constants.DeletedStatus;
 
 import models.sales.Area;
-import models.sales.AreaType;
 import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
@@ -31,9 +29,9 @@ public class Shops extends Controller {
         String page = params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
-        long companyId = getCompanyId();
+        long supplierId = getSupplierId();
         Shop shopCondition = new Shop();
-        shopCondition.companyId = companyId;
+        shopCondition.supplierId = supplierId;
         shopCondition.name = params.get("shopname");
         shopCondition.address = params.get("shopaddr");
         ModelPaginator<Shop> shopPage = Shop.query(shopCondition, pageNumber, PAGE_SIZE);
@@ -52,7 +50,7 @@ public class Shops extends Controller {
             add(shop);
         }
 
-        shop.companyId = 1;
+        shop.supplierId = 1;
         shop.deleted = DeletedStatus.UN_DELETED;
         shop.createdAt = new Date();
         shop.create();
@@ -137,7 +135,7 @@ public class Shops extends Controller {
         index();
     }
 
-    private static long getCompanyId() {
+    private static long getSupplierId() {
         //todo
         return 1;
     }

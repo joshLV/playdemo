@@ -239,15 +239,15 @@ public class Order extends Model {
      * 订单查询
      *
      * @param order      订单信息
-     * @param companyId  商户ID
+     * @param supplierId  商户ID
      * @param pageNumber 第几页
      * @param pageSize   每页记录
      * @return ordersPage 订单信息
      */
-    public static JPAExtPaginator<Order> query(Order order, Long companyId, int pageNumber, int pageSize) {
+    public static JPAExtPaginator<Order> query(Order order, Long supplierId, int pageNumber, int pageSize) {
         OrdersCondition condition = new OrdersCondition();
         JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
-                ("Order o", "o", Order.class, condition.getFilter(order, companyId),
+                ("Order o", "o", Order.class, condition.getFilter(order, supplierId),
                         condition.paramsMap)
                 .orderBy(condition.getOrderByExpress());
         orderPage.setPageNumber(pageNumber);

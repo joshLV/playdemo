@@ -14,15 +14,15 @@ public class OrdersCondition {
 	/**
 	 *
 	 * @param order 订单信息
-	 * @param companyId 商户ID
+	 * @param supplierId 商户ID
 	 * @return sql 查询条件
 	 */
-	public String getFilter(Order order,Long companyId) {
+	public String getFilter(Order order,Long supplierId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" o.deleted = :deleted");
 		paramsMap.put("deleted", DeletedStatus.UN_DELETED);
-		sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.companyId = :companyId)");
-		paramsMap.put("companyId", companyId);
+		sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.supplierId = :supplierId)");
+		paramsMap.put("supplierId", supplierId);
 
 		if (order.createdAtBegin != null) {
 			sql.append(" and o.createdAt >= :createdAtBegin");

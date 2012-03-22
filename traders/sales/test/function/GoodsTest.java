@@ -1,29 +1,20 @@
 package function;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import models.sales.Area;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.GoodsStatus;
-import models.sales.Shop;
-
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.supplier.cas.Security;
+import models.sales.*;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import play.Play;
 import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 
-import com.uhuila.common.constants.DeletedStatus;
-
-import controllers.supplier.cas.Security;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GoodsTest extends FunctionalTest {
 
@@ -87,7 +78,7 @@ public class GoodsTest extends FunctionalTest {
         Map<String, String> goodsParams = new HashMap<>();
         goodsParams.put("goods.name", "laiyifen1");
         goodsParams.put("goods.no", "20000000");
-        goodsParams.put("goods.companyId", "0");
+        goodsParams.put("goods.supplierId", "0");
         goodsParams.put("goods.status", GoodsStatus.ONSALE.toString());
         goodsParams.put("goods.prompt", "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
         goodsParams.put("goods.details", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");

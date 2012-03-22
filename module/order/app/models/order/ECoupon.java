@@ -99,17 +99,17 @@ public class ECoupon extends Model {
      * 根据页面录入券号查询对应信息
      *
      * @param eCouponSn 券号
-     * @param companyId 商户ID
+     * @param supplierId 商户ID
      * @return ECoupon 券信息
      */
-    public static ECoupon query(String eCouponSn, Long companyId) {
+    public static ECoupon query(String eCouponSn, Long supplierId) {
         EntityManager entityManager = play.db.jpa.JPA.em();
         StringBuilder sql = new StringBuilder();
         Map<String, Object> params = new HashMap<String, Object>();
         sql.append("select distinct e from ECoupon e where 1=1 ");
-        if (companyId != null) {
-            sql.append(" and e.goods.companyId = :companyId");
-            params.put("companyId", companyId);
+        if (supplierId != null) {
+            sql.append(" and e.goods.supplierId = :supplierId");
+            params.put("supplierId", supplierId);
         }
         if (StringUtils.isNotBlank(eCouponSn)) {
             sql.append(" and e.eCouponSn = :eCouponSn");
@@ -133,11 +133,11 @@ public class ECoupon extends Model {
      * 根据页面录入券号查询对应信息
      *
      * @param eCouponSn 券号
-     * @param companyId 商户ID
+     * @param supplierId 商户ID
      * @return queryMap 查询信息
      */
-    public static Map<String, Object> queryInfo(String eCouponSn, Long companyId) {
-        ECoupon eCoupon = query(eCouponSn, companyId);
+    public static Map<String, Object> queryInfo(String eCouponSn, Long supplierId) {
+        ECoupon eCoupon = query(eCouponSn, supplierId);
         Map<String, Object> queryMap = new HashMap();
         if (eCoupon != null) {
             java.text.DateFormat df = new java.text.SimpleDateFormat(
@@ -159,12 +159,12 @@ public class ECoupon extends Model {
 	 * 修改券状态,并产生消费交易记录
 	 *
 	 * @param eCouponSn 券号
-	 * @param companyId 商户ID
+	 * @param supplierId 商户ID
 	 */
-	public static boolean update(String eCouponSn, Long companyId) {
-		ECoupon eCoupon = query(eCouponSn, companyId);
+	public static boolean update(String eCouponSn, Long supplierId) {
+		ECoupon eCoupon = query(eCouponSn, supplierId);
 		//产生消费记录
-		Account account = Account.getAccount(companyId, AccountType.DISTRIBUTOR);
+		Account account = Account.getAccount(supplierId, AccountType.DISTRIBUTOR);
 		if(account != null) {
 			TradeBill tradeBill = TradeUtil.createConsumeTrade(eCouponSn, account, eCoupon.incomePrice, eCoupon.order.id);
 			if (tradeBill != null) {
@@ -181,16 +181,16 @@ public class ECoupon extends Model {
     /**
      * 商家券号列表
      *
-     * @param companyId  商户ID
+     * @param supplierId  商户ID
      * @param pageNumber 页数
      * @param pageSize   记录数
      * @return ordersPage 列表信息
      */
-    public static JPAExtPaginator<ECoupon> queryCoupons(Long companyId, int pageNumber, int pageSize) {
+    public static JPAExtPaginator<ECoupon> queryCoupons(Long supplierId, int pageNumber, int pageSize) {
         StringBuilder sql = new StringBuilder();
-        sql.append(" e.goods.companyId = :companyId)");
+        sql.append(" e.goods.supplierId = :supplierId)");
         Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put("companyId", companyId);
+        paramsMap.put("supplierId", supplierId);
         JPAExtPaginator<ECoupon> ordersPage = new JPAExtPaginator<>("ECoupon e", "e", ECoupon.class, sql.toString(),
                 paramsMap).orderBy(" e.consumedAt desc");
 

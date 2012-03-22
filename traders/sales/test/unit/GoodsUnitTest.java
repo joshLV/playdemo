@@ -6,9 +6,7 @@ import org.junit.Test;
 import play.test.UnitTest;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 
 public class GoodsUnitTest extends UnitTest {
@@ -17,7 +15,7 @@ public class GoodsUnitTest extends UnitTest {
 		Goods goods = new Goods();
 		//默认商品下架状态
 		goods.status = GoodsStatus.OFFSALE;
-		goods.companyId = 1l;
+		goods.supplierId = 1l;
 		goods.setPrompt("<script>jkjlkjlk</script>hello");
 //		goods.details = "<a href='www.taobao.com'>detail</a>";
 		goods.setDetails("<a href='www.taobao.com'>detail</a>hello detail");

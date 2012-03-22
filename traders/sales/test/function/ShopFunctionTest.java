@@ -1,18 +1,16 @@
 package function;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import controllers.supplier.cas.Security;
 import junit.framework.Assert;
 import models.sales.Goods;
 import models.sales.Shop;
-
 import org.junit.Test;
-
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
-import controllers.supplier.cas.Security;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 门店功能测试
@@ -41,7 +39,7 @@ public class ShopFunctionTest extends FunctionalTest {
         shop.put("shop.name","xxxxx");
         shop.put("shop.address","bbbbb");
         shop.put("shop.phone","ccccc");
-        shop.put("shop.companyId","1");
+        shop.put("shop.supplierId","1");
         
         Response response2 = POST("/shops",shop);
         

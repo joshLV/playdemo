@@ -43,7 +43,7 @@ sales.Area(Area_02101002):
  areaType: AREA
  
 sales.Shop(Shop_5):
- "companyId": "1"
+ "supplierId": "1"
  "areaId": "02102001"
  "name": "宛平南路店2"
  "address": "宛平南路2号"
@@ -56,7 +56,7 @@ sales.Shop(Shop_5):
  "lockVersion": "0"
 
 sales.Shop(Shop_4):
- "companyId": "1"
+ "supplierId": "1"
  "areaId": "02102001"
  "name": "优惠拉"
  "address": "优惠啦2店"

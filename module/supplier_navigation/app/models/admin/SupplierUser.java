@@ -32,8 +32,8 @@ import com.uhuila.common.constants.DeletedStatus;
 @Entity
 @Table(name = "cusers")
 public class SupplierUser extends Model {
-	@Column(name = "company_id")
-	public Long companyId;
+	@Column(name = "supplier_id")
+	public Long supplierId;
 
 	@Column(name = "login_name")
 	@Required
@@ -76,12 +76,12 @@ public class SupplierUser extends Model {
 			= "role_id"), joinColumns = @JoinColumn(name = "cuser_id"))
 	public Set<SupplierRole> roles;
 
-	public static JPAExtPaginator<SupplierUser> getCuserList(String loginName,Long companyId,
+	public static JPAExtPaginator<SupplierUser> getCuserList(String loginName,Long supplierId,
 			int pageNumber, int pageSize) {
 		StringBuffer sql = new StringBuffer();
 		Map params= new HashMap();
-		sql.append("companyId = :companyId");
-		params.put("companyId",companyId);
+		sql.append("supplierId = :supplierId");
+		params.put("supplierId",supplierId);
 
 		sql.append(" and deleted = :deleted ");
 		params.put("deleted", DeletedStatus.UN_DELETED);

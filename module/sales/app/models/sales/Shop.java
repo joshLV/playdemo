@@ -14,8 +14,8 @@ import java.util.*;
 public class Shop extends Model {
 
 
-    @Column(name = "company_id")
-    public long companyId;
+    @Column(name = "supplier_id")
+    public long supplierId;
 
     @Column(name = "area_id")
     public String areaId;
@@ -69,18 +69,18 @@ public class Shop extends Model {
     /**
      * 读取某商户的全部门店记录
      *
-     * @param companyId
+     * @param supplierId
      * @return
      */
-    public static List<Shop> findShopByCompany(long companyId) {
-        return Shop.find("byCompanyIdAndDeleted", companyId, DeletedStatus.UN_DELETED).fetch();
+    public static List<Shop> findShopBySupplier(long supplierId) {
+        return Shop.find("bySupplierIdAndDeleted", supplierId, DeletedStatus.UN_DELETED).fetch();
     }
 
     public static ModelPaginator<Shop> query(Shop shopCondition, int pageNumber, int pageSize) {
         StringBuilder search = new StringBuilder();
-        search.append("companyId=? and deleted=?");
+        search.append("supplierId=? and deleted=?");
         ArrayList queryParams = new ArrayList();
-        queryParams.add(shopCondition.companyId);
+        queryParams.add(shopCondition.supplierId);
         queryParams.add(DeletedStatus.UN_DELETED);
 
         if (!StringUtils.isBlank(shopCondition.name)) {

@@ -2,7 +2,7 @@
 # This module is a part of LogiSima (http://www.logisima.com).
 order.Order(order1):
   "user": "user"
-  "company_id": 1
+  "supplier_id": 1
   "orderNumber": "201202220324134991598"
   "status": "PAID"
   "amount": "0"
@@ -32,7 +32,7 @@ order.OrderItems(orderItems1):
 
 order.Order(order_unpaid):
   "user": "user"
-  "company_id": 1
+  "supplier_id": 1
   "orderNumber": "201202220324134991599"
   "status": "UNPAID"
   "amount": "0"

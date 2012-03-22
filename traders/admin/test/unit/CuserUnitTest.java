@@ -43,7 +43,7 @@ public class CuserUnitTest extends UnitTest {
 		cuser.lastLoginAt = new Date();
 		cuser.createdAt = new Date();
 		cuser.lockVersion = 0;
-		cuser.companyId = 1l;
+		cuser.supplierId = 1l;
 		cuser.deleted = DeletedStatus.UN_DELETED;
 
 		cuser.save();
@@ -56,10 +56,10 @@ public class CuserUnitTest extends UnitTest {
 	@Test
 	public void testGetCuserList(){
 		String loginName = "1";
-		Long companyId = 2l;
+		Long supplierId= 2l;
 		int pageNumber=1;
 		int pageSize=15;
-		List<SupplierUser> list = SupplierUser.getCuserList(loginName,companyId,pageNumber,pageSize);
+		List<SupplierUser> list = SupplierUser.getCuserList(loginName,supplierId,pageNumber,pageSize);
 		assertEquals(1,list.size());  
 
 	}

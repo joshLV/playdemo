@@ -1,7 +1,5 @@
 package controllers;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +31,7 @@ import com.uhuila.common.constants.DeletedStatus;
 @ActiveNavigation("user")
 public class Cusers extends Controller {
     public static int PAGE_SIZE = 15;
-    public static Long companyId = 2l;
+    public static Long supplierId = 2l;
 
     /**
      * 操作员一览
@@ -44,7 +42,7 @@ public class Cusers extends Controller {
         String loginName = request.params.get("loginName");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<SupplierUser> cusersPage = SupplierUser.getCuserList(
-                loginName, companyId, pageNumber, PAGE_SIZE);
+                loginName, supplierId, pageNumber, PAGE_SIZE);
         render(cusersPage);
     }
 
@@ -86,7 +84,7 @@ public class Cusers extends Controller {
         cuser.lastLoginAt = new Date();
         cuser.createdAt = new Date();
         cuser.lockVersion = 0;
-        cuser.companyId = companyId;
+        cuser.supplierId = supplierId;
         cuser.deleted = DeletedStatus.UN_DELETED;
         // 获得IP
         cuser.lastLoginIP = request.remoteAddress;
