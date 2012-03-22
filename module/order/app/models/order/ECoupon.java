@@ -164,7 +164,7 @@ public class ECoupon extends Model {
 	public static boolean update(String eCouponSn, Long supplierId) {
 		ECoupon eCoupon = query(eCouponSn, supplierId);
 		//产生消费记录
-		Account account = Account.getAccount(supplierId, AccountType.DISTRIBUTOR);
+		Account account = Account.getAccount(supplierId, AccountType.RESALER);
 		if(account != null) {
 			TradeBill tradeBill = TradeUtil.createConsumeTrade(eCouponSn, account, eCoupon.incomePrice, eCoupon.order.id);
 			if (tradeBill != null) {
