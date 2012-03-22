@@ -7,6 +7,15 @@ GET     /register                               Register.index
 POST    /register                               Register.create
 POST    /register/checkLoginName                Register.checkLoginName
 
+# Resaler Favorite
+GET     /library                                ResalerFavs.index
+POST    /library                                ResalerFavs.order
+DELETE  /library/{goodsIds}                     ResalerFavs.delete
+
+GET     /carts                                  ResalerCarts.index
+POST    /carts                                  ResalerCarts.order
+DELET   /carts/{goodsId}-{phones}                ResalerCarts.delete
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
