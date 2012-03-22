@@ -57,7 +57,9 @@
                 <th><input type="checkbox" id="selectall" name="selectall">全选</th>
                 <th>商品编号</th>
                 <th>商品名称</th>
-                <th>现价(元)</th>
+                <th>原价</th>
+                <th>进价</th>
+                <th>现价</th>
                 <th>库存(件)</th>
                 <th>销量(件)</th>
                 <th>状态</th>
@@ -73,6 +75,8 @@
                 <td><input type="checkbox" id="checkoption" value="${goods.id}" name="ids[]"/></td>
                 <td>${goods.no}</td>
                 <td>${goods.name}</td>
+                <td class="amount">${goods.faceValue?.formatCurrency('CNY').raw()}</td>
+                <td class="amount">${goods.originalPrice?.formatCurrency('CNY').raw()}</td>
                 <td class="amount">${goods.salePrice?.formatCurrency('CNY').raw()}</td>
                 <td class="amount">${goods.baseSale}</td>
                 <td class="amount">${goods.saleCount}</td>

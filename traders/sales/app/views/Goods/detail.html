@@ -38,6 +38,12 @@
         <div class="control-group">
             <label class="control-label">原&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
 
+            <div class="controls">${goods?.faceValue.formatCurrency('CNY').raw()}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">进&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
+
             <div class="controls">${goods?.originalPrice.formatCurrency('CNY').raw()}
             </div>
         </div>

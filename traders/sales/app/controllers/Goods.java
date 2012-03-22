@@ -93,12 +93,12 @@ public class Goods extends Controller {
      * 添加商品
      * 商户只能添加电子券.
      *
-     * @param image
+     * @param imagePath
      * @param goods
      * @param topCategoryId 顶层分类Id
      * @param isAllShop     是否全部门店
      */
-    public static void create(@Valid models.sales.Goods goods, @Required File image, Long topCategoryId,
+    public static void create(@Valid models.sales.Goods goods, @Required File imagePath, Long topCategoryId,
                               boolean isAllShop) {
         Long supplierId = getSupplierId();
         if (isAllShop && goods.shops != null) {
@@ -109,24 +109,24 @@ public class Goods extends Controller {
         //检查目录
         File uploadDir = new File(UploadFiles.ROOT_PATH);
         if (!uploadDir.isDirectory()) {
-            Validation.addError("goods.image", "validation.write");
+            Validation.addError("goods.imagePath", "validation.write");
         }
 
         //检查目录写权限
         if (!uploadDir.canWrite()) {
-            Validation.addError("goods.image", "validation.write");
+            Validation.addError("goods.imagePath", "validation.write");
         }
 
-        if (image.length() > UploadFiles.MAX_SIZE) {
-            Validation.addError("goods.image", "validation.maxFileSize");
+        if (imagePath.length() > UploadFiles.MAX_SIZE) {
+            Validation.addError("goods.imagePath", "validation.maxFileSize");
         }
 
         //检查扩展名
         //定义允许上传的文件扩展名
         String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
-        String fileExt = image.getName().substring(image.getName().lastIndexOf(".") + 1).toLowerCase();
+        String fileExt = imagePath.getName().substring(imagePath.getName().lastIndexOf(".") + 1).toLowerCase();
         if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
-            Validation.addError("goods.image", "validation.invalidType", StringUtils.join(fileTypes, ','));
+            Validation.addError("goods.imagePath", "validation.invalidType", StringUtils.join(fileTypes, ','));
         }
 //        }
 
@@ -176,7 +176,7 @@ public class Goods extends Controller {
         }
         goods.create();
         try {
-            uploadImagePath(image, goods);
+            uploadImagePath(imagePath, goods);
         } catch (IOException e) {
             e.printStackTrace();
             error("goods.image_upload_failed");
