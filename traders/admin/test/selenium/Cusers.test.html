@@ -6,13 +6,13 @@
 #{/selenium}
 
 #{selenium}
-   open('/cusers/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-SupplierUser_1")}/edit')
+   open('/cusers/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user1")}/edit')
    assertTitle('操作员编辑')
 #{/selenium}
 
 
 #{selenium}
-   open('/cusers/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-SupplierUser_3")}/edit')
+   open('/cusers/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}/edit')
    click('xpath=(//input[@id='cuser.roles.id'])[2]')
    type('id=loginName','yan1')
    type('id=mobile','13012012011')
@@ -22,7 +22,7 @@
 #{/selenium}
 
 #{selenium}
-   open('/cusers/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-SupplierUser_3")}/edit')
+   open('/cusers/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}/edit')
    click('xpath=(//input[@id='cuser.roles.id'])[2]')
    type('id=loginName','yan1')
    type('id=mobile','13012012011')
@@ -34,7 +34,7 @@
 #{selenium}
   open('/cusers')
   assertTitle('操作员一览')
-  click('id=del_${play.test.Fixtures.idCache.get("models.admin.SupplierUser-SupplierUser_3")}')
+  click('id=del_${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}')
   assertConfirmation('确定删除吗？')
   verifyTextPresent('操作员一览')
 #{/selenium}

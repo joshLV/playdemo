@@ -2,17 +2,20 @@ models.admin.SupplierNavigation(main):
   name: "main"
   text: "系统管理"
   url: "http://www.google.com"
+  applicationName: "traders-admin"
   displayOrder: 1
   
 models.admin.SupplierNavigation(order):
   name: "order"
   text: "订单管理"
+  applicationName: "traders-admin"
   displayOrder: 2
 
 models.admin.SupplierNavigation(user):
   name: "user"
   text: "用户管理"
   parent: main  
+  applicationName: "traders-admin"
   displayOrder: 1
 
 models.admin.SupplierNavigation(user_add):

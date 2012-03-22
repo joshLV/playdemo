@@ -67,7 +67,7 @@ public class CuserUnitTest extends UnitTest {
 	//更改用户名和手机
 	@Test
 	public void testUpdate(){
-		Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-SupplierUser_3");
+		Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user3");
 		SupplierUser cuser = new SupplierUser();
 		cuser.loginName="test";
 		cuser.mobile="13899999999";
@@ -80,7 +80,7 @@ public class CuserUnitTest extends UnitTest {
 	//测试是否存在用户名和手机
 	@Test
 	public void testCheckValue(){
-		Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-SupplierUser_3");
+		Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user3");
 		String returnFlag = SupplierUser.checkValue(id,"2", "");
 		assertEquals("1",returnFlag); 
 

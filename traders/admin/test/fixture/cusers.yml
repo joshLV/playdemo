@@ -1,4 +1,4 @@
-admin.SupplierUser(SupplierUser_1):
+admin.SupplierUser(user1):
  "supplierId": "2"
  "loginName": "1"
  "mobile": "1300000000"
@@ -8,7 +8,7 @@ admin.SupplierUser(SupplierUser_1):
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETED"
 
-admin.SupplierUser(SupplierUser_2):
+admin.SupplierUser(user2):
  "supplierId": "2"
  "loginName": "2"
  "mobile": "1300000001"
@@ -18,7 +18,7 @@ admin.SupplierUser(SupplierUser_2):
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETED"
  
-admin.SupplierUser(SupplierUser_3):
+admin.SupplierUser(user3):
  "supplierId": "2"
  "loginName": "yan"
  "mobile": "13211111111"
@@ -31,5 +31,5 @@ admin.SupplierUser(SupplierUser_3):
  "updatedAt": "2012-03-12T17:33:49"
  "deleted": "UN_DELETED"
  "roles":
- - "SupplierRole_1"
- - "SupplierRole_2"
+ - "admin"
+ - "sales"
