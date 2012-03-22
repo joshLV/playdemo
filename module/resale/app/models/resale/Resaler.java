@@ -1,7 +1,9 @@
 package models.resale;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,14 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.uhuila.common.constants.DeletedStatus;
+
+import models.sales.Brand;
+import models.sales.Goods;
+import models.sales.GoodsCondition;
 
 import play.data.validation.Email;
 import play.data.validation.Match;
@@ -18,6 +28,7 @@ import play.data.validation.MinSize;
 import play.data.validation.Phone;
 import play.data.validation.Required;
 import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
 
 @Entity
 @Table(name="resaler")
@@ -103,6 +114,9 @@ public class Resaler extends Model {
 	@Column(name = "updated_at")
 	public Date updatedAt;
 	
+	@MaxSize(value=500)
+	public String remark;
+
 	/**
 	 * 判断用户名和手机是否唯一
 	 *
@@ -123,4 +137,41 @@ public class Resaler extends Model {
 
 		return returnFlag;
 	}
+
+	/**
+	 * 分销商一览
+	 * @param condition 查询条件
+	 * @param pageNumber 页数
+	 * @param pageSize 记录数
+	 * @return
+	 */
+	public static JPAExtPaginator<Resaler> findByCondition(ResalerCondition condition,
+			int pageNumber, int pageSize) {
+		if (condition == null) {
+			condition = new ResalerCondition();
+		}
+		
+		JPAExtPaginator<Resaler> resalers = new JPAExtPaginator<>
+		("Resaler r", "r", Resaler.class, condition.getFitter(),condition.getParamMap())
+		.orderBy("createdAt DESC");
+		resalers.setPageNumber(pageNumber);
+		resalers.setPageSize(pageSize);
+		resalers.setBoundaryControlsEnabled(false);
+		return resalers;
+	}
+
+	/**
+	 * 审核分销商
+	 * @param id 分销商ID
+	 * @param staus 状态
+	 * @param remark 备注
+	 */
+	public static void update(Long id, ResalerStatus status, String remark) {
+		Resaler resaler = Resaler.findById(id);
+		resaler.status=status;
+		resaler.remark=remark;
+		resaler.save();
+	}
+
+
 }
