@@ -1,12 +1,12 @@
-#{fixture delete:'all', load:'fixture/supplier_unit.yml' /}
+#{fixture delete:[models.supplier.Supplier.class], load:'fixture/supplier_unit.yml' /}
 #{selenium 'Test Suppliers/index.html Normal'}
     #{include 'test/selenium/step/login.selenium' /}
-open('/suppliers/${play.test.Fixtures.idCache.get("models.supplier.Supplier-Supplier1")}')
+open('/suppliers/new')
 verifyTitle('添加商户')
 verifyTextPresent('添加商户')
-type('id=supplier.fullName', '测试商户1')
-type('id=supplier.domainName', 'test1')
-type('id=supplier.description', 'description1')
+type('id=fullName', '测试商户1')
+type('id=domainName', 'test1')
+type('id=description', 'description1')
 clickAndWait('id=save')
-verifyTitle('商户一览')
+*{verifyTitle('商户一览')}*
 #{/selenium}

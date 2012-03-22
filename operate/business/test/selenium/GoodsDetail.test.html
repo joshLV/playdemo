@@ -9,7 +9,7 @@ load:['fixture/areas.yml','fixture/base_data.yml','fixture/goods.yml'] /}
 #{selenium '电子消费券一览'}
     #{include 'test/selenium/step/login.selenium' /}
     open('/goods')
-    assertTextPresent('电子消费券一览')
+    assertTextPresent('消费券一览')
 #{/selenium}
 
 #{selenium '查看电子消费券'}
