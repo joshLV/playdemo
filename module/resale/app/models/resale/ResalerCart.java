@@ -13,7 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
-import models.consumer.User;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import play.db.jpa.Model;
@@ -22,7 +21,7 @@ import play.db.jpa.Model;
 @Table(name = "resaler_cart")
 public class ResalerCart extends Model {
     @ManyToOne
-    public User user;
+    public Resaler resaler;
 
     @ManyToOne
     public Goods goods;
@@ -41,8 +40,8 @@ public class ResalerCart extends Model {
     public Date updatedAt;
 
 
-    public ResalerCart(User user, Goods goods, String phone, long number) {
-        this.user = user;
+    public ResalerCart(Resaler resaler, Goods goods, String phone, long number) {
+        this.resaler = resaler;
         this.goods = goods;
         this.number = number;
         this.phone = phone;
@@ -54,7 +53,7 @@ public class ResalerCart extends Model {
     /**
      * 加入或修改购物车列表
      *
-     * @param user      用户
+     * @param resaler      用户
      * @param phone     手机号
      * @param goods     商品
      * @param increment 购物车中商品数增量，
@@ -62,12 +61,12 @@ public class ResalerCart extends Model {
      *                  若购物车中有此商品，且商品数量加增量小于等于0，视为无效
      */
 
-    public static ResalerCart order(User user, Goods goods, String phone, int increment) {
-        if (user == null || goods == null || phone == null || phone.equals("")) {
+    public static ResalerCart order(Resaler resaler, Goods goods, String phone, int increment) {
+        if (resaler == null || goods == null || phone == null || phone.equals("")) {
             return null;
         }
 
-        ResalerCart cart = ResalerCart.find("byUserAndGoodsAndPhone", user, goods, phone).first();
+        ResalerCart cart = ResalerCart.find("byResalerAndGoodsAndPhone", resaler, goods, phone).first();
 
         //如果记录已存在，则更新记录，否则新建购物车记录
         if (cart != null) {
@@ -84,7 +83,7 @@ public class ResalerCart extends Model {
             if (increment <= 0) {
                 return null;
             }
-            return new ResalerCart(user, goods, phone, increment).save();
+            return new ResalerCart(resaler, goods, phone, increment).save();
         }
 
     }
@@ -92,17 +91,17 @@ public class ResalerCart extends Model {
     /**
      * 从购物车中删除指定商品列表
      *
-     * @param user     用户
+     * @param resaler     用户
      * @param cookie   用户cookie
      * @param goodsIds 商品列表，若未指定，则删除该用户所有的购物车条目
      * @return 成功删除的数量
      */
-    public static int delete(User user, Goods goods, String phone) {
-        if (user == null || goods == null || phone == null || phone.equals("")) {
+    public static int delete(Resaler resaler, Goods goods, String phone) {
+        if (resaler == null || goods == null || phone == null || phone.equals("")) {
             return 0;
         }
 
-        ResalerCart cart = ResalerCart.find("byUserAndGoodsAndPhone", user, goods, phone).first();
+        ResalerCart cart = ResalerCart.find("byResalerAndGoodsAndPhone", resaler, goods, phone).first();
         if (cart == null ){
             return 0;
         }
@@ -113,15 +112,15 @@ public class ResalerCart extends Model {
     /**
      * 列出所有符合条件的购物车条目，合并数量后输出
      *
-     * @param user   用户
+     * @param resaler   用户
      * @return 合并数量后的购物车条目列表
      */
-    public static List<List<ResalerCart>> findAll(User user) {
-        if (user == null ) {
+    public static List<List<ResalerCart>> findAll(Resaler resaler) {
+        if (resaler == null ) {
             return new ArrayList<List<ResalerCart>>();
         }
         List<ResalerCart> carts = ResalerCart.find(
-                "select r from ResalerCart where r.user = ? order by r.createdAt desc", user).fetch();
+                "select r from ResalerCart where r.resaler = ? order by r.createdAt desc", resaler).fetch();
         List<List<ResalerCart>> result = new ArrayList<>();
         for (ResalerCart cart : carts) {
             boolean found = false;
@@ -147,11 +146,11 @@ public class ResalerCart extends Model {
     /**
      * 清除用户购物车中所有条目
      */
-    public static int clear(User user) {
-        if (user == null) {
+    public static int clear(Resaler resaler) {
+        if (resaler == null) {
             return 0;
         }
-        List<ResalerCart> carts = ResalerCart.find("byUser", user).fetch();
+        List<ResalerCart> carts = ResalerCart.find("byResaler", resaler).fetch();
         for (ResalerCart cart : carts) {
             cart.delete();
         }

@@ -9,6 +9,8 @@ import play.Logger;
 
 public class ResaleCAS extends Controller {
 
+/*
+ *  在website-www中用于给未登陆的用户添加cookie唯一标识，在resale平台用暂时用不到
     @Before
     public static void addTrace() {
         Logger.debug("[ResaleCAS]: check cookie identity");
@@ -18,6 +20,7 @@ public class ResaleCAS extends Controller {
             response.setCookie("identity", session.getId(), "365d");
         }
     }
+*/
 
     @Before
     public static void setResaler() {
@@ -33,7 +36,6 @@ public class ResaleCAS extends Controller {
 
     public static Resaler getResaler() {
         String loginName = session.get("loginName");
-        System.out.println("aaaa"+loginName);
         
         if (loginName == null || "".equals(loginName)) {
             return null;
