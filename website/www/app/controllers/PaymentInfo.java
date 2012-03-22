@@ -7,6 +7,7 @@ import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.accounts.TradeBill;
+import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.consumer.User;
 import models.order.Order;
@@ -30,7 +31,7 @@ public class PaymentInfo extends Controller {
     public static void index(long id) {
         //加载用户账户信息
         User user = WebCAS.getUser();
-        Account account = Account.getAccount(user.getId(), AccountType.CONSUMER);
+        Account account = AccountUtil.getAccount(user.getId(), AccountType.CONSUMER);
 
         List<Account> accounts = Account.findAll();
         System.out.println("user:" + user.getId());
@@ -62,7 +63,7 @@ public class PaymentInfo extends Controller {
             error(500,"no such order");
         }
 
-        Account account = Account.getAccount(user.getId(), AccountType.CONSUMER);
+        Account account = AccountUtil.getAccount(user.getId(), AccountType.CONSUMER);
 
         //计算使用余额支付和使用银行卡支付的金额
         BigDecimal balancePaymentAmount = BigDecimal.ZERO;

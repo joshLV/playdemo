@@ -10,9 +10,6 @@ import play.db.jpa.Model;
 @Table(name="accounts")
 public class Account extends Model {
     public long uid;
-    
-    private static final long SHIHUI = 1L;
-    private static final long UHUILA = 2L;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "account_type")
@@ -26,6 +23,11 @@ public class Account extends Model {
     @Column(name = "create_at")
     public Date createdAt;
 
+    public static final long PLATFORM_INCOMING     = 1L;   //券平台收款账户
+    public static final long PLATFORM_COMMISSION   = 2L;   //券平台佣金账户
+    public static final long UHUILA_COMMISSION     = 3L;   //优惠啦佣金账户
+
+
     public Account(long uid, AccountType type){
         this.uid = uid;
         this.accountType = type;
@@ -34,25 +36,5 @@ public class Account extends Model {
         this.createdAt = new Date();
     }
     
-    public static Account getUhuilaAccount(){
-    	return getAccount(UHUILA, AccountType.PLATFORM);
-    }
-    
-    public static Account getShihuiAccount(){
-    	return getAccount(SHIHUI, AccountType.PLATFORM);
-    }
-    
-    public static Account getAccount(long uid, AccountType type){
-    	Account account = Account.find("byUidAndAccountType", uid, type).first();
-    	if(account == null){
-    		synchronized(Account.class){
-    			account = Account.find("byUidAndAccountType", uid, type).first();
-    			if(account == null){
-    				return new Account(uid, type).save();
-    			}
-    		}
-    	}
-    	return account;
-    }
 
 }

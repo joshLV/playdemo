@@ -1,6 +1,8 @@
 package models.order;
 
 import com.uhuila.common.constants.DeletedStatus;
+import models.accounts.Account;
+import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
 import models.sales.Goods;
@@ -24,8 +26,15 @@ import java.util.Random;
 @Entity
 @Table(name = "orders")
 public class Order extends Model {
-    @ManyToOne
-    public User user;
+    @Column(name = "user_id")
+    public long userId;                     //下单用户ID，可能是优惠啦用户，也可能是分销商
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_type")
+    public AccountType userType;            //用户类型，个人/分销商
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    public Account resalerAccount;           //所在分销商的现金账户，优惠啦网站使用系统提供的优惠啦账户
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     public List<OrderItems> orderItems;
@@ -137,8 +146,11 @@ public class Order extends Model {
     }
 
 
-    public Order(User user, Address address) {
-        this.user = user;
+    public Order(long userId, AccountType userType, Account resalerAccount,  Address address) {
+        this.userId = userId;
+        this.userType = userType;
+        this.resalerAccount = resalerAccount;
+
         this.status = OrderStatus.UNPAID;
         this.deleted = DeletedStatus.UN_DELETED;
         this.orderNumber = generateOrderNumber();
@@ -162,9 +174,10 @@ public class Order extends Model {
         }
     }
 
-    public Order(User user, long goodsId, long number, Address address, String mobile)
+    public Order(long userId, AccountType userType, Account resalerAccount,
+                 long goodsId, long number, Address address, String mobile)
             throws NotEnoughInventoryException {
-        this(user, address);
+        this(userId, userType, resalerAccount, address);
 
         models.sales.Goods goods = Goods.findById(goodsId);
         checkInventory(goods, number);
@@ -182,8 +195,9 @@ public class Order extends Model {
         this.orderItems.add(orderItems);
     }
 
-    public Order(User user, List<Cart> cartList, Address address, String mobile) throws NotEnoughInventoryException {
-        this(user, address);
+    public Order(long userId, AccountType userType, Account resalerAccount,
+                 List<Cart> cartList, Address address, String mobile) throws NotEnoughInventoryException {
+        this(userId, userType, resalerAccount, address);
 
         this.amount = Cart.amount(cartList);
         for (Cart cart : cartList) {

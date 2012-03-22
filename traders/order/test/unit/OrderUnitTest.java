@@ -1,5 +1,7 @@
 package unit;
 
+import models.accounts.AccountType;
+import models.accounts.util.AccountUtil;
 import models.consumer.Address;
 import models.consumer.User;
 import models.order.*;
@@ -91,7 +93,7 @@ public class OrderUnitTest extends UnitTest {
         address.mobile = "13000000000";
         address.name = " 徐家汇";
         address.postcode = "200120";
-        Order orders = new Order(user, address);
+        Order orders = new Order(user.getId(),AccountType.CONSUMER, AccountUtil.getUhuilaAccount(), address);
         assertNotNull(orders);
     }
 
@@ -107,9 +109,11 @@ public class OrderUnitTest extends UnitTest {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
         boolean isOk = false;
         try {
-            Order orders = new Order(user, goodsId, 2l, address, mobile);
+            Order orders = new Order(user.getId(), AccountType.CONSUMER, AccountUtil.getUhuilaAccount(),
+                    goodsId, 2l, address, mobile);
             assertNotNull(orders);
-            new Order(user, goodsId, 200000l, address, mobile);
+            new Order(user.getId(), AccountType.CONSUMER, AccountUtil.getUhuilaAccount(), goodsId,
+                    200000l, address, mobile);
         } catch (NotEnoughInventoryException e) {
             isOk = true;
         }
@@ -132,7 +136,8 @@ public class OrderUnitTest extends UnitTest {
         cartList.add(cart);
         boolean isOk = false;
         try {
-            Order orders = new Order(user, cartList, address, mobile);
+            Order orders = new Order(user.getId(), AccountType.CONSUMER, AccountUtil.getUhuilaAccount(),
+                    cartList, address, mobile);
             assertNotNull(orders);
         } catch (NotEnoughInventoryException e) {
             isOk = true;

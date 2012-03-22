@@ -13,12 +13,28 @@ import java.math.BigDecimal;
  */
 
 public class AccountUtil {
-    private static final long uhuilaUid = 1;
 
     public static Account getUhuilaAccount(){
-        Account account =  Account.find("byUid", uhuilaUid).first();
+        return getAccount(Account.UHUILA_COMMISSION, AccountType.PLATFORM);
+    }
+
+    public static Account getPlatformIncomingAccount(){
+        return getAccount(Account.PLATFORM_INCOMING, AccountType.PLATFORM);
+    }
+
+    public static Account getPlatformCommissionAccount(){
+        return getAccount(Account.PLATFORM_COMMISSION, AccountType.PLATFORM);
+    }
+
+    public static Account getAccount(long uid, AccountType type){
+        Account account = Account.find("byUidAndAccountType", uid, type).first();
         if(account == null){
-            throw new RuntimeException("can not get uhuila account"); //未建立uhuila账户
+            synchronized(Account.class){
+                account = Account.find("byUidAndAccountType", uid, type).first();
+                if(account == null){
+                    return new Account(uid, type).save();
+                }
+            }
         }
         return account;
     }

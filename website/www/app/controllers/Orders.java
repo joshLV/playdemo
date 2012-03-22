@@ -2,6 +2,8 @@ package controllers;
 
 import controllers.modules.cas.SecureCAS;
 import controllers.modules.webcas.WebCAS;
+import models.accounts.AccountType;
+import models.accounts.util.AccountUtil;
 import models.consumer.Address;
 import models.order.Cart;
 import models.order.NotEnoughInventoryException;
@@ -114,12 +116,15 @@ public class Orders extends Controller {
             if (buyNow) {
                 long goodsId = Long.parseLong(session.get("goodsId"));
                 long number = Integer.parseInt(session.get("number"));
-                order = new Order(WebCAS.getUser(), goodsId, number, defaultAddress, mobile);
+                order = new Order(WebCAS.getUser().getId(), AccountType.CONSUMER,
+                        AccountUtil.getUhuilaAccount(),
+                        goodsId, number, defaultAddress, mobile);
 
             } else {
 
                 List<Cart> eCartList = Cart.findAll(WebCAS.getUser(), cookieIdentity.value);
-                order = new Order(WebCAS.getUser(), eCartList, defaultAddress, mobile);
+                order = new Order(WebCAS.getUser().getId(), AccountType.CONSUMER,
+                        AccountUtil.getUhuilaAccount(), eCartList, defaultAddress, mobile);
             }
             order.createAndUpdateInventory(WebCAS.getUser(), cookieIdentity.value);
             session.put("buyNow", false);

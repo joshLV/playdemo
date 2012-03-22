@@ -5,6 +5,7 @@ import models.accounts.AccountType;
 import models.accounts.RefundBill;
 import models.accounts.TradeBill;
 import models.accounts.TradeStatus;
+import models.accounts.util.AccountUtil;
 import models.accounts.util.RefundUtil;
 import models.accounts.util.TradeUtil;
 import models.consumer.User;
@@ -164,7 +165,7 @@ public class ECoupon extends Model {
 	public static boolean update(String eCouponSn, Long supplierId) {
 		ECoupon eCoupon = query(eCouponSn, supplierId);
 		//产生消费记录
-		Account account = Account.getAccount(supplierId, AccountType.PLATFORM);
+		Account account = AccountUtil.getAccount(supplierId, AccountType.BUSINESS);
 		if(account != null) {
 			TradeBill tradeBill = TradeUtil.createConsumeTrade(eCouponSn, account, eCoupon.incomePrice, eCoupon.order.id);
 			if (tradeBill != null) {
