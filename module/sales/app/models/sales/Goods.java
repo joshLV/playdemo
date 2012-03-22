@@ -31,22 +31,41 @@ import java.util.Set;
 @Table(name = "goods")
 public class Goods extends Model {
 
-    private static final String IMAGE_SERVER = Play.configuration.getProperty
-            ("image.server", "img0.uhcdn.net");
-    //    private static final String IMAGE_ROOT_GENERATED = Play.configuration
-//            .getProperty("image.root", "/p");
-    public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
+	//  ========= 不同的价格列表 =======
+    /**
+     * 商户填写的商品市场价
+     */
+    @Required
+    @Min(value = 0.01)
+    @Column(name = "face_value")
+    public BigDecimal faceValue;
 
-    static {
-        //增加可信标签到白名单
-        HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div");
-        //增加可信属性
-        HTML_WHITE_TAGS.addAttributes(":all", "style", "class", "id", "name");
-        HTML_WHITE_TAGS.addAttributes("object", "width", "height", "classid", "codebase");
-        HTML_WHITE_TAGS.addAttributes("param", "name", "value");
-        HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen", "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
-    }
+    /**
+     * 商户填写的进货价
+     */
+    @Required
+    @Min(value = 0.01)
+    @Column(name = "original_price")
+    public BigDecimal originalPrice;
 
+    /**
+     * 运营人员填写的优惠啦网站价格
+     */
+    @Required
+    @Min(value = 0.01)
+    @Column(name = "sale_price")
+    public BigDecimal salePrice;	
+
+    
+	/**
+	 * 不同分销商等级所对应的价格
+	 */
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    public Set<GoodsLevelPrice> levelPrices;
+
+    //  ======  价格列表结束 ==========
+    
+    
     /**
      * 商品编号
      */
@@ -69,22 +88,6 @@ public class Goods extends Model {
             = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))
     public Set<Shop> shops;
 
-    public void filterShops() {
-        if (shops == null) {
-            List<Shop> shopList = Shop.findShopBySupplier(supplierId);
-            shops = new HashSet<>();
-            shops.addAll(shopList);
-            return;
-        }
-        Set<Shop> uniqueShops = new HashSet<>();
-        for (Shop shop : shops) {
-            if (!uniqueShops.contains(shop)) {
-                uniqueShops.add(shop);
-            }
-        }
-        this.shops = uniqueShops;
-    }
-
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinTable(name = "goods_categories", inverseJoinColumns = @JoinColumn(name
             = "category_id"), joinColumns = @JoinColumn(name = "goods_id"))
@@ -97,37 +100,6 @@ public class Goods extends Model {
     @Column(name = "image_path")
     public String imagePath;
 
-    /**
-     * 最小规格图片路径
-     */
-    @Transient
-    public String getImageTinyPath() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.TINY);
-    }
-
-    /**
-     * 小规格图片路径
-     */
-    @Transient
-    public String getImageSmallPath() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.SMALL);
-    }
-
-    /**
-     * 中等规格图片路径
-     */
-    @Transient
-    public String getImageMiddlePath() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.MIDDLE);
-    }
-
-    /**
-     * 大规格图片路径
-     */
-    @Transient
-    public String getImageLargePath() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.LARGE);
-    }
 
     /**
      * 进货量
@@ -153,61 +125,9 @@ public class Goods extends Model {
      * 商品标题
      */
     //    public String title;
-    /**
-     * 商品原价
-     */
-    @Required
-    @Min(value = 0.01)
-    @Column(name = "face_value")
-    public BigDecimal faceValue;
-    /**
-     * 商品进价
-     */
-    @Required
-    @Min(value = 0.01)
-    @Column(name = "original_price")
-    public BigDecimal originalPrice;
-    /**
-     * 商品现价
-     */
-    @Required
-    @Min(value = 0.01)
-    @Column(name = "sale_price")
-    public BigDecimal salePrice;
 
     private Integer discount;
 
-    public void setDiscount(Integer discount) {
-        this.discount = discount;
-    }
-
-    @Column(name = "discount")
-    public Integer getDiscount() {
-        if (discount != null && discount > 0) {
-            return discount;
-        }
-        if (originalPrice != null && salePrice != null && originalPrice.compareTo(new BigDecimal(0)) > 0) {
-            this.discount = salePrice.divide(originalPrice, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).intValue();
-        } else {
-            this.discount = 0;
-        }
-        return discount;
-    }
-
-    @Transient
-    public String getDiscountExpress() {
-        int discount = getDiscount();
-        if (discount >= 100 || discount <= 0) {
-            return "";
-        }
-        if (discount < 10) {
-            return String.valueOf(discount / 10.0);
-        }
-        if (discount % 10 == 0) {
-            return String.valueOf(discount / 10);
-        }
-        return String.valueOf(discount);
-    }
 
     /**
      * 温馨提示
@@ -215,36 +135,10 @@ public class Goods extends Model {
     @MaxSize(value = 65535)
     private String prompt;
 
-    public String getPrompt() {
-        if (StringUtils.isBlank(prompt)) {
-            return "";
-        }
-        return Jsoup.clean(prompt, HTML_WHITE_TAGS);
-    }
-
-    public void setPrompt(String prompt) {
-        this.prompt = Jsoup.clean(prompt, HTML_WHITE_TAGS);
-    }
-
     @Required
     @MaxSize(value = 65535)
     private String details;
 
-    /**
-     * 商品详情
-     *
-     * @return
-     */
-    public String getDetails() {
-        if (StringUtils.isBlank(details)) {
-            return "";
-        }
-        return Jsoup.clean(details, HTML_WHITE_TAGS);
-    }
-
-    public void setDetails(String details) {
-        this.details = Jsoup.clean(details, HTML_WHITE_TAGS);
-    }
 
     /**
      * 售出数量
@@ -326,6 +220,25 @@ public class Goods extends Model {
     @Column(name = "material_type")
     public MaterialType materialType;
 
+
+    
+	private static final String IMAGE_SERVER = Play.configuration.getProperty
+            ("image.server", "img0.uhcdn.net");
+    //    private static final String IMAGE_ROOT_GENERATED = Play.configuration
+//            .getProperty("image.root", "/p");
+    public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
+
+    static {
+        //增加可信标签到白名单
+        HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div");
+        //增加可信属性
+        HTML_WHITE_TAGS.addAttributes(":all", "style", "class", "id", "name");
+        HTML_WHITE_TAGS.addAttributes("object", "width", "height", "classid", "codebase");
+        HTML_WHITE_TAGS.addAttributes("param", "name", "value");
+        HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen", "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
+    }
+    
+    
     /**
      * 获取商品所属的商户信息.
      * @return
@@ -335,9 +248,114 @@ public class Goods extends Model {
         return Supplier.findById(id);
     }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    public Set<GoodsLevelPrice> levelPrices;
+    /**
+     * 商品详情
+     *
+     * @return
+     */
+    public String getDetails() {
+        if (StringUtils.isBlank(details)) {
+            return "";
+        }
+        return Jsoup.clean(details, HTML_WHITE_TAGS);
+    }
 
+    public void setDetails(String details) {
+        this.details = Jsoup.clean(details, HTML_WHITE_TAGS);
+    }
+
+    public void filterShops() {
+        if (shops == null) {
+            List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+            shops = new HashSet<>();
+            shops.addAll(shopList);
+            return;
+        }
+        Set<Shop> uniqueShops = new HashSet<>();
+        for (Shop shop : shops) {
+            if (!uniqueShops.contains(shop)) {
+                uniqueShops.add(shop);
+            }
+        }
+        this.shops = uniqueShops;
+    }    
+    
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
+    }
+
+    @Column(name = "discount")
+    public Integer getDiscount() {
+        if (discount != null && discount > 0) {
+            return discount;
+        }
+        if (originalPrice != null && salePrice != null && originalPrice.compareTo(new BigDecimal(0)) > 0) {
+            this.discount = salePrice.divide(originalPrice, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).intValue();
+        } else {
+            this.discount = 0;
+        }
+        return discount;
+    }
+
+    @Transient
+    public String getDiscountExpress() {
+        int discount = getDiscount();
+        if (discount >= 100 || discount <= 0) {
+            return "";
+        }
+        if (discount < 10) {
+            return String.valueOf(discount / 10.0);
+        }
+        if (discount % 10 == 0) {
+            return String.valueOf(discount / 10);
+        }
+        return String.valueOf(discount);
+    }
+    
+    /**
+     * 最小规格图片路径
+     */
+    @Transient
+    public String getImageTinyPath() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.TINY);
+    }
+
+    /**
+     * 小规格图片路径
+     */
+    @Transient
+    public String getImageSmallPath() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.SMALL);
+    }
+
+    /**
+     * 中等规格图片路径
+     */
+    @Transient
+    public String getImageMiddlePath() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.MIDDLE);
+    }
+
+    /**
+     * 大规格图片路径
+     */
+    @Transient
+    public String getImageLargePath() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.LARGE);
+    }
+    
+    public String getPrompt() {
+        if (StringUtils.isBlank(prompt)) {
+            return "";
+        }
+        return Jsoup.clean(prompt, HTML_WHITE_TAGS);
+    }
+
+    public void setPrompt(String prompt) {
+        this.prompt = Jsoup.clean(prompt, HTML_WHITE_TAGS);
+    }
+
+    
     /**
      * 根据商品分类和数量取出指定数量的商品.
      *

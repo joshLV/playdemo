@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.util.regex.Pattern;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -40,6 +42,8 @@ public class ResalerCart extends Model {
     public Date updatedAt;
 
 
+    private static Pattern phonePattern = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$"); 
+
     public ResalerCart(Resaler resaler, Goods goods, String phone, long number) {
         this.resaler = resaler;
         this.goods = goods;
@@ -48,6 +52,20 @@ public class ResalerCart extends Model {
         this.lockVersion = 0;
         this.createdAt = new Date();
         this.updatedAt = this.createdAt;
+    }
+
+    public static List<String> batchOrder(Resaler resaler, Goods goods, List<String> phones) {
+        if (resaler == null || goods == null || phones == null){
+            return null;
+        }
+        List<String> invalidPhones = new ArrayList<>();
+        for(String phone : phones){
+            ResalerCart resalerCart = reorder(resaler, goods, phone, 1);
+            if(resalerCart == null ) {
+                invalidPhones.add(phone);
+            }
+        }
+        return invalidPhones;
     }
 
     /**
@@ -61,8 +79,8 @@ public class ResalerCart extends Model {
      *                  若购物车中有此商品，且商品数量加增量小于等于0，视为无效
      */
 
-    public static ResalerCart order(Resaler resaler, Goods goods, String phone, int increment) {
-        if (resaler == null || goods == null || phone == null || phone.equals("")) {
+    public static ResalerCart reorder(Resaler resaler, Goods goods, String phone, int increment) {
+        if (resaler == null || goods == null || phone == null || !phonePattern.matcher(phone).matches()) {
             return null;
         }
 
@@ -96,17 +114,17 @@ public class ResalerCart extends Model {
      * @param goodsIds 商品列表，若未指定，则删除该用户所有的购物车条目
      * @return 成功删除的数量
      */
-    public static int delete(Resaler resaler, Goods goods, String phone) {
+    public static ResalerCart delete(Resaler resaler, Goods goods, String phone) {
         if (resaler == null || goods == null || phone == null || phone.equals("")) {
-            return 0;
+            return null;
         }
 
         ResalerCart cart = ResalerCart.find("byResalerAndGoodsAndPhone", resaler, goods, phone).first();
         if (cart == null ){
-            return 0;
+            return null;
         }
         cart.delete();
-        return 1;
+        return cart;
     }
 
     /**

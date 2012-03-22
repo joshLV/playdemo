@@ -34,7 +34,7 @@ public class RegisterTest extends FunctionalTest {
 		loginUserParams.put("resaler.email", "11@qq.com");
 		loginUserParams.put("resaler.accountType", AccountType.COMPANY.toString());
 		//正常
-		loginUserParams.put("resaler.status", ResalerStatus.NOMAL.toString());
+		loginUserParams.put("resaler.status", ResalerStatus.NORMAL.toString());
 		loginUserParams.put("resaler.confirmPassword", "123456");
 		loginUserParams.put("resaler.phone", "0213212121");
 		loginUserParams.put("resaler.userName", "小李");
@@ -59,7 +59,7 @@ public class RegisterTest extends FunctionalTest {
 		loginUserParams.put("resaler.email", "11@qq.com");
 		loginUserParams.put("resaler.accountType", AccountType.COMPANY.toString());
 		//正常
-		loginUserParams.put("resaler.status", ResalerStatus.NOMAL.toString());
+		loginUserParams.put("resaler.status", ResalerStatus.NORMAL.toString());
 		loginUserParams.put("resaler.identityNo","341281198208268785");
 		response = POST("/register", loginUserParams);
 		assertStatus(200,response);

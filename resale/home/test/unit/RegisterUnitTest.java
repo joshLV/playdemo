@@ -38,7 +38,7 @@ public class RegisterUnitTest extends UnitTest {
 		resaler.confirmPassword = "1";
 		resaler.userName = "小李";
 		//正常
-		resaler.status = ResalerStatus.NOMAL;
+		resaler.status = ResalerStatus.NORMAL;
 		//随机码
 		resaler.passwordSalt = passwordSalt;
 		resaler.address="上海市";

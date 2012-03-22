@@ -1,9 +1,8 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
-
-import java.util.regex.Pattern;
 
 import controllers.resaletrace.ResaleCAS;
 
@@ -31,7 +30,6 @@ import java.util.List;
 //@With({WebCAS.class,SecureCAS.class})
 @With(ResaleCAS.class)
 public class ResalerCarts extends Controller {
-    private static Pattern phonePattern = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$"); 
 
     /**
      * 购物车主界面
@@ -46,36 +44,21 @@ public class ResalerCarts extends Controller {
     }
 
     /**
-     * 加入或修改购物车列表
+     * 批量加入购物车
      *
      * @param goodsId  商品ID
-     * @param increment 购物车中商品数增量，
-     * 若购物车中无此商品，则新建条目
-     * 若购物车中有此商品，且商品数量加增量小于等于0，视为无效
+     * @param phones   手机号列表，以回车或者空格等空白字符分割
      */
     public static void formAdd(long goodsId, String phones) {
-        System.out.println(phones);
         Resaler resaler = ResaleCAS.getResaler();
-        List<String> invalidPhones = new ArrayList<>();
-        List<String> validPhones = new ArrayList<>();
-        String[] phoneLines = phones.split("\\s+");
-        for(String p : phoneLines){
-            if(!phonePattern.matcher(p).matches()){
-                invalidPhones.add(p);
-                continue;
-            }
-            validPhones.add(p);
-        }
-
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-        if (goods == null) {
-            renderArgs.put("errorMsg","no such goods: " + goodsId);
-        }else {
-            for(String p : validPhones){
-                ResalerCart.order(resaler, goods, p, 1);
-            }
+        List<String> phoneLines = Arrays.asList(phones.split("\\s+"));
 
-            renderArgs.put("validPhones", validPhones);
+        List<String> invalidPhones = ResalerCart.batchOrder(resaler, goods, phoneLines);
+
+        if (invalidPhones == null) {
+            renderArgs.put("errorMsg", "invalid input");
+        }else {
             renderArgs.put("invalidPhones", invalidPhones);
         }
         
@@ -86,12 +69,24 @@ public class ResalerCarts extends Controller {
      * 加入或修改购物车列表
      *
      * @param goodsId  商品ID
+     * @param phones   手机号
      * @param increment 购物车中商品数增量，
      * 若购物车中无此商品，则新建条目
      * 若购物车中有此商品，且商品数量加增量小于等于0，视为无效
      */
-    public static void reorder(long goodsId, String phones, int increment) {
+    public static void reorder(long goodsId, String phone, int increment) {
+        Resaler resaler = ResaleCAS.getResaler();
+        models.sales.Goods goods = models.sales.Goods.findById(goodsId);
+
+        ResalerCart resalerCart = ResalerCart.reorder(resaler, goods, phone, increment);
+
+        if (resalerCart == null) {
+            error(500, "invalid input");
+        }else {
+            renderJSON(resalerCart);
+        }
     }
+
     /**
      * 从购物车中删除指定商品列表
      *
@@ -100,10 +95,14 @@ public class ResalerCarts extends Controller {
      */
     public static void delete(long goodsId, String phone) {
         Resaler resaler = ResaleCAS.getResaler();
-
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
 
-        int result = ResalerCart.delete(resaler, goods, phone);
-        renderJSON(result);
+        ResalerCart result = ResalerCart.delete(resaler, goods, phone);
+
+        if (result == null ){
+            error(500, "invalid input");
+        }else{
+            renderJSON(result);
+        }
     }
 }
