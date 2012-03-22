@@ -59,6 +59,24 @@ public class Menu {
         return labels;
     }
     
+     
+    @XmlAttribute(name="permissions")
+    public String permissionsValue;
+    
+    @XmlTransient
+    public Set<String> getPermissions() {
+        Set<String> permissionSet = new HashSet<String>();
+        
+        if (!StringUtils.isEmpty(permissionsValue)) {
+            String[] values = permissionsValue.split("[\\s,]+");
+            for (String value : values) {
+                permissionSet.add(value);
+            }
+        }
+        
+        return permissionSet;
+    }
+    
     @XmlTransient
     public String applicationName;
     

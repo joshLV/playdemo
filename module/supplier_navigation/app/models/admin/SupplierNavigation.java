@@ -1,24 +1,24 @@
 package models.admin;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Query;
 import javax.persistence.Table;
-
 import navigation.annotations.ActiveNavigation;
 import play.db.jpa.Model;
 
@@ -49,10 +49,18 @@ public class SupplierNavigation extends Model {
     @ManyToOne
     @JoinColumn(name = "parent_id", nullable = true)
     public SupplierNavigation parent;
-    
-    @OneToMany(mappedBy="parent", cascade = CascadeType.ALL, targetEntity=SupplierNavigation.class)
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, targetEntity = SupplierNavigation.class)
     @OrderBy("displayOrder")
     public List<SupplierNavigation> children;
+    
+    
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "supplier_navigations_permissions", 
+        inverseJoinColumns = @JoinColumn(name= "permission_id"), 
+        joinColumns = @JoinColumn(name = "navigation_id"))
+    public Set<SupplierPermission> permissions;    
+    
 
     public boolean hasLink() {
         return url != null || action != null;

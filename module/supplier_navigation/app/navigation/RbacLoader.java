@@ -1,11 +1,10 @@
 package navigation;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-
 import models.admin.SupplierNavigation;
 import models.admin.SupplierPermission;
 import models.admin.SupplierRole;
@@ -44,14 +43,17 @@ public class RbacLoader {
     public static void init(Application application) {
         long loadVersion = System.currentTimeMillis();
         String applicationName = Play.configuration.getProperty("application.name");
-        loadMenusToDB(null, application.menus, applicationName, loadVersion);
-        deleteUndefinedMenus(applicationName, loadVersion);    
         
         loadRolesToDB(application.roles, loadVersion);
         
         loadPermissionsToDB(null /* parent permission */,
                 application.permissions, applicationName, loadVersion);
         deleteUndefinedPermissions(applicationName, loadVersion);    
+        
+        loadMenusToDB(null, application.menus, applicationName, loadVersion);
+        deleteUndefinedMenus(applicationName, loadVersion);    
+        
+        
     }
     
     /**
@@ -95,6 +97,14 @@ public class RbacLoader {
         supplierPermission.applicationName = applicationName;
         supplierPermission.loadVersion = loadVersion;
         supplierPermission.updatedAt = new Date();
+        
+        if (permission.getRoles() != null) {
+            supplierPermission.roles = new HashSet<>();
+            for (String roleName : permission.getRoles()) {
+                SupplierRole role = SupplierRole.find("byKey", roleName).first();
+                supplierPermission.roles.add(role);
+            }
+        }
 
         if (parentPermission != null) {
             supplierPermission.parent = SupplierPermission.find("byApplicationNameAndKey", applicationName, parentPermission.key).first();
@@ -154,7 +164,16 @@ public class RbacLoader {
         supplierNavigation.applicationName = applicationName;
         supplierNavigation.loadVersion = currentLoadVersion;
         supplierNavigation.updatedAt = new Date();
-
+        
+        if (menu.getPermissions() != null) {
+            supplierNavigation.permissions = new HashSet<>();
+            for (String permissionName : menu.getPermissions()) {
+                System.out.println("permissionName=" + permissionName);
+                SupplierPermission permission = SupplierPermission.find("byKey", permissionName).first();
+                supplierNavigation.permissions.add(permission);
+            }
+        }
+        
         if (parentMenu != null) {
             supplierNavigation.parent = SupplierNavigation.find("byName", parentMenu.name).first();
         }

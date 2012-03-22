@@ -35,16 +35,16 @@ public class Permission {
 
     @XmlTransient
     public Set<String> getRoles() {
-        Set<String> labels = new HashSet<String>();
+        Set<String> roles = new HashSet<String>();
 
         if (!StringUtils.isEmpty(rolesValue)) {
             String[] values = rolesValue.split("[\\s,]+");
             for (String value : values) {
-                labels.add(value);
+                roles.add(value);
             }
         }
 
-        return labels;
+        return roles;
     }
 
 }

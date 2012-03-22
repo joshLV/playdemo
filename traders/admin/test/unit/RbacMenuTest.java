@@ -47,6 +47,13 @@ public class RbacMenuTest extends UnitTest {
     public void theNoDefinedNavigationWillBeDeleted() {
         SupplierNavigation mainNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "main").first();
         assertNotNull(mainNav);
+        assertNotNull(mainNav.permissions);
+        assertTrue(mainNav.permissions.size() == 0);
+                
+        SupplierNavigation userNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "user_add").first();
+        assertNotNull(userNav);
+        assertNotNull(userNav.permissions);
+        assertTrue(userNav.permissions.size() == 2);
         
         // 加载后，数据库中没有在yml定义的导航记录必须被删除
         SupplierNavigation toDeleteNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "to_delete").first();

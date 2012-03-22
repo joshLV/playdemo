@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -71,10 +72,17 @@ public class SupplierUser extends Model {
 	@Enumerated(EnumType.ORDINAL)
 	public DeletedStatus deleted;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "cusers_roles", inverseJoinColumns = @JoinColumn(name
-			= "role_id"), joinColumns = @JoinColumn(name = "cuser_id"))
-	public Set<SupplierRole> roles;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "cusers_roles",
+            inverseJoinColumns = @JoinColumn(name = "role_id"),
+            joinColumns = @JoinColumn(name = "cuser_id"))
+    public Set<SupplierRole>       roles;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "supplier_permissions_users",
+            inverseJoinColumns = @JoinColumn(name = "permission_id"),
+            joinColumns = @JoinColumn(name = "user_id"))
+    public Set<SupplierPermission> permissions;
 
 	public static JPAExtPaginator<SupplierUser> getCuserList(String loginName,Long supplierId,
 			int pageNumber, int pageSize) {

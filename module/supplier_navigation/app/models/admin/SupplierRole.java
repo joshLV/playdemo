@@ -8,6 +8,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
@@ -38,9 +40,17 @@ public class SupplierRole extends Model {
     @Column(name = "updated_at")
     public Date updatedAt;
 
-    @ManyToMany(cascade = CascadeType.REFRESH,mappedBy="roles",
-            fetch=FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "cusers_roles", 
+        inverseJoinColumns = @JoinColumn(name= "cuser_id"), 
+        joinColumns = @JoinColumn(name = "role_id"))
     public Set<SupplierUser> cusers;
 
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "supplier_permissions_roles", 
+        inverseJoinColumns = @JoinColumn(name= "permission_id"), 
+        joinColumns = @JoinColumn(name = "role_id"))
+    public Set<SupplierPermission> permissions;    
+    
 }
 

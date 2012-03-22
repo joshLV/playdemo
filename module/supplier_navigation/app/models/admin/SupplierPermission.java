@@ -2,13 +2,16 @@ package models.admin;
 
 import java.util.Date;
 import java.util.List;
-
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 import play.db.jpa.Model;
 
 @Entity
@@ -39,6 +42,18 @@ public class SupplierPermission extends Model {
     @ManyToOne
     @JoinColumn(name = "parent_id", nullable = true)
     public SupplierPermission parent;
+    
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "supplier_permissions_roles", 
+        inverseJoinColumns = @JoinColumn(name= "role_id"), 
+        joinColumns = @JoinColumn(name = "permission_id"))
+    public Set<SupplierRole> roles;    
+  
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "supplier_permissions_users", 
+        inverseJoinColumns = @JoinColumn(name= "user_id"), 
+        joinColumns = @JoinColumn(name = "permission_id"))
+    public Set<SupplierRole> users;    
     
     /**
      * 加载版本，使用应用程序加载时间，在处理完成后，删除不是当前loadVersion的记录，以完成同步.
