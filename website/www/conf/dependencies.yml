@@ -12,6 +12,7 @@ require:
 #    - play -> mockito 0.1
     - paginate_ext -> paginate_ext
     - sales -> sales
+    - supplier -> supplier
     - consumer -> consumer
     - order -> order
     - commons-lang -> commons-lang 2.6
@@ -41,6 +42,7 @@ repositories:
         contains:
             - paginate_ext -> *
             - sales -> *
+            - supplier -> supplier
             - consumer -> *
             - order -> *
             - web_trace -> *

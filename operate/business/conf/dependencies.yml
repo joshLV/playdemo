@@ -8,10 +8,10 @@ require:
     - layout_operate -> layout_operate
     - commons-lang -> commons-lang 2.6
     - sales -> sales
+    - supplier -> supplier
     - play -> cas 3.1
     - paginate_ext -> paginate_ext
     - org.jsoup -> jsoup 1.6.1
-    - supplier -> supplier
     - supplier_navigation -> supplier_navigation
     - resale -> resale
     - consumer -> consumer
@@ -32,8 +32,8 @@ repositories:
         contains:
             - layout_operate -> *
             - sales -> *
-            - paginate_ext -> *
             - supplier -> *
+            - paginate_ext -> *
             - supplier_navigation -> *
             - resale -> *
             - consumer -> *

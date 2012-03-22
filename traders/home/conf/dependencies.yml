@@ -8,6 +8,7 @@ require:
     - layout_trader -> layout_trader
     - sales -> sales
     - accounts -> accounts
+    - supplier -> supplier
     - supplier_navigation -> supplier_navigation
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - org.jsoup -> jsoup 1.6.1
@@ -15,7 +16,7 @@ require:
 repositories:
     - mavenRepository:
         type:       iBiblio
-        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
+        root:       "OneToManyhttp://dev.uhuila.cn/nexus/content/groups/public"
         contains:
             - com.uhuila.utils -> *
             - org.jsoup -> *
@@ -29,4 +30,5 @@ repositories:
             - paginate_ext -> *
             - sales -> *
             - accounts -> *
+            - supplier -> *
             - supplier_navigation -> *

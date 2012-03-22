@@ -6,6 +6,7 @@ require:
     - play -> paginate head
     - paginate_ext -> paginate_ext
     - sales -> sales
+    - supplier -> supplier
     - order -> order
     - consumer -> consumer
     - play -> cas 3.1
@@ -35,6 +36,7 @@ repositories:
         artifact:   "${application.path}/../../module/[module]"
         contains:
             - sales -> *
+            - supplier -> *
             - order -> *
             - consumer -> *
             - web_trace -> *
