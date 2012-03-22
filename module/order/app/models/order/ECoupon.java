@@ -231,13 +231,13 @@ public class ECoupon extends Model {
 	 * 退款
 	 * 
 	 * @param eCoupon 券信息
-	 * @param user 用户信息
+	 * @param userId 用户信息
 	 * @param applyNote 退款原因
 	 * @return
 	 */
 	public static String applyRefund(ECoupon eCoupon,Long userId,String applyNote) {
 		String returnFlg ="{\"error\":\"ok\"}";
-		if(eCoupon == null || !eCoupon.order.user.getId().equals(userId)){
+		if(eCoupon == null || eCoupon.order.userId != userId || eCoupon.order.userType == AccountType.CONSUMER){
 			returnFlg="{\"error\":\"no such eCoupon\"}";
 			return returnFlg;
 		}
