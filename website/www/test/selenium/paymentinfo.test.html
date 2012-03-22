@@ -15,15 +15,11 @@ user = models.consumer.User.findById(id);
 
 id = play.test.Fixtures.idCache.get("models.order.Order-order1");
 order = models.order.Order.findById(id);
-order.userId = user.id;
-order.userType = models.accounts.AccountType.CONSUMER;
-order.save();
+order.setUser(user);
 
 id = play.test.Fixtures.idCache.get("models.order.Order-order_unpaid");
 order = models.order.Order.findById(id);
-order.userId = user.id;
-order.userType = models.accounts.AccountType.CONSUMER;
-order.save()
+order.setUser(user);
 }%
 
 

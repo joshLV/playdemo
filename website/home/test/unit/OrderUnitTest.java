@@ -71,6 +71,21 @@ public class OrderUnitTest extends UnitTest {
 	public void applyRefund(){
 		Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
 		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
+
+
+        Long myId = (Long)play.test.Fixtures.idCache.get("models.consumer.User-selenium");
+        User user = models.consumer.User.findById(myId);
+
+        myId = (Long)play.test.Fixtures.idCache.get("models.order.Order-order1");
+        Order order = models.order.Order.findById(myId);
+        order.setUser(user);
+
+        myId = (Long)play.test.Fixtures.idCache.get("models.order.Order-order2");
+        order = models.order.Order.findById(myId);
+        order.setUser(user);
+
+
+
 		ECoupon eCoupon=ECoupon.findById(id);
 		String applyNote="不想要了";
 		String ret = ECoupon.applyRefund(eCoupon,userId,applyNote);

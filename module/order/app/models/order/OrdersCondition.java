@@ -1,6 +1,7 @@
 package models.order;
 
 import com.uhuila.common.constants.DeletedStatus;
+import models.accounts.AccountType;
 import models.consumer.User;
 import org.apache.commons.lang.StringUtils;
 
@@ -88,8 +89,9 @@ public class OrdersCondition {
 		sql.append(" o.deleted = :deleted");
 		paramsMap.put("deleted", DeletedStatus.UN_DELETED);
 		if (user != null) {
-			sql.append(" and o.user = :user");
-			paramsMap.put("user", user);
+			sql.append(" and o.userId = :user and o.userType = :userType");
+			paramsMap.put("user", user.getId());
+            paramsMap.put("userType", AccountType.CONSUMER);
 		}
 		if (createdAtBegin != null) {
 			sql.append(" and o.createdAt >= :createdAtBegin");

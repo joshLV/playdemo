@@ -237,7 +237,7 @@ public class ECoupon extends Model {
 	 */
 	public static String applyRefund(ECoupon eCoupon,Long userId,String applyNote) {
 		String returnFlg ="{\"error\":\"ok\"}";
-		if(eCoupon == null || eCoupon.order.userId != userId || eCoupon.order.userType == AccountType.CONSUMER){
+		if(eCoupon == null || eCoupon.order.userId != userId || eCoupon.order.userType != AccountType.CONSUMER){
 			returnFlg="{\"error\":\"no such eCoupon\"}";
 			return returnFlg;
 		}

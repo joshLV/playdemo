@@ -225,17 +225,23 @@ public class Order extends Model {
 //        return user;
 //    }
 //
-//    public void setUser(User user){
-//        this.userId = user.getId();
-//        this.userType = AccountType.CONSUMER;
-//        //this.save();
-//    }
-//
-//    public void setUser(User user, AccountType accountType){
-//        this.userId = user.getId();
-//        this.userType = accountType;
-//        //this.save();
-//    }
+    public void setUser(User user){
+        if(user  == null){
+            return;
+        }
+        this.userId = user.getId();
+        this.userType = AccountType.CONSUMER;
+        this.save();
+    }
+
+    public void setUser(User user, AccountType accountType){
+        if(user == null){
+            return;
+        }
+        this.userId = user.getId();
+        this.userType = accountType;
+        this.save();
+    }
 
     public static long itemsNumber(Order order) {
         long itemsNumber = 0L;
