@@ -33,6 +33,8 @@ public class ResaleCAS extends Controller {
 
     public static Resaler getResaler() {
         String loginName = session.get("loginName");
+        System.out.println("aaaa"+loginName);
+        
         if (loginName == null || "".equals(loginName)) {
             return null;
         }

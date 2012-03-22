@@ -31,7 +31,7 @@ public class Resaler extends Model {
 	@Column(name = "account_type")
 	public AccountType accountType;        
 
-	@Column(name="lonin_name")
+	@Column(name="login_name")
 	@Required
 	@MinSize(value = 2)
 	@MaxSize(value = 6)

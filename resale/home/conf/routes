@@ -1,7 +1,7 @@
 # Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
-
+GET /  Application.index
 #注册
 GET     /register                               Register.index
 POST    /register                               Register.create
