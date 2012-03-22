@@ -29,16 +29,15 @@ public class UsernameLengthAuthnHandler extends AbstractUsernamePasswordAuthenti
     @Override
     protected boolean authenticateUsernamePasswordInternal(UsernamePasswordCredentials Credentials)
             throws AuthenticationException {
-
-        System.out.println("<<<<< hello >>>>>");
+        System.out.println("<<<<< test >>>>>");
         String username = Credentials.getUsername();
         String password = Credentials.getPassword();
 
         System.out.println("================ H " + username + " ================");
         if (log.isDebugEnabled()) {
-            log.debug("email=" + username);
+            log.debug("username=" + username);
         }
-        String sql = "select * from resaler where  loginName= ?";
+        String sql = "select * from resaler where  login_name = ?";
         Object[] params = new Object[] { username };
 
         List<Map<String, Object>> userlist = getJdbcTemplate().queryForList(sql, params);
