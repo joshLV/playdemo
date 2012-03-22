@@ -28,13 +28,6 @@ public class AccountUtilTest extends FunctionalTest{
     @Test
     public void testGetUhuilaAccount(){
         Account account = AccountUtil.getUhuilaAccount();
-        Fixtures.delete(Account.class);
-        try{
-            account = AccountUtil.getUhuilaAccount();
-            fail();
-        }catch (RuntimeException e){
-
-        }
         assertNotNull(account);
     }
 

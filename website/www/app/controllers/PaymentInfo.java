@@ -33,13 +33,8 @@ public class PaymentInfo extends Controller {
         User user = WebCAS.getUser();
         Account account = AccountUtil.getAccount(user.getId(), AccountType.CONSUMER);
 
-        List<Account> accounts = Account.findAll();
-        System.out.println("user:" + user.getId());
-        for(Account a : accounts){
-        	System.out.println("account:" + a.getId() + ","+ a.uid);
-        }
         //加载订单信息
-        Order order = Order.find("byIdAndUser", id, user).first();
+        Order order = Order.find("byIdAndUserIdAndUserType", id, user.getId(), AccountType.CONSUMER).first();
         long goodsNumber = OrderItems.itemsNumber(order);
         
         List<PaymentSource> paymentSources = PaymentSource.find("order by showOrder desc").fetch();
@@ -57,7 +52,7 @@ public class PaymentInfo extends Controller {
      */
     public static void confirm(long orderId, boolean useBalance, String paymentSourceCode) {
         User user = WebCAS.getUser();
-        Order order = Order.find("byIdAndUser", orderId, user).first();
+        Order order = Order.find("byIdAndUserIdAndUserType", orderId, user.getId(), AccountType.CONSUMER).first();
         
         if (order == null){
             error(500,"no such order");
@@ -114,7 +109,7 @@ public class PaymentInfo extends Controller {
      */
     public static void payIt(long orderId){
         User user = WebCAS.getUser();
-        Order order = Order.find("byIdAndUser", orderId, user).first();
+        Order order = Order.find("byIdAndUserIdAndUserType", orderId, user.getId(), AccountType.CONSUMER).first();
 
         if (order == null){
             error(500,"no such order");
