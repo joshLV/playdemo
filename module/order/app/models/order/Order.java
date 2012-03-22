@@ -145,6 +145,8 @@ public class Order extends Model {
     public Order() {
     }
 
+//    @Transient
+//    public User user;
 
     public Order(long userId, AccountType userType, Account resalerAccount,  Address address) {
         this.userId = userId;
@@ -218,6 +220,22 @@ public class Order extends Model {
             this.orderItems.add(orderItems);
         }
     }
+    
+//    public User getUser(){
+//        return user;
+//    }
+//
+//    public void setUser(User user){
+//        this.userId = user.getId();
+//        this.userType = AccountType.CONSUMER;
+//        //this.save();
+//    }
+//
+//    public void setUser(User user, AccountType accountType){
+//        this.userId = user.getId();
+//        this.userType = accountType;
+//        //this.save();
+//    }
 
     public static long itemsNumber(Order order) {
         long itemsNumber = 0L;

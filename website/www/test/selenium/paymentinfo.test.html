@@ -9,6 +9,24 @@ load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_uni
 'fixture/shops_unit.yml','fixture/goods_unit.yml',
 'fixture/accounts.yml', 'fixture/account_uhuila.yml','fixture/payment_source.yml', 'fixture/orders.yml'] /}
 
+%{
+id = play.test.Fixtures.idCache.get("models.consumer.User-user");
+user = models.consumer.User.findById(id);
+
+id = play.test.Fixtures.idCache.get("models.order.Order-order1");
+order = models.order.Order.findById(id);
+order.userId = user.id;
+order.userType = models.accounts.AccountType.CONSUMER;
+order.save();
+
+id = play.test.Fixtures.idCache.get("models.order.Order-order_unpaid");
+order = models.order.Order.findById(id);
+order.userId = user.id;
+order.userType = models.accounts.AccountType.CONSUMER;
+order.save()
+}%
+
+
 #{selenium "测试打开支付页"}
     #{include 'test/selenium/step/login.selenium' /}
 	open('/payment_info/${play.test.Fixtures.idCache.get("models.order.Order-order_unpaid")}')
