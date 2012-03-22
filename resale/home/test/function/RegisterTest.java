@@ -39,6 +39,7 @@ public class RegisterTest extends FunctionalTest {
 		loginUserParams.put("resaler.phone", "0213212121");
 		loginUserParams.put("resaler.userName", "小李");
 		loginUserParams.put("resaler.identityNo", "341281198208268785");
+		loginUserParams.put("resaler.postCode", "123456");
 		Response response = POST("/register", loginUserParams);
 		assertStatus(302,response);
 

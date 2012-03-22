@@ -86,7 +86,7 @@ public class Resaler extends Model {
 	public String address; 
 
 	@Column(name="postcode")
-	@Min(value=0)
+	@Required
 	public String postCode; 
 
 	@Column(name="identity_no")

@@ -27,6 +27,7 @@ public class ResaleCAS extends Controller {
     	Resaler resaler = getResaler();
         Cas cas = new Cas();
         if (resaler != null) {
+        	System.out.print(">>>>>>>>>>>>>>>>>>>>>>."+resaler.loginName);
             cas.isLogin = true;
             cas.loginName = resaler.loginName;
             cas.resaler = resaler;
