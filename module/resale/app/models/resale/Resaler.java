@@ -10,7 +10,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import models.consumer.User;
 import play.data.validation.Email;
 import play.data.validation.Match;
 import play.data.validation.MaxSize;
