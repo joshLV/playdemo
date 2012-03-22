@@ -42,10 +42,21 @@ goods.level.VIP3=V I P3
 shop.name=门店名称
 shop.address=门店地址
 
-
 supplier.NORMAL=正常
 supplier.FREEZE=冻结
 supplier.fullName=商户名称
 supplier.domainName=域名
 supplier.description=描述
 supplier.status=状态
+
+resaler.NORMAL=普通会员
+resaler.VIP1=VIP1
+resaler.VIP2=VIP2
+resaler.VIP3=VIP3
+resaler.CONSUMER=个人
+resaler.COMPANY=公司
+resaler.PENDING=待审核
+resaler.APPROVED=审核通过
+resaler.UNAPPROVED=审核未通过
+resaler.remark=备注
+

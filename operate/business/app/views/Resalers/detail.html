@@ -1,0 +1,82 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'分销商详细信息' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/resaler.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{include '/share/nav.html' /}
+<div class="body">
+    <form class="form-horizontal" name="frm" action="" method="post">
+        <legend>分销商详细信息</legend>
+        <div class="control-group">
+            <label class="control-label">帐户类型</label>
+
+            <div class="controls">&{'resaler.'+resaler.accountType}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">用户名</label>
+
+            <div class="controls">${resaler.loginName}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名</label>
+
+            <div class="controls">${resaler?.userName}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">手&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;机</label>
+
+            <div class="controls">${resaler?.mobile}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话</label>
+
+            <div class="controls">${resaler?.phone}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">联系人地址</label>
+
+            <div class="controls">${resaler?.address}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">身份证号</label>
+
+            <div class="controls">${resaler?.identityNo}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">会员级别</label>
+            <div class="controls">
+            #{select 'resaler.level', id:ca,class:'input-small'}
+                    #{option "NORMAL"}&{'resaler.NORMAL'}#{/option} 
+                    #{option "VIP1"}&{'resaler.VIP1'}#{/option} 
+                    #{option "VIP2"}&{'resaler.VIP2'}#{/option} 
+                    #{option "VIP3"}&{'resaler.VIP3'}#{/option} 
+                #{/select}
+            </div>
+        </div>
+         <div class="control-group">
+            <label class="control-label">备注</label>
+            <div class="controls">
+            <textarea rows="5" cols="8" name="remark" id="remark">${resaler?.remark}</textarea>
+            <span class="error" id="checkRemark">#{error 'resaler.remark'/}</span>
+            </div>
+        </div>
+        </form>
+        <form class="form-horizontal" id="checkFrm" action="@{Resalers.update()}" method="post">
+        <div class="form-actions">
+        #{if !"APPROVED".equals(resaler.status.toString())}
+            <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','APPROVED')" id="approved" type="button">审核通过</button>
+        #{/if}    
+        #{if !"UNAPPROVED".equals(resaler.status.toString())}
+            <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','UNAPPROVED',0)" id="unapproved" type="button">审核未通过</button>
+        #{/if}
+            <button class="btn btn-primary" onclick="javascript:window.history.back(-1)" type="button">返回</button>
+        </div>
+      <form class="form-horizontal" name="frm" action="" method="post">
+</div>

@@ -1,0 +1,16 @@
+#{fixture delete:[
+models.resale.Resaler.class],
+load:'fixture/resaler.yml' /}
+
+#{selenium '分销商一览'}
+    #{include 'test/selenium/step/login.selenium' /}
+    open('/resalers')
+    assertTextPresent('分销商一览')
+#{/selenium}
+
+#{selenium '查看分销商'}
+    #{include 'test/selenium/step/login.selenium' /}
+    open('/resalers/${play.test.Fixtures.idCache.get("models.resale.Resaler-resaler_2")}/view')
+    verifyTitle('分销商详细信息')
+    verifyTextPresent('测试二')
+#{/selenium}

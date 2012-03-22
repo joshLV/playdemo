@@ -6,10 +6,11 @@
     <permission key="GOODS" text="商品管理"/>
     <permission key="SUPPLIERS_NEW" text="商户添加"/>
     <permission key="SUPPLIERS" text="商户管理"/>
+    <permission key="RESALERS" text="分销商管理"/>
     <!--<permission key="SHOPS_NEW" text="门店添加"/>-->
     <!--<permission key="SHOPS" text="门店管理"/>-->
 
-    <navigation key="operate_app" text="商品管理" action="Application.index">
+    <navigation key="operate_app" text="商品管理" action="Goods.index">
         <navigation key="goods" text="商品" permission="GOODS_NEW,GOODS">
             <navigation key="goods_add" action="Goods.add" text="商品添加"/>
             <navigation key="goods_index" action="Goods.index" text="商品管理"/>
@@ -21,6 +22,12 @@
         <navigation key="suppliers" text="商户" permission="SUPPLIERS_NEW,SUPPLIERS">
             <navigation key="suppliers_add" action="Suppliers.add" text="商户添加"/>
             <navigation key="suppliers_index" action="Suppliers.index" text="商户管理"/>
+        </navigation>
+    </navigation>
+    
+      <navigation key="resale_app" text="分销商管理" action="Resalers.index">
+        <navigation key="resaler" text="分销商" permission="RESALERS">
+            <navigation key="resalers_index" action="Resalers.index" text="分销商管理"/>
         </navigation>
     </navigation>
 </application>

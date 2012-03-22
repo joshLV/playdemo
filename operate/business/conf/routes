@@ -32,6 +32,9 @@ GET     /suppliers/{id}/edit                    Suppliers.edit
 PUT     /suppliers/{id}/update                  Suppliers.update
 DELETE  /suppliers/{id}/delete                  Suppliers.delete
 
+GET     /resalers                               Resalers.index
+GET     /resalers/{id}/view                     Resalers.detail
+POST    /resalers/update                        Resalers.update
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
