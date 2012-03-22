@@ -1,7 +1,7 @@
 #{fixture delete:'all', load:'fixture/supplier_unit.yml' /}
 #{selenium 'Test Suppliers/index.html Normal'}
     #{include 'test/selenium/step/login.selenium' /}
-open('/suppliers}')
+open('/suppliers')
 verifyTitle('商户一览')
 click('修改')
 verifyTitle('修改商户')

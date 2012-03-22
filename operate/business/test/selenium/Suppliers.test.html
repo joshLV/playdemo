@@ -1,6 +1,7 @@
-#{fixture delete:'all', load:'fixture/goods.yml' /}
+#{fixture delete:'all', load:'fixture/supplier_unit.yml' /}
 #{selenium 'Test Suppliers/index.html Normal'}
-open('/suppliers}')
+    #{include 'test/selenium/step/login-retry.selenium' /}
+open('/suppliers')
 verifyTitle('商户一览')
 verifyTextPresent('来一份')
 verifyTextPresent('lyf.uhuila.net')

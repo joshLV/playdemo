@@ -51,16 +51,20 @@ public class Goods extends Controller {
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(true);
+        List<Supplier> supplierList = Supplier.findUnDeleted();
 
         renderArgs.put("condition", condition);
-        render(goodsPage);
+        render(goodsPage, supplierList);
     }
 
     /**
      * 展示添加商品页面
      */
     @ActiveNavigation("goods_add")
-    public static void add(models.sales.Goods goods,Long topCategoryId) {
+    public static void add(models.sales.Goods goods, Long topCategoryId) {
+        if (goods == null) {
+            goods = new models.sales.Goods();
+        }
         List<Shop> shopList = Shop.findShopBySupplier(goods.supplierId);
         List<Brand> brandList = Brand.findByOrder();
         List<Category> categoryList = Category.findByParent(0);
@@ -68,9 +72,6 @@ public class Goods extends Controller {
         List<Supplier> supplierList = Supplier.findUnDeleted();
         if (categoryList.size() > 0) {
             subCategoryList = Category.findByParent(categoryList.get(0).id);
-        }
-        if (goods == null) {
-            goods = new models.sales.Goods();
         }
         String shopIds = "";
         if (goods.shops != null) {
@@ -174,7 +175,7 @@ public class Goods extends Controller {
 //            renderArgs.put("topCategoryId", topCategoryId);
 //            renderArgs.put("categoryId", categoryId);
 //            renderArgs.put("shopIds", shopIds);
-            add(goods,topCategoryId);
+            add(goods, topCategoryId);
 //            render("Goods/add.html", shopList, brandList, categoryList, subCategoryList, goods, topCategoryId,
 //                    categoryId, shopIds);
         }

@@ -1,13 +1,13 @@
 <div class="control-group">
-    <label class="control-label"><font color="red">*</font>商品分类</label>
+    <label class="control-label"><font color="red">*</font>商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户</label>
 
     <div class="controls">
-    #{select 'goods.supplierId',value:categoryId, id:'categoryId', class:'input-small'}
-        #{list items:subCategoryList, as:'category' }
-            #{option category.id}${category.name}#{/option}
+    #{select 'goods.supplierId',value:supplierId, id:'supplierId', class:'input-small'}
+        #{list items:supplierList, as:'supplier' }
+            #{option supplier.id}${supplier.fullName}#{/option}
         #{/list}
     #{/select}
-        <span class="error">#{error 'goods.category'/}</span>
+        <span class="error">#{error 'goods.supplierId'/}</span>
     </div>
 </div>
 <div class="control-group">

@@ -1,0 +1,8 @@
+.error {
+    padding-left: 10px;
+    color: red;
+}
+
+table td.amount {
+    text-align: right;
+}

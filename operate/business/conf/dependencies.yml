@@ -5,7 +5,7 @@ require:
     - play -> cobertura 2.4
     - play -> paginate head
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
-    - layout_trader -> layout_trader
+    - layout_operate -> layout_operate
     - commons-lang -> commons-lang 2.6
     - sales -> sales
     - play -> cas 3.1
@@ -28,7 +28,7 @@ repositories:
         type:       local
         artifact:   "${application.path}/../../module/[module]"
         contains:
-            - layout_trader -> *
+            - layout_operate -> *
             - sales -> *
             - paginate_ext -> *
             - supplier -> *
