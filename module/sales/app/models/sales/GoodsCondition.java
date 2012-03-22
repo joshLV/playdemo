@@ -17,6 +17,7 @@ import java.util.Map;
 public class GoodsCondition {
     public static final String SHANGHAI = "021";
 
+    public long supplierId = 0;
     public long categoryId = 0;
     public String cityId = SHANGHAI;
     public String districtId = "0";
@@ -112,6 +113,10 @@ public class GoodsCondition {
             condBuilder.append(" and g.id in (select g.id from g.shops s " +
                     "where s.areaId like :areaId)");
             paramMap.put("areaId", cityId + "%");
+        }
+        if (supplierId != 0) {
+            condBuilder.append(" and g.supplierId = :supplierId)");
+            paramMap.put("supplierId", supplierId);
         }
         if (categoryId != 0) {
             condBuilder.append(" and g.id in (select g.id from " +

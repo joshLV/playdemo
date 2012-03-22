@@ -46,7 +46,7 @@ public class Supplier extends Model {
     }
 
     private static final String IMAGE_SERVER = Play.configuration.getProperty
-            ("image.server", "img0.uhlcdndev.net");
+            ("image.server", "img0.uhcdn.net");
 
     public static void update(Supplier supplier) {
         Supplier sp = findById(supplier.id);

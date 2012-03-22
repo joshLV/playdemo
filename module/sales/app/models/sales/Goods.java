@@ -7,6 +7,7 @@ package models.sales;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.constants.ImageSize;
 import com.uhuila.common.util.PathUtil;
+import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -21,14 +22,17 @@ import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "goods")
 public class Goods extends Model {
 
     private static final String IMAGE_SERVER = Play.configuration.getProperty
-            ("image.server", "img0.uhlcdndev.net");
+            ("image.server", "img0.uhcdn.net");
     //    private static final String IMAGE_ROOT_GENERATED = Play.configuration
 //            .getProperty("image.root", "/p");
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
@@ -151,6 +155,13 @@ public class Goods extends Model {
     //    public String title;
     /**
      * 商品原价
+     */
+    @Required
+    @Min(value = 0.01)
+    @Column(name = "face_value")
+    public BigDecimal faceValue;
+    /**
+     * 商品进价
      */
     @Required
     @Min(value = 0.01)
@@ -314,6 +325,18 @@ public class Goods extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "material_type")
     public MaterialType materialType;
+
+    /**
+     * 获取商品所属的商户信息.
+     * @return
+     */
+    @Transient
+    public Supplier getSupplier(){
+        return Supplier.findById(id);
+    }
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    public Set<GoodsLevelPrice> levelPrices;
 
     /**
      * 根据商品分类和数量取出指定数量的商品.

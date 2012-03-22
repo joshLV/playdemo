@@ -72,7 +72,7 @@ public class Shop extends Model {
      * @param supplierId
      * @return
      */
-    public static List<Shop> findShopBySupplier(long supplierId) {
+    public static List<Shop> findShopBySupplier(Long supplierId) {
         return Shop.find("bySupplierIdAndDeleted", supplierId, DeletedStatus.UN_DELETED).fetch();
     }
 
