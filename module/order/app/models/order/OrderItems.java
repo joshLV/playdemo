@@ -11,7 +11,22 @@ import java.util.Date;
 @Entity
 @Table(name = "order_items")
 public class OrderItems extends Model {
-    @ManyToOne(fetch = FetchType.LAZY)
+
+	// ====  价格列表  ====
+	@Column(name = "face_value")
+	public BigDecimal faceValue;		//商品面值、市场价
+	
+    @Column(name = "original_price")
+    public BigDecimal originalPrice;	//供应商进货价
+
+    @Column(name = "resaler_price")
+    public BigDecimal resalerPrice;     //用户在哪个分销商平台购买的价格，用于计算分销平台的佣金
+    
+    @Column(name = "sale_price")
+    public BigDecimal salePrice;		//最终成交价,对于普通分销商来说，此成交价与以上分销商价(resalerPrice)相同；
+    // ====  价格列表  ====
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = true)
     public Order order;
 
@@ -21,12 +36,6 @@ public class OrderItems extends Model {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id", nullable = true)
     public Goods goods;
-
-    @Column(name = "original_price")
-    public BigDecimal originalPrice;
-
-    @Column(name = "sale_price")
-    public BigDecimal salePrice;
 
     @Column(name = "goods_name")
     public String goodsName;
