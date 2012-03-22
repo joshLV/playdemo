@@ -1,8 +1,10 @@
 package controllers;
 
 import controllers.modules.cas.SecureCAS;
-import controllers.modules.webcas.WebCAS;
+
+import controllers.resaletrace.ResaleCAS;
 import models.consumer.User;
+import models.resale.Resaler;
 import models.resale.ResalerFav;
 import play.data.binding.As;
 import play.mvc.Controller;
@@ -18,7 +20,7 @@ import java.util.List;
  *
  */
 //@With({WebCAS.class, SecureCAS.class})
-@With(WebCAS.class)
+@With(ResaleCAS.class)
 public class ResalerFavs extends Controller {
     private static int PAGE_SIZE = 15;
 
@@ -26,7 +28,7 @@ public class ResalerFavs extends Controller {
      * 分销库主界面
      */
     public static void index() {
-        User user = WebCAS.getUser();
+        Resaler resaler = ResaleCAS.getResaler();
 
         List<ResalerFav> favs = ResalerFav.findAll();//user);
         render(favs);
@@ -38,11 +40,11 @@ public class ResalerFavs extends Controller {
      * @param goodsId  商品ID
      */
     public static void order(long goodsId) {
-        User user = WebCAS.getUser();
+        Resaler resaler = ResaleCAS.getResaler();
 
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
         
-        ResalerFav.order(user, goods);
+        ResalerFav.order(resaler, goods);
 
         ok();
     }
@@ -54,9 +56,9 @@ public class ResalerFavs extends Controller {
      * @param goodsIds 商品列表
      */
     public static void delete(@As(",") List<Long> goodsIds) {
-        User user = WebCAS.getUser();
+        Resaler resaler = ResaleCAS.getResaler();
 
-        ResalerFav.delete(user, goodsIds);
+        ResalerFav.delete(resaler, goodsIds);
 
         ok();
     }

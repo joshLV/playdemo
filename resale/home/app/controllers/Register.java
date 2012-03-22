@@ -46,7 +46,7 @@ public class Register extends Controller {
 		//密码加密
 		resaler.password=DigestUtils.md5Hex(resaler.password+passwordSalt);
 		//正常
-		resaler.status=ResalerStatus.NOMAL;
+		resaler.status=ResalerStatus.NORMAL;
 		//随机吗
 		resaler.passwordSalt=passwordSalt;
 		//获得IP
