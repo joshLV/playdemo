@@ -61,8 +61,21 @@ public class Goods extends Controller {
      * 展示添加商品页面
      */
     @ActiveNavigation("goods_add")
-    public static void add() {
+    public static void add(models.sales.Goods goods, Long topCategoryId) {
+        if (goods == null) {
+            goods = new models.sales.Goods();
+        }
         Long supplierId = getSupplierId();
+        String shopIds = "";
+        if (goods.shops != null) {
+            for (Shop shop : goods.shops) {
+                shopIds += shop.id + ",";
+                renderArgs.put("isAllShop", false);
+            }
+        } else {
+            renderArgs.put("isAllShop", true);
+        }
+
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         List<Brand> brandList = Brand.findByOrder();
         List<Category> categoryList = Category.findByParent(0);
@@ -70,11 +83,16 @@ public class Goods extends Controller {
         if (categoryList.size() > 0) {
             subCategoryList = Category.findByParent(categoryList.get(0).id);
         }
-
-        Goods goods = new Goods();
-        Scope.Flash.current().put("goods", goods);
-        renderArgs.put("isAllShop", true);
-        render(shopList, brandList, categoryList, subCategoryList);
+        Long categoryId = 0L;
+        if (goods.categories != null && goods.categories.size() > 0 && goods.categories.iterator() != null && goods
+                .categories.iterator().hasNext()) {
+            categoryId = goods.categories.iterator().next().id;
+        }
+        for (String key : validation.errorsMap().keySet()) {
+            System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
+        }
+        render(shopList, brandList, categoryList, subCategoryList, goods, topCategoryId,
+                categoryId, shopIds);
     }
 
     private static Long getSupplierId() {
@@ -105,60 +123,11 @@ public class Goods extends Controller {
             goods.shops = null;
         }
 
-//        if (image != null) {
-        //检查目录
-        File uploadDir = new File(UploadFiles.ROOT_PATH);
-        if (!uploadDir.isDirectory()) {
-            Validation.addError("goods.imagePath", "validation.write");
-        }
-
-        //检查目录写权限
-        if (!uploadDir.canWrite()) {
-            Validation.addError("goods.imagePath", "validation.write");
-        }
-
-        if (imagePath.length() > UploadFiles.MAX_SIZE) {
-            Validation.addError("goods.imagePath", "validation.maxFileSize");
-        }
-
-        //检查扩展名
-        //定义允许上传的文件扩展名
-        String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
-        String fileExt = imagePath.getName().substring(imagePath.getName().lastIndexOf(".") + 1).toLowerCase();
-        if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
-            Validation.addError("goods.imagePath", "validation.invalidType", StringUtils.join(fileTypes, ','));
-        }
-//        }
-
+        checkImageFile(imagePath);
 
         if (Validation.hasErrors()) {
-            String shopIds = "";
-            if (goods.shops != null) {
-                for (Shop shop : goods.shops) {
-                    shopIds += shop.id + ",";
-                    renderArgs.put("isAllShop", false);
-                }
-            } else {
-                renderArgs.put("isAllShop", true);
-            }
-
-            List<Shop> shopList = Shop.findShopBySupplier(supplierId);
-            List<Brand> brandList = Brand.findByOrder();
-            List<Category> categoryList = Category.findByParent(0);
-            List<Category> subCategoryList = new ArrayList<>();
-            if (categoryList.size() > 0) {
-                subCategoryList = Category.findByParent(categoryList.get(0).id);
-            }
-            Long categoryId = 0L;
-            if (goods.categories != null && goods.categories.size() > 0 && goods.categories.iterator() != null && goods
-                    .categories.iterator().hasNext()) {
-                categoryId = goods.categories.iterator().next().id;
-            }
-            for (Object key : validation.errorsMap().keySet()) {
-                System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
-            }
-            render("Goods/add.html", shopList, brandList, categoryList, subCategoryList, goods, topCategoryId,
-                    categoryId, shopIds);
+            Validation.keep();
+            add(goods, topCategoryId);
         }
 
         //添加商品处理
@@ -191,6 +160,33 @@ public class Goods extends Controller {
         index(null);
     }
 
+    private static void checkImageFile(File imagePath) {
+        if (imagePath != null) {
+            //检查目录
+            File uploadDir = new File(UploadFiles.ROOT_PATH);
+            if (!uploadDir.isDirectory()) {
+                Validation.addError("goods.imagePath", "validation.write");
+            }
+
+            //检查目录写权限
+            if (!uploadDir.canWrite()) {
+                Validation.addError("goods.imagePath", "validation.write");
+            }
+
+            if (imagePath.length() > UploadFiles.MAX_SIZE) {
+                Validation.addError("goods.imagePath", "validation.maxFileSize");
+            }
+
+            //检查扩展名
+            //定义允许上传的文件扩展名
+            String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
+            String fileExt = imagePath.getName().substring(imagePath.getName().lastIndexOf(".") + 1).toLowerCase();
+            if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
+                Validation.addError("goods.imagePath", "validation.invalidType", StringUtils.join(fileTypes, ','));
+            }
+        }
+    }
+
     /**
      * 上传图片
      *
@@ -210,11 +206,39 @@ public class Goods extends Controller {
     /**
      * 取得指定商品信息
      */
-    public static void edit(Long id) {
+    public static void edit(Long id, Long topCategoryId) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
-        List<Shop> shopList = Shop.findShopBySupplier(goods.supplierId);
+        if (goods == null) {
+            goods = new models.sales.Goods();
+        }
+        Long supplierId = getSupplierId();
+        String shopIds = "";
+        if (goods.shops != null) {
+            for (Shop shop : goods.shops) {
+                shopIds += shop.id + ",";
+                renderArgs.put("isAllShop", false);
+            }
+        } else {
+            renderArgs.put("isAllShop", true);
+        }
+
+        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         List<Brand> brandList = Brand.findByOrder();
-        render(goods, shopList, brandList);
+        List<Category> categoryList = Category.findByParent(0);
+        List<Category> subCategoryList = new ArrayList<>();
+        if (categoryList.size() > 0) {
+            subCategoryList = Category.findByParent(categoryList.get(0).id);
+        }
+        Long categoryId = 0L;
+        if (goods.categories != null && goods.categories.size() > 0 && goods.categories.iterator() != null && goods
+                .categories.iterator().hasNext()) {
+            categoryId = goods.categories.iterator().next().id;
+        }
+        for (String key : validation.errorsMap().keySet()) {
+            System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
+        }
+        render(shopList, brandList, categoryList, subCategoryList, goods, topCategoryId,
+                categoryId, shopIds);
     }
 
     /**
@@ -230,12 +254,24 @@ public class Goods extends Controller {
      *
      * @param id
      */
-    public static void update(Long id, File uploadImageFile, models.sales.Goods goods) {
+    public static void update(Long id, File imagePath, models.sales.Goods goods, Long topCategoryId,
+                              boolean isAllShop) {
+        if (isAllShop && goods.shops != null) {
+            goods.shops = null;
+        }
+
+        checkImageFile(imagePath);
+
+        if (Validation.hasErrors()) {
+            Validation.keep();
+            edit(id,topCategoryId);
+        }
+
         String companyUser = getCompanyUser();
         models.sales.Goods updateGoods = models.sales.Goods.findById(id);
 
         try {
-            uploadImagePath(uploadImageFile, updateGoods);
+            uploadImagePath(imagePath, updateGoods);
         } catch (IOException e) {
             error("goods.image_upload_failed");
         }

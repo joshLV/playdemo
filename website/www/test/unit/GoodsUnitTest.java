@@ -40,16 +40,16 @@ public class GoodsUnitTest extends UnitTest {
         models.sales.Goods goods = new Goods();
         goods.imagePath = "/1/1/1/3.jpg";
         String path = goods.getImageLargePath();
-        assertEquals("http://img0.uhcdn.net/p/1/1/1/3_large.jpg", path);
+        assertEquals("http://img0.uhcdn.com/p/1/1/1/3_large.jpg", path);
 
         path = goods.getImageTinyPath();
-        assertEquals("http://img0.uhcdn.net/p/1/1/1/3_tiny.jpg", path);
+        assertEquals("http://img0.uhcdn.com/p/1/1/1/3_tiny.jpg", path);
 
         path = goods.getImageMiddlePath();
-        assertEquals("http://img0.uhcdn.net/p/1/1/1/3_middle.jpg", path);
+        assertEquals("http://img0.uhcdn.com/p/1/1/1/3_middle.jpg", path);
 
         path = goods.getImageSmallPath();
-        assertEquals("http://img0.uhcdn.net/p/1/1/1/3_small.jpg", path);
+        assertEquals("http://img0.uhcdn.com/p/1/1/1/3_small.jpg", path);
     }
 
 

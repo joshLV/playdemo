@@ -30,7 +30,6 @@ import java.util.Set;
 @Entity
 @Table(name = "goods")
 public class Goods extends Model {
-
 	//  ========= 不同的价格列表 =======
     /**
      * 商户填写的商品市场价
@@ -223,7 +222,7 @@ public class Goods extends Model {
 
     
 	private static final String IMAGE_SERVER = Play.configuration.getProperty
-            ("image.server", "img0.uhcdn.net");
+            ("image.server", "img0.uhcdn.com");
     //    private static final String IMAGE_ROOT_GENERATED = Play.configuration
 //            .getProperty("image.root", "/p");
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();

@@ -1,4 +1,4 @@
-goods.image_upload_failed=图片上传失败
+
 
 play-paginate.first=&laquo;&nbsp;首页
 play-paginate.prev=&lsaquo;&nbsp;上一页
@@ -32,7 +32,10 @@ goods.originalPrice=商品进价
 goods.salePrice=商品现价
 goods.baseSale=库存
 goods.imagePath=商品图片
+goods.image_upload_failed=图片上传失败
 goods.details=商品详情
+
+imagePath=商品图片
 shop.name=门店名称
 shop.address=门店地址
 

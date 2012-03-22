@@ -99,10 +99,8 @@ public class Goods extends Controller {
         for (Object key : validation.errorsMap().keySet()) {
             System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
         }
-        renderArgs.put("topCategoryId", topCategoryId);
-        renderArgs.put("categoryId", categoryId);
-        renderArgs.put("shopIds", shopIds);
-        render(shopList, brandList, categoryList, subCategoryList, supplierList, goods);
+        render(shopList, brandList, categoryList, subCategoryList, supplierList, goods,topCategoryId,categoryId,
+                shopIds);
     }
 
     /**
@@ -116,77 +114,47 @@ public class Goods extends Controller {
      * 添加商品
      * 商户只能添加电子券.
      *
-     * @param image
+     * @param imagePath
      * @param goods
      * @param topCategoryId 顶层分类Id
      * @param isAllShop     是否全部门店
      */
-    public static void create(@Valid models.sales.Goods goods, @Required File image, Long topCategoryId,
+    public static void create(@Valid models.sales.Goods goods, @Required File imagePath, Long topCategoryId,
                               boolean isAllShop) {
         if (isAllShop && goods.shops != null) {
             goods.shops = null;
         }
 
         //检查文件大小
-//        if (image != null) {
-        //检查目录
-        File uploadDir = new File(UploadFiles.ROOT_PATH);
-        if (!uploadDir.isDirectory()) {
-            Validation.addError("goods.image", "validation.write");
-        }
+        if (imagePath != null) {
+            //检查目录
+            File uploadDir = new File(UploadFiles.ROOT_PATH);
+            if (!uploadDir.isDirectory()) {
+                Validation.addError("imagePath", "validation.write");
+            }
 
-        //检查目录写权限
-        if (!uploadDir.canWrite()) {
-            Validation.addError("goods.image", "validation.write");
-        }
+            //检查目录写权限
+            if (!uploadDir.canWrite()) {
+                Validation.addError("imagePath", "validation.write");
+            }
 
-        if (image.length() > UploadFiles.MAX_SIZE) {
-            Validation.addError("goods.image", "validation.maxFileSize");
-        }
+            if (imagePath.length() > UploadFiles.MAX_SIZE) {
+                Validation.addError("imagePath", "validation.maxFileSize");
+            }
 
-        //检查扩展名
-        //定义允许上传的文件扩展名
-        String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
-        String fileExt = image.getName().substring(image.getName().lastIndexOf(".") + 1).toLowerCase();
-        if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
-            Validation.addError("goods.image", "validation.invalidType", StringUtils.join(fileTypes, ','));
+            //检查扩展名
+            //定义允许上传的文件扩展名
+            String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
+            String fileExt = imagePath.getName().substring(imagePath.getName().lastIndexOf(".") + 1).toLowerCase();
+            if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
+                Validation.addError("imagePath", "validation.invalidType", StringUtils.join(fileTypes, ','));
+            }
         }
-//        }
 
 
         if (Validation.hasErrors()) {
             Validation.keep();
-//            String shopIds = "";
-//            if (goods.shops != null) {
-//                for (Shop shop : goods.shops) {
-//                    shopIds += shop.id + ",";
-//                    renderArgs.put("isAllShop", false);
-//                }
-//            } else {
-//                renderArgs.put("isAllShop", true);
-//            }
-
-//            List<Shop> shopList = Shop.findShopBySupplier(supplierId);
-//            List<Brand> brandList = Brand.findByOrder();
-//            List<Category> categoryList = Category.findByParent(0);
-//            List<Category> subCategoryList = new ArrayList<>();
-//            if (categoryList.size() > 0) {
-//                subCategoryList = Category.findByParent(categoryList.get(0).id);
-//            }
-//            Long categoryId = 0L;
-//            if (goods.categories != null && goods.categories.size() > 0 && goods.categories.iterator() != null && goods
-//                    .categories.iterator().hasNext()) {
-//                categoryId = goods.categories.iterator().next().id;
-//            }
-//            for (Object key : validation.errorsMap().keySet()) {
-//                System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
-//            }
-//            renderArgs.put("topCategoryId", topCategoryId);
-//            renderArgs.put("categoryId", categoryId);
-//            renderArgs.put("shopIds", shopIds);
             add(goods, topCategoryId);
-//            render("Goods/add.html", shopList, brandList, categoryList, subCategoryList, goods, topCategoryId,
-//                    categoryId, shopIds);
         }
 
         //添加商品处理
@@ -203,7 +171,7 @@ public class Goods extends Controller {
         }
         goods.create();
         try {
-            uploadImagePath(image, goods);
+            uploadImagePath(imagePath, goods);
         } catch (IOException e) {
             e.printStackTrace();
             error("goods.image_upload_failed");
@@ -257,12 +225,12 @@ public class Goods extends Controller {
      *
      * @param id
      */
-    public static void update(Long id, File uploadImageFile, models.sales.Goods goods) {
+    public static void update(Long id, File imagePath,@Valid models.sales.Goods goods) {
         String companyUser = getCompanyUser();
         models.sales.Goods updateGoods = models.sales.Goods.findById(id);
 
         try {
-            uploadImagePath(uploadImageFile, updateGoods);
+            uploadImagePath(imagePath, updateGoods);
         } catch (IOException e) {
             error("goods.image_upload_failed");
         }
@@ -284,16 +252,10 @@ public class Goods extends Controller {
         index(null);
     }
 
-    private static String getCompanyUser() {
-        //todo
-        return "燕井允";
-    }
-
     /**
      * 上下架指定商品
      */
     public static void updateStatus(GoodsStatus status, Long... ids) {
-        //更新处理
         models.sales.Goods.updateStatus(status, ids);
 
         index(null);
@@ -303,13 +265,14 @@ public class Goods extends Controller {
      * 删除指定商品
      */
     public static void delete(Long... ids) {
-        for (int i = 0; i < ids.length; i++) {
-            Long id = ids[i];
-            System.out.println("id:" + id);
-        }
         models.sales.Goods.delete(ids);
 
         index(null);
+    }
+
+    private static String getCompanyUser() {
+        //todo
+        return "燕井允";
     }
 
 }

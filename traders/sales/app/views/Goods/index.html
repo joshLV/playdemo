@@ -74,7 +74,7 @@
             <tr>
                 <td><input type="checkbox" id="checkoption" value="${goods.id}" name="ids[]"/></td>
                 <td>${goods.no}</td>
-                <td>${goods.name}</td>
+                <td><img src="${goods.imageTinyPath}"/>${goods.name}</td>
                 <td class="amount">${goods.faceValue?.formatCurrency('CNY').raw()}</td>
                 <td class="amount">${goods.originalPrice?.formatCurrency('CNY').raw()}</td>
                 <td class="amount">${goods.salePrice?.formatCurrency('CNY').raw()}</td>
