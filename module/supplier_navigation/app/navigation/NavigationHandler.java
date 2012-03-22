@@ -17,12 +17,12 @@ public class NavigationHandler {
     private static ThreadLocal<MenuContext> menuContext = new ThreadLocal<MenuContext>();
 
     static ThreadLocal<List<ContextedMenu>> topMenus = new ThreadLocal<>();
-    static ThreadLocal<List<ContextedMenu>> secendLevelMenus = new ThreadLocal<>();
+    static ThreadLocal<List<ContextedMenu>> secondLevelMenus = new ThreadLocal<>();
     static ThreadLocal<Set<String>> stackMenuNames = new ThreadLocal<>();
 
     public static void initContextMenu(String applicationName, String activeNavigationName) {
         initStackMenuNamesThreadLocal(applicationName, activeNavigationName);
-        initSecendLevelMenusThreadLocal(applicationName, activeNavigationName);
+        initSecondLevelMenusThreadLocal(applicationName, activeNavigationName);
         initTopMenusThreadLocal();
     }
 
@@ -41,19 +41,19 @@ public class NavigationHandler {
     }
 
 
-    private static void initSecendLevelMenusThreadLocal(String applicationName, String activeNavigationName) {
-        List<SupplierNavigation> secendLevelNavigations = SupplierNavigation
-                .getSecendLevelNavigations(applicationName, activeNavigationName);
-        if (secendLevelNavigations == null) {
+    private static void initSecondLevelMenusThreadLocal(String applicationName, String activeNavigationName) {
+        List<SupplierNavigation> secondLevelNavigations = SupplierNavigation
+                .getSecondLevelNavigations(applicationName, activeNavigationName);
+        if (secondLevelNavigations == null) {
             return;
         }
-        List<ContextedMenu> _secendLevelMenus = new ArrayList<>();
-        for (SupplierNavigation topNavitagion : secendLevelNavigations) {
+        List<ContextedMenu> _secondLevelMenus = new ArrayList<>();
+        for (SupplierNavigation topNavitagion : secondLevelNavigations) {
             Menu menu = Menu.from(topNavitagion);
             ContextedMenu contextedMenu = new ContextedMenu(menu, getMenuContext());
-            _secendLevelMenus.add(contextedMenu);
+            _secondLevelMenus.add(contextedMenu);
         }
-        secendLevelMenus.set(_secendLevelMenus);
+        secondLevelMenus.set(_secondLevelMenus);
     }
 
 
@@ -100,7 +100,7 @@ public class NavigationHandler {
     public static void clearMenuContext() {
         menuContext.set(null);
         topMenus.set(null);
-        secendLevelMenus.set(null);
+        secondLevelMenus.set(null);
         stackMenuNames.set(null);
     }
 
@@ -123,7 +123,7 @@ public class NavigationHandler {
         return topMenus.get();
     }
 
-    public static List<ContextedMenu> getSecendLevelMenus() {
-        return secendLevelMenus.get();
+    public static List<ContextedMenu> getSecondLevelMenus() {
+        return secondLevelMenus.get();
     }
 }

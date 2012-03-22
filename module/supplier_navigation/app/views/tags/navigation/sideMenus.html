@@ -1,7 +1,7 @@
-%{ 
-secendLevelMenus = _secendLevelMenus ?: _arg
-if (secendLevelMenus == null) {
-  throw new NullPointerException("The secendLevelMenus is null");
+%{
+secondLevelMenus = _secondLevelMenus ?: _arg
+if (secondLevelMenus == null) {
+  throw new NullPointerException("The secondLevelMenus is null");
 }
 
 if (_level == null) {
@@ -14,18 +14,18 @@ if (_showLevels == null) {
 
 if (_expandLevels == null) {
   _expandLevels = 99;
-} 
+}
 
 if (_ulClass == null) {
    _ulClass = "nav nav-list"
 }
 
 }%
-#{if !secendLevelMenus.isEmpty() &&
-     _level <= _showLevels && 
+#{if !secondLevelMenus.isEmpty() &&
+     _level <= _showLevels &&
      (_level <= _expandLevels || menuItem.hasActiveDescendant()) }
 <ul${_ulClass == null ? '' : (' class="' + _ulClass + '"').raw()}>
-#{list items:secendLevelMenus, as:'child'}
+#{list items:secondLevelMenus, as:'child'}
   %{
     linkClasses = ["nav-header"]
   }%
@@ -37,14 +37,14 @@ if (_ulClass == null) {
       ${child.getText()}
     #{/else}
   </li>
-  
+
   #{list items:child.children, as:'subItem'}
   %{
     subLinkClasses = []
     if(subItem.isActive()) { subLinkClasses.push("active"); }
     if(subItem.hasActiveDescendant()) { subLinkClasses.push("activePath"); }
     if(subItem.getProperty('external')) { subLinkClasses.push("external"); }
-  }%  
+  }%
       <li class="${subLinkClasses.join(' ')}">
         #{if subItem.hasLink()}
           <a href="${subItem.getLink()}">${subItem.getText()}</a>
@@ -52,7 +52,7 @@ if (_ulClass == null) {
         #{else}
           <a href="#">${subItem.getText()}</a>
         #{/else}
-      </li>  
+      </li>
   #{/list}
 #{/list}
 </ul>
