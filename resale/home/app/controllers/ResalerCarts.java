@@ -53,7 +53,8 @@ public class ResalerCarts extends Controller {
      * 若购物车中无此商品，则新建条目
      * 若购物车中有此商品，且商品数量加增量小于等于0，视为无效
      */
-    public static void order(long goodsId, String phones, int increment) {
+    public static void formAdd(long goodsId, String phones) {
+        System.out.println(phones);
         Resaler resaler = ResaleCAS.getResaler();
         List<String> invalidPhones = new ArrayList<>();
         List<String> validPhones = new ArrayList<>();
@@ -68,17 +69,29 @@ public class ResalerCarts extends Controller {
 
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
         if (goods == null) {
-            error(500, "no such goods: " + goodsId);
+            renderArgs.put("errorMsg","no such goods: " + goodsId);
+        }else {
+            for(String p : validPhones){
+                ResalerCart.order(resaler, goods, p, 1);
+            }
+
+            renderArgs.put("validPhones", validPhones);
+            renderArgs.put("invalidPhones", invalidPhones);
         }
         
-        for(String p : validPhones){
-            ResalerCart.order(resaler, goods, p, increment);
-        }
-
-        renderArgs.put("validPhones", validPhones);
         index();
     }
 
+    /**
+     * 加入或修改购物车列表
+     *
+     * @param goodsId  商品ID
+     * @param increment 购物车中商品数增量，
+     * 若购物车中无此商品，则新建条目
+     * 若购物车中有此商品，且商品数量加增量小于等于0，视为无效
+     */
+    public static void reorder(long goodsId, String phones, int increment) {
+    }
     /**
      * 从购物车中删除指定商品列表
      *

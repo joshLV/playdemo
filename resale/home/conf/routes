@@ -13,8 +13,9 @@ POST    /library                                ResalerFavs.order
 DELETE  /library/{goodsIds}                     ResalerFavs.delete
 
 GET     /carts                                  ResalerCarts.index
-POST    /carts                                  ResalerCarts.order
-DELET   /carts/{goodsId}-{phones}                ResalerCarts.delete
+POST    /carts                                  ResalerCarts.formAdd
+POST    /carts/reorder                          ResalerCarts.reorder
+DELET   /carts/{goodsId}-{phones}               ResalerCarts.delete
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
