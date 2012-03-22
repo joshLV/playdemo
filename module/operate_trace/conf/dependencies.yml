@@ -1,4 +1,4 @@
 self: play -> operate_trace 0.1
 
 require:
-    - play
+    - play 1.2.4

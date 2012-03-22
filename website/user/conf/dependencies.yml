@@ -1,6 +1,6 @@
 # Application dependencies
 
 require:
-    - play
+    - play 1.2.4
     - play -> cas 3.1
     - play -> cobertura 2.4

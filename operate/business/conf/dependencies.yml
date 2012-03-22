@@ -1,7 +1,7 @@
 # Application dependencies
 
 require:
-    - play
+    - play 1.2.4
     - play -> cobertura 2.4
     - play -> paginate head
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT

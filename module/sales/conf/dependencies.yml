@@ -1,7 +1,7 @@
 self: play -> sales 0.1
 
 require:
-    - play
+    - play 1.2.4
     - play -> paginate head
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - commons-lang -> commons-lang 2.6

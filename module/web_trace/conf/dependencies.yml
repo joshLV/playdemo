@@ -1,4 +1,4 @@
 self: play -> web_trace 0.2
 
 require:
-    - play
+    - play 1.2.4

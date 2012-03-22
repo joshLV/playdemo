@@ -10,7 +10,8 @@ do
   then
     echo $path
     cd $path
-    $BUILDMODULE_EXPECT
+    # $BUILDMODULE_EXPECT
+    play build-module
     cd -
   fi
 done
