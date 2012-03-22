@@ -49,7 +49,8 @@ public class RbacLoader {
         
         loadRolesToDB(application.roles, loadVersion);
         
-        loadPermissionsToDB(null, application.permissions, applicationName, loadVersion);
+        loadPermissionsToDB(null /* parent permission */,
+                application.permissions, applicationName, loadVersion);
         deleteUndefinedPermissions(applicationName, loadVersion);    
     }
     

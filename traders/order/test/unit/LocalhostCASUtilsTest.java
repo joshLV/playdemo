@@ -24,10 +24,10 @@ public class LocalhostCASUtilsTest extends UnitTest {
         Play.configuration.setProperty("cas.gateway", "false");
         Play.configuration.setProperty("cas.mockserver", "true");
 
-        Play.configuration.setProperty("cas.validateUrl", "http://{domain}.cas.supplierdev.com/serviceValidate");
-        Play.configuration.setProperty("cas.loginUrl", "http://{domain}.cas.supplierdev.com/login");
-        Play.configuration.setProperty("cas.logoutUrl", "http://{domain}.cas.supplierdev.com/logout");
-        Play.configuration.setProperty("application.baseUrl", "http://{domain}.order.supplierdev.com");
+        Play.configuration.setProperty("cas.validateUrl", "http://{domain}.cas.uhuila.net/serviceValidate");
+        Play.configuration.setProperty("cas.loginUrl", "http://{domain}.cas.uhuila.net/login");
+        Play.configuration.setProperty("cas.logoutUrl", "http://{domain}.cas.uhuila.net/logout");
+        Play.configuration.setProperty("application.baseUrl", "http://{domain}.order.uhuila.net");
 
         Http.Request.current.set(Http.Request.createRequest("127.0.0.1", "GET", "/login", null, null, null, null, "localhost:8080", false, 8080, "localhost", false, null, null));
     }
@@ -35,8 +35,8 @@ public class LocalhostCASUtilsTest extends UnitTest {
 
     @Test
     public void testGetDomainName(){
-        String casUrlTemp = "http://{domain}.cas.supplierdev.com/login";
-        assertEquals("http://localhost.cas.supplierdev.com/login",
+        String casUrlTemp = "http://{domain}.cas.uhuila.net/login";
+        assertEquals("http://localhost.cas.uhuila.net/login",
                      CASUtils.replaceCasUrl(casUrlTemp)
                      );
 
@@ -46,12 +46,12 @@ public class LocalhostCASUtilsTest extends UnitTest {
     public void getCasLoginUrlTest1() {
         Play.configuration.setProperty("cas.mockserver", "false");
         String casLoginUrl = CASUtils.getCasLoginUrl(Boolean.TRUE);
-        assertEquals("http://localhost.cas.supplierdev.com/login?service=http://localhost:8080/authenticate", casLoginUrl);
+        assertEquals("http://localhost.cas.uhuila.net/login?service=http://localhost:8080/authenticate", casLoginUrl);
 
         Play.configuration.setProperty("cas.gateway", "true");
         casLoginUrl = CASUtils.getCasLoginUrl(Boolean.TRUE);
         assertEquals(
-                "http://localhost.cas.supplierdev.com/login?service=http://localhost:8080/authenticate&gateway=true",
+                "http://localhost.cas.uhuila.net/login?service=http://localhost:8080/authenticate&gateway=true",
                 casLoginUrl);
     }
 
@@ -59,10 +59,10 @@ public class LocalhostCASUtilsTest extends UnitTest {
     public void getCasLoginUrlTest2() {
         Play.configuration.setProperty("cas.mockserver", "false");
         String casLoginUrl = CASUtils.getCasLoginUrl(Boolean.FALSE);
-        assertEquals("http://localhost.cas.supplierdev.com/login?service=http://localhost:8080/authenticate", casLoginUrl);
+        assertEquals("http://localhost.cas.uhuila.net/login?service=http://localhost:8080/authenticate", casLoginUrl);
         casLoginUrl = CASUtils.getCasLoginUrl(Boolean.TRUE);
         assertEquals(
-                "http://localhost.cas.supplierdev.com/login?service=http://localhost:8080/authenticate",
+                "http://localhost.cas.uhuila.net/login?service=http://localhost:8080/authenticate",
                 casLoginUrl);
     }
 
@@ -70,7 +70,7 @@ public class LocalhostCASUtilsTest extends UnitTest {
     public void getCasLogoutUrlTest() {
         Play.configuration.setProperty("cas.mockserver", "false");
         String casLogoutUrl = CASUtils.getCasLogoutUrl();
-        assertEquals("http://localhost.cas.supplierdev.com/logout", casLogoutUrl);
+        assertEquals("http://localhost.cas.uhuila.net/logout", casLogoutUrl);
     }
 
     @Test

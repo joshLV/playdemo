@@ -1,6 +1,9 @@
 package models.admin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Stack;
@@ -110,7 +113,7 @@ public class SupplierNavigation extends Model {
         SupplierNavigation nav = SupplierNavigation.find("byApplicationNameAndName", applicationName, currentMenuName).first();
         
         if (nav == null) {
-            return null;
+            return Collections.emptyList();
         }
         
         while(nav != null) {
@@ -130,7 +133,7 @@ public class SupplierNavigation extends Model {
         List<SupplierNavigation> parentStack = getNavigationParentStack(applicationName, navName);
         
         if (parentStack == null || parentStack.size() < 2) {
-            return null;
+            return Collections.emptyList();
         }
         
         SupplierNavigation topMenu = parentStack.get(0);

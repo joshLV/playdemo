@@ -56,5 +56,6 @@ public class SupplierPermission extends Model {
         for (SupplierPermission nav : list) {
             SupplierPermission.em().remove(nav);
         }
-    }    
+    }
+    
 }
