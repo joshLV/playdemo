@@ -12,6 +12,7 @@ require:
     - supplier_cas -> supplier_cas
     - sales -> sales
     - supplier -> supplier
+    - resale -> resale
     - accounts -> accounts
     - supplier_navigation -> supplier_navigation
     - org.jsoup -> jsoup 1.6.1
@@ -35,6 +36,7 @@ repositories:
             - consumer -> *
             - sales -> *
             - supplier -> *
+            - resale -> *
             - accounts -> *
             - supplier_cas -> *
             - paginate_ext -> *

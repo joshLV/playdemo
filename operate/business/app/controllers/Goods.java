@@ -64,11 +64,12 @@ public class Goods extends Controller {
         if (goods == null) {
             goods = new models.sales.Goods();
         }
-        if (goods.levelPrices == null){
+        if (goods.levelPrices == null) {
             goods.levelPrices = new HashSet<>();
         }
-        if (goods.levelPrices.size()==0){
+        if (goods.levelPrices.size() == 0) {
             for (ResalerLevel level : ResalerLevel.values()) {
+                System.out.println("level:" + level);
                 GoodsLevelPrice levelPrice = new GoodsLevelPrice(level, BigDecimal.ZERO);
                 goods.levelPrices.add(levelPrice);
             }

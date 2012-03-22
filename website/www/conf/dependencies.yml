@@ -13,6 +13,7 @@ require:
     - paginate_ext -> paginate_ext
     - sales -> sales
     - supplier -> supplier
+    - resale -> resale
     - consumer -> consumer
     - order -> order
     - commons-lang -> commons-lang 2.6
@@ -42,7 +43,8 @@ repositories:
         contains:
             - paginate_ext -> *
             - sales -> *
-            - supplier -> supplier
+            - supplier -> *
+            - resale -> *
             - consumer -> *
             - order -> *
             - web_trace -> *

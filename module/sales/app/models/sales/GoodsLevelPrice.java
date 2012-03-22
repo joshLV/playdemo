@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "goods_level_prices$")
+@Table(name = "goods_level_prices")
 public class GoodsLevelPrice extends Model {
     @Required
     @Enumerated(EnumType.STRING)

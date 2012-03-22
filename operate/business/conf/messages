@@ -33,6 +33,12 @@ goods.salePrice=商品现价
 goods.baseSale=库存
 goods.imagePath=商品图片
 goods.details=商品详情
+goods.level.NORMAL=普通会员
+goods.level.VIP1=V I P1
+goods.level.VIP2=V I P2
+goods.level.VIP3=V I P3
+
+
 shop.name=门店名称
 shop.address=门店地址
 

@@ -9,6 +9,7 @@ require:
     - sales -> sales
     - accounts -> accounts
     - supplier -> supplier
+    - resale -> resale
     - supplier_navigation -> supplier_navigation
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - org.jsoup -> jsoup 1.6.1
@@ -31,4 +32,5 @@ repositories:
             - sales -> *
             - accounts -> *
             - supplier -> *
+            - resale -> *
             - supplier_navigation -> *

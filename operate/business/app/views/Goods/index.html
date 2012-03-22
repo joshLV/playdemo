@@ -68,8 +68,8 @@
                 <th>原价</th>
                 <th>进价</th>
                 <th>现价</th>
-            #{list items:ResalerLevel.values(), as: 'level'}
-                <th>&{'goods_'+level}</th>
+            #{list items:models.resale.ResalerLevel.values(), as: 'level'}
+                <th>&{'goods.level.'+level}</th>
             #{/list}
                 <th>库存(件)</th>
                 <th>销量(件)</th>
@@ -87,9 +87,11 @@
                 <td>${goods.no}</td>
                 <td><a href="${goods.imageLargePath}" target="_blank"><img
                         src="${goods.imageTinyPath}"/></a>${goods.name}</td>
+                <td class="amount">${goods.faceValue?.formatCurrency('CNY').raw()}</td>
+                <td class="amount">${goods.originalPrice?.formatCurrency('CNY').raw()}</td>
                 <td class="amount">${goods.salePrice?.formatCurrency('CNY').raw()}</td>
-                #{list items:ResalerLevel.values(), as: 'level'}
-                    <td class="amount">${goods.levelPrices.price.formatCurrency('CNY').raw()}</td>
+                #{list items:goods.levelPrices, as: 'levelPrice'}
+                    <td class="amount">${levelPrice.price?.formatCurrency('CNY').raw()}</td>
                 #{/list}
                 <td class="amount">${goods.baseSale}</td>
                 <td class="amount">${goods.saleCount}</td>

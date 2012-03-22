@@ -96,12 +96,12 @@
         <span class="error">#{error 'goods.salePrice' /}</span>
     </div>
 </div>
-#{list items:levelPrices, as:'levelPrice'}
+#{list items:goods.levelPrices, as:'levelPrice'}
 <div class="control-group">
-    <label for="salePrice" class="control-label"><span style="color: red; ">*</span>&{'goods.'+levelPrice.level}价</label>
+    <label for="salePrice" class="control-label"><span style="color: red; ">*</span>&{'goods.level.'+levelPrice.level}价</label>
     <div class="controls">
         <input type="text" id="levelPrice_${levelPrice.level}" name="goods.levelPrice" class="input-small"
-               value="${goods?.levelPrices?.price}"/>元
+               value="${levelPrice?.price}"/>元
         <span class="error">#{error 'goods.levelPrices.price' /}</span>
     </div>
 </div>
