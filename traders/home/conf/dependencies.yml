@@ -4,6 +4,7 @@ require:
     - play 1.2.4
     - play -> cobertura 2.4
     - play -> paginate head
+    - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - paginate_ext -> paginate_ext
     - layout_trader -> layout_trader
     - sales -> sales
@@ -11,13 +12,12 @@ require:
     - supplier -> supplier
     - resale -> resale
     - supplier_navigation -> supplier_navigation
-    - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - org.jsoup -> jsoup 1.6.1
 
 repositories:
     - mavenRepository:
         type:       iBiblio
-        root:       "OneToManyhttp://dev.uhuila.cn/nexus/content/groups/public"
+        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
         contains:
             - com.uhuila.utils -> *
             - org.jsoup -> *
