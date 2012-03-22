@@ -7,6 +7,7 @@ package controllers;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
 import controllers.modules.cas.SecureCAS;
+import models.resale.ResalerLevel;
 import models.sales.*;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
@@ -20,10 +21,8 @@ import play.mvc.With;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * 通用说明：
@@ -64,6 +63,15 @@ public class Goods extends Controller {
     public static void add(models.sales.Goods goods, Long topCategoryId) {
         if (goods == null) {
             goods = new models.sales.Goods();
+        }
+        if (goods.levelPrices == null){
+            goods.levelPrices = new HashSet<>();
+        }
+        if (goods.levelPrices.size()==0){
+            for (ResalerLevel level : ResalerLevel.values()) {
+                GoodsLevelPrice levelPrice = new GoodsLevelPrice(level, BigDecimal.ZERO);
+                goods.levelPrices.add(levelPrice);
+            }
         }
         List<Shop> shopList = Shop.findShopBySupplier(goods.supplierId);
         List<Brand> brandList = Brand.findByOrder();

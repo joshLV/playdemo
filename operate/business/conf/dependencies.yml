@@ -13,6 +13,8 @@ require:
     - org.jsoup -> jsoup 1.6.1
     - supplier -> supplier
     - supplier_navigation -> supplier_navigation
+    - resale -> resale
+    - consumer -> consumer
 
 repositories:
     - mavenRepository:
@@ -33,3 +35,5 @@ repositories:
             - paginate_ext -> *
             - supplier -> *
             - supplier_navigation -> *
+            - resale -> *
+            - consumer -> *

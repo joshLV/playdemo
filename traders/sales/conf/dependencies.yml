@@ -8,10 +8,13 @@ require:
     - layout_trader -> layout_trader
     - commons-lang -> commons-lang 2.6
     - sales -> sales
+    - supplier -> supplier
     - supplier_cas -> supplier_cas
     - paginate_ext -> paginate_ext
     - org.jsoup -> jsoup 1.6.1
     - supplier_navigation -> supplier_navigation
+    - resale -> resale
+    - consumer -> consumer
 
 repositories:
     - mavenRepository:
@@ -29,6 +32,9 @@ repositories:
         contains:
             - layout_trader -> *
             - sales -> *
+            - resale -> *
+            - supplier -> *
             - supplier_cas -> *
             - paginate_ext -> *
             - supplier_navigation -> *
+            - consumer -> *

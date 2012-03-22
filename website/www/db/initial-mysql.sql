@@ -26,6 +26,7 @@ insert into categories (name,display_order,parent_id)
 insert into categories (name,display_order,parent_id)
   values('旅游', 200, null);
 
+
 -- Table brand Initial --
 insert into brands (name,logo,display_order,category_id)
   values('来一份', null, 100, 1);
