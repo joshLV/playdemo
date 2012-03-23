@@ -19,8 +19,6 @@ public class GoodsLevelPrice extends Model {
     @Required
     @Min(0.01)
     public BigDecimal price;
-    @Column(name = "goods_id")
-    public Long goodsId;
 
     public GoodsLevelPrice() {
 

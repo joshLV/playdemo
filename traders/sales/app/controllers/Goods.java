@@ -106,7 +106,7 @@ public class Goods extends Controller {
                     .categories.iterator().hasNext()) {
                 Category category = goods.categories.iterator().next();
                 categoryId = category.id;
-                if (goods.topCategoryId == null || goods.topCategoryId == 0) {
+                if ((goods.topCategoryId == null || goods.topCategoryId == 0) && category.parentCategory!=null) {
                     goods.topCategoryId = category.parentCategory.id;
                 }
             }
