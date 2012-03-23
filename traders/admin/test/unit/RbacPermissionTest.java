@@ -12,7 +12,6 @@ import play.test.UnitTest;
 public class RbacPermissionTest extends UnitTest {
 
     @Test
-    @Ignore
     public void canLoadPermissionYamlFile() {
         // 加载后，数据库中必须有相关的记录
         List<SupplierPermission> perms = SupplierPermission.find("byApplicationName", "traders-admin").fetch();

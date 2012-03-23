@@ -102,7 +102,9 @@ public class RbacLoader {
             supplierPermission.roles = new HashSet<>();
             for (String roleName : permission.getRoles()) {
                 SupplierRole role = SupplierRole.find("byKey", roleName).first();
-                supplierPermission.roles.add(role);
+                if (role != null) {
+                    supplierPermission.roles.add(role);
+                }
             }
         }
 
@@ -168,9 +170,10 @@ public class RbacLoader {
         if (menu.getPermissions() != null) {
             supplierNavigation.permissions = new HashSet<>();
             for (String permissionName : menu.getPermissions()) {
-                System.out.println("permissionName=" + permissionName);
                 SupplierPermission permission = SupplierPermission.find("byKey", permissionName).first();
-                supplierNavigation.permissions.add(permission);
+                if (permission != null) {
+                    supplierNavigation.permissions.add(permission);
+                }
             }
         }
         

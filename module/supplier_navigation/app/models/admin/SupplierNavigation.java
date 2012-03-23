@@ -91,7 +91,7 @@ public class SupplierNavigation extends Model {
                 "select s from SupplierNavigation s where s.applicationName=? and s.loadVersion <> ?", 
                 applicationName, loadVersion).fetch();
         for (SupplierNavigation nav : list) {
-            SupplierNavigation.em().remove(nav);
+            nav.delete();
         }
     }
     

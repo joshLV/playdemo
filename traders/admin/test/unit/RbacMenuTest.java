@@ -3,23 +3,19 @@ package unit;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-
 import models.admin.SupplierNavigation;
 import navigation.Application;
 import navigation.ContextedMenu;
 import navigation.Menu;
 import navigation.NavigationHandler;
 import navigation.RbacLoader;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import play.test.Fixtures;
 import play.test.UnitTest;
 import play.vfs.VirtualFile;
@@ -34,7 +30,7 @@ public class RbacMenuTest extends UnitTest {
         Fixtures.loadModels("fixture/navigation.yml");
 
         // 重新加载配置文件
-        VirtualFile file = VirtualFile.open("conf/rbac.xml");
+        VirtualFile file = VirtualFile.open("test/rbac.xml");
         RbacLoader.init(file);
     }
 
@@ -45,26 +41,25 @@ public class RbacMenuTest extends UnitTest {
         RbacLoader.init(file);
     }
     
-    @Ignore
     @Test
     public void theNoDefinedNavigationWillBeDeleted() {
         SupplierNavigation mainNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "main").first();
         assertNotNull(mainNav);
         assertNotNull(mainNav.permissions);
-        assertTrue(mainNav.permissions.size() == 0);
+        assertEquals(0, mainNav.permissions.size());
                 
         SupplierNavigation userNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "user_add").first();
         assertNotNull(userNav);
         assertNotNull(userNav.permissions);
-        assertTrue(userNav.permissions.size() == 2);
+        assertEquals(2, userNav.permissions.size());
         
+        List<SupplierNavigation> list = SupplierNavigation.find("byApplicationName", "traders-admin").fetch();
         // 加载后，数据库中没有在yml定义的导航记录必须被删除
         SupplierNavigation toDeleteNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "to_delete").first();
         assertNull(toDeleteNav);
     }
     
     @Test
-    @Ignore
     public void canLoadNavigationYamlFile() {
         assertNotNull(NavigationHandler.getMenuContext());
         ContextedMenu menu = NavigationHandler.getMenu("main");

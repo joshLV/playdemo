@@ -68,8 +68,8 @@ public class SupplierPermission extends Model {
      */
     public static  void deleteUndefinedPermissions(String applicationName, long loadVersion) {
         List<SupplierPermission> list = SupplierPermission.find("applicationName=? and loadVersion <> ?", applicationName, loadVersion).fetch();
-        for (SupplierPermission nav : list) {
-            SupplierPermission.em().remove(nav);
+        for (SupplierPermission perm : list) {
+            perm.delete();
         }
     }
     
