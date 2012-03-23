@@ -89,6 +89,7 @@ public class OrderUnitTest extends UnitTest {
     public void testOrders() {
         User user = new User();
         user.loginName = "y";
+        user.save();
         Address address = new Address();
         address.mobile = "13000000000";
         address.name = " 徐家汇";
@@ -102,6 +103,7 @@ public class OrderUnitTest extends UnitTest {
         String mobile = "1310000000";
         User user = new User();
         user.loginName = "y";
+        user.save();
         Address address = new Address();
         address.mobile = "13000000000";
         address.name = " 徐家汇";
@@ -125,6 +127,7 @@ public class OrderUnitTest extends UnitTest {
         String mobile = "1310000000";
         User user = new User();
         user.loginName = "y";
+        user.save();
         Address address = new Address();
         address.mobile = "13000000000";
         address.name = " 徐家汇";
