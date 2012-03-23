@@ -93,7 +93,7 @@ public class OrderUnitTest extends UnitTest {
         address.mobile = "13000000000";
         address.name = " 徐家汇";
         address.postcode = "200120";
-        Order orders = new Order(user.getId(),AccountType.CONSUMER, AccountUtil.getUhuilaAccount(), address);
+        Order orders = new Order(user.getId(),AccountType.CONSUMER, address);
         assertNotNull(orders);
     }
 
@@ -109,10 +109,10 @@ public class OrderUnitTest extends UnitTest {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
         boolean isOk = false;
         try {
-            Order orders = new Order(user.getId(), AccountType.CONSUMER, AccountUtil.getUhuilaAccount(),
+            Order orders = new Order(user.getId(), AccountType.CONSUMER,
                     goodsId, 2l, address, mobile);
             assertNotNull(orders);
-            new Order(user.getId(), AccountType.CONSUMER, AccountUtil.getUhuilaAccount(), goodsId,
+            new Order(user.getId(), AccountType.CONSUMER, goodsId,
                     200000l, address, mobile);
         } catch (NotEnoughInventoryException e) {
             isOk = true;
@@ -136,7 +136,7 @@ public class OrderUnitTest extends UnitTest {
         cartList.add(cart);
         boolean isOk = false;
         try {
-            Order orders = new Order(user.getId(), AccountType.CONSUMER, AccountUtil.getUhuilaAccount(),
+            Order orders = new Order(user.getId(), AccountType.CONSUMER,
                     cartList, address, mobile);
             assertNotNull(orders);
         } catch (NotEnoughInventoryException e) {

@@ -33,9 +33,6 @@ public class Order extends Model {
     @Column(name = "user_type")
     public AccountType userType;            //用户类型，个人/分销商
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    public Account resalerAccount;           //所在分销商的现金账户，优惠啦网站使用系统提供的优惠啦账户
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     public List<OrderItems> orderItems;
 
@@ -148,10 +145,9 @@ public class Order extends Model {
 //    @Transient
 //    public User user;
 
-    public Order(long userId, AccountType userType, Account resalerAccount,  Address address) {
+    public Order(long userId, AccountType userType,  Address address) {
         this.userId = userId;
         this.userType = userType;
-        this.resalerAccount = resalerAccount;
 
         this.status = OrderStatus.UNPAID;
         this.deleted = DeletedStatus.UN_DELETED;
@@ -176,10 +172,10 @@ public class Order extends Model {
         }
     }
 
-    public Order(long userId, AccountType userType, Account resalerAccount,
+    public Order(long userId, AccountType userType,
                  long goodsId, long number, Address address, String mobile)
             throws NotEnoughInventoryException {
-        this(userId, userType, resalerAccount, address);
+        this(userId, userType, address);
 
         models.sales.Goods goods = Goods.findById(goodsId);
         checkInventory(goods, number);
@@ -197,9 +193,9 @@ public class Order extends Model {
         this.orderItems.add(orderItems);
     }
 
-    public Order(long userId, AccountType userType, Account resalerAccount,
+    public Order(long userId, AccountType userType,
                  List<Cart> cartList, Address address, String mobile) throws NotEnoughInventoryException {
-        this(userId, userType, resalerAccount, address);
+        this(userId, userType, address);
 
         this.amount = Cart.amount(cartList);
         for (Cart cart : cartList) {
@@ -221,10 +217,6 @@ public class Order extends Model {
         }
     }
     
-//    public User getUser(){
-//        return user;
-//    }
-//
     public void setUser(User user){
         if(user  == null){
             return;

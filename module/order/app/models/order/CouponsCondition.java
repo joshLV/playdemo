@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.persistence.Query;
 
+import models.accounts.AccountType;
 import models.consumer.User;
 
 import org.apache.commons.lang.StringUtils;
@@ -39,8 +40,9 @@ public class CouponsCondition {
         StringBuilder sql = new StringBuilder();
         sql.append(" 1=1 ");
         if (user != null) {
-            sql.append(" and e.order.user = :user");
-            couponsMap.put("user", user);
+            sql.append(" and e.order.userId = :userId and e.order.userType = :userType");
+            couponsMap.put("userId", user.getId());
+            couponsMap.put("userType", AccountType.CONSUMER);
         }
 
         if (createdAtBegin != null) {
