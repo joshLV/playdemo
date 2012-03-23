@@ -216,23 +216,13 @@ public class Order extends Model {
             this.orderItems.add(orderItems);
         }
     }
-    
-    public void setUser(User user){
-        if(user  == null){
-            return;
-        }
-        this.userId = user.getId();
-        this.userType = AccountType.CONSUMER;
-        this.save();
-    }
 
     public void setUser(User user, AccountType accountType){
-        if(user == null){
-            return;
+        if(user != null){
+            this.userId = user.getId();
+            this.userType = accountType;
+            this.save();
         }
-        this.userId = user.getId();
-        this.userType = accountType;
-        this.save();
     }
 
     public static long itemsNumber(Order order) {

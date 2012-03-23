@@ -1,5 +1,6 @@
 package unit;
 
+import models.accounts.AccountType;
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -78,11 +79,11 @@ public class OrderUnitTest extends UnitTest {
 
         myId = (Long)play.test.Fixtures.idCache.get("models.order.Order-order1");
         Order order = models.order.Order.findById(myId);
-        order.setUser(user);
+        order.setUser(user, AccountType.CONSUMER);
 
         myId = (Long)play.test.Fixtures.idCache.get("models.order.Order-order2");
         order = models.order.Order.findById(myId);
-        order.setUser(user);
+        order.setUser(user, AccountType.CONSUMER);
 
 
 
