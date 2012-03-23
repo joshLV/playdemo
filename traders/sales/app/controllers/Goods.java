@@ -61,38 +61,69 @@ public class Goods extends Controller {
      * 展示添加商品页面
      */
     @ActiveNavigation("goods_add")
-    public static void add(models.sales.Goods goods, Long topCategoryId) {
+    public static void add() {
+        renderInit(null);
+        render();
+    }
+
+    /**
+     * 初始化form界面.
+     * 添加和修改页面共用
+     *
+     * @param goods
+     */
+    private static void renderInit(models.sales.Goods goods) {
         if (goods == null) {
             goods = new models.sales.Goods();
         }
+        if (goods.isAllShop != null) {
+            if (goods.isAllShop && goods.shops != null) {
+                goods.shops = null;
+            }
+        } else {
+            goods.isAllShop = false;
+        }
+
         Long supplierId = getSupplierId();
         String shopIds = "";
         if (goods.shops != null) {
             for (Shop shop : goods.shops) {
                 shopIds += shop.id + ",";
-                renderArgs.put("isAllShop", false);
+                goods.isAllShop = false;
             }
         } else {
-            renderArgs.put("isAllShop", true);
+            goods.isAllShop = true;
         }
 
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         List<Brand> brandList = Brand.findByOrder();
-        List<Category> categoryList = Category.findByParent(0);
+
+        List<Category> categoryList = Category.findByParent(0);//获取顶层分类
         List<Category> subCategoryList = new ArrayList<>();
-        if (categoryList.size() > 0) {
-            subCategoryList = Category.findByParent(categoryList.get(0).id);
-        }
         Long categoryId = 0L;
-        if (goods.categories != null && goods.categories.size() > 0 && goods.categories.iterator() != null && goods
-                .categories.iterator().hasNext()) {
-            categoryId = goods.categories.iterator().next().id;
+        if (categoryList.size() > 0) {
+            if (goods.categories != null && goods.categories.size() > 0 && goods.categories.iterator() != null && goods
+                    .categories.iterator().hasNext()) {
+                Category category = goods.categories.iterator().next();
+                categoryId = category.id;
+                if (goods.topCategoryId == null || goods.topCategoryId == 0) {
+                    goods.topCategoryId = category.parentCategory.id;
+                }
+            }
+            if (goods.topCategoryId == null) {
+                goods.topCategoryId = categoryList.get(0).id;
+            }
+            subCategoryList = Category.findByParent(goods.topCategoryId);
         }
         for (String key : validation.errorsMap().keySet()) {
             System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
         }
-        render(shopList, brandList, categoryList, subCategoryList, goods, topCategoryId,
-                categoryId, shopIds);
+        renderArgs.put("shopList", shopList);
+        renderArgs.put("brandList", brandList);
+        renderArgs.put("categoryList", categoryList);
+        renderArgs.put("subCategoryList", subCategoryList);
+        renderArgs.put("categoryId", categoryId);
+        renderArgs.put("shopIds", shopIds);
     }
 
     private static Long getSupplierId() {
@@ -113,21 +144,16 @@ public class Goods extends Controller {
      *
      * @param imagePath
      * @param goods
-     * @param topCategoryId 顶层分类Id
-     * @param isAllShop     是否全部门店
      */
-    public static void create(@Valid models.sales.Goods goods, @Required File imagePath, Long topCategoryId,
-                              boolean isAllShop) {
+    @ActiveNavigation("goods_add")
+    public static void create(@Valid models.sales.Goods goods, @Required File imagePath) {
         Long supplierId = getSupplierId();
-        if (isAllShop && goods.shops != null) {
-            goods.shops = null;
-        }
 
         checkImageFile(imagePath);
 
         if (Validation.hasErrors()) {
-            Validation.keep();
-            add(goods, topCategoryId);
+            renderInit(goods);
+            render("Goods/add.html");
         }
 
         //添加商品处理
@@ -206,39 +232,10 @@ public class Goods extends Controller {
     /**
      * 取得指定商品信息
      */
-    public static void edit(Long id, Long topCategoryId) {
+    public static void edit(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
-        if (goods == null) {
-            goods = new models.sales.Goods();
-        }
-        Long supplierId = getSupplierId();
-        String shopIds = "";
-        if (goods.shops != null) {
-            for (Shop shop : goods.shops) {
-                shopIds += shop.id + ",";
-                renderArgs.put("isAllShop", false);
-            }
-        } else {
-            renderArgs.put("isAllShop", true);
-        }
-
-        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
-        List<Brand> brandList = Brand.findByOrder();
-        List<Category> categoryList = Category.findByParent(0);
-        List<Category> subCategoryList = new ArrayList<>();
-        if (categoryList.size() > 0) {
-            subCategoryList = Category.findByParent(categoryList.get(0).id);
-        }
-        Long categoryId = 0L;
-        if (goods.categories != null && goods.categories.size() > 0 && goods.categories.iterator() != null && goods
-                .categories.iterator().hasNext()) {
-            categoryId = goods.categories.iterator().next().id;
-        }
-        for (String key : validation.errorsMap().keySet()) {
-            System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
-        }
-        render(shopList, brandList, categoryList, subCategoryList, goods, topCategoryId,
-                categoryId, shopIds);
+        renderInit(goods);
+        render(goods, id);
     }
 
     /**
@@ -251,20 +248,18 @@ public class Goods extends Controller {
 
     /**
      * 更新指定商品信息
-     *
-     * @param id
      */
-    public static void update(Long id, File imagePath, models.sales.Goods goods, Long topCategoryId,
-                              boolean isAllShop) {
-        if (isAllShop && goods.shops != null) {
+    public static void update(Long id, @Valid models.sales.Goods goods, File imagePath) {
+        System.out.println("goods.details:" + goods.getDetails());
+        if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
         }
-
+        goods.id = id;
         checkImageFile(imagePath);
 
         if (Validation.hasErrors()) {
-            Validation.keep();
-            edit(id,topCategoryId);
+            renderInit(goods);
+            render("Goods/edit.html", goods);
         }
 
         String companyUser = getCompanyUser();
@@ -278,6 +273,7 @@ public class Goods extends Controller {
 
         updateGoods.name = goods.name;
         updateGoods.no = goods.no;
+        updateGoods.categories = goods.categories;
         updateGoods.effectiveAt = goods.effectiveAt;
         updateGoods.expireAt = goods.expireAt;
         updateGoods.originalPrice = goods.originalPrice;
@@ -288,8 +284,13 @@ public class Goods extends Controller {
         updateGoods.updatedAt = new Date();
         updateGoods.updatedBy = companyUser;
         updateGoods.brand = goods.brand;
+        updateGoods.isAllShop = goods.isAllShop;
         updateGoods.save();
 
+        //预览的情况
+        if (GoodsStatus.UNCREATED.equals(goods.status)) {
+            redirect("http://www.uhuila.cn/goods/" + goods.id + "?preview=true");
+        }
         index(null);
     }
 
@@ -316,5 +317,6 @@ public class Goods extends Controller {
 
         index(null);
     }
+
 
 }

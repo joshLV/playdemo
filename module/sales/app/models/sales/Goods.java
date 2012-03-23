@@ -38,10 +38,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
 import play.Play;
-import play.data.validation.InFuture;
-import play.data.validation.MaxSize;
-import play.data.validation.Min;
-import play.data.validation.Required;
+import play.data.validation.*;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
@@ -53,7 +50,7 @@ import com.uhuila.common.util.PathUtil;
 @Entity
 @Table(name = "goods")
 public class Goods extends Model {
-	//  ========= 不同的价格列表 =======
+    //  ========= 不同的价格列表 =======
 	/**
 	 * 商户填写的商品市场价
 	 */
@@ -70,6 +67,15 @@ public class Goods extends Model {
 	@Column(name = "original_price")
 	public BigDecimal originalPrice;
 
+<<<<<<< .mine
+    /**
+     * 运营人员填写的优惠啦网站价格
+     */
+    @Required
+    @Min(value = 0.01)
+    @Column(name = "sale_price")
+    public BigDecimal salePrice;
+=======
 	/**
 	 * 运营人员填写的优惠啦网站价格
 	 */
@@ -77,15 +83,51 @@ public class Goods extends Model {
 	@Min(value = 0.01)
 	@Column(name = "sale_price")
 	public BigDecimal salePrice;	
+>>>>>>> .r636
 
+<<<<<<< .mine
+
+    /**
+     * 不同分销商等级所对应的价格
+     */
+=======
 
 	/**
 	 * 不同分销商等级所对应的价格
 	 */
+>>>>>>> .r636
+<<<<<<< .mine
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OrderBy("level")
+    public List<GoodsLevelPrice> levelPrices;
+=======
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public Set<GoodsLevelPrice> levelPrices;
+>>>>>>> .r636
 
+<<<<<<< .mine
+    //  ======  价格列表结束 ==========
+
+
+    /**
+     * 商品编号
+     */
+    @MaxSize(value = 30)
+    public String no;
+    /**
+     * 商品名称
+     */
+    @Required
+    @MaxSize(value = 80)
+    public String name;
+    /**
+     * 所属商户ID
+     */
+    @Column(name = "supplier_id")
+    public Long supplierId;
+=======
 	//  ======  价格列表结束 ==========
+>>>>>>> .r636
 
 
 	/**
@@ -150,6 +192,13 @@ public class Goods extends Model {
 
 	private Integer discount;
 
+<<<<<<< .mine
+    @Required
+    @MinSize(value = 7)
+    @MaxSize(value = 65535)
+    private String details;
+=======
+>>>>>>> .r636
 
 	/**
 	 * 温馨提示
@@ -227,6 +276,9 @@ public class Goods extends Model {
 	@JoinColumn(name = "brand_id")
 	public Brand brand;
 
+<<<<<<< .mine
+    private static final String IMAGE_SERVER = Play.configuration.getProperty
+=======
 	@Transient
 	public String salePriceBegin;
 	@Transient
@@ -245,11 +297,34 @@ public class Goods extends Model {
 
 
 	private static final String IMAGE_SERVER = Play.configuration.getProperty
+>>>>>>> .r636
 			("image.server", "img0.uhcdn.com");
 	//    private static final String IMAGE_ROOT_GENERATED = Play.configuration
 	//            .getProperty("image.root", "/p");
 	public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
 
+<<<<<<< .mine
+    static {
+        //增加可信标签到白名单
+        HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div");
+        //增加可信属性
+        HTML_WHITE_TAGS.addAttributes(":all", "style", "class", "id", "name");
+        HTML_WHITE_TAGS.addAttributes("object", "width", "height", "classid", "codebase");
+        HTML_WHITE_TAGS.addAttributes("param", "name", "value");
+        HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen", "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
+    }
+
+
+    /**
+     * 获取商品所属的商户信息.
+     *
+     * @return
+     */
+    @Transient
+    public Supplier getSupplier() {
+        return Supplier.findById(id);
+    }
+=======
 	static {
 		//增加可信标签到白名单
 		HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div");
@@ -259,7 +334,28 @@ public class Goods extends Model {
 		HTML_WHITE_TAGS.addAttributes("param", "name", "value");
 		HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen", "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
 	}
+>>>>>>> .r636
 
+<<<<<<< .mine
+    @Column(name = "is_all_shop")
+    public Boolean isAllShop = true;
+    
+    @Transient
+    public Long topCategoryId;
+
+    /**
+     * 商品详情
+     *
+     * @return
+     */
+    public String getDetails() {
+        if (StringUtils.isBlank(details) || "<br />".equals(details)) {
+            return "";
+        }
+        return Jsoup.clean(details, HTML_WHITE_TAGS);
+    }
+=======
+>>>>>>> .r636
 
 	/**
 	 * 获取商品所属的商户信息.
@@ -270,6 +366,27 @@ public class Goods extends Model {
 		return Supplier.findById(id);
 	}
 
+<<<<<<< .mine
+    public void filterShops() {
+        if (shops == null) {
+            List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+            shops = new HashSet<>();
+            shops.addAll(shopList);
+            return;
+        }
+        Set<Shop> uniqueShops = new HashSet<>();
+        for (Shop shop : shops) {
+            if (!uniqueShops.contains(shop)) {
+                uniqueShops.add(shop);
+            }
+        }
+        this.shops = uniqueShops;
+    }
+
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
+    }
+=======
 	/**
 	 * 商品详情
 	 *
@@ -281,11 +398,36 @@ public class Goods extends Model {
 		}
 		return Jsoup.clean(details, HTML_WHITE_TAGS);
 	}
+>>>>>>> .r636
 
 	public void setDetails(String details) {
 		this.details = Jsoup.clean(details, HTML_WHITE_TAGS);
 	}
 
+<<<<<<< .mine
+    @Transient
+    public String getDiscountExpress() {
+        int discount = getDiscount();
+        if (discount >= 100 || discount <= 0) {
+            return "";
+        }
+        if (discount < 10) {
+            return String.valueOf(discount / 10.0);
+        }
+        if (discount % 10 == 0) {
+            return String.valueOf(discount / 10);
+        }
+        return String.valueOf(discount);
+    }
+
+    /**
+     * 最小规格图片路径
+     */
+    @Transient
+    public String getImageTinyPath() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.TINY);
+    }
+=======
 	public void filterShops() {
 		if (shops == null) {
 			List<Shop> shopList = Shop.findShopBySupplier(supplierId);
@@ -301,6 +443,7 @@ public class Goods extends Model {
 		}
 		this.shops = uniqueShops;
 	}    
+>>>>>>> .r636
 
 	public void setDiscount(Integer discount) {
 		this.discount = discount;
@@ -319,6 +462,22 @@ public class Goods extends Model {
 		return discount;
 	}
 
+<<<<<<< .mine
+    /**
+     * 大规格图片路径
+     */
+    @Transient
+    public String getImageLargePath() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.LARGE);
+    }
+
+    public String getPrompt() {
+        if (StringUtils.isBlank(prompt)) {
+            return "";
+        }
+        return Jsoup.clean(prompt, HTML_WHITE_TAGS);
+    }
+=======
 	@Transient
 	public String getDiscountExpress() {
 		int discount = getDiscount();
@@ -333,6 +492,7 @@ public class Goods extends Model {
 		}
 		return String.valueOf(discount);
 	}
+>>>>>>> .r636
 
 	/**
 	 * 最小规格图片路径
@@ -342,6 +502,20 @@ public class Goods extends Model {
 		return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.TINY);
 	}
 
+<<<<<<< .mine
+
+    /**
+     * 根据商品分类和数量取出指定数量的商品.
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Goods> findTop(int limit) {
+        return find("status=? and deleted=? order by createdAt DESC",
+                GoodsStatus.ONSALE,
+                DeletedStatus.UN_DELETED).fetch(limit);
+    }
+=======
 	/**
 	 * 小规格图片路径
 	 */
@@ -349,6 +523,7 @@ public class Goods extends Model {
 	public String getImageSmallPath() {
 		return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.SMALL);
 	}
+>>>>>>> .r636
 
 	/**
 	 * 中等规格图片路径

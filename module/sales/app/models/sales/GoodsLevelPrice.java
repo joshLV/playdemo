@@ -2,11 +2,15 @@ package models.sales;
 
 import java.math.BigDecimal;
 
+<<<<<<< .mine
+import javax.persistence.*;
+=======
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
+>>>>>>> .r636
 
 import models.resale.ResalerLevel;
 import play.data.validation.Min;
@@ -16,6 +20,8 @@ import play.db.jpa.Model;
 @Entity
 @Table(name = "goods_level_prices")
 public class GoodsLevelPrice extends Model {
+    @ManyToOne
+    public Goods goods;
     @Required
     @Enumerated(EnumType.STRING)
     public ResalerLevel level;

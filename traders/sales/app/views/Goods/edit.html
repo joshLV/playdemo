@@ -4,20 +4,15 @@
 <script src="@{'/public/javascripts/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-<script src="@{'/public/javascripts/goods-add.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/get}
 #{include '/share/nav.html' /}
 <div class="body">
-    <form class="form-horizontal" id="frm" name="frm" action="@{Goods.update(goods.id)}" method="post"
-          enctype="multipart/form-data">
-        <legend>修改电子消费券</legend>
-        #{include '/share/edit_goods.html' /}
-        <div class="form-actions">
-            <button class="btn btn-primary" type="submit">保存</button>
-            <input type="hidden" id="status" name="status" value="0"/>
-            <button class="btn btn-primary" id="view" type="submit">预览</button>
-        </div>
-    </form>
+#{form @Goods.update(goods.id), id:'updateForm',enctype:'multipart/form-data',
+class:"form-horizontal",
+method:'PUT' }
+    <legend>修改电子消费券</legend>
+    #{include '/Goods/goodsForm.html', action:'edit'/}
+#{/form}
 </div>
 
 

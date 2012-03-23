@@ -65,7 +65,7 @@ public class Goods extends Controller {
             goods = new models.sales.Goods();
         }
         if (goods.levelPrices == null) {
-            goods.levelPrices = new HashSet<>();
+            goods.levelPrices = new ArrayList<>();
         }
         if (goods.levelPrices.size() == 0) {
             for (ResalerLevel level : ResalerLevel.values()) {
@@ -99,7 +99,7 @@ public class Goods extends Controller {
         for (Object key : validation.errorsMap().keySet()) {
             System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
         }
-        render(shopList, brandList, categoryList, subCategoryList, supplierList, goods,topCategoryId,categoryId,
+        render(shopList, brandList, categoryList, subCategoryList, supplierList, goods, topCategoryId, categoryId,
                 shopIds);
     }
 
@@ -205,11 +205,39 @@ public class Goods extends Controller {
     /**
      * 取得指定商品信息
      */
-    public static void edit(Long id) {
+    public static void edit(Long id, Long topCategoryId, boolean isAllShop) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
+        if (goods == null) {
+            goods = new models.sales.Goods();
+        }
+        String shopIds = "";
+        if (goods.shops != null) {
+            for (Shop shop : goods.shops) {
+                shopIds += shop.id + ",";
+                renderArgs.put("isAllShop", false);
+            }
+        } else {
+            renderArgs.put("isAllShop", true);
+        }
+
         List<Shop> shopList = Shop.findShopBySupplier(goods.supplierId);
         List<Brand> brandList = Brand.findByOrder();
-        render(goods, shopList, brandList);
+        List<Category> categoryList = Category.findByParent(0);
+        List<Category> subCategoryList = new ArrayList<>();
+        if (categoryList.size() > 0) {
+            subCategoryList = Category.findByParent(categoryList.get(0).id);
+        }
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+        Long categoryId = 0L;
+        if (goods.categories != null && goods.categories.size() > 0 && goods.categories.iterator() != null && goods
+                .categories.iterator().hasNext()) {
+            categoryId = goods.categories.iterator().next().id;
+        }
+        for (String key : validation.errorsMap().keySet()) {
+            System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
+        }
+        render(shopList, brandList, categoryList, subCategoryList, supplierList, goods, topCategoryId,
+                categoryId, shopIds);
     }
 
     /**
@@ -225,7 +253,18 @@ public class Goods extends Controller {
      *
      * @param id
      */
-    public static void update(Long id, File imagePath,@Valid models.sales.Goods goods) {
+    public static void update(Long id, File imagePath, @Valid models.sales.Goods goods, Long topCategoryId,
+                              boolean isAllShop) {
+        if (isAllShop && goods.shops != null) {
+            goods.shops = null;
+        }
+
+        checkImageFile(imagePath);
+
+        if (Validation.hasErrors()) {
+            Validation.keep();
+            edit(id, topCategoryId, isAllShop);
+        }
         String companyUser = getCompanyUser();
         models.sales.Goods updateGoods = models.sales.Goods.findById(id);
 
@@ -275,4 +314,31 @@ public class Goods extends Controller {
         return "燕井允";
     }
 
+
+    private static void checkImageFile(File imagePath) {
+        if (imagePath != null) {
+            //检查目录
+            File uploadDir = new File(UploadFiles.ROOT_PATH);
+            if (!uploadDir.isDirectory()) {
+                Validation.addError("goods.imagePath", "validation.write");
+            }
+
+            //检查目录写权限
+            if (!uploadDir.canWrite()) {
+                Validation.addError("goods.imagePath", "validation.write");
+            }
+
+            if (imagePath.length() > UploadFiles.MAX_SIZE) {
+                Validation.addError("goods.imagePath", "validation.maxFileSize");
+            }
+
+            //检查扩展名
+            //定义允许上传的文件扩展名
+            String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
+            String fileExt = imagePath.getName().substring(imagePath.getName().lastIndexOf(".") + 1).toLowerCase();
+            if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
+                Validation.addError("goods.imagePath", "validation.invalidType", StringUtils.join(fileTypes, ','));
+            }
+        }
+    }
 }

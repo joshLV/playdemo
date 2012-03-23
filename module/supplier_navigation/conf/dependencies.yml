@@ -2,11 +2,14 @@ self: play -> supplier-navigation 0.2
 
 require:
     - play 1.2.4
+    - play -> paginate head
     - base_rbac 0.1
+    - paginate_ext -> paginate_ext
 
 repositories:
     - custom0Modules:
         type:       local
         artifact:   "${application.path}/../../module/[module]"
         contains:
+            - paginate_ext -> *
             - base_rbac -> *
