@@ -41,7 +41,7 @@ public class SupplierRole extends Model {
     public Date updatedAt;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "cusers_roles", 
+    @JoinTable(name = "supplier_users_roles", 
         inverseJoinColumns = @JoinColumn(name= "cuser_id"), 
         joinColumns = @JoinColumn(name = "role_id"))
     public Set<SupplierUser> cusers;

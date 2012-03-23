@@ -17,11 +17,13 @@ import navigation.RbacLoader;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import play.test.Fixtures;
 import play.test.UnitTest;
 import play.vfs.VirtualFile;
+
 
 public class RbacMenuTest extends UnitTest {
 
@@ -43,6 +45,7 @@ public class RbacMenuTest extends UnitTest {
         RbacLoader.init(file);
     }
     
+    @Ignore
     @Test
     public void theNoDefinedNavigationWillBeDeleted() {
         SupplierNavigation mainNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "main").first();
@@ -61,6 +64,7 @@ public class RbacMenuTest extends UnitTest {
     }
     
     @Test
+    @Ignore
     public void canLoadNavigationYamlFile() {
         assertNotNull(NavigationHandler.getMenuContext());
         ContextedMenu menu = NavigationHandler.getMenu("main");

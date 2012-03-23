@@ -31,7 +31,7 @@ import play.mvc.Http.Request;
 import com.uhuila.common.constants.DeletedStatus;
 
 @Entity
-@Table(name = "cusers")
+@Table(name = "supplier_users")
 public class SupplierUser extends Model {
 	@Column(name = "supplier_id")
 	public Long supplierId;
@@ -73,10 +73,10 @@ public class SupplierUser extends Model {
 	public DeletedStatus deleted;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "cusers_roles",
+    @JoinTable(name = "supplier_users_roles",
             inverseJoinColumns = @JoinColumn(name = "role_id"),
             joinColumns = @JoinColumn(name = "cuser_id"))
-    public Set<SupplierRole>       roles;
+    public Set<SupplierRole> roles;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "supplier_permissions_users",
