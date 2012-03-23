@@ -1,0 +1,282 @@
+#{extends 'main.html' /}
+#{set title:'优惠啦 - 商品列表' /}
+#{set 'moreStyles'}
+<link href="@@{'/public/stylesheets/goods-index.css'}" rel="stylesheet" type="text/css"/>
+<link href="@@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/play-pagination.css'}">
+#{/set}
+#{set 'moreScripts'}
+<script src="@@{'/public/javascripts/goods-index.js'}"></script>
+#{/set}
+
+<div id="wrap_main">
+<div id="wrap_top">
+#{include "share/topNavigator.html"/}
+
+    <div id="sereach_wrap">
+        <!--购物车结算-->
+        <div class="seach_right">
+            <span class="seach_right_sp"><img class="gouwu_icon"
+                                              src="@@{'/public/images/gouwu_icon.jpg'}"/></span>
+            <span class="gouwu_font">购物车：<span
+                    class="font_red">12件</span></span>
+            <span class="gouwu_jiesuan"><a href="#"
+                                           class="font_white">去结算</a></span>
+        </div>
+    </div>
+</div>
+
+<!--主体内容部分-->
+<div id="wrap_content">
+<div style="clear:both"></div>
+<div id="main_content">
+#{breadcrumbs/breadcrumb breadcrumbs/}
+<!--左侧导航部分-->
+<div id="left_nav">
+    <div class="left_top_one">
+        <dl class="left_one_dl">
+            <dt>
+            <div class="title_nav font_block">承诺/保障</div>
+            <div></div>
+            </dt>
+            <dd><img src="@@{'/public/images/adv/xiaofei.jpg'}"
+                     border="0"
+                     usemap="#Map"/>
+                <map name="Map" id="Map">
+                    <area shape="rect" coords="9,8,202,64" href="#"/>
+                    <area shape="rect" coords="10,72,204,124" href="#"/>
+                    <area shape="rect" coords="11,130,206,183"
+                          href="#"/>
+                </map>
+            </dd>
+        </dl>
+    </div>
+    <div class="left_top_two">
+        <dl class="left_one_dl">
+            <dt class="xiuzheng_dt">
+            <div class="title_nav font_block">热门商品排行</div>
+            <div></div>
+            </dt>
+            <dd class="shop_dd">
+                <div class="img_cp"><a href="#"><img
+                        src="@@{'/public/images/chanpin/host_shangpin.jpg'}"/></a>
+                </div>
+                <div class="right_hot_cp">
+                    <div class="strong_gray2">来伊来伊价来价</div>
+                    <div class="pri_jiage">现价：14.8</div>
+                    <div class="text_decorat">原价：Y:20.00</div>
+                </div>
+            </dd>
+
+            <dd class="shop_dd">
+                <div class="img_cp"><a href="#"><img
+                        src="@@{'/public/images/chanpin/host_shangpin.jpg'}"/></a>
+                </div>
+                <div class="right_hot_cp">
+                    <div class="strong_gray2">来伊来伊价来价</div>
+                    <div class="pri_jiage">现价：14.8</div>
+                    <div class="text_decorat">原价：Y:20.00</div>
+                </div>
+            </dd>
+
+            <dd class="shop_dd">
+                <div class="img_cp"><a href="#"><img
+                        src="@@{'/public/images/chanpin/host_shangpin.jpg'}"/></a>
+                </div>
+                <div class="right_hot_cp">
+                    <div class="strong_gray2">来伊来伊价来价</div>
+                    <div class="pri_jiage">现价：14.8</div>
+                    <div class="text_decorat">原价：Y:20.00</div>
+                </div>
+            </dd>
+
+            <dd class="shop_dd">
+                <div class="img_cp"><a href="#"><img
+                        src="@@{'/public/images/chanpin/host_shangpin.jpg'}"/></a>
+                </div>
+                <div class="right_hot_cp">
+                    <div class="strong_gray2">来伊来伊价来价</div>
+                    <div class="pri_jiage">现价：14.8</div>
+                    <div class="text_decorat">原价：Y:20.00</div>
+                </div>
+            </dd>
+
+            <dd class="shop_dd">
+                <div class="img_cp"><a href="#"><img
+                        src="@@{'/public/images/chanpin/host_shangpin.jpg'}"/></a>
+                </div>
+                <div class="right_hot_cp">
+                    <div class="strong_gray2">来伊来伊价来价</div>
+                    <div class="pri_jiage">现价：14.8</div>
+                    <div class="text_decorat">原价：Y:20.00</div>
+                </div>
+            </dd>
+
+            <dd class="shop_dd">
+                <div class="img_cp"><a href="#"><img
+                        src="@@{'/public/images/chanpin/host_shangpin.jpg'}"/></a>
+                </div>
+                <div class="right_hot_cp">
+                    <div class="strong_gray2">来伊来伊价来价</div>
+                    <div class="pri_jiage">现价：14.8</div>
+                    <div class="text_decorat">原价：Y:20.00</div>
+                </div>
+            </dd>
+
+
+        </dl>
+    </div>
+</div>
+<!--右侧主体内容部分-->
+<div id="right_content">
+    <div class="right_content_two"><span
+            class="query_item_title">推荐品牌${brandId}：</span>
+    #{if brandId == 0}<span class="selected_box">全部</span>
+    #{/if}
+    #{else}<a
+            href="/goods/list/0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+            class="font_blue"></a>
+    #{/else}
+    #{list brands, as:'brand'}
+        #{if brandId == brand.id}
+            <span id="brandId" class="selected_box">${brand.name}</span>
+        #{/if}
+        #{else}<a
+                href="/goods/list/${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                class="font_blue">${brand.name}</a>
+        #{/else}
+    #{/list}
+    </div>
+<div class="right_content_two">
+    <div>价格：</div>
+#{if priceFrom == 0 && priceTo == 0}
+    <div class="selected_box">全部
+    </div>#{/if}
+#{else}<a class="query_price"
+          href="/goods/list/${brandId}-0-0-${orderBy}-${orderByType}">全部</a>#{/else}
+#{if priceFrom == 0 && priceTo == 30}
+    <div class="selected_box">0-30元
+    </div>#{/if}
+#{else}<a class="query_price"
+          href="/goods/list/${brandId}-0-30-${orderBy}-${orderByType}">0-30元</a>#{/else}
+#{if priceFrom == 30 && priceTo == 60}
+    <div class="selected_box">30-60元
+    </div>#{/if}
+#{else}<a class="query_price"
+          href="/goods/list/${brandId}-30-60-${orderBy}-${orderByType}">30-60元</a>#{/else}
+#{if priceFrom == 60 && priceTo == 90}
+    <div class="selected_box">60-90元
+    </div>#{/if}
+#{else}<a class="query_price"
+          href="/goods/list/${brandId}-60-90-${orderBy}-${orderByType}">60-90元</a>#{/else}
+#{if priceFrom == 90 && priceTo == 120}
+    <div class="selected_box">90-120元
+    </div>#{/if}
+#{else}<a class="query_price"
+          href="/goods/list/${brandId}-90-120-${orderBy}-${orderByType}">90-120元</a>#{/else}
+#{if priceFrom == 120 && priceTo == 160}
+    <div class="selected_box">120-160元
+    </div>#{/if}
+#{else}<a class="query_price"
+          href="/goods/list/${brandId}-120-160-${orderBy}-${orderByType}">120-160元</a>#{/else}
+#{if priceFrom == 160 && priceTo == 0}
+    <div class="selected_box">160元以上
+    </div>#{/if}
+#{else}<a class="query_price"
+          href="/goods/list/${brandId}-160-0-${orderBy}-${orderByType}">160元以上</a>#{/else}
+
+    <div class="range_input"><input class="price_input" id="input_price_from"
+                                    type="text"
+                                    value="#{if priceFrom != 0}${priceFrom}#{/if}"/>至<input
+            class="price_input" id="input_price_to" type="text"
+            value="#{if priceTo != 0}${priceTo}#{/if}"/></div>
+    <div><a id="link_price_confirm" class="sort_box unselected_border"
+            href="/goods/list/${brandId}-0-0-${orderBy}-${orderByType}">确定</a>
+    </div>
+</div>
+<div class="right_content_three">
+    <div class="r_c_three_title">排序：</div>
+#{if orderBy == 0}
+    <span class="sort_box selected_border" value="${orderBy}">默认</span>
+#{/if}
+#{else}
+    <a class="sort_box unselected_border"
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-0-1"
+       value="${orderBy}">默认</a>
+#{/else}
+#{if orderBy == 1}
+    <a
+        #{if orderByType == 1}class="sort_box selected_border box_sort_desc"#{/if}
+        #{else}class="sort_box selected_border box_sort_asc"#{/else}
+        href="/goods/list/${brandId}-${priceFrom}-${priceTo}-1">销量</a>
+#{/if}
+#{else}
+    <a class="sort_box unselected_border box_sort_desc"
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-1">销量</a>
+#{/else}
+#{if orderBy == 2}
+    <a
+        #{if orderByType == 1}class="sort_box selected_border box_sort_desc"#{/if}
+        #{else}class="sort_box selected_border box_sort_asc"#{/else}
+        href="/goods/list/${brandId}-${priceFrom}-${priceTo}-2">价格</a>
+#{/if}
+#{else}
+    <a class="sort_box unselected_border box_sort_desc"
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-2">价格</a>
+#{/else}
+#{if orderBy == 3}
+    <a
+        #{if orderByType == 1}class="sort_box selected_border box_sort_desc"#{/if}
+        #{else}class="sort_box selected_border box_sort_asc"#{/else}
+        href="/goods/list/${brandId}-${priceFrom}-${priceTo}-3">折扣</a>
+#{/if}
+#{else}
+    <a class="sort_box unselected_border box_sort_desc"
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-3">折扣</a>
+#{/else}
+#{if orderBy == 4}
+    <a
+        #{if orderByType == 1}class="sort_box selected_border box_sort_desc"#{/if}
+        #{else}class="sort_box selected_border box_sort_asc"#{/else}
+        href="/goods/list/${brandId}-${priceFrom}-${priceTo}-4">最新</a>
+#{/if}
+#{else}
+    <a class="sort_box unselected_border box_sort_desc"
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-4">最新</a>
+#{/else}
+</div>
+<div class="right_content_three">
+    <div class="r_c_three_title"><a class="font_blue" href="#">批量加入分销库</a></div>
+</div>
+    #{paginate.list items:goodsList, as:'goods'}
+     <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
+     <table width="798" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE">
+     <tr>
+     <td><input type="checkbox"/></td>
+      <td width="340" height="80" align="left">
+       <div class="left_shangpin" >
+        <a href="/goods/${goods.id}"><img src="${goods.imageTinyPath}"/></a>
+       </div>
+       <div class="right_shangpin" align="center" width="140">${goods.name}<br>
+       截止日期：${goods.expireAt}</div>
+      </td>
+      <td width="300" align="center">
+      市场价：￥${goods.faceValue}<br>
+      采购价：￥${goods.getResalePrice(goods.id,resaler.level)}<br>
+      折扣：${goods.discountExpress.yesno(goods.discountExpress+'折','无优惠')}</td>
+      <td width="150" align="center">
+      <a class="font_blue" href="@{ResaleGoods.show(goods.id)}">查看详情</a><br>
+      <a class="font_blue" href="@{ResaleGoods.show(goods.id)}">加入分销库</a>
+      </td>
+     </tr>
+    </table>
+    #{/paginate.list}
+     <div class="pagination">
+	     <ul>
+	    #{paginate.controls items:goodsList /}
+	    </ul>
+     </div>
+</div>
+</div>
+</div>
+</div>

@@ -1,15 +1,17 @@
 package models.sales;
 
-import models.resale.ResalerLevel;
-import play.data.validation.Min;
-import play.data.validation.Required;
-import play.db.jpa.Model;
+import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
-import java.math.BigDecimal;
+
+import models.resale.ResalerLevel;
+import play.data.validation.Min;
+import play.data.validation.Required;
+import play.db.jpa.Model;
 
 @Entity
 @Table(name = "goods_level_prices")
@@ -20,7 +22,8 @@ public class GoodsLevelPrice extends Model {
     @Required
     @Min(0.01)
     public BigDecimal price;
-
+    @Column(name="goods_id")
+    public Long goodsId;
 
     public GoodsLevelPrice(){
 

@@ -17,6 +17,10 @@ POST    /carts                                  ResalerCarts.formAdd
 POST    /carts/reorder                          ResalerCarts.reorder
 DELET   /carts/{goodsId}-{phones}               ResalerCarts.delete
 
+GET     /goods                                  ResaleGoods.index
+GET     /goods/list/{condition}                 ResaleGoods.list
+GET     /goods/{id}                             ResaleGoods.show
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
