@@ -13,7 +13,7 @@ import models.resale.Resaler;
 public class Cas implements Serializable {
     public boolean isLogin = false;
 
-    public String loginName;
+    public String username;
     
     public Resaler resaler;
 }
