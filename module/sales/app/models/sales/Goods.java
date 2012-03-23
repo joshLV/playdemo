@@ -4,48 +4,27 @@
  */
 package models.sales;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.constants.ImageSize;
+import com.uhuila.common.util.PathUtil;
 import models.resale.ResaleGoodsCondition;
 import models.resale.ResalerLevel;
 import models.supplier.Supplier;
-
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
-
 import play.Play;
 import play.data.validation.*;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.constants.ImageSize;
-import com.uhuila.common.util.PathUtil;
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "goods")
@@ -67,15 +46,6 @@ public class Goods extends Model {
 	@Column(name = "original_price")
 	public BigDecimal originalPrice;
 
-<<<<<<< .mine
-    /**
-     * 运营人员填写的优惠啦网站价格
-     */
-    @Required
-    @Min(value = 0.01)
-    @Column(name = "sale_price")
-    public BigDecimal salePrice;
-=======
 	/**
 	 * 运营人员填写的优惠啦网站价格
 	 */
@@ -83,29 +53,14 @@ public class Goods extends Model {
 	@Min(value = 0.01)
 	@Column(name = "sale_price")
 	public BigDecimal salePrice;	
->>>>>>> .r636
-
-<<<<<<< .mine
 
     /**
      * 不同分销商等级所对应的价格
      */
-=======
-
-	/**
-	 * 不同分销商等级所对应的价格
-	 */
->>>>>>> .r636
-<<<<<<< .mine
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("level")
     public List<GoodsLevelPrice> levelPrices;
-=======
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public Set<GoodsLevelPrice> levelPrices;
->>>>>>> .r636
 
-<<<<<<< .mine
     //  ======  价格列表结束 ==========
 
 
@@ -125,27 +80,6 @@ public class Goods extends Model {
      */
     @Column(name = "supplier_id")
     public Long supplierId;
-=======
-	//  ======  价格列表结束 ==========
->>>>>>> .r636
-
-
-	/**
-	 * 商品编号
-	 */
-	@MaxSize(value = 30)
-	public String no;
-	/**
-	 * 商品名称
-	 */
-	@Required
-	@MaxSize(value = 80)
-	public String name;
-	/**
-	 * 所属商户ID
-	 */
-	@Column(name = "supplier_id")
-	public Long supplierId;
 
 	@ManyToMany(cascade = CascadeType.REFRESH)
 	@JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name
@@ -192,24 +126,16 @@ public class Goods extends Model {
 
 	private Integer discount;
 
-<<<<<<< .mine
     @Required
     @MinSize(value = 7)
     @MaxSize(value = 65535)
     private String details;
-=======
->>>>>>> .r636
 
 	/**
 	 * 温馨提示
 	 */
 	@MaxSize(value = 65535)
 	private String prompt;
-
-	@Required
-	@MaxSize(value = 65535)
-	private String details;
-
 
 	/**
 	 * 售出数量
@@ -276,9 +202,6 @@ public class Goods extends Model {
 	@JoinColumn(name = "brand_id")
 	public Brand brand;
 
-<<<<<<< .mine
-    private static final String IMAGE_SERVER = Play.configuration.getProperty
-=======
 	@Transient
 	public String salePriceBegin;
 	@Transient
@@ -297,13 +220,11 @@ public class Goods extends Model {
 
 
 	private static final String IMAGE_SERVER = Play.configuration.getProperty
->>>>>>> .r636
 			("image.server", "img0.uhcdn.com");
 	//    private static final String IMAGE_ROOT_GENERATED = Play.configuration
 	//            .getProperty("image.root", "/p");
 	public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
 
-<<<<<<< .mine
     static {
         //增加可信标签到白名单
         HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div");
@@ -324,7 +245,7 @@ public class Goods extends Model {
     public Supplier getSupplier() {
         return Supplier.findById(id);
     }
-=======
+
 	static {
 		//增加可信标签到白名单
 		HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div");
@@ -334,9 +255,7 @@ public class Goods extends Model {
 		HTML_WHITE_TAGS.addAttributes("param", "name", "value");
 		HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen", "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
 	}
->>>>>>> .r636
 
-<<<<<<< .mine
     @Column(name = "is_all_shop")
     public Boolean isAllShop = true;
     
@@ -354,19 +273,11 @@ public class Goods extends Model {
         }
         return Jsoup.clean(details, HTML_WHITE_TAGS);
     }
-=======
->>>>>>> .r636
 
-	/**
-	 * 获取商品所属的商户信息.
-	 * @return
-	 */
-	@Transient
-	public Supplier getSupplier(){
-		return Supplier.findById(id);
-	}
+    public void setDetails(String details) {
+        this.details = Jsoup.clean(details, HTML_WHITE_TAGS);
+    }
 
-<<<<<<< .mine
     public void filterShops() {
         if (shops == null) {
             List<Shop> shopList = Shop.findShopBySupplier(supplierId);
@@ -386,68 +297,6 @@ public class Goods extends Model {
     public void setDiscount(Integer discount) {
         this.discount = discount;
     }
-=======
-	/**
-	 * 商品详情
-	 *
-	 * @return
-	 */
-	public String getDetails() {
-		if (StringUtils.isBlank(details)) {
-			return "";
-		}
-		return Jsoup.clean(details, HTML_WHITE_TAGS);
-	}
->>>>>>> .r636
-
-	public void setDetails(String details) {
-		this.details = Jsoup.clean(details, HTML_WHITE_TAGS);
-	}
-
-<<<<<<< .mine
-    @Transient
-    public String getDiscountExpress() {
-        int discount = getDiscount();
-        if (discount >= 100 || discount <= 0) {
-            return "";
-        }
-        if (discount < 10) {
-            return String.valueOf(discount / 10.0);
-        }
-        if (discount % 10 == 0) {
-            return String.valueOf(discount / 10);
-        }
-        return String.valueOf(discount);
-    }
-
-    /**
-     * 最小规格图片路径
-     */
-    @Transient
-    public String getImageTinyPath() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.TINY);
-    }
-=======
-	public void filterShops() {
-		if (shops == null) {
-			List<Shop> shopList = Shop.findShopBySupplier(supplierId);
-			shops = new HashSet<>();
-			shops.addAll(shopList);
-			return;
-		}
-		Set<Shop> uniqueShops = new HashSet<>();
-		for (Shop shop : shops) {
-			if (!uniqueShops.contains(shop)) {
-				uniqueShops.add(shop);
-			}
-		}
-		this.shops = uniqueShops;
-	}    
->>>>>>> .r636
-
-	public void setDiscount(Integer discount) {
-		this.discount = discount;
-	}
 
 	@Column(name = "discount")
 	public Integer getDiscount() {
@@ -462,22 +311,6 @@ public class Goods extends Model {
 		return discount;
 	}
 
-<<<<<<< .mine
-    /**
-     * 大规格图片路径
-     */
-    @Transient
-    public String getImageLargePath() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.LARGE);
-    }
-
-    public String getPrompt() {
-        if (StringUtils.isBlank(prompt)) {
-            return "";
-        }
-        return Jsoup.clean(prompt, HTML_WHITE_TAGS);
-    }
-=======
 	@Transient
 	public String getDiscountExpress() {
 		int discount = getDiscount();
@@ -492,30 +325,15 @@ public class Goods extends Model {
 		}
 		return String.valueOf(discount);
 	}
->>>>>>> .r636
-
-	/**
-	 * 最小规格图片路径
-	 */
-	@Transient
-	public String getImageTinyPath() {
-		return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.TINY);
-	}
-
-<<<<<<< .mine
 
     /**
-     * 根据商品分类和数量取出指定数量的商品.
-     *
-     * @param limit
-     * @return
+     * 最小规格图片路径
      */
-    public static List<Goods> findTop(int limit) {
-        return find("status=? and deleted=? order by createdAt DESC",
-                GoodsStatus.ONSALE,
-                DeletedStatus.UN_DELETED).fetch(limit);
+    @Transient
+    public String getImageTinyPath() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.TINY);
     }
-=======
+
 	/**
 	 * 小规格图片路径
 	 */
@@ -523,7 +341,7 @@ public class Goods extends Model {
 	public String getImageSmallPath() {
 		return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.SMALL);
 	}
->>>>>>> .r636
+
 
 	/**
 	 * 中等规格图片路径
