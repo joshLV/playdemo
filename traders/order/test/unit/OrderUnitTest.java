@@ -159,8 +159,6 @@ public class OrderUnitTest extends UnitTest {
         Order orders = Order.findById(orderId);
         orders.paid();
         assertEquals(OrderStatus.PAID, orders.status);
-        assertEquals(saleCount + 2, goods.saleCount);
-        assertEquals(baseSale - 2, goods.baseSale.intValue());
     }
 
     @Test

@@ -98,7 +98,7 @@ public class TradeUtil {
      * 创建消费交易，
      * 消费者消费成功,资金从平台收款账户转到商户
      *
-     * @param couponSn 券号
+     * @param eCouponSn 券号
      * @param account  商户账户
      * @param amount   券的进货价
      * @return 消费交易记录
@@ -112,7 +112,7 @@ public class TradeUtil {
             Logger.error("error while create consume trade: invalid eCouponSn");
             return null;
         }
-        if (amount != null && amount.compareTo(BigDecimal.ZERO) <= 0) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
             Logger.error("error while create consume trade: invalid consumePrice");
             return null;
         }
@@ -146,7 +146,7 @@ public class TradeUtil {
             Logger.error("error while create commission trade: invalid eCouponSn");
             return null;
         }
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
             Logger.error("error while create commission trade: invalid amount");
             return null;
         }

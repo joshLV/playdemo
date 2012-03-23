@@ -58,7 +58,9 @@ public class VerificationUnitTest extends UnitTest {
 	public void testUpdate() {
 		String eCouponSn = "002";
 		Long supplierId = 1l;
-		assertTrue(ECoupon.update(eCouponSn, supplierId));
+        ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
+        assertNotNull(eCoupon);
+        eCoupon.consumed();
 		List<ECoupon> couponList= ECoupon.find("byECouponSn", eCouponSn).fetch();
 		assertEquals(couponList.get(0).status ,ECouponStatus.CONSUMED);
 	}

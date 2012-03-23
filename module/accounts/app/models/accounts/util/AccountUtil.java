@@ -26,6 +26,10 @@ public class AccountUtil {
         return getAccount(Account.PLATFORM_COMMISSION, AccountType.PLATFORM);
     }
 
+    public static boolean accountExist(long uid, AccountType type){
+        return Account.find("byUidAndAccountType", uid, type).first() != null;
+    }
+
     public static Account getAccount(long uid, AccountType type){
         Account account = Account.find("byUidAndAccountType", uid, type).first();
         if(account == null){

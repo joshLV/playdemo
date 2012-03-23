@@ -172,11 +172,9 @@ public class ECoupon extends Model {
      * 
      * @return
      */
-    public boolean consumed(){
+    public void consumed(){
     	Account supplierAccount = AccountUtil.getAccount(orderItems.goods.supplierId, AccountType.BUSINESS);
-    	if(supplierAccount == null){
-    		return false;
-    	}
+
     	//给商户打钱
     	TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, supplierAccount, originalPrice);
     	TradeUtil.success(consumeTrade);
@@ -197,7 +195,6 @@ public class ECoupon extends Model {
     	
         this.status = ECouponStatus.CONSUMED;
         this.save();
-    	return true;
     }
 
     /**

@@ -55,9 +55,11 @@ public class VerificationCoupons extends Controller {
         ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
         
         //根据页面录入券号查询对应信息,并产生消费交易记录
-        if (eCoupon == null || !eCoupon.consumed())
+        if (eCoupon == null){
             renderJSON("0");
-
+            return;
+        }
+        eCoupon.consumed();
         renderJSON("err");
     }
 }
