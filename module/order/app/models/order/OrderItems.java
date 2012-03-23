@@ -49,8 +49,10 @@ public class OrderItems extends Model {
     public OrderItems(Order order, Goods goods, long buyNumber) {
         this.order = order;
         this.goods = goods;
+        this.faceValue = goods.faceValue;
         this.originalPrice = goods.originalPrice;
         this.salePrice = goods.salePrice;
+        this.resalerPrice = BigDecimal.ZERO;
         this.goodsName = goods.name;
         this.buyNumber = buyNumber;
         this.createdAt = new Date();
