@@ -300,13 +300,15 @@ public class Order extends Model {
                 if (goods == null) {
                     continue;
                 }
-                goods.baseSale -= 1;
-                goods.saleCount += 1;
+                goods.baseSale -= orderItem.buyNumber;
+                goods.saleCount += orderItem.buyNumber;
                 if (goods.materialType == MaterialType.ELECTRONIC) {
-                    ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
-                    if (!"dev".equals(Play.configuration.get("application.mode"))) {
-                        SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, this.receiverMobile);
-                    }
+                	for(int i =0; i< orderItem.buyNumber; i++){
+	                    ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
+	                    if (!"dev".equals(Play.configuration.get("application.mode"))) {
+	                        SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, this.receiverMobile);
+	                    }
+                	}
 
                 }
                 goods.save();

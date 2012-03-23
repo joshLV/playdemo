@@ -53,12 +53,10 @@ public class TradeUtilTest extends FunctionalTest{
 
 
         tradeBill = TradeUtil.createOrderTrade(account,null, new BigDecimal(1), aliPayment ,10L);
-        assertNotNull(tradeBill);
-        assertNotNull(tradeBill.getId());
+        assertNull(tradeBill);
 
         tradeBill = TradeUtil.createOrderTrade(account,new BigDecimal(1), null, aliPayment ,10L);
-        assertNotNull(tradeBill);
-        assertNotNull(tradeBill.getId());
+        assertNull(tradeBill);
 
 
         tradeBill = TradeUtil.createOrderTrade(account,new BigDecimal(1), new BigDecimal(1), aliPayment ,10L);
@@ -103,16 +101,16 @@ public class TradeUtilTest extends FunctionalTest{
         Account account = Account.findById(id);
         assertNotNull(account);
 
-        TradeBill tradeBill = TradeUtil.createConsumeTrade(null, account, new BigDecimal(1), 1L);
+        TradeBill tradeBill = TradeUtil.createConsumeTrade(null, account, new BigDecimal(1));
         assertNull(tradeBill);
 
-        tradeBill = TradeUtil.createConsumeTrade("01234", null, new BigDecimal(1), 1L);
+        tradeBill = TradeUtil.createConsumeTrade("01234", null, new BigDecimal(1));
         assertNull(tradeBill);
 
-        tradeBill = TradeUtil.createConsumeTrade("01234", account, new BigDecimal(-1), 1L);
+        tradeBill = TradeUtil.createConsumeTrade("01234", account, new BigDecimal(-1));
         assertNull(tradeBill);
 
-        tradeBill = TradeUtil.createConsumeTrade("01234", account, new BigDecimal(1), 1L);
+        tradeBill = TradeUtil.createConsumeTrade("01234", account, new BigDecimal(1));
         assertNotNull(tradeBill);
         assertNotNull(tradeBill.getId());
     }
@@ -140,7 +138,7 @@ public class TradeUtilTest extends FunctionalTest{
         assertNull(tradeBill);
 
         tradeBill = TradeUtil.createTransferTrade(accountA, accountB, new BigDecimal(1), null, aliPayment);
-        assertNotNull(tradeBill);
+        assertNull(tradeBill);
 
         tradeBill = TradeUtil.createTransferTrade(accountA, accountB, new BigDecimal(1), new BigDecimal(-1), aliPayment);
         assertNull(tradeBill);

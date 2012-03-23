@@ -16,6 +16,7 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.*;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -31,6 +32,8 @@ import java.util.*;
 public class ECoupon extends Model {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmssSSS");
     private static DecimalFormat decimalFormat = new DecimalFormat("00000");
+    private static java.text.DateFormat df = new java.text.SimpleDateFormat(
+            "yyyy-MM-dd HH:mm:ss");
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = true)
@@ -47,14 +50,20 @@ public class ECoupon extends Model {
     @Column(name = "e_coupon_sn")
     public String eCouponSn;
 
-    @Column(name = "e_coupon_price")
-    public BigDecimal eCouponPrice;
+    // ====  价格列表  ====
+    @Column(name = "face_value")
+    public BigDecimal faceValue;        //商品面值、市场价
+    
+    @Column(name = "original_price")
+    public BigDecimal originalPrice;    //供应商进货价
 
-    @Column(name = "income_price")
-    public BigDecimal incomePrice;
-
-    @Column(name = "refund_price")
-    public BigDecimal refundPrice;
+    @Column(name = "resaler_price")
+    public BigDecimal resalerPrice;     //用户在哪个分销商平台购买的价格，用于计算分销平台的佣金
+    
+    @Column(name = "sale_price")
+    public BigDecimal salePrice;        //最终成交价,对于普通分销商来说，此成交价与以上分销商价(resalerPrice)相同；
+    // ====  价格列表  ====
+    
 
     @Column(name = "created_at")
     @Temporal(TemporalType.DATE)
@@ -76,8 +85,12 @@ public class ECoupon extends Model {
     public ECoupon(Order order, Goods goods, OrderItems orderItems) {
         this.order = order;
         this.goods = goods;
-        this.eCouponPrice = orderItems.originalPrice;
-        this.refundPrice = eCouponPrice;
+        
+        this.faceValue = orderItems.faceValue;
+        this.originalPrice = orderItems.originalPrice;
+        this.resalerPrice = orderItems.resalerPrice;
+        this.salePrice = orderItems.salePrice;
+        
         this.createdAt = new Date();
 
         this.consumedAt = null;
@@ -141,8 +154,6 @@ public class ECoupon extends Model {
         ECoupon eCoupon = query(eCouponSn, supplierId);
         Map<String, Object> queryMap = new HashMap();
         if (eCoupon != null) {
-            java.text.DateFormat df = new java.text.SimpleDateFormat(
-                    "yyyy-MM-dd HH:mm:ss");
             queryMap.put("name", eCoupon.goods.name);
             queryMap.put("expireAt", eCoupon.goods.expireAt != null ? df.format(eCoupon.goods.expireAt) : null);
             queryMap.put("consumedAt", eCoupon.consumedAt != null ? df.format(eCoupon.consumedAt) : null);
@@ -155,28 +166,38 @@ public class ECoupon extends Model {
         return queryMap;
     }
 
-
-	/**
-	 * 修改券状态,并产生消费交易记录
-	 *
-	 * @param eCouponSn 券号
-	 * @param supplierId 商户ID
-	 */
-	public static boolean update(String eCouponSn, Long supplierId) {
-		ECoupon eCoupon = query(eCouponSn, supplierId);
-		//产生消费记录
-		Account account = AccountUtil.getAccount(supplierId, AccountType.BUSINESS);
-		if(account != null) {
-			TradeBill tradeBill = TradeUtil.createConsumeTrade(eCouponSn, account, eCoupon.incomePrice, eCoupon.order.id);
-			if (tradeBill != null) {
-				TradeUtil.success(tradeBill);
-				eCoupon.status = ECouponStatus.CONSUMED;
-				eCoupon.save();
-
-                return true;
-            }
-        }
-        return false;
+    /**
+     * 优惠券被消费。
+     * 修改优惠券状态、发佣金、给商户打钱
+     * 
+     * @return
+     */
+    public boolean consumed(){
+    	Account supplierAccount = AccountUtil.getAccount(orderItems.goods.supplierId, AccountType.BUSINESS);
+    	if(supplierAccount == null){
+    		return false;
+    	}
+    	//给商户打钱
+    	TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, supplierAccount, originalPrice);
+    	TradeUtil.success(consumeTrade);
+    	//给优惠券平台佣金
+    	TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(
+    	        AccountUtil.getPlatformCommissionAccount(), 
+    	        resalerPrice.subtract(originalPrice),
+    	        eCouponSn);
+    	TradeUtil.success(platformCommissionTrade);
+    	//如果是在优惠啦网站下的单，还要给优惠啦佣金
+    	if (order.userType == AccountType.CONSUMER){
+	        TradeBill uhuilaCommissionTrade = TradeUtil.createCommissionTrade(
+	                AccountUtil.getUhuilaAccount(),
+	                salePrice.subtract(resalerPrice),
+	                eCouponSn);
+	        TradeUtil.success(uhuilaCommissionTrade);
+    	}
+    	
+        this.status = ECouponStatus.CONSUMED;
+        this.save();
+    	return true;
     }
 
     /**

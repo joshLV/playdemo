@@ -33,6 +33,7 @@ public class VerificationCoupons extends Controller {
             Validation.keep();
             renderTemplate("Verification/index.html", eCouponSn);
         }
+        
         Long supplierId = 1l;
         //根据页面录入券号查询对应信息
         Map<String, Object> queryMap = ECoupon.queryInfo(eCouponSn, supplierId);
@@ -51,8 +52,11 @@ public class VerificationCoupons extends Controller {
             renderTemplate("Verification/index.html", eCouponSn);
         }
         Long supplierId = 1l;
+        ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
+        
         //根据页面录入券号查询对应信息,并产生消费交易记录
-        if (ECoupon.update(eCouponSn, supplierId)) renderJSON("0");
+        if (eCoupon == null || !eCoupon.consumed())
+            renderJSON("0");
 
         renderJSON("err");
     }

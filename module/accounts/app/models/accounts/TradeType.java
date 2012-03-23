@@ -9,5 +9,6 @@ public enum TradeType {
     PAY,        //支付
     REFUND,     //交易退款
     TRANSFER,   //转账
-    CONSUME     //消费
+    CONSUME,    //消费
+    COMMISSION  //佣金
 }

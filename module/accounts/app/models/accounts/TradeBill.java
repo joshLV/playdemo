@@ -28,10 +28,13 @@ public class TradeBill extends Model {
 
     @ManyToOne
     @JoinColumn(name = "to_account")
-    public Account toAccount;               //收款方账户，默认为uhuila的账户
+    public Account toAccount;               //收款方账户，默认为平台收款账户
 
     @Column(name = "order_id")
     public Long orderId;                    //订单编号，仅当付款对象是订单时有效
+    
+    @Column(name = "ecoupon_sn")
+    public String eCouponSn;				//电子券券号
 
     @Column(name = "balance_payment_amount")
     public BigDecimal balancePaymentAmount; //余额支付金额
@@ -59,6 +62,28 @@ public class TradeBill extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
     public TradeStatus tradeStatus;
+    
+    public TradeBill(){
+    	this.amount = BigDecimal.ZERO;
+    	this.balancePaymentAmount = BigDecimal.ZERO;
+    	this.ebankPaymentAmount = BigDecimal.ZERO;
+    	this.paymentSource = null;
+    	this.tradeType = null;
+    	this.tradeStatus = TradeStatus.UNPAID;
+    	
+    	this.fromAccount = null;
+    	this.toAccount = null;
+    	
+    	this.orderId = null;
+    	this.eCouponSn = null;
+    	
+    	
+        this.createdAt = new Date();
+        this.serialNumber = SerialNumberUtil.generateSerialNumber(this.createdAt);
+
+        this.returnCode = null;
+        this.returnNote = null;
+    }
 
     public TradeBill(Account fromAccount,Account toAccount, BigDecimal balancePaymentAmount,
                      BigDecimal ebankPaymentAmount, TradeType tradeType, PaymentSource paymentSource, Long orderId){
