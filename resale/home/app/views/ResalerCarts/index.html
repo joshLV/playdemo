@@ -36,30 +36,30 @@
 <div style="clear:both"></div>
 <div id="gouwucar">
     <div >
-        <form method="POST" action="/carts">
+        <form method="POST" action="/carts/form-add">
             <table>
                 <tr>
                     <td>
                         分销库
                     </td>
                     <td>
-                        <select name="goodsId">
+                        <select name="goodsId" id="favs_list">
                             #{list items:favs, as:'favItem'}
                             <option value="${favItem.goods.id}">${favItem.goods.name}</option>
                             #{/list}
                             #{if favs.size() == 0}
-                            <option>暂无商品</option>
+                            <option value = "-1">暂无商品</option>
                             #{/if}
                         </select>
                     </td>
                     <tr><td colspan="2">
-                            <table>
+                            <table border="1">
                                 <tr>
-                                    <th>名称</th>
-                                    <th>价格</th>
+                                    <td>名称</td>
+                                    <td>价格</td>
                                 </tr>
                                 #{list items:favs, as:'favItem'}
-                                <tr>
+                                <tr id="goods_detail_${favItem.goods.id}" style="display:none">
                                     <td>${favItem.goods.name}</td>
                                     <td>${favItem.goods.salePrice}</td>
                                 </tr>
@@ -77,7 +77,17 @@
                                         <textarea name="phones" cols="20" rows="10">
                                         </textarea>
                                     </td>
-                                    <td>同一个商品，不同的收货人。例：</br>13472228877</br>13477778888</td>
+                                    <td>同一个商品，不同的收货人。例：<br/>13472228877<br/>13477778888<br/>
+                        
+                            <span style="color:red">${errorMsg}<br/>
+                                #{if invalidPhones}
+                                #{list items:invalidPhones , as: 'invalidPhone'}
+                                ${invalidPhone}<br/>
+                                #{/list}
+                                #{/if}
+                            
+                            </span>
+                        </td>
                         </tr>
                     </table>
                 </td>
@@ -88,6 +98,9 @@
         </form>
     </div>
     <div class="block_fense">购物</div>
+        <form id="batch-delete-form" action="/carts/form-batch-delete" method="POST">
+            <input name="goodsIds[]" id="goodsIds" type="hidden"/>
+            </form>
     <table width="996" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
 
 
@@ -96,6 +109,7 @@
               <label>
                   <input class="th_one_input" type="checkbox" name="select_all_checkbox" />全选 </label>
               </span><span class="th_shop_text">商品</span></th>
+            <th width="">手机号</th>
             <th width="120">类型</th>
             <th width="115" height="30" bgcolor="F6F6F6">单价（元）</th>
             <th width="83">数量</th>
@@ -103,29 +117,72 @@
             <th width="103">操作</th>
         </tr>
 
-        #{list items:carts, as:'cartItem'}
+        #{list items:carts, as:'goodsGroup'}
+        %{cartItem = goodsGroup.get(0)}%
+
+
         <tr id="row_${cartItem.goods.id}">
-                <td height="25" align="center" valign="middle">
-                    <div class="col_one"><input type="checkbox" id="check_goods_${cartItem.goods.id}"/>
+                <td height="25" align="center" valign="middle" rowspan="${goodsGroup.size()}">
+                    <div class="col_one"><input type="checkbox" name="goodsIds" id="check_goods_${cartItem.goods.id}"/>
                     </div>
                     <div class="col_one_text">${cartItem.goods.name}
                     </div>
                 </td>
-                <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
-                <td width="115" height="25" align="center" valign="middle" id="price_${cartItem.goods.id}">${cartItem.goods.salePrice}</td>
-                <td width="83" height="25" align="center" valign="middle">
-                    <a href="#" class="reduce_box" name="${cartItem.goods.id}"><img src="@{'/public/images/sub_anniu.jpg'}" /></a>
-                    <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}" />
-                    <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}"/>
-                    <input type="hidden" value="${cartItem.goods.salePrice.multiply(cartItem.number)}" id="subtotal_${cartItem.goods.id}"/>
-                    <a class="add_box" href="#" name="${cartItem.goods.id}"><img src="@{'/public/images/add_anniu.jpg'}"/></a>
+                <td width="103" height="25" align="center" valign="middle">
+                    <span id="phone_${cartItem.goods.id}">${cartItem.phone}</span>
                 </td>
-                <td idth="187" height="25" align="center" valign="middle"><span class="strong_gray">劵号：${cartItem.goods.no}</span>
+                <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
+                <td width="115" height="25" align="center" valign="middle" id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.salePrice}</td>
+                <td width="83" height="25" align="center" valign="middle">
+                    <a href="#" class="reduce_box" iden="${cartItem.goods.id}" phone="${cartItem.phone}"><img src="@{'/public/images/sub_anniu.jpg'}" /></a>
+                    <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}-${cartItem.phone}" />
+                    <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}-${cartItem.phone}"/>
+                    <a class="add_box" href="#" iden="${cartItem.goods.id}" phone="${cartItem.phone}"><img src="@{'/public/images/add_anniu.jpg'}"/></a>
+                </td>
+                <td idth="187" height="25" align="center" valign="middle">
+                    <span class="strong_gray" id="subtotal_${cartItem.goods.id}-${cartItem.phone}"> ${cartItem.goods.salePrice.multiply(cartItem.number)}</span>
                 </td>
                 <td width="103" height="25" align="center" valign="middle">
-                    <a href="#" class="delete_gift" name="${cartItem.goods.id}">删除</a>
+                    <form method="POST" action="/carts/form-delete">
+                        <input name="goodsId" type="hidden" value="${cartItem.goods.id}"/>
+                        <input name="phone" type="hidden" value="${cartItem.phone}"/>
+                        <input type="SUBMIT" value="删除"/>
+                    </form>
                 </td>
             </tr>
+
+            #{if goodsGroup.size() > 1}
+            %{goodsGroup = goodsGroup.subList(1, goodsGroup.size())}%
+            #{list items:goodsGroup, as:'cartItem'}
+        <tr id="row_${cartItem.goods.id}">
+                <td width="103" height="25" align="center" valign="middle">
+                    <span id="phone_${cartItem.goods.id}">${cartItem.phone}</span>
+                </td>
+                <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
+                <td width="115" height="25" align="center" valign="middle" id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.salePrice}</td>
+                <td width="83" height="25" align="center" valign="middle">
+                    <a href="#" class="reduce_box" iden="${cartItem.goods.id}" phone="${cartItem.phone}"><img src="@{'/public/images/sub_anniu.jpg'}" /></a>
+                    <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}-${cartItem.phone}" />
+                    <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}-${cartItem.phone}"/>
+                    <a class="add_box" href="#" iden="${cartItem.goods.id}" phone="${cartItem.phone}"><img src="@{'/public/images/add_anniu.jpg'}"/></a>
+                </td>
+                <td idth="187" height="25" align="center" valign="middle">
+                    <span class="strong_gray" id="subtotal_${cartItem.goods.id}-${cartItem.phone}"> ${cartItem.goods.salePrice.multiply(cartItem.number)}</span>
+                </td>
+                <td width="103" height="25" align="center" valign="middle">
+                    <form method="POST" action="/carts/form-delete">
+                        <input name="goodsId" type="hidden" value="${cartItem.goods.id}"/>
+                        <input name="phone" type="hidden" value="${cartItem.phone}"/>
+                        <input type="SUBMIT" value="删除"/>
+                    </form>
+                </td>
+            </tr>
+
+            #{/list}
+            #{/if}
+
+
+
         #{/list}
 
         #{if carts.size() == 0}

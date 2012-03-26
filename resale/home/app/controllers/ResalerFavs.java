@@ -19,8 +19,7 @@ import java.util.List;
  * @author likang
  *
  */
-//@With({WebCAS.class, SecureCAS.class})
-@With(ResaleCAS.class)
+@With({SecureCAS.class, ResaleCAS.class})
 public class ResalerFavs extends Controller {
     private static int PAGE_SIZE = 15;
 
@@ -30,7 +29,7 @@ public class ResalerFavs extends Controller {
     public static void index() {
         Resaler resaler = ResaleCAS.getResaler();
 
-        List<ResalerFav> favs = ResalerFav.findAll();//user);
+        List<ResalerFav> favs = ResalerFav.findAll(resaler);
         render(favs);
     }
 

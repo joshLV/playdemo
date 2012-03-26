@@ -83,14 +83,44 @@ public class ResalerCarts extends Controller {
         if (resalerCart == null) {
             error(500, "invalid input");
         }else {
-            renderJSON(resalerCart);
+            ok();
         }
+    }
+
+    /**
+     * 从购物车中删除指定商品列表，并返回购物车界面
+     *
+     * @param goodsIds 商品列表
+     */
+    public static void formBatchDelete(List<Long> goodsIds ) {
+        Resaler resaler = ResaleCAS.getResaler();
+        for (long goodsId : goodsIds) {
+            models.sales.Goods goods = models.sales.Goods.findById(goodsId);
+            ResalerCart.delete(resaler, goods );
+        }
+
+        index();
+    }
+
+    /**
+     * 从购物车中删除指定商品列表，并返回购物车界面
+     *
+     * @param goodsId  商品
+     * @param phone    手机号
+     */
+    public static void formDelete(long goodsId, String phone) {
+        Resaler resaler = ResaleCAS.getResaler();
+        models.sales.Goods goods = models.sales.Goods.findById(goodsId);
+
+        ResalerCart result = ResalerCart.delete(resaler, goods, phone);
+
+        index();
     }
 
     /**
      * 从购物车中删除指定商品列表
      *
-     * @param goodsIds 商品列表
+     * @param goodsId  商品
      * @param phone    手机号
      */
     public static void delete(long goodsId, String phone) {
@@ -102,7 +132,7 @@ public class ResalerCarts extends Controller {
         if (result == null ){
             error(500, "invalid input");
         }else{
-            renderJSON(result);
+            ok();
         }
     }
 }

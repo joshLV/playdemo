@@ -13,9 +13,11 @@ POST    /library                                ResalerFavs.order
 DELETE  /library/{goodsIds}                     ResalerFavs.delete
 
 GET     /carts                                  ResalerCarts.index
-POST    /carts                                  ResalerCarts.formAdd
-POST    /carts/reorder                          ResalerCarts.reorder
-DELET   /carts/{goodsId}-{phones}               ResalerCarts.delete
+POST    /carts/form-add                         ResalerCarts.formAdd
+POST    /carts/form-delete                      ResalerCarts.formDelete
+POST    /carts/form-batch-delete                ResalerCarts.formBatchDelete
+POST    /carts/ajax                             ResalerCarts.reorder
+DELET   /carts/ajax                             ResalerCarts.delete
 
 GET     /goods                                  ResalerGoods.index
 GET     /goods/list/{condition}                 ResalerGoods.list

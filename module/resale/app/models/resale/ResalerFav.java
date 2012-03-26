@@ -78,8 +78,13 @@ public class ResalerFav extends Model {
         if (resaler == null || goodsIds == null || goodsIds.size() == 0) {
             return 0;
         }
-        List<ResalerFav> favs = ResalerFav.find(
-                "select r from ResalerFav where r.resaler = ? and r.goods.id in ?", resaler, goodsIds).fetch();
+
+        Query query = play.db.jpa.JPA.em().createQuery(
+                "select r from ResalerFav r where r.resaler = :resaler and r.goods.id in :goods");
+        query.setParameter("resaler", resaler);
+        query.setParameter("goods", goodsIds);
+        List<ResalerFav> favs = query.getResultList();
+
         for (ResalerFav fav : favs){
             fav.delete();
         }

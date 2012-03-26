@@ -107,17 +107,29 @@ public class ResalerCart extends Model {
     }
 
     /**
+     * 从购物车中删除指定商品，所有该商品所对应的条目均被删除
+     *
+     * @param resaler     用户
+     * @param goods       商品
+     * @return 成功删除的数量
+     */
+    public static int delete(Resaler resaler, Goods goods) {
+        List<ResalerCart> carts = ResalerCart.find("byResalerAndGoods", resaler, goods).fetch();
+        for (ResalerCart cart : carts) {
+            cart.delete();
+        }
+        return carts.size();
+    }
+
+    /**
      * 从购物车中删除指定商品列表
      *
      * @param resaler     用户
-     * @param cookie   用户cookie
-     * @param goodsIds 商品列表，若未指定，则删除该用户所有的购物车条目
-     * @return 成功删除的数量
+     * @param goods       商品列表，若未指定，则删除该用户所有的购物车条目
+     * @param phone       手机号
+     * @return 成功删除的购物车条目
      */
     public static ResalerCart delete(Resaler resaler, Goods goods, String phone) {
-        if (resaler == null || goods == null || phone == null || phone.equals("")) {
-            return null;
-        }
 
         ResalerCart cart = ResalerCart.find("byResalerAndGoodsAndPhone", resaler, goods, phone).first();
         if (cart == null ){
@@ -138,7 +150,7 @@ public class ResalerCart extends Model {
             return new ArrayList<List<ResalerCart>>();
         }
         List<ResalerCart> carts = ResalerCart.find(
-                "select r from ResalerCart where r.resaler = ? order by r.createdAt desc", resaler).fetch();
+                "select r from ResalerCart r where r.resaler = ? order by r.createdAt desc", resaler).fetch();
         List<List<ResalerCart>> result = new ArrayList<>();
         for (ResalerCart cart : carts) {
             boolean found = false;
