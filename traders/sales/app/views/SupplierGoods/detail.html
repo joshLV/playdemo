@@ -53,6 +53,14 @@
             <div class="controls">${goods?.salePrice?.formatCurrency('CNY').raw()}
             </div>
         </div>
+    #{list items:goods.getLevelPrices(), as: 'level'}
+        <div class="control-group">
+            <label class="control-label">&{'goods.levelPrice.'+level?.level}</label>
+
+            <div class="controls">${level.price?.formatCurrency('CNY').raw()?:0}
+            </div>
+        </div>
+    #{/list}
         <div class="control-group">
             <label class="control-label">库&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</label>
 
@@ -63,7 +71,7 @@
             <label class="control-label">商品图片</label>
 
             <div class="controls">
-                <img src="${goods?.imageTinyPath}"/>
+                <img src="${goods?.imageLargePath}"/>
             </div>
         </div>
         <div class="control-group">

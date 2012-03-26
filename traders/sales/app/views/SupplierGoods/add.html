@@ -7,9 +7,9 @@
 #{/set}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @Goods.create() , id:'creationForm',enctype:'multipart/form-data',class:"form-horizontal" }
+#{form @SupplierGoods.create() , id:'creationForm',enctype:'multipart/form-data',class:"form-horizontal" }
     <legend>添加电子消费券</legend>
-    #{include '/Goods/goodsForm.html', action:'add'/}
+    #{include '/SupplierGoods/goodsForm.html', action:'add'/}
 #{/form}
 </div>
 

@@ -23,6 +23,13 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 #{layout_trader.textField name:'goods.faceValue', value:goods?.faceValue, note:'元', required:true/}
 #{layout_trader.textField name:'goods.originalPrice', value:goods?.originalPrice ,note:'元', required:true/}
 #{layout_trader.textField name:'goods.salePrice', value:goods?.salePrice, note:'元', required:true/}
+#{set i:0/}
+#{list items:models.resale.ResalerLevel.values(), as: 'level'}
+    #{layout_trader.textField name:'levelPrices', label:'goods.levelPrice.'+models.resale.ResalerLevel.values()[i++],
+    value:levelPrices.length==i?"0":levelPrices[i].toString(), note:'元',
+    required:true/}
+#{/list}
+
 #{layout_trader.textField name:'goods.baseSale', value:goods?.baseSale, note:'件', required:true/}
 #{if "add".equals(_action)}
     #{layout_trader.fileField name:'imagePath', required:true/}
@@ -35,6 +42,7 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 #{layout_trader.radioField name:'goods.isAllShop', value:goods?.isAllShop, required:true/}
 <div class="control-group">
     <label class="control-label"></label>
+
     <div class="controls" id="shop" style="display:none">
         <table class="table table-striped table-bordered table-condensed">
             <tbody>
@@ -58,7 +66,7 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 #{if "edit".equals(_action)}
     <button class="btn btn-primary" id="cancel" type="button" onclick="window.history.go(-1)">取消</button>
 #{/if}
-    <input type="hidden" id="status" name="goods.status"/>
+    <input type="hidden" id="status" name="goods.status" value="${goods?.status?:'OFFSALE'}"/>
 </div>
 <script type="text/javascript">
     $("input[name='goods.isAllShop']:checked").val() == 'false' ? $("#shop").show() : $("#shop").hide();

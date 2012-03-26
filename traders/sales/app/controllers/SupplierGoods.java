@@ -4,27 +4,25 @@
  */
 package controllers;
 
-import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
+import controllers.supplier.cas.SecureCAS;
+import models.resale.ResalerLevel;
 import models.sales.*;
+import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
-import play.mvc.Scope;
+import play.mvc.With;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-
-import play.mvc.With;
-import navigation.annotations.ActiveNavigation;
-import controllers.supplier.cas.SecureCAS;
 
 /**
  * 通用说明：
@@ -34,7 +32,7 @@ import controllers.supplier.cas.SecureCAS;
  */
 @With({SecureCAS.class, MenuInjector.class})
 @ActiveNavigation("goods_index")
-public class Goods extends Controller {
+public class SupplierGoods extends Controller {
 
     public static int PAGE_SIZE = 15;
 
@@ -75,7 +73,22 @@ public class Goods extends Controller {
     private static void renderInit(models.sales.Goods goods) {
         if (goods == null) {
             goods = new models.sales.Goods();
+            BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
+            for (BigDecimal levelPrice : levelPrices) {
+                levelPrice = BigDecimal.ZERO;
+            }
+            renderArgs.put("levelPrices", levelPrices);
         }
+        BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
+        for (int i = 0; i < levelPrices.length; i++) {
+            GoodsLevelPrice levelPrice = goods.getLevelPrices().get(i);
+            if (levelPrice == null) {
+                levelPrices[i] = BigDecimal.ZERO;
+            } else {
+                levelPrices[i] = levelPrice.price;
+            }
+        }
+        renderArgs.put("levelPrices", levelPrices);
         if (goods.isAllShop != null) {
             if (goods.isAllShop && goods.shops != null) {
                 goods.shops = null;
@@ -106,7 +119,7 @@ public class Goods extends Controller {
                     .categories.iterator().hasNext()) {
                 Category category = goods.categories.iterator().next();
                 categoryId = category.id;
-                if ((goods.topCategoryId == null || goods.topCategoryId == 0) && category.parentCategory!=null) {
+                if ((goods.topCategoryId == null || goods.topCategoryId == 0) && category.parentCategory != null) {
                     goods.topCategoryId = category.parentCategory.id;
                 }
             }
@@ -146,37 +159,29 @@ public class Goods extends Controller {
      * @param goods
      */
     @ActiveNavigation("goods_add")
-    public static void create(@Valid models.sales.Goods goods, @Required File imagePath) {
+    public static void create(@Valid models.sales.Goods goods, @Required File imagePath, BigDecimal[] levelPrices) {
         Long supplierId = getSupplierId();
 
         checkImageFile(imagePath);
 
+        goods.setLevelPrices(levelPrices);
         if (Validation.hasErrors()) {
             renderInit(goods);
-            render("Goods/add.html");
+            render("SupplierGoods/add.html");
         }
 
         //添加商品处理
         goods.supplierId = supplierId;
         goods.createdBy = getCompanyUser();
-        goods.deleted = DeletedStatus.UN_DELETED;
-        goods.saleCount = 0;
-        goods.incomeGoodsCount = 0L;
-        goods.createdAt = new Date();
         goods.materialType = MaterialType.ELECTRONIC;
 
-
-        if (goods.baseSale == 0) {
-            goods.status = GoodsStatus.OFFSALE;
-        }
         goods.create();
         try {
-            uploadImagePath(imagePath, goods);
+            goods.imagePath = uploadImagePath(imagePath, goods.id);
         } catch (IOException e) {
             e.printStackTrace();
             error("goods.image_upload_failed");
         }
-//        goods.filterShops();
         goods.save();
 
         //预览的情况
@@ -217,16 +222,16 @@ public class Goods extends Controller {
      * 上传图片
      *
      * @param uploadImageFile
-     * @param goods
+     * @param goodsId
      */
-    private static void uploadImagePath(File uploadImageFile, models.sales.Goods goods) throws IOException {
+    private static String uploadImagePath(File uploadImageFile, Long goodsId) throws IOException {
         if (uploadImageFile == null || uploadImageFile.getName() == null) {
-            return;
+            return "";
         }
         //取得文件存储路径
 
-        String absolutePath = FileUploadUtil.storeImage(uploadImageFile, goods.id, UploadFiles.ROOT_PATH);
-        goods.imagePath = absolutePath.substring(UploadFiles.ROOT_PATH.length(), absolutePath.length());
+        String absolutePath = FileUploadUtil.storeImage(uploadImageFile, goodsId, UploadFiles.ROOT_PATH);
+        return absolutePath.substring(UploadFiles.ROOT_PATH.length(), absolutePath.length());
     }
 
     /**
@@ -243,54 +248,40 @@ public class Goods extends Controller {
      */
     public static void detail(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
-        renderTemplate("Goods/detail.html", goods);
+        renderTemplate("SupplierGoods/detail.html", goods);
     }
 
     /**
      * 更新指定商品信息
      */
-    public static void update(Long id, @Valid models.sales.Goods goods, File imagePath) {
-        System.out.println("goods.details:" + goods.getDetails());
+    public static void update(Long id, @Valid models.sales.Goods goods, File imagePath, BigDecimal[] levelPrices) {
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
         }
-        goods.id = id;
         checkImageFile(imagePath);
 
+        goods.setLevelPrices(levelPrices);
         if (Validation.hasErrors()) {
             renderInit(goods);
-            render("Goods/edit.html", goods);
+            render("SupplierGoods/edit.html", goods);
         }
 
         String companyUser = getCompanyUser();
-        models.sales.Goods updateGoods = models.sales.Goods.findById(id);
 
         try {
-            uploadImagePath(imagePath, updateGoods);
+            String image = uploadImagePath(imagePath, id);
+            if (image != null) {
+                goods.imagePath = image;
+            }
         } catch (IOException e) {
             error("goods.image_upload_failed");
         }
 
-        updateGoods.name = goods.name;
-        updateGoods.no = goods.no;
-        updateGoods.categories = goods.categories;
-        updateGoods.effectiveAt = goods.effectiveAt;
-        updateGoods.expireAt = goods.expireAt;
-        updateGoods.originalPrice = goods.originalPrice;
-        updateGoods.salePrice = goods.salePrice;
-        updateGoods.baseSale = goods.baseSale;
-        updateGoods.setPrompt(goods.getPrompt());
-        updateGoods.setDetails(goods.getDetails());
-        updateGoods.updatedAt = new Date();
-        updateGoods.updatedBy = companyUser;
-        updateGoods.brand = goods.brand;
-        updateGoods.isAllShop = goods.isAllShop;
-        updateGoods.status = goods.status;
-        updateGoods.save();
+        goods.update(id, companyUser);
 
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            redirect("http://www.uhuila.cn/goods/" + goods.id + "?preview=true");
+            redirect("http://www.uhuila.cn/goods/" + id + "?preview=true");
         }
         index(null);
     }

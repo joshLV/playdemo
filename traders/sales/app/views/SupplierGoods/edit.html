@@ -7,11 +7,11 @@
 #{/get}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @Goods.update(goods.id), id:'updateForm',enctype:'multipart/form-data',
+#{form @SupplierGoods.update(goods.id), id:'updateForm',enctype:'multipart/form-data',
 class:"form-horizontal",
 method:'PUT' }
     <legend>修改电子消费券</legend>
-    #{include '/Goods/goodsForm.html', action:'edit'/}
+    #{include '/SupplierGoods/goodsForm.html', action:'edit'/}
 #{/form}
 </div>
 

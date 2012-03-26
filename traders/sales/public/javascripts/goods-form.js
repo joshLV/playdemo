@@ -33,9 +33,9 @@ $(window).load(
         $("#goods_isAllShop_1").click(function () {
             $("#shop").hide();//隐藏门店列表
         });
-        $("#save").click(function () {
-            $("#status").val("OFFSALE");
-        });
+//        $("#save").click(function () {
+//            $("#status").val("OFFSALE");
+//        });
         $("#onsale").click(function () {
             $("#status").val("ONSALE");
         });

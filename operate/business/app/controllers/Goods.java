@@ -64,16 +64,7 @@ public class Goods extends Controller {
         if (goods == null) {
             goods = new models.sales.Goods();
         }
-        if (goods.levelPrices == null) {
-            goods.levelPrices = new ArrayList<>();
-        }
-        if (goods.levelPrices.size() == 0) {
-            for (ResalerLevel level : ResalerLevel.values()) {
-                System.out.println("level:" + level);
-                GoodsLevelPrice levelPrice = new GoodsLevelPrice(level, BigDecimal.ZERO);
-                goods.levelPrices.add(levelPrice);
-            }
-        }
+
         List<Shop> shopList = Shop.findShopBySupplier(goods.supplierId);
         List<Brand> brandList = Brand.findByOrder();
         List<Category> categoryList = Category.findByParent(0);
@@ -159,16 +150,9 @@ public class Goods extends Controller {
 
         //添加商品处理
         goods.createdBy = getCompanyUser();
-        goods.deleted = DeletedStatus.UN_DELETED;
-        goods.saleCount = 0;
-        goods.incomeGoodsCount = 0L;
-        goods.createdAt = new Date();
         goods.materialType = MaterialType.ELECTRONIC;
 
 
-        if (goods.baseSale == 0) {
-            goods.status = GoodsStatus.OFFSALE;
-        }
         goods.create();
         try {
             uploadImagePath(imagePath, goods);
@@ -176,7 +160,6 @@ public class Goods extends Controller {
             e.printStackTrace();
             error("goods.image_upload_failed");
         }
-//        goods.filterShops();
         goods.save();
 
         //预览的情况
@@ -192,14 +175,14 @@ public class Goods extends Controller {
      * @param uploadImageFile
      * @param goods
      */
-    private static void uploadImagePath(File uploadImageFile, models.sales.Goods goods) throws IOException {
+    private static String uploadImagePath(File uploadImageFile, Long goodsId) throws IOException {
         if (uploadImageFile == null || uploadImageFile.getName() == null) {
-            return;
+            return null;
         }
         //取得文件存储路径
 
-        String absolutePath = FileUploadUtil.storeImage(uploadImageFile, goods.id, UploadFiles.ROOT_PATH);
-        goods.imagePath = absolutePath.substring(UploadFiles.ROOT_PATH.length(), absolutePath.length());
+        String absolutePath = FileUploadUtil.storeImage(uploadImageFile, goodsId, UploadFiles.ROOT_PATH);
+        return absolutePath.substring(UploadFiles.ROOT_PATH.length(), absolutePath.length());
     }
 
     /**
@@ -274,20 +257,7 @@ public class Goods extends Controller {
             error("goods.image_upload_failed");
         }
 
-        updateGoods.name = goods.name;
-        updateGoods.no = goods.no;
-        updateGoods.effectiveAt = goods.effectiveAt;
-        updateGoods.expireAt = goods.expireAt;
-        updateGoods.originalPrice = goods.originalPrice;
-        updateGoods.salePrice = goods.salePrice;
-        updateGoods.baseSale = goods.baseSale;
-        updateGoods.setPrompt(goods.getPrompt());
-        updateGoods.setDetails(goods.getDetails());
-        updateGoods.updatedAt = new Date();
-        updateGoods.updatedBy = companyUser;
-        updateGoods.brand = goods.brand;
-        updateGoods.save();
-
+        goods.update(id, companyUser);
         index(null);
     }
 
@@ -316,29 +286,30 @@ public class Goods extends Controller {
 
 
     private static void checkImageFile(File imagePath) {
-        if (imagePath != null) {
-            //检查目录
-            File uploadDir = new File(UploadFiles.ROOT_PATH);
-            if (!uploadDir.isDirectory()) {
-                Validation.addError("goods.imagePath", "validation.write");
-            }
+        if (imagePath == null) {
+            return;
+        }
+        //检查目录
+        File uploadDir = new File(UploadFiles.ROOT_PATH);
+        if (!uploadDir.isDirectory()) {
+            Validation.addError("goods.imagePath", "validation.write");
+        }
 
-            //检查目录写权限
-            if (!uploadDir.canWrite()) {
-                Validation.addError("goods.imagePath", "validation.write");
-            }
+        //检查目录写权限
+        if (!uploadDir.canWrite()) {
+            Validation.addError("goods.imagePath", "validation.write");
+        }
 
-            if (imagePath.length() > UploadFiles.MAX_SIZE) {
-                Validation.addError("goods.imagePath", "validation.maxFileSize");
-            }
+        if (imagePath.length() > UploadFiles.MAX_SIZE) {
+            Validation.addError("goods.imagePath", "validation.maxFileSize");
+        }
 
-            //检查扩展名
-            //定义允许上传的文件扩展名
-            String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
-            String fileExt = imagePath.getName().substring(imagePath.getName().lastIndexOf(".") + 1).toLowerCase();
-            if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
-                Validation.addError("goods.imagePath", "validation.invalidType", StringUtils.join(fileTypes, ','));
-            }
+        //检查扩展名
+        //定义允许上传的文件扩展名
+        String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
+        String fileExt = imagePath.getName().substring(imagePath.getName().lastIndexOf(".") + 1).toLowerCase();
+        if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
+            Validation.addError("goods.imagePath", "validation.invalidType", StringUtils.join(fileTypes, ','));
         }
     }
 }

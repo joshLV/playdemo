@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GoodsTest extends FunctionalTest {
+public class SupplierGoodsTest extends FunctionalTest {
 
     @org.junit.Before
     public void setup() {
@@ -67,7 +67,7 @@ public class GoodsTest extends FunctionalTest {
         //todo
 //        response = PUT("/goods/" + goodsId, goodsParams);
 //        assertStatus(302, response);
-//        Goods goods = Goods.findById(goodsId);
+//        SupplierGoods goods = SupplierGoods.findById(goodsId);
 //        Assert.assertEquals(goods.name, "test");
     }
 
