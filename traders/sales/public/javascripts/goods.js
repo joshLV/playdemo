@@ -1,5 +1,5 @@
 /**
- * For Goods/index.html.
+ * For SupplierGoods/index.html.
  * User: sujie
  * Date: 3/15/12
  * Time: 5:41 PM

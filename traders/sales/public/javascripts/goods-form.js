@@ -1,5 +1,5 @@
 /**
- * To Goods/add.html.
+ * To SupplierGoods/add.html.
  *
  * User: sujie
  * Date: 3/9/12
