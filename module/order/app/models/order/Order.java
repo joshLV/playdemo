@@ -5,6 +5,8 @@ import models.accounts.Account;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
+import models.resale.Resaler;
+import models.resale.ResalerOrdersCondition;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sms.SMSUtil;
@@ -344,5 +346,28 @@ public class Order extends Model {
         return orderPage;
     }
 
+    /**
+     * 会员中心订单查询
+     *
+     * @param user           用户信息
+     * @param createdAtBegin 下单开始时间
+     * @param createdAtEnd   下单结束时间
+     * @param status         状态
+     * @param goodsName      商品名
+     * @param pageNumber     第几页
+     * @param pageSize       每页记录
+     * @return ordersPage 订单信息
+     */
+    public static JPAExtPaginator<Order> findResalerOrders(ResalerOrdersCondition condition,
+    		Resaler resaler,int pageNumber, int pageSize) {
+        JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
+                ("Order o", "o", Order.class, condition.getResalerFilter(resaler),
+                        condition.paramsMap)
+                .orderBy(condition.getOrderByExpress());
+        orderPage.setPageNumber(pageNumber);
+        orderPage.setPageSize(pageSize);
+        orderPage.setBoundaryControlsEnabled(false);
+        return orderPage;
+    }
 
 }

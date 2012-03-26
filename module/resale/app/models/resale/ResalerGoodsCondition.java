@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import models.sales.Brand;
-import models.sales.GoodsStatus;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -18,7 +17,7 @@ import com.uhuila.common.constants.DeletedStatus;
  * Date: 2/29/12
  * Time: 4:25 PM
  */
-public class ResaleGoodsCondition {
+public class ResalerGoodsCondition {
 
 	public long brandId = 0;
 	public BigDecimal priceFrom = new BigDecimal(0);
@@ -30,7 +29,7 @@ public class ResaleGoodsCondition {
 
 	private Map<String, Object> paramMap = new HashMap<>();
 
-	public ResaleGoodsCondition() {
+	public ResalerGoodsCondition() {
 	}
 
 	/**
@@ -38,10 +37,10 @@ public class ResaleGoodsCondition {
 	 *
 	 * @param condStr hql的查询条件
 	 */
-	public ResaleGoodsCondition(String condStr) {
+	public ResalerGoodsCondition(String condStr) {
 		String[] args = condStr.split("-");
 		if (args == null || args.length < 1) {
-			throw new IllegalArgumentException("ResaleGoodsCondition is illegal!");
+			throw new IllegalArgumentException("ResalerGoodsCondition is illegal!");
 		}
 		if (args.length > 0) {
 			brandId = StringUtils.isBlank(args[0]) ? 0 : Long
@@ -51,6 +50,7 @@ public class ResaleGoodsCondition {
 			priceFrom = StringUtils.isBlank(args[1]) ? new
 					BigDecimal(0) : new BigDecimal(args[1]);
 		}
+		
 		if (args.length > 2) {
 			priceTo = StringUtils.isBlank(args[2]) ? new
 					BigDecimal(0) : new BigDecimal(args[2]);
@@ -132,7 +132,7 @@ public class ResaleGoodsCondition {
 			brand.id = brandId;
 			paramMap.put("brand", brand);
 		}
-
+		
 		if (priceFrom.compareTo(new BigDecimal(0)) > 0) {
 			sql.append(" and g.salePrice >= :priceFrom");
 			paramMap.put("priceFrom", priceFrom);
