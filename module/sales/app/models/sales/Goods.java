@@ -278,21 +278,21 @@ public class Goods extends Model {
         this.details = Jsoup.clean(details, HTML_WHITE_TAGS);
     }
 
-    public void filterShops() {
-        if (shops == null) {
-//            List<Shop> shopList = Shop.findShopBySupplier(supplierId);
-//            shops = new HashSet<>();
-//            shops.addAll(shopList);
-            return;
-        }
-        Set<Shop> uniqueShops = new HashSet<>();
-        for (Shop shop : shops) {
-            if (!uniqueShops.contains(shop)) {
-                uniqueShops.add(shop);
-            }
-        }
-        this.shops = uniqueShops;
-    }
+//    public void filterShops() {
+//        if (shops == null) {
+////            List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+////            shops = new HashSet<>();
+////            shops.addAll(shopList);
+//            return;
+//        }
+//        Set<Shop> uniqueShops = new HashSet<>();
+//        for (Shop shop : shops) {
+//            if (!uniqueShops.contains(shop)) {
+//                uniqueShops.add(shop);
+//            }
+//        }
+//        this.shops = uniqueShops;
+//    }
 
     public void setDiscount(Integer discount) {
         this.discount = discount;

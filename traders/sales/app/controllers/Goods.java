@@ -176,7 +176,7 @@ public class Goods extends Controller {
             e.printStackTrace();
             error("goods.image_upload_failed");
         }
-        goods.filterShops();
+//        goods.filterShops();
         goods.save();
 
         //预览的情况

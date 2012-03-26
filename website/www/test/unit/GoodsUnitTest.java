@@ -140,14 +140,4 @@ public class GoodsUnitTest extends UnitTest {
         Set<Category> categories = goodsList.get(0).categories;
         assertEquals(categoryId, categories.iterator().next().id);
     }
-
-    @Test
-    public void testFilterShops() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-        goods.shops = null;
-        goods.filterShops();
-        assertNotNull(goods.shops);
-        assertEquals(2, goods.shops.size());
-    }
 }
