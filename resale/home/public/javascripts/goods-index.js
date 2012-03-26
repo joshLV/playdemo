@@ -1,7 +1,7 @@
 /**
  * 商品列表页.
- * User: sujie
- * Date: 2/29/12
+ * User: yjy
+ * Date: 3/27/12
  * Time: 11:25 AM
  */
 
@@ -41,7 +41,7 @@ $(window).load(
             var linkItems = oldLink.split("-");
             var priceFrom = $("#input_price_from").val();
             if (!isNaN(parseInt(priceFrom)) && priceFrom >= 0) {
-                linkItems[5] = priceFrom;
+                linkItems[1] = priceFrom;
             } else {
                 $("#input_price_from").val("");
                 $("#input_price_from").focus();
@@ -49,7 +49,7 @@ $(window).load(
             }
             var priceTo = $("#input_price_to").val();
             if (!isNaN(parseInt(priceTo)) && priceTo > 0) {
-                linkItems[6] = priceTo;
+                linkItems[2] = priceTo;
             } else {
                 $("#input_price_to").val("");
                 $("#input_price_to").focus();
@@ -57,7 +57,33 @@ $(window).load(
             }
             $(this).attr('href', linkItems.join("-"));
         });
+        
+        $("#selectall").click(function () {
+            if (this.checked) {
+                $("[name='ids[]']").attr("checked", 'true');//全选
+            } else {
+                $("[name='ids[]']").removeAttr("checked");//取消
+            }
+        });
+
+        var checkedcnt = 0;
+        $("#addto").click(function () {
+            $("input[name='ids[]']").each(function () {
+                if (this.checked) {
+                    checkedcnt++;
+                }
+            });
+            if (checkedcnt == 0) {
+                alert("请至少选择一条数据！");
+            } else {
+                    $("#indexForm").attr("method", "POST");
+                    $("#indexForm").attr("action", "@{ResalerGoods.index()}");
+                    $("#indexForm").submit();
+            }
+        });
     }
 );
+
+
 
 

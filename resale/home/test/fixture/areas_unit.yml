@@ -1,0 +1,26 @@
+sales.Area(Area_021):
+ id: "021"
+ name: "上海"
+ displayOrder: "100"
+ areaType: CITY
+
+sales.Area(Area_02101):
+ id: "02101"
+ name: "浦东新区"
+ parent: Area_021
+ displayOrder: "100"
+ areaType: DISTRICT
+
+sales.Area(Area_02101001):
+ id: "02101001"
+ name: "陆家嘴"
+ parent: Area_02101
+ displayOrder: "100"
+ areaType: AREA
+
+sales.Area(Area_02101002):
+ id: "02101002"
+ name: "96广场"
+ parent: Area_02101
+ displayOrder: "200"
+ areaType: AREA

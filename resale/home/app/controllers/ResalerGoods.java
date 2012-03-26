@@ -2,16 +2,12 @@ package controllers;
 
 import java.util.List;
 
-import models.resale.ResaleGoodsCondition;
 import models.resale.Resaler;
-import models.resale.ResalerLevel;
+import models.resale.ResalerGoodsCondition;
 import models.sales.Brand;
-import models.sales.Category;
-import models.sales.GoodsCondition;
 
 import org.apache.commons.lang.StringUtils;
 
-import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -25,22 +21,21 @@ import controllers.resaletrace.ResaleCAS;
  *
  */
 @With({SecureCAS.class,ResaleCAS.class})
-public class ResaleGoods extends Controller {
+public class ResalerGoods extends Controller {
 	public static int PAGE_SIZE = 6;
+	public static int LIMIT = 8;
 	/**
 	 * 商品列表主界面
 	 */
 	public static void index() {
 		Resaler resaler = ResaleCAS.getResaler();
-		//TODO
-		resaler= new Resaler();
-		resaler.level = ResalerLevel.VIP1;
 		String page = params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-		ResaleGoodsCondition goodsCond = new ResaleGoodsCondition();
+		ResalerGoodsCondition goodsCond = new ResalerGoodsCondition();
 		JPAExtPaginator<models.sales.Goods> goodsList = models.sales
 				.Goods.findByResaleCondition(goodsCond,pageNumber, PAGE_SIZE);
-		List<Brand> brands = Brand.findTop(8, 0);
+		List<Brand> brands = Brand.findTop(LIMIT);
+		renderGoodsCond(goodsCond);
 		render(goodsList,brands,resaler);
 	}
 
@@ -51,17 +46,13 @@ public class ResaleGoods extends Controller {
 	public static void list(String condition) {
 		Resaler resaler = ResaleCAS.getResaler();
 		String page = params.get("page");
-		//TODO
-		resaler= new Resaler();
-		resaler.level = ResalerLevel.VIP1;
-
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-		ResaleGoodsCondition goodsCond = new ResaleGoodsCondition(condition);
+		ResalerGoodsCondition goodsCond = new ResalerGoodsCondition(condition);
 		JPAExtPaginator<models.sales.Goods> goodsList = models.sales
 				.Goods.findByResaleCondition(goodsCond,pageNumber, PAGE_SIZE);
-		List<Brand> brands = Brand.findTop(8, goodsCond.brandId);
+		List<Brand> brands = Brand.findTop(LIMIT, goodsCond.brandId);
 		renderGoodsCond(goodsCond);
-		render("ResaleGoods/index.html",goodsList,brands,resaler);
+		render("ResalerGoods/index.html",goodsList,brands,resaler);
 	}
 
 	/**
@@ -71,9 +62,6 @@ public class ResaleGoods extends Controller {
 	 */
 	public static void show(long id) {
 		Resaler resaler = ResaleCAS.getResaler();
-		//TODO
-		resaler= new Resaler();
-		resaler.level = ResalerLevel.VIP1;
 		models.sales.Goods goods = models.sales.Goods.findUnDeletedById(id);
 		if (goods == null) {
 			notFound();
@@ -87,7 +75,7 @@ public class ResaleGoods extends Controller {
 	 * 
 	 * @param goodsCond 页面设置选择信息
 	 */
-	private static void renderGoodsCond(ResaleGoodsCondition goodsCond) {
+	private static void renderGoodsCond(ResalerGoodsCondition goodsCond) {
 		renderArgs.put("brandId", goodsCond.brandId);
 		renderArgs.put("priceFrom", goodsCond.priceFrom);
 		renderArgs.put("priceTo", goodsCond.priceTo);

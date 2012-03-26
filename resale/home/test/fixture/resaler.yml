@@ -1,6 +1,6 @@
 resale.Resaler(models_resale_Resaler_1):
  "accountType": "CONSUMER"
- "loginName": "cc"
+ "loginName": "tom"
  "password": "dfed21ec4562d41879f9358ee80b0e31"
  "userName": "yanjy"
  "passwordSalt": "Tj4vVm"
@@ -11,13 +11,14 @@ resale.Resaler(models_resale_Resaler_1):
  "address": "1"
  "postCode": "124124"
  "identityNo": "341281198208288387"
- "status": "NOMAL"
+ "status": "APPROVED"
  "loginIp": "127.0.0.1"
  "createdAt": "2012-03-21T16:23:22"
+ "level": "VIP1"
 
 resale.Resaler(models_resale_Resaler_2):
  "accountType": "CONSUMER"
- "loginName": "bb"
+ "loginName": "jane"
  "password": "875aefcca6f4ec4f6d1fb7267514a36b"
  "userName": "1"
  "passwordSalt": "2Y7s7g"
@@ -28,9 +29,10 @@ resale.Resaler(models_resale_Resaler_2):
  "address": "1"
  "postCode": ""
  "identityNo": "1312312"
- "status": "NOMAL"
+ "status": "APPROVED"
  "loginIp": "127.0.0.1"
  "createdAt": "2012-03-21T15:48:28"
+ "level": "VIP1"
 
 resale.Resaler(models_resale_Resaler_3):
  "loginName": "1"
@@ -38,5 +40,6 @@ resale.Resaler(models_resale_Resaler_3):
  "passwordSalt": "Y5yfX7"
  "mobile": "1"
  "lastLoginAt": "2012-03-21T11:37:46"
- "status": "NOMAL"
+ "status": "APPROVED"
  "loginIp": "127.0.0.1"
+ "level": "VIP1"

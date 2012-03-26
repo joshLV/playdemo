@@ -1,0 +1,8 @@
+deleteAllVisibleCookies()
+clearSession()
+openAndWait('/@cas/login?service=/modules.cas.securecas/authenticate&gateway=true')
+assertTitle('CAS Mock Server - Login')
+type('id=login','tom')
+type('id=password','tom')
+clickAndWait('css=input[type="submit"]')
+assertNotTitle('CAS Mock Server - Login')

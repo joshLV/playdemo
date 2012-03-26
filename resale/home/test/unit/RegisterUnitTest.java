@@ -56,7 +56,7 @@ public class RegisterUnitTest extends UnitTest {
 	//测试是否存在用户名和手机
 	@Test
 	public void testCheckValue(){
-		String returnFlag = Resaler.checkValue("bb", "");
+		String returnFlag = Resaler.checkValue("jane", "");
 		assertEquals("1",returnFlag); 
 
 		returnFlag = Resaler.checkValue("dd", "13213123124");

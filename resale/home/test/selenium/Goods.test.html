@@ -1,0 +1,33 @@
+#{fixture delete:'all', load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_unit.yml',
+'fixture/shops_unit.yml','fixture/goods_unit.yml','fixture/level_price.yml','fixture/resaler.yml'] /}
+#{selenium 'Test ResaleGoods/index.html Normal'}
+#{include 'test/selenium/step/login.selenium' /}
+open('/goods')
+verifyTextPresent('全部 来一份 豆捞坊')
+verifyTextPresent('30-60元')
+verifyTextPresent('160元以上')
+verifyTextPresent('上一页')
+verifyTextPresent('下一页')
+assertTextPresent('排序： 默认 销量 价格 折扣 最新')
+
+clickAndWait('link=豆捞坊')
+assertText('css=span.selected_box','豆捞坊')
+
+clickAndWait('link=30-60元')
+verifyText('css=div.selected_box','30-60元')
+
+open('/goods/list/0-0-0-1-1')
+verifyTextPresent('上一页')
+
+open('/goods/list/0-0-30-1-1')
+assertText('link=1','1')
+verifyTextPresent('上一页')
+verifyTextPresent('下一页')
+
+open('/goods/list/0-30-60-1-1')
+assertText('link=1','1')
+verifyTextPresent('下一页')
+verifyValue('id=input_price_from','30')
+verifyValue('id=input_price_to','60')
+assertTextPresent('哈根达斯100元抵用券')
+#{/selenium}
