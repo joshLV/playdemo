@@ -29,7 +29,7 @@ public class RbacMenuTest extends UnitTest {
         Fixtures.delete(SupplierNavigation.class);
         Fixtures.loadModels("fixture/navigation.yml");
 
-        // 重新加载配置文件
+        // 加载test/rbac.xml配置文件
         VirtualFile file = VirtualFile.open("test/rbac.xml");
         RbacLoader.init(file);
     }
@@ -53,7 +53,6 @@ public class RbacMenuTest extends UnitTest {
         assertNotNull(userNav.permissions);
         assertEquals(2, userNav.permissions.size());
         
-        List<SupplierNavigation> list = SupplierNavigation.find("byApplicationName", "traders-admin").fetch();
         // 加载后，数据库中没有在yml定义的导航记录必须被删除
         SupplierNavigation toDeleteNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "to_delete").first();
         assertNull(toDeleteNav);

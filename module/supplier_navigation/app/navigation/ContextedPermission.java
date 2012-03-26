@@ -5,12 +5,25 @@ import java.util.Set;
 
 public class ContextedPermission {
     
-    private Set<String> allowPermissions;
+    private static ThreadLocal<Set<String>> _allowPermissions = new ThreadLocal<>();
 
-    public void addAllowPermission(String permmission) {
-        if (allowPermissions == null) {
-            allowPermissions = new HashSet<String>();
+    public static void addAllowPermission(String permmission) {
+        if (_allowPermissions.get() == null) {
+            _allowPermissions.set(new HashSet<String>());
         }
-        allowPermissions.add(permmission);
+        _allowPermissions.get().add(permmission);
+    }
+    
+    public static void clean() {
+        _allowPermissions.set(null);
+    }
+    
+
+    public static Set<String> getAllowPermissions() {
+        return _allowPermissions.get();	
+    }    
+
+    public static boolean hasPermission(String permission_key) {
+        return _allowPermissions.get() != null && _allowPermissions.get().contains(permission_key);
     }
 }

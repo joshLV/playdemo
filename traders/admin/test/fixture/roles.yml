@@ -13,3 +13,12 @@ admin.SupplierRole(admin):
  "lockVersion": "0"
  "createdAt": "2012-03-12T11:14:56"
  "updatedAt": "2012-03-12T17:45:09"
+
+admin.SupplierRole(test):
+ "text": "测试角色"
+ "key": "test"
+ "loadVersion": "1331545508967"
+ "lockVersion": "0"
+ "createdAt": "2012-03-12T11:14:56"
+ "updatedAt": "2012-03-12T17:45:09"
+ 

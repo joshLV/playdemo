@@ -73,4 +73,14 @@ public class SupplierPermission extends Model {
         }
     }
     
+    /**
+     * 按用户角色得到权限列表。
+     * @param userName
+     * @return
+     */
+    public static List<SupplierPermission> findByUserRole(Long userId) {
+        // ""and g.id in (select g.id from g.categories c where c.id = :categoryId)"
+        return SupplierPermission.find("select p from SupplierPermission p join p.roles r join r.users u where u.id=?", userId).fetch();
+    }
+    
 }
