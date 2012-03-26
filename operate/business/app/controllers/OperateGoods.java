@@ -4,10 +4,12 @@
  */
 package controllers;
 
+import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
-import controllers.supplier.cas.SecureCAS;
+import controllers.modules.cas.SecureCAS;
 import models.resale.ResalerLevel;
 import models.sales.*;
+import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
@@ -32,7 +34,7 @@ import java.util.List;
  */
 @With({SecureCAS.class, MenuInjector.class})
 @ActiveNavigation("goods_index")
-public class SupplierGoods extends Controller {
+public class OperateGoods extends Controller {
 
     public static int PAGE_SIZE = 15;
 
@@ -50,9 +52,10 @@ public class SupplierGoods extends Controller {
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(true);
+        List<Supplier> supplierList = Supplier.findUnDeleted();
 
         renderArgs.put("condition", condition);
-        render(goodsPage);
+        render(goodsPage, supplierList);
     }
 
     /**
@@ -131,6 +134,8 @@ public class SupplierGoods extends Controller {
         for (String key : validation.errorsMap().keySet()) {
             System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
         }
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+        renderArgs.put("supplierList", supplierList);
         renderArgs.put("shopList", shopList);
         renderArgs.put("brandList", brandList);
         renderArgs.put("categoryList", categoryList);
@@ -167,7 +172,7 @@ public class SupplierGoods extends Controller {
         goods.setLevelPrices(levelPrices);
         if (Validation.hasErrors()) {
             renderInit(goods);
-            render("SupplierGoods/add.html");
+            render("OperateGoods/add.html");
         }
 
         //添加商品处理
@@ -248,7 +253,7 @@ public class SupplierGoods extends Controller {
      */
     public static void detail(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
-        renderTemplate("SupplierGoods/detail.html", goods);
+        renderTemplate("OperateGoods/detail.html", goods);
     }
 
     /**
@@ -263,7 +268,7 @@ public class SupplierGoods extends Controller {
         goods.setLevelPrices(levelPrices);
         if (Validation.hasErrors()) {
             renderInit(goods);
-            render("SupplierGoods/edit.html", goods);
+            render("OperateGoods/edit.html", goods);
         }
 
         String companyUser = getCompanyUser();

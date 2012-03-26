@@ -20,6 +20,7 @@ sales.Goods(Goods_001):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_2]
 
@@ -43,6 +44,7 @@ sales.Goods(Goods_002):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
@@ -66,6 +68,7 @@ sales.Goods(Goods_003):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
@@ -89,6 +92,7 @@ sales.Goods(Goods_004):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
@@ -112,6 +116,7 @@ sales.Goods(Goods_005):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
@@ -135,6 +140,7 @@ sales.Goods(Goods_006):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
@@ -158,6 +164,7 @@ sales.Goods(Goods_007):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
@@ -181,6 +188,7 @@ sales.Goods(Goods_008):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
@@ -204,6 +212,7 @@ sales.Goods(Goods_009):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
@@ -227,6 +236,7 @@ sales.Goods(Goods_010):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
@@ -250,6 +260,7 @@ sales.Goods(Goods_011):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
@@ -273,6 +284,7 @@ sales.Goods(Goods_012):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
@@ -296,6 +308,7 @@ sales.Goods(Goods_013):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
@@ -319,6 +332,7 @@ sales.Goods(Goods_014):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
@@ -342,6 +356,7 @@ sales.Goods(Goods_015):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
@@ -365,6 +380,7 @@ sales.Goods(Goods_016):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
@@ -388,5 +404,6 @@ sales.Goods(Goods_017):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]

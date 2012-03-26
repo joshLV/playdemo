@@ -3,15 +3,15 @@
 # ~~~~
 
 # Home page
-GET     /goods                                  Goods.index
-GET     /goods/new                              Goods.add
-POST    /goods                                  Goods.create
-GET     /goods/{id}/edit                        Goods.edit
-GET     /goods/{id}/view                        Goods.detail
-GET     /goods/{id}/preview                     Goods.preview
-POST    /goods/{id}/update                      Goods.update
-POST    /updatestatus                           Goods.updateStatus
-DELETE  /goods/{id}/delete                      Goods.delete
+GET     /goods                                  OperateGoods.index
+GET     /goods/new                              OperateGoods.add
+POST    /goods                                  OperateGoods.create
+GET     /goods/{id}/edit                        OperateGoods.edit
+GET     /goods/{id}/view                        OperateGoods.detail
+GET     /goods/{id}/preview                     OperateGoods.preview
+PUT     /goods/{id}                             OperateGoods.update
+POST    /updatestatus                           OperateGoods.updateStatus
+DELETE  /goods/{id}                             OperateGoods.delete
 POST    /goods/images                           UploadFiles.uploadJson
 POST    /goods/filemanager                      UploadFiles.fileManagerJson
 

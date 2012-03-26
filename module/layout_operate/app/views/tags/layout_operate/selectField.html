@@ -1,0 +1,18 @@
+*{下拉框}*
+*{name:      文本框的名称}*
+*{value:     文本框中的值}*
+*{required: 文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+<div class="control-group">
+#{field _name}
+    #{layout_operate.labelText name:_name, required:_required/}
+
+<div class="controls">
+    #{select field.name, id:field.id, class:'input-small', value:params[field.name]?.escape()?.raw() ?: field.error?.message == 'validation.required' ? '' :_value?.escape()?.raw()}
+        #{doBody}#{/doBody}
+    #{/select}
+#{/field}
+#{field _error}
+    <span class="error">${field.error?.raw()}</span>
+#{/field}
+</div>
+</div>

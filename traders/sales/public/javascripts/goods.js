@@ -4,6 +4,23 @@
  * Date: 3/15/12
  * Time: 5:41 PM
  */
+
+function deleteSupplier(link) {
+    if (confirm("您确定要删除商品[" + link.name + "]吗？")) {
+        var url = "/goods/" + link.id;
+        $.ajax({
+            url:url,
+            type:'DELETE',
+            error:function () {
+                alert('删除失败!');
+            },
+            success:function (msg) {
+                window.location.reload();
+            }
+        });
+    }
+}
+
 $(function () {
     $("#selectall").click(function () {
         if (this.checked) {

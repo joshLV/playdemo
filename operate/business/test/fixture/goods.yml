@@ -20,6 +20,7 @@ sales.Goods(Goods1):
  lockVersion: 2
  materialType: ELECTRONIC
  brand: Brand_1
+ isAllShop: true
 
 sales.Goods(Goods2):
  no: 002
@@ -40,3 +41,4 @@ sales.Goods(Goods2):
  lockVersion: 2
  materialType: ELECTRONIC
  brand: Brand_2
+ isAllShop: true

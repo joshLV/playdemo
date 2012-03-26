@@ -25,7 +25,7 @@ $(function () {
         } else {
             if (confirm("您确定要删除吗？")) {
                 $("#deletefrm").attr("method", "delete");
-                $("#deletefrm").attr("action", "@{Goods.delete()}");
+                $("#deletefrm").attr("action", "@{OperateGoods.delete()}");
                 $("#deletefrm").submit();
             }
         }
@@ -42,7 +42,7 @@ $(function () {
         } else {
             $("#deletefrm").attr("method", "POST");
             $("#status").val("ONSALE");
-            $("#deletefrm").action = "@{Goods.updateStatus()}";
+            $("#deletefrm").action = "@{OperateGoods.updateStatus()}";
             $("#deletefrm").submit();
         }
     });
@@ -58,7 +58,7 @@ $(function () {
         } else {
             $("#status").val("OFFSALE");
             $("#deletefrm").attr("method", "POST");
-            $("#deletefrm").action = "@{Goods.updateStatus()}";
+            $("#deletefrm").action = "@{OperateGoods.updateStatus()}";
             $("#deletefrm").submit();
         }
     });

@@ -1,0 +1,31 @@
+*{html编辑框}*
+*{name:      文本框的名称}*
+*{value:     文本框中的值}*
+*{uploadImgUrl:     上传图片的url}*
+*{_required: 文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+#{field _name}
+<div class="control-group">
+    #{layout_operate.labelText name:_name, required:_required/}
+
+    <div class="controls">
+        <textarea name="${field.name}" id="${field.id}" cols="100" rows="8"
+                  style="width:700px;height:200px;visibility:hidden;">${params[field.name]?.escape()?.raw() ?: field.error?.message == 'validation.required' ? '' :_value?.escape()?.raw()}</textarea>
+        #{ifError field.name}
+            <span class="error">${field.error.raw()}</span>
+        #{/ifError}
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        var editorPrompt${'_'+field.id} = KindEditor.create('textarea[name="${field.name}"]',
+                {
+                    filterMode:true,
+                    uploadJson:'${_uploadImgUrl}',
+                    allowFileManager:false
+                }
+        );
+    });
+
+</script>
+#{/field}

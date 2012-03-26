@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Ignore
-public class GoodsTest extends FunctionalTest {
+public class OperateGoodsTest extends FunctionalTest {
 
     @org.junit.Before
     public void setup() {
@@ -39,7 +39,7 @@ public class GoodsTest extends FunctionalTest {
     @Test
     public void testDetails() {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
-                ".Goods-Goods_001");
+                ".OperateGoods-Goods_001");
 
         Response response = GET("/goods/" + goodsId + "/view");
         assertIsOk(response);
@@ -52,7 +52,7 @@ public class GoodsTest extends FunctionalTest {
     @Test
     public void testEdit() {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
-                ".Goods-Goods_001");
+                ".OperateGoods-Goods_001");
         Response response = GET("/goods/" + goodsId + "/edit");
         assertIsOk(response);
         assertContentType("text/html", response);
@@ -96,7 +96,7 @@ public class GoodsTest extends FunctionalTest {
     @Test
     public void testDelete() {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
-                ".Goods-Goods_003");
+                ".OperateGoods-Goods_003");
         Map<String, Long[]> goodsParams = new HashMap<>();
         Long[] ids = new Long[]{goodsId};
         goodsParams.put("ids", ids);
@@ -112,7 +112,7 @@ public class GoodsTest extends FunctionalTest {
     @Test
     public void updateStatus() {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
-                ".Goods-Goods_004");
+                ".OperateGoods-Goods_004");
         Map<String, String> goodsParams = new HashMap<>();
         goodsParams.put("ids", String.valueOf(goodsId));
         goodsParams.put("status", GoodsStatus.ONSALE.toString());

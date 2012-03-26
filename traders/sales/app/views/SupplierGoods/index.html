@@ -88,9 +88,10 @@
                 #{/list}
                 <td class="amount">${goods.baseSale}</td>
                 <td class="amount">${goods.saleCount}</td>
-                <td>&{'goods.'+goods.status}</td>
+                <td>&{'goods.'+goods.status}<br/></td>
                 <td>${goods.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-                <td><a href="@{SupplierGoods.edit(goods.id)}">修改</a>/<a href="@{SupplierGoods.detail(goods.id)}">查看</a></td>
+                <td><a href="@{SupplierGoods.edit(goods.id)}">修改</a>
+                    / <a href="@{SupplierGoods.detail(goods.id)}">查看</a></td>
             </tr>
             #{/paginate.list}
             </tbody>

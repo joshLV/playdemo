@@ -1,0 +1,15 @@
+*{文件上传框}*
+*{name:      文本框的名称}*
+*{_required: 文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+#{field _name}
+<div class="control-group">
+    #{layout_operate.labelText name:_name, required:_required/}
+
+    <div class="controls">
+        <input type="file" id="${field.id}]" name="${field.name}" class="input-file"/>
+    </div>
+    #{ifError field.name}
+    <div class="controls"><span class="error">${field.error.raw()}</span></div>
+    #{/ifError}
+</div>
+#{/field}

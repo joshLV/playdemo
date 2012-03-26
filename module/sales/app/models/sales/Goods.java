@@ -113,7 +113,7 @@ public class Goods extends Model {
         }
         if (levelPrices.size() < ResalerLevel.values().length) {
             int zeroLevelCount = ResalerLevel.values().length - levelPrices.size();
-            int originalSize =  levelPrices.size();
+            int originalSize = levelPrices.size();
             for (int i = 0; i < zeroLevelCount; i++) {
                 levelPrices.add(new GoodsLevelPrice(ResalerLevel.values()[i + originalSize], BigDecimal.ZERO));
             }
@@ -423,14 +423,7 @@ public class Goods extends Model {
             shops = null;
         }
 
-        super.create();
-        if (levelPrices != null && levelPrices.size() > 0) {
-            for (GoodsLevelPrice levelPrice : levelPrices) {
-                System.out.println("levelPrice.price:" + levelPrice.price);
-//                levelPrice.save();
-            }
-        }
-        return true;
+        return super.create();
     }
 
     public void update(Long id, String updatedBy) {
@@ -451,7 +444,9 @@ public class Goods extends Model {
         updateGoods.isAllShop = isAllShop;
         updateGoods.status = status;
         updateGoods.imagePath = imagePath;
-
+        if (supplierId != null) {
+            updateGoods.supplierId = supplierId;
+        }
         updateGoods.save();
     }
 
