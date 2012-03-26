@@ -1,13 +1,15 @@
 package controllers;
 
+import navigation.ContextedPermission;
 import navigation.NavigationHandler;
 import navigation.annotations.ActiveNavigation;
-
+import navigation.annotations.Right;
 import org.apache.commons.lang.StringUtils;
-
 import play.Play;
 import play.mvc.Before;
 import play.mvc.Controller;
+import play.mvc.Finally;
+import controllers.supplier.cas.SecureCAS;
 
 /**
  * Have a menu automatically injected in your renderArgs
@@ -29,13 +31,25 @@ public class MenuInjector extends Controller {
     public static void injectCurrentMenus() {
         if (request.invokedMethod == null)
             return;
-
+        
+        String userName = session.get(SecureCAS.SESSION_USER_KEY);
+        if (userName != null) {
+            ContextedPermission.init(userName);
+        }
+        
+        checkRight();
+        
         // 得到当前菜单的名字
         String currentMenuName = getCurrentMenuName();
         String applicationName = Play.configuration.getProperty("application.name");
         NavigationHandler.initContextMenu(applicationName, currentMenuName);
         renderArgs.put("topMenus", NavigationHandler.getTopMenus());
         renderArgs.put("secondLevelMenu", NavigationHandler.getSecondLevelMenus());
+    }
+    
+    @Finally
+    public static void cleanPermission() {
+	    ContextedPermission.clean();
     }
 
     /**
@@ -57,5 +71,31 @@ public class MenuInjector extends Controller {
             }
         }
         return currentMenuName;
+    }
+    
+    private static void checkRight() {
+        Right methodRightAnnotation = getActionAnnotation(Right.class);
+        String[] rights = null;
+        if (methodRightAnnotation != null) {
+            rights = methodRightAnnotation.value();
+        } else {
+            Right controllerRightAnnotation = getControllerAnnotation(Right.class);
+            if (controllerRightAnnotation != null) {
+                rights = controllerRightAnnotation.value();
+            }
+        }
+        
+        if (rights != null) {
+            boolean hasRight = false;
+            for (String r : rights) {
+                if (ContextedPermission.hasPermission(r)) {
+                    hasRight = true;
+                    break;
+                }
+            }
+            if (!hasRight) {
+                error(403, "没有权限访问.");
+            }
+        } // else 如果没有加上Right标注，不检查权限
     }
 }

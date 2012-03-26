@@ -18,6 +18,9 @@ public class ContextedPermission {
     }
     
     public static void clean() {
+        if (_allowPermissions.get() != null) {
+            _allowPermissions.get().clear();
+        }
         _allowPermissions.set(null);
     }
     

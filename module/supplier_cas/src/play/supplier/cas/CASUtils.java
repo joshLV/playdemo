@@ -311,7 +311,6 @@ public class CASUtils {
     public static String replaceCasUrl(String casUrlTemp) {
         String hostName = Http.Request.current().host;
         if (Play.mode == Play.Mode.DEV && hostName == null) {
-            System.out.println("HostName is null!");
             hostName = "localhost";
         }
         Matcher m = hostPattern.matcher(hostName);

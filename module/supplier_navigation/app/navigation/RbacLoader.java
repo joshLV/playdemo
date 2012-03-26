@@ -52,8 +52,6 @@ public class RbacLoader {
         
         loadMenusToDB(null, application.menus, applicationName, loadVersion);
         deleteUndefinedMenus(applicationName, loadVersion);    
-        
-        
     }
     
     /**
