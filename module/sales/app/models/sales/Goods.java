@@ -280,9 +280,9 @@ public class Goods extends Model {
 
     public void filterShops() {
         if (shops == null) {
-            List<Shop> shopList = Shop.findShopBySupplier(supplierId);
-            shops = new HashSet<>();
-            shops.addAll(shopList);
+//            List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+//            shops = new HashSet<>();
+//            shops.addAll(shopList);
             return;
         }
         Set<Shop> uniqueShops = new HashSet<>();

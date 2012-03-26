@@ -23,9 +23,8 @@ load:['fixture/areas.yml','fixture/base_data.yml','fixture/goods.yml'] /}
     #{include 'test/selenium/step/login.selenium' /}
     open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods2")}/edit')
     verifyTitle('修改电子消费券')
-    type('id=no','002')
+    type('id=goods_no','002')
     type('id=goods_name','测试商品2')
-    assertTextPresent('保存')
     open('/goods?page=1')
 #{/selenium}
 

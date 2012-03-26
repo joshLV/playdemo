@@ -36,8 +36,7 @@ $(window).load(
         $("#save").click(function () {
             $("#status").val("OFFSALE");
         });
-        $("#onsales").click(function () {
-            alert("onsales");
+        $("#onsale").click(function () {
             $("#status").val("ONSALE");
         });
         $("#preview").click(function () {

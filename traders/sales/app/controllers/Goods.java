@@ -285,6 +285,7 @@ public class Goods extends Controller {
         updateGoods.updatedBy = companyUser;
         updateGoods.brand = goods.brand;
         updateGoods.isAllShop = goods.isAllShop;
+        updateGoods.status = goods.status;
         updateGoods.save();
 
         //预览的情况

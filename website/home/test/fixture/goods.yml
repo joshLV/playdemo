@@ -20,6 +20,7 @@ sales.Goods(Goods_001):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_2]
  
@@ -45,5 +46,6 @@ sales.Goods(Goods_002):
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_2]

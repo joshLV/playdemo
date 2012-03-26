@@ -41,7 +41,7 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
             #{list items:shopList, as:'shop' }
             <tr>
                 <td><input type="checkbox" id="shops" value="${shop?.id}" name="goods.shops.id"
-                           #{if shopIds?.contains(String.valueOf(shop?.id))}checked#{/if}/></td>
+                           #{if shopIds?.contains(java.lang.String.valueOf(shop?.id))}checked#{/if}/></td>
                 <td>${shop.name}</td>
                 <td>${shop.address}</td>
                 <td>${shop.phone}</td>
@@ -52,9 +52,9 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
     </div>
 </div>
 <div class="form-actions">
-    <button class="btn btn-primary" id="save" type="submit">保存</button>
-    <button class="btn btn-primary" id="onsales" type="submit">保存并上架</button>
-    <button class="btn btn-primary" id="preview" type="submit">预览</button>
+    <input class="btn btn-primary" id="save" type="submit" value="保存"/>
+    <input class="btn btn-primary" id="onsale" type="submit" value="保存并上架"/>
+    <input class="btn btn-primary" id="preview" type="submit" value="预览"/>
 #{if "edit".equals(_action)}
     <button class="btn btn-primary" id="cancel" type="button" onclick="window.history.go(-1)">取消</button>
 #{/if}
