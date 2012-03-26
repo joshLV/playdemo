@@ -1,4 +1,4 @@
-package controllers;
+    package controllers;
 
 import controllers.modules.cas.SecureCAS;
 
@@ -39,12 +39,13 @@ public class ResalerFavs extends Controller {
      *
      * @param goodsId  商品ID
      */
-    public static void order(long goodsId) {
+    public static void order(@As(",") List<Long> goodsIds) {
         Resaler resaler = ResaleCAS.getResaler();
 
-        models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-        
-        ResalerFav.order(resaler, goods);
+        for(long goodsId : goodsIds) {
+            models.sales.Goods goods = models.sales.Goods.findById(goodsId);       
+            ResalerFav.order(resaler, goods);
+        }
 
         ok();
     }
