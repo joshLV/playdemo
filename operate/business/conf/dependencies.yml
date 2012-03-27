@@ -3,6 +3,7 @@
 require:
     - play 1.2.4
     - play -> cobertura 2.4
+    - play -> rabbitmq 0.3
     - play -> paginate head
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - layout_operate -> layout_operate
@@ -12,9 +13,14 @@ require:
     - play -> cas 3.1
     - paginate_ext -> paginate_ext
     - org.jsoup -> jsoup 1.6.1
+    - supplier_cas -> supplier_cas
     - supplier_navigation -> supplier_navigation
     - resale -> resale
     - consumer -> consumer
+    - accounts -> accounts
+    - order -> order
+    - sms -> sms
+    - sms -> sms
 
 repositories:
     - mavenRepository:
@@ -34,6 +40,10 @@ repositories:
             - sales -> *
             - supplier -> *
             - paginate_ext -> *
+            - supplier_cas -> *
             - supplier_navigation -> *
             - resale -> *
             - consumer -> *
+            - accounts -> *
+            - order -> *
+            - sms -> *

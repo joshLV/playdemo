@@ -2,6 +2,7 @@ package controllers;
 
 import com.uhuila.common.util.FileUploadUtil;
 import controllers.modules.cas.SecureCAS;
+import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
@@ -14,6 +15,7 @@ import play.mvc.With;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -26,6 +28,8 @@ import java.util.List;
 @With({SecureCAS.class, MenuInjector.class})
 @ActiveNavigation("suppliers_index")
 public class Suppliers extends Controller {
+    private static final String ADMIN_ROLE = "admin";
+
     public static void index() {
         List<Supplier> suppliers = Supplier.findUnDeleted();
         render(suppliers);
@@ -43,13 +47,17 @@ public class Suppliers extends Controller {
      * @param image
      * @param admin
      */
+    @ActiveNavigation("suppliers_add")
     public static void create(@Valid Supplier supplier, File image, @Valid SupplierUser admin) {
         checkImage(image);
-        admin.loginName = "admin";
+        initAdmin(admin);
         if (Validation.hasErrors()) {
-            Validation.keep();
-            add();
+            for (String key : validation.errorsMap().keySet()) {
+                System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
+            }
+            render("Suppliers/add.html");
         }
+
         supplier.create();
         try {
             uploadImagePath(image, supplier);
@@ -57,35 +65,41 @@ public class Suppliers extends Controller {
         } catch (IOException e) {
             error("supplier.image_upload_failed");
         }
-        admin.create();
+        admin.create(supplier.id);
 
         index();
     }
 
+    private static void initAdmin(SupplierUser admin) {
+        admin.roles = new HashSet<>();
+        admin.roles.add(SupplierRole.findByKey(ADMIN_ROLE));
+    }
+
     private static void checkImage(File image) {
-        if (image != null) {
-            //检查目录
-            File uploadDir = new File(UploadFiles.ROOT_PATH);
-            if (!uploadDir.isDirectory()) {
-                Validation.addError("supplier.image", "validation.write");
-            }
+        if (image == null) {
+            return;
+        }
+        //检查目录
+        File uploadDir = new File(UploadFiles.ROOT_PATH);
+        if (!uploadDir.isDirectory()) {
+            Validation.addError("supplier.image", "validation.write");
+        }
 
-            //检查目录写权限
-            if (!uploadDir.canWrite()) {
-                Validation.addError("supplier.image", "validation.write");
-            }
+        //检查目录写权限
+        if (!uploadDir.canWrite()) {
+            Validation.addError("supplier.image", "validation.write");
+        }
 
-            if (image.length() > UploadFiles.MAX_SIZE) {
-                Validation.addError("supplier.image", "validation.maxFileSize");
-            }
+        if (image.length() > UploadFiles.MAX_SIZE) {
+            Validation.addError("supplier.image", "validation.maxFileSize");
+        }
 
-            //检查扩展名
-            //定义允许上传的文件扩展名
-            String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
-            String fileExt = image.getName().substring(image.getName().lastIndexOf(".") + 1).toLowerCase();
-            if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
-                Validation.addError("supplier.image", "validation.invalidType", StringUtils.join(fileTypes, ','));
-            }
+        //检查扩展名
+        //定义允许上传的文件扩展名
+        String[] fileTypes = UploadFiles.FILE_TYPES.trim().split(",");
+        String fileExt = image.getName().substring(image.getName().lastIndexOf(".") + 1).toLowerCase();
+        if (!Arrays.<String>asList(fileTypes).contains(fileExt)) {
+            Validation.addError("supplier.image", "validation.invalidType", StringUtils.join(fileTypes, ','));
         }
     }
 
@@ -104,17 +118,21 @@ public class Suppliers extends Controller {
      *
      * @param id 门店标识
      */
-    public static void edit(long id, Supplier supplier) {
+    public static void edit(long id, Supplier supplier, SupplierUser admin) {
         if (supplier == null || supplier.id == null) {
             supplier = Supplier.findById(id);
+            admin = SupplierUser.findAdmin(id, "admin");
         }
-        render(supplier);
+        render(supplier, admin);
     }
 
-    public static void update(@Valid Supplier supplier, File image) {
+    public static void update(@Valid Supplier supplier, File image, @Valid SupplierUser admin) {
+        initAdmin(admin);
+        if (validation.hasErrors() && validation.errorsMap().containsKey("admin.encryptedPassword")){
+            validation.errorsMap().remove("admin.encryptedPassword");
+        }
         if (validation.hasErrors()) {
-            Validation.keep();
-            edit(supplier.id, supplier);
+            render("Suppliers/edit.html");
         }
         try {
             uploadImagePath(image, supplier);
@@ -122,6 +140,8 @@ public class Suppliers extends Controller {
             error("supplier.image_upload_failed");
         }
         Supplier.update(supplier);
+        SupplierUser.update(admin.id, admin);
+
         index();
     }
 

@@ -176,24 +176,28 @@ public class SupplierUser extends Model {
 
     /**
      * 创建用户信息
-     * 
-     * @param cuser
+     *
+     * @param supplierId
      * @return
      */
     public boolean create(Long supplierId) {
-    	  Images.Captcha captcha = Images.captcha();
-          String password_salt = captcha.getText(6);
-          // 密码加密
-          encryptedPassword = DigestUtils.md5Hex(encryptedPassword
-                  + password_salt);
-          // 随机吗
-          passwordSalt = password_salt;
-          createdAt = new Date();
-          lockVersion = 0;
-          this.supplierId = supplierId;
-          deleted = DeletedStatus.UN_DELETED;
-          // 获得IP
-          lastLoginIP = Request.current().remoteAddress;
-          return super.create();
+        Images.Captcha captcha = Images.captcha();
+        String password_salt = captcha.getText(6);
+        // 密码加密
+        encryptedPassword = DigestUtils.md5Hex(encryptedPassword
+                + password_salt);
+        // 随机吗
+        passwordSalt = password_salt;
+        createdAt = new Date();
+        lockVersion = 0;
+        this.supplierId = supplierId;
+        deleted = DeletedStatus.UN_DELETED;
+        // 获得IP
+        lastLoginIP = Request.current().remoteAddress;
+        return super.create();
+    }
+
+    public static SupplierUser findAdmin(Long supplierId, String admin) {
+        return find("bySupplierIdAndLoginName", supplierId, admin).first();
     }
 }

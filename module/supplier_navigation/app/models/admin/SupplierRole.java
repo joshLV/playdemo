@@ -1,19 +1,10 @@
 package models.admin;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
 import play.db.jpa.Model;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "supplier_roles")
@@ -50,7 +41,11 @@ public class SupplierRole extends Model {
     @JoinTable(name = "supplier_permissions_roles", 
         inverseJoinColumns = @JoinColumn(name= "permission_id"), 
         joinColumns = @JoinColumn(name = "role_id"))
-    public Set<SupplierPermission> permissions;    
+    public Set<SupplierPermission> permissions;   
+    
+    public static SupplierRole findByKey(String key){
+        return SupplierRole.find("byKey",key).first();
+    }
     
 }
 

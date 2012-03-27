@@ -9,6 +9,7 @@
 <div class="body">
 #{form @OperateGoods.create() , id:'creationForm',enctype:'multipart/form-data',class:"form-horizontal" }
     <legend>添加消费券</legend>
-    #{include '/OperateGoods/goodsForm.html', action:'add'/}
+    #{set action:"add"/}
+    #{include '/OperateGoods/goodsForm.html'/}
 #{/form}
 </div>

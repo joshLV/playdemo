@@ -48,7 +48,7 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 #{/list}
 
 #{layout_operate.textField name:'goods.baseSale', value:goods?.baseSale, note:'件', required:true/}
-#{if "add".equals(_action)}
+#{if "add".equals(action)}
     #{layout_operate.fileField name:'imagePath', required:true/}
 #{/if}
 #{else}
@@ -80,8 +80,15 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
     <input class="btn btn-primary" id="save" type="submit" value="保存"/>
     <input class="btn btn-primary" id="onsale" type="submit" value="保存并上架"/>
     <input class="btn btn-primary" id="preview" type="submit" value="预览"/>
-#{if "edit".equals(_action)}
+#{if "edit".equals(action)}
     <button class="btn btn-primary" id="cancel" type="button" onclick="window.history.go(-1)">取消</button>
+    <SCRIPT type=text/javascript>
+        $(function () {
+            $("#cancel").click(function () {
+                $(window.location).attr('href', '/suppliers');
+            });
+        });
+    </SCRIPT>
 #{/if}
     <input type="hidden" id="status" name="goods.status" value="${goods?.status?:'OFFSALE'}"/>
 </div>

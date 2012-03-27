@@ -55,6 +55,10 @@ supplier.fullName=商户名称
 supplier.domainName=域名
 supplier.description=描述
 supplier.status=状态
+supplier.image=Logo
+admin.mobile=管理员手机号
+admin.encryptedPassword=管理员密码
+admin.encryptedPassword1=管理员密码确认
 
 resaler.NORMAL=普通会员
 resaler.VIP1=VIP1
