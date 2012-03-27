@@ -15,6 +15,11 @@ require:
     - supplier_navigation -> supplier_navigation
     - resale -> resale
     - consumer -> consumer
+    - order -> order
+    - accounts -> accounts
+    - sms -> sms
+    - play -> rabbitmq 0.3
+    
 
 repositories:
     - mavenRepository:
@@ -38,3 +43,7 @@ repositories:
             - paginate_ext -> *
             - supplier_navigation -> *
             - consumer -> *
+            - order -> *
+            - accounts -> *
+            - sms -> *
+            

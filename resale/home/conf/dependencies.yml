@@ -4,13 +4,14 @@ require:
     - play 1.2.4
     - play -> cobertura 2.4
     - play -> paginate head
+    - play -> rabbitmq 0.3
+    - play -> cas 3.1
     - paginate_ext -> paginate_ext
     - sales -> sales
     - supplier -> supplier
     - order -> order
     - payment -> payment
     - consumer -> consumer
-    - play -> cas 3.1
     - resale_trace -> resale_trace
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - com.uhuila.utils -> alipay 1.0.0-SNAPSHOT
@@ -18,9 +19,7 @@ require:
     - accounts -> accounts
     - resale -> resale
     - org.jsoup -> jsoup 1.6.1
-    - sms -> sms
-    - play -> rabbitmq 0.3
-    - play -> logisimayml 1.8
+    - sms -> sms   
 
 
 repositories:

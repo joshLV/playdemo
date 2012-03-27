@@ -16,6 +16,7 @@ require:
     - supplier_cas -> supplier_cas
     - supplier_navigation -> supplier_navigation
     - resale -> resale
+    - order -> order
     - consumer -> consumer
     - accounts -> accounts
     - order -> order
