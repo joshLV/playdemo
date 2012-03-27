@@ -122,7 +122,7 @@ public class ResalerGoodsCondition {
 	 * 
 	 * @return sql 查询条件
 	 */
-	public String getResaleFilter() {
+	public String getResaleFilter(Resaler resaler) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" g.deleted = :deleted");
 		paramMap.put("deleted", DeletedStatus.UN_DELETED);
@@ -134,13 +134,17 @@ public class ResalerGoodsCondition {
 		}
 		
 		if (priceFrom.compareTo(new BigDecimal(0)) > 0) {
-			sql.append(" and g.salePrice >= :priceFrom");
+			sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.faceValue+l.price >=:priceFrom)");
+			paramMap.put("level", resaler.level);
 			paramMap.put("priceFrom", priceFrom);
 		}
+		
 		if (priceTo.compareTo(new BigDecimal(0)) > 0) {
-			sql.append(" and g.salePrice <= :priceTo");
+			sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.faceValue+l.price <=:priceTo)");
+			paramMap.put("level", resaler.level);
 			paramMap.put("priceTo", priceTo);
 		}
+		
 		return sql.toString();
 	}
 }

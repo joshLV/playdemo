@@ -11,7 +11,12 @@ import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.order.OrderStatus;
-
+/**
+ * 分销订单查询条件
+ * 
+ * @author yanjy
+ *
+ */
 public class ResalerOrdersCondition {
 	public Date createdAtBegin; 
 	public Date createdAtEnd; 
@@ -22,11 +27,7 @@ public class ResalerOrdersCondition {
 	/**
 	 *
 	 *
-	 * @param user 用户信息
-	 * @param createdAtBegin 下单开始时间
-	 * @param createdAtEnd 下单结束时间
-	 * @param status 状态
-	 * @param goodsName 商品名
+	 * @param resaler 用户信息
 	 * @return sql 查询条件
 	 */
 	public String getResalerFilter(Resaler resaler) {
