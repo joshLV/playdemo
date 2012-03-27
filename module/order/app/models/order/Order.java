@@ -388,14 +388,13 @@ public class Order extends Model {
 
 	public static long getThisMonthTotal(Resaler resaler, Map lastMonthMap, Map thisMonthMap) {
 		EntityManager entityManager = JPA.em();
-//		OrderStatus.PAID
 		Query query = entityManager.createQuery("SELECT sum( o.amount ) FROM Order o" +
 				" WHERE createdAt >= '"+lastMonthMap.get("thisMonthFD") +"' and createdAt <='"+
 				lastMonthMap.get("thisMonthLD")+" and status = '"+OrderStatus.PAID+"'");
 		
-		query.setParameter("createdAt", lastMonthMap.get("thisMonthFD"));
-		query.setParameter("createdAtEnd", lastMonthMap.get("thisMonthLD"));
-		query.setParameter("status", OrderStatus.PAID);
+//		query.setParameter("createdAt", lastMonthMap.get("thisMonthFD"));
+//		query.setParameter("createdAtEnd", lastMonthMap.get("thisMonthLD"));
+//		query.setParameter("status", OrderStatus.PAID);
 		
 		List list = query.getResultList();
 		return list.size();

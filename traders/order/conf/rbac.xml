@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <application text="订单管理">
-    <permission key="ORDER" text="订单管理">
-        <permission key="ORDER_EDIT" text="修改订单" />
-    </permission>
+    <permission key="ORDER" text="订单管理"/>
+    <permission key="ORDER_EDIT" text="修改订单" />
 
-    <navigation key="order_app" text="订单管理" action="Application.index">
+    <navigation key="order_app" text="订单管理" action="SupplierOrders.index">
         <navigation key="order" text="订单" permission="ORDER">
           <navigation key="order_index" action="SupplierOrders.index" text="订单管理"/>
         </navigation>
