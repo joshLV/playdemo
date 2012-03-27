@@ -31,7 +31,6 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import models.resale.Resaler;
-import models.resale.ResalerGoodsCondition;
 import models.resale.ResalerLevel;
 import models.supplier.Supplier;
 
@@ -525,7 +524,7 @@ public class Goods extends Model {
      * @return
      */
     public static JPAExtPaginator<Goods> findByResaleCondition(Resaler resaler,
-    		ResalerGoodsCondition condition, int pageNumber, int pageSize) {
+    		GoodsCondition condition, int pageNumber, int pageSize) {
         JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>
                 ("Goods g", "g", Goods.class, condition.getResaleFilter(resaler),
                         condition.getParamMap())

@@ -1,16 +1,34 @@
 package models.order;
 
-import com.uhuila.common.constants.DeletedStatus;
-import models.accounts.Account;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
 import models.resale.Resaler;
-import models.resale.ResalerOrdersCondition;
-import models.resale.util.ResaleUtil;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sms.SMSUtil;
+
 import org.apache.commons.lang.time.DateFormatUtils;
 
 import play.Play;
@@ -18,16 +36,7 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import com.uhuila.common.constants.DeletedStatus;
 
 
 @Entity
@@ -365,7 +374,7 @@ public class Order extends Model {
 	 * @param pageSize       每页记录
 	 * @return ordersPage 订单信息
 	 */
-	public static JPAExtPaginator<Order> findResalerOrders(ResalerOrdersCondition condition,
+	public static JPAExtPaginator<Order> findResalerOrders(OrdersCondition condition,
 			Resaler resaler,int pageNumber, int pageSize) {
 		JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
 		("Order o", "o", Order.class, condition.getResalerFilter(resaler),
@@ -377,24 +386,19 @@ public class Order extends Model {
 		return orderPage;
 	}
 
-	public static long getThisMonthTotal(Resaler resaler, Map lastMonthMap, Map thisMonthMap, OrderStatus success) {
+	public static long getThisMonthTotal(Resaler resaler, Map lastMonthMap, Map thisMonthMap) {
 		EntityManager entityManager = JPA.em();
-		Object result = entityManager.createQuery("SELECT sum( o.amount ) FROM Order o" +
+//		OrderStatus.PAID
+		Query query = entityManager.createQuery("SELECT sum( o.amount ) FROM Order o" +
 				" WHERE createdAt >= '"+lastMonthMap.get("thisMonthFD") +"' and createdAt <='"+
-				lastMonthMap.get("thisMonthLD")+" and status = '"+OrderStatus.PAID+"'").getSingleResult();
+				lastMonthMap.get("thisMonthLD")+" and status = '"+OrderStatus.PAID+"'");
 		
-//		result.setParameter("createdAt", lastMonthMap.get("thisMonthFD"));
-//		result.setParameter("createdAtEnd", lastMonthMap.get("thisMonthLD"));
-//		result.setParameter("status", OrderStatus.PAID);
-//		Object o = result.getSingleResult();
+		query.setParameter("createdAt", lastMonthMap.get("thisMonthFD"));
+		query.setParameter("createdAtEnd", lastMonthMap.get("thisMonthLD"));
+		query.setParameter("status", OrderStatus.PAID);
 		
-//		List list = result.getResultList();
-		Long amount =0l; 
-		if (result != null) {
-			amount = ((BigDecimal) result).longValue();
-		}
-		System.out.println(">>>>>>."+amount);
-		return 1l;
+		List list = query.getResultList();
+		return list.size();
 	}
 
 }

@@ -3,12 +3,12 @@ package unit;
 import java.math.BigDecimal;
 
 import models.resale.Resaler;
-import models.resale.ResalerGoodsCondition;
 import models.resale.ResalerLevel;
 import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
+import models.sales.GoodsCondition;
 import models.sales.GoodsLevelPrice;
 import models.sales.Shop;
 
@@ -65,7 +65,7 @@ public class GoodsUnitTest extends UnitTest {
     @Test
     public void testFindByResaleCondition() {
         String condition = "0-0-0-0-1";
-        ResalerGoodsCondition goodsCond = new ResalerGoodsCondition(condition);
+        GoodsCondition goodsCond = new GoodsCondition(condition);
         Resaler resaler = new Resaler();
         resaler.level=ResalerLevel.VIP1;
         JPAExtPaginator<Goods> goodsPage = models.sales.Goods.findByResaleCondition

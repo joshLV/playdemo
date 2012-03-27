@@ -1,6 +1,9 @@
 package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
+
+import models.resale.Resaler;
+
 import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
@@ -237,82 +240,70 @@ public class GoodsCondition {
 				brandId == 0 && priceFrom.compareTo(BigDecimal.ZERO) == 0 && priceTo.compareTo(BigDecimal.ZERO) == 0;
 	}
 
-	public String getResaleFilter() {
+	/**
+	 * 拼接hql的查询条件.
+	 *
+	 * @param condStr hql的查询条件
+	 */
+	public GoodsCondition(boolean isResaler, String condStr) {
+		String[] args = condStr.split("-");
+		if (args == null || args.length < 1) {
+			throw new IllegalArgumentException("ResalerGoodsCondition is illegal!");
+		}
+		if (args.length > 0) {
+			brandId = StringUtils.isBlank(args[0]) ? 0 : Long
+					.parseLong(args[0]);
+		}
+		if (args.length > 1) {
+			priceFrom = StringUtils.isBlank(args[1]) ? new
+					BigDecimal(0) : new BigDecimal(args[1]);
+		}
+
+		if (args.length > 2) {
+			priceTo = StringUtils.isBlank(args[2]) ? new
+					BigDecimal(0) : new BigDecimal(args[2]);
+		}
+		if (args.length > 3) {
+			orderByNum = StringUtils.isBlank(args[3]) ? 0 : Integer.parseInt(args[3]);
+			orderBy = StringUtils.isBlank(args[3]) ? getOrderBy(0)
+					: getOrderBy(Integer.parseInt(args[3]));
+		}
+		if (args.length > 4) {
+			orderByTypeNum = StringUtils.isBlank(args[4]) ? 1 : Integer.parseInt
+					(args[4]);
+			orderByType = "1".equals(args[4]) ? "DESC" : "ASC";
+		}
+	}
+
+
+	/**
+	 * 分销商查询条件
+	 * 
+	 * @return sql 查询条件
+	 */
+	public String getResaleFilter(Resaler resaler) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" g.deleted = :deleted");
 		paramMap.put("deleted", DeletedStatus.UN_DELETED);
-		System.out.println("AAAAAAAAAAAAAAAAAAA"+brandId);
 		if (brandId != 0) {
 			sql.append(" and g.brand = :brand");
 			Brand brand = new Brand();
 			brand.id = brandId;
 			paramMap.put("brand", brand);
 		}
-		
+
 		if (priceFrom.compareTo(new BigDecimal(0)) > 0) {
-			sql.append(" and g.salePrice >= :priceFrom");
+			sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.faceValue+l.price >=:priceFrom)");
+			paramMap.put("level", resaler.level);
 			paramMap.put("priceFrom", priceFrom);
 		}
+
 		if (priceTo.compareTo(new BigDecimal(0)) > 0) {
-			sql.append(" and g.salePrice <= :priceTo");
+			sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.faceValue+l.price <=:priceTo)");
+			paramMap.put("level", resaler.level);
 			paramMap.put("priceTo", priceTo);
 		}
-System.out.println("AAAAAAAAAAAAAAAAAAA"+sql.toString());
-		return sql.toString();
-	}
-	
-	/**
-	 * 拼接hql的查询条件.
-	 *
-	 * @param condStr hql的查询条件
-	 * @return 
-	 */
-	public GoodsCondition con(String condStr) {
-		String[] args = condStr.split("-");
-		
-		System.out.println("bbbbbbbbbbb"+args.length);
-		if (args == null || args.length < 1) {
-			throw new IllegalArgumentException("GoodsCondition is illegal!");
-		}
 
-		if (args.length > 0) {
-			categoryId = StringUtils.isBlank(args[0]) ? 0 : Long
-					.parseLong(args[0]);
-		}
-		if (args.length > 1) {
-			cityId = StringUtils.isBlank(args[1]) ? SHANGHAI : args[1];
-		}
-		if (args.length > 2) {
-			districtId = args[2];
-		}
-		if (args.length > 3) {
-			areaId = args[3];
-		}
-		if (args.length > 4) {
-			if (isValidAreaId(districtId) && !areaId.contains(districtId)) {
-				areaId = "0";
-			}
-			brandId = StringUtils.isBlank(args[4]) ? 0 : Long
-					.parseLong(args[4]);
-		}
-		if (args.length > 5) {
-			priceFrom = StringUtils.isBlank(args[5]) ? new
-					BigDecimal(0) : new BigDecimal(args[5]);
-		}
-		if (args.length > 6) {
-			priceTo = StringUtils.isBlank(args[6]) ? new
-					BigDecimal(0) : new BigDecimal(args[6]);
-		}
-		if (args.length > 7) {
-			orderByNum = StringUtils.isBlank(args[7]) ? 0 : Integer.parseInt(args[7]);
-			orderBy = StringUtils.isBlank(args[7]) ? getOrderBy(0)
-					: getOrderBy(Integer.parseInt(args[7]));
-		}
-		if (args.length > 8) {
-			orderByTypeNum = StringUtils.isBlank(args[8]) ? 1 : Integer.parseInt
-					(args[8]);
-			orderByType = "1".equals(args[8]) ? "DESC" : "ASC";
-		}
-		return null;
+		return sql.toString();
 	}
 }

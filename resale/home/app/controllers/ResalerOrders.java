@@ -5,9 +5,8 @@ import java.util.Map;
 
 import models.order.Order;
 import models.order.OrderItems;
-import models.order.OrderStatus;
+import models.order.OrdersCondition;
 import models.resale.Resaler;
-import models.resale.ResalerOrdersCondition;
 import models.resale.util.ResaleUtil;
 
 import org.apache.commons.lang.StringUtils;
@@ -34,12 +33,12 @@ public class ResalerOrders extends Controller {
 	/**
 	 * 订单页面展示
 	 */
-	public static void index(ResalerOrdersCondition condition) {
+	public static void index(OrdersCondition condition) {
 		Resaler resaler = ResaleCAS.getResaler();
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 		if (condition == null) {
-    		condition = new ResalerOrdersCondition();
+    		condition = new OrdersCondition();
     	}
 		JPAExtPaginator<models.order.Order>  orderList = Order.findResalerOrders(condition,resaler,pageNumber, PAGE_SIZE);
 
@@ -50,9 +49,9 @@ public class ResalerOrders extends Controller {
 		//取得本月订单总金额
 		Map thisMonthMap = ResaleUtil.findThisMonth();
 		Map lastMonthMap = ResaleUtil.findLastMonth();
-		long instantTotal = Order.getThisMonthTotal(resaler,lastMonthMap,thisMonthMap,OrderStatus.PAID);
+		long thisMonthTotal = Order.getThisMonthTotal(resaler,lastMonthMap,thisMonthMap);
 		//取得上月订单信息
-		render(orderList, breadcrumbs);
+		render(orderList, breadcrumbs,thisMonthTotal);
 	}
 
 	/**
@@ -80,7 +79,7 @@ public class ResalerOrders extends Controller {
 	 * 
 	 * @param goodsCond 页面设置选择信息
 	 */
-	private static void renderGoodsCond(ResalerOrdersCondition goodsCond) {
+	private static void renderGoodsCond(OrdersCondition goodsCond) {
 		renderArgs.put("createdAtBegin", goodsCond.createdAtBegin);
 		renderArgs.put("createdAtEnd", goodsCond.createdAtEnd);
 		renderArgs.put("status", goodsCond.status);

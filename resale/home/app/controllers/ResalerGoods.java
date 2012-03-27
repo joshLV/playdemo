@@ -3,8 +3,8 @@ package controllers;
 import java.util.List;
 
 import models.resale.Resaler;
-import models.resale.ResalerGoodsCondition;
 import models.sales.Brand;
+import models.sales.GoodsCondition;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -31,7 +31,7 @@ public class ResalerGoods extends Controller {
 		Resaler resaler = ResaleCAS.getResaler();
 		String page = params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-		ResalerGoodsCondition goodsCond = new ResalerGoodsCondition();
+		GoodsCondition goodsCond = new GoodsCondition();
 		JPAExtPaginator<models.sales.Goods> goodsList = models.sales
 				.Goods.findByResaleCondition(resaler,goodsCond,pageNumber, PAGE_SIZE);
 		List<Brand> brands = Brand.findTop(LIMIT);
@@ -45,9 +45,10 @@ public class ResalerGoods extends Controller {
 	 */
 	public static void list(String condition) {
 		Resaler resaler = ResaleCAS.getResaler();
+		boolean isResaler = true;
 		String page = params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-		ResalerGoodsCondition goodsCond = new ResalerGoodsCondition(condition);
+		GoodsCondition goodsCond = new GoodsCondition(isResaler,condition);
 		JPAExtPaginator<models.sales.Goods> goodsList = models.sales
 				.Goods.findByResaleCondition(resaler,goodsCond,pageNumber, PAGE_SIZE);
 		List<Brand> brands = Brand.findTop(LIMIT, goodsCond.brandId);
@@ -75,7 +76,7 @@ public class ResalerGoods extends Controller {
 	 * 
 	 * @param goodsCond 页面设置选择信息
 	 */
-	private static void renderGoodsCond(ResalerGoodsCondition goodsCond) {
+	private static void renderGoodsCond(GoodsCondition goodsCond) {
 		renderArgs.put("brandId", goodsCond.brandId);
 		renderArgs.put("priceFrom", goodsCond.priceFrom);
 		renderArgs.put("priceTo", goodsCond.priceTo);
