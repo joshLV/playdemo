@@ -317,6 +317,8 @@ public class CASUtils {
     }
 
     public static String replaceSubDomain(String casUrlTemp, String subDomain) {
+        if (casUrlTemp == null) return null;
+        if (subDomain == null) return casUrlTemp;
         return casUrlTemp.replaceAll("\\{domain\\}", subDomain);
     }
 
