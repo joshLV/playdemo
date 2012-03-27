@@ -30,6 +30,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import models.resale.Resaler;
 import models.resale.ResalerGoodsCondition;
 import models.resale.ResalerLevel;
 import models.supplier.Supplier;
@@ -523,10 +524,10 @@ public class Goods extends Model {
      * @param pageSize   记录数
      * @return
      */
-    public static JPAExtPaginator<Goods> findByResaleCondition(
+    public static JPAExtPaginator<Goods> findByResaleCondition(Resaler resaler,
     		ResalerGoodsCondition condition, int pageNumber, int pageSize) {
         JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>
-                ("Goods g", "g", Goods.class, condition.getResaleFilter(),
+                ("Goods g", "g", Goods.class, condition.getResaleFilter(resaler),
                         condition.getParamMap())
                 .orderBy("createdAt desc");
         goodsPage.setPageNumber(pageNumber);
@@ -543,8 +544,8 @@ public class Goods extends Model {
      * @return resalePrice 分销商现价
      */
     @Transient
-    public BigDecimal getResalePrice(Long id, ResalerLevel level) {
-        List<GoodsLevelPrice> list = GoodsLevelPrice.find("goodsId=? and level=?", id, level).fetch();
+    public BigDecimal getResalePrice(Goods goods, ResalerLevel level) {
+        List<GoodsLevelPrice> list = GoodsLevelPrice.find("goods=? and level=?", goods, level).fetch();
         BigDecimal resalePrice = null;
         if (list.size() > 0) {
             resalePrice = faceValue.add(list.get(0).price);

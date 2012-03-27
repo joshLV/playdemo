@@ -74,21 +74,8 @@ public class Cusers extends Controller {
             }
             render("Cusers/add.html", cuser, roleIds, rolesList);
         }
-        Images.Captcha captcha = Images.captcha();
-        String password_salt = captcha.getText(6);
-        // 密码加密
-        cuser.encryptedPassword = DigestUtils.md5Hex(cuser.encryptedPassword
-                + password_salt);
-        // 随机吗
-        cuser.passwordSalt = password_salt;
-        cuser.lastLoginAt = new Date();
-        cuser.createdAt = new Date();
-        cuser.lockVersion = 0;
-        cuser.supplierId = supplierId;
-        cuser.deleted = DeletedStatus.UN_DELETED;
-        // 获得IP
-        cuser.lastLoginIP = request.remoteAddress;
-        cuser.save();
+        //创建用户
+        cuser.create(supplierId);
         index();
     }
 
@@ -139,7 +126,7 @@ public class Cusers extends Controller {
                     roleIds += role.id + ",";
                 }
             }
-            render("Cusers/add.html", cuser, roleIds, rolesList);
+            render("Cusers/edit.html", cuser, roleIds, rolesList);
             return;
         }
         // 更新用户信息

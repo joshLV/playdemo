@@ -51,7 +51,7 @@ public class ResalerOrders extends Controller {
 		Map thisMonthMap = ResaleUtil.findThisMonth();
 		Map lastMonthMap = ResaleUtil.findLastMonth();
 		
-		List list = Order.jisuan(resaler,lastMonthMap,thisMonthMap,OrderStatus.PAID);
+		long instantTotal = Order.getThisMonthTotal(resaler,lastMonthMap,thisMonthMap,OrderStatus.PAID);
 		//取得上月订单信息
 		render(orderList, breadcrumbs);
 	}

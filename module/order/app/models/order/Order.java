@@ -7,6 +7,7 @@ import models.consumer.Address;
 import models.consumer.User;
 import models.resale.Resaler;
 import models.resale.ResalerOrdersCondition;
+import models.resale.util.ResaleUtil;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sms.SMSUtil;
@@ -19,355 +20,381 @@ import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 
 @Entity
 @Table(name = "orders")
 public class Order extends Model {
-    @Column(name = "user_id")
-    public long userId;                     //下单用户ID，可能是优惠啦用户，也可能是分销商
+	public static SimpleDateFormat simpleFormate = new SimpleDateFormat( " yyyy-MM-dd " );
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "user_type")
-    public AccountType userType;            //用户类型，个人/分销商
+	@Column(name = "user_id")
+	public long userId;                     //下单用户ID，可能是优惠啦用户，也可能是分销商
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
-    public List<OrderItems> orderItems;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "user_type")
+	public AccountType userType;            //用户类型，个人/分销商
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
-    public List<ECoupon> eCoupons;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+	public List<OrderItems> orderItems;
 
-    @Column(name = "order_no")
-    public String orderNumber;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+	public List<ECoupon> eCoupons;
 
-    @Enumerated(EnumType.STRING)
-    public OrderStatus status;
+	@Column(name = "order_no")
+	public String orderNumber;
 
-    public BigDecimal amount;
+	@Enumerated(EnumType.STRING)
+	public OrderStatus status;
 
-    @Column(name = "account_pay")
-    public BigDecimal accountPay;
+	public BigDecimal amount;
 
-    @Column(name = "discount_pay")
-    public BigDecimal discountPay;
+	@Column(name = "account_pay")
+	public BigDecimal accountPay;
 
-    @Column(name = "need_pay")
-    public BigDecimal needPay;
+	@Column(name = "discount_pay")
+	public BigDecimal discountPay;
 
-    @Column(name = "buyer_phone")
-    public String buyerPhone;
+	@Column(name = "need_pay")
+	public BigDecimal needPay;
 
-    @Column(name = "buyer_mobile")
-    public String buyerMobile;
+	@Column(name = "buyer_phone")
+	public String buyerPhone;
 
-    public String remark;
+	@Column(name = "buyer_mobile")
+	public String buyerMobile;
 
-    @Column(name = "pay_method")
-    public String payMethod;
+	public String remark;
 
-    @Column(name = "pay_request_id")
-    public Long payRequestId;
+	@Column(name = "pay_method")
+	public String payMethod;
 
-    @Column(name = "receiver_phone")
-    public String receiverPhone;
+	@Column(name = "pay_request_id")
+	public Long payRequestId;
 
-    @Column(name = "receiver_mobile")
-    public String receiverMobile;
+	@Column(name = "receiver_phone")
+	public String receiverPhone;
 
-    @Column(name = "receiver_address")
-    public String receiverAddress;
+	@Column(name = "receiver_mobile")
+	public String receiverMobile;
 
-    @Column(name = "receiver_name")
-    public String receiverName;
+	@Column(name = "receiver_address")
+	public String receiverAddress;
 
-    @Column(name = "paid_at")
-    public Date paidAt;
+	@Column(name = "receiver_name")
+	public String receiverName;
 
-    @Column(name = "refund_at")
-    public Date refundAt;
+	@Column(name = "paid_at")
+	public Date paidAt;
 
-    public String postcode;
+	@Column(name = "refund_at")
+	public Date refundAt;
 
-    @Column(name = "created_at")
-    public Date createdAt;
+	public String postcode;
 
-    @Column(name = "updated_at")
-    public Date updatedAt;
+	@Column(name = "created_at")
+	public Date createdAt;
 
-    @Column(name = "lock_version")
-    public int lockVersion;
+	@Column(name = "updated_at")
+	public Date updatedAt;
 
-    /**
-     * 逻辑删除,0:未删除，1:已删除
-     */
-    @Enumerated(EnumType.ORDINAL)
-    public DeletedStatus deleted;
+	@Column(name = "lock_version")
+	public int lockVersion;
 
-    @Column(name = "delivery_no")
-    public String deliveryNo;
+	/**
+	 * 逻辑删除,0:未删除，1:已删除
+	 */
+	@Enumerated(EnumType.ORDINAL)
+	public DeletedStatus deleted;
 
-    @Column(name = "delivery_type")
-    public int deliveryType;
-    /**
-     * 成交开始时间
-     */
-    @Transient
-    public Date createdAtBegin;
-    /**
-     * 成交开始时间
-     */
-    @Transient
-    public Date createdAtEnd;
-    /**
-     * 退款开始时间
-     */
-    @Transient
-    @Temporal(TemporalType.DATE)
-    public Date refundAtBegin;
-    /**
-     * 退款开始时间
-     */
-    @Transient
-    @Temporal(TemporalType.DATE)
-    public Date refundAtEnd;
+	@Column(name = "delivery_no")
+	public String deliveryNo;
 
-    @Transient
-    public String searchKey;
+	@Column(name = "delivery_type")
+	public int deliveryType;
+	/**
+	 * 成交开始时间
+	 */
+	@Transient
+	public Date createdAtBegin;
+	/**
+	 * 成交开始时间
+	 */
+	@Transient
+	public Date createdAtEnd;
+	/**
+	 * 退款开始时间
+	 */
+	@Transient
+	@Temporal(TemporalType.DATE)
+	public Date refundAtBegin;
+	/**
+	 * 退款开始时间
+	 */
+	@Transient
+	@Temporal(TemporalType.DATE)
+	public Date refundAtEnd;
 
-    @Transient
-    public String searchItems;
+	@Transient
+	public String searchKey;
 
-    public Order() {
-    }
+	@Transient
+	public String searchItems;
 
-//    @Transient
-//    public User user;
+	public Order() {
+	}
 
-    public Order(long userId, AccountType userType,  Address address) {
-        this.userId = userId;
-        this.userType = userType;
+	//    @Transient
+	//    public User user;
 
-        this.status = OrderStatus.UNPAID;
-        this.deleted = DeletedStatus.UN_DELETED;
-        this.orderNumber = generateOrderNumber();
-        this.orderItems = new ArrayList<>();
-        this.paidAt = null;
-        this.amount = new BigDecimal(0);
-        this.accountPay = new BigDecimal(0);
-        this.needPay = new BigDecimal(0);
-        this.discountPay = new BigDecimal(0);
+	public Order(long userId, AccountType userType,  Address address) {
+		this.userId = userId;
+		this.userType = userType;
 
-        this.lockVersion = 0;
+		this.status = OrderStatus.UNPAID;
+		this.deleted = DeletedStatus.UN_DELETED;
+		this.orderNumber = generateOrderNumber();
+		this.orderItems = new ArrayList<>();
+		this.paidAt = null;
+		this.amount = new BigDecimal(0);
+		this.accountPay = new BigDecimal(0);
+		this.needPay = new BigDecimal(0);
+		this.discountPay = new BigDecimal(0);
 
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
-        if (address != null) {
-            this.receiverAddress = address.getFullAddress();
-            this.receiverMobile = address.mobile;
-            this.receiverName = address.name;
-            this.receiverPhone = address.getPhone();
-            this.postcode = address.postcode;
-        }
-    }
+		this.lockVersion = 0;
 
-    public Order(long userId, AccountType userType,
-                 long goodsId, long number, Address address, String mobile)
-            throws NotEnoughInventoryException {
-        this(userId, userType, address);
+		this.createdAt = new Date();
+		this.updatedAt = new Date();
+		if (address != null) {
+			this.receiverAddress = address.getFullAddress();
+			this.receiverMobile = address.mobile;
+			this.receiverName = address.name;
+			this.receiverPhone = address.getPhone();
+			this.postcode = address.postcode;
+		}
+	}
 
-        models.sales.Goods goods = Goods.findById(goodsId);
-        checkInventory(goods, number);
-        if (goods.salePrice.compareTo(new BigDecimal(0)) > 0) {
-            this.amount = goods.salePrice.multiply(new BigDecimal(number));
-            if (goods.materialType == MaterialType.REAL) {
-                this.amount = this.amount.add(new BigDecimal(5));
-            }
-            //todo 目前没考虑支付优惠
-            this.needPay = amount;
-        }
-        this.receiverMobile = mobile;
+	public Order(long userId, AccountType userType,
+			long goodsId, long number, Address address, String mobile)
+					throws NotEnoughInventoryException {
+		this(userId, userType, address);
 
-        OrderItems orderItems = new OrderItems(this, goods, number);
-        this.orderItems.add(orderItems);
-    }
+		models.sales.Goods goods = Goods.findById(goodsId);
+		checkInventory(goods, number);
+		if (goods.salePrice.compareTo(new BigDecimal(0)) > 0) {
+			this.amount = goods.salePrice.multiply(new BigDecimal(number));
+			if (goods.materialType == MaterialType.REAL) {
+				this.amount = this.amount.add(new BigDecimal(5));
+			}
+			//todo 目前没考虑支付优惠
+			this.needPay = amount;
+		}
+		this.receiverMobile = mobile;
 
-    public Order(long userId, AccountType userType,
-                 List<Cart> cartList, Address address, String mobile) throws NotEnoughInventoryException {
-        this(userId, userType, address);
+		OrderItems orderItems = new OrderItems(this, goods, number);
+		this.orderItems.add(orderItems);
+	}
 
-        this.amount = Cart.amount(cartList);
-        for (Cart cart : cartList) {
-            if (cart.goods.materialType == MaterialType.REAL) {
-                this.amount = this.amount.add(new BigDecimal(5));
-                break;
-            }
-        }
-        this.needPay = amount;
-        this.receiverMobile = mobile;
+	public Order(long userId, AccountType userType,
+			List<Cart> cartList, Address address, String mobile) throws NotEnoughInventoryException {
+		this(userId, userType, address);
 
-        for (Cart cart : cartList) {
-            if (cart.number <= 0) {
-                continue;
-            }
-            checkInventory(cart.goods, cart.number);
-            OrderItems orderItems = new OrderItems(this, cart.goods, cart.number);
-            this.orderItems.add(orderItems);
-        }
-    }
+		this.amount = Cart.amount(cartList);
+		for (Cart cart : cartList) {
+			if (cart.goods.materialType == MaterialType.REAL) {
+				this.amount = this.amount.add(new BigDecimal(5));
+				break;
+			}
+		}
+		this.needPay = amount;
+		this.receiverMobile = mobile;
 
-    public void setUser(User user, AccountType accountType){
-        if(user != null){
-            this.userId = user.getId();
-            this.userType = accountType;
-            this.save();
-        }
-    }
+		for (Cart cart : cartList) {
+			if (cart.number <= 0) {
+				continue;
+			}
+			checkInventory(cart.goods, cart.number);
+			OrderItems orderItems = new OrderItems(this, cart.goods, cart.number);
+			this.orderItems.add(orderItems);
+		}
+	}
 
-    public static long itemsNumber(Order order) {
-        long itemsNumber = 0L;
-        if (order == null) {
-            return itemsNumber;
-        }
-        EntityManager entityManager = JPA.em();
-        Object result = entityManager.createQuery("SELECT sum( buyNumber ) FROM Order o,o.orderItems WHERE Order.id ="
-                + order.getId()).getSingleResult();
-        if (result != null) {
-            itemsNumber = ((java.math.BigDecimal) result).longValue();
-        }
-        return itemsNumber;
-    }
+	public void setUser(User user, AccountType accountType){
+		if(user != null){
+			this.userId = user.getId();
+			this.userType = accountType;
+			this.save();
+		}
+	}
 
-    /**
-     * 生成订单编号.
-     *
-     * @return 订单编号
-     */
-    public static String generateOrderNumber() {
-        int random = new Random().nextInt() % 100;
-        return DateFormatUtils.format(new Date(), "yyyyMMddhhmmssSSS") + Math.abs(random);
-    }
+	public static long itemsNumber(Order order) {
+		long itemsNumber = 0L;
+		if (order == null) {
+			return itemsNumber;
+		}
+		EntityManager entityManager = JPA.em();
+		Object result = entityManager.createQuery("SELECT sum( buyNumber ) FROM Order o,o.orderItems WHERE Order.id ="
+				+ order.getId()).getSingleResult();
+		if (result != null) {
+			itemsNumber = ((java.math.BigDecimal) result).longValue();
+		}
+		return itemsNumber;
+	}
 
-    public void checkInventory(Goods goods, long number) throws NotEnoughInventoryException {
-        if (goods.baseSale < number) {
-            throw new NotEnoughInventoryException();
-        }
-    }
+	/**
+	 * 生成订单编号.
+	 *
+	 * @return 订单编号
+	 */
+	public static String generateOrderNumber() {
+		int random = new Random().nextInt() % 100;
+		return DateFormatUtils.format(new Date(), "yyyyMMddhhmmssSSS") + Math.abs(random);
+	}
 
-    /**
-     * 订单查询
-     *
-     * @param order      订单信息
-     * @param supplierId  商户ID
-     * @param pageNumber 第几页
-     * @param pageSize   每页记录
-     * @return ordersPage 订单信息
-     */
-    public static JPAExtPaginator<Order> query(Order order, Long supplierId, int pageNumber, int pageSize) {
-        OrdersCondition condition = new OrdersCondition();
-        JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
-                ("Order o", "o", Order.class, condition.getFilter(order, supplierId),
-                        condition.paramsMap)
-                .orderBy(condition.getOrderByExpress());
-        orderPage.setPageNumber(pageNumber);
-        orderPage.setPageSize(pageSize);
-        orderPage.setBoundaryControlsEnabled(false);
-        return orderPage;
-    }
+	public void checkInventory(Goods goods, long number) throws NotEnoughInventoryException {
+		if (goods.baseSale < number) {
+			throw new NotEnoughInventoryException();
+		}
+	}
 
-    public void createAndUpdateInventory(User user, String cookieIdentity) {
-        save();
-        for (OrderItems orderItem : orderItems) {
-            orderItem.goods.baseSale -= orderItem.buyNumber;
-            orderItem.save();
-        }
-        Cart.clear(user, cookieIdentity);
+	/**
+	 * 订单查询
+	 *
+	 * @param order      订单信息
+	 * @param supplierId  商户ID
+	 * @param pageNumber 第几页
+	 * @param pageSize   每页记录
+	 * @return ordersPage 订单信息
+	 */
+	public static JPAExtPaginator<Order> query(Order order, Long supplierId, int pageNumber, int pageSize) {
+		OrdersCondition condition = new OrdersCondition();
+		JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
+		("Order o", "o", Order.class, condition.getFilter(order, supplierId),
+				condition.paramsMap)
+				.orderBy(condition.getOrderByExpress());
+		orderPage.setPageNumber(pageNumber);
+		orderPage.setPageSize(pageSize);
+		orderPage.setBoundaryControlsEnabled(false);
+		return orderPage;
+	}
 
-    }
+	public void createAndUpdateInventory(User user, String cookieIdentity) {
+		save();
+		for (OrderItems orderItem : orderItems) {
+			orderItem.goods.baseSale -= orderItem.buyNumber;
+			orderItem.save();
+		}
+		Cart.clear(user, cookieIdentity);
 
-    /**
-     * 订单已支付，修改支付状态、时间，更改库存，发送电子券密码
-     */
-    public void paid() {
-        this.status = OrderStatus.PAID;
-        this.paidAt = new Date();
-        this.save();
-        //如果是电子券
-        if (this.orderItems != null) {
-            for (OrderItems orderItem : this.orderItems) {
-                models.sales.Goods goods = orderItem.goods;
-                if (goods == null) {
-                    continue;
-                }
-                goods.baseSale -= orderItem.buyNumber;
-                goods.saleCount += orderItem.buyNumber;
-                if (goods.materialType == MaterialType.ELECTRONIC) {
-                	for(int i =0; i< orderItem.buyNumber; i++){
-	                    ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
-	                    if (!"dev".equals(Play.configuration.get("application.mode"))) {
-	                        SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, this.receiverMobile);
-	                    }
-                	}
+	}
 
-                }
-                goods.save();
-            }
-        }
-    }
+	/**
+	 * 订单已支付，修改支付状态、时间，更改库存，发送电子券密码
+	 */
+	public void paid() {
+		this.status = OrderStatus.PAID;
+		this.paidAt = new Date();
+		this.save();
+		//如果是电子券
+		if (this.orderItems != null) {
+			for (OrderItems orderItem : this.orderItems) {
+				models.sales.Goods goods = orderItem.goods;
+				if (goods == null) {
+					continue;
+				}
+				goods.baseSale -= orderItem.buyNumber;
+				goods.saleCount += orderItem.buyNumber;
+				if (goods.materialType == MaterialType.ELECTRONIC) {
+					for(int i =0; i< orderItem.buyNumber; i++){
+						ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
+						if (!"dev".equals(Play.configuration.get("application.mode"))) {
+							SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, this.receiverMobile);
+						}
+					}
+
+				}
+				goods.save();
+			}
+		}
+	}
 
 
-    /**
-     * 会员中心订单查询
-     *
-     * @param user           用户信息
-     * @param createdAtBegin 下单开始时间
-     * @param createdAtEnd   下单结束时间
-     * @param status         状态
-     * @param goodsName      商品名
-     * @param pageNumber     第几页
-     * @param pageSize       每页记录
-     * @return ordersPage 订单信息
-     */
-    public static JPAExtPaginator<Order> findMyOrders(User user, Date createdAtBegin, Date createdAtEnd,
-                                                      OrderStatus status, String goodsName,
-                                                      int pageNumber, int pageSize) {
-        OrdersCondition condition = new OrdersCondition();
-        JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
-                ("Order o", "o", Order.class, condition.getFilter(user, createdAtBegin, createdAtEnd,
-                        status, goodsName),
-                        condition.paramsMap)
-                .orderBy(condition.getOrderByExpress());
-        orderPage.setPageNumber(pageNumber);
-        orderPage.setPageSize(pageSize);
-        orderPage.setBoundaryControlsEnabled(false);
-        return orderPage;
-    }
+	/**
+	 * 会员中心订单查询
+	 *
+	 * @param user           用户信息
+	 * @param createdAtBegin 下单开始时间
+	 * @param createdAtEnd   下单结束时间
+	 * @param status         状态
+	 * @param goodsName      商品名
+	 * @param pageNumber     第几页
+	 * @param pageSize       每页记录
+	 * @return ordersPage 订单信息
+	 */
+	public static JPAExtPaginator<Order> findMyOrders(User user, Date createdAtBegin, Date createdAtEnd,
+			OrderStatus status, String goodsName,
+			int pageNumber, int pageSize) {
+		OrdersCondition condition = new OrdersCondition();
+		JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
+		("Order o", "o", Order.class, condition.getFilter(user, createdAtBegin, createdAtEnd,
+				status, goodsName),
+				condition.paramsMap)
+				.orderBy(condition.getOrderByExpress());
+		orderPage.setPageNumber(pageNumber);
+		orderPage.setPageSize(pageSize);
+		orderPage.setBoundaryControlsEnabled(false);
+		return orderPage;
+	}
 
-    /**
-     * 会员中心订单查询
-     *
-     * @param user           用户信息
-     * @param createdAtBegin 下单开始时间
-     * @param createdAtEnd   下单结束时间
-     * @param status         状态
-     * @param goodsName      商品名
-     * @param pageNumber     第几页
-     * @param pageSize       每页记录
-     * @return ordersPage 订单信息
-     */
-    public static JPAExtPaginator<Order> findResalerOrders(ResalerOrdersCondition condition,
-    		Resaler resaler,int pageNumber, int pageSize) {
-        JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
-                ("Order o", "o", Order.class, condition.getResalerFilter(resaler),
-                        condition.paramsMap)
-                .orderBy(condition.getOrderByExpress());
-        orderPage.setPageNumber(pageNumber);
-        orderPage.setPageSize(pageSize);
-        orderPage.setBoundaryControlsEnabled(false);
-        return orderPage;
-    }
+	/**
+	 * 会员中心订单查询
+	 *
+	 * @param user           用户信息
+	 * @param createdAtBegin 下单开始时间
+	 * @param createdAtEnd   下单结束时间
+	 * @param status         状态
+	 * @param goodsName      商品名
+	 * @param pageNumber     第几页
+	 * @param pageSize       每页记录
+	 * @return ordersPage 订单信息
+	 */
+	public static JPAExtPaginator<Order> findResalerOrders(ResalerOrdersCondition condition,
+			Resaler resaler,int pageNumber, int pageSize) {
+		JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
+		("Order o", "o", Order.class, condition.getResalerFilter(resaler),
+				condition.paramsMap)
+				.orderBy(condition.getOrderByExpress());
+		orderPage.setPageNumber(pageNumber);
+		orderPage.setPageSize(pageSize);
+		orderPage.setBoundaryControlsEnabled(false);
+		return orderPage;
+	}
+
+	public static long getThisMonthTotal(Resaler resaler, Map lastMonthMap, Map thisMonthMap, OrderStatus success) {
+		EntityManager entityManager = JPA.em();
+		Object result = entityManager.createQuery("SELECT sum( o.amount ) FROM Order o" +
+				" WHERE createdAt >= '"+lastMonthMap.get("thisMonthFD") +"' and createdAt <='"+
+				lastMonthMap.get("thisMonthLD")+" and status = '"+OrderStatus.PAID+"'").getSingleResult();
+		
+//		result.setParameter("createdAt", lastMonthMap.get("thisMonthFD"));
+//		result.setParameter("createdAtEnd", lastMonthMap.get("thisMonthLD"));
+//		result.setParameter("status", OrderStatus.PAID);
+//		Object o = result.getSingleResult();
+		
+//		List list = result.getResultList();
+		Long amount =0l; 
+		if (result != null) {
+			amount = ((BigDecimal) result).longValue();
+		}
+		System.out.println(">>>>>>."+amount);
+		return 1l;
+	}
 
 }
