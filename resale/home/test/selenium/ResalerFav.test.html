@@ -1,0 +1,23 @@
+#{fixture delete:'all', load:['fixture/resaler-fav.yml','fixture/resaler.yml'] /}
+
+#{selenium 'Test Carts/index.html'}
+#{include 'test/selenium/step/login.selenium' /}
+
+open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}')
+click('id=link_add_cart')
+waitForElementPresent('id=add_cart_result')
+open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
+click('id=link_add_cart')
+waitForElementPresent('id=add_cart_result')
+
+openAndWait('/library')
+
+verifyTitle('优惠啦 - 分销库')
+verifyTextPresent('测试商品1')
+verifyTextPresent('测试商品2')
+
+
+click('name=${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}')
+waitForElementNotPresent('//tr[@id='row_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}']')
+
+#{/selenium}
