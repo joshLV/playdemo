@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
+import controllers.modules.cas.SecureCAS;
 import controllers.resaletrace.ResaleCAS;
 
 import models.consumer.User;
@@ -28,7 +29,7 @@ import java.util.List;
  *
  */
 //@With({WebCAS.class,SecureCAS.class})
-@With(ResaleCAS.class)
+@With({ResaleCAS.class, SecureCAS.class})
 public class ResalerCarts extends Controller {
 
     /**

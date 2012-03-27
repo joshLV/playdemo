@@ -1,0 +1,44 @@
+#{fixture delete:'all', load:['fixture/resaler-fav.yml','fixture/resaler.yml'] /}
+
+%{
+    phone1 = '13472581853'
+    phone2 = '13472581854'
+}%
+
+
+#{selenium 'Test Carts'}
+    #{include 'test/selenium/step/login.selenium' /}
+
+    open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}')
+    click('id=link_add_cart')
+    waitForElementPresent('id=add_cart_result')
+    open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
+    click('id=link_add_cart')
+    waitForElementPresent('id=add_cart_result')
+    
+    openAndWait('/carts')
+    
+    select('id=favs_list','label=测试商品1')
+    
+    
+    type('name=phones','${phone1} ${phone2}')
+    clickAndWait('css=input[type="SUBMIT"]')
+    
+    
+    verifyValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}','1')
+    verifyValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone2}','1')
+
+    click('id=inc_add_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')
+
+    
+    waitForValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}','2')
+    click('id=inc_sub_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')
+    waitForValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}','1')
+    click('id=inc_sub_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')
+    waitForValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}','1')
+    
+    clickAndWait('id=del_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')
+    
+    waitForElementNotPresent('//tr[@id='row_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}']')
+
+#{/selenium}

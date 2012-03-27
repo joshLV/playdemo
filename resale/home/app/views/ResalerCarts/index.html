@@ -74,8 +74,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <textarea name="phones" cols="20" rows="10">
-                                        </textarea>
+                                        <textarea name="phones" cols="20" rows="10"></textarea>
                                     </td>
                                     <td>同一个商品，不同的收货人。例：<br/>13472228877<br/>13477778888<br/>
                         
@@ -134,10 +133,14 @@
                 <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
                 <td width="115" height="25" align="center" valign="middle" id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.salePrice}</td>
                 <td width="83" height="25" align="center" valign="middle">
-                    <a href="#" class="reduce_box" iden="${cartItem.goods.id}" phone="${cartItem.phone}"><img src="@{'/public/images/sub_anniu.jpg'}" /></a>
+                    <a href="#" class="reduce_box" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
+                        <img src="@{'/public/images/sub_anniu.jpg'}" id="inc_sub_${cartItem.goods.id}-${cartItem.phone}"/>
+                    </a>
                     <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}-${cartItem.phone}" />
                     <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}-${cartItem.phone}"/>
-                    <a class="add_box" href="#" iden="${cartItem.goods.id}" phone="${cartItem.phone}"><img src="@{'/public/images/add_anniu.jpg'}"/></a>
+                    <a class="add_box" href="#" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
+                        <img src="@{'/public/images/add_anniu.jpg'}" id="inc_add_${cartItem.goods.id}-${cartItem.phone}"/>
+                    </a>
                 </td>
                 <td idth="187" height="25" align="center" valign="middle">
                     <span class="strong_gray" id="subtotal_${cartItem.goods.id}-${cartItem.phone}"> ${cartItem.goods.salePrice.multiply(cartItem.number)}</span>
@@ -146,7 +149,7 @@
                     <form method="POST" action="/carts/form-delete">
                         <input name="goodsId" type="hidden" value="${cartItem.goods.id}"/>
                         <input name="phone" type="hidden" value="${cartItem.phone}"/>
-                        <input type="SUBMIT" value="删除"/>
+                        <input type="SUBMIT" value="删除" id="del_${cartItem.goods.id}-${cartItem.phone}"/>
                     </form>
                 </td>
             </tr>
@@ -161,10 +164,14 @@
                 <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
                 <td width="115" height="25" align="center" valign="middle" id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.salePrice}</td>
                 <td width="83" height="25" align="center" valign="middle">
-                    <a href="#" class="reduce_box" iden="${cartItem.goods.id}" phone="${cartItem.phone}"><img src="@{'/public/images/sub_anniu.jpg'}" /></a>
+                    <a href="#" class="reduce_box" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
+                        <img src="@{'/public/images/sub_anniu.jpg'}"  id="inc_sub_${cartItem.goods.id}-${cartItem.phone}"/>
+                    </a>
                     <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}-${cartItem.phone}" />
                     <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}-${cartItem.phone}"/>
-                    <a class="add_box" href="#" iden="${cartItem.goods.id}" phone="${cartItem.phone}"><img src="@{'/public/images/add_anniu.jpg'}"/></a>
+                    <a class="add_box" href="#" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
+                        <img src="@{'/public/images/add_anniu.jpg'}"  id="inc_add_${cartItem.goods.id}-${cartItem.phone}"/>
+                    </a>
                 </td>
                 <td idth="187" height="25" align="center" valign="middle">
                     <span class="strong_gray" id="subtotal_${cartItem.goods.id}-${cartItem.phone}"> ${cartItem.goods.salePrice.multiply(cartItem.number)}</span>
@@ -173,7 +180,7 @@
                     <form method="POST" action="/carts/form-delete">
                         <input name="goodsId" type="hidden" value="${cartItem.goods.id}"/>
                         <input name="phone" type="hidden" value="${cartItem.phone}"/>
-                        <input type="SUBMIT" value="删除"/>
+                        <input type="SUBMIT" value="删除" id="del_${cartItem.goods.id}-${cartItem.phone}"/>
                     </form>
                 </td>
             </tr>
