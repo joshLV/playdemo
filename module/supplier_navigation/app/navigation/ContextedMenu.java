@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.commons.collections.CollectionUtils;
+import play.Play;
 import play.mvc.Router;
 
 /**
@@ -29,8 +30,10 @@ public class ContextedMenu {
     }
 
     public boolean isActive() {
-        return (menu.action != null && menuContext.hasActiveAction(menu.action))
-               || (menuContext.hasActiveName(menu.name));
+        return menu.applicationName.equals(Play.configuration.get("application.name"))
+                && ((menu.action != null && menuContext.hasActiveAction(menu.action))
+                      || (menuContext.hasActiveName(menu.name))
+                      );
     }
 
     public boolean hasActiveDescendant() {

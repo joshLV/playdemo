@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import play.db.jpa.Model;
 
@@ -39,17 +41,21 @@ public class SupplierPermission extends Model {
     @Column(name = "updated_at")
     public Date updatedAt;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "parent_id", nullable = true)
     public SupplierPermission parent;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, targetEntity = SupplierPermission.class)
+    @OrderBy("displayOrder")
+    public List<SupplierPermission> children;
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "supplier_permissions_roles", 
         inverseJoinColumns = @JoinColumn(name= "role_id"), 
         joinColumns = @JoinColumn(name = "permission_id"))
     public Set<SupplierRole> roles;    
   
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "supplier_permissions_users", 
         inverseJoinColumns = @JoinColumn(name= "user_id"), 
         joinColumns = @JoinColumn(name = "permission_id"))
@@ -67,7 +73,7 @@ public class SupplierPermission extends Model {
      * @param loadVersion
      */
     public static  void deleteUndefinedPermissions(String applicationName, long loadVersion) {
-        List<SupplierPermission> list = SupplierPermission.find("applicationName=? and loadVersion <> ?", applicationName, loadVersion).fetch();
+        List<SupplierPermission> list = SupplierPermission.find("applicationName=? and loadVersion <> ? order by parent DESC, id DESC", applicationName, loadVersion).fetch();
         for (SupplierPermission perm : list) {
             perm.delete();
         }

@@ -31,13 +31,13 @@ public class SupplierRole extends Model {
     @Column(name = "updated_at")
     public Date updatedAt;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "supplier_users_roles", 
         inverseJoinColumns = @JoinColumn(name= "cuser_id"), 
         joinColumns = @JoinColumn(name = "role_id"))
     public Set<SupplierUser> users;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "supplier_permissions_roles", 
         inverseJoinColumns = @JoinColumn(name= "permission_id"), 
         joinColumns = @JoinColumn(name = "role_id"))

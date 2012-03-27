@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,25 +17,20 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
+import models.supplier.Supplier;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-
 import play.data.validation.Match;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http.Request;
-
 import com.uhuila.common.constants.DeletedStatus;
 
 @Entity
 @Table(name = "supplier_users")
 public class SupplierUser extends Model {
-    @Column(name = "supplier_id")
-    public Long supplierId;
-
     @Column(name = "login_name")
     @Required
     public String loginName;
@@ -68,8 +62,8 @@ public class SupplierUser extends Model {
     public Date updatedAt;
 	
 	@ManyToOne
-	@JoinColumn(name="company_id")
-	public SupplierCompany company;
+	@JoinColumn(name="supplier_id")
+	public Supplier supplier;
 
     /**
      * 逻辑删除,0:未删除，1:已删除
@@ -77,13 +71,13 @@ public class SupplierUser extends Model {
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "supplier_users_roles",
             inverseJoinColumns = @JoinColumn(name = "role_id"),
             joinColumns = @JoinColumn(name = "cuser_id"))
     public Set<SupplierRole> roles;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "supplier_permissions_users",
             inverseJoinColumns = @JoinColumn(name = "permission_id"),
             joinColumns = @JoinColumn(name = "user_id"))
@@ -93,7 +87,7 @@ public class SupplierUser extends Model {
                                                              int pageNumber, int pageSize) {
         StringBuffer sql = new StringBuffer();
         Map params = new HashMap();
-        sql.append("supplierId = :supplierId");
+        sql.append("supplier.id = :supplierId");
         params.put("supplierId", supplierId);
 
         sql.append(" and deleted = :deleted ");
@@ -120,14 +114,14 @@ public class SupplierUser extends Model {
      */
     public static void update(long id, SupplierUser cuser) {
         SupplierUser updCuser = SupplierUser.findById(id);
+        updCuser.loginName = cuser.loginName;
+        updCuser.mobile = cuser.mobile;
         if (StringUtils.isNotEmpty(cuser.encryptedPassword) && !cuser.encryptedPassword.equals(DigestUtils.md5Hex(updCuser.encryptedPassword))) {
             Images.Captcha captcha = Images.captcha();
             String passwordSalt = captcha.getText(6);
             //随机吗
             updCuser.passwordSalt = passwordSalt;
             updCuser.encryptedPassword = DigestUtils.md5Hex(cuser.encryptedPassword + passwordSalt);
-        }else{
-
         }
         updCuser.lastLoginAt = new Date();
         updCuser.updatedAt = new Date();
@@ -135,7 +129,6 @@ public class SupplierUser extends Model {
         updCuser.lastLoginIP = Request.current().remoteAddress;
 
         updCuser.save();
-
     }
 
     /**
@@ -217,6 +210,7 @@ public class SupplierUser extends Model {
      */
     public boolean create(Long supplierId) {
         Images.Captcha captcha = Images.captcha();
+        Supplier supplier = Supplier.findById(supplierId);
         String password_salt = captcha.getText(6);
         // 密码加密
         encryptedPassword = DigestUtils.md5Hex(encryptedPassword
@@ -225,7 +219,7 @@ public class SupplierUser extends Model {
         passwordSalt = password_salt;
         createdAt = new Date();
         lockVersion = 0;
-        this.supplierId = supplierId;
+        this.supplier = supplier;
         deleted = DeletedStatus.UN_DELETED;
         // 获得IP
         lastLoginIP = Request.current().remoteAddress;
@@ -233,6 +227,7 @@ public class SupplierUser extends Model {
     }
 
     public static SupplierUser findAdmin(Long supplierId, String admin) {
-        return find("bySupplierIdAndLoginName", supplierId, admin).first();
+        Supplier supplier = Supplier.findById(supplierId);
+        return find("bySupplierAndLoginName", supplier, admin).first();
     }
 }

@@ -1,5 +1,6 @@
 package controllers;
 
+import models.admin.SupplierUser;
 import navigation.ContextedPermission;
 import navigation.NavigationHandler;
 import navigation.annotations.ActiveNavigation;
@@ -18,6 +19,8 @@ import controllers.supplier.cas.SecureCAS;
  * configuration parameter in your conf/application.conf file, and injects those menus into your renderArgs.
  */
 public class MenuInjector extends Controller {
+    
+    private static ThreadLocal<SupplierUser> _user = new ThreadLocal<>();
 
     public static void injectDefaultMenus() {
         for(String menuName : Play.configuration.getProperty("navigation.defaultMenus", "main").toString().split(",")) {
@@ -36,7 +39,10 @@ public class MenuInjector extends Controller {
         
         // 检查权限
         if (userName != null) {
-            ContextedPermission.init(userName);
+            // 查出当前用户的所有权限  
+            SupplierUser user = SupplierUser.find("byLoginName", userName).first();
+            _user.set(user);
+            ContextedPermission.init(user);
         }
         checkRight();
         
@@ -51,6 +57,11 @@ public class MenuInjector extends Controller {
     @Finally
     public static void cleanPermission() {
 	    ContextedPermission.clean();
+	    _user.set(null);
+    }
+    
+    public static SupplierUser currentUser() {
+        return _user.get();
     }
 
     /**

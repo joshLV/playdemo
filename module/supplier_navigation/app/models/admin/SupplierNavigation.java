@@ -58,7 +58,7 @@ public class SupplierNavigation extends Model {
     @Column(name="application_name")
     public String applicationName;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "parent_id", nullable = true)
     public SupplierNavigation parent;
 
@@ -67,7 +67,7 @@ public class SupplierNavigation extends Model {
     public List<SupplierNavigation> children;
     
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "supplier_navigations_permissions", 
         inverseJoinColumns = @JoinColumn(name= "permission_id"), 
         joinColumns = @JoinColumn(name = "navigation_id"))
@@ -100,7 +100,7 @@ public class SupplierNavigation extends Model {
      */
     public static void deleteUndefinedNavigation(String applicationName, long loadVersion) {
         List<SupplierNavigation> list = SupplierNavigation.find(
-                "select s from SupplierNavigation s where s.applicationName=? and s.loadVersion <> ?", 
+                "select s from SupplierNavigation s where s.applicationName=? and s.loadVersion <> ?  order by parent DESC, id DESC", 
                 applicationName, loadVersion).fetch();
         for (SupplierNavigation nav : list) {
             nav.delete();

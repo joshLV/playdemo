@@ -35,7 +35,7 @@ public class ContextedPermissionTest extends UnitTest {
 	
 	@Test
 	public void testNotExistsUser() {
-	    ContextedPermission.init("notExistsUser");
+	    ContextedPermission.init(null); // not exists user
 	    assertFalse(ContextedPermission.hasPermission("XXX"));
 	}
 	
@@ -43,7 +43,7 @@ public class ContextedPermissionTest extends UnitTest {
 	public void testAdminUserHasNotPermission() {
 		Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user3");
 		SupplierUser user = SupplierUser.findById(id);
-		ContextedPermission.init(user.loginName);
+		ContextedPermission.init(user);
 		
 		assertFalse(ContextedPermission.hasPermission("PERM_TEST"));
 	}
@@ -53,7 +53,7 @@ public class ContextedPermissionTest extends UnitTest {
 	public void testTestUserHasPermission() {
 		Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user2");
 		SupplierUser user = SupplierUser.findById(id);
-		ContextedPermission.init(user.loginName);
+		ContextedPermission.init(user);
 		
 		assertEquals(1, ContextedPermission.getAllowPermissions().size());
 		

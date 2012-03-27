@@ -43,7 +43,6 @@ public class CuserUnitTest extends UnitTest {
 		cuser.lastLoginAt = new Date();
 		cuser.createdAt = new Date();
 		cuser.lockVersion = 0;
-		cuser.supplierId = 1l;
 		cuser.deleted = DeletedStatus.UN_DELETED;
 
 		cuser.save();
@@ -56,12 +55,11 @@ public class CuserUnitTest extends UnitTest {
 	@Test
 	public void testGetCuserList(){
 		String loginName = "1";
-		Long supplierId= 2l;
+		Long supplierId= (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
 		int pageNumber=1;
 		int pageSize=15;
 		List<SupplierUser> list = SupplierUser.getCuserList(loginName,supplierId,pageNumber,pageSize);
-		assertEquals(1,list.size());  
-
+		assertEquals(1,list.size()); 
 	}
 
 	//更改用户名和手机
@@ -73,8 +71,8 @@ public class CuserUnitTest extends UnitTest {
 		cuser.mobile="13899999999";
 		SupplierUser.update(id, cuser);
 		SupplierUser cusers = SupplierUser.findById(id);
-		assertEquals(cusers.loginName,"test");  
-		assertEquals(cusers.mobile,"13899999999");  
+		assertEquals("test", cusers.loginName);  
+		assertEquals("13899999999", cusers.mobile);  
 	}
 
 	//测试是否存在用户名和手机

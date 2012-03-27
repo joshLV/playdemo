@@ -35,7 +35,7 @@ public class NavigationHandler {
         }
         Set<String> navigationNameStackSets = new HashSet<>();
         for (SupplierNavigation nav : navigateionStackList) {
-            navigationNameStackSets.add(nav.name);
+            navigationNameStackSets.add(nav.name);            
         }
         stackMenuNames.set(navigationNameStackSets);
     }

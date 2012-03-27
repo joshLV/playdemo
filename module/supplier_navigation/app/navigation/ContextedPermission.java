@@ -33,10 +33,7 @@ public class ContextedPermission {
      * 初始化用户的权限数据.
      * @param userName
      */
-    public static void init(String userName) {
-        // 查出当前用户的所有权限
-        SupplierUser user = SupplierUser.find("byLoginName", userName).first();
-        
+    public static void init(SupplierUser user) {        
         if (user == null) {
             return;
         }

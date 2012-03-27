@@ -2,23 +2,19 @@ package controllers;
 
 import java.util.Date;
 import java.util.List;
-
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
-
+import navigation.annotations.ActiveNavigation;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
-import navigation.annotations.ActiveNavigation;
-import navigation.annotations.Right;
 import play.mvc.With;
-
 import com.uhuila.common.constants.DeletedStatus;
+import controllers.supplier.cas.SecureCAS;
 
 /**
  * 操作员CRUD
@@ -27,11 +23,10 @@ import com.uhuila.common.constants.DeletedStatus;
  * 
  */
 
-@With({ MenuInjector.class })
+@With({SecureCAS.class, MenuInjector.class })
 @ActiveNavigation("user")
 public class SupplierUsers extends Controller {
     public static int PAGE_SIZE = 15;
-    public static Long supplierId = 2l;
 
     /**
      * 操作员一览
@@ -42,7 +37,7 @@ public class SupplierUsers extends Controller {
         String loginName = request.params.get("loginName");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<SupplierUser> cusersPage = SupplierUser.getCuserList(
-                loginName, supplierId, pageNumber, PAGE_SIZE);
+                loginName, MenuInjector.currentUser().supplier.id, pageNumber, PAGE_SIZE);
         render(cusersPage);
     }
 
@@ -84,7 +79,7 @@ public class SupplierUsers extends Controller {
         cuser.lastLoginAt = new Date();
         cuser.createdAt = new Date();
         cuser.lockVersion = 0;
-        cuser.supplierId = supplierId;
+        cuser.supplier = MenuInjector.currentUser().supplier;
         cuser.deleted = DeletedStatus.UN_DELETED;
         // 获得IP
         cuser.lastLoginIP = request.remoteAddress;
