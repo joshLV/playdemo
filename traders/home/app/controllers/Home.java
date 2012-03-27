@@ -1,19 +1,18 @@
 package controllers;
 
 import navigation.annotations.ActiveNavigation;
-import java.util.logging.Logger;
-import play.mvc.With;
-
+import navigation.annotations.Right;
 import play.mvc.Controller;
+import play.mvc.With;
+import controllers.supplier.cas.SecureCAS;
 
-@With({MenuInjector.class})
+@With({SecureCAS.class, MenuInjector.class})
 public class Home extends Controller {
 
     @ActiveNavigation("home")
+    @Right("HOME")
     public static void index() {
         render();
     }
-
-
 
 }

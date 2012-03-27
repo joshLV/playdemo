@@ -29,10 +29,6 @@ public class ContextedPermission {
         return _allowPermissions.get();	
     }    
 
-    public static boolean hasPermission(String permission_key) {
-        return _allowPermissions.get() != null && _allowPermissions.get().contains(permission_key);
-    }
-    
     /**
      * 初始化用户的权限数据.
      * @param userName
@@ -55,6 +51,28 @@ public class ContextedPermission {
             addAllowPermission(perm.key);
         }
         
+    }
+
+    public static boolean hasPermission(String permission_key) {
+        return _allowPermissions.get() != null && _allowPermissions.get().contains(permission_key);
+    }
+    
+    public static boolean hasPermissions(Set<SupplierPermission> permissions) {
+        for (SupplierPermission perm : permissions) {
+            if (hasPermission(perm.key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasPermissions(String[] permissions) {
+        for (String perm : permissions) {
+            if (hasPermission(perm)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

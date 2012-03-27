@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <application text="Home">
     <role key="admin" text="系统管理员" />
-    <role key="sales" text="销售人员" />
+    <role key="manager" text="经理" />
 
-    <permission key="HOME" text="系统主面板">
-    </permission>
+    <permission key="HOME" text="系统主面板" roles="admin,manager"/>
+    <permission key="STATS" text="统计功能" roles="admin,manager"/>
 
     <navigation key="homeapp" text="面板">
-      <navigation key="home" text="主面板" action="Home.index"/>
-      <navigation key="account_sequence" text="现金帐户查询" action="AccountSequences.index"/>
+      <navigation key="home" text="主面板" action="Home.index" permissions="STATS"/>
+      <navigation key="account_sequence" text="现金帐户查询" action="AccountSequences.index" permissions="STATS"/>
     </navigation>
 </application>

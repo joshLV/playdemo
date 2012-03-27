@@ -31,12 +31,13 @@ public class MenuInjector extends Controller {
     public static void injectCurrentMenus() {
         if (request.invokedMethod == null)
             return;
-        
+
         String userName = session.get(SecureCAS.SESSION_USER_KEY);
+        
+        // 检查权限
         if (userName != null) {
             ContextedPermission.init(userName);
         }
-        
         checkRight();
         
         // 得到当前菜单的名字
@@ -86,13 +87,7 @@ public class MenuInjector extends Controller {
         }
         
         if (rights != null) {
-            boolean hasRight = false;
-            for (String r : rights) {
-                if (ContextedPermission.hasPermission(r)) {
-                    hasRight = true;
-                    break;
-                }
-            }
+            boolean hasRight = ContextedPermission.hasPermissions(rights);
             if (!hasRight) {
                 error(403, "没有权限访问.");
             }

@@ -48,10 +48,14 @@ public class NavigationHandler {
             return;
         }
         List<ContextedMenu> _secondLevelMenus = new ArrayList<>();
-        for (SupplierNavigation topNavitagion : secondLevelNavigations) {
-            Menu menu = Menu.from(topNavitagion);
-            ContextedMenu contextedMenu = new ContextedMenu(menu, getMenuContext());
-            _secondLevelMenus.add(contextedMenu);
+        for (SupplierNavigation navigation : secondLevelNavigations) {
+            if (navigation.permissions == null ||
+                    navigation.permissions.size() == 0 ||
+                    ContextedPermission.hasPermissions(navigation.permissions)) {
+                Menu menu = Menu.from(navigation);
+                ContextedMenu contextedMenu = new ContextedMenu(menu, getMenuContext());
+                _secondLevelMenus.add(contextedMenu);
+            }
         }
         secondLevelMenus.set(_secondLevelMenus);
     }
@@ -60,11 +64,15 @@ public class NavigationHandler {
     private static void initTopMenusThreadLocal() {
         List<SupplierNavigation> topNavigations = SupplierNavigation.getTopNavigations();
         List<ContextedMenu> _topMenus = new ArrayList<>();
-        for (SupplierNavigation topNavitagion : topNavigations) {
-            Menu menu = Menu.from(topNavitagion);
-            ContextedMenu contextedMenu = new ContextedMenu(menu, getMenuContext());
-
-            _topMenus.add(contextedMenu);
+        for (SupplierNavigation navigation : topNavigations) {
+            if (navigation.permissions == null ||
+                    navigation.permissions.size() == 0 ||
+                    ContextedPermission.hasPermissions(navigation.permissions)) {
+                Menu menu = Menu.from(navigation);
+                ContextedMenu contextedMenu = new ContextedMenu(menu,
+                        getMenuContext());
+                _topMenus.add(contextedMenu);
+            }
         }
         topMenus.set(_topMenus);
     }

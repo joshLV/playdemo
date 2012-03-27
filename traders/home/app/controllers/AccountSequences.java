@@ -3,12 +3,13 @@ package controllers;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceCondition;
+import navigation.annotations.ActiveNavigation;
+import navigation.annotations.Right;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
-
-import navigation.annotations.ActiveNavigation;
 import play.mvc.With;
+import controllers.supplier.cas.SecureCAS;
 
 
 /**
@@ -18,11 +19,12 @@ import play.mvc.With;
  * Date: 3/7/12
  * Time: 3:35 PM
  */
-@With({MenuInjector.class})
+@With({SecureCAS.class, MenuInjector.class})
 public class AccountSequences extends Controller {
 
     private static final int PAGE_SIZE = 20;
 
+    @Right("STATS")
     @ActiveNavigation("account_sequence")
     public static void index(AccountSequenceCondition condition) {
         long accountId = 1; //todo 管理员登录做完后修改此处
