@@ -133,4 +133,10 @@ public class Supplier extends Model {
         supplier.status = status;
         supplier.save();
     }
+    
+    
+    @Override
+    public String toString() {
+        return "Supplier[" + this.fullName + "@" + this.domainName + "(" + this.id + ")]";
+    }
 }

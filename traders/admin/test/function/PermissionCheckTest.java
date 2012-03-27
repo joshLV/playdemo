@@ -1,10 +1,9 @@
 package function;
 
-import models.admin.SupplierNavigation;
 import models.admin.SupplierPermission;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
-import navigation.ContextedPermission;
+import models.supplier.Supplier;
 import navigation.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
@@ -30,6 +29,7 @@ public class PermissionCheckTest extends FunctionalTest {
     public void setUp() {
 		Fixtures.delete(SupplierUser.class);
 		Fixtures.delete(SupplierRole.class);
+		Fixtures.delete(Supplier.class);
 		Fixtures.loadModels("fixture/roles.yml");
 		Fixtures.loadModels("fixture/cusers.yml");
 		

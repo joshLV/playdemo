@@ -1,5 +1,5 @@
 supplier.Supplier(kfc):
- "domainName": "kfc"
+ "domainName": "localhost"
  "fullName": "肯德基"
 
 admin.SupplierUser(user1):

@@ -16,6 +16,7 @@ import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Finally;
 import play.mvc.Http.Request;
+import play.supplier.cas.CASUtils;
 import controllers.supplier.cas.SecureCAS;
 
 /**
@@ -42,12 +43,17 @@ public class MenuInjector extends Controller {
             return;
 
         String userName = getDomainUserName(session.get(SecureCAS.SESSION_USER_KEY));
+        String subDomain = CASUtils.getSubDomain();
         
-        System.out.println("currentUser = " + userName);
+        System.out.println("================================================================ currentUser = " + userName + ", domain=" + subDomain);
+        
+        SupplierUser user = null;
         // 检查权限
         if (userName != null) {
             // 查出当前用户的所有权限  
-            SupplierUser user = SupplierUser.find("byLoginName", userName).first();
+            user = SupplierUser.findUserByDomainName(subDomain, userName);
+            System.out.println(" ---------------------------- user : " + user);
+            System.out.println("user.id = " + user.id + ", name=" + user.loginName);
             if (user.roles != null) {
                 System.out.println("get role " + user.roles);
                 for (SupplierRole role : user.roles) {
@@ -57,6 +63,11 @@ public class MenuInjector extends Controller {
             _user.set(user);
             ContextedPermission.init(user);
         }
+        
+        if (user == null) {
+            error(403, "没有登录，请考虑合并SecureCAS和这个类，看上去@With加进去的类是没有顺序的");
+        }
+        
         // 得到当前菜单的名字
         String currentMenuName = getCurrentMenuName();
         

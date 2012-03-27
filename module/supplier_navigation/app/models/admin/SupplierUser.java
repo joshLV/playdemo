@@ -226,8 +226,30 @@ public class SupplierUser extends Model {
         return super.create();
     }
 
+    // FIXME: findAdmin这个名字，是指只找Admin用户？这个应该是findUser
     public static SupplierUser findAdmin(Long supplierId, String admin) {
         Supplier supplier = Supplier.findById(supplierId);
         return find("bySupplierAndLoginName", supplier, admin).first();
     }
+    
+    public static SupplierUser findUserByDomainName(String domainName, String loginName) {
+        System.out.println("domainName=" + domainName + ", loginName=" + loginName + " ^^^^^^^^^^^^^^^^");
+        Supplier supplier = Supplier.find("byDomainName", domainName).first();
+        if (supplier == null) {
+            System.out.println("&&&&&&&&&&&&&&&&  domain is null");
+            return null;
+        }
+        
+        System.out.println("================");
+        
+        List<SupplierUser> all = SupplierUser.findAll();
+        for (SupplierUser user : all) {
+            System.out.println("  ----- user.id:" + user.id + ", supplierId:" + user.supplier.id + ", loginName:" + user.loginName);
+        }
+        
+        System.out.println("================");
+        System.out.println("     ! -------------- supplier: " + supplier.fullName + ", supplerId=" + supplier.id + ", loginName" + loginName);
+        return SupplierUser.find("bySupplierAndLoginName", supplier, loginName).first();
+    }
+    
 }

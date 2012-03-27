@@ -1,4 +1,4 @@
-#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class],load:['fixture/roles.yml','fixture/cusers.yml'] /}
+#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class,models.supplier.Supplier.class],load:['fixture/roles.yml','fixture/cusers.yml'] /}
 %{
         play.vfs.VirtualFile file = play.vfs.VirtualFile.open("conf/rbac.xml");
         navigation.RbacLoader.init(file);

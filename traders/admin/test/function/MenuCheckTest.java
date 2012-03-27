@@ -3,8 +3,8 @@ package function;
 import java.util.List;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
+import models.supplier.Supplier;
 import navigation.ContextedMenu;
-import navigation.NavigationHandler;
 import navigation.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
@@ -29,6 +29,7 @@ public class MenuCheckTest extends FunctionalTest {
     public void setUp() {
 		Fixtures.delete(SupplierUser.class);
 		Fixtures.delete(SupplierRole.class);
+		Fixtures.delete(Supplier.class);
 		Fixtures.loadModels("fixture/roles.yml");
 		Fixtures.loadModels("fixture/cusers.yml");
 		
@@ -48,6 +49,8 @@ public class MenuCheckTest extends FunctionalTest {
 	public void testMenuBaseUrl() {
 		Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user3");
 		SupplierUser user = SupplierUser.findById(id);
+		
+		System.out.println("++++++++++++++++   user.id:" + user.id + ", name:" + user.loginName + ", supplier:" + user.supplier);
 		
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);

@@ -1,4 +1,4 @@
-#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class],load:['fixture/roles.yml','fixture/cusers.yml'] /}
+#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class,models.supplier.Supplier.class],load:['fixture/roles.yml','fixture/cusers.yml'] /}
 
 #{selenium}
    #{include 'test/selenium/step/login.selenium' /}
@@ -26,13 +26,17 @@
 
 #{selenium "edit user"}
    #{include 'test/selenium/step/login.selenium' /}
-   open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}/edit')
+   open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-test")}/edit')
    click('xpath=(//input[@id='cuser.roles.id'])[2]')
-   type('id=loginName','yan1')
-   type('id=mobile','13012012011')
+   type('id=loginName','test')
+   type('id=mobile','13088092012')
    type('name=cuser.encryptedPassword','123')
    clickAndWait('id=save')
    assertNotTitle('操作员编辑')
+   
+   open('/users')
+   assertTitle('操作员一览')
+   verifyTextPresent('test')
 #{/selenium}
 
 #{selenium "delete user"}
