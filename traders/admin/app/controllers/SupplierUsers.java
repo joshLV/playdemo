@@ -29,7 +29,7 @@ import com.uhuila.common.constants.DeletedStatus;
 
 @With({ MenuInjector.class })
 @ActiveNavigation("user")
-public class Cusers extends Controller {
+public class SupplierUsers extends Controller {
     public static int PAGE_SIZE = 15;
     public static Long supplierId = 2l;
 
@@ -72,10 +72,23 @@ public class Cusers extends Controller {
                     roleIds += role.id + ",";
                 }
             }
-            render("Cusers/add.html", cuser, roleIds, rolesList);
+            render("SupplierUsers/add.html", cuser, roleIds, rolesList);
         }
-        //创建用户
-        cuser.create(supplierId);
+        Images.Captcha captcha = Images.captcha();
+        String password_salt = captcha.getText(6);
+        // 密码加密
+        cuser.encryptedPassword = DigestUtils.md5Hex(cuser.encryptedPassword
+                + password_salt);
+        // 随机吗
+        cuser.passwordSalt = password_salt;
+        cuser.lastLoginAt = new Date();
+        cuser.createdAt = new Date();
+        cuser.lockVersion = 0;
+        cuser.supplierId = supplierId;
+        cuser.deleted = DeletedStatus.UN_DELETED;
+        // 获得IP
+        cuser.lastLoginIP = request.remoteAddress;
+        cuser.save();
         index();
     }
 
@@ -97,7 +110,7 @@ public class Cusers extends Controller {
     public static void edit(Long id) {
         SupplierUser cuser = SupplierUser.findById(id);
         String roleIds = "";
-        if (!cuser.roles.isEmpty()) {
+        if (cuser.roles != null && !cuser.roles.isEmpty()) {
             for (SupplierRole role : cuser.roles) {
                 roleIds += role.id + ",";
             }
@@ -126,7 +139,7 @@ public class Cusers extends Controller {
                     roleIds += role.id + ",";
                 }
             }
-            render("Cusers/edit.html", cuser, roleIds, rolesList);
+            render("SupplierUsers/add.html", cuser, roleIds, rolesList);
             return;
         }
         // 更新用户信息

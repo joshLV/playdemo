@@ -4,13 +4,13 @@
 
 # Home page
 GET     /                                       Application.index
-GET     /cusers                               Cusers.index
-GET     /cusers/new                           Cusers.add
-POST    /cusers                               Cusers.create
-POST    /cusers/checkLoginName                Cusers.checkLoginName
-GET     /cusers/{id}/edit                     Cusers.edit
-POST    /cusers/{id}                          Cusers.update
-DELETE  /cusers/{id}                          Cusers.delete
+GET     /users                                  SupplierUsers.index
+GET     /users/new                              SupplierUsers.add
+POST    /users                                  SupplierUsers.create
+POST    /users/checkLoginName                   SupplierUsers.checkLoginName
+GET     /users/{id}/edit                        SupplierUsers.edit
+POST    /users/{id}                             SupplierUsers.update
+DELETE  /users/{id}                             SupplierUsers.delete
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

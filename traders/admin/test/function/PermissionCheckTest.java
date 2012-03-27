@@ -1,13 +1,11 @@
 package function;
 
-import models.admin.SupplierPermission;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
-import navigation.ContextedPermission;
 import navigation.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import play.mvc.Router;
 import play.test.Fixtures;
@@ -17,8 +15,8 @@ import controllers.supplier.cas.Security;
 
 public class PermissionCheckTest extends FunctionalTest {
 
-    @Before
-    public void setUpRouter() {
+    @BeforeClass
+    public static void setUpRouter() {
         Router.addRoute("GET", "/foo/bar", "Foo.bar");
         Router.addRoute("GET", "/singlefoo/bar", "SingleFoo.bar");
         Router.addRoute("GET", "/singlefoo/user", "SingleFoo.user");

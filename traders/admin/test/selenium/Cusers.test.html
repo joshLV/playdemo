@@ -1,18 +1,18 @@
 *{ You can use plain selenium command using the selenium tag }*
 #{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class],load:['fixture/roles.yml','fixture/cusers.yml'] /}
 #{selenium}
-   open('/cusers')
+   open('/users')
    assertTitle('操作员一览')
 #{/selenium}
 
 #{selenium}
-   open('/cusers/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user1")}/edit')
+   open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user1")}/edit')
    assertTitle('操作员编辑')
 #{/selenium}
 
 
 #{selenium}
-   open('/cusers/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}/edit')
+   open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}/edit')
    click('xpath=(//input[@id='cuser.roles.id'])[2]')
    type('id=loginName','yan1')
    type('id=mobile','13012012011')
@@ -22,7 +22,7 @@
 #{/selenium}
 
 #{selenium}
-   open('/cusers/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}/edit')
+   open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}/edit')
    click('xpath=(//input[@id='cuser.roles.id'])[2]')
    type('id=loginName','yan1')
    type('id=mobile','13012012011')
@@ -32,11 +32,15 @@
 #{/selenium}
 
 #{selenium}
-  open('/cusers')
+  open('/users')
   assertTitle('操作员一览')
-  click('id=del_${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}')
+  verifyTextPresent('yan')
+  clickAndWait('id=del_${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}')
   assertConfirmation('确定删除吗？')
+  
+  
   verifyTextPresent('操作员一览')
+  verifyTextNotPresent('yan')
 #{/selenium}
 
 

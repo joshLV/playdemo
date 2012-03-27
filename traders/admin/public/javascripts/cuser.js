@@ -21,7 +21,7 @@ $(window).load(function(){
 		}
 		var hiddenId = $("#hiddenId").val();
 		$.post(
-				"/cusers/checkLoginName",
+				"/users/checkLoginName",
 				{id:hiddenId,loginName:loginName,mobile:mobile},
 				function(data){
 					if(data == 1 ){
@@ -33,7 +33,7 @@ $(window).load(function(){
 						$("#checkName").html("");
 						$("#checkMobile").html("");
 						$("#operForm").attr("method", "POST");
-						$("#operForm").action = "/cusers/create";
+						$("#operForm").action = "/users/create";
 						$("#operForm").submit();
 					}
 				},
@@ -61,7 +61,7 @@ function checkLoginNameAndMobile(){
 		$("#checkMobile").html("");
 	}
 	$.post(
-			"/cusers/checkLoginName",
+			"/users/checkLoginName",
 			{id:hiddenId,loginName:loginName,mobile:mobile},
 			function(data){
 				if(data == 1 ){
@@ -76,11 +76,4 @@ function checkLoginNameAndMobile(){
 			},
 			"text"
 	);
-}
-
-function deleteData(id){
-    if(confirm("确定删除吗？")) {
-    	var url="/cusers/delete?id="+id;
-    	window.location.href=url;
-    }
 }

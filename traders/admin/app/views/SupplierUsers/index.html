@@ -11,12 +11,12 @@
   <script src="@{'/public/javascripts/cuser.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
  <legend>操作员一览</legend>
- #{form @Cusers.index() , id:'operForm',class:"form-horizontal" }
+ #{form @SupplierUsers.index() , id:'operForm',class:"form-horizontal" }
   <table class="table table-striped table-bordered table-condensed">
    <tr>
     <td>用户名<input type="text" name="loginName" class="input-large"/>
      <button class="btn btn-primary" type="submit">搜索</button>
-     <a href="@{Cusers.add()}" class="btn btn-primary">添加操作员</a>
+     <a href="@{SupplierUsers.add()}" class="btn btn-primary">添加操作员</a>
     </td>
    </tr>
   </table>
@@ -41,7 +41,10 @@
      <td>${row.roles.text ==[] ?'':row.roles.text}</td>
      <td>${row.createdAt == null ? '':row.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
      <td>${row.lastLoginAt == null ? '':row.lastLoginAt.format("yyyy-MM-dd HH:mm:ss")}</td>
-     <td><a href="@{Cusers.edit(row.id)}">修改</a>/<a href="#" id="del_${row.id}" onclick="deleteData(${row.id})">删除</a></td>
+     <td>
+        <a href="@{SupplierUsers.edit(row.id)}">修改</a> /
+        <a href="/users/${row.id}" id="del_${row.id}" onclick="if (confirm('确定删除吗？')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href + '?x-http-method-override=DELETE'; f.submit(); };return false;">删除</a>
+     </td>
     </tr>
     #{/paginate.list}
    </tbody>

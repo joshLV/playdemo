@@ -1,6 +1,6 @@
 *{ You can use plain selenium command using the selenium tag }*
 #{selenium}
-    open('/cusers/new')
+    open('/users/new')
     assertTitle('操作员添加')
     click('xpath=(//input[@id='cuser.roles.id'])[2]')
     type('id=loginName','小王')
@@ -11,7 +11,7 @@
 #{/selenium}
 
 #{selenium}
-    open('/cusers/new')
+    open('/users/new')
     assertTitle('操作员添加')
     click('xpath=(//input[@id='cuser.roles.id'])[2]')
     type('id=loginName','小王6')
@@ -20,6 +20,3 @@
     clickAndWait('id=save')
     assertTitle('操作员一览')
 #{/selenium}
-
-
-   

@@ -8,6 +8,7 @@ import navigation.NavigationHandler;
 import navigation.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import play.mvc.Router;
 import play.test.Fixtures;
@@ -17,8 +18,8 @@ import controllers.supplier.cas.Security;
 
 public class MenuCheckTest extends FunctionalTest {
 
-    @Before
-    public void setUpRouter() {
+    @BeforeClass
+    public static void setUpRouter() {
         Router.addRoute("GET", "/foo/bar", "Foo.bar");
         Router.addRoute("GET", "/singlefoo/bar", "SingleFoo.bar");
         Router.addRoute("GET", "/singlefoo/user", "SingleFoo.user");
@@ -55,11 +56,7 @@ public class MenuCheckTest extends FunctionalTest {
 
         List<ContextedMenu> list = (List<ContextedMenu>) renderArgs("topMenus");
 
-        for (ContextedMenu contextedMenu : list) {
-            System.out.println("menu:" + contextedMenu.getLink() + ", xx:" + contextedMenu.getText());
-        }
-        
         assertTrue(list.size() > 0);
-        assertTrue(list.get(0).getLink().indexOf("localhost") > 0);
+        assertTrue(list.get(0).getBaseUrl().indexOf("localhost") > 0);
 	}
 }
