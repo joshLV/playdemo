@@ -6,7 +6,7 @@
     <permission key="GOODS" text="商品管理"/>
     <permission key="SUPPLIERS_NEW" text="商户添加"/>
     <permission key="SUPPLIERS" text="商户管理"/>
-    <permission key="RESALERS" text="分销商管理"/>
+    <permission key="RESALERS" text="分销商管理" roles="admin"/>
     <!--<permission key="SHOPS_NEW" text="门店添加"/>-->
     <!--<permission key="SHOPS" text="门店管理"/>-->
 

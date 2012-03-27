@@ -1,4 +1,4 @@
-*{文本框标签}*
+*{文本区标签}*
 *{label:     文本框的标签（选填）}*
 *{name:      文本框的名称}*
 *{value:     文本框中的值}*
@@ -9,9 +9,10 @@
     #{layout_operate.labelText name:_label?:_name, required:_required/}
 
     <div class="controls">
-        <input type="text" id="${field.id}" name="${field.name}" class="input-xlarge"
-               value="${params[field.name]?.escape()?.raw() ?: field.error?.message == 'validation.required' ?
-               "":_value?.escape()?.raw()}"/><span>${_note}</span>
+        <textarea name="${field.name}" id="${field.id}" cols="100" rows="8"
+                  style="width:700px;height:200px;"
+                >${params[field.name]?.escape()?.raw() ?: field.error?.message == 'validation.required' ?
+               "":_value?.escape()?.raw()}</textarea><span>${_note}</span>
         #{ifError field.name}
             <span class="error">${field.error.raw()}</span>
         #{/ifError}

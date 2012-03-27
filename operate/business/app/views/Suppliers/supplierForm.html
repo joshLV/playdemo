@@ -1,0 +1,56 @@
+<input type="hidden" name="supplier.id" value="${supplier?.id}">
+#{layout_operate.textField name:'supplier.fullName', value=supplier?.fullName,required:true/}
+#{layout_operate.textField name:'supplier.domainName', value=supplier?.domainName,note:'.uhuila.net',required:true/}
+#{layout_operate.textField name:'admin.mobile', value=admin?.mobile, required:true/}
+#{layout_operate.passwordField name:'admin.domainName', value=supplier?.domainName,note:'.uhuila.net',required:true/}
+#{layout_operate.passwordField name:'admin.domainName', value=supplier?.domainName,note:'.uhuila.net',required:true/}
+#{layout_operate.fileField name:'supplier.image'/}
+#{layout_operate.textareaField name:'supplier.description', value=supplier?.description/}
+<div class="form-actions">
+    <button class="btn btn-primary" id="save" type="submit">保存</button>
+#{if "edit".equals(action)}
+    <button class="btn btn-primary" id="cancel" type="button">取消</button>
+    <SCRIPT type=text/javascript>
+        $(function () {
+            $("#cancel").click(function () {
+                window.location.redirect('/suppliers');
+            });
+        });
+    </SCRIPT>
+#{/if}
+</div>
+
+*{<div class="control-group">}*
+*{<label for="fullName" class="control-label"><span style="color: red; ">*</span>商户名称</label>}*
+
+*{<div class="controls">}*
+*{<input type="text" id="fullName" name="supplier.fullName" class="input-xlarge" value="${supplier?.fullName}"/>}*
+*{<span class="error">#{error 'supplier.fullName' /}</span>}*
+*{</div>}*
+*{</div>}*
+*{<div class="control-group">}*
+*{<label for="domainName" class="control-label"><span style="color: red; ">*</span>域名</label>}*
+
+*{<div class="controls">}*
+*{<input type="text" id="domainName" name="supplier.domainName" class="input-xlarge"}*
+*{value="${supplier?.domainName}"/>.uhuila.net}*
+*{<span class="error">#{error 'supplier.domainName' /}</span>}*
+*{</div>}*
+*{</div>}*
+*{<div class="control-group">}*
+*{<label for="image" class="control-label">商户Logo</label>}*
+
+*{<div class="controls">}*
+*{<input type="file" id="image" name="image" class="input-file"/>}*
+*{</div>}*
+*{<div class="controls">}*
+*{<span class="error">#{error 'supplier.image'/}</span></div>}*
+*{</div>}*
+*{<div class="control-group">}*
+*{<label for="description" class="control-label">描述</label>}*
+
+*{<div class="controls">}*
+*{<textarea name="supplier.description" id="description" cols="100" rows="8"}*
+*{style="width:700px;height:200px;">${supplier?.description}</textarea>}*
+*{</div>}*
+*{</div>}*

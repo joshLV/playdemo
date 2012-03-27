@@ -4,17 +4,8 @@
 <div class="body">
 #{form @Suppliers.update(), id:'updateForm',enctype:'multipart/form-data',class:"form-horizontal" }
     <legend>修改商户</legend>
-    #{include '/share/edit_supplier.html'/}
-    <div class="form-actions">
-        <button class="btn btn-primary" id="save" type="submit">保存</button>
-        <button class="btn btn-primary" id="cancel" type="button">取消</button>
-    </div>
+    #{set action:"edit"/}
+    #{include '/Supplier/supplierForm.html'/}
 #{/form}
 </div>
-<SCRIPT type=text/javascript>
-    $(function(){
-        $("#cancel").click(function () {
-            window.location.redirect('/suppliers');
-        });
-    });
-</SCRIPT>
+

@@ -4,10 +4,7 @@
 <div class="body">
 #{form @Suppliers.create() , id:'creationForm',enctype:'multipart/form-data',class:"form-horizontal" }
     <legend>添加商户</legend>
-    #{include '/share/edit_supplier.html'/}
-    <div class="form-actions">
-        <button class="btn btn-primary" id="save" type="submit">保存</button>
-    </div>
+    #{include '/Suppliers/supplierForm.html'/}
 #{/form}
 </div>
 

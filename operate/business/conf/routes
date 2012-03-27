@@ -10,7 +10,7 @@ GET     /goods/{id}/edit                        OperateGoods.edit
 GET     /goods/{id}/view                        OperateGoods.detail
 GET     /goods/{id}/preview                     OperateGoods.preview
 PUT     /goods/{id}                             OperateGoods.update
-POST    /updatestatus                           OperateGoods.updateStatus
+POST    /goods/updatestatus                     OperateGoods.updateStatus
 DELETE  /goods/{id}                             OperateGoods.delete
 POST    /goods/images                           UploadFiles.uploadJson
 POST    /goods/filemanager                      UploadFiles.fileManagerJson
@@ -29,8 +29,8 @@ GET     /suppliers                              Suppliers.index
 GET     /suppliers/new                          Suppliers.add
 POST    /suppliers                              Suppliers.create
 GET     /suppliers/{id}/edit                    Suppliers.edit
-PUT     /suppliers/{id}/update                  Suppliers.update
-DELETE  /suppliers/{id}/delete                  Suppliers.delete
+PUT     /suppliers/{id}                         Suppliers.update
+DELETE  /suppliers/{id}                         Suppliers.delete
 
 GET     /resalers                               Resalers.index
 GET     /resalers/{id}/view                     Resalers.detail

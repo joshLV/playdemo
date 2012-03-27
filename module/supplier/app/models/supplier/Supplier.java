@@ -13,25 +13,54 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 供应商（商户）
+ * <p/>
+ * author:sujie@uhuila.com
+ */
 @Entity
 @Table(name = "suppliers")
 public class Supplier extends Model {
+    /**
+     * 域名
+     */
     @Required
     @MaxSize(100)
     @Column(name = "domain_name")
     public String domainName;
+    /**
+     * 商户名称
+     */
     @Required
     @MaxSize(50)
     @Column(name = "full_name")
     public String fullName;
+    /**
+     * 创建时间
+     */
     @Column(name = "created_at")
     public Date createdAt;
+    /**
+     * 修改时间
+     */
     @Column(name = "updated_at")
     public Date updatedAt;
     @Enumerated(EnumType.STRING)
+    /**
+     * 状态
+     */
     public SupplierStatus status;
+    /**
+     * logo图片路径
+     */
     public String logo;
+    /**
+     * 描述
+     */
     public String description;
+    /**
+     * 删除状态
+     */
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
 
@@ -47,6 +76,16 @@ public class Supplier extends Model {
 
     private static final String IMAGE_SERVER = Play.configuration.getProperty
             ("image.server", "img0.uhcdn.com");
+
+    @Override
+    public boolean create() {
+        deleted = DeletedStatus.UN_DELETED;
+        status = SupplierStatus.NORMAL;
+        createdAt = new Date();
+
+        return super.create();
+    }
+
 
     public static void update(Supplier supplier) {
         Supplier sp = findById(supplier.id);

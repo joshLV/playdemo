@@ -1,0 +1,18 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'修改消费券' /}
+#{get 'moreScripts'}
+<script src="@{'/public/javascripts/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/get}
+#{include '/share/nav.html' /}
+<div class="body">
+#{form @OperateGoods.update(goods.id), id:'updateForm',enctype:'multipart/form-data',
+class:"form-horizontal",
+method:'PUT' }
+    <legend>修改消费券</legend>
+    #{include '/OperateGoods/goodsForm.html', action:'edit'/}
+#{/form}
+</div>
+
+
