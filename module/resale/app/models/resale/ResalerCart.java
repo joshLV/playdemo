@@ -145,7 +145,7 @@ public class ResalerCart extends Model {
      * @param resaler   用户
      * @return 合并数量后的购物车条目列表
      */
-    public static List<List<ResalerCart>> findAll(Resaler resaler) {
+    public static List<List<ResalerCart>> groupFindAll(Resaler resaler) {
         if (resaler == null ) {
             return new ArrayList<List<ResalerCart>>();
         }
@@ -169,6 +169,13 @@ public class ResalerCart extends Model {
             }
         }
         return result;
+    }
+    
+    public static List<ResalerCart> findAll(Resaler resaler) {
+        if (resaler == null){
+            return new ArrayList<ResalerCart>();
+        }
+        return ResalerCart.find("byResaler", resaler).fetch();
     }
 
     

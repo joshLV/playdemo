@@ -1,0 +1,101 @@
+#{extends 'main.html' /}
+#{set title:'优惠啦 - 确认订单' /}
+#{set 'moreStyles'}
+<link href="@@{'/public/stylesheets/carts_index.css'}" rel="stylesheet" type="text/css"/>
+#{/set}
+#{set 'moreScripts'}
+<script src="@@{'/public/javascripts/carts.js'}"></script>
+#{/set}
+
+<div id="wrap_main">
+    <div id="wrap_top">
+    #{include "share/topNavigator.html"/}
+    </div>
+    <div id="wrap_top_header">
+        <div id="wrap_top_header_left"><img src="@{'/public/images/logo.jpg'}"/></div>
+        <div id="wrap_top_middle">卷生活-惠生活</div>
+
+    </div>
+    <div style="clear:both"></div>
+    <div class="fen_g"></div>
+</div>
+<!--主体内容部分-->
+<div id="gouwucar">
+    <div class="block_fense">购物</div>
+    <table width="996" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
+
+
+        <tr bgcolor="F6F6F6">
+            <th width="374">
+              <span class="th_shop_text">商品</span></th>
+            <th width="">手机号</th>
+            <th width="120">类型</th>
+            <th width="115" height="30" bgcolor="F6F6F6">单价（元）</th>
+            <th width="83">数量</th>
+            <th width="187">小计</th>
+        </tr>
+
+        #{list items:carts, as:'goodsGroup'}
+        %{cartItem = goodsGroup.get(0)}%
+
+
+        <tr id="row_${cartItem.goods.id}">
+                <td height="25" align="center" valign="middle" rowspan="${goodsGroup.size()}">
+                    <div class="col_one">
+                    </div>
+                    <div class="col_one_text">${cartItem.goods.name}
+                    </div>
+                </td>
+                <td width="103" height="25" align="center" valign="middle">
+                    <span id="phone_${cartItem.goods.id}">${cartItem.phone}</span>
+                </td>
+                <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
+                <td width="115" height="25" align="center" valign="middle" id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.salePrice}</td>
+                <td width="83" height="25" align="center" valign="middle">
+                    <input class="num_input" type="TEXT" id="num_${cartItem.goods.id}-${cartItem.phone}" value="${cartItem.number}" disabled="disabled"/>
+                </td>
+                <td idth="187" height="25" align="center" valign="middle">
+                    <span class="strong_gray" id="subtotal_${cartItem.goods.id}-${cartItem.phone}"> ${cartItem.goods.salePrice.multiply(cartItem.number)}</span>
+                </td>
+            </tr>
+
+            #{if goodsGroup.size() > 1}
+            %{goodsGroup = goodsGroup.subList(1, goodsGroup.size())}%
+            #{list items:goodsGroup, as:'cartItem'}
+        <tr id="row_${cartItem.goods.id}">
+                <td width="103" height="25" align="center" valign="middle">
+                    <span id="phone_${cartItem.goods.id}">${cartItem.phone}</span>
+                </td>
+                <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
+                <td width="115" height="25" align="center" valign="middle" id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.salePrice}</td>
+                <td width="83" height="25" align="center" valign="middle">
+                    <input class="num_input" type="TEXT" id="num_${cartItem.goods.id}-${cartItem.phone}" value="${cartItem.number}" disabled="disabled"/>
+                </td>
+                <td idth="187" height="25" align="center" valign="middle">
+                    <span class="strong_gray" id="subtotal_${cartItem.goods.id}-${cartItem.phone}"> ${cartItem.goods.salePrice.multiply(cartItem.number)}</span>
+                </td>
+            </tr>
+
+            #{/list}
+            #{/if}
+
+
+
+        #{/list}
+
+        #{if carts.size() == 0}
+            <tr>
+                <td colspan="6" style="text-align:center;padding:10px 0">您还没有添加商品哦，再逛逛吧:)</td>
+            </tr>
+        #{/if}
+
+    </table>
+</div>
+<div id="gouwucar_buttom_info">
+    <div class="bottom_info_three">商品共<span class="font_red_one" id="total_num">0</span>件，总合计（不含运费）：<span
+            class="font_red_one" id="carts_amount"></span>元</div>
+    <div class="both_clear"></div>
+    <form method="POST" action="/carts/confirm" id="confirm_post"></form>
+    <div class="bottom_info_four"><a class="queren_bg" href="/carts/confirm" onclick="$('#confirm_post').submit();return false;">确认结账</a></div>
+    <div class="both_clear"></div>
+</div>

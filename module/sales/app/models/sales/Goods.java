@@ -85,41 +85,6 @@ public class Goods extends Model {
     @JoinColumn(name = "goods_id")
     public List<GoodsLevelPrice> levelPrices;
 
-    public void setLevelPrices(List<GoodsLevelPrice> levelPrices) {
-        this.levelPrices = levelPrices;
-    }
-
-    public void setLevelPrices(BigDecimal[] prices) {
-        if (prices == null || prices.length == 0) {
-            return;
-        }
-        for (int i = 0; i < prices.length; i++) {
-            getLevelPrices().get(i).price = prices[i];
-        }
-    }
-
-    /**
-     * 不同分销商等级所对应的价格, 此方法可确保返回的价格数量与分销等级的数量相同
-     */
-    public List<GoodsLevelPrice> getLevelPrices() {
-        if (levelPrices == null) {
-            levelPrices = new ArrayList<>();
-        }
-        if (levelPrices.size() == 0) {
-            for (ResalerLevel level : ResalerLevel.values()) {
-                GoodsLevelPrice levelPrice = new GoodsLevelPrice(level, BigDecimal.ZERO);
-                levelPrices.add(levelPrice);
-            }
-        }
-        if (levelPrices.size() < ResalerLevel.values().length) {
-            int zeroLevelCount = ResalerLevel.values().length - levelPrices.size();
-            int originalSize = levelPrices.size();
-            for (int i = 0; i < zeroLevelCount; i++) {
-                levelPrices.add(new GoodsLevelPrice(ResalerLevel.values()[i + originalSize], BigDecimal.ZERO));
-            }
-        }
-        return levelPrices;
-    }
 
     //  ======  价格列表结束 ==========
 
@@ -369,6 +334,43 @@ public class Goods extends Model {
         return String.valueOf(discount);
     }
 
+
+    public void setLevelPrices(List<GoodsLevelPrice> levelPrices) {
+        this.levelPrices = levelPrices;
+    }
+
+    public void setLevelPrices(BigDecimal[] prices) {
+        if (prices == null || prices.length == 0) {
+            return;
+        }
+        for (int i = 0; i < prices.length; i++) {
+            getLevelPrices().get(i).price = prices[i];
+        }
+    }
+
+    /**
+     * 不同分销商等级所对应的价格, 此方法可确保返回的价格数量与分销等级的数量相同
+     */
+    public List<GoodsLevelPrice> getLevelPrices() {
+        if (levelPrices == null) {
+            levelPrices = new ArrayList<>();
+        }
+        if (levelPrices.size() == 0) {
+            for (ResalerLevel level : ResalerLevel.values()) {
+                GoodsLevelPrice levelPrice = new GoodsLevelPrice(level, BigDecimal.ZERO);
+                levelPrices.add(levelPrice);
+            }
+        }
+        if (levelPrices.size() < ResalerLevel.values().length) {
+            int zeroLevelCount = ResalerLevel.values().length - levelPrices.size();
+            int originalSize = levelPrices.size();
+            for (int i = 0; i < zeroLevelCount; i++) {
+                levelPrices.add(new GoodsLevelPrice(ResalerLevel.values()[i + originalSize], BigDecimal.ZERO));
+            }
+        }
+        return levelPrices;
+    }    
+    
     /**
      * 最小规格图片路径
      */

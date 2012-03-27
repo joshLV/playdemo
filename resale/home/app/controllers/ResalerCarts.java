@@ -1,5 +1,6 @@
 package controllers;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -7,9 +8,12 @@ import java.util.Map;
 import controllers.modules.cas.SecureCAS;
 import controllers.resaletrace.ResaleCAS;
 
+import models.accounts.AccountType;
 import models.consumer.User;
 
 import models.order.Cart;
+import models.order.Order;
+import models.order.OrderItems;
 import models.resale.Resaler;
 import models.resale.ResalerCart;
 import models.resale.ResalerFav;
@@ -40,8 +44,36 @@ public class ResalerCarts extends Controller {
 
         List<ResalerFav> favs = ResalerFav.findAll(resaler);
 
-        List<List<ResalerCart>> carts = ResalerCart.findAll(resaler);
+        List<List<ResalerCart>> carts = ResalerCart.groupFindAll(resaler);
         render(carts,favs);
+    }
+    
+    public static void showCarts(){
+        Resaler resaler = ResaleCAS.getResaler();
+        List<List<ResalerCart>> carts = ResalerCart.groupFindAll(resaler);
+        render(carts);
+    }
+    
+    public static void confirmCarts(){
+        Resaler resaler = ResaleCAS.getResaler();
+        List<ResalerCart> carts = ResalerCart.findAll(resaler);
+        
+        Order order = new Order(resaler.getId(), AccountType.RESALER, null);
+        BigDecimal amount = new BigDecimal(0);
+        for(ResalerCart cart : carts){
+            OrderItems orderItems = new OrderItems(order, cart.goods, cart.number, cart.phone);
+            orderItems.resalerPrice = cart.goods.getResalePrice(cart.goods, resaler.level);
+            order.orderItems.add(orderItems);
+            amount = amount.add(cart.goods.salePrice);
+        }
+        System.out.println("**********" + order.orderItems.size());
+        order.amount = amount;
+        order.needPay = amount;
+        
+        order.save();
+        ResalerCart.clear(resaler);
+        
+        redirect("/payment_info/" + order.getId());
     }
 
     /**

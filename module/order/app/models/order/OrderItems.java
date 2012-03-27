@@ -42,11 +42,13 @@ public class OrderItems extends Model {
 
     @Column(name = "buy_number")
     public Long buyNumber;
+    
+    public String phone;
 
     @Column(name = "created_at")
     public Date createdAt;
 
-    public OrderItems(Order order, Goods goods, long buyNumber) {
+    public OrderItems(Order order, Goods goods, long buyNumber, String phone) {
         this.order = order;
         this.goods = goods;
         this.faceValue = goods.faceValue;
@@ -55,6 +57,7 @@ public class OrderItems extends Model {
         this.resalerPrice = BigDecimal.ZERO;
         this.goodsName = goods.name;
         this.buyNumber = buyNumber;
+        this.phone = phone;
         this.createdAt = new Date();
     }
 

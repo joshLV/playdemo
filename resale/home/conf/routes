@@ -28,6 +28,8 @@ POST    /carts/form-delete                      ResalerCarts.formDelete
 POST    /carts/form-batch-delete                ResalerCarts.formBatchDelete
 POST    /carts/ajax                             ResalerCarts.reorder
 DELET   /carts/ajax                             ResalerCarts.delete
+GET     /carts/confirm                          ResalerCarts.showCarts
+POST    /carts/confirm                          ResalerCarts.confirmCarts
 
 GET     /goods                                  ResalerGoods.index
 GET     /goods/list/{condition}                 ResalerGoods.list

@@ -207,7 +207,7 @@ public class Order extends Model {
 		}
 		this.receiverMobile = mobile;
 
-		OrderItems orderItems = new OrderItems(this, goods, number);
+		OrderItems orderItems = new OrderItems(this, goods, number, mobile);
 		this.orderItems.add(orderItems);
 	}
 
@@ -230,7 +230,7 @@ public class Order extends Model {
 				continue;
 			}
 			checkInventory(cart.goods, cart.number);
-			OrderItems orderItems = new OrderItems(this, cart.goods, cart.number);
+			OrderItems orderItems = new OrderItems(this, cart.goods, cart.number, mobile);
 			this.orderItems.add(orderItems);
 		}
 	}
@@ -298,6 +298,7 @@ public class Order extends Model {
 		save();
 		for (OrderItems orderItem : orderItems) {
 			orderItem.goods.baseSale -= orderItem.buyNumber;
+			orderItem.goods.saleCount += orderItem.buyNumber;
 			orderItem.save();
 		}
 		Cart.clear(user, cookieIdentity);
@@ -318,13 +319,11 @@ public class Order extends Model {
 				if (goods == null) {
 					continue;
 				}
-				goods.baseSale -= orderItem.buyNumber;
-				goods.saleCount += orderItem.buyNumber;
 				if (goods.materialType == MaterialType.ELECTRONIC) {
 					for(int i =0; i< orderItem.buyNumber; i++){
 						ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
 						if (!"dev".equals(Play.configuration.get("application.mode"))) {
-							SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, this.receiverMobile);
+							SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, orderItem.phone);
 						}
 					}
 
@@ -365,11 +364,6 @@ public class Order extends Model {
 	/**
 	 * 会员中心订单查询
 	 *
-	 * @param user           用户信息
-	 * @param createdAtBegin 下单开始时间
-	 * @param createdAtEnd   下单结束时间
-	 * @param status         状态
-	 * @param goodsName      商品名
 	 * @param pageNumber     第几页
 	 * @param pageSize       每页记录
 	 * @return ordersPage 订单信息
