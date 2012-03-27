@@ -47,10 +47,9 @@ public class ResalerOrders extends Controller {
 		renderGoodsCond(condition);
 		
 		
-		//取得本月订单信息
+		//取得本月订单总金额
 		Map thisMonthMap = ResaleUtil.findThisMonth();
 		Map lastMonthMap = ResaleUtil.findLastMonth();
-		
 		long instantTotal = Order.getThisMonthTotal(resaler,lastMonthMap,thisMonthMap,OrderStatus.PAID);
 		//取得上月订单信息
 		render(orderList, breadcrumbs);

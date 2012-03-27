@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import com.uhuila.common.constants.DeletedStatus;
 
 import models.accounts.AccountType;
-import models.consumer.User;
 import models.order.OrderStatus;
 /**
  * 分销订单查询条件
