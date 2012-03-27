@@ -45,7 +45,7 @@ public class DomainUserAuthnHandler extends AbstractUsernamePasswordAuthenticati
         String loginName = domainUsers[0];
         String domainName = domainUsers[1];
 
-        String sql = "select a.* from cusers a inner join suppliers b on a.supplier_id=b.id where a.login_name = ? " +
+        String sql = "select a.* from supplier_users a inner join suppliers b on a.supplier_id=b.id where a.login_name = ? " +
                 "and b.domain_name = ?";
         Object[] params = new Object[] { loginName, domainName };
 
