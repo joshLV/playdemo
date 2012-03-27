@@ -1,5 +1,5 @@
 #{extends 'main.html' /}
-#{set title:'优惠啦 - 我购买的商品' /}
+#{set title:'我的商品订购' /}
 #{set 'moreStyles'}
 <link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
 <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
@@ -76,8 +76,12 @@ $(window).load(function () {
     </table>
     </form>
     <div class="tab_top">统计金额</div>
-     <div class="caozuo_std">本月订单共100笔共100元（交易成功${thisMonthTotal}笔，进行中10笔）</div>
-     <div class="caozuo_std">上月订单共100笔共100元（交易成功100笔，进行中10笔）</div>
+     <div class="caozuo_std">本月订单共${totalMap.thisMonthTotal}笔共${totalMap.thisMonthTotalAmount}元
+     （交易成功${totalMap.thisPaidTotal}笔/${totalMap.thisMonthPaidAmount}元，
+     进行中${totalMap.thisUnPaidTotal}笔/${totalMap.thisMonthUnPaidAmount}元）</div>
+     <div class="caozuo_std">上月订单共${totalMap.lastMonthTotal}笔共${totalMap.lastMonthTotalAmount}元
+     （交易成功${totalMap.lastPaidTotal}笔/${totalMap.lastMonthPaidAmount}元，
+     进行中${totalMap.lastUnPaidTotal}笔/${totalMap.lastMonthUnPaidAmount}元）</div>
     <table width="798" border="0" cellpadding="0" cellspacing="0" bgcolor="#F6F6F6">
      <tr>
       <td width="340" align="center"><span class="font_strong">商品名称</span></td>

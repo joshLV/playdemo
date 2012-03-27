@@ -65,9 +65,9 @@ public class GoodsUnitTest extends UnitTest {
     @Test
     public void testFindByResaleCondition() {
         String condition = "0-0-0-0-1";
-        GoodsCondition goodsCond = new GoodsCondition(condition);
-        Resaler resaler = new Resaler();
-        resaler.level=ResalerLevel.VIP1;
+        GoodsCondition goodsCond = new GoodsCondition(true,condition);
+        Long resalerId = (Long) Fixtures.idCache.get("models.resale.Resaler-Resaler_1");
+        Resaler resaler =Resaler.findById(resalerId);
         JPAExtPaginator<Goods> goodsPage = models.sales.Goods.findByResaleCondition
                 (resaler,goodsCond, 1, 50);
         assertEquals(16, goodsPage.size());

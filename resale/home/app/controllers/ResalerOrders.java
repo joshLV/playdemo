@@ -45,13 +45,11 @@ public class ResalerOrders extends Controller {
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders");
 		renderGoodsCond(condition);
 		
+		//取得本月和上月订单笔数,总金额
+		Order.getThisMonthTotal(resaler);
+		Map totalMap = Order.getTotalMap();
 		
-		//取得本月订单总金额
-		Map thisMonthMap = ResaleUtil.findThisMonth();
-		Map lastMonthMap = ResaleUtil.findLastMonth();
-		long thisMonthTotal = Order.getThisMonthTotal(resaler,lastMonthMap,thisMonthMap);
-		//取得上月订单信息
-		render(orderList, breadcrumbs,thisMonthTotal);
+		render(orderList, breadcrumbs,totalMap);
 	}
 
 	/**
@@ -71,7 +69,7 @@ public class ResalerOrders extends Controller {
 	 * 付款
 	 */
 	public static void pay(Long id) {
-		redirect("http://www.uhuila.cn/payment_info/" + id);
+		redirect("/payment_info/" + id);
 	}
 	
 	/**

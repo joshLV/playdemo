@@ -1,0 +1,15 @@
+#{fixture delete:[models.order.Order.class,models.sales.Category.class,models.sales.Area.class,
+models.sales.Shop.class, models.sales.Goods.class,models.order.OrderItems.class,models.resale.Resaler.class] ,
+load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_unit.yml',
+'fixture/shops_unit.yml','fixture/goods_unit.yml','fixture/level_price.yml','fixture/resaler.yml','fixture/orders.yml','fixture/orderItems.yml'] /}
+#{selenium "查看订单界面"}
+    #{include 'test/selenium/step/login.selenium' /}
+    open('/orders')
+    assertTitle('我的商品订购')
+    clickAndWait('link=我的商品订购')
+#{/selenium}
+#{selenium '查看订单详细信息'}
+    open('/orders/${play.test.Fixtures.idCache.get("models.order.Order-order1")}')
+    assertTitle('商品详情')
+    verifyTextPresent('201202220324134991598')
+#{/selenium}

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -25,6 +26,7 @@ import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
 import models.resale.Resaler;
+import models.resale.util.ResaleUtil;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sms.SMSUtil;
@@ -235,12 +237,10 @@ public class Order extends Model {
 		}
 	}
 
-	public void setUser(User user, AccountType accountType){
-		if(user != null){
-			this.userId = user.getId();
-			this.userType = accountType;
-			this.save();
-		}
+	public void setUser(long userId, AccountType accountType){
+		this.userId = userId;
+		this.userType = accountType;
+		this.save();
 	}
 
 	public static long itemsNumber(Order order) {
@@ -362,8 +362,8 @@ public class Order extends Model {
 	}
 
 	/**
-	 * 会员中心订单查询
-	 *
+	 * 分销商订单查询
+	 * @param condition  查询条件
 	 * @param pageNumber     第几页
 	 * @param pageSize       每页记录
 	 * @return ordersPage 订单信息
@@ -380,18 +380,119 @@ public class Order extends Model {
 		return orderPage;
 	}
 
-	public static long getThisMonthTotal(Resaler resaler, Map lastMonthMap, Map thisMonthMap) {
+	@Transient
+	static Map totalMap= new HashMap();
+	public static Map getTotalMap() {
+		return totalMap;
+	}
+
+	/**
+	 * 本月订单总数（成功的和进行中的）
+	 * @param resaler
+	 * @param status
+	 * @return
+	 */
+	public static void getThisMonthTotal(Resaler resaler) {
+
 		EntityManager entityManager = JPA.em();
-		Query query = entityManager.createQuery("SELECT sum( o.amount ) FROM Order o" +
-				" WHERE createdAt >= '"+lastMonthMap.get("thisMonthFD") +"' and createdAt <='"+
-				lastMonthMap.get("thisMonthLD")+" and status = '"+OrderStatus.PAID+"'");
+		Map thisMonthMap = ResaleUtil.findThisMonth();
+
+		//本月成功订单笔数
+		String condition = getCondition(resaler,thisMonthMap,OrderStatus.PAID);
+		Query query = entityManager.createQuery("SELECT o FROM Order o"+condition); 
+		List<Order> orderlist = query.getResultList();
+		totalMap.put("thisPaidTotal",orderlist.size());
+		BigDecimal amount = new BigDecimal(0);
+		for (Order order:orderlist) {
+			amount= amount.add(order.amount);
+		}
+		//本月已支付订单金额
+		totalMap.put("thisMonthPaidAmount",amount);
+
+		//本月未支付订单笔数
+		condition = getCondition(resaler,thisMonthMap,OrderStatus.UNPAID);
+		query = entityManager.createQuery("SELECT o FROM Order o"+condition); 
+		orderlist = query.getResultList();
+		totalMap.put("thisUnPaidTotal",orderlist.size());
+		//本月未支付订单金额
+		amount = new BigDecimal(0);
+		for (Order order:orderlist) {
+			amount= amount.add(order.amount);
+		}
+		totalMap.put("thisMonthUnPaidAmount",amount);
+
+		//上月成功订单笔数
+		Map lastMonthMap = ResaleUtil.findLastMonth();
+		condition = getCondition(resaler,lastMonthMap,OrderStatus.PAID);
 		
-//		query.setParameter("createdAt", lastMonthMap.get("thisMonthFD"));
-//		query.setParameter("createdAtEnd", lastMonthMap.get("thisMonthLD"));
-//		query.setParameter("status", OrderStatus.PAID);
-		
-		List list = query.getResultList();
-		return list.size();
+		query = entityManager.createQuery("SELECT o FROM Order o"+condition); 
+		orderlist = query.getResultList();
+		totalMap.put("lastPaidTotal",orderlist.size());
+		//上月已支付订单金额
+		amount = new BigDecimal(0);
+		for (Order order:orderlist) {
+			amount= amount.add(order.amount);
+		}
+		totalMap.put("lastMonthPaidAmount",amount);
+
+		//上月未支付订单笔数
+		condition = getCondition(resaler,lastMonthMap,OrderStatus.UNPAID);
+		query = entityManager.createQuery("SELECT o FROM Order o"+condition); 
+		orderlist = query.getResultList();
+		totalMap.put("lastUnPaidTotal",orderlist.size());
+		//上月未支付订单金额
+		amount = new BigDecimal(0);
+		for (Order order:orderlist) {
+			amount= amount.add(order.amount);
+		}
+		totalMap.put("lastMonthUnPaidAmount",amount);
+
+		//本月总订单笔数
+		condition = getCondition(resaler,thisMonthMap,null);
+		query = entityManager.createQuery("SELECT o FROM Order o"+condition); 
+		orderlist = query.getResultList();
+		totalMap.put("thisMonthTotal",orderlist.size());
+		//本月总订单金额
+		amount = new BigDecimal(0);
+		for (Order order:orderlist) {
+			amount= amount.add(order.amount);
+		}
+		totalMap.put("thisMonthTotalAmount",amount);
+
+		//上月总订单笔数
+		condition = getCondition(resaler,lastMonthMap,null);
+		query = entityManager.createQuery("SELECT o FROM Order o"+condition); 
+		orderlist = query.getResultList();
+		totalMap.put("lastMonthTotal",orderlist.size());
+		//上月总订单金额
+		amount = new BigDecimal(0);
+		for (Order order:orderlist) {
+			amount= amount.add(order.amount);
+		}
+		totalMap.put("lastMonthTotalAmount",amount);
+	}
+
+	/**
+	 * 查询条件
+	 * 
+	 * @param monthMap 当月和上月
+	 * @param status 状态
+	 * @return
+	 */
+	private static String getCondition(Resaler resaler,Map monthMap,OrderStatus status) {
+		StringBuilder buider = new StringBuilder();
+		buider.append(" where userType ='"+AccountType.RESALER+"'");
+		buider.append(" and userId ="+resaler.id);
+		if (monthMap.get("fromDay") != null) {
+			buider.append(" and createdAt >='"+monthMap.get("fromDay")+"'");
+		}
+		if (monthMap.get("toDay") != null) {
+			buider.append(" and createdAt <='"+monthMap.get("toDay")+"'");
+		}
+		if (status != null) {
+			buider.append(" and status = '"+status+"'");
+		}
+		return buider.toString();
 	}
 
 }

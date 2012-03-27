@@ -23,11 +23,11 @@ sales.Goods(Goods_001):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_2]
- 
+ "isAllShop": false
 
 sales.Goods(Goods_002):
  "no": "002"
- "name": "书本"
+ "name": "哈根达斯200元抵用券"
  "supplierId": "1"
  "brand": "Brand_1"
  "imagePath": "/0/0/125/origin.jpg"
@@ -48,7 +48,8 @@ sales.Goods(Goods_002):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
-
+ "isAllShop": false
+ 
 sales.Goods(Goods_003):
  "no": "003"
  "name": "一号店抵用券"
@@ -72,7 +73,8 @@ sales.Goods(Goods_003):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
-
+ "isAllShop": false
+ 
 sales.Goods(Goods_004):
  "no": "004"
  "name": "京东商城50元京券"
@@ -96,7 +98,8 @@ sales.Goods(Goods_004):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
-
+ "isAllShop": false
+ 
 sales.Goods(Goods_005):
  "no": "005"
  "name": "京东商城100元京券"
@@ -120,7 +123,8 @@ sales.Goods(Goods_005):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
-
+ "isAllShop": false
+ 
 sales.Goods(Goods_006):
  "no": "006"
  "name": "京东商城200元京券"
@@ -144,7 +148,8 @@ sales.Goods(Goods_006):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
-
+ "isAllShop": false
+ 
 sales.Goods(Goods_007):
  "no": "007"
  "name": "京东商城300元京券"
@@ -168,7 +173,8 @@ sales.Goods(Goods_007):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
-
+ "isAllShop": false
+ 
 sales.Goods(Goods_008):
  "no": "008"
  "name": "京东商城400元京券"
@@ -192,7 +198,8 @@ sales.Goods(Goods_008):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
-
+ "isAllShop": false
+ 
 sales.Goods(Goods_009):
  "no": "009"
  "name": "京东商城500元京券"
@@ -216,7 +223,8 @@ sales.Goods(Goods_009):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
-
+ "isAllShop": false
+ 
 sales.Goods(Goods_010):
  "no": "010"
  "name": "京东商城550元京券"
@@ -240,7 +248,8 @@ sales.Goods(Goods_010):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
-
+ "isAllShop": false
+ 
 sales.Goods(Goods_011):
  "no": "011"
  "name": "京东商城600元京券"
@@ -264,7 +273,8 @@ sales.Goods(Goods_011):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
-
+ "isAllShop": false
+ 
 sales.Goods(Goods_012):
  "no": "012"
  "name": "京东商城650元京券"
@@ -288,7 +298,8 @@ sales.Goods(Goods_012):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
-
+ "isAllShop": false
+ 
 sales.Goods(Goods_013):
  "no": "013"
  "name": "京东商城700元京券"
@@ -312,7 +323,8 @@ sales.Goods(Goods_013):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
-
+ "isAllShop": false
+ 
 sales.Goods(Goods_014):
  "no": "014"
  "name": "京东商城800元京券"
@@ -336,7 +348,8 @@ sales.Goods(Goods_014):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
-
+ "isAllShop": false
+ 
 sales.Goods(Goods_015):
  "no": "015"
  "name": "京东商城900元京券"
@@ -362,7 +375,8 @@ sales.Goods(Goods_015):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
-
+ "isAllShop": false
+ 
 sales.Goods(Goods_016):
  "no": "016"
  "name": "京东商城1000元京券"
@@ -386,6 +400,7 @@ sales.Goods(Goods_016):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
+ "isAllShop": false
 
 sales.Goods(Goods_017):
  "no": "017"
@@ -412,3 +427,4 @@ sales.Goods(Goods_017):
  "materialType": "ELECTRONIC"
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
+ "isAllShop": false

@@ -1,4 +1,4 @@
-resale.Resaler(models_resale_Resaler_1):
+resale.Resaler(Resaler_1):
  "accountType": "CONSUMER"
  "loginName": "tom"
  "password": "dfed21ec4562d41879f9358ee80b0e31"
@@ -16,7 +16,7 @@ resale.Resaler(models_resale_Resaler_1):
  "createdAt": "2012-03-21T16:23:22"
  "level": "VIP1"
 
-resale.Resaler(models_resale_Resaler_2):
+resale.Resaler(Resaler_2):
  "accountType": "CONSUMER"
  "loginName": "jane"
  "password": "875aefcca6f4ec4f6d1fb7267514a36b"
@@ -34,7 +34,7 @@ resale.Resaler(models_resale_Resaler_2):
  "createdAt": "2012-03-21T15:48:28"
  "level": "VIP1"
 
-resale.Resaler(models_resale_Resaler_3):
+resale.Resaler(Resaler_3):
  "loginName": "1"
  "password": "8428a39d37b30f57a22ef7b29f705fc3"
  "passwordSalt": "Y5yfX7"

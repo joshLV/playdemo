@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ResaleUtil {
-	public static SimpleDateFormat df = new SimpleDateFormat( " yyyy-MM-dd " );
+	public static SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd" );
 	/**   
 	 * 得到本月的第一天和最后一天   
 	 * @return   
@@ -23,8 +23,8 @@ public class ResaleUtil {
 				.getActualMaximum(Calendar.DAY_OF_MONTH)); 
 
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("thisMonthFD", df.format(calendar.getTime()));
-		map.put("thisMonthLD", df.format(lastCalendar.getTime()));
+		map.put("fromDay", df.format(calendar.getTime()));
+		map.put("toDay", df.format(lastCalendar.getTime()));
 		return map;     
 	}     
 
@@ -59,8 +59,8 @@ public class ResaleUtil {
 
 
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("prevMonthFD", day_first_prevM);
-		map.put("prevMonthPD", day_end_prevM);
+		map.put("fromDay", day_first_prevM);
+		map.put("toDay", day_end_prevM);
 		return map;
 	}
 }

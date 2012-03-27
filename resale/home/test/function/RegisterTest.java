@@ -5,6 +5,7 @@ import java.util.Map;
 
 import models.resale.AccountType;
 import models.resale.Resaler;
+import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
 
 import org.junit.Before;
@@ -26,20 +27,20 @@ public class RegisterTest extends FunctionalTest {
 	public void testCreat() {
 		Map<String, String> loginUserParams = new HashMap<String,
 				String>();
-		loginUserParams.put("resaler.loginName", "qqq");
-		loginUserParams.put("resaler.mobile", "13131121121");
+		loginUserParams.put("resaler.loginName", "1qqq");
+		loginUserParams.put("resaler.mobile", "15131121121");
 		loginUserParams.put("resaler.password", "123456");
 		loginUserParams.put("resaler.confirmPassword", "123456");
-		loginUserParams.put("resaler.address", "上海市");
-		loginUserParams.put("resaler.email", "11@qq.com");
-		loginUserParams.put("resaler.accountType", AccountType.COMPANY.toString());
+		loginUserParams.put("resaler.address", "bb");
+		loginUserParams.put("resaler.email", "112@qq.com");
+		loginUserParams.put("resaler.accountType", AccountType.CONSUMER.toString());
 		//正常
 		loginUserParams.put("resaler.status", ResalerStatus.PENDING.toString());
-		loginUserParams.put("resaler.confirmPassword", "123456");
 		loginUserParams.put("resaler.phone", "0213212121");
-		loginUserParams.put("resaler.userName", "小李");
+		loginUserParams.put("resaler.userName", "aa");
 		loginUserParams.put("resaler.identityNo", "341281198208268785");
 		loginUserParams.put("resaler.postCode", "123456");
+		loginUserParams.put("resaler.level", ResalerLevel.NORMAL.toString());
 		Response response = POST("/register", loginUserParams);
 		assertStatus(302,response);
 

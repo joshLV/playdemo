@@ -20,14 +20,13 @@ open('/goods/list/0-0-0-1-1')
 verifyTextPresent('上一页')
 
 open('/goods/list/0-0-30-1-1')
-assertText('link=1','1')
 verifyTextPresent('上一页')
 verifyTextPresent('下一页')
 
-open('/goods/list/0-30-60-1-1')
+open('/goods/list/0-60-90-1-1')
 assertText('link=1','1')
 verifyTextPresent('下一页')
-verifyValue('id=input_price_from','30')
-verifyValue('id=input_price_to','60')
-assertTextPresent('哈根达斯100元抵用券')
+verifyValue('id=input_price_from','60')
+verifyValue('id=input_price_to','90')
+assertTextPresent('京东商城50元京券')
 #{/selenium}
