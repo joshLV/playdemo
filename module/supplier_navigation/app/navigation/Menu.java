@@ -17,6 +17,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import models.admin.SupplierNavigation;
 
 import org.apache.commons.lang.StringUtils;
+import play.Play;
+import play.supplier.cas.CASUtils;
 
 /**
  * Bare Menu
@@ -44,6 +46,12 @@ public class Menu {
     
     @XmlAttribute(name="labels")
     public String labelValue;
+    
+    @XmlTransient
+    public String devBaseUrl;
+    
+    @XmlTransient
+    public String prodBaseUrl;
     
     @XmlTransient
     public Set<String> getLabels() {
@@ -90,6 +98,18 @@ public class Menu {
         return url != null || action != null;
     }
     
+    @XmlTransient
+    public String getBaseUrl() {
+        String subDomain = CASUtils.getSubDomain();
+        String baseUrl = null;
+        if (Play.mode == Play.Mode.DEV) {
+            baseUrl = this.devBaseUrl;
+        } else {
+            baseUrl = this.prodBaseUrl;
+        }
+        return CASUtils.replaceSubDomain(baseUrl, subDomain);
+    }
+    
     public String menuKey() {
         return applicationName + "." + name;
     }
@@ -105,6 +125,8 @@ public class Menu {
         menu.text = navigation.text;
         menu.name = navigation.name;
         menu.action = navigation.action;
+        menu.devBaseUrl = navigation.devBaseUrl;
+        menu.prodBaseUrl = navigation.prodBaseUrl;
         menu.url = navigation.url;
         if (navigation.parent != null && recure) {
             menu.parent = from(navigation.parent, false);

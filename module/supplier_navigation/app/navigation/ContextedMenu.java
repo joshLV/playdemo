@@ -85,12 +85,12 @@ public class ContextedMenu {
 
     public String getLink() {
         if(menu.url != null) {
-            return menu.url;
+            return menu.getBaseUrl() + menu.url;
         }
         if(menu.action == null) {
             return null;
         } else {
-            return Router.reverse(menu.action, getSubstitutedParams()).url;
+            return menu.getBaseUrl() + Router.reverse(menu.action, getSubstitutedParams()).url;
         }
     }
 

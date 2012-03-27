@@ -16,6 +16,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -65,6 +66,10 @@ public class SupplierUser extends Model {
 
     @Column(name = "updated_at")
     public Date updatedAt;
+	
+	@ManyToOne
+	@JoinColumn(name="company_id")
+	public SupplierCompany company;
 
     /**
      * 逻辑删除,0:未删除，1:已删除

@@ -1,13 +1,13 @@
 package function;
 
-import models.admin.SupplierPermission;
+import java.util.List;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
-import navigation.ContextedPermission;
+import navigation.ContextedMenu;
+import navigation.NavigationHandler;
 import navigation.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Router;
 import play.test.Fixtures;
@@ -15,7 +15,7 @@ import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 import controllers.supplier.cas.Security;
 
-public class PermissionCheckTest extends FunctionalTest {
+public class MenuCheckTest extends FunctionalTest {
 
     @Before
     public void setUpRouter() {
@@ -42,31 +42,24 @@ public class PermissionCheckTest extends FunctionalTest {
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
 	}
-
+	
 	@Test
-	public void testAdminUserHasNotPermission() {
+	public void testMenuBaseUrl() {
 		Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user3");
 		SupplierUser user = SupplierUser.findById(id);
 		
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
-		
-		assertStatus(403, GET("/foo/bar"));
-		assertStatus(403, GET("/singlefoo/bar"));
 		assertIsOk(GET("/singlefoo/user"));
-	}
-	
-	
-	@Test
-	public void testTestUserHasPermission() {
-		Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-test");
-		SupplierUser user = SupplierUser.findById(id);
 		
-        // 设置测试登录的用户名
-        Security.setLoginUserForTest(user.loginName);
-		
-		assertIsOk(GET("/foo/bar"));
-		assertIsOk(GET("/singlefoo/bar"));
-		assertStatus(403, GET("/singlefoo/user"));
+
+        List<ContextedMenu> list = (List<ContextedMenu>) renderArgs("topMenus");
+
+        for (ContextedMenu contextedMenu : list) {
+            System.out.println("menu:" + contextedMenu.getLink() + ", xx:" + contextedMenu.getText());
+        }
+        
+        assertTrue(list.size() > 0);
+        assertTrue(list.get(0).getLink().indexOf("localhost") > 0);
 	}
 }

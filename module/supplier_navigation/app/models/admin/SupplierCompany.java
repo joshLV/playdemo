@@ -18,6 +18,7 @@ public class SupplierCompany extends Model {
     @Column(name = "full_name")
     public String fullName;
 
+    // FIXME: SupplierComapny.status应该是一个枚举值
     public String status;
 
     public String logo;

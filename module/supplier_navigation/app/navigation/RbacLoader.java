@@ -31,9 +31,9 @@ public class RbacLoader {
                     Role.class
             };
             jaxbContext = JAXBContext.newInstance(clazzes);
-                Unmarshaller um = jaxbContext.createUnmarshaller();
-                Application application = (Application) um.unmarshal(file.getRealFile());
-                init(application);
+            Unmarshaller um = jaxbContext.createUnmarshaller();
+            Application application = (Application) um.unmarshal(file.getRealFile());
+            init(application);
         } catch (Exception e) {
             Logger.error(e, "Problem initializing context: %s", e.getMessage());
         }
@@ -164,6 +164,12 @@ public class RbacLoader {
         supplierNavigation.applicationName = applicationName;
         supplierNavigation.loadVersion = currentLoadVersion;
         supplierNavigation.updatedAt = new Date();
+        
+        if (Play.mode == Play.mode.DEV) {
+            supplierNavigation.devBaseUrl = Play.configuration.getProperty("application.baseUrl");
+        } else {
+            supplierNavigation.prodBaseUrl = Play.configuration.getProperty("application.baseUrl");
+        }
         
         if (menu.getPermissions() != null) {
             supplierNavigation.permissions = new HashSet<>();

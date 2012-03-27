@@ -1,3 +1,7 @@
+admin.SupplierCompany(kfc):
+ "domainName": "kfc"
+ "fullName": "肯德基"
+
 admin.SupplierUser(user1):
  "supplierId": "2"
  "loginName": "1"
@@ -7,6 +11,7 @@ admin.SupplierUser(user1):
  "lockVersion": "1"
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETED"
+ "company": kfc
 
 admin.SupplierUser(user2):
  "supplierId": "2"
@@ -16,7 +21,8 @@ admin.SupplierUser(user2):
  "lastLoginAt": "2012-03-12T14:39:20"
  "lockVersion": "1"
  "createdAt": "2012-03-12T14:39:20"
- "deleted": "UN_DELETED"
+ "deleted": "UN_DELETE"
+ "company": kfc
  "roles":
  - "test"
  
@@ -32,11 +38,11 @@ admin.SupplierUser(user3):
  "createdAt": "2012-03-12T14:39:20"
  "updatedAt": "2012-03-12T17:33:49"
  "deleted": "UN_DELETED"
+ "company": kfc
  "roles":
  - "admin"
  - "sales"
  
-
 admin.SupplierUser(test):
  "supplierId": "2"
  "loginName": "test"
@@ -46,5 +52,6 @@ admin.SupplierUser(test):
  "lockVersion": "1"
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETED"
+ "company": kfc
  "roles":
  - "test" 

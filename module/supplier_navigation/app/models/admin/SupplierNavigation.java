@@ -40,6 +40,18 @@ public class SupplierNavigation extends Model {
     
     public boolean actived;
     
+    /**
+     * 用于生成Dev环境的topMenu及navigation时使用的baseUrl，如http://localhost:8080
+     */
+    @Column(name="dev_base_url")
+    public String devBaseUrl;
+    
+    /**
+     * 用于生成Prod环境的topMenu及navigation时使用的baseUrl，如http://admin.uhuila.net
+     */
+    @Column(name="prod_base_url")
+    public String prodBaseUrl;
+    
     @OrderColumn(name="display_order")
     public Integer displayOrder;
 

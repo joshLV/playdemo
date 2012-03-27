@@ -309,14 +309,25 @@ public class CASUtils {
     }
 
     public static String replaceCasUrl(String casUrlTemp) {
+        String subDomain = getSubDomain();
+        if (subDomain != null) {
+            return replaceSubDomain(casUrlTemp, subDomain);
+        }
+        return null;
+    }
+
+    public static String replaceSubDomain(String casUrlTemp, String subDomain) {
+        return casUrlTemp.replaceAll("\\{domain\\}", subDomain);
+    }
+
+    public static String getSubDomain() {
         String hostName = Http.Request.current().host;
         if (Play.mode == Play.Mode.DEV && hostName == null) {
             hostName = "localhost";
         }
         Matcher m = hostPattern.matcher(hostName);
         if (m.matches()) {
-            String subDomain = m.group(1);
-            return casUrlTemp.replaceAll("\\{domain\\}", subDomain);
+            return m.group(1);
         }
 
         return null;
