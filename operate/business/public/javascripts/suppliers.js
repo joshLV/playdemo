@@ -7,7 +7,7 @@
 
 function deleteSupplier(link) {
     if (confirm("您确定要删除商户[" + link.name + "]吗？")) {
-        var url = "/suppliers/" + link.id + "/delete";
+        var url = "/suppliers/" + link.id;
         $.ajax({
             url:url,
             type:'DELETE',

@@ -9,9 +9,11 @@ import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
+import play.db.jpa.JPA;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import javax.persistence.EntityManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -126,12 +128,20 @@ public class Suppliers extends Controller {
         render(supplier, admin);
     }
 
-    public static void update(@Valid Supplier supplier, File image, @Valid SupplierUser admin) {
-        initAdmin(admin);
-        if (validation.hasErrors() && validation.errorsMap().containsKey("admin.encryptedPassword")){
-            validation.errorsMap().remove("admin.encryptedPassword");
+    public static void update(@Valid Supplier supplier, File image, @Valid SupplierUser admin, String password) {
+
+        EntityManager entityManager = JPA.em();
+        entityManager.merge(admin);
+
+        SupplierUser uuu = SupplierUser.findById(admin.id);
+        System.out.println("uuu.mobile:" + uuu.mobile);
+
+        if (Validation.hasError("admin.encryptedPassword") && Validation.hasError("admin")
+                && Validation.errors().size() == 2) {
+            Validation.clear();
+            System.out.println("validation.errorsMap().size():" + validation.errorsMap().size());
         }
-        if (validation.hasErrors()) {
+        if (Validation.hasErrors()) {
             render("Suppliers/edit.html");
         }
         try {
@@ -139,9 +149,12 @@ public class Suppliers extends Controller {
         } catch (IOException e) {
             error("supplier.image_upload_failed");
         }
-        Supplier.update(supplier);
-        SupplierUser.update(admin.id, admin);
-
+        supplier.update();
+        if (admin.id == null) {
+            admin.create(supplier.id);
+        } else {
+            admin.update();
+        }
         index();
     }
 
@@ -156,6 +169,7 @@ public class Suppliers extends Controller {
     }
 
     public static void delete(long id) {
+        System.out.println("id:" + id);
         Supplier.delete(id);
         ok();
     }

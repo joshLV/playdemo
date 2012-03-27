@@ -120,16 +120,15 @@ public class SupplierUser extends Model {
      */
     public static void update(long id, SupplierUser cuser) {
         SupplierUser updCuser = SupplierUser.findById(id);
-        updCuser.loginName = cuser.loginName;
-        updCuser.mobile = cuser.mobile;
         if (StringUtils.isNotEmpty(cuser.encryptedPassword) && !cuser.encryptedPassword.equals(DigestUtils.md5Hex(updCuser.encryptedPassword))) {
             Images.Captcha captcha = Images.captcha();
             String passwordSalt = captcha.getText(6);
             //随机吗
             updCuser.passwordSalt = passwordSalt;
             updCuser.encryptedPassword = DigestUtils.md5Hex(cuser.encryptedPassword + passwordSalt);
+        }else{
+
         }
-        updCuser.roles = cuser.roles;
         updCuser.lastLoginAt = new Date();
         updCuser.updatedAt = new Date();
         //获得IP
@@ -137,6 +136,42 @@ public class SupplierUser extends Model {
 
         updCuser.save();
 
+    }
+
+    /**
+     * 更新操作员信息
+     */
+    public void update() {
+
+        SupplierUser updatedUser = SupplierUser.findById(id);
+        System.out.println("updatedUser.encryptedPassword:" + updatedUser.encryptedPassword);
+
+        updatedUser.loginName = loginName;
+        updatedUser.mobile = mobile;
+//        if (!StringUtils.isEmpty(password)){
+//            Images.Captcha captcha = Images.captcha();
+//            String passwordSalt = captcha.getText(6);
+//            //随机码
+//            updatedUser.passwordSalt = passwordSalt;
+//            updatedUser.encryptedPassword = DigestUtils.md5Hex(encryptedPassword + passwordSalt);
+//        }
+        if (StringUtils.isNotEmpty(encryptedPassword) && !encryptedPassword.equals(DigestUtils.md5Hex(updatedUser.encryptedPassword))) {
+            System.out.println("loginName:" + loginName);
+            System.out.println("mobile:" + mobile);
+            Images.Captcha captcha = Images.captcha();
+            String passwordSalt = captcha.getText(6);
+            //随机码
+            updatedUser.passwordSalt = passwordSalt;
+            updatedUser.encryptedPassword = DigestUtils.md5Hex(encryptedPassword + passwordSalt);
+        }
+        System.out.println("encryptedPassword:" + encryptedPassword);
+        System.out.println("updatedUser.encryptedPassword:" + updatedUser.encryptedPassword);
+        updatedUser.lastLoginAt = new Date();
+        updatedUser.updatedAt = new Date();
+        //获得IP
+        updatedUser.lastLoginIP = Request.current().remoteAddress;
+
+//        updatedUser.save();
     }
 
     /**

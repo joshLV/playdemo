@@ -1,5 +1,6 @@
 <input type="hidden" name="supplier.id" value="${supplier?.id}">
 <input type="hidden" name="admin.id" value="${admin?.id}">
+*{<input type="hidden" name="id" value="${admin?.id}">}*
 <input type="hidden" name="admin.loginName" value="admin">
 #{layout_operate.textField name:'supplier.fullName', value:supplier?.fullName, required:true/}
 #{layout_operate.textField name:'supplier.domainName', value:supplier?.domainName, note:'.uhuila.net',required:true/}
@@ -12,14 +13,7 @@
 <div class="form-actions">
     <button class="btn btn-primary" id="save" type="submit">保存</button>
 #{if "edit".equals(action)}
-    <button class="btn btn-primary" id="cancel" type="button">取消</button>
-    <SCRIPT type=text/javascript>
-        $(function () {
-            $("#cancel").click(function () {
-                $(window.location).attr('href', '/suppliers');
-            });
-        });
-    </SCRIPT>
+    #{layout_operate.cancelButton url:'/suppliers'/}
 #{/if}
 </div>
 

@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 public class PathUtil {
 
     private static final String IMAGE_ROOT_GENERATED = "/p";
+    private static final String IMAGE_ROOT_ORIGINAL = "/o";
     private static final Pattern IMAGE_PATTERN = Pattern.compile("^/([0-9]+)/([0-9]+)/([0-9]+)/([^_]+).(jpg|png|gif|jpeg)$");
     private static final String HTTP_HEAD = "http://";
 
@@ -41,10 +42,17 @@ public class PathUtil {
      * @return 完整的图片url
      */
     public static String getImageUrl(String imageServer, String imagePath, ImageSize size) {
-        String sizeType = size == null || ImageSize.ORIGINAL.equals(size) ? "" : "_" + size.toString();
+        String sizeType;
+        String rootPath;
+        if (size == null || ImageSize.ORIGINAL.equals(size)) {
+            sizeType = "";
+            rootPath = IMAGE_ROOT_ORIGINAL;
+        } else {
+            sizeType = "_" + size.toString();
+            rootPath = IMAGE_ROOT_GENERATED;
+        }
         String server = imageServer != null && imageServer.startsWith("http://") ? imageServer : HTTP_HEAD + imageServer;
-        String defaultImage = server + IMAGE_ROOT_GENERATED +
-                "/1/1/1/default" + sizeType + ".png";
+        String defaultImage = server + rootPath + "/1/1/1/default" + sizeType + ".png";
         if (imagePath == null || imagePath.equals("")) {
             return defaultImage;
         }
@@ -53,7 +61,7 @@ public class PathUtil {
             return defaultImage;
         }
         if (size == null || ImageSize.ORIGINAL.equals(size)) {
-            return server + "/o" + imagePath;
+            return server + rootPath + imagePath;
         }
 
         String imageHeadStr = IMAGE_ROOT_GENERATED + imagePath;
