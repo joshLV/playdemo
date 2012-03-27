@@ -187,7 +187,7 @@
 
     <div class="range_input"><input class="price_input" id="input_price_from"
                                     type="text"
-                                    value="${priceFrom}"/>至<input
+                                    value="#{if priceFrom != 0}${priceFrom}#{/if}"/>至<input
             class="price_input" id="input_price_to" type="text"
             value="#{if priceTo != 0}${priceTo}#{/if}"/></div>
     <div><a id="link_price_confirm" class="sort_box unselected_border"

@@ -75,10 +75,13 @@ $(window).load(function () {
      </tr>
     </table>
     </form>
+    <div class="tab_top">统计金额</div>
+     <div class="caozuo_std">本月订单共100笔共100元（交易成功${}笔，进行中10笔）</div>
+     <div class="caozuo_std">上月订单共100笔共100元（交易成功100笔，进行中10笔）</div>
     <table width="798" border="0" cellpadding="0" cellspacing="0" bgcolor="#F6F6F6">
      <tr>
-      <td width="100" align="center"><span class="font_strong">收货手机</span></td>
       <td width="340" align="center"><span class="font_strong">商品名称</span></td>
+      <td width="100" align="center"><span class="font_strong">收货手机</span></td>
       <td width="80" align="center"><span class="font_strong">分销价（元）</span></td>
       <td width="78" align="center"><span class="font_strong">数量</span></td>
       <td width="88" height="30" align="center"><span class="font_strong">实付款（元）</span></td>
@@ -94,7 +97,6 @@ $(window).load(function () {
      #{set m=0/}
     #{list row.orderItems, as:'rowItem'}
      <tr>
-      <td width="100" align="center">13200000</td>
       <td width="340" height="80" align="left">
        <div class="left_shangpin">
         <img src="${rowItem.goods.imageTinyPath}"/>
@@ -103,6 +105,7 @@ $(window).load(function () {
         ${rowItem.goods.name}
        </div>
       </td>
+      <td width="100" align="center">${rowItem.buyNumber}</td>
       <td width="80" align="center">${rowItem.resalerPrice}</td>
       <td width="78" align="center" >${rowItem.buyNumber}</td>
         #{if (++m == 1) }

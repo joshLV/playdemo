@@ -1,12 +1,14 @@
 package controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import models.order.Order;
 import models.order.OrderItems;
+import models.order.OrderStatus;
 import models.resale.Resaler;
-import models.resale.ResalerGoodsCondition;
 import models.resale.ResalerOrdersCondition;
+import models.resale.util.ResaleUtil;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -43,6 +45,14 @@ public class ResalerOrders extends Controller {
 
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders");
 		renderGoodsCond(condition);
+		
+		
+		//取得本月订单信息
+		Map thisMonthMap = ResaleUtil.findThisMonth();
+		Map lastMonthMap = ResaleUtil.findLastMonth();
+		
+		List list = Order.jisuan(resaler,lastMonthMap,thisMonthMap,OrderStatus.PAID);
+		//取得上月订单信息
 		render(orderList, breadcrumbs);
 	}
 

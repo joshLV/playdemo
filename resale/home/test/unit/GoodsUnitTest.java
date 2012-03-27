@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import models.resale.Resaler;
 import models.resale.ResalerGoodsCondition;
+import models.resale.ResalerLevel;
 import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
@@ -65,9 +66,10 @@ public class GoodsUnitTest extends UnitTest {
     public void testFindByResaleCondition() {
         String condition = "0-0-0-0-1";
         ResalerGoodsCondition goodsCond = new ResalerGoodsCondition(condition);
-
+        Resaler resaler = new Resaler();
+        resaler.level=ResalerLevel.VIP1;
         JPAExtPaginator<Goods> goodsPage = models.sales.Goods.findByResaleCondition
-                (goodsCond, 1, 50);
+                (resaler,goodsCond, 1, 50);
         assertEquals(16, goodsPage.size());
     }
 }

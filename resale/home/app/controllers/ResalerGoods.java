@@ -33,7 +33,7 @@ public class ResalerGoods extends Controller {
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 		ResalerGoodsCondition goodsCond = new ResalerGoodsCondition();
 		JPAExtPaginator<models.sales.Goods> goodsList = models.sales
-				.Goods.findByResaleCondition(goodsCond,pageNumber, PAGE_SIZE);
+				.Goods.findByResaleCondition(resaler,goodsCond,pageNumber, PAGE_SIZE);
 		List<Brand> brands = Brand.findTop(LIMIT);
 		renderGoodsCond(goodsCond);
 		render(goodsList,brands,resaler);
@@ -49,7 +49,7 @@ public class ResalerGoods extends Controller {
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 		ResalerGoodsCondition goodsCond = new ResalerGoodsCondition(condition);
 		JPAExtPaginator<models.sales.Goods> goodsList = models.sales
-				.Goods.findByResaleCondition(goodsCond,pageNumber, PAGE_SIZE);
+				.Goods.findByResaleCondition(resaler,goodsCond,pageNumber, PAGE_SIZE);
 		List<Brand> brands = Brand.findTop(LIMIT, goodsCond.brandId);
 		renderGoodsCond(goodsCond);
 		render("ResalerGoods/index.html",goodsList,brands,resaler);
