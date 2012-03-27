@@ -16,6 +16,7 @@ require:
     - resale -> resale
     - consumer -> consumer
     - order -> order
+    - payment -> payment
     - commons-lang -> commons-lang 2.6
     - sms -> sms
     - web_trace -> web_trace
@@ -47,6 +48,7 @@ repositories:
             - resale -> *
             - consumer -> *
             - order -> *
+            - payment -> *
             - web_trace -> *
             - accounts  -> *
             - sms -> *

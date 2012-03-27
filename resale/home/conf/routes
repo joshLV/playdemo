@@ -12,6 +12,16 @@ GET     /library                                ResalerFavs.index
 POST    /library                                ResalerFavs.order
 DELETE  /library/{goodsIds}                     ResalerFavs.delete
 
+
+# 确认支付信息
+POST    /payment_info/confirm                   PaymentInfo.confirm
+GET     /payment_info/{id}                      PaymentInfo.index
+
+
+# 显示支付结果
+GET     /orders/alipay_result                   OrderResult.alipayReturn
+
+# 购物车
 GET     /carts                                  ResalerCarts.index
 POST    /carts/form-add                         ResalerCarts.formAdd
 POST    /carts/form-delete                      ResalerCarts.formDelete

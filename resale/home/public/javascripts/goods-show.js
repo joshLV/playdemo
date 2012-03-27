@@ -10,15 +10,14 @@ $(window).load(
          *点击加入分销库按钮
          */
         $("#link_add_cart").click(function () {
-            $.post("/carts", {'goodsId':$("#goodsId").val(), 'increment':$("#number").val()},
+            $.post("/library", 
+                {'goodsIds':$("#goodsId").val(), 'increment':$("#number").val()},
                 function (data) {
-                    if (data.resultCode == "ok") {
-                        $('#add_cart_result').show();
-                    }
+                    $('#add_cart_result').show();
+                    //5秒后自动消失
+                    setTimeout("$('#add_cart_result').css('display','none')", 5000);
                 });
-            $('#add_cart_result').show();
-            //5秒后自动消失
-            setTimeout("$('#add_cart_result').css('display','none')", 5000);
+            //$('#add_cart_result').show();
         });
 
         $("#link_buy_more").click(function () {
