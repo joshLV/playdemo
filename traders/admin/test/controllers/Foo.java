@@ -9,7 +9,7 @@ import controllers.supplier.cas.SecureCAS;
 
 @With({SecureCAS.class, MenuInjector.class})
 @Right("PERM_TEST")
-@ActiveNavigation("user_add")
+@ActiveNavigation("bar")
 public class Foo extends Controller {
     
     public static void bar() {

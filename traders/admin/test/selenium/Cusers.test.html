@@ -1,17 +1,20 @@
-*{ You can use plain selenium command using the selenium tag }*
 #{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class],load:['fixture/roles.yml','fixture/cusers.yml'] /}
+
 #{selenium}
+   #{include 'test/selenium/step/login.selenium' /}
    open('/users')
    assertTitle('操作员一览')
 #{/selenium}
 
 #{selenium}
+   #{include 'test/selenium/step/login.selenium' /}
    open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user1")}/edit')
    assertTitle('操作员编辑')
 #{/selenium}
 
 
 #{selenium}
+   #{include 'test/selenium/step/login.selenium' /}
    open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}/edit')
    click('xpath=(//input[@id='cuser.roles.id'])[2]')
    type('id=loginName','yan1')
@@ -21,7 +24,8 @@
    verifyTextPresent('请输入密码!')
 #{/selenium}
 
-#{selenium}
+#{selenium "edit user"}
+   #{include 'test/selenium/step/login.selenium' /}
    open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}/edit')
    click('xpath=(//input[@id='cuser.roles.id'])[2]')
    type('id=loginName','yan1')
@@ -31,16 +35,16 @@
    assertNotTitle('操作员编辑')
 #{/selenium}
 
-#{selenium}
+#{selenium "delete user"}
+  #{include 'test/selenium/step/login.selenium' /}
   open('/users')
   assertTitle('操作员一览')
-  verifyTextPresent('yan')
-  clickAndWait('id=del_${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}')
+  verifyTextPresent('test_delete_user')
+  clickAndWait('id=del_${play.test.Fixtures.idCache.get("models.admin.SupplierUser-deleteuser")}')
   assertConfirmation('确定删除吗？')
   
-  
   verifyTextPresent('操作员一览')
-  verifyTextNotPresent('yan')
+  verifyTextNotPresent('test_delete_user')
 #{/selenium}
 
 

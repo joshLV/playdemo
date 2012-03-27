@@ -1,5 +1,10 @@
 package controllers;
 
+import java.util.HashSet;
+import java.util.Set;
+import models.admin.SupplierNavigation;
+import models.admin.SupplierPermission;
+import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import navigation.ContextedPermission;
 import navigation.NavigationHandler;
@@ -10,6 +15,7 @@ import play.Play;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Finally;
+import play.mvc.Http.Request;
 import controllers.supplier.cas.SecureCAS;
 
 /**
@@ -35,21 +41,31 @@ public class MenuInjector extends Controller {
         if (request.invokedMethod == null)
             return;
 
-        String userName = session.get(SecureCAS.SESSION_USER_KEY);
+        String userName = getDomainUserName(session.get(SecureCAS.SESSION_USER_KEY));
         
+        System.out.println("currentUser = " + userName);
         // 检查权限
         if (userName != null) {
             // 查出当前用户的所有权限  
             SupplierUser user = SupplierUser.find("byLoginName", userName).first();
+            if (user.roles != null) {
+                System.out.println("get role " + user.roles);
+                for (SupplierRole role : user.roles) {
+                    System.out.println("user.role=" + role.key);
+                }
+            }
             _user.set(user);
             ContextedPermission.init(user);
         }
-        checkRight();
-        
         // 得到当前菜单的名字
         String currentMenuName = getCurrentMenuName();
+        
+        // 检查权限
+        checkRight(currentMenuName);
+        
         String applicationName = Play.configuration.getProperty("application.name");
         NavigationHandler.initContextMenu(applicationName, currentMenuName);
+        
         renderArgs.put("topMenus", NavigationHandler.getTopMenus());
         renderArgs.put("secondLevelMenu", NavigationHandler.getSecondLevelMenus());
     }
@@ -64,6 +80,14 @@ public class MenuInjector extends Controller {
         return _user.get();
     }
 
+    public static String getDomainUserName(String fullUserName) {
+        if (fullUserName == null || fullUserName.indexOf("@") < 0) {
+            return fullUserName;
+        }
+        return fullUserName.split("@", 2)[0];
+    }
+    
+    
     /**
      * 得到当前菜单的名字。
      * 从Controller或method上检查 {@link ActiveNavigation} 标注，取其value为当前菜单名。
@@ -85,7 +109,7 @@ public class MenuInjector extends Controller {
         return currentMenuName;
     }
     
-    private static void checkRight() {
+    private static void checkRight(String currentMenuName) {
         Right methodRightAnnotation = getActionAnnotation(Right.class);
         String[] rights = null;
         if (methodRightAnnotation != null) {
@@ -97,8 +121,34 @@ public class MenuInjector extends Controller {
             }
         }
         
+        Set<String> rightSet = new HashSet<>();
         if (rights != null) {
-            boolean hasRight = ContextedPermission.hasPermissions(rights);
+            for (String r : rights) {
+                rightSet.add(r);
+            }
+        }
+        
+        SupplierNavigation currentNavigation = SupplierNavigation.findByName(currentMenuName);
+        // 把当前菜单上的权限也作为检查点，这样一个方法只需要指定@ActiveNavigation，就不需要再指定@Right了
+        if (currentNavigation != null && currentNavigation.permissions != null) {
+            for (SupplierPermission perm : currentNavigation.permissions) {
+                System.out.println(" 当前菜单(" + currentMenuName + ")的权限是：" + perm.key);
+                rightSet.add(perm.key);
+            }
+        }
+               
+	    System.out.println("???????? current permission = " + ContextedPermission.getAllowPermissions() + ", url=" + Request.current().url);
+	    if (ContextedPermission.getAllowPermissions() != null) {
+    	    for (String s : ContextedPermission.getAllowPermissions()) {
+    	        System.out.println("   perm:" + s);
+    	    }
+	    }
+	    for (String r : rightSet) {
+	        System.out.println("   right:" + r);
+	    }
+	    
+        if (rightSet.size() > 0) {
+            boolean hasRight = ContextedPermission.hasPermissionKeys(rightSet);
             if (!hasRight) {
                 error(403, "没有权限访问.");
             }

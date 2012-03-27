@@ -25,6 +25,7 @@
           <navigation key="user_search" text="查询用户" action="SupplierUsers.index" permissions="USER"/>
         </navigation>
         <navigation key="role" text="角色管理" permissions="ROLE" />
-        <navigation key="google" text="Google" url="http://www.google.com" />
+        <navigation key="bar" text="BarTest" permissions="PERM_TEST" />
+        <navigation key="google" text="Google" url="http://www.google.com" permissions="PERM_TEST" />
     </navigation>
 </application>

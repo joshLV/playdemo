@@ -33,7 +33,7 @@ public class SupplierRole extends Model {
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "supplier_users_roles", 
-        inverseJoinColumns = @JoinColumn(name= "cuser_id"), 
+        inverseJoinColumns = @JoinColumn(name= "user_id"), 
         joinColumns = @JoinColumn(name = "role_id"))
     public Set<SupplierUser> users;
 

@@ -24,7 +24,7 @@ import controllers.supplier.cas.SecureCAS;
  */
 
 @With({SecureCAS.class, MenuInjector.class })
-@ActiveNavigation("user")
+@ActiveNavigation("user_search")
 public class SupplierUsers extends Controller {
     public static int PAGE_SIZE = 15;
 
@@ -32,6 +32,7 @@ public class SupplierUsers extends Controller {
      * 操作员一览
      * 
      */
+    @ActiveNavigation("user_search")
     public static void index() {
         String page = request.params.get("page");
         String loginName = request.params.get("loginName");
@@ -45,6 +46,7 @@ public class SupplierUsers extends Controller {
      * 操作员添加页面
      * 
      */
+    @ActiveNavigation("user_add")
     public static void add() {
         List rolesList = SupplierRole.findAll();
         render(rolesList);
@@ -58,6 +60,7 @@ public class SupplierUsers extends Controller {
      * @param role
      *            角色ID
      */
+    @ActiveNavigation("user_add")
     public static void create(@Valid SupplierUser cuser) {
         if (Validation.hasErrors()) {
             List rolesList = SupplierRole.findAll();

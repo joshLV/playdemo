@@ -13,6 +13,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import play.db.jpa.Model;
 
@@ -26,7 +27,7 @@ public class SupplierPermission extends Model {
 
     public String description;
 
-    @Column(name="display_order")
+    @OrderColumn(name="display_order")
     public Integer displayOrder;
     
     @Column(name="application_name")
@@ -61,6 +62,12 @@ public class SupplierPermission extends Model {
         joinColumns = @JoinColumn(name = "permission_id"))
     public Set<SupplierRole> users;    
     
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JoinTable(name = "supplier_navigations_permissions", 
+        inverseJoinColumns = @JoinColumn(name= "navigation_id"), 
+        joinColumns = @JoinColumn(name = "permission_id"))
+    public Set<SupplierNavigation> navigations;    
+    
     /**
      * 加载版本，使用应用程序加载时间，在处理完成后，删除不是当前loadVersion的记录，以完成同步.
      */
@@ -73,7 +80,9 @@ public class SupplierPermission extends Model {
      * @param loadVersion
      */
     public static  void deleteUndefinedPermissions(String applicationName, long loadVersion) {
-        List<SupplierPermission> list = SupplierPermission.find("applicationName=? and loadVersion <> ? order by parent DESC, id DESC", applicationName, loadVersion).fetch();
+        List<SupplierPermission> list = SupplierPermission.find(
+                "applicationName=? and loadVersion <> ? order by parent DESC, id DESC", 
+                applicationName, loadVersion).fetch();
         for (SupplierPermission perm : list) {
             perm.delete();
         }
@@ -86,7 +95,9 @@ public class SupplierPermission extends Model {
      */
     public static List<SupplierPermission> findByUserRole(Long userId) {
         // ""and g.id in (select g.id from g.categories c where c.id = :categoryId)"
-        return SupplierPermission.find("select p from SupplierPermission p join p.roles r join r.users u where u.id=?", userId).fetch();
+        return SupplierPermission.find(
+                "select p from SupplierPermission p join p.roles r join r.users u where u.id=?",
+                userId).fetch();
     }
     
 }

@@ -159,5 +159,9 @@ public class SupplierNavigation extends Model {
         SupplierNavigation topMenu = parentStack.get(0);
 
         return topMenu.children;
-    }       
+    }      
+    
+    public static SupplierNavigation findByName(String key) {
+        return SupplierNavigation.find("byName", key).first();
+    }
 }

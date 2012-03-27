@@ -1,5 +1,11 @@
-*{ You can use plain selenium command using the selenium tag }*
+#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class],load:['fixture/roles.yml','fixture/cusers.yml'] /}
+%{
+        play.vfs.VirtualFile file = play.vfs.VirtualFile.open("conf/rbac.xml");
+        navigation.RbacLoader.init(file);
+}%
+
 #{selenium}
+    #{include 'test/selenium/step/login.selenium' /}
     open('/users/new')
     assertTitle('操作员添加')
     click('xpath=(//input[@id='cuser.roles.id'])[2]')
@@ -11,6 +17,7 @@
 #{/selenium}
 
 #{selenium}
+    #{include 'test/selenium/step/login.selenium' /}
     open('/users/new')
     assertTitle('操作员添加')
     click('xpath=(//input[@id='cuser.roles.id'])[2]')

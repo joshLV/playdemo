@@ -48,10 +48,12 @@ public class RbacLoader {
         
         loadPermissionsToDB(null /* parent permission */,
                 application.permissions, applicationName, loadVersion);
-        deleteUndefinedPermissions(applicationName, loadVersion);    
         
         loadMenusToDB(null, application.menus, applicationName, loadVersion);
+        
+        // 清理更新前的数据
         deleteUndefinedMenus(applicationName, loadVersion);    
+        deleteUndefinedPermissions(applicationName, loadVersion);
     }
     
     /**
@@ -110,6 +112,7 @@ public class RbacLoader {
             supplierPermission.parent = SupplierPermission.find("byApplicationNameAndKey", applicationName, parentPermission.key).first();
         }
 
+        System.out.println("supplierPermission.parent-" + supplierPermission.parent);
         supplierPermission.save();
     }
 

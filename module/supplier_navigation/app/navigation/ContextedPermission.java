@@ -63,7 +63,7 @@ public class ContextedPermission {
         return false;
     }
 
-    public static boolean hasPermissions(String[] permissions) {
+    public static boolean hasPermissionKeys(Set<String> permissions) {
         for (String perm : permissions) {
             if (hasPermission(perm)) {
                 return true;

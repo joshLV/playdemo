@@ -10,7 +10,7 @@ import controllers.supplier.cas.SecureCAS;
 public class SingleFoo extends Controller {
 
     @Right("PERM_TEST")
-    @ActiveNavigation("user_add")
+    @ActiveNavigation("bar")
     public static void bar() {
         ok();
     }
@@ -21,4 +21,8 @@ public class SingleFoo extends Controller {
         ok();
     }
     
+    @ActiveNavigation("google")
+    public static void google() {
+        ok();
+    }
 }

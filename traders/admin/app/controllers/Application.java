@@ -1,11 +1,11 @@
 package controllers;
 
 import navigation.annotations.ActiveNavigation;
-import navigation.annotations.Right;
 import play.mvc.Controller;
 import play.mvc.With;
+import controllers.supplier.cas.SecureCAS;
 
-@With({MenuInjector.class})
+@With({SecureCAS.class, MenuInjector.class})
 public class Application extends Controller {
 
     @ActiveNavigation("user_add")

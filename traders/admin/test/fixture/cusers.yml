@@ -51,3 +51,15 @@ admin.SupplierUser(test):
  "supplier": kfc
  "roles":
  - "test" 
+ 
+admin.SupplierUser(deleteuser):
+ "loginName": "test_delete_user"
+ "mobile": "1300000102"
+ "passwordSalt": "gXP0W9"
+ "lastLoginAt": "2012-03-12T14:39:20"
+ "lockVersion": "1"
+ "createdAt": "2012-03-12T14:39:20"
+ "deleted": "UN_DELETED"
+ "supplier": kfc
+ "roles":
+ - "test"  

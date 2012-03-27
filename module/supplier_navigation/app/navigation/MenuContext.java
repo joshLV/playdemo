@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import navigation.annotations.ActiveNavigation;
-import navigation.annotations.ActiveNavigations;
 import play.mvc.Http.Request;
 
 /**
@@ -25,7 +22,6 @@ public class MenuContext {
 
     public MenuContext(Request request, Set<String> _activeNames) {
         addActiveAction(request.action);
-        addActiveAnnotatedActions(request);
         if (_activeNames != null) {
             activeNames.addAll(_activeNames);
         }
@@ -51,20 +47,6 @@ public class MenuContext {
     
     public boolean hasActiveName(String name) {
         return activeNames.contains(name);
-    }
-
-    protected void addActiveAnnotatedActions(Request request) {
-        if(request.invokedMethod == null) return;
-        ActiveNavigation single = request.invokedMethod.getAnnotation(ActiveNavigation.class);
-        if(single != null) {
-            addActiveAction(single.value());
-        }
-        ActiveNavigations multiple = request.invokedMethod.getAnnotation(ActiveNavigations.class);
-        if(multiple != null) {
-            for(ActiveNavigation activeNavigation : multiple.value()) {
-                addActiveAction(activeNavigation.value());
-            }
-        }
     }
 
     public void addActiveLabel(String label) {
