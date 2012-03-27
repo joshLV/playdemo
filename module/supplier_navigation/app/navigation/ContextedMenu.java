@@ -5,9 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.apache.commons.collections.CollectionUtils;
-
 import play.mvc.Router;
 
 /**
@@ -85,13 +83,17 @@ public class ContextedMenu {
 
     public String getLink() {
         if(menu.url != null) {
-            return menu.getBaseUrl() + menu.url;
+            return menu.url;
         }
         if(menu.action == null) {
             return null;
         } else {
-            return menu.getBaseUrl() + Router.reverse(menu.action, getSubstitutedParams()).url;
+            return Router.reverse(menu.action, getSubstitutedParams()).url;
         }
+    }
+    
+    public String getBaseUrl() {
+        return menu.getBaseUrl();
     }
 
     public String getText() {

@@ -34,7 +34,7 @@ if (_ulClass == null) {
   }%
   <li class="${linkClasses.join(' ')}">
     #{if child.hasLink()}
-      <a href="${child.getLink()}">${child.getText()}</a>
+      <a href="${child.getBaseUrl() + child.getLink()}">${child.getText()}</a>
     #{/if}
     #{else}
       <a href="#">${child.getText()}</a>
