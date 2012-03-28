@@ -54,7 +54,7 @@ public class SupplierUnitTest extends UnitTest {
         Supplier supplier = new Supplier();
         supplier.id = id;
         supplier.domainName = "updated.localhost";
-        Supplier.update(supplier);
+        Supplier.update(id, supplier);
         Supplier updatedSupplier = Supplier.findById(id);
         assertEquals("updated.localhost", updatedSupplier.domainName);
     }

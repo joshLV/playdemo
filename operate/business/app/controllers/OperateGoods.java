@@ -4,9 +4,8 @@
  */
 package controllers;
 
-import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
-import controllers.modules.cas.SecureCAS;
+import controllers.supplier.cas.SecureCAS;
 import models.resale.ResalerLevel;
 import models.sales.*;
 import models.supplier.Supplier;
@@ -297,17 +296,53 @@ public class OperateGoods extends Controller {
     }
 
     /**
-     * 上下架指定商品
+     * 上架商品.
+     *
+     * @param id   商品ID
      */
-    public static void updateStatus(GoodsStatus status, Long... ids) {
+    public static void onSale(Long id) {
+        //更新处理
+        updateStatus(GoodsStatus.OFFSALE, id);
+    }
+
+    /**
+     * 下架商品.
+     *
+     * @param id   商品ID
+     */
+    public static void offSale(Long id) {
+        //更新处理
+        updateStatus(GoodsStatus.OFFSALE, id);
+    }
+
+    /**
+     * 拒绝上架申请.
+     *
+     * @param id   商品ID
+     */
+    public static void reject(Long id) {
+        //更新处理
+        updateStatus(GoodsStatus.REJECT, id);
+    }
+
+    /**
+     * 上下架指定商品
+     *
+     * @param status   商品状态
+     * @param ids   商品ID
+     */
+    private static void updateStatus(GoodsStatus status, Long... ids) {
         //更新处理
         models.sales.Goods.updateStatus(status, ids);
 
         index(null);
     }
 
+
     /**
      * 删除指定商品
+     *
+     * @param ids   商品ID
      */
     public static void delete(Long... ids) {
         models.sales.Goods.delete(ids);

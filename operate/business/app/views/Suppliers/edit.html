@@ -2,7 +2,7 @@
 #{set title:'修改商户' /}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @Suppliers.update(), id:'updateForm',enctype:'multipart/form-data',class:"form-horizontal" }
+#{form @Suppliers.update(supplier?.id), id:'updateForm',enctype:'multipart/form-data',class:"form-horizontal" }
     <legend>修改商户</legend>
     #{set action:"edit"/}
     #{include '/Suppliers/supplierForm.html'/}

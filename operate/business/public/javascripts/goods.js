@@ -41,8 +41,8 @@ $(function () {
             alert("请至少选择一条记录！");
         } else {
             $("#deletefrm").attr("method", "POST");
-            $("#status").val("ONSALE");
-            $("#deletefrm").action = "@{OperateGoods.updateStatus()}";
+//            $("#status").val("ONSALE");
+            $("#deletefrm").action = "@{OperateGoods.onSale()}";
             $("#deletefrm").submit();
         }
     });
@@ -56,9 +56,9 @@ $(function () {
         if (checkedcnt == 0) {
             alert("请至少选择一条记录！");
         } else {
-            $("#status").val("OFFSALE");
+//            $("#status").val("OFFSALE");
             $("#deletefrm").attr("method", "POST");
-            $("#deletefrm").action = "@{OperateGoods.updateStatus()}";
+            $("#deletefrm").action = "@{OperateGoods.offSale()}";
             $("#deletefrm").submit();
         }
     });

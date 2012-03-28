@@ -3,10 +3,12 @@ play-paginate.prev=&lsaquo;&nbsp;上一页
 play-paginate.next=下一页&nbsp;&rsaquo;
 play-paginate.last=尾页&nbsp;&raquo;
 
-
 goods.ONSALE=已上架
 goods.OFFSALE=已下架
 goods.UNCREATED=未创建
+goods.APPLY=申请上架
+goods.REJECT=拒绝上架
+
 goods.REAL=实物
 goods.ELECTRONIC=电子券
 

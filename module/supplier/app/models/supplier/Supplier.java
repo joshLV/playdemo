@@ -87,17 +87,17 @@ public class Supplier extends Model {
     }
 
 
-    public void update() {
+    public static void update(Long id,Supplier supplier) {
         Supplier sp = findById(id);
         if (sp == null) {
             return;
         }
-        if (StringUtils.isNotBlank(logo)) {
-            sp.logo = logo;
+        if (StringUtils.isNotBlank(supplier.logo)) {
+            sp.logo = supplier.logo;
         }
-        sp.domainName = domainName;
-        sp.fullName = fullName;
-        sp.description = description;
+        sp.domainName = supplier.domainName;
+        sp.fullName = supplier.fullName;
+        sp.description = supplier.description;
         sp.updatedAt = new Date();
         sp.save();
     }

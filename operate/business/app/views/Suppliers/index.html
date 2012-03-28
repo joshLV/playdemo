@@ -33,12 +33,13 @@
             <td>${supplier?.createdAt?.format()}</td>
             <td>${supplier?.updatedAt?.format()}</td>
             <td><a href="@{Suppliers.edit(supplier.id)}">修改</a>
-                / <a id="${supplier.id}" name="${supplier.fullName}" href="#"
-                     onclick="javascript:return deleteSupplier(this);">删除</a>
+                / #{vx.deleteLink id:supplier?.id, name:supplier?.fullName, action:"/suppliers"/}
                 #{if models.supplier.SupplierStatus.NORMAL.equals(supplier.status)}
-                / <a href="@{Suppliers.freeze(supplier.id)}">冻结</a>#{/if}
+                    / #{vx.operateLink text:"冻结", url:"/suppliers/"+supplier.id+"freeze", method:PUT/}
+                    *{/ <a href="@{Suppliers.freeze(supplier.id)}">冻结</a>#{/if}}*
                 #{if models.supplier.SupplierStatus.FREEZE.equals(supplier.status)}
-                / <a href="@{Suppliers.unfreeze(supplier.id)}">解冻</a>#{/if}
+                    / #{vx.operateLink text:"解冻", url:"/suppliers/"+supplier.id+"unfreeze", method:PUT/}
+                    *{/ <a href="@{Suppliers.unfreeze(supplier.id)}">解冻</a>#{/if}}*
             </td>
         </tr>
         #{/paginate.list}

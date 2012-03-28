@@ -7,7 +7,7 @@ import play.mvc.Controller;
 import java.util.List;
 import play.mvc.With;
 import navigation.annotations.ActiveNavigation;
-import controllers.modules.cas.SecureCAS;
+import controllers.supplier.cas.SecureCAS;
 
 /**
  * 商品分类的控制器.

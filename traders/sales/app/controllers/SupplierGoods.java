@@ -291,10 +291,20 @@ public class SupplierGoods extends Controller {
         return "燕井允";
     }
 
+    public static void apply(Long... ids) {
+        updateStatus(GoodsStatus.APPLY, ids);
+    }
+
+
+    public static void cancelApply(Long... ids) {
+        //更新处理
+        updateStatus(GoodsStatus.OFFSALE, ids);
+    }
+
     /**
      * 上下架指定商品
      */
-    public static void updateStatus(GoodsStatus status, Long... ids) {
+    private static void updateStatus(GoodsStatus status, Long... ids) {
         //更新处理
         models.sales.Goods.updateStatus(status, ids);
 

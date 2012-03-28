@@ -1,0 +1,8 @@
+*{删除单个对象的链接的标签}*
+*{action:  删除链接}*
+*{id:      删除的对象id}*
+*{name:    删除的对象名称, 用于删除确认提示}*
+<a href="${_action}/${_id}" id="del_${_id}"
+   onclick="if (confirm('您确定要删除${_name}吗？')) { var f = document.createElement('form'); f.style.display = 'none';
+   this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href + '?x-http-method-override=DELETE'; 
+   f.submit(); };return false;">删除</a>

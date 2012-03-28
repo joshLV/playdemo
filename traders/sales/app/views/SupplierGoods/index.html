@@ -40,11 +40,12 @@
             </tr>
         </table>
     </form>
-    <form class="form-horizontal" name="deletefrm" id="deletefrm" action="@{SupplierGoods.updateStatus()}" method="post">
+    <form class="form-horizontal" name="deletefrm" id="deletefrm" action="@{SupplierGoods.updateStatus()}"
+          method="post">
         <input type="hidden" id="status" name="status" value="0"/>
 
         <div style="margin-bottom: 12px">
-            <button class="btn btn-primary" id="onsales" type="button">上架</button>
+            <button class="btn btn-primary" id="onsales" type="button">申请上架</button>
             <button class="btn btn-primary" id="offsales" type="button">下架</button>
             <button class="btn btn-primary" id="deletebtn" type="button">删除</button>
             <!-- <button class="btn btn-primary" type="button">导出报表</button> -->
@@ -65,8 +66,8 @@
             #{/list}
                 <th>库存(件)</th>
                 <th>销量(件)</th>
-                <th>状态</th>
                 <th>创建时间</th>
+                <th>状态</th>
                 <th>操 作</th>
             </tr>
             </thead>
@@ -88,10 +89,18 @@
                 #{/list}
                 <td class="amount">${goods.baseSale}</td>
                 <td class="amount">${goods.saleCount}</td>
-                <td>&{'goods.'+goods.status}<br/></td>
                 <td>${goods.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-                <td><a href="@{SupplierGoods.edit(goods.id)}">修改</a>
-                    / <a href="@{SupplierGoods.detail(goods.id)}">查看</a></td>
+                <td>&{'goods.'+goods.status}
+                    #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status)}<br/><a
+                            href="@{SupplierGoods.apply(goods.id)}">申请上架</a>#{/if}
+                    #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
+                        <br/><a href="@{SupplierGoods.offSale(goods.id)}">下架</a>#{/if}
+                    #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}
+                        <br/><a href="@{SupplierGoods.cancelApply(goods.id)}">撤销申请</a>#{/if}
+                </td>
+                <td>#{if !models.sales.GoodsStatus.ONSALE.equals(goods.status)}<a href="@{SupplierGoods.edit(goods
+                .id)}">修改</a> /#{/if}
+                    <a href="@{SupplierGoods.detail(goods.id)}">查看</a></td>
             </tr>
             #{/paginate.list}
             </tbody>

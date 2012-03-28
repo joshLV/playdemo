@@ -1,7 +1,7 @@
 package controllers;
 
 import com.uhuila.common.util.FileUploadUtil;
-import controllers.modules.cas.SecureCAS;
+import controllers.supplier.cas.SecureCAS;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.supplier.Supplier;
@@ -9,11 +9,9 @@ import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
-import play.db.jpa.JPA;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import javax.persistence.EntityManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -120,26 +118,19 @@ public class Suppliers extends Controller {
      *
      * @param id 门店标识
      */
-    public static void edit(long id, Supplier supplier, SupplierUser admin) {
-        if (supplier == null || supplier.id == null) {
-            supplier = Supplier.findById(id);
-            admin = SupplierUser.findAdmin(id, "admin");
-        }
+    public static void edit(long id) {
+        Supplier supplier = Supplier.findById(id);
+        SupplierUser admin = SupplierUser.findAdmin(id, "admin");
+
         render(supplier, admin);
     }
 
-    public static void update(@Valid Supplier supplier, File image, @Valid SupplierUser admin, String password) {
-
-        EntityManager entityManager = JPA.em();
-        entityManager.merge(admin);
-
-        SupplierUser uuu = SupplierUser.findById(admin.id);
-        System.out.println("uuu.mobile:" + uuu.mobile);
+    public static void update(Long id, @Valid Supplier supplier, File image, @Valid SupplierUser admin,
+                              Long adminId) {
 
         if (Validation.hasError("admin.encryptedPassword") && Validation.hasError("admin")
                 && Validation.errors().size() == 2) {
             Validation.clear();
-            System.out.println("validation.errorsMap().size():" + validation.errorsMap().size());
         }
         if (Validation.hasErrors()) {
             render("Suppliers/edit.html");
@@ -149,11 +140,11 @@ public class Suppliers extends Controller {
         } catch (IOException e) {
             error("supplier.image_upload_failed");
         }
-        supplier.update();
-        if (admin.id == null) {
+        Supplier.update(id,supplier);
+        if (adminId == null) {
             admin.create(supplier.id);
         } else {
-            admin.update();
+            SupplierUser.update(adminId,admin);
         }
         index();
     }
@@ -169,7 +160,6 @@ public class Suppliers extends Controller {
     }
 
     public static void delete(long id) {
-        System.out.println("id:" + id);
         Supplier.delete(id);
         ok();
     }

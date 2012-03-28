@@ -1,0 +1,11 @@
+*{操作单个对象的链接的标签}*
+*{url:  操作链接}*
+*{text:    操作的文本名称}*
+*{method:  PUT/DELETE/POST}*
+#{field _name}
+<a href="#" id="${field.id}"
+   onclick="var f = document.createElement('form'); f.style.display = 'none';
+           this.parentNode.appendChild(f); f.method = 'POST'; f.action = '${_url}' +
+           '?x-http-method-override=${_method}';
+           f.submit();">_text</a>
+#{/field}

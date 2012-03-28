@@ -8,16 +8,16 @@
     #{/list}
 #{/layout_operate.selectField}
 *{<div class="control-group">}*
-    *{<label class="control-label"><span style="color: red; ">*</span>商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户</label>}*
+*{<label class="control-label"><span style="color: red; ">*</span>商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户</label>}*
 
-    *{<div class="controls">}*
-    *{#{select 'goods.supplierId',value:supplierId, id:'supplierId', class:'input-small'}}*
-        *{#{list items:supplierList, as:'supplier' }}*
-            *{#{option supplier.id}${supplier.fullName}#{/option}}*
-        *{#{/list}}*
-    *{#{/select}}*
-        *{<span class="error">#{error 'goods.supplierId'/}</span>}*
-    *{</div>}*
+*{<div class="controls">}*
+*{#{select 'goods.supplierId',value:supplierId, id:'supplierId', class:'input-small'}}*
+*{#{list items:supplierList, as:'supplier' }}*
+*{#{option supplier.id}${supplier.fullName}#{/option}}*
+*{#{/list}}*
+*{#{/select}}*
+*{<span class="error">#{error 'goods.supplierId'/}</span>}*
+*{</div>}*
 *{</div>}*
 <div class="control-group">
     <label class="control-label"><span style="color: red; ">*</span>商品分类</label>
@@ -79,9 +79,11 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 <div class="form-actions">
     <input class="btn btn-primary" id="save" type="submit" value="保存"/>
     <input class="btn btn-primary" id="onsale" type="submit" value="保存并上架"/>
+#{if "add".equals(action)}
     <input class="btn btn-primary" id="preview" type="submit" value="预览"/>
+#{/if}
 #{if "edit".equals(action)}
-#{layout_operate.cancelButton url:'/goods'/}
+    #{layout_operate.cancelButton url:'/goods'/}
 #{/if}
     <input type="hidden" id="status" name="goods.status" value="${goods?.status?:'OFFSALE'}"/>
 </div>

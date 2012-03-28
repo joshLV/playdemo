@@ -41,6 +41,8 @@
                     #{option ""}不限#{/option}
                     #{option "ONSALE"}&{'goods.ONSALE'}#{/option}
                     #{option "OFFSALE"}&{'goods.OFFSALE'}#{/option}
+                    #{option "APPLY"}&{'goods.APPLY'}#{/option}
+                    #{option "REJECT"}&{'goods.REJECT'}#{/option}
                 #{/select}</td>
                 <td>
                     <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
@@ -48,14 +50,13 @@
             </tr>
         </table>
     </form>
-    <form class="form-horizontal" name="deletefrm" id="deletefrm" action="@{OperateGoods.updateStatus()}" method="post">
+    <form class="form-horizontal" name="deletefrm" id="deletefrm" action="" method="post">
         <input type="hidden" id="status" name="status" value="0"/>
 
         <div style="margin-bottom: 12px">
             <button class="btn btn-primary" id="onsales" type="button">上架</button>
             <button class="btn btn-primary" id="offsales" type="button">下架</button>
             <button class="btn btn-primary" id="deletebtn" type="button">删除</button>
-            <!-- <button class="btn btn-primary" type="button">导出报表</button> -->
         </div>
 
 
@@ -74,8 +75,8 @@
             #{/list}
                 <th>库存(件)</th>
                 <th>销量(件)</th>
-                <th>状态</th>
                 <th>创建时间</th>
+                <th>状态</th>
                 <th>操 作</th>
             </tr>
             </thead>
@@ -98,10 +99,21 @@
                 #{/list}
                 <td class="amount">${goods.baseSale}</td>
                 <td class="amount">${goods.saleCount}</td>
-                <td>&{'goods.'+goods.status}<br/></td>
                 <td>${goods.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-                <td><a href="@{OperateGoods.edit(goods.id)}">修改</a>
-                    / <a href="@{OperateGoods.detail(goods.id)}">查看</a></td>
+                <td>&{'goods.'+goods.status}
+                    #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}
+                        <br/>#{vx.operateLink text:"同意上架", url:"/suppliers/"+supplier.id+"onSale",
+                    method:PUT/}
+                        <br/>#{vx.operateLink text:"拒绝上架", url:"/suppliers/"+supplier.id+"reject", method:PUT/}#{/if}
+                    #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
+                        <br/>#{vx.operateLink text:"强制下架", url:"/suppliers/"+supplier.id+"reject", method:PUT/}#{/if}
+                        *{<br/><a href="@{OperateGoods.reject(goods.id)}">强制下架</a>#{/if}}*
+                    #{if models.sales.GoodsStatus.REJECT.equals(goods.status)}
+                        <br/>#{vx.operateLink text:"同意上架", url:"/suppliers/"+supplier.id+"onSale", method:PUT/}#{/if}
+                        *{<br/><a href="@{OperateGoods.onSale(goods.id)}">同意上架</a>#{/if}}*
+                </td>
+                <td><a href="@{OperateGoods.edit(goods.id)}">修改</a> /
+                    <a href="@{OperateGoods.detail(goods.id)}">查看</a></td>
             </tr>
             #{/paginate.list}
             </tbody>

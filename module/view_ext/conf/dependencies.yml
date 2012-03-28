@@ -1,0 +1,4 @@
+self: play -> view_ext 0.1
+
+require:
+    - play

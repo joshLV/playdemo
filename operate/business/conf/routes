@@ -10,7 +10,9 @@ GET     /goods/{id}/edit                        OperateGoods.edit
 GET     /goods/{id}/view                        OperateGoods.detail
 GET     /goods/{id}/preview                     OperateGoods.preview
 PUT     /goods/{id}                             OperateGoods.update
-POST    /goods/updatestatus                     OperateGoods.updateStatus
+PUT     /goods/{id}/onSale                      OperateGoods.onSale
+PUT     /goods/{id}/offSale                     OperateGoods.offSale
+PUT     /goods/{id}/reject                      OperateGoods.reject
 DELETE  /goods/{id}                             OperateGoods.delete
 POST    /goods/images                           UploadFiles.uploadJson
 POST    /goods/filemanager                      UploadFiles.fileManagerJson
@@ -30,6 +32,8 @@ GET     /suppliers/new                          Suppliers.add
 POST    /suppliers                              Suppliers.create
 GET     /suppliers/{id}/edit                    Suppliers.edit
 PUT     /suppliers/{id}                         Suppliers.update
+PUT     /suppliers/{id}/freeze                  Suppliers.freeze
+PUT     /suppliers/{id}/unfreeze                Suppliers.unfreeze
 DELETE  /suppliers/{id}                         Suppliers.delete
 
 GET     /resalers                               Resalers.index
@@ -43,7 +47,7 @@ GET     /favicon.ico                            404
 GET     /public/                                staticDir:public
 GET     /o/{path1}/{path2}/{path3}/{path4}      Files.getImage
 
-*  	/					module:cas
+*  	    /					                    module:supplier_cas
 
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}

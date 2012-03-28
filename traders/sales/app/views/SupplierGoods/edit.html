@@ -11,7 +11,8 @@
 class:"form-horizontal",
 method:'PUT' }
     <legend>修改电子消费券</legend>
-    #{include '/SupplierGoods/goodsForm.html', action:'edit'/}
+    #{set action:"edit"/}
+    #{include '/SupplierGoods/goodsForm.html'/}
 #{/form}
 </div>
 

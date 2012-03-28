@@ -6,11 +6,11 @@ require:
     - play -> rabbitmq 0.3
     - play -> paginate head
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - view_ext -> view_ext
     - layout_operate -> layout_operate
     - commons-lang -> commons-lang 2.6
     - sales -> sales
     - supplier -> supplier
-    - play -> cas 3.1
     - paginate_ext -> paginate_ext
     - org.jsoup -> jsoup 1.6.1
     - supplier_cas -> supplier_cas
@@ -20,7 +20,6 @@ require:
     - consumer -> consumer
     - accounts -> accounts
     - order -> order
-    - sms -> sms
     - sms -> sms
 
 repositories:
@@ -37,6 +36,7 @@ repositories:
         type:       local
         artifact:   "${application.path}/../../module/[module]"
         contains:
+            - view_ext -> *
             - layout_operate -> *
             - sales -> *
             - supplier -> *

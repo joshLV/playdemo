@@ -12,6 +12,10 @@ public enum GoodsStatus {
     ONSALE,
     //已下架
     OFFSALE,
+    //申请上架
+    APPLY,
+    //拒绝上架
+    REJECT,
     //预览
     UNCREATED
 }
