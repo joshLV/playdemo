@@ -1,6 +1,6 @@
 #{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class,models.supplier.Supplier.class],load:['fixture/roles.yml','fixture/cusers.yml'] /}
 
-#{selenium "查看所有操作员"}
+#{selenium}
    #{include 'test/selenium/step/login.selenium' /}
    open('/users')
    assertTitle('操作员一览')

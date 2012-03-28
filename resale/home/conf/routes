@@ -3,9 +3,9 @@
 # ~~~~
 GET /  Application.index
 #注册
-GET     /register                               Register.index
-POST    /register                               Register.create
-POST    /register/checkLoginName                Register.checkLoginName
+GET     /register                               ResalerRegister.index
+POST    /register                               ResalerRegister.create
+POST    /register/checkLoginName                ResalerRegister.checkLoginName
 
 # Resaler Favorite
 GET     /library                                ResalerFavs.index
