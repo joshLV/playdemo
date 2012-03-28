@@ -64,7 +64,7 @@ public class ResalerCarts extends Controller {
         BigDecimal amount = new BigDecimal(0);
         for(ResalerCart cart : carts){
             OrderItems orderItems = new OrderItems(order, cart.goods, cart.number, cart.phone);
-            orderItems.resalerPrice = cart.goods.getResalePrice(cart.goods, resaler.level);
+            orderItems.resalerPrice = cart.goods.getResalePrice(resaler.level);
             orderItems.save();
             amount = amount.add(cart.goods.salePrice);
         }
