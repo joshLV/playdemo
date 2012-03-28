@@ -74,7 +74,7 @@ public class CASUtilsTest extends UnitTest {
     @Test
     public void getCasLogoutUrlTest2() {
         String casLogoutUrl = CASUtils.getCasLogoutUrl();
-        assertEquals("http://admin.seewi.com.cn/operate.cas.mockserver/logout", casLogoutUrl);
+        assertEquals("http://admin.seewi.com.cn/@cas/logout", casLogoutUrl);
     }
 
     @Test

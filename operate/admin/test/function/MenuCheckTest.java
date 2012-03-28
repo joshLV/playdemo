@@ -67,6 +67,6 @@ public class MenuCheckTest extends FunctionalTest {
         }
 
         assertTrue(list.size() > 0);
-        assertTrue(list.get(0).getBaseUrl().indexOf("localhost") > 0);
+        assertTrue(list.get(0).getBaseUrl().indexOf("http") >= 0);
     }
 }

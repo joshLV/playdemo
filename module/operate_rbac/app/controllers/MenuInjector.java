@@ -44,7 +44,7 @@ public class MenuInjector extends Controller {
 
         String userName = session.get(SecureCAS.SESSION_USER_KEY);
 
-        Logger.info("================================================================ currentUser = " + userName);
+        Logger.info("======================================== currentUser = " + userName);
 
         OperateUser user = null;
         // 检查权限

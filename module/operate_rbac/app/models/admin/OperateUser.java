@@ -194,7 +194,7 @@ public class OperateUser extends Model {
         }
 
         Logger.info("================");
-        Logger.info("     ! -------------- loginName" + loginName);
+        Logger.info("     ! -------------- loginName: " + loginName);
         return OperateUser.find("byLoginName", loginName).first();
     }
 
