@@ -59,18 +59,20 @@ public class ResalerCarts extends Controller {
         List<ResalerCart> carts = ResalerCart.findAll(resaler);
         
         Order order = new Order(resaler.getId(), AccountType.RESALER, null);
+        order.save();
+        
         BigDecimal amount = new BigDecimal(0);
         for(ResalerCart cart : carts){
             OrderItems orderItems = new OrderItems(order, cart.goods, cart.number, cart.phone);
             orderItems.resalerPrice = cart.goods.getResalePrice(cart.goods, resaler.level);
-            order.orderItems.add(orderItems);
+            orderItems.save();
             amount = amount.add(cart.goods.salePrice);
         }
-        System.out.println("**********" + order.orderItems.size());
-        order.amount = amount;
-        order.needPay = amount;
         
+        order.amount = amount;
+        order.needPay = amount;        
         order.save();
+        
         ResalerCart.clear(resaler);
         
         redirect("/payment_info/" + order.getId());
