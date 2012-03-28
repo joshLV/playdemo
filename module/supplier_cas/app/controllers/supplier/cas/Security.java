@@ -47,6 +47,13 @@ public class Security {
             _loginNameForTest = login;
         }
     }
+    
+    /**
+     * 在@After方法中要调用一下这个，以避免影响selenium.
+     */
+    public static void cleanLoginUserForTest() {
+        _loginNameForTest = null;
+    }
       
     public static String getLoginUserForTest() {
         if (Play.mode == Play.Mode.DEV) {

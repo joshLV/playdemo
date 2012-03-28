@@ -2,10 +2,6 @@
      models.supplier.Supplier.class, models.sales.Category.class,models.sales.Area.class,
       models.sales.Shop.class, models.sales.Goods.class, models.accounts.AccountSequence.class],
   load:['fixture/roles.yml','fixture/supplierusers.yml', 'fixture/data.yml'] /}
-%{
-        play.vfs.VirtualFile file = play.vfs.VirtualFile.open("conf/rbac.xml");
-        navigation.RbacLoader.init(file);
-}%
 
 #{selenium 'Test Home/AccountSequences/index.html'}
 #{include 'test/selenium/step/login.selenium' /}

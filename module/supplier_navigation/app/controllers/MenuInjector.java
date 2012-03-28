@@ -53,8 +53,8 @@ public class MenuInjector extends Controller {
             // 查出当前用户的所有权限  
             user = SupplierUser.findUserByDomainName(subDomain, userName);
             System.out.println(" ---------------------------- user : " + user);
-            System.out.println("user.id = " + user.id + ", name=" + user.loginName);
-            if (user.roles != null) {
+            if (user != null && user.roles != null) {
+                System.out.println("user.id = " + user.id + ", name=" + user.loginName);
                 System.out.println("get role " + user.roles);
                 for (SupplierRole role : user.roles) {
                     System.out.println("user.role=" + role.key);

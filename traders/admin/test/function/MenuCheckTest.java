@@ -43,6 +43,9 @@ public class MenuCheckTest extends FunctionalTest {
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
+        
+        // 清除登录Mock
+        Security.cleanLoginUserForTest();
 	}
 	
 	@Test

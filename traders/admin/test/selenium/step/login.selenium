@@ -2,7 +2,6 @@
         play.vfs.VirtualFile file = play.vfs.VirtualFile.open("conf/rbac.xml");
         navigation.RbacLoader.init(file);
 }%
-
 deleteAllVisibleCookies()
 clearSession()
 openAndWait('/@cas/login?service=/supplier.cas.securecas/authenticate&gateway=true')

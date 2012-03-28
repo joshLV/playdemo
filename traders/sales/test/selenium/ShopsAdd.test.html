@@ -1,4 +1,9 @@
-#{fixture delete:[models.sales.Area.class], load:'fixture/areas.yml' /}
+#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class,
+    models.supplier.Supplier.class,
+    models.sales.Shop.class,
+    models.sales.Area.class],
+    load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/shops.yml','fixture/areas.yml'] /}
+    
 #{selenium}
     #{include 'test/selenium/step/login.selenium' /}
     open('/shops/new')

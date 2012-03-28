@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <application text="商品管理">
-    <role key="admin" text="系统管理员"/>
+    <role key="sales" text="产品销售"/>
 
-    <permission key="GOODS_NEW" text="商品添加"/>
-    <permission key="GOODS" text="商品管理"/>
-    <permission key="SHOPS_NEW" text="门店添加"/>
-    <permission key="SHOPS" text="门店管理"/>
+    <permission key="GOODS_NEW" text="商品添加" roles="sales"/>
+    <permission key="GOODS" text="商品管理" roles="sales"/>
+    <permission key="SHOPS_NEW" text="门店添加" roles="sales"/>
+    <permission key="SHOPS" text="门店管理" roles="sales"/>
 
-    <navigation key="sales_app" text="商品管理" action="Application.index">
-        <navigation key="goods" text="商品" permission="GOODS_NEW,GOODS">
-            <navigation key="goods_add" action="Goods.add" text="商品添加"/>
-            <navigation key="goods_index" action="Goods.index" text="商品管理"/>
+    <navigation key="sales_app" text="商品管理" action="Application.index" permissions="GOODS,SHOPS">
+        <navigation key="goods" text="商品" permission="GOODS_NEW,GOODS" permissions="GOODS">
+            <navigation key="goods_add" action="Goods.add" text="商品添加" permissions="GOODS_NEW"/>
+            <navigation key="goods_index" action="Goods.index" text="商品管理" permissions="GOODS"/>
         </navigation>
-        <navigation key="shops" text="门店" permission="SHOPS_NEW,SHOPS">
-            <navigation key="shops_add" action="Shops.add" text="门店添加"/>
-            <navigation key="shops_index" action="Shops.index" text="门店管理"/>
+        <navigation key="shops" text="门店" permission="SHOPS_NEW,SHOPS" permissions="SHOPS">
+            <navigation key="shops_add" action="Shops.add" text="门店添加" permissions="SHOPS_NEW"/>
+            <navigation key="shops_index" action="Shops.index" text="门店管理" permissions="SHOPS"/>
         </navigation>
     </navigation>
 </application>
