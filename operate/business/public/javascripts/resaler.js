@@ -4,7 +4,8 @@ function checkResaler(id,status,flg){
 		$("#checkRemark").html("请输入备注！");
 	}else {
 		$("#checkRemark").html("");
-		var url="/resalers/update?id="+id+"&status="+status+"&remark="+remark;
+		var level= $("#level").val();
+		var url="/resalers/update?id="+id+"&status="+status+"&level="+level+"&remark="+remark;
 		$("#checkFrm").attr("method", "POST");
 		$("#checkFrm").attr("action", url);
 		$("#checkFrm").submit();

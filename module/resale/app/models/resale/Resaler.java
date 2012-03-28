@@ -165,10 +165,11 @@ public class Resaler extends Model {
 	 * @param status 状态
 	 * @param remark 备注
 	 */
-	public static void update(Long id, ResalerStatus status, String remark) {
+	public static void update(Long id, ResalerStatus status,ResalerLevel level, String remark) {
 		Resaler resaler = Resaler.findById(id);
 		resaler.status=status;
 		resaler.remark=remark;
+		if(level != null) resaler.level =level;
 		resaler.save();
 	}
 

@@ -2,6 +2,7 @@ package controllers;
 
 import models.resale.Resaler;
 import models.resale.ResalerCondition;
+import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
 import navigation.annotations.ActiveNavigation;
 
@@ -47,11 +48,14 @@ public class Resalers extends Controller {
 	 * @param status 状态
 	 * @param remark 备注
 	 */
-	public static void update(Long id,ResalerStatus status,String remark) {
+	public static void update(Long id,ResalerStatus status,ResalerLevel level,String remark) {
 		if (Validation.hasErrors()) {
 			render("Resalers/detail.html");
 		}
-		Resaler.update(id,status,remark);
+		if (status == ResalerStatus.UNAPPROVED) {
+			level = null;
+		}
+		Resaler.update(id,status,level,remark);
 		index(null);
 	}
 

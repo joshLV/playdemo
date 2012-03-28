@@ -5,6 +5,7 @@ import java.util.Map;
 
 import models.resale.Resaler;
 import models.resale.ResalerCondition;
+import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
 
 import org.junit.Test;
@@ -50,9 +51,16 @@ public class ResalerUnitTest extends UnitTest {
 	@Test
 	public void updateStatus() {
 		Long id = (Long) Fixtures.idCache.get("models.resale.Resaler-resaler_2");
-		String remark ="该分销商信用不够！";
-		Resaler.update(id, ResalerStatus.APPROVED, remark);
+		String remark ="";
+		Resaler.update(id, ResalerStatus.APPROVED,ResalerLevel.NORMAL, remark);
 		Resaler resaler = Resaler.findById(id);
 		assertEquals(ResalerStatus.APPROVED,resaler.status );
+		assertEquals(ResalerLevel.NORMAL,resaler.level );
+		
+		remark ="该分销商信用不够！";
+		Resaler.update(id, ResalerStatus.UNAPPROVED,ResalerLevel.NORMAL, remark);
+		resaler = Resaler.findById(id);
+		assertEquals(ResalerStatus.UNAPPROVED,resaler.status );
+		assertEquals(remark,resaler.remark );
 	}
 }

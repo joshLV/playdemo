@@ -58,7 +58,7 @@
         <div class="control-group">
             <label class="control-label">会员级别</label>
             <div class="controls">
-            #{select 'resaler.level', id:ca,class:'input-small'}
+            #{select 'resaler.level', value:resaler?.level,id:'level',class:'input-small'}
                     #{option "NORMAL"}&{'resaler.NORMAL'}#{/option} 
                     #{option "VIP1"}&{'resaler.VIP1'}#{/option} 
                     #{option "VIP2"}&{'resaler.VIP2'}#{/option} 
@@ -79,7 +79,7 @@
         #{if !"APPROVED".equals(resaler.status.toString())}
             <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','APPROVED')" id="approved" type="button">审核通过</button>
         #{/if}    
-        #{if !"UNAPPROVED".equals(resaler.status.toString())}
+        #{if !"UNAPPROVED".equals(resaler.status.toString()) && !"APPROVED".equals(resaler.status.toString())}
             <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','UNAPPROVED',0)" id="unapproved" type="button">审核未通过</button>
         #{/if}
             <button class="btn btn-primary" onclick="javascript:window.history.back(-1)" type="button">返回</button>
