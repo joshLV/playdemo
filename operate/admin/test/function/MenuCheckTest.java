@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import play.Logger;
 import play.mvc.Router;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
@@ -60,9 +61,9 @@ public class MenuCheckTest extends FunctionalTest {
 
         List<ContextedMenu> list = (List<ContextedMenu>) renderArgs("topMenus");
         
-        System.out.println("                -            -----------------------------");
+        Logger.info("        -----------------------------");
         for (ContextedMenu contextedMenu : list) {
-            System.out.println("url=" + contextedMenu.getBaseUrl());
+            Logger.info("url=" + contextedMenu.getBaseUrl());
         }
 
         assertTrue(list.size() > 0);

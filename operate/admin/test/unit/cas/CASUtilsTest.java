@@ -44,12 +44,12 @@ public class CASUtilsTest extends UnitTest {
     public void getCasLoginUrlTest1() {
         Play.configuration.setProperty("cas.mockserver", "false");
         String casLoginUrl = CASUtils.getCasLoginUrl(Boolean.TRUE);
-        assertEquals("http://cas.seewi.com.cn/login?service=http://admin.seewi.com.cn/operate.cas.securecas/authenticate", casLoginUrl);
+        assertEquals("http://cas.seewi.com.cn/login?service=http://admin.seewi.com.cn/authenticate", casLoginUrl);
 
         Play.configuration.setProperty("cas.gateway", "true");
         casLoginUrl = CASUtils.getCasLoginUrl(Boolean.TRUE);
         assertEquals(
-                "http://cas.seewi.com.cn/login?service=http://admin.seewi.com.cn/operate.cas.securecas/authenticate&gateway=true",
+                "http://cas.seewi.com.cn/login?service=http://admin.seewi.com.cn/authenticate&gateway=true",
                 casLoginUrl);
     }
 
@@ -57,10 +57,10 @@ public class CASUtilsTest extends UnitTest {
     public void getCasLoginUrlTest2() {
         Play.configuration.setProperty("cas.mockserver", "false");
         String casLoginUrl = CASUtils.getCasLoginUrl(Boolean.FALSE);
-        assertEquals("http://cas.seewi.com.cn/login?service=http://admin.seewi.com.cn/operate.cas.securecas/authenticate", casLoginUrl);
+        assertEquals("http://cas.seewi.com.cn/login?service=http://admin.seewi.com.cn/authenticate", casLoginUrl);
         casLoginUrl = CASUtils.getCasLoginUrl(Boolean.TRUE);
         assertEquals(
-                "http://cas.seewi.com.cn/login?service=http://admin.seewi.com.cn/operate.cas.securecas/authenticate",
+                "http://cas.seewi.com.cn/login?service=http://admin.seewi.com.cn/authenticate",
                 casLoginUrl);
     }
 
