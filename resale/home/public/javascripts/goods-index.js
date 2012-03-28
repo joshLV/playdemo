@@ -60,15 +60,15 @@ $(window).load(
         
         $("#selectall").click(function () {
             if (this.checked) {
-                $("[name='ids[]']").attr("checked", 'true');//全选
+                $("[name='goodsIds[]']").attr("checked", 'true');//全选
             } else {
-                $("[name='ids[]']").removeAttr("checked");//取消
+                $("[name='goodsIds[]']").removeAttr("checked");//取消
             }
         });
 
         var checkedcnt = 0;
         $("#addto").click(function () {
-            $("input[name='ids[]']").each(function () {
+            $("input[name='goodsIds[]']").each(function () {
                 if (this.checked) {
                     checkedcnt++;
                 }
@@ -77,9 +77,16 @@ $(window).load(
                 alert("请至少选择一条数据！");
             } else {
                     $("#indexForm").attr("method", "POST");
-                    $("#indexForm").attr("action", "@{ResalerGoods.index()}");
+                    $("#indexForm").attr("action", "/library");
                     $("#indexForm").submit();
             }
+        });
+        
+        /**
+         *点击加入分销库按钮
+         */
+        $("#addToLibrary").click(function () {
+            $.post("/library",  {'goodsIds':$("#goodsId").val()});
         });
     }
 );

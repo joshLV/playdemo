@@ -138,7 +138,6 @@ public class SupplierUsers extends Controller {
                 }
             }
             render("SupplierUsers/add.html", cuser, roleIds, rolesList);
-            return;
         }
         // 更新用户信息
         SupplierUser.update(id, cuser);

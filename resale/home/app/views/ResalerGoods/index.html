@@ -256,7 +256,7 @@
      <table width="798" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE">
      <tr>
      <td>
-      <td><input type="checkbox" value="${goods.id}" name="ids[]"/></td>
+      <td><input type="checkbox" value="${goods.id}" name="goodsIds[]"/></td>
       <td width="340" height="80" align="left">
        <div class="left_shangpin" >
         <a href="/goods/${goods.id}"><img src="${goods.imageTinyPath}"/></a>
@@ -270,7 +270,8 @@
       折扣：${goods.discountExpress.yesno(goods.discountExpress+'折','无优惠')}</td>
       <td width="150" align="center">
       <a class="font_blue" href="@{ResalerGoods.show(goods.id)}">查看详情</a><br>
-      <a class="font_blue" href="@{ResalerGoods.show(goods.id)}">加入分销库</a>
+       <a href="/library" id="addToLibrary" onclick="var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href+'?goodsIds=${goods.id}' ; f.submit(); return false;">加入分销库</a>
+      
       </td>
      </tr>
     </table>

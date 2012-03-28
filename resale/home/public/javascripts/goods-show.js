@@ -11,13 +11,12 @@ $(window).load(
          */
         $("#link_add_cart").click(function () {
             $.post("/library", 
-                {'goodsIds':$("#goodsId").val(), 'increment':$("#number").val()},
+                {'goodsIds':$("#goodsId").val()},
                 function (data) {
                     $('#add_cart_result').show();
                     //5秒后自动消失
                     setTimeout("$('#add_cart_result').css('display','none')", 5000);
                 });
-            //$('#add_cart_result').show();
         });
 
         $("#link_buy_more").click(function () {
