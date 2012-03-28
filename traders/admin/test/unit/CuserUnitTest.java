@@ -58,7 +58,7 @@ public class CuserUnitTest extends UnitTest {
 		Long supplierId= (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
 		int pageNumber=1;
 		int pageSize=15;
-		List<SupplierUser> list = SupplierUser.getCuserList(loginName,supplierId,pageNumber,pageSize);
+		List<SupplierUser> list = SupplierUser.getSupplierUserList(loginName,supplierId,pageNumber,pageSize);
 		assertEquals(1,list.size()); 
 	}
 
