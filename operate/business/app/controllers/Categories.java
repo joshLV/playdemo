@@ -1,13 +1,12 @@
 package controllers;
 
+import java.util.List;
 import models.sales.Category;
 import models.sales.CategorySerializer;
-import play.mvc.Controller;
-
-import java.util.List;
-import play.mvc.With;
 import navigation.annotations.ActiveNavigation;
-import controllers.supplier.cas.SecureCAS;
+import play.mvc.Controller;
+import play.mvc.With;
+import controllers.operate.cas.SecureCAS;
 
 /**
  * 商品分类的控制器.

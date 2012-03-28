@@ -1,10 +1,8 @@
 package function;
 
-import controllers.supplier.cas.Security;
-import models.admin.SupplierRole;
-import models.admin.SupplierUser;
+import models.admin.OperateRole;
+import models.admin.OperateUser;
 import models.resale.Resaler;
-import models.supplier.Supplier;
 import navigation.RbacLoader;
 import org.junit.After;
 import org.junit.Test;
@@ -12,6 +10,7 @@ import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
+import controllers.operate.cas.Security;
 
 public class ResalerTest extends FunctionalTest {
 
@@ -20,9 +19,8 @@ public class ResalerTest extends FunctionalTest {
 	public void setup() {
 		Fixtures.delete(Resaler.class);
 
-        Fixtures.delete(SupplierUser.class);
-        Fixtures.delete(SupplierRole.class);
-        Fixtures.delete(Supplier.class);
+        Fixtures.delete(OperateUser.class);
+        Fixtures.delete(OperateRole.class);
         Fixtures.loadModels("fixture/roles.yml");
         Fixtures.loadModels("fixture/supplierusers.yml");
 
@@ -32,8 +30,8 @@ public class ResalerTest extends FunctionalTest {
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
 
-        Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user3");
-        SupplierUser user = SupplierUser.findById(id);
+        Long id = (Long) Fixtures.idCache.get("models.admin.OperateUser-user3");
+        OperateUser user = OperateUser.findById(id);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
     }

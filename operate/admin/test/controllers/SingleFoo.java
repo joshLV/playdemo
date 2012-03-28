@@ -1,12 +1,12 @@
 package controllers;
 
-import navigation.annotations.ActiveNavigation;
-import navigation.annotations.Right;
+import operate.rbac.annotations.ActiveNavigation;
+import operate.rbac.annotations.Right;
 import play.mvc.Controller;
 import play.mvc.With;
 import controllers.operate.cas.SecureCAS;
 
-@With({SecureCAS.class, MenuInjector.class})
+@With({SecureCAS.class, OperateRbac.class})
 public class SingleFoo extends Controller {
 
     @Right("PERM_TEST")

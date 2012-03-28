@@ -3,8 +3,8 @@ package unit;
 import java.util.List;
 
 import models.admin.OperateNavigation;
-import navigation.RbacLoader;
 
+import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -19,7 +19,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Query;
 import javax.persistence.Table;
-import navigation.annotations.ActiveNavigation;
+import operate.rbac.annotations.ActiveNavigation;
 import play.db.jpa.Model;
 
 @Entity

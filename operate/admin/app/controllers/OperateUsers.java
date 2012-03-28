@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
-import navigation.annotations.ActiveNavigation;
+import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
@@ -23,7 +23,7 @@ import controllers.operate.cas.SecureCAS;
  *
  */
 
-@With({SecureCAS.class, MenuInjector.class })
+@With({SecureCAS.class, OperateRbac.class })
 @ActiveNavigation("user_search")
 public class OperateUsers extends Controller {
     public static int PAGE_SIZE = 15;

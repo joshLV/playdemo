@@ -1,10 +1,16 @@
 package function;
 
-import com.uhuila.common.constants.DeletedStatus;
-import controllers.supplier.cas.Security;
-import models.admin.SupplierRole;
-import models.admin.SupplierUser;
-import models.sales.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import models.admin.OperateRole;
+import models.admin.OperateUser;
+import models.sales.Area;
+import models.sales.Brand;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.GoodsStatus;
+import models.sales.Shop;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
 import org.junit.After;
@@ -15,10 +21,8 @@ import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.operate.cas.Security;
 
 @Ignore
 public class OperateGoodsTest extends FunctionalTest {
@@ -31,8 +35,8 @@ public class OperateGoodsTest extends FunctionalTest {
         Fixtures.delete(Brand.class);
         Fixtures.delete(Area.class);
 
-        Fixtures.delete(SupplierUser.class);
-        Fixtures.delete(SupplierRole.class);
+        Fixtures.delete(OperateUser.class);
+        Fixtures.delete(OperateRole.class);
         Fixtures.delete(Supplier.class);
         Fixtures.loadModels("fixture/roles.yml");
         Fixtures.loadModels("fixture/supplierusers.yml");
@@ -47,8 +51,8 @@ public class OperateGoodsTest extends FunctionalTest {
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
 
-        Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user3");
-        SupplierUser user = SupplierUser.findById(id);
+        Long id = (Long) Fixtures.idCache.get("models.admin.OperateUser-user3");
+        OperateUser user = OperateUser.findById(id);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
     }

@@ -3,7 +3,7 @@ package function;
 import models.admin.OperatePermission;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
-import navigation.RbacLoader;
+import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;

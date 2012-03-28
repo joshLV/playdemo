@@ -2,8 +2,8 @@ package unit;
 
 import models.admin.OperateRole;
 import models.admin.OperateUser;
-import navigation.ContextedPermission;
-import navigation.RbacLoader;
+import operate.rbac.ContextedPermission;
+import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
