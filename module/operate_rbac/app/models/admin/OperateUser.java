@@ -78,21 +78,21 @@ public class OperateUser extends Model {
             joinColumns = @JoinColumn(name = "user_id"))
     public Set<OperatePermission> permissions;
 
-    public static JPAExtPaginator<OperateUser> getCuserList(String loginName, 
+    public static JPAExtPaginator<OperateUser> getCuserList(String loginName,
                                                              int pageNumber, int pageSize) {
         StringBuffer sql = new StringBuffer();
         Map params = new HashMap();
-        
-        sql.append(" and deleted = :deleted ");
+
+        sql.append("s.deleted = :deleted ");
         params.put("deleted", DeletedStatus.UN_DELETED);
 
         if (StringUtils.isNotBlank(loginName)) {
-            sql.append(" and loginName like :loginName");
+            sql.append(" and s.loginName like :loginName");
             params.put("loginName", loginName + "%");
         }
 
         JPAExtPaginator<OperateUser> cusersPage = new JPAExtPaginator<>("OperateUser s", "s",
-                OperateUser.class, sql.toString(), params).orderBy("createdAt desc");
+                OperateUser.class, sql.toString(), params).orderBy("s.createdAt desc");
         cusersPage.setPageNumber(pageNumber);
         cusersPage.setPageSize(pageSize);
         cusersPage.setBoundaryControlsEnabled(false);
@@ -162,7 +162,6 @@ public class OperateUser extends Model {
     /**
      * 创建用户信息
      *
-     * @param supplierId
      * @return
      */
     public boolean create() {

@@ -1,0 +1,39 @@
+models.admin.OperateNavigation(main):
+  name: "main"
+  text: "系统管理"
+  url: "http://www.google.com"
+  applicationName: "operate-admin"
+  displayOrder: 1
+
+models.admin.OperateNavigation(order):
+  name: "order"
+  text: "订单管理"
+  applicationName: "operate-admin"
+  displayOrder: 2
+
+models.admin.OperateNavigation(user):
+  name: "user"
+  text: "用户管理"
+  parent: main
+  applicationName: "operate-admin"
+  displayOrder: 1
+
+models.admin.OperateNavigation(user_add):
+  name: "user_add"
+  text: "添加用户"
+  parent: user
+  displayOrder: 1
+  applicationName: operate-admin
+
+models.admin.OperateNavigation(user_edit):
+  name: "user_edit"
+  text: "修改用户"
+  parent: user
+  displayOrder: 2
+  applicationName: operate-admin
+
+models.admin.OperateNavigation(role):
+  name: "role"
+  text: "角色管理"
+  parent: main
+  displayOrder: 2

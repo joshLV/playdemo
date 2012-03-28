@@ -1,0 +1,23 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                                       Application.index
+GET     /users                                  OperateUsers.index
+GET     /users/new                              OperateUsers.add
+POST    /users                                  OperateUsers.create
+POST    /users/checkLoginName                   OperateUsers.checkLoginName
+GET     /users/{id}/edit                        OperateUsers.edit
+POST    /users/{id}                             OperateUsers.update
+DELETE  /users/{id}                             OperateUsers.delete
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+
+*       /                                       module:operate_cas
+
+# Catch all
+*       /{controller}/{action}                  {controller}.{action}

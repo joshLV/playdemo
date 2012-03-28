@@ -18,7 +18,7 @@ import models.admin.OperateNavigation;
 
 import org.apache.commons.lang.StringUtils;
 import play.Play;
-import play.supplier.cas.CASUtils;
+import play.operate.cas.CASUtils;
 
 /**
  * Bare Menu
@@ -28,10 +28,10 @@ import play.supplier.cas.CASUtils;
 @XmlRootElement(name="navigation")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Menu {
-    
+
     @XmlTransient
     public Menu parent;
-    
+
     @XmlAttribute(name="key")
     public String name;
     @XmlAttribute
@@ -43,77 +43,76 @@ public class Menu {
 
     @XmlElement(name="navigation")
     public List<Menu> children = new ArrayList<Menu>();
-    
+
     @XmlAttribute(name="labels")
     public String labelValue;
-    
+
     @XmlTransient
     public String devBaseUrl;
-    
+
     @XmlTransient
     public String prodBaseUrl;
-    
+
     @XmlTransient
     public Set<String> getLabels() {
         Set<String> labels = new HashSet<String>();
-        
+
         if (!StringUtils.isEmpty(labelValue)) {
             String[] values = labelValue.split("[\\s,]+");
             for (String value : values) {
                 labels.add(value);
             }
         }
-        
+
         return labels;
     }
-    
-     
+
+
     @XmlAttribute(name="permissions")
     public String permissionsValue;
-    
+
     @XmlTransient
     public Set<String> getPermissions() {
         Set<String> permissionSet = new HashSet<String>();
-        
+
         if (!StringUtils.isEmpty(permissionsValue)) {
             String[] values = permissionsValue.split("[\\s,]+");
             for (String value : values) {
                 permissionSet.add(value);
             }
         }
-        
+
         return permissionSet;
     }
-    
+
     @XmlTransient
     public String applicationName;
-    
+
     @XmlTransient
     public Map<String, String> params = new HashMap<String, String>();
-    
+
     @XmlTransient
     public Map<String, Object> properties = new HashMap<String, Object>();
-    
+
     public boolean hasLink() {
         return url != null || action != null;
     }
-    
+
     @XmlTransient
     public String getBaseUrl() {
-        String subDomain = CASUtils.getSubDomain();
         String baseUrl = null;
         if (Play.mode == Play.Mode.DEV) {
             baseUrl = this.devBaseUrl;
         } else {
             baseUrl = this.prodBaseUrl;
         }
-        return CASUtils.replaceSubDomain(baseUrl, subDomain);
+        return baseUrl;
     }
-    
+
     public String menuKey() {
         return applicationName + "." + name;
     }
-    
+
      public static Menu from(OperateNavigation navigation) {
          return from(navigation, true);
      }
@@ -133,14 +132,14 @@ public class Menu {
         }
         menu.labelValue = navigation.labels;
         menu.applicationName = navigation.applicationName;
-        
+
         if (navigation.children != null && recure) {
             menu.children = new ArrayList<Menu>();
             for (OperateNavigation nav : navigation.children) {
-                menu.children.add(from(nav, false)); 
+                menu.children.add(from(nav, false));
             }
         }
-        
+
         return menu;
     }
 }

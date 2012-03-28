@@ -47,8 +47,6 @@ import play.mvc.Router;
  */
 public class CASUtils {
 
-    private static final Pattern hostPattern = Pattern.compile("([^\\.:]+)(\\.([^\\.]+)\\.([^\\.]+)\\.\\w+)?(:[\\d]+)?");
-
     /**
      * Method that generate the CAS login page URL.
      *
@@ -66,7 +64,6 @@ public class CASUtils {
         }
         else {
             casLoginUrl = Play.configuration.getProperty("cas.loginUrl");
-            casLoginUrl = replaceCasUrl(casLoginUrl);
         }
 
         // we add the service URL (the reverse route for SecureCas.
@@ -90,9 +87,7 @@ public class CASUtils {
         if (isCasMockServer()) {
             return Router.getFullUrl("operate.cas.MockServer.logout");
         }
-        else {
-            return replaceCasUrl(Play.configuration.getProperty("cas.logoutUrl"));
-        }
+        return Play.configuration.getProperty("cas.logoutUrl");
     }
 
     /**
@@ -101,8 +96,7 @@ public class CASUtils {
      * @throws Throwable
      */
     private static String getCasServiceUrl() {
-        String casServiceUrl = Router.getFullUrl("operate.cas.SecureCAS.authenticate");
-        return replaceCasUrl(casServiceUrl);
+        return Router.getFullUrl("operate.cas.SecureCAS.authenticate");
     }
 
     /**
@@ -118,7 +112,7 @@ public class CASUtils {
         else {
             casServiceValidateUrl = Play.configuration.getProperty("cas.validateUrl");
         }
-        return replaceCasUrl(casServiceValidateUrl);
+        return casServiceValidateUrl;
     }
 
     /**
@@ -142,7 +136,7 @@ public class CASUtils {
             }
         }
 
-        return replaceCasUrl(casProxyCallBackUrl);
+        return casProxyCallBackUrl;
     }
 
     /**
@@ -308,31 +302,5 @@ public class CASUtils {
         return proxyTicket;
     }
 
-    public static String replaceCasUrl(String casUrlTemp) {
-        String subDomain = getSubDomain();
-        if (subDomain != null) {
-            return replaceSubDomain(casUrlTemp, subDomain);
-        }
-        return null;
-    }
-
-    public static String replaceSubDomain(String casUrlTemp, String subDomain) {
-        if (casUrlTemp == null) return null;
-        if (subDomain == null) return casUrlTemp;
-        return casUrlTemp.replaceAll("\\{domain\\}", subDomain);
-    }
-
-    public static String getSubDomain() {
-        String hostName = Http.Request.current().host;
-        if (Play.mode == Play.Mode.DEV && hostName == null) {
-            hostName = "localhost";
-        }
-        Matcher m = hostPattern.matcher(hostName);
-        if (m.matches()) {
-            return m.group(1);
-        }
-
-        return null;
-    }
 
 }

@@ -85,35 +85,35 @@ public class RbacLoader {
 
     private static void savePermissionToDB(String applicationName, long loadVersion, Permission permission,
             Permission parentPermission) {
-        OperatePermission supplierPermission = OperatePermission.find("byApplicationNameAndKey", applicationName, permission.key).first();
-        if (supplierPermission == null) {
-            supplierPermission = new OperatePermission();
-            supplierPermission.key = permission.key;
-            supplierPermission.createdAt = new Date();
-            supplierPermission.displayOrder = 999;   // FIXME: 使用顺序值
+        OperatePermission operatePermission = OperatePermission.find("byApplicationNameAndKey", applicationName, permission.key).first();
+        if (operatePermission == null) {
+            operatePermission = new OperatePermission();
+            operatePermission.key = permission.key;
+            operatePermission.createdAt = new Date();
+            operatePermission.displayOrder = 999;   // FIXME: 使用顺序值
         }
-        supplierPermission.text = permission.text;
+        operatePermission.text = permission.text;
         // TODO: nav.parent
-        supplierPermission.applicationName = applicationName;
-        supplierPermission.loadVersion = loadVersion;
-        supplierPermission.updatedAt = new Date();
+        operatePermission.applicationName = applicationName;
+        operatePermission.loadVersion = loadVersion;
+        operatePermission.updatedAt = new Date();
 
         if (permission.getRoles() != null) {
-            supplierPermission.roles = new HashSet<>();
+            operatePermission.roles = new HashSet<>();
             for (String roleName : permission.getRoles()) {
                 OperateRole role = OperateRole.find("byKey", roleName).first();
                 if (role != null) {
-                    supplierPermission.roles.add(role);
+                    operatePermission.roles.add(role);
                 }
             }
         }
 
         if (parentPermission != null) {
-            supplierPermission.parent = OperatePermission.find("byApplicationNameAndKey", applicationName, parentPermission.key).first();
+            operatePermission.parent = OperatePermission.find("byApplicationNameAndKey", applicationName, parentPermission.key).first();
         }
 
-        Logger.info("supplierPermission.parent-" + supplierPermission.parent);
-        supplierPermission.save();
+        Logger.info("operatePermission.parent-" + operatePermission.parent);
+        operatePermission.save();
     }
 
     /**
@@ -129,17 +129,17 @@ public class RbacLoader {
     }
 
     private static void saveRoleToDB(long loadVersion, Role role) {
-        OperateRole supplierRole = OperateRole.find("byKey", role.key).first();
-        if (supplierRole == null) {
-            supplierRole = new OperateRole();
-            supplierRole.key = role.key;
-            supplierRole.createdAt = new Date();
+        OperateRole operateRole = OperateRole.find("byKey", role.key).first();
+        if (operateRole == null) {
+            operateRole = new OperateRole();
+            operateRole.key = role.key;
+            operateRole.createdAt = new Date();
         }
-        supplierRole.text = role.text;
-        supplierRole.loadVersion = loadVersion;
-        supplierRole.updatedAt = new Date();
+        operateRole.text = role.text;
+        operateRole.loadVersion = loadVersion;
+        operateRole.updatedAt = new Date();
 
-        supplierRole.save();
+        operateRole.save();
     }
 
     public static void loadMenusToDB(Menu parentMenu, List<Menu> menus, String applicationName, long loadVersion) {
@@ -153,42 +153,42 @@ public class RbacLoader {
     }
 
     private static void saveMenuToDB(String applicationName, long currentLoadVersion, Menu menu, Menu parentMenu) {
-        OperateNavigation supplierNavigation = OperateNavigation.find("byName", menu.name).first();
-        if (supplierNavigation == null) {
-            supplierNavigation = new OperateNavigation();
-            supplierNavigation.name = menu.name;
-            supplierNavigation.createdAt = new Date();
+        OperateNavigation operateNavigation = OperateNavigation.find("byName", menu.name).first();
+        if (operateNavigation == null) {
+            operateNavigation = new OperateNavigation();
+            operateNavigation.name = menu.name;
+            operateNavigation.createdAt = new Date();
         }
-        supplierNavigation.text = menu.text;
-        supplierNavigation.action = menu.action;
-        supplierNavigation.url = menu.url;
-        supplierNavigation.labels = menu.labelValue;
-        // TODO: nav.parent
-        supplierNavigation.applicationName = applicationName;
-        supplierNavigation.loadVersion = currentLoadVersion;
-        supplierNavigation.updatedAt = new Date();
+        operateNavigation.text = menu.text;
+        operateNavigation.action = menu.action;
+        operateNavigation.url = menu.url;
+        operateNavigation.labels = menu.labelValue;
+        operateNavigation.applicationName = applicationName;
+        operateNavigation.loadVersion = currentLoadVersion;
+        operateNavigation.updatedAt = new Date();
 
         if (Play.mode == Play.mode.DEV) {
-            supplierNavigation.devBaseUrl = Play.configuration.getProperty("application.baseUrl");
+            // FIXME: operateNavigation.devBaseUrl 应该使用localhost:9000这样的地址，现在这个不对
+            operateNavigation.devBaseUrl = Play.configuration.getProperty("application.baseUrl");
         } else {
-            supplierNavigation.prodBaseUrl = Play.configuration.getProperty("application.baseUrl");
+            operateNavigation.prodBaseUrl = Play.configuration.getProperty("application.baseUrl");
         }
 
         if (menu.getPermissions() != null) {
-            supplierNavigation.permissions = new HashSet<>();
+            operateNavigation.permissions = new HashSet<>();
             for (String permissionName : menu.getPermissions()) {
                 OperatePermission permission = OperatePermission.find("byKey", permissionName).first();
                 if (permission != null) {
-                    supplierNavigation.permissions.add(permission);
+                    operateNavigation.permissions.add(permission);
                 }
             }
         }
 
         if (parentMenu != null) {
-            supplierNavigation.parent = OperateNavigation.find("byName", parentMenu.name).first();
+            operateNavigation.parent = OperateNavigation.find("byName", parentMenu.name).first();
         }
 
-        supplierNavigation.save();
+        operateNavigation.save();
     }
 
     private static void deleteUndefinedMenus(String applicationName, long currentLoadVersion) {

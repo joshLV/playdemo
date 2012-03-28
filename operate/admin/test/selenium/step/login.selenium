@@ -1,0 +1,12 @@
+%{
+        play.vfs.VirtualFile file = play.vfs.VirtualFile.open("conf/rbac.xml");
+        navigation.RbacLoader.init(file);
+}%
+deleteAllVisibleCookies()
+clearSession()
+openAndWait('/@cas/login?service=/operate.cas.securecas/authenticate&gateway=true')
+assertTitle('CAS Mock Server - Login')
+type('id=login','yan')
+type('id=password','yan')
+clickAndWait('css=input[type="submit"]')
+assertNotTitle('CAS Mock Server - Login')

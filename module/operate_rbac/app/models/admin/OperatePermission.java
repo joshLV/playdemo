@@ -29,7 +29,7 @@ public class OperatePermission extends Model {
 
     @OrderColumn(name="display_order")
     public Integer displayOrder;
-    
+
     @Column(name="application_name")
     public String applicationName;
 
@@ -49,25 +49,25 @@ public class OperatePermission extends Model {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, targetEntity = OperatePermission.class)
     @OrderBy("displayOrder")
     public List<OperatePermission> children;
-    
+
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "operate_permissions_roles", 
-        inverseJoinColumns = @JoinColumn(name= "role_id"), 
+    @JoinTable(name = "operate_permissions_roles",
+        inverseJoinColumns = @JoinColumn(name= "role_id"),
         joinColumns = @JoinColumn(name = "permission_id"))
-    public Set<OperateRole> roles;    
-  
+    public Set<OperateRole> roles;
+
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "operate_permissions_users", 
-        inverseJoinColumns = @JoinColumn(name= "user_id"), 
+    @JoinTable(name = "operate_permissions_users",
+        inverseJoinColumns = @JoinColumn(name= "user_id"),
         joinColumns = @JoinColumn(name = "permission_id"))
-    public Set<OperateRole> users;    
-    
+    public Set<OperateRole> users;
+
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "operate_navigations_permissions", 
-        inverseJoinColumns = @JoinColumn(name= "navigation_id"), 
+    @JoinTable(name = "operate_navigations_permissions",
+        inverseJoinColumns = @JoinColumn(name= "navigation_id"),
         joinColumns = @JoinColumn(name = "permission_id"))
-    public Set<OperateNavigation> navigations;    
-    
+    public Set<OperateNavigation> navigations;
+
     /**
      * 加载版本，使用应用程序加载时间，在处理完成后，删除不是当前loadVersion的记录，以完成同步.
      */
@@ -81,13 +81,13 @@ public class OperatePermission extends Model {
      */
     public static  void deleteUndefinedPermissions(String applicationName, long loadVersion) {
         List<OperatePermission> list = OperatePermission.find(
-                "applicationName=? and loadVersion <> ? order by parent DESC, id DESC", 
+                "applicationName=? and loadVersion <> ? order by parent DESC, id DESC",
                 applicationName, loadVersion).fetch();
         for (OperatePermission perm : list) {
             perm.delete();
         }
     }
-    
+
     /**
      * 按用户角色得到权限列表。
      * @param userName
@@ -96,8 +96,8 @@ public class OperatePermission extends Model {
     public static List<OperatePermission> findByUserRole(Long userId) {
         // ""and g.id in (select g.id from g.categories c where c.id = :categoryId)"
         return OperatePermission.find(
-                "select p from SupplierPermission p join p.roles r join r.users u where u.id=?",
+                "select p from OperatePermission p join p.roles r join r.users u where u.id=?",
                 userId).fetch();
     }
-    
+
 }
