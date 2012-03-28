@@ -15,9 +15,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import models.supplier.Supplier;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
@@ -30,8 +28,8 @@ import play.mvc.Http.Request;
 import com.uhuila.common.constants.DeletedStatus;
 
 @Entity
-@Table(name = "supplier_users")
-public class SupplierUser extends Model {
+@Table(name = "operate_users")
+public class OperateUser extends Model {
     @Column(name = "login_name")
     @Required
     public String loginName;
@@ -62,10 +60,6 @@ public class SupplierUser extends Model {
     @Column(name = "updated_at")
     public Date updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name="supplier_id")
-    public Supplier supplier;
-
     /**
      * 逻辑删除,0:未删除，1:已删除
      */
@@ -73,24 +67,22 @@ public class SupplierUser extends Model {
     public DeletedStatus deleted;
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "supplier_users_roles",
+    @JoinTable(name = "operate_users_roles",
             inverseJoinColumns = @JoinColumn(name = "role_id"),
             joinColumns = @JoinColumn(name = "user_id"))
-    public Set<SupplierRole> roles;
+    public Set<OperateRole> roles;
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "supplier_permissions_users",
+    @JoinTable(name = "operate_permissions_users",
             inverseJoinColumns = @JoinColumn(name = "permission_id"),
             joinColumns = @JoinColumn(name = "user_id"))
-    public Set<SupplierPermission> permissions;
+    public Set<OperatePermission> permissions;
 
-    public static JPAExtPaginator<SupplierUser> getCuserList(String loginName, Long supplierId,
+    public static JPAExtPaginator<OperateUser> getCuserList(String loginName, 
                                                              int pageNumber, int pageSize) {
         StringBuffer sql = new StringBuffer();
         Map params = new HashMap();
-        sql.append("supplier.id = :supplierId");
-        params.put("supplierId", supplierId);
-
+        
         sql.append(" and deleted = :deleted ");
         params.put("deleted", DeletedStatus.UN_DELETED);
 
@@ -99,8 +91,8 @@ public class SupplierUser extends Model {
             params.put("loginName", loginName + "%");
         }
 
-        JPAExtPaginator<SupplierUser> cusersPage = new JPAExtPaginator<>("SupplierUser s", "s",
-                SupplierUser.class, sql.toString(), params).orderBy("createdAt desc");
+        JPAExtPaginator<OperateUser> cusersPage = new JPAExtPaginator<>("OperateUser s", "s",
+                OperateUser.class, sql.toString(), params).orderBy("createdAt desc");
         cusersPage.setPageNumber(pageNumber);
         cusersPage.setPageSize(pageSize);
         cusersPage.setBoundaryControlsEnabled(false);
@@ -113,8 +105,8 @@ public class SupplierUser extends Model {
      * @param id    ID
      * @param user 用户信息
      */
-    public static void update(long id, SupplierUser user) {
-        SupplierUser updatedUser = SupplierUser.findById(id);
+    public static void update(long id, OperateUser user) {
+        OperateUser updatedUser = OperateUser.findById(id);
         if (StringUtils.isNotEmpty(user.encryptedPassword) && !user.encryptedPassword.equals(DigestUtils.md5Hex(updatedUser.encryptedPassword))) {
             Images.Captcha captcha = Images.captcha();
             String passwordSalt = captcha.getText(6);
@@ -147,7 +139,7 @@ public class SupplierUser extends Model {
             sq.append("and id <> ?");
             list.add(id);
         }
-        List<SupplierUser> cuserList = SupplierUser.find(sq.toString(), list.toArray()).fetch();
+        List<OperateUser> cuserList = OperateUser.find(sq.toString(), list.toArray()).fetch();
         String returnFlag = "0";
         //用户名存在的情况
         if (cuserList.size() > 0) returnFlag = "1";
@@ -160,7 +152,7 @@ public class SupplierUser extends Model {
                 list.add(id);
             }
             //手机存在的情况
-            List<SupplierUser> mList = SupplierUser.find(sq.toString(), list.toArray()).fetch();
+            List<OperateUser> mList = OperateUser.find(sq.toString(), list.toArray()).fetch();
             if (mList.size() > 0) returnFlag = "2";
         }
 
@@ -173,9 +165,8 @@ public class SupplierUser extends Model {
      * @param supplierId
      * @return
      */
-    public boolean create(Long supplierId) {
+    public boolean create() {
         Images.Captcha captcha = Images.captcha();
-        Supplier supplier = Supplier.findById(supplierId);
         String password_salt = captcha.getText(6);
         // 密码加密
         encryptedPassword = DigestUtils.md5Hex(encryptedPassword
@@ -184,7 +175,6 @@ public class SupplierUser extends Model {
         passwordSalt = password_salt;
         createdAt = new Date();
         lockVersion = 0;
-        this.supplier = supplier;
         deleted = DeletedStatus.UN_DELETED;
         // 获得IP
         lastLoginIP = Request.current().remoteAddress;
@@ -192,29 +182,21 @@ public class SupplierUser extends Model {
     }
 
     // FIXME: findAdmin这个名字，是指只找Admin用户？这个应该是findUser
-    public static SupplierUser findAdmin(Long supplierId, String admin) {
-        Supplier supplier = Supplier.findById(supplierId);
-        return find("bySupplierAndLoginName", supplier, admin).first();
+    public static OperateUser findAdmin(String admin) {
+        return find("byLoginName", admin).first();
     }
 
-    public static SupplierUser findUserByDomainName(String domainName, String loginName) {
-        Logger.info("domainName=" + domainName + ", loginName=" + loginName + " ^^^^^^^^^^^^^^^^");
-        Supplier supplier = Supplier.find("byDomainName", domainName).first();
-        if (supplier == null) {
-            Logger.info("&&&&&&&&&&&&&&&&  domain is null");
-            return null;
+    public static OperateUser findUser(String loginName) {
+        Logger.info("loginName=" + loginName + " ^^^^^^^^^^^^^^^^");
+
+        List<OperateUser> all = OperateUser.findAll();
+        for (OperateUser user : all) {
+            Logger.info("  ----- user.id:" + user.id + ", loginName:" + user.loginName);
         }
 
         Logger.info("================");
-
-        List<SupplierUser> all = SupplierUser.findAll();
-        for (SupplierUser user : all) {
-            Logger.info("  ----- user.id:" + user.id + ", supplierId:" + user.supplier.id + ", loginName:" + user.loginName);
-        }
-
-        Logger.info("================");
-        Logger.info("     ! -------------- supplier: " + supplier.fullName + ", supplerId=" + supplier.id + ", loginName" + loginName);
-        return SupplierUser.find("bySupplierAndLoginName", supplier, loginName).first();
+        Logger.info("     ! -------------- loginName" + loginName);
+        return OperateUser.find("byLoginName", loginName).first();
     }
 
 }

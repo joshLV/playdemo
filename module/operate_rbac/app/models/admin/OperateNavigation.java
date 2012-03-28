@@ -23,8 +23,8 @@ import navigation.annotations.ActiveNavigation;
 import play.db.jpa.Model;
 
 @Entity
-@Table(name = "supplier_navigations")
-public class SupplierNavigation extends Model {
+@Table(name = "operate_navigations")
+public class OperateNavigation extends Model {
 
     public String name;
     
@@ -60,18 +60,18 @@ public class SupplierNavigation extends Model {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "parent_id", nullable = true)
-    public SupplierNavigation parent;
+    public OperateNavigation parent;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, targetEntity = SupplierNavigation.class)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, targetEntity = OperateNavigation.class)
     @OrderBy("displayOrder")
-    public List<SupplierNavigation> children;
+    public List<OperateNavigation> children;
     
     
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "supplier_navigations_permissions", 
+    @JoinTable(name = "operate_navigations_permissions", 
         inverseJoinColumns = @JoinColumn(name= "permission_id"), 
         joinColumns = @JoinColumn(name = "navigation_id"))
-    public Set<SupplierPermission> permissions;    
+    public Set<OperatePermission> permissions;    
     
 
     public boolean hasLink() {
@@ -99,10 +99,10 @@ public class SupplierNavigation extends Model {
      * @param loadVersion
      */
     public static void deleteUndefinedNavigation(String applicationName, long loadVersion) {
-        List<SupplierNavigation> list = SupplierNavigation.find(
+        List<OperateNavigation> list = OperateNavigation.find(
                 "select s from SupplierNavigation s where s.applicationName=? and s.loadVersion <> ?  order by parent DESC, id DESC", 
                 applicationName, loadVersion).fetch();
-        for (SupplierNavigation nav : list) {
+        for (OperateNavigation nav : list) {
             nav.delete();
         }
     }
@@ -111,7 +111,7 @@ public class SupplierNavigation extends Model {
      * 得到所有子系统拼接在一起的顶级菜单.
      * @return
      */
-    public static List<SupplierNavigation> getTopNavigations() {
+    public static List<OperateNavigation> getTopNavigations() {
         Query q = em().createQuery(  
                 "select n from SupplierNavigation n where n.parent is null order by displayOrder");
         return q.getResultList();
@@ -123,14 +123,14 @@ public class SupplierNavigation extends Model {
      * @param currentMenuName
      * @return
      */
-    public static List<SupplierNavigation> getNavigationParentStack(String applicationName, String currentMenuName) {
+    public static List<OperateNavigation> getNavigationParentStack(String applicationName, String currentMenuName) {
         
         if (currentMenuName == null) {
             throw new IllegalAccessError("必须在Controller中定义" + ActiveNavigation.class.getName() + " Annotation。");
         }
-        Stack<SupplierNavigation> stack = new Stack<>();
+        Stack<OperateNavigation> stack = new Stack<>();
 
-        SupplierNavigation nav = SupplierNavigation.find("byApplicationNameAndName", applicationName, currentMenuName).first();
+        OperateNavigation nav = OperateNavigation.find("byApplicationNameAndName", applicationName, currentMenuName).first();
         
         if (nav == null) {
             return Collections.emptyList();
@@ -141,7 +141,7 @@ public class SupplierNavigation extends Model {
             nav = nav.parent;
         }
         
-        List<SupplierNavigation> parentStackList = new ArrayList<>();
+        List<OperateNavigation> parentStackList = new ArrayList<>();
         while (!stack.isEmpty()) {
             parentStackList.add(stack.pop());
         }
@@ -149,19 +149,19 @@ public class SupplierNavigation extends Model {
         return parentStackList;
     }
     
-    public static List<SupplierNavigation> getSecondLevelNavigations(String applicationName, String navName) {
-        List<SupplierNavigation> parentStack = getNavigationParentStack(applicationName, navName);
+    public static List<OperateNavigation> getSecondLevelNavigations(String applicationName, String navName) {
+        List<OperateNavigation> parentStack = getNavigationParentStack(applicationName, navName);
         
         if (parentStack == null || parentStack.size() < 2) {
             return Collections.emptyList();
         }
         
-        SupplierNavigation topMenu = parentStack.get(0);
+        OperateNavigation topMenu = parentStack.get(0);
 
         return topMenu.children;
     }      
     
-    public static SupplierNavigation findByName(String key) {
-        return SupplierNavigation.find("byName", key).first();
+    public static OperateNavigation findByName(String key) {
+        return OperateNavigation.find("byName", key).first();
     }
 }

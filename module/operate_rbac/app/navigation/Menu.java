@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import models.admin.SupplierNavigation;
+import models.admin.OperateNavigation;
 
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -114,10 +114,10 @@ public class Menu {
         return applicationName + "." + name;
     }
     
-     public static Menu from(SupplierNavigation navigation) {
+     public static Menu from(OperateNavigation navigation) {
          return from(navigation, true);
      }
-    public static Menu from(SupplierNavigation navigation, boolean recure) {
+    public static Menu from(OperateNavigation navigation, boolean recure) {
         if (navigation == null) {
             return null;
         }
@@ -136,7 +136,7 @@ public class Menu {
         
         if (navigation.children != null && recure) {
             menu.children = new ArrayList<Menu>();
-            for (SupplierNavigation nav : navigation.children) {
+            for (OperateNavigation nav : navigation.children) {
                 menu.children.add(from(nav, false)); 
             }
         }

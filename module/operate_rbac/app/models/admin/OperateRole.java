@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
-@Table(name = "supplier_roles")
-public class SupplierRole extends Model {
+@Table(name = "operate_roles")
+public class OperateRole extends Model {
 
     public String text;
 
@@ -32,19 +32,19 @@ public class SupplierRole extends Model {
     public Date updatedAt;
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "supplier_users_roles", 
+    @JoinTable(name = "operate_users_roles", 
         inverseJoinColumns = @JoinColumn(name= "user_id"), 
         joinColumns = @JoinColumn(name = "role_id"))
-    public Set<SupplierUser> users;
+    public Set<OperateUser> users;
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "supplier_permissions_roles", 
+    @JoinTable(name = "operate_permissions_roles", 
         inverseJoinColumns = @JoinColumn(name= "permission_id"), 
         joinColumns = @JoinColumn(name = "role_id"))
-    public Set<SupplierPermission> permissions;   
+    public Set<OperatePermission> permissions;   
     
-    public static SupplierRole findByKey(String key){
-        return SupplierRole.find("byKey",key).first();
+    public static OperateRole findByKey(String key){
+        return OperateRole.find("byKey",key).first();
     }
     
 }

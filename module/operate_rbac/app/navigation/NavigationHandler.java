@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import models.admin.SupplierNavigation;
+import models.admin.OperateNavigation;
 import play.Play;
 import play.mvc.Http.Request;
 
@@ -28,13 +28,13 @@ public class NavigationHandler {
 
 
     private static void initStackMenuNamesThreadLocal(String applicationName, String activeNavigationName) {
-        List<SupplierNavigation> navigateionStackList = SupplierNavigation
+        List<OperateNavigation> navigateionStackList = OperateNavigation
                 .getNavigationParentStack(applicationName, activeNavigationName);
         if (navigateionStackList == null) {
             return;
         }
         Set<String> navigationNameStackSets = new HashSet<>();
-        for (SupplierNavigation nav : navigateionStackList) {
+        for (OperateNavigation nav : navigateionStackList) {
             navigationNameStackSets.add(nav.name);            
         }
         stackMenuNames.set(navigationNameStackSets);
@@ -42,13 +42,13 @@ public class NavigationHandler {
 
 
     private static void initSecondLevelMenusThreadLocal(String applicationName, String activeNavigationName) {
-        List<SupplierNavigation> secondLevelNavigations = SupplierNavigation
+        List<OperateNavigation> secondLevelNavigations = OperateNavigation
                 .getSecondLevelNavigations(applicationName, activeNavigationName);
         if (secondLevelNavigations == null) {
             return;
         }
         List<ContextedMenu> _secondLevelMenus = new ArrayList<>();
-        for (SupplierNavigation navigation : secondLevelNavigations) {
+        for (OperateNavigation navigation : secondLevelNavigations) {
             if (navigation.permissions == null ||
                     navigation.permissions.size() == 0 ||
                     ContextedPermission.hasPermissions(navigation.permissions)) {
@@ -62,9 +62,9 @@ public class NavigationHandler {
 
 
     private static void initTopMenusThreadLocal() {
-        List<SupplierNavigation> topNavigations = SupplierNavigation.getTopNavigations();
+        List<OperateNavigation> topNavigations = OperateNavigation.getTopNavigations();
         List<ContextedMenu> _topMenus = new ArrayList<>();
-        for (SupplierNavigation navigation : topNavigations) {
+        for (OperateNavigation navigation : topNavigations) {
             if (navigation.permissions == null ||
                     navigation.permissions.size() == 0 ||
                     ContextedPermission.hasPermissions(navigation.permissions)) {
@@ -86,8 +86,8 @@ public class NavigationHandler {
      */
     public static void initNamedMenus() {
         namedMenus = new HashMap<>();
-        List<SupplierNavigation> allNavigations = SupplierNavigation.findAll();
-        for (SupplierNavigation nav : allNavigations) {
+        List<OperateNavigation> allNavigations = OperateNavigation.findAll();
+        for (OperateNavigation nav : allNavigations) {
             Menu menu = Menu.from(nav);
             namedMenus.put(menu.menuKey(), menu);
         }

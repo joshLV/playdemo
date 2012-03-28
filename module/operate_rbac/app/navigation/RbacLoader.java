@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-import models.admin.SupplierNavigation;
-import models.admin.SupplierPermission;
-import models.admin.SupplierRole;
+import models.admin.OperateNavigation;
+import models.admin.OperatePermission;
+import models.admin.OperateRole;
 import play.Logger;
 import play.Play;
 import play.vfs.VirtualFile;
@@ -62,7 +62,7 @@ public class RbacLoader {
      * @param loadVersion
      */
     private static void deleteUndefinedPermissions(String applicationName, long loadVersion) {
-        SupplierPermission.deleteUndefinedPermissions(applicationName, loadVersion);
+        OperatePermission.deleteUndefinedPermissions(applicationName, loadVersion);
     }
 
     /**
@@ -85,9 +85,9 @@ public class RbacLoader {
 
     private static void savePermissionToDB(String applicationName, long loadVersion, Permission permission,
             Permission parentPermission) {
-        SupplierPermission supplierPermission = SupplierPermission.find("byApplicationNameAndKey", applicationName, permission.key).first();
+        OperatePermission supplierPermission = OperatePermission.find("byApplicationNameAndKey", applicationName, permission.key).first();
         if (supplierPermission == null) {
-            supplierPermission = new SupplierPermission();
+            supplierPermission = new OperatePermission();
             supplierPermission.key = permission.key;
             supplierPermission.createdAt = new Date();
             supplierPermission.displayOrder = 999;   // FIXME: 使用顺序值
@@ -101,7 +101,7 @@ public class RbacLoader {
         if (permission.getRoles() != null) {
             supplierPermission.roles = new HashSet<>();
             for (String roleName : permission.getRoles()) {
-                SupplierRole role = SupplierRole.find("byKey", roleName).first();
+                OperateRole role = OperateRole.find("byKey", roleName).first();
                 if (role != null) {
                     supplierPermission.roles.add(role);
                 }
@@ -109,7 +109,7 @@ public class RbacLoader {
         }
 
         if (parentPermission != null) {
-            supplierPermission.parent = SupplierPermission.find("byApplicationNameAndKey", applicationName, parentPermission.key).first();
+            supplierPermission.parent = OperatePermission.find("byApplicationNameAndKey", applicationName, parentPermission.key).first();
         }
 
         Logger.info("supplierPermission.parent-" + supplierPermission.parent);
@@ -129,9 +129,9 @@ public class RbacLoader {
     }
 
     private static void saveRoleToDB(long loadVersion, Role role) {
-        SupplierRole supplierRole = SupplierRole.find("byKey", role.key).first();
+        OperateRole supplierRole = OperateRole.find("byKey", role.key).first();
         if (supplierRole == null) {
-            supplierRole = new SupplierRole();
+            supplierRole = new OperateRole();
             supplierRole.key = role.key;
             supplierRole.createdAt = new Date();
         }
@@ -153,9 +153,9 @@ public class RbacLoader {
     }
 
     private static void saveMenuToDB(String applicationName, long currentLoadVersion, Menu menu, Menu parentMenu) {
-        SupplierNavigation supplierNavigation = SupplierNavigation.find("byName", menu.name).first();
+        OperateNavigation supplierNavigation = OperateNavigation.find("byName", menu.name).first();
         if (supplierNavigation == null) {
-            supplierNavigation = new SupplierNavigation();
+            supplierNavigation = new OperateNavigation();
             supplierNavigation.name = menu.name;
             supplierNavigation.createdAt = new Date();
         }
@@ -177,7 +177,7 @@ public class RbacLoader {
         if (menu.getPermissions() != null) {
             supplierNavigation.permissions = new HashSet<>();
             for (String permissionName : menu.getPermissions()) {
-                SupplierPermission permission = SupplierPermission.find("byKey", permissionName).first();
+                OperatePermission permission = OperatePermission.find("byKey", permissionName).first();
                 if (permission != null) {
                     supplierNavigation.permissions.add(permission);
                 }
@@ -185,14 +185,14 @@ public class RbacLoader {
         }
 
         if (parentMenu != null) {
-            supplierNavigation.parent = SupplierNavigation.find("byName", parentMenu.name).first();
+            supplierNavigation.parent = OperateNavigation.find("byName", parentMenu.name).first();
         }
 
         supplierNavigation.save();
     }
 
     private static void deleteUndefinedMenus(String applicationName, long currentLoadVersion) {
-        SupplierNavigation.deleteUndefinedNavigation(applicationName, currentLoadVersion);
+        OperateNavigation.deleteUndefinedNavigation(applicationName, currentLoadVersion);
     }
 
 

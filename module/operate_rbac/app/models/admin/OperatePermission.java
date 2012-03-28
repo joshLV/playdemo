@@ -18,8 +18,8 @@ import javax.persistence.Table;
 import play.db.jpa.Model;
 
 @Entity
-@Table(name = "supplier_permissions")
-public class SupplierPermission extends Model {
+@Table(name = "operate_permissions")
+public class OperatePermission extends Model {
 
     public String text;
 
@@ -44,29 +44,29 @@ public class SupplierPermission extends Model {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "parent_id", nullable = true)
-    public SupplierPermission parent;
+    public OperatePermission parent;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, targetEntity = SupplierPermission.class)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, targetEntity = OperatePermission.class)
     @OrderBy("displayOrder")
-    public List<SupplierPermission> children;
+    public List<OperatePermission> children;
     
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "supplier_permissions_roles", 
+    @JoinTable(name = "operate_permissions_roles", 
         inverseJoinColumns = @JoinColumn(name= "role_id"), 
         joinColumns = @JoinColumn(name = "permission_id"))
-    public Set<SupplierRole> roles;    
+    public Set<OperateRole> roles;    
   
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "supplier_permissions_users", 
+    @JoinTable(name = "operate_permissions_users", 
         inverseJoinColumns = @JoinColumn(name= "user_id"), 
         joinColumns = @JoinColumn(name = "permission_id"))
-    public Set<SupplierRole> users;    
+    public Set<OperateRole> users;    
     
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "supplier_navigations_permissions", 
+    @JoinTable(name = "operate_navigations_permissions", 
         inverseJoinColumns = @JoinColumn(name= "navigation_id"), 
         joinColumns = @JoinColumn(name = "permission_id"))
-    public Set<SupplierNavigation> navigations;    
+    public Set<OperateNavigation> navigations;    
     
     /**
      * 加载版本，使用应用程序加载时间，在处理完成后，删除不是当前loadVersion的记录，以完成同步.
@@ -80,10 +80,10 @@ public class SupplierPermission extends Model {
      * @param loadVersion
      */
     public static  void deleteUndefinedPermissions(String applicationName, long loadVersion) {
-        List<SupplierPermission> list = SupplierPermission.find(
+        List<OperatePermission> list = OperatePermission.find(
                 "applicationName=? and loadVersion <> ? order by parent DESC, id DESC", 
                 applicationName, loadVersion).fetch();
-        for (SupplierPermission perm : list) {
+        for (OperatePermission perm : list) {
             perm.delete();
         }
     }
@@ -93,9 +93,9 @@ public class SupplierPermission extends Model {
      * @param userName
      * @return
      */
-    public static List<SupplierPermission> findByUserRole(Long userId) {
+    public static List<OperatePermission> findByUserRole(Long userId) {
         // ""and g.id in (select g.id from g.categories c where c.id = :categoryId)"
-        return SupplierPermission.find(
+        return OperatePermission.find(
                 "select p from SupplierPermission p join p.roles r join r.users u where u.id=?",
                 userId).fetch();
     }

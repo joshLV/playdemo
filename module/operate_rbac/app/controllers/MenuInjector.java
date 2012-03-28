@@ -2,23 +2,22 @@ package controllers;
 
 import java.util.HashSet;
 import java.util.Set;
-import models.admin.SupplierNavigation;
-import models.admin.SupplierPermission;
-import models.admin.SupplierRole;
-import models.admin.SupplierUser;
+import models.admin.OperateNavigation;
+import models.admin.OperatePermission;
+import models.admin.OperateRole;
+import models.admin.OperateUser;
 import navigation.ContextedPermission;
 import navigation.NavigationHandler;
 import navigation.annotations.ActiveNavigation;
 import navigation.annotations.Right;
 import org.apache.commons.lang.StringUtils;
-import play.Play;
 import play.Logger;
+import play.Play;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Finally;
 import play.mvc.Http.Request;
-import play.supplier.cas.CASUtils;
-import controllers.supplier.cas.SecureCAS;
+import controllers.operate.cas.SecureCAS;
 
 /**
  * Have a menu automatically injected in your renderArgs
@@ -28,7 +27,7 @@ import controllers.supplier.cas.SecureCAS;
  */
 public class MenuInjector extends Controller {
 
-    private static ThreadLocal<SupplierUser> _user = new ThreadLocal<>();
+    private static ThreadLocal<OperateUser> _user = new ThreadLocal<>();
 
     public static void injectDefaultMenus() {
         for(String menuName : Play.configuration.getProperty("navigation.defaultMenus", "main").toString().split(",")) {
@@ -43,21 +42,20 @@ public class MenuInjector extends Controller {
         if (request.invokedMethod == null)
             return;
 
-        String userName = getDomainUserName(session.get(SecureCAS.SESSION_USER_KEY));
-        String subDomain = CASUtils.getSubDomain();
+        String userName = session.get(SecureCAS.SESSION_USER_KEY);
 
-        Logger.info("================================================================ currentUser = " + userName + ", domain=" + subDomain);
+        Logger.info("================================================================ currentUser = " + userName);
 
-        SupplierUser user = null;
+        OperateUser user = null;
         // 检查权限
         if (userName != null) {
             // 查出当前用户的所有权限
-            user = SupplierUser.findUserByDomainName(subDomain, userName);
+            user = OperateUser.findUser(userName);
             Logger.info(" ---------------------------- user : " + user);
             if (user != null && user.roles != null) {
                 Logger.info("user.id = " + user.id + ", name=" + user.loginName);
                 Logger.info("get role " + user.roles);
-                for (SupplierRole role : user.roles) {
+                for (OperateRole role : user.roles) {
                     Logger.info("user.role=" + role.key);
                 }
             }
@@ -88,15 +86,8 @@ public class MenuInjector extends Controller {
         _user.set(null);
     }
 
-    public static SupplierUser currentUser() {
+    public static OperateUser currentUser() {
         return _user.get();
-    }
-
-    public static String getDomainUserName(String fullUserName) {
-        if (fullUserName == null || fullUserName.indexOf("@") < 0) {
-            return fullUserName;
-        }
-        return fullUserName.split("@", 2)[0];
     }
 
 
@@ -140,10 +131,10 @@ public class MenuInjector extends Controller {
             }
         }
 
-        SupplierNavigation currentNavigation = SupplierNavigation.findByName(currentMenuName);
+        OperateNavigation currentNavigation = OperateNavigation.findByName(currentMenuName);
         // 把当前菜单上的权限也作为检查点，这样一个方法只需要指定@ActiveNavigation，就不需要再指定@Right了
         if (currentNavigation != null && currentNavigation.permissions != null) {
-            for (SupplierPermission perm : currentNavigation.permissions) {
+            for (OperatePermission perm : currentNavigation.permissions) {
                 Logger.info(" 当前菜单(" + currentMenuName + ")的权限是：" + perm.key);
                 rightSet.add(perm.key);
             }

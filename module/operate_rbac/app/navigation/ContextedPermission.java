@@ -3,8 +3,8 @@ package navigation;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import models.admin.SupplierPermission;
-import models.admin.SupplierUser;
+import models.admin.OperatePermission;
+import models.admin.OperateUser;
 
 public class ContextedPermission {
     
@@ -33,18 +33,18 @@ public class ContextedPermission {
      * 初始化用户的权限数据.
      * @param userName
      */
-    public static void init(SupplierUser user) {        
+    public static void init(OperateUser user) {        
         if (user == null) {
             return;
         }
         
-        for (SupplierPermission perm : user.permissions) {
+        for (OperatePermission perm : user.permissions) {
             addAllowPermission(perm.key);
         }
         
         // 查出当前用户从角色继承的所有权限
-        List<SupplierPermission> rolePerms = SupplierPermission.findByUserRole(user.id);
-        for (SupplierPermission perm : rolePerms) {
+        List<OperatePermission> rolePerms = OperatePermission.findByUserRole(user.id);
+        for (OperatePermission perm : rolePerms) {
             addAllowPermission(perm.key);
         }
         
@@ -54,8 +54,8 @@ public class ContextedPermission {
         return _allowPermissions.get() != null && _allowPermissions.get().contains(permission_key);
     }
     
-    public static boolean hasPermissions(Set<SupplierPermission> permissions) {
-        for (SupplierPermission perm : permissions) {
+    public static boolean hasPermissions(Set<OperatePermission> permissions) {
+        for (OperatePermission perm : permissions) {
             if (hasPermission(perm.key)) {
                 return true;
             }
