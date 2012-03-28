@@ -64,7 +64,7 @@ public class RegisterTest extends FunctionalTest {
 		loginUserParams.put("resaler.status", ResalerStatus.PENDING.toString());
 		loginUserParams.put("resaler.identityNo","341281198208268785");
 		response = POST("/register", loginUserParams);
-		assertStatus(200,response);
+		assertStatus(302,response);
 
 	}
 	

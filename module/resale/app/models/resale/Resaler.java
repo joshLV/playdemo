@@ -43,8 +43,8 @@ public class Resaler extends Model {
 
 	@Column(name="login_name")
 	@Required
-	@MinSize(value = 2)
-	@MaxSize(value = 6)
+	@MinSize(value = 1)
+	@MaxSize(value = 50)
 	public String loginName;
 
 	@Column(name = "encrypted_password")
@@ -86,7 +86,6 @@ public class Resaler extends Model {
 	public String address; 
 
 	@Column(name="postcode")
-	@Required
 	public String postCode; 
 
 	@Column(name="identity_no")
