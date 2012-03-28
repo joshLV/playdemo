@@ -13,6 +13,7 @@ app_dirs = [
             'traders/home',
             'traders/admin',
             'cdn/image-server',
+            'operate/admin',
             'operate/business'
            ]
 
