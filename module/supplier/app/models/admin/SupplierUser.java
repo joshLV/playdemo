@@ -137,30 +137,32 @@ public class SupplierUser extends Model {
      *
      * @param loginName 用户名
      * @param mobile    手机
+     * @param supplierUserId
      */
-    public static String checkValue(Long id, String loginName, String mobile) {
+    public static String checkValue(Long id, String loginName, String mobile, Long supplierUserId) {
 
-        StringBuilder sq = new StringBuilder("loginName = ? ");
-        List list = new ArrayList();
-        list.add(loginName);
+        StringBuilder sq = new StringBuilder("loginName = ? and supplier=? ");
+        List params = new ArrayList();
+        params.add(loginName);
+        params.add(new Supplier(supplierUserId));
         if (id != null) {
             sq.append("and id <> ?");
-            list.add(id);
+            params.add(id);
         }
-        List<SupplierUser> supplierUserList = SupplierUser.find(sq.toString(), list.toArray()).fetch();
+        List<SupplierUser> supplierUserList = SupplierUser.find(sq.toString(), params.toArray()).fetch();
         String returnFlag = "0";
         //用户名存在的情况
         if (supplierUserList.size() > 0) returnFlag = "1";
         else {
             sq = new StringBuilder("mobile = ? ");
-            list = new ArrayList();
-            list.add(mobile);
+            params = new ArrayList();
+            params.add(mobile);
             if (id != null) {
                 sq.append("and id <> ?");
-                list.add(id);
+                params.add(id);
             }
             //手机存在的情况
-            List<SupplierUser> mList = SupplierUser.find(sq.toString(), list.toArray()).fetch();
+            List<SupplierUser> mList = SupplierUser.find(sq.toString(), params.toArray()).fetch();
             if (mList.size() > 0) returnFlag = "2";
         }
 
