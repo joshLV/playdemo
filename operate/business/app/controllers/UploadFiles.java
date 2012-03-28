@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import navigation.annotations.ActiveNavigation;
+import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.mvc.Controller;
