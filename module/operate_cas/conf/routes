@@ -1,0 +1,8 @@
+# import these default routes as :
+# *         /               module:supplier_cas
+#
+
+GET         /login          		supplier.cas.SecureCAS.login
+GET         /logout        		supplier.cas.SecureCAS.logout
+GET         /authenticate   		supplier.cas.SecureCAS.authenticate
+GET         /pgtcallbackurl 		supplier.cas.SecureCAS.pgtCallBack
