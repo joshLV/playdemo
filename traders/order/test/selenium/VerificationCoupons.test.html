@@ -1,13 +1,20 @@
-#{fixture delete:[models.order.Order.class,models.sales.Category.class,models.sales.Area.class,
-models.sales.Shop.class, models.sales.Goods.class,models.order.OrderItems.class,models.order.ECoupon.class] ,
-load:['fixture/goods_base.yml','fixture/goods.yml','fixture/user.yml','fixture/orders.yml'] /}
+#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class,
+    models.supplier.Supplier.class, 
+    models.order.Order.class,models.sales.Category.class,models.sales.Area.class,
+    models.sales.Shop.class, models.sales.Goods.class,
+    models.order.OrderItems.class,models.order.ECoupon.class] ,
+ load:['fixture/roles.yml','fixture/supplierusers.yml',
+      'fixture/goods_base.yml','fixture/goods.yml','fixture/user.yml','fixture/orders.yml'] /}
+      
 #{selenium "商户验证消费券界面"}
+    #{include 'test/selenium/step/login.selenium' /}
     open('/coupons/verify')
     clickAndWait('link=验证消费券')
     assertTitle('商户验证消费券')
 #{/selenium}
 
 #{selenium "验证券号是否消费"}
+    #{include 'test/selenium/step/login.selenium' /}
     open('/coupons/verify')
     clickAndWait('link=验证消费券')
     type('id=eCouponSn','')
@@ -20,6 +27,7 @@ load:['fixture/goods_base.yml','fixture/goods.yml','fixture/user.yml','fixture/o
 #{/selenium}
 
 #{selenium "更新消费状态"}
+    #{include 'test/selenium/step/login.selenium' /}
     open('/coupons/verify')
     clickAndWait('link=验证消费券')
     type('id=eCouponSn','')

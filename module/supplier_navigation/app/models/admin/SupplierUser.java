@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import models.supplier.Supplier;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.data.validation.Match;
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -60,10 +61,10 @@ public class SupplierUser extends Model {
 
     @Column(name = "updated_at")
     public Date updatedAt;
-	
-	@ManyToOne
-	@JoinColumn(name="supplier_id")
-	public Supplier supplier;
+
+    @ManyToOne
+    @JoinColumn(name="supplier_id")
+    public Supplier supplier;
 
     /**
      * 逻辑删除,0:未删除，1:已删除
@@ -114,6 +115,8 @@ public class SupplierUser extends Model {
      */
     public static void update(long id, SupplierUser user) {
         SupplierUser updatedUser = SupplierUser.findById(id);
+        Logger.info("updatedUser.encryptedPassword:" + updatedUser.encryptedPassword);
+
         if (StringUtils.isNotEmpty(user.encryptedPassword) && !user.encryptedPassword.equals(DigestUtils.md5Hex(updatedUser.encryptedPassword))) {
             Images.Captcha captcha = Images.captcha();
             String passwordSalt = captcha.getText(6);
@@ -121,6 +124,8 @@ public class SupplierUser extends Model {
             updatedUser.passwordSalt = passwordSalt;
             updatedUser.encryptedPassword = DigestUtils.md5Hex(user.encryptedPassword + passwordSalt);
         }
+        Logger.info("encryptedPassword:" + encryptedPassword);
+        Logger.info("updatedUser.encryptedPassword:" + updatedUser.encryptedPassword);
         updatedUser.loginName = user.loginName;
         updatedUser.mobile = user.mobile;
         updatedUser.lastLoginAt = new Date();
@@ -195,25 +200,25 @@ public class SupplierUser extends Model {
         Supplier supplier = Supplier.findById(supplierId);
         return find("bySupplierAndLoginName", supplier, admin).first();
     }
-    
+
     public static SupplierUser findUserByDomainName(String domainName, String loginName) {
-        System.out.println("domainName=" + domainName + ", loginName=" + loginName + " ^^^^^^^^^^^^^^^^");
+        Logger.info("domainName=" + domainName + ", loginName=" + loginName + " ^^^^^^^^^^^^^^^^");
         Supplier supplier = Supplier.find("byDomainName", domainName).first();
         if (supplier == null) {
-            System.out.println("&&&&&&&&&&&&&&&&  domain is null");
+            Logger.info("&&&&&&&&&&&&&&&&  domain is null");
             return null;
         }
-        
-        System.out.println("================");
-        
+
+        Logger.info("================");
+
         List<SupplierUser> all = SupplierUser.findAll();
         for (SupplierUser user : all) {
-            System.out.println("  ----- user.id:" + user.id + ", supplierId:" + user.supplier.id + ", loginName:" + user.loginName);
+            Logger.info("  ----- user.id:" + user.id + ", supplierId:" + user.supplier.id + ", loginName:" + user.loginName);
         }
-        
-        System.out.println("================");
-        System.out.println("     ! -------------- supplier: " + supplier.fullName + ", supplerId=" + supplier.id + ", loginName" + loginName);
+
+        Logger.info("================");
+        Logger.info("     ! -------------- supplier: " + supplier.fullName + ", supplerId=" + supplier.id + ", loginName" + loginName);
         return SupplierUser.find("bySupplierAndLoginName", supplier, loginName).first();
     }
-    
+
 }

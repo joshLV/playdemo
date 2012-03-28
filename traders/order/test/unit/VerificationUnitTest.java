@@ -3,7 +3,6 @@ package unit;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import models.accounts.Account;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
@@ -17,14 +16,16 @@ import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
 import models.supplier.Supplier;
-
+import navigation.RbacLoader;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
+import play.vfs.VirtualFile;
+import controllers.supplier.cas.Security;
 
 public class VerificationUnitTest extends UnitTest {
 	@Before
@@ -42,7 +43,7 @@ public class VerificationUnitTest extends UnitTest {
 		Fixtures.delete(Supplier.class);
 		Fixtures.delete(SupplierUser.class);
 		Fixtures.loadModels("fixture/goods_base.yml", "fixture/roles.yml", 
-				"fixture/supplier_users.yml",
+				"fixture/supplierusers.yml",
 				"fixture/user.yml",
 				"fixture/goods.yml","fixture/accounts.yml",
 				"fixture/orders.yml",
@@ -57,8 +58,15 @@ public class VerificationUnitTest extends UnitTest {
 		goods = Goods.findById(goodsId);
 		goods.supplierId = supplierId;
 		goods.save();
-	}
 
+    }
+
+	@After
+	public void tearDown() {
+        // 重新加载配置文件
+        VirtualFile file = VirtualFile.open("conf/rbac.xml");
+        RbacLoader.init(file);  
+	}
 	/**
 	 * 测试订单列表
 	 */

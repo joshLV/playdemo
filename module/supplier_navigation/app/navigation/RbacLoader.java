@@ -14,7 +14,7 @@ import play.vfs.VirtualFile;
 
 /**
  * Keeper of the bare RBAC all defines.
- * 
+ *
  * This class holds a static reference to all the Menus. You can retrive a Menu from this class,
  * which will be automatically wrapped in a ContextedMenu, ready to be inserted into your view.
  */
@@ -37,25 +37,25 @@ public class RbacLoader {
         } catch (Exception e) {
             Logger.error(e, "Problem initializing context: %s", e.getMessage());
         }
-        
+
     }
 
     public static void init(Application application) {
         long loadVersion = System.currentTimeMillis();
         String applicationName = Play.configuration.getProperty("application.name");
-        
+
         loadRolesToDB(application.roles, loadVersion);
-        
+
         loadPermissionsToDB(null /* parent permission */,
                 application.permissions, applicationName, loadVersion);
-        
+
         loadMenusToDB(null, application.menus, applicationName, loadVersion);
-        
+
         // 清理更新前的数据
-        deleteUndefinedMenus(applicationName, loadVersion);    
+        deleteUndefinedMenus(applicationName, loadVersion);
         deleteUndefinedPermissions(applicationName, loadVersion);
     }
-    
+
     /**
      * 删除之前版本的Permissions.
      * @param applicationName
@@ -97,7 +97,7 @@ public class RbacLoader {
         supplierPermission.applicationName = applicationName;
         supplierPermission.loadVersion = loadVersion;
         supplierPermission.updatedAt = new Date();
-        
+
         if (permission.getRoles() != null) {
             supplierPermission.roles = new HashSet<>();
             for (String roleName : permission.getRoles()) {
@@ -112,7 +112,7 @@ public class RbacLoader {
             supplierPermission.parent = SupplierPermission.find("byApplicationNameAndKey", applicationName, parentPermission.key).first();
         }
 
-        System.out.println("supplierPermission.parent-" + supplierPermission.parent);
+        Logger.info("supplierPermission.parent-" + supplierPermission.parent);
         supplierPermission.save();
     }
 
@@ -125,7 +125,7 @@ public class RbacLoader {
     private static void loadRolesToDB(List<Role> roles, long loadVersion) {
         for (Role role : roles) {
             saveRoleToDB(loadVersion, role);
-        }        
+        }
     }
 
     private static void saveRoleToDB(long loadVersion, Role role) {
@@ -167,13 +167,13 @@ public class RbacLoader {
         supplierNavigation.applicationName = applicationName;
         supplierNavigation.loadVersion = currentLoadVersion;
         supplierNavigation.updatedAt = new Date();
-        
+
         if (Play.mode == Play.mode.DEV) {
             supplierNavigation.devBaseUrl = Play.configuration.getProperty("application.baseUrl");
         } else {
             supplierNavigation.prodBaseUrl = Play.configuration.getProperty("application.baseUrl");
         }
-        
+
         if (menu.getPermissions() != null) {
             supplierNavigation.permissions = new HashSet<>();
             for (String permissionName : menu.getPermissions()) {
@@ -183,7 +183,7 @@ public class RbacLoader {
                 }
             }
         }
-        
+
         if (parentMenu != null) {
             supplierNavigation.parent = SupplierNavigation.find("byName", parentMenu.name).first();
         }
