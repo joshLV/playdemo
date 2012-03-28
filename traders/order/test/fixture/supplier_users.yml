@@ -25,7 +25,7 @@ admin.SupplierUser(user2):
  - "test"
  
 admin.SupplierUser(user3):
- "loginName": "yan"
+ "loginName": "tom"
  "mobile": "13211111111"
  "encryptedPassword": "ff7edd82576fd2b9066cdf9a978f6ab5"
  "passwordSalt": "KC3CeW"

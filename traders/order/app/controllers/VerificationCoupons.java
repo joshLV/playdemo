@@ -34,7 +34,7 @@ public class VerificationCoupons extends Controller {
             renderTemplate("Verification/index.html", eCouponSn);
         }
         
-        Long supplierId = 1l;
+        Long supplierId = MenuInjector.currentUser().getId();
         //根据页面录入券号查询对应信息
         Map<String, Object> queryMap = ECoupon.queryInfo(eCouponSn, supplierId);
         renderJSON(queryMap);
@@ -51,7 +51,7 @@ public class VerificationCoupons extends Controller {
             Validation.keep();
             renderTemplate("Verification/index.html", eCouponSn);
         }
-        Long supplierId = 1l;
+        Long supplierId = MenuInjector.currentUser().getId();
         ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
         
         //根据页面录入券号查询对应信息,并产生消费交易记录
