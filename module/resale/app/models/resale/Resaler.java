@@ -124,10 +124,10 @@ public class Resaler extends Model {
 	 */
 	public static String checkValue(String loginName, String mobile) {
 
-		List<Resaler> cuserList = Resaler.find("byLoginName", loginName).fetch();
+		List<Resaler> resalerList = Resaler.find("byLoginName", loginName).fetch();
 		String returnFlag = "0";
 		//用户名存在的情况
-		if (cuserList.size() >0) returnFlag = "1";
+		if (resalerList.size() >0) returnFlag = "1";
 		else {
 			//手机存在的情况
 			List<Resaler> mList = Resaler.find("byMobile", mobile).fetch();

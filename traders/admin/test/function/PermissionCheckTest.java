@@ -31,7 +31,7 @@ public class PermissionCheckTest extends FunctionalTest {
 		Fixtures.delete(SupplierRole.class);
 		Fixtures.delete(Supplier.class);
 		Fixtures.loadModels("fixture/roles.yml");
-		Fixtures.loadModels("fixture/cusers.yml");
+		Fixtures.loadModels("fixture/supplier_users.yml");
 		
         // 加载test/rbac.xml配置文件
         VirtualFile file = VirtualFile.open("test/rbac.xml");

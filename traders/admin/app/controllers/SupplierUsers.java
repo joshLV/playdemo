@@ -37,9 +37,9 @@ public class SupplierUsers extends Controller {
         String page = request.params.get("page");
         String loginName = request.params.get("loginName");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        JPAExtPaginator<SupplierUser> cusersPage = SupplierUser.getCuserList(
+        JPAExtPaginator<SupplierUser> supplierUsersPage = SupplierUser.getSupplierUserList(
                 loginName, MenuInjector.currentUser().supplier.id, pageNumber, PAGE_SIZE);
-        render(cusersPage);
+        render(supplierUsersPage);
     }
 
     /**
@@ -55,38 +55,36 @@ public class SupplierUsers extends Controller {
     /**
      * 创建操作员
      * 
-     * @param cuser
+     * @param supplierUser
      *            操作员信息
-     * @param role
-     *            角色ID
      */
     @ActiveNavigation("user_add")
-    public static void create(@Valid SupplierUser cuser) {
+    public static void create(@Valid SupplierUser supplierUser) {
         if (Validation.hasErrors()) {
             List rolesList = SupplierRole.findAll();
             String roleIds = "";
-            if (cuser.roles != null && !cuser.roles.isEmpty()) {
-                for (SupplierRole role : cuser.roles) {
+            if (supplierUser.roles != null && !supplierUser.roles.isEmpty()) {
+                for (SupplierRole role : supplierUser.roles) {
                     roleIds += role.id + ",";
                 }
             }
-            render("SupplierUsers/add.html", cuser, roleIds, rolesList);
+            render("SupplierUsers/add.html", supplierUser, roleIds, rolesList);
         }
         Images.Captcha captcha = Images.captcha();
         String password_salt = captcha.getText(6);
         // 密码加密
-        cuser.encryptedPassword = DigestUtils.md5Hex(cuser.encryptedPassword
+        supplierUser.encryptedPassword = DigestUtils.md5Hex(supplierUser.encryptedPassword
                 + password_salt);
         // 随机吗
-        cuser.passwordSalt = password_salt;
-        cuser.lastLoginAt = new Date();
-        cuser.createdAt = new Date();
-        cuser.lockVersion = 0;
-        cuser.supplier = MenuInjector.currentUser().supplier;
-        cuser.deleted = DeletedStatus.UN_DELETED;
+        supplierUser.passwordSalt = password_salt;
+        supplierUser.lastLoginAt = new Date();
+        supplierUser.createdAt = new Date();
+        supplierUser.lockVersion = 0;
+        supplierUser.supplier = MenuInjector.currentUser().supplier;
+        supplierUser.deleted = DeletedStatus.UN_DELETED;
         // 获得IP
-        cuser.lastLoginIP = request.remoteAddress;
-        cuser.save();
+        supplierUser.lastLoginIP = request.remoteAddress;
+        supplierUser.save();
         index();
     }
 
@@ -95,9 +93,9 @@ public class SupplierUsers extends Controller {
      * 
      */
     public static void delete(Long id) {
-        SupplierUser cuser = SupplierUser.findById(id);
-        cuser.deleted = DeletedStatus.DELETED;
-        cuser.save();
+        SupplierUser user = SupplierUser.findById(id);
+        user.deleted = DeletedStatus.DELETED;
+        user.save();
         index();
     }
 
@@ -106,18 +104,18 @@ public class SupplierUsers extends Controller {
      * 
      */
     public static void edit(Long id) {
-        SupplierUser cuser = SupplierUser.findById(id);
+        SupplierUser user = SupplierUser.findById(id);
         String roleIds = "";
-        if (cuser.roles != null && !cuser.roles.isEmpty()) {
-            for (SupplierRole role : cuser.roles) {
+        if (user.roles != null && !user.roles.isEmpty()) {
+            for (SupplierRole role : user.roles) {
                 roleIds += role.id + ",";
             }
         }
 
         List rolesList = SupplierRole.findAll();
-        cuser.roles.addAll(rolesList);
+        user.roles.addAll(rolesList);
 
-        render(cuser, roleIds, rolesList);
+        render(user, roleIds, rolesList);
     }
 
     /**
@@ -125,22 +123,22 @@ public class SupplierUsers extends Controller {
      * 
      * @param id
      *            ID
-     * @param cuser
+     * @param user
      *            用户信息
      */
-    public static void update(Long id, @Valid SupplierUser cuser) {
+    public static void update(Long id, @Valid SupplierUser user) {
         if (Validation.hasErrors()) {
             List rolesList = SupplierRole.findAll();
             String roleIds = "";
-            if (!cuser.roles.isEmpty()) {
-                for (SupplierRole role : cuser.roles) {
+            if (!user.roles.isEmpty()) {
+                for (SupplierRole role : user.roles) {
                     roleIds += role.id + ",";
                 }
             }
-            render("SupplierUsers/add.html", cuser, roleIds, rolesList);
+            render("SupplierUsers/add.html", user, roleIds, rolesList);
         }
         // 更新用户信息
-        SupplierUser.update(id, cuser);
+        SupplierUser.update(id, user);
 
         index();
     }

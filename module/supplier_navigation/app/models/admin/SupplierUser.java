@@ -84,7 +84,7 @@ public class SupplierUser extends Model {
             joinColumns = @JoinColumn(name = "user_id"))
     public Set<SupplierPermission> permissions;
 
-    public static JPAExtPaginator<SupplierUser> getCuserList(String loginName, Long supplierId,
+    public static JPAExtPaginator<SupplierUser> getSupplierUserList(String loginName, Long supplierId,
                                                              int pageNumber, int pageSize) {
         StringBuffer sql = new StringBuffer();
         Map params = new HashMap();
@@ -99,12 +99,12 @@ public class SupplierUser extends Model {
             params.put("loginName", loginName + "%");
         }
 
-        JPAExtPaginator<SupplierUser> cusersPage = new JPAExtPaginator<>("SupplierUser s", "s",
+        JPAExtPaginator<SupplierUser> usersPage = new JPAExtPaginator<>("SupplierUser s", "s",
                 SupplierUser.class, sql.toString(), params).orderBy("createdAt desc");
-        cusersPage.setPageNumber(pageNumber);
-        cusersPage.setPageSize(pageSize);
-        cusersPage.setBoundaryControlsEnabled(false);
-        return cusersPage;
+        usersPage.setPageNumber(pageNumber);
+        usersPage.setPageSize(pageSize);
+        usersPage.setBoundaryControlsEnabled(false);
+        return usersPage;
     }
 
     /**
@@ -147,10 +147,10 @@ public class SupplierUser extends Model {
             sq.append("and id <> ?");
             list.add(id);
         }
-        List<SupplierUser> cuserList = SupplierUser.find(sq.toString(), list.toArray()).fetch();
+        List<SupplierUser> supplierUserList = SupplierUser.find(sq.toString(), list.toArray()).fetch();
         String returnFlag = "0";
         //用户名存在的情况
-        if (cuserList.size() > 0) returnFlag = "1";
+        if (supplierUserList.size() > 0) returnFlag = "1";
         else {
             sq = new StringBuilder("mobile = ? ");
             list = new ArrayList();

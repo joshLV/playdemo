@@ -1,18 +1,16 @@
 package models.consumer;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import play.data.validation.Email;
+import play.data.validation.Match;
+import play.data.validation.Required;
+import play.db.jpa.Model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import play.data.validation.Email;
-import play.data.validation.Match;
-import play.data.validation.Required;
-import play.db.jpa.Model;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -63,10 +61,10 @@ public class User extends Model {
 	 */
 	public static String checkValue(String loginName, String mobile) {
 
-		List<User> cuserList = User.find("byLoginName", loginName).fetch();
+		List<User> supplierUserList = User.find("byLoginName", loginName).fetch();
 		String returnFlag = "0";
 		//用户名存在的情况
-		if (cuserList.size() >0) returnFlag = "1";
+		if (supplierUserList.size() >0) returnFlag = "1";
 		else {
 			//手机存在的情况
 			List<User> mList = User.find("byMobile", mobile).fetch();

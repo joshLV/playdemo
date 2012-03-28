@@ -18,7 +18,7 @@ public class ContextedPermissionTest extends UnitTest {
 		Fixtures.delete(SupplierUser.class);
 		Fixtures.delete(SupplierRole.class);
 		Fixtures.loadModels("fixture/roles.yml");
-		Fixtures.loadModels("fixture/cusers.yml");
+		Fixtures.loadModels("fixture/supplier_users.yml");
 		
         // 加载test/rbac.xml配置文件
         VirtualFile file = VirtualFile.open("test/rbac.xml");
