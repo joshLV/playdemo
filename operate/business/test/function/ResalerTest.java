@@ -3,7 +3,7 @@ package function;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.resale.Resaler;
-import navigation.RbacLoader;
+import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Test;
 import play.mvc.Http.Response;

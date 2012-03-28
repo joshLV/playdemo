@@ -11,8 +11,7 @@ import models.sales.Category;
 import models.sales.Goods;
 import models.sales.GoodsStatus;
 import models.sales.Shop;
-import models.supplier.Supplier;
-import navigation.RbacLoader;
+import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -37,7 +36,6 @@ public class OperateGoodsTest extends FunctionalTest {
 
         Fixtures.delete(OperateUser.class);
         Fixtures.delete(OperateRole.class);
-        Fixtures.delete(Supplier.class);
         Fixtures.loadModels("fixture/roles.yml");
         Fixtures.loadModels("fixture/supplierusers.yml");
 

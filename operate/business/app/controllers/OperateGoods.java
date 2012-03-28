@@ -19,7 +19,7 @@ import models.sales.GoodsStatus;
 import models.sales.MaterialType;
 import models.sales.Shop;
 import models.supplier.Supplier;
-import navigation.annotations.ActiveNavigation;
+import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
 import play.data.validation.Valid;
@@ -36,7 +36,7 @@ import controllers.operate.cas.SecureCAS;
  * @author yanjy
  * @version 1.0 02/8/12
  */
-@With({SecureCAS.class, MenuInjector.class})
+@With({SecureCAS.class, OperateRbac.class})
 @ActiveNavigation("goods_index")
 public class OperateGoods extends Controller {
 

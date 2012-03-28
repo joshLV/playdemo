@@ -4,7 +4,7 @@ import models.resale.Resaler;
 import models.resale.ResalerCondition;
 import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
-import navigation.annotations.ActiveNavigation;
+import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
@@ -12,7 +12,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 import controllers.operate.cas.SecureCAS;
 
-@With({SecureCAS.class, MenuInjector.class})
+@With({SecureCAS.class, OperateRbac.class})
 @ActiveNavigation("resalers_index")
 public class Resalers extends Controller {
 	public static int PAGE_SIZE = 15;

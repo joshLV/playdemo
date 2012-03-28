@@ -1,4 +1,4 @@
-admin.SupplierRole(sales):
+admin.OperateRole(sales):
  "text": "销售人员"
  "key": "sales"
  "loadVersion": "1331545508967"
@@ -6,7 +6,7 @@ admin.SupplierRole(sales):
  "createdAt": "2012-03-12T11:14:56"
  "updatedAt": "2012-03-12T17:45:09"
 
-admin.SupplierRole(admin):
+admin.OperateRole(admin):
  "text": "系统管理员"
  "key": "admin"
  "loadVersion": "1331545508967"
@@ -14,7 +14,7 @@ admin.SupplierRole(admin):
  "createdAt": "2012-03-12T11:14:56"
  "updatedAt": "2012-03-12T17:45:09"
 
-admin.SupplierRole(test):
+admin.OperateRole(test):
  "text": "测试角色"
  "key": "test"
  "loadVersion": "1331545508967"

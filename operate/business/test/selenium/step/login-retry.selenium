@@ -1,6 +1,6 @@
 %{
         play.vfs.VirtualFile file = play.vfs.VirtualFile.open("conf/rbac.xml");
-        navigation.RbacLoader.init(file);
+        operate.rbac.RbacLoader.init(file);
 }%
 deleteAllVisibleCookies()
 clearSession()

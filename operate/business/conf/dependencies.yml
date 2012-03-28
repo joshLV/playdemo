@@ -15,6 +15,7 @@ require:
     - org.jsoup -> jsoup 1.6.1
     - operate_cas -> operate_cas
     - operate_rbac -> operate_rbac
+#    - supplier_navigation -> supplier_navigation
     - resale -> resale
     - order -> order
     - consumer -> consumer

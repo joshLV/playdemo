@@ -1,14 +1,13 @@
 package unit;
 
-import com.uhuila.common.constants.DeletedStatus;
+import java.util.List;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import org.junit.Before;
 import org.junit.Test;
 import play.test.Fixtures;
 import play.test.UnitTest;
-
-import java.util.List;
+import com.uhuila.common.constants.DeletedStatus;
 
 /**
  * 供应商商户单元测试.
@@ -51,7 +50,7 @@ public class SupplierUnitTest extends UnitTest {
     @Test
     public void testUpdate() {
         Long id = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
-        Supplier supplier = new Supplier();
+        Supplier supplier = new Supplier(id);
         supplier.id = id;
         supplier.domainName = "updated.localhost";
         Supplier.update(id, supplier);

@@ -1,8 +1,4 @@
-supplier.Supplier(kfc):
- "domainName": "localhost"
- "fullName": "肯德基"
-
-admin.SupplierUser(user1):
+admin.OperateUser(user1):
  "loginName": "1"
  "mobile": "1300000000"
  "passwordSalt": "gXP0W9"
@@ -10,9 +6,8 @@ admin.SupplierUser(user1):
  "lockVersion": "1"
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETED"
- "supplier": kfc
 
-admin.SupplierUser(user2):
+admin.OperateUser(user2):
  "loginName": "2"
  "mobile": "1300000001"
  "passwordSalt": "gXP0W9"
@@ -20,11 +15,10 @@ admin.SupplierUser(user2):
  "lockVersion": "1"
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETE"
- "supplier": kfc
  "roles":
  - "test"
  
-admin.SupplierUser(user3):
+admin.OperateUser(user3):
  "loginName": "tom"
  "mobile": "13211111111"
  "encryptedPassword": "ff7edd82576fd2b9066cdf9a978f6ab5"
@@ -35,12 +29,11 @@ admin.SupplierUser(user3):
  "createdAt": "2012-03-12T14:39:20"
  "updatedAt": "2012-03-12T17:33:49"
  "deleted": "UN_DELETED"
- "supplier": kfc
  "roles":
  - "admin"
  - "sales"
  
-admin.SupplierUser(test):
+admin.OperateUser(test):
  "loginName": "test"
  "mobile": "1300000102"
  "passwordSalt": "gXP0W9"
@@ -48,11 +41,10 @@ admin.SupplierUser(test):
  "lockVersion": "1"
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETED"
- "supplier": kfc
  "roles":
  - "test" 
  
-admin.SupplierUser(deleteuser):
+admin.OperateUser(deleteuser):
  "loginName": "test_delete_user"
  "mobile": "1300000102"
  "passwordSalt": "gXP0W9"
@@ -60,6 +52,5 @@ admin.SupplierUser(deleteuser):
  "lockVersion": "1"
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETED"
- "supplier": kfc
  "roles":
  - "test"  

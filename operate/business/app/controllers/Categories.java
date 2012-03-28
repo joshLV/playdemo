@@ -3,7 +3,7 @@ package controllers;
 import java.util.List;
 import models.sales.Category;
 import models.sales.CategorySerializer;
-import navigation.annotations.ActiveNavigation;
+import operate.rbac.annotations.ActiveNavigation;
 import play.mvc.Controller;
 import play.mvc.With;
 import controllers.operate.cas.SecureCAS;
@@ -15,7 +15,7 @@ import controllers.operate.cas.SecureCAS;
  * Date: 3/12/12
  * Time: 10:42 AM
  */
-@With({SecureCAS.class, MenuInjector.class})
+@With({SecureCAS.class, OperateRbac.class})
 @ActiveNavigation("goods_index")
 public class Categories extends Controller {
 

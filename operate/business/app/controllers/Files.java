@@ -14,7 +14,7 @@ import java.io.File;
  * Date: 3/13/12
  * Time: 2:46 PM
  */
-//@With({SecureCAS.class, MenuInjector.class})
+//@With({SecureCAS.class, OperateRbac.class})
 //@ActiveNavigation("goods_index")
 public class Files extends Controller {
     public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
