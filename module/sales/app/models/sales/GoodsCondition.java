@@ -285,6 +285,10 @@ public class GoodsCondition {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" g.deleted = :deleted");
 		paramMap.put("deleted", DeletedStatus.UN_DELETED);
+		
+		sql.append(" and g.status = :status");
+		paramMap.put("status", GoodsStatus.ONSALE);
+		
 		if (brandId != 0) {
 			sql.append(" and g.brand = :brand");
 			Brand brand = new Brand();
