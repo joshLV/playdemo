@@ -265,7 +265,7 @@
        截止日期：${goods.expireAt}</div>
       </td>
       <td width="300" align="center">
-      市场价：￥${goods.faceValue}<br>
+      市场价：${goods.faceValue?.formatCurrency('CNY').raw()}<br>
       采购价：￥${goods.getResalePrice(goods,resaler.level)}<br>
       折扣：${goods.discountExpress.yesno(goods.discountExpress+'折','无优惠')}</td>
       <td width="150" align="center">
