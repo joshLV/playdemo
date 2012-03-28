@@ -50,7 +50,7 @@ public class ResalerRegister extends Controller {
 		//随机吗
 		resaler.passwordSalt=passwordSalt;
 		//获得IP
-		resaler.loginIp=request.current().remoteAddress;
+		resaler.loginIp=request.remoteAddress;
 		resaler.lastLoginAt = new Date();
 		resaler.createdAt = new Date();
 		resaler.save();
