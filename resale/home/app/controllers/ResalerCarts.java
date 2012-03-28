@@ -66,7 +66,7 @@ public class ResalerCarts extends Controller {
             OrderItems orderItems = new OrderItems(order, cart.goods, cart.number, cart.phone);
             orderItems.resalerPrice = cart.goods.getResalePrice(resaler.level);
             orderItems.save();
-            amount = amount.add(cart.goods.salePrice);
+            amount = amount.add(orderItems.resalerPrice);
         }
         
         order.amount = amount;
