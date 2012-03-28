@@ -1,13 +1,14 @@
-#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class,models.supplier.Supplier.class],load:['fixture/roles.yml','fixture/cusers.yml'] /}
+#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class,models.supplier.Supplier.class],
+load:['fixture/roles.yml','fixture/supplier_users.yml'] /}
 
 #{selenium}
     #{include 'test/selenium/step/login.selenium' /}
     open('/users/new')
     assertTitle('操作员添加')
-    click('xpath=(//input[@id='cuser.roles.id'])[2]')
+    click('xpath=(//input[@id='supplierUser.roles.id'])[2]')
     type('id=loginName','小王')
     type('id=mobile','13112312417')
-    type('name=cuser.encryptedPassword','')
+    type('name=supplierUser.encryptedPassword','')
     clickAndWait('id=save')
     verifyTextPresent('请输入密码!')
 #{/selenium}
@@ -16,10 +17,10 @@
     #{include 'test/selenium/step/login.selenium' /}
     open('/users/new')
     assertTitle('操作员添加')
-    click('xpath=(//input[@id='cuser.roles.id'])[2]')
+    click('xpath=(//input[@id='supplierUser.roles.id'])[2]')
     type('id=loginName','小王6')
     type('id=mobile','13012012016')
-    type('name=cuser.encryptedPassword','123')
+    type('name=supplierUser.encryptedPassword','123')
     clickAndWait('id=save')
     assertTitle('操作员一览')
 #{/selenium}

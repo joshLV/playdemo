@@ -64,6 +64,10 @@ public class Supplier extends Model {
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
 
+    public Supplier(Long id) {
+        this.id = id;
+    }
+
     @Transient
     public String getSmallLogo() {
         return PathUtil.getImageUrl(IMAGE_SERVER, logo, ImageSize.SMALL);

@@ -1,4 +1,4 @@
-#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class,models.supplier.Supplier.class],load:['fixture/roles.yml','fixture/cusers.yml'] /}
+#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class,models.supplier.Supplier.class],load:['fixture/roles.yml','fixture/supplier_users.yml'] /}
 
 #{selenium}
    #{include 'test/selenium/step/login.selenium' /}
@@ -16,10 +16,10 @@
 #{selenium}
    #{include 'test/selenium/step/login.selenium' /}
    open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}/edit')
-   click('xpath=(//input[@id='cuser.roles.id'])[2]')
+   click('xpath=(//input[@id='supplierUser.roles.id'])[2]')
    type('id=loginName','yan1')
    type('id=mobile','13012012011')
-   type('name=cuser.encryptedPassword','')
+   type('name=supplierUser.encryptedPassword','')
    clickAndWait('id=save')
    verifyTextPresent('请输入密码!')
 #{/selenium}
@@ -27,10 +27,10 @@
 #{selenium "edit user"}
    #{include 'test/selenium/step/login.selenium' /}
    open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-test")}/edit')
-   click('xpath=(//input[@id='cuser.roles.id'])[2]')
+   click('xpath=(//input[@id='supplierUser.roles.id'])[2]')
    type('id=loginName','test')
    type('id=mobile','13088092012')
-   type('name=cuser.encryptedPassword','123')
+   type('name=supplierUser.encryptedPassword','123')
    clickAndWait('id=save')
    assertNotTitle('操作员编辑')
    
