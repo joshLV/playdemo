@@ -22,7 +22,7 @@
     
     
     type('name=phones','${phone1} ${phone2}')
-    clickAndWait('css=input[type="SUBMIT"]')
+    clickAndWait('id=submit')
     
     
     verifyValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}','1')
