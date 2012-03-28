@@ -40,7 +40,7 @@
             </tr>
         </table>
     </form>
-    <form class="form-horizontal" name="deletefrm" id="deletefrm" action="@{SupplierGoods.updateStatus()}"
+    <form class="form-horizontal" name="deletefrm" id="deletefrm" action="" method="post">
           method="post">
         <input type="hidden" id="status" name="status" value="0"/>
 
@@ -91,12 +91,12 @@
                 <td class="amount">${goods.saleCount}</td>
                 <td>${goods.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>&{'goods.'+goods.status}
-                    #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status)}<br/><a
-                            href="@{SupplierGoods.apply(goods.id)}">申请上架</a>#{/if}
-                    #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
-                        <br/><a href="@{SupplierGoods.offSale(goods.id)}">下架</a>#{/if}
-                    #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}
-                        <br/><a href="@{SupplierGoods.cancelApply(goods.id)}">撤销申请</a>#{/if}
+                    #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status)}<br/>
+                        #{vx.operateLink text:"申请上架", url:"/goods/"+goods.id+"/apply", method:"PUT"/}#{/if}
+                    #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}<br/>
+                        #{vx.operateLink text:"下架", url:"/goods/"+goods.id+"/offSale", method:"PUT"/}#{/if}
+                    #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}<br/>
+                        #{vx.operateLink text:"撤销申请", url:"/goods/"+goods.id+"/cancelApply", method:"PUT"/}#{/if}
                 </td>
                 <td>#{if !models.sales.GoodsStatus.ONSALE.equals(goods.status)}<a href="@{SupplierGoods.edit(goods
                 .id)}">修改</a> /#{/if}

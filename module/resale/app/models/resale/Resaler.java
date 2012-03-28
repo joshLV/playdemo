@@ -162,7 +162,7 @@ public class Resaler extends Model {
 	/**
 	 * 审核分销商
 	 * @param id 分销商ID
-	 * @param staus 状态
+	 * @param status 状态
 	 * @param remark 备注
 	 */
 	public static void update(Long id, ResalerStatus status, String remark) {

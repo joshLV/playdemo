@@ -302,7 +302,7 @@ public class OperateGoods extends Controller {
      */
     public static void onSale(Long id) {
         //更新处理
-        updateStatus(GoodsStatus.OFFSALE, id);
+        updateStatus(GoodsStatus.ONSALE, id);
     }
 
     /**
@@ -311,8 +311,6 @@ public class OperateGoods extends Controller {
      * @param id   商品ID
      */
     public static void offSale(Long id) {
-        System.out.println("offSale");
-        System.out.println("id:" + id);
         //更新处理
         updateStatus(GoodsStatus.OFFSALE, id);
     }
@@ -323,8 +321,6 @@ public class OperateGoods extends Controller {
      * @param id   商品ID
      */
     public static void reject(Long id) {
-        System.out.println("reject");
-        System.out.println("id:" + id);
         //更新处理
         updateStatus(GoodsStatus.REJECT, id);
     }

@@ -1,13 +1,20 @@
 package function;
 
 import com.uhuila.common.constants.DeletedStatus;
+import controllers.supplier.cas.Security;
+import models.admin.SupplierRole;
+import models.admin.SupplierUser;
 import models.sales.*;
+import models.supplier.Supplier;
+import navigation.RbacLoader;
+import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
 import play.Play;
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
+import play.vfs.VirtualFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,14 +30,33 @@ public class OperateGoodsTest extends FunctionalTest {
         Fixtures.delete(Category.class);
         Fixtures.delete(Brand.class);
         Fixtures.delete(Area.class);
+
+        Fixtures.delete(SupplierUser.class);
+        Fixtures.delete(SupplierRole.class);
+        Fixtures.delete(Supplier.class);
+        Fixtures.loadModels("fixture/roles.yml");
+        Fixtures.loadModels("fixture/supplierusers.yml");
+
         Fixtures.loadModels("fixture/areas_unit.yml");
         Fixtures.loadModels("fixture/categories_unit.yml");
         Fixtures.loadModels("fixture/brands_unit.yml");
         Fixtures.loadModels("fixture/shops_unit.yml");
         Fixtures.loadModels("fixture/goods_unit.yml");
-        
-		// 设置测试登录的用户名
-//        Security.setLoginUserForTest("test1");
+
+        // 重新加载配置文件
+        VirtualFile file = VirtualFile.open("conf/rbac.xml");
+        RbacLoader.init(file);
+
+        Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user3");
+        SupplierUser user = SupplierUser.findById(id);
+        // 设置测试登录的用户名
+        Security.setLoginUserForTest(user.loginName);
+    }
+
+    @After
+    public void tearDown() {
+        // 清除登录Mock
+        Security.cleanLoginUserForTest();
     }
     
     /**

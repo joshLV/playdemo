@@ -10,7 +10,9 @@ GET     /goods/{id}/edit                        SupplierGoods.edit
 GET     /goods/{id}/view                        SupplierGoods.detail
 GET     /goods/{id}/preview                     SupplierGoods.preview
 PUT     /goods/{id}                             SupplierGoods.update
-POST    /updatestatus                           SupplierGoods.updateStatus
+PUT     /goods/{id}/apply                       SupplierGoods.apply
+PUT     /goods/{id}/offSale                     SupplierGoods.offSale
+PUT     /goods/{id}/cancelApply                 SupplierGoods.cancelApply
 DELETE  /goods/{id}                             SupplierGoods.delete
 POST    /goods/images                           UploadFiles.uploadJson
 POST    /goods/filemanager                      UploadFiles.fileManagerJson

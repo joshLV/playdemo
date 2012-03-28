@@ -22,6 +22,7 @@ validation.invalid=无效的%s!
 validation.invalidType=%s的类型必须是%s!
 validation.write=%s没有权限保存!
 validation.save=%s保存失败!
+validation.different=确认密码与登录密码不一致!
 goods.supplierId=商户
 goods.no=编号
 goods.name=名称
@@ -46,7 +47,7 @@ goods.levelPrice.NORMAL=普通会员加价
 goods.levelPrice.VIP1=VIP1加价
 goods.levelPrice.VIP2=VIP2加价
 goods.levelPrice.VIP3=VIP3加价
-
+confirmPassword=确认密码
 imagePath=图片
 shop.name=门店名称
 shop.address=门店地址

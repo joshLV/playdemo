@@ -1,9 +1,0 @@
-#{fixture delete:[models.admin.SupplierUser.class,
-       models.admin.SupplierRole.class],
-   load:['fixture/roles.yml','fixture/cusers.yml'] /}
-#{selenium}
-    #{include 'test/selenium/step/login.selenium' /}
-    // Open the home page, and check that no error occured
-    open('/')
-    assertNotTitle('Application error')
-#{/selenium}

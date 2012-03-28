@@ -137,20 +137,4 @@ public class SupplierGoodsTest extends FunctionalTest {
         Goods goods = Goods.findById(goodsId);
         Assert.assertEquals(DeletedStatus.DELETED, goods.deleted);
     }
-
-    /**
-     * 修改商品上下架
-     */
-    @Test
-    public void updateStatus() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
-                ".Goods-Goods_004");
-        Map<String, String> goodsParams = new HashMap<>();
-        goodsParams.put("ids", String.valueOf(goodsId));
-        goodsParams.put("status", GoodsStatus.ONSALE.toString());
-        Response response = POST("/updatestatus", goodsParams);
-        assertStatus(302, response);
-        Goods goods = Goods.findById(goodsId);
-        Assert.assertEquals(goods.status, GoodsStatus.ONSALE);
-    }
 }

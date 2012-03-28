@@ -7,6 +7,7 @@ import models.admin.SupplierUser;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.data.validation.Required;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
@@ -48,9 +49,12 @@ public class Suppliers extends Controller {
      * @param admin
      */
     @ActiveNavigation("suppliers_add")
-    public static void create(@Valid Supplier supplier, File image, @Valid SupplierUser admin) {
+    public static void create(@Valid Supplier supplier, File image, @Valid SupplierUser admin,
+                              @Required String confirmPassword) {
         checkImage(image);
         initAdmin(admin);
+
+        checkConfirmPassword(confirmPassword, admin.encryptedPassword);
         if (Validation.hasErrors()) {
             for (String key : validation.errorsMap().keySet()) {
                 System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
@@ -68,6 +72,12 @@ public class Suppliers extends Controller {
         admin.create(supplier.id);
 
         index();
+    }
+
+    private static void checkConfirmPassword(String confirmPassword, String password) {
+        if (!confirmPassword.equals(password)) {
+            Validation.addError("confirmPassword", "validation.different");
+        }
     }
 
     private static void initAdmin(SupplierUser admin) {
@@ -122,29 +132,30 @@ public class Suppliers extends Controller {
         Supplier supplier = Supplier.findById(id);
         SupplierUser admin = SupplierUser.findAdmin(id, "admin");
 
-        render(supplier, admin);
+        render(supplier, admin, id);
     }
 
     public static void update(Long id, @Valid Supplier supplier, File image, @Valid SupplierUser admin,
-                              Long adminId) {
-
+                              Long adminId, String confirmPassword) {
         if (Validation.hasError("admin.encryptedPassword") && Validation.hasError("admin")
                 && Validation.errors().size() == 2) {
             Validation.clear();
+        } else {
+            checkConfirmPassword(confirmPassword, admin.encryptedPassword);
         }
         if (Validation.hasErrors()) {
-            render("Suppliers/edit.html");
+            render("Suppliers/edit.html", id);
         }
         try {
             uploadImagePath(image, supplier);
         } catch (IOException e) {
             error("supplier.image_upload_failed");
         }
-        Supplier.update(id,supplier);
+        Supplier.update(id, supplier);
         if (adminId == null) {
-            admin.create(supplier.id);
+            admin.create(id);
         } else {
-            SupplierUser.update(adminId,admin);
+            SupplierUser.update(adminId, admin);
         }
         index();
     }
@@ -161,6 +172,6 @@ public class Suppliers extends Controller {
 
     public static void delete(long id) {
         Supplier.delete(id);
-        ok();
+        index();
     }
 }
