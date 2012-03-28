@@ -115,8 +115,6 @@ public class SupplierUser extends Model {
      */
     public static void update(long id, SupplierUser user) {
         SupplierUser updatedUser = SupplierUser.findById(id);
-        Logger.info("updatedUser.encryptedPassword:" + updatedUser.encryptedPassword);
-
         if (StringUtils.isNotEmpty(user.encryptedPassword) && !user.encryptedPassword.equals(DigestUtils.md5Hex(updatedUser.encryptedPassword))) {
             Images.Captcha captcha = Images.captcha();
             String passwordSalt = captcha.getText(6);
@@ -124,8 +122,6 @@ public class SupplierUser extends Model {
             updatedUser.passwordSalt = passwordSalt;
             updatedUser.encryptedPassword = DigestUtils.md5Hex(user.encryptedPassword + passwordSalt);
         }
-        Logger.info("encryptedPassword:" + encryptedPassword);
-        Logger.info("updatedUser.encryptedPassword:" + updatedUser.encryptedPassword);
         updatedUser.loginName = user.loginName;
         updatedUser.mobile = user.mobile;
         updatedUser.lastLoginAt = new Date();
