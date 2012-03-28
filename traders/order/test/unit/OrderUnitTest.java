@@ -1,21 +1,28 @@
 package unit;
 
-import models.accounts.AccountType;
-import models.accounts.util.AccountUtil;
-import models.consumer.Address;
-import models.consumer.User;
-import models.order.*;
-import models.sales.Goods;
-import org.junit.Before;
-import org.junit.Test;
-import play.test.Fixtures;
-import play.test.UnitTest;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import models.accounts.AccountType;
+import models.admin.SupplierRole;
+import models.admin.SupplierUser;
+import models.consumer.Address;
+import models.consumer.User;
+import models.order.Cart;
+import models.order.NotEnoughInventoryException;
+import models.order.Order;
+import models.order.OrderItems;
+import models.order.OrderStatus;
+import models.sales.Goods;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import play.test.Fixtures;
+import play.test.UnitTest;
 
 
 public class OrderUnitTest extends UnitTest {
@@ -25,8 +32,10 @@ public class OrderUnitTest extends UnitTest {
         Fixtures.delete(models.order.OrderItems.class);
         Fixtures.delete(models.order.Order.class);
         Fixtures.delete(models.sales.Goods.class);
-        Fixtures.delete(models.consumer.User.class);
-        Fixtures.loadModels("fixture/goods_base.yml", "fixture/user.yml", "fixture/goods.yml",
+        Fixtures.delete(User.class);
+        Fixtures.loadModels("fixture/goods_base.yml", 
+        		"fixture/user.yml",
+        		"fixture/goods.yml",
                 "fixture/orders.yml", "fixture/orderItems.yml");
     }
 
@@ -87,23 +96,19 @@ public class OrderUnitTest extends UnitTest {
 
     @Test
     public void testOrders() {
-        User user = new User();
-        user.loginName = "y";
-        user.save();
+    	Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
         Address address = new Address();
         address.mobile = "13000000000";
         address.name = " 徐家汇";
         address.postcode = "200120";
-        Order orders = new Order(user.getId(),AccountType.CONSUMER, address);
+        Order orders = new Order(userId,AccountType.CONSUMER, address);
         assertNotNull(orders);
     }
 
     @Test
     public void testOrdersNumber() {
         String mobile = "1310000000";
-        User user = new User();
-        user.loginName = "y";
-        user.save();
+    	Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
         Address address = new Address();
         address.mobile = "13000000000";
         address.name = " 徐家汇";
@@ -111,10 +116,10 @@ public class OrderUnitTest extends UnitTest {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
         boolean isOk = false;
         try {
-            Order orders = new Order(user.getId(), AccountType.CONSUMER,
+            Order orders = new Order(userId, AccountType.CONSUMER,
                     goodsId, 2l, address, mobile);
             assertNotNull(orders);
-            new Order(user.getId(), AccountType.CONSUMER, goodsId,
+            new Order(userId, AccountType.CONSUMER, goodsId,
                     200000l, address, mobile);
         } catch (NotEnoughInventoryException e) {
             isOk = true;
@@ -125,9 +130,7 @@ public class OrderUnitTest extends UnitTest {
     @Test
     public void testOrdersCart() {
         String mobile = "1310000000";
-        User user = new User();
-        user.loginName = "y";
-        user.save();
+        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
         Address address = new Address();
         address.mobile = "13000000000";
         address.name = " 徐家汇";
@@ -139,7 +142,7 @@ public class OrderUnitTest extends UnitTest {
         cartList.add(cart);
         boolean isOk = false;
         try {
-            Order orders = new Order(user.getId(), AccountType.CONSUMER,
+            Order orders = new Order(userId, AccountType.CONSUMER,
                     cartList, address, mobile);
             assertNotNull(orders);
         } catch (NotEnoughInventoryException e) {
@@ -151,10 +154,6 @@ public class OrderUnitTest extends UnitTest {
 
     @Test
     public void testPaid() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        Goods goods = Goods.findById(goodsId);
-        int saleCount = goods.saleCount;
-        int baseSale = goods.baseSale.intValue();
         Long orderId = (Long) Fixtures.idCache.get("models.order.Order-order1");
         Order orders = Order.findById(orderId);
         orders.paid();

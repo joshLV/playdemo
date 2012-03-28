@@ -1,6 +1,12 @@
 package unit;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import models.accounts.Account;
+import models.admin.SupplierRole;
+import models.admin.SupplierUser;
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -10,16 +16,15 @@ import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
+import models.supplier.Supplier;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 public class VerificationUnitTest extends UnitTest {
 	@Before
@@ -33,10 +38,25 @@ public class VerificationUnitTest extends UnitTest {
 		Fixtures.delete(User.class);
 		Fixtures.delete(ECoupon.class);
 		Fixtures.delete(Account.class);
-		Fixtures.loadModels("fixture/goods_base.yml", "fixture/user.yml", 
+		Fixtures.delete(SupplierRole.class);
+		Fixtures.delete(Supplier.class);
+		Fixtures.delete(SupplierUser.class);
+		Fixtures.loadModels("fixture/goods_base.yml", "fixture/roles.yml", 
+				"fixture/supplier_users.yml",
+				"fixture/user.yml",
 				"fixture/goods.yml","fixture/accounts.yml",
 				"fixture/orders.yml",
 				"fixture/orderItems.yml");
+
+		Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
+		Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
+		Goods goods = Goods.findById(goodsId);
+		goods.supplierId = supplierId;
+		goods.save();
+		goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
+		goods = Goods.findById(goodsId);
+		goods.supplierId = supplierId;
+		goods.save();
 	}
 
 	/**
@@ -45,7 +65,7 @@ public class VerificationUnitTest extends UnitTest {
 	@Test
 	public void queryInfo() {
 		String eCouponSn = "003";
-		Long supplierId = 1l;
+		Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
 		Map<String, Object> map = ECoupon.queryInfo(eCouponSn, supplierId);
 		assertEquals(0, map.size());
 
@@ -57,10 +77,10 @@ public class VerificationUnitTest extends UnitTest {
 	@Test
 	public void testUpdate() {
 		String eCouponSn = "002";
-		Long supplierId = 1l;
-        ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
-        assertNotNull(eCoupon);
-        eCoupon.consumed();
+		Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
+		ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
+		assertNotNull(eCoupon);
+		eCoupon.consumed();
 		List<ECoupon> couponList= ECoupon.find("byECouponSn", eCouponSn).fetch();
 		assertEquals(couponList.get(0).status ,ECouponStatus.CONSUMED);
 	}
@@ -72,21 +92,21 @@ public class VerificationUnitTest extends UnitTest {
 	 */
 	@Test
 	public void testQueryCoupons() {
-		Long supplierId = 1l;
+		Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
 		int pageNumber = 1;
 		int pageSize = 15;
 		List<ECoupon> list = ECoupon.queryCoupons(supplierId, pageNumber, pageSize);
 		assertEquals(2, list.size());
 
 	}
-	
+
 	/**
 	 * 测试用户中心券列表
 	 */
 	@Test
 	public void testUserQueryCoupons(){
-		User user = new User();
-		user.id=2l;
+		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
+		User user = User.findById(userId);
 		Date createdAtBegin=new Date();
 		Date createdAtEnd=new Date();
 		String goodsName="";
