@@ -121,6 +121,8 @@ public class SupplierUser extends Model {
             updatedUser.passwordSalt = passwordSalt;
             updatedUser.encryptedPassword = DigestUtils.md5Hex(user.encryptedPassword + passwordSalt);
         }
+        updatedUser.loginName = user.loginName;
+        updatedUser.mobile = user.mobile;
         updatedUser.lastLoginAt = new Date();
         updatedUser.updatedAt = new Date();
         //获得IP
