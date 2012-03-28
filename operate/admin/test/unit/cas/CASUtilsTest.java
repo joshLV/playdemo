@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -27,9 +28,15 @@ public class CASUtilsTest extends UnitTest {
         Play.configuration.setProperty("cas.validateUrl", "http://cas.seewi.com.cn/serviceValidate");
         Play.configuration.setProperty("cas.loginUrl", "http://cas.seewi.com.cn/login");
         Play.configuration.setProperty("cas.logoutUrl", "http://cas.seewi.com.cn/logout");
-        Play.configuration.setProperty("application.baseUrl", "http://admin.seewi.com.cn");
+        Play.configuration.setProperty("application.baseUrl", "http://localhost:9301");
 
         Http.Request.current.set(Http.Request.createRequest("127.0.0.1", "GET", "/login", null, null, null, null, "admin.seewi.com.cn", false, 80, "admin.seewi.com.cn", false, null, null));
+    }
+    
+    @After
+    public void tearDown() {
+        Play.configuration.setProperty("cas.gateway", "true");
+        Play.configuration.setProperty("cas.mockserver", "true");
     }
 
 
@@ -37,7 +44,6 @@ public class CASUtilsTest extends UnitTest {
     public void testGetDomainName(){
         String casUrlTemp = "http://cas.seewi.com.cn/login";
         assertEquals("http://cas.seewi.com.cn/login", casUrlTemp);
-
     }
 
     @Test

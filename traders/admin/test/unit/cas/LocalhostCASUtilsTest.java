@@ -1,19 +1,11 @@
 package unit.cas;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Pattern;
-
-import javax.xml.parsers.ParserConfigurationException;
-
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.xml.sax.SAXException;
-
 import play.Play;
-import play.supplier.cas.CASUtils;
-import play.supplier.cas.models.CASUser;
 import play.mvc.Http;
+import play.supplier.cas.CASUtils;
 import play.test.UnitTest;
 
 public class LocalhostCASUtilsTest extends UnitTest {
@@ -32,6 +24,11 @@ public class LocalhostCASUtilsTest extends UnitTest {
         Http.Request.current.set(Http.Request.createRequest("127.0.0.1", "GET", "/login", null, null, null, null, "localhost:8080", false, 8080, "localhost", false, null, null));
     }
 
+    @After
+    public void tearDown() {
+        Play.configuration.setProperty("cas.gateway", "true");
+        Play.configuration.setProperty("cas.mockserver", "true");
+    }
 
     @Test
     public void testGetDomainName(){
