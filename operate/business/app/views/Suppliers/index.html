@@ -35,10 +35,10 @@
             <td><a href="@{Suppliers.edit(supplier.id)}">修改</a>
                 / #{vx.deleteLink id:supplier?.id, name:supplier?.fullName, action:"/suppliers"/}
                 #{if models.supplier.SupplierStatus.NORMAL.equals(supplier.status)}
-                    / #{vx.operateLink text:"冻结", url:"/suppliers/"+supplier.id+"freeze", method:PUT/}
+                    / #{vx.operateLink text:"冻结", url:"/suppliers/"+supplier.id+"freeze", method:"PUT"/}#{/if}
                     *{/ <a href="@{Suppliers.freeze(supplier.id)}">冻结</a>#{/if}}*
                 #{if models.supplier.SupplierStatus.FREEZE.equals(supplier.status)}
-                    / #{vx.operateLink text:"解冻", url:"/suppliers/"+supplier.id+"unfreeze", method:PUT/}
+                    / #{vx.operateLink text:"解冻", url:"/suppliers/"+supplier.id+"unfreeze", method:"PUT"/}#{/if}
                     *{/ <a href="@{Suppliers.unfreeze(supplier.id)}">解冻</a>#{/if}}*
             </td>
         </tr>

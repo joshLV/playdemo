@@ -102,14 +102,17 @@
                 <td>${goods.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>&{'goods.'+goods.status}
                     #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}
-                        <br/>#{vx.operateLink text:"同意上架", url:"/suppliers/"+supplier.id+"onSale",
+                        <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods.id+"/onSale",
                     method:PUT/}
-                        <br/>#{vx.operateLink text:"拒绝上架", url:"/suppliers/"+supplier.id+"reject", method:PUT/}#{/if}
+                        <br/>#{vx.operateLink text:"拒绝上架", url:"/goods/"+goods.id+"/reject",
+                    method:"PUT"/}#{/if}
                     #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
-                        <br/>#{vx.operateLink text:"强制下架", url:"/suppliers/"+supplier.id+"reject", method:PUT/}#{/if}
+                        <br/>#{vx.operateLink text:"强制下架", url:"/goods/"+goods.id+"/reject",
+                    method:"PUT"/}#{/if}
                         *{<br/><a href="@{OperateGoods.reject(goods.id)}">强制下架</a>#{/if}}*
                     #{if models.sales.GoodsStatus.REJECT.equals(goods.status)}
-                        <br/>#{vx.operateLink text:"同意上架", url:"/suppliers/"+supplier.id+"onSale", method:PUT/}#{/if}
+                        <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods.id+"/onSale",
+                    method:"PUT"/}#{/if}
                         *{<br/><a href="@{OperateGoods.onSale(goods.id)}">同意上架</a>#{/if}}*
                 </td>
                 <td><a href="@{OperateGoods.edit(goods.id)}">修改</a> /
