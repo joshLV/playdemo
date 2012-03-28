@@ -545,11 +545,14 @@ public class Goods extends Model {
      * @return resalePrice 分销商现价
      */
     @Transient
-    public BigDecimal getResalePrice(Goods goods, ResalerLevel level) {
-        List<GoodsLevelPrice> list = GoodsLevelPrice.find("goods=? and level=?", goods, level).fetch();
-        BigDecimal resalePrice = null;
-        if (list.size() > 0) {
-            resalePrice = faceValue.add(list.get(0).price);
+    public BigDecimal getResalePrice(ResalerLevel level) {
+        BigDecimal resalePrice = originalPrice;
+        
+        for (GoodsLevelPrice goodsLevelPrice : levelPrices){
+            if (goodsLevelPrice.level == level){
+                resalePrice = originalPrice.add(goodsLevelPrice.price);
+                break;
+            }
         }
         return resalePrice;
     }

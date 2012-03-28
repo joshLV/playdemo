@@ -58,7 +58,7 @@
                     </div>
                 </td>
                 <td width="120" height="25" align="center" valign="middle">${favItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
-                <td width="115" height="25" align="center" valign="middle" id="price_${favItem.goods.id}">${favItem.goods.salePrice}</td>
+                <td width="115" height="25" align="center" valign="middle" id="price_${favItem.goods.id}">${favItem.goods.getResalePrice(resaler.level)}</td>
                 <td width="103" height="25" align="center" valign="middle">
                     <a href="#" class="delete_gift" name="${favItem.goods.id}">删除</a>
                 </td>

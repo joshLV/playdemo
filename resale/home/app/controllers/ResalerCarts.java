@@ -45,13 +45,13 @@ public class ResalerCarts extends Controller {
         List<ResalerFav> favs = ResalerFav.findAll(resaler);
 
         List<List<ResalerCart>> carts = ResalerCart.groupFindAll(resaler);
-        render(carts,favs);
+        render(carts,favs, resaler);
     }
     
     public static void showCarts(){
         Resaler resaler = ResaleCAS.getResaler();
         List<List<ResalerCart>> carts = ResalerCart.groupFindAll(resaler);
-        render(carts);
+        render(carts, resaler);
     }
     
     public static void confirmCarts(){

@@ -297,13 +297,13 @@ public class GoodsCondition {
 		}
 
 		if (priceFrom.compareTo(new BigDecimal(0)) > 0) {
-			sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.faceValue+l.price >=:priceFrom)");
+			sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.originalPrice+l.price >=:priceFrom)");
 			paramMap.put("level", resaler.level);
 			paramMap.put("priceFrom", priceFrom);
 		}
 
 		if (priceTo.compareTo(new BigDecimal(0)) > 0) {
-			sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.faceValue+l.price <=:priceTo)");
+			sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.originalPrice+l.price <=:priceTo)");
 			paramMap.put("level", resaler.level);
 			paramMap.put("priceTo", priceTo);
 		}

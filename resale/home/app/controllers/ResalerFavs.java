@@ -26,7 +26,7 @@ public class ResalerFavs extends Controller {
         Resaler resaler = ResaleCAS.getResaler();
 
         List<ResalerFav> favs = ResalerFav.findAll(resaler);
-        render(favs);
+        render(favs, resaler);
     }
 
     /**
