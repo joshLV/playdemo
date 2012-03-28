@@ -1,9 +1,10 @@
 #{fixture delete:[
+models.admin.SupplierUser.class,models.admin.SupplierRole.class,
 models.sales.Category.class,
 models.sales.Area.class,
 models.sales.Goods.class,
 models.sales.Brand.class],
-load:['fixture/areas.yml','fixture/base_data.yml','fixture/goods.yml'] /}
+load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/areas.yml','fixture/base_data.yml','fixture/goods.yml'] /}
 #添加商品数据-保存按钮
 #{selenium}
     #{include 'test/selenium/step/login.selenium' /}
