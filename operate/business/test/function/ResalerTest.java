@@ -1,6 +1,6 @@
 package function;
 
-import controllers.supplier.cas.Security;
+import controllers.operate.cas.Security;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.resale.Resaler;
