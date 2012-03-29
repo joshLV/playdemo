@@ -78,8 +78,8 @@ public class OperateUser extends Model {
             joinColumns = @JoinColumn(name = "user_id"))
     public Set<OperatePermission> permissions;
 
-    public static JPAExtPaginator<OperateUser> getCuserList(String loginName,
-                                                             int pageNumber, int pageSize) {
+    public static JPAExtPaginator<OperateUser> getSupplierUserList(String loginName,
+                                                                   int pageNumber, int pageSize) {
         StringBuffer sql = new StringBuffer();
         Map params = new HashMap();
 
@@ -91,12 +91,12 @@ public class OperateUser extends Model {
             params.put("loginName", loginName + "%");
         }
 
-        JPAExtPaginator<OperateUser> cusersPage = new JPAExtPaginator<>("OperateUser s", "s",
+        JPAExtPaginator<OperateUser> supplierUsersPage = new JPAExtPaginator<>("OperateUser s", "s",
                 OperateUser.class, sql.toString(), params).orderBy("s.createdAt desc");
-        cusersPage.setPageNumber(pageNumber);
-        cusersPage.setPageSize(pageSize);
-        cusersPage.setBoundaryControlsEnabled(false);
-        return cusersPage;
+        supplierUsersPage.setPageNumber(pageNumber);
+        supplierUsersPage.setPageSize(pageSize);
+        supplierUsersPage.setBoundaryControlsEnabled(false);
+        return supplierUsersPage;
     }
 
     /**
@@ -139,10 +139,10 @@ public class OperateUser extends Model {
             sq.append("and id <> ?");
             list.add(id);
         }
-        List<OperateUser> cuserList = OperateUser.find(sq.toString(), list.toArray()).fetch();
+        List<OperateUser> supplierUserList = OperateUser.find(sq.toString(), list.toArray()).fetch();
         String returnFlag = "0";
         //用户名存在的情况
-        if (cuserList.size() > 0) returnFlag = "1";
+        if (supplierUserList.size() > 0) returnFlag = "1";
         else {
             sq = new StringBuilder("mobile = ? ");
             list = new ArrayList();

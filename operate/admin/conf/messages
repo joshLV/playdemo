@@ -7,4 +7,4 @@ play-paginate.next=下一页&nbsp;&rsaquo;
 play-paginate.last=尾页&nbsp;&raquo;
 
 validation.required=请输入%s!
-cuser.encryptedPassword=密码
+supplierUser.encryptedPassword=密码

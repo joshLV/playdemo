@@ -1,6 +1,6 @@
 package function;
 
-import java.util.List;
+import controllers.operate.cas.Security;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
 import operate.rbac.ContextedMenu;
@@ -14,7 +14,8 @@ import play.mvc.Router;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import controllers.operate.cas.Security;
+
+import java.util.List;
 
 public class MenuCheckTest extends FunctionalTest {
 
@@ -30,7 +31,7 @@ public class MenuCheckTest extends FunctionalTest {
         Fixtures.delete(OperateUser.class);
         Fixtures.delete(OperateRole.class);
         Fixtures.loadModels("fixture/roles.yml");
-        Fixtures.loadModels("fixture/cusers.yml");
+        Fixtures.loadModels("fixture/supplier_users.yml");
 
         // 加载test/rbac.xml配置文件
         VirtualFile file = VirtualFile.open("test/rbac.xml");

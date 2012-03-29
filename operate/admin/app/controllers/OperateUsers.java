@@ -1,7 +1,7 @@
 package controllers;
 
-import java.util.Date;
-import java.util.List;
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.operate.cas.SecureCAS;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
 import operate.rbac.annotations.ActiveNavigation;
@@ -13,8 +13,9 @@ import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import com.uhuila.common.constants.DeletedStatus;
-import controllers.operate.cas.SecureCAS;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 操作员CRUD
@@ -37,9 +38,9 @@ public class OperateUsers extends Controller {
         String page = request.params.get("page");
         String loginName = request.params.get("loginName");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        JPAExtPaginator<OperateUser> cusersPage = OperateUser.getCuserList(
+        JPAExtPaginator<OperateUser> supplierUsersPage = OperateUser.getSupplierUserList(
                 loginName, pageNumber, PAGE_SIZE);
-        render(cusersPage);
+        render(supplierUsersPage);
     }
 
     /**
@@ -55,37 +56,35 @@ public class OperateUsers extends Controller {
     /**
      * 创建操作员
      *
-     * @param cuser
+     * @param supplierUser
      *            操作员信息
-     * @param role
-     *            角色ID
      */
     @ActiveNavigation("user_add")
-    public static void create(@Valid OperateUser cuser) {
+    public static void create(@Valid OperateUser supplierUser) {
         if (Validation.hasErrors()) {
             List rolesList = OperateRole.findAll();
             String roleIds = "";
-            if (cuser.roles != null && !cuser.roles.isEmpty()) {
-                for (OperateRole role : cuser.roles) {
+            if (supplierUser.roles != null && !supplierUser.roles.isEmpty()) {
+                for (OperateRole role : supplierUser.roles) {
                     roleIds += role.id + ",";
                 }
             }
-            render("OperateUsers/add.html", cuser, roleIds, rolesList);
+            render("OperateUsers/add.html", supplierUser, roleIds, rolesList);
         }
         Images.Captcha captcha = Images.captcha();
         String password_salt = captcha.getText(6);
         // 密码加密
-        cuser.encryptedPassword = DigestUtils.md5Hex(cuser.encryptedPassword
+        supplierUser.encryptedPassword = DigestUtils.md5Hex(supplierUser.encryptedPassword
                 + password_salt);
         // 随机吗
-        cuser.passwordSalt = password_salt;
-        cuser.lastLoginAt = new Date();
-        cuser.createdAt = new Date();
-        cuser.lockVersion = 0;
-        cuser.deleted = DeletedStatus.UN_DELETED;
+        supplierUser.passwordSalt = password_salt;
+        supplierUser.lastLoginAt = new Date();
+        supplierUser.createdAt = new Date();
+        supplierUser.lockVersion = 0;
+        supplierUser.deleted = DeletedStatus.UN_DELETED;
         // 获得IP
-        cuser.lastLoginIP = request.remoteAddress;
-        cuser.save();
+        supplierUser.lastLoginIP = request.remoteAddress;
+        supplierUser.save();
         index();
     }
 
@@ -94,9 +93,9 @@ public class OperateUsers extends Controller {
      *
      */
     public static void delete(Long id) {
-        OperateUser cuser = OperateUser.findById(id);
-        cuser.deleted = DeletedStatus.DELETED;
-        cuser.save();
+        OperateUser supplierUser = OperateUser.findById(id);
+        supplierUser.deleted = DeletedStatus.DELETED;
+        supplierUser.save();
         index();
     }
 
@@ -105,18 +104,18 @@ public class OperateUsers extends Controller {
      *
      */
     public static void edit(Long id) {
-        OperateUser cuser = OperateUser.findById(id);
+        OperateUser supplierUser = OperateUser.findById(id);
         String roleIds = "";
-        if (cuser.roles != null && !cuser.roles.isEmpty()) {
-            for (OperateRole role : cuser.roles) {
+        if (supplierUser.roles != null && !supplierUser.roles.isEmpty()) {
+            for (OperateRole role : supplierUser.roles) {
                 roleIds += role.id + ",";
             }
         }
 
         List rolesList = OperateRole.findAll();
-        cuser.roles.addAll(rolesList);
+        supplierUser.roles.addAll(rolesList);
 
-        render(cuser, roleIds, rolesList);
+        render(supplierUser, roleIds, rolesList);
     }
 
     /**
@@ -124,22 +123,22 @@ public class OperateUsers extends Controller {
      *
      * @param id
      *            ID
-     * @param cuser
+     * @param supplierUser
      *            用户信息
      */
-    public static void update(Long id, @Valid OperateUser cuser) {
+    public static void update(Long id, @Valid OperateUser supplierUser) {
         if (Validation.hasErrors()) {
             List rolesList = OperateRole.findAll();
             String roleIds = "";
-            if (!cuser.roles.isEmpty()) {
-                for (OperateRole role : cuser.roles) {
+            if (!supplierUser.roles.isEmpty()) {
+                for (OperateRole role : supplierUser.roles) {
                     roleIds += role.id + ",";
                 }
             }
-            render("OperateUsers/add.html", cuser, roleIds, rolesList);
+            render("OperateUsers/add.html", supplierUser, roleIds, rolesList);
         }
         // 更新用户信息
-        OperateUser.update(id, cuser);
+        OperateUser.update(id, supplierUser);
 
         index();
     }

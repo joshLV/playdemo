@@ -9,46 +9,46 @@
 
 #{set title:'操作员编辑' /}
 #{set 'moreScripts'}
-  <script src="@{'/public/javascripts/cuser.js'}" type="text/javascript" charset="UTF-8"></script>
+  <script src="@{'/public/javascripts/supplierUsers.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
-#{form @OperateUsers.update(cuser.id) , id:'operForm',class:"form-horizontal" }
+#{form @OperateUsers.update(supplierUser.id) , id:'operForm',class:"form-horizontal" }
  <legend>操作员编辑</legend>
   <div class="control-group">
   <label for="input01" class="control-label">角色</label>
   <div class="controls">
-  #{list items:cuser.roles, as:'role'}
+  #{list items:supplierUser.roles, as:'role'}
    <label class="checkbox inline">
-       <input type="checkbox" value="${role.id}" id="cuser.roles.id" name="cuser.roles.id" #{if roleIds?.contains(String.valueOf(role?.id))}checked#{/if}/> ${role.text}
+       <input type="checkbox" value="${role.id}" id="supplierUser.roles.id" name="supplierUser.roles.id" #{if roleIds?.contains(String.valueOf(role?.id))}checked#{/if}/> ${role.text}
      </label>
   #{/list}
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <span class="error">#{error 'cuser.roles' /}</span>
+    <span class="error">#{error 'supplierUser.roles' /}</span>
    </div>
  </div>
  <div class="control-group">
   <label for="input01" class="control-label">用户名</label>
   <div class="controls">
-   <input type="text" name="cuser.loginName" class="input-large" id="loginName" value="${cuser.loginName}"/>
-    <span class="error" id="checkName">#{error 'cuser.loginName' /}</span>
+   <input type="text" name="supplierUser.loginName" class="input-large" id="loginName" value="${supplierUser.loginName}"/>
+    <span class="error" id="checkName">#{error 'supplierUser.loginName' /}</span>
   </div>
  </div>
  <div class="control-group">
   <label for="input01" class="control-label">手机</label>
   <div class="controls">
-   <input type="text" name="cuser.mobile" class="input-large" id="mobile" maxlength="11" value="${cuser.mobile}"/>
-   <span class="error" id="checkMobile">#{error 'cuser.mobile' /}</span>
+   <input type="text" name="supplierUser.mobile" class="input-large" id="mobile" maxlength="11" value="${supplierUser.mobile}"/>
+   <span class="error" id="checkMobile">#{error 'supplierUser.mobile' /}</span>
   </div>
  </div>
  <div class="control-group">
   <label for="input01" class="control-label">密码</label>
   <div class="controls">
-   <input type="password" name="cuser.encryptedPassword" class="input-large" value="${cuser.encryptedPassword}" />
-    <span class="error">#{error 'cuser.encryptedPassword' /}</span>
+   <input type="password" name="supplierUser.encryptedPassword" class="input-large" value="${supplierUser.encryptedPassword}" />
+    <span class="error">#{error 'supplierUser.encryptedPassword' /}</span>
   </div>
  </div>
  <div class="form-actions">
   <button class="btn btn-primary" id="save" type="button">保 存</button>
   <button class="btn btn-primary" onclick="javascript:window.history.back(-1)" type="button">返回</button>
  </div>
- <input type="hidden" id="hiddenId" value="${cuser.id}"/>
+ <input type="hidden" id="hiddenId" value="${supplierUser.id}"/>
 #{/form}
