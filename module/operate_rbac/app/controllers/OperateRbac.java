@@ -52,7 +52,10 @@ public class OperateRbac extends Controller {
             // 查出当前用户的所有权限
             user = OperateUser.findUser(userName);
             Logger.info(" ---------------------------- user : " + user);
-            if (user != null && user.roles != null) {
+            if (user != null) {
+                renderArgs.put("currentUser", user);
+            }
+            if (Logger.isDebugEnabled() && user != null && user.roles != null) {
                 Logger.info("user.id = " + user.id + ", name=" + user.loginName);
                 Logger.info("get role " + user.roles);
                 for (OperateRole role : user.roles) {
