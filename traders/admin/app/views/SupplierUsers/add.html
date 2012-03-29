@@ -18,7 +18,8 @@
   <div class="controls">
   #{list items:rolesList, as:'role'}
    <label class="checkbox inline">
-       <input type="checkbox" value="${role.id}" name="supplierUser.roles.id" #{if roleIds?.contains(String.valueOf(role?.id))}checked#{/if}/> ${role.text}
+       <input type="checkbox" value="${role.id}" name="supplierUser.roles.id" 
+       #{if roleIds?.contains(String.valueOf(role?.id))}checked#{/if}/> ${role.text}
      </label>
   #{/list}
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

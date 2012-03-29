@@ -51,21 +51,6 @@ public class RegisterTest extends FunctionalTest {
 		loginUserParams.put("resaler.confirmPassword", "126");
 		response = POST("/register", loginUserParams);
 		assertStatus(200,response);
-
-
-		loginUserParams.put("resaler.loginName", "t");
-		loginUserParams.put("resaler.mobile", "13131121141");
-		loginUserParams.put("resaler.password", "123456");
-		loginUserParams.put("resaler.confirmPassword", "123456");
-		loginUserParams.put("resaler.address", "上海市");
-		loginUserParams.put("resaler.email", "11@qq.com");
-		loginUserParams.put("resaler.accountType", AccountType.COMPANY.toString());
-		//正常
-		loginUserParams.put("resaler.status", ResalerStatus.PENDING.toString());
-		loginUserParams.put("resaler.identityNo","341281198208268785");
-		response = POST("/register", loginUserParams);
-		assertStatus(302,response);
-
 	}
 	
 	//测试是否存在用户名和手机
@@ -78,7 +63,6 @@ public class RegisterTest extends FunctionalTest {
 		
 		Response response = POST("/register/checkLoginName", loginUserParams);
 		assertStatus(200,response);
-		
 	}
 
 }
