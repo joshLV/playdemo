@@ -1,7 +1,6 @@
 package unit;
 
-import java.util.Date;
-import java.util.List;
+import com.uhuila.common.constants.DeletedStatus;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -9,16 +8,18 @@ import org.junit.Test;
 import play.libs.Images;
 import play.test.Fixtures;
 import play.test.UnitTest;
-import com.uhuila.common.constants.DeletedStatus;
 
-public class CuserUnitTest extends UnitTest {
+import java.util.Date;
+import java.util.List;
+
+public class SupplierUserUnitTest extends UnitTest {
 
     @org.junit.Before
     public void setup() {
         Fixtures.delete(OperateUser.class);
         Fixtures.delete(OperateRole.class);
         Fixtures.loadModels("fixture/roles.yml");
-        Fixtures.loadModels("fixture/cusers.yml");
+        Fixtures.loadModels("fixture/supplier_users.yml");
     }
 
     //验证是否添加成功
@@ -50,7 +51,7 @@ public class CuserUnitTest extends UnitTest {
         String loginName = "1";
         int pageNumber=1;
         int pageSize=15;
-        List<OperateUser> list = OperateUser.getCuserList(loginName,pageNumber,pageSize);
+        List<OperateUser> list = OperateUser.getSupplierUserList(loginName, pageNumber, pageSize);
         assertEquals(1,list.size());
     }
 
