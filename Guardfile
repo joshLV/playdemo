@@ -45,9 +45,48 @@ guard 'play', app_path: "traders/admin" do
   watch(%r{^module/})
 end
 
+guard 'play', app_path: "traders/home" do
+  watch(%r{^traders/home/app/})
+  watch(%r{^traders/home/conf/})
+  watch(%r{^traders/home/test/})
+  watch(%r{^module/})
+end
+
 guard 'play', app_path: "cdn/image-server" do
   watch(%r{^cdn/image-server/app/})
   watch(%r{^cdn/image-server/conf/})
   watch(%r{^cdn/image-server/test/})
   watch(%r{^module/})
 end
+
+guard 'play', app_path: "operate/admin" do
+  watch(%r{^operate/admin/app/})
+  watch(%r{^operate/admin/conf/})
+  watch(%r{^operate/admin/test/})
+  watch(%r{^module/})
+end
+
+
+guard 'play', app_path: "operate/business" do
+  watch(%r{^operate/business/app/})
+  watch(%r{^operate/business/conf/})
+  watch(%r{^operate/business/test/})
+  watch(%r{^module/})
+end
+
+
+guard 'play', app_path: "resale/home" do
+  watch(%r{^resale/home/app/})
+  watch(%r{^resale/home/conf/})
+  watch(%r{^resale/home/test/})
+  watch(%r{^module/})
+end
+
+
+guard 'play', app_path: "cdn/image-server" do
+  watch(%r{^cdn/image-server/app/})
+  watch(%r{^cdn/image-server/conf/})
+  watch(%r{^cdn/image-server/test/})
+  watch(%r{^module/})
+end
+
