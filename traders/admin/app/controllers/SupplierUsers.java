@@ -68,8 +68,7 @@ public class SupplierUsers extends Controller {
             }
             render("SupplierUsers/add.html", supplierUser, roleIds, rolesList);
         }
-        Long supplierUserId = MenuInjector.currentUser().id;
-        supplierUser.supplier = new Supplier(supplierUserId);
+        
         Images.Captcha captcha = Images.captcha();
         String password_salt = captcha.getText(6);
         // 密码加密
@@ -146,8 +145,8 @@ public class SupplierUsers extends Controller {
      * @param mobile    手机
      */
     public static void checkLoginName(Long id, String loginName, String mobile) {
-        Long supplierUserId = MenuInjector.currentUser().id;
-        String returnFlag = SupplierUser.checkValue(id, loginName, mobile, supplierUserId);
+        Long supplierId = MenuInjector.currentUser().supplier.id;
+        String returnFlag = SupplierUser.checkValue(id, loginName, mobile, supplierId);
         renderJSON(returnFlag);
     }
 

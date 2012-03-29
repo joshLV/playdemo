@@ -115,7 +115,7 @@ public class SupplierUser extends Model {
      */
     public static void update(long id, SupplierUser user) {
         SupplierUser updatedUser = SupplierUser.findById(id);
-        if (StringUtils.isNotEmpty(user.encryptedPassword) && !user.encryptedPassword.equals(DigestUtils.md5Hex(updatedUser.encryptedPassword))) {
+        if (StringUtils.isNotEmpty(user.encryptedPassword) && !"******".equals(user.encryptedPassword) && !user.encryptedPassword.equals(DigestUtils.md5Hex(updatedUser.encryptedPassword))) {
             Images.Captcha captcha = Images.captcha();
             String passwordSalt = captcha.getText(6);
             //随机码
@@ -182,7 +182,7 @@ public class SupplierUser extends Model {
         // 密码加密
         encryptedPassword = DigestUtils.md5Hex(encryptedPassword
                 + password_salt);
-        // 随机吗
+        // 随机码
         passwordSalt = password_salt;
         createdAt = new Date();
         lockVersion = 0;
