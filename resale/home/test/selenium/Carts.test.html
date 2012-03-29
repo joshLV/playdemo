@@ -45,9 +45,9 @@
     verifyElementNotPresent('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')
     
     
-    click('id=check_goods_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
-    clickAndWait('id=batch_delete')
-    verifyElementNotPresent('id=check_goods_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
+    verifyElementPresent('id=batch_del_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
+    clickAndWait('id=batch_del_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
+    verifyElementNotPresent('id=batch_del_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
     
     
     clickAndWait('//a[contains(@href, "/carts/confirm")]')
