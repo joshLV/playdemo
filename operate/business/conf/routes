@@ -38,7 +38,7 @@ DELETE  /suppliers/{id}                         Suppliers.delete
 
 GET     /resalers                               Resalers.index
 GET     /resalers/{id}/view                     Resalers.detail
-POST    /resalers/update                        Resalers.update
+POST    /resalers/{id}                          Resalers.update
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
