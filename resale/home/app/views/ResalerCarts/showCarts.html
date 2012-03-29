@@ -39,7 +39,7 @@
         %{cartItem = goodsGroup.get(0)}%
 
 
-        <tr id="row_${cartItem.goods.id}">
+        <tr group="row_${cartItem.goods.id}">
                 <td height="25" align="center" valign="middle" rowspan="${goodsGroup.size()}">
                     <div class="col_one">
                     </div>
@@ -62,7 +62,7 @@
             #{if goodsGroup.size() > 1}
             %{goodsGroup = goodsGroup.subList(1, goodsGroup.size())}%
             #{list items:goodsGroup, as:'cartItem'}
-        <tr id="row_${cartItem.goods.id}">
+        <tr group="row_${cartItem.goods.id}">
                 <td width="103" height="25" align="center" valign="middle">
                     <span id="phone_${cartItem.goods.id}">${cartItem.phone}</span>
                 </td>

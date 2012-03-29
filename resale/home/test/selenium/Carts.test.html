@@ -19,11 +19,14 @@
     openAndWait('/carts')
     
     select('id=favs_list','label=测试商品1')
-    
-    
     type('name=phones','${phone1} ${phone2}')
     clickAndWait('id=submit')
     
+    select('id=favs_list','label=测试商品2')
+    type('name=phones','${phone1} ${phone2}')
+    clickAndWait('id=submit')
+
+
     
     verifyValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}','1')
     verifyValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone2}','1')
@@ -37,8 +40,20 @@
     click('id=inc_sub_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')
     waitForValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}','1')
     
-    clickAndWait('id=del_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')
+    verifyElementPresent('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')
+    clickAndWait('id=del_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')    
+    verifyElementNotPresent('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')
     
-    waitForElementNotPresent('//tr[@id='row_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}']')
+    
+    click('id=check_goods_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
+    clickAndWait('id=batch_delete')
+    verifyElementNotPresent('id=check_goods_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
+    
+    
+    clickAndWait('//a[contains(@href, "/carts/confirm")]')
+    verifyTitle('优惠啦 - 确认订单')
+    clickAndWait('//a[contains(@href, "/carts/confirm")]')
+    verifyTitle('优惠啦 - 确认付款')
+    
 
 #{/selenium}
