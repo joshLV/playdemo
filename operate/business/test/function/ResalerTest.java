@@ -1,5 +1,6 @@
 package function;
 
+import controllers.supplier.cas.Security;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.resale.Resaler;
@@ -10,7 +11,6 @@ import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import controllers.operate.cas.Security;
 
 public class ResalerTest extends FunctionalTest {
 

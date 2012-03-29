@@ -267,7 +267,7 @@ public class Goods extends Model {
      */
     @Transient
     public Supplier getSupplier() {
-        return Supplier.findById(id);
+        return Supplier.findById(supplierId);
     }
 
     static {
@@ -363,8 +363,10 @@ public class Goods extends Model {
         }
         if (levelPrices.size() < ResalerLevel.values().length) {
             int zeroLevelCount = ResalerLevel.values().length - levelPrices.size();
+            System.out.println("zeroLevelCount:" + zeroLevelCount);
             int originalSize = levelPrices.size();
             for (int i = 0; i < zeroLevelCount; i++) {
+                System.out.println("i:" + i);
                 levelPrices.add(new GoodsLevelPrice(ResalerLevel.values()[i + originalSize], BigDecimal.ZERO));
             }
         }
@@ -428,26 +430,29 @@ public class Goods extends Model {
         return super.create();
     }
 
-    public void update(Long id, String updatedBy) {
+    public static void update(Long id, Goods goods) {
         models.sales.Goods updateGoods = models.sales.Goods.findById(id);
-        updateGoods.name = name;
-        updateGoods.no = no;
-        updateGoods.effectiveAt = effectiveAt;
-        updateGoods.expireAt = expireAt;
-        updateGoods.originalPrice = originalPrice;
-        updateGoods.salePrice = salePrice;
-        updateGoods.baseSale = baseSale;
-        updateGoods.levelPrices = levelPrices;
-        updateGoods.setPrompt(getPrompt());
-        updateGoods.setDetails(getDetails());
+        if (updateGoods == null){
+            return ;
+        }
+        updateGoods.name = goods.name;
+        updateGoods.no = goods.no;
+        updateGoods.effectiveAt = goods.effectiveAt;
+        updateGoods.expireAt = goods.expireAt;
+        updateGoods.originalPrice = goods.originalPrice;
+        updateGoods.salePrice = goods.salePrice;
+        updateGoods.baseSale = goods.baseSale;
+        updateGoods.levelPrices = goods.levelPrices;
+        updateGoods.setPrompt(goods.getPrompt());
+        updateGoods.setDetails(goods.getDetails());
         updateGoods.updatedAt = new Date();
-        updateGoods.updatedBy = updatedBy;
-        updateGoods.brand = brand;
-        updateGoods.isAllShop = isAllShop;
-        updateGoods.status = status;
-        updateGoods.imagePath = imagePath;
-        if (supplierId != null) {
-            updateGoods.supplierId = supplierId;
+        updateGoods.updatedBy = goods.updatedBy;
+        updateGoods.brand = goods.brand;
+        updateGoods.isAllShop = goods.isAllShop;
+        updateGoods.status = goods.status;
+        updateGoods.imagePath = goods.imagePath;
+        if (goods.supplierId != null) {
+            updateGoods.supplierId = goods.supplierId;
         }
         updateGoods.save();
     }
@@ -540,15 +545,14 @@ public class Goods extends Model {
     /**
      * 根据分销商等级和商品ID计算分销商现价
      *
-     * @param id    商品ID
      * @param level 等级
      * @return resalePrice 分销商现价
      */
     @Transient
     public BigDecimal getResalePrice(ResalerLevel level) {
-        BigDecimal resalePrice = originalPrice;
+        BigDecimal resalePrice = faceValue;
         
-        for (GoodsLevelPrice goodsLevelPrice : levelPrices){
+        for (GoodsLevelPrice goodsLevelPrice : getLevelPrices()){
             if (goodsLevelPrice.level == level){
                 resalePrice = originalPrice.add(goodsLevelPrice.price);
                 break;

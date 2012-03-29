@@ -11,13 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import models.resale.ResalerLevel;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.GoodsCondition;
-import models.sales.GoodsLevelPrice;
-import models.sales.GoodsStatus;
-import models.sales.MaterialType;
-import models.sales.Shop;
+import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -286,7 +280,8 @@ public class OperateGoods extends Controller {
             error("goods.image_upload_failed");
         }
 
-        goods.update(id, companyUser);
+        goods.updatedBy = companyUser;
+        Goods.update(id, goods);
 
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {

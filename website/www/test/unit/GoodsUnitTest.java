@@ -1,7 +1,10 @@
 package unit;
 
 import com.uhuila.common.constants.DeletedStatus;
+import models.resale.Resaler;
+import models.resale.ResalerLevel;
 import models.sales.*;
+import models.supplier.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
@@ -33,6 +36,7 @@ public class GoodsUnitTest extends UnitTest {
         Fixtures.loadModels("fixture/brands_unit.yml");
         Fixtures.loadModels("fixture/shops_unit.yml");
         Fixtures.loadModels("fixture/goods_unit.yml");
+        Fixtures.loadModels("fixture/supplier_unit.yml");
     }
 
     @Test
@@ -140,4 +144,79 @@ public class GoodsUnitTest extends UnitTest {
         Set<Category> categories = goodsList.get(0).categories;
         assertEquals(categoryId, categories.iterator().next().id);
     }
+
+    @Test
+    public void testGetSupplierId() {
+        Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
+        models.sales.Goods goods = new Goods();
+        goods.supplierId = supplierId;
+        Supplier supplier = goods.getSupplier();
+        assertEquals("来一份", supplier.fullName);
+    }
+
+    @Test
+    public void testSetLevelPrices() {
+        models.sales.Goods goods = new Goods();
+        BigDecimal[] prices = new BigDecimal[3];
+        goods.originalPrice = BigDecimal.TEN;
+        prices[0] = BigDecimal.ONE;
+        prices[1] = BigDecimal.ONE;
+        prices[2] = BigDecimal.ONE;
+        goods.setLevelPrices(prices);
+        List<GoodsLevelPrice> priceList = goods.getLevelPrices();
+        assertEquals(4, priceList.size());
+        assertEquals(1, priceList.get(0).price.intValue());
+        assertEquals(1, priceList.get(1).price.intValue());
+        assertEquals(1, priceList.get(2).price.intValue());
+        assertEquals(0, priceList.get(3).price.intValue());
+    }
+
+    @Test
+    public void testCreate() {
+        models.sales.Goods goods = new Goods();
+        goods.no = "11";
+        goods.name = "test111";
+        goods.faceValue = new BigDecimal(200);
+        goods.create();
+    }
+
+    @Test
+    public void testUpdate() {
+        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
+        Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier2");
+        models.sales.Goods goods = new Goods();
+        goods.supplierId = supplierId;
+        goods.no = "11";
+        goods.name = "test111";
+        goods.faceValue = new BigDecimal(200);
+        goods.updatedBy="sujie";
+        goods.update(goodsId, goods);
+        assertEquals("sujie", goods.updatedBy);
+    }
+
+    @Test
+    public void testFindByResaleCondition() {
+        Resaler resaler = new Resaler();
+        resaler.level = ResalerLevel.VIP1;
+        GoodsCondition condition = new GoodsCondition("0-0-0");
+        JPAExtPaginator<Goods> goodsList = models.sales.Goods.findByResaleCondition(resaler, condition, 1, 10);
+        assertEquals(17, goodsList.size());
+    }
+
+
+    @Test
+    public void testGetResalePrice() {
+        models.sales.Goods goods = new Goods();
+        goods.faceValue = BigDecimal.TEN;
+        goods.originalPrice = BigDecimal.ONE;
+        BigDecimal resalePrice = goods.getResalePrice(models.resale.ResalerLevel.NORMAL);
+        assertEquals(BigDecimal.ONE, resalePrice);
+        BigDecimal[] prices = new BigDecimal[4];
+        prices[0] = BigDecimal.ONE;
+        prices[1] = BigDecimal.ONE;
+        prices[2] = BigDecimal.ONE;
+        goods.setLevelPrices(prices);
+        assertEquals(2, goods.getResalePrice(ResalerLevel.VIP1).intValue());
+    }
+
 }
