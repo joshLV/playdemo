@@ -1,5 +1,16 @@
 #!/usr/bin/env ruby
 
+# ~ unit/GoodsUnitTest...               PASSED     0s
+# ~ unit/ShopUnitTest...                PASSED     0s
+# ~ unit/ShopsTest...                   PASSED     0s
+# ~ function/ShopFunctionTest...        PASSED     0s
+# ~ function/SupplierGoodsTest...       PASSED     2s
+# ~ selenium/Shops...                   PASSED     6s
+# ~ selenium/ShopsAdd...                PASSED     2s
+
+test_passed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+PASSED/
+test_failed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+FAILED/
+
 require 'pathname'
 current_dir = Pathname.new(File.dirname(__FILE__)).realpath
 
@@ -14,9 +25,13 @@ app_dirs = [
             'traders/admin',
             'cdn/image-server',
             'operate/admin',
-            'operate/business'
+            'operate/business',
+            'resale/home'
            ]
 
+
+passed_hash = Hash.new(0)
+failed_hash = Hash.new(0)
 
 app_dirs.each do |dir|
   # Dir.chdir("#{current_dir}/#{dir}")
@@ -27,14 +42,31 @@ app_dirs.each do |dir|
 END
   IO.popen(cmd) { |output|
     output.each_line { |line|
-      if line =~ /(FAILED|errors|ERROR)/
-        failed_result << "#{dir}: #{line}"
-      else
-        puts "#{line}"
+      if line =~ test_passed_regex
+        passed_hash[dir] += 1
       end
+      if line =~ test_failed_regex
+        failed_hash[dir] += 1
+        failed_result << "#{dir}: #{line}"
+      end
+      puts "#{line}"
     }
   }
 end
+
+printf("=================== %s ====================\n", "Test Report")
+printf("| %-30s | PASSED | FAILED |\n", "Project")
+printf("----------------------------------------------------\n")
+total_passed = 0
+total_failed = 0
+app_dirs.each do |dir|
+  total_passed += passed_hash[dir]
+  total_failed += failed_hash[dir]
+  printf("| %-30s | %6d | %6d |\n", dir, passed_hash[dir], failed_hash[dir])
+end
+printf("----------------------------------------------------\n")
+printf("| %-30s | %6d | %6d |\n", "Total", total_passed, total_failed)
+printf("----------------------------------------------------\n")
 
 unless failed_result.empty?
   puts "Test Failured!"
