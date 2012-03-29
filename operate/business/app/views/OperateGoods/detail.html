@@ -91,7 +91,7 @@
 
             <div class="controls">
                 <table class="table table-striped table-bordered table-condensed">
-                ${goods?.isAllShop.yesno("全部门店","部分门店")}
+                ${goods?.isAllShop.yesno("全部门店","")}
                 #{list items:shops, as:'shop' }
                     <tr>
                         <td><input type="checkbox" id="checkoption" value="${shop?.id}"/></td>
