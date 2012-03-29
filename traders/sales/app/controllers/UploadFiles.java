@@ -26,7 +26,7 @@ public class UploadFiles extends Controller {
      *
      * @param imgFile
      */
-    public static void uploadJson(File imgFile) {
+    public static void uploadImage(File imgFile) {
         //文件保存目录路径
         if (imgFile == null) {
             getError("请选择文件。");

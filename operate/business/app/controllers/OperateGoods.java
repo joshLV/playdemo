@@ -4,12 +4,8 @@
  */
 package controllers;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.uhuila.common.util.FileUploadUtil;
+import controllers.operate.cas.SecureCAS;
 import models.resale.ResalerLevel;
 import models.sales.*;
 import models.supplier.Supplier;
@@ -21,8 +17,13 @@ import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import com.uhuila.common.util.FileUploadUtil;
-import controllers.operate.cas.SecureCAS;
+
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 通用说明：
@@ -175,7 +176,7 @@ public class OperateGoods extends Controller {
 
         //添加商品处理
         goods.supplierId = supplierId;
-        goods.createdBy = getCompanyUser();
+        goods.createdBy = OperateRbac.currentUser().loginName;
         goods.materialType = MaterialType.ELECTRONIC;
 
         goods.create();
@@ -269,7 +270,7 @@ public class OperateGoods extends Controller {
             render("OperateGoods/edit.html", goods);
         }
 
-        String companyUser = getCompanyUser();
+        String supplierUser = OperateRbac.currentUser().loginName;
 
         try {
             String image = uploadImagePath(imagePath, id);
@@ -280,7 +281,7 @@ public class OperateGoods extends Controller {
             error("goods.image_upload_failed");
         }
 
-        goods.updatedBy = companyUser;
+        goods.updatedBy = supplierUser;
         Goods.update(id, goods);
 
         //预览的情况
@@ -288,11 +289,6 @@ public class OperateGoods extends Controller {
             redirect("http://www.uhuila.cn/goods/" + id + "?preview=true");
         }
         index(null);
-    }
-
-    private static String getCompanyUser() {
-        //todo
-        return "燕井允";
     }
 
     /**

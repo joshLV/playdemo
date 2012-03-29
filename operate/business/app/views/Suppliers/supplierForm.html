@@ -2,7 +2,7 @@
 <input type="hidden" name="admin.loginName" value="admin">
 #{layout_operate.textField name:'supplier.fullName', value:supplier?.fullName, required:true/}
 #{layout_operate.textField name:'supplier.domainName', value:supplier?.domainName, note:'.uhuila.net',required:true/}
-#{layout_operate.fileField name:'supplier.image'/}
+#{layout_operate.fileField name:'image'/}
 #{layout_operate.textField name:'admin.mobile', value:admin?.mobile, required:true/}
 #{if "edit".equals(action)}#{layout_operate.passwordField name:'admin.encryptedPassword', value:""/}#{/if}
 #{else}#{layout_operate.passwordField name:'admin.encryptedPassword', value:"",required:true/}#{/else}

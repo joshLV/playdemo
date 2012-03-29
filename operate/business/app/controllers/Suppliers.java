@@ -1,10 +1,7 @@
 package controllers;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import com.uhuila.common.util.FileUploadUtil;
+import controllers.operate.cas.SecureCAS;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.supplier.Supplier;
@@ -15,8 +12,12 @@ import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
-import com.uhuila.common.util.FileUploadUtil;
-import controllers.operate.cas.SecureCAS;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * 商户管理的控制器.
