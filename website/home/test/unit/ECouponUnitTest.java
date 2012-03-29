@@ -6,7 +6,6 @@ import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderStatus;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
@@ -16,7 +15,7 @@ import play.test.UnitTest;
 import java.util.Date;
 
 
-public class OrderUnitTest extends UnitTest {
+public class ECouponUnitTest extends UnitTest {
 
 	@Before
 	public void loadData() {
@@ -74,15 +73,13 @@ public class OrderUnitTest extends UnitTest {
 		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
 
 
-        Long myId = (Long)play.test.Fixtures.idCache.get("models.consumer.User-selenium");
+        Long orderId = (Long)play.test.Fixtures.idCache.get("models.order.Order-order1");
+        Order order = models.order.Order.findById(orderId);
+        order.setUser(orderId, AccountType.CONSUMER);
 
-        myId = (Long)play.test.Fixtures.idCache.get("models.order.Order-order1");
-        Order order = models.order.Order.findById(myId);
-        order.setUser(myId, AccountType.CONSUMER);
-
-        myId = (Long)play.test.Fixtures.idCache.get("models.order.Order-order2");
-        order = models.order.Order.findById(myId);
-        order.setUser(myId, AccountType.CONSUMER);
+        orderId = (Long)play.test.Fixtures.idCache.get("models.order.Order-order2");
+        order = models.order.Order.findById(orderId);
+        order.setUser(orderId, AccountType.CONSUMER);
 
 		ECoupon eCoupon=ECoupon.findById(id);
 		String applyNote="不想要了";
