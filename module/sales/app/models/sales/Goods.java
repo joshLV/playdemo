@@ -363,10 +363,8 @@ public class Goods extends Model {
         }
         if (levelPrices.size() < ResalerLevel.values().length) {
             int zeroLevelCount = ResalerLevel.values().length - levelPrices.size();
-            System.out.println("zeroLevelCount:" + zeroLevelCount);
             int originalSize = levelPrices.size();
             for (int i = 0; i < zeroLevelCount; i++) {
-                System.out.println("i:" + i);
                 levelPrices.add(new GoodsLevelPrice(ResalerLevel.values()[i + originalSize], BigDecimal.ZERO));
             }
         }

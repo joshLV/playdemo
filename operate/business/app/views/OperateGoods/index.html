@@ -50,12 +50,10 @@
             </tr>
         </table>
     </form>
-    <form class="form-horizontal" name="deletefrm" id="deletefrm" action="" method="post">
-        <input type="hidden" id="status" name="status" value="0"/>
-
+    <form class="form-horizontal" name="deletefrm" id="deletefrm" >
         <div style="margin-bottom: 12px">
-            <button class="btn btn-primary" id="onsales" type="button">上架</button>
-            <button class="btn btn-primary" id="offsales" type="button">下架</button>
+            <button class="btn btn-primary" id="onsales" type="button">同意上架</button>
+            *{<button class="btn btn-primary" id="offsales" type="button">批量下架</button>}*
             <button class="btn btn-primary" id="deletebtn" type="button">删除</button>
         </div>
 
@@ -85,7 +83,7 @@
 
             #{paginate.list items:goodsPage, as:'goods'}
             <tr>
-                <td><input type="checkbox" id="checkoption" value="${goods.id}" name="ids[]"/></td>
+                <td><input type="checkbox" id="checkoption" value="${goods.id}" name="id"/></td>
                 <td>${goods.getSupplier()?.fullName}</td>
                 <td>${goods.no}</td>
                 <td><a href="http://www.uhuila.cn/goods/${goods.id}?preview=true"><img src="${goods
@@ -108,9 +106,11 @@
                         <br/>#{vx.operateLink text:"强制下架", url:"/goods/"+goods.id+"/reject",method:"PUT"/}#{/if}
                     #{if models.sales.GoodsStatus.REJECT.equals(goods.status)}
                         <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods.id+"/onSale",method:"PUT"/}#{/if}
+                    #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status)}
+                        <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods.id+"/onSale",method:"PUT"/}#{/if}
                 </td>
                 <td><a href="@{OperateGoods.edit(goods.id)}">修改</a> /
-                    <a href="@{OperateGoods.detail(goods.id)}">查看</a></td>
+                    <a href="@{OperateGoods.show(goods.id)}">查看</a></td>
             </tr>
             #{/paginate.list}
             </tbody>

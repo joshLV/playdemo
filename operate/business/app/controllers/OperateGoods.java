@@ -11,6 +11,7 @@ import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.data.binding.As;
 import play.data.validation.Required;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
@@ -250,9 +251,9 @@ public class OperateGoods extends Controller {
     /**
      * 取得指定商品信息
      */
-    public static void detail(Long id) {
+    public static void show(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
-        renderTemplate("OperateGoods/detail.html", goods);
+        renderTemplate("OperateGoods/show.html", goods);
     }
 
     /**
@@ -294,9 +295,15 @@ public class OperateGoods extends Controller {
     /**
      * 上架商品.
      *
-     * @param id   商品ID
+     * @param id 商品ID
      */
-    public static void onSale(Long id) {
+    public static void onSale(@As(",") Long... id) {
+        String[] ids = params.getAll("id");
+        for (String i : ids) {
+            System.out.println("onSale      i:" + i);
+        }
+        System.out.println("onsale");
+        System.out.println("id:" + id);
         //更新处理
         updateStatus(GoodsStatus.ONSALE, id);
     }
@@ -304,9 +311,11 @@ public class OperateGoods extends Controller {
     /**
      * 下架商品.
      *
-     * @param id   商品ID
+     * @param id 商品ID
      */
-    public static void offSale(Long id) {
+    public static void offSale(@As(",") Long... id) {
+        System.out.println("offsale");
+        System.out.println("id:" + id);
         //更新处理
         updateStatus(GoodsStatus.OFFSALE, id);
     }
@@ -314,9 +323,9 @@ public class OperateGoods extends Controller {
     /**
      * 拒绝上架申请.
      *
-     * @param id   商品ID
+     * @param id 商品ID
      */
-    public static void reject(Long id) {
+    public static void reject(@As(",") Long... id) {
         //更新处理
         updateStatus(GoodsStatus.REJECT, id);
     }
@@ -324,8 +333,8 @@ public class OperateGoods extends Controller {
     /**
      * 上下架指定商品
      *
-     * @param status   商品状态
-     * @param ids   商品ID
+     * @param status 商品状态
+     * @param ids    商品ID
      */
     private static void updateStatus(GoodsStatus status, Long... ids) {
         //更新处理
@@ -338,10 +347,10 @@ public class OperateGoods extends Controller {
     /**
      * 删除指定商品
      *
-     * @param ids   商品ID
+     * @param id 商品ID
      */
-    public static void delete(Long... ids) {
-        models.sales.Goods.delete(ids);
+    public static void delete(@As(",") Long... id) {
+        models.sales.Goods.delete(id);
 
         index(null);
     }

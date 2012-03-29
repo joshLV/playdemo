@@ -7,58 +7,70 @@
 $(function () {
     $("#selectall").click(function () {
         if (this.checked) {
-            $("[name='ids[]']").attr("checked", 'true');//全选
+            $("[name='id']").attr("checked", 'true');//全选
         } else {
-            $("[name='ids[]']").removeAttr("checked");//取消
+            $("[name='id']").removeAttr("checked");//取消
         }
     });
 
     var checkedcnt = 0;
     $("#deletebtn").click(function () {
-        $("input[name='ids[]']").each(function () {
+        var checkedGoods = [];
+        $("input[name='id']").each(function () {
             if (this.checked) {
                 checkedcnt++;
+                checkedGoods.push($(this).attr("value"));
             }
         });
+
         if (checkedcnt == 0) {
             alert("请至少选择一条数据！");
         } else {
             if (confirm("您确定要删除吗？")) {
-                $("#deletefrm").attr("method", "delete");
-                $("#deletefrm").attr("action", "@{OperateGoods.delete()}");
+                var url = "/goods/"+checkedGoods.join(",")+"?x-http-method-override=DELETE";
+                $("#deletefrm").attr("method","POST") ;
+                $("#deletefrm").attr("action",url) ;
+                alert($("#deletefrm").attr("action"));
                 $("#deletefrm").submit();
             }
         }
     });
 
     $("#onsales").click(function () {
-        $("input[name='ids[]']").each(function () {
+        var checkedGoods = [];
+        $("input[name='id']").each(function () {
             if (this.checked) {
                 checkedcnt++;
+                checkedGoods.push($(this).attr("value"));
             }
         });
         if (checkedcnt == 0) {
             alert("请至少选择一条记录！");
         } else {
-            $("#deletefrm").attr("method", "POST");
-//            $("#status").val("ONSALE");
-            $("#deletefrm").action = "@{OperateGoods.onSale()}";
+            var url = "/goods/"+checkedGoods.join(",")+"/onSale?x-http-method-override=PUT";
+            $("#deletefrm").attr("method","POST") ;
+            $("#deletefrm").attr("action",url) ;
             $("#deletefrm").submit();
         }
     });
 
+    /**
+     * 批量下架
+     */
     $("#offsales").click(function () {
-        $("input[name='ids[]']").each(function () {
+        var checkedGoods = [];
+        $("input[name='id']").each(function () {
             if (this.checked) {
                 checkedcnt++;
+                checkedGoods.push($(this).attr("value"));
             }
         });
         if (checkedcnt == 0) {
             alert("请至少选择一条记录！");
         } else {
-//            $("#status").val("OFFSALE");
-            $("#deletefrm").attr("method", "POST");
-            $("#deletefrm").action = "@{OperateGoods.offSale()}";
+            var url = "/goods/"+checkedGoods.join(",")+"/offSale?x-http-method-override=PUT";
+            $("#deletefrm").attr("method","POST") ;
+            $("#deletefrm").attr("action",url) ;
             $("#deletefrm").submit();
         }
     });
