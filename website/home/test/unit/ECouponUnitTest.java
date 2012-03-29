@@ -1,25 +1,33 @@
 package unit;
 
+import java.util.Date;
+
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
+import models.order.OrderItems;
 import models.order.OrderStatus;
+import models.sales.Goods;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
-
-import java.util.Date;
 
 
 public class ECouponUnitTest extends UnitTest {
 
 	@Before
 	public void loadData() {
-		Fixtures.deleteAllModels();
+		Fixtures.delete(User.class);
+		Fixtures.delete(Goods.class);
+		Fixtures.delete(Order.class);
+		Fixtures.delete(OrderItems.class);
+		Fixtures.delete(ECoupon.class);
 		Fixtures.loadModels("fixture/user.yml");
 		Fixtures.loadModels("fixture/goods_base.yml");
 		Fixtures.loadModels("fixture/goods.yml");
@@ -82,12 +90,16 @@ public class ECouponUnitTest extends UnitTest {
         order.setUser(orderId, AccountType.CONSUMER);
 
 		ECoupon eCoupon=ECoupon.findById(id);
+		eCoupon.order.userId = userId;
+		eCoupon.save();
+		
 		String applyNote="不想要了";
-		String ret = ECoupon.applyRefund(eCoupon,userId,applyNote);
+		String ret = ECoupon.applyRefund(null,userId,applyNote);
+		assertEquals("{\"error\":\"no such eCoupon\"}",ret);
+		
+		 ret = ECoupon.applyRefund(eCoupon,userId,applyNote);
 		assertEquals("{\"error\":\"can not get the trade bill\"}",ret);
 
-		ret = ECoupon.applyRefund(null,userId,applyNote);
-		assertEquals("{\"error\":\"no such eCoupon\"}",ret);
 
 		id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
 		eCoupon=ECoupon.findById(id);
