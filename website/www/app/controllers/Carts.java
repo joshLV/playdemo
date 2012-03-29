@@ -17,7 +17,7 @@ import java.util.List;
  *
  */
 @With(WebCAS.class)
-public class Carts extends Controller {
+public class  Carts extends Controller {
 
     /**
      * 购物车主界面
