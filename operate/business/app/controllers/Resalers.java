@@ -47,9 +47,6 @@ public class Resalers extends Controller {
 	 * @param remark 备注
 	 */
 	public static void update(Long id,ResalerStatus status,ResalerLevel level,String remark) {
-		if (Validation.hasErrors()) {
-			render("Resalers/detail.html");
-		}
 		if (status == ResalerStatus.UNAPPROVED) {
 			level = null;
 		}

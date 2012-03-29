@@ -27,10 +27,11 @@ public class ResalerUnitTest extends UnitTest {
 	public void testIndex() {
 		ResalerCondition condition = new ResalerCondition();
 		condition.loginName="y";
+		condition.status=ResalerStatus.UNAPPROVED;
 		int pageNumber=1;
 		int pageSize=10;
 		JPAExtPaginator<Resaler> list =  Resaler.findByCondition(condition, pageNumber, pageSize);
-		assertEquals(2,list.size());
+		assertEquals(1,list.size());
 	}
 	
 	
@@ -41,7 +42,7 @@ public class ResalerUnitTest extends UnitTest {
 		condition.loginName="y";
 		condition.status=ResalerStatus.APPROVED;
 		String sql = condition.getFitter();
-		assertEquals("1=1 and r.loginName like :loginName and r.status like :status",sql);
+		assertEquals("1=1 and r.loginName like :loginName and r.status = :status",sql);
 		assertNotNull(condition.getParamMap());
 	}
 	

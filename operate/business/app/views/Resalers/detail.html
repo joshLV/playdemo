@@ -10,13 +10,13 @@
         <div class="control-group">
             <label class="control-label">帐户类型</label>
 
-            <div class="controls">&{'resaler.'+resaler.accountType}
+            <div class="controls">&{'resaler.'+resaler?.accountType}
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">用户名</label>
 
-            <div class="controls">${resaler.loginName}
+            <div class="controls">${resaler?.loginName}
             </div>
         </div>
         <div class="control-group">
@@ -74,15 +74,15 @@
             </div>
         </div>
         </form>
-        <form class="form-horizontal" id="checkFrm" action="@{Resalers.update()}" method="post">
+        <form class="form-horizontal" id="checkFrm" method="post">
         <div class="form-actions">
-        #{if !"APPROVED".equals(resaler.status.toString())}
+        #{if !"APPROVED".equals(resaler?.status.toString())}
             <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','APPROVED')" id="approved" type="button">审核通过</button>
         #{/if}    
-        #{if !"UNAPPROVED".equals(resaler.status.toString()) && !"APPROVED".equals(resaler.status.toString())}
+        #{if !"UNAPPROVED".equals(resaler?.status.toString()) && !"APPROVED".equals(resaler?.status.toString())}
             <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','UNAPPROVED',0)" id="unapproved" type="button">审核未通过</button>
         #{/if}
             <button class="btn btn-primary" onclick="javascript:window.history.back(-1)" type="button">返回</button>
         </div>
-      <form class="form-horizontal" name="frm" action="" method="post">
+      </form>
 </div>

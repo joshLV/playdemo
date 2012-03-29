@@ -22,7 +22,7 @@ public class ResalerCondition {
 		}
 
 		if (status != null) {
-			condition.append(" and r.status like :status");
+			condition.append(" and r.status = :status");
 			paramMap.put("status",status);
 		}
 		return condition.toString();

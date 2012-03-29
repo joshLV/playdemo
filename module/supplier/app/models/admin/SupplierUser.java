@@ -201,22 +201,16 @@ public class SupplierUser extends Model {
     }
 
     public static SupplierUser findUserByDomainName(String domainName, String loginName) {
-        Logger.info("domainName=" + domainName + ", loginName=" + loginName + " ^^^^^^^^^^^^^^^^");
         Supplier supplier = Supplier.find("byDomainName", domainName).first();
         if (supplier == null) {
-            Logger.info("&&&&&&&&&&&&&&&&  domain is null");
             return null;
         }
-
-        Logger.info("================");
 
         List<SupplierUser> all = SupplierUser.findAll();
         for (SupplierUser user : all) {
             Logger.info("  ----- user.id:" + user.id + ", supplierId:" + user.supplier.id + ", loginName:" + user.loginName);
         }
 
-        Logger.info("================");
-        Logger.info("     ! -------------- supplier: " + supplier.fullName + ", supplerId=" + supplier.id + ", loginName" + loginName);
         return SupplierUser.find("bySupplierAndLoginName", supplier, loginName).first();
     }
 
