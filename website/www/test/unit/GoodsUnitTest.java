@@ -31,12 +31,13 @@ public class GoodsUnitTest extends UnitTest {
         Fixtures.delete(Category.class);
         Fixtures.delete(Brand.class);
         Fixtures.delete(Area.class);
+        Fixtures.delete(S.class);
+        Fixtures.loadModels("fixture/supplier_unit.yml");
         Fixtures.loadModels("fixture/areas_unit.yml");
         Fixtures.loadModels("fixture/categories_unit.yml");
         Fixtures.loadModels("fixture/brands_unit.yml");
         Fixtures.loadModels("fixture/shops_unit.yml");
         Fixtures.loadModels("fixture/goods_unit.yml");
-        Fixtures.loadModels("fixture/supplier_unit.yml");
     }
 
     @Test
