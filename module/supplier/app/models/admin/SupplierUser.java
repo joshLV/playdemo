@@ -122,6 +122,7 @@ public class SupplierUser extends Model {
             updatedUser.passwordSalt = passwordSalt;
             updatedUser.encryptedPassword = DigestUtils.md5Hex(user.encryptedPassword + passwordSalt);
         }
+        updatedUser.roles = user.roles;
         updatedUser.loginName = user.loginName;
         updatedUser.mobile = user.mobile;
         updatedUser.lastLoginAt = new Date();
