@@ -132,18 +132,23 @@ $(window).load(
 
 
         //点击批量删除
-        $("#batch_delete").click(function(){
-            var checked=[]
-            $("input[id^=check_goods_]").each(function(){
-                if(this.checked){
-                    var id_temp = $(this).attr("id");
-                    checked.push(id_temp.substr(id_temp.lastIndexOf("_")+1));
-                }
-            });
-
-            if(checked.length == 0) return;
-            $("#goodsIds").val(checked);
-            $("#batch-delete-form").submit();
+        $("a[id^=batch_del_]").each(function(){
+        	$(this).click(function(){
+        		var id_temp = $(this).attr("id");
+                id_temp = id_temp.substr(id_temp.lastIndexOf("_")+1);
+        		var form = $("<form></form>");
+        		form.attr('action','/carts/form-batch-delete');
+        		form.attr('method','post');
+        		var input = $("<input type='hidden' name='goodsIds[]' />");
+        		input.attr('value', [id_temp]);
+        		form.append(input);
+        		form.appendTo("body");
+        		form.submit();
+        		return false;
+        	});
+        });
+        
+            	
 /*
             $.ajax({
                 type:'DELETE',
@@ -158,7 +163,8 @@ $(window).load(
                 }});
 */
             
-            });
+        
+        
             var first_opt = $("#favs_list option:first");
             if(first_opt.val() != '-1'){
                 $("#goods_detail_" + first_opt.val()).css({"display":"block"});

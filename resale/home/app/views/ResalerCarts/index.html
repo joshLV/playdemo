@@ -97,17 +97,12 @@
         </form>
     </div>
     <div class="block_fense">购物</div>
-        <form id="batch-delete-form" action="/carts/form-batch-delete" method="POST">
-            <input name="goodsIds[]" id="goodsIds" type="hidden"/>
-            </form>
+
     <table width="996" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
 
 
         <tr bgcolor="F6F6F6">
-            <th width="374"><span class="th_one">
-              <label>
-                  <input class="th_one_input" type="checkbox" name="select_all_checkbox" />全选 </label>
-              </span><span class="th_shop_text">商品</span></th>
+            <th width="374"><span class="th_shop_text">商品</span></th>
             <th width="">手机号</th>
             <th width="120">类型</th>
             <th width="115" height="30" bgcolor="F6F6F6">单价（元）</th>
@@ -122,9 +117,9 @@
 
         <tr id="row_${cartItem.goods.id}">
                 <td height="25" align="center" valign="middle" rowspan="${goodsGroup.size()}">
-                    <div class="col_one"><input type="checkbox" name="goodsIds" id="check_goods_${cartItem.goods.id}"/>
+                    <div class="col_one">
                     </div>
-                    <div class="col_one_text">${cartItem.goods.name}
+                    <div class="col_one_text">${cartItem.goods.name} &nbsp;&nbsp;| &nbsp;&nbsp; <a href="#" id="batch_del_${cartItem.goods.id}">删除</a>
                     </div>
                 </td>
                 <td width="103" height="25" align="center" valign="middle">
@@ -201,10 +196,7 @@
     </table>
 </div>
 <div id="gouwucar_buttom_info">
-    <div class="bottom_info_one"><input type="checkbox" id="uuuu" value="" name="select_all_checkbox"/>
-        全选
-    </div>
-    <div class="bottom_info_two"><a class="piliang_del_bg" href="#" id="batch_delete">批量删除</a></div>
+    
     <div class="both_clear"></div>
     <div class="bottom_info_three">商品共<span class="font_red_one" id="total_num">0</span>件，总合计（不含运费）：<span
             class="font_red_one" id="carts_amount"></span>元</div>
