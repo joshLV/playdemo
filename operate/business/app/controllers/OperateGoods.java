@@ -104,7 +104,7 @@ public class OperateGoods extends Controller {
             goods.isAllShop = false;
         }
 
-        Long supplierId = getSupplierId();
+        Long supplierId = OperateRbac.currentUser().id;
         String shopIds = "";
         if (goods.shops != null) {
             for (Shop shop : goods.shops) {
