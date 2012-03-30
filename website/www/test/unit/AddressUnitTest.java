@@ -76,4 +76,10 @@ public class AddressUnitTest extends UnitTest {
         assertEquals("13412341234 021-1234567-123", address.getPhone());
     }
 
+    @Test
+    public void testUpdateDefault() {
+        Long id = (Long) Fixtures.idCache.get("models.consumer.Address-test1");
+        Address address = Address.findById(id);
+    }
+
 }
