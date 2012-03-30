@@ -66,7 +66,7 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
     <input class="btn btn-primary" id="preview" type="submit" value="预览"/>
 #{/if}
 #{if "edit".equals(action)}
-    #{layout_trader.cancelButton url:'/goods'/}
+    #{vx.cancelButton url:'/goods', class:'btn btn-primary'/}
 #{/if}
     <input type="hidden" id="status" name="goods.status" value="${goods?.status?:'OFFSALE'}"/>
 </div>
