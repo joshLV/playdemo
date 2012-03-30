@@ -2,13 +2,19 @@ package models.accounts;
 
 import models.accounts.util.SerialNumberUtil;
 import org.apache.commons.lang.time.DateUtils;
+
+import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
 
 import javax.persistence.*;
+
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 账户资金变动流水
@@ -85,5 +91,26 @@ public class AccountSequence extends Model {
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
         return page;
+    }
+    
+    public static Map<AccountSequenceFlag, Object[]> summaryReport(Account account){
+        EntityManager entityManager = JPA.em();
+        
+        Query query = entityManager.createQuery("SELECT a.sequenceFlag, count(a.sequenceFlag), sum(a.amount) FROM AccountSequence a  WHERE a.account = :account group by a.sequenceFlag");
+        query.setParameter("account", account);
+        List<Object[]> list = query.getResultList();
+        
+        Map<AccountSequenceFlag, Object[]> result = new HashMap<>();
+        for(Object[] ls : list){
+            result.put((AccountSequenceFlag)ls[0], ls);
+        }
+        if(result.get(AccountSequenceFlag.VOSTRO) == null){
+            result.put(AccountSequenceFlag.VOSTRO, new Object[]{AccountSequenceFlag.VOSTRO, 0, 0});
+        }
+        if(result.get(AccountSequenceFlag.NOSTRO) == null){
+            result.put(AccountSequenceFlag.NOSTRO, new Object[]{AccountSequenceFlag.NOSTRO, 0, 0});
+        }
+        
+       return result;
     }
 }

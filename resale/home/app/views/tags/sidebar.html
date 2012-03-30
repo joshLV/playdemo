@@ -1,0 +1,19 @@
+	<ul class="nav nav-list">
+	%{
+        menus =[
+	        ['library', '/library', '我的分销库'],
+            ['carts',   '/carts',   '下单购买'],
+            ['orders',  '/orders',  '我的订单'],
+            ['ecoupons','#',        '券号列表'],
+            ['account', '/accounts','我的账户'],
+            ['info',    '/info',    '我的资料'],
+            ['pwd',     'pwd',      '密码管理'],
+        ]
+	}%
+    #{list items:menus , as:'menu'}
+        <li #{if menu[0] == _arg} class="active" #{/if}>
+        <a href="${menu[1]}">
+        ${menu[2]}</a></li>
+    #{/list}
+
+	</ul>

@@ -1,0 +1,111 @@
+#{extends 'bt_layout.html' /}
+
+#{set title:'商品订单' /}
+
+#{set 'sidebar-nav'}
+  #{sidebar 'account' /}
+#{/set}
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+
+#{/set}
+
+#{set 'moreStyles'}
+<style type="text/css">
+.form-inline ul {
+    display: inline-block;
+    margin-bottom:-15px;
+}
+.nav-tabs {
+    margin-bottom:0px;
+}
+.tab-content {
+    border-left:1px solid #DDD;
+    border-right:1px solid #DDD;
+    border-bottom:1px solid #DDD;
+    clear:both;
+}
+.tab-content .binary{
+    width:40%;
+    float:left;
+    text-align:center;
+    margin:5px 1%;
+}
+.seq {
+    margin-top:20px;
+}
+.seq thead tr :first{
+    background-color:#f5f5f5;
+}
+footer{
+    margin-top:20px;
+}
+</style>
+#{/set}
+
+<div class="body">
+<form class="well form-inline" action="@{ResalerAccounts.index()}" method="GET">起止日期
+  <input type="text" class="input-medium Wdate" name = "condition.createdAtBegin" onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}">  - 
+  <input type="text" class="input-medium Wdate" name = "condition.createdAtEnd" onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
+  <button type="submit" class="btn">搜索</button>
+  <ul class="nav nav-pills">
+    <li><a href="#">今天</a></li>
+    <li><a href="#">最近7天</a></li>
+    <li><a href="#">1个月</a></li>
+    <li><a href="#">3个月</a></li>
+    <li><a href="#">1年前</a></li>
+  </ul>
+</form>
+
+<ul class="nav nav-tabs">
+        <li class="active"><a href="#">统计金额</a></li>
+        <li><a href="#">下载查询结果</a></li>
+</ul>
+<div class="tab-content">
+<div class="alert alert-success binary">
+  一共支出 ${summaryReport.get(models.accounts.AccountSequenceFlag.NOSTRO)[1]} 笔 / ${summaryReport.get(models.accounts.AccountSequenceFlag.NOSTRO)[2]} 元 
+</div>
+<div class="alert alert-info binary" style="float:right">
+  一共收入 ${summaryReport.get(models.accounts.AccountSequenceFlag.VOSTRO)[1]} 笔 / ${summaryReport.get(models.accounts.AccountSequenceFlag.VOSTRO)[2]} 元 
+</div>
+<div style="clear:both"></div> 
+
+
+ </div>
+
+ <table class="table table-striped seq">
+          <tr>
+            <th>账户明细</th>
+            <th>类型</th>
+            <th>交易时间</th>
+            <th>金额</th>
+          </tr>
+    #{paginate.list items:seqs, as:'accountSequence'}
+        <tr>
+            <td>${accountSequence.orderId}</td>
+
+            <td>#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
+                    收入
+                #{/if}
+                #{else}
+                支出
+                #{/else}
+                </td>
+            <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>${accountSequence.amount}</td>
+        </tr>
+    #{/paginate.list}
+
+
+      </table>
+
+
+   <div class="pagination">
+     <ul>
+    #{paginate.controls items:seqs /}
+    </ul>
+  </div>
+ 
+ 
+ 

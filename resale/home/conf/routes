@@ -41,6 +41,8 @@ GET     /orders                                  ResalerOrders.index
 GET     /orders/{id}                             ResalerOrders.show
 GET     /payment/{id}                            ResalerOrders.pay
 
+GET     /account_seq                            ResalerAccounts.index                                 
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
