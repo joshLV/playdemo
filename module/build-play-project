@@ -4,6 +4,7 @@
 test_passed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+PASSED/
 test_failed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+FAILED/
 
+play_home="/app/play-1.2.4/"
 dir = ARGV[0]
 
 if ARGV.size() < 1
@@ -23,7 +24,7 @@ failed_hash = Hash.new(0)
 # Dir.chdir("#{current_dir}/#{dir}")
 cmd =<<END
         cd #{current_dir}/#{dir}
-        /app/play-1.2.4/play auto-test --deps
+        #{play_home}play auto-test --deps
 END
 IO.popen(cmd) { |output|
   output.each_line { |line|
@@ -53,9 +54,9 @@ end
 # package
 cmd =<<END
   cd #{current_dir}/#{dir}
-  find . -name "[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*" -exec rm '{}' \;
-  /app/play-1.2.4/play clean
-  /app/play-1.2.4/play deps --forProd --forceCopy --%prod
+  find . -name '[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*' -exec rm '{}' \;
+  #{play_home}play clean
+  #{play_home}play deps --forProd --forceCopy --%prod
 END
 IO.popen(cmd) { |output|
   output.each_line { |line|
