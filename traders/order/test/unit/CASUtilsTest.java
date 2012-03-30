@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -30,6 +31,13 @@ public class CASUtilsTest extends UnitTest {
         Play.configuration.setProperty("application.baseUrl", "http://{domain}.order.uhuila.net");
 
         Http.Request.current.set(Http.Request.createRequest("127.0.0.1", "GET", "/login", null, null, null, null, "lyf.order.uhuila.net", false, 80, "lyf.order.uhuila.net", false, null, null));
+    }
+
+
+    @After
+    public void tearDown() {
+        Play.configuration.setProperty("cas.gateway", "true");
+        Play.configuration.setProperty("cas.mockserver", "true");
     }
 
 
