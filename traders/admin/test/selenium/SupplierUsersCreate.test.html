@@ -24,6 +24,4 @@ load:['fixture/roles.yml','fixture/supplier_users.yml'] /}
     type('name=supplierUser.encryptedPassword','123')
     clickAndWait('id=save')
     assertTitle('操作员一览')
-    *{verifyText('//div[2]/table/tbody/tr/td','小王6')}*
-
 #{/selenium}

@@ -80,6 +80,24 @@ public class AddressUnitTest extends UnitTest {
     public void testUpdateDefault() {
         Long id = (Long) Fixtures.idCache.get("models.consumer.Address-test1");
         Address address = Address.findById(id);
+        assertEquals("false", address.isDefault);
+        User user = new User();
+        user.id = (Long) Fixtures.idCache.get("models.consumer.User-User1");
+        Address.updateDefault(id, user);
+        address = Address.findById(id);
+        assertEquals("true", address.isDefault);
     }
+
+    @Test
+    public void testDelete() {
+        Long id = (Long) Fixtures.idCache.get("models.consumer.Address-test2");
+        Address.delete(id);
+        Address address = Address.findById(id);
+        assertNull(address);
+        Long defaultId = (Long) Fixtures.idCache.get("models.consumer.Address-test1");
+        address = Address.findById(defaultId);
+        assertEquals("true", address.isDefault);
+    }
+
 
 }

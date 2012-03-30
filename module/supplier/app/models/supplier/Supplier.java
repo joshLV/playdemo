@@ -92,8 +92,6 @@ public class Supplier extends Model {
 
 
     public static void update(Long id,Supplier supplier) {
-        System.out.println("update");
-        System.out.println("id:" + id);
         Supplier sp = findById(id);
         if (sp == null) {
             return;
