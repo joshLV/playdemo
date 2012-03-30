@@ -23,8 +23,7 @@ failed_hash = Hash.new(0)
 # Dir.chdir("#{current_dir}/#{dir}")
 cmd =<<END
         cd #{current_dir}/#{dir}
-        play clean;
-        play auto-test --deps
+        /app/play-1.2.4/play auto-test --deps
 END
 IO.popen(cmd) { |output|
   output.each_line { |line|
@@ -55,8 +54,8 @@ end
 cmd =<<END
   cd #{current_dir}/#{dir}
   find . -name "[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*" -exec rm '{}' \;
-  play clean
-  play deps --forProd --forceCopy --%prod
+  /app/play-1.2.4/play clean
+  /app/play-1.2.4/play deps --forProd --forceCopy --%prod
 END
 IO.popen(cmd) { |output|
   output.each_line { |line|
