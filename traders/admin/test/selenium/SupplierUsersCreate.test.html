@@ -17,6 +17,7 @@ load:['fixture/roles.yml','fixture/supplier_users.yml'] /}
     #{include 'test/selenium/step/login.selenium' /}
     open('/users/new')
     assertTitle('操作员添加')
+    verifyTextNotPresent('系统管理员')
     click('id=supplierUser.roles_${play.test.Fixtures.idCache.get("models.admin.SupplierRole-sales")}')
     click('id=supplierUser.roles_${play.test.Fixtures.idCache.get("models.admin.SupplierRole-test")}')
     type('id=loginName','小王6')
@@ -24,4 +25,6 @@ load:['fixture/roles.yml','fixture/supplier_users.yml'] /}
     type('name=supplierUser.encryptedPassword','123')
     clickAndWait('id=save')
     assertTitle('操作员一览')
+    verifyText('//div[2]/table/tbody/tr/td','小王6')
+
 #{/selenium}

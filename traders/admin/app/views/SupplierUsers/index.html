@@ -14,7 +14,7 @@
  #{form @SupplierUsers.index() , id:'operForm',class:"form-horizontal" }
   <table class="table table-striped table-bordered table-condensed">
    <tr>
-    <td>用户名<input type="text" name="loginName" class="input-large"/>
+    <td>用户名<input type="text" name="loginName" value="${loginName}" class="input-large"/>
      <button class="btn btn-primary" type="submit">搜索</button>
      <a href="@{SupplierUsers.add()}" class="btn btn-primary">添加操作员</a>
     </td>

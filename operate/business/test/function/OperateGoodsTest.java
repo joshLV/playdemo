@@ -92,7 +92,7 @@ public class OperateGoodsTest extends FunctionalTest {
         response = POST("/goods/" + goodsId + "/update", goodsParams);
         assertStatus(302, response);
         Goods goods = Goods.findById(goodsId);
-        assertEquals(goods.name, "test");
+        assertEquals("test",goods.name );
     }
 
     /**
@@ -147,6 +147,6 @@ public class OperateGoodsTest extends FunctionalTest {
         Response response = POST("/updatestatus", goodsParams);
         assertStatus(302, response);
         Goods goods = Goods.findById(goodsId);
-        assertEquals(goods.status, GoodsStatus.ONSALE);
+        assertEquals(GoodsStatus.ONSALE, goods.status);
     }
 }

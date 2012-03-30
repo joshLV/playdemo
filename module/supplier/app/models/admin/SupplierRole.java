@@ -4,6 +4,7 @@ import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -46,6 +47,15 @@ public class SupplierRole extends Model {
     public static SupplierRole findByKey(String key){
         return SupplierRole.find("byKey",key).first();
     }
+
+    /**
+     * 查询系统管理员以外的角色
+     * @return
+     */
+	public static List findNotAdmin() {
+		List rolesList = SupplierRole.find("key <> 'admin' order by id").fetch();
+		return rolesList;
+	}
     
 }
 

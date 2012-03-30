@@ -48,8 +48,8 @@ $(window).load(function () {
       <td width="12">&nbsp;</td>
       <td width="61" align="right">下单时间：</td>
       <td width="259" height="35">
-        <input class="short_input Wdate" type="text" name="condition.createdAtBegin" value="${createdAtBegin}" onfocus="WdatePicker({readOnly:true})" /> -
-        <input class="short_input Wdate" type="text" name="condition.createdAtEnd" value="${createdAtEnd}" onfocus="WdatePicker({readOnly:true})" />
+        <input class="short_input Wdate" type="text" name="condition.createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
+        <input class="short_input Wdate" type="text" name="condition.createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
      </td>
       <td width="77">订单状态：</td>
       <td width="353">

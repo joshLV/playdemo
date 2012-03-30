@@ -39,6 +39,7 @@ public class SupplierUsers extends Controller {
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<SupplierUser> supplierUsersPage = SupplierUser.getSupplierUserList(
                 loginName, MenuInjector.currentUser().supplier.id, pageNumber, PAGE_SIZE);
+        renderArgs.put("loginName", loginName);
         render(supplierUsersPage);
     }
 
@@ -47,7 +48,7 @@ public class SupplierUsers extends Controller {
      */
     @ActiveNavigation("user_add")
     public static void add() {
-        List rolesList = SupplierRole.findAll();
+        List rolesList = SupplierRole.findNotAdmin();
         render(rolesList);
     }
 
@@ -109,7 +110,7 @@ public class SupplierUsers extends Controller {
             }
         }
 
-        List rolesList = SupplierRole.findAll();
+        List rolesList = SupplierRole.findNotAdmin();
         supplierUser.roles.addAll(rolesList);
 
         render(supplierUser, roleIds, rolesList);

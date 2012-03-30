@@ -152,13 +152,12 @@ public class SupplierUser extends Model {
 	 * @param mobile    手机
 	 * @param supplierUserId
 	 */
-	public static String checkValue(Long id, String loginName, String mobile, Long supplierUserId) {
+	public static String checkValue(Long id, String loginName, String mobile, Long supplierId) {
 
 		StringBuilder sq = new StringBuilder("loginName = ? and supplier=? ");
 		List params = new ArrayList();
 		params.add(loginName);
-		params.add(new Supplier(supplierUserId));
-		System.out.println(">>>>>>>>>>>>>>>>>"+id);
+		params.add(new Supplier(supplierId));
 		if (id != null) {
 			sq.append("and id <> ?");
 			params.add(id);
