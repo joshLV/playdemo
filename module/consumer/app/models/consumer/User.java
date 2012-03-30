@@ -52,6 +52,8 @@ public class User extends Model {
 
 	@Column(name="created_at")
 	public Date createdAt;
+
+
 	
 	/**
 	 * 判断用户名和手机是否唯一

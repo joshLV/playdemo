@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 @Table(name = "address")
 public class Address extends Model {
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     public User user;
     public String province;
     public String city;
@@ -102,17 +102,19 @@ public class Address extends Model {
 
     public static void delete(long id) {
         Address address = Address.findById(id);
-        if (address != null) {
-            if ("true".equals(address.isDefault)) {
-                address.delete();
-                List<Address> addressList = Address.findAll();
-                if (addressList.size() > 0) {
-                    Address defaultAddress = addressList.get(0);
-                    defaultAddress.isDefault = "true";
-                    defaultAddress.save();
-                }
-            }
-            address.delete();
+        if (address == null) {
+            return;
         }
+        if ("true".equals(address.isDefault)) {
+            address.delete();
+            List<Address> addressList = Address.findAll();
+            if (addressList.size() > 0) {
+                Address defaultAddress = addressList.get(0);
+                defaultAddress.isDefault = "true";
+                defaultAddress.save();
+            }
+            return;
+        }
+        address.delete();
     }
 }

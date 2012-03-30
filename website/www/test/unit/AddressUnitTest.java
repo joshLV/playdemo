@@ -90,7 +90,7 @@ public class AddressUnitTest extends UnitTest {
 
     @Test
     public void testDelete() {
-        Long id = (Long) Fixtures.idCache.get("models.consumer.Address-test2");
+        long id = (Long) Fixtures.idCache.get("models.consumer.Address-test2");
         Address.delete(id);
         Address address = Address.findById(id);
         assertNull(address);
