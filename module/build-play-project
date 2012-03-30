@@ -5,7 +5,7 @@ test_passed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+PASSED/
 test_failed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+FAILED/
 
 play_home="/app/play-1.2.4/"
-#play_home = ""
+# play_home = ""
 dir = ARGV[0]
 
 if ARGV.size() < 1
@@ -19,6 +19,24 @@ require 'pathname'
 current_dir = Pathname.new(File.dirname(__FILE__)).parent.realpath
 
 puts current_dir
+
+app_dirs = [
+            'website/www',
+            'website/home',
+            'traders/sales',
+            'traders/order',
+            'traders/home',
+            'traders/admin',
+            'cdn/image-server',
+            'operate/admin',
+            'operate/business',
+            'resale/home'
+           ]
+
+# 用于保证不会因为目录不存在而找不到dependency
+app_dirs.each do |dd|
+  system "mkdir -p #{current_dir}/#{dd}"
+end
 
 failed_result = []
 passed_test_count = 0
