@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 @Table(name = "address")
 public class Address extends Model {
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     public User user;
     public String province;
     public String city;
