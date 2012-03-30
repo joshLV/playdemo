@@ -4,7 +4,8 @@
 test_passed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+PASSED/
 test_failed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+FAILED/
 
-play_home="/app/play-1.2.4/"
+#play_home="/app/play-1.2.4/"
+play_home = ""
 dir = ARGV[0]
 
 if ARGV.size() < 1
@@ -18,10 +19,10 @@ require 'pathname'
 current_dir = Pathname.new(File.dirname(__FILE__)).parent.realpath
 
 puts current_dir
-failed_result = []
 
-passed_hash = Hash.new(0)
-failed_hash = Hash.new(0)
+failed_result = []
+passed_test_count = 0
+failed_test_count = 0
 
 # Dir.chdir("#{current_dir}/#{dir}")
 cmd =<<END
@@ -31,10 +32,10 @@ END
 IO.popen(cmd) { |output|
   output.each_line { |line|
     if line =~ test_passed_regex
-      passed_hash[dir] += 1
+      passed_test_count += 1
     end
     if line =~ test_failed_regex
-      failed_hash[dir] += 1
+      failed_test_count += 1
       failed_result << "#{dir}: #{line}"
     end
     puts "#{line}"
@@ -44,7 +45,7 @@ IO.popen(cmd) { |output|
 printf("=================== %s ====================\n", "Test Report")
 printf("| %-30s | PASSED | FAILED |\n", "Project")
 printf("----------------------------------------------------\n")
-printf("| %-30s | %6d | %6d |\n", dir, passed_hash[dir], failed_hash[dir])
+printf("| %-30s | %6d | %6d |\n", dir, passed_test_count, failed_test_count)
 printf("----------------------------------------------------\n")
 
 unless failed_result.empty?
@@ -52,6 +53,14 @@ unless failed_result.empty?
   failed_result.each {|line| puts "    " + line}
   exit(1)
 end
+
+
+if passed_test_count == 0
+  puts "Play Build Failed or No Test Found!"
+  failed_result.each {|line| puts "    " + line}
+  exit(1)
+end
+
 
 # package
 cmd =<<END
