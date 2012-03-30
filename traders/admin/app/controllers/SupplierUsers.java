@@ -62,7 +62,7 @@ public class SupplierUsers extends Controller {
         if (Validation.hasErrors()) {
             List rolesList = SupplierRole.findAll();
             String roleIds = "";
-            if (supplierUser.roles != null && !supplierUser.roles.isEmpty()) {
+            if (supplierUser.roles != null && supplierUser.roles.size()>0) {
                 for (SupplierRole role : supplierUser.roles) {
                     roleIds += role.id + ",";
                 }
@@ -104,7 +104,7 @@ public class SupplierUsers extends Controller {
     public static void edit(Long id) {
         SupplierUser supplierUser = SupplierUser.findById(id);
         String roleIds = "";
-        if (supplierUser.roles != null && !supplierUser.roles.isEmpty()) {
+        if (supplierUser.roles != null && supplierUser.roles.size()>0) {
             for (SupplierRole role : supplierUser.roles) {
                 roleIds += role.id + ",";
             }
@@ -126,7 +126,7 @@ public class SupplierUsers extends Controller {
         if (Validation.hasErrors()) {
             List rolesList = SupplierRole.findAll();
             String roleIds = "";
-            if (!supplierUser.roles.isEmpty()) {
+            if (supplierUser.roles != null && supplierUser.roles.size()>0) {
                 for (SupplierRole role : supplierUser.roles) {
                     roleIds += role.id + ",";
                 }

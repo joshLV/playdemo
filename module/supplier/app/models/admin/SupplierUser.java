@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,10 +17,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+
 import models.supplier.Supplier;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+
 import play.Logger;
 import play.data.validation.Match;
 import play.data.validation.Required;
@@ -27,6 +32,7 @@ import play.db.jpa.Model;
 import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http.Request;
+
 import com.uhuila.common.constants.DeletedStatus;
 
 @Entity
@@ -76,7 +82,8 @@ public class SupplierUser extends Model {
 	@JoinTable(name = "supplier_users_roles",
 	inverseJoinColumns = @JoinColumn(name = "role_id"),
 	joinColumns = @JoinColumn(name = "user_id"))
-	public Set<SupplierRole> roles;
+	@OrderBy("id")
+	public List<SupplierRole> roles;
 
 	@ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	@JoinTable(name = "supplier_permissions_users",

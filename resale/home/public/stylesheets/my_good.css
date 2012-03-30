@@ -286,9 +286,10 @@ table {
     margin-top: 10px;
 }
 
-.nav_bg_ul {
-    list-style: none
-}
+.left_nav_li_div{ background:url(../images/left_nav_bgs.jpg) no-repeat; height:31px; width:165px;  line-height:30px; margin-bottom:11px; font-weight:700}
+.left_nav_li_div span{ margin-left:37px;}
+.left_content_ul{ background:url(../images/left_nav_right.jpg) repeat-y top right; width:169px; list-style:none }
+.left_nav_text{ height:27px; margin-left:32px; background:url(../images/left_my_arrow.jpg) no-repeat; padding-left:15px; line-height:22px;}
 
 .nav_bg_li {
     float: left;
@@ -440,124 +441,17 @@ table {
     margin-left: 100px;
 }
 
-.page_a_box {
-    padding: 10px;
-    float: left;
-    border: solid 1px #CCCCCC;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin-right: 5px;
-    color: #000000;
-    text-align: center
-}
-
-.page_a_box:hover, .curr_page_a_box {
-    padding: 10px;
-    float: left;
-    border: solid 1px #AB3420;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin-right: 5px;
-    color: #AB3420;
-    text-align: center
-}
-
-.page_text_info {
-    margin-left: 5px;
-    margin-right: 5px;
-    line-height: 26px;
-    float: left
-}
-
-.page_text_info input {
-    width: 55px;
-    height: 23px;
-    border: solid 1px #CCCCCC;
-    margin-left: 5px;
-    margin-right: 5px;
-    line-height: 23px;
-    vertical-align: middle
-}
-
-.short_input {
-    width: 110px;
-    height: 21px;
-    line-height: 21px;
-    border: solid 1px #A8ACAD
-}
-
-.long_input {
-    width: 240px;
-    height: 21px;
-    border: solid 1px #A8ACAD;
-    line-height: 21px;
-}
-
-.pos_abs {
-    position: relative
-}
-
-.dingdan_stauts_bg {
-    background: url(../images/dingdan_stauts_bg.jpg) repeat-x;
-    width: 86px;
-    height: 21px;
-    border: solid 1px #D6D8D8;
-    line-height: 21px;
-}
-
-.select_xuanze {
-    background: url(../images/select_xiala.jpg) no-repeat;
-    border: solid 1px #99999B;
-    width: 15px;
-    height: 15px;
-    position: absolute;
-    top: 2px;
-    left: 67px;
-}
-
-*html .select_xuanze {
-    top: 3px;
-}
-
-.font_strong {
-    font-weight: 700;
-    color: #000000
-}
-
-.left_shangpin {
-    width: 62px;
-    height: 63px;
-    float: left;
-    margin: 8px 10px;
-}
-
-.right_shangpin {
-    width: 250px;
-    margin: 13px 0px;
-    line-height: 26px;
-    float: left;
-    font-weight: bold;
-    overflow: hidden
-}
-
-*html .right_shangpin {
-    width: 230px;
-}
-
-/*IE6 Hack*/
-.caozuo_std {
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-.font_red_one {
-    font-weight: normal
-}
-
-.font_gray2 {
-    color: #999999
-}
-
+.pos_abs{ position:relative}
+.dingdan_status_bg{ background: repeat-x; width:86px; height:30px; border:solid 1px #D6D8D8; line-height:21px; }
+.select_xuanze{ background:url(../images/select_xiala.jpg) no-repeat; border:solid 1px #99999B; width:15px; height:15px; position:absolute; top:2px; left:67px;}
+*html .select_xuanze{ top:3px;}
+.font_strong{ font-weight:700; color:#000000}
+.left_shangpin{ width:62px; height:63px; float:left; margin:8px 10px;} 
+.right_shangpin{ width:250px; margin:13px 0px; line-height:26px; float:left; font-weight:bold; overflow:hidden}
+*html .right_shangpin{ width:230px;} /*IE6 Hack*/
+.caozuo_std{ margin-top:5px; margin-bottom:5px;}
+.font_red_one{ font-weight:normal}
+.font_gray2{ color:#999999}
 /**/
 .tab_top3 {
     margin-top: 27px;

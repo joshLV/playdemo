@@ -6,6 +6,7 @@ require:
     - play -> paginate head
     - play -> rabbitmq 0.3
     - play -> cas 3.1
+    - view_ext -> view_ext
     - paginate_ext -> paginate_ext
     - sales -> sales
     - supplier -> supplier
@@ -44,6 +45,7 @@ repositories:
             - consumer -> *
             - resale_trace -> *
             - paginate_ext -> *
+            - view_ext -> *
             - breadcrumbs -> *
             - accounts -> *
             - sms -> *

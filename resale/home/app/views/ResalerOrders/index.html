@@ -1,14 +1,36 @@
 #{extends 'main.html' /}
 #{set title:'我的商品订购' /}
 #{set 'moreStyles'}
-<link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
+<link href="@{'/public/assets/css/bootstrap.css'}" rel="stylesheet">
 <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" type="text/css" media="screen"
-      href="@{'/public/stylesheets/play-pagination.css'}">
-<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/play-pagination.css'}">
+<style>
+ul,
+ol {
+  padding: 0;
+  margin: 0 0 0 0;
+}
+.pagination ul {
+    box-shadow:none;
+}
+.pagination {
+    height:auto
+}
+ul .pagination {
+    margin:auto;
+}
+.left_bottom_nav_bg {
+    background: none no-repeat scroll 0 0 transparent;
+    height: 31px;
+    width: 169px;
+}
+
+</style>
 #{/set}
 
 #{set 'moreScripts'}
+<script src="@{'/public/assets/js/bootstrap-tab.js'}"></script>
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script>
 $(window).load(function () {
  $("#search").click(function () {
@@ -46,7 +68,7 @@ $(window).load(function () {
     <table width="774" border="0" cellpadding="0" cellspacing="0">
      <tr>
       <td width="12">&nbsp;</td>
-      <td width="61" align="right">下单时间：</td>
+      <td width="65" align="right">下单时间：</td>
       <td width="259" height="35">
         <input class="short_input Wdate" type="text" name="condition.createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
         <input class="short_input Wdate" type="text" name="condition.createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
@@ -54,14 +76,14 @@ $(window).load(function () {
       <td width="77">订单状态：</td>
       <td width="353">
        <div class="pos_abs">
-        <select class="dingdan_stauts_bg" name="condition.status">
-        <option value=""></option>
-        <option value="UNPAID" ${status.toString()=='UNPAID'?'selected':''}>未支付</option>
-        <option value="PAID" ${status.toString()=='PAID'?'selected':''}>已支付</option>
-        <option value="CANCELED" ${status.toString()=='CANCELED'?'selected':''}>取消订单</option>
-        <option value="SENT" ${status.toString()=='SENT'?'selected':''}>已发货</option>
-        <option value="RETURNED" ${status.toString()=='RETURNED'?'selected':''}>退款</option>
-        <option value="RECEIPT" ${status.toString()=='RECEIPT'?'selected':''}>确认收货</option>
+        <select class="dingdan_status_bg" id="condition_status"name="condition.status">
+        <option value="">不限</option>
+        <option value="UNPAID" ${status?.toString()=='UNPAID'?'selected':''}>未支付</option>
+        <option value="PAID" ${status?.toString()=='PAID'?'selected':''}>已支付</option>
+        <option value="CANCELED" ${status?.toString()=='CANCELED'?'selected':''}>取消订单</option>
+        <option value="SENT" ${status?.toString()=='SENT'?'selected':''}>已发货</option>
+        <option value="RETURNED" ${status?.toString()=='RETURNED'?'selected':''}>退款</option>
+        <option value="RECEIPT" ${status?.toString()=='RECEIPT'?'selected':''}>确认收货</option>
         </select>
        </div>
       </td>
@@ -74,6 +96,7 @@ $(window).load(function () {
       <td colspan="2" align="left" valign="middle"><a class="seach_bg" href="#" id="search">搜素</a></td>
      </tr>
     </table>
+    #{vx.tab enumItems: models.order.OrderStatus.values(),name:'order',select:'condition_status',value:status,form:'orderForm'/}
     </form>
     <div class="tab_top">统计金额</div>
      <div class="caozuo_std">本月订单共${totalMap.thisMonthTotal}笔共${totalMap.thisMonthTotalAmount}元
