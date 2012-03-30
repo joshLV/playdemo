@@ -36,6 +36,10 @@ public class MyOrders extends Controller {
 		JPAExtPaginator<models.order.Order>  orderList = Order.findMyOrders(user, createdAtBegin, createdAtEnd, status, goodsName,pageNumber, PAGE_SIZE);
 
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders");
+		renderArgs.put("createdAtBegin", createdAtBegin);
+		renderArgs.put("createdAtEnd", createdAtEnd);
+		renderArgs.put("status", status);
+		renderArgs.put("goodsName", goodsName);
 		render(orderList, breadcrumbs);
 	}
 
@@ -57,4 +61,5 @@ public class MyOrders extends Controller {
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "订单详情", "/orders/" + id);
 		render(order, orderItems,breadcrumbs);
 	}
+	
 }

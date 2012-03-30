@@ -55,16 +55,16 @@
                         </div>
                         <div class="col_one_text">${row.goods.name}</div>
                     </td>
-                    <td width="69" align="center" valign="middle">13200000</td>
-                    <td width="69" align="center" valign="middle">${row.resalerPrice}</td>
-                    <td width="81" align="center" valign="middle">${row.faceValue}</td>
+                    <td width="69" align="center" valign="middle">${row.phone}</td>
+                    <td width="69" align="center" valign="middle">${row.resalerPrice?.formatCurrency('CNY').raw()}</td>
+                    <td width="81" align="center" valign="middle">${row.originalPrice?.formatCurrency('CNY').raw()}</td>
                     <td width="66" align="center" valign="middle">${row.buyNumber}</td>
                     <td align="center" valign="middle"> 
                            <div class="caozuo_std">${row.eCoupon?.eCouponSn}
                            </div>
                     </td>
                     #{if (++m == 1) }
-                        <td rowspan="${orderItems.size()}" align="center" valign="middle">${order.amount}<br/> (含运费)
+                        <td rowspan="${orderItems.size()}" align="center" valign="middle">0<br/> (含运费)
                         </td>
                         <td rowspan="${orderItems.size()}" align="center" valign="middle">
                         &{'order.'+order.status}

@@ -76,15 +76,15 @@ $(window).load(function () {
       <td width="77">订单状态：</td>
       <td width="353">
        <div class="pos_abs">
-        <select class="dingdan_status_bg" id="condition_status"name="condition.status">
-        <option value="">不限</option>
-        <option value="UNPAID" ${status?.toString()=='UNPAID'?'selected':''}>未支付</option>
-        <option value="PAID" ${status?.toString()=='PAID'?'selected':''}>已支付</option>
-        <option value="CANCELED" ${status?.toString()=='CANCELED'?'selected':''}>取消订单</option>
-        <option value="SENT" ${status?.toString()=='SENT'?'selected':''}>已发货</option>
-        <option value="RETURNED" ${status?.toString()=='RETURNED'?'selected':''}>退款</option>
-        <option value="RECEIPT" ${status?.toString()=='RECEIPT'?'selected':''}>确认收货</option>
-        </select>
+          #{select 'status', id:'status', class:'dingdan_stauts_bg', value:status}
+               #{option ""}不限#{/option}
+               #{option "UNPAID"}&{'order.UNPAID'}#{/option}
+               #{option "PAID"}&{'order.PAID'}#{/option}
+               #{option "CANCELED"}&{'order.CANCELED'}#{/option}
+               #{option "SENT"}&{'order.SENT'}#{/option}
+               #{option "RETURNED"}&{'order.RETURNED'}#{/option}
+               #{option "RECEIPT"}&{'order.RECEIPT'}#{/option}
+         #{/select}
        </div>
       </td>
      </tr>
@@ -133,10 +133,10 @@ $(window).load(function () {
        </div>
       </td>
       <td width="100" align="center">${rowItem.buyNumber}</td>
-      <td width="80" align="center">${rowItem.resalerPrice}</td>
+      <td width="80" align="center">${rowItem.resalerPrice?.formatCurrency('CNY').raw()}</td>
       <td width="78" align="center" >${rowItem.buyNumber}</td>
         #{if (++m == 1) }
-      <td width="88"align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
+      <td width="88"align="center" rowspan="${row.orderItems.size()}">${row.amount?.formatCurrency('CNY').raw()}</td>
       <td width="85" align="center" rowspan="${row.orderItems.size()}">
         &{'order.'+row.status}
       </td>

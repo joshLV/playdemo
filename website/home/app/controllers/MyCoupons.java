@@ -35,6 +35,10 @@ public class MyCoupons extends Controller {
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 		JPAExtPaginator<ECoupon> couponsList = ECoupon.userCouponsQuery(user, createdAtBegin, createdAtEnd, status, goodsName,pageNumber, PAGE_SIZE);
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的券订单", "/coupons");
+		renderArgs.put("createdAtBegin", createdAtBegin);
+		renderArgs.put("createdAtEnd", createdAtEnd);
+		renderArgs.put("status", status);
+		renderArgs.put("goodsName", goodsName);
 		render("MyCoupons/e_coupons.html", couponsList, breadcrumbs);
 	}
 

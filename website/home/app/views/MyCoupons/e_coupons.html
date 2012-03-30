@@ -235,27 +235,27 @@ $(window).load(function () {
       <td width="12">&nbsp;</td>
       <td width="61" align="right">成交时间：</td>
       <td width="259" height="35">
-      <input class="short_input Wdate" type="text" name="createdAtBegin" onfocus="WdatePicker({readOnly:true})" /> -
-     <input class="short_input Wdate" type="text" name="createdAtEnd" onfocus="WdatePicker({readOnly:true})" />
+      <input class="short_input Wdate" type="text" name="createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
+     <input class="short_input Wdate" type="text" name="createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
      </td>
       <td width="77">订单状态：</td>
       <td width="353">
        <div class="pos_abs">
-        <select class="dingdan_stauts_bg" name="status" >
-        <option value=""></option>
-        <option value="DEALING">处理中</option>
-        <option value="CONSUMED">已消费</option>
-        <option value="UNCONSUMED">未消费</option>
-        <option value="REFUND">已退款</option>
-        <option value="EXPIRED">已过期</option>
-        </select>
+        #{select 'status', id:'status', class:'dingdan_stauts_bg', value:status}
+               #{option ""}不限#{/option}
+               #{option "DEALING"}&{'coupon.DEALING'}#{/option}
+               #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
+               #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
+               #{option "REFUND"}&{'coupon.REFUND'}#{/option}
+               #{option "EXPIRED"}&{'coupon.EXPIRED'}#{/option}
+         #{/select}
        </div>
       </td>
      </tr>
      <tr>
       <td>&nbsp;</td>
       <td align="right">商品名称：</td>
-      <td height="35"><label> <input class="long_input" type="text" name="goodsName" id="textfield4" />
+      <td height="35"><label> <input class="long_input" type="text" name="goodsName" value="${goodsName}"/>
       </label></td>
       <td colspan="2" align="left" valign="middle"><a class="seach_bg" href="#" id="search">搜素</a></td>
      </tr>
@@ -277,7 +277,7 @@ $(window).load(function () {
       <td width="118" height="30" align="center">${coupon.eCouponSn}</td>
       <td width="100" height="31" align="center">${coupon.order.orderNumber}</td>
       <td width="177" align="center">${coupon.goods.name}</td>
-      <td width="177" align="center" id="price_${coupon.id}">${coupon.eCouponPrice}</td>
+      <td width="177" align="center" id="price_${coupon.id}">${coupon.eCouponPrice?.formatCurrency('CNY').raw()}</td>
       <td width="106" align="center">${coupon.createdAt}</td>
       <td width="123" align="center">${coupon.consumedAt}</td>
       <td width="95" align="center"><span id="status_apply_${coupon.id}">&{'coupon.'+coupon.status}</span></td>

@@ -56,12 +56,12 @@
                         <div class="col_one_text">${row.goods.name}</div>
                     </td>
                     <td width="69" align="center" valign="middle">&{'goods.'+row.goods.materialType}</td>
-                    <td width="81" align="center" valign="middle">${row.salePrice}</td>
+                    <td width="81" align="center" valign="middle">${row.salePrice?.formatCurrency('CNY').raw()}</td>
                     <td width="66" align="center" valign="middle">${row.buyNumber}</td>
                     <td width="118" align="center" valign="middle"><span
-                            class="strong_gray">劵号：${row.eCoupon==null ?'':row.eCoupon.eCouponSn}</span></td>
+                            class="strong_gray">${row.eCoupon?.eCouponSn}</span></td>
                     #{if (++m == 1) }
-                        <td rowspan="${orderItems.size()}" align="center" valign="middle">${order.amount}<br/> (含运费)
+                        <td rowspan="${orderItems.size()}" align="center" valign="middle">${order.amount?.formatCurrency('CNY').raw()}<br/> (含运费)
                         </td>
                         <td rowspan="${orderItems.size()}" align="center" valign="middle">
                         &{'order.'+order.status}
