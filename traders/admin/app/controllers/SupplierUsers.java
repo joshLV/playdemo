@@ -48,7 +48,7 @@ public class SupplierUsers extends Controller {
      */
     @ActiveNavigation("user_add")
     public static void add() {
-        List rolesList = SupplierRole.findNotAdmin();
+        List rolesList = SupplierRole.findRoleOrderById();
         render(rolesList);
     }
 
@@ -110,7 +110,7 @@ public class SupplierUsers extends Controller {
             }
         }
 
-        List rolesList = SupplierRole.findNotAdmin();
+        List rolesList = SupplierRole.findRoleOrderById();
         supplierUser.roles.addAll(rolesList);
 
         render(supplierUser, roleIds, rolesList);

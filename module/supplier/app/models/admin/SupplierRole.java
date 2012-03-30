@@ -52,8 +52,8 @@ public class SupplierRole extends Model {
      * 查询系统管理员以外的角色
      * @return
      */
-	public static List findNotAdmin() {
-		List rolesList = SupplierRole.find("key <> 'admin' order by id").fetch();
+	public static List findRoleOrderById() {
+		List rolesList = SupplierRole.find(" order by id").fetch();
 		return rolesList;
 	}
     
