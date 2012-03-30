@@ -8,7 +8,6 @@ import controllers.modules.cas.SecureCAS;
 import controllers.resaletrace.ResaleCAS;
 
 import models.accounts.Account;
-import models.accounts.AccountCondition;
 import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceCondition;
 import models.accounts.AccountSequenceFlag;
