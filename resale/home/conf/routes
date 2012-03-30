@@ -2,7 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 GET     /                                       ResalerGoods.index
-GET /  Application.index
+
 #注册
 GET     /register                               ResalerRegister.index
 POST    /register                               ResalerRegister.create
@@ -41,7 +41,7 @@ GET     /orders                                  ResalerOrders.index
 GET     /orders/{id}                             ResalerOrders.show
 GET     /payment/{id}                            ResalerOrders.pay
 
-GET     /account_seq                            ResalerAccounts.index                                 
+GET     /account_seq                            ResalerAccounts.index
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
