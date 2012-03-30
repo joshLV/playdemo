@@ -249,8 +249,10 @@ public class OperateGoods extends Controller {
 
         List<Supplier> supplierList = Supplier.findUnDeleted();
         Supplier supplier = goods.getSupplier();
-        if (DeletedStatus.DELETED.equals(supplier.deleted)) {
-            supplierList.add(supplier);
+        if (supplier != null) {
+            if (DeletedStatus.DELETED.equals(supplier.deleted)) {
+                supplierList.add(supplier);
+            }
         }
         renderArgs.put("supplierList", supplierList);
         renderInit(goods);
