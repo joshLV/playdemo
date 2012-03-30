@@ -7,7 +7,7 @@
 				<td width="30%">用户名：<input type="text" name="condition.loginName" class="input-medium"
 					value="${condition?.loginName}" /></td>
 				<td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态： 
-				#{select 'condition.status', id:ca,class:'input-small', value:'${condition?.status}'}
+				#{select 'condition.status', id:ca,class:'input-small', value:condition?.status}
 					#{option ""}不限#{/option} 
 					#{option "PENDING"}&{'resaler.PENDING'}#{/option} 
 					#{option "APPROVED"}&{'resaler.APPROVED'}
@@ -42,7 +42,7 @@
 				<td>${resaler.userName}</td>
 				<td>${resaler.mobile}</td>
 				<td>&{'resaler.'+resaler.status}</td>
-				<td>${resaler.createdAt?.format()}</td>
+				<td>${resaler.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
 				<td><a href="@{Resalers.detail(resaler.id)}">查看</a></td>
 			</tr>
 			#{/paginate.list}

@@ -14,6 +14,12 @@
             </div>
         </div>
         <div class="control-group">
+            <label class="control-label">分销商状态</label>
+
+            <div class="controls">&{'resaler.'+resaler?.status}
+            </div>
+        </div>
+        <div class="control-group">
             <label class="control-label">用户名</label>
 
             <div class="controls">${resaler?.loginName}
@@ -58,19 +64,29 @@
         <div class="control-group">
             <label class="control-label">会员级别</label>
             <div class="controls">
-            #{select 'resaler.level', value:resaler?.level,id:'level',class:'input-small'}
+            #{if !"APPROVED".equals(resaler?.status.toString())}
+                #{select 'resaler.level', value:resaler?.level,id:'level',class:'input-small'}
                     #{option "NORMAL"}&{'resaler.NORMAL'}#{/option} 
                     #{option "VIP1"}&{'resaler.VIP1'}#{/option} 
                     #{option "VIP2"}&{'resaler.VIP2'}#{/option} 
                     #{option "VIP3"}&{'resaler.VIP3'}#{/option} 
                 #{/select}
+            #{/if}
+            #{else}
+                 ${resaler?.level}
+            #{/else}
             </div>
         </div>
          <div class="control-group">
             <label class="control-label">备注</label>
             <div class="controls">
+            #{if !"APPROVED".equals(resaler?.status.toString())}
             <textarea rows="5" cols="8" name="remark" id="remark">${resaler?.remark}</textarea>
             <span class="error" id="checkRemark">#{error 'resaler.remark'/}</span>
+            #{/if}
+            #{else}
+                 ${resaler?.remark}
+            #{/else}
             </div>
         </div>
         </form>

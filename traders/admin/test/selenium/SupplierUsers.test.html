@@ -4,6 +4,7 @@
    #{include 'test/selenium/step/login.selenium' /}
    open('/users')
    assertTitle('操作员一览')
+   verifyTextNotPresent('admin')
 #{/selenium}
 
 #{selenium}
