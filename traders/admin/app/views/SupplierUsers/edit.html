@@ -18,7 +18,8 @@
   <div class="controls">
   #{list items:supplierUser.roles, as:'role'}
    <label class="checkbox inline">
-       <input type="checkbox" value="${role.id}" id="supplierUser.roles.id" name="supplierUser.roles.id" #{if roleIds?.contains(String.valueOf(role?.id))}checked#{/if}/> ${role.text}
+       <input type="checkbox" value="${role.id}" id="supplierUser.roles_${role.id}" 
+       name="supplierUser.roles.id" #{if roleIds?.contains(String.valueOf(role?.id))}checked#{/if}/> ${role.text}
      </label>
   #{/list}
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -50,5 +51,5 @@
   <button class="btn btn-primary" id="save" type="button">保 存</button>
   <button class="btn btn-primary" onclick="javascript:window.history.back(-1)" type="button">返回</button>
  </div>
- <input type="hidden" id="hiddenId" value="${supplierUser.id}"/>
+  <input type="hidden" id="hiddenId" value="${supplierUser.id}"/>
 #{/form}

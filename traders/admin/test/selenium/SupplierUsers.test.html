@@ -27,16 +27,16 @@
 #{selenium "edit user"}
    #{include 'test/selenium/step/login.selenium' /}
    open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-test")}/edit')
-   click('xpath=(//input[@id='supplierUser.roles.id'])[2]')
-   type('id=loginName','test')
-   type('id=mobile','13088092012')
+   click('id=supplierUser.roles_${play.test.Fixtures.idCache.get("models.admin.SupplierRole-sales")}')
+   type('id=loginName','test1')
+   type('id=mobile','13088092013')
    type('name=supplierUser.encryptedPassword','123')
    clickAndWait('id=save')
-   assertNotTitle('操作员编辑')
-   
    open('/users')
    assertTitle('操作员一览')
-   verifyTextPresent('test')
+   verifyText('//tr[3]/td','test1')
+   verifyText('//tr[3]/td[2]','[销售人员]')
+   verifyText('//tr[3]/td[3]','2012-03-12 00:00:00')
 #{/selenium}
 
 #{selenium "delete user"}

@@ -123,18 +123,20 @@ public class SupplierUser extends Model {
 	 * @param id    ID
 	 * @param user 用户信息
 	 */
-	public static void update(long id, SupplierUser user) {
+	public static void update(long id, SupplierUser supplierUser) {
 		SupplierUser updatedUser = SupplierUser.findById(id);
-		if (StringUtils.isNotEmpty(user.encryptedPassword) && !"******".equals(user.encryptedPassword) && !user.encryptedPassword.equals(DigestUtils.md5Hex(updatedUser.encryptedPassword))) {
+		if (StringUtils.isNotEmpty(supplierUser.encryptedPassword) && 
+				!"******".equals(supplierUser.encryptedPassword) && 
+				!supplierUser.encryptedPassword.equals(DigestUtils.md5Hex(updatedUser.encryptedPassword))) {
 			Images.Captcha captcha = Images.captcha();
 			String passwordSalt = captcha.getText(6);
 			//随机码
 			updatedUser.passwordSalt = passwordSalt;
-			updatedUser.encryptedPassword = DigestUtils.md5Hex(user.encryptedPassword + passwordSalt);
+			updatedUser.encryptedPassword = DigestUtils.md5Hex(supplierUser.encryptedPassword + passwordSalt);
 		}
-		updatedUser.roles = user.roles;
-		updatedUser.loginName = user.loginName;
-		updatedUser.mobile = user.mobile;
+		updatedUser.roles = supplierUser.roles;
+		updatedUser.loginName = supplierUser.loginName;
+		updatedUser.mobile = supplierUser.mobile;
 		updatedUser.lastLoginAt = new Date();
 		updatedUser.updatedAt = new Date();
 		//获得IP
@@ -156,6 +158,7 @@ public class SupplierUser extends Model {
 		List params = new ArrayList();
 		params.add(loginName);
 		params.add(new Supplier(supplierUserId));
+		System.out.println(">>>>>>>>>>>>>>>>>"+id);
 		if (id != null) {
 			sq.append("and id <> ?");
 			params.add(id);
