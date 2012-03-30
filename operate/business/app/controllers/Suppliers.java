@@ -64,7 +64,7 @@ public class Suppliers extends Controller {
 
         supplier.create();
         try {
-            uploadImagePath(image, supplier);
+            supplier.logo = uploadImagePath(image, supplier.id);
             supplier.save();
         } catch (IOException e) {
             error("supplier.image_upload_failed");
@@ -113,14 +113,20 @@ public class Suppliers extends Controller {
         }
     }
 
-    private static void uploadImagePath(File image, Supplier supplier) throws IOException {
-        if (image == null || image.getName() == null) {
-            return;
+    /**
+     * 上传图片
+     *
+     * @param uploadImageFile
+     * @param supplierId
+     */
+    private static String uploadImagePath(File uploadImageFile, Long supplierId) throws IOException {
+        if (uploadImageFile == null || uploadImageFile.getName() == null) {
+            return "";
         }
         //取得文件存储路径
 
-        String absolutePath = FileUploadUtil.storeImage(image, supplier.id, UploadFiles.ROOT_PATH);
-        supplier.logo = absolutePath.substring(UploadFiles.ROOT_PATH.length(), absolutePath.length());
+        String absolutePath = FileUploadUtil.storeImage(uploadImageFile, supplierId, UploadFiles.ROOT_PATH);
+        return absolutePath.substring(UploadFiles.ROOT_PATH.length(), absolutePath.length());
     }
 
     /**
@@ -147,7 +153,7 @@ public class Suppliers extends Controller {
             render("Suppliers/edit.html", id);
         }
         try {
-            uploadImagePath(image, supplier);
+            supplier.logo = uploadImagePath(image, id);
         } catch (IOException e) {
             error("supplier.image_upload_failed");
         }

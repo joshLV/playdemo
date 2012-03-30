@@ -1,6 +1,6 @@
 #{extends 'layout_operate/layout.html' /} #{set title:'分销商一览' /} #{include '/share/nav.html' /}
 <div class="body">
-	<legend>分销商一览</legend>
+	<legend>${title}</legend>
 	<form class="form-horizontal" name="frmlist" action="@{Resalers.index()}" method="GET">
 		<table width="100%">
 			<tr>

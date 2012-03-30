@@ -4,6 +4,7 @@
  */
 package controllers;
 
+import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
 import controllers.operate.cas.SecureCAS;
 import models.resale.ResalerLevel;
@@ -52,7 +53,7 @@ public class OperateGoods extends Controller {
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(true);
-        List<Supplier> supplierList = Supplier.findUnDeleted();
+        List<Supplier> supplierList = Supplier.findAll();
 
         renderArgs.put("condition", condition);
         render(goodsPage, supplierList);
@@ -63,6 +64,9 @@ public class OperateGoods extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void add() {
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+        renderArgs.put("supplierList", supplierList);
+
         renderInit(null);
         render();
     }
@@ -134,8 +138,6 @@ public class OperateGoods extends Controller {
         for (String key : validation.errorsMap().keySet()) {
             System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
         }
-        List<Supplier> supplierList = Supplier.findUnDeleted();
-        renderArgs.put("supplierList", supplierList);
         renderArgs.put("shopList", shopList);
         renderArgs.put("brandList", brandList);
         renderArgs.put("categoryList", categoryList);
@@ -244,6 +246,13 @@ public class OperateGoods extends Controller {
      */
     public static void edit(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
+
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+        Supplier supplier = goods.getSupplier();
+        if (DeletedStatus.DELETED.equals(supplier.deleted)) {
+            supplierList.add(supplier);
+        }
+        renderArgs.put("supplierList", supplierList);
         renderInit(goods);
         render(goods, id);
     }

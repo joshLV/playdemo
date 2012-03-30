@@ -30,7 +30,6 @@ $(function () {
                 var url = "/goods/"+checkedGoods.join(",")+"?x-http-method-override=DELETE";
                 $("#deletefrm").attr("method","POST") ;
                 $("#deletefrm").attr("action",url) ;
-                alert($("#deletefrm").attr("action"));
                 $("#deletefrm").submit();
             }
         }
