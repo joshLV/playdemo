@@ -3,6 +3,7 @@
 # ~~~~
 
 # Home page
+GET     /                                       OperateGoods.index
 GET     /goods                                  OperateGoods.index
 GET     /goods/new                              OperateGoods.add
 POST    /goods                                  OperateGoods.create
