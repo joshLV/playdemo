@@ -50,10 +50,10 @@
             </tr>
         </table>
     </form>
-    <form class="form-horizontal" name="deletefrm" id="deletefrm" >
+    <form class="form-horizontal" name="deletefrm" id="deletefrm">
         <div style="margin-bottom: 12px">
             <button class="btn btn-primary" id="onsales" type="button">同意上架</button>
-            *{<button class="btn btn-primary" id="offsales" type="button">批量下架</button>}*
+        *{<button class="btn btn-primary" id="offsales" type="button">批量下架</button>}*
             <button class="btn btn-primary" id="deletebtn" type="button">删除</button>
         </div>
 
@@ -110,7 +110,8 @@
                         <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods.id+"/onSale",method:"PUT"/}#{/if}
                 </td>
                 <td><a href="@{OperateGoods.edit(goods.id)}">修改</a> /
-                    <a href="@{OperateGoods.show(goods.id)}">查看</a></td>
+                    <a href="@{OperateGoods.show(goods.id)}">查看</a> /
+                    #{vx.deleteLink action:"goods", id:goods.id, name:goods.name/}</td>
             </tr>
             #{/paginate.list}
             </tbody>

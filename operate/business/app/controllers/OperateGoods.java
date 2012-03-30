@@ -146,11 +146,6 @@ public class OperateGoods extends Controller {
         renderArgs.put("shopIds", shopIds);
     }
 
-    private static Long getSupplierId() {
-        //todo
-        return 1l;
-    }
-
     /**
      * 展示添加商品页面
      */
@@ -167,7 +162,7 @@ public class OperateGoods extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void create(@Valid models.sales.Goods goods, @Required File imagePath, BigDecimal[] levelPrices) {
-        Long supplierId = getSupplierId();
+        Long supplierId = OperateRbac.currentUser().id;
 
         checkImageFile(imagePath);
 
@@ -309,13 +304,6 @@ public class OperateGoods extends Controller {
      * @param id 商品ID
      */
     public static void onSale(@As(",") Long... id) {
-        String[] ids = params.getAll("id");
-        for (String i : ids) {
-            System.out.println("onSale      i:" + i);
-        }
-        System.out.println("onsale");
-        System.out.println("id:" + id);
-        //更新处理
         updateStatus(GoodsStatus.ONSALE, id);
     }
 
@@ -325,9 +313,6 @@ public class OperateGoods extends Controller {
      * @param id 商品ID
      */
     public static void offSale(@As(",") Long... id) {
-        System.out.println("offsale");
-        System.out.println("id:" + id);
-        //更新处理
         updateStatus(GoodsStatus.OFFSALE, id);
     }
 
@@ -337,7 +322,6 @@ public class OperateGoods extends Controller {
      * @param id 商品ID
      */
     public static void reject(@As(",") Long... id) {
-        //更新处理
         updateStatus(GoodsStatus.REJECT, id);
     }
 
@@ -348,7 +332,6 @@ public class OperateGoods extends Controller {
      * @param ids    商品ID
      */
     private static void updateStatus(GoodsStatus status, Long... ids) {
-        //更新处理
         models.sales.Goods.updateStatus(status, ids);
 
         index(null);

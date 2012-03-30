@@ -1,31 +1,23 @@
 package function;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.supplier.cas.Security;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
-import models.sales.Area;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.GoodsStatus;
-import models.sales.Shop;
+import models.sales.*;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import play.Play;
 import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import com.uhuila.common.constants.DeletedStatus;
-import controllers.supplier.cas.Security;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SupplierGoodsTest extends FunctionalTest {
 
@@ -71,7 +63,7 @@ public class SupplierGoodsTest extends FunctionalTest {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
                 ".Goods-Goods_001");
 
-        Http.Response response = GET("/goods/" + goodsId + "/view");
+        Http.Response response = GET("/goods/" + goodsId);
         assertIsOk(response);
         assertContentType("text/html", response);
     }
@@ -131,8 +123,8 @@ public class SupplierGoodsTest extends FunctionalTest {
                 ".Goods-Goods_003");
         Map<String, Long[]> goodsParams = new HashMap<>();
         Long[] ids = new Long[]{goodsId};
-        goodsParams.put("ids", ids);
-        Response response = DELETE("/goods/0?ids[]=" + goodsId);
+        goodsParams.put("id", ids);
+        Response response = DELETE("/goods/" + goodsId);
         assertStatus(302, response);
         Goods goods = Goods.findById(goodsId);
         Assert.assertEquals(DeletedStatus.DELETED, goods.deleted);

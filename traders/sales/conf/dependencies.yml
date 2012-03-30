@@ -6,6 +6,7 @@ require:
     - play -> paginate head
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - layout_trader -> layout_trader
+    - view_ext -> view_ext
     - commons-lang -> commons-lang 2.6
     - sales -> sales
     - supplier -> supplier
@@ -36,6 +37,7 @@ repositories:
         artifact:   "${application.path}/../../module/[module]"
         contains:
             - layout_trader -> *
+            - view_ext -> *
             - sales -> *
             - resale -> *
             - supplier -> *

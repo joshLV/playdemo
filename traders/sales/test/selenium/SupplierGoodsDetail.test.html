@@ -14,7 +14,7 @@
 
 #{selenium '查看电子消费券'}
     #{include 'test/selenium/step/login.selenium' /}
-    open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods1")}/view')
+    open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods1")}')
     verifyTitle('查看电子消费券')
     verifyTextPresent('测试商品1')
 #{/selenium}

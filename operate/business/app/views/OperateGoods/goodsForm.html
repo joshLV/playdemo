@@ -7,18 +7,6 @@
         #{option supplier.id}${supplier.fullName}#{/option}
     #{/list}
 #{/layout_operate.selectField}
-*{<div class="control-group">}*
-*{<label class="control-label"><span style="color: red; ">*</span>商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户</label>}*
-
-*{<div class="controls">}*
-*{#{select 'goods.supplierId',value:supplierId, id:'supplierId', class:'input-small'}}*
-*{#{list items:supplierList, as:'supplier' }}*
-*{#{option supplier.id}${supplier.fullName}#{/option}}*
-*{#{/list}}*
-*{#{/select}}*
-*{<span class="error">#{error 'goods.supplierId'/}</span>}*
-*{</div>}*
-*{</div>}*
 <div class="control-group">
     <label class="control-label"><span style="color: red; ">*</span>商品分类</label>
 

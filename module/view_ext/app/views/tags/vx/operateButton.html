@@ -1,0 +1,11 @@
+*{操作单个对象的链接的标签}*
+*{url:  操作链接}*
+*{text:    操作的文本名称}*
+*{class:   css的class（选填）}*
+*{method:  PUT/DELETE/POST}*
+#{field _name?:"operate"}
+<button id="${field?.id}" class="${_class}"
+        onclick="var f = $('#${_form}');f.attr('method','POST'); f.attr('action',
+                '${_url}?x-http-method-override=${_method}');
+                f.submit();">${_text}</button>
+#{/field}

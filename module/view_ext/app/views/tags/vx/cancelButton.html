@@ -1,0 +1,11 @@
+*{返回按钮}*
+*{url: 取消按钮返回的链接}*
+*{class:   css的class（选填）}*
+<button class="${_class}" id="cancel" type="button">取消</button>
+<SCRIPT type=text/javascript>
+    $(function () {
+        $("#cancel").click(function () {
+            $(location).attr('href', '${_url}');
+        });
+    });
+</SCRIPT>

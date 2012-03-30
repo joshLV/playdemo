@@ -17,6 +17,8 @@
                 <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
                 #{select 'condition.status', id:ca, class:'input-small', value:condition?.status}
                     #{option ""}不限#{/option}
+                    #{option "APPLY"}&{'goods.APPLY'}#{/option}
+                    #{option "REJECT"}&{'goods.REJECT'}#{/option}
                     #{option "ONSALE"}&{'goods.ONSALE'}#{/option}
                     #{option "OFFSALE"}&{'goods.OFFSALE'}#{/option}
                 #{/select}</td>
@@ -41,7 +43,6 @@
         </table>
     </form>
     <form class="form-horizontal" name="deletefrm" id="deletefrm" action="" method="post">
-          method="post">
         <input type="hidden" id="status" name="status" value="0"/>
 
         <div style="margin-bottom: 12px">
@@ -76,7 +77,7 @@
 
             #{paginate.list items:goodsPage, as:'goods'}
             <tr>
-                <td><input type="checkbox" id="checkoption" value="${goods.id}" name="ids[]"/></td>
+                <td><input type="checkbox" id="checkoption" value="${goods.id}" name="id"/></td>
                 <td>${goods.no}</td>
                 <td><a href="http://www.uhuila.cn/goods/${goods.id}?preview=true"><img src="${goods
                 .imageTinyPath}"/>${goods
@@ -100,7 +101,9 @@
                 </td>
                 <td>#{if !models.sales.GoodsStatus.ONSALE.equals(goods.status)}<a href="@{SupplierGoods.edit(goods
                 .id)}">修改</a> /#{/if}
-                    <a href="@{SupplierGoods.detail(goods.id)}">查看</a></td>
+                    <a href="@{SupplierGoods.show(goods.id)}">查看</a> /
+                    #{vx.deleteLink action:"goods", id:goods.id, name:goods.name/}
+                </td>
             </tr>
             #{/paginate.list}
             </tbody>

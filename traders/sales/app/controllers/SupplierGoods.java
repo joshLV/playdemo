@@ -10,6 +10,7 @@ import models.resale.ResalerLevel;
 import models.sales.*;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.data.binding.As;
 import play.data.validation.Required;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
@@ -241,9 +242,9 @@ public class SupplierGoods extends Controller {
     /**
      * 取得指定商品信息
      */
-    public static void detail(Long id) {
+    public static void show(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
-        renderTemplate("SupplierGoods/detail.html", goods);
+        renderTemplate("SupplierGoods/show.html", goods);
     }
 
     /**
@@ -271,6 +272,7 @@ public class SupplierGoods extends Controller {
         } catch (IOException e) {
             error("goods.image_upload_failed");
         }
+
         goods.updatedBy = supplierUser;
         Goods.update(id, goods);
 
@@ -281,21 +283,40 @@ public class SupplierGoods extends Controller {
         index(null);
     }
 
-    public static void apply(Long... ids) {
-        updateStatus(GoodsStatus.APPLY, ids);
+    /**
+     * 申请上架商品.
+     *
+     * @param id 商品ID
+     */
+    public static void apply(@As(",") Long... id) {
+        updateStatus(GoodsStatus.APPLY, id);
     }
 
+    /**
+     * 下架商品.
+     *
+     * @param id 商品ID
+     */
+    public static void offSale(@As(",") Long... id) {
+        updateStatus(GoodsStatus.OFFSALE, id);
+    }
 
-    public static void cancelApply(Long... ids) {
-        //更新处理
-        updateStatus(GoodsStatus.OFFSALE, ids);
+    /**
+     * 撤销上架申请.
+     *
+     * @param id 商品ID
+     */
+    public static void cancelApply(@As(",") Long... id) {
+        updateStatus(GoodsStatus.OFFSALE, id);
     }
 
     /**
      * 上下架指定商品
+     *
+     * @param status 商品状态
+     * @param ids    商品ID
      */
     private static void updateStatus(GoodsStatus status, Long... ids) {
-        //更新处理
         models.sales.Goods.updateStatus(status, ids);
 
         index(null);
@@ -303,9 +324,11 @@ public class SupplierGoods extends Controller {
 
     /**
      * 删除指定商品
+     *
+     * @param id 商品ID
      */
-    public static void delete(Long... ids) {
-        models.sales.Goods.delete(ids);
+    public static void delete(@As(",") Long... id) {
+        models.sales.Goods.delete(id);
 
         index(null);
     }

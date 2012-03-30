@@ -3,11 +3,12 @@
 # ~~~~
 
 # Home page
+GET     /                                       SupplierGoods.index
 GET     /goods                                  SupplierGoods.index
 GET     /goods/new                              SupplierGoods.add
 POST    /goods                                  SupplierGoods.create
 GET     /goods/{id}/edit                        SupplierGoods.edit
-GET     /goods/{id}/view                        SupplierGoods.detail
+GET     /goods/{id}                             SupplierGoods.show
 GET     /goods/{id}/preview                     SupplierGoods.preview
 PUT     /goods/{id}                             SupplierGoods.update
 PUT     /goods/{id}/apply                       SupplierGoods.apply

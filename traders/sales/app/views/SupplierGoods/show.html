@@ -2,7 +2,7 @@
 #{set title:'查看电子消费券' /}
 #{include '/share/nav.html' /}
 <div class="body">
-    <form class="form-horizontal" name="frm" action="" method="post">
+    <form class="form-horizontal" name="frm" id="frm" method="post">
         <legend>查看电子消费券</legend>
         <div class="control-group">
             <label class="control-label">商品类型</label>
@@ -91,6 +91,7 @@
 
             <div class="controls">
                 <table class="table table-striped table-bordered table-condensed">
+                ${goods?.isAllShop.yesno("全部门店","")}
                 #{list items:shops, as:'shop' }
                     <tr>
                         <td><input type="checkbox" id="checkoption" value="${shop?.id}"/></td>
@@ -102,8 +103,23 @@
                 </table>
             </div>
         </div>
+        <div class="control-group">
+            <label class="control-label">商品状态</label>
+
+            <div class="controls">&{'goods.'+goods.status}
+            </div>
+        </div>
         <div class="form-actions">
-            <button class="btn btn-primary" onclick="javascript:window.history.back(-1)" type="button">返回</button>
+        #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status)}<br/>
+            #{vx.operateButton text:"申请上架",form:'frm', url:"/goods/"+goods.id+"/apply", method:"PUT",
+            class:"btn btn-primary" /}#{/if}
+        #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}<br/>
+            #{vx.operateButton text:"下架",form:'frm', url:"/goods/"+goods.id+"/offSale", method:"PUT",
+            class:"btn btn-primary" /}#{/if}
+        #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}<br/>
+            #{vx.operateButton text:"撤销申请",form:'frm', url:"/goods/"+goods.id+"/cancelApply", method:"PUT",
+            class:"btn btn-primary" /}#{/if}
+        #{vx.cancelButton url:'/goods', class:'btn btn-primary'/}
         </div>
     </form>
 </div>
