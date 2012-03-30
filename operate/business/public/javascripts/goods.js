@@ -4,6 +4,10 @@
  * Date: 3/15/12
  * Time: 5:41 PM
  */
+function changeList(status){
+    $("#condition_status").val(status);
+    $("#frmlist").submit();
+}
 $(function () {
     $("#selectall").click(function () {
         if (this.checked) {
