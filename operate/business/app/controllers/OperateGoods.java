@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.math.BigDecimal.*;
+
 /**
  * 通用说明：
  *
@@ -82,7 +84,7 @@ public class OperateGoods extends Controller {
             goods = new models.sales.Goods();
             BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
             for (BigDecimal levelPrice : levelPrices) {
-                levelPrice = BigDecimal.ZERO;
+                levelPrice = ZERO;
             }
             renderArgs.put("levelPrices", levelPrices);
         }
@@ -90,7 +92,7 @@ public class OperateGoods extends Controller {
         for (int i = 0; i < levelPrices.length; i++) {
             GoodsLevelPrice levelPrice = goods.getLevelPrices().get(i);
             if (levelPrice == null) {
-                levelPrices[i] = BigDecimal.ZERO;
+                levelPrices[i] = ZERO;
             } else {
                 levelPrices[i] = levelPrice.price;
             }
