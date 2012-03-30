@@ -1,0 +1,67 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+test_passed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+PASSED/
+test_failed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+FAILED/
+
+dir = ARGV[0]
+
+if ARGV.size() < 1
+  puts "需要指定目标路径！"
+  exit(1)
+end
+
+require 'pathname'
+current_dir = Pathname.new(File.dirname(__FILE__)).parent.realpath
+
+puts current_dir
+failed_result = []
+
+passed_hash = Hash.new(0)
+failed_hash = Hash.new(0)
+
+# Dir.chdir("#{current_dir}/#{dir}")
+cmd =<<END
+        cd #{current_dir}/#{dir}
+        play clean;
+        play auto-test --deps
+END
+IO.popen(cmd) { |output|
+  output.each_line { |line|
+    if line =~ test_passed_regex
+      passed_hash[dir] += 1
+    end
+    if line =~ test_failed_regex
+      failed_hash[dir] += 1
+      failed_result << "#{dir}: #{line}"
+    end
+    puts "#{line}"
+  }
+}
+
+printf("=================== %s ====================\n", "Test Report")
+printf("| %-30s | PASSED | FAILED |\n", "Project")
+printf("----------------------------------------------------\n")
+printf("| %-30s | %6d | %6d |\n", dir, passed_hash[dir], failed_hash[dir])
+printf("----------------------------------------------------\n")
+
+unless failed_result.empty?
+  puts "Play Test Failed!"
+  failed_result.each {|line| puts "    " + line}
+  exit(1)
+end
+
+# package
+cmd =<<END
+  cd #{current_dir}/#{dir}
+  find . -name "[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*" -exec rm '{}' \;
+  play clean
+  play deps --forProd --forceCopy --%prod
+END
+IO.popen(cmd) { |output|
+  output.each_line { |line|
+    puts "#{line}"
+  }
+}
+
+puts "BUILD SUCCESS!"
