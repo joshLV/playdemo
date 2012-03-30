@@ -27,16 +27,21 @@
 
 #{selenium "edit user"}
    #{include 'test/selenium/step/login.selenium' /}
+   open('/users')
+   assertTitle('操作员一览')
+   verifyText('//tr[3]/td','test')
+   verifyText('//tr[3]/td[2]','[测试角色]')
+
    open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-test")}/edit')
    click('id=supplierUser.roles_${play.test.Fixtures.idCache.get("models.admin.SupplierRole-sales")}')
-   type('id=loginName','test1')
+   type('id=loginName','test')
    type('id=mobile','13088092013')
    type('name=supplierUser.encryptedPassword','123')
    clickAndWait('id=save')
    open('/users')
    assertTitle('操作员一览')
-   verifyText('//tr[3]/td','test1')
-   verifyText('//tr[3]/td[2]','[销售人员]')
+   verifyText('//tr[3]/td','test')
+   verifyText('//tr[3]/td[2]','[销售人员, 测试角色]')
    verifyText('//tr[3]/td[3]','2012-03-12 00:00:00')
 #{/selenium}
 
@@ -47,7 +52,7 @@
   verifyTextPresent('test_delete_user')
   clickAndWait('id=del_${play.test.Fixtures.idCache.get("models.admin.SupplierUser-deleteuser")}')
   assertConfirmation('确定删除吗？')
-  
+
   verifyTextPresent('操作员一览')
   verifyTextNotPresent('test_delete_user')
 #{/selenium}
