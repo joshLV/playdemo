@@ -80,16 +80,16 @@ public class SupplierGoods extends Controller {
             }
             renderArgs.put("levelPrices", levelPrices);
         }
-        BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
-        for (int i = 0; i < levelPrices.length; i++) {
-            GoodsLevelPrice levelPrice = goods.getLevelPrices().get(i);
-            if (levelPrice == null) {
-                levelPrices[i] = BigDecimal.ZERO;
-            } else {
-                levelPrices[i] = levelPrice.price;
-            }
-        }
-        renderArgs.put("levelPrices", levelPrices);
+//        BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
+//        for (int i = 0; i < levelPrices.length; i++) {
+//            GoodsLevelPrice levelPrice = goods.getLevelPrices().get(i);
+//            if (levelPrice == null) {
+//                levelPrices[i] = BigDecimal.ZERO;
+//            } else {
+//                levelPrices[i] = levelPrice.price;
+//            }
+//        }
+//        renderArgs.put("levelPrices", levelPrices);
         if (goods.isAllShop != null) {
             if (goods.isAllShop && goods.shops != null) {
                 goods.shops = null;

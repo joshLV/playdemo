@@ -75,7 +75,6 @@ public class Goods extends Model {
     /**
      * 运营人员填写的优惠啦网站价格
      */
-    @Required
     @Min(value = 0.01)
     @Column(name = "sale_price")
     public BigDecimal salePrice;

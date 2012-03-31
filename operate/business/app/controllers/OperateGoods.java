@@ -168,6 +168,8 @@ public class OperateGoods extends Controller {
         checkImageFile(imagePath);
 
         goods.setLevelPrices(levelPrices);
+
+        checkSalePrice(goods);
         if (Validation.hasErrors()) {
             List<Supplier> supplierList = Supplier.findUnDeleted();
             renderArgs.put("supplierList", supplierList);
@@ -193,6 +195,15 @@ public class OperateGoods extends Controller {
             redirect("http://www.uhuila.cn/goods/" + goods.id + "?preview=true");
         }
         index(null);
+    }
+
+    private static void checkSalePrice(Goods goods) {
+        if (goods.salePrice == null) {
+            Validation.addError("goods.salePrice", "validation.required");
+        }
+        if (goods.salePrice.compareTo(new BigDecimal(0.01)) < 0) {
+            Validation.addError("goods.salePrice", "validation.min", "0.01");
+        }
     }
 
     private static void checkImageFile(File imagePath) {
@@ -274,6 +285,7 @@ public class OperateGoods extends Controller {
         checkImageFile(imagePath);
 
         goods.setLevelPrices(levelPrices);
+        checkSalePrice(goods);
         if (Validation.hasErrors()) {
             renderInit(goods);
             render("OperateGoods/edit.html", goods);

@@ -64,19 +64,19 @@
             <thead>
             <tr>
                 <th><input type="checkbox" id="selectall" name="selectall">全选</th>
-                <th>商户</th>
-                <th>商品编号</th>
-                <th>商品名称</th>
-                <th>原价</th>
-                <th>进价</th>
-                <th>现价</th>
+                <th>&{'goods.supplierId'}</th>
+                <th>&{'goods.no'}</th>
+                <th>&{'goods.name'}</th>
+                <th>&{'goods.faceValue'}</th>
+                <th>&{'goods.originalPrice'}</th>
+                <th>&{'goods.salePrice'}</th>
             #{list items:models.resale.ResalerLevel.values(), as: 'level'}
                 <th>&{'goods.levelPrice.'+level}</th>
             #{/list}
-                <th>库存(件)</th>
-                <th>销量(件)</th>
-                <th>创建时间</th>
-                <th>状态</th>
+                <th>&{'goods.baseSale'}(件)</th>
+                <th>&{'goods.saleCount'}(件)</th>
+                <th>&{'goods.createdAt'}</th>
+                <th>&{'goods.status'}</th>
                 <th>操 作</th>
             </tr>
             </thead>
@@ -91,9 +91,9 @@
                 <td><a href="http://www.uhuila.cn/goods/${goods.id}?preview=true"><img src="${goods
                 .imageTinyPath}"/>${goods
                 .name}</a></td>
-                <td class="amount">${goods.faceValue?.formatCurrency('CNY').raw()}</td>
-                <td class="amount">${goods.originalPrice?.formatCurrency('CNY').raw()}</td>
-                <td class="amount">${goods.salePrice?.formatCurrency('CNY').raw()}</td>
+                <td class="amount">${goods.faceValue?.formatCurrency('CNY')}</td>
+                <td class="amount">${goods.originalPrice?.formatCurrency('CNY')}</td>
+                <td class="amount">${goods.salePrice?.formatCurrency('CNY')}</td>
                 #{list items:goods.getLevelPrices(), as: 'level'}
                     <td class="amount">${level.price?.formatCurrency('CNY').raw()?:0}</td>
                 #{/list}
