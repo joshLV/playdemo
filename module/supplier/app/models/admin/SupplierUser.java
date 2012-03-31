@@ -68,6 +68,9 @@ public class SupplierUser extends Model {
 	@Column(name = "updated_at")
 	public Date updatedAt;
 
+	@Column(name = "user_name")
+	public String userName;
+	
 	@ManyToOne
 	@JoinColumn(name="supplier_id")
 	public Supplier supplier;
@@ -143,6 +146,7 @@ public class SupplierUser extends Model {
 		}
 		updatedUser.roles = supplierUser.roles;
 		updatedUser.loginName = supplierUser.loginName;
+		updatedUser.userName = supplierUser.userName;
 		updatedUser.mobile = supplierUser.mobile;
 		updatedUser.lastLoginAt = new Date();
 		updatedUser.updatedAt = new Date();

@@ -60,6 +60,9 @@ public class OperateUser extends Model {
 	@Column(name = "updated_at")
 	public Date updatedAt;
 
+	@Column(name = "user_name")
+	public String userName;
+	
 	/**
 	 * 逻辑删除,0:未删除，1:已删除
 	 */
@@ -70,7 +73,7 @@ public class OperateUser extends Model {
 	@JoinTable(name = "operate_users_roles",
 	inverseJoinColumns = @JoinColumn(name = "role_id"),
 	joinColumns = @JoinColumn(name = "user_id"))
-	public Set<OperateRole> roles;
+	public List<OperateRole> roles;
 
 	@ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	@JoinTable(name = "operate_permissions_users",
@@ -115,7 +118,9 @@ public class OperateUser extends Model {
 	 */
 	public static void update(long id, OperateUser user) {
 		OperateUser updatedUser = OperateUser.findById(id);
-		if (StringUtils.isNotEmpty(user.encryptedPassword) && !user.encryptedPassword.equals(DigestUtils.md5Hex(updatedUser.encryptedPassword))) {
+		if (StringUtils.isNotEmpty(user.encryptedPassword) && 
+				!"******".equals(user.encryptedPassword) && 
+				!user.encryptedPassword.equals(DigestUtils.md5Hex(updatedUser.encryptedPassword))) {
 			Images.Captcha captcha = Images.captcha();
 			String passwordSalt = captcha.getText(6);
 			//随机码
@@ -123,9 +128,11 @@ public class OperateUser extends Model {
 			updatedUser.encryptedPassword = DigestUtils.md5Hex(user.encryptedPassword + passwordSalt);
 		}
 		updatedUser.loginName = user.loginName;
+		updatedUser.userName = user.userName;
 		updatedUser.mobile = user.mobile;
 		updatedUser.lastLoginAt = new Date();
 		updatedUser.updatedAt = new Date();
+		updatedUser.roles = user.roles;
 		//获得IP
 		updatedUser.lastLoginIP = Request.current().remoteAddress;
 

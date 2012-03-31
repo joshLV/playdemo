@@ -14,7 +14,7 @@
 #{form @OperateUsers.index() , id:'operForm',class:"form-horizontal" }
 <table class="table table-striped table-bordered table-condensed">
     <tr>
-        <td>用户名<input type="text" name="loginName" class="input-large"/>
+        <td>用户名<input type="text" name="loginName" value="${loginName}" class="input-large"/>
             <button class="btn btn-primary" type="submit">搜索</button>
             <a href="@{OperateUsers.add()}" class="btn btn-primary">添加操作员</a>
         </td>
@@ -39,8 +39,8 @@
     <tr>
         <td>${row.loginName}</td>
         <td>${row.roles.text ==[] ?'':row.roles.text}</td>
-        <td>${row.createdAt == null ? '':row.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
-        <td>${row.lastLoginAt == null ? '':row.lastLoginAt.format("yyyy-MM-dd HH:mm:ss")}</td>
+        <td>${row.createdAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
+        <td>${row.lastLoginAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
         <td>
             <a href="@{OperateUsers.edit(row.id)}">修改</a> /
             <a href="/users/${row.id}" id="del_${row.id}"

@@ -1,12 +1,15 @@
 package controllers;
 
-import com.uhuila.common.constants.DeletedStatus;
-import controllers.operate.cas.SecureCAS;
+import java.util.Date;
+import java.util.List;
+
 import models.admin.OperateRole;
 import models.admin.OperateUser;
 import operate.rbac.annotations.ActiveNavigation;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.libs.Images;
@@ -14,8 +17,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.util.Date;
-import java.util.List;
+import com.uhuila.common.constants.DeletedStatus;
 
 /**
  * 操作员CRUD
@@ -24,7 +26,7 @@ import java.util.List;
  *
  */
 
-@With({SecureCAS.class, OperateRbac.class })
+@With({OperateRbac.class })
 @ActiveNavigation("user_search")
 public class OperateUsers extends Controller {
     public static int PAGE_SIZE = 15;
@@ -40,7 +42,7 @@ public class OperateUsers extends Controller {
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<OperateUser> supplierUsersPage = OperateUser.getSupplierUserList(
                 loginName, pageNumber, PAGE_SIZE);
-        render(supplierUsersPage);
+        render(supplierUsersPage,loginName);
     }
 
     /**
