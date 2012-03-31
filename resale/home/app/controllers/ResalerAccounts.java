@@ -37,14 +37,18 @@ public class ResalerAccounts extends Controller{
 
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        String interval = request.params.get("interval");
+        renderArgs.put("interval", interval);
 
         if (condition == null) {
             condition = new AccountSequenceCondition();
+        }else{
+            renderArgs.put("createdAtBegin", condition.createdAtBegin);
+            renderArgs.put("createdAtEnd", condition.createdAtEnd);
         }
         condition.account = account;
         JPAExtPaginator<AccountSequence> seqs = AccountSequence.findByAccount(condition,
                 pageNumber, PAGE_SIZE);
-        renderArgs.put("condition", condition);
 
         
         Map<AccountSequenceFlag, Object[]> summaryReport = AccountSequence.summaryReport(account);
