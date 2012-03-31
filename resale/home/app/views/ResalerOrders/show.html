@@ -64,7 +64,7 @@
                            </div>
                     </td>
                     #{if (++m == 1) }
-                        <td rowspan="${orderItems.size()}" align="center" valign="middle">0<br/> (含运费)
+                        <td rowspan="${orderItems.size()}" align="center" valign="middle">${order.amount?.formatCurrency('CNY').raw()}<br/> (含运费)
                         </td>
                         <td rowspan="${orderItems.size()}" align="center" valign="middle">
                         &{'order.'+order.status}
