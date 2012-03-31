@@ -42,8 +42,8 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 #{else}
     #{layout_operate.fileField name:'imagePath'/}
 #{/else}
-#{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/image'/}
-#{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/image', required:true/}
+#{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images'/}
+#{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}
 #{layout_operate.radioField name:'goods.isAllShop', value:goods?.isAllShop, required:true/}
 <div class="control-group">
     <label class="control-label"></label>
