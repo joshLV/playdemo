@@ -46,7 +46,7 @@ $(window).load(function () {
    <div id="wrap_top_header_left">
     <img src="@{'/public/images/logo.jpg'}" />
    </div>
-   <div id="wrap_top_middle">卷生活-惠生活</div>
+   <div id="wrap_top_middle">券生活-惠生活</div>
    <div style="clear: both"></div>
      <div class="nav_hengfu">
          <ul class="nav_bg_ul">
@@ -146,14 +146,14 @@ $(window).load(function () {
         <a class="font_red_one" href="@{ResalerOrders.pay(row.id)}">付款</a>
        </div>
        #{/if}
-     *{ #{if (row.status == models.order.OrderStatus.PAID 
+     *{ #{if (row.status == models.order.OrderStatus.PAID
       || row.status == models.order.OrderStatus.RECEIPT) && rowItem.goods.materialType.toString().equals('REAL')}
      <div class="caozuo_std">
         <a class="font_red_one" href="/orders/refund/${row.id}"  id="apply_${row.id}">申请退款</a>
        </div>
       #{/if}
       }*
-      
+
        <div class="caozuo_std">
         <a class="font_blue" href="@{ResalerOrders.show(row.id)}">查看详情</a>
        </div>

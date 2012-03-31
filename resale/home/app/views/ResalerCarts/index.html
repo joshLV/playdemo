@@ -13,7 +13,7 @@
     </div>
     <div id="wrap_top_header">
         <div id="wrap_top_header_left"><img src="@{'/public/images/logo.jpg'}"/></div>
-        <div id="wrap_top_middle">卷生活-惠生活</div>
+        <div id="wrap_top_middle">券生活-惠生活</div>
 
     </div>
     <div style="clear:both"></div>
@@ -77,14 +77,14 @@
                                         <textarea name="phones" cols="20" rows="10"></textarea>
                                     </td>
                                     <td>同一个商品，不同的收货人。例：<br/>13472228877<br/>13477778888<br/>
-                        
+
                             <span style="color:red">${errorMsg}<br/>
                                 #{if invalidPhones}
                                 #{list items:invalidPhones , as: 'invalidPhone'}
                                 ${invalidPhone}<br/>
                                 #{/list}
                                 #{/if}
-                            
+
                             </span>
                         </td>
                         </tr>
@@ -196,7 +196,7 @@
     </table>
 </div>
 <div id="gouwucar_buttom_info">
-    
+
     <div class="both_clear"></div>
     <div class="bottom_info_three">商品共<span class="font_red_one" id="total_num">0</span>件，总合计（不含运费）：<span
             class="font_red_one" id="carts_amount"></span>元</div>
