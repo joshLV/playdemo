@@ -164,18 +164,18 @@ public class OperateGoods extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void create(@Valid models.sales.Goods goods, @Required File imagePath, BigDecimal[] levelPrices) {
-        Long supplierId = OperateRbac.currentUser().id;
 
         checkImageFile(imagePath);
 
         goods.setLevelPrices(levelPrices);
         if (Validation.hasErrors()) {
+            List<Supplier> supplierList = Supplier.findUnDeleted();
+            renderArgs.put("supplierList", supplierList);
             renderInit(goods);
             render("OperateGoods/add.html");
         }
 
         //添加商品处理
-        goods.supplierId = supplierId;
         goods.createdBy = OperateRbac.currentUser().loginName;
         goods.materialType = MaterialType.ELECTRONIC;
 
