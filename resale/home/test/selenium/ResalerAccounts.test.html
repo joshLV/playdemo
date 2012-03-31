@@ -1,0 +1,24 @@
+#{fixture delete:'all', load:['fixture/resaler.yml', 'fixture/account_sequence.yml'] /}
+
+%{
+
+    id = play.test.Fixtures.idCache.get("models.resale.Resaler-Resaler_1")
+    account = models.accounts.util.AccountUtil.getAccount(id, models.accounts.AccountType.RESALER)
+
+    accountSequences = models.accounts.AccountSequence.findAll()
+    accountSequences.each{
+        it.account = account
+        it.save()
+    }
+}%
+
+#{selenium 'Test Carts'}
+    #{include 'test/selenium/step/login.selenium' /}
+
+    open('/account_seq')
+    verifyTitle('账户明细')
+    
+    verifyTextPresent('一共支出 1 笔 / 8.00 元')
+    verifyTextPresent('一共收入 2 笔 / 19.00 元')
+    
+#{/selenium}

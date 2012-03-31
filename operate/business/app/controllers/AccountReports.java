@@ -27,7 +27,16 @@ public class AccountReports extends Controller{
 
     @ActiveNavigation("account_reports")
     public static void index(AccountSequenceCondition condition){
-        Account account = AccountUtil.getUhuilaAccount();
+        Account account = null;
+        String accountCode = request.params.get("account_code");
+        renderArgs.put("account_code", accountCode);
+        if("platform_incoming".equals(accountCode)){
+            account = AccountUtil.getPlatformIncomingAccount();
+        }else if("platform_commission".equals(accountCode)){
+            account = AccountUtil.getPlatformCommissionAccount();
+        }else {
+            account =  AccountUtil.getUhuilaAccount();
+        }
         
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);

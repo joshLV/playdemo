@@ -74,7 +74,14 @@ footer{
 #{/set}
 
 <div class="body">
-<form class="well form-inline" action="@{AccountReports.index()}" method="GET" id="search_form">起止日期
+<form class="well form-inline" action="@{AccountReports.index()}" method="GET" id="search_form">
+  账户选择
+  <select name="account_code">
+    <option value="uhuila_incoming" #{if account_code=='uhuila_incoming'} selected="selected" #{/if} >优惠啦收款账户</option>
+    <option value="platform_incoming"  #{if account_code=='platform_incoming'} selected="selected" #{/if}>系统收款账户</option>
+    <option value="platform_commission" #{if account_code=='platform_commission'} selected="selected" #{/if}>系统佣金账户</option>
+  </select>
+  起止日期
   <input type="text"  id="condition_begin" class="input-medium Wdate" name = "condition.createdAtBegin" onfocus="WdatePicker({readOnly:true})" value="${createdAtBegin?.format()}">  - 
   <input type="text" id="condition_end" class="input-medium Wdate" name = "condition.createdAtEnd" onfocus="WdatePicker({readOnly:true})" value="${createdAtEnd?.format()}">
   <button type="submit" class="btn">搜索</button>
