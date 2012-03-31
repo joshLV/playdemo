@@ -42,5 +42,9 @@ $(window).load(
         $("input[name='levelPrices']").onchange(function () {
             alert(this.id);
         });
+
+        $("#level_prices").click(function () {
+            
+        });
     }
 );
