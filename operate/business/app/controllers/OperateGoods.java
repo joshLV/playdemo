@@ -44,6 +44,7 @@ public class OperateGoods extends Controller {
     /**
      * 展示商品一览页面
      */
+    @ActiveNavigation("goods_index")
     public static void index(models.sales.GoodsCondition condition) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);

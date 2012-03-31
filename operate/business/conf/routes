@@ -41,6 +41,8 @@ GET     /resalers                               Resalers.index
 GET     /resalers/{id}/view                     Resalers.detail
 POST    /resalers/update                        Resalers.update
 
+GET     /account-report                         AccountReports.index
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

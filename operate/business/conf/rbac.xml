@@ -2,18 +2,19 @@
 <application text="商品管理">
     <role key="admin" text="系统管理员"/>
 
-    <permission key="GOODS_NEW" text="商品添加"/>
-    <permission key="GOODS" text="商品管理"/>
-    <permission key="SUPPLIERS_NEW" text="商户添加"/>
-    <permission key="SUPPLIERS" text="商户管理"/>
+    <permission key="GOODS_NEW" text="商品添加" roles="admin"/>
+    <permission key="GOODS" text="商品管理" roles="admin"/>
+    <permission key="SUPPLIERS_NEW" text="商户添加" roles="admin"/>
+    <permission key="SUPPLIERS" text="商户管理" roles="admin"/>
     <permission key="RESALERS" text="分销商管理" roles="admin"/>
+    <permission key="ACCOUNT_REPORTS" text="账户报表查看" roles="admin"/>
     <!--<permission key="SHOPS_NEW" text="门店添加"/>-->
     <!--<permission key="SHOPS" text="门店管理"/>-->
 
     <navigation key="goods_app" text="商品管理" action="OperateGoods.index">
-        <navigation key="goods" text="商品" permission="GOODS_NEW,GOODS">
-            <navigation key="goods_add" action="OperateGoods.add" text="商品添加"/>
-            <navigation key="goods_index" action="OperateGoods.index" text="商品管理"/>
+        <navigation key="goods" text="商品" permissions="GOODS_NEW,GOODS">
+            <navigation key="goods_add" action="OperateGoods.add" text="商品添加" permissions="GOODS_NEW"/>
+            <navigation key="goods_index" action="OperateGoods.index" text="商品管理" permissions="GOODS"/>
         </navigation>
     </navigation>
     <!--<navigation key="shops" text="门店" permission="SHOPS_NEW,SHOPS">-->
@@ -21,15 +22,20 @@
     <!--<navigation key="shops_index" action="Shops.index" text="门店管理"/>-->
     <!--</navigation>-->
     <navigation key="supplier_app" text="商户管理" action="Suppliers.index">
-        <navigation key="suppliers" text="商户" permission="SUPPLIERS_NEW,SUPPLIERS">
-            <navigation key="suppliers_add" action="Suppliers.add" text="商户添加"/>
-            <navigation key="suppliers_index" action="Suppliers.index" text="商户管理"/>
+        <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
+            <navigation key="suppliers_add" action="Suppliers.add" text="商户添加" permissions="SUPPLIERS_NEW"/>
+            <navigation key="suppliers_index" action="Suppliers.index" text="商户管理" permissions="SUPPLIERS"/>
         </navigation>
     </navigation>
 
     <navigation key="resale_app" text="分销商管理" action="Resalers.index">
-        <navigation key="resaler" text="分销商" permission="RESALERS">
-            <navigation key="resalers_index" action="Resalers.index" text="分销商管理"/>
+        <navigation key="resaler" text="分销商" permissions="RESALERS">
+            <navigation key="resalers_index" action="Resalers.index" text="分销商管理" permissions="RESALERS"/>
+        </navigation>
+    </navigation>
+    <navigation key="account_app" text="系统账户" action="AccountReports.index">
+        <navigation key="account" text="账户" permission="ACCOUNT_REPORTS">
+            <navigation key="account_reports" action="AccountReports.index" text="账户报表"  permission="ACCOUNT_REPORTS" />
         </navigation>
     </navigation>
 </application>
