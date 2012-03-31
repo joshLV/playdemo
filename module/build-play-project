@@ -4,8 +4,8 @@
 test_passed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+PASSED/
 test_failed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+FAILED/
 
-#play_home="/app/play-1.2.4/"
- play_home = ""
+play_home="/app/play-1.2.4/"
+# play_home = ""
 dir = ARGV[0]
 
 if ARGV.size() < 1
