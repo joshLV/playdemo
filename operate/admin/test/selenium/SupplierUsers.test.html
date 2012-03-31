@@ -19,7 +19,7 @@
    #{include 'test/selenium/step/login.selenium' /}
    open('/users/${play.test.Fixtures.idCache.get("models.admin.OperateUser-user3")}/edit')
    click('xpath=(//input[@id='supplierUser.roles.id'])[2]')
-   type('id=loginName','yan1')
+   verifyTextPresent('tom')
    type('id=mobile','13012012011')
    type('name=supplierUser.encryptedPassword','')
    clickAndWait('id=save')
@@ -30,7 +30,7 @@
    #{include 'test/selenium/step/login.selenium' /}
    open('/users/${play.test.Fixtures.idCache.get("models.admin.OperateUser-test")}/edit')
    click('xpath=(//input[@id='supplierUser.roles.id'])[2]')
-   type('id=loginName','test')
+   verifyTextPresent('test')
    type('id=mobile','13088092012')
    type('name=supplierUser.encryptedPassword','123')
    clickAndWait('id=save')

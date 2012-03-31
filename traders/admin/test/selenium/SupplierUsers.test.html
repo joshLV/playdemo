@@ -7,18 +7,18 @@
    verifyTextNotPresent('admin')
 #{/selenium}
 
-#{selenium}
+#{selenium "edit"}
    #{include 'test/selenium/step/login.selenium' /}
    open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user1")}/edit')
    assertTitle('操作员编辑')
 #{/selenium}
 
 
-#{selenium}
+#{selenium "edit user validate"}
    #{include 'test/selenium/step/login.selenium' /}
    open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}/edit')
    click('xpath=(//input[@id='supplierUser.roles.id'])[2]')
-   type('id=loginName','yan1')
+   verifyTextPresent('yan')
    type('id=mobile','13012012011')
    type('name=supplierUser.encryptedPassword','')
    clickAndWait('id=save')
@@ -34,7 +34,7 @@
 
    open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-test")}/edit')
    click('id=supplierUser.roles_${play.test.Fixtures.idCache.get("models.admin.SupplierRole-sales")}')
-   type('id=loginName','test')
+   verifyTextPresent('test')
    type('id=mobile','13088092013')
    type('name=supplierUser.encryptedPassword','123')
    clickAndWait('id=save')
