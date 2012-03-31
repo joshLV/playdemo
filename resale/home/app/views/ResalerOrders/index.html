@@ -76,7 +76,7 @@ $(window).load(function () {
       <td width="77">订单状态：</td>
       <td width="353">
        <div class="pos_abs">
-          #{select 'status', id:'status', class:'dingdan_stauts_bg', value:status}
+          #{select 'condition.status', id:'condition_status', class:'dingdan_stauts_bg', value:status}
                #{option ""}不限#{/option}
                #{option "UNPAID"}&{'order.UNPAID'}#{/option}
                #{option "PAID"}&{'order.PAID'}#{/option}
