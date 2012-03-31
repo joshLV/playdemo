@@ -1,6 +1,16 @@
 #{set 'moreScripts'}
     #{get 'moreScripts'/}
 <script src="@{'/public/javascripts/goods-form.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+    $.load(
+            function () {
+                #{list items:models.resale.ResalerLevel.values(), as: 'level'}
+                    $("#levelPrices_${level}").onchange(function () {
+                        alert("hello");
+                    });
+                #{/list}
+            });
+</script>
 #{/set}
 #{layout_operate.selectField name:'goods.supplierId', value:goods?.supplierId, error:'goods.supplierId'}
     #{list items:supplierList, as:'supplier' }
@@ -25,14 +35,13 @@
 #{layout_operate.textField name:'goods.name', value:goods?.name, required:true/}
 #{layout_operate.dateScopeField name:'goods.effective', begin:'goods.effectiveAt',end:'goods.expireAt',
 beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), required:true/}
-#{layout_operate.textField name:'goods.faceValue', value:goods?.faceValue, note:'元', required:true/}
-#{layout_operate.textField name:'goods.originalPrice', value:goods?.originalPrice ,note:'元', required:true/}
-#{layout_operate.textField name:'goods.salePrice', value:goods?.salePrice, note:'元', required:true/}
+#{layout_operate.textField name:'goods.faceValue', value:goods?.faceValue?.formatCurrency('CNY'), note:'元', required:true/}
+#{layout_operate.textField name:'goods.originalPrice', value:goods?.originalPrice ?.formatCurrency('CNY'),note:'元', required:true/}
+#{layout_operate.textField name:'goods.salePrice', value:goods?.salePrice?.formatCurrency('CNY'), note:'元', required:true/}
 #{set i:0/}
 #{list items:models.resale.ResalerLevel.values(), as: 'level'}
-    #{layout_operate.textField name:'levelPrices', label:'goods.levelPrice.'+models.resale.ResalerLevel.values()[i++],
-    value:levelPrices.length==i?"0":levelPrices[i].toString(), note:'元',
-    required:true/}
+    #{layout_operate.textField id:'levelPrices_'+level, name:'levelPrices', label:'goods.levelPrice.'+models.resale
+    .ResalerLevel.values()[i++],value:levelPrices?.length==i?"0":levelPrices[i]?.formatCurrency('CNY'), note:'元',required:true/}
 #{/list}
 
 #{layout_operate.textField name:'goods.baseSale', value:goods?.baseSale, note:'件', required:true/}

@@ -43,8 +43,8 @@ $(window).load(
             alert(this.id);
         });
 
-        $("#level_prices").click(function () {
-            
+        $("#levelPrices").onblur(function () {
+           alert($(this).val());
         });
     }
 );

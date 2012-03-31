@@ -451,6 +451,7 @@ public class Goods extends Model {
         if (goods.supplierId != null) {
             updateGoods.supplierId = goods.supplierId;
         }
+        updateGoods.shops=goods.shops;
         updateGoods.save();
     }
 

@@ -29,10 +29,9 @@ public class FileUploadUtil {
      */
     public static String storeImage(File imageFile, long uniqueId, boolean needNewName,
                                     String rootPath) throws IOException {
-        //取得文件名
+        //取得文件
         FileInputStream in = new FileInputStream(imageFile);
         // 将该数据流写入到指定文件中
-
         String storePath = rootPath + PathUtil.getPathById(uniqueId);
 
         File targetPath = new File(storePath);
@@ -64,8 +63,7 @@ public class FileUploadUtil {
      * @return 返回文件的路径
      */
     public static String storeImage(File imageFile, long uniqueId, String rootPath) throws IOException {
-        return storeImage(imageFile, uniqueId, false
-                , rootPath);
+        return storeImage(imageFile, uniqueId, true, rootPath);
     }
 
 

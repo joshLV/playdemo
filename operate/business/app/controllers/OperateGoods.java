@@ -12,6 +12,7 @@ import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.data.binding.As;
 import play.data.validation.Required;
 import play.data.validation.Valid;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.math.BigDecimal.*;
+import static java.math.BigDecimal.ZERO;
 
 /**
  * 通用说明：
@@ -88,17 +89,18 @@ public class OperateGoods extends Controller {
                 levelPrice = ZERO;
             }
             renderArgs.put("levelPrices", levelPrices);
-        }
-        BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
-        for (int i = 0; i < levelPrices.length; i++) {
-            GoodsLevelPrice levelPrice = goods.getLevelPrices().get(i);
-            if (levelPrice == null) {
-                levelPrices[i] = ZERO;
-            } else {
-                levelPrices[i] = levelPrice.price;
+        } else {
+            BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
+            for (int i = 0; i < levelPrices.length; i++) {
+                GoodsLevelPrice levelPrice = goods.getLevelPrices().get(i);
+                if (levelPrice == null) {
+                    levelPrices[i] = ZERO;
+                } else {
+                    levelPrices[i] = levelPrice.price;
+                }
             }
+            renderArgs.put("levelPrices", levelPrices);
         }
-        renderArgs.put("levelPrices", levelPrices);
         if (goods.isAllShop != null) {
             if (goods.isAllShop && goods.shops != null) {
                 goods.shops = null;
@@ -117,6 +119,7 @@ public class OperateGoods extends Controller {
         } else {
             goods.isAllShop = true;
         }
+        Logger.info("shopIds=" + shopIds);
 
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         List<Brand> brandList = Brand.findByOrder();
@@ -139,7 +142,7 @@ public class OperateGoods extends Controller {
             subCategoryList = Category.findByParent(goods.topCategoryId);
         }
         for (String key : validation.errorsMap().keySet()) {
-            System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
+            Logger.warn("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
         }
         renderArgs.put("shopList", shopList);
         renderArgs.put("brandList", brandList);
@@ -186,8 +189,9 @@ public class OperateGoods extends Controller {
         try {
             goods.imagePath = uploadImagePath(imagePath, goods.id);
         } catch (IOException e) {
+            System.out.println("e:" + e);
             e.printStackTrace();
-            error("goods.image_upload_failed");
+            error(500, "goods.image_upload_failed");
         }
         goods.save();
 
@@ -201,8 +205,7 @@ public class OperateGoods extends Controller {
     private static void checkSalePrice(Goods goods) {
         if (goods.salePrice == null) {
             Validation.addError("goods.salePrice", "validation.required");
-        }
-        if (goods.salePrice.compareTo(new BigDecimal(0.01)) < 0) {
+        } else if (goods.salePrice.compareTo(new BigDecimal("0.01")) < 0) {
             Validation.addError("goods.salePrice", "validation.min", "0.01");
         }
     }
@@ -289,17 +292,20 @@ public class OperateGoods extends Controller {
         checkSalePrice(goods);
         if (Validation.hasErrors()) {
             renderInit(goods);
-            render("OperateGoods/edit.html", goods);
+            render("OperateGoods/edit.html", goods, id);
         }
 
         String supplierUser = OperateRbac.currentUser().loginName;
 
         try {
+            System.out.println("imagePath:" + imagePath);
+            System.out.println("id:" + id);
             String image = uploadImagePath(imagePath, id);
             if (image != null) {
                 goods.imagePath = image;
             }
         } catch (IOException e) {
+            e.printStackTrace();
             error("goods.image_upload_failed");
         }
 

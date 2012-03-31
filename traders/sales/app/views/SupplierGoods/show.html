@@ -38,26 +38,26 @@
         <div class="control-group">
             <label class="control-label">原&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
 
-            <div class="controls">${goods?.faceValue?.formatCurrency('CNY').raw()}
+            <div class="controls">${goods?.faceValue?.formatCurrency('CNY')}
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">进&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
 
-            <div class="controls">${goods?.originalPrice?.formatCurrency('CNY').raw()}
+            <div class="controls">${goods?.originalPrice?.formatCurrency('CNY')}
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
 
-            <div class="controls">${goods?.salePrice?.formatCurrency('CNY').raw()}
+            <div class="controls">${goods?.salePrice?.formatCurrency('CNY')}
             </div>
         </div>
     #{list items:goods.getLevelPrices(), as: 'level'}
         <div class="control-group">
             <label class="control-label">&{'goods.levelPrice.'+level?.level}</label>
 
-            <div class="controls">${level.price?.formatCurrency('CNY').raw()?:0}
+            <div class="controls">${level.price?.formatCurrency('CNY')}
             </div>
         </div>
     #{/list}
