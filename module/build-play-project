@@ -4,8 +4,8 @@
 test_passed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+PASSED/
 test_failed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+FAILED/
 
-play_home="/app/play-1.2.4/"
-# play_home = ""
+#play_home="/app/play-1.2.4/"
+ play_home = ""
 dir = ARGV[0]
 
 if ARGV.size() < 1
@@ -73,7 +73,7 @@ unless failed_result.empty?
 end
 
 
-if passed_test_count == 0
+if passed_test_count == 0 and failed_test_count != 0
   puts "Play Build Failed or No Test Found!"
   failed_result.each {|line| puts "    " + line}
   exit(1)
