@@ -7,12 +7,13 @@
                 <td width="30%">用户名：<input type="text" name="condition.loginName" class="input-medium"
                                            value="${condition?.loginName}"/></td>
                 <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
-                #{select 'condition.status', id:ca,class:'input-small', value:condition?.status}
+                #{select 'condition.status', id:'condition_status',class:'input-medium', value:condition?.status}
                     #{option ""}不限#{/option}
                     #{option "PENDING"}&{'resaler.PENDING'}#{/option}
-                    #{option "APPROVED"}&{'resaler.APPROVED'}
-                    #{/option} #{option "UNAPPROVED"}&{'resaler.UNAPPROVED'}#{/option}
-                #{/select}</td>
+                    #{option "APPROVED"}&{'resaler.APPROVED'}#{/option} 
+                    #{option "UNAPPROVED"}&{'resaler.UNAPPROVED'}#{/option}
+                #{/select}
+                </td>
                 <td>
                     <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
                 </td>
@@ -20,8 +21,7 @@
         </table>
     </form>
 
-#{vx.tab enumItems: models.resale.ResalerStatus.values(),name:'resaler',select:'condition_status',
-value:condition?.status/}
+#{vx.tab enumItems: models.resale.ResalerStatus.values(),name:'resaler',select:'condition_status',value:'condition?.status'/}
     <table class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>
