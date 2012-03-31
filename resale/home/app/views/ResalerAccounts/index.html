@@ -13,6 +13,9 @@ $(window).load(function(){
 	
 $("[start]").each(function(){
 	$(this).click(function(){
+		if($(this).parent().attr("class") == 'active'){
+			return false;
+		}
         var tomorrow = new Date();
         var startDay = new Date();
 			    
@@ -32,8 +35,8 @@ $("[start]").each(function(){
         $("#condition_begin").val(startDay.getFullYear() + "-" + (startDay.getMonth()+1) + "-" + startDay.getDate());
         $("#condition_end").val(tomorrow.getFullYear() + "-" + (tomorrow.getMonth()+1) + "-" + tomorrow.getDate());
         $("#interval").val(interval);
-        $("#search_form").submit();        
-
+        $("#search_form").submit();    
+        return false;
 	});
 });
 
