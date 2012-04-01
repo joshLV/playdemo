@@ -291,6 +291,8 @@ public class OperateGoods extends Controller {
         goods.setLevelPrices(levelPrices);
         checkSalePrice(goods);
         if (Validation.hasErrors()) {
+            List<Supplier> supplierList = Supplier.findUnDeleted();
+            renderArgs.put("supplierList", supplierList);
             renderInit(goods);
             render("OperateGoods/edit.html", goods, id);
         }

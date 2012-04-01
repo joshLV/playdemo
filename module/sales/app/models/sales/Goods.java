@@ -368,8 +368,8 @@ public class Goods extends Model {
             }
         }
         return levelPrices;
-    }    
-    
+    }
+
     /**
      * 最小规格图片路径
      */
@@ -429,13 +429,14 @@ public class Goods extends Model {
 
     public static void update(Long id, Goods goods) {
         models.sales.Goods updateGoods = models.sales.Goods.findById(id);
-        if (updateGoods == null){
-            return ;
+        if (updateGoods == null) {
+            return;
         }
         updateGoods.name = goods.name;
         updateGoods.no = goods.no;
         updateGoods.effectiveAt = goods.effectiveAt;
         updateGoods.expireAt = goods.expireAt;
+        updateGoods.faceValue = goods.faceValue;
         updateGoods.originalPrice = goods.originalPrice;
         updateGoods.salePrice = goods.salePrice;
         updateGoods.baseSale = goods.baseSale;
@@ -451,7 +452,7 @@ public class Goods extends Model {
         if (goods.supplierId != null) {
             updateGoods.supplierId = goods.supplierId;
         }
-        updateGoods.shops=goods.shops;
+        updateGoods.shops = goods.shops;
         updateGoods.save();
     }
 
@@ -529,7 +530,7 @@ public class Goods extends Model {
      * @return
      */
     public static JPAExtPaginator<Goods> findByResaleCondition(Resaler resaler,
-    		GoodsCondition condition, int pageNumber, int pageSize) {
+                                                               GoodsCondition condition, int pageNumber, int pageSize) {
         JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>
                 ("Goods g", "g", Goods.class, condition.getResaleFilter(resaler),
                         condition.getParamMap())
@@ -549,9 +550,9 @@ public class Goods extends Model {
     @Transient
     public BigDecimal getResalePrice(ResalerLevel level) {
         BigDecimal resalePrice = faceValue;
-        
-        for (GoodsLevelPrice goodsLevelPrice : getLevelPrices()){
-            if (goodsLevelPrice.level == level){
+
+        for (GoodsLevelPrice goodsLevelPrice : getLevelPrices()) {
+            if (goodsLevelPrice.level == level) {
                 resalePrice = originalPrice.add(goodsLevelPrice.price);
                 break;
             }
