@@ -28,8 +28,8 @@ function reorder(goods_id,increment){
 }
 //计算单行的总价
 function calItem(goods_id){
-    var total_price = Number($("#price_" + goods_id).text()) * Number($("#num_" + goods_id).val());
-    $("#subtotal_" + goods_id).val(total_price);
+    var total_price = (new BigNumber($("#price_" + goods_id).text())).multiply($("#num_" + goods_id).val()).toString();
+    $("#subtotal_" + goods_id).text(total_price);
 }
 //计算订单总价
 function refreshAmount(){
@@ -37,9 +37,9 @@ function refreshAmount(){
     $("input.num_input").each(function(){number += Number($(this).val())});
     $("#total_num").text(number);
 
-    var amount = 0;
-    $("input[id^=subtotal_]").each(function(){amount += Number($(this).val())});;
-    $("#carts_amount").text(amount);
+    var amount = new BigNumber("0");
+    $("span[id^=subtotal_]").each(function(){amount = amount.add($(this).text())});;
+    $("#carts_amount").text(amount.toString());
 }
 
 $(window).load(
