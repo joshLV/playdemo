@@ -15,59 +15,66 @@ public class OrdersCondition {
 	public Map<String, Object> paramsMap = new HashMap<>();
 	public Date createdAtBegin; 
 	public Date createdAtEnd; 
+	public Date refundAtBegin; 
+	public Date refundAtEnd; 
 	public OrderStatus status;
 	public String goodsName;
+	public int deliveryType;
+	public String payMethod;
+	public String searchKey;
+	public String searchItems;
+	
 	/**
 	 *
 	 * @param order 订单信息
 	 * @param supplierId 商户ID
 	 * @return sql 查询条件
 	 */
-	public String getFilter(Order order,Long supplierId) {
+	public String getFilter(Long supplierId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" o.deleted = :deleted");
 		paramsMap.put("deleted", DeletedStatus.UN_DELETED);
 		sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.supplierId = :supplierId)");
 		paramsMap.put("supplierId", supplierId);
 
-		if (order.createdAtBegin != null) {
+		if (createdAtBegin != null) {
 			sql.append(" and o.createdAt >= :createdAtBegin");
-			paramsMap.put("createdAtBegin", order.createdAtBegin);
+			paramsMap.put("createdAtBegin", createdAtBegin);
 		}
-		if (order.createdAtEnd != null) {
+		if (createdAtEnd != null) {
 			sql.append(" and o.createdAt <= :createdAtEnd");
-			paramsMap.put("createdAtEnd", order.createdAtEnd);
+			paramsMap.put("createdAtEnd", createdAtEnd);
 		}
-		if (order.refundAtBegin != null) {
+		if (refundAtBegin != null) {
 			sql.append(" and o.refundAt >= :refundAtBegin");
-			paramsMap.put("refundAtBegin", order.refundAtBegin);
+			paramsMap.put("refundAtBegin", refundAtBegin);
 		}
-		if (order.refundAtEnd != null) {
+		if (refundAtEnd != null) {
 			sql.append(" and o.refundAt <= :refundAtEnd");
-			paramsMap.put("refundAtEnd", order.refundAtEnd);
+			paramsMap.put("refundAtEnd", refundAtEnd);
 		}
-		if (order.status != null) {
+		if (status != null) {
 			sql.append(" and o.status = :status");
-			paramsMap.put("status", order.status);
+			paramsMap.put("status", status);
 		}
-		if (order.deliveryType != 0) {
+		if (deliveryType != 0) {
 			sql.append(" and o.deliveryType = :deliveryType");
-			paramsMap.put("deliveryType", order.deliveryType);
+			paramsMap.put("deliveryType", deliveryType);
 		}
-		if (StringUtils.isNotBlank(order.payMethod)) {
+		if (StringUtils.isNotBlank(payMethod)) {
 			sql.append(" and o.payMethod = :payMethod");
-			paramsMap.put("payMethod", order.payMethod);
+			paramsMap.put("payMethod", payMethod);
 		}
 
 		//按照商品名称检索
-		if ("1".equals(order.searchKey)) {
+		if ("1".equals(searchKey)) {
 			sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.name like :name)");
-			paramsMap.put("name", "%" + order.searchItems + "%");
+			paramsMap.put("name", "%" + searchItems + "%");
 		}
 		//按照商品订单检索
-		if ("2".equals(order.searchKey)) {
+		if ("2".equals(searchKey)) {
 			sql.append(" and o.orderNumber like :orderNumber");
-			paramsMap.put("orderNumber", "%" + order.searchItems + "%");
+			paramsMap.put("orderNumber", "%" + searchItems + "%");
 		}
 
 		return sql.toString();

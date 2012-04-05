@@ -4,6 +4,7 @@ package controllers;
 import controllers.supplier.cas.SecureCAS;
 import models.order.ECoupon;
 import models.order.OrderItems;
+import models.order.OrdersCondition;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
@@ -23,13 +24,16 @@ public class SupplierOrders extends Controller {
 	 *
 	 * @param orders 页面信息
 	 */
-	public static void index(models.order.Order orders) {
+	public static void index(OrdersCondition condition) {
+		if (condition == null) {
+    		condition = new OrdersCondition();
+    	}
 		//该商户ID
 		Long supplierId = MenuInjector.currentUser().supplier.getId();
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-		JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(orders, supplierId, pageNumber, PAGE_SIZE);
-		renderArgs.put("order.createdAtBegin", orders.createdAtBegin);
+		JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, supplierId, pageNumber, PAGE_SIZE);
+		renderGoodsCond(condition);
 		render(orderList);
 
 	}
@@ -47,6 +51,26 @@ public class SupplierOrders extends Controller {
 		render(orders, orderItems);
 	}
 
+	/**
+	 * 向页面设置选择信息
+	 * 
+	 * @param goodsCond 页面设置选择信息
+	 */
+	private static void renderGoodsCond(OrdersCondition goodsCond) {
+		System.out.println(goodsCond.searchKey+">>>"+goodsCond.searchItems);
+		renderArgs.put("createdAtBegin", goodsCond.createdAtBegin);
+		renderArgs.put("createdAtEnd", goodsCond.createdAtEnd);
+		renderArgs.put("status", goodsCond.status);
+		renderArgs.put("goodsName", goodsCond.goodsName);
+		renderArgs.put("refundAtBegin", goodsCond.refundAtBegin);
+		renderArgs.put("refundAtEnd", goodsCond.refundAtEnd);
+		renderArgs.put("status", goodsCond.status);
+		renderArgs.put("deliveryType", goodsCond.deliveryType);
+		renderArgs.put("payMethod", goodsCond.payMethod);
+		renderArgs.put("searchKey", goodsCond.searchKey);
+		renderArgs.put("searchItems", goodsCond.searchItems);
+	}
+	
 	/**
 	 * 券号列表
 	 */

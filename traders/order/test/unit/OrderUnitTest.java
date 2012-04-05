@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 import models.accounts.AccountType;
-import models.admin.SupplierRole;
-import models.admin.SupplierUser;
 import models.consumer.Address;
 import models.consumer.User;
 import models.order.Cart;
@@ -16,6 +14,7 @@ import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
+import models.order.OrdersCondition;
 import models.sales.Goods;
 
 import org.junit.Before;
@@ -44,7 +43,7 @@ public class OrderUnitTest extends UnitTest {
      */
     @Test
     public void testOrder() {
-        Order order = new Order();
+    	OrdersCondition order = new OrdersCondition();
         order.createdAtBegin = new Date();
         order.createdAtEnd = new Date();
         order.status = OrderStatus.UNPAID;
@@ -58,7 +57,7 @@ public class OrderUnitTest extends UnitTest {
         List<Order> list = Order.query(order, supplierId, pageNumber, pageSize);
         assertEquals(0, list.size());
 
-        order = new Order();
+        order = new OrdersCondition();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
             order.createdAtBegin = sdf.parse("2012-03-01");
@@ -75,13 +74,13 @@ public class OrderUnitTest extends UnitTest {
         list = Order.query(order, supplierId, pageNumber, pageSize);
         assertEquals(1, list.size());
 
-        order = new Order();
+        order = new OrdersCondition();
         order.searchKey = "1";
         order.searchItems = "哈根达斯200";
         list = Order.query(order, supplierId, pageNumber, pageSize);
         assertEquals(1, list.size());
 
-        order = new Order();
+        order = new OrdersCondition();
         try {
             order.refundAtBegin = sdf.parse("2012-03-01");
             order.refundAtEnd = new Date();
