@@ -1,29 +1,23 @@
 package function;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.operate.cas.Security;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
-import models.sales.Area;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.GoodsStatus;
-import models.sales.Shop;
+import models.sales.*;
 import operate.rbac.RbacLoader;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.Play;
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import com.uhuila.common.constants.DeletedStatus;
-import controllers.operate.cas.Security;
 
-@Ignore
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class OperateGoodsTest extends FunctionalTest {
 
     @org.junit.Before
@@ -60,16 +54,15 @@ public class OperateGoodsTest extends FunctionalTest {
         // 清除登录Mock
         Security.cleanLoginUserForTest();
     }
-    
+
     /**
      * 查看商品信息
      */
     @Test
     public void testDetails() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
-                ".OperateGoods-Goods_001");
+        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
 
-        Response response = GET("/goods/" + goodsId + "/view");
+        Response response = GET("/goods/" + goodsId);
         assertIsOk(response);
         assertContentType("text/html", response);
     }
@@ -79,27 +72,28 @@ public class OperateGoodsTest extends FunctionalTest {
      */
     @Test
     public void testEdit() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
-                ".OperateGoods-Goods_001");
+        Long brandId = (Long) Fixtures.idCache.get("models.sales.Brand-Brand_1");
+        Long categoryId = (Long) Fixtures.idCache.get("models.sales.Category-Category_1");
+        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
         Response response = GET("/goods/" + goodsId + "/edit");
         assertIsOk(response);
         assertContentType("text/html", response);
         assertCharset(Play.defaultWebEncoding, response);
 
-        Map<String, String> goodsParams = new HashMap<>();
-        goodsParams.put("goods.name", "test");
-        goodsParams.put("id", String.valueOf(goodsId));
-        response = POST("/goods/" + goodsId + "/update", goodsParams);
+        String params = "goods.name=test123&goods.faceValue=120&goods" +
+                ".originalPrice=120&goods.details=abcdefgh&goods.salePrice=123&goods.categories.id=" +
+                categoryId + "&goods.expireAt=2015-12-12&goods.effectiveAt=2012-03-12&goods.baseSale=1000&goods.brand" +
+                ".id=" + brandId;
+        response = PUT("/goods/" + goodsId, "application/x-www-form-urlencoded", params);
         assertStatus(302, response);
         Goods goods = Goods.findById(goodsId);
-        assertEquals("test",goods.name );
+        assertEquals("test123", goods.name);
     }
 
     /**
      * 添加商品信息
      */
     @Test
-    @Ignore
     public void testCreate() {
         Map<String, String> goodsParams = new HashMap<>();
         goodsParams.put("goods.name", "laiyifen1");
@@ -108,7 +102,7 @@ public class OperateGoodsTest extends FunctionalTest {
         goodsParams.put("goods.status", GoodsStatus.ONSALE.toString());
         goodsParams.put("goods.prompt", "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
         goodsParams.put("goods.details", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        goodsParams.put("goods.imagePath", "/opt/3.jpg");
+//        goodsParams.put("goods.imagePath", "/opt/3.jpg");
         goodsParams.put("goods.deleted", DeletedStatus.DELETED.toString());
         goodsParams.put("goods.createdBy", "yanjy");
         Response response = POST("/goods", goodsParams);
@@ -123,12 +117,9 @@ public class OperateGoodsTest extends FunctionalTest {
      */
     @Test
     public void testDelete() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
-                ".OperateGoods-Goods_003");
-        Map<String, Long[]> goodsParams = new HashMap<>();
-        Long[] ids = new Long[]{goodsId};
-        goodsParams.put("ids", ids);
-        Response response = DELETE("/goods/0/delete?ids[]=" + goodsId);
+        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_003");
+
+        Response response = DELETE("/goods/" + goodsId);
         assertStatus(302, response);
         Goods goods = Goods.findById(goodsId);
         assertEquals(DeletedStatus.DELETED, goods.deleted);
@@ -138,13 +129,10 @@ public class OperateGoodsTest extends FunctionalTest {
      * 修改商品上下架
      */
     @Test
-    public void updateStatus() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
-                ".OperateGoods-Goods_004");
-        Map<String, String> goodsParams = new HashMap<>();
-        goodsParams.put("ids", String.valueOf(goodsId));
-        goodsParams.put("status", GoodsStatus.ONSALE.toString());
-        Response response = POST("/updatestatus", goodsParams);
+    public void testOnSale() {
+        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
+
+        Response response = PUT("/goods/" + goodsId + "/onSale", "text/html", "");
         assertStatus(302, response);
         Goods goods = Goods.findById(goodsId);
         assertEquals(GoodsStatus.ONSALE, goods.status);

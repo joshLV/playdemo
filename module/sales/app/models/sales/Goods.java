@@ -460,7 +460,9 @@ public class Goods extends Model {
         updateGoods.brand = goods.brand;
         updateGoods.isAllShop = goods.isAllShop;
         updateGoods.status = goods.status;
-        updateGoods.imagePath = goods.imagePath;
+        if (!StringUtils.isEmpty(goods.imagePath)) {
+            updateGoods.imagePath = goods.imagePath;
+        }
         if (goods.supplierId != null) {
             updateGoods.supplierId = goods.supplierId;
         }

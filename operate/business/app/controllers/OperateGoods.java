@@ -291,6 +291,7 @@ public class OperateGoods extends Controller {
         goods.setLevelPrices(levelPrices);
         checkSalePrice(goods);
         if (Validation.hasErrors()) {
+
             List<Supplier> supplierList = Supplier.findUnDeleted();
             renderArgs.put("supplierList", supplierList);
             renderInit(goods);
@@ -300,12 +301,11 @@ public class OperateGoods extends Controller {
         String supplierUser = OperateRbac.currentUser().loginName;
 
         try {
-            System.out.println("imagePath:" + imagePath);
-            System.out.println("id:" + id);
             String image = uploadImagePath(imagePath, id);
-            if (image != null) {
+            if (!StringUtils.isEmpty(image)) {
                 goods.imagePath = image;
             }
+
         } catch (IOException e) {
             e.printStackTrace();
             error("goods.image_upload_failed");
