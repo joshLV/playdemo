@@ -31,6 +31,7 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import models.resale.Resaler;
+import models.resale.ResalerFav;
 import models.resale.ResalerLevel;
 import models.supplier.Supplier;
 
@@ -284,6 +285,10 @@ public class Goods extends Model {
 
     @Transient
     public Long topCategoryId;
+    
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "goods_id")
+    public List<ResalerFav> resalerFavs;
 
     /**
      * 商品详情
@@ -351,24 +356,31 @@ public class Goods extends Model {
      * 不同分销商等级所对应的价格, 此方法可确保返回的价格数量与分销等级的数量相同
      */
     public List<GoodsLevelPrice> getLevelPrices() {
-        if (levelPrices == null) {
-            levelPrices = new ArrayList<>();
-        }
-        if (levelPrices.size() == 0) {
-            for (ResalerLevel level : ResalerLevel.values()) {
-                GoodsLevelPrice levelPrice = new GoodsLevelPrice(level, BigDecimal.ZERO);
-                levelPrices.add(levelPrice);
-            }
-        }
-        if (levelPrices.size() < ResalerLevel.values().length) {
-            int zeroLevelCount = ResalerLevel.values().length - levelPrices.size();
-            int originalSize = levelPrices.size();
-            for (int i = 0; i < zeroLevelCount; i++) {
-                levelPrices.add(new GoodsLevelPrice(ResalerLevel.values()[i + originalSize], BigDecimal.ZERO));
-            }
-        }
-        return levelPrices;
-    }
+		if (levelPrices == null) {
+			levelPrices = new ArrayList<>();
+		}
+		if (levelPrices.size() == 0) {
+			for (ResalerLevel level : ResalerLevel.values()) {
+				GoodsLevelPrice levelPrice = new GoodsLevelPrice(level, BigDecimal.ZERO);
+				levelPrices.add(levelPrice);
+			}
+		} else {
+			for (GoodsLevelPrice levelPrice : levelPrices) {
+				if (levelPrice.price == null) {
+					levelPrice.price = BigDecimal.ZERO;
+				}
+			}
+		}
+
+		if (levelPrices.size() < ResalerLevel.values().length) {
+			int zeroLevelCount = ResalerLevel.values().length - levelPrices.size();
+			int originalSize = levelPrices.size();
+			for (int i = 0; i < zeroLevelCount; i++) {
+				levelPrices.add(new GoodsLevelPrice(ResalerLevel.values()[i + originalSize], BigDecimal.ZERO));
+			}
+		}
+		return levelPrices;
+	}
 
     /**
      * 最小规格图片路径
@@ -549,15 +561,30 @@ public class Goods extends Model {
      */
     @Transient
     public BigDecimal getResalePrice(ResalerLevel level) {
-        BigDecimal resalePrice = faceValue;
+		BigDecimal resalePrice = faceValue;
 
-        for (GoodsLevelPrice goodsLevelPrice : getLevelPrices()) {
-            if (goodsLevelPrice.level == level) {
-                resalePrice = originalPrice.add(goodsLevelPrice.price);
-                break;
-            }
-        }
-        return resalePrice;
-    }
+		for (GoodsLevelPrice goodsLevelPrice : getLevelPrices()){
+			if (goodsLevelPrice.level == level){
+				resalePrice = originalPrice.add(goodsLevelPrice.price);
+				break;
+			}
+		}
+		return resalePrice;
+	}
+    
+	/**
+	 * 判断分销商是否已经把商品加入分销库
+	 *
+	 * @return isExist true 已经存在，false 不存在
+	 */
+	@Transient
+	public boolean isExistlibray() {
+		boolean isExist = false;
+		  if (resalerFavs != null && resalerFavs.size()>0) {
+	        	isExist = true;
+	        }
+	        
+		return isExist;
+	}
 
 }

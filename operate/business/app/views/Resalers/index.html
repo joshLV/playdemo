@@ -1,7 +1,7 @@
 #{extends 'layout_operate/layout.html' /} #{set title:'分销商一览' /} #{include '/share/nav.html' /}
 <div class="body">
     <legend>${title}</legend>
-    <form class="form-horizontal" name="frmlist" action="@{Resalers.index()}" method="GET">
+    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{Resalers.index()}" method="GET">
         <table width="100%">
             <tr>
                 <td width="30%">用户名：<input type="text" name="condition.loginName" class="input-medium"
@@ -21,7 +21,7 @@
         </table>
     </form>
 
-#{vx.tab enumItems: models.resale.ResalerStatus.values(),name:'resaler',select:'condition_status',value:'condition?.status'/}
+  #{vx.tab enumItems: models.resale.ResalerStatus.values(),name:'resaler',select:'condition_status',value:condition?.status/}
     <table class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>

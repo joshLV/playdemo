@@ -4,6 +4,9 @@
 <link href="@@{'/public/stylesheets/goods-index.css'}" rel="stylesheet" type="text/css"/>
 <link href="@@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/play-pagination.css'}">
+<style>
+.buttom_dibu{ margin-top:8px; padding-left:80px; color:#FF6600; font-weight:700; font-size:17px;}
+</style>
 #{/set}
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/goods-index.js'}"></script>
@@ -248,7 +251,11 @@
 <div class="right_content_three">
     <div class="r_c_three_title">
     <input type="checkbox" id="selectall" name="selectall">全选
-    <a class="font_blue" href="#" id="addto">批量加入分销库</a></div>
+    <a class="font_blue" href="#" id="addto">批量加入分销库</a>
+    <span id ="batchAdd" class="buttom_dibu" style="display: none;font-size:14px">
+            已成功添加到分销库！是否进入?
+         <a href="/library">点击进入</a></span>
+    </div>
 </div>
  #{form @ResalerGoods.index() , id:'indexForm'}
     #{paginate.list items:goodsList, as:'goods'}
@@ -256,7 +263,14 @@
      <table width="798" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE">
      <tr>
      <td>
-      <td><input type="checkbox" value="${goods.id}" name="goodsIds[]"/></td>
+      <td id="goodsId_${goods.id}">
+         #{if !goods.isExistlibray()}
+          <input type="checkbox" value="${goods.id}"  name="goodsIds[]"/>
+         #{/if}
+         #{else}
+          <input type="checkbox" disabled/>
+         #{/else}
+       </td>
       <td width="340" height="80" align="left">
        <div class="left_shangpin" >
         <a href="/goods/${goods.id}"><img src="${goods.imageTinyPath}"/></a>
@@ -270,13 +284,23 @@
       折扣：${goods.discountExpress.yesno(goods.discountExpress+'折','无优惠')}</td>
       <td width="150" align="center">
       <a class="font_blue" href="@{ResalerGoods.show(goods.id)}">查看详情</a><br>
-       <a href="/library" id="addToLibrary" onclick="var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href+'?goodsIds=${goods.id}' ; f.submit(); return false;">加入分销库</a>
-      
+      #{if !goods.isExistlibray()}
+        <span id= "add_${goods.id}"><a href="javascript:" class="font_blue" id="libray_${goods.id}" onclick="addToLibray('${goods.id}')">加入分销库</a> </span>
+      #{/if}
+      #{else}
+         已加入分销库 
+      #{/else}
       </td>
      </tr>
+     <tr>
+       <td width="350" colspan="5" align="center" id="add_cart_result_${goods.id}" class="buttom_dibu"
+          style="display: none;font-size:14px"> 商品：${goods.name}，已成功添加到分销库！是否进入?
+         <a href="/library"><span class="zi_gray">点击进入</span></a>
+      </td>
     </table>
     #{/paginate.list}
    #{/form}
+   
      <div class="pagination">
 	     <ul>
 	    #{paginate.controls items:goodsList /}

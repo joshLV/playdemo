@@ -1,6 +1,8 @@
-    package controllers;
+package controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import models.resale.Resaler;
 import models.resale.ResalerFav;
@@ -19,41 +21,48 @@ import controllers.resaletrace.ResaleCAS;
 @With({SecureCAS.class, ResaleCAS.class})
 public class ResalerFavs extends Controller {
 
-    /**
-     * 分销库主界面
-     */
-    public static void index() {
-        Resaler resaler = ResaleCAS.getResaler();
+	/**
+	 * 分销库主界面
+	 */
+	public static void index() {
+		Resaler resaler = ResaleCAS.getResaler();
 
-        List<ResalerFav> favs = ResalerFav.findAll(resaler);
-        render(favs, resaler);
-    }
+		List<ResalerFav> favs = ResalerFav.findAll(resaler);
+		render(favs, resaler);
+	}
 
-    /**
-     * 加入或修改购物车列表
-     *
-     * @param goodsId  商品ID
-     */
-    public static void order(Long... goodsIds) {
-        Resaler resaler = ResaleCAS.getResaler();
-        for(long goodsId : goodsIds) {
-            models.sales.Goods goods = models.sales.Goods.findById(goodsId);       
-            ResalerFav.order(resaler, goods);
-        }
-        index();
-    }
+	/**
+	 * 加入或修改购物车列表
+	 *
+	 * @param goodsId  商品ID
+	 */
+	public static void order(@As(",") Long... goodsIds) {
+		Resaler resaler = ResaleCAS.getResaler();
+		Map<String,String> map = new HashMap();
+		String ids ="";
+		for(long goodsId : goodsIds) {
+			models.sales.Goods goods = models.sales.Goods.findById(goodsId);  
+			ResalerFav.order(resaler, goods);
+			ids += goodsId +",";
+			System.out.println(">>>>>>>>."+ids);
+		}
+		map.put("goodsId", !"".equals(ids) ? ids.substring(0,ids.length()-1):"");
+		System.out.println("@@@@@@@@@"+map.get("goodsId"));
+		renderJSON(map);
+
+	}
 
 
-    /**
-     * 从购物车中删除指定商品列表
-     *
-     * @param goodsIds 商品列表
-     */
-    public static void delete(@As(",") List<Long> goodsIds) {
-        Resaler resaler = ResaleCAS.getResaler();
+	/**
+	 * 从购物车中删除指定商品列表
+	 *
+	 * @param goodsIds 商品列表
+	 */
+	public static void delete(@As(",") List<Long> goodsIds) {
+		Resaler resaler = ResaleCAS.getResaler();
 
-        ResalerFav.delete(resaler, goodsIds);
+		ResalerFav.delete(resaler, goodsIds);
 
-        ok();
-    }
+		ok();
+	}
 }
