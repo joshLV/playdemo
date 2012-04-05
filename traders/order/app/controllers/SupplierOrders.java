@@ -25,10 +25,11 @@ public class SupplierOrders extends Controller {
 	 */
 	public static void index(models.order.Order orders) {
 		//该商户ID
-		Long supplierId = MenuInjector.currentUser().getId();
+		Long supplierId = MenuInjector.currentUser().supplier.getId();
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 		JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(orders, supplierId, pageNumber, PAGE_SIZE);
+		renderArgs.put("order.createdAtBegin", orders.createdAtBegin);
 		render(orderList);
 
 	}
@@ -50,7 +51,7 @@ public class SupplierOrders extends Controller {
 	 * 券号列表
 	 */
 	public static void coupons() {
-		Long supplierId = MenuInjector.currentUser().getId();
+		Long supplierId = MenuInjector.currentUser().supplier.getId();
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 		JPAExtPaginator<models.order.ECoupon> couponsList = ECoupon.queryCoupons(supplierId, pageNumber, PAGE_SIZE);

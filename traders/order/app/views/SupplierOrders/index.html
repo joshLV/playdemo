@@ -10,7 +10,7 @@
  <form class="form-horizontal" name="frmlist" action="@{SupplierOrders.index()}" method="GET">
   <table width="80%">
    <tr>
-    <td>成交时间：<input type="text" id="createdAtBegin" name="order.createdAtBegin" onfocus="WdatePicker({readOnly:true})"
+    <td>成交时间${createdAtBegin}：<input type="text" id="createdAtBegin" name="order.createdAtBegin" onfocus="WdatePicker({readOnly:true})" value="${createdAtBegin}"
      class="input-medium Wdate" />至 <input type="text" id="createdAtEnd" name="order.createdAtEnd" onfocus="WdatePicker({readOnly:true})"
      class="input-medium Wdate" /></td>
       <td>物流方式： <select id="deliveryType" name="order.deliveryType" class="input-small">
@@ -79,8 +79,8 @@
      <td>${order.deliveryNo}</td>
      <td>${order.amount}</td>
      <td>&{'order.'+order.status}</td>
-     <td>${order.createdAt == null ?'':order.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
-     <td>${order.refundAt == null ?'':order.refundAt.format("yyyy-MM-dd HH:mm:ss")}</td>
+     <td>${order.createdAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
+     <td>${order.refundAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
     <td><a href="@{SupplierOrders.details(order.id)}">查看</a></td>
     </tr>
     #{/list}

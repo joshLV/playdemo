@@ -14,7 +14,7 @@ $(window).load(function(){
                             $("#checksn").html("<font color=red>此券已消费!</font>");
                             $("#sure").attr("disabled",true);
                             var consumedAt=data.consumedAt;
-                            $("#showinfo").html('券编号: '+data.eCouponSn+'<br />商品名称: '+data.name+'<br />消费日期：'+consumedAt);
+                            $("#showinfo").html('券编号: '+data.eCouponSn+'<br />商品名称: '+data.name+'<br />消费日期：'+data.consumedAt);
                         }else if(data.status =="EXPIRED"){
                              $("#checksn").html("<font color=red>此券已过期!</font>");
                              $("#showinfo").html('券编号: '+data.eCouponSn+'<br />商品名称: '+data.name);
@@ -25,6 +25,7 @@ $(window).load(function(){
                         }else {
                         	 $("#checksn").html("");
                         	 $("#sure").attr("disabled",false);
+                        	 $("#statusw").html('券状态:未消费');
                         	 $("#showinfo").html('券编号: '+data.eCouponSn+'<br />商品名称: '+data.name+'<br />截止日期：'+data.expireAt);
                         } 
                     } else{
@@ -50,6 +51,7 @@ $(window).load(function(){
              success: function(data) {
                  if (data == '0') {
                      $("#checksn").html("<font color=red>该券消费成功！</font>");
+                     $("#statusw").html('券状态:已消费');
                      $("#sure").attr("disabled",false);
                  } else {
                      alert("消费失败！");

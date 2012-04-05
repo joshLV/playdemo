@@ -183,6 +183,7 @@ public class ECoupon extends Model {
     	        AccountUtil.getPlatformCommissionAccount(), 
     	        resalerPrice.subtract(originalPrice),
     	        eCouponSn);
+    	
     	TradeUtil.success(platformCommissionTrade);
     	//如果是在优惠啦网站下的单，还要给优惠啦佣金
     	if (order.userType == AccountType.CONSUMER){
@@ -190,10 +191,11 @@ public class ECoupon extends Model {
 	                AccountUtil.getUhuilaAccount(),
 	                salePrice.subtract(resalerPrice),
 	                eCouponSn);
+	       
 	        TradeUtil.success(uhuilaCommissionTrade);
     	}
-    	
         this.status = ECouponStatus.CONSUMED;
+        this.consumedAt = new Date();
         this.save();
     }
 
@@ -290,6 +292,7 @@ public class ECoupon extends Model {
 
 		//更改订单状态
 		eCoupon.status = ECouponStatus.REFUND;
+		eCoupon.refundAt = new Date();
 		eCoupon.save();
 
 		return returnFlg;
