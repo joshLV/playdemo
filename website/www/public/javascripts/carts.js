@@ -29,16 +29,30 @@ function reorder(goods_id,increment){
 //计算单行的总价
 function calItem(goods_id){
     var total_price = (new BigNumber($("#price_" + goods_id).text())).multiply($("#num_" + goods_id).val()).toString();
-    $("#subtotal_" + goods_id).text(total_price);
+    $("#subtotal_" + goods_id).text(total_price.toString());
 }
 //计算订单总价
 function refreshAmount(){
     var number = 0;
-    $("input.num_input").each(function(){number += Number($(this).val())});
+    var amount = new BigNumber("0");
+
+    $("input[id^=check_goods_]").each(function(){
+        if(!this.checked){
+            return true;
+        }
+        var el_id = $(this).attr("id");
+        var goods_id = el_id.substr(el_id.lastIndexOf("_") + 1);
+        number += Number($("#num_" + goods_id).val());
+        amount = amount.add($("#subtotal_" + goods_id).text());
+
+    });
+
+    //var number = 0;
+    //$("input.num_input").each(function(){number += Number($(this).val())});
     $("#total_num").text(number);
 
-    var amount = new BigNumber("0");
-    $("span[id^=subtotal_]").each(function(){amount = amount.add($(this).text())});;
+    //var amount = new BigNumber("0");
+    //$("span[id^=subtotal_]").each(function(){amount = amount.add($(this).text())});;
     $("#carts_amount").text(amount.toString());
 }
 
@@ -102,6 +116,7 @@ $(window).load(
                         set_all_select_all_checkbox(false);
                         set_all_goods_checkbox(false);
                      } 
+                    refreshAmount();
                   } 
                 )});
         //点击单个复选框
@@ -119,14 +134,15 @@ $(window).load(
             return all_check;
         };
         $("input[id^=check_goods_]").each(function(){ 
-            $(this).click(
-                function(){
-            if(all_checked()){
-                set_all_select_all_checkbox(true);
-            }else{
-                set_all_select_all_checkbox(false);
-            }
-        })}); 
+            $(this).click( function(){
+                if(all_checked()){
+                    set_all_select_all_checkbox(true);
+                }else{
+                    set_all_select_all_checkbox(false);
+                }
+                refreshAmount();
+            })
+        }); 
 
 
         //点击批量删除
@@ -153,6 +169,8 @@ $(window).load(
                 }});
             
             });
+        set_all_select_all_checkbox(true);
+        set_all_goods_checkbox(true);
         refreshAmount();
     }
 );
