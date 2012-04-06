@@ -13,6 +13,9 @@ import java.util.Date;
 public class DateUtil {
 
     public static Date getEndOfDay(Date day) {
+        if (day == null){
+            return null;
+        }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(day);
         calendar.set(Calendar.HOUR_OF_DAY,23);
