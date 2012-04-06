@@ -185,7 +185,7 @@ public class GoodsUnitTest extends UnitTest {
     public void testUpdate() {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
         Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier2");
-        models.sales.Goods goods = new Goods();
+        models.sales.Goods goods = Goods.findById(goodsId);
         goods.supplierId = supplierId;
         goods.no = "11";
         goods.name = "test111";
