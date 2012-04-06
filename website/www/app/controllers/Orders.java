@@ -74,10 +74,10 @@ public class Orders extends Controller {
         if (rCartList.size() == 0) {
             rCartAmount = new BigDecimal(0);
         } else {
-            rCartAmount = Cart.amount(rCartList).add(new BigDecimal(5));
+            rCartAmount = Cart.amount(rCartList).add(new BigDecimal("5"));
         }
         BigDecimal totalAmount = eCartAmount.add(rCartAmount);
-        BigDecimal goodsAmount = rCartList.size() == 0 ? eCartAmount : totalAmount.subtract(new BigDecimal(5));
+        BigDecimal goodsAmount = rCartList.size() == 0 ? eCartAmount : totalAmount.subtract(new BigDecimal("5"));
 
         renderArgs.put("goodsAmount", goodsAmount);
         renderArgs.put("totalAmount", totalAmount);
