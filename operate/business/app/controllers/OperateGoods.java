@@ -88,19 +88,21 @@ public class OperateGoods extends Controller {
             for (BigDecimal levelPrice : levelPrices) {
                 levelPrice = ZERO;
             }
-            renderArgs.put("levelPrices", levelPrices);
-        } else {
-            BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
-            for (int i = 0; i < levelPrices.length; i++) {
-                GoodsLevelPrice levelPrice = goods.getLevelPrices().get(i);
-                if (levelPrice == null) {
-                    levelPrices[i] = ZERO;
-                } else {
-                    levelPrices[i] = levelPrice.price;
-                }
-            }
-            renderArgs.put("levelPrices", levelPrices);
         }
+//        else {
+//            BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
+//            for (int i = 0; i < levelPrices.length; i++) {
+//                GoodsLevelPrice levelPrice = goods.getLevelPrices().get(i);
+//                if (levelPrice == null) {
+//                    levelPrices[i] = ZERO;
+//                } else {
+//                    levelPrices[i] = levelPrice.price;
+//                }
+//                System.out.println("levelPrice." + ResalerLevel.values()[i] + ":" + levelPrices[i]);
+//                renderArgs.put("levelPrice." + ResalerLevel.values()[i], levelPrices[i]);
+//            }
+//        }
+//        renderArgs.put("goods", goods);
         if (goods.isAllShop != null) {
             if (goods.isAllShop && goods.shops != null) {
                 goods.shops = null;
@@ -173,6 +175,7 @@ public class OperateGoods extends Controller {
         goods.setLevelPrices(levelPrices);
 
         checkSalePrice(goods);
+        checkLevelPrice(levelPrices);
         if (Validation.hasErrors()) {
             List<Supplier> supplierList = Supplier.findUnDeleted();
             renderArgs.put("supplierList", supplierList);
@@ -249,7 +252,6 @@ public class OperateGoods extends Controller {
         String absolutePath = FileUploadUtil.storeImage(uploadImageFile, goodsId, UploadFiles.ROOT_PATH);
         if (oldImageFile != null && !"".equals(oldImageFile)) {
             File oldImage = new File(UploadFiles.ROOT_PATH + oldImageFile);
-            System.out.println("oldImage.getAbsolutePath():" + oldImage.getAbsolutePath());
             oldImage.delete();
         }
         return absolutePath.substring(UploadFiles.ROOT_PATH.length(), absolutePath.length());
@@ -290,8 +292,9 @@ public class OperateGoods extends Controller {
         }
         checkImageFile(imagePath);
 
-        goods.setLevelPrices(levelPrices);
+        goods.setLevelPrices(levelPrices, id);
         checkSalePrice(goods);
+        checkLevelPrice(levelPrices);
         if (Validation.hasErrors()) {
 
             List<Supplier> supplierList = Supplier.findUnDeleted();
@@ -301,11 +304,9 @@ public class OperateGoods extends Controller {
         }
 
         String supplierUser = OperateRbac.currentUser().loginName;
-        System.out.println("imagePath:" + imagePath);
         try {
             Goods oldGoods = Goods.findById(id);
             String oldImagePath = oldGoods == null ? null : oldGoods.imagePath;
-            System.out.println("oldImagePath:" + oldImagePath);
             String image = uploadImagePath(imagePath, id, oldImagePath);
             if (StringUtils.isNotEmpty(image)) {
                 goods.imagePath = image;
@@ -322,6 +323,23 @@ public class OperateGoods extends Controller {
             preview0(id);
         }
         index(null);
+    }
+
+    private static void checkLevelPrice(BigDecimal[] prices) {
+        if (prices == null) {
+            for (ResalerLevel level : ResalerLevel.values()) {
+                Validation.addError("goods.levelPrice." + level, "validation.required");
+            }
+            return;
+        }
+        for (int i = 0; i < prices.length; i++) {
+            BigDecimal price = prices[i];
+            if (price == null) {
+                Validation.addError("goods.levelPrice." + ResalerLevel.values()[i], "validation.required");
+            } else if (price.compareTo(new BigDecimal("0.01")) < 0) {
+                Validation.addError("goods.levelPrice." + ResalerLevel.values()[i], "validation.min", "0.01");
+            }
+        }
     }
 
     private static void preview0(Long id) {

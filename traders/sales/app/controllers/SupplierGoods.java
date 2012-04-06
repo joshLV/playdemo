@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.math.BigDecimal.ZERO;
+import static play.Logger.warn;
+
 /**
  * 通用说明：
  *
@@ -76,20 +79,21 @@ public class SupplierGoods extends Controller {
             goods = new models.sales.Goods();
             BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
             for (BigDecimal levelPrice : levelPrices) {
-                levelPrice = BigDecimal.ZERO;
+                levelPrice = ZERO;
+            }
+            renderArgs.put("levelPrices", levelPrices);
+        } else {
+            BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
+            for (int i = 0; i < levelPrices.length; i++) {
+                GoodsLevelPrice levelPrice = goods.getLevelPrices().get(i);
+                if (levelPrice == null) {
+                    levelPrices[i] = ZERO;
+                } else {
+                    levelPrices[i] = levelPrice.price;
+                }
             }
             renderArgs.put("levelPrices", levelPrices);
         }
-//        BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
-//        for (int i = 0; i < levelPrices.length; i++) {
-//            GoodsLevelPrice levelPrice = goods.getLevelPrices().get(i);
-//            if (levelPrice == null) {
-//                levelPrices[i] = BigDecimal.ZERO;
-//            } else {
-//                levelPrices[i] = levelPrice.price;
-//            }
-//        }
-//        renderArgs.put("levelPrices", levelPrices);
         if (goods.isAllShop != null) {
             if (goods.isAllShop && goods.shops != null) {
                 goods.shops = null;
@@ -130,7 +134,7 @@ public class SupplierGoods extends Controller {
             subCategoryList = Category.findByParent(goods.topCategoryId);
         }
         for (String key : validation.errorsMap().keySet()) {
-            System.out.println("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
+            warn("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
         }
         renderArgs.put("shopList", shopList);
         renderArgs.put("brandList", brandList);
@@ -144,7 +148,7 @@ public class SupplierGoods extends Controller {
      * 展示添加商品页面
      */
     public static void preview(Long id) {
-        redirect("http://www.uhuila.cn/goods/" + id + "?preview=true");
+        preview0(id);
     }
 
     /**
@@ -161,6 +165,7 @@ public class SupplierGoods extends Controller {
         checkImageFile(imagePath);
 
         goods.setLevelPrices(levelPrices);
+
         if (Validation.hasErrors()) {
             renderInit(goods);
             render("SupplierGoods/add.html");
@@ -173,16 +178,16 @@ public class SupplierGoods extends Controller {
 
         goods.create();
         try {
-            goods.imagePath = uploadImagePath(imagePath, goods.id);
+            goods.imagePath = uploadImagePath(imagePath, goods.id, null);
         } catch (IOException e) {
             e.printStackTrace();
-            error("goods.image_upload_failed");
+            error(500, "goods.image_upload_failed");
         }
         goods.save();
 
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            redirect("http://www.uhuila.cn/goods/" + goods.id + "?preview=true");
+            preview0(goods.id);
         }
         index(null);
     }
@@ -220,13 +225,18 @@ public class SupplierGoods extends Controller {
      * @param uploadImageFile
      * @param goodsId
      */
-    private static String uploadImagePath(File uploadImageFile, Long goodsId) throws IOException {
+    private static String uploadImagePath(File uploadImageFile, Long goodsId, String oldImageFile) throws IOException {
         if (uploadImageFile == null || uploadImageFile.getName() == null) {
             return "";
         }
         //取得文件存储路径
 
         String absolutePath = FileUploadUtil.storeImage(uploadImageFile, goodsId, UploadFiles.ROOT_PATH);
+        if (oldImageFile != null && !"".equals(oldImageFile)) {
+            File oldImage = new File(UploadFiles.ROOT_PATH + oldImageFile);
+            System.out.println("oldImage.getAbsolutePath():" + oldImage.getAbsolutePath());
+            oldImage.delete();
+        }
         return absolutePath.substring(UploadFiles.ROOT_PATH.length(), absolutePath.length());
     }
 
@@ -235,6 +245,7 @@ public class SupplierGoods extends Controller {
      */
     public static void edit(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
+
         renderInit(goods);
         render(goods, id);
     }
@@ -265,12 +276,16 @@ public class SupplierGoods extends Controller {
         String supplierUser = MenuInjector.currentUser().loginName;
 
         try {
-            String image = uploadImagePath(imagePath, id);
-            if (image != null) {
+            Goods oldGoods = Goods.findById(id);
+            String oldImagePath = oldGoods == null ? null : oldGoods.imagePath;
+            System.out.println("oldImagePath:" + oldImagePath);
+            String image = uploadImagePath(imagePath, id, oldImagePath);
+            if (StringUtils.isNotEmpty(image)) {
                 goods.imagePath = image;
             }
         } catch (IOException e) {
-            error("goods.image_upload_failed");
+            e.printStackTrace();
+            error(e);
         }
 
         goods.updatedBy = supplierUser;
@@ -278,9 +293,13 @@ public class SupplierGoods extends Controller {
 
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            redirect("http://www.uhuila.cn/goods/" + id + "?preview=true");
+            preview0(id);
         }
         index(null);
+    }
+
+    private static void preview0(Long id) {
+        redirect("http://www.uhuila.cn/goods/" + id + "?preview=true");
     }
 
     /**
@@ -321,6 +340,7 @@ public class SupplierGoods extends Controller {
 
         index(null);
     }
+
 
     /**
      * 删除指定商品

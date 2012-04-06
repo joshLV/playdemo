@@ -4,54 +4,29 @@
  */
 package models.sales;
 
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.constants.ImageSize;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.PathUtil;
+import models.resale.Resaler;
+import models.resale.ResalerFav;
+import models.resale.ResalerLevel;
+import models.supplier.Supplier;
+import org.apache.commons.lang.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
+import play.Play;
+import play.data.validation.*;
+import play.db.jpa.JPA;
+import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
-import models.resale.Resaler;
-import models.resale.ResalerFav;
-import models.resale.ResalerLevel;
-import models.supplier.Supplier;
-
-import org.apache.commons.lang.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
-
-import play.Play;
-import play.data.validation.InFuture;
-import play.data.validation.MaxSize;
-import play.data.validation.Min;
-import play.data.validation.MinSize;
-import play.data.validation.Required;
-import play.db.jpa.JPA;
-import play.db.jpa.Model;
-import play.modules.paginate.JPAExtPaginator;
-
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.constants.ImageSize;
-import com.uhuila.common.util.PathUtil;
 
 @Entity
 @Table(name = "goods")
@@ -285,7 +260,7 @@ public class Goods extends Model {
 
     @Transient
     public Long topCategoryId;
-    
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
     public List<ResalerFav> resalerFavs;
@@ -356,31 +331,31 @@ public class Goods extends Model {
      * 不同分销商等级所对应的价格, 此方法可确保返回的价格数量与分销等级的数量相同
      */
     public List<GoodsLevelPrice> getLevelPrices() {
-		if (levelPrices == null) {
-			levelPrices = new ArrayList<>();
-		}
-		if (levelPrices.size() == 0) {
-			for (ResalerLevel level : ResalerLevel.values()) {
-				GoodsLevelPrice levelPrice = new GoodsLevelPrice(level, BigDecimal.ZERO);
-				levelPrices.add(levelPrice);
-			}
-		} else {
-			for (GoodsLevelPrice levelPrice : levelPrices) {
-				if (levelPrice.price == null) {
-					levelPrice.price = BigDecimal.ZERO;
-				}
-			}
-		}
+        if (levelPrices == null) {
+            levelPrices = new ArrayList<>();
+        }
+        if (levelPrices.size() == 0) {
+            for (ResalerLevel level : ResalerLevel.values()) {
+                GoodsLevelPrice levelPrice = new GoodsLevelPrice(this, level, BigDecimal.ZERO);
+                levelPrices.add(levelPrice);
+            }
+        } else {
+            for (GoodsLevelPrice levelPrice : levelPrices) {
+                if (levelPrice.price == null) {
+                    levelPrice.price = BigDecimal.ZERO;
+                }
+            }
+        }
 
-		if (levelPrices.size() < ResalerLevel.values().length) {
-			int zeroLevelCount = ResalerLevel.values().length - levelPrices.size();
-			int originalSize = levelPrices.size();
-			for (int i = 0; i < zeroLevelCount; i++) {
-				levelPrices.add(new GoodsLevelPrice(ResalerLevel.values()[i + originalSize], BigDecimal.ZERO));
-			}
-		}
-		return levelPrices;
-	}
+        if (levelPrices.size() < ResalerLevel.values().length) {
+            int zeroLevelCount = ResalerLevel.values().length - levelPrices.size();
+            int originalSize = levelPrices.size();
+            for (int i = 0; i < zeroLevelCount; i++) {
+                levelPrices.add(new GoodsLevelPrice(this, ResalerLevel.values()[i + originalSize], BigDecimal.ZERO));
+            }
+        }
+        return levelPrices;
+    }
 
     /**
      * 最小规格图片路径
@@ -435,7 +410,7 @@ public class Goods extends Model {
         if (isAllShop) {
             shops = null;
         }
-
+        expireAt = DateUtil.getEndOfDay(expireAt);
         return super.create();
     }
 
@@ -447,7 +422,7 @@ public class Goods extends Model {
         updateGoods.name = goods.name;
         updateGoods.no = goods.no;
         updateGoods.effectiveAt = goods.effectiveAt;
-        updateGoods.expireAt = goods.expireAt;
+        updateGoods.expireAt = DateUtil.getEndOfDay(goods.expireAt);
         updateGoods.faceValue = goods.faceValue;
         updateGoods.originalPrice = goods.originalPrice;
         updateGoods.salePrice = goods.salePrice;
@@ -563,30 +538,40 @@ public class Goods extends Model {
      */
     @Transient
     public BigDecimal getResalePrice(ResalerLevel level) {
-		BigDecimal resalePrice = faceValue;
+        BigDecimal resalePrice = faceValue;
 
-		for (GoodsLevelPrice goodsLevelPrice : getLevelPrices()){
-			if (goodsLevelPrice.level == level){
-				resalePrice = originalPrice.add(goodsLevelPrice.price);
-				break;
-			}
-		}
-		return resalePrice;
-	}
-    
-	/**
-	 * 判断分销商是否已经把商品加入分销库
-	 *
-	 * @return isExist true 已经存在，false 不存在
-	 */
-	@Transient
-	public boolean isExistlibray() {
-		boolean isExist = false;
-		  if (resalerFavs != null && resalerFavs.size()>0) {
-	        	isExist = true;
-	        }
-	        
-		return isExist;
-	}
+        for (GoodsLevelPrice goodsLevelPrice : getLevelPrices()) {
+            if (goodsLevelPrice.level == level) {
+                resalePrice = originalPrice.add(goodsLevelPrice.price);
+                break;
+            }
+        }
+        return resalePrice;
+    }
 
+    /**
+     * 判断分销商是否已经把商品加入分销库
+     *
+     * @return isExist true 已经存在，false 不存在
+     */
+    @Transient
+    public boolean isExistLibrary() {
+        boolean isExist = false;
+        if (resalerFavs != null && resalerFavs.size() > 0) {
+            isExist = true;
+        }
+
+        return isExist;
+    }
+
+    public void setLevelPrices(BigDecimal[] prices, Long id) {
+        if (prices == null || prices.length == 0) {
+            return;
+        }
+        for (int i = 0; i < prices.length; i++) {
+            this.id = id;
+            getLevelPrices().get(i).price = prices[i];
+        }
+
+    }
 }

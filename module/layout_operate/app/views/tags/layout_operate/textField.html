@@ -4,17 +4,23 @@
 *{value:     文本框中的值}*
 *{note:      文本框后的说明文字（选填）}*
 *{required:  文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
-#{field _name}
 <div class="control-group">
-    #{layout_operate.labelText name:_label?:_name, required:_required/}
+#{layout_operate.labelText name:_label?:_name, required:_required/}
 
     <div class="controls">
+    #{field _name}
         <input type="text" id="${_id?:field.id}" name="${field.name}" class="input-xlarge"
                value="${params[field.name]?.escape()?.raw() ?: field.error?.message == 'validation.required' ?
                "":_value?.escape()?.raw()}"/><span>${_note}</span>
         #{ifError field.name}
             <span class="error">${field.error.raw()}</span>
         #{/ifError}
+    #{/field}
+    #{field _err?:'errors'}
+        #{ifError field.name}
+            <span class="error">${field.error.raw()?:''}</span>
+        #{/ifError}
+    #{/field}
     </div>
 </div>
-#{/field}
+

@@ -24,7 +24,8 @@ public class GoodsLevelPrice extends Model {
 
     }
 
-    public GoodsLevelPrice(ResalerLevel level, BigDecimal price) {
+    public GoodsLevelPrice(Goods goods,ResalerLevel level, BigDecimal price) {
+        this.goods = goods;
         this.level = level;
         this.price = price;
     }

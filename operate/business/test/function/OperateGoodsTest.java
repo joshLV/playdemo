@@ -68,29 +68,6 @@ public class OperateGoodsTest extends FunctionalTest {
     }
 
     /**
-     * 修改商品信息
-     */
-    @Test
-    public void testEdit() {
-        Long brandId = (Long) Fixtures.idCache.get("models.sales.Brand-Brand_1");
-        Long categoryId = (Long) Fixtures.idCache.get("models.sales.Category-Category_1");
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        Response response = GET("/goods/" + goodsId + "/edit");
-        assertIsOk(response);
-        assertContentType("text/html", response);
-        assertCharset(Play.defaultWebEncoding, response);
-
-        String params = "goods.name=test123&goods.faceValue=120&goods" +
-                ".originalPrice=120&goods.details=abcdefgh&goods.salePrice=123&goods.categories.id=" +
-                categoryId + "&goods.expireAt=2015-12-12&goods.effectiveAt=2012-03-12&goods.baseSale=1000&goods.brand" +
-                ".id=" + brandId;
-        response = PUT("/goods/" + goodsId, "application/x-www-form-urlencoded", params);
-        assertStatus(302, response);
-        Goods goods = Goods.findById(goodsId);
-        assertEquals("test123", goods.name);
-    }
-
-    /**
      * 添加商品信息
      */
     @Test
@@ -136,5 +113,29 @@ public class OperateGoodsTest extends FunctionalTest {
         assertStatus(302, response);
         Goods goods = Goods.findById(goodsId);
         assertEquals(GoodsStatus.ONSALE, goods.status);
+    }
+
+    /**
+     * 修改商品信息
+     */
+    @Test
+    public void testEdit() {
+        Long brandId = (Long) Fixtures.idCache.get("models.sales.Brand-Brand_1");
+        Long categoryId = (Long) Fixtures.idCache.get("models.sales.Category-Category_1");
+        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
+        Response response = GET("/goods/" + goodsId + "/edit");
+        assertIsOk(response);
+        assertContentType("text/html", response);
+        assertCharset(Play.defaultWebEncoding, response);
+
+        String params = "goods.name=test123&goods.faceValue=120&goods" +
+                ".originalPrice=120&goods.details=abcdefgh&goods.salePrice=123&goods.categories.id=" +
+                categoryId + "&goods.expireAt=2015-12-12&goods.effectiveAt=2012-03-12&goods.baseSale=1000" +
+                "&levelPrices=1&goods.brand" +
+                ".id=" + brandId;
+        response = PUT("/goods/" + goodsId, "application/x-www-form-urlencoded", params);
+        assertStatus(302, response);
+        Goods goods = Goods.findById(goodsId);
+        assertEquals("test123", goods.name);
     }
 }

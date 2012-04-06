@@ -1,16 +1,6 @@
 #{set 'moreScripts'}
     #{get 'moreScripts'/}
 <script src="@{'/public/javascripts/goods-form.js'}" type="text/javascript" charset="UTF-8"></script>
-<script type="text/javascript">
-    $.load(
-            function () {
-                #{list items:models.resale.ResalerLevel.values(), as: 'level'}
-                    $("#levelPrices_${level}").onchange(function () {
-                        alert("hello");
-                    });
-                #{/list}
-            });
-</script>
 #{/set}
 #{layout_operate.selectField name:'goods.supplierId', value:goods?.supplierId, error:'goods.supplierId'}
     #{list items:supplierList, as:'supplier' }
@@ -40,8 +30,19 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 #{layout_operate.textField name:'goods.salePrice', value:goods?.salePrice?:"", note:'元', required:true/}
 #{set i:0/}
 #{list items:models.resale.ResalerLevel.values(), as: 'level'}
-    #{layout_operate.textField id:'levelPrices_'+level, name:'levelPrices', label:'goods.levelPrice.'+models.resale
-    .ResalerLevel.values()[i++],value:levelPrices?.length==i?"0":levelPrices[i]?:"", note:'元',required:true/}
+<div class="control-group">
+    <label for='levelPrices_${level}' class="control-label">
+        <span style="color: red; ">*</span>&{'goods.levelPrice.'+models.resale.ResalerLevel.values()[i]}</label>
+
+    <div class="controls">
+        <input type="text" id='levelPrices_${level}' name="levelPrices" class="input-xlarge"
+               value="${goods?.levelPrices?goods.levelPrices.price[i]:''}"/>元
+        #{field 'goods.levelPrice.'+level}
+            <span class="error">#{error field?.name/}</span>
+        #{/field}
+    </div>
+</div>
+    #{set i++/}
 #{/list}
 
 #{layout_operate.textField name:'goods.baseSale', value:goods?.baseSale, note:'件', required:true/}
