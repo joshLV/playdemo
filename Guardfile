@@ -4,7 +4,7 @@ interactor :readline
 case RbConfig::CONFIG['host_os'].downcase
 when /linux/
   # notification :libnotify
-  notification :notifysend
+  notification :notifysend, :t => 10000
   # notification :gntp
 when /darwin/
   notification :growl_notify

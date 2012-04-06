@@ -19,11 +19,18 @@ public class FileUploadUtilTest extends TestCase {
         URL testUrl = FileUploadUtilTest.class.getClassLoader().getResource("test.jpg");
         File image = new File(testUrl.getFile());
         String targetPath = FileUploadUtil.storeImage(image, 12L, "/tmp");
-        assertEquals("/tmp/0/0/12/12.jpg", targetPath);
+        assertEquals("/tmp/0/0/12/", targetPath.substring(0,"/tmp/0/0/12/".length()));
         targetPath = FileUploadUtil.storeImage(image, 24L, false, "/tmp");
         assertEquals("/tmp/0/0/24/test.jpg", targetPath);
         targetPath = FileUploadUtil.storeImage(image, "/tmp");
         assertEquals("/tmp/", targetPath.substring(0, 5));
         assertEquals(".jpg", targetPath.substring(targetPath.length() - 4, targetPath.length()));
     }
+
+    @Test
+    public void testDeleteExtImages() {
+        String directory = FileUploadUtil.deleteExtImages("/tmp/directory/o/0/0/48", "p");
+        assertEquals("/tmp/directory/p/0/0/48", directory);
+    }
+
 }

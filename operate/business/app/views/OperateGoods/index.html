@@ -88,7 +88,8 @@
                 <td><input type="checkbox" id="checkoption" value="${goods?.id}" name="id"/></td>
                 <td>${goods?.getSupplier()?.fullName}</td>
                 <td>${goods?.no}</td>
-                <td><a href="http://www.uhuila.cn/goods/${goods?.id}?preview=true"><img src="${goods.imageTinyPath}"/>${goods.name}</a></td>
+                <td><a href="http://www.uhuila.cn/goods/${goods?.id}?preview=true"><img
+                        src="${goods.imageTinyPath}"/>${goods.name}</a></td>
                 <td class="amount">${goods?.faceValue?.formatCurrency('CNY')}</td>
                 <td class="amount">${goods?.originalPrice?.formatCurrency('CNY')}</td>
                 <td class="amount">${goods?.salePrice?.formatCurrency('CNY')}</td>

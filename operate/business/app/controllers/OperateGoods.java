@@ -12,7 +12,6 @@ import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
-import play.Logger;
 import play.data.binding.As;
 import play.data.validation.Required;
 import play.data.validation.Valid;
@@ -29,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static java.math.BigDecimal.ZERO;
+import static play.Logger.warn;
 
 /**
  * 通用说明：
@@ -119,7 +119,6 @@ public class OperateGoods extends Controller {
         } else {
             goods.isAllShop = true;
         }
-        Logger.info("shopIds=" + shopIds);
 
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         List<Brand> brandList = Brand.findByOrder();
@@ -142,7 +141,7 @@ public class OperateGoods extends Controller {
             subCategoryList = Category.findByParent(goods.topCategoryId);
         }
         for (String key : validation.errorsMap().keySet()) {
-            Logger.warn("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
+            warn("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
         }
         renderArgs.put("shopList", shopList);
         renderArgs.put("brandList", brandList);
@@ -156,7 +155,7 @@ public class OperateGoods extends Controller {
      * 展示添加商品页面
      */
     public static void preview(Long id) {
-        redirect("http://www.uhuila.cn/goods/" + id + "?preview=true");
+        preview0(id);
     }
 
     /**
@@ -187,9 +186,8 @@ public class OperateGoods extends Controller {
 
         goods.create();
         try {
-            goods.imagePath = uploadImagePath(imagePath, goods.id);
+            goods.imagePath = uploadImagePath(imagePath, goods.id, null);
         } catch (IOException e) {
-            System.out.println("e:" + e);
             e.printStackTrace();
             error(500, "goods.image_upload_failed");
         }
@@ -197,7 +195,7 @@ public class OperateGoods extends Controller {
 
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            redirect("http://www.uhuila.cn/goods/" + goods.id + "?preview=true");
+            preview0(goods.id);
         }
         index(null);
     }
@@ -243,13 +241,17 @@ public class OperateGoods extends Controller {
      * @param uploadImageFile
      * @param goodsId
      */
-    private static String uploadImagePath(File uploadImageFile, Long goodsId) throws IOException {
+    private static String uploadImagePath(File uploadImageFile, Long goodsId, String oldImageFile) throws IOException {
         if (uploadImageFile == null || uploadImageFile.getName() == null) {
             return "";
         }
         //取得文件存储路径
-
         String absolutePath = FileUploadUtil.storeImage(uploadImageFile, goodsId, UploadFiles.ROOT_PATH);
+        if (oldImageFile != null && !"".equals(oldImageFile)) {
+            File oldImage = new File(UploadFiles.ROOT_PATH + oldImageFile);
+            System.out.println("oldImage.getAbsolutePath():" + oldImage.getAbsolutePath());
+            oldImage.delete();
+        }
         return absolutePath.substring(UploadFiles.ROOT_PATH.length(), absolutePath.length());
     }
 
@@ -299,26 +301,31 @@ public class OperateGoods extends Controller {
         }
 
         String supplierUser = OperateRbac.currentUser().loginName;
-
+        System.out.println("imagePath:" + imagePath);
         try {
-            String image = uploadImagePath(imagePath, id);
-            if (!StringUtils.isEmpty(image)) {
+            Goods oldGoods = Goods.findById(id);
+            String oldImagePath = oldGoods == null ? null : oldGoods.imagePath;
+            System.out.println("oldImagePath:" + oldImagePath);
+            String image = uploadImagePath(imagePath, id, oldImagePath);
+            if (StringUtils.isNotEmpty(image)) {
                 goods.imagePath = image;
             }
-
         } catch (IOException e) {
             e.printStackTrace();
-            error("goods.image_upload_failed");
+            error(e);
         }
-
         goods.updatedBy = supplierUser;
         Goods.update(id, goods);
 
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            redirect("http://www.uhuila.cn/goods/" + id + "?preview=true");
+            preview0(id);
         }
         index(null);
+    }
+
+    private static void preview0(Long id) {
+        redirect("http://www.uhuila.cn/goods/" + id + "?preview=true");
     }
 
     /**
