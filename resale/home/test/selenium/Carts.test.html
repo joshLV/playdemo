@@ -1,4 +1,6 @@
-#{fixture delete:'all', load:['fixture/resaler-fav.yml','fixture/resaler.yml'] /}
+#{fixture delete:'all' ,
+load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_unit.yml',
+'fixture/shops_unit.yml','fixture/goods_unit.yml','fixture/resaler.yml','fixture/resaler-fav.yml'] /}
 
 %{
     phone1 = '13472581853'
@@ -9,45 +11,45 @@
 #{selenium 'Test Carts'}
     #{include 'test/selenium/step/login.selenium' /}
 
-    open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}')
-    click('id=link_add_cart')
-    waitForElementPresent('id=add_cart_result')
-    open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
-    click('id=link_add_cart')
-    waitForElementPresent('id=add_cart_result')
+    open('/goods')
+	click('id=libray_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}')
+	waitForElementPresent('id=add_cart_result_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}')
+	
+	click('id=libray_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_008")}')
+	waitForElementPresent('id=add_cart_result_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_008")}')
     
     openAndWait('/carts')
     
-    select('id=favs_list','label=测试商品1')
+    select('id=favs_list','label=京东商城300元京券')
     type('name=phones','${phone1} ${phone2}')
     clickAndWait('id=submit')
     
-    select('id=favs_list','label=测试商品2')
+    select('id=favs_list','label=京东商城400元京券')
     type('name=phones','${phone1} ${phone2}')
     clickAndWait('id=submit')
 
 
     
-    verifyValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}','1')
-    verifyValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone2}','1')
+    verifyValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}-${phone1}','1')
+    verifyValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}-${phone2}','1')
 
-    click('id=inc_add_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')
+    click('id=inc_add_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}-${phone1}')
 
     
-    waitForValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}','2')
-    click('id=inc_sub_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')
-    waitForValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}','1')
-    click('id=inc_sub_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')
-    waitForValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}','1')
+    waitForValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}-${phone1}','2')
+    click('id=inc_sub_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}-${phone1}')
+    waitForValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}-${phone1}','1')
+    click('id=inc_sub_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}-${phone1}')
+    waitForValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}-${phone1}','1')
     
-    verifyElementPresent('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')
-    clickAndWait('id=del_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')    
-    verifyElementNotPresent('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}-${phone1}')
+    verifyElementPresent('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}-${phone1}')
+    clickAndWait('id=del_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}-${phone1}')    
+    verifyElementNotPresent('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}-${phone1}')
     
     
-    verifyElementPresent('id=batch_del_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
-    clickAndWait('id=batch_del_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
-    verifyElementNotPresent('id=batch_del_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
+    verifyElementPresent('id=batch_del_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_008")}')
+    clickAndWait('id=batch_del_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_008")}')
+    verifyElementNotPresent('id=batch_del_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_008")}')
     
     
     clickAndWait('//a[contains(@href, "/carts/confirm")]')

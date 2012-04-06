@@ -22,7 +22,7 @@ import controllers.resaletrace.ResaleCAS;
  */
 @With({SecureCAS.class,ResaleCAS.class})
 public class ResalerGoods extends Controller {
-	public static int PAGE_SIZE = 6;
+	public static int PAGE_SIZE = 12;
 	public static int LIMIT = 8;
 	/**
 	 * 商品列表主界面

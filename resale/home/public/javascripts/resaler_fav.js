@@ -89,6 +89,10 @@ $(window).load(
                 }});
             
             });
+        
+         $("#search").click(function () {
+             $('#orderForm').submit();
+         });
     }
 );
 

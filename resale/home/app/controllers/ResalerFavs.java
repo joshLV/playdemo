@@ -1,9 +1,11 @@
 package controllers;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import models.order.OrderStatus;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import play.data.binding.As;
@@ -24,10 +26,14 @@ public class ResalerFavs extends Controller {
 	/**
 	 * 分销库主界面
 	 */
-	public static void index() {
+	public static void index(Date createdAtBegin, Date createdAtEnd, String goodsName) {
 		Resaler resaler = ResaleCAS.getResaler();
-
-		List<ResalerFav> favs = ResalerFav.findAll(resaler);
+		List<ResalerFav> favs = ResalerFav.findFavs(resaler,createdAtBegin, createdAtEnd,
+				goodsName);
+		renderArgs.put("createdAtBegin", createdAtBegin);
+		renderArgs.put("createdAtEnd", createdAtEnd);
+//		renderArgs.put("status", status);
+		renderArgs.put("goodsName", goodsName);
 		render(favs, resaler);
 	}
 
@@ -38,16 +44,7 @@ public class ResalerFavs extends Controller {
 	 */
 	public static void order(@As(",") Long... goodsIds) {
 		Resaler resaler = ResaleCAS.getResaler();
-		Map<String,String> map = new HashMap();
-		String ids ="";
-		for(long goodsId : goodsIds) {
-			models.sales.Goods goods = models.sales.Goods.findById(goodsId);  
-			ResalerFav.order(resaler, goods);
-			ids += goodsId +",";
-			System.out.println(">>>>>>>>."+ids);
-		}
-		map.put("goodsId", !"".equals(ids) ? ids.substring(0,ids.length()-1):"");
-		System.out.println("@@@@@@@@@"+map.get("goodsId"));
+		Map<String,String> map = ResalerFav.checkGoods(resaler,goodsIds);
 		renderJSON(map);
 
 	}

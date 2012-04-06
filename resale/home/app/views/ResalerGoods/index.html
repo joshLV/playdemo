@@ -257,14 +257,16 @@
          <a href="/library">点击进入</a></span>
     </div>
 </div>
+
  #{form @ResalerGoods.index() , id:'indexForm'}
+     <table width="798" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE">
     #{paginate.list items:goodsList, as:'goods'}
      <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
-     <table width="798" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE">
+ 
      <tr>
      <td>
       <td id="goodsId_${goods.id}">
-         #{if !goods.isExistlibray()}
+         #{if !goods.isExistLibrary()}
           <input type="checkbox" value="${goods.id}"  name="goodsIds[]"/>
          #{/if}
          #{else}
@@ -284,7 +286,7 @@
       折扣：${goods.discountExpress.yesno(goods.discountExpress+'折','无优惠')}</td>
       <td width="150" align="center">
       <a class="font_blue" href="@{ResalerGoods.show(goods.id)}">查看详情</a><br>
-      #{if !goods.isExistlibray()}
+      #{if !goods.isExistLibrary()}
         <span id= "add_${goods.id}"><a href="javascript:" class="font_blue" id="libray_${goods.id}" onclick="addToLibray('${goods.id}')">加入分销库</a> </span>
       #{/if}
       #{else}
@@ -297,8 +299,8 @@
           style="display: none;font-size:14px"> 商品：${goods.name}，已成功添加到分销库！是否进入?
          <a href="/library"><span class="zi_gray">点击进入</span></a>
       </td>
-    </table>
     #{/paginate.list}
+    </table>
    #{/form}
    
      <div class="pagination">

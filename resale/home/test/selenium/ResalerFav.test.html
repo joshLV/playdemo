@@ -1,23 +1,46 @@
-#{fixture delete:'all', load:['fixture/resaler-fav.yml','fixture/resaler.yml'] /}
+#{fixture delete:'all' ,
+load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_unit.yml',
+'fixture/shops_unit.yml','fixture/goods_unit.yml','fixture/resaler.yml','fixture/resaler-fav.yml'] /}
+
 
 #{selenium 'Test Carts/index.html'}
 #{include 'test/selenium/step/login.selenium' /}
 
-open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}')
-click('id=link_add_cart')
-waitForElementPresent('id=add_cart_result')
-open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
-click('id=link_add_cart')
-waitForElementPresent('id=add_cart_result')
+open('/goods')
+click('id=libray_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_003")}')
+waitForElementPresent('id=add_cart_result_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_003")}')
+
+click('id=libray_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}')
+waitForElementPresent('id=add_cart_result_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}')
 
 openAndWait('/library')
 
 verifyTitle('优惠啦 - 分销库')
-verifyTextPresent('测试商品1')
-verifyTextPresent('测试商品2')
+verifyTextPresent('哈根达斯100元抵用券')
+verifyTextPresent('一号店抵用券')
+verifyTextPresent('京东商城300元京券')
 
+type('id=createdAtBegin','2012-04-05')
+type('id=createdAtEnd','2012-05-07')
+type('id=goodsName','券')
+clickAndWait('id=search')
+verifyTextPresent('一号店抵用券')
+verifyTextPresent('京东商城300元京券')
 
-click('name=${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}')
-waitForElementNotPresent('//tr[@id='row_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}']')
+open('/library')
+verifyTextPresent('哈根达斯100元抵用券')
+verifyTextPresent('一号店抵用券')
+verifyTextPresent('京东商城300元京券')
+
+click('id=del_${play.test.Fixtures.idCache.get("models.resale.ResalerFav-ResalerFavs1")}')
+verifyTextPresent('一号店抵用券')
+verifyTextPresent('京东商城300元京券')
+
+click('id=check_goods_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_003")}')
+click('id=check_goods_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}')
+click('id=batch_delete')
+verifyTextNotPresent('哈根达斯100元抵用券')
+verifyTextNotPresent('一号店抵用券')
+verifyTextNotPresent('京东商城300元京券')
 
 #{/selenium}

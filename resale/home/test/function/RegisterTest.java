@@ -27,8 +27,16 @@ public class RegisterTest extends FunctionalTest {
 	public void testCreat() {
 		Map<String, String> loginUserParams = new HashMap<String,
 				String>();
-		loginUserParams.put("resaler.loginName", "1qqq");
-		loginUserParams.put("resaler.mobile", "15131121121");
+		//异常情况
+		loginUserParams.put("resaler.loginName", "rrrr");
+		loginUserParams.put("resaler.mobile", "13131121123");
+		loginUserParams.put("resaler.password", "123456");
+		loginUserParams.put("resaler.confirmPassword", "126");
+		Response response = POST("/register", loginUserParams);
+		assertStatus(200,response);
+
+		loginUserParams.put("resaler.loginName", "2qqq");
+		loginUserParams.put("resaler.mobile", "15131621121");
 		loginUserParams.put("resaler.password", "123456");
 		loginUserParams.put("resaler.confirmPassword", "123456");
 		loginUserParams.put("resaler.address", "bb");
@@ -41,18 +49,11 @@ public class RegisterTest extends FunctionalTest {
 		loginUserParams.put("resaler.identityNo", "341281198208268785");
 		loginUserParams.put("resaler.postCode", "123456");
 		loginUserParams.put("resaler.level", ResalerLevel.NORMAL.toString());
-		Response response = POST("/register", loginUserParams);
+		response = POST("/register", loginUserParams);
 		assertStatus(302,response);
 
-		//异常情况
-		loginUserParams.put("resaler.loginName", "rrrr");
-		loginUserParams.put("resaler.mobile", "13131121123");
-		loginUserParams.put("resaler.password", "123456");
-		loginUserParams.put("resaler.confirmPassword", "126");
-		response = POST("/register", loginUserParams);
-		assertStatus(200,response);
 	}
-	
+
 	//测试是否存在用户名和手机
 	@Test
 	public void testCheckValue(){
@@ -60,7 +61,7 @@ public class RegisterTest extends FunctionalTest {
 				String>();
 		loginUserParams.put("resaler.loginName", "qqq");
 		loginUserParams.put("resaler.mobile", "13131121121");
-		
+
 		Response response = POST("/register/checkLoginName", loginUserParams);
 		assertStatus(200,response);
 	}
