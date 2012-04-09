@@ -65,7 +65,6 @@
     <tr>
      <th>订单</th>
      <th>商品名称</th>
-     <th>购买数量</th>
      <th>运单号</th>
      <th>总金额</th>
      <th>订单状态</th>
@@ -77,19 +76,20 @@
 
    <tbody>
     #{paginate.list items:orderList, as:'order'}
+     <tr>
+      <td>${order.orderNumber}</td>
+      <td>
     #{list items:order.orderItems, as:'item'  }
-    <tr>
-     <td>${order.orderNumber}</td>
-     <td>${item.goods.name}</td>
-     <td>${item.buyNumber}</td>
-     <td>${order.deliveryNo}</td>
+     <table><tr><td>${item.goodsName}</td></tr></table>
+    #{/list}
+    </td>
+      <td>${order.deliveryNo}</td>
      <td>${order.amount}</td>
      <td>&{'order.'+order.status}</td>
      <td>${order.createdAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
      <td>${order.refundAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
-    <td><a href="@{SupplierOrders.details(order.id)}">查看</a></td>
+     <td><a href="@{SupplierOrders.details(order.id)}">查看</a></td>
     </tr>
-    #{/list}
      #{/paginate.list}
    </tbody>
   </table>

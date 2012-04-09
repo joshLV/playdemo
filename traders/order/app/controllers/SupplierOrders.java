@@ -57,7 +57,6 @@ public class SupplierOrders extends Controller {
 	 * @param goodsCond 页面设置选择信息
 	 */
 	private static void renderGoodsCond(OrdersCondition goodsCond) {
-		System.out.println(goodsCond.searchKey+">>>"+goodsCond.searchItems);
 		renderArgs.put("createdAtBegin", goodsCond.createdAtBegin);
 		renderArgs.put("createdAtEnd", goodsCond.createdAtEnd);
 		renderArgs.put("status", goodsCond.status);

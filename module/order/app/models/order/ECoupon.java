@@ -11,6 +11,8 @@ import models.accounts.util.TradeUtil;
 import models.consumer.User;
 import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
+
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
@@ -30,222 +32,220 @@ import java.util.*;
 @Entity
 @Table(name = "e_coupon")
 public class ECoupon extends Model {
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmssSSS");
-    private static DecimalFormat decimalFormat = new DecimalFormat("00000");
-    private static java.text.DateFormat df = new java.text.SimpleDateFormat(
-            "yyyy-MM-dd HH:mm:ss");
+	private static String dateFormat = "yyyyMMddhhmmssSSS";
+	private static java.text.DateFormat df = new java.text.SimpleDateFormat(
+			"yyyy-MM-dd HH:mm:ss");
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = true)
-    public Order order;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_id", nullable = true)
+	public Order order;
 
-    @ManyToOne
-    public Goods goods;
+	@ManyToOne
+	public Goods goods;
 
-    @OneToOne
-    @JoinColumn(name = "item_id")
-    public OrderItems orderItems;
+	@OneToOne
+	@JoinColumn(name = "item_id")
+	public OrderItems orderItems;
 
-    @Required
-    @Column(name = "e_coupon_sn")
-    public String eCouponSn;
+	@Required
+	@Column(name = "e_coupon_sn")
+	public String eCouponSn;
 
-    // ====  价格列表  ====
-    @Column(name = "face_value")
-    public BigDecimal faceValue;        //商品面值、市场价
-    
-    @Column(name = "original_price")
-    public BigDecimal originalPrice;    //供应商进货价
+	// ====  价格列表  ====
+	@Column(name = "face_value")
+	public BigDecimal faceValue;        //商品面值、市场价
 
-    @Column(name = "resaler_price")
-    public BigDecimal resalerPrice;     //用户在哪个分销商平台购买的价格，用于计算分销平台的佣金
-    
-    @Column(name = "sale_price")
-    public BigDecimal salePrice;        //最终成交价,对于普通分销商来说，此成交价与以上分销商价(resalerPrice)相同；
-    // ====  价格列表  ====
-    
+	@Column(name = "original_price")
+	public BigDecimal originalPrice;    //供应商进货价
 
-    @Column(name = "created_at")
-    @Temporal(TemporalType.DATE)
-    public Date createdAt;
+	@Column(name = "resaler_price")
+	public BigDecimal resalerPrice;     //用户在哪个分销商平台购买的价格，用于计算分销平台的佣金
 
-    @Column(name = "consumed_at")
-    public Date consumedAt;
-
-    @Column(name = "refund_at")
-    public Date refundAt;
-
-    @Column(name = "buy_number")
-    public int buyNumber;
-
-    @Enumerated(EnumType.STRING)
-    public ECouponStatus status;
+	@Column(name = "sale_price")
+	public BigDecimal salePrice;        //最终成交价,对于普通分销商来说，此成交价与以上分销商价(resalerPrice)相同；
+	// ====  价格列表  ====
 
 
-    public ECoupon(Order order, Goods goods, OrderItems orderItems) {
-        this.order = order;
-        this.goods = goods;
-        
-        this.faceValue = orderItems.faceValue;
-        this.originalPrice = orderItems.originalPrice;
-        this.resalerPrice = orderItems.resalerPrice;
-        this.salePrice = orderItems.salePrice;
-        
-        this.createdAt = new Date();
+	@Column(name = "created_at")
+	@Temporal(TemporalType.DATE)
+	public Date createdAt;
 
-        this.consumedAt = null;
-        this.refundAt = null;
-        this.status = ECouponStatus.UNCONSUMED;
-        this.eCouponSn = generateSerialNumber();
-        this.orderItems = orderItems;
-    }
+	@Column(name = "consumed_at")
+	public Date consumedAt;
 
-    public ECoupon() {
-    }
+	@Column(name = "refund_at")
+	public Date refundAt;
 
-    private String generateSerialNumber() {
-        int random = new Random().nextInt() % 10000;
-        return dateFormat.format(new Date()) + decimalFormat.format(random);
+	@Column(name = "buy_number")
+	public int buyNumber;
 
-    }
+	@Enumerated(EnumType.STRING)
+	public ECouponStatus status;
 
-    /**
-     * 根据页面录入券号查询对应信息
-     *
-     * @param eCouponSn 券号
-     * @param supplierId 商户ID
-     * @return ECoupon 券信息
-     */
-    public static ECoupon query(String eCouponSn, Long supplierId) {
-        EntityManager entityManager = play.db.jpa.JPA.em();
-        StringBuilder sql = new StringBuilder();
-        Map<String, Object> params = new HashMap<String, Object>();
-        sql.append("select distinct e from ECoupon e where 1=1 ");
-        if (supplierId != null) {
-            sql.append(" and e.goods.supplierId = :supplierId");
-            params.put("supplierId", supplierId);
-        }
-        if (StringUtils.isNotBlank(eCouponSn)) {
-            sql.append(" and e.eCouponSn = :eCouponSn");
-            params.put("eCouponSn", eCouponSn);
-        }
-        Query couponQery = entityManager.createQuery(sql.toString());
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
-            couponQery.setParameter(entry.getKey(), entry.getValue());
-        }
-        sql.append(" order by e.createdAt desc");
 
-        List<ECoupon> queryList = couponQery.getResultList();
-        if (queryList.size() == 0) {
-            return null;
-        }
+	public ECoupon(Order order, Goods goods, OrderItems orderItems) {
+		this.order = order;
+		this.goods = goods;
 
-        return queryList.get(0);
-    }
+		this.faceValue = orderItems.faceValue;
+		this.originalPrice = orderItems.originalPrice;
+		this.resalerPrice = orderItems.resalerPrice;
+		this.salePrice = orderItems.salePrice;
 
-    /**
-     * 根据页面录入券号查询对应信息
-     *
-     * @param eCouponSn 券号
-     * @param supplierId 商户ID
-     * @return queryMap 查询信息
-     */
-    public static Map<String, Object> queryInfo(String eCouponSn, Long supplierId) {
-        ECoupon eCoupon = query(eCouponSn, supplierId);
-        Map<String, Object> queryMap = new HashMap();
-        if (eCoupon != null) {
-            queryMap.put("name", eCoupon.goods.name);
-            queryMap.put("expireAt", eCoupon.goods.expireAt != null ? df.format(eCoupon.goods.expireAt) : null);
-            queryMap.put("consumedAt", eCoupon.consumedAt != null ? df.format(eCoupon.consumedAt) : null);
-            queryMap.put("eCouponSn", eCoupon.eCouponSn);
-            queryMap.put("refundAt", eCoupon.refundAt != null ? df.format(eCoupon.refundAt) : null);
-            queryMap.put("status", eCoupon.status);
-            queryMap.put("error", 0);
-        }
+		this.createdAt = new Date();
 
-        return queryMap;
-    }
+		this.consumedAt = null;
+		this.refundAt = null;
+		this.status = ECouponStatus.UNCONSUMED;
+		this.eCouponSn = generateSerialNumber();
+		this.orderItems = orderItems;
+	}
 
-    /**
-     * 优惠券被消费。
-     * 修改优惠券状态、发佣金、给商户打钱
-     * 
-     * @return
-     */
-    public void consumed(){
-    	Account supplierAccount = AccountUtil.getAccount(orderItems.goods.supplierId, AccountType.BUSINESS);
+	public ECoupon() {
+	}
 
-    	//给商户打钱
-    	TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, supplierAccount, originalPrice);
-    	TradeUtil.success(consumeTrade);
-    	//给优惠券平台佣金
-    	TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(
-    	        AccountUtil.getPlatformCommissionAccount(), 
-    	        resalerPrice.subtract(originalPrice),
-    	        eCouponSn);
-    	
-    	TradeUtil.success(platformCommissionTrade);
-    	//如果是在优惠啦网站下的单，还要给优惠啦佣金
-    	if (order.userType == AccountType.CONSUMER){
-	        TradeBill uhuilaCommissionTrade = TradeUtil.createCommissionTrade(
-	                AccountUtil.getUhuilaAccount(),
-	                salePrice.subtract(resalerPrice),
-	                eCouponSn);
-	       
-	        TradeUtil.success(uhuilaCommissionTrade);
-    	}
-        this.status = ECouponStatus.CONSUMED;
-        this.consumedAt = new Date();
-        this.save();
-    }
+	private String generateSerialNumber() {
+		int random = new Random().nextInt() % 100;
+		return DateFormatUtils.format(new Date(), dateFormat) + Math.abs(random);
+	}
 
-    /**
-     * 商家券号列表
-     *
-     * @param supplierId  商户ID
-     * @param pageNumber 页数
-     * @param pageSize   记录数
-     * @return ordersPage 列表信息
-     */
-    public static JPAExtPaginator<ECoupon> queryCoupons(Long supplierId, int pageNumber, int pageSize) {
-        StringBuilder sql = new StringBuilder();
-        sql.append(" e.goods.supplierId = :supplierId)");
-        Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put("supplierId", supplierId);
-        JPAExtPaginator<ECoupon> ordersPage = new JPAExtPaginator<>("ECoupon e", "e", ECoupon.class, sql.toString(),
-                paramsMap).orderBy(" e.consumedAt desc");
+	/**
+	 * 根据页面录入券号查询对应信息
+	 *
+	 * @param eCouponSn 券号
+	 * @param supplierId 商户ID
+	 * @return ECoupon 券信息
+	 */
+	public static ECoupon query(String eCouponSn, Long supplierId) {
+		EntityManager entityManager = play.db.jpa.JPA.em();
+		StringBuilder sql = new StringBuilder();
+		Map<String, Object> params = new HashMap<String, Object>();
+		sql.append("select distinct e from ECoupon e where 1=1 ");
+		if (supplierId != null) {
+			sql.append(" and e.goods.supplierId = :supplierId");
+			params.put("supplierId", supplierId);
+		}
+		if (StringUtils.isNotBlank(eCouponSn)) {
+			sql.append(" and e.eCouponSn = :eCouponSn");
+			params.put("eCouponSn", eCouponSn);
+		}
+		Query couponQery = entityManager.createQuery(sql.toString());
+		for (Map.Entry<String, Object> entry : params.entrySet()) {
+			couponQery.setParameter(entry.getKey(), entry.getValue());
+		}
+		sql.append(" order by e.createdAt desc");
 
-        ordersPage.setPageNumber(pageNumber);
-        ordersPage.setPageSize(pageSize);
-        ordersPage.setBoundaryControlsEnabled(false);
-        return ordersPage;
-    }
+		List<ECoupon> queryList = couponQery.getResultList();
+		if (queryList.size() == 0) {
+			return null;
+		}
 
-    /**
-     * 会员中心 券号列表
-     *
-     * @param user           用户信息
-     * @param createdAtBegin 开始日
-     * @param createdAtEnd   结束日
-     * @param status         状态
-     * @param goodsName      商品名称
-     * @param pageNumber     页数
-     * @param pageSize       记录数
-     * @return couponsPage 券记录
-     */
-    public static JPAExtPaginator<ECoupon> userCouponsQuery(User user, Date createdAtBegin, Date createdAtEnd,
-                                                            ECouponStatus status, String goodsName, int pageNumber, int pageSize) {
-        CouponsCondition condition = new CouponsCondition();
+		return queryList.get(0);
+	}
 
-        JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
-                ("ECoupon e", "e", ECoupon.class, condition.getFilter(user, createdAtBegin, createdAtEnd, status, goodsName),
-                        condition.couponsMap).orderBy(condition.getOrderByExpress());
+	/**
+	 * 根据页面录入券号查询对应信息
+	 *
+	 * @param eCouponSn 券号
+	 * @param supplierId 商户ID
+	 * @return queryMap 查询信息
+	 */
+	public static Map<String, Object> queryInfo(String eCouponSn, Long supplierId) {
+		ECoupon eCoupon = query(eCouponSn, supplierId);
+		Map<String, Object> queryMap = new HashMap();
+		if (eCoupon != null) {
+			queryMap.put("name", eCoupon.goods.name);
+			queryMap.put("expireAt", eCoupon.goods.expireAt != null ? df.format(eCoupon.goods.expireAt) : null);
+			queryMap.put("consumedAt", eCoupon.consumedAt != null ? df.format(eCoupon.consumedAt) : null);
+			queryMap.put("eCouponSn", eCoupon.eCouponSn);
+			queryMap.put("refundAt", eCoupon.refundAt != null ? df.format(eCoupon.refundAt) : null);
+			queryMap.put("status", eCoupon.status);
+			queryMap.put("error", 0);
+		}
 
-        couponsPage.setPageNumber(pageNumber);
-        couponsPage.setPageSize(pageSize);
-        couponsPage.setBoundaryControlsEnabled(false);
-        return couponsPage;
-    }
+		return queryMap;
+	}
+
+	/**
+	 * 优惠券被消费。
+	 * 修改优惠券状态、发佣金、给商户打钱
+	 * 
+	 * @return
+	 */
+	public void consumed(){
+		Account supplierAccount = AccountUtil.getAccount(orderItems.goods.supplierId, AccountType.BUSINESS);
+
+		//给商户打钱
+		TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, supplierAccount, originalPrice);
+		TradeUtil.success(consumeTrade);
+		//给优惠券平台佣金
+		TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(
+				AccountUtil.getPlatformCommissionAccount(), 
+				resalerPrice.subtract(originalPrice),
+				eCouponSn);
+
+		TradeUtil.success(platformCommissionTrade);
+		//如果是在优惠啦网站下的单，还要给优惠啦佣金
+		if (order.userType == AccountType.CONSUMER){
+			TradeBill uhuilaCommissionTrade = TradeUtil.createCommissionTrade(
+					AccountUtil.getUhuilaAccount(),
+					salePrice.subtract(resalerPrice),
+					eCouponSn);
+
+			TradeUtil.success(uhuilaCommissionTrade);
+		}
+		this.status = ECouponStatus.CONSUMED;
+		this.consumedAt = new Date();
+		this.save();
+	}
+
+	/**
+	 * 商家券号列表
+	 *
+	 * @param supplierId  商户ID
+	 * @param pageNumber 页数
+	 * @param pageSize   记录数
+	 * @return ordersPage 列表信息
+	 */
+	public static JPAExtPaginator<ECoupon> queryCoupons(Long supplierId, int pageNumber, int pageSize) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" e.goods.supplierId = :supplierId)");
+		Map<String, Object> paramsMap = new HashMap<>();
+		paramsMap.put("supplierId", supplierId);
+		JPAExtPaginator<ECoupon> ordersPage = new JPAExtPaginator<>("ECoupon e", "e", ECoupon.class, sql.toString(),
+				paramsMap).orderBy(" e.consumedAt desc");
+
+		ordersPage.setPageNumber(pageNumber);
+		ordersPage.setPageSize(pageSize);
+		ordersPage.setBoundaryControlsEnabled(false);
+		return ordersPage;
+	}
+
+	/**
+	 * 会员中心 券号列表
+	 *
+	 * @param user           用户信息
+	 * @param createdAtBegin 开始日
+	 * @param createdAtEnd   结束日
+	 * @param status         状态
+	 * @param goodsName      商品名称
+	 * @param pageNumber     页数
+	 * @param pageSize       记录数
+	 * @return couponsPage 券记录
+	 */
+	public static JPAExtPaginator<ECoupon> userCouponsQuery(User user, Date createdAtBegin, Date createdAtEnd,
+			ECouponStatus status, String goodsName, int pageNumber, int pageSize) {
+		CouponsCondition condition = new CouponsCondition();
+
+		JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
+		("ECoupon e", "e", ECoupon.class, condition.getFilter(user, createdAtBegin, createdAtEnd, status, goodsName),
+				condition.couponsMap).orderBy(condition.getOrderByExpress());
+
+		couponsPage.setPageNumber(pageNumber);
+		couponsPage.setPageSize(pageSize);
+		couponsPage.setBoundaryControlsEnabled(false);
+		return couponsPage;
+	}
 
 	/**
 	 * 退款
@@ -257,7 +257,7 @@ public class ECoupon extends Model {
 	 */
 	public static String applyRefund(ECoupon eCoupon,Long userId,String applyNote) {
 		String returnFlg ="{\"error\":\"ok\"}";
-		
+
 		if(eCoupon == null || eCoupon.order.userId != userId || eCoupon.order.userType != AccountType.CONSUMER){
 			returnFlg="{\"error\":\"no such eCoupon\"}";
 			return returnFlg;

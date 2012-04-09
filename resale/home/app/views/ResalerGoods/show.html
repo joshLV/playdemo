@@ -109,7 +109,7 @@
                             height="168"/></div>
                     <div class="right_shangpin">
                         <div class="right_shangpin_one">
-                            原价：${goods.originalPrice}元
+                            市场价：${goods.faceValue}元
                         </div>
                         <div class="right_shangpin_two">
                             折扣：${goods.discountExpress.yesno(goods.discountExpress+'折','无优惠')}</div>
@@ -142,6 +142,7 @@
                 </div>
                  <div id="add_cart_result1" class="buttom_dibu"
                      style="display: none;font-size:15px">分销库中已存在！
+                      <a href="/library"><span class="zi_gray">查看</span></a>
                 </div>
             </div>
         #{/form}
