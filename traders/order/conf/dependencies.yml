@@ -13,8 +13,7 @@ require:
     - supplier -> supplier
     - resale -> resale
     - accounts -> accounts
-    - supplier_navigation -> supplier_navigation
-    - supplier_cas -> supplier_cas
+    - supplier_rbac -> supplier_rbac
     - org.jsoup -> jsoup 1.6.1
     - sms -> sms
     - play -> rabbitmq 0.3
@@ -39,6 +38,5 @@ repositories:
             - resale -> *
             - accounts -> *
             - paginate_ext -> *
-            - supplier_navigation -> *
-            - supplier_cas -> *
+            - supplier_rbac -> *
             - sms -> *

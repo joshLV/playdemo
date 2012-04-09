@@ -10,17 +10,16 @@ require:
     - commons-lang -> commons-lang 2.6
     - sales -> sales
     - supplier -> supplier
-    - supplier_cas -> supplier_cas
     - paginate_ext -> paginate_ext
     - org.jsoup -> jsoup 1.6.1
-    - supplier_navigation -> supplier_navigation
+    - supplier_rbac -> supplier_rbac
     - resale -> resale
     - consumer -> consumer
     - order -> order
     - accounts -> accounts
     - sms -> sms
     - play -> rabbitmq 0.3
-    
+
 
 repositories:
     - mavenRepository:
@@ -41,11 +40,9 @@ repositories:
             - sales -> *
             - resale -> *
             - supplier -> *
-            - supplier_cas -> *
             - paginate_ext -> *
-            - supplier_navigation -> *
+            - supplier_rbac -> *
             - consumer -> *
             - order -> *
             - accounts -> *
             - sms -> *
-            

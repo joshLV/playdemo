@@ -2,21 +2,18 @@ package controllers;
 
 import java.util.Date;
 import java.util.List;
-
-import com.uhuila.common.constants.DeletedStatus;
-
 import models.sales.Area;
 import models.sales.Shop;
+import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
+import play.data.validation.Validation;
 import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
-
 import play.mvc.With;
-import navigation.annotations.ActiveNavigation;
-import controllers.supplier.cas.SecureCAS;
+import com.uhuila.common.constants.DeletedStatus;
 
-@With({SecureCAS.class, MenuInjector.class})
+@With(SupplierRbac.class)
 @ActiveNavigation("shops_index")
 public class Shops extends Controller {
 
@@ -44,9 +41,9 @@ public class Shops extends Controller {
      * @param shop 门店对象
      */
     public static void create(@Valid Shop shop) {
-        if (validation.hasErrors()) {
+        if (Validation.hasErrors()) {
             params.flash();
-            validation.keep();
+            Validation.keep();
             add(shop);
         }
 
@@ -91,7 +88,7 @@ public class Shops extends Controller {
      */
     public static void update(long id, @Valid Shop shop) {
         Shop sp = Shop.findById(id);
-        if (validation.hasErrors()) {
+        if (Validation.hasErrors()) {
             edit(id, shop);
         }
         sp.areaId = shop.areaId;

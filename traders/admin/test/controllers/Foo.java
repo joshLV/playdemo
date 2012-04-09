@@ -4,10 +4,9 @@ import navigation.annotations.ActiveNavigation;
 import navigation.annotations.Right;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.supplier.cas.SecureCAS;
 
 
-@With({SecureCAS.class, MenuInjector.class})
+@With(SupplierRbac.class)
 @Right("PERM_TEST")
 @ActiveNavigation("bar")
 public class Foo extends Controller {

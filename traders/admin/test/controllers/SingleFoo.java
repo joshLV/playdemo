@@ -4,9 +4,8 @@ import navigation.annotations.ActiveNavigation;
 import navigation.annotations.Right;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.supplier.cas.SecureCAS;
 
-@With({SecureCAS.class, MenuInjector.class})
+@With(SupplierRbac.class)
 public class SingleFoo extends Controller {
 
     @Right("PERM_TEST")

@@ -1,7 +1,6 @@
 package controllers;
 
-
-import controllers.supplier.cas.SecureCAS;
+import java.util.List;
 import models.order.ECoupon;
 import models.order.OrderItems;
 import models.order.OrdersCondition;
@@ -11,9 +10,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.util.List;
-
-@With({SecureCAS.class, MenuInjector.class})
+@With(SupplierRbac.class)
 @ActiveNavigation("order_index")
 public class SupplierOrders extends Controller {
 
@@ -29,7 +26,7 @@ public class SupplierOrders extends Controller {
     		condition = new OrdersCondition();
     	}
 		//该商户ID
-		Long supplierId = MenuInjector.currentUser().supplier.id;
+		Long supplierId = SupplierRbac.currentUser().supplier.id;
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 		JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, supplierId, pageNumber, PAGE_SIZE);
@@ -74,7 +71,7 @@ public class SupplierOrders extends Controller {
 	 * 券号列表
 	 */
 	public static void coupons() {
-		Long supplierId = MenuInjector.currentUser().supplier.id;
+		Long supplierId = SupplierRbac.currentUser().supplier.id;
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 		JPAExtPaginator<models.order.ECoupon> couponsList = ECoupon.queryCoupons(supplierId, pageNumber, PAGE_SIZE);

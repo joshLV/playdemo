@@ -100,14 +100,14 @@ public class Security {
     /**
      * This method is called just after the user authentification (when ST is validated).
      */
-    static void onAuthenticated(CASUser user) {
-        Logger.debug("[SecureCAS]: onAutenticated method");
+    public static void onAuthenticated(CASUser user) {
+        Logger.debug("[SupplierCAS]: onAutenticated method");
     }
 
     /**
      * This method is called just before the logout route.
      */
-    static void onDisconnected() {
+    public static void onDisconnected() {
     }
 
     /**
@@ -116,33 +116,8 @@ public class Security {
      * @param profile
      */
     static void onCheckFailed(String profile) {
-        Logger.debug("[SecureCAS]: profile " + profile + " check failed");
+        Logger.debug("[SupplierCAS]: profile " + profile + " check failed");
         throw new Forbidden("Access denied");
-    }
-
-    /**
-     * Method to find the good Security class. If there is class that extends this one, we take it !
-     * 
-     * @param m
-     * @param args
-     * @return
-     * @throws Throwable
-     */
-    public static Object invoke(String m, Object... args) throws Throwable {
-        Logger.info(m);
-        Class security = null;
-        List<Class> classes = Play.classloader.getAssignableClasses(Security.class);
-        if (classes.size() == 0) {
-            security = Security.class;
-        }
-        else {
-            security = classes.get(0);
-        }
-        try {
-            return Java.invokeStaticOrParent(security, m, args);
-        } catch (InvocationTargetException e) {
-            throw e.getTargetException();
-        }
     }
 
 }

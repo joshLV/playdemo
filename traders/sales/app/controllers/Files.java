@@ -1,13 +1,10 @@
 package controllers;
 
+import java.io.File;
+import navigation.annotations.ActiveNavigation;
 import play.Play;
 import play.mvc.Controller;
 import play.mvc.With;
-
-import java.io.File;
-
-import navigation.annotations.ActiveNavigation;
-import controllers.supplier.cas.SecureCAS;
 
 /**
  * 图片文件的访问控制.
@@ -16,7 +13,7 @@ import controllers.supplier.cas.SecureCAS;
  * Date: 3/13/12
  * Time: 2:46 PM
  */
-@With({SecureCAS.class, MenuInjector.class})
+@With(SupplierRbac.class)
 @ActiveNavigation("goods_index")
 public class Files extends Controller {
     public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");

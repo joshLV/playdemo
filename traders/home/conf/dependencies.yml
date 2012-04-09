@@ -11,8 +11,7 @@ require:
     - accounts -> accounts
     - supplier -> supplier
     - resale -> resale
-    - supplier_navigation -> supplier_navigation
-    - supplier_cas -> supplier_cas
+    - supplier_rbac -> supplier_rbac
     - org.jsoup -> jsoup 1.6.1
 
 repositories:
@@ -34,5 +33,4 @@ repositories:
             - accounts -> *
             - supplier -> *
             - resale -> *
-            - supplier_navigation -> *
-            - supplier_cas -> *
+            - supplier_rbac -> *

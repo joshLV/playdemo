@@ -4,10 +4,23 @@
  */
 package controllers;
 
-import com.uhuila.common.util.FileUploadUtil;
-import controllers.supplier.cas.SecureCAS;
+import static java.math.BigDecimal.ZERO;
+import static play.Logger.warn;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import models.resale.ResalerLevel;
-import models.sales.*;
+import models.sales.Brand;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.GoodsCondition;
+import models.sales.GoodsLevelPrice;
+import models.sales.GoodsStatus;
+import models.sales.MaterialType;
+import models.sales.Shop;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.binding.As;
@@ -17,16 +30,7 @@ import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static java.math.BigDecimal.ZERO;
-import static play.Logger.warn;
+import com.uhuila.common.util.FileUploadUtil;
 
 /**
  * 通用说明：
@@ -34,7 +38,7 @@ import static play.Logger.warn;
  * @author yanjy
  * @version 1.0 02/8/12
  */
-@With({SecureCAS.class, MenuInjector.class})
+@With(SupplierRbac.class)
 @ActiveNavigation("goods_index")
 public class SupplierGoods extends Controller {
 
@@ -102,7 +106,7 @@ public class SupplierGoods extends Controller {
             goods.isAllShop = false;
         }
 
-        Long supplierId = MenuInjector.currentUser().supplier.id;
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
         String shopIds = "";
         if (goods.shops != null) {
             for (Shop shop : goods.shops) {
@@ -160,7 +164,7 @@ public class SupplierGoods extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void create(@Valid models.sales.Goods goods, @Required File imagePath, BigDecimal[] levelPrices) {
-        Long supplierId = MenuInjector.currentUser().supplier.id;
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
 
         checkImageFile(imagePath);
 
@@ -176,7 +180,7 @@ public class SupplierGoods extends Controller {
         System.out.println("supplierId:" + supplierId);
 
 
-        goods.createdBy = MenuInjector.currentUser().loginName;
+        goods.createdBy = SupplierRbac.currentUser().loginName;
         goods.materialType = MaterialType.ELECTRONIC;
 
         goods.create();
@@ -276,7 +280,7 @@ public class SupplierGoods extends Controller {
             render("SupplierGoods/edit.html", goods);
         }
 
-        String supplierUser = MenuInjector.currentUser().loginName;
+        String supplierUser = SupplierRbac.currentUser().loginName;
 
         try {
             Goods oldGoods = Goods.findById(id);

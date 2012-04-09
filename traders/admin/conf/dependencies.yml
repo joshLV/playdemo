@@ -7,8 +7,7 @@ require:
     - layout_trader -> layout_trader
     - paginate_ext -> paginate_ext
     - supplier -> supplier
-    - supplier_cas -> supplier_cas
-    - supplier_navigation -> supplier_navigation
+    - supplier_rbac -> supplier_rbac
     - base_rbac -> base_rbac
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
 
@@ -25,8 +24,7 @@ repositories:
         artifact:   "${application.path}/../../module/[module]"
         contains:
             - layout_trader -> *
-            - supplier_cas -> *
             - paginate_ext -> *
-            - supplier_navigation -> *
+            - supplier_rbac -> *
             - base_rbac -> *
             - supplier -> *

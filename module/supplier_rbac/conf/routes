@@ -1,0 +1,8 @@
+# import these default routes as :
+# *         /               module:supplier_navigation
+#
+
+GET         /login                      SupplierRbac.login
+GET         /logout                     SupplierRbac.logout
+GET         /authenticate               SupplierRbac.authenticate
+GET         /pgtcallbackurl             SupplierRbac.pgtCallBack

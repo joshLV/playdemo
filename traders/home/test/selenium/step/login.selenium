@@ -5,7 +5,7 @@
 
 deleteAllVisibleCookies()
 clearSession()
-openAndWait('/@cas/login?service=/supplier.cas.securecas/authenticate&gateway=true')
+openAndWait('/@cas/login?service=/authenticate&gateway=true')
 assertTitle('CAS Mock Server - Login')
 type('id=login','yan')
 type('id=password','yan')

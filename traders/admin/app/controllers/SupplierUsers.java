@@ -1,10 +1,9 @@
 package controllers;
 
-import com.uhuila.common.constants.DeletedStatus;
-import controllers.supplier.cas.SecureCAS;
+import java.util.Date;
+import java.util.List;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
-import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
@@ -14,9 +13,7 @@ import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-
-import java.util.Date;
-import java.util.List;
+import com.uhuila.common.constants.DeletedStatus;
 
 /**
  * 操作员CRUD
@@ -24,7 +21,7 @@ import java.util.List;
  * @author yanjy
  */
 
-@With({SecureCAS.class, MenuInjector.class})
+@With(SupplierRbac.class)
 @ActiveNavigation("user_search")
 public class SupplierUsers extends Controller {
     public static int PAGE_SIZE = 15;
@@ -38,7 +35,7 @@ public class SupplierUsers extends Controller {
         String loginName = request.params.get("loginName");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<SupplierUser> supplierUsersPage = SupplierUser.getSupplierUserList(
-                loginName, MenuInjector.currentUser().supplier.id, pageNumber, PAGE_SIZE);
+                loginName, SupplierRbac.currentUser().supplier.id, pageNumber, PAGE_SIZE);
         renderArgs.put("loginName", loginName);
         render(supplierUsersPage);
     }
@@ -80,7 +77,7 @@ public class SupplierUsers extends Controller {
         supplierUser.lastLoginAt = new Date();
         supplierUser.createdAt = new Date();
         supplierUser.lockVersion = 0;
-        supplierUser.supplier = MenuInjector.currentUser().supplier;
+        supplierUser.supplier = SupplierRbac.currentUser().supplier;
         supplierUser.deleted = DeletedStatus.UN_DELETED;
         // 获得IP
         supplierUser.lastLoginIP = request.remoteAddress;
@@ -146,7 +143,7 @@ public class SupplierUsers extends Controller {
      * @param mobile    手机
      */
     public static void checkLoginName(Long id, String loginName, String mobile) {
-        Long supplierId = MenuInjector.currentUser().supplier.id;
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
         String returnFlag = SupplierUser.checkValue(id, loginName, mobile, supplierId);
         renderJSON(returnFlag);
     }

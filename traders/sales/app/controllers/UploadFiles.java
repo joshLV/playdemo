@@ -1,19 +1,17 @@
 package controllers;
 
-import com.uhuila.common.util.FileUploadUtil;
-import controllers.supplier.cas.SecureCAS;
+import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.mvc.Controller;
 import play.mvc.With;
+import com.uhuila.common.util.FileUploadUtil;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-@With({SecureCAS.class, MenuInjector.class})
+@With(SupplierRbac.class)
 @ActiveNavigation("goods_index")
 public class UploadFiles extends Controller {
 
