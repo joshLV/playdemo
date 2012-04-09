@@ -6,6 +6,8 @@ import models.order.OrderItems;
 import models.order.OrdersCondition;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+
+import play.Logger;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -23,11 +25,11 @@ public class SupplierOrders extends Controller {
 	 */
 	public static void index(OrdersCondition condition) {
 		if (condition == null) {
-    		condition = new OrdersCondition();
-    	}
+			condition = new OrdersCondition();
+		}
 		//该商户ID
 		Long supplierId = SupplierRbac.currentUser().supplier.id;
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+supplierId);
+		Logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+supplierId);
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 		JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, supplierId, pageNumber, PAGE_SIZE);
@@ -67,7 +69,7 @@ public class SupplierOrders extends Controller {
 		renderArgs.put("searchKey", goodsCond.searchKey);
 		renderArgs.put("searchItems", goodsCond.searchItems);
 	}
-	
+
 	/**
 	 * 券号列表
 	 */
