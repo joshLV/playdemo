@@ -6,12 +6,14 @@ package controllers;
 
 import static java.math.BigDecimal.ZERO;
 import static play.Logger.warn;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import models.resale.ResalerLevel;
 import models.sales.Brand;
 import models.sales.Category;
@@ -82,9 +84,7 @@ public class SupplierGoods extends Controller {
         if (goods == null) {
             goods = new models.sales.Goods();
             BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
-            for (BigDecimal levelPrice : levelPrices) {
-                levelPrice = ZERO;
-            }
+            Arrays.fill(levelPrices, BigDecimal.ZERO);
             renderArgs.put("levelPrices", levelPrices);
         } else {
             BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];

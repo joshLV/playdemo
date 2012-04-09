@@ -23,10 +23,7 @@ import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "goods")
@@ -582,9 +579,7 @@ public class Goods extends Model {
     public BigDecimal[] getLevelPriceArray() {
         BigDecimal[] prices = new BigDecimal[ResalerLevel.values().length];
         if (levelPrices == null || levelPrices.size() == 0) {
-            for (BigDecimal price : prices) {
-                price = BigDecimal.ZERO;
-            }
+            Arrays.fill(prices, BigDecimal.ZERO);
             return prices;
         }
 

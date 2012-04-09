@@ -88,9 +88,7 @@ public class OperateGoods extends Controller {
         if (goods == null) {
             goods = new models.sales.Goods();
             BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
-            for (BigDecimal levelPrice : levelPrices) {
-                levelPrice = ZERO;
-            }
+            Arrays.fill(levelPrices, ZERO);
             goods.setLevelPrices(levelPrices);
         }
         if (goods.isAllShop != null) {
