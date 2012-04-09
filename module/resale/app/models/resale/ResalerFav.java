@@ -35,6 +35,8 @@ public class ResalerFav extends Model {
 	@Column(name = "created_at")
 	public Date createdAt;
 
+	@Column(name = "taobao_item_id")
+	public Long taobaoItemId;
 
 	public ResalerFav(Resaler resaler, Goods goods) {
 		this.resaler= resaler;

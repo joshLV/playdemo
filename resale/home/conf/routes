@@ -43,6 +43,10 @@ GET     /payment/{id}                            ResalerOrders.pay
 
 GET     /account_seq                            ResalerAccounts.index
 
+GET     /top-oauth-callback                     TopOauthCallback.index
+
+GET     /top-add                                TopClient.add
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
