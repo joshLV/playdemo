@@ -3,7 +3,6 @@
 require:
     - play 1.2.4
     - play -> cobertura 2.4
-    - play -> cas 3.1
     - play -> logisimayml 1.8
     - play -> rabbitmq 0.3
     - play -> paginate head
@@ -19,7 +18,7 @@ require:
     - payment -> payment
     - commons-lang -> commons-lang 2.6
     - sms -> sms
-    - web_trace -> web_trace
+    - website_cas -> website_cas
     - accounts  -> accounts
     - breadcrumbs  -> breadcrumbs
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
@@ -49,7 +48,7 @@ repositories:
             - consumer -> *
             - order -> *
             - payment -> *
-            - web_trace -> *
+            - website_cas -> *
             - accounts  -> *
             - sms -> *
             - breadcrumbs -> *

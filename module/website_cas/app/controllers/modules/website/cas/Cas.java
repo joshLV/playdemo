@@ -1,11 +1,11 @@
-package models.webcas;
+package controllers.modules.website.cas;
 
 import models.consumer.User;
 
 import java.io.Serializable;
 
 /**
- * TODO.
+ * TODO: controllers.modules.website.cas.Cas这个类的具体职责是？能否修改一个名字？
  * <p/>
  * User: sujie
  * Date: 2/22/12

@@ -1,9 +1,9 @@
 package controllers;
 
-import controllers.modules.cas.SecureCAS;
-import controllers.modules.webcas.WebCAS;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import models.accounts.AccountType;
-import models.accounts.util.AccountUtil;
 import models.consumer.Address;
 import models.order.Cart;
 import models.order.NotEnoughInventoryException;
@@ -13,10 +13,7 @@ import play.data.validation.Required;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import controllers.modules.website.cas.SecureCAS;
 
 /**
  * 用户订单确认控制器.
@@ -25,14 +22,14 @@ import java.util.List;
  * Date: 2/14/12
  * Time: 11:31 AM
  */
-@With({SecureCAS.class, WebCAS.class})
+@With(SecureCAS.class)
 public class Orders extends Controller {
     /**
      * 订单确认.
      */
     public static void index() {
 
-        List<Address> addressList = Address.findByOrder(WebCAS.getUser());
+        List<Address> addressList = Address.findByOrder(SecureCAS.getUser());
 
         boolean buyNow = Boolean.parseBoolean(session.get("buyNow"));
         if (buyNow) {//立即购买，则不从购物车取购买的商品信息，而直接从session中获取
@@ -43,7 +40,7 @@ public class Orders extends Controller {
             long goodsId = Long.parseLong(session.get("goodsId"));
             long number = Long.parseLong(session.get("number"));
             models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-            Cart cart = new Cart(WebCAS.getUser(), null, goods, number);
+            Cart cart = new Cart(SecureCAS.getUser(), null, goods, number);
 
             switch ( goods.materialType) {
                 case ELECTRONIC:
@@ -65,11 +62,11 @@ public class Orders extends Controller {
         }
         Http.Cookie cookieIdentity = request.cookies.get("identity");
         //从购物车结算购买
-        List<Cart> eCartList = Cart.findECart(WebCAS.getUser(), cookieIdentity.value);
+        List<Cart> eCartList = Cart.findECart(SecureCAS.getUser(), cookieIdentity.value);
         BigDecimal eCartAmount = Cart.amount(eCartList);
 
 
-        List<Cart> rCartList = Cart.findRCart(WebCAS.getUser(), cookieIdentity.value);
+        List<Cart> rCartList = Cart.findRCart(SecureCAS.getUser(), cookieIdentity.value);
         BigDecimal rCartAmount;
         if (rCartList.size() == 0) {
             rCartAmount = new BigDecimal(0);
@@ -110,22 +107,22 @@ public class Orders extends Controller {
     public static void create(String mobile) {
         Http.Cookie cookieIdentity = request.cookies.get("identity");
         boolean buyNow = Boolean.parseBoolean(session.get("buyNow"));
-        Address defaultAddress = Address.findDefault(WebCAS.getUser());
+        Address defaultAddress = Address.findDefault(SecureCAS.getUser());
         Order order;
         try {
             if (buyNow) {
                 long goodsId = Long.parseLong(session.get("goodsId"));
                 long number = Integer.parseInt(session.get("number"));
-                order = new Order(WebCAS.getUser().getId(), AccountType.CONSUMER,
+                order = new Order(SecureCAS.getUser().getId(), AccountType.CONSUMER,
                         goodsId, number, defaultAddress, mobile);
 
             } else {
 
-                List<Cart> eCartList = Cart.findAll(WebCAS.getUser(), cookieIdentity.value);
-                order = new Order(WebCAS.getUser().getId(), AccountType.CONSUMER,
+                List<Cart> eCartList = Cart.findAll(SecureCAS.getUser(), cookieIdentity.value);
+                order = new Order(SecureCAS.getUser().getId(), AccountType.CONSUMER,
                         eCartList, defaultAddress, mobile);
             }
-            order.createAndUpdateInventory(WebCAS.getUser(), cookieIdentity.value);
+            order.createAndUpdateInventory(SecureCAS.getUser(), cookieIdentity.value);
             session.put("buyNow", false);
             redirect("/payment_info/" + order.id);
         } catch (NotEnoughInventoryException e) {

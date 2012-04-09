@@ -11,8 +11,7 @@ require:
     - resale -> resale
     - order -> order
     - consumer -> consumer
-    - play -> cas 3.1
-    - web_trace -> web_trace
+    - website_cas -> website_cas 3.1
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - breadcrumbs -> breadcrumbs
     - accounts -> accounts
@@ -42,7 +41,7 @@ repositories:
             - resale -> *
             - order -> *
             - consumer -> *
-            - web_trace -> *
+            - website_cas -> *
             - paginate_ext -> *
             - view_ext -> *
             - breadcrumbs -> *

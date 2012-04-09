@@ -1,26 +1,19 @@
 package controllers;
 
-import controllers.modules.cas.SecureCAS;
-import controllers.modules.webcas.WebCAS;
-import models.accounts.RefundBill;
-import models.accounts.TradeBill;
-import models.accounts.TradeStatus;
-import models.accounts.util.RefundUtil;
+import java.util.Date;
+import java.util.List;
 import models.consumer.User;
-import models.order.*;
+import models.order.Order;
+import models.order.OrderItems;
+import models.order.OrderStatus;
+import org.apache.commons.lang.StringUtils;
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
+import controllers.modules.website.cas.SecureCAS;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-
-@With({SecureCAS.class, WebCAS.class})
+@With(SecureCAS.class)
 public class MyOrders extends Controller {
 
 	public static int PAGE_SIZE = 15;
@@ -29,7 +22,7 @@ public class MyOrders extends Controller {
 	 * 我的订单
 	 */
 	public static void index(Date createdAtBegin, Date createdAtEnd, OrderStatus status, String goodsName) {
-		User user = WebCAS.getUser();
+		User user = SecureCAS.getUser();
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 

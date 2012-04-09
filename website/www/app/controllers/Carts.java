@@ -1,14 +1,14 @@
 package controllers;
 
-import controllers.modules.webcas.WebCAS;
+import java.util.List;
 import models.consumer.User;
 import models.order.Cart;
 import play.data.binding.As;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-
-import java.util.List;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 
 /**
  * 购物车控制器，提供http接口对购物车进行增删该查
@@ -16,14 +16,15 @@ import java.util.List;
  * @author likang
  *
  */
-@With(WebCAS.class)
+@With(SecureCAS.class)
+@SkipCAS
 public class  Carts extends Controller {
 
     /**
      * 购物车主界面
      */
     public static void index() {
-        User user = WebCAS.getUser();
+        User user = SecureCAS.getUser();
         Http.Cookie cookie= request.cookies.get("identity");
         String cookieValue = cookie == null ? null : cookie.value;
 
@@ -40,7 +41,7 @@ public class  Carts extends Controller {
      * 若购物车中有此商品，且商品数量加增量小于等于0，视为无效
      */
     public static void order(long goodsId, int increment) {
-        User user = WebCAS.getUser();
+        User user = SecureCAS.getUser();
         Http.Cookie cookie= request.cookies.get("identity");
         String cookieValue = cookie == null ? null : cookie.value;
 
@@ -63,7 +64,7 @@ public class  Carts extends Controller {
      * 以JSON格式展示所有购物车内容
      */
     public static void allJSON() {
-        User user = WebCAS.getUser();
+        User user = SecureCAS.getUser();
         Http.Cookie cookie= request.cookies.get("identity");
         String cookieValue = cookie == null ? null : cookie.value;
 
@@ -77,7 +78,7 @@ public class  Carts extends Controller {
      * @param goodsIds 商品列表
      */
     public static void delete(@As(",") List<Long> goodsIds) {
-        User user = WebCAS.getUser();
+        User user = SecureCAS.getUser();
         Http.Cookie cookie= request.cookies.get("identity");
         String cookieValue = cookie == null ? null : cookie.value;
 

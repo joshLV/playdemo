@@ -61,7 +61,7 @@ GET     /favicon.ico                            404
 GET     /public/                                staticDir:public
 
 # Import Secure routes
-*    /    module:cas
+*        /                                      module:website_cas
 
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}

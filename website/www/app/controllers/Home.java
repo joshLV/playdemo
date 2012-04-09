@@ -1,12 +1,12 @@
 package controllers;
 
-import controllers.modules.webcas.WebCAS;
+import java.util.List;
 import models.sales.Area;
 import models.sales.Category;
 import play.mvc.Controller;
 import play.mvc.With;
-
-import java.util.List;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 
 /**
  * 首页控制器.
@@ -15,7 +15,8 @@ import java.util.List;
  * Date: 2/13/12
  * Time: 9:57 AM
  */
-@With(WebCAS.class)
+@With(SecureCAS.class)
+@SkipCAS
 public class Home extends Controller {
 
     public static void index(long categoryId) {

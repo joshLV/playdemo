@@ -1,11 +1,11 @@
 package controllers;
 
-import controllers.modules.webcas.WebCAS;
+import java.util.List;
 import models.consumer.Address;
 import play.mvc.Controller;
 import play.mvc.With;
-
-import java.util.List;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 
 /**
  * 用户地址控制器.
@@ -14,7 +14,8 @@ import java.util.List;
  * Date: 2/14/12
  * Time: 1:43 PM
  */
-@With(WebCAS.class)
+@With(SecureCAS.class)
+@SkipCAS
 public class Addresses extends Controller {
 
     public static void index() {
@@ -37,7 +38,7 @@ public class Addresses extends Controller {
 
     public static void create(long selectedAddressId, Address address) {
         if (selectedAddressId == 0) {
-            address.user = WebCAS.getUser();
+            address.user = SecureCAS.getUser();
             address.save();
             render("Addresses/show.html", address);
         }
@@ -47,9 +48,9 @@ public class Addresses extends Controller {
     }
 
     public static void update(Address address) {
-        address.user = WebCAS.getUser();
+        address.user = SecureCAS.getUser();
         if ("true".equals(address.isDefault)) {
-            Address.updateToUnDefault(WebCAS.getUser());
+            Address.updateToUnDefault(SecureCAS.getUser());
         }
         address.isDefault = "true";
         address.save();
@@ -57,7 +58,7 @@ public class Addresses extends Controller {
     }
 
     public static void updateDefault(long id) {
-        Address.updateDefault(id, WebCAS.getUser());
+        Address.updateDefault(id, SecureCAS.getUser());
 
         ok();
     }

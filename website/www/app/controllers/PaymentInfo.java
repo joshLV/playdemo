@@ -2,7 +2,6 @@ package controllers;
 
 import java.math.BigDecimal;
 import java.util.List;
-
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -16,10 +15,9 @@ import models.payment.AliPaymentFlow;
 import models.payment.PaymentFlow;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.cas.SecureCAS;
-import controllers.modules.webcas.WebCAS;
+import controllers.modules.website.cas.SecureCAS;
 
-@With({SecureCAS.class, WebCAS.class})
+@With(SecureCAS.class)
 public class PaymentInfo extends Controller {
 	private static PaymentFlow paymentFlow = new AliPaymentFlow();
 
@@ -30,7 +28,7 @@ public class PaymentInfo extends Controller {
      */
     public static void index(long id) {
         //加载用户账户信息
-        User user = WebCAS.getUser();
+        User user = SecureCAS.getUser();
         Account account = AccountUtil.getAccount(user.getId(), AccountType.CONSUMER);
 
         //加载订单信息
@@ -51,7 +49,7 @@ public class PaymentInfo extends Controller {
      * @param paymentSourceCode 网银代码
      */
     public static void confirm(long orderId, boolean useBalance, String paymentSourceCode) {
-        User user = WebCAS.getUser();
+        User user = SecureCAS.getUser();
         Order order = Order.find("byIdAndUserIdAndUserType", orderId, user.getId(), AccountType.CONSUMER).first();
         
         if (order == null){
@@ -108,7 +106,7 @@ public class PaymentInfo extends Controller {
      * @param orderId               订单
      */
     public static void payIt(long orderId){
-        User user = WebCAS.getUser();
+        User user = SecureCAS.getUser();
         Order order = Order.find("byIdAndUserIdAndUserType", orderId, user.getId(), AccountType.CONSUMER).first();
 
         if (order == null){
