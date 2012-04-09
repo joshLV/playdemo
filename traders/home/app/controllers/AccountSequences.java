@@ -5,7 +5,9 @@ import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceCondition;
 import navigation.annotations.ActiveNavigation;
 import navigation.annotations.Right;
+
 import org.apache.commons.lang.StringUtils;
+
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -26,8 +28,7 @@ public class AccountSequences extends Controller {
     @Right("STATS")
     @ActiveNavigation("account_sequence")
     public static void index(AccountSequenceCondition condition) {
-        long accountId = 1; //todo 管理员登录做完后修改此处
-
+        Long accountId = SupplierRbac.currentUser().supplier.id;
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 

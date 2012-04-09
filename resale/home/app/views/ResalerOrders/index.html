@@ -157,9 +157,11 @@ $(window).load(function () {
        <div class="caozuo_std">
         <a class="font_blue" href="@{ResalerOrders.show(row.id)}">查看详情</a>
        </div>
+        #{if (row.status != models.order.OrderStatus.PAID)}
        <div class="caozuo_std">
         <a href="#">取消</a>
        </div>
+        #{/if}
       </td>
        #{/if}
      </tr>

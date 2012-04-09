@@ -9,7 +9,7 @@
     <legend>资金明细</legend>
     <table class="table">
         <tr>
-            <td width="20%">余额：${account.amount}元</td>
+            <td width="20%">余额：${account?.amount}元</td>
         </tr>
     </table>
     <form class="well form-search" name="form" action="@{AccountSequences.index()}" method="GET">
@@ -61,21 +61,19 @@
         </tr>
     #{paginate.list items:accountSequences, as:'accountSequence'}
         <tr>
-            <td>${accountSequence.serialNumber}</td>
-            <td>${accountSequence.orderId}</td>
-            <td>${accountSequence.remark}</td>
-            <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-            <td>&{'account_sequence.'+accountSequence.sequenceType}</td>
-            <td>#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
+            <td>${accountSequence?.serialNumber}</td>
+            <td>${accountSequence?.orderId}</td>
+            <td>${accountSequence?.remark}</td>
+            <td>${accountSequence?.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>&{'account_sequence.'+accountSequence?.sequenceType}</td>
+            <td>#{if accountSequence?.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
                     ${accountSequence.cashAmount.add(accountSequence.uncashAmount)}
                 #{/if}</td>
-            <td>#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
-                ${accountSequence
-                .cashAmount.add(accountSequence
-            .uncashAmount)}
+            <td>#{if accountSequence?.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
+                ${accountSequence?.cashAmount.add(accountSequence?.uncashAmount)}
             #{/if}</td>
-        *{<td>&{'account_sequence.'+accountSequence.sequenceType}</td>}*
-            <td>${accountSequence.amount}</td>
+        *{<td>&{'account_sequence.'+accountSequence?.sequenceType}</td>}*
+            <td>${accountSequence?.amount}</td>
         </tr>
     #{/paginate.list}
 
