@@ -425,6 +425,8 @@ public class Goods extends Model {
         updateGoods.expireAt = DateUtil.getEndOfDay(goods.expireAt);
         updateGoods.faceValue = goods.faceValue;
         updateGoods.originalPrice = goods.originalPrice;
+        goods.discount = null;
+        updateGoods.setDiscount(goods.getDiscount());
         updateGoods.salePrice = goods.salePrice;
         updateGoods.baseSale = goods.baseSale;
         updateGoods.levelPrices = goods.levelPrices;

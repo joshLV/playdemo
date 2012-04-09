@@ -398,10 +398,10 @@
                         class="strong_gray font_14px">${aGoods.name}</span>
                 </div>
                 <div class="margin_text"><span
-                        class="pri_jiage font_14px">￥${aGoods.salePrice}</span>
+                        class="pri_jiage font_14px">${aGoods.salePrice?.formatCurrency('CNY')}</span>
                 </div>
                 <div class="text_decorat margin_text">
-                    市场价格：Y:${aGoods.originalPrice}</div>
+                    市场价格：${aGoods.faceValue.formatCurrency('CNY')}</div>
                 <div class="margin_text margin_bottom"><a
                         class="buy_now" name="link_buy_now" id="link_buy_now_${aGoods.id}"
                         href="#" onclick="javascript:buyNow(${aGoods.id})">立即购买</a></div>

@@ -110,10 +110,10 @@
                             height="168"/></div>
                     <div class="right_shangpin">
                         <div class="right_shangpin_one">
-                            原价：${goods.originalPrice}元
+                            原价：${goods.faceValue}元
                         </div>
                         <div class="right_shangpin_two">
-                            折扣：${goods.discountExpress.yesno(goods.discountExpress+'折','无优惠')}</div>
+                            折扣：${goods.discountExpress?goods.discountExpress+'折':'无优惠'}</div>
                         <div class="right_shangpin_three">现价：<span
                                 class="font_red font_size18">${goods.salePrice}</span>元
                         </div>
