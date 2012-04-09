@@ -77,9 +77,7 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 <div class="form-actions">
     <input class="btn btn-primary" id="save" type="submit" value="保存"/>
     <input class="btn btn-primary" id="onsale" type="submit" value="保存并上架"/>
-#{if "add".equals(action)}
     <input class="btn btn-primary" id="preview" type="submit" value="预览"/>
-#{/if}
 #{if "edit".equals(action)}
     #{vx.cancelButton url:'/goods', class:'btn btn-primary'/}
 #{/if}

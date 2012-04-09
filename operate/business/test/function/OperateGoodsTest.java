@@ -94,25 +94,34 @@ public class OperateGoodsTest extends FunctionalTest {
      */
     @Test
     public void testDelete() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_003");
+        long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_003");
 
         Response response = DELETE("/goods/" + goodsId);
         assertStatus(302, response);
-        Goods goods = Goods.findById(goodsId);
-        assertEquals(DeletedStatus.DELETED, goods.deleted);
+
+        //修改商品状态为下架状态
+        response = PUT("/goods/" + goodsId + "/offSale", "text/html", "");
+                             //再次删除
+        response = DELETE("/goods/" + goodsId);
+        assertStatus(302, response);
+        
+        //验证状态改为已删除状态
+        Goods goods1 = Goods.findById(goodsId);
+        assertEquals(DeletedStatus.DELETED, goods1.deleted);
     }
 
     /**
      * 修改商品上下架
      */
     @Test
-    public void testOnSale() {
+    public void testOffSale() {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
 
-        Response response = PUT("/goods/" + goodsId + "/onSale", "text/html", "");
+        Response response = PUT("/goods/" + goodsId + "/offSale", "text/html", "");
+
         assertStatus(302, response);
         Goods goods = Goods.findById(goodsId);
-        assertEquals(GoodsStatus.ONSALE, goods.status);
+        assertEquals(GoodsStatus.OFFSALE, goods.status);
     }
 
     /**

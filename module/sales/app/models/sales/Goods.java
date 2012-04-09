@@ -506,6 +506,8 @@ public class Goods extends Model {
         for (Long id : ids) {
             models.sales.Goods goods = models.sales.Goods.findById(id);
             goods.status = status;
+
+            System.out.println("@@@@@@@@@@@@@@status:" + status);
             goods.save();
         }
     }
