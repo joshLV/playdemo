@@ -88,21 +88,8 @@ public class OperateGoods extends Controller {
             for (BigDecimal levelPrice : levelPrices) {
                 levelPrice = ZERO;
             }
+            goods.setLevelPrices(levelPrices);
         }
-//        else {
-//            BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
-//            for (int i = 0; i < levelPrices.length; i++) {
-//                GoodsLevelPrice levelPrice = goods.getLevelPrices().get(i);
-//                if (levelPrice == null) {
-//                    levelPrices[i] = ZERO;
-//                } else {
-//                    levelPrices[i] = levelPrice.price;
-//                }
-//                System.out.println("levelPrice." + ResalerLevel.values()[i] + ":" + levelPrices[i]);
-//                renderArgs.put("levelPrice." + ResalerLevel.values()[i], levelPrices[i]);
-//            }
-//        }
-//        renderArgs.put("goods", goods);
         if (goods.isAllShop != null) {
             if (goods.isAllShop && goods.shops != null) {
                 goods.shops = null;
@@ -263,6 +250,12 @@ public class OperateGoods extends Controller {
     public static void edit(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
 
+        renderSupplierList(goods);
+        renderInit(goods);
+        render(goods, id);
+    }
+
+    private static void renderSupplierList(Goods goods) {
         List<Supplier> supplierList = Supplier.findUnDeleted();
         Supplier supplier = goods.getSupplier();
         if (supplier != null) {
@@ -271,8 +264,6 @@ public class OperateGoods extends Controller {
             }
         }
         renderArgs.put("supplierList", supplierList);
-        renderInit(goods);
-        render(goods, id);
     }
 
     /**
@@ -297,8 +288,7 @@ public class OperateGoods extends Controller {
         checkLevelPrice(levelPrices);
         if (Validation.hasErrors()) {
 
-            List<Supplier> supplierList = Supplier.findUnDeleted();
-            renderArgs.put("supplierList", supplierList);
+            renderSupplierList(goods);
             renderInit(goods);
             render("OperateGoods/edit.html", goods, id);
         }
@@ -352,6 +342,18 @@ public class OperateGoods extends Controller {
      * @param id 商品ID
      */
     public static void onSale(@As(",") Long... id) {
+        for (Long goodsId : id) {
+            models.sales.Goods goods = Goods.findById(goodsId);
+            if (goods != null) {
+                checkSalePrice(goods);
+                checkLevelPrice(goods.getLevelPriceArray());
+            }
+            if (Validation.hasErrors() && id.length > 0) {
+                renderSupplierList(goods);
+                renderInit(goods);
+                render("OperateGoods/edit.html", goods, id);
+            }
+        }
         updateStatus(GoodsStatus.ONSALE, id);
     }
 
@@ -392,6 +394,12 @@ public class OperateGoods extends Controller {
      * @param id 商品ID
      */
     public static void delete(@As(",") Long... id) {
+        for (Long goodsId : id) {        //已上架的商品不可以删除
+            Goods goods = Goods.findById(goodsId);
+            if (GoodsStatus.ONSALE.equals(goods.status)) {
+                index(null);
+            }
+        }
         models.sales.Goods.delete(id);
 
         index(null);

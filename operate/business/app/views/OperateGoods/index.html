@@ -111,8 +111,9 @@
                         <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale",method:"PUT"/}#{/if}
                 </td>
                 <td><a href="@{OperateGoods.edit(goods?.id)}">修改</a> /
-                    <a href="@{OperateGoods.show(goods?.id)}">查看</a> /
-                    #{vx.deleteLink action:"goods", id:goods?.id, name:goods?.name/}</td>
+                    <a href="@{OperateGoods.show(goods?.id)}">查看</a>
+                    #{if !models.sales.GoodsStatus.ONSALE.equals(goods.status)} /
+                        #{vx.deleteLink action:"goods", id:goods?.id, name:goods?.name/}#{/if}</td>
             </tr>
             #{/paginate.list}
             </tbody>

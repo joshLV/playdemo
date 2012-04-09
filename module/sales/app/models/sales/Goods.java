@@ -574,4 +574,21 @@ public class Goods extends Model {
         }
 
     }
+
+    public BigDecimal[] getLevelPriceArray() {
+        BigDecimal[] prices = new BigDecimal[ResalerLevel.values().length];
+        if (levelPrices == null || levelPrices.size() == 0) {
+            for (BigDecimal price : prices) {
+                price = BigDecimal.ZERO;
+            }
+            return prices;
+        }
+
+        List<GoodsLevelPrice> levelPriceList = getLevelPrices();
+        for (int i = 0; i < levelPriceList.size(); i++) {
+            GoodsLevelPrice levelPrice = levelPriceList.get(i);
+            prices[i] = (levelPrice == null || levelPrice.price == null) ? BigDecimal.ZERO : levelPrice.price;
+        }
+        return prices;
+    }
 }

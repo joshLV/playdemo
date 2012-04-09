@@ -102,7 +102,7 @@ public class SupplierGoods extends Controller {
             goods.isAllShop = false;
         }
 
-        Long supplierId = MenuInjector.currentUser().getId();
+        Long supplierId = MenuInjector.currentUser().supplier.id;
         String shopIds = "";
         if (goods.shops != null) {
             for (Shop shop : goods.shops) {
@@ -160,7 +160,7 @@ public class SupplierGoods extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void create(@Valid models.sales.Goods goods, @Required File imagePath, BigDecimal[] levelPrices) {
-        Long supplierId = MenuInjector.currentUser().getId();
+        Long supplierId = MenuInjector.currentUser().supplier.id;
 
         checkImageFile(imagePath);
 
@@ -173,6 +173,9 @@ public class SupplierGoods extends Controller {
 
         //添加商品处理
         goods.supplierId = supplierId;
+        System.out.println("supplierId:" + supplierId);
+
+
         goods.createdBy = MenuInjector.currentUser().loginName;
         goods.materialType = MaterialType.ELECTRONIC;
 
