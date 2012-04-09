@@ -39,7 +39,7 @@
                                            class="font_white">去结算</a></span>
         </div>
         <!--下拉购物车-->
-        <div class="abs_gouwu_car" style="displa￥none">
+        <div class="abs_gouwu_car" style="display:none">
             <!--over auto-->
             <div class="over_auto">
                 <div class="car_box">
@@ -217,10 +217,10 @@
                         <div class="margin_top5px"><span
                                 id="recommend_goods_${aGoods.id}"
                                 class="strong_gray font_14px">${aGoods.name} </span><span
-                                class="pri_jiage font_14px">${aGoods.salePrice.formatCurrency('CNY')}</span>
+                                class="pri_jiage font_14px">${aGoods.salePrice?.formatCurrency('CNY')}</span>
                         </div>
                         <div class="text_decorat">
-                            市场价格：${aGoods.faceValue.formatCurrency('CNY')}</div>
+                            市场价格：${aGoods.faceValue?.formatCurrency('CNY')}</div>
                     </li>
                     #{if ((i%4 == 3))}
                     </div>
