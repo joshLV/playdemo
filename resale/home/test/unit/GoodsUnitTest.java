@@ -50,7 +50,7 @@ public class GoodsUnitTest extends UnitTest {
         models.sales.Goods goods = new Goods();
         assertEquals(new Integer(0), goods.getDiscount());
 
-        goods.originalPrice = new BigDecimal(100);
+        goods.faceValue = new BigDecimal(100);
         goods.salePrice = new BigDecimal(12);
         assertEquals(new Integer(12), goods.getDiscount());
 
