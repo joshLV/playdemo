@@ -1,16 +1,13 @@
 package controllers;
 
 import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceCondition;
 import models.accounts.AccountSequenceFlag;
 import models.accounts.util.AccountUtil;
-import controllers.operate.cas.SecureCAS;
 import operate.rbac.annotations.ActiveNavigation;
+import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -21,7 +18,7 @@ import play.mvc.With;
  * @author likang
  *
  */
-@With({SecureCAS.class, OperateRbac.class})
+@With(OperateRbac.class)
 public class AccountReports extends Controller{
     private static final int PAGE_SIZE = 20;
 

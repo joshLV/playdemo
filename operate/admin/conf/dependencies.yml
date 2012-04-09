@@ -6,7 +6,6 @@ require:
     - play -> paginate head
     - layout_operate -> layout_operate
     - paginate_ext -> paginate_ext
-    - operate_cas -> operate_cas
     - operate_rbac -> operate_rbac
     - base_rbac -> base_rbac
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
@@ -24,7 +23,6 @@ repositories:
         artifact:   "${application.path}/../../module/[module]"
         contains:
             - layout_operate -> *
-            - operate_cas -> *
             - paginate_ext -> *
             - operate_rbac -> *
             - base_rbac -> *

@@ -50,7 +50,7 @@ GET     /favicon.ico                            404
 GET     /public/                                staticDir:public
 GET     /o/{path1}/{path2}/{path3}/{path4}      Files.getImage
 
-*           /                                                       module:operate_cas
+*           /                                                       module:operate_rbac
 
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}

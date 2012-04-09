@@ -1,9 +1,8 @@
 package controllers;
 
+import java.io.File;
 import play.Play;
 import play.mvc.Controller;
-
-import java.io.File;
 
 //import navigation.annotations.ActiveNavigation;
 
@@ -14,7 +13,7 @@ import java.io.File;
  * Date: 3/13/12
  * Time: 2:46 PM
  */
-//@With({SecureCAS.class, OperateRbac.class})
+//@With(OperateRbac.class)
 //@ActiveNavigation("goods_index")
 public class Files extends Controller {
     public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");

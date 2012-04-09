@@ -118,9 +118,15 @@ public class OperateUser extends Model {
 	 */
 	public static void update(long id, OperateUser user) {
 		OperateUser updatedUser = OperateUser.findById(id);
+		
+		// FIX NullPointException for DigestUtils.md5Hex
+        String updatedUser_encryptedPassword =
+                StringUtils.isNotEmpty(updatedUser.encryptedPassword) ?
+                        updatedUser.encryptedPassword : "!&NOTSETPASSWORD!";
+
 		if (StringUtils.isNotEmpty(user.encryptedPassword) && 
 				!"******".equals(user.encryptedPassword) && 
-				!user.encryptedPassword.equals(DigestUtils.md5Hex(updatedUser.encryptedPassword))) {
+				!user.encryptedPassword.equals(DigestUtils.md5Hex(updatedUser_encryptedPassword))) {
 			Images.Captcha captcha = Images.captcha();
 			String passwordSalt = captcha.getText(6);
 			//随机码

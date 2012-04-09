@@ -1,8 +1,8 @@
-# This file defines all module routes (Higher priority routes first)
+# import these default routes as :
+# *         /               module:operate_rbac
 #
-# import these routes in the main app as :
-# *     /                       module:navigation
-#
-# ~~~~
 
-GET     /?                      Module.index
+GET         /login                      OperateRbac.login
+GET         /logout                     OperateRbac.logout
+GET         /authenticate               OperateRbac.authenticate
+GET         /pgtcallbackurl             OperateRbac.pgtCallBack

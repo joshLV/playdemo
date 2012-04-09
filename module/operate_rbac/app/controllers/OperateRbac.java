@@ -13,11 +13,15 @@ import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
+import play.cache.Cache;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Finally;
 import play.mvc.Http.Request;
-import controllers.operate.cas.SecureCAS;
+import play.mvc.Router;
+import play.operate.cas.CASUtils;
+import play.operate.cas.models.CASUser;
+import controllers.operate.cas.Security;
 
 /**
  * Have a menu automatically injected in your renderArgs
@@ -29,20 +33,124 @@ public class OperateRbac extends Controller {
 
     private static ThreadLocal<OperateUser> _user = new ThreadLocal<>();
 
-    public static void injectDefaultMenus() {
-        for(String menuName : Play.configuration.getProperty("navigation.defaultMenus", "main").toString().split(",")) {
-            if(!StringUtils.isBlank(menuName)) {
-                renderArgs.put(menuName + "Menu", NavigationHandler.getMenu(StringUtils.trim(menuName)));
+
+    public static final String SESSION_USER_KEY = "operate_login";
+
+
+    /**
+     * Action for the login route. We simply redirect to CAS login page.
+     *
+     * @throws Throwable
+     */
+    public static void login() throws Throwable {
+        // We must avoid infinite loops after success authentication
+        if (!Router.route(request).action.equals("OperateRbac.login")) {
+            // we put into cache the url we come from
+            Cache.add("url_" + session.getId(), request.method == "GET" ? request.url : "/", "10min");
+        }
+
+        // we redirect the user to the cas login page
+        String casLoginUrl = CASUtils.getCasLoginUrl(false);
+        redirect(casLoginUrl);
+    }
+
+    /**
+     * Action for the logout route. We clear cache & session and redirect the user to CAS logout page.
+     *
+     * @throws Throwable
+     */
+    public static void logout() throws Throwable {
+
+        String username = session.get(SESSION_USER_KEY);
+
+        // we clear cache
+        Cache.delete("pgt_" + username);
+
+        // we clear session
+        session.clear();
+
+        // we invoke the implementation of "onDisconnected"
+        Security.onDisconnected();
+
+        // we redirect to the cas logout page.
+        String casLogoutUrl = CASUtils.getCasLogoutUrl();
+        redirect(casLogoutUrl);
+    }
+
+    /**
+     * Action when the user authentification or checking rights fails.
+     *
+     * @throws Throwable
+     */
+    public static void fail() throws Throwable {
+        forbidden();
+    }
+
+    /**
+     * Action for the CAS return.
+     *
+     * @throws Throwable
+     */
+    public static void authenticate() throws Throwable {
+        Boolean isAuthenticated = Boolean.FALSE;
+        String ticket = params.get("ticket");
+        if (ticket != null) {
+            Logger.debug("[OperateCAS]: Try to validate ticket " + ticket);
+            CASUser user = CASUtils.valideCasTicket(ticket);
+            if (user != null) {
+                isAuthenticated = Boolean.TRUE;
+                session.put(SESSION_USER_KEY, user.getUsername());
+                // we invoke the implementation of onAuthenticate
+                Security.onAuthenticated(user);
             }
+        }
+
+        if (isAuthenticated) {
+            // we redirect to the original URL
+            String url = (String) Cache.get("url_" + session.getId());
+            Cache.delete("url_" + session.getId());
+            if (url == null) {
+                url = "/";
+            }
+            Logger.debug("[OperateCAS]: redirect to url -> " + url);
+            redirect(url);
+        }
+        else {
+            fail();
         }
     }
 
-    @Before
+    /**
+     * Action for the proxy call back url.
+     */
+    public static void pgtCallBack() throws Throwable {
+        // CAS server call this URL with PGTIou & PGTId
+        String pgtIou = params.get("pgtIou");
+        String pgtId = params.get("pgtId");
+
+        // here we put in cache PGT with PGTIOU as key
+        if (pgtIou != null || pgtId != null) {
+            Cache.set(pgtIou, pgtId);
+        }
+    }
+
+    /**
+     * Method that do CAS Filter and check rights.
+     *
+     * @throws Throwable
+     */
+    @Before(unless = { "login", "logout", "fail", "authenticate", "pgtCallBack", "setLoginUserForTest" })
     public static void injectCurrentMenus() {
+        Logger.debug("[OperateCAS]: CAS Filter for URL -> " + request.url);
+
+        if (Security.isTestLogined()) {
+            session.put(SESSION_USER_KEY, Security.getLoginUserForTest());
+        }
+        
         if (request.invokedMethod == null)
             return;
 
-        String userName = session.get(SecureCAS.SESSION_USER_KEY);
+        String userName = session.get(SESSION_USER_KEY);
 
         Logger.info("======================================== currentUser = " + userName);
 
@@ -67,7 +175,13 @@ public class OperateRbac extends Controller {
         }
 
         if (user == null) {
-            error(403, "没有登录，请考虑合并SecureCAS和这个类，看上去@With加进去的类是没有顺序的");
+            Logger.debug("[OperateCAS]: user is not authenticated");
+            // we put into cache the url we come from
+            Cache.add("url_" + session.getId(), request.method == "GET" ? request.url : "/", "10min");
+
+            // we redirect the user to the cas login page
+            String casLoginUrl = CASUtils.getCasLoginUrl(true);
+            redirect(casLoginUrl);            
         }
 
         // 得到当前菜单的名字
@@ -81,6 +195,14 @@ public class OperateRbac extends Controller {
 
         renderArgs.put("topMenus", NavigationHandler.getTopMenus());
         renderArgs.put("secondLevelMenu", NavigationHandler.getSecondLevelMenus());
+    }
+
+    public static void injectDefaultMenus() {
+        for(String menuName : Play.configuration.getProperty("navigation.defaultMenus", "main").toString().split(",")) {
+            if(!StringUtils.isBlank(menuName)) {
+                renderArgs.put(menuName + "Menu", NavigationHandler.getMenu(StringUtils.trim(menuName)));
+            }
+        }
     }
 
     @Finally

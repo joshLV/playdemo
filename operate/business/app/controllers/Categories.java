@@ -1,13 +1,11 @@
 package controllers;
 
-import controllers.operate.cas.SecureCAS;
+import java.util.List;
 import models.sales.Category;
 import models.sales.CategorySerializer;
 import operate.rbac.annotations.ActiveNavigation;
 import play.mvc.Controller;
 import play.mvc.With;
-
-import java.util.List;
 
 /**
  * 商品分类的控制器.
@@ -16,7 +14,7 @@ import java.util.List;
  * Date: 3/12/12
  * Time: 10:42 AM
  */
-@With({SecureCAS.class, OperateRbac.class})
+@With(OperateRbac.class)
 @ActiveNavigation("goods_index")
 public class Categories extends Controller {
 

@@ -73,7 +73,7 @@ public class CASUtils {
         if (possibleGateway && Boolean.valueOf(Play.configuration.getProperty("cas.gateway"))) {
             casLoginUrl += "&gateway=true";
         }
-        Logger.debug("[SecureCAS]: login CAS URL is " + casLoginUrl);
+        Logger.debug("[OperateCAS]: login CAS URL is " + casLoginUrl);
 
         return casLoginUrl;
     }
@@ -96,7 +96,7 @@ public class CASUtils {
      * @throws Throwable
      */
     private static String getCasServiceUrl() {
-        return Router.getFullUrl("operate.cas.SecureCAS.authenticate");
+        return Router.getFullUrl("OperateRbac.authenticate");
     }
 
     /**
@@ -121,7 +121,7 @@ public class CASUtils {
      * @throws Throwable
      */
     private static String getCasProxyCallBackUrl() {
-        String casProxyCallBackUrl = Router.getFullUrl("operate.cas.SecureCAS.pgtCallBack");
+        String casProxyCallBackUrl = Router.getFullUrl("OperateRbac.pgtCallBack");
 
         // proxy call back url must be in https, but not in Mock mode
         if (!casProxyCallBackUrl.contains("https") && !isCasMockServer()) {
@@ -208,7 +208,7 @@ public class CASUtils {
         }
 
         // we do the validation request
-        Logger.debug("[SecureCAS]: validate cas ticket by calling " + casValidationTicketUrl);
+        Logger.debug("[OperateCAS]: validate cas ticket by calling " + casValidationTicketUrl);
         // com.ning.http.client.Response validationResponse =
         // client.prepareGet(casValidationTicketUrl).execute().get();
         Document response = WS.url(casValidationTicketUrl).get().getXml();
@@ -298,7 +298,7 @@ public class CASUtils {
             Logger.error("CAS server responded with error for request [" + url + "].  Full response was ["
                     + response.getElementsByTagName("cas:proxyFailure").item(0).getTextContent() + "]");
         }
-        Logger.debug("[SecureCAS]: PT for user " + username + " and service " + serviceName + " is " + proxyTicket);
+        Logger.debug("[OperateCAS]: PT for user " + username + " and service " + serviceName + " is " + proxyTicket);
         return proxyTicket;
     }
 

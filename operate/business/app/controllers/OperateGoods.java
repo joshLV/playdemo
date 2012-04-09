@@ -4,11 +4,22 @@
  */
 package controllers;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.FileUploadUtil;
-import controllers.operate.cas.SecureCAS;
+import static java.math.BigDecimal.ZERO;
+import static play.Logger.warn;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import models.resale.ResalerLevel;
-import models.sales.*;
+import models.sales.Brand;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.GoodsCondition;
+import models.sales.GoodsStatus;
+import models.sales.MaterialType;
+import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -19,16 +30,8 @@ import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static java.math.BigDecimal.ZERO;
-import static play.Logger.warn;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.FileUploadUtil;
 
 /**
  * 通用说明：
@@ -36,7 +39,7 @@ import static play.Logger.warn;
  * @author yanjy
  * @version 1.0 02/8/12
  */
-@With({SecureCAS.class, OperateRbac.class})
+@With(OperateRbac.class)
 @ActiveNavigation("goods_index")
 public class OperateGoods extends Controller {
 

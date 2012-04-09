@@ -13,7 +13,6 @@ require:
     - supplier -> supplier
     - paginate_ext -> paginate_ext
     - org.jsoup -> jsoup 1.6.1
-    - operate_cas -> operate_cas
     - operate_rbac -> operate_rbac
 #    - supplier_navigation -> supplier_navigation
     - resale -> resale
@@ -42,7 +41,6 @@ repositories:
             - sales -> *
             - supplier -> *
             - paginate_ext -> *
-            - operate_cas -> *
             - operate_rbac -> *
             - resale -> *
             - consumer -> *

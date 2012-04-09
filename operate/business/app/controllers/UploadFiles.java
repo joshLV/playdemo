@@ -10,9 +10,8 @@ import play.Play;
 import play.mvc.Controller;
 import play.mvc.With;
 import com.uhuila.common.util.FileUploadUtil;
-import controllers.operate.cas.SecureCAS;
 
-@With({SecureCAS.class, OperateRbac.class})
+@With(OperateRbac.class)
 @ActiveNavigation("goods_index")
 public class UploadFiles extends Controller {
 

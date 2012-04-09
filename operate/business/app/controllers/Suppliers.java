@@ -5,23 +5,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
-
 import org.apache.commons.lang.StringUtils;
-
 import play.data.validation.Required;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
-
 import com.uhuila.common.util.FileUploadUtil;
-
-import controllers.operate.cas.SecureCAS;
 
 /**
  * 商户管理的控制器.
@@ -30,7 +24,7 @@ import controllers.operate.cas.SecureCAS;
  * Date: 3/20/12
  * Time: 3:13 PM
  */
-@With({SecureCAS.class, OperateRbac.class})
+@With(OperateRbac.class)
 @ActiveNavigation("suppliers_index")
 public class Suppliers extends Controller {
     private static final String ADMIN_ROLE = "admin";

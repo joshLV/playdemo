@@ -25,8 +25,7 @@ import com.uhuila.common.constants.DeletedStatus;
  * @author yanjy
  *
  */
-
-@With({OperateRbac.class })
+@With(OperateRbac.class)
 @ActiveNavigation("user_search")
 public class OperateUsers extends Controller {
     public static int PAGE_SIZE = 15;
