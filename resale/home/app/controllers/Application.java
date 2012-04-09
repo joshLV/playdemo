@@ -1,20 +1,13 @@
 package controllers;
 
-import play.*;
-import play.mvc.*;
+import play.mvc.Controller;
+import play.mvc.With;
+import controllers.modules.resale.cas.SecureCAS;
 
-import java.util.*;
-
-import controllers.modules.cas.SecureCAS;
-import controllers.resaletrace.ResaleCAS;
-
-import models.*;
-
-@With({SecureCAS.class ,ResaleCAS.class})
+@With(SecureCAS.class)
 public class Application extends Controller {
 
     public static void index() {
-        System.out.print("h");
     }
 
 }

@@ -2,21 +2,16 @@ package controllers;
 
 import java.util.List;
 import java.util.Map;
-
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrdersCondition;
 import models.resale.Resaler;
-import models.resale.util.ResaleUtil;
-
 import org.apache.commons.lang.StringUtils;
-
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.cas.SecureCAS;
-import controllers.resaletrace.ResaleCAS;
+import controllers.modules.resale.cas.SecureCAS;
 
 /**
  * 分销商订单列表控制器
@@ -24,7 +19,7 @@ import controllers.resaletrace.ResaleCAS;
  * @author yanjy
  *
  */
-@With({SecureCAS.class,ResaleCAS.class})
+@With(SecureCAS.class)
 public class ResalerOrders extends Controller {
 
 	public static int PAGE_SIZE = 6;
@@ -34,7 +29,7 @@ public class ResalerOrders extends Controller {
 	 * 订单页面展示
 	 */
 	public static void index(OrdersCondition condition) {
-		Resaler resaler = ResaleCAS.getResaler();
+		Resaler resaler = SecureCAS.getResaler();
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 		if (condition == null) {

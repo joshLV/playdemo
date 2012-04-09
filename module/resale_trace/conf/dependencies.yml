@@ -1,4 +1,0 @@
-self: play -> resale_trace 0.1
-
-require:
-    - play 1.2.4

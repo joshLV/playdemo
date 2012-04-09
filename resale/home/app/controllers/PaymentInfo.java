@@ -2,14 +2,12 @@ package controllers;
 
 import java.math.BigDecimal;
 import java.util.List;
-
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
-import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
 import models.payment.AliPaymentFlow;
@@ -17,10 +15,9 @@ import models.payment.PaymentFlow;
 import models.resale.Resaler;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.cas.SecureCAS;
-import controllers.resaletrace.ResaleCAS;
+import controllers.modules.resale.cas.SecureCAS;
 
-@With({SecureCAS.class, ResaleCAS.class})
+@With(SecureCAS.class)
 public class PaymentInfo extends Controller {
 	private static PaymentFlow paymentFlow = new AliPaymentFlow();
 
@@ -31,7 +28,7 @@ public class PaymentInfo extends Controller {
      */
     public static void index(long id) {
         //加载用户账户信息
-        Resaler user = ResaleCAS.getResaler();
+        Resaler user = SecureCAS.getResaler();
         Account account = AccountUtil.getAccount(user.getId(), AccountType.RESALER);
 
         //加载订单信息
@@ -52,7 +49,7 @@ public class PaymentInfo extends Controller {
      * @param paymentSourceCode 网银代码
      */
     public static void confirm(long orderId, boolean useBalance, String paymentSourceCode) {
-        Resaler resaler = ResaleCAS.getResaler();
+        Resaler resaler = SecureCAS.getResaler();
         Order order = Order.find("byIdAndUserIdAndUserType", orderId, resaler.getId(), AccountType.RESALER).first();
         
         if (order == null){
@@ -109,7 +106,7 @@ public class PaymentInfo extends Controller {
      * @param orderId               订单
      */
     public static void payIt(long orderId){
-        Resaler resaler = ResaleCAS.getResaler();
+        Resaler resaler = SecureCAS.getResaler();
         Order order = Order.find("byIdAndUserIdAndUserType", orderId, resaler.getId(), AccountType.RESALER).first();
 
         if (order == null){

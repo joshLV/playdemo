@@ -282,7 +282,7 @@
       </td>
       <td width="300" align="center">
       市场价：${goods.faceValue?.formatCurrency('CNY').raw()}<br>
-      采购价：￥${goods.getResalePrice(resaler.level)}<br>
+      采购价：￥${goods.getResalePrice(resaler?.level)}<br>
       折扣：${goods.discountExpress.yesno(goods.discountExpress+'折','无优惠')}</td>
       <td width="150" align="center">
       <a class="font_blue" href="@{ResalerGoods.show(goods.id)}">查看详情</a><br>

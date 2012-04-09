@@ -7,13 +7,14 @@ import models.sales.Goods;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.cas.SecureCAS;
-import controllers.resaletrace.ResaleCAS;
-import com.taobao.api.*;
-import com.taobao.api.request.*;
+import com.taobao.api.ApiException;
+import com.taobao.api.DefaultTaobaoClient;
+import com.taobao.api.TaobaoClient;
+import com.taobao.api.request.ItemAddRequest;
 import com.taobao.api.response.ItemAddResponse;
+import controllers.modules.resale.cas.SecureCAS;
 
-@With({SecureCAS.class, ResaleCAS.class})
+@With(SecureCAS.class)
 public class TopClient extends Controller{
     private static final String url = "http://gw.api.taobao.com/router/rest";
     private static final String appkey = "12576100";
@@ -21,7 +22,7 @@ public class TopClient extends Controller{
     
     
     public static void add(Long favId){
-        Resaler user = ResaleCAS.getResaler();
+        Resaler user = SecureCAS.getResaler();
         OauthToken token = OauthToken.find("byUserId", user.getId().toString()).first();
         ResalerFav resalerFav = ResalerFav.findById(favId);
         if(resalerFav == null){

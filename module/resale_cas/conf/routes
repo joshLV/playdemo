@@ -1,0 +1,8 @@
+# import these default routes as :
+# *         /               module:resale_cas
+#
+
+GET         /login          		modules.resale.cas.SecureCAS.login
+GET         /logout        			modules.resale.cas.SecureCAS.logout
+GET         /authenticate   		modules.resale.cas.SecureCAS.authenticate
+GET         /pgtcallbackurl 		modules.resale.cas.SecureCAS.pgtCallBack

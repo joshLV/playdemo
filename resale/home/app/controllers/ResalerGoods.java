@@ -1,18 +1,14 @@
 package controllers;
 
 import java.util.List;
-
 import models.resale.Resaler;
 import models.sales.Brand;
 import models.sales.GoodsCondition;
-
 import org.apache.commons.lang.StringUtils;
-
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.cas.SecureCAS;
-import controllers.resaletrace.ResaleCAS;
+import controllers.modules.resale.cas.SecureCAS;
 
 /**
  * 分销商商品列表控制器
@@ -20,7 +16,7 @@ import controllers.resaletrace.ResaleCAS;
  * @author yanjy
  *
  */
-@With({SecureCAS.class,ResaleCAS.class})
+@With(SecureCAS.class)
 public class ResalerGoods extends Controller {
 	public static int PAGE_SIZE = 12;
 	public static int LIMIT = 8;
@@ -28,7 +24,7 @@ public class ResalerGoods extends Controller {
 	 * 商品列表主界面
 	 */
 	public static void index() {
-		Resaler resaler = ResaleCAS.getResaler();
+		Resaler resaler = SecureCAS.getResaler();
 		String page = params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 		GoodsCondition goodsCond = new GoodsCondition();
@@ -44,7 +40,7 @@ public class ResalerGoods extends Controller {
 	 * @param condition 查询条件
 	 */
 	public static void list(String condition) {
-		Resaler resaler = ResaleCAS.getResaler();
+		Resaler resaler = SecureCAS.getResaler();
 		boolean isResaler = true;
 		String page = params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
@@ -62,7 +58,7 @@ public class ResalerGoods extends Controller {
 	 * @param id 商品
 	 */
 	public static void show(long id) {
-		Resaler resaler = ResaleCAS.getResaler();
+		Resaler resaler = SecureCAS.getResaler();
 		models.sales.Goods goods = models.sales.Goods.findUnDeletedById(id);
 		if (goods == null) {
 			notFound();

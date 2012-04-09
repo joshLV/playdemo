@@ -1,24 +1,18 @@
 package controllers;
 
 import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-
-import controllers.modules.cas.SecureCAS;
-import controllers.resaletrace.ResaleCAS;
-
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceCondition;
 import models.accounts.AccountSequenceFlag;
 import models.accounts.AccountType;
-
 import models.accounts.util.AccountUtil;
-
 import models.resale.Resaler;
+import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
+import controllers.modules.resale.cas.SecureCAS;
 
 /**
  * 分销商账户明细控制器
@@ -26,13 +20,13 @@ import play.mvc.With;
  * @author likang
  *
  */
-@With({SecureCAS.class, ResaleCAS.class})
+@With(SecureCAS.class)
 public class ResalerAccounts extends Controller{
     private static final int PAGE_SIZE = 20;
 
     public static void index(AccountSequenceCondition condition){
 
-        Resaler resaler = ResaleCAS.getResaler();
+        Resaler resaler = SecureCAS.getResaler();
         Account account = AccountUtil.getAccount(resaler.getId(), AccountType.RESALER);
 
         String page = request.params.get("page");
