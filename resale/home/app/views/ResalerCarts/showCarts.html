@@ -4,6 +4,7 @@
 <link href="@@{'/public/stylesheets/carts_index.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
 #{set 'moreScripts'}
+<script src="@@{'/public/javascripts/bignumber.js'}"></script>
 <script src="@@{'/public/javascripts/carts.js'}"></script>
 #{/set}
 
@@ -52,7 +53,7 @@
                 <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
                 <td width="115" height="25" align="center" valign="middle" id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level)}</td>
                 <td width="83" height="25" align="center" valign="middle">
-                    <input class="num_input" type="TEXT" id="num_${cartItem.goods.id}-${cartItem.phone}" value="${cartItem.number}" disabled="disabled"/>
+                    <input class="num_input" type="TEXT" id="num_${cartItem.goods.id}-${cartItem.phone}" value="${cartItem.number}" disabled="disabled" style="border:0"/>
                 </td>
                 <td idth="187" height="25" align="center" valign="middle">
                     <span class="strong_gray" id="subtotal_${cartItem.goods.id}-${cartItem.phone}"> ${cartItem.goods.getResalePrice(resaler.level).multiply(cartItem.number)}</span>
@@ -69,7 +70,7 @@
                 <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
                 <td width="115" height="25" align="center" valign="middle" id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level)}</td>
                 <td width="83" height="25" align="center" valign="middle">
-                    <input class="num_input" type="TEXT" id="num_${cartItem.goods.id}-${cartItem.phone}" value="${cartItem.number}" disabled="disabled"/>
+                    <input class="num_input" type="TEXT" id="num_${cartItem.goods.id}-${cartItem.phone}" value="${cartItem.number}" disabled="disabled" style="border:0"/>
                 </td>
                 <td idth="187" height="25" align="center" valign="middle">
                     <span class="strong_gray" id="subtotal_${cartItem.goods.id}-${cartItem.phone}"> ${cartItem.goods.getResalePrice(resaler.level).multiply(cartItem.number)}</span>
