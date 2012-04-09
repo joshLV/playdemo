@@ -106,7 +106,7 @@ public class Goods extends Model {
      */
     @Required
     @Column(name = "effective_at")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     public Date effectiveAt;
     /**
      * 券有效结束日
@@ -114,7 +114,7 @@ public class Goods extends Model {
     @Required
     @InFuture
     @Column(name = "expire_at")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     public Date expireAt;
     /**
      * 商品标题
@@ -420,6 +420,7 @@ public class Goods extends Model {
         updateGoods.no = goods.no;
         updateGoods.effectiveAt = goods.effectiveAt;
         updateGoods.expireAt = DateUtil.getEndOfDay(goods.expireAt);
+        System.out.println("updateGoods.expireAt:" + updateGoods.expireAt);
         updateGoods.faceValue = goods.faceValue;
         updateGoods.originalPrice = goods.originalPrice;
         goods.discount = null;

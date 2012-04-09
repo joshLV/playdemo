@@ -4,22 +4,10 @@
  */
 package controllers;
 
-import static java.math.BigDecimal.ZERO;
-import static play.Logger.warn;
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.FileUploadUtil;
 import models.resale.ResalerLevel;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.GoodsCondition;
-import models.sales.GoodsStatus;
-import models.sales.MaterialType;
-import models.sales.Shop;
+import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -30,8 +18,16 @@ import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.FileUploadUtil;
+
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static java.math.BigDecimal.ZERO;
+import static play.Logger.warn;
 
 /**
  * 通用说明：
@@ -352,9 +348,11 @@ public class OperateGoods extends Controller {
                 checkLevelPrice(goods.getLevelPriceArray());
             }
             if (Validation.hasErrors() && id.length > 0) {
+
                 renderSupplierList(goods);
                 renderInit(goods);
-                render("OperateGoods/edit.html", goods, id);
+                renderArgs.put("id", goodsId);
+                render("OperateGoods/edit.html", goods);
             }
         }
         updateStatus(GoodsStatus.ONSALE, id);
