@@ -27,6 +27,7 @@ public class SupplierOrders extends Controller {
     	}
 		//该商户ID
 		Long supplierId = SupplierRbac.currentUser().supplier.id;
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+supplierId);
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 		JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, supplierId, pageNumber, PAGE_SIZE);
