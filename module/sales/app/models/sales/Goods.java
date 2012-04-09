@@ -290,8 +290,8 @@ public class Goods extends Model {
         if (discount != null && discount > 0) {
             return discount;
         }
-        if (originalPrice != null && salePrice != null && originalPrice.compareTo(new BigDecimal(0)) > 0) {
-            this.discount = salePrice.divide(originalPrice, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).intValue();
+        if (faceValue != null && salePrice != null && faceValue.compareTo(new BigDecimal(0)) > 0) {
+            this.discount = salePrice.divide(faceValue, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).intValue();
         } else {
             this.discount = 0;
         }
