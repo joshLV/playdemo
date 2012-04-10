@@ -1,0 +1,80 @@
+*{名称的文本框标签}*
+*{label:     文本框的标签（选填）}*
+*{name:      文本框的名称}*
+*{value:     文本框中的值}*
+*{length:    文本框中的值的最大长度，（选填，默认80)}*
+*{required:  文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+<div class="control-group">
+#{layout_trader.labelText name:_label?:_name, required:_required/}
+
+    <div class="controls">
+    #{field _name}
+        <input type="text" id="${_id?:field.id}" name="${field.name}" class="input-xlarge"
+               value="${params[field.name]?.escape()?.raw() ?: field.error?.message == 'validation.required' ?
+               "":_value?.escape()?.raw()}" maxlength="${_length?_length*2:80}" onfocus="checkName(this)"
+               onkeyup="checkName(this)" onkeydown="checkName(this)"
+               onchange="checkName(this)"/><span
+            id="tip_head">最多可输入</span><span
+            id="tip" class="warn">${_length?:40}</span> 个字
+        #{ifError field.name}
+            <span class="error">${field.error.raw()}</span>
+        #{/ifError}
+    #{/field}
+    #{field _err?:'errors'}
+        #{ifError field.name}
+            <span class="error">${field.error.raw()?:''}</span>
+        #{/ifError}
+    #{/field}
+    </div>
+</div>
+<script type="text/javascript">
+    //返回val的字节长度
+    function getByteLen(val) {
+        var len = 0;
+        for (var i = 0; i < val.length; i++) {
+            if (val[i].match(/[^\x00-\xff]/ig) != null) //全角
+                len += 2;
+            else
+                len += 1;
+        }
+        return len;
+    }
+
+    //返回val的字节长度
+    function getMaxStr(val, max) {
+        var len = 0;
+        var text = "";
+        for (var i = 0; i < val.length; i++) {
+            if (val[i].match(/[^\x00-\xff]/ig) != null) { //全角
+                len += 2;
+                if (len <= max) {
+                    text += val[i];
+                } else {
+                    return text;
+                }
+
+            }
+            else {
+                len += 1;
+                if (len <= max) {
+                    text += val[i];
+                } else {
+                    return text;
+                }
+            }
+        }
+        return text;
+    }
+
+    function checkName(nameField) {
+        var remainLen = parseInt((${_length?_length*2:80} -getByteLen($(nameField).val())) / 2);
+        $("#tip_head").html("还可以输入");
+        if (remainLen <= 0) {
+            $("#tip").html("0");
+            var maxStr = getMaxStr($(nameField).val(), ${_length?_length*2:80});
+            $(nameField).val(maxStr);
+        }else{
+            $("#tip").html(remainLen);
+        }
+    }
+</script>
