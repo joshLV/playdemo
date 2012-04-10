@@ -23,17 +23,17 @@ public class Shops extends Controller {
     /**
      * 门店一览信息
      */
-    public static void index() {
+    public static void index(Shop shopCondition) {
         String page = params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
         Long supplierId = SupplierRbac.currentUser().supplier.id;
-        Shop shopCondition = new Shop();
+        if (shopCondition == null){
+            shopCondition = new Shop();
+        }
         shopCondition.supplierId = supplierId;
-        shopCondition.name = params.get("shopname");
-        shopCondition.address = params.get("shopaddr");
         ModelPaginator<Shop> shopPage = Shop.query(shopCondition, pageNumber, PAGE_SIZE);
-        render(shopPage);
+        render(shopPage,shopCondition);
     }
 
     /**
@@ -52,7 +52,7 @@ public class Shops extends Controller {
         shop.deleted = DeletedStatus.UN_DELETED;
         shop.createdAt = new Date();
         shop.create();
-        index();
+        index(null);
 
     }
 
@@ -97,7 +97,7 @@ public class Shops extends Controller {
         sp.phone = shop.phone;
         sp.updatedAt = new Date();
         sp.save();
-        index();
+        index(null);
     }
 
     /**
@@ -129,6 +129,6 @@ public class Shops extends Controller {
      */
     public static void delete(long id) {
         Shop.delete(id);
-        index();
+        index(null);
     }
 }

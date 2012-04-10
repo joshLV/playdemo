@@ -1,13 +1,6 @@
 #{extends 'layout_trader/layout.html' /}
 #{include '/share/nav.html' /}
 #{set title:'门店列表' /}
-#{set 'moreScripts'}
-<script type="text/javascript">
-    function showmsg() {
-        return confirm("您确定要删除门店信息吗");
-    }
-</script>
-#{/set}
 <div class="body">
 
     <legend>门店列表</legend>
@@ -17,9 +10,11 @@
             <tbody>
             <tr>
                 <td>门店名称</td>
-                <td><input type="text" id="shopname" name="shopname" class="input-large"/></td>
+                <td><input type="text" id="shopCondition_name" name="shopCondition.name" class="input-large"
+                           value="${shopCondition?.name}"/></td>
                 <td>门店地址</td>
-                <td><input type="text" id="shopaddr" name="shopaddr" class="input-large"/></td>
+                <td><input type="text" id="shopCondition_address" name="shopCondition.address" class="input-large"
+                           value="${shopCondition?.address}"/></td>
                 <td>
                     <button class="btn btn-primary" type="submit">搜 索</button>
                 </td>
