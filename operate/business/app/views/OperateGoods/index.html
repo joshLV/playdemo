@@ -110,9 +110,11 @@
                     #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status)}
                         <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale",method:"PUT"/}#{/if}
                 </td>
-                <td><a href="@{OperateGoods.edit(goods?.id)}">修改</a> /
+                <td>#{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
+                .equals(goods.status)}<a href="@{OperateGoods.edit(goods?.id)}">修改</a> / #{/if}
                     <a href="@{OperateGoods.show(goods?.id)}">查看</a>
-                    #{if !models.sales.GoodsStatus.ONSALE.equals(goods.status)} /
+                    #{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
+                .equals(goods.status)}<a href="@{OperateGoods.edit(goods?.id)} /
                         #{vx.deleteLink action:"goods", id:goods?.id, name:goods?.name/}#{/if}</td>
             </tr>
             #{/paginate.list}
