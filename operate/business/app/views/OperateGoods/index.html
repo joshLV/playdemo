@@ -85,7 +85,7 @@
 
             #{paginate.list items:goodsPage, as:'goods'}
             <tr>
-                <td><input type="checkbox" id="checkoption" value="${goods?.id}" name="id"/></td>
+                <td><input type="checkbox" id="checkoption" value="${goods.id}" name="id"/></td>
                 <td>${goods?.getSupplier()?.fullName}</td>
                 <td>${goods?.no}</td>
                 <td><a href="http://www.uhuila.cn/goods/${goods?.id}?preview=true"><img

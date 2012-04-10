@@ -49,6 +49,7 @@ public class SupplierGoods extends Controller {
     /**
      * 展示商品一览页面
      */
+    @ActiveNavigation("goods_index")
     public static void index(models.sales.GoodsCondition condition) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
@@ -84,19 +85,8 @@ public class SupplierGoods extends Controller {
         if (goods == null) {
             goods = new models.sales.Goods();
             BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
-            Arrays.fill(levelPrices, BigDecimal.ZERO);
-            renderArgs.put("levelPrices", levelPrices);
-        } else {
-            BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
-            for (int i = 0; i < levelPrices.length; i++) {
-                GoodsLevelPrice levelPrice = goods.getLevelPrices().get(i);
-                if (levelPrice == null) {
-                    levelPrices[i] = ZERO;
-                } else {
-                    levelPrices[i] = levelPrice.price;
-                }
-            }
-            renderArgs.put("levelPrices", levelPrices);
+            Arrays.fill(levelPrices, ZERO);
+            goods.setLevelPrices(levelPrices);
         }
         if (goods.isAllShop != null) {
             if (goods.isAllShop && goods.shops != null) {
@@ -177,8 +167,6 @@ public class SupplierGoods extends Controller {
 
         //添加商品处理
         goods.supplierId = supplierId;
-        System.out.println("supplierId:" + supplierId);
-
 
         goods.createdBy = SupplierRbac.currentUser().loginName;
         goods.materialType = MaterialType.ELECTRONIC;
@@ -237,11 +225,9 @@ public class SupplierGoods extends Controller {
             return "";
         }
         //取得文件存储路径
-
         String absolutePath = FileUploadUtil.storeImage(uploadImageFile, goodsId, UploadFiles.ROOT_PATH);
         if (oldImageFile != null && !"".equals(oldImageFile)) {
             File oldImage = new File(UploadFiles.ROOT_PATH + oldImageFile);
-            System.out.println("oldImage.getAbsolutePath():" + oldImage.getAbsolutePath());
             oldImage.delete();
         }
         return absolutePath.substring(UploadFiles.ROOT_PATH.length(), absolutePath.length());
@@ -274,10 +260,10 @@ public class SupplierGoods extends Controller {
         }
         checkImageFile(imagePath);
 
-        goods.setLevelPrices(levelPrices);
+        goods.setLevelPrices(levelPrices, id);
         if (Validation.hasErrors()) {
             renderInit(goods);
-            render("SupplierGoods/edit.html", goods);
+            render("SupplierGoods/edit.html", goods, id);
         }
 
         String supplierUser = SupplierRbac.currentUser().loginName;
@@ -285,7 +271,6 @@ public class SupplierGoods extends Controller {
         try {
             Goods oldGoods = Goods.findById(id);
             String oldImagePath = oldGoods == null ? null : oldGoods.imagePath;
-            System.out.println("oldImagePath:" + oldImagePath);
             String image = uploadImagePath(imagePath, id, oldImagePath);
             if (StringUtils.isNotEmpty(image)) {
                 goods.imagePath = image;
@@ -295,12 +280,13 @@ public class SupplierGoods extends Controller {
             error(e);
         }
 
-        goods.updatedBy = supplierUser;
-        Goods.update(id, goods);
-
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
+            //todo
             preview0(id);
+        } else {
+            goods.updatedBy = supplierUser;
+            Goods.update(id, goods, true);
         }
         index(null);
     }
@@ -355,6 +341,12 @@ public class SupplierGoods extends Controller {
      * @param id 商品ID
      */
     public static void delete(@As(",") Long... id) {
+        for (Long goodsId : id) {        //已上架的商品不可以删除
+            Goods goods = Goods.findById(goodsId);
+            if (GoodsStatus.ONSALE.equals(goods.status)) {
+                index(null);
+            }
+        }
         models.sales.Goods.delete(id);
 
         index(null);

@@ -291,6 +291,7 @@ public class OperateGoods extends Controller {
         }
 
         String supplierUser = OperateRbac.currentUser().loginName;
+
         try {
             Goods oldGoods = Goods.findById(id);
             String oldImagePath = oldGoods == null ? null : oldGoods.imagePath;
@@ -398,15 +399,10 @@ public class OperateGoods extends Controller {
         for (Long goodsId : id) {        //已上架的商品不可以删除
             Goods goods = Goods.findById(goodsId);
             if (GoodsStatus.ONSALE.equals(goods.status)) {
-
-
-                System.out.println("goods.status:" + goods.status);
-                System.out.println("!!!!!!!!!Can't delete goods:" + goodsId);
                 index(null);
             }
         }
         models.sales.Goods.delete(id);
-        System.out.println("*************Success to delete goods:" + id);
 
         index(null);
     }

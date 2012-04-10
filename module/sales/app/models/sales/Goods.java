@@ -126,12 +126,14 @@ public class Goods extends Model {
     @Required
     @MinSize(value = 7)
     @MaxSize(value = 65535)
+    @Lob
     private String details;
 
     /**
      * 温馨提示
      */
     @MaxSize(value = 65535)
+    @Lob
     private String prompt;
 
     /**
@@ -411,7 +413,7 @@ public class Goods extends Model {
         return super.create();
     }
 
-    public static void update(Long id, Goods goods) {
+    public static void update(Long id, Goods goods, boolean noLevelPrices) {
         models.sales.Goods updateGoods = models.sales.Goods.findById(id);
         if (updateGoods == null) {
             return;
@@ -420,14 +422,17 @@ public class Goods extends Model {
         updateGoods.no = goods.no;
         updateGoods.effectiveAt = goods.effectiveAt;
         updateGoods.expireAt = DateUtil.getEndOfDay(goods.expireAt);
-        System.out.println("updateGoods.expireAt:" + updateGoods.expireAt);
         updateGoods.faceValue = goods.faceValue;
         updateGoods.originalPrice = goods.originalPrice;
         goods.discount = null;
         updateGoods.setDiscount(goods.getDiscount());
         updateGoods.salePrice = goods.salePrice;
         updateGoods.baseSale = goods.baseSale;
-        updateGoods.levelPrices = goods.levelPrices;
+
+
+        if (!noLevelPrices) {
+            updateGoods.levelPrices = goods.levelPrices;
+        }
         updateGoods.setPrompt(goods.getPrompt());
         updateGoods.setDetails(goods.getDetails());
         updateGoods.updatedAt = new Date();
@@ -443,6 +448,10 @@ public class Goods extends Model {
         }
         updateGoods.shops = goods.shops;
         updateGoods.save();
+    }
+
+    public static void update(Long id, Goods goods) {
+        update(id, goods, false);
     }
 
 

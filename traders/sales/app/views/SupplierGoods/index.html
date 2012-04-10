@@ -7,7 +7,7 @@
 
 <div class="body">
     <legend>电子消费券一览</legend>
-    <form class="form-horizontal" name="frmlist" action="@{SupplierGoods.index()}" method="GET">
+    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{SupplierGoods.index()}" method="GET">
         <table width="100%">
             <tr>
                 <td width="30%">商品名称：<input type="text" name="condition.name" class="input-medium"
@@ -15,7 +15,7 @@
                 <td width="30%">商品编号：<input type="text" name="condition.no" class="input-medium"
                                             value="${condition?.no}"/></td>
                 <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
-                #{select 'condition.status', id:ca, class:'input-small', value:condition?.status}
+                #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
                     #{option ""}不限#{/option}
                     #{option "APPLY"}&{'goods.APPLY'}#{/option}
                     #{option "REJECT"}&{'goods.REJECT'}#{/option}
@@ -42,9 +42,7 @@
             </tr>
         </table>
     </form>
-    <form class="form-horizontal" name="deletefrm" id="deletefrm" action="" method="post">
-        <input type="hidden" id="status" name="status" value="0"/>
-
+    <form class="form-horizontal" name="deletefrm" id="deletefrm">
         <div style="margin-bottom: 12px">
             <button class="btn btn-primary" id="onsales" type="button">申请上架</button>
             <button class="btn btn-primary" id="offsales" type="button">下架</button>
@@ -52,7 +50,9 @@
             <!-- <button class="btn btn-primary" type="button">导出报表</button> -->
         </div>
 
-
+    #{vx.tab name:'goods',enumItems: [models.sales.GoodsStatus.ONSALE,models.sales.GoodsStatus.OFFSALE,
+    models.sales.GoodsStatus.APPLY,models.sales.GoodsStatus.REJECT],
+    select:'condition_status',value:condition?.status/}
         <table class="table table-striped table-bordered table-condensed">
             <thead>
             <tr>
@@ -91,10 +91,11 @@
                     #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}<br/>
                         #{vx.operateLink text:"撤销申请", url:"/goods/"+goods.id+"/cancelApply", method:"PUT"/}#{/if}
                 </td>
-                <td>#{if !models.sales.GoodsStatus.ONSALE.equals(goods.status)}<a href="@{SupplierGoods.edit(goods
-                .id)}">修改</a> /#{/if}
-                    <a href="@{SupplierGoods.show(goods.id)}">查看</a> /
-                    #{vx.deleteLink action:"goods", id:goods.id, name:goods.name/}
+                <td>#{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
+                .equals(goods.status)}<a href="@{SupplierGoods.edit(goods.id)}">修改</a> /#{/if}
+                    <a href="@{SupplierGoods.show(goods.id)}">查看</a>#{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
+                .equals(goods.status)} /
+                        #{vx.deleteLink action:"goods", id:goods.id, name:goods.name/}#{/if}
                 </td>
             </tr>
             #{/paginate.list}
