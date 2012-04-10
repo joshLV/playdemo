@@ -119,14 +119,21 @@ public class SupplierGoodsTest extends FunctionalTest {
      */
     @Test
     public void testDelete() {
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
-                ".Goods-Goods_003");
-        Map<String, Long[]> goodsParams = new HashMap<>();
-        Long[] ids = new Long[]{goodsId};
-        goodsParams.put("id", ids);
+
+
+        long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_003");
+
         Response response = DELETE("/goods/" + goodsId);
         assertStatus(302, response);
-        Goods goods = Goods.findById(goodsId);
-        Assert.assertEquals(DeletedStatus.DELETED, goods.deleted);
+
+        //修改商品状态为下架状态
+        response = PUT("/goods/" + goodsId + "/offSale", "text/html", "");
+        //再次删除
+        response = DELETE("/goods/" + goodsId);
+        assertStatus(302, response);
+
+        //验证状态改为已删除状态
+        Goods goods1 = Goods.findById(goodsId);
+        assertEquals(DeletedStatus.DELETED, goods1.deleted);
     }
 }

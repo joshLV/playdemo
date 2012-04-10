@@ -26,9 +26,13 @@ insert into categories (name,display_order,parent_id)
 insert into categories (name,display_order,parent_id)
   values('旅游', 200, null);
 
-
 -- Table brand Initial --
-insert into brands (name,logo,display_order,category_id)
-  values('来一份', null, 100, 1);
-insert into brands (name,logo,display_order,category_id)
-  values('豆捞坊', null, 200, 1);
+insert into brands (name,logo,display_order)
+  values('来一份', null, 100);
+insert into brands (name,logo,display_order)
+  values('豆捞坊', null, 200);
+
+-- Table operate_users Initial --
+insert into operate_users(id,created_at,deleted,encrypted_password,last_login_at,last_login_ip,lock_version,
+login_name,mobile,password_salt,user_name)
+values();
