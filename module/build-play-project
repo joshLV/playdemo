@@ -73,7 +73,7 @@ unless failed_result.empty?
 end
 
 
-if passed_test_count == 0 and failed_test_count != 0
+if passed_test_count == 0 or failed_test_count > 0
   puts "Play Build Failed or No Test Found!"
   failed_result.each {|line| puts "    " + line}
   exit(1)
