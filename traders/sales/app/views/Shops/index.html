@@ -44,7 +44,7 @@
             <td>${shop.name}</td>
             <td>${shop.address}</td>
             <td>${shop.phone}</td>
-            <td><a href="@{Shops.edit(shop.id)}">修改</a>/<a href="@{Shops.delete(shop.id)}" onclick="return showmsg();">删除</a>
+            <td><a href="@{Shops.edit(shop.id)}">修改</a>/#{vx.deleteLink action:"shops", id:shop.id, name:shop.name/}
             </td>
         </tr>
         #{/paginate.list}

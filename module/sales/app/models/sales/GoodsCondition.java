@@ -174,6 +174,8 @@ public class GoodsCondition {
 			condBuilder.append(" and saleCount <= :saleCountEnd");
 			paramMap.put("saleCountEnd", saleCountEnd);
 		}
+
+        System.out.println("condBuilder.toString():" + condBuilder.toString());
 		return condBuilder.toString();
 	}
 

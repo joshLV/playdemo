@@ -2,6 +2,7 @@ package controllers;
 
 import java.util.Date;
 import java.util.List;
+
 import models.sales.Area;
 import models.sales.Shop;
 import navigation.annotations.ActiveNavigation;
@@ -26,7 +27,7 @@ public class Shops extends Controller {
         String page = params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
-        long supplierId = getSupplierId();
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
         Shop shopCondition = new Shop();
         shopCondition.supplierId = supplierId;
         shopCondition.name = params.get("shopname");
@@ -47,7 +48,7 @@ public class Shops extends Controller {
             add(shop);
         }
 
-        shop.supplierId = 1;
+        shop.supplierId = SupplierRbac.currentUser().supplier.id;
         shop.deleted = DeletedStatus.UN_DELETED;
         shop.createdAt = new Date();
         shop.create();
@@ -66,8 +67,7 @@ public class Shops extends Controller {
         List<Area> districts = Area.findAllSubAreas(cities.get(0).getId());
         //商圈列表
         List<Area> areas = Area.findAllSubAreas(districts.get(0).getId());
-        renderArgs.put("shop", shop);
-        render(cities, districts, areas);
+        render(cities, districts, areas, shop);
     }
 
     /**
@@ -130,10 +130,5 @@ public class Shops extends Controller {
     public static void delete(long id) {
         Shop.delete(id);
         index();
-    }
-
-    private static long getSupplierId() {
-        //todo
-        return 1;
     }
 }

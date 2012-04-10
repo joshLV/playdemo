@@ -25,6 +25,10 @@ insert into categories (name,display_order,parent_id)
   values('饮食', 100, null);
 insert into categories (name,display_order,parent_id)
   values('旅游', 200, null);
+insert into categories (name,display_order,parent_id)
+  values('渝信川菜', 100, 1);
+insert into categories (name,display_order,parent_id)
+  values('国旅', 200, 2);
 
 -- Table brand Initial --
 insert into brands (name,logo,display_order)
@@ -38,3 +42,4 @@ login_name,mobile,password_salt,user_name)
 values(now(), 'UNDELETED','1360dceeb96ae52402fb21f954a8268d',0,'admin',13910001000,'mSKHrC','小唐');
 insert into operate_users_roles(role_id,user_id)
 values(1,1);
+

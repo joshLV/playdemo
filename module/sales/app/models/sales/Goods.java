@@ -38,7 +38,7 @@ public class Goods extends Model {
     public BigDecimal faceValue;
 
     /**
-     * 商户填写的进货价
+     * 商户填写的进货价，采购价
      */
     @Required
     @Min(value = 0.01)

@@ -39,12 +39,16 @@ $(window).load(
         $("#preview").click(function () {
             $("#status").val("UNCREATED");
         });
-        $("input[name='levelPrices']").onchange(function () {
-            alert(this.id);
+        $("#goods_name").onfocus(function () {
+            var remainLen = (80 - $("#goods_name").length)/2;
+            $("#tip_goods_name").html("还可以输入" + remainLen + "个字");
         });
-
-        $("#levelPrices").onblur(function () {
-           alert($(this).val());
+        $("#goods_name").onblur(function () {
+            $("#tip_goods_name").html("");
+        });
+        $("#goods_name").change(function () {
+            var remainLen = (80 - $("#goods_name").length)/2;
+            $("#tip_goods_name").html("还可以输入" + remainLen + "个字");
         });
     }
 );
