@@ -2,8 +2,9 @@
 
 require:
     - play 1.2.4
-    - play -> cobertura 2.4
-    - play -> paginate head
+    - play1 -> cobertura 2.4
+    - play1 -> paginate head
+    - play1 -> rabbitmq 0.3
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - layout_trader -> layout_trader
     - view_ext -> view_ext
@@ -18,8 +19,6 @@ require:
     - order -> order
     - accounts -> accounts
     - sms -> sms
-    - play -> rabbitmq 0.3
-
 
 repositories:
     - mavenRepository:
@@ -30,6 +29,12 @@ repositories:
             - commons-lang -> *
             - org.jsoup -> *
         m2compatible: true
+
+    - play1ContributedModules:
+        type: http
+        artifact: "http://dev.uhuila.cn/play/modules/[module]-[revision].zip"
+        contains:
+            - play1 -> *
 
     - customModules:
         type:       local

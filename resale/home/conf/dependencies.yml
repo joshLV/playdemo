@@ -2,9 +2,9 @@
 
 require:
     - play 1.2.4
-    - play -> cobertura 2.4
-    - play -> paginate head
-    - play -> rabbitmq 0.3
+    - play1 -> cobertura 2.4
+    - play1 -> paginate head
+    - play1 -> rabbitmq 0.3
     - view_ext -> view_ext
     - paginate_ext -> paginate_ext
     - sales -> sales
@@ -32,8 +32,15 @@ repositories:
             - commons-httpclient -> *
             - com.taobao -> *
             - dom4j -> *
+            - org.apache.httpcomponents -> *
             - org.jsoup -> *
         m2compatible: true
+
+    - play1ContributedModules:
+        type: http
+        artifact: "http://dev.uhuila.cn/play/modules/[module]-[revision].zip"
+        contains:
+            - play1 -> *
 
     - customModules:
         type:       local

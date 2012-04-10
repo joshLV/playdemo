@@ -2,7 +2,7 @@
 
 require:
     - play 1.2.4
-    - play -> rabbitmq 0.3
+    - play1 -> rabbitmq 0.3
     - org.apache.httpcomponents -> httpclient 4.1.3
     - sms -> sms
 
@@ -13,3 +13,9 @@ repositories:
         artifact:   "${application.path}/../module/[module]"
         contains:
             - sms -> *
+
+    - play1ContributedModules:
+        type: http
+        artifact: "http://dev.uhuila.cn/play/modules/[module]-[revision].zip"
+        contains:
+            - play1 -> *

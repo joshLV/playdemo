@@ -2,10 +2,10 @@
 
 require:
     - play 1.2.4
-    - play -> cobertura 2.4
-    - play -> logisimayml 1.8
-    - play -> rabbitmq 0.3
-    - play -> paginate head
+    - play1 -> cobertura 2.4
+    - play1 -> logisimayml 1.8
+    - play1 -> rabbitmq 0.3
+    - play1 -> paginate head
 #    - org.powermock -> powermock-module-junit4 1.4.11
 #    - org.powermock -> powermock-api-mockito 1.4.11
 #    - play -> mockito 0.1
@@ -36,6 +36,12 @@ repositories:
             - commons-lang -> *
             - org.jsoup -> *
         m2compatible: true
+
+    - play1ContributedModules:
+        type: http
+        artifact: "http://dev.uhuila.cn/play/modules/[module]-[revision].zip"
+        contains:
+            - play1 -> *
 
     - customModules:
         type:       local

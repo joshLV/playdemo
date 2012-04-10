@@ -2,8 +2,9 @@
 
 require:
     - play 1.2.4
-    - play -> cobertura 2.4
-    - play -> paginate head
+    - play1 -> cobertura 2.4
+    - play1 -> paginate head
+    - play1 -> rabbitmq 0.3
     - view_ext -> view_ext
     - paginate_ext -> paginate_ext
     - sales -> sales
@@ -17,7 +18,6 @@ require:
     - accounts -> accounts
     - org.jsoup -> jsoup 1.6.1
     - sms -> sms
-    - play -> rabbitmq 0.3
 
 
 repositories:
@@ -31,6 +31,12 @@ repositories:
             - org.jsoup -> *
 #            - activemq-core -> *
         m2compatible: true
+
+    - play1ContributedModules:
+        type: http
+        artifact: "http://dev.uhuila.cn/play/modules/[module]-[revision].zip"
+        contains:
+            - play1 -> *
 
     - customModules:
         type:       local
