@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import models.accounts.AccountType;
+import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderItems;
 import models.resale.Resaler;
 import models.resale.ResalerCart;
 import models.resale.ResalerFav;
+import models.sales.MaterialType;
 import play.mvc.Controller;
 import play.mvc.With;
 import controllers.modules.resale.cas.SecureCAS;
@@ -40,24 +42,15 @@ public class ResalerCarts extends Controller {
         render(carts, resaler);
     }
     
-    public static void confirmCarts(){
+    public static void confirmCarts() throws NotEnoughInventoryException{
         Resaler resaler = SecureCAS.getResaler();
         List<ResalerCart> carts = ResalerCart.findAll(resaler);
         
-        Order order = new Order(resaler.getId(), AccountType.RESALER, null);
-        order.save();
-        
-        BigDecimal amount = new BigDecimal(0);
+        Order order = new Order(resaler.getId(), AccountType.RESALER);
         for(ResalerCart cart : carts){
-            OrderItems orderItems = new OrderItems(order, cart.goods, cart.number, cart.phone);
-            orderItems.resalerPrice = cart.goods.getResalePrice(resaler.level);
-            orderItems.save();
-            amount = amount.add(orderItems.resalerPrice);
+            order.addOrderItem(cart.goods, cart.number, cart.phone, cart.goods.getResalePrice(resaler.level));
         }
-        
-        order.amount = amount;
-        order.needPay = amount;        
-        order.save();
+        order.createAndUpdateInventory();
         
         ResalerCart.clear(resaler);
         

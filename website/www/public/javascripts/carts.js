@@ -169,6 +169,24 @@ $(window).load(
                 }});
             
             });
+        //点击确认付款
+        $("#confirm_to_order").click(function(){
+        	var items = "";
+        	$("input[id^=check_goods_]").each(function(){
+                if(!this.checked){
+                    return true;
+                }
+                var el_id = $(this).attr("id");
+                var goods_id = el_id.substr(el_id.lastIndexOf("_") + 1);
+                items += goods_id +"-" + $("#num_" + goods_id).val() + ",";
+            });
+        	
+        	var t = $(this);
+        	t.attr("href", t.attr("href") + items);
+        	return true;
+        });
+        
+        
         set_all_select_all_checkbox(true);
         set_all_goods_checkbox(true);
         refreshAmount();

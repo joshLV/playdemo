@@ -35,7 +35,6 @@ POST    /sms/send                               SMS.send
 
 # 订单
 GET     /orders                                 Orders.index
-POST    /orders                                 Orders.buy
 POST    /orders/new                             Orders.create
 GET     /orders/addresses/{id}                  Addresses.show
 GET     /orders/addresses/{id}/edit             Addresses.edit

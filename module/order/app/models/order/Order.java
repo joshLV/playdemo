@@ -162,10 +162,7 @@ public class Order extends Model {
 	public Order() {
 	}
 
-	//    @Transient
-	//    public User user;
-
-	public Order(long userId, AccountType userType,  Address address) {
+	public Order(long userId, AccountType userType) {
 		this.userId = userId;
 		this.userType = userType;
 
@@ -183,59 +180,49 @@ public class Order extends Model {
 
 		this.createdAt = new Date();
 		this.updatedAt = new Date();
-		if (address != null) {
-			this.receiverAddress = address.getFullAddress();
-			this.receiverMobile = address.mobile;
-			this.receiverName = address.name;
-			this.receiverPhone = address.getPhone();
-			this.postcode = address.postcode;
-		}
 	}
 
-	public Order(long userId, AccountType userType,
-			long goodsId, long number, Address address, String mobile)
-					throws NotEnoughInventoryException {
-		this(userId, userType, address);
+    /**
+     * 设置订单地址
+     *
+     * @param address 地址
+     */
+    public void setAddress(Address address){
+        if (address != null) {
+            this.receiverAddress = address.getFullAddress();
+            this.receiverMobile = address.mobile;
+            this.receiverName = address.name;
+            this.receiverPhone = address.getPhone();
+            this.postcode = address.postcode;
+        }
 
-		models.sales.Goods goods = Goods.findById(goodsId);
-		checkInventory(goods, number);
-		if (goods.salePrice.compareTo(new BigDecimal(0)) > 0) {
-			this.amount = goods.salePrice.multiply(new BigDecimal(number));
-			if (goods.materialType == MaterialType.REAL) {
-				this.amount = this.amount.add(new BigDecimal(5));
-			}
-			//todo 目前没考虑支付优惠
-			this.needPay = amount;
-		}
-		this.receiverMobile = mobile;
+    }
+    
+    public OrderItems addOrderItem(Goods goods, long number, String mobile) throws NotEnoughInventoryException{
+        OrderItems orderItems = null;
+        if(number > 0 && goods != null){
+            checkInventory(goods, number);
+            orderItems = new OrderItems(this, goods, number, mobile);
+            this.orderItems.add(orderItems);
+            this.amount = this.amount.add(goods.salePrice.multiply(new BigDecimal(String.valueOf(number))));
+            this.needPay = amount;
+        }
+        return orderItems;
+    }
+    
+    public OrderItems addOrderItem(Goods goods, long number, String mobile, BigDecimal resalerPrice) throws NotEnoughInventoryException{
+        OrderItems orderItems = addOrderItem(goods, number, mobile);
+        if(orderItems != null){
+            orderItems.resalerPrice = resalerPrice;
+        }
+        return orderItems;
+    }
+    
+    public void addFreight(){
+        this.amount = this.amount.add(new BigDecimal("5"));
+        this.needPay = amount;
+    }
 
-		OrderItems orderItems = new OrderItems(this, goods, number, mobile);
-		this.orderItems.add(orderItems);
-	}
-
-	public Order(long userId, AccountType userType,
-			List<Cart> cartList, Address address, String mobile) throws NotEnoughInventoryException {
-		this(userId, userType, address);
-
-		this.amount = Cart.amount(cartList);
-		for (Cart cart : cartList) {
-			if (cart.goods.materialType == MaterialType.REAL) {
-				this.amount = this.amount.add(new BigDecimal(5));
-				break;
-			}
-		}
-		this.needPay = amount;
-		this.receiverMobile = mobile;
-
-		for (Cart cart : cartList) {
-			if (cart.number <= 0) {
-				continue;
-			}
-			checkInventory(cart.goods, cart.number);
-			OrderItems orderItems = new OrderItems(this, cart.goods, cart.number, mobile);
-			this.orderItems.add(orderItems);
-		}
-	}
 
 	public void setUser(long userId, AccountType accountType){
 		this.userId = userId;
@@ -243,6 +230,12 @@ public class Order extends Model {
 		this.save();
 	}
 
+	/**
+	 * 计算订单中有多少个商品
+	 * 
+	 * @param order
+	 * @return
+	 */
 	public static long itemsNumber(Order order) {
 		long itemsNumber = 0L;
 		if (order == null) {
@@ -276,7 +269,7 @@ public class Order extends Model {
 	/**
 	 * 订单查询
 	 *
-	 * @param order      订单信息
+	 * @param condition   订单查询条件
 	 * @param supplierId  商户ID
 	 * @param pageNumber 第几页
 	 * @param pageSize   每页记录
@@ -293,15 +286,22 @@ public class Order extends Model {
 		return orderPage;
 	}
 
-	public void createAndUpdateInventory(User user, String cookieIdentity) {
+	public void createAndUpdateInventory() {
 		save();
+        boolean haveFreight = false;
 		for (OrderItems orderItem : orderItems) {
 			orderItem.goods.baseSale -= orderItem.buyNumber;
 			orderItem.goods.saleCount += orderItem.buyNumber;
 			orderItem.save();
+            if(orderItem.goods.materialType == MaterialType.REAL){
+                haveFreight = true;
+            }
 		}
-		Cart.clear(user, cookieIdentity);
 
+        if(haveFreight){
+            addFreight();
+            save();
+        }
 	}
 
 	/**

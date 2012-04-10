@@ -98,7 +98,6 @@
         </div>
         <!--右侧主体内容部分-->
         <div id="right_content">
-        #{form @Orders.buy() , id:'buy_now_form'}
             <div class="right_content_show">
                 <div><h1 class="show_h1 font_block">${goods.name}</h1></div>
                 <input type="hidden" id="goodsId" name="goodsId"
@@ -130,7 +129,7 @@
                                 class="error">#{error 'number' /}</span>
                         </div>
                         <div class="right_shangpin_five"><a class="ligm_bg"
-                                                            href="#"
+                                                            href="/orders?items=${goods.getId()}-"
                                                             id="link_buy_now">立即购买</a>
                             <a class="wai_juli" id="link_add_cart"
                                href="#">加入购物车</a><a
@@ -145,7 +144,6 @@
                     <a href="/carts"><span class="zi_gray">查看购物车</span></a>
                 </div>
             </div>
-        #{/form}
         #{if goods.prompt != null}
             <div class="right_content_two">
 

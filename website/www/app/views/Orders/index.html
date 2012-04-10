@@ -35,6 +35,7 @@
     </div>
 
 #{form @Orders.create(), id:'order_create_form' }
+    <input type="hidden" name="items" value="${items}"/>
     <input type="hidden" id="addressId"/>
     #{if rCartList.size() >0}
 

@@ -1,10 +1,8 @@
 package controllers;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import models.accounts.AccountType;
 import models.consumer.Address;
+import models.consumer.User;
 import models.order.Cart;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
@@ -14,6 +12,12 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
 import controllers.modules.website.cas.SecureCAS;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 用户订单确认控制器.
@@ -25,109 +29,114 @@ import controllers.modules.website.cas.SecureCAS;
 @With(SecureCAS.class)
 public class Orders extends Controller {
     /**
-     * 订单确认.
+     * 预览订单.
+     * @param items 选择的商品及数量，格式为 goods1-num1,goods2-num2-.....
      */
-    public static void index() {
-
-        List<Address> addressList = Address.findByOrder(SecureCAS.getUser());
-
-        boolean buyNow = Boolean.parseBoolean(session.get("buyNow"));
-        if (buyNow) {//立即购买，则不从购物车取购买的商品信息，而直接从session中获取
-            List<Cart> eCartList = new ArrayList<>();
-            BigDecimal eCartAmount = new BigDecimal(0);
-            List<Cart> rCartList = new ArrayList<>();
-            BigDecimal rCartAmount = new BigDecimal(0);
-            long goodsId = Long.parseLong(session.get("goodsId"));
-            long number = Long.parseLong(session.get("number"));
-            models.sales.Goods goods = models.sales.Goods.findById(goodsId);
-            Cart cart = new Cart(SecureCAS.getUser(), null, goods, number);
-
-            switch ( goods.materialType) {
-                case ELECTRONIC:
-                    eCartList.add(cart);
-                    eCartAmount = Cart.amount(eCartList);
-                    renderArgs.put("goodsAmount", eCartAmount);
-                    renderArgs.put("totalAmount", eCartAmount);
-                    break;
-                case REAL:
-                    rCartList.add(cart);
-                    BigDecimal goodsAmount = Cart.amount(rCartList);
-                    rCartAmount = goodsAmount.add(new BigDecimal(5));
-                    renderArgs.put("goodsAmount", goodsAmount);
-                    renderArgs.put("totalAmount", rCartAmount);
-                    break;
-            }
-            render(addressList, eCartList, eCartAmount, rCartList, rCartAmount);
+    public static void index(String items) {
+        if(items == null){
+            error("no goods specified");
             return;
         }
-        Http.Cookie cookieIdentity = request.cookies.get("identity");
-        //从购物车结算购买
-        List<Cart> eCartList = Cart.findECart(SecureCAS.getUser(), cookieIdentity.value);
-        BigDecimal eCartAmount = Cart.amount(eCartList);
+        //解析提交的商品及数量
+        List<Long> goodsIds = new ArrayList<>();
+        Map<Long,Integer> itemsMap = new HashMap<>();
+        String[] itemSplits = items.split(",");
+        for(String split : itemSplits){
+            String[] goodsItem = split.split("-");
+            if(goodsItem.length == 2){
+                Integer number = Integer.parseInt(goodsItem[1]);
+                if(number > 0){
+                    Long goodsId = Long.parseLong(goodsItem[0]);
+                    goodsIds.add(goodsId);
+                    itemsMap.put(goodsId, number);
+                }
+            }
+        }
+        
+        //计算电子商品列表和非电子商品列表
+        List<Cart> eCartList = new ArrayList<>();
+        BigDecimal eCartAmount = BigDecimal.ZERO;
 
+        List<Cart> rCartList = new ArrayList<>();
+        BigDecimal rCartAmount = BigDecimal.ZERO;
+        
+        List<models.sales.Goods> goods = models.sales.Goods.findInIdList(goodsIds);
+        
+        for (models.sales.Goods g : goods){
+            Integer number = itemsMap.get(g.getId());
+            if(g.materialType == models.sales.MaterialType.REAL){
+                rCartList.add(new Cart(g, number));
+                rCartAmount = rCartAmount.add(g.salePrice.multiply(new BigDecimal(number.toString())));
+            }else if(g.materialType == models.sales.MaterialType.ELECTRONIC){
+                eCartList.add(new Cart(g, number));
+                eCartAmount = eCartAmount.add(g.salePrice.multiply(new BigDecimal(number.toString())));
+            }
+        }
 
-        List<Cart> rCartList = Cart.findRCart(SecureCAS.getUser(), cookieIdentity.value);
-        BigDecimal rCartAmount;
-        if (rCartList.size() == 0) {
-            rCartAmount = new BigDecimal(0);
-        } else {
-            rCartAmount = Cart.amount(rCartList).add(new BigDecimal("5"));
+        if(rCartList.size() == 0 && eCartList.size() == 0){
+            error("no goods specified");
+            return;
+        }
+        
+        List<Address> addressList = Address.findByOrder(SecureCAS.getUser());
+
+        //如果有实物商品，加上运费
+         if (rCartList.size() > 0) {
+            rCartAmount = rCartAmount.add(new BigDecimal("5"));
         }
         BigDecimal totalAmount = eCartAmount.add(rCartAmount);
         BigDecimal goodsAmount = rCartList.size() == 0 ? eCartAmount : totalAmount.subtract(new BigDecimal("5"));
 
         renderArgs.put("goodsAmount", goodsAmount);
         renderArgs.put("totalAmount", totalAmount);
-        render(addressList, eCartList, eCartAmount, rCartList, rCartAmount);
+        render(addressList, eCartList, eCartAmount, rCartList, rCartAmount, items);
     }
-
-    /**
-     * 立即购买操作.
-     *
-     * @param goodsId 购买商品
-     * @param number  购买数量
-     */
-    public static void buy(@Required long goodsId,
-                           @Required(message = "购买数量应大于0")
-                           @Min(value = 1, message = "购买数量应大于或等于0") long number) {
-        if (validation.hasErrors()) {
-            params.flash(); // add http parameters to the flash scope
-            validation.keep(); // keep the errors for the next request
-            Goods.show(goodsId);
-        }
-        session.put("buyNow", true);
-        session.put("goodsId", goodsId);
-        session.put("number", number);
-        redirect("/orders");
-    }
-
+    
     /**
      * 提交订单.
      */
-    public static void create(String mobile) {
+    public static void create(String items, String mobile){
         Http.Cookie cookieIdentity = request.cookies.get("identity");
-        boolean buyNow = Boolean.parseBoolean(session.get("buyNow"));
-        Address defaultAddress = Address.findDefault(SecureCAS.getUser());
-        Order order;
-        try {
-            if (buyNow) {
-                long goodsId = Long.parseLong(session.get("goodsId"));
-                long number = Integer.parseInt(session.get("number"));
-                order = new Order(SecureCAS.getUser().getId(), AccountType.CONSUMER,
-                        goodsId, number, defaultAddress, mobile);
+        User user = SecureCAS.getUser();
 
-            } else {
-
-                List<Cart> eCartList = Cart.findAll(SecureCAS.getUser(), cookieIdentity.value);
-                order = new Order(SecureCAS.getUser().getId(), AccountType.CONSUMER,
-                        eCartList, defaultAddress, mobile);
+        //解析提交的商品及数量
+        List<Long> goodsIds = new ArrayList<>();
+        Map<Long,Integer> itemsMap = new HashMap<>();
+        String[] itemSplits = items.split(",");
+        for(String split : itemSplits){
+            String[] goodsItem = split.split("-");
+            if(goodsItem.length == 2){
+                Integer number = Integer.parseInt(goodsItem[1]);
+                if(number > 0){
+                    Long goodsId = Long.parseLong(goodsItem[0]);
+                    goodsIds.add(goodsId);
+                    itemsMap.put(goodsId, number);
+                }
             }
-            order.createAndUpdateInventory(SecureCAS.getUser(), cookieIdentity.value);
-            session.put("buyNow", false);
-            redirect("/payment_info/" + order.id);
-        } catch (NotEnoughInventoryException e) {
+        }
+
+        //创建订单
+        Order order = new Order(user.getId(), AccountType.CONSUMER);
+        Address defaultAddress = Address.findDefault(user);
+        order.setAddress(defaultAddress);
+
+        List<models.sales.Goods> goods = models.sales.Goods.findInIdList(goodsIds);
+        //添加订单条目
+        try{
+            for(models.sales.Goods goodsItem : goods){
+                order.addOrderItem(goodsItem, itemsMap.get(goodsItem.getId()), mobile);
+            }
+        }catch (NotEnoughInventoryException e){
             //todo 缺少库存
             e.printStackTrace();
+            error("inventory not enough");
         }
+        //确认订单
+        order.createAndUpdateInventory();
+
+
+        //todo clear cart
+
+        redirect("/payment_info/" + order.getId());
     }
 }

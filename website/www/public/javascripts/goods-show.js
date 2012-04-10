@@ -26,7 +26,9 @@ $(window).load(
         });
 
         $("#link_buy_now").click(function () {
-            $('#buy_now_form').submit();
+            var t = $(this);
+            t.attr("href", t.attr("href") + $("#number").val());
+            return true;
         });
 
     }

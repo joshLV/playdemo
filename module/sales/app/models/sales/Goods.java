@@ -485,6 +485,16 @@ public class Goods extends Model {
         return q.getResultList();
     }
 
+    public static List<Goods> findInIdList(List<Long> goodsIds){
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
+                "and g.id in :ids");
+        q.setParameter("status", GoodsStatus.ONSALE);
+        q.setParameter("deleted", DeletedStatus.UN_DELETED);
+        q.setParameter("ids", goodsIds);
+        return q.getResultList();
+    }
+    
     public static Goods findUnDeletedById(long id) {
         return find("id=? and deleted=?", id, DeletedStatus.UN_DELETED).first();
     }
