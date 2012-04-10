@@ -45,6 +45,7 @@ failed_test_count = 0
 # Dir.chdir("#{current_dir}/#{dir}")
 cmd =<<END
         cd #{current_dir}/#{dir}
+        #{play_home}play deps --sync --clearcache
         #{play_home}play auto-test --deps
 END
 IO.popen(cmd) { |output|
