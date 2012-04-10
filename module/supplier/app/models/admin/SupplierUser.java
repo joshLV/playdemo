@@ -109,7 +109,7 @@ public class SupplierUser extends Model {
 		sql.append("supplier.id = :supplierId");
 		params.put("supplierId", supplierId);
 		
-		sql.append(" and loginName <> 'admin' ");
+//		sql.append(" and loginName <> 'admin' ");
 		
 		sql.append(" and deleted = :deleted ");
 		params.put("deleted", DeletedStatus.UN_DELETED);
