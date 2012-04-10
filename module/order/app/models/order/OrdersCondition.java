@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 public class OrdersCondition {
 	public Map<String, Object> paramsMap = new HashMap<>();
 	public Date createdAtBegin; 
@@ -34,8 +37,12 @@ public class OrdersCondition {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" o.deleted = :deleted");
 		paramsMap.put("deleted", DeletedStatus.UN_DELETED);
-		sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.supplierId = :supplierId)");
-		paramsMap.put("supplierId", supplierId);
+		
+		if (supplierId != null) {
+			sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.supplierId = :supplierId)");
+			paramsMap.put("supplierId", supplierId);
+		}
+		
 
 		if (createdAtBegin != null) {
 			sql.append(" and o.createdAt >= :createdAtBegin");

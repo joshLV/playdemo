@@ -50,7 +50,7 @@ public class ResalerRegister extends Controller {
 		resaler.createdAt = new Date();
 		resaler.save();
 
-		redirect("http://www.114bsgo.com");
+		redirect("http://home.114bsgo.com");
 	}
 
 	/**

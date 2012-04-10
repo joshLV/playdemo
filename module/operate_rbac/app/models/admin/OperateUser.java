@@ -106,7 +106,7 @@ public class OperateUser extends Model {
 				OperateUser.class, sql.toString(), params).orderBy("s.createdAt desc");
 		supplierUsersPage.setPageNumber(pageNumber);
 		supplierUsersPage.setPageSize(pageSize);
-		supplierUsersPage.setBoundaryControlsEnabled(false);
+		supplierUsersPage.setBoundaryControlsEnabled(true);
 		return supplierUsersPage;
 	}
 

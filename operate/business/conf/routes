@@ -43,6 +43,11 @@ POST    /resalers/update                        Resalers.update
 
 GET     /account-report                         AccountReports.index
 
+#运营后台订单
+GET     /orders                                 OperateOrders.index
+GET     /orders/{id}                            OperateOrders.details
+GET     /coupons                                OperateCoupons.index
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

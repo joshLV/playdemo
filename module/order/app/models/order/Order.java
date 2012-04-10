@@ -130,28 +130,6 @@ public class Order extends Model {
 
 	@Column(name = "delivery_type")
 	public int deliveryType;
-	/**
-	 * 成交开始时间
-	 */
-	@Transient
-	public Date createdAtBegin;
-	/**
-	 * 成交开始时间
-	 */
-	@Transient
-	public Date createdAtEnd;
-	/**
-	 * 退款开始时间
-	 */
-	@Transient
-	@Temporal(TemporalType.DATE)
-	public Date refundAtBegin;
-	/**
-	 * 退款开始时间
-	 */
-	@Transient
-	@Temporal(TemporalType.DATE)
-	public Date refundAtEnd;
 
 	@Transient
 	public String searchKey;
@@ -282,7 +260,7 @@ public class Order extends Model {
 				.orderBy(condition.getOrderByExpress());
 		orderPage.setPageNumber(pageNumber);
 		orderPage.setPageSize(pageSize);
-		orderPage.setBoundaryControlsEnabled(false);
+		orderPage.setBoundaryControlsEnabled(true);
 		return orderPage;
 	}
 

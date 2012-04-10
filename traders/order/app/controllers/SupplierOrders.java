@@ -29,7 +29,6 @@ public class SupplierOrders extends Controller {
 		}
 		//该商户ID
 		Long supplierId = SupplierRbac.currentUser().supplier.id;
-		Logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+supplierId);
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 		JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, supplierId, pageNumber, PAGE_SIZE);
@@ -57,6 +56,7 @@ public class SupplierOrders extends Controller {
 	 * @param goodsCond 页面设置选择信息
 	 */
 	private static void renderGoodsCond(OrdersCondition goodsCond) {
+		System.out.println(">>>>>>>>>>"+ goodsCond.createdAtEnd);
 		renderArgs.put("createdAtBegin", goodsCond.createdAtBegin);
 		renderArgs.put("createdAtEnd", goodsCond.createdAtEnd);
 		renderArgs.put("status", goodsCond.status);

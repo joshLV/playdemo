@@ -60,7 +60,7 @@
                     <td width="81" align="center" valign="middle">${row.originalPrice?.formatCurrency('CNY').raw()}</td>
                     <td width="66" align="center" valign="middle">${row.buyNumber}</td>
                     <td align="center" valign="middle">
-                           <div class="caozuo_std">${row.eCoupon?.eCouponSn}
+                           <div class="caozuo_std">${row.eCoupon?.getEcouponSn()}
                            </div>
                     </td>
                     #{if (++m == 1) }
