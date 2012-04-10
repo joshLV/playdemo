@@ -25,6 +25,7 @@ require:
     - com.uhuila.utils -> alipay 1.0.0-SNAPSHOT
     - org.apache.httpcomponents -> httpclient 4.1.3
     - org.jsoup -> jsoup 1.6.1
+    - view_ext -> view_ext
 
 repositories:
 
@@ -58,3 +59,4 @@ repositories:
             - accounts  -> *
             - sms -> *
             - breadcrumbs -> *
+            - view_ext -> *

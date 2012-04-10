@@ -51,6 +51,11 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 #{/if}
 #{else}
     #{layout_operate.fileField name:'imagePath'/}
+<div class="control-group">
+    <label for='levelPrices_${level}' class="control-label"> </label>
+
+    <div class="controls">(修改前)<br/><img src="${goods.imageLargePath}"/></div>
+</div>
 #{/else}
 #{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images'/}
 #{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}

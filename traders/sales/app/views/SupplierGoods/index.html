@@ -91,11 +91,10 @@
                     #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}<br/>
                         #{vx.operateLink text:"撤销申请", url:"/goods/"+goods.id+"/cancelApply", method:"PUT"/}#{/if}
                 </td>
-                <td>#{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
-                .equals(goods.status)}<a href="@{SupplierGoods.edit(goods.id)}">修改</a> /#{/if}
-                    <a href="@{SupplierGoods.show(goods.id)}">查看</a>#{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
-                .equals(goods.status)} /
-                        #{vx.deleteLink action:"goods", id:goods.id, name:goods.name/}#{/if}
+                <td><a href="@{SupplierGoods.show(goods.id)}">查看</a>
+                    #{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
+                .equals(goods.status)}/ <a href="@{SupplierGoods.edit(goods.id)}">修改</a>
+                        / #{vx.deleteLink action:"goods", id:goods.id, name:goods.name/}#{/if}
                 </td>
             </tr>
             #{/paginate.list}

@@ -195,6 +195,9 @@ public class OperateGoods extends Controller {
         if (goods.faceValue!= null && goods.originalPrice.compareTo(goods.faceValue) > 0) {
             Validation.addError("goods.originalPrice", "validation.moreThanFaceValue");
         }
+        if (goods.originalPrice!= null && goods.salePrice.compareTo(goods.originalPrice) < 0) {
+            Validation.addError("goods.salePrice", "validation.lessThanOriginalPrice");
+        }
     }
 
     private static void checkImageFile(File imagePath) {
