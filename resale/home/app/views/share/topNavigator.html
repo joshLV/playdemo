@@ -3,10 +3,10 @@
     <div class="top_margin_left">
         <div class="wellcome">
         #{if cas?.isLogin}
-            欢迎您，<a class="zi_gray" href="/orders">${cas.username}</a>  <a class="zi_gray" href="/logout">退出</a>
+            欢迎您，<a class="zi_gray" href="/orders" id="login_name">${cas.username}</a>  <a class="zi_gray" href="/logout">退出</a>
         #{/if}
         #{else}
-            您好，欢迎您来到优惠啦！<a class="zi_gray" href="/login">请登录</a>
+            您好，欢迎您来到优惠啦！<a class="zi_gray" href="/login" id="login_name">请登录</a>
         #{/else}
         </div>
         <div class="top_ul_box">

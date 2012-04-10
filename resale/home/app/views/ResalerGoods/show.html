@@ -117,7 +117,7 @@
                                 class="font_red font_size18">${goods.getResalePrice(resaler.level)}</span>元
                         </div>
                         <div class="right_shangpin_two">有效期：<span
-                                class="right_shangpin_two">${goods.effectiveAt} 至 ${goods.expireAt}</span>
+                                class="right_shangpin_two">${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span>
                         </div>
                         <div class="right_shangpin_two">库存：<span
                                 class="right_shangpin_two">${goods.baseSale}</span>&nbsp;件

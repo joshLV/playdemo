@@ -11,12 +11,13 @@ import models.resale.ResalerStatus;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import play.libs.Images;
 import play.test.Fixtures;
 import play.test.UnitTest;
-
+@Ignore
 public class RegisterUnitTest extends UnitTest {
 	@Before
 	public void setup() {

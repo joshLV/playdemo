@@ -9,13 +9,14 @@ import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import play.cache.Cache;
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
-
+@Ignore
 public class RegisterTest extends FunctionalTest {
 	@Before
 	public void setup() {

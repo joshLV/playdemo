@@ -580,11 +580,17 @@ public class Goods extends Model {
      * @return isExist true 已经存在，false 不存在
      */
     @Transient
-    public boolean isExistLibrary() {
+    public boolean isExistLibrary(Resaler resaler) {
         boolean isExist = false;
-        if (resalerFavs != null && resalerFavs.size() > 0) {
-            isExist = true;
-        }
+		Query query = play.db.jpa.JPA.em().createQuery(
+				"select r from ResalerFav r where r.resaler = :resaler and r.goods =:goods");
+		query.setParameter("resaler", resaler);
+		query.setParameter("goods", this);
+		List<ResalerFav> favs = query.getResultList();
+		if (favs.size()>0) {
+			isExist = true;
+		}
+
 
         return isExist;
     }

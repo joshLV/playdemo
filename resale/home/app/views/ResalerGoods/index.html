@@ -266,7 +266,7 @@
      <tr>
      <td>
       <td id="goodsId_${goods.id}">
-         #{if !goods.isExistLibrary()}
+         #{if !goods.isExistLibrary(resaler)}
           <input type="checkbox" value="${goods.id}"  name="goodsIds[]"/>
          #{/if}
          #{else}
@@ -286,7 +286,7 @@
       折扣：${goods.discountExpress.yesno(goods.discountExpress+'折','无优惠')}</td>
       <td width="150" align="center">
       <a class="font_blue" href="@{ResalerGoods.show(goods.id)}">查看详情</a><br>
-      #{if !goods.isExistLibrary()}
+      #{if !goods.isExistLibrary(resaler)}
         <span id= "add_${goods.id}"><a href="javascript:" class="font_blue" id="libray_${goods.id}" onclick="addToLibray('${goods.id}')">加入分销库</a> </span>
       #{/if}
       #{else}

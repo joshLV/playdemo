@@ -3,7 +3,6 @@ package unit;
 import java.math.BigDecimal;
 
 import models.resale.Resaler;
-import models.resale.ResalerLevel;
 import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
@@ -13,6 +12,7 @@ import models.sales.GoodsLevelPrice;
 import models.sales.Shop;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import play.modules.paginate.JPAExtPaginator;
@@ -26,6 +26,7 @@ import play.test.UnitTest;
  * Date: 3/26/12
  * Time: 5:59 PM
  */
+@Ignore
 public class GoodsUnitTest extends UnitTest {
     @Before
     public void setup() {

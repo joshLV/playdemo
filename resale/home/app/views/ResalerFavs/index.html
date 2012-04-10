@@ -111,9 +111,9 @@ ul .pagination {
                         </div>
                         <div class="col_one_text">${favItem.goods.name}</div>
                     </td>
-                    <td width="120" height="25" align="center" valign="middle">${favItem.goods.materialType ==
+                    <td width="120" height="25" align="center" valign="middle">${favItem.goods?.materialType ==
                         models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
-                    <td width="115" height="25" align="center" valign="middle">${favItem.goods.originalPrice}</td>
+                    <td width="115" height="25" align="center" valign="middle">${favItem.goods?.faceValue?.formatCurrency('CNY').raw()}</td>
                     <td width="115" height="25" align="center" valign="middle" id="price_${favItem.goods.id}">${favItem.goods.getResalePrice(resaler.level)}</td>
                     <td width="115" height="25" align="center" valign="middle">处理中</td>
                     <td width="115" height="25" align="center" valign="middle">${favItem.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>

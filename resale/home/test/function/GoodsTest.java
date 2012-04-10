@@ -9,6 +9,7 @@ import models.sales.GoodsLevelPrice;
 import models.sales.Shop;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import play.mvc.Http;
@@ -22,6 +23,7 @@ import play.test.FunctionalTest;
  * Date: 3/26/12
  * Time: 5:22 PM
  */
+@Ignore
 public class GoodsTest extends FunctionalTest {
     @Before
     public void setup() {

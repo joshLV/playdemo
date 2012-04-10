@@ -19,13 +19,14 @@ import models.sales.GoodsLevelPrice;
 import models.sales.Shop;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
 
-
+@Ignore
 public class OrderUnitTest extends UnitTest {
 	@Before
 	@SuppressWarnings("unchecked")

@@ -16,11 +16,12 @@ import models.sales.Goods;
 import models.sales.Shop;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import play.test.Fixtures;
 import play.test.UnitTest;
-
+@Ignore
 public class ResalerFavUnitTest extends UnitTest {
 
 	@Before
