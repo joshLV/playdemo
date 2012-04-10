@@ -12,7 +12,7 @@
         <input type="text" id="${_id?:field.id}" name="${field.name}" class="input-xlarge"
                value="${params[field.name]?.escape()?.raw() ?: field.error?.message == 'validation.required' ?
                "":_value?.escape()?.raw()}"/><span id="note_${_id?:field.id}">${_note}</span>#{if _tip!= null}<span
-            id="tip_${_id?:field.id}">${_tip}</span>#{/if}
+            id="tip_${_id?:field.id}" class="warn">${_tip}</span>#{/if}
         #{ifError field.name}
             <span class="error">${field.error.raw()}</span>
         #{/ifError}

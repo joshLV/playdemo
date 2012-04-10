@@ -17,7 +17,7 @@
     #{/list}
 #{/layout_trader.selectField}
 #{layout_trader.textField name:'goods.no', value:goods?.no/}
-#{layout_trader.textField name:'goods.name', value:goods?.name, required:true/}
+#{layout_trader.nameField name:'goods.name', value:goods?.name, required:true, length:40/}
 #{layout_trader.dateScopeField name:'goods.effective', begin:'goods.effectiveAt',end:'goods.expireAt',
 beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), required:true/}
 #{layout_trader.textField name:'goods.faceValue', value:goods?.faceValue, note:'元', required:true/}

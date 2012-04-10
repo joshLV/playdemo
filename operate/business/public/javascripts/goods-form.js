@@ -5,6 +5,18 @@
  * Date: 3/9/12
  * Time: 7:00 PM
  */
+
+//返回val的字节长度
+function getByteLen(val) {
+    var len = 0;
+    for (var i = 0; i < val.length; i++) {
+        if (val[i].match(/[^\x00-\xff]/ig) != null) //全角
+            len += 2;
+        else
+            len += 1;
+    }
+    return len;
+}
 $(window).load(
     function () {
         $("#goods_topCategoryId").change(function () {
@@ -25,8 +37,7 @@ $(window).load(
                     return false;
                 }
             }
-        )
-        ;
+        );
         $("#goods_isAllShop_2").click(function () {
             $("#shop").show();//显示门店列表
         });
@@ -38,17 +49,6 @@ $(window).load(
         });
         $("#preview").click(function () {
             $("#status").val("UNCREATED");
-        });
-        $("#goods_name").onfocus(function () {
-            var remainLen = (80 - $("#goods_name").length)/2;
-            $("#tip_goods_name").html("还可以输入" + remainLen + "个字");
-        });
-        $("#goods_name").onblur(function () {
-            $("#tip_goods_name").html("");
-        });
-        $("#goods_name").change(function () {
-            var remainLen = (80 - $("#goods_name").length)/2;
-            $("#tip_goods_name").html("还可以输入" + remainLen + "个字");
         });
     }
 );
