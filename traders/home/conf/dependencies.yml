@@ -13,6 +13,7 @@ require:
     - resale -> resale
     - supplier_rbac -> supplier_rbac
     - org.jsoup -> jsoup 1.6.1
+    - view_ext -> view_ext
 
 repositories:
     - mavenRepository:
@@ -40,3 +41,4 @@ repositories:
             - supplier -> *
             - resale -> *
             - supplier_rbac -> *
+            - view_ext -> *

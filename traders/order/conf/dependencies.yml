@@ -17,7 +17,7 @@ require:
     - supplier_rbac -> supplier_rbac
     - org.jsoup -> jsoup 1.6.1
     - sms -> sms
-
+    - view_ext -> view_ext
 repositories:
     - mavenRepository:
         type:       iBiblio
@@ -47,3 +47,4 @@ repositories:
             - paginate_ext -> *
             - supplier_rbac -> *
             - sms -> *
+            - view_ext -> *

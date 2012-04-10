@@ -19,7 +19,6 @@ require:
     - org.jsoup -> jsoup 1.6.1
     - sms -> sms
 
-
 repositories:
     - mavenRepository:
         type:       iBiblio
