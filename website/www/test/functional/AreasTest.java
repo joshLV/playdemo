@@ -1,15 +1,11 @@
 package functional;
 
 import models.consumer.Address;
-import models.sales.Area;
 import org.junit.Before;
 import org.junit.Test;
-import play.Play;
 import play.mvc.Http;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
-
-import java.util.List;
 
 /**
  * 商圈区域控制器的测试.

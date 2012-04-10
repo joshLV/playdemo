@@ -1,6 +1,8 @@
 package functional.models.accounts.util;
 
-import models.accounts.*;
+import models.accounts.Account;
+import models.accounts.PaymentSource;
+import models.accounts.TradeBill;
 import models.accounts.util.TradeUtil;
 import org.junit.Before;
 import org.junit.Test;

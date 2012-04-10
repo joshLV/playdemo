@@ -1,7 +1,7 @@
 package controllers;
 
-import java.math.BigDecimal;
-import java.util.List;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
@@ -13,8 +13,9 @@ import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 商品控制器.

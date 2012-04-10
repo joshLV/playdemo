@@ -1,13 +1,10 @@
 package functional.models.payment;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import models.order.Order;
-
 import models.payment.AliPaymentFlow;
 import models.payment.PaymentFlow;
-
+import org.junit.Before;
+import org.junit.Test;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 

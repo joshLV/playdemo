@@ -2,7 +2,6 @@ package functional;
 
 import models.sales.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.Play;
 import play.mvc.Http;

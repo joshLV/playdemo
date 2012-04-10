@@ -1,11 +1,12 @@
 package controllers;
 
-import java.util.List;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 import models.consumer.Address;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+
+import java.util.List;
 
 /**
  * 用户地址控制器.

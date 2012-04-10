@@ -1,13 +1,12 @@
 package functional;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Test;
-
 import play.cache.Cache;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterTest extends FunctionalTest {
 

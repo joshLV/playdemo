@@ -1,19 +1,16 @@
 package unit;
 
-import java.util.Date;
-import java.util.List;
-
-import models.consumer.Address;
 import models.consumer.User;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import play.libs.Images;
 import play.test.Fixtures;
 import play.test.UnitTest;
+
+import java.util.Date;
+import java.util.List;
 
 public class RegisterUnitTest extends UnitTest {
 	@Before

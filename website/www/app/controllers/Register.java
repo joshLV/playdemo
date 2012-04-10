@@ -1,6 +1,5 @@
 package controllers;
 
-import java.util.Date;
 import models.consumer.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
@@ -10,6 +9,8 @@ import play.data.validation.Validation;
 import play.libs.Codec;
 import play.libs.Images;
 import play.mvc.Controller;
+
+import java.util.Date;
 
 /**
  * 前台注册用户

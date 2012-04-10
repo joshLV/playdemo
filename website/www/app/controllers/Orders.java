@@ -1,5 +1,6 @@
 package controllers;
 
+import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
@@ -7,18 +8,15 @@ import models.order.Cart;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import play.Logger;
-import play.data.validation.Min;
-import play.data.validation.Required;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-import controllers.modules.website.cas.SecureCAS;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户订单确认控制器.
