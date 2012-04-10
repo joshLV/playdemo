@@ -1,0 +1,24 @@
+#{fixture delete:[models.order.Order.class,
+models.sales.Category.class,
+models.sales.Area.class,
+models.sales.Goods.class,
+models.sales.Brand.class,
+    models.sales.Category.class,models.sales.Area.class,
+    models.sales.Shop.class, models.sales.Goods.class,
+    models.order.OrderItems.class,models.order.ECoupon.class,] ,
+load:['fixture/areas.yml','fixture/base_data.yml','fixture/orders.yml'] /}
+#{selenium "查看订单界面"}
+    #{include 'test/selenium/step/login.selenium' /}
+    open('/orders')
+    assertTitle('商品订单')
+#{/selenium}
+#{selenium '查看订单详细信息'}
+    open('/orders/${play.test.Fixtures.idCache.get("models.order.Order-order1")}')
+    assertTitle('订单详细信息')
+    verifyTextPresent('201202220324134991598')
+#{/selenium}
+#{selenium '查看消费券号列表'}
+    open('/coupons')
+    assertTitle('券号列表')
+    clickAndWait('link=券列表管理')
+#{/selenium}
