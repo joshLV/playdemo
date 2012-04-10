@@ -185,34 +185,4 @@ public class Cart extends Model {
     public static List<Cart> findAll(User user, String cookie) {
         return findAll(user, cookie, null);
     }
-
-    /**
-     * 用户购物车中电子券列表
-     */
-    public static List<Cart> findECart(User user, String cookie) {
-        return findAll(user, cookie, MaterialType.ELECTRONIC);
-    }
-
-    /**
-     * 用户购物车中实物列表
-     */
-    public static List<Cart> findRCart(User user, String cookie) {
-        return findAll(user, cookie, MaterialType.REAL);
-    }
-
-    public static BigDecimal amount(List<Cart> cartList) {
-        BigDecimal cartAmount = new BigDecimal(0);
-        for (Cart cart : cartList) {
-            cartAmount = cartAmount.add(
-                    cart.goods.salePrice.multiply(new BigDecimal(cart.number)));
-        }
-        return cartAmount;
-    }
-
-    /**
-     * 清除用户购物车中所有条目
-     */
-    public static void clear(User user, String cookie) {
-        delete(user, cookie, null);
-    }
 }

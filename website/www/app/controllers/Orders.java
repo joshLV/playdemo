@@ -6,6 +6,7 @@ import models.consumer.User;
 import models.order.Cart;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
+import play.Logger;
 import play.data.validation.Min;
 import play.data.validation.Required;
 import play.mvc.Controller;
@@ -40,28 +41,15 @@ public class Orders extends Controller {
         //解析提交的商品及数量
         List<Long> goodsIds = new ArrayList<>();
         Map<Long,Integer> itemsMap = new HashMap<>();
-        String[] itemSplits = items.split(",");
-        for(String split : itemSplits){
-            String[] goodsItem = split.split("-");
-            if(goodsItem.length == 2){
-                Integer number = Integer.parseInt(goodsItem[1]);
-                if(number > 0){
-                    Long goodsId = Long.parseLong(goodsItem[0]);
-                    goodsIds.add(goodsId);
-                    itemsMap.put(goodsId, number);
-                }
-            }
-        }
+        parseItems(items, goodsIds, itemsMap);
         
         //计算电子商品列表和非电子商品列表
         List<Cart> eCartList = new ArrayList<>();
         BigDecimal eCartAmount = BigDecimal.ZERO;
-
         List<Cart> rCartList = new ArrayList<>();
         BigDecimal rCartAmount = BigDecimal.ZERO;
         
         List<models.sales.Goods> goods = models.sales.Goods.findInIdList(goodsIds);
-        
         for (models.sales.Goods g : goods){
             Integer number = itemsMap.get(g.getId());
             if(g.materialType == models.sales.MaterialType.REAL){
@@ -96,24 +84,14 @@ public class Orders extends Controller {
      * 提交订单.
      */
     public static void create(String items, String mobile){
-        Http.Cookie cookieIdentity = request.cookies.get("identity");
+        Http.Cookie cookie= request.cookies.get("identity");
+        String cookieValue = cookie == null ? null : cookie.value;
         User user = SecureCAS.getUser();
 
         //解析提交的商品及数量
         List<Long> goodsIds = new ArrayList<>();
         Map<Long,Integer> itemsMap = new HashMap<>();
-        String[] itemSplits = items.split(",");
-        for(String split : itemSplits){
-            String[] goodsItem = split.split("-");
-            if(goodsItem.length == 2){
-                Integer number = Integer.parseInt(goodsItem[1]);
-                if(number > 0){
-                    Long goodsId = Long.parseLong(goodsItem[0]);
-                    goodsIds.add(goodsId);
-                    itemsMap.put(goodsId, number);
-                }
-            }
-        }
+        parseItems(items, goodsIds, itemsMap);
 
         //创建订单
         Order order = new Order(user.getId(), AccountType.CONSUMER);
@@ -128,15 +106,29 @@ public class Orders extends Controller {
             }
         }catch (NotEnoughInventoryException e){
             //todo 缺少库存
-            e.printStackTrace();
+            Logger.error(e, "inventory not enough");
             error("inventory not enough");
         }
         //确认订单
         order.createAndUpdateInventory();
-
-
-        //todo clear cart
-
+        //删除购物车中相应物品
+        Cart.delete(user, cookieValue, goodsIds);
+        
         redirect("/payment_info/" + order.getId());
+    }
+    
+    private static void parseItems(String items, List<Long> goodsIds, Map<Long, Integer> itemsMap){
+        String[] itemSplits = items.split(",");
+        for(String split : itemSplits){
+            String[] goodsItem = split.split("-");
+            if(goodsItem.length == 2){
+                Integer number = Integer.parseInt(goodsItem[1]);
+                if(number > 0){
+                    Long goodsId = Long.parseLong(goodsItem[0]);
+                    goodsIds.add(goodsId);
+                    itemsMap.put(goodsId, number);
+                }
+            }
+        }
     }
 }
