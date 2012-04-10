@@ -187,11 +187,13 @@ public class OperateGoods extends Controller {
         index(null);
     }
 
+
     private static void checkSalePrice(Goods goods) {
         if (goods.salePrice == null) {
             Validation.addError("goods.salePrice", "validation.required");
-        } else if (goods.salePrice.compareTo(new BigDecimal("0.01")) < 0) {
-            Validation.addError("goods.salePrice", "validation.min", "0.01");
+        }
+        if (goods.faceValue!= null && goods.originalPrice.compareTo(goods.faceValue) > 0) {
+            Validation.addError("goods.originalPrice", "validation.moreThanFaceValue");
         }
     }
 

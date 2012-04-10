@@ -20,6 +20,7 @@ validation.maxFileSize=%s的长度不能超过%d个字符!
 validation.min=%s必须大于或等于%d!
 validation.minSize=%s的长度不能少于%d个字符!
 validation.invalid=无效的%s!
+validation.money=%s不是有效的价格!
 validation.invalidType=%s的类型必须是%s!
 validation.write=%s没有权限保存!
 validation.save=%s保存失败!

@@ -4,6 +4,7 @@ import models.resale.ResalerLevel;
 import play.data.validation.Min;
 import play.data.validation.Required;
 import play.db.jpa.Model;
+import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -18,6 +19,7 @@ public class GoodsLevelPrice extends Model {
     public ResalerLevel level;
     @Required
     @Min(0.01)
+    @Money
     public BigDecimal price;
 
     public GoodsLevelPrice() {

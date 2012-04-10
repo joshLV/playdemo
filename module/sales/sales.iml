@@ -91,6 +91,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="supplier" />
     <orderEntry type="module" module-name="resale" />
+    <orderEntry type="module" module-name="view_ext" />
   </component>
 </module>
 

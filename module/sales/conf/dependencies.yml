@@ -7,7 +7,6 @@ require:
     - commons-lang -> commons-lang 2.6
     - org.jsoup -> jsoup 1.6.1
 
-
 repositories:
     - mavenRepository:
         type:       iBiblio

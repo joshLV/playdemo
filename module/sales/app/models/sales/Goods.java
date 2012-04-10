@@ -20,6 +20,7 @@ import play.data.validation.*;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
+import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -34,6 +35,7 @@ public class Goods extends Model {
      */
     @Required
     @Min(value = 0.01)
+    @Money
     @Column(name = "face_value")
     public BigDecimal faceValue;
 
@@ -42,6 +44,7 @@ public class Goods extends Model {
      */
     @Required
     @Min(value = 0.01)
+    @Money
     @Column(name = "original_price")
     public BigDecimal originalPrice;
 
@@ -49,6 +52,7 @@ public class Goods extends Model {
      * 运营人员填写的优惠啦网站价格
      */
     @Min(value = 0.01)
+    @Money
     @Column(name = "sale_price")
     public BigDecimal salePrice;
 
@@ -125,14 +129,14 @@ public class Goods extends Model {
 
     @Required
     @MinSize(value = 7)
-    @MaxSize(value = 65535)
+    @MaxSize(value = 4000)
     @Lob
     private String details;
 
     /**
      * 温馨提示
      */
-    @MaxSize(value = 65535)
+    @MaxSize(value = 4000)
     @Lob
     private String prompt;
 
