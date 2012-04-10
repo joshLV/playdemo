@@ -8,6 +8,10 @@ public class AliPay extends Controller {
     private static PaymentFlow paymentFlow = new AliPaymentFlow();
 
     public static void paymentNotify(){
-        paymentFlow.paymentNotify(params.all());
+        if(paymentFlow.paymentNotify(params.all())){
+            renderText("success");
+        }else {
+            renderText("failed");
+        }
    }
 }
