@@ -3,6 +3,7 @@
 # ~~~~
 
 # Home page
+GET     /                                             MyOrders.index
 GET     /orders                                       MyOrders.index
 POST    /orders/refund/{id}                           MyOrders.applyRefund
 GET     /orders/{id}                                  MyOrders.details

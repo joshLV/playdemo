@@ -180,9 +180,9 @@ $(window).load(function () {
     </form>
     <table width="798" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
      <tr bgcolor="#FBE8E4">
-      <td align="center">劵号</td>
-      <td width="100" height="28" align="center" bgcolor="#FBE8E4">订单号</td>
+      <td  width="100" align="center">劵号</td>
       <td align="center">商品名称</td>
+      <td width="100" height="28" align="center" bgcolor="#FBE8E4">订单号</td>
       <td height="30" align="center">价格</td>
       <td height="30" align="center">成交时间</td>
       <td align="center">消费时间</td>
@@ -192,11 +192,11 @@ $(window).load(function () {
      #{paginate.list items:couponsList, as:'coupon'}
       <tr>
       <td width="118" height="30" align="center">${coupon.eCouponSn}</td>
-      <td width="100" height="31" align="center">${coupon.order.orderNumber}</td>
       <td width="177" align="center">${coupon.goods.name}</td>
+      <td width="100" height="31" align="center">${coupon.order.orderNumber}</td>
       <td width="177" align="center" id="price_${coupon.id}">${coupon.salePrice?.formatCurrency('CNY').raw()}</td>
-      <td width="106" align="center">${coupon.createdAt}</td>
-      <td width="123" align="center">${coupon.consumedAt}</td>
+      <td width="106" align="center">${coupon.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+      <td width="123" align="center">${coupon.consumedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
       <td width="95" align="center"><span id="status_apply_${coupon.id}">&{'coupon.'+coupon.status}</span></td>
       <td width="103" align="center">
       #{if (coupon.status == models.order.ECouponStatus.UNCONSUMED
