@@ -9,7 +9,7 @@ GET     /goods/new                              SupplierGoods.add
 POST    /goods                                  SupplierGoods.create
 GET     /goods/{id}/edit                        SupplierGoods.edit
 GET     /goods/{id}                             SupplierGoods.show
-GET     /goods/{id}/preview                     SupplierGoods.preview
+GET     /goods/{uuid}/preview                   SupplierGoods.preview
 PUT     /goods/{id}                             SupplierGoods.update
 PUT     /goods/{id}/apply                       SupplierGoods.apply
 PUT     /goods/{id}/offSale                     SupplierGoods.offSale

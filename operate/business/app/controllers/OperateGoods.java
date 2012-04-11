@@ -192,10 +192,10 @@ public class OperateGoods extends Controller {
         if (goods.salePrice == null) {
             Validation.addError("goods.salePrice", "validation.required");
         }
-        if (goods.faceValue!= null && goods.originalPrice.compareTo(goods.faceValue) > 0) {
+        if (goods.faceValue != null && goods.originalPrice != null && goods.originalPrice.compareTo(goods.faceValue) > 0) {
             Validation.addError("goods.originalPrice", "validation.moreThanFaceValue");
         }
-        if (goods.originalPrice!= null && goods.salePrice.compareTo(goods.originalPrice) < 0) {
+        if (goods.salePrice != null && goods.originalPrice != null && goods.salePrice.compareTo(goods.originalPrice) < 0) {
             Validation.addError("goods.salePrice", "validation.lessThanOriginalPrice");
         }
     }

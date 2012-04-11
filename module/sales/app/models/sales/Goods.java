@@ -7,11 +7,13 @@ package models.sales;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.constants.ImageSize;
 import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.PathUtil;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.resale.ResalerLevel;
 import models.supplier.Supplier;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -23,6 +25,8 @@ import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.*;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -43,7 +47,7 @@ public class Goods extends Model {
      * 商户填写的进货价，采购价
      */
     @Required
-    @Min(value = 0.01)
+    @Min(value = 0)
     @Money
     @Column(name = "original_price")
     public BigDecimal originalPrice;
@@ -489,7 +493,7 @@ public class Goods extends Model {
         return q.getResultList();
     }
 
-    public static List<Goods> findInIdList(List<Long> goodsIds){
+    public static List<Goods> findInIdList(List<Long> goodsIds) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
                 "and g.id in :ids");
@@ -498,7 +502,7 @@ public class Goods extends Model {
         q.setParameter("ids", goodsIds);
         return q.getResultList();
     }
-    
+
     public static Goods findUnDeletedById(long id) {
         return find("id=? and deleted=?", id, DeletedStatus.UN_DELETED).first();
     }
@@ -530,9 +534,47 @@ public class Goods extends Model {
             models.sales.Goods goods = models.sales.Goods.findById(id);
             goods.status = status;
 
-            System.out.println("@@@@@@@@@@@@@@status:" + status);
             goods.save();
         }
+    }
+
+    private static final String expiration = "10mn";
+
+    /**
+     * 将预览商品存入缓存.
+     * 
+     * 商品图片移动到指定目录下，指定目录下的预览用的商品图片将通过后台crontab的方式定时删除.
+     *
+     * @param goods
+     * @return uuid
+     */
+    public static String preview(Goods goods, File imageFile, String rootDir) throws IOException {
+        goods.status = GoodsStatus.UNCREATED;
+
+        System.out.println("imageFile.getName():" + imageFile.getName());
+        
+        String ext = imageFile.getName().substring(imageFile.getName().lastIndexOf("."));
+        String imagePath = "/000/000/000/" + FileUploadUtil.generateUniqueId() + ext;
+        File targetDir = new File(rootDir+"/000/000/000/");
+        if (!targetDir.exists()){
+             targetDir.mkdirs();
+        }
+        FileUtils.moveFile(imageFile, new File(rootDir + imagePath));
+        goods.imagePath = imagePath;
+        UUID cacheId = UUID.randomUUID();
+        play.cache.Cache.set(cacheId.toString(), goods, expiration);
+        return cacheId.toString();
+    }
+
+    /**
+     * 获取商品预览对象.
+     *
+     * @param uuid 缓存键值
+     * @return 预览商品
+     */
+    public static Goods getPreviewGoods(String uuid) {
+        System.out.println("uuid:" + uuid);
+        return (Goods) play.cache.Cache.get(uuid);
     }
 
     /**

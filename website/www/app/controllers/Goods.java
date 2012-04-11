@@ -55,18 +55,17 @@ public class Goods extends Controller {
         render(goodsPage, areas, districts, categories, brands, breadcrumbs);
     }
 
-    /**
-     * 商品详情.
-     *
-     * @param id 商品
-     */
-    public static void show(long id) {
-        models.sales.Goods goods = models.sales.Goods.findUnDeletedById(id);
+    public static void preview(String uuid) {
+        models.sales.Goods goods = models.sales.Goods.getPreviewGoods(uuid);
+        showGoods(goods);
+        render();
+    }
+
+    private static void showGoods(models.sales.Goods goods) {
         if (goods == null) {
             notFound();
         }
-
-        BreadcrumbList breadcrumbs = new BreadcrumbList();
+       BreadcrumbList breadcrumbs = new BreadcrumbList();
         long categoryId = 0;
         if (goods.categories != null && goods.categories.size() > 0) {
             Category category = goods.categories.iterator().next();
@@ -77,8 +76,22 @@ public class Goods extends Controller {
             breadcrumbs.append(goods.brand.name, "/goods/list/" + categoryId + "-" + SHANGHAI + "-0-0-" + goods.brand
                     .id);
         }
+        renderArgs.put("goods",goods);
+        renderArgs.put("breadcrumbs",breadcrumbs);
 
-        render(goods, breadcrumbs);
+    }
+
+    /**
+     * 商品详情.
+     *
+     * @param id 商品
+     */
+    public static void show(long id) {
+        models.sales.Goods goods = models.sales.Goods.findUnDeletedById(id);
+
+        showGoods(goods);
+
+        render();
     }
 
     /**

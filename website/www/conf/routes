@@ -13,6 +13,7 @@ GET     /{<[0-9]+>categoryId}                   Home.index
 GET     /goods                                  Goods.index
 GET     /goods/list/{condition}                 Goods.list
 GET     /goods/{id}                             Goods.show
+GET     /goods/{uuid}/preview                   Goods.preview
 
 # 购物车
 GET     /carts                                  Carts.index

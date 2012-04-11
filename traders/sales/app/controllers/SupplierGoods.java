@@ -19,12 +19,12 @@ import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
 import models.sales.GoodsCondition;
-import models.sales.GoodsLevelPrice;
 import models.sales.GoodsStatus;
 import models.sales.MaterialType;
 import models.sales.Shop;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.data.binding.As;
 import play.data.validation.Required;
 import play.data.validation.Valid;
@@ -45,6 +45,7 @@ import com.uhuila.common.util.FileUploadUtil;
 public class SupplierGoods extends Controller {
 
     public static int PAGE_SIZE = 15;
+    public static String WWW_URL = Play.configuration.getProperty("www.url", "");
 
     /**
      * 展示商品一览页面
@@ -139,13 +140,6 @@ public class SupplierGoods extends Controller {
     }
 
     /**
-     * 展示添加商品页面
-     */
-    public static void preview(Long id) {
-        preview0(id);
-    }
-
-    /**
      * 添加商品
      * 商户只能添加电子券.
      *
@@ -164,6 +158,10 @@ public class SupplierGoods extends Controller {
             renderInit(goods);
             render("SupplierGoods/add.html");
         }
+        //预览的情况
+        if (GoodsStatus.UNCREATED.equals(goods.status)) {
+            preview(goods, imagePath);
+        }
 
         //添加商品处理
         goods.supplierId = supplierId;
@@ -180,12 +178,25 @@ public class SupplierGoods extends Controller {
         }
         goods.save();
 
-        //预览的情况
-        if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            preview0(goods.id);
-        }
         index(null);
     }
+
+    public static void preview(String uuid) {
+        Goods goods = Goods.getPreviewGoods(uuid);
+        render(goods);
+    }
+
+    private static void preview(Goods goods, File imagePath) {
+        String cacheId = "0";
+        try {
+            cacheId = Goods.preview(goods, imagePath, UploadFiles.ROOT_PATH);
+        } catch (IOException e) {
+            e.printStackTrace();
+            error(500, "goods.image_upload_failed");
+        }
+        redirect("http://" + WWW_URL + "/goods/" + cacheId + "/preview");
+    }
+
 
     private static void checkImageFile(File imagePath) {
         if (imagePath != null) {
@@ -265,6 +276,9 @@ public class SupplierGoods extends Controller {
             renderInit(goods);
             render("SupplierGoods/edit.html", goods, id);
         }
+        if (GoodsStatus.UNCREATED.equals(goods.status)) {
+            preview(goods, imagePath);
+        }
 
         String supplierUser = SupplierRbac.currentUser().loginName;
 
@@ -280,19 +294,9 @@ public class SupplierGoods extends Controller {
             error(e);
         }
 
-        //预览的情况
-        if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            //todo
-            preview0(id);
-        } else {
-            goods.updatedBy = supplierUser;
-            Goods.update(id, goods, true);
-        }
+        goods.updatedBy = supplierUser;
+        Goods.update(id, goods, true);
         index(null);
-    }
-
-    private static void preview0(Long id) {
-        redirect("http://www.uhuila.cn/goods/" + id + "?preview=true");
     }
 
     /**
