@@ -35,14 +35,14 @@ public class CouponsCondition {
      * @param goodsName      商品名称
      * @return sql 查询条件
      */
-    public String getFilter(User user, Date createdAtBegin, Date createdAtEnd,
+    public String getFilter(Long userId, AccountType accountType, Date createdAtBegin, Date createdAtEnd,
                             ECouponStatus status, String goodsName) {
         StringBuilder sql = new StringBuilder();
         sql.append(" 1=1 ");
-        if (user != null) {
+        if (userId != null && accountType != null) {
             sql.append(" and e.order.userId = :userId and e.order.userType = :userType");
-            couponsMap.put("userId", user.getId());
-            couponsMap.put("userType", AccountType.CONSUMER);
+            couponsMap.put("userId", userId);
+            couponsMap.put("userType", accountType);
         }
 
         if (createdAtBegin != null) {

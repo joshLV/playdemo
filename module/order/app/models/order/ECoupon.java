@@ -251,12 +251,12 @@ public class ECoupon extends Model {
 	 * @param pageSize       记录数
 	 * @return couponsPage 券记录
 	 */
-	public static JPAExtPaginator<ECoupon> userCouponsQuery(User user, Date createdAtBegin, Date createdAtEnd,
+	public static JPAExtPaginator<ECoupon> userCouponsQuery(Long userId, AccountType accountType, Date createdAtBegin, Date createdAtEnd,
 			ECouponStatus status, String goodsName, int pageNumber, int pageSize) {
 		CouponsCondition condition = new CouponsCondition();
 
 		JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
-		("ECoupon e", "e", ECoupon.class, condition.getFilter(user, createdAtBegin, createdAtEnd, status, goodsName),
+		("ECoupon e", "e", ECoupon.class, condition.getFilter(userId, accountType, createdAtBegin, createdAtEnd, status, goodsName),
 				condition.couponsMap).orderBy(condition.getOrderByExpress());
 
 		couponsPage.setPageNumber(pageNumber);
