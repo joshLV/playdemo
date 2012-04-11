@@ -20,6 +20,8 @@ import java.util.Date;
  */
 public class Register extends Controller{
 
+	public static final String SESSION_USER_KEY = "website_login";
+	
 	/**
 	 * 注册页面 
 	 */
@@ -59,7 +61,8 @@ public class Register extends Controller{
 		user.createdAt = new Date();
 		user.save();
 
-		redirect("http://www.uhuila.cn");
+		session.put(SESSION_USER_KEY,user.loginName);
+		render("Register/success.html");
 	}
 
 

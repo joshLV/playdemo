@@ -1,19 +1,30 @@
 #{fixture delete:'all'/}
+%{
+long time = System.currentTimeMillis();
+}%
 #{selenium 'Test Register/index.html'}
-    
     open('/register')
     verifyTitle('分销商 - 注册新用户')
-    type('id=loginName','dfijkl')
+    type('id=loginName','dfijkl${time}')
     type('id=mobile','13111111116')
     type('id=password','1')
     type('id=confirmPassword','1')
     type('id=email','163@sina.com')
-    type('id=mobile','13111111116')
     type('id=address','xujiahui')
     type('id=phone','02112345678')
     type('id=userName','xujiahui')
     type('id=identityNo','341281198208268785')
     type('id=postCode','123456')
-    click('id=register_submit')
-
+    clickAndWait('id=register_submit')
+    verifyTextPresent('注册成功页面')
+        
+	openAndWait('/@cas/login?service=/authenticate&gateway=true')
+	assertTitle('CAS Mock Server - Login')
+	type('id=login','dfijkl${time}')
+	type('id=password','dfijkl${time}')
+	clickAndWait('css=input[type="submit"]')
+	assertNotTitle('CAS Mock Server - Login')
+        
+    verifyTitle('优惠啦 - 商品列表')
+    verifyText('id=login_name','dfijkl${time}')
 #{/selenium}

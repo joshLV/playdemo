@@ -1,12 +1,26 @@
 #{fixture delete:'all'/}
+%{
+long time = System.currentTimeMillis();
+}%
 #{selenium 'Test Register/index.html'}
     open('/register')
     verifyTitle('优惠啦 - 注册新用户')
-    type('id=loginName','admin@uhuila.com')
+    type('id=loginName','admin${time}@uhuila.com')
     type('id=mobile','13111111116')
     type('id=password','1')
     type('id=confirmPassword','1')
     type('id=captcha','zuet')
-    click('link=注册')
+    clickAndWait('id=register_submit')
+    verifyTextPresent('注册成功页面')
+    
+    openAndWait('/@cas/login?service=/authenticate&gateway=true')
+    assertTitle('CAS Mock Server - Login')
+    type('id=login','admin${time}@uhuila.com')
+    type('id=password','admin${time}@uhuila.com')
+    clickAndWait('css=input[type="submit"]')
+    assertNotTitle('CAS Mock Server - Login')
+        
+    verifyTitle('优惠啦 - 首页')
+    verifyText('id=login_name','admin${time}@uhuila.com')
     assertElementPresent('css=body')
 #{/selenium}

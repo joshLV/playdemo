@@ -51,7 +51,6 @@ public class ResalerRegister extends Controller {
 		resaler.lastLoginAt = new Date();
 		resaler.createdAt = new Date();
 		resaler.save();
-
 		session.put(SESSION_USER_KEY, resaler.loginName);
 		render("ResalerRegister/success.html");
 	}

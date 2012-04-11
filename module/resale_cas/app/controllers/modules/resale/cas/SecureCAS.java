@@ -42,7 +42,7 @@ public class SecureCAS extends Controller {
     public static void setResaler() {
     	Resaler resaler = getResaler();
     	
-    	System.out.println("resaler=" + resaler);
+    	System.out.println("resaler>>>>>>>>>>>>>>>>>." + resaler);
         Cas cas = new Cas();
         if (resaler != null) {
             cas.isLogin = true;
