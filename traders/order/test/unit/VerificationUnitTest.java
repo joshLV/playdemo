@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import models.accounts.Account;
+import models.accounts.AccountType;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.consumer.User;
@@ -121,7 +122,7 @@ public class VerificationUnitTest extends UnitTest {
 		int pageNumber =1;
 		int pageSize =15;
 		ECouponStatus status =null;
-		JPAExtPaginator<ECoupon> list = ECoupon.userCouponsQuery(user,createdAtBegin,createdAtEnd, status, goodsName,pageNumber, pageSize);
+		JPAExtPaginator<ECoupon> list = ECoupon.userCouponsQuery(user.getId(), AccountType.CONSUMER,createdAtBegin,createdAtEnd, status, goodsName,null, null,pageNumber, pageSize);
 		Assert.assertEquals(0,list.size());
 
 	}
