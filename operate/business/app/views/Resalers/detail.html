@@ -66,14 +66,14 @@
             <div class="controls">
             #{if !"APPROVED".equals(resaler?.status.toString())}
                 #{select 'resaler.level', value:resaler?.level,id:'level',class:'input-small'}
-                    #{option "NORMAL"}&{'resaler.'+resaler.NORMAL'}#{/option} 
-                    #{option "VIP1"}&{'resaler.'+resaler.VIP1'}#{/option} 
-                    #{option "VIP2"}&{'resaler.'+resaler.VIP2'}#{/option} 
-                    #{option "VIP3"}&{'resaler.'+resaler.VIP3'}#{/option} 
+                    #{option "NORMAL"}&{'resaler.NORMAL'}#{/option} 
+                    #{option "VIP1"}&{'resaler.VIP1'}#{/option} 
+                    #{option "VIP2"}&{'resaler.VIP2'}#{/option} 
+                    #{option "VIP3"}&{'resaler.VIP3'}#{/option} 
                 #{/select}
             #{/if}
             #{else}
-                 ${resaler?.level}
+                 &{'resaler.'+resaler.level}
             #{/else}
             </div>
         </div>
