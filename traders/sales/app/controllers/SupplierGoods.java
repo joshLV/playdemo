@@ -160,7 +160,7 @@ public class SupplierGoods extends Controller {
         }
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            preview(goods, imagePath);
+            preview(null, goods, imagePath);
         }
 
         //添加商品处理
@@ -186,10 +186,10 @@ public class SupplierGoods extends Controller {
         render(goods);
     }
 
-    private static void preview(Goods goods, File imagePath) {
+    private static void preview(Long goodsId, Goods goods, File imagePath) {
         String cacheId = "0";
         try {
-            cacheId = Goods.preview(goods, imagePath, UploadFiles.ROOT_PATH);
+            cacheId = Goods.preview(goodsId, goods, imagePath, UploadFiles.ROOT_PATH);
         } catch (IOException e) {
             e.printStackTrace();
             error(500, "goods.image_upload_failed");
@@ -277,7 +277,7 @@ public class SupplierGoods extends Controller {
             render("SupplierGoods/edit.html", goods, id);
         }
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            preview(goods, imagePath);
+            preview(id, goods, imagePath);
         }
 
         String supplierUser = SupplierRbac.currentUser().loginName;

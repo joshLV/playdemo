@@ -538,29 +538,33 @@ public class Goods extends Model {
         }
     }
 
-    private static final String expiration = "10mn";
+    private static final String expiration = "30mn";
 
     /**
      * 将预览商品存入缓存.
-     * 
+     * <p/>
      * 商品图片移动到指定目录下，指定目录下的预览用的商品图片将通过后台crontab的方式定时删除.
      *
      * @param goods
      * @return uuid
      */
-    public static String preview(Goods goods, File imageFile, String rootDir) throws IOException {
+    public static String preview(Long id, Goods goods, File imageFile, String rootDir) throws IOException {
         goods.status = GoodsStatus.UNCREATED;
 
-        System.out.println("imageFile.getName():" + imageFile.getName());
-        
-        String ext = imageFile.getName().substring(imageFile.getName().lastIndexOf("."));
-        String imagePath = "/000/000/000/" + FileUploadUtil.generateUniqueId() + ext;
-        File targetDir = new File(rootDir+"/000/000/000/");
-        if (!targetDir.exists()){
-             targetDir.mkdirs();
+        if (imageFile == null && id != null) {
+            Goods originalGoods = Goods.findById(id);
+            goods.imagePath = originalGoods.imagePath;
+        } else {
+            String ext = imageFile.getName().substring(imageFile.getName().lastIndexOf("."));
+            String imagePath = "/000/000/000/" + FileUploadUtil.generateUniqueId() + ext;
+            File targetDir = new File(rootDir + "/000/000/000/");
+            if (!targetDir.exists()) {
+                targetDir.mkdirs();
+            }
+            FileUtils.moveFile(imageFile, new File(rootDir + imagePath));
+            goods.imagePath = imagePath;
         }
-        FileUtils.moveFile(imageFile, new File(rootDir + imagePath));
-        goods.imagePath = imagePath;
+        System.out.println("goods.imagePath:" + goods.imagePath);
         UUID cacheId = UUID.randomUUID();
         play.cache.Cache.set(cacheId.toString(), goods, expiration);
         return cacheId.toString();
@@ -624,14 +628,14 @@ public class Goods extends Model {
     @Transient
     public boolean isExistLibrary(Resaler resaler) {
         boolean isExist = false;
-		Query query = play.db.jpa.JPA.em().createQuery(
-				"select r from ResalerFav r where r.resaler = :resaler and r.goods =:goods");
-		query.setParameter("resaler", resaler);
-		query.setParameter("goods", this);
-		List<ResalerFav> favs = query.getResultList();
-		if (favs.size()>0) {
-			isExist = true;
-		}
+        Query query = play.db.jpa.JPA.em().createQuery(
+                "select r from ResalerFav r where r.resaler = :resaler and r.goods =:goods");
+        query.setParameter("resaler", resaler);
+        query.setParameter("goods", this);
+        List<ResalerFav> favs = query.getResultList();
+        if (favs.size() > 0) {
+            isExist = true;
+        }
 
 
         return isExist;

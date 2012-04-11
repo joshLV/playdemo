@@ -9,7 +9,6 @@ GET     /goods/new                              OperateGoods.add
 POST    /goods                                  OperateGoods.create
 GET     /goods/{id}/edit                        OperateGoods.edit
 GET     /goods/{id}                             OperateGoods.show
-GET     /goods/{id}/preview                     OperateGoods.preview
 PUT     /goods/{id}                             OperateGoods.update
 PUT     /goods/{id}/onSale                      OperateGoods.onSale
 PUT     /goods/{id}/offSale                     OperateGoods.offSale
