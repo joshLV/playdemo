@@ -79,6 +79,8 @@ resaler.COMPANY=公司
 resaler.PENDING=待审核
 resaler.APPROVED=审核通过
 resaler.UNAPPROVED=审核未通过
+resaler.FREEZE=冻结
+
 resaler.remark=备注
 
 #订单状态

@@ -7,6 +7,8 @@ import models.resale.Resaler;
 import models.resale.ResalerCondition;
 import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
+import models.supplier.Supplier;
+import models.supplier.SupplierStatus;
 
 import org.junit.Test;
 
@@ -22,7 +24,7 @@ public class ResalerUnitTest extends UnitTest {
 		Fixtures.delete(Resaler.class);
 		Fixtures.loadModels("fixture/resaler.yml");
 	}
-	
+
 	@Test
 	public void testIndex() {
 		ResalerCondition condition = new ResalerCondition();
@@ -33,9 +35,9 @@ public class ResalerUnitTest extends UnitTest {
 		JPAExtPaginator<Resaler> list =  Resaler.findByCondition(condition, pageNumber, pageSize);
 		assertEquals(1,list.size());
 	}
-	
-	
-	
+
+
+
 	@Test
 	public void testCondition() {
 		ResalerCondition condition = new ResalerCondition();
@@ -45,7 +47,7 @@ public class ResalerUnitTest extends UnitTest {
 		assertEquals("1=1 and r.loginName like :loginName and r.status = :status",sql);
 		assertNotNull(condition.getParamMap());
 	}
-	
+
 	/**
 	 * 审核分销商
 	 */
@@ -57,11 +59,27 @@ public class ResalerUnitTest extends UnitTest {
 		Resaler resaler = Resaler.findById(id);
 		assertEquals(ResalerStatus.APPROVED,resaler.status );
 		assertEquals(ResalerLevel.NORMAL,resaler.level );
-		
+
 		remark ="该分销商信用不够！";
 		Resaler.update(id, ResalerStatus.UNAPPROVED,ResalerLevel.NORMAL, remark);
 		resaler = Resaler.findById(id);
 		assertEquals(ResalerStatus.UNAPPROVED,resaler.status );
 		assertEquals(remark,resaler.remark );
+	}
+
+	@Test
+	public void testFreeze() {
+		Long id = (Long) Fixtures.idCache.get("models.resale.Resaler-resaler_2");
+		Resaler.freeze(id);
+		Resaler resaler = Resaler.findById(id);
+		assertEquals(ResalerStatus.FREEZE, resaler.status);
+	}
+
+	@Test
+	public void testUnfreeze() {
+		Long id = (Long) Fixtures.idCache.get("models.resale.Resaler-resaler_3");
+		Resaler.unfreeze(id);
+		Resaler resaler = Resaler.findById(id);
+		assertEquals(ResalerStatus.APPROVED, resaler.status);
 	}
 }

@@ -39,6 +39,9 @@ DELETE  /suppliers/{id}                         Suppliers.delete
 GET     /resalers                               Resalers.index
 GET     /resalers/{id}/view                     Resalers.detail
 POST    /resalers/update                        Resalers.update
+PUT     /resalers/{id}/freeze                   Resalers.freeze
+PUT     /resalers/{id}/unfreeze                 Resalers.unfreeze
+DELETE  /resalers/{id}                          Resalers.delete
 
 GET     /account-report                         AccountReports.index
 

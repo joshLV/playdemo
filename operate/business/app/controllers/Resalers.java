@@ -4,6 +4,7 @@ import models.resale.Resaler;
 import models.resale.ResalerCondition;
 import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
+import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
@@ -33,9 +34,9 @@ public class Resalers extends Controller {
 	 * 分销商详细
 	 * @param id 分销商ID
 	 */
-	public static void detail(Long id) {
+	public static void detail(Long id,String flag) {
 		Resaler resaler = Resaler.findById(id);
-		render(resaler);
+		render(resaler,flag);
 	}
 
 	/**
@@ -51,5 +52,16 @@ public class Resalers extends Controller {
 		Resaler.update(id,status,level,remark);
 		index(null);
 	}
+	
+
+    public static void freeze(long id) {
+    	Resaler.freeze(id);
+        index(null);
+    }
+
+    public static void unfreeze(long id) {
+    	Resaler.unfreeze(id);
+        index(null);
+    }
 
 }

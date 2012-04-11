@@ -19,6 +19,8 @@ import com.uhuila.common.constants.DeletedStatus;
 import models.sales.Brand;
 import models.sales.Goods;
 import models.sales.GoodsCondition;
+import models.supplier.Supplier;
+import models.supplier.SupplierStatus;
 
 import play.data.validation.Email;
 import play.data.validation.Match;
@@ -112,7 +114,7 @@ public class Resaler extends Model {
 
 	@Column(name = "updated_at")
 	public Date updatedAt;
-	
+
 	@MaxSize(value=500)
 	public String remark;
 
@@ -149,7 +151,7 @@ public class Resaler extends Model {
 		if (condition == null) {
 			condition = new ResalerCondition();
 		}
-		
+
 		JPAExtPaginator<Resaler> resalers = new JPAExtPaginator<>
 		("Resaler r", "r", Resaler.class, condition.getFitter(),condition.getParamMap())
 		.orderBy("createdAt DESC");
@@ -168,10 +170,17 @@ public class Resaler extends Model {
 	public static void update(Long id, ResalerStatus status,ResalerLevel level, String remark) {
 		Resaler resaler = Resaler.findById(id);
 		resaler.status=status;
-		resaler.remark=remark;
+		if (StringUtils.isNotEmpty(remark)) resaler.remark=remark;
 		if(level != null) resaler.level =level;
 		resaler.save();
 	}
 
+	public static void freeze(long id) {
+		update(id, ResalerStatus.FREEZE,null,null);
+	}
+
+	public static void unfreeze(long id) {
+		update(id, ResalerStatus.APPROVED,null,null);
+	}
 
 }

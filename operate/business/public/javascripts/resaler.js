@@ -12,5 +12,14 @@ function checkResaler(id,status,flg){
 	}
 }
 
-
+$(document).ready(function(){
+    $("#edit").click(function(){
+    	$("#flag").val("0");
+    	$("#flagForm").submit();
+    });
+    $("#view").click(function(){
+    	$("#flag").val("1");
+    	$("#flagForm").submit();
+    });
+}); 
 

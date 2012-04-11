@@ -64,7 +64,7 @@
         <div class="control-group">
             <label class="control-label">会员级别</label>
             <div class="controls">
-            #{if !"APPROVED".equals(resaler?.status.toString())}
+            #{if !"1".equals(flag)}
                 #{select 'resaler.level', value:resaler?.level,id:'level',class:'input-small'}
                     #{option "NORMAL"}&{'resaler.NORMAL'}#{/option} 
                     #{option "VIP1"}&{'resaler.VIP1'}#{/option} 
@@ -80,7 +80,7 @@
          <div class="control-group">
             <label class="control-label">备注</label>
             <div class="controls">
-            #{if !"APPROVED".equals(resaler?.status.toString())}
+            #{if !"1".equals(flag) && !"APPROVED".equals(resaler?.status.toString())}
             <textarea rows="5" cols="8" name="remark" id="remark">${resaler?.remark}</textarea>
             <span class="error" id="checkRemark">#{error 'resaler.remark'/}</span>
             #{/if}
@@ -92,8 +92,8 @@
         </form>
         <form class="form-horizontal" id="checkFrm" method="post">
         <div class="form-actions">
-        #{if !"APPROVED".equals(resaler?.status.toString())}
-            <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','APPROVED')" id="approved" type="button">审核通过</button>
+        #{if !"1".equals(flag)}
+            <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','APPROVED')" id="approved" type="button">修改</button>
         #{/if}    
         #{if !"UNAPPROVED".equals(resaler?.status.toString()) && !"APPROVED".equals(resaler?.status.toString())}
             <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','UNAPPROVED',0)" id="unapproved" type="button">审核未通过</button>
