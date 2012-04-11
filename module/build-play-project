@@ -93,7 +93,7 @@ cmd =<<END
   rm -f conf/version.conf
   echo "build.time=#{Time.now.strftime("%Y-%m-%d %H:%M")}" >> conf/version.conf
   echo "version=$BUILD_VERSION" >> conf/version.conf
-  echo "revision=$SVN_REVISION" >> conf/version.conf
+  echo "revision=$SVN_REVISION_1" >> conf/version.conf
 END
 IO.popen(cmd) { |output|
   output.each_line { |line|
