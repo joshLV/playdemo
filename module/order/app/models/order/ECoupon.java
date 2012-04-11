@@ -252,11 +252,11 @@ public class ECoupon extends Model {
 	 * @return couponsPage 券记录
 	 */
 	public static JPAExtPaginator<ECoupon> userCouponsQuery(Long userId, AccountType accountType, Date createdAtBegin, Date createdAtEnd,
-			ECouponStatus status, String goodsName, int pageNumber, int pageSize) {
+			ECouponStatus status, String goodsName, String orderNumber, String phone, int pageNumber, int pageSize) {
 		CouponsCondition condition = new CouponsCondition();
 
 		JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
-		("ECoupon e", "e", ECoupon.class, condition.getFilter(userId, accountType, createdAtBegin, createdAtEnd, status, goodsName),
+		("ECoupon e", "e", ECoupon.class, condition.getFilter(userId, accountType, createdAtBegin, createdAtEnd, status, goodsName, orderNumber, phone),
 				condition.couponsMap).orderBy(condition.getOrderByExpress());
 
 		couponsPage.setPageNumber(pageNumber);

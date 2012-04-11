@@ -1,0 +1,90 @@
+#{extends 'bt_layout.html' /}
+
+#{set title:'券订单列表' /}
+
+#{set 'sidebar-nav'}
+  #{sidebar 'ecoupons' /}
+#{/set}
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript" charset="utf-8">
+</script>
+#{/set}
+
+#{set 'moreStyles'}
+<style type="text/css">
+</style>
+#{/set}
+
+<div class="body">
+
+    <form class="form-horizontal" id="couponsFrm" action="@{Coupons.index()}" method="GET">
+        成交时间：
+      <input class="short_input Wdate" type="text" name="createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
+     <input class="short_input Wdate" type="text" name="createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" /><br/>
+        订单状态：
+        #{select 'status', id:'status', class:'dingdan_stauts_bg', value:status}
+               #{option ""}不限#{/option}
+               #{option "DEALING"}&{'coupon.DEALING'}#{/option}
+               #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
+               #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
+               #{option "REFUND"}&{'coupon.REFUND'}#{/option}
+               #{option "EXPIRED"}&{'coupon.EXPIRED'}#{/option}
+         #{/select}
+         <br/>
+        商品名称：
+        <input class="long_input" type="text" name="goodsName" value="${goodsName}"/>
+        <input type="submit" value="搜索"/>
+    </form>
+
+
+
+
+    <table  class="table table-striped table-bordered table-condensed">
+        <thead>
+	     <tr >
+	      <td align="center" >订单号</td>
+	      <td align="center">商品名称</td>
+          <td align="center">劵号</td>
+	      <td align="center">价格</td>
+	      <td align="center">成交时间</td>
+	      <td align="center">消费时间</td>
+          <td align="center">过期时间</td>
+	      <td align="center">状态</td>
+	      <td align="center">操作</td>
+	     </tr>
+        </thead>
+        <tbody>
+	     #{paginate.list items:couponsList, as:'coupon'}
+	      <tr>
+		      <td>${coupon.order.orderNumber}</td>
+		      <td>${coupon.goods.name}</td>
+              <td>${coupon.eCouponSn.substring(0,8)}****${coupon.eCouponSn.substring(coupon.eCouponSn.length() - 4)}</td>
+		      <td id="price_${coupon.id}">${coupon.salePrice?.formatCurrency('CNY').raw()}</td>
+		      <td>${coupon.createdAt}</td>
+		      <td>${coupon.consumedAt}</td>
+              <td>${coupon.goods.expireAt}</td>
+		      
+		      <td><span id="status_apply_${coupon.id}">&{'coupon.'+coupon.status}</span></td>
+		      <td>
+			      #{if (coupon.status == models.order.ECouponStatus.UNCONSUMED
+			      || coupon.status == models.order.ECouponStatus.EXPIRED)}
+			      <a href="/coupons/refund/${coupon.id}" name="apply_refund" id="apply_${coupon.id}">申请退款</a>
+			      #{/if}
+		      </td>
+	     </tr>
+	     #{/paginate.list}
+        </tbody>
+    </table>
+     <div class="pagination">
+     <ul>
+    #{paginate.controls items:couponsList /}
+    </ul>
+  </div>
+
+
+
+</div>
+ 
+ 

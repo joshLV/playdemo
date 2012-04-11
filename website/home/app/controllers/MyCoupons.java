@@ -25,7 +25,7 @@ public class MyCoupons extends Controller {
 		User user = SecureCAS.getUser();
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-		JPAExtPaginator<ECoupon> couponsList = ECoupon.userCouponsQuery(user.getId(), AccountType.CONSUMER, createdAtBegin, createdAtEnd, status, goodsName,pageNumber, PAGE_SIZE);
+		JPAExtPaginator<ECoupon> couponsList = ECoupon.userCouponsQuery(user.getId(), AccountType.CONSUMER, createdAtBegin, createdAtEnd, status, goodsName,null, null, pageNumber,  PAGE_SIZE);
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的券订单", "/coupons");
 		renderArgs.put("createdAtBegin", createdAtBegin);
 		renderArgs.put("createdAtEnd", createdAtEnd);

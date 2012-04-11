@@ -36,7 +36,7 @@ public class CouponsCondition {
      * @return sql 查询条件
      */
     public String getFilter(Long userId, AccountType accountType, Date createdAtBegin, Date createdAtEnd,
-                            ECouponStatus status, String goodsName) {
+                            ECouponStatus status, String goodsName, String orderNumber, String phone) {
         StringBuilder sql = new StringBuilder();
         sql.append(" 1=1 ");
         if (userId != null && accountType != null) {
@@ -65,6 +65,17 @@ public class CouponsCondition {
             couponsMap.put("status", status);
         }
 
+        if(orderNumber != null){
+            sql.append(" and e.order.orderNumber like :orderNumber");
+            couponsMap.put("orderNumber", "%" + orderNumber + "%");
+        }
+        
+        if(StringUtils.isNotBlank(phone)){
+            sql.append(" and e.orderItems.phone like :phone");
+            couponsMap.put("phone", "%" + phone + "%");
+        }
+
         return sql.toString();
     }
+        
 }

@@ -47,6 +47,8 @@ GET     /top-oauth-callback                     TopOauthCallback.index
 
 GET     /top-add                                TopClient.add
 
+GET     /ecoupons                               Coupons.index
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
