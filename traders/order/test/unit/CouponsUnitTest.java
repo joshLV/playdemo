@@ -1,6 +1,7 @@
 package unit;
 
 import models.accounts.Account;
+import models.accounts.AccountType;
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -92,7 +93,7 @@ public class CouponsUnitTest extends UnitTest {
 		int pageNumber =1;
 		int pageSize =15;
 		ECouponStatus status =null;
-		JPAExtPaginator<ECoupon> list = ECoupon.userCouponsQuery(user,createdAtBegin,createdAtEnd, status, goodsName,pageNumber, pageSize);
+		JPAExtPaginator<ECoupon> list = ECoupon.userCouponsQuery(user.getId(), AccountType.CONSUMER,createdAtBegin,createdAtEnd, status, goodsName,null, null,pageNumber, pageSize);
 		assertEquals(0,list.size());
 
 	}
