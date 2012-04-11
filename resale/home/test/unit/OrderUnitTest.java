@@ -26,7 +26,6 @@ import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
 
-@Ignore
 public class OrderUnitTest extends UnitTest {
 	@Before
 	@SuppressWarnings("unchecked")

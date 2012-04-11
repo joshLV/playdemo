@@ -1,6 +1,7 @@
 package function;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import models.resale.AccountType;
@@ -9,14 +10,11 @@ import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import play.cache.Cache;
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
-@Ignore
 public class RegisterTest extends FunctionalTest {
 	@Before
 	public void setup() {
@@ -26,6 +24,8 @@ public class RegisterTest extends FunctionalTest {
 
 	@Test
 	public void testCreat() {
+		List old = Resaler.findAll();
+		int count = old.size();
 		Map<String, String> loginUserParams = new HashMap<String,
 				String>();
 		//异常情况
@@ -51,8 +51,10 @@ public class RegisterTest extends FunctionalTest {
 		loginUserParams.put("resaler.postCode", "123456");
 		loginUserParams.put("resaler.level", ResalerLevel.NORMAL.toString());
 		response = POST("/register", loginUserParams);
-		assertStatus(302,response);
-
+		assertStatus(200,response);
+		
+		List newList = Resaler.findAll();
+		assertEquals(count+1,newList.size());
 	}
 
 	//测试是否存在用户名和手机

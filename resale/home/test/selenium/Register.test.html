@@ -1,7 +1,5 @@
 #{fixture delete:'all'/}
 #{selenium 'Test Register/index.html'}
-    deleteAllVisibleCookies()
-    clearSession()
     
     open('/register')
     verifyTitle('分销商 - 注册新用户')
@@ -16,18 +14,6 @@
     type('id=userName','xujiahui')
     type('id=identityNo','341281198208268785')
     type('id=postCode','123456')
-    click('link=注册')
-    waitForTitle('CAS Mock Server - Login')
-        
-	openAndWait('/@cas/login?service=/authenticate&gateway=true')
-	assertTitle('CAS Mock Server - Login')
-	type('id=login','dfijkl')
-	type('id=password','dfijkl')
-	clickAndWait('css=input[type="submit"]')
-	assertNotTitle('CAS Mock Server - Login')
-
-    openAndWait('/goods')
-    verifyTitle('优惠啦 - 商品列表')
-    *{verifyText('id=login_name','dfijkl')}*
+    click('id=register_submit')
 
 #{/selenium}

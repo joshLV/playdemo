@@ -21,7 +21,6 @@ import org.junit.Test;
 
 import play.test.Fixtures;
 import play.test.UnitTest;
-@Ignore
 public class ResalerFavUnitTest extends UnitTest {
 
 	@Before

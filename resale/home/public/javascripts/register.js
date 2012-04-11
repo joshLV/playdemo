@@ -84,15 +84,14 @@ function checkLoginNameAndMobile(){
 
 
 function checkIDCard (str) { 
-    //身份证正则表达式(15位) 
-    isIDCard1=/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$/; 
-    //身份证正则表达式(18位) 
-    isIDCard2=/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{4}$/; 
-    //验证身份证，返回结果 
-    if(!( isIDCard1.test(str)||isIDCard2.test(str))){
-    	$("#checkIdentityNo").html("<font color=red>请输入有效身份证号码!</font");
-    } else {
-    	$("#checkIdentityNo").html("");
-    }
+	//身份证正则表达式(15位) 
+	isIDCard1=/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$/; 
+	//身份证正则表达式(18位) 
+	isIDCard2=/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{4}$/; 
+	//验证身份证，返回结果 
+	if(!( isIDCard1.test(str)||isIDCard2.test(str))){
+		$("#checkIdentityNo").html("<font color=red>请输入有效身份证号码!</font");
+	} else {
+		$("#checkIdentityNo").html("");
+	}
 }
- 

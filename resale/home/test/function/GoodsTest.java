@@ -23,7 +23,6 @@ import play.test.FunctionalTest;
  * Date: 3/26/12
  * Time: 5:22 PM
  */
-@Ignore
 public class GoodsTest extends FunctionalTest {
     @Before
     public void setup() {

@@ -26,7 +26,6 @@ import play.test.UnitTest;
  * Date: 3/26/12
  * Time: 5:59 PM
  */
-@Ignore
 public class GoodsUnitTest extends UnitTest {
     @Before
     public void setup() {

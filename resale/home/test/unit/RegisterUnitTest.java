@@ -17,7 +17,6 @@ import org.junit.Test;
 import play.libs.Images;
 import play.test.Fixtures;
 import play.test.UnitTest;
-@Ignore
 public class RegisterUnitTest extends UnitTest {
 	@Before
 	public void setup() {

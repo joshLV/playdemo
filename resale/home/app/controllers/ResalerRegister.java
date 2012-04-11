@@ -16,6 +16,8 @@ import play.mvc.Controller;
  */
 public class ResalerRegister extends Controller {
 
+    public static final String SESSION_USER_KEY = "resale_login";
+    
 	/**
 	 * 注册页面
 	 */
@@ -50,7 +52,8 @@ public class ResalerRegister extends Controller {
 		resaler.createdAt = new Date();
 		resaler.save();
 
-		redirect("http://home.114bsgo.com");
+		session.put(SESSION_USER_KEY, resaler.loginName);
+		render("ResalerRegister/success.html");
 	}
 
 	/**
