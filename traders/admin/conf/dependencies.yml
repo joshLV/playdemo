@@ -11,6 +11,7 @@ require:
     - supplier_rbac -> supplier_rbac
     - base_rbac -> base_rbac
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - view_ext -> view_ext
 
 repositories:
     - mavenRepository:
@@ -35,3 +36,4 @@ repositories:
             - supplier_rbac -> *
             - base_rbac -> *
             - supplier -> *
+            - view_ext -> *
