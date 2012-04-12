@@ -23,16 +23,10 @@ public class SupplierUser extends Model {
 	@Required
 	public String loginName;
 
+	@Required
 	@Mobile
 	public String mobile;
 	
-	   /**
-     * 负责人联系电话
-     */
-    @MaxSize(50)
-    public String phone;
-    
-
 	@Column(name = "encrypted_password")
 	@Required
 	public String encryptedPassword;
@@ -55,7 +49,6 @@ public class SupplierUser extends Model {
 	@Column(name = "updated_at")
 	public Date updatedAt;
 
-	@Required
 	@Column(name = "user_name")
 	public String userName;
 	
@@ -122,10 +115,12 @@ public class SupplierUser extends Model {
 	 * @param user 用户信息
 	 */
 	public static void update(long id, SupplierUser supplierUser) {
+		
 		SupplierUser updatedUser = SupplierUser.findById(id);
 		if (StringUtils.isNotEmpty(supplierUser.encryptedPassword) && 
 				!"******".equals(supplierUser.encryptedPassword) && 
 				!supplierUser.encryptedPassword.equals(DigestUtils.md5Hex(updatedUser.encryptedPassword))) {
+			System.out.println("AAAAAAAAAAAAA");
 			Images.Captcha captcha = Images.captcha();
 			String passwordSalt = captcha.getText(6);
 			//随机码
