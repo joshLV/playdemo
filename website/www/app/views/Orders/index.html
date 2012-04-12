@@ -158,9 +158,11 @@
                 <dd class="shouji_text" id="ecart_mobile_update_dd">手机号码：
                     <!--手机号码修改的输入框input-->
                     <input class="num_input_bg" type="text" name="mobile" id="ecart_mobile"/>
-                    <span><a class="font_blue jianju" id="link_mobile_confirm" href="#">确认</a></span></dd>
+                    <span><a class="font_blue jianju" id="link_mobile_confirm" href="#">确认</a></span> <span
+                            class="font_red jianju">#{error 'mobile'/}</span></dd>
                 <dd class="shouji_text" id="ecart_mobile_show_dd">手机号码：<span id="ecart_mobile_show_span"></span><span><a
-                        class="font_blue jianju" id="link_edit_mobile" href="#">修改</a></span></dd>
+                        class="font_blue jianju" id="link_edit_mobile" href="#">修改</a></span> <span
+                        class="font_red">#{error 'mobile'/}</span></dd>
 
                 <dd class="border_dd">
                     <table width="970" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">

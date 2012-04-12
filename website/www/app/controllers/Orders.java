@@ -8,6 +8,10 @@ import models.order.Cart;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import play.Logger;
+import play.data.validation.Required;
+import play.data.validation.Valid;
+import play.data.validation.Validation;
+import play.modules.view_ext.annotation.Mobile;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
@@ -17,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static play.Logger.warn;
 
 /**
  * 用户订单确认控制器.
@@ -36,17 +42,22 @@ public class Orders extends Controller {
             error("no goods specified");
             return;
         }
+        showOrder(items);
+        render();
+    }
+
+    private static void showOrder(String items) {
         //解析提交的商品及数量
         List<Long> goodsIds = new ArrayList<>();
         Map<Long,Integer> itemsMap = new HashMap<>();
         parseItems(items, goodsIds, itemsMap);
-        
+
         //计算电子商品列表和非电子商品列表
         List<Cart> eCartList = new ArrayList<>();
         BigDecimal eCartAmount = BigDecimal.ZERO;
         List<Cart> rCartList = new ArrayList<>();
         BigDecimal rCartAmount = BigDecimal.ZERO;
-        
+
         List<models.sales.Goods> goods = models.sales.Goods.findInIdList(goodsIds);
         for (models.sales.Goods g : goods){
             Integer number = itemsMap.get(g.getId());
@@ -63,25 +74,38 @@ public class Orders extends Controller {
             error("no goods specified");
             return;
         }
-        
+
         List<Address> addressList = Address.findByOrder(SecureCAS.getUser());
 
         //如果有实物商品，加上运费
-         if (rCartList.size() > 0) {
-            rCartAmount = rCartAmount.add(new BigDecimal("5"));
-        }
+        if (rCartList.size() > 0) {
+           rCartAmount = rCartAmount.add(new BigDecimal("5"));
+       }
         BigDecimal totalAmount = eCartAmount.add(rCartAmount);
         BigDecimal goodsAmount = rCartList.size() == 0 ? eCartAmount : totalAmount.subtract(new BigDecimal("5"));
 
         renderArgs.put("goodsAmount", goodsAmount);
         renderArgs.put("totalAmount", totalAmount);
-        render(addressList, eCartList, eCartAmount, rCartList, rCartAmount, items);
+        renderArgs.put("addressList", addressList);
+        renderArgs.put("eCartList", eCartList);
+        renderArgs.put("eCartAmount", eCartAmount);
+        renderArgs.put("rCartList", rCartList);
+        renderArgs.put("rCartAmount", rCartAmount);
+        renderArgs.put("items", items);
     }
-    
+
     /**
      * 提交订单.
      */
-    public static void create(String items, String mobile){
+    public static void create(String items, @Valid @Required @Mobile String mobile){
+        if (Validation.hasErrors()){
+            for (String key : validation.errorsMap().keySet()) {
+                warn("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
+            }
+
+            showOrder(items);
+            render("Orders/index.html");
+        }
         Http.Cookie cookie= request.cookies.get("identity");
         String cookieValue = cookie == null ? null : cookie.value;
         User user = SecureCAS.getUser();
