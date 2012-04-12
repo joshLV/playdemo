@@ -8,20 +8,20 @@ import play.data.validation.Validation;
 import java.util.regex.Pattern;
 
 /**
- * 检查钱的格式.
+ * 手机号格式检查.
  * <p/>
  * User: sujie
- * Date: 4/10/12
- * Time: 4:59 PM
+ * Date: 4/12/12
+ * Time: 5:32 PM
  */
-public class MoneyCheck extends AbstractAnnotationCheck<Money> {
+public class MobileCheck extends AbstractAnnotationCheck<Mobile> {
 
     final static String mes = "validation.invalid";
-    static Pattern moneyPattern = Pattern.compile("^([0-9]+|[0-9]{1,3}(,[0-9]{3})*)(.[0-9]{1,2})?$");
+    static Pattern mobilePattern = Pattern.compile("^1[3|4|5|8][0-9]\\d{4,8}$");
 
     @Override
-    public void configure(Money money) {
-        setMessage(money.message());
+    public void configure(Mobile mobile) {
+        setMessage(mobile.message());
     }
 
     public boolean isSatisfied(Object validatedObject, Object value, OValContext context, Validator validator) {
@@ -29,7 +29,7 @@ public class MoneyCheck extends AbstractAnnotationCheck<Money> {
         if (value == null || value.toString().length() == 0) {
             return true;
         }
-        return moneyPattern.matcher(value.toString()).matches();
+        return mobilePattern.matcher(value.toString()).matches();
     }
 
 }
