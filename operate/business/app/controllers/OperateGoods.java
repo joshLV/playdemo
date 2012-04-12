@@ -11,6 +11,7 @@ import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.data.binding.As;
 import play.data.validation.Required;
 import play.data.validation.Valid;
@@ -40,6 +41,7 @@ import static play.Logger.warn;
 public class OperateGoods extends Controller {
 
     public static int PAGE_SIZE = 15;
+    public static String WWW_URL = Play.configuration.getProperty("www.url", "");
 
     /**
      * 展示商品一览页面
@@ -87,24 +89,27 @@ public class OperateGoods extends Controller {
             Arrays.fill(levelPrices, ZERO);
             goods.setLevelPrices(levelPrices);
         }
-        if (goods.isAllShop != null) {
-            if (goods.isAllShop && goods.shops != null) {
-                goods.shops = null;
-            }
-        } else {
-            goods.isAllShop = false;
-        }
+//        if (goods.isAllShop != null) {
+//            if (goods.isAllShop && goods.shops != null) {
+//                goods.shops = null;
+//            }
+//        } else {
+//            goods.isAllShop = false;
+//        }
 
         Long supplierId = OperateRbac.currentUser().id;
         String shopIds = "";
-        if (goods.shops != null) {
+        if (goods.shops != null && goods.shops.size() > 0) {
             for (Shop shop : goods.shops) {
                 shopIds += shop.id + ",";
-                goods.isAllShop = false;
             }
+            goods.isAllShop = false;
         } else {
             goods.isAllShop = true;
         }
+
+        System.out.println("goods.isAllShop:" + goods.isAllShop);
+
 
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         List<Brand> brandList = Brand.findByOrder();
@@ -135,13 +140,22 @@ public class OperateGoods extends Controller {
         renderArgs.put("subCategoryList", subCategoryList);
         renderArgs.put("categoryId", categoryId);
         renderArgs.put("shopIds", shopIds);
+        renderArgs.put("isAllShop", goods.isAllShop);
     }
 
     /**
      * 展示添加商品页面
      */
-    public static void preview(Long id) {
-        preview0(id);
+
+    private static void preview(Long goodsId, Goods goods, File imagePath) {
+        String cacheId = "0";
+        try {
+            cacheId = Goods.preview(goodsId, goods, imagePath, UploadFiles.ROOT_PATH);
+        } catch (IOException e) {
+            e.printStackTrace();
+            error(500, "goods.image_upload_failed");
+        }
+        redirect("http://" + WWW_URL + "/goods/" + cacheId + "/preview");
     }
 
     /**
@@ -167,6 +181,10 @@ public class OperateGoods extends Controller {
             render("OperateGoods/add.html");
         }
 
+        //预览
+        if (GoodsStatus.UNCREATED.equals(goods.status)) {
+            preview(null, goods, imagePath);
+        }
         //添加商品处理
         goods.createdBy = OperateRbac.currentUser().loginName;
         goods.materialType = MaterialType.ELECTRONIC;
@@ -180,10 +198,6 @@ public class OperateGoods extends Controller {
         }
         goods.save();
 
-        //预览的情况
-        if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            preview0(goods.id);
-        }
         index(null);
     }
 
@@ -252,7 +266,6 @@ public class OperateGoods extends Controller {
     public static void edit(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
 
-        renderSupplierList(goods);
         renderInit(goods);
         render(goods, id);
     }
@@ -290,9 +303,13 @@ public class OperateGoods extends Controller {
         checkLevelPrice(levelPrices);
         if (Validation.hasErrors()) {
 
-            renderSupplierList(goods);
             renderInit(goods);
             render("OperateGoods/edit.html", goods, id);
+        }
+
+        //预览的情况
+        if (GoodsStatus.UNCREATED.equals(goods.status)) {
+            preview(id, goods, imagePath);
         }
 
         String supplierUser = OperateRbac.currentUser().loginName;
@@ -309,14 +326,8 @@ public class OperateGoods extends Controller {
             error(e);
         }
 
-        //预览的情况
-        if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            //todo
-            preview0(id);
-        } else {
-            goods.updatedBy = supplierUser;
-            Goods.update(id, goods);
-        }
+        goods.updatedBy = supplierUser;
+        Goods.update(id, goods);
         index(null);
     }
 

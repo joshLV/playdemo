@@ -33,6 +33,8 @@ import java.util.*;
 @Entity
 @Table(name = "goods")
 public class Goods extends Model {
+    public static final String PREVIEW_IMG_ROOT = "/9999/9999/9999/";
+
     //  ========= 不同的价格列表 =======
     /**
      * 商户填写的商品市场价
@@ -556,14 +558,15 @@ public class Goods extends Model {
             goods.imagePath = originalGoods.imagePath;
         } else {
             String ext = imageFile.getName().substring(imageFile.getName().lastIndexOf("."));
-            String imagePath = "/000/000/000/" + FileUploadUtil.generateUniqueId() + ext;
-            File targetDir = new File(rootDir + "/000/000/000/");
+            String imagePath = PREVIEW_IMG_ROOT + FileUploadUtil.generateUniqueId() + ext;
+            File targetDir = new File(rootDir + PREVIEW_IMG_ROOT);
             if (!targetDir.exists()) {
                 targetDir.mkdirs();
             }
             FileUtils.moveFile(imageFile, new File(rootDir + imagePath));
             goods.imagePath = imagePath;
         }
+        System.out.println("goods.name:" + goods.name);
         System.out.println("goods.imagePath:" + goods.imagePath);
         UUID cacheId = UUID.randomUUID();
         play.cache.Cache.set(cacheId.toString(), goods, expiration);
@@ -665,5 +668,12 @@ public class Goods extends Model {
             prices[i] = (levelPrice == null || levelPrice.price == null) ? BigDecimal.ZERO : levelPrice.price;
         }
         return prices;
+    }
+    
+    public Iterator<Shop> getShopList(){
+        if (isAllShop){
+            return Shop.findShopBySupplier(supplierId).iterator();
+        }
+        return shops.iterator();
     }
 }

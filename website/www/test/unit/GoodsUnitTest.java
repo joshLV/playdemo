@@ -11,7 +11,9 @@ import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -190,7 +192,7 @@ public class GoodsUnitTest extends UnitTest {
         goods.no = "11";
         goods.name = "test111";
         goods.faceValue = new BigDecimal(200);
-        goods.updatedBy="sujie";
+        goods.updatedBy = "sujie";
         goods.update(goodsId, goods);
         assertEquals("sujie", goods.updatedBy);
     }
@@ -203,7 +205,6 @@ public class GoodsUnitTest extends UnitTest {
         JPAExtPaginator<Goods> goodsList = models.sales.Goods.findByResaleCondition(resaler, condition, 1, 10);
         assertEquals(17, goodsList.size());
     }
-
 
     @Test
     public void testGetResalePrice() {
@@ -218,6 +219,43 @@ public class GoodsUnitTest extends UnitTest {
         prices[2] = BigDecimal.ONE;
         goods.setLevelPrices(prices);
         assertEquals(2, goods.getResalePrice(ResalerLevel.VIP1).intValue());
+    }
+
+    @Test
+    public void testPreview() throws IOException {
+        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
+        models.sales.Goods goods = Goods.findById(goodsId);
+        models.sales.Goods updatedGoods = new Goods();
+        updatedGoods.name = "abcd";
+        updatedGoods.imagePath = "abc.jpg";
+        updatedGoods.salePrice = new BigDecimal(99);
+        String uuid = Goods.preview(goodsId, updatedGoods, null, "/nfs/images/o");
+        Goods cacheGoods = Goods.getPreviewGoods(uuid);
+        assertEquals(goods.imagePath, cacheGoods.imagePath);
+        assertEquals("abcd", cacheGoods.name);
+        assertEquals(99, cacheGoods.salePrice.longValue());
+    }
+
+    @Test
+    public void testGetLevelPriceArray() {
+        models.sales.Goods goods = new Goods();
+        BigDecimal[] prices = goods.getLevelPriceArray();
+        assertEquals(ResalerLevel.values().length, prices.length);
+        assertEquals(0, prices[0].intValue());
+        assertEquals(0, prices[1].intValue());
+        assertEquals(0, prices[2].intValue());
+        assertEquals(0, prices[3].intValue());
+
+
+        GoodsLevelPrice priceObj = new GoodsLevelPrice(goods, ResalerLevel.NORMAL, BigDecimal.TEN);
+        List<GoodsLevelPrice> priceList = new ArrayList<>();
+        priceList.add(priceObj);
+        goods.setLevelPrices(priceList);
+        BigDecimal[] updatedPrices = goods.getLevelPriceArray();
+        assertEquals(10, updatedPrices[0].intValue());
+        assertEquals(0, updatedPrices[1].intValue());
+        assertEquals(0, updatedPrices[2].intValue());
+        assertEquals(0, updatedPrices[3].intValue());
     }
 
 }

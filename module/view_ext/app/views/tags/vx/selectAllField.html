@@ -1,0 +1,37 @@
+*{全选的勾选框}*
+*{name: 全选框的名称，（选填，默认是selectAll）}*
+*{listName: 列表的name}*
+*{selected: 初始情况下是否全选}*
+#{field _name?:"selectAll"}
+<input type="checkbox" id="${field.id}" name="${field.name}" #{if _selected?:false}checked#{/if}
+        /> <span id="selectAllText"/>全选</span>
+
+<script type="text/javascript">
+    function selectAll(select) {
+        if ($(select).attr("checked")) {
+            $("[name='${_listName}']").attr("checked", 'true');//全选
+
+        } else {
+            $("[name='${_listName}']").removeAttr("checked");//取消
+        }
+    }
+
+    $(function () {
+        $("#${field.id}").change(function () {
+            selectAll(this);
+        });
+        $("#selectAllText").click(function () {
+            if ($("#${field.id}").attr("checked")) {
+                $("#${field.id}").removeAttr("checked");//取消
+            } else {
+                $("#${field.id}").attr("checked", 'true');
+            }
+            selectAll($("#${field.id}"));
+        });
+        #{if _selected?:false}
+            $("[name='${_listName}']").attr("checked", 'true');//全选
+        #{/if}
+    });
+
+</script>
+#{/field}

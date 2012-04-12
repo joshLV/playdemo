@@ -2,11 +2,17 @@
     #{get 'moreScripts'/}
 <script src="@{'/public/javascripts/goods-form.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
-#{layout_operate.selectField name:'goods.supplierId', value:goods?.supplierId, error:'goods.supplierId'}
-    #{list items:supplierList, as:'supplier' }
-        #{option supplier.id}${supplier.fullName}#{/option}
-    #{/list}
-#{/layout_operate.selectField}
+#{if "add".equals(action)}
+    #{layout_operate.selectField name:'goods.supplierId', value:goods?.supplierId, error:'goods.supplierId'}
+        #{list items:supplierList, as:'supplier' }
+            #{option supplier.id}${supplier.fullName}#{/option}
+        #{/list}
+    #{/layout_operate.selectField}
+#{/if}
+#{else}
+<input type="hidden" name="goods.supplierId" value="${goods?.supplierId}">
+    #{layout_operate.textField name:'goods.supplier', value:goods?.supplier?.fullName, disabled:true/}
+#{/else}
 <div class="control-group">
     <label class="control-label"><span style="color: red; ">*</span>商品分类</label>
 
@@ -59,23 +65,13 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 #{/else}
 #{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images'/}
 #{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}
-#{layout_operate.radioField name:'goods.isAllShop', value:goods?.isAllShop, required:true/}
+#{layout_operate.radioField name:'goods.isAllShop', value:isAllShop?:false, required:true/}
 <div class="control-group">
     <label class="control-label"></label>
 
     <div class="controls" id="shop" style="display:none">
-        <table class="table table-striped table-bordered table-condensed">
-            <tbody>
-            #{list items:shopList, as:'shop' }
-            <tr>
-                <td><input type="checkbox" id="shops" value="${shop?.id}" name="goods.shops.id"
-                           #{if shopIds?.contains(java.lang.String.valueOf(shop?.id))}checked#{/if}/></td>
-                <td>${shop.name}</td>
-                <td>${shop.address}</td>
-                <td>${shop.phone}</td>
-            </tr>
-            #{/list}
-            </tbody>
+        <table id="tableShop" class="table table-striped table-bordered table-condensed">
+
         </table>
     </div>
 </div>
@@ -90,4 +86,13 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 </div>
 <script type="text/javascript">
     $("input[name='goods.isAllShop']:checked").val() == 'false' ? $("#shop").show() : $("#shop").hide();
+
+    $(function () {
+        $("#goods_isAllShop_2").click(function () {
+            $("#shop").show();//显示门店列表
+        #{if "edit".equals(action)}
+            $("#selectAll").click();
+        #{/if}
+        });
+    });
 </script>

@@ -27,6 +27,7 @@ validation.different=确认密码与登录密码不一致!
 validation.moreThanFaceValue=%s不能超过原价!
 validation.lessThanOriginalPrice=%s不能低于采购价!
 goods.supplierId=商户
+goods.supplier=商户
 goods.no=编号
 goods.name=名称
 goods.category=分类
