@@ -60,7 +60,8 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 <div class="control-group">
     <label for='levelPrices_${level}' class="control-label"> </label>
 
-    <div class="controls">(修改前)<br/><img src="${goods.imageLargePath}"/></div>
+    <div class="controls">(修改前)<br/><img src="${imageLargePath}"/>
+        <input type="hidden" name="imageLargePath" value="${imageLargePath}"></div>
 </div>
 #{/else}
 #{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images'/}
@@ -71,7 +72,7 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 
     <div class="controls" id="shop" style="display:none">
         <table id="tableShop" class="table table-striped table-bordered table-condensed">
-
+        #{include '/Shops/showGoodsShops.html'/}
         </table>
     </div>
 </div>

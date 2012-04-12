@@ -10,6 +10,7 @@ import models.resale.ResalerLevel;
 import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.binding.As;
@@ -71,7 +72,9 @@ public class OperateGoods extends Controller {
     public static void add() {
         List<Supplier> supplierList = Supplier.findUnDeleted();
         renderArgs.put("supplierList", supplierList);
-
+        if (CollectionUtils.isNotEmpty(supplierList)) {
+            renderShopList(supplierList.get(0).id);
+        }
         renderInit(null);
         render();
     }
@@ -89,15 +92,7 @@ public class OperateGoods extends Controller {
             Arrays.fill(levelPrices, ZERO);
             goods.setLevelPrices(levelPrices);
         }
-//        if (goods.isAllShop != null) {
-//            if (goods.isAllShop && goods.shops != null) {
-//                goods.shops = null;
-//            }
-//        } else {
-//            goods.isAllShop = false;
-//        }
 
-        Long supplierId = OperateRbac.currentUser().id;
         String shopIds = "";
         if (goods.shops != null && goods.shops.size() > 0) {
             for (Shop shop : goods.shops) {
@@ -108,10 +103,6 @@ public class OperateGoods extends Controller {
             goods.isAllShop = true;
         }
 
-        System.out.println("goods.isAllShop:" + goods.isAllShop);
-
-
-        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         List<Brand> brandList = Brand.findByOrder();
 
         List<Category> categoryList = Category.findByParent(0);//获取顶层分类
@@ -134,7 +125,6 @@ public class OperateGoods extends Controller {
         for (String key : validation.errorsMap().keySet()) {
             warn("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
         }
-        renderArgs.put("shopList", shopList);
         renderArgs.put("brandList", brandList);
         renderArgs.put("categoryList", categoryList);
         renderArgs.put("subCategoryList", subCategoryList);
@@ -177,6 +167,7 @@ public class OperateGoods extends Controller {
         if (Validation.hasErrors()) {
             List<Supplier> supplierList = Supplier.findUnDeleted();
             renderArgs.put("supplierList", supplierList);
+            renderShopList(goods.supplierId);
             renderInit(goods);
             render("OperateGoods/add.html");
         }
@@ -265,9 +256,18 @@ public class OperateGoods extends Controller {
      */
     public static void edit(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
-
+        if (goods != null) {
+            renderShopList(goods.supplierId);
+            renderArgs.put("imageLargePath", goods.getImageLargePath());
+        }
         renderInit(goods);
         render(goods, id);
+
+    }
+
+    private static void renderShopList(Long supplierId) {
+        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+        renderArgs.put("shopList", shopList);
     }
 
     private static void renderSupplierList(Goods goods) {
@@ -292,7 +292,8 @@ public class OperateGoods extends Controller {
     /**
      * 更新指定商品信息
      */
-    public static void update(Long id, @Valid models.sales.Goods goods, File imagePath, BigDecimal[] levelPrices) {
+    public static void update(Long id, @Valid models.sales.Goods goods, File imagePath, BigDecimal[] levelPrices,
+                              String imageLargePath) {
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
         }
@@ -303,6 +304,8 @@ public class OperateGoods extends Controller {
         checkLevelPrice(levelPrices);
         if (Validation.hasErrors()) {
 
+            renderArgs.put("imageLargePath", imageLargePath);
+            renderShopList(goods.supplierId);
             renderInit(goods);
             render("OperateGoods/edit.html", goods, id);
         }
@@ -346,10 +349,6 @@ public class OperateGoods extends Controller {
                 Validation.addError("goods.levelPrice." + ResalerLevel.values()[i], "validation.min", "0.01");
             }
         }
-    }
-
-    private static void preview0(Long id) {
-        redirect("http://www.uhuila.cn/goods/" + id + "?preview=true");
     }
 
     /**

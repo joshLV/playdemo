@@ -26,6 +26,7 @@ GET     /shops/{id}/edit                        Shops.edit
 POST    /shops/{id}                             Shops.update
 DELETE  /shops/{id}                             Shops.delete
 GET     /shops/area                             Shops.showAreas
+GET     /shops/{supplierId}/showGoodsShops      Shops.showGoodsShops
 
 GET     /suppliers                              Suppliers.index
 GET     /suppliers/new                          Suppliers.add

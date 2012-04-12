@@ -20,9 +20,9 @@ function getByteLen(val) {
 $(window).load(
     function () {
         $("#goods_supplierId").change(function () {
-             $("#tableShop").load(
-
-             )
+            $("#tableShop").load("/shops/" + $("#goods_supplierId").val() + "/showGoodsShops", function (data) {
+                $("#selectAll").click();
+            });
         });
 
         $("#goods_topCategoryId").change(function () {
