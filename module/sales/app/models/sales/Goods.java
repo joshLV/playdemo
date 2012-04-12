@@ -57,7 +57,7 @@ public class Goods extends Model {
     /**
      * 运营人员填写的优惠啦网站价格
      */
-    @Min(value = 0.01)
+    @Min(value = 0)
     @Money
     @Column(name = "sale_price")
     public BigDecimal salePrice;
@@ -552,6 +552,14 @@ public class Goods extends Model {
      */
     public static String preview(Long id, Goods goods, File imageFile, String rootDir) throws IOException {
         goods.status = GoodsStatus.UNCREATED;
+        if (goods.isAllShop){
+            goods.shops = new HashSet<>();
+
+            System.out.println("goods.supplierId:" + goods.supplierId);
+            System.out.println("Shop.findShopBySupplier(goods.supplierId):" + Shop.findShopBySupplier(goods
+                    .supplierId).size());
+            goods.shops.addAll(Shop.findShopBySupplier(goods.supplierId));
+        }
 
         if (imageFile == null && id != null) {
             Goods originalGoods = Goods.findById(id);
@@ -566,8 +574,6 @@ public class Goods extends Model {
             FileUtils.moveFile(imageFile, new File(rootDir + imagePath));
             goods.imagePath = imagePath;
         }
-        System.out.println("goods.name:" + goods.name);
-        System.out.println("goods.imagePath:" + goods.imagePath);
         UUID cacheId = UUID.randomUUID();
         play.cache.Cache.set(cacheId.toString(), goods, expiration);
         return cacheId.toString();
@@ -580,7 +586,6 @@ public class Goods extends Model {
      * @return 预览商品
      */
     public static Goods getPreviewGoods(String uuid) {
-        System.out.println("uuid:" + uuid);
         return (Goods) play.cache.Cache.get(uuid);
     }
 

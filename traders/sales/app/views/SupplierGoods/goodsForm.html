@@ -31,7 +31,8 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
     <div class="control-group">
         <label for='levelPrices_${level}' class="control-label"> </label>
 
-        <div class="controls">(修改前)<br/><img src="${goods.imageLargePath}"/></div>
+        <div class="controls">(修改前)<br/><img src="${imageLargePath}"/>
+            <input type="hidden" name="imageLargePath" value="${imageLargePath}"></div>
     </div>
 #{/else}
 #{layout_trader.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images'/}
@@ -43,11 +44,19 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
     <div class="controls" id="shop" style="display:none">
         <table class="table table-striped table-bordered table-condensed">
             <tbody>
+            <tr>
+                <td>#{if "add".equals(action)}
+                    #{vx.selectAllField listName:"goods.shops.id", selected:true/}
+                #{/if}
+                    #{else}
+                    #{vx.selectAllField listName:"goods.shops.id"/}
+                #{/else}</td>
+                <td colspan="2"></td>
+            </tr>
             #{list items:shopList, as:'shop' }
             <tr>
                 <td><input type="checkbox" id="shops" value="${shop?.id}" name="goods.shops.id"
-                           #{if shopIds?.contains(java.lang.String.valueOf(shop?.id))}checked#{/if}/></td>
-                <td>${shop.name}</td>
+                           #{if shopIds?.contains(java.lang.String.valueOf(shop?.id))}checked#{/if}/> ${shop.name}</td>
                 <td>${shop.address}</td>
                 <td>${shop.phone}</td>
             </tr>
@@ -67,4 +76,12 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 </div>
 <script type="text/javascript">
     $("input[name='goods.isAllShop']:checked").val() == 'false' ? $("#shop").show() : $("#shop").hide();
+    $(function () {
+        $("#goods_isAllShop_2").click(function () {
+            $("#shop").show();//显示门店列表
+        #{if "edit".equals(action)}
+            $("#selectAll").click();
+        #{/if}
+        });
+    });
 </script>

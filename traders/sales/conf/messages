@@ -24,6 +24,7 @@ validation.money=%s不是有效的价格!
 validation.invalidType=%s的类型必须是%s!
 validation.write=%s没有权限保存!
 validation.save=%s保存失败!
+validation.moreThanFaceValue=%s不能超过原价!
 goods.no=编号
 goods.name=名称
 goods.category=分类

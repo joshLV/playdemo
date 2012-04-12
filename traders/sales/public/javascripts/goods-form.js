@@ -18,17 +18,12 @@ $(window).load(
         });
 
         $("#onsales").click(function () {
-                if ($("#baseSale").val() > 0) {
-                    $("#status").val("ONSALE");
-                } else {
-                    $("#errorBaseSale").text("上架商品的库存不能为0！");
-                    return false;
-                }
+            if ($("#baseSale").val() > 0) {
+                $("#status").val("ONSALE");
+            } else {
+                $("#errorBaseSale").text("上架商品的库存不能为0！");
+                return false;
             }
-        )
-        ;
-        $("#goods_isAllShop_2").click(function () {
-            $("#shop").show();//显示门店列表
         });
         $("#goods_isAllShop_1").click(function () {
             $("#shop").hide();//隐藏门店列表
@@ -38,6 +33,7 @@ $(window).load(
         });
         $("#preview").click(function () {
             $("#status").val("UNCREATED");
+            $("#form").attr("target","_blank");
         });
     }
 );

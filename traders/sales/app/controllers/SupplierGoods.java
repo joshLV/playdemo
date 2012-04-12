@@ -52,12 +52,14 @@ public class SupplierGoods extends Controller {
      */
     @ActiveNavigation("goods_index")
     public static void index(models.sales.GoodsCondition condition) {
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
         if (condition == null) {
             condition = new GoodsCondition();
         }
+        condition.supplierId = supplierId;
 
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
@@ -153,21 +155,22 @@ public class SupplierGoods extends Controller {
         checkImageFile(imagePath);
 
         goods.setLevelPrices(levelPrices);
-
+        checkOriginalPrice(goods);
         if (Validation.hasErrors()) {
             renderInit(goods);
             render("SupplierGoods/add.html");
         }
-        //预览的情况
-        if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            preview(null, goods, imagePath);
-        }
-
         //添加商品处理
         goods.supplierId = supplierId;
 
         goods.createdBy = SupplierRbac.currentUser().loginName;
         goods.materialType = MaterialType.ELECTRONIC;
+
+        //预览的情况
+        if (GoodsStatus.UNCREATED.equals(goods.status)) {
+            preview(null, goods, imagePath);
+        }
+
 
         goods.create();
         try {
@@ -197,6 +200,11 @@ public class SupplierGoods extends Controller {
         redirect("http://" + WWW_URL + "/goods/" + cacheId + "/preview");
     }
 
+    private static void checkOriginalPrice(Goods goods) {
+        if (goods.faceValue != null && goods.originalPrice != null && goods.originalPrice.compareTo(goods.faceValue) > 0) {
+            Validation.addError("goods.originalPrice", "validation.moreThanFaceValue");
+        }
+    }
 
     private static void checkImageFile(File imagePath) {
         if (imagePath != null) {
@@ -249,8 +257,8 @@ public class SupplierGoods extends Controller {
      */
     public static void edit(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
-
         renderInit(goods);
+        renderArgs.put("imageLargePath", goods.getImageLargePath());
         render(goods, id);
     }
 
@@ -265,18 +273,25 @@ public class SupplierGoods extends Controller {
     /**
      * 更新指定商品信息
      */
-    public static void update(Long id, @Valid models.sales.Goods goods, File imagePath, BigDecimal[] levelPrices) {
+    public static void update(Long id, @Valid models.sales.Goods goods, File imagePath, BigDecimal[] levelPrices,
+                              String imageLargePath) {
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
         }
         checkImageFile(imagePath);
 
         goods.setLevelPrices(levelPrices, id);
+        checkOriginalPrice(goods);
         if (Validation.hasErrors()) {
             renderInit(goods);
+            renderArgs.put("imageLargePath", imageLargePath);
             render("SupplierGoods/edit.html", goods, id);
         }
+
+        //预览情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
+            goods.supplierId = supplierId;
             preview(id, goods, imagePath);
         }
 

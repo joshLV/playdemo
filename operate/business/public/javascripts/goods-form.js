@@ -51,6 +51,7 @@ $(window).load(
         });
         $("#preview").click(function () {
             $("#status").val("UNCREATED");
+            $("#form").attr("target", "_blank");
         });
     }
 );

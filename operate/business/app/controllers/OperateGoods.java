@@ -192,7 +192,6 @@ public class OperateGoods extends Controller {
         index(null);
     }
 
-
     private static void checkSalePrice(Goods goods) {
         if (goods.salePrice == null) {
             Validation.addError("goods.salePrice", "validation.required");
@@ -256,11 +255,9 @@ public class OperateGoods extends Controller {
      */
     public static void edit(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
-        if (goods != null) {
-            renderShopList(goods.supplierId);
-            renderArgs.put("imageLargePath", goods.getImageLargePath());
-        }
         renderInit(goods);
+        renderShopList(goods.supplierId);
+        renderArgs.put("imageLargePath", goods.getImageLargePath());
         render(goods, id);
 
     }
