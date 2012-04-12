@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
-test_passed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+PASSED/
-test_failed_regex = /^~\s+(unit|function|selenium)\/\w+\.{3}\s+FAILED/
+test_passed_regex = /^~\s+(unit|functional|selenium)\/\w+\.{3}\s+PASSED/
+test_failed_regex = /^~\s+(unit|functional|selenium)\/\w+\.{3}\s+FAILED/
 
 play_home="/app/play-1.2.4/"
 #play_home = ""
