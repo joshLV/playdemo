@@ -1,13 +1,23 @@
 <input type="hidden" name="adminId" value="${admin?.id}">
-<input type="hidden" name="admin.loginName" value="admin">
 #{layout_operate.textField name:'supplier.fullName', value:supplier?.fullName, required:true/}
 #{layout_operate.textField name:'supplier.domainName', value:supplier?.domainName, note:'.uhuila.net',required:true/}
-#{layout_operate.fileField name:'image'/}
+*{#{layout_operate.fileField name:'image'/}}*
+#{layout_operate.textField name:'supplier.userName', value:supplier?.userName, required:true/}
+#{layout_operate.textField name:'supplier.position', value:supplier?.position, required:true/}
+#{layout_operate.textField name:'supplier.mobile', value:supplier?.mobile,note:'(负责人手机和电话至少填写一项！)'/}
+#{layout_operate.textField name:'supplier.phone', value:supplier?.phone/}
+#{if !"edit".equals(action)}
+#{layout_operate.textField name:'admin.loginName', value:admin?.loginName, required:true/}
+#{/if}
+#{else}
+#{layout_operate.textField name:'admin.loginName', value:admin?.loginName, required:true,disabled:true/}
+<input type="hidden" name="admin.loginName" value="${admin?.loginName}">
+#{/else}
 #{layout_operate.textField name:'admin.mobile', value:admin?.mobile, required:true/}
-#{if "edit".equals(action)}#{layout_operate.passwordField name:'admin.encryptedPassword', value:""/}#{/if}
-#{else}#{layout_operate.passwordField name:'admin.encryptedPassword', value:"",required:true/}#{/else}
+*{#{if "edit".equals(action)}#{layout_operate.passwordField name:'admin.encryptedPassword', value:""/}#{/if}
+#{else}#{layout_operate.passwordField name:'admin.encryptedPassword', value:"",required:true/}#{/else}}*
 *{#{layout_operate.passwordField name:'admin.encryptedPassword1', value="", required:true/}}*
-#{layout_operate.textareaField name:'supplier.description', value:supplier?.description/}
+#{layout_operate.textareaField name:'supplier.remark', value:supplier?.remark/}
 <div class="form-actions">
     <button class="btn btn-primary" id="save" type="submit">保存</button>
 #{if "edit".equals(action)}
@@ -16,7 +26,7 @@
 </div>
 
 *{<div class="control-group">}*
-*{<label for="fullName" class="control-label"><span style="color: red; ">*</span>商户名称</label>}*
+*{<label for="fullName" class="control-label"><span style="color: red; ">*</span>公司名称</label>}*
 
 *{<div class="controls">}*
 *{<input type="text" id="fullName" name="supplier.fullName" class="input-xlarge" value="${supplier?.fullName}"/>}*

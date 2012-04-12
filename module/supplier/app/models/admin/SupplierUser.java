@@ -5,6 +5,7 @@ import models.supplier.Supplier;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
+import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.libs.Images;
@@ -22,9 +23,15 @@ public class SupplierUser extends Model {
 	@Required
 	public String loginName;
 
-	@Required
 	@Mobile
 	public String mobile;
+	
+	   /**
+     * 负责人联系电话
+     */
+    @MaxSize(50)
+    public String phone;
+    
 
 	@Column(name = "encrypted_password")
 	@Required
@@ -48,6 +55,7 @@ public class SupplierUser extends Model {
 	@Column(name = "updated_at")
 	public Date updatedAt;
 
+	@Required
 	@Column(name = "user_name")
 	public String userName;
 	

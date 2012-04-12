@@ -5,11 +5,14 @@ import com.uhuila.common.constants.ImageSize;
 import com.uhuila.common.util.PathUtil;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
+import play.data.validation.Match;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
+import play.modules.view_ext.annotation.Mobile;
 
 import javax.persistence.*;
+
 import java.util.Date;
 import java.util.List;
 
@@ -29,12 +32,37 @@ public class Supplier extends Model {
     @Column(name = "domain_name")
     public String domainName;
     /**
-     * 商户名称
+     * 公司名称
      */
     @Required
     @MaxSize(50)
     @Column(name = "full_name")
     public String fullName;
+    
+    /**
+     * 职务
+     */
+    @Required
+    @MaxSize(100)
+    public String position;
+    
+
+    @Mobile
+	public String mobile;
+	
+	   /**
+     * 负责人联系电话
+     */
+    @MaxSize(50)
+    public String phone;
+    
+	@Required
+	@Column(name = "user_name")
+	public String userName;
+	
+	@Column(name = "login_name")
+	public String loginName;
+	
     /**
      * 创建时间
      */
@@ -57,7 +85,7 @@ public class Supplier extends Model {
     /**
      * 描述
      */
-    public String description;
+    public String remark;
     /**
      * 删除状态
      */
@@ -101,7 +129,7 @@ public class Supplier extends Model {
         }
         sp.domainName = supplier.domainName;
         sp.fullName = supplier.fullName;
-        sp.description = supplier.description;
+        sp.remark = supplier.remark;
         sp.updatedAt = new Date();
         sp.save();
     }

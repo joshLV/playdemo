@@ -9,6 +9,9 @@ open('/suppliers/${play.test.Fixtures.idCache.get("models.supplier.Supplier-Supp
 verifyTitle('修改商户')
 type('id=supplier_fullName', '测试商户1')
 type('id=supplier_domainName', 'test1')
-type('id=supplier_description', 'description1')
+type('id=supplier_remark', 'remark1')
+type('id=supplier_mobile', '13645687979')
+type('id=supplier_phone', '02112345678')
+type('id=supplier_userName', 'wadawsd')
 clickAndWait('id=save')
 #{/selenium}
