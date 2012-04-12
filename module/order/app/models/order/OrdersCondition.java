@@ -1,6 +1,8 @@
 package models.order;
 
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.resale.Resaler;
@@ -26,7 +28,7 @@ public class OrdersCondition {
 	public String payMethod;
 	public String searchKey;
 	public String searchItems;
-	
+
 	/**
 	 *
 	 * @param order 订单信息
@@ -37,12 +39,11 @@ public class OrdersCondition {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" o.deleted = :deleted");
 		paramsMap.put("deleted", DeletedStatus.UN_DELETED);
-		
+
 		if (supplierId != null) {
 			sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.supplierId = :supplierId)");
 			paramsMap.put("supplierId", supplierId);
 		}
-		
 
 		if (createdAtBegin != null) {
 			sql.append(" and o.createdAt >= :createdAtBegin");
@@ -50,7 +51,7 @@ public class OrdersCondition {
 		}
 		if (createdAtEnd != null) {
 			sql.append(" and o.createdAt <= :createdAtEnd");
-			paramsMap.put("createdAtEnd", createdAtEnd);
+			paramsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
 		}
 		if (refundAtBegin != null) {
 			sql.append(" and o.refundAt >= :refundAtBegin");
@@ -58,7 +59,7 @@ public class OrdersCondition {
 		}
 		if (refundAtEnd != null) {
 			sql.append(" and o.refundAt <= :refundAtEnd");
-			paramsMap.put("refundAtEnd", refundAtEnd);
+			paramsMap.put("refundAtEnd", DateUtil.getEndOfDay(refundAtEnd));
 		}
 		if (status != null) {
 			sql.append(" and o.status = :status");
@@ -97,15 +98,14 @@ public class OrdersCondition {
 	 * @param goodsName 商品名
 	 * @return sql 查询条件
 	 */
-	public String getFilter(User user, Date createdAtBegin, Date createdAtEnd,
-			OrderStatus status, String goodsName) {
+	public String getFilter(User user) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" o.deleted = :deleted");
 		paramsMap.put("deleted", DeletedStatus.UN_DELETED);
 		if (user != null) {
 			sql.append(" and o.userId = :user and o.userType = :userType");
 			paramsMap.put("user", user.getId());
-            paramsMap.put("userType", AccountType.CONSUMER);
+			paramsMap.put("userType", AccountType.CONSUMER);
 		}
 		if (createdAtBegin != null) {
 			sql.append(" and o.createdAt >= :createdAtBegin");
@@ -113,7 +113,7 @@ public class OrdersCondition {
 		}
 		if (createdAtEnd != null) {
 			sql.append(" and o.createdAt <= :createdAtEnd");
-			paramsMap.put("createdAtEnd", createdAtEnd);
+			paramsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
 		}
 		if (status != null) {
 			sql.append(" and o.status = :status");
@@ -128,7 +128,7 @@ public class OrdersCondition {
 
 		return sql.toString();
 	}
-	
+
 	/**
 	 * @param resaler 用户信息
 	 * @return sql 查询条件
@@ -148,7 +148,7 @@ public class OrdersCondition {
 		}
 		if (createdAtEnd != null) {
 			sql.append(" and o.createdAt <= :createdAtEnd");
-			paramsMap.put("createdAtEnd", createdAtEnd);
+			paramsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
 		}
 		if (status != null) {
 			sql.append(" and o.status = :status");

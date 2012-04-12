@@ -160,46 +160,46 @@ public class Order extends Model {
 		this.updatedAt = new Date();
 	}
 
-    /**
-     * 设置订单地址
-     *
-     * @param address 地址
-     */
-    public void setAddress(Address address){
-        if (address != null) {
-            this.receiverAddress = address.getFullAddress();
-            this.receiverMobile = address.mobile;
-            this.receiverName = address.name;
-            this.receiverPhone = address.getPhone();
-            this.postcode = address.postcode;
-        }
+	/**
+	 * 设置订单地址
+	 *
+	 * @param address 地址
+	 */
+	public void setAddress(Address address){
+		if (address != null) {
+			this.receiverAddress = address.getFullAddress();
+			this.receiverMobile = address.mobile;
+			this.receiverName = address.name;
+			this.receiverPhone = address.getPhone();
+			this.postcode = address.postcode;
+		}
 
-    }
-    
-    public OrderItems addOrderItem(Goods goods, long number, String mobile) throws NotEnoughInventoryException{
-        OrderItems orderItems = null;
-        if(number > 0 && goods != null){
-            checkInventory(goods, number);
-            orderItems = new OrderItems(this, goods, number, mobile);
-            this.orderItems.add(orderItems);
-            this.amount = this.amount.add(goods.salePrice.multiply(new BigDecimal(String.valueOf(number))));
-            this.needPay = amount;
-        }
-        return orderItems;
-    }
-    
-    public OrderItems addOrderItem(Goods goods, long number, String mobile, BigDecimal resalerPrice) throws NotEnoughInventoryException{
-        OrderItems orderItems = addOrderItem(goods, number, mobile);
-        if(orderItems != null){
-            orderItems.resalerPrice = resalerPrice;
-        }
-        return orderItems;
-    }
-    
-    public void addFreight(){
-        this.amount = this.amount.add(new BigDecimal("5"));
-        this.needPay = amount;
-    }
+	}
+
+	public OrderItems addOrderItem(Goods goods, long number, String mobile) throws NotEnoughInventoryException{
+		OrderItems orderItems = null;
+		if(number > 0 && goods != null){
+			checkInventory(goods, number);
+			orderItems = new OrderItems(this, goods, number, mobile);
+			this.orderItems.add(orderItems);
+			this.amount = this.amount.add(goods.salePrice.multiply(new BigDecimal(String.valueOf(number))));
+			this.needPay = amount;
+		}
+		return orderItems;
+	}
+
+	public OrderItems addOrderItem(Goods goods, long number, String mobile, BigDecimal resalerPrice) throws NotEnoughInventoryException{
+		OrderItems orderItems = addOrderItem(goods, number, mobile);
+		if(orderItems != null){
+			orderItems.resalerPrice = resalerPrice;
+		}
+		return orderItems;
+	}
+
+	public void addFreight(){
+		this.amount = this.amount.add(new BigDecimal("5"));
+		this.needPay = amount;
+	}
 
 
 	public void setUser(long userId, AccountType accountType){
@@ -266,20 +266,20 @@ public class Order extends Model {
 
 	public void createAndUpdateInventory() {
 		save();
-        boolean haveFreight = false;
+		boolean haveFreight = false;
 		for (OrderItems orderItem : orderItems) {
 			orderItem.goods.baseSale -= orderItem.buyNumber;
 			orderItem.goods.saleCount += orderItem.buyNumber;
 			orderItem.save();
-            if(orderItem.goods.materialType == MaterialType.REAL){
-                haveFreight = true;
-            }
+			if(orderItem.goods.materialType == MaterialType.REAL){
+				haveFreight = true;
+			}
 		}
 
-        if(haveFreight){
-            addFreight();
-            save();
-        }
+		if(haveFreight){
+			addFreight();
+			save();
+		}
 	}
 
 	/**
@@ -315,21 +315,15 @@ public class Order extends Model {
 	 * 会员中心订单查询
 	 *
 	 * @param user           用户信息
-	 * @param createdAtBegin 下单开始时间
-	 * @param createdAtEnd   下单结束时间
-	 * @param status         状态
-	 * @param goodsName      商品名
+	 * @param condition      查询条件
 	 * @param pageNumber     第几页
 	 * @param pageSize       每页记录
 	 * @return ordersPage 订单信息
 	 */
-	public static JPAExtPaginator<Order> findMyOrders(User user, Date createdAtBegin, Date createdAtEnd,
-			OrderStatus status, String goodsName,
+	public static JPAExtPaginator<Order> findMyOrders(User user,OrdersCondition condition,
 			int pageNumber, int pageSize) {
-		OrdersCondition condition = new OrdersCondition();
 		JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
-		("Order o", "o", Order.class, condition.getFilter(user, createdAtBegin, createdAtEnd,
-				status, goodsName),
+		("Order o", "o", Order.class, condition.getFilter(user),
 				condition.paramsMap)
 				.orderBy(condition.getOrderByExpress());
 		orderPage.setPageNumber(pageNumber);
@@ -401,7 +395,7 @@ public class Order extends Model {
 		//上月成功订单笔数
 		Map lastMonthMap = ResaleUtil.findLastMonth();
 		condition = getCondition(resaler,lastMonthMap,OrderStatus.PAID);
-		
+
 		query = entityManager.createQuery("SELECT o FROM Order o"+condition); 
 		orderlist = query.getResultList();
 		totalMap.put("lastPaidTotal",orderlist.size());

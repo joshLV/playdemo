@@ -1,14 +1,18 @@
 package unit;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import models.accounts.AccountType;
 import models.consumer.User;
+import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
+import models.order.OrdersCondition;
 import models.sales.Goods;
 
 import org.junit.Before;
@@ -20,7 +24,7 @@ import play.test.UnitTest;
 
 
 public class ECouponUnitTest extends UnitTest {
-
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	@Before
 	public void loadData() {
 		Fixtures.delete(User.class);
@@ -33,6 +37,15 @@ public class ECouponUnitTest extends UnitTest {
 		Fixtures.loadModels("fixture/goods.yml");
 		Fixtures.loadModels("fixture/orders.yml");
 		Fixtures.loadModels("fixture/orderItems.yml");
+		
+		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
+		Long orderId = (Long)play.test.Fixtures.idCache.get("models.order.Order-order1");
+		Order order = models.order.Order.findById(orderId);
+		order.setUser(userId, AccountType.CONSUMER);
+
+		orderId = (Long)play.test.Fixtures.idCache.get("models.order.Order-order2");
+		order = models.order.Order.findById(orderId);
+		order.setUser(userId, AccountType.CONSUMER);
 	}
 
 	/**
@@ -40,16 +53,21 @@ public class ECouponUnitTest extends UnitTest {
 	 */
 	@Test
 	public void testOrder(){
-		User user = new User();
-		user.id=2l;
-		Date createdAtBegin=new Date();
-		Date createdAtEnd=new Date();
-		OrderStatus status= null;
-		String goodsName="";
+		OrdersCondition condition = new OrdersCondition();
+		try {
+			condition.createdAtBegin = sdf.parse("2012-03-01");
+			condition.createdAtEnd = new Date();
+			condition.status = OrderStatus.UNPAID;
+			condition.goodsName = "哈根";
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		int pageNumber =1;
 		int pageSize =15;
-		JPAExtPaginator<Order> list = Order.findMyOrders(user, createdAtBegin, createdAtEnd, status, goodsName,pageNumber, pageSize);
-		assertEquals(0,list.size());
+		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
+		User user = User.findById(userId);
+		JPAExtPaginator<Order> list = Order.findMyOrders(user, condition,pageNumber, pageSize);
+		assertEquals(1,list.size());
 
 	}
 
@@ -58,16 +76,21 @@ public class ECouponUnitTest extends UnitTest {
 	 */
 	@Test
 	public void testQueryCoupons(){
-		User user = new User();
-		user.id=2l;
-		Date createdAtBegin=new Date();
-		Date createdAtEnd=new Date();
-		String goodsName="";
+		CouponsCondition condition = new CouponsCondition();
+		try {
+			condition.createdAtBegin = sdf.parse("2012-03-01");
+			condition.createdAtEnd = new Date();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		condition.status = ECouponStatus.UNCONSUMED;
+		condition.goodsName = "哈根";
+		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
 		int pageNumber =1;
 		int pageSize =15;
-		ECouponStatus status =null;
-		JPAExtPaginator<ECoupon> list = ECoupon.userCouponsQuery(user.getId(), AccountType.CONSUMER, createdAtBegin,createdAtEnd, status, goodsName, null, null, pageNumber, pageSize);
-		assertEquals(0,list.size());
+		JPAExtPaginator<ECoupon> list = ECoupon.userCouponsQuery(condition,userId, AccountType.CONSUMER,pageNumber, pageSize);
+		assertEquals(1,list.size());
 
 	}
 
@@ -80,24 +103,15 @@ public class ECouponUnitTest extends UnitTest {
 		Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
 		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
 
-
-        Long orderId = (Long)play.test.Fixtures.idCache.get("models.order.Order-order1");
-        Order order = models.order.Order.findById(orderId);
-        order.setUser(orderId, AccountType.CONSUMER);
-
-        orderId = (Long)play.test.Fixtures.idCache.get("models.order.Order-order2");
-        order = models.order.Order.findById(orderId);
-        order.setUser(orderId, AccountType.CONSUMER);
-
 		ECoupon eCoupon=ECoupon.findById(id);
 		eCoupon.order.userId = userId;
 		eCoupon.save();
-		
+
 		String applyNote="不想要了";
 		String ret = ECoupon.applyRefund(null,userId,applyNote);
 		assertEquals("{\"error\":\"no such eCoupon\"}",ret);
-		
-		 ret = ECoupon.applyRefund(eCoupon,userId,applyNote);
+
+		ret = ECoupon.applyRefund(eCoupon,userId,applyNote);
 		assertEquals("{\"error\":\"can not get the trade bill\"}",ret);
 
 

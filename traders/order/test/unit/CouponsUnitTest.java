@@ -1,8 +1,15 @@
 package unit;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.consumer.User;
+import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
@@ -11,15 +18,13 @@ import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 public class CouponsUnitTest extends UnitTest {
 	@Before
@@ -36,7 +41,7 @@ public class CouponsUnitTest extends UnitTest {
 		Fixtures.loadModels("fixture/goods_base.yml","fixture/user.yml", 
 				"fixture/goods.yml","fixture/accounts.yml",
 				"fixture/orders.yml",
-                "fixture/orderItems.yml");
+				"fixture/orderItems.yml");
 	}
 
 	/**
@@ -58,8 +63,8 @@ public class CouponsUnitTest extends UnitTest {
 	public void testUpdate() {
 		String eCouponSn = "002";
 		Long supplierId = 1l;
-        ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
-        assertNotNull(eCoupon);
+		ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
+		assertNotNull(eCoupon);
 		eCoupon.consumed();
 		List<ECoupon> couponList= ECoupon.find("byECouponSn", eCouponSn).fetch();
 		assertEquals(couponList.get(0).status ,ECouponStatus.CONSUMED);
@@ -79,25 +84,30 @@ public class CouponsUnitTest extends UnitTest {
 		assertEquals(2, list.size());
 
 	}
-	
+
 	/**
 	 * 测试用户中心券列表
 	 */
 	@Test
 	public void testUserQueryCoupons(){
-		User user = new User();
-		user.id=2l;
-		Date createdAtBegin=new Date();
-		Date createdAtEnd=new Date();
-		String goodsName="";
+		CouponsCondition condition = new CouponsCondition();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			condition.createdAtBegin = sdf.parse("2012-03-01");
+			condition.createdAtEnd = new Date();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		condition.status = ECouponStatus.UNCONSUMED;
+		condition.goodsName = "";
+		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
 		int pageNumber =1;
 		int pageSize =15;
-		ECouponStatus status =null;
-		JPAExtPaginator<ECoupon> list = ECoupon.userCouponsQuery(user.getId(), AccountType.CONSUMER,createdAtBegin,createdAtEnd, status, goodsName,null, null,pageNumber, pageSize);
+		JPAExtPaginator<ECoupon> list = ECoupon.userCouponsQuery(condition,userId, AccountType.CONSUMER,pageNumber, pageSize);
 		assertEquals(0,list.size());
 
 	}
-	
+
 	/**
 	 * 测试用户中心券列表
 	 */

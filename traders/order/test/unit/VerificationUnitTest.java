@@ -109,21 +109,4 @@ public class VerificationUnitTest extends UnitTest {
 
 	}
 
-	/**
-	 * 测试用户中心券列表
-	 */
-	@Test
-	public void testUserQueryCoupons(){
-		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
-		User user = User.findById(userId);
-		Date createdAtBegin=new Date();
-		Date createdAtEnd=new Date();
-		String goodsName="";
-		int pageNumber =1;
-		int pageSize =15;
-		ECouponStatus status =null;
-		JPAExtPaginator<ECoupon> list = ECoupon.userCouponsQuery(user.getId(), AccountType.CONSUMER,createdAtBegin,createdAtEnd, status, goodsName,null, null,pageNumber, pageSize);
-		Assert.assertEquals(0,list.size());
-
-	}
 }

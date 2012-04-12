@@ -47,7 +47,7 @@ import play.modules.paginate.JPAExtPaginator;
 @Entity
 @Table(name = "e_coupon")
 public class ECoupon extends Model {
-	private static String dateFormat = "yyyyMMddhhmmssSSS";
+	private static String chars = "0123456789";
 	private static java.text.DateFormat df = new java.text.SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss");
 
@@ -112,18 +112,24 @@ public class ECoupon extends Model {
 		this.consumedAt = null;
 		this.refundAt = null;
 		this.status = ECouponStatus.UNCONSUMED;
-		this.eCouponSn = generateSerialNumber();
+		this.eCouponSn = generateSerialNumber(10);
 		this.orderItems = orderItems;
 	}
 
 	public ECoupon() {
 	}
 
-	private String generateSerialNumber() {
-		int random = new Random().nextInt() % 100;
-		return DateFormatUtils.format(new Date(), dateFormat) + Math.abs(random);
+	private String generateSerialNumber(int length) {
+		char[] charsArray = chars.toCharArray();
+		Random random = new Random(System.currentTimeMillis());
+		StringBuffer sb = new StringBuffer(length);
+		for (int i = 0; i < length; i++) {
+			sb.append(charsArray[random.nextInt(charsArray.length)]);
+		}
+		String text = sb.toString();
+		return text;
 	}
-
+	
 	/**
 	 * 根据页面录入券号查询对应信息
 	 *
@@ -242,21 +248,15 @@ public class ECoupon extends Model {
 	/**
 	 * 会员中心 券号列表
 	 *
+	 * @param condition      条件
 	 * @param user           用户信息
-	 * @param createdAtBegin 开始日
-	 * @param createdAtEnd   结束日
-	 * @param status         状态
-	 * @param goodsName      商品名称
 	 * @param pageNumber     页数
 	 * @param pageSize       记录数
 	 * @return couponsPage 券记录
 	 */
-	public static JPAExtPaginator<ECoupon> userCouponsQuery(Long userId, AccountType accountType, Date createdAtBegin, Date createdAtEnd,
-			ECouponStatus status, String goodsName, String orderNumber, String phone, int pageNumber, int pageSize) {
-		CouponsCondition condition = new CouponsCondition();
-
+	public static JPAExtPaginator<ECoupon> userCouponsQuery(CouponsCondition condition,Long userId,AccountType accountType, int pageNumber, int pageSize) {
 		JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
-		("ECoupon e", "e", ECoupon.class, condition.getFilter(userId, accountType, createdAtBegin, createdAtEnd, status, goodsName, orderNumber, phone),
+		("ECoupon e", "e", ECoupon.class, condition.getFilter(userId, accountType),
 				condition.couponsMap).orderBy(condition.getOrderByExpress());
 
 		couponsPage.setPageNumber(pageNumber);
@@ -317,7 +317,7 @@ public class ECoupon extends Model {
 	}
 
 	public String getEcouponSn(){
-		String sn = eCouponSn.substring(0, 4)+ "**********"+eCouponSn.substring(14);
+		String sn = "******"+eCouponSn.substring(6);
 		return sn;
 	}
 

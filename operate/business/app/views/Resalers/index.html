@@ -49,7 +49,8 @@
             <td>${resaler.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
             <td>
             #{if !models.resale.ResalerStatus.FREEZE.equals(resaler.status)}
-            <a href="@{Resalers.detail(resaler.id,'0')}">修改</a>/
+            <a href="@{Resalers.detail(resaler.id,'0')}">
+             #{if "PENDING".equals(resaler?.status.toString()) ||"UNAPPROVED".equals(resaler?.status.toString())}审核#{/if} #{else}修改#{/else}</a>/
              <a href="@{Resalers.detail(resaler.id,'1')}">查看</a>
              #{/if}
               #{if models.resale.ResalerStatus.APPROVED.equals(resaler.status)}

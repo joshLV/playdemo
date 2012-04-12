@@ -152,13 +152,13 @@ $(window).load(function () {
       <td width="12">&nbsp;</td>
       <td width="61" align="right">成交时间：</td>
       <td width="259" height="35">
-      <input class="short_input Wdate" type="text" name="createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
-     <input class="short_input Wdate" type="text" name="createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
+      <input class="short_input Wdate" type="text" name="condition.createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
+     <input class="short_input Wdate" type="text" name="condition.createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
      </td>
       <td width="77">订单状态：</td>
       <td width="353">
        <div class="pos_abs">
-        #{select 'status', id:'status', class:'dingdan_stauts_bg', value:status}
+        #{select 'condition.status', id:'status', class:'dingdan_stauts_bg', value:status}
                #{option ""}不限#{/option}
                #{option "DEALING"}&{'coupon.DEALING'}#{/option}
                #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
@@ -172,7 +172,7 @@ $(window).load(function () {
      <tr>
       <td>&nbsp;</td>
       <td align="right">商品名称：</td>
-      <td height="35"><label> <input class="long_input" type="text" name="goodsName" value="${goodsName}"/>
+      <td height="35"><label> <input class="long_input" type="text" name="condition.goodsName" value="${goodsName}"/>
       </label></td>
       <td colspan="2" align="left" valign="middle"><a class="seach_bg" href="#" id="search">搜素</a></td>
      </tr>

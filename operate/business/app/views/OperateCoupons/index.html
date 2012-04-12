@@ -27,16 +27,16 @@
 
     #{paginate.list items:couponsList, as:'coupon'}
     <tr>
-    <td>${coupon.eCouponSn}</td>
-    <td>${coupon.order.orderNumber}</td>
-     <td>${coupon.goods.name}</td>
-     <td>${coupon.salePrice}</td>
-     <td>${coupon.goods.effectiveAt ?.format()}/
-         ${coupon.goods.expireAt ?.format()}</td>
-     <td>${coupon.consumedAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
-     <td>${coupon.refundAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
-     <td>${coupon.salePrice}</td>
-     <td>&{'coupon.'+coupon.status}</td>
+    <td>${coupon?.getEcouponSn()}</td>
+    <td>${coupon?.order.orderNumber}</td>
+     <td>${coupon?.goods?.name}</td>
+     <td>${coupon?.salePrice}</td>
+     <td>${coupon?.goods.effectiveAt ?.format()}/
+         ${coupon?.goods.expireAt ?.format()}</td>
+     <td>${coupon?.consumedAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
+     <td>${coupon?.refundAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
+     <td>${coupon?.salePrice}</td>
+     <td>&{'coupon.'+coupon?.status}</td>
     </tr>
     #{/paginate.list}
 

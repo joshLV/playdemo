@@ -12,10 +12,20 @@ import models.consumer.User;
 import org.apache.commons.lang.StringUtils;
 
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 
 public class CouponsCondition {
     public Map<String, Object> couponsMap = new HashMap<>();
-
+    public Date createdAtBegin; 
+	public Date createdAtEnd; 
+	public Date refundAtBegin; 
+	public Date refundAtEnd; 
+	public ECouponStatus status;
+	public String goodsName;
+	public String orderNumber;
+	public String phone;
+	 
+	
     /**
      * @return orderBySql 排序字段
      */
@@ -35,8 +45,7 @@ public class CouponsCondition {
      * @param goodsName      商品名称
      * @return sql 查询条件
      */
-    public String getFilter(Long userId, AccountType accountType, Date createdAtBegin, Date createdAtEnd,
-                            ECouponStatus status, String goodsName, String orderNumber, String phone) {
+    public String getFilter(Long userId, AccountType accountType) {
         StringBuilder sql = new StringBuilder();
         sql.append(" 1=1 ");
         if (userId != null && accountType != null) {
@@ -52,7 +61,7 @@ public class CouponsCondition {
 
         if (createdAtEnd != null) {
             sql.append(" and e.createdAt <= :createdAtEnd");
-            couponsMap.put("createdAtEnd", createdAtEnd);
+            couponsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
         }
 
         if (StringUtils.isNotBlank(goodsName)) {

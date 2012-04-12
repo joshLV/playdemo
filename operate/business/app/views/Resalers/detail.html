@@ -93,7 +93,9 @@
         <form class="form-horizontal" id="checkFrm" method="post">
         <div class="form-actions">
         #{if !"1".equals(flag)}
-            <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','APPROVED')" id="approved" type="button">修改</button>
+            <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','APPROVED')" id="approved" type="button">
+             #{if "PENDING".equals(resaler?.status.toString()) ||"UNAPPROVED".equals(resaler?.status.toString()) }审核#{/if} #{else}修改#{/else}
+            </button>
         #{/if}    
         #{if !"UNAPPROVED".equals(resaler?.status.toString()) && !"APPROVED".equals(resaler?.status.toString())}
             <button class="btn btn-primary" onclick="checkResaler('${resaler.id}','UNAPPROVED',0)" id="unapproved" type="button">审核未通过</button>

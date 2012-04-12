@@ -21,10 +21,10 @@
 
     <form class="form-horizontal" id="couponsFrm" action="@{Coupons.index()}" method="GET">
         成交时间：
-      <input class="short_input Wdate" type="text" name="createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
-     <input class="short_input Wdate" type="text" name="createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" /><br/>
+      <input class="short_input Wdate" type="text" name="condition.createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
+     <input class="short_input Wdate" type="text" name="condition.createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" /><br/>
         订单状态：
-        #{select 'status', id:'status', class:'dingdan_stauts_bg', value:status}
+        #{select 'condition.status', id:'status', class:'dingdan_stauts_bg', value:status}
                #{option ""}不限#{/option}
                #{option "DEALING"}&{'coupon.DEALING'}#{/option}
                #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
@@ -34,12 +34,9 @@
          #{/select}
          <br/>
         商品名称：
-        <input class="long_input" type="text" name="goodsName" value="${goodsName}"/>
+        <input class="long_input" type="text" name="condition.goodsName" value="${goodsName}"/>
         <input type="submit" value="搜索"/>
     </form>
-
-
-
 
     <table  class="table table-striped table-bordered table-condensed">
         <thead>

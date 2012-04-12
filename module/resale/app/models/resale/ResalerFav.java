@@ -16,6 +16,8 @@ import models.sales.Goods;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.uhuila.common.util.DateUtil;
+
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
@@ -73,7 +75,7 @@ public class ResalerFav extends Model {
 		}
 		if (createdAtEnd != null) {
 			sql.append(" and f.createdAt <= :createdAtEnd");
-			paramsMap.put("createdAtEnd", createdAtEnd);
+			paramsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
 		}
 //		if (status != null) {
 //			sql.append(" and f.status = :status");

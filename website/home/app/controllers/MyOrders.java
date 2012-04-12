@@ -1,12 +1,15 @@
 package controllers;
 
-import java.util.Date;
 import java.util.List;
+
 import models.consumer.User;
+import models.order.CouponsCondition;
 import models.order.Order;
 import models.order.OrderItems;
-import models.order.OrderStatus;
+import models.order.OrdersCondition;
+
 import org.apache.commons.lang.StringUtils;
+
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
@@ -21,18 +24,17 @@ public class MyOrders extends Controller {
 	/**
 	 * 我的订单
 	 */
-	public static void index(Date createdAtBegin, Date createdAtEnd, OrderStatus status, String goodsName) {
+	public static void index(OrdersCondition condition) {
 		User user = SecureCAS.getUser();
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-
-		JPAExtPaginator<models.order.Order>  orderList = Order.findMyOrders(user, createdAtBegin, createdAtEnd, status, goodsName,pageNumber, PAGE_SIZE);
+		if (condition == null) {
+			condition = new OrdersCondition();
+		}
+		JPAExtPaginator<models.order.Order>  orderList = Order.findMyOrders(user, condition,pageNumber, PAGE_SIZE);
 
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders");
-		renderArgs.put("createdAtBegin", createdAtBegin);
-		renderArgs.put("createdAtEnd", createdAtEnd);
-		renderArgs.put("status", status);
-		renderArgs.put("goodsName", goodsName);
+		renderCond(condition);
 		render(orderList, breadcrumbs);
 	}
 
@@ -54,5 +56,17 @@ public class MyOrders extends Controller {
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "订单详情", "/orders/" + id);
 		render(order, orderItems,breadcrumbs);
 	}
-	
+
+	/**
+	 * 向页面设置选择信息
+	 * 
+	 * @param condition 页面设置选择信息
+	 */
+	private static void renderCond(OrdersCondition condition) {
+		renderArgs.put("createdAtBegin", condition.createdAtBegin);
+		renderArgs.put("createdAtEnd", condition.createdAtEnd);
+		renderArgs.put("status", condition.status);
+		renderArgs.put("goodsName", condition.goodsName);
+	}
+
 }
