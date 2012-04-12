@@ -87,7 +87,7 @@ end
 #revision=512
 cmd =<<END
   cd #{current_dir}/#{dir}
-  find . -name '[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*' -exec rm '{}' \;
+  find . -name "[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*" -exec rm "{}" \;
   #{play_home}play clean
   #{play_home}play deps --forProd --forceCopy --%prod
   rm -f conf/version.conf
