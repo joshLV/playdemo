@@ -1,39 +1,19 @@
 package models.admin;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-
+import com.uhuila.common.constants.DeletedStatus;
 import models.supplier.Supplier;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-
 import play.Logger;
-import play.data.validation.Match;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
+import play.modules.view_ext.annotation.Mobile;
 import play.mvc.Http.Request;
 
-import com.uhuila.common.constants.DeletedStatus;
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
 @Table(name = "supplier_users")
@@ -43,7 +23,7 @@ public class SupplierUser extends Model {
 	public String loginName;
 
 	@Required
-	@Match(value = "^1[3|4|5|8][0-9]\\d{4,8}$", message = "手机格式不对！")
+	@Mobile
 	public String mobile;
 
 	@Column(name = "encrypted_password")

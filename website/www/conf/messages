@@ -4,7 +4,9 @@ play-paginate.next=下一页&nbsp;&rsaquo;
 play-paginate.last=尾页&nbsp;&raquo;
 
 validation.email=邮箱格式不对！
+validation.invalid=无效的%s!
 validation.required=请输入%s!
+
 user.loginName=邮箱
 user.mobile=手机
 user.password=密码

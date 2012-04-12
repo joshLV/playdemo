@@ -1,6 +1,7 @@
 package models.sales;
 
 import models.resale.ResalerLevel;
+import play.data.validation.Max;
 import play.data.validation.Min;
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -18,6 +19,7 @@ public class GoodsLevelPrice extends Model {
     @Enumerated(EnumType.STRING)
     public ResalerLevel level;
     @Required
+    @Max(999999)
     @Min(0.01)
     @Money
     public BigDecimal price;

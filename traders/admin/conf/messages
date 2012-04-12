@@ -7,4 +7,5 @@ play-paginate.next=下一页&nbsp;&rsaquo;
 play-paginate.last=尾页&nbsp;&raquo;
 
 validation.required=请输入%s!
+validation.invalid=无效的%s!
 supplierUser.encryptedPassword=密码

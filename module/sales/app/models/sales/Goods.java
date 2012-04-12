@@ -40,7 +40,8 @@ public class Goods extends Model {
      * 商户填写的商品市场价
      */
     @Required
-    @Min(value = 0.01)
+    @Min(0.01)
+    @Max(999999)
     @Money
     @Column(name = "face_value")
     public BigDecimal faceValue;
@@ -49,7 +50,8 @@ public class Goods extends Model {
      * 商户填写的进货价，采购价
      */
     @Required
-    @Min(value = 0)
+    @Min(0)
+    @Max(999999)
     @Money
     @Column(name = "original_price")
     public BigDecimal originalPrice;
@@ -57,7 +59,8 @@ public class Goods extends Model {
     /**
      * 运营人员填写的优惠啦网站价格
      */
-    @Min(value = 0)
+    @Min(0)
+    @Max(999999)
     @Money
     @Column(name = "sale_price")
     public BigDecimal salePrice;
@@ -74,13 +77,13 @@ public class Goods extends Model {
     /**
      * 商品编号
      */
-    @MaxSize(value = 30)
+    @MaxSize(30)
     public String no;
     /**
      * 商品名称
      */
     @Required
-    @MaxSize(value = 80)
+    @MaxSize(80)
     public String name;
     /**
      * 所属商户ID
@@ -134,15 +137,15 @@ public class Goods extends Model {
     private Integer discount;
 
     @Required
-    @MinSize(value = 7)
-    @MaxSize(value = 4000)
+    @MinSize(7)
+    @MaxSize(4000)
     @Lob
     private String details;
 
     /**
      * 温馨提示
      */
-    @MaxSize(value = 4000)
+    @MaxSize(4000)
     @Lob
     private String prompt;
 
@@ -155,7 +158,8 @@ public class Goods extends Model {
      * 售出基数
      */
     @Required
-    @Min(value = 0)
+    @Min(0)
+    @Max(999999)
     @Column(name = "base_sale")
     public Long baseSale;
     /**
