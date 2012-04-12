@@ -317,7 +317,10 @@ public class ECoupon extends Model {
 	}
 
 	public String getEcouponSn(){
-		String sn = "******"+eCouponSn.substring(6);
+		if (eCouponSn.length()>6) {
+			eCouponSn = eCouponSn.substring(6);
+		}
+		String sn = "******"+eCouponSn;
 		return sn;
 	}
 
