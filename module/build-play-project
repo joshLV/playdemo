@@ -91,7 +91,7 @@ cmd =<<END
   #{play_home}play clean
   #{play_home}play deps --forProd --forceCopy --%prod
   rm -f conf/version.conf
-  echo "build.time=#{Time.now.strftime("%Y-%m-%d %H:%M")}" >> conf/version.conf
+  echo "build.time=#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}" >> conf/version.conf
   echo "version=$BUILD_VERSION" >> conf/version.conf
   echo "revision=$SVN_REVISION_1" >> conf/version.conf
 END
