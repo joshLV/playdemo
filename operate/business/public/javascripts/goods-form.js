@@ -50,12 +50,15 @@ $(window).load(
         });
         $("#save").click(function () {
             $("#status").val("OFFSALE");
+            $("#form").attr("target","_self");
         });
         $("#onsale").click(function () {
             $("#status").val("ONSALE");
+            $("#form").attr("target","_self");
         });
         $("#preview").click(function () {
             $("#status").val("UNCREATED");
+            $("#form").attr("target", "_blank");
         });
     }
 );

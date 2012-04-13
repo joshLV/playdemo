@@ -311,7 +311,7 @@ public class Goods extends Model {
         }
         if (faceValue != null && salePrice != null && faceValue.compareTo(new BigDecimal(0)) > 0) {
             this.discount = salePrice.divide(faceValue, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(10)).floatValue();
-            if (this.discount>10f){
+            if (this.discount > 10f) {
                 this.discount = 10f;
             }
         } else {
@@ -566,13 +566,11 @@ public class Goods extends Model {
         if (goods.isAllShop) {
             goods.shops = new HashSet<>();
 
-            System.out.println("goods.supplierId:" + goods.supplierId);
-            System.out.println("Shop.findShopBySupplier(goods.supplierId):" + Shop.findShopBySupplier(goods
-                    .supplierId).size());
             goods.shops.addAll(Shop.findShopBySupplier(goods.supplierId));
         }
-
-        if (imageFile == null && id != null) {
+        if (id == null) {
+            goods.imagePath = null;
+        } else if (imageFile == null || imageFile.getName() == null) {
             Goods originalGoods = Goods.findById(id);
             goods.imagePath = originalGoods.imagePath;
         } else {
@@ -639,7 +637,7 @@ public class Goods extends Model {
         return resalePrice;
     }
 
-    public BigDecimal getResalerPriceOfUhuila(){
+    public BigDecimal getResalerPriceOfUhuila() {
         return getResalePrice(ResalerLevel.VIP3);
     }
 

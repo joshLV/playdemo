@@ -12,6 +12,7 @@ import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.data.binding.As;
 import play.data.validation.Required;
 import play.data.validation.Valid;
@@ -41,7 +42,7 @@ import static play.Logger.warn;
 public class OperateGoods extends Controller {
 
     public static int PAGE_SIZE = 15;
-//    public static String WWW_URL = Play.configuration.getProperty("www.url", "");
+    public static String WWW_URL = Play.configuration.getProperty("www.url", "");
 
     /**
      * 展示商品一览页面
@@ -135,7 +136,7 @@ public class OperateGoods extends Controller {
      * 展示添加商品页面
      */
 
-    private static String getPreviewId(Long goodsId, Goods goods, File imagePath) {
+    private static void preview(Long goodsId, Goods goods, File imagePath) {
         String cacheId = "0";
         try {
             cacheId = Goods.preview(goodsId, goods, imagePath, UploadFiles.ROOT_PATH);
@@ -143,8 +144,7 @@ public class OperateGoods extends Controller {
             e.printStackTrace();
             error(500, "goods.image_upload_failed");
         }
-        return cacheId;
-//        redirect("http://" + WWW_URL + "/goods/" + cacheId + "/getPreviewId");
+        redirect("http://" + WWW_URL + "/goods/" + cacheId + "/preview");
     }
 
     /**
@@ -163,7 +163,7 @@ public class OperateGoods extends Controller {
 
         //预览
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            getPreviewId(null, goods, imagePath);
+            preview(null, goods, imagePath);
         }
 
         checkExpireAt(goods);
@@ -317,7 +317,7 @@ public class OperateGoods extends Controller {
 
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            getPreviewId(id, goods, imagePath);
+            preview(id, goods, imagePath);
         }
 
         String supplierUser = OperateRbac.currentUser().loginName;
