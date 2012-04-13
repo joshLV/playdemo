@@ -201,10 +201,10 @@ public class GoodsUnitTest extends UnitTest {
         goods.setLevelPrices(prices);
         List<GoodsLevelPrice> priceList = goods.getLevelPrices();
         assertEquals(4, priceList.size());
-        assertEquals(1, priceList.get(0).getPrice().intValue());
-        assertEquals(1, priceList.get(1).getPrice().intValue());
-        assertEquals(1, priceList.get(2).getPrice().intValue());
-        assertEquals(0, priceList.get(3).getPrice().intValue());
+        assertEquals(1, priceList.get(0).price.intValue());
+        assertEquals(1, priceList.get(1).price.intValue());
+        assertEquals(1, priceList.get(2).price.intValue());
+        assertEquals(0, priceList.get(3).price.intValue());
     }
 
     @Test

@@ -1,5 +1,5 @@
 /**
- * To SupplierGoods/add.html.
+ * To OperateGoods/add.html and edit.html.
  *
  * User: sujie
  * Date: 3/9/12
@@ -50,15 +50,12 @@ $(window).load(
         });
         $("#save").click(function () {
             $("#status").val("OFFSALE");
-            $("#form").attr("target","_self");
         });
         $("#onsale").click(function () {
             $("#status").val("ONSALE");
-            $("#form").attr("target","_self");
         });
         $("#preview").click(function () {
             $("#status").val("UNCREATED");
-            $("#form").attr("target", "_blank");
         });
     }
 );

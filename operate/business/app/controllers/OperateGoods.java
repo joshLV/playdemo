@@ -12,7 +12,6 @@ import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import play.Play;
 import play.data.binding.As;
 import play.data.validation.Required;
 import play.data.validation.Valid;
@@ -42,7 +41,7 @@ import static play.Logger.warn;
 public class OperateGoods extends Controller {
 
     public static int PAGE_SIZE = 15;
-    public static String WWW_URL = Play.configuration.getProperty("www.url", "");
+//    public static String WWW_URL = Play.configuration.getProperty("www.url", "");
 
     /**
      * 展示商品一览页面
@@ -136,7 +135,7 @@ public class OperateGoods extends Controller {
      * 展示添加商品页面
      */
 
-    private static void preview(Long goodsId, Goods goods, File imagePath) {
+    private static String getPreviewId(Long goodsId, Goods goods, File imagePath) {
         String cacheId = "0";
         try {
             cacheId = Goods.preview(goodsId, goods, imagePath, UploadFiles.ROOT_PATH);
@@ -144,7 +143,8 @@ public class OperateGoods extends Controller {
             e.printStackTrace();
             error(500, "goods.image_upload_failed");
         }
-        redirect("http://" + WWW_URL + "/goods/" + cacheId + "/preview");
+        return cacheId;
+//        redirect("http://" + WWW_URL + "/goods/" + cacheId + "/getPreviewId");
     }
 
     /**
@@ -161,6 +161,11 @@ public class OperateGoods extends Controller {
 
         goods.setLevelPrices(levelPrices);
 
+        //预览
+        if (GoodsStatus.UNCREATED.equals(goods.status)) {
+            getPreviewId(null, goods, imagePath);
+        }
+
         checkExpireAt(goods);
         checkSalePrice(goods);
         checkLevelPrice(levelPrices);
@@ -172,10 +177,6 @@ public class OperateGoods extends Controller {
             render("OperateGoods/add.html");
         }
 
-        //预览
-        if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            preview(null, goods, imagePath);
-        }
         //添加商品处理
         goods.createdBy = OperateRbac.currentUser().loginName;
         goods.materialType = MaterialType.ELECTRONIC;
@@ -316,7 +317,7 @@ public class OperateGoods extends Controller {
 
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            preview(id, goods, imagePath);
+            getPreviewId(id, goods, imagePath);
         }
 
         String supplierUser = OperateRbac.currentUser().loginName;
