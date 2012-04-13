@@ -26,6 +26,7 @@ import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
 import models.resale.Resaler;
+import models.resale.ResalerLevel;
 import models.resale.util.ResaleUtil;
 import models.sales.Goods;
 import models.sales.MaterialType;
@@ -149,10 +150,10 @@ public class Order extends Model {
 		this.orderNumber = generateOrderNumber();
 		this.orderItems = new ArrayList<>();
 		this.paidAt = null;
-		this.amount = new BigDecimal(0);
-		this.accountPay = new BigDecimal(0);
-		this.needPay = new BigDecimal(0);
-		this.discountPay = new BigDecimal(0);
+		this.amount = BigDecimal.ZERO;
+		this.accountPay = BigDecimal.ZERO;
+		this.needPay = BigDecimal.ZERO;
+		this.discountPay = BigDecimal.ZERO;
 
 		this.lockVersion = 0;
 
@@ -176,29 +177,33 @@ public class Order extends Model {
 
 	}
 
-	public OrderItems addOrderItem(Goods goods, long number, String mobile) throws NotEnoughInventoryException{
+    /**
+     * 添加订单条目.
+     *
+     * @param goods        商品
+     * @param number       数量
+     * @param mobile       手机
+     * @param salePrice    成交价
+     * @param resalerPrice 作为分销商的成本价
+     * @return             添加的订单条目
+     * @throws NotEnoughInventoryException
+     */
+	public OrderItems addOrderItem(Goods goods, long number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice)
+            throws NotEnoughInventoryException{
 		OrderItems orderItems = null;
 		if(number > 0 && goods != null){
 			checkInventory(goods, number);
-			orderItems = new OrderItems(this, goods, number, mobile);
+			orderItems = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice);
 			this.orderItems.add(orderItems);
-			this.amount = this.amount.add(goods.salePrice.multiply(new BigDecimal(String.valueOf(number))));
-			this.needPay = amount;
-		}
-		return orderItems;
-	}
-
-	public OrderItems addOrderItem(Goods goods, long number, String mobile, BigDecimal resalerPrice) throws NotEnoughInventoryException{
-		OrderItems orderItems = addOrderItem(goods, number, mobile);
-		if(orderItems != null){
-			orderItems.resalerPrice = resalerPrice;
+			this.amount = this.amount.add(salePrice.multiply(new BigDecimal(String.valueOf(number))));
+			this.needPay = this.amount;
 		}
 		return orderItems;
 	}
 
 	public void addFreight(){
 		this.amount = this.amount.add(new BigDecimal("5"));
-		this.needPay = amount;
+		this.needPay = this.amount;
 	}
 
 

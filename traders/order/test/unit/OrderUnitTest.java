@@ -107,7 +107,7 @@ public class OrderUnitTest extends UnitTest {
 			int baseSale = oldGoods.baseSale.intValue();
 			int saleCount =oldGoods.saleCount;
 			Order order = new Order(userId, AccountType.CONSUMER);
-			order.addOrderItem((Goods)Goods.findById(goodsId), 20L, mobile,resalePrice);
+			order.addOrderItem((Goods)Goods.findById(goodsId), 20L, mobile, oldGoods.salePrice, resalePrice);
 			order.createAndUpdateInventory();
 			
 			Goods goods = Goods.findById(goodsId);
@@ -115,7 +115,7 @@ public class OrderUnitTest extends UnitTest {
 			assertEquals(saleCount+20, goods.saleCount);
 			
 			//异常情况
-			order.addOrderItem((Goods)Goods.findById(goodsId), 200000L, mobile,resalePrice);
+			order.addOrderItem((Goods)Goods.findById(goodsId), 200000L, mobile, goods.salePrice,resalePrice);
 
 		} catch (NotEnoughInventoryException e) {
 			isOk = true;

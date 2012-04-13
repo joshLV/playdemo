@@ -52,7 +52,11 @@ public class ResalerCarts extends Controller {
         
         Order order = new Order(resaler.getId(), AccountType.RESALER);
         for(ResalerCart cart : carts){
-            order.addOrderItem(cart.goods, cart.number, cart.phone, cart.goods.getResalePrice(resaler.level));
+            BigDecimal resalerPrice = cart.goods.getResalePrice(resaler.level);
+            order.addOrderItem(cart.goods, cart.number, cart.phone,
+                    resalerPrice, // 分销商成本价即成交价
+                    resalerPrice  // 分销商成本价
+            );
         }
         order.createAndUpdateInventory();
         

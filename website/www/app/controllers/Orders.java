@@ -7,6 +7,7 @@ import models.consumer.User;
 import models.order.Cart;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
+import models.resale.ResalerLevel;
 import play.Logger;
 import play.data.validation.Required;
 import play.data.validation.Valid;
@@ -124,7 +125,10 @@ public class Orders extends Controller {
         //添加订单条目
         try{
             for(models.sales.Goods goodsItem : goods){
-                order.addOrderItem(goodsItem, itemsMap.get(goodsItem.getId()), mobile);
+                order.addOrderItem(goodsItem, itemsMap.get(goodsItem.getId()), mobile,
+                        goodsItem.salePrice, //最终成交价
+                        goodsItem.getResalerPriceOfUhuila()//优惠啦作为分销商的成本价
+                );
             }
         }catch (NotEnoughInventoryException e){
             //todo 缺少库存
@@ -133,6 +137,8 @@ public class Orders extends Controller {
         }
         //确认订单
         order.createAndUpdateInventory();
+        order.receiverMobile = mobile;
+        order.receiverPhone = mobile;
         //删除购物车中相应物品
         Cart.delete(user, cookieValue, goodsIds);
         

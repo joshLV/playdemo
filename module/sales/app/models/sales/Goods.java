@@ -376,6 +376,7 @@ public class Goods extends Model {
         return levelPrices;
     }
 
+
     /**
      * 最小规格图片路径
      */
@@ -636,6 +637,10 @@ public class Goods extends Model {
             }
         }
         return resalePrice;
+    }
+
+    public BigDecimal getResalerPriceOfUhuila(){
+        return getResalePrice(ResalerLevel.VIP3);
     }
 
     /**
