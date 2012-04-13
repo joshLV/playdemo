@@ -61,8 +61,7 @@ public class OperateGoods extends Controller {
         goodsPage.setBoundaryControlsEnabled(true);
         List<Supplier> supplierList = Supplier.findAll();
 
-        renderArgs.put("condition", condition);
-        render(goodsPage, supplierList);
+        render(goodsPage, supplierList, condition);
     }
 
     /**

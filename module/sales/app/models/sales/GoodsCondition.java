@@ -117,7 +117,7 @@ public class GoodsCondition {
 			paramMap.put("areaId", cityId + "%");
 		}
 		if (supplierId != 0) {
-			condBuilder.append(" and g.supplierId = :supplierId)");
+			condBuilder.append(" and g.supplierId = :supplierId");
 			paramMap.put("supplierId", supplierId);
 		}
 		if (categoryId != 0) {
@@ -141,41 +141,45 @@ public class GoodsCondition {
 		}
 
 		if (StringUtils.isNotBlank(name)) {
-			condBuilder.append(" and name like :name");
+			condBuilder.append(" and g.name like :name");
 			paramMap.put("name", "%" + name.trim() + "%");
 		}
 
 		if (StringUtils.isNotBlank(no)) {
-			condBuilder.append(" and no like :no ");
+			condBuilder.append(" and g.no like :no ");
 			paramMap.put("no", "%" + no.trim() + "%");
 		}
 
 		if (status != null) {
-			condBuilder.append(" and status = :status ");
+			condBuilder.append(" and g.status = :status ");
 			paramMap.put("status", status);
 		}
 
 		if (salePriceBegin != null) {
-			condBuilder.append(" and salePrice >= :salePriceBegin");
+			condBuilder.append(" and g.salePrice >= :salePriceBegin");
 			paramMap.put("salePriceBegin", salePriceBegin);
 		}
 
 		if (salePriceEnd != null) {
-			condBuilder.append(" and salePrice <= :salePriceEnd");
+			condBuilder.append(" and g.salePrice <= :salePriceEnd");
 			paramMap.put("salePriceEnd", salePriceEnd);
 		}
 
 		if (saleCountBegin != null && saleCountBegin >= 0) {
-			condBuilder.append(" and saleCount >= :saleCountBegin");
+			condBuilder.append(" and g.saleCount >= :saleCountBegin");
 			paramMap.put("saleCountBegin", saleCountBegin);
 		}
 
 		if (saleCountEnd != null && saleCountEnd >= 0) {
-			condBuilder.append(" and saleCount <= :saleCountEnd");
+			condBuilder.append(" and g.saleCount <= :saleCountEnd");
 			paramMap.put("saleCountEnd", saleCountEnd);
 		}
 
         System.out.println("condBuilder.toString():" + condBuilder.toString());
+
+        for (String key : paramMap.keySet()) {
+            System.out.println(key+":" + paramMap.get(key));
+        }
 		return condBuilder.toString();
 	}
 

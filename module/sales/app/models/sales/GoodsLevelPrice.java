@@ -22,9 +22,9 @@ public class GoodsLevelPrice extends Model {
     @Max(999999)
     @Min(0)
     @Money
-    private BigDecimal price;
+    public BigDecimal price;
 
-    public Float discount;
+//    public Float discount;
 
     public GoodsLevelPrice() {
 
@@ -35,8 +35,9 @@ public class GoodsLevelPrice extends Model {
         this.level = level;
         this.price = price;
 
-        setDiscount(goods, price);
+//        setDiscount(goods, price);
     }
+/*
 
     private void setDiscount(Goods goods, BigDecimal price) {
         if (goods != null && goods.faceValue != null && price != null && goods.faceValue.compareTo(new
@@ -57,4 +58,5 @@ public class GoodsLevelPrice extends Model {
         this.price = price;
         setDiscount(goods, price);
     }
+*/
 }

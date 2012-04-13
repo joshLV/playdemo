@@ -342,7 +342,7 @@ public class Goods extends Model {
             return;
         }
         for (int i = 0; i < prices.length; i++) {
-            getLevelPrices().get(i).setPrice(prices[i]);
+            getLevelPrices().get(i).price = prices[i];
         }
     }
 
@@ -360,8 +360,8 @@ public class Goods extends Model {
             }
         } else {
             for (GoodsLevelPrice levelPrice : levelPrices) {
-                if (levelPrice.getPrice() == null) {
-                    levelPrice.setPrice(BigDecimal.ZERO);
+                if (levelPrice.price == null) {
+                    levelPrice.price = BigDecimal.ZERO;
                 }
             }
         }
@@ -632,7 +632,7 @@ public class Goods extends Model {
 
         for (GoodsLevelPrice goodsLevelPrice : getLevelPrices()) {
             if (goodsLevelPrice.level == level) {
-                resalePrice = originalPrice.add(goodsLevelPrice.getPrice());
+                resalePrice = originalPrice.add(goodsLevelPrice.price);
                 break;
             }
         }
@@ -670,7 +670,7 @@ public class Goods extends Model {
         }
         for (int i = 0; i < prices.length; i++) {
             this.id = id;
-            getLevelPrices().get(i).setPrice(prices[i]);
+            getLevelPrices().get(i).price = prices[i];
         }
 
     }
@@ -685,7 +685,7 @@ public class Goods extends Model {
         List<GoodsLevelPrice> levelPriceList = getLevelPrices();
         for (int i = 0; i < levelPriceList.size(); i++) {
             GoodsLevelPrice levelPrice = levelPriceList.get(i);
-            prices[i] = (levelPrice == null || levelPrice.getPrice() == null) ? BigDecimal.ZERO : levelPrice.getPrice();
+            prices[i] = (levelPrice == null || levelPrice.price == null) ? BigDecimal.ZERO : levelPrice.price;
         }
         return prices;
     }

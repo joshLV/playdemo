@@ -20,8 +20,8 @@
 #{layout_trader.nameField name:'goods.name', value:goods?.name, required:true, length:40/}
 #{layout_trader.dateScopeField name:'goods.effective', begin:'goods.effectiveAt',end:'goods.expireAt',
 beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), required:true/}
-#{layout_trader.textField name:'goods.faceValue', value:goods?.faceValue, note:'元', required:true/}
-#{layout_trader.textField name:'goods.originalPrice', value:goods?.originalPrice ,note:'元', required:true/}
+#{layout_trader.textField name:'goods.faceValue', value:goods?.faceValue?:"0", note:'元', required:true/}
+#{layout_trader.textField name:'goods.originalPrice', value:goods?.originalPrice?:"0" ,note:'元', required:true/}
 #{layout_trader.textField name:'goods.baseSale', value:goods?.baseSale, note:'件', required:true/}
 #{if "add".equals(action)}
     #{layout_trader.fileField name:'imagePath', required:true/}

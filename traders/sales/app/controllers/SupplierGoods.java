@@ -60,14 +60,12 @@ public class SupplierGoods extends Controller {
             condition = new GoodsCondition();
         }
         condition.supplierId = supplierId;
-        condition.orderByType = "DESC";
 
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(true);
 
-        renderArgs.put("condition", condition);
-        render(goodsPage);
+        render(goodsPage, condition);
     }
 
     /**

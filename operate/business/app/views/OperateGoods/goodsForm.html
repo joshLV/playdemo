@@ -31,9 +31,9 @@
 #{layout_operate.nameField name:'goods.name', value:goods?.name, required:true, length:40/}
 #{layout_operate.dateScopeField name:'goods.effective', begin:'goods.effectiveAt',end:'goods.expireAt',
 beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), required:true/}
-#{layout_operate.textField name:'goods.faceValue', value:goods?.faceValue?:"", note:'元', required:true/}
-#{layout_operate.textField name:'goods.originalPrice', value:goods?.originalPrice?:"",note:'元', required:true/}
-#{layout_operate.textField name:'goods.salePrice', value:goods?.salePrice?:"", note:'元', required:true/}
+#{layout_operate.textField name:'goods.faceValue', value:goods?.faceValue?:"0", note:'元', required:true/}
+#{layout_operate.textField name:'goods.originalPrice', value:goods?.originalPrice?:"0",note:'元', required:true/}
+#{layout_operate.textField name:'goods.salePrice', value:goods?.salePrice?:"0", note:'元', required:true/}
 #{set i:0/}
 #{list items:models.resale.ResalerLevel.values(), as: 'level'}
 <div class="control-group">

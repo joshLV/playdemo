@@ -73,28 +73,26 @@
 
             #{paginate.list items:goodsPage, as:'goods'}
             <tr>
-                <td><input type="checkbox" id="checkoption" value="${goods.id}" name="id"/></td>
-                <td>${goods.no}</td>
-                <td><a href="http://www.uhuila.cn/goods/${goods.id}?preview=true"><img src="${goods
-                .imageTinyPath}"/>${goods
-                .name}</a></td>
-                <td class="amount">${goods.faceValue?.formatCurrency('CNY').raw()}</td>
-                <td class="amount">${goods.originalPrice?.formatCurrency('CNY').raw()}</td>
-                <td class="amount">${goods.baseSale}</td>
-                <td class="amount">${goods.saleCount}</td>
+                <td><input type="checkbox" id="checkoption" value="${goods?.id}" name="id"/></td>
+                <td>${goods?.no}</td>
+                <td><a href="http://www.uhuila.cn/goods/${goods.id}?preview=true"><img src="${goods?.imageTinyPath}"/>${goods?.name}</a></td>
+                <td class="amount">${goods?.faceValue?.formatCurrency('CNY').raw()}</td>
+                <td class="amount">${goods?.originalPrice?.formatCurrency('CNY').raw()}</td>
+                <td class="amount">${goods?.baseSale}</td>
+                <td class="amount">${goods?.saleCount}</td>
                 <td>${goods.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>&{'goods.'+goods.status}
-                    #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status)}<br/>
+                    #{if models.sales.GoodsStatus.OFFSALE.equals(goods?.status)}<br/>
                         #{vx.operateLink text:"申请上架", url:"/goods/"+goods.id+"/apply", method:"PUT"/}#{/if}
-                    #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}<br/>
-                        #{vx.operateLink text:"下架", url:"/goods/"+goods.id+"/offSale", method:"PUT"/}#{/if}
-                    #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}<br/>
-                        #{vx.operateLink text:"撤销申请", url:"/goods/"+goods.id+"/cancelApply", method:"PUT"/}#{/if}
+                    #{if models.sales.GoodsStatus.ONSALE.equals(goods?.status)}<br/>
+                        #{vx.operateLink text:"下架", url:"/goods/"+goods?.id+"/offSale", method:"PUT"/}#{/if}
+                    #{if models.sales.GoodsStatus.APPLY.equals(goods?.status)}<br/>
+                        #{vx.operateLink text:"撤销申请", url:"/goods/"+goods?.id+"/cancelApply", method:"PUT"/}#{/if}
                 </td>
                 <td><a href="@{SupplierGoods.show(goods.id)}">查看</a>
-                    #{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
-                .equals(goods.status)}/ <a href="@{SupplierGoods.edit(goods.id)}">修改</a>
-                        / #{vx.deleteLink action:"goods", id:goods.id, name:goods.name/}#{/if}
+                    #{if !models.sales.GoodsStatus.ONSALE.equals(goods?.status) && !models.sales.GoodsStatus.APPLY
+                .equals(goods?.status)}/ <a href="@{SupplierGoods.edit(goods?.id)}">修改</a>
+                        / #{vx.deleteLink action:"goods", id:goods?.id, name:goods?.name/}#{/if}
                 </td>
             </tr>
             #{/paginate.list}
