@@ -27,21 +27,21 @@
    </div>
  </div>
  <div class="control-group">
-  <label for="input01" class="control-label">用户名</label>
+  <label for="input01" class="control-label"><span style="color: red; ">*</span>用户名</label>
   <div class="controls">
    <input type="text" name="supplierUser.loginName" class="input-large" id="loginName" value="${supplierUser?.loginName}"/>
     <span class="error" id="checkName">#{error 'supplierUser.loginName' /}</span>
   </div>
  </div>
  <div class="control-group">
-  <label for="input01" class="control-label">手机</label>
+  <label for="input01" class="control-label"><span style="color: red; ">*</span>手机</label>
   <div class="controls">
    <input type="text" name="supplierUser.mobile" class="input-large" id="mobile" maxlength="11" value="${supplierUser?.mobile}"/>
    <span class="error" id="checkMobile">#{error 'supplierUser.mobile' /}</span>
   </div>
  </div>
  <div class="control-group">
-  <label for="input01" class="control-label">密码</label>
+  <label for="input01" class="control-label"><span style="color: red; ">*</span>密码</label>
   <div class="controls">
    <input type="password" name="supplierUser.encryptedPassword" class="input-large" value="${supplierUser?.encryptedPassword}" />
     <span class="error">#{error 'supplierUser.encryptedPassword' /}</span>

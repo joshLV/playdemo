@@ -121,7 +121,7 @@ public class SupplierUsers extends Controller {
      */
     public static void update(Long id, @Valid SupplierUser supplierUser) {
         if (Validation.hasErrors()) {
-        	System.out.println("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ");
+        	
             List rolesList = SupplierRole.findAll();
             String roleIds = "";
             if (supplierUser.roles != null && supplierUser.roles.size()>0) {

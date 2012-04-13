@@ -2,10 +2,10 @@
 <application text="商品管理">
     <role key="sales" text="产品销售"/>
 
-    <permission key="GOODS_NEW" text="商品添加" roles="sales"/>
-    <permission key="GOODS" text="商品管理" roles="sales"/>
-    <permission key="SHOPS_NEW" text="门店添加" roles="sales"/>
-    <permission key="SHOPS" text="门店管理" roles="sales"/>
+    <permission key="GOODS_NEW" text="商品添加" roles="admin,sales"/>
+    <permission key="GOODS" text="商品管理" roles="admin,sales"/>
+    <permission key="SHOPS_NEW" text="门店添加" roles="admin,sales"/>
+    <permission key="SHOPS" text="门店管理" roles="admin,sales"/>
 
     <navigation key="goods_app" text="商品管理" action="SupplierGoods.index" permissions="GOODS">
         <navigation key="goods" text="商品" permission="GOODS_NEW,GOODS" permissions="GOODS">
