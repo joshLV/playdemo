@@ -269,42 +269,20 @@ public class GoodsCondition {
 			priceTo = StringUtils.isBlank(args[2]) ? new
 					BigDecimal(0) : new BigDecimal(args[2]);
 		}
-		System.out.println(">>>>>>>>>>>>>"+condStr);
+		
 		if (args.length > 3) {
 			orderByNum = StringUtils.isBlank(args[3]) ? 0 : Integer.parseInt(args[3]);
 			orderBy = StringUtils.isBlank(args[3]) ? getOrderBy(0)
-					: getResalerOrderBy(Integer.parseInt(args[3]));
+					: getOrderBy(Integer.parseInt(args[3]));
 		}
 		
 		if (args.length > 4) {
 			orderByTypeNum = StringUtils.isBlank(args[4]) ? 1 : Integer.parseInt
 					(args[4]);
 			orderByType = "1".equals(args[4]) ? "DESC" : "ASC";
+			
 		}
 	}
-
-	private static String getResalerOrderBy(int orderById) {
-		String orderBy;
-		switch (orderById) {
-		case 1:
-			orderBy = "g.saleCount";
-			break;
-		case 2:
-			orderBy = "g.salePrice";
-			break;
-		case 3:
-			orderBy = "g.discount";
-			break;
-		case 4:
-			orderBy = "g.createdAt";
-			break;
-		default:
-			orderBy = "g.createdAt";
-			break;
-		}
-		return orderBy;
-	}
-	
 
 	/**
 	 * 分销商查询条件
@@ -327,13 +305,13 @@ public class GoodsCondition {
 		}
 
 		if (priceFrom.compareTo(new BigDecimal(0)) > 0) {
-			sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.faceValue+l.price >=:priceFrom)");
+			sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.originalPrice+l.price >=:priceFrom)");
 			paramMap.put("level", resaler.level);
 			paramMap.put("priceFrom", priceFrom);
 		}
 
 		if (priceTo.compareTo(new BigDecimal(0)) > 0) {
-			sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.faceValue+l.price <=:priceTo)");
+			sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.originalPrice+l.price <=:priceTo)");
 			paramMap.put("level", resaler.level);
 			paramMap.put("priceTo", priceTo);
 		}

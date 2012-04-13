@@ -613,7 +613,7 @@ public class Goods extends Model {
         JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>
                 ("Goods g", "g", Goods.class, condition.getResaleFilter(resaler),
                         condition.getParamMap())
-                .orderBy("createdAt desc");
+                .orderBy(condition.getOrderByExpress());
         goodsPage.setPageNumber(pageNumber);
         goodsPage.setPageSize(pageSize);
         goodsPage.setBoundaryControlsEnabled(false);
