@@ -45,6 +45,10 @@ public class ResalerCarts extends Controller {
     public static void confirmCarts() throws NotEnoughInventoryException{
         Resaler resaler = SecureCAS.getResaler();
         List<ResalerCart> carts = ResalerCart.findAll(resaler);
+        if(carts.size() == 0){
+            error("购物车中无商品");
+            return;
+        }
         
         Order order = new Order(resaler.getId(), AccountType.RESALER);
         for(ResalerCart cart : carts){
