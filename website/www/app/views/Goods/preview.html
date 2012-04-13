@@ -111,7 +111,7 @@
                         <div class="right_shangpin_one">
                             原价：${goods.faceValue}元
                         </div>
-                    #{if params['isSupplier']}
+                    #{if params['isSupplier']== null || !params['isSupplier']}
                         <div class="right_shangpin_two">
                             折扣：${goods.discountExpress?goods.discountExpress+'折':'无优惠'}</div>
                         <div class="right_shangpin_three">现价：<span
