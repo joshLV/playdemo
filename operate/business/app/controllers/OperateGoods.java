@@ -351,8 +351,8 @@ public class OperateGoods extends Controller {
             BigDecimal price = prices[i];
             if (price == null) {
                 Validation.addError("goods.levelPrice." + ResalerLevel.values()[i], "validation.required");
-            } else if (price.compareTo(new BigDecimal("0.01")) < 0) {
-                Validation.addError("goods.levelPrice." + ResalerLevel.values()[i], "validation.min", "0.01");
+            } else if (price.compareTo(BigDecimal.ZERO) < 0) {
+                Validation.addError("goods.levelPrice." + ResalerLevel.values()[i], "validation.min", "0");
             } else if (price.compareTo(prices[(i > 0 ? i - 1 : 0)]) > 0) {
                 Validation.addError("goods.levelPrice." + ResalerLevel.values()[i], "validation.moreThanLastLevel");
             }
