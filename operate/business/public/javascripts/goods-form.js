@@ -38,8 +38,10 @@ $(window).load(
         $("#onsales").click(function () {
             if ($("#baseSale").val() > 0) {
                 $("#status").val("ONSALE");
+                $("#form").attr("target","_self");
             } else {
                 $("#errorBaseSale").text("上架商品的库存不能为0！");
+                $("#form").attr("target","_self");
                 return false;
             }
         });
@@ -48,9 +50,11 @@ $(window).load(
         });
         $("#save").click(function () {
             $("#status").val("OFFSALE");
+            $("#form").attr("target","_self");
         });
         $("#onsale").click(function () {
             $("#status").val("ONSALE");
+            $("#form").attr("target","_self");
         });
         $("#preview").click(function () {
             $("#status").val("UNCREATED");

@@ -59,48 +59,81 @@ public class GoodsUnitTest extends UnitTest {
         assertEquals("http://img0.uhcdn.com/p/1/1/1/3_small.jpg", path);
     }
 
-
     @Test
     public void testGetDiscountExpress() {
         models.sales.Goods goods = new Goods();
-        goods.setDiscount(100);
+        goods.setDiscount(10f);
         assertEquals("", goods.getDiscountExpress());
 
+        goods.setDiscount(9.8f);
+        assertEquals("9.8", goods.getDiscountExpress());
 
-        goods.setDiscount(10);
-        assertEquals("1", goods.getDiscountExpress());
-
-
-        goods.setDiscount(1);
-        assertEquals("0.1", goods.getDiscountExpress());
+        goods.setDiscount(1f);
+        assertEquals("1.0", goods.getDiscountExpress());
 
 
-        goods.setDiscount(12);
-        assertEquals("12", goods.getDiscountExpress());
-
-
-        goods.setDiscount(1000);
+        goods.setDiscount(12f);
         assertEquals("", goods.getDiscountExpress());
 
+        goods.setDiscount(-1f);
+        assertEquals("0", goods.getDiscountExpress());
 
-        goods.setDiscount(-1);
-        assertEquals("", goods.getDiscountExpress());
+        goods.setDiscount(0f);
+        assertEquals("0", goods.getDiscountExpress());
     }
 
+    @Test
+    public void testSetDiscount() {
+        models.sales.Goods goods = new Goods();
+        goods.setDiscount(10f);
+        assertEquals(new Float(10f), goods.getDiscount());
+
+        goods.setDiscount(9.8f);
+        assertEquals(new Float(9.8f), goods.getDiscount());
+
+        goods.setDiscount(0f);
+        assertEquals(new Float(0f), goods.getDiscount());
+
+        goods.setDiscount(-1f);
+        assertEquals(new Float(0f), goods.getDiscount());
+
+        goods.setDiscount(100f);
+        assertEquals(new Float(10f), goods.getDiscount());
+    }
 
     @Test
     public void testGetDiscount() {
         models.sales.Goods goods = new Goods();
-        assertEquals(new Integer(0), goods.getDiscount());
-
         goods.faceValue = new BigDecimal(100);
-        goods.salePrice = new BigDecimal(12);
-        assertEquals(new Integer(12), goods.getDiscount());
+        goods.salePrice = new BigDecimal(100);
+        assertEquals(new Float(10f), goods.getDiscount());
 
-        goods.setDiscount(100);
-        assertEquals(new Integer(100), goods.getDiscount());
+        goods.faceValue = new BigDecimal(200);
+        goods = new Goods();
+        goods.faceValue = new BigDecimal(100);
+        goods.salePrice = new BigDecimal(1);
+        assertEquals(new Float(0.1f), goods.getDiscount());
+
+        goods = new Goods();
+        goods.faceValue = new BigDecimal(100);
+        goods.salePrice = new BigDecimal(10000);
+        assertEquals(new Float(10f), goods.getDiscount());
+
+        goods = new Goods();
+        goods.faceValue = new BigDecimal(100);
+        goods.salePrice = new BigDecimal(10);
+        assertEquals(new Float(1f), goods.getDiscount());
+
+        goods = new Goods();
+        goods.faceValue = new BigDecimal(100);
+        goods.salePrice = null;
+        assertEquals(new Float(0f), goods.getDiscount());
+
+        goods = new Goods();
+        goods.faceValue = null;
+        goods.salePrice = new BigDecimal(100);
+        assertEquals(new Float(0f), goods.getDiscount());
     }
-
 
     /**
      * 测试各种查询条件都指定的情况.
@@ -168,10 +201,10 @@ public class GoodsUnitTest extends UnitTest {
         goods.setLevelPrices(prices);
         List<GoodsLevelPrice> priceList = goods.getLevelPrices();
         assertEquals(4, priceList.size());
-        assertEquals(1, priceList.get(0).price.intValue());
-        assertEquals(1, priceList.get(1).price.intValue());
-        assertEquals(1, priceList.get(2).price.intValue());
-        assertEquals(0, priceList.get(3).price.intValue());
+        assertEquals(1, priceList.get(0).getPrice().intValue());
+        assertEquals(1, priceList.get(1).getPrice().intValue());
+        assertEquals(1, priceList.get(2).getPrice().intValue());
+        assertEquals(0, priceList.get(3).getPrice().intValue());
     }
 
     @Test

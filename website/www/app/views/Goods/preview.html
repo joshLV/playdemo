@@ -111,11 +111,13 @@
                         <div class="right_shangpin_one">
                             原价：${goods.faceValue}元
                         </div>
+                    #{if isSupplier}
                         <div class="right_shangpin_two">
                             折扣：${goods.discountExpress?goods.discountExpress+'折':'无优惠'}</div>
                         <div class="right_shangpin_three">现价：<span
                                 class="font_red font_size18">${goods.salePrice}</span>元
                         </div>
+                    #{/if}
                         <div class="right_shangpin_two">有效期：<span
                                 class="right_shangpin_two">${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span>
                         </div>

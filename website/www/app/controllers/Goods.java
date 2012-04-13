@@ -45,7 +45,7 @@ public class Goods extends Controller {
         List<Brand> brands = Brand.findTop(LIMIT);
 
         GoodsCondition goodsCond = new GoodsCondition();
-        ValuePaginator goodsPage = new ValuePaginator(goodsList);
+        ValuePaginator<models.sales.Goods> goodsPage = new ValuePaginator<>(goodsList);
         goodsPage.setPageNumber(1);
         goodsPage.setPageSize(PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(false);
@@ -55,10 +55,10 @@ public class Goods extends Controller {
         render(goodsPage, areas, districts, categories, brands, breadcrumbs);
     }
 
-    public static void preview(String uuid) {
+    public static void preview(String uuid,boolean isSupplier) {
         models.sales.Goods goods = models.sales.Goods.getPreviewGoods(uuid);
         showGoods(goods);
-        render();
+        render(isSupplier);
     }
 
     private static void showGoods(models.sales.Goods goods) {

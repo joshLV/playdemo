@@ -134,7 +134,7 @@ public class Goods extends Model {
      */
     //    public String title;
 
-    private Integer discount;
+    private Float discount;
 
     @Required
     @MinSize(7)
@@ -294,38 +294,44 @@ public class Goods extends Model {
         this.details = Jsoup.clean(details, HTML_WHITE_TAGS);
     }
 
-    public void setDiscount(Integer discount) {
-        this.discount = discount;
+    public void setDiscount(Float discount) {
+        if (discount != null && discount >= 0f && discount <= 10f) {
+            this.discount = discount;
+        } else if (discount < 0f) {
+            this.discount = 0f;
+        } else if (discount > 10f) {
+            this.discount = 10f;
+        }
     }
 
     @Column(name = "discount")
-    public Integer getDiscount() {
+    public Float getDiscount() {
         if (discount != null && discount > 0) {
             return discount;
         }
         if (faceValue != null && salePrice != null && faceValue.compareTo(new BigDecimal(0)) > 0) {
-            this.discount = salePrice.divide(faceValue, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).intValue();
+            this.discount = salePrice.divide(faceValue, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(10)).floatValue();
+            if (this.discount>10f){
+                this.discount = 10f;
+            }
         } else {
-            this.discount = 0;
+            this.discount = 0f;
         }
         return discount;
     }
 
     @Transient
     public String getDiscountExpress() {
-        int discount = getDiscount();
-        if (discount >= 100 || discount <= 0) {
+        float discount = getDiscount();
+        if (discount >= 10) {
             return "";
         }
-        if (discount < 10) {
-            return String.valueOf(discount / 10.0);
+        if (discount <= 0) {
+            return "0";
         }
-        if (discount % 10 == 0) {
-            return String.valueOf(discount / 10);
-        }
+
         return String.valueOf(discount);
     }
-
 
     public void setLevelPrices(List<GoodsLevelPrice> levelPrices) {
         this.levelPrices = levelPrices;
@@ -336,7 +342,7 @@ public class Goods extends Model {
             return;
         }
         for (int i = 0; i < prices.length; i++) {
-            getLevelPrices().get(i).price = prices[i];
+            getLevelPrices().get(i).setPrice(prices[i]);
         }
     }
 
@@ -354,8 +360,8 @@ public class Goods extends Model {
             }
         } else {
             for (GoodsLevelPrice levelPrice : levelPrices) {
-                if (levelPrice.price == null) {
-                    levelPrice.price = BigDecimal.ZERO;
+                if (levelPrice.getPrice() == null) {
+                    levelPrice.setPrice(BigDecimal.ZERO);
                 }
             }
         }
@@ -556,7 +562,7 @@ public class Goods extends Model {
      */
     public static String preview(Long id, Goods goods, File imageFile, String rootDir) throws IOException {
         goods.status = GoodsStatus.UNCREATED;
-        if (goods.isAllShop){
+        if (goods.isAllShop) {
             goods.shops = new HashSet<>();
 
             System.out.println("goods.supplierId:" + goods.supplierId);
@@ -625,7 +631,7 @@ public class Goods extends Model {
 
         for (GoodsLevelPrice goodsLevelPrice : getLevelPrices()) {
             if (goodsLevelPrice.level == level) {
-                resalePrice = originalPrice.add(goodsLevelPrice.price);
+                resalePrice = originalPrice.add(goodsLevelPrice.getPrice());
                 break;
             }
         }
@@ -659,7 +665,7 @@ public class Goods extends Model {
         }
         for (int i = 0; i < prices.length; i++) {
             this.id = id;
-            getLevelPrices().get(i).price = prices[i];
+            getLevelPrices().get(i).setPrice(prices[i]);
         }
 
     }
@@ -674,13 +680,13 @@ public class Goods extends Model {
         List<GoodsLevelPrice> levelPriceList = getLevelPrices();
         for (int i = 0; i < levelPriceList.size(); i++) {
             GoodsLevelPrice levelPrice = levelPriceList.get(i);
-            prices[i] = (levelPrice == null || levelPrice.price == null) ? BigDecimal.ZERO : levelPrice.price;
+            prices[i] = (levelPrice == null || levelPrice.getPrice() == null) ? BigDecimal.ZERO : levelPrice.getPrice();
         }
         return prices;
     }
-    
-    public Iterator<Shop> getShopList(){
-        if (isAllShop){
+
+    public Iterator<Shop> getShopList() {
+        if (isAllShop) {
             return Shop.findShopBySupplier(supplierId).iterator();
         }
         return shops.iterator();

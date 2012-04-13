@@ -197,7 +197,7 @@ public class SupplierGoods extends Controller {
             e.printStackTrace();
             error(500, "goods.image_upload_failed");
         }
-        redirect("http://" + WWW_URL + "/goods/" + cacheId + "/preview");
+        redirect("http://" + WWW_URL + "/goods/" + cacheId + "/preview?isSupplier=true");
     }
 
     private static void checkOriginalPrice(Goods goods) {
