@@ -20,7 +20,7 @@ public class GoodsLevelPrice extends Model {
     public ResalerLevel level;
     @Required
     @Max(999999)
-    @Min(0.01)
+    @Min(0)
     @Money
     private BigDecimal price;
 

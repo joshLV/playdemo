@@ -162,6 +162,7 @@ public class OperateGoods extends Controller {
 
         goods.setLevelPrices(levelPrices);
 
+        checkExpireAt(goods);
         checkSalePrice(goods);
         checkLevelPrice(levelPrices);
         if (Validation.hasErrors()) {
@@ -201,6 +202,12 @@ public class OperateGoods extends Controller {
         }
         if (goods.salePrice != null && goods.originalPrice != null && goods.salePrice.compareTo(goods.originalPrice) < 0) {
             Validation.addError("goods.salePrice", "validation.lessThanOriginalPrice");
+        }
+    }
+
+    private static void checkExpireAt(Goods goods) {
+        if (goods.effectiveAt != null && goods.expireAt != null && goods.expireAt.before(goods.effectiveAt)) {
+            Validation.addError("goods.expireAt", "validation.beforeThanEffectiveAt");
         }
     }
 
@@ -296,6 +303,7 @@ public class OperateGoods extends Controller {
         }
         checkImageFile(imagePath);
 
+        checkExpireAt(goods);
         goods.setLevelPrices(levelPrices, id);
         checkSalePrice(goods);
         checkLevelPrice(levelPrices);
@@ -338,12 +346,15 @@ public class OperateGoods extends Controller {
             }
             return;
         }
+        //检查各个级别的价格，要求必须级别越高加价越低。
         for (int i = 0; i < prices.length; i++) {
             BigDecimal price = prices[i];
             if (price == null) {
                 Validation.addError("goods.levelPrice." + ResalerLevel.values()[i], "validation.required");
             } else if (price.compareTo(new BigDecimal("0.01")) < 0) {
                 Validation.addError("goods.levelPrice." + ResalerLevel.values()[i], "validation.min", "0.01");
+            } else if (price.compareTo(prices[(i > 0 ? i - 1 : 0)]) > 0) {
+                Validation.addError("goods.levelPrice." + ResalerLevel.values()[i], "validation.moreThanLastLevel");
             }
         }
     }

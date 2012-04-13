@@ -27,6 +27,9 @@ validation.different=确认密码与登录密码不一致!
 validation.lessone=手机和电话至少输入一项!
 validation.moreThanFaceValue=%s不能超过原价!
 validation.lessThanOriginalPrice=%s不能低于采购价!
+validation.moreThanLastLevel=%s不能超过前一级别的VIP加价!
+validation.beforeThanEffectiveAt=%s不能早于有效期开始时间!
+
 goods.supplierId=商户
 goods.supplier=商户
 goods.no=编号

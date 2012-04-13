@@ -60,6 +60,7 @@ public class SupplierGoods extends Controller {
             condition = new GoodsCondition();
         }
         condition.supplierId = supplierId;
+        condition.orderByType = "DESC";
 
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
@@ -155,6 +156,8 @@ public class SupplierGoods extends Controller {
         checkImageFile(imagePath);
 
         goods.setLevelPrices(levelPrices);
+
+        checkExpireAt(goods);
         checkOriginalPrice(goods);
         if (Validation.hasErrors()) {
             renderInit(goods);
@@ -282,6 +285,8 @@ public class SupplierGoods extends Controller {
         checkImageFile(imagePath);
 
         goods.setLevelPrices(levelPrices, id);
+
+        checkExpireAt(goods);
         checkOriginalPrice(goods);
         if (Validation.hasErrors()) {
             renderInit(goods);
@@ -312,6 +317,17 @@ public class SupplierGoods extends Controller {
         goods.updatedBy = supplierUser;
         Goods.update(id, goods, true);
         index(null);
+    }
+
+    /**
+     * 过期时间不能早于有效期开始时间.
+     *
+     * @param goods
+     */
+    private static void checkExpireAt(Goods goods) {
+        if (goods.effectiveAt != null && goods.expireAt != null && goods.expireAt.before(goods.effectiveAt)) {
+            Validation.addError("goods.expireAt", "validation.beforeThanEffectiveAt");
+        }
     }
 
     /**
