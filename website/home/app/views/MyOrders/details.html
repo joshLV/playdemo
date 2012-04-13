@@ -59,7 +59,7 @@
                     <td width="81" align="center" valign="middle">${row.salePrice?.formatCurrency('CNY').raw()}</td>
                     <td width="66" align="center" valign="middle">${row.buyNumber}</td>
                     <td width="118" align="center" valign="middle"><span
-                            class="strong_gray">${row.eCoupon?.eCouponSn}</span></td>
+                            class="strong_gray">${row?.getEcouponSn()}</span></td>
                     #{if (++m == 1) }
                         <td rowspan="${orderItems.size()}" align="center" valign="middle">${order.amount?.formatCurrency('CNY').raw()}<br/> (含运费)
                         </td>

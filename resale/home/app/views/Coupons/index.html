@@ -57,7 +57,7 @@
 	      <tr>
 		      <td>${coupon.order.orderNumber}</td>
 		      <td>${coupon.goods.name}</td>
-              <td>${coupon.eCouponSn.substring(0,8)}****${coupon.eCouponSn.substring(coupon.eCouponSn.length() - 4)}</td>
+              <td>${coupon?.getEcouponSn()}</td>
 		      <td id="price_${coupon.id}">${coupon.salePrice?.formatCurrency('CNY').raw()}</td>
 		      <td>${coupon.createdAt}</td>
 		      <td>${coupon.consumedAt}</td>

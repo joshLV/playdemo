@@ -54,7 +54,7 @@ public class GoodsUnitTest extends UnitTest {
         goods.salePrice = new BigDecimal(12);
         assertEquals(new Integer(12), goods.getDiscount());
 
-        goods.setDiscount(100);
+        goods.setDiscount(100f);
         assertEquals(new Integer(100), goods.getDiscount());
     }
 

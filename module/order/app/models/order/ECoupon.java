@@ -314,6 +314,10 @@ public class ECoupon extends Model {
 		return returnFlg;
 	}
 
+	/**
+	 * 处理券号
+	 * @return 券号
+	 */
 	public String getEcouponSn(){
 		if (eCouponSn.length()>6) {
 			eCouponSn = eCouponSn.substring(6);
