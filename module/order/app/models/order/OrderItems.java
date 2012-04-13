@@ -1,12 +1,22 @@
 package models.order;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Query;
+import javax.persistence.Table;
+
 import models.sales.Goods;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
-
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.Date;
 
 @Entity
 @Table(name = "order_items")
@@ -29,9 +39,6 @@ public class OrderItems extends Model {
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = true)
     public Order order;
-
-    @OneToOne(mappedBy = "orderItems")
-    public ECoupon eCoupon;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id", nullable = true)

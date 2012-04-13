@@ -15,7 +15,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -29,11 +29,9 @@ import models.accounts.TradeStatus;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.RefundUtil;
 import models.accounts.util.TradeUtil;
-import models.consumer.User;
 import models.sales.Goods;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateFormatUtils;
 
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -58,8 +56,8 @@ public class ECoupon extends Model {
 	@ManyToOne
 	public Goods goods;
 
-	@OneToOne
-	@JoinColumn(name = "item_id")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "item_id", nullable = true)
 	public OrderItems orderItems;
 
 	@Required
