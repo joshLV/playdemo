@@ -48,14 +48,14 @@ public class GoodsUnitTest extends UnitTest {
     @Test
     public void testGetResalePrice() {
         models.sales.Goods goods = new Goods();
-        assertEquals(new Integer(0), goods.getDiscount());
+        assertEquals(new Float(0.0f), goods.getDiscount());
 
         goods.faceValue = new BigDecimal(100);
         goods.salePrice = new BigDecimal(12);
-        assertEquals(new Integer(12), goods.getDiscount());
+        assertEquals(new Float(1.2f), goods.getDiscount());
 
         goods.setDiscount(100f);
-        assertEquals(new Integer(100), goods.getDiscount());
+        assertEquals(new Float(10.0f), goods.getDiscount());
     }
 
 
