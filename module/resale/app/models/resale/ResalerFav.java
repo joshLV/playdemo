@@ -86,15 +86,13 @@ public class ResalerFav extends Model {
 			sql.append(" and f.goods.name like :goodsName)");
 			paramsMap.put("goodsName", "%" + goodsName + "%");
 		}
-		
+		sql.append(" order by f.createdAt desc");
 		EntityManager entityManager = JPA.em();
 		Query result = entityManager.createQuery(sql.toString());
 		for (Map.Entry<String, Object> entry : paramsMap.entrySet()) {
 			result.setParameter(entry.getKey(), entry.getValue());
 		}
-		sql.append(" order by f.createdAt desc");
-
-
+	
 		return result.getResultList();
 	}
 	

@@ -127,7 +127,7 @@ public class ECoupon extends Model {
 		String text = sb.toString();
 		return text;
 	}
-	
+
 	/**
 	 * 根据页面录入券号查询对应信息
 	 *
@@ -198,33 +198,33 @@ public class ECoupon extends Model {
 		TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, supplierAccount, originalPrice);
 		TradeUtil.success(consumeTrade);
 
-        BigDecimal platformCommission = BigDecimal.ZERO;
-        if(salePrice.compareTo(resalerPrice) < 0){
-            //如果成交价小于分销商成本价（这种情况只有在优惠啦网站上才会发生），
-            //那么优惠啦就没有佣金，平台的佣金也变为成交价减成本价
-            platformCommission = salePrice.subtract(originalPrice);
-        }else {
-            //平台的佣金等于分销商成本价减成本价
-            platformCommission = resalerPrice.subtract(originalPrice);
-            //如果是在优惠啦网站下的单，还要给优惠啦佣金
-            if (order.userType == AccountType.CONSUMER){
-                TradeBill uhuilaCommissionTrade = TradeUtil.createCommissionTrade(
-                        AccountUtil.getUhuilaAccount(),
-                        salePrice.subtract(resalerPrice),
-                        eCouponSn);
+		BigDecimal platformCommission = BigDecimal.ZERO;
+		if(salePrice.compareTo(resalerPrice) < 0){
+			//如果成交价小于分销商成本价（这种情况只有在优惠啦网站上才会发生），
+			//那么优惠啦就没有佣金，平台的佣金也变为成交价减成本价
+			platformCommission = salePrice.subtract(originalPrice);
+		}else {
+			//平台的佣金等于分销商成本价减成本价
+			platformCommission = resalerPrice.subtract(originalPrice);
+			//如果是在优惠啦网站下的单，还要给优惠啦佣金
+			if (order.userType == AccountType.CONSUMER){
+				TradeBill uhuilaCommissionTrade = TradeUtil.createCommissionTrade(
+						AccountUtil.getUhuilaAccount(),
+						salePrice.subtract(resalerPrice),
+						eCouponSn);
 
-                TradeUtil.success(uhuilaCommissionTrade);
-            }
-        }
+				TradeUtil.success(uhuilaCommissionTrade);
+			}
+		}
 
-        if(platformCommission.compareTo(BigDecimal.ZERO) > 0){
-            //给优惠券平台佣金
-            TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(
-                    AccountUtil.getPlatformCommissionAccount(),
-                    platformCommission,
-                    eCouponSn);
-            TradeUtil.success(platformCommissionTrade);
-        }
+		if(platformCommission.compareTo(BigDecimal.ZERO) > 0){
+			//给优惠券平台佣金
+			TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(
+					AccountUtil.getPlatformCommissionAccount(),
+					platformCommission,
+					eCouponSn);
+			TradeUtil.success(platformCommissionTrade);
+		}
 
 		this.status = ECouponStatus.CONSUMED;
 		this.consumedAt = new Date();
@@ -332,11 +332,15 @@ public class ECoupon extends Model {
 	 * @return 券号
 	 */
 	public String getEcouponSn(){
-		if (eCouponSn.length()>6) {
-			eCouponSn = eCouponSn.substring(6);
+		StringBuilder sn = new StringBuilder();
+		int len =  eCouponSn.length();
+		if (len > 4) {
+			for (int i =0; i < len-4;i++) {
+				sn.append("*");
+			}
+			sn.append(eCouponSn.substring(len-4,len));
 		}
-		String sn = "******"+eCouponSn;
-		return sn;
+		return sn.toString();
 	}
 
 }

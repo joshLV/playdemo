@@ -214,6 +214,9 @@ public class Goods extends Model {
     @ManyToOne
     @JoinColumn(name = "brand_id")
     public Brand brand;
+    
+    /**运费*/
+    public BigDecimal freight;
 
     @Transient
     public String salePriceBegin;

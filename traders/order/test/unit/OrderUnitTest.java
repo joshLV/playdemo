@@ -9,6 +9,7 @@ import java.util.List;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
+import models.order.ECoupon;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderItems;
@@ -140,5 +141,22 @@ public class OrderUnitTest extends UnitTest {
 		assertEquals(2L, itemsNumber);
 	}
 
+	@Test
+	public void getEcouponSn(){
+		Long id = (Long) Fixtures.idCache.get("models.order.OrderItems-orderItems1");
+		OrderItems orderItems=OrderItems.findById(id);
+		String sn = orderItems.getEcouponSn();
+		String s="******7001\n******7003\n";
+		assertEquals(s,sn);
+	}
+	
+	@Test
+	public void getWebEcouponSn(){
+		Long id = (Long) Fixtures.idCache.get("models.order.OrderItems-orderItems1");
+		OrderItems orderItems=OrderItems.findById(id);
+		String sn = orderItems.getWebEcouponSn();
+		String s="1234567001\n1234567003\n";
+		assertEquals(s,sn);
+	}
 
 }

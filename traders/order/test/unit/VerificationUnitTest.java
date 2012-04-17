@@ -78,14 +78,14 @@ public class VerificationUnitTest extends UnitTest {
 		Map<String, Object> map = ECoupon.queryInfo(eCouponSn, supplierId);
 		assertEquals(0, map.size());
 
-		eCouponSn = "002";
+		eCouponSn = "1234567002";
 		map = ECoupon.queryInfo(eCouponSn, supplierId);
 		assertEquals("哈根达斯200元抵用券", map.get("name"));
 	}
 
 	@Test
 	public void testUpdate() {
-		String eCouponSn = "002";
+		String eCouponSn = "1234567002";
 		Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
 		ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
 		assertNotNull(eCoupon);
@@ -105,7 +105,7 @@ public class VerificationUnitTest extends UnitTest {
 		int pageNumber = 1;
 		int pageSize = 15;
 		List<ECoupon> list = ECoupon.queryCoupons(supplierId, pageNumber, pageSize);
-		assertEquals(2, list.size());
+		assertEquals(3, list.size());
 
 	}
 

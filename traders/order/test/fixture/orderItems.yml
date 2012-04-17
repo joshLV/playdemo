@@ -23,7 +23,7 @@ order.OrderItems(orderItems2):
 
 order.ECoupon(coupon1):
   "order": "order1"
-  "eCouponSn": "001"
+  "eCouponSn": "1234567001"
   "originalPrice": "1.0"
   "faceValue": "10.0"
   "resalerPrice": "1.0"
@@ -36,7 +36,7 @@ order.ECoupon(coupon1):
 
 order.ECoupon(coupon2):
   "order": "order1"
-  "eCouponSn": "002"
+  "eCouponSn": "1234567002"
   "originalPrice": "1.0"
   "faceValue": "10.0"
   "resalerPrice": "1.0"
@@ -46,3 +46,16 @@ order.ECoupon(coupon2):
   "status": "UNCONSUMED"
   "goods": "Goods_002"
   "orderItems": "orderItems2"
+  
+order.ECoupon(coupon3):
+  "order": "order1"
+  "eCouponSn": "1234567003"
+  "originalPrice": "1.0"
+  "faceValue": "10.0"
+  "resalerPrice": "1.0"
+  "salePrice": "1.0"
+  "createdAt": "2012-03-05T00:00:00"
+  "consumedAt": "2012-03-05T00:00:00"
+  "status": "UNCONSUMED"
+  "goods": "Goods_001"
+  "orderItems": "orderItems1"
