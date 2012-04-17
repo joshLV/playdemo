@@ -30,7 +30,7 @@ order.OrderItems(orderItems3):
 
 order.ECoupon(coupon1):
   "order": "order1"
-  "eCouponSn": "001"
+  "eCouponSn": "1234567001"
   "faceValue": "1.0"
   "originalPrice": "10.0"
   "refundPrice": "1.0"
@@ -42,7 +42,7 @@ order.ECoupon(coupon1):
 
 order.ECoupon(coupon2):
   "order": "order1"
-  "eCouponSn": "002"
+  "eCouponSn": "1234567002"
   "faceValue": "10.0"
   "originalPrice": "10.0"
   "refundPrice": "1.0"
