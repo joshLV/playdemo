@@ -28,7 +28,6 @@ public class ResalerFavs extends Controller {
 				goodsName);
 		renderArgs.put("createdAtBegin", createdAtBegin);
 		renderArgs.put("createdAtEnd", createdAtEnd);
-//		renderArgs.put("status", status);
 		renderArgs.put("goodsName", goodsName);
 		render(favs, resaler);
 	}
