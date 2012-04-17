@@ -65,6 +65,7 @@
     <tr>
      <th>订单</th>
      <th>商品名称</th>
+     <th>订单来源</th>
      <th>运单号</th>
      <th>总金额</th>
      <th>订单状态</th>
@@ -83,6 +84,7 @@
      <table><tr><td>${item.goodsName}</td></tr></table>
     #{/list}
     </td>
+     <td>&{'order.'+order.userType}</td>
       <td>${order.deliveryNo}</td>
      <td>${order.amount}</td>
      <td>&{'order.'+order.status}</td>
