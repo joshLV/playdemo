@@ -11,9 +11,9 @@ verifyTextPresent('请输入原密码!')
 verifyTextPresent('请输入新密码!')
 verifyTextPresent('请输入确认新密码!')
 
-type('id=old_password','1313141')
-type('id=password','')
-type('id=confirmPassword','')
+type('id=old_password','131s141')
+type('id=password','123123')
+type('id=confirmPassword','123123')
 clickAndWait('id=sure_submit')
 verifyTextPresent('原密码输入的不对！')
 
@@ -26,9 +26,9 @@ verifyTextPresent('新密码和原密码一样，请重新输入！')
 
 #{/selenium}
 
-#{selenium 'Test ResalerInfos/index.html Normal'}
+#{selenium 'Test 修改密码'}
 #{include 'test/selenium/step/login.selenium' /}
-open('/user/${play.test.Fixtures.idCache.get("models.consumer.User-selenium")}/password')
+open('/user/password')
 type('id=old_password','123456')
 type('id=password','123')
 type('id=confirmPassword','1234567')

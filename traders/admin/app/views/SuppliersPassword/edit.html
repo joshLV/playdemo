@@ -1,0 +1,170 @@
+#{extends 'layout_trader/layout.html' /}
+#{set 'topbar-nav'}
+#{include 'share/topbar-nav.html'/}
+#{/set}
+#{set 'profile-left-nav'}
+#{include 'share/left-nav.html'/}
+#{/set}
+#{set title:'修改密码' /} #{set 'moreStyles'}
+<style type="text/css">
+<!--
+
+.input_box {
+	width: auto;
+	height: 34px;
+	line-height: 34px;
+	float: left;
+}
+
+.inputBox {
+	height: 26px;
+	line-height: 26px;
+	border: 1px solid #999999;
+	background-repeat: repeat-x;
+	margin-top: 2px;
+	float: left;
+	font-size: 14px;
+	color: #000000;
+}
+/*设置为显示*/
+.setShow {
+	visibility: visible
+}
+/*设置为隐藏*/
+.setClose {
+	visibility: hidden;
+}
+/*红色外框*/
+.qdbox_hongse {
+	width: 162px;
+	height: 16px;
+	line-height: 16px;
+	border: 1px solid #ff0000;
+	float: left;
+	overflow: hidden;
+	margin-top: 7px;
+	margin-left: 10px;
+}
+/*橙色外框*/
+.qdbox_cengse {
+	width: 162px;
+	height: 16px;
+	line-height: 16px;
+	border: 1px solid #FF6600;
+	float: left;
+	overflow: hidden;
+	margin-top: 7px;
+	margin-left: 10px;
+}
+/*蓝色外框*/
+.qdbox_lanse {
+	width: 162px;
+	height: 16px;
+	line-height: 16px;
+	border: 1px solid #0033ff;
+	float: left;
+	overflow: hidden;
+	margin-top: 7px;
+	margin-left: 10px;
+}
+/*绿色外框*/
+.qdbox_luse {
+	width: 162px;
+	height: 16px;
+	line-height: 16px;
+	border: 1px solid #00cc00;
+	float: left;
+	overflow: hidden;
+	margin-top: 7px;
+	margin-left: 10px;
+}
+/*25%红色*/
+.qdhongse {
+	width: 40px;
+	height: 14px;
+	line-height: 14px;
+	border: 1px solid #ffffff;
+	float: left;
+	background-color: #cc0000;
+	text-align: center;
+	font-size: 12px;
+	color: #ffffff;
+}
+/*50%橙色*/
+.qdcengse {
+	width: 80px;
+	height: 14px;
+	line-height: 14px;
+	border: 1px solid #ffffff;
+	float: left;
+	background-color: #FF6600;
+	text-align: center;
+	font-size: 12px;
+	color: #ffffff;
+}
+/*75%蓝色*/
+.qdlanse {
+	width: 120px;
+	height: 14px;
+	line-height: 14px;
+	border: 1px solid #ffffff;
+	float: left;
+	background-color: #0033ff;
+	text-align: center;
+	font-size: 12px;
+	color: #ffffff;
+}
+/*75%绿色*/
+.qdluse {
+	width: 160px;
+	height: 14px;
+	line-height: 14px;
+	border: 1px solid #ffffff;
+	float: left;
+	background-color: #00cc00;
+	text-align: center;
+	font-size: 12px;
+	color: #ffffff;
+}
+-->
+</style>
+#{/set} #{set 'moreScripts'}
+<script src="@{'/public/javascripts/password.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<body onload="isOk('${isOk}')">
+<legend>修改密码</legend>
+<div class="control-group">
+	<form class="form-horizontal" action="@{SuppliersPassword.update(supplierUser.id)}" method="POST">
+		<div class="control-group">
+			<label for="input01" class="control-label"><span style="color: red;">*</span>原&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;&nbsp;码&nbsp;</label>
+			<div class="controls">
+				<input name="supplierUser.oldPassword" type="password" id="old_password" size="26"
+                maxlength="20" class="inputBox"  value="${supplierUser?.oldPassword}" /><span class="error">#{error 'supplierUser.oldPassword' /}</span>
+			</div>
+		</div>
+    <div class="control-group">
+            <label for="input01" class="control-label"><span style="color: red;">*</span>新&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;&nbsp;码&nbsp;</label>
+            <div class="controls">
+               <input name="supplierUser.encryptedPassword" type="password" id="encryptedPassword" size="26" maxlength="20"  value="${supplierUser?.encryptedPassword}"
+                class="inputBox" onkeyup="javascript:ChangeQD();" /><span class="error">#{error 'supplierUser.newPassword' /}</span>
+            </div>
+             <div class="qdbox_hongse setClose" id="qdbox">
+                    <div id="pwQiangdu" class="qdhongse">很弱</div>
+                </div>
+        </div>
+        
+            <div class="control-group">
+            <label for="input01" class="control-label"><span style="color: red;">*</span>确认新密码</label>
+            <div class="controls">
+                <input name="supplierUser.confirmPassword" type="password" id="confirmPassword" size="26" maxlength="20"
+                class="inputBox"  value="${supplierUser?.confirmPassword}" /><span class="error">#{error 'supplierUser.newConfirmPassword' /}</span>
+            </div>
+        </div>
+         <div class="form-actions">
+  <button class="btn btn-primary" id="sure_submit" type="submit">确认</button>
+  <button class="btn btn-primary" onclick="javascript:window.history.back(-1)" type="button">返回</button>
+ </div>
+
+		
+	</form>
+	</div>

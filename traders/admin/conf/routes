@@ -11,6 +11,11 @@ POST    /users/checkLoginName                   SupplierUsers.checkLoginName
 GET     /users/{id}/edit                        SupplierUsers.edit
 POST    /users/{id}                             SupplierUsers.update
 DELETE  /users/{id}                             SupplierUsers.delete
+
+GET     /profile                                SupplierProfiles.index
+GET     /users/password                         SuppliersPassword.edit
+POST    /users/{id}/update                      SuppliersPassword.update
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

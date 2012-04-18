@@ -1,6 +1,7 @@
 package controllers;
 
 import controllers.modules.resale.cas.SecureCAS;
+import models.consumer.User;
 import models.resale.Resaler;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
@@ -16,7 +17,7 @@ import play.mvc.With;
  * 
  */
 @With(SecureCAS.class)
-public class ResalerInfos extends Controller {
+public class ResalerPassword extends Controller {
 
 	/**
 	 * 修改密码页面
@@ -37,17 +38,16 @@ public class ResalerInfos extends Controller {
 		} else {
 			newResaler = Resaler.findById(id);
 		}
-		
 		//密码验证
 		checkPassword(resaler, newResaler);
 
 		if (Validation.hasErrors()) {
-			render("ResalerInfos/index.html", resaler);
+			render("ResalerPassword/index.html", resaler);
 		}
 
 		Resaler.updatePassword(newResaler, resaler);
 		String isOk = "isOk";
-		render("ResalerInfos/index.html", resaler, isOk);
+		render("ResalerPassword/index.html", resaler, isOk);
 	}
 
 	/**

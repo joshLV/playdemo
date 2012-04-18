@@ -14,17 +14,6 @@
 #{/selenium}
 
 
-#{selenium "edit user validate"}
-   #{include 'test/selenium/step/login.selenium' /}
-   open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3")}/edit')
-   click('xpath=(//input[@id='supplierUser.roles.id'])[2]')
-   verifyTextPresent('yan')
-   type('id=mobile','13012012011')
-   type('name=supplierUser.encryptedPassword','')
-   clickAndWait('id=save')
-   verifyTextPresent('请输入密码!')
-#{/selenium}
-
 #{selenium "edit user"}
    #{include 'test/selenium/step/login.selenium' /}
    open('/users')
@@ -36,7 +25,7 @@
    click('id=supplierUser.roles_${play.test.Fixtures.idCache.get("models.admin.SupplierRole-sales")}')
    verifyTextPresent('test')
    type('id=mobile','13088092013')
-   type('name=supplierUser.encryptedPassword','123')
+   *{type('name=supplierUser.encryptedPassword','123')}*
    clickAndWait('id=save')
    open('/users')
    assertTitle('操作员一览')

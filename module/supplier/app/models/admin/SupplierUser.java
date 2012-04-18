@@ -1,11 +1,32 @@
 package models.admin;
 
-import com.uhuila.common.constants.DeletedStatus;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import models.supplier.Supplier;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+
 import play.Logger;
-import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.libs.Images;
@@ -13,8 +34,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Mobile;
 import play.mvc.Http.Request;
 
-import javax.persistence.*;
-import java.util.*;
+import com.uhuila.common.constants.DeletedStatus;
 
 @Entity
 @Table(name = "supplier_users")
@@ -26,7 +46,7 @@ public class SupplierUser extends Model {
 	@Required
 	@Mobile
 	public String mobile;
-	
+
 	@Column(name = "encrypted_password")
 	@Required
 	public String encryptedPassword;
@@ -51,11 +71,16 @@ public class SupplierUser extends Model {
 
 	@Column(name = "user_name")
 	public String userName;
-	
+
 	@ManyToOne
 	@JoinColumn(name="supplier_id")
 	public Supplier supplier;
 
+	@Transient
+	@Required
+	public String confirmPassword;
+	@Transient
+	public String oldPassword;
 	/**
 	 * 逻辑删除,0:未删除，1:已删除
 	 */
@@ -89,9 +114,9 @@ public class SupplierUser extends Model {
 		Map params = new HashMap();
 		sql.append("supplier.id = :supplierId");
 		params.put("supplierId", supplierId);
-		
-//		sql.append(" and loginName <> 'admin' ");
-		
+
+		//		sql.append(" and loginName <> 'admin' ");
+
 		sql.append(" and deleted = :deleted ");
 		params.put("deleted", DeletedStatus.UN_DELETED);
 
@@ -115,18 +140,8 @@ public class SupplierUser extends Model {
 	 * @param user 用户信息
 	 */
 	public static void update(long id, SupplierUser supplierUser) {
-		
+
 		SupplierUser updatedUser = SupplierUser.findById(id);
-		if (StringUtils.isNotEmpty(supplierUser.encryptedPassword) && 
-				!"******".equals(supplierUser.encryptedPassword) && 
-				!supplierUser.encryptedPassword.equals(DigestUtils.md5Hex(updatedUser.encryptedPassword))) {
-			System.out.println("AAAAAAAAAAAAA");
-			Images.Captcha captcha = Images.captcha();
-			String passwordSalt = captcha.getText(6);
-			//随机码
-			updatedUser.passwordSalt = passwordSalt;
-			updatedUser.encryptedPassword = DigestUtils.md5Hex(supplierUser.encryptedPassword + passwordSalt);
-		}
 		updatedUser.roles = supplierUser.roles;
 		updatedUser.loginName = supplierUser.loginName;
 		updatedUser.userName = supplierUser.userName;
@@ -220,4 +235,21 @@ public class SupplierUser extends Model {
 		return SupplierUser.find("bySupplierAndLoginName", supplier, loginName).first();
 	}
 
+	/**
+	 * 修改密码
+	 * 
+	 * @param newResaler 新密码信息
+	 * @param resaler 原密码信息
+	 */
+	public static void updatePassword(SupplierUser newUser, SupplierUser user) {
+		// 随机码
+		Images.Captcha captcha = Images.captcha();
+		String newPasswordSalt = captcha.getText(6);
+		newUser.passwordSalt = newPasswordSalt;
+		// 新密码
+		String newPassword = user.encryptedPassword;
+		newUser.encryptedPassword = DigestUtils.md5Hex(newPassword + newPasswordSalt);
+		newUser.save();
+
+	}
 }

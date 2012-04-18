@@ -53,7 +53,9 @@
           <a class="brand" href="#">商户后台</a>
           <div class="nav-collapse">
             #{navigation.topMenus topMenus /}
-            <p class="navbar-text pull-right">当前用户：<a href="#">${currentUser?.loginName}</a></p>
+            <p class="navbar-text pull-right">当前用户：<a id="profile" href="/profile">${currentUser?.loginName}</a>
+            <a id="profile" href="/profile">用户信息</a>
+            </p>
           </div><!--/.nav-collapse -->
         </div>
       </div>
@@ -63,6 +65,7 @@
         <div class="span2">
           <div class="well sidebar-nav">
             #{get 'sidebar-nav'/}
+            #{get 'profile-left-nav'/}
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span10">

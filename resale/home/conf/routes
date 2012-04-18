@@ -7,8 +7,8 @@ GET     /                                       ResalerGoods.index
 GET     /register                               ResalerRegister.index
 POST    /register                               ResalerRegister.create
 POST    /register/checkLoginName                ResalerRegister.checkLoginName
-GET     /resaler/{id}/password                  ResalerInfos.index
-POST    /resaler/{id}                           ResalerInfos.update
+GET     /resaler//password                      ResalerPassword.index
+POST    /resaler/{id}                           ResalerPassword.update
 
 # Resaler Favorite
 GET     /library                                ResalerFavs.index

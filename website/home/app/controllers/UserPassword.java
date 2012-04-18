@@ -11,7 +11,7 @@ import play.mvc.With;
 import controllers.modules.website.cas.SecureCAS;
 
 @With(SecureCAS.class)
-public class UserInfomations extends Controller{
+public class UserPassword extends Controller{
 
 	/**
 	 * 修改密码页面 
@@ -36,12 +36,12 @@ public class UserInfomations extends Controller{
 		checkPassword(user, newUser);
 
 		if (Validation.hasErrors()) {
-			render("UserInfomations/index.html", user);
+			render("UserPassword/index.html", user);
 		}
 
 		User.updatePassword(newUser, user);
 		String isOk = "isOk";
-		render("UserInfomations/index.html", user, isOk);
+		render("UserPassword/index.html", user, isOk);
 	}
 
 	/**

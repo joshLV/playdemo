@@ -11,8 +11,8 @@ GET     /coupons                                      MyCoupons.coupons
 GET     /payment/{id}                                 MyOrders.pay
 POST    /coupons/refund/{id}                          MyCoupons.applyRefund
 
-GET     /user/{id}/password                           UserInfomations.index
-POST    /user/{id}                                    UserInfomations.update
+GET     /user/password                                UserPassword.index
+POST    /user/{id}                                    UserPassword.update
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

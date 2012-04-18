@@ -17,7 +17,7 @@ import org.junit.Test;
 import play.libs.Images;
 import play.test.Fixtures;
 import play.test.UnitTest;
-public class ResalerInfosUnitTest extends UnitTest {
+public class ResalerPasswordUnitTest extends UnitTest {
 	@Before
 	public void setup() {
 		Fixtures.delete(Resaler.class);
