@@ -26,6 +26,24 @@
         <property name="password">
             <value>seewidb</value>
         </property>
+        <property name="maxActive">
+          <value>50</value>
+        </property>
+        <property name="maxIdle">
+          <value>10</value>
+        </property>
+        <property name="maxWait">
+          <value>10000</value>
+        </property>
+        <property name="timeBetweenEvictionRunsMillis">
+          <value>3600000</value><!--1 hours-->
+        </property>
+        <property name="testWhileIdle">
+          <value>true</value>
+        </property>
+        <property name="validationQuery">
+          <value>select 1 from dual</value>
+        </property>
     </bean>
 
     <bean id = "jdbcTemplate"
