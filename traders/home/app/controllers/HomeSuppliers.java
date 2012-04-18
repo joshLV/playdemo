@@ -23,8 +23,6 @@ public class HomeSuppliers extends Controller {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
 
-
-        System.out.println("supplier.brands.size():" + supplier.brands.size());
         render(supplier);
     }
 
