@@ -1,0 +1,37 @@
+#{selenium 'Test ResalerInfos/index.html Normal'}
+#{include 'test/selenium/step/login.selenium' /}
+open('/orders')
+clickAndWait('id=pwd')
+verifyTitle('修改密码')
+type('id=old_password','')
+type('id=password','')
+type('id=confirmPassword','')
+clickAndWait('id=sure_submit')
+verifyTextPresent('请输入原密码!')
+verifyTextPresent('请输入新密码!')
+verifyTextPresent('请输入确认新密码!')
+
+type('id=old_password','1313141')
+type('id=password','')
+type('id=confirmPassword','')
+clickAndWait('id=sure_submit')
+verifyTextPresent('原密码输入的不对！')
+
+
+type('id=old_password','123456')
+type('id=password','123456')
+type('id=confirmPassword','123456')
+clickAndWait('id=sure_submit')
+verifyTextPresent('新密码和原密码一样，请重新输入！')
+
+#{/selenium}
+
+#{selenium 'Test ResalerInfos/index.html Normal'}
+#{include 'test/selenium/step/login.selenium' /}
+open('/user/${play.test.Fixtures.idCache.get("models.consumer.User-selenium")}/password')
+type('id=old_password','123456')
+type('id=password','123')
+type('id=confirmPassword','1234567')
+clickAndWait('id=sure_submit')
+verifyTextPresent('密码不能小于6位！')
+#{/selenium}

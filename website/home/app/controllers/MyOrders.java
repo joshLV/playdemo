@@ -35,7 +35,7 @@ public class MyOrders extends Controller {
 
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders");
 		renderCond(condition);
-		render(orderList, breadcrumbs);
+		render(orderList, breadcrumbs,user);
 	}
 
 	/**

@@ -25,44 +25,17 @@ public class ResalerInfosUnitTest extends UnitTest {
 	}
 
 	@Test
-	public void registersTest() { 
-		List<Resaler> list = Resaler.findAll(); 
-		int cnt =list.size();
-		Resaler resaler = new Resaler();
-		resaler.loginName = "yyyy";
-		resaler.mobile = "13000000001";
-		Images.Captcha captcha = Images.captcha();
-		String passwordSalt = captcha.getText(6);
-		//密码加密
-		resaler.password = DigestUtils.md5Hex("1"+passwordSalt);
-		resaler.confirmPassword = "1";
-		resaler.userName = "小李";
-		//正常
-		resaler.status = ResalerStatus.PENDING;
-		//随机码
-		resaler.passwordSalt = passwordSalt;
-		resaler.address="上海市";
-		resaler.accountType=AccountType.COMPANY;
-		resaler.email="11@qq.com";
-		resaler.loginIp = "127.0.0.1";
-		resaler.lastLoginAt = new Date();
-		resaler.createdAt = new Date();
-		resaler.save();
-
-		list = Resaler.findAll(); 
-		assertEquals(cnt+1, list.size());  
-	}  
-
-	//测试是否存在用户名和手机
-	@Test
-	public void testCheckValue(){
-		String returnFlag = Resaler.checkValue("jane", "");
-		assertEquals("1",returnFlag); 
-
-		returnFlag = Resaler.checkValue("dd", "13213123124");
-		assertEquals("2",returnFlag); 
-
-		returnFlag = Resaler.checkValue("ee", "13213123125");
-		assertEquals("0",returnFlag);
-	}
+	public void passwordTest() { 
+	
+		Long resalerId = (Long) Fixtures.idCache.get("models.resale.Resaler-Resaler_1");
+		Resaler resaler =new Resaler();
+		resaler.password="123456";
+		Resaler newresaler =Resaler.findById(resalerId);
+		String password = newresaler.password;
+		
+		resaler.updatePassword(newresaler, resaler);
+		Resaler updresaler =Resaler.findById(resalerId);
+		assertNotSame(password, updresaler.password);  
+		assertEquals( DigestUtils.md5Hex("123456"+updresaler.passwordSalt), updresaler.password);  
+	} 
 }

@@ -33,7 +33,7 @@ public class MyCoupons extends Controller {
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的券订单", "/coupons");
 		renderCond(condition);
 		
-		render("MyCoupons/e_coupons.html", couponsList, breadcrumbs);
+		render("MyCoupons/e_coupons.html", couponsList, breadcrumbs,user);
 	}
 
 	/**

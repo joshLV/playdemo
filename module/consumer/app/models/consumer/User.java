@@ -1,16 +1,24 @@
 package models.consumer;
 
-import play.data.validation.Email;
-import play.data.validation.Match;
-import play.data.validation.Required;
-import play.db.jpa.Model;
+import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.util.Date;
-import java.util.List;
+
+import models.resale.Resaler;
+
+import org.apache.commons.codec.digest.DigestUtils;
+
+import play.data.validation.Email;
+import play.data.validation.MaxSize;
+import play.data.validation.MinSize;
+import play.data.validation.Required;
+import play.db.jpa.Model;
+import play.libs.Images;
+import play.modules.view_ext.annotation.Mobile;
 
 @Entity
 @Table(name = "users")
@@ -21,7 +29,7 @@ public class User extends Model {
 	@Email
 	public String loginName;
 
-	@Match(value="^1[3|4|5|8][0-9]\\d{4,8}$",message="手机格式不匹配！")
+	@Mobile
 	@Required
 	public String mobile;
 
@@ -30,6 +38,8 @@ public class User extends Model {
 
 	@Column(name = "encrypted_password")
 	@Required
+	@MinSize(value = 6)
+	@MaxSize(value = 20)
 	public String password;
 
 	@Transient
@@ -53,8 +63,10 @@ public class User extends Model {
 	@Column(name="created_at")
 	public Date createdAt;
 
+	@Transient
+	public String oldPassword;
 
-	
+
 	/**
 	 * 判断用户名和手机是否唯一
 	 *
@@ -74,5 +86,23 @@ public class User extends Model {
 		}
 
 		return returnFlag;
+	}
+
+	/**
+	 * 修改密码
+	 * 
+	 * @param newUser 新密码信息
+	 * @param user 原密码信息
+	 */
+	public static void updatePassword(User newUser, User user) {
+		// 随机码
+		Images.Captcha captcha = Images.captcha();
+		String newPasswordSalt = captcha.getText(6);
+		newUser.passwordSalt = newPasswordSalt;
+		// 新密码
+		String newPassword = user.password;
+		newUser.password = DigestUtils.md5Hex(newPassword + newPasswordSalt);
+		newUser.save();
+
 	}
 }

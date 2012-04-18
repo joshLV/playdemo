@@ -53,7 +53,7 @@ public class Register extends Controller{
 		user.password=DigestUtils.md5Hex(user.password+passwordSalt);
 		//正常
 		user.status=1;
-		//随机吗
+		//随机码
 		user.passwordSalt=passwordSalt;
 		//获得IP
 		user.loginIp=request.current().remoteAddress;

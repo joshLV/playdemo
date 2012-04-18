@@ -6,6 +6,18 @@ play-paginate.prev=&lsaquo;&nbsp;上一页
 play-paginate.next=下一页&nbsp;&rsaquo;
 play-paginate.last=尾页&nbsp;&raquo;
 
+validation.required=请输入%s!
+validation.minSize=%s的长度至少%d位!
+validation.maxSize=%s的长度不能超过%d!
+
+user.oldPassword=原密码
+user.newPassword=新密码
+user.newConfirmPassword=确认新密码
+validation.newPassword.minSize=密码不能小于6位！
+validation.newPassword.maxSize=密码不能大于20位！
+validation.confirmPassword=两次密码输入的不一样！！
+validation.oldPassword=原密码输入的不对！
+validation.newPassword.confirm=新密码和原密码一样，请重新输入！
 #订单状态
 order.UNPAID=未支付
 order.PAID=已支付

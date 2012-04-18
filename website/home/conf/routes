@@ -10,6 +10,10 @@ GET     /orders/{id}                                  MyOrders.details
 GET     /coupons                                      MyCoupons.coupons
 GET     /payment/{id}                                 MyOrders.pay
 POST    /coupons/refund/{id}                          MyCoupons.applyRefund
+
+GET     /user/{id}/password                           UserInfomations.index
+POST    /user/{id}                                    UserInfomations.update
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
