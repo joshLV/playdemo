@@ -3,16 +3,15 @@ package models.supplier;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.constants.ImageSize;
 import com.uhuila.common.util.PathUtil;
+import models.sales.Brand;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
-import play.data.validation.Match;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.view_ext.annotation.Mobile;
 
 import javax.persistence.*;
-
 import java.util.Date;
 import java.util.List;
 
@@ -38,36 +37,42 @@ public class Supplier extends Model {
     @MaxSize(50)
     @Column(name = "full_name")
     public String fullName;
-    
+
     /**
      * 职务
      */
     @Required
     @MaxSize(100)
     public String position;
-    
 
+    /**
+     * 负责人手机号
+     */
     @Mobile
-	public String mobile;
-	
-	   /**
+    public String mobile;
+
+    /**
      * 负责人联系电话
      */
     @MaxSize(50)
     public String phone;
-    
-	@Required
-	@Column(name = "user_name")
-	public String userName;
-	
-	@Column(name = "login_name")
-	public String loginName;
-	
+
+    /**
+     * 负责人姓名
+     */
+    @Required
+    @Column(name = "user_name")
+    public String userName;
+
+    @Column(name = "login_name")
+    public String loginName;
+
     /**
      * 创建时间
      */
     @Column(name = "created_at")
     public Date createdAt;
+
     /**
      * 修改时间
      */
@@ -91,6 +96,11 @@ public class Supplier extends Model {
      */
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OrderBy("displayOrder,name")
+    @JoinColumn(name="supplier_id")
+    public List<Brand> brands;
 
     public Supplier(Long id) {
         this.id = id;
@@ -119,7 +129,7 @@ public class Supplier extends Model {
     }
 
 
-    public static void update(Long id,Supplier supplier) {
+    public static void update(Long id, Supplier supplier) {
         Supplier sp = findById(id);
         if (sp == null) {
             return;
@@ -165,8 +175,8 @@ public class Supplier extends Model {
         supplier.status = status;
         supplier.save();
     }
-    
-    
+
+
     @Override
     public String toString() {
         return "Supplier[" + this.fullName + "@" + this.domainName + "(" + this.id + ")]";

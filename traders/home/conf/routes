@@ -4,8 +4,12 @@
 
 # Home page
 GET     /                                       Home.index
+
 # 资金帐户
-GET     /account-sequences                               AccountSequences.index
+GET     /account-sequences                      AccountSequences.index
+
+# 商户信息
+GET     /suppliers/{id}                         HomeSuppliers.show
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

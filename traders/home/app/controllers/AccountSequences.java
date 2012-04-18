@@ -40,6 +40,7 @@ public class AccountSequences extends Controller {
         JPAExtPaginator<AccountSequence> accountSequences = AccountSequence.findByAccount(condition,
                 pageNumber, PAGE_SIZE);
         renderArgs.put("condition", condition);
+
         render(account, accountSequences);
     }
 

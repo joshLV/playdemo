@@ -18,6 +18,7 @@ public class Images extends Controller {
     public static final String MIDDLE = "middle";
     public static final String LARGE = "large";
     public static final String TINY = "tiny";
+    public static final String LOGO = "logo";
 
     private static final Pattern targetImagePattern = Pattern.compile("^([^_]+)_([a-z0-9]+).(jpg|png|gif|jpeg)$");
     private static final String IMAGE_ROOT_ORIGINAL = play.Play
@@ -26,6 +27,7 @@ public class Images extends Controller {
     private static final String IMAGE_ROOT_GENERATED = play.Play
             .configuration.getProperty("image.root.generated",
                     "/nfs/images/p"); //缩略图根目录
+
 
     /**
      * 根据图片路径显示指定规格的缩略图.
@@ -55,6 +57,10 @@ public class Images extends Controller {
             width = 300;
             height = 180;
             imageSizeType = LARGE;
+        } else if (imageName.contains(LOGO)) {
+            width = 300;
+            height = 180;
+            imageSizeType = LOGO;
         } else {
             notFound();
         }

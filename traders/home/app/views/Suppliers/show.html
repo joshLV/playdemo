@@ -1,0 +1,70 @@
+#{extends 'layout_trader/layout.html' /}
+#{set title:'商户基本信息' /}
+#{include 'Share/nav.html' /}
+<!--主体内容部分-->
+#{set 'moreScripts' }
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<style type="text/css">
+    .controls {
+        padding-top: 5px;
+    }
+</style>
+<div class="body">
+    <legend>#{get title/}</legend>
+    <form class="form-horizontal">
+        <fieldset>
+            <div class="control-group">
+                <label class="control-label">&{'supplier.logo'}</label>
+                <div class="controls"><img src='${supplier?.originalLogo}'/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">&{'supplier.fullName'}</label>
+                <div class="controls">${supplier?.fullName}
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">&{'supplier.domainName'}</label>
+                <div class="controls">${supplier?.domainName}
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">&{'supplier.userName'}</label>
+                <div class="controls">${supplier?.userName}
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">&{'supplier.position'}</label>
+                <div class="controls">${supplier?.position}
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">&{'supplier.mobile'}</label>
+                <div class="controls">${supplier?.mobile}
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">&{'supplier.phone'}</label>
+                <div class="controls">${supplier?.phone}</div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">&{'supplier.brands'}</label>
+                <div class="controls">#{list items:supplier?.brands, as:'brand'}${brand?.name}&nbsp;&nbsp;#{/list}</div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">&{'supplier.createdAt'}</label>
+                <div class="controls">${supplier?.createdAt}</div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+
+
+
+
+
+
+

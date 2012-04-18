@@ -1,0 +1,40 @@
+#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class,
+models.sales.Brand.class,models.supplier.Supplier.class],
+load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/brands.yml'] /}
+
+#{selenium '添加品牌'}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/brands/new')
+assertTextPresent('添加品牌')
+type('id=brand_name','Nike')
+type('id=brand_displayOrder','100')
+type('id=brand_introduce','introduce')
+clickAndWait('id=save')
+verifyTitle('添加品牌')
+verifyTextPresent('无效的Logo!')
+#{/selenium}
+
+#{selenium '修改品牌'}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/brands/${play.test.Fixtures.idCache.get("models.sales.Brand-Brand_10")}/edit')
+verifyTitle('修改品牌')
+verifyValue('id=brand_name','豆捞坊4')
+verifyValue('id=brand_displayOrder','200')
+type('id=brand_name','豆捞坊-Test')
+type('id=brand_displayOrder','100')
+clickAndWait('id=save')
+verifyTitle('品牌一览')
+verifyTextPresent('豆捞坊-Test')
+#{/selenium}
+
+#{selenium '删除品牌'}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/brands')
+
+verifyTitle('品牌一览')
+verifyTextPresent('来一份4')
+clickAndWait('id=del_${play.test.Fixtures.idCache.get("models.sales.Brand-Brand_9")}')
+assertConfirmation('您确定要删除来一份4吗？')
+verifyTitle('品牌一览')
+verifyTextNotPresent('来一份4')
+#{/selenium}

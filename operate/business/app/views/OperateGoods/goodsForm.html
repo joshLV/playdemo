@@ -3,7 +3,8 @@
 <script src="@{'/public/javascripts/goods-form.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 #{if "add".equals(action)}
-    #{layout_operate.selectField name:'goods.supplierId', value:goods?.supplierId, error:'goods.supplierId'}
+    #{layout_operate.selectField name:'goods.supplierId', class:'span2', value:goods?.supplierId,
+    error:'goods.supplierId'}
         #{list items:supplierList, as:'supplier' }
             #{option supplier.id}${supplier.fullName}#{/option}
         #{/list}

@@ -1,0 +1,33 @@
+#{if "add".equals(action)}
+    #{layout_operate.selectField name:'brand.supplier.id', value:brand?.supplier?.id, error:'brand.supplier',
+    class:'span2'}
+        #{list items:supplierList, as:'supplier' }
+            #{option supplier.id}${supplier.fullName}#{/option}
+        #{/list}
+    #{/layout_operate.selectField}
+#{/if}
+#{else}
+<input type="hidden" name="brand.supplier.id" value="${brand?.supplier?.id}">
+    #{layout_operate.textField name:'brand.supplier', value:brand?.supplier?.fullName, disabled:true/}
+#{/else}
+#{layout_operate.textField name:'brand.name', value:brand?.name, required:true/}
+#{layout_operate.textField name:'brand.displayOrder', value:brand?.displayOrder, required:true/}
+#{layout_operate.textareaField name:'brand.introduce', value:brand?.introduce/}
+#{if "add".equals(action)}
+    #{layout_operate.fileField name:'logoImage', required:true/}
+#{/if}
+#{else}
+    #{layout_operate.fileField name:'logoImage'/}
+<div class="control-group">
+    <label for='levelPrices_${level}' class="control-label"> </label>
+
+    <div class="controls">(修改前)<br/><img src="${imageLogoPath}"/>
+        <input type="hidden" name="imageLogoPath" value="${imageLogoPath}"></div>
+</div>
+#{/else}
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="保存"/>
+#{if "edit".equals(action)}
+    #{vx.cancelButton url:'/brands', class:'btn btn-primary'/}
+#{/if}
+</div>

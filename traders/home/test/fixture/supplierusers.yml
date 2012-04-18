@@ -1,6 +1,22 @@
 supplier.Supplier(kfc):
  "domainName": "localhost"
  "fullName": "肯德基"
+ "userName": "张三"
+ "position": "总经理"
+ "mobile": "13412341234"
+ "phone": "56788765"
+ "logo": "/0/0/48/origin.jpg"
+ "createdAt": "2012-03-12T10:39:20"
+
+supplier.Supplier(apple):
+ "domainName": "localhost"
+ "fullName": "苹果"
+ "userName": "利斯"
+ "position": "经理"
+ "mobile": "13400000000"
+ "phone": "58601234"
+ "logo": "/0/0/50/origin.jpg"
+ "createdAt": "2012-03-10T10:39:20"
 
 admin.SupplierUser(user1):
  "loginName": "1"

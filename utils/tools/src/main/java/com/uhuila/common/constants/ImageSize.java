@@ -8,7 +8,7 @@ package com.uhuila.common.constants;
  * Time: 11:49 AM
  */
 public enum ImageSize {
-    TINY("tiny"), SMALL("small"), MIDDLE("middle"), LARGE("large"), ORIGINAL("");
+    TINY("tiny"), SMALL("small"), MIDDLE("middle"), LARGE("large"),LOGO("logo"), ORIGINAL("");
     
     private String value;
     private ImageSize(String value){

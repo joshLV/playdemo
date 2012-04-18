@@ -1,10 +1,7 @@
 #{fixture delete:[
 models.accounts.AccountSequence.class,
 models.admin.SupplierUser.class,models.admin.SupplierRole.class,
-models.accounts.Account.class
-]
-
-, load:['fixture/roles.yml','fixture/supplierusers.yml', 'fixture/account_sequence.yml'] /}
+models.accounts.Account.class], load:['fixture/roles.yml','fixture/supplierusers.yml', 'fixture/account_sequence.yml'] /}
 
 %{
     account = models.accounts.util.AccountUtil.getUhuilaAccount()

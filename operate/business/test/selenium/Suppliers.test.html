@@ -1,14 +1,14 @@
 #{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class,
       models.supplier.Supplier.class],
-load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/supplier_unit.yml'] /}
+load:['fixture/roles.yml','fixture/supplierusers.yml'] /}
 #{selenium 'Test Suppliers/index.html Normal'}
     #{include 'test/selenium/step/login-retry.selenium' /}
 open('/suppliers')
 verifyTitle('商户一览')
-verifyTextPresent('来一份')
-verifyTextPresent('lyf.uhuila.net')
+verifyTextPresent('肯德基')
+verifyTextPresent('kdj.uhuila.net')
 verifyTextPresent('正常')
-verifyTextPresent('2012-02-29')
+verifyTextPresent('2012-03-12')
 verifyTextPresent('本地')
 verifyTextPresent('localhost.uhuila.net')
 verifyTextPresent('正常')

@@ -1,3 +1,21 @@
+supplier.Supplier(Supplier1):
+ "domainName": "kdj"
+ "fullName": "肯德基"
+ "userName": "张三"
+ "position": "总经理"
+ "mobile": "13412341234"
+ "phone": "56788765"
+ "logo": "/0/0/48/origin.jpg"
+ "createdAt": "2012-03-12T10:39:20"
+ "deleted": UN_DELETED
+
+supplier.Supplier(Supplier2):
+ "domainName": 'localhost'
+ "fullName": 本地
+ "status": NORMAL
+ "createdAt": "2012-03-19T16:33:18"
+ "deleted": UN_DELETED
+
 admin.OperateUser(user1):
  "loginName": "1"
  "mobile": "1300000000"

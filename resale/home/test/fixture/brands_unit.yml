@@ -1,4 +1,4 @@
-sales.Brand(Brand_1):
+\sales.Brand(Brand_1):
  "name": "来一份"
  "displayOrder": "100"
  "category": "Category_1"

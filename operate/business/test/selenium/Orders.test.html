@@ -1,12 +1,15 @@
-#{fixture delete:[models.order.Order.class,
-models.sales.Category.class,
-models.sales.Area.class,
-models.sales.Goods.class,
-models.sales.Brand.class,
+#{fixture delete:[models.admin.SupplierUser.class,
+    models.admin.SupplierRole.class,
+    models.order.Order.class,
+    models.sales.Category.class,
+    models.sales.Area.class,
+    models.sales.Goods.class,
+    models.sales.Brand.class,
     models.sales.Category.class,models.sales.Area.class,
     models.sales.Shop.class, models.sales.Goods.class,
     models.order.OrderItems.class,models.order.ECoupon.class,] ,
-load:['fixture/areas.yml','fixture/base_data.yml','fixture/orders.yml'] /}
+load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/areas.yml','fixture/base_data.yml',
+'fixture/orders.yml'] /}
 #{selenium "查看订单界面"}
     #{include 'test/selenium/step/login.selenium' /}
     open('/orders')

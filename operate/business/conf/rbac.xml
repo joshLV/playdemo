@@ -28,6 +28,10 @@
 			<navigation key="suppliers_add" action="Suppliers.add" text="商户添加" permissions="SUPPLIERS_NEW" />
 			<navigation key="suppliers_index" action="Suppliers.index" text="商户管理" permissions="SUPPLIERS" />
 		</navigation>
+        <navigation key="brands" text="品牌" permissions="BRANDS_NEW,BRANDS">
+            <navigation key="brands_add" action="OperateBrands.add" text="品牌添加" permissions="BRANDS_NEW" />
+            <navigation key="brands_index" action="OperateBrands.index" text="品牌管理" permissions="BRANDS" />
+        </navigation>
 	</navigation>
 
 	<navigation key="resale_app" text="分销商管理" action="Resalers.index">

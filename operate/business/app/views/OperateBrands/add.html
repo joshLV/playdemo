@@ -1,0 +1,10 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'添加品牌' /}
+#{include '/share/nav.html' /}
+<div class="body">
+#{form @OperateBrands.create() , id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
+    <legend>${title}</legend>
+    #{set action:"add"/}
+    #{include '/OperateBrands/brandForm.html'/}
+#{/form}
+</div>

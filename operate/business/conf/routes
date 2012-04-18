@@ -51,6 +51,14 @@ GET     /orders                                 OperateOrders.index
 GET     /orders/{id}                            OperateOrders.details
 GET     /coupons                                OperateCoupons.index
 
+#品牌管理
+GET     /brands                                 OperateBrands.index
+GET     /brands/new                             OperateBrands.add
+POST    /brands                                 OperateBrands.create
+DELETE  /brands/{id}                            OperateBrands.delete
+GET     /brands/{id}/edit                       OperateBrands.edit
+PUT     /brands/{id}                            OperateBrands.update
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

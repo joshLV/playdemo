@@ -26,6 +26,7 @@ public class GoodsTest extends FunctionalTest {
         Fixtures.delete(Area.class);
         Fixtures.loadModels("fixture/areas_unit.yml");
         Fixtures.loadModels("fixture/categories_unit.yml");
+        Fixtures.loadModels("fixture/supplier_unit.yml");
         Fixtures.loadModels("fixture/brands_unit.yml");
         Fixtures.loadModels("fixture/shops_unit.yml");
         Fixtures.loadModels("fixture/goods_unit.yml");

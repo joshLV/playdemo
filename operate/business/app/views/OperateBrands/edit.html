@@ -1,0 +1,15 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'修改品牌' /}
+#{get 'moreScripts'}
+#{/get}
+#{include '/share/nav.html' /}
+<div class="body">
+#{form @OperateBrands.update(id), id:'form',enctype:'multipart/form-data',
+class:"form-horizontal", method:'PUT' }
+    <legend>${title}</legend>
+    #{set action:"edit"/}
+    #{include '/OperateBrands/brandForm.html'/}
+#{/form}
+</div>
+
+

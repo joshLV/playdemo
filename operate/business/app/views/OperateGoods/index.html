@@ -11,7 +11,7 @@
         <table width="100%">
             <tr>
                 <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-                #{select 'condition.supplierId', id:supplierId, class:'input-small', value:condition?.supplierId}
+                #{select 'condition.supplierId', id:supplierId, class:'span2', value:condition?.supplierId}
                     #{option "0"}不限#{/option}
                     #{list items:supplierList, as:'supplier'}
                         #{option supplier?.id}${supplier?.fullName}#{/option}
