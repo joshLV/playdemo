@@ -49,7 +49,7 @@ public class BrandUnitTest extends UnitTest {
     @Test
     public void testGetBrandPage() {
         long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
-        ModelPaginator brandPage = Brand.getBrandPage(1, 15, supplierId);
+        ModelPaginator brandPage = Brand.getBrandPage(1, 15, 1L);
         assertEquals(3, brandPage.size());
         Brand firstBrand = (Brand) brandPage.get(0);
         assertEquals("来一份", firstBrand.name);
