@@ -12,6 +12,10 @@ require:
     - base_rbac -> base_rbac
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - view_ext -> view_ext
+    - sales -> sales
+    - org.jsoup -> jsoup 1.6.1
+    - commons-lang -> commons-lang 2.6
+    - resale -> resale
 
 repositories:
     - mavenRepository:
@@ -19,6 +23,8 @@ repositories:
         root:       "http://dev.uhuila.cn/nexus/content/groups/public"
         contains:
             - com.uhuila.utils -> *
+            - commons-lang -> *
+            - org.jsoup -> *
         m2compatible: true
 
     - play1ContributedModules:
@@ -37,3 +43,5 @@ repositories:
             - base_rbac -> *
             - supplier -> *
             - view_ext -> *
+            - sales -> *
+            - resale -> *
