@@ -44,7 +44,7 @@ public class ResalerOrders extends Controller {
 		Order.getThisMonthTotal(resaler);
 		Map totalMap = Order.getTotalMap();
 		
-		render(orderList, breadcrumbs,totalMap);
+		render(orderList, breadcrumbs,totalMap,resaler);
 	}
 
 	/**

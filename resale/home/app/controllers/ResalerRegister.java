@@ -44,7 +44,7 @@ public class ResalerRegister extends Controller {
 		resaler.password=DigestUtils.md5Hex(resaler.password+passwordSalt);
 		//正常
 		resaler.status=ResalerStatus.PENDING;
-		//随机吗
+		//随机码
 		resaler.passwordSalt=passwordSalt;
 		//获得IP
 		resaler.loginIp=request.remoteAddress;

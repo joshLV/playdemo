@@ -38,14 +38,14 @@ public class RegisterTest extends FunctionalTest {
 
 		loginUserParams.put("resaler.loginName", "2qqq");
 		loginUserParams.put("resaler.mobile", "15131621121");
-		loginUserParams.put("resaler.password", "123456");
-		loginUserParams.put("resaler.confirmPassword", "123456");
+		loginUserParams.put("resaler.password", "1111111a");
+		loginUserParams.put("resaler.confirmPassword", "1111111a");
 		loginUserParams.put("resaler.address", "bb");
 		loginUserParams.put("resaler.email", "112@qq.com");
 		loginUserParams.put("resaler.accountType", AccountType.CONSUMER.toString());
 		//正常
 		loginUserParams.put("resaler.status", ResalerStatus.PENDING.toString());
-		loginUserParams.put("resaler.phone", "0213212121");
+		loginUserParams.put("resaler.phone", "0213112121");
 		loginUserParams.put("resaler.userName", "aa");
 		loginUserParams.put("resaler.identityNo", "341281198208268785");
 		loginUserParams.put("resaler.postCode", "123456");

@@ -1,9 +1,7 @@
 package models.resale;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,25 +10,18 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.uhuila.common.constants.DeletedStatus;
-
-import models.sales.Brand;
-import models.sales.Goods;
-import models.sales.GoodsCondition;
-import models.supplier.Supplier;
-import models.supplier.SupplierStatus;
-
 import play.data.validation.Email;
-import play.data.validation.Match;
 import play.data.validation.MaxSize;
-import play.data.validation.Min;
 import play.data.validation.MinSize;
 import play.data.validation.Phone;
 import play.data.validation.Required;
 import play.db.jpa.Model;
+import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
+import play.modules.view_ext.annotation.Mobile;
 
 @Entity
 @Table(name="resaler")
@@ -51,6 +42,8 @@ public class Resaler extends Model {
 
 	@Column(name = "encrypted_password")
 	@Required
+	@MinSize(value = 6)
+	@MaxSize(value = 20)
 	public String password;
 
 	/**
@@ -69,7 +62,7 @@ public class Resaler extends Model {
 	public String passwordSalt;
 
 	@Required
-	@Match(value="^1[3|4|5|8][0-9]\\d{4,8}$",message="手机格式不匹配！")
+	@Mobile
 	public String mobile;
 
 	@Required
@@ -117,6 +110,9 @@ public class Resaler extends Model {
 
 	@MaxSize(value=500)
 	public String remark;
+
+	@Transient
+	public String oldPassword;
 
 	/**
 	 * 判断用户名和手机是否唯一
@@ -181,6 +177,24 @@ public class Resaler extends Model {
 
 	public static void unfreeze(long id) {
 		update(id, ResalerStatus.APPROVED,null,null);
+	}
+
+	/**
+	 * 修改密码
+	 * 
+	 * @param newResaler 新密码信息
+	 * @param resaler 原密码信息
+	 */
+	public static void updatePassword(Resaler newResaler, Resaler resaler) {
+		// 随机码
+		Images.Captcha captcha = Images.captcha();
+		String newPasswordSalt = captcha.getText(6);
+		newResaler.passwordSalt = newPasswordSalt;
+		// 新密码
+		String newPassword = resaler.password;
+		newResaler.password = DigestUtils.md5Hex(newPassword + newPasswordSalt);
+		newResaler.save();
+
 	}
 
 }

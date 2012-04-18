@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>修改密码</title>
+<style type="text/css">
+<!--
+body,td,th {
+    font-size: 14px;
+}
+
+a {
+    font-size: 14px;
+    color: #003399;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+    color: #003399;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #0033FF;
+}
+
+a:active {
+    text-decoration: none;
+    color: #003399;
+}
+
+.box {
+    width: 600px;
+    height: auto;
+    border: 1px solid #8FC319;
+    margin: 0 auto;
+}
+
+.title {
+    width: 100%;
+    height: 26px;
+    line-height: 26px;
+    border-bottom: 1px solid #8FC319;
+    margin: 0 auto;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+    color: #666666;
+    background-color: #A0D771;
+}
+
+.commd {
+    width: 90%;
+    border: 1px solid #cccccc;
+    height: 20px;
+    line-height: 20px;
+    margin: 0 auto;
+    margin-top: 10px;
+    background-color: #f1f1f1;
+}
+
+.commdinfo {
+    width: 90%;
+    border: 1px solid #cccccc;
+    height: 200px;
+    line-height: 140%;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+.workbox {
+    width: 90%;
+    border: 1px solid #cccccc;
+    margin: 0 auto;
+    margin-top: 10px;
+    list-style: none;
+}
+
+.workbox li {
+    height: 34px;
+    line-height: 34px;
+    width: 99%;
+    color: #000000;
+    border-bottom: 1px solid #cccccc;
+    margin: 0 auto;
+}
+
+.input_box {
+    width: auto;
+    height: 34px;
+    line-height: 34px;
+    float: left;
+}
+
+.inputBox {
+    height: 26px;
+    line-height: 26px;
+    border: 1px solid #999999;
+    background-image: url(Images/inputBg.png);
+    background-repeat: repeat-x;
+    margin-top: 2px;
+    float: left;
+    font-size: 14px;
+    color: #000000;
+}
+/*设置为显示*/
+.setShow {
+    visibility: visible
+}
+/*设置为隐藏*/
+.setClose {
+    visibility: hidden;
+}
+/*红色外框*/
+.qdbox_hongse {
+    width: 162px;
+    height: 16px;
+    line-height: 16px;
+    border: 1px solid #ff0000;
+    float: left;
+    overflow: hidden;
+    margin-top: 7px;
+    margin-left: 10px;
+}
+/*橙色外框*/
+.qdbox_cengse {
+    width: 162px;
+    height: 16px;
+    line-height: 16px;
+    border: 1px solid #FF6600;
+    float: left;
+    overflow: hidden;
+    margin-top: 7px;
+    margin-left: 10px;
+}
+/*蓝色外框*/
+.qdbox_lanse {
+    width: 162px;
+    height: 16px;
+    line-height: 16px;
+    border: 1px solid #0033ff;
+    float: left;
+    overflow: hidden;
+    margin-top: 7px;
+    margin-left: 10px;
+}
+/*绿色外框*/
+.qdbox_luse {
+    width: 162px;
+    height: 16px;
+    line-height: 16px;
+    border: 1px solid #00cc00;
+    float: left;
+    overflow: hidden;
+    margin-top: 7px;
+    margin-left: 10px;
+}
+/*25%红色*/
+.qdhongse {
+    width: 40px;
+    height: 14px;
+    line-height: 14px;
+    border: 1px solid #ffffff;
+    float: left;
+    background-color: #cc0000;
+    text-align: center;
+    font-size: 12px;
+    color: #ffffff;
+}
+/*50%橙色*/
+.qdcengse {
+    width: 80px;
+    height: 14px;
+    line-height: 14px;
+    border: 1px solid #ffffff;
+    float: left;
+    background-color: #FF6600;
+    text-align: center;
+    font-size: 12px;
+    color: #ffffff;
+}
+/*75%蓝色*/
+.qdlanse {
+    width: 120px;
+    height: 14px;
+    line-height: 14px;
+    border: 1px solid #ffffff;
+    float: left;
+    background-color: #0033ff;
+    text-align: center;
+    font-size: 12px;
+    color: #ffffff;
+}
+/*75%绿色*/
+.qdluse {
+    width: 160px;
+    height: 14px;
+    line-height: 14px;
+    border: 1px solid #ffffff;
+    float: left;
+    background-color: #00cc00;
+    text-align: center;
+    font-size: 12px;
+    color: #ffffff;
+}
+-->
+</style>
+<script language="javascript">
+    function ChangeQD()
+ {
+         var pwQiangdu=document.getElementById("pwQiangdu");//强度内容框
+      var password=document.getElementById("password");
+      var ls=f_CalcPwdRank(password.value);
+      //pwQiangdu.innerHTML="强度"+ls;
+      switch(ls) { 
+                case 0:    //不显示
+                case 1:    //弱
+                case 2:    //中
+                case 3:    //强 
+                 showPwRank(ls);
+                break;
+               default:
+                showPwRank(3);
+    }
+ }
+   //密码强度检测函数
+ function f_CalcPwdRank(l_Content) 
+    {
+      if(l_Content.length<6||/^[0-9]{1,8}$/.test(l_Content)) {showPwRank(0);return 0;}
+   var ls = 0; 
+      if (l_Content.match(/[a-z]/g)){ ls++; }
+      if(l_Content.match(/[A-Z]/g)){ ls++; }
+      if (l_Content.match(/[0-9]/g)){ ls++; }
+      if (l_Content.match(/[^a-zA-Z0-9]/g)){ ls++; }
+      if (l_Content.length < 8 && ls > 1){   
+        ls = 1;
+      } 
+      if(ls>3) 
+      {
+        ls=3;
+      };
+       return ls;
+    }
+ //----显示强度状态
+  function showPwRank(pwRank)
+       {
+      //js<a href="/Web/Wytx/" target="_blank" class="innerlink">特效</a>代码：/<a href="/Web/Rjkf/" class="innerlink">软件</a>开发
+   var obj = document.getElementById("pwQiangdu");
+   var qdbox = document.getElementById("qdbox");
+   var password=document.getElementById("password")//密码输入框
+      switch(pwRank)
+          {
+            case 0:
+         qdbox.className="qdbox_hongse";
+      obj.className = "qdhongse";
+      obj.innerHTML="很弱:"+password.value.length;
+         if(password.value.length<1)
+         {
+           qdbox.className="qdbox_hongse setClose";
+         }
+         else
+         {
+          qdbox.className="qdbox_hongse setShow";
+         }
+                break;
+            case 1:
+        qdbox.className="qdbox_cengse";
+                 obj.innerHTML = "一般:"+password.value.length;
+                 obj.className = "qdcengse";
+                break;
+            case 2:
+                 qdbox.className="qdbox_lanse";
+     obj.innerHTML = "良好:"+password.value.length;
+     obj.className = "qdlanse";
+                break;
+            case 3:
+                 qdbox.className="qdbox_luse";
+     obj.innerHTML = "超强:"+password.value.length;
+        obj.className = "qdluse";
+                break;
+         }
+      }
+</script>
+</head>
+<body>
+    <div class="box ">
+        <div class="title">用户注册区</div>
+        <div class="commd">基本信息</div>
+        <form id="Form_submit" name="Form_submit" method="post" action="?">
+            <div class="workbox">
+                <li><div class="input_box">注册账号：</div> <input name="goods_name" type="text" id="goods_name" size="26"
+                    maxlength="100" class="inputBox" /></li>
+                <li><div class="input_box">用户昵称：</div> <input name="Price" type="text" id="price" size="26" maxlength="100"
+                    class="inputBox" /></li>
+                <li><div class="input_box">设置密码：</div> <input name="password" type="text" id="password" size="26"
+                    maxlength="16" class="inputBox" onkeyup="javascript:ChangeQD();" />
+                    <div class="qdbox_hongse setClose" id="qdbox">
+                        <div id="pwQiangdu" class="qdhongse">很弱</div>
+                    </div></li>
+                <li>操作选项： <input type="submit" name="button" id="button" value="我要结账" /> <input type="button" name="button0"
+                    id="button0" value="刷新" />
+                </li>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
