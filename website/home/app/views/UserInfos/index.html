@@ -1,0 +1,594 @@
+#{extends 'main.html' /} #{set title:'优惠啦 - 我购买的商品' /} #{set 'moreStyles'}
+<link href="@@{'/public/stylesheets/common.css'}" rel="stylesheet" type="text/css" />
+<link href="http://www.uhuila.com/css/updateinfo.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" media="screen" href="http://www.uhuila.com/css/account.css">
+#{/set} 
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/user.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/common.jq.js'}" type="text/javascript" charset="UTF-8"></script>
+<script>
+function isOk(val){
+    if (val=="ok") {
+        alert("修改成功！");
+    }
+
+}
+</script>
+#{/set}
+
+<body onload="isOk('${isOk}')">
+<form class="form-horizontal" id="userForm" action="@{UserInfos.update()}" method="POST">
+	<div id="wrap_main">
+		<!--    最顶部导航-->
+		<div id="wrap_top">#{include "share/topNavigator.html"/}</div>
+		<div id="wrap_top_header">
+			<div id="wrap_top_header_left">
+				<img src="@{'/public/images/logo.jpg'}" />
+			</div>
+			<div id="wrap_top_middle">券生活-惠生活</div>
+		</div>
+		<div id="mem_ukgl_main">
+			<!--center_bar-->
+			<div class="topnav">
+				<a href="/" class="current">我的优惠啦</a> <a href="#">安全中心</a>
+			</div>
+			<!--/center_bar-->
+			<div class="clear"></div>
+			<div id="mem_updateui_main">
+				<!--right-->
+				<div id="mem_updateui_center">
+					<div id="h_right">
+						<div class="t">
+							<div class="list">
+								<a href="javascript:void(0);" class="current">基 本 资 料</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<span>为了最大限度保障您的账户安全，请如实填写以下信息请完善以下资料，这将有助于我们更好的为您服务。</span>
+							</div>
+						</div>
+						<div class="userupdate_main">
+							<div class="detail">
+								<ul class="infodetail">
+									<li><div class="input">
+											<span class="colorred1">*</span> <label> 用户名：</label>
+											<div class="mem_infod_username">${user.loginName}</div>
+										</div></li>
+									<li>
+										<div class="input">
+											<span class="colorred1">*</span> <label>真实姓名：</label> <input type="text" tabindex="1" id="realname"
+												name="userInfo.userName" maxlength="10" class="input196 inputbg" value="${userInfo?.userName}">
+											<div id="realnamecheck"></div>
+										</div>
+									</li>
+									<li>
+										<div class="input">
+											<span class="colorred1">*</span>
+											 <label>性别${userInfo?.userSex}：</label>
+											  <input type="radio" name="userInfo.userSex" class="usersex" value="1" ${userInfo?.userSex==1 ?'checked':''} /> 男
+								              <input type="radio" name="userInfo.userSex" class="usersex" value="2" ${userInfo?.userSex==2 ?'checked':''} /> 女
+										</div>
+										<div id="showsexcheck"></div>
+									</li>
+									<li>
+										<div class="input" style="width: auto">
+											<span class="colorred1">*</span><label>出生日期：</label>
+											<input type="text" id="bdayyear" name="userInfo.birthdayYear" value="${userInfo?.birthdayYear}" class="input68 inputbg" value="1980"> <label class="label1">年</label>
+											<input type="text" id="bdaymonth" name="userInfo.birthdayMonth" value="${userInfo?.birthdayMonth}" class="input52 inputbg" value="08"><label class="label1">月</label>
+											<input type="text" id="bdayday" name="userInfo.birthdayDay" value="${userInfo?.birthdayDay}" class="input52 inputbg" value="28"><label class="label1">日 </label>
+											<q>（格式：1980-01-08）</q>
+											<div id="showbdaycheck"></div>
+										</div>
+									</li>
+									<li>
+										<div class="input">
+											<span></span> <label>手机号码：</label> <input type="text" id="usertel" name="userInfo.mobil" value="${userInfo?.mobile}" class="input138 inputbg" disabled
+												/>
+												<div class="bt colorw bold bdph">
+												#{if userInfo?.mobile ==null}
+												<a onclick="$.common.dialog({'id':'bindusertel','title':'绑定手机'});" href="#">绑定手机</a>
+												#{/if}
+												#{else}
+												<a onclick="$.common.dialog({'id':'changeusertel','title':'更换手机'});" href="#">更换号码</a>
+												#{/else}
+												
+											</div>
+											<div id="showphonecheck"></div>
+										</div>
+									</li>
+									<li>
+										<div class="input">
+											<span></span><label>固定电话：</label>
+											 <input type="text" id="userphone" class="input138 inputbg" name="userInfo.phone"  value="${userInfo?.phone}"/> 
+											 <q>（例：021-12345678）</q> <div id="showtelcheck"></div>
+										</div>
+									</li>
+									<li>
+										<div class="input">
+											<span></span> <label>QQ：</label> <input type="text" id="userqq" name="userInfo.userqq" class="input138 inputbg"  value="${userInfo?.userqq}" />
+											<div id="showqqcheck"></div>
+										</div>
+									</li>
+									<li>
+										<div class="input">
+											<span></span> <label>婚姻状况：</label> 
+											 <input type="radio" name="userInfo.marrState" class="marrstate" value="1" ${userInfo?.marrState==1 ?'checked':''} /> 未婚
+                                              <input type="radio" name="userInfo.marrState" class="marrstate" value="2" ${userInfo?.marrState==2 ?'checked':''} /> 已婚
+
+										</div>
+									</li>
+									<li>
+										<div class="input">
+											<span></span> <label for="select">行业：</label>
+											#{select 'userInfo.industry', id:'industry', class:'select1', value:userInfo?.industry}
+                                               #{option "0"}不限#{/option}
+                                               #{option "1"}&{'userInfo.industry1'}#{/option}
+                                               #{option "2"}&{'userInfo.industry2'}#{/option}
+                                               #{option "3"}&{'userInfo.industry3'}#{/option}
+                                               #{option "4"}&{'userInfo.industry4'}#{/option}
+                                               #{option "5"}&{'userInfo.industry5'}#{/option}
+                                               #{option "6"}&{'userInfo.industry6'}#{/option}
+                                               #{option "7"}&{'userInfo.industry7'}#{/option}
+                                               #{option "8"}&{'userInfo.industry8'}#{/option}
+                                               #{option "9"}&{'userInfo.industry9'}#{/option}
+                                               #{option "10"}&{'userInfo.industry10'}#{/option}
+                                               #{option "11"}&{'userInfo.industry11'}#{/option}
+                                               #{option "12"}&{'userInfo.industry12'}#{/option}
+                                               #{option "13"}&{'userInfo.industry13'}#{/option}
+                                               #{option "14"}&{'userInfo.industry14'}#{/option}
+                                               #{option "15"}&{'userInfo.industry15'}#{/option}
+                                               #{option "16"}&{'userInfo.industry16'}#{/option}
+                                               #{option "17"}&{'userInfo.industry17'}#{/option}
+                                               #{option "18"}&{'userInfo.industry18'}#{/option}
+                                               #{option "19"}&{'userInfo.industry19'}#{/option}
+                                         #{/select} 
+										</div>
+									</li>
+									<li>
+										<div class="input">
+											<span></span> <label for="select">职位：</label> 
+											#{select 'userInfo.position', id:'position', class:'select1', value:userInfo?.salary}
+                                               #{option "0"}不限#{/option}
+                                               #{option "1"}&{'userInfo.position1'}#{/option}
+                                               #{option "2"}&{'userInfo.position2'}#{/option}
+                                               #{option "3"}&{'userInfo.position3'}#{/option}
+                                               #{option "4"}&{'userInfo.position4'}#{/option}
+                                               #{option "5"}&{'userInfo.position5'}#{/option}
+                                               #{option "6"}&{'userInfo.position6'}#{/option}
+                                         #{/select}
+										</div>
+									</li>
+									<li>
+										<div class="input">
+											<span></span> <label for="select">月薪：</label> 
+											 #{select 'userInfo.salary', id:'salary', class:'select1',value:userInfo?.salary}		
+											   #{option "0"}不限#{/option}
+								               #{option "1"}&{'userInfo.salary1'}#{/option}
+								               #{option "2"}&{'userInfo.salary2'}#{/option}
+								               #{option "3"}&{'userInfo.salary3'}#{/option}
+								               #{option "4"}&{'userInfo.salary4'}#{/option}
+								               #{option "5"}&{'userInfo.salary5'}#{/option}
+								               #{option "6"}&{'userInfo.salary6'}#{/option}
+								         #{/select}
+										</div>
+									</li>
+									<li>
+										<div class="hobby">
+											<span></span> <label for="select" class="h70">感兴趣喜好：</label>
+											<div width="350" border="0" style="float: left;">
+												<div class="hobbies">
+												<input type="hidden" name="userInfo.intrest[]"/>
+													<span><input name="likenames[]" type="checkbox" value="1" class="likenames" /><b>美食</b></span> <span><input
+														name="likenames[]" type="checkbox" value="2" class="likenames" /><b>购物</b></span> <span><input
+														name="likenames[]" type="checkbox" value="3" class="likenames" /><b>电影</b></span> <span><input
+														name="likenames[]" type="checkbox" value="4" class="likenames" /><b>游戏</b></span> <span><input
+														name="likenames[]" type="checkbox" value="5" class="likenames" /><b>美容美发</b></span> <span><input
+														name="likenames[]" type="checkbox" value="6" class="likenames" /><b>学习</b></span> <span><input
+														name="likenames[]" type="checkbox" value="7" class="likenames" /><b>舞蹈</b></span> <span><input
+														name="likenames[]" type="checkbox" value="8" class="likenames" /><b>音乐</b></span> <span><input
+														name="likenames[]" type="checkbox" value="9" class="likenames" /><b>网络</b></span> <span><input
+														name="likenames[]" type="checkbox" value="10" class="likenames" /><b>园艺</b></span> <span><input
+														name="likenames[]" type="checkbox" value="11" class="likenames" /><b>计算机</b></span> <span><input
+														name="likenames[]" type="checkbox" value="12" class="likenames" /><b>小说</b></span> <span><input
+														name="likenames[]" type="checkbox" value="13" class="likenames" /><b>汽车</b></span> <span><input
+														name="likenames[]" type="checkbox" value="14" class="likenames" /><b>生活</b></span> <span><input
+														name="likenames[]" type="checkbox" value="15" class="likenames" /><b>体育</b></span>
+												</div>
+												<div>
+													<span style="width: 30px; clear: both;">其他</span><input type="text" id="elselike" class="input110 inputbg" />
+												</div>
+												<div style="height: 10px; clear: both"></div>
+												<div class="button">
+													<button id="upuserinfobutton" type="button" onClick="setUserInfo()" class="bt">确认无误提交</button>
+												</div>
+											</div>
+										</div>
+										<div class="clear:both"></div>
+									</li>
+								</ul>
+							</div>
+
+						</div>
+						<div class="b"></div>
+
+					</div>
+					<style>
+
+/************* 弹出框  **********/
+.i_w309bg {
+	width: 309px;
+	height: 170px;
+	background: url(images/tcbg.gif) -4px -5px;
+}
+
+.i_w309 {
+	padding-top: 60px;
+	padding-left: 78px;
+}
+
+.middletext {
+	height: 36px;
+	font-size: 13px;
+}
+
+.i_w380bg {
+	width: 380px;
+	height: 300px;
+	background: url(images/tcbg.gif) -315px -5px no-repeat;
+	overflow: hidden;
+}
+
+.i_w380 {
+	padding-top: 20px;
+	padding-left: 2px;
+}
+
+.middletext {
+	height: 36px;
+	font-size: 14px;
+}
+
+.i_w380title {
+	padding-top: 8px;
+	padding-left: 10px;
+}
+
+.bdhone {
+	line-height: 32px;
+	height: 32px;
+}
+
+.bdhone .input {
+	width: 380px;
+	height: 24px;
+}
+
+.bdhone .label88 {
+	display: block;
+	font-size: 12px;
+	height: 24px;
+	line-height: 24px;
+	text-align: right;
+	width: 88px;
+	float: left;
+}
+
+.bdhone .qrjh {
+	padding-left: 90px;
+}
+
+.question {
+	line-height: 28px;
+	padding-left: 15px;
+}
+
+.i_w380 .buttonfield {
+	letter-spacing: 0.08em;
+}
+
+.i_w528bg {
+	width: 528px;
+	height: 228px;
+	background: url(images/tcbg.gif) -10px -357px no-repeat;
+	overflow: hidden;
+}
+
+.i_w528 {
+	padding-top: 20px;
+	padding-left: 30px;
+}
+
+.i_w528title {
+	padding-top: 6px;
+	padding-left: 12px;
+}
+
+.chphone .input {
+	height: 34px;
+	line-height: 40px;
+}
+
+.chphone .msg {
+	float: left;
+	width: 162px;
+	height: 34px;
+	border: 1px #e08a78 solid;
+	line-height: 34px;
+}
+
+.chphone .attention {
+	padding-left: 10px;
+	_padding-top: 10px;
+}
+
+.chphone .buttonfield {
+	margin-left: 86px;
+}
+
+.ghqr {
+	padding-left: 10px;
+}
+
+.ghqr a,.ghqr a:visited {
+	color: #000;
+}
+
+.qqbt {
+	width: 200px;
+	text-align: left;
+}
+
+.qqbt ul li {
+	float: left
+}
+</style>
+					<!--通用弹出框-->
+					<div id="changeusertel" class="boxwrap">
+						<div id="layout" style="width: 474px; height: 200px; z-index: 10000">
+							<div id="center" style="height: 200px;">
+								<div id="cc">
+									<!--弹出框内容-->
+									<div style="width: 426px; height: 164px; padding-left: 10px; padding-top: 10px;">
+										<ul>
+											<li class="mem_chphone">
+												<div class="input">
+													<label>旧手机号码：</label> <input id="oldtelnum" type="text" class="input140 inputbg" />
+													<div id="showoldtelcheck"></div>
+												</div>
+											</li>
+											<li class="mem_chphone">
+												<div class="input">
+													<label>新手机号码：</label> <input type="text" tabindex="2" id="newtelnum" class="input140 inputbg" />
+													<div id="shownewtelcheck"></div>
+												</div>
+												<div style="clear: both"></div>
+											</li>
+											<li class="mem_chphone">
+												<div class="inputsj">
+													<div class="sjyzm">
+														<button id="getchangeCode" onClick="getBindCode(2)" type="submit" class="mem_update_hqbt">获取手机验证码</button>
+													</div>
+												</div>
+											</li>
+											<li class="mem_chphone">
+												<div class="input">
+													<label>输入验证码：</label> <input type="text" id="telcheckcode" tabindex="3" class="input140 inputbg" />
+													<div id="showchangecode"></div>
+													<label class="label88">区分大小写</label>
+												</div>
+											</li>
+											<li class="mem_chphone">
+												<div class="buttonfield">
+													<button type="submit" onClick="changeTel(1)" class="btg70">确 认</button>
+												</div>
+											</li>
+										</ul>
+									</div>
+									<!--弹出框内容结束-->
+								</div>
+								<div id="cb"></div>
+							</div>
+						</div>
+						<div id="changeseccess" class="">
+							<div class="i_w309">
+								<p class="middletext">
+									手机号码更换成功<br />
+								<div class="ghqr">
+									<div class="btg70 colorblack tlc">
+										<a onClick="closediv(1)" href="#">确 认</a>
+									</div>
+								</div>
+							</div>
+							</p>
+						</div>
+					</div>
+					<!--通用弹出框-->
+					<style>
+
+/************* 弹出框  **********/
+.i_w309bg {
+	width: 309px;
+	height: 170px;
+	background: url(images/tcbg.gif) -4px -5px;
+}
+
+.i_w309 {
+	padding-top: 60px;
+	padding-left: 78px;
+}
+
+.middletext {
+	height: 36px;
+	font-size: 13px;
+}
+
+.i_w380bg {
+	width: 380px;
+	height: 300px;
+	background: url(images/tcbg.gif) -315px -5px no-repeat;
+	overflow: hidden;
+}
+
+.i_w380 {
+	padding-top: 20px;
+	padding-left: 2px;
+}
+
+.middletext {
+	height: 36px;
+	font-size: 14px;
+}
+
+.i_w380title {
+	padding-top: 8px;
+	padding-left: 10px;
+}
+
+.bdhone {
+	line-height: 32px;
+	height: 32px;
+}
+
+.bdhone .input {
+	width: 380px;
+	height: 24px;
+}
+
+.bdhone .label88 {
+	display: block;
+	font-size: 12px;
+	height: 24px;
+	line-height: 24px;
+	text-align: right;
+	width: 88px;
+	float: left;
+}
+
+.bdhone .qrjh {
+	padding-left: 90px;
+}
+
+.question {
+	line-height: 28px;
+	padding-left: 15px;
+}
+
+.i_w380 .buttonfield {
+	letter-spacing: 0.08em;
+}
+
+.i_w528bg {
+	width: 528px;
+	height: 228px;
+	background: url(images/tcbg.gif) -10px -357px no-repeat;
+	overflow: hidden;
+}
+
+.i_w528 {
+	padding-top: 20px;
+	padding-left: 30px;
+}
+
+.i_w528title {
+	padding-top: 6px;
+	padding-left: 12px;
+}
+
+.chphone .input {
+	height: 34px;
+	line-height: 40px;
+}
+
+.chphone .msg {
+	float: left;
+	width: 162px;
+	height: 34px;
+	border: 1px #e08a78 solid;
+	line-height: 34px;
+}
+
+.chphone .attention {
+	padding-left: 10px;
+	_padding-top: 10px;
+}
+
+.chphone .buttonfield {
+	margin-left: 86px;
+}
+
+.ghqr {
+	padding-left: 10px;
+}
+
+.ghqr a,.ghqr a:visited {
+	color: #000;
+}
+
+.qqbt {
+	width: 200px;
+	text-align: left;
+}
+
+.qqbt ul li {
+	float: left
+}
+</style>
+ %{ randomID = controllers.UserInfos.genRandomId(); }%
+					<!--通用弹出框-->
+					<div id="bindusertel" class="boxwrap">
+						<div id="layoutbind" style="width: 410px; height: 267px;">
+							<div id="bindcenter" style="height: 267px;">
+								<div id="cc">
+									<!--弹出框内容-->
+									<div style="width: 300px; height: 126px; padding-top: 10px;">
+										<ul>
+											<li class="mem_bd_phone">
+												<div class="input">
+													<label class="label88">手机号码：</label> <input type="text" id="bindtelnum" class="input140 inputbg" />
+													<div class="buttonfield sjyzm">
+														<button id="getBindCode" type="submit" onclick="getBindCode(1)" class="mem_update_hqbt">获取手机验证码</button>
+													</div>
+												</div>
+											</li>
+											<li class="mem_bd_phone">
+												<div class="input">
+													<label class="label88">输入验证码：</label> <input type="text" id="bindcheckcode" class="input140 inputbg" />
+													<div id="showbindtelcheck" style="float: left;"></div>
+													<label class="label88">区分大小写</label>
+												</div>
+											</li>
+											<li class="mem_bd_phone">
+												<div class="qrjh">
+													<div class="buttonfield">
+														<button type="submit" onClick="changeTel(2)" class="btg70">确认激活</button>
+													</div>
+												</div>
+											</li>
+										</ul>
+										<p class="mem_bd_question">
+											使用遇到问题？<br /> 手机收不到校验码，怎么办？<br /> 答：有时经过网关时有可能网络通讯异常造成短信丢失，<br /> 如果出现丢失几条或者延时收到短信，这种情况是属于<br />
+											正常的。需要您耐心等待一下，或者过会儿再重新试一下。<br />
+										</p>
+									</div>
+									<!--弹出框内容结束-->
+								</div>
+							</div>
+						</div>
+						<div id="jhseccess" class="">
+							<div class="i_w309">
+								<p class="middletext">
+									恭喜您手机已经激活！<br />
+								<div class="ghqr">
+									<div id="truejh" onClick="closediv(2)" class="btg70 colorblack tlc">确 认</div>
+								</div>
+								</p>
+							</div>
+						</div>
+					</div>
+					<!--通用弹出框-->
+					<!--/right-->
+				</div>
+			</div>
+		</div>
+		<!--/main-->
+		</form>
+</body>
+</html>
+<!-- /foot -->
+
