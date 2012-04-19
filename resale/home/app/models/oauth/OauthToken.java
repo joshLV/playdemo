@@ -12,7 +12,7 @@ import play.db.jpa.Model;
 @Table(name="oauth_token")
 public class OauthToken extends Model{
     @Column(name = "user_id")
-    public String userId;
+    public Long userId;
     
     @Column(name = "access_token")
     public String accessToken;
