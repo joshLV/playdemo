@@ -125,7 +125,8 @@ public class SupplierNavigation extends Model {
     public static List<SupplierNavigation> getNavigationParentStack(String applicationName, String currentMenuName) {
         
         if (currentMenuName == null) {
-            throw new IllegalAccessError("必须在Controller中定义 @ActiveNavigation 。");
+            // throw new IllegalAccessError("必须在Controller中定义 @ActiveNavigation 。");
+            return null;
         }
         Stack<SupplierNavigation> stack = new Stack<>();
 
