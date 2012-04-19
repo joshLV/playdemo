@@ -1,0 +1,18 @@
+*{文本框标签}*
+*{name:      文本框的名称}*
+*{value:     文本框中的值}*
+*{required:  文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+#{field _name}
+<div class="control-group">
+    #{layout_operate.labelText name:_name, required:_required/}
+    <div class="controls">
+        <label class="radio inline"><input type="radio" value="${_value1}" id="${field.id}_1" name="${field.name}"
+            #{set value:params[field.name]?:_value/}
+                                           #{if _value1.equals(params[field.name]?:_value)}checked#{/if}/>&{field
+               .name+'_1'}</label>
+        <label class="radio inline"><input type="radio" value="${_value2}" id="${field.id}_2" name="${field.name}"
+                                           #{if _value2.equals(params[field.name]?:_value)}checked#{/if}/>&{field
+               .name+'_2'}</label>
+    </div>
+</div>
+#{/field}

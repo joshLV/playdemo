@@ -11,6 +11,8 @@ load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/areas.yml','fixtu
 open('/goods/new')
 verifyTitle('添加消费券')
 verifyTextPresent('添加消费券')
+verifyTextPresent('电子券')
+verifyTextPresent('实物')
 select('id=goods_topCategoryId','label=旅游')
 *{waitForCondition('selenium.isTextPresent("上海")',10000)}*
 *{select('id=categoryId','label=上海')}*

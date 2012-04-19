@@ -89,6 +89,7 @@ public class SupplierGoods extends Controller {
             BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
             Arrays.fill(levelPrices, ZERO);
             goods.setLevelPrices(levelPrices);
+            goods.materialType = MaterialType.ELECTRONIC;
         }
         if (goods.isAllShop != null) {
             if (goods.isAllShop && goods.shops != null) {

@@ -452,7 +452,7 @@ public class Goods extends Model {
         updateGoods.setDiscount(goods.getDiscount());
         updateGoods.salePrice = goods.salePrice;
         updateGoods.baseSale = goods.baseSale;
-
+        updateGoods.materialType = goods.materialType;
 
         if (!noLevelPrices) {
             updateGoods.levelPrices = goods.levelPrices;

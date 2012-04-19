@@ -6,13 +6,13 @@
 <div class="control-group">
     #{layout_operate.labelText name:_name, required:_required/}
     <div class="controls">
-        <input type="radio" value="true" id="${field.id}_1" name="${field.name}"
+        <label class="radio inline"><input type="radio" value="${_value1?:true}" id="${field.id}_1" name="${field.name}"
                #{set value:params[field.name]?:_value/}
-               #{if 'true'.equals(params[field.name]?:_value)||(params[field.name]?:_value)}checked#{/if}/>&{field
-               .name+'_1'}
-        <input type="radio" value="false" id="${field.id}_2" name="${field.name}"
-               #{if 'false'.equals(params[field.name]?:_value)||!(params[field.name]?:_value)}checked#{/if}/>&{field
-               .name+'_2'}
+               #{if (_value1?:'true').equals(params[field.name]?:_value)||(params[field.name]?:_value)}checked#{/if}/>&{field
+               .name+'_1'}</label>
+        <label class="radio inline"><input type="radio" value="${_value2?:false}" id="${field.id}_2" name="${field.name}"
+               #{if (_value2?:'false').equals(params[field.name]?:_value)||!(params[field.name]?:_value)}checked#{/if}/>&{field
+               .name+'_2'}</label>
     </div>
 </div>
 #{/field}

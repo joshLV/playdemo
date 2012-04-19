@@ -76,6 +76,7 @@
                 <th>&{'goods.baseSale'}(件)</th>
                 <th>&{'goods.saleCount'}(件)</th>
                 <th>&{'goods.createdAt'}</th>
+                <th>&{'goods.materialType'}</th>
                 <th>&{'goods.status'}</th>
                 <th>操 作</th>
             </tr>
@@ -98,7 +99,8 @@
                 #{/list}
                 <td class="amount">${goods?.baseSale}</td>
                 <td class="amount">${goods?.saleCount}</td>
-                <td>${goods?.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${goods?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>&{'goods.'+goods?.materialType}</td>
                 <td>&{'goods.'+goods.status}
                     #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}
                         <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale",method:"PUT"/}

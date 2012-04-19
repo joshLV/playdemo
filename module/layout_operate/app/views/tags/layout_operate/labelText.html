@@ -1,8 +1,9 @@
 *{文本框标签}*
 *{name:      文本框的名称}*
 *{value:     文本框中的值}*
+*{class:     文本框的css class（选填，默认为control-label）}*
 *{required: 文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
 #{field _name}
-    <label for="${field?.id}" class="control-label">
+    <label for="${field?.id}" class="${_class?:"control-label"}">
         #{if _required}<span style="color: red; ">*</span>#{/if}&{field?.name}</label>
 #{/field}

@@ -74,6 +74,7 @@ public class OperateGoods extends Controller {
         if (CollectionUtils.isNotEmpty(supplierList)) {
             renderShopList(supplierList.get(0).id);
         }
+        renderArgs.put("goods.materialType",MaterialType.ELECTRONIC);
         renderInit(null);
         render();
     }
@@ -90,6 +91,7 @@ public class OperateGoods extends Controller {
             BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
             Arrays.fill(levelPrices, ZERO);
             goods.setLevelPrices(levelPrices);
+            goods.materialType = MaterialType.ELECTRONIC;
         }
 
         String shopIds = "";
@@ -130,6 +132,7 @@ public class OperateGoods extends Controller {
         renderArgs.put("categoryId", categoryId);
         renderArgs.put("shopIds", shopIds);
         renderArgs.put("isAllShop", goods.isAllShop);
+        renderArgs.put("goods", goods);
     }
 
     /**
@@ -161,6 +164,8 @@ public class OperateGoods extends Controller {
 
         goods.setLevelPrices(levelPrices);
 
+        System.out.println("goods.materialType:" + goods.materialType);
+
         //预览
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
             preview(null, goods, imagePath);
@@ -179,7 +184,6 @@ public class OperateGoods extends Controller {
 
         //添加商品处理
         goods.createdBy = OperateRbac.currentUser().loginName;
-        goods.materialType = MaterialType.ELECTRONIC;
 
         goods.create();
         try {
