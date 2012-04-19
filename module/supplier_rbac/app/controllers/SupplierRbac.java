@@ -125,6 +125,9 @@ public class SupplierRbac extends Controller {
 
         renderArgs.put("topMenus", NavigationHandler.getTopMenus());
         renderArgs.put("secondLevelMenu", NavigationHandler.getSecondLevelMenus());
+        renderArgs.put("operatorProfileUrl", NavigationHandler.getOperatorProfileUrl());
+        renderArgs.put("supplierInfoUrl", NavigationHandler.getSupplierInfoUrl());
+        
     }
 
     @Finally

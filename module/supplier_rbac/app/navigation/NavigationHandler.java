@@ -6,10 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import models.admin.SupplierNavigation;
 import play.Play;
 import play.mvc.Http.Request;
+import play.supplier.cas.CASUtils;
 
 public class NavigationHandler {
 
@@ -133,5 +133,23 @@ public class NavigationHandler {
 
     public static List<ContextedMenu> getSecondLevelMenus() {
         return secondLevelMenus.get();
+    }
+    
+    // 用于显示导航
+    public static String getOperatorProfileUrl() {
+        String baseUrl = Play.configuration.getProperty("application.baseUrl");
+        
+        String hostUrl = baseUrl.replaceAll("\\{domain\\}\\.[^\\.]+", CASUtils.getSubDomain() + ".admin");
+        
+        return hostUrl + "/profile";
+    }
+    
+    // 用于显示导航
+    public static String getSupplierInfoUrl() {
+        String baseUrl = Play.configuration.getProperty("application.baseUrl");
+        
+        String hostUrl = baseUrl.replaceAll("\\{domain\\}\\.[^\\.]+", CASUtils.getSubDomain() + ".home");
+        
+        return hostUrl + "/info";
     }
 }

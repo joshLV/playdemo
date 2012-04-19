@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+
+# ~ unit/GoodsUnitTest...               PASSED     0s
+# ~ unit/ShopUnitTest...                PASSED     0s
+# ~ unit/ShopsTest...                   PASSED     0s
+# ~ function/ShopFunctionTest...        PASSED     0s
+# ~ function/SupplierGoodsTest...       PASSED     2s
+# ~ selenium/Shops...                   PASSED     6s
+# ~ selenium/ShopsAdd...                PASSED     2s
+
+
+require 'pathname'
+current_dir = Pathname.new(File.dirname(__FILE__)).realpath
+
+puts current_dir
+failed_result = []
+app_dirs = [
+            'website/www',
+            'website/home',
+            'traders/sales',
+            'traders/order',
+            'traders/home',
+            'traders/admin',
+            'cdn/image-server',
+            'operate/admin',
+            'operate/business',
+            'resale/home'
+           ]
+
+
+app_dirs.each do |dir|
+  # Dir.chdir("#{current_dir}/#{dir}")
+  cmd =<<END
+        cd #{current_dir}/#{dir}
+        play  eclipsify --deps
+END
+  IO.popen(cmd) { |output|
+    output.each_line { |line|
+      puts "#{line}"
+    }
+  }
+end
