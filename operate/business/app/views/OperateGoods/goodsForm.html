@@ -2,6 +2,7 @@
     #{get 'moreScripts'/}
 <script src="@{'/public/javascripts/goods-form.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
+#{layout_operate.radioField name:'goods.materialType', value:goods?.materialType/}
 #{if "add".equals(action)}
     #{layout_operate.selectField name:'goods.supplierId', class:'span2', value:goods?.supplierId,
     error:'goods.supplierId'}

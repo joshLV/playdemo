@@ -30,6 +30,9 @@ validation.lessThanOriginalPrice=%s不能低于采购价!
 validation.moreThanLastLevel=%s不能超过前一级别的VIP加价!
 validation.beforeThanEffectiveAt=%s不能早于有效期开始时间!
 
+goods.materialType=券类型
+goods.materialType_1=电子券
+goods.materialType_2=实物
 goods.supplierId=商户
 goods.supplier=商户
 goods.no=编号
