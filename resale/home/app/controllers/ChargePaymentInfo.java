@@ -50,6 +50,7 @@ public class ChargePaymentInfo extends Controller {
      */
     public static void confirm(long orderId, String paymentSourceCode) {
         Resaler resaler = SecureCAS.getResaler();
+        System.out.println("dsdfs" + resaler == null);
         ChargeOrder order = ChargeOrder.find("byIdAndUserIdAndAccountType", orderId, resaler.getId(), AccountType.RESALER).first();
         if (order == null){
             error(500,"no such order");

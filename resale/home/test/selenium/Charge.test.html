@@ -1,0 +1,20 @@
+#{fixture delete:'all' ,
+load:['fixture/payment_source.yml','fixture/resaler.yml']
+/}
+#{selenium 'Test Charge'}
+    #{include 'test/selenium/step/login.selenium' /}
+    
+    openAndWait('/charge')
+    type('name=amount','-1')
+    clickAndWait('css=input[type="submit"]')
+    verifyTitle('Application error')
+
+    openAndWait('/charge')
+    type('name=amount','10')
+    clickAndWait('css=input[type="submit"]')
+    verifyTitle('优惠啦 - 确认付款')
+    clickAndWait('id=confirm')
+    click('id=confirm_pay_it')
+
+#{/selenium}    
+    
