@@ -1,12 +1,20 @@
-#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class,
-models.supplier.Supplier.class, models.sales.Category.class,models.sales.Area.class,
-models.sales.Shop.class, models.sales.Goods.class, models.accounts.AccountSequence.class,
-models.sales.Brand.class],
+#{fixture delete:[
+models.admin.SupplierUser.class,
+models.admin.SupplierRole.class,
+models.sales.Brand.class,
+models.supplier.Supplier.class,
+models.sales.Category.class,
+models.sales.Area.class,
+models.sales.Shop.class,
+models.sales.Goods.class,
+models.accounts.AccountSequence.class,
+models.accounts.Account.class
+],
 load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/brands.yml'] /}
 
 #{selenium 'Test Home/AccountSequences/index.html'}
     #{include 'test/selenium/step/login.selenium' /}
-open('/suppliers/${play.test.Fixtures.idCache.get("models.supplier.Supplier-kfc")}')
+open('/info')
 
 verifyTitle('商户基本信息')
 verifyTextPresent('公司名称')

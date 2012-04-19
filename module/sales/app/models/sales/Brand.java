@@ -25,7 +25,7 @@ public class Brand extends Model {
     public Supplier supplier;
     @Required
     @Min(0)
-    @Column(name = "display_order")
+    @Column(name="display_order")
     public int displayOrder = 100; //显示次序，默认100
     //    @Time
 //    public String workAt;      //营业时间上班时间

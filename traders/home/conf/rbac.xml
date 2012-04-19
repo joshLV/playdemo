@@ -8,7 +8,6 @@
 
     <navigation key="homeapp" text="面板">
       <navigation key="home" text="主面板" action="Home.index" permissions="STATS"/>
-      <navigation key="supplier_show" text="基本信息查询" action="HomeSupplier.index" permissions="STATS"/>
       <navigation key="account_sequence" text="现金帐户查询" action="AccountSequences.index" permissions="STATS"/>
     </navigation>
 </application>

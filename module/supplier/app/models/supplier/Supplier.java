@@ -98,7 +98,7 @@ public class Supplier extends Model {
     public DeletedStatus deleted;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @OrderBy("displayOrder,name")
+    @OrderColumn(name="`display_order`")
     @JoinColumn(name="supplier_id")
     public List<Brand> brands;
 

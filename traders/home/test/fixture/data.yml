@@ -42,7 +42,7 @@ models.sales.Area(models_sales_Area_02101):
 
 models.accounts.Account(models_accounts_Account_1):
  "uid": "1"
- "type": "ENTERPRISE"
+ "accountType": SUPPLIER
  "amount": "1000.00"
  "status": "NORMAL"
  "createdAt": "2012-03-07T17:29:59"

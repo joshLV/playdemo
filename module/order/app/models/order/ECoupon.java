@@ -15,7 +15,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -192,7 +191,7 @@ public class ECoupon extends Model {
 	 * @return
 	 */
 	public void consumed(){
-		Account supplierAccount = AccountUtil.getAccount(orderItems.goods.supplierId, AccountType.BUSINESS);
+		Account supplierAccount = AccountUtil.getAccount(orderItems.goods.supplierId, AccountType.SUPPLIER);
 
 		//给商户打钱
 		TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, supplierAccount, originalPrice);

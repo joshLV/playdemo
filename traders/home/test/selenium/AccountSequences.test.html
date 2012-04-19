@@ -1,10 +1,22 @@
-#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class,
-models.supplier.Supplier.class, models.sales.Category.class,models.sales.Area.class,
-models.sales.Shop.class, models.sales.Goods.class, models.accounts.AccountSequence.class],
+#{fixture delete:[models.admin.SupplierUser.class,
+models.admin.SupplierRole.class,
+models.supplier.Supplier.class,
+models.sales.Category.class,
+models.sales.Area.class,
+models.sales.Shop.class,
+models.sales.Goods.class,
+models.accounts.AccountSequence.class,
+models.accounts.Account.class],
 load:['fixture/roles.yml','fixture/supplierusers.yml', 'fixture/data.yml'] /}
 
 #{selenium 'Test Home/AccountSequences/index.html'}
     #{include 'test/selenium/step/login.selenium' /}
+%{
+    models.accounts.Account account = models.accounts.util.AccountUtil.getAccount(1L,models.accounts.AccountType.SUPPLIER);
+    account.uid=play.test.Fixtures.idCache.get("models.supplier.Supplier-kfc");
+    account.amount=new BigDecimal(1000);
+    account.save();
+}%
 open('/account-sequences')
 verifyTitle('资金明细')
 verifyTextPresent('余额：1000.00元')
