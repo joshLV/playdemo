@@ -5,10 +5,10 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import models.resale.Resaler;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -19,6 +19,7 @@ import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.libs.Images;
 import play.modules.view_ext.annotation.Mobile;
+import play.mvc.Http.Request;
 
 @Entity
 @Table(name = "users")
@@ -30,7 +31,6 @@ public class User extends Model {
 	public String loginName;
 
 	@Mobile
-	@Required
 	public String mobile;
 
 	@Column(name="openid_source")
@@ -55,7 +55,8 @@ public class User extends Model {
 	@Column(name="last_login_at")
 	public Date lastLoginAt;
 
-	public int status;
+	@Enumerated(EnumType.STRING)
+	public UserStatus status;
 
 	@Column(name="login_ip")
 	public String loginIp;
@@ -75,16 +76,15 @@ public class User extends Model {
 	 */
 	public static String checkValue(String loginName, String mobile) {
 
-		List<User> supplierUserList = User.find("byLoginName", loginName).fetch();
+		List<User> userList = User.find("byLoginName", loginName).fetch();
 		String returnFlag = "0";
 		//用户名存在的情况
-		if (supplierUserList.size() >0) returnFlag = "1";
+		if (userList.size() >0) returnFlag = "1";
 		else {
 			//手机存在的情况
 			List<User> mList = User.find("byMobile", mobile).fetch();
 			if(mList.size()>0) returnFlag = "2";
 		}
-
 		return returnFlag;
 	}
 
@@ -103,6 +103,28 @@ public class User extends Model {
 		String newPassword = user.password;
 		newUser.password = DigestUtils.md5Hex(newPassword + newPasswordSalt);
 		newUser.save();
+
+	}
+
+	/**
+	 * 
+	 * @param user
+	 */
+	@Override
+	public boolean create() {
+		Images.Captcha captcha = Images.captcha();
+		String salt=captcha.getText(6);
+		//密码加密
+		password=DigestUtils.md5Hex(password+salt);
+		//正常
+		status=UserStatus.NORMAL;
+		//随机码
+		passwordSalt=salt;
+		//获得IP
+		loginIp=Request.current().remoteAddress;
+		lastLoginAt = new Date();
+		createdAt = new Date();
+		return super.create();
 
 	}
 }

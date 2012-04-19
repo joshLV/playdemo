@@ -1,6 +1,8 @@
 package controllers;
 
 import models.consumer.User;
+import models.consumer.UserStatus;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import play.cache.Cache;
@@ -21,7 +23,7 @@ import java.util.Date;
 public class Register extends Controller{
 
 	public static final String SESSION_USER_KEY = "website_login";
-	
+
 	/**
 	 * 注册页面 
 	 */
@@ -35,31 +37,28 @@ public class Register extends Controller{
 	 * @param user 用户信息
 	 */
 	public static void create(@Valid User user) {
+
+		if (Validation.hasError("user.mobile")
+				&& Validation.hasError("user")) {
+			Validation.clear();
+		}
+
 		if(!user.password.equals(user.confirmPassword)){
-			Validation.addError("user.confirmPassword", "两次密码输入的不一样！！");
+			Validation.addError("user.confirmPassword", "validation.confirmPassword");
 		}
 		if(!"dev".equals(play.Play.configuration.get("application.mode"))) {
 			if(StringUtils.isNotEmpty(user.captcha) && !user.captcha.toUpperCase().equals(Cache.get(params.get("randomID")))){
-				Validation.addError("user.captcha", "验证码不对，请重新输入！");
+				Validation.addError("user.captcha", "validation.captcha");
 			}
 		}
+
+      
 		if (Validation.hasErrors()) {
 			render("Register/index.html", user);
 		}
 
-		Images.Captcha captcha = Images.captcha();
-		String passwordSalt=captcha.getText(6);
-		//密码加密
-		user.password=DigestUtils.md5Hex(user.password+passwordSalt);
-		//正常
-		user.status=1;
-		//随机码
-		user.passwordSalt=passwordSalt;
-		//获得IP
-		user.loginIp=request.current().remoteAddress;
-		user.lastLoginAt = new Date();
-		user.createdAt = new Date();
-		user.save();
+		//用户创建
+		user.create();
 
 		session.put(SESSION_USER_KEY,user.loginName);
 		render("Register/success.html");

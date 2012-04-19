@@ -17,7 +17,6 @@ import play.mvc.With;
  * 
  */
 @With(SupplierRbac.class)
-@ActiveNavigation("user_search")
 public class SuppliersPassword extends Controller {
 
 	/**

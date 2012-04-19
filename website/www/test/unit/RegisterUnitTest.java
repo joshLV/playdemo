@@ -1,6 +1,8 @@
 package unit;
 
 import models.consumer.User;
+import models.consumer.UserStatus;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,7 +31,7 @@ public class RegisterUnitTest extends UnitTest {
 		user.password = DigestUtils.md5Hex("1"+passwordSalt);
 		user.confirmPassword = "1";
 		//正常
-		user.status = 1;
+		user.status = UserStatus.NORMAL;
 		//随机码
 		user.passwordSalt = passwordSalt;
 		user.captcha = "awwr";

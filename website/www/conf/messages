@@ -6,9 +6,14 @@ play-paginate.last=尾页&nbsp;&raquo;
 validation.email=邮箱格式不对！
 validation.invalid=无效的%s!
 validation.required=请输入%s!
+validation.minSize=%s的长度至少%d位!
+validation.maxSize=%s的长度不能超过%d!
 mobile=手机号
 user.loginName=邮箱
 user.mobile=手机
 user.password=密码
 user.confirmPassword=确认密码
 user.captcha=验证码
+
+validation.confirmPassword=两次密码输入的不一样！！
+validation.captcha=验证码不对，请重新输入！
