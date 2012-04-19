@@ -283,14 +283,14 @@ public class ECoupon extends Model {
 	 * @param applyNote 退款原因
 	 * @return
 	 */
-	public static String applyRefund(ECoupon eCoupon,Long userId,String applyNote) {
+	public static String applyRefund(ECoupon eCoupon,Long userId,String applyNote, AccountType accountType) {
 		String returnFlg ="{\"error\":\"ok\"}";
 
-		if(eCoupon == null || eCoupon.order.userId != userId || eCoupon.order.userType != AccountType.CONSUMER){
+		if(eCoupon == null || eCoupon.order.userId != userId || eCoupon.order.userType != accountType){
 			returnFlg="{\"error\":\"no such eCoupon\"}";
 			return returnFlg;
 		}
-		if(eCoupon.status == ECouponStatus.UNCONSUMED ){
+		if(eCoupon.status != ECouponStatus.UNCONSUMED && eCoupon.status != ECouponStatus.EXPIRED){
 			returnFlg = "{\"error\":\"can not apply refund with this goods\"}";
 			return returnFlg;
 		}
@@ -314,8 +314,8 @@ public class ECoupon extends Model {
 		RefundUtil.success(refundBill);
 
 		//更改库存
-		eCoupon.goods.baseSale += 1;
-		eCoupon.goods.saleCount -= 1;
+		eCoupon.goods.baseSale += orderItem.buyNumber;
+		eCoupon.goods.saleCount -= orderItem.buyNumber;
 		eCoupon.goods.save();
 
 		//更改订单状态

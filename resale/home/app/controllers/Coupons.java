@@ -42,6 +42,14 @@ public class Coupons extends Controller{
 		render(couponsList, breadcrumbs);
 
 	}
+	
+	public static void refund(Long id){
+        Resaler user = SecureCAS.getResaler();
+        ECoupon eCoupon = ECoupon.findById(id);
+        String returnFlag = ECoupon.applyRefund(eCoupon,user.getId(),"", AccountType.RESALER);
+        System.out.println(returnFlag);
+        index(null);
+	}
 
 	/**
 	 * 向页面设置选择信息

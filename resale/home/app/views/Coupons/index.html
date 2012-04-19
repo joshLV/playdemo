@@ -67,7 +67,7 @@
 		      <td>
 			      #{if (coupon.status == models.order.ECouponStatus.UNCONSUMED
 			      || coupon.status == models.order.ECouponStatus.EXPIRED)}
-			      <a href="/coupons/refund/${coupon.id}" name="apply_refund" id="apply_${coupon.id}">申请退款</a>
+			      <a href="/ecoupons/refund/${coupon.id}" name="apply_refund" id="apply_${coupon.id}">申请退款</a>
 			      #{/if}
 		      </td>
 	     </tr>

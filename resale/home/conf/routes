@@ -46,6 +46,7 @@ GET     /orders                                  ResalerOrders.index
 GET     /orders/{id}                             ResalerOrders.show
 GET     /payment/{id}                            ResalerOrders.pay
 
+
 GET     /account_seq                            ResalerAccounts.index
 
 GET     /top-oauth-callback                     TopOauthCallback.index
@@ -53,6 +54,7 @@ GET     /top-oauth-callback                     TopOauthCallback.index
 GET     /top-add                                TopClient.add
 
 GET     /ecoupons                               Coupons.index
+GET     /ecoupons/refund/{id}                   Coupons.refund
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

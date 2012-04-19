@@ -45,7 +45,7 @@ public class MyCoupons extends Controller {
 	public static void applyRefund(Long id, String applyNote){
 		User user = SecureCAS.getUser();
 		ECoupon eCoupon = ECoupon.findById(id);
-		String returnFlg = ECoupon.applyRefund(eCoupon,user.getId(),applyNote);
+		String returnFlg = ECoupon.applyRefund(eCoupon,user.getId(),applyNote, AccountType.CONSUMER);
 		renderJSON(returnFlg);
 	}
 	
