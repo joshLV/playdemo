@@ -21,6 +21,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 
 import models.accounts.AccountType;
 import models.consumer.Address;
@@ -117,6 +118,7 @@ public class Order extends Model {
 	@Column(name = "updated_at")
 	public Date updatedAt;
 
+	@Version
 	@Column(name = "lock_version")
 	public int lockVersion;
 

@@ -1,6 +1,8 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 确认订单' /}
 #{set 'moreStyles'}
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
 <link href="@@{'/public/stylesheets/carts_index.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
 #{set 'moreScripts'}
@@ -97,6 +99,8 @@
             class="font_red_one" id="carts_amount"></span>元</div>
     <div class="both_clear"></div>
     <form method="POST" action="/carts/confirm" id="confirm_post"></form>
-    <div class="bottom_info_four"><a class="queren_bg" href="/carts/confirm" onclick="$('#confirm_post').submit();return false;">确认结账</a></div>
+    #{if carts.size() > 0}
+        <div class="bottom_info_four"><a class="queren_bg" href="/carts/confirm" onclick="$('#confirm_post').submit();return false;">确认结账</a></div>
+    #{/if}
     <div class="both_clear"></div>
 </div>

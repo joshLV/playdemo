@@ -8,6 +8,8 @@ import java.util.Map;
 import models.accounts.PaymentCallbackLog;
 import models.accounts.TradeBill;
 import models.accounts.util.TradeUtil;
+import models.order.ChargeOrder;
+import models.order.ChargeOrderStatus;
 import models.order.Order;
 import models.order.OrderStatus;
 import play.Logger;
@@ -19,6 +21,14 @@ import thirdpart.alipay.util.AlipayNotify;
  *         Date: 12-3-16
  */
 public class AliPaymentFlow implements PaymentFlow{
+    
+    public String generateChargeForm(ChargeOrder chargeOrder){
+        String out_trade_no = chargeOrder.serialNumber;
+        String subject = "优惠啦充值" + chargeOrder.chargeAmount + "元";
+        String total_fee = chargeOrder.chargeAmount.toString();
+        return generateFormBase(out_trade_no, subject, total_fee);
+    }
+    
     public String generateForm(Order order){
         //必填参数//
 
@@ -32,11 +42,15 @@ public class AliPaymentFlow implements PaymentFlow{
         }else if(order.orderItems.size() > 1){
             subject = order.orderItems.get(0).goodsName + "等商品";
         }
-        //订单描述、订单详细、订单备注，显示在支付宝收银台里的“商品描述”里
-        String body = "优惠啦测试商品描述";
         //订单总金额，显示在支付宝收银台里的“应付总额”里
         String total_fee = order.needPay.toString();
 
+        return generateFormBase(out_trade_no, subject, total_fee);
+    } 
+
+    public String generateFormBase(String out_trade_no, String subject, String total_fee){
+        //订单描述、订单详细、订单备注，显示在支付宝收银台里的“商品描述”里
+        String body = "优惠啦测试商品描述";
 
         //扩展功能参数——默认支付方式//
 
@@ -106,8 +120,9 @@ public class AliPaymentFlow implements PaymentFlow{
         sParaTemp.put("royalty_parameters", royalty_parameters);
 
         //构造函数，生成请求URL
-        return AlipayService.create_direct_pay_by_user(sParaTemp);
-    } 
+        return AlipayService.create_direct_pay_by_user(sParaTemp);        
+    }
+    
     /**
      * 校验 http 返回参数
      */
@@ -175,25 +190,50 @@ public class AliPaymentFlow implements PaymentFlow{
             Logger.error("alipay_notify:订单编号或订单金额非法");
             callbackLog.status = "invalid_trade";
         } else {
-            Order order = Order.find("byOrderNumber", out_trade_no).first();
-            if (order == null) {
+            boolean noOrder = true;
+            BigDecimal orderNeedPay = new BigDecimal("9999999999");
+            boolean orderPaid = true; 
+            Long tradeId = 0L;
+            if(out_trade_no.startsWith("charge")){
+                ChargeOrder chargeOrder = ChargeOrder.find("bySerialNumber", out_trade_no).first();
+                if(chargeOrder != null){
+                    noOrder = false;
+                    orderNeedPay = chargeOrder.chargeAmount;
+                    if(chargeOrder.status == ChargeOrderStatus.UNPAID){
+                        orderPaid = false;
+                    }
+                    tradeId = chargeOrder.tradeId;
+                }
+            }else{
+                Order order = Order.find("byOrderNumber", out_trade_no).first();
+                if(order != null){
+                    noOrder = false;
+                    orderNeedPay = order.needPay;
+                    if(order.status == OrderStatus.UNPAID){
+                        orderPaid = false;
+                    }
+                    tradeId = order.payRequestId;
+                }
+            }
+            if (noOrder) {
                 Logger.error("alipay_notify:查无此订单:" + out_trade_no);
                 callbackLog.status = "invalid_order";
-            } else if (total_fee.compareTo(order.needPay) < 0) {
+            } else if (total_fee.compareTo(orderNeedPay) < 0) {
                 Logger.error("alipay_notify:订单金额不符:" + out_trade_no);
                 callbackLog.status = "invalid_amount";
-            } else if (order.status != OrderStatus.UNPAID) {
+            } else if (orderPaid) {
                 Logger.error("alipay_notify:订单已被处理:" + out_trade_no);
                 callbackLog.status = "processed";
             } else {
-                Long tradeId = order.payRequestId;
                 TradeBill tradeBill = TradeBill.findById(tradeId);
                 if(tradeBill != null){
                     //最终所有条件满足
                     TradeUtil.success(tradeBill);
-                    order.paid();
+                    if(!out_trade_no.startsWith("charge")){
+                        Order order = Order.find("byOrderNumber", out_trade_no).first();
+                        order.paid();
+                    }
                     success = true;
-
                 }else {
                     callbackLog.status = "no_trade_found";
                 }

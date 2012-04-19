@@ -20,6 +20,9 @@ DELETE  /library/{goodsIds}                     ResalerFavs.delete
 POST    /payment_info/confirm                   PaymentInfo.confirm
 GET     /payment_info/{id}                      PaymentInfo.index
 
+GET     /charge                                 Charge.index
+POST    /charge_payment_info/confirm            ChargePaymentInfo.confirm
+GET     /charge_payment_info/{id}               ChargePaymentInfo.index
 
 # 显示支付结果
 GET     /orders/alipay_result                   OrderResult.alipayReturn
@@ -30,7 +33,7 @@ POST    /carts/form-add                         ResalerCarts.formAdd
 POST    /carts/form-delete                      ResalerCarts.formDelete
 POST    /carts/form-batch-delete                ResalerCarts.formBatchDelete
 POST    /carts/ajax                             ResalerCarts.reorder
-DELET   /carts/ajax                             ResalerCarts.delete
+DELETE  /carts/ajax                             ResalerCarts.delete
 GET     /carts/confirm                          ResalerCarts.showCarts
 POST    /carts/confirm                          ResalerCarts.confirmCarts
 

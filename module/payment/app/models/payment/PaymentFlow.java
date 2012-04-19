@@ -2,6 +2,7 @@ package models.payment;
 
 import java.util.Map;
 
+import models.order.ChargeOrder;
 import models.order.Order;
 
 /**
@@ -10,6 +11,7 @@ import models.order.Order;
  */
 public interface PaymentFlow {
     
+    public String generateChargeForm(ChargeOrder chargeOrder);
     public String generateForm(Order order);  //生成form表单
     public boolean verifyParams(Map<String, String[]> params); //校验返回参数
     public boolean paymentNotify(Map<String ,String[]> params);   //处理服务器回调

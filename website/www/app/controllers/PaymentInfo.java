@@ -81,6 +81,7 @@ public class PaymentInfo extends Controller {
         order.payRequestId = tradeBill.getId();
         order.payMethod = paymentSourceCode;
 
+        order.save();
         //如果使用余额足以支付，则付款直接成功
         if (ebankPaymentAmount.compareTo(BigDecimal.ZERO) == 0){
             TradeUtil.success(tradeBill);
@@ -96,7 +97,6 @@ public class PaymentInfo extends Controller {
             error(500, "can not get paymentSource");
         }
 
-        order.save();
         render(order, paymentSource);
 
     }
