@@ -1,0 +1,15 @@
+<html>
+<body><head>[优惠啦] 您订购优惠券</head><body>
+<p>
+您好 ${message.fullName}, 
+</p>
+<p>
+您在优惠啦网站上订购的优惠券如下：<br>
+<ul>
+#{list items:message.coupons, as:'coupon'}
+  <li>${coupon}</li>
+#{/list}
+</ul>
+</p>
+</body>
+</html>
