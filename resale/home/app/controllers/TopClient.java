@@ -39,23 +39,14 @@ public class TopClient extends Controller{
             error("no fav found");
         }
         if(token == null || (token.accessTokenExpiresAt.getTime() - new Date().getTime()) <= 0){
-            token.delete();
+            if(token != null){
+                token.delete();
+            }
             redirect("http://container.api.taobao.com/container?appkey=12576100&encode=utf-8");
         }
 
         Goods goods = resalerFav.goods;
         TaobaoClient taobaoClient = new DefaultTaobaoClient(url, appkey, appsecret);
-        ItemAddRequest addRequest = new ItemAddRequest();
-        addRequest.setNum(goods.baseSale > 999999 ? 999999 : goods.baseSale);
-        addRequest.setPrice(goods.getResalePrice(user.level).toString());
-        addRequest.setType("fixed");
-        addRequest.setStuffStatus("new");
-        addRequest.setTitle(goods.name);
-        addRequest.setDesc(goods.name);
-        addRequest.setLocationState("上海");
-        addRequest.setLocationCity("上海");
-        addRequest.setCid(50022008L);
-        
  
         ItemAddResponse response = addItem(taobaoClient, token.accessToken, goods.baseSale, goods.getResalePrice(user.level).toString(), goods.name, goods.name);
         
