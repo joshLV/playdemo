@@ -13,10 +13,10 @@ POST    /coupons/refund/{id}                          MyCoupons.applyRefund
 
 
 #用户资料
-GET      /user                                        UserInfos.index
-POST     /user/update                                 UserInfos.update
-POST     /user/bindMobile                             UserInfos.bindMobile
-POST     /user/send                                   UserInfos.sendValidCode
+GET      /userInfo                                    UserInfos.index
+POST     /userInfo/{id}                               UserInfos.update
+POST     /userInfo/bindMobile                         UserInfos.bindMobile
+POST     /userInfo/send                               UserInfos.sendValidCode
 
 GET     /user/password                                UserPassword.index
 POST    /user/{id}                                    UserPassword.update

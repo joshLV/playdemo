@@ -66,12 +66,13 @@ public class UserInfo extends Model {
 
 	@Column(name="bindMobile_at")
 	public Date bindMobileAt;
-	@Transient
-	public String updSuccessFlag;
 
 	public UserInfo(User user) {
 		this.user =user;
 		this.createdAt = new Date();
+	}
+
+	public UserInfo() {
 	}
 
 	/**
@@ -95,7 +96,7 @@ public class UserInfo extends Model {
 		marrState=userInfo.marrState;
 		otherInfo = userInfo.otherInfo;
 		createdAt=new Date();
-		save();
+		this.save();
 
 	}
 
@@ -123,7 +124,6 @@ public class UserInfo extends Model {
 	 * @return 用户基本信息
 	 */
 	public static UserInfo findByUser(User user) {
-		System.out.println("userInfo==============="+user);
 		List<UserInfo> userInfos = UserInfo.find("byUser",user).fetch();
 		UserInfo userInfo = null;
 		if (userInfos.size()>0) {

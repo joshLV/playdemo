@@ -21,19 +21,18 @@ public class UserInfos extends Controller{
 	/**
 	 * 用户资料页面 
 	 */
-	public static void index(String successflag) {
+	public static void index() {
 		User user = SecureCAS.getUser();
 		UserInfo userInfo = UserInfo.findByUser(user);
-		render(user,userInfo,successflag);
+		System.out.println("id==============="+userInfo.id);
+		render(user,userInfo);
 	}
 
 	/**
 	 * 用户资料页面 
 	 */
 	public static void update(Long id,UserInfo userInfo,String intrest) {
-		if (Validation.hasErrors()) {
-			render("UserInfos/index.html", userInfo);
-		}
+		System.out.println("id==============="+id);
 		UserInfo userInfos = UserInfo.findById(id);
 		//如果用户信息不存在则创建
 		if (userInfos != null) {
@@ -43,7 +42,7 @@ public class UserInfos extends Controller{
 			User user = SecureCAS.getUser();
 			user.updateMobile(userInfo.mobile);
 		}
-		index("1");
+		index();
 	}
 
 	/**

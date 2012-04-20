@@ -1,37 +1,35 @@
+#{fixture delete:'all' ,
+load:['fixture/user.yml','fixture/userInfo.yml'] /}
+
 #{selenium 'Test ResalerInfos/index.html Normal'}
 #{include 'test/selenium/step/login.selenium' /}
 open('/orders')
-clickAndWait('id=pwd')
-verifyTitle('修改密码')
-type('id=old_password','')
-type('id=password','')
-type('id=confirmPassword','')
-clickAndWait('id=sure_submit')
-verifyTextPresent('请输入原密码!')
-verifyTextPresent('请输入新密码!')
-verifyTextPresent('请输入确认新密码!')
-
-type('id=old_password','131s141')
-type('id=password','123123')
-type('id=confirmPassword','123123')
-clickAndWait('id=sure_submit')
-verifyTextPresent('原密码输入的不对！')
-
-
-type('id=old_password','123456')
-type('id=password','123456')
-type('id=confirmPassword','123456')
-clickAndWait('id=sure_submit')
-verifyTextPresent('新密码和原密码一样，请重新输入！')
-
+clickAndWait('id=userInfo')
+verifyTitle('优惠啦 - 基本资料')
+verifyTextPresent('selenium@uhuila.com')
+click('id=upuserinfobutton')
+type('id=realname','')
+verifyTextPresent('请输入正确的姓名')  
+ 
+type('id=realname','u会啦')
+click('name=userInfo.userSex')
+type('id=bdayyear','1982')
+type('id=bdaymonth','01')
+type('id=bdayday','01')
+type('id=userphone','021-12345678')
+type('id=userqq','1111111')
+click('name=userInfo.marrState')
+select('id=industry','label=餐饮/娱乐')
+select('id=position','label=一般员工')
+select('id=salary','label=1500元-3000元')
+click('xpath=(//input[@name='likenames[]'])[2]')
+click('xpath=(//input[@name='likenames[]'])[9]')
+type('id=elselike','啊大')
+clickAndWait('id=upuserinfobutton')
+verifyTextPresent('021-12345678')
+verifyTextPresent('餐饮/娱乐')
+verifyTextPresent('一般员工')
+verifyTextPresent('1500元-3000元')
+ 
 #{/selenium}
 
-#{selenium 'Test 修改密码'}
-#{include 'test/selenium/step/login.selenium' /}
-open('/user/password')
-type('id=old_password','123456')
-type('id=password','123')
-type('id=confirmPassword','1234567')
-clickAndWait('id=sure_submit')
-verifyTextPresent('密码不能小于6位！')
-#{/selenium}

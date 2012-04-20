@@ -50,7 +50,6 @@ public class Register extends Controller{
 			}
 		}
 
-
 		if (Validation.hasErrors()) {
 			render("Register/index.html", user);
 		}

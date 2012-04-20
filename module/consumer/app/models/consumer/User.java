@@ -71,14 +71,6 @@ public class User extends Model {
 
 	@OneToOne(mappedBy = "user",cascade=CascadeType.ALL)  
 	public UserInfo userInfo;
-	public UserInfo getUserInfo() {
-		return this.userInfo;
-	}
-
-	public void setUserInfo(UserInfo userInfo) {
-		this.userInfo = userInfo;
-	}
-
 
 	/**
 	 * 判断用户名和手机是否唯一
@@ -140,9 +132,13 @@ public class User extends Model {
 
 	}
 
+	/**
+	 * 更新手机
+	 * @param mobile 手机
+	 */
 	public void updateMobile(String mobile) {
-		this.mobile = userInfo.mobile;
+		this.mobile = mobile;
 		this.save();
-		
+
 	}
 }

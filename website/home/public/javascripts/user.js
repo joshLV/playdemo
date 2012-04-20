@@ -27,13 +27,14 @@ function setUserInfo(){
 			}
 	)
 	$("#intrest").val(hobby.join(","));
+
 	var elselike      = $("#elselike").val();
 	if(realname==''||checkRealName(realname)){
 		$("#realnamecheck").html("<div class='loginpwd_msg'><div class='attention'><img  src='/public/images/error.gif' style='vertical-align:middle'/>&nbsp;&nbsp;&nbsp;请输入正确的姓名</div></div>");
 		return false;
 	}
 	if(usersex==undefined){
-		$("#showsexcheck").html("<div class='loginpwd_msg' style='margin-left:-360px'><div class='attention'><img  src='/public/images/error.gif' style='vertical-align:middle'/>请选择</div></div>");
+		$("#showsexcheck").html("<div class='loginpwd_msg' style='margin-right:10px'><div class='attention'><img  src='/public/images/error.gif' style='vertical-align:middle'/>请选择</div></div>");
 		return false;
 	}
 	if(bdayyear==''||bdaymonth==''||bdayday==''||checkBDay(bday)){
@@ -80,14 +81,14 @@ function changeTel(telidentify){
 		}
 		$("#newtelnum").attr("disabled","");
 		$.post(
-				"/user/bindMobile",
+				"/userInfo/bindMobile",
 				{mobile:newtelnum,validCode:telcheckcode,telidentify:1},
 				function(data){
 					alert(data)
 					if(data==0){
 						$("#layout").hide();
 						//修改成功跳转
-						setTimeout(function(){ location.href = "/user"},10);
+						setTimeout(function(){ location.href = "/userInfo"},10);
 					}else if(data==-1){
 						alert('时间过期');
 					}else if(data==2){
@@ -115,12 +116,12 @@ function changeTel(telidentify){
 			return false;
 		}
 		$("#bindtelnum").attr("disabled","");
-		$.post("/user/bindMobile",
+		$.post("/userInfo/bindMobile",
 				{mobile:bindtelnum,validCode:bindcheckcode,telidentify:2},function(data){
 					if(data==0){
 						$("#layout").hide();
 						//修改成功跳转
-						setTimeout(function(){ location.href = "/user"},10);
+						setTimeout(function(){ location.href = "/userInfo"},10);
 					}else if(data==2){
 						alert('输入的手机号和不一致！');
 					}else if(data==1){
@@ -145,7 +146,7 @@ function getBindCode(codeidy){
 		}
 		$("#getBindCode").attr("disabled","disabled");
 		$.post(
-				"/user/send",
+				"/userInfo/send",
 				{mobile:bindtelnum},
 				function(data){
 					if(data==1){
@@ -186,7 +187,7 @@ function getBindCode(codeidy){
 		}
 		$("#getchangeCode").attr("disabled","disabled");
 		$.post(
-				"/user/send",
+				"/userInfo/send",
 				{mobile:newtelnum},
 				function(data){
 					if(data==1){

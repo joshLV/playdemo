@@ -290,7 +290,8 @@ public class ECoupon extends Model {
 			returnFlg="{\"error\":\"no such eCoupon\"}";
 			return returnFlg;
 		}
-		if(eCoupon.status != ECouponStatus.UNCONSUMED && eCoupon.status != ECouponStatus.EXPIRED){
+	
+		if(!eCoupon.status.equals(ECouponStatus.UNCONSUMED) && eCoupon.status.equals(ECouponStatus.EXPIRED)){
 			returnFlg = "{\"error\":\"can not apply refund with this goods\"}";
 			return returnFlg;
 		}

@@ -119,7 +119,7 @@ public class ECouponUnitTest extends UnitTest {
 		assertEquals("{\"error\":\"can not get the trade bill\"}",ret);
 
 
-		id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
+		id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon3");
 		eCoupon=ECoupon.findById(id);
 		ret = ECoupon.applyRefund(eCoupon,userId,applyNote, AccountType.CONSUMER);
 		assertEquals("{\"error\":\"can not apply refund with this goods\"}",ret);
