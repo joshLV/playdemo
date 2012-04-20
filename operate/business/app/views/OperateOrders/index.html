@@ -129,11 +129,13 @@
             <td rowspan="${order.orderItems.size()}">${order.orderNumber}</td>
             #{if order.realGoods.size()>0}
                 <td>(&{'goods.'+order.realGoods.get(0).materialType})${order.realGoods.get(0).name}</td>
-                <td rowspan="${order.realGoods.size()}">
-                    <a id="sendInfo_${order.id}" href="#" class="label label-info" rel="popover"
-                       data-content="运单号: ${order.deliveryNo}"
-                       data-original-title="物流公司: ${order.deliveryCompany}"
-                       onmouseover="$('#sendInfo_${order.id}').popover();">&{'order.'+order.realGoodsStatus}</a>
+                <td rowspan="${order.realGoods.size()}">#{if order.deliveryNo!=null}<a id="sendInfo_${order.id}" href="#" class="label label-info" rel="popover"
+                           data-content="运单号: ${order.deliveryNo}"
+                           data-original-title="物流公司: ${order.deliveryCompany}"
+                           onmouseover="$('#sendInfo_${order.id}').popover();">&{'order.'+order.realGoodsStatus}</a>
+                    #{/if}
+                    #{else}&{'order.'+order.realGoodsStatus}#{/else}
+
                     #{if models.order.OrderStatus.PAID.equals(order.realGoodsStatus)}
                         <br/><a href="#" id="linkSend_${order.id}" onclick="prepareSend(${order.id})">发货</a>#{/if}
                 </td>
