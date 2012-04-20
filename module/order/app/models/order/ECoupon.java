@@ -328,10 +328,10 @@ public class ECoupon extends Model {
 	}
 
 	/**
-	 * 处理券号
+	 * 得到隐藏处理过的券号
 	 * @return 券号
 	 */
-	public String getEcouponSn(){
+	public String getMaskedEcouponSn(){
 		StringBuilder sn = new StringBuilder();
 		int len =  eCouponSn.length();
 		if (len > 4) {

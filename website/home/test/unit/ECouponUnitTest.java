@@ -129,7 +129,7 @@ public class ECouponUnitTest extends UnitTest {
 	public void getEcouponSn(){
 		Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
 		ECoupon eCoupon=ECoupon.findById(id);
-		String sn = eCoupon.getEcouponSn();
+		String sn = eCoupon.getMaskedEcouponSn();
 		assertEquals("******7002",sn);
 	}
 

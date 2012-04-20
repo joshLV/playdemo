@@ -1,10 +1,32 @@
 package models.order;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 import com.sun.org.apache.xpath.internal.operations.Or;
 import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
+import models.mail.CouponMessage;
+import models.mail.MailUtil;
 import models.resale.Resaler;
 import models.resale.util.ResaleUtil;
 import models.sales.Goods;
@@ -15,7 +37,6 @@ import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -134,7 +155,7 @@ public class Order extends Model {
 
     @Transient
     public String searchItems;
-    
+
     @Column(name = "delivery_company")
     public String deliveryCompany;
 
@@ -302,19 +323,39 @@ public class Order extends Model {
                     continue;
                 }
                 if (goods.materialType == MaterialType.ELECTRONIC) {
+                    List<String> couponCodes = new ArrayList<>();
                     for (int i = 0; i < orderItem.buyNumber; i++) {
                         ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
-                        if (!"dev".equals(Play.configuration.get("application.mode"))) {
+                        if (!Play.mode.isDev()) {
                             SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, orderItem.phone);
                         }
+                        couponCodes.add(eCoupon.getMaskedEcouponSn());
                     }
 
+                    CouponMessage mail = new CouponMessage();
+                    mail.setEmail(orderItem.order.getUser().loginName);
+                    if (orderItem.order.getUser().userInfo == null) {
+                        mail.setFullName(orderItem.order.getUser().loginName);
+                    } else {
+                        mail.setFullName(orderItem.order.getUser().userInfo.fullName);
+                    }
+                    mail.setCoupons(couponCodes);
+                    MailUtil.send(mail);
                 }
                 goods.save();
             }
         }
     }
 
+
+    private User user;
+
+    public User getUser() {
+        if (user == null) {
+            user = User.findById(userId);
+        }
+        return user;
+    }
 
     /**
      * 会员中心订单查询
@@ -466,7 +507,7 @@ public class Order extends Model {
     private List<Goods> realGoods = new ArrayList<>();
     @Transient
     private List<Goods> electronicGoods = new ArrayList<>();
-    
+
     @Transient
     public List<Goods> getRealGoods() {
         if (realGoods.size()>0){

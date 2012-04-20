@@ -99,12 +99,7 @@ public class OrderItems extends Model {
         List<ECoupon> favs = query.getResultList();
         StringBuilder sn = new StringBuilder();
         for (ECoupon e : favs) {
-            String eCouponSn = e.eCouponSn;
-            int len = eCouponSn.length();
-            for (int i = 0; i < len - 4; i++) {
-                sn.append("*");
-            }
-            sn.append(eCouponSn.substring(len - 4, len) + "\n");
+            sn.append(e.getMaskedEcouponSn() + "\n");
         }
         return sn.toString();
     }
