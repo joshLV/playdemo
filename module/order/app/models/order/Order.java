@@ -1,5 +1,34 @@
 package models.order;
 
+import com.sun.org.apache.xpath.internal.operations.Or;
+import com.uhuila.common.constants.DeletedStatus;
+import models.accounts.AccountType;
+import models.consumer.Address;
+import models.consumer.User;
+import models.resale.Resaler;
+import models.resale.util.ResaleUtil;
+import models.sales.Goods;
+import models.sales.MaterialType;
+import models.sms.SMSUtil;
+import org.apache.commons.lang.time.DateFormatUtils;
+import play.Play;
+import play.db.jpa.JPA;
+import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,33 +38,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import javax.persistence.*;
-
-import models.accounts.AccountType;
-import models.consumer.Address;
-import models.consumer.User;
-import models.resale.Resaler;
-import models.resale.ResalerLevel;
-import models.resale.util.ResaleUtil;
-import models.sales.Goods;
-import models.sales.MaterialType;
-import models.sms.SMSUtil;
-
-import org.apache.commons.lang.time.DateFormatUtils;
-
-import play.Play;
-import play.db.jpa.JPA;
-import play.db.jpa.Model;
-import play.modules.paginate.JPAExtPaginator;
-
-import com.uhuila.common.constants.DeletedStatus;
-
 
 @Entity
 @Table(name = "orders")
 public class Order extends Model {
-    public static SimpleDateFormat simpleFormate = new SimpleDateFormat(" yyyy-MM-dd ");
-
     @Column(name = "user_id")
     public long userId;                     //下单用户ID，可能是优惠啦用户，也可能是分销商
 
@@ -44,7 +50,7 @@ public class Order extends Model {
     public AccountType userType;            //用户类型，个人/分销商
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
-    @OrderBy("createdAt")
+    @OrderBy("id")
     public List<OrderItems> orderItems;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
@@ -448,13 +454,11 @@ public class Order extends Model {
 
     @Transient
     public OrderStatus getRealGoodsStatus() {
-        System.out.println("getRealGoodsStatus");
         return getStatus(MaterialType.REAL);
     }
 
     @Transient
     public OrderStatus getElectronicGoodsStatus() {
-        System.out.println("getElectronicGoodsStatus");
         return getStatus(MaterialType.ELECTRONIC);
     }
 
@@ -493,8 +497,6 @@ public class Order extends Model {
         OrderStatus status = null;
         for (OrderItems orderItem : orderItems) {
             if (type.equals(orderItem.goods.materialType)) {
-                System.out.println("orderItem.status:" + orderItem.status);
-                System.out.println("status:" + status);
                 if (status == null) {
                     status = orderItem.status;
                 } else if (orderItem.status.compareTo(status) < 0) {
@@ -529,4 +531,18 @@ public class Order extends Model {
         return buider.toString();
     }
 
+    public void sendRealGoods() {
+        Order order = Order.findById(id);
+        order.deliveryCompany = this.deliveryCompany;
+        order.deliveryNo = this.deliveryNo;
+        for (OrderItems orderItem : order.orderItems) {
+            System.out.println("orderItem.goods.materialType:" + orderItem.goods.materialType);
+            if (MaterialType.REAL.equals(orderItem.goods.materialType)){
+                orderItem.status = OrderStatus.SENT;
+                orderItem.save();
+            }
+        }
+
+        order.save();
+    }
 }

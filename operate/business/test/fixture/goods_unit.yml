@@ -43,7 +43,7 @@ sales.Goods(Goods_002):
  "lockVersion": "1"
  "saleCountBegin": "0"
  "saleCountEnd": "0"
- "materialType": "ELECTRONIC"
+ "materialType": "REAL"
  "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]

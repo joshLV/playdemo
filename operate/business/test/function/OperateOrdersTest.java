@@ -22,20 +22,20 @@ import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 import controllers.operate.cas.Security;
 
-public class OrdersTest extends FunctionalTest {
+public class OperateOrdersTest extends FunctionalTest {
 
 	@org.junit.Before
 	public void setup() {
-		Fixtures.delete(Shop.class);
-		Fixtures.delete(Category.class);
-		Fixtures.delete(Brand.class);
-		Fixtures.delete(Area.class);
-		Fixtures.delete(Goods.class);
+        Fixtures.delete(ECoupon.class);
+        Fixtures.delete(OrderItems.class);
 		Fixtures.delete(Order.class);
-		Fixtures.delete(OrderItems.class);
+        Fixtures.delete(Goods.class);
+        Fixtures.delete(Shop.class);
+        Fixtures.delete(Category.class);
+        Fixtures.delete(Brand.class);
+        Fixtures.delete(Area.class);
 		Fixtures.delete(Supplier.class);
 		Fixtures.delete(OperateUser.class);
-		Fixtures.delete(ECoupon.class);
 		Fixtures.delete(OperateRole.class);
 		Fixtures.loadModels("fixture/roles.yml");
 		Fixtures.loadModels("fixture/supplierusers.yml");
@@ -64,7 +64,6 @@ public class OrdersTest extends FunctionalTest {
 
 	@Test
 	public void testIndex() {
-
 		Response response = GET("/orders");
 		assertStatus(200, response);
 	}
@@ -74,6 +73,7 @@ public class OrdersTest extends FunctionalTest {
 		Response response = GET("/coupons");
 		assertStatus(200, response);
 	}
+
 	@Test
 	public void testDetails() {
 		Long id = (Long) Fixtures.idCache.get("models.order.Order-order1");

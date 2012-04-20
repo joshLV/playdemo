@@ -1,19 +1,33 @@
 #{fixture delete:[models.admin.SupplierUser.class,
     models.admin.SupplierRole.class,
+    models.order.OrderItems.class,
     models.order.Order.class,
     models.sales.Category.class,
-    models.sales.Area.class,
     models.sales.Goods.class,
     models.sales.Brand.class,
-    models.sales.Category.class,models.sales.Area.class,
-    models.sales.Shop.class, models.sales.Goods.class,
-    models.order.OrderItems.class,models.order.ECoupon.class,] ,
-load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/areas.yml','fixture/base_data.yml',
-'fixture/orders.yml'] /}
+    models.sales.Category.class,
+    models.sales.Area.class,
+    models.sales.Shop.class,
+    models.order.ECoupon.class] ,
+load:['fixture/roles.yml','fixture/supplierusers.yml',
+'fixture/areas_unit.yml',
+'fixture/categories_unit.yml',
+'fixture/brands_unit.yml',
+'fixture/shops_unit.yml',
+'fixture/goods_unit.yml','fixture/orders.yml','fixture/orderItems.yml'] /}
 #{selenium "查看订单界面"}
     #{include 'test/selenium/step/login.selenium' /}
     open('/orders')
     assertTitle('商品订单')
+    verifyTextPresent('201202220324134991598')
+    verifyTextPresent('201202220324134991599')
+    verifyTextPresent('已付款')
+    verifyTextPresent('发货')
+    click('link=发货')
+    type('id=order_deliveryCompany','汇通')
+    type('id=order_deliveryNo','321123')
+    clickAndWait('id=send')
+    verifyTextPresent('已发货')
 #{/selenium}
 #{selenium '查看订单详细信息'}
     open('/orders/${play.test.Fixtures.idCache.get("models.order.Order-order1")}')

@@ -7,8 +7,9 @@ order.OrderItems(orderItems1):
   "salePrice": "10"
   "originalPrice": "20"
   "goodsName": "哈根达斯100元抵用券"
-  "createdAt": "2012-03-05T00:00:00"
+  "createdAt": "2012-03-07"
   "goods": "Goods_001"
+  "status": "PAID"
 
 order.OrderItems(orderItems2):
   "order": "order2"
@@ -16,8 +17,9 @@ order.OrderItems(orderItems2):
   "salePrice": "20"
   "originalPrice": "20"
   "goodsName": "哈根达斯200元抵用券"
-  "createdAt": "2012-03-05T00:00:00"
+  "createdAt": "2012-03-07"
   "goods": "Goods_002"
+  "status": "PAID"
 
 order.OrderItems(orderItems3):
   "order": "order1"
@@ -25,9 +27,9 @@ order.OrderItems(orderItems3):
   "salePrice": "10"
   "originalPrice": "20"
   "goodsName": "哈根达斯100元抵用券"
-  "createdAt": "2012-03-05T00:00:00"
+  "createdAt": "2012-03-07"
   "goods": "Goods_002"
-
+  "status": "PAID"
 
 order.ECoupon(coupon1):
   "order": "order1"
@@ -36,8 +38,8 @@ order.ECoupon(coupon1):
   "faceValue": "10.0"
   "resalerPrice": "1.0"
   "salePrice": "1.0"
-  "createdAt": "2012-03-05T00:00:00"
-  "consumedAt": "2012-03-05T00:00:00"
+  "createdAt": "2012-03-07"
+  "consumedAt": "2012-03-07"
   "status": "UNCONSUMED"
   "goods": "Goods_001"
   "orderItems": "orderItems1"
@@ -49,8 +51,8 @@ order.ECoupon(coupon2):
   "faceValue": "10.0"
   "resalerPrice": "1.0"
   "salePrice": "1.0"
-  "createdAt": "2012-03-05T00:00:00"
-  "consumedAt": "2012-03-05T00:00:00"
+  "createdAt": "2012-03-07"
+  "consumedAt": "2012-03-07"
   "status": "UNCONSUMED"
   "goods": "Goods_002"
   "orderItems": "orderItems2"

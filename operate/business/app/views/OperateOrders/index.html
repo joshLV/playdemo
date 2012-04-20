@@ -4,21 +4,36 @@
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript">
+    function prepareSend(id) {
+        $("#sendForm").attr("action", "/orders/" + id + "/send?x-http-method-override=PUT");
+        $('#sendModal').modal('show');
+    }
+
     $(function () {
         $("#send").click(function () {
-            if ($("#order_deliveryCompany").val().trim() == "") {
-                $("#note_order_deliveryCompany").css("error");
-                $("#note_order_deliveryCompany").html("请输入物流公司!");
-                $("#order_deliveryCompany").focus();
-                return false;
-            }
+            var result = true;
             if ($("#order_deliveryNo").val().trim() == "") {
-                $("#note_order_deliveryNo").css("error");
+                $("#note_order_deliveryNo").addClass("error");
                 $("#note_order_deliveryNo").html("请输入物流单号!");
                 $("#order_deliveryNo").focus();
-                return false;
+                result = false;
+            } else {
+                $("#note_order_deliveryCompany").removeClass("error");
+                $("#note_order_deliveryCompany").html("");
             }
-            $("#sendForm").submit();
+            if ($("#order_deliveryCompany").val().trim() == "") {
+                $("#note_order_deliveryCompany").addClass("error");
+                $("#note_order_deliveryCompany").html("请输入物流公司!");
+                $("#order_deliveryCompany").val("");
+                $("#order_deliveryCompany").focus();
+                result = false;
+            } else {
+                $("#note_order_deliveryCompany").removeClass("error");
+                $("#note_order_deliveryCompany").html("");
+            }
+            if (result) {
+                $("#sendForm").submit();
+            }
         });
     });
 </script>
@@ -101,7 +116,6 @@
             <th>商品名称</th>
             <th>订单状态</th>
             <th>订单来源</th>
-            <th>运单号</th>
             <th>总金额</th>
             <th>成交时间</th>
             <th>退款时间</th>
@@ -115,9 +129,13 @@
             <td rowspan="${order.orderItems.size()}">${order.orderNumber}</td>
             #{if order.realGoods.size()>0}
                 <td>(&{'goods.'+order.realGoods.get(0).materialType})${order.realGoods.get(0).name}</td>
-                <td rowspan="${order.realGoods.size()}">&{'order.'+
-                    order.realGoodsStatus}#{if models.order.OrderStatus.PAID.equals(order.realGoodsStatus)}
-                        <br/><a href="#" id="linkSend_${order.id}" onclick="$('#sendModal').modal('show');">发货</a>#{/if}
+                <td rowspan="${order.realGoods.size()}">
+                    <a id="sendInfo_${order.id}" href="#" class="label label-info" rel="popover"
+                       data-content="运单号: ${order.deliveryNo}"
+                       data-original-title="物流公司: ${order.deliveryCompany}"
+                       onmouseover="$('#sendInfo_${order.id}').popover();">&{'order.'+order.realGoodsStatus}</a>
+                    #{if models.order.OrderStatus.PAID.equals(order.realGoodsStatus)}
+                        <br/><a href="#" id="linkSend_${order.id}" onclick="prepareSend(${order.id})">发货</a>#{/if}
                 </td>
             #{/if}
 
@@ -129,11 +147,10 @@
                 #{/if}
             #{/else}
             <td rowspan="${order.orderItems.size()}">&{'order.'+order.userType}</td>
-            <td rowspan="${order.orderItems.size()}">${order.deliveryNo}</td>
             <td rowspan="${order.orderItems.size()}">${order.amount}</td>
 
-            <td rowspan="${order.orderItems.size()}">${order.createdAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
-            <td rowspan="${order.orderItems.size()}">${order.refundAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td rowspan="${order.orderItems.size()}">${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td rowspan="${order.orderItems.size()}">${order.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
             <td rowspan="${order.orderItems.size()}"><a href="@{OperateOrders.details(order.id)}">查看</a></td>
         </tr>
             #{set i:0/}
@@ -146,7 +163,6 @@
                         <td rowspan="${order.realGoods.size()}">&{'order.'+
                             order.realGoodsStatus}#{if models.order.OrderStatus.PAID.equals(order.status)}
                                 <br/><a href="#" id="linkSend">发货</a>#{/if}
-                        *{#{vx.operateLink text:"发货", url:"/orders/"+order.id+"/send", method:"PUT"/}}*
                         </td>
                         #{set showRealStatus:false/}
                     #{/if}
@@ -190,7 +206,8 @@
         <h3>发货信息</h3>
     </div>
     <div class="modal-body">
-    #{form @OperateOrders.send(order.id) , id:"sendForm", enctype:'multipart/form-data', class:"form-horizontal",
+    #{form @OperateOrders.index(), id:"sendForm", name:"sendForm", enctype:'multipart/form-data',
+    class:"form-horizontal",
     method:"PUT"}
 #{layout_operate.textField name:'order.deliveryCompany', value:order.deliveryCompany, required:true,
     err:"deliveryCompany"/}
