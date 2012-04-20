@@ -1,18 +1,16 @@
 package controllers;
 
 import models.consumer.User;
-import models.consumer.UserStatus;
+import models.consumer.UserInfo;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+
 import play.cache.Cache;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.libs.Codec;
 import play.libs.Images;
 import play.mvc.Controller;
-
-import java.util.Date;
 
 /**
  * 前台注册用户
@@ -52,13 +50,15 @@ public class Register extends Controller{
 			}
 		}
 
-      
+
 		if (Validation.hasErrors()) {
 			render("Register/index.html", user);
 		}
 
 		//用户创建
 		user.create();
+		user.userInfo = new UserInfo(user);
+		user.save();
 
 		session.put(SESSION_USER_KEY,user.loginName);
 		render("Register/success.html");

@@ -112,16 +112,16 @@ public class ECouponUnitTest extends UnitTest {
 		eCoupon.save();
 
 		String applyNote="不想要了";
-		String ret = ECoupon.applyRefund(null,userId,applyNote);
+		String ret = ECoupon.applyRefund(null,userId,applyNote, AccountType.CONSUMER);
 		assertEquals("{\"error\":\"no such eCoupon\"}",ret);
 
-		ret = ECoupon.applyRefund(eCoupon,userId,applyNote);
+		ret = ECoupon.applyRefund(eCoupon,userId,applyNote, AccountType.CONSUMER);
 		assertEquals("{\"error\":\"can not get the trade bill\"}",ret);
 
 
 		id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
 		eCoupon=ECoupon.findById(id);
-		ret = ECoupon.applyRefund(eCoupon,userId,applyNote);
+		ret = ECoupon.applyRefund(eCoupon,userId,applyNote, AccountType.CONSUMER);
 		assertEquals("{\"error\":\"can not apply refund with this goods\"}",ret);
 	}
 

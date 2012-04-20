@@ -15,9 +15,8 @@ POST    /coupons/refund/{id}                          MyCoupons.applyRefund
 #用户资料
 GET      /user                                        UserInfos.index
 POST     /user/update                                 UserInfos.update
-POST     /user/bind_mobile                            UserInfos.bindMobile
+POST     /user/bindMobile                             UserInfos.bindMobile
 POST     /user/send                                   UserInfos.sendValidCode
-GET      /user/send                                   UserInfos.sendValidCode
 
 GET     /user/password                                UserPassword.index
 POST    /user/{id}                                    UserPassword.update

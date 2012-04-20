@@ -3,10 +3,12 @@ package models.consumer;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -67,6 +69,16 @@ public class User extends Model {
 	@Transient
 	public String oldPassword;
 
+	@OneToOne(mappedBy = "user",cascade=CascadeType.ALL)  
+	public UserInfo userInfo;
+	public UserInfo getUserInfo() {
+		return this.userInfo;
+	}
+
+	public void setUserInfo(UserInfo userInfo) {
+		this.userInfo = userInfo;
+	}
+
 
 	/**
 	 * 判断用户名和手机是否唯一
@@ -126,5 +138,11 @@ public class User extends Model {
 		createdAt = new Date();
 		return super.create();
 
+	}
+
+	public void updateMobile(String mobile) {
+		this.mobile = userInfo.mobile;
+		this.save();
+		
 	}
 }
