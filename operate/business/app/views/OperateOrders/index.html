@@ -128,7 +128,9 @@
         <tr>
             <td rowspan="${order.orderItems.size()}">${order.orderNumber}</td>
             #{if order.realGoods.size()>0}
-                <td>(&{'goods.'+order.realGoods.get(0).materialType})${order.realGoods.get(0).name}</td>
+                <td>#{if models.sales.MaterialType.ELECTRONIC.equals(order.realGoods.get(0).materialType)}<img
+                src="@@{'/public/images/electronic-goods.png'}"> #{/if}
+                    #{else}<img src="@@{'/public/images/real-goods.png'}"> #{/else}${order.realGoods.get(0).name}</td>
                 <td rowspan="${order.realGoods.size()}">#{if order.deliveryNo!=null}<a id="sendInfo_${order.id}" href="#" class="label label-info" rel="popover"
                            data-content="运单号: ${order.deliveryNo}"
                            data-original-title="物流公司: ${order.deliveryCompany}"
@@ -143,8 +145,7 @@
 
             #{else}
                 #{if order.electronicGoods.size()>0}
-                    <td>(&{'goods.'+
-                        order.electronicGoods.get(0).materialType})${order.electronicGoods.get(0).name}</td>
+                    <td><img src="@@{'/public/images/electronic-goods.png'}"> ${order.electronicGoods.get(0).name}</td>
                     <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
                 #{/if}
             #{/else}
@@ -160,7 +161,7 @@
             #{list items:order.realGoods, as:'aRealGoods'}
                 #{if i>0}
                 <tr>
-                    <td>(&{'goods.'+aRealGoods.materialType})${aRealGoods.name}</td>
+                    <td><img src="@@{'/public/images/real-goods.png'}"> ${aRealGoods.name}</td>
                     #{if showRealStatus}
                         <td rowspan="${order.realGoods.size()}">&{'order.'+
                             order.realGoodsStatus}#{if models.order.OrderStatus.PAID.equals(order.status)}
@@ -179,7 +180,7 @@
             #{list items:order.electronicGoods, as:'aElectronicGoods'}
                 #{if (order.realGoods.size()==0 && j>0) ||(order.realGoods.size()>0) }
                 <tr>
-                    <td>(&{'goods.'+aElectronicGoods.materialType})${aElectronicGoods.name}</td>
+                    <td><img src="@@{'/public/images/electronic-goods.png'}"> ${aElectronicGoods.name}</td>
                     #{if showElectronicStatus}
                         <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
                         #{set showElectronicStatus:false/}
