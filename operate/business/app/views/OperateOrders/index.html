@@ -7,13 +7,13 @@
     $(function () {
         $("#send").click(function () {
             if ($("#order_deliveryCompany").val().trim() == "") {
-                $("#note_order_deliveryCompany").st("error");
+                $("#note_order_deliveryCompany").css("error");
                 $("#note_order_deliveryCompany").html("请输入物流公司!");
                 $("#order_deliveryCompany").focus();
                 return false;
             }
             if ($("#order_deliveryNo").val().trim() == "") {
-                $("#note_order_deliveryNo").class("error");
+                $("#note_order_deliveryNo").css("error");
                 $("#note_order_deliveryNo").html("请输入物流单号!");
                 $("#order_deliveryNo").focus();
                 return false;
