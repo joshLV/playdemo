@@ -94,10 +94,10 @@ resaler.FREEZE=冻结
 resaler.remark=备注
 
 #订单状态
-order.UNPAID=未支付
-order.PAID=已支付
-order.CANCELED=取消订单
-order.SENT=交易成功
+order.UNPAID=等待付款
+order.PAID=已付款
+order.CANCELED=交易取消
+order.SENT=已发货
 order.RETURNED=退款
 order.RECEIPT=确认取货
 
@@ -119,4 +119,6 @@ brand.supplier=商户
 
 order.CONSUMER=个人
 order.RESALER=分销商
+order.deliveryCompany=物流公司
+order.deliveryNo=物流单号
 

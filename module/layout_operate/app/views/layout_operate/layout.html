@@ -18,7 +18,7 @@
     <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
     <!-- Le styles -->
     <link href="@{'/public/assets/css/bootstrap.css'}" rel="stylesheet">
-    #{get 'moreStyles' /}
+    <link href="@{'/public/assets/css/bootstrap-responsive.css'}" rel="stylesheet">
     <style type="text/css">
       body {
       padding-top: 60px;
@@ -28,9 +28,9 @@
       padding: 9px 0;
       }
     </style>
-    <link href="@{'/public/assets/css/bootstrap-responsive.css'}" rel="stylesheet">
+  #{get 'moreStyles' /}
 
-    <!-- Le fav and touch icons -->
+      <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="@{'/public/assets/ico/favicon.ico'}">
     <link rel="apple-touch-icon" href="@{'/public/assets/ico/bootstrap-apple-57x57.png'}">
     <link rel="apple-touch-icon" sizes="72x72" href="@{'/public/assets/ico/bootstrap-apple-72x72.png'}">

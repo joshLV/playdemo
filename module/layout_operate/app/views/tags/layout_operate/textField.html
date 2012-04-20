@@ -21,7 +21,7 @@
     #{/field}
     #{field _err?:'errors'}
         #{ifError field.name}
-            <span class="error">${field.error.raw()?:''}</span>
+            <span class="error" id="${field.id}">${field.error.raw()?:''}</span>
         #{/ifError}
     #{/field}
     </div>

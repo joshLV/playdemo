@@ -1,17 +1,14 @@
 package controllers;
 
-import java.util.List;
-
-import models.order.ECoupon;
 import models.order.OrderItems;
 import models.order.OrdersCondition;
 import operate.rbac.annotations.ActiveNavigation;
-
 import org.apache.commons.lang.StringUtils;
-
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
+
+import java.util.List;
 
 @With(OperateRbac.class)
 @ActiveNavigation("order_index")
@@ -22,7 +19,7 @@ public class OperateOrders extends Controller {
 	/**
 	 * 商户订单信息一览
 	 *
-	 * @param orders 页面信息
+	 * @param condition 页面条件信息
 	 */
 	public static void index(OrdersCondition condition) {
 		if (condition == null) {
@@ -35,6 +32,13 @@ public class OperateOrders extends Controller {
 		render(orderList);
 
 	}
+
+    /**
+     * 订单发货.
+     */
+    public static void send(Long id) {
+       index(null);
+    }
 
 	/**
 	 * 商户订单详细

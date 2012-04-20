@@ -49,6 +49,8 @@ GET     /account-report                         AccountReports.index
 #运营后台订单
 GET     /orders                                 OperateOrders.index
 GET     /orders/{id}                            OperateOrders.details
+PUT     /orders/{id}/send                       OperateOrders.send
+
 GET     /coupons                                OperateCoupons.index
 
 #品牌管理
