@@ -1,0 +1,20 @@
+# Application dependencies
+
+require:
+    - play
+    - play1 -> app-version 0.1
+    - asset_package -> asset_package
+
+repositories:
+
+    - customModules:
+        type:       local
+        artifact:   "${application.path}/../../module/[module]"
+        contains:
+            - asset_package -> *
+
+    - play1ContributedModules:
+        type: http
+        artifact: "http://dev.uhuila.cn/play/modules/[module]-[revision].zip"
+        contains:
+            - play1 -> *

@@ -1,0 +1,4 @@
+self: play -> asset_package 0.1
+
+require:
+    - play 1.2.4

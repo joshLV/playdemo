@@ -1,0 +1,50 @@
+package functional;
+import org.junit.*;
+import play.test.*;
+import play.mvc.*;
+import play.mvc.Http.*;
+import models.*;
+
+public class AssetPackageTest extends FunctionalTest {
+
+    @Test
+    public void testMerge2JsFiles() {
+        Response response = GET("/js/test/a.js/test/b.js");
+        assertIsOk(response);
+        assertContentType("application/javascript", response);
+        assertContentMatch("a.js", response);
+        assertContentMatch("b.js", response);
+    }
+    
+
+    @Test
+    public void testMerge3JsFiles() {
+        Response response = GET("/js/test/a.js/test/b.js/test/c.js");
+        assertIsOk(response);
+        assertContentType("application/javascript", response);
+        assertContentMatch("a.js", response);
+        assertContentMatch("b.js", response);
+        assertContentMatch("c.js", response);
+    }    
+ 
+    @Test
+    public void testMerge2CssFiles() {
+        Response response = GET("/css/test/a.css/test/b.css");
+        assertIsOk(response);
+        assertContentType("text/css", response);
+        assertContentMatch("aaaaaa", response);
+        assertContentMatch("bbbbbb", response);
+    }
+    
+
+    @Test
+    public void testMerge3CssFiles() {
+        Response response = GET("/css/test/a.css/test/b.css/test/c.css");
+        assertIsOk(response);
+        assertContentType("text/css", response);
+        assertContentMatch("aaaaaa", response);
+        assertContentMatch("bbbbbb", response);
+        assertContentMatch("cccccc", response);
+    }    
+       
+}
