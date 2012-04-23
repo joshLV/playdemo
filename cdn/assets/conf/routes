@@ -6,6 +6,9 @@
 GET     /js/{<[^\?]+>path}                                        AssetPackage.js(format:'js')
 GET     /css/{<[^\?]+>path}                                       AssetPackage.css(format:'css')
 
+
+GET     /test                                                     TestController.index
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
