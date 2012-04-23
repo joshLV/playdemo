@@ -1,0 +1,33 @@
+#{fixture delete:'all' ,
+load:['fixture/resaler.yml'] /}
+
+#{selenium 'Test ResalerInfos/index.html'}
+    #{include 'test/selenium/step/login.selenium' /}
+    open('/resalerInfo')
+    verifyTitle('分销商 - 我的资料')
+    verifyTextPresent('tom')
+    verifyTextPresent('VIP1')
+    type('id=mobile','asdas')
+    type('id=email','3@qq.com')
+    clickAndWait('id=sure_submit')
+    verifyTextPresent('手机格式不对!')
+    
+    open('/resalerInfo')
+    verifyTitle('分销商 - 我的资料')
+    verifyTextPresent('tom')
+    verifyTextPresent('VIP1')
+    verifyValue('id=mobile','13213123121')
+    verifyValue('id=email','2@qq.com')
+    verifyValue('id=userName','yanjy')
+    verifyTextPresent('341281198208288387')
+    type('id=mobile','13900000000')
+    type('id=email','3@qq.com')
+    type('id=address','xujiahui1')
+    type('id=phone','02112345678')
+    type('id=userName','asdf')
+    type('id=postCode','123456')
+    clickAndWait('id=sure_submit')
+    verifyValue('id=mobile','13900000000')
+    verifyValue('id=email','3@qq.com')
+    verifyValue('id=userName','asdf')
+#{/selenium}

@@ -1,0 +1,114 @@
+#{extends 'main.html' /}
+ #{set title:'分销商 - 我的资料' /}
+ #{set 'moreStyles'}
+<link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
+<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
+#{/set}
+#{set 'moreScripts'}
+<script type="text/javascript">
+<!--
+init('${flag}'');
+function init(val){
+	if (flag == '1') {
+		alert("修改成功！");
+	}
+}
+//-->
+</script>
+#{/set}
+<div id="wrap_main">
+        <!--    最顶部导航-->
+        <div id="wrap_top">#{include "share/topNavigator.html"/}</div>
+        <div id="wrap_top_header">
+                <div id="wrap_top_header_left">
+                        <img src="@{'/public/images/logo.jpg'}" />
+                </div>
+                <div id="wrap_top_middle">券生活-惠生活</div>
+                <div style="clear: both"></div>
+                <div class="nav_hengfu">
+                        <ul class="nav_bg_ul">
+                                <li class="nav_bg_li"><a class="current_nav_bg_a" href="#">我的优惠啦</a></li>
+                                <li class="nav_bg_li"><a class="nav_bg_a nodisplay" href="#">我的优惠啦</a></li>
+                                <li class="nav_bg_li"><a class="nav_bg_a nodisplay" href="#">我的优惠啦</a></li>
+                        </ul>
+                </div>
+        </div>
+</div>
+<!--主体内容部分-->
+<div id="wrap_content">
+ #{include "share/left.html"/}
+        <div id="right_content_box">
+                <div class="tab_top">用户注册</div>
+                <div class="tab_top2">
+                        <form class="form-horizontal" id="editForm" action="@{ResalerInfos.update(resaler?.id)}" method="POST">
+                                <table width="774" border="0" cellpadding="0" cellspacing="0">
+                                        <tr>
+                                                <td width="12">&nbsp;</td>
+                                                <td>帐号等级：</td>
+                                                <td width="259" height="35">&{'resaler.'+resaler?.level}</td>
+                                        </tr>
+                                        <tr>
+                                                <td width="12">&nbsp;</td>
+                                                <td>用&nbsp;&nbsp;户&nbsp;&nbsp;名：</td>
+                                                <td width="259" height="35">${resaler?.loginName}
+                                                  <input type="hidden" name="resaler.password" value="******"/>
+                                                  <input type="hidden" name="resaler.confirmPassword" value="******"/>
+                                                  <input type="hidden" name="resaler.loginName" value="${resaler?.loginName}"/>
+                                                 </td>
+                                               
+                                        </tr>
+                                         <tr>
+                                                <td width="12">&nbsp;</td>
+                                                <td><font color="red">*</font>联系人姓名：</td>
+                                                <td width="259" height="35"><input type="text" name="resaler.userName" id="userName" value="${resaler?.userName}" />
+                                                        <span class="error">#{error 'resaler.userName' /}</span></td>
+                                        </tr>
+                                        <tr>
+                                                <td width="12">&nbsp;</td>
+                                                <td><font color="red">*</font>手&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;机：</td>
+                                                <td width="259" height="35"><input type="text" name="resaler.mobile" id="mobile" maxlength="11"
+                                                        value="${resaler?.mobile}" /> <span class="error" id="checkMobile">#{error 'resaler.mobile' /}</span></td>
+                                        </tr>
+                                        <tr>
+                                                <td width="12">&nbsp;</td>
+                                                <td><font color="red">*</font>电子邮箱：</td>
+                                                <td width="259" height="35"><input type="text" name="resaler.email" id="email" value="${resaler?.email}" />
+                                                        <span class="error">#{error 'resaler.email' /}</span></td>
+                                        </tr>
+                                      
+                                        <tr>
+                                                <td width="12">&nbsp;</td>
+                                                <td>身份证号：</td>
+                                                <td width="259" height="35">${resaler?.identityNo}
+                                                 <input type="hidden" name="resaler.identityNo" value="${resaler?.identityNo}"/>
+                                                 </td>
+                                        </tr>
+                                        <tr>
+                                                <td width="12">&nbsp;</td>
+                                                <td><font color="red">*</font>联系电话：</td>
+                                                <td width="259" height="35"><input type="text" name="resaler.phone" id="phone" value="${resaler?.phone}" />
+                                                        <span class="error">#{error 'resaler.phone' /}</span></td>
+                                        </tr>
+                                        <tr>
+                                                <td width="12">&nbsp;</td>
+                                                <td><font color="red">*</font>联系地址：</td>
+                                                <td width="259" height="35"><input type="text" name="resaler.address" id="address" value="${resaler?.address}" />
+                                                        <span class="error">#{error 'resaler.address' /}</span></td>
+                                        </tr>
+                                        <tr>
+                                                <td width="12">&nbsp;</td>
+                                                <td>邮编：</td>
+                                                <td width="259" height="35"><input type="text" name="resaler.postCode" id="postCode" maxlength=6 value="${resaler?.postCode}" />
+                                                        <span class="error">#{error 'resaler.postCode' /}</span></td>
+                                        </tr>
+                                        <tr>
+                                                <td width="12">&nbsp;</td>
+                                                <td width="12">&nbsp;</td>
+                                                <td align="center" height="35">
+                                                 <button class="seach_bg" id="sure_submit" type="submit">确认</button></td>
+                                        </tr>
+                                </table>
+                        </form>
+                </div>
+        </div>
+</div>

@@ -63,6 +63,7 @@ public class Resaler extends Model {
 
 	@Required
 	@Mobile
+	@MinSize(value = 11)
 	public String mobile;
 
 	@Required
@@ -195,6 +196,24 @@ public class Resaler extends Model {
 		newResaler.password = DigestUtils.md5Hex(newPassword + newPasswordSalt);
 		newResaler.save();
 
+	}
+
+	/**
+	 * 修改分销商信息
+	 * 
+	 * @param id ID
+	 * @param resaler 分销商信息
+	 */
+	public void updateInfo(Long id, Resaler resaler) {
+		Resaler updResaler = Resaler.findById(id);
+		updResaler.address = resaler.address;
+		updResaler.mobile = resaler.mobile;
+		updResaler.phone = resaler.phone;
+		updResaler.email = resaler.email;
+		updResaler.userName = resaler.userName;
+		updResaler.postCode = resaler.postCode;
+		updResaler.updatedAt = new Date();
+		updResaler.save();
 	}
 
 }

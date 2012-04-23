@@ -8,6 +8,12 @@ play-paginate.last=尾页&nbsp;&raquo;
 resaler.CONSUMER=个人
 resaler.COMPANY=公司
 
+
+resaler.NORMAL=普通会员
+resaler.VIP1=VIP1
+resaler.VIP2=VIP2
+resaler.VIP3=VIP3
+    
 validation.required=请输入%s!
 validation.min=只能是数字！
 validation.minSize=%s的长度至少%d位!
@@ -15,6 +21,7 @@ validation.maxSize=%s的长度不能超过%d!
 validation.maxFileSize=%s的长度不能超过%d个字节!
 validation.email=邮箱格式不对!
 validation.phone=电话格式不对!
+validation.invalid=手机格式不对!
 resaler.loginName=用户名
 resaler.password=密码
 resaler.confirmPassword=确认密码
@@ -22,6 +29,7 @@ resaler.confirmPassword=确认密码
 resaler.email=邮箱
 resaler.userName=联系人姓名
 resaler.identityNo=身份证号
+resaler.mobile=手机
 resaler.phone=联系电话
 resaler.address=联系地址
 resaler.oldPassword=原密码
