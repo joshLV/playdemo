@@ -52,6 +52,7 @@ GET     /account_seq                            ResalerAccounts.index
 GET     /top-oauth-callback                     TopOauthCallback.index
 
 GET     /top-add                                TopClient.add
+POST    /batch-top-add                          TopClient.batchAdd
 
 GET     /ecoupons                               Coupons.index
 GET     /ecoupons/refund/{id}                   Coupons.refund

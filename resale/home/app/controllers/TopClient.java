@@ -2,15 +2,20 @@ package controllers;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 import models.oauth.OauthToken;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.sales.Goods;
+import models.sales.Shop;
 import play.Logger;
 import play.Play;
+import play.data.binding.As;
 import play.mvc.Controller;
 import play.mvc.With;
+import java.math.BigDecimal;
+
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.FileItem;
@@ -28,8 +33,8 @@ public class TopClient extends Controller{
     private static final String appkey = "12576100";
     private static final String appsecret = "b1301dd48f91e483b42c914bbdf38d01";
 
-    public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
-    
+    public static String IMG_ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
+    public static String TAOBAO_TOP_OAUTH_URL = Play.configuration.getProperty("taobao.top.oauth_url","http://container.api.taobao.com/container?appkey=12576100&encode=utf-8");
     
     public static void add(Long favId){
         Resaler user = SecureCAS.getResaler();
@@ -38,33 +43,21 @@ public class TopClient extends Controller{
         if(resalerFav == null){
             error("no fav found");
         }
-        if(token == null || (token.accessTokenExpiresAt.getTime() - new Date().getTime()) <= 0){
-            if(token != null){
-                token.delete();
-            }
-            redirect("http://container.api.taobao.com/container?appkey=12576100&encode=utf-8");
+        if(token == null){
+            redirect(TAOBAO_TOP_OAUTH_URL);
         }
-
-        Goods goods = resalerFav.goods;
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(url, appkey, appsecret);
- 
-        ItemAddResponse response = addItem(taobaoClient, token.accessToken, goods.baseSale, goods.getResalePrice(user.level).toString(), goods.name, goods.name);
         
+        ItemAddResponse response = uploadGoods(resalerFav.goods, token, user,null ,null);
         if(response == null){
-            renderArgs.put("errMsg", "请求淘宝服务出现异常，请稍后再试");
+            renderArgs.put("errMsg", "");
             render("ResalerFavs/topError.html");
-            return;
-        }
-        
-        if(response.getErrorCode() != null){
+        }else if(response.getErrorCode() != null){
             renderArgs.put("errMsg", "请求淘宝服务出现异常：ErrorCode:" + response.getErrorCode() + 
                     "; ErrorMessage:" + response.getMsg() +
                     "; SubErrorCode:" + response.getSubCode() + 
                     "; SubErrorMessage:" + response.getSubMsg());
             render("ResalerFavs/topError.html");
         }else{
-            uploadImg(taobaoClient, token.accessToken,response.getItem().getNumIid(), new File(ROOT_PATH, goods.imagePath));
-            
             Long iid = response.getItem().getNumIid();
             resalerFav.taobaoItemId = iid;
             resalerFav.save();
@@ -72,6 +65,68 @@ public class TopClient extends Controller{
         }
     }
     
+    /**
+     * 
+     * 
+     * @param favIds
+     */
+    public static void batchAdd(@As(",") List<Long> favIds, int pricemakupRate, String pricemakup){
+        Resaler user = SecureCAS.getResaler();
+        OauthToken token = getOauthToken(user.getId());
+        if(token == null){
+            redirect(TAOBAO_TOP_OAUTH_URL);
+        }
+        for(Long favId : favIds){
+            System.out.println("#######" + favId);
+            ResalerFav resalerFav = ResalerFav.findById(favId);
+            uploadGoods(resalerFav.goods, token, user, String.valueOf(pricemakupRate/100.0), pricemakup);
+        }
+        redirect("/library");
+    }
+    
+    /**
+     * 上传商品到淘宝
+     * 
+     * @param goods 商品
+     * @param token OAuth token
+     * @param resaler 分销商
+     * @return 上传结果
+     */
+    private static ItemAddResponse uploadGoods(Goods goods, OauthToken token, Resaler resaler, String pricemakupRate, String pricemakup){
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(url, appkey, appsecret);
+        
+        StringBuilder desc = new StringBuilder(goods.getDetails() + "<br/>" + goods.getPrompt() + "<br/> 可使用门店：<br/>");
+        for(Shop shop : goods.shops){
+            desc.append(shop.name + "," + shop.address + "<br/>");
+        }
+        BigDecimal price = goods.getResalePrice(resaler.level);
+        if(pricemakupRate != null){
+            price = price.multiply(new BigDecimal(pricemakupRate).add(BigDecimal.ONE));
+        }else if(pricemakup != null){
+            price = price.add(new BigDecimal(pricemakup));
+        }
+        
+        ItemAddResponse response = addItem(taobaoClient, token.accessToken, goods.baseSale, 
+                price.toString(), goods.name, goods.getDetails());
+        
+        if(response != null && response.getErrorCode() == null){
+            //ignore upload image error
+            uploadImg(taobaoClient, token.accessToken,response.getItem().getNumIid(), new File(IMG_ROOT_PATH, goods.imagePath));
+        }
+        return response;
+    }
+    
+    /**
+     * 上传商品到淘宝——仅基本信息部分
+     * 
+     * @param taobaoClient  淘宝api客户端对象
+     * @param token         OAuth token
+     * @param num           商品数量
+     * @param price         商品价格
+     * @param title         商品标题
+     * @param desc          商品描述
+     * @return              上传结果
+     */
     private static ItemAddResponse addItem(TaobaoClient taobaoClient, String token, Long num, String price, String title, String desc){
         ItemAddRequest addRequest = new ItemAddRequest();
         addRequest.setNum(num > 999999 ? 999999 : num);
@@ -96,6 +151,15 @@ public class TopClient extends Controller{
         
     }
     
+    /**
+     * 上传商品图片到淘宝的某一商品，并设置为主图片
+     * 
+     * @param taobaoClient  淘宝api客户端对象
+     * @param token         OAuth token
+     * @param numIid        淘宝商品ID
+     * @param imgFile       图片文件
+     * @return              上传图片结果
+     */
     private static ItemImgUploadResponse uploadImg(TaobaoClient taobaoClient, String token,Long numIid, File imgFile){
         ItemImgUploadRequest imgUploadRequest = new ItemImgUploadRequest();
         imgUploadRequest.setNumIid(numIid);
@@ -120,7 +184,6 @@ public class TopClient extends Controller{
             return null;
         }
         return token;
-        
     }
     
 }

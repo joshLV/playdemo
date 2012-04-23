@@ -27,12 +27,52 @@ ul .pagination {
     height: 31px;
     width: 169px;
 }
+
+#full_bg{
+    background-color: Gray;
+    display:none;
+    z-index:3;
+    position:absolute;
+    left:0px;
+    top:0px;
+    filter:Alpha(Opacity=30);
+    /* IE */
+    -moz-opacity:0.4;
+    /* Moz + FF */
+    opacity: 0.4;
+  }
+
+  #payment_result {
+      position:absolute;
+      width:400px;
+      height:200px;
+      background:white;
+      display: none;
+      z-index: 5;
+ }
+
+
 </style>
 #{/set} 
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/resaler_fav.js'}"></script>
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
+
+
+<div id="full_bg"></div>
+<div id="payment_result">
+    <div style="text-align:center;">
+        <a href="#" onclick="close_result_dialog();">关闭</a><br/><br/>
+        <form method="post" action="/batch-top-add" id="batch_upload_form">
+        按百分比加价：<input type="text" name="pricemakupRate" size="2"/>%<br/>
+        加固定额度：<input type="text" name="pricemakup" size="5"/>元<br/>
+        <input type="hidden" name="favIds" id="batch_upload_favids"/>
+        <input type="submit" value="上传" id="batch_upload_btn" >
+        </form>
+    </div>
+</div>
+
 <div id="wrap_main">
     <!--    最顶部导航-->
     <div id="wrap_top">#{include "share/topNavigator.html"/}</div>
@@ -141,6 +181,7 @@ ul .pagination {
                 </div>
                 <div class="bottom_info_two">
                     <a class="piliang_del_bg" href="#" id="batch_delete">批量删除</a>
+                    <a class="piliang_del_bg" href="#" id="batch_upload_show">批量发布到淘宝</a>
                 </div>
                 <div class="both_clear"></div>
             </div>
