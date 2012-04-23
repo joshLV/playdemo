@@ -128,7 +128,10 @@ public class OrderUnitTest extends UnitTest {
 	@Test
 	public void testPaid() {
 		Long orderId = (Long) Fixtures.idCache.get("models.order.Order-order1");
+		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
 		Order orders = Order.findById(orderId);
+		
+		orders.setUser(userId, AccountType.CONSUMER);
 		orders.paid();
 		assertEquals(OrderStatus.PAID, orders.status);
 	}
