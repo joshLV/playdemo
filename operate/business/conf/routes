@@ -61,6 +61,14 @@ DELETE  /brands/{id}                            OperateBrands.delete
 GET     /brands/{id}/edit                       OperateBrands.edit
 PUT     /brands/{id}                            OperateBrands.update
 
+#公告管理
+GET     /topics                                 OperateTopics.index
+GET     /topics/new                             OperateTopics.add
+POST    /topics                                 OperateTopics.create
+DELETE  /topics/{id}                            OperateTopics.delete
+GET     /topics/{id}/edit                       OperateTopics.edit
+PUT     /topics/{id}                            OperateTopics.update
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
@@ -68,7 +76,7 @@ GET     /favicon.ico                            404
 GET     /public/                                staticDir:public
 GET     /o/{path1}/{path2}/{path3}/{path4}      Files.getImage
 
-*           /                                                       module:operate_rbac
+*       /                                       module:operate_rbac
 
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}

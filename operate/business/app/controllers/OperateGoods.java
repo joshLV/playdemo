@@ -124,7 +124,7 @@ public class OperateGoods extends Controller {
             subCategoryList = Category.findByParent(goods.topCategoryId);
         }
         for (String key : validation.errorsMap().keySet()) {
-            warn("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
+            warn("validation.errorsMap().get("+key+"):" + validation.errorsMap().get(key));
         }
         renderArgs.put("brandList", brandList);
         renderArgs.put("categoryList", categoryList);

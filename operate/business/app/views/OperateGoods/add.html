@@ -8,7 +8,7 @@
 #{include '/share/nav.html' /}
 <div class="body">
 #{form @OperateGoods.create() , id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
-    <legend>添加消费券</legend>
+    <legend>${title}</legend>
     #{set action:"add"/}
     #{include '/OperateGoods/goodsForm.html'/}
 #{/form}

@@ -83,7 +83,7 @@ public class Goods extends Model {
      * 商品名称
      */
     @Required
-    @MaxSize(80)
+    @MaxSize(60)
     public String name;
     /**
      * 所属商户ID

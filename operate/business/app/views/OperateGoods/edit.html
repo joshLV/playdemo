@@ -9,7 +9,7 @@
 <div class="body">
 #{form @OperateGoods.update(id), id:'form',enctype:'multipart/form-data',
 class:"form-horizontal", method:'PUT' }
-    <legend>修改消费券</legend>
+    <legend>${title}</legend>
     #{set action:"edit"/}
     #{include '/OperateGoods/goodsForm.html'/}
 #{/form}
