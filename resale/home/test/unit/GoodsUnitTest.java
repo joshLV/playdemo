@@ -50,7 +50,7 @@ public class GoodsUnitTest extends UnitTest {
      */
     @Test
     public void testFindByResaleCondition() {
-        String condition = "0-0-0-0-1";
+        String condition = "0-0-0-0-1-0-0";
         GoodsCondition goodsCond = new GoodsCondition(true,condition);
         Long resalerId = (Long) Fixtures.idCache.get("models.resale.Resaler-Resaler_1");
         Resaler resaler =Resaler.findById(resalerId);

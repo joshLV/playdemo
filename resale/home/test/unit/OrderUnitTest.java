@@ -113,31 +113,6 @@ public class OrderUnitTest extends UnitTest {
 		Order.getThisMonthTotal(resaler);
 		Map totalMap = Order.getTotalMap();
 		assertNotNull(totalMap);
-//		DecimalFormat ft = new DecimalFormat("#0.00");
-//		//本月成功订单笔数
-//		assertEquals(2, totalMap.get("thisPaidTotal"));
-//		//本月已支付订单金额
-//		assertEquals(new BigDecimal(ft.format(280)), totalMap.get("thisMonthPaidAmount"));
-//		//本月未支付订单笔数
-//		assertEquals(1, totalMap.get("thisUnPaidTotal"));
-//		//本月未支付订单金额
-//		assertEquals(new BigDecimal(ft.format(70)), totalMap.get("thisMonthUnPaidAmount"));
-//		//上月成功订单笔数
-//		assertEquals(2, totalMap.get("lastPaidTotal"));
-//		//上月已支付订单金额
-//		assertEquals(new BigDecimal(ft.format(460)), totalMap.get("lastMonthPaidAmount"));
-//		//上月未支付订单笔数
-//		assertEquals(1, totalMap.get("lastUnPaidTotal"));
-//		//上月未支付订单金额
-//		assertEquals(new BigDecimal(ft.format(280)), totalMap.get("lastMonthUnPaidAmount"));
-//		//本月总订单笔数
-//		assertEquals(3, totalMap.get("thisMonthTotal"));
-//		//本月总订单金额
-//		assertEquals(new BigDecimal(ft.format(350)), totalMap.get("thisMonthTotalAmount"));
-//		//上月总订单笔数
-//		assertEquals(3, totalMap.get("lastMonthTotal"));
-//		//上月总订单金额
-//		assertEquals(new BigDecimal(ft.format(740)), totalMap.get("lastMonthTotalAmount"));
 
 	}
 
