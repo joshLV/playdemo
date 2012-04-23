@@ -16,7 +16,7 @@ $(window).load(
 			 */
 			$(".sort_box").click(function () {
 				var oldLink = $(this).attr('href');
-				if (oldLink.split("-").length == 4) {//排序点击事件
+				if (oldLink.split("-").length == 7) {//排序点击事件
 					if ($(this).hasClass("selected_border")) {
 						if ($(this).hasClass("box_sort_asc")) {
 							$(this).removeClass("box_sort_asc");

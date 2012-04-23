@@ -137,7 +137,7 @@
     #{if brandId == 0}<span class="selected_box">全部</span>
     #{/if}
     #{else}<a
-            href="/goods/list/0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+            href="/goods/list/0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-${type}"
             class="font_blue">全部</a>
     #{/else}
     #{list brands, as:'brand'}
@@ -145,7 +145,7 @@
             <span id="brandId" class="selected_box">${brand.name}</span>
         #{/if}
         #{else}<a
-                href="/goods/list/${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                href="/goods/list/${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-${type}"
                 class="font_blue">${brand.name}</a>
         #{/else}
     #{/list}
@@ -156,37 +156,37 @@
     <div class="selected_box">全部
     </div>#{/if}
 #{else}<a class="query_price"
-          href="/goods/list/${brandId}-0-0-${orderBy}-${orderByType}">全部</a>#{/else}
+          href="/goods/list/${brandId}-0-0-${orderBy}-${orderByType}-${type}">全部</a>#{/else}
 #{if priceFrom == 0 && priceTo == 30}
     <div class="selected_box">0-30元
     </div>#{/if}
 #{else}<a class="query_price"
-          href="/goods/list/${brandId}-0-30-${orderBy}-${orderByType}">0-30元</a>#{/else}
+          href="/goods/list/${brandId}-0-30-${orderBy}-${orderByType}-${type}">0-30元</a>#{/else}
 #{if priceFrom == 30 && priceTo == 60}
     <div class="selected_box">30-60元
     </div>#{/if}
 #{else}<a class="query_price"
-          href="/goods/list/${brandId}-30-60-${orderBy}-${orderByType}">30-60元</a>#{/else}
+          href="/goods/list/${brandId}-30-60-${orderBy}-${orderByType}-${type}">30-60元</a>#{/else}
 #{if priceFrom == 60 && priceTo == 90}
     <div class="selected_box">60-90元
     </div>#{/if}
 #{else}<a class="query_price"
-          href="/goods/list/${brandId}-60-90-${orderBy}-${orderByType}">60-90元</a>#{/else}
+          href="/goods/list/${brandId}-60-90-${orderBy}-${orderByType}-${type}">60-90元</a>#{/else}
 #{if priceFrom == 90 && priceTo == 120}
     <div class="selected_box">90-120元
     </div>#{/if}
 #{else}<a class="query_price"
-          href="/goods/list/${brandId}-90-120-${orderBy}-${orderByType}">90-120元</a>#{/else}
+          href="/goods/list/${brandId}-90-120-${orderBy}-${orderByType}-${type}">90-120元</a>#{/else}
 #{if priceFrom == 120 && priceTo == 160}
     <div class="selected_box">120-160元
     </div>#{/if}
 #{else}<a class="query_price"
-          href="/goods/list/${brandId}-120-160-${orderBy}-${orderByType}">120-160元</a>#{/else}
+          href="/goods/list/${brandId}-120-160-${orderBy}-${orderByType}-${type}">120-160元</a>#{/else}
 #{if priceFrom == 160 && priceTo == 0}
     <div class="selected_box">160元以上
     </div>#{/if}
 #{else}<a class="query_price"
-          href="/goods/list/${brandId}-160-0-${orderBy}-${orderByType}">160元以上</a>#{/else}
+          href="/goods/list/${brandId}-160-0-${orderBy}-${orderByType}-${type}">160元以上</a>#{/else}
 
     <div class="range_input"><input class="price_input" id="input_price_from"
                                     type="text"
@@ -194,7 +194,7 @@
             class="price_input" id="input_price_to" type="text"
             value="#{if priceTo != 0}${priceTo}#{/if}"/></div>
     <div><a id="link_price_confirm" class="sort_box unselected_border"
-            href="/goods/list/${brandId}-0-0-${orderBy}-${orderByType}">确定</a>
+            href="/goods/list/${brandId}-0-0-${orderBy}-${orderByType}-${type}">确定</a>
     </div>
 </div>
 <div class="right_content_three">
@@ -204,50 +204,77 @@
 #{/if}
 #{else}
     <a class="sort_box unselected_border"
-       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-0-1"
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-0-1-${type}"
        value="${orderBy}">默认</a>
 #{/else}
 #{if orderBy == 1}
     <a
         #{if orderByType == 1}class="sort_box selected_border box_sort_desc"#{/if}
         #{else}class="sort_box selected_border box_sort_asc"#{/else}
-        href="/goods/list/${brandId}-${priceFrom}-${priceTo}-1">销量</a>
+        href="/goods/list/${brandId}-${priceFrom}-${priceTo}-1-${orderByType}-${type}-1">销量</a>
 #{/if}
 #{else}
     <a class="sort_box unselected_border box_sort_desc"
-       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-1">销量</a>
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-1-${orderByType}-${type}-1">销量</a>
 #{/else}
 #{if orderBy == 2}
     <a
         #{if orderByType == 1}class="sort_box selected_border box_sort_desc"#{/if}
         #{else}class="sort_box selected_border box_sort_asc"#{/else}
-        href="/goods/list/${brandId}-${priceFrom}-${priceTo}-2">价格</a>
+        href="/goods/list/${brandId}-${priceFrom}-${priceTo}-2-${orderByType}-${type}-2">价格</a>
 #{/if}
 #{else}
     <a class="sort_box unselected_border box_sort_desc"
-       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-2">价格</a>
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-2-${orderByType}-${type}-2">价格</a>
 #{/else}
 #{if orderBy == 3}
     <a
         #{if orderByType == 1}class="sort_box selected_border box_sort_desc"#{/if}
         #{else}class="sort_box selected_border box_sort_asc"#{/else}
-        href="/goods/list/${brandId}-${priceFrom}-${priceTo}-3">折扣</a>
+        href="/goods/list/${brandId}-${priceFrom}-${priceTo}-3-${orderByType}-${type}-3">折扣</a>
 #{/if}
 #{else}
     <a class="sort_box unselected_border box_sort_desc"
-       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-3">折扣</a>
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-3-${orderByType}-${type}-3">折扣</a>
 #{/else}
 #{if orderBy == 4}
     <a
         #{if orderByType == 1}class="sort_box selected_border box_sort_desc"#{/if}
         #{else}class="sort_box selected_border box_sort_asc"#{/else}
-        href="/goods/list/${brandId}-${priceFrom}-${priceTo}-4">最新</a>
+        href="/goods/list/${brandId}-${priceFrom}-${priceTo}-4-${orderByType}-${type}-4">最新</a>
 #{/if}
 #{else}
     <a class="sort_box unselected_border box_sort_desc"
-       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-4">最新</a>
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-4-${orderByType}-${type}-4">最新</a>
 #{/else}
 </div>
+<div class="right_content_three">
+    <div class="r_c_three_title">分类：</div>
+#{if materialType ==  null || "".equals(materialType)}
+    <span class="sort_box selected_border" value="${orderBy}">全部</span>
+    <a class="sort_box unselected_border"
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-1">电子券</a>
+    <a class="sort_box unselected_border"
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-2">实体</a>
+#{/if} 
+#{if materialType != null && "REAL".equals(materialType.toString())}       
+    <a class="sort_box unselected_border"
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-0">全部</a>
+    <a class="sort_box unselected_border"
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-1">电子券</a>
+    <a class="sort_box selected_border"
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-2">实体</a>
+#{/if} 
+#{if materialType != null &&  "ELECTRONIC".equals(materialType.toString())}       
+     <a class="sort_box unselected_border"
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-0">全部</a>
+    <a class="sort_box selected_border"
+       href="/goods/list/${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-1">电子券</a>
+     <a class="sort_box unselected_border"
+    href="/goods/list/${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-2">实体</a>
+#{/if}       
+</div>
+
 <div class="right_content_three">
     <div class="r_c_three_title">
     <input type="checkbox" id="selectall" name="selectall">全选
@@ -259,6 +286,7 @@
 </div>
 
  #{form @ResalerGoods.index() , id:'indexForm'}
+ <input type="hidden" id="type" name="condition.type" value="${condition?.type}">
      <table width="798" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE">
     #{paginate.list items:goodsList, as:'goods'}
      <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">

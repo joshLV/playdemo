@@ -32,12 +32,14 @@ public class GoodsCondition {
 	public String orderByType = "DESC";
 	public int orderByNum = 0;
 	public int orderByTypeNum = 0;
+	public int type = 0;
 	public String name;
 	public String no;
 	public BigDecimal salePriceBegin;
 	public BigDecimal salePriceEnd;
 	public Integer saleCountBegin;
 	public Integer saleCountEnd;
+	public MaterialType materialType;
 	public GoodsStatus status;
 
 	private Map<String, Object> paramMap = new HashMap<>();
@@ -175,11 +177,11 @@ public class GoodsCondition {
 			paramMap.put("saleCountEnd", saleCountEnd);
 		}
 
-        System.out.println("condBuilder.toString():" + condBuilder.toString());
+		System.out.println("condBuilder.toString():" + condBuilder.toString());
 
-        for (String key : paramMap.keySet()) {
-            System.out.println(key+":" + paramMap.get(key));
-        }
+		for (String key : paramMap.keySet()) {
+			System.out.println(key+":" + paramMap.get(key));
+		}
 		return condBuilder.toString();
 	}
 
@@ -269,18 +271,32 @@ public class GoodsCondition {
 			priceTo = StringUtils.isBlank(args[2]) ? new
 					BigDecimal(0) : new BigDecimal(args[2]);
 		}
-		
+
 		if (args.length > 3) {
+			
 			orderByNum = StringUtils.isBlank(args[3]) ? 0 : Integer.parseInt(args[3]);
 			orderBy = StringUtils.isBlank(args[3]) ? getOrderBy(0)
 					: getOrderBy(Integer.parseInt(args[3]));
 		}
-		
-		if (args.length > 4) {
-			orderByTypeNum = StringUtils.isBlank(args[4]) ? 1 : Integer.parseInt
-					(args[4]);
-			orderByType = "1".equals(args[4]) ? "DESC" : "ASC";
+
+
+		if (args.length > 5) {
+			type = StringUtils.isBlank(args[5]) ? 1 : Integer.parseInt
+					(args[5]);
+		}
+		if (type==0) {
+			materialType = null;
+		} else if (type == 1){
+			materialType = MaterialType.ELECTRONIC;
+		} else {
+			materialType = MaterialType.REAL;
+		}
+
+		if (args.length > 7) {
 			
+			orderByTypeNum = StringUtils.isBlank(args[7]) ? 1 : Integer.parseInt
+					(args[7]);
+			orderByType = "1".equals(args[7]) ? "DESC" : "ASC";
 		}
 	}
 
@@ -293,10 +309,10 @@ public class GoodsCondition {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" g.deleted = :deleted");
 		paramMap.put("deleted", DeletedStatus.UN_DELETED);
-		
+
 		sql.append(" and g.status = :status");
 		paramMap.put("status", GoodsStatus.ONSALE);
-		
+
 		if (brandId != 0) {
 			sql.append(" and g.brand = :brand");
 			Brand brand = new Brand();
@@ -314,6 +330,11 @@ public class GoodsCondition {
 			sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.originalPrice+l.price <=:priceTo)");
 			paramMap.put("level", resaler.level);
 			paramMap.put("priceTo", priceTo);
+		}
+
+		if (materialType != null) {
+			sql.append(" and g.materialType = :materialType");
+			paramMap.put("materialType", materialType);
 		}
 
 		return sql.toString();

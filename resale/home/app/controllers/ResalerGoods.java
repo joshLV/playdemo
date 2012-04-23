@@ -78,5 +78,7 @@ public class ResalerGoods extends Controller {
 		renderArgs.put("priceTo", goodsCond.priceTo);
 		renderArgs.put("orderBy", goodsCond.orderByNum);
 		renderArgs.put("orderByType", goodsCond.orderByTypeNum);
+		renderArgs.put("materialType", goodsCond.materialType);
+		renderArgs.put("type", goodsCond.type);
 	}
 }

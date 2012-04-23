@@ -27,7 +27,7 @@
 
     #{paginate.list items:couponsList, as:'coupon'}
     <tr>
-    <td>${coupon?.getEcouponSn()}</td>
+    <td>${coupon?.getMaskedEcouponSn()}</td>
     <td>${coupon?.order.orderNumber}</td>
      <td>${coupon?.goods?.name}</td>
      <td>${coupon?.salePrice}</td>
