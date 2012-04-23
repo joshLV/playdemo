@@ -1,8 +1,8 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 地址管理' /}
 #{set 'moreStyles'}
-<link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
-<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
+<link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css"/>
+<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" type="text/css" media="screen"
       href="@{'/public/stylesheets/play-pagination.css'}">
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -12,63 +12,64 @@
 <script>
 </script>
 #{/set}
- <div id="wrap_main">
-  <!--    最顶部导航-->
-  <div id="wrap_top">#{include "share/topNavigator.html"/}</div>
-  <div id="wrap_top_header">
-   <div id="wrap_top_header_left">
-    <img src="@{'/public/images/logo.jpg'}" />
-   </div>
-   <div id="wrap_top_middle">券生活-惠生活</div>
-   <div style="clear: both"></div>
-     <div class="nav_hengfu">
-         <ul class="nav_bg_ul">
-             <li class="nav_bg_li"><a class="current_nav_bg_a" href="#">我的优惠啦</a></li>
-             <li class="nav_bg_li"><a class="nav_bg_a nodisplay"  href="#">我的优惠啦</a></li>
-             <li class="nav_bg_li"><a class="nav_bg_a nodisplay"  href="#">我的优惠啦</a></li>
-         </ul>
-     </div>
- </div>
- </div>
- <!--主体内容部分-->
- <div id="wrap_content">
-  #{breadcrumbs/breadcrumb breadcrumbs/}
-  #{include "share/left.html"/}
-  <div id="right_content_box">
-   <div class="tab_top">地址管理</div>
-   <div class="tab_top2">
-   <form class="form-horizontal" id="orderForm" action="@{UserAddress.index()}" method="GET">
-   #{include "UserAddress/add.html"/}
-   #{paginate.list items:orderList, as:'row'}
-    <div class="tab_top_info">
-     <span class="tab_one">订单号：${row.orderNumber}</span><span class="tab_two">成交时间：${row.createdAt==null ? '':row.createdAt.format("yyyy-MM-dd HH:mm:ss")}</span>
+<div id="wrap_main">
+    <!--    最顶部导航-->
+    <div id="wrap_top">#{include "share/topNavigator.html"/}</div>
+    <div id="wrap_top_header">
+        <div id="wrap_top_header_left">
+            <img src="@{'/public/images/logo.jpg'}"/>
+        </div>
+        <div id="wrap_top_middle">券生活-惠生活</div>
+        <div style="clear: both"></div>
+        <div class="nav_hengfu">
+            <ul class="nav_bg_ul">
+                <li class="nav_bg_li"><a class="current_nav_bg_a" href="#">我的优惠啦</a></li>
+                <li class="nav_bg_li"><a class="nav_bg_a nodisplay" href="#">我的优惠啦</a></li>
+                <li class="nav_bg_li"><a class="nav_bg_a nodisplay" href="#">我的优惠啦</a></li>
+            </ul>
+        </div>
     </div>
-    <table width="798" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="hsides">
-     #{set m=0/}
-    #{list row.orderItems, as:'rowItem'}
-     <tr>
-      <td width="340" height="80" align="left">
-       <div class="left_shangpin">
-        <img src="${rowItem.goods.imageTinyPath}"/>
-       </div>
-       <div class="right_shangpin">
-        ${rowItem.goods.name}
-       </div>
-      </td>
-      <td width="100" align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
-      <td width="78" align="center" >${rowItem.buyNumber}</td>
-        #{if (++m == 1) }
-      <td width="108"align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
-      <td width="85" align="center" rowspan="${row.orderItems.size()}">
-        &{'order.'+row.status}
-      </td>
-      <td width="80" align="center" rowspan="${row.orderItems.size()}">
-       #{if (row.status == models.order.OrderStatus.UNPAID)}
-       <div class="caozuo_std">
-        <a class="font_red_one" href="@{MyOrders.pay(row.id)}">付款</a>
-       </div>
-       #{/if}
-     *{ #{if (row.status == models.order.OrderStatus.PAID
+</div>
+<!--主体内容部分-->
+<div id="wrap_content">
+#{breadcrumbs/breadcrumb breadcrumbs/}
+#{include "share/left.html"/}
+    <div id="right_content_box">
+        <div class="tab_top">地址管理</div>
+        <div class="tab_top2">
+            <form class="form-horizontal" id="orderForm" action="@{UserAddress.index()}" method="GET">
+            #{include "UserAddress/form.html"/}
+            #{paginate.list items:orderList, as:'row'}
+                <div class="tab_top_info">
+                    <span class="tab_one">订单号：${row.orderNumber}</span><span
+                        class="tab_two">成交时间：${row.createdAt==null ? '':row.createdAt.format("yyyy-MM-dd HH:mm:ss")}</span>
+                </div>
+                <table width="798" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="hsides">
+                    #{set m=0/}
+                    #{list row.orderItems, as:'rowItem'}
+                        <tr>
+                            <td width="340" height="80" align="left">
+                                <div class="left_shangpin">
+                                    <img src="${rowItem.goods.imageTinyPath}"/>
+                                </div>
+                                <div class="right_shangpin">
+                                ${rowItem.goods.name}
+                                </div>
+                            </td>
+                            <td width="100" align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
+                            <td width="78" align="center">${rowItem.buyNumber}</td>
+                            #{if (++m == 1) }
+                                <td width="108" align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
+                                <td width="85" align="center" rowspan="${row.orderItems.size()}">
+                                &{'order.'+row.status}
+                                </td>
+                                <td width="80" align="center" rowspan="${row.orderItems.size()}">
+                                    #{if (row.status == models.order.OrderStatus.UNPAID)}
+                                        <div class="caozuo_std">
+                                            <a class="font_red_one" href="@{MyOrders.pay(row.id)}">付款</a>
+                                        </div>
+                                    #{/if}
+                                *{ #{if (row.status == models.order.OrderStatus.PAID
       || row.status == models.order.OrderStatus.RECEIPT) && rowItem.goods.materialType.toString().equals('REAL')}
      <div class="caozuo_std">
         <a class="font_red_one" href="/orders/refund/${row.id}"  id="apply_${row.id}">申请退款</a>
@@ -76,26 +77,26 @@
       #{/if}
       }*
 
-       <div class="caozuo_std">
-        <a class="font_blue" href="@{MyOrders.details(row.id)}">查看详情</a>
-       </div>
-      #{if (row.status != models.order.OrderStatus.PAID)}  
-       <div class="caozuo_std">
-        <a href="#">取消</a>
-       </div>
-        #{/if}
-      </td>
-       #{/if}
-     </tr>
-      #{/list}
-    </table>
-  #{/paginate.list}
-   <div class="pagination">
-     <ul>
-    #{paginate.controls items:orderList /}
-    </ul>
-  </div>
+                                    <div class="caozuo_std">
+                                        <a class="font_blue" href="@{MyOrders.details(row.id)}">查看详情</a>
+                                    </div>
+                                    #{if (row.status != models.order.OrderStatus.PAID)}
+                                        <div class="caozuo_std">
+                                            <a href="#">取消</a>
+                                        </div>
+                                    #{/if}
+                                </td>
+                            #{/if}
+                        </tr>
+                    #{/list}
+                </table>
+            #{/paginate.list}
+                <div class="pagination">
+                    <ul>
+                    #{paginate.controls items:orderList /}
+                    </ul>
+                </div>
 
- </div>
- </div>
- </div>
+        </div>
+    </div>
+</div>

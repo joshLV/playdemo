@@ -1,0 +1,68 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'公告一览' /}
+#{include '/share/nav.html' /}
+*{#{set 'moreScripts'}}*
+*{<script src="@{'/public/javascripts/topic.js'}" type="text/javascript" charset="UTF-8"></script>}*
+*{#{/set}}*
+
+<div class="body">
+    <legend>${title}</legend>
+    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateTopics.index()}" method="GET">
+        <table width="100%">
+            <tr>
+                <td width="30%">&{'topic.platformType'}：
+                #{select 'platformType', id:'platformType', class:'input-middle', value:platformType}
+                    #{option "null"}不限#{/option}
+                    #{option "RESALE"}&{'topic.RESALE'}#{/option}
+                    #{option "UHUILA"}&{'topic.UHUILA'}#{/option}
+                #{/select}</td>
+                <td width="30%">&{'topic.type'}：
+                #{select 'type', id:'type', class:'input-middle', value:type}
+                    #{option "null"}不限#{/option}
+                    #{option models.cms.TopicType.NOTICE}&{'topic.NOTICE'}#{/option}
+                    #{option models.cms.TopicType.NEWS}&{'topic.NEWS'}#{/option}
+                #{/select}</td>
+                <td>
+                    <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <form class="form-horizontal" name="deletefrm" id="deletefrm">
+    #{vx.tab name:'topic',enumItems: com.uhuila.common.constants.PlatformType,
+    select:'platformType',value:platformType/}
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+            <tr>
+                <th>&{'topic.displayOrder'}</th>
+                <th>&{'topic.title'}</th>
+                <th>&{'topic.platformType'}</th>
+                <th>&{'topic.type'}</th>
+                <th>&{'topic.effectiveAt'}</th>
+                <th>&{'topic.expireAt'}</th>
+                <th>操 作</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            #{paginate.list items:topicPage, as:'topic'}
+            <tr>
+                <td>${topic?.displayOrder}</td>
+                <td>${topic?.title}</td>
+                <td>&{'topic.'+topic?.platformType}</td>
+                <td>&{'topic.'+topic?.type}</td>
+                <td>${topic?.effectiveAt?.format('yyyy-MM-dd')}</td>
+                <td>${topic?.expireAt?.format('yyyy-MM-dd')}</td>
+                <td><a href="@{OperateTopics.edit(topic.id)}">修改</a>
+                    / #{vx.deleteLink action:"topics", id:topic.id, name:topic.title/}
+            </tr>
+            #{/paginate.list}
+            </tbody>
+        </table>
+    </form>
+    <div class="pagination" align="center">
+        <ul>
+        #{paginate.controls items:topicPage /}
+        </ul>
+    </div>
+</div>

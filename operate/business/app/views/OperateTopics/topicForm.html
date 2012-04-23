@@ -1,0 +1,21 @@
+#{layout_operate.selectField name:'topic.platformType', value:topic?.platformType, error:'topic.platformType',
+class:'span2'}
+    #{option com.uhuila.common.constants.PlatformType.UHUILA}&{'topic.UHUILA'}#{/option}
+    #{option com.uhuila.common.constants.PlatformType.RESALE}&{'topic.RESALE'}#{/option}
+#{/layout_operate.selectField}
+#{layout_operate.selectField name:'topic.type', value:topic?.platformType, error:'topic.platformType',
+class:'span2'}
+    #{option models.cms.TopicType.NOTICE}&{'topic.NOTICE'}#{/option}
+    #{option models.cms.TopicType.NEWS}&{'topic.NEWS'}#{/option}
+#{/layout_operate.selectField}
+#{layout_operate.textField name:'topic.title', value:topic?.title, required:true/}
+#{layout_operate.textField name:'topic.displayOrder', value:topic?.displayOrder, required:true/}
+#{layout_operate.htmlField name:'topic.content', value:topic?.content, required:true/}
+#{layout_operate.dateScopeField name:'topic.effective', begin:'topic.effectiveAt',end:'topic.expireAt',
+beginValue:topic?.effectiveAt?.format(), endValue:topic?.expireAt?.format(), required:true/}
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="保存"/>
+#{if "edit".equals(action)}
+    #{vx.cancelButton url:'/topics', class:'btn btn-primary'/}
+#{/if}
+</div>

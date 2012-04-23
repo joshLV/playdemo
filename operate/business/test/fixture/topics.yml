@@ -1,0 +1,8 @@
+cms.Topic(Test):
+  title: '测试公告开始啦'
+  effectiveAt: '2012-3-21T00:00:00'
+  expireAt: '2013-3-21T00:00:00'
+  displayOrder: '100'
+  content: '测试内容如下'
+  platformType: UHUILA
+  type: NOTICE

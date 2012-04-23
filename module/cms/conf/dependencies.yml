@@ -1,0 +1,4 @@
+self: play -> cms 0.1
+
+require:
+    - play
