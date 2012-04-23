@@ -19,7 +19,7 @@
    open('/users')
    assertTitle('操作员一览')
    verifyText('//tr[3]/td','test')
-   verifyText('//tr[3]/td[2]','[测试角色]')
+   verifyText('//tr[3]/td[3]','[测试角色]')
 
    open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-test")}/edit')
    click('id=supplierUser.roles_${play.test.Fixtures.idCache.get("models.admin.SupplierRole-sales")}')
@@ -30,8 +30,8 @@
    open('/users')
    assertTitle('操作员一览')
    verifyText('//tr[3]/td','test')
-   verifyText('//tr[3]/td[2]','[销售人员, 测试角色]')
-   verifyText('//tr[3]/td[3]','2012-03-12 00:00:00')
+   verifyText('//tr[3]/td[3]','[销售人员, 测试角色]')
+   verifyText('//tr[3]/td[4]','2012-03-12 00:00:00')
 #{/selenium}
 
 #{selenium "delete user"}

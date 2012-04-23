@@ -17,10 +17,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import models.sales.Shop;
 import models.supplier.Supplier;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -81,6 +83,11 @@ public class SupplierUser extends Model {
 	public String confirmPassword;
 	@Transient
 	public String oldPassword;
+
+	@OneToOne
+	@JoinColumn(name="shop_id",nullable=true)
+	public Shop shop;
+
 	/**
 	 * 逻辑删除,0:未删除，1:已删除
 	 */
@@ -146,6 +153,7 @@ public class SupplierUser extends Model {
 		updatedUser.loginName = supplierUser.loginName;
 		updatedUser.userName = supplierUser.userName;
 		updatedUser.mobile = supplierUser.mobile;
+		updatedUser.shop=supplierUser == null ? null:supplierUser.shop;
 		updatedUser.lastLoginAt = new Date();
 		updatedUser.updatedAt = new Date();
 		//获得IP

@@ -2,17 +2,23 @@ package controllers;
 
 import java.util.Date;
 import java.util.List;
+
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
+import models.sales.Shop;
 import navigation.annotations.ActiveNavigation;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+
 import play.data.validation.Valid;
 import play.data.validation.Validation;
+import play.data.validation.ValidationPlugin;
 import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
+
 import com.uhuila.common.constants.DeletedStatus;
 
 /**
@@ -33,11 +39,13 @@ public class SupplierUsers extends Controller {
 	public static void index() {
 		String page = request.params.get("page");
 		String loginName = request.params.get("loginName");
+		Long supplierId = SupplierRbac.currentUser().supplier.id;
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 		JPAExtPaginator<SupplierUser> supplierUsersPage = SupplierUser
 				.getSupplierUserList(loginName,
-						SupplierRbac.currentUser().supplier.id, pageNumber,
+						supplierId, pageNumber,
 						PAGE_SIZE);
+
 		renderArgs.put("loginName", loginName);
 		render(supplierUsersPage);
 	}
@@ -48,7 +56,9 @@ public class SupplierUsers extends Controller {
 	@ActiveNavigation("user_add")
 	public static void add() {
 		List rolesList = SupplierRole.findRoleOrderById();
-		render(rolesList);
+		Long supplierId = SupplierRbac.currentUser().supplier.id;
+		List shopList = Shop.findShopBySupplier(supplierId);
+		render(rolesList,shopList);
 	}
 
 	/**
@@ -59,16 +69,7 @@ public class SupplierUsers extends Controller {
 	 */
 	@ActiveNavigation("user_add")
 	public static void create(@Valid SupplierUser supplierUser) {
-		if (Validation.hasErrors()) {
-			List rolesList = SupplierRole.findAll();
-			String roleIds = "";
-			if (supplierUser.roles != null && supplierUser.roles.size() > 0) {
-				for (SupplierRole role : supplierUser.roles) {
-					roleIds += role.id + ",";
-				}
-			}
-			render("SupplierUsers/add.html", supplierUser, roleIds, rolesList);
-		}
+		checkValid(null,supplierUser);
 
 		Images.Captcha captcha = Images.captcha();
 		String password_salt = captcha.getText(6);
@@ -112,8 +113,9 @@ public class SupplierUsers extends Controller {
 
 		List rolesList = SupplierRole.findRoleOrderById();
 		supplierUser.roles.addAll(rolesList);
-
-		render(supplierUser, roleIds, rolesList);
+		Long supplierId = SupplierRbac.currentUser().supplier.id;
+		List shopList = Shop.findShopBySupplier(supplierId);
+		render(supplierUser, roleIds, rolesList,shopList);
 	}
 
 	/**
@@ -125,11 +127,18 @@ public class SupplierUsers extends Controller {
 	 *            用户信息
 	 */
 	public static void update(Long id, @Valid SupplierUser supplierUser) {
-		if (Validation.hasError("supplierUser.encryptedPassword")
-				&& Validation.hasError("supplierUser.confirmPassword")
-				&& Validation.hasError("supplierUser")) {
-			Validation.clear();
-		}
+		checkValid(id,supplierUser);
+		// 更新用户信息
+		SupplierUser.update(id, supplierUser);
+		index();
+	}
+
+	/**
+	 * 验证
+	 * 
+	 * @param supplierUser 操作员信息
+	 */
+	private static void checkValid(Long id,SupplierUser supplierUser) {
 		if (Validation.hasErrors()) {
 			List rolesList = SupplierRole.findAll();
 			String roleIds = "";
@@ -138,13 +147,14 @@ public class SupplierUsers extends Controller {
 					roleIds += role.id + ",";
 				}
 			}
-
-			render("SupplierUsers/edit.html", supplierUser, roleIds, rolesList);
+			supplierUser.id=id;
+			if (id != null) {
+				render("SupplierUsers/edit.html", supplierUser, roleIds, rolesList);
+			} else {
+				render("SupplierUsers/add.html", supplierUser, roleIds, rolesList);
+			}
 		}
-		// 更新用户信息
-		SupplierUser.update(id, supplierUser);
 
-		index();
 	}
 
 	/**

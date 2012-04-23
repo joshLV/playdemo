@@ -44,6 +44,7 @@
   <label for="input01" class="control-label"><span style="color: red; ">*</span>密码</label>
   <div class="controls">
    <input type="password" name="supplierUser.encryptedPassword" class="input-large" id ="encryptedPassword" value="${supplierUser?.encryptedPassword}" />
+    <input type="hidden" name="supplierUser.confirmPassword" class="input-large" id ="confirmPassword" value="**" />
     <span class="error">#{error 'supplierUser.encryptedPassword' /}</span>
   </div>
  </div>
@@ -52,6 +53,19 @@
   <div class="controls">
    <input type="text" name="supplierUser.userName" class="input-large" id="userName" value="${supplierUser?.userName}"/>
   </div>
+ </div>
+  <div class="control-group">
+  <label for="input01" class="control-label">门店</label>
+  <div class="controls">
+   #{select 'supplierUser.shop.id', id:shopId, class:'span2', value:supplierUser?.shop?.id}
+                    #{option ""}全部#{/option}
+                    #{list items:shopList, as:'shop'}
+                        #{option shop?.id}${shop?.name}#{/option}
+                    #{/list}
+                #{/select}
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span class="error">#{error 'supplierUser.shop' /}</span>
+   </div>
  </div>
  <div class="form-actions">
   <button class="btn btn-primary" id="save" type="button">保 存</button>

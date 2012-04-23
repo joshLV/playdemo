@@ -20,3 +20,5 @@ validation.newPassword.maxSize=密码不能大于20位！
 validation.confirmPassword=两次密码输入的不一样！！
 validation.oldPassword=原密码输入的不对！
 validation.newPassword.confirm=新密码和原密码一样，请重新输入！
+
+supplierUser.mobile=手机
