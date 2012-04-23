@@ -18,6 +18,9 @@ POST     /userInfo/{id}                               UserInfos.update
 POST     /userInfo/bindMobile                         UserInfos.bindMobile
 POST     /userInfo/send                               UserInfos.sendValidCode
 
+#收货地址
+GET     /address                                      UserAddress.index
+
 GET     /user/password                                UserPassword.index
 POST    /user/{id}                                    UserPassword.update
 
