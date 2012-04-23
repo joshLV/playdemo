@@ -36,10 +36,11 @@ public class TopClient extends Controller{
     public static String IMG_ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
     public static String TAOBAO_TOP_OAUTH_URL = Play.configuration.getProperty("taobao.top.oauth_url","http://container.api.taobao.com/container?appkey=12576100&encode=utf-8");
     
-    public static void add(Long favId){
+    public static void add(Long goodsId){
         Resaler user = SecureCAS.getResaler();
         OauthToken token = getOauthToken(user.getId());
-        ResalerFav resalerFav = ResalerFav.findById(favId);
+        Goods goods = Goods.findById(goodsId);
+        ResalerFav resalerFav = ResalerFav.find("byGoods",goods).first();
         if(resalerFav == null){
             error("no fav found");
         }
@@ -70,16 +71,24 @@ public class TopClient extends Controller{
      * 
      * @param favIds
      */
-    public static void batchAdd(@As(",") List<Long> favIds, int pricemakupRate, String pricemakup){
+    public static void batchAdd(@As(",") List<Long> goodsIds, int pricemakupRate, String pricemakup){
         Resaler user = SecureCAS.getResaler();
         OauthToken token = getOauthToken(user.getId());
         if(token == null){
             redirect(TAOBAO_TOP_OAUTH_URL);
         }
-        for(Long favId : favIds){
-            System.out.println("#######" + favId);
-            ResalerFav resalerFav = ResalerFav.findById(favId);
-            uploadGoods(resalerFav.goods, token, user, String.valueOf(pricemakupRate/100.0), pricemakup);
+        for(Long goodsId : goodsIds){
+            Goods goods = Goods.findById(goodsId);
+            ResalerFav resalerFav = ResalerFav.find("byGoods", goods).first();
+            if(resalerFav == null ){
+                continue;
+            }
+            ItemAddResponse response =  uploadGoods(resalerFav.goods, token, user, String.valueOf(pricemakupRate/100.0), pricemakup);
+            if(response != null && response.getErrorCode() == null){
+                Long iid = response.getItem().getNumIid();
+                resalerFav.taobaoItemId = iid;
+                resalerFav.save();
+            }
         }
         redirect("/library");
     }
@@ -105,9 +114,9 @@ public class TopClient extends Controller{
         }else if(pricemakup != null){
             price = price.add(new BigDecimal(pricemakup));
         }
-        
+        System.out.print("####price :" + price);
         ItemAddResponse response = addItem(taobaoClient, token.accessToken, goods.baseSale, 
-                price.toString(), goods.name, goods.getDetails());
+                price.setScale(2,BigDecimal.ROUND_UP).toString(), goods.name, goods.getDetails());
         
         if(response != null && response.getErrorCode() == null){
             //ignore upload image error

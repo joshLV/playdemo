@@ -67,7 +67,7 @@ ul .pagination {
         <form method="post" action="/batch-top-add" id="batch_upload_form">
         按百分比加价：<input type="text" name="pricemakupRate" size="2"/>%<br/>
         加固定额度：<input type="text" name="pricemakup" size="5"/>元<br/>
-        <input type="hidden" name="favIds" id="batch_upload_favids"/>
+        <input type="hidden" name="goodsIds" id="batch_upload_goodsids"/>
         <input type="submit" value="上传" id="batch_upload_btn" >
         </form>
     </div>
@@ -163,7 +163,7 @@ ul .pagination {
                             已发布到淘宝
                         #{/if}
                         #{else}
-                            <a href="/top-add?favId=${favItem.id}">发布到淘宝</a>
+                            <a href="/top-add?goodsId=${favItem.goods.id}">发布到淘宝</a>
                         #{/else}
                     </td>
                 </tr>

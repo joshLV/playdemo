@@ -145,7 +145,7 @@ $(window).load(
                  }
              });
              if(checked.length == 0) return;
-             $("#batch_upload_favids").val(checked);
+             $("#batch_upload_goodsids").val(checked);
              $("#batch_upload_form").submit();
              return false;
          });
