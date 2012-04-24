@@ -68,7 +68,7 @@ public class CouponsUnitTest extends UnitTest {
 		int pageNumber = 1;
 		int pageSize = 15;
 		List<ECoupon> list = ECoupon.queryCoupons(supplierId, pageNumber, pageSize);
-		assertEquals(3, list.size());
+		assertEquals(4, list.size());
 
 	}
 

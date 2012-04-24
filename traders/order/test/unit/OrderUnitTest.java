@@ -149,7 +149,7 @@ public class OrderUnitTest extends UnitTest {
 		Long id = (Long) Fixtures.idCache.get("models.order.OrderItems-orderItems1");
 		OrderItems orderItems=OrderItems.findById(id);
 		String sn = orderItems.getEcouponSn();
-		String s="******7001\n******7003\n";
+		String s="******7001\n******7003\n******7004\n";
 		assertEquals(s,sn);
 	}
 	
@@ -158,7 +158,7 @@ public class OrderUnitTest extends UnitTest {
 		Long id = (Long) Fixtures.idCache.get("models.order.OrderItems-orderItems1");
 		OrderItems orderItems=OrderItems.findById(id);
 		String sn = orderItems.getWebEcouponSn();
-		String s="1234567001\n1234567003\n";
+		String s="1234567001\n1234567003\n1234567004\n";
 		assertEquals(s,sn);
 	}
 
