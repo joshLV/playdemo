@@ -3,13 +3,14 @@ package controllers;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-
+import models.admin.SupplierSetting;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.sales.Shop;
-import models.supplier.SupplierSetting;
 import navigation.annotations.ActiveNavigation;
+
+import org.apache.commons.lang.StringUtils;
+
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;

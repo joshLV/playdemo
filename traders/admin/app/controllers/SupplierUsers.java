@@ -1,21 +1,17 @@
 package controllers;
 
-import java.util.Date;
 import java.util.List;
 
 import models.admin.SupplierRole;
+import models.admin.SupplierSetting;
 import models.admin.SupplierUser;
 import models.sales.Shop;
-import models.supplier.SupplierSetting;
 import navigation.annotations.ActiveNavigation;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 
 import play.data.validation.Valid;
 import play.data.validation.Validation;
-import play.data.validation.ValidationPlugin;
-import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
