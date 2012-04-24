@@ -22,7 +22,7 @@ require:
     - resale -> resale
     - org.jsoup -> jsoup 1.6.1
     - sms -> sms
-
+    - asset_package -> asset_package
 
 repositories:
     - mavenRepository:
@@ -59,3 +59,4 @@ repositories:
             - accounts -> *
             - sms -> *
             - resale -> *
+            - asset_package -> *

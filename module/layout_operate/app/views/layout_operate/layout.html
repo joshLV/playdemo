@@ -17,8 +17,7 @@
 
     <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
     <!-- Le styles -->
-    <link href="@{'/public/assets/css/bootstrap.css'}" rel="stylesheet">
-    <link href="@{'/public/assets/css/bootstrap-responsive.css'}" rel="stylesheet">
+    #{asset.css src:['/bootstrap/bootstrap.css', '/bootstrap/bootstrap-responsive.css'] /}
     <style type="text/css">
       body {
       padding-top: 60px;

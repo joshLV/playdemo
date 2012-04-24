@@ -10,6 +10,7 @@ require:
     - operate_rbac -> operate_rbac
     - base_rbac -> base_rbac
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - asset_package -> asset_package
 
 repositories:
     - mavenRepository:
@@ -33,3 +34,4 @@ repositories:
             - paginate_ext -> *
             - operate_rbac -> *
             - base_rbac -> *
+            - asset_package -> *

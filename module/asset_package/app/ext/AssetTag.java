@@ -100,6 +100,47 @@ public class AssetTag extends FastTags {
         }
     }    
 
+    /**
+     * 用法：
+     * 
+     * <pre>
+     *   #{asset.url href:"/test.png" /}
+     * </pre>
+     * @param args
+     * @param body
+     * @param out
+     * @param template
+     * @param fromLine
+     */
+    public static void _url(Map<?, ?> args, Closure body, PrintWriter out,
+            ExecutableTemplate template, int fromLine) {
+        
+        String tagVersion = Play.mode.isDev() ? String.valueOf(System.currentTimeMillis()) : PROD_VERSION;
+
+        List<String> srcList = getSrcArg(args);
+        boolean bPackageFlag = getPackageFlagArg(args);
+        
+        String baseUrl = getBaseUrl() + "/js";
+
+        if (bPackageFlag) {
+            start_js_tag(out);
+            StringBuilder sb = new StringBuilder();
+            for (String src : srcList) {
+                if (!src.startsWith("/")) sb.append("/");
+                sb.append(src);
+            }
+            out.print("src=\"" + baseUrl + sb.toString() + "/" + tagVersion + ".js\"");
+            end_js_tag(out);
+        } else {
+            for (String src : srcList) {
+                start_js_tag(out);
+                if (!src.startsWith("/")) src = "/" + src;
+                out.print("src=\"" + baseUrl + src + "?" + tagVersion + "\"");
+                end_js_tag(out);
+            }
+        }
+    }    
+    
     private static String getBaseUrl() {
         String baseUrl = null;
         String cdnHost = Play.configuration.getProperty("cdn.host");
