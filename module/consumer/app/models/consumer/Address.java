@@ -46,7 +46,6 @@ public class Address extends Model {
     @Column(name = "updated_at")
     public Date updatedAt;
     @Column(name = "area_code")
-    @Match("^([0-9]+)$")
     public String areaCode;
     @Column(name = "phone_number")
     @Match("^([0-9]+)$")
@@ -134,20 +133,19 @@ public class Address extends Model {
 
     public static void delete(long id) {
         Address address = Address.findById(id);
-        if (address == null) {
-            return;
-        }
-        if (address.isDefault) {
-            address.delete();
-            List<Address> addressList = Address.findAll();
-            if (addressList.size() > 0) {
-                Address defaultAddress = addressList.get(0);
-                defaultAddress.isDefault = true;
-                defaultAddress.save();
+        if (address != null) {
+            if (address.isDefault != null && address.isDefault) {
+                address.delete();
+                List<Address> addressList = Address.findAll();
+                if (addressList.size() > 0) {
+                    Address defaultAddress = addressList.get(0);
+                    defaultAddress.isDefault = true;
+                    defaultAddress.save();
+                }
+            } else {
+                address.delete();
             }
-            return;
         }
-        address.delete();
     }
 
     public static void update(Long id, Address address) {

@@ -7,7 +7,7 @@
 #{/set}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @OperateTopics.update(id) , id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
+#{form @OperateTopics.update(topic.id) , id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
     <legend>${title}</legend>
     #{set action:"edit"/}
     #{include '/OperateTopics/topicForm.html'/}

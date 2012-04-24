@@ -50,10 +50,13 @@ public class Addresses extends Controller {
 
     public static void update(Address address) {
         address.user = SecureCAS.getUser();
-        if ("true".equals(address.isDefault)) {
+        if (address.isDefault == null) {
+            address.isDefault = false;
+        }
+        if (address.isDefault) {
             Address.updateToUnDefault(SecureCAS.getUser());
         }
-        address.isDefault = "true";
+        address.isDefault = true;
         address.save();
         render("Addresses/show.html", address);
     }
@@ -72,18 +75,19 @@ public class Addresses extends Controller {
     public static void delete(long id) {
         Address address = Address.findById(id);
         if (address != null) {
-            if ("true".equals(address.isDefault)) {
+            if (address.isDefault != null && address.isDefault) {
                 address.delete();
                 List<Address> addressList = Address.findAll();
                 if (addressList.size() > 0) {
                     Address defaultAddress = addressList.get(0);
-                    defaultAddress.isDefault = "true";
+                    defaultAddress.isDefault = true;
                     defaultAddress.save();
                     renderJSON(defaultAddress.id);
                 }
                 ok();
+            } else {
+                address.delete();
             }
-            address.delete();
         }
 //        Address.delete("id=?", id);
 

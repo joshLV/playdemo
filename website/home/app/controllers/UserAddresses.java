@@ -101,22 +101,7 @@ public class UserAddresses extends Controller {
      * @param id
      */
     public static void delete(long id) {
-        Address address = Address.findById(id);
-        if (address != null) {
-            if (address.isDefault != null && address.isDefault) {
-                address.delete();
-                List<Address> addressList = Address.findAll();
-                if (addressList.size() > 0) {
-                    Address defaultAddress = addressList.get(0);
-                    defaultAddress.isDefault = true;
-                    defaultAddress.save();
-                    renderJSON(defaultAddress.id);
-                }
-                index();
-            } else {
-                address.delete();
-            }
-        }
+        Address.delete(id);
 
         index();
     }
