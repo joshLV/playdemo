@@ -1,4 +1,4 @@
-$(function(){
+jQuery(function(){
     //  我的优惠啦
     $('.myUhuila').mouseover(function(){
         $(this).addClass('myUhuila-on');
@@ -17,5 +17,13 @@ $(function(){
     $('.carts').mouseout(function(){
         $(this).removeClass('carts-on');
         $('.carts-bd').hide();
+    });
+
+    // 焦点图
+    $('#slides').slides({
+        play: 5000,
+        pause: 2500,
+        slideSpeed: 600,
+        hoverPause: true
     });
 });

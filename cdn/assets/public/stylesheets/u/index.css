@@ -129,6 +129,11 @@
     margin: 0 10px;
     _margin: 0 8px;
 }
+.recommendation-bd .title {
+    width: 120px;
+    height: 18px;
+    overflow: hidden;
+}
 .recommendation-bd li strong {
     color: #F50;
     font-family: arial, tahoma, \5b8b\4f53, sans-serif;
@@ -209,4 +214,9 @@ del {
     float: left;
     margin: 0 20px;
     _margin: 0 18px;
+}
+.boutique-bd .title {
+    width: 120px;
+    height: 18px;
+    overflow: hidden;
 }

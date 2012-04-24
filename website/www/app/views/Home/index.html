@@ -4,10 +4,6 @@
 #{set 'moreStyles'}
   #{asset.css src:['/u/index.css'] /}
 #{/set}
-#{set 'moreScripts'}
-  <script src="@@{'/public/javascripts/home.js'}"></script>
-#{/set}
-
 
 <div class="wrap clearfix">
     <div class="bizarea">
@@ -41,17 +37,6 @@
             <a href="" target="_blank"><img src="#{asset.url href:'/images/u/s3.png'/}" width="478" height="218" /></a>
         </div>
     </div>
-<script>
-$(function(){
-    $('#slides').slides({
-        play: 5000,
-        pause: 2500,
-        slideSpeed: 600,
-        hoverPause: true
-    });
-
-});
-</script>
 
     <div class="service">
         <div class="service-hd">购物满29元免运费(了解更多)</div>
@@ -116,8 +101,8 @@ $(function(){
      #{list goodsList, as:'aGoods'}
         <li>
             <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="120" height="130" alt="${aGoods.name}" /></a>
-            <div><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
-            <div><del>&yen; ${aGoods.faceValue?.formatCurrency('CNY')}</del><strong>&yen;${aGoods.salePrice?.formatCurrency('CNY')}</strong></div>
+            <div class="title"><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
+            <div><del>${aGoods.faceValue?.formatCurrency('CNY')}</del><strong>${aGoods.salePrice?.formatCurrency('CNY')}</strong></div>
         </li>
      #{/list}
     </ul>
@@ -128,32 +113,32 @@ $(function(){
     <ul class="boutique-bd clearfix">
         <li>
             <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            <div><a href="">肯德基</a></div>
+            <div class="title"><a href="">肯德基</a></div>
             <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
         </li>
         <li>
             <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            <div><a href="">肯德基</a></div>
+            <div class="title"><a href="">肯德基</a></div>
             <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
         </li>
         <li>
             <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            <div><a href="">肯德基</a></div>
+            <div class="title"><a href="">肯德基</a></div>
             <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
         </li>
         <li>
             <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            <div><a href="">肯德基</a></div>
+            <div class="title"><a href="">肯德基</a></div>
             <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
         </li>
         <li>
             <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            <div><a href="">肯德基</a></div>
+            <div class="title"><a href="">肯德基</a></div>
             <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
         </li>
         <li>
             <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            <div><a href="">肯德基</a></div>
+            <div class="title"><a href="">肯德基</a></div>
             <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
         </li>
     </ul>

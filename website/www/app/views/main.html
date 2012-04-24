@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta charset="UTF-8">
     <title>#{get 'title' /}</title>
-    #{asset.css src:['/u/reset.css', '/u/base.css'] /}
+    #{asset.css src:['/u/base.css'] /}
     #{get 'moreStyles' /}
+    #{asset.js src:['/u/jquery-1.7.2.min.js'] /}
 </head>
 <body>
 <div id="header" class="clearfix">
@@ -61,8 +62,7 @@
         优惠啦Copyright © 2011-2012 UHUILA.COM 版权所有 <span> 沪ICP备08114451号</span>
     </div>
 </div>
-
-    #{asset.js src:['/u/jquery-1.7.2.min.js', '/u/slides.min.js', '/u/base.js'] /}
+    #{asset.js src:['/u/slides.min.js', '/u/base.js'] /}
     #{get 'moreScripts' /}
 </body>
 </html>
