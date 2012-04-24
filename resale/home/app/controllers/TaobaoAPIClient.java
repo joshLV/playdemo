@@ -28,7 +28,7 @@ import com.taobao.api.response.ItemImgUploadResponse;
 import controllers.modules.resale.cas.SecureCAS;
 
 @With(SecureCAS.class)
-public class TopClient extends Controller{
+public class TaobaoAPIClient extends Controller{
     private static final String url = "http://gw.api.taobao.com/router/rest";
     private static final String appkey = "12576100";
     private static final String appsecret = "b1301dd48f91e483b42c914bbdf38d01";

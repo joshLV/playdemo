@@ -20,7 +20,7 @@ import controllers.modules.resale.cas.SecureCAS;
  * 
  */
 @With(SecureCAS.class)
-public class TopOauthCallback extends Controller{
+public class TaobaoOauthCallback extends Controller{
     public static void index(String top_session, String top_sign, String top_parameters){
         //加载用户账户信息
         Resaler user = SecureCAS.getResaler();
