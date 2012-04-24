@@ -19,7 +19,13 @@ POST     /userInfo/bindMobile                         UserInfos.bindMobile
 POST     /userInfo/send                               UserInfos.sendValidCode
 
 #收货地址
-GET     /address                                      UserAddress.index
+GET     /addresses                                    UserAddresses.index
+GET     /addresses/new                                UserAddresses.add
+POST    /addresses                                    UserAddresses.create
+GET     /addresses/{id}/edit                          UserAddresses.edit
+PUT     /addresses/{id}                               UserAddresses.update
+PUT     /addresses/{id}/default                       UserAddresses.updateDefault
+DELETE  /addresses/{id}                               UserAddresses.delete
 
 GET     /user/password                                UserPassword.index
 POST    /user/{id}                                    UserPassword.update

@@ -9,15 +9,17 @@ play-paginate.last=尾页&nbsp;&raquo;
 validation.required=请输入%s!
 validation.minSize=%s的长度至少%d位!
 validation.maxSize=%s的长度不能超过%d!
-
-user.oldPassword=原密码
-user.newPassword=新密码
-user.newConfirmPassword=确认新密码
 validation.newPassword.minSize=密码不能小于6位！
 validation.newPassword.maxSize=密码不能大于20位！
 validation.confirmPassword=两次密码输入的不一样！！
 validation.oldPassword=原密码输入的不对！
 validation.newPassword.confirm=新密码和原密码一样，请重新输入！
+validation.invalid=无效的%s!
+validation.match=无效的%s!
+
+user.oldPassword=原密码
+user.newPassword=新密码
+user.newConfirmPassword=确认新密码
 #订单状态
 order.UNPAID=未支付
 order.PAID=已支付
@@ -71,4 +73,13 @@ userInfo.position3=中层管理者
 userInfo.position4=高层管理者
 userInfo.position5=私营老板/个体户
 userInfo.position6=其他
+
+
+address.name=收货人
+address.district=所在地区
+address.address=街道地址
+address.mobile=手机/电话
+address.phone=手机/电话
+address.postcode=邮编
+address.isDefault=设为默认
 

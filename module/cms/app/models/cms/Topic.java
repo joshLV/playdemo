@@ -104,4 +104,16 @@ public class Topic extends Model {
             topic.delete();
         }
     }
+
+    public static void update(Long id, Topic topic) {
+        Topic oldTopic = Topic.findById(id);
+        oldTopic.content = topic.content;
+        oldTopic.displayOrder = topic.displayOrder;
+        oldTopic.effectiveAt = topic.effectiveAt;
+        oldTopic.expireAt = topic.expireAt;
+        oldTopic.platformType = topic.platformType;
+        oldTopic.type = topic.type;
+        oldTopic.title = topic.title;
+        oldTopic.save();
+    }
 }

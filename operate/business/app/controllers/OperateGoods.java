@@ -7,7 +7,13 @@ package controllers;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
 import models.resale.ResalerLevel;
-import models.sales.*;
+import models.sales.Brand;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.GoodsCondition;
+import models.sales.GoodsStatus;
+import models.sales.MaterialType;
+import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.collections.CollectionUtils;
@@ -74,7 +80,7 @@ public class OperateGoods extends Controller {
         if (CollectionUtils.isNotEmpty(supplierList)) {
             renderShopList(supplierList.get(0).id);
         }
-        renderArgs.put("goods.materialType",MaterialType.ELECTRONIC);
+        renderArgs.put("goods.materialType", MaterialType.ELECTRONIC);
         renderInit(null);
         render();
     }
@@ -124,7 +130,7 @@ public class OperateGoods extends Controller {
             subCategoryList = Category.findByParent(goods.topCategoryId);
         }
         for (String key : validation.errorsMap().keySet()) {
-            warn("validation.errorsMap().get("+key+"):" + validation.errorsMap().get(key));
+            warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
         }
         renderArgs.put("brandList", brandList);
         renderArgs.put("categoryList", categoryList);
@@ -163,8 +169,6 @@ public class OperateGoods extends Controller {
         checkImageFile(imagePath);
 
         goods.setLevelPrices(levelPrices);
-
-        System.out.println("goods.materialType:" + goods.materialType);
 
         //预览
         if (GoodsStatus.UNCREATED.equals(goods.status)) {

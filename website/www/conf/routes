@@ -58,7 +58,6 @@ GET     /areas/areas/{areaId}                   Areas.showArea
 GET     /areas/subs/{areaId}                    Areas.showAllSubAreas
 GET     /areas/subs/{areaId}/{limit}            Areas.showTopSubAreas
 
-
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

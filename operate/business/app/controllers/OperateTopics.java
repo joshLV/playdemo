@@ -66,8 +66,8 @@ public class OperateTopics extends Controller {
             }
             render("OperateTopics/edit.html", topic);
         }
-        topic.id = id;
-        topic.save();
+        Topic.update(id,topic);
+
         index(null, null);
     }
 

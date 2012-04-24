@@ -1,8 +1,17 @@
 package models.consumer;
 
+import play.data.validation.Match;
+import play.data.validation.MaxSize;
+import play.data.validation.Required;
 import play.db.jpa.Model;
+import play.modules.view_ext.annotation.Mobile;
+import play.modules.view_ext.annotation.Postcode;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 
@@ -11,16 +20,25 @@ import java.util.List;
 public class Address extends Model {
     @ManyToOne
     public User user;
+    @Required
     public String province;
+    @Required
     public String city;
+    @Required
     public String district;
+    @Required
     public String address;
+    @Required
+    @MaxSize(20)
     public String name;
+    @Required
+    @Postcode
     public String postcode;
 
+    @Mobile
     public String mobile;
     @Column(name = "is_default")
-    public String isDefault;
+    public Boolean isDefault;
     @Column(name = "create_at")
     public Date createdAt;
     @Column(name = "lock_version")
@@ -28,24 +46,18 @@ public class Address extends Model {
     @Column(name = "updated_at")
     public Date updatedAt;
     @Column(name = "area_code")
+    @Match("^([0-9]+)$")
     public String areaCode;
     @Column(name = "phone_number")
+    @Match("^([0-9]+)$")
     public String phoneNumber;
     @Column(name = "phone_ext_number")
+    @Match("^([0-9]+)$")
     public String phoneExtNumber;
 
     @Transient
     public String getFullAddress() {
-        String fullAddress = "";
-        if (!"ALL".equals(province) && !"".equals(province)) {
-            fullAddress += province;
-        }
-        if (!"ALL".equals(city) && !"".equals(city)) {
-            fullAddress += " " + city;
-        }
-        if (!"ALL".equals(district) && !"".equals(district)) {
-            fullAddress += " " + district;
-        }
+        String fullAddress = getArea();
         if (!"".equals(fullAddress)) {
             fullAddress += " ";
         }
@@ -53,11 +65,34 @@ public class Address extends Model {
             fullAddress += address;
         }
         return fullAddress;
-
+    }
+    
+    @Transient
+    public String getArea(){
+        String area = "";
+        if (!"ALL".equals(province) && !"".equals(province)) {
+            area += province;
+        }
+        if (!"ALL".equals(city) && !"".equals(city)) {
+            area += " " + city;
+        }
+        if (!"ALL".equals(district) && !"".equals(district)) {
+            area += " " + district;
+        }
+        return area;
     }
 
     @Transient
     public String getPhone() {
+        String phoneStr = getNormalPhone();
+        if (mobile != null && !mobile.equals("")) {
+            return mobile + " " + phoneStr;
+        }
+        return phoneStr;
+    }
+
+    @Transient
+    private String getNormalPhone() {
         StringBuilder phoneStr = new StringBuilder();
         if (areaCode != null && !areaCode.equals("")) {
             phoneStr.append(areaCode);
@@ -68,9 +103,6 @@ public class Address extends Model {
             phoneStr.append("-");
             phoneStr.append(phoneExtNumber);
         }
-        if (mobile != null && !mobile.equals("")) {
-            return mobile + " " + phoneStr.toString();
-        }
         return phoneStr.toString();
     }
 
@@ -79,22 +111,22 @@ public class Address extends Model {
     }
 
     public static void updateToUnDefault(User user) {
-        List<Address> addressList = Address.find("byUserAndIsDefault", user, "true").fetch();
+        List<Address> addressList = Address.find("byUserAndIsDefault", user, true).fetch();
         for (Address address : addressList) {
-            address.isDefault = "false";
+            address.isDefault = false;
             address.save();
         }
     }
 
     public static Address findDefault(User user) {
-        return Address.find("byUserAndIsDefault", user, "true").first();
+        return Address.find("byUserAndIsDefault", user, true).first();
     }
 
     public static void updateDefault(long id, User user) {
         Address address = Address.findById(id);
         if (address != null) {
             Address.updateToUnDefault(user);
-            address.isDefault = "true";
+            address.isDefault = true;
             address.save();
         }
     }
@@ -105,16 +137,39 @@ public class Address extends Model {
         if (address == null) {
             return;
         }
-        if ("true".equals(address.isDefault)) {
+        if (address.isDefault) {
             address.delete();
             List<Address> addressList = Address.findAll();
             if (addressList.size() > 0) {
                 Address defaultAddress = addressList.get(0);
-                defaultAddress.isDefault = "true";
+                defaultAddress.isDefault = true;
                 defaultAddress.save();
             }
             return;
         }
         address.delete();
     }
+
+    public static void update(Long id, Address address) {
+        Address oldAddress = Address.findById(id);
+        oldAddress.isDefault = address.isDefault;
+        if (address.isDefault) {
+            updateToUnDefault(oldAddress.user);
+        }
+
+        oldAddress.updatedAt = new Date();
+        oldAddress.city = address.city;
+        oldAddress.address = address.address;
+        oldAddress.areaCode = address.areaCode;
+        oldAddress.district = address.district;
+        oldAddress.mobile = address.mobile;
+        oldAddress.name = address.name;
+        oldAddress.phoneExtNumber = address.phoneExtNumber;
+        oldAddress.phoneNumber = address.phoneNumber;
+        oldAddress.postcode = address.postcode;
+        oldAddress.province = address.province;
+        oldAddress.save();
+    }
+
+
 }
