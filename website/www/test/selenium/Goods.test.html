@@ -2,14 +2,16 @@
 'fixture/shops_unit.yml','fixture/goods_unit.yml'] /}
 #{selenium 'Test Goods/index.html Normal'}
 open('/goods')
-verifyTextPresent('全部 饮食 旅游')
+verifyTextPresent('商圈')
 verifyTextPresent('浦东新区')
-verifyTextPresent('全部 陆家嘴 96广场')
+verifyTextPresent('陆家嘴')
+
+*{
 verifyTextPresent('全部 来一份 豆捞坊')
-verifyTextPresent('30-60元')
-verifyTextPresent('160元以上')
-verifyTextPresent('上一页')
-verifyTextPresent('下一页')
+verifyTextPresent('30-60元') 
+verifyTextPresent('160元以上') 
+verifyTextPresent('上一页') 
+verifyTextPresent('下一页') 
 
 assertText('//div[@id='right_content']/div/div[2]/span[2]','全部')
 assertText('//div[@id='right_content']/div/div[3]/span[2]','全部')
@@ -43,4 +45,7 @@ verifyTextPresent('下一页')
 verifyValue('id=input_price_from','30')
 verifyValue('id=input_price_to','60')
 verifyTextPresent('首页 > 全部分类 > 全部地区 > 全部商圈 > 全部品牌 > 30-60元')
+
+}*
+
 #{/selenium}
