@@ -12,8 +12,8 @@
           <navigation key="order_index" action="SupplierOrders.index" text="订单管理" permissions="ORDER"/>
         </navigation>
         <navigation key="coupon" text="消费券" permission="ORDER" permissions="COUPON">
-          <navigation key="coupons_index" action="SupplierOrders.coupons" text="消费券号列表" permissions="COUPON"/>
-          <navigation key="coupon_verify" action="VerificationCoupons.index" text="验证消费券" permissions="COUPON_VERIFY"/>
+          <navigation key="coupons" action="SupplierCoupons.coupons" text="消费券号列表" permissions="COUPON"/>
+          <navigation key="coupon_index" action="SupplierCoupons.index" text="验证消费券" permissions="COUPON_VERIFY"/>
         </navigation>
     </navigation>
 </application>

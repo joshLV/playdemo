@@ -70,15 +70,4 @@ public class SupplierOrders extends Controller {
 		renderArgs.put("searchItems", goodsCond.searchItems);
 	}
 
-	/**
-	 * 券号列表
-	 */
-	public static void coupons() {
-		Long supplierId = SupplierRbac.currentUser().supplier.id;
-		String page = request.params.get("page");
-		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-		JPAExtPaginator<models.order.ECoupon> couponsList = ECoupon.queryCoupons(supplierId, pageNumber, PAGE_SIZE);
-		render("SupplierOrders/e_coupons.html", couponsList);
-	}
-
 }

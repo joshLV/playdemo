@@ -3,27 +3,32 @@ package controllers;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.sales.Shop;
 import navigation.annotations.ActiveNavigation;
 import play.data.validation.Validation;
+import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
 @With(SupplierRbac.class)
-@ActiveNavigation("coupon_verify")
-public class VerificationCoupons extends Controller {
+public class SupplierCoupons extends Controller {
 
+	public static int PAGE_SIZE = 15;
+	
     /**
      * 验证页面
      */
+	@ActiveNavigation("coupon_index")
     public static void index() {
     	Long supplierId = SupplierRbac.currentUser().supplier.id;
     	Long supplierUserId = SupplierRbac.currentUser().id;
     	SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
 		List shopList = Shop.findShopBySupplier(supplierId);
-        render("Verification/index.html",shopList,supplierUser);
+        render("SupplierCoupons/index.html",shopList,supplierUser);
     }
 
     /**
@@ -36,7 +41,7 @@ public class VerificationCoupons extends Controller {
         if (Validation.hasErrors()) {
             params.flash();
             Validation.keep();
-            renderTemplate("Verification/index.html", eCouponSn);
+            renderTemplate("SupplierCoupons/index.html", eCouponSn);
         }
         
         Long supplierId = SupplierRbac.currentUser().supplier.id;
@@ -54,7 +59,7 @@ public class VerificationCoupons extends Controller {
         if (Validation.hasErrors()) {
             params.flash();
             Validation.keep();
-            renderTemplate("Verification/index.html", eCouponSn);
+            renderTemplate("SupplierCoupons/index.html", eCouponSn);
         }
         
         Long supplierId = SupplierRbac.currentUser().supplier.id;
@@ -66,4 +71,16 @@ public class VerificationCoupons extends Controller {
         eCoupon.consumed(shopId);
         renderJSON("0");
     }
+    
+    /**
+	 * 券号列表
+	 */
+    @ActiveNavigation("coupons")
+	public static void coupons() {
+		Long supplierId = SupplierRbac.currentUser().supplier.id;
+		String page = request.params.get("page");
+		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+		JPAExtPaginator<models.order.ECoupon> couponsList = ECoupon.queryCoupons(supplierId, pageNumber, PAGE_SIZE);
+		render("SupplierCoupons/e_coupons.html", couponsList);
+	}
 }

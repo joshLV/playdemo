@@ -5,15 +5,14 @@
 # Home page
 GET     /                                       SupplierOrders.index
 GET     /orders                                 SupplierOrders.index
-GET     /coupons                                SupplierOrders.coupons
 GET     /orders/{id}                            SupplierOrders.details
 #验证电子券页面
-GET     /coupons/verify                         VerificationCoupons.index
+GET     /coupons                                SupplierCoupons.coupons
+GET     /coupons/verify                         SupplierCoupons.index
 #验证电子券有效性
-GET    /coupons/query                          VerificationCoupons.queryCoupons
-POST    /coupons/query                          VerificationCoupons.queryCoupons
+POST    /coupons/query                          SupplierCoupons.queryCoupons
 #更新电子券状态及产生交易
-POST    /coupons/update                         VerificationCoupons.update
+POST    /coupons/update                         SupplierCoupons.update
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
