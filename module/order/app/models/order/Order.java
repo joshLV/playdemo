@@ -382,7 +382,7 @@ public class Order extends Model {
 	 * @param pageSize   每页记录
 	 * @return ordersPage 订单信息
 	 */
-	public static JPAExtPaginator<Order> findMyOrders(User user, OrdersCondition condition,
+	public static JPAExtPaginator<Order> findUserOrders(User user, OrdersCondition condition,
 			int pageNumber, int pageSize) {
 		JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
 		("Order o", "o", Order.class, condition.getFilter(user),

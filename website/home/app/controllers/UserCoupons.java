@@ -15,7 +15,7 @@ import play.mvc.With;
 import controllers.modules.website.cas.SecureCAS;
 
 @With(SecureCAS.class)
-public class MyCoupons extends Controller {
+public class UserCoupons extends Controller {
 
 	public static int PAGE_SIZE = 15;
 
@@ -33,7 +33,7 @@ public class MyCoupons extends Controller {
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的券订单", "/coupons");
 		renderCond(condition);
 		
-		render("MyCoupons/e_coupons.html", couponsList, breadcrumbs,user);
+		render("UserCoupons/e_coupons.html", couponsList, breadcrumbs,user);
 	}
 
 	/**

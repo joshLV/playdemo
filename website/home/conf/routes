@@ -3,13 +3,13 @@
 # ~~~~
 
 # Home page
-GET     /                                             MyOrders.index
-GET     /orders                                       MyOrders.index
-POST    /orders/refund/{id}                           MyOrders.applyRefund
-GET     /orders/{id}                                  MyOrders.details
-GET     /coupons                                      MyCoupons.coupons
-GET     /payment/{id}                                 MyOrders.pay
-POST    /coupons/refund/{id}                          MyCoupons.applyRefund
+GET     /                                             UserOrders.index
+GET     /orders                                       UserOrders.index
+POST    /orders/refund/{id}                           UserOrders.applyRefund
+GET     /orders/{id}                                  UserOrders.details
+GET     /coupons                                      UserCoupons.coupons
+GET     /payment/{id}                                 UserOrders.pay
+POST    /coupons/refund/{id}                          UserCoupons.applyRefund
 
 
 #用户资料

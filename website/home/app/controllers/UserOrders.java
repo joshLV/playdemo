@@ -17,7 +17,7 @@ import play.mvc.With;
 import controllers.modules.website.cas.SecureCAS;
 
 @With(SecureCAS.class)
-public class MyOrders extends Controller {
+public class UserOrders extends Controller {
 
 	public static int PAGE_SIZE = 15;
 
@@ -31,7 +31,7 @@ public class MyOrders extends Controller {
 		if (condition == null) {
 			condition = new OrdersCondition();
 		}
-		JPAExtPaginator<models.order.Order>  orderList = Order.findMyOrders(user, condition,pageNumber, PAGE_SIZE);
+		JPAExtPaginator<models.order.Order>  orderList = Order.findUserOrders(user, condition,pageNumber, PAGE_SIZE);
 
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders");
 		renderCond(condition);

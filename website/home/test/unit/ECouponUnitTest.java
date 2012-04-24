@@ -70,7 +70,7 @@ public class ECouponUnitTest extends UnitTest {
 		int pageSize =15;
 		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
 		User user = User.findById(userId);
-		JPAExtPaginator<Order> list = Order.findMyOrders(user, condition,pageNumber, pageSize);
+		JPAExtPaginator<Order> list = Order.findUserOrders(user, condition,pageNumber, pageSize);
 		assertEquals(1,list.size());
 
 	}
