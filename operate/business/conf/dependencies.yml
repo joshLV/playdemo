@@ -23,6 +23,7 @@ require:
     - order -> order
     - cms -> cms
     - sms -> sms
+    - asset_package -> asset_package
 
 repositories:
     - mavenRepository:
@@ -56,3 +57,4 @@ repositories:
             - order -> *
             - cms -> *
             - sms -> *
+            - asset_package -> *
