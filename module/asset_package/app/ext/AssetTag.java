@@ -117,35 +117,18 @@ public class AssetTag extends FastTags {
         
         String tagVersion = Play.mode.isDev() ? String.valueOf(System.currentTimeMillis()) : PROD_VERSION;
 
-        List<String> srcList = getSrcArg(args);
-        boolean bPackageFlag = getPackageFlagArg(args);
-        
-        String baseUrl = getBaseUrl() + "/js";
+        String href = args.get("href").toString();
+        String baseUrl = getBaseUrl();
+        String split = href.indexOf('?') > 0 ? "&" : "?";
 
-        if (bPackageFlag) {
-            start_js_tag(out);
-            StringBuilder sb = new StringBuilder();
-            for (String src : srcList) {
-                if (!src.startsWith("/")) sb.append("/");
-                sb.append(src);
-            }
-            out.print("src=\"" + baseUrl + sb.toString() + "/" + tagVersion + ".js\"");
-            end_js_tag(out);
-        } else {
-            for (String src : srcList) {
-                start_js_tag(out);
-                if (!src.startsWith("/")) src = "/" + src;
-                out.print("src=\"" + baseUrl + src + "?" + tagVersion + "\"");
-                end_js_tag(out);
-            }
-        }
+        out.print(baseUrl + href + split + tagVersion + "=true");
     }    
     
     private static String getBaseUrl() {
         String baseUrl = null;
         String cdnHost = Play.configuration.getProperty("cdn.host");
         if (cdnHost == null) {
-            cdnHost = "a.ulcdn.com";
+            cdnHost = "a.uhcdn.com";
             baseUrl = "http://" + cdnHost;
         }
         return baseUrl;

@@ -1,0 +1,357 @@
+/**
+ * CSS RESET START
+ * **/
+/** 清除内外边距 **/
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, /* structural elements 结构元素 */
+dl, dt, dd, ul, ol, li, /* list elements 列表元素 */
+pre, /* text formatting elements 文本格式元素 */
+form, fieldset, legend, button, input, textarea, /* form elements 表单元素 */
+th, td /* table elements 表格元素 */ {
+    margin: 0;
+    padding: 0;
+}
+
+/** 设置默认字体 **/
+body, a, button, input, select, textarea /* for ie */ {
+    color: #3E3E3E;
+    font: 12px/1.5 tahoma, arial, \5b8b\4f53, sans-serif;
+}
+h1, h2, h3, h4, h5, h6 { font-size: 100%; }
+address, cite, dfn, em, var { font-style: normal; } /* 将斜体扶正 */
+code, kbd, pre, samp { font-family: courier new, courier, monospace; } /* 统一等宽字体 */
+small { font-size: 12px; } /* 小于 12px 的中文很难阅读，让 small 正常化 */
+
+/** 重置列表元素 **/
+ul, ol { list-style: none; }
+
+/** 重置文本格式元素 **/
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+sup { vertical-align: text-top; } /* 重置，减少对行高的影响 */
+sub { vertical-align: text-bottom; }
+
+/** 重置表单元素 **/
+legend { color: #000; } /* for ie6 */
+fieldset, img { border: 0; } /* img 搭车：让链接里的 img 无边框 */
+button, input, select, textarea { font-size: 100%; } /* 使得表单元素在 ie 下能继承字体大小 */
+/* 注：optgroup 无法扶正 */
+
+/** 重置表格元素 **/
+table { border-collapse: collapse; border-spacing: 0; }
+
+/* 重置 HTML5 元素 */
+article, aside, details, figcaption, figure, footer,header, hgroup, menu, nav, section,
+summary, time, mark, audio, video {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+mark { background: #ff0; }
+
+/** 清除浮动 **/
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.clearfix {
+    *+height: 1%;
+}
+/** CSS RESET END **/
+/** 清除内外边距 **/
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, /* structural elements 结构元素 */
+dl, dt, dd, ul, ol, li, /* list elements 列表元素 */
+pre, /* text formatting elements 文本格式元素 */
+form, fieldset, legend, button, input, textarea, /* form elements 表单元素 */
+th, td /* table elements 表格元素 */ {
+    margin: 0;
+    padding: 0;
+}
+
+/** 设置默认字体 **/
+body, a, button, input, select, textarea /* for ie */ {
+    color: #3E3E3E;
+    font: 12px/1.5 tahoma, arial, \5b8b\4f53, sans-serif;
+}
+h1, h2, h3, h4, h5, h6 { font-size: 100%; }
+address, cite, dfn, em, var { font-style: normal; } /* 将斜体扶正 */
+code, kbd, pre, samp { font-family: courier new, courier, monospace; } /* 统一等宽字体 */
+small { font-size: 12px; } /* 小于 12px 的中文很难阅读，让 small 正常化 */
+
+/** 重置列表元素 **/
+ul, ol { list-style: none; }
+
+/** 重置文本格式元素 **/
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+sup { vertical-align: text-top; } /* 重置，减少对行高的影响 */
+sub { vertical-align: text-bottom; }
+
+/** 重置表单元素 **/
+legend { color: #000; } /* for ie6 */
+fieldset, img { border: 0; } /* img 搭车：让链接里的 img 无边框 */
+button, input, select, textarea { font-size: 100%; } /* 使得表单元素在 ie 下能继承字体大小 */
+/* 注：optgroup 无法扶正 */
+
+/** 重置表格元素 **/
+table { border-collapse: collapse; border-spacing: 0; }
+
+/* 重置 HTML5 元素 */
+article, aside, details, figcaption, figure, footer,header, hgroup, menu, nav, section,
+summary, time, mark, audio, video {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+mark { background: #ff0; }
+
+/** 清除浮动 **/
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.clearfix {
+    *+height: 1%;
+}
+/** CSS RESET END **/
+/** 清除内外边距 **/
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, /* structural elements 结构元素 */
+dl, dt, dd, ul, ol, li, /* list elements 列表元素 */
+pre, /* text formatting elements 文本格式元素 */
+form, fieldset, legend, button, input, textarea, /* form elements 表单元素 */
+th, td /* table elements 表格元素 */ {
+    margin: 0;
+    padding: 0;
+}
+
+/** 设置默认字体 **/
+body, a, button, input, select, textarea /* for ie */ {
+    color: #3E3E3E;
+    font: 12px/1.5 tahoma, arial, \5b8b\4f53, sans-serif;
+}
+h1, h2, h3, h4, h5, h6 { font-size: 100%; }
+address, cite, dfn, em, var { font-style: normal; } /* 将斜体扶正 */
+code, kbd, pre, samp { font-family: courier new, courier, monospace; } /* 统一等宽字体 */
+small { font-size: 12px; } /* 小于 12px 的中文很难阅读，让 small 正常化 */
+
+/** 重置列表元素 **/
+ul, ol { list-style: none; }
+
+/** 重置文本格式元素 **/
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+sup { vertical-align: text-top; } /* 重置，减少对行高的影响 */
+sub { vertical-align: text-bottom; }
+
+/** 重置表单元素 **/
+legend { color: #000; } /* for ie6 */
+fieldset, img { border: 0; } /* img 搭车：让链接里的 img 无边框 */
+button, input, select, textarea { font-size: 100%; } /* 使得表单元素在 ie 下能继承字体大小 */
+/* 注：optgroup 无法扶正 */
+
+/** 重置表格元素 **/
+table { border-collapse: collapse; border-spacing: 0; }
+
+/* 重置 HTML5 元素 */
+article, aside, details, figcaption, figure, footer,header, hgroup, menu, nav, section,
+summary, time, mark, audio, video {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+mark { background: #ff0; }
+
+/** 清除浮动 **/
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.clearfix {
+    *+height: 1%;
+}
+/**
+ * CSS RESET END
+ * **/
+
+
+#header {
+    width: 960px;
+    margin: 0 auto;
+}
+#logo {
+    float: left;
+    width: 248px;
+    height: 88px;
+}
+#menu {
+    height: 48px;
+    padding: 40px 0 0 0;
+    float: right;
+}
+#menu .welcom {
+    float: left;
+    margin-left: 10px;
+}
+#menu .carts,
+#menu .myUhuila {
+    float: left;
+    position: relative;
+    width: 60px;
+    padding: 0 12px 0 10px;
+    background: url(http://img.uhcdn.com/images/u/arrow.png) no-repeat;
+    background-position: 73px 9px;
+}
+#menu .myUhuila-bd {
+    display: none;
+    overflow: hidden;
+    position: absolute;
+    top: 22px;
+    left: -1px;
+    width: 60px;
+    padding: 10px;
+    border: solid #209890;
+    border-width: 0 1px 1px 1px;
+    background-color: #fff;
+}
+#menu .myUhuila-on {
+    margin-top: -1px;
+    padding: 0 11px 4px 9px;
+    border: solid #209890;
+    border-width: 1px 1px 0 1px;
+    background-position: 72px 9px;
+}
+#menu .carts span {
+    padding: 0 2px;
+    color: #F50;
+    font-weight: 700;
+}
+#menu .carts-on {
+    margin-top: -1px;
+    padding: 0 11px 4px 9px;
+    border: solid #209890;
+    border-width: 1px 1px 0 1px;
+    background-position: 72px 9px;
+}
+#menu .carts-bd {
+    display: none;
+    overflow: hidden;
+    position: absolute;
+    top: 22px;
+    left: -1px;
+    width: 220px;
+    padding: 10px;
+    border: solid #209890;
+    border-width: 0 1px 1px 1px;
+    background-color: #fff;
+}
+#menu .carts-bd .upRightLine {
+    position: absolute;
+    top: 0;
+    left: 80px;
+    border-top: 1px solid #209890;
+    width: 160px;
+}
+#menu .carts-bd .view-carts {
+    display: inline-block;
+    padding: 0 3px;
+    margin-left: 5px;
+    color: #F8F8F8;
+    background-color: #209890;
+}
+#menu .carts-bd .view-carts:hover {
+    text-decoration: none;
+}
+#menu .help {
+    float: left;
+    margin-left: 10px;
+    width: 48px;
+}
+#menu .login {
+    width: 24px;
+}
+#menu .regist {
+    width: 48px;
+}
+#menu .login,
+#menu .regist {
+    float: left;
+    margin-left: 10px;
+    padding: 0 5px 2px;
+    padding: 2px 5px 0\9;
+    background-color: #209890;
+}
+#menu .login a,
+#menu .regist a {
+    color: #fff;
+} 
+
+/** 导航 **/
+#nav {
+    background-color: #25b4ab;
+    margin-bottom: 12px;
+}
+#nav ul {
+    width: 960px;
+    margin: 0 auto;
+}
+#nav li {
+    float: left;
+}
+#nav a {
+    display: block;
+    padding: 0 20px;
+    color: #F8F8F8;
+    line-height: 35px;
+    font-size: 15px;
+    font-weight: 700;
+}
+#nav a:hover {
+    text-decoration: none;
+}
+#nav .current {
+    background-color: #209890;
+}
+
+#content {
+    width: 960px;
+    margin: 0 auto;
+}
+.wrap {
+    margin-bottom: 15px;
+}
+
+/** 页尾 **/
+#footer {
+    padding: 10px 0 20px;
+    margin: 0 auto;
+    text-align: center;
+    border-top: 1px solid #d5d5d5;
+    background-color: #F9F9F9;
+}
+.ft-nav {
+    color: #999;
+    text-align: center;
+}
+.ft-nav a {
+    color: #3E3E3E;
+    margin: 0 10px;
+}
+.copyright {
+    color: #999;
+    line-height: 26px;
+}
+.copyright span {
+    margin: 0 10px;
+}
+

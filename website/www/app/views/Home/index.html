@@ -1,191 +1,167 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 首页' /}
 
+#{set 'moreStyles'}
+  #{asset.css src:['/u/index.css'] /}
+#{/set}
 #{set 'moreScripts'}
-<script src="@@{'/public/javascripts/home.js'}"></script>
+  <script src="@@{'/public/javascripts/home.js'}"></script>
 #{/set}
 
-<div id="wrap_main">
-<div id="wrap_top">
-    #{include "share/topNavigator.html"/}
-    #{include "share/topTabs.html"/}
 
-    <div id="research_wrap">
-        <div id="research_box">
-            <form action="" method="get">
-                <input class="left_input_seach" type="text" value="请输入您想找的优惠劵"/>
-                <input class="left_input_seach2" type="image" name="imageField"
-                       id="imageField"
-                       src="@@{'/public/images/sumbit_yuhui.jpg'}"/>
-            </form>
+<div class="wrap clearfix">
+    <div class="bizarea">
+        <div class="bizarea-hd">区域商圈</div>
+        <div class="bizarea-bd">
+            <ul class="area clearfix">
+                <li><a href="" target="_blank">杨浦区</a></li>
+                <li><a href="" target="_blank">虹口区</a></li>
+                <li><a href="" target="_blank">闸北区</a></li>
+                <li><a href="" target="_blank">普陀区</a></li>
+                <li><a href="" target="_blank">黄浦区</a></li>
+                <li><a href="" target="_blank">静安区</a></li>
+                <li><a href="" target="_blank">长宁区</a></li>
+                <li><a href="" target="_blank">卢湾区</a></li>
+                <li><a href="" target="_blank">徐汇区</a></li>
+                <li><a href="" target="_blank">闵行区</a></li>
+                <li><a href="" target="_blank">浦东新区</a></li>
+            </ul>
+            <ul class="ring clearfix">
+              #{list areas, as:'area'}
+                <li><a href="/goods/list/0-021-0-${area.id}">${area.name}</a></li>
+              #{/list}            
+            </ul>
         </div>
-        <!--tag 标签-->
-        <div class="tag_box"><strong>热门搜素：</strong><span class="tag_hot"><a
-                href="#" class="font_white">真功夫</a>&nbsp;&nbsp;&nbsp;<a
-                href="#" class="font_white">爱西西里</a>&nbsp;&nbsp;&nbsp;<a
-                href="#" class="font_white">西提牛排</a>&nbsp;&nbsp;&nbsp;<a
-                href="#" class="font_white">西提牛排</a>&nbsp;&nbsp;&nbsp;<a
-                href="#" class="font_white">西提牛排</a>&nbsp;&nbsp;&nbsp;<a
-                href="#" class="font_white">西提牛排</a>&nbsp;&nbsp;&nbsp;<a
-                href="#" class="font_white">西提牛排</a></span>
-        </div>
-        <!--购物车结算-->
-        <div class="seach_right">
-            <span class="seach_right_sp"><img class="gouwu_icon"
-                                              src="@@{'/public/images/gouwu_icon.jpg'}"/></span>
-            <span class="gouwu_font">购物车：<span
-                    class="font_red">12件</span></span>
-            <span class="gouwu_jiesuan"><a href="#"
-                                           class="font_white">去结算</a></span>
-        </div>
-        <!--下拉购物车-->
-        <div class="abs_gouwu_car" style="display:none">
-            <!--over auto-->
-            <div class="over_auto">
-                <div class="car_box">
-                    <div class="car_one"><img
-                            src="@@{'/public/images/chanpin/car_cp1.jpg'}"
-                            width="60" height="41"/>
-                    </div>
-                    <div class="car_one_right">
-                        <div class="float_title">马可波罗 一千零一夜花茶20g</div>
-                        <div class="font_red">￥12.9<span
-                                class="font_gray">x1</span></div>
-                        <div class="font_gray delete_font"><a href="#">删除</a>
-                        </div>
-                    </div>
-                </div>
+    </div>
 
-                <div class="car_box">
-                    <div class="car_one"><img
-                            src="@@{'/public/images/chanpin/car_cp1.jpg'}"/>
-                    </div>
-                    <div class="car_one_right">
-                        <div class="float_title">佳宝 无花果35G</div>
-                        <div class="font_red">￥3元<span
-                                class="font_gray">x3</span></div>
-                        <div class="font_gray delete_font"><a href="#">删除</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="car_box">
-                    <div class="car_one"><img
-                            src="@@{'/public/images/chanpin/car_cp1.jpg'}"/>
-                    </div>
-                    <div class="car_one_right">
-                        <div class="float_title">超值试用装 修护眼膜贴2对+便携装小</div>
-                        <div class="font_red">￥0.01<span
-                                class="font_gray">x1</span></div>
-                        <div class="font_gray delete_font"><a href="#">删除</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="car_box">
-                    <div class="car_one"><img
-                            src="@@{'/public/images/chanpin/car_cp1.jpg'}"/>
-                    </div>
-                    <div class="car_one_right">
-                        <div class="float_title">和田 一品玉枣（四星）500克/袋</div>
-                        <div class="font_red">￥35<span
-                                class="font_gray">x1</span></div>
-                        <div class="font_gray delete_font"><a href="#">删除</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gouwu_car_haha">共<span class="font_red">6</span>件商品
-            </div>
-            <div class="gouwu_car_haha">金额总计（预估）：<span
-                    class="font_red">59.61元</span></div>
-            <div class="gouwu_car_haha bottom_car"><a href="#"><img
-                    src="@@{'/public/images/go_gouwu_car.jpg'}"/></a>
-            </div>
+    <div id="slides">
+        <div class="slides_container">
+            <a href="" target="_blank"><img src="images/s1.png" width="478" height="218" /></a>
+            <a href="" target="_blank"><img src="images/s2.png" width="478" height="218" /></a>
+            <a href="" target="_blank"><img src="images/s3.png" width="478" height="218" /></a>
         </div>
+    </div>
+<script>
+$(function(){
+    $('#slides').slides({
+        play: 5000,
+        pause: 2500,
+        slideSpeed: 600,
+        hoverPause: true
+    });
+
+});
+</script>
+
+    <div class="service">
+        <div class="service-hd">购物满29元免运费(了解更多)</div>
+        <ul class="service-bd">
+            <li class="item-1"><span>优质的品牌商户</span><br>
+                优惠啦与上海的品牌商户深入合作，为您提供服务
+            </li>
+            <li class="item-2"><span>优惠折扣不打烊</span><br>
+                全天24小时服务于您，随时消费随时购买
+            </li>
+            <li class="item-3"><span>未消费全额退</span><br>
+                优惠啦承诺只要未消费无任何理由即全额退款
+            </li>
+        </ul>
     </div>
 </div>
 
-<!--主体内容部分-->
-<div id="wrap_content">
-    <!--左侧部分-->
-    <div id="left_content_wrap">
-        <div id="left_content_top1">
-            <DIV id=idContainer2 class=container>
-                <TABLE id=idSlider2 border=0 cellSpacing=0 cellPadding=0>
-                    <TBODY>
-                    <TR>
-                        <TD class=td_f><A href="#" target="_blank"><IMG
-                                src="@@{'/public/images/flash/01.jpg'}"></A>
-                        </TD>
-                        <TD class=td_f><A href="#" target="_blank"><IMG
-                                src="@@{'/public/images/flash/02.jpg'}"></A>
-                        </TD>
-                        <TD class=td_f><A href="#" target="_blank"><IMG
-                                src="@@{'/public/images/flash/03.jpg'}"></A>
-                        </TD>
-                        <TD class=td_f><A href="#" target="_blank"><IMG
-                                src="@@{'/public/images/flash/04.jpg'}"></A>
-                        </TD>
-                        <TD class=td_f><A href="#" target="_blank"><IMG
-                                src="@@{'/public/images/flash/05.jpg'}"></A>
-                        </TD>
-                    </TR>
-                    </TBODY>
-                </TABLE>
-                <UL id=idNum class=num></UL>
-            </DIV>
-            <SCRIPT>
-                var forEach = function (array, callback, thisObject) {
-                    if (array.forEach) {
-                        array.forEach(callback, thisObject);
-                    } else {
-                        for (var i = 0, len = array.length; i < len; i++) {
-                            callback.call(thisObject, array[i], i, array);
-                        }
-                    }
-                }
-
-                var st = new SlideTrans("idContainer2", "idSlider2", 5, { Vertical:false });
-
-                var nums = [];
-                //插入数字
-                for (var i = 0, n = st._count - 1; i <= n;) {
-                    (nums[i] = $("idNum").appendChild(document.createElement("li"))).innerHTML = ++i;
-                }
-
-                forEach(nums, function (o, i) {
-                    o.onmouseover = function () {
-                        o.className = "on";
-                        st.Auto = false;
-                        st.Run(i);
-                    }
-                    o.onmouseout = function () {
-                        o.className = "";
-                        st.Auto = true;
-                        st.Run();
-                    }
-                })
-
-                //设置按钮样式
-                st.onStart = function () {
-                    forEach(nums, function (o, i) {
-                        o.className = st.Index == i ? "on" : "";
-                    })
-                }
-                st.Run();
-            </SCRIPT>
+<div class="wrap clearfix">
+    <div class="recommendation">
+        <div class="recommendation-hd">网友推荐商品</div>
+        <ul class="recommendation-bd clearfix">
+            <li>
+            	<a href=""><img src="images/quan.png" width="120" height="130" alt="" /></a>
+            	<div><a href="">肯德基</a></div>
+            	<div><del>原价：19.8</del> <strong>&yen;16.8</strong></div>
+            </li>
+            <li>
+            	<a href=""><img src="images/quan.png" width="120" height="130" alt="" /></a>
+            	<div><a href="">肯德基</a></div>
+            	<div><del>原价：19.8</del> <strong>&yen;16.8</strong></div>
+            </li>
+            <li>
+            	<a href=""><img src="images/quan.png" width="120" height="130" alt="" /></a>
+            	<div><a href="">肯德基</a></div>
+            	<div><del>原价：19.8</del> <strong>&yen;16.8</strong></div>
+            </li>
+            <li>
+            	<a href=""><img src="images/quan.png" width="120" height="130" alt="" /></a>
+            	<div><a href="">肯德基</a></div>
+            	<div><del>原价：19.8</del> <strong>&yen;16.8</strong></div>
+            </li>
+            <li>
+            	<a href=""><img src="images/quan.png" width="120" height="130" alt="" /></a>
+            	<div><a href="">肯德基</a></div>
+            	<div><del>原价：19.8</del> <strong>&yen;16.8</strong></div>
+            </li>
+        </ul>
+    </div>
+    <div class="tuangou">
+        <div class="tuangou-hd">今日团购</div>
+        <div class="tuangou-bd">
+            <a class="tuan-img" href="" target="_blank"><img src="images/tuan.png" width="220" height="120" alt="" /></a>
+            <a class="tuan-title" href="" href="_blank">麦当劳59元超值营养套餐9折优惠券</a>
+            <div class="tuan-price"><del>原价: 59元</del> <strong><i>&yen;</i>52.00</strong><a href="" target="_blank"></a></div>
         </div>
+    </div>
+</div>
+<div class="wrap">
+    <div class="boutique-hd">精选商品</div>
+    <ul class="boutique-bd clearfix">
 
-        <div id="left_content_top2">
-            <div class="hot_sq">热门商圈：</div>
-            <div class="area_name">
-                <ul class="area_ul">
-                    #{list areas, as:'area'}
-                    <li><a href="/goods/list/0-021-0-${area.id}">${area.name}</a></li>
-                    #{/list}
-                </ul>
-            </div>
-        </div>
+     #{list goodsList, as:'aGoods'}
+        <li>
+            <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="120" height="130" alt="${aGoods.name}" /></a>
+            <div><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
+            <div><del>&yen; ${aGoods.faceValue?.formatCurrency('CNY')}</del><strong>&yen;${aGoods.salePrice?.formatCurrency('CNY')}</strong></div>
+        </li>
+     #{/list}
+    </ul>
+</div>
+
+<div class="wrap">
+    <div class="boutique-hd">近日成交商品</div>
+    <ul class="boutique-bd clearfix">
+        <li>
+            <a href=""><img src="images/quan.png" width="120" height="130" alt="" /></a>
+            <div><a href="">肯德基</a></div>
+            <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
+        </li>
+        <li>
+            <a href=""><img src="images/quan.png" width="120" height="130" alt="" /></a>
+            <div><a href="">肯德基</a></div>
+            <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
+        </li>
+        <li>
+            <a href=""><img src="images/quan.png" width="120" height="130" alt="" /></a>
+            <div><a href="">肯德基</a></div>
+            <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
+        </li>
+        <li>
+            <a href=""><img src="images/quan.png" width="120" height="130" alt="" /></a>
+            <div><a href="">肯德基</a></div>
+            <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
+        </li>
+        <li>
+            <a href=""><img src="images/quan.png" width="120" height="130" alt="" /></a>
+            <div><a href="">肯德基</a></div>
+            <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
+        </li>
+        <li>
+            <a href=""><img src="images/quan.png" width="120" height="130" alt="" /></a>
+            <div><a href="">肯德基</a></div>
+            <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
+        </li>
+    </ul>
+</div>
+
+
+
+        <!-- 
         <div id="left_content_top3">
             <div>
                 <ul class="hot_shangpin">
@@ -201,103 +177,5 @@
                                                                       class="tab_unselected">更多>></a></li>
                 </ul>
             </div>
+       -->
 
-
-            <!--具体商品价格-->
-            <div id="" class="shop_wrap">
-                <ul>
-                #{set i:-1/}
-                #{list goodsList, as:'aGoods'}
-                    #{if (++i%4) == 0 }
-                    <div class="shop_li_box">
-                    #{/if}
-                    <li class="shop_box">
-                        <div><a href="/goods/${aGoods.id}" target="_blank"><img
-                                src="${aGoods.imageMiddlePath}"/></a></div>
-                        <div class="margin_top5px"><span
-                                id="recommend_goods_${aGoods.id}"
-                                class="strong_gray font_14px">${aGoods.name} </span><span
-                                class="pri_jiage font_14px">${aGoods.salePrice?.formatCurrency('CNY')}</span>
-                        </div>
-                        <div class="text_decorat">
-                            市场价格：${aGoods.faceValue?.formatCurrency('CNY')}</div>
-                    </li>
-                    #{if ((i%4 == 3))}
-                    </div>
-                    #{/if}
-
-                #{/list}
-
-
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!--右侧部分-->
-    <div id="right_content_wrap">
-        <div id="right_content_top1" class="ones border_div">
-            <dl>
-                <dt class="right_one_dt">公&nbsp;告</dt>
-                <dd class="right_one_dd"><span>10-08-5</span><a href="#">优惠啦改版啦优惠啦改版啦！</a>
-                </dd>
-                <dd class="right_one_dd right_one_dd2"><span>10-08-5</span><a
-                        href="#">优惠啦改版啦优惠啦改版啦！</a></dd>
-                <dd class="right_one_dd"><span>10-08-5</span><a href="#">优惠啦改版啦优惠啦改版啦！</a>
-                </dd>
-                <dd class="right_one_dd right_one_dd2"><span>10-08-5</span><a
-                        href="#">优惠啦改版啦优惠啦改版啦！</a></dd>
-                <dd class="right_one_dd"><span>10-08-5</span><a href="#">优惠啦改版啦优惠啦改版啦！</a>
-                </dd>
-            </dl>
-        </div>
-        <div id="right_content_top2" class="ones border_div">
-            <dl class="right_top2">
-                <dt><span><a href="#">更多>></a></span>优惠团购</dt>
-                <dd class="right_top2_dd1"><img
-                        src="@@{'/public/images/adv/1.jpg'}"/></dd>
-                <dd class="right_top2_dd2">
-                    <div>还有<span class="span_font_red">0</span>天<span
-                            class="span_font_red">6</span>小时<span
-                            class="span_font_red">6</span>分<span
-                            class="span_font_red">35</span>秒结束
-                    </div>
-                </dd>
-                <dd class="right_top2_dd3">
-                    <div><span>[优惠团]</span><b
-                            class="strong_gray">仅35元！原价67元的</b></div>
-                </dd>
-                <dd class="right_top2_dd4">
-                    <div class="right_dd4_div2"><span
-                            class="strong_font font_size14px">团购价：</span><span
-                            class="font_14px font_red_one font_weight">156</span>元<span
-                            class="right_dd4_span"><a
-                            class="li_goumai_bg" href="#">立即购买</a></span>
-                    </div>
-                    <div class="right_dd4_div">
-                        原价：234元<span
-                            class="ones_ie6"><span>52</span>人已经购买</span>
-                    </div>
-                </dd>
-            </dl>
-
-        </div>
-        <div id="right_content_top3" class="ones border_div">
-            <dl>
-                <dt class="right_list_dt"><span><a href="#">更多>></a></span>热门优惠劵
-                </dt>
-                <dd class="right_lists right_list2"><a href="#">【牛奶棚】[牛奶棚]大社区开心...</a>
-                </dd>
-                <dd class="right_lists"><a href="#">【河河亭铁板烧】[河河亭铁板烧]</a></dd>
-                <dd class="right_lists right_list2"><a href="#">【牛奶棚】[牛奶棚]大社区开心..</a>
-                </dd>
-                <dd class="right_lists"><a href="#">【维罗纳意式私房菜】[牛奶棚]</a></dd>
-                <dd class="right_lists right_list2"><a href="#">【牛奶棚】[牛奶棚]大社区开心..</a>
-                </dd>
-                <dd class="right_lists"><a href="#">【牛奶棚】[牛奶棚]大社区开心..</a></dd>
-                <dd class="right_dd_adv"><a href="#"><img
-                        src="@@{'/public/images/adv/2.jpg'}"/></a></dd>
-            </dl>
-        </div>
-    </div>
-</div>
-</div>

@@ -1,0 +1,106 @@
+#aside {
+    float: left;
+    width: 200px;
+}
+#aside .filter {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border: solid #AADBDB;
+    border-width: 1px 0 1px;
+    line-height: 24px;
+    background-color: #EAF6F6;
+}
+#aside .filter .market-hd,
+#aside .filter .area-hd {
+    padding: 3px 0 5px 9px;
+    font-weight: 700;
+}
+#aside .filter ul {
+    position: relative;
+    padding-left: 30px;
+}
+#aside .filter li {
+    position: relative;
+}
+#aside .filter .branch {
+    overflow: hidden;
+    display: block;
+    position: absolute;
+    left: -15px;
+    top: -8px;
+    _top: -14px;
+    width: 12px;
+    height: 23px;
+    border-bottom: 1px solid #AADBDB;
+    border-left: 1px solid #AADBDB;
+    font-size: 0;
+    line-height: 0;
+}
+#aside .filter .amount {
+    color: #999;
+}
+
+.popular-hd {
+    font-weight: 700;
+    line-height: 30px;
+    border-bottom: 1px solid #E4E4E4;
+}
+.popular-bd li {
+    padding: 5px 0;
+}
+
+
+#section {
+    float: right;
+    width: 740px;
+}
+.tab-pannel {
+    border: solid #AADBDB;
+    border-width: 1px 1px 0 1px;
+    background-color: #EAF6F6;
+    border-bottom: 1px solid #25B4AB;
+}
+.tab-pannel a {
+    display: block;
+    float: left;
+    width: 80px;
+    line-height: 28px;
+    text-align: center;
+    border-right: 1px solid #AADBDB;
+}
+.tab-pannel a.current {
+    margin: -1px 0 0 -1px;
+    padding: 1px 0 0 1px;
+    color: #F8F8F8;
+    font-weight: 700;
+    background-color: #25B4AB;
+}
+.sort-pannel {
+    padding: 5px;
+    margin-bottom: 15px;
+    text-indent: 20px;
+    line-height: 22px;
+    background-color: #F3F3F3;
+}
+.sort-pannel a {
+    margin: 0 15px;
+    color: #666;
+}
+.sort-pannel .selected {
+    color: #0082CA;
+}
+
+.list-content {
+    overflow: hidden;
+    width: 740px;
+}
+.list-content ul {
+    width: 765px;
+}
+.list-content li {
+    float: left;
+    height: 190px;
+    padding: 10px 12px 10px 11px;
+    margin: 0 20px 20px 0;
+    border: 1px solid #E4E4E4;
+}

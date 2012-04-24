@@ -1,0 +1,98 @@
+.title {
+    padding: 5px 0 10px;
+    font-size: 18px;
+}
+.photo {
+    float: left;
+    margin-right: 20px;
+    width: 265px;
+    border: 1px solid #E4E4E4;
+    font-size: 0;
+}
+
+.property {
+    float: left;
+    width: 430px;
+    margin-right: 20px;
+    border-top: 1px dotted #E4E4E4;
+    /* border-bottom: 1px dotted #E4E4E4; */
+}
+.property li {
+    line-height: 25px;
+}
+.property span {
+    margin-left: 5px;
+}
+.property .price span {
+    color: #F50;
+    font-size: 20px;
+    font-weight: 700;
+}
+.property .cost del {
+    margin-left: 5px;
+    color: #F50;
+    font-size: 14px;
+}
+.property li {
+    color: #666;
+}
+.property .amount input {
+    width: 30px;
+}
+.property .action {
+    margin-top: 9px;
+}
+.property .action div {
+    float: left;
+    padding: 2px 15px;
+    color: #FFF;
+    font-weight: 700;
+    background-color: #25B4AB;
+}
+.property .buy {
+    margin-right: 35px;
+}
+
+.aside {
+    float: left;
+    width: 223px;
+}
+.aside .service {
+    padding: 5px;
+    margin-bottom: 20px;
+    border: 1px solid #E4E4E4;
+    background: url(http://img.uhcdn.com/images/u/detail_icon.png) no-repeat 5px 12px;
+}
+.aside .service li {
+    font: 14px/1.5 "Microsoft YaHei";
+    padding: 6px 0 5px 30px;
+}
+.aside .brand {
+    padding: 5px;
+    border: 1px solid #E4E4E4;
+}
+.aside .brand li {
+    padding: 5px 0;
+}
+
+.detail-tab {
+    padding-left: 15px;
+    border-bottom: 1px solid #E4E4E4;
+}
+.detail-tab li {
+    float: left;
+    padding: 5px 15px;
+    margin:0 5px -1px 0;
+    border: 1px solid #E4E4E4;
+    /* border-color: #E4E4E4 #E4E4E4 #FFF #E4E4E4; */
+}
+.detail-tab li.current {
+    border-bottom: 1px solid #FFF;
+}
+.detail-tab li a {
+    font-weight: 700;
+}
+.detail-txt {
+    padding: 10px;
+}
+
