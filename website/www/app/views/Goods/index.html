@@ -1,106 +1,77 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 商品列表' /}
+
 #{set 'moreStyles'}
-<link href="@@{'/public/stylesheets/goods-index.css'}" rel="stylesheet"
-      type="text/css"/>
-<link rel="stylesheet" type="text/css" media="screen"
-      href="@{'/public/stylesheets/play-pagination.css'}">
+  #{asset.css src:['/u/list.css'] /}
 #{/set}
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/goods-index.js'}"></script>
 #{/set}
 
-<div id="wrap_main">
-<div id="wrap_top">
-#{include "share/topNavigator.html"/}
-#{include "share/topTabs.html"/}
-
-    <div id="sereach_wrap">
-        <!--购物车结算-->
-        <div class="seach_right">
-            <span class="seach_right_sp"><img class="gouwu_icon"
-                                              src="@@{'/public/images/gouwu_icon.jpg'}"/></span>
-            <span class="gouwu_font">购物车：<span
-                    class="font_red">12件</span></span>
-            <span class="gouwu_jiesuan"><a href="#"
-                                           class="font_white">去结算</a></span>
+<div class="wrap clearfix">
+    <div id="aside">
+        <div class="filter">
+            <div class="market">
+                <div class="market-hd"><b></b>商圈</div>
+                <ul class="market-bd">
+                    <li><span class="branch"></span><a href="">中山公园<span class="amount">(3289)</span></a></li>
+                    <li><span class="branch"></span><a href="">人民广场<span class="amount">(7877)</span></a></li>
+                    <li><span class="branch"></span><a href="">五角场<span class="amount">(238)</span></a></li>
+                    <li><span class="branch"></span><a href="">新不夜城<span class="amount">(373)</span></a></li>
+                    <li><span class="branch"></span><a href="">城隍庙<span class="amount">(125)</span></a></li>
+                </ul>
+            </div>
+            <div class="area">
+                <div class="area-hd"><b></b>区域</div>
+                <ul class="area-bd">
+                    <li><span class="branch"></span><a href="">杨浦区<span class="amount">(289)</span></a></li>
+                    <li><span class="branch"></span><a href="">虹口区<span class="amount">(877)</span></a></li>
+                    <li><span class="branch"></span><a href="">闸北区<span class="amount">(638)</span></a></li>
+                    <li><span class="branch"></span><a href="">普陀区<span class="amount">(3973)</span></a></li>
+                    <li><span class="branch"></span><a href="">黄浦区<span class="amount">(8125)</span></a></li>
+                </ul>
+            </div>
         </div>
-        <!--下拉购物车-->
-        <div class="abs_gouwu_car">
-            <!--over auto-->
-            <div class="over_auto">
-                <div class="car_box">
-                    <div class="car_one"><img
-                            src="@@{'/public/images/chanpin/car_cp1.jpg'}"
-                            width="60" height="41"/></div>
-                    <div class="car_one_right">
-                        <div class="float_title">马可波罗 一千零一夜花茶20g</div>
-                        <div class="font_red">￥12.9<span
-                                class="font_gray">x1</span></div>
-                        <div class="font_gray delete_font"><a href="#">删除</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="car_box">
-                    <div class="car_one"><img
-                            src="@@{'/public/images/chanpin/car_cp1.jpg'}"/>
-                    </div>
-                    <div class="car_one_right">
-                        <div class="float_title">佳宝 无花果35G</div>
-                        <div class="font_red">￥3元<span
-                                class="font_gray">x3</span></div>
-                        <div class="font_gray delete_font"><a href="#">删除</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="car_box">
-                    <div class="car_one"><img
-                            src="@@{'/public/images/chanpin/car_cp1.jpg'}"/>
-                    </div>
-                    <div class="car_one_right">
-                        <div class="float_title">佳宝 无花果35G</div>
-                        <div class="font_red">￥3元<span
-                                class="font_gray">x3</span></div>
-                        <div class="font_gray delete_font"><a href="#">删除</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="car_box">
-                    <div class="car_one"><img
-                            src="@@{'/public/images/chanpin/car_cp1.jpg'}"/>
-                    </div>
-                    <div class="car_one_right">
-                        <div class="float_title">超值试用装 修护眼膜贴2对+便携装小</div>
-                        <div class="font_red">￥0.01<span
-                                class="font_gray">x1</span></div>
-                        <div class="font_gray delete_font"><a href="#">删除</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="car_box">
-                    <div class="car_one"><img
-                            src="@@{'/public/images/chanpin/car_cp1.jpg'}"/>
-                    </div>
-                    <div class="car_one_right">
-                        <div class="float_title">和田 一品玉枣（四星）500克/袋</div>
-                        <div class="font_red">￥35<span
-                                class="font_gray">x1</span></div>
-                        <div class="font_gray delete_font"><a href="#">删除</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gouwu_car_haha">共<span class="font_red">6</span>件商品
-            </div>
-            <div class="gouwu_car_haha">金额总计（预估）：<span
-                    class="font_red">59.61元</span></div>
-            <div class="gouwu_car_haha bottom_car"><a class="go_car_bg"
-                                                      href="#">去购物车结算</a></div>
+        <div class="popular">
+            <div class="popular-hd">受欢迎的产品</div>
+            <ul class="popular-bd">
+                <li><a href="">黄浦区人民广场非常8+10人民广场00优惠呀</a></li>
+                <li><a href="">普陀区非常8+1000优惠呀人民广场</a></li>
+                <li><a href="">虹口区非常8+1000优惠口区非常8+1000优惠呀</a></li>
+                <li><a href="">杨浦区非常8+100人民广场0优惠呀</a></li>
+                <li><a href="">闸北区非常8+1000优惠人民广场呀</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="section">
+        <div class="tab-pannel clearfix">
+            <a class="current" href="">全部</a>
+            <a href="">电子券</a>
+            <a href="">实体券</a>
+        </div>
+        <div class="sort-pannel">
+            排序：
+            <a href="">最佳匹配</a>
+            <a class="selected" href="">最新发布</a>
+            <a href="">销量最多</a>
+            <a href="">价格最低</a>
+        </div>
+        <div class="list-content clearfix">
+            <ul class="clearfix">
+            <?php for($i = 0; $i < 20; $i++) { ?>
+                <li>
+                    <a href=""><img src="images/quan.png" width="145" height="130" alt="" /></a>
+                    <div><a href="">肯德基</a></div>
+                    <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
+                </li>
+            <?php } ?>
+            </ul>
         </div>
     </div>
 </div>
 
+
+<!--                OLD   -->
 <!--主体内容部分-->
 <div id="wrap_content">
 <div style="clear:both"></div>
@@ -127,79 +98,7 @@
         </dl>
     </div>
     <div class="left_top_two">
-        <dl class="left_one_dl">
-            <dt class="xiuzheng_dt">
-            <div class="title_nav font_block">热门商品排行</div>
-            <div></div>
-            </dt>
-            <dd class="shop_dd">
-                <div class="img_cp"><a href="#"><img
-                        src="@@{'/public/images/chanpin/host_shangpin.jpg'}"/></a>
-                </div>
-                <div class="right_hot_cp">
-                    <div class="strong_gray2">来伊来伊价来价</div>
-                    <div class="pri_jiage">现价：14.8</div>
-                    <div class="text_decorat">原价：Y:20.00</div>
-                </div>
-            </dd>
 
-            <dd class="shop_dd">
-                <div class="img_cp"><a href="#"><img
-                        src="@@{'/public/images/chanpin/host_shangpin.jpg'}"/></a>
-                </div>
-                <div class="right_hot_cp">
-                    <div class="strong_gray2">来伊来伊价来价</div>
-                    <div class="pri_jiage">现价：14.8</div>
-                    <div class="text_decorat">原价：Y:20.00</div>
-                </div>
-            </dd>
-
-            <dd class="shop_dd">
-                <div class="img_cp"><a href="#"><img
-                        src="@@{'/public/images/chanpin/host_shangpin.jpg'}"/></a>
-                </div>
-                <div class="right_hot_cp">
-                    <div class="strong_gray2">来伊来伊价来价</div>
-                    <div class="pri_jiage">现价：14.8</div>
-                    <div class="text_decorat">原价：Y:20.00</div>
-                </div>
-            </dd>
-
-            <dd class="shop_dd">
-                <div class="img_cp"><a href="#"><img
-                        src="@@{'/public/images/chanpin/host_shangpin.jpg'}"/></a>
-                </div>
-                <div class="right_hot_cp">
-                    <div class="strong_gray2">来伊来伊价来价</div>
-                    <div class="pri_jiage">现价：14.8</div>
-                    <div class="text_decorat">原价：Y:20.00</div>
-                </div>
-            </dd>
-
-            <dd class="shop_dd">
-                <div class="img_cp"><a href="#"><img
-                        src="@@{'/public/images/chanpin/host_shangpin.jpg'}"/></a>
-                </div>
-                <div class="right_hot_cp">
-                    <div class="strong_gray2">来伊来伊价来价</div>
-                    <div class="pri_jiage">现价：14.8</div>
-                    <div class="text_decorat">原价：Y:20.00</div>
-                </div>
-            </dd>
-
-            <dd class="shop_dd">
-                <div class="img_cp"><a href="#"><img
-                        src="@@{'/public/images/chanpin/host_shangpin.jpg'}"/></a>
-                </div>
-                <div class="right_hot_cp">
-                    <div class="strong_gray2">来伊来伊价来价</div>
-                    <div class="pri_jiage">现价：14.8</div>
-                    <div class="text_decorat">原价：Y:20.00</div>
-                </div>
-            </dd>
-
-
-        </dl>
     </div>
 </div>
 <!--右侧主体内容部分-->
