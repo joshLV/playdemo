@@ -125,13 +125,11 @@ public class AssetTag extends FastTags {
     }    
     
     private static String getBaseUrl() {
-        String baseUrl = null;
         String cdnHost = Play.configuration.getProperty("cdn.host");
         if (cdnHost == null) {
             cdnHost = "a.uhcdn.com";
-            baseUrl = "http://" + cdnHost;
         }
-        return baseUrl;
+        return "http://" + cdnHost;
     }
 
     private static boolean getPackageFlagArg(Map<?, ?> args) {
