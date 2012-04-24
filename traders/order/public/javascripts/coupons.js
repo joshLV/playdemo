@@ -40,13 +40,17 @@ $(window).load(function(){
     $("#sure").click(function() {
         var eCouponSn = $("#eCouponSn").val();
         var shopId = $("#shopId").val();
+        var shopName = $("#shopName").val();
+        if (shopName == undefined) {
+        	shopName = $("#shopId option:selected").text();
+        }
         if(eCouponSn ==""){
             $("#checksn").html("<font color=red>请输入券号!</font>");
             return false;
         }
          $.ajax({
              url: "/coupons/update",
-             data:"shopId="+shopId+"&eCouponSn="+eCouponSn,
+             data:"shopId="+shopId+"&eCouponSn="+eCouponSn+"&shopName="+shopName,
              type: 'POST',
              error: function() { alert('消费失败!'); },
              success: function(data) {

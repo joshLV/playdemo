@@ -15,11 +15,8 @@
 	    #{/select}
   #{/if}
   #{else}
-      #{select 'shopId1', id:'shopId',class:'span2', value:supplierUser?.shop?.id ,disabled:true}
-            #{list items:shopList, as:'shop'}
-                #{option shop?.id}${shop?.name}#{/option}
-            #{/list}
-        #{/select}
+  <input type="text" name="shopName" id="shopName" disabled="true" value="${supplierSetting?.supplierUserShopValue}" class="input-large" />
+  <input type="hidden" name="shopId" id="shopId" value="${supplierSetting?.supplierUserShopId}" class="input-large" />
   #{/else}
   
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
