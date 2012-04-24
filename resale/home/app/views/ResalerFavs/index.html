@@ -149,7 +149,7 @@ ul .pagination {
                         <div class="col_one">
                             <input type="checkbox" id="check_goods_${favItem.goods.id}" />
                         </div>
-                        <div class="col_one_text">${favItem.goods.name}</div>
+                        <div class="col_one_text"><a href="/goods/${favItem.goods.id}" target="_blank">${favItem.goods.name}</a></div>
                     </td>
                     <td width="120" height="25" align="center" valign="middle">${favItem.goods?.materialType ==
                         models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
