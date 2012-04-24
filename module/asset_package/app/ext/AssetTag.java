@@ -13,7 +13,7 @@ import play.templates.GroovyTemplate.ExecutableTemplate;
 public class AssetTag extends FastTags {
     
     // 以jvm启动时间作为PROD模式下的VERSION值.
-    private static String PROD_VERSION = String.valueOf(System.currentTimeMillis());
+    public static String PROD_VERSION = String.valueOf(System.currentTimeMillis());
     
     /**
      * 用法：

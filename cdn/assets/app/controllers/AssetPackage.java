@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import play.Play;
 import play.mvc.Controller;
+import ext.AssetTag;
 
 public class AssetPackage extends Controller {
 
@@ -17,7 +18,7 @@ public class AssetPackage extends Controller {
 
     private static final String CSS_ROOT = "/public/stylesheets";
     
-    private static String GENERATE_DIR = Play.configuration.getProperty("asset.generate.dir");
+    private static String GENERATE_DIR = Play.configuration.getProperty("asset.generate.dir") + "/assets_" + AssetTag.PROD_VERSION;
     
     public static void js(String path) {
         String file_ext = "js";
@@ -38,40 +39,46 @@ public class AssetPackage extends Controller {
         mergeRequestPathFile(path, CSS_ROOT, file_ext, contentType);
     }    
     
-    private static void mergeRequestPathFile(String path, String fileRoot, String file_ext,
+    private static void mergeRequestPathFile(String path, String fileRoot, String file_type,
             String contentType) {
         String requestPath = "/" + path;
+        String file_ext = "." + file_type;
+        String[] assetPath = requestPath.split(file_ext);
         
         String pathName = path.replace('/', '_');
         String targetName = path.substring(path.lastIndexOf('/') + 1);
         System.out.println("targetName=" + targetName);
-        File targetFile= new File(GENERATE_DIR + "/" + file_ext + "/" + pathName, targetName);
-        if (!targetFile.getParentFile().exists()) {
-            targetFile.getParentFile().mkdirs();
-        }
+        File targetFile= null;
         
-        if (!targetFile.exists()) {
-            try {
-                BufferedWriter targetWrite = new BufferedWriter(new FileWriter(targetFile));
-                String[] jsPath = requestPath.split(file_ext);
-                
-                for (String js : jsPath) {
-                    File jsFile = new File(Play.applicationPath, fileRoot + js + file_ext);
-                    System.out.println("js=" + jsFile.getPath());
-                    if (jsFile.exists()) {
-                        BufferedReader breader = new BufferedReader(new FileReader(jsFile));
-                        int c;
-                        while ((c = breader.read()) != -1) {
-                            targetWrite.write(c);
-                        }
-                        targetWrite.write('\n');
-                    }
-                }
-                targetWrite.flush();
-                targetWrite.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (assetPath.length > 1) {    
+            targetFile= new File(GENERATE_DIR + "/" + file_type + "/" + pathName, targetName);
+            if (!targetFile.getParentFile().exists()) {
+                targetFile.getParentFile().mkdirs();
             }
+            if(!targetFile.exists()) { 
+                try {
+                    BufferedWriter targetWrite = new BufferedWriter(new FileWriter(targetFile));
+                    
+                    for (String assetName : assetPath) {
+                        File sourceFile = new File(Play.applicationPath, fileRoot + assetName + file_ext);
+                        System.out.println("js=" + sourceFile.getPath());
+                        if (sourceFile.exists()) {
+                            BufferedReader breader = new BufferedReader(new FileReader(sourceFile));
+                            int c;
+                            while ((c = breader.read()) != -1) {
+                                targetWrite.write(c);
+                            }
+                            targetWrite.write('\n');
+                        }
+                    }
+                    targetWrite.flush();
+                    targetWrite.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            targetFile = new File(Play.applicationPath, fileRoot + assetPath[0] + file_ext);
         }
         
         try {

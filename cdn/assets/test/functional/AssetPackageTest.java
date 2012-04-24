@@ -8,6 +8,14 @@ import models.*;
 public class AssetPackageTest extends FunctionalTest {
 
     @Test
+    public void testMergeOneJsFiles() {
+        Response response = GET("/js/test/a.js");
+        assertIsOk(response);
+        assertContentType("application/javascript", response);
+        assertContentMatch("a.js", response);
+    }
+        
+    @Test
     public void testMerge2JsFiles() {
         Response response = GET("/js/test/a.js/test/b.js");
         assertIsOk(response);
@@ -26,7 +34,15 @@ public class AssetPackageTest extends FunctionalTest {
         assertContentMatch("b.js", response);
         assertContentMatch("c.js", response);
     }    
- 
+  @Test
+    public void testMergeOneCssFiles() {
+        Response response = GET("/css/test/a.css");
+        assertIsOk(response);
+        assertContentType("text/css", response);
+        assertContentMatch("aaaaaa", response);
+    }
+    
+  
     @Test
     public void testMerge2CssFiles() {
         Response response = GET("/css/test/a.css/test/b.css");
