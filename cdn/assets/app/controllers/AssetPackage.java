@@ -60,11 +60,11 @@ public class AssetPackage extends Controller {
                     System.out.println("js=" + jsFile.getPath());
                     if (jsFile.exists()) {
                         BufferedReader breader = new BufferedReader(new FileReader(jsFile));
-                        String line = null;
-                        while ((line = breader.readLine()) != null) {
-                            targetWrite.write(line);
+                        int c;
+                        while ((c = breader.read()) != -1) {
+                            targetWrite.write(c);
                         }
-                        targetWrite.newLine();
+                        targetWrite.write('\n');
                     }
                 }
                 targetWrite.flush();
