@@ -1,8 +1,8 @@
 package controllers;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+
 import models.accounts.AccountType;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
@@ -10,6 +10,7 @@ import models.order.OrderItems;
 import models.resale.Resaler;
 import models.resale.ResalerCart;
 import models.resale.ResalerFav;
+import models.sales.Goods;
 import models.sales.MaterialType;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -42,26 +43,32 @@ public class ResalerCarts extends Controller {
         render(carts, resaler);
     }
     
-    public static void confirmCarts() throws NotEnoughInventoryException{
+    public static void confirmCarts(String favItems) throws NotEnoughInventoryException{
         Resaler resaler = SecureCAS.getResaler();
-        List<ResalerCart> carts = ResalerCart.findAll(resaler);
-        if(carts.size() == 0){
+
+        //解析提交的商品及数量
+        List<Object[]> favs =  parseItems(favItems);
+
+        if(favs.size() == 0){
             error("购物车中无商品");
             return;
         }
-        
+
         Order order = new Order(resaler.getId(), AccountType.RESALER);
-        for(ResalerCart cart : carts){
-            BigDecimal resalerPrice = cart.goods.getResalePrice(resaler.level);
-            order.addOrderItem(cart.goods, cart.number, cart.phone,
+        for(Object[] fav : favs){
+            Goods goods = (Goods)fav[0];
+            int number = (Integer)fav[1];
+            String phone = (String)fav[2];
+            BigDecimal resalerPrice = goods.getResalePrice(resaler.level);
+            order.addOrderItem(goods, number, phone,
                     resalerPrice, // 分销商成本价即成交价
                     resalerPrice  // 分销商成本价
             );
+            ResalerCart.delete(resaler, goods, phone);
+
         }
+
         order.createAndUpdateInventory();
-        
-        ResalerCart.clear(resaler);
-        
         redirect("/payment_info/" + order.getId());
     }
 
@@ -91,7 +98,7 @@ public class ResalerCarts extends Controller {
      * 加入或修改购物车列表
      *
      * @param goodsId  商品ID
-     * @param phones   手机号
+     * @param phone    手机号
      * @param increment 购物车中商品数增量，
      * 若购物车中无此商品，则新建条目
      * 若购物车中有此商品，且商品数量加增量小于等于0，视为无效
@@ -157,5 +164,21 @@ public class ResalerCarts extends Controller {
         }else{
             ok();
         }
+    }
+    private static List<Object[]> parseItems(String items){
+        String[] itemSplits = items.split(",");
+        List<Object[]> parsedItems = new ArrayList<>();
+        for(String split : itemSplits){
+            String[] goodsItem = split.split("-");
+            if(goodsItem.length == 3){
+                Integer number = Integer.parseInt(goodsItem[1]);
+                if(number > 0){
+                    Long goodsId = Long.parseLong(goodsItem[0]);
+                    Goods goods = Goods.findById(goodsId);
+                    parsedItems.add(new Object[]{goods, number, goodsItem[2]});
+                }
+            }
+        }
+        return parsedItems;
     }
 }

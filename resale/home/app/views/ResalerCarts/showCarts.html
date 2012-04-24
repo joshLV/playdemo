@@ -1,8 +1,8 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 确认订单' /}
 #{set 'moreStyles'}
-<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
-<META HTTP-EQUIV="Expires" CONTENT="-1">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="-1">
 <link href="@@{'/public/stylesheets/carts_index.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
 #{set 'moreScripts'}
@@ -38,6 +38,7 @@
             <th width="187">小计</th>
         </tr>
 
+        %{fav_items_text = ""}%
         #{list items:carts, as:'goodsGroup'}
         %{cartItem = goodsGroup.get(0)}%
 
@@ -61,10 +62,11 @@
                     <span class="strong_gray" id="subtotal_${cartItem.goods.id}-${cartItem.phone}"> ${cartItem.goods.getResalePrice(resaler.level).multiply(cartItem.number)}</span>
                 </td>
             </tr>
-
+            %{fav_items_text += cartItem.goods.id + "-" + cartItem.number + "-" + cartItem.phone + ","}%
             #{if goodsGroup.size() > 1}
-            %{goodsGroup = goodsGroup.subList(1, goodsGroup.size())}%
-            #{list items:goodsGroup, as:'cartItem'}
+                %{goodsGroup = goodsGroup.subList(1, goodsGroup.size())}%
+                #{list items:goodsGroup, as:'cartItem'}
+                    %{fav_items_text += cartItem.goods.id + "-" + cartItem.number + "-" + cartItem.phone + ","}%
         <tr group="row_${cartItem.goods.id}">
                 <td width="103" height="25" align="center" valign="middle">
                     <span id="phone_${cartItem.goods.id}">${cartItem.phone}</span>
@@ -98,7 +100,7 @@
     <div class="bottom_info_three">商品共<span class="font_red_one" id="total_num">0</span>件，总合计（不含运费）：<span
             class="font_red_one" id="carts_amount"></span>元</div>
     <div class="both_clear"></div>
-    <form method="POST" action="/carts/confirm" id="confirm_post"></form>
+    <form method="POST" action="/carts/confirm" id="confirm_post"><input type="hidden" value="${fav_items_text}" name="favItems"/></form>
     #{if carts.size() > 0}
         <div class="bottom_info_four"><a class="queren_bg" href="/carts/confirm" onclick="$('#confirm_post').submit();return false;">确认结账</a></div>
     #{/if}
