@@ -59,3 +59,17 @@ order.ECoupon(coupon3):
   "status": "UNCONSUMED"
   "goods": "Goods_001"
   "orderItems": "orderItems1"
+  
+order.ECoupon(coupon4):
+  "order": "order1"
+  "eCouponSn": "1234567004"
+  "originalPrice": "1.0"
+  "faceValue": "10.0"
+  "resalerPrice": "1.0"
+  "salePrice": "1.0"
+  "createdAt": "2012-03-05T00:00:00"
+  "consumedAt": "2012-03-05T00:00:00"
+  "status": "CONSUMED"
+  "goods": "Goods_001"
+  "orderItems": "orderItems1"
+  "shop": "Shop_4"

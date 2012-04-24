@@ -15,6 +15,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -29,6 +30,7 @@ import models.accounts.util.AccountUtil;
 import models.accounts.util.RefundUtil;
 import models.accounts.util.TradeUtil;
 import models.sales.Goods;
+import models.sales.Shop;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -94,6 +96,15 @@ public class ECoupon extends Model {
 	@Enumerated(EnumType.STRING)
 	public ECouponStatus status;
 
+	@OneToOne
+	@JoinColumn(name="shop_id",nullable=true)
+	public Shop shop;
+	public Shop getShop(){
+		if (shop ==  null) {
+			shop = new Shop();
+		}
+		return shop;
+	}
 
 	public ECoupon(Order order, Goods goods, OrderItems orderItems) {
 		this.order = order;
@@ -190,7 +201,7 @@ public class ECoupon extends Model {
 	 * 
 	 * @return
 	 */
-	public void consumed(){
+	public void consumed(Long shopId){
 		Account supplierAccount = AccountUtil.getAccount(orderItems.goods.supplierId, AccountType.SUPPLIER);
 
 		//给商户打钱
@@ -225,6 +236,7 @@ public class ECoupon extends Model {
 			TradeUtil.success(platformCommissionTrade);
 		}
 
+		getShop().id=shopId;
 		this.status = ECouponStatus.CONSUMED;
 		this.consumedAt = new Date();
 		this.save();
@@ -290,7 +302,7 @@ public class ECoupon extends Model {
 			returnFlg="{\"error\":\"no such eCoupon\"}";
 			return returnFlg;
 		}
-	
+
 		if(!eCoupon.status.equals(ECouponStatus.UNCONSUMED) && eCoupon.status.equals(ECouponStatus.EXPIRED)){
 			returnFlg = "{\"error\":\"can not apply refund with this goods\"}";
 			return returnFlg;
@@ -343,4 +355,17 @@ public class ECoupon extends Model {
 		return sn.toString();
 	}
 
+	/**
+	 * 得到隐藏处理过的券号
+	 * @return 券号
+	 */
+	public String getConsumedShop(){
+		String shopName = "";
+		Shop sp = null;
+		if (shop.id != null) {
+			sp = Shop.findById(shop.id);
+			shopName = sp.name;
+		}
+		return shopName;
+	}
 }

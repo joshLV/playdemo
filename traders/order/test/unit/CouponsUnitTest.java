@@ -59,19 +59,6 @@ public class CouponsUnitTest extends UnitTest {
 		assertEquals("哈根达斯200元抵用券", map.get("name"));
 	}
 
-	@Test
-	public void testUpdate() {
-		String eCouponSn = "1234567002";
-		Long supplierId = 1l;
-		ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
-		assertNotNull(eCoupon);
-		eCoupon.consumed();
-		List<ECoupon> couponList= ECoupon.find("byECouponSn", eCouponSn).fetch();
-		assertEquals(couponList.get(0).status ,ECouponStatus.CONSUMED);
-	}
-
-
-
 	/**
 	 * 测试券列表
 	 */

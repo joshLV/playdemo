@@ -4,20 +4,38 @@
 #{set 'moreScripts'}
  <script src="@{'/public/javascripts/coupons.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
-<div>
  <legend>商户验证消费券</legend>
-
-  <div class="control-group">
-  <table>
-  <tr><td>券号</td>
-  <td><input type="text" name="eCouponSn" id="eCouponSn" class="input-large" />
-    <button class="btn btn-primary" id="query" >查询</button>
-    <button class="btn btn-primary" id="sure" disabled>确定</button></td></tr>
-  </table>
-   <div class="controls"><span class="error" id="checksn"></span></div>
-   <div class="controls" id="statusw"> </div>
-   <div class="controls" id="showinfo"> 
+<div class="control-group">
+  <div class="controls">门店:
+  #{if supplierUser?.shop?.id == null}
+	   #{select 'shopId', id:'shopId', class:'span2', value:supplierUser?.shop?.id}
+	        #{list items:shopList, as:'shop'}
+	            #{option shop?.id}${shop?.name}#{/option}
+	        #{/list}
+	    #{/select}
+  #{/if}
+  #{else}
+      #{select 'shopId1', id:'shopId',class:'span2', value:supplierUser?.shop?.id ,disabled:true}
+            #{list items:shopList, as:'shop'}
+                #{option shop?.id}${shop?.name}#{/option}
+            #{/list}
+        #{/select}
+  #{/else}
+  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span class="error">#{error 'supplierUser.shop' /}</span>
    </div>
-  </div>
+ </div>
+  <div class="control-group">
+	  <div class="controls">券号:
+	  <input type="text" name="eCouponSn" id="eCouponSn" class="input-large" />
+	     <span class="control-group" id="checksn"></span>
+	   </div>
+   </div>
+     <div class="control-group" id="statusw"></div>
+     <div class="control-group" id="showinfo"></div>
+   <div class="form-actions">
+  <button class="btn btn-primary" id="query" >查询</button>
+    <button class="btn btn-primary" id="sure" disabled>确定</button>
  </div>
  

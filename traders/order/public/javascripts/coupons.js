@@ -39,13 +39,14 @@ $(window).load(function(){
     
     $("#sure").click(function() {
         var eCouponSn = $("#eCouponSn").val();
+        var shopId = $("#shopId").val();
         if(eCouponSn ==""){
             $("#checksn").html("<font color=red>请输入券号!</font>");
             return false;
         }
          $.ajax({
              url: "/coupons/update",
-             data:"eCouponSn="+eCouponSn,
+             data:"shopId="+shopId+"&eCouponSn="+eCouponSn,
              type: 'POST',
              error: function() { alert('消费失败!'); },
              success: function(data) {

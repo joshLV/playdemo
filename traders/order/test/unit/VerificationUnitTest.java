@@ -16,6 +16,7 @@ import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
+import models.sales.Shop;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
 import org.junit.After;
@@ -89,9 +90,12 @@ public class VerificationUnitTest extends UnitTest {
 		Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
 		ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
 		assertNotNull(eCoupon);
-		eCoupon.consumed();
+		
+		Long shopId = (Long) Fixtures.idCache.get("models.sales.Shop-Shop_4");
+		eCoupon.consumed(shopId);
 		List<ECoupon> couponList= ECoupon.find("byECouponSn", eCouponSn).fetch();
-		assertEquals(couponList.get(0).status ,ECouponStatus.CONSUMED);
+		assertEquals(ECouponStatus.CONSUMED,couponList.get(0).status);
+		assertEquals(shopId,couponList.get(0).shop.id );
 	}
 
 
@@ -105,8 +109,19 @@ public class VerificationUnitTest extends UnitTest {
 		int pageNumber = 1;
 		int pageSize = 15;
 		List<ECoupon> list = ECoupon.queryCoupons(supplierId, pageNumber, pageSize);
-		assertEquals(3, list.size());
+		assertEquals(4, list.size());
 
 	}
+	
+	@Test
+	public void testGetConsumedShop() {
+		String eCouponSn = "1234567004";
+		Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
+		ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
+		System.out.println(eCoupon.shop);
+		String name = eCoupon.getConsumedShop();
+		assertEquals("优惠拉", name);
 
+	}
+	
 }
