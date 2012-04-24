@@ -14,21 +14,35 @@
             <div class="market">
                 <div class="market-hd"><b></b>商圈</div>
                 <ul class="market-bd">
-                    <li><span class="branch"></span><a href="">中山公园<span class="amount">(3289)</span></a></li>
-                    <li><span class="branch"></span><a href="">人民广场<span class="amount">(7877)</span></a></li>
-                    <li><span class="branch"></span><a href="">五角场<span class="amount">(238)</span></a></li>
-                    <li><span class="branch"></span><a href="">新不夜城<span class="amount">(373)</span></a></li>
-                    <li><span class="branch"></span><a href="">城隍庙<span class="amount">(125)</span></a></li>
+                #{list areas, as:'area'}
+                    #{if area != null}
+                        #{if areaId.equals(area.id)}
+                    <li><span class="branch"></span>${area.name}(xx)</li>
+                        #{/if}
+                        #{else}
+                    <li><span class="branch"></span><a
+                                href="/goods/list/${categoryId}-${cityId}-${districtId}-${area.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                                class="font_blue">${area.name}(xx)</a></li>
+                        #{/else}
+                    #{/if}
+                #{/list}
                 </ul>
             </div>
             <div class="area">
                 <div class="area-hd"><b></b>区域</div>
                 <ul class="area-bd">
-                    <li><span class="branch"></span><a href="">杨浦区<span class="amount">(289)</span></a></li>
-                    <li><span class="branch"></span><a href="">虹口区<span class="amount">(877)</span></a></li>
-                    <li><span class="branch"></span><a href="">闸北区<span class="amount">(638)</span></a></li>
-                    <li><span class="branch"></span><a href="">普陀区<span class="amount">(3973)</span></a></li>
-                    <li><span class="branch"></span><a href="">黄浦区<span class="amount">(8125)</span></a></li>
+                #{list districts, as:'district'}
+                    #{if district != null}
+                        #{if district.id.equals(districtId)}
+                  <li><span class="branch"></span>${district.name}<span class="amount">(xxx)</li>
+                        #{/if}
+                        #{else}
+                  <li><span class="branch"></span><a
+                                href="/goods/list/${categoryId}-${cityId}-${district.id}-${areaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                                class="font_blue">${district.name}<span class="amount">(xxx)</span></a></li>
+                        #{/else}
+                    #{/if}
+                #{/list}
                 </ul>
             </div>
         </div>
@@ -58,50 +72,21 @@
         </div>
         <div class="list-content clearfix">
             <ul class="clearfix">
-            <?php for($i = 0; $i < 20; $i++) { ?>
+            #{paginate.list items:goodsPage, as:'aGoods'}
                 <li>
-                    <a href=""><img src="images/quan.png" width="145" height="130" alt="" /></a>
-                    <div><a href="">肯德基</a></div>
-                    <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
+                    <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="145" height="130" alt="" /></a>
+                    <div><a href="">${aGoods.name}</a></div>
+                    <div><del>&yen;${aGoods.faceValue?.formatCurrency('CNY')}</del><strong>&yen;${aGoods.salePrice?.formatCurrency('CNY')}</strong></div>
                 </li>
-            <?php } ?>
+            #{/paginate.list}
             </ul>
         </div>
     </div>
 </div>
 
 
-<!--                OLD   -->
-<!--主体内容部分-->
-<div id="wrap_content">
-<div style="clear:both"></div>
-<div id="main_content">
-#{breadcrumbs/breadcrumb breadcrumbs/}
-<!--左侧导航部分-->
-<div id="left_nav">
-    <div class="left_top_one">
-        <dl class="left_one_dl">
-            <dt>
-            <div class="title_nav font_block">承诺/保障</div>
-            <div></div>
-            </dt>
-            <dd><img src="@@{'/public/images/adv/xiaofei.jpg'}"
-                     border="0"
-                     usemap="#Map"/>
-                <map name="Map" id="Map">
-                    <area shape="rect" coords="9,8,202,64" href="#"/>
-                    <area shape="rect" coords="10,72,204,124" href="#"/>
-                    <area shape="rect" coords="11,130,206,183"
-                          href="#"/>
-                </map>
-            </dd>
-        </dl>
-    </div>
-    <div class="left_top_two">
 
-    </div>
-</div>
-<!--右侧主体内容部分-->
+<!-- 
 <div id="right_content">
 <div class="right_content_one">
     <div class="query_items"><span
@@ -320,3 +305,5 @@
 </div>
 </div>
 </div>
+
+-->
