@@ -6,6 +6,7 @@ import java.util.List;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.sales.Shop;
+import models.supplier.SupplierSetting;
 import navigation.annotations.ActiveNavigation;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -70,22 +71,16 @@ public class SupplierUsers extends Controller {
 	@ActiveNavigation("user_add")
 	public static void create(@Valid SupplierUser supplierUser) {
 		checkValid(null,supplierUser);
-
-		Images.Captcha captcha = Images.captcha();
-		String password_salt = captcha.getText(6);
-		// 密码加密
-		supplierUser.encryptedPassword = DigestUtils
-				.md5Hex(supplierUser.encryptedPassword + password_salt);
-		// 随机吗
-		supplierUser.passwordSalt = password_salt;
-		supplierUser.lastLoginAt = new Date();
-		supplierUser.createdAt = new Date();
-		supplierUser.lockVersion = 0;
-		supplierUser.supplier = SupplierRbac.currentUser().supplier;
-		supplierUser.deleted = DeletedStatus.UN_DELETED;
-		// 获得IP
-		supplierUser.lastLoginIP = request.remoteAddress;
-		supplierUser.save();
+		supplierUser.create(SupplierRbac.currentUser().supplier.id);
+		//设置setting
+		Long shopId = null;
+		String shopName= "";
+		if (supplierUser.shop !=  null) {
+			shopId = supplierUser.shop.id;
+			shopName = supplierUser.shop.name;
+		}
+		SupplierSetting supplierSetting = new SupplierSetting();
+		supplierSetting.save(supplierUser.id,shopId,shopName);
 		index();
 	}
 
