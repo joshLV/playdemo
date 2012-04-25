@@ -381,6 +381,8 @@ public class OperateGoods extends Controller {
                 checkLevelPrice(goods.getLevelPriceArray());
             }
             renderShopList(goods.supplierId);
+            renderArgs.put("imageLargePath", goods.getImageLargePath());
+
             if (Validation.hasErrors() && id.length > 0) {
                 renderSupplierList(goods);
                 renderInit(goods);
