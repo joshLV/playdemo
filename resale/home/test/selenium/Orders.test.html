@@ -2,6 +2,16 @@
 models.sales.Shop.class, models.sales.Goods.class,models.order.OrderItems.class,models.resale.Resaler.class] ,
 load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_unit.yml',
 'fixture/shops_unit.yml','fixture/goods_unit.yml','fixture/level_price.yml','fixture/resaler.yml','fixture/orders.yml','fixture/orderItems.yml'] /}
+%{
+        orderId = play.test.Fixtures.idCache.get("models.order.Order-order1")
+        order = models.order.Order.findById(orderId)
+        resalerId = play.test.Fixtures.idCache.get("models.resale.Resaler-Resaler_1")
+        resaler = models.resale.Resaler.findById(resalerId)
+        order.userId = resaler.getId()
+        order.userType = models.accounts.AccountType.RESALER
+        order.save()
+
+}%
 #{selenium "查看订单界面"}
     #{include 'test/selenium/step/login.selenium' /}
     open('/orders')
