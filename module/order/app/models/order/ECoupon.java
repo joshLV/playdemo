@@ -181,7 +181,7 @@ public class ECoupon extends Model {
 	 * @param supplierId 商户ID
 	 * @return queryMap 查询信息
 	 */
-	public static Map<String, Object> queryInfo(String eCouponSn, Long supplierId) {
+	public static Map<String, Object> queryInfo(String eCouponSn, Long supplierId,Long shopId) {
 		ECoupon eCoupon = query(eCouponSn, supplierId);
 		Map<String, Object> queryMap = new HashMap();
 		if (eCoupon != null) {
@@ -192,6 +192,20 @@ public class ECoupon extends Model {
 			queryMap.put("refundAt", eCoupon.refundAt != null ? df.format(eCoupon.refundAt) : null);
 			queryMap.put("status", eCoupon.status);
 			queryMap.put("error", 0);
+			
+	
+			//判断该券是否属于所在消费门店
+			if (!eCoupon.goods.isAllShop) {
+				int cnt =0;
+				for (Shop shop :eCoupon.goods.shops) {
+					if (shop.id == shopId){
+						cnt ++;
+					}
+				}
+				if (cnt == 0) {
+					queryMap.put("error", 1);
+				}
+			}
 		}
 
 		return queryMap;
@@ -261,7 +275,7 @@ public class ECoupon extends Model {
 		}
 
 		JPAExtPaginator<ECoupon> ordersPage = new JPAExtPaginator<>("ECoupon e", "e", ECoupon.class, sql.toString(),
-				paramsMap).orderBy(" e.consumedAt desc");
+				paramsMap).orderBy(" e.createdAt desc,e.consumedAt desc");
 
 		ordersPage.setPageNumber(pageNumber);
 		ordersPage.setPageSize(pageSize);

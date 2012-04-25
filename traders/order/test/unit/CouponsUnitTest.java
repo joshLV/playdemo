@@ -44,20 +44,6 @@ public class CouponsUnitTest extends UnitTest {
 				"fixture/orderItems.yml");
 	}
 
-	/**
-	 * 测试订单列表
-	 */
-	@Test
-	public void queryInfo() {
-		String eCouponSn = "003";
-		Long supplierId = 1l;
-		Map<String, Object> map = ECoupon.queryInfo(eCouponSn, supplierId);
-		assertEquals(0, map.size());
-
-		eCouponSn = "1234567002";
-		map = ECoupon.queryInfo(eCouponSn, supplierId);
-		assertEquals("哈根达斯200元抵用券", map.get("name"));
-	}
 
 	/**
 	 * 测试券列表

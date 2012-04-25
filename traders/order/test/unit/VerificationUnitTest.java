@@ -76,11 +76,12 @@ public class VerificationUnitTest extends UnitTest {
 	public void queryInfo() {
 		String eCouponSn = "003";
 		Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
-		Map<String, Object> map = ECoupon.queryInfo(eCouponSn, supplierId);
+		Long shopId = (Long) Fixtures.idCache.get("models.sales.Shop-Shop_4");
+		Map<String, Object> map = ECoupon.queryInfo(eCouponSn, supplierId,shopId);
 		assertEquals(0, map.size());
 
 		eCouponSn = "1234567002";
-		map = ECoupon.queryInfo(eCouponSn, supplierId);
+		map = ECoupon.queryInfo(eCouponSn, supplierId,shopId);
 		assertEquals("哈根达斯200元抵用券", map.get("name"));
 	}
 

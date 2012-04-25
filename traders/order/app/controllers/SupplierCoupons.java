@@ -39,7 +39,7 @@ public class SupplierCoupons extends Controller {
 	 *
 	 * @param eCouponSn 券号
 	 */
-	public static void queryCoupons(String eCouponSn) {
+	public static void queryCoupons(Long shopId,String eCouponSn) {
 
 		if (Validation.hasErrors()) {
 			params.flash();
@@ -48,8 +48,9 @@ public class SupplierCoupons extends Controller {
 		}
 
 		Long supplierId = SupplierRbac.currentUser().supplier.id;
+	
 		//根据页面录入券号查询对应信息
-		Map<String, Object> queryMap = ECoupon.queryInfo(eCouponSn, supplierId);
+		Map<String, Object> queryMap = ECoupon.queryInfo(eCouponSn, supplierId,shopId);
 		renderJSON(queryMap);
 	}
 
