@@ -13,6 +13,7 @@ goods.REAL=实物
 goods.ELECTRONIC=电子券
 
 validation.required=请输入%s!
+validation.match=无效的%s!
 validation.future=%s必须填写未来的时间!
 validation.max=%s不能超过%d!
 validation.maxSize=%s的长度不能超过%d!
@@ -24,11 +25,12 @@ validation.invalidType=%s的类型必须是%s!
 validation.write=%s没有权限保存!
 validation.save=%s保存失败!
 validation.different=确认密码与登录密码不一致!
-validation.lessone=手机和电话至少输入一项!
+validation.lessOne=手机和电话至少输入一项!
 validation.moreThanFaceValue=%s不能超过原价!
 validation.lessThanOriginalPrice=%s不能低于采购价!
 validation.moreThanLastLevel=%s不能超过前一级别的VIP加价!
 validation.beforeThanEffectiveAt=%s不能早于有效期开始时间!
+validation.phone=无效的电话!
 
 goods.materialType=券类型
 goods.materialType_1=电子券

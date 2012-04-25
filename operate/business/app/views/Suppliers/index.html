@@ -29,8 +29,7 @@
 
         #{paginate.list items:suppliers, as:'supplier'}
         <tr>
-            <td><a href="${supplier?.originalLogo}" target="_blank"><img src="${supplier?.smallLogo}"/></a>
-            ${supplier?.fullName}</td>
+            <td>${supplier?.fullName}</td>
             <td>${supplier?.domainName}.uhuila.net</td>
             <td>${supplier?.userName}</td>
             <td>${supplier?.mobile}</td>
@@ -44,10 +43,8 @@
                 / #{vx.deleteLink id:supplier?.id, name:supplier?.fullName, action:"/suppliers"/}
                 #{if models.supplier.SupplierStatus.NORMAL.equals(supplier.status)}
                     / #{vx.operateLink text:"冻结", url:"/suppliers/"+supplier.id+"/freeze", method:"PUT"/}#{/if}
-                    *{/ <a href="@{Suppliers.freeze(supplier.id)}">冻结</a>#{/if}}*
                 #{if models.supplier.SupplierStatus.FREEZE.equals(supplier.status)}
                     / #{vx.operateLink text:"解冻", url:"/suppliers/"+supplier.id+"/unfreeze", method:"PUT"/}#{/if}
-                    *{/ <a href="@{Suppliers.unfreeze(supplier.id)}">解冻</a>#{/if}}*
             </td>
         </tr>
         #{/paginate.list}

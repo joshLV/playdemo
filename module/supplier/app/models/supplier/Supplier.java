@@ -6,7 +6,9 @@ import com.uhuila.common.util.PathUtil;
 import models.sales.Brand;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
+import play.data.validation.Match;
 import play.data.validation.MaxSize;
+import play.data.validation.Phone;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.view_ext.annotation.Mobile;
@@ -38,6 +40,7 @@ public class Supplier extends Model {
      */
     @Required
     @MaxSize(100)
+    @Match("^[a-zA-Z0-9\\-]{3,20}$")
     @Column(name = "domain_name")
     public String domainName;
     /**
@@ -64,7 +67,7 @@ public class Supplier extends Model {
     /**
      * 负责人联系电话
      */
-    @MaxSize(50)
+    @Phone
     public String phone;
 
     /**
@@ -150,6 +153,10 @@ public class Supplier extends Model {
         sp.domainName = supplier.domainName;
         sp.fullName = supplier.fullName;
         sp.remark = supplier.remark;
+        sp.mobile = supplier.mobile;
+        sp.phone = supplier.phone;
+        sp.position = supplier.position;
+        sp.userName = supplier.userName;
         sp.updatedAt = new Date();
         sp.save();
     }

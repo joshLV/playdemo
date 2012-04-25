@@ -50,7 +50,6 @@ public class SupplierUser extends Model {
 	public String mobile;
 
 	@Column(name = "encrypted_password")
-	@Required
 	public String encryptedPassword;
 
 	@Column(name = "password_salt")
@@ -79,7 +78,6 @@ public class SupplierUser extends Model {
 	public Supplier supplier;
 
 	@Transient
-	@Required
 	public String confirmPassword;
 	@Transient
 	public String oldPassword;

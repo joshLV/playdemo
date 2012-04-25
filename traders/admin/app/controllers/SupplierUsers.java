@@ -130,6 +130,8 @@ public class SupplierUsers extends Controller {
 	 * @param supplierUser 操作员信息
 	 */
 	private static void checkValid(Long id,SupplierUser supplierUser) {
+        Validation.required("supplierUser.encryptedPassword",supplierUser.encryptedPassword);
+        Validation.required("supplierUser.confirmPassword",supplierUser.confirmPassword);
 		if (Validation.hasErrors()) {
 			List rolesList = SupplierRole.findAll();
 			String roleIds = "";
