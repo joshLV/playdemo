@@ -49,6 +49,11 @@
         <li><a href="">休闲食品券</a></li>
         <li><a href="">餐饮券</a></li>
         <li><a href="">电影券</a></li>
+        #{list categories, as: 'category'}
+        <li class="hot_shangpin_li"><a #{if categoryId == category.id}class="tab_selected"#{/if}
+                                                   #{else}class="tab_unselected"#{/else}
+                                                   href="/${category.id}">${category.name}</a></li>
+        #{/list}
     </ul>
 </div>
 <div id="content">
