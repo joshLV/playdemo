@@ -28,7 +28,7 @@ $(window).load(
 
         $("#link_buy_now").click(function () {
             var t = $(this);
-            t.attr("href", t.attr("href") + $("#number").val());
+            t.attr("href", t.attr("href") + '-' + $("#number").val());
             return true;
         });
 
