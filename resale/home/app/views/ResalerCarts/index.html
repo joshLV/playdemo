@@ -111,50 +111,20 @@
             <th width="187">小计</th>
             <th width="103">操作</th>
         </tr>
-
         #{list items:carts, as:'goodsGroup'}
-        %{cartItem = goodsGroup.get(0)}%
-
-
+        %{index = 0}%
+        #{list items:goodsGroup, as:'cartItem'}
         <tr id="row_${cartItem.goods.id}">
-                <td height="25" align="center" valign="middle" rowspan="${goodsGroup.size()}">
-                    <div class="col_one">
-                    </div>
-                    <div class="col_one_text">${cartItem.goods.name} &nbsp;&nbsp;| &nbsp;&nbsp; <a href="#" id="batch_del_${cartItem.goods.id}">删除</a>
-                    </div>
-                </td>
-                <td width="103" height="25" align="center" valign="middle">
-                    <span id="phone_${cartItem.goods.id}">${cartItem.phone}</span>
-                </td>
-                <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
-                <td width="115" height="25" align="center" valign="middle" id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level)}</td>
-                <td width="83" height="25" align="center" valign="middle">
-                    <a href="#" class="reduce_box" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
-                        <img src="@{'/public/images/sub_anniu.jpg'}" id="inc_sub_${cartItem.goods.id}-${cartItem.phone}"/>
-                    </a>
-                    <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}-${cartItem.phone}" />
-                    <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}-${cartItem.phone}"/>
-                    <a class="add_box" href="#" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
-                        <img src="@{'/public/images/add_anniu.jpg'}" id="inc_add_${cartItem.goods.id}-${cartItem.phone}"/>
-                    </a>
-                </td>
-                <td idth="187" height="25" align="center" valign="middle">
-                    <span class="strong_gray" id="subtotal_${cartItem.goods.id}-${cartItem.phone}"> ${cartItem.goods.getResalePrice(resaler.level).multiply(cartItem.number)}</span>
-                </td>
-                <td width="103" height="25" align="center" valign="middle">
-                    <form method="POST" action="/carts/form-delete">
-                        <input name="goodsId" type="hidden" value="${cartItem.goods.id}"/>
-                        <input name="phone" type="hidden" value="${cartItem.phone}"/>
-                        <input type="SUBMIT" value="删除" id="del_${cartItem.goods.id}-${cartItem.phone}"/>
-                    </form>
-                </td>
-            </tr>
+            #{if ++index==1}
+            <td height="25" align="center" valign="middle" rowspan="${goodsGroup.size()}">
+                <div class="col_one">
+                </div>
+                <div class="col_one_text">${cartItem.goods.name} &nbsp;&nbsp;| &nbsp;&nbsp; <a href="#" id="batch_del_${cartItem.goods.id}">删除</a>
+                </div>
+            </td>
+            #{/if}
 
-            #{if goodsGroup.size() > 1}
-            %{goodsGroup = goodsGroup.subList(1, goodsGroup.size())}%
-            #{list items:goodsGroup, as:'cartItem'}
-        <tr id="row_${cartItem.goods.id}">
-                <td width="103" height="25" align="center" valign="middle">
+            <td width="103" height="25" align="center" valign="middle">
                     <span id="phone_${cartItem.goods.id}">${cartItem.phone}</span>
                 </td>
                 <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
@@ -182,10 +152,6 @@
             </tr>
 
             #{/list}
-            #{/if}
-
-
-
         #{/list}
 
         #{if carts.size() == 0}

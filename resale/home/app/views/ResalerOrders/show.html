@@ -32,12 +32,18 @@
             <div class="tab_top_info">
                 <span class="tab_one">订单号：${order.orderNumber}</span>
                 <span class="tab_two">成交时间：${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
+                <span>商品总价：${order.amount?.formatCurrency('CNY').raw()}(含运费)</span>
+                <span>订单状态：&{'order.'+order.status}</span>
                 <span>付款时间：${order.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
             </div>
 
             <table width="975" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
                 <tr bgcolor="F6F6F6">
-                    <th width="369"><span class="th_shop_text">商品</span></th>
+                    <th width="70">
+                        全选
+                        <input type="checkbox">
+                    </th>
+                    <th width="300"><span class="th_shop_text">商品</span></th>
                     <th width="69"><span class="th_shop_text">收货手机</span></th>
                     <th width="69">分销价（元）</th>
                     <th width="81" height="30" bgcolor="F6F6F6">原价（元）</th>
@@ -46,9 +52,11 @@
                     <th width="118">商品总价</th>
                     <th width="93">订单状态</th>
                 </tr>
-            #{set m=0/}
             #{list items:orderItems, as:'row' }
                 <tr>
+                    <td>
+                        <input type="checkbox"/>
+                    </td>
                     <td align="center" valign="middle">
                         <div class="shop_img">
                             <img src=""/>
@@ -63,13 +71,12 @@
                            <div class="caozuo_std">${row?.getEcouponSn()}
                            </div>
                     </td>
-                    #{if (++m == 1) }
-                        <td rowspan="${orderItems.size()}" align="center" valign="middle">${order.amount?.formatCurrency('CNY').raw()}<br/> (含运费)
-                        </td>
-                        <td rowspan="${orderItems.size()}" align="center" valign="middle">
-                        &{'order.'+order.status}
-                        </td>
-                    #{/if}
+                    <td align="center" valign="middle">
+                        ${row.resalerPrice.multiply(row.buyNumber)?.formatCurrency('CNY').raw()}
+                    </td>
+                    <td align="center" valign="middle">
+
+                    </td>
                 </tr>
             #{/list}
             </table>

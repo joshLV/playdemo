@@ -40,35 +40,21 @@
 
         %{fav_items_text = ""}%
         #{list items:carts, as:'goodsGroup'}
-        %{cartItem = goodsGroup.get(0)}%
-
-
-        <tr group="row_${cartItem.goods.id}">
+        %{index = 0}%
+        #{list items:goodsGroup, as:'cartItem'}
+            %{fav_items_text += cartItem.goods.id + "-" + cartItem.number + "-" + cartItem.phone + ","}%
+            <tr group="row_${cartItem.goods.id}">
+                #{if ++index==1}
                 <td height="25" align="center" valign="middle" rowspan="${goodsGroup.size()}">
                     <div class="col_one">
                     </div>
                     <div class="col_one_text">${cartItem.goods.name}
                     </div>
                 </td>
-                <td width="103" height="25" align="center" valign="middle">
-                    <span id="phone_${cartItem.goods.id}">${cartItem.phone}</span>
-                </td>
-                <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
-                <td width="115" height="25" align="center" valign="middle" id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level)}</td>
-                <td width="83" height="25" align="center" valign="middle">
-                    <input class="num_input" type="hidden" id="num_${cartItem.goods.id}-${cartItem.phone}" value="${cartItem.number}" />${cartItem.number}
-                </td>
-                <td idth="187" height="25" align="center" valign="middle">
-                    <span class="strong_gray" id="subtotal_${cartItem.goods.id}-${cartItem.phone}"> ${cartItem.goods.getResalePrice(resaler.level).multiply(cartItem.number)}</span>
-                </td>
-            </tr>
-            %{fav_items_text += cartItem.goods.id + "-" + cartItem.number + "-" + cartItem.phone + ","}%
-            #{if goodsGroup.size() > 1}
-                %{goodsGroup = goodsGroup.subList(1, goodsGroup.size())}%
-                #{list items:goodsGroup, as:'cartItem'}
-                    %{fav_items_text += cartItem.goods.id + "-" + cartItem.number + "-" + cartItem.phone + ","}%
-        <tr group="row_${cartItem.goods.id}">
-                <td width="103" height="25" align="center" valign="middle">
+                #{/if}
+
+
+            <td width="103" height="25" align="center" valign="middle">
                     <span id="phone_${cartItem.goods.id}">${cartItem.phone}</span>
                 </td>
                 <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
@@ -82,10 +68,6 @@
             </tr>
 
             #{/list}
-            #{/if}
-
-
-
         #{/list}
 
         #{if carts.size() == 0}
