@@ -30,12 +30,14 @@ public class Goods extends Controller {
 
     public static String SHANGHAI = "021";
     public static int LIMIT = 8;
-    public static int PAGE_SIZE = 12;
+    public static int PAGE_SIZE = 20;
 
     /**
      * 商品列表初始页
      */
     public static void index() {
+        String page = params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         //默认取出5页产品
         List<models.sales.Goods> goodsList = models.sales.Goods.findTop(PAGE_SIZE * 5);
         //默认取出前8个上海的区
@@ -46,7 +48,7 @@ public class Goods extends Controller {
 
         GoodsCondition goodsCond = new GoodsCondition();
         ValuePaginator<models.sales.Goods> goodsPage = new ValuePaginator<>(goodsList);
-        goodsPage.setPageNumber(1);
+        goodsPage.setPageNumber(pageNumber);
         goodsPage.setPageSize(PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(false);
         BreadcrumbList breadcrumbs = createBreadcrumbs(goodsCond);
