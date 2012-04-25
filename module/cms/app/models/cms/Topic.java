@@ -1,5 +1,6 @@
 package models.cms;
 
+import com.uhuila.common.constants.DeletedStatus;
 import org.apache.commons.lang.StringUtils;
 import com.uhuila.common.constants.PlatformType;
 import org.jsoup.Jsoup;
@@ -57,6 +58,9 @@ public class Topic extends Model {
     @MaxSize(4000)
     private String content;
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
+
+    @Enumerated(EnumType.STRING)
+    public DeletedStatus deleted;
     /**
      * 公告内容
      *
@@ -100,9 +104,8 @@ public class Topic extends Model {
 
     public static void delete(Long id) {
         Topic topic = Topic.findById(id);
-        if (topic!= null){
-            topic.delete();
-        }
+        topic.deleted = DeletedStatus.DELETED;
+        topic.save();
     }
 
     public static void update(Long id, Topic topic) {

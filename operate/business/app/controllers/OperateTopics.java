@@ -1,5 +1,6 @@
 package controllers;
 
+import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.constants.PlatformType;
 import models.cms.Topic;
 import models.cms.TopicType;
@@ -41,8 +42,9 @@ public class OperateTopics extends Controller {
     public static void create(@Valid Topic topic) {
         checkExpireAt(topic);
         if (Validation.hasErrors()) {
-            render("OperateTopics/add.html",topic);
+            render("OperateTopics/add.html", topic);
         }
+        topic.deleted = DeletedStatus.UN_DELETED;
         topic.create();
         index(null, null);
     }
