@@ -91,9 +91,11 @@
 }
 .tabbar li {
     float: left;
+    width: 70px;
     padding: 5px 15px;
     margin:0 5px -1px 0;
     cursor: pointer;
+    text-align: center;
     border: 1px solid #AADBDB;
     background-color: #EAF6F6;
 }

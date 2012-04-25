@@ -299,7 +299,7 @@ mark { background: #ff0; }
 /** 导航 **/
 #nav {
     background-color: #25b4ab;
-    margin-bottom: 12px;
+    margin-bottom: 20px;
 }
 #nav ul {
     width: 960px;
