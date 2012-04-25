@@ -135,10 +135,11 @@ public class Orders extends Controller {
             Logger.error(e, "inventory not enough");
             error("inventory not enough");
         }
+        
         //确认订单
-        order.createAndUpdateInventory();
         order.receiverMobile = mobile;
         order.receiverPhone = mobile;
+        order.createAndUpdateInventory();
         //删除购物车中相应物品
         Cart.delete(user, cookieValue, goodsIds);
         

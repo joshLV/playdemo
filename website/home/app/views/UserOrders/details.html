@@ -124,12 +124,20 @@
                 </tr>
             #{/if}
             #{else}
-                <tr>
-                    <td height="28" align="center" valign="middle">收货手机</td>
-                    <td align="left" valign="middle">
-                        <div class="margin_left_10">${orderItems.phone}</div>
-                    </td>
-                </tr>
+	           
+	                <tr>
+	                    <td height="28" align="center" valign="middle">收货手机</td>
+	                    <td align="left" valign="middle">
+	                        <div class="margin_left_10">
+	                         #{if "RESALER".equals(order.userType)}
+	                           ${orderItems.phone}
+	                          #{/if}
+			                 #{else}
+			                    ${order.receiverMobile}
+			                 #{/else} 
+	                         </div>
+	                    </td>
+	                </tr>
              #{/else}    
             </table>
         </div>
