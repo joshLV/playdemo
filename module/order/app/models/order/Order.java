@@ -601,4 +601,8 @@ public class Order extends Model {
 
 		order.save();
 	}
+
+    public static Order findOneByUser(Long id, Long userId, AccountType accountType){
+        return Order.find("byIdAndUserIdAndUserType", id, userId, accountType).first();
+    }
 }

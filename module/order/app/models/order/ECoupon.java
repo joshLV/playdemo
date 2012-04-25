@@ -367,6 +367,19 @@ public class ECoupon extends Model {
 		return sn.toString();
 	}
 
+    public static List<ECoupon> findByOrder(Order order){
+        return ECoupon.find("byOrder", order).fetch();
+    }
+
+    public static List<ECoupon> findByUserAndIds(List<Long> ids, Long userId, AccountType accountType){
+        String sql = "select e from ECoupon e where e.id in :ids and e.order.userId = :userId and e.order.userType = :userType";
+        Query query = ECoupon.em().createQuery(sql);
+        query.setParameter("ids", ids);
+        query.setParameter("userId", userId);
+        query.setParameter("userType", accountType);
+        return query.getResultList();
+    }
+
 	/**
 	 * 得到隐藏处理过的券号
 	 * @return 券号
