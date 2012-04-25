@@ -11,10 +11,23 @@ supplier.Supplier(Supplier1):
 
 supplier.Supplier(Supplier2):
  "domainName": 'localhost'
+ "userName": "利斯"
+ "loginName": "wer"
  "fullName": 本地
  "status": NORMAL
  "createdAt": "2012-03-19T16:33:18"
  "deleted": UN_DELETED
+
+admin.SupplierUser(admin-test):
+ "loginName": "wer"
+ "mobile": "1300000000"
+ "supplier": "Supplier2"
+ "deleted": "UN_DELETED"
+ "encryptedPassword": "ff7edd82576fd2b9066cdf9a978f6ab5"
+ "passwordSalt": "KC3CeW"
+ "roles":
+ - "admin"
+ - "sales"
 
 admin.OperateUser(user1):
  "loginName": "1"

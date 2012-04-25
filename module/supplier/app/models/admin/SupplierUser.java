@@ -142,7 +142,7 @@ public class SupplierUser extends Model {
 	 * 更新操作员信息
 	 *
 	 * @param id    ID
-	 * @param user 用户信息
+	 * @param supplierUser 用户信息
 	 */
 	public static void update(long id, SupplierUser supplierUser) {
 
@@ -165,7 +165,7 @@ public class SupplierUser extends Model {
 	 *
 	 * @param loginName 用户名
 	 * @param mobile    手机
-	 * @param supplierUserId
+	 * @param supplierId
 	 */
 	public static String checkValue(Long id, String loginName, String mobile, Long supplierId) {
 
@@ -244,8 +244,8 @@ public class SupplierUser extends Model {
 	/**
 	 * 修改密码
 	 * 
-	 * @param newResaler 新密码信息
-	 * @param resaler 原密码信息
+	 * @param newUser 新用户
+	 * @param user 原用户
 	 */
 	public static void updatePassword(SupplierUser newUser, SupplierUser user) {
 		// 随机码
