@@ -79,6 +79,8 @@ public class ECoupon extends Model {
 	public BigDecimal salePrice;        //最终成交价,对于普通分销商来说，此成交价与以上分销商价(resalerPrice)相同；
 	// ====  价格列表  ====
 
+	@Column(name = "refund_Price")
+	public BigDecimal refundPrice;
 
 	@Column(name = "created_at")
 	@Temporal(TemporalType.DATE)
