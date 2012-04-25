@@ -8,8 +8,8 @@ verifyTextPresent('30-60元')
 verifyTextPresent('160元以上')
 verifyTextPresent('上一页')
 verifyTextPresent('下一页')
-*{assertTextPresent('排序：默认 销量 价格 折扣 最新')}*
-verifyTextPresent('全部 电子券 实物')
+*{assertTextPresent('排序：默认 销量 价格 折扣 最新')
+verifyTextPresent('全部 电子券 实物')}*
 
 clickAndWait('link=豆捞坊')
 assertText('css=span.selected_box','豆捞坊')
@@ -31,10 +31,11 @@ verifyValue('id=input_price_from','120')
 verifyValue('id=input_price_to','160')
 assertTextPresent('哈根达斯100元抵用券')
 
-open('/goods/list/0-0-0-1-1-0-0')
+
+*{open('/goods/list/0-0-0-1-1-0-0')
 clickAndWait('link=电子券')
 assertTextPresent('哈根达斯100元抵用券')
 
 clickAndWait('link=实物')
-assertTextPresent('哈根达斯200元抵用券')
+assertTextPresent('哈根达斯200元抵用券')}*
 #{/selenium}
