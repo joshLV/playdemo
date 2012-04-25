@@ -275,7 +275,7 @@ public class ECoupon extends Model {
 		}
 
 		JPAExtPaginator<ECoupon> ordersPage = new JPAExtPaginator<>("ECoupon e", "e", ECoupon.class, sql.toString(),
-				paramsMap).orderBy(" e.createdAt desc,e.consumedAt desc");
+				paramsMap).orderBy(" e.createdAt desc");
 
 		ordersPage.setPageNumber(pageNumber);
 		ordersPage.setPageSize(pageSize);
