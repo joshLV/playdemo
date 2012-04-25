@@ -25,7 +25,11 @@ public class SupplierSetting extends Model {
 
 	public void save(Long supplierUserId, Long shopId, String shopName) {
 		SupplierSetting SupplierSetting = getSetting(supplierUserId);
-		Long id =SupplierSetting.supplierUserShopId;
+		Long id = 0L;
+		if (SupplierSetting !=  null) {
+			id =SupplierSetting.supplierUserShopId;
+		}
+		
 		if (shopId != null && id != shopId) {
 			supplierUserKey = supplierUserId;
 			supplierUserShopId = shopId;
