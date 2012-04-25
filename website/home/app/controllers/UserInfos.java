@@ -24,7 +24,6 @@ public class UserInfos extends Controller{
 	public static void index() {
 		User user = SecureCAS.getUser();
 		UserInfo userInfo = UserInfo.findByUser(user);
-		System.out.println("id==============="+userInfo.id);
 		render(user,userInfo);
 	}
 
@@ -32,7 +31,6 @@ public class UserInfos extends Controller{
 	 * 用户资料页面 
 	 */
 	public static void update(Long id,UserInfo userInfo,String intrest) {
-		System.out.println("id==============="+id);
 		UserInfo userInfos = UserInfo.findById(id);
 		//如果用户信息不存在则创建
 		if (userInfos != null) {

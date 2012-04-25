@@ -75,7 +75,6 @@ public class SupplierGoodsTest extends FunctionalTest {
     public void testEdit() {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales" +
                 ".Goods-Goods_001");
-        System.out.println("goodsId:" + goodsId);
         Http.Response response = GET("/goods/" + goodsId + "/edit");
         assertIsOk(response);
         assertContentType("text/html", response);

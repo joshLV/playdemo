@@ -29,11 +29,9 @@ public class UsernameLengthAuthnHandler extends AbstractUsernamePasswordAuthenti
     @Override
     protected boolean authenticateUsernamePasswordInternal(UsernamePasswordCredentials Credentials)
             throws AuthenticationException {
-        System.out.println("<<<<< test >>>>>");
         String username = Credentials.getUsername();
         String password = Credentials.getPassword();
 
-        System.out.println("================ H " + username + " ================");
         if (log.isDebugEnabled()) {
             log.debug("username=" + username);
         }

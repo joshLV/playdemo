@@ -53,8 +53,6 @@ public class MenuCheckTest extends FunctionalTest {
         Long id = (Long) Fixtures.idCache.get("models.admin.OperateUser-user3");
         OperateUser user = OperateUser.findById(id);
 
-        System.out.println("++++++++++++++++   user.id:" + user.id + ", name:" + user.loginName);
-
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
         assertIsOk(GET("/singlefoo/user"));

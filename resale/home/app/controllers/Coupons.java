@@ -47,7 +47,6 @@ public class Coupons extends Controller{
         Resaler user = SecureCAS.getResaler();
         ECoupon eCoupon = ECoupon.findById(id);
         String returnFlag = ECoupon.applyRefund(eCoupon,user.getId(),"", AccountType.RESALER);
-        System.out.println(returnFlag);
         index(null);
 	}
 

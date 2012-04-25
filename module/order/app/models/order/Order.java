@@ -593,7 +593,6 @@ public class Order extends Model {
 		order.deliveryCompany = this.deliveryCompany;
 		order.deliveryNo = this.deliveryNo;
 		for (OrderItems orderItem : order.orderItems) {
-			System.out.println("orderItem.goods.materialType:" + orderItem.goods.materialType);
 			if (MaterialType.REAL.equals(orderItem.goods.materialType)){
 				orderItem.status = OrderStatus.SENT;
 				orderItem.save();

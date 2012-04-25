@@ -54,8 +54,7 @@ public class RefundUtilTest extends FunctionalTest{
         Long id  = (Long)Fixtures.idCache.get("models.accounts.TradeBill-tradebill");
         TradeBill tradeBill = TradeBill.findById(id);
         assertNotNull(tradeBill);
-        System.out.println(tradeBill.orderId);
-        
+
         BigDecimal amount = new BigDecimal("10");
         RefundBill refundBill = RefundUtil.create(null, 10L, 10L, amount, "apply refund");
         assertNull(refundBill);

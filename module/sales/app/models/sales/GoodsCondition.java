@@ -177,11 +177,6 @@ public class GoodsCondition {
 			paramMap.put("saleCountEnd", saleCountEnd);
 		}
 
-		System.out.println("condBuilder.toString():" + condBuilder.toString());
-
-		for (String key : paramMap.keySet()) {
-			System.out.println(key+":" + paramMap.get(key));
-		}
 		return condBuilder.toString();
 	}
 

@@ -105,7 +105,6 @@ public class RbacMenuTest extends UnitTest {
         StringWriter writer = new StringWriter();
         m.marshal(app, writer);
         String xmlString = writer.toString();
-        System.out.println(xmlString);
 
         StringReader sr = new StringReader(xmlString);
         Application umApp = (Application)um.unmarshal(sr);

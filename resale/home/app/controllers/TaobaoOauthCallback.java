@@ -29,11 +29,7 @@ public class TaobaoOauthCallback extends Controller{
         oauthToken.accessToken = top_session;
         try {
             Map<String, String> topParams = TaobaoUtils.decodeTopParams(top_parameters);
-            System.out.println("top_session:" + top_session );
-            for(String key : topParams.keySet()){
-                System.out.println("top_params: "+key + ":" + topParams.get(key));
-            }
-            
+
             int expiresIn = Integer.parseInt(topParams.get("expires_in"));
             int reExpiresIn = Integer.parseInt(topParams.get("re_expires_in"));
             Date now = new Date();

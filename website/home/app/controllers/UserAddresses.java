@@ -37,7 +37,6 @@ public class UserAddresses extends Controller {
         User user = SecureCAS.getUser();
         Address address = Address.findById(id);
 
-        System.out.println("id:" + id);
         List<Address> addressList = Address.findByOrder(user);
 
         render("UserAddresses/form.html", addressList, address);

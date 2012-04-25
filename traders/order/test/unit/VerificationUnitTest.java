@@ -118,7 +118,6 @@ public class VerificationUnitTest extends UnitTest {
 		String eCouponSn = "1234567004";
 		Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
 		ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
-		System.out.println(eCoupon.shop);
 		String name = eCoupon.getConsumedShop();
 		assertEquals("优惠拉", name);
 
