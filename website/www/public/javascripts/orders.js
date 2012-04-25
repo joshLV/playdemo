@@ -311,25 +311,6 @@ $(window).load(
         });
 
         /**
-         * 电子优惠券的手机号 确认点击事件
-         */
-        $("#link_mobile_confirm").click(function () {
-            $("#ecart_mobile_show_span").html($("#ecart_mobile").val());
-            $("#ecart_mobile_show_dd").show();
-            $("#ecart_mobile_update_dd").hide();
-        });
-
-        /**
-         * 电子优惠券的手机号 修改点击事件
-         */
-        $("#link_edit_mobile").click(function () {
-            $("#ecart_mobile").val($("#ecart_mobile_show_span").html());
-
-            $("#ecart_mobile_show_dd").hide();
-            $("#ecart_mobile_update_dd").show();
-        });
-
-        /**
          * form提交事件
          */
         $("#link_confirm_pay").click(function () {
