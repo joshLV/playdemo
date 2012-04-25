@@ -70,12 +70,11 @@ $(function () {
             <li>未消费全额退</li>
         </ul>
         <div class="brand">
-            <h4 class="brand-name">品牌名称: <span>TODO: XXXXXXX</span></h4>
-            <p class="brand-logo"><img src="http://img.uhcdn.com/images/u/detail_brand_logo.png" alt="85度C蛋糕甜点" /></p>
-            <div class="brand-text">
-                特色产品: 蛋糕甜点<br>
-                门店数量: 820家<br>
-                营业时间: 早8:00 -- 晚9:00
+            <h4 class="brand-name">品牌名称: <span>${goods.brand.name}</span></h4>
+            <p class="brand-logo"><img src="${goods.brand.showLogo}" height="83"
+                                       width="195"
+                                       alt="${goods.brand.name}" /></p>
+            <div class="brand-text">${goods.brand.introduce.raw()}
             </div>
         </div>
     </div>
