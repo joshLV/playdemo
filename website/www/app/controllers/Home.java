@@ -23,9 +23,9 @@ public class Home extends Controller {
     public static void index(long categoryId) {
         List<models.sales.Goods> goodsList;
         if (categoryId==0){
-            goodsList = models.sales.Goods.findTop(6);
+            goodsList = models.sales.Goods.findTop(5);
         }else{
-            goodsList = models.sales.Goods.findTopByCategory(categoryId, 6);
+            goodsList = models.sales.Goods.findTopByCategory(categoryId, 5);
         }
         List<Area> areas = Area.findTopAreas(8);
         List<Category> categories = Category.findTop(8);

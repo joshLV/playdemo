@@ -10,7 +10,7 @@
 
 <div class="wrap clearfix">
     <div id="aside">
-        <div class="filter">
+        <!--div class="filter">
             <div class="market">
                 <div class="market-hd"><b></b>商圈</div>
                 <ul class="market-bd">
@@ -45,7 +45,7 @@
                 #{/list}
                 </ul>
             </div>
-        </div>
+        </div-->
         <div class="popular">
             <div class="popular-hd">受欢迎的产品</div>
             <ul class="popular-bd">
@@ -58,12 +58,57 @@
         </div>
     </div>
     <div id="section">
-        <div class="tab-pannel clearfix">
+        <div class="tabbar clearfix">
             <a class="current" href="">全部</a>
             <a href="">电子券</a>
             <a href="">实体券</a>
         </div>
-        <div class="sort-pannel">
+        <div class="filter">
+            <dl class="clearfix">
+                <dt>区域:</dt>
+                <dd>
+                    <a href="">杨浦区</a>
+                    <a href="">虹口区</a>
+                    <a href="">闸北区</a>
+                    <a href="">普陀区</a>
+                    <a href="">黄浦区</a>
+                    <a href="">静安区</a>
+                    <a href="">长宁区</a>
+                    <a href="">卢湾区</a>
+                    <a href="">徐汇区</a>
+                    <a href="">闵行区</a>
+                    <a href="">浦东新区</a>
+                </dd>
+            </dl>
+            <dl class="clearfix">
+                <dt>商圈:</dt>
+                <dd>
+                    <a href="">中山公园</a>
+                    <a href="">北外滩</a>
+                    <a href="">人民广场</a>
+                    <a href="">城隍庙</a>
+                    <a href="">新炒夜城</a>
+                    <a href="">虹桥</a>
+                    <a href="">五角场</a>
+                    <a href="">曹家渡</a>
+                    <a href="">淮海中路</a>
+                    <a href="">陆家嘴</a>
+                    <a href="">四川北路</a>
+                </dd>
+            </dl>
+            <dl class="clearfix">
+                <dt>品牌:</dt>
+                <dd>
+                    <a href="">麦当劳</a>
+                    <a href="">肯德基</a>
+                    <a href="">真功夫</a>
+                    <a href="">来一份</a>
+                    <a href="">可佳基</a>
+                    <a href="">麦肯姆</a>
+                </dd>
+            </dl>
+        </div>
+        <div class="rankbar">
             排序：
             <a href="">最佳匹配</a>
             <a class="selected" href="">最新发布</a>
@@ -74,9 +119,10 @@
             <ul class="clearfix">
             #{paginate.list items:goodsPage, as:'aGoods'}
                 <li>
-                    <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="145" height="130" alt="" /></a>
-                    <div><a href="">${aGoods.name}</a></div>
-                    <div><del>&yen;${aGoods.faceValue?.formatCurrency('CNY')}</del><strong>&yen;${aGoods.salePrice?.formatCurrency('CNY')}</strong></div>
+                    <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="170" height="130" alt="" /></a>
+                    <p><a href="">${aGoods.name}</a></p>
+                    <span>原价:<del>${aGoods.faceValue}</del> | 8.5折</span>
+                    <span>现价:<strong>&yen;${aGoods.salePrice}</strong></span>
                 </li>
             #{/paginate.list}
             </ul>
@@ -304,5 +350,4 @@
 </div>
 </div>
 </div>
-
 -->

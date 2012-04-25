@@ -59,50 +59,57 @@
         <div class="recommendation-hd">网友推荐商品</div>
         <ul class="recommendation-bd clearfix">
             <li>
-            	<a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            	<div><a href="">肯德基</a></div>
-            	<div><del>原价：19.8</del> <strong>&yen;16.8</strong></div>
+            	<a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="150" height="130" alt="" /></a>
+            	<p><a href="">DQ冰雪皇后!50元DQ冰纷卡1张!</a></p>
+                <span>原价:<del>19.88</del> | 8.5折</span>
+                <span>现价:<strong>&yen;16.00</strong></span>
             </li>
             <li>
-            	<a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            	<div><a href="">肯德基</a></div>
-            	<div><del>原价：19.8</del> <strong>&yen;16.8</strong></div>
+            	<a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="150" height="130" alt="" /></a>
+            	<p><a href="">《超级战舰》观众大呼被轰炸海里玩漂移好爽，不是3D胜似</a></p>
+                <span>原价:<del>19.88</del> | 8.5折</span>
+                <span>现价:<strong>&yen;16.8</strong></span>
             </li>
             <li>
-            	<a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            	<div><a href="">肯德基</a></div>
-            	<div><del>原价：19.8</del> <strong>&yen;16.8</strong></div>
-            </li>
+            	<a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="150" height="130" alt="" /></a>
+            	<p><a href="">五一大促专场，吃喝玩乐一折起！</a></p>
+                <span>原价:<del>19.88</del> | 8.5折</span>
+                <span>现价:<strong>&yen;16.8</strong></span>
             <li>
-            	<a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            	<div><a href="">肯德基</a></div>
-            	<div><del>原价：19.8</del> <strong>&yen;16.8</strong></div>
-            </li>
-            <li>
-            	<a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            	<div><a href="">肯德基</a></div>
-            	<div><del>原价：19.8</del> <strong>&yen;16.8</strong></div>
+            	<a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="150" height="130" alt="" /></a>
+            	<p><a href="">光大会展国际大酒店，步行至地铁1号线仅需10分钟！</a></p>
+                <span>原价:<del>19.88</del> | 8.5折</span>
+                <span>现价:<strong>&yen;16.8</strong></span>
             </li>
         </ul>
     </div>
     <div class="tuangou">
         <div class="tuangou-hd">今日团购</div>
         <div class="tuangou-bd">
-            <a class="tuan-img" href="" target="_blank"><img src="#{asset.url href:'/images/u/tuan.png'/}" width="220" height="120" alt="" /></a>
-            <a class="tuan-title" href="" href="_blank">麦当劳59元超值营养套餐9折优惠券</a>
-            <div class="tuan-price"><del>原价: 59元</del> <strong><i>&yen;</i>52.00</strong><a href="" target="_blank"></a></div>
+            <a class="image" href="" target="_blank"><img src="#{asset.url href:'/images/u/tuan.png'/}" width="220" height="170" alt="" /></a>
+            <a class="title" href="" href="_blank">麦当劳59元超值营养套餐9折优惠券</a>
+            <div class="detail clearfix">
+                <div class="action">
+                    <strong><i>&yen;</i>52.00</strong>
+                    <a href="" target="_blank"></a>
+                </div>
+                <div class="price">
+                    <span>原价:<del>59元</del></span>
+                    <span>折扣:<em>7.8折</em></span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 <div class="wrap">
     <div class="boutique-hd">精选商品</div>
     <ul class="boutique-bd clearfix">
-
      #{list goodsList, as:'aGoods'}
         <li>
-            <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="120" height="130" alt="${aGoods.name}" /></a>
-            <div class="title"><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
-            <div><del>${aGoods.faceValue?.formatCurrency('CNY')}</del><strong>${aGoods.salePrice?.formatCurrency('CNY')}</strong></div>
+            <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="170" height="130" alt="${aGoods.name}" /></a>
+            <p><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
+            <span>原价:<del>${aGoods.faceValue}</del> | 8.5折</span>
+            <span>现价:<strong>&yen;${aGoods.salePrice}</strong></span>
         </li>
      #{/list}
     </ul>
@@ -112,34 +119,34 @@
     <div class="boutique-hd">近日成交商品</div>
     <ul class="boutique-bd clearfix">
         <li>
-            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            <div class="title"><a href="">肯德基</a></div>
-            <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
+            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="170" height="130" alt="" /></a>
+            <p><a href="">光大会展国际大酒店，步行至地铁1号线仅需10分钟！</a></p>
+            <span>原价:<del>19.88</del> | 8.5折</span>
+            <span>现价:<strong>&yen;16.8</strong></span>
         </li>
         <li>
-            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            <div class="title"><a href="">肯德基</a></div>
-            <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
+            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="170" height="130" alt="" /></a>
+            <p><a href="">光大会展国际大酒店，步行至地铁1号线仅需10分钟！</a></p>
+            <span>原价:<del>19.88</del> | 8.5折</span>
+            <span>现价:<strong>&yen;16.8</strong></span>
         </li>
         <li>
-            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            <div class="title"><a href="">肯德基</a></div>
-            <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
+            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="170" height="130" alt="" /></a>
+            <p><a href="">光大会展国际大酒店，步行至地铁1号线仅需10分钟！</a></p>
+            <span>原价:<del>19.88</del> | 8.5折</span>
+            <span>现价:<strong>&yen;16.8</strong></span>
         </li>
         <li>
-            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            <div class="title"><a href="">肯德基</a></div>
-            <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
+            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="170" height="130" alt="" /></a>
+            <p><a href="">光大会展国际大酒店，步行至地铁1号线仅需10分钟！</a></p>
+            <span>原价:<del>19.88</del> | 8.5折</span>
+            <span>现价:<strong>&yen;16.8</strong></span>
         </li>
         <li>
-            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            <div class="title"><a href="">肯德基</a></div>
-            <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
-        </li>
-        <li>
-            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="120" height="130" alt="" /></a>
-            <div class="title"><a href="">肯德基</a></div>
-            <div><del>&yen;19.8</del><strong>&yen;16.8</strong></div>
+            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="170" height="130" alt="" /></a>
+            <p><a href="">光大会展国际大酒店，步行至地铁1号线仅需10分钟！</a></p>
+            <span>原价:<del>19.88</del> | 8.5折</span>
+            <span>现价:<strong>&yen;16.8</strong></span>
         </li>
     </ul>
 </div>

@@ -10,42 +10,50 @@
     font-size: 0;
 }
 
+/** 券属性 **/
 .property {
     float: left;
     width: 430px;
     margin-right: 20px;
     border-top: 1px dotted #E4E4E4;
-    /* border-bottom: 1px dotted #E4E4E4; */
-}
-.property li {
-    line-height: 25px;
-}
-.property span {
-    margin-left: 5px;
-}
-.property .price span {
-    color: #F50;
-    font-size: 20px;
-    font-weight: 700;
-}
-.property .cost del {
-    margin-left: 5px;
-    color: #F50;
-    font-size: 14px;
 }
 .property li {
     color: #666;
+    line-height: 35px;
+}
+.property span {
+    color: #333;
+    margin-left: 8px;
+}
+.property .price span {
+    color: #F50;
+    font-size: 24px;
+    font-family: Arial;
+}
+.property .cost del {
+    margin-left: 5px;
+    font-size: 14px;
+}
+.property .cost {
+    font-family: Arial;
 }
 .property .amount input {
-    width: 30px;
+    width: 36px;
+    height: 21px;
+    line-height: 21px;
+    padding-left: 2px;
+    border: solid 1px #A8ACAD;
+    background: url(http://img.uhcdn.com/images/u/num_input_bg.jpg) repeat-x;
 }
 .property .action {
     margin-top: 9px;
 }
-.property .action div {
+.property .action a {
     float: left;
-    padding: 2px 15px;
+    display: block;
+    padding: 6px 15px 7px;
     color: #FFF;
+    font-size: 14px;
     font-weight: 700;
     background-color: #25B4AB;
 }
@@ -53,46 +61,48 @@
     margin-right: 35px;
 }
 
+/** 服务、品牌 **/
 .aside {
     float: left;
     width: 223px;
 }
 .aside .service {
-    padding: 5px;
-    margin-bottom: 20px;
+    padding: 2px 5px;
+    margin-bottom: 10px;
     border: 1px solid #E4E4E4;
-    background: url(http://img.uhcdn.com/images/u/detail_icon.png) no-repeat 5px 12px;
+    background: url(http://img.uhcdn.com/images/u/detail_icon.png) no-repeat 5px 10px;
 }
 .aside .service li {
     font: 14px/1.5 "Microsoft YaHei";
     padding: 6px 0 5px 30px;
 }
 .aside .brand {
-    padding: 5px;
+    padding: 5px 8px;
     border: 1px solid #E4E4E4;
 }
 .aside .brand li {
-    padding: 5px 0;
+    padding: 2px 0;
 }
 
-.detail-tab {
+/** 详情 **/
+.tabbar {
     padding-left: 15px;
-    border-bottom: 1px solid #E4E4E4;
+    border-bottom: 1px solid #AADBDB;
 }
-.detail-tab li {
+.tabbar li {
     float: left;
     padding: 5px 15px;
     margin:0 5px -1px 0;
-    border: 1px solid #E4E4E4;
-    /* border-color: #E4E4E4 #E4E4E4 #FFF #E4E4E4; */
+    cursor: pointer;
+    border: 1px solid #AADBDB;
+    background-color: #EAF6F6;
 }
-.detail-tab li.current {
+.tabbar li.current {
+    font-weight: 700;
+    background-color: #FFF;
     border-bottom: 1px solid #FFF;
 }
-.detail-tab li a {
-    font-weight: 700;
-}
-.detail-txt {
+.tabtxt {
     padding: 10px;
+    line-height: 22px;
 }
-

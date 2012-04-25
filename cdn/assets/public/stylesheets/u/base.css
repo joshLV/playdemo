@@ -347,6 +347,9 @@ mark { background: #ff0; }
     color: #3E3E3E;
     margin: 0 10px;
 }
+.ft-nav a:hover {
+    color: #25b4ab;
+}
 .copyright {
     color: #999;
     line-height: 26px;
