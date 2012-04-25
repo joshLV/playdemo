@@ -18,7 +18,12 @@ import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import play.Play;
-import play.data.validation.*;
+import play.data.validation.InFuture;
+import play.data.validation.Max;
+import play.data.validation.MaxSize;
+import play.data.validation.Min;
+import play.data.validation.MinSize;
+import play.data.validation.Required;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
@@ -28,7 +33,14 @@ import javax.persistence.*;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "goods")
@@ -214,8 +226,10 @@ public class Goods extends Model {
     @ManyToOne
     @JoinColumn(name = "brand_id")
     public Brand brand;
-    
-    /**运费*/
+
+    /**
+     * 运费
+     */
     public BigDecimal freight;
 
     @Transient
@@ -571,7 +585,7 @@ public class Goods extends Model {
 
             goods.shops.addAll(Shop.findShopBySupplier(goods.supplierId));
         }
-        if (id == null) {
+        if(id == null && imageFile == null) {
             goods.imagePath = null;
         } else if (imageFile == null || imageFile.getName() == null) {
             Goods originalGoods = Goods.findById(id);
