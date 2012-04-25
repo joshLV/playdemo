@@ -37,7 +37,7 @@ public class Images extends Controller {
      * @param thirdDir
      * @param imageName
      */
-    public static void showImage(int firstDir, int secondDir, int thirdDir, String imageName) {
+    public static void showImage(long firstDir, long secondDir, long thirdDir, String imageName) {
         int width = 0;
         int height = 0;
         String imageSizeType = "";
