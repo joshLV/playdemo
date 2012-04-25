@@ -57,7 +57,6 @@ $(window).load(
         <li class="action">
            <a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
            <a class="add" id="link_add_cart" href="#">加入购物车</a>
-           <a href="#" class="shoucang_font">收藏</a>
         </li>
         <li id="add_cart_result" class="buttom_dibu"
              style="display: none;">已成功添加到购物车！
@@ -84,20 +83,15 @@ $(window).load(
 <div class="wrap clearfix">
     <ul id="J_tabbar" class="tabbar clearfix">
         <li name="product-info" class="current">商品信息</li>
-        #{if goods.prompt != null}
-        <li name="product-prompt">温馨提示</li>
-        #{/if}
         <li name="applicable-store">适用门店</li>
     </ul>
     <div id="J_tabtxt" class="tabtxt">
         <div class="product-info txt-item">
+           #{if goods.prompt != null}
+              ${goods?.prompt?.raw()}
+           #{/if}        
            ${goods?.details?.raw()}
         </div>
-        #{if goods.prompt != null}
-        <div class="product-prompt txt-item">
-           ${goods?.prompt?.raw()}
-        </div>
-        #{/if}        
         <div class="applicable-store txt-item">
             <h4>适用门店</h4>
             <table width="700" border="0" cellpadding="0"
