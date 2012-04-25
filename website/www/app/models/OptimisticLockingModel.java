@@ -28,12 +28,12 @@ public class OptimisticLockingModel extends GenericModel {
     public Long id;
 
     
-    @CheckWith(value=OptimisticLockingCheck.class, message="optimisticLocking.modelHasChanged")
-    @Version
-    @Column(nullable=false)
     /**
      * The version which will be automatically updated which each update. 
      */
+    @CheckWith(value=OptimisticLockingCheck.class, message="optimisticLocking.modelHasChanged")
+    @Version
+    @Column(nullable=false)
     public Long version;
     
     public void setVersion(Long newVersion) {
