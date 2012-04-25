@@ -1,4 +1,4 @@
-jQuery(function(){
+$(function(){
     //  我的优惠啦
     $('.myUhuila').mouseover(function(){
         $(this).addClass('myUhuila-on');
@@ -19,11 +19,27 @@ jQuery(function(){
         $('.carts-bd').hide();
     });
 
-    // 焦点图
+
     $('#slides').slides({
         play: 5000,
         pause: 2500,
         slideSpeed: 600,
         hoverPause: true
+    });
+
+    // 详情页tab
+    $('#J_tabbar li').click(function(){
+        var that = $(this),
+            attr = that.attr('name');
+
+        $('#J_tabbar li').removeClass('current');
+        that.addClass('current');
+
+        if (attr == 'product-info') {
+            $('#J_tabtxt .txt-item').show();
+        } else {
+            $('#J_tabtxt .txt-item').hide();
+            $('#J_tabtxt .'+ attr).show();
+        }
     });
 });
