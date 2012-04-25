@@ -13,6 +13,7 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 
 import models.sales.Goods;
+import models.sales.MaterialType;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -65,6 +66,10 @@ public class ResalerFav extends Model {
 		StringBuilder sql =  new StringBuilder();
 		Map<String, Object> paramsMap = new HashMap<>();
 		sql.append("select f from ResalerFav f where 1=1");
+		
+		sql.append(" and f.goods.materialType = :materialType");
+		paramsMap.put("materialType", MaterialType.ELECTRONIC);
+		
 		if (resaler != null) {
 			sql.append(" and f.resaler = :resaler");
 			paramsMap.put("resaler", resaler);

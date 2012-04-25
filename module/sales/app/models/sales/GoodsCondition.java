@@ -310,6 +310,9 @@ public class GoodsCondition {
 		sql.append(" g.deleted = :deleted");
 		paramMap.put("deleted", DeletedStatus.UN_DELETED);
 
+		sql.append(" and g.materialType = :materialType");
+		paramMap.put("materialType", MaterialType.ELECTRONIC);
+		
 		sql.append(" and g.status = :status");
 		paramMap.put("status", GoodsStatus.ONSALE);
 
