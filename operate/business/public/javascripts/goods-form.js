@@ -6,17 +6,6 @@
  * Time: 7:00 PM
  */
 
-//返回val的字节长度
-function getByteLen(val) {
-    var len = 0;
-    for (var i = 0; i < val.length; i++) {
-        if (val[i].match(/[^\x00-\xff]/ig) != null) //全角
-            len += 2;
-        else
-            len += 1;
-    }
-    return len;
-}
 $(window).load(
     function () {
         $("#goods_supplierId").change(function () {

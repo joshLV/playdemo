@@ -47,7 +47,11 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 
     <div class="controls">
         <input type="text" id='levelPrices_${level}' name="levelPrices" class="input-xlarge"
-               value="${goods?.levelPrices?goods.levelPrices.price[i]:''}"/>元
+               value="${goods?.levelPrices?goods.levelPrices.price[i]:''}" onfocus="showPrice(this)"
+               onkeyup="showPrice(this)" onkeydown="showPrice(this)"
+               onchange="showPrice(this)"/>元 <span style="color: blue; ">加价后为</span><span style="color: red; "
+                                                                                          id="realPrice_levelPrices_${level}">0</span><span
+            style="color: blue; ">元</span>
         #{field 'goods.levelPrice.'+level}
             <span class="error">#{error field?.name/}</span>
         #{/field}
@@ -93,7 +97,37 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 <script type="text/javascript">
     $("input[name='goods.isAllShop']:checked").val() == 'false' ? $("#shop").show() : $("#shop").hide();
 
+    function showPrice(nameField) {
+        var originalPrice = $("#goods_originalPrice").val() == null ? 0 : $("#goods_originalPrice").val();
+        var price = parseFloat($(nameField).val()) + parseFloat(originalPrice);
+        price = (price == null || price.toString() == "NaN") ? 0 : price;
+        $("#realPrice_" + nameField.id).html(price);
+    }
+
+    function showAddedPrice() {
+        var originalPrice = $("#goods_originalPrice").val() == null ? 0 : $("#goods_originalPrice").val();
+    #{list items:models.resale.ResalerLevel.values(), as: 'level'}
+        var price = parseFloat($('#levelPrices_${level}').val()) + parseFloat(originalPrice);
+        price = (price == null || price.toString() == "NaN") ? 0 : price;
+        $("#realPrice_levelPrices_${level}").html(price);
+    #{/list}
+    }
+
+    showAddedPrice();
+
     $(function () {
+        $("#goods_originalPrice").keyup(function () {
+            showAddedPrice();
+        })
+        $("#goods_originalPrice").keydown(function () {
+            showAddedPrice();
+        })
+        $("#goods_originalPrice").change(function () {
+            showAddedPrice();
+        })
+        $("#goods_originalPrice").focus(function () {
+            showAddedPrice();
+        })
         $("#goods_isAllShop_2").click(function () {
             $("#shop").show();//显示门店列表
         #{if "edit".equals(action)}
