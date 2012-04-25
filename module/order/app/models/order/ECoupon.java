@@ -18,8 +18,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import models.accounts.Account;
 import models.accounts.AccountType;
@@ -29,6 +27,7 @@ import models.accounts.TradeStatus;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.RefundUtil;
 import models.accounts.util.TradeUtil;
+import models.sales.Brand;
 import models.sales.Goods;
 import models.sales.Shop;
 
@@ -37,6 +36,7 @@ import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
+import play.modules.paginate.ModelPaginator;
 
 /**
  * User: pwg
@@ -265,17 +265,13 @@ public class ECoupon extends Model {
 	 * @param pageSize   记录数
 	 * @return ordersPage 列表信息
 	 */
-	public static JPAExtPaginator<ECoupon> queryCoupons(Long supplierId, int pageNumber, int pageSize) {
-		StringBuilder sql = new StringBuilder(" 1=1");
-		Map<String, Object> paramsMap = new HashMap<>();
+	public static ModelPaginator<ECoupon> queryCoupons(Long supplierId, int pageNumber, int pageSize) {
+		ModelPaginator ordersPage;
 		if (supplierId != null) {
-			sql.append(" and e.goods.supplierId = :supplierId)");
-			paramsMap.put("supplierId", supplierId);
+			 ordersPage = new ModelPaginator(ECoupon.class,"goods.supplierId = ?",supplierId).orderBy("createdAt desc");
+		} else {
+			 ordersPage = new ModelPaginator(ECoupon.class).orderBy("createdAt desc");
 		}
-
-		System.out.println("================="+supplierId);
-		JPAExtPaginator<ECoupon> ordersPage = new JPAExtPaginator<>("ECoupon e", "e", ECoupon.class, sql.toString(),
-				paramsMap).orderBy("e.createdAt desc");
 
 		ordersPage.setPageNumber(pageNumber);
 		ordersPage.setPageSize(pageSize);

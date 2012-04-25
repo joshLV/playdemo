@@ -12,7 +12,7 @@ import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 
 import play.data.validation.Validation;
-import play.modules.paginate.JPAExtPaginator;
+import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -87,7 +87,7 @@ public class SupplierCoupons extends Controller {
 		Long supplierId = SupplierRbac.currentUser().supplier.id;
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-		JPAExtPaginator<models.order.ECoupon> couponsList = ECoupon.queryCoupons(supplierId, pageNumber, PAGE_SIZE);
+		ModelPaginator<models.order.ECoupon> couponsList = ECoupon.queryCoupons(supplierId, pageNumber, PAGE_SIZE);
 		render("SupplierCoupons/e_coupons.html", couponsList);
 	}
 }
