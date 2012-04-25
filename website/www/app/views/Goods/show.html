@@ -1,208 +1,118 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 商品详情' /}
 #{set 'moreStyles'}
-<link href="@@{'/public/stylesheets/goods-show.css'}" rel="stylesheet"
-      type="text/css"/>
+#{asset.css src:['/u/detail.css']/}
 #{/set}
 #{set 'moreScripts'}
-<script src="@@{'/public/javascripts/goods-show.js'}"></script>
+<script>
+$(window).load(
+    function () {
+        /**
+         *点击加入购物车按钮
+         */
+        $("#link_add_cart").click(function () {
+            $.post("/carts", {'goodsId':$("#goodsId").val(), 'increment':$("#number").val()},
+                function (data) {
+                    if (data.resultCode == "ok") {
+                        $('#add_cart_result').show();
+                    }
+                });
+            $('#add_cart_result').show();
+            //5秒后自动消失
+            setTimeout("$('#add_cart_result').css('display','none')", 5000);
+        });
+
+        $("#link_buy_more").click(function () {
+            $('#add_cart_result').hide();
+        });
+
+        $("#link_buy_now").click(function () {
+            var t = $(this);
+            t.attr("href", t.attr("href") + $("#number").val());
+            return true;
+        });
+
+    }
+);
+</script>
 #{/set}
 
-<div id="wrap_main">
-    <div id="wrap_top">
-    #{include "share/topNavigator.html"/}
+<div class="wrap clearfix">
+    <h3 class="title">${goods.name}</h3>
+    <div class="photo">
+        <img src="${goods.imageLargePath}" width="265" height="290" />
     </div>
-    <div id="wrap_top_header">
-        <div id="wrap_top_header_left"><img
-                src="@@{'/public/images/logo.jpg'}"/></div>
-        <div id="wrap_top_middle">券生活-惠生活</div>
+    <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
+    <ul class="property">
+        <li class="price">现　　价:<span>&yen;${goods.salePrice}</span></li>
+        <li class="cost">原　　价:<del>&yen;${goods.faceValue}</del></li>
+        <li class="discount">折　　扣:<span>${goods.discountExpress?goods.discountExpress+'折':'无优惠'}</span></li>
+        <li class="type">商品类型:<span>TODO电子消费券</span></li>
+        <li class="shipmod">配送方式:<span>TODO手机短信</span></li>
+        <li class="deadline">券有效期:<span>${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span></li>
+        <li class="amount">购买数量:<span><input class="num_input_bg" id="number" name="number" type="text"
+                                value="1"/> 件</span>
+                    <span class="error">#{error 'number' /}</span>                        
+        </li>
+        <li class="action">
+           <a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
+           <a class="add" id="link_add_cart" href="#">加入购物车</a>
+           <a href="#" class="shoucang_font">收藏</a>
+        </li>
+        <li id="add_cart_result" class="buttom_dibu"
+             style="display: none;">已成功添加到购物车！
+            <a id="link_buy_more" href="#"><span
+                    class="zi_gray">继续购物</span></a>
+            <a href="/carts"><span class="zi_gray">查看购物车</span></a>
+        </li>
+    </ul>
+    <div class="aside">
+        <ul class="service">
+            <li>即买即用</li>
+            <li>无需快递费</li>
+            <li>未消费全额退</li>
+        </ul>
+        <ul class="brand">
+            <li>品牌名称: <span>TODO: XXXXXXX</span></li>
+            <li><img src="images/detail_brand_logo.png" alt="85度C蛋糕甜点" /></li>
+            <li>特色产品: <span>蛋糕甜点</span></li>
+            <li>门店数量: <span>820家</span></li>
+            <li>营业时间: <span>早8:00 -- 晚9:00</span></li>
+        </ul>
     </div>
-    <div style="clear:both"></div>
-    <div class="fen_g"></div>
 </div>
-<!--主体内容部分-->
-<div id="wrap_content">
-    <div style="clear:both"></div>
-    <div id="main_content">
-    #{breadcrumbs/breadcrumb breadcrumbs/}
-        <!--左侧导航部分-->
-        <div id="left_nav">
-            <div class="left_top_one">
-                <dl class="left_one_dl">
-                    <dt>
-                    <div class="title_nav font_block">承诺/保障</div>
-                    <div></div>
-                    </dt>
-                    <dd><img src="@@{'/public/images/adv/xiaofei.jpg'}"
-                             border="0" usemap="#Map'}"/>
-                        <map name="Map" id="Map">
-                            <area shape="rect" coords="9,8,202,64" href="#'}"/>
-                            <area shape="rect" coords="10,72,204,124"
-                                  href="#'}"/>
-                            <area shape="rect" coords="11,130,206,183"
-                                  href="#'}"/>
-                        </map>
-                    </dd>
-                </dl>
-            </div>
-            <div class="left_top_two">
-                <dl class="left_one_dl">
-                    <dt>
-                    <div class="title_nav font_block">搜过该产品的用户还看过</div>
-                    <div></div>
-                    </dt>
-                    <dd class="shop_dd">
-                        <div class="img_cp"><a href="#"><img
-                                src="@@{'/public/images/chanpin/1.jpg'}"/></a>
-                        </div>
-                        <div>
-                            <a href="#"><span class="strong_gray">来伊价</span>
-                                <span class="pri_jiage">14.8</span></a>
-                        </div>
-                        <div class="text_decorat">市场价格：Y:20.00</div>
-                    </dd>
-                    <dd class="shop_dd">
-                        <div class="img_cp"><a href="#"><img
-                                src="@@{'/public/images/chanpin/1.jpg'}"/></a>
-                        </div>
-                        <div>
-                            <a href="#"><span class="strong_gray">来伊价</span>
-                                <span class="pri_jiage">14.8</span></a>
-                        </div>
-                        <div class="text_decorat">市场价格：Y:20.00</div>
-                    </dd>
-
-                    <dd class="shop_dd">
-                        <div class="img_cp"><a href="#"><img
-                                src="@@{'/public/images/chanpin/1.jpg'}"/></a>
-                        </div>
-                        <div>
-                            <a href="#"><span class="strong_gray">来伊价</span>
-                                <span class="pri_jiage">14.8</span></a>
-                        </div>
-                        <div class="text_decorat">市场价格：Y:20.00</div>
-                    </dd>
-                    <dd class="shop_dd">
-                        <div class="img_cp"><a href="#"><img
-                                src="@@{'/public/images/chanpin/1.jpg'}"/></a>
-                        </div>
-                        <div>
-                            <a href="#"><span class="strong_gray">来伊价</span>
-                                <span class="pri_jiage">14.8</span></a>
-                        </div>
-                        <div class="text_decorat">市场价格：Y:20.00</div>
-                    </dd>
-
-                </dl>
-            </div>
-        </div>
-        <!--右侧主体内容部分-->
-        <div id="right_content">
-            <div class="right_content_show">
-                <div><h1 class="show_h1 font_block">${goods.name}</h1></div>
-                <input type="hidden" id="goodsId" name="goodsId"
-                       value="${goods.id}">
-
-                <div class="shangpin_box">
-                    <div class="left_shangpin"><img
-                            src="${goods.imageLargePath}" width="280"
-                            height="168"/></div>
-                    <div class="right_shangpin">
-                        <div class="right_shangpin_one">
-                            原价：${goods.faceValue}元
-                        </div>
-                        <div class="right_shangpin_two">
-                            折扣：${goods.discountExpress?goods.discountExpress+'折':'无优惠'}</div>
-                        <div class="right_shangpin_three">现价：<span
-                                class="font_red font_size18">${goods.salePrice}</span>元
-                        </div>
-                        <div class="right_shangpin_two">有效期：<span
-                                class="right_shangpin_two">${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span>
-                        </div>
-                        <div class="right_shangpin_two">库存：<span
-                                class="right_shangpin_two">${goods.baseSale}</span>&nbsp;件
-                        </div>
-                        <div class="right_shangpin_four">购买数量:&nbsp;<input
-                                class="num_input_bg" id="number"
-                                name="number" type="text"
-                                value="1"/>&nbsp;件 <span
-                                class="error">#{error 'number' /}</span>
-                        </div>
-                        <div class="right_shangpin_five"><a class="ligm_bg"
-                                                            href="/orders?items=${goods.getId()}-"
-                                                            id="link_buy_now">立即购买</a>
-                            <a class="wai_juli" id="link_add_cart"
-                               href="#">加入购物车</a><a
-                                    href="#" class="shoucang_font">收藏</a></div>
-                    </div>
-                </div>
-                <div style="clear:both"></div>
-                <div id="add_cart_result" class="buttom_dibu"
-                     style="display: none;">已成功添加到购物车！
-                    <a id="link_buy_more" href="#"><span
-                            class="zi_gray">继续购物</span></a>
-                    <a href="/carts"><span class="zi_gray">查看购物车</span></a>
-                </div>
-            </div>
+<div class="wrap clearfix">
+    <ul id="J_tabbar" class="tabbar clearfix">
+        <li name="product-info" class="current">商品信息</li>
         #{if goods.prompt != null}
-            <div class="right_content_two">
-
-                <dl class="right_one_dl">
-                    <dt>
-                    <div class="title_nav">温馨提示</div>
-                    <div></div>
-                    </dt>
-                    <dd>
-                        <ul class="tishi_ul">
-                            <li class="tishi_li" id="prompt">${goods?.prompt?.raw()}</li>
-                        </ul>
-                    </dd>
-                </dl>
-            </div>
+        <li name="product-prompt">温馨提示</li>
         #{/if}
-            <div class="right_content_two">
-                <dl class="right_one_dl">
-                    <dt>
-                    <div class="title_nav">商品详情</div>
-                    <div></div>
-                    </dt>
-                    <dd>
-                        <ul class="tishi_ul">
-                            <li class="tishi_li"
-                                id="details">${goods?.details?.raw()}</li>
-                        </ul>
-                    </dd>
-                </dl>
-            </div>
-            <div class="right_content_four">
-                <dl class="right_one_dl">
-                    <dt>
-                    <div class="title_nav">使用门店</div>
-                    <div></div>
-                    </dt>
-                    <dd class="table_dd">
-                        <table width="700" border="0" cellpadding="0"
-                               cellspacing="0">
-                        #{if goods?.getShopList()?.size() >0}
-                            #{list goods?.getShopList(), as:'shop'}
-                                <tr>
-                                    <td width="120" height="30"
-                                        class="table_td">${shop.name}</td>
-                                    <td class="table_td">${shop.address}</td>
-                                    <td class="table_td">${shop.phone}</td>
-                                </tr>
-                            #{/list}
-                        #{/if}
-                        </table>
-                    </dd>
-                </dl>
-
-            </div>
+        <li name="applicable-store">适用门店</li>
+    </ul>
+    <div id="J_tabtxt" class="tabtxt">
+        <div class="product-info txt-item">
+           ${goods?.details?.raw()}
         </div>
-        <div style="clear:both"></div>
+        #{if goods.prompt != null}
+        <div class="product-prompt txt-item">
+           ${goods?.prompt?.raw()}
+        </div>
+        #{/if}        
+        <div class="applicable-store txt-item">
+            <h4>适用门店</h4>
+            <table width="700" border="0" cellpadding="0"
+                   cellspacing="0">
+            #{if goods?.getShopList()?.size() >0}
+                #{list goods?.getShopList(), as:'shop'}
+                    <tr>
+                        <td width="120" height="30"
+                            class="table_td">${shop.name}</td>
+                        <td class="table_td">${shop.address}</td>
+                        <td class="table_td">${shop.phone}</td>
+                    </tr>
+                #{/list}
+            #{/if}
+            </table>          
+        </div>
     </div>
 </div>
-<script type="text/javascript">
-    $("#prompt").html($("#prompt").text()).text();
-    $("#details").html($("#details").text()).text();
-</script>
