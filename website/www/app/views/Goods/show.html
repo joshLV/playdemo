@@ -70,11 +70,11 @@ $(function () {
             <li>未消费全额退</li>
         </ul>
         <div class="brand">
-            <h4 class="brand-name">品牌名称: <span>${goods.brand.name}</span></h4>
-            <p class="brand-logo"><img src="${goods.brand.showLogo}" height="83"
+            <h4 class="brand-name">品牌名称: <span>${goods.brand?.name}</span></h4>
+            <p class="brand-logo"><img src="${goods.brand?.showLogo}" height="83"
                                        width="195"
-                                       alt="${goods.brand.name}" /></p>
-            <div class="brand-text">${goods.brand.introduce.raw()}
+                                       alt="${goods.brand?.name}" /></p>
+            <div class="brand-text">${goods.brand?.introduce.raw()}
             </div>
         </div>
     </div>
