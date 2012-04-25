@@ -373,14 +373,15 @@ public class OperateGoods extends Controller {
      * @param id 商品ID
      */
     public static void onSale(@As(",") Long... id) {
+    	
         for (Long goodsId : id) {
             models.sales.Goods goods = Goods.findById(goodsId);
             if (goods != null) {
                 checkSalePrice(goods);
                 checkLevelPrice(goods.getLevelPriceArray());
             }
+            renderShopList(goods.supplierId);
             if (Validation.hasErrors() && id.length > 0) {
-
                 renderSupplierList(goods);
                 renderInit(goods);
                 renderArgs.put("id", goodsId);

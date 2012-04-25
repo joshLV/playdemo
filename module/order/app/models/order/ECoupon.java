@@ -83,7 +83,6 @@ public class ECoupon extends Model {
 	public BigDecimal refundPrice;
 
 	@Column(name = "created_at")
-	@Temporal(TemporalType.DATE)
 	public Date createdAt;
 
 	@Column(name = "consumed_at")
@@ -274,8 +273,9 @@ public class ECoupon extends Model {
 			paramsMap.put("supplierId", supplierId);
 		}
 
+		System.out.println("================="+supplierId);
 		JPAExtPaginator<ECoupon> ordersPage = new JPAExtPaginator<>("ECoupon e", "e", ECoupon.class, sql.toString(),
-				paramsMap).orderBy(" e.createdAt desc");
+				paramsMap).orderBy("e.createdAt desc");
 
 		ordersPage.setPageNumber(pageNumber);
 		ordersPage.setPageSize(pageSize);
