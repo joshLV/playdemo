@@ -2,6 +2,9 @@ package controllers;
 
 import java.util.List;
 import java.util.Map;
+
+import models.accounts.AccountType;
+import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrdersCondition;
@@ -52,13 +55,26 @@ public class ResalerOrders extends Controller {
 	 * @param id 订单ID
 	 */
 	public static void show(long id) {
-		//订单信息
-		models.order.Order order = models.order.Order.findById(id);
-		List<OrderItems> orderItems = order.orderItems;
+        Resaler resaler = SecureCAS.getResaler();
+        //订单信息
+		models.order.Order order = models.order.Order.findOneByUser(id, resaler.getId(), AccountType.RESALER);
+        List<ECoupon> eCoupons = ECoupon.findByOrder(order);
 		//收货信息
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "订单详情", "/orders/" + id);
-		render(order, orderItems,breadcrumbs);
+		render(order, eCoupons, breadcrumbs);
 	}
+
+    public static void batchRefund(List<Long> couponIds , Long orderId){
+        Resaler resaler = SecureCAS.getResaler();
+        if(couponIds == null || couponIds.size() == 0){
+            show(orderId);
+        }
+        List<ECoupon> eCoupons = ECoupon.findByUserAndIds(couponIds, resaler.getId(), AccountType.RESALER);
+        for(ECoupon eCoupon : eCoupons){
+            ECoupon.applyRefund(eCoupon, resaler.getId(), "", AccountType.RESALER);
+        }
+        show(orderId);
+    }
 
 	/**
 	 * 付款

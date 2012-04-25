@@ -45,10 +45,10 @@ GET     /goods/list/{condition}                 ResalerGoods.list
 GET     /goods/{id}                             ResalerGoods.show
 
 
-GET     /orders                                  ResalerOrders.index
-GET     /orders/{id}                             ResalerOrders.show
-GET     /payment/{id}                            ResalerOrders.pay
-
+GET     /orders                                 ResalerOrders.index
+POST    /orders/batch-refund                    ResalerOrders.batchRefund
+GET     /orders/{id}                            ResalerOrders.show
+GET     /payment/{id}                           ResalerOrders.pay
 
 GET     /account_seq                            ResalerAccounts.index
 

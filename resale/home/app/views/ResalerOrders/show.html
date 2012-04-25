@@ -5,7 +5,6 @@
 <link href="@{'/public/stylesheets/lanrentuku.css'}" rel="stylesheet" type="text/css"/>
 <link href="@{'/public/stylesheets/shop_info_more.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
-<body>
 <div id="wrap_main">
     <!--    最顶部导航-->
     <div id="wrap_top">#{include "share/topNavigator.html"/}</div>
@@ -37,53 +36,113 @@
                 <span>付款时间：${order.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
             </div>
 
+            <form action="/orders/batch-refund" method="post">
+
             <table width="975" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
                 <tr bgcolor="F6F6F6">
                     <th width="70">
-                        全选
-                        <input type="checkbox">
+                        <label>
+                            <input class="th_one_input" type="checkbox" name="select_all_checkbox" />全选 </label>
                     </th>
                     <th width="300"><span class="th_shop_text">商品</span></th>
                     <th width="69"><span class="th_shop_text">收货手机</span></th>
                     <th width="69">分销价（元）</th>
                     <th width="81" height="30" bgcolor="F6F6F6">原价（元）</th>
-                    <th width="66">数量</th>
                     <th width="163">券号</th>
-                    <th width="118">商品总价</th>
-                    <th width="93">订单状态</th>
+                    <th width="93">券状态</th>
                 </tr>
-            #{list items:orderItems, as:'row' }
+                #{list items:eCoupons, as:'coupon' }
                 <tr>
                     <td>
-                        <input type="checkbox"/>
+                        #{if coupon.status == models.order.ECouponStatus.UNCONSUMED || coupon.status == models.order.ECouponStatus.EXPIRED}
+                        <input type="checkbox" id="check_coupon_${coupon.id}" value="${coupon.id}" name="couponIds"/>
+                        #{/if}
                     </td>
                     <td align="center" valign="middle">
                         <div class="shop_img">
                             <img src=""/>
                         </div>
-                        <div class="col_one_text">${row.goods.name}</div>
+                        <div class="col_one_text">${coupon.goods.name}</div>
                     </td>
-                    <td width="69" align="center" valign="middle">${row.phone}</td>
-                    <td width="69" align="center" valign="middle">${row.resalerPrice?.formatCurrency('CNY').raw()}</td>
-                    <td width="81" align="center" valign="middle">${row.originalPrice?.formatCurrency('CNY').raw()}</td>
-                    <td width="66" align="center" valign="middle">${row.buyNumber}</td>
-                    <td align="center" valign="middle">
-                           <div class="caozuo_std">${row?.getEcouponSn()}
-                           </div>
+                    <td width="69" align="center" valign="middle">${coupon.orderItems.phone}</td>
+                    <td width="69" align="center" valign="middle">
+                        ${coupon.orderItems.resalerPrice?.formatCurrency('CNY').raw()}
                     </td>
-                    <td align="center" valign="middle">
-                        ${row.resalerPrice.multiply(row.buyNumber)?.formatCurrency('CNY').raw()}
+                    <td width="81" align="center" valign="middle">
+                        ${coupon.orderItems.originalPrice?.formatCurrency('CNY').raw()}
                     </td>
                     <td align="center" valign="middle">
-
+                        <div class="caozuo_std">${coupon?.getMaskedEcouponSn()}
+                        </div>
+                    </td>
+                    <td align="center" valign="middle">
+                        &{'coupon.'+coupon.status}
                     </td>
                 </tr>
-            #{/list}
+                #{/list}
             </table>
+                <label>
+                    <input class="th_one_input" type="checkbox" name="select_all_checkbox" />全选
+                </label>
+                <input type="submit" value="申请退款">
+                <input type="hidden" value="${order.id}" name="orderId">
+            </form>
         </div>
         <div class="buttom_tab_info2">
             商品金额：<span class="font_cheng">${order.amount}元</span>
         </div>
     </div>
 </div>
+<script>
+var set_all_select_all_checkbox =function(checked){
+    $("input[name=select_all_checkbox]").each(function(){
+        this.checked = checked
+    });
+};
+var set_all_goods_checkbox = function(checked){
+    $("input[id^=check_coupon_]").each(function(){
+        this.checked = checked
+    });
+};
+var all_checked= function(){
+    var all_check = true;
+    $("input[id^=check_coupon_]").each(function(){
+        if(this.checked){
+            return true;
+        }else{
+            all_check = false;
+            return false;
+        }
+    });
 
+    return all_check;
+};
+$(window).load(
+    function(){
+    //点击全选
+    $("input[name=select_all_checkbox]").each(function(){
+        $(this).click(
+            function(){
+                if(this.checked){
+                    set_all_select_all_checkbox(true);
+                    set_all_goods_checkbox(true);
+                }else{
+                    set_all_select_all_checkbox(false);
+                    set_all_goods_checkbox(false);
+                }
+                refreshAmount();
+            }
+            )});
+    //点击单个复选框
+    $("input[id^=check_coupon_]").each(function(){
+        $(this).click( function(){
+            if(all_checked()){
+                set_all_select_all_checkbox(true);
+            }else{
+                set_all_select_all_checkbox(false);
+            }
+            refreshAmount();
+        })
+    });
+});
+</script>
