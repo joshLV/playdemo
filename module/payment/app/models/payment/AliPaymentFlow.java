@@ -175,9 +175,7 @@ public class AliPaymentFlow implements PaymentFlow{
                 new PaymentCallbackLog(buyer_email, "alipay", out_trade_no, total_fee, trade_status, log);
 
         boolean success = false;
-        Logger.info("######## alipay verify params start, orderId: " + out_trade_no);
         boolean verifyResult = verifyParams(params);
-        Logger.info("######## alipay verify params end, orderId: " + out_trade_no);
         //验证通知结果
         if (!verifyResult) {
             Logger.error("alipay_notify:支付宝参数验证失败");
@@ -223,6 +221,7 @@ public class AliPaymentFlow implements PaymentFlow{
                 callbackLog.status = "invalid_amount";
             } else if (orderPaid) {
                 Logger.error("alipay_notify:订单已被处理:" + out_trade_no);
+                success = true;
                 callbackLog.status = "processed";
             } else {
                 TradeBill tradeBill = TradeBill.findById(tradeId);
