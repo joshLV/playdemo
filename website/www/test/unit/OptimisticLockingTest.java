@@ -26,6 +26,10 @@ public class OptimisticLockingTest extends UnitTest{
         MyBook mybook = new MyBook();
         mybook.count = 0L;
         mybook.save();
+        
+        BookEnhance book2 = new BookEnhance();
+        book2.count = 0L;
+        book2.save();
     }
 /*    
     private void justrun(final String url){
