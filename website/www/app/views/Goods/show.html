@@ -5,35 +5,33 @@
 #{/set}
 #{set 'moreScripts'}
 <script>
-$(window).load(
-    function () {
-        /**
-         *点击加入购物车按钮
-         */
-        $("#link_add_cart").click(function () {
-            $.post("/carts", {'goodsId':$("#goodsId").val(), 'increment':$("#number").val()},
-                function (data) {
-                    if (data.resultCode == "ok") {
-                        $('#add_cart_result').show();
-                    }
-                });
-            $('#add_cart_result').show();
-            //5秒后自动消失
-            setTimeout("$('#add_cart_result').css('display','none')", 5000);
-        });
+$(function () {
+    /**
+     *点击加入购物车按钮
+     */
+    $("#link_add_cart").click(function () {
+        $.post("/carts", {'goodsId':$("#goodsId").val(), 'increment':$("#number").val()},
+            function (data) {
+                if (data.resultCode == "ok") {
+                    $('#add_cart_result').show();
+                }
+            });
+        $('#add_cart_result').show();
+        //5秒后自动消失
+        setTimeout("$('#add_cart_result').css('display','none')", 5000);
+    });
 
-        $("#link_buy_more").click(function () {
-            $('#add_cart_result').hide();
-        });
+    $("#link_buy_more").click(function () {
+        $('#add_cart_result').hide();
+    });
 
-        $("#link_buy_now").click(function () {
-            var t = $(this);
-            t.attr("href", t.attr("href") + '-' + $("#number").val());
-            return true;
-        });
+    $("#link_buy_now").click(function () {
+        var t = $(this);
+        t.attr("href", t.attr("href") + '-' + $("#number").val());
+        return true;
+    });
 
-    }
-);
+});
 </script>
 #{/set}
 
@@ -50,9 +48,9 @@ $(window).load(
         <li class="type">商品类型:<span>TODO电子消费券</span></li>
         <li class="shipmod">配送方式:<span>TODO手机短信</span></li>
         <li class="deadline">券有效期:<span>${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span></li>
-        <li class="amount">购买数量:<span><input class="num_input_bg" id="number" name="number" type="text"
-                                value="1"/> 件</span>
-                    <span class="error">#{error 'number' /}</span>                        
+        <li class="amount">购买数量:
+            <span><input class="num_input_bg" id="number" name="number" type="text" value="1" /> 件</span>
+            <span class="error">#{error 'number' /}</span>                        
         </li>
         <li class="action">
            <a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
@@ -71,13 +69,15 @@ $(window).load(
             <li>无需快递费</li>
             <li>未消费全额退</li>
         </ul>
-        <ul class="brand">
-            <li>品牌名称: <span>TODO: XXXXXXX</span></li>
-            <li><img src="images/detail_brand_logo.png" alt="85度C蛋糕甜点" /></li>
-            <li>特色产品: <span>蛋糕甜点</span></li>
-            <li>门店数量: <span>820家</span></li>
-            <li>营业时间: <span>早8:00 -- 晚9:00</span></li>
-        </ul>
+        <div class="brand">
+            <h4 class="brand-name">品牌名称: <span>TODO: XXXXXXX</span></h4>
+            <p class="brand-logo"><img src="http://img.uhcdn.com/images/u/detail_brand_logo.png" alt="85度C蛋糕甜点" /></p>
+            <div class="brand-text">
+                特色产品: 蛋糕甜点<br>
+                门店数量: 820家<br>
+                营业时间: 早8:00 -- 晚9:00
+            </div>
+        </div>
     </div>
 </div>
 <div class="wrap clearfix">

@@ -20,6 +20,7 @@ require:
     - accounts -> accounts
     - org.jsoup -> jsoup 1.6.1
     - sms -> sms
+    - asset_package -> asset_package
 
 repositories:
     - mavenRepository:
@@ -55,3 +56,4 @@ repositories:
             - breadcrumbs -> *
             - accounts -> *
             - sms -> *
+            - asset_package -> *

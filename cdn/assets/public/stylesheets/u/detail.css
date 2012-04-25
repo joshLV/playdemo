@@ -80,8 +80,12 @@
     padding: 5px 8px;
     border: 1px solid #E4E4E4;
 }
-.aside .brand li {
+.aside .brand-name,
+.aside .brand-logo {
     padding: 2px 0;
+}
+.aside .brand-text {
+    line-height: 22px;
 }
 
 /** 详情 **/
