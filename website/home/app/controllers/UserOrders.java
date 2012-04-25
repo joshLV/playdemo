@@ -2,11 +2,15 @@ package controllers;
 
 import java.util.List;
 
+import models.accounts.Account;
+import models.accounts.AccountType;
+import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.order.CouponsCondition;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrdersCondition;
+import models.resale.Resaler;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -49,8 +53,12 @@ public class UserOrders extends Controller {
 	 * 订单详情
 	 */
 	public static void details(Long id) {
-		//订单信息
-		models.order.Order order = models.order.Order.findById(id);
+	     //加载用户账户信息
+		User user = SecureCAS.getUser();
+
+        //加载订单信息
+        Order order = Order.find("byIdAndUserIdAndUserType", id, user.getId(), AccountType.CONSUMER).first();
+        
 		List<OrderItems> orderItems = order.orderItems;
 		//收货信息
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "订单详情", "/orders/" + id);

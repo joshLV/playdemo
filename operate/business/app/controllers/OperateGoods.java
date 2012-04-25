@@ -99,12 +99,13 @@ public class OperateGoods extends Controller {
             goods.setLevelPrices(levelPrices);
             goods.materialType = MaterialType.ELECTRONIC;
         }
-
-        String shopIds = "";
+       
+        String shopIds = ",";
         if (goods.shops != null && goods.shops.size() > 0) {
             for (Shop shop : goods.shops) {
                 shopIds += shop.id + ",";
             }
+           
             goods.isAllShop = false;
         } else {
             goods.isAllShop = true;
@@ -136,6 +137,7 @@ public class OperateGoods extends Controller {
         renderArgs.put("categoryList", categoryList);
         renderArgs.put("subCategoryList", subCategoryList);
         renderArgs.put("categoryId", categoryId);
+        
         renderArgs.put("shopIds", shopIds);
         renderArgs.put("isAllShop", goods.isAllShop);
         renderArgs.put("goods", goods);
@@ -316,7 +318,6 @@ public class OperateGoods extends Controller {
         checkSalePrice(goods);
         checkLevelPrice(levelPrices);
         if (Validation.hasErrors()) {
-
             renderArgs.put("imageLargePath", imageLargePath);
             renderShopList(goods.supplierId);
             renderInit(goods);
@@ -369,7 +370,7 @@ public class OperateGoods extends Controller {
 
     /**
      * 上架商品.
-     *
+     *shopIds
      * @param id 商品ID
      */
     public static void onSale(@As(",") Long... id) {
@@ -380,11 +381,13 @@ public class OperateGoods extends Controller {
                 checkSalePrice(goods);
                 checkLevelPrice(goods.getLevelPriceArray());
             }
+            
             renderShopList(goods.supplierId);
             renderArgs.put("imageLargePath", goods.getImageLargePath());
 
             if (Validation.hasErrors() && id.length > 0) {
                 renderSupplierList(goods);
+                
                 renderInit(goods);
                 renderArgs.put("id", goodsId);
                 render("OperateGoods/edit.html", goods);

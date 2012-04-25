@@ -183,6 +183,7 @@ public class ECoupon extends Model {
 	public static Map<String, Object> queryInfo(String eCouponSn, Long supplierId,Long shopId) {
 		ECoupon eCoupon = query(eCouponSn, supplierId);
 		Map<String, Object> queryMap = new HashMap();
+		System.out.println("eCoupon"+eCoupon);
 		if (eCoupon != null) {
 			queryMap.put("name", eCoupon.goods.name);
 			queryMap.put("expireAt", eCoupon.goods.expireAt != null ? df.format(eCoupon.goods.expireAt) : null);
@@ -202,11 +203,12 @@ public class ECoupon extends Model {
 					}
 				}
 				if (cnt == 0) {
+					System.out.println("11111111111111================");
 					queryMap.put("error", 1);
 				}
 			}
 		}
-
+		System.out.println("queryMap================"+queryMap);
 		return queryMap;
 	}
 
