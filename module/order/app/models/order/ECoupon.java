@@ -27,7 +27,6 @@ import models.accounts.TradeStatus;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.RefundUtil;
 import models.accounts.util.TradeUtil;
-import models.sales.Brand;
 import models.sales.Goods;
 import models.sales.Shop;
 
@@ -383,7 +382,7 @@ public class ECoupon extends Model {
     }
 
 	/**
-	 * 得到隐藏处理过的券号
+	 * 得到可以消费的门店
 	 * @return 券号
 	 */
 	public String getConsumedShop(){
@@ -394,5 +393,20 @@ public class ECoupon extends Model {
 			shopName = sp.name;
 		}
 		return shopName;
+	}
+	
+
+	/**
+	 * 如果券过期了则更新券状态
+	 * @return 券状态
+	 */
+	public ECouponStatus updateStatusByexpireAt(){
+		
+		if (goods.expireAt.before(new Date())) {
+			System.out.println(goods.expireAt.before(new Date()));
+			status = ECouponStatus.EXPIRED;
+			//this.save();
+		}
+		return status;
 	}
 }

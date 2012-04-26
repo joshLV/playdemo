@@ -42,12 +42,9 @@ validation.oldPassword=原密码输入的不对！
 validation.newPassword.confirm=新密码和原密码一样，请重新输入！
 
 #订单状态
-order.UNPAID=未支付
-order.PAID=已支付
-order.CANCELED=取消订单
-order.SENT=交易成功
-order.RETURNED=退款
-order.RECEIPT=确认取货
+order.UNPAID=未付款
+order.PAID=交易成功
+order.CANCELED=交易关闭
 
 #券状态
 coupon.DEALING=处理中

@@ -59,9 +59,6 @@ $(window).load(function () {
                #{option "UNPAID"}&{'order.UNPAID'}#{/option}
                #{option "PAID"}&{'order.PAID'}#{/option}
                #{option "CANCELED"}&{'order.CANCELED'}#{/option}
-               #{option "SENT"}&{'order.SENT'}#{/option}
-               #{option "RETURNED"}&{'order.RETURNED'}#{/option}
-               #{option "RECEIPT"}&{'order.RECEIPT'}#{/option}
          #{/select}
        </div>
       </td>
@@ -114,8 +111,7 @@ $(window).load(function () {
         <a class="font_red_one" href="@{UserOrders.pay(row.id)}">付款</a>
        </div>
        #{/if}
-     *{ #{if (row.status == models.order.OrderStatus.PAID
-      || row.status == models.order.OrderStatus.RECEIPT) && rowItem.goods.materialType.toString().equals('REAL')}
+     *{ #{if (row.status == models.order.OrderStatus.PAID) && rowItem.goods.materialType.toString().equals('REAL')}
      <div class="caozuo_std">
         <a class="font_red_one" href="/orders/refund/${row.id}"  id="apply_${row.id}">申请退款</a>
        </div>

@@ -594,7 +594,7 @@ public class Order extends Model {
 		order.deliveryNo = this.deliveryNo;
 		for (OrderItems orderItem : order.orderItems) {
 			if (MaterialType.REAL.equals(orderItem.goods.materialType)){
-				orderItem.status = OrderStatus.SENT;
+				orderItem.status = OrderStatus.PAID;
 				orderItem.save();
 			}
 		}

@@ -183,25 +183,37 @@ $(window).load(function () {
       <td  width="100" align="center">劵号</td>
       <td align="center">商品名称</td>
       <td width="100" height="28" align="center" bgcolor="#FBE8E4">订单号</td>
-      <td height="30" align="center">价格</td>
       <td height="30" align="center">成交时间</td>
-      <td align="center">消费时间</td>
+      <td align="center">过期时间</td>
       <td align="center">状态</td>
       <td align="center">操作</td>
      </tr>
      #{paginate.list items:couponsList, as:'coupon'}
       <tr>
-      <td width="118" height="30" align="center">${coupon.eCouponSn}</td>
-      <td width="177" align="center">${coupon.goods.name}</td>
+      <td width="118" height="30" align="center">${coupon?.eCouponSn}</td>
+      <td width="177" align="center">${coupon?.goods?.name}</td>
       <td width="100" height="31" align="center">${coupon.order.orderNumber}</td>
-      <td width="177" align="center" id="price_${coupon.id}">${coupon.salePrice?.formatCurrency('CNY').raw()}</td>
-      <td width="106" align="center">${coupon.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-      <td width="123" align="center">${coupon.consumedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-      <td width="95" align="center"><span id="status_apply_${coupon.id}">&{'coupon.'+coupon.status}</span></td>
+      <td width="106" align="center">${coupon?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+      <td width="123" align="center">${coupon?.goods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+      #{if "EXPIRED".equals(coupon?.updateStatusByexpireAt().toString())} 
+      <td width="95" align="center" style="color:#03C">
+      <span id="status_apply_${coupon.id}" >
+        已过期
+      </span> 
+       </td> 
+      #{/if}
+      #{else}
+       <td width="95" align="center">
+       <span id="status_apply_${coupon.id}">
+        &{'coupon.'+coupon?.updateStatusByexpireAt()}
+      </span> 
+       </td> 
+      #{/else}
+     
       <td width="103" align="center">
       #{if (coupon.status == models.order.ECouponStatus.UNCONSUMED
       || coupon.status == models.order.ECouponStatus.EXPIRED)}
-      <a href="/coupons/refund/${coupon.id}" name="apply_refund" id="apply_${coupon.id}">申请退款</a>
+      <a href="/coupons/refund/${coupon.id}" name="apply_refund" class="font_blue" id="apply_${coupon.id}">申请退款</a>
       #{/if}
       </td>
      </tr>

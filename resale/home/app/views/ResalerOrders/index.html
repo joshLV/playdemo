@@ -81,9 +81,6 @@ $(window).load(function () {
                #{option "UNPAID"}&{'order.UNPAID'}#{/option}
                #{option "PAID"}&{'order.PAID'}#{/option}
                #{option "CANCELED"}&{'order.CANCELED'}#{/option}
-               #{option "SENT"}&{'order.SENT'}#{/option}
-               #{option "RETURNED"}&{'order.RETURNED'}#{/option}
-               #{option "RECEIPT"}&{'order.RECEIPT'}#{/option}
          #{/select}
        </div>
       </td>
@@ -132,9 +129,9 @@ $(window).load(function () {
         ${rowItem.goods.name}
        </div>
       </td>
-      <td width="100" align="center">${rowItem.buyNumber}</td>
-      <td width="80" align="center">${rowItem.resalerPrice?.formatCurrency('CNY').raw()}</td>
-      <td width="78" align="center" >${rowItem.buyNumber}</td>
+      <td width="100" align="center">${rowItem?.phone}</td>
+      <td width="80" align="center">${rowItem?.resalerPrice?.formatCurrency('CNY').raw()}</td>
+      <td width="78" align="center" >${rowItem?.buyNumber}</td>
         #{if (++m == 1) }
       <td width="88"align="center" rowspan="${row.orderItems.size()}">${row.amount?.formatCurrency('CNY').raw()}</td>
       <td width="85" align="center" rowspan="${row.orderItems.size()}">
@@ -146,8 +143,7 @@ $(window).load(function () {
         <a class="font_red_one" href="@{ResalerOrders.pay(row.id)}">付款</a>
        </div>
        #{/if}
-     *{ #{if (row.status == models.order.OrderStatus.PAID
-      || row.status == models.order.OrderStatus.RECEIPT) && rowItem.goods.materialType.toString().equals('REAL')}
+     *{ #{if (row.status == models.order.OrderStatus.PAID) && rowItem.goods.materialType.toString().equals('REAL')}
      <div class="caozuo_std">
         <a class="font_red_one" href="/orders/refund/${row.id}"  id="apply_${row.id}">申请退款</a>
        </div>
