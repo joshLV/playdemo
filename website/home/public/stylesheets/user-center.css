@@ -1,0 +1,44 @@
+.aside {
+    float: left;
+    width: 148px;
+    margin-right: 10px;
+    border: 1px solid #D3D3D3;
+}
+.menu h3 {
+    padding: 4px 0 4px 10px;
+    color: #25B4AB;
+    font-size: 12px;
+    border-bottom: solid 1px #DADADA;
+    background: url(http://img.uhcdn.com/images/u/u_left_bg.png) repeat-x 0 0;
+}
+.menu ul {
+    border-bottom: solid 1px #DADADA;
+}
+.menu li {
+    /* margin: 5px 0; */
+}
+.menu li a {
+    display: block;
+    /* padding: 3px 0 3px 12px; */
+    color: #444;
+}
+.menu li .current,
+.menu li a:hover {
+    color: #25B4AB;
+    text-decoration: none;
+    background-color: #F6F6F6;
+}
+
+.section {
+    float: right;
+    width: 800px;
+}
+.zhu_nav_title {
+    padding: 4px 0 4px 8px;
+    margin-bottom: 10px;
+    border: 1px solid #E4E4E4;
+    background-color: #F9FAFC;
+}
+.zhu_nav_title a:hover {
+    color: #25B4AB;
+}
