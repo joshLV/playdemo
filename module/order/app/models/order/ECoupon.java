@@ -197,7 +197,7 @@ public class ECoupon extends Model {
 			if (!eCoupon.goods.isAllShop) {
 				int cnt =0;
 				for (Shop shop :eCoupon.goods.shops) {
-					if (shop.id == shopId){
+					if (shop.id.compareTo(shopId) == 0){
 						cnt ++;
 					}
 				}
