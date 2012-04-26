@@ -22,7 +22,8 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 import com.sun.org.apache.xpath.internal.operations.Or;
 import com.uhuila.common.constants.DeletedStatus;
-import models.accounts.AccountType;
+import models.accounts.*;
+import models.accounts.util.AccountUtil;
 import models.consumer.Address;
 import models.consumer.User;
 import models.mail.CouponMessage;
@@ -315,6 +316,16 @@ public class Order extends Model {
 		this.status = OrderStatus.PAID;
 		this.paidAt = new Date();
 		this.save();
+        Account account = AccountUtil.getAccount(this.userId, this.userType);
+        //如果网银付款成功，则补加两个账户交易记录
+        if (this.discountPay.compareTo(BigDecimal.ZERO) > 0){
+            new AccountSequence(account, AccountSequenceFlag.VOSTRO, AccountSequenceType.CHARGE,
+                    account.amount, account.amount.add(this.discountPay),
+                    this.discountPay, BigDecimal.ZERO, this.payRequestId ).save();
+            new AccountSequence(account, AccountSequenceFlag.NOSTRO, AccountSequenceType.PAY,
+                    account.amount.add(this.discountPay), account.amount,
+                    this.discountPay, BigDecimal.ZERO, this.payRequestId ).save();
+        }
 		//如果是电子券
 		if (this.orderItems != null) {
 			for (OrderItems orderItem : this.orderItems) {

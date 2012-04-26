@@ -284,7 +284,8 @@ public class ECoupon extends Model {
 	 * 会员中心 券号列表
 	 *
 	 * @param condition      条件
-	 * @param user           用户信息
+	 * @param userId         用户ID
+     * @param accountType    账户类型
 	 * @param pageNumber     页数
 	 * @param pageSize       记录数
 	 * @return couponsPage 券记录
