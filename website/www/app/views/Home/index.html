@@ -2,7 +2,7 @@
 #{set title:'优惠啦 - 首页' /}
 
 #{set 'moreStyles'}
-  #{asset.css src:['/u/index.css'] /}
+    #{asset.css src:['/u/index.css'] /}
 #{/set}
 
 <div class="wrap clearfix">
@@ -10,31 +10,23 @@
         <div class="bizarea-hd">区域商圈</div>
         <div class="bizarea-bd">
             <ul class="area clearfix">
-                <li><a href="" target="_blank">杨浦区</a></li>
-                <li><a href="" target="_blank">虹口区</a></li>
-                <li><a href="" target="_blank">闸北区</a></li>
-                <li><a href="" target="_blank">普陀区</a></li>
-                <li><a href="" target="_blank">黄浦区</a></li>
-                <li><a href="" target="_blank">静安区</a></li>
-                <li><a href="" target="_blank">长宁区</a></li>
-                <li><a href="" target="_blank">卢湾区</a></li>
-                <li><a href="" target="_blank">徐汇区</a></li>
-                <li><a href="" target="_blank">闵行区</a></li>
-                <li><a href="" target="_blank">浦东新区</a></li>
+            #{list districts, as:'district'}
+                <li><a href="/goods/list/0-021-${district.id}">${district.name}</a></li>
+            #{/list}
             </ul>
             <ul class="ring clearfix">
-              #{list areas, as:'area'}
+            #{list areas, as:'area'}
                 <li><a href="/goods/list/0-021-0-${area.id}">${area.name}</a></li>
-              #{/list}
+            #{/list}
             </ul>
         </div>
     </div>
 
     <div id="slides">
         <div class="slides_container">
-            <a href="" target="_blank"><img src="#{asset.url href:'/images/u/s1.png'/}" width="478" height="218" /></a>
-            <a href="" target="_blank"><img src="#{asset.url href:'/images/u/s2.png'/}" width="478" height="218" /></a>
-            <a href="" target="_blank"><img src="#{asset.url href:'/images/u/s3.png'/}" width="478" height="218" /></a>
+            <a href="" target="_blank"><img src="#{asset.url href:'/images/u/s1.png'/}" width="478" height="218"/></a>
+            <a href="" target="_blank"><img src="#{asset.url href:'/images/u/s2.png'/}" width="478" height="218"/></a>
+            <a href="" target="_blank"><img src="#{asset.url href:'/images/u/s3.png'/}" width="478" height="218"/></a>
         </div>
     </div>
 
@@ -58,36 +50,24 @@
     <div class="recommendation">
         <div class="recommendation-hd">网友推荐商品</div>
         <ul class="recommendation-bd clearfix">
+        #{list recommendGoodsList, as:'aGoods'}
             <li>
-                <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="150" height="130" alt="" /></a>
-                <p><a href="">DQ冰雪皇后!50元DQ冰纷卡1张!</a></p>
-                <span>原价:<del>19.88</del> | 8.5折</span>
-                <span>现价:<strong>&yen;16.00</strong></span>
+                <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="150" height="130"
+                                                                   alt="${aGoods.name}"/></a>
+                <p><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
+                <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
+                <span>现价:<strong>&yen;${aGoods.salePrice}</strong></span>
             </li>
-            <li>
-                <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="150" height="130" alt="" /></a>
-                <p><a href="">《超级战舰》观众大呼被轰炸海里玩漂移好爽，不是3D胜似</a></p>
-                <span>原价:<del>19.88</del> | 8.5折</span>
-                <span>现价:<strong>&yen;16.8</strong></span>
-            </li>
-            <li>
-                <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="150" height="130" alt="" /></a>
-                <p><a href="">五一大促专场，吃喝玩乐一折起！</a></p>
-                <span>原价:<del>19.88</del> | 8.5折</span>
-                <span>现价:<strong>&yen;16.8</strong></span>
-            <li>
-                <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="150" height="130" alt="" /></a>
-                <p><a href="">光大会展国际大酒店，步行至地铁1号线仅需10分钟！</a></p>
-                <span>原价:<del>19.88</del> | 8.5折</span>
-                <span>现价:<strong>&yen;16.8</strong></span>
-            </li>
+        #{/list}
         </ul>
     </div>
     <div class="tuangou">
         <div class="tuangou-hd">今日团购</div>
         <div class="tuangou-bd">
-            <a class="image" href="" target="_blank"><img src="#{asset.url href:'/images/u/tuan.png'/}" width="220" height="170" alt="" /></a>
+            <a class="image" href="" target="_blank"><img src="#{asset.url href:'/images/u/tuan.png'/}" width="220"
+                                                          height="170" alt=""/></a>
             <a class="title" href="" href="_blank">麦当劳59元超值营养套餐9折优惠券</a>
+
             <div class="detail clearfix">
                 <div class="action">
                     <strong><i>&yen;</i>52.00</strong>
@@ -104,56 +84,35 @@
 <div class="wrap">
     <div class="boutique-hd">精选商品</div>
     <ul class="boutique-bd clearfix">
-     #{list goodsList, as:'aGoods'}
+    #{list goodsList, as:'aGoods'}
         <li>
-            <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="170" height="130" alt="${aGoods.name}" /></a>
+            <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="170" height="130"
+                                                               alt="${aGoods.name}"/></a>
             <p><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
-            <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress?aGoods.discountExpress+'折':'无优惠'}</span>
+            <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
             <span>现价:<strong>&yen;${aGoods.salePrice}</strong></span>
         </li>
-     #{/list}
+    #{/list}
     </ul>
 </div>
 
 <div class="wrap">
     <div class="boutique-hd">近日成交商品</div>
     <ul class="boutique-bd clearfix">
+    #{list recentGoodsList, as:'aGoods'}
         <li>
-            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="170" height="130" alt="" /></a>
-            <p><a href="">光大会展国际大酒店，步行至地铁1号线仅需10分钟！</a></p>
-            <span>原价:<del>19.88</del> | 8.5折</span>
-            <span>现价:<strong>&yen;16.8</strong></span>
+            <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="170" height="130"
+                                                               alt="${aGoods.name}"/></a>
+            <p><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
+            <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
+            <span>现价:<strong>&yen;${aGoods.salePrice}</strong></span>
         </li>
-        <li>
-            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="170" height="130" alt="" /></a>
-            <p><a href="">光大会展国际大酒店，步行至地铁1号线仅需10分钟！</a></p>
-            <span>原价:<del>19.88</del> | 8.5折</span>
-            <span>现价:<strong>&yen;16.8</strong></span>
-        </li>
-        <li>
-            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="170" height="130" alt="" /></a>
-            <p><a href="">光大会展国际大酒店，步行至地铁1号线仅需10分钟！</a></p>
-            <span>原价:<del>19.88</del> | 8.5折</span>
-            <span>现价:<strong>&yen;16.8</strong></span>
-        </li>
-        <li>
-            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="170" height="130" alt="" /></a>
-            <p><a href="">光大会展国际大酒店，步行至地铁1号线仅需10分钟！</a></p>
-            <span>原价:<del>19.88</del> | 8.5折</span>
-            <span>现价:<strong>&yen;16.8</strong></span>
-        </li>
-        <li>
-            <a href=""><img src="#{asset.url href:'/images/u/quan.png'/}" width="170" height="130" alt="" /></a>
-            <p><a href="">光大会展国际大酒店，步行至地铁1号线仅需10分钟！</a></p>
-            <span>原价:<del>19.88</del> | 8.5折</span>
-            <span>现价:<strong>&yen;16.8</strong></span>
-        </li>
+    #{/list}
     </ul>
 </div>
 
 
-
-        <!-- Will Delete SOON.
+<!-- Will Delete SOON.
         <div id="left_content_top3">
             <div>
                 <ul class="hot_shangpin">

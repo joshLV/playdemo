@@ -74,8 +74,8 @@
         </div>
         <div class="buttom_tab_info2">
         #{if "[REAL]".equals(orderItems.goods.materialType)}
-            商品金额：<span class="font_cheng">${order?.amount.subtract(orderItems?.goods?.freight)}元</span>
-            运费：<span class="font_cheng">${orderItems?.goods?.freight}元</span>
+            商品金额：<span class="font_cheng">${order?.amount.subtract(new java.math.BigDecimal("5"))}元</span>
+            运费：<span class="font_cheng">5元</span>
         #{/if}
         #{else}
             商品金额：<span class="font_cheng">${order?.amount}元</span>

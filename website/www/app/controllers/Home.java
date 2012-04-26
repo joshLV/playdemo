@@ -2,6 +2,7 @@ package controllers;
 
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
+import models.order.Cart;
 import models.sales.Area;
 import models.sales.Category;
 import play.mvc.Controller;
@@ -21,16 +22,26 @@ import java.util.List;
 public class Home extends Controller {
 
     public static void index(long categoryId) {
+        //精选商品
         List<models.sales.Goods> goodsList;
-        if (categoryId==0){
+        if (categoryId == 0) {
             goodsList = models.sales.Goods.findTop(5);
-        }else{
+        } else {
             goodsList = models.sales.Goods.findTopByCategory(categoryId, 5);
         }
-        List<Area> areas = Area.findTopAreas(8);
+        //近日成交商品
+        List<models.sales.Goods> recentGoodsList = models.sales.Goods.findTradeRecently(5);
+
+        //网友推荐商品
+        List<models.sales.Goods> recommendGoodsList = models.sales.Goods.findTopRecommend(4);
+
+        //前n个区域
+        List<Area> districts = Area.findTopDistricts(Goods.SHANGHAI, 12);
+        //前n个商圈
+        List<Area> areas = Area.findTopAreas(12);
         List<Category> categories = Category.findTop(8);
 
-        renderArgs.put("categoryId", new Long(categoryId));
-        render(goodsList, categories, areas);
+        renderArgs.put("categoryId", categoryId);
+        render(goodsList, recentGoodsList, recommendGoodsList, categories, districts, areas);
     }
 }

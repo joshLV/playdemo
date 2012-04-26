@@ -57,7 +57,7 @@ public class Goods extends Controller {
         render(goodsPage, areas, districts, categories, brands, breadcrumbs);
     }
 
-    public static void preview(String uuid,boolean isSupplier) {
+    public static void preview(String uuid, boolean isSupplier) {
         models.sales.Goods goods = models.sales.Goods.getPreviewGoods(uuid);
         showGoods(goods);
         render(isSupplier);
@@ -67,7 +67,7 @@ public class Goods extends Controller {
         if (goods == null) {
             notFound();
         }
-       BreadcrumbList breadcrumbs = new BreadcrumbList();
+        BreadcrumbList breadcrumbs = new BreadcrumbList();
         long categoryId = 0;
         if (goods.categories != null && goods.categories.size() > 0) {
             Category category = goods.categories.iterator().next();
@@ -78,8 +78,8 @@ public class Goods extends Controller {
             breadcrumbs.append(goods.brand.name, "/goods/list/" + categoryId + "-" + SHANGHAI + "-0-0-" + goods.brand
                     .id);
         }
-        renderArgs.put("goods",goods);
-        renderArgs.put("breadcrumbs",breadcrumbs);
+        renderArgs.put("goods", goods);
+        renderArgs.put("breadcrumbs", breadcrumbs);
 
     }
 
@@ -89,11 +89,26 @@ public class Goods extends Controller {
      * @param id 商品
      */
     public static void show(long id) {
+        models.sales.Goods.addRecommend(id, false);
         models.sales.Goods goods = models.sales.Goods.findUnDeletedById(id);
 
         showGoods(goods);
 
         render();
+    }
+
+    /**
+     * 用户喜欢指定商品.
+     *
+     * @param id    商品标识
+     */
+    public static void like(long id) {
+        models.sales.Goods.addRecommend(id, true);
+        models.sales.Goods goods = models.sales.Goods.findUnDeletedById(id);
+
+        showGoods(goods);
+
+        render("Goods/show.html");
     }
 
     /**

@@ -6,5 +6,6 @@ package models.order;
 public enum OrderStatus{
     UNPAID,
     PAID,
-    CANCELED
+    CANCELED,
+    SENT
 }

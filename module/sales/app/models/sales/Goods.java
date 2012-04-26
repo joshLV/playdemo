@@ -228,9 +228,14 @@ public class Goods extends Model {
     public Brand brand;
 
     /**
-     * 运费
+     * 推荐指数.
      */
-    public BigDecimal freight;
+    public Integer recommend = 0;
+
+    /**
+     * 收藏指数.
+     */
+    public Integer favorite = 0;
 
     @Transient
     public String salePriceBegin;
@@ -341,13 +346,13 @@ public class Goods extends Model {
     public String getDiscountExpress() {
         float discount = getDiscount();
         if (discount >= 10) {
-            return "";
+            return "无优惠";
         }
         if (discount <= 0) {
-            return "0";
+            return "";
         }
 
-        return String.valueOf(discount);
+        return String.valueOf(discount) + "折";
     }
 
     public void setLevelPrices(List<GoodsLevelPrice> levelPrices) {
@@ -392,7 +397,6 @@ public class Goods extends Model {
         }
         return levelPrices;
     }
-
 
     /**
      * 最小规格图片路径
@@ -585,7 +589,7 @@ public class Goods extends Model {
 
             goods.shops.addAll(Shop.findShopBySupplier(goods.supplierId));
         }
-        if(id == null && imageFile == null) {
+        if (id == null && imageFile == null) {
             goods.imagePath = null;
         } else if (imageFile == null || imageFile.getName() == null) {
             Goods originalGoods = Goods.findById(id);
@@ -710,5 +714,50 @@ public class Goods extends Model {
             return Shop.findShopBySupplier(supplierId).iterator();
         }
         return shops.iterator();
+    }
+
+    /**
+     * 获取最近成交的n个商品
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Goods> findTradeRecently(int limit) {
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("select i.goods from OrderItems i group by i.goods order by i.createdAt DESC");
+        q.setMaxResults(limit);
+        return q.getResultList();
+    }
+
+    /**
+     * 增加商品的推荐指数.
+     *
+     * @param id
+     * @param like
+     */
+    public static void addRecommend(Long id, boolean like) {
+        Goods goods = Goods.findById(id);
+        if (goods == null){
+            return;
+        }
+        int number = 1;
+        if (like) {
+            number = 100;
+        }
+        if (goods.recommend ==  null){
+            goods.recommend = 0;
+        }
+        goods.recommend += number;
+        goods.save();
+    }
+
+    /**
+     * 获取推荐指数高的前n个商品
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Goods> findTopRecommend(int limit) {
+        return Goods.find("order by recommend DESC").fetch(limit);
     }
 }

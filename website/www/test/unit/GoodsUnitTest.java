@@ -1,9 +1,18 @@
 package unit;
 
 import com.uhuila.common.constants.DeletedStatus;
+import models.order.Order;
+import models.order.OrderItems;
 import models.resale.Resaler;
 import models.resale.ResalerLevel;
-import models.sales.*;
+import models.sales.Area;
+import models.sales.Brand;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.GoodsCondition;
+import models.sales.GoodsLevelPrice;
+import models.sales.GoodsStatus;
+import models.sales.Shop;
 import models.supplier.Supplier;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +37,8 @@ public class GoodsUnitTest extends UnitTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        Fixtures.delete(OrderItems.class);
+        Fixtures.delete(Order.class);
         Fixtures.delete(Shop.class);
         Fixtures.delete(Goods.class);
         Fixtures.delete(Category.class);
@@ -40,6 +51,7 @@ public class GoodsUnitTest extends UnitTest {
         Fixtures.loadModels("fixture/brands_unit.yml");
         Fixtures.loadModels("fixture/shops_unit.yml");
         Fixtures.loadModels("fixture/goods_unit.yml");
+        Fixtures.loadModels("fixture/orders.yml");
     }
 
     @Test
@@ -63,23 +75,23 @@ public class GoodsUnitTest extends UnitTest {
     public void testGetDiscountExpress() {
         models.sales.Goods goods = new Goods();
         goods.setDiscount(10f);
-        assertEquals("", goods.getDiscountExpress());
+        assertEquals("无优惠", goods.getDiscountExpress());
 
         goods.setDiscount(9.8f);
-        assertEquals("9.8", goods.getDiscountExpress());
+        assertEquals("9.8折", goods.getDiscountExpress());
 
         goods.setDiscount(1f);
-        assertEquals("1.0", goods.getDiscountExpress());
+        assertEquals("1.0折", goods.getDiscountExpress());
 
 
         goods.setDiscount(12f);
-        assertEquals("", goods.getDiscountExpress());
+        assertEquals("无优惠", goods.getDiscountExpress());
 
         goods.setDiscount(-1f);
-        assertEquals("0", goods.getDiscountExpress());
+        assertEquals("", goods.getDiscountExpress());
 
         goods.setDiscount(0f);
-        assertEquals("0", goods.getDiscountExpress());
+        assertEquals("", goods.getDiscountExpress());
     }
 
     @Test
@@ -279,7 +291,6 @@ public class GoodsUnitTest extends UnitTest {
         assertEquals(0, prices[2].intValue());
         assertEquals(0, prices[3].intValue());
 
-
         GoodsLevelPrice priceObj = new GoodsLevelPrice(goods, ResalerLevel.NORMAL, BigDecimal.TEN);
         List<GoodsLevelPrice> priceList = new ArrayList<>();
         priceList.add(priceObj);
@@ -289,6 +300,24 @@ public class GoodsUnitTest extends UnitTest {
         assertEquals(0, updatedPrices[1].intValue());
         assertEquals(0, updatedPrices[2].intValue());
         assertEquals(0, updatedPrices[3].intValue());
+    }
+
+    @Test
+    public void testFindTradeGoodsRecently() {
+        List<Goods> goodsList = Goods.findTradeRecently(3);
+        assertEquals(1, goodsList.size());
+        assertEquals("哈根达斯100元抵用券", goodsList.get(0).name);
+    }
+
+    @Test
+    public void testAddRecommend() {
+        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
+        Goods.addRecommend(goodsId, true);
+        Goods goods = Goods.findById(goodsId);
+        assertEquals(100, goods.recommend.intValue());
+
+        Goods.addRecommend(goodsId, false);
+        assertEquals(101, goods.recommend.intValue());
     }
 
 }

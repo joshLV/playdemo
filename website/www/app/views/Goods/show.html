@@ -1,63 +1,66 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 商品详情' /}
 #{set 'moreStyles'}
-#{asset.css src:['/u/detail.css']/}
+    #{asset.css src:['/u/detail.css']/}
 #{/set}
 #{set 'moreScripts'}
 <script>
-$(function () {
-    /**
-     *点击加入购物车按钮
-     */
-    $("#link_add_cart").click(function () {
-        $.post("/carts", {'goodsId':$("#goodsId").val(), 'increment':$("#number").val()},
-            function (data) {
-                if (data.resultCode == "ok") {
-                    $('#add_cart_result').show();
-                }
-            });
-        $('#add_cart_result').show();
-        //5秒后自动消失
-        setTimeout("$('#add_cart_result').css('display','none')", 5000);
-    });
+    $(function () {
+        /**
+         *点击加入购物车按钮
+         */
+        $("#link_add_cart").click(function () {
+            $.post("/carts", {'goodsId':$("#goodsId").val(), 'increment':$("#number").val()},
+                    function (data) {
+                        if (data.resultCode == "ok") {
+                            $('#add_cart_result').show();
+                        }
+                    });
+            $('#add_cart_result').show();
+            //5秒后自动消失
+            setTimeout("$('#add_cart_result').css('display','none')", 5000);
+        });
 
-    $("#link_buy_more").click(function () {
-        $('#add_cart_result').hide();
-    });
+        $("#link_buy_more").click(function () {
+            $('#add_cart_result').hide();
+        });
 
-    $("#link_buy_now").click(function () {
-        var t = $(this);
-        t.attr("href", t.attr("href") + '-' + $("#number").val());
-        return true;
-    });
+        $("#link_buy_now").click(function () {
+            var t = $(this);
+            t.attr("href", t.attr("href") + '-' + $("#number").val());
+            return true;
+        });
 
-});
+    });
 </script>
 #{/set}
 
 <div class="wrap clearfix">
     <h3 class="title">${goods.name}</h3>
+
     <div class="photo">
-        <img src="${goods.imageLargePath}" width="265" height="290" />
+        <img src="${goods.imageLargePath}" width="265" height="290"/>
     </div>
     <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
     <ul class="property">
         <li class="price">现　　价:<span>&yen;${goods.salePrice}</span></li>
-        <li class="cost">原　　价:<del>&yen;${goods.faceValue}</del></li>
-        <li class="discount">折　　扣:<span>${goods.discountExpress?goods.discountExpress+'折':'无优惠'}</span></li>
+        <li class="cost">原　　价:
+            <del>&yen;${goods.faceValue}</del>
+        </li>
+        <li class="discount">折　　扣:<span>${goods.discountExpress}</span></li>
         <li class="type">商品类型:<span>TODO电子消费券</span></li>
         <li class="shipmod">配送方式:<span>TODO手机短信</span></li>
         <li class="deadline">券有效期:<span>${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span></li>
         <li class="amount">购买数量:
-            <span><input class="num_input_bg" id="number" name="number" type="text" value="1" /> 件</span>
-            <span class="error">#{error 'number' /}</span>                        
+            <span><input class="num_input_bg" id="number" name="number" type="text" value="1"/> 件</span>
+            <span class="error">#{error 'number' /}</span>
         </li>
         <li class="action">
-           <a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
-           <a class="add" id="link_add_cart" href="#">加入购物车</a>
+            <a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
+            <a class="add" id="link_add_cart" href="#">加入购物车</a>
         </li>
         <li id="add_cart_result" class="buttom_dibu"
-             style="display: none;">已成功添加到购物车！
+            style="display: none;">已成功添加到购物车！
             <a id="link_buy_more" href="#"><span
                     class="zi_gray">继续购物</span></a>
             <a href="/carts"><span class="zi_gray">查看购物车</span></a>
@@ -71,9 +74,11 @@ $(function () {
         </ul>
         <div class="brand">
             <h4 class="brand-name">品牌名称: <span>${goods.brand?.name}</span></h4>
+
             <p class="brand-logo"><img src="${goods.brand?.showLogo}" height="83"
                                        width="195"
-                                       alt="${goods.brand?.name}" /></p>
+                                       alt="${goods.brand?.name}"/></p>
+
             <div class="brand-text">${goods.brand?.introduce.raw()}
             </div>
         </div>
@@ -86,9 +91,9 @@ $(function () {
     </ul>
     <div id="J_tabtxt" class="tabtxt">
         <div class="product-info txt-item">
-           #{if goods.prompt != null}
-              ${goods?.prompt?.raw()}
-           #{/if}        
+        #{if goods.prompt != null}
+        ${goods?.prompt?.raw()}
+        #{/if}
            ${goods?.details?.raw()}
         </div>
         <div class="applicable-store txt-item">
@@ -105,7 +110,7 @@ $(function () {
                     </tr>
                 #{/list}
             #{/if}
-            </table>          
+            </table>
         </div>
     </div>
 </div>
