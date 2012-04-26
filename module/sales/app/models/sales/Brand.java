@@ -10,7 +10,11 @@ import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +29,7 @@ public class Brand extends Model {
     public Supplier supplier;
     @Required
     @Min(0)
-    @Column(name="display_order")
+    @Column(name = "display_order")
     public int displayOrder = 100; //显示次序，默认100
     //    @Time
 //    public String workAt;      //营业时间上班时间
@@ -51,45 +55,59 @@ public class Brand extends Model {
     public String getOriginalLogo() {
         return PathUtil.getImageUrl(IMAGE_SERVER, logo, ImageSize.ORIGINAL);
     }
-/*
-    @Transient
-    @MaxSize(2)
-    public String workAtHour;
-    @Transient
-    @MaxSize(2)
-    public String workAtMin;
-    @Transient
-    @MaxSize(2)
-    public String closeAtHour;
-    @Transient
-    @MaxSize(2)
-    public String closeAtMin;
 
-    public void setWorkAt(String workAt) {
-        this.workAt = workAt;
-        String[] workAtParts = workAt.split(":");
-        if (workAtParts != null && workAtParts.length == 2) {
-            workAtHour = workAtParts[0];
-            workAtMin = workAtParts[1];
+    /*
+        @Transient
+        @MaxSize(2)
+        public String workAtHour;
+        @Transient
+        @MaxSize(2)
+        public String workAtMin;
+        @Transient
+        @MaxSize(2)
+        public String closeAtHour;
+        @Transient
+        @MaxSize(2)
+        public String closeAtMin;
+
+        public void setWorkAt(String workAt) {
+            this.workAt = workAt;
+            String[] workAtParts = workAt.split(":");
+            if (workAtParts != null && workAtParts.length == 2) {
+                workAtHour = workAtParts[0];
+                workAtMin = workAtParts[1];
+            }
         }
-    }
 
-    public void setCloseAt(String closeAt) {
-        this.closeAt = closeAt;
-        String[] closeAtParts = closeAt.split(":");
-        if (closeAtParts != null && closeAtParts.length == 2) {
-            closeAtHour = closeAtParts[0];
-            closeAtMin = closeAtParts[1];
+        public void setCloseAt(String closeAt) {
+            this.closeAt = closeAt;
+            String[] closeAtParts = closeAt.split(":");
+            if (closeAtParts != null && closeAtParts.length == 2) {
+                closeAtHour = closeAtParts[0];
+                closeAtMin = closeAtParts[1];
+            }
         }
-    }
 
-    @Override
-    public boolean create() {
-        this.workAt = workAtHour + ":" + workAtMin;
-        this.closeAt = closeAtHour + ":" + closeAtMin;
-        return super.create();
+        @Override
+        public boolean create() {
+            this.workAt = workAtHour + ":" + workAtMin;
+            this.closeAt = closeAtHour + ":" + closeAtMin;
+            return super.create();
+        }
+    */
+    public static void update(Long id, Brand brand) {
+        Brand oldBrand = Brand.findById(id);
+        if (oldBrand == null) {
+            return;
+        }
+        oldBrand.name = brand.name;
+        oldBrand.displayOrder = brand.displayOrder;
+        oldBrand.introduce = brand.introduce;
+        if (brand.logo != null) {
+            oldBrand.logo = brand.logo;
+        }
+        oldBrand.save();
     }
-*/
 
     public static List<Brand> findTop(int limit) {
         return find("order by displayOrder").fetch(limit);

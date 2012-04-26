@@ -162,7 +162,7 @@ public class OperateBrands extends Controller {
             e.printStackTrace();
             error(e);
         }
-        brand.save();
+        Brand.update(id, brand);
 
         index(null);
     }
