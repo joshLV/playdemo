@@ -1,12 +1,15 @@
 #{fixture delete:'all', load:'fixture/carts.yml' /}
 #{selenium 'Test Carts/index.html'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}')
+assertText('id=carts_size','0')
 click('id=link_add_cart')
 waitForElementPresent('id=add_cart_result')
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}')
+assertText('id=carts_size','1')
 click('id=link_add_cart')
 waitForElementPresent('id=add_cart_result')
 open('/carts')
+assertText('id=carts_size','2')
 verifyValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")}','1')
 verifyValue('id=num_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}','1')
 click('//tr[@id='row_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")}']/td[4]/a[2]/img')
