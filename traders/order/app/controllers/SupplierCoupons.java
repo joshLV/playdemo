@@ -11,10 +11,13 @@ import navigation.annotations.ActiveNavigation;
 
 import org.apache.commons.lang.StringUtils;
 
+import play.Play;
 import play.data.validation.Validation;
 import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
+
+import com.uhuila.common.util.DateUtil;
 
 @With(SupplierRbac.class)
 public class SupplierCoupons extends Controller {
@@ -34,13 +37,14 @@ public class SupplierCoupons extends Controller {
 		render("SupplierCoupons/index.html",shopList,supplierUser,supplierSetting);
 	}
 
+	
 	/**
 	 * 查询
 	 *
 	 * @param eCouponSn 券号
 	 */
 	public static void queryCoupons(Long shopId,String eCouponSn) {
-
+		
 		if (Validation.hasErrors()) {
 			params.flash();
 			Validation.keep();
@@ -48,6 +52,7 @@ public class SupplierCoupons extends Controller {
 		}
 
 		Long supplierId = SupplierRbac.currentUser().supplier.id;
+		System.out.println("supplierId"+supplierId);
 		//根据页面录入券号查询对应信息
 		Map<String, Object> queryMap = ECoupon.queryInfo(eCouponSn, supplierId,shopId);
 		renderJSON(queryMap);

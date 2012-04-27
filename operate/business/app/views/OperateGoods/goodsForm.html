@@ -61,6 +61,10 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 #{/list}
 
 #{layout_operate.textField name:'goods.baseSale', value:goods?.baseSale, note:'件', required:true/}
+
+#{layout_operate.timeScopeField name:'goods.useTime', begin:'goods.useBeginTime',end:'goods.useEndTime',
+beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
+
 #{if "add".equals(action)}
     #{layout_operate.fileField name:'imagePath', required:true/}
 #{/if}

@@ -3,6 +3,22 @@
 #{set title:'商户验证消费券' /}
 #{set 'moreScripts'}
  <script src="@{'/public/javascripts/coupons.js'}" type="text/javascript" charset="UTF-8"></script>
+ <script type="text/javascript">
+ $(window).load(function(){
+	 if (!${timeFlag}) {
+		 $("#shopId").attr("disabled",true);
+		 $("#eCouponSn").attr("disabled",true);
+		 $("#query").attr("disabled",true);
+		 $("#statusw").html("<font color=red>对不起，只能在11：00-14：00内使用消费券！</font>");
+	 } else {
+		 $("#query").attr("disabled",false);
+		 $("#shopId").attr("disabled",false);
+         $("#eCouponSn").attr("disabled",false);
+		 $("#statusw").html("");
+	 }
+ });
+</script>
+ 
 #{/set}
  <legend>商户验证消费券</legend>
 <div class="control-group">

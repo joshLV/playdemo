@@ -1,4 +1,10 @@
 $(window).load(function(){
+	  $("#eCouponSn").click(function() {
+		  $("#checksn").html("");
+		  $("#showinfo").html("");
+		  $("#statusw").html("");
+	  });
+	
     $("#query").click(function() {
         var eCouponSn = $("#eCouponSn").val();
         var shopId = $("#shopId").val();
@@ -22,7 +28,7 @@ $(window).load(function(){
                             $("#showinfo").html('券编号: '+data.eCouponSn+'<br />商品名称: '+data.name+'<br />消费日期：'+data.consumedAt);
                         }else if(data.status =="EXPIRED"){
                              $("#checksn").html("<font color=red>此券已过期!</font>");
-                             $("#showinfo").html('券编号: '+data.eCouponSn+'<br />商品名称: '+data.name);
+                             $("#showinfo").html('券编号: '+data.eCouponSn+'<br />商品名称: '+data.name+'<br />截止日期：'+data.expireAt);
                         }else if(data.statu =="REFUND"){
                             $("#checksn").html("<font color=red>此券已经退款，无法再使用该券号进行消费!</font>");
                             $("#sure").attr("disabled",true);
@@ -35,6 +41,9 @@ $(window).load(function(){
                         } 
                     } else if (data.error ==1) { 
                     	 $("#checksn").html("<font color=red>对不起，此券不能在 "+shopName+"门店使用!</font>");
+                    } else if (data.error ==2) { 
+                    	$("#checksn").html("<font color=red>对不起，只能在今天"+data.timeBegin+"~"+data.timeEnd+"时间内使用该券!</font>");
+                    	$("#showinfo").html("");
                     } else{
                         $("#checksn").html("<font color=red>对不起，没有该券的信息!</font>");
                     }

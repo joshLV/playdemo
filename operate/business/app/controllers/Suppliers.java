@@ -1,11 +1,16 @@
 package controllers;
 
 import com.uhuila.common.util.FileUploadUtil;
+import com.uhuila.common.util.RadomNumberUtil;
+
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
+import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
+
+import play.Play;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
@@ -55,15 +60,12 @@ public class Suppliers extends Controller {
         initAdmin(admin);
 
         checkItems(supplier);
-
-        //TODO
-        admin.encryptedPassword = "123456";
-        admin.encryptedPassword = "123456";
+        //随机产生6位数字密码
+        String password = RadomNumberUtil.generateSerialNumber(6);
+        admin.encryptedPassword = password;
+        admin.confirmPassword = password;
 
         if (Validation.hasErrors()) {
-            for (String key : validation.errorsMap().keySet()) {
-                warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
-            }
             render("Suppliers/add.html");
         }
         supplier.loginName = admin.loginName;
@@ -76,6 +78,10 @@ public class Suppliers extends Controller {
         }
         admin.create(supplier.id);
 
+        //发送密码给商户管理员手机
+        String comment = Play.configuration.getProperty("message.comment");
+        SMSUtil.send(comment.replace("password", password), admin.mobile);
+        
         index();
     }
 

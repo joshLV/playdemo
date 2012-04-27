@@ -194,7 +194,7 @@ $(window).load(function () {
       <td width="177" align="center">${coupon?.goods?.name}</td>
       <td width="100" height="31" align="center">${coupon.order.orderNumber}</td>
       <td width="106" align="center">${coupon?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-      <td width="123" align="center">${coupon?.goods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+      <td width="123" align="center">${coupon?.goods?.expireAt?.format()}</td>
       #{if "EXPIRED".equals(coupon?.updateStatusByexpireAt().toString())} 
       <td width="95" align="center" style="color:#03C">
       <span id="status_apply_${coupon.id}" >

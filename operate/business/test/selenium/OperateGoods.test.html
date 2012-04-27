@@ -21,6 +21,8 @@ type('id=goods_no','34')
 type('id=goods_name','wwww')
 type('id=goods_effectiveAt','2012-03-19')
 type('id=goods_expireAt','2015-03-19')
+type('id=goods_useBeginTime','09:00')
+type('id=goods_useEndTime','')
 type('id=goods_originalPrice','55')
 type('id=goods_salePrice','55')
 type('id=goods_baseSale','55')
@@ -33,6 +35,17 @@ runScript('idocument = element.contentDocument;')
 runScript('element=idocument.getElementsByTagName("body")[0];')
 runScript('element.innerHTML  = "this is a test thread";')
 
+clickAndWait('id=save')
+
+verifyTextPresent('请把使用时间输入完整!')
+
+type('id=goods_useBeginTime','19:00')
+type('id=goods_useEndTime','09:00')
+clickAndWait('id=save')
+verifyTextPresent('使用结束时间要大于开始时间!')
+
+type('id=goods_useBeginTime','09:00')
+type('id=goods_useEndTime','19:00')
 clickAndWait('id=save')
 *{verifyTitle('电子消费券一览')}*
 *{verifyTextPresent('电子消费券一览')}*

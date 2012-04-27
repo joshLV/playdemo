@@ -130,9 +130,7 @@ public class SupplierGoods extends Controller {
             }
             subCategoryList = Category.findByParent(goods.topCategoryId);
         }
-        for (String key : validation.errorsMap().keySet()) {
-            warn("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
-        }
+  
         renderArgs.put("shopList", shopList);
         renderArgs.put("brandList", brandList);
         renderArgs.put("categoryList", categoryList);
@@ -156,8 +154,12 @@ public class SupplierGoods extends Controller {
 
         goods.setLevelPrices(levelPrices);
 
+        System.out.println("goods.useBeginTime=================="+goods.useBeginTime);
         checkExpireAt(goods);
         checkOriginalPrice(goods);
+        for (String key : validation.errorsMap().keySet()) {
+            warn("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
+        }
         if (Validation.hasErrors()) {
             renderInit(goods);
             render("SupplierGoods/add.html");
@@ -327,6 +329,12 @@ public class SupplierGoods extends Controller {
         if (goods.effectiveAt != null && goods.expireAt != null && goods.expireAt.before(goods.effectiveAt)) {
             Validation.addError("goods.expireAt", "validation.beforeThanEffectiveAt");
         }
+        if ((StringUtils.isNotBlank(goods.useBeginTime) && StringUtils.isBlank(goods.useEndTime))  
+        		|| StringUtils.isBlank(goods.useBeginTime) && StringUtils.isNotBlank(goods.useEndTime) ) {
+        	Validation.addError("goods.useEndTime", "validation.allRequiredUseTime");
+        } else if (StringUtils.isNotBlank(goods.useBeginTime) && StringUtils.isNotBlank(goods.useEndTime) && goods.useBeginTime.compareTo(goods.useEndTime)>=0) {
+            Validation.addError("goods.useEndTime", "validation.beforeThanUseTime");
+        } 
     }
 
     /**

@@ -2,6 +2,7 @@ package unit;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,9 @@ import models.sales.Goods;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.uhuila.common.util.DateUtil;
+
+import play.Play;
 import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
@@ -96,4 +100,5 @@ public class CouponsUnitTest extends UnitTest {
 		}
 		assertNotNull(coupon);
 	}
+	
 }

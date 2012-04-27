@@ -23,6 +23,10 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 #{layout_trader.textField name:'goods.faceValue', value:goods?.faceValue?:"0", note:'元', required:true/}
 #{layout_trader.textField name:'goods.originalPrice', value:goods?.originalPrice?:"0" ,note:'元', required:true/}
 #{layout_trader.textField name:'goods.baseSale', value:goods?.baseSale, note:'件', required:true/}
+
+#{layout_trader.timeScopeField name:'goods.useTime', begin:'goods.useBeginTime',end:'goods.useEndTime',
+beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
+
 #{if "add".equals(action)}
     #{layout_trader.fileField name:'imagePath', required:true/}
 #{/if}

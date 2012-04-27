@@ -1,11 +1,12 @@
 package models.order;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,10 +33,13 @@ import models.sales.Shop;
 
 import org.apache.commons.lang.StringUtils;
 
+import play.Play;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
+
+import com.uhuila.common.util.RadomNumberUtil;
 
 /**
  * User: pwg
@@ -45,9 +49,9 @@ import play.modules.paginate.ModelPaginator;
 @Entity
 @Table(name = "e_coupon")
 public class ECoupon extends Model {
-	private static String chars = "0123456789";
 	private static java.text.DateFormat df = new java.text.SimpleDateFormat(
-			"yyyy-MM-dd HH:mm:ss");
+			"yyyy-MM-dd");
+	public static SimpleDateFormat time = new SimpleDateFormat( "HH:mm:ss" );
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id", nullable = true)
@@ -120,22 +124,11 @@ public class ECoupon extends Model {
 		this.consumedAt = null;
 		this.refundAt = null;
 		this.status = ECouponStatus.UNCONSUMED;
-		this.eCouponSn = generateSerialNumber(10);
+		this.eCouponSn = RadomNumberUtil.generateSerialNumber(10);
 		this.orderItems = orderItems;
 	}
 
 	public ECoupon() {
-	}
-
-	private String generateSerialNumber(int length) {
-		char[] charsArray = chars.toCharArray();
-		Random random = new Random(System.currentTimeMillis());
-		StringBuffer sb = new StringBuffer(length);
-		for (int i = 0; i < length; i++) {
-			sb.append(charsArray[random.nextInt(charsArray.length)]);
-		}
-		String text = sb.toString();
-		return text;
 	}
 
 	/**
@@ -182,17 +175,25 @@ public class ECoupon extends Model {
 	public static Map<String, Object> queryInfo(String eCouponSn, Long supplierId,Long shopId) {
 		ECoupon eCoupon = query(eCouponSn, supplierId);
 		Map<String, Object> queryMap = new HashMap();
-		System.out.println("eCoupon"+eCoupon);
 		if (eCoupon != null) {
-			queryMap.put("name", eCoupon.goods.name);
-			queryMap.put("expireAt", eCoupon.goods.expireAt != null ? df.format(eCoupon.goods.expireAt) : null);
-			queryMap.put("consumedAt", eCoupon.consumedAt != null ? df.format(eCoupon.consumedAt) : null);
-			queryMap.put("eCouponSn", eCoupon.eCouponSn);
-			queryMap.put("refundAt", eCoupon.refundAt != null ? df.format(eCoupon.refundAt) : null);
-			queryMap.put("status", eCoupon.status);
-			queryMap.put("error", 0);
+			boolean timeFlag = true;
 			
-	
+			String timeBegin = eCoupon.goods.useBeginTime ;
+			String timeEnd = eCoupon.goods.useEndTime ;
+			System.out.println(timeBegin+">>>>>>>>>>>>>>>>"+timeEnd);
+			if (StringUtils.isNotBlank(timeBegin) && StringUtils.isNotBlank(timeEnd))  {
+				timeFlag = ECoupon.getTimeRegion(timeBegin,timeEnd);
+			}
+
+			//不在这个制定时间范围内
+			if (!timeFlag) {
+				queryMap.put("timeBegin",timeBegin);
+				queryMap.put("timeEnd", timeEnd);
+				queryMap.put("error", 2);
+				return queryMap;
+			}
+
+
 			//判断该券是否属于所在消费门店
 			if (!eCoupon.goods.isAllShop) {
 				int cnt =0;
@@ -202,12 +203,20 @@ public class ECoupon extends Model {
 					}
 				}
 				if (cnt == 0) {
-					System.out.println("11111111111111================");
 					queryMap.put("error", 1);
+					return queryMap;
 				}
 			}
+			
+			queryMap.put("name", eCoupon.goods.name);
+			queryMap.put("expireAt", eCoupon.goods.expireAt != null ? df.format(eCoupon.goods.expireAt) : null);
+			queryMap.put("consumedAt", eCoupon.consumedAt != null ? df.format(eCoupon.consumedAt) : null);
+			queryMap.put("eCouponSn", eCoupon.eCouponSn);
+			queryMap.put("refundAt", eCoupon.refundAt != null ? df.format(eCoupon.refundAt) : null);
+			queryMap.put("status", eCoupon.status);
+			queryMap.put("error", 0);
+
 		}
-		System.out.println("queryMap================"+queryMap);
 		return queryMap;
 	}
 
@@ -269,9 +278,9 @@ public class ECoupon extends Model {
 	public static ModelPaginator<ECoupon> queryCoupons(Long supplierId, int pageNumber, int pageSize) {
 		ModelPaginator ordersPage;
 		if (supplierId != null) {
-			 ordersPage = new ModelPaginator(ECoupon.class,"goods.supplierId = ?",supplierId).orderBy("createdAt desc");
+			ordersPage = new ModelPaginator(ECoupon.class,"goods.supplierId = ?",supplierId).orderBy("createdAt desc");
 		} else {
-			 ordersPage = new ModelPaginator(ECoupon.class).orderBy("createdAt desc");
+			ordersPage = new ModelPaginator(ECoupon.class).orderBy("createdAt desc");
 		}
 
 		ordersPage.setPageNumber(pageNumber);
@@ -285,7 +294,7 @@ public class ECoupon extends Model {
 	 *
 	 * @param condition      条件
 	 * @param userId         用户ID
-     * @param accountType    账户类型
+	 * @param accountType    账户类型
 	 * @param pageNumber     页数
 	 * @param pageSize       记录数
 	 * @return couponsPage 券记录
@@ -369,18 +378,18 @@ public class ECoupon extends Model {
 		return sn.toString();
 	}
 
-    public static List<ECoupon> findByOrder(Order order){
-        return ECoupon.find("byOrder", order).fetch();
-    }
+	public static List<ECoupon> findByOrder(Order order){
+		return ECoupon.find("byOrder", order).fetch();
+	}
 
-    public static List<ECoupon> findByUserAndIds(List<Long> ids, Long userId, AccountType accountType){
-        String sql = "select e from ECoupon e where e.id in :ids and e.order.userId = :userId and e.order.userType = :userType";
-        Query query = ECoupon.em().createQuery(sql);
-        query.setParameter("ids", ids);
-        query.setParameter("userId", userId);
-        query.setParameter("userType", accountType);
-        return query.getResultList();
-    }
+	public static List<ECoupon> findByUserAndIds(List<Long> ids, Long userId, AccountType accountType){
+		String sql = "select e from ECoupon e where e.id in :ids and e.order.userId = :userId and e.order.userType = :userType";
+		Query query = ECoupon.em().createQuery(sql);
+		query.setParameter("ids", ids);
+		query.setParameter("userId", userId);
+		query.setParameter("userType", accountType);
+		return query.getResultList();
+	}
 
 	/**
 	 * 得到可以消费的门店
@@ -395,19 +404,32 @@ public class ECoupon extends Model {
 		}
 		return shopName;
 	}
-	
+
 
 	/**
 	 * 如果券过期了则更新券状态
 	 * @return 券状态
 	 */
 	public ECouponStatus updateStatusByexpireAt(){
-		
 		if (goods.expireAt.before(new Date())) {
-			System.out.println(goods.expireAt.before(new Date()));
 			status = ECouponStatus.EXPIRED;
-			//this.save();
+			this.save();
 		}
 		return status;
+	}
+
+	/**
+	 * 判断当日的时间是否在11点和14点之间
+	 * 
+	 * @return 在该范围内：true 
+	 */
+	public static boolean getTimeRegion(String timeBegin,String timeEnd) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		String date= time.format(calendar.getTime());
+		if (date.compareTo(timeBegin)>0 && date.compareTo(timeEnd)<0) {
+			return true;
+		}
+		return false;
 	}
 }

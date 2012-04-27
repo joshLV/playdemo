@@ -219,6 +219,13 @@ public class OperateGoods extends Controller {
         if (goods.effectiveAt != null && goods.expireAt != null && goods.expireAt.before(goods.effectiveAt)) {
             Validation.addError("goods.expireAt", "validation.beforeThanEffectiveAt");
         }
+        
+        if ((StringUtils.isNotBlank(goods.useBeginTime) && StringUtils.isBlank(goods.useEndTime))  
+        		|| StringUtils.isBlank(goods.useBeginTime) && StringUtils.isNotBlank(goods.useEndTime) ) {
+        	Validation.addError("goods.useEndTime", "validation.allRequiredUseTime");
+        } else if (StringUtils.isNotBlank(goods.useBeginTime) && StringUtils.isNotBlank(goods.useEndTime) && goods.useBeginTime.compareTo(goods.useEndTime)>=0) {
+            Validation.addError("goods.useEndTime", "validation.beforeThanUseTime");
+        } 
     }
 
     private static void checkImageFile(File imagePath) {
