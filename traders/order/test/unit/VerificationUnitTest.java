@@ -83,13 +83,17 @@ public class VerificationUnitTest extends UnitTest {
 		assertEquals(0, map.size());
 
 		eCouponSn = "1234567002";
+		Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
+		Goods goods = Goods.findById(goodsId);
+		goods.useBeginTime="00:00";
+		goods.useEndTime="23:50";
 		map = ECoupon.queryInfo(eCouponSn, supplierId,shopId);
 		assertEquals("哈根达斯200元抵用券", map.get("name"));
 		assertEquals(0, map.get("error"));
 		
 		eCouponSn = "1234567003";
-		Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-		Goods goods = Goods.findById(goodsId);
+		goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
+		goods = Goods.findById(goodsId);
 		goods.useBeginTime="09:00";
 		goods.useEndTime="14:00";
 		goods.save();

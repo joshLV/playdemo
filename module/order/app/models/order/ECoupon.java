@@ -179,11 +179,9 @@ public class ECoupon extends Model {
 			
 			String timeBegin = eCoupon.goods.useBeginTime ;
 			String timeEnd = eCoupon.goods.useEndTime ;
-			System.out.println(timeBegin+">>>>>>>>>>>>>>>>"+timeEnd);
 			if (StringUtils.isNotBlank(timeBegin) && StringUtils.isNotBlank(timeEnd))  {
 				timeFlag = ECoupon.getTimeRegion(timeBegin,timeEnd);
 			}
-
 			//不在这个制定时间范围内
 			if (!timeFlag) {
 				queryMap.put("timeBegin",timeBegin);
