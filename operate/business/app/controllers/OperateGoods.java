@@ -318,6 +318,8 @@ public class OperateGoods extends Controller {
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
         }
+
+        System.out.println("goods.details    1:" + goods.getDetails()+"====================");
         checkImageFile(imagePath);
 
         checkExpireAt(goods);
@@ -333,6 +335,7 @@ public class OperateGoods extends Controller {
 
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
+            System.out.println("goods.details   2:" + goods.getDetails()+"====================");
             preview(id, goods, imagePath);
         }
 

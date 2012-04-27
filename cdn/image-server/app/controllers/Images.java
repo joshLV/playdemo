@@ -1,5 +1,7 @@
 package controllers;
 
+import play.Logger;
+import play.Play;
 import play.mvc.Controller;
 
 import java.io.File;
@@ -27,7 +29,19 @@ public class Images extends Controller {
     private static final String IMAGE_ROOT_GENERATED = play.Play
             .configuration.getProperty("image.root.generated",
                     "/nfs/images/p"); //缩略图根目录
+    public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
 
+    public static void showOriginalImage(String path1, String path2, String path3, String path4) {
+        final String path = "/" + path1 + "/" + path2 + "/" + path3 + "/" + path4;
+        String targetImagePath = ROOT_PATH + path;
+
+        File targetImage = new File(targetImagePath);
+        if (!targetImage.exists()) {
+            Logger.warn(targetImagePath + " Not Found!");
+            error(404, path + "图片文件不存在！");
+        }
+        renderBinary(targetImage);
+    }
 
     /**
      * 根据图片路径显示指定规格的缩略图.

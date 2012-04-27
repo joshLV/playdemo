@@ -1,15 +1,16 @@
 package controllers;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import com.uhuila.common.util.FileUploadUtil;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.mvc.Controller;
 import play.mvc.With;
-import com.uhuila.common.util.FileUploadUtil;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @With(OperateRbac.class)
 @ActiveNavigation("goods_index")
@@ -61,7 +62,8 @@ public class UploadFiles extends Controller {
             map.put("error", 0);
 
             String path = targetFilePath.substring(ROOT_PATH.length(), targetFilePath.length());
-            map.put("url", "/o" + path);
+
+            map.put("url", "http://"+OperateGoods.WWW_URL+"/o" + path);
 
 
             renderJSON(map);

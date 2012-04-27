@@ -33,7 +33,6 @@ GET     /favicon.ico                            404
 
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public
-GET     /o/{path1}/{path2}/{path3}/{path4}      Files.getImage
 
 *       /                                       module:supplier_rbac
 

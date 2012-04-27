@@ -66,6 +66,7 @@ goods.levelPrice.NORMAL=普通会员加价
 goods.levelPrice.VIP1=VIP1加价
 goods.levelPrice.VIP2=VIP2加价
 goods.levelPrice.VIP3=VIP3加价
+goods.null=
 goods.useBeginTime=使用开始时间
 goods.useEndTime=使用结束时间
 goods.useTime=使用时间
