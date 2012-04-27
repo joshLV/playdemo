@@ -10,31 +10,39 @@
     }
 
     $(function () {
-        $("#send").click(function () {
-            var result = true;
-            if ($("#order_deliveryNo").val().trim() == "") {
-                $("#note_order_deliveryNo").addClass("error");
-                $("#note_order_deliveryNo").html("请输入物流单号!");
-                $("#order_deliveryNo").focus();
-                result = false;
-            } else {
-                $("#note_order_deliveryCompany").removeClass("error");
-                $("#note_order_deliveryCompany").html("");
-            }
-            if ($("#order_deliveryCompany").val().trim() == "") {
-                $("#note_order_deliveryCompany").addClass("error");
-                $("#note_order_deliveryCompany").html("请输入物流公司!");
-                $("#order_deliveryCompany").val("");
-                $("#order_deliveryCompany").focus();
-                result = false;
-            } else {
-                $("#note_order_deliveryCompany").removeClass("error");
-                $("#note_order_deliveryCompany").html("");
-            }
-            if (result) {
+        #{if !play.Play.mode.isDev()}
+            $("#send").click(function () {
+                var result = true;
+                if ($("#order_deliveryNo").val().trim() == "") {
+//                $("#note_order_deliveryNo").addClass("error");
+                    $("#note_order_deliveryNo").html("请输入单号!");
+                    $("#order_deliveryNo").focus();
+                    result = false;
+                }
+                else {
+//                $("#note_order_deliveryCompany").removeClass("error");
+                    $("#note_order_deliveryCompany").html("");
+                }
+                if ($("#order_deliveryCompany").val().trim() == "") {
+//                $("#note_order_deliveryCompany").addClass("error");
+                    $("#note_order_deliveryCompany").html("请输入公司!");
+                    $("#order_deliveryCompany").val("");
+                    $("#order_deliveryCompany").focus();
+                    result = false;
+                } else {
+                    $("#note_order_deliveryCompany").removeClass("error");
+                    $("#note_order_deliveryCompany").html("");
+                }
+                if (result) {
+                    $("#sendForm").submit();
+                }
+            });
+        #{/if}
+        #{else}
+            $("#send").click(function () {
                 $("#sendForm").submit();
-            }
-        });
+            });
+        #{/else}
     });
 </script>
 #{/set}
@@ -126,13 +134,16 @@
             <td rowspan="${order.orderItems.size()}">${order.orderNumber}</td>
             #{if order.realGoods.size()>0}
                 <td>#{if models.sales.MaterialType.ELECTRONIC.equals(order.realGoods.get(0).materialType)}<img
-                src="@@{'/public/images/electronic-goods.png'}"> #{/if}
+                        src="@@{'/public/images/electronic-goods.png'}"> #{/if}
                     #{else}<img src="@@{'/public/images/real-goods.png'}"> #{/else}${order.realGoods.get(0).name}</td>
-                <td rowspan="${order.realGoods.size()}">#{if order.deliveryNo!=null}<a id="sendInfo_${order.id}" href="#" class="label label-info" rel="popover"
-                           data-content="运单号: ${order.deliveryNo}"
-                           data-original-title="物流公司: ${order.deliveryCompany}"
-                           onmouseover="$('#sendInfo_${order.id}').popover();">&{'order.'+order.realGoodsStatus}</a>
-                    #{/if}
+                <td rowspan="${order.realGoods.size()}">#{if order.deliveryNo!=null}<a id="sendInfo_${order.id}"
+                                                                                       href="#" class="label label-info"
+                                                                                       rel="popover"
+                                                                                       data-content="运单号: ${order.deliveryNo}"
+                                                                                       data-original-title="物流公司: ${order.deliveryCompany}"
+                                                                                       onmouseover="$('#sendInfo_${order.id}').popover();">&{'order.'+
+                    order.realGoodsStatus}</a>
+                #{/if}
                     #{else}&{'order.'+order.realGoodsStatus}#{/else}
 
                     #{if models.order.OrderStatus.PAID.equals(order.realGoodsStatus)}
@@ -207,8 +218,7 @@
     </div>
     <div class="modal-body">
     #{form @OperateOrders.index(), id:"sendForm", name:"sendForm", enctype:'multipart/form-data',
-    class:"form-horizontal",
-    method:"PUT"}
+    class:"form-horizontal",method:"PUT"}
 #{layout_operate.textField name:'order.deliveryCompany', value:order.deliveryCompany, required:true,
     err:"deliveryCompany"/}
 #{layout_operate.textField name:'order.deliveryNo', value:order.deliveryNo, required:true/}
