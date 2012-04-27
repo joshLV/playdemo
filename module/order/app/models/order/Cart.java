@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import models.consumer.User;
 import models.sales.Goods;
+import models.sales.GoodsStatus;
 import models.sales.MaterialType;
 import play.db.jpa.Model;
 
@@ -152,8 +153,10 @@ public class Cart extends Model {
         }
         //构建查询条件
         StringBuilder sql = new StringBuilder(
-                "select new Cart(c.goods, SUM(c.number)) from Cart c where ( c.goods is not null ");
+                "select new Cart(c.goods, SUM(c.number)) from Cart c where " +
+                "( c.goods is not null and c.goods.status = :status and ( 1=1 ");
         Map<String, Object> params = new HashMap<String, Object>();
+        params.put("status", GoodsStatus.ONSALE);
 
         if (user != null) {
             sql.append("or c.user = :user ");
@@ -168,7 +171,7 @@ public class Cart extends Model {
             sql.append("and c.goods.materialType = :type ");
             params.put("type", type);
         }
-        sql.append(" group by c.goods");
+        sql.append(") group by c.goods");
 
         Query query = play.db.jpa.JPA.em().createQuery(sql.toString());
         for (Map.Entry<String, Object> entry : params.entrySet()) {
