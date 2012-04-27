@@ -46,7 +46,7 @@
                 </a>
             </td>
             <td><span class="strong_gray" id="subtotal_${cartItem.goods.id}">${cartItem.goods.salePrice?.multiply(cartItem.number)}</span></td>
-            <td><a href="#" class="del" name="${cartItem.goods.id}">删除</a></td>
+            <td><a href="#" class="del" name="del_row" goods_id="${cartItem.goods.id}" id="del_row_${cartItem.goods.id}">删除</a></td>
         </tr>
         #{/list}
 

@@ -82,8 +82,8 @@ $(window).load(
             reorder(goods_id, Number($(this).val()) - Number(last_num.val()));
         });
         //点击删除
-        $("a.delete_gift").click(function(){  
-            var goods_id = $(this).attr("name");
+        $("a.del").click(function(){
+            var goods_id = $(this).attr("goods_id");
             $.ajax({
                 type:'DELETE',
                 url:'/carts/' + goods_id,
