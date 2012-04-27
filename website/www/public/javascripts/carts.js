@@ -180,6 +180,9 @@ $(window).load(
                 var goods_id = el_id.substr(el_id.lastIndexOf("_") + 1);
                 items += goods_id +"-" + $("#num_" + goods_id).val() + ",";
             });
+            if(items.length == 0){
+                return false;
+            }
         	
         	var t = $(this);
         	t.attr("href", t.attr("href") + items);
