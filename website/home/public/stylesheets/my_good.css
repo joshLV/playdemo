@@ -80,7 +80,7 @@ table {
 #wrap_content{width:960px; height:auto; margin:0 auto; margin-top:12px;}
 #left_content_box{ float:left; width:170px; height:auto; margin-right:9px; margin-top:-13px; margin-left:7px;}
 
-#right_content_box{ width:800px; float:left; height:auto;}
+/* #right_content_box{ width:800px; float:left; height:auto;} */
 
 .left_nav_li_div{ background:url(../images/left_nav_bgs.jpg) no-repeat; height:31px; width:165px;  line-height:30px; margin-bottom:11px; font-weight:700}
 .left_nav_li_div span{ margin-left:47px;}
@@ -104,15 +104,15 @@ table {
 	padding-left:8px;
 	font-weight:bold
 }
-.tab_top2{ width:798px; border:solid 1px #D3D3D3; height:300px; padding-top:5px; height:auto} 
-.tab_top_info {
-    background: none repeat scroll 0 0 #FBE8E4;
-    height: 32px;
-    line-height: 32px;
-    margin-top: 7px;
-    width:798px;
-}
-.tab_one{ margin-left:20px;}
+.tab_top2{ width:798px; border-top: 1px solid #D3D3D3; height:300px; padding-top:5px; height:auto} 
+/* .tab_top_info { */
+    /* background: none repeat scroll 0 0 #FBE8E4; */
+    /* height: 32px; */
+    /* line-height: 32px; */
+    /* margin-top: 7px; */
+    /* width:798px; */
+/* } */
+/* .tab_one{ margin-left:20px;} */
 
 .tab_top4{ height:26px; text-align:center; width:550px; margin-left:100px;}
 .page_a_box{ padding:10px; float:left;  border:solid 1px #CCCCCC; padding-top:5px; padding-bottom:5px; margin-right:5px; color:#000000; text-align:center}
@@ -144,8 +144,8 @@ table {
 .focu_click{ float:right; width:13px; height:13px; margin-top:7px; margin-right:5px; }
 *html .focu_click{ float:right; width:13px; height:13px; margin-top:7px; margin-right:3px; }
 .margin_top11{ margin-bottom:-11px; }
-.tab_two{ margin-left:60px;}
-.seach_bg{ background:url(../images/seach_buttom_one.jpg) no-repeat;color:#FFFFFF; text-align:center; font-weight:700;line-height:24px;letter-spacing:0.2em; width:77px; height:24px; float:left}
+/* .tab_two{ margin-left:60px;} */
+/* .seach_bg{ background:url(../images/seach_buttom_one.jpg) no-repeat;color:#FFFFFF; text-align:center; font-weight:700;line-height:24px;letter-spacing:0.2em; width:77px; height:24px; float:left} */
 .pre_bg{background:url(../images/pre_buttom.jpg) no-repeat;color:#FFFFFF; text-align:center; font-weight:700;line-height:24px;letter-spacing:0.1em; width:71px; height:24px; float:left; padding-left:5px}
 .next_bg{background:url(../images/next_buttom.jpg) no-repeat;color:#FFFFFF; text-align:center; font-weight:700;line-height:24px;letter-spacing:0.1em; width:71px; height:24px; float:left; margin-left:40px; padding-right:13px}
 .width200px{ width:500px; margin-left:220px; height:24px;}

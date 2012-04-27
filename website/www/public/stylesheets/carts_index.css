@@ -20,25 +20,26 @@ table {
 .left_top_two{ width:238px; height:609px; border:solid 1px #CECECE; margin-top:11px;}
 
 
-.div_step_title {height:85px; width:950px; line-height:85px; padding-left:50px; font-size:14px;}
-.div_step_text_4 {width:23px; height:23px; background:#EFEFEF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;font-size:16px; font-weight:700}
+/* .div_step_title {height:85px; width:950px; line-height:85px; padding-left:50px; font-size:14px;} */
+/* .div_step_text_4 {width:23px; height:23px; background:#EFEFEF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;font-size:16px; font-weight:700} */
 
-.div_step_text_1 {float:left;font-weight:700; letter-spacing:0.1em}
-.div_step_text_1 span{padding-left:15px; padding-right:0px; font-weight:700px; color:#999999}
+/* .div_step_text_1 {float:left;font-weight:700; letter-spacing:0.1em} */
+/* .div_step_text_1 span{padding-left:15px; padding-right:0px; font-weight:700px; color:#999999} */
 
-.div_step_3 {width:23px; height:23px; background:#EFEFEF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px; font-size:16px; font-weight:700}
-.div_step_2 {width:23px; height:23px; background:#CF1F1F; color:#FFFFFF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;}
+/* .div_step_3 {width:23px; height:23px; background:#EFEFEF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px; font-size:16px; font-weight:700} */
+/* .div_step_2 {width:23px; height:23px; background:#CF1F1F; color:#FFFFFF; line-height:23px; text-align:center; float:left; margin-top:31px; margin-bottom:31px; margin-right:10px; margin-left:10px;} */
 
-#gouwucar{ margin:0 auto; width:996px; border:solid 1px #EEEEEE; overflow:hidden}
-*+html #gouwucar{ margin:0 auto; width:996px; border:solid 1px #EEEEEE; height:426px; overflow:hidden}
+
+#gouwucar{ margin:0 auto; width:958px; border:solid 1px #EEEEEE; overflow:hidden}
+*+html #gouwucar{ margin:0 auto; width:958px; border:solid 1px #EEEEEE; height:426px; overflow:hidden}
 *html #gouwucar{ height:422px;} 
-#gouwucar_buttom_info{ margin:0 auto; width:996px; height:auto; margin-top:7px; line-height:30px; margin-bottom:30px}
+#gouwucar_buttom_info{ margin:0 auto; width:960px; height:auto; margin-top:7px; line-height:30px; margin-bottom:30px}
 
-.bottom_info_one{ float:left; width:90px; padding-left:11px}
+.bottom_info_one{ float:left; width:50px; padding-left:11px}
 .bottom_info_one input{ position:relative; top:2px; margin-right:5px}
-.bottom_info_two{ float:left; width:495px;}
-.bottom_info_three{float:right; padding-left:5px; padding-right:5px;}
-.bottom_info_four{ float:right; margin-right:50px; margin-top:5px;}
+.bottom_info_two{ float:left; width:300px;padding-top:4px;}
+.bottom_info_three{float:left; width:474px; padding-left:5px; padding-right:5px; text-align:right;}
+.bottom_info_four{ float:left; width:115px;}
 .font_red_one{ font-weight:700; color:#D24000}
 
 .col_one {
@@ -74,7 +75,7 @@ table {
 .num_input{ float:left; width:32px; height:18px; border:solid 1px #BBC0C5; text-align:center; font-weight:700}
 .add_box, .reduce_box { display:block; width:9px; height:9px; text-align:center; float:left; color:#8D959B; font-size:10px; vertical-align:middle; margin-top:5px; margin-left:5px; margin-right:5px;}
 
-.block_fense{ background:#FBE8E4; height:31px; width:981px; line-height:31px; font-weight:700; padding-left:15px;}
+/* .block_fense{ background-color: #AADBDB; height:31px; width:981px; line-height:31px; font-weight:700; padding-left:15px;} */
 
 
 /*gouwu _4_buzou style*/
@@ -82,5 +83,8 @@ table {
 
 .div_step_text_2 {float:left; color:#CF1F1F; font-size:18px; font-weight:700}
 table{ letter-spacing:0.1em}
-.piliang_del_bg{ background:url(../images/piliang_del.jpg) no-repeat; width:77px; height:24px; float:left;color:#FFFFFF; text-align:center; font-weight:700;line-height:24px;letter-spacing:0.1em;}
+.piliang_del_bg{ width:77px; height:24px; float:left;color:#25B4AB; line-height:23px;letter-spacing:0.1em;}
 .queren_bg{ background:url(../images/queren_jz_03.jpg) no-repeat; width:115px; height:28px; float:left;color:#FFFFFF; text-align:center; font-weight:700;line-height:28px;letter-spacing:0.1em; font-size:14px}
+
+
+

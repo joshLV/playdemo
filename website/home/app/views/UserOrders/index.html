@@ -21,95 +21,114 @@ $(window).load(function () {
     #{include "share/left.html"/}
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
-        <div id="right_content_box">
-            <div class="tab_top">我的商品订单</div>
-                <div class="tab_top2">
-                    <form class="form-horizontal" id="orderForm" action="@{UserOrders.index()}" method="GET">
-                        <table width="774" border="0" cellpadding="0" cellspacing="0">
-                            <tr>
-                                <td width="12">&nbsp;</td>
-                                <td width="61" align="right">下单时间：</td>
-                                <td width="259" height="35">
-                                    <input class="short_input Wdate" type="text" name="condition.createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
-                                    <input class="short_input Wdate" type="text" name="condition.createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
-                                </td>
-                                <td width="77">订单状态：</td>
-                                <td width="353">
-                                    <div class="pos_abs">
-                                    #{select 'condition.status', id:'status', class:'dingdan_stauts_bg', value:status}
-                                        #{option ""}不限#{/option}
-                                        #{option "UNPAID"}&{'order.UNPAID'}#{/option}
-                                        #{option "PAID"}&{'order.PAID'}#{/option}
-                                        #{option "CANCELED"}&{'order.CANCELED'}#{/option}
-                                    #{/select}
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td align="right">商品名称：</td>
-                                <td height="35"><label> <input class="long_input" type="text" name="condition.goodsName" value="${goodsName}"/></label></td>
-                                <td colspan="2" align="left" valign="middle"><a class="seach_bg" href="#" id="search">搜索</a></td>
-                             </tr>
-                        </table>
-                    </form>
+        <div class="tab_top">我的商品订单</div>
+        <div class="tab_top2">
+            <form class="form-horizontal" id="orderForm" action="@{UserOrders.index()}" method="GET">
+                <table width="774" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="12">&nbsp;</td>
+                        <td width="61" align="right">下单时间：</td>
+                        <td width="259" height="35">
+                            <input class="short_input Wdate" type="text" name="condition.createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
+                            <input class="short_input Wdate" type="text" name="condition.createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
+                        </td>
+                        <td width="77">订单状态：</td>
+                        <td width="353">
+                            <div class="pos_abs">
+                            #{select 'condition.status', id:'status', class:'dingdan_stauts_bg', value:status}
+                                #{option ""}不限#{/option}
+                                #{option "UNPAID"}&{'order.UNPAID'}#{/option}
+                                #{option "PAID"}&{'order.PAID'}#{/option}
+                                #{option "CANCELED"}&{'order.CANCELED'}#{/option}
+                            #{/select}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td align="right">商品名称：</td>
+                        <td height="35"><label> <input class="long_input" type="text" name="condition.goodsName" value="${goodsName}"/></label></td>
+                        <td colspan="2" align="left" valign="middle"><button class="search-btn"> 搜　索 </button></td>
+                     </tr>
+                </table>
+            </form>
 
-                    <table width="798" border="0" cellpadding="0" cellspacing="0" bgcolor="#F6F6F6">
-                        <tr>
-                            <td width="340" align="center"><span class="font_strong">商品</span></td>
-                            <td width="100" align="center"><span class="font_strong">单价（元）</span></td>
-                            <td width="78" align="center"><span class="font_strong">数量</span></td>
-                            <td width="108" height="30" align="center"><span class="font_strong">实付款（元）</span></td>
-                            <td width="85" align="center" bgcolor="#F6F6F6"><span class="font_strong">订单状态</span></td>
-                            <td width="80" align="center"><span class="font_strong">操作</span></td>
-                        </tr>
-                    </table>
-                    #{paginate.list items:orderList, as:'row'}
-                    <div class="tab_top_info">
-                        <span class="tab_one">订单号：${row.orderNumber}</span>
-                        <span class="tab_two">成交时间：${row.createdAt==null ? '':row.createdAt.format("yyyy-MM-dd HH:mm:ss")}</span>
-                    </div>
-                    <table width="798" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="hsides">
+            <table class="order-tab" cellpadding="0" cellspacing="0">
+                <thead>
+                    <tr class="col-name">
+                        <th width="340">商品</th>
+                        <th width="100">单价（元）</th>
+                        <th width="78">数量</th>
+                        <th width="108">实付款（元）</th>
+                        <th width="85">订单状态</th>
+                        <th width="80">操作</th>
+                    </tr>
+                </thead>
+                #{paginate.list items:orderList, as:'row'}
+                <tbody>
+                    <tr class="sep-row"><td colspan="6"></td></tr>
+                    <tr class="order-hd">
+                        <td colspan="6">
+                            <span class="order-no">订单号：${row.orderNumber}</span>
+                            <span class="order-time">成交时间：${row.createdAt==null ? '':row.createdAt.format("yyyy-MM-dd HH:mm:ss")}</span>
+                        </td>
+                    </tr>
                     #{set m=0/}
                     #{list row.orderItems, as:'rowItem'}
-                        <tr>
-                            <td width="340" height="80" align="left">
-                                <div class="left_shangpin"><img src="${rowItem.goods.imageTinyPath}"/></div>
-                                <div class="right_shangpin">${rowItem.goods.name}</div>
-                            </td>
-                            <td width="100" align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
-                            <td width="78" align="center" >${rowItem.buyNumber}</td>
-                            #{if (++m == 1) }
-                            <td width="108"align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
-                            <td width="85" align="center" rowspan="${row.orderItems.size()}">&{'order.'+row.status}</td>
-                            <td width="80" align="center" rowspan="${row.orderItems.size()}">
-                                #{if (row.status == models.order.OrderStatus.UNPAID)}
-                                    <div class="caozuo_std"><a class="font_red_one" href="@{UserOrders.pay(row.id)}">付款</a></div>
-                                #{/if}
-                                *{
-                                #{if (row.status == models.order.OrderStatus.PAID) && rowItem.goods.materialType.toString().equals('REAL')}
-                                <div class="caozuo_std">
-                                    <a class="font_red_one" href="/orders/refund/${row.id}"  id="apply_${row.id}">申请退款</a>
-                                </div>
-                                #{/if}
-                                }*
-                                <div class="caozuo_std"><a class="font_blue" href="@{UserOrders.details(row.id)}">查看详情</a></div>
-                                #{if (row.status != models.order.OrderStatus.PAID)}  
-                                <div class="caozuo_std"><a href="#">取消</a></div>
-                                #{/if}
-                            </td>
+                    <tr class="order-bd">
+                        <td width="340" height="80" align="left">
+                            <div class="left_shangpin"><img src="${rowItem.goods.imageTinyPath}"/></div>
+                            <div class="right_shangpin">${rowItem.goods.name}</div>
+                        </td>
+                        <td width="100" align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
+                        <td width="78" align="center" >${rowItem.buyNumber}</td>
+                        <td width="80" align="center" rowspan="${row.orderItems.size()}">
+                            <!-- #{if (row.status == models.order.OrderStatus.UNPAID)} -->
+                                <!-- <div class="caozuo_std"><a class="font_red_one" href="@{UserOrders.pay(row.id)}">付款</a></div> -->
+                            <!-- #{/if} -->
+                            <!-- *{ -->
+                            <!-- #{if (row.status == models.order.OrderStatus.PAID) && rowItem.goods.materialType.toString().equals('REAL')} -->
+                            <!-- <div class="caozuo_std"> -->
+                                <!-- <a class="font_red_one" href="/orders/refund/${row.id}"  id="apply_${row.id}">申请退款</a> -->
+                            <!-- </div> -->
+                            <!-- #{/if} -->
+                            <!-- }* -->
+                            <!-- <div class="caozuo_std"><a class="font_blue" href="@{UserOrders.details(row.id)}">查看详情</a></div> -->
+                            <!-- #{if (row.status != models.order.OrderStatus.PAID)}   -->
+                            <!-- <div class="caozuo_std"><a href="#">取消</a></div> -->
+                            <!-- #{/if} -->
+                        </td>
+                        #{if (++m == 1) }
+                        <td width="108"align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
+                        <td width="85" align="center" rowspan="${row.orderItems.size()}">&{'order.'+row.status}</td>
+                        <td width="80" align="center" rowspan="${row.orderItems.size()}">
+                            #{if (row.status == models.order.OrderStatus.UNPAID)}
+                                <div class="caozuo_std"><a class="font_red_one" href="@{UserOrders.pay(row.id)}">付款</a></div>
                             #{/if}
-                        </tr>
+                            *{
+                            #{if (row.status == models.order.OrderStatus.PAID || row.status == models.order.OrderStatus.RECEIPT) && rowItem.goods.materialType.toString().equals('REAL')}
+                            <div class="caozuo_std">
+                                <a class="font_red_one" href="/orders/refund/${row.id}"  id="apply_${row.id}">申请退款</a>
+                            </div>
+                            #{/if}
+                            }*
+                            <div class="caozuo_std"><a class="font_blue" href="@{UserOrders.details(row.id)}">查看详情</a></div>
+                            #{if (row.status != models.order.OrderStatus.PAID)}  
+                            <div class="caozuo_std"><a href="#">取消</a></div>
+                            #{/if}
+                        </td>
+                        #{/if}
+                    </tr>
                     #{/list}
-                    </table>
-                    #{/paginate.list}
+                </tbody>
+            #{/paginate.list}
+            </table>
 
-                    <div class="pagination">
-                        <ul>
-                           #{paginate.controls items:orderList /}
-                        </ul>
-                    </div>
-                </div>
+            <div class="pagination">
+                <ul>
+                   #{paginate.controls items:orderList /}
+                </ul>
             </div>
+        </div>
     </div>
 </div>
