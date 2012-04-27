@@ -7,11 +7,10 @@ import models.sms.SMSUtil;
 import org.apache.commons.lang.StringUtils;
 
 import play.cache.Cache;
-import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import com.uhuila.common.util.RadomNumberUtil;
+import com.uhuila.common.util.RandomNumberUtil;
 
 import controllers.modules.website.cas.SecureCAS;
 
@@ -50,7 +49,7 @@ public class UserInfos extends Controller{
 	 */
 	public static void sendValidCode(String mobile) {
 
-		String validCode = RadomNumberUtil.generateSerialNumber(4);
+		String validCode = RandomNumberUtil.generateSerialNumber(4);
 		String comment="您的验证码是"+validCode+", 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码";
 		SMSUtil.send(comment, mobile);
 		//保存手机和验证码

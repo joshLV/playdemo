@@ -33,13 +33,12 @@ import models.sales.Shop;
 
 import org.apache.commons.lang.StringUtils;
 
-import play.Play;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
 
-import com.uhuila.common.util.RadomNumberUtil;
+import com.uhuila.common.util.RandomNumberUtil;
 
 /**
  * User: pwg
@@ -124,7 +123,7 @@ public class ECoupon extends Model {
 		this.consumedAt = null;
 		this.refundAt = null;
 		this.status = ECouponStatus.UNCONSUMED;
-		this.eCouponSn = RadomNumberUtil.generateSerialNumber(10);
+		this.eCouponSn = RandomNumberUtil.generateSerialNumber(10);
 		this.orderItems = orderItems;
 	}
 

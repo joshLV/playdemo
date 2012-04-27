@@ -82,22 +82,6 @@ $(window).load(function () {
                         </td>
                         <td width="100" align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
                         <td width="78" align="center" >${rowItem.buyNumber}</td>
-                        <td width="80" align="center" rowspan="${row.orderItems.size()}">
-                            <!-- #{if (row.status == models.order.OrderStatus.UNPAID)} -->
-                                <!-- <div class="caozuo_std"><a class="font_red_one" href="@{UserOrders.pay(row.id)}">付款</a></div> -->
-                            <!-- #{/if} -->
-                            <!-- *{ -->
-                            <!-- #{if (row.status == models.order.OrderStatus.PAID) && rowItem.goods.materialType.toString().equals('REAL')} -->
-                            <!-- <div class="caozuo_std"> -->
-                                <!-- <a class="font_red_one" href="/orders/refund/${row.id}"  id="apply_${row.id}">申请退款</a> -->
-                            <!-- </div> -->
-                            <!-- #{/if} -->
-                            <!-- }* -->
-                            <!-- <div class="caozuo_std"><a class="font_blue" href="@{UserOrders.details(row.id)}">查看详情</a></div> -->
-                            <!-- #{if (row.status != models.order.OrderStatus.PAID)}   -->
-                            <!-- <div class="caozuo_std"><a href="#">取消</a></div> -->
-                            <!-- #{/if} -->
-                        </td>
                         #{if (++m == 1) }
                         <td width="108"align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
                         <td width="85" align="center" rowspan="${row.orderItems.size()}">&{'order.'+row.status}</td>
