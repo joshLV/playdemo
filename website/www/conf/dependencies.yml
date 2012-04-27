@@ -28,6 +28,7 @@ require:
     - org.jsoup -> jsoup 1.6.1
     - view_ext -> view_ext
     - asset_package -> asset_package
+    - layout_website -> layout_website
 
 repositories:
 
@@ -63,3 +64,4 @@ repositories:
             - breadcrumbs -> *
             - view_ext -> *
             - asset_package -> *
+            - layout_website -> *
