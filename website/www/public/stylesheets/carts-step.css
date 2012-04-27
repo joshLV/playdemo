@@ -1,0 +1,156 @@
+/**
+ * User: zhangjunyi
+ * Date: 4/27/12
+ * */
+#nav {
+    display: none;
+}
+/* 购买步骤条 */
+.buy-step {
+    margin: 40px 0 20px;
+    background-color: #F4F4F4;
+}
+.buy-step li {
+    float: left;
+    width: 230px;
+    padding-left: 10px;
+    font-size: 18px;
+}
+.buy-step em {
+    padding: 0 5px;
+}
+.buy-step-curr {
+    color: #F8F8F8;
+    font-weight: 700;
+    background-color: #25B4AB;
+}
+.buy-step span {
+    padding: 2px 8px;
+}
+
+#carts-list .select-all input {
+    position: relative;
+    top: 2px;
+}
+#carts-list caption {
+    padding: 5px 0;
+    font-size: 20px;
+    text-align: left;
+}
+#carts-list thead tr {
+    height: 30px;
+    padding: 5px;
+    /* background-color: #AADBDB; */
+    background-color: #F6F6F6;
+}
+#carts-list td {
+    padding: 15px 0;
+    height: 35px;
+    text-align: center;
+    border-bottom: 1px solid #E2E2E2;
+}
+#carts-list .goods-name {
+    text-align: left;
+}
+#carts-list .goods-name img {
+    float: left;
+    margin-right: 5px;
+}
+#carts-list tbody input {
+    width: 30px;
+}
+
+/* 购物车询问 */
+#carts-ft {
+    height: 34px;
+    margin: 20px 0 30px;
+    background-color: #F6F6F6;
+}
+#carts-ft .select-all {
+    float: left;
+    width: 50px;
+    padding: 8px 0 8px 11px;
+}
+#carts-ft .select-all input {
+    position: relative;
+    top: 2px;
+    margin-right: 5px;
+}
+#carts-ft .delete-all {
+    float: left;
+    width: 300px;
+    padding: 8px 0;
+}
+#carts-ft .delete-all button {
+    border: 0;
+    color: #25B4AB;
+    background-color: #F6F6F6;
+    cursor: pointer;
+}
+#carts-ft .carts-info {
+    float: left;
+    width: 479px;
+    padding-right: 5px;
+    text-align: right;
+}
+#carts-ft .carts-info b {
+    padding: 0 3px;
+    color: #F50;
+    font-size: 22px;
+}
+#carts-ft .confirm-order {
+    float: left;
+    width: 95px;
+    padding-left: 20px;
+}
+#carts-ft .confirm-order a {
+    display: block;
+    padding: 8px 0 8px;
+    color: #F8F8F8;
+    text-align: center;
+    font-weight: 700;
+    background-color: #25B4AB;
+}
+
+
+/** 最近浏览商品 **/
+#recent {
+    margin: 20px 0 30px;
+    border: 1px solid #e4e4e4;
+}
+.recent-hd {
+    padding: 8px 0 0 12px;
+    color: #999;
+    line-height: 22px;
+    font-size: 14px;
+    font-weight: 700;
+}
+.recent-bd {
+    padding: 10px 4px;
+}
+.recent-bd li {
+    float: left;
+    margin: 0 10px;
+    _margin: 0 9px 0 9px;
+}
+.recent-bd li p {
+    width: 150px;
+    height: 40px;
+    margin: 3px 0;
+    line-height: 20px;
+    overflow: hidden;
+}
+.recent-bd li span {
+    display: block;
+    color: #AAA;
+}
+.recent-bd li strong {
+    margin-left: 5px;
+    color: #F50;
+    font-size: 14px;
+    font-family: arial, tahoma, \5b8b\4f53, sans-serif;
+}
+.recent-bd li del {
+    margin-left: 5px;
+    font-family: arial, tahoma, \5b8b\4f53, sans-serif;
+}

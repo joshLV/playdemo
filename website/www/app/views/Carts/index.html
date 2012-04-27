@@ -19,22 +19,20 @@
     <caption>我的购物车</caption>
     <thead>
         <tr>
-            <th width="54"><input type="checkbox" name="select_all_checkbox" /> <label for="select_all_checkbox">全选</label></th>
-            <th width="320">商品</th>
-            <th width="120">类型</th>
-            <th width="115">单价（元）</th>
-            <th width="83">数量</th>
-            <th width="187">小计</th>
+            <th class="select-all" width="75"><input type="checkbox" name="select_all_checkbox" /> <label for="select_all_checkbox">全选</label></th>
+            <th width="420">商品</th>
+            <th width="140">类型</th>
+            <th width="125">单价（元）</th>
+            <th width="100">数量</th>
+            <!-- <th width="187">小计</th> -->
             <th width="100">操作</th>
         </tr>
     </thead>
     <tbody>
         #{list items:carts, as:'cartItem'}
         <tr id="row_${cartItem.goods.id}">
-            <td>
-                <div class="col_one"><input type="checkbox" id="check_goods_${cartItem.goods.id}"/></div>
-            </td>
-            <td><img src="http://img0.uhcdn.com/p/0/0/51/2012042702400668315_tiny.jpg" /> ${cartItem.goods.name}</td>
+            <td><input type="checkbox" id="check_goods_${cartItem.goods.id}" /></td>
+            <td class="goods-name"><img src="http://img0.uhcdn.com/p/0/0/51/2012042702400668315_tiny.jpg" /> ${cartItem.goods.name}</td>
             <td>${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
             <td id="price_${cartItem.goods.id}">${cartItem.goods.salePrice}</td>
             <td>
@@ -43,7 +41,7 @@
                 <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}"/>
                 <a class="add_box" href="#" name="${cartItem.goods.id}"><img src="@{'/public/images/add_anniu.jpg'}"/></a>
             </td>
-            <td><span class="strong_gray" id="subtotal_${cartItem.goods.id}">${cartItem.goods.salePrice?.multiply(cartItem.number)}</span></td>
+            <!-- <td><span class="strong_gray" id="subtotal_${cartItem.goods.id}">${cartItem.goods.salePrice?.multiply(cartItem.number)}</span></td> -->
             <td><a href="#" class="delete_gift" name="${cartItem.goods.id}">删除</a></td>
         </tr>
         #{/list}
