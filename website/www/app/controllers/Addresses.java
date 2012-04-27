@@ -1,12 +1,11 @@
 package controllers;
 
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+import java.util.List;
 import models.consumer.Address;
 import play.mvc.Controller;
 import play.mvc.With;
-
-import java.util.List;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 
 /**
  * 用户地址控制器.
@@ -15,7 +14,7 @@ import java.util.List;
  * Date: 2/14/12
  * Time: 1:43 PM
  */
-@With(SecureCAS.class)
+@With({SecureCAS.class, WebsiteInjector.class})
 @SkipCAS
 public class Addresses extends Controller {
 

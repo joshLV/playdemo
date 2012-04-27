@@ -1,13 +1,17 @@
 package controllers;
 
-import controllers.modules.website.cas.SecureCAS;
+import static play.Logger.warn;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
 import models.order.Cart;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
-import models.resale.ResalerLevel;
 import play.Logger;
 import play.data.validation.Required;
 import play.data.validation.Valid;
@@ -16,14 +20,7 @@ import play.modules.view_ext.annotation.Mobile;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static play.Logger.warn;
+import controllers.modules.website.cas.SecureCAS;
 
 /**
  * 用户订单确认控制器.
@@ -32,7 +29,7 @@ import static play.Logger.warn;
  * Date: 2/14/12
  * Time: 11:31 AM
  */
-@With(SecureCAS.class)
+@With({SecureCAS.class, WebsiteInjector.class})
 public class Orders extends Controller {
     /**
      * 预览订单.

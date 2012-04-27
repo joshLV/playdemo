@@ -1,12 +1,12 @@
 package controllers;
 
-import controllers.modules.website.cas.SecureCAS;
 import models.payment.AliPaymentFlow;
 import models.payment.PaymentFlow;
 import play.mvc.Controller;
 import play.mvc.With;
+import controllers.modules.website.cas.SecureCAS;
 
-@With(SecureCAS.class)
+@With({SecureCAS.class, WebsiteInjector.class})
 public class OrderResult extends Controller {
 	private static PaymentFlow paymentFlow = new AliPaymentFlow();
 	

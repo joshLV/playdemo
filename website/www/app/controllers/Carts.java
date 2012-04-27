@@ -1,15 +1,14 @@
 package controllers;
 
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+import java.util.List;
 import models.consumer.User;
 import models.order.Cart;
 import play.data.binding.As;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-
-import java.util.List;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 
 /**
  * 购物车控制器，提供http接口对购物车进行增删该查
@@ -17,7 +16,7 @@ import java.util.List;
  * @author likang
  *
  */
-@With(SecureCAS.class)
+@With({SecureCAS.class, WebsiteInjector.class})
 @SkipCAS
 public class  Carts extends Controller {
 

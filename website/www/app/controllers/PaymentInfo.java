@@ -1,6 +1,7 @@
 package controllers;
 
-import controllers.modules.website.cas.SecureCAS;
+import java.math.BigDecimal;
+import java.util.List;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -14,11 +15,9 @@ import models.payment.AliPaymentFlow;
 import models.payment.PaymentFlow;
 import play.mvc.Controller;
 import play.mvc.With;
+import controllers.modules.website.cas.SecureCAS;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-@With(SecureCAS.class)
+@With({SecureCAS.class, WebsiteInjector.class})
 public class PaymentInfo extends Controller {
 	private static PaymentFlow paymentFlow = new AliPaymentFlow();
 

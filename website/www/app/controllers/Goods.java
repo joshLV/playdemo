@@ -1,7 +1,7 @@
 package controllers;
 
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+import java.math.BigDecimal;
+import java.util.List;
 import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
@@ -13,9 +13,8 @@ import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-
-import java.math.BigDecimal;
-import java.util.List;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 
 /**
  * 商品控制器.
@@ -24,7 +23,7 @@ import java.util.List;
  * Date: 2/13/12
  * Time: 5:32 PM
  */
-@With(SecureCAS.class)
+@With({SecureCAS.class, WebsiteInjector.class})
 @SkipCAS
 public class Goods extends Controller {
 

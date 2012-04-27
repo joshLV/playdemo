@@ -28,12 +28,22 @@
             </div>
         </div>
         <div class="carts">
-            <div class="carts-hd"><a href="/carts">购物车<span>0</span>件</a></div>
+            <div class="carts-hd"><a href="/carts">购物车<span id="carts_size">${carts.size()}</span>件</a></div>
             <div class="carts-bd">
                 <b class="upRightLine"></b>
-                您的购物车中没有任何商品
-                <a class="view-carts" href="/carts">查看购物车</a>
+                #{if carts.size() > 0 }
+                    #{list items:carts, as:'cartItem'}
+                      <p><img src="${cartItem.goods.imageTinyPath}"/>${cartItem.goods.name}, &yen;${cartItem.goods.salePrice} x${cartItem.number}</p>
+                    #{/list}
+                    <a class="view-carts" href="/carts">查看购物车</a>
+                    <a class="view-carts" href="/orders?items=#{list items:carts, as:'cartItem'}${cartItem.goods.id}-${cartItem.number},#{/list}">去结算</a>
+                #{/if}
+                #{else}
+                    您的购物车中没有任何商品。<br/>
+                    <a class="view-carts" href="/carts">查看购物车</a>
+                #{/else}
             </div>
+
         </div>
         <div class="help"><a href="">帮助中心</a></div>
         <div class="login"><a href="/login">登录</a></div>
@@ -42,7 +52,7 @@
 </div>
 <div id="nav">
     <ul class="clearfix">
-        <li class="current"><a href="">首页</a></li>
+        <li class="current"><a href="/">首页</a></li>
         <li><a href="/goods/list/1">饮食</a></li>
         <li><a href="/goods/list/2">礼品</a></li>
         *{
