@@ -6,3 +6,4 @@ cms.Topic(Test):
   content: '测试内容如下'
   platformType: UHUILA
   type: NOTICE
+  deleted: UN_DELETED

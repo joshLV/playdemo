@@ -26,18 +26,6 @@ public class TopicUnitTest extends UnitTest {
     }
 
     @Test
-    public void testDelete() {
-        long id = (Long) Fixtures.idCache.get("models.cms.Topic-Test");
-
-        Topic.delete(id);
-
-        Topic deletedTopic = Topic.findById(id);
-
-        assertNotNull(deletedTopic);
-        assertEquals(DeletedStatus.DELETED, deletedTopic.deleted);
-    }
-
-    @Test
     public void testGetContent() {
         Topic topic = new Topic();
         topic.setContent("  ");
@@ -55,6 +43,18 @@ public class TopicUnitTest extends UnitTest {
         assertEquals(1, page.size());
         page = Topic.getPage(1, 15, PlatformType.UHUILA, TopicType.NEWS);
         assertEquals(0, page.size());
+    }
+
+    @Test
+    public void testDelete() {
+        long id = (Long) Fixtures.idCache.get("models.cms.Topic-Test");
+
+        Topic.delete(id);
+
+        Topic deletedTopic = Topic.findById(id);
+
+        assertNotNull(deletedTopic);
+        assertEquals(DeletedStatus.DELETED, deletedTopic.deleted);
     }
 
 }

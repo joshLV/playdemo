@@ -35,3 +35,13 @@ verifyTextPresent('2013-05-20')
 verifyTextPresent('300')
 verifyTextPresent('通知')
 #{/selenium}
+
+#{selenium '删除公告'}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/topics')
+verifyTitle('公告一览')
+click('id=del_${play.test.Fixtures.idCache.get("models.cms.Topic-Test")}')
+assertConfirmation('您确定要删除已被修改的公告吗？')
+verifyTitle('公告一览')
+#{/selenium}
+

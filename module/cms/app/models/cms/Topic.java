@@ -1,8 +1,8 @@
 package models.cms;
 
 import com.uhuila.common.constants.DeletedStatus;
-import org.apache.commons.lang.StringUtils;
 import com.uhuila.common.constants.PlatformType;
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import play.data.validation.InFuture;
@@ -29,7 +29,7 @@ import java.util.Date;
  * Time: 10:31 AM
  */
 @Entity
-@Table(name = "notice")
+@Table(name = "topic")
 public class Topic extends Model {
     @Required
     @MinSize(10)
@@ -61,6 +61,7 @@ public class Topic extends Model {
 
     @Enumerated(EnumType.STRING)
     public DeletedStatus deleted;
+
     /**
      * 公告内容
      *
@@ -87,15 +88,15 @@ public class Topic extends Model {
 
     public static ModelPaginator getPage(int pageNumber, int pageSize, PlatformType platformType, TopicType type) {
         ModelPaginator<Topic> topicPage;
-        final String orderBy = "displayOrder, type, " +
-                "effectiveAt,expireAt";
+        final String orderBy = "displayOrder, type, effectiveAt desc, expireAt";
         if (platformType == null) {
-            topicPage = new ModelPaginator<Topic>(Topic.class).orderBy(orderBy);
+            topicPage = new ModelPaginator<Topic>(Topic.class,"deleted = ?",DeletedStatus.UN_DELETED).orderBy(orderBy);
         } else if (type == null) {
-            topicPage = new ModelPaginator<Topic>(Topic.class, "platformType=?", platformType).orderBy(orderBy);
+            topicPage = new ModelPaginator<Topic>(Topic.class, "deleted = ? and platformType=?",
+                    DeletedStatus.UN_DELETED, platformType).orderBy(orderBy);
         } else {
-            topicPage = new ModelPaginator<Topic>(Topic.class, "platformType=? and type=?", platformType,
-                    type).orderBy(orderBy);
+            topicPage = new ModelPaginator<Topic>(Topic.class, "deleted = ? and platformType=? and type=?",
+                    DeletedStatus.UN_DELETED, platformType, type).orderBy(orderBy);
         }
         topicPage.setPageNumber(pageNumber);
         topicPage.setPageSize(pageSize);
