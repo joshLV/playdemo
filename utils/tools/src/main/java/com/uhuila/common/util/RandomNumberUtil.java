@@ -2,7 +2,7 @@ package com.uhuila.common.util;
 
 import java.util.Random;
 
-public class RadomNumberUtil {
+public class RandomNumberUtil {
 	private static String chars = "0123456789";
 
 	/**
