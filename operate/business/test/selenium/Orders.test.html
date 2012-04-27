@@ -27,6 +27,7 @@ load:['fixture/roles.yml','fixture/supplierusers.yml',
     type('id=order_deliveryCompany','汇通')
     type('id=order_deliveryNo','321123')
     clickAndWait('id=send')
+    open('/orders')
     verifyTextPresent('已发货')
 #{/selenium}
 #{selenium '查看订单详细信息'}
