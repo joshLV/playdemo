@@ -219,7 +219,7 @@ public class TradeUtil {
         //余额不足以支付订单中指定的使用余额付款的金额
         //则将充值的钱打入发起人账户里
         if (tradeBill.fromAccount.amount.compareTo(tradeBill.balancePaymentAmount) < 0) {
-            if (tradeBill.ebankPaymentAmount.compareTo(BigDecimal.ZERO) > 0) {
+            if (tradeBill.ebankPaymentAmount.compareTo(BigDecimal.ZERO) >= 0) {
                 ChargeBill chargeBill
 	                = ChargeUtil.createWithTrade(tradeBill.fromAccount, tradeBill.ebankPaymentAmount, tradeBill);
                 ChargeUtil.success(chargeBill);
@@ -229,7 +229,7 @@ public class TradeUtil {
                 return null;
             }
         }
-        if (tradeBill.balancePaymentAmount.compareTo(BigDecimal.ZERO) > 0) {
+        if (tradeBill.balancePaymentAmount.compareTo(BigDecimal.ZERO) >= 0) {
             AccountUtil.addCash(
                     tradeBill.fromAccount,
                     tradeBill.balancePaymentAmount.negate(),
@@ -237,7 +237,7 @@ public class TradeUtil {
                     AccountSequenceType.PAY,
                     "支付");
         }
-        if (tradeBill.ebankPaymentAmount.compareTo(BigDecimal.ZERO) > 0) {
+        if (tradeBill.ebankPaymentAmount.add(tradeBill.balancePaymentAmount).compareTo(BigDecimal.ZERO) >= 0) {
             AccountUtil.addCash(
                     tradeBill.toAccount,
                     tradeBill.ebankPaymentAmount.add(tradeBill.balancePaymentAmount),
