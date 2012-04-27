@@ -154,7 +154,7 @@ public class Cart extends Model {
         //构建查询条件
         StringBuilder sql = new StringBuilder(
                 "select new Cart(c.goods, SUM(c.number)) from Cart c where " +
-                "( c.goods is not null and c.goods.status = :status and ( 1=1 ");
+                "c.goods is not null and c.goods.status = :status and ( 1=2 ");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("status", GoodsStatus.ONSALE);
 
@@ -171,7 +171,7 @@ public class Cart extends Model {
             sql.append("and c.goods.materialType = :type ");
             params.put("type", type);
         }
-        sql.append(") group by c.goods");
+        sql.append(" group by c.goods");
 
         Query query = play.db.jpa.JPA.em().createQuery(sql.toString());
         for (Map.Entry<String, Object> entry : params.entrySet()) {
