@@ -40,7 +40,6 @@
 #carts-list thead tr {
     height: 30px;
     padding: 5px;
-    /* background-color: #AADBDB; */
     background-color: #F6F6F6;
 }
 #carts-list td {
@@ -58,6 +57,9 @@
 }
 #carts-list tbody input {
     width: 30px;
+}
+#carts-list .del {
+    color: #25B4AB;
 }
 
 /* 购物车询问 */

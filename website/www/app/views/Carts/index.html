@@ -19,13 +19,13 @@
     <caption>我的购物车</caption>
     <thead>
         <tr>
-            <th class="select-all" width="75"><input type="checkbox" name="select_all_checkbox" /> <label for="select_all_checkbox">全选</label></th>
+            <th class="select-all" width="80"><input type="checkbox" name="select_all_checkbox" /> <label for="select_all_checkbox">全选</label></th>
             <th width="420">商品</th>
-            <th width="140">类型</th>
-            <th width="125">单价（元）</th>
-            <th width="100">数量</th>
-            <!-- <th width="187">小计</th> -->
-            <th width="100">操作</th>
+            <th width="100">类型</th>
+            <th width="90">单价（元）</th>
+            <th width="90">数量</th>
+            <th width="90">小计</th>
+            <th width="90">操作</th>
         </tr>
     </thead>
     <tbody>
@@ -45,8 +45,8 @@
                     <img src="@{'/public/images/add_anniu.jpg'}" id="add_img_${cartItem.goods.id}"/>
                 </a>
             </td>
-            <!-- <td><span class="strong_gray" id="subtotal_${cartItem.goods.id}">${cartItem.goods.salePrice?.multiply(cartItem.number)}</span></td> -->
-            <td><a href="#" class="delete_gift" name="${cartItem.goods.id}" id="del_row_${cartItem.goods.id}">删除</a></td>
+            <td><span class="strong_gray" id="subtotal_${cartItem.goods.id}">${cartItem.goods.salePrice?.multiply(cartItem.number)}</span></td>
+            <td><a href="#" class="del" name="${cartItem.goods.id}">删除</a></td>
         </tr>
         #{/list}
 
