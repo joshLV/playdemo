@@ -19,6 +19,7 @@ public class OptimisticLockingTest extends UnitTest{
     public void setup(){
         Book.deleteAll();
         MyBook.deleteAll();
+        BookEnhance.deleteAll();
         Book book = new Book();
         book.count = 0L;
         book.save();

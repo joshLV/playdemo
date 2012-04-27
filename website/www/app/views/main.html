@@ -28,10 +28,10 @@
             </div>
         </div>
         <div class="carts">
-            <div class="carts-hd"><a href="/carts">购物车<span id="carts_size">${carts.size()}</span>件</a></div>
+            <div class="carts-hd"><a href="/carts">购物车<span id="carts_size">${carts?.size()}</span>件</a></div>
             <div class="carts-bd">
                 <b class="upRightLine"></b>
-                #{if carts.size() > 0 }
+                #{if carts?.size() > 0 }
                     #{list items:carts, as:'cartItem'}
                       <p><img src="${cartItem.goods.imageTinyPath}"/>${cartItem.goods.name}, &yen;${cartItem.goods.salePrice} x${cartItem.number}</p>
                     #{/list}
