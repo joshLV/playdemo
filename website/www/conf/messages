@@ -8,6 +8,7 @@ validation.invalid=无效的%s!
 validation.required=请输入%s!
 validation.minSize=%s的长度至少%d位!
 validation.maxSize=%s的长度不能超过%d!
+validation.match=无效的%s!
 mobile=手机号
 user.loginName=邮箱
 user.mobile=手机
