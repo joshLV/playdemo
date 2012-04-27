@@ -322,7 +322,7 @@ public class Order extends Model {
                         
                         // 更新订单明细的状态
                         orderItem.status = OrderStatus.PAID;
-                        
+                        orderItem.save();
                         if (!Play.mode.isDev()) {
                             SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, orderItem.phone);
                         }

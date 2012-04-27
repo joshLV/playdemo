@@ -104,10 +104,8 @@ resaler.remark=备注
 #订单状态
 order.UNPAID=等待付款
 order.PAID=已付款
-order.CANCELED=交易取消
+order.CANCELED=交易关闭
 order.SENT=已发货
-order.RETURNED=退款
-order.RECEIPT=确认取货
 
 #券状态
 coupon.DEALING=处理中

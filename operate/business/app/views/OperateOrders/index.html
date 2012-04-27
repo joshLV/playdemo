@@ -135,7 +135,7 @@
             #{if order.realGoods.size()>0}
                 <td>#{if models.sales.MaterialType.ELECTRONIC.equals(order.realGoods.get(0).materialType)}<img
                         src="@@{'/public/images/electronic-goods.png'}"> #{/if}
-                    #{else}<img src="@@{'/public/images/real-goods.png'}"> #{/else}${order.realGoods.get(0).name}</td>
+                    #{else}<img src="@@{'/public/images/real-goods.png'}"> &nbsp;#{/else}${order.realGoods.get(0).name}&nbsp;</td>
                 <td rowspan="${order.realGoods.size()}">#{if order.deliveryNo!=null}<a id="sendInfo_${order.id}"
                                                                                        href="#" class="label label-info"
                                                                                        rel="popover"
@@ -145,7 +145,6 @@
                     order.realGoodsStatus}</a>
                 #{/if}
                     #{else}&{'order.'+order.realGoodsStatus}#{/else}
-
                     #{if models.order.OrderStatus.PAID.equals(order.realGoodsStatus)}
                         <br/><a href="#" id="linkSend_${order.id}" onclick="prepareSend(${order.id})">发货</a>#{/if}
                 </td>
@@ -153,9 +152,13 @@
 
             #{else}
                 #{if order.electronicGoods.size()>0}
-                    <td><img src="@@{'/public/images/electronic-goods.png'}"> ${order.electronicGoods.get(0).name}</td>
+                    <td><img src="@@{'/public/images/electronic-goods.png'}"> ${order.electronicGoods.get(0).name}&nbsp;</td>
                     <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
                 #{/if}
+                 #{else}
+                    <td>&nbsp;</td>
+                    <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
+                #{/else}
             #{/else}
             <td rowspan="${order.orderItems.size()}">&{'order.'+order.userType}</td>
             <td rowspan="${order.orderItems.size()}">${order.amount}</td>
@@ -169,7 +172,7 @@
             #{list items:order.realGoods, as:'aRealGoods'}
                 #{if i>0}
                 <tr>
-                    <td><img src="@@{'/public/images/real-goods.png'}"> ${aRealGoods.name}</td>
+                    <td><img src="@@{'/public/images/real-goods.png'}">bb ${aRealGoods.name}</td>
                     #{if showRealStatus}
                         <td rowspan="${order.realGoods.size()}">&{'order.'+
                             order.realGoodsStatus}#{if models.order.OrderStatus.PAID.equals(order.status)}
@@ -188,8 +191,8 @@
             #{list items:order.electronicGoods, as:'aElectronicGoods'}
                 #{if (order.realGoods.size()==0 && j>0) ||(order.realGoods.size()>0) }
                 <tr>
-                    <td><img src="@@{'/public/images/electronic-goods.png'}"> ${aElectronicGoods.name}</td>
-                    #{if showElectronicStatus}
+                    <td><img src="@@{'/public/images/electronic-goods.png'}">aaa ${aElectronicGoods?.name}bbb</td>
+                    #{if showElectronicStatus && order.realGoods.size()>0}
                         <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
                         #{set showElectronicStatus:false/}
                     #{/if}
