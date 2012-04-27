@@ -152,7 +152,7 @@ public class Cart extends Model {
         }
         //构建查询条件
         StringBuilder sql = new StringBuilder(
-                "select new Cart(c.goods, SUM(c.number)) from Cart c where ( 1=2 ");
+                "select new Cart(c.goods, SUM(c.number)) from Cart c where ( c.goods is not null ");
         Map<String, Object> params = new HashMap<String, Object>();
 
         if (user != null) {
