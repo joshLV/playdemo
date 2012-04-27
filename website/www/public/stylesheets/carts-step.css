@@ -8,7 +8,7 @@
 /* 购买步骤条 */
 .buy-step {
     margin: 40px 0 20px;
-    background-color: #F4F4F4;
+    background: #F4F4F4 url(http://img.uhcdn.com/images/u/carts_step.png) repeat-x 0 0;
 }
 .buy-step li {
     float: left;
@@ -22,7 +22,7 @@
 .buy-step-curr {
     color: #F8F8F8;
     font-weight: 700;
-    background-color: #25B4AB;
+    /* background-color: #25B4AB; */
 }
 .buy-step span {
     padding: 2px 8px;
