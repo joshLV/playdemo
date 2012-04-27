@@ -43,6 +43,7 @@
                     <th width="81" height="30" bgcolor="F6F6F6">单价（元）</th>
                     <th width="66">数量</th>
                     <th width="118">劵号</th>
+                     <th width="93">物流状态</th>
                     <th width="163">实付款（元）</th>
                     <th width="93">订单状态</th>
                 </tr>
@@ -60,6 +61,13 @@
                     <td width="66" align="center" valign="middle">${row.buyNumber}</td>
                     <td width="118" align="center" valign="middle"><span
                             class="strong_gray">${row?.getWebEcouponSn()}</span></td>
+                     <td width="66" align="center" valign="middle">
+                     #{if "SENT".equals(row?.status.toString()) && "REAL".equals(row?.goods?.materialType.toString()) }已发货#{/if}
+                     #{elseif "PAID".equals(row?.status.toString()) && "ELECTRONIC".equals(row?.goods?.materialType.toString()) }已发送#{/elseif}
+                     
+                      #{if "PAID".equals(row?.status.toString()) && "REAL".equals(row?.goods?.materialType.toString()) }未发货#{/if}
+                     #{elseif "UNPAID".equals(row?.status.toString()) && "ELECTRONIC".equals(row?.goods?.materialType.toString()) }未发送#{/elseif}
+                     </td>        
                     #{if (++m == 1) }
                         <td rowspan="${orderItems.size()}" align="center"
                             valign="middle">${order?.amount?.formatCurrency('CNY').raw()}<br/> (含运费)
@@ -68,6 +76,7 @@
                         &{'order.'+order.status}
                         </td>
                     #{/if}
+                    
                 </tr>
             #{/list}
             </table>

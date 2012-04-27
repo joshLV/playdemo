@@ -319,6 +319,10 @@ public class Order extends Model {
                     List<String> couponCodes = new ArrayList<>();
                     for (int i = 0; i < orderItem.buyNumber; i++) {
                         ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
+                        
+                        // 更新订单明细的状态
+                        orderItem.status = OrderStatus.PAID;
+                        
                         if (!Play.mode.isDev()) {
                             SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, orderItem.phone);
                         }
