@@ -2,8 +2,8 @@
     <div class="menu">
         <h3>我的商城</h3>
         <ul>
-            <li><a class="current" href="">» 我的商品订单</a></li>
-            <li><a href="">» 我的券订单</a></li>
+            <li><a class="current" href="@{UserOrders.index()}">» 我的商品订单</a></li>
+            <li><a href="@{UserCoupons.coupons()}">» 我的券订单</a></li>
             <li><a href="">» 我的电影票</a></li>
         </ul>
         <h3>我的资金</h3>
@@ -19,10 +19,10 @@
         </ul>
         <h3>资料管理</h3>
         <ul>
-            <li><a href="">» 我的资料</a></li>
-            <li><a href="">» 修改密码</a></li>
+            <li><a id="userInfo" href="/userInfo">» 我的资料</a></li>
+            <li><a id="pwd" href="/user/password">» 修改密码</a></li>
             <li><a href="">» 优卡管理</a></li>
-            <li><a href="">» 收货地址</a></li>
+            <li><a href="/addresses">» 收货地址</a></li>
         </ul>
     </div>
 </div>
