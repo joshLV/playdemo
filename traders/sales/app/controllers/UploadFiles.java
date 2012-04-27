@@ -1,6 +1,7 @@
 package controllers;
 
 import com.uhuila.common.util.FileUploadUtil;
+import models.sales.Goods;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -62,7 +63,7 @@ public class UploadFiles extends Controller {
             map.put("error", 0);
 
             String path = targetFilePath.substring(ROOT_PATH.length(), targetFilePath.length());
-            map.put("url", "http://" + SupplierGoods.WWW_URL + "/o" + path);
+            map.put("url", "http://" + Goods.IMAGE_SERVER + "/o" + path);
 
 
             renderJSON(map);

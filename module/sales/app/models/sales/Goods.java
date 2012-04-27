@@ -260,7 +260,7 @@ public class Goods extends Model {
     public MaterialType materialType;
 
 
-    private static final String IMAGE_SERVER = Play.configuration.getProperty
+    public static final String IMAGE_SERVER = Play.configuration.getProperty
             ("image.server", "img0.uhcdn.com");
     //    private static final String IMAGE_ROOT_GENERATED = Play.configuration
     //            .getProperty("image.root", "/p");
