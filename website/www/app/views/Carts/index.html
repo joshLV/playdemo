@@ -36,13 +36,17 @@
             <td>${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
             <td id="price_${cartItem.goods.id}">${cartItem.goods.salePrice}</td>
             <td>
-                <a href="#" class="reduce_box" name="${cartItem.goods.id}"><img src="@{'/public/images/sub_anniu.jpg'}" /></a>
+                <a href="#" class="reduce_box" name="${cartItem.goods.id}">
+                    <img src="@{'/public/images/sub_anniu.jpg'}" id="sub_img_${cartItem.goods.id}" />
+                </a>
                 <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}" />
                 <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}"/>
-                <a class="add_box" href="#" name="${cartItem.goods.id}"><img src="@{'/public/images/add_anniu.jpg'}"/></a>
+                <a class="add_box" href="#" name="${cartItem.goods.id}">
+                    <img src="@{'/public/images/add_anniu.jpg'}" id="add_img_${cartItem.goods.id}"/>
+                </a>
             </td>
             <!-- <td><span class="strong_gray" id="subtotal_${cartItem.goods.id}">${cartItem.goods.salePrice?.multiply(cartItem.number)}</span></td> -->
-            <td><a href="#" class="delete_gift" name="${cartItem.goods.id}">删除</a></td>
+            <td><a href="#" class="delete_gift" name="${cartItem.goods.id}" id="del_row_${cartItem.goods.id}">删除</a></td>
         </tr>
         #{/list}
 
