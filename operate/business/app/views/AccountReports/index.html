@@ -112,11 +112,12 @@ footer{
  </div>
 
  <table class="table table-striped seq">
-          <tr>
+          <tr>        f
             <th>账户明细</th>
-            <th>类型</th>
+            <th>变动类型</th>
             <th>交易时间</th>
-            <th>金额</th>
+            <th>交易金额</th>
+            <th>账户余额</th>
           </tr>
     #{paginate.list items:seqs, as:'accountSequence'}
         <tr>
@@ -130,6 +131,7 @@ footer{
                 #{/else}
                 </td>
             <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>${accountSequence.cashAmount.add(accountSequence.uncashAmount) }</td>
             <td>${accountSequence.amount}</td>
         </tr>
     #{/paginate.list}
