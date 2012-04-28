@@ -89,7 +89,7 @@ public class Goods extends Controller {
      * @param id 商品
      */
     public static void show(long id) {
-        models.sales.Goods goods = models.sales.Goods.findOnSale(id);
+        models.sales.Goods goods = models.sales.Goods.findUnDeletedById(id);
         if (goods == null) {
             error(404, "没有找到该商品！");
         }

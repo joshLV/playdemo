@@ -44,10 +44,12 @@
     <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
     <ul class="property">
         <li class="price">现　　价:<span>&yen;${goods.salePrice}</span></li>
+    #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
         <li class="cost">原　　价:
             <del>&yen;${goods.faceValue}</del>
         </li>
         <li class="discount">折　　扣:<span>${goods.discountExpress}</span></li>
+    #{/if}
         <li class="type">商品类型:<span>TODO电子消费券</span></li>
         <li class="shipmod">配送方式:<span>TODO手机短信</span></li>
         <li class="deadline">券有效期:<span>${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span></li>
@@ -55,6 +57,7 @@
             <span><input class="num_input_bg" id="number" name="number" type="text" value="1"/> 件</span>
             <span class="error">#{error 'number' /}</span>
         </li>
+    #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
         <li class="action">
             <a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
             <a class="add" id="link_add_cart" href="#">加入购物车</a>
@@ -65,6 +68,7 @@
                     class="zi_gray">继续购物</span></a>
             <a href="/carts"><span class="zi_gray">查看购物车</span></a>
         </li>
+    #{/if}
     </ul>
     <div class="aside">
         <ul class="service">
