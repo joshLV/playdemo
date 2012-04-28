@@ -1,7 +1,7 @@
 package controllers;
 
-import java.math.BigDecimal;
-import java.util.List;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
@@ -13,8 +13,9 @@ import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 商品控制器.
@@ -88,8 +89,12 @@ public class Goods extends Controller {
      * @param id 商品
      */
     public static void show(long id) {
-        models.sales.Goods.addRecommend(id, false);
-        models.sales.Goods goods = models.sales.Goods.findUnDeletedById(id);
+        models.sales.Goods goods = models.sales.Goods.findOnSale(id);
+        if (goods == null) {
+            error(404, "没有找到该商品！");
+        }
+
+        models.sales.Goods.addRecommend(goods, false);
 
         showGoods(goods);
 
@@ -98,13 +103,16 @@ public class Goods extends Controller {
 
     /**
      * 用户喜欢指定商品.
+     * todo 页面上还没有加这个功能
      *
-     * @param id    商品标识
+     * @param id 商品标识
      */
     public static void like(long id) {
-        models.sales.Goods.addRecommend(id, true);
-        models.sales.Goods goods = models.sales.Goods.findUnDeletedById(id);
+        models.sales.Goods goods = models.sales.Goods.findOnSale(id);
 
+        models.sales.Goods.addRecommend(goods, true);
+
+        //todo 添加到个人喜欢的商品列表中
         showGoods(goods);
 
         render("Goods/show.html");

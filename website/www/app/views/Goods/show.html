@@ -87,15 +87,23 @@
 <div class="wrap clearfix">
     <ul id="J_tabbar" class="tabbar clearfix">
         <li name="product-info" class="current">商品信息</li>
+    #{if goods.prompt != null}
+        <li name="product-prompt">温馨提示</li>
+    #{/if}
         <li name="applicable-store">适用门店</li>
     </ul>
     <div id="J_tabtxt" class="tabtxt">
         <div class="product-info txt-item">
-        #{if goods.prompt != null}
-        ${goods?.prompt?.raw()}
-        #{/if}
-           ${goods?.details?.raw()}
+        ${goods?.details?.raw()}
         </div>
+
+    #{if goods.prompt != null}
+        <div class="product-prompt txt-item">
+            <h4>温馨提示</h4>
+        ${goods?.prompt?.raw()}
+        </div>
+    #{/if}
+
         <div class="applicable-store txt-item">
             <h4>适用门店</h4>
             <table width="700" border="0" cellpadding="0"

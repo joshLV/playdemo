@@ -312,11 +312,11 @@ public class GoodsUnitTest extends UnitTest {
     @Test
     public void testAddRecommend() {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
-        Goods.addRecommend(goodsId, true);
-        Goods goods = Goods.findById(goodsId);
+        models.sales.Goods goods = Goods.findById(goodsId);
+        Goods.addRecommend(goods, true);
         assertEquals(100, goods.recommend.intValue());
 
-        Goods.addRecommend(goodsId, false);
+        Goods.addRecommend(goods, false);
         assertEquals(101, goods.recommend.intValue());
     }
 

@@ -550,6 +550,10 @@ public class Goods extends Model {
         return find("id=? and deleted=?", id, DeletedStatus.UN_DELETED).first();
     }
 
+    public static Goods findOnSale(long id) {
+        return find("id=? and deleted=? and status=?", id, DeletedStatus.UN_DELETED, GoodsStatus.ONSALE).first();
+    }
+
     public static JPAExtPaginator<Goods> findByCondition(GoodsCondition condition,
                                                          int pageNumber, int pageSize) {
         JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>
@@ -740,11 +744,10 @@ public class Goods extends Model {
     /**
      * 增加商品的推荐指数.
      *
-     * @param id
+     * @param goods
      * @param like
      */
-    public static void addRecommend(Long id, boolean like) {
-        Goods goods = Goods.findById(id);
+    public static void addRecommend(Goods goods, boolean like) {
         if (goods == null) {
             return;
         }
