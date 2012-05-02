@@ -28,6 +28,7 @@ app_dirs = [
             'cdn/assets',
             'operate/admin',
             'operate/business',
+            'operate/cms',
             'resale/home'
            ]
 

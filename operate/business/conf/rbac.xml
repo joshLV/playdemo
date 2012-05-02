@@ -10,8 +10,6 @@
     <permission key="ORDERS" text="运营订单管理" roles="admin"/>
     <permission key="COUPONS" text="券管理" roles="admin"/>
     <permission key="ACCOUNT_REPORTS" text="账户报表查看" roles="admin"/>
-    <permission key="TOPICS_NEW" text="公告添加" roles="admin"/>
-    <permission key="TOPICS" text="公告管理" roles="admin"/>
     <!--<permission key="SHOPS_NEW" text="门店添加"/> -->
     <!--<permission key="SHOPS" text="门店管理"/> -->
 
@@ -54,12 +52,6 @@
     <navigation key="account_app" text="系统账户" action="AccountReports.index">
         <navigation key="account" text="账户" permission="ACCOUNT_REPORTS">
             <navigation key="account_reports" action="AccountReports.index" text="账户报表" permission="ACCOUNT_REPORTS"/>
-        </navigation>
-    </navigation>
-    <navigation key="topic_app" text="公告管理" action="OperateTopics.index">
-        <navigation key="topic" text="公告" permission="TOPICS_NEW,TOPICS">
-            <navigation key="topics_add" action="OperateTopics.add" text="公告添加" permission="TOPICS_NEW"/>
-            <navigation key="topics_index" action="OperateTopics.index" text="公告管理" permission="TOPICS"/>
         </navigation>
     </navigation>
 </application>

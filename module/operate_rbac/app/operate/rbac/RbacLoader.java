@@ -143,16 +143,18 @@ public class RbacLoader {
     }
 
     public static void loadMenusToDB(Menu parentMenu, List<Menu> menus, String applicationName, long loadVersion) {
-        for (Menu menu : menus) {
+        for (int index = 0; index < menus.size(); index++) {
+            Menu menu = menus.get(index);
             menu.parent = parentMenu;
-            saveMenuToDB(applicationName, loadVersion, menu, parentMenu);
+            saveMenuToDB(applicationName, loadVersion, menu, parentMenu, index);
             if (!menu.children.isEmpty()) {
                 loadMenusToDB(menu, menu.children, applicationName, loadVersion);
             }
         }
     }
 
-    private static void saveMenuToDB(String applicationName, long currentLoadVersion, Menu menu, Menu parentMenu) {
+    private static void saveMenuToDB(String applicationName, long currentLoadVersion,
+            Menu menu, Menu parentMenu, int menuIndex) {
         OperateNavigation operateNavigation = OperateNavigation.find("byName", menu.name).first();
         if (operateNavigation == null) {
             operateNavigation = new OperateNavigation();
@@ -174,6 +176,12 @@ public class RbacLoader {
             operateNavigation.prodBaseUrl = Play.configuration.getProperty("application.baseUrl");
         }
 
+        if (menu.displayOrder == 0) {
+            operateNavigation.displayOrder = menuIndex;
+        } else {
+            operateNavigation.displayOrder = menu.displayOrder;
+        }
+        
         if (menu.getPermissions() != null) {
             operateNavigation.permissions = new HashSet<>();
             for (String permissionName : menu.getPermissions()) {
