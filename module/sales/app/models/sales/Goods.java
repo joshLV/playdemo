@@ -157,14 +157,14 @@ public class Goods extends Model {
 
     @Required
     @MinSize(7)
-    @MaxSize(4000)
+    @MaxSize(65000)
     @Lob
     private String details;
 
     /**
      * 温馨提示
      */
-    @MaxSize(4000)
+    @MaxSize(65000)
     @Lob
     private String prompt;
 
