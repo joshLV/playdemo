@@ -37,6 +37,9 @@ public class Menu {
     public String action;
     @XmlAttribute
     public String url;
+    
+    @XmlAttribute(name="display-order")
+    public int displayOrder;
 
     @XmlElement(name="navigation")
     public List<Menu> children = new ArrayList<Menu>();

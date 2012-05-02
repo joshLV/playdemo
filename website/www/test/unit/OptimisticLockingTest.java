@@ -204,7 +204,6 @@ public class OptimisticLockingTest extends UnitTest{
         System.out.println("Main1");
         book.count = 3L;
         book.save();
-        book.em().flush();
         JPAPlugin.closeTx(false);
         System.out.println("Main2");
         Thread.sleep(300l);

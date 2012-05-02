@@ -13,10 +13,7 @@ import play.Play;
 import play.vfs.VirtualFile;
 
 /**
- * Keeper of the bare RBAC all defines.
- *
- * This class holds a static reference to all the Menus. You can retrive a Menu from this class,
- * which will be automatically wrapped in a ContextedMenu, ready to be inserted into your view.
+ * 从XML加载权限相对的定义文件.
  */
 public class RbacLoader {
 
@@ -143,16 +140,18 @@ public class RbacLoader {
     }
 
     public static void loadMenusToDB(Menu parentMenu, List<Menu> menus, String applicationName, long loadVersion) {
-        for (Menu menu : menus) {
+        for (int index = 0; index < menus.size(); index++) {
+            Menu menu = menus.get(index);
             menu.parent = parentMenu;
-            saveMenuToDB(applicationName, loadVersion, menu, parentMenu);
+            saveMenuToDB(applicationName, loadVersion, menu, parentMenu, index);
             if (!menu.children.isEmpty()) {
                 loadMenusToDB(menu, menu.children, applicationName, loadVersion);
             }
         }
     }
 
-    private static void saveMenuToDB(String applicationName, long currentLoadVersion, Menu menu, Menu parentMenu) {
+    private static void saveMenuToDB(String applicationName, long currentLoadVersion, 
+            Menu menu, Menu parentMenu, int menuIndex) {
         SupplierNavigation supplierNavigation = SupplierNavigation.find("byName", menu.name).first();
         if (supplierNavigation == null) {
             supplierNavigation = new SupplierNavigation();
@@ -163,10 +162,16 @@ public class RbacLoader {
         supplierNavigation.action = menu.action;
         supplierNavigation.url = menu.url;
         supplierNavigation.labels = menu.labelValue;
-        // TODO: nav.parent
+
         supplierNavigation.applicationName = applicationName;
         supplierNavigation.loadVersion = currentLoadVersion;
         supplierNavigation.updatedAt = new Date();
+        
+        if (menu.displayOrder == 0) {
+            supplierNavigation.displayOrder = menuIndex;
+        } else {
+            supplierNavigation.displayOrder = menu.displayOrder;
+        }
 
         if (Play.mode == Play.mode.DEV) {
             supplierNavigation.devBaseUrl = Play.configuration.getProperty("application.baseUrl");

@@ -71,9 +71,12 @@ public class RbacMenuTest extends UnitTest {
         SupplierNavigation mainNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "main")
                 .first();
         assertNotNull(mainNav);
+        assertEquals("系统管理", mainNav.text);
+        assertEquals(new Integer(99), mainNav.displayOrder);
         SupplierNavigation homeNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "home")
                 .first();
         assertNotNull(homeNav);
+        assertEquals(new Integer(0), homeNav.displayOrder);
         assertNotNull(homeNav.parent);
         assertEquals(mainNav.name, homeNav.parent.name);
     }
