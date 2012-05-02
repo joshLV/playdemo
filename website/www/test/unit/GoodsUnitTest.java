@@ -11,7 +11,9 @@ import models.sales.Category;
 import models.sales.Goods;
 import models.sales.GoodsCondition;
 import models.sales.GoodsLevelPrice;
+import models.sales.GoodsPublishedPlatformType;
 import models.sales.GoodsStatus;
+import models.sales.GoodsUnPublishedPlatform;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import org.junit.Before;
@@ -74,43 +76,43 @@ public class GoodsUnitTest extends UnitTest {
     @Test
     public void testGetDiscountExpress() {
         models.sales.Goods goods = new Goods();
-        goods.setDiscount(10f);
+        goods.setDiscount(BigDecimal.TEN);
         assertEquals("无优惠", goods.getDiscountExpress());
 
-        goods.setDiscount(9.8f);
+        goods.setDiscount(new BigDecimal("9.8"));
         assertEquals("9.8折", goods.getDiscountExpress());
 
-        goods.setDiscount(1f);
-        assertEquals("1.0折", goods.getDiscountExpress());
+        goods.setDiscount(new BigDecimal("1"));
+        assertEquals("1折", goods.getDiscountExpress());
 
 
-        goods.setDiscount(12f);
+        goods.setDiscount(new BigDecimal("12"));
         assertEquals("无优惠", goods.getDiscountExpress());
 
-        goods.setDiscount(-1f);
+        goods.setDiscount(new BigDecimal("-1"));
         assertEquals("", goods.getDiscountExpress());
 
-        goods.setDiscount(0f);
+        goods.setDiscount(BigDecimal.ZERO);
         assertEquals("", goods.getDiscountExpress());
     }
 
     @Test
     public void testSetDiscount() {
         models.sales.Goods goods = new Goods();
-        goods.setDiscount(10f);
-        assertEquals(new Float(10f), goods.getDiscount());
+        goods.setDiscount(BigDecimal.TEN);
+        assertEquals(BigDecimal.TEN, goods.getDiscount());
 
-        goods.setDiscount(9.8f);
-        assertEquals(new Float(9.8f), goods.getDiscount());
+        goods.setDiscount(new BigDecimal("9.8"));
+        assertEquals(new BigDecimal("9.8"), goods.getDiscount());
 
-        goods.setDiscount(0f);
-        assertEquals(new Float(0f), goods.getDiscount());
+        goods.setDiscount(BigDecimal.ZERO);
+        assertEquals(BigDecimal.ZERO, goods.getDiscount());
 
-        goods.setDiscount(-1f);
-        assertEquals(new Float(0f), goods.getDiscount());
+        goods.setDiscount(new BigDecimal("-1"));
+        assertEquals(BigDecimal.ZERO, goods.getDiscount());
 
-        goods.setDiscount(100f);
-        assertEquals(new Float(10f), goods.getDiscount());
+        goods.setDiscount(new BigDecimal("100"));
+        assertEquals(BigDecimal.TEN, goods.getDiscount());
     }
 
     @Test
@@ -118,33 +120,33 @@ public class GoodsUnitTest extends UnitTest {
         models.sales.Goods goods = new Goods();
         goods.faceValue = new BigDecimal(100);
         goods.salePrice = new BigDecimal(100);
-        assertEquals(new Float(10f), goods.getDiscount());
+        assertEquals(BigDecimal.TEN, goods.getDiscount());
 
         goods.faceValue = new BigDecimal(200);
         goods = new Goods();
         goods.faceValue = new BigDecimal(100);
-        goods.salePrice = new BigDecimal(1);
-        assertEquals(new Float(0.1f), goods.getDiscount());
+        goods.salePrice = new BigDecimal("1.00");
+        assertEquals(new BigDecimal("0.10"), goods.getDiscount());
 
         goods = new Goods();
         goods.faceValue = new BigDecimal(100);
         goods.salePrice = new BigDecimal(10000);
-        assertEquals(new Float(10f), goods.getDiscount());
+        assertEquals(BigDecimal.TEN, goods.getDiscount());
 
         goods = new Goods();
         goods.faceValue = new BigDecimal(100);
         goods.salePrice = new BigDecimal(10);
-        assertEquals(new Float(1f), goods.getDiscount());
+        assertEquals(new BigDecimal("1.00"), goods.getDiscount());
 
         goods = new Goods();
         goods.faceValue = new BigDecimal(100);
         goods.salePrice = null;
-        assertEquals(new Float(0f), goods.getDiscount());
+        assertEquals(BigDecimal.ZERO, goods.getDiscount());
 
         goods = new Goods();
         goods.faceValue = null;
         goods.salePrice = new BigDecimal(100);
-        assertEquals(new Float(0f), goods.getDiscount());
+        assertEquals(BigDecimal.ZERO, goods.getDiscount());
     }
 
     /**
@@ -320,4 +322,34 @@ public class GoodsUnitTest extends UnitTest {
         assertEquals(101, goods.recommend.intValue());
     }
 
+    @Test
+    public void testSetPublishedPlatform() {
+        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
+        models.sales.Goods goods = Goods.findById(goodsId);
+        assertEquals(0, goods.unPublishedPlatforms.size());
+
+        List<GoodsPublishedPlatformType> platforms = new ArrayList<>();
+        platforms.add(GoodsPublishedPlatformType.DANGDANG);
+        goods.setPublishedPlatforms(platforms);
+        Goods.update(goodsId,goods);
+
+        List<GoodsUnPublishedPlatform> unPublishedPlatforms = GoodsUnPublishedPlatform.find("goods.id is null").fetch();
+        assertEquals(0, unPublishedPlatforms.size());
+
+        models.sales.Goods goods2 = Goods.findById(goodsId);
+        assertEquals(2, goods2.unPublishedPlatforms.size());
+
+        platforms = new ArrayList<>();
+        platforms.add(GoodsPublishedPlatformType.TAOBAO);
+        platforms.add(GoodsPublishedPlatformType.YIHAODIAN);
+        goods2.setPublishedPlatforms(platforms);
+        Goods.update(goodsId,goods);
+
+        goods2 = Goods.findById(goodsId);
+        assertEquals(1, goods2.unPublishedPlatforms.size());
+
+        unPublishedPlatforms = GoodsUnPublishedPlatform.find("goods.id is null")
+                .fetch();
+        assertEquals(0, unPublishedPlatforms.size());
+    }
 }

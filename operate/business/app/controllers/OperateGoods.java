@@ -12,6 +12,7 @@ import models.sales.Category;
 import models.sales.Goods;
 import models.sales.GoodsCondition;
 import models.sales.GoodsStatus;
+import models.sales.GoodsUnPublishedPlatform;
 import models.sales.MaterialType;
 import models.sales.Shop;
 import models.supplier.Supplier;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static java.math.BigDecimal.ZERO;
@@ -82,6 +84,7 @@ public class OperateGoods extends Controller {
         }
         renderArgs.put("goods.materialType", MaterialType.ELECTRONIC);
         renderInit(null);
+
         render();
     }
 
@@ -98,14 +101,15 @@ public class OperateGoods extends Controller {
             Arrays.fill(levelPrices, ZERO);
             goods.setLevelPrices(levelPrices);
             goods.materialType = MaterialType.ELECTRONIC;
+            goods.unPublishedPlatforms = new HashSet<>();
         }
-       
+
         String shopIds = ",";
         if (goods.shops != null && goods.shops.size() > 0) {
             for (Shop shop : goods.shops) {
                 shopIds += shop.id + ",";
             }
-           
+
             goods.isAllShop = false;
         } else {
             goods.isAllShop = true;
@@ -137,7 +141,7 @@ public class OperateGoods extends Controller {
         renderArgs.put("categoryList", categoryList);
         renderArgs.put("subCategoryList", subCategoryList);
         renderArgs.put("categoryId", categoryId);
-        
+
         renderArgs.put("shopIds", shopIds);
         renderArgs.put("isAllShop", goods.isAllShop);
         renderArgs.put("goods", goods);
@@ -189,6 +193,18 @@ public class OperateGoods extends Controller {
         }
 
         //添加商品处理
+        if (goods.unPublishedPlatforms != null) {
+            System.out.println("goods.unPublishedPlatforms.size():" + goods.unPublishedPlatforms.size());
+            for (GoodsUnPublishedPlatform unPublishedPlatform : goods.unPublishedPlatforms) {
+                if (unPublishedPlatform == null) {
+                    goods.unPublishedPlatforms.remove(unPublishedPlatform);
+                    System.out.println("goods.unPublishedPlatforms is null.");
+                } else {
+                    System.out.println("unPublishedPlatform.type:" + unPublishedPlatform.type);
+                    System.out.println("unPublishedPlatform.goods.id:" + unPublishedPlatform.goods.id);
+                }
+            }
+        }
         goods.createdBy = OperateRbac.currentUser().loginName;
 
         goods.create();
@@ -219,13 +235,13 @@ public class OperateGoods extends Controller {
         if (goods.effectiveAt != null && goods.expireAt != null && goods.expireAt.before(goods.effectiveAt)) {
             Validation.addError("goods.expireAt", "validation.beforeThanEffectiveAt");
         }
-        
-        if ((StringUtils.isNotBlank(goods.useBeginTime) && StringUtils.isBlank(goods.useEndTime))  
-        		|| StringUtils.isBlank(goods.useBeginTime) && StringUtils.isNotBlank(goods.useEndTime) ) {
-        	Validation.addError("goods.useEndTime", "validation.allRequiredUseTime");
-        } else if (StringUtils.isNotBlank(goods.useBeginTime) && StringUtils.isNotBlank(goods.useEndTime) && goods.useBeginTime.compareTo(goods.useEndTime)>=0) {
+
+        if ((StringUtils.isNotBlank(goods.useBeginTime) && StringUtils.isBlank(goods.useEndTime))
+                || StringUtils.isBlank(goods.useBeginTime) && StringUtils.isNotBlank(goods.useEndTime)) {
+            Validation.addError("goods.useEndTime", "validation.allRequiredUseTime");
+        } else if (StringUtils.isNotBlank(goods.useBeginTime) && StringUtils.isNotBlank(goods.useEndTime) && goods.useBeginTime.compareTo(goods.useEndTime) >= 0) {
             Validation.addError("goods.useEndTime", "validation.beforeThanUseTime");
-        } 
+        }
     }
 
     private static void checkImageFile(File imagePath) {
@@ -319,7 +335,7 @@ public class OperateGoods extends Controller {
             goods.shops = null;
         }
 
-        System.out.println("goods.details    1:" + goods.getDetails()+"====================");
+
         checkImageFile(imagePath);
 
         checkExpireAt(goods);
@@ -327,15 +343,29 @@ public class OperateGoods extends Controller {
         checkSalePrice(goods);
         checkLevelPrice(levelPrices);
         if (Validation.hasErrors()) {
+
             renderArgs.put("imageLargePath", imageLargePath);
             renderShopList(goods.supplierId);
             renderInit(goods);
             render("OperateGoods/edit.html", goods, id);
         }
 
+
+        //添加商品处理
+        if (goods.unPublishedPlatforms != null) {
+            System.out.println("goods.unPublishedPlatforms.size():" + goods.unPublishedPlatforms.size());
+            for (GoodsUnPublishedPlatform unPublishedPlatform : goods.unPublishedPlatforms) {
+                if (unPublishedPlatform == null) {
+                    goods.unPublishedPlatforms.remove(unPublishedPlatform);
+                    System.out.println("goods.unPublishedPlatforms is null.");
+                } else {
+                    System.out.println("unPublishedPlatform.type:" + unPublishedPlatform.type);
+                    System.out.println("unPublishedPlatform.goods.id:" + unPublishedPlatform.goods.id);
+                }
+            }
+        }
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            System.out.println("goods.details   2:" + goods.getDetails()+"====================");
             preview(id, goods, imagePath);
         }
 
@@ -380,24 +410,25 @@ public class OperateGoods extends Controller {
 
     /**
      * 上架商品.
-     *shopIds
+     * shopIds
+     *
      * @param id 商品ID
      */
     public static void onSale(@As(",") Long... id) {
-    	
+
         for (Long goodsId : id) {
             models.sales.Goods goods = Goods.findById(goodsId);
             if (goods != null) {
                 checkSalePrice(goods);
                 checkLevelPrice(goods.getLevelPriceArray());
             }
-            
+
             renderShopList(goods.supplierId);
             renderArgs.put("imageLargePath", goods.getImageLargePath());
 
             if (Validation.hasErrors() && id.length > 0) {
                 renderSupplierList(goods);
-                
+
                 renderInit(goods);
                 renderArgs.put("id", goodsId);
                 render("OperateGoods/edit.html", goods);

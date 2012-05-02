@@ -5,14 +5,14 @@ models.sales.Area.class,
 models.sales.Goods.class,
 models.sales.Brand.class],
 load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/areas.yml','fixture/base_data.yml','fixture/goods.yml'] /}
-#添加商品数据-保存按钮
-#{selenium}
+#{selenium '添加商品数据-保存按钮'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/goods/new')
 verifyTitle('添加消费券')
 verifyTextPresent('添加消费券')
 verifyTextPresent('电子券')
 verifyTextPresent('实物')
+verifyTextPresent('淘宝网')
 select('id=goods_topCategoryId','label=旅游')
 *{waitForCondition('selenium.isTextPresent("上海")',10000)}*
 *{select('id=categoryId','label=上海')}*
@@ -51,12 +51,12 @@ clickAndWait('id=save')
 *{verifyTextPresent('电子消费券一览')}*
 #{/selenium}
 
-#添加商品数据-保存并上架按钮
-#{selenium}
+#{selenium '添加商品数据-保存并上架按钮'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/goods/new')
 verifyTitle('添加消费券')
 verifyTextPresent('添加消费券')
+verifyTextPresent('淘宝网')
 select('id=goods_topCategoryId','label=旅游')
 *{waitForCondition('selenium.isTextPresent("上海")',10000)}*
 *{select('id=categoryId','label=上海')}*
@@ -84,12 +84,12 @@ verifyTextPresent('无效的图片!')
 *{verifyTextPresent('电子消费券一览')}*
 #{/selenium}
 
-#添加商品数据-保存预览按钮
-#{selenium}
+#{selenium '添加商品数据-保存预览按钮'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/goods/new')
 verifyTitle('添加消费券')
 verifyTextPresent('添加消费券')
+verifyTextPresent('淘宝网')
 select('id=goods_topCategoryId','label=旅游')
 select('id=goods_brand_id','label=豆捞坊')
 type('id=goods_no','34')

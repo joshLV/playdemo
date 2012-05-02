@@ -1,0 +1,17 @@
+*{多选框标签}*
+*{name:      多选框的名称}*
+*{items:     多选框的选项}*
+*{value:     多选框的值}*
+*{required:  文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+#{field _name}
+<div class="control-group">
+    #{layout_operate.labelText name:_name, required:_required/}
+    <div class="controls">
+            #{list items:_items, as:'item'}
+            <label class="checkbox inline">
+                <input type="checkbox" value="${item}" id="${field.id}_${item}" name="${field.name}"
+                    #{if _value?.contains(item) || params[field.name]?.equals(item) }checked#{/if}/>
+            &{field.name+'_'+item}</label>#{/list}
+    </div>
+</div>
+#{/field}

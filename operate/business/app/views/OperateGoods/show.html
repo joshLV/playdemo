@@ -10,6 +10,19 @@
     <form class="form-horizontal" name="frm" id="frm" method="post">
         <legend>查看消费券</legend>
         <div class="control-group">
+            <label class="control-label">&{'goods.materialType'}</label>
+
+            <div class="controls">&{'goods.'+goods?.materialType}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'goods.publishedPlatforms'}</label>
+
+            <div class="controls">#{list items:goods?.publishedPlatforms,as:'publishedPlatform'}&{'goods.'+
+                publishedPlatform} #{/list}
+            </div>
+        </div>
+        <div class="control-group">
             <label class="control-label">&{'goods.category'}</label>
 
             <div class="controls">${goods?.categories?.name}
@@ -72,15 +85,15 @@
             <div class="controls">${goods?.baseSale}件
             </div>
         </div>
-       #{if goods?.useBeginTime != "" && goods?.useBeginTime != null}
-       <div class="control-group">
+    #{if goods?.useBeginTime != "" && goods?.useBeginTime != null}
+        <div class="control-group">
             <label class="control-label">使用时间</label>
 
             <div class="controls">${goods?.useBeginTime}
                 至 ${goods?.useEndTime}
             </div>
         </div>
-      #{/if}  
+    #{/if}
         <div class="control-group">
             <label class="control-label">&{'goods.imagePath'}</label>
 

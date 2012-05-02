@@ -12,6 +12,10 @@ goods.REJECT=拒绝上架
 goods.REAL=实物
 goods.ELECTRONIC=电子券
 
+goods.TAOBAO=淘宝网
+goods.YIHAODIAN=一号店
+goods.DANGDANG=当当网
+
 validation.required=请输入%s!
 validation.match=无效的%s!
 validation.future=%s必须填写未来的时间!
@@ -37,6 +41,12 @@ validation.allRequiredUseTime=请把使用时间输入完整!
 goods.materialType=券类型
 goods.materialType_1=电子券
 goods.materialType_2=实物
+
+goods.publishedPlatforms=可发布到
+goods.publishedPlatforms_TAOBAO=淘宝网
+goods.publishedPlatforms_YIHAODIAN=一号店
+goods.publishedPlatforms_DANGDANG=当当网
+
 goods.supplierId=商户
 goods.supplier=商户
 goods.no=编号

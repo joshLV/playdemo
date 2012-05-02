@@ -77,9 +77,8 @@ public class Goods extends Model {
     @Column(name = "sale_price")
     public BigDecimal salePrice;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "goods")
     @OrderBy("level")
-    @JoinColumn(name = "goods_id")
     public List<GoodsLevelPrice> levelPrices;
 
 
@@ -153,7 +152,7 @@ public class Goods extends Model {
      */
     //    public String title;
 
-    private Float discount;
+    private BigDecimal discount;
 
     @Required
     @MinSize(7)
@@ -259,6 +258,12 @@ public class Goods extends Model {
     @Column(name = "material_type")
     public MaterialType materialType;
 
+    /**
+     * 不允许发布的电子商务网站.
+     * 设置后将不允许自动发布到这些电子商务网站上
+     */
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "goods")
+    public Set<GoodsUnPublishedPlatform> unPublishedPlatforms;
 
     public static final String IMAGE_SERVER = Play.configuration.getProperty
             ("image.server", "img0.uhcdn.com");
@@ -323,39 +328,39 @@ public class Goods extends Model {
         this.details = Jsoup.clean(details, HTML_WHITE_TAGS);
     }
 
-    public void setDiscount(Float discount) {
-        if (discount != null && discount >= 0f && discount <= 10f) {
+    public void setDiscount(BigDecimal discount) {
+        if (discount != null && discount.compareTo(BigDecimal.ZERO) >= 0 && discount.compareTo(BigDecimal.TEN) <= 0) {
             this.discount = discount;
-        } else if (discount < 0f) {
-            this.discount = 0f;
-        } else if (discount > 10f) {
-            this.discount = 10f;
+        } else if (discount.compareTo(BigDecimal.ZERO) < 0) {
+            this.discount = BigDecimal.ZERO;
+        } else if (discount.compareTo(BigDecimal.TEN) > 0) {
+            this.discount = BigDecimal.TEN;
         }
     }
 
     @Column(name = "discount")
-    public Float getDiscount() {
-        if (discount != null && discount > 0) {
+    public BigDecimal getDiscount() {
+        if (discount != null && discount.compareTo(BigDecimal.ZERO) > 0) {
             return discount;
         }
-        if (faceValue != null && salePrice != null && faceValue.compareTo(new BigDecimal(0)) > 0) {
-            this.discount = salePrice.divide(faceValue, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(10)).floatValue();
-            if (this.discount > 10f) {
-                this.discount = 10f;
+        if (faceValue != null && salePrice != null && faceValue.compareTo(BigDecimal.ZERO) > 0) {
+            this.discount = salePrice.divide(faceValue, 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.TEN);
+            if (this.discount.compareTo(BigDecimal.TEN) >= 0) {
+                this.discount = BigDecimal.TEN;
             }
         } else {
-            this.discount = 0f;
+            this.discount = BigDecimal.ZERO;
         }
         return discount;
     }
 
     @Transient
     public String getDiscountExpress() {
-        float discount = getDiscount();
-        if (discount >= 10) {
+        BigDecimal discount = getDiscount();
+        if (discount.compareTo(BigDecimal.TEN) >= 0) {
             return "无优惠";
         }
-        if (discount <= 0) {
+        if (discount.compareTo(BigDecimal.ZERO) <= 0) {
             return "";
         }
 
@@ -449,6 +454,40 @@ public class Goods extends Model {
         this.prompt = Jsoup.clean(prompt, HTML_WHITE_TAGS);
     }
 
+    /**
+     * 获取商品允许发布的电子商务平T台.
+     *
+     * @return
+     */
+    @Transient
+    public List<GoodsPublishedPlatformType> getPublishedPlatforms() {
+        List<GoodsPublishedPlatformType> publishedPlatforms = new ArrayList<>();
+        for (GoodsPublishedPlatformType type : GoodsPublishedPlatformType.values()) {
+            if (!containsUnPublishedPlatform(type)) {
+                System.out.println("publishedPlatforms add type:" + type);
+                publishedPlatforms.add(type);
+            }
+        }
+        return publishedPlatforms;
+    }
+
+    public boolean containsUnPublishedPlatform(GoodsPublishedPlatformType type) {
+        if (unPublishedPlatforms == null) {
+            return true;
+        }
+
+        for (GoodsUnPublishedPlatform unPublishedPlatform : unPublishedPlatforms) {
+//            System.out.println("unPublishedPlatform:" + unPublishedPlatform);
+            if (unPublishedPlatform != null && unPublishedPlatform.type.equals(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    //=================================================== 数据库操作 ====================================================
+
     @Override
     public boolean create() {
         deleted = DeletedStatus.UN_DELETED;
@@ -459,6 +498,9 @@ public class Goods extends Model {
             shops = null;
         }
         expireAt = DateUtil.getEndOfDay(expireAt);
+        if (unPublishedPlatforms == null) {
+            unPublishedPlatforms = new HashSet<>();
+        }
         return super.create();
     }
 
@@ -497,6 +539,9 @@ public class Goods extends Model {
             updateGoods.supplierId = goods.supplierId;
         }
         updateGoods.shops = goods.shops;
+
+        updateGoods.setPublishedPlatforms(goods.getPublishedPlatforms());
+
         updateGoods.useBeginTime = goods.useBeginTime;
         updateGoods.useEndTime = goods.useEndTime;
         updateGoods.save();
@@ -770,5 +815,28 @@ public class Goods extends Model {
      */
     public static List<Goods> findTopRecommend(int limit) {
         return Goods.find("order by recommend DESC").fetch(limit);
+    }
+
+    public void setPublishedPlatforms(List<GoodsPublishedPlatformType> publishedPlatforms) {
+        if (unPublishedPlatforms == null) {
+            unPublishedPlatforms = new HashSet<>();
+        } else {
+            unPublishedPlatforms.clear();
+        }
+
+        if (publishedPlatforms == null || publishedPlatforms.size() == 0) {
+            for (GoodsPublishedPlatformType type : GoodsPublishedPlatformType.values()) {
+                final GoodsUnPublishedPlatform goodsUnPublishedPlatform = new GoodsUnPublishedPlatform(this, type);
+                unPublishedPlatforms.add(goodsUnPublishedPlatform);
+            }
+            return;
+        }
+
+        for (GoodsPublishedPlatformType type : GoodsPublishedPlatformType.values()) {
+            if (!publishedPlatforms.contains(type)) {
+                final GoodsUnPublishedPlatform goodsUnPublishedPlatform = new GoodsUnPublishedPlatform(this, type);
+                unPublishedPlatforms.add(goodsUnPublishedPlatform);
+            }
+        }
     }
 }

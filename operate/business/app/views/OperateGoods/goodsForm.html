@@ -6,6 +6,9 @@
 value1:models.sales.MaterialType.ELECTRONIC.toString(),
 value2:models.sales.MaterialType.REAL.toString(),
 value:goods?.materialType?.toString(), required:true/}
+#{layout_operate.checkboxField name:'goods.publishedPlatforms', items:models.sales.GoodsPublishedPlatformType
+.values(), value:goods?.publishedPlatforms/}
+
 #{if "add".equals(action)}
     #{layout_operate.selectField name:'goods.supplierId', class:'span2', value:goods?.supplierId,
     error:'goods.supplierId'}
@@ -80,6 +83,7 @@ beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
 #{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images'/}
 #{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}
 #{layout_operate.radioField name:'goods.isAllShop', value:isAllShop?:false, required:true/}
+
 <div class="control-group">
     <label class="control-label"></label>
 

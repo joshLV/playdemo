@@ -18,6 +18,7 @@ load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/areas.yml','fixtu
     open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods1")}')
     verifyTitle('查看消费券')
     verifyTextPresent('测试商品1')
+    verifyTextPresent('淘宝网')
 #{/selenium}
 
 #{selenium '修改电子消费券'}
