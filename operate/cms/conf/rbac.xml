@@ -2,13 +2,20 @@
 <application text="商品管理">
     <role key="admin" text="系统管理员"/>
 
-    <permission key="TOPICS_NEW" text="公告添加" roles="admin"/>
-    <permission key="TOPICS" text="公告管理" roles="admin"/>
-    
-    <navigation key="topic_app" text="公告管理" action="OperateTopics.index">
+    <permission key="CMS" text="网站管理" roles="admin">
+        <permission key="TOPICS_NEW" text="新增公告" roles="admin"/>
+        <permission key="TOPICS" text="公告管理" roles="admin"/>
+        <permission key="BLOCKS_NEW" text="新增内容块管理" roles="admin"/>
+        <permission key="BLOCKS" text="内容块管理" roles="admin"/>
+    </permission>
+    <navigation key="cms_main" text="网站管理" action="Application.index" permission="CMS">
         <navigation key="topic" text="公告" permission="TOPICS_NEW,TOPICS">
             <navigation key="topics_add" action="OperateTopics.add" text="公告添加" permission="TOPICS_NEW"/>
             <navigation key="topics_index" action="OperateTopics.index" text="公告管理" permission="TOPICS"/>
+        </navigation>
+        <navigation key="block" text="内容块" permission="BLOCKS_NEW,BLOCKS">
+            <navigation key="blocks_add" action="CmsBlocks.add" text="内容块添加" permission="BLOCKS_NEW"/>
+            <navigation key="blocks_index" action="CmsBlocks.index" text="公告管理" permission="BLOCKS"/>
         </navigation>
     </navigation>
 </application>

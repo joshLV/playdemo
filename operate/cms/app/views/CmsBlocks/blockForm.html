@@ -1,0 +1,16 @@
+#{layout_operate.selectField name:'block.type', value:block?.type, error:'block.type',
+class:'span2'}
+    #{option models.cms.BlockType.WEBSITE_SLIDE}&{'block.WEBSITE_SLIDE'}#{/option}
+    #{option models.cms.BlockType.DAILY_SPECIAL}&{'block.DAILY_SPECIAL'}#{/option}
+#{/layout_operate.selectField}
+#{layout_operate.textField name:'block.title', value:block?.title, required:true/}
+#{layout_operate.textField name:'block.displayOrder', value:block?.displayOrder, required:true/}
+#{layout_operate.htmlField name:'block.content', value:block?.content, required:true/}
+#{layout_operate.dateScopeField name:'block.effective', begin:'block.effectiveAt',end:'block.expireAt',
+beginValue:block?.effectiveAt?.format(), endValue:block?.expireAt?.format(), required:true/}
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="保存"/>
+#{if "edit".equals(action)}
+    #{vx.cancelButton url:'/blocks', class:'btn btn-primary'/}
+#{/if}
+</div>

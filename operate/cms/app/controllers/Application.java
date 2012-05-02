@@ -1,12 +1,11 @@
 package controllers;
 
-import play.*;
-import play.mvc.*;
+import operate.rbac.annotations.ActiveNavigation;
+import play.mvc.Controller;
+import play.mvc.With;
 
-import java.util.*;
-
-import models.*;
-
+@With(OperateRbac.class)
+@ActiveNavigation("cms_main")
 public class Application extends Controller {
 
     public static void index() {

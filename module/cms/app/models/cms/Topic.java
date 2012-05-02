@@ -29,12 +29,13 @@ import java.util.Date;
  * Time: 10:31 AM
  */
 @Entity
-@Table(name = "topic")
+@Table(name = "cms_topic")
 public class Topic extends Model {
     @Required
     @MinSize(10)
     @MaxSize(60)
     public String title;
+    
     /**
      * 有效开始日
      */
@@ -57,6 +58,7 @@ public class Topic extends Model {
     @MinSize(7)
     @MaxSize(4000)
     private String content;
+    
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
 
     @Enumerated(EnumType.STRING)

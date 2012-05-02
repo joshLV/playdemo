@@ -1,3 +1,19 @@
+play-paginate.first=&laquo;&nbsp;首页
+play-paginate.prev=&lsaquo;&nbsp;上一页
+play-paginate.next=下一页&nbsp;&rsaquo;
+play-paginate.last=尾页&nbsp;&raquo;
+
+#Block
+block.WEBSITE_SLIDE=首页展示
+block.DAILY_SPECIAL=每日特卖
+block.title=标题
+block.type=消息类型
+block.displayOrder=显示顺序
+block.content=内容
+block.effective=有效期
+block.effectiveAt=开始时间
+block.expireAt=到期时间
+
 #公告
 topic.NOTICE=通知
 topic.NEWS=新消息
@@ -12,5 +28,3 @@ topic.expireAt=到期时间
 topic.RESALE=分销平台
 topic.UHUILA=优惠啦平台
 topic.SUPPLIER=商户平台
-
-
