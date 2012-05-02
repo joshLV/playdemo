@@ -28,7 +28,7 @@ public class CouponMailConsumer extends RabbitMQConsumer<CouponMessage> {
     @Override
     protected void consume(CouponMessage message) {
         try {
-            CouponMails.notifyOrder(message);
+            CouponMails.notify(message);
             saveJournal(message, 0, "发送成功");
         } catch (MailException e) {
             Logger.warn(e, "发送邮件(" + message.getEmail() + ")时出现异常");

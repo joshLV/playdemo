@@ -24,7 +24,7 @@ public class CouponMailsTest extends FunctionalTest {
         coupons.add(coupon2);
         message.setCoupons(coupons);
         
-        CouponMails.notifyOrder(message);
+        CouponMails.notify(message);
         
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
         System.out.println(mailBody);
