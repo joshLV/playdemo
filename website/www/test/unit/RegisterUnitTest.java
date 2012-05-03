@@ -37,10 +37,10 @@ public class RegisterUnitTest extends UnitTest {
 	//测试是否存在用户名和手机
 	@Test
 	public void testCheckValue(){
-		String returnFlag = User.checkValue("11@qq.com", "");
+		String returnFlag = User.checkLoginName("11@qq.com");
 		assertEquals("0",returnFlag); 
 
-		returnFlag = User.checkValue("selenium@uhuila.com", "13213123125");
+		returnFlag = User.checkLoginName("selenium@uhuila.com");
 		assertEquals("1",returnFlag);
 	}
 

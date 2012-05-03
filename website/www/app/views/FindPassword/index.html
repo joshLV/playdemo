@@ -1,0 +1,49 @@
+#{extends 'main.html' /} #{set title:'优惠啦 - 注册新用户' /} #{set 'moreStyles'}
+<link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
+#{/set}
+<!--主体内容部分-->
+<div class="allstep">
+    <div class="flow-steps">
+        <ol class="num3">
+            <li class="current"><strong class="first">第一步：选择找回密码方式</strong></li>
+            <li class="last"><strong>第二步：填写内容</strong></li>
+        </ol>
+    </div>
+    <div class="step">
+
+        <div class="fmeans">
+            <div class="fm">
+                <div class="fmul">
+                    <ul class="fmli w300">
+
+                        <li><div class="field">
+                                <img src="public/images/mailicon.gif" style="vertical-align: middle" width="24px"
+                                    height="16px" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="bold">用邮箱注册</span>
+                            </div></li>
+                        <li><div class="field">
+                                <div class="findbt bold colorw">
+                                    <a href="/findByEmail">马上找回</a>
+                                </div>
+                            </div></li>
+
+                    </ul>
+                </div>
+                <div class="fmul">
+                    <ul class="fmli">
+
+                        <li><div class="field">
+                                <img src="public/images/phoneicon.gif" style="vertical-align: middle" />&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="bold">用手机注册 </span>
+                            </div></li>
+                        <li><div class="field">
+                                <div class="findbt bold colorw">
+                                    <a href="/findByTel">马上找回</a>
+                                </div>
+                            </div></li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

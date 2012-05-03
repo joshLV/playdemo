@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 
 import play.data.validation.Email;
 import play.data.validation.MaxSize;
@@ -73,22 +74,30 @@ public class User extends Model {
 	public UserInfo userInfo;
 
 	/**
-	 * 判断用户名和手机是否唯一
+	 * 判断用户名是否唯一
 	 *
 	 * @param loginName 用户名
-	 * @param mobile 手机
 	 */
-	public static String checkValue(String loginName, String mobile) {
+	public static String checkLoginName(String loginName) {
 
 		List<User> userList = User.find("byLoginName", loginName).fetch();
 		String returnFlag = "0";
 		//用户名存在的情况
 		if (userList.size() >0) returnFlag = "1";
-		else {
-			//手机存在的情况
-			List<User> mList = User.find("byMobile", mobile).fetch();
-			if(mList.size()>0) returnFlag = "2";
-		}
+		return returnFlag;
+	}
+
+	/**
+	 * 判断手机是否存在
+	 *
+	 * @param mobile 手机
+	 */
+	public static String checkMobile(String mobile) {
+
+		String returnFlag = "0";
+		//手机存在的情况
+		List<User> mList = User.find("byMobile", mobile).fetch();
+		if(mList.size()>0) returnFlag = "2" ;
 		return returnFlag;
 	}
 
@@ -139,6 +148,25 @@ public class User extends Model {
 	public void updateMobile(String mobile) {
 		this.mobile = mobile;
 		this.save();
+
+	}
+
+	public static void updateFindPwd(String email, String mobile,String password) {
+		User user = null;
+		if (!StringUtils.isBlank(email)) {
+			user = User.find("byLoginName", email).first();
+		} 
+		if (!StringUtils.isBlank(mobile)) {
+			user = User.find("byMobile", mobile).first();
+		} 
+		user.password=password;
+		// 随机码
+		Images.Captcha captcha = Images.captcha();
+		String newPasswordSalt = captcha.getText(6);
+		user.passwordSalt = newPasswordSalt;
+		user.password = DigestUtils.md5Hex(password + newPasswordSalt);
+		user.save();
+
 
 	}
 }

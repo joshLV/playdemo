@@ -1,0 +1,32 @@
+#{extends 'main.html' /} #{set title:'优惠啦 - 注册新用户' /} #{set 'moreStyles'}
+<link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
+#{/set}
+<script>
+function request(indexurl){
+  window.location.href = indexurl;
+}
+</script>
+
+<!--主体内容部分-->
+<div id="index_main"> 
+  <div id="main">
+    <div id="fpwd_maincontainer">
+      <div class="allstep">
+        <div class="step">
+        <ul class="fsqs">
+        <li><h1 class="colorred">您的申请已经提交成功，优惠啦已给您的邮箱发出了密码找回通知信！</h1></li>
+        <li>请您立即<span class="fs14"><a href="">登录邮箱</a></span>，并按信中的提示完成密码找回的操作。</li>
+        <li>注意：如果您连续多次申请找回密码，请以最新收到的通知信为准。</li>
+        <li>
+        <a href="http://www.uhuila.cn">申请完成，返回首页</a>
+            </li>
+        </ul>
+        </div>
+    </div>
+      <div class="allstep">
+       
+        <div class="sstep"></div>
+      </div>
+    </div>
+  </div>
+</div>

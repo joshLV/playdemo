@@ -46,7 +46,7 @@
    </table>
     <table class="table">
    <tr><td>支付方式： ${orders.payMethod=='1'?'支付宝':'网银'}</td></tr>
-   <tr><td>订单状态： ${orders.status=='1'?'处理中':'处理成功'}</td></tr>
+   <tr><td>订单状态： &{'order.'+orders.status}</td></tr>
    <tr><td>物流方式： ${orders.deliveryType=='2'?'有物流':'无物流'}</td></tr>
   </table>
 

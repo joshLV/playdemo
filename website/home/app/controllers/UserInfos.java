@@ -73,7 +73,7 @@ public class UserInfos extends Controller{
 			renderJSON("1");
 		}
 		//判断手机是否正确
-		if(!StringUtils.normalizeSpace(cacheMobile).equals(cacheMobile)) {
+		if(!StringUtils.normalizeSpace(cacheMobile).equals(mobile)) {
 			renderJSON("2");
 		}
 		//更新用户基本信息手机

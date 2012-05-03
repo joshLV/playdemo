@@ -1,12 +1,12 @@
 package notifiers;
 
-import models.mail.CouponMessage;
+import models.mail.MailMessage;
 import play.mvc.Mailer;
 
 public class FindPassWordMails extends Mailer {
 
-    public static void notifyPassWord(CouponMessage message) {
-
+    public static void notify(MailMessage message) {
+    	System.out.println("aaaaaaaaaaaaaaaaaaaaa");
         setSubject("[优惠啦] 找回密码");
         addRecipient(message.getEmail());
         setFrom("Uhuila <noreplay@uhuila.com>");

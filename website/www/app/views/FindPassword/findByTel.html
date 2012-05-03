@@ -1,0 +1,124 @@
+#{extends 'main.html' /} #{set title:'优惠啦 - 注册新用户' /} #{set 'moreStyles'}
+<link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
+#{/set}
+<script type="text/javascript">
+    function checkTel(tel) {
+        var telreg = /^((15)\d{9})$|^((13)\d{9})$|^((18)\d{9})$/i;
+        if (tel.match(telreg) == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function sendCheckCode() {
+    	
+    	 var mobile = $.trim($("#mobile").val());
+         if(mobile==''|| checkTel(mobile)){
+         $("#passtelcheck").html("<span class='redInfo allstep_info'><b></b><em>手机号码不对！</em></span>"); 
+         return false;
+        }
+       $.post(
+              "/checkByTel",
+              {mobile:mobile},
+              function(data){
+                if(data==2){
+                   $("#passtelcheck").html("<span class='yellowInfo allstep_info'><b></b><em>验证码已成功发送，请查收！</em></span>"); 
+                   updateTimer('showspan',60);
+                }else if(data==-1){
+                   $("#passtelcheck").html("<span class='yellowInfo allstep_info'><b></b><em>网络错误，请重发！</em></span>");
+                   $("#getcodebutton").attr("disabled",false);
+                }else if(data==0){
+                   $("#passtelcheck").html("<span class='yellowInfo allstep_info'><b></b><em>此手机并未注册！</em></span>"); 
+                   $("#getcodebutton").attr("disabled",false);
+                }
+                else if(data==-3){
+                   $("#passtelcheck").html("<span class='yellowInfo allstep_info'><b></b><em>请使用此账号绑定手机！</em></span>"); 
+                   $("#getcodebutton").attr("disabled",false);
+                }
+              },
+              "text"
+       );
+    }
+  //60秒倒计时
+    function updateTimer(showspan,timeval)
+    {
+      if(timeval>=0){
+           $("#" + showspan).html(timeval);
+           timeval--;
+           setTimeout("updateTimer('"+showspan +"', " + timeval+")",1000);
+       }else{
+         timeval=0;
+         $("#" + showspan).html("<input type='button' onClick='sendCheckCode()' value='重新发送' />");
+         $("#telpassbutton").attr("disabled",false);
+       }
+       
+    }
+  
+  //找回密码
+   function getpwsbyemail(){
+
+       var mobile      = $("#mobile").val();
+       var telcheckcode = $("#telcheckcode").val();
+       if(mobile==''|| checkTel(mobile)){
+           $("#passtelcheck").html("<span class='redInfo allstep_info'><b></b><em>手机号码不对！</em></span>"); 
+           return false;
+       }
+       if(telcheckcode==''){
+           $("#passtelcheck").html("<span class='redInfo allstep_info'><b></b><em>请输入手机验证码</em></span>"); 
+           return false;
+       }
+       $("#telpassbutton").attr("disabled","disabled");
+       $.post("/reset",{mobile:mobile,validCode:telcheckcode},function(data){
+           if(data==0){
+        	   var url = "/resetPassword?mobile="+mobile;
+               setTimeout(function(){ location.href =url;},10);
+           }else if(data==1){
+               $("#passtelcheck").html("<span class='redInfo allstep_info'><b></b><em>手机验证码错误或已过期</em></span>");
+               $("#telpassbutton").attr("disabled",false);
+           }
+           else if(data==3){
+               $("#passtelcheck").html("<span class='redInfo allstep_info'><b></b><em>此手机并未注册</em></span>"); 
+               $("#telpassbutton").attr("disabled",false);
+           }else if(data==2){
+               $("#passtelcheck").html("<span class='redInfo allstep_info'><b></b><em>两次输入的手机不一致！</em></span>"); 
+               $("#telpassbutton").attr("disabled",false);
+           } else{
+               $("#passtelcheck").html("<span class='redInfo allstep_info'><b></b><em>手机验证码错误或已过期</em></span>");
+               $("#telpassbutton").attr("disabled",false);
+
+           }
+       },"text");
+	  
+  }
+</script>
+<!--主体内容部分-->
+<div id="main">
+    <div id="fpwd_maincontainer">
+
+        <!--填写手机号-->
+        <div class="allstep">
+            <div class="flow-steps2">
+                <ol class="num3">
+                    <li class="current"><strong class="first">第一步：选择找回密码方式</strong></li>
+                    <li class="last"><strong>第二步：填写注册手机</strong></li>
+                </ol>
+            </div>
+            <div class="allstep_c redInfo">
+                <ul>
+                    <li class="allstemp_c_1"><label> 注册手机：</label><input id="mobile" type="text" maxlength="11"
+                        class="input196 inputbg" />
+                    <div id="showspan">
+                            <input id="getcodebutton" type="button"  onclick="sendCheckCode()"
+                                value="发送验证码" />
+                        </div></li>
+                    <li class="allstemp_c_3" id="passtelcheck"></li>
+                    <li class="allstemp_c_2"><label>输入验证码：</label><input id="telcheckcode" type="text"
+                        class="input196 inputbg" />&nbsp;&nbsp;&nbsp;<label>区分大小写</label></li>
+                    <li><input id="telpassbutton" type="button" onClick="getpwsbyemail()"
+                        value="下一步" /></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>

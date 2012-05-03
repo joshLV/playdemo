@@ -18,3 +18,10 @@ user.captcha=验证码
 
 validation.confirmPassword=两次密码输入的不一样！！
 validation.captcha=验证码不对，请重新输入！
+
+validation.newPassword.minSize=密码不能小于6位！
+validation.newPassword.maxSize=密码不能大于20位！
+validation.confirmPassword=两次密码输入的不一样！！
+
+user.newPassword=密码
+user.confirmPassword=确认密码

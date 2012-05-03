@@ -73,7 +73,7 @@ public class Register extends Controller{
 	 *            手机
 	 */
 	public static void checkLoginName(String loginName, String mobile) {
-		String returnFlag = User.checkValue(loginName, mobile);
+		String returnFlag = User.checkLoginName(loginName);
 		renderJSON(returnFlag);
 	}
 

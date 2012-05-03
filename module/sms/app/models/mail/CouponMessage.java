@@ -3,29 +3,19 @@ package models.mail;
 import java.io.Serializable;
 import java.util.List;
 
-public class CouponMessage implements Serializable {
+public class CouponMessage extends MailMessage implements Serializable {
 
-    private String email;
+    private String mailUrl;
     
-    private String fullName;
-    
-    private List<String> coupons;
+    public String getMailUrl() {
+		return mailUrl;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setMailUrl(String mailUrl) {
+		this.mailUrl = mailUrl;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+	private List<String> coupons;
 
     public List<String> getCoupons() {
         return coupons;

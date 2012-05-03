@@ -89,3 +89,370 @@ a{ color:#000000; text-decoration:none;}
 .both_clear{ clear: both}
 .font_14px{ font-size:14px}
 .wellcome a{ color:#333333}
+/*找回密码样式结束*/
+
+#fpwd_maincontainer {
+    width:1000px;
+    margin:0 auto;
+    text-align:center;
+    overflow:hidden;
+    zoom:1;
+}
+.flow-steps {
+    margin:40px auto 8px;
+    padding:0;
+    text-align:center;
+    overflow:hidden;
+    zoom:1;
+}
+.flow-steps li {
+    float:left;
+    font-size:12px;
+    font-weight:bold;
+    height:23px;
+    line-height:23px;
+    overflow:hidden;
+    padding:0 15px 0 0;
+    text-align:center;
+}
+.flow-steps li span, .flow-steps li strong {
+    display:block;
+}
+.flow-steps li.last {
+    color:#333333;
+}
+.flow-steps .num3 li {
+    width:301px;
+    height:23px;
+}
+.flow-steps2 {
+    margin:40px auto 8px;
+    padding:0;
+    text-align:center;
+    overflow:hidden;
+    zoom:1;
+    background:url(../images/uhl/flowstep2.gif) no-repeat;
+}
+.flow-steps2 li {
+    float:left;
+    font-size:12px;
+    font-weight:bold;
+    height:23px;
+    line-height:23px;
+    overflow:hidden;
+    padding:0 15px 0 0;
+    text-align:center;
+}
+.flow-steps2 li span, .flow-steps2 li strong {
+    display:block;
+}
+.flow-steps2 li.current {
+    color:#000;
+}
+.flow-steps2 li.last {
+    color:#000;
+}
+.flow-steps2 .num3 li {
+    width:301px;
+    height:23px;
+}
+/* CSS Document step 样式*/
+.step {
+    width:630px;
+    height:222px;
+    background-color:#fdf8f7;
+    border:1px #e08a78 solid;
+}
+.allstep {
+    width:632px;
+    margin:36px auto;
+}
+.allstep ul li {
+    line-height:40px;
+    height:40px;
+}
+.allstep .input {
+    height:24px;
+    line-height:24px;
+    width:550px;
+}
+.allstep .input label {
+    display:block;
+    float:left;
+    text-align:right;
+    width:100px;
+}
+.fmeans {
+    width:470px;
+    height:217px;
+    background:url(../images/uhl/slinebg.gif) no-repeat center;
+    text-align:center;
+    margin:0 auto;
+}
+.fmeans .fm {
+    width:430px;
+    height:160px;
+    margin:0 auto;
+    text-align:center;
+}
+.fmeans .fm .fmli {
+    padding-top:48px;
+}
+.fm .fmul {
+    float:left;
+    overflow:hidden
+}
+.fmli li {
+    height:42px;
+    margin-bottom:10px;
+    font-size:14px;
+}
+.field {
+    height:18px;
+    line-height:18px;
+    text-align:left;
+}
+.ftext {
+    height:18px;
+    padding-top:20px;
+}
+.findbt140 {
+    background:url(../images/uhl/bt.gif) 0 -138px no-repeat;
+    border:0;
+    height:25px;
+    width:150px;
+    line-height:25px;
+    text-align:center;
+    font-size:12px;
+    color:#fff;
+    font-weight:bold
+}
+.ftext {
+    height:18px;
+}
+.w300 {
+    width:300px;
+}
+.emailstep {
+    padding-top:60px;
+    padding-left:80px;
+}
+.phonesteps {
+    padding-top:50px;
+    padding-left:80px;
+    text-align:center
+}
+.input .inputemail {
+    padding-left:104px;
+    text-align:left;
+}
+.input .nextstepbt {
+    padding-left:160px;
+    text-align:left;
+    margin-top:20px;
+}
+.label130 {
+    width:130px;
+    float:left;
+}
+.fsqs {
+    margin-top:36px;
+}
+.fsqs span a, .fsqs span a:visited {
+    color:#0066ff;
+    text-decoration:underline;
+}
+.input196 {
+    border:1px solid #A7A6AA;
+    font-size:12px;
+    height:18px;
+    margin:0 2px 0 4px;
+    padding:2px;
+    width:196px;
+    float:left;
+    vertical-align:middle;
+}
+.inputbg {
+    background:url(../images/uhl/input.gif) no-repeat scroll 0 0 white;
+}
+/*修改手机密码找回*/
+.redInfo b, .yellowInfo b, .allstep_yzm, .allstep_count {
+    background:url(../images/uhl/fpwd.png) no-repeat;
+}
+.redInfo, .yellowInfo {
+    border:1px solid #e08a78;
+    background:#fdf8f7;
+}
+.redInfo b, .yellowInfo b {
+    display:block;
+    float:left;
+    width:12px;
+    height:18px;
+    margin:0px 6px 0px 0px;
+    background-position:-20px 0px;
+}
+.yellowInfo b {
+    background-position:0px 0px;
+}
+.allstep_c {
+    padding:15px 0px 20px 0px;
+}
+li.allstemp_c_1, li.allstemp_c_2 {
+    text-align:left;
+    padding-left:130px;
+}
+li.allstemp_c_3 {
+    padding-left:207px;
+}
+span.allstep_info {
+    float:left;
+    display:inline;
+}
+.allstep_c input {
+    float:none;
+}
+.allstep_c em {
+    font-style:normal;
+    float:left;
+}
+.allstep_c span {
+    display:block;
+    width:185px;
+    height:18px;
+    line-height:18px;
+    padding:6px;
+}
+.allstep_tip {
+    color:#b73a24;
+}
+.allstemp_c_1 label, .allstemp_c_1 input {
+    float:left;
+}
+.allstemp_c_1 input {
+    margin-top:5px;
+}
+.allstep_yzm {
+    border:0px;
+    width:88px;
+    height:25px;
+    margin:0px 0px 0px 5px;
+    background-position:0px -85px;
+}
+.allstep_count {
+    border:0px;
+    width:48px;
+    height:25px;
+    margin:0px 0px 0px 5px;
+    color:#c1bfbf;
+    font-weight:bold;
+    font-size:16px;
+    background-position:-45px 0px;
+}
+.allstep_next {
+    width:100px;
+    height:24px;
+    border:0px;
+    font-weight:bold;
+    background:url(../images/uhl/bg_nav.gif) no-repeat -320px -30px;
+}
+/*密码找回样式结束*/
+.colorred{ color:#ba3c26;}
+
+#fpwd_main {
+    border-top:2px solid #b73a24;
+    padding:20px 0px 60px 10px;
+}
+.redInfo, .yellowInfo {
+    border:1px solid #e08a78;
+    background:#fdf8f7;
+}
+.greyInfo {
+    border:1px solid #ccc;
+    background:#f6f6f6;
+}
+.redInfo b, .yellowInfo b, .greyInfo b {
+    display:block;
+    float:left;
+    width:12px;
+    height:18px;
+    margin:0px 6px 0px 0px;
+    background-position:-20px 0px;
+}
+.yellowInfo b {
+    background-position:0px 0px;
+}
+.fpwd_1 {
+    width:140px;
+    height:55px;
+    color:#b73a24;
+    font-size:14px;
+    font-weight:bold;
+    line-height:55px;
+}
+.fpwd_1 b, .fpwd_1 span {
+    float:left;
+    display:block;
+}
+.fpwd_1 b {
+    width:60px;
+    height:55px;
+    overflow:hidden;
+    background-position:-0px -30px;
+}
+.fpwd_2 {
+    width:455px;
+    height:235px;
+    padding:15px 85px;
+    margin:0px auto;
+    overflow:hidden;
+}
+.fpwd_3 {
+    width:375px;
+    height:55px;
+    background:#fff;
+    padding:10px 35px;
+    overflow:hidden;
+}
+.fpwd_3 span{
+    display:block;
+    width:350px;
+    float:left;
+}
+.fpwd_4 li {
+    width:450px;
+    height:auto;
+    display:inline;
+    float:left;
+    line-height:24px;
+    margin:12px 0px 0px 20px;
+}
+.fpwd_4 li, .fpwd_4 span, .fpwd_4 em, .fpwd_4 input, .fpwd_4 label{
+    float:left;
+}
+.fpwd_4 .greyinput {
+    width:200px;
+}
+.fpwd_4 span {
+    color:#999;
+    line-height:18px;
+}
+.fpwd_4 em {
+    font-style:normal;
+    color:#666;
+    margin-left:5px;
+}
+li.fpwd_4_0 {
+    width:280px;
+    padding-left:130px;
+}
+.fpwd_4_1 {
+    width:100px;
+    height:24px;
+    border:0px;
+    color:#fff;
+    font-weight:bold;
+    background-position:-320px -30px;
+}
+.fpwd_5 {
+    padding-left:100px;
+}

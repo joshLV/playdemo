@@ -334,7 +334,7 @@ public class Order extends Model {
 					//分销商
 					if (AccountType.RESALER.equals(orderItem.order.userType)) {
 						String userName = orderItem.order.getResaler().userName;
-						mail.setEmail(userName);
+						mail.setEmail(orderItem.order.getResaler().email);
 						mail.setFullName(userName);
 					} else {
 						//消费者
