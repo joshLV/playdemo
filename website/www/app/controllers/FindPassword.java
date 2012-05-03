@@ -115,6 +115,7 @@ public class FindPassword extends Controller {
 	 * @param mobile 手机
 	 */
 	public static void updatePassword(String totken,String mobile,String password,String confirmPassword) {
+		System.out.println("aaaaaaaaaaaaaaa");
 		if (StringUtils.isBlank(totken) && StringUtils.isBlank(mobile) ) {
 			renderJSON("-1");
 		}
