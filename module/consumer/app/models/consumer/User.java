@@ -12,9 +12,13 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import models.mail.CouponMessage;
+import models.mail.MailUtil;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 
+import play.Play;
 import play.data.validation.Email;
 import play.data.validation.MaxSize;
 import play.data.validation.MinSize;
@@ -73,6 +77,9 @@ public class User extends Model {
 	@OneToOne(mappedBy = "user",cascade=CascadeType.ALL)  
 	public UserInfo userInfo;
 
+	@Column(name="password_totken")
+	public String passwordTotken;
+
 	/**
 	 * 判断用户名是否唯一
 	 *
@@ -98,6 +105,35 @@ public class User extends Model {
 		//手机存在的情况
 		List<User> mList = User.find("byMobile", mobile).fetch();
 		if(mList.size()>0) returnFlag = "2" ;
+		return returnFlag;
+	}
+
+	/**
+	 * 判断用户名是否存在
+	 *
+	 * @param loginName 用户名
+	 */
+	public static String getUser(String loginName) {
+		String returnFlag = "0";
+
+		List<User> userList = User.find("byLoginName", loginName).fetch();
+		//用户名存在的情况
+		if (userList.size() >0) {
+			returnFlag = "1";
+			User user = userList.get(0);
+
+			Images.Captcha captcha = Images.captcha();
+			String totken=user.id+captcha.getText(20);
+			user.passwordTotken = totken;
+			user.save();
+
+			CouponMessage mail = new CouponMessage();
+			String url = Play.configuration.getProperty("resetpassword.mail_url");
+			
+			mail.setMailUrl(url+"?totken="+DigestUtils.md5Hex(totken));
+			mail.setEmail(loginName);
+			MailUtil.sendFindPasswordMail(mail);
+		}
 		return returnFlag;
 	}
 
@@ -151,10 +187,10 @@ public class User extends Model {
 
 	}
 
-	public static void updateFindPwd(String email, String mobile,String password) {
+	public static void updateFindPwd(String totken, String mobile,String password) {
 		User user = null;
-		if (!StringUtils.isBlank(email)) {
-			user = User.find("byLoginName", email).first();
+		if (!StringUtils.isBlank(totken)) {
+			user = User.find("byPasswordTotken", DigestUtils.md5Hex(totken)).first();
 		} 
 		if (!StringUtils.isBlank(mobile)) {
 			user = User.find("byMobile", mobile).first();

@@ -39,14 +39,7 @@ public class FindPassword extends Controller {
 	 * 通过邮箱找回密码,并验证邮箱
 	 */
 	public static void checkByEmail(String email) {
-		String returnFlag = User.checkLoginName(email);
-		//邮箱存在
-		if ("1".equals(returnFlag)) {
-			CouponMessage mail = new CouponMessage();
-			mail.setMailUrl("http://www.uhuila.cn:9001/resetPassword&email="+email);
-			mail.setEmail(email);
-			MailUtil.sendFindPasswordMail(mail);
-		}
+		String returnFlag = User.getUser(email);
 		renderJSON(returnFlag);
 	}
 
@@ -88,7 +81,6 @@ public class FindPassword extends Controller {
 		String cacheValidCode = objCode== null ?"":objCode.toString();
 		String cacheMobile =  objMobile== null ?"":objMobile.toString();
 		String returnFlag = User.checkMobile(mobile);
-		System.out.println(validCode+"55");
 		//手机不存在
 		if ("0".equals(returnFlag)) {
 			renderJSON("3");
@@ -111,11 +103,10 @@ public class FindPassword extends Controller {
 	 * 
 	 * @param mobile 手机
 	 */
-	public static void resetPassword(String mobile,String email) {
-		String s = request.params.get("mobile");
-		String e = request.params.get("email");
-		System.out.println(e+">>>>>>>>>>>>>."+s+"rrrrrrrrrrr"+mobile);
-		render(mobile,email);
+	public static void resetPassword() {
+		String mobile = request.params.get("mobile");
+		String totken = request.params.get("totken");
+		render(mobile,totken);
 	}
 
 	/**
@@ -123,13 +114,13 @@ public class FindPassword extends Controller {
 	 * 
 	 * @param mobile 手机
 	 */
-	public static void updatePassword(String email,String mobile,String password,String confirmPassword) {
-		if (StringUtils.isBlank(email) && StringUtils.isBlank(mobile) ) {
+	public static void updatePassword(String totken,String mobile,String password,String confirmPassword) {
+		if (StringUtils.isBlank(totken) && StringUtils.isBlank(mobile) ) {
 			renderJSON("-1");
 		}
 
 		//根据手机有邮箱更改密码
-		User.updateFindPwd(email, mobile,password);
+		User.updateFindPwd(totken, mobile,password);
 
 		Cache.delete("mobile_");
 		Cache.delete("user_email_");
