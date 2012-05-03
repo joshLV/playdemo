@@ -36,7 +36,7 @@ public class CouponMailsTest extends FunctionalTest {
     
     @Test
     public void testCouponMailSendByMQ() throws Exception {
-        String email = "test2@uhuila.com";
+        String email = "test3@uhuila.com";
         String fullName = "李四";
         String coupon1 = "9780ec55a4fb4ddeabef27ee287d61c9";
         String coupon2 = "0420737f2d56c1150528fc3307d5fa91";
