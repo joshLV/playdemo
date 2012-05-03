@@ -10,9 +10,9 @@ GET     /forgetPwd                              FindPassword.index
 GET     /findByEmail                            FindPassword.findByEmail
 GET     /findByTel                              FindPassword.findByTel
 POST    /checkByEmail                           FindPassword.checkByEmail
-POST    /checkByTel                           FindPassword.checkByTel
-POST    /reset                           FindPassword.reset
-GET     /resetPassword                           FindPassword.resetPassword
+POST    /checkByTel                             FindPassword.checkByTel
+POST    /reset                                  FindPassword.reset
+GET     /resetPassword                          FindPassword.resetPassword
 POST    /updatePassword                         FindPassword.updatePassword
 
 GET     /success                                FindPassword.success

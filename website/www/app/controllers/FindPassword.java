@@ -1,20 +1,16 @@
 package controllers;
 
-import org.apache.commons.codec.digest.DigestUtils;
+import java.util.Date;
+
+import models.consumer.User;
+import models.sms.SMSUtil;
+
 import org.apache.commons.lang.StringUtils;
 
-import com.uhuila.common.util.RandomNumberUtil;
-
-import controllers.modules.website.cas.SecureCAS;
-import models.consumer.User;
-import models.consumer.UserInfo;
-import models.mail.CouponMessage;
-import models.mail.MailUtil;
-import models.sms.SMSUtil;
 import play.cache.Cache;
-import play.data.validation.Validation;
-import play.libs.Images;
 import play.mvc.Controller;
+
+import com.uhuila.common.util.RandomNumberUtil;
 
 /**
  * 找回密码.
@@ -52,7 +48,8 @@ public class FindPassword extends Controller {
 	}
 
 	/**
-	 * 通过手机找回密码页面
+	 * 通过手机发送验证码
+	 * 
 	 * @param mobile 手机
 	 */
 	public static void checkByTel(String mobile) {
@@ -71,9 +68,10 @@ public class FindPassword extends Controller {
 	}
 
 	/**
-	 * 绑定手机
+	 *  判断手机和验证码是否正确
 	 * 
 	 * @param mobile 手机
+	 * @param validCode 验证码
 	 */
 	public static void reset(String mobile,String validCode) {
 		Object objCode = Cache.get("validCode_");
@@ -99,23 +97,22 @@ public class FindPassword extends Controller {
 	}
 
 	/**
-	 * 绑定手机
-	 * 
-	 * @param mobile 手机
+	 * 找回密码页面
 	 */
 	public static void resetPassword() {
 		String mobile = request.params.get("mobile");
 		String totken = request.params.get("totken");
-		render(mobile,totken);
+		//判断发送邮件的链接是否有效
+		boolean isExpired = User.isExpired(totken);
+		render(mobile,totken,isExpired);
 	}
 
 	/**
-	 * 绑定手机
+	 * 更新密码
 	 * 
 	 * @param mobile 手机
 	 */
 	public static void updatePassword(String totken,String mobile,String password,String confirmPassword) {
-		System.out.println("aaaaaaaaaaaaaaa");
 		if (StringUtils.isBlank(totken) && StringUtils.isBlank(mobile) ) {
 			renderJSON("-1");
 		}
@@ -129,7 +126,7 @@ public class FindPassword extends Controller {
 	}
 
 	/**
-	 * 通过手机找回密码页面
+	 * 成功找回密码页面
 	 */
 	public static void success() {
 		render("FindPassword/success.html");

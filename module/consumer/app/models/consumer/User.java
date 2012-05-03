@@ -80,6 +80,9 @@ public class User extends Model {
 	@Column(name="password_totken")
 	public String passwordTotken;
 
+	@Column(name="send_mail_at")
+	public Date sendMailAt;
+
 	/**
 	 * 判断用户名是否唯一
 	 *
@@ -121,13 +124,12 @@ public class User extends Model {
 		if (userList.size() >0) {
 			returnFlag = "1";
 			User user = userList.get(0);
-
-			Images.Captcha captcha = Images.captcha();
-			String totken=user.id+captcha.getText(20);
+			String totken=user.id+loginName;
 			totken = DigestUtils.md5Hex(totken); 
 			user.passwordTotken = totken;
+			user.sendMailAt = new Date();
 			user.save();
-
+			//发送邮件
 			CouponMessage mail = new CouponMessage();
 			String url = Play.configuration.getProperty("resetpassword.mail_url");
 			mail.setMailUrl(url+"?totken="+totken);
@@ -187,6 +189,12 @@ public class User extends Model {
 
 	}
 
+	/**
+	 * 根据邮箱或手机更新密码
+	 * @param totken 邮箱的
+	 * @param mobile
+	 * @param password
+	 */
 	public static void updateFindPwd(String totken, String mobile,String password) {
 		User user = null;
 		if (!StringUtils.isBlank(totken)) {
@@ -204,5 +212,28 @@ public class User extends Model {
 		user.save();
 
 
+	}
+
+	/**
+	 * 判断链接是否超过24小时
+	 * 
+	 * @param totken 标识
+	 * @return 过期标识
+	 */
+	public static boolean isExpired(String totken) {
+		boolean isExpired = false;
+		if (!StringUtils.isBlank(totken)) {
+			System.out.println(totken);
+			User user = User.find("byPasswordTotken", totken).first();
+			Date d1 = user.sendMailAt ;
+			Date d2 = new Date();
+			long diff = d2.getTime() - d1.getTime();
+			long hour = diff / (1000 * 60 * 60);
+			//超过24小时，表示过期
+			if(hour > 24) {
+				isExpired = true;
+			}
+		} 
+		return isExpired;
 	}
 }
