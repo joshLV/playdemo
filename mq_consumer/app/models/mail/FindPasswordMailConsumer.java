@@ -26,9 +26,8 @@ public class FindPasswordMailConsumer extends RabbitMQConsumer<CouponMessage> {
 	@Override
 	protected void consume(CouponMessage message) {
 		try {
-			
-			System.out.println(">>>>>>>>>>>>>.");
 			String content  = message.getEmail() + " | " + 0 + "|邮件找回密码|" + "发送成功";
+			FindPassWordMails.notify(message);
 			saveJournal(content);
 		} catch (MailException e) {
 			Logger.warn(e, "发送邮件(" + message.getEmail() + ")时出现异常");
@@ -44,7 +43,7 @@ public class FindPasswordMailConsumer extends RabbitMQConsumer<CouponMessage> {
 
 	@Override
 	protected String queue() {
-		return MailUtil.COUPON_MAIL_QUEUE_NAME;
+		return MailUtil.MAIL_QUEUE_NAME;
 	}
 
 }
