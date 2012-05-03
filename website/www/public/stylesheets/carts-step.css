@@ -5,10 +5,22 @@
 #nav {
     display: none;
 }
-/* 购买步骤条 */
+/* 购买步骤条 {{{ */
 .buy-step {
     margin: 40px 0 20px;
+    line-height: 30px;
+}
+.step1 {
     background: #F4F4F4 url(http://img.uhcdn.com/images/u/carts_step.png) repeat-x 0 0;
+}
+.step2 {
+    background: #F4F4F4 url(http://img.uhcdn.com/images/u/carts_step_2.png) repeat-x 0 0;
+}
+.step3 {
+    background: #F4F4F4 url(http://img.uhcdn.com/images/u/carts_step_3.png) repeat-x 0 0;
+}
+.step4 {
+    background: #F4F4F4 url(http://img.uhcdn.com/images/u/carts_step_4.png) repeat-x 0 0;
 }
 .buy-step li {
     float: left;
@@ -22,7 +34,6 @@
 .buy-step-curr {
     color: #F8F8F8;
     font-weight: 700;
-    /* background-color: #25B4AB; */
 }
 .buy-step span {
     padding: 2px 8px;
@@ -61,8 +72,8 @@
 #carts-list .del {
     color: #25B4AB;
 }
-
-/* 购物车询问 */
+/* }}} */
+/* 购物车底部 {{{ */
 #carts-ft {
     height: 34px;
     margin: 20px 0 30px;
@@ -113,9 +124,8 @@
     font-weight: 700;
     background-color: #25B4AB;
 }
-
-
-/** 最近浏览商品 **/
+/* }}} */
+/** 最近浏览商品 {{{ **/
 #recent {
     margin: 20px 0 30px;
     border: 1px solid #e4e4e4;
@@ -155,4 +165,166 @@
 .recent-bd li del {
     margin-left: 5px;
     font-family: arial, tahoma, \5b8b\4f53, sans-serif;
+}
+/* }}} */
+
+.order {
+    /* padding: 10px 15px; */
+    margin: 30px 0;
+    /* border: 1px solid #E4E4E4; */
+}
+.order h3 {
+    margin-bottom: 15px;
+    color: #656565;
+    font-size: 14px;
+    border-bottom: 1px solid #E4E4E4;
+}
+.order h3 span {
+    float: left;
+    display: block;
+    margin-bottom: -1px;
+    color: #656565;
+    font-size: 14px;
+    line-height: 24px;
+    border-bottom: 1px solid #AADBDB;
+}
+.order h3 a {
+    margin-top: 2px;
+    color: #25B4AB;
+}
+.addr {
+    padding: 5px;
+    line-height: 25px;
+    background-color: #F2F2F2;
+}
+.addr .modify-addr {
+    margin-left: 10px;
+    color: #25B4AB;
+}
+.addr em {
+    color: #999;
+}
+.addr .confirm {
+    display: block;
+    margin: 5px 0;
+    width: 130px;
+    color: #F8F8F8;
+    font-weight: 700;
+    text-align: center;
+    line-height: 28px;
+    background-color: #25B4AB;
+    border-radius: 2px;
+}
+.addr-all {
+    display: none;
+    padding: 0 60px;
+}
+.addr-all li {
+    line-height: 25px;
+}
+.addr-all li:hover {
+    background-color: #CEECEC;
+}
+.addr-all li input,
+.addr-all li label {
+    vertical-align: middle;
+}
+.addr-one {
+    float: left;
+}
+.addr-action {
+    float: right;
+}
+.addr-action a {
+    color: #666;
+}
+.addr-action a:hover {
+    *text-decoration: none;
+}
+.addr-action .addr-del {
+    position: relative;
+}
+.addr-action .addr-del-confirm {
+    position: absolute;
+    top: -65px;
+    left: -30px;
+    padding: 2px 8px;
+    width: 110px;
+    line-height: 25px;
+    border: 1px solid #25B4AB;
+    background-color: #FFF;
+}
+.addr-action .addr-del-confirm b {
+    color: #25B4AB;
+    padding: 3px 5px;
+    font-weight: normal;
+}
+.addr-action .addr-del-confirm img {
+    position: absolute;
+    top: 54px;
+    left: 30px;
+}
+.addr-new {
+    border-bottom: 1px dotted #A4A4A4;
+}
+.use-addr {
+    display: none;
+}
+.use-addr caption {
+    text-align: left;
+    font-weight: 700;
+}
+.use-addr td {
+    height: 30px;
+    font-family: "宋体";
+}
+.use-addr select {
+    width: 100px;
+    height: 22px;
+    color: #341527;
+    line-height: 22px;
+    border: 1px solid #939496;
+}
+.use-addr input {
+    width: 150px;
+}
+.use-addr .addr-street {
+    width: 303px;
+}
+.use-addr .addr-mobile {
+    width: 100px;
+}
+.use-addr .addr-area-code {
+    width: 35px;
+}
+.use-addr .addr-phone-num {
+    width: 90px;
+}
+.use-addr .addr-phone-ext {
+    width: 70px;
+}
+.use-addr .required {
+    padding-right: 3px;
+    color: #F40;
+    line-height: 24px;
+    font-style: normal;
+    font-family: 'simsun';
+}
+
+
+
+.order-list {
+    margin-top: 15px;
+}
+.order-list thead tr {
+    border-right: 1px solid #C4E8E8;
+}
+.order-list thead th {
+    height: 30px;
+    background-color: #AADBDB;
+}
+.order-list tbody td {
+    padding: 3px 5px;
+    border: solid #AADBDB;
+    border-width: 0 1px 1px 1px;
 }

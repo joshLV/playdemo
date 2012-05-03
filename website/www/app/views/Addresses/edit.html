@@ -1,82 +1,39 @@
-<table width="100%" cellpadding="0" cellspacing="0">
+<table class="use-addr" id="J_editAddr" border="0" cellpadding="0" cellspacing="0">
+    <caption>编辑以下地址：</caption>
     <tr>
-        <td valign="top">
-            <input name="selectedAddressId" type="radio" id="radio_address_${address.id}"
-                   value="${address.id}" #{if "true".equals(address.isDefault)}checked#{/if} onclick="radioClick()"/>
-        </td>
+        <td width="70" align="right"><span class="required">*</span>地　　区：</td>
         <td>
-            <div class="right_table" id="div_edit_address_${address.id}">
-                <table class="table_height" width="700" border="0" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td width="71" height="30" align="right"><span class="font_red">*</span>选择地区：</td>
-                        <td width="613" align="left">
-                            <div id="china_area">
-                                <select class="area_select" name="address.province" id="address_province_${address.id}"
-                                        selectedValue="${address.province}">
-                                </select>
-                                <select class="area_select" name="address.city" id="address_city_${address.id}"
-                                        selectedValue="${address.city}">
-                                </select>
-                                <select class="area_select" name="address.district" id="address_district_${address.id}"
-                                        selectedValue="${address.district}">
-                                </select>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td height="30" align="right"><span class="font_red">*</span>详细地址：</td>
-                        <td align="left">
-                            <input class="input_height input_adress" type="text" name="address.address"
-                                   id="address_address_${address.id}" value="${address.address}"/></td>
-                    </tr>
-                    <tr>
-                        <td height="30" align="right"><span class="font_red">*</span>邮政编码：</td>
-                        <td align="left"><input class="input_height" type="text" name="address.postcode"
-                                                id="address_postcode_${address.id}" value="${address.postcode}"/></td>
-                    </tr>
-                    <tr>
-                        <td height="30" align="right"><span class="font_red">*</span>收&nbsp;货&nbsp;&nbsp;人：</td>
-                        <td align="left">
-                            <input class="input_height" type="text" name="address.name" id="address_name_${address.id}"
-                                   value="${address.name}"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td height="30" align="right"><span class="font_red">*</span>手　　机：</td>
-                        <td align="left" class="font_yanse">
-                            <input name="address.mobile" type="text" class="input_height"
-                                   id="address_mobile_${address.id}"
-                                   value="${address.mobile}"/>
-                            或固定电话
-
-                            -
-                            <input name="address.areaCode" type="text" class="input_height area_input"
-                                   id="address_areaCode_${address.id}"
-                                   fs="${address.areaCode}"/>
-                            <input name="address.phoneNumber" type="text" class="input_height"
-                                   id="address_phoneNumber_${address.id}"
-                                   fs="${address.phoneNumber}"/>
-                            -
-                            <input name="address.phoneExtNumber" type="text" class="input_height"
-                                   id="address_phoneExtNumber_${address.id}"
-                                   fs="${address.phoneExtNumber}"/> 两者至少填写一项
-                        </td>
-                    </tr>
-                    <tr>
-                        <td height="50" colspan="2"><span class="margin_left"><a class="address_confirm_button"
-                                                                                 id="link_edit_confirm"
-                                                                                 addressId="${address.id}"
-                                                                                 href="javascript:updateAddress(${address.id});">确认收货信息</a></span>
-                                        <span class="margin_left"><a class="address_cancel_button"
-                                                                     id="link_edit_cancel1"
-                                                                     addressId="${address.id}"
-                                                                     href="javascript:showAddress(true);">取消</a></span>
-                        </td>
-
-                    </tr>
-                </table>
-                <div class="clear_both"></div>
-            </div>
+            <select class="addr-prov" id="J_addrProv2" name="addr-prov2"></select>
+            <select class="addr-city" id="J_addrCity2" name="addr-city2"></select>
+            <select class="addr-dist" id="J_addrDist2" name="addr-dist2"></select>
+        </td>
+    </tr>
+    <tr>
+        <td align="right"><span class="required">*</span>街道地址：</td>
+        <td>
+            <input class="addr-street" id="J_addrStreet2" type="text" value="${address.address}" /></td>
+    </tr>
+    <tr>
+        <td align="right"><span class="required">*</span>邮政编码：</td>
+        <td><input class="addr-post" id="J_addrPost2" type="text" value="${address.postcode}" /></td>
+    </tr>
+    <tr>
+        <td align="right"><span class="required">*</span>收 货 人：</td>
+        <td>
+            <input class="addr-name" id="J_addrName2" type="text" value="${address.name}" />
+        </td>
+    </tr>
+    <tr>
+        <td align="right"><span class="required">*</span>手　　机：</td>
+        <td>
+            <input class="addr-mobile" id="J_addrMobile2" type="text" value="${address.mobile}" /> 或 电话： 
+            <input class="addr-area-code" id="J_addrAreaCode2" type="text" value="${address.areaCode}" placeholder="区号"/> - 
+            <input class="addr-phone-num" id="J_addrPhoneNum2" type="text" value="${address.phoneNumber}" placeholder="电话号码"/> - 
+            <input class="addr-phone-ext" id="J_addrPhoneExt2" type="text" value="${address.phoneExtNumber}" placeholder="分机(可选)"/> 手机和电话请至少填写一个
         </td>
     </tr>
 </table>
+<script>
+// 省市区三级联动
+new PCAS('addr-prov2','addr-city2','addr-dist2','${address.province}','${address.city}','${address.district}');
+</script>

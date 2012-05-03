@@ -343,7 +343,7 @@ ul {
     width: 960px;
     float: right;
     text-align: right;
-    margin-right: 40px;
+    /* margin-right: 40px; */
     margin-top: 30px;
     letter-spacing: 0.1em;
     font-size: 14px;
@@ -353,7 +353,7 @@ ul {
     float: right;
     width: 900px;
     text-align: right;
-    margin-right: 80px;
+    /* margin-right: 80px; */
     margin-top: 17px;
     margin-bottom: 20px;
 }

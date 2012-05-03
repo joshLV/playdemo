@@ -1,57 +1,34 @@
-<div class="right_table" id="div_add_address">
-    <table class="table_height" width="700" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-            <td width="71" height="30" align="right"><span class="font_red">*</span>选择地区：</td>
-            <td width="613" align="left"><div id="china_area">
-                <select class="area_select" name="address.province" id="address_province">
-                </select>
-                <select class="area_select" name="address.city" id="address_city">
-                </select>
-                <select class="area_select" name="address.district" id="address_district">
-                </select></div>
-            </td>
-        </tr>
-        <tr>
-            <td height="30" align="right"><span class="font_red">*</span>详细地址：</td>
-            <td align="left">
-                <input class="input_height input_adress" type="text" name="address.address"
-                       id="address_address"/></td>
-        </tr>
-        <tr>
-            <td height="30" align="right"><span class="font_red">*</span>邮政编码：</td>
-            <td align="left"><input class="input_height" type="text" name="address.postcode"
-                                    id="address_postcode"/></td>
-        </tr>
-        <tr>
-            <td height="30" align="right"><span class="font_red">*</span>收&nbsp;货&nbsp;&nbsp;人：</td>
-            <td align="left">
-                <input class="input_height" type="text" name="address.name" id="address_name"/>
-            </td>
-        </tr>
-        <tr>
-            <td height="30" align="right"><span class="font_red">*</span>手　　机：</td>
-            <td align="left" class="font_yanse">
-                <input name="address.mobile" type="text" class="input_height"
-                       id="address_mobile"
-                       fs="如133421433434"/>
-                或固定电话
-
-                -
-                <input name="address.areaCode" type="text" class="input_height area_input"
-                       id="address_areaCode"
-                       fs="区号" placeholder="区号"/>
-                <input name="address.phoneNumber" type="text" class="input_height"
-                       id="address_phoneNumber"
-                       fs="电话号码" placeholder="电话号码"/>
-                -
-                <input name="address.phoneExtNumber" type="text" class="input_height"
-                       id="address_phoneExtNumber"
-                       fs="分机号（可选）" placeholder="分机号（可选）"/> 两者至少填写一项
-            </td>
-        </tr>
-    </table>
-    <div class="clear_both"></div>
-</div>
-<script type="text/javascript">
-    $("#china_area").jChinaArea({aspnet:false, s1:"上海市", s2:"上海市", s3:"黄浦区"});
-</script>
+<table class="use-addr" id="J_useAddr" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td width="70" align="right"><span class="required">*</span>地　　区：</td>
+        <td>
+            <select class="addr-prov" name="addr-prov"></select>
+            <select class="addr-city" name="addr-city"></select>
+            <select class="addr-dist" name="addr-dist"></select>
+        </td>
+    </tr>
+    <tr>
+        <td align="right"><span class="required">*</span>街道地址：</td>
+        <td>
+            <input class="addr-street" type="text" /></td>
+    </tr>
+    <tr>
+        <td align="right"><span class="required">*</span>邮政编码：</td>
+        <td><input class="addr-post" type="text" /></td>
+    </tr>
+    <tr>
+        <td align="right"><span class="required">*</span>收 货 人：</td>
+        <td>
+            <input class="addr-name" type="text" />
+        </td>
+    </tr>
+    <tr>
+        <td align="right"><span class="required">*</span>手　　机：</td>
+        <td>
+            <input class="addr-mobile" type="text" /> 或 电话： 
+            <input class="addr-area-code" type="text" placeholder="区号"/> - 
+            <input class="addr-phone-num" type="text" placeholder="电话号码"/> - 
+            <input class="addr-phone-ext" type="text" placeholder="分机(可选)"/> 手机和电话请至少填写一个
+        </td>
+    </tr>
+</table>
