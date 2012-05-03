@@ -464,7 +464,6 @@ public class Goods extends Model {
         List<GoodsPublishedPlatformType> publishedPlatforms = new ArrayList<>();
         for (GoodsPublishedPlatformType type : GoodsPublishedPlatformType.values()) {
             if (!containsUnPublishedPlatform(type)) {
-                System.out.println("publishedPlatforms add type:" + type);
                 publishedPlatforms.add(type);
             }
         }
@@ -477,7 +476,6 @@ public class Goods extends Model {
         }
 
         for (GoodsUnPublishedPlatform unPublishedPlatform : unPublishedPlatforms) {
-//            System.out.println("unPublishedPlatform:" + unPublishedPlatform);
             if (unPublishedPlatform != null && unPublishedPlatform.type.equals(type)) {
                 return true;
             }
@@ -838,5 +836,9 @@ public class Goods extends Model {
                 unPublishedPlatforms.add(goodsUnPublishedPlatform);
             }
         }
+    }
+
+    public boolean canPublishTo(GoodsPublishedPlatformType type){
+        return !containsUnPublishedPlatform(type);
     }
 }

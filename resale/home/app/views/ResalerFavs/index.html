@@ -155,12 +155,14 @@ ul .pagination {
                     <td width="115" height="25" align="center" valign="middle">处理中</td>
                     <td width="115" height="25" align="center" valign="middle">${favItem.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
                     <td width="103" height="25" align="center" valign="middle">
-                        <a href="#" class="delete_gift" id="del_${favItem.id}" name="${favItem.goods.id}">删除</a> | 
+                        <a href="#" class="delete_gift" id="del_${favItem.id}" name="${favItem.goods.id}">删除</a>
                         #{if favItem.taobaoItemId}
-                            已发布到淘宝
+                            | 已发布到淘宝
                         #{/if}
                         #{else}
-                            <a href="/top-add?goodsId=${favItem.goods.id}">发布到淘宝</a>
+                            #{if favItem.goods.canPublishTo(models.sales.GoodsPublishedPlatformType.TAOBAO)}
+                            | <a href="/top-add?goodsId=${favItem.goods.id}">发布到淘宝</a>
+                            #{/if}
                         #{/else}
                     </td>
                 </tr>
