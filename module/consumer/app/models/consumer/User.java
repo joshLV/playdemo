@@ -123,13 +123,14 @@ public class User extends Model {
 			User user = userList.get(0);
 
 			Images.Captcha captcha = Images.captcha();
-			String totken=captcha.getText(20);
+			String totken=user.id+captcha.getText(20);
+			totken = DigestUtils.md5Hex(totken); 
 			user.passwordTotken = totken;
 			user.save();
 
 			CouponMessage mail = new CouponMessage();
 			String url = Play.configuration.getProperty("resetpassword.mail_url");
-			mail.setMailUrl(url+"?totken="+DigestUtils.md5Hex(totken));
+			mail.setMailUrl(url+"?totken="+totken);
 			mail.setEmail(loginName);
 			MailUtil.sendFindPasswordMail(mail);
 		}
