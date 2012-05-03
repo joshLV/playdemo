@@ -4,6 +4,8 @@ class:'span2'}
     #{option models.cms.BlockType.DAILY_SPECIAL}&{'block.DAILY_SPECIAL'}#{/option}
 #{/layout_operate.selectField}
 #{layout_operate.textField name:'block.title', value:block?.title, required:true/}
+#{layout_operate.textField name:'block.link', value:block?.title, required:true/}
+#{layout_operate.textField name:'block.imageUrl', value:block?.title, required:true/}
 #{layout_operate.textField name:'block.displayOrder', value:block?.displayOrder, required:true/}
 #{layout_operate.htmlField name:'block.content', value:block?.content, required:true/}
 #{layout_operate.dateScopeField name:'block.effective', begin:'block.effectiveAt',end:'block.expireAt',
