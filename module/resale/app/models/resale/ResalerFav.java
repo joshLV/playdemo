@@ -58,7 +58,6 @@ public class ResalerFav extends Model {
 	 * @param resaler 分销商
      * @param createdAtBegin 下单开始时间
 	 * @param createdAtEnd 下单结束时间
-	 * @param status 状态
 	 * @param goodsName 商品名
 	 * @return sql 查询条件
 	 */
@@ -129,7 +128,7 @@ public class ResalerFav extends Model {
 	 * 加入或修改分销库列表
 	 *
 	 * @param resaler   用户
-	 * @param goods     商品
+	 * @param goodsIds     商品标识
 	 */
 	public static Map<String, String> checkGoods(Resaler resaler,
 			Long[] goodsIds) {

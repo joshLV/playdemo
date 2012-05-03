@@ -35,7 +35,7 @@ public class ResalerFavs extends Controller {
 	/**
 	 * 加入或修改购物车列表
 	 *
-	 * @param goodsId  商品ID
+	 * @param goodsIds  商品ID
 	 */
 	public static void order(@As(",") Long... goodsIds) {
 		Resaler resaler = SecureCAS.getResaler();

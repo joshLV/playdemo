@@ -106,17 +106,17 @@ ul .pagination {
 		        <input class="short_input Wdate" type="text" name="createdAtBegin" id="createdAtBegin"  value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
 		        <input class="short_input Wdate" type="text" name="createdAtEnd"  id="createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
 		     </td>
-		      <td width="77">订单状态：</td>
-		      <td width="353">
-		       <div class="pos_abs">
-		          #{select 'status', id:'condition_status', class:'dingdan_stauts_bg', value:status}
-		               #{option ""}不限#{/option}
-		               #{option "UNPAID"}&{'order.UNPAID'}#{/option}
-		               #{option "PAID"}&{'order.PAID'}#{/option}
-		               #{option "CANCELED"}&{'order.CANCELED'}#{/option}
-		         #{/select}
-		       </div>
-		      </td>
+		      *{<td width="77">订单状态：</td>}*
+		      *{<td width="353">}*
+		       *{<div class="pos_abs">}*
+		          *{#{select 'status', id:'condition_status', class:'dingdan_stauts_bg', value:status}}*
+		               *{#{option ""}不限#{/option}}*
+		               *{#{option "UNPAID"}&{'order.UNPAID'}#{/option}}*
+		               *{#{option "PAID"}&{'order.PAID'}#{/option}}*
+		               *{#{option "CANCELED"}&{'order.CANCELED'}#{/option}}*
+		         *{#{/select}}*
+		       *{</div>}*
+		      *{</td>}*
 		     </tr>
 		     <tr>
 		      <td>&nbsp;</td>
@@ -152,7 +152,7 @@ ul .pagination {
                         models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
                     <td width="115" height="25" align="center" valign="middle">${favItem.goods?.faceValue?.formatCurrency('CNY').raw()}</td>
                     <td width="115" height="25" align="center" valign="middle" id="price_${favItem.goods.id}">${favItem.goods.getResalePrice(resaler.level)}</td>
-                    <td width="115" height="25" align="center" valign="middle">处理中</td>
+                    <td width="115" height="25" align="center" valign="middle">&{'goods.'+favItem.goods?.status}</td>
                     <td width="115" height="25" align="center" valign="middle">${favItem.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
                     <td width="103" height="25" align="center" valign="middle">
                         <a href="#" class="delete_gift" id="del_${favItem.id}" name="${favItem.goods.id}">删除</a>

@@ -52,3 +52,10 @@ coupon.CONSUMED=已消费
 coupon.UNCONSUMED=未消费
 coupon.REFUND=已退款
 coupon.EXPIRED=已过期
+
+#商品状态
+goods.ONSALE=正常
+goods.OFFSALE=已下架
+goods.UNCREATED=创建中
+goods.APPLY=申请上架
+goods.REJECT=拒绝上架
