@@ -29,8 +29,7 @@ public class RegisterUnitTest extends UnitTest {
 		user.create();
 
 		List<User> list = User.findAll(); 
-		assertTrue(list.size() !=0);  
-		assertEquals("11@qq.com", list.get(1).loginName);  
+		assertEquals(4, list.size());  
 	}  
 
 

@@ -50,9 +50,9 @@ beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), req
 
     <div class="controls">
         <input type="text" id='levelPrices_${level}' name="levelPrices" class="input-xlarge"
-               value="${goods?.levelPrices?goods.levelPrices.price[i]:''}" onfocus="showPrice(this)"
-               onkeyup="showPrice(this)" onkeydown="showPrice(this)"
-               onchange="showPrice(this)"/>元 <span style="color: blue; ">加价后为</span><span style="color: red; "
+               value="${goods?.levelPrices?goods.levelPrices.price[i]:''}" onfocus="showPrice(this);isTriDecimal(this,this.value)"
+               onkeyup="showPrice(this);isTriDecimal(this,this.value)" onkeydown="showPrice(this);isTriDecimal(this,this.value)"
+               onchange="showPrice(this);isTriDecimal(this,this.value)"/>元 <span style="color: blue; ">加价后为</span><span style="color: red; "
                                                                                           id="realPrice_levelPrices_${level}">0</span><span
             style="color: blue; ">元</span>
         #{field 'goods.levelPrice.'+level}
@@ -109,7 +109,7 @@ beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
         var originalPrice = $("#goods_originalPrice").val() == null ? 0 : $("#goods_originalPrice").val();
         var price = parseFloat($(nameField).val()) + parseFloat(originalPrice);
         price = (price == null || price.toString() == "NaN") ? 0 : price;
-        $("#realPrice_" + nameField.id).html(price);
+        $("#realPrice_" + nameField.id).html(price.toFixed(2));
     }
 
     function showAddedPrice() {
@@ -117,23 +117,35 @@ beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
     #{list items:models.resale.ResalerLevel.values(), as: 'level'}
         var price = parseFloat($('#levelPrices_${level}').val()) + parseFloat(originalPrice);
         price = (price == null || price.toString() == "NaN") ? 0 : price;
-        $("#realPrice_levelPrices_${level}").html(price);
+        $("#realPrice_levelPrices_${level}").html(price.toFixed(2));
     #{/list}
     }
 
     showAddedPrice();
 
     $(function () {
+
+    	 $("#goods_faceValue").keyup(function () {
+             isTriDecimal(this,$("#goods_faceValue").val());
+         })
+         
+          $("#goods_salePrice").keyup(function () {
+             isTriDecimal(this,$("#goods_salePrice").val());
+         })
+         
         $("#goods_originalPrice").keyup(function () {
-            showAddedPrice();
+        	isTriDecimal(this,$("#goods_originalPrice").val());
+           showAddedPrice();
         })
         $("#goods_originalPrice").keydown(function () {
+        	isTriDecimal(this,$("#goods_originalPrice").val());
             showAddedPrice();
         })
         $("#goods_originalPrice").change(function () {
             showAddedPrice();
         })
         $("#goods_originalPrice").focus(function () {
+        	isTriDecimal(this,$("#goods_originalPrice").val());
             showAddedPrice();
         })
         $("#goods_isAllShop_2").click(function () {
@@ -143,4 +155,21 @@ beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
         #{/if}
         });
     });
+    
+    function isTriDecimal(obj,value){
+        if(value!=null&&value!=''){   
+            var decimalIndex=value.indexOf('.');   
+            if(decimalIndex=='-1'){   
+                return false;   
+            }else{   
+                var decimalPart=value.substring(decimalIndex+1,value.length);   
+                if(decimalPart.length>2){ 
+                
+                	 $(obj).val(value.substring(0,decimalIndex+3));
+                	return false;   
+                } 
+            }   
+        }   
+        return true;   
+    }   
 </script>
