@@ -4,7 +4,7 @@ class:'span2'}
     #{option models.cms.BlockType.DAILY_SPECIAL}&{'block.DAILY_SPECIAL'}#{/option}
 #{/layout_operate.selectField}
 #{layout_operate.textField name:'block.title', value:block?.title, required:true/}
-#{layout_operate.textField name:'block.link', value:block?.title, required:true/}
+#{layout_operate.textField name:'block.link', value:block?.link, required:true/}
 #{if "add".equals(action)}
     #{layout_operate.fileField name:'image', required:true/}
 #{/if}

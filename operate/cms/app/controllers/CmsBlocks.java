@@ -140,8 +140,12 @@ public class CmsBlocks extends Controller {
             Block oldBlock = Block.findById(id);
             String oldImagePath = oldBlock == null ? null : oldBlock.imageUrl;
             String imageUrl = uploadFile(image, oldImagePath);
+            System.out.println("================================================================");
+            System.out.println("oldImage=" + oldImagePath);
+            System.out.println("newImage=" + imageUrl);
             if (StringUtils.isNotEmpty(imageUrl)) {
                 block.imageUrl = imageUrl;
+                System.out.println("block.imageUrl=" + block.imageUrl);
             }
         } catch (IOException e) {
             e.printStackTrace();

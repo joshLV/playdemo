@@ -39,7 +39,7 @@ public class Block extends Model {
             ("image.server", "img0.uhcdn.com");
     
     @Required
-    @MinSize(10)
+    @MinSize(3)
     @MaxSize(60)
     public String title;
 
@@ -67,9 +67,6 @@ public class Block extends Model {
 
     public Integer displayOrder;
 
-    @Required
-    @MinSize(7)
-    @MaxSize(4000)
     @Lob
     private String content;
 
@@ -134,6 +131,8 @@ public class Block extends Model {
         oldBlock.effectiveAt = block.effectiveAt;
         oldBlock.expireAt = block.expireAt;
         oldBlock.title = block.title;
+        oldBlock.link = block.link;
+        oldBlock.imageUrl = block.imageUrl;
         oldBlock.type = block.type;
         oldBlock.save();
     }
