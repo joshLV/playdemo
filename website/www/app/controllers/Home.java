@@ -1,7 +1,9 @@
 package controllers;
 
+import java.util.Date;
 import java.util.List;
 import models.cms.Block;
+import models.cms.BlockType;
 import models.sales.Area;
 import models.sales.Category;
 import play.mvc.Controller;
@@ -42,10 +44,11 @@ public class Home extends Controller {
         renderArgs.put("categoryId", categoryId);
         
         // CMS 区块
-        List<Block> slides = Block.all().fetch();
-        List<Block> topSales = Block.all().fetch();
+        Date currentDate = new Date();
+        List<Block> slides = Block.findByType(BlockType.WEBSITE_SLIDE, currentDate);
+        List<Block> dailySpecials = Block.findByType(BlockType.DAILY_SPECIAL, currentDate);
         renderArgs.put("slides", slides);
-        renderArgs.put("topSales", topSales);
+        renderArgs.put("dailySpecials", dailySpecials);
 
         render(goodsList, recentGoodsList, recommendGoodsList, categories, districts, areas);
     }

@@ -24,9 +24,9 @@
 
     <div id="slides">
         <div class="slides_container">
-            <a href="" target="_blank"><img src="#{asset.url href:'/images/u/s1.png'/}" width="478" height="218"/></a>
-            <a href="" target="_blank"><img src="#{asset.url href:'/images/u/s2.png'/}" width="478" height="218"/></a>
-            <a href="" target="_blank"><img src="#{asset.url href:'/images/u/s3.png'/}" width="478" height="218"/></a>
+        #{list slides, as:'slide'}
+            <a href="${slide.link}" target="_blank" title="${slide.title}"><img src="${slide.getShowImageUrl()}" width="478" height="218"/></a>
+        #{/list}
         </div>
     </div>
 

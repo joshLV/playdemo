@@ -1,6 +1,7 @@
 package models.cms;
 
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -135,5 +136,25 @@ public class Block extends Model {
         oldBlock.title = block.title;
         oldBlock.type = block.type;
         oldBlock.save();
+    }
+    
+    /**
+     * 按BlockType和时间查询可用的Block，如果找不到任何记录，则按BlockType查询.
+     * @param type
+     * @param currentDate
+     * @return
+     */
+    public static List<Block> findByType(BlockType type, Date currentDate) {
+        final String orderBy = "displayOrder, effectiveAt desc, expireAt";
+            
+        List<Block> blocks = Block.find("deleted = ? and type = ? and effectiveAt <= ? and expireAt >= ? order by " + orderBy,
+                    DeletedStatus.UN_DELETED, type, currentDate, currentDate).fetch();
+        
+        if (blocks.size() == 0) {
+            blocks = Block.find("deleted = ? and type = ? order by " + orderBy,
+                    DeletedStatus.UN_DELETED, type).fetch();
+        }
+        
+        return blocks;
     }
 }

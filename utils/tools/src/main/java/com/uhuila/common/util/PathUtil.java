@@ -25,9 +25,10 @@ public class PathUtil {
      * @return 三级目录的路径
      */
     public static String getPathById(long id) {
-        long firstDir = (id >> 20) % 1000;
+        long firstDir = id >> 20;
         long secondTmpNum = id >> 10;
         long secondDir = (~(firstDir << 10)) & (secondTmpNum);
+        firstDir =  firstDir % 1000;
 
         long thirdDir = (~(secondTmpNum << 10)) & id;
         return "/" + String.valueOf(firstDir) + "/" + secondDir + "/" + thirdDir + "/";
