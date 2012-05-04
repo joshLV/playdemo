@@ -1,7 +1,6 @@
 package unit;
 
 import models.consumer.User;
-import models.consumer.UserInfo;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
@@ -21,8 +20,8 @@ public class FindPasswordUnitTest extends UnitTest {
 		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user_test1");
 		User user= User.findById(userId);
 		String loginName ="selenium1@uhuila.com";
-		String returnFlag = user.getUser(loginName);
-		assertEquals("1",returnFlag);
+		boolean  isExisted= user.isExisted(loginName);
+		assertTrue(isExisted);
 	}
 	
 	@Test

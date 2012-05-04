@@ -115,31 +115,35 @@ public class User extends Model {
 	 * 判断用户名是否存在
 	 *
 	 * @param loginName 用户名
+     * @return 用户名是否存在
 	 */
-	public static String getUser(String loginName) {
-		String returnFlag = "0";
+	public static boolean isExisted(String loginName) {
+		boolean  isExisted = false;
 
-		List<User> userList = User.find("byLoginName", loginName).fetch();
-		//用户名存在的情况
-		if (userList.size() >0) {
-			returnFlag = "1";
-			User user = userList.get(0);
-			String totken=user.id+loginName;
-			totken = DigestUtils.md5Hex(totken); 
-			user.passwordTotken = totken;
+        User user = findByLoginName(loginName);
+        //用户名存在的情况
+		if (user!= null) {
+			isExisted = true;
+			String token=user.id+loginName;
+			token = DigestUtils.md5Hex(token);
+			user.passwordTotken = token;
 			user.sendMailAt = new Date();
 			user.save();
 			//发送邮件
 			CouponMessage mail = new CouponMessage();
 			String url = Play.configuration.getProperty("resetpassword.mail_url");
-			mail.setMailUrl(url+"?totken="+totken);
+			mail.setMailUrl(url+"?token="+token);
 			mail.setEmail(loginName);
 			MailUtil.sendFindPasswordMail(mail);
 		}
-		return returnFlag;
+		return isExisted;
 	}
 
-	/**
+    public static User findByLoginName(String loginName) {
+        return User.find("byLoginName", loginName).first();
+    }
+
+    /**
 	 * 修改密码
 	 * 
 	 * @param newUser 新密码信息

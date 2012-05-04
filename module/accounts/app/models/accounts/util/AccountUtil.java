@@ -1,7 +1,14 @@
 package models.accounts.util;
 
-import models.accounts.*;
-import play.Logger;
+import models.accounts.Account;
+import models.accounts.AccountSequence;
+import models.accounts.AccountSequenceFlag;
+import models.accounts.AccountSequenceType;
+import models.accounts.AccountType;
+import models.accounts.CertificateDetail;
+import models.accounts.CertificateType;
+import models.accounts.SubjectDetail;
+import models.accounts.SubjectType;
 
 import java.math.BigDecimal;
 
@@ -73,7 +80,9 @@ public class AccountUtil {
         //保存账户变动信息
         AccountSequence accountSequence = new AccountSequence(
                 account,
-                AccountSequenceFlag.VOSTRO,                           //账务变动方向：来帐
+                amount.compareTo(BigDecimal.ZERO) >0
+                        ? AccountSequenceFlag.VOSTRO
+                        : AccountSequenceFlag.NOSTRO,                 //账务变动方向
                 sequenceType,                                         //变动类型
                 account.amount.subtract(amount),                      //变动前资金
                 account.amount,                                       //变动后资金

@@ -1,10 +1,14 @@
 package models.accounts;
 
-import javax.persistence.*;
+import play.db.jpa.Model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Date;
-
-import play.db.jpa.Model;
 
 @Entity
 @Table(name="accounts")
@@ -27,6 +31,9 @@ public class Account extends Model {
     public static final long PLATFORM_COMMISSION   = 2L;   //券平台佣金账户
     public static final long UHUILA_COMMISSION     = 3L;   //优惠啦佣金账户
 
+    public Account(){
+
+    }
 
     public Account(long uid, AccountType type){
         this.uid = uid;

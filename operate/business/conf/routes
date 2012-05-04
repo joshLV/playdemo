@@ -61,6 +61,15 @@ DELETE  /brands/{id}                            OperateBrands.delete
 GET     /brands/{id}/edit                       OperateBrands.edit
 PUT     /brands/{id}                            OperateBrands.update
 
+#财务报表
+GET     /reports                                OperateReports.showSystemReport
+GET     /reports/consumer                       OperateReports.showConsumerReport
+GET     /reports/resale                         OperateReports.showResaleReport
+GET     /reports/supplier                       OperateReports.showSupplierReport
+GET     /reports/website                        OperateReports.showWebsiteReport
+GET     /reports/platform                       OperateReports.showPlatformReport
+GET     /reports/incoming                       OperateReports.showIncomingReport
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

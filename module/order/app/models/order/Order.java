@@ -301,12 +301,18 @@ public class Order extends Model {
 		Account account = AccountUtil.getAccount(this.userId, this.userType);
 		//如果网银付款成功，则补加两个账户交易记录
 		if (this.discountPay.compareTo(BigDecimal.ZERO) > 0) {
-			new AccountSequence(account, AccountSequenceFlag.VOSTRO, AccountSequenceType.CHARGE,
+			AccountSequence chargeSequence = new AccountSequence(account, AccountSequenceFlag.VOSTRO,
+                    AccountSequenceType.CHARGE,
 					account.amount, account.amount.add(this.discountPay),
-					this.discountPay, BigDecimal.ZERO, this.payRequestId).save();
-			new AccountSequence(account, AccountSequenceFlag.NOSTRO, AccountSequenceType.PAY,
+					this.discountPay, BigDecimal.ZERO, this.payRequestId);
+            chargeSequence.save();
+
+			AccountSequence paySequence = new AccountSequence(account, AccountSequenceFlag.NOSTRO,
+                    AccountSequenceType.PAY,
 					account.amount.add(this.discountPay), account.amount,
-					this.discountPay, BigDecimal.ZERO, this.payRequestId).save();
+					this.discountPay, BigDecimal.ZERO, this.payRequestId);
+            paySequence.orderId = this.getId();
+            paySequence.save();
 		}
 		//如果是电子券
 		if (this.orderItems != null) {

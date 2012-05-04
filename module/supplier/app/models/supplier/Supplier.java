@@ -198,4 +198,8 @@ public class Supplier extends Model {
     public String toString() {
         return "Supplier[" + this.fullName + "@" + this.domainName + "(" + this.id + ")]";
     }
+
+    public static Supplier findByFullName(String fullName) {
+        return find("fullName like ?","%"+fullName+"%").first();
+    }
 }

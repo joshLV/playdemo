@@ -9,7 +9,12 @@
     <permission key="RESALERS" text="分销商管理" roles="admin"/>
     <permission key="ORDERS" text="运营订单管理" roles="admin"/>
     <permission key="COUPONS" text="券管理" roles="admin"/>
-    <permission key="ACCOUNT_REPORTS" text="账户报表查看" roles="admin"/>
+    <permission key="CONSUMERS_REPORT" text="消费者的资金明细" roles="admin"/>
+    <permission key="RESALES_REPORT" text="分销商的资金明细" roles="admin"/>
+    <permission key="SUPPLIERS_REPORT" text="商户的资金明细" roles="admin"/>
+    <permission key="WEBSITES_REPORT" text="优惠啦佣金账户的资金明细" roles="admin"/>
+    <permission key="PLATFORMS_REPORT" text="券平台佣金账户的资金明细" roles="admin"/>
+    <permission key="INCOMINGS_REPORT" text="收款账户的资金明细" roles="admin"/>
     <!--<permission key="SHOPS_NEW" text="门店添加"/> -->
     <!--<permission key="SHOPS" text="门店管理"/> -->
 
@@ -49,9 +54,26 @@
             <navigation key="coupons_index" action="OperateCoupons.index" text="券列表管理" permissions="COUPONS"/>
         </navigation>
     </navigation>
-    <navigation key="account_app" text="系统账户" action="AccountReports.index">
-        <navigation key="account" text="账户" permission="ACCOUNT_REPORTS">
-            <navigation key="account_reports" action="AccountReports.index" text="账户报表" permission="ACCOUNT_REPORTS"/>
+    <navigation key="report_app" text="财务报表" action="OperateReports.showIncomingReport">
+        <navigation key="consumers" text="消费者" permission="CONSUMERS_REPORT">
+            <navigation key="consumers_reports" action="OperateReports.showConsumerReport" text="消费者的资金明细"
+                    permission="CONSUMERS_REPORT"/>
+        </navigation>
+        <navigation key="resales" text="分销商" permission="RESALES_REPORT">
+            <navigation key="resales_reports" action="OperateReports.showResaleReport" text="分销商的资金明细"
+                        permission="RESALES_REPORT"/>
+        </navigation>
+        <navigation key="websites" text="优惠啦佣金账户" permission="WEBSITES_REPORT">
+            <navigation key="websites_reports" action="OperateReports.showWebsiteReport" text="优惠啦佣金账户的资金明细"
+                        permission="WEBSITES_REPORT"/>
+        </navigation>
+        <navigation key="platforms" text="券平台佣金账户" permission="PLATFORMS_REPORT">
+            <navigation key="platforms_reports" action="OperateReports.showPlatformReport" text="券平台佣金账户的资金明细"
+                        permission="PLATFORMS_REPORT"/>
+        </navigation>
+        <navigation key="incomings" text="收款账户" permission="INCOMINGS_REPORT">
+            <navigation key="incomings_reports" action="OperateReports.showIncomingReport" text="收款账户的资金明细"
+                        permission="INCOMINGS_REPORT"/>
         </navigation>
     </navigation>
 </application>

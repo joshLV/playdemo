@@ -1,15 +1,19 @@
 package models.accounts;
 
 import models.accounts.util.SerialNumberUtil;
-import org.apache.commons.lang.time.DateUtils;
-
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
-import play.modules.paginate.ModelPaginator;
 
-import javax.persistence.*;
-
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,6 +65,21 @@ public class AccountSequence extends Model {
 
     public String remark;                       //备注
 
+    @Transient
+    public String orderNumber;                  //订单号
+
+    @Transient
+    public String accountName;                  //账号名称
+
+    @Transient
+    public String payMethod;                    //订单支付方式
+
+    @Transient
+    public String supplierName;                 //商户名称
+
+    @Transient
+    public String platform;                     //平台
+
     public AccountSequence() {
 
     }
@@ -81,7 +100,6 @@ public class AccountSequence extends Model {
         this.createdAt = new Date();
         this.serialNumber = SerialNumberUtil.generateSerialNumber(this.createdAt);
         this.remark = null;
-
     }
 
     public static JPAExtPaginator<AccountSequence> findByAccount(AccountSequenceCondition condition, int pageNumber, int pageSize) {
@@ -92,25 +110,36 @@ public class AccountSequence extends Model {
         page.setPageSize(pageSize);
         return page;
     }
-    
-    public static Map<AccountSequenceFlag, Object[]> summaryReport(Account account){
+
+    public static AccountSequenceSummary findSummaryByCondition(AccountSequenceCondition condition) {
         EntityManager entityManager = JPA.em();
-        
+        Query query = entityManager.createQuery("SELECT a.sequenceFlag, count(a.sequenceFlag), " +
+                "sum(a.amount) FROM AccountSequence a  WHERE "+condition.getFilter()+" group by a.sequenceFlag");
+        for (String key : condition.getParams().keySet()) {
+            query.setParameter(key,condition.getParams().get(key));
+        }
+        List<Object[]> result = query.getResultList();
+        return new AccountSequenceSummary(result);
+    }
+
+    public static Map<AccountSequenceFlag, Object[]> summaryReport(Account account) {
+        EntityManager entityManager = JPA.em();
+
         Query query = entityManager.createQuery("SELECT a.sequenceFlag, count(a.sequenceFlag), sum(a.amount) FROM AccountSequence a  WHERE a.account = :account group by a.sequenceFlag");
         query.setParameter("account", account);
         List<Object[]> list = query.getResultList();
-        
+
         Map<AccountSequenceFlag, Object[]> result = new HashMap<>();
-        for(Object[] ls : list){
-            result.put((AccountSequenceFlag)ls[0], ls);
+        for (Object[] ls : list) {
+            result.put((AccountSequenceFlag) ls[0], ls);
         }
-        if(result.get(AccountSequenceFlag.VOSTRO) == null){
+        if (result.get(AccountSequenceFlag.VOSTRO) == null) {
             result.put(AccountSequenceFlag.VOSTRO, new Object[]{AccountSequenceFlag.VOSTRO, 0, 0});
         }
-        if(result.get(AccountSequenceFlag.NOSTRO) == null){
+        if (result.get(AccountSequenceFlag.NOSTRO) == null) {
             result.put(AccountSequenceFlag.NOSTRO, new Object[]{AccountSequenceFlag.NOSTRO, 0, 0});
         }
-        
-       return result;
+
+        return result;
     }
 }

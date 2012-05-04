@@ -117,6 +117,12 @@ order.PAID=已付款
 order.CANCELED=交易关闭
 order.SENT=已发货
 
+#订单支付方式
+order.payMethod.alipay=支付宝
+order.payMethod.kuaiqian=快钱
+order.payMethod.tenpay=财付通
+order.payMethod.null=
+
 #券状态
 coupon.DEALING=处理中
 coupon.CONSUMED=已消费
@@ -137,3 +143,13 @@ order.CONSUMER=个人
 order.RESALER=分销商
 order.deliveryCompany=物流公司
 order.deliveryNo=物流单号
+
+account_sequence.CHARGE=充值
+account_sequence.WITHDRAW=提现
+account_sequence.PAY=支付
+account_sequence.REFUND=交易退款
+account_sequence.CANCEL=交易取消
+account_sequence.RECEIVE=收款
+
+platform.CONSUMER=优惠啦网站
+platform.RESALER=分销网

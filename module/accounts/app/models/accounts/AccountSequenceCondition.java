@@ -1,5 +1,6 @@
 package models.accounts;
 
+import com.uhuila.common.util.DateUtil;
 import org.apache.commons.lang.time.DateUtils;
 
 import java.io.Serializable;
@@ -21,13 +22,22 @@ public class AccountSequenceCondition implements Serializable {
     public AccountSequenceType sequenceType;    //资金变动类型
     public Date createdAtBegin;
     public Date createdAtEnd;
+    public String interval;
+
+    //用于保存界面的查询条件
+    public String accountName;
 
     private Map<String, Object> params = new HashMap<>();
 
     public String getFilter() {
         StringBuilder filter = new StringBuilder();
         boolean hasCond = false;
-        if (account != null) {
+        if (account != null && account.accountType != null && account.id == null) {
+            appendAndIfNeeded(filter, hasCond);
+            filter.append("account.accountType =:accountType ");
+            params.put("accountType", account.accountType);
+            hasCond = true;
+        } else if (account != null && account.id != null) {
             appendAndIfNeeded(filter, hasCond);
             filter.append("account =:account");
             params.put("account", account);
@@ -46,7 +56,7 @@ public class AccountSequenceCondition implements Serializable {
         if (createdAtEnd != null) {
             appendAndIfNeeded(filter, hasCond);
             filter.append("createdAt <=:createdAtEnd");
-            params.put("createdAtEnd", createdAtEnd);
+            params.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
             hasCond = true;
         }
         if (sequenceFlag != null) {
