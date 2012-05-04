@@ -88,3 +88,31 @@ table{ border-collapse:collapse}
       display: none;
       z-index: 5;
  }
+.pay_2_6 {
+    padding-left:5px;
+    float:left;
+}
+.pay_2_6 input, .pay_2_6 img {
+    float:left;
+}
+.pay_2_6 li {
+    width:175px;
+    float:left;
+    height:32px;
+    line-height:32px;
+    margin-top:10px;
+    vertical-align:middle;
+}
+.pay_2_6 li {
+}
+.pay_2_6 input {
+    float:left;
+    margin:5px 5px 0px 0px;
+    display:inline;
+}
+.pay_2_6 input.inputtxt {
+    margin:0px;
+}
+.pay_2_6 img {
+    border:1px solid #ddd;
+}

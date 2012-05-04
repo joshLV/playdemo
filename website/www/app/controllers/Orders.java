@@ -120,7 +120,7 @@ public class Orders extends Controller {
 
 
         if (containsElectronic) {
-            Validation.required("mobile", mobile);
+//            Validation.required("mobile", mobile);
             Validation.match("mobile", mobile, "^1[3|4|5|8][0-9]\\d{4,8}$");
         }
 
