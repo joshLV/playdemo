@@ -126,7 +126,7 @@ public class PaymentInfo extends Controller {
 			} catch (UnsupportedEncodingException e) {
 				error(500,"no such order");
 			}
-		} else 	 if ("tenpay".equals(paymentCode)) {
+		} else if ("tenpay".equals(paymentCode)) {
 			form = alipayPaymentFlow.generateForm(order);
 			render(form);
 		}

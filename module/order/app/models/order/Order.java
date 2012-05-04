@@ -351,7 +351,7 @@ public class Order extends Model {
 							mail.setFullName(orderItem.order.getUser().userInfo.fullName);
 						}
 					}
-
+					System.out.println(couponCodes+"@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 					mail.setCoupons(couponCodes);
 					MailUtil.send(mail);
 				}
