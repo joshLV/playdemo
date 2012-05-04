@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.List;
+import models.cms.Block;
 import models.sales.Area;
 import models.sales.Category;
 import play.mvc.Controller;
@@ -38,8 +39,14 @@ public class Home extends Controller {
         //前n个商圈
         List<Area> areas = Area.findTopAreas(12);
         List<Category> categories = Category.findTop(8);
-
         renderArgs.put("categoryId", categoryId);
+        
+        // CMS 区块
+        List<Block> slides = Block.all().fetch();
+        List<Block> topSales = Block.all().fetch();
+        renderArgs.put("slides", slides);
+        renderArgs.put("topSales", topSales);
+
         render(goodsList, recentGoodsList, recommendGoodsList, categories, districts, areas);
     }
 }

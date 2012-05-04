@@ -26,7 +26,7 @@ import play.db.jpa.Model;
 public class SupplierNavigation extends Model {
 
     public String name;
-    
+
     public String text;
 
     public String description;
@@ -34,23 +34,23 @@ public class SupplierNavigation extends Model {
     public String action;
 
     public String url;
-    
+
     public String labels;
-    
+
     public boolean actived;
-    
+
     /**
      * 用于生成Dev环境的topMenu及navigation时使用的baseUrl，如http://localhost:8080
      */
     @Column(name="dev_base_url")
     public String devBaseUrl;
-    
+
     /**
      * 用于生成Prod环境的topMenu及navigation时使用的baseUrl，如http://admin.uhuila.net
      */
     @Column(name="prod_base_url")
     public String prodBaseUrl;
-    
+
     @OrderColumn(name="display_order")
     public Integer displayOrder;
 
@@ -64,14 +64,14 @@ public class SupplierNavigation extends Model {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, targetEntity = SupplierNavigation.class)
     @OrderBy("displayOrder")
     public List<SupplierNavigation> children;
-    
-    
+
+
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinTable(name = "supplier_navigations_permissions", 
-        inverseJoinColumns = @JoinColumn(name= "permission_id"), 
+    @JoinTable(name = "supplier_navigations_permissions",
+        inverseJoinColumns = @JoinColumn(name= "permission_id"),
         joinColumns = @JoinColumn(name = "navigation_id"))
-    public Set<SupplierPermission> permissions;    
-    
+    public Set<SupplierPermission> permissions;
+
 
     public boolean hasLink() {
         return url != null || action != null;
@@ -99,23 +99,23 @@ public class SupplierNavigation extends Model {
      */
     public static void deleteUndefinedNavigation(String applicationName, long loadVersion) {
         List<SupplierNavigation> list = SupplierNavigation.find(
-                "select s from SupplierNavigation s where s.applicationName=? and s.loadVersion <> ?  order by parent DESC, id DESC", 
+                "select s from SupplierNavigation s where s.applicationName=? and s.loadVersion <> ?  order by parent DESC, id DESC",
                 applicationName, loadVersion).fetch();
         for (SupplierNavigation nav : list) {
             nav.delete();
         }
     }
-    
+
     /**
      * 得到所有子系统拼接在一起的顶级菜单.
      * @return
      */
     public static List<SupplierNavigation> getTopNavigations() {
-        Query q = em().createQuery(  
+        Query q = em().createQuery(
                 "select n from SupplierNavigation n where n.parent is null order by displayOrder");
         return q.getResultList();
     }
-    
+
     /**
      * 给定一个菜单名，查出所有上级菜单的序列。
      * 如: main => child => subchild
@@ -123,7 +123,7 @@ public class SupplierNavigation extends Model {
      * @return
      */
     public static List<SupplierNavigation> getNavigationParentStack(String applicationName, String currentMenuName) {
-        
+
         if (currentMenuName == null) {
             // throw new IllegalAccessError("必须在Controller中定义 @ActiveNavigation 。");
             return null;
@@ -131,36 +131,36 @@ public class SupplierNavigation extends Model {
         Stack<SupplierNavigation> stack = new Stack<>();
 
         SupplierNavigation nav = SupplierNavigation.find("byApplicationNameAndName", applicationName, currentMenuName).first();
-        
+
         if (nav == null) {
             return Collections.emptyList();
         }
-        
+
         while(nav != null) {
             stack.push(nav);
             nav = nav.parent;
         }
-        
+
         List<SupplierNavigation> parentStackList = new ArrayList<>();
         while (!stack.isEmpty()) {
             parentStackList.add(stack.pop());
         }
-        
+
         return parentStackList;
     }
-    
+
     public static List<SupplierNavigation> getSecondLevelNavigations(String applicationName, String navName) {
         List<SupplierNavigation> parentStack = getNavigationParentStack(applicationName, navName);
-        
-        if (parentStack == null || parentStack.size() < 2) {
+
+        if (parentStack == null || parentStack.size() < 1) {
             return Collections.emptyList();
         }
-        
+
         SupplierNavigation topMenu = parentStack.get(0);
 
         return topMenu.children;
-    }      
-    
+    }
+
     public static SupplierNavigation findByName(String key) {
         return SupplierNavigation.find("byName", key).first();
     }

@@ -21,6 +21,8 @@ public class Images extends Controller {
     public static final String LARGE = "large";
     public static final String TINY = "tiny";
     public static final String LOGO = "logo";
+    
+    public static final String SLIDE = "slide";
 
     private static final Pattern targetImagePattern = Pattern.compile("^([^_]+)_([a-z0-9]+).(jpg|png|gif|jpeg)$");
     private static final String IMAGE_ROOT_ORIGINAL = play.Play
@@ -75,6 +77,10 @@ public class Images extends Controller {
             width = 300;
             height = 180;
             imageSizeType = LOGO;
+        } else if (imageName.contains(SLIDE)) {
+            width = 478;
+            height = 218;
+            imageSizeType = SLIDE;
         } else {
             notFound();
         }

@@ -5,7 +5,17 @@ class:'span2'}
 #{/layout_operate.selectField}
 #{layout_operate.textField name:'block.title', value:block?.title, required:true/}
 #{layout_operate.textField name:'block.link', value:block?.title, required:true/}
-#{layout_operate.textField name:'block.imageUrl', value:block?.title, required:true/}
+#{if "add".equals(action)}
+    #{layout_operate.fileField name:'image', required:true/}
+#{/if}
+#{else}
+    #{layout_operate.fileField name:'image'/}
+<div class="control-group">
+    <label for='levelPrices_${level}' class="control-label"> </label>
+
+    <div class="controls">(修改前)<br/><img src="${block.getShowImageUrlMiddle()}"/></div>
+</div>
+#{/else}
 #{layout_operate.textField name:'block.displayOrder', value:block?.displayOrder, required:true/}
 #{layout_operate.htmlField name:'block.content', value:block?.content, required:true/}
 #{layout_operate.dateScopeField name:'block.effective', begin:'block.effectiveAt',end:'block.expireAt',

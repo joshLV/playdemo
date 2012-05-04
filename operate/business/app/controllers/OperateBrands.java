@@ -140,7 +140,6 @@ public class OperateBrands extends Controller {
             Validation.clear();
         }
 
-
         checkImageFile(logoImage);
         if (Validation.hasErrors()) {
             List<Supplier> supplierList = Supplier.findUnDeleted();

@@ -9,9 +9,11 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
+import play.Play;
 import play.data.validation.InFuture;
 import play.data.validation.MaxSize;
 import play.data.validation.MinSize;
@@ -19,28 +21,32 @@ import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
 import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.constants.PlatformType;
+import com.uhuila.common.constants.ImageSize;
+import com.uhuila.common.util.PathUtil;
 
 /**
- * 内容管理系统之内容块定义。 
+ * 内容管理系统之内容块定义。
  * @author <a href="mailto:tangliqun@uhuila.com">唐力群</a>
  */
 @Entity
 @Table(name = "cms_block")
 public class Block extends Model {
-    
+
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
+
+    private static final String IMAGE_SERVER = Play.configuration.getProperty
+            ("image.server", "img0.uhcdn.com");
     
     @Required
     @MinSize(10)
     @MaxSize(60)
     public String title;
-    
+
     public String link;
-    
+
     @Column(name="image_url")
     public String imageUrl;
-    
+
     /**
      * 有效开始日
      */
@@ -48,7 +54,7 @@ public class Block extends Model {
     @Column(name = "effective_at")
     @Temporal(TemporalType.TIMESTAMP)
     public Date effectiveAt;
-    
+
     /**
      * 有效结束日
      */
@@ -66,12 +72,22 @@ public class Block extends Model {
     @Lob
     private String content;
 
-    
+
     @Enumerated(EnumType.STRING)
     public BlockType type;
-    
+
     @Enumerated(EnumType.STRING)
     public DeletedStatus deleted;
+
+    @Transient
+    public String getShowImageUrl() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, ImageSize.SLIDE);
+    }
+    
+    @Transient
+    public String getShowImageUrlMiddle() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, ImageSize.MIDDLE);
+    }
     
     /**
      * 公告内容
@@ -119,5 +135,5 @@ public class Block extends Model {
         oldBlock.title = block.title;
         oldBlock.type = block.type;
         oldBlock.save();
-    }    
+    }
 }

@@ -18,6 +18,9 @@
     <!--<permission key="SHOPS_NEW" text="门店添加"/> -->
     <!--<permission key="SHOPS" text="门店管理"/> -->
 
+    <permission key="BRANDS_NEW" text="品牌添加" roles="admin"/>
+    <permission key="BRANDS" text="品牌管理" roles="admin"/>
+
     <navigation key="goods_app" text="商品管理" action="OperateGoods.index">
         <navigation key="goods" text="商品" permissions="GOODS_NEW,GOODS">
             <navigation key="goods_add" action="OperateGoods.add" text="商品添加" permissions="GOODS_NEW"/>

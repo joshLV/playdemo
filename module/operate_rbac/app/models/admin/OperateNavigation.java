@@ -126,7 +126,8 @@ public class OperateNavigation extends Model {
     public static List<OperateNavigation> getNavigationParentStack(String applicationName, String currentMenuName) {
 
         if (currentMenuName == null) {
-            throw new IllegalAccessError("必须在Controller中定义" + ActiveNavigation.class.getName() + " Annotation。");
+            // throw new IllegalAccessError("必须在Controller中定义" + ActiveNavigation.class.getName() + " Annotation。");
+            return null;
         }
         Stack<OperateNavigation> stack = new Stack<>();
 
@@ -152,7 +153,7 @@ public class OperateNavigation extends Model {
     public static List<OperateNavigation> getSecondLevelNavigations(String applicationName, String navName) {
         List<OperateNavigation> parentStack = getNavigationParentStack(applicationName, navName);
 
-        if (parentStack == null || parentStack.size() < 2) {
+        if (parentStack == null || parentStack.size() < 1) {
             return Collections.emptyList();
         }
 
