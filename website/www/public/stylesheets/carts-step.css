@@ -234,6 +234,7 @@
 }
 .addr-action {
     float: right;
+    margin-right: 360px;
 }
 .addr-action a {
     color: #666;
@@ -303,7 +304,7 @@
 .use-addr .addr-phone-ext {
     width: 70px;
 }
-.use-addr .required {
+.required {
     padding-right: 3px;
     color: #F40;
     line-height: 24px;

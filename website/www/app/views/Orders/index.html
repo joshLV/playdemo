@@ -32,7 +32,7 @@
                 </li>
                 #{/list}
                 <li class="addr-new">
-                    <input type="radio" name="addr" id="addrId_new" />
+                    <input type="radio" name="addr" id="addrId_new" checked />
                     <label for="addrId_new">使用新地址</label>
                 </li>
             </ul>
@@ -72,7 +72,7 @@
 <!-- 电子凭证 SRTAT -->
 <div class="order">
     <h3 class="clearfix"><span>电子凭证 - 订单信息</span></h3>
-    <div class="addr">接收手机：<input class="num_input_bg" type="text" name="mobile" id="ecart_mobile"/><span class="font_red jianju">#{error 'mobile'/}</div>
+    <div class="addr"><span class="required">*</span>接收手机：<input class="num_input_bg" type="text" name="mobile" id="ecart_mobile"/><span class="font_red jianju">#{error 'mobile'/}</div>
     <table class="order-list" border="0" cellpadding="0" cellspacing="0">
         <thead>
             <tr bgcolor="F6F6F6">
@@ -116,134 +116,3 @@
 
 #{/form}
 
-<SCRIPT type=text/javascript>
-
-    //initAddress();
-    //todo
-    if ($.cookie != null && $.cookie('ecart_mobile', 'null') != null) {
-        $("#ecart_mobile_show_span").text($("#ecart_mobile").val());
-        $("#ecart_mobile_show_dd").show();
-        $("#ecart_mobile_update_dd").hide();
-    } else {
-        $("#ecart_mobile_show_dd").hide();
-        $("#ecart_mobile_update_dd").show();
-        $("#ecart_mobile").val("");
-    }
-
-</SCRIPT>
-<script>
-$(function(){
-    $('#J_modifyAddr').click(function(ev){
-        ev.preventDefault();
-        if ($(this).text() == '[修改]') {
-            $(this).text('[关闭]');
-            $('#J_addrAll').show();
-        } else {
-            $(this).text('[修改]');
-            $('#J_addrAll').hide();
-        }
-    });
-
-    // 切换地址
-    $('#J_addrAll ul input').live('click', function(){
-        $('#J_editAddr').hide();
-
-        if ($(this).attr('id') == 'addrId_new') {
-            $('#J_useAddr').show();
-            $('#J_confirm').text('保存并送到这个地址').attr('data-action', 'add-addr');
-        } else {
-            $('#J_useAddr').hide();
-            $('#J_confirm').text('送到这个地址');
-        }
-    });
-
-    // 省市区三级联动
-    new PCAS('addr-prov','addr-city','addr-dist','上海市','市辖区','黄浦区');
-
-    // 删除地址
-    $('.addr-del').live('click', function(ev){
-        ev.preventDefault();
-
-        var addrId = $(this).attr('data-addrid');
-        $(this).append('<div class="addr-del-confirm">您要删除该地址吗？<br><b>确定删除</b> <b>取消</b><img src="http://img.uhcdn.com/images/u/o_jian.png" /></div>');
-
-        $('.addr-del-confirm').click(function(ev){
-            var txt = $(ev.target).text();
-            if (txt == '确定删除') {
-                $.ajax({
-                    url: '/orders/addresses/'+ addrId,
-                    type: 'DELETE',
-                    success: function(){
-                        $('#addr-li-'+ addrId).remove();
-                    }
-                });
-            } else if (txt == '取消') { 
-                $(this).remove();
-            }
-        });
-    });
-
-    // 编辑地址
-    $('.addr-edit').live('click', function(){
-        var addrId = $(this).attr('data-addrid');
-
-        $('#J_addrEditBox').load('/orders/addresses/'+ addrId +'/edit', function(){
-            $('#J_useAddr').hide();
-            $('#J_editAddr').show();
-            $('#J_confirm').text('保存并送到这个地址').attr({'data-action': 'edit-addr', 'data-addrid': addrId});
-        });
-    });
-
-    // 添加地址
-    $('#J_confirm').click(function(ev){
-        ev.preventDefault();
-        if ($(this).text() == '保存并送到这个地址') {
-            if ($(this).attr('data-action') == 'add-addr') {
-                $.ajax({
-                    url: '/orders/addresses/new',
-                    type: 'POST',
-                    data: {
-                        'address.name': $('#J_addrName').val(),
-                        'address.postcode': $('#J_addrPost').val(),
-                        'address.province': $('#J_addrProv').val(),
-                        'address.city': $('#J_addrCity').val(),
-                        'address.district': $('#J_addrDist').val(),
-                        'address.address': $('#J_addrStreet').val(),
-                        'address.mobile': $('#J_addrMobile').val(),
-                        'address.areaCode': $('#J_addrAreaCode').val(),
-                        'address.phoneNumber': $('#J_addrPhoneNum').val(),
-                        'address.phoneExtNumber': $('#J_addrPhoneExt').val(),
-                        'address.isDefault': true
-                    },
-                    success: function (data){
-                       //TODO  console.log(data);
-                    }
-                });
-            } else if ($(this).attr('data-action') == 'edit-addr') {
-                $.ajax({
-                    url: '/orders/addresses/'+ $(this).attr('data-addrid'),
-                    type: 'PUT',
-                    data: {
-                        'address.id': $('#J_addrName2').val(),
-                        'address.name': $('#J_addrName2').val(),
-                        'address.postcode': $('#J_addrPost2').val(),
-                        'address.province': $('#J_addrProv2').val(),
-                        'address.city': $('#J_addrCity2').val(),
-                        'address.district': $('#J_addrDist2').val(),
-                        'address.address': $('#J_addrStreet2').val(),
-                        'address.mobile': $('#J_addrMobile2').val(),
-                        'address.areaCode': $('#J_addrAreaCode2').val(),
-                        'address.phoneNumber': $('#J_addrPhoneNum2').val(),
-                        'address.phoneExtNumber': $('#J_addrPhoneExt2').val(),
-                        'address.isDefault': true
-                    },
-                    success: function (data){
-                       //TODO  console.log(data);
-                    }
-                });
-            }
-        } else if ($(this).text() == '送到这个地址') {
-        }
-    });
-});
-</script>

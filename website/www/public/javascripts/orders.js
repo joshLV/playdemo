@@ -318,3 +318,205 @@ $(window).load(
         });
     }
 );
+
+
+
+$(function(){
+    $('#J_modifyAddr').click(function(ev){
+        ev.preventDefault();
+        if ($(this).text() == '[修改]') {
+            $(this).text('[关闭]');
+            $('#J_addrAll').show();
+        } else {
+            $(this).text('[修改]');
+            $('#J_addrAll').hide();
+            $('#J_useAddr').hide();
+            $('#J_confirm').text('送到这个地址').removeAttr('data-action');
+            $('#J_addrEditBox table').remove();
+        }
+    });
+
+    // 切换地址
+    $('#J_addrAll ul input').live('click', function(){
+        $('#J_editAddr').hide();
+
+        if ($(this).attr('id') == 'addrId_new') {
+            $('#J_useAddr').show();
+            $('#J_confirm').text('保存并送到这个地址').attr('data-action', 'add-addr');
+        } else {
+            $('#J_useAddr').hide();
+            $('#J_confirm').text('送到这个地址');
+        }
+    });
+
+    // 省市区三级联动
+    new PCAS('addr-prov','addr-city','addr-dist','上海市','市辖区','黄浦区');
+
+    // 删除地址
+    $('.addr-del').live('click', function(ev){
+        ev.preventDefault();
+
+        var addrId = $(this).attr('data-addrid');
+        $(this).append('<div class="addr-del-confirm">您要删除该地址吗？<br><b>确定删除</b> <b>取消</b><img src="http://img.uhcdn.com/images/u/o_jian.png" /></div>');
+
+        $('.addr-del-confirm').click(function(ev){
+            var txt = $(ev.target).text();
+            if (txt == '确定删除') {
+                $.ajax({
+                    url: '/orders/addresses/'+ addrId,
+                    type: 'DELETE',
+                    success: function(){
+                        $('#addr-li-'+ addrId).remove();
+                    }
+                });
+            } else if (txt == '取消') { 
+                $(this).remove();
+            }
+        });
+    });
+
+    // 编辑地址
+    $('.addr-edit').live('click', function(){
+        var addrId = $(this).attr('data-addrid');
+
+        $('#J_addrEditBox').load('/orders/addresses/'+ addrId +'/edit', function(){
+            $('#J_useAddr').hide();
+            $('#J_editAddr').show();
+            $('#J_confirm').text('保存并送到这个地址').attr({'data-action': 'edit-addr', 'data-addrid': addrId});
+        });
+    });
+
+    // 添加、修改地址
+    $('#J_confirm').click(function(ev){
+        ev.preventDefault();
+
+        var addrId = $(this).attr('data-addrid');
+
+        if ($(this).text() == '保存并送到这个地址') {
+            if ($(this).attr('data-action') == 'add-addr') {
+
+                var addrName = $('#J_addrName'),
+                    addrPost = $('#J_addrPost'),
+                    addrStreet = $('#J_addrStreet'),
+                    addrMobile = $('#J_addrMobile'),
+                    addrAreaCode = $('#J_addrAreaCode'),
+                    addrPhoneNum = $('#J_addrPhoneNum'),
+                    addrPhoneExt = $('#J_addrPhoneExt');
+                
+                if (addrStreet.val() == '') {
+                    addrStreet.parent().append('<span class="required"> 街道地址不能空！</span>');
+                    return;
+                }
+                if (addrPost.val() == '' || !$.isNumeric(addrPost.val()) || !(addrPost.val().length == 6)) {
+                    addrPost.parent().append('<span class="required"> 邮政编码格式不对！</span>');
+                    return;
+                }
+                if (addrName.val() == '') {
+                    addrName.parent().append('<span class="required"> 收货人不能空！</span>');
+                    return;
+                }
+                if (addrMobile.val() == '' ||　!$.isNumeric(addrMobile.val()) || !(addrMobile.val().length == 11)) {
+                    if (addrAreaCode.val() == '' || addrPhoneNum.val() == '' ) {
+                        addrMobile.parent().children('span').addClass('required');
+                        return;
+                    }
+                }
+                $.ajax({
+                    url: '/orders/addresses/new',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        'address.name': addrName.val(),
+                        'address.postcode': addrPost.val(),
+                        'address.province': $('#J_addrProv').val(),
+                        'address.city': $('#J_addrCity').val(),
+                        'address.district': $('#J_addrDist').val(),
+                        'address.address': addrStreet.val(),
+                        'address.mobile': addrMobile.val(),
+                        'address.areaCode': addrAreaCode.val(),
+                        'address.phoneNumber': addrPhoneNum.val(),
+                        'address.phoneExtNumber': addrPhoneExt.val(),
+                        'address.isDefault': true
+                    },
+                    success: function (data){
+                        $('#J_addrCurrent').html( data.fullAddress +' ('+ data.name +' 收) <em>'+ data.mobile +'</em>' );
+                        $('#J_modifyAddr').text('[修改]');
+                        $('#J_addrAll').hide();
+
+                        $('#J_addrAll ul').prepend('<li class="clearfix" id="addr-li-'+ data.id +'">'
+                            +'<span class="addr-one">'
+                                +'<input type="radio" name="addr" checked id="addrId_'+ data.id +'" value="'+ data.id +'" />'
+                                +'<label for="addrId_'+ data.id +'}"> '+ data.fullAddress +' ('+ data.name +' 收) <em>'+ data.mobile +'</em></label>'
+                            +'</span>'
+                            +'<span class="addr-action"><a class="addr-edit" data-addrid="'+ data.id +'" href="#">编辑</a> <a class="addr-del" data-addrid="'+ data.id +'" href="#">删除</a></span>'
+                        +'</li>');
+                    }
+                });
+
+            } else if ($(this).attr('data-action') == 'edit-addr') {
+
+                var addrName = $('#J_addrName2'),
+                    addrPost = $('#J_addrPost2'),
+                    addrStreet = $('#J_addrStreet2'),
+                    addrMobile = $('#J_addrMobile2'),
+                    addrAreaCode = $('#J_addrAreaCode2'),
+                    addrPhoneNum = $('#J_addrPhoneNum2'),
+                    addrPhoneExt = $('#J_addrPhoneExt2');
+                
+                if (addrStreet.val() == '') {
+                    addrStreet.parent().append('<span class="required"> 街道地址不能空！</span>');
+                    return;
+                }
+                if (addrPost.val() == '' || !$.isNumeric(addrPost.val()) || !(addrPost.val().length == 6)) {
+                    addrPost.parent().append('<span class="required"> 邮政编码格式不对！</span>');
+                    return;
+                }
+                if (addrName.val() == '') {
+                    addrName.parent().append('<span class="required"> 收货人不能空！</span>');
+                    return;
+                }
+                if (addrMobile.val() == '' ||　!$.isNumeric(addrMobile.val()) || !(addrMobile.val().length == 11)) {
+                    if (addrAreaCode.val() == '' || addrPhoneNum.val() == '' ) {
+                        addrMobile.parent().children('span').addClass('required');
+                        return;
+                    }
+                }
+                $.ajax({
+                    url: '/orders/addresses/'+ addrId,
+                    type: 'PUT',
+                    data: {
+                        'address.id': addrId,
+                        'address.name': $('#J_addrName2').val(),
+                        'address.postcode': $('#J_addrPost2').val(),
+                        'address.province': $('#J_addrProv2').val(),
+                        'address.city': $('#J_addrCity2').val(),
+                        'address.district': $('#J_addrDist2').val(),
+                        'address.address': $('#J_addrStreet2').val(),
+                        'address.mobile': $('#J_addrMobile2').val(),
+                        'address.areaCode': $('#J_addrAreaCode2').val(),
+                        'address.phoneNumber': $('#J_addrPhoneNum2').val(),
+                        'address.phoneExtNumber': $('#J_addrPhoneExt2').val(),
+                        'address.isDefault': true
+                    },
+                    success: function (data){
+                        $('#J_addrCurrent').html(data);
+                        $('#J_modifyAddr').text('[修改]');
+                        $('#J_addrAll').hide();
+                        $('#J_addrAll label[for="addrId_'+ addrId +'"]').html(data);
+                        $('#J_addrAll input:checked').removeAttr('checked');
+                        $('#addrId_'+ addrId).attr('checked', 'checked');
+                        $('#J_addrEditBox table').remove();
+                        $('#J_confirm').text('送到这个地址').removeAttr('data-action');
+                    }
+                });
+            }
+        } else if ($(this).text() == '送到这个地址') {
+            $('#addressId').val(addrId);
+            $('#J_modifyAddr').text('[修改]');
+            $('#J_addrAll').hide();
+            var checkedId = $('#J_addrAll input:checked').attr('id'),
+                checkHTML = $('#J_addrAll label[for="'+ checkedId +'"]').html();
+            $('#J_addrCurrent').html(checkHTML);
+        }
+    });
+});

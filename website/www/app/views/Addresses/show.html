@@ -1,4 +1,6 @@
-<li>
-    <input type="radio" checked="checked" name="addr" id="addrId_${address?.id}" value="${address?.id}" />
-    <label for="addrId_${address?.id}">${address?.fullAddress} (${address?.name} 收) <em>${address.mobile}</em></label>
-</li>
+{
+    "id": ${address?.id},
+    "fullAddress": "${address?.fullAddress}",
+    "name": "${address?.name}",
+    "mobile": "${address?.mobile}"
+}
