@@ -1,0 +1,172 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'商户的资金明细' /}
+#{include '/share/nav.html' /}
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript" charset="utf-8">
+    $(window).load(function () {
+
+        $("[start]").each(function () {
+            $(this).click(function () {
+                if ($(this).parent().attr("class") == 'active') {
+                    return false;
+                }
+                var tomorrow = new Date();
+                var startDay = new Date();
+
+                tomorrow.setDate(tomorrow.getDate() + 1)
+
+                var interval = $(this).attr("start");
+                var sig = interval.charAt(interval.length - 1);
+                var count = parseInt(interval.substring(0, interval.length - 1));
+                if (sig == 'd') {
+                    startDay.setDate(startDay.getDate() - count);
+                } else if (sig == 'm') {
+                    startDay.setMonth(startDay.getMonth() - count);
+                } else if (sig == 'y') {
+                    startDay.setFullYear(startDay.getFullYear() - count);
+                }
+
+                $("#condition_begin").val(startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate());
+                $("#condition_end").val(tomorrow.getFullYear() + "-" + (tomorrow.getMonth() + 1) + "-" + tomorrow.getDate());
+                $("#condition_interval").val(interval);
+                $("#search_form").submit();
+                return false;
+            });
+        });
+
+    });
+</script>
+#{/set}
+
+#{set 'moreStyles'}
+<style type="text/css">
+    .form-inline ul {
+        display: inline-block;
+        margin-bottom: -15px;
+    }
+
+    .nav-tabs {
+        margin-bottom: 0px;
+    }
+
+    .tab-content {
+        border-left: 1px solid #DDD;
+        border-right: 1px solid #DDD;
+        border-bottom: 1px solid #DDD;
+        clear: both;
+    }
+
+    .tab-content .binary {
+        width: 40%;
+        float: left;
+        text-align: center;
+        margin: 5px 1%;
+    }
+
+    .seq {
+        margin-top: 20px;
+    }
+
+    .alert {
+        margin-bottom: 0px;
+    }
+
+    .seq thead tr :first {
+        background-color: #f5f5f5;
+    }
+
+    footer {
+        margin-top: 20px;
+    }
+</style>
+#{/set}
+
+<div class="body">
+    <form class="well form-inline" action="@{OperateReports.showSupplierReport()}" method="GET" id="form" name="form">
+        账户
+        <input type="text" name="condition.accountName" value="${condition.accountName}">
+        起止日期
+        <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
+               onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
+        <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
+               onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
+        <label class="control-label">交易类型:</label>
+    #{select 'condition.sequenceType', value:condition.sequenceType, id:'condition_sequenceType',
+    class:"input-small"}
+        #{option ""}不限#{/option}
+        #{option "CHARGE"}&{'account_sequence.CHARGE'}#{/option}
+        #{option "WITHDRAW"}&{'account_sequence.WITHDRAW'}#{/option}
+        #{option "PAY"}&{'account_sequence.PAY'}#{/option}
+        #{option "REFUND"}&{'account_sequence.REFUND'}#{/option}
+        #{option "CANCEL"}&{'account_sequence.CANCEL'}#{/option}
+        #{option "RECEIVE"}&{'account_sequence.RECEIVE'}#{/option}
+    #{/select}
+        <button type="submit" class="btn btn-primary">搜索</button>
+        <ul class="nav nav-pills">
+            <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">今天</a></li>
+            <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
+            <li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>
+            <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
+            <li #{if condition.interval=='1y'} class="active" #{/if}  ><a start="1y" href="#">1年内</a></li>
+        </ul>
+        <input type="hidden" id="condition_interval" name="condition.interval"/>
+    </form>
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#">统计金额</a></li>
+    *{<li><a href="#">下载查询结果</a></li>}*
+    </ul>
+    <div class="tab-content" style="margin-bottom: 10px">
+        <div class="alert alert-success binary">
+            一共支出 ${summary.nostroCount} 笔 / ${summary.nostroAmount} 元
+        </div>
+        <div class="alert alert-info binary" style="float:right">
+            一共收入 ${summary.vostroCount} 笔 / ${summary.vostroAmount} 元
+        </div>
+    </div>
+
+#{vx.tab name:'account_sequence',enumItems: models.accounts.AccountSequenceType,
+select:'condition_sequenceType',value:condition.sequenceType,form:'form'/}
+    <div class="tab-content">
+        <table class="table table-striped seq">
+            <tr>
+                <th>流水号</th>
+                <th>时间</th>
+                <th>账号</th>
+                <th>公司名称</th>
+                <th>余额</th>
+                <th>名称/备注</th>
+                <th>支出</th>
+                <th>收入</th>
+                <th>支付方式</th>
+            </tr>
+        #{paginate.list items:accountSequencePage, as:'accountSequence'}
+            <tr>
+                <td>${accountSequence.serialNumber}</td>
+                <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${accountSequence.accountName}</td>
+                <td>${accountSequence.supplierName}</td>
+                <td>${accountSequence.amount?.formatCurrency('CNY')}</td>
+                <td>${accountSequence.remark}#{if accountSequence.sequenceType.isOrder()}
+                    <br/>订单号：<a href="/orders/${accountSequence.orderId}" target="_blank">${accountSequence
+                .orderNumber}</a>#{/if}</td>
+                <td>#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
+                    <div class="alert alert-success">${accountSequence.cashAmount.add(accountSequence
+                    .uncashAmount)?.formatCurrency('CNY')}</div>#{/if}</td>
+                <td>#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
+                    <div class="alert alert-info">${accountSequence.cashAmount.add(accountSequence.uncashAmount)?.formatCurrency('CNY')}</div>#{/if}</td>
+
+                <td>&{'order.payMethod.'+accountSequence.payMethod}</td>
+            </tr>
+        #{/paginate.list}
+        </table>
+    </div>
+    <div class="pagination">
+        <ul>
+        #{paginate.controls items:accountSequencePage /}
+        </ul>
+    </div>
+
+</div>
