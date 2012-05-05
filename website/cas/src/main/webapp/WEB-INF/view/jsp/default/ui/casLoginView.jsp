@@ -60,6 +60,21 @@
                                 <form:password  cssErrorClass="error" id="password" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
                             </div>
                         </li>
+
+                                <c:if test="${not empty count && count >= 3}">
+                        <li class="field">
+                            <div class="input2">
+                                <label>验证码：</label> 
+                                   <input name="j_captcha_response" type="text">
+                            </div>
+                        </li>
+                        <li class="field">
+                            <div class="input2">
+                                <label></label> 
+                                   <img src="captcha">
+                            </div>
+                        </li>
+                                </c:if>                        
                         <li class="submit-field">
                         <input type="hidden" name="lt" value="${loginTicket}" />
                         <input type="hidden" name="execution" value="${flowExecutionKey}" />

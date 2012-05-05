@@ -103,6 +103,8 @@
 				<prop key="/openid/*">openIdProviderController</prop>
                 <prop key="/authorizationFailure.html">passThroughController</prop>
                 <prop key="/403.html">passThroughController</prop>
+                
+                <prop key="/captcha">captchaImageCreateController</prop>
 			</props>
 		</property>
 		<property
@@ -260,4 +262,18 @@
 
     <bean id="credentialsValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"
             p:messageInterpolator-ref="messageInterpolator" />
+            
+
+    <bean id="jcaptchaService"  class="org.jasig.cas.captcha.DefaultManageableImageCaptchaService"/>
+
+    <bean id="captchaErrorCountAction" class="org.jasig.cas.captcha.CaptchaErrorCountAction"/>
+     
+    <bean id="captchaValidateAction" class="org.jasig.cas.captcha.CaptchaValidateAction"
+       p:jcaptchaService-ref="jcaptchaService"
+       p:captchaValidationParameter="j_captcha_response"/>
+    
+     
+    <bean id="captchaImageCreateController"  class="org.jasig.cas.captcha.CaptchaImageCreateController">
+       <property name="jcaptchaService" ref="jcaptchaService"/>
+    </bean>            
 </beans>

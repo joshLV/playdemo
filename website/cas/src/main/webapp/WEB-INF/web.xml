@@ -136,6 +136,11 @@
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
 
+    <servlet-mapping>
+       <servlet-name>cas</servlet-name>
+       <url-pattern>/captcha</url-pattern>
+    </servlet-mapping>
+
 	<servlet-mapping>
 		<servlet-name>cas</servlet-name>
 		<url-pattern>/logout</url-pattern>

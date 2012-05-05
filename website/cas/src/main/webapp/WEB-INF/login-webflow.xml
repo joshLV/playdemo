@@ -14,7 +14,7 @@
 	</decision-state>
     
 	<decision-state id="gatewayRequestCheck">
-		<if test="externalContext.requestParameterMap['gateway'] neq '' &amp;&amp; externalContext.requestParameterMap['gateway'] neq null &amp;&amp; flowScope.service neq null" then="gatewayServicesManagementCheck" else="generateLoginTicket" />
+		<if test="externalContext.requestParameterMap['gateway'] neq '' &amp;&amp; externalContext.requestParameterMap['gateway'] neq null &amp;&amp; flowScope.service neq null" then="gatewayServicesManagementCheck" else="errorCount" />
 	</decision-state>
 	
 	<decision-state id="hasServiceCheck">
@@ -22,7 +22,7 @@
 	</decision-state>
 	
 	<decision-state id="renewRequestCheck">
-		<if test="externalContext.requestParameterMap['renew'] neq '' &amp;&amp; externalContext.requestParameterMap['renew'] neq null" then="generateLoginTicket" else="generateServiceTicket" />
+		<if test="externalContext.requestParameterMap['renew'] neq '' &amp;&amp; externalContext.requestParameterMap['renew'] neq null" then="errorCount" else="generateServiceTicket" />
 	</decision-state>
 	
 	<!-- 
@@ -32,7 +32,11 @@
 	<decision-state id="warn">
 		<if test="flowScope.warnCookieValue" then="showWarningView" else="redirect" />
 	</decision-state>
-	
+    	
+    <decision-state id="captchaCheck">
+       <if test="flowScope.count != null &amp;&amp; flowScope.count >= 3" then="captchaValidate" else="sendTicketGrantingTicket"/>
+    </decision-state>
+    
 	<!-- 
 	<action-state id="startAuthenticate">
 		<action bean="x509Check" />
@@ -40,12 +44,25 @@
 		<transition on="warn" to="warn" />
 		<transition on="error" to="generateLoginTicket" />
 	</action-state>
-	 -->
    
 	<action-state id="generateLoginTicket">
         <evaluate expression="generateLoginTicketAction.generate(flowRequestContext)" />
 		<transition on="generated" to="viewLoginForm" />
 	</action-state>
+	 -->
+     
+    
+    <action-state id="captchaValidate">
+       <evaluate expression="captchaValidateAction" />
+       <transition on="success" to="sendTicketGrantingTicket" />
+       <transition on="error" to="errorCount" />
+    </action-state>
+    
+    
+    <action-state id="errorCount">
+       <evaluate expression="captchaErrorCountAction" />
+       <transition on="success" to="viewLoginForm" />
+    </action-state>    
     
 	<view-state id="viewLoginForm" view="casLoginView" model="credentials">
         <binder>
@@ -63,10 +80,10 @@
 	<action-state id="realSubmit">
         <evaluate expression="authenticationViaFormAction.submit(flowRequestContext, flowScope.credentials, messageContext)" />
 		<transition on="warn" to="warn" />
-		<transition on="success" to="sendTicketGrantingTicket" />
-		<transition on="error" to="generateLoginTicket" />
+		<transition on="success" to="captchaCheck" />
+		<transition on="error" to="errorCount" />
 	</action-state>
-	
+    	
 	<action-state id="sendTicketGrantingTicket">
         <evaluate expression="sendTicketGrantingTicketAction" />
 		<transition to="serviceCheck" />
@@ -79,7 +96,7 @@
 	<action-state id="generateServiceTicket">
         <evaluate expression="generateServiceTicketAction" />
 		<transition on="success" to ="warn" />
-		<transition on="error" to="generateLoginTicket" />
+		<transition on="error" to="errorCount" />
 		<transition on="gateway" to="gatewayServicesManagementCheck" />
 	</action-state>
 
