@@ -1,28 +1,24 @@
 package controllers;
 
-import com.uhuila.common.util.FileUploadUtil;
-import com.uhuila.common.util.RadomNumberUtil;
-
+import static play.Logger.warn;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
-
 import play.Play;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static play.Logger.warn;
+import com.uhuila.common.util.FileUploadUtil;
+import com.uhuila.common.util.RandomNumberUtil;
 
 /**
  * 商户管理的控制器.
@@ -61,7 +57,7 @@ public class Suppliers extends Controller {
 
         checkItems(supplier);
         //随机产生6位数字密码
-        String password = RadomNumberUtil.generateSerialNumber(6);
+        String password = RandomNumberUtil.generateSerialNumber(6);
         admin.encryptedPassword = password;
         admin.confirmPassword = password;
 
