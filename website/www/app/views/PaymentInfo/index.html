@@ -2,6 +2,7 @@
 #{set title:'优惠啦 - 确认付款' /}
 #{set 'moreStyles'}
 <link href="@@{'/public/stylesheets/payment_info.css'}" rel="stylesheet" type="text/css"/>
+<link href="@@{'/public/stylesheets/carts-step.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/payment_info.js'}"></script>
@@ -24,221 +25,75 @@
     </div>
 </div>
 
-<!--主体内容部分-->
-<div id="wrap_content">
-    <div class="div_step_title">
-        <div class="div_step_text_4">1</div>
-        <div class="div_step_text_1">查看购物车 <span>>></span></div>
+<ol class="buy-step step3 clearfix">
+    <li><span>1</span>查看购物车 <em>>></em></li>
+    <li><span>2</span>确认订单信息 <em>>></em></li>
+    <li class="buy-step-curr"><span>3</span>确认付款 <em>>></em></li>
+    <li><span>4</span>成功提交订单 <em>>></em></li>
+</ol>
 
-        <div class="div_step_3">2</div>
-        <div class="div_step_text_1">确认订单信息<span>>></span></div>
-
-        <div class="div_step_2">3</div>
-        <div class="div_step_text_2">确认付款信息<span class="no_xiuzhen">>></span></div>
-        <div class="div_step_3">4</div>
-        <div class="div_step_text_1">成功提交订单</div>
-    </div>
 #{if order}
-    <div id="pay_mothod_box">
-        #{form @confirm() , id:"confirm_form"}
-
-        <div class="top_bg_fense">
-            <div class="arrow_left"></div>
-            付款方式 <a class="font_blue noral_zhe" href="#">了解详情</a></div>
-        <div class="dottod_line"></div>
-        <div class="zong_box">
-            <div class="table_box" align="center">
-                <table width="960" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE">
-                    <tr>
-                        <td height="72" align="left">
-                            <table width="700" border="0" cellpadding="0" cellspacing="0">
-                                <tr>
-                                    <td height="50">
-                                        <div class="margin_left_26">定金金额：<span
-                                                class="font_red_one">${order.amount}</span>元
-                                        </div>
-                                        <div class="margin_left_26 span_blow">您的账号：${user.loginName}</div>
-                                    </td>
-                                    <td>
-                                        <div class="margin_left_26">共<span class="font_red_one">${goodsNumber}</span>件商品
-                                        </div>
-                                        <div class="margin_left_26 span_blow">可用支付余额：<span
-                                                class="font_red_one">${account.amount}</span>元
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td height="50" align="left">
-                            <div class="top_youhui2">
-                                <input type="checkbox" name="useBalance" id="use_balance" />用余额付款<span
-                                    class="font_red_one font_weigh">${account.amount.min(order.needPay)}</span>元。
-                                #{if account.amount.compareTo(order.needPay) < 0}
-                                    剩余<span
-                                        class="font_red_one font_weigh">${order.amount}</span>元可选择其他付款方式付款。
-                                #{/if}
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td height="75" align="left" valign="bottom">
-                            <div class="top_youhui">
-                                <input type="checkbox" name="checkbox" id="checkbox" disabled="disabled"/>
-                                使用抵用券&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input class="youhui_input" type="text" name="textfield" id="textfield"/>
-                                <a href="#" class="shiyong_bg">使用</a>
-                            </div>
-                            <div class="nate_tishi">提示：多张抵用劵可同时使用，抵用劵一次只能使用一张</div>
-
-                        </td>
-                    </tr>
-
-                *{
-  <tr>
-    <td height="43" bgcolor="#F9F9F9"><table width="930" height="15" border="0" cellpadding="0" cellspacing="0">
-   <tr>
-    <td width="400" align="left"><div class="margin_left_text">说明</div></td>
-    <td width="300" align="center">抵值（元）</td>
-    <td width="233" align="center">使用/取消</td>
-  </tr>
-</table></td>
-  </tr>
-
-  <tr>
-      <td height="43">
-        <table width="930" border="0" cellpadding="0" cellspacing="0">
-            <tr>
-                <td width="400" align="left"><div class="margin_left_text">78888u8888优惠劵</div></td>
-                <td width="300" align="center">Y:35元</td>
-                <td width="233" align="center">
-                    <a href="#"><img src="@{'/public/images/cancel.jpg'}" width="60" height="24" /></a>
-                </td>
-            </tr>
-        </table>
-    </td>
-  </tr>
-  }*
-
-
-                    <tr>
-                        <td height="43" align="center">
-                            <table width="600" border="0" cellpadding="0" cellspacing="0">
-                                <tr>
-                                    <td width="98" align="center"><span class="font_weigh">应付金额</span></td>
-                                    <td width="95" align="center">&nbsp;</td>
-                                    <td width="96" align="center"><span class="font_weigh">抵用劵</span></td>
-                                    <td width="79" align="center">&nbsp;</td>
-                                    <td width="104" align="center"><span class="font_weigh">使用余额</span></td>
-                                    <td width="68" align="center">&nbsp;</td>
-                                    <td width="60" align="center"><span class="font_weigh">还需支付</span></td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td height="43" align="center">
-                            <table width="600" border="0" cellpadding="0" cellspacing="0">
-                                <tr>
-                                    <td width="98" align="center"><span
-                                            class="font_red font_weigh">￥${order.amount}</span></td>
-                                    <td width="95" align="center"><img src="@{'/public/images/add_icon.jpg'}" width="16"
-                                                                       height="12"/></td>
-                                    <td width="96" align="center"><span class="font_red font_weigh">￥0.00</span></td>
-                                    <td width="79" align="center"><img src="@{'/public/images/add_icon.jpg'}" alt=""
-                                                                       width="16" height="12"/></td>
-                                    <td width="104" align="center"><span class="font_red font_weigh">￥0.00</span></td>
-                                    <td width="68" align="center"><img src="@{'/public/images/deng_icon.jpg'}"
-                                                                       width="16" height="12"/></td>
-                                    <td width="60" align="center"><span
-                                            class="font_red font_weigh2">￥${order.amount}</span></td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-        <div>
-            <div class="zhifu_arrow">选择支付方式</div>
-            <div>
-                <div class="zhifubao_pay">
-                    <div class="zhifubao_input">
-                        <input name="paymentSourceCode" type="radio" checked="checked" value="alipay"/>
-                    </div>
-                    <div><img src="@{'/public/images/pay_icon/zhifubao_pay.jpg'}"/></div>
-                     <div class="zhifubao_input">
-                        <input name="paymentSourceCode" type="radio" value="tenpay"/>
-                    </div>
-                    <div><img src="@{'/public/images/tenpay/tenpay.png'}"/></div>
-                </div>
-                <div class="zhifubao_pay">
-                <div> 快钱：
-                <ul class="pay_2_6">
-                    <li><input type="radio" name="paymentSourceCode" value="CMB"/><img src="@{'/public/images/bank/bank_cmb.gif'}"/></li>
-                    <li><input type="radio" name="paymentSourceCode" value="ABC"/><img src="@{'/public/images/bank/bank_abc.gif'}"/></li>
-                    <li><input type="radio" name="paymentSourceCode" value="BCOM"/><img src="@{'/public/images/bank/bank_bcom.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="BEA"/><img src="@{'/public/images/bank/bank_bea.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="BJRCB"/><img src="@{'/public/images/bank/bank_bjrcb.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="BOB"/><img src="@{'/public/images/bank/bank_bob.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="BOC"/><img src="@{'/public/images/bank/bank_boc.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="CBHB"/><img src="@{'/public/images/bank/bank_cbhb.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="CCB"/><img src="@{'/public/images/bank/bank_ccb.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="CEB"/><img src="@{'/public/images/bank/bank_ceb.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="CIB"/><img src="@{'/public/images/bank/bank_cib.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="CITIC"/><img src="@{'/public/images/bank/bank_citic.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="CMBC"/><img src="@{'/public/images/bank/bank_cmbc.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="CZB"/><img src="@{'/public/images/bank/bank_czb.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="GDB"/><img src="@{'/public/images/bank/bank_gdb.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="GZCB"/><img src="@{'/public/images/bank/bank_gzcb.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="GZRCC"/><img src="@{'/public/images/bank/bank_gzrcc.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="HSB"/><img src="@{'/public/images/bank/bank_hsb.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="HXB"/><img src="@{'/public/images/bank/bank_hxb.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="HZB"/><img src="@{'/public/images/bank/bank_hzb.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="ICBC"/><img src="@{'/public/images/bank/bank_icbc.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="NBCB"/><img src="@{'/public/images/bank/bank_nbcb.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="NJCB"/><img src="@{'/public/images/bank/bank_njcb.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="PAB"/><img src="@{'/public/images/bank/bank_pab.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="POST"/><img src="@{'/public/images/bank/bank_post.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="SDB"/><img src="@{'/public/images/bank/bank_sdb.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="SHB"/><img src="@{'/public/images/bank/bank_shb.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="SHRCC"/><img src="@{'/public/images/bank/bank_shrcc.gif'}"/></li>
-                    <li><input type="radio" name="bank" value="SPDB"/><img src="@{'/public/images/bank/bank_spdb.gif'}"/></li>
-                    </ul></div>
-            </div>
-            *{
-                        <ul class="pay_company_ul">
-                        <li class="pay_company">
-                        <div class="pay_input">
-                            <input name="" type="radio" value="" />
-                        </div>
-                        <div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div>
-                        </li>
-                        <li class="pay_company">
-                        <div class="pay_input"><input name="" type="radio" value="" /></div>
-                        <div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div>
-                        </li>
-                        <li class="pay_company">
-                        <div class="pay_input"><input name="" type="radio" value="" /></div>
-                        <div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div>
-                        </li>
-                        <li class="pay_company">
-                        <div class="pay_input"><input name="" type="radio" value="" /></div>
-                        <div><img src="@{'/public/images/pay_icon/gongshang_icon.jpg'}" /></div>
-                        </li>
-                    </ul>
-                    }*
-            </div>
-        </div>
-            <input type="hidden" value="${order.id}" name="orderId"/>
-
-            <div class="buttom_queren"><a class="suc_ok_bg" href="#" id="confirm" >确认订单，付款</a></div>
-        #{/form}
+#{form @confirm() , id:"confirm_form"}
+<div id="balance-pay" class="clearfix">
+    <div id="order-box" class="clearfix">
+        <div class="order-num">共有 ${goodsNumber} 笔订单</div>
+        <div class="pay-num">总金额 <strong>${order.amount}</strong> 元</div>
     </div>
+    <div id="account-box">
+        <div class="account">您的账号：<strong>${user.loginName}</strong></div>
+        <div class="balance">可用余额：<span class="">${account.amount}</span>元</div>
+    </div>
+    <div id="payment">
+        <input type="checkbox" name="useBalance" id="use_balance" /> 用余额付款<span>${account.amount.min(order.needPay)}</span>元。
+        #{if account.amount.compareTo(order.needPay) < 0}
+            剩余 <strong>${order.amount}</strong> 元可选择其他付款方式付款。
+        #{/if}
+    </div>
+    <button id="confirm-pay">确认付款</button>
+</div><!-- #balance-pay END-->
 
-</div>
+<div id="other-pay">
+    <h3>您可以使用其他方式付款</h3>
+    <ul class="zhifu clearfix">
+        <li><input name="paymentSourceCode" type="radio" checked="checked" id="alipay" value="alipay"/> <label for="alipay"><img src="@{'/public/images/pay_icon/zhifubao_pay.jpg'}"/></label></li>
+        <li><input name="paymentSourceCode" type="radio" id="tenpay" value="tenpay"/> <label for="tenpay"><img src="@{'/public/images/tenpay/tenpay.png'}"/></label></li>
+    </ul>
+    <h4>快钱：</h4>
+    <ul class="kuaiqian clearfix">
+        <li><input type="radio" name="paymentSourceCode" id="CMB" value="CMB"/><label for="CMB"><img src="@{'/public/images/bank/bank_cmb.gif'}"/></label></li>
+        <li><input type="radio" name="paymentSourceCode" id="ABC" value="ABC"/><label for="ABC"><img src="@{'/public/images/bank/bank_abc.gif'}"/></label></li>
+        <li><input type="radio" name="paymentSourceCode" id="BCOM" value="BCOM"/><label for="BCOM"><img src="@{'/public/images/bank/bank_bcom.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="BEA" value="BEA"/><label for="BEA"><img src="@{'/public/images/bank/bank_bea.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="BJRCB" value="BJRCB"/><label for="BJRCB"><img src="@{'/public/images/bank/bank_bjrcb.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="BOB" value="BOB"/><label for="BOB"><img src="@{'/public/images/bank/bank_bob.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="BOC" value="BOC"/><label for="BOC"><img src="@{'/public/images/bank/bank_boc.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="CBHB" value="CBHB"/><label for="CBHB"><img src="@{'/public/images/bank/bank_cbhb.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="CCB" value="CCB"/><label for="CCB"><img src="@{'/public/images/bank/bank_ccb.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="CEB" value="CEB"/><label for="CEB"><img src="@{'/public/images/bank/bank_ceb.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="CIB" value="CIB"/><label for="CIB"><img src="@{'/public/images/bank/bank_cib.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="CITIC" value="CITIC"/><label for="CITIC"><img src="@{'/public/images/bank/bank_citic.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="CMBC" value="CMBC"/><label for="CMBC"><img src="@{'/public/images/bank/bank_cmbc.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="CZB" value="CZB"/><label for="CZB"><img src="@{'/public/images/bank/bank_czb.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="GDB" value="GDB"/><label for="GDB"><img src="@{'/public/images/bank/bank_gdb.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="GZCB" value="GZCB"/><label for="GZCB"><img src="@{'/public/images/bank/bank_gzcb.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="GZRCC" value="GZRCC"/><label for="GZRCC"><img src="@{'/public/images/bank/bank_gzrcc.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="HSB" value="HSB"/><label for="HSB"><img src="@{'/public/images/bank/bank_hsb.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="HXB" value="HXB"/><label for="HXB"><img src="@{'/public/images/bank/bank_hxb.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="HZB" value="HZB"/><label for="HZB"><img src="@{'/public/images/bank/bank_hzb.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="ICBC" value="ICBC"/><label for="ICBC"><img src="@{'/public/images/bank/bank_icbc.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="NBCB" value="NBCB"/><label for="NBCB"><img src="@{'/public/images/bank/bank_nbcb.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="NJCB" value="NJCB"/><label for="NJCB"><img src="@{'/public/images/bank/bank_njcb.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="PAB" value="PAB"/><label for="PAB"><img src="@{'/public/images/bank/bank_pab.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="POST" value="POST"/><label for="POST"><img src="@{'/public/images/bank/bank_post.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="SDB" value="SDB"/><label for="SDB"><img src="@{'/public/images/bank/bank_sdb.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="SHB" value="SHB"/><label for="SHB"><img src="@{'/public/images/bank/bank_shb.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="SHRCC" value="SHRCC"/><label for="SHRCC"><img src="@{'/public/images/bank/bank_shrcc.gif'}"/></label></li>
+        <li><input type="radio" name="bank" id="SPDB" value="SPDB"/><label for="SPDB"><img src="@{'/public/images/bank/bank_spdb.gif'}"/></label></li>
+    </ul>
+    <input type="hidden" value="${order.id}" name="orderId"/>
+    <div class="buttom_queren"><a class="suc_ok_bg" href="#" id="confirm" >下一步</a></div>
+</div><!-- #other-pay END-->
+#{/form}
 #{/if}
 
 #{if !order}

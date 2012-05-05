@@ -69,6 +69,7 @@
     </table>
 </div><!-- 实物凭证 END -->
 
+#{form @Orders.create(), id:'order_create_form' }
 <!-- 电子凭证 SRTAT -->
 <div class="order">
     <h3 class="clearfix"><span>电子凭证 - 订单信息</span></h3>
@@ -99,7 +100,6 @@
     </table>
 </div><!-- 电子凭证 END -->
 
-#{form @Orders.create(), id:'order_create_form' }
     <input type="hidden" name="items" value="${items}"/>
     <input type="hidden" id="addressId"/>
     #{if rCartList.size() > 0 || eCartList.size() > 0}
