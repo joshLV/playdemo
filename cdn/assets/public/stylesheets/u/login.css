@@ -1,0 +1,154 @@
+#content {
+    padding: 30px 0 10px;
+}
+.form-hd {
+    height: 33px;
+    background: url(http://img.uhcdn.com/images/u/tit_regist.jpg) repeat-x 0 -34px;
+}
+.form-hd h2 {
+    float: left;
+    padding-left: 12px;
+    font-size: 14px;
+    line-height: 33px;
+    background: url(http://img.uhcdn.com/images/u/tit_regist.jpg) no-repeat 0 0;
+}
+.form-hd b {
+    float: right;
+    width: 10px;
+    height: 33px;
+    background: url(http://img.uhcdn.com/images/u/tit_regist.jpg) no-repeat 0 -68px;
+}
+.form-bd {
+    padding: 35px 20px;
+    border: solid #D1D1D1;
+    border-width: 0 1px 1px 1px;
+}
+#login-form {
+    float: left;
+    width: 420px;
+    padding: 10px 50px 10px 70px;
+    border-right: 1px solid #D1D1D1;
+}
+#regist-form {
+    width: 450px;
+    margin: 0 auto;
+}
+.field {
+   padding: 3px 0;
+}
+.label {
+    display: inline-block;
+    width: 80px;
+    text-align: right;
+}
+.label i {
+    position: relative;
+    top: 3px;
+    color: #F50;
+    padding: 0 3px;
+    font-style: normal;
+}
+.medium {
+    width: 240px;
+    height: 22px;
+    border: 1px solid #D1D1D1;
+}
+.forget {
+    color: #25B4AB;
+    padding-left: 20px;
+}
+.error {
+    display: block;
+    width: 204px;
+    height: 20px;
+    padding-left: 52px;
+    color: #f00;
+}
+#regist-form .error {
+    padding-left: 84px;
+}
+#auto {
+    padding-left: 52px;
+}
+#remember {
+    position: relative;
+    top: 2px;
+}
+#login-form #submit {
+    width: 100px;
+    height: 30px;
+    margin: 20px 0 0 52px;
+    border: 0;
+    color: #F8F8F8;
+    font-size: 14px;
+    font-weight: 700;
+    background: url(http://img.uhcdn.com/images/u/login_btn.png) no-repeat 0 0;
+    cursor: pointer;
+}
+#login-form #submit:hover {
+    background: url(http://img.uhcdn.com/images/u/login_btn.png) no-repeat 0 -30px;
+}
+#regist-form #submit {
+    display: block;
+    width: 158px;
+    height: 32px;
+    margin: 0 0 0 85px;
+    border: 0;
+    color: #FFF;
+    line-height: 32px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+    background: url(http://img.uhcdn.com/images/u/regist_btn.png) no-repeat 0 0;
+}
+.guide {
+    float: right;
+    width: 320px;
+    padding-left: 40px;
+}
+.guide h5 {
+    line-height: 35px;
+}
+.guide p {
+    line-height: 20px;
+}
+.regist {
+    display: block;
+    width: 158px;
+    height: 32px;
+    margin: 50px 0 0 80px;
+    color: #FFF;
+    line-height: 32px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+    background: url(http://img.uhcdn.com/images/u/regist_btn.png) no-repeat 0 0;
+}
+.regist:hover {
+    color: #F60;
+    text-decoration: none;
+}
+#captchaImg {
+    position: relative;
+    top: 8px;
+}
+#checkcode {
+    width: 70px;
+}
+#protocol {
+    display: block;
+    width: 600px;
+    height: 120px;
+    overflow-y: scroll;
+    padding: 5px 0 0 5px;
+    margin: 20px auto 0;
+    border: 1px solid #D1D1D1;
+}
+#protocol h3 {
+    text-align: center;
+    line-height: 30px;
+}
+#footer {
+    border-top: 0;
+    background-color: #FFF;
+}
