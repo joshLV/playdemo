@@ -19,6 +19,7 @@ require:
     - consumer -> consumer
     - view_ext -> view_ext
     - supplier -> supplier
+    - org.jsoup -> jsoup 1.6.1
 
 repositories:
     - mavenRepository:
@@ -28,6 +29,7 @@ repositories:
             - org.json -> *
             - com.taobao -> *
             - com.uhuila.utils -> *
+            - org.jsoup -> *
         m2compatible: true
 
     - customModules:
