@@ -11,6 +11,7 @@ require:
     - sms -> sms
     - accounts -> accounts
     - oauth -> oauth
+    - order -> order
 
 repositories:
     - mavenRepository:
@@ -29,6 +30,7 @@ repositories:
             - resale -> *
             - accounts  -> *
             - oauth -> *
+            - order -> *
 
     - play1ContributedModules:
         type: http
