@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import models.mail.CouponMessage;
 import models.mail.MailUtil;
 import notifiers.CouponMails;
+import org.junit.Before;
 import org.junit.Test;
 import play.libs.Mail;
+import play.modules.rabbitmq.RabbitMQPlugin;
 import play.test.FunctionalTest;
 
 public class CouponMailsTest extends FunctionalTest {
-
+    
     @Test
     public void testDirectCouponMailSend() {
-    	Long time = System.currentTimeMillis();
+    	Long time = System.currentTimeMillis() + 1;
     	String email = "test"+time+"@uhuila.com";
         String fullName = "张三";
         String coupon1 = "0280ec55a4fb4dde3aef27ee287d61c9";
@@ -37,7 +39,7 @@ public class CouponMailsTest extends FunctionalTest {
     
     @Test
     public void testCouponMailSendByMQ() throws Exception {
-    	Long time = System.currentTimeMillis();
+    	Long time = System.currentTimeMillis() + 2;
         String email = "test"+time+"@uhuila.com";
         String fullName = "李四";
         String coupon1 = "9780ec55a4fb4ddeabef27ee287d61c9";
@@ -52,6 +54,8 @@ public class CouponMailsTest extends FunctionalTest {
         
         MailUtil.send(message);
         Thread.sleep(500);
+        
+        RabbitMQPlugin.retries();
         
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
         System.out.println(mailBody);
