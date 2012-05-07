@@ -21,7 +21,7 @@ public class Account extends Model {
 
     public BigDecimal amount;       //可提现金额
 
-    public BigDecimal uncash;       //不可提现金额
+    public BigDecimal uncashAmount;       //不可提现金额
 
     @Enumerated(EnumType.STRING)
     public AccountStatus status;
@@ -41,7 +41,7 @@ public class Account extends Model {
         this.uid = uid;
         this.accountType = type;
         this.amount = new BigDecimal(0);
-        this.uncash = new BigDecimal(0);
+        this.uncashAmount = new BigDecimal(0);
         this.status = AccountStatus.NORMAL;
         this.createdAt = new Date();
     }

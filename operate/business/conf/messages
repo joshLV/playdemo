@@ -153,3 +153,8 @@ account_sequence.RECEIVE=收款
 
 platform.CONSUMER=优惠啦网站
 platform.RESALER=分销网
+
+# 提现
+withdraw.APPLIED=等待审批
+withdraw.SUCCESS=成功
+withdraw.REJECTED=被拒绝

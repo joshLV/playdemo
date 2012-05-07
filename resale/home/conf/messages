@@ -61,6 +61,6 @@ goods.APPLY=申请上架
 goods.REJECT=拒绝上架
 
 # 提现
-withdraw.APPLIED=已申请
+withdraw.APPLIED=等待审批
 withdraw.SUCCESS=成功
-withdraw.REJECTED=已拒绝
+withdraw.REJECTED=被拒绝

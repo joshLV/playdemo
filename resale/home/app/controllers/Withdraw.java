@@ -21,7 +21,7 @@ public class Withdraw extends Controller{
     public static void index(){
         Resaler user = SecureCAS.getResaler();
         Account account = AccountUtil.getAccount(user.getId(), AccountType.RESALER);
-        List<WithdrawBill> withdrawBills = WithdrawBill.find("byAccount",account).fetch();
+        List<WithdrawBill> withdrawBills = WithdrawBill.find("account =? order by appliedAt desc",account).fetch();
         render(withdrawBills);
     }
 

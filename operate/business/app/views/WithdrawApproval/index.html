@@ -1,0 +1,43 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'系统账户查看' /}
+#{include '/share/nav.html' /}
+#{set 'moreStyles'}
+<style type="text/css">
+</style>
+#{/set}
+
+<div class="body">
+    <table class="table table-striped">
+        <tr>
+            <th>申请时间</th>
+            <th>申请账户</th>
+            <th>申请金额</th>
+            <th>所在城市</th>
+            <th>开户银行</th>
+            <th>分行名称</th>
+            <th>开户姓名</th>
+            <th>申请状态</th>
+            <th>操作</th>
+        </tr>
+        #{list items:withdrawBills, as:'withdrawBill'}
+            <tr>
+                <td>${withdrawBill.appliedAt.format()}</td>
+                <td>${withdrawBill.account.getId()}</td>
+                <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
+                <td>${withdrawBill.bankCity}</td>
+                <td>${withdrawBill.bankName}</td>
+                <td>${withdrawBill.subBankName}</td>
+                <td>${withdrawBill.userName}</td>
+                <td>&{'withdraw.' + withdrawBill.status}</td>
+                <td>
+                    #{if withdrawBill.status == models.accounts.WithdrawBillStatus.APPLIED}
+                    通过 | 拒绝
+                    #{/if}
+                </td>
+            </tr>
+        #{/list}
+    </table>
+</div>
+
+ 
+ 

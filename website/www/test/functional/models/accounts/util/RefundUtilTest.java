@@ -1,6 +1,7 @@
 package functional.models.accounts.util;
 
 import models.accounts.*;
+import models.accounts.util.AccountUtil;
 import models.accounts.util.RefundUtil;
 import models.consumer.User;
 import models.order.Order;
@@ -72,6 +73,9 @@ public class RefundUtilTest extends FunctionalTest{
         assertNotNull(account);
 
         BigDecimal origin_amount = account.amount;
+        Account platformIncomingAccount = AccountUtil.getPlatformIncomingAccount();
+        platformIncomingAccount.amount = new BigDecimal("999999");
+        platformIncomingAccount.save();
         RefundUtil.success(refundBill);
 
         assertEquals(origin_amount.add(amount), account.amount);

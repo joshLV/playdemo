@@ -29,6 +29,7 @@
             <td>支行</td>
             <td>银行卡号</td>
             <td>提现金额</td>
+            <td>申请时间</td>
             <td>状态</td>
             <td>申请反馈</td>
         </tr>
@@ -40,7 +41,8 @@
             <td>${withdrawBill.bankName}</td>
             <td>${withdrawBill.subBankName}</td>
             <td>${withdrawBill.cardNumber}</td>
-            <td>${withdrawBill.amount}</td>
+            <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
+            <td>${withdrawBill.appliedAt.format()}</td>
             <td>&{'withdraw.'+ withdrawBill.status}</td>
             <td>${withdrawBill.comment}</td>
         </tr>

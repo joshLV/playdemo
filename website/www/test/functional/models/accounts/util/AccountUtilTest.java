@@ -58,7 +58,7 @@ public class AccountUtilTest extends FunctionalTest{
         BigDecimal originAmount = account.amount;
 
         BigDecimal augend = new BigDecimal(1);
-        AccountUtil.addBalance(account, augend, null, new Long(1), AccountSequenceType.CHARGE, "test note");
+        AccountUtil.addBalance(account, augend, BigDecimal.ZERO, new Long(1), AccountSequenceType.CHARGE, "test note");
         assertEquals(originAmount.add(augend), account.amount);
 
         assertEquals(1, AccountSequence.findAll().size());

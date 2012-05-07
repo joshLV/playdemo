@@ -70,6 +70,10 @@ GET     /reports/website                        OperateReports.showWebsiteReport
 GET     /reports/platform                       OperateReports.showPlatformReport
 GET     /reports/incoming                       OperateReports.showIncomingReport
 
+# 提现管理
+GET     /withdraw                               WithdrawApproval.index
+GET     /withdraw/approval                      WithdrawApproval
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

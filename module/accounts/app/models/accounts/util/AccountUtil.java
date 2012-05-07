@@ -73,10 +73,10 @@ public class AccountUtil {
         }else {
             throw new RuntimeException("error while add cash to account: balance not enough");
         }
-        if (account.uncash.add(uncashAugend).compareTo(BigDecimal.ZERO) >= 0){
-            account.uncash = account.uncash.add(uncashAugend);
+        if (account.uncashAmount.add(uncashAugend).compareTo(BigDecimal.ZERO) >= 0){
+            account.uncashAmount = account.uncashAmount.add(uncashAugend);
         }else {
-            throw new RuntimeException("error while add uncash to account: balance not enough");
+            throw new RuntimeException("error while add uncashAmount to account: balance not enough");
         }
 
         account.save();

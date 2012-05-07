@@ -15,6 +15,7 @@
     <permission key="WEBSITES_REPORT" text="优惠啦佣金账户的资金明细" roles="admin"/>
     <permission key="PLATFORMS_REPORT" text="券平台佣金账户的资金明细" roles="admin"/>
     <permission key="INCOMINGS_REPORT" text="收款账户的资金明细" roles="admin"/>
+    <permission key="WITHDRAW_APPROVAL" text="审批提现申请" roles="admin"/>
     <!--<permission key="SHOPS_NEW" text="门店添加"/> -->
     <!--<permission key="SHOPS" text="门店管理"/> -->
 
@@ -77,6 +78,14 @@
         <navigation key="incomings" text="收款账户" permission="INCOMINGS_REPORT">
             <navigation key="incomings_reports" action="OperateReports.showIncomingReport" text="收款账户的资金明细"
                         permission="INCOMINGS_REPORT"/>
+        </navigation>
+
+    </navigation>
+    <navigation key="withdraw" text="提现" action="WithdrawApproval.index">
+        <navigation key="withdraw_approval" action="WithdrawApproval.index" text="审批提现"
+                    permission="WITHDRAW_APPROVAL">
+            <navigation key="withdraw_approval_index" action="WithdrawApproval.index" text="审批提现"
+                        permission="WITHDRAW_APPROVAL"/>
         </navigation>
     </navigation>
 </application>
