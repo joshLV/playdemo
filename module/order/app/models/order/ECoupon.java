@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -19,7 +18,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
-
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.RefundBill;
@@ -30,14 +28,11 @@ import models.accounts.util.RefundUtil;
 import models.accounts.util.TradeUtil;
 import models.sales.Goods;
 import models.sales.Shop;
-
 import org.apache.commons.lang.StringUtils;
-
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
-
 import com.uhuila.common.util.RandomNumberUtil;
 
 /**
@@ -98,6 +93,13 @@ public class ECoupon extends Model {
 
 	@Enumerated(EnumType.STRING)
 	public ECouponStatus status;
+	
+	/**
+	 * 用于短信回复的code，将会成为消费者看到的发送手机号的最后4位。
+	 * 
+	 * 将会是4位，而且在同一个消费者所有未消费的券号中不重复.
+	 */
+	public String replyCode;
 
 	@OneToOne
 	@JoinColumn(name="shop_id",nullable=true)
@@ -125,10 +127,31 @@ public class ECoupon extends Model {
 		this.status = ECouponStatus.UNCONSUMED;
 		this.eCouponSn = RandomNumberUtil.generateSerialNumber(10);
 		this.orderItems = orderItems;
+		
+		this.replyCode = queryAvailableReplayCode(order.userId, order.userType);
 	}
 
-	public ECoupon() {
+	private String queryAvailableReplayCode(long userId, AccountType userType) {
+	    
+	    String randomNumber = null;
+	    do {
+	        randomNumber = RandomNumberUtil.generateSerialNumber(4);
+	        System.out.println("randomNumber=" + randomNumber);
+	    } while(isNotUniqueReplyCode(randomNumber, userId, userType));
+        return randomNumber;
+    }
+	private boolean isNotUniqueReplyCode(String randomNumber, long userId, AccountType userType) {
+	    return ECoupon.find("from ECoupon where replyCode=? and order.userId=? and order.userType=?",
+	            randomNumber, userId, userType).fetch().size() > 0;
 	}
+
+    /**
+	 * 禁止无参数构造.
+	 */
+	private ECoupon() {
+	}
+	
+	
 
 	/**
 	 * 根据页面录入券号查询对应信息

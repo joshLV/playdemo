@@ -2,11 +2,8 @@ package unit;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.consumer.User;
@@ -19,13 +16,8 @@ import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import com.uhuila.common.util.DateUtil;
-
-import play.Play;
 import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
@@ -97,6 +89,9 @@ public class CouponsUnitTest extends UnitTest {
 		ECoupon coupon = null;
 		for (OrderItems orderItem:order.orderItems) {
 			coupon = new ECoupon(order,goods,orderItem);
+			assertNotNull(coupon);
+			assertNotNull(coupon.replyCode);
+			assertEquals(4, coupon.replyCode.length());
 		}
 		assertNotNull(coupon);
 	}
