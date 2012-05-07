@@ -1,0 +1,24 @@
+accounts.Account(account_1):
+    uid: 11
+    accountType: CONSUMER
+    amount: 20.4
+    cashAmount: 10.2
+    uncashAmount: 11.2
+    status: NORMAL
+
+accounts.Account(account_2):
+    uid: 12
+    accountType: RESALER
+    amount: 22.4
+    cashAmount: 11.2
+    uncashAmount: 12.2
+    status: NORMAL
+
+accounts.Account(account_3):
+    uid: 13
+    accountType: SUPPLIER
+    amount: 22.4
+    cashAmount: 12.2
+    uncashAmount: 13.2
+    status: NORMAL
+

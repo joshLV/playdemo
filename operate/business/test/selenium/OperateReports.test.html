@@ -1,0 +1,84 @@
+#{fixture delete:[models.admin.SupplierUser.class,
+models.admin.SupplierRole.class,
+models.order.OrderItems.class,
+models.order.Order.class,
+models.sales.Category.class,
+models.sales.Goods.class,
+models.sales.Brand.class,
+models.sales.Category.class,
+models.sales.Area.class,
+models.sales.Shop.class,
+models.accounts.AccountSequence.class,
+models.accounts.Account.class] ,
+load:['fixture/roles.yml','fixture/supplierusers.yml',
+'fixture/areas_unit.yml',
+'fixture/categories_unit.yml',
+'fixture/brands_unit.yml',
+'fixture/shops_unit.yml',
+'fixture/goods_unit.yml',
+'fixture/orders.yml',
+'fixture/orderItems.yml',
+'fixture/accounts.yml',
+'fixture/account_sequence.yml'] /}
+%{
+    account = models.accounts.util.AccountUtil.getUhuilaAccount()
+
+    Long sequenceId = play.test.Fixtures.idCache.get("models.accounts.AccountSequence-seq_001");
+    accountSequences = models.accounts.AccountSequence.findById(sequenceId);
+    accountSequences.each{
+        it.account = account
+        it.save()
+    }
+
+    account = models.accounts.util.AccountUtil.getPlatformCommissionAccount()
+
+    sequenceId = play.test.Fixtures.idCache.get("models.accounts.AccountSequence-seq_002");
+    accountSequences = models.accounts.AccountSequence.findById(sequenceId);
+    accountSequences.each{
+        it.account = account
+        it.save()
+    }
+
+    account = models.accounts.util.AccountUtil.getPlatformIncomingAccount()
+
+    sequenceId = play.test.Fixtures.idCache.get("models.accounts.AccountSequence-seq_003");
+    accountSequences = models.accounts.AccountSequence.findById(sequenceId);
+    accountSequences.each{
+        it.account = account
+        it.save()
+    }
+}%
+#{selenium "消费者的资金明细"}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/reports/consumer')
+assertTitle('消费者的资金明细')
+verifyTextPresent('004')
+verifyTextPresent('7.00')
+#{/selenium}
+#{selenium '分销商的资金明细'}
+open('/reports/resale')
+assertTitle('分销商的资金明细')
+verifyTextPresent('005')
+verifyTextPresent('6.00')
+#{/selenium}
+#{selenium '商户的资金明细'}
+open('/reports/supplier')
+assertTitle('商户的资金明细')
+verifyTextPresent('006')
+verifyTextPresent('5.00')
+#{/selenium}
+#{selenium '优惠啦佣金账户的资金明细'}
+open('/reports/website')
+assertTitle('优惠啦佣金账户的资金明细')
+verifyTextPresent('3')
+#{/selenium}
+#{selenium '券平台佣金账户的资金明细'}
+open('/reports/platform')
+assertTitle('券平台佣金账户的资金明细')
+verifyTextPresent('2')
+#{/selenium}
+#{selenium '收款账户的资金明细'}
+open('/reports/incoming')
+assertTitle('收款账户的资金明细')
+verifyTextPresent('1')
+#{/selenium}
