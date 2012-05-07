@@ -30,6 +30,7 @@ import org.apache.commons.lang.StringUtils;
 
 import play.Logger;
 import play.data.validation.Required;
+import play.data.validation.Unique;
 import play.db.jpa.Model;
 import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
@@ -48,6 +49,14 @@ public class SupplierUser extends Model {
 	@Required
 	@Mobile
 	public String mobile;
+	
+	/**
+	 * 工号.
+	 * 用于短信验证方式，消费者向指定号码回复工号，即可完成验证。
+	 * TODO: 员工工号需要保证在同一个Supplier中唯一
+	 */
+	@Column(name="job_number")
+	public String jobNumber;
 
 	@Column(name = "encrypted_password")
 	public String encryptedPassword;
@@ -154,6 +163,7 @@ public class SupplierUser extends Model {
 		updatedUser.shop=supplierUser == null ? null:supplierUser.shop;
 		updatedUser.lastLoginAt = new Date();
 		updatedUser.updatedAt = new Date();
+		updatedUser.jobNumber = supplierUser.jobNumber;
 		//获得IP
 		updatedUser.lastLoginIP = Request.current().remoteAddress;
 

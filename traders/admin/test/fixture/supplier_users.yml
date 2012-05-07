@@ -11,6 +11,7 @@ admin.SupplierUser(user1):
  "lockVersion": "1"
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETED"
+ "jobNumber": "1001"
  "supplier": kfc
 
 admin.SupplierUser(user2):
@@ -22,6 +23,7 @@ admin.SupplierUser(user2):
  "lockVersion": "1"
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETE"
+ "jobNumber": "1002"
  "supplier": kfc
  "roles":
   - "test"
@@ -37,6 +39,7 @@ admin.SupplierUser(user3):
  "createdAt": "2012-03-12T14:39:20"
  "updatedAt": "2012-03-12T17:33:49"
  "deleted": "UN_DELETED"
+ "jobNumber": "1003"
  "supplier": kfc
  "roles":
    - "admin"
@@ -52,6 +55,7 @@ admin.SupplierUser(test):
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETED"
  "supplier": kfc
+ "jobNumber": "1004"
  "roles":
    - "test"
 
@@ -64,6 +68,7 @@ admin.SupplierUser(deleteuser):
  "lockVersion": "1"
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETED"
+ "jobNumber": "1005"
  "supplier": kfc
  "roles":
    - "test"
