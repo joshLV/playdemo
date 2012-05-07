@@ -55,10 +55,10 @@ public class RefundUtil {
         refundBill.refundStatus = RefundStatus.SUCCESS;
 
         //更新账户余额
-        AccountUtil.addCash(refundBill.account, refundBill.amount,refundBill.getId(),
-                AccountSequenceType.REFUND,"退款");
-        AccountUtil.addCash(AccountUtil.getPlatformIncomingAccount(), refundBill.amount.negate(),
-                refundBill.getId(),AccountSequenceType.REFUND,"支付退款");
+        AccountUtil.addBalance(refundBill.account, refundBill.amount, BigDecimal.ZERO, refundBill.getId(),
+                AccountSequenceType.REFUND, "退款");
+        AccountUtil.addBalance(AccountUtil.getPlatformIncomingAccount(), refundBill.amount.negate(), BigDecimal.ZERO,
+                refundBill.getId(), AccountSequenceType.REFUND, "支付退款");
         return refundBill.save();
     }
 

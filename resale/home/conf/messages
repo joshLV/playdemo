@@ -59,3 +59,8 @@ goods.OFFSALE=已下架
 goods.UNCREATED=创建中
 goods.APPLY=申请上架
 goods.REJECT=拒绝上架
+
+# 提现
+withdraw.APPLIED=已申请
+withdraw.SUCCESS=成功
+withdraw.REJECTED=已拒绝

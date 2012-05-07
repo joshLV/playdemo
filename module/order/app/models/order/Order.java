@@ -206,7 +206,7 @@ public class Order extends Model {
 	}
 
 	public void addFreight() {
-		this.amount = this.amount.add(new BigDecimal("5"));
+		this.amount = this.amount.add(new BigDecimal("6"));
 		this.needPay = this.amount;
 	}
 
@@ -299,21 +299,12 @@ public class Order extends Model {
 		this.paidAt = new Date();
 		this.save();
 		Account account = AccountUtil.getAccount(this.userId, this.userType);
-		//如果网银付款成功，则补加两个账户交易记录
-		if (this.discountPay.compareTo(BigDecimal.ZERO) > 0) {
-			AccountSequence chargeSequence = new AccountSequence(account, AccountSequenceFlag.VOSTRO,
-                    AccountSequenceType.CHARGE,
-					account.amount, account.amount.add(this.discountPay),
-					this.discountPay, BigDecimal.ZERO, this.payRequestId);
-            chargeSequence.save();
+		//补加两个账户交易记录
+        AccountUtil.addBalance(account,this.accountPay.add(this.discountPay),
+                BigDecimal.ZERO, this.payRequestId,AccountSequenceType.CHARGE,"账户充值");
+        AccountUtil.addBalance(account,this.accountPay.add(this.discountPay).negate(),
+                BigDecimal.ZERO, this.payRequestId, AccountSequenceType.PAY,"支付");
 
-			AccountSequence paySequence = new AccountSequence(account, AccountSequenceFlag.NOSTRO,
-                    AccountSequenceType.PAY,
-					account.amount.add(this.discountPay), account.amount,
-					this.discountPay, BigDecimal.ZERO, this.payRequestId);
-            paySequence.orderId = this.getId();
-            paySequence.save();
-		}
 		//如果是电子券
 		if (this.orderItems != null) {
 			for (OrderItems orderItem : this.orderItems) {
@@ -351,7 +342,6 @@ public class Order extends Model {
 							mail.setFullName(orderItem.order.getUser().userInfo.fullName);
 						}
 					}
-					System.out.println(couponCodes+"@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 					mail.setCoupons(couponCodes);
 					MailUtil.send(mail);
 				}

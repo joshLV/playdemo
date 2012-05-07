@@ -1,0 +1,76 @@
+#{extends 'main.html' /}
+#{set title:'分销网 - 申请提现' /}
+#{set 'moreStyles'}
+<link href="@@{'/public/stylesheets/payment_info.css'}" rel="stylesheet" type="text/css"/>
+#{/set}
+
+<div id="wrap_main">
+    <div id="wrap_top">
+    #{include "share/topNavigator.html"/}
+    </div>
+
+    <div id="wrap_top_header">
+        <div id="wrap_top_header_left"><img src="@{'/public/images/logo.jpg'}"/></div>
+        <div id="wrap_top_middle">券生活-惠生活</div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="fen_g"></div>
+</div>
+<!--主体内容部分-->
+<div id="wrap_content">
+
+    #{form @create()}
+    <table>
+        <tr>
+            <td>*开户人真实姓名:</td>
+            <td>
+                <input type="text" name="withdraw.userName" value="${withdraw?.userName}">
+                <span class="error">#{error 'withdraw.userName'/}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>*银行所在城市:</td>
+            <td>
+                上海
+                <input type="hidden" name="withdraw.bankCity" value="上海">
+                <span class="error">#{error 'withdraw.bankCity'/}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>*选择银行开户行:</td>
+            <td>
+                <select name="withdraw.bankName" >
+                    <option value="招商银行">招商银行</option>
+                    <option value="中国工商银行">中国工商银行</option>
+                    <option value="中国建设银行">中国建设银行</option>
+                </select>
+                <span class="error">#{error 'withdraw.bankName'/}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>支行:</td>
+            <td>
+                <input type="text" name="withdraw.subBankName" value="${withdraw?.subBankName}">
+                <span class="error">#{error 'withdraw.subBankName'/}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>*银行卡号:</td>
+            <td>
+                <input type="text" name="withdraw.cardNumber" value="${withdraw?.cardNumber}">
+                <span class="error">#{error 'withdraw.cardNumber'/}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>*提现金额:</td>
+            <td>
+                <input type="text" name="withdraw.amount" value="${withdraw?.amount}">
+                余额:${account?.amount}元
+                <span class="error">#{error 'withdraw.amount'/}</span>
+            </td>
+        </tr>
+    </table>
+    <input type="submit" value="申请">
+    #{/form}
+
+</div>

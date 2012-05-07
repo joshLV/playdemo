@@ -1,12 +1,11 @@
 package models.accounts;
 
+import models.accounts.util.AccountUtil;
 import models.accounts.util.SerialNumberUtil;
+import play.data.validation.Required;
 import play.db.jpa.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -17,61 +16,89 @@ import java.util.Date;
  * Date: 12-3-6
  */
 @Entity
-@Table
+@Table(name = "withdraw_bill")
 public class WithdrawBill extends Model {
     
     public String serialNumber;         
     
     @ManyToOne
     public Account account;
-    
+
+    @Required
     public BigDecimal amount;           //提现金额
 
-    public BigDecimal fee;              //手续费
-    
-    @Column(name = "order_id")
-    public Long orderId;                //订单号
+    @Column(name = "user_name")
+    @Required
+    public String userName;
 
-    @Column(name = "bank_code")
-    public String bankCode;             //银行代码
-    
-    @Column(name = "bank_card_number")
-    public String bankCardNumber;       //银行卡卡号
-    
-    @Column(name = "bank_account_name")
-    public String cardHolderName;      //持卡人姓名
+    @Column(name = "bank_city")
+    @Required
+    public String bankCity;
 
-    @Column(name = "return_at")
-    public Date returnAt;               //银行返回时间
+    @Column(name = "bank_name")
+    @Required
+    public String bankName;
 
-    @Column(name = "return_code")
-    public String returnCode;           //银行返回码
+    @Column(name = "sub_bank_name")
+    public String subBankName;
 
-    @Column(name = "return_note")
-    public String  returnNote;          //银行返回备注
+    @Column(name = "card_number")
+    @Required
+    public String cardNumber;
 
-    @Column(name = "created_at")
-    public Date createdAt;              //创建时间
+    @Enumerated(EnumType.STRING)
+    public WithdrawBillStatus status;
 
+    @Column(name = "applied_at")
+    public Date appliedAt;
 
-    public WithdrawBillStatus  status;
+    @Column(name = "processed_at")
+    public Date processedAt;
 
-    public WithdrawBill(Account account, BigDecimal amount, BigDecimal fee, Long orderId, String bankCode,
-                        String bankCardNumber, String cardHolderName){
-        this.createdAt = new Date();
-        this.serialNumber = SerialNumberUtil.generateSerialNumber(this.createdAt);
+    public String comment;
+
+    /**
+     * 申请提现.
+     *
+     * @param account 申请提现的账户
+     */
+    public void applied(Account account){
+        AccountUtil.addBalance(account,this.amount.negate(), this.amount,
+                this.getId(),AccountSequenceType.FREEZE,"申请提现");
 
         this.account = account;
-        this.amount = amount;
-        this.fee = fee;
-        this.orderId = orderId;
-        this.bankCode = bankCode;
-        this.bankCardNumber = bankCardNumber;
-        this.cardHolderName = cardHolderName;
-
-        this.returnAt = null;
-        this.returnCode = null;
-        this.returnNote = null;
+        this.status = WithdrawBillStatus.APPLIED;
+        this.appliedAt = new Date();
+        this.serialNumber = SerialNumberUtil.generateSerialNumber();
+        this.save();
     }
-    
+
+    /**
+     * 提现申请被拒绝
+     *
+     * @param comment 拒绝理由.
+     */
+    public void rejected(String comment){
+        AccountUtil.addBalance(this.account, this.amount, this.amount.negate(),
+                this.getId(), AccountSequenceType.UNFREEZE,"拒绝提现");
+
+        this.comment = comment;
+        this.status = WithdrawBillStatus.REJECTED;
+        this.save();
+    }
+
+    /**
+     * 退款提现成功
+     *
+     * @param comment 备注.
+     */
+    public void success(String comment){
+        AccountUtil.addBalance(this.account, BigDecimal.ZERO, this.amount.negate(),
+                this.getId(), AccountSequenceType.WITHDRAW, "提现成功");
+
+        this.status = WithdrawBillStatus.SUCCESS;
+        this.comment = comment;
+        this.save();
+    }
+
 }

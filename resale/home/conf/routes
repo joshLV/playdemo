@@ -23,9 +23,16 @@ DELETE  /library/{goodsIds}                     ResalerFavs.delete
 POST    /payment_info/confirm                   PaymentInfo.confirm
 GET     /payment_info/{id}                      PaymentInfo.index
 
+# 充值
 GET     /charge                                 Charge.index
 POST    /charge_payment_info/confirm            ChargePaymentInfo.confirm
 GET     /charge_payment_info/{id}               ChargePaymentInfo.index
+
+# 提现
+#*       /withdraw                               module:crud
+GET     /withdraw                                Withdraw.index
+GET     /withdraw/apply                          Withdraw.apply
+POST    /withdraw/apply                          Withdraw.create
 
 # 显示支付结果
 GET     /orders/alipay_result                   OrderResult.alipayReturn

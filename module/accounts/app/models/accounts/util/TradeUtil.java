@@ -230,17 +230,19 @@ public class TradeUtil {
             }
         }
         if (tradeBill.balancePaymentAmount.compareTo(BigDecimal.ZERO) >= 0) {
-            AccountUtil.addCash(
+            AccountUtil.addBalance(
                     tradeBill.fromAccount,
                     tradeBill.balancePaymentAmount.negate(),
+                    BigDecimal.ZERO,
                     tradeBill.getId(),
                     AccountSequenceType.PAY,
                     "支付");
         }
         if (tradeBill.ebankPaymentAmount.add(tradeBill.balancePaymentAmount).compareTo(BigDecimal.ZERO) >= 0) {
-            AccountUtil.addCash(
+            AccountUtil.addBalance(
                     tradeBill.toAccount,
                     tradeBill.ebankPaymentAmount.add(tradeBill.balancePaymentAmount),
+                    BigDecimal.ZERO,
                     tradeBill.getId(),
                     AccountSequenceType.RECEIVE,
                     "收款");

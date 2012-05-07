@@ -7,5 +7,5 @@ package models.accounts;
 public enum WithdrawBillStatus {
     APPLIED,
     SUCCESS,
-    FAILED
+    REJECTED
 }
