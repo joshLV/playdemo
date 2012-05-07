@@ -12,6 +12,7 @@ require:
     - accounts -> accounts
     - oauth -> oauth
     - order -> order
+    - sales -> sales
 
 repositories:
     - mavenRepository:
@@ -31,6 +32,7 @@ repositories:
             - accounts  -> *
             - oauth -> *
             - order -> *
+            - sales -> *
 
     - play1ContributedModules:
         type: http
