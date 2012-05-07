@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * User: likang
  */
-//@OnApplicationStart(async = true)
+@OnApplicationStart(async = true)
 public class HaduoHttpConsumer extends RabbitMQConsumer<SMSMessage> {
     private final String SEND_URL = Play.configuration.getProperty("sms.http.send_url");
 

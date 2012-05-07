@@ -14,10 +14,19 @@ public class SMSUtil {
     public static final String SMS_QUEUE2 = Play.mode.isProd() ? "send_sms2" : "send_sms_dev2";
     
     private SMSUtil(){}
+    
     public static void send(String content, String phoneNumber){
-        RabbitMQPublisher.publish(SMS_QUEUE2, new SMSMessage(content, phoneNumber));
+        RabbitMQPublisher.publish(QUEUE_NAME, new SMSMessage(content, phoneNumber));
     }
     public static void send(String content, List<String> phoneNumbers){
+        RabbitMQPublisher.publish(QUEUE_NAME, new SMSMessage(content, phoneNumbers));
+    }
+    
+    
+    public static void send2(String content, String phoneNumber){
+        RabbitMQPublisher.publish(SMS_QUEUE2, new SMSMessage(content, phoneNumber));
+    }
+    public static void send2(String content, List<String> phoneNumbers){
         RabbitMQPublisher.publish(SMS_QUEUE2, new SMSMessage(content, phoneNumbers));
     }
 }
