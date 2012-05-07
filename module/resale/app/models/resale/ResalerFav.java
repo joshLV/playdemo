@@ -31,7 +31,6 @@ public class ResalerFav extends Model {
 	@ManyToOne
 	public Goods goods;
 
-
 	@Column(name = "lock_version")
 	public int lockVersion;
 

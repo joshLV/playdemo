@@ -1,10 +1,11 @@
 package controllers;
 
 import java.io.File;
-import java.util.Date;
 import java.util.List;
 
-import models.oauth.OauthToken;
+import models.accounts.AccountType;
+import models.oauth.OAuthToken;
+import models.oauth.WebSite;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.sales.Goods;
@@ -29,22 +30,22 @@ import controllers.modules.resale.cas.SecureCAS;
 
 @With(SecureCAS.class)
 public class TaobaoAPIClient extends Controller{
-    private static final String url = "http://gw.api.taobao.com/router/rest";
-    private static final String appkey = "12576100";
-    private static final String appsecret = "b1301dd48f91e483b42c914bbdf38d01";
+    private static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
+    private static final String APPKEY = Play.configuration.getProperty("taobao.top.appkey", "12621657");
+    private static final String APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "b0d06603b45a281f783b6ccd72ad8745");
 
     public static String IMG_ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
-    public static String TAOBAO_TOP_OAUTH_URL = Play.configuration.getProperty("taobao.top.oauth_url","http://container.api.taobao.com/container?appkey=12576100&encode=utf-8");
+    public static String TAOBAO_TOP_OAUTH_URL = Play.configuration.getProperty("taobao.top.oauth_url","http://container.api.taobao.com/container?appkey=12621657&encode=utf-8");
     
     public static void add(Long goodsId){
         Resaler user = SecureCAS.getResaler();
-        OauthToken token = getOauthToken(user.getId());
+        OAuthToken token =  OAuthToken.getOAuthToken(user.getId(), AccountType.RESALER, WebSite.TAOBAO);
         Goods goods = Goods.findById(goodsId);
         ResalerFav resalerFav = ResalerFav.find("byGoods",goods).first();
         if(resalerFav == null){
             error("no fav found");
         }
-        if(token == null){
+        if(token == null || token.isExpired()){
             redirect(TAOBAO_TOP_OAUTH_URL);
         }
         
@@ -67,14 +68,16 @@ public class TaobaoAPIClient extends Controller{
     }
     
     /**
+     * 批量发布商品到淘宝
      * 
-     * 
-     * @param favIds
+     * @param goodsIds 商品ID列表
+     * @param pricemakupRate 提价百分比
+     * @param pricemakup 提价额
      */
     public static void batchAdd(@As(",") List<Long> goodsIds, int pricemakupRate, String pricemakup){
         Resaler user = SecureCAS.getResaler();
-        OauthToken token = getOauthToken(user.getId());
-        if(token == null){
+        OAuthToken token = OAuthToken.getOAuthToken(user.getId(), AccountType.RESALER, WebSite.TAOBAO);
+        if(token == null || token.isExpired()){
             redirect(TAOBAO_TOP_OAUTH_URL);
         }
         for(Long goodsId : goodsIds){
@@ -101,8 +104,8 @@ public class TaobaoAPIClient extends Controller{
      * @param resaler 分销商
      * @return 上传结果
      */
-    private static ItemAddResponse uploadGoods(Goods goods, OauthToken token, Resaler resaler, String pricemakupRate, String pricemakup){
-        TaobaoClient taobaoClient = new DefaultTaobaoClient(url, appkey, appsecret);
+    private static ItemAddResponse uploadGoods(Goods goods, OAuthToken token, Resaler resaler, String pricemakupRate, String pricemakup){
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, APPKEY, APPSECRET);
         
         StringBuilder desc = new StringBuilder(goods.getDetails() + "<br/>" + goods.getPrompt() + "<br/> 可使用门店：<br/>");
         for(Shop shop : goods.shops){
@@ -185,14 +188,4 @@ public class TaobaoAPIClient extends Controller{
         }
        
     }
-    
-    private static OauthToken getOauthToken(Long userId){
-        OauthToken token = OauthToken.find("byUserId", userId).first();
-        if(token != null && (token.accessTokenExpiresAt.getTime() - new Date().getTime()) <= 0){
-            token.delete();
-            return null;
-        }
-        return token;
-    }
-    
 }

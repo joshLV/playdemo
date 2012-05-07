@@ -5,13 +5,21 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import com.taobao.api.ApiException;
+import com.taobao.api.DefaultTaobaoClient;
+import com.taobao.api.TaobaoClient;
 import com.taobao.api.internal.util.TaobaoUtils;
 
-import models.oauth.OauthToken;
+import com.taobao.api.request.IncrementCustomerPermitRequest;
+import com.taobao.api.response.IncrementCustomerPermitResponse;
+import models.accounts.AccountType;
+import models.oauth.OAuthToken;
+import models.oauth.WebSite;
 import models.resale.Resaler;
+import play.Logger;
+import play.Play;
 import play.mvc.Controller;
 import play.mvc.With;
-import sun.misc.BASE64Decoder;
 import controllers.modules.resale.cas.SecureCAS;
 
 /**
@@ -21,31 +29,67 @@ import controllers.modules.resale.cas.SecureCAS;
  */
 @With(SecureCAS.class)
 public class TaobaoOauthCallback extends Controller{
+    private static final String URL = Play.configuration.getProperty("taobao.top.url", "http://gw.api.taobao.com/router/rest");
+    private static final String APPKEY = Play.configuration.getProperty("taobao.top.appkey", "12621657");
+    private static final String APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "b0d06603b45a281f783b6ccd72ad8745");
+
     public static void index(String top_session, String top_sign, String top_parameters){
         //加载用户账户信息
         Resaler user = SecureCAS.getResaler();
-        OauthToken oauthToken = new OauthToken();
-        oauthToken.userId = user.getId();
-        oauthToken.accessToken = top_session;
+        OAuthToken oAuthToken = OAuthToken.getOAuthToken(user.getId(), AccountType.RESALER, WebSite.TAOBAO);
+        if(oAuthToken == null){
+            oAuthToken = new OAuthToken();
+            oAuthToken.userId = user.getId();
+            oAuthToken.accountType = AccountType.RESALER;
+            oAuthToken.webSite = WebSite.TAOBAO;
+        }
+
+        oAuthToken.accessToken = top_session;
         try {
             Map<String, String> topParams = TaobaoUtils.decodeTopParams(top_parameters);
 
+            // 保存淘宝账户ID
+            String serviceUserId = topParams.get("visitor_id");
+            oAuthToken.serviceUserId = serviceUserId;
+
+            // 计算并保存失效时间
             int expiresIn = Integer.parseInt(topParams.get("expires_in"));
             int reExpiresIn = Integer.parseInt(topParams.get("re_expires_in"));
             Date now = new Date();
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(now);
             calendar.add(Calendar.SECOND, expiresIn);
-            oauthToken.accessTokenExpiresAt = calendar.getTime();
+            oAuthToken.accessTokenExpiresAt = calendar.getTime();
             calendar.add(Calendar.SECOND, reExpiresIn - expiresIn);
-            oauthToken.refreshTokenExpiresAt = calendar.getTime();
+            oAuthToken.refreshTokenExpiresAt = calendar.getTime();
 
-            oauthToken.save();
+            oAuthToken.save();
+
+            taobaoIncrementPermit(oAuthToken);
+
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.error(e, "oauth callback failed");
             redirect("/library");
         }
         redirect("/library");
+    }
+
+    /**
+     * 为用户申请主动通知服务
+     *
+     * @param oauthToken oauth token
+     */
+    private static void taobaoIncrementPermit(OAuthToken oauthToken) {
+        TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, APPKEY, APPSECRET);
+
+        IncrementCustomerPermitRequest req=new IncrementCustomerPermitRequest();
+        req.setType("get,syn,notify");
+        req.setTopics("trade;refund;item");
+        req.setStatus("all;all;ItemAdd,ItemUpdate");
+        try {
+            IncrementCustomerPermitResponse response = taobaoClient.execute(req , oauthToken.accessToken);
+        } catch (ApiException e) {
+            Logger.error(e, "taobao increment permit failed" );
+        }
     }
 }

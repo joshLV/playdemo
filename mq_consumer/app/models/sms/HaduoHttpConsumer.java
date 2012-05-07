@@ -29,7 +29,6 @@ import java.util.List;
 @OnApplicationStart(async = true)
 public class HaduoHttpConsumer extends RabbitMQConsumer<SMSMessage> {
     private final String SEND_URL = Play.configuration.getProperty("sms.haduo.send_url");
-    private static final String QUEUE_NAME = Play.mode.isProd() ? "send_sms" : "send_sms_dev";
 
 
     /**
@@ -42,7 +41,7 @@ public class HaduoHttpConsumer extends RabbitMQConsumer<SMSMessage> {
     private void saveJournal(SMSMessage message, String status, String serial) {
         JPAPlugin.startTx(false);
         for (String phone : message.getPhoneNumbers()) {
-            new MQJournal(QUEUE_NAME, message.getContent() + " | " + phone + " | " + status + " | " + serial).save();
+            new MQJournal(SMSUtil.QUEUE_NAME, message.getContent() + " | " + phone + " | " + status + " | " + serial).save();
         }
         JPAPlugin.closeTx(false);
     }
@@ -101,7 +100,7 @@ public class HaduoHttpConsumer extends RabbitMQConsumer<SMSMessage> {
     }
 
     protected String queue() {
-        return QUEUE_NAME;
+        return SMSUtil.QUEUE_NAME;
 
     }
 

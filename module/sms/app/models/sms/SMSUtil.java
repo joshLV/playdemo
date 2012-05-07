@@ -9,7 +9,7 @@ import java.util.List;
  * User: likang
  */
 public class SMSUtil {
-    private static final String QUEUE_NAME = Play.mode.isProd() ? "send_sms" : "send_sms_dev";
+    public static final String QUEUE_NAME = Play.mode.isProd() ? "send_sms" : "send_sms_dev";
     private SMSUtil(){}
     public static void send(String content, String phoneNumber){
         RabbitMQPublisher.publish(QUEUE_NAME, new SMSMessage(content, phoneNumber));
