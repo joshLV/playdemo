@@ -34,8 +34,7 @@ public class SMSMessageTest extends UnitTest{
         assertEquals(1, message.getPhoneNumbers().size());
         assertEquals(newPhoneNumber, message.getPhoneNumbers().get(0));
         
-        
-        String toString = "SMSMessage [content=" + newContent + ",phones="+newPhoneNumber+",]";
+        String toString = "SMSMessage [content=" + newContent + ",code=0000,phones="+newPhoneNumber+",]";
         assertEquals(toString, message.toString());
     }
     
