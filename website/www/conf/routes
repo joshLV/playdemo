@@ -49,10 +49,10 @@ GET     /orders/billpay_result                   OrderResult.billReturn
 GET     /sms                                    SMS.index
 POST    /sms/send                               SMS.send
 
-GET     /mybook                                   Books.mybook
+GET     /mybook                                 Books.mybook
 GET     /book                                   Books.book
-GET     /bookenhance                                   Books.bookenhance
-GET     /bookenhancemirror                                   Books.bookenhancemirror
+GET     /bookenhance                            Books.bookenhance
+GET     /bookenhancemirror                      Books.bookenhancemirror
 
 # 订单
 GET     /orders                                 Orders.index

@@ -25,3 +25,6 @@ validation.confirmPassword=两次密码输入的不一样！！
 
 user.newPassword=密码
 user.confirmPassword=确认密码
+
+goods.REAL=实物
+goods.ELECTRONIC=电子券

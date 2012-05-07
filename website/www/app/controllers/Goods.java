@@ -6,6 +6,7 @@ import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
 import models.sales.GoodsCondition;
+import models.sales.GoodsStatus;
 import org.apache.commons.lang.StringUtils;
 import play.modules.breadcrumbs.Breadcrumb;
 import play.modules.breadcrumbs.BreadcrumbList;
@@ -38,8 +39,12 @@ public class Goods extends Controller {
     public static void index() {
         String page = params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        //网友推荐商品
+        List<models.sales.Goods> recommendGoodsList = models.sales.Goods.findTopRecommend(6);
+
         //默认取出5页产品
         List<models.sales.Goods> goodsList = models.sales.Goods.findTop(PAGE_SIZE * 5);
+
         //默认取出前8个上海的区
         List<Area> districts = Area.findTopDistricts(SHANGHAI, LIMIT);
         List<Area> areas = Area.findTopAreas(LIMIT);
@@ -47,6 +52,7 @@ public class Goods extends Controller {
         List<Brand> brands = Brand.findTop(LIMIT);
 
         GoodsCondition goodsCond = new GoodsCondition();
+        goodsCond.status = GoodsStatus.ONSALE;
         ValuePaginator<models.sales.Goods> goodsPage = new ValuePaginator<>(goodsList);
         goodsPage.setPageNumber(pageNumber);
         goodsPage.setPageSize(PAGE_SIZE);
@@ -54,7 +60,7 @@ public class Goods extends Controller {
         BreadcrumbList breadcrumbs = createBreadcrumbs(goodsCond);
 
         renderGoodsCond(goodsCond);
-        render(goodsPage, areas, districts, categories, brands, breadcrumbs);
+        render(recommendGoodsList, goodsPage, areas, districts, categories, brands, breadcrumbs);
     }
 
     public static void preview(String uuid, boolean isSupplier) {
@@ -128,7 +134,12 @@ public class Goods extends Controller {
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
         try {
+            //网友推荐商品
+            List<models.sales.Goods> recommendGoodsList = models.sales.Goods.findTopRecommend(6);
+
             GoodsCondition goodsCond = new GoodsCondition(condition);
+            goodsCond.status = GoodsStatus.ONSALE;
+
             JPAExtPaginator<models.sales.Goods> goodsPage = models.sales
                     .Goods.findByCondition(goodsCond, pageNumber, PAGE_SIZE);
 
@@ -142,7 +153,8 @@ public class Goods extends Controller {
             BreadcrumbList breadcrumbs = createBreadcrumbs(goodsCond);
 
             renderGoodsCond(goodsCond);
-            render("/Goods/index.html", goodsPage, areas, districts, categories, brands, breadcrumbs);
+            render("/Goods/index.html", goodsPage, recommendGoodsList, areas, districts, categories, brands,
+                    breadcrumbs);
         } catch (Exception e) {
             e.printStackTrace();
             index();
@@ -159,6 +171,7 @@ public class Goods extends Controller {
         renderArgs.put("priceTo", goodsCond.priceTo);
         renderArgs.put("orderBy", goodsCond.orderByNum);
         renderArgs.put("orderByType", goodsCond.orderByTypeNum);
+        renderArgs.put("materialType", goodsCond.materialType);
     }
 
     private static final String LIST_URL_HEAD = "/goods/list/";

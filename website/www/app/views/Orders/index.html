@@ -17,6 +17,7 @@
     <li><span>4</span>成功提交订单 <em>>></em></li>
 </ol>
 <!-- 实物凭证 START -->
+#{if rCartList.size()>0}
 <div class="order">
     <h3 class="clearfix"><span>实物凭证 - 订单信息</span></h3>
     <div class="addr">收货地址：<span id="J_addrCurrent">上海 上海市 徐汇区 宛平南路75号17楼 (李小四 收) <em>18912345678</em></span> <a class="modify-addr" id="J_modifyAddr" href="#">[修改]</a>
@@ -67,13 +68,18 @@
             #{set i:0} #{/set}
         </tbody>
     </table>
-</div><!-- 实物凭证 END -->
+</div>
+#{/if}
+<!-- 实物凭证 END -->
 
 #{form @Orders.create(), id:'order_create_form' }
-<!-- 电子凭证 SRTAT -->
-<div class="order">
+<!-- 电子凭证 START -->
+#{if eCartList.size()>0}
+    <div class="order">
     <h3 class="clearfix"><span>电子凭证 - 订单信息</span></h3>
-    <div class="addr"><span class="required">*</span>接收手机：<input class="num_input_bg" type="text" name="mobile" id="ecart_mobile"/><span class="font_red jianju">#{error 'mobile'/}</div>
+    <div class="addr"><span class="required">*</span>接收手机：<input class="num_input_bg" type="text" name="mobile"
+                                                                 id="ecart_mobile"/> <span class="required">#{error
+    'mobile'/}</div>
     <table class="order-list" border="0" cellpadding="0" cellspacing="0">
         <thead>
             <tr bgcolor="F6F6F6">
@@ -98,7 +104,9 @@
             #{/list}
         </tbody>
     </table>
-</div><!-- 电子凭证 END -->
+</div>
+#{/if}
+<!-- 电子凭证 END -->
 
     <input type="hidden" name="items" value="${items}"/>
     <input type="hidden" id="addressId"/>

@@ -50,8 +50,8 @@
         </li>
         <li class="discount">折　　扣:<span>${goods.discountExpress}</span></li>
     #{/if}
-        <li class="type">商品类型:<span>TODO电子消费券</span></li>
-        <li class="shipmod">配送方式:<span>TODO手机短信</span></li>
+        <li class="type">商品类型:<span>&{'goods.'+goods.materialType}</span></li>
+        <li class="shipmod">配送方式:<span>#{if models.sales.MaterialType.ELECTRONIC.equals(goods.materialType)}手机短信#{/if}#{else}快递#{/else}</span></li>
         <li class="deadline">券有效期:<span>${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span></li>
         <li class="amount">购买数量:
             <span><input class="num_input_bg" id="number" name="number" type="text" value="1"/> 件</span>
@@ -80,11 +80,11 @@
             <li>未消费全额退</li>
         </ul>
         <div class="brand">
-            <h4 class="brand-name">品牌名称: <span>${goods.brand?.name}</span></h4>
+            <h4 class="brand-name">品牌名称: <a href="/goods/list/0-0-0-0-${goods.brand.id}"><span>${goods.brand?.name}</span></a></h4>
 
-            <p class="brand-logo"><img src="${goods.brand?.showLogo}" height="83"
-                                       width="195"
-                                       alt="${goods.brand?.name}"/></p>
+            <p class="brand-logo"><a href="/goods/list/0-0-0-0-${goods.brand.id}"><img src="${goods.brand?.showLogo}"
+                                                                                height="83"width="195"
+                                       alt="${goods.brand?.name}"/></a></p>
 
             <div class="brand-text">${goods.brand?.introduce?.raw()}
             </div>

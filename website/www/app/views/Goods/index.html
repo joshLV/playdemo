@@ -2,7 +2,7 @@
 #{set title:'优惠啦 - 商品列表' /}
 
 #{set 'moreStyles'}
-  #{asset.css src:['/u/list.css'] /}
+    #{asset.css src:['/u/list.css'] /}
 #{/set}
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/goods-index.js'}"></script>
@@ -49,124 +49,153 @@
         <div class="popular">
             <div class="popular-hd">受欢迎的产品</div>
             <ul class="popular-bd">
+            #{list recommendGoodsList, as:'recommendGoods'}
                 <li>
-                    <a href="" target="_blank"><img src="http://img0.uhcdn.com/p/0/0/36/2012042310454449890_middle.jpg" width="170" height="130" alt="" /></a>
-                    <p><a href="">原装 4800毫安 移动电源 秒杀价108元</a></p>
-                    <span>原价:<del>4800</del> | 8.5折</span>
-                    <span>现价:<strong>&yen;3699</strong></span>
+                    <a href="/goods/${recommendGoods.id}" target="_blank"><img src="${recommendGoods.imageMiddlePath}"
+                                                                               width="150"
+                                                                               height="130"
+                                                                               alt="${recommendGoods.name}" width="170"
+                                                                               height="130"/></a>
+
+                    <p><a href="/goods/${recommendGoods.id}" target="_blank">${recommendGoods.name}</a></p>
+                    <span>原价:<del>${recommendGoods.faceValue}</del> | ${recommendGoods.discountExpress}</span>
+                    <span>现价:<strong>&yen;${recommendGoods.salePrice}</strong></span>
                 </li>
-                <li>
-                    <a href="" target="_blank"><img src="http://img0.uhcdn.com/p/0/0/23/2012041304465579616_middle.jpg" width="170" height="130" alt="" /></a>
-                    <p><a href="">原装 4800毫安 移动电源 秒杀价108元</a></p>
-                    <span>原价:<del>4800</del> | 8.5折</span>
-                    <span>现价:<strong>&yen;3699</strong></span>
-                </li>
-                <li>
-                    <a href="" target="_blank"><img src="http://img0.uhcdn.com/p/0/0/4/2012041004034748195_middle.jpg" width="170" height="130" alt="" /></a>
-                    <p><a href="">原装 4800毫安 移动电源 秒杀价108元</a></p>
-                    <span>原价:<del>4800</del> | 8.5折</span>
-                    <span>现价:<strong>&yen;3699</strong></span>
-                </li>
-                <li>
-                    <a href="" target="_blank"><img src="http://img0.uhcdn.com/p/0/0/23/2012041304465579616_middle.jpg" width="170" height="130" alt="" /></a>
-                    <p><a href="">原装 4800毫安 移动电源 秒杀价108元</a></p>
-                    <span>原价:<del>4800</del> | 8.5折</span>
-                    <span>现价:<strong>&yen;3699</strong></span>
-                </li>
+            #{/list}
             </ul>
         </div>
     </div>
     <div id="section">
         <div class="tabbar clearfix">
-            <a class="current" href="">全部</a>
-            <a href="">电子券</a>
-            <a href="">实体券</a>
+            <a #{if materialType == null}class="current"#{/if} href="/goods/list/0">全部</a>
+            <a href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-1"
+               #{if models.sales.MaterialType.ELECTRONIC.equals(materialType)}class="current"#{/if}>电子券</a>
+            <a href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-0"
+               #{if models.sales.MaterialType.REAL.equals(materialType)}class="current"#{/if}>实体券</a>
         </div>
         <div class="filter">
             <dl class="clearfix">
                 <dt>区域:</dt>
                 <dd>
-                    <a href="">杨浦区</a>
-                    <a href="">虹口区</a>
-                    <a href="">闸北区</a>
-                    <a href="">普陀区</a>
-                    <a href="">黄浦区</a>
-                    <a href="">静安区</a>
-                    <a href="">长宁区</a>
-                    <a href="">卢湾区</a>
-                    <a href="">徐汇区</a>
-                    <a href="">闵行区</a>
-                    <a href="">浦东新区</a>
+                #{if "0".equals(districtId)}<span class="selected_box">全部</span>
+                #{/if}
+                #{else}<a id="district"
+                          href="/goods/list/${categoryId}-${cityId}-0-${areaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                          class="font_blue">全部</a>
+                #{/else}
+                #{list districts, as:'district'}
+                    #{if district != null}
+                        #{if district.id.equals(districtId)}
+                            <span id="district" class="selected_box">${district.name}</span>
+                        #{/if}
+                        #{else}<a
+                                href="/goods/list/${categoryId}-${cityId}-${district.id}-${areaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                                class="font_blue">${district.name}</a>
+                        #{/else}
+                    #{/if}
+                #{/list}
                 </dd>
             </dl>
             <dl class="clearfix">
                 <dt>商圈:</dt>
                 <dd>
-                    <a href="">中山公园</a>
-                    <a href="">北外滩</a>
-                    <a href="">人民广场</a>
-                    <a href="">城隍庙</a>
-                    <a href="">新炒夜城</a>
-                    <a href="">虹桥</a>
-                    <a href="">五角场</a>
-                    <a href="">曹家渡</a>
-                    <a href="">淮海中路</a>
-                    <a href="">陆家嘴</a>
-                    <a href="">四川北路</a>
+                #{if "0".equals(areaId)}<span class="selected_box">全部</span>
+                #{/if}
+                #{else}<a
+                        href="/goods/list/${categoryId}-${cityId}-${districtId}-0-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                        class="font_blue">全部</a>
+                #{/else}
+                #{list areas, as:'area'}
+                    #{if area != null}
+                        #{if areaId.equals(area.id)}
+                            <span id="area" class="selected_box">${area.name}</span>
+                        #{/if}
+                        #{else}<a
+                                href="/goods/list/${categoryId}-${cityId}-${districtId}-${area.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                                class="font_blue">${area.name}</a>
+                        #{/else}
+                    #{/if}
+                #{/list}
                 </dd>
             </dl>
             <dl class="clearfix">
                 <dt>品牌:</dt>
                 <dd>
-                    <a href="">麦当劳</a>
-                    <a href="">肯德基</a>
-                    <a href="">真功夫</a>
-                    <a href="">来一份</a>
-                    <a href="">可佳基</a>
-                    <a href="">麦肯姆</a>
+                #{if brandId == 0}<span class="selected_box">全部</span>
+                #{/if}
+                #{else}<a
+                        href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                        class="font_blue">全部</a>
+                #{/else}
+                #{list brands, as:'brand'}
+                    #{if brandId == brand.id}
+                        <span id="area" class="selected_box">${brand.name}</span>
+                    #{/if}
+                    #{else}<a
+                            href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                            class="font_blue">${brand.name}</a>
+                    #{/else}
+                #{/list}
                 </dd>
             </dl>
         </div>
         <div class="rankbar">
             排序：
-            <a href="">最佳匹配</a>
-            <a class="selected" href="">最新发布</a>
-            <a href="">销量最多</a>
-            <a href="">价格最低</a>
+
+            <a #{if orderBy == 0}class="selected"#{/if}
+               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-0"
+               value="${orderBy}">最佳匹配</a>
+            <a #{if orderBy == 4}class="selected"#{/if}
+               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-4-${orderByType==0?1:0}">#{if orderBy==4 && orderByType == 1}
+                最新#{/if}#{else}最早#{/else}发布</a>
+
+            <a #{if orderBy == 1}class="selected"#{/if}
+               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-1-${orderByType==0?1:0}">销量#{if orderBy==1 && orderByType == 1}
+                最多#{/if}#{else}最少#{/else}</a>
+
+            <a #{if orderBy == 2}class="selected"#{/if}
+               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-2-${orderByType==0?1:0}">价格#{if orderBy==2 && orderByType == 1}
+                最高#{/if}#{else}最低#{/else}</a>
+
+            <a #{if orderBy == 3}class="selected"#{/if}
+               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-3-${orderByType==0?1:0}">折扣#{if orderBy==3 && orderByType == 1}
+                最大#{/if}#{else}最小#{/else}</a>
         </div>
         <div class="list-content clearfix">
             <ul class="clearfix">
             #{paginate.list items:goodsPage, as:'aGoods'}
                 <li>
-                    <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="170" height="130" alt="" /></a>
+                    <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="170"
+                                                                       height="130" alt=""/></a>
+
                     <p><a href="">${aGoods.name}</a></p>
-                    <span>原价:<del>${aGoods.faceValue}</del> | 8.5折</span>
+                    <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
                     <span>现价:<strong>&yen;${aGoods.salePrice}</strong></span>
                 </li>
             #{/paginate.list}
             </ul>
         </div>
-            <!--
-        <div class="pagination-box">
-            <div class="pagination clear-fix">
-                <a class="page-prev" href="">上一页</a>
-                <a class="page-curr" href="">1</a>
-                <a href="">2</a>
-                <a href="">3</a>
-                <a href="">4</a>
-                <a href="">5</a>
-                <a href="">6</a>
-                <span class="ellipsis">...</span>
-                <a class="page-next" href="">下一页</a>
-                <form class="page-form">
-                    <span>共37页</span>
-                    <span>到第<input type="text" class="page-num" name="page-num" value="2" />页</span>
-                    <button>确定</button>
-                <form>
-            </div>
+        <!--
+    <div class="pagination-box">
+        <div class="pagination clear-fix">
+            <a class="page-prev" href="">上一页</a>
+            <a class="page-curr" href="">1</a>
+            <a href="">2</a>
+            <a href="">3</a>
+            <a href="">4</a>
+            <a href="">5</a>
+            <a href="">6</a>
+            <span class="ellipsis">...</span>
+            <a class="page-next" href="">下一页</a>
+            <form class="page-form">
+                <span>共37页</span>
+                <span>到第<input type="text" class="page-num" name="page-num" value="2" />页</span>
+                <button>确定</button>
+            <form>
         </div>
-            -->
-        #{paginate.controls items:goodsPage /}
+    </div>
+        -->
+    #{paginate.controls items:goodsPage /}
     </div>
 </div>
 
