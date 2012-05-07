@@ -4,6 +4,7 @@ package controllers;
 import org.apache.commons.lang.StringUtils;
 
 import models.payment.AliPaymentFlow;
+import models.payment.BillPaymentFlow;
 import models.payment.PaymentFlow;
 import models.payment.TenpayPaymentFlow;
 import play.mvc.Controller;
@@ -13,6 +14,7 @@ import controllers.modules.website.cas.SecureCAS;
 @With({SecureCAS.class, WebsiteInjector.class})
 public class OrderResult extends Controller {
 	private static PaymentFlow paymentFlow = new AliPaymentFlow();
+	private static BillPaymentFlow billPaymentFlow = new BillPaymentFlow();
 
 	//支付宝
 	public static void alipayReturn() {
@@ -40,4 +42,14 @@ public class OrderResult extends Controller {
 
 	}
 
+	
+	/**
+	 * 快钱
+	 */
+	public static void billReturn() {
+		String rtnOk =billPaymentFlow.billPara.get("rtnOk");
+		String rtnUrl =billPaymentFlow.billPara.get("rtnUrl");
+		renderText("<result><%="+rtnOk+" %></result><redirecturl><%="+rtnUrl+" %></redirecturl>");
+
+	}
 }

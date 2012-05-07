@@ -3,6 +3,7 @@ package controllers;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import models.accounts.Account;
 import models.accounts.AccountType;
@@ -14,6 +15,7 @@ import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
 import models.payment.AliPaymentFlow;
+import models.payment.BillPaymentFlow;
 import models.payment.PaymentFlow;
 import models.payment.TenpayPaymentFlow;
 import play.mvc.Controller;
@@ -24,6 +26,7 @@ import controllers.modules.website.cas.SecureCAS;
 public class PaymentInfo extends Controller {
 	private static PaymentFlow alipayPaymentFlow = new AliPaymentFlow();
 	private static TenpayPaymentFlow tenpayPaymentFlow = new TenpayPaymentFlow();
+	private static BillPaymentFlow billPaymentFlow = new BillPaymentFlow();
 
 	/**
 	 * 展示确认支付信息页.
@@ -126,8 +129,12 @@ public class PaymentInfo extends Controller {
 			} catch (UnsupportedEncodingException e) {
 				error(500,"no such order");
 			}
-		} else if ("tenpay".equals(paymentCode)) {
+		} else if ("alipay".equals(paymentCode)) {
 			form = alipayPaymentFlow.generateForm(order);
+			System.out.println("############"+form);
+			render(form);
+		} else {
+			form = billPaymentFlow.generateForm(order);
 			render(form);
 		}
 	}

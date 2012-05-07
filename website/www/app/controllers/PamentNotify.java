@@ -3,6 +3,7 @@ package controllers;
 import java.io.IOException;
 
 import models.payment.AliPaymentFlow;
+import models.payment.BillPaymentFlow;
 import models.payment.PaymentFlow;
 import models.payment.TenpayPaymentFlow;
 import models.payment.tenpay.ResponseHandler;
@@ -12,6 +13,7 @@ import play.mvc.Controller;
 public class PamentNotify extends Controller {
 	private static PaymentFlow paymentFlow = new AliPaymentFlow();
 	private static TenpayPaymentFlow tenpayPaymentFlow = new TenpayPaymentFlow();
+	private static BillPaymentFlow billPaymentFlow = new BillPaymentFlow();
 
 	/**
 	 * 支付宝
@@ -37,6 +39,18 @@ public class PamentNotify extends Controller {
 				renderText(handler.doShow(url+"?error=1"));
 			}
 		} catch (IOException e) {
+			renderText("failed");
+		}
+	}
+
+	/**
+	 * 财付通
+	 */
+	public static void billNotify(){
+		System.out.println("billNotify============================");
+		if(billPaymentFlow.paymentNotify(params.all())){
+			renderText("success");
+		}else {
 			renderText("failed");
 		}
 	}

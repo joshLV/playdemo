@@ -40,10 +40,12 @@ GET     /payment_info/{id}                      PaymentInfo.index
 POST    /pay/alipay_notify                      PamentNotify.aliPayNotify
 
 GET    /pay/tenpay_notify                       PamentNotify.tenpayNotify
+POST    /pay/bill_notify                        PamentNotify.billNotify
 # 显示支付结果
 GET     /orders/alipay_result                   OrderResult.alipayReturn
 # 显示支付结果
 GET     /orders/tenpay_result                   OrderResult.tenpayReturn
+GET     /orders/billpay_result                   OrderResult.billReturn
 GET     /sms                                    SMS.index
 POST    /sms/send                               SMS.send
 
