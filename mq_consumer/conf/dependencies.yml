@@ -10,9 +10,15 @@ require:
     - resale -> resale
     - sms -> sms
     - accounts -> accounts
+    - play1 -> paginate head
+    - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - paginate_ext -> paginate_ext
     - oauth -> oauth
     - order -> order
     - sales -> sales
+    - consumer -> consumer
+    - view_ext -> view_ext
+    - supplier -> supplier
 
 repositories:
     - mavenRepository:
@@ -21,6 +27,7 @@ repositories:
         contains:
             - org.json -> *
             - com.taobao -> *
+            - com.uhuila.utils -> *
         m2compatible: true
 
     - customModules:
@@ -33,6 +40,10 @@ repositories:
             - oauth -> *
             - order -> *
             - sales -> *
+            - paginate_ext -> *
+            - consumer -> *
+            - view_ext -> *
+            - supplier -> *
 
     - play1ContributedModules:
         type: http
