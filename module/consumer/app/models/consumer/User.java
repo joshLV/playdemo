@@ -102,13 +102,13 @@ public class User extends Model {
 	 *
 	 * @param mobile 手机
 	 */
-	public static String checkMobile(String mobile) {
+	public static boolean checkMobile(String mobile) {
 
-		String returnFlag = "0";
+		boolean  isExisted = false;
 		//手机存在的情况
 		List<User> mList = User.find("byMobile", mobile).fetch();
-		if(mList.size()>0) returnFlag = "2" ;
-		return returnFlag;
+		if(mList.size()>0) isExisted = true ;
+		return isExisted;
 	}
 
 	/**

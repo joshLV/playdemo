@@ -21,7 +21,7 @@
               "/checkByTel",
               {mobile:mobile},
               function(data){
-                if(data==2){
+                if(data==1){
                    $("#passtelcheck").html("<span class='yellowInfo allstep_info'><b></b><em>验证码已成功发送，请查收！</em></span>"); 
                    updateTimer('showspan',60);
                 }else if(data==-1){

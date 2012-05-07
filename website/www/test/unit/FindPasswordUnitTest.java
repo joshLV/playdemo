@@ -29,8 +29,8 @@ public class FindPasswordUnitTest extends UnitTest {
 		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user_test1");
 		User user= User.findById(userId);
 		String mobile ="15618096151";
-		String returnFlag = user.checkMobile(mobile);
-		assertEquals("2",returnFlag);
+		boolean returnFlag = user.checkMobile(mobile);
+		assertTrue(returnFlag);
 	}
 	
 	@Test
