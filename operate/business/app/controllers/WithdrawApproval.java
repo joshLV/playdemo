@@ -1,6 +1,7 @@
 package controllers;
 
 import models.accounts.WithdrawBill;
+import models.accounts.WithdrawBillStatus;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -20,7 +21,17 @@ public class WithdrawApproval extends Controller {
         render(withdrawBills);
     }
 
-    public static void approval(String action){
-
+    public static void approval(Long id, String action){
+        WithdrawBill bill = WithdrawBill.findById(id);
+        if(bill == null || bill.status != WithdrawBillStatus.APPLIED){
+            error("cannot find the withdraw bill or the bill is processed");
+            return;
+        }
+        if (action.equals("YES")){
+            bill.success("无");
+        }else if(action.equals("NO")){
+            bill.rejected("无");
+        }
+        index();
     }
 }

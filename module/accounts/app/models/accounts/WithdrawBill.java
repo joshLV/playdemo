@@ -63,14 +63,14 @@ public class WithdrawBill extends Model {
      * @param account 申请提现的账户
      */
     public void applied(Account account){
-        AccountUtil.addBalance(account,this.amount.negate(), this.amount,
-                this.getId(),AccountSequenceType.FREEZE,"申请提现");
-
         this.account = account;
         this.status = WithdrawBillStatus.APPLIED;
         this.appliedAt = new Date();
         this.serialNumber = SerialNumberUtil.generateSerialNumber();
         this.save();
+
+        AccountUtil.addBalance(account,this.amount.negate(), this.amount,
+                this.getId(),AccountSequenceType.FREEZE,"申请提现");
     }
 
     /**

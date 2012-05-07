@@ -21,6 +21,7 @@ public class Account extends Model {
 
     public BigDecimal amount;       //可提现金额
 
+    @Column(name = "uncash_amount")
     public BigDecimal uncashAmount;       //不可提现金额
 
     @Enumerated(EnumType.STRING)
