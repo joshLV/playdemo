@@ -9,7 +9,8 @@ require:
     - com.taobao -> taobao-top 20120405
     - resale -> resale
     - sms -> sms
-    - accounts  -> accounts
+    - accounts -> accounts
+    - oauth -> oauth
 
 repositories:
     - mavenRepository:
@@ -27,6 +28,7 @@ repositories:
             - sms -> *
             - resale -> *
             - accounts  -> *
+            - oauth -> *
 
     - play1ContributedModules:
         type: http
