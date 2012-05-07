@@ -39,7 +39,7 @@ verifyTextPresent('300')
 open('/blocks')
 verifyTitle('内容块一览')
 click('id=del_${play.test.Fixtures.idCache.get("models.cms.Block-Test")}')
-assertConfirmation('您确定要删除测试内容块开始啦吗？')
+assertConfirmation('您确定要删除已被修改的内容块吗？')
 verifyTitle('内容块一览')
 #{/selenium}
 

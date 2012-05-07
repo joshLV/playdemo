@@ -25,7 +25,7 @@ app_dirs.each do |dir|
   # Dir.chdir("#{current_dir}/#{dir}")
   cmd =<<END
         cd #{current_dir}/#{dir}
-        play eclipsify
+        play eclipsify --deps
 END
   IO.popen(cmd) { |output|
     output.each_line { |line|
