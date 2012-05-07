@@ -42,6 +42,8 @@ app_dirs.each do |dir|
         cd #{current_dir}/#{dir}
         play clean;
         play auto-test --deps
+        find . -name "[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*" -exec rm '{}' \;
+        find . -name "core" -exec rm '{}' \;
 END
   IO.popen(cmd) { |output|
     output.each_line { |line|

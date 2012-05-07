@@ -2,6 +2,7 @@ cms.Block(Test):
   title: '测试内容块开始啦'
   effectiveAt: '2012-3-21T00:00:00'
   expireAt: '2013-3-21T00:00:00'
+  link: 'http://www.uhuila.com'
   displayOrder: '100'
   content: '测试内容如下'
   type: WEBSITE_SLIDE
