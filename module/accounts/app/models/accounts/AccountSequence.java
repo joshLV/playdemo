@@ -102,9 +102,11 @@ public class AccountSequence extends Model {
         this.remark = null;
     }
 
-    public static JPAExtPaginator<AccountSequence> findByAccount(AccountSequenceCondition condition, int pageNumber, int pageSize) {
+    public static JPAExtPaginator<AccountSequence> findByCondition(AccountSequenceCondition condition, int pageNumber, int pageSize) {
         JPAExtPaginator<AccountSequence> page = new JPAExtPaginator<>(null, null, AccountSequence.class, condition.getFilter(),
                 condition.getParams());
+
+        System.out.println("condition.getFilter():" + condition.getFilter());
         page.orderBy("createdAt DESC");
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);

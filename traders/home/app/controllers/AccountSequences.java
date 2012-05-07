@@ -39,7 +39,7 @@ public class AccountSequences extends Controller {
             condition = new AccountSequenceCondition();
         }
         condition.account = account;
-        JPAExtPaginator<AccountSequence> accountSequences = AccountSequence.findByAccount(condition,
+        JPAExtPaginator<AccountSequence> accountSequences = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         renderArgs.put("condition", condition);
 

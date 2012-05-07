@@ -43,15 +43,13 @@ public class OperateReports extends Controller {
         User user = User.findByLoginName(condition.accountName);
         if (user != null) {
             condition.account = AccountUtil.getAccount(user.id, AccountType.CONSUMER);
-            System.out.println("condition.account.id:" + condition.account.id);
         } else {
             condition.account = new Account();
             condition.account.accountType = AccountType.CONSUMER;
         }
-        JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByAccount(condition,
+        JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage) {
-            System.out.println("accountSequence.account.uid:" + accountSequence.account.uid);
             User consumer = User.findById(accountSequence.account.uid);
             if (consumer != null) {
                 accountSequence.accountName = consumer.loginName;
@@ -95,7 +93,7 @@ public class OperateReports extends Controller {
             condition.account = new Account();
             condition.account.accountType = AccountType.RESALER;
         }
-        JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByAccount(condition,
+        JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage) {
             Resaler resaler = Resaler.findById(accountSequence.account.uid);
@@ -129,7 +127,7 @@ public class OperateReports extends Controller {
             condition.account = new Account();
             condition.account.accountType = AccountType.SUPPLIER;
         }
-        JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByAccount(condition,
+        JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage) {
             Supplier supplier = Supplier.findById(accountSequence.account.uid);
@@ -161,7 +159,7 @@ public class OperateReports extends Controller {
         }
 
         condition.account = AccountUtil.getUhuilaAccount();
-        JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByAccount(condition,
+        JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage) {
             setOrderInfo(accountSequence);
@@ -199,7 +197,7 @@ public class OperateReports extends Controller {
         }
 
         condition.account = AccountUtil.getPlatformCommissionAccount();
-        JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByAccount(condition,
+        JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage) {
             setOrderInfo(accountSequence);
@@ -222,7 +220,7 @@ public class OperateReports extends Controller {
         }
 
         condition.account = AccountUtil.getPlatformIncomingAccount();
-        JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByAccount(condition,
+        JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage) {
             setOrderInfo(accountSequence);

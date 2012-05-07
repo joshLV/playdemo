@@ -47,7 +47,7 @@ public class AccountReports extends Controller{
             renderArgs.put("createdAtEnd", condition.createdAtEnd);
         }
         condition.account = account;
-        JPAExtPaginator<AccountSequence> seqs = AccountSequence.findByAccount(condition,
+        JPAExtPaginator<AccountSequence> seqs = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
 
         
