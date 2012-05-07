@@ -26,8 +26,8 @@ public class MyGimpyEngine extends ListImageCaptchaEngine
     public static final Integer WORD_MIN_LENGTH = new Integer(4);
     public static final Integer WORD_MAX_LENGTH = new Integer(4);
 
-    public static final Integer IMAGE_WIDTH = new Integer(80);
-    public static final Integer IMAGE_HEIGHT = new Integer(25);
+    public static final Integer IMAGE_WIDTH = new Integer(100);
+    public static final Integer IMAGE_HEIGHT = new Integer(30);
 
     public static final Integer FONT_MIN_SIZE = new Integer(15);
     public static final Integer FONT_MAX_SIZE = new Integer(18);
