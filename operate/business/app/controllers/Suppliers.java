@@ -76,7 +76,7 @@ public class Suppliers extends Controller {
 
         //发送密码给商户管理员手机
         String comment = Play.configuration.getProperty("message.comment");
-        SMSUtil.send(comment.replace("password", password), admin.mobile);
+        SMSUtil.send(comment.replace("password", password), admin.mobile, "0000");
         
         index();
     }

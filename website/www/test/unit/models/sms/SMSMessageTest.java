@@ -16,7 +16,7 @@ public class SMSMessageTest extends UnitTest{
     public void TestSMSMessage(){
         String content = "test content";
         String phoneNumber = "123456";
-        SMSMessage message = new SMSMessage(content, phoneNumber);
+        SMSMessage message = new SMSMessage(content, phoneNumber, "0000");
         
         assertEquals(content, message.getContent());
         assertEquals(1, message.getPhoneNumbers().size());

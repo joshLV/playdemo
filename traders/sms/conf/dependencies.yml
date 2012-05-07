@@ -15,7 +15,6 @@ require:
     - supplier -> supplier
     - resale -> resale
     - accounts -> accounts
-    - supplier_rbac -> supplier_rbac
     - org.jsoup -> jsoup 1.6.1
     - sms -> sms
     - view_ext -> view_ext
@@ -47,6 +46,5 @@ repositories:
             - resale -> *
             - accounts -> *
             - paginate_ext -> *
-            - supplier_rbac -> *
             - sms -> *
             - view_ext -> *

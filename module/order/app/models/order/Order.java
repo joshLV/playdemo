@@ -322,7 +322,7 @@ public class Order extends Model {
 						ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
 
 						if (!Play.mode.isDev()) {
-							SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, orderItem.phone);
+							SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, orderItem.phone, eCoupon.replyCode);
 						}
 						couponCodes.add(eCoupon.getMaskedEcouponSn());
 					}

@@ -5,6 +5,8 @@
 # Home page
 GET     /                                       Application.index
 
+GET     /getsms                                 SmsReceivers.getSms
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

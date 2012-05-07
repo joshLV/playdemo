@@ -16,17 +16,22 @@ public class SMSMessage implements Serializable {
     private String code = "0000";
     private List<String> phoneNumbers;
 
-    public SMSMessage(String content, String phoneNumber){
+    public SMSMessage(String content, String phoneNumber, String code){
         this.content = content;
         this.phoneNumbers = new ArrayList<>();
+        this.code = code;
         this.phoneNumbers.add(phoneNumber);
+    }
+    
+    public SMSMessage(String content, String phoneNumber){
+        this(content, phoneNumber, "0000");
     }
 
     public SMSMessage(String content, List<String> phoneNumbers) {
         this.content = content;
         this.phoneNumbers = phoneNumbers;
     }
-
+    
     public String getContent() {
         return content;
     }

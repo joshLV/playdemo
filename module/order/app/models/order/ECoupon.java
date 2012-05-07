@@ -26,6 +26,7 @@ import models.accounts.TradeStatus;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.RefundUtil;
 import models.accounts.util.TradeUtil;
+import models.consumer.User;
 import models.sales.Goods;
 import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
@@ -128,10 +129,16 @@ public class ECoupon extends Model {
 		this.eCouponSn = RandomNumberUtil.generateSerialNumber(10);
 		this.orderItems = orderItems;
 		
-		this.replyCode = queryAvailableReplayCode(order.userId, order.userType);
+		this.replyCode = generateAvailableReplayCode(order.userId, order.userType);
 	}
 
-	private String queryAvailableReplayCode(long userId, AccountType userType) {
+	/**
+	 * 生成当前用户唯一的ReplyCode，用于发送短信.
+	 * @param userId
+	 * @param userType
+	 * @return
+	 */
+	private String generateAvailableReplayCode(long userId, AccountType userType) {
 	    
 	    String randomNumber = null;
 	    do {
@@ -452,4 +459,14 @@ public class ECoupon extends Model {
 		}
 		return false;
 	}
+
+	/**
+	 * 按手机号及replyCode查出可用的ECoupon
+	 * @param mobile
+	 * @param code
+	 * @return
+	 */
+    public static ECoupon findByMobileAndCode(String mobile, String replyCode) {
+        return ECoupon.find("from ECoupon where orderItems.phone=? and replyCode=?", mobile, replyCode).first();
+    }
 }
