@@ -6,6 +6,7 @@ import java.util.Map;
 import models.admin.SupplierSetting;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.sales.Shop;
 import navigation.annotations.ActiveNavigation;
 
@@ -76,7 +77,11 @@ public class SupplierCoupons extends Controller {
 		if (eCoupon == null){
 			renderJSON("err");
 		}
-		eCoupon.consumed(shopId);
+		if (eCoupon.status == ECouponStatus.UNCONSUMED) {
+		    eCoupon.consumed(shopId);
+		} else {
+		    renderJSON("err");
+		}
 
 		SupplierSetting supplierSetting = new SupplierSetting();
 		supplierSetting.save(SupplierRbac.currentUser().id,shopId,shopName);
