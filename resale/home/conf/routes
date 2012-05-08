@@ -36,7 +36,10 @@ POST    /withdraw/apply                          Withdraw.create
 
 # 显示支付结果
 GET     /orders/alipay_result                   OrderResult.alipayReturn
-
+# 显示财付通回调结果
+GET     /orders/tenpay_result                   OrderResult.tenpayReturn
+# 显示快钱回调结果
+GET     /orders/99billpay_result                OrderResult.kuaiqianReturn
 # 购物车
 GET     /carts                                  ResalerCarts.index
 POST    /carts/form-add                         ResalerCarts.formAdd

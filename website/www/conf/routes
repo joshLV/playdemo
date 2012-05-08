@@ -38,14 +38,16 @@ GET     /payment_info/{id}                      PaymentInfo.index
 
 # 接收支付宝回调
 POST    /pay/alipay_notify                      PamentNotify.aliPayNotify
-
-GET    /pay/tenpay_notify                       PamentNotify.tenpayNotify
-POST    /pay/bill_notify                        PamentNotify.billNotify
+# 接收财付通回调
+GET     /pay/tenpay_notify                      PamentNotify.tenpayNotify
+# 接收快钱回调
+GET     /pay/99bill_notify                      PamentNotify.kuaiqianNotify
 # 显示支付结果
 GET     /orders/alipay_result                   OrderResult.alipayReturn
-# 显示支付结果
+# 显示财付通回调结果
 GET     /orders/tenpay_result                   OrderResult.tenpayReturn
-GET     /orders/billpay_result                   OrderResult.billReturn
+# 显示快钱回调结果
+GET     /orders/99billpay_result                OrderResult.kuaiqianReturn
 GET     /sms                                    SMS.index
 POST    /sms/send                               SMS.send
 

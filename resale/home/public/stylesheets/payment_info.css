@@ -29,7 +29,7 @@
 .dottod_line{ border-bottom:dotted 1px #CCCCCC;width:996px; height:1px;}
 
 .zhifu_arrow{ background:url(../images/red_arrow.jpg) no-repeat; padding-left:15px;  margin-left:15px; font-size:14px; font-weight:700; height:20px; line-height:21px; margin-top:13px; margin-bottom:30px;}
-.buttom_queren{ width:950px; float:left; margin-right:45px; margin-top:45px}
+.buttom_queren{ width:950px; float:left; margin-right:45px; margin-top:15px}
 .buttom_queren a{ float:right}
 
 .margin_left_26{ padding-left:26px; color:#000000; font-size:14px; font-weight:700; height:20px; line-height:20px}
@@ -88,3 +88,47 @@ table{ border-collapse:collapse}
       display: none;
       z-index: 5;
  }
+#other-pay {
+    margin-bottom: 20px;
+    padding:  5px 15px 20px;
+    border: 1px solid #D4D4D4;
+}
+#other-pay h3 {
+    font-size: 14px;
+    line-height: 32px;
+    border-bottom: 1px solid #D4D4D4;
+}
+#other-pay h4 {
+    color: #666;
+    font-size: 14px;
+}
+#other-pay input {
+    margin-right: 5px;
+}
+.zhifu {
+    padding: 30px 20px 40px;
+}
+.zhifu li {
+    float: left;
+    margin-right: 50px;
+}
+.kuaiqian {
+    padding: 20px;
+}
+.kuaiqian li {
+    float: left;
+    margin: 0 30px 25px 0;
+}
+#confirm {
+    display: block;
+    margin-left: 20px;
+    width: 100px;
+    height: 32px;
+    line-height: 32px;
+    color: #FFF;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    background: url(http://img.uhcdn.com/images/u/pay_btn.png) repeat-x 0 0;
+    cursor: pointer;
+}

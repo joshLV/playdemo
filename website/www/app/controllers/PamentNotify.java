@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.IOException;
+import java.util.Map;
 
 import models.payment.AliPaymentFlow;
 import models.payment.BillPaymentFlow;
@@ -32,24 +33,19 @@ public class PamentNotify extends Controller {
 	public static void tenpayNotify(){
 		ResponseHandler handler = new ResponseHandler();
 		try {
-			String url =Play.configuration.getProperty("tenpay.return_url");
-			if(tenpayPaymentFlow.paymentNotify(params.all())){
-				renderText(handler.doShow(url));
-			}else {
-				renderText(handler.doShow(url+"?error=1"));
-			}
+			renderText(handler.doShow(tenpayPaymentFlow.paymentNotify(params.all())));
 		} catch (IOException e) {
 			renderText("failed");
 		}
 	}
 
 	/**
-	 * 财付通
+	 * 快钱
 	 */
-	public static void billNotify(){
-		System.out.println("billNotify============================");
-		if(billPaymentFlow.paymentNotify(params.all())){
-			renderText("success");
+	public static void kuaiqianNotify(){
+		Map<String,String> map = billPaymentFlow.paymentNotify(params.all());
+		if(map != null && !"0".equals(map.get("rtnOK"))){
+			renderText("<result>"+map.get("rtnOK")+"</result><redirecturl>"+map.get("rtnUrl")+"</redirecturl>");
 		}else {
 			renderText("failed");
 		}

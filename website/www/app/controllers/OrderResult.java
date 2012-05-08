@@ -14,7 +14,6 @@ import controllers.modules.website.cas.SecureCAS;
 @With({SecureCAS.class, WebsiteInjector.class})
 public class OrderResult extends Controller {
 	private static PaymentFlow paymentFlow = new AliPaymentFlow();
-	private static BillPaymentFlow billPaymentFlow = new BillPaymentFlow();
 
 	//支付宝
 	public static void alipayReturn() {
@@ -39,17 +38,14 @@ public class OrderResult extends Controller {
 			errorMessage = "对不起，暂时无法读取信息，请您稍后再试";
 		}
 		renderTemplate("OrderResult/index.html",errorMessage);
-
 	}
 
-	
+
 	/**
 	 * 快钱
 	 */
-	public static void billReturn() {
-		String rtnOk =billPaymentFlow.billPara.get("rtnOk");
-		String rtnUrl =billPaymentFlow.billPara.get("rtnUrl");
-		renderText("<result><%="+rtnOk+" %></result><redirecturl><%="+rtnUrl+" %></redirecturl>");
+	public static void kuaiqianReturn() {
+		render("OrderResult/index.html");
 
 	}
 }

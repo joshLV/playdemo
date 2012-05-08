@@ -131,7 +131,6 @@ public class PaymentInfo extends Controller {
 			}
 		} else if ("alipay".equals(paymentCode)) {
 			form = alipayPaymentFlow.generateForm(order);
-			System.out.println("############"+form);
 			render(form);
 		} else {
 			form = billPaymentFlow.generateForm(order);

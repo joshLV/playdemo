@@ -61,7 +61,7 @@
             <div class="div_step_2">4</div>
             <div class="div_step_text_2">支付成功</div>
         </div>
-
+   %{String rtnOK=(String)request.params.get("rtnOK");}%
         <div class="dingdan_info">
             #{if errorMessage}
             <div style="margin:20px 0">
@@ -69,7 +69,11 @@
             </div>
             #{/if}
             #{else}
-            <div class="success_dingdan">恭喜，交易成功！</div>
+            <div class="success_dingdan">
+             #{if rtnOK =='-1'}没有此订单信息！#{/if }
+             #{ elseif rtnOK =='-2'}订单支付金额不相符！#{/elseif }
+             #{elseif rtnOK =='-3'}支付失败！#{/elseif}
+             #{else}恭喜，交易成功！ #{/else}</div>
             <div  class="chakan_info">
                 <a href="#"><span class="font_blue">点击查看</span></a>
                 消费门店地址，您随时可至以上点消费

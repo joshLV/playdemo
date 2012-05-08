@@ -59,7 +59,7 @@ public class TenpayPaymentFlow {
 
 		//回调通知URL，成功的时候处理订单信息
 		String return_url = Play.configuration.getProperty("tenpay.notify_url","http://192.168.18.140:29001/pay/tenpay_notify");
-		
+
 		//当前时间 yyyyMMddHHmmss
 		String currTime = TenpayUtil.getCurrTime();
 
@@ -160,13 +160,14 @@ public class TenpayPaymentFlow {
 	 * @param params 参数
 	 * @return 处理成功或失败
 	 */
-	public boolean paymentNotify(Map<String, String[]> params) {
+	public String paymentNotify(Map<String, String[]> params) {
 
 		String transaction_id = params.get("transaction_id") == null ? null : params.get("transaction_id")[0];
 		String orderNo  = params.get("sp_billno") == null ? null : params.get("sp_billno")[0];
 		BigDecimal orderAmount    = params.get("total_fee") == null ? null : new BigDecimal(params.get("total_fee")[0]);
 		String subject = params.get("subject") == null ? null : params.get("subject")[0];
-
+		String url = Play.configuration.getProperty("tenpay.return_url");
+		System.out.println("paymentNotify==========="+url);
 		boolean success = true;
 		//判断签名
 		if(isTenpaySign(params)) {
@@ -182,7 +183,7 @@ public class TenpayPaymentFlow {
 					"商品名称:" + subject;
 			Logger.info(log);
 			PaymentCallbackLog callbackLog =
-					new PaymentCallbackLog("afasfa", "tenpay", orderNo,orderAmount, pay_result, log);
+					new PaymentCallbackLog("", "tenpay", orderNo,orderAmount, pay_result, log);
 
 			if( "0".equals(pay_result) ) {
 				Order order = Order.find("byOrderNumber",orderNo).first();
@@ -190,7 +191,7 @@ public class TenpayPaymentFlow {
 				if (order == null || order.orderNumber == null ) {
 					Logger.error("tenpay_notify:没有此订单信息！");
 					callbackLog.status = "invalid_trade";
-					success = false;
+					url+="?rtnOK=-1";
 				}
 
 				BigDecimal amount= 	order.amount.multiply(new BigDecimal(100)).divide(new BigDecimal(1),0,BigDecimal.ROUND_HALF_UP);
@@ -199,7 +200,7 @@ public class TenpayPaymentFlow {
 				if(amount.compareTo(orderAmount) !=0) {
 					Logger.error("tenpay_notify:订单支付金额不相符！");
 					callbackLog.status = "invalid_order_money";
-					success = false;
+					url+="?rtnOK=-2";
 				}
 
 				if (OrderStatus.PAID.equals(order.status)) {
@@ -208,27 +209,22 @@ public class TenpayPaymentFlow {
 				} else if (success){
 					Long tradeId = order.payRequestId;
 					TradeBill tradeBill = TradeBill.findById(tradeId);
-					if(tradeBill != null){
-						//最终所有条件满足
-						TradeUtil.success(tradeBill);
-						order.paid();
-					} else {
-						callbackLog.status = "no_trade_found";
-						success = false;
-					}
+					//最终所有条件满足
+					TradeUtil.success(tradeBill);
+					order.paid();
 				}
 
 			} else {
 				Logger.error("tenpay_notify:支付失败");
 				callbackLog.status = "tenpay_verify_failed";
-				success = false;
+				url+="?rtnOK=-3";
 			}
 			callbackLog.save();
 		} else {
 			Logger.error("tenpay_notify:认证签名失败");
-			success = false;
+			url+="?rtnOK=-3";
 		}
 
-		return success;
+		return url;
 	}
 }
