@@ -6,12 +6,13 @@ load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_uni
 #{selenium 'Test Carts/index.html'}
 #{include 'test/selenium/step/login.selenium' /}
 
-open('/goods')
-click('id=libray_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_003")}')
-waitForElementPresent('id=add_cart_result_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_003")}')
+openAndWait('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_003")}')
+click('id=link_add_cart')
+waitForElementPresent('id=add_cart_result')
 
-click('id=libray_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}')
-waitForElementPresent('id=add_cart_result_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}')
+openAndWait('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}')
+click('id=link_add_cart')
+waitForElementPresent('id=add_cart_result')
 
 openAndWait('/library')
 
