@@ -91,7 +91,9 @@ public class AddressUnitTest extends UnitTest {
     @Test
     public void testDelete() {
         long id = (Long) Fixtures.idCache.get("models.consumer.Address-test2");
-        Address.delete(id);
+        User user = new User();
+        user.id = (Long) Fixtures.idCache.get("models.consumer.User-User1");
+        Address.delete(id, user);
         Address address = Address.findById(id);
         assertNull(address);
         Long defaultId = (Long) Fixtures.idCache.get("models.consumer.Address-test1");
