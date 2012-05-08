@@ -9,12 +9,12 @@ import models.accounts.TradeBill;
 import models.accounts.util.TradeUtil;
 import models.order.Order;
 import models.order.OrderStatus;
-import models.payment.tenpay.PayRequestHandler;
-import models.payment.tenpay.util.MD5Util;
-import models.payment.tenpay.util.TenpayUtil;
 import play.Logger;
 import play.Play;
 import play.mvc.Http.Request;
+import tenpay.PayRequestHandler;
+import tenpay.util.MD5Util;
+import tenpay.util.TenpayUtil;
 
 /**
  * 财付通支付接口

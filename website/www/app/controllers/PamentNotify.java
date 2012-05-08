@@ -7,9 +7,8 @@ import models.payment.AliPaymentFlow;
 import models.payment.BillPaymentFlow;
 import models.payment.PaymentFlow;
 import models.payment.TenpayPaymentFlow;
-import models.payment.tenpay.ResponseHandler;
-import play.Play;
 import play.mvc.Controller;
+import tenpay.ResponseHandler;
 
 public class PamentNotify extends Controller {
 	private static PaymentFlow paymentFlow = new AliPaymentFlow();
