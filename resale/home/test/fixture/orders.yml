@@ -20,6 +20,7 @@ order.Order(order1):
   "deleted": "UN_DELETED"
   "deliveryType": "0"
   "payMethod": "alipay"
+  "payRequestId": "0"
   
 order.Order(order2):
   "user": "user"
@@ -41,7 +42,8 @@ order.Order(order2):
   "deleted": "UN_DELETED"
   "deliveryType": "1"
   "payMethod": "alipay"
-  
+  "payRequestId": "0"
+
 order.Order(order3):
   "user": "user"
   "supplier_id": 1
@@ -62,7 +64,8 @@ order.Order(order3):
   "deleted": "UN_DELETED"
   "deliveryType": "1"
   "payMethod": "alipay"  
-  
+  "payRequestId": "0"
+
 order.Order(order4):
   "user": "user"
   "supplier_id": 1
@@ -83,7 +86,8 @@ order.Order(order4):
   "deleted": "UN_DELETED"
   "deliveryType": "1"
   "payMethod": "alipay" 
- 
+  "payRequestId": "0"
+
 order.Order(order5):
   "user": "user"
   "supplier_id": 1
@@ -104,7 +108,8 @@ order.Order(order5):
   "deleted": "UN_DELETED"
   "deliveryType": "1"
   "payMethod": "alipay"
-   
+  "payRequestId": "0"
+
 order.Order(order6):
   "user": "user"
   "supplier_id": 1
@@ -125,3 +130,4 @@ order.Order(order6):
   "deleted": "UN_DELETED"
   "deliveryType": "1"
   "payMethod": "alipay" 
+  "payRequestId": "0"

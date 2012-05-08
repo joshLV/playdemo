@@ -20,6 +20,7 @@ order.Order(order1):
   "deleted": "UN_DELETED"
   "deliveryType": "0"
   "paymentSourceCode": ""
+  "payRequestId": "0"
 
 order.OrderItems(orderItems1):
   "order": "order1"
@@ -50,6 +51,7 @@ order.Order(order_unpaid):
   "deleted": "UN_DELETED"
   "deliveryType": "0"
   "paymentSourceCode": ""
+  "payRequestId": "0"
 
 order.OrderItems(order_unpaid_items_1):
   "order": "order_unpaid"

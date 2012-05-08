@@ -295,6 +295,10 @@ public class Order extends Model {
 	 * 订单已支付，修改支付状态、时间，更改库存，发送电子券密码
 	 */
 	public void paid() {
+        if (this.status != OrderStatus.UNPAID){
+            throw new RuntimeException("can not pay order:" + this.getId() + " since it's already been processed");
+        }
+
 		this.status = OrderStatus.PAID;
 		this.paidAt = new Date();
 		this.save();
@@ -419,9 +423,7 @@ public class Order extends Model {
 	/**
 	 * 本月订单总数（成功的和进行中的）
 	 *
-	 * @param resaler
-	 * @param status
-	 * @return
+	 * @param resaler 分销商
 	 */
 	public static void getThisMonthTotal(Resaler resaler) {
 

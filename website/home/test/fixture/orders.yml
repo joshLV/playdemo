@@ -19,6 +19,8 @@ order.Order(order1):
   "deleted": "UN_DELETED"
   "deliveryType": "0"
   "payMethod": "alipay"
+  "payRequestId": "0"  
+  
   
 order.Order(order2):
   "user": "selenium"
@@ -39,3 +41,4 @@ order.Order(order2):
   "deleted": "UN_DELETED"
   "deliveryType": "1"
   "payMethod": "alipay"
+  "payRequestId": "0"  
