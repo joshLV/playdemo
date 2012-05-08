@@ -231,7 +231,7 @@ public class TradeUtil {
         }
         if (tradeBill.balancePaymentAmount.compareTo(BigDecimal.ZERO) >= 0) {
             AccountUtil.addBalance(
-                    tradeBill.fromAccount,
+                    tradeBill.fromAccount.getId(),
                     tradeBill.balancePaymentAmount.negate(),
                     BigDecimal.ZERO,
                     tradeBill.getId(),
@@ -240,7 +240,7 @@ public class TradeUtil {
         }
         if (tradeBill.ebankPaymentAmount.add(tradeBill.balancePaymentAmount).compareTo(BigDecimal.ZERO) >= 0) {
             AccountUtil.addBalance(
-                    tradeBill.toAccount,
+                    tradeBill.toAccount.getId(),
                     tradeBill.ebankPaymentAmount.add(tradeBill.balancePaymentAmount),
                     BigDecimal.ZERO,
                     tradeBill.getId(),

@@ -54,7 +54,7 @@ public class ChargeUtil {
         //修改流水状态
         chargeBill.chargeStatus = ChargeStatus.SUCCESS;
         //更新账户余额
-        AccountUtil.addBalance(chargeBill.account, chargeBill.amount, BigDecimal.ZERO,
+        AccountUtil.addBalance(chargeBill.account.getId(), chargeBill.amount, BigDecimal.ZERO,
                 chargeBill.getId(), AccountSequenceType.REFUND, "充值");
 
         return chargeBill.save();

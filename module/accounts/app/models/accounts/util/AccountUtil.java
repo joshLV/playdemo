@@ -54,7 +54,7 @@ public class AccountUtil {
     /**
      * 变更账户余额，同时保存凭证相关信息.
      *
-     * @param account       需要变更的账户
+     * @param accountId     需要变更的账户ID
      * @param cashAugend    可提现金额变更额度
      * @param uncashAugend  不可提现金额变更额度
      * @param billId        关联的交易ID
@@ -62,8 +62,13 @@ public class AccountUtil {
      * @param note          变动备注
      * @return              变更后的账户
      */
-    public static Account addBalance(Account account, BigDecimal cashAugend, BigDecimal uncashAugend,
+    public static Account addBalance(Long accountId, BigDecimal cashAugend, BigDecimal uncashAugend,
                                      Long billId, AccountSequenceType sequenceType, String note){
+        Account account = Account.findById(accountId);
+        if(account == null){
+            throw new RuntimeException("can not find the specified account");
+        }
+
         if(billId == null || sequenceType == null){
             throw new RuntimeException("error while add balance to account: miss parameter");
         }
@@ -80,12 +85,17 @@ public class AccountUtil {
         }
 
         account.save();
-        accountChanged(account, cashAugend, uncashAugend, billId, sequenceType, note);
+        accountChanged(account.getId(), cashAugend, uncashAugend, billId, sequenceType, note);
         return account;
     }
 
-    private static void accountChanged(Account account, BigDecimal cashAmount, BigDecimal uncashAmount,
+    private static void accountChanged(Long accountId, BigDecimal cashAmount, BigDecimal uncashAmount,
                                        Long billId, AccountSequenceType sequenceType, String note){
+        Account account = Account.findById(accountId);
+        if(account == null){
+            throw new RuntimeException("can not find the specified account");
+        }
+
         //保存账户变动信息
         AccountSequence accountSequence = new AccountSequence(
                 account,

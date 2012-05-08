@@ -69,7 +69,7 @@ public class WithdrawBill extends Model {
         this.serialNumber = SerialNumberUtil.generateSerialNumber();
         this.save();
 
-        AccountUtil.addBalance(account,this.amount.negate(), this.amount,
+        AccountUtil.addBalance(account.getId(),this.amount.negate(), this.amount,
                 this.getId(),AccountSequenceType.FREEZE,"申请提现");
     }
 
@@ -83,7 +83,7 @@ public class WithdrawBill extends Model {
             throw new RuntimeException("The withdraw request has been processed");
         }
 
-        AccountUtil.addBalance(this.account, this.amount, this.amount.negate(),
+        AccountUtil.addBalance(this.account.getId(), this.amount, this.amount.negate(),
                 this.getId(), AccountSequenceType.UNFREEZE,"拒绝提现");
 
         this.comment = comment;
@@ -101,7 +101,7 @@ public class WithdrawBill extends Model {
             throw new RuntimeException("The withdraw request has been processed");
         }
 
-        AccountUtil.addBalance(this.account, BigDecimal.ZERO, this.amount.negate(),
+        AccountUtil.addBalance(this.account.getId(), BigDecimal.ZERO, this.amount.negate(),
                 this.getId(), AccountSequenceType.WITHDRAW, "提现成功");
 
         this.status = WithdrawBillStatus.SUCCESS;

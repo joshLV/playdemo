@@ -300,9 +300,9 @@ public class Order extends Model {
 		this.save();
 		Account account = AccountUtil.getAccount(this.userId, this.userType);
 		//补加两个账户交易记录
-        AccountUtil.addBalance(account,this.accountPay.add(this.discountPay),
+        AccountUtil.addBalance(account.getId(),this.accountPay.add(this.discountPay),
                 BigDecimal.ZERO, this.payRequestId,AccountSequenceType.CHARGE,"账户充值");
-        AccountUtil.addBalance(account,this.accountPay.add(this.discountPay).negate(),
+        AccountUtil.addBalance(account.getId(),this.accountPay.add(this.discountPay).negate(),
                 BigDecimal.ZERO, this.payRequestId, AccountSequenceType.PAY,"支付");
 
 		//如果是电子券
