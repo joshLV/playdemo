@@ -62,10 +62,10 @@
                     <td width="118" align="center" valign="middle"><span
                             class="strong_gray">${row?.getWebEcouponSn()}</span></td>
                      <td width="66" align="center" valign="middle">
-                     #{if "SENT".equals(row?.status.toString()) && "REAL".equals(row?.goods?.materialType.toString()) }已发货#{/if}
-                     #{elseif "PAID".equals(row?.status.toString()) && "ELECTRONIC".equals(row?.goods?.materialType.toString()) }已发送#{/elseif}
+                     #{if (models.order.OrderStatus.SENT.equals(row?.status) && models.sales.MaterialType.REAL.equals(row?.goods?.materialType))}已发货#{/if}
+                     #{elseif (models.order.OrderStatus.PAID.equals(row?.status) && models.sales.MaterialType.ELECTRONIC.equals(row?.goods?.materialType)) }已发送#{/elseif}
                      
-                      #{if "PAID".equals(row?.status.toString()) && "REAL".equals(row?.goods?.materialType.toString()) }未发货#{/if}
+                     #{if (models.order.OrderStatus.PAID.equals(row?.status) && models.sales.MaterialType.REAL.equals(row?.goods?.materialType))}未发货#{/if}
                      #{elseif "UNPAID".equals(row?.status.toString()) && "ELECTRONIC".equals(row?.goods?.materialType.toString()) }未发送#{/elseif}
                      </td>        
                     #{if (++m == 1) }

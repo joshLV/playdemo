@@ -44,8 +44,6 @@ PUT     /resalers/{id}/freeze                   Resalers.freeze
 PUT     /resalers/{id}/unfreeze                 Resalers.unfreeze
 DELETE  /resalers/{id}                          Resalers.delete
 
-GET     /account-report                         AccountReports.index
-
 #运营后台订单
 GET     /orders                                 OperateOrders.index
 GET     /orders/{id}                            OperateOrders.details
