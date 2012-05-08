@@ -2,6 +2,7 @@ package controllers;
 
 import models.admin.SupplierUser;
 import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import play.mvc.Controller;
@@ -31,16 +32,27 @@ public class SmsReceivers extends Controller {
        SupplierUser supplierUser = SupplierUser.find("from SupplierUser where supplier.id=? and jobNumber=?", ecoupon.goods.supplierId, msg).first();
        
        if (supplierUser == null) {
-           SMSUtil.send("没有找到对应的店员工号，请确认您的输入只包括工号，或是否是在" + supplier.fullName + "门店消费，谢谢！", mobile, code);
+           // 发给消费者
+           SMSUtil.send("没有找到对应的店员工号，请确认您的输入只包括工号，或确认您是在<" + supplier.fullName + ">的门店消费，谢谢！", mobile, code);
+           renderText("error, coupon=" + ecoupon.getMaskedEcouponSn() + ",没有找到对应的店员工号");
        }
        if (supplierUser.shop == null) {
+           // 发给消费者
            SMSUtil.send("指定店员" + supplierUser.userName + "无门店设置，请询问店员，谢谢！", mobile, code);
+           renderText("error, coupon=" + ecoupon.getMaskedEcouponSn() + ",指定店员" + supplierUser.userName + "无门店设置");
        }
        
-       ecoupon.consumed(supplierUser.shop.id);
+       if (ecoupon.status == ECouponStatus.UNCONSUMED) {
+           ecoupon.consumed(supplierUser.shop.id);
+           // 发给店员
+           SMSUtil.send("收到" + mobile + "的" + ecoupon.faceValue + "元费用，券号:" + ecoupon.getMaskedEcouponSn(), supplierUser.mobile, code);
+           // 发给消费者
+           SMSUtil.send("你的券号:" + ecoupon.getMaskedEcouponSn() + "(面值" + ecoupon.faceValue + "元)已经消费成功", mobile, code);
+       } else {
+           // 发给消费者
+           SMSUtil.send("你的券号:" + ecoupon.getMaskedEcouponSn() + "(面值" + ecoupon.faceValue + "元)不能消费，状态码：" + ecoupon.status.toString(), mobile, code);
+       }
        
-       SMSUtil.send("收到" + mobile + "的" + ecoupon.faceValue + "元费用，券号:" + ecoupon.eCouponSn, supplierUser.mobile, code);
-       
-       renderText("ok, coupon=" + ecoupon.eCouponSn);
+       renderText("ok, coupon=" + ecoupon.getMaskedEcouponSn());
     }
 }
