@@ -415,7 +415,7 @@ $(function(){
                     addrName.parent().append('<span class="required"> 收货人不能空！</span>');
                     return;
                 }
-                if (addrMobile.val() == '' ||　!$.isNumeric(addrMobile.val()) || !(addrMobile.val().length == 11)) {
+                if (addrMobile.val() == '' || !$.isNumeric(addrMobile.val()) || !(addrMobile.val().length == 11)) {
                     if (addrAreaCode.val() == '' || addrPhoneNum.val() == '' ) {
                         addrMobile.parent().children('span').addClass('required');
                         return;
@@ -475,7 +475,7 @@ $(function(){
                     addrName.parent().append('<span class="required"> 收货人不能空！</span>');
                     return;
                 }
-                if (addrMobile.val() == '' ||　!$.isNumeric(addrMobile.val()) || !(addrMobile.val().length == 11)) {
+                if (addrMobile.val() == '' || !$.isNumeric(addrMobile.val()) || !(addrMobile.val().length == 11)) {
                     if (addrAreaCode.val() == '' || addrPhoneNum.val() == '' ) {
                         addrMobile.parent().children('span').addClass('required');
                         return;

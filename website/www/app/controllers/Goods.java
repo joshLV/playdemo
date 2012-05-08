@@ -30,7 +30,8 @@ import java.util.List;
 public class Goods extends Controller {
 
     public static String SHANGHAI = "021";
-    public static int LIMIT = 8;
+    public static int LIMIT = 13;
+    public static int AREA_LIMIT = 11;
     public static int PAGE_SIZE = 20;
 
     /**
@@ -45,9 +46,9 @@ public class Goods extends Controller {
         //默认取出5页产品
         List<models.sales.Goods> goodsList = models.sales.Goods.findTop(PAGE_SIZE * 5);
 
-        //默认取出前8个上海的区
+        //默认取出前n个上海的区
         List<Area> districts = Area.findTopDistricts(SHANGHAI, LIMIT);
-        List<Area> areas = Area.findTopAreas(LIMIT);
+        List<Area> areas = Area.findTopAreas(AREA_LIMIT);
         List<Category> categories = Category.findTop(LIMIT);
         List<Brand> brands = Brand.findTop(LIMIT);
 
@@ -143,9 +144,9 @@ public class Goods extends Controller {
             JPAExtPaginator<models.sales.Goods> goodsPage = models.sales
                     .Goods.findByCondition(goodsCond, pageNumber, PAGE_SIZE);
 
-            //默认取出前8个上海的区
+            //默认取出前n个上海的区
             List<Area> districts = Area.findTopDistricts(SHANGHAI, LIMIT, goodsCond.districtId);
-            List<Area> areas = Area.findTopAreas(goodsCond.districtId, LIMIT, goodsCond.areaId);
+            List<Area> areas = Area.findTopAreas(goodsCond.districtId, AREA_LIMIT, goodsCond.areaId);
             List<Category> categories = Category.findTop(LIMIT, goodsCond.categoryId);
             List<Brand> brands = Brand.findTop(LIMIT, goodsCond.brandId);
 

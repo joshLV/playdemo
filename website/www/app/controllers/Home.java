@@ -39,7 +39,7 @@ public class Home extends Controller {
         //前n个区域
         List<Area> districts = Area.findTopDistricts(Goods.SHANGHAI, 12);
         //前n个商圈
-        List<Area> areas = Area.findTopAreas(12);
+        List<Area> areas = Area.findTopAreas(13);
         List<Category> categories = Category.findTop(8);
         renderArgs.put("categoryId", categoryId);
         

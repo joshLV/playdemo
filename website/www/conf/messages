@@ -28,3 +28,4 @@ user.confirmPassword=确认密码
 
 goods.REAL=实物
 goods.ELECTRONIC=电子券
+goods.null=

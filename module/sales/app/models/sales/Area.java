@@ -121,7 +121,7 @@ public class Area extends GenericModel {
     public static List<Area> findTopDistricts(String cityId, int limit,
                                               String districtId) {
         List<Area> districts = findTopDistricts(cityId, limit);
-        if (StringUtils.isNotBlank(districtId)) {
+        if (StringUtils.isNotBlank(districtId) && !"0".equals(districtId)) {
             boolean containsSelectedDistrict = false;
             for (Area district : districts) {
                 if (district.id.equals(districtId)) {
