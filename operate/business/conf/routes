@@ -37,6 +37,10 @@ PUT     /suppliers/{id}/freeze                  Suppliers.freeze
 PUT     /suppliers/{id}/unfreeze                Suppliers.unfreeze
 DELETE  /suppliers/{id}                         Suppliers.delete
 
+# 增加提现账户
+POST    /withdraw-account                       Suppliers.withdrawAccountCreateAndUpdate
+POST    /withdraw-account/delete                Suppliers.withdrawAccountDelete
+
 GET     /resalers                               Resalers.index
 GET     /resalers/{id}/view                     Resalers.detail
 POST    /resalers/update                        Resalers.update

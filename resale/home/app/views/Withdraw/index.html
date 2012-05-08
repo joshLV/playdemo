@@ -31,6 +31,7 @@
             <td>提现金额</td>
             <td>申请时间</td>
             <td>状态</td>
+            <td>处理时间</td>
             <td>申请反馈</td>
         </tr>
         #{list items:withdrawBills, as:'withdrawBill'}
@@ -44,6 +45,7 @@
             <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
             <td>${withdrawBill.appliedAt.format()}</td>
             <td>&{'withdraw.'+ withdrawBill.status}</td>
+            <td>${withdrawBill.processedAt?.format()}</td>
             <td>${withdrawBill.comment}</td>
         </tr>
         #{/list}

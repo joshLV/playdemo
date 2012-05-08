@@ -88,6 +88,7 @@ public class WithdrawBill extends Model {
 
         this.comment = comment;
         this.status = WithdrawBillStatus.REJECTED;
+        this.processedAt = new Date();
         this.save();
     }
 
@@ -106,6 +107,7 @@ public class WithdrawBill extends Model {
 
         this.status = WithdrawBillStatus.SUCCESS;
         this.comment = comment;
+        this.processedAt = new Date();
         this.save();
     }
 

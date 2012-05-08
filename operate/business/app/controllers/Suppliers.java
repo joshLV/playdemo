@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import models.accounts.AccountType;
+import models.accounts.WithdrawAccount;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.sms.SMSUtil;
@@ -150,7 +153,30 @@ public class Suppliers extends Controller {
     public static void edit(long id) {
         Supplier supplier = Supplier.findById(id);
         SupplierUser admin = SupplierUser.findAdmin(id, supplier.loginName);
-        render(supplier, admin, id);
+        List<WithdrawAccount> withdrawAccounts =
+                WithdrawAccount.find("byUserIdAndAccountType", supplier.getId(), AccountType.SUPPLIER).fetch();
+        render(supplier, admin, id, withdrawAccounts);
+    }
+
+    public static void withdrawAccountCreateAndUpdate(@Valid WithdrawAccount withdrawAccount, Long supplierId){
+        if(Validation.hasErrors()){
+            renderArgs.put("withdrawAccount", withdrawAccount);
+            Validation.keep();
+            edit(supplierId);
+        }
+        Supplier supplier = Supplier.findById(supplierId);
+        withdrawAccount.userId = supplier.getId();
+        withdrawAccount.accountType = AccountType.SUPPLIER;
+        withdrawAccount.save();
+        index();
+    }
+
+    public static void withdrawAccountDelete(Long id, Long supplierId){
+        WithdrawAccount withdrawAccount = WithdrawAccount.findById(id);
+        if(withdrawAccount != null){
+            withdrawAccount.delete();
+        }
+        edit(supplierId);
     }
 
     public static void update(Long id, @Valid Supplier supplier, File image, @Valid SupplierUser admin, Long adminId) {

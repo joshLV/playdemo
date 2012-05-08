@@ -158,3 +158,9 @@ platform.RESALER=分销网
 withdraw.APPLIED=等待审批
 withdraw.SUCCESS=成功
 withdraw.REJECTED=被拒绝
+
+withdrawAccount.userName=开户姓名
+withdrawAccount.bankName=银行
+withdrawAccount.bankCity=城市
+withdrawAccount.cardNumber=银行卡号
+
