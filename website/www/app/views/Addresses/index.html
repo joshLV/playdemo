@@ -1,0 +1,14 @@
+#{list addressList, as:'address'}
+<li class="clearfix" id="addr-li-${address?.id}">
+                    <span class="addr-one">
+                        <input type="radio" #{if address?.isDefault}checked#{/if} name="addr" id="addrId_${address?.id}" value="${address?.id}" />
+                        <label for="addrId_${address?.id}">${address?.fullAddress} (${address?.name} 收)
+                            <em>${address.mobile}</em></label>
+                    </span>
+    <span class="addr-action"><a class="addr-edit" data-addrid="${address?.id}" href="#">编辑</a> <a class="addr-del" data-addrid="${address?.id}" href="#">删除</a></span>
+</li>
+#{/list}
+<li class="addr-new">
+    <input type="radio" name="addr" id="addrId_new"/>
+    <label for="addrId_new">使用新地址</label>
+</li>

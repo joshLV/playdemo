@@ -57,12 +57,16 @@ GET     /bookenhancemirror                      Books.bookenhancemirror
 # 订单
 GET     /orders                                 Orders.index
 POST    /orders/new                             Orders.create
+
+# 地址
+GET     /orders/addresses                       Addresses.index
+POST    /orders/addresses/new                   Addresses.create
+GET     /orders/addresses/new                   Addresses.add
+GET     /orders/addresses/default               Addresses.showDefault
 GET     /orders/addresses/{id}                  Addresses.show
 GET     /orders/addresses/{id}/edit             Addresses.edit
 PUT     /orders/addresses/{id}                  Addresses.update
 PUT     /orders/addresses/{id}/default          Addresses.updateDefault
-GET     /orders/addresses/new                   Addresses.add
-POST    /orders/addresses/new                   Addresses.create
 DELETE  /orders/addresses/{id}                  Addresses.delete
 
 # 商圈区域

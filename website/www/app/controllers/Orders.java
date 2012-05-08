@@ -76,6 +76,7 @@ public class Orders extends Controller {
         }
 
         List<Address> addressList = Address.findByOrder(SecureCAS.getUser());
+        Address defaultAddress = Address.findDefault(SecureCAS.getUser());
 
         //如果有实物商品，加上运费
         if (rCartList.size() > 0) {
@@ -87,6 +88,7 @@ public class Orders extends Controller {
         renderArgs.put("goodsAmount", goodsAmount);
         renderArgs.put("totalAmount", totalAmount);
         renderArgs.put("addressList", addressList);
+        renderArgs.put("address", defaultAddress);
         renderArgs.put("eCartList", eCartList);
         renderArgs.put("eCartAmount", eCartAmount);
         renderArgs.put("rCartList", rCartList);
@@ -108,21 +110,24 @@ public class Orders extends Controller {
         Map<Long, Integer> itemsMap = new HashMap<>();
         parseItems(items, goodsIds, itemsMap);
         List<models.sales.Goods> goods = models.sales.Goods.findInIdList(goodsIds);
-        boolean containsElectronic = false;
-        for (Goods good : goods) {
-            if (MaterialType.ELECTRONIC.equals(good.materialType)) {
-                containsElectronic = true;
-                break;
-            }
-        }
+        boolean containsElectronic = containsMaterialType(goods, MaterialType.ELECTRONIC);
+        boolean containsReal = containsMaterialType(goods, MaterialType.REAL);
 
-        System.out.println("containsElectronic:" + containsElectronic);
-
-
+        //电子券必须校验手机号
         if (containsElectronic) {
             Validation.required("mobile", mobile);
             Validation.match("mobile", mobile, "^1[3|4|5|8][0-9]\\d{4,8}$");
         }
+
+        //实物券必须校验收货地址信息
+        Address defaultAddress = null;
+        if (containsReal) {
+            defaultAddress = Address.findDefault(SecureCAS.getUser());
+            if (defaultAddress == null) {
+                Validation.addError("address", "validation.required");
+            }
+        }
+
 
         if (Validation.hasErrors()) {
             for (String key : validation.errorsMap().keySet()) {
@@ -135,9 +140,9 @@ public class Orders extends Controller {
 
         //创建订单
         Order order = new Order(user.getId(), AccountType.CONSUMER);
-        Address defaultAddress = Address.findDefault(user);
-        order.setAddress(defaultAddress);
-
+        if (defaultAddress != null) {
+            order.setAddress(defaultAddress);
+        }
         //添加订单条目
         try {
             for (models.sales.Goods goodsItem : goods) {
@@ -160,6 +165,17 @@ public class Orders extends Controller {
         Cart.delete(user, cookieValue, goodsIds);
 
         redirect("/payment_info/" + order.getId());
+    }
+
+    private static boolean containsMaterialType(List<Goods> goods, MaterialType type) {
+        boolean containsElectronic = false;
+        for (Goods good : goods) {
+            if (type.equals(good.materialType)) {
+                containsElectronic = true;
+                break;
+            }
+        }
+        return containsElectronic;
     }
 
     private static void parseItems(String items, List<Long> goodsIds, Map<Long, Integer> itemsMap) {

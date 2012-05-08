@@ -38,7 +38,7 @@
                       .goods.name}</a> &yen;${cartItem.goods.salePrice} x${cartItem.number}</p>
                     #{/list}
                     <a class="view-carts" href="http://www.uhuila.cn/carts">查看购物车</a>
-                    <a class="view-carts" href="http://home.uhuila.cn/orders?items=#{list items:carts,
+                    <a class="view-carts" href="http://www.uhuila.cn/orders?items=#{list items:carts,
                     as:'cartItem'}${cartItem.goods.id}-${cartItem.number},#{/list}">去结算</a>
                 #{/if}
                 #{else}

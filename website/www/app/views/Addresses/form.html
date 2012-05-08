@@ -1,0 +1,54 @@
+<table id="J_editAddr" border="0" cellpadding="0" cellspacing="0">
+#{if address!= null }
+    <caption>编辑以下地址：</caption>
+#{/if}
+    <tr>
+        <td width="70" align="right"><span class="required">*</span>地　　区：</td>
+        <td>
+            <select class="addr-prov" id="J_addrProv" name="addr-prov"></select>
+            <select class="addr-city" id="J_addrCity" name="addr-city"></select>
+            <select class="addr-dist" id="J_addrDist" name="addr-dist"></select>
+            <span class="required" id="err-district"></span>
+        </td>
+    </tr>
+    <tr>
+        <td align="right"><span class="required">*</span>街道地址：</td>
+        <td>
+            <input class="addr-street" id="J_addrStreet" type="text" value="${address?.address}" />
+            <span class="required" id="err-address"></span></td>
+    </tr>
+    <tr>
+        <td align="right"><span class="required">*</span>邮政编码：</td>
+        <td><input class="addr-post" id="J_addrPost" type="text" value="${address?.postcode}" />
+            <span class="required" id="err-postcode"></span></td>
+    </tr>
+    <tr>
+        <td align="right"><span class="required">*</span>收 货 人：</td>
+        <td>
+            <input class="addr-name" id="J_addrName" type="text" value="${address?.name}" />
+            <span class="required" id="err-name"></span>
+        </td>
+    </tr>
+    <tr>
+        <td align="right"><span class="required">*</span>手　　机：</td>
+        <td>
+            <input class="addr-mobile" id="J_addrMobile" type="text" value="${address?.mobile}" /> 或 电话：
+            <input class="addr-area-code" id="J_addrAreaCode" type="text" value="${address?.areaCode}"
+                   placeholder="区号"/> -
+            <input class="addr-phone-num" id="J_addrPhoneNum" type="text" value="${address?.phoneNumber}"
+                   placeholder="电话号码"/> -
+            <input class="addr-phone-ext" id="J_addrPhoneExt" type="text" value="${address?.phoneExtNumber}"
+                   placeholder="分机(可选)"/> 手机和电话请至少填写一个<span class="required" id="err-phone"></span>
+        </td>
+    </tr>
+</table>
+<script>
+    // 省市区三级联动
+    #{if address!= null }
+        new PCAS('addr-prov','addr-city','addr-dist','${address?.province}','${address?.city}','${address?.district}');
+    #{/if}
+    #{else}
+        // 省市区三级联动
+        new PCAS('addr-prov', 'addr-city', 'addr-dist', '上海市', '市辖区', '黄浦区');
+    #{/else}
+</script>

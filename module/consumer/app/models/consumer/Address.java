@@ -7,8 +7,10 @@ import play.db.jpa.Model;
 import play.modules.view_ext.annotation.Mobile;
 import play.modules.view_ext.annotation.Postcode;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -18,7 +20,7 @@ import java.util.List;
 @Entity
 @Table(name = "address")
 public class Address extends Model {
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     public User user;
     @Required
     public String province;
@@ -130,13 +132,12 @@ public class Address extends Model {
         }
     }
 
-
-    public static void delete(long id) {
+    public static void delete(long id, User user) {
         Address address = Address.findById(id);
         if (address != null) {
             if (address.isDefault != null && address.isDefault) {
                 address.delete();
-                List<Address> addressList = Address.findAll();
+                List<Address> addressList = Address.findByOrder(user);
                 if (addressList.size() > 0) {
                     Address defaultAddress = addressList.get(0);
                     defaultAddress.isDefault = true;
@@ -168,6 +169,4 @@ public class Address extends Model {
         oldAddress.province = address.province;
         oldAddress.save();
     }
-
-
 }

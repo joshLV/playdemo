@@ -100,7 +100,7 @@ public class UserAddresses extends Controller {
      * @param id
      */
     public static void delete(long id) {
-        Address.delete(id);
+        Address.delete(id, SecureCAS.getUser());
 
         index();
     }

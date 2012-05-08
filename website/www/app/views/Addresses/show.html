@@ -1,6 +1,2 @@
-{
-    "id": ${address?.id},
-    "fullAddress": "${address?.fullAddress}",
-    "name": "${address?.name}",
-    "mobile": "${address?.mobile}"
-}
+#{if address == null}无#{/if}
+#{else}${address?.fullAddress} (${address?.name} 收) <em>${address?.mobile}</em>#{/else}
