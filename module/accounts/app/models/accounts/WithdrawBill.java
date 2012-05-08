@@ -62,7 +62,7 @@ public class WithdrawBill extends Model {
      *
      * @param account 申请提现的账户
      */
-    public void applied(Account account){
+    public void apply(Account account){
         this.account = account;
         this.status = WithdrawBillStatus.APPLIED;
         this.appliedAt = new Date();
@@ -78,7 +78,11 @@ public class WithdrawBill extends Model {
      *
      * @param comment 拒绝理由.
      */
-    public void rejected(String comment){
+    public void reject(String comment){
+        if(this.status != WithdrawBillStatus.APPLIED){
+            throw new RuntimeException("The withdraw request has been processed");
+        }
+
         AccountUtil.addBalance(this.account, this.amount, this.amount.negate(),
                 this.getId(), AccountSequenceType.UNFREEZE,"拒绝提现");
 
@@ -92,7 +96,11 @@ public class WithdrawBill extends Model {
      *
      * @param comment 备注.
      */
-    public void success(String comment){
+    public void agree(String comment){
+        if(this.status != WithdrawBillStatus.APPLIED){
+            throw new RuntimeException("The withdraw request has been processed");
+        }
+
         AccountUtil.addBalance(this.account, BigDecimal.ZERO, this.amount.negate(),
                 this.getId(), AccountSequenceType.WITHDRAW, "提现成功");
 

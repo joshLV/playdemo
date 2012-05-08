@@ -31,8 +31,8 @@
                 <td>&{'withdraw.' + withdrawBill.status}</td>
                 <td>
                     #{if withdrawBill.status == models.accounts.WithdrawBillStatus.APPLIED}
-                    <a href="/withdraw/approval?id=${withdrawBill.id}&action=YES"> 通过 </a>|
-                    <a href="/withdraw/approval?id=${withdrawBill.id}&action=NO"> 拒绝 </a>
+                    <a href="/withdraw/approve?id=${withdrawBill.id}&action=agree"> 通过 </a>|
+                    <a href="/withdraw/approve?id=${withdrawBill.id}&action=reject"> 拒绝 </a>
                     #{/if}
                 </td>
             </tr>
