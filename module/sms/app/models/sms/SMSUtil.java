@@ -10,24 +10,19 @@ import models.order.ECoupon;
  * User: likang
  */
 public class SMSUtil {
-    public static final String QUEUE_NAME = Play.mode.isProd() ? "send_sms" : "send_sms_dev";
     
-    public static final String SMS_QUEUE2 = Play.mode.isProd() ? "send_sms2" : "send_sms_dev2";
+    // 短信MQ名称，在测试模式加入一个时间戳，以避免被其它进程消费.
+    public static final String SMS_QUEUE = Play.mode.isProd() ? "send_sms" 
+            : (Play.runingInTestMode() ? "send_sms_test_" + System.currentTimeMillis() : "send_sms_dev");
+    
     
     private SMSUtil(){}
     
     public static void send(String content, String phoneNumber, String code){
-        RabbitMQPublisher.publish(QUEUE_NAME, new SMSMessage(content, phoneNumber, code));
+        RabbitMQPublisher.publish(SMS_QUEUE, new SMSMessage(content, phoneNumber, code));
     }
     public static void send(String content, List<String> phoneNumbers){
-        RabbitMQPublisher.publish(QUEUE_NAME, new SMSMessage(content, phoneNumbers));
+        RabbitMQPublisher.publish(SMS_QUEUE, new SMSMessage(content, phoneNumbers));
     }
     
-    
-    public static void send2(String content, String phoneNumber, String code){
-        RabbitMQPublisher.publish(SMS_QUEUE2, new SMSMessage(content, phoneNumber, code));
-    }
-    public static void send2(String content, List<String> phoneNumbers){
-        RabbitMQPublisher.publish(SMS_QUEUE2, new SMSMessage(content, phoneNumbers));
-    }
 }

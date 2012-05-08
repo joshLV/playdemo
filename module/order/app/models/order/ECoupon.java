@@ -289,6 +289,8 @@ public class ECoupon extends Model {
 		}
 
 		getShop().id=shopId;
+		
+		this.shop = Shop.findById(shopId);
 		this.status = ECouponStatus.CONSUMED;
 		this.consumedAt = new Date();
 		this.save();

@@ -1,6 +1,12 @@
-package models.sms;
+package models.sms.impl;
 
-import models.journal.MQJournal;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import models.sms.SMSMessage;
+import models.sms.SMSProvider;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -11,48 +17,15 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import play.Logger;
 import play.Play;
-import play.db.jpa.JPAPlugin;
-import play.jobs.OnApplicationStart;
-import play.modules.rabbitmq.RabbitMQPlugin;
-import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+public class HaduoHttpSMSProvider implements SMSProvider {
 
-
-/**
- * User: likang
- */
-@OnApplicationStart(async = true)
-public class HaduoHttpConsumer extends RabbitMQConsumer<SMSMessage> {
     private final String SEND_URL = Play.configuration.getProperty("sms.http.send_url");
-
-
-    /**
-     * 保存发送记录
-     *
-     * @param message 消息
-     * @param status  状态
-     * @param serial  成功序列号
-     */
-    private void saveJournal(SMSMessage message, String status, String serial) {
-        JPAPlugin.startTx(false);
-        for (String phone : message.getPhoneNumbers()) {
-            new MQJournal(SMSUtil.QUEUE_NAME, message.getContent() + " | " + phone + " | " + status + " | " + serial).save();
-        }
-        JPAPlugin.closeTx(false);
-    }
-
+    
     @Override
-    protected void consume(SMSMessage message) {
-        if (SEND_URL == null) {
-            saveJournal(message, "-14", null);
-            Logger.error("SMSHaduoHttpConsumer: can not get the SEND_URL in application.conf");
-            return;
-        }
+    public int send(SMSMessage message) {
+        
+        int resultCode = 0;
         //准备url
         StringBuffer phonesBuffer = new StringBuffer();
         for (String phone : message.getPhoneNumbers()) {
@@ -83,42 +56,28 @@ public class HaduoHttpConsumer extends RabbitMQConsumer<SMSMessage> {
                 if (line.equals("0")) {
                     //发送成功
                     line = bufferedReader.readLine();
-                    saveJournal(message, "0", line);
+                    resultCode = 0;
                     httpget.abort();
                 } else {
                     //发送失败
-                    saveJournal(message, line, null);
+                    resultCode = Integer.parseInt(line);
                     httpget.abort();
                 }
             } else {
                 //无响应
-                saveJournal(message, "-12", null);
+                resultCode = -12;
             }
 
         } catch (IOException e) {
             //http请求失败
-            saveJournal(message, "-13", null);
+            resultCode = -13;
         }
+        return resultCode;
     }
 
-    protected String queue() {
-        return SMSUtil.QUEUE_NAME;
-
+    @Override
+    public String getProviderName() {
+        return "HaduoHttp";
     }
 
-    protected String routingKey() {
-        return this.queue();
-    }
-
-    protected int retries() {
-        // This is the default value defined by "rabbitmq.retries” on
-        // application.conf (please override if you need a new value)
-        return RabbitMQPlugin.retries();
-    }
-
-    protected Class getMessageType() {
-        return SMSMessage.class;
-    }
 }
-
-

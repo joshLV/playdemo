@@ -31,15 +31,15 @@ public class SmsReceivers extends Controller {
        SupplierUser supplierUser = SupplierUser.find("from SupplierUser where supplier.id=? and jobNumber=?", ecoupon.goods.supplierId, msg).first();
        
        if (supplierUser == null) {
-           SMSUtil.send2("没有找到对应的店员工号，请确认您的输入只包括工号，或是否是在" + supplier.fullName + "门店消费，谢谢！", mobile, code);
+           SMSUtil.send("没有找到对应的店员工号，请确认您的输入只包括工号，或是否是在" + supplier.fullName + "门店消费，谢谢！", mobile, code);
        }
        if (supplierUser.shop == null) {
-           SMSUtil.send2("指定店员" + supplierUser.userName + "无门店设置，请询问店员，谢谢！", mobile, code);
+           SMSUtil.send("指定店员" + supplierUser.userName + "无门店设置，请询问店员，谢谢！", mobile, code);
        }
        
        ecoupon.consumed(supplierUser.shop.id);
        
-       SMSUtil.send2("收到" + mobile + "的" + ecoupon.faceValue + "元费用，券号:" + ecoupon.eCouponSn, supplierUser.mobile, code);
+       SMSUtil.send("收到" + mobile + "的" + ecoupon.faceValue + "元费用，券号:" + ecoupon.eCouponSn, supplierUser.mobile, code);
        
        renderText("ok, coupon=" + ecoupon.eCouponSn);
     }
