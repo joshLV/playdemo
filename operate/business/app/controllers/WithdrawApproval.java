@@ -16,6 +16,7 @@ import java.util.List;
 
 @With(OperateRbac.class)
 public class WithdrawApproval extends Controller {
+
     public static void index(){
         List<WithdrawBill> withdrawBills = WithdrawBill.find("order by appliedAt desc").fetch();
         render(withdrawBills);
