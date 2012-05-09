@@ -39,7 +39,7 @@
                 <label for="password">密　码：</label>
                 <form:password  cssErrorClass="error" id="password" class="medium" maxlength="20" tabindex="2" 
                     path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
-                <a class="forget" href="${commandName.substring(commandName.indexOf('=')+1,commandName.lastIndexOf('/'))}/forgetPwd">忘记密码？</a>
+                <a class="forget" href="/forgetPwd">忘记密码？</a>
                 <span id="password-error-error" class="error"></span>
             </div>
             <c:if test="${not empty count && count >= 3}">
