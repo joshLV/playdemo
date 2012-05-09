@@ -1,0 +1,61 @@
+#{extends 'layout_trader/layout.html' /}
+#{set title:'提现' /}
+#{include 'Share/nav.html' /}
+#{set 'moreStyles'}
+<style type="text/css">
+</style>
+#{/set}
+
+<legend>申请提现</legend>
+#{if withdrawAccounts.size() == 0 }
+暂无收款账户,请联系管理员
+#{/if}
+#{else}
+    #{form @Withdraw.create(), class:'form-horizontal'}
+        <fieldset>
+            <div class="control-group">
+                <label class="control-label">选择收款账户</label>
+                <div class="controls">
+                    <table class="table" style="width:auto">
+                        <tr>
+                            <th>#</th>
+                            <th>开户名</th>
+                            <th>银行名称</th>
+                            <th>所在城市</th>
+                            <th>支行名称</th>
+                            <th>银行卡号</th>
+                        </tr>
+                        %{index = 0}%
+                        #{list withdrawAccounts, as:'withdrawAccount'}
+                            <tr>
+                                <td>
+                                    <input type="radio" name="withdrawAccountId" value="${withdrawAccount.getId()}"
+                                        #{if ++index == 1} checked #{/if} >
+                                </td>
+                                <td>${withdrawAccount.userName}</td>
+                                <td>${withdrawAccount.bankName}</td>
+                                <td>${withdrawAccount.bankCity}</td>
+                                <td>${withdrawAccount.subBankName}</td>
+                                <td>${withdrawAccount.cardNumber}</td>
+                            </tr>
+                        #{/list}
+                    </table>
+                    #{error 'withdrawAccountId'/}
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">提现金额</label>
+                <div class="controls">
+                    <input type="text" name="amount" class="input-small" placeholder="最少提现10元"/>
+                    (账户可用余额:${account.amount}元)<br/><br/>
+                    <span class="error">#{error 'amount'/}</span>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">提交申请</button>
+                <a class="btn" href="/withdraw">取消</a>
+            </div>
+        </fieldset>
+    #{/form}
+#{/else}
+

@@ -2,6 +2,7 @@ package models.accounts;
 
 import models.accounts.util.AccountUtil;
 import models.accounts.util.SerialNumberUtil;
+import play.data.validation.Min;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
@@ -29,6 +30,7 @@ public class WithdrawBill extends Model {
     public String applier;
 
     @Required
+    @Min(10)
     public BigDecimal amount;           //提现金额
 
     public BigDecimal fee;              //手续费

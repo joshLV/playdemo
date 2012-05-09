@@ -30,9 +30,7 @@ public class WithdrawApproval extends Controller {
         int pageNumber =  StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         if(condition == null){
             condition = new WithdrawBillCondition();
-            System.out.println("***********nullllllllllll");
         }
-        System.out.println("==========nullllllllllll"+ condition.status);
 
         JPAExtPaginator<WithdrawBill> billPage = WithdrawBill.findByCondition(condition,
                 pageNumber, PAGE_SIZE);

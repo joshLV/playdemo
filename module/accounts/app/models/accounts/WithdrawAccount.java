@@ -4,6 +4,7 @@ import play.data.validation.Required;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author likang
@@ -39,5 +40,9 @@ public class WithdrawAccount extends Model {
     @Column(name = "card_number")
     @Required
     public String cardNumber;
+
+    public static List<WithdrawAccount> findByAccount(Long userId, AccountType accountType){
+        return WithdrawAccount.find("byUserIdAndAccountType", userId, accountType).fetch();
+    }
 
 }

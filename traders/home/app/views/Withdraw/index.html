@@ -1,0 +1,55 @@
+#{extends 'layout_trader/layout.html' /}
+#{set title:'提现' /}
+#{include 'Share/nav.html' /}
+#{set 'moreStyles'}
+<style type="text/css">
+</style>
+#{/set}
+
+<div class="clearfix"><a class="btn btn-primary pull-right" href="/withdraw/apply">申请提现</a></div>
+
+<form action="@{Withdraw.index()}" method="GET" id="form" style="display:none">
+#{select 'condition.status',id:'condition_status',value:condition?.status}
+    #{option ""}全部#{/option}
+    #{option "APPLIED"}&{'withdraw.APPLIED'}#{/option}
+    #{option "SUCCESS"}&{'withdraw.SUCCESS'}#{/option}
+    #{option "REJECTED"}&{'withdraw.REJECTED'}#{/option}
+#{/select}
+</form>
+#{vx.tab
+    name:'withdraw',
+    enumItems: models.accounts.WithdrawBillStatus,
+    select:'condition_status',
+    value:condition.status,
+    form:'form'/}
+<div class="row-fluid">
+    <table class="table table-striped">
+        <tr>
+            <th>申请时间</th>
+            <th>申 请 者</th>
+            <th>收款人</th>
+            <th>申请金额</th>
+            <th>申请状态</th>
+            <th>操作</th>
+        </tr>
+        #{paginate.list items:billPage, as:'withdrawBill'}
+            <tr>
+                <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${withdrawBill.applier}</td>
+                <td>${withdrawBill.userName}</td>
+                <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
+                <td>&{'withdraw.' + withdrawBill.status}</td>
+                <td>
+                    <a href="/withdraw/detail/${withdrawBill.id}"> 查看详情 </a>
+                </td>
+            </tr>
+        #{/paginate.list}
+    </table>
+</div>
+<div class="pagination">
+    <ul>
+        #{paginate.controls items:billPage /}
+    </ul>
+</div>
+ 
+ 

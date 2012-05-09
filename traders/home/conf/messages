@@ -19,4 +19,7 @@ supplier.userName=负责人姓名
 supplier.createdAt=开通时间
 supplier.brands=品牌
 
-
+# 提现
+withdraw.APPLIED=待审批
+withdraw.SUCCESS=成功
+withdraw.REJECTED=被拒绝

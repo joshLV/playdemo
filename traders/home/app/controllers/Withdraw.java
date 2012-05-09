@@ -1,0 +1,101 @@
+package controllers;
+
+import models.accounts.*;
+import models.accounts.util.AccountUtil;
+import models.supplier.Supplier;
+import navigation.annotations.ActiveNavigation;
+import navigation.annotations.Right;
+import org.apache.commons.lang.StringUtils;
+import play.data.validation.Min;
+import play.data.validation.Required;
+import play.data.validation.Valid;
+import play.data.validation.Validation;
+import play.modules.paginate.JPAExtPaginator;
+import play.mvc.Controller;
+import play.mvc.With;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+/**
+ * @author likang
+ * Date: 12-5-9
+ */
+
+@With(SupplierRbac.class)
+public class Withdraw extends Controller{
+    private static final int PAGE_SIZE = 20;
+
+    @Right("STATS")
+    @ActiveNavigation("account_withdraw")
+    public static void index(WithdrawBillCondition condition){
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        Supplier supplier = Supplier.findById(supplierId);
+        Account account = AccountUtil.getAccount(supplier.getId(), AccountType.SUPPLIER);
+
+        String page = request.params.get("page");
+        int pageNumber =  StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        if(condition == null){
+            condition = new WithdrawBillCondition();
+        }
+        condition.account = account;
+
+        JPAExtPaginator<WithdrawBill> billPage = WithdrawBill.findByCondition(condition,
+                pageNumber, PAGE_SIZE);
+
+        render(billPage, condition);
+    }
+
+    @ActiveNavigation("account_withdraw")
+    public static void apply(){
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        Supplier supplier = Supplier.findById(supplierId);
+        Account account = AccountUtil.getAccount(supplier.getId(), AccountType.SUPPLIER);
+        List<WithdrawAccount> withdrawAccounts = WithdrawAccount.findByAccount(supplier.getId(), AccountType.SUPPLIER);
+        render(account, withdrawAccounts);
+    }
+
+    @ActiveNavigation("account_withdraw")
+    public static void create(Long withdrawAccountId, BigDecimal amount){
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        Supplier supplier = Supplier.findById(supplierId);
+        Account account = AccountUtil.getAccount(supplier.getId(), AccountType.SUPPLIER);
+        WithdrawAccount withdrawAccount = WithdrawAccount.findById(withdrawAccountId);
+        if(withdrawAccount == null || !withdrawAccount.userId.equals(supplier.getId())
+                || withdrawAccount.accountType != AccountType.SUPPLIER){
+            error("invalid withdraw account");
+        }
+        if(amount == null || amount.compareTo(account.amount) > 0 || amount.compareTo(new BigDecimal("10")) < 0){
+            Validation.addError("amount", "提现金额不能小于10元,且不能大于余额！！");
+            params.flash();
+            Validation.keep();
+            apply();
+        }
+
+        WithdrawBill withdraw = new WithdrawBill();
+        withdraw.userName = withdrawAccount.userName;
+        withdraw.account = account;
+        withdraw.bankCity = withdrawAccount.bankCity;
+        withdraw.bankName = withdrawAccount.bankName;
+        withdraw.subBankName = withdrawAccount.subBankName;
+        withdraw.cardNumber = withdrawAccount.cardNumber;
+        withdraw.amount = amount;
+
+        withdraw.apply(supplier.fullName+"-"+SupplierRbac.currentUser().loginName, account);
+        index(null);
+    }
+
+
+    @ActiveNavigation("account_withdraw")
+    public static void detail(Long id){
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        Supplier supplier = Supplier.findById(supplierId);
+        Account account = AccountUtil.getAccount(supplier.getId(), AccountType.SUPPLIER);
+
+        WithdrawBill bill = WithdrawBill.findById(id);
+        if(bill == null || !bill.account.getId().equals(account.getId())){
+            error("withdraw bill not found");
+        }
+        render(bill);
+    }
+}

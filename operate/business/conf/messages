@@ -166,6 +166,11 @@ withdrawAccount.bankName=银行
 withdrawAccount.bankCity=城市
 withdrawAccount.cardNumber=银行卡号
 
+withdraw.apply.withdraw_account=收款账户
+withdraw.apply.amount=提现金额
+validation.amount=提现金额%s
+amount=提现金额
+
 # 账户类型
 account.type.CONSUMER=消费者
 account.type.SUPPLIER=商户

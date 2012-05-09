@@ -1,0 +1,67 @@
+#{extends 'layout_trader/layout.html' /}
+#{set title:'提现详情' /}
+#{include 'Share/nav.html' /}
+#{set 'moreStyles'}
+<style type="text/css">
+    .control-label{
+        font-weight: bold;
+    }
+    .control-value{
+        line-height: 28px;
+        margin-left: 160px;
+    }
+    .form-horizontal .control-group{
+        margin-bottom: 4px;
+    }
+</style>
+#{/set}
+
+<div class="row-fluid">
+    <legend>提现申请明细</legend>
+    <div class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label">申请时间</label>
+            <label class="control-value">${bill?.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">申 请 者</label>
+            <label class="control-value">${bill?.applier}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">申请金额</label>
+            <label class="control-value">${bill?.amount.formatCurrency('CNY')}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">所在城市</label>
+            <label class="control-value">${bill?.bankCity}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">开户银行</label>
+            <label class="control-value">${bill?.bankName}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">分行名称</label>
+            <label class="control-value">${bill?.subBankName}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">开户姓名</label>
+            <label class="control-value">${bill?.userName}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">银行卡号</label>
+            <label class="control-value">${bill?.cardNumber}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">申请状态</label>
+            <label class="control-value">&{'withdraw.' + bill.status}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">手续费</label>
+            <label class="control-value">${bill.fee?.formatCurrency('CNY')}</label>
+        </div>
+        <div class="form-actions">
+                <a href="/withdraw" class="btn btn-primary">返回</a>
+        </div>
+    </div>
+</div>
+
