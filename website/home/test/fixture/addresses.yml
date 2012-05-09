@@ -13,8 +13,8 @@ consumer.Address(test2):
   name: sujie
   postcode: 200101
   mobile: 13511112222
-  city: 北京市
-  province: 市辖区
+  city: 市辖区
+  province: 北京市
   district: 东城区
   address: test2
   isDefault: true
