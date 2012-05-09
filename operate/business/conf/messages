@@ -150,6 +150,8 @@ account_sequence.PAY=支付
 account_sequence.REFUND=交易退款
 account_sequence.CANCEL=交易取消
 account_sequence.RECEIVE=收款
+account_sequence.FREEZE=冻结
+account_sequence.UNFREEZE=取消冻结
 
 platform.CONSUMER=优惠啦网站
 platform.RESALER=分销网
