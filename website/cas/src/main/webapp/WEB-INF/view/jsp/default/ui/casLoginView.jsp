@@ -39,7 +39,7 @@
                 <label for="password">密　码：</label>
                 <form:password  cssErrorClass="error" id="password" class="medium" maxlength="20" tabindex="2" 
                     path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
-                <a class="forget" href="">忘记密码？</a>
+                <a class="forget" href="/forgetPwd">忘记密码？</a>
                 <span id="password-error-error" class="error"></span>
             </div>
             <c:if test="${not empty count && count >= 3}">
@@ -64,7 +64,7 @@
         <div class="guide">
             <h5>还不是优惠啦用户？</h5>
             <p>惠打折，惠生活；不打折，不消费！立刻免费注册成为优惠啦用户，轻松享受优惠生活。</p>
-            <a class="regist" href="">注册新用户</a>
+            <a class="regist" href="/register">注册新用户</a>
         </div>
     </div>
 </div>
