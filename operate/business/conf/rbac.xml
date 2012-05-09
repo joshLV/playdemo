@@ -82,9 +82,9 @@
 
     </navigation>
     <navigation key="withdraw" text="提现" action="WithdrawApproval.index">
-        <navigation key="withdraw_approval" action="WithdrawApproval.index" text="审批提现"
+        <navigation key="withdraw_approval" text="提现审批"
                     permission="WITHDRAW_APPROVAL">
-            <navigation key="withdraw_approval_index" action="WithdrawApproval.index" text="审批提现"
+            <navigation key="withdraw_approval_index" action="WithdrawApproval.index" text="提现申请列表"
                         permission="WITHDRAW_APPROVAL"/>
         </navigation>
     </navigation>

@@ -2,6 +2,7 @@ package controllers;
 
 import models.accounts.WithdrawBill;
 import models.accounts.WithdrawBillStatus;
+import operate.rbac.annotations.ActiveNavigation;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -16,6 +17,7 @@ import java.util.List;
  */
 
 @With(OperateRbac.class)
+@ActiveNavigation("withdraw_approval_index")
 public class WithdrawApproval extends Controller {
 
     public static void index(){
