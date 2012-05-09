@@ -26,8 +26,10 @@ app_dirs = [
             'traders/sales',
             'traders/order',
             'traders/home',
+            'traders/sms',
             'traders/admin',
             'cdn/image-server',
+            'cdn/assets',
             'operate/admin',
             'operate/business',
             'resale/home'
