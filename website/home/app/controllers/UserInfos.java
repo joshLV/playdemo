@@ -78,7 +78,7 @@ public class UserInfos extends Controller{
 		}
 		//更新用户基本信息手机
 		User user = SecureCAS.getUser();
-		UserInfo.updateById(user,mobile);
+		//UserInfo.updateById(user,mobile);
 		//同时更新用户手机
 		user.updateMobile(mobile);
 

@@ -42,8 +42,9 @@ public class Orders extends Controller {
             error("no goods specified");
             return;
         }
+        User user = SecureCAS.getUser();
         showOrder(items);
-        render();
+        render(user);
     }
 
     private static void showOrder(String items) {
