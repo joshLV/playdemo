@@ -3,6 +3,9 @@
 #{include '/share/nav.html' /}
 #{set 'moreStyles'}
 <style type="text/css">
+    .control-label{
+        font-weight: bold;
+    }
     .control-value{
         line-height: 28px;
         margin-left: 160px;
@@ -62,8 +65,8 @@
         </div>
         <div class="form-actions">
             #{if bill.status == models.accounts.WithdrawBillStatus.APPLIED}
-                <button class="btn btn-primary" id="approval-agree">通过</button>
-                <button class="btn btn-primary" id="approval-reject">拒绝</button>
+                <a data-toggle="modal" href="#agree-modal" class="btn btn-primary">通过</a>
+                <a data-toggle="modal" href="#reject-modal" class="btn btn-danger">拒绝</a>
             #{/if}
             #{else}
                 <a href="/withdraw" class="btn btn-primary">返回</a>
@@ -72,6 +75,59 @@
     </div>
 
 </div>
+<div id="agree-modal" class="modal hide">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal">×</button>
+        <h3>同意提现申请</h3>
+    </div>
 
- 
- 
+    #{form @WithdrawApproval.approve(), class:'form-horizontal'}
+        <div class="modal-body">
+            <fieldset>
+                <div class="control-group">
+                    <label class="control-label" for="agree-fee">手续费</label>
+                    <div class="controls">
+                        <input type="text" class="input-xlarge" id="agree-fee" name="fee" value="0">元
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="agree-comment">备注</label>
+                    <div class="controls">
+                        <textarea rows="3" class="input-xlarge" id="agree-comment" name="comment">无</textarea>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn" data-dismiss="modal">关闭</a>
+            <input type="hidden" name="id" value="${bill.id}">
+            <input type="hidden" name="action" value="agree">
+            <button class="btn btn-primary" type="submit">通过</button>
+        </div>
+    #{/form}
+</div>
+<div id="reject-modal" class="modal hide">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal">×</button>
+        <h3>拒绝提现申请</h3>
+    </div>
+
+    #{form @WithdrawApproval.approve(), class:'form-horizontal'}
+    <div class="modal-body">
+        <fieldset>
+            <div class="control-group">
+                <label class="control-label" for="reject-comment">拒绝理由</label>
+                <div class="controls">
+                    <textarea rows="3" class="input-xlarge" id="reject-comment" name="comment" >请输入拒绝理由</textarea>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">关闭</a>
+        <input type="hidden" name="id" value="${bill.id}">
+        <input type="hidden" name="action" value="reject">
+        <button class="btn btn-danger" type="submit">拒绝</button>
+    </div>
+    #{/form}
+</div>

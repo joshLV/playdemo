@@ -31,16 +31,20 @@ public class WithdrawApproval extends Controller {
         render(bill);
     }
 
-    public static void approve(Long id, String action){
+    public static void approve(Long id, String action, BigDecimal fee, String comment){
         WithdrawBill bill = WithdrawBill.findById(id);
         if(bill == null || bill.status != WithdrawBillStatus.APPLIED){
             error("cannot find the withdraw bill or the bill is processed");
             return;
         }
         if (action.equals("agree")){
-            bill.agree(BigDecimal.ZERO, "无");
+            if(fee == null || fee.compareTo(BigDecimal.ZERO) < 0){
+                error("invalid fee");
+                return;
+            }
+            bill.agree(fee, comment);
         }else if(action.equals("reject")){
-            bill.reject("无");
+            bill.reject(comment);
         }
         index();
     }
