@@ -1,8 +1,12 @@
 package controllers;
 
-import models.accounts.WithdrawBill;
-import models.accounts.WithdrawBillStatus;
+import models.accounts.*;
+import models.consumer.User;
+import models.resale.Resaler;
+import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
+import org.apache.commons.lang.StringUtils;
+import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -19,10 +23,21 @@ import java.util.List;
 @With(OperateRbac.class)
 @ActiveNavigation("withdraw_approval_index")
 public class WithdrawApproval extends Controller {
+    private static final int PAGE_SIZE = 20;
 
-    public static void index(){
-        List<WithdrawBill> withdrawBills = WithdrawBill.find("order by appliedAt desc").fetch();
-        render(withdrawBills);
+    public static void index(WithdrawBillCondition condition){
+        String page = request.params.get("page");
+        int pageNumber =  StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        if(condition == null){
+            condition = new WithdrawBillCondition();
+            System.out.println("***********nullllllllllll");
+        }
+        System.out.println("==========nullllllllllll"+ condition.status);
+
+        JPAExtPaginator<WithdrawBill> billPage = WithdrawBill.findByCondition(condition,
+                pageNumber, PAGE_SIZE);
+
+        render(billPage, condition);
     }
 
     public static void detail(Long id){
@@ -48,6 +63,6 @@ public class WithdrawApproval extends Controller {
         }else if(action.equals("reject")){
             bill.reject(comment);
         }
-        index();
+        index(null);
     }
 }

@@ -4,6 +4,7 @@ import models.accounts.util.AccountUtil;
 import models.accounts.util.SerialNumberUtil;
 import play.data.validation.Required;
 import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -24,8 +25,8 @@ public class WithdrawBill extends Model {
     @ManyToOne
     public Account account;
 
-    @Transient
-    public String loginName;
+    @Column(name = "applier")
+    public String applier;
 
     @Required
     public BigDecimal amount;           //提现金额
@@ -64,10 +65,11 @@ public class WithdrawBill extends Model {
 
     /**
      * 申请提现.
-     *
+     * @param applier 申请人信息
      * @param account 申请提现的账户
      */
-    public void apply(Account account){
+    public void apply(String applier, Account account){
+        this.applier = applier;
         this.account = account;
         this.status = WithdrawBillStatus.APPLIED;
         this.appliedAt = new Date();
@@ -115,6 +117,18 @@ public class WithdrawBill extends Model {
         this.processedAt = new Date();
         this.fee = fee;
         this.save();
+    }
+
+
+    public static JPAExtPaginator<WithdrawBill> findByCondition(
+            WithdrawBillCondition condition, int pageNumber, int pageSize) {
+        JPAExtPaginator<WithdrawBill> page = new JPAExtPaginator<>(
+                null, null, WithdrawBill.class, condition.getFilter(), condition.getParams());
+
+        page.orderBy("appliedAt DESC");
+        page.setPageNumber(pageNumber);
+        page.setPageSize(pageSize);
+        return page;
     }
 
 }

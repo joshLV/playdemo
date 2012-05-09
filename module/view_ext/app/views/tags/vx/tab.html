@@ -4,7 +4,7 @@
 *{value:       当前的状态值}*
 *{form:        提交的form的,默认为frmlist}*
 *{name:        状态对应的对象的名字,用于定位message中的文字,默认为status}*
-<ul class="nav nav-tabs">
+<ul class="nav nav-tabs" style="margin-bottom:-1px;">
     <li #{if _value == null || "".equals(_value)}class="active"#{/if}>
         <a href="#" data-toggle="tab" onclick="$('#${_select}').val('');$('#${_form?:'frmlist'}').submit();">全部</a></li>
 #{list items:_enumItems, as:'item'}

@@ -5,31 +5,46 @@
 <style type="text/css">
 </style>
 #{/set}
-
+<form action="@{WithdrawApproval.index()}" method="GET" id="form" style="display:none">
+#{select 'condition.status',id:'condition_status',value:condition?.status}
+    #{option ""}全部#{/option}
+    #{option "APPLIED"}&{'withdraw.APPLIED'}#{/option}
+#{/select}
+</form>
+#{vx.tab
+    name:'withdraw',
+    enumItems: [models.accounts.WithdrawBillStatus.APPLIED],
+    select:'condition_status',
+    value:condition.status,
+    form:'form'/}
 <div class="row-fluid">
     <table class="table table-striped">
         <tr>
             <th>申请时间</th>
             <th>账户类型</th>
-            <th>登陆账号</th>
+            <th>申 请 者</th>
             <th>申请金额</th>
             <th>申请状态</th>
             <th>操作</th>
         </tr>
-        #{list items:withdrawBills, as:'withdrawBill'}
+        #{paginate.list items:billPage, as:'withdrawBill'}
             <tr>
                 <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>&{'account.type.' + withdrawBill.account.accountType}</td>
-                <td>${withdrawBill.loginName}</td>
+                <td>${withdrawBill.applier}</td>
                 <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
                 <td>&{'withdraw.' + withdrawBill.status}</td>
                 <td>
                     <a href="/withdraw/detail/${withdrawBill.id}"> 查看详情 </a>
                 </td>
             </tr>
-        #{/list}
+        #{/paginate.list}
     </table>
 </div>
-
+<div class="pagination">
+    <ul>
+        #{paginate.controls items:billPage /}
+    </ul>
+</div>
  
  
