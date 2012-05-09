@@ -38,14 +38,14 @@ public class SupplierCoupons extends Controller {
 		render("SupplierCoupons/index.html",shopList,supplierUser,supplierSetting);
 	}
 
-	
+
 	/**
 	 * 查询
 	 *
 	 * @param eCouponSn 券号
 	 */
 	public static void queryCoupons(Long shopId,String eCouponSn) {
-		
+
 		if (Validation.hasErrors()) {
 			params.flash();
 			Validation.keep();
@@ -78,9 +78,9 @@ public class SupplierCoupons extends Controller {
 			renderJSON("err");
 		}
 		if (eCoupon.status == ECouponStatus.UNCONSUMED) {
-		    eCoupon.consumed(shopId);
+			eCoupon.consumed(shopId);
 		} else {
-		    renderJSON("err");
+			renderJSON(eCoupon.status);
 		}
 
 		SupplierSetting supplierSetting = new SupplierSetting();

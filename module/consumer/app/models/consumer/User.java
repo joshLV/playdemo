@@ -2,6 +2,8 @@ package models.consumer;
 
 import models.mail.CouponMessage;
 import models.mail.MailUtil;
+import models.order.Order;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -11,6 +13,7 @@ import play.data.validation.MinSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.libs.Images;
+import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Mobile;
 import play.mvc.Http.Request;
 
@@ -239,4 +242,5 @@ public class User extends Model {
         }
         return isExpired;
     }
+
 }

@@ -1,0 +1,22 @@
+#{fixture delete:'all' ,
+load:['fixture/user.yml','fixture/userInfo.yml','fixture/goods_base.yml','fixture/goods.yml','fixture/orders.yml','fixture/userPoints.yml','fixture/userPointsConfig.yml'] /}
+
+#{selenium 'Test UserPoints/index.html Normal'}
+#{include 'test/selenium/step/login.selenium' /}
+open('/orders')
+clickAndWait('id=points')
+verifyTitle('优惠啦 - 我的积分')
+verifyTextPresent('selenium@uhuila.com')
+verifyTextPresent('100')
+verifyTextPresent('2012-04-09')
+verifyTextPresent('2012-04-10')
+ 
+type('id=createdAtBegin','2012-04-01')
+type('id=createdAtEnd','2012-04-09')
+type('id=pointNumber','注册')
+click('id=search')
+verifyTextPresent('2012-04-09')
+verifyTextPresent('注册')
+ 
+#{/selenium}
+

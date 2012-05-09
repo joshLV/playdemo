@@ -27,6 +27,8 @@ PUT     /addresses/{id}                               UserAddresses.update
 PUT     /addresses/{id}/default                       UserAddresses.updateDefault
 DELETE  /addresses/{id}                               UserAddresses.delete
 
+GET     /userPoint                                   UserPoints.index
+
 GET     /user/password                                UserPassword.index
 POST    /user/{id}                                    UserPassword.update
 

@@ -67,6 +67,10 @@ public class UserInfo extends Model {
 
     @Column(name = "bindMobile_at")
     public Date bindMobileAt;
+    
+    @Column(name = "total_points")
+    public int totalPoints;
+    
 
     public UserInfo(User user) {
         this.user = user;

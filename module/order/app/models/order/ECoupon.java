@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -15,9 +16,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.Table;
+import javax.persistence.Version;
+
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.RefundBill;
@@ -26,14 +29,16 @@ import models.accounts.TradeStatus;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.RefundUtil;
 import models.accounts.util.TradeUtil;
-import models.consumer.User;
 import models.sales.Goods;
 import models.sales.Shop;
+
 import org.apache.commons.lang.StringUtils;
+
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
+
 import com.uhuila.common.util.RandomNumberUtil;
 
 /**
@@ -94,7 +99,11 @@ public class ECoupon extends Model {
 
 	@Enumerated(EnumType.STRING)
 	public ECouponStatus status;
-	
+
+	@Version
+	@Column(name = "lock_version")
+	public int lockVersion;
+
 	/**
 	 * 用于短信回复的code，将会成为消费者看到的发送手机号的最后4位。
 	 * 
@@ -102,15 +111,9 @@ public class ECoupon extends Model {
 	 */
 	public String replyCode;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name="shop_id",nullable=true)
 	public Shop shop;
-	public Shop getShop(){
-		if (shop ==  null) {
-			shop = new Shop();
-		}
-		return shop;
-	}
 
 	public ECoupon(Order order, Goods goods, OrderItems orderItems) {
 		this.order = order;
@@ -128,7 +131,7 @@ public class ECoupon extends Model {
 		this.status = ECouponStatus.UNCONSUMED;
 		this.eCouponSn = RandomNumberUtil.generateSerialNumber(10);
 		this.orderItems = orderItems;
-		
+		this.lockVersion = 0;
 		this.replyCode = generateAvailableReplayCode(order.userId, order.userType);
 	}
 
@@ -139,26 +142,18 @@ public class ECoupon extends Model {
 	 * @return
 	 */
 	private String generateAvailableReplayCode(long userId, AccountType userType) {
-	    
-	    String randomNumber = null;
-	    do {
-	        randomNumber = RandomNumberUtil.generateSerialNumber(4);
-	        System.out.println("randomNumber=" + randomNumber);
-	    } while(isNotUniqueReplyCode(randomNumber, userId, userType));
-        return randomNumber;
-    }
-	private boolean isNotUniqueReplyCode(String randomNumber, long userId, AccountType userType) {
-	    return ECoupon.find("from ECoupon where replyCode=? and order.userId=? and order.userType=?",
-	            randomNumber, userId, userType).fetch().size() > 0;
-	}
 
-    /**
-	 * 禁止无参数构造.
-	 */
-	private ECoupon() {
+		String randomNumber = null;
+		do {
+			randomNumber = RandomNumberUtil.generateSerialNumber(4);
+			System.out.println("randomNumber=" + randomNumber);
+		} while(isNotUniqueReplyCode(randomNumber, userId, userType));
+		return randomNumber;
 	}
-	
-	
+	private boolean isNotUniqueReplyCode(String randomNumber, long userId, AccountType userType) {
+		return ECoupon.find("from ECoupon where replyCode=? and order.userId=? and order.userType=?",
+				randomNumber, userId, userType).fetch().size() > 0;
+	}
 
 	/**
 	 * 根据页面录入券号查询对应信息
@@ -168,6 +163,7 @@ public class ECoupon extends Model {
 	 * @return ECoupon 券信息
 	 */
 	public static ECoupon query(String eCouponSn, Long supplierId) {
+
 		EntityManager entityManager = play.db.jpa.JPA.em();
 		StringBuilder sql = new StringBuilder();
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -206,7 +202,7 @@ public class ECoupon extends Model {
 		Map<String, Object> queryMap = new HashMap();
 		if (eCoupon != null) {
 			boolean timeFlag = true;
-			
+
 			String timeBegin = eCoupon.goods.useBeginTime ;
 			String timeEnd = eCoupon.goods.useEndTime ;
 			if (StringUtils.isNotBlank(timeBegin) && StringUtils.isNotBlank(timeEnd))  {
@@ -234,7 +230,7 @@ public class ECoupon extends Model {
 					return queryMap;
 				}
 			}
-			
+
 			queryMap.put("name", eCoupon.goods.name);
 			queryMap.put("expireAt", eCoupon.goods.expireAt != null ? df.format(eCoupon.goods.expireAt) : null);
 			queryMap.put("consumedAt", eCoupon.consumedAt != null ? df.format(eCoupon.consumedAt) : null);
@@ -254,6 +250,9 @@ public class ECoupon extends Model {
 	 * @return
 	 */
 	public void consumed(Long shopId){
+		if (this.status != ECouponStatus.UNCONSUMED) {
+			return;
+		}
 		Account supplierAccount = AccountUtil.getAccount(orderItems.goods.supplierId, AccountType.SUPPLIER);
 
 		//给商户打钱
@@ -288,8 +287,6 @@ public class ECoupon extends Model {
 			TradeUtil.success(platformCommissionTrade);
 		}
 
-		getShop().id=shopId;
-		
 		this.shop = Shop.findById(shopId);
 		this.status = ECouponStatus.CONSUMED;
 		this.consumedAt = new Date();
@@ -427,7 +424,7 @@ public class ECoupon extends Model {
 	public String getConsumedShop(){
 		String shopName = "";
 		Shop sp = null;
-		if (shop.id != null) {
+		if (shop != null && shop.id != null) {
 			sp = Shop.findById(shop.id);
 			shopName = sp.name;
 		}
@@ -468,7 +465,7 @@ public class ECoupon extends Model {
 	 * @param code
 	 * @return
 	 */
-    public static ECoupon findByMobileAndCode(String mobile, String replyCode) {
-        return ECoupon.find("from ECoupon where orderItems.phone=? and replyCode=?", mobile, replyCode).first();
-    }
+	public static ECoupon findByMobileAndCode(String mobile, String replyCode) {
+		return ECoupon.find("from ECoupon where orderItems.phone=? and replyCode=?", mobile, replyCode).first();
+	}
 }

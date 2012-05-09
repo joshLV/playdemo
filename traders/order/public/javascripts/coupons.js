@@ -74,8 +74,10 @@ $(window).load(function(){
                      $("#checksn").html("<font color=red>该券消费成功！</font>");
                      $("#statusw").html('券状态:已消费');
                      $("#sure").attr("disabled",false);
-                 } else {
+                 } else if(data == 'err') {
                      alert("消费失败！");
+                 } else {
+                	 $("#checksn").html("<font color=red>该券已"+data+"！</font>");
                  }
 
              }
