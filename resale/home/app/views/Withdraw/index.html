@@ -32,6 +32,7 @@
             <td>申请时间</td>
             <td>状态</td>
             <td>处理时间</td>
+            <td>手续费</td>
             <td>申请反馈</td>
         </tr>
         #{list items:withdrawBills, as:'withdrawBill'}
@@ -42,10 +43,11 @@
             <td>${withdrawBill.bankName}</td>
             <td>${withdrawBill.subBankName}</td>
             <td>${withdrawBill.cardNumber}</td>
-            <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
-            <td>${withdrawBill.appliedAt.format()}</td>
+            <td>${withdrawBill.amount?.formatCurrency('CNY')}</td>
+            <td>${withdrawBill.appliedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>&{'withdraw.'+ withdrawBill.status}</td>
-            <td>${withdrawBill.processedAt?.format()}</td>
+            <td>${withdrawBill.processedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>${withdrawBill.fee?.formatCurrency('CNY')}</td>
             <td>${withdrawBill.comment}</td>
         </tr>
         #{/list}

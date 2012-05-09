@@ -164,3 +164,9 @@ withdrawAccount.bankName=银行
 withdrawAccount.bankCity=城市
 withdrawAccount.cardNumber=银行卡号
 
+# 账户类型
+account.type.CONSUMER=消费者
+account.type.SUPPLIER=商户
+account.type.RESALER=分销商
+account.type.PLATFORM=平台
+

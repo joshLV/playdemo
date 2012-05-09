@@ -6,34 +6,25 @@
 </style>
 #{/set}
 
-<div class="body">
+<div class="row-fluid">
     <table class="table table-striped">
         <tr>
             <th>申请时间</th>
-            <th>申请账户</th>
+            <th>账户类型</th>
+            <th>登陆账号</th>
             <th>申请金额</th>
-            <th>所在城市</th>
-            <th>开户银行</th>
-            <th>分行名称</th>
-            <th>开户姓名</th>
             <th>申请状态</th>
             <th>操作</th>
         </tr>
         #{list items:withdrawBills, as:'withdrawBill'}
             <tr>
-                <td>${withdrawBill.appliedAt.format()}</td>
-                <td>${withdrawBill.account.getId()}</td>
+                <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>&{'account.type.' + withdrawBill.account.accountType}</td>
+                <td>${withdrawBill.loginName}</td>
                 <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
-                <td>${withdrawBill.bankCity}</td>
-                <td>${withdrawBill.bankName}</td>
-                <td>${withdrawBill.subBankName}</td>
-                <td>${withdrawBill.userName}</td>
                 <td>&{'withdraw.' + withdrawBill.status}</td>
                 <td>
-                    #{if withdrawBill.status == models.accounts.WithdrawBillStatus.APPLIED}
-                    <a href="/withdraw/approve?id=${withdrawBill.id}&action=agree"> 通过 </a>|
-                    <a href="/withdraw/approve?id=${withdrawBill.id}&action=reject"> 拒绝 </a>
-                    #{/if}
+                    <a href="/withdraw/detail/${withdrawBill.id}"> 查看详情 </a>
                 </td>
             </tr>
         #{/list}

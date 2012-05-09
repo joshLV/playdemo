@@ -5,6 +5,7 @@ import models.accounts.WithdrawBillStatus;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -22,6 +23,14 @@ public class WithdrawApproval extends Controller {
         render(withdrawBills);
     }
 
+    public static void detail(Long id){
+        WithdrawBill bill = WithdrawBill.findById(id);
+        if (bill == null){
+            error("withdraw bill not found");
+        }
+        render(bill);
+    }
+
     public static void approve(Long id, String action){
         WithdrawBill bill = WithdrawBill.findById(id);
         if(bill == null || bill.status != WithdrawBillStatus.APPLIED){
@@ -29,7 +38,7 @@ public class WithdrawApproval extends Controller {
             return;
         }
         if (action.equals("agree")){
-            bill.agree("无");
+            bill.agree(BigDecimal.ZERO, "无");
         }else if(action.equals("reject")){
             bill.reject("无");
         }

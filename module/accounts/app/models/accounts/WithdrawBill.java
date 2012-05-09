@@ -24,8 +24,13 @@ public class WithdrawBill extends Model {
     @ManyToOne
     public Account account;
 
+    @Transient
+    public String loginName;
+
     @Required
     public BigDecimal amount;           //提现金额
+
+    public BigDecimal fee;              //手续费
 
     @Column(name = "user_name")
     @Required
@@ -97,7 +102,7 @@ public class WithdrawBill extends Model {
      *
      * @param comment 备注.
      */
-    public void agree(String comment){
+    public void agree(BigDecimal fee, String comment){
         if(this.status != WithdrawBillStatus.APPLIED){
             throw new RuntimeException("The withdraw request has been processed");
         }
@@ -108,6 +113,7 @@ public class WithdrawBill extends Model {
         this.status = WithdrawBillStatus.SUCCESS;
         this.comment = comment;
         this.processedAt = new Date();
+        this.fee = fee;
         this.save();
     }
 

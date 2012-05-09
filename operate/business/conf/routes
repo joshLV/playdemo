@@ -74,7 +74,8 @@ GET     /reports/incoming                       OperateReports.showIncomingRepor
 
 # 提现管理
 GET     /withdraw                               WithdrawApproval.index
-GET     /withdraw/approve                       WithdrawApproval.approve
+GET     /withdraw/detail/{id}                   WithdrawApproval.detail
+POST    /withdraw/approve                       WithdrawApproval.approve
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
