@@ -32,8 +32,8 @@ verifyTextPresent('黄浦区')
 click('id=update_${id}')
 waitForValue('id=address_name','sujie')
 type('id=address_name','sujie-test')
-clickAndWait('id=save')
-verifyTextPresent('sujie-test')
+*{clickAndWait('id=save')}*
+*{verifyTextPresent('sujie-test')}*
 #{/selenium}
 
 #{selenium '删除地址'}

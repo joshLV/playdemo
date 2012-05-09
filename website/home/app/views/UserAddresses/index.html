@@ -67,8 +67,7 @@
                     <td id="address_address_${address?.id}">${address.address}</td>
                     <td id="address_postcode_${address?.id}">${address.postcode}</td>
                     <td id="address_phone_${address?.id}">${address.mobile}<br/>${address.normalPhone}</td>
-                    <td align="center" id="address_isDefault_${address?.id}">#{if address
-                        .isDefault}默认地址#{/if}#{else}#{vx.operateLink url:'/addresses/'+address.id+'/default',
+                    <td align="center" id="address_isDefault_${address?.id}">#{if address.isDefault}默认地址#{/if}#{else}#{vx.operateLink url:'/addresses/'+address.id+'/default',
                     text:'设为默认', method:'PUT'/}#{/else}</td>
                     <td width="80" align="center">
                         <a id="update_${address?.id}" class="address_span_modify" href="#"
