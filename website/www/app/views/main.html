@@ -19,7 +19,7 @@
                                                                                            href="/logout">退出</a>
         #{/if}
         #{else}
-            您好，欢迎您来到优惠啦！
+            您好，欢迎您来到优惠啦！ 请[<a class="zi_gray" id="login_name" href="/login">登录</a>] [<a href="/register">免费注册</a>]
         #{/else}
         </div>
         <div class="myUhuila">
@@ -49,10 +49,6 @@
 
         </div>
         <div class="help"><a href="/help">帮助中心</a></div>
-    #{if !cas?.isLogin}
-        <div class="login"><a href="/login">登录</a></div>
-        <div class="regist"><a href="/register">免费注册</a></div>
-    #{/if}
     </div>
 </div>
 <div id="nav">
