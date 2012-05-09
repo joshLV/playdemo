@@ -12,7 +12,7 @@ consumer.User(user_test1):
  "lastLoginAt": "2012-02-24T15:40:07"
  "status": "NORMAL"
  "mobile": "15618096151"
- "passwordTotken": "63dc778349e8f64e7c1c3b9370848ba2"
+ "passwordToken": "63dc778349e8f64e7c1c3b9370848ba2"
  "sendMailAt": ""
 
 consumer.User(user_test2):
@@ -22,6 +22,6 @@ consumer.User(user_test2):
  "lastLoginAt": "2012-02-24T15:40:07"
  "status": "NORMAL"
  "mobile": "15618096151"
- "passwordTotken": "63dc778349e8f64e7c1c3b9370848ba1"
+ "passwordToken": "63dc778349e8f64e7c1c3b9370848ba1"
  "sendMailAt": "2012-04-24T15:40:07"
     

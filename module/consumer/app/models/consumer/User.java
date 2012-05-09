@@ -78,8 +78,8 @@ public class User extends Model {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public UserInfo userInfo;
 
-    @Column(name = "password_totken")
-    public String passwordTotken;
+    @Column(name = "password_token")
+    public String passwordToken;
 
     @Column(name = "send_mail_at")
     public Date sendMailAt;
@@ -127,7 +127,7 @@ public class User extends Model {
             isExisted = true;
             String token = user.id + loginName;
             token = DigestUtils.md5Hex(token);
-            user.passwordTotken = token;
+            user.passwordToken = token;
             user.sendMailAt = new Date();
             user.save();
             //发送邮件
@@ -200,14 +200,14 @@ public class User extends Model {
     /**
      * 根据邮箱或手机更新密码
      *
-     * @param totken   邮箱的
+     * @param token   邮箱的
      * @param mobile
      * @param password
      */
-    public static void updateFindPwd(String totken, String mobile, String password) {
+    public static void updateFindPwd(String token, String mobile, String password) {
         User user = null;
-        if (!StringUtils.isBlank(totken)) {
-            user = User.find("byPasswordTotken", totken).first();
+        if (!StringUtils.isBlank(token)) {
+            user = User.find("byPasswordToken", token).first();
         }
         if (!StringUtils.isBlank(mobile)) {
             user = User.find("byMobile", mobile).first();
@@ -226,14 +226,14 @@ public class User extends Model {
     /**
      * 判断链接是否超过24小时
      *
-     * @param totken 标识
+     * @param token 标识
      * @return 过期标识
      */
-    public static boolean isExpired(String totken) {
+    public static boolean isExpired(String token) {
         boolean isExpired = false;
-        if (!StringUtils.isBlank(totken)) {
-            System.out.println(totken);
-            User user = User.find("byPasswordTotken", totken).first();
+        if (!StringUtils.isBlank(token)) {
+            System.out.println(token);
+            User user = User.find("byPasswordToken", token).first();
             Date d1 = user.sendMailAt;
             Date d2 = new Date();
             long diff = d2.getTime() - d1.getTime();

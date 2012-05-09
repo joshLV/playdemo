@@ -1,18 +1,12 @@
 package unit;
 
 import models.consumer.User;
-import models.consumer.UserStatus;
-import models.resale.Resaler;
-
 import org.apache.commons.codec.digest.DigestUtils;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import play.libs.Images;
 import play.test.Fixtures;
 import play.test.UnitTest;
 
-import java.util.Date;
 import java.util.List;
 
 public class RegisterUnitTest extends UnitTest {
@@ -60,7 +54,7 @@ public class RegisterUnitTest extends UnitTest {
 	public void testUpdateMobile(){
 		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
 		User user = User.findById(userId);
-		String mobile = "15618096999";
+		String mobile = "13518096999";
 		user.updateMobile(mobile);
 		User newUser = User.findById(userId);
 		assertEquals(mobile,newUser.mobile);
