@@ -25,7 +25,7 @@ public class RegisterTest extends FunctionalTest {
 	}
 	
 	@Test
-	public void testCreat() {
+	public void testCreate() {
 		List old = User.findAll();
 		int count = old.size();
 		
