@@ -101,335 +101,6 @@
 }
 
 .mem_del_bt{ width:84px; float:left;}
-/*会员中心登录样式*/    
-.shlogin .btg170 a, .shlogin .btg170 a:visited {
-    text-decoration:none;
-    color: #333;
-}
-.shlogin .btg170 a:hover {
-    text-decoration:none;
-    color:#000;
-}
-.shlogin {
-    position:absolute;
-    right:0px;
-    bottom:2px;
-}
-#login_maincontainer {
-    padding:48px 0px 82px 15px;
-    border:1px solid #fff;
-}
-.loginbg {
-    width:318px;
-    float:left;
-    margin-right:100px;
-}
-.login {
-    border:1px #e08a78 solid;
-    background-color:#fdf8f7;
-    padding-top:14px;
-    padding-bottom:12px;
-    overflow:hidden;
-}
-.loginUl {
-    width:310px;
-    float:left;
-    overflow:hidden;
-}
-.login .bt {
-    vertical-align:middle;
-    background:url(../images/uhl/bt.gif) 0 0 no-repeat;
-    height:24px;
-    width:78px;
-    line-height:24px;
-    font-size:12px;
-    text-align:center;
-    border:0;
-}
-.login li {
-    width:270px;
-    overflow:hidden;
-    float:left;
-    height:32px;
-    padding:3px 0px 3px 25px;
-}
-.login li.field .input {
-    float:left;
-    width:280px;
-    padding-top:4px;
-}
-.login li.field label {
-    display:block;
-    font-size:12px;
-    height:24px;
-    line-height:24px;
-    text-align:right;
-    width:50px;
-    float:left;
-}
-.login li.field input {
-    border:1px solid #A7A6AA;
-    font-size:12px;
-    height:18px;
-    margin:0 14px 0 4px;
-    padding:2px;
-    width:196px;
-    float:left;
-    vertical-align:middle;
-}
-.login li.field .label1 {
-    display:block;
-    font-size:12px;
-    height:28px;
-    line-height:28px;
-    text-align:right;
-    width:50px;
-    float:left;
-}
-.login li.field .input .input1 {
-    border:1px solid #A7A6AA;
-    font-size:12px;
-    height:22px;
-    margin:0 8px 0 4px;
-    padding:2px;
-    width:90px;
-    float:left;
-    vertical-align:middle;
-}
-.login li.field input {
-    background:url(../images/uhl/input.gif) no-repeat scroll 0 0 white;
-}
-.login li.submit-field .input {
-    margin-left:52px;
-    clear:both;
-}
-.login .submit-field .input a, .login .submit-field .input a:visited {
-    text-decoration: underline;
-    color: #3366cc
-}
-.shlogin .btg170 a:hover {
-    text-decoration: underline;
-    color: #d84700
-}
-.fieldnot a, .fieldnot a:visited {
-    text-decoration: underline;
-    color: #d84700
-}
-.fieldnot a:hover {
-    text-decoration: underline;
-    color: #d84700
-}
-.login .fieldnot {
-    text-align:center;
-    height:30px;
-}
-.login .yzm {
-    width:90px;
-    line-height:24px;
-}
-.showcode_1 img {
-    width:50px;
-    height:23px;
-    border:1px #e4e4e4 solid;
-}
-.showcode_1 {
-    width:168px;
-    line-height:24px;
-}
-.showcode_1 b {
-    float:left;
-    margin-right:3px;
-    font-weight:normal;
-}
-.loginfj {
-    margin-left:22px;
-    margin-top:16px;
-    line-height:25px;
-}
-.loginfj a, .loginfj a:visited {
-    text-decoration:underline;
-    color:#3366cc;
-}
-.loginfj a:hover {
-    text-decoration:underline;
-    color:#3366cc;
-}
-.mem_login_info {
-    padding:0;
-    float:left;
-    margin-top:8px;
-}
-.mem_login_info h3 {
-    color:#7b2829;
-    font-size:14px;
-    margin:0px 5px 8px;
-    font-weight:bold;
-}
-.mem_login_info .loginTip {
-    background:none repeat scroll 0 0 #FFF8EE;
-    padding:10px;
-
-}
-.mem_login_info .loginTip li {
-    width:360px;
-    height:auto;
-    margin-left: 5px;
-}
-.mem_login_info .loginTip li.sec {
-    margin-top:8px;
-    font-size:12px;
-}
-.Color7, a.Color7, a.Color7:hover {
-    color:#999999;
-}
-/*会员中心登录样式结束*/  
-
-/*会员中心注册样式*/
-#reg_maincontainer {
-    margin-left:68px;
-    overflow:hidden;
-    zoom:1;
-}
-.reg_flow-steps {
-    width:588px;
-    margin:20px 0 20px 0;
-    overflow:hidden;
-    zoom:1;
-    background:url(../images/uhl/flow_steps_bg1.png) no-repeat scroll 100% 0 #E4E4E4;
-
-}
-
-.reg_flow-steps li {
-    color:#FFF;
-    float:left;
-    font-size:12px;
-    font-weight:bold;
-    height:23px;
-    line-height:23px;
-    overflow:hidden;
-    padding:0 15px 0 0;
-    text-align:center;
-}
-.reg_flow-steps li span, .reg_flow-steps li strong {
-    display:block;
-}
-
-.reg_flow-steps li.current {
-    color:#FFFFFF;
-}
-.reg_flow-steps li.last {
-    color:#333333;
-}
-.reg_flow-steps .num3 li {
-    width:276px;
-    height:23px;
-}
-
-.reg {
-    overflow:hidden;
-    zoom:1;
-    margin-bottom: 15px;
-}
-.reg-form {
-    width:570px;
-    margin-right:30px;
-    float:left;
-    display:inline
-}
-.reg-form li {
-    margin-bottom:3px;
-}
-.reg-form li.field {
-    border:1px solid white;
-    height:40px;
-    padding:8px 8px 4px 0px;
-    float:left;
-}
-.reg-form li.hover {
-    background-color:#fdf8f7;
-    border:1px solid #e08a78;
-    float:left;
-}
-.reg-form li.field .input {
-    float:left;
-    width:280px;
-    padding-top:4px;
-}
-.reg-form li.field label {
-    display:block;
-    font-size:12px;
-    height:24px;
-    line-height:24px;
-    text-align:right;
-    width:60px;
-    float:left;
-}
-.reg-form li.field input {
-    border:1px solid #A7A6AA;
-    font-size:13px;
-    height:18px;
-    margin:0 14px 0 4px;
-    padding:2px;
-    width:196px;
-    float:left;
-    vertical-align:middle;
-}
-.reg-form li.field input {
-    background:url(../images/uhl/input.gif) no-repeat scroll 0 0 white;
-}
-li.field input.showcode_2 {
-    width:40px;
-    margin-right:2px;
-}
-.reg-form li.field .msg {
-    display:none;
-    float:left;
-    width:280px;
-}
-.reg-form li.hover .msg, .reg-form li.field .show-error, .reg-form li.field .show-ok, .reg-form li.field .show-tips {
-    display:block;
-}
-.reg-form li.field .msg p {
-    display:none;
-}
-.reg-form li.field .show-attention .attention {
-    display:block;
-}
-.msg .error, .msg .stop, .msg .alert, .msg .attention, .msg .tips, .msg .ok, .msg .notice, .msg .question, .msg .help, .msg .small-help {
-    color:#404040;
-    line-height:18px;
-}
-.msg .attention {
-    background-color:#E5F5FF;
-    background-position:0px 8px;
-    border-color:#40B3FF;
-    margin-top:-3px;
-    position:relative;
-}
-.msg .error, .msg .stop, .msg .alert, .msg .attention, .msg .tips, .msg .ok, .msg .notice, .msg .question, .msg .help, .msg .small-help {
-    background:url(../images/uhl/usericon.gif) no-repeat scroll 3px 3px transparent;
-    border:1px solid #cccccc;
-    color:#404040;
-    float:left;
-    line-height:18px;
-    padding:1px 18px 1px 23px;
-}
-.reg-form li.submit-field .input {
-    margin:8px 0px 0px 72px;
-    clear:both;
-}
-.reg-form li.submit-field button {
-    background:url(../images/uhl/bt.gif) no-repeat scroll 0 -32px transparent;
-    border:0 none;
-    color:#fff;
-    cursor:pointer;
-    font-size:12px;
-    font-weight:700;
-    height:24px;
-    line-height:24px;
-    margin-right:13px;
-    width:206px;
-}
 .reg-form li.notreg-field .input {
     margin-left:90px;
     margin-top:10px;
@@ -444,33 +115,6 @@ li.field input.showcode_2 {
 .regasider {
     float:right;
     margin-top:15px;
-}
-.reg_phonebd {
-    width:593px;
-    height:66px;
-    background:url(../images/uhl/userbg.gif) 0 0 no-repeat;
-    margin-top:26px;
-}
-.reg_phonebd .ptext {
-    padding:20px 35px;
-    color:#333333;
-    line-height: 24px;
-    letter-spacing:0.6px;
-}
-.reg_phonebd .ptext .fcred {
-    color:#b8432f
-}
-.reg_phonebd .ptext .clickbt {
-    display:block;
-    background:url(../images/uhl/bt.gif) no-repeat scroll 0 0 transparent;
-    border:0 none;
-    color:#fff;
-    cursor:pointer;
-    font-size:12px;
-    font-weight:700;
-    height:24px;
-    line-height:24px;
-    width:77px;
 }
 .regasider .info {
     padding:0;
@@ -515,24 +159,6 @@ li.field input.showcode_2 {
 /*注册样式结束*/
 
 
-/*注册成功样式*/
-.flow-steps {
-    margin:20px auto;
-    padding:0;
-    text-align:center;
-    overflow:hidden;
-    zoom:1;
-    background:url(../images/uhl/flowstep1.gif) no-repeat;
-
-}
-.flow-steps2 {
-    margin:40px auto 8px;
-    padding:0;
-    text-align:center;
-    overflow:hidden;
-    zoom:1;
-    background:url(../images/uhl/flowstep2.gif) no-repeat;
-}
 .flow-steps2 li {
     color:#FFF;
     float:left;
@@ -598,13 +224,6 @@ li.field input.showcode_2 {
 .regok .bclick a:hover {
     text-decoration:none;
 }
-.bcbt {
-    background:url(../images/uhl/bt.gif) 0 -64px no-repeat;
-    height:26px;
-    width:100px;
-    line-height:25px;
-    margin:0 auto
-}
 .regok .bctext {
     height:22px;
 }
@@ -659,30 +278,6 @@ li.field input.showcode_2 {
     margin:26px auto;
     position:relative
 }
-.hyk01 .phonebdt {
-    background: url(../images/uhl/kbg.gif) 0 0 no-repeat;
-    width:309px;
-    height:34px;
-}
-.hyk01 .phonebdm {
-    background: url(../images/uhl/kbg.gif) 0 -35px repeat-y;
-    width:309px;
-    height:113px;
-}
-.hyk01 .phonebdm p {
-    padding:20px 40px;
-    font-size:14px;
-}
-.hyk01 .backimg {
-    margin:0 auto;
-    padding:0;
-    text-align:center
-}
-.hyk01 .phonebdb {
-    background: url(../images/uhl/kbg.gif) 0 -142px no-repeat;
-    width:309px;
-    height:13px;
-}
 .hyk01 .hyk03text {
     padding-top:33px;
 }
@@ -736,7 +331,6 @@ li.field input.showcode_2 {
     text-align:center;
     overflow:hidden;
     zoom:1;
-    background:url(../images/uhl/flowstep2.gif) no-repeat;
 }
 .flow-steps2 li {
     color:#FFF;
@@ -819,7 +413,6 @@ li.field input.showcode_2 {
     text-align:left;
 }
 .findbt {
-    background:url(../images/uhl/bt.gif) 0 -98px no-repeat;
     border:0;
     height:24px;
     width:101px;
@@ -834,7 +427,6 @@ li.field input.showcode_2 {
     padding-top:20px;
 }
 .findbt140 {
-    background:url(../images/uhl/bt.gif) 0 -138px no-repeat;
     border:0;
     height:25px;
     width:150px;
@@ -890,7 +482,6 @@ li.field input.showcode_2 {
     vertical-align:middle;
 }
 .inputbg {
-    background:url(../images/uhl/input.gif) no-repeat scroll 0 0 white;
 }
 /*修改手机密码找回*/
 .redInfo b, .yellowInfo b, .allstep_yzm, .allstep_count {
@@ -1080,12 +671,10 @@ span.allstep_info {
     height:auto;
     overflow:hidden;
     padding:8px;
-    background:#fff url(../images/uhl/xbg.gif) repeat-y -168px 0px;
 }
 .usernav {
     width:1000px;
     height:28px;
-    background:url(../images/uhl/usernavbg.gif) repeat-x #b73a24;
 }
 .usernav .current a, .usernav .current:link, .usernav .current:visited {
     color:#fff;
@@ -1113,7 +702,6 @@ span.allstep_info {
 }
 .userbg {
     margin-left:3px;
-    background:url(../images/uhl/userbg.gif) 0px -68px no-repeat;
     width:174px;
     height:160px;
 }
@@ -1150,7 +738,6 @@ span.allstep_info {
     height:14px;
 }
 .bt {
-    background:url(../images/uhl/bt.gif) 0 -98px no-repeat;
     border:0;
     height:24px;
     width:101px;
@@ -1161,7 +748,6 @@ span.allstep_info {
     font-weight:bold
 }
 .bt1 {
-    background:url(../images/uhl/bt.gif) 0 0 no-repeat;
     border:0;
     height:24px;
     width:78px;
@@ -1531,7 +1117,6 @@ span.allstep_info {
     height:28px;
 }
 .ukgltext li div a {
-    background:url(../images/uhl/bt.gif) 0 -205px no-repeat;
     border:0;
     height:24px;
     width:70px;
@@ -1545,11 +1130,9 @@ span.allstep_info {
 }
 .ukgltext li div a:hover {
     text-decoration:none;
-    background:url(../images/uhl/bt.gif) 0px -239px;
 }
 .ukgltext div.card_default a, .ukgltext div.card_default a:hover {
     color:#fff;
-    background:url(../images/uhl/bt.gif) 0 0 no-repeat;
     width:78px;
     font-weight:bold;
     margin-right:5px;
@@ -1661,7 +1244,6 @@ span.allstep_info {
     line-height:22px;
 }
 .phone-tips .close, .safe-info .state .over, .account-info .bind, .phone-tips .close, .phone-tips .arror, .sub-phone .pinch, .sub-phone .collapse {
-    background: url(../images/uhl/safebt2.gif) no-repeat scroll 0 0 transparent;
 }
 .safe-info .state span {
     display:block;
@@ -1746,7 +1328,6 @@ span.allstep_info {
     width:370px;
 }
 .tc370 li.t {
-    background:url("../images/uhl/bg_nav.gif") no-repeat scroll -171px -70px transparent;
     float:left;
     height:29px;
     line-height:29px;
@@ -1760,7 +1341,6 @@ span.allstep_info {
     width:368px;
 }
 .tc370 li.b {
-    background:url("../images/uhl/bg_nav.gif") no-repeat scroll -2px -250px transparent;
     float:left;
     font-size:1px;
     height:6px;
@@ -1844,7 +1424,6 @@ span.allstep_info {
     line-height:34px;
 }
 .mem_update_hqbt {
-    background:url("../images/uhl/bt.gif") no-repeat scroll -101px -62px transparent;
     border:0 none;
     color:#FFFFFF;
     font-size:12px;
@@ -1908,7 +1487,6 @@ span.allstep_info {
     overflow:hidden;
     padding-left:1px;
     padding-right:6px;
-    background:#fff url(../images/uhl/xbg.gif) repeat-y -168px 0px;
 }
 .message {
     height:16px;
@@ -1972,7 +1550,6 @@ span.allstep_info {
     width:14px;
     height:21px;
     position:absolute;
-    background:url(../images/uhl/icon_s.gif) -1px -30px;
     left: -18px;
     top: 0px;
 }
@@ -2056,7 +1633,6 @@ span.allstep_info {
     overflow:hidden;
     position:relative;
     z-index:2;
-    background:url(../images/uhl/bg_nav_h.gif) no-repeat 0px -161px;
 }
 #collect_center .t .list {
     height:26px;
@@ -2084,7 +1660,6 @@ span.allstep_info {
 #collect_center .list a:hover, #collect_center .list a.current {
     color:#c43f27;
     text-decoration:none;
-    background:url(../images/uhl/bg_nav_h.gif) no-repeat -500px -30px;
 }
 #collect_center .collectmain {
     width:582px;
@@ -2093,7 +1668,6 @@ span.allstep_info {
     margin-top:-4px;
     position:relative;
     z-index:1;
-    background:#fff url(../images/uhl/collectk.gif) repeat-y;
 }
 #collect_center .b {
     width:100%;
@@ -2101,7 +1675,6 @@ span.allstep_info {
     overflow:hidden;
     margin:0px;
     font-size:1px;
-    background:url(../images/uhl/bg_nav_h.gif) no-repeat -175px -96px;
 }
 .collectmain .fd {
     width:556px;
@@ -2144,7 +1717,6 @@ auto;
     padding-left:12px;
 }
 .mem_sc_fd_bts {
-    background:url(../images/uhl/bt.gif) -161px -209px no-repeat;
     border:0;
     height:25px;
     width:70px;
@@ -2158,7 +1730,6 @@ auto;
 }
 .mem_sc_sp_bts {
     float:left;
-    background:url(../images/uhl/bt.gif) -212px -268px no-repeat;
     border:0;
     height:25px;
     width:70px;
@@ -2169,7 +1740,6 @@ auto;
 }
 .mem_sc_sp_bts1 {
     float:left;
-    background:url(../images/uhl/bt.gif) -161px -209px no-repeat;
     border:0;
     height:25px;
     width:70px;
@@ -2253,16 +1823,6 @@ auto;
 .mem_sc_fd_yp {
     padding-left:16px;
 }
-.mem_sc_fd_btp {
-    background:url(../images/uhl/bt.gif) -270px -209px no-repeat;
-    border:0;
-    height:25px;
-    width:70px;
-    line-height:25px;
-    padding-left:28px;
-    font-size:12px;
-    color:#333;
-}
 /*collect.html样式结束*/
 
 /*会员中心-图片页面样式*/
@@ -2280,26 +1840,6 @@ auto;
     float:left;
     width:810px;
     height:auto;
-}
-#collect_img_center .prebt {
-    background:url(../images/uhl/bt.gif) -218px -32px no-repeat;
-    border:0;
-    height:24px;
-    width:78px;
-    line-height:24px;
-    padding-left:28px;
-    font-size:12px;
-    color:#333;
-}
-#collect_img_center .nextbt {
-    background:url(../images/uhl/bt.gif) -218px -61px no-repeat;
-    border:0;
-    height:24px;
-    width:78px;
-    line-height:24px;
-    padding-left:18px;
-    font-size:12px;
-    color:#333;
 }
 #collect_img_center .imgpage {
     height:46px;
@@ -2414,75 +1954,7 @@ auto;
     margin-left:9px;
     margin-right:28px;
 }
-#layout #left #lt {
-    width:9px;
-    height:35px;
-    background-image:url(../images/uhl/g_01.jpg);
-}
-#layout #left #lc {
-    width:9px;
-    height:100%;
-    background-image:url(../images/uhl/left.jpg);
-    bakcground-repeat:repeat-y;
-}
-#layout #left #lb {
-    width:9px;
-    height:8px;
-    background-image:url(../images/uhl/g_07.jpg);
-    background-repeat:no-repeat;
-}
-#layout #right #rt {
-    width:28px;
-    height:35px;
-    background-image:url(../images/uhl/g_03.jpg);
-}
-#layout #right #rc {
-    width:28px;
-    height:100%;
-    background-image:url(../images/uhl/right.jpg);
-    bakcground-repeat:repeat-y;
-}
-#layout #right #rb {
-    width:28px;
-    height:8px;
-    background-image:url(../images/uhl/g_09.jpg);
-    background-repeat:no-repeat;
-}
-#layout #center #ct {
-    width:100%;
-    height:35px;
-    background-image:url(../images/uhl/g_02.jpg);
-    background-position:right top;
-    background-repeat: repeat-x;
-}
-#layout #center #cc {
-    width:100%;
-    height:100%;
-}
-#layout #center #cb {
-    width:100%;
-    height:8px;
-    background-image:url(../images/uhl/g_08.jpg);
-    background-repeat:repeat-x;
-}
 /**/
-/*弹出层商户回信*/
-.mem_sh_feed {
-    position:relative;
-    width:630px;
-    margin-left:16px;
-    margin-bottom:10px;
-    display:none
-}
-.mem_sh_feed .mem_sh_feed_se {
-    background:url(../images/uhl/icon_s.gif) 0 -579px;
-    width:20px;
-    height:7px;
-    position:relative;
-    left:34px;
-    top:2px;
-    _top:9px;
-}
 .mem_sh_feed_c {
     border:2px solid #efc4bb;
     background-color:#fdf8f7;
@@ -2504,71 +1976,6 @@ auto;
 }
 /*弹出层商户回信结束*/
 
-/*弹出评论时间*/
-.sh_mess_main_l_c .messagesort {
-    height:22px;
-    margin-top:8px;
-    float:right;
-    margin-right:15px;
-    _margin-right:8px;
-}
-.messagesort a.messagesort_ti_t {
-    text-decoration:none;
-}
-.messagesort_ti {
-    width:70px;
-    border:1px solid #b84531;
-    padding:0px 6px 4px 6px;
-    position:absolute;
-    background-color:#fff;
-    z-index:100;
-}
-.messagesort_ti li {
-    line-height:24px;
-}
-.messagesort_ti_t {
-    cursor:pointer;
-}
-.messagesort_ti_t b {
-    display:inline-block;
-    background: url(../images/uhl/list.gif) no-repeat 3px -4px !important;
-    background: url(../images/uhl/list.gif) no-repeat 3px 3px;
-    width:12px;
-    height:5px;
-}
-.messagesort_ti li a:link, .messagesort_ti li a:visited {
-    color:#666;
-}
-.messagesort_ti li a:hover {
-    color:#000;
-    text-decoration:none
-}
-.messagesort_ti_0 a {
-    color:#000;
-}
-.messagesort_ti_0 b {
-    display: inline-block;
-    margin-left:8px;
-    background: url(../images/uhl/list.gif) no-repeat -2px -14px;
-    width:13px;
-    height:17px;
-}
-/*弹出评论时间结束*/
-/*gyp 2011-2-12添加*/
-.mem_sc_fd_yp {
-    padding-left:16px;
-}
-.mem_sc_fd_btp {
-    background:url(../images/uhl/bt.gif) -270px -209px no-repeat;
-    border:0;
-    height:25px;
-    width:70px;
-    line-height:25px;
-    padding-left:28px;
-    font-size:12px;
-    color:#333;
-}
-/*gyp 2011-2-14添加*/
 .mem_u_name_input {
     color:#999;
 }

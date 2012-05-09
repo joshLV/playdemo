@@ -1,4 +1,10 @@
-#{extends 'main.html' /} #{set title:'优惠啦 - 基本资料' /} #{set 'moreStyles'}
+#{extends 'main.html' /} 
+#{set title:'优惠啦 - 基本资料' /} 
+#{set 'moreStyles'}
+<!-- <link rel="stylesheet" type="text/css" href="@{'/public/stylesheets/common.css'}" />
+<link rel="stylesheet" type="text/css" href="@{'/public/stylesheets/updateinfo.css'}" />
+<link rel="stylesheet" type="text/css" href="@{'/public/stylesheets/account.css'}" /> -->
+
 <link rel="stylesheet" type="text/css" href="http://www.uhuila.com/css/common.css" />
 <link rel="stylesheet" type="text/css" href="http://www.uhuila.com/css/updateinfo.css" />
 <link rel="stylesheet" type="text/css" href="http://www.uhuila.com/css/account.css" />
@@ -8,17 +14,8 @@
 <script src="@{'/public/javascripts/common.jq.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 
-<body>
+<div class="wrap clearfix">
 <form class="form-horizontal" id="userForm" action="@{UserInfos.update(userInfo?.id)}" method="POST">
-	<div id="wrap_main">
-		<!--    最顶部导航-->
-		<div id="wrap_top">#{include "share/topNavigator.html"/}</div>
-		<div id="wrap_top_header">
-			<div id="wrap_top_header_left">
-				<img src="@{'/public/images/logo.jpg'}" />
-			</div>
-			<div id="wrap_top_middle">券生活-惠生活${userInfo?.id}</div>
-		</div>
 		<div id="mem_ukgl_main">
 			<!--center_bar-->
 			<div class="topnav">
@@ -72,7 +69,7 @@
 										<div class="input">
 											<span></span> <label>手机号码：</label> <input type="text" id="usertel" name="userInfo.mobil" value="${userInfo?.mobile}" class="input138 inputbg" disabled
 												/>
-												<div class="bt colorw bold bdph">
+												<div class="search-btn colorw bold bdph">
 												#{if userInfo?.mobile ==null || userInfo?.mobile =='' }
 												<a onclick="$.common.dialog({'id':'bindusertel','title':'绑定手机'});" href="#">绑定手机</a>
 												#{/if}
@@ -187,7 +184,7 @@
 												</div>
 												<div style="height: 10px; clear: both"></div>
 												<div class="button">
-													<button id="upuserinfobutton" type="button" onClick="setUserInfo()" class="bt">确认无误提交</button>
+													<button id="upuserinfobutton" type="button" onClick="setUserInfo()" class="search-btn">确认无误提交</button>
 													<span id="info"> </span>
 												</div>
 											</div>
@@ -199,138 +196,8 @@
 
 						</div>
 						<div class="b"></div>
-
 					</div>
-					<style>
 
-/************* 弹出框  **********/
-.i_w309bg {
-	width: 309px;
-	height: 170px;
-	background: url(images/tcbg.gif) -4px -5px;
-}
-
-.i_w309 {
-	padding-top: 60px;
-	padding-left: 78px;
-}
-
-.middletext {
-	height: 36px;
-	font-size: 13px;
-}
-
-.i_w380bg {
-	width: 380px;
-	height: 300px;
-	background: url(images/tcbg.gif) -315px -5px no-repeat;
-	overflow: hidden;
-}
-
-.i_w380 {
-	padding-top: 20px;
-	padding-left: 2px;
-}
-
-.middletext {
-	height: 36px;
-	font-size: 14px;
-}
-
-.i_w380title {
-	padding-top: 8px;
-	padding-left: 10px;
-}
-
-.bdhone {
-	line-height: 32px;
-	height: 32px;
-}
-
-.bdhone .input {
-	width: 380px;
-	height: 24px;
-}
-
-.bdhone .label88 {
-	display: block;
-	font-size: 12px;
-	height: 24px;
-	line-height: 24px;
-	text-align: right;
-	width: 88px;
-	float: left;
-}
-
-.bdhone .qrjh {
-	padding-left: 90px;
-}
-
-.question {
-	line-height: 28px;
-	padding-left: 15px;
-}
-
-.i_w380 .buttonfield {
-	letter-spacing: 0.08em;
-}
-
-.i_w528bg {
-	width: 528px;
-	height: 228px;
-	background: url(images/tcbg.gif) -10px -357px no-repeat;
-	overflow: hidden;
-}
-
-.i_w528 {
-	padding-top: 20px;
-	padding-left: 30px;
-}
-
-.i_w528title {
-	padding-top: 6px;
-	padding-left: 12px;
-}
-
-.chphone .input {
-	height: 34px;
-	line-height: 40px;
-}
-
-.chphone .msg {
-	float: left;
-	width: 162px;
-	height: 34px;
-	border: 1px #e08a78 solid;
-	line-height: 34px;
-}
-
-.chphone .attention {
-	padding-left: 10px;
-	_padding-top: 10px;
-}
-
-.chphone .buttonfield {
-	margin-left: 86px;
-}
-
-.ghqr {
-	padding-left: 10px;
-}
-
-.ghqr a,.ghqr a:visited {
-	color: #000;
-}
-
-.qqbt {
-	width: 200px;
-	text-align: left;
-}
-
-.qqbt ul li {
-	float: left
-}
-</style>
 					<!--通用弹出框-->
 					<div id="changeusertel" class="boxwrap">
 						<div id="layout" style="width: 474px; height: 200px; z-index: 10000">
@@ -380,136 +247,7 @@
 						</div>
 					</div>
 					<!--通用弹出框-->
-					<style>
-
-/************* 弹出框  **********/
-.i_w309bg {
-	width: 309px;
-	height: 170px;
-	background: url(images/tcbg.gif) -4px -5px;
-}
-
-.i_w309 {
-	padding-top: 60px;
-	padding-left: 78px;
-}
-
-.middletext {
-	height: 36px;
-	font-size: 13px;
-}
-
-.i_w380bg {
-	width: 380px;
-	height: 300px;
-	background: url(images/tcbg.gif) -315px -5px no-repeat;
-	overflow: hidden;
-}
-
-.i_w380 {
-	padding-top: 20px;
-	padding-left: 2px;
-}
-
-.middletext {
-	height: 36px;
-	font-size: 14px;
-}
-
-.i_w380title {
-	padding-top: 8px;
-	padding-left: 10px;
-}
-
-.bdhone {
-	line-height: 32px;
-	height: 32px;
-}
-
-.bdhone .input {
-	width: 380px;
-	height: 24px;
-}
-
-.bdhone .label88 {
-	display: block;
-	font-size: 12px;
-	height: 24px;
-	line-height: 24px;
-	text-align: right;
-	width: 88px;
-	float: left;
-}
-
-.bdhone .qrjh {
-	padding-left: 90px;
-}
-
-.question {
-	line-height: 28px;
-	padding-left: 15px;
-}
-
-.i_w380 .buttonfield {
-	letter-spacing: 0.08em;
-}
-
-.i_w528bg {
-	width: 528px;
-	height: 228px;
-	background: url(images/tcbg.gif) -10px -357px no-repeat;
-	overflow: hidden;
-}
-
-.i_w528 {
-	padding-top: 20px;
-	padding-left: 30px;
-}
-
-.i_w528title {
-	padding-top: 6px;
-	padding-left: 12px;
-}
-
-.chphone .input {
-	height: 34px;
-	line-height: 40px;
-}
-
-.chphone .msg {
-	float: left;
-	width: 162px;
-	height: 34px;
-	border: 1px #e08a78 solid;
-	line-height: 34px;
-}
-
-.chphone .attention {
-	padding-left: 10px;
-	_padding-top: 10px;
-}
-
-.chphone .buttonfield {
-	margin-left: 86px;
-}
-
-.ghqr {
-	padding-left: 10px;
-}
-
-.ghqr a,.ghqr a:visited {
-	color: #000;
-}
-
-.qqbt {
-	width: 200px;
-	text-align: left;
-}
-
-.qqbt ul li {
-	float: left
-}
-</style>
+                    
 					<!--通用弹出框-->
 					<div id="bindusertel" class="boxwrap">
 						<div id="layoutbind" style="width: 410px; height: 267px;">
@@ -555,10 +293,6 @@
 					<!--/right-->
 				</div>
 			</div>
-		</div>
 		<!--/main-->
 		</form>
-</body>
-</html>
-<!-- /foot -->
-
+        </div>

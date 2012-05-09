@@ -1,228 +1,12 @@
-#{extends 'main.html' /} #{set title:'修改密码' /} #{set 'moreStyles'}
-<style type="text/css">
-<!--
-body,td,th {
-	font-size: 14px;
-}
-
-a {
-	font-size: 14px;
-	color: #003399;
-}
-
-a:link {
-	text-decoration: none;
-}
-
-a:visited {
-	text-decoration: none;
-	color: #003399;
-}
-
-a:hover {
-	text-decoration: underline;
-	color: #0033FF;
-}
-
-a:active {
-	text-decoration: none;
-	color: #003399;
-}
-
-.box {
-	width: 600px;
-	height: auto;
-	border: 1px solid #8FC319;
-	margin: 0 auto;
-}
-
-.title {
-	width: 100%;
-	height: 26px;
-	line-height: 26px;
-	border-bottom: 1px solid #8FC319;
-	margin: 0 auto;
-	font-family: "Courier New", Courier, monospace;
-	font-weight: bold;
-	color: #666666;
-	background-color: #A0D771;
-}
-
-.commd {
-	width: 90%;
-	border: 1px solid #cccccc;
-	height: 20px;
-	line-height: 20px;
-	margin: 0 auto;
-	margin-top: 10px;
-	background-color: #f1f1f1;
-}
-
-.commdinfo {
-	width: 90%;
-	border: 1px solid #cccccc;
-	height: 200px;
-	line-height: 140%;
-	margin: 0 auto;
-	margin-top: 10px;
-}
-
-.workbox {
-	width: 90%;
-	border: 1px solid #cccccc;
-	margin: 0 auto;
-	margin-top: 10px;
-	list-style: none;
-}
-
-.workbox li {
-	height: 34px;
-	line-height: 34px;
-	width: 99%;
-	color: #000000;
-	border-bottom: 1px solid #cccccc;
-	margin: 0 auto;
-}
-
-.input_box {
-	width: auto;
-	height: 34px;
-	line-height: 34px;
-	float: left;
-}
-
-.inputBox {
-	height: 26px;
-	line-height: 26px;
-	border: 1px solid #999999;
-	background-repeat: repeat-x;
-	margin-top: 2px;
-	float: left;
-	font-size: 14px;
-	color: #000000;
-}
-/*设置为显示*/
-.setShow {
-	visibility: visible
-}
-/*设置为隐藏*/
-.setClose {
-	visibility: hidden;
-}
-/*红色外框*/
-.qdbox_hongse {
-	width: 162px;
-	height: 16px;
-	line-height: 16px;
-	border: 1px solid #ff0000;
-	float: left;
-	overflow: hidden;
-	margin-top: 7px;
-	margin-left: 10px;
-}
-/*橙色外框*/
-.qdbox_cengse {
-	width: 162px;
-	height: 16px;
-	line-height: 16px;
-	border: 1px solid #FF6600;
-	float: left;
-	overflow: hidden;
-	margin-top: 7px;
-	margin-left: 10px;
-}
-/*蓝色外框*/
-.qdbox_lanse {
-	width: 162px;
-	height: 16px;
-	line-height: 16px;
-	border: 1px solid #0033ff;
-	float: left;
-	overflow: hidden;
-	margin-top: 7px;
-	margin-left: 10px;
-}
-/*绿色外框*/
-.qdbox_luse {
-	width: 162px;
-	height: 16px;
-	line-height: 16px;
-	border: 1px solid #00cc00;
-	float: left;
-	overflow: hidden;
-	margin-top: 7px;
-	margin-left: 10px;
-}
-/*25%红色*/
-.qdhongse {
-	width: 40px;
-	height: 14px;
-	line-height: 14px;
-	border: 1px solid #ffffff;
-	float: left;
-	background-color: #cc0000;
-	text-align: center;
-	font-size: 12px;
-	color: #ffffff;
-}
-/*50%橙色*/
-.qdcengse {
-	width: 80px;
-	height: 14px;
-	line-height: 14px;
-	border: 1px solid #ffffff;
-	float: left;
-	background-color: #FF6600;
-	text-align: center;
-	font-size: 12px;
-	color: #ffffff;
-}
-/*75%蓝色*/
-.qdlanse {
-	width: 120px;
-	height: 14px;
-	line-height: 14px;
-	border: 1px solid #ffffff;
-	float: left;
-	background-color: #0033ff;
-	text-align: center;
-	font-size: 12px;
-	color: #ffffff;
-}
-/*75%绿色*/
-.qdluse {
-	width: 160px;
-	height: 14px;
-	line-height: 14px;
-	border: 1px solid #ffffff;
-	float: left;
-	background-color: #00cc00;
-	text-align: center;
-	font-size: 12px;
-	color: #ffffff;
-}
--->
-</style>
-#{/set} #{set 'moreScripts'}
+#{extends 'main.html' /} 
+#{set title:'修改密码' /} 
+#{set 'moreScripts'}
 <script src="@{'/public/javascripts/password.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 <body onload="isOk('${isOk}')">
-	<div id="wrap_main">
-		<!--    最顶部导航-->
-		<div id="wrap_top">#{include "share/topNavigator.html"/}</div>
-		<div id="wrap_top_header">
-			<div id="wrap_top_header_left">
-				<img src="@{'/public/images/logo.jpg'}" />
-			</div>
-			<div id="wrap_top_middle">券生活-惠生活</div>
-
-		</div>
-		<div style="clear: both"></div>
-		<div class="fen_g"></div>
-	</div>
 	<!--主体内容部分-->
 	<div id="wrap_content">
-		<div class="commd">修改密码</div>
+		<div class="tab_top">修改密码</div>
 		<form class="form-horizontal" action="@{UserPassword.update(user.id)}" method="POST">
 			<div class="workbox">
 				<li><div class="input_box">原&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;&nbsp;码&nbsp;：</div> 
@@ -241,3 +25,209 @@ a:active {
 			</div>
 		</form>
 	</div>
+#{set 'moreStyles'}
+<style type="text/css">
+<!--
+body,td,th {
+    font-size: 14px;
+}
+
+a {
+    font-size: 14px;
+    color: #003399;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+    color: #003399;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #0033FF;
+}
+
+a:active {
+    text-decoration: none;
+    color: #003399;
+}
+
+.box {
+    width: 600px;
+    height: auto;
+    border: 1px solid #8FC319;
+    margin: 0 auto;
+}
+
+.title {
+    width: 100%;
+    height: 26px;
+    line-height: 26px;
+    border-bottom: 1px solid #8FC319;
+    margin: 0 auto;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+    color: #666666;
+    background-color: #A0D771;
+}
+
+.commd {
+    width: 90%;
+    border: 1px solid #cccccc;
+    height: 20px;
+    line-height: 20px;
+    margin: 0 auto;
+    margin-top: 10px;
+    background-color: #f1f1f1;
+}
+
+.commdinfo {
+    width: 90%;
+    border: 1px solid #cccccc;
+    height: 200px;
+    line-height: 140%;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+.workbox {
+    width: 90%;
+    border: 1px solid #cccccc;
+    margin: 0 auto;
+    margin-top: 10px;
+    list-style: none;
+}
+
+.workbox li {
+    height: 34px;
+    line-height: 34px;
+    width: 99%;
+    color: #000000;
+    border-bottom: 1px solid #cccccc;
+    margin: 0 auto;
+}
+
+.input_box {
+    width: auto;
+    height: 34px;
+    line-height: 34px;
+    float: left;
+}
+
+.inputBox {
+    height: 26px;
+    line-height: 26px;
+    border: 1px solid #999999;
+    background-repeat: repeat-x;
+    margin-top: 2px;
+    float: left;
+    font-size: 14px;
+    color: #000000;
+}
+/*设置为显示*/
+.setShow {
+    visibility: visible
+}
+/*设置为隐藏*/
+.setClose {
+    visibility: hidden;
+}
+/*红色外框*/
+.qdbox_hongse {
+    width: 162px;
+    height: 16px;
+    line-height: 16px;
+    border: 1px solid #ff0000;
+    float: left;
+    overflow: hidden;
+    margin-top: 7px;
+    margin-left: 10px;
+}
+/*橙色外框*/
+.qdbox_cengse {
+    width: 162px;
+    height: 16px;
+    line-height: 16px;
+    border: 1px solid #FF6600;
+    float: left;
+    overflow: hidden;
+    margin-top: 7px;
+    margin-left: 10px;
+}
+/*蓝色外框*/
+.qdbox_lanse {
+    width: 162px;
+    height: 16px;
+    line-height: 16px;
+    border: 1px solid #0033ff;
+    float: left;
+    overflow: hidden;
+    margin-top: 7px;
+    margin-left: 10px;
+}
+/*绿色外框*/
+.qdbox_luse {
+    width: 162px;
+    height: 16px;
+    line-height: 16px;
+    border: 1px solid #00cc00;
+    float: left;
+    overflow: hidden;
+    margin-top: 7px;
+    margin-left: 10px;
+}
+/*25%红色*/
+.qdhongse {
+    width: 40px;
+    height: 14px;
+    line-height: 14px;
+    border: 1px solid #ffffff;
+    float: left;
+    background-color: #cc0000;
+    text-align: center;
+    font-size: 12px;
+    color: #ffffff;
+}
+/*50%橙色*/
+.qdcengse {
+    width: 80px;
+    height: 14px;
+    line-height: 14px;
+    border: 1px solid #ffffff;
+    float: left;
+    background-color: #FF6600;
+    text-align: center;
+    font-size: 12px;
+    color: #ffffff;
+}
+/*75%蓝色*/
+.qdlanse {
+    width: 120px;
+    height: 14px;
+    line-height: 14px;
+    border: 1px solid #ffffff;
+    float: left;
+    background-color: #0033ff;
+    text-align: center;
+    font-size: 12px;
+    color: #ffffff;
+}
+/*75%绿色*/
+.qdluse {
+    width: 160px;
+    height: 14px;
+    line-height: 14px;
+    border: 1px solid #ffffff;
+    float: left;
+    background-color: #00cc00;
+    text-align: center;
+    font-size: 12px;
+    color: #ffffff;
+}
+-->
+</style>
+#{/set}

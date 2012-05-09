@@ -112,152 +112,6 @@ h3 {font-size:12px;}
     background-color:#ececec;
 }
 
-/**鑳屾櫙鍥剧墖缁熶竴瀹氫箟**/
-/*bg_nav_h.gif*/
-.smallbtn, .bigbtn, .menu li.t, .menu li.first, .menu li.b, #h_right .t, #h_right .list a:hover, #h_right .list a.current, #h_right .b, #ukgl-center .t, #ukgl-center  .list a:hover, #ukgl-center  .list a.current, #ukgl-center  .b, .topnav a.current, .topnav a:hover {
-    background:url(../images/uhl/bg_nav_h.gif) no-repeat;
-}
-/*icon.gif*/
-.menu li b, .menu dl b, .area #city, #header li.shopcar {
-    background:url(../images/uhl/icon.gif) no-repeat;
-}
-/*xbg.gif*/
-.menu li.list, .menu dl, #ukgl-center .main, #h_right .main {
-    background:url(../images/uhl/xbg.gif) repeat-y;
-}
-/*c2cbg.gif*/
-.cmenu li.t, .cmenu li b, .cmenu li.b, .cmenu li.first {
-    background:url(../images/uhl/c2cbg.gif) no-repeat;
-}
-/*c2cybg.gif*/
-.cmenu li.list, .cmenu dl {
-    background:url(../images/uhl/c2cybg.gif) repeat-y;
-}
-/*bg_nav.gif*/
-.searchbox, .searchbtn, .searchitem a.current, .searchitem a:hover, .greyinput {
-    background:url(../images/uhl/bg_nav.gif) no-repeat;
-}
-/*page.icon.png*/
-.page a.pn, .page a.pp,.page a.pn_gray, .page a.pp_gray, .page .btn {
-    background:url(../images/uhl/page.icon.png) no-repeat;
-}
-/*bg.gif*/
-#header .headbar, .f3, .t_m, .b_m span, .topnav,.cart_topnav {
-    background:url(../images/uhl/bg.gif) repeat-x;
-}
-/*bg_table.gif*/
-.f1 ul {
-    background:url(../images/uhl/bg_table.gif) no-repeat;
-}
-/*bt.gif*/
-.btg170 {
-    background:url(../images/uhl/bt.gif) no-repeat;
-}
-/*box.gif*/
-.t_l, .t_r, .m_r, .b_l, .b_r, a.close {
-    background:url(../images/uhl/box.gif) no-repeat;
-}
-/*box_c.gif*/
-.m_l {
-    background:url(../images/uhl/box_c.gif) repeat-y;
-}
-/*level.png*/
-.level1, .level2, .level3, .level4, .level5{
-    background:url(../images/uhl/level.png) no-repeat;
-}
-/*c2c.table.bg.gif*/
-.gtable_tl, .gtable_tr {
-    background:url(../images/uhl/c2c.table.bg.gif) no-repeat;
-}
-/*c2c.table.bg.png*/
-.table_tl, .table_tr, .table_bl, .table_br {
-    background:url(../images/uhl/c2c.table.bg.png) no-repeat;
-}
-/*c2c.table.xbg.png*/
-.table_c {
-    background:url(../images/uhl/c2c.table.xbg.png) repeat-y;
-}
-.smallbtn {
-    border:0px;
-    width:71px;
-    height:24px;
-    line-height:24px;
-    color:#fff;
-    margin:0px 15px;
-    letter-spacing:3px;
-    word-spacing:3px;
-    cursor:pointer;
-    background-position: -289px -35px;
-}
-.bigbtn {
-    width:125px;
-    border:0px;
-    height:24px;
-    line-height:24px;
-    color:#fff;
-    margin-left:82px;
-    display:inline;
-    cursor:pointer;
-    font-weight:bold;
-    background-position: -364px -35px;
-}
-/*甯︾伆鑹叉笎鍙樼殑杈撳叆妗�*/
-input.greyinput{
-    border:1px solid;
-    border-top-color:#c0c3c3;
-    border-left-color:#c0c3c3;
-    border-right-color:#a8acad;
-    border-bottom-color:#a8acad;
-    padding:2px;
-    height:18px;
-    line-height:20px;
-    background-position: -320px -175px;
-    width:145px;
-}
-
-/*shanghu.html璇勬槦绾у紑濮� 2011-01-25 gyp*/
-/*鏄熺骇璇勮*/
-.redStar {
-    float:left;
-    display:block;
-    background:url(../images/uhl/star.gif) no-repeat;
-    width:110px;
-    height:20px;
-    clear:both;
-}
-.star11{
-    background-position:url(../images/uhl/star.gif) 0px 0px;
-}
-.star10{
-    background:url(../images/uhl/star.gif) 0px -20px;
-}
-.star9{
-    background:url(../images/uhl/star.gif) 0px -40px;
-}
-.star8{
-    background:url(../images/uhl/star.gif) 0px -60px;
-}
-.star7{
-    background:url(../images/uhl/star.gif) 0px -80px;
-}
-.star6{
-    background:url(../images/uhl/star.gif) 0px -101px;
-}
-.star5{
-    background:url(../images/uhl/star.gif) 0px -121px;
-}
-.star4{
-    background:url(../images/uhl/star.gif) 0px -141px;
-}
-.star3{
-    background:url(../images/uhl/star.gif) 0px -161px;
-}
-.star2{
-    background:url(../images/uhl/star.gif) 0px -182px;
-}
-.star1{
-    background:url(../images/uhl/star.gif) 0px -202px;
-}
 /*鏄熺骇璇勮 缁撴潫*/  
 
 /*shanghu.html璇勬槦绾х粨鏉�*/
@@ -982,22 +836,6 @@ width:610px;
 
 
 
-/*鎸夐挳鏍峰紡*/
-
-.bt a,.bt a:visited{ color:#fff;}
-.bt1 a,.bt1 a:visited{ color:#fff;}
-.btg170{background-position: 0 -170px  no-repeat; border:0; height:25px; width:128px; line-height:25px; text-align:center; font-size:12px;}
-.btg170 a,.btg170 a:visited{ color:#fff;}
-.btg78{background:url(../images/uhl/bt.gif) 0 0 no-repeat; border:0; height:25px; width:78px; line-height:25px; text-align:center; font-size:12px;}
-.btg78 a,.btg78 a:visited{ color:#fff;}
-.btg70{background:url(../images/uhl/bt.gif) 0 -205px no-repeat; border:0; height:25px; width:70px; line-height:25px; text-align:center; font-size:12px;}
-.btg70 a,.btg70 a:visited{ color:#fff;}
-.findbt a,.findbt a:visited{ color:#fff;}
-.findbt140 a,.findbt140 a:visited{ color:#fff;}
-.bts{background:url(../images/uhl/bt.gif) 0 -266px no-repeat; border:0; height:21px; width:38px; line-height:21px; padding-left:22px;font-size:12px; color:#333;}
-.bt_buy{background:url(../images/uhl/bt.gif) -63px -266px no-repeat; border:0; height:21px; width:38px; line-height:21px; padding-left:22px;font-size:12px; color:#333;}
-.bt_pl{background:url(../images/uhl/bt.gif) -127px -266px no-repeat; border:0; height:21px; width:48px; line-height:21px; padding-left:22px;font-size:12px; color:#333;}
-/*鎸夐挳鏍峰紡缁撴潫*/
 
 /*************  杈撳叆妗嗘牱寮�   **********/
 .input196 {
@@ -1011,7 +849,6 @@ float:left;
 vertical-align:middle; 
 
 }
-.inputbg {background:url(../images/uhl/input.gif) no-repeat scroll 0 0 white;}
 
 /*************  杈撳叆妗嗘牱寮忕粨鏉�   **********/
 
@@ -1123,7 +960,6 @@ a.close {
 
 a.nav_wrap {
     display:inline-block;
-    background:url(../images/uhl/list.gif) no-repeat 56px 3px;
     width:58px;
     position:relative;
     overflow:hidden;
@@ -1143,7 +979,6 @@ z-index:5;
 
 .js_nav_wrap_0 {
     display:block;
-    background:url(../images/uhl/list.gif) no-repeat 54px -14px;
     border-left:1px solid #b84531;
     border-right:1px solid #b84531;
     border-top:1px solid #b84531;
@@ -1198,7 +1033,6 @@ z-index:5;
     height:20px;
     cursor:pointer;
     overflow:hidden;
-    background:url(../images/uhl/identity.png) no-repeat 0px 0px;
 }
 .identity_yk {
     background-position: 0px 0px;
