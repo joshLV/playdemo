@@ -5,25 +5,27 @@
  * Time: 11:28 AM
  */
 $(window).load(
-		
+
     function () {
         /**
          *点击加入分销库按钮
          */
         $("#link_add_cart").click(function () {
-            $.post("/library", 
+            $.post("/library",
                 {'goodsIds':$("#goodsId").val()},
                 function (data) {
-                    if (data.isExist ==1) {
-                      $('#add_cart_result1').show();
-                	//5秒后自动消失
-                      setTimeout("$('#add_cart_result1').css('display','none')", 5000);
+                    if (data.isExist == 1) {
+                        $('#add_cart_result1').show();
+                        //5秒后自动消失
+                        setTimeout("$('#add_cart_result1').css('display','none')", 5000);
                     } else {
                         $('#add_cart_result').show();
                         //5秒后自动消失
                         setTimeout("$('#add_cart_result').css('display','none')", 5000);
                     }
-                   
+                    var oldSize = parseInt($("#carts-size").html());
+                    var buyCount = parseInt($("#number").val());
+                    $("#carts-size").html(oldSize + buyCount);
                 });
         });
 
