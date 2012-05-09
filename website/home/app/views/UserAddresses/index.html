@@ -3,8 +3,17 @@
 #{set 'moreStyles'}
 <link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css"/>
 <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
-<link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/play-pagination.css'}">
-<link href="@{'/public/stylesheets/user-center.css'}" rel="stylesheet" type="text/css" />
+<link href="@{'/public/stylesheets/user-center.css'}" rel="stylesheet" type="text/css"/>
+<style type="text/css">
+    .tab_top2{
+        border: 1px solid #D3D3D3;
+        margin-bottom: 8px;
+    };
+</style>
+#{/set}
+#{set 'moreScripts'}
+<script src="@@{'/public/javascripts/location.js'}"></script>
+*{<script src="@@{'/public/javascripts/china-area.js'}"></script>}*
 #{/set}
 
 <script type="text/javascript">
@@ -18,34 +27,41 @@
     }
 
     function setAreaValue(addressId) {
-        $("#china_area").jChinaArea({aspnet:false,
-            s1:$("#address_province").attr("selectedValue"),
-            s2:$("#address_city").attr("selectedValue"),
-            s3:$("#address_district").attr("selectedValue")});
+        new PCAS('address.province', 'address.city', 'address.distinct',
+                $("#address_province").attr("selectedValue"),
+                $("#address_city").attr("selectedValue"),
+                $("#address_district").attr("selectedValue"));
     }
 </script>
 <!--主体内容部分-->
-<div id="wrap clearfix">
-    #{include "share/left.html"/}
+<div class="wrap clearfix">
+#{include "share/left.html"/}
     <div class="section">
-        #{breadcrumbs/breadcrumb breadcrumbs/}
-        <div class="tab_top"><span id="addressTitle">新增地址</span></div>
+    #{breadcrumbs/breadcrumb breadcrumbs/}
+        <div class="tab_top"><span id="addressTitle">新增地址</span>
+        </div>
         <div class="tab_top2">
             <form class="form-horizontal" id="form" action="@{UserAddresses.create()}" method="POST">
             #{include "UserAddresses/form.html"/}
             </form>
-            <span>已保存地址</span>
-            <table class="order-tab">
+
+        </div>
+        <div class="tab_top">已保存地址</div>
+        <div class="tab_top2">
+            <table class="order-tab" cellpadding="0" cellspacing="0">
+                <thead>
                 <tr class="col-name">
-                    <td width="78" height="30" align="center">&{'address.name'}</td>
-                    <td width="150" align="center">&{'address.district'}</td>
-                    <td width="200" align="center">&{'address.address'}</td>
-                    <td width="70" align="center">&{'address.postcode'}</td>
-                    <td width="140" align="center">&{'address.phone'}</td>
-                    <td width="80"></td>
-                    <td width="80" align="center">操作</td>
+                    <th width="78" height="30" align="center">&{'address.name'}</th>
+                    <th width="150" align="center">&{'address.district'}</th>
+                    <th width="200" align="center">&{'address.address'}</th>
+                    <th width="70" align="center">&{'address.postcode'}</th>
+                    <th width="140" align="center">&{'address.phone'}</th>
+                    <th width="80"></th>
+                    <th width="80" align="center">操作</th>
                 </tr>
-            #{list items:addressList, as:'address'}
+                </thead>
+                <tbody>
+                #{list items:addressList, as:'address'}
                 <tr id="tr_address_${address.id}" height="35px">
                     <td align="left" id="address_name_${address?.id}">&nbsp;${address.name}</td>
                     <td id="address_area_${address?.id}">${address.area}</td>
@@ -56,12 +72,14 @@
                         .isDefault}默认地址#{/if}#{else}#{vx.operateLink url:'/addresses/'+address.id+'/default',
                     text:'设为默认', method:'PUT'/}#{/else}</td>
                     <td width="80" align="center">
-                        <a id="update_${address?.id}" class="address_span_modify" href="#" onclick="editAddress(${address?.id})
-                                ">修改</a> |
+                        <a id="update_${address?.id}" class="address_span_modify" href="#"
+                           onclick="editAddress(${address?.id})
+                                   ">修改</a> |
                         #{vx.deleteLink action:"addresses", id:address.id, name:address.name/}
                     </td>
                 </tr>
-            #{/list}
+                #{/list}
+                </tbody>
             </table>
         *{<ul>
                 <li class="nav_bg_li">最多保存10个有效地址</li>

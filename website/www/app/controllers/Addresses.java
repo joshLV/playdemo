@@ -16,7 +16,6 @@ import java.util.List;
  * Time: 1:43 PM
  */
 @With({SecureCAS.class, WebsiteInjector.class})
-@SkipCAS
 public class Addresses extends Controller {
 
     public static void index() {

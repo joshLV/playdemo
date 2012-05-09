@@ -1,24 +1,18 @@
 package controllers;
 
-import java.util.List;
-
-import models.accounts.Account;
+import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
-import models.accounts.util.AccountUtil;
 import models.consumer.User;
-import models.order.CouponsCondition;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrdersCondition;
-import models.resale.Resaler;
-
 import org.apache.commons.lang.StringUtils;
-
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.website.cas.SecureCAS;
+
+import java.util.List;
 
 @With(SecureCAS.class)
 public class UserOrders extends Controller {
@@ -38,8 +32,7 @@ public class UserOrders extends Controller {
 		JPAExtPaginator<models.order.Order>  orderList = Order.findUserOrders(user, condition,pageNumber, PAGE_SIZE);
 
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders");
-		renderCond(condition);
-		render(orderList, breadcrumbs,user);
+		render(orderList, breadcrumbs,user,condition);
 	}
 
 	/**
@@ -63,18 +56,6 @@ public class UserOrders extends Controller {
 		//收货信息
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "订单详情", "/orders/" + id);
 		render(order, orderItems,breadcrumbs);
-	}
-
-	/**
-	 * 向页面设置选择信息
-	 * 
-	 * @param condition 页面设置选择信息
-	 */
-	private static void renderCond(OrdersCondition condition) {
-		renderArgs.put("createdAtBegin", condition.createdAtBegin);
-		renderArgs.put("createdAtEnd", condition.createdAtEnd);
-		renderArgs.put("status", condition.status);
-		renderArgs.put("goodsName", condition.goodsName);
 	}
 
 }

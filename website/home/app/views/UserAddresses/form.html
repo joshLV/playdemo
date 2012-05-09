@@ -1,42 +1,38 @@
-#{set 'moreScripts'}
-<script src="@@{'/public/javascripts/location.js'}"></script>
-<script src="@@{'/public/javascripts/china-area.js'}"></script>
-#{/set}
 <div id="div_add_address">
     <table width="700" border="0" cellpadding="0" cellspacing="0">
         <tr>
-            <td height="30" align="right"><span class="font_red">*</span>收货人姓名：</td>
+            <td height="30" align="right"><span class="font_red">*</span>收&nbsp;&nbsp;货&nbsp;&nbsp;人：</td>
             <td align="left">
-                <input class="input_height" type="text" name="address.name" id="address_name"
+                <input class="long_input" type="text" name="address.name" id="address_name"
                        value="${address?.name}"/><span
                     class="error">#{error 'address.name'/}</span>
             </td>
         </tr>
         <tr>
             <td width="90" height="30" align="right"><span class="font_red">*</span>选择地区：</td>
-            <td width="610" align="left"><div id="china_area">
-                <select class="area_select" name="address.province" id="address_province"
-                        selectedValue="${address?.province}">
-                </select>
-                <select class="area_select" name="address.city" id="address_city"
-                        selectedValue="${address?.city}">
-                </select>
-                <select class="area_select" name="address.district" id="address_district"
-                        selectedValue="${address?.district}">
-                </select></div>
+            <td width="610" align="left">
+                    <select class="dingdan_stauts_bg" name="address.province" id="address_province"
+                            selectedValue="${address?.province}">
+                    </select>
+                    <select class="dingdan_stauts_bg" name="address.city" id="address_city"
+                            selectedValue="${address?.city}">
+                    </select>
+                    <select class="dingdan_stauts_bg" name="address.district" id="address_district"
+                            selectedValue="${address?.district}">
+                    </select>
             </td>
         </tr>
         <tr>
             <td height="30" align="right"><span class="font_red">*</span>街道地址：</td>
             <td align="left">
-                <input class="input_height input_adress" type="text" name="address.address"
+                <input class="long_input input_adress" type="text" name="address.address"
                        id="address_address"
                        value="${address?.address}"/>不需要重复填写省/市/区 <span
                     class="error">#{error 'address.address'/}</span></td>
         </tr>
         <tr>
             <td height="30" align="right"><span class="font_red">*</span>邮政编码：</td>
-            <td align="left"><input class="input_height" type="text" name="address.postcode"
+            <td align="left"><input class="long_input" type="text" name="address.postcode"
                                     id="address_postcode"
                                     value="${address?.postcode}"/><span
                     class="error">#{error 'address.postcode'/}</span></td>
@@ -44,7 +40,7 @@
         <tr>
             <td height="30" align="right"><span class="font_red">*</span>手　　机：</td>
             <td align="left" class="font_yanse">
-                <input name="address.mobile" type="text" class="input_height"
+                <input name="address.mobile" type="text" class="long_input"
                        id="address_mobile"
                        value="${address?.mobile}"/>手机和固定电话至少填写一项<span
                     class="error">#{error 'address.mobile'/}</span>
@@ -52,33 +48,44 @@
         </tr>
         <tr>
             <td height="30" align="right"><span class="font_red">*</span>固定电话：</td>
-            <td align="left" class="font_yanse"><input name="address.areaCode" type="text" class="input_height area_input"
-                       id="address_areaCode"
-                       fs="区号" placeholder="区号"
-                       value="${address?.areaCode}"/>-
-                <input name="address.phoneNumber" type="text" class="input_height"
+            <td align="left" class="font_yanse"><input name="address.areaCode" type="text"
+                                                       class="short_input area_input"
+                                                       id="address_areaCode"
+                                                       fs="区号" placeholder="区号"
+                                                       value="${address?.areaCode}"/>-
+                <input name="address.phoneNumber" type="text" class="short_input"
                        id="address_phoneNumber"
                        fs="电话号码" placeholder="电话号码"
                        value="${address?.phoneNumber}"/>-
-                <input name="address.phoneExtNumber" type="text" class="input_height"
+                <input name="address.phoneExtNumber" type="text" class="short_input"
                        id="address_phoneExtNumber"
                        fs="分机号（可选）" placeholder="分机号（可选）"
                        value="${address?.phoneExtNumber}"/><span
-                        class="error">#{error 'address.phone'/}</span>
+                       class="error">#{error 'address.phone'/}</span>
             </td>
         </tr>
-        <tr><td height="30" align="right"><span class="font_red">*</span>设为默认：</td>
+        <tr>
+            <td height="30" align="right"><span class="font_red">*</span>设为默认：</td>
             <td align="left" class="font_yanse"><input type="checkbox"
                                                        value="true"
                                                        #{if address?.isDefault}checked#{/if}
-                                                       name="address.isDefault" id="address_isDefault"/></td></tr>
-        <tr><td height="30" align="right"> </td>
-            <td align="left" class="font_yanse"><a class="seach_bg" href="#" id="save"
-                                                   onclick="$('#form').submit();">保存</a></td></tr>
+                                                       name="address.isDefault" id="address_isDefault"/></td>
+        </tr>
+        <tr>
+            <td height="30" align="right"></td>
+            <td align="left">
+                <button class="search-btn" id="save" onclick="$('#form').submit();">保存</button>
+            </td>
+        </tr>
     </table>
+    <script type="text/javascript">
+        // 省市区三级联动
+        #{if address!= null }
+        new PCAS('address.province', 'address.city', 'address.district', '${address?.province}', '${address?.city}',
+                '${address?.district}');
+        #{/if}
+        #{else}
+        new PCAS('address.province', 'address.city', 'address.district', '上海市', '市辖区', '黄浦区');
+        #{/else}
+    </script>
 </div>
-<script type="text/javascript">
-$(window).load(function(){
-    $("#china_area").jChinaArea({aspnet:false, s1:"上海市", s2:"上海市", s3:"黄浦区"});
-});
-</script>

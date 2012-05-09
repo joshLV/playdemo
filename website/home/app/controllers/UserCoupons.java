@@ -1,18 +1,15 @@
 package controllers;
 
+import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
-import models.order.OrdersCondition;
-
 import org.apache.commons.lang.StringUtils;
-
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.website.cas.SecureCAS;
 
 @With(SecureCAS.class)
 public class UserCoupons extends Controller {
@@ -22,7 +19,7 @@ public class UserCoupons extends Controller {
 	/**
 	 * 我的券列表
 	 */
-	public static void coupons(CouponsCondition condition) {
+	public static void index(CouponsCondition condition) {
 		User user = SecureCAS.getUser();
 		String page = request.params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
@@ -30,10 +27,9 @@ public class UserCoupons extends Controller {
     		condition = new CouponsCondition();
     	}
 		JPAExtPaginator<ECoupon> couponsList = ECoupon.userCouponsQuery(condition,user.getId(),AccountType.CONSUMER, pageNumber,  PAGE_SIZE);
-		BreadcrumbList breadcrumbs = new BreadcrumbList("我的券订单", "/coupons");
-		renderCond(condition);
-		
-		render("UserCoupons/e_coupons.html", couponsList, breadcrumbs,user);
+		BreadcrumbList breadcrumbs = new BreadcrumbList("我的券", "/coupons");
+
+		render(couponsList, breadcrumbs, user, condition);
 	}
 
 	/**
@@ -47,17 +43,5 @@ public class UserCoupons extends Controller {
 		ECoupon eCoupon = ECoupon.findById(id);
 		String returnFlg = ECoupon.applyRefund(eCoupon,user.getId(),applyNote, AccountType.CONSUMER);
 		renderJSON(returnFlg);
-	}
-	
-	/**
-	 * 向页面设置选择信息
-	 * 
-	 * @param condition 页面设置选择信息
-	 */
-	private static void renderCond(CouponsCondition condition) {
-		renderArgs.put("createdAtBegin", condition.createdAtBegin);
-		renderArgs.put("createdAtEnd", condition.createdAtEnd);
-		renderArgs.put("status", condition.status);
-		renderArgs.put("goodsName", condition.goodsName);
 	}
 }

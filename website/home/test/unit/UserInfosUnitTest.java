@@ -33,15 +33,13 @@ public class UserInfosUnitTest extends UnitTest {
 
 		UserInfo userInfo1= new UserInfo();
 		userInfo1.fullName="小小";
-		userInfo1.birthdayYear="2001";
-		userInfo1.birthdayMonth="09";
-		userInfo1.birthdayDay="01";
-		String intrests = "1,2";
+		userInfo1.birthday="2001-01-01";
+		String interests = "1,2";
 
-		userInfo.update(userInfo1, intrests);
+		userInfo.update(userInfo1, interests);
 
 		assertEquals("小小",userInfo.fullName);
-		assertEquals("20010901",userInfo.birthday);
+		assertEquals("2001-01-01",userInfo.birthday);
 	}
 
 	@Test
@@ -67,9 +65,7 @@ public class UserInfosUnitTest extends UnitTest {
 		UserInfo userInfo= UserInfo.findById(userInfoId);
 		userInfo.findByUser(user);
 
-		assertEquals("2001",userInfo.birthdayYear);
-		assertEquals("01",userInfo.birthdayMonth);
-		assertEquals("01",userInfo.birthdayDay);
+		assertEquals("2001-01-01",userInfo.birthday);
 	}
 
 }

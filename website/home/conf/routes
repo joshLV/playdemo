@@ -7,7 +7,7 @@ GET     /                                             UserOrders.index
 GET     /orders                                       UserOrders.index
 POST    /orders/refund/{id}                           UserOrders.applyRefund
 GET     /orders/{id}                                  UserOrders.details
-GET     /coupons                                      UserCoupons.coupons
+GET     /coupons                                      UserCoupons.index
 GET     /payment/{id}                                 UserOrders.pay
 POST    /coupons/refund/{id}                          UserCoupons.applyRefund
 
@@ -27,10 +27,10 @@ PUT     /addresses/{id}                               UserAddresses.update
 PUT     /addresses/{id}/default                       UserAddresses.updateDefault
 DELETE  /addresses/{id}                               UserAddresses.delete
 
-GET     /userPoint                                   UserPoints.index
+GET     /user/password                                UserPasswords.index
+POST    /user/{id}                                    UserPasswords.update
 
-GET     /user/password                                UserPassword.index
-POST    /user/{id}                                    UserPassword.update
+GET     /userPoint                                   UserPoints.index
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

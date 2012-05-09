@@ -11,7 +11,7 @@ import play.mvc.Controller;
 
 /**
  * 找回密码.
- * User: ynajy
+ * User: yanjy
  */
 public class FindPassword extends Controller {
 	/**

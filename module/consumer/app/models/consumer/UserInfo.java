@@ -1,6 +1,5 @@
 package models.consumer;
 
-import org.apache.commons.lang.StringUtils;
 import play.db.jpa.Model;
 import play.modules.view_ext.annotation.Mobile;
 
@@ -11,7 +10,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 
@@ -36,20 +34,11 @@ public class UserInfo extends Model {
 
     /*出生年月*/
     public String birthday;
-    /*年*/
-    @Transient
-    public String birthdayYear;
-    /*月*/
-    @Transient
-    public String birthdayMonth;
-    /*日*/
-    @Transient
-    public String birthdayDay;
     /*电话*/
     public String phone;
 
     /*婚姻状况*/
-    public int marrState;
+    public int marryState;
     /*职位*/
     public String position;
     /*qq*/
@@ -57,7 +46,7 @@ public class UserInfo extends Model {
     /*薪水*/
     public int salary;
     /*职位*/
-    public String intrest;
+    public String interest;
     /*行业*/
     public String industry;
     /*行业*/
@@ -85,7 +74,7 @@ public class UserInfo extends Model {
      *
      * @param userInfo 用户信息
      */
-    public void update(UserInfo userInfo, String intrests) {
+    public void update(UserInfo userInfo, String interest) {
         fullName = userInfo.fullName;
         salary = userInfo.salary;
         position = userInfo.position;
@@ -93,12 +82,9 @@ public class UserInfo extends Model {
         userqq = userInfo.userqq;
         userSex = userInfo.userSex;
         industry = userInfo.industry;
-        String birthdayYear = userInfo.birthdayYear;
-        if (StringUtils.isNotBlank(birthdayYear)) {
-            birthday = userInfo.birthdayYear + userInfo.birthdayMonth + userInfo.birthdayDay;
-        }
-        intrest = intrests;
-        marrState = userInfo.marrState;
+        birthday = userInfo.birthday;
+        this.interest = interest;
+        marryState = userInfo.marryState;
         otherInfo = userInfo.otherInfo;
         createdAt = new Date();
         this.save();
@@ -108,7 +94,7 @@ public class UserInfo extends Model {
     /**
      * 更新手机
      *
-     * @param id     用户ID
+     * @param user     用户
      * @param mobile 手机
      */
     public static void updateById(User user, String mobile) {
@@ -133,12 +119,6 @@ public class UserInfo extends Model {
         UserInfo userInfo = null;
         if (userInfos.size() > 0) {
             userInfo = userInfos.get(0);
-            String birth = userInfo.birthday;
-            if (StringUtils.isNotBlank(birth)) {
-                userInfo.birthdayYear = birth.substring(0, 4);
-                userInfo.birthdayMonth = birth.substring(4, 6);
-                userInfo.birthdayDay = birth.substring(6, 8);
-            }
         }
 
         return userInfo;

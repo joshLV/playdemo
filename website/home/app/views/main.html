@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <title>#{get 'title' /}</title>
     #{asset.css src:['/u/base.css'] /}
+    #{asset.css src:['/u/list.css'] /}
+
+    <link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
     #{get 'moreStyles' /}
     #{asset.js src:['/u/jquery-1.7.2.min.js'] /}
+    #{get 'moreScripts' /}
 </head>
 <body>
 <div id="header" class="clearfix">
@@ -15,7 +19,8 @@
     <div id="menu">
         <div class="welcom">
         #{if cas?.isLogin}
-            欢迎您，<a class="zi_gray" href="/orders" id="login_name">${cas.loginName}</a>  <a class="zi_gray" href="/logout">退出</a>
+            欢迎您，<a class="zi_gray" href="http://home.uhuila.cn" id="login_name">${cas.loginName}</a>  <a
+                class="zi_gray" href="/logout">退出</a>
         #{/if}
         #{else}
             您好，欢迎您来到优惠啦！<a class="zi_gray" id="login_name" href="/login">请登录</a>
@@ -28,7 +33,7 @@
             </div>
         </div>
         <div class="carts">
-            <div class="carts-hd"><a href="/carts">购物车<span>0</span>件</a></div>
+            <div class="carts-hd"><a href="http://www.uhuila.cn/carts">购物车<span>0</span>件</a></div>
             <div class="carts-bd">
                 <b class="upRightLine"></b>
                 您的购物车中没有任何商品
@@ -43,8 +48,8 @@
 <div id="nav">
     <ul class="clearfix">
         <li class="current"><a href="">首页</a></li>
-        <li><a href="/goods/list/1">饮食</a></li>
-        <li><a href="/goods/list/2">礼品</a></li>
+        <li><a href="http://www.uhuila.cn/goods/list/1">饮食</a></li>
+        <li><a href="http://www.uhuila.cn/goods/list/2">礼品</a></li>
         *{
         #{list categories, as: 'category'}
         <li class="hot_shangpin_li"><a #{if categoryId == category.id}class="tab_selected"#{/if}
@@ -73,6 +78,5 @@
     </div>
 </div>
     #{asset.js src:['/u/slides.min.js', '/u/base.js'] /}
-    #{get 'moreScripts' /}
 </body>
 </html>

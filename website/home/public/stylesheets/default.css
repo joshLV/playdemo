@@ -88,3 +88,11 @@ a{ color:#000000; text-decoration:none;}
 .both_clear{ clear: both}
 .font_14px{ font-size:14px}
 .wellcome a{ color:#333333}
+.error {
+    padding-left: 5px;
+    padding-right: 3px;
+    color: #F40;
+    line-height: 24px;
+    font-style: normal;
+    font-family: 'simsun';
+}

@@ -1,17 +1,15 @@
-import java.util.HashMap;
-import java.util.Map;
-
 import models.consumer.User;
 import models.consumer.UserInfo;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import play.cache.Cache;
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Ignore
 public class UserInfoTest extends FunctionalTest {
@@ -37,7 +35,7 @@ public class UserInfoTest extends FunctionalTest {
 	public void testUpdate() {
 		Long userInfoId = (Long) Fixtures.idCache.get("models.consumer.UserInfo-userInfo1");
 
-		String intrests = "1,2";
+		String interests = "1,2";
 		Map<String, String> params = new HashMap<String,
 				String>();
 		params.put("userInfo.fullName", "小小");
@@ -45,7 +43,7 @@ public class UserInfoTest extends FunctionalTest {
 		params.put("userInfo.birthdayMonth", "06");
 		params.put("userInfo.birthdayDay", "12");
 		params.put("id", userInfoId.toString());
-		params.put("intrests", intrests);
+		params.put("interest", interests);
 		Response response = POST("/userInfo/update", params);
 		assertStatus(302,response);
 

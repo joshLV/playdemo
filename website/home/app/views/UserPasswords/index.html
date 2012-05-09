@@ -1,0 +1,111 @@
+#{extends 'main.html' /}
+#{set title:'修改密码' /}
+#{set 'moreStyles'}
+<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
+<link href="@{'/public/stylesheets/user-center.css'}" rel="stylesheet" type="text/css"/>
+<style type="text/css">
+    <!--
+
+        /*25%红色*/
+    .qdhongse {
+        width: 40px;
+        height: 14px;
+        line-height: 14px;
+        border: 1px solid #ffffff;
+        float: left;
+        background-color: #cc0000;
+        text-align: center;
+        font-size: 12px;
+        color: #ffffff;
+    }
+
+        /*50%橙色*/
+    .qdcengse {
+        width: 80px;
+        height: 14px;
+        line-height: 14px;
+        border: 1px solid #ffffff;
+        float: left;
+        background-color: #FF6600;
+        text-align: center;
+        font-size: 12px;
+        color: #ffffff;
+    }
+
+        /*75%蓝色*/
+    .qdlanse {
+        width: 120px;
+        height: 14px;
+        line-height: 14px;
+        border: 1px solid #ffffff;
+        float: left;
+        background-color: #0033ff;
+        text-align: center;
+        font-size: 12px;
+        color: #ffffff;
+    }
+
+        /*75%绿色*/
+    .qdluse {
+        width: 160px;
+        height: 14px;
+        line-height: 14px;
+        border: 1px solid #ffffff;
+        float: left;
+        background-color: #00cc00;
+        text-align: center;
+        font-size: 12px;
+        color: #ffffff;
+    }
+
+    -->
+</style>
+#{/set} #{set 'moreScripts'}
+<script src="@{'/public/javascripts/password.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<body onload="isOk('${isOk}')">
+<!--主体内容部分-->
+<div class="wrap clearfix">
+#{include "share/left.html"/}
+    <div class="section">
+    #{breadcrumbs/breadcrumb breadcrumbs/}
+        <div class="tab_top2">
+            <form class="form-horizontal" action="@{UserPasswords.update(user.id)}" method="POST">
+                <table width="774" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="200" height="30" align="right"><span class="font_red">*</span> 原&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;&nbsp;码&nbsp;：</td>
+                        <td width="300"><input class="long_input" name="user.oldPassword" type="password"
+                                               id="old_password" size="26" maxlength="20"
+                                               value="${user?.oldPassword}"/><span
+                                class="error">#{error 'user.oldPassword' /}</span></td>
+                        <td width="274" >&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td  height="30" align="right"><span class="font_red">*</span> 新&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;&nbsp;码&nbsp;：</td>
+                        <td><input class="long_input" name="user.password" type="password" id="password" size="26"
+                                   maxlength="20"
+                                   value="${user?.password}" onkeyup="javascript:ChangeQD();"/>
+                            <span class="error">#{error 'user.newPassword' /}</span>
+                        </td>
+                        <td><span class="qdbox_hongse setClose" id="qdbox"><span id="pwQiangdu"
+                                                                                 class="qdhongse">很弱</span></span></td>
+                    </tr>
+                    <tr>
+                        <td height="30"  align="right"><span class="font_red">*</span> 确认新密码&nbsp;：</td>
+                        <td><input class="long_input" name="user.confirmPassword" type="password" id="confirmPassword" size="26"
+                                         maxlength="20" value="${user?.confirmPassword}"/><span
+                                class="error">#{error 'user.newConfirmPassword' /}</span></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td height="30" ></td>
+                        <td><input type="submit" name="button" id="sure_submit" class="search-btn" value="确认"/></td>
+                        <td>&nbsp;</td>
+
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
