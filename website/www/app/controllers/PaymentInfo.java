@@ -134,6 +134,7 @@ public class PaymentInfo extends Controller {
 			render(form);
 		} else {
 			form = billPaymentFlow.generateForm(order);
+			System.out.println("form========================"+form);
 			render(form);
 		}
 	}

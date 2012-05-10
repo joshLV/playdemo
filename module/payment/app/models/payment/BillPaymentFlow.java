@@ -67,6 +67,7 @@ public class BillPaymentFlow {
 		String pageUrl = "";
 		//服务器接收支付结果的后台地址，该参数务必填写，不能为空。
 		String bgUrl = Play.configuration.getProperty("99bill.notify_url","http://test.uhuila.com:29001/pay/99bill_notify");
+		System.out.println("bgUrl========================"+bgUrl);
 		//网关版本，固定值：v2.0,该参数必填。
 		String version =  "v2.0";
 		//语言种类，1代表中文显示，2代表英文显示。默认为1,该参数必填。
