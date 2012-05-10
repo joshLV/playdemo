@@ -5,6 +5,8 @@
     <title>#{get 'title' /}</title>
     #{asset.css src:['/u/base.css'] /}
     #{get 'moreStyles' /}
+    *{<script src="@@{'/public/javascripts/jquery-1.6.4.min.js'}"></script>}*
+
     #{asset.js src:['/u/jquery-1.7.2.min.js'] /}
 </head>
 <body>
@@ -29,23 +31,8 @@
             </div>
         </div>
         <div class="carts">
-            <div class="carts-hd"><a href="http://www.uhuila.cn/carts">购物车<span id="carts_size">${carts?.size()}</span>件</a></div>
-            <div class="carts-bd">
-                <b class="upRightLine"></b>
-                #{if carts?.size() > 0 }
-                    #{list items:carts, as:'cartItem'}
-                      <p><a href="http://www.uhuila.cn/goods/${cartItem.goods.id}"><img src="${cartItem.goods.imageTinyPath}"/>${cartItem
-                      .goods.name}</a> &yen;${cartItem.goods.salePrice} x${cartItem.number}</p>
-                    #{/list}
-                    <a class="view-carts" href="http://www.uhuila.cn/carts">查看购物车</a>
-                    <a class="view-carts" href="http://www.uhuila.cn/orders?items=#{list items:carts,
-                    as:'cartItem'}${cartItem.goods.id}-${cartItem.number},#{/list}">去结算</a>
-                #{/if}
-                #{else}
-                    您的购物车中没有任何商品。<br/>
-                    <a class="view-carts" href="http://www.uhuila.cn/carts">查看购物车</a>
-                #{/else}
-            </div>
+            <div class="carts-hd"><a href="http://www.uhuila.cn/carts">购物车<span id="carts_size">${count}</span>件</a></div>
+            <div class="carts-bd" id="cart-list"></div>
 
         </div>
         <div class="help"><a href="/help">帮助中心</a></div>

@@ -28,7 +28,7 @@ GET     /goods/{uuid}/preview                   Goods.preview
 
 # 购物车
 GET     /carts                                  Carts.index
-GET     /carts/all.json                         Carts.allJSON
+GET     /carts/tops                             Carts.tops
 POST    /carts                                  Carts.order
 DELETE  /carts/{goodsIds}                       Carts.delete
 

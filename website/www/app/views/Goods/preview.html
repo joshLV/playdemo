@@ -1,11 +1,7 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 商品详情' /}
 #{set 'moreStyles'}
-<link href="@@{'/public/stylesheets/goods-show.css'}" rel="stylesheet"
-      type="text/css"/>
-#{/set}
-#{set 'moreScripts'}
-<script src="@@{'/public/javascripts/goods-show.js'}"></script>
+    #{asset.css src:['/u/detail.css']/}
 #{/set}
 
 <div id="wrap_main">

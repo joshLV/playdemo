@@ -16,7 +16,6 @@
 </ol>
 
 <table id="carts-list">
-    <caption>我的购物车</caption>
     <thead>
         <tr>
             <th class="select-all" width="80"><input type="checkbox" name="select_all_checkbox" /> <label for="select_all_checkbox">全选</label></th>
@@ -32,7 +31,7 @@
         #{list items:carts, as:'cartItem'}
         <tr id="row_${cartItem.goods.id}">
             <td><input type="checkbox" id="check_goods_${cartItem.goods.id}" /></td>
-            <td class="goods-name"><img src="http://img0.uhcdn.com/p/0/0/51/2012042702400668315_tiny.jpg" /> ${cartItem.goods.name}</td>
+            <td class="goods-name"><img src="${cartItem.goods.imageTinyPath}" /> ${cartItem.goods.name}</td>
             <td>${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
             <td id="price_${cartItem.goods.id}">${cartItem.goods.salePrice}</td>
             <td>
