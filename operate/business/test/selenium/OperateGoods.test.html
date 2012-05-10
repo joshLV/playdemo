@@ -2,6 +2,7 @@
 models.admin.SupplierUser.class,models.admin.SupplierRole.class,
 models.sales.Category.class,
 models.sales.Area.class,
+models.supplier.Supplier.class,
 models.sales.Goods.class,
 models.sales.Brand.class],
 load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/areas.yml','fixture/base_data.yml','fixture/goods.yml'] /}
@@ -13,10 +14,11 @@ verifyTextPresent('添加消费券')
 verifyTextPresent('电子券')
 verifyTextPresent('实物')
 verifyTextPresent('淘宝网')
+select('id=goods_supplierId','label=肯德基')
 select('id=goods_topCategoryId','label=旅游')
 *{waitForCondition('selenium.isTextPresent("上海")',10000)}*
 *{select('id=categoryId','label=上海')}*
-select('id=goods_brand_id','label=豆捞坊')
+select('id=goods_brand_id','label=来一份')
 type('id=goods_no','34')
 type('id=goods_name','wwww')
 type('id=goods_effectiveAt','2012-03-19')
@@ -57,10 +59,11 @@ open('/goods/new')
 verifyTitle('添加消费券')
 verifyTextPresent('添加消费券')
 verifyTextPresent('淘宝网')
+select('id=goods_supplierId','label=肯德基')
 select('id=goods_topCategoryId','label=旅游')
 *{waitForCondition('selenium.isTextPresent("上海")',10000)}*
 *{select('id=categoryId','label=上海')}*
-select('id=goods_brand_id','label=豆捞坊')
+select('id=goods_brand_id','label=来一份')
 type('id=goods_no','34')
 type('id=goods_name','wwww')
 type('id=goods_effectiveAt','2012-03-19')
@@ -90,6 +93,7 @@ open('/goods/new')
 verifyTitle('添加消费券')
 verifyTextPresent('添加消费券')
 verifyTextPresent('淘宝网')
+select('id=goods_supplierId','label=肯德基')
 select('id=goods_topCategoryId','label=旅游')
 select('id=goods_brand_id','label=豆捞坊')
 type('id=goods_no','34')

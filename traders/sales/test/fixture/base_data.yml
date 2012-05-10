@@ -16,9 +16,9 @@ sales.Category(Category_22):
 sales.Brand(Brand_1):
  "name": "来一份"
  "displayOrder": "100"
- "supplierId": 1
+ "supplier": "kfc"
 
 sales.Brand(Brand_2):
  "name": "豆捞坊"
  "displayOrder": "200"
- "supplierId": 1
+ "supplier": "kfc"

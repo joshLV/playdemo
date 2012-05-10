@@ -599,10 +599,11 @@ public class Goods extends Model {
 
     public static JPAExtPaginator<Goods> findByCondition(GoodsCondition condition,
                                                          int pageNumber, int pageSize) {
+
         JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>
                 ("Goods g", "g", Goods.class, condition.getFilter(),
                         condition.getParamMap())
-                .orderBy(condition.getOrderByExpress());
+                .orderBy("g.createdAt DESC");
         goodsPage.setPageNumber(pageNumber);
         goodsPage.setPageSize(pageSize);
         goodsPage.setBoundaryControlsEnabled(false);
