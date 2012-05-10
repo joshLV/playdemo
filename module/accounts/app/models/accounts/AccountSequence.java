@@ -55,7 +55,7 @@ public class AccountSequence extends Model {
     public BigDecimal uncashAmount;             //不可提现发生额
 
     @Column(name = "ref_sn_id")
-    public Long referenceSerialId;              //关联交易流水ID
+    public Long tradeId;              //关联交易流水ID
 
     @Column(name = "order_id")
     public Long orderId;                        //冗余订单ID
@@ -86,7 +86,7 @@ public class AccountSequence extends Model {
 
     public AccountSequence(Account account, AccountSequenceFlag sequenceFlag, AccountSequenceType sequenceType,
                            BigDecimal preAmount, BigDecimal amount, BigDecimal cashAmount, BigDecimal uncashAmount,
-                           long referenceSerialId) {
+                           long tradeId) {
 
         this.account = account;
         this.sequenceFlag = sequenceFlag;
@@ -95,7 +95,7 @@ public class AccountSequence extends Model {
         this.amount = amount;
         this.cashAmount = cashAmount;
         this.uncashAmount = uncashAmount;
-        this.referenceSerialId = referenceSerialId;
+        this.tradeId = tradeId;
 
         this.createdAt = new Date();
         this.serialNumber = SerialNumberUtil.generateSerialNumber(this.createdAt);

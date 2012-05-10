@@ -6,7 +6,7 @@ accounts.AccountSequence(seq_001):
  cashAmount: "10.00"
  uncashAmount: "100.00"
  createdAt: 2012-03-27
- referenceSerialId: 1
+ tradeId: 1
 
 accounts.AccountSequence(seq_002):
  serialNumber: "002"
@@ -16,7 +16,7 @@ accounts.AccountSequence(seq_002):
  uncashAmount: "100.00"
  sequenceType: "PAY"
  createdAt: 2012-03-27   
- referenceSerialId: 1
+ tradeId: 1
 
 accounts.AccountSequence(seq_003):
  serialNumber: "003"
@@ -26,7 +26,7 @@ accounts.AccountSequence(seq_003):
  uncashAmount: "100.00"
  sequenceType: "PAY"
  createdAt: 2012-03-27   
- referenceSerialId: 1
+ tradeId: 1
 
 accounts.AccountSequence(seq_004):
  serialNumber: "004"
@@ -37,7 +37,7 @@ accounts.AccountSequence(seq_004):
  account: account_1
  sequenceType: "PAY"
  createdAt: 2012-03-27   
- referenceSerialId: 1
+ tradeId: 1
 
 accounts.AccountSequence(seq_005):
  serialNumber: "005"
@@ -48,7 +48,7 @@ accounts.AccountSequence(seq_005):
  account: account_2
  sequenceType: "PAY"
  createdAt: 2012-03-27   
- referenceSerialId: 1
+ tradeId: 1
 
 accounts.AccountSequence(seq_006):
  serialNumber: "006"
@@ -60,5 +60,5 @@ accounts.AccountSequence(seq_006):
  remark: "test 6"
  sequenceType: "PAY"
  createdAt: 2012-03-27   
- referenceSerialId: 1
+ tradeId: 1
 
