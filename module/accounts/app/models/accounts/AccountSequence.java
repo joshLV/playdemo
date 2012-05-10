@@ -54,7 +54,7 @@ public class AccountSequence extends Model {
     @Column(name = "uncash_amount")
     public BigDecimal uncashAmount;             //不可提现发生额
 
-    @Column(name = "ref_sn_id")
+    @Column(name = "trade_id")
     public Long tradeId;              //关联交易流水ID
 
     @Column(name = "order_id")
