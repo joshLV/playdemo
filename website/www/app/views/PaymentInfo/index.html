@@ -44,12 +44,16 @@
         <div class="balance">可用余额：<span class="">${account.amount}</span>元</div>
     </div>
     <div id="payment">
-        <input type="checkbox" name="useBalance" id="use_balance" /> 用余额付款<span>${account.amount.min(order.needPay)}</span>元。
+        <input type="checkbox" name="useBalance" id="use_balance"
+            #{if account.amount.compareTo(BigDecimal.ZERO) == 0} disabled #{/if} /> 用余额付款
+        <span>${account.amount.min(order.needPay)}</span>元。
         #{if account.amount.compareTo(order.needPay) < 0}
-            剩余 <strong>${order.amount}</strong> 元可选择其他付款方式付款。
+            剩余 <strong>${order.needPay.subtract(account.amount)}</strong> 元可选择其他付款方式付款。
         #{/if}
     </div>
-    <button id="confirm-pay">确认付款</button>
+    #{if account.amount.compareTo(order.needPay) >= 0}
+        <button id="confirm-pay">确认付款</button>
+    #{/if}
 </div><!-- #balance-pay END-->
 
 <div id="other-pay">
