@@ -163,13 +163,12 @@ withdraw.REJECTED=被拒绝
 
 withdrawAccount.userName=开户姓名
 withdrawAccount.bankName=银行
+withdrawAccount.subBankName=支行
 withdrawAccount.bankCity=城市
 withdrawAccount.cardNumber=银行卡号
 
 withdraw.apply.withdraw_account=收款账户
 withdraw.apply.amount=提现金额
-validation.amount=提现金额%s
-amount=提现金额
 
 # 账户类型
 account.type.CONSUMER=消费者

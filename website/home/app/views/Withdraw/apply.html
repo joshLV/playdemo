@@ -1,0 +1,80 @@
+#{extends 'main.html' /}
+#{set title:'提现申请' /}
+#{set 'moreStyles'}
+<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
+<link href="@{'/public/stylesheets/user-center.css'}" rel="stylesheet" type="text/css"/>
+#{/set}
+
+<!--主体内容部分-->
+<div class="wrap clearfix">
+    #{include "share/left.html"/}
+    <div class="section">
+        #{breadcrumbs/breadcrumb breadcrumbs/}
+        <div class="tab_top"><span id="addressTitle">申请提现</span>
+        </div>
+        <div class="tab_top2" style="border:1px solid lightGrey;padding-bottom:10px;">
+            #{form @create()}
+            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td align="right" width="100px">开户名</td>
+                    <td align="left" style="padding-left:20px;">
+                        <input type="text" class="long_input" name="withdraw.userName" value="${withdraw?.userName}">
+                        <span class="font_red">*</span>
+                        <span class="error">#{error 'withdraw.userName'/}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="100px">选择银行</td>
+                    <td align="left" style="padding-left:20px">
+                        <select name="withdraw.bankName" class="dingdan_stauts_bg">
+                            <option value="招商银行">招商银行</option>
+                            <option value="中国工商银行">中国工商银行</option>
+                            <option value="中国建设银行">中国建设银行</option>
+                        </select>
+                        <span class="error">#{error 'withdraw.bankName'/}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="100px">银行所在城市</td>
+                    <td align="left" style="padding-left:20px">
+                        上海
+                        <input type="hidden" name="withdraw.bankCity" class="long_input" value="上海">
+                        <span class="error">#{error 'withdraw.bankCity'/}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="100px">支行</td>
+                    <td align="left" style="padding-left:20px">
+                        <input type="text" name="withdraw.subBankName" class="long_input" value="${withdraw?.subBankName}">
+                        <span class="font_red">*</span>
+                        <span class="error">#{error 'withdraw.subBankName'/}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="100px">银行卡号</td>
+                    <td align="left" style="padding-left:20px">
+                        <input type="text" name="withdraw.cardNumber" class="long_input" value="${withdraw?.cardNumber}">
+                        <span class="font_red">*</span>
+                        <span class="error">#{error 'withdraw.cardNumber'/}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="100px">提现金额</td>
+                    <td align="left" style="padding-left:20px">
+                        <input type="text" name="withdraw.amount" class="long_input" value="${withdraw?.amount}">
+                        <span class="font_red">*</span>
+                        余额:${account?.amount}元,最少提现10元!
+                        <span class="error">#{error 'withdraw.amount'/}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="100px"></td>
+                    <td align="left" style="padding-left:20px">
+                        <input type="submit" value="申请" class="search-btn">
+                    </td>
+                </tr>
+            </table>
+            #{/form}
+        </div>
+    </div>
+</div>

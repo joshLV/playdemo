@@ -1,0 +1,82 @@
+#{extends 'main.html' /}
+#{set title:'提现申请' /}
+#{set 'moreStyles'}
+<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
+<link href="@{'/public/stylesheets/user-center.css'}" rel="stylesheet" type="text/css"/>
+#{/set}
+
+<!--主体内容部分-->
+<div class="wrap clearfix">
+    #{include "share/left.html"/}
+    <div class="section">
+        #{breadcrumbs/breadcrumb breadcrumbs/}
+        <div class="tab_top"><span id="addressTitle">申请提现</span>
+        </div>
+        <div class="tab_top2" style="border:1px solid lightGrey;padding-bottom:10px;">
+            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td align="right" width="100px">申请时间</td>
+                    <td align="left" style="padding-left:20px;">
+                        ${bill?.appliedAt.format('yyyy-MM-dd HH:mm:ss')}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="100px">申请金额</td>
+                    <td align="left" style="padding-left:20px;">
+                        ${bill?.amount.formatCurrency('CNY')}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="100px">所在城市</td>
+                    <td align="left" style="padding-left:20px;">
+                        ${bill?.bankCity}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="100px">开户银行</td>
+                    <td align="left" style="padding-left:20px;">
+                        ${bill?.bankName}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="100px">分行名称</td>
+                    <td align="left" style="padding-left:20px;">
+                        ${bill?.subBankName}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="100px">开户姓名</td>
+                    <td align="left" style="padding-left:20px;">
+                        ${bill?.userName}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="100px">银行卡号</td>
+                    <td align="left" style="padding-left:20px;">
+                        ${bill?.cardNumber}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="100px">申请状态</td>
+                    <td align="left" style="padding-left:20px;">
+                        &{'withdraw.' + bill.status}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="100px">手续费</td>
+                    <td align="left" style="padding-left:20px;">
+                        ${bill.fee?.formatCurrency('CNY')}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" width="100px"></td>
+                    <td align="left" style="padding-left:20px;">
+                        <div style="display:inline;background-color: lightGray; padding:4px;">
+                            <a  href="/withdraw">返回</a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

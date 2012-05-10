@@ -157,7 +157,7 @@ ul .pagination {
                     <td width="103" height="25" align="center" valign="middle">
                         <a href="#" class="delete_gift" id="del_${favItem.id}" name="${favItem.goods.id}">删除</a>
                         #{if favItem.taobaoItemId}
-                            | 已发布到淘宝
+                            | <a href="/top-add?goodsId=${favItem.goods.id}">重新发布到淘宝</a>
                         #{/if}
                         #{else}
                             #{if favItem.goods.canPublishTo(models.sales.GoodsPublishedPlatformType.TAOBAO)}

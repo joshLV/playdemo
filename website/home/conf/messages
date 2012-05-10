@@ -16,6 +16,7 @@ validation.oldPassword=原密码输入的不对！
 validation.newPassword.confirm=新密码和原密码一样，请重新输入！
 validation.invalid=无效的%s!
 validation.match=无效的%s!
+validation.min=%s必须大于或等于%.2f!
 
 user.oldPassword=原密码
 user.newPassword=新密码
@@ -80,3 +81,14 @@ address.phone=手机/电话
 address.postcode=邮编
 address.isDefault=设为默认
 
+# 提现
+withdraw.APPLIED=待审批
+withdraw.SUCCESS=成功
+withdraw.REJECTED=被拒绝
+
+withdraw.userName=开户姓名
+withdraw.bankName=银行
+withdraw.subBankName=支行
+withdraw.bankCity=城市
+withdraw.cardNumber=银行卡号
+withdraw.amount=提现金额

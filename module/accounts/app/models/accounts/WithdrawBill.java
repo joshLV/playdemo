@@ -48,6 +48,7 @@ public class WithdrawBill extends Model {
     public String bankName;
 
     @Column(name = "sub_bank_name")
+    @Required
     public String subBankName;
 
     @Column(name = "card_number")
@@ -80,6 +81,11 @@ public class WithdrawBill extends Model {
 
         AccountUtil.addBalance(account.getId(),this.amount.negate(), this.amount,
                 this.getId(),AccountSequenceType.FREEZE,"申请提现");
+    }
+
+    public static WithdrawBill findByIdAndUser(Long id, Long userId, AccountType accountType){
+        return WithdrawBill.find("id = ? and account.uid = ? and account.accountType = ?",
+                id, userId, accountType).first();
     }
 
     /**

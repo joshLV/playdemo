@@ -32,6 +32,12 @@ POST    /user/{id}                                    UserPasswords.update
 
 GET     /userPoint                                   UserPoints.index
 
+# 提现申请
+GET     /withdraw                                   Withdraw.index
+GET     /withdraw/detail/{id}                       Withdraw.detail
+GET     /withdraw/apply                             Withdraw.apply
+POST    /withdraw/apply                             Withdraw.create
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
