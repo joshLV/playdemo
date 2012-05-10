@@ -126,7 +126,10 @@
         <div style="clear:both"></div>
     </div>
 
-#{vx.tab name:'account_sequence',enumItems: models.accounts.AccountSequenceType,
+#{vx.tab name:'account_sequence',enumItems: [models.accounts.AccountSequenceType.CHARGE,
+models.accounts.AccountSequenceType.WITHDRAW,models.accounts.AccountSequenceType.PAY,
+models.accounts.AccountSequenceType.REFUND,models.accounts.AccountSequenceType.CANCEL,
+models.accounts.AccountSequenceType.RECEIVE],
 select:'condition_sequenceType',value:condition.sequenceType,form:'form'/}
     <div class="tab-content">
         <table class="table table-striped seq">

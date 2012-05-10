@@ -155,6 +155,9 @@ account_sequence.UNFREEZE=取消冻结
 
 platform.CONSUMER=优惠啦网站
 platform.RESALER=分销网
+platform.PLATFORM=运营平台
+platform.SUPPLIER=商户平台
+platform.null=
 
 # 提现
 withdraw.APPLIED=待审批

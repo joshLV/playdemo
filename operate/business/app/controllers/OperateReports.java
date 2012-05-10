@@ -172,12 +172,8 @@ public class OperateReports extends Controller {
 
     private static void setPlatform(AccountSequence accountSequence) {
         TradeBill bill = TradeBill.findById(accountSequence.referenceSerialId);
-        if (bill!=null){
-            if(AccountType.RESALER.equals(bill.fromAccount.accountType)){
-                accountSequence.platform = AccountType.RESALER.name();
-            }else if(AccountType.CONSUMER.equals(bill.fromAccount.accountType)){
-                accountSequence.platform = AccountType.CONSUMER.name();
-            }
+        if (bill != null && bill.fromAccount != null && bill.fromAccount.accountType != null) {
+            accountSequence.platform = bill.fromAccount.accountType.name();
         }
     }
 

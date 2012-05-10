@@ -67,6 +67,10 @@
             <navigation key="resales_reports" action="OperateReports.showResaleReport" text="分销商的资金明细"
                         permission="RESALES_REPORT"/>
         </navigation>
+        <navigation key="suppliers_reports_app" text="商  户" permission="SUPPLIERS_REPORT">
+            <navigation key="suppliers_reports" action="OperateReports.showSupplierReport" text="商户的资金明细"
+                        permission="SUPPLIERS_REPORT"/>
+        </navigation>
         <navigation key="websites" text="优惠啦佣金账户" permission="WEBSITES_REPORT">
             <navigation key="websites_reports" action="OperateReports.showWebsiteReport" text="优惠啦佣金账户的资金明细"
                         permission="WEBSITES_REPORT"/>
