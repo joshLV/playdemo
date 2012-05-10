@@ -6,7 +6,6 @@
     #{include "share/left.html"/}
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
-
         <form action="@{Withdraw.index()}" method="GET" id="form" style="display:none">
             #{select 'condition.status',id:'condition_status',value:condition?.status}
             #{option ""}全部#{/option}
@@ -26,6 +25,10 @@
         </div>
         <div style="clear: both"></div>
         <div class="tab_top2">
+            #{if billPage.size() == 0}
+            暂无提现申请记录
+            #{/if}
+            #{else}
             <table class="order-tab" cellpadding="0" cellspacing="0" style="width:100%">
                 <tr class="col-name">
                     <th>申请时间</th>
@@ -50,6 +53,7 @@
                 </tr>
                 #{/paginate.list}
             </table>
+            #{/else}
         </div>
     </div>
 </div>
