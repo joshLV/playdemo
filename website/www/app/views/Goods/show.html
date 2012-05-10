@@ -23,6 +23,8 @@
             var oldSize = parseInt($("#carts_size").html());
             var buyCount = parseInt($("#number").val());
             $("#carts_size").html(oldSize + buyCount);
+            $("#reload").val("true");
+            $("#order_confirm").hide();
         });
 
         $("#link_buy_more").click(function () {
