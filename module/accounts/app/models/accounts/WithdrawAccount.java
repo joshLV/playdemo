@@ -41,8 +41,12 @@ public class WithdrawAccount extends Model {
     @Required
     public String cardNumber;
 
-    public static List<WithdrawAccount> findByAccount(Long userId, AccountType accountType){
+    public static List<WithdrawAccount> findByUser(Long userId, AccountType accountType){
         return WithdrawAccount.find("byUserIdAndAccountType", userId, accountType).fetch();
+    }
+
+    public static WithdrawAccount findByIdAndUser(long id, Long userId, AccountType accountType){
+        return WithdrawAccount.find("byIdAndUserIdAndAccountType", id, userId, accountType).first();
     }
 
 }

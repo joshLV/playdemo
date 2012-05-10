@@ -6,9 +6,6 @@ import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import navigation.annotations.Right;
 import org.apache.commons.lang.StringUtils;
-import play.data.validation.Min;
-import play.data.validation.Required;
-import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
@@ -51,7 +48,7 @@ public class Withdraw extends Controller{
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
         Account account = AccountUtil.getAccount(supplier.getId(), AccountType.SUPPLIER);
-        List<WithdrawAccount> withdrawAccounts = WithdrawAccount.findByAccount(supplier.getId(), AccountType.SUPPLIER);
+        List<WithdrawAccount> withdrawAccounts = WithdrawAccount.findByUser(supplier.getId(), AccountType.SUPPLIER);
         render(account, withdrawAccounts);
     }
 
@@ -60,9 +57,9 @@ public class Withdraw extends Controller{
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
         Account account = AccountUtil.getAccount(supplier.getId(), AccountType.SUPPLIER);
-        WithdrawAccount withdrawAccount = WithdrawAccount.findById(withdrawAccountId);
-        if(withdrawAccount == null || !withdrawAccount.userId.equals(supplier.getId())
-                || withdrawAccount.accountType != AccountType.SUPPLIER){
+        WithdrawAccount withdrawAccount = WithdrawAccount.findByIdAndUser(
+                withdrawAccountId, supplier.getId(), AccountType.SUPPLIER);
+        if(withdrawAccount == null){
             error("invalid withdraw account");
         }
         if(amount == null || amount.compareTo(account.amount) > 0 || amount.compareTo(new BigDecimal("10")) < 0){
@@ -90,10 +87,9 @@ public class Withdraw extends Controller{
     public static void detail(Long id){
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
-        Account account = AccountUtil.getAccount(supplier.getId(), AccountType.SUPPLIER);
 
-        WithdrawBill bill = WithdrawBill.findById(id);
-        if(bill == null || !bill.account.getId().equals(account.getId())){
+        WithdrawBill bill = WithdrawBill.findByIdAndUser(id, supplier.getId(), AccountType.SUPPLIER);
+        if(bill == null){
             error("withdraw bill not found");
         }
         render(bill);
