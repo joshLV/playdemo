@@ -3,12 +3,9 @@
 #{set 'moreStyles'}
 <link href="@{'/public/assets/css/bootstrap.css'}" rel="stylesheet">
 <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" href="@{'/public/stylesheets/play-pagination.css'}">
-
-    #{asset.css src:['/r/base.css', '/r/orders.css'] /}
+    #{asset.css src:['/r/base.css', '/r/orders.css', '/r/play-pagination.css'] /}
 <style>
-ul,
-ol {
+ul, ol {
   padding: 0;
   margin: 0 0 0 0;
 }
@@ -26,7 +23,6 @@ ul .pagination {
     height: 31px;
     width: 169px;
 }
-
 </style>
 #{/set}
 
@@ -35,14 +31,14 @@ ul .pagination {
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script>
 $(window).load(function () {
- $("#search").click(function () {
-     $('#orderForm').submit();
- });
+    $("#search").click(function () {
+        $('#orderForm').submit();
+    });
 });
 </script>
 #{/set}
-<div id="content">
-</div>
+
+<div id="content"></div>
 
 
 <div style="height:200px"></div>
