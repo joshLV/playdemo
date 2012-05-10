@@ -315,7 +315,6 @@ public class OperateGoods extends Controller {
 	}
 
 	private static void renderSupplierList(Goods goods) {
-		System.out.println("goods.supplierId=================="+goods.supplierId);
 		List<Supplier> supplierList = Supplier.findUnDeleted();
 		Supplier supplier = goods.getSupplier();
 		if (supplier != null) {
