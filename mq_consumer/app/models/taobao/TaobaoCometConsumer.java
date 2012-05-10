@@ -65,6 +65,7 @@ public class TaobaoCometConsumer extends RabbitMQConsumer<TaobaoCometMessage>{
             return;
         }
         if(!messageStatus.equals("TradeBuyerPay")){
+            Logger.info("the message status is not TradeBuyerPay, ignore it");
             JPAPlugin.closeTx(false);
             return;
         }
@@ -72,18 +73,21 @@ public class TaobaoCometConsumer extends RabbitMQConsumer<TaobaoCometMessage>{
         // 查找 oAuthToken
         OAuthToken oAuthToken = OAuthToken.getOAuthToken(taobaoUserId, WebSite.TAOBAO);
         if (oAuthToken == null || oAuthToken.isExpired() || !oAuthToken.accountType.equals(AccountType.RESALER)){
+            Logger.error("oauth token invalid");
             JPAPlugin.closeTx(false);
             return;
         }
         // 获取订单的详细信息
         TradeFullinfoGetResponse taobaoOrder = getTaobaoOrder(taobaoOrderId, oAuthToken);
         if(taobaoOrder == null || taobaoOrder.getErrorCode() != null){
+            Logger.error("can not get the fullinfo of taobao order:" + taobaoOrderId);
             JPAPlugin.closeTx(false);
             return;
         }
         // 生成本地订单
         models.order.Order resalerOrder = createResalerOrder(taobaoOrder, oAuthToken.userId);
         if(resalerOrder == null){
+            Logger.error("can not create resaler order");
             JPAPlugin.closeTx(false);
             return;
         }
@@ -194,11 +198,20 @@ public class TaobaoCometConsumer extends RabbitMQConsumer<TaobaoCometMessage>{
                         resalerOrder.payMethod = null;
 
                         resalerOrder.paid();
+                    }else {
+                        Logger.info("auto process resaler order failed: can not create trade bill");
                     }
+                }else {
+                    Logger.info("auto process resaler order failed: set taobao order send failed");
                 }
+            }else {
+                Logger.info("auto process resaler order failed: balance not enough");
             }
 
+        }else {
+            Logger.info("auto process resaler order failed: not all of the orderItems in taobaoOrder is our goods");
         }
+
     }
 
     /**
@@ -214,7 +227,6 @@ public class TaobaoCometConsumer extends RabbitMQConsumer<TaobaoCometMessage>{
         req.setTid(taobaoOrderId);
         try {
             return client.execute(req , token.accessToken);
-
         } catch (ApiException e) {
             Logger.error(e, "set taobao order send failed");
             return null;
