@@ -13,10 +13,10 @@ load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_uni
 
     open('/goods')
 	click('id=libray_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}')
-	waitForElementPresent('id=add_cart_result_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}')
+	*{waitForElementPresent('id=add_cart_result_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}')}*
 	
 	click('id=libray_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_008")}')
-	waitForElementPresent('id=add_cart_result_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_008")}')
+	*{waitForElementPresent('id=add_cart_result_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_008")}')}*
     
     openAndWait('/carts')
     

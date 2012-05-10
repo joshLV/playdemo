@@ -12,10 +12,11 @@ verifyTextPresent('下一页')
 verifyTextPresent('全部 电子券 实物')}*
 
 clickAndWait('link=豆捞坊')
-assertText('css=span.selected_box','豆捞坊')
+assertText('class=selected','豆捞坊')
 
+open('/goods')
 clickAndWait('link=30-60元')
-verifyText('css=div.selected_box','30-60元')
+verifyText('//div[@id='filter']/dl[2]/dd/span','30-60元')
 
 open('/goods/list/0-0-0-1-1-0-0')
 verifyTextPresent('上一页')

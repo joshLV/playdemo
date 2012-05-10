@@ -16,6 +16,14 @@
             #{get 'navMenu' /}
         </ul>
     </div>
+    <div class="wellcome">
+    #{if cas?.isLogin}
+        欢迎您，<a class="zi_gray" href="/orders" id="login_name">${cas.username}</a>  <a class="zi_gray" href="/logout">退出</a>
+    #{/if}
+    #{else}
+        您好，欢迎您来到优惠啦！<a class="zi_gray" href="/login" id="login_name">请登录</a>
+    #{/else}
+    </div>
 </div>
 #{doLayout /}
 <div id="footer">
