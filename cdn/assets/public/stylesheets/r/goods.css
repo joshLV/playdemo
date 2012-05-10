@@ -1,0 +1,274 @@
+.zhu_nav_title {
+    line-height: 30px;
+}
+/**
+ * 列表页
+ */
+/* 筛选条 {{{ */
+#filter {
+    padding: 8px;
+    border: 1px solid #D2D2D2;
+}
+#filter dl {
+    padding: 10px 0;
+    border-bottom: 1px dashed #D2D2D2;
+}
+#filter dt {
+    float: left;
+    width: 70px;
+    line-height: 22px;
+}
+#filter a {
+    display: inline-block;
+    color: #4991D4;
+    margin: 0 5px;
+}
+#filter .selected {
+    display: inline-block;
+    padding: 0 5px 3px;
+    color: #F9F9F9;
+    background-color: #4991D4;
+}
+#filter input {
+    width: 35px;
+    border: 1px solid #C4C4C4;
+}
+#filter .submit {
+    padding: 0 5px;
+    border: 1px solid #C4C4C4;
+    border-radius: 2px;
+    background-color: #FCFCFD;
+    background-image: -webkit-linear-gradient(top,#FCFCFD,#EEEFF0);
+    background-image: -moz-linear-gradient(top,#FCFCFD,#EEEFF0);
+    background-image: -ms-linear-gradient(top,#FCFCFD,#EEEFF0);
+}
+/* }}} */
+/* 排序条 {{{ */
+#rankbar {
+    margin: 12px 0;
+    height: 28px;
+    line-height: 28px;
+    margin-bottom: 20px;
+    border: 1px solid #E4E4E4;
+    color: #9C9EAD;
+    background-color: #F8F8F8;
+}
+#rankbar a {
+    float: left;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 25px;
+    border-right: 1px solid #E4E4E4;
+}
+#rankbar .current {
+    background-color: white;
+    position: relative;
+    _line-height: 29px;
+    _margin-bottom: -1px;
+    border-bottom: 1px solid white;
+}
+#rankbar .prop {
+    background-image: url(http://img.uhcdn.com/images/r/rank.png);
+    background-position: 53px 6px;
+    background-repeat: no-repeat;
+}
+#rankbar .rank-asc {
+    background-position: 53px -15px;
+}
+#rankbar .rank-desc {
+    background-position: 53px -36px;
+}
+/* }}} */
+/* 列表 {{{ */
+#selectall {
+    position: relative;
+    top: 2px;
+    margin-right: 2px;
+}
+#addto {
+    display: inline-block;
+    padding: 3px 13px;
+    margin: 0 10px 0 5px;
+    color: #666;
+    background: url(http://img.uhcdn.com/images/r/addto.png) no-repeat 0 0;
+}
+#addto:hover {
+    color: #333;
+    text-decoration: none;
+}
+#lists {
+    margin-top: 8px;
+}
+#lists li {
+    padding: 10px 0;
+    border-bottom: 1px solid #E4E4E4;
+}
+#lists .check {
+    float: left;
+    padding: 12px 15px 10px 0;
+}
+#lists .photo {
+    float: left;
+    margin-right: 20px;
+}
+#lists .name {
+    float: left;
+    width: 450px;
+    margin-right: 20px;
+}
+#lists .name a {
+    color: #4991D4;
+    font-size: 14px;
+}
+#lists .name span {
+    color: #636363;
+}
+#lists .price {
+    float: left;
+    width: 280px;
+    margin-right: 20px;
+}
+#lists .price .purchass-price {
+    color: red;
+    font-weight: 700;
+}
+#lists .action {
+    float: left;
+}
+#lists .action .view-detail {
+    color: #4991D4;
+}
+/* }}} */
+
+/**
+ * 详情页
+ */
+.aside {
+    float: left;
+    width: 220px;
+    margin-top: 25px;
+}
+.aside h3 {
+    text-indent: 5px;
+    font-size: 13px;
+    line-height: 32px;
+    color: #F2F2F2;
+    background-color: #AF2F15;
+}
+.aside ul {
+    padding: 2px 10px;
+    border: 1px solid #FCC3B7;
+}
+.aside li {
+    padding: 8px 0;
+}
+.aside .image {
+    font-size: 0;
+    text-align: center;
+}
+.aside .image a {
+    font-size: 0;
+}
+.aside .name {
+    padding: 5px 0 2px;
+}
+.aside .name a {
+    font-size: 14px;
+    font-weight: 700;
+}
+.aside .purchass {
+    float: right;
+}
+.aside .purchass b {
+    color: #F50;
+    font: 700 14px Arial;
+}
+.aside .market {
+    float: left;
+}
+.aside .market del {
+    font: 12px Arial;
+}
+.section {
+    float: right;
+    width: 720px;
+    margin-top: 25px;
+}
+.section .summary {
+    padding: 10px;
+    border: 1px solid #E4E4E4;
+}
+.section .summary h3 {
+    padding: 8px 0 10px;
+    font-size: 16px;
+}
+.section .photo {
+    float: left;
+    width: 300px;
+    padding: 10px 9px;
+    margin-right: 20px;
+    font-size: 0;
+}
+.section .property {
+    line-height: 26px;
+}
+.section .property li {
+    color:
+}
+
+.property {
+    float: left;
+    width: 280px;
+}
+.property li {
+    color: #666;
+    line-height: 23px;
+    font-family: "宋体";
+}
+.property span {
+    color: #333;
+    margin-left: 8px;
+}
+.property .price span {
+    color: #F50;
+    font: 24px Arial;
+}
+.property .cost del {
+    margin-left: 5px;
+    font: 14px Arial;
+}
+.property .amount input {
+    width: 36px;
+    height: 21px;
+    line-height: 21px;
+    padding-left: 2px;
+    border: 1px solid #A8ACAD;
+    background: url(http://img.uhcdn.com/images/u/num_input_bg.jpg) repeat-x;
+}
+.property .action {
+    margin-top: 9px;
+}
+.property .action a {
+    float: left;
+    display: block;
+    padding: 6px 15px 7px;
+    color: #FFF;
+    font-size: 14px;
+    font-weight: 700;
+    background-color: #AF2F15;
+}
+.property .buy {
+    margin-right: 35px;
+}
+.intro {
+    margin: 20px 0;
+    border: 1px solid #E4E4E4;
+}
+.intro h3 {
+    text-indent: 5px;
+    line-height: 28px;
+    background-color: #E4E4E4;
+}
+.intro-bd {
+    padding: 10px;
+}

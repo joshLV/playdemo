@@ -3,7 +3,9 @@
 #{set 'moreStyles'}
 <link href="@{'/public/assets/css/bootstrap.css'}" rel="stylesheet">
 <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/play-pagination.css'}">
+<link rel="stylesheet" href="@{'/public/stylesheets/play-pagination.css'}">
+
+    #{asset.css src:['/r/base.css', '/r/orders.css'] /}
 <style>
 ul,
 ol {
@@ -39,6 +41,11 @@ $(window).load(function () {
 });
 </script>
 #{/set}
+<div id="content">
+</div>
+
+
+<div style="height:200px"></div>
  <div id="wrap_main">
   <!--    最顶部导航-->
   <div id="wrap_top">#{include "share/topNavigator.html"/}</div>

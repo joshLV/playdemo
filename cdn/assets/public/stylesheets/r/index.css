@@ -1,0 +1,67 @@
+#banner {
+    background-color: #FCC3B7;
+}
+#banner .inner {
+    font-size: 0;
+}
+#content {
+    padding: 15px 0;
+}
+.section {
+    float: left;
+    width: 665px;
+    padding-right: 15px;
+    border-right: 2px solid #D2D2D2;
+}
+.section h3 {
+    padding: 5px 0;
+}
+.whyjoin {
+    margin-bottom: 15px;
+}
+.whyjoin li {
+    padding-left: 35px;
+    margin-left: 15px;
+    font: 14px "Microsoft Yahei";
+    line-height: 36px;
+    background: url(http://img.uhcdn.com/images/r/reason.png) no-repeat -9999px -9999px;
+}
+.whyjoin .reason1 {
+    background-position: 0 2px;
+}
+.whyjoin .reason2 {
+    background-position: 0 -34px;
+}
+.whyjoin .reason3 {
+    background-position: 0 -70px;
+}
+.whyjoin .reason4 {
+    background-position: 0 -105px;
+}
+.partner li {
+    float: left;
+    margin: 0 6px;
+    border: 1px solid #D2D2D2;
+}
+.aside {
+    float: right;
+    width: 263px;
+    padding-top: 8px;
+}
+.guide .joinus {
+    margin-right: 8px;
+}
+.salemode {
+    margin-top: 40px;
+}
+.salemode li {
+    line-height: 32px;
+    border-bottom: 1px dashed #D2D2D2;
+}
+.salemode a {
+    color: #4991D4;
+}
+.salemode a:hover {
+    color: #AF2F15;
+    text-decoration: none;
+}
