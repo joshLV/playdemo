@@ -24,7 +24,6 @@ $(function () {
     //购物车记录删除
     $(".cart-delete").live('click',function (ev) {
         ev.preventDefault();
-        alert("delete cart row");
         var goods_id = $(this).attr("goods_id");
         $.ajax({
             type:'DELETE',
