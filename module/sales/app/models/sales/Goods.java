@@ -839,7 +839,12 @@ public class Goods extends Model {
         }
     }
 
-    public boolean canPublishTo(GoodsPublishedPlatformType type){
+    public boolean canPublishTo(GoodsPublishedPlatformType type) {
         return !containsUnPublishedPlatform(type);
+    }
+
+    public boolean onSale() {
+        return (GoodsStatus.ONSALE.equals(status) && expireAt.after(new Date()) &&
+                baseSale > 0 && DeletedStatus.UN_DELETED.equals(deleted));
     }
 }

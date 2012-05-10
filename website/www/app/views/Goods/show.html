@@ -63,7 +63,7 @@
             <span><input class="num_input_bg" id="number" name="number" type="text" value="1"/> 件</span>
             <span class="error">#{error 'number' /}</span>
         </li>
-    #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
+    #{if goods.onSale()}
         <li class="action">
             <a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
             <a class="add" id="link_add_cart" href="#">加入购物车</a>
