@@ -45,19 +45,10 @@
    <tr><td colspan="6">商品金额： ${orders.amount} &nbsp;元 &nbsp;+运费：0 &nbsp;-折扣：0 &nbsp;元= &nbsp;总金额： ${orders.amount} 元</td></tr>
    </table>
     <table class="table">
-   <tr><td>支付方式： ${orders.payMethod=='1'?'支付宝':'网银'}</td></tr>
    <tr><td>订单状态： &{'order.'+orders.status}</td></tr>
    <tr><td>物流方式： ${orders.deliveryType=='2'?'有物流':'无物流'}</td></tr>
-  </table>
+   </table>
 
-   <table class="table">
-   <tr><td>收货信息</td></tr>
-   #{if (orders.orderItems.goods.materialType.toString().equals("[REAL]"))}
-   <tr><td>收货人姓名： ${orders.receiverName}</td></tr>
-   <tr><td>收货地址： ${orders.receiverAddress}</td></tr>
-   #{/if}
-   <tr><td>联系方式： ${orders.receiverMobile}</td></tr>
-  </table>
    <table class="table">
    <tr><td>订购者信息</td></tr>
    <tr><td>订购者帐号： ${orders.payMethod}</td></tr>

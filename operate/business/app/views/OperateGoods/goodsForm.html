@@ -32,7 +32,7 @@ value:goods?.materialType?.toString(), required:true/}
 </div>
 <div id="brand">#{include '/OperateBrands/goodsBrands.html'/}</div>
 #{layout_operate.textField name:'goods.no', value:goods?.no/}
-#{layout_operate.nameField name:'goods.name', value:goods?.name, required:true, length:40/}
+#{layout_operate.nameField name:'goods.name', value:goods?.name, required:true, length:30/}
 #{layout_operate.dateScopeField name:'goods.effective', begin:'goods.effectiveAt',end:'goods.expireAt',
 beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), required:true/}
 #{layout_operate.textField name:'goods.faceValue', value:goods?.faceValue?:"0", note:'元', required:true/}
