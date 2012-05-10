@@ -1,30 +1,138 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 商品详情' /}
 #{set 'moreStyles'}
-<link href="@@{'/public/stylesheets/goods-show.css'}" rel="stylesheet"
-      type="text/css"/>
+<link href="@@{'/public/stylesheets/goods-show.css'}" rel="stylesheet" type="text/css"/>
+<link href="@@{'/public/stylesheets/goods.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/goods-show.js'}"></script>
 #{/set}
-
-<div id="wrap_main">
-    <div id="wrap_top">
-    #{include "share/topNavigator.html"/}
-    </div>
-    <div id="wrap_top_header">
-        <div id="wrap_top_header_left"><img
-                src="@@{'/public/images/logo.jpg'}"/></div>
-        <div id="wrap_top_middle">券生活-惠生活</div>
-    </div>
-    <div style="clear:both"></div>
-    <div class="fen_g"></div>
+<div id="content" class="clearfix">
+    <div class="aside">
+        <h3>搜索该产品的用户还看过</h3>
+        <ul>
+            <li>
+                <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div>
+                <div class="name"><a href="">来伊价</a></div>
+                <div class="price clearfix">
+                    <span class="purchass">采购价：<b>&yen; 14.8</b></span>
+                    <span class="market">市场价：<del>Y:20.00</del></span>
+                </div>
+            </li>
+            <li>
+                <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div>
+                <div class="name"><a href="">来伊价</a></div>
+                <div class="price clearfix">
+                    <span class="purchass">采购价：<b>&yen; 14.8</b></span>
+                    <span class="market">市场价：<del>Y:20.00</del></span>
+                </div>
+            </li>
+            <li>
+                <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div>
+                <div class="name"><a href="">来伊价</a></div>
+                <div class="price clearfix">
+                    <span class="purchass">采购价：<b>&yen; 14.8</b></span>
+                    <span class="market">市场价：<del>Y:20.00</del></span>
+                </div>
+            </li>
+            <li>
+                <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div>
+                <div class="name"><a href="">来伊价</a></div>
+                <div class="price clearfix">
+                    <span class="purchass">采购价：<b>&yen; 14.8</b></span>
+                    <span class="market">市场价：<del>Y:20.00</del></span>
+                </div>
+            </li>
+            <li>
+                <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div>
+                <div class="name"><a href="">来伊价</a></div>
+                <div class="price clearfix">
+                    <span class="purchass">采购价：<b>&yen; 14.8</b></span>
+                    <span class="market">市场价：<del>Y:20.00</del></span>
+                </div>
+            </li>
+            <li>
+                <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div>
+                <div class="name"><a href="">来伊价</a></div>
+                <div class="price clearfix">
+                    <span class="purchass">采购价：<b>&yen; 14.8</b></span>
+                    <span class="market">市场价：<del>Y:20.00</del></span>
+                </div>
+            </li>
+        </ul>
+    </div><!-- .aside END -->
+    <div class="section">
+        <div class="summary clearfix">
+            <h3>${goods.name}</h3>
+            <div class="photo"><img src="${goods.imageLargePath}" width="280" height="168"/></div>
+            <ul class="property">
+                <li class="price">采 购 价：<span>&yen;${goods.getResalePrice(resaler.level)}</span></li>
+                <li class="cost">市 场 价：
+                    <del>&yen;${goods.faceValue}</del>
+                </li>
+                <li class="discount">折　　扣：<span>${goods.discountExpress.yesno(goods.discountExpress+'折','无优惠')}</span></li>
+                <li class="inventory">库　　存：<span>${goods.baseSale}</span></li>
+                <li class="deadline">有效期：<span>${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span></li>
+                <li class="amount">购买数量：
+                    <span><input class="num_input_bg" id="number" name="number" type="text" value="1"/> 件</span>
+                    <span class="error">#{error 'number' /}</span>
+                </li>
+                <li class="action">
+                    <a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
+                    <a class="add" id="link_add_cart" href="#">加入分销库</a>
+                </li>
+                <li id="add_cart_result" class="buttom_dibu"
+                    style="display: none;">已成功添加到分销库！
+                    <a id="link_buy_more" href="#"><span
+                            class="zi_gray">继续购买</span></a>
+                    <a href="/carts"><span class="zi_gray">查看分销库</span></a>
+                </li>
+            </ul>
+        </div><!-- .summary END -->
+        <div class="intro">
+            <h3>温馨提示</h3>
+            <div class="intro-bd">${goods?.prompt?.raw()}</div>
+        </div>
+        <div class="intro">
+            <h3>商品详情</h3>
+            <div class="intro-bd">${goods?.details?.raw()}</div>
+        </div>
+        <div class="intro">
+            <h3>使用门店</h3>
+            <table width="700" border="0" cellpadding="0" cellspacing="0">
+            #{if goods.shops.size() > 0}
+                #{list goods.shops, as:'shop'}
+                    <tr>
+                        <td width="120" height="30">${shop.name}</td>
+                        <td>${shop.address}</td>
+                        <td>${shop.phone}</td>
+                    </tr>
+                #{/list}
+            #{/if}
+            </table>
+        </div>
+    </div><!-- .section END -->
 </div>
+
+    *{
+<div style="height:200px"></div>
+<!-- <div id="wrap_main"> -->
+    <!-- <div id="wrap_top"> -->
+    #{include "share/topNavigator.html"/}
+    <!-- </div> -->
+    <!-- <div id="wrap_top_header"> -->
+        <!-- <div id="wrap_top_header_left"><img -->
+                <!-- src="@@{'/public/images/logo.jpg'}"/></div> -->
+        <!-- <div id="wrap_top_middle">券生活-惠生活</div> -->
+    <!-- </div> -->
+    <!-- <div style="clear:both"></div> -->
+    <!-- <div class="fen_g"></div> -->
+<!-- </div> -->
 <!--主体内容部分-->
 <div id="wrap_content">
     <div style="clear:both"></div>
-    <div id="main_content">
-        <!--左侧导航部分-->
+    <div id="main_content" class="clearfix">
+        <!--左侧导航部分 {{{ -->
         <div id="left_nav">
             <div class="left_top_one">
                 <dl class="left_one_dl">
@@ -95,7 +203,7 @@
                 </dl>
             </div>
         </div>
-        <!--右侧主体内容部分-->
+        <!--右侧主体内容部分 }}} -->
         <div id="right_content">
         #{form @ResalerGoods.index() , id:'buy_now_form'}
             <div class="right_content_show">
@@ -208,3 +316,4 @@
     $("#prompt").html($("#prompt").text()).text();
     $("#details").html($("#details").text()).text();
 </script>
+    }*

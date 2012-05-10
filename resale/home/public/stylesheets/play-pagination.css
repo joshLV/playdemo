@@ -18,9 +18,9 @@ ul.pagination {
 	margin: 0;
 	padding: 0;
 	list-style: none;
-	border: solid 1px #1E1E1E;
+	border: solid 1px #AEAEAE;
 	float: left;
-	margin-right : 2px;
+	margin-right : 10px;
 }
 
 .pagination .previous-off a,
@@ -46,7 +46,7 @@ ul.pagination {
 	color: #0033CC;
 	display : block;
 	float: left;
-	padding: 3px 6px;
+	padding: 3px 8px;
 	text-decoration: none;
 }
 
