@@ -30,11 +30,7 @@ value:goods?.materialType?.toString(), required:true/}
         <span class="error">#{error 'goods.category'/}</span>
     </div>
 </div>
-#{layout_operate.selectField name:'goods.brand.id', value:goods?.brand?.id, error:'goods.brand'}
-    #{list items:brandList, as:'brand' }
-        #{option brand?.id}${brand?.name}#{/option}
-    #{/list}
-#{/layout_operate.selectField}
+<div id="brand">#{include '/OperateBrands/goodsBrands.html'/}</div>
 #{layout_operate.textField name:'goods.no', value:goods?.no/}
 #{layout_operate.nameField name:'goods.name', value:goods?.name, required:true, length:40/}
 #{layout_operate.dateScopeField name:'goods.effective', begin:'goods.effectiveAt',end:'goods.expireAt',

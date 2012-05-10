@@ -22,8 +22,11 @@ import models.sales.GoodsCondition;
 import models.sales.GoodsStatus;
 import models.sales.MaterialType;
 import models.sales.Shop;
+import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
+
 import org.apache.commons.lang.StringUtils;
+
 import play.Play;
 import play.data.binding.As;
 import play.data.validation.Required;
@@ -32,6 +35,7 @@ import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
+
 import com.uhuila.common.util.FileUploadUtil;
 
 /**
@@ -99,7 +103,8 @@ public class SupplierGoods extends Controller {
             goods.isAllShop = false;
         }
 
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        Supplier supplier = SupplierRbac.currentUser().supplier;
+        Long supplierId = supplier.id;
         String shopIds = "";
         if (goods.shops != null) {
             for (Shop shop : goods.shops) {
@@ -111,7 +116,7 @@ public class SupplierGoods extends Controller {
         }
 
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
-        List<Brand> brandList = Brand.findByOrder();
+        List<Brand> brandList = Brand.findByOrder(supplier);
 
         List<Category> categoryList = Category.findByParent(0);//获取顶层分类
         List<Category> subCategoryList = new ArrayList<>();

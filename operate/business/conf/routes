@@ -16,7 +16,7 @@ PUT     /goods/{id}/reject                      OperateGoods.reject
 DELETE  /goods/{id}                             OperateGoods.delete
 POST    /goods/images                           UploadFiles.uploadJson
 POST    /goods/filemanager                      UploadFiles.fileManagerJson
-
+GET     /goods_brands/{id}                      OperateBrands.goodsBrands
 GET     /category/sub/{id}                      Categories.showSubs
 
 GET     /shops                                  Shops.index
@@ -62,7 +62,6 @@ POST    /brands                                 OperateBrands.create
 DELETE  /brands/{id}                            OperateBrands.delete
 GET     /brands/{id}/edit                       OperateBrands.edit
 PUT     /brands/{id}                            OperateBrands.update
-
 #财务报表
 GET     /reports                                OperateReports.showSystemReport
 GET     /reports/consumer                       OperateReports.showConsumerReport
