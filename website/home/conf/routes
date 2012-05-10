@@ -11,6 +11,9 @@ GET     /coupons                                      UserCoupons.index
 GET     /payment/{id}                                 UserOrders.pay
 POST    /coupons/refund/{id}                          UserCoupons.applyRefund
 
+#购物车
+GET     /carts/tops                                   UserCarts.tops
+DELETE  /carts/{goodsIds}                             UserCarts.delete
 
 #用户资料
 GET      /userInfo                                    UserInfos.index

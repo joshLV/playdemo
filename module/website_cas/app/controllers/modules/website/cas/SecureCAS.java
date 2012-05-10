@@ -183,9 +183,10 @@ public class SecureCAS extends Controller {
     @Before(unless = { "login", "logout", "fail", "authenticate", "pgtCallBack" })
     public static void filter() throws Throwable {
         Logger.debug("[SecureCAS]: CAS Filter for URL -> " + request.url);
-        
+
+        Logger.debug("session contains=" + session.contains(SESSION_USER_KEY) + ", value=" + session.get(SESSION_USER_KEY));
         if (skipCAS()) {
-            Logger.debug("[SecureCAS]: Skip CAS.");
+            Logger.debug("[SecureCAS]: Skip the CAS.");
             return;
         }
 

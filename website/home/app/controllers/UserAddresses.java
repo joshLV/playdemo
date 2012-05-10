@@ -15,7 +15,7 @@ import java.util.List;
 
 import static play.Logger.warn;
 
-@With(SecureCAS.class)
+@With({SecureCAS.class, WebsiteInjector.class})
 public class UserAddresses extends Controller {
     /**
      * 地址列表

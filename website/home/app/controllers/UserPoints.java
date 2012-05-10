@@ -1,20 +1,18 @@
 package controllers;
 
-import java.util.List;
-
+import controllers.modules.website.cas.SecureCAS;
 import models.consumer.User;
 import models.consumer.UserCondition;
 import models.consumer.UserPoint;
 import models.consumer.UserPointConfig;
-
 import org.apache.commons.lang.StringUtils;
-
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.website.cas.SecureCAS;
-@With(SecureCAS.class)
+
+import java.util.List;
+@With({SecureCAS.class, WebsiteInjector.class})
 public class UserPoints extends Controller{
 	
 	public static int PAGE_SIZE = 15;

@@ -21,6 +21,7 @@ require:
     - org.jsoup -> jsoup 1.6.1
     - sms -> sms
     - asset_package -> asset_package
+    - layout_website -> layout_website
 
 repositories:
     - mavenRepository:
@@ -57,3 +58,4 @@ repositories:
             - accounts -> *
             - sms -> *
             - asset_package -> *
+            - layout_website -> *

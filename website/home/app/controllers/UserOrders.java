@@ -14,7 +14,7 @@ import play.mvc.With;
 
 import java.util.List;
 
-@With(SecureCAS.class)
+@With({SecureCAS.class, WebsiteInjector.class})
 public class UserOrders extends Controller {
 
 	public static int PAGE_SIZE = 15;

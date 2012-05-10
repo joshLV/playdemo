@@ -11,7 +11,7 @@ import play.modules.breadcrumbs.BreadcrumbList;
 import play.mvc.Controller;
 import play.mvc.With;
 
-@With(SecureCAS.class)
+@With({SecureCAS.class, WebsiteInjector.class})
 public class UserInfos extends Controller {
 
     /**

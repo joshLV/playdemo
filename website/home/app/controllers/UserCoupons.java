@@ -11,7 +11,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-@With(SecureCAS.class)
+@With({SecureCAS.class, WebsiteInjector.class})
 public class UserCoupons extends Controller {
 
 	public static int PAGE_SIZE = 15;

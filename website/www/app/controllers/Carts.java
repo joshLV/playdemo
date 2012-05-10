@@ -63,7 +63,7 @@ public class Carts extends Controller {
     }
 
     /**
-     * 以JSON格式展示所有购物车内容
+     * 在顶部展示所有购物车内容
      */
     public static void tops() {
         User user = SecureCAS.getUser();

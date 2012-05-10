@@ -22,7 +22,6 @@ public class WebsiteInjector extends Controller {
         for (Cart cart : carts) {
             count += cart.number;
         }
-        renderArgs.put("carts", carts);
         renderArgs.put("count", count);
     }
 }

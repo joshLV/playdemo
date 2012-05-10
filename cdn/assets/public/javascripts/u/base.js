@@ -17,6 +17,7 @@ $(function () {
                 $("#reload").val("false");
             });
         }
+//        $("#carts_size").html($("#goods_count").val());
         $(this).addClass('carts-on');
         $('.carts-bd').show();
     });
