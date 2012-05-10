@@ -1,11 +1,10 @@
 package models.journal;
 
-import play.db.jpa.Model;
-
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.Date;
+import play.db.jpa.Model;
 
 /**
  * User: likang
@@ -17,7 +16,9 @@ public class MQJournal extends Model {
     @Column(name = "queue_name")
     public String queueName;
 
+    @Column(length=4000)
     public String journal;
+    
     @Column(name = "created_at")
     public Date createdAt;
     
