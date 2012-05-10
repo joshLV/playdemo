@@ -5,8 +5,7 @@
             src="${cartItem.goods.imageTinyPath}"/>${cartItem.goods.name}</a> ${cartItem.goods.salePrice?.formatCurrency('CNY')}
         x${cartItem.number} <a href="#" id="cart-delete_${cartItem.goods.id}" class="cart-delete"
                                goods_id="${cartItem.goods.id}"
-                               count="${cartItem
-        .number}">删除</a></p>
+                               count="${cartItem.number}">删除</a></p>
     #{/list}
 <a class="view-carts" href="http://www.uhuila.cn/carts">查看购物车</a>
 <a class="view-carts" href="http://www.uhuila.cn/orders?items=#{list items:carts,
