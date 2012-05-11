@@ -11,6 +11,8 @@ import java.security.Signature;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
+import play.Play;
+
 
 public class Pkipair {
 	
@@ -22,21 +24,11 @@ public class Pkipair {
 			// 密钥仓库
 			KeyStore ks = KeyStore.getInstance("PKCS12");
 
-			// 读取密钥仓库
-//			FileInputStream ksfis = new FileInputStream("e:/tester-rsa.pfx");
-			
 			// 读取密钥仓库（相对路径）
-//			String file = Pkipair.class.getResource("99bill-rsa.pfx").getPath().replaceAll("%20", " ");
-			
-			FileInputStream ksfis = new FileInputStream("/opt/99bill/tester-rsa.pfx");
+			String path = Play.configuration.getProperty("99bill.privateKey","/opt/99bill/tester-rsa.pfx");
+			FileInputStream ksfis = new FileInputStream(path);
 			BufferedInputStream ksbufin = new BufferedInputStream(ksfis);
 			
-//			System.out.println("******************"+file);
-			
-//			FileInputStream ksfis = new FileInputStream(file);
-//			
-//			BufferedInputStream ksbufin = new BufferedInputStream(ksfis);
-
 			char[] keyPwd = "yu@uhuila.seewi".toCharArray();
 			//char[] keyPwd = "YaoJiaNiLOVE999Year".toCharArray();
 			ks.load(ksbufin, keyPwd);
@@ -59,14 +51,10 @@ public class Pkipair {
 	public static boolean enCodeByCer( String val, String msg) {
 		boolean flag = false;
 		try {
-			//获得文件(绝对路径)
-			//InputStream inStream = new FileInputStream("e:/99bill[1].cert.rsa.20140803.cer");
-			
 			//获得文件(相对路径)
-//			String file = Pkipair.class.getResource("99bill.cert.rsa.20140728.cer").toURI().getPath();
-//			System.out.println(file);
-//			FileInputStream inStream = new FileInputStream(file);
-			InputStream inStream = new FileInputStream("/opt/99bill/99bill.cert.rsa.20140728.cer");
+			String path = Play.configuration.getProperty("99bill.publickey","/opt/99bill/99bill.cert.rsa.20140728.cer");
+			
+			InputStream inStream = new FileInputStream(path);
 			CertificateFactory cf = CertificateFactory.getInstance("X.509");
 			X509Certificate cert = (X509Certificate) cf.generateCertificate(inStream);
 			//获得公钥

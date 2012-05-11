@@ -60,14 +60,13 @@ public class BillPaymentFlow {
 		String orderTime=systemTime(order.createdAt);
 
 		//人民币网关账号，该账号为11位人民币网关商户编号+01,该参数必填。
-		String merchantAcctId = Play.configuration.getProperty("99bill.merchantAcctId","1002034040901");;
+		String merchantAcctId = Play.configuration.getProperty("99bill.merchantAcctId","1002034040901");
 		//编码方式，1代表 UTF-8; 2 代表 GBK; 3代表 GB2312 默认为1,该参数必填。
 		String inputCharset = "1";
 		//接收支付结果的页面地址，该参数一般置为空即可。
 		String pageUrl = "";
 		//服务器接收支付结果的后台地址，该参数务必填写，不能为空。
 		String bgUrl = Play.configuration.getProperty("99bill.notify_url","http://test.uhuila.com:29001/pay/99bill_notify");
-		System.out.println("bgUrl========================"+bgUrl);
 		//网关版本，固定值：v2.0,该参数必填。
 		String version =  "v2.0";
 		//语言种类，1代表中文显示，2代表英文显示。默认为1,该参数必填。
@@ -206,7 +205,7 @@ public class BillPaymentFlow {
 	 * @return 处理成功或失败
 	 */
 	public Map<String,String> paymentNotify(Map<String, String[]> params) {
-
+		System.out.println("11111111111111111111");
 		//获取人民币网关账户号
 		String merchantAcctId = doParam(params.get("merchantAcctId"));
 
@@ -302,10 +301,13 @@ public class BillPaymentFlow {
 		merchantSignMsgVal = appendParam(merchantSignMsgVal, "errCode",errCode);
 		KuaiQianPkipair pki = new KuaiQianPkipair();
 		boolean flag = pki.enCodeByCer(merchantSignMsgVal, signMsg);
+		System.out.println("11111111111111111111"+flag);
 		int rtnOK =0;
 		String rtnUrl = Play.configuration.getProperty("99bill.return_url","http://test.uhuila.com:29001/orders/99billpay_result");
+		System.out.println("11111111111111111111"+rtnUrl);
+		
 		if(flag){
-
+			System.out.println("11111111111111111111payResult"+payResult);
 			String log = "99bill_notify:" +
 					"交易状态:" + payResult + "," +
 					"交易号:" + bankDealId + "," +
@@ -316,8 +318,7 @@ public class BillPaymentFlow {
 			PaymentCallbackLog callbackLog =
 					new PaymentCallbackLog("", "99bill", orderId,new BigDecimal(orderAmount), payResult, log);
 
-			switch(Integer.parseInt(payResult))
-			{
+			switch(Integer.parseInt(payResult)){
 			case 10:
 				Order order = Order.find("byOrderNumber",orderId).first();
 				if (order == null || order.orderNumber == null ) {
@@ -364,6 +365,7 @@ public class BillPaymentFlow {
 			rtnOK=1;
 			rtnUrl+="?rtnOK=-3";
 		}	
+		System.out.println("rtnUrl====================="+rtnUrl);
 		Map<String,String> map = new HashMap();
 		map.put("rtnOK", String.valueOf(rtnOK));
 		map.put("rtnUrl", rtnUrl);
