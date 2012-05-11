@@ -58,42 +58,19 @@
 
 <div id="other-pay">
     <h3>您可以使用其他方式付款</h3>
+       
     <ul class="zhifu clearfix">
         <li><input name="paymentSourceCode" type="radio" checked="checked" id="alipay" value="alipay"/> <label for="alipay"><img src="@{'/public/images/pay_icon/zhifubao_pay.jpg'}"/></label></li>
         <li><input name="paymentSourceCode" type="radio" id="tenpay" value="tenpay"/> <label for="tenpay"><img src="@{'/public/images/tenpay/tenpay.png'}"/></label></li>
     </ul>
     <h4>快钱：</h4>
-    <ul class="kuaiqian clearfix">
-        <li><input type="radio" name="paymentSourceCode" id="CMB" value="CMB"/><label for="CMB"><img src="@{'/public/images/bank/bank_cmb.gif'}"/></label></li>
-        <li><input type="radio" name="paymentSourceCode" id="ABC" value="ABC"/><label for="ABC"><img src="@{'/public/images/bank/bank_abc.gif'}"/></label></li>
-        <li><input type="radio" name="paymentSourceCode" id="BCOM" value="BCOM"/><label for="BCOM"><img src="@{'/public/images/bank/bank_bcom.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="BEA" value="BEA"/><label for="BEA"><img src="@{'/public/images/bank/bank_bea.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="BJRCB" value="BJRCB"/><label for="BJRCB"><img src="@{'/public/images/bank/bank_bjrcb.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="BOB" value="BOB"/><label for="BOB"><img src="@{'/public/images/bank/bank_bob.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="BOC" value="BOC"/><label for="BOC"><img src="@{'/public/images/bank/bank_boc.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="CBHB" value="CBHB"/><label for="CBHB"><img src="@{'/public/images/bank/bank_cbhb.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="CCB" value="CCB"/><label for="CCB"><img src="@{'/public/images/bank/bank_ccb.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="CEB" value="CEB"/><label for="CEB"><img src="@{'/public/images/bank/bank_ceb.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="CIB" value="CIB"/><label for="CIB"><img src="@{'/public/images/bank/bank_cib.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="CITIC" value="CITIC"/><label for="CITIC"><img src="@{'/public/images/bank/bank_citic.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="CMBC" value="CMBC"/><label for="CMBC"><img src="@{'/public/images/bank/bank_cmbc.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="CZB" value="CZB"/><label for="CZB"><img src="@{'/public/images/bank/bank_czb.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="GDB" value="GDB"/><label for="GDB"><img src="@{'/public/images/bank/bank_gdb.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="GZCB" value="GZCB"/><label for="GZCB"><img src="@{'/public/images/bank/bank_gzcb.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="GZRCC" value="GZRCC"/><label for="GZRCC"><img src="@{'/public/images/bank/bank_gzrcc.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="HSB" value="HSB"/><label for="HSB"><img src="@{'/public/images/bank/bank_hsb.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="HXB" value="HXB"/><label for="HXB"><img src="@{'/public/images/bank/bank_hxb.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="HZB" value="HZB"/><label for="HZB"><img src="@{'/public/images/bank/bank_hzb.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="ICBC" value="ICBC"/><label for="ICBC"><img src="@{'/public/images/bank/bank_icbc.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="NBCB" value="NBCB"/><label for="NBCB"><img src="@{'/public/images/bank/bank_nbcb.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="NJCB" value="NJCB"/><label for="NJCB"><img src="@{'/public/images/bank/bank_njcb.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="PAB" value="PAB"/><label for="PAB"><img src="@{'/public/images/bank/bank_pab.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="POST" value="POST"/><label for="POST"><img src="@{'/public/images/bank/bank_post.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="SDB" value="SDB"/><label for="SDB"><img src="@{'/public/images/bank/bank_sdb.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="SHB" value="SHB"/><label for="SHB"><img src="@{'/public/images/bank/bank_shb.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="SHRCC" value="SHRCC"/><label for="SHRCC"><img src="@{'/public/images/bank/bank_shrcc.gif'}"/></label></li>
-        <li><input type="radio" name="bank" id="SPDB" value="SPDB"/><label for="SPDB"><img src="@{'/public/images/bank/bank_spdb.gif'}"/></label></li>
-    </ul>
+     <ul class="kuaiqian clearfix">
+      #{list items:paymentSources, as:'payment'}
+      #{if payment.paymentCode =='99bill'}
+          <li><input type="radio" name="paymentSourceCode" id="${payment.code}" value="${payment.code}"/><label for="${payment.code}"><img src="/public/${payment.logo}"/></label></li>
+     #{/if}
+      #{/list}
+     </ul>
     <input type="hidden" value="${order.id}" name="orderId"/>
     <div class="buttom_queren"><a class="suc_ok_bg" href="#" id="confirm" >下一步</a></div>
 </div><!-- #other-pay END-->
