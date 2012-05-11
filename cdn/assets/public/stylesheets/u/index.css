@@ -106,13 +106,13 @@
     font-weight: 700;
 }
 .service-bd .item-1 {
-    background: url(http://img.uhcdn.com/images/u/icon_1.png) no-repeat 0 0;
+    background: url(http://img.uhcdn.com/images/u/icon_1.png) no-repeat 10px 15px;
 }
 .service-bd .item-2 {
-    background: url(http://img.uhcdn.com/images/u/icon_2.png) no-repeat 0 0;
+    background: url(http://img.uhcdn.com/images/u/icon_2.png) no-repeat 10px 15px;
 }
 .service-bd .item-3 {
-    background: url(http://img.uhcdn.com/images/u/icon_3.png) no-repeat 0 0;
+    background: url(http://img.uhcdn.com/images/u/icon_3.png) no-repeat 10px 15px;
 }
 
 /** 网友推荐 **/
@@ -215,6 +215,8 @@
 }
 .tuangou-bd .price {
     float: right;
+    width: 68px;
+    overflow: hidden;
 }
 .tuangou-bd .price span {
     display: block;
