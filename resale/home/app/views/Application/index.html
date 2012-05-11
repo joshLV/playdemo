@@ -1,15 +1,20 @@
-#{extends 'main.html' /}
-#{set 'moreStyles'}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>100券 - 生活消费券分销平台</title>
     #{asset.css src:['/r/base.css', '/r/index.css'] /}
-#{/set}
-
-#{set 'navMenu'}
-    <li><a class="current" href="/">首　页</a></li>
-    <li><a href="/goods">商品库</a></li>
-    <li><a href="/library">我的分销库</a></li>
-    <li><a href="">帮助中心</a></li>
-#{/set}
-
+</head>
+<div id="header" class="index clearfix">
+    <div class="inner">
+        <h1 id="logo"><img src="http://img.uhcdn.com/images/r/logo.png" alt="100券" /></h1>
+        <ul id="menu">
+            <li><a class="current" href="/">首　页</a></li>
+            <li><a href="/goods">商品库</a></li>
+            <li><a href="/library">我的分销</a></li>
+        </ul>
+    </div>
+</div>
 <div id="banner">
     <div class="inner">
         <img src="http://img.uhcdn.com/images/r/banner.png" />
@@ -53,3 +58,8 @@
         </div>
     </div>
 </div>
+<div id="footer">
+    <div class="copyright">版权所有：上海视惠信息科技有限公司 © 2010 - 2012 100QUAN.COM  沪ICP备08114451号</div>
+</div>
+</body>
+</html>

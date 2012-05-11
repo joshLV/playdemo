@@ -73,13 +73,19 @@ mark { background: #ff0; }
 }
 #logo {
     float: left;
-    width: 280px;
-    height: 100px;
+}
+#user {
+    float: left;
+    padding: 15px 0 0 10px;
+    color: #D2D2D2;
+}
+#user a {
+    color: #D2D2D2;
 }
 #menu {
     float: right;
     height: 35px;
-    padding: 65px 0 0 0;
+    padding-top: 14px;
 }
 #menu li {
     float: left;

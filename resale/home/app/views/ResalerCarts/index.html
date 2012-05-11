@@ -1,41 +1,124 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 购物车' /}
 #{set 'moreStyles'}
-<link href="@@{'/public/stylesheets/carts_index.css'}" rel="stylesheet" type="text/css"/>
+    #{asset.css src:['/r/base.css', '/r/carts.css'] /}
 #{/set}
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/bignumber.js'}"></script>
 <script src="@@{'/public/javascripts/carts.js'}"></script>
 #{/set}
 
-<div id="wrap_main">
-    <div id="wrap_top">
-    #{include "share/topNavigator.html"/}
-    </div>
-    <div id="wrap_top_header">
-        <div id="wrap_top_header_left"><img src="@{'/public/images/logo.jpg'}"/></div>
-        <div id="wrap_top_middle">券生活-惠生活</div>
+#{set 'navMenu'}
+    <li><a href="/">首　页</a></li>
+    <li><a class="current" href="/goods">商品库</a></li>
+    <li><a href="/library">我的分销库</a></li>
+    <li><a href="/charge">账户充值</a></li>
+    <li><a href="/withdraw">账户提现</a></li>
+#{/set}
 
-    </div>
-    <div style="clear:both"></div>
-    <div class="fen_g"></div>
-</div>
-<!--主体内容部分-->
-<div id="wrap_content">
-    <div class="div_step_title">
-        <div class="div_step_2">1</div>
-        <div class="div_step_text_2">查看购物车<span class="no_xiuzhen">>></span></div>
-        <div class="div_step_3">2</div>
-        <div class="div_step_text_1">确认订单信息<span>>></span></div>
-        <div class="div_step_3">3</div>
-        <div class="div_step_text_1">确认付款<span>>></span></div>
-        <div class="div_step_text_4">4</div>
-        <div class="div_step_text_1">成功提交订单</div>
+<div id="content">
+    <ol class="buy-step step1 clearfix">
+        <li class="buy-step-curr"><span>1</span>查看订单信息 <em>>></em></li>
+        <li><span>2</span>确认付款 <em>>></em></li>
+        <li><span>3</span>成功提交订单 <em>>></em></li>
+    </ol>
+    <form method="POST" action="/carts/form-add">
+        <div class="select clearfix">
+            <div class="salehub">
+                <h3>从我的分销库选择商品：</h3>
+                <ul>
+                #{list items:favs, as:'favItem'}
+                    <li>
+                        <input type="radio" name="goodsId" value="${favItem.goods.id}" id="goods_${favItem.goods.id}" />
+                        <label for="goods_${favItem.goods.id}">${favItem.goods.name}</label>
+                        <span>${favItem.goods.getResalePrice(resaler.level)}</span>元
+                    </li>
+                #{/list}
+                </ul>
+            </div>
+            <div class="phones">
+                <h3>添加接收手机号码：</h3>
+                <textarea name="phones" cols="20" rows="12"></textarea>
+                <span>
+                    同一个商品，不同的收货人。<br/><br/>
+                    例：13472228877<br/>
+                    　　13477778888<br/>
+                </span>
+            </div>
+        </div>
+        <div class="submit-btn"><button type="submit" id="submit"> 添 加 </button></div>
+    </form>
+
+    <div class="selected">
+        <h3>已选择商品</h3>
+        <table border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE">
+            <thead>
+            <tr bgcolor="F6F6F6">
+                <th width="300"><span class="th_shop_text">商品</span></th>
+                <th width="140">接收手机号</th>
+                <th width="120">类型</th>
+                <th width="110" height="30" bgcolor="F6F6F6">单价（元）</th>
+                <th width="110">数量</th>
+                <th width="120">小计</th>
+                <th width="80">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            #{list items:carts, as:'goodsGroup'}
+            %{index = 0}%
+                #{list items:goodsGroup, as:'cartItem'}
+            <tr id="row_${cartItem.goods.id}">
+                #{if ++index==1}
+                <td rowspan="${goodsGroup.size()}">${cartItem.goods.name}</td>
+                #{/if}
+
+                <td><span id="phone_${cartItem.goods.id}">${cartItem.phone}</span></td>
+                <td>${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
+                <td class="price" id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level)}</td>
+                <td>
+                    <a href="#" class="reduce_box" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
+                        <img src="@{'/public/images/sub_anniu.jpg'}"  id="inc_sub_${cartItem.goods.id}-${cartItem.phone}"/>
+                    </a>
+                    <input class="num-input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}-${cartItem.phone}" />
+                    <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}-${cartItem.phone}"/>
+                    <a class="add_box" href="#" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
+                        <img src="@{'/public/images/add_anniu.jpg'}"  id="inc_add_${cartItem.goods.id}-${cartItem.phone}"/>
+                    </a>
+                </td>
+                <td class="amount">
+                    <span id="subtotal_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level).multiply(cartItem.number)}</span>
+                </td>
+                <td>
+                    <form method="POST" action="/carts/form-delete">
+                        <input name="goodsId" type="hidden" value="${cartItem.goods.id}"/>
+                        <input name="phone" type="hidden" value="${cartItem.phone}"/>
+                        <input type="SUBMIT" value=" 删 除 " id="del_${cartItem.goods.id}-${cartItem.phone}"/>
+                    </form>
+                </td>
+            </tr>
+                #{/list}
+            #{/list}
+
+            #{if carts.size() == 0}
+            <tr>
+                <td colspan="7" style="text-align:center;padding:10px 0">您还没有添加商品哦，再逛逛吧:)</td>
+            </tr>
+            #{/if}
+            </tbody>
+        </table>
     </div>
 
+    <div class="total-box">
+        商品共<span class="total-num" id="total_num">0</span>件，总合计（不含运费）：<span class="carts-amount" id="carts_amount"></span>元
+        <a class="confirm-pay" href="/carts/show"> 下一步 </a>
+    </div>
 </div>
-<div style="clear:both"></div>
-<div id="gouwucar">
+
+
+
+
+
+    *{
     <div >
         <form method="POST" action="/carts/form-add">
             <table>
@@ -97,77 +180,4 @@
             </table>
         </form>
     </div>
-    <div class="block_fense">购物</div>
-
-    <table width="996" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
-
-
-        <tr bgcolor="F6F6F6">
-            <th width="374"><span class="th_shop_text">商品</span></th>
-            <th width="">手机号</th>
-            <th width="120">类型</th>
-            <th width="115" height="30" bgcolor="F6F6F6">单价（元）</th>
-            <th width="83">数量</th>
-            <th width="187">小计</th>
-            <th width="103">操作</th>
-        </tr>
-        #{list items:carts, as:'goodsGroup'}
-        %{index = 0}%
-        #{list items:goodsGroup, as:'cartItem'}
-        <tr id="row_${cartItem.goods.id}">
-            #{if ++index==1}
-            <td height="25" align="center" valign="middle" rowspan="${goodsGroup.size()}">
-                <div class="col_one">
-                </div>
-                <div class="col_one_text">${cartItem.goods.name} &nbsp;&nbsp;| &nbsp;&nbsp; <a href="#" id="batch_del_${cartItem.goods.id}">删除</a>
-                </div>
-            </td>
-            #{/if}
-
-            <td width="103" height="25" align="center" valign="middle">
-                    <span id="phone_${cartItem.goods.id}">${cartItem.phone}</span>
-                </td>
-                <td width="120" height="25" align="center" valign="middle">${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
-                <td width="115" height="25" align="center" valign="middle" id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level)}</td>
-                <td width="83" height="25" align="center" valign="middle">
-                    <a href="#" class="reduce_box" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
-                        <img src="@{'/public/images/sub_anniu.jpg'}"  id="inc_sub_${cartItem.goods.id}-${cartItem.phone}"/>
-                    </a>
-                    <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}-${cartItem.phone}" />
-                    <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}-${cartItem.phone}"/>
-                    <a class="add_box" href="#" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
-                        <img src="@{'/public/images/add_anniu.jpg'}"  id="inc_add_${cartItem.goods.id}-${cartItem.phone}"/>
-                    </a>
-                </td>
-                <td idth="187" height="25" align="center" valign="middle">
-                    <span class="strong_gray" id="subtotal_${cartItem.goods.id}-${cartItem.phone}"> ${cartItem.goods.getResalePrice(resaler.level).multiply(cartItem.number)}</span>
-                </td>
-                <td width="103" height="25" align="center" valign="middle">
-                    <form method="POST" action="/carts/form-delete">
-                        <input name="goodsId" type="hidden" value="${cartItem.goods.id}"/>
-                        <input name="phone" type="hidden" value="${cartItem.phone}"/>
-                        <input type="SUBMIT" value="删除" id="del_${cartItem.goods.id}-${cartItem.phone}"/>
-                    </form>
-                </td>
-            </tr>
-
-            #{/list}
-        #{/list}
-
-        #{if carts.size() == 0}
-            <tr>
-                <td colspan="6" style="text-align:center;padding:10px 0">您还没有添加商品哦，再逛逛吧:)</td>
-            </tr>
-        #{/if}
-
-    </table>
-</div>
-<div id="gouwucar_buttom_info">
-
-    <div class="both_clear"></div>
-    <div class="bottom_info_three">商品共<span class="font_red_one" id="total_num">0</span>件，总合计（不含运费）：<span
-            class="font_red_one" id="carts_amount"></span>元</div>
-    <div class="both_clear"></div>
-    <div class="bottom_info_four"><a class="queren_bg" href="/carts/show">确认结账</a></div>
-    <div class="both_clear"></div>
-</div>
+    }*

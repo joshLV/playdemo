@@ -1,0 +1,151 @@
+.zhu_nav_title {
+    line-height: 36px;
+}
+#content {
+    margin-bottom: 20px;
+}
+.main {
+    border: 1px solid #E4E4E4;
+    background: url(http://img.uhcdn.com/images/r/order-center-bg.gif) repeat-y 0 0;
+}
+.aside {
+    float: left;
+    width: 129px;
+    padding: 10px;
+}
+.aside .menu h3 {
+    font: 16px "Microsoft Yahei";
+    line-height: 32px;
+    border-bottom: 1px solid #E4E4E4;
+}
+.aside .menu ul {
+    padding: 10px 20px;
+}
+.aside .menu li {
+    line-height: 30px;
+}
+.section {
+    float: right;
+    width: 770px;
+    padding-right: 20px;
+}
+.section h3 {
+    margin-bottom: 10px;
+    line-height: 36px;
+    border-bottom: 1px solid #E4E4E4;
+}
+.search-order {
+    padding: 8px 0 18px;
+}
+.search-btn {
+    width: 67px;
+    height: 25px;
+    border: 0;
+    background: url(http://img.uhcdn.com/images/u/u_btn.png) repeat-x 0 0;
+}
+.search-btn:hover {
+    background-position: 0 -26px;
+}
+
+.nav-tabs {
+  *zoom: 1;
+  margin-left: 0;
+  margin-bottom: 18px;
+  list-style: none;
+  border-bottom: 1px solid #ddd;
+}
+.nav-tabs li {
+  float: left;
+  margin-bottom: -1px;
+}
+.nav-tabs:before,
+.nav-tabs:after {
+  display: table;
+  content: "";
+}
+.nav-tabs:after {
+  clear: both;
+}
+.nav-tabs li a {
+  display: block;
+  padding: 3px 18px;
+  margin-right: 2px;
+  line-height: 18px;
+  border: 1px solid transparent;
+  -webkit-border-radius: 4px 4px 0 0;
+  -moz-border-radius: 4px 4px 0 0;
+  border-radius: 4px 4px 0 0;
+}
+.nav-tabs li a:hover {
+  text-decoration: none;
+  background-color: #eeeeee;
+  border-color: #eeeeee #eeeeee #dddddd;
+}
+.nav-tabs .active a,
+.nav-tabs .active a:hover {
+  color: #555555;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  cursor: default;
+}
+
+#stats {
+    margin: 15px 0;
+    line-height: 28px;
+    text-indent: 10px;
+    border: 1px solid #E4E4E4;
+    background-color: #F2F2F2;
+}
+#stats .this-month {
+    border-right: 1px solid #E4E4E4;
+}
+
+.order-tab {
+    margin: 10px 0;
+}
+.order-tab .sep-row {
+    height: 7px;
+}
+.order-tab .col-name {
+    line-height: 38px;
+    background-color: #F7FAFD;
+    border-top: 1px solid #E2E2E2;
+}
+.order-tab .sep-row td {
+    padding: 3px 0;
+    border: 0;
+}
+.order-tab  tbody td {
+    padding: 8px 5px;
+    border: 1px solid #F2F2F2;
+}
+.order-tab .order-hd {
+    background-color: #F2F2F2;
+}
+.order-tab .order-hd td {
+    padding: 2px 5px;
+    line-height: 22px;
+}
+.order-tab .order-bd {
+    text-align: center;
+    border: solid #AADBDB;
+    border-width: 0 1px 1px 1px;
+}
+.order-tab .order-no {
+    padding-left: 10px;
+}
+.order-tab .order-time {
+    padding-left: 20px;
+}
+.order-tab .alileft {
+    text-align: left;
+}
+.order-tab .alileft img {
+    float: left;
+    margin-right: 8px;
+}
+.order-tab .alileft a,
+.order-tab .action a {
+    color: #4991D4;
+}

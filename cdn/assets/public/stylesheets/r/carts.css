@@ -1,0 +1,254 @@
+.buy-step {
+    margin: 40px 0 20px;
+    line-height: 30px;
+}
+.step1 {
+    background: #F4F4F4 url(http://img.uhcdn.com/images/r/carts_step.png) repeat-x 0 0;
+}
+.step2 {
+    background: #F4F4F4 url(http://img.uhcdn.com/images/r/carts_step_2.png) repeat-x 0 0;
+}
+.step3 {
+    background: #F4F4F4 url(http://img.uhcdn.com/images/r/carts_step_3.png) repeat-x 0 0;
+}
+.buy-step li {
+    float: left;
+    width: 310px;
+    padding-left: 10px;
+    font-size: 18px;
+}
+.buy-step em {
+    padding: 0 5px;
+}
+.buy-step-curr {
+    color: #F8F8F8;
+    font-weight: 700;
+}
+.buy-step span {
+    padding: 2px 8px;
+}
+
+.select h3 {
+    font-size: 14px;
+    line-height: 32px;
+}
+.salehub {
+    float: left;
+    width: 445px;
+    padding: 0 10px 10px;
+    background-color: #F2F2F2;
+}
+.salehub ul {
+    height: 210px;
+    padding: 6px 0 0 0;
+    overflow-y: scroll;
+    background-color: #FFF;
+    border: 1px solid #E4E4E4;
+}
+.salehub ul li {
+    padding-left: 10px;
+    line-height: 32px;
+}
+.salehub ul li:hover {
+    background-color: #F6F6F6;
+}
+.salehub ul input {
+    position: relative;
+    top: 2px;
+}
+.salehub ul span {
+    padding-left: 10px;
+    color: #AF2F15;
+}
+.phones {
+    float: right;
+    width: 445px;
+    padding: 0 10px 10px;
+    background-color: #F2F2F2;
+}
+.phones textarea {
+    float: left;
+    width: 230px;
+    border: 1px solid #D2D2D2;
+}
+.phones span {
+    float: left;
+    padding: 0 10px;
+}
+.submit-btn {
+    padding: 20px 0;
+    text-align: center;
+}
+.submit-btn button {
+    padding: 5px 25px;
+}
+.selected h3 {
+    font-size: 14px;
+    line-height: 32px;
+}
+.selected td {
+    text-align: center;
+    line-height: 30px;
+}
+.num-input {
+    width: 30px;
+}
+.selected .price,
+.selected .amount {
+    text-align: right;
+    padding-right: 8px;
+}
+.total-box {
+    padding: 20px 0 30px;
+    text-align: right;
+}
+.confirm-pay {
+    margin: 0 10px;
+    color: #F8F8F8;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 8px 25px;
+    background-color: #AF2F15;
+}
+.total-num,
+.carts-amount {
+    padding: 0 3px;
+    color: #F50;
+    font-weight: 700;
+}
+
+#balance-pay {
+    margin: 0 auto 20px;
+    padding-bottom: 20px;
+    width: 958px;
+    border: 1px solid #D4D4D4;
+}
+#order-box {
+    padding: 5px 20px;
+    font-size: 14px;
+    background-color: #FFFCED;
+    border-bottom: 1px solid #D4D4D4;
+}
+#order-box .order-num {
+    float: left;
+    font-weight: 700;
+    line-height: 32px;
+}
+#order-box .pay-num {
+    float: right;
+    line-height: 28px;
+}
+#order-box .pay-num strong {
+    color: #F50;
+    font-size: 20px;
+}
+#account-box {
+    margin: 10px 20px;
+    padding: 0 60px 10px;
+    font-size: 14px;
+    line-height: 30px;
+    border-bottom: 1px dashed #E4E4E4;
+}
+#account-box .balance span {
+    padding-right: 3px;
+    color: #25B4AB;
+    font-weight: 700;
+}
+#payment {
+    margin: 10px 20px;
+    padding: 0 0 10px 135px;
+}
+#payment input {
+    position: relative;
+    top: 2px;
+}
+#payment span {
+    padding: 0 3px;
+    color: #F50;
+    font-weight: 700;
+}
+#confirm-pay {
+    border: 0;
+    margin-left: 155px;
+    width: 100px;
+    height: 32px;
+    color: #FFF;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    background: url(http://img.uhcdn.com/images/r/pay_btn.png) repeat-x 0 0;
+    cursor: pointer;
+}
+/* 确认付款 {{{ */
+#full_bg {
+    background-color: Gray;
+    display:none;
+    z-index:3;
+    position:absolute;
+    left:0px;
+    top:0px;
+    filter:Alpha(Opacity=30);
+    /* IE */
+    -moz-opacity:0.4;
+    /* Moz + FF */
+    opacity: 0.4;
+}
+
+#payment_result {
+    position:absolute;
+    width:400px;
+    height:100px;
+    background:white;
+    display: none;
+    z-index: 5;
+}
+#other-pay {
+    margin-bottom: 20px;
+    padding:  5px 15px 20px;
+    border: 1px solid #D4D4D4;
+}
+#other-pay h3 {
+    font-size: 14px;
+    line-height: 32px;
+    border-bottom: 1px solid #D4D4D4;
+}
+#other-pay h4 {
+    color: #666;
+    font-size: 14px;
+}
+#other-pay input {
+    margin-right: 5px;
+}
+.zhifu {
+    padding: 30px 20px 40px;
+}
+.zhifu li {
+    float: left;
+    margin-right: 50px;
+}
+.kuaiqian {
+    padding: 20px;
+}
+.kuaiqian li {
+    float: left;
+    margin: 0 30px 25px 0;
+}
+#other-pay #confirm {
+    display: block;
+    margin-left: 20px;
+    width: 100px;
+    height: 32px;
+    line-height: 32px;
+    color: #FFF;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    background: url(http://img.uhcdn.com/images/r/pay_btn.png) repeat-x 0 0;
+    cursor: pointer;
+}
+.pay-success {
+    padding: 50px 30px;
+    color: #227b10;
+    font-size: 14px;
+    font-weight: 700;
+}

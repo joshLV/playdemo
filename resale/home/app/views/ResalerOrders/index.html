@@ -1,29 +1,7 @@
 #{extends 'main.html' /}
 #{set title:'我的商品订购' /}
 #{set 'moreStyles'}
-<link href="@{'/public/assets/css/bootstrap.css'}" rel="stylesheet">
-<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
     #{asset.css src:['/r/base.css', '/r/orders.css', '/r/play-pagination.css'] /}
-<style>
-ul, ol {
-  padding: 0;
-  margin: 0 0 0 0;
-}
-.pagination ul {
-    box-shadow:none;
-}
-.pagination {
-    height:auto
-}
-ul .pagination {
-    margin:auto;
-}
-.left_bottom_nav_bg {
-    background: none no-repeat scroll 0 0 transparent;
-    height: 31px;
-    width: 169px;
-}
-</style>
 #{/set}
 
 #{set 'moreScripts'}
@@ -38,143 +16,149 @@ $(window).load(function () {
 </script>
 #{/set}
 
-<div id="content"></div>
+#{set 'navMenu'}
+    <li><a href="/">首　页</a></li>
+    <li><a class="current" href="/goods">商品库</a></li>
+    <li><a href="/library">我的分销库</a></li>
+    <li><a href="/charge">账户充值</a></li>
+    <li><a href="/withdraw">账户提现</a></li>
+#{/set}
 
+<div id="content">
+    #{breadcrumbs/breadcrumb breadcrumbs/}
+    <div class="main clearfix">
+        #{include "share/left.html"/}
+        <div class="section">
+           <h3>我的商品订单</h3>
+           <form class="search-order" id="orderForm" action="@{ResalerOrders.index()}" method="GET">
+                <span>下单时间：
+                    <input type="text" name="condition.createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
+                    <input type="text" name="condition.createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
+                </span>
+                <span>订单状态：
+                    #{select 'condition.status', id:'condition_status', class:'dingdan_stauts_bg', value:status}
+                        #{option ""}不限#{/option}
+                        #{option "UNPAID"}&{'order.UNPAID'}#{/option}
+                        #{option "PAID"}&{'order.PAID'}#{/option}
+                        #{option "CANCELED"}&{'order.CANCELED'}#{/option}
+                    #{/select}
+                </span>
+                <span>商品名称：
+                    <input type="text" name="condition.goodsName" value="${goodsName}" />
+                </span>
+                <button type="submit" class="search-btn" id="search">搜素</button>
+            </form>
+            #{vx.tab enumItems: models.order.OrderStatus.values(),name:'order',select:'condition_status',value:status,form:'orderForm'/}
 
-<div style="height:200px"></div>
- <div id="wrap_main">
-  <!--    最顶部导航-->
-  <div id="wrap_top">#{include "share/topNavigator.html"/}</div>
-  <div id="wrap_top_header">
-   <div id="wrap_top_header_left">
-    <img src="@{'/public/images/logo.jpg'}" />
-   </div>
-   <div id="wrap_top_middle">券生活-惠生活</div>
-   <div style="clear: both"></div>
-     <div class="nav_hengfu">
-         <ul class="nav_bg_ul">
-             <li class="nav_bg_li"><a class="current_nav_bg_a" href="#">我的优惠啦</a></li>
-             <li class="nav_bg_li"><a class="nav_bg_a nodisplay"  href="#">我的优惠啦</a></li>
-             <li class="nav_bg_li"><a class="nav_bg_a nodisplay"  href="#">我的优惠啦</a></li>
-         </ul>
-     </div>
- </div>
- </div>
- <!--主体内容部分-->
- <div id="wrap_content">
-  #{breadcrumbs/breadcrumb breadcrumbs/}
-  #{include "share/left.html"/}
-  <div id="right_content_box">
-   <div class="tab_top">我的商品订单</div>
-   <div class="tab_top2">
-   <form class="form-horizontal" id="orderForm" action="@{ResalerOrders.index()}" method="GET">
-    <table width="774" border="0" cellpadding="0" cellspacing="0">
-     <tr>
-      <td width="12">&nbsp;</td>
-      <td width="65" align="right">下单时间：</td>
-      <td width="259" height="35">
-        <input class="short_input Wdate" type="text" name="condition.createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
-        <input class="short_input Wdate" type="text" name="condition.createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
-     </td>
-      <td width="77">订单状态：</td>
-      <td width="353">
-       <div class="pos_abs">
-          #{select 'condition.status', id:'condition_status', class:'dingdan_stauts_bg', value:status}
-               #{option ""}不限#{/option}
-               #{option "UNPAID"}&{'order.UNPAID'}#{/option}
-               #{option "PAID"}&{'order.PAID'}#{/option}
-               #{option "CANCELED"}&{'order.CANCELED'}#{/option}
-         #{/select}
-       </div>
-      </td>
-     </tr>
-     <tr>
-      <td>&nbsp;</td>
-      <td align="right">商品名称：</td>
-      <td height="35"><label> <input class="long_input" type="text" name="condition.goodsName" value="${goodsName}"/>
-      </label></td>
-      <td colspan="2" align="left" valign="middle"><a class="seach_bg" href="#" id="search">搜素</a></td>
-     </tr>
-    </table>
-    #{vx.tab enumItems: models.order.OrderStatus.values(),name:'order',select:'condition_status',value:status,form:'orderForm'/}
-    </form>
-    <div class="tab_top">统计金额</div>
-     <div class="caozuo_std">本月订单共${totalMap.thisMonthTotal}笔共${totalMap.thisMonthTotalAmount}元
-     （交易成功${totalMap.thisPaidTotal}笔/${totalMap.thisMonthPaidAmount}元，
-     进行中${totalMap.thisUnPaidTotal}笔/${totalMap.thisMonthUnPaidAmount}元）</div>
-     <div class="caozuo_std">上月订单共${totalMap.lastMonthTotal}笔共${totalMap.lastMonthTotalAmount}元
-     （交易成功${totalMap.lastPaidTotal}笔/${totalMap.lastMonthPaidAmount}元，
-     进行中${totalMap.lastUnPaidTotal}笔/${totalMap.lastMonthUnPaidAmount}元）</div>
-    <table width="798" border="0" cellpadding="0" cellspacing="0" bgcolor="#F6F6F6">
-     <tr>
-      <td width="340" align="center"><span class="font_strong">商品名称</span></td>
-      <td width="100" align="center"><span class="font_strong">收货手机</span></td>
-      <td width="80" align="center"><span class="font_strong">分销价（元）</span></td>
-      <td width="78" align="center"><span class="font_strong">数量</span></td>
-      <td width="88" height="30" align="center"><span class="font_strong">实付款（元）</span></td>
-      <td width="85" align="center" bgcolor="#F6F6F6"><span class="font_strong">订单状态</span></td>
-      <td width="80" align="center"><span class="font_strong">操作</span></td>
-     </tr>
-    </table>
-   #{paginate.list items:orderList, as:'row'}
-    <div class="tab_top_info">
-     <span class="tab_one">订单号：${row.orderNumber}</span><span class="tab_two">成交时间：${row.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
-    </div>
-    <table width="798" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="hsides">
-     #{set m=0/}
-    #{list row.orderItems, as:'rowItem'}
-     <tr>
-      <td width="340" height="80" align="left">
-       <div class="left_shangpin">
-        <img src="${rowItem.goods.imageTinyPath}"/>
-       </div>
-       <div class="right_shangpin">
-        ${rowItem.goods.name}
-       </div>
-      </td>
-      <td width="100" align="center">${rowItem?.phone}</td>
-      <td width="80" align="center">${rowItem?.resalerPrice?.formatCurrency('CNY').raw()}</td>
-      <td width="78" align="center" >${rowItem?.buyNumber}</td>
-        #{if (++m == 1) }
-      <td width="88"align="center" rowspan="${row.orderItems.size()}">${row.amount?.formatCurrency('CNY').raw()}</td>
-      <td width="85" align="center" rowspan="${row.orderItems.size()}">
-        &{'order.'+row.status}
-      </td>
-      <td width="80" align="center" rowspan="${row.orderItems.size()}">
-       #{if (row.status == models.order.OrderStatus.UNPAID)}
-       <div class="caozuo_std">
-        <a class="font_red_one" href="@{ResalerOrders.pay(row.id)}">付款</a>
-       </div>
-       #{/if}
-     *{ #{if (row.status == models.order.OrderStatus.PAID) && rowItem.goods.materialType.toString().equals('REAL')}
-     <div class="caozuo_std">
-        <a class="font_red_one" href="/orders/refund/${row.id}"  id="apply_${row.id}">申请退款</a>
-       </div>
-      #{/if}
-      }*
+            <div id="stats" class="clearfix">
+                <div class="this-month">
+                    本月订单： 共${totalMap.thisMonthTotal}笔， 共${totalMap.thisMonthTotalAmount}元
+                    （交易成功${totalMap.thisPaidTotal}笔/${totalMap.thisMonthPaidAmount}元，
+                    进行中${totalMap.thisUnPaidTotal}笔/${totalMap.thisMonthUnPaidAmount}元）
+                </div>
+                <div class="last-month">
+                    上月订单： 共${totalMap.lastMonthTotal}笔， 共${totalMap.lastMonthTotalAmount}元
+                    （交易成功${totalMap.lastPaidTotal}笔/${totalMap.lastMonthPaidAmount}元，
+                    进行中${totalMap.lastUnPaidTotal}笔/${totalMap.lastMonthUnPaidAmount}元）
+                </div>
+            </div>
 
-      #{if row.status == models.order.OrderStatus.PAID}
-        <div class="caozuo_std">
-            <a class="font_blue" href="@{ResalerOrders.show(row.id)}">查看详情</a>
-        </div>
-       #{/if}
-          #{if (row.status != models.order.OrderStatus.PAID)}
-       <div class="caozuo_std">
-        <a href="#">取消</a>
-       </div>
-        #{/if}
-      </td>
-       #{/if}
-     </tr>
-      #{/list}
-    </table>
-  #{/paginate.list}
-   <div class="pagination">
-     <ul>
-    #{paginate.controls items:orderList /}
-    </ul>
-  </div>
+            <table class="order-tab" cellpadding="0" cellspacing="0">
+                <thead>
+                <tr class="col-name">
+                    <th width="340">商品名称</th>
+                    <th width="80">收货手机</th>
+                    <th width="60">分销价</th>
+                    <th width="60">数量</th>
+                    <th width="60">实付款</th>
+                    <th width="80">订单状态</th>
+                    <th width="80">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+            #{paginate.list items:orderList, as:'row'}
+            #{set m=0/}
+            #{list row.orderItems, as:'rowItem'}
+                <tr class="sep-row">
+                    <td colspan="6"></td>
+                </tr>
+                <tr class="order-hd">
+                    <td colspan="7">
+                        <span class="order-no">订单号：${row.orderNumber}</span>
+                        <span class="order-time">成交时间：${row.createdAt==null ? '':row.createdAt.format("yyyy-MM-dd HH:mm:ss")}</span>
+                    </td>
+                </tr>
+                <tr class="order-bd">
+                    <td class="alileft">
+                        <img src="${rowItem.goods.imageTinyPath}" />
+                        <a href="">${rowItem.goods.name}</a>
+                    </td>
+                    <td>${rowItem?.phone}</td>
+                    <td>${rowItem?.resalerPrice?.formatCurrency('CNY').raw()}</td>
+                    <td>${rowItem?.buyNumber}</td>
+                    #{if (++m == 1) }
+                    <td rowspan="${row.orderItems.size()}">${row.amount?.formatCurrency('CNY').raw()}</td>
+                    <td rowspan="${row.orderItems.size()}">&{'order.'+row.status}</td>
+                    <td class="action" rowspan="${row.orderItems.size()}">
+                        #{if (row.status == models.order.OrderStatus.UNPAID)}
+                        <div><a href="@{ResalerOrders.pay(row.id)}">付款</a></div>
+                        #{/if}
 
- </div>
- </div>
- </div>
+                        #{if row.status == models.order.OrderStatus.PAID}
+                        <div><a href="@{ResalerOrders.show(row.id)}">查看详情</a></div>
+                        #{/if}
+
+                        #{if (row.status != models.order.OrderStatus.PAID)}
+                        <div><a href="#">取消</a></div>
+                        #{/if}
+                    </td>
+                    #{/if}
+                </tr>
+            #{/list}
+            #{/paginate.list}
+                </tbody>
+            </table>
+            *{
+            #{paginate.list items:orderList, as:'row'}
+            <table width="798" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="hsides">
+            #{set m=0/}
+            #{list row.orderItems, as:'rowItem'}
+                <tr>
+                    <td width="340" height="80" align="left">
+                        <div class="left_shangpin"><img src="${rowItem.goods.imageTinyPath}"/></div>
+                        <div class="right_shangpin">${rowItem.goods.name}</div>
+                    </td>
+                    <td width="100" align="center">${rowItem?.phone}</td>
+                    <td width="80" align="center">${rowItem?.resalerPrice?.formatCurrency('CNY').raw()}</td>
+                    <td width="78" align="center" >${rowItem?.buyNumber}</td>
+                    #{if (++m == 1) }
+                    <td width="88"align="center" rowspan="${row.orderItems.size()}">${row.amount?.formatCurrency('CNY').raw()}</td>
+                    <td width="85" align="center" rowspan="${row.orderItems.size()}">&{'order.'+row.status}</td>
+                    <td width="80" align="center" rowspan="${row.orderItems.size()}">
+                        #{if (row.status == models.order.OrderStatus.UNPAID)}
+                        <div class="caozuo_std"><a class="font_red_one" href="@{ResalerOrders.pay(row.id)}">付款</a></div>
+                        #{/if}
+
+                        #{if row.status == models.order.OrderStatus.PAID}
+                        <div class="caozuo_std"><a class="font_blue" href="@{ResalerOrders.show(row.id)}">查看详情</a></div>
+                        #{/if}
+                        #{if (row.status != models.order.OrderStatus.PAID)}
+                        <div class="caozuo_std"><a href="#">取消</a></div>
+                        #{/if}
+                    </td>
+                    #{/if}
+                </tr>
+            #{/list}
+            </table>
+            #{/paginate.list}
+            }*
+
+            <div class="pagination">
+                <ul>
+                    #{paginate.controls items:orderList /}
+                </ul>
+            </div>
+
+        </div><!-- .section END -->
+    </div><!-- .main END -->
+</div>
