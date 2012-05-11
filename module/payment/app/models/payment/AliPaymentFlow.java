@@ -8,10 +8,7 @@ import java.util.Map;
 import models.accounts.PaymentCallbackLog;
 import models.accounts.TradeBill;
 import models.accounts.util.TradeUtil;
-import models.order.ChargeOrder;
-import models.order.ChargeOrderStatus;
-import models.order.Order;
-import models.order.OrderStatus;
+import models.order.*;
 import play.Logger;
 import thirdpart.alipay.services.AlipayService;
 import thirdpart.alipay.util.AlipayNotify;
@@ -22,13 +19,6 @@ import thirdpart.alipay.util.AlipayNotify;
  */
 public class AliPaymentFlow implements PaymentFlow{
     
-    public String generateChargeForm(ChargeOrder chargeOrder){
-        String out_trade_no = chargeOrder.serialNumber;
-        String subject = "优惠啦充值" + chargeOrder.chargeAmount + "元";
-        String total_fee = chargeOrder.chargeAmount.toString();
-        return generateFormBase(out_trade_no, subject, total_fee);
-    }
-    
     public String generateForm(Order order){
         //必填参数//
 
@@ -37,7 +27,9 @@ public class AliPaymentFlow implements PaymentFlow{
         //订单名称，显示在支付宝收银台里的“商品名称”里，显示在支付宝的交易管理的
         //“商品名称”的列表里。
         String subject = null;
-        if(order.orderItems.size() == 1){
+        if(order.orderType == OrderType.CHARGE){
+            subject = "优惠啦充值" + order.amount + "元";
+        }else if(order.orderItems.size() == 1){
             subject = order.orderItems.get(0).goodsName ;
         }else if(order.orderItems.size() > 1){
             subject = order.orderItems.get(0).goodsName + "等商品";
