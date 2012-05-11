@@ -140,7 +140,7 @@ public class Orders extends Controller {
         }
 
         //创建订单
-        Order order = new Order(user.getId(), AccountType.CONSUMER);
+        Order order = Order.createConsumeOrder(user.getId(), AccountType.CONSUMER);
         if (defaultAddress != null) {
             order.setAddress(defaultAddress);
         }

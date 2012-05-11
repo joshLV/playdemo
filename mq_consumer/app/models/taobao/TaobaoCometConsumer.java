@@ -148,7 +148,7 @@ public class TaobaoCometConsumer extends RabbitMQConsumer<TaobaoCometMessage>{
 
         // 遍历所有的子订单(也就是我们所谓的orderItem),生成我们的订单
         List<Order> taobaoOrders = taobaoOrder.getTrade().getOrders();
-        models.order.Order order = new models.order.Order(userId, AccountType.RESALER);
+        models.order.Order order = models.order.Order.createConsumeOrder(userId, AccountType.RESALER);
         for(Order tOrder: taobaoOrders){
             ResalerFav resalerFav = ResalerFav.find("byTaobaoItemId", tOrder.getIid()).first();
             if(resalerFav == null){

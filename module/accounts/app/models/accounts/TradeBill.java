@@ -51,7 +51,7 @@ public class TradeBill extends Model {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_type")
-    public TradeType tradeType;         //交易类型
+    public TradeType tradeType;             //交易类型
 
     @Column(name = "return_code")
     public String returnCode;               //返回码

@@ -104,7 +104,7 @@ public class OrderUnitTest extends UnitTest {
             Goods oldGoods = Goods.findById(goodsId);
             int baseSale = oldGoods.baseSale.intValue();
             int saleCount = oldGoods.saleCount;
-            Order order = new Order(userId, AccountType.CONSUMER);
+            Order order = Order.createConsumeOrder(userId, AccountType.CONSUMER);
             order.addOrderItem((Goods) Goods.findById(goodsId), 20L, mobile, oldGoods.salePrice, resalePrice);
             order.createAndUpdateInventory();
 

@@ -19,7 +19,7 @@ public class Charge extends Controller{
     }
     public static void create(BigDecimal amount){
         Resaler resaler = SecureCAS.getResaler();
-        if(amount.compareTo(BigDecimal.ZERO) <= 0){
+        if(amount.compareTo(BigDecimal.ONE) <= 0){
             error("invalid charge amount");
         }
         ChargeOrder chargeOrder= new ChargeOrder(resaler.getId(), AccountType.RESALER, amount);

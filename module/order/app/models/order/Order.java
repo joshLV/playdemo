@@ -22,18 +22,7 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,6 +42,14 @@ public class Order extends Model {
 	@Column(name = "user_type")
 	public AccountType userType;            //用户类型，个人/分销商
 
+    @Column(name = "receiver_account")
+    @Basic(fetch = FetchType.LAZY)
+    public Account receiverAccount; //收款方账户,普通消费订单的收款账户为平台账户,充值订单的收款账户为特定账户
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "orderType")
+    public OrderType orderType;
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
 	@OrderBy("id")
 	public List<OrderItems> orderItems;
@@ -66,16 +63,16 @@ public class Order extends Model {
 	@Enumerated(EnumType.STRING)
 	public OrderStatus status;
 
-	public BigDecimal amount;
+	public BigDecimal amount;       //订单总金额
 
 	@Column(name = "account_pay")
-	public BigDecimal accountPay;
+	public BigDecimal accountPay;   //使用余额付款金额
 
 	@Column(name = "discount_pay")
-	public BigDecimal discountPay;
+	public BigDecimal discountPay;  //使用网银付款金额
 
 	@Column(name = "need_pay")
-	public BigDecimal needPay;
+	public BigDecimal needPay;      //订单应付金额
 
 	@Column(name = "buyer_phone")
 	public String buyerPhone;
@@ -145,7 +142,7 @@ public class Order extends Model {
 	public Order() {
 	}
 
-	public Order(long userId, AccountType userType) {
+	private Order(long userId, AccountType userType) {
 		this.userId = userId;
 		this.userType = userType;
 
@@ -155,8 +152,8 @@ public class Order extends Model {
 		this.orderItems = new ArrayList<>();
 		this.paidAt = null;
 		this.amount = BigDecimal.ZERO;
+        this.needPay = BigDecimal.ZERO;
 		this.accountPay = BigDecimal.ZERO;
-		this.needPay = BigDecimal.ZERO;
 		this.discountPay = BigDecimal.ZERO;
 
 		this.lockVersion = 0;
@@ -164,6 +161,35 @@ public class Order extends Model {
 		this.createdAt = new Date();
 		this.updatedAt = new Date();
 	}
+
+    /**
+     * 创建普通消费订单.
+     *
+     * @param userId    付款用户ID
+     * @param accountType 付款用户账户类型
+     * @return 消费订单
+     */
+    public static Order createConsumeOrder(long userId, AccountType accountType){
+        Order order = new Order(userId, accountType);
+        order.orderType = OrderType.CONSUME;
+        order.receiverAccount = AccountUtil.getPlatformIncomingAccount();
+        return order;
+    }
+
+    /**
+     * 创建充值订单.
+     *
+     * @param payerUserId 付款用户ID.
+     * @param payerAccountType 付款用户类型.
+     * @param receiverAccount 收款账户.
+     * @return 充值订单
+     */
+    public static Order createChargeOrder(long payerUserId, AccountType payerAccountType, Account receiverAccount){
+        Order order = new Order(payerUserId, payerAccountType);
+        order.orderType = OrderType.CHARGE;
+        order.receiverAccount = receiverAccount;
+        return order;
+    }
 
 	/**
 	 * 设置订单地址

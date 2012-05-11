@@ -216,7 +216,7 @@ public class TradeUtil {
     public static TradeBill success(TradeBill tradeBill) {
         tradeBill.tradeStatus = TradeStatus.SUCCESS;
 
-        //余额不足以支付订单中指定的使用余额付款的金额
+        //余额不足以支付订单中指定的使用余额付款的金额,并且银行付款的金额大于零
         //则将充值的钱打入发起人账户里
         if (tradeBill.fromAccount.amount.compareTo(tradeBill.balancePaymentAmount) < 0) {
             if (tradeBill.ebankPaymentAmount.compareTo(BigDecimal.ZERO) >= 0) {

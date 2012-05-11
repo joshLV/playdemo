@@ -54,7 +54,7 @@ public class ResalerCarts extends Controller {
             return;
         }
 
-        Order order = new Order(resaler.getId(), AccountType.RESALER);
+        Order order = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         for(Object[] fav : favs){
             Goods goods = (Goods)fav[0];
             int number = (Integer)fav[1];

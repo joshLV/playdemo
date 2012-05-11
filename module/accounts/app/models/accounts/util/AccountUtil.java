@@ -108,6 +108,7 @@ public class AccountUtil {
                 cashAmount,                                         //可提现金额
                 uncashAmount,                                       //不可提现金额
                 billId);                                            //相关流水号
+        accountSequence.remark = note;
         accountSequence.save();                                     //保存账户变动信息
 
         //保存凭证明细
