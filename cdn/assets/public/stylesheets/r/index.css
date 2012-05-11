@@ -3,10 +3,12 @@
 }
 
 #banner {
-    background-color: #FCC3B7;
+    background: url(http://img.uhcdn.com/images/r/banner-bg.png) repeat 0 0;
 }
 #banner .inner {
+    height: 300px;
     font-size: 0;
+    background: url(http://img.uhcdn.com/images/r/banner.png) no-repeat center 0;
 }
 #content {
     padding: 15px 0;

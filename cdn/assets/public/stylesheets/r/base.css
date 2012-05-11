@@ -67,7 +67,7 @@ mark { background: #ff0; }
 #header {
     background-color: #AF2F15;
 }
-.inner {
+#header .inner {
     width: 960px;
     margin: 0 auto;
 }
