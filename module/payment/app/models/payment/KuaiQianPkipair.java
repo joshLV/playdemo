@@ -11,10 +11,12 @@ import java.security.Signature;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
+import play.Play;
+
 
 public class KuaiQianPkipair {
-	
-	
+
+
 	public  String signMsg( String signMsg) {
 
 		String base64 = "";
@@ -23,7 +25,8 @@ public class KuaiQianPkipair {
 			KeyStore ks = KeyStore.getInstance("PKCS12");
 
 			// 读取密钥仓库（相对路径）
-			FileInputStream ksfis = new FileInputStream("/opt/99bill/tester-rsa.pfx");
+			String path = Play.configuration.getProperty("99bill.privateKey","/opt/99bill/tester-rsa.pfx");
+			FileInputStream ksfis = new FileInputStream(path);
 			BufferedInputStream ksbufin = new BufferedInputStream(ksfis);
 
 			char[] keyPwd = "yu@uhuila.seewi".toCharArray();
@@ -35,7 +38,7 @@ public class KuaiQianPkipair {
 			signature.update(signMsg.getBytes("utf-8"));
 			sun.misc.BASE64Encoder encoder = new sun.misc.BASE64Encoder();
 			base64 = encoder.encode(signature.sign());
-			
+
 		} catch(FileNotFoundException e){
 			System.out.println("文件找不到");
 		}catch (Exception ex) {
@@ -46,7 +49,9 @@ public class KuaiQianPkipair {
 	public  boolean enCodeByCer( String val, String msg) {
 		boolean flag = false;
 		try {
-			InputStream inStream = new FileInputStream("/opt/99bill/99bill.cert.rsa.20140728.cer");
+			String path = Play.configuration.getProperty("99bill.publickey","/opt/99bill/99bill.cert.rsa.20140728.cer");
+
+			InputStream inStream = new FileInputStream(path);
 			CertificateFactory cf = CertificateFactory.getInstance("X.509");
 			X509Certificate cert = (X509Certificate) cf.generateCertificate(inStream);
 			//获得公钥
