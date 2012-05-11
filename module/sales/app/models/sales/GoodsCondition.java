@@ -39,6 +39,8 @@ public class GoodsCondition {
     public Integer saleCountEnd;
     public MaterialType materialType;
     public GoodsStatus status;
+    public long baseSaleBegin;
+    public long baseSaleEnd;
 
     private Map<String, Object> paramMap = new HashMap<>();
 
@@ -98,8 +100,6 @@ public class GoodsCondition {
         if (args.length > 9) {
             materialType = StringUtils.isBlank(args[9]) ? MaterialType.ELECTRONIC :
                     MaterialType.values()[Integer.parseInt(args[9])];
-
-            System.out.println("materialType:" + materialType);
         }
     }
 

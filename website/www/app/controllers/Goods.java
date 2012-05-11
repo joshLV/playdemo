@@ -13,6 +13,7 @@ import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.With;
 
 import java.math.BigDecimal;
@@ -54,6 +55,7 @@ public class Goods extends Controller {
 
         GoodsCondition goodsCond = new GoodsCondition();
         goodsCond.status = GoodsStatus.ONSALE;
+        goodsCond.baseSaleBegin = 0;
         ValuePaginator<models.sales.Goods> goodsPage = new ValuePaginator<>(goodsList);
         goodsPage.setPageNumber(pageNumber);
         goodsPage.setPageSize(PAGE_SIZE);
@@ -66,8 +68,11 @@ public class Goods extends Controller {
 
     public static void preview(String uuid, boolean isSupplier) {
         models.sales.Goods goods = models.sales.Goods.getPreviewGoods(uuid);
+        if (goods == null) {
+            error(404, "没有找到该商品！");
+        }
         showGoods(goods);
-        render(isSupplier);
+        render("Goods/show.html", isSupplier);
     }
 
     private static void showGoods(models.sales.Goods goods) {
@@ -100,10 +105,27 @@ public class Goods extends Controller {
         if (goods == null) {
             error(404, "没有找到该商品！");
         }
-
+        //增加商品推荐指数
         models.sales.Goods.addRecommend(goods, false);
 
+        //记录用户浏览过的商品
+        Http.Cookie cookie = request.cookies.get("saw_goods_ids");
+        String sawGoodsIds = ",";
+        if (cookie != null) {
+            if (!cookie.value.contains("," + id + ",")) {
+                sawGoodsIds = "," + id + cookie.value;
+                if (sawGoodsIds.length() > 100){
+                    sawGoodsIds = sawGoodsIds.substring(0, 100);
+                }
+            }else{
+                sawGoodsIds = cookie.value;
+            }
+        }
+
+        response.setCookie("saw_goods_ids", sawGoodsIds);
+
         showGoods(goods);
+
 
         render();
     }

@@ -182,11 +182,6 @@ public class OperateGoods extends Controller {
 
         goods.setLevelPrices(levelPrices);
 
-        //预览
-        if (GoodsStatus.UNCREATED.equals(goods.status)) {
-            preview(null, goods, imagePath);
-        }
-
         checkExpireAt(goods);
         checkSalePrice(goods);
         checkLevelPrice(levelPrices);
@@ -196,6 +191,10 @@ public class OperateGoods extends Controller {
             renderShopList(goods.supplierId);
             renderInit(goods);
             render("OperateGoods/add.html");
+        }
+        //预览
+        if (GoodsStatus.UNCREATED.equals(goods.status)) {
+            preview(null, goods, imagePath);
         }
 
         //添加商品处理

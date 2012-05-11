@@ -4,12 +4,14 @@ import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import models.consumer.User;
 import models.order.Cart;
+import org.apache.commons.lang.StringUtils;
 import play.data.binding.As;
 import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +33,20 @@ public class Carts extends Controller {
         String cookieValue = cookie == null ? null : cookie.value;
 
         List<Cart> carts = Cart.findAll(user, cookieValue);
-        render(carts);
+
+
+        //显示最近浏览过的商品
+        cookie = request.cookies.get("saw_goods_ids");
+        String sawGoodsIds = cookie == null ? "" : cookie.value;
+        List<Long> goodsIds = new ArrayList<>();
+        for (String goodsId : sawGoodsIds.split(",")) {
+            if (StringUtils.isNotEmpty(goodsId) && goodsIds.size() < 5) {
+                goodsIds.add(new Long(goodsId));
+            }
+        }
+        List<models.sales.Goods> sawGoodsList = goodsIds.size() > 0 ? models.sales.Goods.findInIdList(goodsIds) : new ArrayList<models.sales.Goods>();
+
+        render(carts, sawGoodsList);
     }
 
     /**
