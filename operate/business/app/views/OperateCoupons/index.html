@@ -29,7 +29,7 @@
     <tr>
     <td>${coupon?.getMaskedEcouponSn()}</td>
     <td>${coupon?.order.orderNumber}</td>
-     <td>${coupon?.goods?.name}</td>
+     <td><img src="${coupon?.goods?.imageTinyPath}"/>${coupon?.goods?.name}</td>
      <td>${coupon?.salePrice}</td>
      <td>${coupon?.goods.effectiveAt ?.format()}/
          ${coupon?.goods.expireAt ?.format()}</td>

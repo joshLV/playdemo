@@ -7,7 +7,7 @@ sales.Goods(Goods1):
  supplierId: 1
  imagePath: /0/0/114/origin.jpg
  expiredBeginOn: 2012-02-28
- expiredEndOn: 2012-02-29
+ expiredEndOn: 2092-02-29
  originalPrice: 100
  salePrice: 10
  prompt: test
@@ -28,7 +28,7 @@ sales.Goods(Goods2):
  supplierId: 1
  imagePath: /0/0/112/origin.jpg
  expiredBeginOn: 2012-02-28
- expiredEndOn: 2012-02-29
+ expiredEndOn: 2092-02-29
  originalPrice: 100
  salePrice: 10
  prompt: test1

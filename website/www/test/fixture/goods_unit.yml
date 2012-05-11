@@ -37,12 +37,15 @@ sales.Goods(Goods_002):
  "baseSale": "10"
  "status": "ONSALE"
  "createdAt": "2012-02-28T14:41:33"
+ "effectiveAt": "2012-02-28T14:41:33"
+ "expireAt": "2092-02-28T14:41:33"
  "createdBy": "yanjy"
  "deleted": "UN_DELETED"
  "lockVersion": "1"
  "saleCountBegin": "0"
  "saleCountEnd": "0"
  "materialType": "ELECTRONIC"
+ "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_1]
 
