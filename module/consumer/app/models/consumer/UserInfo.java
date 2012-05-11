@@ -39,7 +39,7 @@ public class UserInfo extends Model {
 
 	/*婚姻状况*/
 	@Column(name = "marry_state")
-	public int marryState;
+	public Integer marryState;
 	/*职位*/
 	public String position;
 	/*qq*/
