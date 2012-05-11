@@ -42,11 +42,6 @@ public class Order extends Model {
 	@Column(name = "user_type")
 	public AccountType userType;            //用户类型，个人/分销商
 
-    @Basic(fetch = FetchType.LAZY)
-    @ManyToOne
-    @JoinColumn(name = "receiver_account")
-    public Account receiverAccount; //收款方账户,普通消费订单的收款账户为平台账户,充值订单的收款账户为特定账户
-
     @Enumerated(EnumType.STRING)
     @Column(name = "orderType")
     public OrderType orderType;
@@ -173,7 +168,6 @@ public class Order extends Model {
     public static Order createConsumeOrder(long userId, AccountType accountType){
         Order order = new Order(userId, accountType);
         order.orderType = OrderType.CONSUME;
-        order.receiverAccount = AccountUtil.getPlatformIncomingAccount();
         return order;
     }
 
@@ -182,13 +176,11 @@ public class Order extends Model {
      *
      * @param payerUserId 付款用户ID.
      * @param payerAccountType 付款用户类型.
-     * @param receiverAccount 收款账户.
      * @return 充值订单
      */
-    public static Order createChargeOrder(long payerUserId, AccountType payerAccountType, Account receiverAccount){
+    public static Order createChargeOrder(long payerUserId, AccountType payerAccountType){
         Order order = new Order(payerUserId, payerAccountType);
         order.orderType = OrderType.CHARGE;
-        order.receiverAccount = receiverAccount;
         return order;
     }
 
@@ -338,24 +330,26 @@ public class Order extends Model {
         Account account = AccountUtil.getAccount(this.userId, this.userType);
         PaymentSource paymentSource = PaymentSource.find("byCode", this.payMethod).first();
 
-        //补一个充值,即将用户银行支付的钱打到自己账户上
-        if(this.discountPay.compareTo(BigDecimal.ZERO) > 0){
+        //先将用户银行支付的钱充值到自己账户上
+        if(this.discountPay.compareTo(BigDecimal.ZERO) > 0 ){
             TradeBill chargeTradeBill = TradeUtil.createChargeTrade(account, this.discountPay, paymentSource);
             TradeUtil.success(chargeTradeBill);
             JPAPlugin.closeTx(false);
             JPAPlugin.startTx(true);
+            this.payRequestId = chargeTradeBill.getId();
         }
 
-        //然后再支付此次订单
-        TradeBill tradeBill = TradeUtil.createOrderTrade(
-                account,
-                this.accountPay,
-                this.discountPay,
-                paymentSource,
-                this.getId());
-        TradeUtil.success(tradeBill);
-
-        this.payRequestId = tradeBill.getId();
+        //如果订单类型不是充值,那接着再支付此次订单
+        if(this.orderType != OrderType.CHARGE){
+            TradeBill tradeBill = TradeUtil.createOrderTrade(
+                    account,
+                    this.accountPay,
+                    this.discountPay,
+                    paymentSource,
+                    this.getId());
+            TradeUtil.success(tradeBill);
+            this.payRequestId = tradeBill.getId();
+        }
         this.save();
 
         //发送电子券

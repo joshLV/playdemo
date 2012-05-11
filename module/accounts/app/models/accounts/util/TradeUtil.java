@@ -217,13 +217,16 @@ public class TradeUtil {
     public static boolean success(TradeBill tradeBill) {
 
         try {
-            AccountUtil.addBalance(
-                    tradeBill.fromAccount.getId(),
-                    tradeBill.balancePaymentAmount.add(tradeBill.ebankPaymentAmount).negate(),
-                    BigDecimal.ZERO,
-                    tradeBill.getId(),
-                    AccountSequenceType.PAY,
-                    "支付");
+            //如果不是充值,则首先支付此笔订单
+            if(tradeBill.tradeType != TradeType.CHARGE){
+                AccountUtil.addBalance(
+                        tradeBill.fromAccount.getId(),
+                        tradeBill.balancePaymentAmount.add(tradeBill.ebankPaymentAmount).negate(),
+                        BigDecimal.ZERO,
+                        tradeBill.getId(),
+                        AccountSequenceType.PAY,
+                        "支付");
+            }
             AccountUtil.addBalance(
                     tradeBill.toAccount.getId(),
                     tradeBill.ebankPaymentAmount.add(tradeBill.balancePaymentAmount),

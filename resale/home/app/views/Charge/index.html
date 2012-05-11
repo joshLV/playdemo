@@ -21,5 +21,6 @@
     #{form @create()}
         充值金额：<input name = "amount" type = "text"/><br/>
         <input type="submit" value = "充值"/>
+        <span class="error">#{error 'charge.amount'/}</span>
     #{/form}
 </div>

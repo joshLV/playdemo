@@ -2,12 +2,16 @@ package controllers;
 
 import java.math.BigDecimal;
 
+import models.accounts.Account;
 import models.accounts.AccountType;
+import models.accounts.util.AccountUtil;
 import models.order.ChargeOrder;
+import models.order.Order;
 import models.resale.Resaler;
 
 import controllers.modules.resale.cas.SecureCAS;
 
+import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -19,12 +23,17 @@ public class Charge extends Controller{
     }
     public static void create(BigDecimal amount){
         Resaler resaler = SecureCAS.getResaler();
-        if(amount.compareTo(BigDecimal.ONE) <= 0){
-            error("invalid charge amount");
+        if(amount == null || amount.compareTo(BigDecimal.ONE) < 0){
+            Validation.addError("charge.amount", "最少充值1.00元!");
+            Validation.keep();
+            index();
         }
-        ChargeOrder chargeOrder= new ChargeOrder(resaler.getId(), AccountType.RESALER, amount);
-        chargeOrder.save();
-        redirect("/charge_payment_info/" + chargeOrder.getId());
+
+        Order order = Order.createChargeOrder(resaler.getId(), AccountType.RESALER );
+        order.amount = amount;
+        order.needPay = amount;
+        order.save();
+        redirect("/payment_info/" + order.getId());
     }
 
 }

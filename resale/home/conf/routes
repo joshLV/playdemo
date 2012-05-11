@@ -25,8 +25,6 @@ GET     /payment_info/{id}                      PaymentInfo.index
 
 # 充值
 GET     /charge                                 Charge.index
-POST    /charge_payment_info/confirm            ChargePaymentInfo.confirm
-GET     /charge_payment_info/{id}               ChargePaymentInfo.index
 
 # 提现
 #*       /withdraw                               module:crud
