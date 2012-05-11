@@ -47,30 +47,31 @@
                     <tr class="col-name">
                         <th width="340">商品</th>
                         <th width="100">单价（元）</th>
-                        <th width="78">数量</th>
+                        <th width="28">数量</th>
+                        <th width="78">售后</th>
                         <th width="108">实付款（元）</th>
                         <th width="85">
                             <div class="pos_abs">
                             #{select 'condition.status', id:'status', class:'dingdan_stauts_bg', value:condition.status}
-                                #{option ""}订单状态#{/option}
+                                #{option ""}交易状态#{/option}
                                 #{option "UNPAID"}&{'order.UNPAID'}#{/option}
                                 #{option "PAID"}&{'order.PAID'}#{/option}
                                 #{option "CANCELED"}&{'order.CANCELED'}#{/option}
                             #{/select}
                             </div>
                         </th>
-                        <th width="80">操作</th>
+                        <th width="80">交易操作</th>
                     </tr>
                     </thead>
                 #{paginate.list items:orderList, as:'row'}
                     <tbody>
                     <tr class="sep-row">
-                        <td colspan="6"></td>
+                        <td colspan="7"></td>
                     </tr>
                     <tr class="order-hd">
-                        <td colspan="6">
+                        <td colspan="7">
                             <span class="order-no">订单号：${row.orderNumber}</span>
-                            <span class="order-time">成交时间：${row.createdAt==null ? '':row.createdAt.format("yyyy-MM-dd HH:mm:ss")}</span>
+                            <span class="order-time">成交时间：${row.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
                         </td>
                     </tr>
                         #{set m=0/}
@@ -82,28 +83,27 @@
                             </td>
                             <td width="100" align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
                             <td width="78" align="center">${rowItem.buyNumber}</td>
+                             <td width="78" align="center"> 
+                             #{if row.status == models.order.OrderStatus.PAID}
+                            <div class="caozuo_std">
+                                <a style="color:#3366CC"  href="/orders/refund/${row.id}"  id="apply_${row.id}">申请退款</a>
+                            </div>
+                            #{/if}</td>
                             #{if (++m == 1) }
                                 <td width="108" align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
                                 <td width="85" align="center" rowspan="${row.orderItems.size()}">&{'order.'+
                                     row.status}
+                                     <div class="caozuo_std"><a style="color:#3366CC" href="@{UserOrders.details(row.id)}"
+                                                               target="_blank"
+                                            >订单详情</a></div>
                                 </td>
                                 <td width="80" align="center" rowspan="${row.orderItems.size()}">
                                     #{if (row.status == models.order.OrderStatus.UNPAID)}
                                         <div class="caozuo_std"><a class="font_red_one"
                                                                    href="@{UserOrders.pay(row.id)}">付款</a></div>
                                     #{/if}
-                                *{
-                            #{if (row.status == models.order.OrderStatus.PAID || row.status == models.order.OrderStatus.RECEIPT) && rowItem.goods.materialType.toString().equals('REAL')}
-                            <div class="caozuo_std">
-                                <a class="font_red_one" href="/orders/refund/${row.id}"  id="apply_${row.id}">申请退款</a>
-                            </div>
-                            #{/if}
-                            }*
-                                    <div class="caozuo_std"><a class="font_blue" href="@{UserOrders.details(row.id)}"
-                                                               target="_blank"
-                                            >查看详情</a></div>
                                     #{if (row.status != models.order.OrderStatus.PAID)}
-                                        <div class="caozuo_std"><a href="#">取消</a></div>
+                                        <div class="caozuo_std"><a class="font_red_one" href="#">取消</a></div>
                                     #{/if}
                                 </td>
                             #{/if}

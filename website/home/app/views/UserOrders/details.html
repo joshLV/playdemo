@@ -22,6 +22,7 @@
             <th width="81">单价（元）</th>
             <th width="66">数量</th>
             <th width="118">劵号</th>
+            <th width="118">收货手机</th>
             <th width="93">物流状态</th>
             <th width="163">实付款（元）</th>
             <th width="93">订单状态</th>
@@ -31,12 +32,14 @@
         <tr>
             <td align="left" valign="middle">
                 <div class="left_shangpin"><a href="http://www.uhuila.cn/goods/${row.goods.id}" target="_blank"><img src="${row.goods.imageTinyPath}"/></a></div>
-                <div class="right_shangpin"><a href="http://www.uhuila.cn/goods/${row.goods.id}" target="_blank">${row.goods.name}</a><</div>/td>
+                <div class="right_shangpin"><a href="http://www.uhuila.cn/goods/${row.goods.id}" target="_blank">${row.goods.name}</a></div>
             <td width="69" align="center" valign="middle">&{'goods.'+row.goods.materialType}</td>
             <td width="81" align="center" valign="middle">${row.salePrice?.formatCurrency('CNY').raw()}</td>
             <td width="66" align="center" valign="middle">${row.buyNumber}</td>
             <td width="118" align="center" valign="middle"><span
                     class="strong_gray">${row?.getWebEcouponSn()}</span></td>
+                     <td width="66" align="center" valign="middle">${row.phone} 
+                    </td>
             <td width="66" align="center" valign="middle">
                 #{if (models.order.OrderStatus.SENT.equals(row?.status) && models.sales.MaterialType.REAL.equals(row?.goods?.materialType))}
                     已发货#{/if}
@@ -73,62 +76,26 @@
 #{/else}
 </div>
 <div style="clear: both"></div>
-<div style="clear: both"></div>
-<div class="tab_top">
-    <span>收货人信息</span>
-</div>
-<div class="tab_top_box ren_info">
-
-    <table width="975" border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE" frame="void">
-    #{if models.sales.MaterialType.REAL==orderItems.goods.materialType}
-        <tr bgcolor="F6F6F6">
-            <th width="112" height="30">收货人</th>
-            <th width="878" align="left" valign="middle">
-                <div class="margin_left_30">${order.receiverName}</div>
-            </th>
+ #{set i:0/}
+ #{list items:orderItems, as:'row' }
+     #{if models.sales.MaterialType.REAL==row.goods.materialType && i==0}
+    <div class="tab_top">
+        <span>收货人信息</span>
+    </div>
+    <div class="tab_top_box ren_info">
+    <table class="order-tab" cellpadding="0" cellspacing="0">
+     #{set i:i+1/}
+        <tr>
+            <td width=380 >收货人：${order.receiverName}</td> <td width=980 height="30">详细地址：${order.receiverAddress}</td>
         </tr>
         <tr>
-            <td width="112" height="28" align="center" valign="middle">详细地址</td>
-            <td width="878" align="left" valign="middle">
-                <div class="margin_left_10">${order.receiverAddress}</div>
-            </td>
+            <td width=380 >物流公司：${order.deliveryCompany}</td> <td width=980 height="30">物流单号：${order.deliveryNo}</td>
         </tr>
         <tr>
-            <td height="28" align="center" valign="middle">物流公司</td>
-            <td align="left" valign="middle">
-                <div class="margin_left_10">${order.deliveryCompany}</div>
-            </td>
+            <td width=380 colspan=2  height="30">电话：${order.receiverPhone}</td>
         </tr>
-        <tr>
-            <td height="28" align="center" valign="middle">物流单号</td>
-            <td align="left" valign="middle">
-                <div class="margin_left_10">${order.deliveryNo}</div>
-            </td>
-        </tr>
-        <tr>
-            <td height="28" align="center" valign="middle">收货手机</td>
-            <td align="left" valign="middle">
-                <div class="margin_left_10">${order.receiverMobile}</div>
-            </td>
-        </tr>
-    #{/if}
-    #{else}
-
-        <tr>
-            <td height="28" align="center" valign="middle">收货手机</td>
-            <td align="left" valign="middle">
-                <div class="margin_left_10">
-                    #{if "RESALER".equals(order.userType)}
-                    ${orderItems.phone}
-                    #{/if}
-			                 #{else}
-                ${order.receiverMobile}
-                #{/else}
-                </div>
-            </td>
-        </tr>
-    #{/else}
     </table>
 </div>
-
+#{/if}
+#{/list}
 </body>
