@@ -1,11 +1,13 @@
 package models.accounts;
 
-import javax.persistence.*;
-
 import play.db.jpa.Model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 @Entity
-@Table(name="payment_source")
+@Table(name = "payment_source")
 public class PaymentSource extends Model {
     public String name;
     public String detail;
@@ -16,5 +18,12 @@ public class PaymentSource extends Model {
 
     @Column(name = "payment_code")
     public String paymentCode;          //最终用哪个支付渠道支付
+
+
+    public static String findNameByCode(String code) {
+        PaymentSource source = PaymentSource.find("byCode", code).first();
+        return source == null ? "" : source.name;
+    }
+
 }
 

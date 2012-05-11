@@ -119,8 +119,11 @@ order.SENT=已发货
 
 #订单支付方式
 order.payMethod.alipay=支付宝
-order.payMethod.kuaiqian=快钱
+order.payMethod.99bill=快钱
 order.payMethod.tenpay=财付通
+order.payMethod.CMB=招商银行
+order.payMethod.ABC=农业银行
+order.payMethod.balance=余额支付
 order.payMethod.null=
 
 #券状态

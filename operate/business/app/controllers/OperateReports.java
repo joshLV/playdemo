@@ -5,6 +5,7 @@ import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceCondition;
 import models.accounts.AccountSequenceSummary;
 import models.accounts.AccountType;
+import models.accounts.PaymentSource;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
@@ -66,7 +67,7 @@ public class OperateReports extends Controller {
         if (accountSequence.orderId != null) {
             Order order = Order.findById(accountSequence.orderId);
             if (order != null) {
-                accountSequence.payMethod = order.payMethod;
+                accountSequence.payMethod = PaymentSource.findNameByCode(order.payMethod);
                 accountSequence.orderNumber = order.orderNumber;
             }
             return order;
