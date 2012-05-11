@@ -17,6 +17,7 @@ import play.mvc.Http;
 import play.mvc.With;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -55,7 +56,8 @@ public class Goods extends Controller {
 
         GoodsCondition goodsCond = new GoodsCondition();
         goodsCond.status = GoodsStatus.ONSALE;
-        goodsCond.baseSaleBegin = 0;
+        goodsCond.baseSaleBegin = 1;
+        goodsCond.expireAtBegin = new Date();
         ValuePaginator<models.sales.Goods> goodsPage = new ValuePaginator<>(goodsList);
         goodsPage.setPageNumber(pageNumber);
         goodsPage.setPageSize(PAGE_SIZE);

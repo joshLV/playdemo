@@ -558,9 +558,10 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTop(int limit) {
-        return find("status=? and deleted=? order by createdAt DESC",
+        return find("status=? and deleted=? and baseSale >=1 and expireAt > ? order by createdAt DESC",
                 GoodsStatus.ONSALE,
-                DeletedStatus.UN_DELETED).fetch(limit);
+                DeletedStatus.UN_DELETED,
+                new Date()).fetch(limit);
     }
 
     /**
@@ -572,10 +573,11 @@ public class Goods extends Model {
     public static List<Goods> findTopByCategory(long categoryId, int limit) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
-                "and g.id in (select g.id from g.categories c where c.id = :categoryId) " +
+                "and g.baseSale >= 1 and g.expireAt > :now and g.id in (select g.id from g.categories c where c.id = :categoryId) " +
                 "order by g.updatedAt, g.createdAt DESC");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
+        q.setParameter("now", new Date());
         q.setParameter("categoryId", categoryId);
         q.setMaxResults(limit);
         return q.getResultList();
@@ -596,7 +598,8 @@ public class Goods extends Model {
     }
 
     public static Goods findOnSale(long id) {
-        return find("id=? and deleted=? and status=?", id, DeletedStatus.UN_DELETED, GoodsStatus.ONSALE).first();
+        return find("id=? and status=? and deleted=? and baseSale >= 1 and expireAt > ?", id,
+                DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).first();
     }
 
     public static JPAExtPaginator<Goods> findByCondition(GoodsCondition condition,
@@ -815,7 +818,8 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTopRecommend(int limit) {
-        return Goods.find("order by recommend DESC").fetch(limit);
+        return Goods.find("status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by recommend DESC",
+                GoodsStatus.ONSALE, new Date(), DeletedStatus.UN_DELETED).fetch(limit);
     }
 
     public void setPublishedPlatforms(List<GoodsPublishedPlatformType> publishedPlatforms) {

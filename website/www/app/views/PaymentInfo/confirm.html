@@ -2,6 +2,8 @@
 #{set title:'优惠啦 - 确认付款' /}
 #{set 'moreStyles'}
 <link href="@@{'/public/stylesheets/payment_info.css'}" rel="stylesheet" type="text/css"/>
+<link href="@@{'/public/stylesheets/carts-step.css'}" rel="stylesheet" type="text/css"/>
+<link href="@@{'/public/stylesheets/order_info.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/payment_info.js'}"></script>
@@ -19,19 +21,13 @@
 </div>
 
 <!--主体内容部分-->
-<div id="wrap_content">
-    <div class="div_step_title">
-        <div class="div_step_text_4">1</div>
-        <div class="div_step_text_1">查看购物车 <span>>></span></div>
 
-        <div class="div_step_3">2</div>
-        <div class="div_step_text_1">确认订单信息<span>>></span></div>
-
-        <div class="div_step_2">3</div>
-        <div class="div_step_text_2">确认付款信息<span class="no_xiuzhen">>></span></div>
-        <div class="div_step_3">4</div>
-        <div class="div_step_text_1">成功</div>
-    </div>
+<ol class="buy-step step2 clearfix">
+    <li><span>1</span>查看购物车 <em>>></em></li>
+    <li><span>2</span>确认订单信息 <em>>></em></li>
+    <li><span>3</span>确认付款 <em>>></em></li>
+    <li class="buy-step-curr"><span>4</span>成功提交订单 <em>>></em></li>
+</ol>
 #{if order}
     #{if order.status == models.order.OrderStatus.PAID}
     <div>恭喜您付款成功</div>

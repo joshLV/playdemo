@@ -5,6 +5,7 @@ import models.resale.Resaler;
 import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,10 +40,12 @@ public class GoodsCondition {
     public Integer saleCountEnd;
     public MaterialType materialType;
     public GoodsStatus status;
-    public long baseSaleBegin;
-    public long baseSaleEnd;
+    public long baseSaleBegin = -1;
+    public long baseSaleEnd = -1;
 
     private Map<String, Object> paramMap = new HashMap<>();
+    public Date expireAtBegin;
+    public Date expireAtEnd;
 
     public GoodsCondition() {
 
@@ -179,6 +182,26 @@ public class GoodsCondition {
         if (saleCountEnd != null && saleCountEnd >= 0) {
             condBuilder.append(" and g.saleCount <= :saleCountEnd");
             paramMap.put("saleCountEnd", saleCountEnd);
+        }
+
+        if (baseSaleBegin >= 0){
+            condBuilder.append(" and g.baseSale >= :baseSaleBegin");
+            paramMap.put("baseSale", baseSaleBegin);
+        }
+
+        if (baseSaleEnd >= 0){
+            condBuilder.append(" and g.baseSale <= :baseSaleEnd");
+            paramMap.put("baseSale", baseSaleEnd);
+        }
+
+        if (expireAtBegin != null){
+            condBuilder.append(" and g.expireAt > :expireAtBegin");
+            paramMap.put("expireAtBegin", expireAtBegin);
+        }
+
+        if (expireAtEnd != null){
+            condBuilder.append(" and g.expireAt <= :expireAtEnd");
+            paramMap.put("expireAtEnd", expireAtEnd);
         }
 
         if (materialType != null) {

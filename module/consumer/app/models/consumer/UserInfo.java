@@ -17,7 +17,7 @@ import java.util.List;
 @Table(name = "users_info")
 public class UserInfo extends Model {
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id")
 	public User user;
 
 	@Column(name = "full_name")
@@ -37,31 +37,30 @@ public class UserInfo extends Model {
 	/*电话*/
 	public String phone;
 
-	/*婚姻状况*/
-	@Column(name = "marry_state")
-	public Integer marryState;
-	/*职位*/
-	public String position;
-	/*qq*/
-	public String userqq;
-	/*薪水*/
-	@Column(name = "salary")
-	public Integer salary;
-	/*职位*/
-	public String interest;
-	/*行业*/
-	public String industry;
-	/*行业*/
-	public String otherInfo;
-	@Column(name = "created_at")
-	public Date createdAt;
+    /*婚姻状况*/
+    @Column(name = "marry_state")
+    public Integer marryState;
+    /*职位*/
+    public String position;
+    /*qq*/
+    public String userqq;
+    /*薪水*/
+    public Integer salary;
+    /*职位*/
+    public String interest;
+    /*行业*/
+    public String industry;
+    /*其他行业*/
+    @Column(name = "other_info")
+    public String otherInfo;
+    @Column(name = "created_at")
+    public Date createdAt;
 
-	@Column(name = "bindMobile_at",nullable=true)
-	public Date bindMobileAt;
+    @Column(name = "bind_mobile_at")
+    public Date bindMobileAt;
 
-	@Column(name = "total_points",nullable=true)
-	public int totalPoints;
-
+    @Column(name = "total_points")
+    public Integer totalPoints;
 
 	public UserInfo(User user) {
 		this.user = user;
@@ -91,7 +90,6 @@ public class UserInfo extends Model {
 		otherInfo = userInfo.otherInfo;
 		createdAt = new Date();
 		this.save();
-
 	}
 
 	/**
