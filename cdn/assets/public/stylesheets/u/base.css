@@ -1,5 +1,5 @@
 /**
- * CSS RESET START
+ * CSS RESET START {{{
  * **/
 /** 清除内外边距 **/
 body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, /* structural elements 结构元素 */
@@ -61,7 +61,7 @@ mark { background: #ff0; }
     *+height: 1%;
 }
 /**
- * CSS RESET END 
+ * CSS RESET END }}}
  * **/
 
 #header {
@@ -81,6 +81,12 @@ mark { background: #ff0; }
 #menu .welcom {
     float: left;
     margin-left: 10px;
+}
+#menu .welcom a {
+    color: #666;
+}
+#menu a:hover {
+    color: #F50;
 }
 #menu .carts,
 #menu .myUhuila {
@@ -110,7 +116,7 @@ mark { background: #ff0; }
     border-width: 1px 1px 0 1px;
     background-position: 72px 9px;
 }
-#menu .carts span {
+#menu .carts .carts-size {
     padding: 0 2px;
     color: #F50;
     font-weight: 700;
@@ -129,7 +135,7 @@ mark { background: #ff0; }
     top: 22px;
     left: -1px;
     width: 220px;
-    padding: 10px;
+    padding: 2px 10px 10px 10px;
     border: solid #209890;
     border-width: 0 1px 1px 1px;
     background-color: #fff;
@@ -141,14 +147,40 @@ mark { background: #ff0; }
     border-top: 1px solid #209890;
     width: 160px;
 }
+#menu .carts-item {
+    margin: 8px 0;
+}
+#menu .carts-item .goods-img {
+    float: left;
+    margin: 5px 5px 0 0;
+}
+#menu .carts-item .goods-name {
+    display: inline-block;
+    margin-bottom: 2px;
+    width: 165px;
+    _width: 162px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+}
+#menu .carts-item .goods-price {
+    color: #f50;
+    font: 12px arial;
+}
+#menu .carts-item .cart-delete {
+    *margin-top: -18px;
+    float: right;
+    color: #25B4AB;
+}
 #menu .carts-bd .view-carts {
     display: inline-block;
     padding: 0 3px;
-    margin-left: 5px;
+    margin: 10px 5px 0 5px;
     color: #F8F8F8;
     background-color: #209890;
 }
-#menu .carts-bd .view-carts:hover {
+#menu .carts-item .view-carts:hover {
     text-decoration: none;
 }
 #menu .help {

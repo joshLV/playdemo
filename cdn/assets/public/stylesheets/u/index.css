@@ -11,14 +11,20 @@
 .bizarea-bd {
     width: 200px;
     padding: 9px 8px;
-    /* border: 2px solid #6fb5b5; */
     border: 2px solid #AADBDB;
     background-color: #eaf6f6;
+}
+.bizarea-bd a:hover {
+    color: #F50;
 }
 .bizarea-bd .area {
     padding-bottom: 10px;
     margin-bottom: 8px;
     border-bottom: 1px solid #AADBDB;
+}
+.bizarea-bd .ring {
+    height: 88px;
+    overflow: hidden;
 }
 .bizarea-bd li {
     float: left;
@@ -144,7 +150,7 @@
 .recommendation-bd li strong {
     margin-left: 5px;
     color: #F50;
-    font-size: 14px;
+    font-size: 16px;
     font-family: arial, tahoma, \5b8b\4f53, sans-serif;
 }
 .recommendation-bd li del {
@@ -248,7 +254,7 @@
 .boutique-bd li strong {
     margin-left: 5px;
     color: #F50;
-    font-size: 14px;
+    font-size: 16px;
     font-family: arial, tahoma, \5b8b\4f53, sans-serif;
 }
 .boutique-bd li del {

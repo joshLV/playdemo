@@ -1,14 +1,18 @@
 <b class="upRightLine"></b>
 #{if carts?.size() > 0 }
-        #{list items:carts, as:'cartItem'}
-        <p id="row_${cartItem.goods.id}"><a href="http://www.uhuila.cn/goods/${cartItem.goods.id}"><img
-                src="${cartItem.goods.imageTinyPath}"/>${cartItem.goods.name}</a> ${cartItem.goods.salePrice?.formatCurrency('CNY')}
-            x${cartItem.number} <a href="#" class="cart-delete" goods_id="${cartItem.goods.id}"
-                                   count="${cartItem.number}">删除</a></p>
-        #{/list}
+<ul>
+    #{list items:carts, as:'cartItem'}
+    <li class="carts-item clearfix" id="row_${cartItem.goods.id}">
+        <a class="goods-img" href="http://www.uhuila.cn/goods/${cartItem.goods.id}"><img src="${cartItem.goods.imageTinyPath}" width="48" /></a>
+        <a class="goods-name" href="http://www.uhuila.cn/goods/${cartItem.goods.id}">${cartItem.goods.name}</a>
+        <span class="goods-price">${cartItem.goods.salePrice?.formatCurrency('CNY')} x ${cartItem.number}</span>
+        <a href="#" class="cart-delete" goods_id="${cartItem.goods.id}" count="${cartItem.number}">删除</a>
+    </li>
+    #{/list}
     <a class="view-carts" href="http://www.uhuila.cn/carts">查看购物车</a>
     <a id="order_confirm" class="view-carts" href="http://www.uhuila.cn/orders?items=#{list items:carts,
     as:'cartItem'}${cartItem.goods.id}-${cartItem.number},#{/list}">去结算</a>
+</ul>
 #{/if}
 #{else}
 您的购物车中没有任何商品。<br/>
