@@ -81,10 +81,10 @@ public class Orders extends Controller {
 
         //如果有实物商品，加上运费
         if (rCartList.size() > 0) {
-            rCartAmount = rCartAmount.add(new BigDecimal("5"));
+            rCartAmount = rCartAmount.add(Order.FREIGHT);
         }
         BigDecimal totalAmount = eCartAmount.add(rCartAmount);
-        BigDecimal goodsAmount = rCartList.size() == 0 ? eCartAmount : totalAmount.subtract(new BigDecimal("5"));
+        BigDecimal goodsAmount = rCartList.size() == 0 ? eCartAmount : totalAmount.subtract(Order.FREIGHT);
 
         renderArgs.put("goodsAmount", goodsAmount);
         renderArgs.put("totalAmount", totalAmount);

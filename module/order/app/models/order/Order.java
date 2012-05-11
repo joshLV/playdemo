@@ -2,8 +2,6 @@ package models.order;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.Account;
-import models.accounts.AccountSequence;
-import models.accounts.AccountSequenceFlag;
 import models.accounts.AccountSequenceType;
 import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
@@ -35,6 +33,8 @@ import java.util.Random;
 @Entity
 @Table(name = "orders")
 public class Order extends Model {
+    public static final BigDecimal FREIGHT = new BigDecimal("6");
+
 	@Column(name = "user_id")
 	public long userId;                     //下单用户ID，可能是优惠啦用户，也可能是分销商
 
@@ -232,7 +232,7 @@ public class Order extends Model {
 	}
 
 	public void addFreight() {
-		this.amount = this.amount.add(new BigDecimal("6"));
+		this.amount = this.amount.add(FREIGHT);
 		this.needPay = this.amount;
 	}
 
@@ -329,6 +329,10 @@ public class Order extends Model {
 		this.paidAt = new Date();
 		this.save();
 		Account account = AccountUtil.getAccount(this.userId, this.userType);
+
+
+
+
 		//补加两个账户交易记录
         AccountUtil.addBalance(account.getId(),this.accountPay.add(this.discountPay),
                 BigDecimal.ZERO, this.payRequestId,AccountSequenceType.CHARGE,"账户充值");
