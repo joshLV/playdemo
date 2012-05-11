@@ -30,7 +30,7 @@ public class UserInfo extends Model {
 	 * 性别
 	 */
 	@Column(name = "user_sex")
-	public int userSex;
+	public Integer userSex;
 
 	/*出生年月*/
 	public String birthday;
@@ -46,7 +46,7 @@ public class UserInfo extends Model {
 	public String userqq;
 	/*薪水*/
 	@Column(name = "salary")
-	public int salary;
+	public Integer salary;
 	/*职位*/
 	public String interest;
 	/*行业*/
