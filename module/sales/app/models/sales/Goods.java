@@ -68,6 +68,7 @@ public class Goods extends Model {
     @Column(name = "original_price")
     public BigDecimal originalPrice;
 
+
     /**
      * 运营人员填写的优惠啦网站价格
      */
@@ -77,13 +78,11 @@ public class Goods extends Model {
     @Column(name = "sale_price")
     public BigDecimal salePrice;
 
-    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "goods")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "goods")
     @OrderBy("level")
     public List<GoodsLevelPrice> levelPrices;
 
-
     //  ======  价格列表结束 ==========
-
 
     /**
      * 商品编号
@@ -521,6 +520,9 @@ public class Goods extends Model {
 
         if (!noLevelPrices) {
             updateGoods.levelPrices = goods.levelPrices;
+            for (GoodsLevelPrice levelPrice : updateGoods.getLevelPrices()) {
+                levelPrice.goods = updateGoods;
+            }
         }
 
         updateGoods.setPrompt(goods.getPrompt());
