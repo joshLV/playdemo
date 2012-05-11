@@ -114,6 +114,8 @@ public class Order extends Model {
 	@Column(name = "lock_version")
 	public int lockVersion;
 
+    public String description;          //订单描述
+
 	/**
 	 * 逻辑删除,0:未删除，1:已删除
 	 */
@@ -199,6 +201,16 @@ public class Order extends Model {
 		}
 
 	}
+
+    public void generateOrderDescription(){
+        if(this.orderType == OrderType.CHARGE){
+            this.description = "优惠啦充值" + this.amount + "元";
+        }else if(this.orderItems.size() == 1){
+            this.description = this.orderItems.get(0).goodsName ;
+        }else if(this.orderItems.size() > 1){
+            this.description= this.orderItems.get(0).goodsName + "等商品";
+        }
+    }
 
 	/**
 	 * 添加订单条目.
@@ -293,6 +305,7 @@ public class Order extends Model {
 	}
 
 	public void createAndUpdateInventory() {
+        generateOrderDescription();
 		save();
 		boolean haveFreight = false;
 		for (OrderItems orderItem : orderItems) {

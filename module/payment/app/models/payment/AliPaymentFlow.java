@@ -26,14 +26,7 @@ public class AliPaymentFlow implements PaymentFlow{
         String out_trade_no = order.orderNumber;
         //订单名称，显示在支付宝收银台里的“商品名称”里，显示在支付宝的交易管理的
         //“商品名称”的列表里。
-        String subject = null;
-        if(order.orderType == OrderType.CHARGE){
-            subject = "优惠啦充值" + order.amount + "元";
-        }else if(order.orderItems.size() == 1){
-            subject = order.orderItems.get(0).goodsName ;
-        }else if(order.orderItems.size() > 1){
-            subject = order.orderItems.get(0).goodsName + "等商品";
-        }
+        String subject = order.description;
         //订单总金额，显示在支付宝收银台里的“应付总额”里
         String total_fee = order.needPay.toString();
 
