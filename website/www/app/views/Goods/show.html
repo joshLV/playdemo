@@ -50,11 +50,11 @@
     <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
     <ul class="property">
     #{if params['isSupplier']== null || !params['isSupplier']}
-        <li class="price">现　　价:<span>${goods.salePrice.formatCurrency('CNY')}</span></li>
+        <li class="price">现　　价:<span>${goods.salePrice?.formatCurrency('CNY')}</span></li>
     #{/if}
     #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
         <li class="cost">原　　价:
-            <del>${goods.faceValue.formatCurrency('CNY')}</del>
+            <del>${goods.faceValue?.formatCurrency('CNY')}</del>
         </li>
     #{if params['isSupplier']== null || !params['isSupplier']}
         <li class="discount">折　　扣:<span>${goods.discountExpress}</span></li>
