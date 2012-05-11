@@ -1,11 +1,8 @@
 package models.accounts.util;
 
-import models.accounts.AccountSequenceType;
-import models.accounts.RefundBill;
-import models.accounts.RefundStatus;
-import models.accounts.TradeBill;
-import models.accounts.TradeStatus;
+import models.accounts.*;
 import play.Logger;
+import play.db.jpa.JPAPlugin;
 
 import java.math.BigDecimal;
 
@@ -49,17 +46,30 @@ public class RefundUtil {
      * 退款申请成功.
      *
      * @param refundBill    原退款申请流水
-     * @return              修改状态后的退款流水
+     * @return              是否成功
      */
-    public static RefundBill success(RefundBill refundBill){
+    public static boolean success(RefundBill refundBill){
         refundBill.refundStatus = RefundStatus.SUCCESS;
 
         //更新账户余额
-        AccountUtil.addBalance(refundBill.account.getId(), refundBill.amount, BigDecimal.ZERO, refundBill.getId(),
-                AccountSequenceType.REFUND, "退款");
-        AccountUtil.addBalance(AccountUtil.getPlatformIncomingAccount().getId(), refundBill.amount.negate(),
-                BigDecimal.ZERO, refundBill.getId(), AccountSequenceType.REFUND, "支付退款");
-        return refundBill.save();
+        try {
+            AccountUtil.addBalance(refundBill.account.getId(), refundBill.amount, BigDecimal.ZERO, refundBill.getId(),
+                    AccountSequenceType.REFUND, "退款");
+            AccountUtil.addBalance(AccountUtil.getPlatformIncomingAccount().getId(), refundBill.amount.negate(),
+                    BigDecimal.ZERO, refundBill.getId(), AccountSequenceType.REFUND, "支付退款");
+        } catch (BalanceNotEnoughException e) {
+            Logger.error(e, e.getMessage());
+            //回滚
+            JPAPlugin.closeTx(true);
+            return false;
+        } catch (AccountNotFoundException e) {
+            Logger.error(e, e.getMessage());
+            //回滚
+            JPAPlugin.closeTx(true);
+            return false;
+        }
+        refundBill.save();
+        return true;
     }
 
 }

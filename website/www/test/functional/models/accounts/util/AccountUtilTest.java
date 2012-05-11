@@ -42,6 +42,10 @@ public class AccountUtilTest extends FunctionalTest{
             AccountUtil.addBalance(null, null, null, null, AccountSequenceType.REFUND, "test note");
         }catch (RuntimeException e){
             exception = true;
+        } catch (BalanceNotEnoughException e) {
+            exception = true;
+        } catch (AccountNotFoundException e) {
+            exception = true;
         }
         if(!exception){
             fail();
@@ -51,6 +55,10 @@ public class AccountUtilTest extends FunctionalTest{
             AccountUtil.addBalance(null, null,null, new Long(1), null, "test note");
         }catch (RuntimeException e){
             exception = true;
+        } catch (BalanceNotEnoughException e) {
+            exception = true;
+        } catch (AccountNotFoundException e) {
+            exception = true;
         }
         if(!exception){
             fail();
@@ -58,8 +66,13 @@ public class AccountUtilTest extends FunctionalTest{
         BigDecimal originAmount = account.amount;
 
         BigDecimal augend = new BigDecimal(1);
-        AccountUtil.addBalance(account.getId(), augend, BigDecimal.ZERO, new Long(1),
-                AccountSequenceType.CHARGE, "test note");
+        try {
+            AccountUtil.addBalance(account.getId(), augend, BigDecimal.ZERO, new Long(1),
+                    AccountSequenceType.CHARGE, "test note");
+        } catch (BalanceNotEnoughException e) {
+
+        } catch (AccountNotFoundException e) {
+        }
         assertEquals(originAmount.add(augend), account.amount);
 
         assertEquals(1, AccountSequence.findAll().size());

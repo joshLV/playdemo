@@ -373,7 +373,10 @@ public class ECoupon extends Model {
 		//创建退款流程
 		RefundBill refundBill = RefundUtil.create(tradeBill, order.getId(), orderItem.getId(),
 				orderItem.salePrice, applyNote);
-		RefundUtil.success(refundBill);
+		if(!RefundUtil.success(refundBill)){
+            returnFlg = "{\"error\":\"refound failed\"}";
+            return returnFlg;
+        }
 
 		//更改库存
 		eCoupon.goods.baseSale += orderItem.buyNumber;
@@ -461,9 +464,9 @@ public class ECoupon extends Model {
 
 	/**
 	 * 按手机号及replyCode查出可用的ECoupon
-	 * @param mobile
-	 * @param code
-	 * @return
+	 * @param mobile 手机号
+	 * @param replyCode 返回码
+	 * @return 电子券
 	 */
 	public static ECoupon findByMobileAndCode(String mobile, String replyCode) {
 		return ECoupon.find("from ECoupon where orderItems.phone=? and replyCode=?", mobile, replyCode).first();

@@ -1,16 +1,9 @@
 package models.accounts.util;
 
-import models.accounts.Account;
-import models.accounts.AccountSequence;
-import models.accounts.AccountSequenceFlag;
-import models.accounts.AccountSequenceType;
-import models.accounts.AccountType;
-import models.accounts.CertificateDetail;
-import models.accounts.CertificateType;
-import models.accounts.SubjectDetail;
-import models.accounts.SubjectType;
+import models.accounts.*;
 
 import java.math.BigDecimal;
+import java.util.MissingFormatArgumentException;
 
 /**
  * 账户资金变动流水工具.
@@ -62,26 +55,28 @@ public class AccountUtil {
      * @param note          变动备注
      * @return              变更后的账户
      */
-    public static Account addBalance(Long accountId, BigDecimal cashAugend, BigDecimal uncashAugend,
-                                     Long billId, AccountSequenceType sequenceType, String note){
+    public static Account addBalance(Long accountId, BigDecimal cashAugend, BigDecimal uncashAugend, Long billId,
+                                     AccountSequenceType sequenceType, String note)
+            throws BalanceNotEnoughException,AccountNotFoundException{
+
         Account account = Account.findById(accountId);
         if(account == null){
-            throw new RuntimeException("can not find the specified account");
+            throw new AccountNotFoundException("can not find the specified account");
         }
 
         if(billId == null || sequenceType == null){
-            throw new RuntimeException("error while add balance to account: miss parameter");
+            throw new IllegalArgumentException("error while add balance to account: miss parameter");
         }
 
         if (account.amount.add(cashAugend).compareTo(BigDecimal.ZERO) >= 0 ){
             account.amount = account.amount.add(cashAugend);
         }else {
-            throw new RuntimeException("error while add cash to account: balance not enough");
+            throw new BalanceNotEnoughException("error while add cash to account: balance not enough");
         }
         if (account.uncashAmount.add(uncashAugend).compareTo(BigDecimal.ZERO) >= 0){
             account.uncashAmount = account.uncashAmount.add(uncashAugend);
         }else {
-            throw new RuntimeException("error while add uncashAmount to account: balance not enough");
+            throw new BalanceNotEnoughException("error while add uncashAmount to account: balance not enough");
         }
 
         account.save();

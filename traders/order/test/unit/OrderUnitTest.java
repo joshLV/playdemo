@@ -32,6 +32,7 @@ public class OrderUnitTest extends UnitTest {
         Fixtures.loadModels("fixture/goods_base.yml",
                 "fixture/user.yml",
                 "fixture/goods.yml",
+                "fixture/payment_source.yml",
                 "fixture/orders.yml", "fixture/orderItems.yml");
     }
 

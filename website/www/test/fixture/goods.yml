@@ -8,7 +8,7 @@ sales.Goods(goods1):
   deleted: UN_DELETED
   supplierId: 1
   effectiveAt: 2012-02-01
-  expireAt: 2012-02-02
+  expireAt: 2092-02-02
 sales.Goods(goods2):
   name: "测试商品2"
   originalPrice: 100
@@ -18,6 +18,8 @@ sales.Goods(goods2):
   status: ONSALE
   deleted: DELETED
   supplierId: 1
+  effectiveAt: 2012-02-01
+  expireAt: 2092-02-02
 sales.Goods(goods3):
   name: "测试商品3"
   originalPrice: 100

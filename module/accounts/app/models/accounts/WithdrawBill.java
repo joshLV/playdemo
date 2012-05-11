@@ -2,6 +2,7 @@ package models.accounts;
 
 import models.accounts.util.AccountUtil;
 import models.accounts.util.SerialNumberUtil;
+import play.Logger;
 import play.data.validation.Min;
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -71,7 +72,7 @@ public class WithdrawBill extends Model {
      * @param applier 申请人信息
      * @param account 申请提现的账户
      */
-    public void apply(String applier, Account account){
+    public boolean apply(String applier, Account account){
         this.applier = applier;
         this.account = account;
         this.status = WithdrawBillStatus.APPLIED;
@@ -79,8 +80,17 @@ public class WithdrawBill extends Model {
         this.serialNumber = SerialNumberUtil.generateSerialNumber();
         this.save();
 
-        AccountUtil.addBalance(account.getId(),this.amount.negate(), this.amount,
-                this.getId(),AccountSequenceType.FREEZE,"申请提现");
+        try {
+            AccountUtil.addBalance(account.getId(),this.amount.negate(), this.amount,
+                    this.getId(),AccountSequenceType.FREEZE,"申请提现");
+        } catch (BalanceNotEnoughException e) {
+            Logger.error(e, e.getMessage());
+            return false;
+        } catch (AccountNotFoundException e) {
+            Logger.error(e, e.getMessage());
+            return false;
+        }
+        return true;
     }
 
     public static WithdrawBill findByIdAndUser(Long id, Long userId, AccountType accountType){
@@ -93,18 +103,28 @@ public class WithdrawBill extends Model {
      *
      * @param comment 拒绝理由.
      */
-    public void reject(String comment){
+    public boolean reject(String comment){
         if(this.status != WithdrawBillStatus.APPLIED){
-            throw new RuntimeException("The withdraw request has been processed");
+            Logger.error("the withdraw bill has been processed already");
+            return false;
         }
 
-        AccountUtil.addBalance(this.account.getId(), this.amount, this.amount.negate(),
-                this.getId(), AccountSequenceType.UNFREEZE,"拒绝提现");
+        try {
+            AccountUtil.addBalance(this.account.getId(), this.amount, this.amount.negate(),
+                    this.getId(), AccountSequenceType.UNFREEZE,"拒绝提现");
+        } catch (BalanceNotEnoughException e) {
+            Logger.error(e, e.getMessage());
+            return false;
+        } catch (AccountNotFoundException e) {
+            Logger.error(e, e.getMessage());
+            return false;
+        }
 
         this.comment = comment;
         this.status = WithdrawBillStatus.REJECTED;
         this.processedAt = new Date();
         this.save();
+        return true;
     }
 
     /**
@@ -112,19 +132,29 @@ public class WithdrawBill extends Model {
      *
      * @param comment 备注.
      */
-    public void agree(BigDecimal fee, String comment){
+    public boolean agree(BigDecimal fee, String comment){
         if(this.status != WithdrawBillStatus.APPLIED){
-            throw new RuntimeException("The withdraw request has been processed");
+            Logger.error("the withdraw bill has been processed already");
+            return false;
         }
 
-        AccountUtil.addBalance(this.account.getId(), BigDecimal.ZERO, this.amount.negate(),
-                this.getId(), AccountSequenceType.WITHDRAW, "提现成功");
+        try {
+            AccountUtil.addBalance(this.account.getId(), BigDecimal.ZERO, this.amount.negate(),
+                    this.getId(), AccountSequenceType.WITHDRAW, "提现成功");
+        } catch (BalanceNotEnoughException e) {
+            Logger.error(e, e.getMessage());
+            return false;
+        } catch (AccountNotFoundException e) {
+            Logger.error(e, e.getMessage());
+            return false;
+        }
 
         this.status = WithdrawBillStatus.SUCCESS;
         this.comment = comment;
         this.processedAt = new Date();
         this.fee = fee;
         this.save();
+        return true;
     }
 
 

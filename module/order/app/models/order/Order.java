@@ -1,10 +1,9 @@
 package models.order;
 
 import com.uhuila.common.constants.DeletedStatus;
-import models.accounts.Account;
-import models.accounts.AccountSequenceType;
-import models.accounts.AccountType;
+import models.accounts.*;
 import models.accounts.util.AccountUtil;
+import models.accounts.util.TradeUtil;
 import models.consumer.Address;
 import models.consumer.User;
 import models.mail.CouponMessage;
@@ -17,6 +16,7 @@ import models.sms.SMSUtil;
 import org.apache.commons.lang.time.DateFormatUtils;
 import play.Play;
 import play.db.jpa.JPA;
+import play.db.jpa.JPAPlugin;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
@@ -42,8 +42,9 @@ public class Order extends Model {
 	@Column(name = "user_type")
 	public AccountType userType;            //用户类型，个人/分销商
 
-    @Column(name = "receiver_account")
     @Basic(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "receiver_account")
     public Account receiverAccount; //收款方账户,普通消费订单的收款账户为平台账户,充值订单的收款账户为特定账户
 
     @Enumerated(EnumType.STRING)
@@ -324,68 +325,94 @@ public class Order extends Model {
         if (this.status != OrderStatus.UNPAID){
             throw new RuntimeException("can not pay order:" + this.getId() + " since it's already been processed");
         }
+        //更改子订单状态
+        if (this.orderItems != null){
+            for (OrderItems orderItem : this.orderItems){
+                orderItem.status = OrderStatus.PAID;
+                orderItem.save();
+            }
+        }
 
 		this.status = OrderStatus.PAID;
 		this.paidAt = new Date();
-		this.save();
-		Account account = AccountUtil.getAccount(this.userId, this.userType);
+        Account account = AccountUtil.getAccount(this.userId, this.userType);
+        PaymentSource paymentSource = PaymentSource.find("byCode", this.payMethod).first();
+
+        //补一个充值,即将用户银行支付的钱打到自己账户上
+        if(this.discountPay.compareTo(BigDecimal.ZERO) > 0){
+            TradeBill chargeTradeBill = TradeUtil.createChargeTrade(account, this.discountPay, paymentSource);
+            TradeUtil.success(chargeTradeBill);
+            JPAPlugin.closeTx(false);
+            JPAPlugin.startTx(true);
+        }
+
+        //然后再支付此次订单
+        TradeBill tradeBill = TradeUtil.createOrderTrade(
+                account,
+                this.accountPay,
+                this.discountPay,
+                paymentSource,
+                this.getId());
+        TradeUtil.success(tradeBill);
+
+        this.payRequestId = tradeBill.getId();
+        this.save();
+
+        //发送电子券
+        sendECoupon();
+    }
+
+    /**
+     * 发送电子券相关短信/邮件/通知
+     */
+    private void sendECoupon() {
+        if (this.status != OrderStatus.PAID){
+            return;
+        }
+        if (this.orderItems == null){
+            return;
+        }
+        for (OrderItems orderItem : this.orderItems) {
+            Goods goods = orderItem.goods;
+            if (goods == null) {
+                continue;
+            }
+            //如果是电子券
+            if (MaterialType.ELECTRONIC.equals(goods.materialType)) {
+                List<String> couponCodes = new ArrayList<>();
+                for (int i = 0; i < orderItem.buyNumber; i++) {
+                    ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
+
+                    if (!Play.mode.isDev()) {
+                        SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, orderItem.phone, eCoupon.replyCode);
+                    }
+                    couponCodes.add(eCoupon.getMaskedEcouponSn());
+                }
+
+                CouponMessage mail = new CouponMessage();
+                //分销商
+                if (AccountType.RESALER.equals(orderItem.order.userType)) {
+                    String userName = orderItem.order.getResaler().userName;
+                    mail.setEmail(orderItem.order.getResaler().email);
+                    mail.setFullName(userName);
+                } else {
+                    //消费者
+                    mail.setEmail(orderItem.order.getUser().loginName);
+                    if (orderItem.order.getUser().userInfo == null) {
+                        mail.setFullName(orderItem.order.getUser().loginName);
+                    } else {
+                        mail.setFullName(orderItem.order.getUser().userInfo.fullName);
+                    }
+                }
+                mail.setCoupons(couponCodes);
+                MailUtil.send(mail);
+            }
+            goods.save();
+        }
+    }
 
 
-
-
-		//补加两个账户交易记录
-        AccountUtil.addBalance(account.getId(),this.accountPay.add(this.discountPay),
-                BigDecimal.ZERO, this.payRequestId,AccountSequenceType.CHARGE,"账户充值");
-        AccountUtil.addBalance(account.getId(),this.accountPay.add(this.discountPay).negate(),
-                BigDecimal.ZERO, this.payRequestId, AccountSequenceType.PAY,"支付");
-
-		//如果是电子券
-		if (this.orderItems != null) {
-			for (OrderItems orderItem : this.orderItems) {
-				models.sales.Goods goods = orderItem.goods;
-				if (goods == null) {
-					continue;
-				}
-				// 更新订单明细的状态
-				orderItem.status = OrderStatus.PAID;
-				orderItem.save();
-
-				if (MaterialType.ELECTRONIC.equals(goods.materialType)) {
-					List<String> couponCodes = new ArrayList<>();
-					for (int i = 0; i < orderItem.buyNumber; i++) {
-						ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
-
-						if (!Play.mode.isDev()) {
-							SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn, orderItem.phone, eCoupon.replyCode);
-						}
-						couponCodes.add(eCoupon.getMaskedEcouponSn());
-					}
-
-					CouponMessage mail = new CouponMessage();
-					//分销商
-					if (AccountType.RESALER.equals(orderItem.order.userType)) {
-						String userName = orderItem.order.getResaler().userName;
-						mail.setEmail(orderItem.order.getResaler().email);
-						mail.setFullName(userName);
-					} else {
-						//消费者
-						mail.setEmail(orderItem.order.getUser().loginName);
-						if (orderItem.order.getUser().userInfo == null) {
-							mail.setFullName(orderItem.order.getUser().loginName);
-						} else {
-							mail.setFullName(orderItem.order.getUser().userInfo.fullName);
-						}
-					}
-					mail.setCoupons(couponCodes);
-					MailUtil.send(mail);
-				}
-				goods.save();
-			}
-		}
-	}
-
-
-	private User user;
+    private User user;
 	private Resaler resaler;
 
 	public User getUser() {

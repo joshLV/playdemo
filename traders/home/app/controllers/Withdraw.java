@@ -78,8 +78,11 @@ public class Withdraw extends Controller{
         withdraw.cardNumber = withdrawAccount.cardNumber;
         withdraw.amount = amount;
 
-        withdraw.apply(supplier.fullName+"-"+SupplierRbac.currentUser().loginName, account);
-        index(null);
+        if (withdraw.apply(supplier.fullName+"-"+SupplierRbac.currentUser().loginName, account)){
+            index(null);
+        }else {
+            error("申请失败");
+        }
     }
 
 

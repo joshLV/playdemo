@@ -61,8 +61,11 @@ public class Withdraw extends Controller{
             Validation.addError("withdraw.amount", "提现金额不能大于余额！！");
             render("Withdraw/apply.html", withdraw, account);
         }
-        withdraw.apply(user.loginName, account);
-        index(null);
+        if(withdraw.apply(user.loginName, account)){
+            index(null);
+        }else {
+            error("申请失败");
+        }
     }
 
     public static void detail(Long id){

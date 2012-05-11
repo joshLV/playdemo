@@ -1,6 +1,8 @@
 package models.accounts.util;
 
 import models.accounts.*;
+import play.Logger;
+import play.db.jpa.JPAPlugin;
 
 import java.math.BigDecimal;
 
@@ -50,14 +52,27 @@ public class ChargeUtil {
      * @param chargeBill    原充值交易
      * @return              修改相关状态后的充值交易
      */
-    public static ChargeBill success(ChargeBill chargeBill){
+    public static boolean success(ChargeBill chargeBill){
         //修改流水状态
         chargeBill.chargeStatus = ChargeStatus.SUCCESS;
         //更新账户余额
-        AccountUtil.addBalance(chargeBill.account.getId(), chargeBill.amount, BigDecimal.ZERO,
-                chargeBill.getId(), AccountSequenceType.REFUND, "充值");
+        try {
+            AccountUtil.addBalance(chargeBill.account.getId(), chargeBill.amount, BigDecimal.ZERO,
+                    chargeBill.getId(), AccountSequenceType.REFUND, "充值");
+        } catch (BalanceNotEnoughException e) {
+            Logger.error(e, e.getMessage());
+            //回滚
+            JPAPlugin.closeTx(true);
+            return false;
+        } catch (AccountNotFoundException e) {
+            Logger.error(e, e.getMessage());
+            //回滚
+            JPAPlugin.closeTx(true);
+            return false;
+        }
 
-        return chargeBill.save();
+        chargeBill.save();
+        return true;
     }
 
 

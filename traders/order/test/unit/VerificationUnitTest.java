@@ -1,5 +1,6 @@
 package unit;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import models.accounts.Account;
 import models.accounts.AccountType;
+import models.accounts.util.AccountUtil;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.consumer.User;
@@ -62,6 +64,9 @@ public class VerificationUnitTest extends UnitTest {
 		goods = Goods.findById(goodsId);
 		goods.supplierId = supplierId;
 		goods.save();
+        Account account = AccountUtil.getPlatformIncomingAccount();
+        account.amount = new BigDecimal("99999");
+        account.save();
 
     }
 

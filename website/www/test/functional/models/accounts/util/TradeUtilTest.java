@@ -171,17 +171,23 @@ public class TradeUtilTest extends FunctionalTest{
         assertEquals(amountA, accountA.amount);
         assertEquals(amountB, accountB.amount);
         
-        BigDecimal accountPay = new BigDecimal(1);
-        BigDecimal ebankPay = new BigDecimal(2);
+        BigDecimal accountPay = new BigDecimal("1");
+        BigDecimal ebankPay = new BigDecimal("2");
 
         //验证正常转账
+        System.out.println("==================");
         TradeBill tradeBill = TradeUtil.createTransferTrade(accountA, accountB,accountPay, ebankPay, aliPayment );
         assertNotNull(tradeBill);
         assertNotNull(tradeBill.getId());
 
-        TradeUtil.success(tradeBill);
+        boolean result = TradeUtil.success(tradeBill);
+        assertTrue(result);
 
-        assertEquals(accountA.amount, amountA.subtract(accountPay));
+        id  = (Long)Fixtures.idCache.get("models.accounts.Account-account_1");
+        accountA = Account.findById(id);
+        id  = (Long)Fixtures.idCache.get("models.accounts.Account-account_2");
+        accountB = Account.findById(id);
+        assertEquals(accountA.amount, amountA.subtract(accountPay).subtract(ebankPay));
         assertEquals(accountB.amount, amountB.add(ebankPay).add(accountPay));
 
         //重新从数据库加载
@@ -190,7 +196,7 @@ public class TradeUtilTest extends FunctionalTest{
         id  = (Long)Fixtures.idCache.get("models.accounts.Account-account_2");
         accountB = Account.findById(id);
 
-        assertEquals(accountA.amount, amountA.subtract(accountPay));
+        assertEquals(accountA.amount, amountA.subtract(accountPay).subtract(ebankPay));
         assertEquals(accountB.amount, amountB.add(ebankPay).add(accountPay));
 
         //验证余额不足
@@ -202,9 +208,10 @@ public class TradeUtilTest extends FunctionalTest{
         assertNotNull(tradeBill);
         assertNotNull(tradeBill.getId());
 
-        TradeUtil.success(tradeBill);
+        result = TradeUtil.success(tradeBill);
+        assertFalse(result);
 
-        assertEquals(accountA.amount, amountA.add(ebankPay));
+        assertEquals(accountA.amount, amountA);
         assertEquals(accountB.amount, amountB);
     }
 

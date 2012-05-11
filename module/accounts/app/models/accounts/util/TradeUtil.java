@@ -2,6 +2,7 @@ package models.accounts.util;
 
 import models.accounts.*;
 import play.Logger;
+import play.db.jpa.JPAPlugin;
 
 import java.math.BigDecimal;
 
@@ -211,34 +212,18 @@ public class TradeUtil {
      * 交易成功
      *
      * @param tradeBill 需变更的交易记录
-     * @return 更新后的交易记录
-     */
-    public static TradeBill success(TradeBill tradeBill) {
-        tradeBill.tradeStatus = TradeStatus.SUCCESS;
+     * @return  是否成功
+     * */
+    public static boolean success(TradeBill tradeBill) {
 
-        //余额不足以支付订单中指定的使用余额付款的金额,并且银行付款的金额大于零
-        //则将充值的钱打入发起人账户里
-        if (tradeBill.fromAccount.amount.compareTo(tradeBill.balancePaymentAmount) < 0) {
-            if (tradeBill.ebankPaymentAmount.compareTo(BigDecimal.ZERO) >= 0) {
-                ChargeBill chargeBill
-	                = ChargeUtil.createWithTrade(tradeBill.fromAccount, tradeBill.ebankPaymentAmount, tradeBill);
-                ChargeUtil.success(chargeBill);
-	
-                return tradeBill;
-            }else {
-                return null;
-            }
-        }
-        if (tradeBill.balancePaymentAmount.compareTo(BigDecimal.ZERO) >= 0) {
+        try {
             AccountUtil.addBalance(
                     tradeBill.fromAccount.getId(),
-                    tradeBill.balancePaymentAmount.negate(),
+                    tradeBill.balancePaymentAmount.add(tradeBill.ebankPaymentAmount).negate(),
                     BigDecimal.ZERO,
                     tradeBill.getId(),
                     AccountSequenceType.PAY,
                     "支付");
-        }
-        if (tradeBill.ebankPaymentAmount.add(tradeBill.balancePaymentAmount).compareTo(BigDecimal.ZERO) >= 0) {
             AccountUtil.addBalance(
                     tradeBill.toAccount.getId(),
                     tradeBill.ebankPaymentAmount.add(tradeBill.balancePaymentAmount),
@@ -246,8 +231,20 @@ public class TradeUtil {
                     tradeBill.getId(),
                     AccountSequenceType.RECEIVE,
                     "收款");
+        } catch (BalanceNotEnoughException e) {
+            Logger.error(e, e.getMessage());
+            //回滚
+            JPAPlugin.closeTx(true);
+            return false;
+        } catch (AccountNotFoundException e) {
+            Logger.error(e, e.getMessage());
+            //回滚
+            JPAPlugin.closeTx(true);
+            return false;
         }
 
-        return tradeBill.save();
+        tradeBill.tradeStatus = TradeStatus.SUCCESS;
+        tradeBill.save();
+        return true;
     }
 }
