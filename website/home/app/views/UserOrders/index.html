@@ -1,6 +1,7 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 我的订单' /}
 #{set 'moreStyles'}
+    #{asset.css src:['/u/list.css'] /}
 <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
 <link href="@{'/public/stylesheets/user-center.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
@@ -47,9 +48,9 @@
                     <tr class="col-name">
                         <th width="340">商品</th>
                         <th width="100">单价（元）</th>
-                        <th width="28">数量</th>
-                        <th width="78">售后</th>
-                        <th width="108">实付款（元）</th>
+                        <th width="38">数量</th>
+                        <th width="70">售后</th>
+                        <th width="78">实付款（元）</th>
                         <th width="85">
                             <div class="pos_abs">
                             #{select 'condition.status', id:'status', class:'dingdan_stauts_bg', value:condition.status}
@@ -77,27 +78,27 @@
                         #{set m=0/}
                         #{list row.orderItems, as:'rowItem'}
                         <tr class="order-bd">
-                            <td width="340" height="80" align="left">
+                            <td height="80" align="left">
                                 <div class="left_shangpin"><a href="http://www.uhuila.cn/goods/${rowItem.goods.id}" target="_blank"><img src="${rowItem.goods.imageTinyPath}"/></a></div>
                                 <div class="right_shangpin"><a href="http://www.uhuila.cn/goods/${rowItem.goods.id}" target="_blank">${rowItem.goods.name}</a></div>
                             </td>
-                            <td width="100" align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
-                            <td width="78" align="center">${rowItem.buyNumber}</td>
-                             <td width="78" align="center"> 
+                            <td align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
+                            <td align="center">${rowItem.buyNumber}</td>
+                             <td align="center">
                              #{if row.status == models.order.OrderStatus.PAID}
                             <div class="caozuo_std">
                                 <a style="color:#3366CC"  href="/orders/refund/${row.id}"  id="apply_${row.id}">申请退款</a>
                             </div>
                             #{/if}</td>
                             #{if (++m == 1) }
-                                <td width="108" align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
-                                <td width="85" align="center" rowspan="${row.orderItems.size()}">&{'order.'+
+                                <td align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
+                                <td align="center" rowspan="${row.orderItems.size()}">&{'order.'+
                                     row.status}
                                      <div class="caozuo_std"><a style="color:#3366CC" href="@{UserOrders.details(row.id)}"
                                                                target="_blank"
                                             >订单详情</a></div>
                                 </td>
-                                <td width="80" align="center" rowspan="${row.orderItems.size()}">
+                                <td align="center" rowspan="${row.orderItems.size()}">
                                     #{if (row.status == models.order.OrderStatus.UNPAID)}
                                         <div class="caozuo_std"><a class="font_red_one"
                                                                    href="@{UserOrders.pay(row.id)}">付款</a></div>
