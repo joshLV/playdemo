@@ -14,8 +14,6 @@ public final class CaptchaValidateAction extends AbstractAction {
       String captcha_response = context.getRequestParameters().get(captchaValidationParameter);
       boolean valid = false;
  
-      System.out.println("begin valid:" + captchaValidationParameter);
-      
       if(captcha_response != null){
          String id = WebUtils.getHttpServletRequest(context).getSession().getId();
          System.out.println("sessionid=" + id);

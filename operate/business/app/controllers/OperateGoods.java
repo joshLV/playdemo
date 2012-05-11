@@ -11,7 +11,6 @@ import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
 import models.sales.GoodsCondition;
-import models.sales.GoodsLevelPrice;
 import models.sales.GoodsStatus;
 import models.sales.GoodsUnPublishedPlatform;
 import models.sales.MaterialType;
@@ -87,7 +86,8 @@ public class OperateGoods extends Controller {
         List<Brand> brandList = Brand.findByOrder(supplierList.get(0));
         renderInit(null);
 
-        render(brandList);
+        boolean selectAll = true;
+        render(brandList, selectAll);
     }
 
     /**
@@ -190,7 +190,8 @@ public class OperateGoods extends Controller {
             renderArgs.put("supplierList", supplierList);
             renderShopList(goods.supplierId);
             renderInit(goods);
-            render("OperateGoods/add.html");
+            boolean selectAll = false;
+            render("OperateGoods/add.html", selectAll);
         }
         //预览
         if (GoodsStatus.UNCREATED.equals(goods.status)) {
@@ -206,12 +207,7 @@ public class OperateGoods extends Controller {
             }
         }
         goods.createdBy = OperateRbac.currentUser().loginName;
-        for (GoodsLevelPrice levelPrice : goods.levelPrices) {
-            System.out.println(levelPrice.level.name() + ":" + levelPrice.price);
-            if (levelPrice.goods != null) {
-                System.out.println("levelPrice.goods.id:" + levelPrice.goods.id);
-            }
-        }
+
         goods.create();
         try {
             goods.imagePath = uploadImagePath(imagePath, goods.id, null);
@@ -357,14 +353,9 @@ public class OperateGoods extends Controller {
 
         //添加商品处理
         if (goods.unPublishedPlatforms != null) {
-            System.out.println("goods.unPublishedPlatforms.size():" + goods.unPublishedPlatforms.size());
             for (GoodsUnPublishedPlatform unPublishedPlatform : goods.unPublishedPlatforms) {
                 if (unPublishedPlatform == null) {
                     goods.unPublishedPlatforms.remove(unPublishedPlatform);
-                    System.out.println("goods.unPublishedPlatforms is null.");
-                } else {
-                    System.out.println("unPublishedPlatform.type:" + unPublishedPlatform.type);
-                    System.out.println("unPublishedPlatform.goods.id:" + unPublishedPlatform.goods.id);
                 }
             }
         }

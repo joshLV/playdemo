@@ -4,16 +4,7 @@
  */
 package controllers;
 
-import static java.math.BigDecimal.ZERO;
-import static play.Logger.warn;
-
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.uhuila.common.util.FileUploadUtil;
 import models.resale.ResalerLevel;
 import models.sales.Brand;
 import models.sales.Category;
@@ -24,9 +15,7 @@ import models.sales.MaterialType;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
-
 import org.apache.commons.lang.StringUtils;
-
 import play.Play;
 import play.data.binding.As;
 import play.data.validation.Required;
@@ -36,7 +25,15 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import com.uhuila.common.util.FileUploadUtil;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static java.math.BigDecimal.ZERO;
+import static play.Logger.warn;
 
 /**
  * 通用说明：
@@ -78,7 +75,8 @@ public class SupplierGoods extends Controller {
     @ActiveNavigation("goods_add")
     public static void add() {
         renderInit(null);
-        render();
+        boolean selectAll = true;
+        render(selectAll);
     }
 
     /**
@@ -135,7 +133,7 @@ public class SupplierGoods extends Controller {
             }
             subCategoryList = Category.findByParent(goods.topCategoryId);
         }
-  
+
         renderArgs.put("shopList", shopList);
         renderArgs.put("brandList", brandList);
         renderArgs.put("categoryList", categoryList);
@@ -159,15 +157,17 @@ public class SupplierGoods extends Controller {
 
         goods.setLevelPrices(levelPrices);
 
-        System.out.println("goods.useBeginTime=================="+goods.useBeginTime);
+        System.out.println("goods.useBeginTime==================" + goods.useBeginTime);
         checkExpireAt(goods);
         checkOriginalPrice(goods);
         for (String key : validation.errorsMap().keySet()) {
-            warn("validation.errorsMap().get(key):" + validation.errorsMap().get(key));
+            warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
         }
         if (Validation.hasErrors()) {
             renderInit(goods);
-            render("SupplierGoods/add.html");
+            boolean selectAll = false;
+
+            render("SupplierGoods/add.html", selectAll);
         }
         //添加商品处理
         goods.supplierId = supplierId;
@@ -334,12 +334,12 @@ public class SupplierGoods extends Controller {
         if (goods.effectiveAt != null && goods.expireAt != null && goods.expireAt.before(goods.effectiveAt)) {
             Validation.addError("goods.expireAt", "validation.beforeThanEffectiveAt");
         }
-        if ((StringUtils.isNotBlank(goods.useBeginTime) && StringUtils.isBlank(goods.useEndTime))  
-        		|| StringUtils.isBlank(goods.useBeginTime) && StringUtils.isNotBlank(goods.useEndTime) ) {
-        	Validation.addError("goods.useEndTime", "validation.allRequiredUseTime");
-        } else if (StringUtils.isNotBlank(goods.useBeginTime) && StringUtils.isNotBlank(goods.useEndTime) && goods.useBeginTime.compareTo(goods.useEndTime)>=0) {
+        if ((StringUtils.isNotBlank(goods.useBeginTime) && StringUtils.isBlank(goods.useEndTime))
+                || StringUtils.isBlank(goods.useBeginTime) && StringUtils.isNotBlank(goods.useEndTime)) {
+            Validation.addError("goods.useEndTime", "validation.allRequiredUseTime");
+        } else if (StringUtils.isNotBlank(goods.useBeginTime) && StringUtils.isNotBlank(goods.useEndTime) && goods.useBeginTime.compareTo(goods.useEndTime) >= 0) {
             Validation.addError("goods.useEndTime", "validation.beforeThanUseTime");
-        } 
+        }
     }
 
     /**

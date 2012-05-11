@@ -50,7 +50,7 @@ beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
             <tbody>
             <tr>
                 <td>#{if "add".equals(action)}
-                    #{vx.selectAllField listName:"goods.shops.id", selected:true/}
+                    #{vx.selectAllField listName:"goods.shops.id", selected:selectAll/}
                 #{/if}
                     #{else}
                     #{vx.selectAllField listName:"goods.shops.id"/}
