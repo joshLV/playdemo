@@ -189,34 +189,18 @@ public class AliPaymentFlow implements PaymentFlow{
             callbackLog.status = "invalid_trade";
         } else {
             boolean noOrder = true;
-            BigDecimal orderNeedPay = new BigDecimal("9999999999");
-            boolean orderPaid = true; 
-            Long tradeId = 0L;
-            if(out_trade_no.startsWith("charge")){
-                ChargeOrder chargeOrder = ChargeOrder.find("bySerialNumber", out_trade_no).first();
-                if(chargeOrder != null){
-                    noOrder = false;
-                    orderNeedPay = chargeOrder.chargeAmount;
-                    if(chargeOrder.status == ChargeOrderStatus.UNPAID){
-                        orderPaid = false;
-                    }
-                    tradeId = chargeOrder.tradeId;
-                }
-            }else{
-                Order order = Order.find("byOrderNumber", out_trade_no).first();
-                if(order != null){
-                    noOrder = false;
-                    orderNeedPay = order.needPay;
-                    if(order.status == OrderStatus.UNPAID){
-                        orderPaid = false;
-                    }
-                    tradeId = order.payRequestId;
+            boolean orderPaid = true;
+            Order order = Order.find("byOrderNumber", out_trade_no).first();
+            if(order != null){
+                noOrder = false;
+                if(order.status == OrderStatus.UNPAID){
+                    orderPaid = false;
                 }
             }
             if (noOrder) {
                 Logger.error("alipay_notify:查无此订单:" + out_trade_no);
                 callbackLog.status = "invalid_order";
-            } else if (total_fee.compareTo(orderNeedPay) < 0) {
+            } else if (total_fee.compareTo(order.needPay) < 0) {
                 Logger.error("alipay_notify:订单金额不符:" + out_trade_no);
                 callbackLog.status = "invalid_amount";
             } else if (orderPaid) {
@@ -224,18 +208,7 @@ public class AliPaymentFlow implements PaymentFlow{
                 success = true;
                 callbackLog.status = "processed";
             } else {
-                TradeBill tradeBill = TradeBill.findById(tradeId);
-                if(tradeBill != null){
-                    //最终所有条件满足
-                    TradeUtil.success(tradeBill);
-                    if(!out_trade_no.startsWith("charge")){
-                        Order order = Order.find("byOrderNumber", out_trade_no).first();
-                        order.paid();
-                    }
-                    success = true;
-                }else {
-                    callbackLog.status = "no_trade_found";
-                }
+                order.paid();
             }
         }
         callbackLog.save();

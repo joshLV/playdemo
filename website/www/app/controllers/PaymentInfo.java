@@ -79,18 +79,12 @@ public class PaymentInfo extends Controller {
 
 		//创建订单交易
 		PaymentSource paymentSource = PaymentSource.find("byCode", paymentSourceCode).first();
-		TradeBill tradeBill =
-				TradeUtil.createOrderTrade(account, balancePaymentAmount,ebankPaymentAmount,paymentSource, orderId);
-		if(tradeBill == null){
-			error(500, "error create trade bill");
-		}
-		order.payRequestId = tradeBill.getId();
 		order.payMethod = paymentSourceCode;
 
 		order.save();
 		//如果使用余额足以支付，则付款直接成功
 		if (ebankPaymentAmount.compareTo(BigDecimal.ZERO) == 0){
-			TradeUtil.success(tradeBill);
+            order.payMethod = PaymentSource.getBalanceSource().code;
 			order.paid();
 
 			render(order,paymentSource);

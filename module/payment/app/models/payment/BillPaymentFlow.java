@@ -345,10 +345,7 @@ public class BillPaymentFlow {
 					rtnOK=1;
 					break;
 				} else if (OrderStatus.UNPAID.equals(order.status)){
-					Long tradeId = order.payRequestId;
-					TradeBill tradeBill = TradeBill.findById(tradeId);
 					//最终所有条件满足
-					TradeUtil.success(tradeBill);
 					order.paid();
 					rtnOK=1;
 					break;

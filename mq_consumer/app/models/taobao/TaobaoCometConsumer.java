@@ -10,6 +10,7 @@ import com.taobao.api.response.LogisticsDummySendResponse;
 import com.taobao.api.response.TradeFullinfoGetResponse;
 import models.accounts.Account;
 import models.accounts.AccountType;
+import models.accounts.PaymentSource;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
@@ -190,17 +191,9 @@ public class TaobaoCometConsumer extends RabbitMQConsumer<TaobaoCometMessage>{
                     resalerOrder.accountPay = resalerOrder.needPay;
                     resalerOrder.discountPay = BigDecimal.ZERO;
 
-                    TradeBill tradeBill =
-                            TradeUtil.createOrderTrade(account, resalerOrder.accountPay, resalerOrder.discountPay,
-                                    null, resalerOrder.getId());
-                    if(tradeBill != null){
-                        resalerOrder.payRequestId = tradeBill.getId();
-                        resalerOrder.payMethod = null;
+                    resalerOrder.payMethod = PaymentSource.getBalanceSource().code;
 
-                        resalerOrder.paid();
-                    }else {
-                        Logger.info("auto process resaler order failed: can not create trade bill");
-                    }
+                    resalerOrder.paid();
                 }else {
                     Logger.info("auto process resaler order failed: set taobao order send failed");
                 }

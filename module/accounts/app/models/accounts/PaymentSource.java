@@ -24,6 +24,19 @@ public class PaymentSource extends Model {
         PaymentSource source = PaymentSource.find("byCode", code).first();
         return source == null ? "" : source.name;
     }
-
+    public static PaymentSource getBalanceSource(){
+        PaymentSource source = PaymentSource.find("byCode", "balance").first();
+        if(source == null){
+            source = new PaymentSource();
+            source.name = "余额支付";
+            source.detail = "余额支付";
+            source.code = "balance";
+            source.logo = null;
+            source.showOrder = 0;
+            source.paymentCode = "balance";
+            source.save();
+        }
+        return source;
+    }
 }
 

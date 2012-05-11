@@ -168,7 +168,6 @@ public class TenpayPaymentFlow {
 		String subject = params.get("subject") == null ? null : params.get("subject")[0];
 		String url = Play.configuration.getProperty("tenpay.return_url");
 		System.out.println("paymentNotify==========="+url);
-		boolean success = true;
 		//判断签名
 		if(isTenpaySign(params)) {
 
@@ -192,27 +191,21 @@ public class TenpayPaymentFlow {
 					Logger.error("tenpay_notify:没有此订单信息！");
 					callbackLog.status = "invalid_trade";
 					url+="?rtnOK=-1";
-				}
+				}else {
+                    BigDecimal amount= 	order.amount.multiply(new BigDecimal(100)).divide(new BigDecimal(1),0,BigDecimal.ROUND_HALF_UP);
 
-				BigDecimal amount= 	order.amount.multiply(new BigDecimal(100)).divide(new BigDecimal(1),0,BigDecimal.ROUND_HALF_UP);
-
-				//订单支付金额不相符
-				if(amount.compareTo(orderAmount) !=0) {
-					Logger.error("tenpay_notify:订单支付金额不相符！");
-					callbackLog.status = "invalid_order_money";
-					url+="?rtnOK=-2";
-				}
-
-				if (OrderStatus.PAID.equals(order.status)) {
-					Logger.error("tenpay_notify:订单已被处理:" + orderNo);
-					callbackLog.status = "processed";
-				} else if (success){
-					Long tradeId = order.payRequestId;
-					TradeBill tradeBill = TradeBill.findById(tradeId);
-					//最终所有条件满足
-					TradeUtil.success(tradeBill);
-					order.paid();
-				}
+                    //订单支付金额不相符
+                    if(amount.compareTo(orderAmount) !=0) {
+                        Logger.error("tenpay_notify:订单支付金额不相符！");
+                        callbackLog.status = "invalid_order_money";
+                        url+="?rtnOK=-2";
+                    }else if (OrderStatus.PAID.equals(order.status)) {
+                        Logger.error("tenpay_notify:订单已被处理:" + orderNo);
+                        callbackLog.status = "processed";
+                    } else {
+                        order.paid();
+                    }
+                }
 
 			} else {
 				Logger.error("tenpay_notify:支付失败");
