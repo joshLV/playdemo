@@ -347,8 +347,10 @@ public class Order extends Model {
         if(this.discountPay.compareTo(BigDecimal.ZERO) > 0 ){
             TradeBill chargeTradeBill = TradeUtil.createChargeTrade(account, this.discountPay, paymentSource);
             TradeUtil.success(chargeTradeBill);
+            /*
             JPAPlugin.closeTx(false);
             JPAPlugin.startTx(true);
+            */
             this.payRequestId = chargeTradeBill.getId();
         }
 
