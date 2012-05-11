@@ -598,7 +598,7 @@ public class Goods extends Model {
     }
 
     public static Goods findOnSale(long id) {
-        return find("id=? and status=? and deleted=? and baseSale >= 1 and expireAt > ?", id,
+        return find("id=? and deleted=? and status=? and baseSale >= 1 and expireAt > ?", id,
                 DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).first();
     }
 
@@ -819,7 +819,7 @@ public class Goods extends Model {
      */
     public static List<Goods> findTopRecommend(int limit) {
         return Goods.find("status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by recommend DESC",
-                GoodsStatus.ONSALE, new Date(), DeletedStatus.UN_DELETED).fetch(limit);
+                GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date() ).fetch(limit);
     }
 
     public void setPublishedPlatforms(List<GoodsPublishedPlatformType> publishedPlatforms) {
