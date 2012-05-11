@@ -1,9 +1,9 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 确认付款' /}
 #{set 'moreStyles'}
+<link href="@@{'/public/stylesheets/order_info.css'}" rel="stylesheet" type="text/css"/>
 <link href="@@{'/public/stylesheets/payment_info.css'}" rel="stylesheet" type="text/css"/>
 <link href="@@{'/public/stylesheets/carts-step.css'}" rel="stylesheet" type="text/css"/>
-<link href="@@{'/public/stylesheets/order_info.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/payment_info.js'}"></script>
@@ -13,44 +13,52 @@
 <div id="payment_result">
     <div style="text-align:center;">
         <a href="#" onclick="close_result_dialog();">关闭</a><br/><br/>
-        #{if order}
-            <a href="/payment_info/${order.id}">遇到问题，重新选择付款信息</a>&nbsp;&nbsp;&nbsp;&nbsp;
-        #{/if}
+    #{if order}
+        <a href="/payment_info/${order.id}">遇到问题，重新选择付款信息</a>&nbsp;&nbsp;&nbsp;&nbsp;
+    #{/if}
         <a href="http://home.uhuila.cn/orders">完成付款，查看结果</a>
     </div>
 </div>
 
 <!--主体内容部分-->
 
-<ol class="buy-step step2 clearfix">
+<ol class="buy-step step4 clearfix">
     <li><span>1</span>查看购物车 <em>>></em></li>
     <li><span>2</span>确认订单信息 <em>>></em></li>
     <li><span>3</span>确认付款 <em>>></em></li>
     <li class="buy-step-curr"><span>4</span>成功提交订单 <em>>></em></li>
 </ol>
+<div id="balance-pay" class="clearfix">
 #{if order}
     #{if order.status == models.order.OrderStatus.PAID}
-    <div>恭喜您付款成功</div>
+        <div id="order-box" class="clearfix">
+            <div class="order-num"><span>恭喜您付款成功</span></div>
+        </div>
     #{/if}
-#{else }
-    <div>已选择 ${paymentSource.name} 支付 ${order.discountPay} 元</div>
-
-    #{form @payIt(), target:"_blank", id: "pay_it_form"}
-        <input name="paymentCode" value="${paymentSource.code}" type="hidden"/>
-        <input name="orderId" value="${order.id}" type="hidden"/>
-        <input type="submit" value="确认支付" id="confirm_pay_it"/>
-    #{/form}
-
+    #{else }
+        <div id="order-box" class="clearfix">
+            <div class="order-num">已选择 ${paymentSource.name} 支付 ${order.discountPay} 元</div>
+        </div>
+        #{form @payIt(), target:"_blank", id: "pay_it_form"}
+            <input name="paymentCode" value="${paymentSource.code}" type="hidden"/>
+            <input name="orderId" value="${order.id}" type="hidden"/>
+            <button type="submit" id="confirm_pay">确认支付</button>
+        #{/form}
+    </div>
     <script type="text/javascript">
         $(window).load(
-                function(){
-                    $(window).scroll(function(){reset_result_dialog()});
-                    $(window).resize(function(){reset_result_dialog()});
+                function () {
+                    $(window).scroll(function () {
+                        reset_result_dialog()
+                    });
+                    $(window).resize(function () {
+                        reset_result_dialog()
+                    });
 
-                    $("#confirm_pay_it").click(function(){
+                    $("#confirm_pay").click(function () {
                         $("#full_bg").css({display:"block"});
                         reset_result_dialog();
-                        $(this).attr("disabled","disabled");
+                        $(this).attr("disabled", "disabled");
                         $("#pay_it_form").submit();
                     });
 
@@ -58,15 +66,14 @@
     </script>
 
 
-#{/else}
+    #{/else}
 
 
 #{/if}
 
 #{if !order}
-<div style="padding:20px auto">
-    对不起，找不到您所需要的订单:(
-</div>
+<div class="order-num"> 对不起，找不到您所需要的订单:(</div>
 #{/if}
+
 
 </div>
