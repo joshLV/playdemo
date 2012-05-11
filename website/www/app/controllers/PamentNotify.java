@@ -44,6 +44,7 @@ public class PamentNotify extends Controller {
 	public static void kuaiqianNotify(){
 		Map<String,String> map = billPaymentFlow.paymentNotify(params.all());
 		if(map != null && !"0".equals(map.get("rtnOK"))){
+			System.out.println("kuaiqianNotify====================="+"<result>"+map.get("rtnOK")+"</result><redirecturl>"+map.get("rtnUrl")+"</redirecturl>");
 			renderText("<result>"+map.get("rtnOK")+"</result><redirecturl>"+map.get("rtnUrl")+"</redirecturl>");
 		}else {
 			renderText("failed");
