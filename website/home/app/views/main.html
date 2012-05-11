@@ -4,19 +4,22 @@
     <meta charset="UTF-8">
     <title>#{get 'title' /}</title>
     #{asset.css src:['/u/base.css'] /}
+    #{asset.js src:['/u/slides.min.js', '/u/base.js'] /}
     #{get 'moreStyles' /}
     #{asset.js src:['/u/jquery-1.7.2.min.js'] /}
+    #{get 'moreScripts' /}
 </head>
 <body>
 <div id="header" class="clearfix">
     <div id="logo">
-        <a href="http://www.uhuila.com/"><img src="#{asset.url href:'/images/u/logo.png'/}" width="248" height="88" alt="优惠啦"/></a>
+        <a href="http://www.uhuila.com/"><img src="#{asset.url href:'/images/u/logo.png'/}" width="248" height="88"
+                                              alt="优惠啦"/></a>
     </div>
     <div id="menu">
         <div class="welcom">
         #{if cas?.isLogin}
-            欢迎您, <a class="zi_gray" href="http://home.uhuila.cn" id="login_name">${cas.loginName}</a>  <a class="zi_gray"
-                                                                                           href="/logout">退出</a>
+            欢迎您, <a class="zi_gray" href="http://home.uhuila.cn" id="login_name">${cas.loginName}</a> <a class="zi_gray"
+                                                                                                         href="/logout">退出</a>
         #{/if}
         #{else}
             您好，欢迎您来到优惠啦！ 请[<a class="zi_gray" id="login_name" href="/login">登录</a>] [<a href="/register">免费注册</a>]
@@ -29,8 +32,10 @@
             </div>
         </div>
         <div class="carts">
-            <div class="carts-hd"><a href="http://www.uhuila.cn/carts">购物车<span id="carts_size">${count}</span>件</a></div>
+            <div class="carts-hd"><a href="http://www.uhuila.cn/carts">购物车<span id="carts_size">${count}</span>件</a>
+            </div>
             <input type="hidden" id="reload" value="true"/>
+
             <div class="carts-bd" id="cart-list"></div>
 
         </div>
@@ -42,7 +47,7 @@
         <li #{if categoryId == 0}class="current"#{/if}><a href="http://www.uhuila.cn">首页</a></li>
         <li><a href="http://www.uhuila.cn/goods/list/1" #{if categoryId == 1}class="current"#{/if}>饮食</a></li>
         <li><a href="http://www.uhuila.cn/goods/list/2" #{if categoryId == 2}class="current"#{/if}>礼品</a></li>
-        *{
+    *{
         #{list categories, as: 'category'}
         <li class="hot_shangpin_li"><a #{if categoryId == category.id}class="tab_selected"#{/if}
                                                    #{else}class="tab_unselected"#{/else}
@@ -52,7 +57,7 @@
     </ul>
 </div>
 <div id="content">
-  #{doLayout /}
+#{doLayout /}
 </div>
 <div id="footer">
     <div class="ft-nav">
@@ -69,7 +74,5 @@
         优惠啦Copyright © 2011-2012 UHUILA.COM 版权所有 <span> 沪ICP备08114451号</span>
     </div>
 </div>
-    #{asset.js src:['/u/slides.min.js', '/u/base.js'] /}
-    #{get 'moreScripts' /}
 </body>
 </html>
