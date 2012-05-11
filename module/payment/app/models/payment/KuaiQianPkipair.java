@@ -26,6 +26,7 @@ public class KuaiQianPkipair {
 
 			// 读取密钥仓库（相对路径）
 			String path = Play.configuration.getProperty("99bill.privateKey","/opt/99bill/tester-rsa.pfx");
+			System.out.println("path===="+path);
 			FileInputStream ksfis = new FileInputStream(path);
 			BufferedInputStream ksbufin = new BufferedInputStream(ksfis);
 
