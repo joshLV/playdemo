@@ -164,6 +164,8 @@ public class Goods extends Controller {
 
             GoodsCondition goodsCond = new GoodsCondition(condition);
             goodsCond.status = GoodsStatus.ONSALE;
+            goodsCond.baseSaleBegin = 1;
+            goodsCond.expireAtBegin = new Date();
 
             JPAExtPaginator<models.sales.Goods> goodsPage = models.sales
                     .Goods.findByCondition(goodsCond, pageNumber, PAGE_SIZE);

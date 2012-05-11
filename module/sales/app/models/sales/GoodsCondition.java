@@ -186,12 +186,12 @@ public class GoodsCondition {
 
         if (baseSaleBegin >= 0){
             condBuilder.append(" and g.baseSale >= :baseSaleBegin");
-            paramMap.put("baseSale", baseSaleBegin);
+            paramMap.put("baseSaleBegin", baseSaleBegin);
         }
 
         if (baseSaleEnd >= 0){
             condBuilder.append(" and g.baseSale <= :baseSaleEnd");
-            paramMap.put("baseSale", baseSaleEnd);
+            paramMap.put("baseSaleEnd", baseSaleEnd);
         }
 
         if (expireAtBegin != null){
@@ -208,6 +208,7 @@ public class GoodsCondition {
             condBuilder.append(" and g.materialType=:materialType");
             paramMap.put("materialType", materialType);
         }
+        System.out.println("condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();
     }
 
