@@ -1,0 +1,14 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'添加门店' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/shops-add.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<div class="body">
+    <form class="form-horizontal" id="shopForm" action="@{OperateShops.create()}" method="post">
+        <legend>添加门店</legend>
+    #{set action:"add"/}
+    #{include '/OperateShops/shopForm.html' /}
+    </form>
+</div>
+<script type="text/javascript">loadArea($("#district").val());</script>
