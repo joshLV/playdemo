@@ -19,14 +19,14 @@ POST    /goods/filemanager                      UploadFiles.fileManagerJson
 GET     /goods_brands/{id}                      OperateBrands.goodsBrands
 GET     /category/sub/{id}                      Categories.showSubs
 
-GET     /shops                                  Shops.index
-GET     /shops/new                              Shops.add
-POST    /shops                                  Shops.create
-GET     /shops/{id}/edit                        Shops.edit
-POST    /shops/{id}                             Shops.update
-DELETE  /shops/{id}                             Shops.delete
-GET     /shops/area                             Shops.showAreas
-GET     /shops/{supplierId}/showGoodsShops      Shops.showGoodsShops
+GET     /shops                                  OperateShops.index
+GET     /shops/new                              OperateShops.add
+POST    /shops                                  OperateShops.create
+GET     /shops/{id}/edit                        OperateShops.edit
+POST    /shops/{id}                             OperateShops.update
+DELETE  /shops/{id}                             OperateShops.delete
+GET     /shops/area                             OperateShops.showAreas
+GET     /shops/{supplierId}/showGoodsShops      OperateShops.showGoodsShops
 
 GET     /suppliers                              Suppliers.index
 GET     /suppliers/new                          Suppliers.add

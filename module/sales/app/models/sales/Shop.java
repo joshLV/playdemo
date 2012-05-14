@@ -6,8 +6,20 @@ import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
 
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "shops")
@@ -65,6 +77,10 @@ public class Shop extends Model {
 
     @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = "shops", fetch = FetchType.LAZY)
     public Set<Goods> goods = new HashSet<>();
+    
+    
+    @Transient
+    public String supplierName;
 
     /**
      * 读取某商户的全部门店记录
@@ -78,10 +94,14 @@ public class Shop extends Model {
 
     public static ModelPaginator<Shop> query(Shop shopCondition, int pageNumber, int pageSize) {
         StringBuilder search = new StringBuilder();
-        search.append("supplierId=? and deleted=?");
+        search.append("deleted=?");
         ArrayList queryParams = new ArrayList();
-        queryParams.add(shopCondition.supplierId);
         queryParams.add(DeletedStatus.UN_DELETED);
+
+        if (shopCondition.supplierId > 0) {
+            search.append(" and supplierId=?");
+            queryParams.add(shopCondition.supplierId);
+        }
 
         if (!StringUtils.isBlank(shopCondition.name)) {
             search.append(" and name like ?");

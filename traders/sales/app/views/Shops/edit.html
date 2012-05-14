@@ -8,7 +8,7 @@
 <div class="body">
     <form class="form-horizontal" action="@{Shops.update(shop.id)}" method="post">
         <legend>编辑门店</legend>
-        #{include '/share/edit_shop.html' /}
+        #{include '/Shops/shopForm.html' /}
     </form>
 </div>
 <script type="text/javascript">loadArea($("#district").val());</script>

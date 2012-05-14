@@ -1,5 +1,5 @@
 /**
- * For Shops/add.html.
+ * For OperateShops/add.html.
  * User: sujie
  * Date: 3/16/12
  * Time: 6:07 PM

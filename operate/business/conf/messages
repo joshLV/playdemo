@@ -83,6 +83,9 @@ goods.useTime=使用时间
 imagePath=图片
 shop.name=门店名称
 shop.address=门店地址
+shop.supplier=商户
+shop.supplierId=商户
+shop.supplierName=商户
 
 supplier.NORMAL=正常
 supplier.FREEZE=冻结

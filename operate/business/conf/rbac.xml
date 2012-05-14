@@ -6,6 +6,8 @@
     <permission key="GOODS" text="商品管理" roles="admin"/>
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="admin"/>
     <permission key="SUPPLIERS" text="商户管理" roles="admin"/>
+    <permission key="SHOPS_NEW" text="门店添加" roles="admin"/>
+    <permission key="SHOPS" text="门店管理" roles="admin"/>
     <permission key="RESALERS" text="分销商管理" roles="admin"/>
     <permission key="ORDERS" text="运营订单管理" roles="admin"/>
     <permission key="COUPONS" text="券管理" roles="admin"/>
@@ -16,8 +18,6 @@
     <permission key="PLATFORMS_REPORT" text="券平台佣金账户的资金明细" roles="admin"/>
     <permission key="INCOMINGS_REPORT" text="收款账户的资金明细" roles="admin"/>
     <permission key="WITHDRAW_APPROVAL" text="审批提现申请" roles="admin"/>
-    <!--<permission key="SHOPS_NEW" text="门店添加"/> -->
-    <!--<permission key="SHOPS" text="门店管理"/> -->
 
     <permission key="BRANDS_NEW" text="品牌添加" roles="admin"/>
     <permission key="BRANDS" text="品牌管理" roles="admin"/>
@@ -28,14 +28,14 @@
             <navigation key="goods_index" action="OperateGoods.index" text="商品管理" permissions="GOODS"/>
         </navigation>
     </navigation>
-    <!--<navigation key="shops" text="门店" permission="SHOPS_NEW,SHOPS"> -->
-    <!--<navigation key="shops_add" action="Shops.add" text="门店添加"/> -->
-    <!--<navigation key="shops_index" action="Shops.index" text="门店管理"/> -->
-    <!--</navigation> -->
     <navigation key="supplier_app" text="商户管理" action="Suppliers.index">
         <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
             <navigation key="suppliers_add" action="Suppliers.add" text="商户添加" permissions="SUPPLIERS_NEW"/>
             <navigation key="suppliers_index" action="Suppliers.index" text="商户管理" permissions="SUPPLIERS"/>
+        </navigation>
+        <navigation key="shops" text="门店" permission="SHOPS_NEW,SHOPS">
+            <navigation key="shops_add" action="OperateShops.add" text="门店添加" permissions="SHOPS_NEW"/>
+            <navigation key="shops_index" action="OperateShops.index" text="门店管理" permissions="SHOPS"/>
         </navigation>
         <navigation key="brands" text="品牌" permissions="BRANDS_NEW,BRANDS">
             <navigation key="brands_add" action="OperateBrands.add" text="品牌添加" permissions="BRANDS_NEW"/>
@@ -61,7 +61,7 @@
     <navigation key="report_app" text="财务报表" action="OperateReports.showIncomingReport">
         <navigation key="consumers" text="消费者" permission="CONSUMERS_REPORT">
             <navigation key="consumers_reports" action="OperateReports.showConsumerReport" text="消费者的资金明细"
-                    permission="CONSUMERS_REPORT"/>
+                        permission="CONSUMERS_REPORT"/>
         </navigation>
         <navigation key="resales" text="分销商" permission="RESALES_REPORT">
             <navigation key="resales_reports" action="OperateReports.showResaleReport" text="分销商的资金明细"
