@@ -7,7 +7,7 @@ load:['fixture/payment_source.yml','fixture/resaler.yml']
     openAndWait('/charge')
     type('name=amount','-1')
     clickAndWait('css=input[type="submit"]')
-    verifyTitle('Application error')
+    verifyTextPresent('最少充值1.00元!')
 
     openAndWait('/charge')
     type('name=amount','10')
