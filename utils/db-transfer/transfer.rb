@@ -164,9 +164,8 @@ def transfer_users
     ReebUser.all.each {|u| hash[u.id] = u}
   }
   UhlUser.all.each do |u|
-    puts "id=#{u.user_id}"
+    puts "transfer_users: user.id=#{u.user_id}"
     DataMapper.repository(:target) {
-      puts "u.id=#{u.user_id}"
       ru = hash[u.user_id]
       if ru.nil?
         ru = ReebUser.new
@@ -193,14 +192,10 @@ def transfer_users
 end
 
 def transfer_user_info(user_hash)
-  info_hash = Hash.new
-  DataMapper.repository(:target) {
-    ReebUserInfo.all.each{|rui| info_hash[rui.id] = rui}
-  }
   UhlUserInfo.all.each do |u|
     DataMapper.repository(:target) {
       puts "u.user_id=#{u.user_id}"
-      ru = info_hash[u.user_id]
+      ru = ReebUserInfo.get(u.user_id)
       user = user_hash[u.user_id]
       unless user.nil?
         if ru.nil?
@@ -227,7 +222,6 @@ def transfer_user_info(user_hash)
       end
     }
   end
-  info_hash.clear
 end
 
 def des_decrypt(encrypt_value)
@@ -254,18 +248,13 @@ class ReebAccount
   property :status, String
   property :uid, Integer
   property :uncash_amount, Decimal
-  property :error_message, String
 end
 
 def transfer_user_amount(user_hash)
-  amount_hash = Hash.new
-  DataMapper.repository(:target) {
-    ReebAccount.all.each{|a| amount_hash[a.uid] = a}
-  }
   UhlUserInfo.all.each do |u|
     DataMapper.repository(:target) {
       puts "u.user_id=#{u.user_id}"
-      ru = amount_hash[u.user_id]
+      ru = ReebAccount.first(uid: u.user_id)
       user = user_hash[u.user_id]
       unless user.nil?
         if ru.nil?
@@ -274,20 +263,17 @@ def transfer_user_amount(user_hash)
         end
         ru.status = "NORMAL"
         ru.account_type = "CONSUMER"
-        #begin
-          ru.amount = u.amount.nil? ? 0.0 : des_decrypt(u.amount)
-        # rescue
-        #   ru.error_message = u.amount.nil? ? "ERROR" : u.amount
-        #   puts "u.amount=#{u.amount.nil? ? "NULL" : u.amount}"
-        #   ru.amount = -1
-        # end
+        if !u.amount.nil? && u.amount.length < 20
+          ru.amount = des_decrypt(u.amount)
+        else
+          ru.amount = 0
+        end
         ru.created_at = Time.now
         ru.uncash_amount = u.lock_amount
         ru.save
       end
     }
   end
-  amount_hash.clear
 end
 
 class UhlUserAddress
@@ -336,14 +322,10 @@ class ReebUserAddress
 end
 
 def transfer_user_address(user_hash)
-  addr_hash = Hash.new
-  DataMapper.repository(:target) {
-    ReebUserAddress.all.each{|a| addr_hash[a.user_id] = a}
-  }
   UhlUserAddress.all.each do |u|
     puts "addr_id=#{u.addr_id}"
     DataMapper.repository(:target) {
-      ru = addr_hash[u.user_id]
+      ru = ReebUserAddress.first(user_id: u.user_id)
       user = user_hash[u.user_id]
       unless user.nil?
         if ru.nil?
@@ -365,18 +347,13 @@ def transfer_user_address(user_hash)
       end
     }
   end
-  addr_hash.clear
 end
 
 def transfer_user_point(user_hash)
-  point_hash = Hash.new
-  DataMapper.repository(:target) {
-    ReebUserPoint.all.each{|p| point_hash[p.id] = p}
-  }
   UhlUserPoint.all.each do |u|
     DataMapper.repository(:target) {
       puts "u.point_id=#{u.points_id}"
-      ru = point_hash[u.points_id]
+      ru = ReebUserPoint.get(u.points_id)
       user = user_hash[u.user_id]
       unless user.nil?
         if ru.nil?
@@ -393,7 +370,6 @@ def transfer_user_point(user_hash)
       end
     }
   end
-  point_hash.clear
 end
 
 user_hash = transfer_users
