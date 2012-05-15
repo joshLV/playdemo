@@ -3,7 +3,14 @@ package models.sales;
 import org.apache.commons.lang.StringUtils;
 import play.db.jpa.GenericModel;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -179,5 +186,10 @@ public class Area extends GenericModel {
             }
         }
         return areas;
+    }
+
+    public static Area findParent(String areaId) {
+        Area area = findById(areaId);
+        return area.parent;
     }
 }

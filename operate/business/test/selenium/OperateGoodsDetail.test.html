@@ -7,24 +7,24 @@ models.sales.Brand.class],
 load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/areas.yml','fixture/base_data.yml','fixture/goods.yml'] /}
 
 
-#{selenium '电子消费券一览'}
+#{selenium '商品一览'}
     #{include 'test/selenium/step/login.selenium' /}
     open('/goods')
-    assertTextPresent('消费券一览')
+    assertTextPresent('商品一览')
 #{/selenium}
 
-#{selenium '查看电子消费券'}
+#{selenium '查看商品'}
     #{include 'test/selenium/step/login.selenium' /}
     open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods1")}')
-    verifyTitle('查看消费券')
+    verifyTitle('查看商品')
     verifyTextPresent('测试商品1')
     verifyTextPresent('淘宝网')
 #{/selenium}
 
-#{selenium '修改电子消费券'}
+#{selenium '修改商品'}
     #{include 'test/selenium/step/login.selenium' /}
     open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods2")}/edit')
-    verifyTitle('修改消费券')
+    verifyTitle('修改商品')
     type('id=goods_no','002')
     type('id=goods_name','测试商品2')
     open('/goods?page=1')

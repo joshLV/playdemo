@@ -15,18 +15,17 @@ function loadArea(areaId) {
             alert('地区读取失败!');
         },
         success:function (msg) {
-            $("#area").empty();
+            $("#shop_areaId").empty();
             $.each(eval(msg), function (i, item) {
-                $("<option value='" + item.id + "'>" + item.name + "</option>").appendTo($("#area"));
+                $("<option value='" + item.id + "'>" + item.name + "</option>").appendTo($("#shop_areaId"));
             });
         }
     });
-    $("#area").change();
 }
 
-$(document).ready(function () {
-    $("#district").change(function () {
-        loadArea($("#district").val());
+$(function () {
+    $("#shop_districtId").change(function () {
+        loadArea($("#shop_districtId").val());
     });
 
 

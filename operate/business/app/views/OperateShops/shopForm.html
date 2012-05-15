@@ -10,48 +10,17 @@
 <input type="hidden" name="shop.supplierId" value="${shop?.supplierId}">
     #{layout_operate.textField name:'shop.supplierName', value:shop?.supplierName, disabled:true/}
 #{/else}
-#{layout_operate.selectList name:'shop.cityId', value:shop?.cityId, list:cities/}
-#{layout_operate.selectList name:'shop.districtId', value:shop?.districtId, list:districts/}
-#{layout_operate.selectList name:'shop.areaId', value:shop?.areaId, list:areas/}
 
-*{<div class="control-group">}*
-    *{<label for="city" class="control-label">城&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;市</label>}*
-
-    *{<div class="controls">}*
-        *{<select id="city" name="city" class="input-large">}*
-        *{#{list items:cities, as:'city' }}*
-            *{<option value="${city.id}">${city.name}</option>}*
-        *{#{/list}}*
-        *{</select>}*
-    *{</div>}*
-*{</div>}*
-*{<div class="control-group">}*
-    *{<label for="district" class="control-label">区&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;域</label>}*
-
-    *{<div class="controls">}*
-        *{<select id="district" name="district" class="input-large">}*
-        *{#{list districts, as:'district' }}*
-            *{<option value="${district.id}">${district.name}</option>}*
-        *{#{/list}}*
-        *{</select>}*
-    *{</div>}*
-*{</div>}*
-*{<div class="control-group">}*
-    *{<label for="area" class="control-label">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;圈</label>}*
-
-    *{<div class="controls">}*
-        *{<select id="area" name="shop.areaId" class="input-large">}*
-        *{#{list areas, as:'area' }}*
-            *{<option value="${area.id}">${area.name}</option>}*
-        *{#{/list}}*
-        *{</select>}*
-    *{</div>}*
-*{</div>}*
-#{layout_operate.textField name:'shop.name', value:shop?.name, required:true/}
+#{layout_operate.selectField name:'shop.cityId', class:'span2', value:shop?.cityId, error:'shop.cityId',list:cities/}
+#{layout_operate.selectField name:'shop.districtId', class:'span2', value:shop?.districtId, error:'shop.districtId',list:districts/}
+#{layout_operate.selectField name:'shop.areaId', class:'span2', value:shop?.areaId, error:'shop.areaId',list:areas/}
+#{layout_operate.textField name:'shop.name', class:'span2', value:shop?.name, required:true/}
 #{layout_operate.textField name:'shop.address', value:shop?.address, required:true/}
 #{layout_operate.textField name:'shop.phone', value:shop?.phone/}
 
 <div class="form-actions">
-    <button class="btn btn-primary" type="submit">保 存</button>
-    <button class="btn" type="reset">取 消</button>
+    <button class="btn btn-primary" id="save" type="submit">保 存</button>
+#{if "edit".equals(action)}
+    #{vx.cancelButton url:'/shops', class:'btn btn-primary'/}
+#{/if}
 </div>

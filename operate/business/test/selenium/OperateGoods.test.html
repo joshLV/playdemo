@@ -9,8 +9,8 @@ load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/areas.yml','fixtu
 #{selenium '添加商品数据-保存按钮'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/goods/new')
-verifyTitle('添加消费券')
-verifyTextPresent('添加消费券')
+verifyTitle('添加商品')
+verifyTextPresent('添加商品')
 verifyTextPresent('电子券')
 verifyTextPresent('实物')
 verifyTextPresent('淘宝网')
@@ -49,17 +49,19 @@ verifyTextPresent('使用结束时间要大于开始时间!')
 type('id=goods_useBeginTime','09:00')
 type('id=goods_useEndTime','19:00')
 clickAndWait('id=save')
-*{verifyTitle('电子消费券一览')}*
-*{verifyTextPresent('电子消费券一览')}*
+*{verifyTitle('商品一览')}*
+*{verifyTextPresent('商品一览')}*
 #{/selenium}
 
 #{selenium '添加商品数据-保存并上架按钮'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/goods/new')
-verifyTitle('添加消费券')
-verifyTextPresent('添加消费券')
+verifyTitle('添加商品')
+verifyTextPresent('添加商品')
 verifyTextPresent('淘宝网')
 select('id=goods_supplierId','label=肯德基')
+waitForText('id=goods_brand_id','来一份 豆捞坊')
+
 select('id=goods_topCategoryId','label=旅游')
 *{waitForCondition('selenium.isTextPresent("上海")',10000)}*
 *{select('id=categoryId','label=上海')}*
@@ -81,17 +83,17 @@ runScript('element=idocument.getElementsByTagName("body")[0];')
 runScript('element.innerHTML  = "this is a test thread";')
 
 clickAndWait('id=onsale')
-verifyTitle('添加消费券')
+verifyTitle('添加商品')
 verifyTextPresent('无效的图片!')
-*{verifyTitle('电子消费券一览')}*
-*{verifyTextPresent('电子消费券一览')}*
+*{verifyTitle('商品一览')}*
+*{verifyTextPresent('商品一览')}*
 #{/selenium}
 
 #{selenium '添加商品数据-保存预览按钮'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/goods/new')
-verifyTitle('添加消费券')
-verifyTextPresent('添加消费券')
+verifyTitle('添加商品')
+verifyTextPresent('添加商品')
 verifyTextPresent('淘宝网')
 select('id=goods_supplierId','label=肯德基')
 select('id=goods_topCategoryId','label=旅游')
@@ -114,7 +116,7 @@ runScript('idocument = element.contentDocument;')
 runScript('element=idocument.getElementsByTagName("body")[0];')
 runScript('element.innerHTML  = "this is a test thread";')
 clickAndWait('id=save')
-verifyTitle('添加消费券')
+verifyTitle('添加商品')
 verifyTextPresent('到期时间不能早于有效期开始时间!')
 verifyTextPresent('无效的图片!')
 verifyTextPresent('采购价不能超过原价!')

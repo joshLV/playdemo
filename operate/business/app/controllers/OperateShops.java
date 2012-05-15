@@ -75,14 +75,34 @@ public class OperateShops extends Controller {
      */
     @ActiveNavigation("shops_add")
     public static void add(Shop shop) {
+        renderParams(shop);
+        render(shop);
+    }
+
+    private static void renderParams(Shop shop) {
         List<Supplier> supplierList = Supplier.findAll();
+        if (StringUtils.isNotEmpty(shop.areaId)) {
+            Area district = Area.findParent(shop.areaId);
+            shop.districtId = district.id;
+            Area city = Area.findParent(district.id);
+            shop.cityId = city.id;
+        }
         //城市列表
         List<Area> cities = Area.findAllSubAreas(null);
         //区域列表
-        List<Area> districts = Area.findAllSubAreas(cities.get(0).getId());
+        String cityId = StringUtils.isEmpty(shop.cityId) ? cities.get(0).getId() : shop.cityId;
+        List<Area> districts = Area.findAllSubAreas(cityId);
         //商圈列表
-        List<Area> areas = Area.findAllSubAreas(districts.get(0).getId());
-        render(supplierList, cities, districts, areas, shop);
+        String districtId = StringUtils.isEmpty(shop.districtId) ? districts.get(0).getId() : shop.districtId;
+        List<Area> areas = Area.findAllSubAreas(districtId);
+        if (shop.areaId == null && areas != null && areas.get(0) != null) {
+            shop.areaId = areas.get(0).id;
+        }
+
+        renderArgs.put("districts", districts);
+        renderArgs.put("areas", areas);
+        renderArgs.put("cities", cities);
+        renderArgs.put("supplierList", supplierList);
     }
 
     /**
@@ -123,31 +143,25 @@ public class OperateShops extends Controller {
      * @param id 门店标识
      */
     public static void edit(long id, Shop shop) {
-        Shop originalShop = shop;
-        originalShop.id = id;
-        if (originalShop.areaId == null) {
+        Shop originalShop;
+        if (id > 0) {
             originalShop = Shop.findById(id);
-            if (originalShop == null) {
-                error(404, "没有找到该门店");
-            }
-            Supplier supplier = Supplier.findById(originalShop.supplierId);
-            if (supplier != null) {
-                originalShop.supplierName = supplier.fullName;
-            }
-
+        } else {
+            originalShop = shop;
+        }
+        if (originalShop == null) {
+            error(404, "没有找到该门店!");
         }
 
-        List<Supplier> supplierList = Supplier.findAll();
-        //城市列表
-        List<Area> cities = Area.findAllSubAreas(null);
-        //区域列表
-        List<Area> districts = Area.findAllSubAreas(cities.get(0).getId());
-        //商圈列表
-        List<Area> areas = Area.findAllSubAreas(districts.get(0).getId());
+        Supplier supplier = Supplier.findById(originalShop.supplierId);
+        if (supplier != null) {
+            originalShop.supplierName = supplier.fullName;
+        }
 
+        renderParams(originalShop);
 
         renderArgs.put("shop", originalShop);
-        render(supplierList, cities, districts, areas);
+        render();
     }
 
     /**

@@ -1,12 +1,11 @@
 #{extends 'layout_operate/layout.html' /}
 #{include '/share/nav.html' /}
-#{set title:'门店列表' /}
+#{set title:'门店一览' /}
 <div class="body">
 
-    <legend>门店列表</legend>
+    <legend>${title}</legend>
     <form class="form-horizontal" action="@{OperateShops.index()}" method="get">
         <table class="table table-striped">
-
             <tbody>
             <tr>
                 <td>商户</td>
@@ -48,7 +47,8 @@
             <td>${shop.name}</td>
             <td>${shop.address}</td>
             <td>${shop.phone}</td>
-            <td><a href="@{OperateShops.edit(shop.id)}">修改</a>/#{vx.deleteLink action:"shops", id:shop.id, name:shop.name/}
+            <td>
+                <a href="@{OperateShops.edit(shop.id)}">修改</a>/#{vx.deleteLink action:"shops", id:shop.id, name:shop.name/}
             </td>
         </tr>
         #{/paginate.list}
