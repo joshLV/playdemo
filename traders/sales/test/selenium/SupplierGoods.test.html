@@ -2,17 +2,25 @@
     models.supplier.Supplier.class,
     models.sales.Category.class,
     models.sales.Area.class,
+    models.sales.Shop.class,
     models.supplier.Supplier.class,
     models.sales.Goods.class,
     models.sales.Brand.class],
     load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/areas.yml','fixture/base_data.yml','fixture/goods.yml'] /}
-
-#添加商品数据-保存按钮
-#{selenium}
+%{
+    Long supplierId = play.test.Fixtures.idCache.get("models.supplier.Supplier-kfc");
+    models.sales.Shop shop = new models.sales.Shop();
+    shop.address = "test-shop";
+    shop.name = "test-name";
+    shop.supplierId = supplierId;
+    shop.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED;
+    shop.create();
+}%
+#{selenium '添加商品数据-保存按钮'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/goods/new')
-verifyTitle('添加电子消费券')
-verifyTextPresent('添加电子消费券')
+verifyTitle('添加商品')
+verifyTextPresent('添加商品')
 select('id=goods_topCategoryId','label=旅游')
 *{waitForCondition('selenium.isTextPresent("上海")',10000)}*
 *{select('id=categoryId','label=上海')}*
@@ -46,12 +54,11 @@ verifyTextPresent('使用结束时间要大于开始时间!')
 *{verifyTextPresent('电子消费券一览')}*
 #{/selenium}
 
-#添加商品数据-保存按钮
-#{selenium}
+#{selenium '添加商品数据-保存按钮'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/goods/new')
-verifyTitle('添加电子消费券')
-verifyTextPresent('添加电子消费券')
+verifyTitle('添加商品')
+verifyTextPresent('添加商品')
 select('id=goods_topCategoryId','label=旅游')
 *{waitForCondition('selenium.isTextPresent("上海")',10000)}*
 *{select('id=categoryId','label=上海')}*
@@ -78,12 +85,11 @@ clickAndWait('id=save')
 *{verifyTextPresent('电子消费券一览')}*
 #{/selenium}
 
-#添加商品数据-保存并上架按钮
-#{selenium}
+#{selenium '添加商品数据-保存并上架按钮'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/goods/new')
-verifyTitle('添加电子消费券')
-verifyTextPresent('添加电子消费券')
+verifyTitle('添加商品')
+verifyTextPresent('添加商品')
 select('id=goods_topCategoryId','label=旅游')
 *{waitForCondition('selenium.isTextPresent("上海")',10000)}*
 *{select('id=categoryId','label=上海')}*
@@ -104,18 +110,17 @@ runScript('element=idocument.getElementsByTagName("body")[0];')
 runScript('element.innerHTML  = "this is a test thread";')
 
 clickAndWait('id=onsale')
-verifyTitle('添加电子消费券')
+verifyTitle('添加商品')
 verifyTextPresent('无效的图片!')
 *{verifyTitle('电子消费券一览')}*
 *{verifyTextPresent('电子消费券一览')}*
 #{/selenium}
 
-#添加商品数据-保存预览按钮
-#{selenium}
+#{selenium '添加商品数据-保存预览按钮'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/goods/new')
-verifyTitle('添加电子消费券')
-verifyTextPresent('添加电子消费券')
+verifyTitle('添加商品')
+verifyTextPresent('添加商品')
 select('id=goods_topCategoryId','label=旅游')
 *{waitForCondition('selenium.isTextPresent("上海")',10000)}*
 *{select('id=categoryId','label=上海')}*
@@ -136,7 +141,7 @@ runScript('idocument = element.contentDocument;')
 runScript('element=idocument.getElementsByTagName("body")[0];')
 runScript('element.innerHTML  = "this is a test thread";')
 clickAndWait('id=save')
-verifyTitle('添加电子消费券')
+verifyTitle('添加商品')
 verifyTextPresent('无效的图片!')
 verifyTextPresent('采购价不能超过原价!')
 #{/selenium}

@@ -1,5 +1,5 @@
 #{extends 'layout_trader/layout.html' /}
-#{set title:'添加电子消费券' /}
+#{set title:'添加商品' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -8,7 +8,7 @@
 #{include '/share/nav.html' /}
 <div class="body">
 #{form @SupplierGoods.create() , id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
-    <legend>添加电子消费券</legend>
+    <legend>${title}</legend>
     #{set action:"add"/}
     #{include '/SupplierGoods/goodsForm.html'/}
 #{/form}

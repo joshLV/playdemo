@@ -1,12 +1,12 @@
 #{extends 'layout_trader/layout.html' /}
-#{set title:'电子消费券一览' /}
+#{set title:'商品一览' /}
 #{include '/share/nav.html' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/goods.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 
 <div class="body">
-    <legend>电子消费券一览</legend>
+    <legend>${title}</legend>
     <form class="form-horizontal" name="frmlist" id="frmlist" action="@{SupplierGoods.index()}" method="GET">
         <table width="100%">
             <tr>

@@ -1,5 +1,5 @@
 #{extends 'layout_trader/layout.html' /}
-#{set title:'修改电子消费券' /}
+#{set title:'修改商品' /}
 #{get 'moreScripts'}
 <script src="@{'/public/javascripts/kindeditor-min.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/lang/zh_CN.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -8,7 +8,7 @@
 #{include '/share/nav.html' /}
 <div class="body">
 #{form @SupplierGoods.update(id), id:'form',enctype:'multipart/form-data',class:"form-horizontal",method:'PUT' }
-    <legend>修改电子消费券</legend>
+    <legend>${title}</legend>
     #{set action:"edit"/}
     #{include '/SupplierGoods/goodsForm.html'/}
 #{/form}
