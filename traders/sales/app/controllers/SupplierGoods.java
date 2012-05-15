@@ -74,6 +74,11 @@ public class SupplierGoods extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void add() {
+        Supplier supplier = SupplierRbac.currentUser().supplier;
+        if (!Shop.containsShop(supplier.id)) {
+            String noShopTip = "所有商户都没有门店，无法添加商品。请先为商户<a href='/shops/new'>添加门店</a>！";
+            render(noShopTip);
+        }
         renderInit(null);
         boolean selectAll = true;
         render(selectAll);

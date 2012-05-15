@@ -77,14 +77,14 @@ public class Shop extends Model {
 
     @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = "shops", fetch = FetchType.LAZY)
     public Set<Goods> goods = new HashSet<>();
-    
-    
+
+
     @Transient
     public String supplierName;
-    
+
     @Transient
     public String cityId;
-    
+
     @Transient
     public String districtId;
 
@@ -97,6 +97,12 @@ public class Shop extends Model {
     public static List<Shop> findShopBySupplier(Long supplierId) {
         return Shop.find("bySupplierIdAndDeleted", supplierId, DeletedStatus.UN_DELETED).fetch();
     }
+
+
+    public static boolean containsShop(Long supplierId) {
+        return Shop.count("bySupplierIdAndDeleted", supplierId, DeletedStatus.UN_DELETED) > 0;
+    }
+
 
     public static ModelPaginator<Shop> query(Shop shopCondition, int pageNumber, int pageSize) {
         StringBuilder search = new StringBuilder();

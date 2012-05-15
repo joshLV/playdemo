@@ -77,7 +77,21 @@ public class OperateGoods extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void add() {
-        List<Supplier> supplierList = Supplier.findUnDeleted();
+        List<Supplier> suppliers = Supplier.findUnDeleted();
+        //过滤掉无门店的商户
+        List<Supplier> supplierList = new ArrayList<>();
+        //todo 性能需要优化
+        for (Supplier supplier : suppliers) {
+            if (Shop.containsShop(supplier.id)) {
+                supplierList.add(supplier);
+            }
+        }
+        if (suppliers.size() > 0 && supplierList.size() == 0) {
+            String noShopTip = "所有商户都没有门店，无法添加商品。请先为商户<a href='/shops/new'>添加门店</a>！";
+
+            System.out.println("noShopTip:" + noShopTip);
+            render(noShopTip);
+        }
         renderArgs.put("supplierList", supplierList);
         if (CollectionUtils.isNotEmpty(supplierList)) {
             renderShopList(supplierList.get(0).id);

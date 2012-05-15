@@ -1,11 +1,22 @@
 #{fixture delete:[
-models.admin.SupplierUser.class,models.admin.SupplierRole.class,
+models.admin.SupplierUser.class,
+models.admin.SupplierRole.class,
 models.sales.Category.class,
 models.sales.Area.class,
+models.sales.Shop.class,
 models.supplier.Supplier.class,
 models.sales.Goods.class,
 models.sales.Brand.class],
 load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/areas.yml','fixture/base_data.yml','fixture/goods.yml'] /}
+%{
+    Long supplierId = play.test.Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
+    models.sales.Shop shop = new models.sales.Shop();
+    shop.address = "test-shop";
+    shop.name = "test-name";
+    shop.supplierId = supplierId;
+    shop.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED;
+    shop.create();
+}%
 #{selenium '添加商品数据-保存按钮'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/goods/new')

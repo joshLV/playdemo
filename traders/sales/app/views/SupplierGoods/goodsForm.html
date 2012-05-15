@@ -1,3 +1,7 @@
+#{if noShopTip != null}
+<h1>${noShopTip.raw()}</h1>
+#{/if}
+#{else}
 #{set 'moreScripts'}
     #{get 'moreScripts'/}
 <script src="@{'/public/javascripts/goods-form.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -89,3 +93,4 @@ beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
         });
     });
 </script>
+#{/else}
