@@ -93,7 +93,8 @@ $(window).load(
 						for (var i=0;i<len;i++) {
 							$('#goodsId_'+ids[i]).html(" <input type='checkbox' disabled/>");
 							$('#add_'+ids[i]).html("已加入分销库");
-							$('#libray_'+ids[i]).removeClass("font_blue");
+							$('#add_'+ids[i]).attr("style","");
+							$('#add_'+ids[i]).attr("onclick","").unbind("click");
 						}
 						//5秒后自动消失
 						setTimeout('refeash()', 5000);
@@ -111,17 +112,15 @@ function refeash(){
 /**
  *点击加入分销库按钮
  */
-function addToLibray(goodsId) {
+function addToLibrary(goodsId) {
 
 	$.post("/library",{'goodsIds':goodsId},
 	function (data) {
-     	$('#add_cart_result_'+data.goodsId).show();
      	$('#add_'+data.goodsId).html("已加入分销库");
-		$('#libray_'+data.goodsId).removeClass("font_blue");
+        $('#add_'+data.goodsId).attr("style","");
+		$('#add_'+data.goodsId).attr("onclick","").unbind("click");
 		$('#goodsId_'+data.goodsId).html(" <input type='checkbox' disabled/>");
-		//5秒后自动消失
-		setTimeout("display("+data.goodsId+")", 5000);
-	});	
+	});
 }
 
 function display(goodsId){

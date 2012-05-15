@@ -12,19 +12,20 @@ load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_uni
     #{include 'test/selenium/step/login.selenium' /}
 
     open('/goods')
-	click('id=libray_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}')
-	*{waitForElementPresent('id=add_cart_result_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}')}*
-	
-	click('id=libray_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_008")}')
-	*{waitForElementPresent('id=add_cart_result_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_008")}')}*
-    
+	click('id=add_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}')
+	waitForText('id=add_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}', '已加入分销库')
+
+
+    click('id=add_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_008")}')
+    waitForText('id=add_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_008")}', '已加入分销库')
+
     openAndWait('/carts')
     
-    select('id=favs_list','label=京东商城300元京券')
+    click('id=goods_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_007")}')
     type('name=phones','${phone1} ${phone2}')
     clickAndWait('id=submit')
     
-    select('id=favs_list','label=京东商城400元京券')
+    click('id=goods_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_008")}')
     type('name=phones','${phone1} ${phone2}')
     clickAndWait('id=submit')
 

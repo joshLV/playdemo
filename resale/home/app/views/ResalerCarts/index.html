@@ -69,7 +69,9 @@
                 #{list items:goodsGroup, as:'cartItem'}
             <tr id="row_${cartItem.goods.id}">
                 #{if ++index==1}
-                <td rowspan="${goodsGroup.size()}">${cartItem.goods.name}</td>
+                <td rowspan="${goodsGroup.size()}">${cartItem.goods.name}&nbsp;&nbsp; | &nbsp;&nbsp;
+                    <a href="#" id="batch_del_${cartItem.goods.id}">删除</a>
+                </td>
                 #{/if}
 
                 <td><span id="phone_${cartItem.goods.id}">${cartItem.phone}</span></td>
@@ -113,71 +115,3 @@
         <a class="confirm-pay" href="/carts/show"> 下一步 </a>
     </div>
 </div>
-
-
-
-
-
-    *{
-    <div >
-        <form method="POST" action="/carts/form-add">
-            <table>
-                <tr>
-                    <td>
-                        分销库
-                    </td>
-                    <td>
-                        <select name="goodsId" id="favs_list">
-                            #{list items:favs, as:'favItem'}
-                            <option value="${favItem.goods.id}">${favItem.goods.name}</option>
-                            #{/list}
-                            #{if favs.size() == 0}
-                            <option value = "-1">暂无商品</option>
-                            #{/if}
-                        </select>
-                    </td>
-                    <tr><td colspan="2">
-                            <table border="1">
-                                <tr>
-                                    <td>名称</td>
-                                    <td>价格</td>
-                                </tr>
-                                #{list items:favs, as:'favItem'}
-                                <tr id="goods_detail_${favItem.goods.id}" style="display:none">
-                                    <td>${favItem.goods.name}</td>
-                                    <td>${favItem.goods.getResalePrice(resaler.level)}</td>
-                                </tr>
-                                #{/list}
-                            </table>
-                        </td></tr>
-                    <tr>
-                        <td>
-                            手机号码:
-                        </td>
-                        <td text-align="top">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <textarea name="phones" cols="20" rows="10"></textarea>
-                                    </td>
-                                    <td>同一个商品，不同的收货人。例：<br/>13472228877<br/>13477778888<br/>
-
-                            <span style="color:red">${errorMsg}<br/>
-                                #{if invalidPhones}
-                                #{list items:invalidPhones , as: 'invalidPhone'}
-                                ${invalidPhone}<br/>
-                                #{/list}
-                                #{/if}
-
-                            </span>
-                        </td>
-                        </tr>
-                    </table>
-                </td>
-                <tr><td colspan="2">
-                        <input type="SUBMIT" id="submit" value="提交"/>
-                    </td></tr>
-            </table>
-        </form>
-    </div>
-    }*

@@ -158,7 +158,7 @@
             <div class="action">
                 <a class="view-detail" href="@{ResalerGoods.show(goods.id)}">查看详情</a><br>
                 #{if !goods.isExistLibrary(resaler)}
-                    <span id= "add_${goods.id}"><a href="javascript:" class="font_blue" id="libray_${goods.id}" onclick="addToLibray('${goods.id}')">加入分销库</a> </span>
+                    <span id= "add_${goods.id}" onclick="addToLibrary('${goods.id}')" style="cursor:pointer;color:#4991D4">加入分销库 </span>
                 #{/if}
                 #{else}
                     已加入分销库 
@@ -491,7 +491,7 @@
         <!-- <td width="150" align="center"> -->
             <!-- <a class="font_blue" href="@{ResalerGoods.show(goods.id)}">查看详情</a><br> -->
             <!-- #{if !goods.isExistLibrary(resaler)} -->
-                <!-- <span id= "add_${goods.id}"><a href="javascript:" class="font_blue" id="libray_${goods.id}" onclick="addToLibray('${goods.id}')">加入分销库</a> </span> -->
+                <!-- <span id= "add_${goods.id}"><a href="javascript:" class="font_blue" id="library_${goods.id}" onclick="addToLibrary('${goods.id}')">加入分销库</a> </span> -->
             <!-- #{/if} -->
             <!-- #{else} -->
                 <!-- 已加入分销库  -->
