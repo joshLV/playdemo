@@ -125,7 +125,6 @@ public class ContextedMenu {
 
     @Override
     public String toString() {
-        // TODO: Improve
         return "ContextedMenu " + menu.text;
     }
 }

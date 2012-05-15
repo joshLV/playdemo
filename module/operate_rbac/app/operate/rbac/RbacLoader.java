@@ -10,6 +10,7 @@ import models.admin.OperatePermission;
 import models.admin.OperateRole;
 import play.Logger;
 import play.Play;
+import play.mvc.Router;
 import play.vfs.VirtualFile;
 
 /**
@@ -220,6 +221,10 @@ public class RbacLoader {
 
         if (parentMenu != null) {
             operateNavigation.parent = OperateNavigation.find("byName", parentMenu.name).first();
+        } else {
+            if (operateNavigation.url == null && operateNavigation.action != null) {
+                operateNavigation.url = Router.reverse(operateNavigation.action).url;
+            }            
         }
 
         operateNavigation.save();

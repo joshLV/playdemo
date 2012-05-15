@@ -10,6 +10,7 @@ import models.admin.SupplierPermission;
 import models.admin.SupplierRole;
 import play.Logger;
 import play.Play;
+import play.mvc.Router;
 import play.vfs.VirtualFile;
 
 /**
@@ -216,6 +217,10 @@ public class RbacLoader {
 
         if (parentMenu != null) {
             supplierNavigation.parent = SupplierNavigation.find("byName", parentMenu.name).first();
+        } else {
+            if (supplierNavigation.url == null && supplierNavigation.action != null) {
+                supplierNavigation.url = Router.reverse(supplierNavigation.action).url;
+            }
         }
 
         supplierNavigation.save();
