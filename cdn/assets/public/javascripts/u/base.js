@@ -53,20 +53,4 @@ $(function () {
         slideSpeed:600,
         hoverPause:true
     });
-
-    // 详情页tab
-    $('#J_tabbar li').click(function () {
-        var that = $(this),
-            attr = that.attr('name');
-
-        $('#J_tabbar li').removeClass('current');
-        that.addClass('current');
-
-        if (attr == 'product-info') {
-            $('#J_tabtxt .txt-item').show();
-        } else {
-            $('#J_tabtxt .txt-item').hide();
-            $('#J_tabtxt .' + attr).show();
-        }
-    });
 });

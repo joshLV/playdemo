@@ -5,44 +5,62 @@
 #{/set}
 #{set 'moreScripts'}
 <script>
-    $(function () {
-        /**
-         *点击加入购物车按钮
-         */
-        $("#link_add_cart").click(function () {
-            $.post("/carts", {'goodsId':$("#goodsId").val(), 'increment':$("#number").val()},
-                    function (data) {
-                        if (data.resultCode == "ok") {
-                            $('#add_cart_result').show();
-                        }
-                    });
-            $('#add_cart_result').show();
-            //5秒后自动消失
-            setTimeout("$('#add_cart_result').css('display','none')", 5000);
-            //修改顶部购物车商品数量
-            var oldSize = parseInt($("#carts_size").html());
-            var buyCount = parseInt($("#number").val());
-            $("#carts_size").html(oldSize + buyCount);
-            $("#reload").val("true");
-            $("#order_confirm").hide();
-        });
-
-        $("#link_buy_more").click(function () {
-            $('#add_cart_result').hide();
-        });
-
-        $("#link_buy_now").click(function () {
-            var t = $(this);
-            t.attr("href", t.attr("href") + '-' + $("#number").val());
-            return true;
-        });
-
-        $("#J_closeTips").click(function(ev) {
-            ev.preventDefault();
-            $('#add_cart_result').hide();
-        });
-
+$(function() {
+    /**
+     *点击加入购物车按钮
+     */
+    $("#link_add_cart").click(function () {
+        $.post("/carts", {'goodsId':$("#goodsId").val(), 'increment':$("#number").val()},
+                function (data) {
+                    if (data.resultCode == "ok") {
+                        $('#add_cart_result').show();
+                    }
+                });
+        $('#add_cart_result').show();
+        //5秒后自动消失
+        setTimeout("$('#add_cart_result').css('display','none')", 5000);
+        //修改顶部购物车商品数量
+        var oldSize = parseInt($("#carts_size").html());
+        var buyCount = parseInt($("#number").val());
+        $("#carts_size").html(oldSize + buyCount);
+        $("#reload").val("true");
+        $("#order_confirm").hide();
     });
+
+    $("#link_buy_more").click(function () {
+        $('#add_cart_result').hide();
+    });
+
+    $("#link_buy_now").click(function () {
+        var t = $(this);
+        t.attr("href", t.attr("href") + '-' + $("#number").val());
+        return true;
+    });
+
+    $("#J_closeTips").click(function(ev) {
+        ev.preventDefault();
+        $('#add_cart_result').hide();
+    });
+
+
+    // 详情页tab
+    $('#J_tabbar li').click(function () {
+        var that = $(this),
+            attr = that.attr('name');
+
+        $('#J_tabbar li').removeClass('current');
+        that.addClass('current');
+
+        if (attr == 'product-info') {
+            $('#J_tabtxt .txt-item').show();
+            $('#J_tabtxt .txt-item-hd').show();
+        } else {
+            $('#J_tabtxt .txt-item').hide();
+            $('#J_tabtxt .' + attr + ' .txt-item-hd').hide();
+            $('#J_tabtxt .' + attr).show();
+        }
+    });
+});
 </script>
 #{/set}
 
@@ -110,23 +128,29 @@
         </div>
     </div>
 </div>
-        #{if goods.prompt != null}
-                <h4>温馨提示</h4>
-            ${goods?.prompt?.raw()}
-        #{/if}
+
+#{if goods.prompt != null}
+<div class="wrap warm-tips">
+    <h4>温馨提示</h4>
+    <div class="warm-content">
+        ${goods?.prompt?.raw()}
+    </div>
+</div>
+#{/if}
+
 <div class="wrap clearfix">
     <ul id="J_tabbar" class="tabbar clearfix">
         <li name="product-info" class="current">商品信息</li>
         <li name="applicable-store">适用门店</li>
     </ul>
     <div id="J_tabtxt" class="tabtxt">
-        <div class="product-info txt-item">
+        <div class="product-info txt-item txt-item-bd">
         ${goods?.details?.raw()}
         </div>
 
         <div class="applicable-store txt-item">
-            <h4>适用门店</h4>
-            <table width="700" border="0" cellpadding="0"
+            <h4 class="txt-item-hd">适用门店</h4>
+            <table class="txt-item-bd" width="700" border="0" cellpadding="0"
                    cellspacing="0">
             #{if goods?.getShopList()?.size() >0}
                 #{list goods?.getShopList(), as:'shop'}

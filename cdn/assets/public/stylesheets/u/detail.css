@@ -128,8 +128,18 @@
     line-height: 22px;
 }
 
+.warm-tips h4 {
+    text-indent: 5px;
+    line-height: 28px;
+    background-color: #AADBDB;
+}
+.warm-content {
+    padding: 5px 12px;
+}
+
 /** 详情 **/
 .tabbar {
+    margin-bottom: 10px;
     padding-left: 15px;
     border-bottom: 1px solid #AADBDB;
 }
@@ -149,6 +159,13 @@
     border-bottom: 1px solid #FFF;
 }
 .tabtxt {
-    padding: 10px;
     line-height: 22px;
+}
+.tabtxt h4 {
+    text-indent: 5px;
+    line-height: 28px;
+    background-color: #AADBDB;
+}
+.txt-item-bd {
+    margin: 10px;
 }
