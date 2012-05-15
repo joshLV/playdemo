@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <application text="订单管理">
-  <role key="sales" text="销售人员"/>
-  <role key="clerk" text="店员"/>
+  <role key="sales" text="销售经理"/>
+  <role key="clerk" text="收款店员"/>
 
   <permission key="ORDER" text="订单管理" roles="sales"/>
   <permission key="ORDER_EDIT" text="修改订单" roles="sales" />
