@@ -42,7 +42,7 @@ function showPwRank(pwRank) {
 	switch(pwRank){
 	case 0:
 		qdbox.className="qdbox_hongse";
-		obj.className = "qdhongse";
+		obj.className = "qd qdhongse";
 		obj.innerHTML="很弱";
 		if(password.value.length<1) {
 			qdbox.className="qdbox_hongse setClose";
@@ -53,17 +53,17 @@ function showPwRank(pwRank) {
 	case 1:
 		qdbox.className="qdbox_cengse";
 		obj.innerHTML = "一般";
-		obj.className = "qdcengse";
+		obj.className = "qd qdcengse";
 		break;
 	case 2:
 		qdbox.className="qdbox_lanse";
 		obj.innerHTML = "良好";
-		obj.className = "qdlanse";
+		obj.className = "qd qdlanse";
 		break;
 	case 3:
 		qdbox.className="qdbox_luse";
 		obj.innerHTML = "超强";
-		obj.className = "qdluse";
+		obj.className = "qd qdluse";
 		break;
 	}
 }
