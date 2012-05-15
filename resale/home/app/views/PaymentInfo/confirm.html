@@ -26,7 +26,7 @@
 #{else }
     <div>已选择 ${paymentSource.name} 支付 ${order.discountPay} 元</div>
 
-    #{form @payIt(), target:"_blank", id: "pay_it_form"}
+    #{form @payIt(), target:play.Play.runingInTestMode() ? "_self" : "_blank", id: "pay_it_form"}
     <input name="paymentCode" value="${paymentSource.code}" type="hidden"/>
         <input name="orderId" value="${order.id}" type="hidden"/>
         <input type="submit" value="确认支付" id="confirm_pay_it"/>
