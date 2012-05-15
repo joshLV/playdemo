@@ -1,0 +1,9 @@
+#{extends 'layout_operate/layout.html' /}
+#{set 'topbar-nav'}
+    #{navigation.topMenus topMenus /}
+#{/set}
+
+#{if message}
+<p style="size:30px;">${message.raw()}</p>
+#{/if}
+

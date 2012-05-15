@@ -117,9 +117,6 @@ public class SupplierRbac extends Controller {
         // 得到当前菜单的名字
         String currentMenuName = getCurrentMenuName();
 
-        // 检查权限
-        checkRight(currentMenuName);
-
         String applicationName = Play.configuration.getProperty("application.name");
         NavigationHandler.initContextMenu(applicationName, currentMenuName);
 
@@ -127,6 +124,9 @@ public class SupplierRbac extends Controller {
         renderArgs.put("secondLevelMenu", NavigationHandler.getSecondLevelMenus());
         renderArgs.put("operatorProfileUrl", NavigationHandler.getOperatorProfileUrl());
         renderArgs.put("supplierInfoUrl", NavigationHandler.getSupplierInfoUrl());
+        
+        // 检查权限
+        checkRight(currentMenuName);
         
     }
 
@@ -210,7 +210,11 @@ public class SupplierRbac extends Controller {
         if (rightSet.size() > 0) {
             boolean hasRight = ContextedPermission.hasPermissionKeys(rightSet);
             if (!hasRight) {
-                error(403, "没有权限访问.");
+                String message = "没有权限访问！";
+                if (currentNavigation != null) {
+                    message = "没有权限访问 <strong>" + currentNavigation.text + "</strong> 功能。";
+                }
+                renderTemplate("Defaults/index.html", message);
             }
         } // else 如果没有加上Right标注，不检查权限
     }    

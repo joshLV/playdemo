@@ -46,7 +46,7 @@ public class RbacMenuTest extends UnitTest {
         SupplierNavigation mainNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "main").first();
         assertNotNull(mainNav);
         assertNotNull(mainNav.permissions);
-        assertEquals(0, mainNav.permissions.size());
+        assertEquals(4, mainNav.permissions.size());
                 
         SupplierNavigation userNav = SupplierNavigation.find("byApplicationNameAndName", "traders-admin", "user_add").first();
         assertNotNull(userNav);

@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import play.mvc.Http.Response;
 import play.mvc.Router;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
@@ -54,9 +55,15 @@ public class PermissionCheckTest extends FunctionalTest {
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
 
-        assertStatus(403, GET("/foo/bar"));
-        assertStatus(403, GET("/singlefoo/bar"));
-        assertStatus(403, GET("/singlefoo/google"));
+        Response resp1 = GET("/foo/bar");
+        assertStatus(200, resp1);
+        assertContentMatch("没有权限", resp1);
+        Response resp2 = GET("/singlefoo/bar");
+        assertStatus(200, resp2);
+        assertContentMatch("没有权限", resp2);
+        Response resp3 = GET("/singlefoo/google");
+        assertStatus(200, resp3);
+        assertContentMatch("没有权限", resp3);
         assertIsOk(GET("/singlefoo/user"));
     }
 
@@ -73,7 +80,9 @@ public class PermissionCheckTest extends FunctionalTest {
         assertIsOk(GET("/foo/bar"));
         assertIsOk(GET("/singlefoo/bar"));
         assertIsOk(GET("/singlefoo/google"));
-        assertStatus(403, GET("/singlefoo/user"));
+        Response resp1 = GET("/singlefoo/user");
+        assertStatus(200, resp1);
+        assertContentMatch("没有权限", resp1);
     }
 
 
@@ -85,9 +94,6 @@ public class PermissionCheckTest extends FunctionalTest {
                 System.out.println("       perm:" + perm.key);
             }
         }
-
-
-
     }
 
 }

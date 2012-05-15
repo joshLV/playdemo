@@ -54,6 +54,32 @@ public class RbacLoader {
         // 清理更新前的数据
         deleteUndefinedMenus(applicationName, loadVersion);
         deleteUndefinedPermissions(applicationName, loadVersion);
+        
+        updateParentPermissions(applicationName);
+    }
+
+    /**
+     * 把所有下级菜单的权限依次复制到上一级.
+     * @param applicationName
+     */
+    private static void updateParentPermissions(String applicationName) {
+        List<OperateNavigation> allNavs = OperateNavigation.find("applicationName=?", applicationName).fetch();
+        for (OperateNavigation nav : allNavs) {
+            if (nav.parent != null) {
+                savePermisionsToParent(nav, nav.parent);
+            }
+        }
+    }
+
+    private static void savePermisionsToParent(OperateNavigation nav,
+            OperateNavigation parent) {
+        if (nav.permissions != null && nav.permissions.size() > 0) {
+            parent.permissions.addAll(nav.permissions);
+            parent.save();
+            if (parent.parent != null) {
+                savePermisionsToParent(parent, parent.parent);
+            }
+        }
     }
 
     /**
