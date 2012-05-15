@@ -46,9 +46,11 @@
     background: url(http://img.uhcdn.com/images/u/num_input_bg.jpg) repeat-x;
 }
 .property .action {
+    position: relative;
     margin-top: 9px;
 }
-.property .action a {
+.property .action .add,
+.property .action .buy {
     float: left;
     display: block;
     padding: 6px 15px 7px;
@@ -59,6 +61,44 @@
 }
 .property .buy {
     margin-right: 35px;
+}
+.property .add-tips {
+    position: absolute;
+    top: -10px;
+    left: 50px;
+    width: 230px;
+    padding: 10px 10px 10px 45px;
+    line-height: 24px;
+    border: 1px solid #25B4AB;
+    background: #FFF url(http://img.uhcdn.com/images/u/right.png) no-repeat 8px 15px;
+}
+.property .add-tips h4 {
+    font-size: 14px;
+}
+.property .add-tips p {
+    margin-bottom: 15px;
+}
+.property .add-tips strong {
+    color: #F50;
+    font-size: 14px;
+    padding: 0 3px;
+}
+.property .add-tips em {
+    color: #F50;
+    padding: 0 3px;
+}
+.property .add-tips .see-carts {
+    padding: 5px 10px;
+    color: #FFF;
+    background-color: #25B4AB;
+}
+.property .add-tips .close-tips {
+    position: absolute;
+    top: 0;
+    right: 3px;
+    padding-left: 12px;
+    color: #999;
+    background: url(http://img.uhcdn.com/images/u/close.png) no-repeat 0 6px;
 }
 
 /** 服务、品牌 **/
