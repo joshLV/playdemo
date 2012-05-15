@@ -236,16 +236,11 @@ public class TradeUtil {
                     "收款");
         } catch (BalanceNotEnoughException e) {
             Logger.error(e, e.getMessage());
-            //回滚
-            JPAPlugin.closeTx(true);
-            return false;
+            throw new RuntimeException("balance not enough, trade bill: " + tradeBill.getId(), e);
         } catch (AccountNotFoundException e) {
             Logger.error(e, e.getMessage());
-            //回滚
-            JPAPlugin.closeTx(true);
-            return false;
+            throw new RuntimeException("account not found, trade bill: " + tradeBill.getId(), e);
         }
-
         tradeBill.tradeStatus = TradeStatus.SUCCESS;
         tradeBill.save();
         return true;
