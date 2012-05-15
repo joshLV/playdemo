@@ -48,21 +48,21 @@ PUT     /resalers/{id}/freeze                   Resalers.freeze
 PUT     /resalers/{id}/unfreeze                 Resalers.unfreeze
 DELETE  /resalers/{id}                          Resalers.delete
 
-#运营后台订单
+# 运营后台订单
 GET     /orders                                 OperateOrders.index
 GET     /orders/{id}                            OperateOrders.details
 PUT     /orders/{id}/send                       OperateOrders.send
 
 GET     /coupons                                OperateCoupons.index
 
-#品牌管理
+# 品牌管理
 GET     /brands                                 OperateBrands.index
 GET     /brands/new                             OperateBrands.add
 POST    /brands                                 OperateBrands.create
 DELETE  /brands/{id}                            OperateBrands.delete
 GET     /brands/{id}/edit                       OperateBrands.edit
 PUT     /brands/{id}                            OperateBrands.update
-#财务报表
+# 财务报表
 GET     /reports                                OperateReports.showSystemReport
 GET     /reports/consumer                       OperateReports.showConsumerReport
 GET     /reports/resale                         OperateReports.showResaleReport
@@ -75,6 +75,12 @@ GET     /reports/incoming                       OperateReports.showIncomingRepor
 GET     /withdraw                               WithdrawApproval.index
 GET     /withdraw/detail/{id}                   WithdrawApproval.detail
 POST    /withdraw/approve                       WithdrawApproval.approve
+
+# 用户管理
+GET     /consumers                              OperateConsumers.index
+GET     /consumers/{id}                         OperateConsumers.show
+PUT     /consumers/{id}/freeze                  OperateConsumers.freeze
+PUT     /consumers/{id}/unfreeze                OperateConsumers.unfreeze
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

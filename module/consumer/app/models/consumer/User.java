@@ -2,8 +2,6 @@ package models.consumer;
 
 import models.mail.CouponMessage;
 import models.mail.MailUtil;
-import models.order.Order;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -40,7 +38,9 @@ public class User extends Model {
 
     @Mobile
     public String mobile;
-
+    /**
+     * 第三方登录帐号的来源系统
+     */
     @Column(name = "openid_source")
     public String openIdSource;
 
@@ -53,6 +53,9 @@ public class User extends Model {
     @Transient
     @Required
     public String confirmPassword;
+    /**
+     * 图形校验码
+     */
     @Transient
     @Required
     public String captcha;
@@ -200,7 +203,7 @@ public class User extends Model {
     /**
      * 根据邮箱或手机更新密码
      *
-     * @param token   邮箱的
+     * @param token    邮箱的
      * @param mobile
      * @param password
      */
@@ -246,4 +249,29 @@ public class User extends Model {
         return isExpired;
     }
 
+    public static JPAExtPaginator<User> findByCondition(UserCondition condition, int pageNumber, int pageSize) {
+        JPAExtPaginator<User> userPage = new JPAExtPaginator<>("User u", "u", User.class, condition.getFilter(),
+                condition.getParamMap()).orderBy("u.lastLoginAt DESC");
+        userPage.setPageNumber(pageNumber);
+        userPage.setPageSize(pageSize);
+        userPage.setBoundaryControlsEnabled(false);
+        return userPage;
+    }
+
+    public static void freeze(long id) {
+        updateStatus(id, UserStatus.FREEZE);
+    }
+
+    public static void unfreeze(long id) {
+        updateStatus(id, UserStatus.NORMAL);
+    }
+
+    private static void updateStatus(long id, UserStatus status) {
+        User user = User.findById(id);
+        if (user == null) {
+            return;
+        }
+        user.status = status;
+        user.save();
+    }
 }

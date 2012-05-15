@@ -79,5 +79,5 @@ public class UserPoint extends Model {
 		}
 		UserPointConfig userPointConfig = UserPointConfig.find("byPointNumber", pointNumber).first();
 		return userPointConfig.pointTitle;
-	};
+	}
 }
