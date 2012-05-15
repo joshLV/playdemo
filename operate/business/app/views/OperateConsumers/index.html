@@ -1,0 +1,74 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'用户一览' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+<div class="body">
+    <legend>${title}</legend>
+    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateConsumers.index()}" method="GET">
+        <table width="100%">
+            <tr>
+                <td width="15%">帐号：<input type="text" name="condition.loginName" class="input-medium"
+                                          value="${condition?.loginName}"/></td>
+                <td width="15%">手机：<input type="text" name="condition.mobile" class="input-medium"
+                                          value="${condition?.mobile}"/></td>
+                <td width="40%">注册时间：<input type="text" id="createdAtBegin" name="condition.createdAtBegin"
+                                value="${condition?.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"
+                                class="input-medium Wdate"/>至 <input type="text" id="createdAtEnd"
+                                                                     name="condition.createdAtEnd"
+                                                                     value="${condition?.createdAtEnd?.format()}"
+                                                                     onfocus="WdatePicker({readOnly:true})"
+                                                                     class="input-medium Wdate"/></td>
+                <td width="20%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
+                #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
+                    #{option ""}不限#{/option}
+                    #{option "NORMAL"}&{'user.status.NORMAL'}#{/option}
+                    #{option "FREEZE"}&{'user.status.FREEZE'}#{/option}
+                #{/select}</td>
+                <td width="10%">
+                    <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <form class="form-horizontal" name="deletefrm" id="deletefrm">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+            <tr>
+                <th>&{'user.loginName'}</th>
+                <th>&{'user.mobile'}</th>
+                <th>&{'user.lastLoginAt'}</th>
+                <th>&{'user.loginIp'}</th>
+                <th>&{'user.createdAt'}</th>
+                <th>&{'user.status'}</th>
+                <th>操 作</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            #{paginate.list items:users, as:'user'}
+            <tr>
+                <td>${user?.loginName}</td>
+                <td>${user?.mobile}</td>
+                <td>${user?.lastLoginAt}</td>
+                <td>${user?.loginIp}</td>
+                <td>${user?.createdAt}</td>
+                <td>&{'user.status.'+user?.status}</td>
+                <td><a href="@{OperateConsumers.show(user?.id)}">详细信息</a>
+                    #{if models.consumer.UserStatus.NORMAL.equals(user?.status)}
+                        / #{vx.operateLink text:"冻结", url:"/consumers/"+user.id+"/freeze", method:"PUT"/}#{/if}
+                    #{if models.consumer.UserStatus.FREEZE.equals(user?.status)}
+                        / #{vx.operateLink text:"解冻", url:"/consumers/"+user.id+"/unfreeze", method:"PUT"/}#{/if}
+            </tr>
+            #{/paginate.list}
+            </tbody>
+        </table>
+    </form>
+    <div class="pagination" align="center">
+        <ul>
+        #{paginate.controls items:users /}
+        </ul>
+    </div>
+</div>

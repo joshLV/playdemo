@@ -1,0 +1,130 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'用户详细信息' /}
+#{include '/share/nav.html' /}
+<style type="text/css">
+    .controls {
+        padding-top: 5px;
+    }
+</style>
+<div class="body">
+    <form class="form-horizontal" name="frm" id="frm" method="post">
+        <legend>${title}</legend>
+        <div class="control-group">
+            <label class="control-label">&{'user.loginName'}</label>
+
+            <div class="controls">${user?.loginName}</div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.mobile'}</label>
+
+            <div class="controls">${user?.mobile}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.openIdSource'}</label>
+
+            <div class="controls">${user?.openIdSource}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.createdAt'}</label>
+
+            <div class="controls">${user?.createdAt}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.lastLoginAt'}</label>
+
+            <div class="controls">${user?.lastLoginAt}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.loginIp'}</label>
+
+            <div class="controls">${user?.loginIp}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.userInfo.fullName'}</label>
+
+            <div class="controls">${user.userInfo?.fullName}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.userInfo.userSex'}</label>
+
+            <div class="controls">${user.userInfo?.userSex}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.userInfo.birthday'}</label>
+
+            <div class="controls">${user.userInfo?.birthday}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.userInfo.phone'}</label>
+
+            <div class="controls">${user?.userInfo?.phone}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.userInfo.marryState'}</label>
+
+            <div class="controls">${user.userInfo?.marryState}件
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.userInfo.position'}</label>
+
+            <div class="controls">${user.userInfo?.position}</div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.userInfo.userqq'}</label>
+
+            <div class="controls">${user.userInfo?.userqq}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.userInfo.salary'}</label>
+
+            <div class="controls">${user.userInfo?.salary}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.userInfo.interest'}</label>
+
+            <div class="controls">${user.userInfo?.interest}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.userInfo.industry'}</label>
+
+            <div class="controls">${user.userInfo?.industry}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.userInfo.otherInfo'}</label>
+
+            <div class="controls">${user.userInfo?.otherInfo}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.userInfo.totalPoints'}</label>
+
+            <div class="controls">${user.userInfo?.totalPoints}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'user.status'}</label>
+
+            <div class="controls">&{'user.status.'+user.status}
+            </div>
+        </div>
+        <div class="form-actions">
+        #{if models.consumer.UserStatus.NORMAL.equals(user.status)}
+            #{vx.operateButton text:"冻结",form:'frm',url:"/consumers/"+user.id+"/freeze",method:"PUT",
+            class:"btn btn-primary" /}#{/if}
+        </div>
+    </form>
+</div>
