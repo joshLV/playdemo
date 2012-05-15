@@ -1,7 +1,7 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 确认订单信息' /}
 #{set 'moreStyles'}
-<!-- <link href="@@{'/public/stylesheets/order_info.css'}" rel="stylesheet" type="text/css"/> -->
+<!--<link href="@@{'/public/stylesheets/order_info.css'}" rel="stylesheet" type="text/css"/>-->
 <link href="@@{'/public/stylesheets/carts-step.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
 #{set 'moreScripts'}
@@ -50,7 +50,7 @@
                 #{if (++i) == 1 }
                 <td rowspan="${rCartList.size()}" align="center" valign="middle">
                     ${rCartAmount.formatCurrency('CNY').raw()}<br/>
-                        （含5元运费）<span class="strong_gray"></span></td>
+                        （含${models.order.Order.FREIGHT.formatCurrency('CNY').raw()}元运费）<span class="strong_gray"></span></td>
                 #{/if}
             </tr>
             #{/list}
@@ -102,7 +102,7 @@
         <div class="order-total">
             #{if rCartList.size() > 0}
             总金额：<span>${goodsAmount.formatCurrency('CNY').raw()}</span>
-            运费：<span >${5.formatCurrency('CNY').raw()}</span>
+            运费：<span >${models.order.Order.FREIGHT.formatCurrency('CNY').raw()}</span>
             #{/if}
             合计：<span>${totalAmount.formatCurrency('CNY').raw()}</span><br />
         </div>

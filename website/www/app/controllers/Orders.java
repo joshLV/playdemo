@@ -138,7 +138,7 @@ public class Orders extends Controller {
 			}
 
 			showOrder(items);
-			render("Orders/index.html");
+			render("Orders/index.html", user);
 		}
 
 		//创建订单
