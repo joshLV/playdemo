@@ -78,7 +78,7 @@ public class Carts extends Controller {
     }
 
     /**
-     * 在顶部展示所有购物车内容
+     * 在顶部展示所有购物车内容,最多显示5条购物车记录.
      */
     public static void tops() {
         User user = SecureCAS.getUser();

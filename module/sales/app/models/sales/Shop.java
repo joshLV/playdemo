@@ -81,6 +81,12 @@ public class Shop extends Model {
     
     @Transient
     public String supplierName;
+    
+    @Transient
+    public String cityId;
+    
+    @Transient
+    public String districtId;
 
     /**
      * 读取某商户的全部门店记录

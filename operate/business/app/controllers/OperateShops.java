@@ -104,6 +104,8 @@ public class OperateShops extends Controller {
     public static void update(long id, @Valid Shop shop) {
         Shop sp = Shop.findById(id);
         if (Validation.hasErrors()) {
+            params.flash();
+            Validation.keep();
             edit(id, shop);
         }
         sp.areaId = shop.areaId;
