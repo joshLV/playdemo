@@ -329,3 +329,27 @@
     border: solid #AADBDB;
     border-width: 0 1px 1px 1px;
 }
+
+.order-total {
+    padding: 20px 0 5px;
+    text-align: right;
+}
+.order-total span {
+    padding: 0 12px 0 1px;
+    color: #F50;
+    font: 700 16px arial;
+}
+.confirm-box {
+    margin: 20px 0;
+}
+.confirm-box .confirm-pay-btn {
+    display: block;
+    float: right;
+    width: 80px;
+    padding: 5px 10px;
+    color: #FFF;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    background-color: #25B4AB;
+}

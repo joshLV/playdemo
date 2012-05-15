@@ -76,7 +76,7 @@ $(function () {
 
         var addrId = $(this).attr('data-addrid');
 
-        if ($(this).text() == '保存并送到这个地址') { //修改或新增地址时
+        if ($(this).text() == '保存并送到这个地址') { //新增地址时
             if ($(this).attr('data-action') == 'add-addr') {
 
                 var addrName = $('#J_addrName'),
@@ -91,7 +91,7 @@ $(function () {
                     $("#err-address").html('街道地址不能空！');
                     return;
                 }
-                if (addrPost.val() == '' || !$.isNumeric(addrPost.val()) || !(addrPost.val().length == 6)) {
+                if (!/^[1-9]\d{5}$/.test($.trim(addrPost.val()))) {
                     $("#err-postcode").html('邮政编码格式不对！');
                     return;
                 }
@@ -99,23 +99,23 @@ $(function () {
                     $("#err-name").html('收货人不能空！');
                     return;
                 }
-                if (addrMobile.val() == '' || !$.isNumeric(addrMobile.val()) || !(addrMobile.val().length == 11)) {
-                    if (addrAreaCode.val() == '' || addrPhoneNum.val() == '') {
+                if (!/^[1-9]\d{10}$/.test($.trim(addrMobile.val()))) {
+                    if (!/^\d{3,4}$/.test($.trim(addrAreaCode.val())) || !/^\d{7,8}$/.test($.trim(addrPhoneNum.val()))) {
                         $("#err-phone").html("联系电话填写不对!");
                         return;
                     }
                 }
                 $.post('/orders/addresses/new', {
-                    'address.name':addrName.val(),
-                    'address.postcode':addrPost.val(),
+                    'address.name':$.trim($('#J_addrName').val()),
+                    'address.postcode':$.trim(addrPost.val()),
                     'address.province':$('#J_addrProv').val(),
                     'address.city':$('#J_addrCity').val(),
                     'address.district':$('#J_addrDist').val(),
-                    'address.address':addrStreet.val(),
-                    'address.mobile':addrMobile.val(),
-                    'address.areaCode':addrAreaCode.val(),
-                    'address.phoneNumber':addrPhoneNum.val(),
-                    'address.phoneExtNumber':addrPhoneExt.val(),
+                    'address.address':$('#J_addrStreet').val(),
+                    'address.mobile':$.trim($('#J_addrMobile').val()),
+                    'address.areaCode':$.trim($('#J_addrAreaCode').val()),
+                    'address.phoneNumber':$.trim($('#J_addrPhoneNum').val()),
+                    'address.phoneExtNumber':$.trim($('#J_addrPhoneExt').val()),
                     'address.isDefault':true
                 }, function (data) {
                     $('#J_addrCurrent').load('/orders/addresses/default', function (data) {
@@ -126,7 +126,7 @@ $(function () {
                     $('#J_addrAll ul').prepend(data);
                 });
 
-            } else if ($(this).attr('data-action') == 'edit-addr') {
+            } else if ($(this).attr('data-action') == 'edit-addr') { //修改地址时
 
                 var addrName = $('#J_addrName'),
                     addrPost = $('#J_addrPost'),
@@ -140,7 +140,7 @@ $(function () {
                     $("#err-address").html('街道地址不能空！');
                     return;
                 }
-                if (addrPost.val() == '' || !$.isNumeric(addrPost.val()) || !(addrPost.val().length == 6)) {
+                if (!/^[1-9]\d{5}$/.test($.trim(addrPost.val()))) {
                     $("#err-postcode").html('邮政编码格式不对！');
                     return;
                 }
@@ -148,8 +148,9 @@ $(function () {
                     $("#err-name").html('收货人不能为空！');
                     return;
                 }
-                if (addrMobile.val() == '' || !$.isNumeric(addrMobile.val()) || !(addrMobile.val().length == 11)) {
-                    if (addrAreaCode.val() == '' || addrPhoneNum.val() == '') {
+                if (!/^[1-9]\d{10}$/.test($.trim(addrMobile.val()))) {
+                    if (!/^\d{3,4}$/.test($.trim(addrAreaCode.val())) || !/^\d{7,8}$/.test($.trim(addrPhoneNum.val()))) {
+                        $("#err-phone").html("联系电话填写不对!");
                         $("#err-phone").html("联系电话填写不对!");
                         return;
                     }
@@ -159,16 +160,16 @@ $(function () {
                     type:'PUT',
                     data:{
                         'address.id':addrId,
-                        'address.name':$('#J_addrName').val(),
-                        'address.postcode':$('#J_addrPost').val(),
+                        'address.name':$.trim($('#J_addrName').val()),
+                        'address.postcode':$.trim(addrPost.val()),
                         'address.province':$('#J_addrProv').val(),
                         'address.city':$('#J_addrCity').val(),
                         'address.district':$('#J_addrDist').val(),
                         'address.address':$('#J_addrStreet').val(),
-                        'address.mobile':$('#J_addrMobile').val(),
-                        'address.areaCode':$('#J_addrAreaCode').val(),
-                        'address.phoneNumber':$('#J_addrPhoneNum').val(),
-                        'address.phoneExtNumber':$('#J_addrPhoneExt').val(),
+                        'address.mobile':$.trim($('#J_addrMobile').val()),
+                        'address.areaCode':$.trim($('#J_addrAreaCode').val()),
+                        'address.phoneNumber':$.trim($('#J_addrPhoneNum').val()),
+                        'address.phoneExtNumber':$.trim($('#J_addrPhoneExt').val()),
                         'address.isDefault':true
                     },
                     success:function (data) {

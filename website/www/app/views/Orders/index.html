@@ -1,7 +1,7 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 确认订单信息' /}
 #{set 'moreStyles'}
-<link href="@@{'/public/stylesheets/order_info.css'}" rel="stylesheet" type="text/css"/>
+<!-- <link href="@@{'/public/stylesheets/order_info.css'}" rel="stylesheet" type="text/css"/> -->
 <link href="@@{'/public/stylesheets/carts-step.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
 #{set 'moreScripts'}
@@ -64,7 +64,7 @@
 #{form @Orders.create(), id:'order_create_form' }
 <!-- 电子凭证 START -->
 #{if eCartList.size()>0}
-    <div class="order">
+<div class="order">
     <h3 class="clearfix"><span>电子凭证 - 订单信息</span></h3>
     <div class="addr"><span class="required">*</span>接收手机：<input class="num_input_bg" type="text" name="mobile" value="${user?.mobile}"
                                                                  id="ecart_mobile"/>
@@ -96,20 +96,20 @@
 </div>
 #{/if}
 <!-- 电子凭证 END -->
-
     <input type="hidden" name="items" value="${items}"/>
     <input type="hidden" id="addressId"/>
     #{if rCartList.size() > 0 || eCartList.size() > 0}
-    <div class="sp_height">#{if rCartList.size() >0}总金额:<span class="font_red_one">${goodsAmount.formatCurrency('CNY').raw()}</span> 运费：<span
-            class="font_red_one">${5.formatCurrency('CNY').raw()}</span>#{/if} 合计：<span
-            class="font_red_one">${totalAmount.formatCurrency('CNY').raw()}</span></div>
-    <div class="sp_height_one"><a id="link_confirm_pay" class="que_pay_bg" href="#">确认付款</a></div>
+        <div class="order-total">
+            #{if rCartList.size() > 0}
+            总金额：<span>${goodsAmount.formatCurrency('CNY').raw()}</span>
+            运费：<span >${5.formatCurrency('CNY').raw()}</span>
+            #{/if}
+            合计：<span>${totalAmount.formatCurrency('CNY').raw()}</span><br />
+        </div>
+        <div class="confirm-box clearfix"><a id="link_confirm_pay" class="confirm-pay-btn" href="#">确认付款</a></div>
     #{/if}
     #{else}
-    对不起，您的购物车内没有商品
+        对不起，您的购物车内没有商品
     #{/else}
-
-    <div style="clear:both"></div>
-
 #{/form}
 
