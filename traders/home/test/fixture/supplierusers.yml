@@ -55,6 +55,10 @@ admin.SupplierUser(user3):
  "roles":
  - "admin"
  - "sales"
+ - "manager"
+ - "editor"
+ - "clerk"
+ - "account"
  
 admin.SupplierUser(test):
  "loginName": "test"

@@ -9,7 +9,9 @@ require 'data_mapper' # requires all the gems listed above
 # DataMapper::Logger.new($stdout, :debug)
 
 DataMapper.setup(:default, 'mysql://root:seewidb@192.168.18.235/scott')
-DataMapper.setup(:target, 'mysql://root:seewidb@192.168.18.235/reeb')
+DataMapper.setup(:target, 'mysql://root:seewidb@192.168.18.235/sales')
+
+user_hash = Hash.new
 
 # Uhuila
 class UhlUser
@@ -159,11 +161,10 @@ class ReebUserPoint
 end
 
 def transfer_users
-  hash = Hash.new
   DataMapper.repository(:target) {
-    ReebUser.all.each {|u| hash[u.id] = u}
+    ReebUser.all.each {|u| user_hash[u.id] = u}
   }
-  UhlUser.all.each do |u|
+  UhlUser.first.each do |u|
     puts "transfer_users: user.id=#{u.user_id}"
     DataMapper.repository(:target) {
       ru = hash[u.user_id]
@@ -185,13 +186,12 @@ def transfer_users
       ru.last_login_at = Time.at(u.login_time) if u.login_time
       ru.status = (!u.nil? && u.user_state == 1) ? 'NORMAL' : 'FREEZE'
       ru.save
-      hash[u.user_id] = ru
+      user_hash[u.user_id] = ru
     }
   end
-  hash
 end
 
-def transfer_user_info(user_hash)
+def transfer_user_info
   UhlUserInfo.all.each do |u|
     DataMapper.repository(:target) {
       puts "u.user_id=#{u.user_id}"
@@ -250,7 +250,7 @@ class ReebAccount
   property :uncash_amount, Decimal
 end
 
-def transfer_user_amount(user_hash)
+def transfer_user_amount
   UhlUserInfo.all.each do |u|
     DataMapper.repository(:target) {
       puts "u.user_id=#{u.user_id}"
@@ -321,7 +321,7 @@ class ReebUserAddress
   property :user_id, Integer
 end
 
-def transfer_user_address(user_hash)
+def transfer_user_address
   UhlUserAddress.all.each do |u|
     puts "addr_id=#{u.addr_id}"
     DataMapper.repository(:target) {
@@ -349,7 +349,7 @@ def transfer_user_address(user_hash)
   end
 end
 
-def transfer_user_point(user_hash)
+def transfer_user_point
   UhlUserPoint.all.each do |u|
     DataMapper.repository(:target) {
       puts "u.point_id=#{u.points_id}"
@@ -372,9 +372,9 @@ def transfer_user_point(user_hash)
   end
 end
 
-user_hash = transfer_users
+transfer_users
 puts "user_hash.size=#{user_hash.size}"
-transfer_user_info(user_hash)
-transfer_user_point(user_hash)
-transfer_user_amount(user_hash)
-transfer_user_address(user_hash)
+transfer_user_info
+transfer_user_point
+transfer_user_amount
+transfer_user_address
