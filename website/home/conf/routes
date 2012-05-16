@@ -5,11 +5,13 @@
 # Home page
 GET     /                                             UserOrders.index
 GET     /orders                                       UserOrders.index
+GET     /orders/refund/{id}                           UserOrders.refund
 POST    /orders/refund/{id}                           UserOrders.applyRefund
 GET     /orders/{id}                                  UserOrders.details
 GET     /coupons                                      UserCoupons.index
 GET     /payment/{id}                                 UserOrders.pay
 POST    /coupons/refund/{id}                          UserCoupons.applyRefund
+POST    /orders/batch-refund                          UserOrders.batchRefund
 
 #购物车
 GET     /carts/tops                                   UserCarts.tops

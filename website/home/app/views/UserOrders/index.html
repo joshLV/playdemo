@@ -85,7 +85,7 @@
                             <td align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
                             <td align="center">${rowItem.buyNumber}</td>
                              <td align="center">
-                             #{if row.status == models.order.OrderStatus.PAID}
+                             #{if row.status == models.order.OrderStatus.PAID && models.sales.MaterialType.ELECTRONIC.equals(rowItem?.goods?.materialType)}
                             <div class="caozuo_std">
                                 <a style="color:#3366CC"  href="/orders/refund/${row.id}"  id="apply_${row.id}">申请退款</a>
                             </div>

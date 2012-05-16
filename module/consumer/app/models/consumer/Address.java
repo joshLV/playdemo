@@ -41,7 +41,7 @@ public class Address extends Model {
     public String mobile;
     @Column(name = "is_default")
     public Boolean isDefault;
-    @Column(name = "create_at")
+    @Column(name = "created_at")
     public Date createdAt;
     @Column(name = "lock_version")
     public int lockVersion;

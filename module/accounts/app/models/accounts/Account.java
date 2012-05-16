@@ -27,7 +27,7 @@ public class Account extends Model {
     @Enumerated(EnumType.STRING)
     public AccountStatus status;
 
-    @Column(name = "create_at")
+    @Column(name = "created_at")
     public Date createdAt;
 
     public static final long PLATFORM_INCOMING     = 1L;   //券平台收款账户
