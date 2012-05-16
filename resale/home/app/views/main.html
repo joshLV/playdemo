@@ -12,18 +12,17 @@
 <div id="header" class="clearfix">
     <div class="inner">
         <h1 id="logo"><img src="http://img.uhcdn.com/images/r/small-logo.png" alt="100券" /></h1>
-        <div id="user">您好，<a href="">username</a> | <a href="">退出</a></div>
+        <div id="user">
+        #{if cas?.isLogin}
+            欢迎您，<a href="/orders">${cas.username}</a> | <a href="/logout">退出</a>
+        #{/if}
+        #{else}
+            您好，欢迎您来到优惠啦！<a href="/login">请登录</a>
+        #{/else}
+        </div>
         <ul id="menu">
             #{get 'navMenu' /}
         </ul>
-    </div>
-    <div class="wellcome">
-    #{if cas?.isLogin}
-        欢迎您，<a class="zi_gray" href="/orders" id="login_name">${cas.username}</a>  <a class="zi_gray" href="/logout">退出</a>
-    #{/if}
-    #{else}
-        您好，欢迎您来到优惠啦！<a class="zi_gray" href="/login" id="login_name">请登录</a>
-    #{/else}
     </div>
 </div>
 #{doLayout /}

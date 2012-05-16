@@ -232,6 +232,7 @@
 .kuaiqian li {
     float: left;
     margin: 0 30px 25px 0;
+    *margin-bottom: 5px;
 }
 #other-pay #confirm {
     display: block;

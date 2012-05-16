@@ -1,145 +1,105 @@
-#{extends 'bt_layout.html' /}
-
+#{extends 'main.html' /}
 #{set title:'账户明细' /}
-
-#{set 'sidebar-nav'}
-  #{sidebar 'account' /}
-#{/set}
 
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-<script type="text/javascript" charset="utf-8">
+<script>
 $(window).load(function(){
-	
-$("[start]").each(function(){
-	$(this).click(function(){
-		if($(this).parent().attr("class") == 'active'){
-			return false;
-		}
-        var tomorrow = new Date();
-        var startDay = new Date();
-			    
-	    tomorrow.setDate(tomorrow.getDate() + 1)
-	    
-	    var interval = $(this).attr("start");
-	    var sig = interval.charAt(interval.length - 1);
-	    var count = parseInt(interval.substring(0, interval.length -1));
-	    if( sig == 'd'){
-	    	startDay.setDate(startDay.getDate()-count);
-	    }else if( sig == 'm'){
-            startDay.setMonth(startDay.getMonth()-count);
-	    }else if( sig == 'y'){
-            startDay.setFullYear(startDay.getFullYear()-count);
-	    }
+    $("[start]").each(function(){
+        $(this).click(function(){
+            if($(this).parent().attr("class") == 'active'){
+                return false;
+            }
+            var tomorrow = new Date();
+            var startDay = new Date();
+                    
+            tomorrow.setDate(tomorrow.getDate() + 1)
+            
+            var interval = $(this).attr("start");
+            var sig = interval.charAt(interval.length - 1);
+            var count = parseInt(interval.substring(0, interval.length -1));
+            if( sig == 'd'){
+                startDay.setDate(startDay.getDate()-count);
+            }else if( sig == 'm'){
+                startDay.setMonth(startDay.getMonth()-count);
+            }else if( sig == 'y'){
+                startDay.setFullYear(startDay.getFullYear()-count);
+            }
 
-        $("#condition_begin").val(startDay.getFullYear() + "-" + (startDay.getMonth()+1) + "-" + startDay.getDate());
-        $("#condition_end").val(tomorrow.getFullYear() + "-" + (tomorrow.getMonth()+1) + "-" + tomorrow.getDate());
-        $("#interval").val(interval);
-        $("#search_form").submit();    
-        return false;
-	});
-});
-
+            $("#condition_begin").val(startDay.getFullYear() + "-" + (startDay.getMonth()+1) + "-" + startDay.getDate());
+            $("#condition_end").val(tomorrow.getFullYear() + "-" + (tomorrow.getMonth()+1) + "-" + tomorrow.getDate());
+            $("#interval").val(interval);
+            $("#search_form").submit();    
+            return false;
+        });
+    });
 });
 </script>
 #{/set}
 
 #{set 'moreStyles'}
-<style type="text/css">
-.form-inline ul {
-    display: inline-block;
-    margin-bottom:-15px;
-}
-.nav-tabs {
-    margin-bottom:0px;
-}
-.tab-content {
-    border-left:1px solid #DDD;
-    border-right:1px solid #DDD;
-    border-bottom:1px solid #DDD;
-    clear:both;
-}
-.tab-content .binary{
-    width:40%;
-    float:left;
-    text-align:center;
-    margin:5px 1%;
-}
-.seq {
-    margin-top:20px;
-}
-.seq thead tr :first{
-    background-color:#f5f5f5;
-}
-footer{
-    margin-top:20px;
-}
-</style>
+    #{asset.css src:['/r/base.css', '/r/orders.css', '/r/play-pagination.css'] /}
 #{/set}
 
-<div class="body">
-<form class="well form-inline" action="@{ResalerAccounts.index()}" method="GET" id="search_form">起止日期
-  <input type="text"  id="condition_begin" class="input-medium Wdate" name = "condition.createdAtBegin" onfocus="WdatePicker({readOnly:true})" value="${createdAtBegin?.format()}">  - 
-  <input type="text" id="condition_end" class="input-medium Wdate" name = "condition.createdAtEnd" onfocus="WdatePicker({readOnly:true})" value="${createdAtEnd?.format()}">
-  <button type="submit" class="btn">搜索</button>
-  <ul class="nav nav-pills">
-    <li #{if interval=='0d'} class="active" #{/if}  ><a start="0d" href="#" >今天</a></li>
-    <li #{if interval=='7d'} class="active" #{/if}  ><a start="7d" href="#" >最近7天</a></li>
-    <li #{if interval=='1m'} class="active" #{/if}  ><a start="1m" href="#" >1个月</a></li>
-    <li #{if interval=='3m'} class="active" #{/if}  ><a start="3m" href="#" >3个月</a></li>
-    <li #{if interval=='1y'} class="active" #{/if}  ><a start="1y" href="#" >1年内</a></li>
-  </ul>
-  <input type="hidden" id="interval" name="interval"/>
-</form>
+<div id="content">
+    #{breadcrumbs/breadcrumb breadcrumbs/}
+    <div class="main clearfix">
+        #{include "share/left.html"/}
+        <div class="section">
+           <h3>账户明细</h3>
 
-<ul class="nav nav-tabs">
-        <li class="active"><a href="#">统计金额</a></li>
-        <li><a href="#">下载查询结果</a></li>
-</ul>
-<div class="tab-content">
-<div class="alert alert-success binary">
-  一共支出 ${summaryReport.get(models.accounts.AccountSequenceFlag.NOSTRO)[1]} 笔 / ${summaryReport.get(models.accounts.AccountSequenceFlag.NOSTRO)[2]} 元 
+            <form class="well form-inline" action="@{ResalerAccounts.index()}" method="GET" id="search_form">起止日期
+                <input type="text"  id="condition_begin" class="input-medium Wdate" name = "condition.createdAtBegin" onfocus="WdatePicker({readOnly:true})" value="${createdAtBegin?.format()}">  - 
+                <input type="text" id="condition_end" class="input-medium Wdate" name = "condition.createdAtEnd" onfocus="WdatePicker({readOnly:true})" value="${createdAtEnd?.format()}">
+                <button type="submit" class="search-btn">搜索</button>
+                <span #{if interval=='0d'} class="active" #{/if}  ><a start="0d" href="#" >今天</a></span>
+                <span #{if interval=='7d'} class="active" #{/if}  ><a start="7d" href="#" >最近7天</a></span>
+                <span #{if interval=='1m'} class="active" #{/if}  ><a start="1m" href="#" >1个月</a></span>
+                <span #{if interval=='3m'} class="active" #{/if}  ><a start="3m" href="#" >3个月</a></span>
+                <span #{if interval=='1y'} class="active" #{/if}  ><a start="1y" href="#" >1年内</a></span>
+                <input type="hidden" id="interval" name="interval"/>
+            </form>
+
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#">统计金额</a></li>
+                <li><a href="#">下载查询结果</a></li>
+            </ul>
+            <div id="stats" class="clearfix">
+                <div class="this-month">
+                    一共支出 ${summaryReport.get(models.accounts.AccountSequenceFlag.NOSTRO)[1]} 笔 / ${summaryReport.get(models.accounts.AccountSequenceFlag.NOSTRO)[2]} 元 
+                </div>
+                <div class="last-month">
+                    一共收入 ${summaryReport.get(models.accounts.AccountSequenceFlag.VOSTRO)[1]} 笔 / ${summaryReport.get(models.accounts.AccountSequenceFlag.VOSTRO)[2]} 元 
+                </div>
+            </div>
+            <table class="order-tab" cellpadding="0" cellspacing="0">
+                <thead>
+                <tr>
+                    <th width="350">账户明细</th>
+                    <th width="120">类型</th>
+                    <th width="150">交易时间</th>
+                    <th width="150">金额</th>
+                </tr>
+                </thead>
+                <tbody>
+                #{paginate.list items:seqs, as:'accountSequence'}
+                <tr>
+                    <td>${accountSequence.orderId}</td>
+                    <td>
+                        #{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO} 收入 #{/if}
+                        #{else} 支出 #{/else}
+                    </td>
+                    <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                    <td>${accountSequence.amount}</td>
+                </tr>
+                #{/paginate.list}
+                </tbody>
+            </table>
+            <div class="pagination">
+                <ul>
+                    #{paginate.controls items:seqs /}
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="alert alert-info binary" style="float:right">
-  一共收入 ${summaryReport.get(models.accounts.AccountSequenceFlag.VOSTRO)[1]} 笔 / ${summaryReport.get(models.accounts.AccountSequenceFlag.VOSTRO)[2]} 元 
-</div>
-<div style="clear:both"></div> 
-
-
- </div>
-
- <table class="table table-striped seq">
-          <tr>
-            <th>账户明细</th>
-            <th>类型</th>
-            <th>交易时间</th>
-            <th>金额</th>
-          </tr>
-    #{paginate.list items:seqs, as:'accountSequence'}
-        <tr>
-            <td>${accountSequence.orderId}</td>
-
-            <td>#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
-                    收入
-                #{/if}
-                #{else}
-                支出
-                #{/else}
-                </td>
-            <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-            <td>${accountSequence.amount}</td>
-        </tr>
-    #{/paginate.list}
-
-
-      </table>
-
-
-   <div class="pagination">
-     <ul>
-    #{paginate.controls items:seqs /}
-    </ul>
-  </div>
- 
- 
- 

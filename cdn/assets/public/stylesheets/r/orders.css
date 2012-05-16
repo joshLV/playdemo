@@ -149,3 +149,21 @@
 .order-tab .action a {
     color: #4991D4;
 }
+.order-tab input {
+    position: relative;
+    top: 2px;
+}
+.order-tab .order-ft {
+    border-top: 1px solid #DDD;
+    border-bottom: 1px solid #DDD;
+}
+.order-tab .order-ft td {
+    padding: 8px 5px;
+    background-color: #F6F6F6;
+}
+.order-tab .order-ft a {
+    padding: 2px 5px;
+    margin-left: 5px;
+    color: #4991D4;
+    border: 1px solid #BBB;
+}

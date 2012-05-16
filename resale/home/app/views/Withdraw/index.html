@@ -1,40 +1,29 @@
 #{extends 'main.html' /}
 #{set title:'分销网 - 提现' /}
 #{set 'moreStyles'}
-<link href="@@{'/public/stylesheets/payment_info.css'}" rel="stylesheet" type="text/css"/>
+    #{asset.css src:['/r/base.css', '/r/withdraw.css'] /}
 #{/set}
 
-<div id="wrap_main">
-    <div id="wrap_top">
-    #{include "share/topNavigator.html"/}
-    </div>
-
-    <div id="wrap_top_header">
-        <div id="wrap_top_header_left"><img src="@{'/public/images/logo.jpg'}"/></div>
-        <div id="wrap_top_middle">券生活-惠生活</div>
-    </div>
-    <div style="clear:both"></div>
-    <div class="fen_g"></div>
-</div>
-<!--主体内容部分-->
-<div id="wrap_content">
-
-    <a href="/withdraw/apply"><h1>点击申请提现</h1></a>
+<div id="content">
+    <h1><a href="/withdraw/apply">点击申请提现</a></h1>
     <table border="1">
+        <thead>
         <tr>
-            <td>流水号</td>
-            <td>开户人真实姓名</td>
-            <td>银行所在城市</td>
-            <td>银行开户行</td>
-            <td>支行</td>
-            <td>银行卡号</td>
-            <td>提现金额</td>
-            <td>申请时间</td>
-            <td>状态</td>
-            <td>处理时间</td>
-            <td>手续费</td>
-            <td>申请反馈</td>
+            <th>流水号</th>
+            <th>开户人真实姓名</th>
+            <th>银行所在城市</th>
+            <th>银行开户行</th>
+            <th>支行</th>
+            <th>银行卡号</th>
+            <th>提现金额</th>
+            <th>申请时间</th>
+            <th>状态</th>
+            <th>处理时间</th>
+            <th>手续费</th>
+            <th>申请反馈</th>
         </tr>
+        <thead>
+        <tbody>
         #{list items:withdrawBills, as:'withdrawBill'}
         <tr>
             <td>${withdrawBill.serialNumber}</td>
@@ -51,5 +40,6 @@
             <td>${withdrawBill.comment}</td>
         </tr>
         #{/list}
+        <tbody>
     </table>
 </div>

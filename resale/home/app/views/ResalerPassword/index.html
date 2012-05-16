@@ -1,106 +1,8 @@
-#{extends 'main.html' /} #{set title:'修改密码' /} #{set 'moreStyles'}
+#{extends 'main.html' /}
+#{set title:'修改密码' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/r/base.css', '/r/orders.css', '/r/users.css'] /}
 <style type="text/css">
-<!--
-body,td,th {
-	font-size: 14px;
-}
-
-a {
-	font-size: 14px;
-	color: #003399;
-}
-
-a:link {
-	text-decoration: none;
-}
-
-a:visited {
-	text-decoration: none;
-	color: #003399;
-}
-
-a:hover {
-	text-decoration: underline;
-	color: #0033FF;
-}
-
-a:active {
-	text-decoration: none;
-	color: #003399;
-}
-
-.box {
-	width: 600px;
-	height: auto;
-	border: 1px solid #8FC319;
-	margin: 0 auto;
-}
-
-.title {
-	width: 100%;
-	height: 26px;
-	line-height: 26px;
-	border-bottom: 1px solid #8FC319;
-	margin: 0 auto;
-	font-family: "Courier New", Courier, monospace;
-	font-weight: bold;
-	color: #666666;
-	background-color: #A0D771;
-}
-
-.commd {
-	width: 90%;
-	border: 1px solid #cccccc;
-	height: 20px;
-	line-height: 20px;
-	margin: 0 auto;
-	margin-top: 10px;
-	background-color: #f1f1f1;
-}
-
-.commdinfo {
-	width: 90%;
-	border: 1px solid #cccccc;
-	height: 200px;
-	line-height: 140%;
-	margin: 0 auto;
-	margin-top: 10px;
-}
-
-.workbox {
-	width: 90%;
-	border: 1px solid #cccccc;
-	margin: 0 auto;
-	margin-top: 10px;
-	list-style: none;
-}
-
-.workbox li {
-	height: 34px;
-	line-height: 34px;
-	width: 99%;
-	color: #000000;
-	border-bottom: 1px solid #cccccc;
-	margin: 0 auto;
-}
-
-.input_box {
-	width: auto;
-	height: 34px;
-	line-height: 34px;
-	float: left;
-}
-
-.inputBox {
-	height: 26px;
-	line-height: 26px;
-	border: 1px solid #999999;
-	background-repeat: repeat-x;
-	margin-top: 2px;
-	float: left;
-	font-size: 14px;
-	color: #000000;
-}
 /*设置为显示*/
 .setShow {
 	visibility: visible
@@ -207,37 +109,36 @@ a:active {
 <script src="@{'/public/javascripts/password.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 <body onload="isOk('${isOk}')">
-	<div id="wrap_main">
-		<!--    最顶部导航-->
-		<div id="wrap_top">#{include "share/topNavigator.html"/}</div>
-		<div id="wrap_top_header">
-			<div id="wrap_top_header_left">
-				<img src="@{'/public/images/logo.jpg'}" />
-			</div>
-			<div id="wrap_top_middle">券生活-惠生活</div>
 
-		</div>
-		<div style="clear: both"></div>
-		<div class="fen_g"></div>
-	</div>
-	<!--主体内容部分-->
-	<div id="wrap_content">
-		<div class="commd">修改密码</div>
-		<form class="form-horizontal" action="@{ResalerPassword.update(resaler.id)}" method="POST">
-			<div class="workbox">
-				<li><div class="input_box">原&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;&nbsp;码&nbsp;：</div> 
-				<input name="resaler.oldPassword" type="password" id="old_password" size="26"
-					maxlength="20" class="inputBox"  value="${resaler?.oldPassword}" /><span class="error">#{error 'resaler.oldPassword' /}</span></li>
-				<li><div class="input_box">新&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;&nbsp;码&nbsp;：</div> 
-				<input name="resaler.password" type="password" id="password" size="26" maxlength="20"  value="${resaler?.password}"
-					class="inputBox" onkeyup="javascript:ChangeQD();" /><span class="error">#{error 'resaler.newPassword' /}</span>
-					<div class="qdbox_hongse setClose" id="qdbox">
-						<div id="pwQiangdu" class="qdhongse">很弱</div>
-					</div></li>
-				<li><div class="input_box">确认新密码：</div> <input name="resaler.confirmPassword" type="password" id="confirmPassword" size="26" maxlength="20"
-					class="inputBox"  value="${resaler?.confirmPassword}" /><span class="error">#{error 'resaler.newConfirmPassword' /}</span></li>
-				<li>操作： <input type="submit" name="button" id="sure_submit" value="确认" />
-				</li>
-			</div>
-		</form>
-	</div>
+<div id="content">
+    #{breadcrumbs/breadcrumb breadcrumbs/}
+    <div class="main clearfix">
+        #{include "share/left.html"/}
+        <div class="section">
+            <h3>修改密码</h3>
+            <form class="form-horizontal user-form" action="@{ResalerPassword.update(resaler.id)}" method="POST">
+                <div class="item old-password clearfix">
+                    <span class="label">原密码：</span>
+                    <input name="resaler.oldPassword" type="password" id="old_password" size="26" maxlength="20" value="${resaler?.oldPassword}" />
+                    <span class="error">#{error 'resaler.oldPassword' /}</span>
+                </div>
+                <div class="item clearfix">
+                    <span class="label">新密码：</span> 
+                    <input name="resaler.password" type="password" id="password" size="26" maxlength="20"  value="${resaler?.password}" onkeyup="javascript:ChangeQD();" />
+                    <span class="error">#{error 'resaler.newPassword' /}</span>
+                    <div class="qdbox_hongse setClose" id="qdbox">
+                        <div id="pwQiangdu" class="qdhongse">很弱</div>
+                    </div>
+                </div>
+                <div class="item clearfix">
+                    <span class="label">确认新密码：</span>
+                    <input name="resaler.confirmPassword" type="password" id="confirmPassword" size="26" maxlength="20" value="${resaler?.confirmPassword}" />
+                    <span class="error">#{error 'resaler.newConfirmPassword' /}</span>
+                </div>
+                <div class="btn-box">
+                    <button type="submit" class="submit-btn">确 认</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
