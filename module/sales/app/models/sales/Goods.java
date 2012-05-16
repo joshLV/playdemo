@@ -800,7 +800,12 @@ public class Goods extends Model {
      */
     public static List<Goods> findTradeRecently(int limit) {
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select i.goods from OrderItems i group by i.goods order by i.createdAt DESC");
+        Query q = entityManager.createQuery("select i.goods from OrderItems i where i.goods.status = :status " +
+                "and i.goods.deleted = :deleted and i.goods.baseSale >= 1 and i.goods.expireAt > :expireAt " +
+                "group by i.goods order by i.createdAt DESC");
+        q.setParameter("status",GoodsStatus.ONSALE);
+        q.setParameter("deleted",DeletedStatus.UN_DELETED);
+        q.setParameter("expireAt",new Date());
         q.setMaxResults(limit);
         return q.getResultList();
     }
