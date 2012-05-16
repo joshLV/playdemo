@@ -1,0 +1,50 @@
+.user-form {
+    margin: 0 100px;
+}
+.user-form .item {
+    padding: 10px 0;
+    line-height: 28px;
+}
+.user-form .item input {
+    height: 24px;
+    padding: 0 2px;
+	float: left;
+	margin-top: 2px;
+	font-size: 14px;
+	line-height: 24px;
+    border: 1px solid;
+    border-color: #AAA #DDD #DDD #AAA;
+	background-repeat: repeat-x;
+}
+.user-form .label {
+    float: left;
+    width: 185px;
+    margin-right: 8px;
+    text-align: right;
+    color: #666;
+}
+.user-form .label i {
+    position: relative;
+    top: 3px;
+    padding: 0 2px;
+    color: #F50;
+    font-style: normal;
+}
+.user-form .btn-box {
+    padding-left: 193px;
+    margin: 10px 0 30px;
+
+}
+.user-form .submit-btn {
+    width: 72px;
+    height: 28px;
+    color: #F8F8F8;
+    border: 0;
+    background: url(http://img.uhcdn.com/images/r/submit_btn.png) no-repeat 0 0;
+    cursor: pointer;
+}
+.user-form .old-password {
+    padding-bottom: 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #DDD;
+}

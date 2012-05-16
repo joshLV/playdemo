@@ -1,0 +1,65 @@
+#charge {
+    margin: 20px 0 10px;
+    padding: 10px 10px 10px 100px;
+    line-height: 28px;
+    background-color: #F5DEDE;
+    border: 1px solid #E5A6A6;
+}
+#charge .amount {
+    width: 120px;
+    height: 22px;
+    padding: 0 2px;
+    font-weight: 700;
+    border: 1px solid;
+    border-color: #AAA #CCC #DDD #CCC;
+}
+#charge .error {
+    margin-left: 5px;
+    color: #F50;
+}
+#payway {
+    margin-bottom: 20px;
+    padding:  5px 15px 20px;
+    border: 1px solid #D4D4D4;
+}
+#payway h3 {
+    font-size: 14px;
+    line-height: 32px;
+    border-bottom: 1px solid #D4D4D4;
+}
+#payway h4 {
+    color: #666;
+    font-size: 14px;
+}
+#payway input {
+    margin-right: 5px;
+}
+.zhifu {
+    padding: 30px 20px 40px;
+}
+.zhifu li {
+    float: left;
+    margin-right: 50px;
+}
+.kuaiqian {
+    padding: 20px;
+}
+.kuaiqian li {
+    float: left;
+    margin: 0 30px 25px 0;
+    *margin-bottom: 5px;
+}
+#payway .submit-btn {
+    display: block;
+    margin-left: 20px;
+    width: 100px;
+    height: 32px;
+    line-height: 32px;
+    color: #FFF;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    border: 0;
+    background: url(http://img.uhcdn.com/images/r/pay_btn.png) repeat-x 0 0;
+    cursor: pointer;
+}
