@@ -1,9 +1,7 @@
 package models.accounts.util;
 
 import models.accounts.*;
-import models.order.Order;
 import play.Logger;
-import play.db.jpa.JPAPlugin;
 
 import java.math.BigDecimal;
 
@@ -175,8 +173,7 @@ public class TradeUtil {
      * @param tradeBill 需变更的交易记录
      * @return  是否成功
      * */
-    public static boolean success(TradeBill tradeBill) {
-        Order order = Order.findById(tradeBill.orderId);
+    public static boolean success(TradeBill tradeBill, String note) {
         try {
             //如果不是充值,则首先支付此笔订单
             if(tradeBill.tradeType != TradeType.CHARGE){
@@ -186,7 +183,7 @@ public class TradeUtil {
                         BigDecimal.ZERO,
                         tradeBill.getId(),
                         AccountSequenceType.PAY,
-                        order == null ? "支付" : order.description,
+                        note,
                         tradeBill.orderId);
             }
             AccountUtil.addBalance(
@@ -195,7 +192,7 @@ public class TradeUtil {
                     BigDecimal.ZERO,
                     tradeBill.getId(),
                     AccountSequenceType.RECEIVE,
-                    order == null ? "收款" : order.description,
+                    note,
                     tradeBill.orderId);
         } catch (BalanceNotEnoughException e) {
             Logger.error(e, e.getMessage());
