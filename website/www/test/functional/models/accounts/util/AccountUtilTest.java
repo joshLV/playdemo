@@ -39,7 +39,7 @@ public class AccountUtilTest extends FunctionalTest{
 
         Boolean exception = false;
         try{
-            AccountUtil.addBalance(null, null, null, null, AccountSequenceType.REFUND, "test note");
+            AccountUtil.addBalance(null, null, null, null, AccountSequenceType.REFUND, "test note",null);
         }catch (RuntimeException e){
             exception = true;
         } catch (BalanceNotEnoughException e) {
@@ -52,7 +52,7 @@ public class AccountUtilTest extends FunctionalTest{
         }
         exception = false;
         try{
-            AccountUtil.addBalance(null, null,null, new Long(1), null, "test note");
+            AccountUtil.addBalance(null, null,null, new Long(1), null, "test note",null);
         }catch (RuntimeException e){
             exception = true;
         } catch (BalanceNotEnoughException e) {
@@ -68,7 +68,7 @@ public class AccountUtilTest extends FunctionalTest{
         BigDecimal augend = new BigDecimal(1);
         try {
             AccountUtil.addBalance(account.getId(), augend, BigDecimal.ZERO, new Long(1),
-                    AccountSequenceType.CHARGE, "test note");
+                    AccountSequenceType.CHARGE, "test note", null);
         } catch (BalanceNotEnoughException e) {
 
         } catch (AccountNotFoundException e) {

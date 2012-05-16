@@ -17,7 +17,7 @@
             <table width="774" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                     <td width="12">&nbsp;</td>
-                    <td>用&nbsp;&nbsp;户&nbsp;&nbsp;名：</td>
+                    <td>邮&nbs;&nbsp;箱：</td>
                     <td width="259" height="35"><input type="text" name="user.loginName" id="loginName"
                         value="${user?.loginName}" /> <span class="error" id="checkName">#{error
                             'user.loginName' /}</span></td>
@@ -69,33 +69,29 @@
     <div class="form-bd">
         <form id="regist-form" method="post" action="">
             <div class="field">
-                <label for="username" class="label"><i>*</i>用户名：</label>
-                <input type="text" id="username" class="medium" maxlength="32" tabindex="1" />
-                <span id="username-error" class="error"></span>
+                <label for="loginName" class="label"><i>*</i>邮箱：</label>
+                <input type="text" id="loginName" class="medium" maxlength="32" tabindex="1" name="user.loginName" value="${user?.loginName}" />
+                <span id="username-error" class="error">#{error 'user.loginName' /}</span>
             </div>
             <div class="field">
                 <label for="password" class="label"><i>*</i>设置密码：</label>
-                <input type="text" id="password" class="medium" maxlength="20" tabindex="2" />
-                <span id="password-error" class="error"></span>
+                <input type="password" id="password" class="medium" maxlength="20" tabindex="2" name="user.password" value="${user?.password}" />
+                <span id="password-error" class="error">#{error 'user.password' /}</span>
             </div>
             <div class="field">
-                <label for="password2" class="label"><i>*</i>确认密码：</label>
-                <input type="text" id="password2" class="medium" maxlength="20" tabindex="3" />
-                <span id="password2-error" class="error"></span>
+                <label for="confirmPassword" class="label"><i>*</i>确认密码：</label>
+                <input type="password" id="confirmPassword" class="medium" maxlength="20" tabindex="3" name="user.confirmPassword" value="${user?.confirmPassword}"/>
+                <span id="password2-error" class="error">#{error 'user.confirmPassword' /}</span>
             </div>
             <div class="field">
-                <label for="email" class="label"><i>*</i>邮箱：</label>
-                <input type="text" id="email" class="medium" maxlength="20" tabindex="4" />
-                <span id="email-error" class="error"></span>
-            </div>
-            <div class="field">
-                <label for="checkcode" class="label"><i>*</i>验证码：</label>
-                <input type="text" id="checkcode" class="medium" maxlength="20" tabindex="5" />
+                <label for="captcha" class="label"><i>*</i>验证码：</label>
+                <input type="text" id="captcha" class="medium" maxlength="20" tabindex="5" name="user.captcha"/>
                 <img id="captchaImg" width="100" height="30" src="/captcha?randomID=${randomID}">
                 <span>看不清？<a id="newcode" href="">换一张</a></span>
-                <span id="checkcode-error" class="error"></span>
+                <input type="hidden" name="randomID" id="randomID" value="${randomID}" />
+                <span id="checkcode-error" class="error">#{error 'user.captcha' /}</span>
             </div>
-            <button type="submit" id="submit" tabindex="6"> 同意以下条款并注册 </button>
+            <button type="submit" id="register_submit" tabindex="6"> 同意以下条款并注册 </button>
         </form>
 <div id="protocol">
     <h3>优惠啦网站服务条款</h3>
@@ -223,11 +219,10 @@
 </div>
 <script>
 $(function(){
-    var username = $('#username'),
+    var username = $('#loginName'),
         password = $('#password'),
-        password2 = $('#password2'),
-        email = $('#email'),
-        checkcode = $('#checkcode'),
+        password2 = $('#confirmPassword'),
+        checkcode = $('#captcha'),
         reEmail = /^(?:\w+\.?)*\w+@(?:\w+\.?)*\w+$/;
 
     $('#regist-form').submit(function(){
@@ -251,14 +246,9 @@ $(function(){
             $('#password2-error').text('两次输入的密码不一致');
             return false;
         }
-        if (email.val() == '') {
-            email.css('border', '1px solid #f50');
-            $('#email-error').text('请输入邮箱');
-            return false;
-        }
-        if (!reEmail.test(email.val())) {
-            email.css('border', '1px solid #f50');
-            $('#email-error').text('邮箱格式不正确');
+        if (!reEmail.test(username.val())) {
+            username.css('border', '1px solid #f50');
+            $('#username-error').text('邮箱格式不正确');
             return false;
         }
         if (checkcode.val() == '') {
@@ -278,10 +268,6 @@ $(function(){
     password2.blur(function(){
         password2.css('border', '1px solid #D1D1D1');
         $('#password2-error').text('');
-    });
-    email.blur(function(){
-        email.css('border', '1px solid #D1D1D1');
-        $('#email-error').text('');
     });
     checkcode.blur(function(){
         checkcode.css('border', '1px solid #D1D1D1');
