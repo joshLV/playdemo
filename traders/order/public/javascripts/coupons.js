@@ -77,6 +77,15 @@ $(window).load(function(){
                  } else if(data == 'err') {
                      alert("消费失败！");
                  } else {
+                	 if (data =='CONSUMED') {
+                		 data ="消费";
+                	 }else if(data =='REFUND'){
+                		 data ="退款";
+                	 }else if(data =='EXPIRED'){
+                		 data ="过期";
+                	 } else {
+                		 data ="处理中";
+                	 }
                 	 $("#checksn").html("<font color=red>该券已"+data+"！</font>");
                  }
 
