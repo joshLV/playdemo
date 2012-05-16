@@ -5,6 +5,7 @@ require:
     - play1 -> cobertura 2.4p3
     - play1 -> paginate head
     - play1 -> app-version 0.1
+    - play1 -> rabbitmq 0.3
     - layout_trader -> layout_trader
     - paginate_ext -> paginate_ext
     - supplier -> supplier
@@ -16,6 +17,7 @@ require:
     - org.jsoup -> jsoup 1.6.1
     - commons-lang -> commons-lang 2.6
     - resale -> resale
+    - sms -> sms
 
 repositories:
     - mavenRepository:
@@ -45,3 +47,4 @@ repositories:
             - view_ext -> *
             - sales -> *
             - resale -> *
+            - sms -> *

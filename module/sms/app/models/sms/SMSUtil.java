@@ -4,7 +4,6 @@ import play.Play;
 import play.modules.rabbitmq.producer.RabbitMQPublisher;
 
 import java.util.List;
-import models.order.ECoupon;
 
 /**
  * User: likang

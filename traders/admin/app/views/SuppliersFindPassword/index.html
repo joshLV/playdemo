@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>找回密码</title>
+<meta charset="utf-8">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="stylesheet" media="screen" href="/public/stylesheets/main.css">
+<link href="/public/assets/css/bootstrap.css" rel="stylesheet">
+
+<style type="text/css">
+ body {
+      padding-top: 60px;
+      padding-bottom: 40px;
+      }
+.form-horizontal .controls {
+	margin-left: 460px;
+	*display: inline-block;
+	*margin-left: 0;
+	*padding-left: 20px;
+	vertical-align: center
+}
+
+.form-horizontal .control-label {
+	width: 420px;
+	padding-top: 5px;
+	text-align: right;
+}
+
+.form-horizontal .form-actions {
+	padding-left: 460px;
+}
+</style>
+
+</head>
+
+<form class="form-horizontal" method="POST">
+    <legend style="padding-left:500px">找回密码</legend>
+    <div class="control-group">
+        <label for="input01" class="control-label"><span style="color: red;">*</span>注册手机</label>
+        <div class="controls">
+            <input name="mobile" type="text" id="mobile" size="26" maxlength="11" class="inputBox" /> <span
+                id="showspan"> <input id="getcodebutton" type="button" class="btn btn-primary"
+                onclick="sendCheckCode()" value="发送验证码" />
+            </span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label for="input01" class="control-label"><span style="color: red;">*</span>验证码</label>
+        <div class="controls">
+            <input type="text" id="checkcode" size="26" maxlength="20" class="inputBox" /><span class="error" id=""></span>
+        </div>
+
+    </div>
+    <div class="controls error" style="font-align: center" id="checkByTel"></div>
+    <div class="form-actions">
+        <input id="next" class="btn btn-primary" type="button" onClick="getpwsbyemail()" value="下一步" />
+    </div>
+</form>
+</html>
+
+<script src="/public/javascripts/jquery-1.6.4.min.js" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+    function checkTel(tel) {
+        var telreg = /^((15)\d{9})$|^((13)\d{9})$|^((18)\d{9})$/i;
+        if (tel.match(telreg) == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function sendCheckCode() {
+
+        var mobile = $.trim($("#mobile").val());
+        if (mobile == '' || checkTel(mobile)) {
+            $("#checkByTel").html("<span class='redInfo allstep_info'><b></b><em>手机号码不对！</em></span>");
+            return false;
+        }
+        $.post("/checkByTel",{mobile : mobile},
+            function(data) {
+                if (data == 1) {
+                    $("#checkByTel").html("<span class='yellowInfo allstep_info'><b></b><em>验证码已成功发送，请查收！</em></span>");
+                    updateTimer('showspan', 60);
+                } else if (data == -1) {
+                    $("#checkByTel").html("<span class='yellowInfo allstep_info'><b></b><em>网络错误，请重发！</em></span>");
+                    $("#getcodebutton").attr("disabled", false);
+                } else if (data == 0) {
+                    $("#checkByTel").html("<span class='yellowInfo allstep_info'><b></b><em>此手机不存在！</em></span>");
+                    $("#getcodebutton").attr("disabled", false);
+                } else if (data == -3) {
+                    $("#checkByTel").html("<span class='yellowInfo allstep_info'><b></b><em>请使用此账号绑定手机！</em></span>");
+                    $("#getcodebutton").attr("disabled", false);
+                }
+            }, "text");
+    }
+    //60秒倒计时
+    function updateTimer(showspan, timeval) {
+        if (timeval >= 0) {
+            $("#" + showspan).html(timeval);
+            timeval--;
+            setTimeout("updateTimer('" + showspan + "', " + timeval + ")", 1000);
+            $("#" + showspan).html("<input type='button' onClick='sendCheckCode()' value='重新发送"+ timeval + "' />");
+        } else {
+            timeval = 0;
+            $("#" + showspan).html("<input type='button' onClick='sendCheckCode()' value='重新发送' />");
+            $("#telpassbutton").attr("disabled", false);
+        }
+
+    }
+
+    //找回密码
+    function getpwsbyemail() {
+
+        var mobile = $("#mobile").val();
+        var checkcode = $("#checkcode").val();
+        if (mobile == '' || checkTel(mobile)) {
+            $("#checkByTel").html("<span class='redInfo allstep_info'><b></b><em>手机号码不对！</em></span>");
+            return false;
+        }
+        if (checkcode == '') {
+            $("#checkByTel").html("<span class='redInfo allstep_info'><b></b><em>请输入手机验证码</em></span>");
+            return false;
+        }
+        $("#telpassbutton").attr("disabled", "disabled");
+        $.post("/reset",{mobile : mobile,validCode : checkcode},
+            function(data) {
+                if (data == 0) {
+                    var url = "/resetPassword?mobile=" + mobile;
+                    setTimeout(function() {location.href = url;}, 10);
+                } else if (data == 1) {
+                    $("#checkByTel").html("<span class='redInfo allstep_info'><b></b><em>手机验证码错误或已过期</em></span>");
+                    $("#telpassbutton").attr("disabled", false);
+                } else if (data == 3) {
+                    $("#checkByTel").html("<span class='redInfo allstep_info'><b></b><em>此手机并未注册</em></span>");
+                    $("#telpassbutton").attr("disabled", false);
+                } else if (data == 2) {
+                    $("#checkByTel").html("<span class='redInfo allstep_info'><b></b><em>两次输入的手机不一致！</em></span>");
+                    $("#telpassbutton").attr("disabled", false);
+                } else {
+                    $("#checkByTel").html("<span class='redInfo allstep_info'><b></b><em>手机验证码错误或已过期</em></span>");
+                    $("#telpassbutton").attr("disabled", false);
+                }
+            }, "text");
+
+    }
+</script>

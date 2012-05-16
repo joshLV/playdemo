@@ -16,6 +16,14 @@ GET     /profile                                SupplierProfiles.index
 GET     /users/password                         SuppliersPassword.edit
 POST    /users/{id}/update                      SuppliersPassword.update
 
+#找回密码
+GET     /forget-password                         SuppliersFindPassword.index
+POST    /checkByTel                             SuppliersFindPassword.checkByTel
+POST    /reset                                  SuppliersFindPassword.reset
+GET     /resetPassword                          SuppliersFindPassword.resetPassword
+POST    /updatePassword                         SuppliersFindPassword.updatePassword
+
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

@@ -206,7 +206,7 @@ public class SupplierUser extends Model {
 
 		return returnFlag;
 	}
-
+	
 	/**
 	 * 创建用户信息
 	 *
@@ -268,4 +268,38 @@ public class SupplierUser extends Model {
 		newUser.save();
 
 	}
-}
+
+	/**
+	 * 验证手机是否存在
+	 * @param mobile
+	 * @return
+	 */
+	public static boolean checkMobile(String mobile) {
+		SupplierUser supplierUser = SupplierUser.find("mobile = ?", mobile).first();
+		if (supplierUser != null) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 找回密码，更新新密码
+	 * @param supplierUserId
+	 * @param mobile
+	 * @param password
+	 */
+	public static void updateFindPwd(Long supplierUserId, String mobile,
+			String password) {
+		SupplierUser supplierUser = SupplierUser.find("id = ? and mobile = ?",supplierUserId,mobile).first();
+		if (supplierUser != null) {
+			Images.Captcha captcha = Images.captcha();
+			String password_salt = captcha.getText(6);
+			// 密码加密
+			supplierUser.encryptedPassword = DigestUtils.md5Hex(password
+					+ password_salt);
+			// 随机码
+			supplierUser.passwordSalt = password_salt;
+			supplierUser.save();
+		}
+		
+	}}

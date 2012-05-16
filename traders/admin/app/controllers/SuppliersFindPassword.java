@@ -1,59 +1,33 @@
 package controllers;
 
-import models.consumer.User;
+import models.admin.SupplierUser;
 import models.sms.SMSUtil;
 
 import org.apache.commons.lang.StringUtils;
 
 import play.cache.Cache;
 import play.mvc.Controller;
+import play.mvc.With;
 
 import com.uhuila.common.constants.DataConstants;
 import com.uhuila.common.util.RandomNumberUtil;
 
-/**
- * 找回密码.
- * User: yanjy
- */
-public class FindPassword extends Controller {
-	/**
-	 * 找回密码页面
-	 */
-	public static void index() {
-		render();
-	}
+public class SuppliersFindPassword  extends Controller {
 
-	/**
-	 * 通过邮箱找回密码页面
-	 */
-	public static void findByEmail() {
-		render("FindPassword/findByEmail.html");
-	}
+    /**
+     * 用户信息
+     */
+    public static void index() {
+        render();
+    }
 
-	/**
-	 * 通过邮箱找回密码,并验证邮箱
-	 */
-	public static void checkByEmail(String email) {
-		boolean isExisted = User.isExisted(email);
-		renderJSON(isExisted ? DataConstants.ONE.getValue():DataConstants.ZERO.getValue());
-	}
-
-
-	/**
-	 * 通过手机找回密码页面
-	 */
-	public static void findByTel() {
-		render("FindPassword/findByTel.html");
-	}
-
-	/**
+    /**
 	 * 通过手机发送验证码
 	 *
 	 * @param mobile 手机
 	 */
 	public static void checkByTel(String mobile) {
-
-		boolean isExisted = User.checkMobile(mobile);
+		boolean isExisted = SupplierUser.checkMobile(mobile);
 		//手机存在
 		if (isExisted) {
 			String validCode = RandomNumberUtil.generateSerialNumber(4);
@@ -63,7 +37,7 @@ public class FindPassword extends Controller {
 			Cache.set("validCode_", validCode, "10mn");
 			Cache.set("mobile_", mobile, "10mn");
 		}
-		renderJSON(isExisted ? DataConstants.ONE.getValue():DataConstants.ZERO.getValue());
+		renderJSON(isExisted ? "1":"0");
 	}
 
 	/**
@@ -77,7 +51,8 @@ public class FindPassword extends Controller {
 		Object objMobile = Cache.get("mobile_");
 		String cacheValidCode = objCode == null ? "" : objCode.toString();
 		String cacheMobile = objMobile == null ? "" : objMobile.toString();
-		boolean isExisted = User.checkMobile(mobile);
+		boolean isExisted = SupplierUser.checkMobile(mobile);
+		
 		//手机不存在
 		if (!isExisted) {
 			renderJSON(DataConstants.THREE.getValue());
@@ -101,34 +76,25 @@ public class FindPassword extends Controller {
 	 */
 	public static void resetPassword() {
 		String mobile = request.params.get("mobile");
-		String totken = request.params.get("totken");
-		//判断发送邮件的链接是否有效
-		boolean isExpired = User.isExpired(totken);
-		render(mobile, totken, isExpired);
+		SupplierUser supplierUser= SupplierUser.find("mobile", mobile).first();
+		
+		render(mobile,supplierUser);
 	}
-
+	
 	/**
 	 * 更新密码
 	 *
 	 * @param mobile 手机
 	 */
-	public static void updatePassword(String totken, String mobile, String password, String confirmPassword) {
-		if (StringUtils.isBlank(totken) && StringUtils.isBlank(mobile)) {
+	public static void updatePassword(Long supplierUserId, String mobile, String password, String confirmPassword) {
+		if (StringUtils.isBlank(String.valueOf(supplierUserId)) && StringUtils.isBlank(mobile)) {
 			renderJSON("-1");
 		}
 
 		//根据手机有邮箱更改密码
-		User.updateFindPwd(totken, mobile, password);
+		SupplierUser.updateFindPwd(supplierUserId, mobile, password);
 
 		Cache.delete("mobile_");
-		Cache.delete("user_email_");
 		renderJSON("1");
-	}
-
-	/**
-	 * 成功找回密码页面
-	 */
-	public static void success() {
-		render("FindPassword/success.html");
 	}
 }
