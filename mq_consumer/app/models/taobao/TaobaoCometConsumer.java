@@ -11,9 +11,7 @@ import com.taobao.api.response.TradeFullinfoGetResponse;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
-import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
-import models.accounts.util.TradeUtil;
 import models.journal.MQJournal;
 import models.oauth.OAuthToken;
 import models.oauth.WebSite;
@@ -125,11 +123,13 @@ public class TaobaoCometConsumer extends RabbitMQConsumer<TaobaoCometMessage>{
     private TradeFullinfoGetResponse getTaobaoOrder(Long orderId, OAuthToken oAuthToken){
         TaobaoClient taobaoClient = new DefaultTaobaoClient(URL, APPKEY, APPSECRET);
         TradeFullinfoGetRequest fullinfoGetRequest = new TradeFullinfoGetRequest();
-        //请求以下字段:收件人手机,收件人电话,每笔子订单订单数量,子订单的购买者ID
+         //请求以下字段:收件人手机,收件人电话,每笔子订单订单数量,子订单的购买者ID
         fullinfoGetRequest.setFields("tid,receiver_mobile,receiver_phone,orders.num,orders.num_iid");
         fullinfoGetRequest.setTid(orderId);
         try {
-            return taobaoClient.execute(fullinfoGetRequest , oAuthToken.accessToken);
+            TradeFullinfoGetResponse response = taobaoClient.execute(fullinfoGetRequest , oAuthToken.accessToken);
+            Logger.info("taobao order response detail body:\n" + response.getBody());
+            return response;
         } catch (ApiException e) {
             Logger.error(e, "error while request taobao api");
             return null;
@@ -151,7 +151,7 @@ public class TaobaoCometConsumer extends RabbitMQConsumer<TaobaoCometMessage>{
         List<Order> taobaoOrders = taobaoOrder.getTrade().getOrders();
         models.order.Order order = models.order.Order.createConsumeOrder(userId, AccountType.RESALER);
         for(Order tOrder: taobaoOrders){
-            ResalerFav resalerFav = ResalerFav.find("byTaobaoItemId", tOrder.getIid()).first();
+            ResalerFav resalerFav = ResalerFav.find("byTaobaoItemId", tOrder.getNumIid()).first();
             if(resalerFav == null){
                 continue;
             }
