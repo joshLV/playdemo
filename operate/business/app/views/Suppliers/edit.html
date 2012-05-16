@@ -50,12 +50,12 @@
         </div>
     </div>
     <div class="form-actions">
-        <input type="hidden" name="supplierId" value="${supplier.getId()}"/>
+        <input type="hidden" name="supplierId" value="${supplier?.getId()}"/>
         <button class="btn btn-primary" type="submit">新 建</button>
     </div>
     #{/form}
     <legend>修改提现账户</legend>
-    #{if withdrawAccounts.size() == 0}
+    #{if withdrawAccounts?.size() == 0}
     暂无提现账户
     #{/if}
     #{else}
