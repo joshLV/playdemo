@@ -78,7 +78,8 @@ public class Goods extends Model {
     @Column(name = "sale_price")
     public BigDecimal salePrice;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "goods")
+    @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, fetch = FetchType.LAZY,
+            mappedBy = "goods")
     @OrderBy("level")
     public List<GoodsLevelPrice> levelPrices;
 
@@ -288,6 +289,9 @@ public class Goods extends Model {
      */
     @Transient
     public Supplier getSupplier() {
+        if (supplierId == null){
+            return null;
+        }
         return Supplier.findById(supplierId);
     }
 
@@ -368,14 +372,16 @@ public class Goods extends Model {
 
     public void setLevelPrices(List<GoodsLevelPrice> levelPrices) {
         this.levelPrices = levelPrices;
+        setLevelPrices();
     }
 
     public void setLevelPrices(BigDecimal[] prices) {
         if (prices == null || prices.length == 0) {
             return;
         }
+        setLevelPrices();
         for (int i = 0; i < prices.length; i++) {
-            getLevelPrices().get(i).price = prices[i];
+            levelPrices.get(i).price = prices[i];
         }
     }
 
@@ -383,6 +389,14 @@ public class Goods extends Model {
      * 不同分销商等级所对应的价格, 此方法可确保返回的价格数量与分销等级的数量相同
      */
     public List<GoodsLevelPrice> getLevelPrices() {
+        if (levelPrices!= null && levelPrices.size() == ResalerLevel.values().length){
+            return levelPrices;
+        }
+        setLevelPrices();
+        return levelPrices;
+    }
+
+    private void setLevelPrices() {
         if (levelPrices == null) {
             levelPrices = new ArrayList<>();
         }
@@ -391,13 +405,14 @@ public class Goods extends Model {
                 GoodsLevelPrice levelPrice = new GoodsLevelPrice(this, level, BigDecimal.ZERO);
                 levelPrices.add(levelPrice);
             }
-        } else {
-            for (GoodsLevelPrice levelPrice : levelPrices) {
-                if (levelPrice.price == null) {
-                    levelPrice.price = BigDecimal.ZERO;
-                }
-            }
         }
+//        else {
+//            for (GoodsLevelPrice levelPrice : levelPrices) {
+//                if (levelPrice.price == null) {
+//                    levelPrice.price = BigDecimal.ZERO;
+//                }
+//            }
+//        }
 
         if (levelPrices.size() < ResalerLevel.values().length) {
             int zeroLevelCount = ResalerLevel.values().length - levelPrices.size();
@@ -406,7 +421,6 @@ public class Goods extends Model {
                 levelPrices.add(new GoodsLevelPrice(this, ResalerLevel.values()[i + originalSize], BigDecimal.ZERO));
             }
         }
-        return levelPrices;
     }
 
     /**
@@ -507,6 +521,7 @@ public class Goods extends Model {
             return;
         }
         updateGoods.name = goods.name;
+
         updateGoods.no = goods.no;
         updateGoods.effectiveAt = goods.effectiveAt;
         updateGoods.expireAt = DateUtil.getEndOfDay(goods.expireAt);
@@ -518,12 +533,6 @@ public class Goods extends Model {
         updateGoods.baseSale = goods.baseSale;
         updateGoods.materialType = goods.materialType;
 
-        if (!noLevelPrices) {
-            updateGoods.levelPrices = goods.levelPrices;
-            for (GoodsLevelPrice levelPrice : updateGoods.getLevelPrices()) {
-                levelPrice.goods = updateGoods;
-            }
-        }
 
         updateGoods.setPrompt(goods.getPrompt());
         updateGoods.setDetails(goods.getDetails());
@@ -544,6 +553,11 @@ public class Goods extends Model {
 
         updateGoods.useBeginTime = goods.useBeginTime;
         updateGoods.useEndTime = goods.useEndTime;
+        if (!noLevelPrices) {
+            for (int i = 0; i < goods.levelPrices.size(); i++) {
+                updateGoods.getLevelPrices().get(i).price = goods.levelPrices.get(i).price;
+            }
+        }
         updateGoods.save();
     }
 
@@ -749,9 +763,10 @@ public class Goods extends Model {
         if (prices == null || prices.length == 0) {
             return;
         }
+        getLevelPrices();
         for (int i = 0; i < prices.length; i++) {
             this.id = id;
-            getLevelPrices().get(i).price = prices[i];
+            levelPrices.get(i).price = prices[i];
         }
     }
 

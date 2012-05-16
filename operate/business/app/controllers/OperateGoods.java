@@ -36,7 +36,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static java.math.BigDecimal.ZERO;
 import static play.Logger.warn;
 
 /**
@@ -77,31 +76,9 @@ public class OperateGoods extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void add() {
-        List<Supplier> suppliers = Supplier.findUnDeleted();
-        //过滤掉无门店的商户
-        List<Supplier> supplierList = new ArrayList<>();
-        //todo 性能需要优化
-        for (Supplier supplier : suppliers) {
-            if (Shop.containsShop(supplier.id)) {
-                supplierList.add(supplier);
-            }
-        }
-        if (suppliers.size() > 0 && supplierList.size() == 0) {
-            String noShopTip = "所有商户都没有门店，无法添加商品。请先为商户<a href='/shops/new'>添加门店</a>！";
-
-            System.out.println("noShopTip:" + noShopTip);
-            render(noShopTip);
-        }
-        renderArgs.put("supplierList", supplierList);
-        if (CollectionUtils.isNotEmpty(supplierList)) {
-            renderShopList(supplierList.get(0).id);
-        }
-        renderArgs.put("goods.materialType", MaterialType.ELECTRONIC);
-        List<Brand> brandList = Brand.findByOrder(supplierList.get(0));
         renderInit(null);
 
-        boolean selectAll = true;
-        render(brandList, selectAll);
+        render();
     }
 
     /**
@@ -111,14 +88,24 @@ public class OperateGoods extends Controller {
      * @param goods
      */
     private static void renderInit(models.sales.Goods goods) {
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+
         if (goods == null) {
             goods = new models.sales.Goods();
             BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
-            Arrays.fill(levelPrices, ZERO);
+            Arrays.fill(levelPrices, null);
             goods.setLevelPrices(levelPrices);
             goods.materialType = MaterialType.ELECTRONIC;
             goods.unPublishedPlatforms = new HashSet<>();
+            if (CollectionUtils.isNotEmpty(supplierList)) {
+                goods.supplierId = supplierList.get(0).id;
+                checkShops(goods.supplierId);
+                renderShopList(goods.supplierId);
+            }
+            renderArgs.put("goods.materialType", MaterialType.ELECTRONIC);
+            renderArgs.put("selectAll", true);
         }
+        renderShopList(goods.supplierId);
 
         String shopIds = ",";
         if (goods.shops != null && goods.shops.size() > 0) {
@@ -132,8 +119,7 @@ public class OperateGoods extends Controller {
         }
 
         if (goods.supplierId != null) {
-            Supplier supplier = Supplier.findById(goods.supplierId);
-            List<Brand> brandList = Brand.findByOrder(supplier);
+            List<Brand> brandList = Brand.findByOrder(new Supplier(goods.supplierId));
             renderArgs.put("brandList", brandList);
         }
 
@@ -154,10 +140,12 @@ public class OperateGoods extends Controller {
             }
             subCategoryList = Category.findByParent(goods.topCategoryId);
         }
+        //调试用
         for (String key : validation.errorsMap().keySet()) {
             warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
         }
 
+        renderArgs.put("supplierList", supplierList);
         renderArgs.put("categoryList", categoryList);
         renderArgs.put("subCategoryList", subCategoryList);
         renderArgs.put("categoryId", categoryId);
@@ -199,10 +187,9 @@ public class OperateGoods extends Controller {
         checkExpireAt(goods);
         checkSalePrice(goods);
         checkLevelPrice(levelPrices);
+        checkShops(goods.supplierId);
+
         if (Validation.hasErrors()) {
-            List<Supplier> supplierList = Supplier.findUnDeleted();
-            renderArgs.put("supplierList", supplierList);
-            renderShopList(goods.supplierId);
             renderInit(goods);
             boolean selectAll = false;
             render("OperateGoods/add.html", selectAll);
@@ -231,6 +218,12 @@ public class OperateGoods extends Controller {
         goods.save();
 
         index(null);
+    }
+
+    private static void checkShops(Long supplierId) {
+        if (!Shop.containsShop(supplierId)) {
+            Validation.addError("goods.supplierId", "validation.noShop");
+        }
     }
 
     private static void checkSalePrice(Goods goods) {
@@ -309,10 +302,10 @@ public class OperateGoods extends Controller {
      */
     public static void edit(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
+        checkShops(goods.supplierId);
         renderInit(goods);
-        renderShopList(goods.supplierId);
         renderArgs.put("imageLargePath", goods.getImageLargePath());
-        render(goods, id);
+        render(id);
 
     }
 
@@ -356,14 +349,15 @@ public class OperateGoods extends Controller {
         goods.setLevelPrices(levelPrices, id);
         checkSalePrice(goods);
         checkLevelPrice(levelPrices);
+        checkShops(goods.supplierId);
+
         if (Validation.hasErrors()) {
 
             renderArgs.put("imageLargePath", imageLargePath);
-            renderShopList(goods.supplierId);
             renderInit(goods);
+
             render("OperateGoods/edit.html", goods, id);
         }
-
 
         //添加商品处理
         if (goods.unPublishedPlatforms != null) {
@@ -393,7 +387,8 @@ public class OperateGoods extends Controller {
         }
 
         goods.updatedBy = supplierUser;
-        Goods.update(id, goods);
+        Goods.update(id, goods, false);
+
         index(null);
     }
 
@@ -430,9 +425,9 @@ public class OperateGoods extends Controller {
             if (goods != null) {
                 checkSalePrice(goods);
                 checkLevelPrice(goods.getLevelPriceArray());
+                checkShops(goods.supplierId);
             }
 
-            renderShopList(goods.supplierId);
             renderArgs.put("imageLargePath", goods.getImageLargePath());
 
             if (Validation.hasErrors() && id.length > 0) {
@@ -485,6 +480,7 @@ public class OperateGoods extends Controller {
     public static void delete(@As(",") Long... id) {
         for (Long goodsId : id) {        //已上架的商品不可以删除
             Goods goods = Goods.findById(goodsId);
+            warn("goods.status:" + goods.status);
             if (GoodsStatus.ONSALE.equals(goods.status)) {
                 index(null);
             }

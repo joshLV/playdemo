@@ -94,7 +94,7 @@
                 <td class="amount">${goods?.faceValue?.formatCurrency('CNY')}</td>
                 <td class="amount">${goods?.originalPrice?.formatCurrency('CNY')}</td>
                 <td class="amount">${goods?.salePrice?.formatCurrency('CNY')}</td>
-                #{list items:goods?.getLevelPrices(), as: 'level'}
+                #{list items:goods?.levelPrices, as: 'level'}
                     <td class="amount">${level?.price?.formatCurrency('CNY')}</td>
                 #{/list}
                 <td class="amount">${goods?.baseSale}</td>

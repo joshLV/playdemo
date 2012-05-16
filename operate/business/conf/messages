@@ -37,6 +37,7 @@ validation.beforeThanEffectiveAt=%s不能早于有效期开始时间!
 validation.phone=无效的电话!
 validation.beforeThanUseTime=%s要大于开始时间!
 validation.allRequiredUseTime=请把使用时间输入完整!
+validation.noShop=该商户没有门店，请先为商户添加门店！
 
 goods.materialType=券类型
 goods.materialType_1=电子券

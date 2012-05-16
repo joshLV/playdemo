@@ -63,7 +63,8 @@ admin.OperateUser(user3):
  "roles":
  - "admin"
  - "sales"
- 
+ - "editor"
+
 admin.OperateUser(test):
  "loginName": "test"
  "mobile": "1300000102"

@@ -71,7 +71,7 @@
             <div class="controls">${goods?.salePrice?.formatCurrency('CNY')}
             </div>
         </div>
-    #{list items:goods.getLevelPrices(), as: 'level'}
+    #{list items:goods?.levelPrices, as: 'level'}
         <div class="control-group">
             <label class="control-label">&{'goods.levelPrice.'+level?.level}</label>
 

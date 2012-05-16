@@ -12,5 +12,5 @@ load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/areas.yml','fixtu
     #{include 'test/selenium/step/login.selenium' /}
 open('/goods/new')
 verifyTitle('添加商品')
-verifyTextPresent('所有商户都没有门店，无法添加商品。请先为商户添加门店！')
+verifyTextPresent('该商户没有门店，请先为商户添加门店！')
 #{/selenium}

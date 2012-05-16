@@ -1,11 +1,20 @@
 *{操作单个对象的链接的标签}*
 *{url:     操作链接}*
 *{text:    操作的文本名称}*
+*{confirm:    操作前是否需要确认操作的提示}*
+*{targetName:    操作的对象名称，confirm=true时需要}*
 *{class:   css的class（选填）}*
 *{method:  PUT/DELETE/POST}*
 #{field _name?:"operate"}
 <a href="#" id="${field?.id}" class="${_class}"
-   onclick="var f = document.createElement('form'); f.style.display = 'none';
+   #{if _confirm?:false}
+   onclick="if (confirm('您确定要${_text}${_targetName}吗？')) {var f = document.createElement('form'); f.style.display =
+           'none';
            this.parentNode.appendChild(f); f.method = 'POST'; f.action = '${_url}?x-http-method-override=${_method}';
-           f.submit();">${_text}</a>
+           f.submit();}return false;"#{/if}
+   #{else}
+   onclick="var f = document.createElement('form'); f.style.display = 'none';
+        this.parentNode.appendChild(f); f.method = 'POST'; f.action = '${_url}?x-http-method-override=${_method}';
+        f.submit();"#{/else}
+   >${_text}</a>
 #{/field}

@@ -47,7 +47,6 @@
             </thead>
 
             <tbody>
-
             #{paginate.list items:users, as:'user'}
             <tr>
                 <td>${user?.loginName}</td>
@@ -58,9 +57,11 @@
                 <td>&{'user.status.'+user?.status}</td>
                 <td><a href="@{OperateConsumers.show(user?.id)}">详细信息</a>
                     #{if models.consumer.UserStatus.NORMAL.equals(user?.status)}
-                        / #{vx.operateLink text:"冻结", url:"/consumers/"+user.id+"/freeze", method:"PUT"/}#{/if}
+                        / #{vx.operateLink text:"冻结", name:'freeze_'+user.id,url:"/consumers/"+user.id+"/freeze",
+                    method:"PUT",confirm:true, targetName:user?.loginName/}#{/if}
                     #{if models.consumer.UserStatus.FREEZE.equals(user?.status)}
-                        / #{vx.operateLink text:"解冻", url:"/consumers/"+user.id+"/unfreeze", method:"PUT"/}#{/if}
+                        / #{vx.operateLink text:"解冻", name:'unfreeze_'+user.id, url:"/consumers/"+user.id+"/unfreeze",
+                    method:"PUT",confirm:true,targetName:user?.loginName/}#{/if}
             </tr>
             #{/paginate.list}
             </tbody>

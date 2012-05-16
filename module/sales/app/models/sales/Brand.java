@@ -114,7 +114,7 @@ public class Brand extends Model {
     }
 
     public static List<Brand> findByOrder(Supplier supplier) {
-        return find("supplier = ? order by displayOrder",supplier).fetch();
+        return find("supplier = ? order by displayOrder", supplier).fetch();
     }
 
     public static List<Brand> findTop(int limit, long brandId) {
