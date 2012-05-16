@@ -21,3 +21,27 @@ admin.OperateRole(test):
  "lockVersion": "0"
  "createdAt": "2012-03-12T11:14:56"
  "updatedAt": "2012-03-12T17:45:09"
+
+admin.OperateRole(editor):
+ "text": "编辑"
+ "key": "editor"
+ "loadVersion": "1331545508967"
+ "lockVersion": "0"
+ "createdAt": "2012-03-12T11:14:56"
+ "updatedAt": "2012-03-12T17:45:09"
+
+admin.OperateRole(customservice):
+ "text": "客服"
+ "key": "customservice"
+ "loadVersion": "1331545508967"
+ "lockVersion": "0"
+ "createdAt": "2012-03-12T11:14:56"
+ "updatedAt": "2012-03-12T17:45:09"
+
+admin.OperateRole(account):
+ "text": "财务"
+ "key": "account"
+ "loadVersion": "1331545508967"
+ "lockVersion": "0"
+ "createdAt": "2012-03-12T11:14:56"
+ "updatedAt": "2012-03-12T17:45:09"

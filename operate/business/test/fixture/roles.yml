@@ -1,11 +1,3 @@
-admin.OperateRole(editor):
- "text": "编辑人员"
- "key": "editor"
- "loadVersion": "1331545508967"
- "lockVersion": "0"
- "createdAt": "2012-03-12T11:14:56"
- "updatedAt": "2012-03-12T17:45:09"
-
 admin.OperateRole(sales):
  "text": "销售人员"
  "key": "sales"
@@ -30,28 +22,26 @@ admin.OperateRole(test):
  "createdAt": "2012-03-12T11:14:56"
  "updatedAt": "2012-03-12T17:45:09"
 
-admin.SupplierRole(sales):
- "text": "销售人员"
- "key": "sales"
+admin.OperateRole(editor):
+ "text": "编辑"
+ "key": "editor"
  "loadVersion": "1331545508967"
  "lockVersion": "0"
  "createdAt": "2012-03-12T11:14:56"
  "updatedAt": "2012-03-12T17:45:09"
 
-admin.SupplierRole(admin):
- "text": "系统管理员"
- "key": "admin"
+admin.OperateRole(customservice):
+ "text": "客服"
+ "key": "customservice"
  "loadVersion": "1331545508967"
  "lockVersion": "0"
  "createdAt": "2012-03-12T11:14:56"
  "updatedAt": "2012-03-12T17:45:09"
 
-admin.SupplierRole(test):
- "text": "测试角色"
- "key": "test"
+admin.OperateRole(account):
+ "text": "财务"
+ "key": "account"
  "loadVersion": "1331545508967"
  "lockVersion": "0"
  "createdAt": "2012-03-12T11:14:56"
  "updatedAt": "2012-03-12T17:45:09"
-
- 

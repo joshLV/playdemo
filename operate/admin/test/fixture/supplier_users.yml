@@ -32,6 +32,9 @@ admin.OperateUser(user3):
  "roles":
  - "admin"
  - "sales"
+ - "customservice"
+ - "editor"
+ - "account"
 
 admin.OperateUser(test):
  "loginName": "test"
