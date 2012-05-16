@@ -256,7 +256,7 @@ public class ECoupon extends Model {
 		Account supplierAccount = AccountUtil.getAccount(orderItems.goods.supplierId, AccountType.SUPPLIER);
 
 		//给商户打钱
-		TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, supplierAccount, originalPrice);
+		TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, supplierAccount, originalPrice, order.getId());
 		TradeUtil.success(consumeTrade);
 
 		BigDecimal platformCommission = BigDecimal.ZERO;
@@ -272,7 +272,8 @@ public class ECoupon extends Model {
 				TradeBill uhuilaCommissionTrade = TradeUtil.createCommissionTrade(
 						AccountUtil.getUhuilaAccount(),
 						salePrice.subtract(resalerPrice),
-						eCouponSn);
+						eCouponSn,
+                        order.getId());
 
 				TradeUtil.success(uhuilaCommissionTrade);
 			}
@@ -283,7 +284,8 @@ public class ECoupon extends Model {
 			TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(
 					AccountUtil.getPlatformCommissionAccount(),
 					platformCommission,
-					eCouponSn);
+					eCouponSn,
+                    order.getId());
 			TradeUtil.success(platformCommissionTrade);
 		}
 

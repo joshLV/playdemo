@@ -54,9 +54,9 @@ public class RefundUtil {
         //更新账户余额
         try {
             AccountUtil.addBalance(refundBill.account.getId(), refundBill.amount, BigDecimal.ZERO, refundBill.getId(),
-                    AccountSequenceType.REFUND, "退款");
+                    AccountSequenceType.REFUND, "退款", refundBill.orderId);
             AccountUtil.addBalance(AccountUtil.getPlatformIncomingAccount().getId(), refundBill.amount.negate(),
-                    BigDecimal.ZERO, refundBill.getId(), AccountSequenceType.REFUND, "支付退款");
+                    BigDecimal.ZERO, refundBill.getId(), AccountSequenceType.REFUND, "支付退款", refundBill.orderId);
         } catch (BalanceNotEnoughException e) {
             Logger.error(e, e.getMessage());
             //回滚

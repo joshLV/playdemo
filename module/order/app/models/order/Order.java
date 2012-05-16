@@ -345,7 +345,7 @@ public class Order extends Model {
 
         //先将用户银行支付的钱充值到自己账户上
         if(this.discountPay.compareTo(BigDecimal.ZERO) > 0 ){
-            TradeBill chargeTradeBill = TradeUtil.createChargeTrade(account, this.discountPay, paymentSource);
+            TradeBill chargeTradeBill = TradeUtil.createChargeTrade(account, this.discountPay, paymentSource, this.getId());
             TradeUtil.success(chargeTradeBill);
             /*
             JPAPlugin.closeTx(false);

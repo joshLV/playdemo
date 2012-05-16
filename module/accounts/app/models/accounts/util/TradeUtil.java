@@ -1,6 +1,7 @@
 package models.accounts.util;
 
 import models.accounts.*;
+import models.order.Order;
 import play.Logger;
 import play.db.jpa.JPAPlugin;
 
@@ -57,7 +58,7 @@ public class TradeUtil {
         tradeBill.paymentSource        = paymentSource;                            //银行信息
         tradeBill.orderId              = orderId;                                  //订单信息
         tradeBill.amount = tradeBill.balancePaymentAmount.add(tradeBill.ebankPaymentAmount);
-        
+
         return tradeBill.save();
     }
 
@@ -69,7 +70,8 @@ public class TradeUtil {
      * @param paymentSource 网银信息
      * @return 创建的订单交易记录
      */
-    public static TradeBill createChargeTrade(Account account, BigDecimal amount, PaymentSource paymentSource) {
+    public static TradeBill createChargeTrade(Account account, BigDecimal amount,
+                                              PaymentSource paymentSource, Long orderId) {
         if (account == null) {
             Logger.error("error while create order trade: no account specified");
             return null;
@@ -91,6 +93,7 @@ public class TradeUtil {
         tradeBill.tradeType            = TradeType.CHARGE;  //交易类型为充值
         tradeBill.paymentSource        = paymentSource;     //银行信息
         tradeBill.amount = tradeBill.balancePaymentAmount.add(tradeBill.ebankPaymentAmount);
+        tradeBill.orderId = orderId;
         
         return tradeBill.save();
     }
@@ -104,7 +107,7 @@ public class TradeUtil {
      * @param amount   券的进货价
      * @return 消费交易记录
      */
-    public static TradeBill createConsumeTrade(String eCouponSn, Account account, BigDecimal amount) {
+    public static TradeBill createConsumeTrade(String eCouponSn, Account account, BigDecimal amount, Long orderId) {
         if (account == null) {
             Logger.error("error while create consume trade: invalid account");
             return null;
@@ -126,6 +129,7 @@ public class TradeUtil {
         tradeBill.tradeType            = TradeType.CONSUME;                         //交易类型为佣金
         tradeBill.eCouponSn            = eCouponSn;                                 //保存对应的券号，以便核查
         tradeBill.amount = tradeBill.balancePaymentAmount.add(tradeBill.ebankPaymentAmount);
+        tradeBill.orderId = orderId;
 
         return tradeBill.save();
     }
@@ -138,7 +142,7 @@ public class TradeUtil {
      * @param eCouponSn 对应的电子券号
      * @return
      */
-    public static TradeBill createCommissionTrade(Account account, BigDecimal amount, String eCouponSn){
+    public static TradeBill createCommissionTrade(Account account, BigDecimal amount, String eCouponSn, Long orderId){
         if (account == null) {
             Logger.error("error while create commission trade: invalid account");
             return null;
@@ -160,62 +164,19 @@ public class TradeUtil {
         tradeBill.tradeType            = TradeType.COMMISSION;                      //交易类型为佣金
         tradeBill.eCouponSn            = eCouponSn;                                 //保存对应的券号，以便核查
         tradeBill.amount = tradeBill.balancePaymentAmount.add(tradeBill.ebankPaymentAmount);
+        tradeBill.orderId = orderId;
         
         return tradeBill.save();
     }
 
-    /**
-     * 创建转账交易.
-     *
-     * @param fromAccount          //发起人账户
-     * @param toAccount            //收款人账户
-     * @param balancePaymentAmount //使用余额支付额
-     * @param ebankPaymentAmount   //使用网银支付额
-     * @param paymentSource        //网银信息
-     * @return //创建的转账交易记录
-     */
-    public static TradeBill createTransferTrade(Account fromAccount, Account toAccount,
-                                                BigDecimal balancePaymentAmount, BigDecimal ebankPaymentAmount, PaymentSource paymentSource) {
-
-        if (fromAccount == null || toAccount == null) {
-            Logger.error("error while create transfer trade: invalid fromAccount or toAccount");
-            return null;
-        }
-        if (balancePaymentAmount == null || balancePaymentAmount.compareTo(BigDecimal.ZERO) <= 0) {
-            Logger.error("error while create transfer trade: invalid balancePaymentAmount");
-            return null;
-        }
-        if (ebankPaymentAmount == null || ebankPaymentAmount.compareTo(BigDecimal.ZERO) <= 0) {
-            Logger.error("error while create transfer trade: invalid ebankPaymentAmount");
-            return null;
-        }
-
-        if (paymentSource == null) {
-            Logger.error("error while create order trade: invalid paymentSource");
-            return null;
-        }
-
-        TradeBill tradeBill = new TradeBill();
-        tradeBill.fromAccount          = fromAccount;           //付款方账户
-        tradeBill.toAccount            = toAccount;             //收款方账户
-        tradeBill.balancePaymentAmount = balancePaymentAmount;  //不使用余额支付金额
-        tradeBill.ebankPaymentAmount   = ebankPaymentAmount;    //使用网银支付金额
-        tradeBill.tradeType            = TradeType.TRANSFER;    //交易类型
-        tradeBill.paymentSource        = paymentSource;         //银行信息
-        tradeBill.amount = tradeBill.balancePaymentAmount.add(tradeBill.ebankPaymentAmount);
-        
-        return tradeBill.save();
-    }
-
-
-    /**
+  /**
      * 交易成功
      *
      * @param tradeBill 需变更的交易记录
      * @return  是否成功
      * */
     public static boolean success(TradeBill tradeBill) {
-
+        Order order = Order.findById(tradeBill.orderId);
         try {
             //如果不是充值,则首先支付此笔订单
             if(tradeBill.tradeType != TradeType.CHARGE){
@@ -225,7 +186,8 @@ public class TradeUtil {
                         BigDecimal.ZERO,
                         tradeBill.getId(),
                         AccountSequenceType.PAY,
-                        "支付");
+                        order == null ? "支付" : order.description,
+                        tradeBill.orderId);
             }
             AccountUtil.addBalance(
                     tradeBill.toAccount.getId(),
@@ -233,7 +195,8 @@ public class TradeUtil {
                     BigDecimal.ZERO,
                     tradeBill.getId(),
                     AccountSequenceType.RECEIVE,
-                    "收款");
+                    order == null ? "收款" : order.description,
+                    tradeBill.orderId);
         } catch (BalanceNotEnoughException e) {
             Logger.error(e, e.getMessage());
             throw new RuntimeException("balance not enough, trade bill: " + tradeBill.getId(), e);

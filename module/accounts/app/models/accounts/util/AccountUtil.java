@@ -56,7 +56,7 @@ public class AccountUtil {
      * @return              变更后的账户
      */
     public static Account addBalance(Long accountId, BigDecimal cashAugend, BigDecimal uncashAugend, Long billId,
-                                     AccountSequenceType sequenceType, String note)
+                                     AccountSequenceType sequenceType, String note, Long orderId)
             throws BalanceNotEnoughException,AccountNotFoundException{
 
         Account account = Account.findById(accountId);
@@ -80,12 +80,12 @@ public class AccountUtil {
         }
 
         account.save();
-        accountChanged(account.getId(), cashAugend, uncashAugend, billId, sequenceType, note);
+        accountChanged(account.getId(), cashAugend, uncashAugend, billId, sequenceType, note, orderId);
         return account;
     }
 
     private static void accountChanged(Long accountId, BigDecimal cashAmount, BigDecimal uncashAmount,
-                                       Long billId, AccountSequenceType sequenceType, String note){
+                                       Long billId, AccountSequenceType sequenceType, String note, Long orderId){
         Account account = Account.findById(accountId);
         if(account == null){
             throw new RuntimeException("can not find the specified account");
@@ -104,6 +104,7 @@ public class AccountUtil {
                 uncashAmount,                                       //不可提现金额
                 billId);                                            //相关流水号
         accountSequence.remark = note;
+        accountSequence.orderId = orderId;
         accountSequence.save();                                     //保存账户变动信息
 
         //保存凭证明细

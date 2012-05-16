@@ -82,7 +82,7 @@ public class WithdrawBill extends Model {
 
         try {
             AccountUtil.addBalance(account.getId(),this.amount.negate(), this.amount,
-                    this.getId(),AccountSequenceType.FREEZE,"申请提现");
+                    this.getId(),AccountSequenceType.FREEZE,"申请提现", null);
         } catch (BalanceNotEnoughException e) {
             Logger.error(e, e.getMessage());
             return false;
@@ -111,7 +111,7 @@ public class WithdrawBill extends Model {
 
         try {
             AccountUtil.addBalance(this.account.getId(), this.amount, this.amount.negate(),
-                    this.getId(), AccountSequenceType.UNFREEZE,"拒绝提现");
+                    this.getId(), AccountSequenceType.UNFREEZE,"拒绝提现", null);
         } catch (BalanceNotEnoughException e) {
             Logger.error(e, e.getMessage());
             return false;
@@ -140,7 +140,7 @@ public class WithdrawBill extends Model {
 
         try {
             AccountUtil.addBalance(this.account.getId(), BigDecimal.ZERO, this.amount.negate(),
-                    this.getId(), AccountSequenceType.WITHDRAW, "提现成功");
+                    this.getId(), AccountSequenceType.WITHDRAW, "提现成功", null);
         } catch (BalanceNotEnoughException e) {
             Logger.error(e, e.getMessage());
             return false;
