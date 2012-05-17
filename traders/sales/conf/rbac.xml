@@ -19,16 +19,4 @@
             <navigation key="shops_index" action="Shops.index" text="门店管理" permissions="SHOPS"/>
         </navigation>
     </navigation>
-    <navigation key="reports_app" text="财务报表" action="SupplierReports.showDailyReport" permissions="GOODS"
-                display-order="20">
-        <!--<navigation key="goods" text="商品" permission="GOODS_NEW,GOODS" permissions="GOODS">-->
-        <navigation key="goods_add" action="SupplierReports.add" text="商品报表" permissions="GOODS_NEW"/>
-        <!--</navigation>-->
-        <!--<navigation key="goods" text="商品" permission="GOODS_NEW,GOODS" permissions="GOODS">-->
-        <navigation key="goods_add" action="SupplierReports.add" text="商品报表" permissions="GOODS_NEW"/>
-        <!--</navigation>-->
-        <!--<navigation key="shops" text="门店" permission="SHOPS_NEW,SHOPS" permissions="SHOPS">-->
-        <navigation key="shops_index" action="Shops.index" text="门店报表" permissions="SHOPS"/>
-        <!--</navigation>        -->
-    </navigation>
 </application>
