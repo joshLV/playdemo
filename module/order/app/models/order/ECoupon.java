@@ -540,9 +540,7 @@ public class ECoupon extends Model {
 	 * @return
 	 */
 	public static boolean sendUserMessage(long id) {
-		System.out.println(id+"#######");
 		ECoupon eCoupon = ECoupon.findById(id);
-		System.out.println(id+">>>>>>>>>>>>>>>."+eCoupon.downloadTimes);
 		boolean sendFalg = false;
 		if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED && eCoupon.downloadTimes < 3) {
 			send(eCoupon);
