@@ -26,5 +26,5 @@ long time = System.currentTimeMillis();
 	assertNotTitle('CAS Mock Server - Login')
     open('/goods')
     verifyTitle('100券 - 商品列表')
-    verifyText('id=login_name','dfijkl${time}')
+    verifyTextPresent('dfijkl${time}')
 #{/selenium}
