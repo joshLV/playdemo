@@ -32,6 +32,7 @@ import models.accounts.util.TradeUtil;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
 import models.sales.Shop;
+import models.sms.SMSUtil;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -108,7 +109,7 @@ public class ECoupon extends Model {
 	@Column(name = "is_freeze")
 	/** 1：冻结 0：解冻*/
 	public int isFreeze;
-	
+
 	@Column(name = "download_times")
 	public Integer downloadTimes;
 	/**
@@ -506,5 +507,15 @@ public class ECoupon extends Model {
 		ECoupon eCoupon = ECoupon.findById(id);
 		eCoupon.isFreeze = isFreeze;
 		eCoupon.save();
+	}
+
+	public static boolean sendMessage(long id) {
+		ECoupon eCoupon = ECoupon.findById(id);
+		boolean sendFalg = false;
+		if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED) {
+			SMSUtil.send(eCoupon.goods.name + "券号:" + eCoupon.eCouponSn, eCoupon.orderItems.phone, eCoupon.replyCode);
+			sendFalg = true; 
+		}
+		return sendFalg;
 	}
 }

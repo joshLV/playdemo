@@ -1,6 +1,24 @@
 #{extends 'layout_operate/layout.html' /}
  #{include 'share/nav.html' /}
 #{set title:'券号列表' /}
+<script type="text/javascript">
+	function sendMessage(id){
+        $.ajax({
+            url: "/coupons-message/"+id+"/send",
+            type: 'GET',
+            error: function() { alert('发送失败!'); },
+            success: function(data) {
+                if (data == '0') {
+                	alert("发送成功！");
+                } else {
+                    alert("发送失败!");
+                }
+
+            }
+        });
+		
+	}
+</script>
 <div class="body">
  <legend>券号列表</legend>
  <form class="form-horizontal" name="frmlist" action="@{OperateCoupons.index()}" method="GET">
@@ -39,9 +57,9 @@
      <td>${coupon?.salePrice}</td>
      <td>&{'coupon.'+coupon?.status}</td>
      <td>#{if  models.order.ECouponStatus.DEALING.equals(coupon.status) || models.order.ECouponStatus.UNCONSUMED.equals(coupon.status) }
-             #{if coupon.isFreeze == 0} #{vx.operateLink text:"冻结", url:"/coupons/"+coupon.id+"/freeze", method:"PUT"/}#{/if}
+             #{if coupon.isFreeze == 0} #{vx.operateLink text:"冻结", url:"/coupons/"+coupon.id+"/freeze", method:"PUT"/}
+              <a href="javascript:sendMessage(${coupon.id})">发送短信</a>#{/if}
              #{ else } #{vx.operateLink text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}#{/else}
-             <a href="">重发短信</a>
          #{/if}
      
        </td>

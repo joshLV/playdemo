@@ -44,4 +44,14 @@ public class OperateCoupons extends Controller {
     	ECoupon.unfreeze(id);
         index();
     }
+    
+
+	/**
+	 * 重发短信
+	 * @param id
+	 */
+    public static void sendMessage(long id) {
+    	boolean sendFalg = ECoupon.sendMessage(id);
+        renderJSON(sendFalg ?"0":"1");
+    }
 }
