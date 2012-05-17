@@ -15,6 +15,5 @@
    #{else}
    onclick="var f = document.createElement('form'); f.style.display = 'none';
         this.parentNode.appendChild(f); f.method = 'POST'; f.action = '${_url}?x-http-method-override=${_method}';
-        f.submit();"#{/else}
-   >${_text}</a>
+        f.submit();"#{/else}>${_text}</a>
 #{/field}

@@ -58,11 +58,9 @@
      <td>&{'coupon.'+coupon?.status}</td>
      <td>#{if  models.order.ECouponStatus.DEALING.equals(coupon.status) || models.order.ECouponStatus.UNCONSUMED.equals(coupon.status) }
              #{if coupon.isFreeze == 0} 
-             #{vx.operateLink text:"冻结",url:"/coupons/"+coupon.id+"/freeze", method:"PUT"/}
+             #{vx.operateLink name:"freeze_"+coupon.id,text:"冻结",url:"/coupons/"+coupon.id+"/freeze",confirm:true, targetName:coupon?.getMaskedEcouponSn(),method:"PUT"/}
              <a href="javascript:sendMessage(${coupon.id})">发送短信</a>#{/if}
-             #{ else } 
-                #{vx.operateLink text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}
-             #{/else}
+             #{ else } #{vx.operateLink name:"unfreeze_"+coupon.id,text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}#{/else}
          #{/if}
      
        </td>
