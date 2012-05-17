@@ -126,6 +126,7 @@
     });
     var cnt =0;
   function sendMessage(id){
+	   alert("只要三次发送短信的机会！");
         $.ajax({
             url: "/coupons-message/"+id+"/send",
             type: 'GET',
