@@ -1,6 +1,10 @@
 .zhu_nav_title {
     line-height: 30px;
 }
+#header .inner,
+#content {
+    width: 960px;
+}
 /**
  * 列表页
  */

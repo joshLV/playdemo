@@ -16,9 +16,9 @@
 .aside .menu h3 {
     font: 16px "Microsoft Yahei";
     line-height: 32px;
-    border-bottom: 1px solid #E4E4E4;
 }
 .aside .menu ul {
+    border-top: 1px solid #E4E4E4;
     padding: 10px 20px;
 }
 .aside .menu li {
@@ -26,7 +26,7 @@
 }
 .section {
     float: right;
-    width: 770px;
+    width: 1010px;
     padding-right: 20px;
 }
 .section h3 {
@@ -45,6 +45,9 @@
 }
 .search-btn:hover {
     background-position: 0 -26px;
+}
+.form-inline {
+    margin: 10px 0 20px;
 }
 
 .nav-tabs {
@@ -97,12 +100,10 @@
     border: 1px solid #E4E4E4;
     background-color: #F2F2F2;
 }
-#stats .this-month {
-    border-right: 1px solid #E4E4E4;
-}
 
 .order-tab {
     margin: 10px 0;
+    width: 100%;
 }
 .order-tab .sep-row {
     height: 7px;
@@ -111,6 +112,10 @@
     line-height: 38px;
     background-color: #F7FAFD;
     border-top: 1px solid #E2E2E2;
+}
+.order-tab .align th {
+    text-align: left;
+    padding-left: 5px;
 }
 .order-tab .sep-row td {
     padding: 3px 0;

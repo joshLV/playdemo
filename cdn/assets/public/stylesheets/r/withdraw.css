@@ -1,0 +1,12 @@
+.withdraw-btn {
+    display: inline-block;
+    width: 83px;
+    padding: 3px 13px;
+    /* margin: 0 10px 0 5px; */
+    color: #666;
+    background: url(http://img.uhcdn.com/images/r/addto.png) no-repeat 0 0;
+}
+.withdraw-btn:hover {
+    color: #333;
+    text-decoration: none;
+}

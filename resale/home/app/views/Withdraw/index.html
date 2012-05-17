@@ -1,45 +1,52 @@
 #{extends 'main.html' /}
 #{set title:'分销网 - 提现' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/r/base.css', '/r/withdraw.css'] /}
+    #{asset.css src:['/r/base.css', '/r/orders.css', '/r/withdraw.css'] /}
 #{/set}
 
 <div id="content">
-    <h1><a href="/withdraw/apply">点击申请提现</a></h1>
-    <table border="1">
-        <thead>
-        <tr>
-            <th>流水号</th>
-            <th>开户人真实姓名</th>
-            <th>银行所在城市</th>
-            <th>银行开户行</th>
-            <th>支行</th>
-            <th>银行卡号</th>
-            <th>提现金额</th>
-            <th>申请时间</th>
-            <th>状态</th>
-            <th>处理时间</th>
-            <th>手续费</th>
-            <th>申请反馈</th>
-        </tr>
-        <thead>
-        <tbody>
-        #{list items:withdrawBills, as:'withdrawBill'}
-        <tr>
-            <td>${withdrawBill.serialNumber}</td>
-            <td>${withdrawBill.userName}</td>
-            <td>${withdrawBill.bankCity}</td>
-            <td>${withdrawBill.bankName}</td>
-            <td>${withdrawBill.subBankName}</td>
-            <td>${withdrawBill.cardNumber}</td>
-            <td>${withdrawBill.amount?.formatCurrency('CNY')}</td>
-            <td>${withdrawBill.appliedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-            <td>&{'withdraw.'+ withdrawBill.status}</td>
-            <td>${withdrawBill.processedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-            <td>${withdrawBill.fee?.formatCurrency('CNY')}</td>
-            <td>${withdrawBill.comment}</td>
-        </tr>
-        #{/list}
-        <tbody>
-    </table>
+    #{breadcrumbs/breadcrumb breadcrumbs/}
+    <div class="main clearfix">
+        #{include "share/left.html"/}
+        <div class="section">
+            <h3>提现记录</h3>
+            <a class="withdraw-btn" href="/withdraw/apply">点击申请提现</a>
+            <table class="order-tab">
+                <thead>
+                    <tr class="col-name">
+                        <th>流水号</th>
+                        <th>开户人真实姓名</th>
+                        <th>银行所在城市</th>
+                        <th>银行开户行</th>
+                        <th>支行</th>
+                        <th>银行卡号</th>
+                        <th>提现金额</th>
+                        <th>申请时间</th>
+                        <th>状态</th>
+                        <th>处理时间</th>
+                        <th>手续费</th>
+                        <th>申请反馈</th>
+                    </tr>
+                <thead>
+                <tbody>
+                #{list items:withdrawBills, as:'withdrawBill'}
+                    <tr>
+                        <td>${withdrawBill.serialNumber}</td>
+                        <td>${withdrawBill.userName}</td>
+                        <td>${withdrawBill.bankCity}</td>
+                        <td>${withdrawBill.bankName}</td>
+                        <td>${withdrawBill.subBankName}</td>
+                        <td>${withdrawBill.cardNumber}</td>
+                        <td>${withdrawBill.amount?.formatCurrency('CNY')}</td>
+                        <td>${withdrawBill.appliedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                        <td>&{'withdraw.'+ withdrawBill.status}</td>
+                        <td>${withdrawBill.processedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                        <td>${withdrawBill.fee?.formatCurrency('CNY')}</td>
+                        <td>${withdrawBill.comment}</td>
+                    </tr>
+                #{/list}
+                <tbody>
+            </table>
+        </div>
+    </div>
 </div>

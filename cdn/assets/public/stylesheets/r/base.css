@@ -68,7 +68,7 @@ mark { background: #ff0; }
     background-color: #AF2F15;
 }
 #header .inner {
-    width: 960px;
+    width: 1200px;
     margin: 0 auto;
 }
 #logo {
@@ -103,7 +103,7 @@ mark { background: #ff0; }
 }
 
 #content {
-    width: 960px;
+    width: 1200px;
     margin: 0 auto;
 }
 .wrap {

@@ -46,9 +46,9 @@ $(window).load(function(){
     <div class="main clearfix">
         #{include "share/left.html"/}
         <div class="section">
-           <h3>账户明细</h3>
-
-            <form class="well form-inline" action="@{ResalerAccounts.index()}" method="GET" id="search_form">起止日期
+            <h3>账户明细</h3>
+            <form class="form-inline" action="@{ResalerAccounts.index()}" method="GET" id="search_form">
+                起止日期
                 <input type="text"  id="condition_begin" class="input-medium Wdate" name = "condition.createdAtBegin" onfocus="WdatePicker({readOnly:true})" value="${createdAtBegin?.format()}">  - 
                 <input type="text" id="condition_end" class="input-medium Wdate" name = "condition.createdAtEnd" onfocus="WdatePicker({readOnly:true})" value="${createdAtEnd?.format()}">
                 <button type="submit" class="search-btn">搜索</button>
@@ -59,7 +59,6 @@ $(window).load(function(){
                 <span #{if interval=='1y'} class="active" #{/if}  ><a start="1y" href="#" >1年内</a></span>
                 <input type="hidden" id="interval" name="interval"/>
             </form>
-
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#">统计金额</a></li>
                 <li><a href="#">下载查询结果</a></li>
@@ -74,11 +73,11 @@ $(window).load(function(){
             </div>
             <table class="order-tab" cellpadding="0" cellspacing="0">
                 <thead>
-                <tr>
-                    <th width="350">账户明细</th>
-                    <th width="120">类型</th>
-                    <th width="150">交易时间</th>
-                    <th width="150">金额</th>
+                <tr class="col-name align">
+                    <th width="250">账户明细</th>
+                    <th width="150">类型</th>
+                    <th width="160">交易时间</th>
+                    <th width="160">金额</th>
                 </tr>
                 </thead>
                 <tbody>
