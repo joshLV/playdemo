@@ -53,7 +53,6 @@ public class SupplierCoupons extends Controller {
 		}
 
 		Long supplierId = SupplierRbac.currentUser().supplier.id;
-		System.out.println("supplierId"+supplierId);
 		//根据页面录入券号查询对应信息
 		Map<String, Object> queryMap = ECoupon.queryInfo(eCouponSn, supplierId,shopId);
 		renderJSON(queryMap);

@@ -40,3 +40,18 @@ load:['fixture/roles.yml','fixture/supplierusers.yml',
     assertTitle('券号列表')
     clickAndWait('link=券列表管理')
 #{/selenium}
+
+#{selenium '冻结券'}
+    open('/coupons')
+    verifyTable('//table.1.9','冻结 重发短信')
+    clickAndWait('link=冻结')
+   *{ open('/coupons/${play.test.Fixtures.idCache.get("models.order.ECoupon-coupon1")}/freeze')}*
+   verifyTable('//table.1.9','解冻 重发短信')
+#{/selenium}
+
+#{selenium '解冻券'}
+    open('/coupons')
+    verifyTable('//table.2.9','解冻 重发短信')
+    clickAndWait('link=解冻')
+    verifyTable('//table.2.9','冻结 重发短信')
+#{/selenium}

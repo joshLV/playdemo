@@ -43,6 +43,7 @@ order.ECoupon(coupon1):
   "status": "UNCONSUMED"
   "goods": "Goods_001"
   "orderItems": "orderItems1"
+  "isFreeze": "0"
 
 order.ECoupon(coupon2):
   "order": "order1"
@@ -55,4 +56,5 @@ order.ECoupon(coupon2):
   "consumedAt": "2012-03-07"
   "status": "UNCONSUMED"
   "goods": "Goods_002"
+  "isFreeze": "1"
   "orderItems": "orderItems2"

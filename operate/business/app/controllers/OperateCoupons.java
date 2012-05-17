@@ -1,6 +1,7 @@
 package controllers;
 
 import models.order.ECoupon;
+import models.resale.Resaler;
 import operate.rbac.annotations.ActiveNavigation;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,4 +26,22 @@ public class OperateCoupons extends Controller {
 		render(couponsList);
 	}
 
+
+	/**
+	 *  冻结此券
+	 * @param id
+	 */
+    public static void freeze(long id) {
+    	ECoupon.freeze(id);
+        index();
+    }
+
+	/**
+	 *  解冻此券
+	 * @param id
+	 */
+    public static void unfreeze(long id) {
+    	ECoupon.unfreeze(id);
+        index();
+    }
 }

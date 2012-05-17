@@ -95,5 +95,21 @@ public class CouponsUnitTest extends UnitTest {
 		}
 		assertNotNull(coupon);
 	}
+	@Test
+	public void testFreeze(){
+		Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
+		ECoupon.freeze(id);
+		ECoupon eCoupon = ECoupon.findById(id);
+		assertEquals(1, eCoupon.isFreeze);
+	}
+	
+	
+	@Test
+	public void testUnFreeze(){
+		Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
+		ECoupon.unfreeze(id);
+		ECoupon eCoupon = ECoupon.findById(id);
+		assertEquals(0, eCoupon.isFreeze);
+	}
 	
 }

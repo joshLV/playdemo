@@ -20,6 +20,7 @@
      <th>退款时间</th>
      <th>退款金额</th>
      <th>状态</th>
+     <th>操作</th>
     </tr>
    </thead>
 
@@ -37,6 +38,13 @@
      <td>${coupon?.refundAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
      <td>${coupon?.salePrice}</td>
      <td>&{'coupon.'+coupon?.status}</td>
+     <td>#{if  models.order.ECouponStatus.DEALING.equals(coupon.status) || models.order.ECouponStatus.UNCONSUMED.equals(coupon.status) }
+             #{if coupon.isFreeze == 0} #{vx.operateLink text:"冻结", url:"/coupons/"+coupon.id+"/freeze", method:"PUT"/}#{/if}
+             #{ else } #{vx.operateLink text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}#{/else}
+             <a href="">重发短信</a>
+         #{/if}
+     
+       </td>
     </tr>
     #{/paginate.list}
 

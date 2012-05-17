@@ -29,6 +29,7 @@ import models.accounts.TradeStatus;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.RefundUtil;
 import models.accounts.util.TradeUtil;
+import models.resale.ResalerStatus;
 import models.sales.Goods;
 import models.sales.Shop;
 
@@ -104,6 +105,12 @@ public class ECoupon extends Model {
 	@Column(name = "lock_version")
 	public int lockVersion;
 
+	@Column(name = "is_freeze")
+	/** 1：冻结 0：解冻*/
+	public int isFreeze;
+	
+	@Column(name = "download_times")
+	public Integer downloadTimes;
 	/**
 	 * 用于短信回复的code，将会成为消费者看到的发送手机号的最后4位。
 	 * 
@@ -131,6 +138,7 @@ public class ECoupon extends Model {
 		this.status = ECouponStatus.UNCONSUMED;
 		this.eCouponSn = RandomNumberUtil.generateSerialNumber(10);
 		this.orderItems = orderItems;
+		this.isFreeze = 0;
 		this.lockVersion = 0;
 		this.replyCode = generateAvailableReplayCode(order.userId, order.userType);
 	}
@@ -237,6 +245,7 @@ public class ECoupon extends Model {
 			queryMap.put("eCouponSn", eCoupon.eCouponSn);
 			queryMap.put("refundAt", eCoupon.refundAt != null ? df.format(eCoupon.refundAt) : null);
 			queryMap.put("status", eCoupon.status);
+			queryMap.put("isFreeze", eCoupon.isFreeze);
 			queryMap.put("error", 0);
 
 		}
@@ -273,7 +282,7 @@ public class ECoupon extends Model {
 						AccountUtil.getUhuilaAccount(),
 						salePrice.subtract(resalerPrice),
 						eCouponSn,
-                        order.getId());
+						order.getId());
 
 				TradeUtil.success(uhuilaCommissionTrade, "佣金:" + order.description );
 			}
@@ -285,7 +294,7 @@ public class ECoupon extends Model {
 					AccountUtil.getPlatformCommissionAccount(),
 					platformCommission,
 					eCouponSn,
-                    order.getId());
+					order.getId());
 			TradeUtil.success(platformCommissionTrade, "佣金:" + order.description);
 		}
 
@@ -376,9 +385,9 @@ public class ECoupon extends Model {
 		RefundBill refundBill = RefundUtil.create(tradeBill, order.getId(), orderItem.getId(),
 				orderItem.salePrice, applyNote);
 		if(!RefundUtil.success(refundBill)){
-            returnFlg = "{\"error\":\"refound failed\"}";
-            return returnFlg;
-        }
+			returnFlg = "{\"error\":\"refound failed\"}";
+			return returnFlg;
+		}
 
 		//更改库存
 		eCoupon.goods.baseSale += orderItem.buyNumber;
@@ -472,5 +481,30 @@ public class ECoupon extends Model {
 	 */
 	public static ECoupon findByMobileAndCode(String mobile, String replyCode) {
 		return ECoupon.find("from ECoupon where orderItems.phone=? and replyCode=?", mobile, replyCode).first();
+	}
+
+	/**
+	 *  冻结此券
+	 * @param id
+	 */
+	public static void freeze(long id) {
+		update(id,1);
+	}
+
+	/**
+	 *  解冻此券
+	 * @param id
+	 */
+	public static void unfreeze(long id) {
+		update(id,0);
+	}
+
+	/**
+	 *  更新券是否冻结
+	 */
+	private static void update(long id, Integer isFreeze) {
+		ECoupon eCoupon = ECoupon.findById(id);
+		eCoupon.isFreeze = isFreeze;
+		eCoupon.save();
 	}
 }
