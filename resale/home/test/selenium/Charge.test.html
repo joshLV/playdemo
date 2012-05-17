@@ -6,15 +6,12 @@ load:['fixture/payment_source.yml','fixture/resaler.yml']
     
     openAndWait('/charge')
     type('name=amount','-1')
-    clickAndWait('css=input[type="submit"]')
-    verifyTextPresent('最少充值1.00元!')
+    click('id=submit')
+    verifyTextPresent('最低充值1元! 小数点后不超过两位!')
 
     openAndWait('/charge')
     type('name=amount','10')
-    clickAndWait('css=input[type="submit"]')
-    verifyTitle('优惠啦 - 确认付款')
-    clickAndWait('id=confirm')
-    click('id=confirm_pay_it')
+    click('id=submit')
 
 #{/selenium}    
     

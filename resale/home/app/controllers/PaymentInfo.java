@@ -11,6 +11,7 @@ import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.order.Order;
 import models.order.OrderItems;
+import models.order.OrderType;
 import models.payment.AliPaymentFlow;
 import models.payment.BillPaymentFlow;
 import models.payment.PaymentFlow;
@@ -66,7 +67,7 @@ public class PaymentInfo extends Controller {
         //计算使用余额支付和使用银行卡支付的金额
         BigDecimal balancePaymentAmount = BigDecimal.ZERO;
         BigDecimal ebankPaymentAmount = BigDecimal.ZERO;
-        if (useBalance){
+        if (useBalance && order.orderType == OrderType.CONSUME){
             balancePaymentAmount = account.amount.min(order.needPay);
             ebankPaymentAmount = order.needPay.subtract(balancePaymentAmount);
         }else {
@@ -81,7 +82,7 @@ public class PaymentInfo extends Controller {
         order.payMethod = paymentSourceCode;
 
         //如果使用余额足以支付，则付款直接成功
-        if (ebankPaymentAmount.compareTo(BigDecimal.ZERO) == 0){
+        if (ebankPaymentAmount.compareTo(BigDecimal.ZERO) == 0 && balancePaymentAmount.compareTo(order.needPay) == 0){
             order.payMethod = PaymentSource.getBalanceSource().code;
             order.paid();
 

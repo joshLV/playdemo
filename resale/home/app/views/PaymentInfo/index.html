@@ -36,14 +36,15 @@
     <div id="balance-pay" class="clearfix">
         <div id="order-box" class="clearfix">
             <div class="order-num">共有 ${goodsNumber} 件商品</div>
-            <div class="pay-num">定金金额 <strong>${order.amount}</strong> 元</div>
+            <div class="pay-num">定金金额 <strong>${order.amount.formatCurrency('CNY')}</strong> 元</div>
         </div>
         <div id="account-box">
             <div class="account">您的账号：<strong>${user.loginName}</strong></div>
-            <div class="balance">可用余额：<span class="">${account.amount}</span>元</div>
+            <div class="balance">可用余额：<span class="">${account.amount.formatCurrency('CNY')}</span>元</div>
         </div>
         <div id="payment">
-            <input type="checkbox" name="useBalance" id="use_balance" /> 用余额付款<span>${account.amount.min(order.needPay)}</span>元。
+            <input type="checkbox" name="useBalance" id="use_balance" />
+            用余额付款<span>${account.amount.min(order.needPay)}</span>元。
             #{if account.amount.compareTo(order.needPay) < 0}
                 剩余 <strong>${order.amount}</strong> 元可选择其他付款方式付款。
             #{/if}
@@ -53,14 +54,23 @@
     <div id="other-pay">
         <h3>您可以使用其他方式付款</h3>
         <ul class="zhifu clearfix">
-            <li><input name="paymentSourceCode" type="radio" checked="checked" id="alipay" value="alipay"/> <label for="alipay"><img src="@{'/public/images/pay_icon/zhifubao_pay.jpg'}"/></label></li>
-            <li><input name="paymentSourceCode" type="radio" id="tenpay" value="tenpay"/> <label for="tenpay"><img src="@{'/public/images/tenpay/tenpay.png'}"/></label></li>
+            <li>
+                <input name="paymentSourceCode" type="radio" checked="checked" id="alipay" value="alipay"/>
+                <label for="alipay"><img src="@{'/public/images/pay_icon/zhifubao_pay.jpg'}"/></label>
+            </li>
+            <li>
+                <input name="paymentSourceCode" type="radio" id="tenpay" value="tenpay"/>
+                <label for="tenpay"><img src="@{'/public/images/tenpay/tenpay.png'}"/></label>
+            </li>
         </ul>
         <h4>快钱：</h4>
         <ul class="kuaiqian clearfix">
           #{list items:paymentSources, as:'payment'}
           #{if payment.paymentCode =='99bill'}
-              <li><input type="radio" name="paymentSourceCode" id="${payment.code}" value="${payment.code}"/><label for="${payment.code}"><img src="/public/${payment.logo}"/></label></li>
+              <li>
+                  <input type="radio" name="paymentSourceCode" id="${payment.code}" value="${payment.code}"/>
+                  <label for="${payment.code}"><img src="/public/${payment.logo}"/></label>
+              </li>
          #{/if}
           #{/list}
         </ul>

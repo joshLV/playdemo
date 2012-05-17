@@ -65,4 +65,27 @@ table{ border-collapse:collapse}
 .div_step_text_2 {float:left; color:#CF1F1F; font-size:18px; font-weight:700}
 .shiyong_bg{background:url(../images/shhiyong_buttom.jpg) no-repeat;color:#FFFFFF; text-align:center; font-weight:700;line-height:24px;letter-spacing:0.1em; width:77px; height:24px; display:block; margin-left:40px; float:right; margin-right:460px; margin-top:-21px;}
 .suc_ok_bg{ width:152px; height:33px; background:url(../images/queren_bottom.jpg) no-repeat;color:#FFFFFF; text-align:center; font-weight:700;line-height:33px; font-size:16px;}
+/* 确认付款 {{{ */
+#full_bg {
+    background-color: Gray;
+    display:none;
+    z-index:3;
+    position:absolute;
+    left:0px;
+    top:0px;
+    filter:Alpha(Opacity=30);
+    /* IE */
+    -moz-opacity:0.4;
+    /* Moz + FF */
+    opacity: 0.4;
+}
+
+#payment_result {
+    position:absolute;
+    width:400px;
+    height:100px;
+    background:white;
+    display: none;
+    z-index: 5;
+}
 
