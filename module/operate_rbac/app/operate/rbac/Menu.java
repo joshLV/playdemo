@@ -136,7 +136,6 @@ public class Menu {
         if (navigation.children != null && recureParent) {
             menu.children = new ArrayList<Menu>();
             for (OperateNavigation nav : navigation.children) {
-                Logger.debug("nav id=" + nav.id + ", action=" + nav.action + ", url=" + nav.url + ",text=" + nav.text);
                 menu.children.add(from(nav, false));
             }
         }

@@ -139,7 +139,7 @@ public class RbacLoader {
             operatePermission.parent = OperatePermission.find("byApplicationNameAndKey", applicationName, parentPermission.key).first();
         }
 
-        Logger.info("operatePermission.parent-" + operatePermission.parent);
+        Logger.debug("operatePermission.parent-" + operatePermission.parent);
         operatePermission.save();
     }
 

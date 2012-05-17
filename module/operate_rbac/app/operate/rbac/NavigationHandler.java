@@ -53,7 +53,6 @@ public class NavigationHandler {
                     navigation.permissions.size() == 0 ||
                     ContextedPermission.hasPermissions(navigation.permissions)) {
                 Menu menu = Menu.from(navigation);
-                Logger.info("id=" + navigation.id + ", action=" + menu.action + ", url=" + menu.url);
                 ContextedMenu contextedMenu = new ContextedMenu(menu, getMenuContext());
                 _secondLevelMenus.add(contextedMenu);
             }
