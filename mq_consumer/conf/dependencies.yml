@@ -2,6 +2,8 @@
 
 require:
     - play 1.2.4
+    - play1 -> betterlogs 1.0
+    - play1 -> appconfiguration 0.1
     - play1 -> rabbitmq 0.3
     - play1 -> app-version 0.1
     - org.apache.httpcomponents -> httpclient 4.1.3
