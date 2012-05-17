@@ -112,4 +112,24 @@ public class CouponsUnitTest extends UnitTest {
 		assertEquals(0, eCoupon.isFreeze);
 	}
 	
+	@Test
+	public void testSendMessage(){
+		Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
+		
+		boolean sendFalg = ECoupon.sendMessage(id);
+		assertTrue(sendFalg);
+		
+		ECoupon.sendUserMessage(id);
+		ECoupon eCoupon = ECoupon.findById(id);
+		assertEquals(1, eCoupon.downloadTimes.intValue());
+		ECoupon.sendUserMessage(id);
+		assertEquals(2, eCoupon.downloadTimes.intValue());
+		ECoupon.sendUserMessage(id);
+		assertEquals(3, eCoupon.downloadTimes.intValue());
+		
+		ECoupon.sendUserMessage(id);
+		assertEquals(3, eCoupon.downloadTimes.intValue());
+	}
+	
+	
 }

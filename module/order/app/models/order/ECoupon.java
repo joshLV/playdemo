@@ -139,6 +139,7 @@ public class ECoupon extends Model {
 		this.status = ECouponStatus.UNCONSUMED;
 		this.eCouponSn = RandomNumberUtil.generateSerialNumber(10);
 		this.orderItems = orderItems;
+		this.downloadTimes = 0;
 		this.isFreeze = 0;
 		this.lockVersion = 0;
 		this.replyCode = generateAvailableReplayCode(order.userId, order.userType);
@@ -508,12 +509,45 @@ public class ECoupon extends Model {
 		eCoupon.isFreeze = isFreeze;
 		eCoupon.save();
 	}
+	
+	/**
+	 *  发送短信
+	 */
+	private static void send(ECoupon eCoupon) {
+		SMSUtil.send(eCoupon.goods.name + "券号:" + eCoupon.eCouponSn, eCoupon.orderItems.phone, eCoupon.replyCode);
+	}
 
+	/**
+	 * 运营后台发送短信
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public static boolean sendMessage(long id) {
 		ECoupon eCoupon = ECoupon.findById(id);
 		boolean sendFalg = false;
 		if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED) {
-			SMSUtil.send(eCoupon.goods.name + "券号:" + eCoupon.eCouponSn, eCoupon.orderItems.phone, eCoupon.replyCode);
+			send(eCoupon);
+			sendFalg = true; 
+		}
+		return sendFalg;
+	}
+	
+	/**
+	 * 会员中心发送短信
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public static boolean sendUserMessage(long id) {
+		System.out.println(id+"#######");
+		ECoupon eCoupon = ECoupon.findById(id);
+		System.out.println(id+">>>>>>>>>>>>>>>."+eCoupon.downloadTimes);
+		boolean sendFalg = false;
+		if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED && eCoupon.downloadTimes < 3) {
+			send(eCoupon);
+			eCoupon.downloadTimes++;
+			eCoupon.save();
 			sendFalg = true; 
 		}
 		return sendFalg;

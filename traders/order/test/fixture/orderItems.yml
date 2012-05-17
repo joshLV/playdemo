@@ -33,6 +33,8 @@ order.ECoupon(coupon1):
   "status": "UNCONSUMED"
   "goods": "Goods_001"
   "orderItems": "orderItems1"
+  "isFreeze": "1"
+  "downloadTimes": "0"
 
 order.ECoupon(coupon2):
   "order": "order1"
@@ -46,6 +48,8 @@ order.ECoupon(coupon2):
   "status": "UNCONSUMED"
   "goods": "Goods_002"
   "orderItems": "orderItems2"
+  "isFreeze": "1"
+  "downloadTimes": "0"
   
 order.ECoupon(coupon3):
   "order": "order1"
@@ -59,6 +63,8 @@ order.ECoupon(coupon3):
   "status": "UNCONSUMED"
   "goods": "Goods_001"
   "orderItems": "orderItems1"
+  "isFreeze": "1"
+  "downloadTimes": "0"
   
 order.ECoupon(coupon4):
   "order": "order1"
@@ -73,3 +79,5 @@ order.ECoupon(coupon4):
   "goods": "Goods_001"
   "orderItems": "orderItems1"
   "shop": "Shop_4"
+  "isFreeze": "1"
+  "downloadTimes": "0"

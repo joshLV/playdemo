@@ -44,4 +44,14 @@ public class UserCoupons extends Controller {
 		String returnFlg = ECoupon.applyRefund(eCoupon,user.getId(),applyNote, AccountType.CONSUMER);
 		renderJSON(returnFlg);
 	}
+	
+
+	/**
+	 * 重发短信
+	 * @param id
+	 */
+    public static void sendMessage(long id) {
+    	boolean sendFalg = ECoupon.sendUserMessage(id);
+        renderJSON(sendFalg ?"0":"1");
+    }
 }

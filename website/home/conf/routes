@@ -12,6 +12,7 @@ GET     /coupons                                      UserCoupons.index
 GET     /payment/{id}                                 UserOrders.pay
 POST    /coupons/refund/{id}                          UserCoupons.applyRefund
 POST    /orders/batch-refund                          UserOrders.batchRefund
+GET     /coupons-message/{id}/send                    UserCoupons.sendMessage
 
 #购物车
 GET     /carts/tops                                   UserCarts.tops

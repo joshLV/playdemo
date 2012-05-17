@@ -124,6 +124,27 @@
         });
 
     });
+    var cnt =0;
+  function sendMessage(id){
+        $.ajax({
+            url: "/coupons-message/"+id+"/send",
+            type: 'GET',
+            error: function() { alert('发送失败!'); },
+            success: function(data) {
+                if (data == '0') {
+                    alert("发送成功！");
+                    cnt++;
+                    if (cnt == 3){
+                        $("#send_msg_"+id).html("");
+                    }
+                } else {
+                    alert("发送失败!");
+                }
+
+            }
+        });
+        
+    }
 </script>
 #{/set}
 <!--主体内容部分-->
@@ -195,7 +216,10 @@
                         #{if (coupon.status == models.order.ECouponStatus.UNCONSUMED
                         || coupon.status == models.order.ECouponStatus.EXPIRED)}
                             <a href="/index/refund/${coupon.id}" name="apply_refund" class="font_blue"
-                               id="apply_${coupon.id}">申请退款</a>
+                               id="apply_${coupon.id}">申请退款</a><br>
+                                #{if coupon.downloadTimes !=3}
+                               <a href="javascript:sendMessage(${coupon.id})" class="font_blue"
+                               id="send_msg_${coupon.id}">发送短信</a>#{/if}
                         #{/if}
                     </td>
                 </tr>
