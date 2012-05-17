@@ -106,7 +106,7 @@ public class ContextedMenu {
     public boolean hasLink() {
         return menu.hasLink();
     }
-
+    
     public Object getProperty(String propertyName) {
         return menu.properties.get(propertyName);
     }

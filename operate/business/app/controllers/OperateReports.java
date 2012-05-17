@@ -34,7 +34,7 @@ public class OperateReports extends Controller {
      *
      * @param condition 查询条件对象
      */
-    @ActiveNavigation("consumers_reports")
+    @ActiveNavigation("consumers_account_reports")
     public static void showConsumerReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
@@ -80,7 +80,7 @@ public class OperateReports extends Controller {
      *
      * @param condition 查询条件对象
      */
-    @ActiveNavigation("resales_reports")
+    @ActiveNavigation("resales_account_reports")
     public static void showResaleReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
@@ -114,7 +114,7 @@ public class OperateReports extends Controller {
      *
      * @param condition 查询条件对象
      */
-    @ActiveNavigation("suppliers_reports")
+    @ActiveNavigation("suppliers_account_reports")
     public static void showSupplierReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
@@ -152,7 +152,7 @@ public class OperateReports extends Controller {
     /**
      * 查询优惠啦佣金账户报表.
      */
-    @ActiveNavigation("websites_reports")
+    @ActiveNavigation("websites_account_reports")
     public static void showWebsiteReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
@@ -186,7 +186,7 @@ public class OperateReports extends Controller {
     /**
      * 查询平台佣金账户报表.
      */
-    @ActiveNavigation("platforms_reports")
+    @ActiveNavigation("platforms_account_reports")
     public static void showPlatformReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
@@ -209,7 +209,7 @@ public class OperateReports extends Controller {
     /**
      * 查询收款账户报表.
      */
-    @ActiveNavigation("incomings_reports")
+    @ActiveNavigation("incomings_account_reports")
     public static void showIncomingReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {

@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import models.admin.OperateNavigation;
+import play.Logger;
 import play.Play;
 import play.mvc.Http.Request;
 
@@ -53,6 +53,7 @@ public class NavigationHandler {
                     navigation.permissions.size() == 0 ||
                     ContextedPermission.hasPermissions(navigation.permissions)) {
                 Menu menu = Menu.from(navigation);
+                Logger.info("id=" + navigation.id + ", action=" + menu.action + ", url=" + menu.url);
                 ContextedMenu contextedMenu = new ContextedMenu(menu, getMenuContext());
                 _secondLevelMenus.add(contextedMenu);
             }

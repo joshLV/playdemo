@@ -207,11 +207,11 @@ public class OperateUser extends Model {
 	}
 
 	public static OperateUser findUser(String loginName) {
-		Logger.info("loginName=" + loginName + " ^^^^^^^^^^^^^^^^");
+		Logger.debug("loginName=" + loginName + " ^^^^^^^^^^^^^^^^");
 
 		List<OperateUser> all = OperateUser.findAll();
 		for (OperateUser user : all) {
-			Logger.info("  ----- user.id:" + user.id + ", loginName:" + user.loginName);
+			Logger.debug("  ----- user.id:" + user.id + ", loginName:" + user.loginName);
 		}
 
 		Logger.info("================");

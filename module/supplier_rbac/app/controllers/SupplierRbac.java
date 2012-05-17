@@ -82,22 +82,22 @@ public class SupplierRbac extends Controller {
         String userName = getDomainUserName(session.get(SupplierRbac.SESSION_USER_KEY));
         String subDomain = CASUtils.getSubDomain();
 
-        Logger.info("================================================================ currentUser = " + userName + ", domain=" + subDomain);
+        Logger.debug("================================================================ currentUser = " + userName + ", domain=" + subDomain);
 
         SupplierUser user = null;
         // 检查权限
         if (userName != null) {
             // 查出当前用户的所有权限
             user = SupplierUser.findUserByDomainName(subDomain, userName);
-            Logger.info(" ---------------------------- user : " + user);
+            Logger.debug(" ---------------------------- user : " + user);
             if (user != null) {
                 renderArgs.put("currentUser", user);
             }
             if (Logger.isDebugEnabled() && user != null && user.roles != null) {
-                Logger.info("user.id = " + user.id + ", name=" + user.loginName);
-                Logger.info("get role " + user.roles);
+                Logger.debug("user.id = " + user.id + ", name=" + user.loginName);
+                Logger.debug("get role " + user.roles);
                 for (SupplierRole role : user.roles) {
-                    Logger.info("user.role=" + role.key);
+                    Logger.debug("user.role=" + role.key);
                 }
             }
             _user.set(user);
@@ -192,19 +192,19 @@ public class SupplierRbac extends Controller {
         // 把当前菜单上的权限也作为检查点，这样一个方法只需要指定@ActiveNavigation，就不需要再指定@Right了
         if (currentNavigation != null && currentNavigation.permissions != null) {
             for (SupplierPermission perm : currentNavigation.permissions) {
-                Logger.info(" 当前菜单(" + currentMenuName + ")的权限是：" + perm.key);
+                Logger.debug(" 当前菜单(" + currentMenuName + ")的权限是：" + perm.key);
                 rightSet.add(perm.key);
             }
         }
 
-        Logger.info("???????? current permission = " + ContextedPermission.getAllowPermissions() + ", url=" + Request.current().url);
+        Logger.debug("???????? current permission = " + ContextedPermission.getAllowPermissions() + ", url=" + Request.current().url);
         if (ContextedPermission.getAllowPermissions() != null) {
             for (String s : ContextedPermission.getAllowPermissions()) {
-                Logger.info("   perm:" + s);
+                Logger.debug("   perm:" + s);
             }
         }
         for (String r : rightSet) {
-            Logger.info("   right:" + r);
+            Logger.debug("   right:" + r);
         }
 
         if (rightSet.size() > 0) {

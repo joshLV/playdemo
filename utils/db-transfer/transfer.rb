@@ -11,8 +11,6 @@ require 'data_mapper' # requires all the gems listed above
 DataMapper.setup(:default, 'mysql://root:seewidb@192.168.18.235/scott')
 DataMapper.setup(:target, 'mysql://root:seewidb@192.168.18.235/sales')
 
-user_hash = Hash.new
-
 # Uhuila
 class UhlUser
   include DataMapper::Resource
@@ -161,13 +159,10 @@ class ReebUserPoint
 end
 
 def transfer_users
-  DataMapper.repository(:target) {
-    ReebUser.all.each {|u| user_hash[u.id] = u}
-  }
-  UhlUser.first.each do |u|
+  UhlUser.all.each do |u|
     puts "transfer_users: user.id=#{u.user_id}"
     DataMapper.repository(:target) {
-      ru = hash[u.user_id]
+      ru = ReebUser.get(u.user_id)
       if ru.nil?
         ru = ReebUser.new
         ru.id = u.user_id
@@ -186,7 +181,6 @@ def transfer_users
       ru.last_login_at = Time.at(u.login_time) if u.login_time
       ru.status = (!u.nil? && u.user_state == 1) ? 'NORMAL' : 'FREEZE'
       ru.save
-      user_hash[u.user_id] = ru
     }
   end
 end
@@ -196,7 +190,7 @@ def transfer_user_info
     DataMapper.repository(:target) {
       puts "u.user_id=#{u.user_id}"
       ru = ReebUserInfo.get(u.user_id)
-      user = user_hash[u.user_id]
+      user = ReebUser.get(u.user_id)
       unless user.nil?
         if ru.nil?
           ru = ReebUserInfo.new
@@ -255,7 +249,7 @@ def transfer_user_amount
     DataMapper.repository(:target) {
       puts "u.user_id=#{u.user_id}"
       ru = ReebAccount.first(uid: u.user_id)
-      user = user_hash[u.user_id]
+      user = ReebUser.get(u.user_id)
       unless user.nil?
         if ru.nil?
           ru = ReebAccount.new
@@ -326,7 +320,7 @@ def transfer_user_address
     puts "addr_id=#{u.addr_id}"
     DataMapper.repository(:target) {
       ru = ReebUserAddress.first(user_id: u.user_id)
-      user = user_hash[u.user_id]
+      user = ReebUser.get(u.user_id)
       unless user.nil?
         if ru.nil?
           ru = ReebUserAddress.new
@@ -354,7 +348,7 @@ def transfer_user_point
     DataMapper.repository(:target) {
       puts "u.point_id=#{u.points_id}"
       ru = ReebUserPoint.get(u.points_id)
-      user = user_hash[u.user_id]
+      user = ReebUser.get(u.user_id)
       unless user.nil?
         if ru.nil?
           ru = ReebUserPoint.new
@@ -373,7 +367,6 @@ def transfer_user_point
 end
 
 transfer_users
-puts "user_hash.size=#{user_hash.size}"
 transfer_user_info
 transfer_user_point
 transfer_user_amount
