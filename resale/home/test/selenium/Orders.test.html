@@ -15,8 +15,8 @@ load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_uni
 #{selenium "查看订单界面"}
     #{include 'test/selenium/step/login.selenium' /}
     open('/orders')
-    assertTitle('我的商品订购')
-    clickAndWait('link=我的商品订购')
+    assertTitle('我的订单')
+    clickAndWait('link=我的订单')
 #{/selenium}
 #{selenium '查看订单详细信息'}
     open('/orders/${play.test.Fixtures.idCache.get("models.order.Order-order1")}')
