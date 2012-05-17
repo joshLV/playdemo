@@ -245,7 +245,7 @@ public class SupplierUser extends Model {
 
 		List<SupplierUser> all = SupplierUser.findAll();
 		for (SupplierUser user : all) {
-			Logger.info("  ----- user.id:" + user.id + ", supplierId:" + user.supplier.id + ", loginName:" + user.loginName);
+			Logger.debug("----- user.id:" + user.id + ", supplierId:" + user.supplier.id + ", loginName:" + user.loginName);
 		}
 
 		return SupplierUser.find("bySupplierAndLoginName", supplier, loginName).first();

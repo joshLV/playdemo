@@ -77,9 +77,7 @@ public class NavigationHandler {
         topMenus.set(_topMenus);
     }
 
-
     /// ================ ================
-
 
     /**
      * 把数据库中的所有Navigation转化为菜单.

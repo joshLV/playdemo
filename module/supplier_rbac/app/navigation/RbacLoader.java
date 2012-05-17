@@ -135,7 +135,7 @@ public class RbacLoader {
             supplierPermission.parent = SupplierPermission.find("byApplicationNameAndKey", applicationName, parentPermission.key).first();
         }
 
-        Logger.info("supplierPermission.parent-" + supplierPermission.parent);
+        Logger.debug("supplierPermission.parent-" + supplierPermission.parent);
         supplierPermission.save();
     }
 
