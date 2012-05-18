@@ -1,9 +1,7 @@
 package functional;
 
-import java.util.ArrayList;
 
 import models.mail.CouponMessage;
-import models.mail.MailUtil;
 import notifiers.FindPassWordMails;
 
 import org.junit.Test;

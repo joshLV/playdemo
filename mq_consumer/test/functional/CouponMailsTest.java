@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import models.mail.CouponMessage;
 import models.mail.MailUtil;
 import notifiers.CouponMails;
-import org.junit.Before;
 import org.junit.Test;
 import play.libs.Mail;
 import play.modules.rabbitmq.RabbitMQPlugin;

@@ -17,7 +17,7 @@ public class CouponMailConsumer extends RabbitMQConsumer<CouponMessage> {
      *
      * @param message 消息
      * @param status  状态
-     * @param serial  成功序列号
+     * @param info 成功序列号
      */
     private void saveJournal(CouponMessage message, int status, String info) {
         JPAPlugin.startTx(false);
