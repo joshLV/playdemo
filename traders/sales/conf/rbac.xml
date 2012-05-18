@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <application text="商品管理">
     <role key="editor" text="商品编辑"/>
+    <role key="account" text="财务人员"/>
+    <role key="sales" text="商务销售"/>
 
     <permission key="GOODS_MANAGE" text="商品库">
         <permission key="GOODS" text="商品管理" roles="editor"/>

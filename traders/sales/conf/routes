@@ -3,6 +3,7 @@
 # ~~~~
 
 # Home page
+# 商品管理
 GET     /                                       SupplierGoods.index
 GET     /goods                                  SupplierGoods.index
 GET     /goods/new                              SupplierGoods.add
@@ -19,6 +20,7 @@ POST    /goods/filemanager                      UploadFiles.fileManagerJson
 
 GET     /category/sub/{id}                      Categories.showSubs
 
+# 门店管理
 GET     /shops                                  Shops.index
 GET     /shops/new                              Shops.add
 POST    /shops                                  Shops.create
@@ -27,6 +29,10 @@ POST    /shops/{id}                             Shops.update
 DELETE  /shops/{id}                             Shops.delete
 GET     /shops/area                             Shops.showAreas
 
+# 财务报表
+GET     /reports/daily                          SupplierReports.showDailyReport
+GET     /reports/shop                           SupplierReports.showShopReport
+GET     /reports/goods                          SupplierReports.showGoodsReport
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

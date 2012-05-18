@@ -1,3 +1,5 @@
+
+
 -- Table area Initial --
 
 insert into areas (id,area_type,display_order,name,parent_id)

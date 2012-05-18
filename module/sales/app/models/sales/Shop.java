@@ -116,14 +116,11 @@ public class Shop extends Model {
         }
 
         if (!StringUtils.isBlank(shopCondition.name)) {
-            search.append(" and name like ?");
+            search.append(" and (name like ? or address like ?)");
+            queryParams.add("%" + shopCondition.name.trim() + "%");
             queryParams.add("%" + shopCondition.name.trim() + "%");
         }
 
-        if (!StringUtils.isBlank(shopCondition.address)) {
-            search.append(" and address like ?");
-            queryParams.add("%" + shopCondition.address.trim() + "%");
-        }
         ModelPaginator<Shop> shopPage = new ModelPaginator<>(Shop.class, search.toString(),
                 queryParams.toArray()).orderBy("createdAt desc");
         shopPage.setPageNumber(pageNumber);

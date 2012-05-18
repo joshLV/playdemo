@@ -143,4 +143,22 @@ public class AccountSequence extends Model {
 
         return result;
     }
+/*
+
+    public static JPAExtPaginator<DailyReport> reportByDate(Date begin, Date end, int pageNumber, int pageSize) {
+        EntityManager entityManager = JPA.em();
+
+        Query query = entityManager.createQuery("SELECT count(a.sequenceFlag), sum(a.amount) FROM AccountSequence a  WHERE a.account = :account group by a.sequenceFlag");
+        query.setParameter("account", account);
+        List<Object[]> list = query.getResultList();
+        Map<AccountSequenceFlag, Object[]> result = new HashMap<>();
+        for (Object[] ls : list) {
+            result.put((AccountSequenceFlag) ls[0], ls);
+        }
+    }
+*/
+//
+//    public static ReportSummary reportSummaryByDate(Date begin, Date end) {
+//        return null;  //To change body of created methods use File | Settings | File Templates.
+//    }
 }
