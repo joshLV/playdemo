@@ -1,0 +1,127 @@
+#{extends 'main.html' /} 
+#{set title:'优惠啦 - 资金明细' /} 
+#{set 'moreStyles'}
+    #{asset.css src:['/u/list.css'] /}
+<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
+<link href="@{'/public/stylesheets/user-center.css'}" rel="stylesheet" type="text/css" />
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<style type="text/css">
+#full_bg {
+	background-color: Gray;
+	display: none;
+	z-index: 3;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	filter: Alpha(Opacity = 30);
+	/* IE */
+	-moz-opacity: 0.4;
+	/* Moz + FF */
+	opacity: 0.4;
+}
+
+#apply_dialog {
+	position: absolute;
+	width: 400px;
+	height: 200px;
+	background: white;
+	display: none;
+	z-index: 5;
+}
+</style>
+#{/set}
+#{set 'moreScripts'}
+<script>
+    $(window).load(function () {
+        $("#sequenceType").change(function() {
+            $('#amountFrm').submit();
+        });
+        $("#sequenceFlag").change(function() {
+            $('#amountFrm').submit();
+        });
+    });
+</script>
+
+#{/set}
+<!--主体内容部分-->
+<div class="clearfix">
+    #{include "share/left.html"/}
+    <div class="section">
+        #{breadcrumbs/breadcrumb breadcrumbs/}
+        <div class="tab_top2">&nbsp;&nbsp;&nbsp;&nbsp;账号：${user?.loginName} &nbsp;&nbsp;&nbsp;&nbsp;账户余额：￥${account.amount}元</div>
+        <div class="tab_top2">
+            <form class="form-horizontal" id="amountFrm" action="@{UserSequences.index()}" method="GET">
+                 <table width="774" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="12">&nbsp;</td>
+                        <td width="65" align="right">成交时间：</td>
+                        <td width="259" height="35"><input class="short_input Wdate" type="text"
+                            name="condition.createdAtBegin" id="createdAtBegin" value="${condition?.createdAtBegin?.format()}"
+                            onfocus="WdatePicker({readOnly:true})" /> - <input class="short_input Wdate" type="text"
+                            id="createdAtEnd" name="condition.createdAtEnd" value="${condition?.createdAtEnd?.format()}"
+                            onfocus="WdatePicker({readOnly:true})" /></td>
+                        <td width="77">资金流向：</td>
+                        <td width="353">
+                            <div class="pos_abs">#{select 'condition.sequenceFlag', id:'sequenceFlag',
+                                class:'dingdan_stauts_bg', value:condition?.sequenceFlag} 
+                                #{option ''}不限#{/option}
+                                 #{option "VOSTRO"}&{'accountSequence.VOSTRO'}#{/option}
+                                 #{option "NOSTRO"}&{'accountSequence.NOSTRO'}#{/option}
+                                #{/select}</div>
+                        </td>
+                        <td valign="middle"><button class="search-btn" id="search"> 搜　索 </button></td>
+                    </tr>
+                </table>
+            
+            <table class="order-tab" cellpadding="0" cellspacing="0">
+                <thead>
+                    <tr class="col-name">              
+                        <th width="180">流水号</th>
+                        <th width="120">时间</th>
+                        <th width="100">余额</th>
+                        <th width="280">名称/备注 
+                         #{select 'condition.sequenceType', id:'sequenceType',class:'dingdan_stauts_bg', value:condition?.sequenceType} 
+                               #{option ''}交易类型#{/option}
+                               #{option "CHARGE"}&{'accountSequence.CHARGE'}#{/option}
+                               #{option "WITHDRAW"}&{'accountSequence.WITHDRAW'}#{/option}
+                               #{option "PAY"}&{'accountSequence.PAY'}#{/option}
+                               #{option "REFUND"}&{'accountSequence.REFUND'}#{/option}
+                               #{option "RECEIVE"}&{'accountSequence.RECEIVE'}#{/option}
+                               #{option "FREEZE"}&{'accountSequence.FREEZE'}#{/option} 
+                               #{option "CANCEL"}&{'accountSequence.CANCEL'}#{/option}
+                               #{option "UNFREEZE"}&{'accountSequence.UNFREEZE'}#{/option}   
+                                #{/select}
+                         </th>
+                        <th width="100">支出</th>
+                        <th width="100">收入</th>
+                        <th width="110">支付方式</th>
+                    </tr>
+                </thead>
+                #{paginate.list items:amountList, as:'accountSequence'}
+                <tr>
+                <td>${accountSequence.serialNumber}</td>
+                <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${accountSequence.amount?.formatCurrency('CNY')}</td>
+                <td>${accountSequence.remark}
+                #{if accountSequence.orderId != null && accountSequence.sequenceType.isOrder()}
+                    <br/>订单号：<a style="color:#3366CC"  href="/orders/${accountSequence.orderId}" target="_blank">
+                    ${accountSequence?.orderNumber}</a>#{/if}</td>
+                <td>
+                #{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
+                    ${accountSequence.cashAmount.add(accountSequence
+                    .uncashAmount)?.formatCurrency('CNY')}#{/if}</td>
+                <td>#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
+                    <div class="alert alert-info">${accountSequence.cashAmount.add(accountSequence.uncashAmount)?.formatCurrency('CNY')}</div>#{/if}</td>
+
+                <td>${accountSequence?.payMethod}</td>
+            </tr>
+                #{/paginate.list}
+            </table>
+            <div class="pagination">
+                <ul>#{paginate.controls items:amountList /}
+                </ul>
+            </div>
+             </form>
+        </div>
+    </div>
+</div>

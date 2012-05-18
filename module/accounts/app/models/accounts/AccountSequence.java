@@ -1,9 +1,10 @@
 package models.accounts;
 
-import models.accounts.util.SerialNumberUtil;
-import play.db.jpa.JPA;
-import play.db.jpa.Model;
-import play.modules.paginate.JPAExtPaginator;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,11 +15,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import models.accounts.util.SerialNumberUtil;
+import models.consumer.User;
+import models.order.Order;
+import play.db.jpa.JPA;
+import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
 
 /**
  * 账户资金变动流水
@@ -161,4 +164,6 @@ public class AccountSequence extends Model {
 //    public static ReportSummary reportSummaryByDate(Date begin, Date end) {
 //        return null;  //To change body of created methods use File | Settings | File Templates.
 //    }
+    
+ 
 }

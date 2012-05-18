@@ -1,0 +1,224 @@
+accounts.PaymentSource(paymentSource1):
+  code: alipay
+  detail: 支付宝
+  logo: ali
+  name: 支付宝
+  paymentCode: alipay
+  showOrder: 1
+accounts.PaymentSource(paymentSource2):
+  code: tenpay
+  detail: 财付通
+  logo: tenpay
+  name: 财付通
+  paymentCode: tenpay
+  showOrder: 2
+accounts.PaymentSource(paymentSource3):
+  code: CMB
+  detail: 招商银行
+  logo: images/bank/bank_cmb.gif
+  name: 招商银行
+  paymentCode: 99bill
+  showOrder: 3
+accounts.PaymentSource(paymentSource4):
+  code: ABC
+  detail: 农业银行
+  logo: images/bank/bank_abc.gif
+  name: 农业银行
+  paymentCode: 99bill
+  showOrder: 4
+accounts.PaymentSource(paymentSource5):
+  code: balance
+  detail: 余额支付
+  logo: 把我的show_order设置为0吧亲
+  name: 余额支付
+  paymentCode: balance
+  showOrder: 0
+accounts.PaymentSource(paymentSource6):
+  code: BCOM
+  detail: 交通银行
+  logo: images/bank/bank_bcom.gif
+  name: 交通银行
+  paymentCode: 99bill
+  showOrder: 5
+accounts.PaymentSource(paymentSource7):
+  code: BEA
+  detail: BEA东亚银行
+  logo: images/bank/bank_bea.gif
+  name: BEA东亚银行
+  paymentCode: 99bill
+  showOrder: 6
+accounts.PaymentSource(paymentSource8):
+  code: BJRCB
+  detail: 北京农村商业银行
+  logo: images/bank/bank_bjrcb.gif
+  name: 北京农村商业银行
+  paymentCode: 99bill
+  showOrder: 7
+accounts.PaymentSource(paymentSource9):
+  code: BOB
+  detail: 北京银行
+  logo: images/bank/bank_bob.gif
+  name: 北京银行
+  paymentCode: 99bill
+  showOrder: 8
+accounts.PaymentSource(paymentSource10):
+  code: BOC
+  detail: 中国银行
+  logo: images/bank/bank_boc.gif
+  name: 中国银行
+  paymentCode: 99bill
+  showOrder: 9
+accounts.PaymentSource(paymentSource11):
+  code: CBHB
+  detail: 渤海银行
+  logo: images/bank/bank_cbhb.gif
+  name: 渤海银行
+  paymentCode: 99bill
+  showOrder: 10
+accounts.PaymentSource(paymentSource12):
+  code: CCB
+  detail: 中国建设银行
+  logo: images/bank/bank_ccb.gif
+  name: 中国建设银行
+  paymentCode: 99bill
+  showOrder: 11
+accounts.PaymentSource(paymentSource13):
+  code: CEB
+  detail: 中国光大银行
+  logo: images/bank/bank_ceb.gif
+  name: 中国光大银行
+  paymentCode: 99bill
+  showOrder: 12
+accounts.PaymentSource(paymentSource14):
+  code: CIB
+  detail: 兴业银行
+  logo: images/bank/bank_cib.gif
+  name: 兴业银行
+  paymentCode: 99bill
+  showOrder: 13
+accounts.PaymentSource(paymentSource15):
+  code: CITIC
+  detail: 中信银行
+  logo: images/bank/bank_citic.gif
+  name: 中信银行
+  paymentCode: 99bill
+  showOrder: 14
+accounts.PaymentSource(paymentSource16):
+  code: CMBC
+  detail: 中国民生银行
+  logo: images/bank/bank_cmbc.gif
+  name: 中国民生银行
+  paymentCode: 99bill
+  showOrder: 15
+accounts.PaymentSource(paymentSource17):
+  code: CZB
+  detail: 浙商银行
+  logo: images/bank/bank_czb.gif
+  name: 浙商银行
+  paymentCode: 99bill
+  showOrder: 16
+accounts.PaymentSource(paymentSource18):
+  code: GDB
+  detail: 广东发展银行
+  logo: images/bank/bank_gdb.gif
+  name: 广东发展银行
+  paymentCode: 99bill
+  showOrder: 17
+accounts.PaymentSource(paymentSource19):
+  code: GZCB
+  detail: 广州市商业银行
+  logo: images/bank/bank_gzcb.gif
+  name: 广州市商业银行
+  paymentCode: 99bill
+  showOrder: 18
+accounts.PaymentSource(paymentSource20):
+  code: GZRCC
+  detail: 广州市农村信用合作社
+  logo: images/bank/bank_gzrcc.gif
+  name: 广州市农村信用合作社
+  paymentCode: 99bill
+  showOrder: 19
+accounts.PaymentSource(paymentSource21):
+  code: HSB
+  detail: 徽商银行
+  logo: images/bank/bank_hsb.gif
+  name: 徽商银行
+  paymentCode: 99bill
+  showOrder: 20
+accounts.PaymentSource(paymentSource22):
+  code: HXB
+  detail: 华夏银行
+  logo: images/bank/bank_hxb.gif
+  name: 华夏银行
+  paymentCode: 99bill
+  showOrder: 21
+accounts.PaymentSource(paymentSource23):
+  code: HZB
+  detail: 杭州银行
+  logo: images/bank/bank_hzb.gif
+  name: 杭州银行
+  paymentCode: 99bill
+  showOrder: 22
+accounts.PaymentSource(paymentSource24):
+  code: ICBC
+  detail: 中国工商银行
+  logo: images/bank/bank_icbc.gif
+  name: 中国工商银行
+  paymentCode: 99bill
+  showOrder: 23
+accounts.PaymentSource(paymentSource25):
+  code: NBCB
+  detail: 宁波银行
+  logo: images/bank/bank_nbcb.gif
+  name: 宁波银行
+  paymentCode: 99bill
+  showOrder: 24
+accounts.PaymentSource(paymentSource26):
+  code: NJCB
+  detail: 南京银行
+  logo: images/bank/bank_njcb.gif
+  name: 南京银行
+  paymentCode: 99bill
+  showOrder: 25
+accounts.PaymentSource(paymentSource27):
+  code: PAB
+  detail: 平安银行
+  logo: images/bank/bank_pab.gif
+  name: 平安银行
+  paymentCode: 99bill
+  showOrder: 26
+accounts.PaymentSource(paymentSource28):
+  code: POST
+  detail: 中国邮政
+  logo: images/bank/bank_post.gif
+  name: 中国邮政
+  paymentCode: 99bill
+  showOrder: 27
+accounts.PaymentSource(paymentSource29):
+  code: SDB
+  detail: 深圳发展银行
+  logo: images/bank/bank_sdb.gif
+  name: 深圳发展银行
+  paymentCode: 99bill
+  showOrder: 28
+accounts.PaymentSource(paymentSource30):
+  code: SHB
+  detail: 上海银行
+  logo: images/bank/bank_shb.gif
+  name: 上海银行
+  paymentCode: 99bill
+  showOrder: 29
+accounts.PaymentSource(paymentSource31):
+  code: SHRCC
+  detail: 上海农村商业银行
+  logo: images/bank/bank_shrcc.gif
+  name: 上海农村商业银行
+  paymentCode: 99bill
+  showOrder: 30
+accounts.PaymentSource(paymentSource32):
+  code: SPDB
+  detail: 浦发银行
+  logo: images/bank/bank_spdb.gif
+  name: 浦发银行
+  paymentCode: 99bill
+  showOrder: 31

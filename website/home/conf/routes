@@ -19,11 +19,11 @@ GET     /carts/tops                                   UserCarts.tops
 DELETE  /carts/{goodsIds}                             UserCarts.delete
 
 #用户资料
-GET      /userInfo                                    UserInfos.index
-POST     /userInfo/{id}                               UserInfos.update
-POST     /userInfo/bindMobile                         UserInfos.bindMobile
-POST     /userInfo/send                               UserInfos.sendValidCode
-
+GET      /user-info                                    UserInfos.index
+POST     /user-info/{id}                               UserInfos.update
+POST     /user-info/mobile-bind                        UserInfos.bindMobile
+POST     /user-info/send                               UserInfos.sendValidCode
+GET      /user-sequences                               Usersequences.index
 #收货地址
 GET     /addresses                                    UserAddresses.index
 GET     /addresses/new                                UserAddresses.add
@@ -36,7 +36,7 @@ DELETE  /addresses/{id}                               UserAddresses.delete
 GET     /user/password                                UserPasswords.index
 POST    /user/{id}                                    UserPasswords.update
 
-GET     /userPoint                                   UserPoints.index
+GET     /user-point                                   UserPoints.index
 
 # 提现申请
 GET     /withdraw                                   Withdraw.index

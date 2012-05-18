@@ -75,7 +75,7 @@ function changeTel(telidentify) {
         }
         $("#newtelnum").attr("disabled", "");
         $.post(
-            "/userInfo/bindMobile",
+            "/user-info/mobile-bind",
             {mobile:newtelnum, validCode:telcheckcode, telidentify:1},
             function (data) {
                 alert(data)
@@ -83,7 +83,7 @@ function changeTel(telidentify) {
                     $("#layout").hide();
                     //修改成功跳转
                     setTimeout(function () {
-                        location.href = "/userInfo"
+                        location.href = "/user-info"
                     }, 10);
                 } else if (data == -1) {
                     alert('时间过期');
@@ -112,13 +112,13 @@ function changeTel(telidentify) {
             return false;
         }
         $("#bindtelnum").attr("disabled", "");
-        $.post("/userInfo/bindMobile",
+        $.post("/user-info/mobile-bind",
             {mobile:bindtelnum, validCode:bindcheckcode, telidentify:2}, function (data) {
                 if (data == 0) {
                     $("#layout").hide();
                     //修改成功跳转
                     setTimeout(function () {
-                        location.href = "/userInfo"
+                        location.href = "/user-info"
                     }, 10);
                 } else if (data == 2) {
                     alert('输入的手机号和不一致！');
@@ -144,7 +144,7 @@ function getBindCode(codeidy) {
         }
         $("#getBindCode").attr("disabled", "disabled");
         $.post(
-            "/userInfo/send",
+            "/user-info/send",
             {mobile:bindtelnum},
             function (data) {
                 if (data == 1) {
@@ -185,7 +185,7 @@ function getBindCode(codeidy) {
         }
         $("#getchangeCode").attr("disabled", "disabled");
         $.post(
-            "/userInfo/send",
+            "/user-info/send",
             {mobile:newtelnum},
             function (data) {
                 if (data == 1) {
@@ -414,15 +414,6 @@ function activationEmail() {
         },
         "json"
     );
-}
-/*弹出选定付款方式*/
-function selectedPay() {
-    window.location.href = "togetherpay.php?or_id=" + $("#orderinfo").val();
-    /*
-     var selectBrank_img = $("input[name=bank][checked]").parent().find('img').attr("src");
-     $("#brank_img").attr("src",selectBrank_img);
-     $.common.dialog({'id':'fk',"title":"付款方式"});
-     */
 }
 
 /*

@@ -136,7 +136,12 @@ public class Order extends Model {
 
 	@Column(name = "delivery_company")
 	public String deliveryCompany;
-
+	
+	/**
+	 * 支付方式名称 
+	 */
+	@Transient
+	public String payMethodName;
 	public Order() {
 	}
 

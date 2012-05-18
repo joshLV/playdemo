@@ -92,3 +92,16 @@ withdraw.subBankName=支行
 withdraw.bankCity=城市
 withdraw.cardNumber=银行卡号
 withdraw.amount=提现金额
+
+#资金明细
+accountSequence.VOSTRO=收入
+accountSequence.NOSTRO=支出
+
+accountSequence.CHARGE=充值
+accountSequence.WITHDRAW=提现
+accountSequence.PAY=支付
+accountSequence.REFUND=退款
+accountSequence.RECEIVE=收款
+accountSequence.FREEZE=冻结
+accountSequence.CANCEL=交易取消
+accountSequence.UNFREEZE=取消冻结
