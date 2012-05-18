@@ -84,11 +84,17 @@ public class ECoupon extends Model {
 	public BigDecimal salePrice;        //最终成交价,对于普通分销商来说，此成交价与以上分销商价(resalerPrice)相同；
 	// ====  价格列表  ====
 
-	@Column(name = "refund_Price")
+	@Column(name = "refund_price")
 	public BigDecimal refundPrice;
 
 	@Column(name = "created_at")
 	public Date createdAt;
+
+    @Column(name = "effective_at")
+    public Date effectiveAt;
+
+    @Column(name = "expire_at")
+    public Date expireAt;
 
 	@Column(name = "consumed_at")
 	public Date consumedAt;
@@ -117,13 +123,14 @@ public class ECoupon extends Model {
 	 * 
 	 * 将会是4位，而且在同一个消费者所有未消费的券号中不重复.
 	 */
+    @Column(name = "reply_code")
 	public String replyCode;
 
 	@ManyToOne
 	@JoinColumn(name="shop_id",nullable=true)
 	public Shop shop;
 
-	public ECoupon(Order order, Goods goods, OrderItems orderItems) {
+    public ECoupon(Order order, Goods goods, OrderItems orderItems) {
 		this.order = order;
 		this.goods = goods;
 
@@ -133,6 +140,8 @@ public class ECoupon extends Model {
 		this.salePrice = orderItems.salePrice;
 
 		this.createdAt = new Date();
+        this.effectiveAt = goods.effectiveAt;
+        this.expireAt = goods.expireAt;
 
 		this.consumedAt = null;
 		this.refundAt = null;
@@ -365,7 +374,7 @@ public class ECoupon extends Model {
 			return returnFlg;
 		}
 
-		if(!eCoupon.status.equals(ECouponStatus.UNCONSUMED) && eCoupon.status.equals(ECouponStatus.EXPIRED)){
+		if(eCoupon.status == ECouponStatus.CONSUMED || eCoupon.status == ECouponStatus.REFUND){
 			returnFlg = "{\"error\":\"can not apply refund with this goods\"}";
 			return returnFlg;
 		}
@@ -445,19 +454,6 @@ public class ECoupon extends Model {
 			shopName = sp.name;
 		}
 		return shopName;
-	}
-
-
-	/**
-	 * 如果券过期了则更新券状态
-	 * @return 券状态
-	 */
-	public ECouponStatus updateStatusByexpireAt(){
-		if (goods.expireAt.before(new Date())) {
-			status = ECouponStatus.EXPIRED;
-			this.save();
-		}
-		return status;
 	}
 
 	/**

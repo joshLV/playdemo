@@ -179,14 +179,12 @@
                     <th width="320" align="center">商品名称</th>
                     <th width="100" align="center" width="100">订单号</th>
                     <th width="100" align="center">成交时间</th>
-                    <th width="100" align="center">过期时间</th>
+                    <th width="100" align="center">截止日期</th>
                     <th width="18">#{select 'condition.status', id:'status', value:condition?.status}
                         #{option ""}券状态#{/option}
-                        #{option "DEALING"}&{'coupon.DEALING'}#{/option}
                         #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
                         #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
                         #{option "REFUND"}&{'coupon.REFUND'}#{/option}
-                        #{option "EXPIRED"}&{'coupon.EXPIRED'}#{/option}
                     #{/select}</th>
                     <th width="100" align="center">操作</th>
                 </tr>
@@ -197,8 +195,9 @@
                         <div class="right_shangpin"><a href="http://www.uhuila.cn/goods/${coupon.goods.id}" target="_blank">${coupon?.goods?.name}</a></div></td>
                     <td align="center">${coupon.order.orderNumber}</td>
                     <td align="center">${coupon?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-                    <td align="center">${coupon?.goods?.expireAt?.format()}</td>
-                    #{if (models.order.ECouponStatus.EXPIRED == coupon?.updateStatusByexpireAt() )}
+                    <td align="center">${coupon?.expireAt?.format()}</td>
+                    %{now = new java.util.Date()}%
+                    #{if coupon.expireAt?.before(now) }
                         <td width="95" align="center" style="color:#03C">
                           <span id="status_apply_${coupon.id}">
                             已过期
@@ -208,14 +207,13 @@
                     #{else}
                         <td width="95" align="center">
                            <span id="status_apply_${coupon.id}">
-                            &{'coupon.'+coupon?.updateStatusByexpireAt()}
+                            &{'coupon.'+coupon?.status}
                           </span>
                         </td>
                     #{/else}
 
                     <td width="103" align="center">
-                        #{if (coupon.status == models.order.ECouponStatus.UNCONSUMED
-                        || coupon.status == models.order.ECouponStatus.EXPIRED)}
+                        #{if coupon.status == models.order.ECouponStatus.UNCONSUMED }
                             <a href="/index/refund/${coupon.id}" name="apply_refund" class="font_blue"
                                id="apply_${coupon.id}">申请退款</a><br>
                                 #{if coupon.downloadTimes !=3}

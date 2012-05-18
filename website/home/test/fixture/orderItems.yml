@@ -60,6 +60,6 @@ order.ECoupon(coupon3):
   "refundPrice": "1.0"
   "createdAt": "2012-03-05T00:00:00"
   "consumedAt": "2012-03-05T00:00:00"
-  "status": "EXPIRED"
+  "status": "UNCONSUMED"
   "goods": "Goods_002"
   "orderItems": "orderItems2"

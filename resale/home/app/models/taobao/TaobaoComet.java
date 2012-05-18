@@ -21,6 +21,8 @@ public class TaobaoComet extends Job{
     private static final String APPKEY = Play.configuration.getProperty("taobao.top.appkey", "12621657");
     private static final String APPSECRET = Play.configuration.getProperty("taobao.top.appsecret", "b0d06603b45a281f783b6ccd72ad8745");
     private static final String COMET_ON = Play.configuration.getProperty("taobao.comet.on", "false");
+
+    @Override
     public void doJob(){
         if(Play.runingInTestMode() || COMET_ON.equals("false")){
             return;

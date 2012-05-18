@@ -17,7 +17,7 @@ public class SerialNumberUtil {
     }
     
     public static String generateSerialNumber(Date date){
-        int random = new Random().nextInt(10000);
+        int random = new Random().nextInt(100000);
         return dateFormat.format(date) + decimalFormat.format(random);
     }
 }

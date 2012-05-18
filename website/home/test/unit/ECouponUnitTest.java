@@ -94,7 +94,7 @@ public class ECouponUnitTest extends UnitTest {
 		int pageNumber =1;
 		int pageSize =15;
 		JPAExtPaginator<ECoupon> list = ECoupon.userCouponsQuery(condition,userId, AccountType.CONSUMER,pageNumber, pageSize);
-		assertEquals(1,list.size());
+		assertEquals(2,list.size());
 
 	}
 
@@ -104,7 +104,7 @@ public class ECouponUnitTest extends UnitTest {
 	 */
 	@Test
 	public void applyRefund(){
-		Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
+		Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon3");
 		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
 
 		ECoupon eCoupon=ECoupon.findById(id);
@@ -119,7 +119,7 @@ public class ECouponUnitTest extends UnitTest {
 		assertEquals("{\"error\":\"can not get the trade bill\"}",ret);
 
 
-		id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon3");
+		id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
 		eCoupon=ECoupon.findById(id);
 		ret = ECoupon.applyRefund(eCoupon,userId,applyNote, AccountType.CONSUMER);
 		assertEquals("{\"error\":\"can not apply refund with this goods\"}",ret);

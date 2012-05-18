@@ -39,6 +39,6 @@ load:['fixture/user.yml','fixture/goods_base.yml','fixture/goods.yml','fixture/o
     open('/orders/refund/${play.test.Fixtures.idCache.get("models.order.Order-order1")}')
     assertTitle('申请退款')
     verifyTextPresent('您的位置：首页 > 我的订单 > 申请退款')
-     verifyTextPresent('已过期')
+     verifyTextPresent('未消费')
 #{/selenium}
 

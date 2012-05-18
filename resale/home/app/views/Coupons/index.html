@@ -26,11 +26,9 @@
                 订单状态：
                 #{select 'condition.status', id:'status', class:'dingdan_stauts_bg', value:status}
                     #{option ""}不限#{/option}
-                    #{option "DEALING"}&{'coupon.DEALING'}#{/option}
                     #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
                     #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
                     #{option "REFUND"}&{'coupon.REFUND'}#{/option}
-                    #{option "EXPIRED"}&{'coupon.EXPIRED'}#{/option}
                 #{/select}
                 商品名称：
                 <input class="long_input" type="text" name="condition.goodsName" value="${goodsName}"/>
@@ -64,11 +62,10 @@
                         <td>${coupon?.getMaskedEcouponSn()}</td>
                         <td id="price_${coupon.id}">${coupon.salePrice?.formatCurrency('CNY').raw()}</td>
                         <td>${coupon.consumedAt}</td>
-                        <td>${coupon.goods.expireAt}</td>
+                        <td>${coupon.expireAt?.format()}</td>
                         <td><span id="status_apply_${coupon.id}">&{'coupon.'+coupon.status}</span></td>
                         <td class="action">
-                            #{if (coupon.status == models.order.ECouponStatus.UNCONSUMED
-                            || coupon.status == models.order.ECouponStatus.EXPIRED)}
+                            #{if coupon.status == models.order.ECouponStatus.UNCONSUMED }
                             <a href="/ecoupons/refund/${coupon.id}" name="apply_refund" id="apply_${coupon.id}">申请退款</a>
                             #{/if}
                         </td>
