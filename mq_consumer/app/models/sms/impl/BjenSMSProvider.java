@@ -23,7 +23,7 @@ import play.Play;
 
 /**
  * 北京奥软短信接口实现
- * @author <a href="mailto:tangliqun@snda.com">唐力群</a>
+ * @author <a href="mailto:tangliqun@uhuila.com">唐力群</a>
  *
  */
 public class BjenSMSProvider implements SMSProvider {
