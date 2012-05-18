@@ -1,15 +1,9 @@
-#{extends 'main.html' /} #{set title:'优惠啦 - 通过邮箱找回密码' /} #{set 'moreStyles'}
-<link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
+#{extends 'simple.html' /}
+#{set title:'优惠啦 - 通过邮箱找回密码' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/u/find-password.css'] /}
 #{/set}
-<script type="text/javascript">
-	function checkTel(tel) {
-		var telreg = /^((15)\d{9})$|^((13)\d{9})$|^((18)\d{9})$/i;
-		if (tel.match(telreg) == null) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+<script>
 	function checkEmail(email) {
 		var reg = /([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)/i;
 		if (reg.test(email)) {
@@ -20,65 +14,30 @@
 	}
 	
 	function getpwsbyemail() {
-		 var useremail = $.trim($("#email").val());
-	     if(useremail==''|| checkEmail(useremail)){
-	     $("#passemcheck").html("<div>邮箱地址不合法</div>"); 
-	     return false;
+		var useremail = $.trim($("#email").val());
+	    if(useremail==''|| checkEmail(useremail)) {
+	    $(".error").html("邮箱地址不合法"); 
+	        return false;
 	    }
 	    $("#nexthtml").attr("disabled","disabled");
 		
-		$.post("/checkByEmail",{email:useremail},function(data){
-	        if(data==1){
-	           setTimeout(function(){ location.href = "/success";},10);
-	        }else if(data==0){
-	           $("#passemcheck").html("<div>email不存在</div>");
+		$.post("/checkByEmail", {email:useremail}, function(data) {
+	        if (data == 1) {
+                setTimeout(function(){
+                    location.href = "/success";
+                }, 10);
+	        } else if (data == 0) {
+	           $(".error").html("你填写的邮箱不存在");
 	           $("#nexthtml").attr("disabled",false);
 	        }
-	    },"text");
+	    }, "text");
 	}
 </script>
-<!--主体内容部分-->
-<div class="allstep">
-    <div class="flow-steps2">
-        <ol class="num3">
-            <li class="current"><strong class="first">第一步：选择找回密码方式</strong></li>
-            <li class="last"><strong>第二步：填写邮箱</strong></li>
-        </ol>
-    </div>
-    <div class="step">
-
-        <div class="emailstep">
-            <ul>
-                <li>
-                    <div class="input">
-                        <label>注册邮箱：</label> <input id="email" name="user_email" type="text" tabindex="1"
-                            class="input196 inputbg"> <label id="passemcheck" class="colorred"
-                            style="width: 130px"></label>
-                    </div>
-                </li>
-                <li>
-                    <div class="input">
-
-                        <div class="inputemail">请输入您的注册电子邮箱</div>
-                    </div>
-
-                </li>
-                <li>
-                    <div class="input">
-                        <div class="nextstepbt">
-                            <div class="field">
-                                <div class="findbt bold colorw">
-                                    <button id="nexthtml" type="button" onClick="getpwsbyemail()"
-                                        class="findbt bold colorw">下一步</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </li>
-
-
-            </ul>
-        </div>
+<div class="find-password">
+    <div class="find-title">找回密码</div>
+    <h2>请填写您的注册邮箱</h2>
+    <div class="input-email">
+        <div><input id="email" name="user_email" type="text" tabindex="1"> <span class="error"></span></div>
+        <div><button id="nexthtml" class="btn" type="button" onClick="getpwsbyemail()">下一步</button></div>
     </div>
 </div>
