@@ -1,0 +1,54 @@
+# Application dependencies
+
+require:
+    - play 1.2.4
+    - play1 -> cobertura 2.4p3
+    - play1 -> paginate head
+    - play1 -> rabbitmq 0.3
+    - play1 -> app-version 0.1
+    - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - layout_operate -> layout_operate
+    - view_ext -> view_ext
+    - commons-lang -> commons-lang 2.6
+    - sales -> sales
+    - supplier -> supplier
+    - paginate_ext -> paginate_ext
+    - org.jsoup -> jsoup 1.6.1
+    - resale -> resale
+    - consumer -> consumer
+    - order -> order
+    - accounts -> accounts
+    - report -> report
+    - sms -> sms
+
+repositories:
+    - mavenRepository:
+        type:       iBiblio
+        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
+        contains:
+            - com.uhuila.utils -> *
+            - commons-lang -> *
+            - org.jsoup -> *
+        m2compatible: true
+
+    - play1ContributedModules:
+        type: http
+        artifact: "http://dev.uhuila.cn/play/modules/[module]-[revision].zip"
+        contains:
+            - play1 -> *
+
+    - customModules:
+        type:       local
+        artifact:   "${application.path}/../../module/[module]"
+        contains:
+            - layout_operate -> *
+            - view_ext -> *
+            - sales -> *
+            - resale -> *
+            - supplier -> *
+            - paginate_ext -> *
+            - consumer -> *
+            - order -> *
+            - accounts -> *
+            - report -> *
+            - sms -> *
