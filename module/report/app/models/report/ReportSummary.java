@@ -12,11 +12,21 @@ import java.math.BigDecimal;
  * Time: 6:02 PM
  */
 public class ReportSummary extends Model {
-    long goodsCount;
-    long kindCount;
-    long orderCount;
+    public long goodsCount;
+    public long kindCount;
+    public long orderCount;
 
-    BigDecimal saleAmount;
-    BigDecimal resaleAmount;
-    BigDecimal originalAmount;
+    public BigDecimal saleAmount;
+    public BigDecimal resaleAmount;
+    public BigDecimal originalAmount;
+
+    public ReportSummary() {
+
+    }
+
+    public ReportSummary(long goodsCount,long orderCount,BigDecimal originalAmount) {
+        this.goodsCount = goodsCount;
+        this.orderCount = orderCount;
+        this.originalAmount = originalAmount;
+    }
 }

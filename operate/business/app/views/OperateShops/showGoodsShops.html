@@ -11,7 +11,7 @@
 #{list items:shopList, as:'shop' }
 <tr>
     <td><input type="checkbox" id="shops" value="${shop?.id}" name="goods.shops.id"
-               #{if shopIds.contains(","+java.lang.String.valueOf(shop?.id)+",")}checked#{/if}/> ${shop.name}</td>
+               #{if shopIds?.contains(","+java.lang.String.valueOf(shop?.id)+",")}checked#{/if}/> ${shop.name}</td>
     <td>${shop.address}</td>
     <td>${shop.phone}</td>
 </tr>

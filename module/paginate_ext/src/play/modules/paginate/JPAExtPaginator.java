@@ -1,11 +1,11 @@
 package play.modules.paginate;
 
+import play.db.jpa.GenericModel;
+import play.modules.paginate.strategy.JPAExtStrategy;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-
-import play.db.jpa.GenericModel;
-import play.modules.paginate.strategy.JPAExtStrategy;
 
 /**
  * JPA的play的翻页.
@@ -49,5 +49,10 @@ public class JPAExtPaginator<T extends GenericModel> extends Paginator<Long, T> 
 
     public JPAExtStrategy jpaStrategy() {
         return (JPAExtStrategy) getRecordLocatorStrategy();
+    }
+    
+    public JPAExtPaginator<T> groupBy(String groupByClause) {
+        jpaStrategy().setGroupBy(groupByClause);
+        return this;
     }
 }

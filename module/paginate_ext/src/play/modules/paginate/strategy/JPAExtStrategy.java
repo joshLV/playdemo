@@ -34,6 +34,8 @@ public class JPAExtStrategy<T> extends JPARecordLocatorStrategy {
     private String entityName;
     private String select;
 
+    private String groupBy;
+
     public JPAExtStrategy(Class<T> typeToken) {
         super(typeToken);
         this.typeToken = typeToken;
@@ -66,6 +68,11 @@ public class JPAExtStrategy<T> extends JPARecordLocatorStrategy {
     }
 
     @Override
+    public int count() {
+        return ((Long) query("COUNT(*)", false, false).getSingleResult()).intValue();
+    }
+
+    @Override
     public List<T> fetchPage(int startRowIdx, int lastRowIdx) {
         List<T> pageValues = findByIndex(startRowIdx, lastRowIdx);
         return pageValues;
@@ -73,10 +80,14 @@ public class JPAExtStrategy<T> extends JPARecordLocatorStrategy {
 
     private List<T> findByIndex(int firstRowIdx, int lastRowIdx) {
         int pageSize = lastRowIdx - firstRowIdx;
-        return query(this.select, true).setFirstResult(firstRowIdx).setMaxResults(pageSize).getResultList();
+        return query(this.select, true, true).setFirstResult(firstRowIdx).setMaxResults(pageSize).getResultList();
     }
 
     protected Query query(String select, boolean applyOrderBy) {
+        return query(select, applyOrderBy, true);
+    }
+
+    protected Query query(String select, boolean applyOrderBy, boolean applyGroupBy) {
         StringBuilder hql = new StringBuilder();
         if (select != null) {
             if (!select.regionMatches(true, 0, SELECT, 0, SELECT.length()))
@@ -89,6 +100,11 @@ public class JPAExtStrategy<T> extends JPARecordLocatorStrategy {
             hql.append(" WHERE " + filter);
         } else if (keyFilter != null) {
             hql.append(" WHERE " + key + " " + keyFilter);
+        }
+        if (applyGroupBy) {
+            if (getGroupBy() != null) {
+                hql.append(" GROUP BY " + getGroupBy());
+            }
         }
         if (applyOrderBy) {
             if (getOrderBy() != null) {
@@ -132,6 +148,7 @@ public class JPAExtStrategy<T> extends JPARecordLocatorStrategy {
             }
         }
 
+        System.out.println("hql.toString():" + hql.toString());
         Query query = em.createQuery(hql.toString());
         if (useQueryCache) {
             query.setHint("org.hibernate.cacheable", true);
@@ -153,5 +170,14 @@ public class JPAExtStrategy<T> extends JPARecordLocatorStrategy {
             entityName = typeToken.getSimpleName();
         }
         return entityName;
+    }
+
+
+    public String getGroupBy() {
+        return groupBy;
+    }
+
+    public void setGroupBy(String groupBy) {
+        this.groupBy = groupBy;
     }
 }

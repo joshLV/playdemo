@@ -1,5 +1,6 @@
 package controllers;
 
+import models.report.DetailDailyReport;
 import models.report.GoodsDailyReport;
 import models.report.ReportCondition;
 import models.report.ReportSummary;
@@ -26,19 +27,29 @@ public class SupplierReports extends Controller {
      * 显示门店报表.
      */
     @ActiveNavigation("shops_report")
-    public static void showShopReport(ReportCondition condition) {
+    public static void showShopReport(ReportCondition condition, int tabIndex) {
         int pageNumber = getPageNumber();
 
-        if(condition ==  null){
+        if (condition == null) {
             condition = new ReportCondition();
         }
         condition.supplier = SupplierRbac.currentUser().supplier;
 
-        JPAExtPaginator<ShopDailyReport> reportPage = ShopDailyReport.query(condition,pageNumber,PAGE_SIZE);
+        JPAExtPaginator reportPage = null;
+        ReportSummary summary = null;
+        switch (tabIndex) {
+            case 0:
+                reportPage = ShopDailyReport.query(condition, pageNumber, PAGE_SIZE);
 
-        ReportSummary summary = ShopDailyReport.summary(condition);
+                summary = ShopDailyReport.summary(condition);
+                break;
+            case 1:
+                reportPage = DetailDailyReport.query(condition, pageNumber, PAGE_SIZE);
 
-        render(reportPage, summary, condition);
+                summary = DetailDailyReport.summary(condition);
+                break;
+        }
+        render(reportPage, summary, condition, tabIndex);
     }
 
     /**
@@ -48,12 +59,12 @@ public class SupplierReports extends Controller {
     public static void showGoodsReport(ReportCondition condition) {
         int pageNumber = getPageNumber();
 
-        if(condition ==  null){
+        if (condition == null) {
             condition = new ReportCondition();
         }
         condition.supplier = SupplierRbac.currentUser().supplier;
 
-        JPAExtPaginator<GoodsDailyReport> reportPage = GoodsDailyReport.query(condition,pageNumber,PAGE_SIZE);
+        JPAExtPaginator<GoodsDailyReport> reportPage = GoodsDailyReport.query(condition, pageNumber, PAGE_SIZE);
 
         ReportSummary summary = GoodsDailyReport.summary(condition);
 
@@ -67,12 +78,12 @@ public class SupplierReports extends Controller {
     public static void showTotalReport(ReportCondition condition) {
         int pageNumber = getPageNumber();
 
-        if(condition ==  null){
+        if (condition == null) {
             condition = new ReportCondition();
         }
         condition.supplier = SupplierRbac.currentUser().supplier;
 
-        JPAExtPaginator<TotalDailyReport> reportPage = TotalDailyReport.query(condition,pageNumber,PAGE_SIZE);
+        JPAExtPaginator<TotalDailyReport> reportPage = TotalDailyReport.query(condition, pageNumber, PAGE_SIZE);
 
         ReportSummary summary = TotalDailyReport.summary(condition);
 

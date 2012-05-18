@@ -22,8 +22,8 @@ public class ReportCondition implements Serializable {
     public String supplierLike;
 
     public Supplier supplier;
-    public Date createdAtBegin;
-    public Date createdAtEnd;
+    public Date createdAtBegin = DateUtil.getYesterday();
+    public Date createdAtEnd = DateUtil.getEndOfDay(DateUtil.getYesterday());
     public String orderBy = "r.createdAt";
     public String orderByType = "DESC";
     public String interval = "0d";
@@ -32,19 +32,18 @@ public class ReportCondition implements Serializable {
 
     public String getFilter() {
         StringBuilder condBuilder = new StringBuilder();
-        condBuilder.append(" 1=1");
-
-        if (supplier != null) {
-            condBuilder.append(" and r.supplier = :supplier");
-            paramMap.put("supplier", supplier);
-        }
         if (createdAtBegin != null) {
-            condBuilder.append(" and r.createdAt >= :createdAtBegin");
+            condBuilder.append(" r.createdAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", createdAtBegin);
         }
         if (createdAtEnd != null) {
             condBuilder.append(" and r.createdAt < :createdAtEnd");
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
+        }
+
+        if (supplier != null) {
+            condBuilder.append(" and r.supplier = :supplier");
+            paramMap.put("supplier", supplier);
         }
 
         if (StringUtils.isNotBlank(goodsLike)) {
@@ -82,6 +81,7 @@ public class ReportCondition implements Serializable {
             condBuilder.append(" and r.supplier.fullName like :supplierLike");
             paramMap.put("supplierLike", "%" + supplierLike + "%");
         }
+        System.out.println("condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();
     }
 
