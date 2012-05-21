@@ -50,7 +50,9 @@
     *{只有一种情况不显示用余额付款的选项:订单金额大于0,并且账户余额是0}*
     #{if !(order.needPay.compareTo(BigDecimal.ZERO) > 0 && account.amount.compareTo(BigDecimal.ZERO) == 0)}
     <div id="payment">
-        <input type="checkbox" name="useBalance" id="use_balance" /> 用余额付款
+        <input type="checkbox" name="useBalance" id="use_balance"
+               #{if order.needPay.compareTo(BigDecimal.ZERO) == 0} checked disabled #{/if}
+                /> 用余额付款
         <span>${account.amount.min(order.needPay)}</span>元。
         #{if account.amount.compareTo(order.needPay) < 0}
             剩余 <strong>${order.needPay.subtract(account.amount)}</strong> 元可选择其他付款方式付款。
