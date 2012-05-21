@@ -1,32 +1,21 @@
-#{extends 'main.html' /} #{set title:'找回密码-邮件发送成功' /} #{set 'moreStyles'}
-<link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css" />
+#{extends 'simple.html' /}
+#{set title:'找回密码-邮件发送成功' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/u/find-password.css'] /}
 #{/set}
 <script>
 function request(indexurl){
   window.location.href = indexurl;
 }
 </script>
-
-<!--主体内容部分-->
-<div id="index_main"> 
-  <div id="main">
-    <div id="fpwd_maincontainer">
-      <div class="allstep">
-        <div class="step">
-        <ul class="fsqs">
-        <li><h1 class="colorred">您的申请已经提交成功，优惠啦已给您的邮箱发出了密码找回通知信！</h1></li>
-        <li>请您立即登录邮箱，并按信中的提示完成密码找回的操作。</li>
-        <li>注意：如果您连续多次申请找回密码，请以最新收到的通知信为准。</li>
-        <li>
-        <a href="http://www.uhuila.cn">申请完成，返回首页</a>
-            </li>
-        </ul>
-        </div>
+<div class="find-password">
+    <div class="find-title">找回密码-邮件发送成功</div>
+    <div class="find-success">
+        <h3>您的申请已经提交成功，一百券(yibaiquan.com)已给您的邮箱发出了密码找回通知信！</h3>
+        <p>
+            请您立即登录邮箱，并按信中的提示完成密码找回的操作。<br/>
+            注意：如果您连续多次申请找回密码，请以最新收到的通知信为准。
+        </p>
+        <div class="return"><a href="http://www.uhuila.cn">申请完成，返回首页</a></div>
     </div>
-      <div class="allstep">
-       
-        <div class="sstep"></div>
-      </div>
-    </div>
-  </div>
 </div>
