@@ -16,26 +16,26 @@ import java.util.List;
 @Entity
 @Table(name = "users_info")
 public class UserInfo extends Model {
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-	public User user;
+    public User user;
 
-	@Column(name = "full_name")
-	public String fullName;
+    @Column(name = "full_name")
+    public String fullName;
 
-	@Mobile
-	public String mobile;
+    @Mobile
+    public String mobile;
 
-	/**
-	 * 性别
-	 */
-	@Column(name = "user_sex")
-	public Integer userSex;
+    /**
+     * 性别
+     */
+    @Column(name = "user_sex")
+    public Integer userSex;
 
-	/*出生年月*/
-	public String birthday;
-	/*电话*/
-	public String phone;
+    /*出生年月*/
+    public String birthday;
+    /*电话*/
+    public String phone;
 
     /*婚姻状况*/
     @Column(name = "marry_state")
@@ -62,67 +62,52 @@ public class UserInfo extends Model {
     @Column(name = "total_points")
     public Integer totalPoints;
 
-	public UserInfo(User user) {
-		this.user = user;
-		this.marryState = 0;
-		this.userSex = 0;
-		this.createdAt = new Date();
-	}
+    public UserInfo(User user) {
+        this.user = user;
+        this.marryState = 0;
+        this.userSex = 0;
+        this.createdAt = new Date();
+    }
 
-	public UserInfo() {}
+    public UserInfo() {
+    }
 
-	/**
-	 * 更新用户信息
-	 *
-	 * @param userInfo 用户信息
-	 */
-	public void update(UserInfo userInfo, String interest) {
-		fullName = userInfo.fullName;
-		salary = userInfo.salary;
-		position = userInfo.position;
-		phone = userInfo.phone;
-		userqq = userInfo.userqq;
-		userSex = userInfo.userSex;
-		industry = userInfo.industry;
-		birthday = userInfo.birthday;
-		this.interest = interest;
-		marryState = userInfo.marryState;
-		otherInfo = userInfo.otherInfo;
-		createdAt = new Date();
-		this.save();
-	}
+    /**
+     * 更新用户信息
+     *
+     * @param userInfo 用户信息
+     */
+    public void update(UserInfo userInfo, String interest) {
+        fullName = userInfo.fullName;
+        salary = userInfo.salary;
+        position = userInfo.position;
+        phone = userInfo.phone;
+        userqq = userInfo.userqq;
+        userSex = userInfo.userSex;
+        industry = userInfo.industry;
+        birthday = userInfo.birthday;
+        this.interest = interest;
+        marryState = userInfo.marryState;
+        otherInfo = userInfo.otherInfo;
+        createdAt = new Date();
+        this.save();
+    }
 
-	/**
-	 * 更新手机
-	 *
-	 * @param user     用户
-	 * @param mobile 手机
-	 */
-	public static void updateById(User user, String mobile) {
-		List<UserInfo> userInfos = UserInfo.find("byUser", user).fetch();
-		UserInfo userInfo = null;
-		if (userInfos.size() > 0) {
-			userInfo = userInfos.get(0);
-			userInfo.mobile = mobile;
-			userInfo.bindMobileAt = new Date();
-			userInfo.save();
-		}
-	}
 
-	/**
-	 * 查询用户基本信息
-	 *
-	 * @param user 用户ID信息
-	 * @return 用户基本信息
-	 */
-	public static UserInfo findByUser(User user) {
-		List<UserInfo> userInfos = UserInfo.find("byUser", user).fetch();
-		UserInfo userInfo = null;
-		if (userInfos.size() > 0) {
-			userInfo = userInfos.get(0);
-		}
+    /**
+     * 查询用户基本信息
+     *
+     * @param user 用户ID信息
+     * @return 用户基本信息
+     */
+    public static UserInfo findByUser(User user) {
+        List<UserInfo> userInfos = UserInfo.find("byUser", user).fetch();
+        UserInfo userInfo = null;
+        if (userInfos.size() > 0) {
+            userInfo = userInfos.get(0);
+        }
 
-		return userInfo;
-	}
+        return userInfo;
+    }
 
 }

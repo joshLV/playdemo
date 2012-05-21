@@ -8,19 +8,12 @@ function setUserInfo() {
     $("#showqqcheck").html("");
     var realname = $.trim($("#realname").val());
     var usersex = $(".usersex:checked").val();
-    var bdayyear = $("#bdayyear").val();
-    var bdaymonth = $("#bdaymonth").val();
-    var bdayday = $("#bdayday").val();
     var usertel = $("#usertel").val();
     var userphone = $("#userphone").val();
     var userqq = $("#userqq").val();
-    var marrstate = $(".marrstate:checked").val();
-    var industry = $("#industry").val();
-    var position = $("#position").val();
-    var salary = $("#salary").val();
     var hobby = [];
-    var likenames = [];
-    $(".likenames:checked").each(
+
+    $(".check:checked").each(
         function () {
             hobby.push($(this).val());
         }
@@ -29,23 +22,23 @@ function setUserInfo() {
 
     var elselike = $("#elselike").val();
     if (realname == '' || checkRealName(realname)) {
-        $("#realnamecheck").html("<div class='loginpwd_msg'><div class='attention'><img  src='/public/images/error.gif' style='vertical-align:middle'/>&nbsp;&nbsp;&nbsp;请输入正确的姓名</div></div>");
+        $("#realnamecheck").html("<img  src='/public/images/error.gif' style='vertical-align:middle'/>&nbsp;&nbsp;&nbsp;请输入正确的姓名");
         return false;
     }
     if (usersex == undefined) {
-        $("#showsexcheck").html("<div class='loginpwd_msg' style='margin-right:10px'><div class='error'><img  src='/public/images/error.gif' style='vertical-align:middle'/>请选择</div></div>");
+        $("#showsexcheck").html("<img  src='/public/images/error.gif' style='vertical-align:middle'/>请选择");
         return false;
     }
     if (usertel && checkTel(usertel)) {
-        $("#showphonecheck").html("<div class='loginpwd_msg' style='margin-left:5px'><div class='error'><img  src='/public/images/error.gif' style='vertical-align:middle'/>请输入正确的手机号</div></div>");
+        $("#showphonecheck").html("<img  src='/public/images/error.gif' style='vertical-align:middle'/>请输入正确的手机号");
         return false;
     }
     if (userphone && checkPhone(userphone)) {
-        $("#showtelcheck").html("<div class='loginpwd_msg'><div class='error'><img  src='/public/images/error.gif' style='vertical-align:middle'/>请按提示输入</div></div>");
+        $("#showtelcheck").html("<img  src='/public/images/error.gif' style='vertical-align:middle'/>请按提示输入");
         return false;
     }
     if (userqq && checkQQ(userqq)) {
-        $("#showqqcheck").html("<div class='loginpwd_msg'><div class='error'><img  src='/public/images/error.gif' style='vertical-align:middle'/>请输入正确的QQ号</div></div>");
+        $("#showqqcheck").html("<img  src='/public/images/error.gif' style='vertical-align:middle'/>请输入正确的QQ号");
         return false;
     }
 
@@ -58,52 +51,53 @@ function changeTel(telidentify) {
         $("#showoldtelcheck").html("");
         $("#shownewtelcheck").html("");
         $("#showchangecode").html("");
-        var oldtelnum = $.trim($("#oldtelnum").val());
-        var newtelnum = $.trim($("#newtelnum").val());
+        var old_mobile = $.trim($("#old_mobile").val());
+        var new_mobile= $.trim($("#new_mobile").val());
         var telcheckcode = $("#telcheckcode").val();
-        if (oldtelnum && checkTel(oldtelnum)) {
+        if (old_mobile  && checkTel(old_mobile )) {
             alert("原手机号码输入有误!");
             return false;
         }
-        if (newtelnum == '' || checkTel(newtelnum)) {
+
+       if (new_mobile == '' || checkTel(new_mobile)) {
             alert("新手机号码输入有误!");
             return false;
         }
+
         if (telcheckcode == '') {
             alert("必须输入验证码!");
             return false;
         }
-        $("#newtelnum").attr("disabled", "");
+        $("#new_mobile").attr("disabled", "");
         $.post(
             "/user-info/mobile-bind",
-            {mobile:newtelnum, validCode:telcheckcode, telidentify:1},
+            {mobile:new_mobile,oldMobile:old_mobile, validCode:telcheckcode},
             function (data) {
-                alert(data)
                 if (data == 0) {
                     $("#layout").hide();
                     //修改成功跳转
                     setTimeout(function () {
                         location.href = "/user-info"
                     }, 10);
-                } else if (data == -1) {
-                    alert('时间过期');
+                } else if (data ==3)  {
+                    alert('旧手机号码不存在！');
                 } else if (data == 2) {
                     alert('输入的手机号和不一致！');
                 } else if (data == 1) {
-                    alert('验证码有误');
+                    alert('验证码有误或已过期');
                 }
             },
             "json"
         );
     } else if (telidentify == 2) {
         $("#jhseccess").hide();
-        var bindtelnum = $.trim($("#bindtelnum").val());
+        var bind_mobile = $.trim($("#bind_mobile").val());
         var bindcheckcode = $.trim($("#bindcheckcode").val());
-        if (bindtelnum == '') {
+        if (bind_mobile == '') {
             alert("请输入手机号！");
             return false;
         }
-        if (checkTel(bindtelnum)) {
+        if (checkTel(bind_mobile)) {
             alert("手机号格式不对！");
             return false;
         }
@@ -111,9 +105,9 @@ function changeTel(telidentify) {
             alert('验证码不能为空');
             return false;
         }
-        $("#bindtelnum").attr("disabled", "");
+        $("#bind_mobile").attr("disabled", "");
         $.post("/user-info/mobile-bind",
-            {mobile:bindtelnum, validCode:bindcheckcode, telidentify:2}, function (data) {
+            {mobile:bind_mobile,oldMobile:'', validCode:bindcheckcode}, function (data) {
                 if (data == 0) {
                     $("#layout").hide();
                     //修改成功跳转
@@ -133,24 +127,23 @@ function changeTel(telidentify) {
 
 function getBindCode(codeidy) {
     if (codeidy == 1) {
-        var bindtelnum = $.trim($("#bindtelnum").val());
-        if (bindtelnum == '') {
+        var bind_mobile = $.trim($("#bind_mobile").val());
+        if (bind_mobile == '') {
             alert("请输入手机号！");
             return false;
         }
-        if (checkTel(bindtelnum)) {
+        if (checkTel(bind_mobile)) {
             alert("手机号格式不对！");
             return false;
         }
         $("#getBindCode").attr("disabled", "disabled");
         $.post(
             "/user-info/send",
-            {mobile:bindtelnum},
+            {mobile:bind_mobile,oldMobile:''},
             function (data) {
                 if (data == 1) {
                     alert("验证码已成功发送，请查收！");
                     $("#getBindCode").attr("disabled", "");
-//						$("#newtelnum").attr("disabled","disabled");
                 } else if (data == -1) {
                     alert("网络错误，请重发");
                     $("#getBindCode").attr("disabled", "");
@@ -159,39 +152,39 @@ function getBindCode(codeidy) {
             "json"
         );
     } else if (codeidy == 2) {
-        var oldtelnum = $.trim($("#oldtelnum").val());
-        if (oldtelnum == '') {
+        var old_mobile = $.trim($("#old_mobile").val());
+        if (old_mobile == '') {
             alert("请输入原手机号！");
             return false;
         }
-        if (checkTel(oldtelnum)) {
+        if (checkTel(old_mobile)) {
             alert("原手机号格式不对！");
             return false;
         }
-
-        var newtelnum = $.trim($("#newtelnum").val());
-        if (newtelnum == '') {
+        var new_mobile = $.trim($("#new_mobile").val());
+        if (new_mobile == '') {
             alert("请输入新手机号！");
             return false;
         }
-        if (checkTel(newtelnum)) {
+        if (checkTel(new_mobile)) {
             alert("新手机号格式不对！");
             return false;
         }
 
-        if (oldtelnum == newtelnum) {
+        if (old_mobile == new_mobile) {
             alert("新手机号和原手机号一样！");
             return false;
         }
         $("#getchangeCode").attr("disabled", "disabled");
         $.post(
             "/user-info/send",
-            {mobile:newtelnum},
+            {mobile:new_mobile,oldMobile:old_mobile},
             function (data) {
                 if (data == 1) {
                     alert("验证码已成功发送，请查收！");
                     $("#getchangeCode").attr("disabled", "");
-//						$("#newtelnum").attr("disabled","disabled");
+                } else if(data ==3){
+                  alert("旧手机号码不存在！");
                 } else if (data == -1) {
                     alert("网络错误，请重发");
                     $("#getchangeCode").attr("disabled", "");
@@ -324,67 +317,6 @@ function updateTimer(showspan, timeval) {
     }
 
 }
-//忘记登录密码 修改密码
-function updatePass() {
-    var idemail = $.trim($("#idemail").val());
-    var firstpass = $("#upuserpass1").val();
-    var secondpass = $("#upuserpass2").val();
-    var usertel = $("#upusertel").val();
-    var upuserid = $("#upuserid").val();
-    if (firstpass == '' || checkAllPass(firstpass)) {
-        alert("请根据提示输入密码！");
-        return false;
-    }
-    if (firstpass != secondpass) {
-        $(".checkupuserpass2").html("<em>两次密码不一致</em>");
-        return false;
-    }
-    $("input[@type=submit]").attr("disabled", "disabled");
-    $.post(
-        "user.php?act=check_updatepass",
-        {idemail:idemail, firstpass:firstpass, secondpass:secondpass, usertel:usertel, upuserid:upuserid},
-        function (data) {
-            if (data.errno == 1) {
-                alert('修改成功');
-                window.location.href = "user.php?act=login";
-            } else if (data.errno == -1) {
-                $("input[@type=submit]").attr("disabled", "");
-                alert('修改失败');
-            }
-        },
-        "json"
-    );
-}
-//忘记交易密码 修改密码
-function updateTradePass() {
-    var passreg = /^[0-9]*$/;
-    var idemail = $.trim($("#idemail2").val());
-    var firstpass = $("#uptradepass1").val();
-    var secondpass = $("#uptradepass2").val();
-    var usertel = $.trim($("#upusertel2").val());
-    var upuserid = $("#upuserid2").val();
-    if (firstpass == '' || checkAllPass(firstpass) || firstpass.length < 6) {
-        return false;
-    }
-    if (firstpass != secondpass) {
-        $(".checkupuserpass2").html("<em>两次密码不一致</em>");
-        return false;
-    }
-    $("input[@type=submit]").attr("disabled", "disabled");
-    $.post(
-        "user.php?act=check_updatepass",
-        {idemail:idemail, firstpass:firstpass, secondpass:secondpass, usertel:usertel, upuserid:upuserid},
-        function (data) {
-            if (data.errno == 1) {
-                alert('修改成功');
-            } else if (data.errno == -1) {
-                alert('修改失败');
-                $("input[@type=submit]").attr("disabled", "");
-            }
-        },
-        "json"
-    );
-}
 //关闭弹出层
 function closediv(closeidy) {
     if (closeidy == 1) {
@@ -416,35 +348,7 @@ function activationEmail() {
     );
 }
 
-/*
- * 显示地址区域(修改时用)
- */
-function region2(regId1, regId2, thisvalue) {
-    var reg_id = $("#" + regId1 + " option:selected").attr("regId");
-    $.ajax({
-        type:"POST",
-        url:"user.php",
-        cache:false,
-        dataType:"json",
-        data:"act=getRegion&reg_id=" + reg_id + "&rand=" + Math.random(),
-        success:function (jn) {
-            $("#" + regId2).html("");
-            $.each(jn, function (i) {
-                if (thisvalue == jn[i].REGION_NAME) {
-                    $("<option regId='" + jn[i].REGION_ID + "' value='" + jn[i].REGION_NAME + "' selected>" + jn[i].REGION_NAME + "</option>").appendTo("#" + regId2);
-                } else {
-                    $("<option regId='" + jn[i].REGION_ID + "' value='" + jn[i].REGION_NAME + "'>" + jn[i].REGION_NAME + "</option>").appendTo("#" + regId2);
-                }
-            });
-            if (regId2 != 'f_consignee_addr') {
-                region2('f_consignee_city', 'f_consignee_addr', thiscounty);
-            }
-        }
-    });
-}
 
-
-//楠岃瘉鐪熷疄濮撳悕
 function checkRealName(realname) {
     var realnamereg = /^([a-zA-Z\u4e00-\u9fa5]* ?)*[a-zA-Z\u4e00-\u9fa5]*$/;
     if (realname.match(realnamereg) == null) {
@@ -453,7 +357,6 @@ function checkRealName(realname) {
         return false;
     }
 }
-//楠岃瘉閭斂缂栫爜
 function checkPostalcode(postalcode) {
     var postalcodereg = /^[1-9]\d{5}$/;
     if (postalcode.match(postalcodereg) == null) {
@@ -462,7 +365,6 @@ function checkPostalcode(postalcode) {
         return false;
     }
 }
-//楠岃瘉鍥哄畾鐢佃瘽
 function checkPhone(phone) {
     var phonereg = /^0[1-9]{2,3}-[1-9]\d{5,7}$/;
     if (phone.match(phonereg) == null) {
@@ -480,7 +382,6 @@ function checkTel(tel) {
         return false;
     }
 }
-//楠岃瘉閭
 function checkEmail(email) {
 
     var reg = /([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)/i;
@@ -491,7 +392,6 @@ function checkEmail(email) {
     }
 
 }
-//楠岃瘉鐧诲綍瀵嗙爜
 function checkLoginPass(loginpass) {
     var loginpassreg = /^(?![a-zA-Z]+$)(?![0-9]+$)[a-zA-Z0-9]{6,20}$/;
     if (loginpass.match(loginpassreg) == null) {
@@ -500,7 +400,6 @@ function checkLoginPass(loginpass) {
         return false;
     }
 }
-//楠岃瘉鐢熸棩鏍煎紡
 function checkBDay(bday) {
     var bdayreg = /^((((19|20)(([02468][048])|([13579][26]))-02-29))|((20[0-9][0-9])|(19[0-9][0-9]))-((((0[1-9])|(1[0-2]))-((0[1-9])|(1\d)|(2[0-8])))|((((0[13578])|(1[02]))-31)|(((01,3-9])|(1[0-2]))-(29|30)))))$/;
     if (bday.match(bdayreg) == null) {
@@ -509,7 +408,6 @@ function checkBDay(bday) {
         return false;
     }
 }
-//楠岃瘉QQ鏍煎紡
 function checkQQ(qq) {
     var qqreg = /^\s*[.0-9]{5,10}\s*$/;
     if (qq.match(qqreg) == null) {
@@ -518,13 +416,11 @@ function checkQQ(qq) {
         return false;
     }
 }
-//鍒嗛〉璺宠浆
 function skippage(skipurl) {
     var pagenum = $("input[@name='pageinput']").val();
     window.location = skipurl + pagenum;
     return false;
 }
-//楠岃瘉浼氬憳鐧诲綍瀵嗙爜鍜屼氦鏄撳瘑鐮�
 function checkAllPass(loginpass) {
     var loginpassreg = /^[0-9]{6,20}$/;
     if (loginpass.match(loginpassreg) == null) {

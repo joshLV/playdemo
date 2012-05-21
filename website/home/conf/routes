@@ -20,9 +20,10 @@ DELETE  /carts/{goodsIds}                             UserCarts.delete
 
 #用户资料
 GET      /user-info                                    UserInfos.index
-POST     /user-info/{id}                               UserInfos.update
-POST     /user-info/mobile-bind                        UserInfos.bindMobile
 POST     /user-info/send                               UserInfos.sendValidCode
+POST     /user-info/mobile-bind                        UserInfos.bindMobile
+POST     /user-info/{id}                               UserInfos.update
+
 GET      /user-sequences                               Usersequences.index
 #收货地址
 GET     /addresses                                    UserAddresses.index

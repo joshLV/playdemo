@@ -33,9 +33,6 @@ public class UserInfos extends Controller {
         if (userInfos != null) {
             //存在则修改
             userInfos.update(userInfo, interest);
-            //同时更新用户手机
-            User user = SecureCAS.getUser();
-            user.updateMobile(userInfo.mobile);
         }
         index();
     }
@@ -45,7 +42,11 @@ public class UserInfos extends Controller {
      *
      * @param mobile 手机
      */
-    public static void sendValidCode(String mobile) {
+    public static void sendValidCode(String mobile, String oldMobile) {
+        //判断旧手机号码是否存在
+        if (StringUtils.isNotBlank(oldMobile) && !User.checkMobile(oldMobile)) {
+            renderJSON("3");
+        }
 
         String validCode = RandomNumberUtil.generateSerialNumber(4);
         String comment = "您的验证码是" + validCode + ", 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码";
@@ -61,7 +62,12 @@ public class UserInfos extends Controller {
      *
      * @param mobile 手机
      */
-    public static void bindMobile(String mobile, String validCode) {
+    public static void bindMobile(String mobile, String oldMobile, String validCode) {
+        //判断旧手机号码是否存在
+        if (StringUtils.isNotBlank(oldMobile) && !User.checkMobile(oldMobile)) {
+
+            renderJSON("3");
+        }
         Object objCode = Cache.get("validCode_");
         Object objMobile = Cache.get("mobile_");
         String cacheValidCode = objCode == null ? "" : objCode.toString();
@@ -76,8 +82,6 @@ public class UserInfos extends Controller {
         }
         //更新用户基本信息手机
         User user = SecureCAS.getUser();
-        UserInfo.updateById(user, mobile);
-        //同时更新用户手机
         user.updateMobile(mobile);
 
         Cache.delete("validCode_");

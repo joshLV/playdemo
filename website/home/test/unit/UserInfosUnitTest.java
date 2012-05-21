@@ -42,19 +42,6 @@ public class UserInfosUnitTest extends UnitTest {
 		assertEquals("2001-01-01",userInfo.birthday);
 	}
 
-	@Test
-	public void testUpdateById(){
-		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
-		User user= User.findById(userId);
-
-		Long userInfoId = (Long) Fixtures.idCache.get("models.consumer.UserInfo-userInfo1");
-		UserInfo userInfo= UserInfo.findById(userInfoId);
-		userInfo.user = user;
-		String mobile = "15200000012";
-		userInfo.updateById(user, mobile);
-
-		assertEquals("15200000012",userInfo.mobile);
-	}
 
 	@Test
 	public void testFindByUser(){
