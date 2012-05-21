@@ -57,7 +57,6 @@ public class PaymentInfo extends Controller {
 	 */
 	public static void confirm(long orderId, boolean useBalance, String paymentSourceCode) {
 		User user = SecureCAS.getUser();
-        System.out.println("orderId:" + orderId + ",userid:" + user.getId());
 		Order order = Order.find("byIdAndUserIdAndUserType", orderId, user.getId(), AccountType.CONSUMER).first();
 
 		if (order == null){
