@@ -17,8 +17,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import models.accounts.util.SerialNumberUtil;
-import models.consumer.User;
-import models.order.Order;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
