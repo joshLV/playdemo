@@ -1,27 +1,50 @@
 @charset "utf-8";
 
-#full_bg{
+#full_bg {
     background-color: Gray;
-    display:none;
-    z-index:3;
-    position:absolute;
-    left:0px;
-    top:0px;
-    filter:Alpha(Opacity=30);
-    /* IE */
-    -moz-opacity:0.4;
-    /* Moz + FF */
-    opacity: 0.4;
-  }
-
-#payment_result {
-    position:absolute;
-    width:400px;
-    height:100px;
-    background:white;
     display: none;
-    z-index: 5;
+    z-index: 3;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    filter: Alpha(Opacity=30); /* IE */
+    -moz-opacity: 0.4; /* Moz + FF */
+    opacity: 0.4;
 }
+#payment_result {
+    position: absolute;
+    width: 450px;
+    height: 160px;
+    z-index: 5;
+    text-align: center;
+    background-color: white;
+    border: 6px solid #AAA;
+    display: none;
+}
+#payment_result .close {
+    position: absolute;
+    top: 3px;
+    right: 5px;
+    z-index: 5;
+    color: #666;
+}
+#payment_result .pay-tips {
+    line-height: 30px;
+    margin-bottom: 30px;
+}
+#payment_result .repay {
+    margin-right: 55px;
+}
+#payment_result .repay,
+#payment_result .payed {
+    display: inline-block;
+    padding: 0 15px;
+    color: #25B4AB;
+    line-height: 32px;
+    border: 1px solid #DDD;
+    background-color: #F2F2F2;
+}
+
 #balance-pay {
     margin: 0 auto 20px;
     padding-bottom: 20px;

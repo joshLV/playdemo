@@ -11,16 +11,14 @@
 
 <div id="full_bg"></div>
 <div id="payment_result">
-    <div style="text-align:center;">
-        <a href="#" onclick="close_result_dialog();">关闭</a><br/><br/>
+        <a class="close" href="#" onclick="close_result_dialog();">关闭</a><br/><br/>
+        <div class="pay-tips">付款完成前请不要关闭此窗口。完成付款后请根据你的情况点击下面的按钮：</div>
     #{if order}
-        <a href="/payment_info/${order.id}">遇到问题，重新选择付款信息</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a class="repay" href="/payment_info/${order.id}">遇到问题？</a>
     #{/if}
-        <a href="http://home.uhuila.cn/orders">完成付款，查看结果</a>
-    </div>
+        <a class="payed" href="http://home.uhuila.cn/orders">已完成付款</a>
 </div>
 
-<!--主体内容部分-->
 
 <ol class="buy-step step4 clearfix">
     <li><span>1</span>查看购物车 <em>>></em></li>
@@ -37,43 +35,36 @@
     #{/if}
     #{else }
         <div id="order-box" class="clearfix">
-            <div class="order-num">已选择 ${paymentSource.name} 支付 ${order.discountPay} 元</div>
+            <div class="order-num">您已选择 ${paymentSource.name} 支付 ${order.discountPay} 元</div>
         </div>
         #{form @payIt(), target:"_blank", id: "pay_it_form"}
             <input name="paymentCode" value="${paymentSource.code}" type="hidden"/>
             <input name="orderId" value="${order.id}" type="hidden"/>
             <button type="submit" id="confirm_pay">确认支付</button>
         #{/form}
-    </div>
-    <script type="text/javascript">
+        <script>
         $(window).load(
-                function () {
-                    $(window).scroll(function () {
-                        reset_result_dialog()
-                    });
-                    $(window).resize(function () {
-                        reset_result_dialog()
-                    });
+        function () {
+            $(window).scroll(function () {
+                reset_result_dialog()
+            });
 
-                    $("#confirm_pay").click(function () {
-                        $("#full_bg").css({display:"block"});
-                        reset_result_dialog();
-                        $(this).attr("disabled", "disabled");
-                        $("#pay_it_form").submit();
-                    });
+            $(window).resize(function () {
+                reset_result_dialog()
+            });
 
-                });
-    </script>
-
-
+            $("#confirm_pay").click(function () {
+                $("#full_bg").css({display:"block"});
+                reset_result_dialog();
+                $(this).attr("disabled", "disabled");
+                $("#pay_it_form").submit();
+            });
+        });
+        </script>
     #{/else}
-
-
 #{/if}
+</div>
 
 #{if !order}
 <div class="order-num"> 对不起，找不到您所需要的订单:(</div>
 #{/if}
-
-
-</div>
