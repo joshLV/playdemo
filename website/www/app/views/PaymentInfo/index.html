@@ -38,6 +38,7 @@
 
 #{if order}
 #{form @confirm() , id:"confirm_form"}
+<input type="hidden" value="${order.id}" name="orderId"/>
 <div id="balance-pay" class="clearfix">
     <div id="order-box" class="clearfix">
         <div class="order-num">共有 ${goodsNumber} 笔订单</div>
@@ -59,7 +60,7 @@
         #{/if}
     </div>
 
-    <button id="confirm-pay" type="submit" disabled="disabled">确认付款</button>
+    <button id="confirm-pay" type="submit" #{if order.needPay.compareTo(BigDecimal.ZERO) > 0} disabled #{/if} >确认付款</button>
     #{/if}
 </div><!-- #balance-pay END-->
 
@@ -88,7 +89,6 @@
      #{/if}
       #{/list}
      </ul>
-    <input type="hidden" value="${order.id}" name="orderId"/>
     <div class="buttom_queren"><a class="suc_ok_bg" href="#" id="confirm" >下一步</a></div>
 </div><!-- #other-pay END-->
 #{/if}

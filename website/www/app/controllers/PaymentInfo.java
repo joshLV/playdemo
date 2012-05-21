@@ -57,6 +57,7 @@ public class PaymentInfo extends Controller {
 	 */
 	public static void confirm(long orderId, boolean useBalance, String paymentSourceCode) {
 		User user = SecureCAS.getUser();
+        System.out.println("orderId:" + orderId + ",userid:" + user.getId());
 		Order order = Order.find("byIdAndUserIdAndUserType", orderId, user.getId(), AccountType.CONSUMER).first();
 
 		if (order == null){
@@ -77,26 +78,24 @@ public class PaymentInfo extends Controller {
 		order.accountPay = balancePaymentAmount;
 		order.discountPay = ebankPaymentAmount;
 
-		//创建订单交易
-		PaymentSource paymentSource = PaymentSource.find("byCode", paymentSourceCode).first();
-		order.payMethod = paymentSourceCode;
-
-		order.save();
+        PaymentSource paymentSource = null;
 		//如果使用余额足以支付，则付款直接成功
 		if (ebankPaymentAmount.compareTo(BigDecimal.ZERO) == 0){
-            order.payMethod = PaymentSource.getBalanceSource().code;
+            paymentSource = PaymentSource.getBalanceSource();
+            order.payMethod = paymentSource.code;
+            order.save();
 			order.paid();
 
 			render(order,paymentSource);
 		}
 
-		/*网银付款*/
-
+        paymentSource = PaymentSource.find("byCode", paymentSourceCode).first();
 		//无法确定支付渠道
 		if(paymentSource == null){
 			error(500, "can not get paymentSource");
 		}
-
+        order.payMethod = paymentSource.code;
+        order.save();
 		render(order, paymentSource);
 
 	}
