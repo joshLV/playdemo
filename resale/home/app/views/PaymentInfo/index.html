@@ -8,11 +8,16 @@
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/payment_info.js'}"></script>
 <script type="text/javascript">
-    $(window).load(
-            function(){
-                $("#confirm").click(function(){$("#confirm_form").submit()});
-
-            });
+    $(window).load(function(){
+        $("#confirm").click(function(){$("#confirm_form").submit()});
+        $("#use_balance").click(function(){
+            if($(this).attr("checked") == "checked"){
+                $("#confirm-pay").attr("disabled",false);
+            }else{
+                $("#confirm-pay").attr("disabled",true);
+            }
+        });
+    });
 </script>
 
 #{/set}
