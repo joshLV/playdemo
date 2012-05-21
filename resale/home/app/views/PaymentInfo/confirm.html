@@ -9,13 +9,12 @@
 
 <div id="full_bg"></div>
 <div id="payment_result">
-    <div style="text-align:center;">
-        <a href="#" onclick="close_result_dialog();">关闭</a><br/><br/>
-        #{if order}
-            <a href="/payment_info/${order.id}">遇到问题，重新选择付款信息</a>&nbsp;&nbsp;&nbsp;&nbsp;
-        #{/if}
-        <a href="#">完成付款，查看结果</a>
-    </div>
+    <a class="close" href="#" onclick="close_result_dialog();">关闭</a><br/><br/>
+    <div class="pay-tips">付款完成前请不要关闭此窗口。完成付款后请根据你的情况点击下面的按钮：</div>
+    #{if order}
+        <a class="repay" href="/payment_info/${order.id}">遇到问题？</a>
+    #{/if}
+        <a class="payed" href="#">已完成付款</a>
 </div>
 <!--主体内容部分-->
 <div id="content">
