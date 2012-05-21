@@ -42,15 +42,20 @@
             <div class="account">您的账号：<strong>${user.loginName}</strong></div>
             <div class="balance">可用余额：<span class="">${account.amount.formatCurrency('CNY')}</span>元</div>
         </div>
+        *{只有一种情况不显示用余额付款的选项:订单金额大于0,并且账户余额是0}*
+        #{if !(order.needPay.compareTo(BigDecimal.ZERO) > 0 && account.amount.compareTo(BigDecimal.ZERO) == 0)}
         <div id="payment">
-            <input type="checkbox" name="useBalance" id="use_balance" />
-            用余额付款<span>${account.amount.min(order.needPay)}</span>元。
+            <input type="checkbox" name="useBalance" id="use_balance" /> 用余额付款
+            <span>${account.amount.min(order.needPay)}</span>元。
             #{if account.amount.compareTo(order.needPay) < 0}
-                剩余 <strong>${order.amount}</strong> 元可选择其他付款方式付款。
+            剩余 <strong>${order.needPay.subtract(account.amount)}</strong> 元可选择其他付款方式付款。
             #{/if}
         </div>
-        <button id="confirm-pay">确认付款</button>
+
+        <button id="confirm-pay" type="submit" disabled="disabled">确认付款</button>
+        #{/if}
     </div><!-- #balance-pay END-->
+    #{if order.needPay.compareTo(BigDecimal.ZERO) > 0 }
     <div id="other-pay">
         <h3>您可以使用其他方式付款</h3>
         <ul class="zhifu clearfix">
@@ -77,6 +82,7 @@
         <input type="hidden" value="${order.id}" name="orderId"/>
         <div class="buttom_queren"><a class="suc_ok_bg" href="#" id="confirm" >下一步</a></div>
     </div><!-- #other-pay END-->
+    #{/if}
     #{/form}
 #{/if}
 #{if !order}

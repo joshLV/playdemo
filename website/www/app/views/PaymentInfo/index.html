@@ -7,13 +7,17 @@
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/payment_info.js'}"></script>
 <script type="text/javascript">
-    $(window).load(
-            function(){
-                $("#confirm").click(function(){$("#confirm_form").submit()});
-
-            });
+    $(window).load( function(){
+        $("#confirm").click(function(){$("#confirm_form").submit()});
+        $("#use_balance").click(function(){
+            if($(this).attr("checked") == "checked"){
+                $("#confirm-pay").attr("disabled",false);
+            }else{
+                $("#confirm-pay").attr("disabled",true);
+            }
+        });
+    });
 </script>
-
 #{/set}
 
 <div id="full_bg"></div>
@@ -43,37 +47,50 @@
         <div class="account">您的账号：<strong>${user.loginName}</strong></div>
         <div class="balance">可用余额：<span class="">${account.amount}</span>元</div>
     </div>
+    *{只有一种情况不显示用余额付款的选项:订单金额大于0,并且账户余额是0}*
+    #{if !(order.needPay.compareTo(BigDecimal.ZERO) > 0 && account.amount.compareTo(BigDecimal.ZERO) == 0)}
     <div id="payment">
-        <input type="checkbox" name="useBalance" id="use_balance"
-            #{if account.amount.compareTo(BigDecimal.ZERO) == 0} disabled #{/if} /> 用余额付款
+        <input type="checkbox" name="useBalance" id="use_balance" /> 用余额付款
         <span>${account.amount.min(order.needPay)}</span>元。
         #{if account.amount.compareTo(order.needPay) < 0}
             剩余 <strong>${order.needPay.subtract(account.amount)}</strong> 元可选择其他付款方式付款。
         #{/if}
     </div>
-    #{if account.amount.compareTo(order.needPay) >= 0}
-        <button id="confirm-pay" type="submit">确认付款</button>
+
+    <button id="confirm-pay" type="submit" disabled="disabled">确认付款</button>
     #{/if}
 </div><!-- #balance-pay END-->
 
+#{if order.needPay.compareTo(BigDecimal.ZERO) > 0 }
 <div id="other-pay">
     <h3>您可以使用其他方式付款</h3>
        
     <ul class="zhifu clearfix">
-        <li><input name="paymentSourceCode" type="radio" checked="checked" id="alipay" value="alipay"/> <label for="alipay"><img src="@{'/public/images/pay_icon/zhifubao_pay.jpg'}"/></label></li>
-        <li><input name="paymentSourceCode" type="radio" id="tenpay" value="tenpay"/> <label for="tenpay"><img src="@{'/public/images/tenpay/tenpay.png'}"/></label></li>
+        <li>
+            <input name="paymentSourceCode" type="radio" checked="checked" id="alipay" value="alipay"/>
+            <label for="alipay"><img src="@{'/public/images/pay_icon/zhifubao_pay.jpg'}"/></label>
+        </li>
+        <li>
+            <input name="paymentSourceCode" type="radio" id="tenpay" value="tenpay"/>
+            <label for="tenpay"><img src="@{'/public/images/tenpay/tenpay.png'}"/></label>
+        </li>
     </ul>
     <h4>快钱：</h4>
      <ul class="kuaiqian clearfix">
       #{list items:paymentSources, as:'payment'}
       #{if payment.paymentCode =='99bill'}
-          <li><input type="radio" name="paymentSourceCode" id="${payment.code}" value="${payment.code}"/><label for="${payment.code}"><img src="/public/${payment.logo}"/></label></li>
+          <li>
+              <input type="radio" name="paymentSourceCode" id="${payment.code}" value="${payment.code}"/>
+              <label for="${payment.code}"><img src="/public/${payment.logo}"/></label>
+          </li>
      #{/if}
       #{/list}
      </ul>
     <input type="hidden" value="${order.id}" name="orderId"/>
     <div class="buttom_queren"><a class="suc_ok_bg" href="#" id="confirm" >下一步</a></div>
 </div><!-- #other-pay END-->
+#{/if}
+
 #{/form}
 #{/if}
 
