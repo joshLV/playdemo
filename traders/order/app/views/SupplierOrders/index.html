@@ -85,7 +85,7 @@
      <td>&{'order.'+order.status}</td>
      <td>${order.createdAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
      <td>${order.refundAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
-     <td><a href="@{SupplierOrders.details(order.id)}">查看</a></td>
+     <td><a href="@{SupplierOrders.details(order.orderNumber)}">查看</a></td>
     </tr>
      #{/paginate.list}
    </tbody>

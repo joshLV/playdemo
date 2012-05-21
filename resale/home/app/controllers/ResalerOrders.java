@@ -52,35 +52,35 @@ public class ResalerOrders extends Controller {
 
 	/**
 	 * 订单详情
-	 * @param id 订单ID
+	 * @param orderNumber 订单编号
 	 */
-	public static void show(long id) {
+	public static void show(String  orderNumber) {
         Resaler resaler = SecureCAS.getResaler();
         //订单信息
-		models.order.Order order = models.order.Order.findOneByUser(id, resaler.getId(), AccountType.RESALER);
+		models.order.Order order = models.order.Order.findOneByUser(orderNumber, resaler.getId(), AccountType.RESALER);
         List<ECoupon> eCoupons = ECoupon.findByOrder(order);
 		//收货信息
-		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "订单详情", "/orders/" + id);
+		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "订单详情", "/orders/" + orderNumber);
 		render(order, eCoupons, breadcrumbs);
 	}
 
-    public static void batchRefund(List<Long> couponIds , Long orderId){
+    public static void batchRefund(List<Long> couponIds , String orderNumber){
         Resaler resaler = SecureCAS.getResaler();
         if(couponIds == null || couponIds.size() == 0){
-            show(orderId);
+            show(orderNumber);
         }
         List<ECoupon> eCoupons = ECoupon.findByUserAndIds(couponIds, resaler.getId(), AccountType.RESALER);
         for(ECoupon eCoupon : eCoupons){
             ECoupon.applyRefund(eCoupon, resaler.getId(), "", AccountType.RESALER);
         }
-        show(orderId);
+        show(orderNumber);
     }
 
 	/**
 	 * 付款
 	 */
-	public static void pay(Long id) {
-		redirect("/payment_info/" + id);
+	public static void pay(String  orderNumber) {
+		redirect("/payment_info/" + orderNumber);
 	}
 	
 	/**

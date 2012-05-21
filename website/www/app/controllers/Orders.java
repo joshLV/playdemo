@@ -175,7 +175,7 @@ public class Orders extends Controller {
 		//删除购物车中相应物品
 		Cart.delete(user, cookieValue, goodsIds);
 
-		redirect("/payment_info/" + order.getId());
+		redirect("/payment_info/" + order.orderNumber);
 	}
 
 	private static boolean containsMaterialType(List<Goods> goods, MaterialType type) {

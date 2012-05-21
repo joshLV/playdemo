@@ -87,21 +87,21 @@
                              <td align="center">
                              #{if row.status == models.order.OrderStatus.PAID && models.sales.MaterialType.ELECTRONIC.equals(rowItem?.goods?.materialType)}
                             <div class="caozuo_std">
-                                <a style="color:#3366CC"  href="/orders/refund/${row.id}"  id="apply_${row.id}">申请退款</a>
+                                <a style="color:#3366CC"  href="/orders/refund/${row.orderNumber}"  id="apply_${row.orderNumber}">申请退款</a>
                             </div>
                             #{/if}</td>
                             #{if (++m == 1) }
                                 <td align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
                                 <td align="center" rowspan="${row.orderItems.size()}">&{'order.'+
                                     row.status}
-                                     <div class="caozuo_std"><a style="color:#3366CC" href="@{UserOrders.details(row.id)}"
+                                     <div class="caozuo_std"><a style="color:#3366CC" href="@{UserOrders.details(row.orderNumber)}"
                                                                target="_blank"
                                             >订单详情</a></div>
                                 </td>
                                 <td align="center" rowspan="${row.orderItems.size()}">
                                     #{if (row.status == models.order.OrderStatus.UNPAID)}
                                         <div class="caozuo_std"><a class="font_red_one"
-                                                                   href="@{UserOrders.pay(row.id)}">付款</a></div>
+                                                                   href="@{UserOrders.pay(row.orderNumber)}">付款</a></div>
                                     #{/if}
                                     #{if (row.status != models.order.OrderStatus.PAID)}
                                         <div class="caozuo_std"><a class="font_red_one" href="#">取消</a></div>

@@ -1,6 +1,9 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import models.accounts.AccountType;
 import models.order.ECoupon;
 import models.order.OrderItems;
 import models.order.OrdersCondition;
@@ -21,7 +24,7 @@ public class SupplierOrders extends Controller {
 	/**
 	 * 商户订单信息一览
 	 *
-	 * @param orders 页面信息
+	 * @param condition 查询条件
 	 */
 	public static void index(OrdersCondition condition) {
 		if (condition == null) {
@@ -40,12 +43,25 @@ public class SupplierOrders extends Controller {
 	/**
 	 * 商户订单详细
 	 *
-	 * @param id 订单ID
+	 * @param orderNumber 订单编号
 	 */
-	public static void details(Long id) {
-		//订单信息
-		models.order.Order orders = models.order.Order.findById(id);
-		List<OrderItems> orderItems = orders.orderItems;
+	public static void details(String orderNumber) {
+        Long supplierId = SupplierRbac.currentUser().supplier.id;
+
+		models.order.Order orders = models.order.Order.find("byOrderNumber", orderNumber).first();
+        if(orders == null || orders.orderItems == null){
+            error("order can not find:" + orderNumber);
+        }
+
+		List<OrderItems> orderItems = new ArrayList<>();
+        for (OrderItems orderItem : orders.orderItems){
+            if(orderItem.goods.supplierId.equals(supplierId)){
+                orderItems.add(orderItem);
+            }
+        }
+        if(orderItems.size() == 0){
+            error("access denied");
+        }
 		//收货信息
 		render(orders, orderItems);
 	}

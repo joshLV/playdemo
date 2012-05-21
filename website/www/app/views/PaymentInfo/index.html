@@ -38,7 +38,7 @@
 
 #{if order}
 #{form @confirm() , id:"confirm_form"}
-<input type="hidden" value="${order.id}" name="orderId"/>
+<input type="hidden" value="${order.orderNumber}" name="orderNumber"/>
 <div id="balance-pay" class="clearfix">
     <div id="order-box" class="clearfix">
         <div class="order-num">共有 ${goodsNumber} 笔订单</div>

@@ -41,23 +41,23 @@ public class UserOrders extends Controller {
 	/**
 	 * 付款
 	 */
-	public static void pay(Long id) {
-		redirect("http://www.uhuila.cn/payment_info/" + id);
+	public static void pay(String orderNumber) {
+		redirect("http://www.uhuila.cn/payment_info/" + orderNumber);
 	}
 
 	/**
 	 * 订单详情
 	 */
-	public static void details(Long id) {
+	public static void details(String orderNumber) {
 	     //加载用户账户信息
 		User user = SecureCAS.getUser();
 
         //加载订单信息
-        Order order = Order.find("byIdAndUserIdAndUserType", id, user.getId(), AccountType.CONSUMER).first();
+        Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
         
 		List<OrderItems> orderItems = order.orderItems;
 		//收货信息
-		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "订单详情", "/orders/" + id);
+		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "订单详情", "/orders/" + orderNumber);
 		render(order, orderItems,breadcrumbs);
 	}
 	
@@ -65,17 +65,17 @@ public class UserOrders extends Controller {
 	/**
 	 * 订单详情
 	 */
-	public static void refund(Long id) {
+	public static void refund(String orderNumber) {
 	     //加载用户账户信息
 		User user = SecureCAS.getUser();
 
         //加载订单信息
-        Order order = Order.find("byIdAndUserIdAndUserType", id, user.getId(), AccountType.CONSUMER).first();
+        Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
         
         List<ECoupon> eCoupons = ECoupon.findByOrder(order);
         System.out.println("eCoupons========"+eCoupons);
 		//收货信息
-		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "申请退款", "/orders/refund/" + id);
+		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "申请退款", "/orders/refund/" + orderNumber);
 		render(order, eCoupons,breadcrumbs);
 	}
 
@@ -83,19 +83,19 @@ public class UserOrders extends Controller {
 	 * 申请退款
 	 * 
 	 * @param couponIds ids
-	 * @param orderId 订单ID
+	 * @param orderNumber 订单编号
 	 */
-    public static void batchRefund(List<Long> couponIds , Long orderId){
+    public static void batchRefund(List<Long> couponIds , String  orderNumber){
     	User user = SecureCAS.getUser();
         if(couponIds == null || couponIds.size() == 0){
-        	refund(orderId);
+        	refund(orderNumber);
         }
         
         List<ECoupon> eCoupons = ECoupon.findByUserAndIds(couponIds, user.getId(), AccountType.CONSUMER);
         for(ECoupon eCoupon : eCoupons){
-            ECoupon.applyRefund(eCoupon, user.getId(), "", AccountType.CONSUMER);
+            ECoupon.applyRefund(eCoupon, user.getId(), "批量申请退款", AccountType.CONSUMER);
         }
-        refund(orderId);
+        refund(orderNumber);
     }
 
 }

@@ -5,7 +5,7 @@
 # Home page
 GET     /                                       SupplierOrders.index
 GET     /orders                                 SupplierOrders.index
-GET     /orders/{id}                            SupplierOrders.details
+GET     /orders/{orderNumber}                   SupplierOrders.details
 #验证电子券页面
 GET     /coupons                                SupplierCoupons.coupons
 GET     /coupons/verify                         SupplierCoupons.index

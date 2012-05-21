@@ -19,7 +19,7 @@ load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_uni
     clickAndWait('link=我的订单')
 #{/selenium}
 #{selenium '查看订单详细信息'}
-    open('/orders/${play.test.Fixtures.idCache.get("models.order.Order-order1")}')
+    open('/orders/${order.orderNumber}')
     assertTitle('商品详情')
     verifyTextPresent('201202220324134991598')
 #{/selenium}

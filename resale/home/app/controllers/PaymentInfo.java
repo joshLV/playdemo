@@ -30,15 +30,15 @@ public class PaymentInfo extends Controller {
     /**
      * 展示确认支付信息页.
      *
-     * @param id 订单ID
+     * @param orderNumber 订单编号
      */
-    public static void index(long id) {
+    public static void index(String orderNumber) {
         //加载用户账户信息
         Resaler user = SecureCAS.getResaler();
         Account account = AccountUtil.getAccount(user.getId(), AccountType.RESALER);
 
         //加载订单信息
-        Order order = Order.find("byIdAndUserIdAndUserType", id, user.getId(), AccountType.RESALER).first();
+        Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.RESALER);
         long goodsNumber = OrderItems.itemsNumber(order);
         
         List<PaymentSource> paymentSources = PaymentSource.findAll();
@@ -50,14 +50,14 @@ public class PaymentInfo extends Controller {
     /**
      * 接收用户反馈的订单的支付信息.
      *
-     * @param orderId           订单ID
+     * @param orderNumber 订单ID
      * @param useBalance        是否使用余额
      * @param paymentSourceCode 网银代码
      */
-    public static void confirm(long orderId, boolean useBalance, String paymentSourceCode) {
+    public static void confirm(String orderNumber, boolean useBalance, String paymentSourceCode) {
         Resaler resaler = SecureCAS.getResaler();
-        Order order = Order.find("byIdAndUserIdAndUserType", orderId, resaler.getId(), AccountType.RESALER).first();
-        
+        Order order = Order.findOneByUser(orderNumber, resaler.getId(), AccountType.RESALER);
+
         if (order == null){
             error(500,"no such order");
         }
@@ -104,11 +104,11 @@ public class PaymentInfo extends Controller {
     /**
      * 生成网银跳转页.
      *
-     * @param orderId               订单
+     * @param orderNumber              订单
      */
-    public static void payIt(long orderId,String paymentCode){
+    public static void payIt(String orderNumber,String paymentCode){
         Resaler resaler = SecureCAS.getResaler();
-        Order order = Order.find("byIdAndUserIdAndUserType", orderId, resaler.getId(), AccountType.RESALER).first();
+        Order order = Order.findOneByUser(orderNumber, resaler.getId(), AccountType.RESALER);
 
         if (order == null){
             error(500,"no such order");

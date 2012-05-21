@@ -33,7 +33,7 @@
 <div id="content">
 #{if order}
     #{form @confirm() , id:"confirm_form"}
-    <input type="hidden" value="${order.id}" name="orderId"/>
+    <input type="hidden" value="${order.orderNumber}" name="orderNumber"/>
     <ol class="buy-step step3 clearfix">
         <li><span>1</span>查看订单信息 <em>>></em></li>
         <li><span>2</span>确认付款 <em>>></em></li>

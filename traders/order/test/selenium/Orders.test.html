@@ -12,11 +12,26 @@ load:['fixture/roles.yml','fixture/supplier_users.yml',
     open('/orders')
     assertTitle('商品订单')
 #{/selenium}
-#{selenium '查看订单详细信息'}
-    open('/orders/${play.test.Fixtures.idCache.get("models.order.Order-order1")}')
-    assertTitle('订单详细信息')
-    verifyTextPresent('201202220324134991598')
+%{
+
+id = play.test.Fixtures.idCache.get("models.admin.SupplierUser-user3");
+user = models.admin.SupplierUser.findById(id);
+
+id = play.test.Fixtures.idCache.get("models.order.Order-order1");
+order = models.order.Order.findById(id);
+for(orderItem in order.orderItems){
+    orderItem.goods.supplierId = user.supplier.id + 1L
+    orderItem.goods.save()
+        System.out.println(orderItem.goods.supplierId)
+}
+order.save()
+}%
+#{selenium '查看订单详细信息-无权限'}
+    open('/orders/${order.orderNumber}')
+    assertTitle('Application error')
 #{/selenium}
+
+
 #{selenium '查看消费券号列表'}
     open('/coupons')
     assertTitle('券号列表')

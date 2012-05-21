@@ -101,11 +101,11 @@ $(window).load(function () {
                     <td rowspan="${row.orderItems.size()}">&{'order.'+row.status}</td>
                     <td class="action" rowspan="${row.orderItems.size()}">
                         #{if (row.status == models.order.OrderStatus.UNPAID)}
-                        <div><a href="@{ResalerOrders.pay(row.id)}">付款</a></div>
+                        <div><a href="@{ResalerOrders.pay(row.orderNumber)}">付款</a></div>
                         #{/if}
 
                         #{if row.status == models.order.OrderStatus.PAID}
-                        <div><a href="@{ResalerOrders.show(row.id)}">查看详情</a></div>
+                        <div><a href="@{ResalerOrders.show(row.orderNumber)}">查看详情</a></div>
                         #{/if}
 
                         #{if (row.status != models.order.OrderStatus.PAID)}
@@ -136,11 +136,11 @@ $(window).load(function () {
                     <td width="85" align="center" rowspan="${row.orderItems.size()}">&{'order.'+row.status}</td>
                     <td width="80" align="center" rowspan="${row.orderItems.size()}">
                         #{if (row.status == models.order.OrderStatus.UNPAID)}
-                        <div class="caozuo_std"><a class="font_red_one" href="@{ResalerOrders.pay(row.id)}">付款</a></div>
+                        <div class="caozuo_std"><a class="font_red_one" href="@{ResalerOrders.pay(row.orderNumber)}">付款</a></div>
                         #{/if}
 
                         #{if row.status == models.order.OrderStatus.PAID}
-                        <div class="caozuo_std"><a class="font_blue" href="@{ResalerOrders.show(row.id)}">查看详情</a></div>
+                        <div class="caozuo_std"><a class="font_blue" href="@{ResalerOrders.show(row.orderNumber)}">查看详情</a></div>
                         #{/if}
                         #{if (row.status != models.order.OrderStatus.PAID)}
                         <div class="caozuo_std"><a href="#">取消</a></div>

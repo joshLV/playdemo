@@ -34,7 +34,7 @@ DELETE  /carts/{goodsIds}                       Carts.delete
 
 # 确认支付信息
 POST    /payment_info/confirm                   PaymentInfo.confirm
-GET     /payment_info/{id}                      PaymentInfo.index
+GET     /payment_info/{orderNumber}             PaymentInfo.index
 
 # 接收支付宝回调
 POST    /pay/alipay_notify                      PamentNotify.aliPayNotify

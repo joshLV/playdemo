@@ -12,7 +12,7 @@
     <a class="close" href="#" onclick="close_result_dialog();">关闭</a><br/><br/>
     <div class="pay-tips">付款完成前请不要关闭此窗口。完成付款后请根据你的情况点击下面的按钮：</div>
     #{if order}
-        <a class="repay" href="/payment_info/${order.id}">遇到问题？</a>
+        <a class="repay" href="/payment_info/${order.orderNumber}">遇到问题？</a>
     #{/if}
         <a class="payed" href="#">已完成付款</a>
 </div>
@@ -27,9 +27,10 @@
 
     #{form @payIt(), target:play.Play.runingInTestMode() ? "_self" : "_blank", id: "pay_it_form"}
     <input name="paymentCode" value="${paymentSource.code}" type="hidden"/>
-        <input name="orderId" value="${order.id}" type="hidden"/>
+        <input name="orderNumber" value="${order.orderNumber}" type="hidden"/>
         <input type="submit" value="确认支付" id="confirm_pay_it"/>
     #{/form}
+    <a href="/payment_info/${order.orderNumber}">返回重新选择支付方式</a>
 
 <script type="text/javascript">
 $(window).load(function(){

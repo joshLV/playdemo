@@ -7,12 +7,12 @@ load:['fixture/user.yml','fixture/goods_base.yml','fixture/goods.yml','fixture/o
      user = models.consumer.User.findById(userId);
      
         orderId = play.test.Fixtures.idCache.get("models.order.Order-order1");
-        order = models.order.Order.findById(orderId);
-        order.setUser(user.getId(), models.accounts.AccountType.CONSUMER);
+        order1 = models.order.Order.findById(orderId);
+        order1.setUser(user.getId(), models.accounts.AccountType.CONSUMER);
 
         orderId =  play.test.Fixtures.idCache.get("models.order.Order-order2");
-        order = models.order.Order.findById(orderId);
-        order.setUser(user.getId(), models.accounts.AccountType.CONSUMER);
+        order2 = models.order.Order.findById(orderId);
+        order2.setUser(user.getId(), models.accounts.AccountType.CONSUMER);
         
         id=play.test.Fixtures.idCache.get("models.order.ECoupon-coupon3");
 }%
@@ -30,13 +30,13 @@ load:['fixture/user.yml','fixture/goods_base.yml','fixture/goods.yml','fixture/o
 #{/selenium}
 
 #{selenium '查看订单详细信息'}
-    open('/orders/${play.test.Fixtures.idCache.get("models.order.Order-order1")}')
+    open('/orders/${order1.orderNumber}')
     assertTitle('优惠啦 - 商品详情')
     verifyTextPresent('订单详情')
 #{/selenium}
 
 #{selenium '申请退款'}
-    open('/orders/refund/${play.test.Fixtures.idCache.get("models.order.Order-order1")}')
+    open('/orders/refund/${order1.orderNumber}')
     assertTitle('申请退款')
     verifyTextPresent('您的位置：首页 > 我的订单 > 申请退款')
      verifyTextPresent('未消费')

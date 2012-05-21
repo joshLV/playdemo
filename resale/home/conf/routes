@@ -10,8 +10,8 @@ POST    /register/checkLoginName                ResalerRegister.checkLoginName
 GET     /resaler/password                       ResalerPassword.index
 POST    /resaler/{id}                           ResalerPassword.update
 
-GET     /resaler-info                            ResalerInfos.index
-POST    /resaler-info/{id}                       ResalerInfos.update
+GET     /resaler-info                           ResalerInfos.index
+POST    /resaler-info/{id}                      ResalerInfos.update
 
 # Resaler Favorite
 GET     /library                                ResalerFavs.index
@@ -21,16 +21,16 @@ DELETE  /library/{goodsIds}                     ResalerFavs.delete
 
 # 确认支付信息
 POST    /payment_info/confirm                   PaymentInfo.confirm
-GET     /payment_info/{id}                      PaymentInfo.index
+GET     /payment_info/{orderNumber}             PaymentInfo.index
 
 # 充值
 GET     /charge                                 Charge.index
 
 # 提现
-#*       /withdraw                               module:crud
-GET     /withdraw                                Withdraw.index
-GET     /withdraw/apply                          Withdraw.apply
-POST    /withdraw/apply                          Withdraw.create
+#*       /withdraw                              module:crud
+GET     /withdraw                               Withdraw.index
+GET     /withdraw/apply                         Withdraw.apply
+POST    /withdraw/apply                         Withdraw.create
 
 # 显示支付结果
 GET     /orders/alipay_result                   OrderResult.alipayReturn
@@ -55,8 +55,8 @@ GET     /goods/{id}                             ResalerGoods.show
 
 GET     /orders                                 ResalerOrders.index
 POST    /orders/batch-refund                    ResalerOrders.batchRefund
-GET     /orders/{id}                            ResalerOrders.show
-GET     /payment/{id}                           ResalerOrders.pay
+GET     /orders/{orderNumber}                   ResalerOrders.show
+GET     /payment/{orderNumber}                  ResalerOrders.pay
 
 GET     /account_seq                            ResalerAccounts.index
 

@@ -16,7 +16,6 @@ import models.resale.util.ResaleUtil;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sms.SMSUtil;
-import org.apache.commons.lang.time.DateFormatUtils;
 import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
@@ -24,13 +23,20 @@ import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.*;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 
 @Entity
 @Table(name = "orders")
-public class Order extends Model {
+public class Order extends Model{
     public static final BigDecimal FREIGHT = new BigDecimal("6");
+    private static final DecimalFormat decimalFormat = new DecimalFormat("0000000");
 
 	@Column(name = "user_id")
 	public long userId;                     //下单用户ID，可能是优惠啦用户，也可能是分销商
@@ -276,8 +282,17 @@ public class Order extends Model {
 	 * @return 订单编号
 	 */
 	public static String generateOrderNumber() {
-		int random = new Random().nextInt() % 100;
-		return DateFormatUtils.format(new Date(), "yyyyMMddhhmmssSSS") + Math.abs(random);
+        String numberHeader = String.valueOf(Integer.parseInt(String.format("%tj", new Date()))%8 + 1);
+        for(int i = 0; i < 100000; i++ ){
+            int random = new Random().nextInt(10000000) ;
+            //使用7位的格式化工具对数字进行补零
+            String orderNumber =  numberHeader +  decimalFormat.format(random);
+            Order order = Order.find("byOrderNumber", orderNumber).first();
+            if (order == null){
+                return  orderNumber;
+            }
+        }
+        throw new RuntimeException("still could not generate an unique order number after 100000 tries");
 	}
 
 	public void checkInventory(Goods goods, long number) throws NotEnoughInventoryException {
@@ -667,7 +682,7 @@ public class Order extends Model {
 		order.save();
 	}
 
-	public static Order findOneByUser(Long id, Long userId, AccountType accountType) {
-		return Order.find("byIdAndUserIdAndUserType", id, userId, accountType).first();
+	public static Order findOneByUser(String orderNumber, Long userId, AccountType accountType) {
+		return Order.find("byOrderNumberAndUserIdAndUserType", orderNumber, userId, accountType).first();
 	}
 }

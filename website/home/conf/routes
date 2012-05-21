@@ -5,11 +5,11 @@
 # Home page
 GET     /                                             UserOrders.index
 GET     /orders                                       UserOrders.index
-GET     /orders/refund/{id}                           UserOrders.refund
-POST    /orders/refund/{id}                           UserOrders.applyRefund
-GET     /orders/{id}                                  UserOrders.details
+GET     /orders/refund/{orderNumber}                  UserOrders.refund
+POST    /orders/refund/{orderNumber}                  UserOrders.applyRefund
+GET     /orders/{orderNumber}                         UserOrders.details
 GET     /coupons                                      UserCoupons.index
-GET     /payment/{id}                                 UserOrders.pay
+GET     /payment/{orderNumber}                        UserOrders.pay
 POST    /coupons/refund/{id}                          UserCoupons.applyRefund
 POST    /orders/batch-refund                          UserOrders.batchRefund
 GET     /coupons-message/{id}/send                    UserCoupons.sendMessage
