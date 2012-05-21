@@ -1,6 +1,7 @@
 #{extends 'main.html' /}
 #{set title:'优惠啦 - 基本资料' /}
 #{set 'moreStyles'}
+    #{asset.css src:['/u/popup.css'] /}
 <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
 <link href="@{'/public/stylesheets/user-center.css'}" rel="stylesheet" type="text/css"/>
 <style>
@@ -115,13 +116,6 @@
     .usersex{
         margin-top: 3px;
     }
-
-        /************* 弹出框  **********/
-    .boxwrap {
-        width: 0px;
-        height: 0px;
-        overflow: hidden;
-    }
 </style>
 #{/set}
 #{set 'moreScripts'}
@@ -146,19 +140,13 @@
     </li>
     <li>
         <div class="input">
-             <label><span class="font_red">*</span> 真实姓名：</label> <input type="text" tabindex="1"
-                                                                        id="realname"
-                                                                        name="userInfo.fullName"
-                                                                        maxlength="10"
-                                                                        class="long_input"
-                                                                        value="${userInfo?.fullName}">
-
+            <label><span class="font_red">*</span> 真实姓名：</label>
+            <input type="text" tabindex="1" id="realname" name="userInfo.fullName" maxlength="10" class="long_input" value="${userInfo?.fullName}">
             <div id="realnamecheck"></div>
         </div>
     </li>
     <li>
         <div class="input">
-
             <label><span class="font_red">*</span> 性别：</label>
             <input type="radio" name="userInfo.userSex" class="usersex"
                    value="1" ${(userInfo?.userSex==1 || userInfo?.userSex==0) ?'checked':''} />男
@@ -178,18 +166,13 @@
     </li>
     <li>
         <div class="input">
-            <label>手机号码：</label> <input type="text" id="usertel" name="userInfo.mobile"
-                                                     value="${userInfo?.mobile}" class="long_input"
-                                                     disabled/>
-
+            <label>手机号码：</label>
+            <input type="text" id="usertel" name="userInfo.mobile" value="${userInfo?.mobile}" class="long_input" disabled/> 
         #{if userInfo?.mobile ==null || userInfo?.mobile =='' }
-            <button onclick="$.common.dialog({'id':'bindusertel','title':'绑定手机'});" class="search-btn">绑定手机
-            </button>
+            <button type="button" onclick="$.common.dialog({'id':'bindusertel','title':'绑定手机'});" class="search-btn">绑定手机</button>
         #{/if}
         #{else}
-            <input type="button" onclick="$.common.dialog({'id':'changeusertel',
-                'title':'更换手机'});" class="search-btn" value="更换号码">
-            </input>
+            <input type="button" onclick="$.common.dialog({'id':'changeusertel', 'title':'更换手机'});" class="search-btn" value="更换号码" />
         #{/else}
             <div id="showphonecheck"></div>
         </div>
@@ -197,17 +180,14 @@
     <li>
         <div class="input">
             <span></span><label>固定电话：</label>
-            <input type="text" id="userphone" class="long_input" name="userInfo.phone"
-                   value="${userInfo?.phone}"/>（例：021-12345678）
-
+            <input type="text" id="userphone" class="long_input" name="userInfo.phone" value="${userInfo?.phone}"/>（例：021-12345678）
             <div id="showtelcheck"></div>
         </div>
     </li>
     <li>
         <div class="input">
-            <span></span> <label>QQ：</label> <input type="text" id="userqq" name="userInfo.userqq"
-                                                    class="long_input" value="${userInfo?.userqq}"/>
-
+            <span></span> <label>QQ：</label>
+            <input type="text" id="userqq" name="userInfo.userqq" class="long_input" value="${userInfo?.userqq}"/>
             <div id="showqqcheck"></div>
         </div>
     </li>
@@ -329,109 +309,58 @@
         <div class="clear:both"></div>
     </li>
 </ul>
-<!--通用弹出框-->
-<div id="changeusertel" class="boxwrap">
-    <div id="layout" style="width: 474px; height: 200px; z-index: 10000">
-        <div id="center" style="height: 200px;">
-            <div id="cc">
-                <!--弹出框内容-->
-                <div style="width: 426px; height: 164px; padding-left: 10px; padding-top: 10px;">
-                    <ul>
-                        <li class="mem_chphone">
-                            <div class="input">
-                                <label>旧手机号码：</label> <input id="oldtelnum" type="text" class="input140 inputbg"/>
-
-                                <div id="showoldtelcheck"></div>
-                            </div>
-                        </li>
-                        <li class="mem_chphone">
-                            <div class="input">
-                                <label>新手机号码：</label> <input type="text" tabindex="2" id="newtelnum"
-                                                             class="input140 inputbg"/>
-
-                                <div id="shownewtelcheck"></div>
-                            </div>
-                            <div style="clear: both"></div>
-                        </li>
-                        <li class="mem_chphone">
-                            <div class="inputsj">
-                                <div class="sjyzm">
-                                    <button id="getchangeCode" onClick="getBindCode(2)" type="submit"
-                                            class="search-btn">获取验证码
-                                    </button>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="mem_chphone">
-                            <div class="input">
-                                <label>输入验证码：</label> <input type="text" id="telcheckcode" tabindex="3"
-                                                             class="input140 inputbg"/>
-
-                                <div id="showchangecode"></div>
-                                <label class="label88">区分大小写</label>
-                            </div>
-                        </li>
-                        <li class="mem_chphone">
-                            <button type="submit" onClick="changeTel(1)" class="search-btn">确 认</button>
-                        </li>
-                    </ul>
-                </div>
-                <!--弹出框内容结束-->
-            </div>
-            <div id="cb"></div>
+    <div id="changeusertel">
+        <div id="layout" class="popup-content" style="width:450px;height:200px;z-index:10000">
+            <ul>
+                <li class="item">
+                    <label>旧手机号码：</label> <input id="oldtelnum" type="text" class="input140 inputbg"/>
+                    <div id="showoldtelcheck"></div>
+                </li>
+                <li class="item">
+                    <label>新手机号码：</label>
+                    <input type="text" tabindex="2" id="newtelnum" class="input140 inputbg"/>
+                    <button id="getchangeCode" onClick="getBindCode(2)" type="submit" class="search-btn">获取验证码</button>
+                    <div id="shownewtelcheck"></div>
+                </li>
+                <li class="item">
+                    <label>输入验证码：</label>
+                    <input type="text" id="telcheckcode" tabindex="3"/>
+                    <span>区分大小写</span>
+                    <div id="showchangecode"></div>
+                </li>
+                <li class="item btn-box">
+                    <button type="submit" onClick="changeTel(1)" class="search-btn">确 认</button>
+                </li>
+            </ul>
         </div>
     </div>
-</div>
-<!--通用弹出框-->
-<!--通用弹出框-->
-<div id="bindusertel" class="boxwrap">
-    <div id="layoutbind" style="width: 410px; height: 267px;">
-        <div id="bindcenter" style="height: 267px;">
-            <div>
-                <!--弹出框内容-->
-                <div style="width: 300px; height: 126px; padding-top: 10px;">
-                    <ul>
-                        <li class="mem_bd_phone">
-                            <div class="input">
-                                <label class="label88">手机号码：</label> <input type="text" id="bindtelnum"
-                                                                            class="input140 inputbg"/>
 
-                                <div class="buttonfield sjyzm">
-                                    <button id="getBindCode" type="submit" onclick="getBindCode(1)"
-                                            class="mem_update_hqbt">获取手机验证码
-                                    </button>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="mem_bd_phone">
-                            <div class="input">
-                                <label class="label88">输入验证码：</label> <input type="text" id="bindcheckcode"
-                                                                             class="input140 inputbg"/>
-
-                                <div id="showbindtelcheck" style="float: left;"></div>
-                                <label class="label88">区分大小写</label>
-                            </div>
-                        </li>
-                        <li class="mem_bd_phone">
-                            <div class="qrjh">
-                                <div class="buttonfield">
-                                    <button type="submit" onClick="changeTel(2)" class="btg70">确认激活</button>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                    <p class="mem_bd_question">
-                        使用遇到问题？<br/> 手机收不到校验码，怎么办？<br/> 答：有时经过网关时有可能网络通讯异常造成短信丢失，<br/> 如果出现丢失几条或者延时收到短信，这种情况是属于<br/>
-                        正常的。需要您耐心等待一下，或者过会儿再重新试一下。<br/>
-                    </p>
-                </div>
-                <!--弹出框内容结束-->
-            </div>
+    <div id="bindusertel">
+        <div id="layoutbind" class="popup-content" style="width:450px;height:200px">
+            <ul>
+                <li class="item">
+                    <label>手机号码：</label>
+                    <input type="text" id="bindtelnum" class="input140 inputbg"/>
+                    <button id="getBindCode" type="submit" onclick="getBindCode(1)">获取手机验证码</button>
+                </li>
+                <li class="item">
+                    <label>输入验证码：</label>
+                    <input type="text" id="bindcheckcode"/>
+                    <div id="showbindtelcheck" style="float: left;"></div>
+                    <span>区分大小写</span>
+                </li>
+                <li class="item btn-box">
+                    <button type="submit" onClick="changeTel(2)">确认激活</button>
+                </li>
+            </ul>
+            <dl class="faq-tips">
+                <dt>使用遇到问题？ 手机收不到校验码，怎么办？</dt>
+                <dd>答：有时经过网关时有可能网络通讯异常造成短信丢失，<br/> 如果出现丢失几条或者延时收到短信，这种情况是属于<br/>
+                正常的。需要您耐心等待一下，或者过会儿再重新试一下。<br/>
+                </dd>
+            </dl>
         </div>
     </div>
-</div>
-<!--通用弹出框-->
-<!--/right-->
 </form>
 </div>
 </div>

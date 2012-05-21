@@ -196,7 +196,6 @@ function Dialog(opts) {
 	
 	//提示信息容器
 	var _popup_container = $('<div id="popupbox" class="popup-container"></div>');
-	var clear = $('<div class="clear"></div>');
 	$('body').append($(_popup_container));
 	$(_popup_content).show();
 	var strhtml = _popup_content.html();
@@ -214,19 +213,18 @@ function Dialog(opts) {
 	
 	_popup_content.html("");
 	//将结构体封装在这个变量中
-	var indiv = "<div class='box'><div class='uhlbox_t'><div class='table_tl'><b>"+opts.title+"</b><a href='javascript:void(0);' class='close' id='popup_close'></a></div><div class='table_tr'></div></div><div class='uhlbox_c'><div class='table_c'>"+opts.content+"</div></div><div class='uhlbox_b'><div class='table_bl'></div><div class='table_br'></div></div></div>";
+	var indiv = "<div class='box'>"
+        +"  <div class='uhlbox_t clearfix'><b>"+ opts.title +"</b><a href='javascript:void(0);' class='close' id='popup_close'>X</a></div>"
+        +"  <div class='uhlbox_c'>"+ opts.content +"</div>"
+        //+"  <div class='uhlbox_b'><div class='table_bl'></div><div class='table_br'></div></div>"
+        +"</div>";
 
 	$(_popup_container).html(indiv);
 
-	$("#popupbox .table_c").html(strhtml);
-	$("#popupbox .table_c").append(clear);
+	$("#popupbox .uhlbox_c").html(strhtml);
 	
 	$(_popup_container).css({"height":outerHeight + 67,"width":outerWidth,"zIndex":"2"});
-	$("#popupbox .table_c").css({"height":outerHeight,"width":outerWidth, "overflow":"hidden"});
-	$("#popupbox .table_tl, #popupbox .table_bl").css({"width":outerWidth - 11});
-	if (ie && ie[1] == '6.0'){
-		//$("#popupbox .table_bl").css({"width":outerWidth - 9});
-	}
+	// $("#popupbox .uhlbox_c").css({"height":outerHeight,"width":outerWidth, "overflow":"hidden"});
 	$.common.center($(_popup_container));
 	$(_popup_container).show();
 	
