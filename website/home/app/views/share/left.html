@@ -10,7 +10,7 @@
         <h3>我的资金</h3>
         <ul>
             <li><a id="amount" #{if request.url.equals("/sequences")}class="current"#{/if} href="/user-sequences">» 资金明细</a></li>
-            <li><a #{if request.url.equals("/refunds")}class="current"#{/if} href="">» 退款记录</a></li>
+          <!--  <li><a #{if request.url.equals("/refunds")}class="current"#{/if} href="">» 退款记录</a></li>-->
             <li>
                 <a #{if request.url.equals("/withdraw")}class="current"#{/if}  href="@{Withdraw.index()}">» 提现申请</a>
             </li>

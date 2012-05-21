@@ -10,7 +10,7 @@ table {
 /*search start*/
 #wrap_top_right{float:right; width:550px; height:30px; margin-top:43px; }
 
-.seach_area{ float:left; width:103px; height:25px; border:solid 1px #D1D1D1; line-height:25px; padding-left:5px;color:#999999; margin-left:15px;}
+/*.seach_area{ float:left; width:103px; height:25px; border:solid 1px #D1D1D1; line-height:25px; padding-left:5px;color:#999999; margin-left:15px;}*/
 .seach_area div{float:right; height:15px; padding-bottom:4px; line-height:25px;padding-top:4px; margin-right:5px;}
 *html .seach_area div{ margin-top:-25px;} /*Ie6 hack*/
 .seach_input{ border:solid 1px #D1D1D1; width:250px; height:25px; line-height:25px; padding-left:6px; color:#999999}
