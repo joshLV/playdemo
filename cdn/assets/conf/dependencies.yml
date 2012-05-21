@@ -3,6 +3,8 @@
 require:
     - play
     - play1 -> app-version 0.1
+    - play1 -> betterlogs 1.0
+    - play1 -> appconfiguration 0.1
     - asset_package -> asset_package
 
 repositories:
