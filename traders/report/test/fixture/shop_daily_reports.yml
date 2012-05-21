@@ -1,0 +1,9 @@
+report.ShopDailyReport(ShopDailyTest):
+  supplier: kfc
+  shop: Shop_5
+  buyCount: 20.4
+  orderCount: 5
+  saleAmount: 100
+  resaleAmount: 100
+  originalAmount: 100
+  createdAt: 2012-05-18
