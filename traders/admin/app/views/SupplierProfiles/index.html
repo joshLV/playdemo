@@ -1,3 +1,4 @@
+
 #{extends 'layout_trader/layout.html' /}
 #{set 'topbar-nav'}
 #{include 'share/topbar-nav.html'/}
@@ -6,7 +7,86 @@
 #{include 'share/left-nav.html'/}
 #{/set}
 
-#{set title:'用户信息' /}
+#{set title:'操作员编辑' /}
 #{set 'moreScripts'}
+<script src="@{'/public/javascripts/supplierUser.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+   $(window).load(function(){
+       $("#save").click(function(){
+           if('${okFlag}' =='ok'){
+               alert("修改成功！")
+           }
+       })
+
+   })
+
+</script>
+
 #{/set}
- <legend>用户信息</legend>
+#{form @SupplierUsers.update(supplierUser.id) , id:'operForm',class:"form-horizontal" }
+<legend>操作员编辑</legend>
+<div class="control-group">
+    <label for="input01" class="control-label">角色</label>
+    <div class="controls">
+        #{list items:rolesList, as:'role'}
+            <label class="checkbox inline">
+                <input type="checkbox" value="${role.id}" id="supplierUser.roles_${role.id}"
+                       name="supplierUser.roles.id" #{if roleIds?.contains(String.valueOf(role?.id))}checked#{/if}/> ${role.text}
+            </label>
+        #{/list}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="error">#{error 'supplierUser.roles' /}</span>
+    </div>
+</div>
+<div class="control-group">
+    <label for="input01" class="control-label">用户名</label>
+    <div class="controls">
+    ${supplierUser?.loginName}
+        <input type="hidden" name="supplierUser.loginName" class="input-large" value="${supplierUser?.loginName}"/>
+    </div>
+</div>
+<div class="control-group">
+    <label for="input01" class="control-label"><span style="color: red; ">*</span>手机</label>
+    <div class="controls">
+        <input type="text" name="supplierUser.mobile" class="input-large" id="mobile" maxlength="11" value="${supplierUser.mobile}"/>
+        <span class="error" id="checkMobile">#{error 'supplierUser.mobile' /}</span>
+    </div>
+</div>
+
+<div class="control-group">
+    <label for="userName" class="control-label">姓名</label>
+    <div class="controls">
+        <input type="text" name="supplierUser.userName" class="input-large" id="userName" value="${supplierUser?.userName}"/>
+    </div>
+</div>
+
+<div class="control-group">
+    <label for="jobNumber" class="control-label">工号</label>
+    <div class="controls">
+        <input type="text" name="supplierUser.jobNumber" class="input-large" id="jobNumber" value="${supplierUser?.jobNumber}"/>
+    </div>
+</div>
+
+<div class="control-group">
+    <label for="input01" class="control-label">门店</label>
+    <div class="controls">
+        #{select 'supplierUser.shop.id', id:shopId, class:'span2', value:supplierUser?.shop?.id}
+            #{option ""}全部#{/option}
+            #{list items:shopList, as:'shop'}
+                #{option shop?.id}${shop?.name}#{/option}
+            #{/list}
+        #{/select}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="error">#{error 'supplierUser.shop' /}</span>
+    </div>
+</div>
+<div class="form-actions">
+    <button class="btn btn-primary" id="save" type="button">保 存</button>
+    <button class="btn btn-primary" onclick="javascript:window.history.back(-1)" type="button">返回</button>
+</div>
+<input type="hidden" id="hiddenId" value="${supplierUser.id}"/>
+<input type="hidden" name="supplierUser.encryptedPassword" class="input-large" value="******" />
+<input type="hidden" name="supplierUser.confirmPassword" class="input-large" id ="confirmPassword" value="******" />
+#{/form}
+
+

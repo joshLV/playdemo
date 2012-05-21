@@ -1,27 +1,20 @@
 package controllers;
 
-import java.util.List;
-
+import com.uhuila.common.constants.DeletedStatus;
 import models.admin.SupplierRole;
 import models.admin.SupplierSetting;
 import models.admin.SupplierUser;
 import models.sales.Shop;
-import models.sms.SMSUtil;
 import navigation.annotations.ActiveNavigation;
-
 import org.apache.commons.lang.StringUtils;
-import org.h2.engine.User;
-
-import play.cache.Cache;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import com.uhuila.common.constants.DataConstants;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.RandomNumberUtil;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 操作员CRUD
@@ -39,7 +32,22 @@ public class SupplierUsers extends Controller {
 	 */
 	@ActiveNavigation("user_search")
 	public static void index() {
-		String page = request.params.get("page");
+
+        Long supplierUserId = SupplierRbac.currentUser().id;
+        SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
+        List<SupplierRole> roles = supplierUser.roles;
+        List<String> keyList = new ArrayList<String>();
+        for (SupplierRole role:roles) {
+            keyList.add(role.key);
+
+        }
+        System.out.println("role.key========="+keyList);
+
+        if (!keyList.contains("admin")) {
+            redirect("/profile");
+        }
+
+        String page = request.params.get("page");
 		String loginName = request.params.get("loginName");
 		Long supplierId = SupplierRbac.currentUser().supplier.id;
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);

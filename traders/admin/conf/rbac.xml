@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <application text="系统管理">
-    <role key="admin" text="系统管理员" />
+	<role key="admin" text="系统管理员" />
+	<role key="clerk" text="收银人员" />
 
-    <permission key="SYSTEM_HOME" text="系统管理主页" roles="admin" />
-    <permission key="USER" text="用户管理" roles="admin">
-        <permission key="USER_ADD" text="新增" roles="admin" />
-        <permission key="USER_EDIT" text="修改" roles="admin" />
-    </permission>
-
-    <!-- 系统管理是最后一个菜单 -->
-    <navigation key="main" text="系统管理" action="Application.index" permissions="SYSTEM_HOME" display-order="999">
-        <navigation key="user" text="用户管理" permissions="USER">
-          <navigation key="user_add" text="新增用户" action="SupplierUsers.add" permissions="USER"/>
-          <navigation key="user_search" text="查询用户" action="SupplierUsers.index" permissions="USER"/>
-        </navigation>
-    </navigation>
+	<permission key="SYSTEM_HOME" text="系统管理主页" roles="admin" />
+	<permission key="USER" text="用户管理" roles="admin,clerk,editor,manager,account">
+		<permission key="USER_ADD" text="新增" roles="admin" />
+		<permission key="USER_EDIT" text="修改" roles="admin" />
+	</permission>
+    
+	<!-- 系统管理是最后一个菜单 -->
+	<navigation key="main" text="系统管理" action="Application.index" permissions="SYSTEM_HOME" display-order="999">
+		<navigation key="user" text="用户管理" permissions="USER">
+			<navigation key="user_add" text="新增用户" action="SupplierUsers.add" permissions="USER" />
+			<navigation key="user_search" text="查询用户" action="SupplierUsers.index" permissions="USER" />
+		</navigation>
+	</navigation>
 </application>

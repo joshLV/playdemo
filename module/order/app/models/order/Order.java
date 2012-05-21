@@ -1,7 +1,10 @@
 package models.order;
 
 import com.uhuila.common.constants.DeletedStatus;
-import models.accounts.*;
+import models.accounts.Account;
+import models.accounts.AccountType;
+import models.accounts.PaymentSource;
+import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.consumer.Address;
@@ -16,18 +19,12 @@ import models.sms.SMSUtil;
 import org.apache.commons.lang.time.DateFormatUtils;
 import play.Play;
 import play.db.jpa.JPA;
-import play.db.jpa.JPAPlugin;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 
 @Entity

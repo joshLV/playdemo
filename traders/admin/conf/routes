@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                                       Application.index
+GET     /                                       SupplierUsers.index
 GET     /users                                  SupplierUsers.index
 GET     /users/new                              SupplierUsers.add
 POST    /users                                  SupplierUsers.create
