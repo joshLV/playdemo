@@ -1,5 +1,6 @@
 package unit;
 
+import models.order.Order;
 import org.junit.Test;
 import play.test.UnitTest;
 
@@ -13,6 +14,7 @@ import play.test.UnitTest;
 public class OrdersTest extends UnitTest {
     @Test
     public void testIndex(){
-
+        String number = Order.generateOrderNumber();
+        assertEquals(8, number.length());
     }
 }
