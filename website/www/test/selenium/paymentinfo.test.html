@@ -10,6 +10,16 @@ load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_uni
 'fixture/accounts.yml', 'fixture/account_uhuila.yml','fixture/payment_source.yml', 'fixture/orders.yml'] /}
 
 %{
+id = play.test.Fixtures.idCache.get("models.consumer.User-user");
+user = models.consumer.User.findById(id);
+
+id = play.test.Fixtures.idCache.get("models.order.Order-order1");
+order = models.order.Order.findById(id);
+order.setUser(user.getId(), models.accounts.AccountType.CONSUMER);
+
+id = play.test.Fixtures.idCache.get("models.order.Order-order_unpaid");
+order = models.order.Order.findById(id);
+order.setUser(user.getId(), models.accounts.AccountType.CONSUMER);
 }%
 
 
