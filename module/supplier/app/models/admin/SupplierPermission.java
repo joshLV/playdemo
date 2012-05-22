@@ -1,8 +1,7 @@
 package models.admin;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import play.db.jpa.Model;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +14,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
-import play.db.jpa.Model;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "supplier_permissions")
@@ -90,7 +91,7 @@ public class SupplierPermission extends Model {
     
     /**
      * 按用户角色得到权限列表。
-     * @param userName
+     * @param userId
      * @return
      */
     public static List<SupplierPermission> findByUserRole(Long userId) {
@@ -99,5 +100,25 @@ public class SupplierPermission extends Model {
                 "select p from SupplierPermission p join p.roles r join r.users u where u.id=?",
                 userId).fetch();
     }
-    
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SupplierPermission)) return false;
+        if (!super.equals(o)) return false;
+
+        SupplierPermission that = (SupplierPermission) o;
+
+        if (key != null ? !key.equals(that.key) : that.key != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (key != null ? key.hashCode() : 0);
+        return result;
+    }
 }

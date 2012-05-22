@@ -1,10 +1,5 @@
 package navigation;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
 import models.admin.SupplierNavigation;
 import models.admin.SupplierPermission;
 import models.admin.SupplierRole;
@@ -13,16 +8,22 @@ import play.Play;
 import play.mvc.Router;
 import play.vfs.VirtualFile;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+
 /**
  * 从XML加载权限相对的定义文件.
  */
 public class RbacLoader {
 
-    public static void init(VirtualFile file)  {
+    public static void init(VirtualFile file) {
         JAXBContext jaxbContext;
         Logger.info(RbacLoader.class.getName() + " init.");
         try {
-            Class[] clazzes = new Class[] {
+            Class[] clazzes = new Class[]{
                     Application.class,
                     Menu.class,
                     Permission.class,
@@ -57,30 +58,36 @@ public class RbacLoader {
 
     /**
      * 把所有下级菜单的权限依次复制到上一级.
+     *
      * @param applicationName
      */
     private static void updateParentPermissions(String applicationName) {
         List<SupplierNavigation> allNavs = SupplierNavigation.find("applicationName=?", applicationName).fetch();
         for (SupplierNavigation nav : allNavs) {
             if (nav.parent != null) {
-                savePermisionsToParent(nav, nav.parent);
+                savePermissionsToParent(nav, nav.parent);
             }
         }
     }
 
-    private static void savePermisionsToParent(SupplierNavigation nav,
-            SupplierNavigation parent) {
+    private static void savePermissionsToParent(SupplierNavigation nav,
+                                                SupplierNavigation parent) {
         if (nav.permissions != null && nav.permissions.size() > 0) {
-            parent.permissions.addAll(nav.permissions);
+            for (SupplierPermission permission : nav.permissions) {
+                if (!parent.permissions.contains(permission)) {
+                    parent.permissions.add(permission);
+                }
+            }
             parent.save();
             if (parent.parent != null) {
-                savePermisionsToParent(parent, parent.parent);
+                savePermissionsToParent(parent, parent.parent);
             }
         }
     }
-    
+
     /**
      * 删除之前版本的Permissions.
+     *
      * @param applicationName
      * @param loadVersion
      */
@@ -90,6 +97,7 @@ public class RbacLoader {
 
     /**
      * 加载权限到数据库.
+     *
      * @param object
      * @param menus
      * @param applicationName
@@ -107,7 +115,7 @@ public class RbacLoader {
     }
 
     private static void savePermissionToDB(String applicationName, long loadVersion, Permission permission,
-            Permission parentPermission) {
+                                           Permission parentPermission) {
         SupplierPermission supplierPermission = SupplierPermission.find("byApplicationNameAndKey", applicationName, permission.key).first();
         if (supplierPermission == null) {
             supplierPermission = new SupplierPermission();
@@ -141,6 +149,7 @@ public class RbacLoader {
 
     /**
      * 加载Roles到数据库.
+     *
      * @param roles
      * @param applicationName
      * @param loadVersion
@@ -176,8 +185,8 @@ public class RbacLoader {
         }
     }
 
-    private static void saveMenuToDB(String applicationName, long currentLoadVersion, 
-            Menu menu, Menu parentMenu, int menuIndex) {
+    private static void saveMenuToDB(String applicationName, long currentLoadVersion,
+                                     Menu menu, Menu parentMenu, int menuIndex) {
         SupplierNavigation supplierNavigation = SupplierNavigation.find("byName", menu.name).first();
         if (supplierNavigation == null) {
             supplierNavigation = new SupplierNavigation();
@@ -192,7 +201,7 @@ public class RbacLoader {
         supplierNavigation.applicationName = applicationName;
         supplierNavigation.loadVersion = currentLoadVersion;
         supplierNavigation.updatedAt = new Date();
-        
+
         if (menu.displayOrder == 0) {
             supplierNavigation.displayOrder = menuIndex;
         } else {
