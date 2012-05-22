@@ -63,7 +63,7 @@ a.close:hover {
 .popup-content .faq-tips dt {
     font-weight: 700;
 }
-
+#sendMsg .popup-content,
 #bindusertel .popup-content,
 #changeusertel .popup-content {
     display: none;

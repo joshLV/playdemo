@@ -11,7 +11,7 @@
         <ul id="menu">
             <li><a class="current" href="/">首　页</a></li>
             <li><a href="/goods">商品库</a></li>
-            <li><a href="/library">我的分销</a></li>
+            <li><a href="/library">我的分销库</a></li>
         </ul>
     </div>
 </div>
@@ -41,10 +41,25 @@
         </div>
     </div>
     <div class="aside">
+        #{if cas?.isLogin}
+            <div class="fastnav">
+                <div class="userinfo">
+                    <a href="/orders">${cas.username}</a>
+                    <a href="/logout">退出</a>
+                </div>
+                <ul class="clearfix">
+                    <li><a href="/library">我的分销库</a></li>
+                    <li><a href="/ecoupons">券订单列表</a></li>
+                    <li><a href="/account_seq">账户明细</a></li>
+                </ul>
+            </div>
+        #{/if}
+        #{else}
         <div class="guide">
-            <a class="joinus" href=""><img src="http://img.uhcdn.com/images/r/joinus.png" /></a>
-            <a class="login" href="http://home.114bsgo.com/goods"><img src="http://img.uhcdn.com/images/r/login.png" /></a>
+                <a class="joinus" href=""><img src="http://img.uhcdn.com/images/r/joinus.png" /></a>
+                <a class="login" href="http://home.114bsgo.com/goods"><img src="http://img.uhcdn.com/images/r/login.png" /></a>
         </div>
+        #{/else}
         <div class="salemode">
             <h3><img src="http://img.uhcdn.com/images/r/salemode.png" /></h3>
             <ul>
@@ -57,7 +72,7 @@
     </div>
 </div>
 <div id="footer">
-    <div class="copyright">版权所有：上海视惠信息科技有限公司 © 2010 - 2012 100QUAN.COM  沪ICP备08114451号</div>
+    <div class="copyright">版权所有：上海视惠信息科技有限公司 ©2012 quanFX.COM  沪ICP备08114451号</div>
 </div>
 </body>
 </html>

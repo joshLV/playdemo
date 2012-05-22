@@ -61,6 +61,24 @@
 .guide .joinus {
     margin-right: 8px;
 }
+.fastnav {
+    padding: 10px 6px;
+    border: 1px solid #e07a65;
+    background-color: #FBB0A0;
+}
+.fastnav .userinfo {
+    margin-bottom: 15px;
+}
+.fastnav .userinfo a {
+    margin-right: 5px;
+}
+.fastnav a {
+    color: #457BAC;
+}
+.fastnav li {
+    float: left;
+    padding-right: 22px;
+}
 .salemode {
     margin-top: 40px;
 }

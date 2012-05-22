@@ -90,12 +90,18 @@
 <div class="find-password">
     <div class="find-title">找回密码</div>
     <div class="input-tel">
-        <div><label>输注册手机</label><input id="mobile" type="text" maxlength="11" />
-            <input id="getcodebutton" type="button"class="btn" onclick="sendCheckCode()" value="发送验证码" /> <span id="passtelcheck"></span></div>
-
-        <div><label>输入验证码</label><input id="telcheckcode" type="text"
-                        class="input196 inputbg" /></div>
-        <div style="padding-top:20px"><input id="telpassbutton" class="btn" type="button" onClick="getpwsbyemail()" value="下一步" /></div>
+        <div style="padding:8px 0;">
+            <label>输注册手机：</label> <input id="mobile" type="text" maxlength="11" />
+            <input id="getcodebutton" type="button"class="btn" onclick="sendCheckCode()" value="发送验证码" />
+            <span class="error" id="passtelcheck"></span>
+        </div>
+        <div style="padding:8px 0;">
+            <label>输入验证码：</label>
+            <input id="telcheckcode" type="text" />
+        </div>
+        <div style="padding-top:20px">
+            <input id="telpassbutton" class="btn" type="button" onClick="getpwsbyemail()" value="下一步" />
+        </div>
     </div>
 </div>
 

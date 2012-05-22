@@ -10,66 +10,13 @@
 <body>
 <div id="header" class="clearfix">
     <div id="logo">
-        <a href="http://www.uhuila.com/"><img src="#{asset.url href:'/images/u/logo.png'/}" width="170" height="88" alt="优惠啦"/></a>
+        <a href="http://www.uhuila.com/"><img src="#{asset.url href:'/images/u/logo.png'/}" width="180" height="88" alt="优惠啦"/></a>
     </div>
-<!--
-    <div id="menu">
-        <div class="welcom">
-        #{if cas?.isLogin}
-            欢迎您, <a class="zi_gray" href="http://home.uhuila.cn" id="login_name">${cas.loginName}</a> <a class="zi_gray" href="/logout">退出</a>
-        #{/if}
-        #{else}
-            您好，欢迎您来到优惠啦！ [<a class="zi_gray" id="login_name" href="/login">登录</a>] [<a href="/register">免费注册</a>]
-        #{/else}
-        </div>
-        <div class="myUhuila">
-            <div class="myUhuila-hd"><a href="http://home.uhuila.cn/">我的一百券</a></div>
-            <div class="myUhuila-bd">
-                <a href="http://home.uhuila.cn/orders">我的订单</a>
-            </div>
-        </div>
-        <div class="carts">
-            <div class="carts-hd"><a href="http://www.uhuila.cn/carts">购物车<span class="carts-size" id="carts_size">${count}</span>件</a></div>
-            <input type="hidden" id="reload" value="true"/>
-            <div class="carts-bd" id="cart-list"></div>
-
-        </div>
-        <div class="help"><a href="/help">帮助中心</a></div>
-    </div>
--->
 </div>
-<!--
-<div id="nav">
-    <ul class="clearfix">
-        <li #{if categoryId == 0}class="current"#{/if}><a href="http://www.uhuila.cn">首页</a></li>
-        <li><a href="http://www.uhuila.cn/goods/list/1" #{if categoryId == 1}class="current"#{/if}>饮食</a></li>
-        <li><a href="http://www.uhuila.cn/goods/list/2" #{if categoryId == 2}class="current"#{/if}>礼品</a></li>
-        *{
-        #{list categories, as: 'category'}
-        <li class="hot_shangpin_li"><a #{if categoryId == category.id}class="tab_selected"#{/if}
-                                                   #{else}class="tab_unselected"#{/else}
-                                                   href="/${category.id}">${category.name}</a></li>
-        #{/list} 
-        }*
-    </ul>
-</div>
--->
 <div id="content">
-  #{doLayout /}
+    #{doLayout /}
 </div>
 <div id="footer">
-<!--
-    <div class="ft-nav">
-        <a href="">关于我们</a> |
-        <a href="">联系我们</a> |
-        <a href="">人才招聘</a> |
-        <a href="">商户入驻</a> |
-        <a href="">友情链接</a> |
-        <a href="">手机一百券</a> |
-        <a href="">分销网</a> |
-        <a href="">帮助中心</a>
-    </div>
--->
     <div class="copyright">
         © 2012 一百券 yibaiquan.com 版权所有 <span> 沪ICP备08114451号</span>
     </div>

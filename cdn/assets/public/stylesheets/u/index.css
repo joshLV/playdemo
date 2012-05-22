@@ -143,6 +143,12 @@
     line-height: 20px;
     overflow: hidden;
 }
+.recommendation-bd li p a {
+    *line-height: 20px;
+}
+.recommendation-bd li p a:hover {
+    color: #25B4AB;
+}
 .recommendation-bd li span {
     display: block;
     color: #AAA;
@@ -182,6 +188,9 @@
     _line-height: 32px;
     font-weight: 700;
     text-indent: 4px;
+}
+.tuangou-bd .title:hover {
+    color: #25B4AB;
 }
 .tuangou-bd .action {
     float: left;
@@ -248,6 +257,12 @@
     margin: 3px 0;
     line-height: 20px;
     overflow: hidden;
+}
+.boutique-bd li p a {
+    *line-height: 20px;
+}
+.boutique-bd li p a:hover {
+    color: #25B4AB;
 }
 .boutique-bd li span {
     display: block;
