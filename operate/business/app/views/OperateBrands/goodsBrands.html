@@ -1,5 +1,4 @@
-
-#{layout_operate.selectField name:'goods.brand.id', value:goods?.brand?.id, error:'goods.brand'}
+#{layout_operate.selectField name:'goods.brand.id', value:goods?.brand?.id, error:'goods.brand', required:true}
 #{list items:brandList, as:'brand'}
  #{option brand?.id}${brand?.name}#{/option}
 #{/list}

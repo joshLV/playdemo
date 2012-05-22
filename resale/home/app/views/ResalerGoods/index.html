@@ -153,7 +153,7 @@
             <div class="price">
                 市场价：${goods.faceValue?.formatCurrency('CNY').raw()}<br>
                 采购价：<span class="purchass-price">￥${goods.getResalePrice(resaler?.level)}</span><br>
-                折扣：${goods.discountExpress.yesno(goods.discountExpress+'折','无优惠')}
+                折扣：${goods.discountExpress}
             </div>
             <div class="action">
                 <a class="view-detail" href="@{ResalerGoods.show(goods.id)}">查看详情</a><br>
