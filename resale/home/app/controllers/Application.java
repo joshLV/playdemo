@@ -9,7 +9,7 @@ import models.*;
 import play.mvc.With;
 import controllers.modules.resale.cas.SecureCAS;
 
-@With(SecureCAS.class)
+// @With(SecureCAS.class)
 public class Application extends Controller {
 
     public static void index() {
