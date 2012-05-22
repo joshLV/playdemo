@@ -363,7 +363,7 @@ public class Order extends Model{
         //先将用户银行支付的钱充值到自己账户上
         if(this.discountPay.compareTo(BigDecimal.ZERO) > 0 ){
             TradeBill chargeTradeBill = TradeUtil.createChargeTrade(account, this.discountPay, paymentSource, this.getId());
-            TradeUtil.success(chargeTradeBill, "充值:" + this.description);
+            TradeUtil.success(chargeTradeBill, "充值(" + this.description + ")");
             /*
             JPAPlugin.closeTx(false);
             JPAPlugin.startTx(true);
@@ -379,7 +379,7 @@ public class Order extends Model{
                     this.discountPay,
                     paymentSource,
                     this.getId());
-            TradeUtil.success(tradeBill, "支付:" + this.description);
+            TradeUtil.success(tradeBill, "支付(" + this.description + ")");
             this.payRequestId = tradeBill.getId();
         }
         this.save();

@@ -127,8 +127,9 @@ public class Orders extends Controller {
 			defaultAddress = Address.findDefault(SecureCAS.getUser());
 			if (defaultAddress == null) {
 				Validation.addError("address", "validation.required");
-			}
-			receiverMobile = defaultAddress.mobile;
+			}else {
+                receiverMobile = defaultAddress.mobile;
+            }
 		}
 
 

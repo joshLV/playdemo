@@ -277,7 +277,7 @@ public class ECoupon extends Model {
 
 		//给商户打钱
 		TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, supplierAccount, originalPrice, order.getId());
-		TradeUtil.success(consumeTrade, "佣金:" + order.description);
+		TradeUtil.success(consumeTrade, "佣金(" + order.description + ")");
 
 		BigDecimal platformCommission = BigDecimal.ZERO;
 		if(salePrice.compareTo(resalerPrice) < 0){
@@ -295,7 +295,7 @@ public class ECoupon extends Model {
 						eCouponSn,
 						order.getId());
 
-				TradeUtil.success(uhuilaCommissionTrade, "佣金:" + order.description );
+				TradeUtil.success(uhuilaCommissionTrade, "佣金(" + order.description + ")" );
 			}
 		}
 
@@ -306,7 +306,7 @@ public class ECoupon extends Model {
 					platformCommission,
 					eCouponSn,
 					order.getId());
-			TradeUtil.success(platformCommissionTrade, "佣金:" + order.description);
+			TradeUtil.success(platformCommissionTrade, "佣金(" + order.description + ")");
 		}
 
 		this.shop = Shop.findById(shopId);
