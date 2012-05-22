@@ -11,6 +11,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +75,14 @@ public class Carts extends Controller {
 
         Cart.order(user, cookieValue, goods, increment);
 
-        ok();
+        List<Cart> carts = Cart.findAll(user, cookieValue);
+        BigDecimal amount = BigDecimal.ZERO;
+        int count = 0;
+        for(Cart cart : carts){
+            amount = amount.add(cart.goods.salePrice.multiply(new BigDecimal(cart.number)));
+            count += cart.number;
+        }
+        renderJSON("{\"count\":" + count + ", \"amount\":\"" + amount + "\"}");
     }
 
     /**
