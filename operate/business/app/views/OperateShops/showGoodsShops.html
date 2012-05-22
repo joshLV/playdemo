@@ -8,10 +8,18 @@
     #{/else}</td>
     <td colspan="2"></td>
 </tr>
+<SCRIPT type=text/javascript>
+    #{if shopList== null || shopList.size()==0}
+    $("#err-goods_supplierId").html("该商户没有门店，请先为商户添加门店！");
+    #{/if}
+    #{else}
+    $("#err-goods_supplierId").html("");
+    #{/else}
+</SCRIPT>
 #{list items:shopList, as:'shop' }
 <tr>
     <td><input type="checkbox" id="shops" value="${shop?.id}" name="goods.shops.id"
-               #{if shopIds?.contains(","+java.lang.String.valueOf(shop?.id)+",")}checked#{/if}/> ${shop.name}</td>
+               #{if shopIds?.contains(","+shop?.id+",")}checked#{/if}/> ${shop.name}</td>
     <td>${shop.address}</td>
     <td>${shop.phone}</td>
 </tr>

@@ -11,7 +11,7 @@
         <table width="100%">
             <tr>
                 <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-                #{select 'supplierId', id:supplierId, class:'input-middle', value:supplierId}
+                #{select 'supplierId', id:supplierId, class:'select', value:supplierId}
                     #{option "0"}不限#{/option}
                     #{list items:supplierList, as:'supplier'}
                         #{option supplier?.id}${supplier?.fullName}#{/option}

@@ -16,12 +16,12 @@
                "":_value?.escape()?.raw()}"/><span id="note_${_id?:field.id}">${_note}</span>#{if _tip!= null}<span
             id="tip_${_id?:field.id}" class="warn">${_tip}</span>#{/if}
         #{ifError field.name}
-            <span class="error">${field.error.raw()}</span>
+            <span class="error" id="err-${field.id}">${field.error.raw()}</span>
         #{/ifError}
     #{/field}
     #{field _err?:'errors'}
         #{ifError field.name}
-            <span class="error" id="${field.id}">${field.error.raw()?:''}</span>
+            <span class="error" id="err-${field.id}">${field.error.raw()?:''}</span>
         #{/ifError}
     #{/field}
     </div>
