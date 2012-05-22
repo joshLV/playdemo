@@ -159,7 +159,7 @@ select:'condition_sequenceType',value:condition.sequenceType,form:'form'/}
                     ${accountSequence.cashAmount.add(accountSequence.uncashAmount)?.formatCurrency('CNY')}
                 #{/if}</td>
 
-                <td>&{'order.payMethod.'+accountSequence.payMethod}</td>
+                <td>${accountSequence.payMethod}</td>
             </tr>
         #{/paginate.list}
         </table>
