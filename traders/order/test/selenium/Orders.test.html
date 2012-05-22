@@ -6,7 +6,7 @@
     models.sales.Shop.class, models.sales.Goods.class,
     models.order.OrderItems.class,models.order.ECoupon.class,] ,
 load:['fixture/roles.yml','fixture/supplier_users.yml',
-    'fixture/goods_base.yml','fixture/goods.yml','fixture/user.yml','fixture/orders.yml'] /}
+    'fixture/goods_base.yml','fixture/goods.yml','fixture/user.yml','fixture/orders.yml','fixture/orderItems.yml'] /}
 #{selenium "查看订单界面"}
     #{include 'test/selenium/step/login.selenium' /}
     open('/orders')

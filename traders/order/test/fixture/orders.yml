@@ -21,14 +21,6 @@ order.Order(order1):
   "payMethod": "alipay"
   "payRequestId": "0"
 
-order.OrderItems(orderItems1):
-  "order": "order1"
-  "buyNumber": 2
-  "salePrice": "10"
-  "originalPrice": "20"
-  "goodsName": "哈根达斯100元抵用券"
-  "createdAt": "2012-03-05T00:00:00"
-  "goods": "Goods_001"
 
 order.Order(order2):
   "user": "user"
