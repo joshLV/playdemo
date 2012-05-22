@@ -20,6 +20,10 @@ GET     /send-email/success                    FindPassword.sendEmailSuccess
 # Home page
 GET     /                                       Home.index
 GET     /{<[0-9]+>categoryId}                   Home.index
+GET     /about                                  Application.about
+GET     /contact                                Application.contact
+GET     /help                                   Application.help
+
 GET     /goods                                  Goods.index
 GET     /goods/list/{condition}                 Goods.list
 GET     /goods/{id}                             Goods.show
