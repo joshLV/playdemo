@@ -1,8 +1,7 @@
 div.pagination-container {
 	clear: both;
-	align:center;
+	text-align:center;
 }
-
 ul.pagination {
 	border: 0;
 	margin: 0;
@@ -10,17 +9,14 @@ ul.pagination {
 	float: left;
 	margin: 20px 0px 20px 10px;
 }
-
 .pagination li {
 	border: 0;
 	margin: 0;
 	padding: 0;
 	list-style: none;
-	border: solid 1px #AEAEAE;
 	float: left;
 	margin-right : 10px;
 }
-
 .pagination .previous-off a,
 .pagination .next-off a, 
 .pagination .off a:link, 
@@ -28,26 +24,28 @@ ul.pagination {
 	color: #888888;
 	font-weight: bold;
 }
-
-.pagination .next a, .pagination .previous a, .pagination .first a, .pagination .last a {
+.pagination .next a,
+.pagination .previous a,
+.pagination .first a,
+.pagination .last a {
 	font-weight: bold;
-	color: #00000;
+	color: #000;
 }
-
-.pagination .active {
-	color: #00000;
-	background-color: #DEDEDE;
-	font-weight : bold;
-}
-
-.pagination a:link, .pagination a:visited {
-	color: #0033CC;
+.pagination a:link,
+.pagination a:visited {
+    color: #666;
 	display : block;
 	float: left;
 	padding: 3px 8px;
 	text-decoration: none;
+	border: solid 1px #AEAEAE;
 }
-
+.pagination a.active {
+	color: #FFF;
+	font-weight: 700;
+	background-color: #AF2F15;
+    border: 1px solid #AF2F15;
+}
 .pagination a:hover {
 	text-decoration: none;
 }

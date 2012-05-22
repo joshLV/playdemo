@@ -73,6 +73,7 @@ mark { background: #ff0; }
 }
 #logo {
     float: left;
+    font-size: 0;
 }
 #user {
     float: left;
@@ -84,7 +85,7 @@ mark { background: #ff0; }
 }
 #menu {
     float: right;
-    height: 35px;
+    height: 34px;
     padding-top: 14px;
 }
 #menu li {
