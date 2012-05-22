@@ -1,0 +1,35 @@
+#content {
+    padding-top: 15px;
+}
+#sidebar {
+    float: left;
+    width: 180px;
+}
+#sidebar ul {
+    padding-bottom: 5px;
+    border-top: 2px solid #25B4AB;
+    background-color: #F4F4F4;
+}
+#sidebar li a {
+    display: block;
+    color: #666;
+    text-indent: 10px;
+    line-height: 32px;
+}
+#sidebar li a:hover {
+    color: #25B4AB;
+}
+#section {
+    float: right;
+    width: 760px;
+}
+#section h3 {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    border-bottom: 1px dashed #D4D4D4;
+}
+#section pre {
+    font-size: 13px;
+    font-family: "宋体";
+}
