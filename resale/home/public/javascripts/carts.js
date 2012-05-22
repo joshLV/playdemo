@@ -11,19 +11,32 @@
  */
 function reorder(goods_id,phone,increment){
     var element = $("#num_" + goods_id + "-" + phone);
-    var last_num = $("#last_num_" + goods_id + "-" + phone);
+    var last_num_ele = $("#last_num_" + goods_id + "-" + phone);
     var stock = Number($("#stock_" + goods_id + "-" + phone).val());
 
-    var new_num = Number(last_num.val()) + increment;
-    if(new_num <= 0 || new_num > stock){
-        element.val(last_num.val());
+    var last_num = Number(last_num_ele.val())
+    var new_num = last_num + increment;
+    if(new_num <= 0){
+        element.val(last_num);
+        return;
+    }
+    if(new_num > 999){
+        new_num = 999;
+        increment = 999 - last_num;
+    }
+    if(new_num > stock){
+        new_num = stock;
+        increment = stock - last_num;
+    }
+    if(increment == 0){
+        element.val(last_num);
         return;
     }
     $.post('/carts/ajax',
             {goodsId:goods_id,increment:increment, phone: phone},
             function(data){
                 element.val(new_num);
-                last_num.val(new_num);
+                last_num_ele.val(new_num);
                 calItem(goods_id + "-" + phone);
                 refreshAmount();
             });
@@ -57,7 +70,7 @@ $(window).load(
             return false;
         });
         //直接在文本框里输入
-        $("input.num_input").blur(function(){
+        $("input.num-input").blur(function(){
             var el_id = $(this).attr("id");
             var last_num = $("#last_" + el_id);
             var re= /^\d+(\.\d+)?$/;
@@ -65,9 +78,11 @@ $(window).load(
                 $(this).val(last_num.val());
                 return;
             }
-            var goods_id = el_id.substr(el_id.lastIndexOf("_") + 1);
+            var goods_id_str = el_id.substr(el_id.lastIndexOf("_") + 1);
+            var goods_ids = goods_id_str.split("-");
 
-            reorder(goods_id, Number($(this).val()) - Number(last_num.val()));
+
+            reorder(goods_ids[0], goods_ids[1], Number($(this).val()) - Number(last_num.val()));
         });
         //点击删除
         $("a.delete_gift").click(function(){  

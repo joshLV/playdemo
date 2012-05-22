@@ -82,11 +82,15 @@ public class Cart extends Model {
 
         //如果记录已存在，则更新记录，否则新建购物车记录
         if (cart != null) {
-            if (cart.number + increment > 0) {
+            // 不允许一次购买超过999
+            if (cart.number + increment > 0){
                 cart.number += increment;
+                cart.number = cart.number > 999 ? 999 : cart.number;
+                cart.number = cart.number > goods.baseSale ? goods.baseSale : cart.number;
                 cart.save();
                 return cart;
             } else {
+                cart.delete();
                 //不允许存在数量小于等于0的购物车记录
                 return null;
             }
@@ -94,6 +98,8 @@ public class Cart extends Model {
             if (increment <= 0) {
                 return null;
             }
+            increment = increment > 999 ? 999 : increment;
+            increment = increment > goods.baseSale.intValue() ? goods.baseSale.intValue() : increment;
             if (user != null) {
                 return new Cart(user, null, goods, increment).save();
             } else {

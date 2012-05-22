@@ -11,19 +11,32 @@
  */
 function reorder(goods_id,increment){
     var element = $("#num_" + goods_id);
-    var last_num = $("#last_num_" + goods_id);
+    var last_num_ele = $("#last_num_" + goods_id);
     var stock = Number($("#stock_" + goods_id).val());
 
-    var new_num = Number(last_num.val()) + increment;
-    if(new_num <= 0 || new_num > stock){
-        element.val(last_num.val());
+    var last_num = Number(last_num_ele.val())
+    var new_num = last_num + increment;
+    if(new_num <= 0){
+        element.val(last_num);
+        return;
+    }
+    if(new_num > 999){
+        new_num = 999;
+        increment = 999 - last_num;
+    }
+    if(new_num > stock){
+        new_num = stock;
+        increment = stock - last_num;
+    }
+    if(increment == 0){
+        element.val(last_num);
         return;
     }
     $.post('/carts',
             {goodsId:goods_id,increment:increment},
             function(data){
                 element.val(new_num);
-                last_num.val(new_num);
+                last_num_ele.val(new_num);
                 calItem(goods_id);
                 refreshAmount();
             });
@@ -80,7 +93,6 @@ $(window).load(
                 return;
             }
             var goods_id = el_id.substr(el_id.lastIndexOf("_") + 1);
-
             reorder(goods_id, Number($(this).val()) - Number(last_num.val()));
         });
         //点击删除
