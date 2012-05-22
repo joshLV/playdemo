@@ -146,20 +146,16 @@
                href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-0"
                value="${orderBy}">最佳匹配</a>
             <a #{if orderBy == 4}class="selected"#{/if}
-               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-4-${orderByType==0?1:0}">#{if orderBy==4 && orderByType == 1}
-                最新#{/if}#{else}最早#{/else}发布</a>
+               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-4-${orderByType==0?1:0}">#{if orderBy==4 && orderByType == 1}最新#{/if}#{else}最早#{/else}发布</a>
 
             <a #{if orderBy == 1}class="selected"#{/if}
-               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-1-${orderByType==0?1:0}">销量#{if orderBy==1 && orderByType == 1}
-                最多#{/if}#{else}最少#{/else}</a>
+               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-1-${orderByType==0?1:0}">销量#{if orderBy==1 && orderByType == 1}最多#{/if}#{else}最少#{/else}</a>
 
             <a #{if orderBy == 2}class="selected"#{/if}
-               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-2-${orderByType==0?1:0}">价格#{if orderBy==2 && orderByType == 1}
-                最高#{/if}#{else}最低#{/else}</a>
+               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-2-${orderByType==0?1:0}">价格#{if orderBy==2 && orderByType == 1}最高#{/if}#{else}最低#{/else}</a>
 
             <a #{if orderBy == 3}class="selected"#{/if}
-               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-3-${orderByType==0?1:0}">折扣#{if orderBy==3 && orderByType == 1}
-                最大#{/if}#{else}最小#{/else}</a>
+               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-3-${orderByType==0?1:0}">折扣#{if orderBy==3 && orderByType == 1}最大#{/if}#{else}最小#{/else}</a>
         </div>
         <div class="list-content clearfix">
             <ul class="clearfix">

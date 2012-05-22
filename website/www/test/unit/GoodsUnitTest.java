@@ -90,10 +90,10 @@ public class GoodsUnitTest extends UnitTest {
         assertEquals("无优惠", goods.getDiscountExpress());
 
         goods.setDiscount(new BigDecimal("-1"));
-        assertEquals("", goods.getDiscountExpress());
+        assertEquals("0折", goods.getDiscountExpress());
 
         goods.setDiscount(BigDecimal.ZERO);
-        assertEquals("", goods.getDiscountExpress());
+        assertEquals("0折", goods.getDiscountExpress());
     }
 
     @Test

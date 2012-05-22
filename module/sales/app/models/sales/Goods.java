@@ -360,10 +360,13 @@ public class Goods extends Model {
     @Transient
     public String getDiscountExpress() {
         BigDecimal discount = getDiscount();
+        if (discount.compareTo(BigDecimal.ZERO) == 0) {
+            return "0折";
+        }
         if (discount.compareTo(BigDecimal.TEN) >= 0) {
             return "无优惠";
         }
-        if (discount.compareTo(BigDecimal.ZERO) <= 0) {
+        if (discount.compareTo(BigDecimal.ZERO) < 0) {
             return "";
         }
 
