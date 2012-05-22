@@ -38,10 +38,10 @@ public class ShopDailyReport extends Model {
     public Shop shop;
 
     @Column(name = "buy_count")
-    public long buyCount;
+    public Long buyCount;
 
     @Column(name = "order_count")
-    public long orderCount;
+    public Long orderCount;
 
     @Column(name = "sale_amount")
     public BigDecimal saleAmount;
