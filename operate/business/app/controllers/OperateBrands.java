@@ -2,8 +2,6 @@ package controllers;
 
 import com.uhuila.common.util.FileUploadUtil;
 import models.sales.Brand;
-import models.sales.Category;
-import models.sales.CategorySerializer;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -54,7 +52,8 @@ public class OperateBrands extends Controller {
     @ActiveNavigation("brands_add")
     public static void add() {
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        render(supplierList);
+        Brand brand = new Brand();
+        render(supplierList, brand);
     }
 
     @ActiveNavigation("brands_add")
@@ -175,13 +174,13 @@ public class OperateBrands extends Controller {
         }
         index(null);
     }
-    
 
-	public static void goodsBrands(Long id) {
-		//品牌列表
-		Supplier supplier = Supplier.findById(id);
-		List<Brand> brandList = Brand.findByOrder(supplier);
-		render(brandList);
-	}
+
+    public static void goodsBrands(Long id) {
+        //品牌列表
+        Supplier supplier = Supplier.findById(id);
+        List<Brand> brandList = Brand.findByOrder(supplier);
+        render(brandList);
+    }
 
 }
