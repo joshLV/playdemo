@@ -625,7 +625,7 @@ public class Goods extends Model {
         JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>
                 ("Goods g", "g", Goods.class, condition.getFilter(),
                         condition.getParamMap())
-                .orderBy("g.createdAt DESC");
+                .orderBy(condition.getOrderByExpress());
         goodsPage.setPageNumber(pageNumber);
         goodsPage.setPageSize(pageSize);
         goodsPage.setBoundaryControlsEnabled(false);
