@@ -149,16 +149,15 @@ $(function() {
             </ul>
         </div>
         <div class="brand">
-            <h4 class="brand-name">品牌名称: <a
-                    href="/goods/list/0-0-0-0-${goods.brand?.id}"><span>${goods.brand?.name}</span></a></h4>
-
-            <p class="brand-logo"><a href="/goods/list/0-0-0-0-${goods.brand?.id}"><img src="${goods.brand?.showLogo}"
-                                                                                        height="83" width="195"
-                                                                                        alt="${goods.brand?.name}"/></a>
+            <h4 class="brand-name">
+                品牌名称: <a href="/goods/list/0-0-0-0-${goods.brand?.id}"><span>${goods.brand?.name}</span></a>
+            </h4>
+            <p class="brand-logo">
+                <a href="/goods/list/0-0-0-0-${goods.brand?.id}">
+                    <img src="${goods.brand?.showLogo}" height="83" width="195" alt="${goods.brand?.name}"/>
+                </a>
             </p>
-
-            <div class="brand-text">${goods.brand?.introduce?.raw()}
-            </div>
+            <div class="brand-text">${goods.brand?.introduce?.raw()}</div>
         </div>
     </div>
 </div>

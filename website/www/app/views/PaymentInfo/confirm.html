@@ -19,21 +19,30 @@
         <a class="payed" href="http://home.uhuila.cn/orders">已完成付款</a>
 </div>
 
-
 <ol class="buy-step step4 clearfix">
     <li><span>1</span>查看购物车 <em>>></em></li>
     <li><span>2</span>确认订单信息 <em>>></em></li>
     <li><span>3</span>确认付款 <em>>></em></li>
     <li class="buy-step-curr"><span>4</span>成功提交订单 <em>>></em></li>
 </ol>
-<div id="balance-pay" class="clearfix">
 #{if order}
     #{if order.status == models.order.OrderStatus.PAID}
-        <div id="order-box" class="clearfix">
-            <div class="order-num"><span>恭喜您付款成功</span></div>
+    <div class="order-success">
+        <div class="order-wish">恭喜您付款成功</div>
+        <ul>
+            <li>您还可以在 “<a href="">我的一百券</a> > <a href="">我购买的商品</a> > <a href="">订单详情</a>” 查看商品券号或配送详情</li>
+            <li>凭短信的券号到取货门店直接取货。</li>
+            <li class="service">电子券商品，只要您末进行消费，且保持一百券订单有效，我们将提供随时退款的服务。<br/>
+                我们的客服电话：400-6262-166 我们的客服邮件是：uhuila@seewi.com.cn</li>
+        </ul>
+        <div class="btn">
+            <a href=""><span>查看订单详情</span></a>
+            <a href=""><span>继续购物</span></a>
         </div>
+    </div>
     #{/if}
     #{else }
+    <div id="balance-pay" class="clearfix">
         <div id="order-box" class="clearfix">
             <div class="order-num">您已选择 ${paymentSource.name} 支付 ${order.discountPay} 元</div>
         </div>
@@ -62,9 +71,9 @@
             });
         });
         </script>
+    </div>
     #{/else}
 #{/if}
-</div>
 
 #{if !order}
 <div class="order-num"> 对不起，找不到您所需要的订单:(</div>

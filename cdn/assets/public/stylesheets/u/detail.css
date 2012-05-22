@@ -13,7 +13,7 @@
 /** 券属性 **/
 .property {
     float: left;
-    width: 430px;
+    width: 410px;
     margin-right: 20px;
     border-top: 1px dotted #E4E4E4;
 }
@@ -104,17 +104,6 @@
 /** 服务、品牌 **/
 .aside {
     float: left;
-    width: 223px;
-}
-.aside .service {
-    padding: 2px 5px;
-    margin-bottom: 10px;
-    border: 1px solid #E4E4E4;
-    background: url(http://img.uhcdn.com/images/u/detail_icon.png) no-repeat 5px 10px;
-}
-.aside .service li {
-    font: 14px/1.5 "Microsoft YaHei";
-    padding: 6px 0 5px 30px;
 }
 .aside .brand {
     padding: 5px 8px;
@@ -123,6 +112,9 @@
 .aside .brand-name,
 .aside .brand-logo {
     padding: 2px 0;
+}
+.aside .brand-name {
+    line-height: 25px;
 }
 .aside .brand-text {
     line-height: 22px;
