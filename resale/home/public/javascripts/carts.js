@@ -12,9 +12,11 @@
 function reorder(goods_id,phone,increment){
     var element = $("#num_" + goods_id + "-" + phone);
     var last_num = $("#last_num_" + goods_id + "-" + phone);
+    var stock = Number($("#stock_" + goods_id + "-" + phone).val());
 
     var new_num = Number(last_num.val()) + increment;
-    if(new_num <= 0){
+    if(new_num <= 0 || new_num > stock){
+        element.val(last_num.val());
         return;
     }
     $.post('/carts/ajax',

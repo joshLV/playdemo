@@ -83,6 +83,7 @@
                     </a>
                     <input class="num-input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}-${cartItem.phone}" />
                     <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}-${cartItem.phone}"/>
+                    <input type="hidden" value="${cartItem.goods.baseSale}" id="stock_${cartItem.goods.id}-${cartItem.phone}">
                     <a class="add_box" href="#" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
                         <img src="@{'/public/images/add_anniu.jpg'}"  id="inc_add_${cartItem.goods.id}-${cartItem.phone}"/>
                     </a>

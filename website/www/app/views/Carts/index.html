@@ -41,6 +41,7 @@
             </a>
             <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}"/>
             <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}"/>
+            <input type="hidden" value="${cartItem.goods.baseSale}" id="stock_${cartItem.goods.id}">
             <a class="add_box" href="#" name="${cartItem.goods.id}">
                 <img src="@{'/public/images/add_anniu.jpg'}" id="add_img_${cartItem.goods.id}"/>
             </a>
