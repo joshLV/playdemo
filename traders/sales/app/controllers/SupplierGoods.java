@@ -61,6 +61,7 @@ public class SupplierGoods extends Controller {
             condition = new GoodsCondition();
         }
         condition.supplierId = supplierId;
+        condition.orderBy = "g.createdAt";
 
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);

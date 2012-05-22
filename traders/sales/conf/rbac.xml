@@ -11,12 +11,12 @@
         <permission key="SHOPS_NEW" text="门店添加" roles="editor"/>
     </permission>
 
-    <navigation key="goods_app" text="商品发布" action="SupplierGoods.index" permissions="GOODS" display-order="20">
-        <navigation key="goods" text="商品" permission="GOODS_NEW,GOODS" permissions="GOODS">
+    <navigation key="goods_app" text="商品发布" action="SupplierGoods.index" display-order="20">
+        <navigation key="goods" text="商品">
             <navigation key="goods_add" action="SupplierGoods.add" text="商品添加" permissions="GOODS_NEW"/>
             <navigation key="goods_index" action="SupplierGoods.index" text="商品管理" permissions="GOODS"/>
         </navigation>
-        <navigation key="shops" text="门店" permission="SHOPS_NEW,SHOPS" permissions="SHOPS">
+        <navigation key="shops" text="门店">
             <navigation key="shops_add" action="Shops.add" text="门店添加" permissions="SHOPS_NEW"/>
             <navigation key="shops_index" action="Shops.index" text="门店管理" permissions="SHOPS"/>
         </navigation>
