@@ -22,7 +22,8 @@
         <h3>资料管理</h3>
         <ul>
             <li><a id="userInfo" #{if request.url.equals("/user-info")}class="current"#{/if} href="/user-info">» 我的资料</a></li>
-            <li><a id="pwd" #{if request.url.equals("/user/password")}class="current"#{/if} href="/user/password">»
+            <li><a id="pwd" #{if request.url.equals("/user/password")}class="current"#{/if}
+                   href="/user/edit-password">»
                 修改密码</a></li>
             <li><a #{if request.url.equals("/addresses")}class="current"#{/if} href="/addresses">» 收货地址</a></li>
         </ul>

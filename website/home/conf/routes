@@ -22,7 +22,7 @@ DELETE  /carts/{goodsIds}                             UserCarts.delete
 GET      /user-info                                    UserInfos.index
 POST     /user-info/send                               UserInfos.sendValidCode
 POST     /user-info/mobile-bind                        UserInfos.bindMobile
-POST     /user-info/{id}                               UserInfos.update
+POST     /user-info                                    UserInfos.update
 
 GET      /user-sequences                               Usersequences.index
 #收货地址
@@ -34,8 +34,8 @@ PUT     /addresses/{id}                               UserAddresses.update
 PUT     /addresses/{id}/default                       UserAddresses.updateDefault
 DELETE  /addresses/{id}                               UserAddresses.delete
 
-GET     /user/password                                UserPasswords.index
-POST    /user/{id}                                    UserPasswords.update
+GET     /user/edit-password                           UserPasswords.index
+POST    /user/edit-password                           UserPasswords.update
 
 GET     /user-point                                   UserPoints.index
 

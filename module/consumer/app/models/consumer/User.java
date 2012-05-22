@@ -193,11 +193,7 @@ public class User extends Model {
      */
     public void updateMobile(String mobile) {
         this.mobile = mobile;
-        this.userInfo.mobile = mobile;
-        this.userInfo.bindMobileAt = new Date();
-        this.userInfo.save();
         this.save();
-
     }
 
     /**

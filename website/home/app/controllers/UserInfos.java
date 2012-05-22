@@ -28,8 +28,8 @@ public class UserInfos extends Controller {
      * 用户资料页面
      */
     public static void update(Long id, UserInfo userInfo, String interest) {
-        UserInfo userInfos = UserInfo.findById(id);
-        //如果用户信息不存在则创建
+        User user = SecureCAS.getUser();
+        UserInfo userInfos = UserInfo.findById(user.id);
         if (userInfos != null) {
             //存在则修改
             userInfos.update(userInfo, interest);

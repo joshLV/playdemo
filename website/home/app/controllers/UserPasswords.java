@@ -25,14 +25,9 @@ public class UserPasswords extends Controller {
     /**
      * 修改密码
      */
-    public static void update(long id, User user) {
+    public static void update(User user) {
         BreadcrumbList breadcrumbs = new BreadcrumbList("修改密码", "/user/password");
-        User newUser;
-        if (id == 0) {
-            newUser = SecureCAS.getUser();
-        } else {
-            newUser = User.findById(id);
-        }
+        User newUser = SecureCAS.getUser();
         //密码验证
         checkPassword(user, newUser);
 

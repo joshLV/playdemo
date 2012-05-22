@@ -75,7 +75,7 @@
     <div class="section">
     #{breadcrumbs/breadcrumb breadcrumbs/}
         <div class="change-password">
-            <form class="form-horizontal" action="@{UserPasswords.update(user.id)}" method="POST">
+            <form class="form-horizontal" action="@{UserPasswords.update()}" method="POST">
                 <div class="old-password">
                     <label><span class="required">*</span>原密码：</label>
                     <input class="input" name="user.oldPassword" type="password" id="old_password" size="26" maxlength="20" value="${user?.oldPassword}"/>

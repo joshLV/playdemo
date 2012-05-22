@@ -19,7 +19,7 @@
             $("#passtelcheck").html("<span class='redInfo allstep_info'><b></b><em>手机号码不对！</em></span>"); 
             return false;
         }
-        $.post("/checkByTel", {mobile:mobile}, function(data){
+        $.get("/send-message_code?from="+mobile,function(data){
                 if(data==1){
                    $("#passtelcheck").html("<span class='yellowInfo allstep_info'><b></b><em>验证码已成功发送，请查收！</em></span>"); 
                    updateTimer('showspan',60);
@@ -62,10 +62,11 @@
            $("#passtelcheck").html("<span class='redInfo allstep_info'><b></b><em>请输入手机验证码</em></span>"); 
            return false;
        }
+
        $("#telpassbutton").attr("disabled","disabled");
-       $.post("/reset",{mobile:mobile,validCode:telcheckcode},function(data){
+       $.get("/check-mobile",{mobile:mobile,validCode:telcheckcode},function(data){
            if(data==0){
-        	   var url = "/resetPassword?mobile="+mobile;
+        	   var url = "/reset-password?mobile="+mobile;
                setTimeout(function(){ location.href =url;},10);
            }else if(data==1){
                $("#passtelcheck").html("<span class='redInfo allstep_info'><b></b><em>手机验证码错误或已过期</em></span>");
@@ -88,38 +89,13 @@
 </script>
 <div class="find-password">
     <div class="find-title">找回密码</div>
-    <h2>请填写您的注册手机</h2>
     <div class="input-tel">
-        <div><input id="mobile" type="text" maxlength="11" /> <span class="error"></span></div>
+        <div><label>输注册手机</label><input id="mobile" type="text" maxlength="11" />
+            <input id="getcodebutton" type="button"class="btn" onclick="sendCheckCode()" value="发送验证码" /> <span id="passtelcheck"></span></div>
+
+        <div><label>输入验证码</label><input id="telcheckcode" type="text"
+                        class="input196 inputbg" /></div>
         <div style="padding-top:20px"><input id="telpassbutton" class="btn" type="button" onClick="getpwsbyemail()" value="下一步" /></div>
     </div>
 </div>
-<!--
-<div id="main">
-    <div id="fpwd_maincontainer">
 
-        <div class="allstep">
-            <div class="flow-steps2">
-                <ol class="num3">
-                    <li class="current"><strong class="first">第一步：选择找回密码方式</strong></li>
-                    <li class="last"><strong>第二步：填写注册手机</strong></li>
-                </ol>
-            </div>
-            <div class="allstep_c redInfo">
-                <ul>
-                    <li class="allstemp_c_1"><label> 注册手机：</label><input id="mobile" type="text" maxlength="11"
-                        class="input196 inputbg" />
-                    <div id="showspan">
-                            <input id="getcodebutton" type="button"  onclick="sendCheckCode()" value="发送验证码" />
-                        </div></li>
-                    <li class="allstemp_c_3" id="passtelcheck"></li>
-                    <li class="allstemp_c_2"><label>输入验证码：</label><input id="telcheckcode" type="text"
-                        class="input196 inputbg" />&nbsp;&nbsp;&nbsp;</li>
-                    <li><input id="telpassbutton" type="button" onClick="getpwsbyemail()" value="下一步" /></li>
-                </ul>
-            </div>
-
-        </div>
-    </div>
-</div>
--->
