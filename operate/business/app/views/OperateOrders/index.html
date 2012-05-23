@@ -222,9 +222,9 @@
     <div class="modal-body">
     #{form @OperateOrders.index(), id:"sendForm", name:"sendForm", enctype:'multipart/form-data',
     class:"form-horizontal",method:"PUT"}
-#{layout_operate.textField name:'order.deliveryCompany', value:order.deliveryCompany, required:true,
+#{layout_operate.textField name:'order?.deliveryCompany', value:order?.deliveryCompany, required:true,
     err:"deliveryCompany"/}
-#{layout_operate.textField name:'order.deliveryNo', value:order.deliveryNo, required:true/}
+#{layout_operate.textField name:'order?.deliveryNo', value:order?.deliveryNo, required:true/}
     #{/form}
     </div>
     <div class="modal-footer">
