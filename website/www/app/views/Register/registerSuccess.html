@@ -1,12 +1,19 @@
 #{extends 'main.html' /}
 #{set title:'注册成功页面' /}
 #{set 'moreStyles'}
-<link href="@{'/public/stylesheets/default.css'}" rel="stylesheet" type="text/css"/>
-<link href="@{'/public/stylesheets/lanrentuku.css'}" rel="stylesheet" type="text/css"/>
-<link href="@{'/public/stylesheets/shop_info_more.css'}" rel="stylesheet" type="text/css"/>
 <style>
-.error_tz{ clear:both; font-size:25px;padding-left:24px; vertical-align:bottom}
-.error_tz span{ font-size:30px; color:#f20000; font-family:"宋体"; vertical-align: middle; }
+.wish {
+    font-size: 25px;
+    padding: 35px 25px;
+}
+.wish span {
+    padding: 0 5px;
+    font-size: 36px;
+    font-weight: 700;
+    color: #f20000;
+    font-family:"宋体";
+    vertical-align: middle;
+}
 </style>
 #{/set}
 #{set 'moreScripts'}
@@ -29,27 +36,8 @@ function doUpda(num){
 </script>
 #{/set}
 <body onload="init()">
-<div id="wrap_main">
-    <!--    最顶部导航-->
-    <div id="wrap_top">#{include "share/topNavigator.html"/}</div>
-    <div id="wrap_top_header">
-        <div id="wrap_top_header_left">
-            <img src="@{'/public/images/logo.jpg'}"/>
-        </div>
-        <div id="wrap_top_middle">券生活-惠生活</div>
-
+<div id="content">
+    <div class="wish">
+        恭喜你注册成功！<span id="time">5</span>秒之后自动跳转到登录页面
     </div>
-    <div style="clear: both"></div>
-    <div class="fen_g"></div>
 </div>
-<!--主体内容部分-->
-<div id="wrap_content">
-    <div id="content_zhuti">
-        <div class="zhu_nav_title">
-            您的位置：注册成功页面
-            <div class="error_tz">恭喜你注册成功！<span id="time">5</span>&nbsp;&nbsp;&nbsp;&nbsp;秒之后自动跳转到登录页面</div>
-        </div>
-</div>
-</div>
-</body>
-</html>
