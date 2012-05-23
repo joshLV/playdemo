@@ -92,13 +92,13 @@ public class User extends Model {
      *
      * @param loginName 用户名
      */
-    public static String checkLoginName(String loginName) {
+    public static boolean checkLoginName(String loginName) {
 
         List<User> userList = User.find("byLoginName", loginName).fetch();
-        String returnFlag = "0";
+        boolean isExisted = false;
         //用户名存在的情况
-        if (userList.size() > 0) returnFlag = "1";
-        return returnFlag;
+        if (userList.size() > 0) isExisted = true;
+        return isExisted;
     }
 
     /**
