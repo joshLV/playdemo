@@ -79,8 +79,8 @@
                         #{list row.orderItems, as:'rowItem'}
                         <tr class="order-bd">
                             <td height="80" align="left">
-                                <div class="left_shangpin"><a href="http://www.uhuila.cn/goods/${rowItem.goods.id}" target="_blank"><img src="${rowItem.goods.imageTinyPath}"/></a></div>
-                                <div class="right_shangpin"><a href="http://www.uhuila.cn/goods/${rowItem.goods.id}" target="_blank">${rowItem.goods.name}</a></div>
+                                <div class="left_shangpin"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${rowItem.goods.id}" target="_blank"><img src="${rowItem.goods.imageTinyPath}"/></a></div>
+                                <div class="right_shangpin"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${rowItem.goods.id}" target="_blank">${rowItem.goods.name}</a></div>
                             </td>
                             <td align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
                             <td align="center">${rowItem.buyNumber}</td>

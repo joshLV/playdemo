@@ -19,7 +19,7 @@
     <div id="menu">
         <div class="welcom">
         #{if cas?.isLogin}
-            欢迎您, <a class="zi_gray" href="http://home.uhuila.cn" id="login_name">${cas.loginName}</a> <a class="zi_gray"
+            欢迎您, <a class="zi_gray" href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}" id="login_name">${cas.loginName}</a> <a class="zi_gray"
                                                                                                          href="/logout">退出</a>
         #{/if}
         #{else}
@@ -27,27 +27,27 @@
         #{/else}
         </div>
         <div class="myUhuila">
-            <div class="myUhuila-hd"><a href="http://home.uhuila.cn/">我的一百券</a></div>
+            <div class="myUhuila-hd"><a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}/">我的一百券</a></div>
             <div class="myUhuila-bd">
-                <a href="http://home.uhuila.cn/orders">我的订单</a>
+                <a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}/orders">我的订单</a>
             </div>
         </div>
         <div class="carts">
-            <div class="carts-hd"><a href="http://www.uhuila.cn/carts">购物车<span id="carts_size">${count}</span>件</a>
+            <div class="carts-hd"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">购物车<span id="carts_size">${count}</span>件</a>
             </div>
             <input type="hidden" id="reload" value="true"/>
 
             <div class="carts-bd" id="cart-list"></div>
 
         </div>
-        <div class="help"><a href="/help">帮助中心</a></div>
+        <div class="help"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/help">帮助中心</a></div>
     </div>
 </div>
 <div id="nav">
     <ul class="clearfix">
-        <li #{if categoryId == 0}class="current"#{/if}><a href="http://www.uhuila.cn">首页</a></li>
-        <li><a href="http://www.uhuila.cn/goods/list/1" #{if categoryId == 1}class="current"#{/if}>饮食</a></li>
-        <li><a href="http://www.uhuila.cn/goods/list/2" #{if categoryId == 2}class="current"#{/if}>礼品</a></li>
+        <li #{if categoryId == 0}class="current"#{/if}><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}">首页</a></li>
+        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/1" #{if categoryId == 1}class="current"#{/if}>饮食</a></li>
+        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/2" #{if categoryId == 2}class="current"#{/if}>礼品</a></li>
     *{
         #{list categories, as: 'category'}
         <li class="hot_shangpin_li"><a #{if categoryId == category.id}class="tab_selected"#{/if}
@@ -62,11 +62,10 @@
 </div>
 <div id="footer">
     <div class="ft-nav">
-        <a href="" target="_blank">关于我们</a> |
-        <a href="" target="_blank">联系我们</a> |
-        <a href="" target="_blank">人才招聘</a> |
+        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/about" target="_blank">关于我们</a> |
+        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/contact" target="_blank">联系我们</a> |
         <a href="http://quanmx.com/" target="_blank">商户入驻</a> |
-        <a href="" target="_blank">帮助中心</a>
+        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/help" target="_blank">帮助中心</a>
     </div>
     <div class="copyright">
         Copyright © 2012 一百券YiBaiQuan.COM 版权所有 <span> 沪ICP备08114451号</span>

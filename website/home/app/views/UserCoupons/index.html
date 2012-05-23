@@ -133,11 +133,11 @@
                     <td height="30" align="center">${coupon?.eCouponSn}</td>
                     <td width="320">
                         <div class="left_shangpin">
-                            <a href="http://www.uhuila.cn/goods/${coupon.goods.id}" target="_blank"><img
+                            <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${coupon.goods.id}" target="_blank"><img
                                     src="${coupon?.goods?.imageTinyPath}"/></a>
                         </div>
                         <div class="right_shangpin">
-                            <a href="http://www.uhuila.cn/goods/${coupon.goods.id}"
+                            <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${coupon.goods.id}"
                                target="_blank">${coupon?.goods?.name}</a>
                         </div>
                     </td>

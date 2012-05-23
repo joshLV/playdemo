@@ -79,9 +79,9 @@
                     <table>
                         <tbody>
                         <tr>
-                            <td><a href="http://www.uhuila.cn/goods/${goods.id}?preview=true" target="_blank"><img
+                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${goods.id}?preview=true" target="_blank"><img
                                     src="${goods?.imageTinyPath}"/></a></td>
-                            <td><a href="http://www.uhuila.cn/goods/${goods.id}?preview=true">${goods?.name}</a></td>
+                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${goods.id}?preview=true">${goods?.name}</a></td>
                         </tr>
                         </tbody>
                     </table>

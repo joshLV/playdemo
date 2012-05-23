@@ -3,19 +3,19 @@
 <ul>
     #{list items:carts, as:'cartItem'}
     <li class="carts-item clearfix" id="row_${cartItem.goods.id}">
-        <a class="goods-img" href="http://www.uhuila.cn/goods/${cartItem.goods.id}"><img src="${cartItem.goods.imageTinyPath}" width="48" /></a>
-        <a class="goods-name" href="http://www.uhuila.cn/goods/${cartItem.goods.id}">${cartItem.goods.name}</a>
+        <a class="goods-img" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${cartItem.goods.id}"><img src="${cartItem.goods.imageTinyPath}" width="48" /></a>
+        <a class="goods-name" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${cartItem.goods.id}">${cartItem.goods.name}</a>
         <span class="goods-price">${cartItem.goods.salePrice?.formatCurrency('CNY')} x ${cartItem.number}</span>
         <a href="#" class="cart-delete" goods_id="${cartItem.goods.id}" count="${cartItem.number}">删除</a>
     </li>
     #{/list}
-    <a class="view-carts" href="http://www.uhuila.cn/carts">查看购物车</a>
-    <a id="order_confirm" class="view-carts" href="http://www.uhuila.cn/orders?items=#{list items:carts,
+    <a class="view-carts" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">查看购物车</a>
+    <a id="order_confirm" class="view-carts" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/orders?items=#{list items:carts,
     as:'cartItem'}${cartItem.goods.id}-${cartItem.number},#{/list}">去结算</a>
 </ul>
 #{/if}
 #{else}
 您的购物车中没有任何商品。<br/>
-<a class="view-carts" href="http://www.uhuila.cn/carts">查看购物车</a>
+<a class="view-carts" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">查看购物车</a>
 #{/else}
 *{<input type="hidden" id="goods_count" value="${count}">}*

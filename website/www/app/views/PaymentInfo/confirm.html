@@ -16,7 +16,7 @@
     #{if order}
         <a class="repay" href="/payment_info/${order.orderNumber}">遇到问题？</a>
     #{/if}
-        <a class="payed" href="http://home.uhuila.cn/orders">已完成付款</a>
+        <a class="payed" href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}/orders">已完成付款</a>
 </div>
 
 <ol class="buy-step step4 clearfix">

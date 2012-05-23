@@ -93,7 +93,7 @@
     </thead>
 #{paginate.list items:reportPage, as:'report'}
     <tr>
-        <td><a href="http://www.uhuila.cn/goods/${report?.goods?.id}"><img
+        <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${report?.goods?.id}"><img
                 src="${report?.goods?.imageTinyPath}"/>${report?.goods?.name}</a></td>
         <td>${report?.buyCount}</td>
         <td>${report?.orderCount}</td>

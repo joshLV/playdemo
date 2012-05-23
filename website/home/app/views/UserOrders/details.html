@@ -31,8 +31,8 @@
     #{list items:orderItems, as:'row' }
         <tr>
             <td align="left" valign="middle">
-                <div class="left_shangpin"><a href="http://www.uhuila.cn/goods/${row.goods.id}" target="_blank"><img src="${row.goods.imageTinyPath}"/></a></div>
-                <div class="right_shangpin"><a href="http://www.uhuila.cn/goods/${row.goods.id}" target="_blank">${row.goods.name}</a></div>
+                <div class="left_shangpin"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${row.goods.id}" target="_blank"><img src="${row.goods.imageTinyPath}"/></a></div>
+                <div class="right_shangpin"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${row.goods.id}" target="_blank">${row.goods.name}</a></div>
             <td width="69" align="center" valign="middle">&{'goods.'+row.goods.materialType}</td>
             <td width="81" align="center" valign="middle">${row.salePrice?.formatCurrency('CNY').raw()}</td>
             <td width="66" align="center" valign="middle">${row.buyNumber}</td>
