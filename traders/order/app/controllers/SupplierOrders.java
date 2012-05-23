@@ -17,6 +17,9 @@ import play.mvc.With;
 
 @With(SupplierRbac.class)
 @ActiveNavigation("order_index")
+/**
+ * 商户不需要关注用户订单，因此此功能应取消！！！
+ */
 public class SupplierOrders extends Controller {
 
 	public static int PAGE_SIZE = 15;

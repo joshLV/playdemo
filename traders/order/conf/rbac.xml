@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<application text="订单管理">
+<application text="券管理">
   <role key="sales" text="销售经理"/>
   <role key="clerk" text="收款店员"/>
 
+<!--
   <permission key="ORDER" text="订单管理" roles="sales"/>
   <permission key="ORDER_EDIT" text="修改订单" roles="sales" />
+-->
   <permission key="COUPON" text="消费券管理" roles="clerk"/>
   <permission key="COUPON_VERIFY" text="验证消费券" roles="clerk"/>
 
+<!--
   <navigation key="order_app" text="销售订单" action="SupplierOrders.index" permissions="ORDER" display-order="50">
     <navigation key="order" text="订单" permission="ORDER" permissions="ORDER">
       <navigation key="order_index" action="SupplierOrders.index" text="订单管理" permissions="ORDER"/>
     </navigation>
   </navigation>
+-->
   <navigation key="coupon_app" text="券验证" action="SupplierCoupons.index" permissions="COUPON" display-order="60">
     <navigation key="coupon" text="消费券">
       <navigation key="coupons" action="SupplierCoupons.coupons" text="消费券号列表" permissions="COUPON"/>
