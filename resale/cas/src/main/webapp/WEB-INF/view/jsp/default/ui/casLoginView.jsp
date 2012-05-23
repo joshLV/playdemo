@@ -77,7 +77,7 @@
             </form:form>
 
             <p class="loginfj">
-                <span class="colorred">注：</span>如您手机已经绑定过优惠啦"优卡"(会员卡)，<br>
+                <span class="colorred">注：</span>如您手机已经绑定过一百券"优卡"(会员卡)，<br>
                 &nbsp;&nbsp;&nbsp;&nbsp;并且首次登录网站请<a href="#">点击</a>
             </p>
         </div>

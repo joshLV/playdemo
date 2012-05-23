@@ -3,7 +3,7 @@
 #{selenium "登录并退出"}
     #{include 'test/selenium/step/login.selenium' /}
     openAndWait('/orders')
-    assertTitle('优惠啦 - 我的订单')
+    assertTitle('一百券 - 我的订单')
     openAndWait('/logout')
     openAndWait('/orders')
     assertTitle('CAS Mock Server - Login')

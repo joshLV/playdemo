@@ -281,13 +281,13 @@ public class ECoupon extends Model {
 
 		BigDecimal platformCommission = BigDecimal.ZERO;
 		if(salePrice.compareTo(resalerPrice) < 0){
-			//如果成交价小于分销商成本价（这种情况只有在优惠啦网站上才会发生），
-			//那么优惠啦就没有佣金，平台的佣金也变为成交价减成本价
+			//如果成交价小于分销商成本价（这种情况只有在一百券网站上才会发生），
+			//那么一百券就没有佣金，平台的佣金也变为成交价减成本价
 			platformCommission = salePrice.subtract(originalPrice);
 		}else {
 			//平台的佣金等于分销商成本价减成本价
 			platformCommission = resalerPrice.subtract(originalPrice);
-			//如果是在优惠啦网站下的单，还要给优惠啦佣金
+			//如果是在一百券网站下的单，还要给一百券佣金
 			if (order.userType == AccountType.CONSUMER){
 				TradeBill uhuilaCommissionTrade = TradeUtil.createCommissionTrade(
 						AccountUtil.getUhuilaAccount(),

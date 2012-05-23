@@ -7,7 +7,7 @@ load:['fixture/user.yml','fixture/addresses.yml'] /}
 #{selenium '查看地址管理 添加地址'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/addresses')
-verifyTitle('优惠啦 - 地址管理')
+verifyTitle('一百券 - 地址管理')
 verifyTextPresent('新增地址')
 type('id=address_name','sujie1-test')
 type('id=address_address','address-test')
@@ -37,7 +37,7 @@ type('id=address_name','sujie-test')
 #{selenium '删除地址'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/addresses')
-verifyTitle('优惠啦 - 地址管理')
+verifyTitle('一百券 - 地址管理')
 verifyTextPresent('sujie')
 verifyTextPresent('200100')
 verifyTextPresent('13511112222')
@@ -46,6 +46,6 @@ verifyTextPresent('test1')
 verifyTextPresent('黄浦区')
 click('id=del_${play.test.Fixtures.idCache.get("models.consumer.Address-test2")}')
 assertConfirmation('您确定要删除sujie吗？')
-verifyTitle('优惠啦 - 地址管理')
+verifyTitle('一百券 - 地址管理')
 #{/selenium}
 

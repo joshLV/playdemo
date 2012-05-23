@@ -133,7 +133,7 @@ public class TradeUtil {
     }
     
     /**
-     * 创建佣金交易，消费者消费成功后，将佣金付给平台和优惠啦
+     * 创建佣金交易，消费者消费成功后，将佣金付给平台和一百券
      * 
      * @param account   收取佣金的账户
      * @param amount    佣金金额

@@ -4,7 +4,7 @@
 sales.Shop(shop1):
  supplierId: 1
  areaId: "02101001"
- name: 优惠啦
+ name: 一百券
  address: 宛平南路
  phone: "02100000"
  latitude: 0.0
@@ -15,7 +15,7 @@ sales.Shop(shop1):
 sales.Shop(shop2):
  supplierId: 1
  areaId: "02101002"
- name: 优惠啦二店
+ name: 一百券二店
  address: 宛平南路二号
  phone: "02100000"
  latitude: 0.0

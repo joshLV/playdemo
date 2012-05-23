@@ -184,7 +184,7 @@ $.fn.unopacity = function(opts){
 }
 
 /**
-*优惠啦弹出框
+*一百券弹出框
 */
 function Dialog(opts) {
 	$.popup.hide();

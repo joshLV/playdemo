@@ -60,7 +60,7 @@ goods.effectiveAt=开始时间
 goods.expireAt=到期时间
 goods.faceValue=原价
 goods.originalPrice=采购价
-goods.salePrice=优惠啦销售价
+goods.salePrice=一百券销售价
 goods.baseSale=库存
 goods.imagePath=图片
 goods.image_upload_failed=图片上传失败
@@ -164,7 +164,7 @@ account_sequence.RECEIVE=收款
 account_sequence.FREEZE=冻结
 account_sequence.UNFREEZE=取消冻结
 
-platform.CONSUMER=优惠啦网站
+platform.CONSUMER=一百券网站
 platform.RESALER=分销网
 platform.PLATFORM=运营平台
 platform.SUPPLIER=商户平台

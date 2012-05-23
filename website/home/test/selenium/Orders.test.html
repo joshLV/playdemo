@@ -22,16 +22,16 @@ load:['fixture/user.yml','fixture/goods_base.yml','fixture/goods.yml','fixture/o
 #{selenium "查看我购买的商品"}
     #{include 'test/selenium/step/login.selenium' /}
     openAndWait('/orders')
-    assertTitle('优惠啦 - 我的订单')
+    assertTitle('一百券 - 我的订单')
     verifyTextPresent('您的位置：首页 > 我的订单')
     openAndWait('/coupons')
-    assertTitle('优惠啦 - 我的券')
+    assertTitle('一百券 - 我的券')
     verifyTextPresent('您的位置：首页 > 我的券')
 #{/selenium}
 
 #{selenium '查看订单详细信息'}
     open('/orders/${order1.orderNumber}')
-    assertTitle('优惠啦 - 商品详情')
+    assertTitle('一百券 - 商品详情')
     verifyTextPresent('订单详情')
 #{/selenium}
 

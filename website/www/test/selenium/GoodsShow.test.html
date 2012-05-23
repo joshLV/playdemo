@@ -1,7 +1,7 @@
 #{fixture delete:'all', load:'fixture/goods.yml' /}
 #{selenium 'Test Goods/show.html Normal'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods1")}')
-verifyTitle('优惠啦 - 商品详情')
+verifyTitle('一百券 - 商品详情')
 verifyTextPresent('测试商品1')
 verifyTextPresent('2012-02-01')
 verifyTextPresent('2092-02-02')
@@ -12,12 +12,12 @@ verifyTitle('Not found')
 #{/selenium}
 #{selenium 'Test Goods/show.html OFFSALE'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods3")}')
-verifyTitle('优惠啦 - 商品详情')
+verifyTitle('一百券 - 商品详情')
 verifyTextPresent('测试商品3')
 #{/selenium}
 #{selenium 'Test Goods/show.html expired'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods4")}')
-verifyTitle('优惠啦 - 商品详情')
+verifyTitle('一百券 - 商品详情')
 verifyTextPresent('测试商品4')
 #{/selenium}
 #{selenium 'Test Goods/show.html Not found'}

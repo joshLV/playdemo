@@ -18,7 +18,7 @@
   <permission key="CONSUMERS_REPORT" text="消费者资金明细" roles="account"/>
   <permission key="RESALES_REPORT" text="分销商资金明细" roles="account"/>
   <permission key="SUPPLIERS_REPORT" text="商户资金明细" roles="account"/>
-  <permission key="WEBSITES_REPORT" text="优惠啦佣金账户资金明细" roles="account"/>
+  <permission key="WEBSITES_REPORT" text="一百券佣金账户资金明细" roles="account"/>
   <permission key="PLATFORMS_REPORT" text="券平台佣金账户资金明细" roles="account"/>
   <permission key="INCOMINGS_REPORT" text="收款账户资金明细" roles="account"/>
   <permission key="WITHDRAW_APPROVAL" text="审批提现申请" roles="account"/>
@@ -81,7 +81,7 @@
                   permission="RESALES_REPORT"/>
       <navigation key="suppliers_account_reports" action="OperateReports.showSupplierReport" text="商户的资金明细"
                   permission="SUPPLIERS_REPORT"/>
-      <navigation key="websites_account_reports" action="OperateReports.showWebsiteReport" text="优惠啦佣金账户资金明细"
+      <navigation key="websites_account_reports" action="OperateReports.showWebsiteReport" text="一百券佣金账户资金明细"
                   permission="WEBSITES_REPORT"/>
       <navigation key="platforms_account_reports" action="OperateReports.showPlatformReport" text="券平台佣金账户资金明细"
                   permission="PLATFORMS_REPORT"/>

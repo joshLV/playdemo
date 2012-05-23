@@ -70,7 +70,7 @@ public class Goods extends Model {
 
 
     /**
-     * 运营人员填写的优惠啦网站价格
+     * 运营人员填写的一百券网站价格
      */
     @Min(0)
     @Max(999999)

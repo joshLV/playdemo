@@ -1,5 +1,5 @@
 $(function () {
-    //  我的优惠啦
+    //  我的一百券
     $('.myUhuila').mouseover(function () {
         $(this).addClass('myUhuila-on');
         $('.myUhuila-bd').show();

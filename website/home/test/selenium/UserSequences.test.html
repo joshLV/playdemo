@@ -41,7 +41,7 @@ load:['fixture/user.yml','fixture/goods_base.yml','fixture/goods.yml','fixture/o
     #{include 'test/selenium/step/login.selenium' /}
     open('/orders')
     clickAndWait('id=amount')
-    assertTitle('优惠啦 - 资金明细')
+    assertTitle('一百券 - 资金明细')
     verifyTextPresent('selenium@uhuila.com')
     verifyTextPresent('1000.02')
     type('id=sequenceFlag','收入')

@@ -150,7 +150,7 @@ public class OperateReports extends Controller {
     }
 
     /**
-     * 查询优惠啦佣金账户报表.
+     * 查询一百券佣金账户报表.
      */
     @ActiveNavigation("websites_account_reports")
     public static void showWebsiteReport(AccountSequenceCondition condition) {

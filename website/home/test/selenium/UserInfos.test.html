@@ -5,7 +5,7 @@ load:['fixture/user.yml','fixture/userInfo.yml'] /}
 #{include 'test/selenium/step/login.selenium' /}
 open('/orders')
 clickAndWait('id=userInfo')
-verifyTitle('优惠啦 - 基本资料')
+verifyTitle('一百券 - 基本资料')
 verifyTextPresent('selenium@uhuila.com')
 click('id=upuserinfobutton')
 type('id=realname','')

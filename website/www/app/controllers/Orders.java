@@ -153,12 +153,12 @@ public class Orders extends Controller {
 				if (goodsItem.materialType == MaterialType.REAL) {
 					order.addOrderItem(goodsItem, itemsMap.get(goodsItem.getId()), receiverMobile,
 							goodsItem.salePrice, //最终成交价
-							goodsItem.getResalerPriceOfUhuila()//优惠啦作为分销商的成本价
+							goodsItem.getResalerPriceOfUhuila()//一百券作为分销商的成本价
 							);
 				} else {
 					order.addOrderItem(goodsItem, itemsMap.get(goodsItem.getId()), mobile,
 							goodsItem.salePrice, //最终成交价
-							goodsItem.getResalerPriceOfUhuila()//优惠啦作为分销商的成本价
+							goodsItem.getResalerPriceOfUhuila()//一百券作为分销商的成本价
 							);
 				}
 

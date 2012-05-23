@@ -1,7 +1,7 @@
 #{fixture delete:'all'/}
 #{selenium 'Test FindPassword/findByTel.html'}
     open('/find-password?from=mobile')
-    verifyTitle('优惠啦 - 通过手机找回密码')
+    verifyTitle('一百券 - 通过手机找回密码')
     type('id=mobile','1523124asdd')
     click('id=telpassbutton')
     verifyTextPresent('手机号码不对！')

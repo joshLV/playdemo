@@ -85,7 +85,7 @@ public class ShopFunctionTest extends FunctionalTest {
 		Response response = POST("/shops/"+shopId, goodsParams);
 		assertStatus(302,response);
 		Shop shop = Shop.findById(shopId);
-		Assert.assertEquals("优惠啦二店", shop.name);  
+		Assert.assertEquals("一百券二店", shop.name);
 	}
 
 }

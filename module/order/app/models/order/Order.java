@@ -39,7 +39,7 @@ public class Order extends Model{
     private static final DecimalFormat decimalFormat = new DecimalFormat("0000000");
 
 	@Column(name = "user_id")
-	public long userId;                     //下单用户ID，可能是优惠啦用户，也可能是分销商
+	public long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "user_type")
@@ -212,7 +212,7 @@ public class Order extends Model{
 
     public void generateOrderDescription(){
         if(this.orderType == OrderType.CHARGE){
-            this.description = "优惠啦充值" + this.amount + "元";
+            this.description = "一百券充值" + this.amount + "元";
         }else if(this.orderItems.size() == 1){
             this.description = this.orderItems.get(0).goodsName ;
         }else if(this.orderItems.size() > 1){

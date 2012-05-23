@@ -19,20 +19,20 @@ verifyTextPresent('test-address')
     #{include 'test/selenium/step/login.selenium' /}
 open('/shops/${play.test.Fixtures.idCache.get("models.sales.Shop-shop1")}/edit')
 verifyTitle('修改门店')
-verifyValue('id=shop_name','优惠啦')
-type('id=shop_name','优惠啦特色门店')
+verifyValue('id=shop_name','一百券')
+type('id=shop_name','一百券特色门店')
 clickAndWait('id=save')
 verifyTitle('门店一览')
-verifyTextPresent('优惠啦特色门店')
+verifyTextPresent('一百券特色门店')
 #{/selenium}
 
 #{selenium '删除门店'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/shops')
 verifyTitle('门店一览')
-verifyTextPresent('优惠啦二店')
+verifyTextPresent('一百券二店')
 clickAndWait('id=del_${play.test.Fixtures.idCache.get("models.sales.Shop-shop2")}')
-assertConfirmation('您确定要删除优惠啦二店吗？')
+assertConfirmation('您确定要删除一百券二店吗？')
 verifyTitle('门店一览')
-verifyTextNotPresent('优惠啦二店')
+verifyTextNotPresent('一百券二店')
 #{/selenium}

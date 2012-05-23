@@ -5,7 +5,7 @@ load:['fixture/user.yml','fixture/userInfo.yml','fixture/goods_base.yml','fixtur
 #{include 'test/selenium/step/login.selenium' /}
 open('/orders')
 clickAndWait('id=points')
-verifyTitle('优惠啦 - 我的积分')
+verifyTitle('一百券 - 我的积分')
 verifyTextPresent('selenium@uhuila.com')
 verifyTextPresent('100')
 verifyTextPresent('2012-04-09')
