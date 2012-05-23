@@ -30,7 +30,7 @@ public class CouponMailsTest extends FunctionalTest {
         
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
         System.out.println(mailBody);
-        assertTrue("邮件标题不正确", mailBody.indexOf("Subject: [优惠啦] 您订购优惠券") > 0);
+        assertTrue("邮件标题不正确", mailBody.indexOf("Subject: [一百券] 您订购优惠券") > 0);
         assertTrue("邮件中必须出现fullName", mailBody.indexOf(fullName) > 0);
         assertTrue("邮件中必须出现fulcoupon1", mailBody.indexOf(coupon1) > 0);
         assertTrue("邮件中必须出现fulcoupon2", mailBody.indexOf(coupon2) > 0);
@@ -58,7 +58,7 @@ public class CouponMailsTest extends FunctionalTest {
         
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
         System.out.println(mailBody);
-        assertTrue("邮件标题不正确", mailBody.indexOf("Subject: [优惠啦] 您订购优惠券") > 0);
+        assertTrue("邮件标题不正确", mailBody.indexOf("Subject: [一百券] 您订购优惠券") > 0);
         assertTrue("邮件中必须出现fullName", mailBody.indexOf(fullName) > 0);
         assertTrue("邮件中必须出现fulcoupon1", mailBody.indexOf(coupon1) > 0);
         assertTrue("邮件中必须出现fulcoupon2", mailBody.indexOf(coupon2) > 0);

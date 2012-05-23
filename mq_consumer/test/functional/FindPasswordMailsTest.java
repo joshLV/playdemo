@@ -23,7 +23,7 @@ public class FindPasswordMailsTest extends FunctionalTest {
         
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
         System.out.println(mailBody);
-        assertTrue("邮件标题不正确", mailBody.indexOf("Subject: [优惠啦] 找回密码") > 0);
+        assertTrue("邮件标题不正确", mailBody.indexOf("Subject: [一百券] 找回密码") > 0);
         assertTrue("邮件中必须出现url", mailBody.indexOf(mailUrl) > 0);
     }
     
@@ -40,7 +40,7 @@ public class FindPasswordMailsTest extends FunctionalTest {
         
         String mailBody = Mail.Mock.getLastMessageReceivedBy(email);
         System.out.println(mailBody);
-        assertTrue("邮件标题不正确", mailBody.indexOf("Subject: [优惠啦] 找回密码") > 0);
+        assertTrue("邮件标题不正确", mailBody.indexOf("Subject: [一百券] 找回密码") > 0);
         assertTrue("邮件中必须出现url", mailBody.indexOf(mailUrl) > 0);
     }
 }
