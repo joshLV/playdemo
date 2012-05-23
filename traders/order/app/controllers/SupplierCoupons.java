@@ -1,24 +1,19 @@
 package controllers;
 
-import java.util.List;
-import java.util.Map;
-
 import models.admin.SupplierSetting;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.sales.Shop;
 import navigation.annotations.ActiveNavigation;
-
 import org.apache.commons.lang.StringUtils;
-
-import play.Play;
 import play.data.validation.Validation;
 import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import com.uhuila.common.util.DateUtil;
+import java.util.List;
+import java.util.Map;
 
 @With(SupplierRbac.class)
 public class SupplierCoupons extends Controller {
@@ -77,7 +72,7 @@ public class SupplierCoupons extends Controller {
 			renderJSON("err");
 		}
 		if (eCoupon.status == ECouponStatus.UNCONSUMED) {
-			eCoupon.consumed(shopId);
+			eCoupon.consumed(shopId, SupplierRbac.currentUser());
 		} else {
 			renderJSON(eCoupon.status);
 		}

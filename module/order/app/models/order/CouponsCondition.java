@@ -1,90 +1,104 @@
 package models.order;
 
+import com.uhuila.common.util.DateUtil;
+import models.accounts.AccountType;
+import models.supplier.Supplier;
+import org.apache.commons.lang.StringUtils;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.Query;
-
-import models.accounts.AccountType;
-import models.consumer.User;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-
 public class CouponsCondition {
-    public Map<String, Object> couponsMap = new HashMap<>();
-    public Date createdAtBegin; 
-	public Date createdAtEnd; 
-	public Date refundAtBegin; 
-	public Date refundAtEnd; 
-	public ECouponStatus status;
-	public String goodsName;
-	public String orderNumber;
-	public String phone;
-	 
-	
-    /**
-     * @return orderBySql 排序字段
-     */
-    public String getOrderByExpress() {
-        String orderBySql = "e.createdAt desc";
+    public Date createdAtBegin;
+    public Date createdAtEnd;
 
-        return orderBySql;
+    public Date consumedAtBegin;
+    public Date consumedAtEnd;
+
+    public ECouponStatus status;
+    public ECouponStatus excludeStatus;
+    public String goodsName;
+    public String orderNumber;
+    public String phone;
+    public Long userId;
+    public AccountType accountType;
+    public Supplier supplier;
+    public String shopLike;
+
+    private Map<String, Object> paramMap = new HashMap<>();
+
+    public String getOrderByExpress() {
+        return "e.createdAt desc";
     }
 
     /**
      * 券查询条件
      *
-     * @param user           用户信息
-     * @param createdAtBegin 开始日
-     * @param createdAtEnd   结束日
-     * @param status         状态
-     * @param goodsName      商品名称
      * @return sql 查询条件
      */
-    public String getFilter(Long userId, AccountType accountType) {
+    public String getFilter() {
         StringBuilder sql = new StringBuilder();
         sql.append(" 1=1 ");
         if (userId != null && accountType != null) {
             sql.append(" and e.order.userId = :userId and e.order.userType = :userType");
-            couponsMap.put("userId", userId);
-            couponsMap.put("userType", accountType);
+            paramMap.put("userId", userId);
+            paramMap.put("userType", accountType);
         }
 
         if (createdAtBegin != null) {
             sql.append(" and e.createdAt >= :createdAtBegin");
-            couponsMap.put("createdAtBegin", createdAtBegin);
+            paramMap.put("createdAtBegin", createdAtBegin);
         }
 
         if (createdAtEnd != null) {
             sql.append(" and e.createdAt <= :createdAtEnd");
-            couponsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
+            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
+        }
+
+        if (consumedAtBegin != null) {
+            sql.append(" and e.consumedAt >= :consumedAtBegin");
+            paramMap.put("consumedAtBegin", consumedAtBegin);
+        }
+
+        if (consumedAtEnd != null) {
+            sql.append(" and e.consumedAt <= :consumedAtEnd");
+            paramMap.put("consumedAtEnd", DateUtil.getEndOfDay(consumedAtEnd));
         }
 
         if (StringUtils.isNotBlank(goodsName)) {
             sql.append(" and e.goods.name like :name");
-            couponsMap.put("name", "%" + goodsName + "%");
+            paramMap.put("name", "%" + goodsName + "%");
+        }
+
+        if (StringUtils.isNotBlank(shopLike)) {
+            sql.append(" and (e.shops.name like :shopLike or e.shops.address like :shopLike)");
+            paramMap.put("shopLike", "%" + shopLike + "%");
         }
 
         if (status != null) {
             sql.append(" and e.status = :status");
-            couponsMap.put("status", status);
+            paramMap.put("status", status);
+        }
+        if (excludeStatus != null) {
+            sql.append(" and e.status != :excludeStatus");
+            paramMap.put("excludeStatus", excludeStatus);
         }
 
-        if(orderNumber != null){
+        if (orderNumber != null) {
             sql.append(" and e.order.orderNumber like :orderNumber");
-            couponsMap.put("orderNumber", "%" + orderNumber + "%");
+            paramMap.put("orderNumber", "%" + orderNumber + "%");
         }
-        
-        if(StringUtils.isNotBlank(phone)){
+
+        if (StringUtils.isNotBlank(phone)) {
             sql.append(" and e.orderItems.phone like :phone");
-            couponsMap.put("phone", "%" + phone + "%");
+            paramMap.put("phone", "%" + phone + "%");
         }
 
         return sql.toString();
     }
-        
+
+    public Map<String, Object> getParamMap() {
+        return paramMap;
+    }
 }

@@ -84,7 +84,7 @@ public class SmsReceivers extends Controller {
             Shop shop = Shop.findById(shopId);
             String shopName = shop.name;
             if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-                ecoupon.consumed(supplierUser.shop.id);
+                ecoupon.consumed(supplierUser.shop.id, supplierUser);
 
                 String coupon = ecoupon.getMaskedEcouponSn();
                 coupon = coupon.substring(coupon.lastIndexOf("*") + 1);
@@ -154,8 +154,8 @@ public class SmsReceivers extends Controller {
         }
 
         if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-            ecoupon.consumed(supplierUser.shop.id);
-            String coupon = ecoupon.getMaskedEcouponSn().replaceAll("*", "");
+            ecoupon.consumed(supplierUser.shop.id, supplierUser);
+            String coupon = ecoupon.getLastCode(4);
             String dateTime = DateUtil.getNowTime();
             // 发给店员
             SMSUtil.send("【券市场】," + getMaskedMobile(mobile) + "消费者的尾号" + coupon + "的券（面值：" + ecoupon

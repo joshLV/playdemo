@@ -1,5 +1,8 @@
 package controllers;
 
+import models.order.CouponsCondition;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.report.DetailDailyReport;
 import models.report.GoodsDailyReport;
 import models.report.ReportCondition;
@@ -47,6 +50,20 @@ public class SupplierReports extends Controller {
                 reportPage = DetailDailyReport.query(condition, pageNumber, PAGE_SIZE);
 
                 summary = DetailDailyReport.summary(condition);
+                break;
+            case 2:
+                CouponsCondition ecouponCondition = new CouponsCondition();
+                ecouponCondition.supplier = condition.supplier;
+                ecouponCondition.consumedAtBegin = condition.createdAtBegin;
+                ecouponCondition.consumedAtEnd = condition.createdAtEnd;
+                ecouponCondition.shopLike = condition.shopLike;
+                ecouponCondition.goodsName = condition.goodsLike;
+                ecouponCondition.excludeStatus = ECouponStatus.UNCONSUMED;
+
+                reportPage = ECoupon.query(ecouponCondition, pageNumber, PAGE_SIZE);
+                summary = new ReportSummary();
+                summary.goodsCount = reportPage.getRowCount();
+                summary.originalAmount = ECoupon.sum(ecouponCondition);
                 break;
         }
         render(reportPage, summary, condition, tabIndex);

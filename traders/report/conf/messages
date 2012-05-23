@@ -2,3 +2,6 @@ play-paginate.first=&laquo;&nbsp;首页
 play-paginate.prev=&lsaquo;&nbsp;上一页
 play-paginate.next=下一页&nbsp;&rsaquo;
 play-paginate.last=尾页&nbsp;&raquo;
+
+coupon-status.UNCONSUMED=未消费
+coupon-status.CONSUMED=已消费

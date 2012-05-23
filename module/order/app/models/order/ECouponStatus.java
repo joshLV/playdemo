@@ -7,5 +7,5 @@ package models.order;
 public enum ECouponStatus {
     UNCONSUMED, // 未消费
     CONSUMED,   //已消费
-    REFUND,     //已退款
+    REFUND     //已退款
 }
