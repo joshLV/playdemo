@@ -2,34 +2,16 @@
 #{set title:'优惠啦 - 我的券' /}
 #{set 'moreStyles'}
     #{asset.css src:['/u/list.css','/u/popup.css'] /}
-<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
-<link href="@{'/public/stylesheets/user-center.css'}" rel="stylesheet" type="text/css" />
+<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
+<link href="@{'/public/stylesheets/user-center.css'}" rel="stylesheet" type="text/css"/>
 <style type="text/css">
-    #full_bg {
-        background-color: Gray;
-        display: none;
-        z-index: 3;
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        filter: Alpha(Opacity = 30); /* IE */
-        -moz-opacity: 0.4; /* Moz + FF */
-        opacity: 0.4;
-    }
-    #apply_dialog {
-        position: absolute;
-        width: 400px;
-        height: 200px;
-        background: white;
-        display: none;
-        z-index: 5;
-    }
     .left_shangpin {
         float: left;
         width: 62px;
         height: 36px;
         margin: 2px 2px;
     }
+
     .right_shangpin {
         width: 190px;
         margin: 2px 0px;
@@ -44,100 +26,57 @@
 <script src="@{'/public/javascripts/common.jq.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script>
-
-    function cal_position_top(id) {
-        var st = document.documentElement.scrollTop;//滚动条距顶部的距离
-        var ch = document.documentElement.clientHeight;//屏幕的高度
-        var height = $("#" + id).height();//浮动对象的高度
-        return Number(st) + (Number(ch) - Number(height)) / 2;
-    }
-    function cal_position_left(id) {
-        var sl = document.documentElement.scrollLeft;//滚动条距左边的距离
-        var cw = document.documentElement.clientWidth;//屏幕的宽度
-        var width = $("#" + id).width();//浮动对象的宽度
-        return Number(sl) + (Number(cw) - Number(width)) / 2;
-    }
-    function reset_result_dialog() {
-        if ($("#full_bg").css("display") == "block") {
-            var body_height = document.documentElement.clientHeight;//屏幕的高度
-            var body_width = document.documentElement.clientWidth;//屏幕的宽度
-//        var body_height = $("body").height();
-//        var body_width  = $("body").width();
-            $("#full_bg").css({
-                width:body_width,
-                height:body_height});
-            $("#apply_dialog").css({
-                top:cal_position_top("apply_dialog"),
-                left:cal_position_left("apply_dialog"),
-                display:"block"});
-
+    function applyRefund(id) {
+        $("#coupon_id").val(id);
+        if (confirm("确定要申请退款吗？")) {
+            $.common.dialog({'id':'refund', 'title':'申请退款'});
         }
+
     }
-    function close_result_dialog() {
-        $("#full_bg").css({display:"none"});
-        $("#apply_dialog").css({display:"none"});
-    }
+    function confirmApply() {
+        var coupon_id = $("#coupon_id").val();
+        var apply_note = $("#apply_note").val();
+        if (apply_note == "") {
+            alert("请输入退款理由！");
+            return;
+        }
+        var url = "/coupons/refund/" + coupon_id;
+        $.post(
+                url,
+                {"applyNote":apply_note},
+                function (data) {
+                    if (data.error != 'ok') {
+                        alert("申请失败: " + data.error);
+                    } else {
+                         $.popup.hide();
+                        $("#apply_" + coupon_id).html("");
+                        $("#send_" + coupon_id).html("");
 
-
-    $(window).load(function () {
-
-        $(window).scroll(function () {
-            reset_result_dialog()
-        });
-        $(window).resize(function () {
-            reset_result_dialog()
-        });
-
-        $("#search").click(function () {
-            $('#couponsFrm').submit();
-        });
-        $("#status").change(function () {
-            $('#couponsFrm').submit();
-        });
-        $("a[name='apply_refund']").each(function () {
-            $(this).click(function () {
-                $("#apply_row").val($(this).attr('id'));
-                $("#full_bg").css({"display":"block"});
-                reset_result_dialog();
-                return false;
-            });
-        });
-
-        $("#confirm_apply").click(function () {
-            close_result_dialog();
-            $.post(
-                    $("#" + $("#apply_row").val()).attr("href"),
-                    {"applyNote":$("#apply_note").val()},
-                    function (data) {
-                        if (data.error != 'ok') {
-                            alert("申请失败: " + data.error);
-                        } else {
-                            $("#" + $("#apply_row").val()).empty().append("");
-                            $("#status_" + $("#apply_row").val()).empty().append("已退款");
-                        }
+                        $("#status_apply_" + coupon_id).html("已退款");
                     }
-            );
-            return false;
-        });
-
-    });
-  var cnt =0;
-  function sendMessage(id,phone){
-      cnt++;
-      if (cnt == 3){
-          $("#send_msg_"+id).html("");
-      }
-      $("#mobile").html(phone);
-      $("#id").val(id);
-      $.common.dialog({'id':'sendMsg','title':'发送短信'});
+                }, "json");
     }
-    function sendMessageDialog(){
+
+
+    var cnt = 0;
+    function sendMessage(id, phone) {
+        cnt++;
+        if (cnt == 3) {
+            $("#send_msg_" + id).html("");
+        }
+        $("#mobile").html(phone);
+        $("#id").val(id);
+        $.common.dialog({'id':'sendMsg', 'title':'发送短信'});
+    }
+    function sendMessageDialog() {
         var id = $("#id").val();
         $.ajax({
-            url: "/coupons-message/"+id+"/send",
-            type: 'GET',
-            error: function() { alert('发送失败!'); },
-            success: function(data) {
+            url:"/coupons-message/" + id + "/send",
+            type:'GET',
+            error:function () {
+                alert('发送失败!');
+            },
+            success:function (data) {
                 if (data == '0') {
                     $("#send_dialog").html("<div style='text-align:center;padding-top:15px'>短信已发送成功，请查收！</div>");
                 } else {
@@ -153,7 +92,7 @@
 <div class="wrap clearfix">
 #{include "share/left.html"/}
     <div class="section">
-        #{breadcrumbs/breadcrumb breadcrumbs/}
+    #{breadcrumbs/breadcrumb breadcrumbs/}
         <form class="form-horizontal" id="couponsFrm" action="@{UserCoupons.index()}" method="GET">
             <table width="774" border="0" cellpadding="0" cellspacing="0">
                 <tr>
@@ -169,61 +108,67 @@
                         <input class="short_input Wdate" type="text" name="condition.createdAtEnd" id="createdAtEnd"
                                value="${condition.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})"/>
                     </td>
-                    <td colspan="2" align="left" valign="middle"><button class="search-btn" id="search"> 搜　索 </button>
+                    <td colspan="2" align="left" valign="middle">
+                        <button class="search-btn" id="search"> 搜　索</button>
                     </td>
                 </tr>
             </table>
-        <table class="order-tab" cellpadding="0" cellspacing="0">
-            <tr class="col-name">
-                <th width="100" align="center" height="30">劵号</th>
-                <th width="320" align="center">商品名称</th>
-                <th width="100" align="center" width="100">订单号</th>
-                <th width="100" align="center">截止日期</th>
-                <th width="100" align="center">消费时间</th>
-                <th width="18">#{select 'condition.status', id:'status', value:condition?.status}
-                    #{option ""}券状态#{/option}
-                    #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
-                    #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
-                    #{option "REFUND"}&{'coupon.REFUND'}#{/option}
-                #{/select}</th>
-                <th width="100" align="center">操作</th>
-            </tr>
-        #{paginate.list items:couponsList, as:'coupon'}
-            <tr>
-                <td height="30" align="center">${coupon?.eCouponSn}</td>
-                <td width="320">
-                    <div class="left_shangpin">
-                        <a href="http://www.uhuila.cn/goods/${coupon.goods.id}" target="_blank"><img src="${coupon?.goods?.imageTinyPath}"/></a>
-                    </div>
-                    <div class="right_shangpin">
-                        <a href="http://www.uhuila.cn/goods/${coupon.goods.id}" target="_blank">${coupon?.goods?.name}</a>
-                    </div>
-                </td>
-                <td align="center">${coupon.order.orderNumber}</td>
-                <td align="center">${coupon?.expireAt?.format()}</td>
-                <td align="center">${coupon?.consumedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <table class="order-tab" cellpadding="0" cellspacing="0">
+                <tr class="col-name">
+                    <th width="100" align="center" height="30">劵号</th>
+                    <th width="320" align="center">商品名称</th>
+                    <th width="100" align="center" width="100">订单号</th>
+                    <th width="100" align="center">截止日期</th>
+                    <th width="100" align="center">消费时间</th>
+                    <th width="18">#{select 'condition.status', id:'status', value:condition?.status}
+                        #{option ""}券状态#{/option}
+                        #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
+                        #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
+                        #{option "REFUND"}&{'coupon.REFUND'}#{/option}
+                    #{/select}</th>
+                    <th width="100" align="center">操作</th>
+                </tr>
+            #{paginate.list items:couponsList, as:'coupon'}
+                <tr>
+                    <td height="30" align="center">${coupon?.eCouponSn}</td>
+                    <td width="320">
+                        <div class="left_shangpin">
+                            <a href="http://www.uhuila.cn/goods/${coupon.goods.id}" target="_blank"><img
+                                    src="${coupon?.goods?.imageTinyPath}"/></a>
+                        </div>
+                        <div class="right_shangpin">
+                            <a href="http://www.uhuila.cn/goods/${coupon.goods.id}"
+                               target="_blank">${coupon?.goods?.name}</a>
+                        </div>
+                    </td>
+                    <td align="center">${coupon.order.orderNumber}</td>
+                    <td align="center">${coupon?.expireAt?.format()}</td>
+                    <td align="center">${coupon?.consumedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 %{now = new java.util.Date()}%
-                #{if coupon.expireAt?.before(now) }
-                <td width="95" align="center" style="color:#03C">
-                    <span id="status_apply_${coupon.id}">已过期</span>
-                </td>
-                #{/if}
-                #{else}
-                <td width="95" align="center">
-                   <span id="status_apply_${coupon.id}">&{'coupon.'+coupon?.status}</span>
-                </td>
-                #{/else}
-                <td width="103" align="center">
-                    #{if coupon.status == models.order.ECouponStatus.UNCONSUMED }
-                        <a href="/index/refund/${coupon.id}" name="apply_refund" id="apply_${coupon.id}">申请退款</a><br>
-                        #{if coupon.downloadTimes != 3}
-                        <a href="#" onclick="sendMessage('${coupon.id}', '${coupon.orderItems.phone}')">发送短信</a>
-                        #{/if}
+                    #{if coupon.expireAt?.before(now) }
+                        <td width="95" align="center" style="color:#03C">
+                            <span id="status_apply_${coupon.id}">已过期</span>
+                        </td>
                     #{/if}
-                </td>
-            </tr>
-        #{/paginate.list}
-        </table>
+                    #{else}
+                        <td width="95" align="center">
+                            <span id="status_apply_${coupon.id}">&{'coupon.'+coupon?.status}</span>
+                        </td>
+                    #{/else}
+                    <td width="103" align="center">
+                        #{if coupon.status == models.order.ECouponStatus.UNCONSUMED }
+                            <a href="javascript:applyRefund(${coupon.id})" name="apply_refund" id="apply_${coupon
+                      .id}">申请退款</a>
+                            <br>
+                            #{if coupon.downloadTimes != 3}
+                                <a href="#" id="send_${coupon.id}" onclick="sendMessage('${coupon.id}',
+                                        '${coupon.orderItems.phone}')">发送短信</a>
+                            #{/if}
+                        #{/if}
+                    </td>
+                </tr>
+            #{/paginate.list}
+            </table>
         </form>
         <div class="pagination">
             <ul>
@@ -233,7 +178,7 @@
     </div>
 </div>
 
-<div id="sendMsg" >
+<div id="sendMsg">
     <div id="send_dialog" class="popup-content" style="width:450px;height:120px">
         <div class="faq-tips">
             为了避免券损失，只能发送至购买时的手机号码，3次重发机会。
@@ -250,12 +195,20 @@
     </div>
 </div>
 
-<div id="full_bg"></div>
-<div id="apply_dialog">
-    <div style="text-align:center;">
-        <a href="#" onclick="close_result_dialog();">关闭</a><br/><br/>
-        <label for="apply_note">申请理由</label><textarea rows="5" id="apply_note"></textarea> <br/>
-        <a href="#" id="confirm_apply">确定</a>
+<div id="refund">
+    <div id="apply_dialog" class="popup-content" style="width:450px;height:180px">
+        <div class="faq-tips">
+            请填写退款理由:
+        </div>
+        <ul>
+            <li class="item">
+                <label>理由：</label><textarea rows="5" cols="35" id="apply_note"></textarea>
+            </li>
+            <li class="item btn-box">
+                <button type="button" onClick="confirmApply()">确定</button>
+            </li>
+        </ul>
+        <input type="hidden" id="coupon_id"/>
     </div>
-    <input value="" type="hidden" id="apply_row"/>
 </div>
+
