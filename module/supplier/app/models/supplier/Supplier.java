@@ -208,6 +208,6 @@ public class Supplier extends Model {
     }
 
     public static boolean existDomainName(String domainName) {
-        return find("domainName=?", domainName).first() != null;
+        return find("domainName=? and deleted=?", domainName, DeletedStatus.UN_DELETED).first() != null;
     }
 }
