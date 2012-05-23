@@ -2,6 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 GET     /                                       Application.index
+GET     /solution                               Application.solution
 
 #注册
 GET     /register                               ResalerRegister.index
