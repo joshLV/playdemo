@@ -144,6 +144,8 @@ function getBindCode(codeidy) {
                 if (data == 1) {
                     alert("验证码已成功发送，请查收！");
                     $("#getBindCode").attr("disabled", "");
+                } else if (data == 2) {
+                    alert('该手机已经绑定！');
                 } else if (data == -1) {
                     alert("网络错误，请重发");
                     $("#getBindCode").attr("disabled", "");
@@ -183,6 +185,8 @@ function getBindCode(codeidy) {
                 if (data == 1) {
                     alert("验证码已成功发送，请查收！");
                     $("#getchangeCode").attr("disabled", "");
+                 } else if (data == 2) {
+                    alert('该手机已经绑定！');
                 } else if(data ==3){
                   alert("旧手机号码不存在！");
                 } else if (data == -1) {

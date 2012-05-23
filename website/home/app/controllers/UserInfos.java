@@ -47,7 +47,9 @@ public class UserInfos extends Controller {
         if (StringUtils.isNotBlank(oldMobile) && !User.checkMobile(oldMobile)) {
             renderJSON("3");
         }
-
+        if (User.checkMobile(oldMobile)) {
+            renderJSON("2");
+        }
         String validCode = RandomNumberUtil.generateSerialNumber(4);
         String comment = "您的验证码是" + validCode + ", 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码";
         SMSUtil.send(comment, mobile, "0000");
