@@ -30,7 +30,7 @@
         #{paginate.list items:suppliers, as:'supplier'}
         <tr>
             <td>${supplier?.fullName}</td>
-            <td>${supplier?.domainName}.uhuila.net</td>
+            <td>${supplier?.domainName}.${play.Play.configure.getProperty("application.baseDomain")}</td>
             <td>${supplier?.userName}</td>
             <td>${supplier?.mobile}</td>
             <td>${supplier?.phone}</td>

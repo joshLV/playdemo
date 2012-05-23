@@ -17,8 +17,8 @@
     <div id="menu">
         <div class="welcom">
         #{if cas?.isLogin}
-            欢迎您, <a class="zi_gray" href="http://home.${play.Play.configuration.getProperty("")}" id="login_name">${cas.loginName}</a> <a class="zi_gray" 
-                                                                                                 href="/logout">退出</a>
+            欢迎您, <a class="zi_gray" href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}"
+                    id="login_name">${cas.loginName}</a> <a class="zi_gray" href="/logout">退出</a>
         #{/if}
         #{else}
             您好，欢迎您来到优惠啦！ [<a class="zi_gray" id="login_name" href="/login">登录</a>] [<a href="/register">免费注册</a>]

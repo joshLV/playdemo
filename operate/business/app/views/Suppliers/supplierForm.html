@@ -1,6 +1,8 @@
 <input type="hidden" name="adminId" value="${admin?.id}">
 #{layout_operate.textField name:'supplier.fullName', value:supplier?.fullName, required:true/}
-#{layout_operate.textField name:'supplier.domainName', value:supplier?.domainName, note:'.uhuila.net',required:true,
+#{layout_operate.textField name:'supplier.domainName', value:supplier?.domainName,
+note:play.Play.configure.getProperty("application.baseDomain"),
+required:true,
 note:'(只能是字母、数字、下划线，且长度限定在3-20位内)'/}
 *{#{layout_operate.fileField name:'image'/}}*
 #{layout_operate.textField name:'supplier.userName', value:supplier?.userName, required:true/}
@@ -25,38 +27,3 @@ note:'(只能是字母、数字、下划线，且长度限定在3-20位内)'/}
     #{vx.cancelButton url:'/suppliers', class:'btn btn-primary'/}
 #{/if}
 </div>
-
-*{<div class="control-group">}*
-*{<label for="fullName" class="control-label"><span style="color: red; ">*</span>公司名称</label>}*
-
-*{<div class="controls">}*
-*{<input type="text" id="fullName" name="supplier.fullName" class="input-xlarge" value="${supplier?.fullName}"/>}*
-*{<span class="error">#{error 'supplier.fullName' /}</span>}*
-*{</div>}*
-*{</div>}*
-*{<div class="control-group">}*
-*{<label for="domainName" class="control-label"><span style="color: red; ">*</span>域名</label>}*
-
-*{<div class="controls">}*
-*{<input type="text" id="domainName" name="supplier.domainName" class="input-xlarge"}*
-*{value="${supplier?.domainName}"/>.uhuila.net}*
-*{<span class="error">#{error 'supplier.domainName' /}</span>}*
-*{</div>}*
-*{</div>}*
-*{<div class="control-group">}*
-*{<label for="image" class="control-label">商户Logo</label>}*
-
-*{<div class="controls">}*
-*{<input type="file" id="image" name="image" class="input-file"/>}*
-*{</div>}*
-*{<div class="controls">}*
-*{<span class="error">#{error 'supplier.image'/}</span></div>}*
-*{</div>}*
-*{<div class="control-group">}*
-*{<label for="description" class="control-label">描述</label>}*
-
-*{<div class="controls">}*
-*{<textarea name="supplier.description" id="description" cols="100" rows="8"}*
-*{style="width:700px;height:200px;">${supplier?.description}</textarea>}*
-*{</div>}*
-*{</div>}*

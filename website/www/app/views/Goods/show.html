@@ -5,85 +5,87 @@
 #{/set}
 #{set 'moreScripts'}
 <script>
-$(function() {
-    /**
-     *点击加入购物车按钮
-     */
-    $("#link_add_cart").click(function () {
-        $.post(
-            "/carts", 
-            {'goodsId':$("#goodsId").val(), 'increment':$("#number").val()},
-            function (data) {
-                $('#add_cart_result').show();
-                $('#add_cart_result').show();
-                //5秒后自动消失
-                setTimeout("$('#add_cart_result').css('display','none')", 5000);
-                //显示最新的购物车信息
-                $("#result-count").text(data.count);
-                $("#result-amount").text(data.amount);
+    $(function () {
+        /**
+         *点击加入购物车按钮
+         */
+        $("#link_add_cart").click(function () {
+            $.post(
+                    "/carts",
+                    {'goodsId':$("#goodsId").val(), 'increment':$("#number").val()},
+                    function (data) {
+                        $('#add_cart_result').show();
+                        $('#add_cart_result').show();
+                        //5秒后自动消失
+                        setTimeout("$('#add_cart_result').css('display','none')", 5000);
+                        //显示最新的购物车信息
+                        $("#result-count").text(data.count);
+                        $("#result-amount").text(data.amount);
 
-                //修改顶部购物车商品数量
-                $("#carts_size").html(data.count);
-                $("#reload").val("true");
-                $("#order_confirm").hide();
+                        //修改顶部购物车商品数量
+                        $("#carts_size").html(data.count);
+                        $("#reload").val("true");
+                        $("#order_confirm").hide();
+                    }
+            );
+        });
+
+        $("#link_buy_more").click(function () {
+            $('#add_cart_result').hide();
+        });
+
+        $("#link_buy_now").click(function () {
+            var t = $(this);
+            t.attr("href", t.attr("href") + '-' + $("#number").val());
+            return true;
+        });
+
+        $("#J_closeTips").click(function (ev) {
+            ev.preventDefault();
+            $('#add_cart_result').hide();
+        });
+
+
+        // 详情页tab
+        $('#J_tabbar li').click(function () {
+            var that = $(this),
+                    attr = that.attr('name');
+
+            $('#J_tabbar li').removeClass('current');
+            that.addClass('current');
+
+            if (attr == 'product-info') {
+                $('#J_tabtxt .txt-item').show();
+                $('#J_tabtxt .txt-item-hd').show();
+            } else {
+                $('#J_tabtxt .txt-item').hide();
+                $('#J_tabtxt .' + attr + ' .txt-item-hd').hide();
+                $('#J_tabtxt .' + attr).show();
             }
-        );
-    });
+        });
 
-    $("#link_buy_more").click(function () {
-        $('#add_cart_result').hide();
-    });
-
-    $("#link_buy_now").click(function () {
-        var t = $(this);
-        t.attr("href", t.attr("href") + '-' + $("#number").val());
-        return true;
-    });
-
-    $("#J_closeTips").click(function(ev) {
-        ev.preventDefault();
-        $('#add_cart_result').hide();
-    });
-
-
-    // 详情页tab
-    $('#J_tabbar li').click(function () {
-        var that = $(this),
-            attr = that.attr('name');
-
-        $('#J_tabbar li').removeClass('current');
-        that.addClass('current');
-
-        if (attr == 'product-info') {
-            $('#J_tabtxt .txt-item').show();
-            $('#J_tabtxt .txt-item-hd').show();
-        } else {
-            $('#J_tabtxt .txt-item').hide();
-            $('#J_tabtxt .' + attr + ' .txt-item-hd').hide();
-            $('#J_tabtxt .' + attr).show();
-        }
-    });
-
-    //直接在文本框里输入购买数量
-    $("#number").blur(function(){
-        try{
-            var number = Number($(this).val())
-            var stock = Number($("#stock").val())
-            if (number <= 0){
+        //直接在文本框里输入购买数量
+        $("#number").blur(function () {
+            try {
+                var number = Number($(this).val())
+                var stock = Number($("#stock").val())
+                if (number <= 0) {
+                    $(this).val(1);
+                }
+                if (number > 999) {
+                    $(this).val(999);
+                }
+                ;
+                if (number > stock) {
+                    $(this).val(stock)
+                    $("#stock_hit").css("display", "inline")
+                }
+                ;
+            } catch (e) {
                 $(this).val(1);
             }
-            if (number > 999) {
-                $(this).val(999);
-            };
-            if (number > stock) {
-                $(this).val(stock)
-                $("#stock_hit").css("display","inline")
-            };
-        }catch(e){
-            $(this).val(1);
-        }
+        });
     });
-});
 </script>
 #{/set}
 
@@ -102,9 +104,9 @@ $(function() {
         <li class="cost">原　　价:
             <del>${goods.faceValue?.formatCurrency('CNY')}</del>
         </li>
-    #{if params['isSupplier']== null || !params['isSupplier']}
-        <li class="discount">折　　扣:<span>${goods.discountExpress}</span></li>
-    #{/if}
+        #{if params['isSupplier']== null || !params['isSupplier']}
+            <li class="discount">折　　扣:<span>${goods.discountExpress}</span></li>
+        #{/if}
     #{/if}
         <li class="type">商品类型:<span>&{'goods.'+goods.materialType}</span></li>
         <li class="shipmod">配送方式:<span>#{if models.sales.MaterialType.ELECTRONIC.equals(goods.materialType)}
@@ -120,13 +122,14 @@ $(function() {
         <li class="action clearfix">
             <a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
             <a class="add" id="link_add_cart" href="#">加入购物车</a>
+
             <div id="add_cart_result" class="add-tips" style="display: none;">
                 <h4>已成功添加到购物车！</h4>
+
                 <p>购物车共有<em id="result-count"></em>件，总计<strong id="result-amount"></strong>元。</p>
-                <!-- <a id="link_buy_more" href="#">继续购物</a> -->
                 <a class="see-carts" href="/carts">查看购物车</a>
                 <a class="close-tips" id="J_closeTips" href="#">关闭</a>
-            </li>
+            </div>
         </li>
     #{/if}
     #{elseif params['isSupplier']== null || !params['isSupplier']}
@@ -165,8 +168,9 @@ $(function() {
 #{if goods.prompt != null}
 <div class="wrap warm-tips">
     <h4>温馨提示</h4>
+
     <div class="warm-content">
-        ${goods?.prompt?.raw()}
+    ${goods?.prompt?.raw()}
     </div>
 </div>
 #{/if}
