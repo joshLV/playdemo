@@ -127,7 +127,7 @@ public class AssetTag extends FastTags {
     private static String getBaseUrl() {
         String cdnHost = Play.configuration.getProperty("cdn.host");
         if (cdnHost == null) {
-            cdnHost = "a.uhcdn.com";
+            cdnHost = "a.dev.uhcdn.com";
         }
         return "http://" + cdnHost;
     }
