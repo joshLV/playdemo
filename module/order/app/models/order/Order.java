@@ -128,8 +128,9 @@ public class Order extends Model{
 	@Column(name = "delivery_no")
 	public String deliveryNo;
 
-	@Column(name = "delivery_type")
-	public int deliveryType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "delivery_type")
+	public DeliveryType deliveryType;
 
 	@Transient
 	public String searchKey;

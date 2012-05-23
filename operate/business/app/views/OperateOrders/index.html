@@ -59,28 +59,28 @@
         <table width="80%">
             <tr>
                 <td>成交时间：<input type="text" id="createdAtBegin" name="condition.createdAtBegin"
-                                value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"
+                                value="${condition.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"
                                 class="input-medium Wdate"/>至 <input type="text" id="createdAtEnd"
                                                                      name="condition.createdAtEnd"
-                                                                     value="${createdAtEnd?.format()}"
+                                                                     value="${condition.createdAtEnd?.format()}"
                                                                      onfocus="WdatePicker({readOnly:true})"
                                                                      class="input-medium Wdate"/></td>
                 <td>物流方式：
-                #{select 'condition.deliveryType', class:'input-small', value:deliveryType}
+                #{select 'condition.deliveryType', class:'input-small', value:condition.deliveryType}
                     #{option ""}不限#{/option}
-                    #{option "1"}无物流#{/option}
-                    #{option "2"}有物流#{/option}
+                    #{option models.order.DeliveryType.SMS}无物流#{/option}
+                    #{option models.order.DeliveryType.LOGISTICS}有物流#{/option}
                 #{/select}
                 </td>
             </tr>
             <tr>
-                <td>退款时间：<input type="text" name="condition.refundAtBegin" value="${refundAtBegin?.format()}"
+                <td>退款时间：<input type="text" name="condition.refundAtBegin" value="${condition.refundAtBegin?.format()}"
                                 onfocus="WdatePicker({readOnly:true})"
                                 class="input-medium Wdate"/>至 <input type="text" name="condition.refundAtEnd"
-                                                                     value="${refundAtEnd?.format()}"
+                                                                     value="${condition.refundAtEnd?.format()}"
                                                                      onfocus="WdatePicker({readOnly:true})"
                                                                      class="input-medium Wdate"/></td>
-                <td>支付方式：#{select 'condition.payMethod', class:'input-small', value:payMethod}
+                <td>支付方式：#{select 'condition.payMethod', class:'input-small', value:condition.payMethod}
                     #{option ""}不限#{/option}
                     #{option "1"}支付宝#{/option}
                     #{option "2"}网银#{/option}
@@ -89,15 +89,15 @@
             </tr>
             <tr>
                 <td>关&nbsp;键&nbsp;字：
-                #{select 'condition.searchKey', class:'input-small', value:searchKey}
+                #{select 'condition.searchKey', class:'input-small', value:condition.searchKey}
                     #{option ""}不限#{/option}
                     #{option "1"}商品名称#{/option}
                     #{option "2"}订单号#{/option}
                 #{/select}
 
-                    <input type="text" name="condition.searchItems" value="${searchItems}" class="input-medium"/></td>
+                    <input type="text" name="condition.searchItems" value="${condition.searchItems}" class="input-medium"/></td>
                 <td>订单状态：
-                #{select 'condition.status', id:'condition_status', class:'input-small', value:status}
+                #{select 'condition.status', id:'condition_status', class:'input-small', value:condition.status}
                     #{option ""}不限#{/option}
                     #{option "UNPAID"}&{'order.UNPAID'}#{/option}
                     #{option "PAID"}&{'order.PAID'}#{/option}

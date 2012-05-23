@@ -5,6 +5,7 @@ import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
 import models.order.Cart;
+import models.order.DeliveryType;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.sales.Goods;
@@ -110,9 +111,9 @@ public class Orders extends Controller {
 		List<Long> goodsIds = new ArrayList<>();
 		Map<Long, Integer> itemsMap = new HashMap<>();
 		parseItems(items, goodsIds, itemsMap);
-		List<models.sales.Goods> goods = models.sales.Goods.findInIdList(goodsIds);
-		boolean containsElectronic = containsMaterialType(goods, MaterialType.ELECTRONIC);
-		boolean containsReal = containsMaterialType(goods, MaterialType.REAL);
+		List<models.sales.Goods> goodsList = models.sales.Goods.findInIdList(goodsIds);
+		boolean containsElectronic = containsMaterialType(goodsList, MaterialType.ELECTRONIC);
+		boolean containsReal = containsMaterialType(goodsList, MaterialType.REAL);
 
 		//电子券必须校验手机号
 		if (containsElectronic) {
@@ -144,12 +145,17 @@ public class Orders extends Controller {
 
 		//创建订单
 		Order order = Order.createConsumeOrder(user.getId(), AccountType.CONSUMER);
+        if (containsElectronic){
+            order.deliveryType = DeliveryType.SMS;
+        }else if (containsReal){
+            order.deliveryType = DeliveryType.LOGISTICS;
+        }
 		if (defaultAddress != null) {
 			order.setAddress(defaultAddress);
 		}
 		//添加订单条目
 		try {
-			for (models.sales.Goods goodsItem : goods) {
+			for (models.sales.Goods goodsItem : goodsList) {
 				if (goodsItem.materialType == MaterialType.REAL) {
 					order.addOrderItem(goodsItem, itemsMap.get(goodsItem.getId()), receiverMobile,
 							goodsItem.salePrice, //最终成交价

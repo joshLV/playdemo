@@ -24,14 +24,14 @@ public class OrdersCondition {
 	public Date refundAtEnd; 
 	public OrderStatus status;
 	public String goodsName;
-	public int deliveryType;
+	public DeliveryType deliveryType;
 	public String payMethod;
 	public String searchKey;
 	public String searchItems;
 
 	/**
-	 *
-	 * @param order 订单信息
+	 * 查询条件hql.
+     *
 	 * @param supplierId 商户ID
 	 * @return sql 查询条件
 	 */
@@ -65,7 +65,7 @@ public class OrdersCondition {
 			sql.append(" and o.status = :status");
 			paramsMap.put("status", status);
 		}
-		if (deliveryType != 0) {
+		if (deliveryType != null) {
 			sql.append(" and o.deliveryType = :deliveryType");
 			paramsMap.put("deliveryType", deliveryType);
 		}
@@ -92,10 +92,6 @@ public class OrdersCondition {
 	 *
 	 *
 	 * @param user 用户信息
-	 * @param createdAtBegin 下单开始时间
-	 * @param createdAtEnd 下单结束时间
-	 * @param status 状态
-	 * @param goodsName 商品名
 	 * @return sql 查询条件
 	 */
 	public String getFilter(User user) {

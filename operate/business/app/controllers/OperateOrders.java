@@ -28,9 +28,9 @@ public class OperateOrders extends Controller {
         }
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        System.out.println("condition.deliveryType:" + condition.deliveryType);
         JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
-        renderGoodsCond(condition);
-        render(orderList);
+        render(orderList,condition);
 
     }
 
@@ -55,24 +55,4 @@ public class OperateOrders extends Controller {
         //收货信息
         render(orders, orderItems);
     }
-
-    /**
-     * 向页面设置选择信息
-     *
-     * @param goodsCond 页面设置选择信息
-     */
-    private static void renderGoodsCond(OrdersCondition goodsCond) {
-        renderArgs.put("createdAtBegin", goodsCond.createdAtBegin);
-        renderArgs.put("createdAtEnd", goodsCond.createdAtEnd);
-        renderArgs.put("status", goodsCond.status);
-        renderArgs.put("goodsName", goodsCond.goodsName);
-        renderArgs.put("refundAtBegin", goodsCond.refundAtBegin);
-        renderArgs.put("refundAtEnd", goodsCond.refundAtEnd);
-        renderArgs.put("status", goodsCond.status);
-        renderArgs.put("deliveryType", goodsCond.deliveryType);
-        renderArgs.put("payMethod", goodsCond.payMethod);
-        renderArgs.put("searchKey", goodsCond.searchKey);
-        renderArgs.put("searchItems", goodsCond.searchItems);
-    }
-
 }
