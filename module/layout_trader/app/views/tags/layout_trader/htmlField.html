@@ -9,7 +9,8 @@
 
     <div class="controls">
         <textarea name="${field.name}" id="${field.id}" cols="100" rows="8"
-                  style="width:700px;height:200px;visibility:hidden;">${params[field.name]?.escape()?.raw() ?: field.error?.message == 'validation.required' ? '' :_value?.escape()?.raw()}</textarea>
+                  style="width:850px;height:550px;visibility:hidden;">${params[field.name]?.escape()?.raw() ?: field
+                  .error?.message == 'validation.required' ? '' :_value?.escape()?.raw()}</textarea>
         #{ifError field.name}
             <span class="error">${field.error.raw()}</span>
         #{/ifError}
