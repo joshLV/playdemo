@@ -16,9 +16,9 @@ verifyTextPresent('无效的Logo!')
 
 #{selenium '修改品牌'}
     #{include 'test/selenium/step/login.selenium' /}
-open('/brands/${play.test.Fixtures.idCache.get("models.sales.Brand-Brand_10")}/edit')
+open('/brands/${play.test.Fixtures.idCache.get("models.sales.Brand-Brand_8")}/edit')
 verifyTitle('修改品牌')
-verifyValue('id=brand_name','豆捞坊4')
+verifyValue('id=brand_name','豆捞坊3')
 verifyValue('id=brand_displayOrder','200')
 type('id=brand_name','豆捞坊-Test')
 type('id=brand_displayOrder','100')
@@ -32,9 +32,9 @@ verifyTextPresent('豆捞坊-Test')
 open('/brands')
 
 verifyTitle('品牌一览')
-verifyTextPresent('来一份4')
-clickAndWait('id=del_${play.test.Fixtures.idCache.get("models.sales.Brand-Brand_9")}')
+verifyTextPresent('来一份3')
+clickAndWait('id=del_${play.test.Fixtures.idCache.get("models.sales.Brand-Brand_7")}')
 assertConfirmation('您确定要删除来一份4吗？')
 verifyTitle('品牌一览')
-verifyTextNotPresent('来一份4')
+verifyTextNotPresent('来一份3')
 #{/selenium}

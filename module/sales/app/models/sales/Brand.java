@@ -39,7 +39,7 @@ public class Brand extends Model {
     public String introduce;   //特色产品介绍
 
     private static final String IMAGE_SERVER = Play.configuration.getProperty
-            ("image.server", "img0.uhcdn.com");
+            ("image.server", "img0.dev.uhcdn.com");
 
     @Transient
     public String getShowLogo() {
