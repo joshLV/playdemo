@@ -3,6 +3,7 @@ package unit;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
+import models.order.DeliveryType;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderItems;
@@ -45,7 +46,7 @@ public class OrderUnitTest extends UnitTest {
         order.createdAtBegin = new Date();
         order.createdAtEnd = new Date();
         order.status = OrderStatus.UNPAID;
-        order.deliveryType = 1;
+        order.deliveryType = DeliveryType.LOGISTICS;
         order.payMethod = "1";
         Long supplierId = 1l;
         order.searchKey = "2";
@@ -65,7 +66,7 @@ public class OrderUnitTest extends UnitTest {
         }
 
         order.status = OrderStatus.PAID;
-        order.deliveryType = 1;
+        order.deliveryType = DeliveryType.LOGISTICS;
         order.payMethod = "alipay";
         order.searchKey = "2";
         order.searchItems = "2012";

@@ -58,6 +58,7 @@ public class Suppliers extends Controller {
      */
     @ActiveNavigation("suppliers_add")
     public static void create(@Valid Supplier supplier, File image, @Valid SupplierUser admin) {
+
         checkImage(image);
         initAdmin(admin);
 
@@ -96,6 +97,11 @@ public class Suppliers extends Controller {
     private static void checkItems(Supplier supplier) {
         if (StringUtils.isEmpty(supplier.mobile) && StringUtils.isEmpty(supplier.phone)) {
             Validation.addError("supplier.mobile", "validation.lessOne");
+        }
+        if (supplier.domainName != null) {
+            if (Supplier.existDomainName(supplier.domainName)) {
+                Validation.addError("supplier.domainName", "validation.existed");
+            }
         }
     }
 

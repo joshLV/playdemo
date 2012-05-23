@@ -206,4 +206,8 @@ public class Supplier extends Model {
     public static List<Supplier> findListByFullName(String fullName) {
         return find("fullName like ?","%"+fullName+"%").fetch();
     }
+
+    public static boolean existDomainName(String domainName) {
+        find
+    }
 }
