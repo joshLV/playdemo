@@ -34,7 +34,7 @@ open('/brands')
 verifyTitle('品牌一览')
 verifyTextPresent('来一份3')
 clickAndWait('id=del_${play.test.Fixtures.idCache.get("models.sales.Brand-Brand_7")}')
-assertConfirmation('您确定要删除来一份4吗？')
+assertConfirmation('您确定要删除来一份3吗？')
 verifyTitle('品牌一览')
 verifyTextNotPresent('来一份3')
 #{/selenium}
