@@ -143,13 +143,10 @@
         <th>券号</th>
         <th>订单号</th>
         <th>商品名称</th>
-        <th>单价</th>
+        <th>金额</th>
         <th>有效期</th>
         <th>消费时间</th>
         <th>店员</th>
-        <th>退款时间</th>
-        <th>退款金额</th>
-        <th>状态</th>
     </tr>
     </thead>
 
@@ -163,10 +160,8 @@
         <td>${report?.originalPrice}</td>
         <td>${report?.goods.effectiveAt ?.format()} - ${report?.expireAt?.format()}</td>
         <td>${report?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-        <td>#{if report?.supplierUser?.jobNumber!=null}工号: ${report?.supplierUser?.jobNumber}#{/if}#{if report?.supplierUser?.userName!=null}(${report?.supplierUser?.userName})#{/if}</td>
-        <td>${report?.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-        <td>${report?.salePrice}</td>
-        <td>&{'coupon-status.'+report?.status}</td>
+        <td>#{if report?.supplierUser?.userName!=null}${report?.supplierUser?.userName}#{/if}
+            #{if report?.supplierUser?.jobNumber!=null}(工号: ${report?.supplierUser?.jobNumber})#{/if}</td>
     </tr>
     #{/paginate.list}
 
