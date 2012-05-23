@@ -200,14 +200,14 @@ public class Supplier extends Model {
     }
 
     public static Supplier findByFullName(String fullName) {
-        return find("fullName like ?","%"+fullName+"%").first();
+        return find("fullName like ?", "%" + fullName + "%").first();
     }
-    
+
     public static List<Supplier> findListByFullName(String fullName) {
-        return find("fullName like ?","%"+fullName+"%").fetch();
+        return find("fullName like ?", "%" + fullName + "%").fetch();
     }
 
     public static boolean existDomainName(String domainName) {
-        find
+        return find("domainName=?", domainName).first() != null;
     }
 }
