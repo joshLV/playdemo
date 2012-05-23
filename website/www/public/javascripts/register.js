@@ -13,23 +13,16 @@ $(document).ready(
 function register(){
 	var loginName = $("#loginName").val();
 	if(loginName ==""){
-		$("#checkName").html("<font color=red>请输入用户名!</font>");
+		$("#checkName").html("<font color=red>请输入邮箱!</font>");
 		return false;
 	}
-	//var mobile = $("#mobile").val();
-	//if(mobile ==""){
-	//	$("#checkMobile").html("<font color=red>请输入手机!</font>");
-	//	return false;
-	//}
 	$.post(
 			"/register/checkLoginName",
-			//{loginName:loginName,mobile:mobile},
 			{loginName:loginName},
 			function(data){
 				if(data == 1 ){
-					$("#checkName").html("<font color=red>对不起，该用户名已经存在!</font");
+					$("#checkName").html("<font color=red>对不起，该邮箱已经存在!</font>");
 				} else if(data == 2){
-					//$("#checkMobile").html("<font color=red>对不起，该手机已经存在!</font");
 					$("#checkName").html("");
 				} else{
 					$("#checkName").html("");
@@ -48,41 +41,27 @@ $(window).load(function(){
 	$("#loginName").blur(function() {
 		checkLoginNameAndMobile();
 	})
-//    //验证手机
-//	$("#mobile").blur(function() {
-//		checkLoginNameAndMobile();
-//	})
+
 });
 
 
 function checkLoginNameAndMobile(){
-	var loginName = $("#loginName").val();
+    var loginName = $("#loginName").val();
 	var mobile = $("#mobile").val();
 	if(loginName ==""){
-		$("#checkName").html("<font color=red>请输入用户名!</font>");
+		$("#checkName").html("<font color=red>请输入邮箱!</font>");
 		return false;
 	}else {
 		$("#checkName").html("");
 	}
-//	if(mobile ==""){
-//		$("#checkMobile").html("<font color=red>请输入手机!</font>");
-//		return false;
-//	} else {
-//		$("#checkMobile").html("");
-//	}
 	$.post(
 			"/register/checkLoginName",
-			//{loginName:loginName,mobile:mobile},
 			{loginName:loginName},
 			function(data){
 				if(data == 1 ){
-					$("#checkName").html("<font color=red>对不起，该用户名已经存在!</font");
-//				} else if(data == 2){
-//					$("#checkMobile").html("<font color=red>对不起，该手机已经存在!</font");
-//					$("#checkName").html("");
-				} else {
+					$("#checkName").html("<font color=red>对不起，该邮箱已已经存在!</font>");
+       			} else {
 					$("#checkName").html("");
-					$("#checkMobile").html("");
 				}
 			},
 			"text"
