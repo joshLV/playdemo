@@ -43,7 +43,7 @@
     <li><span>4</span>成功提交订单 <em>>></em></li>
 </ol>
 
-#{if order}
+#{if order && order.status == models.order.OrderStatus.UNPAID}
 #{form @confirm() , id:"confirm_form"}
 <input type="hidden" value="${order.orderNumber}" name="orderNumber"/>
 %{
@@ -123,6 +123,11 @@
 #{/form}
 #{/if}
 
+#{if order && order.status != models.order.OrderStatus.UNPAID}
+<div style="padding:20px auto">
+    订单已被处理!
+</div>
+#{/if}
 #{if !order}
 <div style="padding:20px auto">
     对不起，找不到您所需要的订单:(
