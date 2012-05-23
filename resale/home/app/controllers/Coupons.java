@@ -34,7 +34,9 @@ public class Coupons extends Controller{
 		if (condition == null) {
 			condition = new CouponsCondition();
 		}
-		JPAExtPaginator<ECoupon> couponsList = ECoupon.userCouponsQuery(condition,user.getId(), AccountType.RESALER,pageNumber,  PAGE_SIZE);
+        condition.userId = user.id;
+        condition.accountType = AccountType.RESALER;
+		JPAExtPaginator<ECoupon> couponsList = ECoupon.query(condition,pageNumber, PAGE_SIZE);
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的券订单", "/coupons");
 
 		renderCond(condition);
