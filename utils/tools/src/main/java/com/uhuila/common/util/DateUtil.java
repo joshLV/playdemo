@@ -66,7 +66,7 @@ public class DateUtil {
     public static String getNowTime() {
 
         Calendar c = Calendar.getInstance();
-        String nowTime = c.get(Calendar.MONTH) + "月" + c.get(Calendar.DATE) + "日"+ c.get(Calendar.HOUR_OF_DAY)+"时"+c
+        String nowTime = c.get(Calendar.MONTH+1) + "月" + c.get(Calendar.DATE) + "日"+ c.get(Calendar.HOUR_OF_DAY)+"时"+c
                 .get(Calendar.MINUTE)+"分";
         return nowTime;
     }
