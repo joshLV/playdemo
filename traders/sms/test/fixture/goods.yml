@@ -52,3 +52,89 @@ sales.Goods(Goods_002):
  "categories": [Category_2]
  "useBeginTime": "10:00"
  "useEndTime": "17:00"
+
+sales.Goods(Goods_003):
+ "no": "003"
+ "name": "哈根达斯200元抵用券"
+ "supplierId": "1"
+ "brand": "Brand_3"
+ "imagePath": "/0/0/133/origin.jpg"
+ "effectiveAt": "2012-03-01T00:00:00"
+ "expireAt": "2012-03-30T00:00:00"
+ "originalPrice": "100"
+ "salePrice": "50"
+ "prompt": "提示测试"
+ "details": "商品详情"
+ "saleCount": "0"
+ "baseSale": "10000"
+ "status": "ONSALE"
+ "createdAt": "2012-03-01T15:02:02"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "isAllShop": false
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_2]
+ "useBeginTime": "10:00"
+ "useEndTime": "17:00"
+
+
+sales.Goods(Goods_003):
+ "no": "003"
+ "name": "哈根达斯200元抵用券"
+ "supplierId": "1"
+ "brand": "Brand_3"
+ "imagePath": "/0/0/133/origin.jpg"
+ "effectiveAt": "2012-03-01T00:00:00"
+ "expireAt": "2012-03-30T00:00:00"
+ "originalPrice": "100"
+ "salePrice": "50"
+ "prompt": "提示测试"
+ "details": "商品详情"
+ "saleCount": "0"
+ "baseSale": "10000"
+ "status": "ONSALE"
+ "createdAt": "2012-03-01T15:02:02"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "isAllShop": false
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_2]
+ "useBeginTime": "10:00"
+ "useEndTime": "17:00"
+
+sales.Goods(Goods_004):
+ "no": "004"
+ "name": "哈根达斯200元抵用券"
+ "supplierId": "1"
+ "brand": "Brand_4"
+ "imagePath": "/0/0/133/origin.jpg"
+ "effectiveAt": "2012-03-01T00:00:00"
+ "expireAt": "2012-03-30T00:00:00"
+ "originalPrice": "100"
+ "salePrice": "50"
+ "prompt": "提示测试"
+ "details": "商品详情"
+ "saleCount": "0"
+ "baseSale": "10000"
+ "status": "ONSALE"
+ "createdAt": "2012-03-01T15:02:02"
+ "createdBy": "yanjy"
+ "deleted": "UN_DELETED"
+ "lockVersion": "1"
+ "saleCountBegin": "0"
+ "saleCountEnd": "0"
+ "materialType": "ELECTRONIC"
+ "isAllShop": false
+ "shops": [Shop_4, Shop_5]
+ "categories": [Category_2]
+ "useBeginTime": "10:00"
+ "useEndTime": "17:00"
+

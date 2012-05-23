@@ -18,10 +18,20 @@ public class SMSUtil {
     private SMSUtil(){}
     
     public static void send(String content, String phoneNumber, String code){
-        RabbitMQPublisher.publish(SMS_QUEUE, new SMSMessage(content, phoneNumber, code));
+        if (Play.runingInTestMode()) {
+            MockSMSProvider mockSms = new MockSMSProvider();
+            mockSms.send(new SMSMessage(content, phoneNumber, code));
+        } else {
+            RabbitMQPublisher.publish(SMS_QUEUE, new SMSMessage(content, phoneNumber, code));
+        }
     }
     public static void send(String content, List<String> phoneNumbers){
-        RabbitMQPublisher.publish(SMS_QUEUE, new SMSMessage(content, phoneNumbers));
+        if (Play.runingInTestMode()) {
+            MockSMSProvider mockSms = new MockSMSProvider();
+            mockSms.send(new SMSMessage(content, phoneNumbers));
+        } else {
+            RabbitMQPublisher.publish(SMS_QUEUE, new SMSMessage(content, phoneNumbers));
+        }
     }
     
 }

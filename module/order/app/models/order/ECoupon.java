@@ -313,6 +313,7 @@ public class ECoupon extends Model {
 		this.status = ECouponStatus.CONSUMED;
 		this.consumedAt = new Date();
 		this.save();
+        System.out.println("3333333333");
 	}
 
 	/**

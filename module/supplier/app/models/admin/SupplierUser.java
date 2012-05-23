@@ -289,7 +289,7 @@ public class SupplierUser extends Model {
      * @return 操作员
      */
     public static SupplierUser findByMobileAndSupplier(String mobile, Supplier supplier) {
-        SupplierUser supplierUser = SupplierUser.find("delete = ? and mobile = ? and supplier = ?",
+        SupplierUser supplierUser = SupplierUser.find("deleted = ? and mobile = ? and supplier = ?",
                 DeletedStatus.UN_DELETED,mobile,supplier).first();
         return supplierUser;
     }

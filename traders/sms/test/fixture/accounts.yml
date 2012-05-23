@@ -3,4 +3,5 @@ accounts.Account(Account_1):
  "type": "ENTERPRISE"
  "amount": "1000.02"
  "status": "NORMAL"
+ "uncashAmount": "10.2"
  "createdAt": "2012-03-07T17:29:59"

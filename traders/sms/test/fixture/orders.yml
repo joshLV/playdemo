@@ -19,8 +19,9 @@ order.Order(order1):
   "deleted": "UN_DELETED"
   "deliveryType": "0"
   "payMethod": "alipay"
-  "payRequestId": "0"  
-  
+  "payRequestId": "0"
+
+
 order.Order(order2):
   "user": "user"
   "orderNumber": "201202220324134991598"

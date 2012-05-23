@@ -9,7 +9,7 @@ order.OrderItems(orderItems1):
   "goodsName": "哈根达斯100元抵用券"
   "createdAt": "2012-03-05T00:00:00"
   "goods": "Goods_001"
-  "phone": "02101111111"
+  "phone": "15900002342"
 
 order.OrderItems(orderItems2):
   "order": "order2"
@@ -33,6 +33,8 @@ order.ECoupon(coupon1):
   "status": "UNCONSUMED"
   "goods": "Goods_001"
   "orderItems": "orderItems1"
+  "isFreeze": "0"
+  "downloadTimes": "0"
 
 order.ECoupon(coupon2):
   "order": "order1"
@@ -46,6 +48,8 @@ order.ECoupon(coupon2):
   "status": "UNCONSUMED"
   "goods": "Goods_002"
   "orderItems": "orderItems2"
+  "isFreeze": "0"
+  "downloadTimes": "0"
   
 order.ECoupon(coupon3):
   "order": "order1"
@@ -59,6 +63,8 @@ order.ECoupon(coupon3):
   "status": "UNCONSUMED"
   "goods": "Goods_001"
   "orderItems": "orderItems1"
+  "isFreeze": "0"
+  "downloadTimes": "0"
   
 order.ECoupon(coupon4):
   "order": "order1"
@@ -70,6 +76,23 @@ order.ECoupon(coupon4):
   "createdAt": "2012-03-05T00:00:00"
   "consumedAt": "2012-03-05T00:00:00"
   "status": "CONSUMED"
-  "goods": "Goods_001"
+  "goods": "Goods_004"
   "orderItems": "orderItems1"
   "shop": "Shop_4"
+  "isFreeze": "0"
+  "downloadTimes": "0"
+
+order.ECoupon(coupon5):
+  "order": "order1"
+  "eCouponSn": "1234567005"
+  "originalPrice": "1.0"
+  "faceValue": "10.0"
+  "resalerPrice": "1.0"
+  "salePrice": "1.0"
+  "createdAt": "2012-03-05T00:00:00"
+  "consumedAt": "2012-03-05T00:00:00"
+  "status": "UNCONSUMED"
+  "goods": "Goods_003"
+  "orderItems": "orderItems2"
+  "isFreeze": "0"
+  "downloadTimes": "0"

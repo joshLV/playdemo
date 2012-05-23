@@ -16,7 +16,6 @@ POST    /reset-password                         FindPassword.updatePassword
 
 GET     /send-email/success                    FindPassword.sendEmailSuccess
 
-
 # Home page
 GET     /                                       Home.index
 GET     /{<[0-9]+>categoryId}                   Home.index
