@@ -5,16 +5,16 @@
 
   <permission key="HOME" text="系统主面板" roles="admin,account"/>
   <permission key="ACCOUNT" text="账户管理" roles="account">
-    <permission key="ACCOUNT_REPORT" text="账户报表" roles="account"/>
-    <permission key="ACCOUNT_WITHDRAW" text="提现申请" roles="account"/>
+    <permission key="ACCOUNT_REPORT" text="账户明细" roles="account"/>
+    <permission key="ACCOUNT_WITHDRAW" text="账户提现" roles="account"/>
   </permission>
 
   <navigation key="homeapp" text="面板" action="Home.index" display-order="-1">
     <navigation key="home" text="主面板" action="Home.index" />
   </navigation>
   <navigation key="account" text="财务管理" action="AccountSequences.index" display-order="100">
-    <navigation key="account_bar" text="帐户" permissions="ACCOUNT_REPORT">
-      <navigation key="account_sequence" text="帐户明细" action="AccountSequences.index" permissions="ACCOUNT_REPORT"/>
+    <navigation key="account_bar" text="账户" permissions="ACCOUNT_REPORT">
+      <navigation key="account_sequence" text="账户明细" action="AccountSequences.index" permissions="ACCOUNT_REPORT"/>
       <navigation key="account_withdraw" text="账户提现" action="Withdraw.index" permissions="ACCOUNT_WITHDRAW"/>
     </navigation>
   </navigation>
