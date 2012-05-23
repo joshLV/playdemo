@@ -1,12 +1,7 @@
 package controllers;
 
-import static play.Logger.warn;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.uhuila.common.util.FileUploadUtil;
+import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.AccountType;
 import models.accounts.WithdrawAccount;
 import models.admin.SupplierRole;
@@ -20,8 +15,14 @@ import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
-import com.uhuila.common.util.FileUploadUtil;
-import com.uhuila.common.util.RandomNumberUtil;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static play.Logger.warn;
 
 /**
  * 商户管理的控制器.
@@ -35,6 +36,7 @@ import com.uhuila.common.util.RandomNumberUtil;
 public class Suppliers extends Controller {
     private static final String ADMIN_ROLE = "admin";
     private static final String SALES_ROLE = "sales";
+    public static final String BASE_DOMAIN = Play.configuration.getProperty("application.baseDomain");
 
     public static void index() {
         List<Supplier> suppliers = Supplier.findUnDeleted();
@@ -43,6 +45,7 @@ public class Suppliers extends Controller {
 
     @ActiveNavigation("suppliers_add")
     public static void add() {
+        renderArgs.put("baseDomain", BASE_DOMAIN);
         render();
     }
 
@@ -65,6 +68,7 @@ public class Suppliers extends Controller {
         admin.confirmPassword = password;
 
         if (Validation.hasErrors()) {
+            renderArgs.put("baseDomain", BASE_DOMAIN);
             render("Suppliers/add.html");
         }
         supplier.loginName = admin.loginName;
@@ -80,7 +84,7 @@ public class Suppliers extends Controller {
         //发送密码给商户管理员手机
         String comment = Play.configuration.getProperty("message.comment");
         SMSUtil.send(comment.replace("password", password), admin.mobile, "0000");
-        
+
         index();
     }
 
@@ -155,11 +159,12 @@ public class Suppliers extends Controller {
         SupplierUser admin = SupplierUser.findAdmin(id, supplier.loginName);
         List<WithdrawAccount> withdrawAccounts =
                 WithdrawAccount.find("byUserIdAndAccountType", supplier.getId(), AccountType.SUPPLIER).fetch();
+        renderArgs.put("baseDomain", BASE_DOMAIN);
         render(supplier, admin, id, withdrawAccounts);
     }
 
-    public static void withdrawAccountCreateAndUpdate(@Valid WithdrawAccount withdrawAccount, Long supplierId){
-        if(Validation.hasErrors()){
+    public static void withdrawAccountCreateAndUpdate(@Valid WithdrawAccount withdrawAccount, Long supplierId) {
+        if (Validation.hasErrors()) {
             renderArgs.put("withdrawAccount", withdrawAccount);
             Validation.keep();
             edit(supplierId);
@@ -171,9 +176,9 @@ public class Suppliers extends Controller {
         index();
     }
 
-    public static void withdrawAccountDelete(Long id, Long supplierId){
+    public static void withdrawAccountDelete(Long id, Long supplierId) {
         WithdrawAccount withdrawAccount = WithdrawAccount.findById(id);
-        if(withdrawAccount != null){
+        if (withdrawAccount != null) {
             withdrawAccount.delete();
         }
         edit(supplierId);

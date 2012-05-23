@@ -3,14 +3,14 @@
     <role key="account" text="财务人员"/>
     <role key="sales" text="商务销售"/>
 
-    <permission key="FINANCE" text="财务报表" roles="account,sales">
+    <permission key="FINANCE" text="报表" roles="account,sales">
         <permission key="REPORT" text="财务报表" roles="account,sales"/>
         <permission key="TOTAL_REPORT" text="总销售报表" roles="account,sales"/>
         <permission key="GOODS_REPORT" text="商品报表" roles="account,sales"/>
         <permission key="SHOP_REPORT" text="门店报表" roles="account,sales"/>
     </permission>
 
-    <navigation key="finance_app" text="财务报表" action="SupplierReports.showTotalReport" display-order="110">
+    <navigation key="finance_app" text="报表" action="SupplierReports.showTotalReport" display-order="110">
         <navigation key="reports_app" text="财务报表" action="SupplierReports.showTotalReport" permissions="REPORT">
             <navigation key="total_report" action="SupplierReports.showTotalReport" text="总销售报表"
                         permissions="TOTAL_REPORT"/>

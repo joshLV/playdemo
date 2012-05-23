@@ -1,19 +1,17 @@
 <input type="hidden" name="adminId" value="${admin?.id}">
 #{layout_operate.textField name:'supplier.fullName', value:supplier?.fullName, required:true/}
 #{layout_operate.textField name:'supplier.domainName', value:supplier?.domainName,
-note:play.Play.configure.getProperty("application.baseDomain"),
-required:true,
-note:'(只能是字母、数字、下划线，且长度限定在3-20位内)'/}
+note:'.'+baseDomain+' (只能是字母、数字、下划线，且长度限定在3-20位内)',required:true/}
 *{#{layout_operate.fileField name:'image'/}}*
 #{layout_operate.textField name:'supplier.userName', value:supplier?.userName, required:true/}
 #{layout_operate.textField name:'supplier.position', value:supplier?.position, required:true/}
 #{layout_operate.textField name:'supplier.mobile', value:supplier?.mobile,note:'(负责人手机和电话至少填写一项)'/}
 #{layout_operate.textField name:'supplier.phone', value:supplier?.phone/}
 #{if !"edit".equals(action)}
-#{layout_operate.textField name:'admin.loginName', value:admin?.loginName, required:true/}
+    #{layout_operate.textField name:'admin.loginName', value:admin?.loginName, required:true/}
 #{/if}
 #{else}
-#{layout_operate.textField name:'admin.loginName', value:admin?.loginName, required:true,disabled:true/}
+    #{layout_operate.textField name:'admin.loginName', value:admin?.loginName, required:true,disabled:true/}
 <input type="hidden" name="admin.loginName" value="${admin?.loginName}">
 #{/else}
 #{layout_operate.textField name:'admin.mobile', value:admin?.mobile, required:true/}
