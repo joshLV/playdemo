@@ -66,7 +66,6 @@ public class OrderUnitTest extends UnitTest {
         }
 
         order.status = OrderStatus.PAID;
-        order.deliveryType = DeliveryType.LOGISTICS;
         order.payMethod = "alipay";
         order.searchKey = "2";
         order.searchItems = "2012";
