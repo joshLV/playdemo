@@ -54,11 +54,6 @@ GET     /orders/99billpay_result                OrderResult.kuaiqianReturn
 GET     /sms                                    SMS.index
 POST    /sms/send                               SMS.send
 
-GET     /mybook                                 Books.mybook
-GET     /book                                   Books.book
-GET     /bookenhance                            Books.bookenhance
-GET     /bookenhancemirror                      Books.bookenhancemirror
-
 # 订单
 GET     /orders                                 Orders.index
 POST    /orders/new                             Orders.create
