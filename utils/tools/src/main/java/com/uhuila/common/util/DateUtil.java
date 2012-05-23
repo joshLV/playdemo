@@ -57,4 +57,19 @@ public class DateUtil {
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTime();
     }
+
+    /**
+     * 当前时间
+     *
+     * @return
+     */
+    public static String getNowTime() {
+
+        Calendar c = Calendar.getInstance();
+        String nowTime = c.get(Calendar.MONTH) + "月" + c.get(Calendar.DATE) + "日"+ c.get(Calendar.HOUR_OF_DAY)+"时"+c
+                .get(Calendar.MINUTE)+"分";
+        return nowTime;
+    }
+
+
 }
