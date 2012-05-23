@@ -69,7 +69,7 @@ public class ResalerCarts extends Controller {
         }
 
         order.createAndUpdateInventory();
-        redirect("/payment_info/" + order.getId());
+        redirect("/payment_info/" + order.orderNumber);
     }
 
     /**
