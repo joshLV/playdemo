@@ -1,20 +1,18 @@
 package function;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import models.resale.AccountType;
 import models.resale.Resaler;
 import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 public class RegisterTest extends FunctionalTest {
 	@Before
 	public void setup() {
@@ -65,7 +63,7 @@ public class RegisterTest extends FunctionalTest {
 		loginUserParams.put("resaler.loginName", "qqq");
 		loginUserParams.put("resaler.mobile", "13131121121");
 
-		Response response = POST("/register/checkLoginName", loginUserParams);
+		Response response = POST("/register/check-resaler", loginUserParams);
 		assertStatus(200,response);
 	}
 

@@ -32,7 +32,7 @@ $(window).load(function(){
 		}
 		
 		$.post(
-				"/register/checkLoginName",
+				"/register/check-resaler",
 				{loginName:loginName,mobile:mobile},
 				function(data){
 					if(data == 1 ){
@@ -71,7 +71,7 @@ function checkLoginNameAndMobile(){
 		$("#checkMobile").html("");
 	}
 	$.post(
-			"/register/checkLoginName",
+			"/register/check-resaler",
 			{loginName:loginName,mobile:mobile},
 			function(data){
 				if(data == 1 ){

@@ -7,12 +7,12 @@ GET     /solution                               Application.solution
 #注册
 GET     /register                               ResalerRegister.index
 POST    /register                               ResalerRegister.create
-POST    /register/checkLoginName                ResalerRegister.checkLoginName
-GET     /resaler/password                       ResalerPassword.index
-POST    /resaler/{id}                           ResalerPassword.update
+POST    /register/check-resaler                 ResalerRegister.checkLoginName
+GET     /resaler/edit-password                  ResalerPassword.index
+POST    /resaler/edit-password                  ResalerPassword.update
 
 GET     /resaler-info                           ResalerInfos.index
-POST    /resaler-info/{id}                      ResalerInfos.update
+POST    /resaler-info                           ResalerInfos.update
 
 # Resaler Favorite
 GET     /library                                ResalerFavs.index

@@ -28,7 +28,7 @@ function init(val){
         #{include "share/left.html"/}
         <div class="section">
             <h3>我的资料</h3>
-            <form class="form-horizontal user-form" id="editForm" action="@{ResalerInfos.update(resaler?.id)}" method="POST">
+            <form class="form-horizontal user-form" id="editForm" action="@{ResalerInfos.update()}" method="POST">
                 <div class="item clearfix">
                     <span class="label">帐号等级：</span>
                     &{'resaler.'+resaler?.level}

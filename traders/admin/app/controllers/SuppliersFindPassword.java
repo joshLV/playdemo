@@ -1,16 +1,12 @@
 package controllers;
 
-import models.admin.SupplierUser;
-import models.sms.SMSUtil;
-
-import org.apache.commons.lang.StringUtils;
-
-import play.cache.Cache;
-import play.mvc.Controller;
-import play.mvc.With;
-
 import com.uhuila.common.constants.DataConstants;
 import com.uhuila.common.util.RandomNumberUtil;
+import models.admin.SupplierUser;
+import models.sms.SMSUtil;
+import org.apache.commons.lang.StringUtils;
+import play.cache.Cache;
+import play.mvc.Controller;
 
 public class SuppliersFindPassword  extends Controller {
 
@@ -31,7 +27,7 @@ public class SuppliersFindPassword  extends Controller {
 		//手机存在
 		if (isExisted) {
 			String validCode = RandomNumberUtil.generateSerialNumber(4);
-			String comment = "您的验证码是" + validCode + ", 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码";
+            String comment = "【券市场】您您的验证码是" + validCode + ", 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码";
 			SMSUtil.send(comment, mobile, "0000");
 			//保存手机和验证码
 			Cache.set("validCode_", validCode, "10mn");

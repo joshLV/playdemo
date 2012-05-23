@@ -1,13 +1,11 @@
 package controllers;
 
-import java.util.Date;
-
+import controllers.modules.resale.cas.SecureCAS;
 import models.resale.Resaler;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.resale.cas.SecureCAS;
 
 @With(SecureCAS.class)
 public class ResalerInfos extends Controller {
@@ -23,12 +21,13 @@ public class ResalerInfos extends Controller {
 	/**
 	 * 修改资料
 	 */
-	public static void update(Long id, @Valid Resaler resaler){
+	public static void update(@Valid Resaler resaler){
+          Resaler newResaler = SecureCAS.getResaler();
+
 		if (Validation.hasErrors()) {
-			resaler.id = id;
 			render("ResalerInfos/index.html", resaler);
 		}
-		resaler.updateInfo(id,resaler);
+		resaler.updateInfo(newResaler.id,resaler);
 		index();
 	}
 }

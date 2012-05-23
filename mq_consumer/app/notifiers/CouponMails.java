@@ -7,10 +7,9 @@ import play.mvc.Mailer;
 public class CouponMails extends Mailer {
 
     public static void notify(MailMessage message) {
-
-        setSubject("[优惠啦] 您订购优惠券");
+        setSubject("[一百券] 您订购优惠券");
         addRecipient(message.getEmail());
-        setFrom("Uhuila <noreplay@uhuila.com>");
+        setFrom("yibaiquan <noreplay@uhuila.com>");
         send(message);
     }
 

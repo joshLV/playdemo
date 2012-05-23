@@ -50,6 +50,8 @@ order.ECoupon(coupon2):
   "orderItems": "orderItems2"
   "isFreeze": "0"
   "downloadTimes": "0"
+  "effectiveAt": "2012-03-01T00:00:00"
+  "expireAt": "2015-07-30T00:00:00"
   
 order.ECoupon(coupon3):
   "order": "order1"

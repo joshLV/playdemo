@@ -6,9 +6,9 @@ import play.mvc.Mailer;
 public class FindPassWordMails extends Mailer {
 
     public static void notify(MailMessage message) {
-        setSubject("[优惠啦] 找回密码");
+        setSubject("[一百券] 找回密码");
         addRecipient(message.getEmail());
-        setFrom("Uhuila <noreplay@uhuila.com>");
+        setFrom("yibaiquan <noreplay@uhuila.com>");
         send(message);
     }
 
