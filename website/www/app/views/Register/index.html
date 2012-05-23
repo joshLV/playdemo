@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>新用户注册</title>
-    <link rel="stylesheet" href="http://a.uhcdn.com/css/u/base.css" />
-    <link rel="stylesheet" href="http://a.uhcdn.com/css/u/login.css" />
-    <script src="http://a.uhcdn.com/js/u/jquery-1.7.2.min.js"></script>
-    <script src="@{'/public/javascripts/register.js'}"></script>
+    #{asset.css src:['/u/base.css'] /}
+    #{asset.js src:['/u/jquery-1.7.2.min.js'] /}
+    #{asset.css src:['/u/login.css'] /}
 </head>
 <body>
     
@@ -14,7 +13,8 @@
 
 <div id="header" class="clearfix">
     <div id="logo">
-        <a href="http://www.uhuila.com/"><img src="http://img.uhcdn.com/images/u/logo.png" width="170" height="88" alt="一百券"/></a>
+                  <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}"><img src="#{asset.url href:'/images/u/logo.png'/}" width="180" height="88"
+                                            alt="一百券"/></a>
     </div>
 </div>
 
@@ -172,19 +172,21 @@
     </div>
 </div>
 <script>
+var reEmail = /^(?:\w+\.?)*\w+@(?:\w+\.?)*\w+$/;
 $(function(){
     var username = $('#loginName'),
         password = $('#password'),
         password2 = $('#confirmPassword'),
-        checkcode = $('#captcha'),
-        reEmail = /^(?:\w+\.?)*\w+@(?:\w+\.?)*\w+$/;
+        checkcode = $('#captcha');
+        //reEmail = /^(?:\w+\.?)*\w+@(?:\w+\.?)*\w+$/;
 
     $('#regist-form').submit(function(){
         if (username.val() == '') {
             username.css('border', '1px solid #F50');
-            $('#username-error').text('请输入用户名');
+            $('#username-error').text('请输入邮箱');
             return false;
         }
+        checkLoginNameAndMobile();
         if (password.val() == '') {
             password.css('border', '1px solid #f50');
             $('#password-error').text('请输入密码');
@@ -200,11 +202,7 @@ $(function(){
             $('#password2-error').text('两次输入的密码不一致');
             return false;
         }
-        if (!reEmail.test(username.val())) {
-            username.css('border', '1px solid #f50');
-            $('#username-error').text('邮箱格式不正确');
-            return false;
-        }
+
         if (checkcode.val() == '') {
             checkcode.css('border', '1px solid #f50');
             $('#checkcode-error').text('请输入验证码');
@@ -212,8 +210,7 @@ $(function(){
         }
     });
     username.blur(function(){
-        username.css('border', '1px solid #D1D1D1');
-        $('#username-error').text('');
+       checkLoginNameAndMobile();
     });
     password.blur(function(){
         password.css('border', '1px solid #D1D1D1');
@@ -234,6 +231,32 @@ $(function(){
         img.attr('src', src +'?'+ +new Date);
     });
 });
+
+
+function checkLoginNameAndMobile(){
+    var loginName = $("#loginName").val();
+	if(loginName ==''){
+      $('#username-error').text('请输入邮箱');
+		return false;
+	}
+    if (!reEmail.test(loginName)) {
+          $("#loginName").css('border', '1px solid #f50');
+            $('#username-error').text('邮箱格式不正确');
+            return false;
+        }
+
+	$.post(
+			"/register/checkLoginName",
+			{loginName:loginName},
+			function(data){
+				if(data == 1 ){
+					$("#username-error").html("<font color=red>对不起，该邮箱已已经存在!</font>");
+       			} else {
+					$("#username-error").html("");
+				}
+			}
+	);
+}
 </script>
 
 <div id="footer">
