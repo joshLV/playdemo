@@ -22,10 +22,10 @@
             </tr>
             <tr>
                 <td> 商品名称
-                    <input type="text" name="condition.goodsName" value="${condition.goodsName}">
+                    <input type="text" name="condition.goodsName" value="${condition?.goodsName}">
                 </td>
                 <td> 消费门店
-                    <input type="text" name="condition.shopLike" value="${condition.shopLike}">
+                    <input type="text" name="condition.shopLike" value="${condition?.shopLike}">
                 </td>
                 <td> 状态
                 #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
@@ -40,17 +40,17 @@
                 <td>消费时间
                     <input type="text" id="condition_consumed_begin" class="input-medium Wdate"
                            name="condition.consumedAtBegin"
-                           onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtBegin?.format()}"> -
+                           onfocus="WdatePicker({readOnly:true})" value="${condition?.consumedAtBegin?.format()}"> -
                     <input type="text" id="condition_consumed_end" class="input-medium Wdate"
                            name="condition.consumedAtEnd"
-                           onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtEnd?.format()}">
+                           onfocus="WdatePicker({readOnly:true})" value="${condition?.consumedAtEnd?.format()}">
                 </td>
                 <td>退款时间
                     <input type="text" id="condition_refund_begin" class="input-medium Wdate"
                            name="condition.refundAtBegin"
-                           onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtBegin?.format()}"> -
+                           onfocus="WdatePicker({readOnly:true})" value="${condition?.refundAtBegin?.format()}"> -
                     <input type="text" id="condition_refund_end" class="input-medium Wdate" name="condition.refundAtEnd"
-                           onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtEnd?.format()}">
+                           onfocus="WdatePicker({readOnly:true})" value="${condition?.refundAtEnd?.format()}">
                 </td>
                 <td>
                     <button type="submit" class="btn btn-primary" id="search">搜索</button>
