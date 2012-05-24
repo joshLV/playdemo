@@ -32,7 +32,7 @@
                     #{list items:eCoupons, as:'coupon' }
                     <tr>
                         <td>
-                            #{if coupon.status == models.order.ECouponStatus.UNCONSUMED || coupon.status == models.order.ECouponStatus.EXPIRED}
+                            #{if coupon.status == models.order.ECouponStatus.UNCONSUMED}
                             <input type="checkbox" id="check_coupon_${coupon.id}" value="${coupon.id}" name="couponIds"/>
                             #{/if}
                         </td>
