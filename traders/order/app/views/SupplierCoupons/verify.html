@@ -31,8 +31,11 @@
 	    #{/select}
   #{/if}
   #{else}
-  <input type="text" name="shopName" id="shopName" disabled="true" value="${supplierSetting?.supplierUserShopValue}" class="input-large" />
-  <input type="hidden" name="shopId" id="shopId" value="${supplierSetting?.supplierUserShopId}" class="input-large" />
+
+  <input type="text" name="shopName" id="shopName" disabled="true" value="${shop?.name}"
+         class="input-large"
+          />
+  <input type="hidden" name="shopId" id="shopId" value="${shop?.id}" class="input-large" />
   #{/else}
   
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

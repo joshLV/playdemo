@@ -57,9 +57,7 @@ public class ResalerOrders extends Controller {
         Resaler resaler = SecureCAS.getResaler();
         //订单信息
 		models.order.Order order = models.order.Order.findOneByUser(orderNumber, resaler.getId(), AccountType.RESALER);
-        System.out.println(order);
         List<ECoupon> eCoupons = ECoupon.findByOrder(order);
-        System.out.println(">>>>>>>>>>>."+eCoupons);
 		//收货信息
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "订单详情", "/orders/" + orderNumber);
 		render(order, eCoupons, breadcrumbs);

@@ -18,13 +18,13 @@
     <h2>用户注册</h2>
     <form class="form-horizontal" id="regForm" action="@{ResalerRegister.create()}" method="GET">
     <ul>
-        <li>
-            <label><i class="required">*</i>帐户类型：</label>
-            <select class="dingdan_status_bg" name="resaler.accountType">
-                <option value="CONSUMER">&{'resaler.CONSUMER'}</option>
-                <option value="COMPANY">&{'resaler.COMPANY'}</option>
-            </select>
-        </li>
+        *{<li>}*
+            *{<label><i class="required">*</i>帐户类型：</label>}*
+            *{<select class="dingdan_status_bg" name="resaler.accountType">}*
+                *{<option value="CONSUMER">&{'resaler.CONSUMER'}</option>}*
+                *{<option value="COMPANY">&{'resaler.COMPANY'}</option>}*
+            *{</select>}*
+        *{</li>}*
         <li>
             <label><i class="required">*</i>用&nbsp;&nbsp;户&nbsp;&nbsp;名：</label>
             <input type="text" name="resaler.loginName" id="loginName" value="${resaler?.loginName}" />
@@ -78,6 +78,7 @@
         <li class="btn">
             <button id="register_submit" type="button">注册</button>
         </li>
+        </ul>
     </form>
 </div>
 <div id="footer">版权所有：上海视惠信息科技有限公司 ©2012 quanFX.COM  沪ICP备08114451号</div>

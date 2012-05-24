@@ -32,7 +32,14 @@ $(window).load(
         });
 
         $("#link_buy_now").click(function () {
-            $('#buy_now_form').submit();
+             var buyCount = parseInt($("#number").val());
+              var inventory = parseInt($("#inventory").html());
+                if (inventory < buyCount) {
+                    $("#notEnough").html("<font color:red>库存不足！ </font>");
+                    return false;
+                } else {
+                    $('#buy_now_form').submit();
+                }
         });
 
     }

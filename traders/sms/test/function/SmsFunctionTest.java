@@ -93,14 +93,14 @@ public class SmsFunctionTest extends FunctionalTest {
                 "" + "=1319873904&code=1028";
         //msg不符合的情况
         Http.Response response = GET("/getsms?" + message);
-        assertEquals("msg is wrong", response.out.toString());
+        assertEquals("券号无效！", response.out.toString());
 
         message = "mobiles=15900002342&msg=##&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808" +
                 "&dt" +
                 "" + "=1319873904&code=1028";
         //msg不符合的情况
         response = GET("/getsms?" + message);
-        assertEquals("msg is wrong", response.out.toString());
+        assertEquals("券号无效！", response.out.toString());
 
         //msg不存在的情况
         message = "mobiles=15900002342&msg=#11234567003#&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808&dt" +
@@ -147,10 +147,10 @@ public class SmsFunctionTest extends FunctionalTest {
         message = "mobiles=15900002342&msg=#" + ecoupon.eCouponSn + "#&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808&dt" +
                 "=1319873904&code=1028";
         response = GET("/getsms?" + message);
-        assertEquals("店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", response.out.toString());
+        assertEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", response.out.toString());
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertNotNull("店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", msg);
-        assertEquals("店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", msg.getContent());
+        assertNotNull("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", msg);
+        assertEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", msg.getContent());
 
         //店员符合
         id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
@@ -183,10 +183,10 @@ public class SmsFunctionTest extends FunctionalTest {
 
         response = GET("/getsms?" + message);
 
-        assertEquals("店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", response.out.toString());
+        assertEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", response.out.toString());
         msg = MockSMSProvider.getLastSMSMessage();
-        assertNotNull("店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", msg);
-        assertEquals("店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", msg.getContent());
+        assertNotNull("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", msg);
+        assertEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", msg.getContent());
 
 
         //已消费的验证

@@ -83,9 +83,9 @@ public class FindPassword extends Controller {
 		if (!StringUtils.normalizeSpace(cacheMobile).equals(mobile)) {
 			renderJSON(DataConstants.TWO.getValue());
 		}
-		Cache.delete("validCode_");
-		Cache.delete("mobile_");
 
+        Cache.delete("validCode_");
+        Cache.delete("mobile_");
 		renderJSON(DataConstants.ZERO.getValue());
 	}
 

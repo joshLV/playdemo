@@ -28,7 +28,7 @@
                    $("#getcodebutton").attr("disabled",false);
                 }else if(data==0){
                    $("#passtelcheck").html("<span class='yellowInfo allstep_info'><b></b><em>此手机并未注册！</em></span>"); 
-                   $("#getcodebutton").attr("disabled",false);
+                   //$("#getcodebutton").attr("disabled",false);
                 }
                 else if(data==-3){
                    $("#passtelcheck").html("<span class='yellowInfo allstep_info'><b></b><em>请使用此账号绑定手机！</em></span>"); 
@@ -63,7 +63,7 @@
            return false;
        }
 
-       $("#telpassbutton").attr("disabled","disabled");
+      // $("#telpassbutton").attr("disabled","disabled");
        $.get("/check-mobile",{mobile:mobile,validCode:telcheckcode},function(data){
            if(data==0){
         	   var url = "/reset-password?mobile="+mobile;

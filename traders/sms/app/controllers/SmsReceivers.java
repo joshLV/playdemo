@@ -36,7 +36,7 @@ public class SmsReceivers extends Controller {
         if (FieldCheckUtil.isNumeric(msg)) {
             // 消费者验证的情况
             checkConsumer(mobile, msg, code);
-        } else if (FieldCheckUtil.isNumericRule(msg)) {
+        } else if (msg.contains("#")) {
             // 店员验证
             checkClerk(mobile, msg, code);
         } else {
@@ -53,57 +53,73 @@ public class SmsReceivers extends Controller {
      * @param code   回复代码
      */
 
+
     private static void checkClerk(String mobile, String msg, String code) {
-        //验证店员是否存在
-        String couponNumber = msg.replaceAll("#", "");
-        ECoupon ecoupon = ECoupon.query(couponNumber, null);
+        String[] couponArray = msg.split("#");
 
-        if (ecoupon == null) {
-            renderText("Not Found the coupon");
-        } else {
-            Long supplierId = ecoupon.goods.supplierId;
-
-            Supplier supplier = Supplier.findById(supplierId);
-
-            if (supplier == null || supplier.deleted == DeletedStatus.DELETED) {
-                renderText("Not Found the supplier");
+        //验证店员是否存在        
+        String couponNumber = "";
+        int couponCount = couponArray.length;
+        for (int i = 1; i < couponCount; i++) {
+            couponNumber = couponArray[i];
+            if (!FieldCheckUtil.isNumeric(couponNumber)) {
+                renderText("券号无效！");
             }
 
-            if (supplier.status == SupplierStatus.FREEZE) {
-                renderText("The supplier was freeze!");
-            }
+            ECoupon ecoupon = ECoupon.query(couponNumber, null);
 
-            SupplierUser supplierUser = SupplierUser.findByMobileAndSupplier(mobile, supplier);
-            List<Brand> brandList = Brand.findByOrder(supplier);
-            if (supplierUser == null || !brandList.contains(ecoupon.goods.brand)) {
-                SMSUtil.send("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166", mobile, code);
-                renderText("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166");
-            }
+            if (ecoupon == null) {
+                renderText("Not Found the coupon");
+            } else {
+                Long supplierId = ecoupon.goods.supplierId;
 
-            Long shopId = supplierUser.shop.id;
-            Shop shop = Shop.findById(shopId);
-            String shopName = shop.name;
-            if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-                ecoupon.consumed(supplierUser.shop.id, supplierUser);
+                Supplier supplier = Supplier.findById(supplierId);
 
-                String coupon = ecoupon.getMaskedEcouponSn();
-                coupon = coupon.substring(coupon.lastIndexOf("*") + 1);
+                if (supplier == null || supplier.deleted == DeletedStatus.DELETED) {
+                    renderText("Not Found the supplier");
+                }
 
-                String dateTime = DateUtil.getNowTime();
+                if (supplier.status == SupplierStatus.FREEZE) {
+                    renderText("The supplier was freeze!");
+                }
 
-                // 发给店员
-                SMSUtil.send("【券市场】," + getMaskedMobile(mobile) + "消费者的尾号" + coupon + "的券（面值：" + ecoupon
-                        .faceValue + "元）于" + dateTime + "已验证成功，使用门店：" + shopName + "。客服热线：400" +
-                        "-6262-166", supplierUser.mobile, code);
-                // 发给消费者
-                SMSUtil.send("【券市场】您尾号" + coupon + "的券号于" + dateTime
-                        + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166", mobile, code);
-            } else if (ecoupon.status == ECouponStatus.CONSUMED) {
-                SMSUtil.send("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", mobile, code);
-            } else if (ecoupon.expireAt.before(new Date())) {
-                SMSUtil.send("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", mobile, code);
+                SupplierUser supplierUser = SupplierUser.findByMobileAndSupplier(mobile, supplier);
+                List<Brand> brandList = Brand.findByOrder(supplier);
+                if (supplierUser == null || !brandList.contains(ecoupon.goods.brand)) {
+                    SMSUtil.send("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166", mobile, code);
+                    renderText("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166");
+                }
+
+                Long shopId = supplierUser.shop.id;
+                Shop shop = Shop.findById(shopId);
+                String shopName = shop.name;
+                if (ecoupon.status == ECouponStatus.UNCONSUMED) {
+                    ecoupon.consumed(supplierUser.shop.id, supplierUser);
+
+                    String coupon = ecoupon.getMaskedEcouponSn();
+                    coupon = coupon.substring(coupon.lastIndexOf("*") + 1);
+
+                    String dateTime = DateUtil.getNowTime();
+
+                    // 发给店员
+                    SMSUtil.send("【券市场】," + getMaskedMobile(mobile) + "消费者的尾号" + coupon + "的券（面值：" + ecoupon
+                            .faceValue + "元）于" + dateTime + "已验证成功，使用门店：" + shopName + "。客服热线：400" +
+                            "-6262-166", supplierUser.mobile, code);
+                    // 发给消费者
+                    SMSUtil.send("【券市场】您尾号" + coupon + "的券号于" + dateTime
+                            + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166", mobile, code);
+                } else if (ecoupon.status == ECouponStatus.CONSUMED) {
+                    SMSUtil.send("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", mobile, code);
+                } else if (ecoupon.expireAt.before(new Date())) {
+                    SMSUtil.send("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", mobile, code);
+                }
             }
         }
+        if (couponCount == 0) {
+            renderText("券号无效！");
+        }
+
+
     }
 
     /**

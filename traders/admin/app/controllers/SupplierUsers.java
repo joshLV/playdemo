@@ -2,7 +2,6 @@ package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.admin.SupplierRole;
-import models.admin.SupplierSetting;
 import models.admin.SupplierUser;
 import models.sales.Shop;
 import navigation.annotations.ActiveNavigation;
@@ -88,8 +87,8 @@ public class SupplierUsers extends Controller {
 			shopId = supplierUser.shop.id;
 			shopName = supplierUser.shop.name;
 		}
-		SupplierSetting supplierSetting = new SupplierSetting();
-		supplierSetting.save(supplierUser.id,shopId,shopName);
+//		SupplierSetting supplierSetting = new SupplierSetting();
+//		supplierSetting.save(supplierUser.id,shopId,shopName);
 		index();
 	}
 

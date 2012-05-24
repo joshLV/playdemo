@@ -71,7 +71,7 @@ function showPwRank(pwRank) {
 function isOk(val){
 	if (val=="isOk") {
 		alert("密码修改成功！");
-		window.location.href="/orders";
+		//window.location.href="/orders";
 	}
 
 }

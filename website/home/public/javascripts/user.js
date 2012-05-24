@@ -136,7 +136,7 @@ function getBindCode(codeidy) {
             alert("手机号格式不对！");
             return false;
         }
-        $("#getBindCode").attr("disabled", "disabled");
+       // $("#getBindCode").attr("disabled", "disabled");
         $.post(
             "/user-info/send",
             {mobile:bind_mobile,oldMobile:''},
@@ -177,7 +177,7 @@ function getBindCode(codeidy) {
             alert("新手机号和原手机号一样！");
             return false;
         }
-        $("#getchangeCode").attr("disabled", "disabled");
+      //  $("#getchangeCode").attr("disabled", "disabled");
         $.post(
             "/user-info/send",
             {mobile:new_mobile,oldMobile:old_mobile},
@@ -223,7 +223,7 @@ function getpwsbyemail(getiby) {
             $("#passemcheck").html("<div>邮箱地址不合法</div>");
             return false;
         }
-        $("#nexthtml").attr("disabled", "disabled");
+       // $("#nexthtml").attr("disabled", "disabled");
         $.post("user.php?act=check_forgetpw", {useremail:useremail, title:1}, function (data) {
             if (data.message == 1) {
                 setTimeout(function () {
@@ -251,7 +251,7 @@ function getpwsbyemail(getiby) {
             $("#passtelcheck").html("<span class='redInfo allstep_info'><b></b><em>请输入手机验证码</em></span>");
             return false;
         }
-        $("#telpassbutton").attr("disabled", "disabled");
+       // $("#telpassbutton").attr("disabled", "disabled");
         $.post("user.php?act=check_forgetpw", {usertel:usertel, telcheckcode:telcheckcode, title:2}, function (data) {
             if (data.message == 1) {
                 setTimeout(function () {
@@ -283,7 +283,7 @@ function sendCheckCode() {
         $("#passtelcheck").html("<span class='redInfo allstep_info'><b></b><em>请输入11位手机号码</em></span>");
         return false;
     }
-    $("#getcodebutton").attr("disabled", "disabled");
+  //  $("#getcodebutton").attr("disabled", "disabled");
     $.post(
         "user.php?act=sendcheckcode",
         {usertel:usertel},
