@@ -180,7 +180,6 @@ public class ECoupon extends Model {
      * @return ECoupon 券信息
      */
     public static ECoupon query(String eCouponSn, Long supplierId) {
-
         EntityManager entityManager = play.db.jpa.JPA.em();
         StringBuilder sql = new StringBuilder();
         Map<String, Object> params = new HashMap<>();
