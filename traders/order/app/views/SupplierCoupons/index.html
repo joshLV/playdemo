@@ -11,13 +11,13 @@
             <tbody>
             <tr>
                 <td> 店员工号
-                    <input type="text" name="condition.jobNumber" value="${condition.jobNumber}">
+                    <input type="text" name="condition.jobNumber" value="${condition?.jobNumber}">
                 </td>
                 <td> 订&nbsp;&nbsp;单&nbsp;&nbsp;号
-                    <input type="text" name="condition.orderNumber" value="${condition.orderNumber}">
+                    <input type="text" name="condition.orderNumber" value="${condition?.orderNumber}">
                 </td>
                 <td> 券号
-                    <input type="text" name="condition.eCouponSn" value="${condition.eCouponSn}">
+                    <input type="text" name="condition.eCouponSn" value="${condition?.eCouponSn}">
                 </td>
             </tr>
             <tr>
@@ -94,11 +94,11 @@
             <td>${coupon?.originalPrice?.formatCurrency('CNY')}</td>
             <td>${coupon?.getConsumedShop()}</td>
             <td>${coupon?.goods?.effectiveAt ?.format()} -
-            ${coupon?.goods?.expireAt ?.format()}</td>
-            <td>${coupon?.consumedAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            ${coupon?.goods?.expireAt?.format()}</td>
+            <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
             <td>#{if coupon?.supplierUser?.userName!=null}${coupon?.supplierUser?.userName}#{/if}
                 #{if coupon?.supplierUser?.jobNumber!=null}(工号: ${coupon?.supplierUser?.jobNumber})#{/if}</td>
-            <td>${coupon?.refundAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>${coupon?.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
             <td>${coupon?.refundPrice}</td>
             <td>&{'coupon.'+coupon?.status}</td>
         </tr>

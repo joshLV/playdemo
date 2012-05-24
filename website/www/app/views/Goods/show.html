@@ -172,13 +172,16 @@
 <div class="wrap clearfix">
     <ul id="J_tabbar" class="tabbar clearfix">
         <li name="product-info" class="current">商品信息</li>
+    #{if models.sales.MaterialType.REAL!=goods.materialType}
         <li name="applicable-store">适用门店</li>
+    #{/if}
     </ul>
     <div id="J_tabtxt" class="tabtxt">
         <div class="product-info txt-item txt-item-bd clearfix">
         ${goods?.details?.raw()}
         </div>
 
+    #{if models.sales.MaterialType.REAL!=goods.materialType}
         <div class="applicable-store txt-item clearfix">
             <h4 class="txt-item-hd">适用门店</h4>
             <table class="txt-item-bd" width="700" border="0" cellpadding="0"
@@ -195,5 +198,7 @@
             #{/if}
             </table>
         </div>
+    #{/if}
+
     </div>
 </div>
