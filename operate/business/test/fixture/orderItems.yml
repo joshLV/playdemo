@@ -6,6 +6,7 @@ order.OrderItems(orderItems1):
   "buyNumber": 2
   "salePrice": "10"
   "originalPrice": "20"
+  "resalerPrice": "1.0"
   "goodsName": "哈根达斯100元抵用券"
   "createdAt": "2012-03-07"
   "goods": "Goods_001"
@@ -16,6 +17,7 @@ order.OrderItems(orderItems2):
   "buyNumber": 1
   "salePrice": "20"
   "originalPrice": "20"
+  "resalerPrice": "1.0"
   "goodsName": "哈根达斯200元抵用券"
   "createdAt": "2012-03-07"
   "goods": "Goods_002"
@@ -25,6 +27,7 @@ order.OrderItems(orderItems3):
   "order": "order1"
   "buyNumber": 3
   "salePrice": "10"
+  "resalerPrice": "1.0"
   "originalPrice": "20"
   "goodsName": "哈根达斯100元抵用券"
   "createdAt": "2012-03-07"

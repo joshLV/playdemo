@@ -708,7 +708,7 @@ public class Order extends Model {
                 orderItem.status = OrderStatus.SENT;
                 orderItem.save();
 
-                BigDecimal platformCommission = BigDecimal.ZERO;
+                BigDecimal platformCommission;
                 if (orderItem.salePrice.compareTo(orderItem.resalerPrice) < 0) {
                     //如果成交价小于分销商成本价（这种情况只有在一百券网站上才会发生），
                     //那么一百券就没有佣金，平台的佣金也变为成交价减成本价
