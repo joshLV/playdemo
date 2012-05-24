@@ -162,6 +162,10 @@ public class GoodsCondition {
         if (status != null) {
             condBuilder.append(" and g.status = :status ");
             paramMap.put("status", status);
+            if (status.equals(GoodsStatus.ONSALE)) {
+                expireAtEnd = new Date();
+                baseSaleEnd = 0;
+            }
         }
 
         if (salePriceBegin != null) {
@@ -184,22 +188,22 @@ public class GoodsCondition {
             paramMap.put("saleCountEnd", saleCountEnd);
         }
 
-        if (baseSaleBegin >= 0){
+        if (baseSaleBegin >= 0) {
             condBuilder.append(" and g.baseSale >= :baseSaleBegin");
             paramMap.put("baseSaleBegin", baseSaleBegin);
         }
 
-        if (baseSaleEnd >= 0){
+        if (baseSaleEnd >= 0) {
             condBuilder.append(" and g.baseSale <= :baseSaleEnd");
             paramMap.put("baseSaleEnd", baseSaleEnd);
         }
 
-        if (expireAtBegin != null){
+        if (expireAtBegin != null) {
             condBuilder.append(" and g.expireAt > :expireAtBegin");
             paramMap.put("expireAtBegin", expireAtBegin);
         }
 
-        if (expireAtEnd != null){
+        if (expireAtEnd != null) {
             condBuilder.append(" and g.expireAt <= :expireAtEnd");
             paramMap.put("expireAtEnd", expireAtEnd);
         }
