@@ -115,3 +115,15 @@ INSERT INTO `payment_source` (`id`, `code`, `detail`, `logo`, `name`, `payment_c
 (31, 'SHRCC', '上海农村商业银行', 'images/bank/bank_shrcc.gif', '上海农村商业银行', '99bill', 30),
 (32, 'SPDB', '浦发银行', 'images/bank/bank_spdb.gif', '浦发银行', '99bill', 31);
 
+--
+-- 转存表中的数据 `categories`
+--
+update `categories` set `parent_id`=null;
+delete from `categories`;
+INSERT INTO `categories` (`id`, `display_order`, `name`, `parent_id`) VALUES
+(1, 100, '美食券', NULL),
+(2, 200, '食品券', NULL),
+(3, 300, '川菜', 1),
+(4, 400, '快餐', 1),
+(5, 500, '面包甜点', 2),
+(6, 600, '休闲食品', 2);
