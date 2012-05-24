@@ -81,7 +81,7 @@
         <li class="active"><a href="#"> 订购者信息</a></li>
         <table class="table table-bordered table-striped">
             <tr>
-                <td>订购者帐号： ${orders.user.loginName}</td>
+                <td>订购者帐号： ${orders.user?.loginName}</td>
             </tr>
             <tr>
                 <td>订购者手机： ${orders.buyerMobile}#{if orders.buyerPhone != null}/ ${orders.buyerPhone}#{/if}</td>

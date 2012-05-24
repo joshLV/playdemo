@@ -98,7 +98,6 @@
         #{option "WITHDRAW"}&{'account_sequence.WITHDRAW'}#{/option}
         #{option "PAY"}&{'account_sequence.PAY'}#{/option}
         #{option "REFUND"}&{'account_sequence.REFUND'}#{/option}
-        #{option "CANCEL"}&{'account_sequence.CANCEL'}#{/option}
         #{option "RECEIVE"}&{'account_sequence.RECEIVE'}#{/option}
     #{/select}
         <button type="submit" class="btn btn-primary">搜索</button>
@@ -128,7 +127,7 @@
 
 #{vx.tab name:'account_sequence',enumItems: [models.accounts.AccountSequenceType.CHARGE,
 models.accounts.AccountSequenceType.WITHDRAW,models.accounts.AccountSequenceType.PAY,
-models.accounts.AccountSequenceType.REFUND,models.accounts.AccountSequenceType.CANCEL,
+models.accounts.AccountSequenceType.REFUND,
 models.accounts.AccountSequenceType.RECEIVE],
 select:'condition_sequenceType',value:condition.sequenceType,form:'form'/}
     <div class="tab-content">

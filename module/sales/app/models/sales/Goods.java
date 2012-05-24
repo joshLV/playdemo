@@ -504,10 +504,9 @@ public class Goods extends Model {
     }
 
     public GoodsStatus getStatus() {
-        if (status == GoodsStatus.ONSALE) {
-            if ((expireAt != null && expireAt.before(new Date())) || baseSale <= 0) {
-                status = GoodsStatus.OFFSALE;
-            }
+        if (status != null && GoodsStatus.ONSALE.equals(status) &&
+                (expireAt != null && expireAt.before(new Date())) || (baseSale != null && baseSale <= 0)) {
+            status = GoodsStatus.OFFSALE;
         }
         return status;
     }
