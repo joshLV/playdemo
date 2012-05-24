@@ -372,7 +372,7 @@ public class Goods extends Model {
         }
         String express = String.valueOf(discount);
         if (express.contains(".")) {
-            return express.substring(0, express.indexOf('.') + 2);
+            return express.substring(0, express.indexOf('.') + 2) + "折";
         }
         return express + "折";
     }
