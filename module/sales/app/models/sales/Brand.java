@@ -1,5 +1,6 @@
 package models.sales;
 
+import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.constants.ImageSize;
 import com.uhuila.common.util.PathUtil;
 import models.supplier.Supplier;
@@ -12,6 +13,8 @@ import play.modules.paginate.ModelPaginator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -36,7 +39,10 @@ public class Brand extends Model {
 //    @Time
 //    public String closeAt;     //营业时间下班时间
     @MaxSize(500)
-    public String introduce;   //特色产品介绍
+    public String introduce;     //特色产品介绍
+
+    @Enumerated(EnumType.ORDINAL)
+    public DeletedStatus deleted;
 
     private static final String IMAGE_SERVER = Play.configuration.getProperty
             ("image.server", "img0.dev.uhcdn.com");
@@ -110,11 +116,11 @@ public class Brand extends Model {
     }
 
     public static List<Brand> findTop(int limit) {
-        return find("order by displayOrder").fetch(limit);
+        return find("deleted= ? order by displayOrder", DeletedStatus.UN_DELETED).fetch(limit);
     }
 
     public static List<Brand> findByOrder(Supplier supplier) {
-        return find("supplier = ? order by displayOrder", supplier).fetch();
+        return find("deleted = ? and supplier = ? order by displayOrder", DeletedStatus.UN_DELETED, supplier).fetch();
     }
 
     public static List<Brand> findTop(int limit, long brandId) {
@@ -143,9 +149,10 @@ public class Brand extends Model {
     public static ModelPaginator getBrandPage(int pageNumber, int pageSize, Long supplierId) {
         ModelPaginator page;
         if (supplierId != null) {
-            page = new ModelPaginator(Brand.class, "supplier.id=?", supplierId).orderBy("displayOrder,name");
+            page = new ModelPaginator(Brand.class, "deleted = ? and supplier.id=?", DeletedStatus.UN_DELETED,
+                    supplierId).orderBy("displayOrder,name");
         } else {
-            page = new ModelPaginator(Brand.class).orderBy("displayOrder,name");
+            page = new ModelPaginator(Brand.class, "deleted = ? ", DeletedStatus.UN_DELETED).orderBy("displayOrder,name");
         }
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);

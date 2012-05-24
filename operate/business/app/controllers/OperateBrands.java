@@ -1,5 +1,6 @@
 package controllers;
 
+import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
 import models.sales.Brand;
 import models.supplier.Supplier;
@@ -72,6 +73,7 @@ public class OperateBrands extends Controller {
             e.printStackTrace();
             error(500, "brand.image_upload_failed");
         }
+        brand.deleted = DeletedStatus.UN_DELETED;
         brand.create();
 
         index(null);
@@ -170,7 +172,8 @@ public class OperateBrands extends Controller {
     public static void delete(Long id) {
         Brand brand = Brand.findById(id);
         if (brand != null) {
-            brand.delete();
+            brand.deleted= DeletedStatus.DELETED;
+            brand.save();
         }
         index(null);
     }

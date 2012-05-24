@@ -33,7 +33,7 @@ load:['fixture/roles.yml','fixture/supplierusers.yml',
 #{/selenium}
 #{selenium '查看订单详细信息'}
     open('/orders/${play.test.Fixtures.idCache.get("models.order.Order-order1")}')
-    assertTitle('订单详细信息')
+    assertTitle('订单详请')
     verifyTextPresent('201202220324134991598')
 #{/selenium}
 #{selenium '查看消费券号列表'}
