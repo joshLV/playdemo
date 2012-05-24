@@ -32,6 +32,7 @@
                         <input type="radio" name="goodsId" value="${favItem.goods.id}" id="goods_${favItem.goods.id}" />
                         <label for="goods_${favItem.goods.id}">${favItem.goods.name}</label>
                         <span>${favItem.goods.getResalePrice(resaler.level)}</span>元
+                        <em>已无库存</em>
                     </li>
                 #{/list}
                 </ul>

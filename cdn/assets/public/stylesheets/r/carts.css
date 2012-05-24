@@ -64,6 +64,10 @@
     padding-left: 10px;
     color: #AF2F15;
 }
+.salehub ul em {
+    padding: 8px;
+    color: #B16666;
+}
 .phones {
     float: right;
     width: 445px;
