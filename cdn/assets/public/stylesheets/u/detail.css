@@ -127,7 +127,8 @@
 
 .warm-tips h4 {
     text-indent: 5px;
-    line-height: 28px;
+    font-size: 14px;
+    line-height: 42px;
     background-color: #AADBDB;
 }
 .warm-content {
@@ -146,6 +147,7 @@
     padding: 5px 15px;
     margin:0 5px -1px 0;
     cursor: pointer;
+    font-size: 16px;
     text-align: center;
     border: 1px solid #AADBDB;
     background-color: #EAF6F6;
@@ -160,7 +162,8 @@
 }
 .tabtxt h4 {
     text-indent: 5px;
-    line-height: 28px;
+    font-size: 16px;
+    line-height: 32px;
     background-color: #AADBDB;
 }
 .txt-item-bd {
