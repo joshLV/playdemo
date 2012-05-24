@@ -1,11 +1,13 @@
 package controllers;
 
+import com.uhuila.common.util.DateUtil;
 import models.admin.SupplierSetting;
 import models.admin.SupplierUser;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.sales.Shop;
+import models.sms.SMSUtil;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;
@@ -73,6 +75,10 @@ public class SupplierCoupons extends Controller {
         }
         if (eCoupon.status == ECouponStatus.UNCONSUMED) {
             eCoupon.consumed(shopId, SupplierRbac.currentUser());
+            String dateTime = DateUtil.getNowTime();
+            // 发给消费者
+            SMSUtil.send("【券市场】您尾号" + eCouponSn + "的券号于" + dateTime
+                    + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166", eCoupon.orderItems.phone, eCoupon.replyCode);
         } else {
             renderJSON(eCoupon.status);
         }
@@ -87,7 +93,7 @@ public class SupplierCoupons extends Controller {
      */
     @ActiveNavigation("coupons_index")
     public static void index(CouponsCondition condition) {
-        if (condition == null){
+        if (condition == null) {
             condition = new CouponsCondition();
         }
         condition.supplier = SupplierRbac.currentUser().supplier;

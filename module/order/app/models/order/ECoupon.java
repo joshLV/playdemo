@@ -248,14 +248,16 @@ public class ECoupon extends Model {
             }
 
             queryMap.put("name", eCoupon.goods.name);
-            queryMap.put("expireAt", eCoupon.goods.expireAt != null ? df.format(eCoupon.goods.expireAt) : null);
+            queryMap.put("expireAt", eCoupon.expireAt != null ? df.format(eCoupon.expireAt) : null);
             queryMap.put("consumedAt", eCoupon.consumedAt != null ? df.format(eCoupon.consumedAt) : null);
             queryMap.put("eCouponSn", eCoupon.eCouponSn);
             queryMap.put("refundAt", eCoupon.refundAt != null ? df.format(eCoupon.refundAt) : null);
             queryMap.put("status", eCoupon.status);
             queryMap.put("isFreeze", eCoupon.isFreeze);
             queryMap.put("error", 0);
-
+            if (eCoupon.expireAt.before(new Date())) {
+                queryMap.put("status", "EXPIRED");
+            }
         }
         return queryMap;
 
@@ -312,7 +314,6 @@ public class ECoupon extends Model {
         this.consumedAt = new Date();
         this.supplierUser = supplierUser;
         this.save();
-        System.out.println("3333333333");
     }
 
     /**
