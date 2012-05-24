@@ -27,4 +27,18 @@
         <version>3.0.5.RELEASE</version>
     </dependency>
   </dependencies>
+
+  <distributionManagement>
+    <repository>
+      <id>nexus</id>
+      <name>Internal Releases</name>
+      <url>http://dev.uhuila.cn/nexus/content/repositories/releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>nexus</id>
+      <name>Internal Snapshots</name>
+      <url>http://dev.uhuila.cn/nexus/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
 </project>
