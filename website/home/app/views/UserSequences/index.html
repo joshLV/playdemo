@@ -108,8 +108,8 @@
                     ${accountSequence?.orderNumber}</a>#{/if}</td>
                 <td>
                 #{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
-                    ${accountSequence.cashAmount.add(accountSequence
-                    .uncashAmount)?.formatCurrency('CNY')}#{/if}</td>
+                    ${accountSequence.cashAmount.add(accountSequence .uncashAmount)?.formatCurrency('CNY')}
+                #{/if}</td>
                 <td>#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
                     <div class="alert alert-info">${accountSequence.cashAmount.add(accountSequence.uncashAmount)?.formatCurrency('CNY')}</div>#{/if}</td>
 

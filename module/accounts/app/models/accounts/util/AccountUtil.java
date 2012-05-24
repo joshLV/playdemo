@@ -99,13 +99,15 @@ public class AccountUtil {
         if(account == null){
             throw new RuntimeException("can not find the specified account:" + accountId);
         }
+        AccountSequenceFlag flag = AccountSequenceFlag.VOSTRO;
+        if(sequenceType == AccountSequenceType.PAY || sequenceType == AccountSequenceType.PAY_REFUND){
+            flag = AccountSequenceFlag.NOSTRO;
+        }
 
         //保存账户变动信息
         AccountSequence accountSequence = new AccountSequence(
                 account,
-                cashAmount.compareTo(BigDecimal.ZERO) >0
-                        ? AccountSequenceFlag.VOSTRO
-                        : AccountSequenceFlag.NOSTRO,               //账务变动方向
+                flag,                                               //账务变动方向
                 sequenceType,                                       //变动类型
                 account.amount.subtract(cashAmount),                //变动前资金
                 account.amount,                                     //变动后资金
