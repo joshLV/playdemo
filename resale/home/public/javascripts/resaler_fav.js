@@ -45,6 +45,8 @@ $(window).load(
                 url:'/library/' + goods_id,
                 success:function(data){
                     $("#row_" + goods_id).remove();
+                    $("#row_hd_" + goods_id).remove();
+                    $("#row_sep_" + goods_id).remove();
                 }});
             
             return false;
@@ -116,6 +118,8 @@ $(window).load(
                 success:function(data){
                     for(var i = 0; i< checked.length; i++){
                         $("#row_" + checked[i]).remove();
+                        $("#row_hd_" + goods_id).remove();
+                        $("#row_sep_" + goods_id).remove();
                     }
                     set_all_select_all_checkbox(false);
                 }});

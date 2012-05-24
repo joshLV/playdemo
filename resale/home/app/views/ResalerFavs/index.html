@@ -75,8 +75,8 @@
 
                 #{list items:favs, as:'favItem'}
                 <tbody>
-                <tr class="sep-row"><td colspan="6"></td></tr>
-                <tr class="order-hd">
+                <tr class="sep-row" id="row_sep_${favItem.goods.id}"><td colspan="6"></td></tr>
+                <tr class="order-hd" id="row_hd_${favItem.goods.id}">
                     <td colspan="6">
                         <input type="checkbox" id="check_goods_${favItem.goods.id}" />
                         <span>成交时间：${favItem.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
@@ -91,7 +91,7 @@
                     <td id="price_${favItem.goods.id}">${favItem.goods.getResalePrice(resaler.level)}</td>
                     <td>&{'goods.'+favItem.goods?.status}</td>
                     <td class="action">
-                        <a href="#" id="del_${favItem.id}" name="${favItem.goods.id}">删除</a>
+                        <a href="#" id="del_${favItem.id}" name="${favItem.goods.id}" class="delete_gift">删除</a>
                         <!--#{if favItem.taobaoItemId}-->
                             <!--| <a href="/top-add?goodsId=${favItem.goods.id}">重新发布到淘宝</a>-->
                         <!--#{/if}-->
@@ -115,7 +115,7 @@
                     <td colspan="6">
                         <input type="checkbox" id="uuuu" value="" name="select_all_checkbox" /> 全选
                         <a href="#" id="batch_delete">批量删除</a>
-                        <a href="#" id="batch_upload_show">批量发布到淘宝</a>
+                        <!--<a href="#" id="batch_upload_show">批量发布到淘宝</a>-->
                     </td>
                 </tr>
                 </tfoot>
