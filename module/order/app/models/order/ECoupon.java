@@ -277,7 +277,7 @@ public class ECoupon extends Model {
 
         //给商户打钱
         TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, supplierAccount, originalPrice, order.getId());
-        TradeUtil.success(consumeTrade, "佣金(" + order.description + ")");
+        TradeUtil.success(consumeTrade, "券消费(" + order.description + ")");
 
         BigDecimal platformCommission = BigDecimal.ZERO;
         if (salePrice.compareTo(resalerPrice) < 0) {
@@ -295,7 +295,7 @@ public class ECoupon extends Model {
                         eCouponSn,
                         order.getId());
 
-                TradeUtil.success(uhuilaCommissionTrade, "佣金(" + order.description + ")");
+                TradeUtil.success(uhuilaCommissionTrade, "收款(" + order.description + ")");
             }
         }
 
@@ -306,7 +306,7 @@ public class ECoupon extends Model {
                     platformCommission,
                     eCouponSn,
                     order.getId());
-            TradeUtil.success(platformCommissionTrade, "佣金(" + order.description + ")");
+            TradeUtil.success(platformCommissionTrade, "收款(" + order.description + ")");
         }
 
         this.shop = Shop.findById(shopId);
@@ -361,10 +361,9 @@ public class ECoupon extends Model {
      *
      * @param eCoupon   券信息
      * @param userId    用户信息
-     * @param applyNote 退款原因
      * @return
      */
-    public static String applyRefund(ECoupon eCoupon, Long userId, String applyNote, AccountType accountType) {
+    public static String applyRefund(ECoupon eCoupon, Long userId, AccountType accountType) {
         String returnFlg = "{\"error\":\"ok\"}";
 
         if (eCoupon == null || eCoupon.order.userId != userId || eCoupon.order.userType != accountType) {
@@ -392,7 +391,7 @@ public class ECoupon extends Model {
 
         //创建退款流程
         RefundBill refundBill = RefundUtil.create(tradeBill, order.getId(), orderItem.getId(),
-                orderItem.salePrice, applyNote);
+                orderItem.salePrice, "退款(" + eCoupon.goods.name + ")");
         if (!RefundUtil.success(refundBill)) {
             returnFlg = "{\"error\":\"refound failed\"}";
             return returnFlg;

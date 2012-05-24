@@ -43,7 +43,7 @@ public class UserCoupons extends Controller {
 	public static void applyRefund(Long id, String applyNote){
 		User user = SecureCAS.getUser();
 		ECoupon eCoupon = ECoupon.findById(id);
-		String returnFlg = ECoupon.applyRefund(eCoupon,user.getId(),applyNote, AccountType.CONSUMER);
+		String returnFlg = ECoupon.applyRefund(eCoupon,user.getId(), AccountType.CONSUMER);
 		renderJSON(returnFlg);
 	}
 	
