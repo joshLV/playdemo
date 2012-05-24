@@ -35,8 +35,11 @@ public class CouponsUnitTest extends UnitTest {
         Fixtures.delete(User.class);
         Fixtures.delete(ECoupon.class);
         Fixtures.delete(Account.class);
-        Fixtures.loadModels("fixture/goods_base.yml", "fixture/user.yml",
-                "fixture/goods.yml", "fixture/accounts.yml",
+        Fixtures.loadModels(
+                "fixture/goods_base.yml",
+                "fixture/user.yml",
+                "fixture/goods.yml",
+                "fixture/accounts.yml",
                 "fixture/orders.yml",
                 "fixture/orderItems.yml");
     }

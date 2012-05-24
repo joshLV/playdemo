@@ -52,14 +52,12 @@ public class VerificationUnitTest extends UnitTest {
                 "fixture/orderItems.yml");
 
         Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
-        Goods goods = Goods.findById(goodsId);
-        goods.supplierId = supplierId;
-        goods.save();
-        goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        goods = Goods.findById(goodsId);
-        goods.supplierId = supplierId;
-        goods.save();
+        List<Goods> goodsList = Goods.findAll();
+        for (Goods goods : goodsList) {
+            goods.supplierId = supplierId;
+            goods.save();
+        }
+
         Account account = AccountUtil.getPlatformIncomingAccount();
         account.amount = new BigDecimal("99999");
         account.save();

@@ -32,7 +32,7 @@ insert into categories (name,display_order,parent_id)
 insert into categories (name,display_order,parent_id)
   values('餐饮券', 400, null);
 insert into categories (name,display_order,parent_id)
-  values('其他', 500, null);
+  values('休闲食品', 600, 2);
 
 -- Table brand Initial --
 insert into brands (name,logo,display_order)
