@@ -1,54 +1,116 @@
 #{extends 'layout_trader/layout.html' /}
 #{include 'Share/nav.html' /}
-#{set title:'商户验证消费券' /}
+#{set title:'券列表' /}
 #{set 'moreScripts'}
- <script src="@{'/public/javascripts/coupons.js'}" type="text/javascript" charset="UTF-8"></script>
- <script type="text/javascript">
- $(window).load(function(){
-	 if (!${timeFlag}) {
-		 $("#shopId").attr("disabled",true);
-		 $("#eCouponSn").attr("disabled",true);
-		 $("#query").attr("disabled",true);
-		 $("#statusw").html("<font color=red>对不起，只能在11：00-14：00内使用消费券！</font>");
-	 } else {
-		 $("#query").attr("disabled",false);
-		 $("#shopId").attr("disabled",false);
-         $("#eCouponSn").attr("disabled",false);
-		 $("#statusw").html("");
-	 }
- });
-</script>
- 
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
- <legend>商户验证消费券</legend>
-<div class="control-group">
-  <div class="controls">门店:
-  #{if supplierUser?.shop?.id == null}
-	   #{select 'shopId', id:'shopId', class:'span2', value:supplierUser?.shop?.id}
-	        #{list items:shopList, as:'shop'}
-	            #{option shop?.id}${shop?.name}#{/option}
-	        #{/list}
-	    #{/select}
-  #{/if}
-  #{else}
-  <input type="text" name="shopName" id="shopName" disabled="true" value="${supplierSetting?.supplierUserShopValue}" class="input-large" />
-  <input type="hidden" name="shopId" id="shopId" value="${supplierSetting?.supplierUserShopId}" class="input-large" />
-  #{/else}
-  
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <span class="error">#{error 'supplierUser.shop' /}</span>
-   </div>
- </div>
-  <div class="control-group">
-	  <div class="controls">券号:
-	  <input type="text" name="eCouponSn" id="eCouponSn" class="input-large" />
-	     <span class="control-group" id="checksn"></span>
-	   </div>
-   </div>
-     <div class="control-group" id="statusw"></div>
-     <div class="control-group" id="showinfo"></div>
-   <div class="form-actions">
-  <button class="btn btn-primary" id="query" >查询</button>
-    <button class="btn btn-primary" id="sure" disabled>确定</button>
- </div>
- 
+<div class="body">
+    <legend>${title}</legend>
+    <form class="well form-inline" name="frmlist" id="frmlist" action="@{SupplierCoupons.index()}" method="GET">
+        <table>
+            <tbody>
+            <tr>
+                <td> 店员工号
+                    <input type="text" name="condition.jobNumber" value="${condition.jobNumber}">
+                </td>
+                <td> 订&nbsp;&nbsp;单&nbsp;&nbsp;号
+                    <input type="text" name="condition.orderNumber" value="${condition.orderNumber}">
+                </td>
+                <td> 券号
+                    <input type="text" name="condition.eCouponSn" value="${condition.eCouponSn}">
+                </td>
+            </tr>
+            <tr>
+                <td> 商品名称
+                    <input type="text" name="condition.goodsName" value="${condition.goodsName}">
+                </td>
+                <td> 消费门店
+                    <input type="text" name="condition.shopLike" value="${condition.shopLike}">
+                </td>
+                <td> 状态
+                #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
+                    #{option ""}不限#{/option}
+                    #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
+                    #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
+                    #{option "REFUND"}&{'coupon.REFUND'}#{/option}
+                #{/select}
+                </td>
+           </tr>
+            <tr>
+                <td>消费时间
+                    <input type="text" id="condition_consumed_begin" class="input-medium Wdate"
+                           name="condition.consumedAtBegin"
+                           onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtBegin?.format()}"> -
+                    <input type="text" id="condition_consumed_end" class="input-medium Wdate"
+                           name="condition.consumedAtEnd"
+                           onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtEnd?.format()}">
+                </td>
+                <td>退款时间
+                    <input type="text" id="condition_refund_begin" class="input-medium Wdate"
+                           name="condition.refundAtBegin"
+                           onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtBegin?.format()}"> -
+                    <input type="text" id="condition_refund_end" class="input-medium Wdate" name="condition.refundAtEnd"
+                           onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtEnd?.format()}">
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-primary" id="search">搜索</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+
+    </form>
+    *{<div style="margin-bottom: 12px">}*
+        *{<button class="btn btn-primary" type="button">导出报表</button>}*
+    *{</div>}*
+
+#{vx.tab name:'coupon',enumItems: models.order.ECouponStatus.values(),select:'condition_status',value:condition?.status/}
+
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+        <tr>
+            <th>券号</th>
+            <th>订单号</th>
+            <th>商品名称</th>
+            <th>单价</th>
+            <th>消费门店</th>
+            <th>有效期</th>
+            <th>消费时间</th>
+            <th>店员</th>
+            <th>退款时间</th>
+            <th>退款金额</th>
+            <th>状态</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        #{paginate.list items:couponPage, as:'coupon'}
+        <tr>
+            <td>${coupon?.getMaskedEcouponSn()}</td>
+            <td>${coupon?.order?.orderNumber}</td>
+            <td>${coupon?.goods?.name}</td>
+            <td>${coupon?.originalPrice?.formatCurrency('CNY')}</td>
+            <td>${coupon?.getConsumedShop()}</td>
+            <td>${coupon?.goods?.effectiveAt ?.format()} -
+            ${coupon?.goods?.expireAt ?.format()}</td>
+            <td>${coupon?.consumedAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>#{if coupon?.supplierUser?.userName!=null}${coupon?.supplierUser?.userName}#{/if}
+                #{if coupon?.supplierUser?.jobNumber!=null}(工号: ${coupon?.supplierUser?.jobNumber})#{/if}</td>
+            <td>${coupon?.refundAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>${coupon?.refundPrice}</td>
+            <td>&{'coupon.'+coupon?.status}</td>
+        </tr>
+        #{/paginate.list}
+
+        </tbody>
+    </table>
+    <div class="pagination" align="center">
+        <ul>
+        #{paginate.controls items:couponPage /}
+        </ul>
+    </div>
+
+</div>
+

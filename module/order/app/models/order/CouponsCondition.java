@@ -16,6 +16,9 @@ public class CouponsCondition {
     public Date consumedAtBegin;
     public Date consumedAtEnd;
 
+    public Date refundAtBegin;
+    public Date refundAtEnd;
+
     public ECouponStatus status;
     public ECouponStatus excludeStatus;
     public String goodsName;
@@ -25,6 +28,8 @@ public class CouponsCondition {
     public AccountType accountType;
     public Supplier supplier;
     public String shopLike;
+    public String jobNumber;
+    public String eCouponSn;
 
     private Map<String, Object> paramMap = new HashMap<>();
 
@@ -44,6 +49,11 @@ public class CouponsCondition {
             sql.append(" and e.order.userId = :userId and e.order.userType = :userType");
             paramMap.put("userId", userId);
             paramMap.put("userType", accountType);
+        }
+
+        if (StringUtils.isNotBlank(eCouponSn)) {
+            sql.append(" and e.eCouponSn like :eCouponSn");
+            paramMap.put("eCouponSn", "%" + eCouponSn + "%");
         }
 
         if (createdAtBegin != null) {
@@ -66,13 +76,28 @@ public class CouponsCondition {
             paramMap.put("consumedAtEnd", DateUtil.getEndOfDay(consumedAtEnd));
         }
 
+        if (refundAtBegin != null) {
+            sql.append(" and e.refundAt >= :refundAtBegin");
+            paramMap.put("refundAtBegin", refundAtBegin);
+        }
+
+        if (refundAtEnd != null) {
+            sql.append(" and e.refundAt <= :refundAtEnd");
+            paramMap.put("refundAtEnd", DateUtil.getEndOfDay(refundAtEnd));
+        }
+
+        if (StringUtils.isNotBlank(jobNumber)) {
+            sql.append(" and e.supplierUser.jobNumber=:jobNumber");
+            paramMap.put("jobNumber", jobNumber);
+        }
+
         if (StringUtils.isNotBlank(goodsName)) {
             sql.append(" and e.goods.name like :name");
             paramMap.put("name", "%" + goodsName + "%");
         }
 
         if (StringUtils.isNotBlank(shopLike)) {
-            sql.append(" and (e.shops.name like :shopLike or e.shops.address like :shopLike)");
+            sql.append(" and (e.shop.name like :shopLike or e.shop.address like :shopLike)");
             paramMap.put("shopLike", "%" + shopLike + "%");
         }
 
@@ -85,7 +110,7 @@ public class CouponsCondition {
             paramMap.put("excludeStatus", excludeStatus);
         }
 
-        if (orderNumber != null) {
+        if (StringUtils.isNotBlank(orderNumber)) {
             sql.append(" and e.order.orderNumber like :orderNumber");
             paramMap.put("orderNumber", "%" + orderNumber + "%");
         }

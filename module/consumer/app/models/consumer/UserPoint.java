@@ -63,7 +63,6 @@ public class UserPoint extends Model {
 				.orderBy("createdAt desc");
 		orderPage.setPageNumber(pageNumber);
 		orderPage.setPageSize(pageSize);
-		orderPage.setBoundaryControlsEnabled(false);
 
 		return orderPage;
 

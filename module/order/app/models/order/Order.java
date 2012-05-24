@@ -471,7 +471,6 @@ public class Order extends Model {
                 .orderBy(condition.getOrderByExpress());
         orderPage.setPageNumber(pageNumber);
         orderPage.setPageSize(pageSize);
-        orderPage.setBoundaryControlsEnabled(false);
         return orderPage;
     }
 
@@ -491,7 +490,6 @@ public class Order extends Model {
                 .orderBy(condition.getOrderByExpress());
         orderPage.setPageNumber(pageNumber);
         orderPage.setPageSize(pageSize);
-        orderPage.setBoundaryControlsEnabled(false);
         return orderPage;
     }
 

@@ -253,7 +253,6 @@ public class User extends Model {
                 condition.getParamMap()).orderBy("u.lastLoginAt DESC");
         userPage.setPageNumber(pageNumber);
         userPage.setPageSize(pageSize);
-        userPage.setBoundaryControlsEnabled(false);
         return userPage;
     }
 

@@ -194,18 +194,13 @@ public class ECoupon extends Model {
             sql.append(" and e.eCouponSn = :eCouponSn");
             params.put("eCouponSn", eCouponSn);
         }
-        Query couponQery = entityManager.createQuery(sql.toString());
+        Query couponQuery = entityManager.createQuery(sql.toString());
         for (Map.Entry<String, Object> entry : params.entrySet()) {
-            couponQery.setParameter(entry.getKey(), entry.getValue());
+            couponQuery.setParameter(entry.getKey(), entry.getValue());
         }
         sql.append(" order by e.createdAt desc");
 
-        List<ECoupon> queryList = couponQery.getResultList();
-        if (queryList.size() == 0) {
-            return null;
-        }
-
-        return queryList.get(0);
+        return (ECoupon) couponQuery.getSingleResult();
     }
 
     /**
@@ -353,7 +348,6 @@ public class ECoupon extends Model {
 
         couponsPage.setPageNumber(pageNumber);
         couponsPage.setPageSize(pageSize);
-        couponsPage.setBoundaryControlsEnabled(false);
         return couponsPage;
     }
 

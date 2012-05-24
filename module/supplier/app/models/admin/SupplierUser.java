@@ -120,7 +120,6 @@ public class SupplierUser extends Model {
                 SupplierUser.class, sql.toString(), params).orderBy("createdAt desc");
         usersPage.setPageNumber(pageNumber);
         usersPage.setPageSize(pageSize);
-        usersPage.setBoundaryControlsEnabled(false);
         return usersPage;
     }
 

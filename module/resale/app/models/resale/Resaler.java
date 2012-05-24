@@ -153,7 +153,6 @@ public class Resaler extends Model {
                 .orderBy("createdAt DESC");
         resalers.setPageNumber(pageNumber);
         resalers.setPageSize(pageSize);
-        resalers.setBoundaryControlsEnabled(false);
         return resalers;
     }
 
