@@ -163,8 +163,8 @@ public class GoodsCondition {
             condBuilder.append(" and g.status = :status ");
             paramMap.put("status", status);
             if (status.equals(GoodsStatus.ONSALE)) {
-                expireAtEnd = new Date();
-                baseSaleEnd = 0;
+                expireAtBegin = new Date();
+                baseSaleBegin = 0;
             }
         }
 

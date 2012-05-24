@@ -4,6 +4,7 @@ import java.util.List;
 import models.resale.Resaler;
 import models.sales.Brand;
 import models.sales.GoodsCondition;
+import models.sales.GoodsStatus;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
@@ -45,6 +46,7 @@ public class ResalerGoods extends Controller {
 		String page = params.get("page");
 		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 		GoodsCondition goodsCond = new GoodsCondition(isResaler,condition);
+        goodsCond.status = GoodsStatus.ONSALE;
 		JPAExtPaginator<models.sales.Goods> goodsList = models.sales
 				.Goods.findByResaleCondition(resaler,goodsCond,pageNumber, PAGE_SIZE);
 		List<Brand> brands = Brand.findTop(LIMIT, goodsCond.brandId);
