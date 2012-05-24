@@ -8,7 +8,7 @@
       <permission key="ORDER_EDIT" text="修改订单" roles="sales" />
     -->
     <permission key="COUPON" text="券管理" roles="clerk">
-        <permission key="COUPON" text="券列表" roles="clerk"/>
+        <permission key="COUPON_INDEX" text="券列表" roles="clerk"/>
         <permission key="COUPON_VERIFY" text="验证券" roles="clerk"/>
     </permission>
 
@@ -21,7 +21,7 @@
     -->
     <navigation key="coupon_app" text="券管理" action="SupplierCoupons.verify" display-order="60">
         <navigation key="coupon" text="消费券">
-            <navigation key="coupons_index" action="SupplierCoupons.index" text="券列表" permissions="COUPON"/>
+            <navigation key="coupons_index" action="SupplierCoupons.index" text="券列表" permissions="COUPON_INDEX"/>
             <navigation key="coupons_verify" action="SupplierCoupons.verify" text="验证券" permissions="COUPON_VERIFY"/>
         </navigation>
     </navigation>

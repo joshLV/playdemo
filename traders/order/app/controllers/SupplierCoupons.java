@@ -85,7 +85,7 @@ public class SupplierCoupons extends Controller {
     /**
      * 券号列表
      */
-    @ActiveNavigation("coupon_index")
+    @ActiveNavigation("coupons_index")
     public static void index(CouponsCondition condition) {
         if (condition == null){
             condition = new CouponsCondition();
