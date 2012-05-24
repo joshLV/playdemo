@@ -113,7 +113,8 @@
     </form>
 
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#">统计金额</a></li>
+        <li class="active"><a href="#">统计金额 <span style="color: #08c">(余额:${condition.account.amount} 元)
+        </span></a></li>
     *{<li><a href="#">下载查询结果</a></li>}*
     </ul>
     <div class="tab-content" style="margin-bottom: 10px">
@@ -122,9 +123,6 @@
         </div>
         <div class="alert alert-info binary" style="float:right">
             一共收入 ${summary.vostroCount} 笔 / ${summary.vostroAmount} 元
-        </div>
-        <div class="alert alert-info binary" style="float:right">
-            余额 ${condition.account.amount} 元
         </div>
     </div>
 
