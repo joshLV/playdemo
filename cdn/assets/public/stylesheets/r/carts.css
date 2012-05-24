@@ -279,7 +279,60 @@
 }
 .pay-success {
     padding: 50px 30px;
-    color: #227b10;
+    /* color: #227b10; */
     font-size: 14px;
     font-weight: 700;
+}
+
+.pay-success {
+	margin: 20px 0 40px 0;
+	padding: 8px 10px;
+	border: 1px solid #e4e4e4;	
+}
+.pay-wish {
+	padding: 10px 0 15px 35px;
+	background: url(http://img.uhcdn.com/images/u/pass.png) no-repeat 0 7px;
+	font-size: 18px;
+}
+.pay-success ul {
+	margin: 15px 50px 20px;
+	border: 1px solid #EBDECD;
+	padding-top: 10px;
+	background-color: #F4F4F4;
+}
+.pay-success li {
+	margin: 3px 0;
+	padding: 3px 15px;
+	line-height: 24px;
+}
+.pay-success li a {
+	color: #4991D4;
+}
+.pay-success li.service {
+	margin: 15px 0 0;
+	line-height: 20px;
+	border-top: 1px dashed #EBDECD;
+	background-color: #FFF;
+}
+.pay-success .btn {
+	padding-left: 120px;
+}
+.pay-success .btn a {
+	display: inline-block;
+	vertical-align: middle;
+	margin: 0 10px;
+	text-decoration: none;
+}
+.pay-success .btn a span {
+	display: inline-block;
+	padding: 0 10px;
+	height: 25px;
+	color: #fff;
+	font-size: 13px;
+	line-height: 25px;
+	background: -webkit-gradient(linear, left top, left bottom, from(#e05721), to(#bf3e23));
+	background: -moz-linear-gradient(top, #e05721, #bf3e23);
+	background: -o-linear-gradient(left, #e05721, #bf3e23);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e05721', endColorstr='#bf3e23');
+	background: linear-gradient(left, #e05721, #bf3e23);
 }

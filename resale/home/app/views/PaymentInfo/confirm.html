@@ -16,11 +16,22 @@
     #{/if}
         <a class="payed" href="#">已完成付款</a>
 </div>
-<!--主体内容部分-->
 <div id="content">
 #{if order}
     #{if order.status == models.order.OrderStatus.PAID}
-    <div class="pay-success">恭喜您付款成功</div>
+    <div class="pay-success">
+        <h2 class="pay-wish">恭喜您，付款成功</h2>
+        <ul>
+            <li>您还可以在 “<a href="">我的分销库</a> > <a href="">券订单列表</a> > <a href="">订单详情</a>” 查看商品券号或配送详情</li>
+            <li>凭短信的券号到取货门店直接取货。</li>
+            <li class="service">电子券商品，只要您末进行消费，且保持一百券订单有效，我们将提供随时退款的服务。<br/>
+                我们的客服电话：400-6262-166 我们的客服邮件是：uhuila@seewi.com.cn</li>
+        </ul>
+        <div class="btn">
+            <a href=""><span>查看订单详情</span></a>
+            <a href=""><span>继续购物</span></a>
+        </div>
+    </div>
     #{/if}
 #{else }
     <div>已选择 ${paymentSource.name} 支付 ${order.discountPay} 元</div>
