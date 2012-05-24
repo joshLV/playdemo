@@ -2,44 +2,6 @@
     float: left;
     width: 190px;
 }
-/* #aside .filter { */
-    /* margin-bottom: 20px; */
-    /* padding-bottom: 10px; */
-    /* border: solid #AADBDB; */
-    /* border-width: 1px 0 1px; */
-    /* line-height: 24px; */
-    /* background-color: #EAF6F6; */
-/* } */
-/* #aside .filter .market-hd, */
-/* #aside .filter .area-hd { */
-    /* padding: 3px 0 5px 9px; */
-    /* font-weight: 700; */
-/* } */
-/* #aside .filter ul { */
-    /* position: relative; */
-    /* padding-left: 30px; */
-/* } */
-/* #aside .filter li { */
-    /* position: relative; */
-/* } */
-/* #aside .filter .branch { */
-    /* overflow: hidden; */
-    /* display: block; */
-    /* position: absolute; */
-    /* left: -15px; */
-    /* top: -8px; */
-    /* _top: -14px; */
-    /* width: 12px; */
-    /* height: 23px; */
-    /* border-bottom: 1px solid #AADBDB; */
-    /* border-left: 1px solid #AADBDB; */
-    /* font-size: 0; */
-    /* line-height: 0; */
-/* } */
-/* #aside .filter .amount { */
-    /* color: #999; */
-/* } */
-
 .popular-hd {
     color: #F8F8F8;
     font-weight: 700;
@@ -91,7 +53,6 @@
 .tabbar {
     border: solid #E4E4E4;
     border-width: 1px 1px 0 1px;
-    /* background-color: #EAF6F6; */
     background-color: #F9F9F9;
     border-bottom: 1px solid #25B4AB;
 }
@@ -119,15 +80,14 @@
     border-width: 0 1px 1px 1px;
 }
 .filter dl {
-    padding: 5px 0 5px 5px;
+    padding: 5px 0 5px 45px;
     border-top: 1px solid #F4F4F4;
 }
 .filter dt {
     float: left;
     width: 40px;
-}
-.filter dd {
-    float: left;
+    margin-left: -40px;
+    _margin-left: -20px;
 }
 .filter dd a {
     margin: 0 5px;
@@ -214,24 +174,3 @@
     background-color: #25B4AB;
     border: 1px solid #25B4AB;
 }
-/* .pagination .page-form { */
-    /* float: left; */
-    /* line-height: 26px; */
-    /* *line-height: 18px; */
-/* } */
-/* .pagination .page-form span { */
-    /* margin: 0 3px 0 10px; */
-/* } */
-/* .pagination .page-form input { */
-    /* width: 20px; */
-    /* height: 21px; */
-    /* margin: 0 3px; */
-    /* padding-left: 2px; */
-    /* line-height: 21px; */
-    /* border: 1px solid #A8ACAD; */
-    /* background: url(http://img.uhcdn.com/images/u/num_input_bg.jpg) repeat-x; */
-/* } */
-/* .pagination .page-form button { */
-    /* padding: 0 5px; */
-    /* *padding: 0; */
-/* } */
