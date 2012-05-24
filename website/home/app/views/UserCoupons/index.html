@@ -26,8 +26,9 @@
 <script src="@{'/public/javascripts/common.jq.js'}" type="text/javascript" charset="UTF-8"></script>
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script>
-    function applyRefund(id) {
+    function applyRefund(id, money) {
         $("#coupon_id").val(id);
+        $("#money").html("¥" + money);
         if (confirm("确定要申请退款吗？")) {
             $.common.dialog({'id':'refund', 'title':'申请退款'});
         }
@@ -36,10 +37,10 @@
     function confirmApply() {
         var coupon_id = $("#coupon_id").val();
         var apply_note = $("#apply_note").val();
-        if (apply_note == "") {
-            alert("请输入退款理由！");
-            return;
-        }
+//        if (apply_note == "") {
+//            alert("请输入退款理由！");
+//            return;
+//        }
         var url = "/coupons/refund/" + coupon_id;
         $.post(
                 url,
@@ -48,7 +49,7 @@
                     if (data.error != 'ok') {
                         alert("申请失败: " + data.error);
                     } else {
-                         $.popup.hide();
+                        $.popup.hide();
                         $("#apply_" + coupon_id).html("");
                         $("#send_" + coupon_id).html("");
 
@@ -133,7 +134,8 @@
                     <td height="30" align="center">${coupon?.eCouponSn}</td>
                     <td width="320">
                         <div class="left_shangpin">
-                            <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${coupon.goods.id}" target="_blank"><img
+                            <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${coupon.goods.id}"
+                               target="_blank"><img
                                     src="${coupon?.goods?.imageTinyPath}"/></a>
                         </div>
                         <div class="right_shangpin">
@@ -157,7 +159,8 @@
                     #{/else}
                     <td width="103" align="center">
                         #{if coupon.status == models.order.ECouponStatus.UNCONSUMED }
-                            <a href="javascript:applyRefund(${coupon.id})" name="apply_refund" id="apply_${coupon
+                            <a href="javascript:applyRefund('${coupon.id}','${coupon.salePrice}')" name="apply_refund"
+                               id="apply_${coupon
                       .id}">申请退款</a>
                             <br>
                             #{if coupon.downloadTimes != 3}
@@ -197,12 +200,14 @@
 
 <div id="refund">
     <div id="apply_dialog" class="popup-content" style="width:450px;height:180px">
-        <div class="faq-tips">
-            请填写退款理由:
-        </div>
+
         <ul>
             <li class="item">
-                <label>理由：</label><textarea rows="5" cols="35" id="apply_note"></textarea>
+                <label>退款金额：<span id="money"></span></label>
+            </li>
+
+            <li class="item">
+                <label>退款理由：</label><textarea rows="5" cols="35" id="apply_note"></textarea>
             </li>
             <li class="item btn-box">
                 <button type="button" onClick="confirmApply()">确定</button>

@@ -27,12 +27,6 @@ public class DateUtil {
         return calendar.getTime();
     }
 
-    public static void main(String[] args) {
-        System.out.println(getTimeRegion());
-
-
-    }
-
     /**
      * 判断当日的时间是否在11点和14点之间
      *
@@ -66,10 +60,10 @@ public class DateUtil {
     public static String getNowTime() {
 
         Calendar c = Calendar.getInstance();
-        String nowTime = c.get(Calendar.MONTH+1) + "月" + c.get(Calendar.DATE) + "日"+ c.get(Calendar.HOUR_OF_DAY)+"时"+c
+        String nowTime = c.get(Calendar.MONTH)+1 + "月" + c.get(Calendar.DATE) + "日"+ c.get(Calendar.HOUR_OF_DAY)+"时"+c
                 .get(Calendar.MINUTE)+"分";
+
         return nowTime;
     }
-
-
+   
 }

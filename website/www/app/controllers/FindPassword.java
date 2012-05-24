@@ -16,31 +16,31 @@ import com.uhuila.common.util.RandomNumberUtil;
  * User: yanjy
  */
 public class FindPassword extends Controller {
-	/**
-	 * 找回密码页面
-	 */
-	public static void index() {
-		render();
-	}
+    /**
+     * 找回密码页面
+     */
+    public static void index() {
+        render();
+    }
 
-	/**
-	 * 通过邮箱h或手机找回密码页面
-	 */
-	public static void findByEmailOrMobile(String from) {
+    /**
+     * 通过邮箱h或手机找回密码页面
+     */
+    public static void findByEmailOrMobile(String from) {
         String file_url = "";
         if (StringUtils.isNotEmpty(from) && "email".equals(from)) {
-          file_url = "FindPassword/findByEmail.html";
+            file_url = "FindPassword/findByEmail.html";
         } else {
-          file_url = "FindPassword/findByMobile.html";
+            file_url = "FindPassword/findByMobile.html";
         }
-		renderTemplate(file_url);
-	}
+        renderTemplate(file_url);
+    }
 
 
     /**
-	 * 通过邮箱找回密码,并验证邮箱
-	 */
-	public static void sendMessageCode(String from) {
+     * 通过邮箱找回密码,并验证邮箱
+     */
+    public static void sendMessageCode(String from) {
         boolean isExisted = false;
         if (StringUtils.isNotEmpty(from) && from.indexOf("@") != -1) {
             isExisted = User.isExisted(from);
@@ -59,70 +59,67 @@ public class FindPassword extends Controller {
         renderJSON(isExisted ? DataConstants.ONE.getValue() : DataConstants.ZERO.getValue());
     }
 
-	/**
-	 * 判断手机和验证码是否正确
-	 *
-	 * @param mobile    手机
-	 * @param validCode 验证码
-	 */
-	public static void checkMobile(String mobile, String validCode) {
-		Object objCode = Cache.get("validCode_");
-		Object objMobile = Cache.get("mobile_");
-		String cacheValidCode = objCode == null ? "" : objCode.toString();
-		String cacheMobile = objMobile == null ? "" : objMobile.toString();
-		boolean isExisted = User.checkMobile(mobile);
-		//手机不存在
-		if (!isExisted) {
-			renderJSON(DataConstants.THREE.getValue());
-		}
-		//判断验证码是否正确
-		if (!StringUtils.normalizeSpace(cacheValidCode).equals(validCode)) {
-			renderJSON(DataConstants.ONE.getValue());
-		}
-		//判断手机是否正确
-		if (!StringUtils.normalizeSpace(cacheMobile).equals(mobile)) {
-			renderJSON(DataConstants.TWO.getValue());
-		}
+    /**
+     * 判断手机和验证码是否正确
+     *
+     * @param mobile    手机
+     * @param validCode 验证码
+     */
+    public static void checkMobile(String mobile, String validCode) {
+        Object objCode = Cache.get("validCode_");
+        Object objMobile = Cache.get("mobile_");
+        String cacheValidCode = objCode == null ? "" : objCode.toString();
+        String cacheMobile = objMobile == null ? "" : objMobile.toString();
+        boolean isExisted = User.checkMobile(mobile);
+        //手机不存在
+        if (!isExisted) {
+            renderJSON(DataConstants.THREE.getValue());
+        }
+        //判断验证码是否正确
+        if (!StringUtils.normalizeSpace(cacheValidCode).equals(validCode)) {
+            renderJSON(DataConstants.ONE.getValue());
+        }
+        //判断手机是否正确
+        if (!StringUtils.normalizeSpace(cacheMobile).equals(mobile)) {
+            renderJSON(DataConstants.TWO.getValue());
+        }
 
         Cache.delete("validCode_");
-		renderJSON(DataConstants.ZERO.getValue());
-	}
+        renderJSON(DataConstants.ZERO.getValue());
+    }
 
-	/**
-	 * 找回密码页面
-	 */
-	public static void resetPassword() {
-		Object mobile = Cache.get("mobile_");
-		String token = request.params.get("token");
+    /**
+     * 找回密码页面
+     */
+    public static void resetPassword() {
+        Object mobile = Cache.get("mobile_");
+        String token = request.params.get("token");
+        //判断发送邮件的链接是否有效
+        boolean isExpired = User.isExpired(token);
+        render(mobile, token, isExpired);
+    }
 
-        System.out.println("********************"+token);
-		//判断发送邮件的链接是否有效
-		boolean isExpired = User.isExpired(token);
-		render(mobile, token, isExpired);
-	}
+    /**
+     * 更新密码
+     *
+     * @param mobile 手机
+     */
+    public static void updatePassword(String token, String mobile, String password, String confirmPassword) {
+        if (StringUtils.isBlank(token) && StringUtils.isBlank(mobile)) {
+            renderJSON("-1");
+        }
+        //根据手机有邮箱更改密码
+        User.updateFindPwd(token, mobile, password);
 
-	/**
-	 * 更新密码
-	 *
-	 * @param mobile 手机
-	 */
-	public static void updatePassword(String token, String mobile, String password, String confirmPassword) {
-        System.out.println(">>>>>>>>>>>>>"+token);
-		if (StringUtils.isBlank(token) && StringUtils.isBlank(mobile)) {
-			renderJSON("-1");
-		}
-		//根据手机有邮箱更改密码
-		User.updateFindPwd(token, mobile, password);
+        Cache.delete("mobile_");
+        Cache.delete("user_email_");
+        renderJSON("1");
+    }
 
-		Cache.delete("mobile_");
-		Cache.delete("user_email_");
-		renderJSON("1");
-	}
-
-	/**
-	 * 成功找回密码页面
-	 */
-	public static void sendEmailSuccess() {
-		render("FindPassword/sendEmailSuccess.html");
-	}
+    /**
+     * 成功找回密码页面
+     */
+    public static void sendEmailSuccess() {
+        render("FindPassword/sendEmailSuccess.html");
+    }
 }
