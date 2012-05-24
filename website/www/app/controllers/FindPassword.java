@@ -53,7 +53,7 @@ public class FindPassword extends Controller {
                 SMSUtil.send(comment, from, "0000");
                 //保存手机和验证码
                 Cache.set("validCode_", validCode, "10mn");
-                Cache.set("mobile_", from, "10mn");
+                Cache.set("mobile_", from, "30mn");
             }
         }
         renderJSON(isExisted ? DataConstants.ONE.getValue() : DataConstants.ZERO.getValue());
@@ -85,7 +85,6 @@ public class FindPassword extends Controller {
 		}
 
         Cache.delete("validCode_");
-        Cache.delete("mobile_");
 		renderJSON(DataConstants.ZERO.getValue());
 	}
 
@@ -93,11 +92,13 @@ public class FindPassword extends Controller {
 	 * 找回密码页面
 	 */
 	public static void resetPassword() {
-		String mobile = request.params.get("mobile");
-		String totken = request.params.get("token");
+		Object mobile = Cache.get("mobile_");
+		String token = request.params.get("token");
+
+        System.out.println("********************"+token);
 		//判断发送邮件的链接是否有效
-		boolean isExpired = User.isExpired(totken);
-		render(mobile, totken, isExpired);
+		boolean isExpired = User.isExpired(token);
+		render(mobile, token, isExpired);
 	}
 
 	/**
@@ -106,10 +107,10 @@ public class FindPassword extends Controller {
 	 * @param mobile 手机
 	 */
 	public static void updatePassword(String token, String mobile, String password, String confirmPassword) {
+        System.out.println(">>>>>>>>>>>>>"+token);
 		if (StringUtils.isBlank(token) && StringUtils.isBlank(mobile)) {
 			renderJSON("-1");
 		}
-
 		//根据手机有邮箱更改密码
 		User.updateFindPwd(token, mobile, password);
 

@@ -234,7 +234,6 @@ public class User extends Model {
     public static boolean isExpired(String token) {
         boolean isExpired = false;
         if (!StringUtils.isBlank(token)) {
-            System.out.println(token);
             User user = User.find("byPasswordToken", token).first();
             Date d1 = user.sendMailAt;
             Date d2 = new Date();
