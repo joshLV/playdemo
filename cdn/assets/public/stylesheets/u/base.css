@@ -70,8 +70,15 @@ mark { background: #ff0; }
 }
 #logo {
     float: left;
-    width: 248px;
     height: 88px;
+}
+#logo .uhuila {
+    position: relative;
+    top: -32px;
+    color: #D03F24;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: "Microsoft Yahei";
 }
 #menu {
     height: 48px;
