@@ -168,12 +168,15 @@ public class Order extends Model {
     private Order(long userId, AccountType userType) {
         this.userId = userId;
         this.userType = userType;
-        User user = User.findById(userId);
-        UserInfo userInfo = UserInfo.findByUser(user);
-        if (userInfo!= null){
-            this.buyerPhone = userInfo.phone;
+
+        if (userType == AccountType.CONSUMER){
+            User user = User.findById(userId);
+            UserInfo userInfo = UserInfo.findByUser(user);
+            if (userInfo!= null){
+                this.buyerPhone = userInfo.phone;
+            }
+            this.buyerMobile = user.mobile;
         }
-        this.buyerMobile = user.mobile;
 
         this.status = OrderStatus.UNPAID;
         this.deleted = DeletedStatus.UN_DELETED;
