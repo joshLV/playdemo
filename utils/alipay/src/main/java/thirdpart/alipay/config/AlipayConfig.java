@@ -30,7 +30,7 @@ public class AlipayConfig {
 	public static String partner = Play.configuration.getProperty("alipay.partner","2088301101779485");
 	
 	// 交易安全检验码，由数字和字母组成的32位字符串
-	public static String key = Play.configuration.getProperty("alipay.kay","s45ka6duejz9em93xklwq2fais9h5uf4");
+	public static String key = Play.configuration.getProperty("alipay.key","s45ka6duejz9em93xklwq2fais9h5uf4");
 	
 	// 签约支付宝账号或卖家收款支付宝帐户
 	public static String seller_email = Play.configuration.getProperty("alipay.seller_email","uhuila@126.com");
