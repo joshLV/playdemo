@@ -1,12 +1,9 @@
 package controllers;
 
-import java.util.List;
-import java.util.Map;
-
+import controllers.modules.resale.cas.SecureCAS;
 import models.accounts.AccountType;
 import models.order.ECoupon;
 import models.order.Order;
-import models.order.OrderItems;
 import models.order.OrdersCondition;
 import models.resale.Resaler;
 import org.apache.commons.lang.StringUtils;
@@ -14,7 +11,9 @@ import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.resale.cas.SecureCAS;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 分销商订单列表控制器
@@ -58,7 +57,9 @@ public class ResalerOrders extends Controller {
         Resaler resaler = SecureCAS.getResaler();
         //订单信息
 		models.order.Order order = models.order.Order.findOneByUser(orderNumber, resaler.getId(), AccountType.RESALER);
+        System.out.println(order);
         List<ECoupon> eCoupons = ECoupon.findByOrder(order);
+        System.out.println(">>>>>>>>>>>."+eCoupons);
 		//收货信息
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "订单详情", "/orders/" + orderNumber);
 		render(order, eCoupons, breadcrumbs);

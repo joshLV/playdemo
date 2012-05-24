@@ -7,12 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +39,7 @@ public class ResalerFav extends Model {
     }
 
     public static List<ResalerFav> findAll(Resaler resaler) {
-        return ResalerFav.find("byResaler", resaler).fetch();
+        return ResalerFav.find(" resaler= ? and goods.materialType = ?", resaler, MaterialType.ELECTRONIC).fetch();
     }
 
     /**
@@ -76,10 +71,7 @@ public class ResalerFav extends Model {
             sql.append(" and f.createdAt <= :createdAtEnd");
             paramsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
         }
-//		if (status != null) {
-//			sql.append(" and f.status = :status");
-//			paramsMap.put("status", status);
-//		}
+
         //按照商品名称检索
         if (StringUtils.isNotBlank(goodsName)) {
             sql.append(" and f.goods.name like :goodsName)");
