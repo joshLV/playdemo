@@ -16,7 +16,7 @@ long time = System.currentTimeMillis();
     type('id=identityNo','341281198208268785')
     type('id=postCode','123456')
     clickAndWait('id=register_submit')
-    verifyTextPresent('注册成功页面')
+    verifyTextPresent('注册成功')
         
 	openAndWait('/@cas/login?service=/authenticate&gateway=true')
 	assertTitle('CAS Mock Server - Login')

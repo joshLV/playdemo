@@ -8,7 +8,7 @@ verifyTextPresent('2092-02-02')
 #{/selenium}
 #{selenium 'Test Goods/show.html DELETED'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods2")}')
-verifyTitle('很抱歉，你访问的页面不存在')
+verifyTitle('很抱歉，您访问的页面不存在')
 #{/selenium}
 #{selenium 'Test Goods/show.html OFFSALE'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods3")}')
@@ -22,5 +22,5 @@ verifyTextPresent('测试商品4')
 #{/selenium}
 #{selenium 'Test Goods/show.html Not found'}
 open('/goods/10000000000000')
-verifyTitle('很抱歉，你访问的页面不存在')
+verifyTitle('很抱歉，您访问的页面不存在')
 #{/selenium}

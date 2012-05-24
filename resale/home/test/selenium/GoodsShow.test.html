@@ -3,26 +3,26 @@
 #{selenium 'Test ResaleGoods/show.html Normal'}
 #{include 'test/selenium/step/login.selenium' /}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_001")}')
-verifyTitle('一百券 - 商品详情')
+verifyTitle(' 券市场 - 商品详情')
 verifyTextPresent('哈根达斯100元抵用券')
 verifyTextPresent('2012-03-01')
 verifyTextPresent('2012-03-30')
 #{/selenium}
 #{selenium 'Test Goods/show.html DELETED'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_017")}')
-verifyTitle('Not found')
+verifyTitle('很抱歉，您访问的页面不存在')
 #{/selenium}
 #{selenium 'Test Goods/show.html OFFSALE'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_016")}')
-verifyTitle('一百券 - 商品详情')
+verifyTitle(' 券市场 - 商品详情')
 verifyTextPresent('京东商城1000元京券')
 #{/selenium}
 #{selenium 'Test Goods/show.html expired'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_015")}')
-verifyTitle('一百券 - 商品详情')
+verifyTitle(' 券市场 - 商品详情')
 verifyTextPresent('京东商城900元京券')
 #{/selenium}
 #{selenium 'Test Goods/show.html Not found'}
 open('/goods/10000000000000')
-verifyTitle('Not found')
+verifyTitle('很抱歉，您访问的页面不存在')
 #{/selenium}
