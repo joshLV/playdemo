@@ -9,8 +9,8 @@ import play.mvc.Controller;
 
 public class PaymentNotify extends Controller {
 
-    public static void notify(String partner){
-        PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(partner);
+    public static void notify(String shihui_partner){
+        PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(shihui_partner);
         Map<String, String> result = paymentFlow.notify(PaymentUtil.filterPlayParameter(params.all()));
 
         if(PaymentFlow.VERIFY_RESULT_OK.equals(result.get(PaymentFlow.VERIFY_RESULT))){

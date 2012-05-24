@@ -42,7 +42,7 @@ public class PaymentUtil {
     public static Map<String, String[]> filterPlayParameter(Map<String, String[]> params){
         Map<String, String[]> result = new HashMap<>();
         for (Map.Entry<String, String[]> entry : params.entrySet()){
-            if ("body".equals(entry.getKey()) || "partner".equals(entry.getKey())){
+            if ("body".equals(entry.getKey()) || "shihui_partner".equals(entry.getKey())){
                 continue;
             }
             result.put(entry.getKey(), entry.getValue());

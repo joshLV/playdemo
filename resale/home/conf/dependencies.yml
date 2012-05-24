@@ -18,7 +18,7 @@ require:
     - resale_cas -> resale_cas
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - com.uhuila.utils -> alipay 1.0.0-SNAPSHOT
-    - com.tencent.tenpay -> tenpay-sdk 1.1.1
+    - com.uhuila.utils -> tenpay 1.1.1
     - com.taobao -> taobao-top 20120405
     - breadcrumbs -> breadcrumbs
     - accounts -> accounts
@@ -36,7 +36,6 @@ repositories:
             - com.uhuila.utils -> *
             - commons-httpclient -> *
             - com.taobao -> *
-            - com.tencent.tenpay -> *
             - dom4j -> *
             - org.apache.httpcomponents -> *
             - org.jsoup -> *

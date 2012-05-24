@@ -19,10 +19,10 @@ public class OrderResult extends Controller {
     /**
      * 支付 url 跳转回来.
      *
-     * @param partner 第三方支付
+     * @param shihui_partner 第三方支付
      */
-    public static void urlReturn(String partner){
-        PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(partner);
+    public static void urlReturn(String shihui_partner){
+        PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(shihui_partner);
         Map<String, String> result = paymentFlow.urlReturn(PaymentUtil.filterPlayParameter(params.all()));
         String  errorMessage = "对不起，暂时无法读取信息，请您稍后再试";
 

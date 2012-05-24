@@ -1,24 +1,13 @@
 package models.payment.kuaiqian;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 
-import models.accounts.PaymentCallbackLog;
-import models.order.Order;
-import models.order.OrderStatus;
 import models.payment.PaymentFlow;
-import play.Logger;
-import play.Play;
-import play.mvc.Http;
 
 public class KuaiqianPaymentFlow extends PaymentFlow {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.uhuila.utils</groupId>
+  <artifactId>tenpay</artifactId>
+  <version>1.1.1</version>
+
+
+  <dependencies>
+      <dependency>
+          <groupId>com.playframework</groupId>
+          <artifactId>playframework</artifactId>
+          <version>1.2.4</version>
+          <scope>system</scope>
+          <systemPath>/Kang/Dev/play/framework/play-1.2.4.jar</systemPath>
+      </dependency>
+      <dependency>
+          <groupId>org.jdom</groupId>
+          <artifactId>jdom</artifactId>
+          <version>1.1</version>
+      </dependency>
+  </dependencies>
+  <distributionManagement>
+      <repository>
+          <id>nexus</id>
+          <name>Internal Releases</name>
+          <url>http://dev.uhuila.cn/nexus/content/repositories/releases</url>
+      </repository>
+      <snapshotRepository>
+          <id>nexus</id>
+          <name>Internal Snapshots</name>
+          <url>http://dev.uhuila.cn/nexus/content/repositories/snapshots</url>
+      </snapshotRepository>
+  </distributionManagement>
+
+</project>

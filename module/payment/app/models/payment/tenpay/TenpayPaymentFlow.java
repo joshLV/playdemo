@@ -2,14 +2,13 @@ package models.payment.tenpay;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import com.tenpay.api.NotifyQueryRequest;
-import com.tenpay.api.NotifyQueryResponse;
-import com.tenpay.api.PayRequest;
 import models.payment.PaymentFlow;
-import play.mvc.Http.Request;
+import thirdpart.tenpay.client.ClientResponseHandler;
+import thirdpart.tenpay.client.TenpayHttpClient;
+import thirdpart.tenpay.util.TenpayUtil;
+import play.Logger;
 
 /**
  * 财付通支付接口
@@ -25,41 +24,95 @@ public class TenpayPaymentFlow extends PaymentFlow {
      * @param orderNumber 订单号
      * @param description 订单描述
      * @param fee 订单金额
-     * @param remoteIp 客户Ip
+     * @param remoteIp 客户ID
      * @return 跳转信息
      */
     @Override
     public String getRequestForm(String orderNumber, String description,
                                  BigDecimal fee, String subPaymentCode, String remoteIp) {
-        // 创建支付请求对象
-        PayRequest req = new PayRequest(TenpayConfig.SECRET_KEY);
+        SortedMap<String, String> params = new TreeMap<>();
+        String orderAmount= fee.multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).toString();
 
-        // 设置在沙箱中运行，正式环境请设置为false
-        req.setInSandBox(TenpayConfig.IN_SANDBOX);
-        // 设置财付通App-id: 财付通App注册时，由财付通分配
-        req.setAppid(TenpayConfig.APP_ID);
-        // *************************以下业务参数名称参考开放平台sdk文档-JAVA****************************
-        // 设置用户客户端ip:用户IP，指用户浏览器端IP，不是财付通APP服务器IP
-        req.setParameter("spbill_create_ip", remoteIp);
+        //-----------------------------
+        //设置支付参数
+        //-----------------------------
+        params.put("partner", TenpayUtil.APP_ID);		        //商户号
+        params.put("out_trade_no", orderNumber);		//商家订单号
+        params.put("total_fee", orderAmount);			        //商品金额,以分为单位
+        params.put("return_url", TenpayUtil.RETURN_URL);		    //交易完成后跳转的URL
+        params.put("notify_url", TenpayUtil.NOTIFY_URL);		    //接收财付通通知的URL
+        params.put("body", description);	                    //商品描述
+        params.put("bank_type", "DEFAULT");		    //银行类型(中介担保时此参数无效)
+        params.put("spbill_create_ip", remoteIp);   //用户的公网ip，不是商户服务器IP
+        params.put("fee_type", "1");                    //币种，1人民币
+        params.put("subject", description);              //商品名称(中介交易时必填)
+
+        //系统可选参数
+        params.put("sign_type", "MD5");                //签名类型,默认：MD5
+        params.put("service_version", "1.0");			//版本号，默认为1.0
+        params.put("input_charset", TenpayUtil.getCharacterEncoding());            //字符编码
+        params.put("sign_key_index", "1");             //密钥序号
 
 
-        // 设置商户系统订单号：财付通APP系统内部的订单号,32个字符内、可包含字母,确保在财付通APP系统唯一
-        req.setParameter("out_trade_no", orderNumber);
-        // 设置商品名称:商品描述，会显示在财付通支付页面上
-        req.setParameter("body", description);
-        // 设置通知url：接收财付通后台通知的URL，用户在财付通完成支付后，财付通会回调此URL，向财付通APP反馈支付结果。
-        // 此URL可能会被多次回调，请正确处理，避免业务逻辑被多次触发。需给绝对路径，例如：http://wap.isv.com/notify.asp
-        req.setParameter("notify_url", TenpayConfig.NOTIFY_URL);
-        // 设置返回url：用户完成支付后跳转的URL，财付通APP应在此页面上给出提示信息，引导用户完成支付后的操作。
-        // 财付通APP不应在此页面内做发货等业务操作，避免用户反复刷新页面导致多次触发业务逻辑造成不必要的损失。
-        // 需给绝对路径，例如：http://wap.isv.com/after_pay.asp，通过该路径直接将支付结果以Get的方式返回
-        req.setParameter("return_url", TenpayConfig.RETURN_URL);
-        // 设置订单总金额，单位为分
-        req.setParameter("total_fee", fee.multiply(new BigDecimal("100")).setScale(0, RoundingMode.HALF_DOWN).toString());
+        //业务可选参数
+        params.put("attach", "");                      //附加数据，原样返回
+        params.put("product_fee", orderAmount);                 //商品费用，必须保证transport_fee + product_fee=total_fee
+        params.put("transport_fee", "0");               //物流费用，必须保证transport_fee + product_fee=total_fee
+        params.put("time_start", TenpayUtil.getCurrTime());            //订单生成时间，格式为yyyymmddhhmmss
+        params.put("time_expire", "");                 //订单失效时间，格式为yyyymmddhhmmss
+        params.put("buyer_id", "");                    //买方财付通账号
+        params.put("goods_tag", "");                   //商品标记
+        params.put("trade_mode", "1");                 //交易模式，1即时到账(默认)，2中介担保，3后台选择（买家进支付中心列表选择）
+        params.put("transport_desc", "");              //物流说明
+        params.put("trans_type", "1");                  //交易类型，1实物交易，2虚拟交易
+        params.put("agentid", "");                     //平台ID
+        params.put("agent_type", "");                  //代理模式，0无代理(默认)，1表示卡易售模式，2表示网店模式
+        params.put("seller_id", "");                   //卖家商户号，为空则等同于partner
+
+
+        String  requestUrl = TenpayUtil.getRequestUrl(params, TenpayUtil.PAY_GATE_URL);
 
         return "<script language=\"javascript\">\r\n" +
-                "window.location.href='" + req.getURL() + "';\r\n" +
+                "window.location.href='" + requestUrl + "';\r\n" +
                 "</script>";
+    }
+
+
+
+    @Override
+    public Map<String, String> urlReturn(Map<String, String[]> requestParams){
+        //创建支付应答对象
+        Map<String, String> result = new HashMap<>();
+        Map<String, String> params = parseRequestParams(requestParams);
+        result.put(VERIFY_RESULT, VERIFY_RESULT_ERROR);
+
+        //判断签名
+        if(TenpayUtil.isTenpaySign(new TreeMap<String, String>(params))) {
+
+            //商户订单号
+            String outTradeNo = params.get("out_trade_no");
+            //金额,以分为单位
+            String totalFee = params.get("total_fee");
+
+            result.put(ORDER_NUMBER, outTradeNo);
+            BigDecimal fee = new BigDecimal(totalFee);
+            result.put(TOTAL_FEE, fee.divide(new BigDecimal("100"), 2, RoundingMode.HALF_DOWN).toString());
+            result.put(SUCCESS_INFO, "failed");
+
+
+            //支付结果
+            String trade_state = params.get("trade_state");
+            //交易模式，1即时到账，2中介担保
+            String trade_mode = params.get("trade_mode");
+
+            if("1".equals(trade_mode)){       //即时到账
+                if( "0".equals(trade_state)){
+                    result.put(VERIFY_RESULT, VERIFY_RESULT_OK);
+                    result.put(SUCCESS_INFO, "success");
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -76,34 +129,63 @@ public class TenpayPaymentFlow extends PaymentFlow {
     public Map<String, String> notify(Map<String, String[]> requestParams) {
         Map<String, String> result = new HashMap<>();
         Map<String, String> params = parseRequestParams(requestParams);
+        result.put(VERIFY_RESULT, VERIFY_RESULT_ERROR);
 
-        // Constants.TEST_SECRET_KEY 签名密钥: 开发者注册时，由财付通分配
-        // 创建支付结果反馈响应对象：支付跳转接口为异步返回，用户在财付通完成支付后，财付通通过回调return_url和notify_url向财付通APP反馈支付结果。
-        TenpayResponse res = new TenpayResponse(params, TenpayConfig.SECRET_KEY);
-        // 获取通知id:支付结果通知id，支付成功返回通知id，要获取订单详细情况需用此ID调用通知验证接口。
-        String notifyid = res.getNotifyId();
-        // 初始化通知验证请求:财付通APP接收到财付通的支付成功通知后，通过此接口查询订单的详细情况，以确保通知是从财付通发起的，没有被篡改过。
-        NotifyQueryRequest req = new NotifyQueryRequest( TenpayConfig.SECRET_KEY);
-        // 是否在沙箱运行
-        req.setInSandBox(TenpayConfig.IN_SANDBOX);
-        // 设置财付通App-id: 财付通App注册时，由财付通分配
-        req.setAppid(TenpayConfig.APP_ID);
-        req.setParameter("notify_id", notifyid);
-        NotifyQueryResponse notifyQueryRes = req.send();
+        if (TenpayUtil.isTenpaySign(new TreeMap<String, String>(params))){
+            //通知id
+            String notify_id = params.get("notify_id");
+            //通信对象
+            TenpayHttpClient httpClient = new TenpayHttpClient();
+            //应答对象
+            ClientResponseHandler queryRes = new ClientResponseHandler();
 
-        if (notifyQueryRes.isPayed()) {// 已经支付则更新数据库状态
-            result.put(VERIFY_RESULT, VERIFY_RESULT_OK);
-            // 获取支付的订单号
-            String outTradeNo = notifyQueryRes.getParameter("out_trade_no");
-            result.put(ORDER_NUMBER, outTradeNo);
-            // ！！！此处强烈建议校验支付金额是否和订单金额一致！！！
-            String totalFee = notifyQueryRes.getParameter("total_fee");
-            BigDecimal fee = new BigDecimal(totalFee);
-            result.put(TOTAL_FEE, fee.divide(new BigDecimal("100"), 2, RoundingMode.HALF_DOWN).toString());
-            result.put(SUCCESS_INFO, "success");
-        }else {
-            result.put(VERIFY_RESULT, VERIFY_RESULT_ERROR);
-            result.put(SUCCESS_INFO, "failed");
+            //通过通知ID查询，确保通知来至财付通
+            SortedMap<String,String> verifyParams = new TreeMap<>();
+            verifyParams.put("partner", TenpayUtil.APP_ID);
+            verifyParams.put("notify_id", notify_id);
+
+            String requestUrl = TenpayUtil.getRequestUrl(verifyParams, TenpayUtil.VERIFY_GATE_URL);
+
+            //通信对象
+            httpClient.setTimeOut(5);
+            //设置请求内容
+            httpClient.setReqContent(requestUrl);
+            //后台调用
+            if(httpClient.call()) {
+                //设置结果参数
+                try {
+                    queryRes.setContent(httpClient.getResContent());
+                } catch (Exception e) {
+                    return result;
+                }
+                Logger.info("tenpay: 验证ID返回字符串:" + httpClient.getResContent());
+                queryRes.setKey(TenpayUtil.SECRET_KEY);
+
+                //获取id验证返回状态码，0表示此通知id是财付通发起
+                String retcode = queryRes.getParameter("retcode");
+
+                //商户订单号
+                String outTradeNo = params.get("out_trade_no");
+                //金额,以分为单位
+                String totalFee = params.get("total_fee");
+                String trade_state = params.get("trade_state");
+                //交易模式，1即时到账，2中介担保
+                String trade_mode = params.get("trade_mode");
+
+                result.put(ORDER_NUMBER, outTradeNo);
+                BigDecimal fee = new BigDecimal(totalFee);
+                result.put(TOTAL_FEE, fee.divide(new BigDecimal("100"), 2, RoundingMode.HALF_DOWN).toString());
+                result.put(SUCCESS_INFO, "failed");
+                //判断签名及结果
+                if(queryRes.isTenpaySign()&& "0".equals(retcode)){
+                    if("1".equals(trade_mode)){       //即时到账
+                        if( "0".equals(trade_state)){
+                            result.put(VERIFY_RESULT, VERIFY_RESULT_OK);
+                            result.put(SUCCESS_INFO, "success");
+                        }
+                    }
+                }
+            }
         }
 
         return result;

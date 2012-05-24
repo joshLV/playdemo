@@ -39,8 +39,8 @@ POST    /payment_info/confirm                   PaymentInfo.confirm
 GET     /payment_info/{orderNumber}             PaymentInfo.index
 
 # 接收支付回调
-*       /pay_notify/{partner}                   PaymentNotify.notify
-*       /order_result/{partner}                 OrderResult.urlReturn
+*       /pay_notify/{shihui_partner}                   PaymentNotify.notify
+*       /order_result/{shihui_partner}                 OrderResult.urlReturn
 
 GET     /sms                                    SMS.index
 POST    /sms/send                               SMS.send

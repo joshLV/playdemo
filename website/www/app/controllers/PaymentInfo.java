@@ -23,9 +23,6 @@ import controllers.modules.website.cas.SecureCAS;
 
 @With({SecureCAS.class, WebsiteInjector.class})
 public class PaymentInfo extends Controller {
-	private static PaymentFlow alipayPaymentFlow = new AliPaymentFlow();
-	private static TenpayPaymentFlow tenpayPaymentFlow = new TenpayPaymentFlow();
-	private static KuaiqianPaymentFlow kuaiqianPaymentFlow = new KuaiqianPaymentFlow();
 
 	/**
 	 * 展示确认支付信息页.

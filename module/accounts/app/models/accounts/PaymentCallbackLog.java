@@ -13,7 +13,7 @@ public class PaymentCallbackLog extends Model {
     
     public String account;
 
-    @Column(name = "payment_souce_code")
+    @Column(name = "payment_source_code")
     public String paymentSourceCode;
 
     @Column(name = "trade_bill")
