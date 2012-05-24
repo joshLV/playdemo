@@ -10,8 +10,8 @@ long time = System.currentTimeMillis();
     type('id=confirmPassword','123456')
     type('id=captcha','zuet')
     clickAndWait('id=register_submit')
-    verifyTextPresent('注册成功页面')
-    
+    verifyTitle('注册成功页面')
+
     openAndWait('/@cas/login?service=/authenticate&gateway=true')
     assertTitle('CAS Mock Server - Login')
     type('id=login','admin${time}@uhuila.com')
