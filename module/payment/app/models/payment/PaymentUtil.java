@@ -17,12 +17,13 @@ public class PaymentUtil {
     private static PaymentFlow kuaiqianPaymentFlow = new KuaiqianPaymentFlow();
 
     public static PaymentFlow getPaymentFlow(String partner){
+        //partner必须是payment_source表中的payment_code字段中的数据
         switch (partner){
             case "alipay":
                 return alipayPaymentFlow;
             case "tenpay":
                 return tenpayPaymentFlow;
-            case "kuaiqian":
+            case "99bill":
                 return kuaiqianPaymentFlow;
             default:
                 return null;
