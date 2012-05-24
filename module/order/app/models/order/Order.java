@@ -170,8 +170,10 @@ public class Order extends Model {
         this.userType = userType;
         User user = User.findById(userId);
         UserInfo userInfo = UserInfo.findByUser(user);
+        if (userInfo!= null){
+            this.buyerPhone = userInfo.phone;
+        }
         this.buyerMobile = user.mobile;
-        this.buyerPhone = userInfo.phone;
 
         this.status = OrderStatus.UNPAID;
         this.deleted = DeletedStatus.UN_DELETED;
