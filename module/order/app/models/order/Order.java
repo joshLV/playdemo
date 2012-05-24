@@ -415,7 +415,7 @@ public class Order extends Model {
                     ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
 
                     if (!Play.runingInTestMode()) {
-                        SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn + "," +
+                        SMSUtil.send("【券市场】"+goods.name + "券号:" + eCoupon.eCouponSn + "," +
                                 "截止日期：" + COUPON_EXPIRE_FORMAT.format(eCoupon.expireAt) + ",如有疑问请致电：400-6262-166",
                                 orderItem.phone, eCoupon.replyCode);
                     }
