@@ -2,10 +2,9 @@ package com.uhuila.suppliers.cas;
 
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jasig.cas.authentication.handler.AuthenticationException;
-
+import org.jasig.cas.authentication.handler.BlockedCredentialsAuthenticationException;
 import org.jasig.cas.authentication.handler.support.AbstractUsernamePasswordAuthenticationHandler;
 import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
 import org.slf4j.Logger;
@@ -45,8 +44,8 @@ public class DomainUserAuthnHandler extends AbstractUsernamePasswordAuthenticati
         String loginName = domainUsers[0];
         String domainName = domainUsers[1];
 
-        String sql = "select a.* from supplier_users a inner join suppliers b on a.supplier_id=b.id where a.login_name = ? " +
-                "and b.domain_name = ?";
+        String sql = "select a.*, b.status as supplier_status from supplier_users a inner join suppliers b on a.supplier_id=b.id where a.login_name = ? " +
+                "and b.domain_name = ? and a.deleted=0 and b.deleted=0";
         Object[] params = new Object[] { loginName, domainName };
 
         List<Map<String, Object>> userlist = getJdbcTemplate().queryForList(sql, params);
@@ -56,6 +55,10 @@ public class DomainUserAuthnHandler extends AbstractUsernamePasswordAuthenticati
         }
         Map<String, Object> user = userlist.get(0);
 
+        if (!"NORMAL".equals(user.get("supplier_status"))) {
+            throw new BlockedCredentialsAuthenticationException();
+        }
+        
         if (!DigestUtils.md5Hex(password + user.get("password_salt")).equals(user.get("encrypted_password"))) {
             return false;
         }

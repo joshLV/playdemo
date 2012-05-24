@@ -9,7 +9,6 @@ import play.mvc.With;
 public class Home extends Controller {
 
     @ActiveNavigation("home")
-    @Right("HOME")
     public static void index() {
         render();
     }

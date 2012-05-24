@@ -6,19 +6,17 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>商户管理中心 - 用户登录</title>
+    <title>券市场 - 商户中心 - 用户登录</title>
     <link rel="stylesheet" href="css/traders-login.css"/>
     <script src="http://a.uhcdn.com/js/u/jquery-1.7.2.min.js"></script>
-    <% String url = request.getQueryString();
-
-        String domain = "";
+    <% String url = request.getServerName();
+    System.out.println(url);
+        String domain = null;
         if (url.contains("localhost")) {
-            domain = url.substring(url.indexOf("=") + 1, url.lastIndexOf("/"));
-            domain += "/forget-password";
+            domain = "/forget-password";
         } else {
-            url = url.substring(url.lastIndexOf("//") + 2);
             domain = "http://" + url.substring(0, url.indexOf("."));
-            domain += ".admin.uhuila.net/forget-password";
+            domain += ".admin.quanmx.com/forget-password";
         }
         System.out.println(domain);
     %>
