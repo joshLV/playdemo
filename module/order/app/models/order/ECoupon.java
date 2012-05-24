@@ -258,6 +258,7 @@ public class ECoupon extends Model {
 
         }
         return queryMap;
+
     }
 
     /**

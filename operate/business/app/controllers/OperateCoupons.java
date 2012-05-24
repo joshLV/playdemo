@@ -1,12 +1,10 @@
 package controllers;
 
+import models.order.CouponsCondition;
 import models.order.ECoupon;
-import models.resale.Resaler;
 import operate.rbac.annotations.ActiveNavigation;
-
 import org.apache.commons.lang.StringUtils;
-
-import play.modules.paginate.ModelPaginator;
+import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -14,44 +12,52 @@ import play.mvc.With;
 @ActiveNavigation("coupons_index")
 public class OperateCoupons extends Controller {
 
-	public static int PAGE_SIZE = 15;
+    public static int PAGE_SIZE = 15;
 
-	/**
-	 * 券号列表
-	 */
-	public static void index() {
-		String page = request.params.get("page");
-		int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-		ModelPaginator<models.order.ECoupon> couponsList = ECoupon.queryCoupons(null, pageNumber, PAGE_SIZE);
-		render(couponsList);
-	}
+    /**
+     * 券号列表
+     */
+    @ActiveNavigation("coupons_index")
+    public static void index(CouponsCondition condition) {
+        if (condition == null) {
+            condition = new CouponsCondition();
+        }
 
+        String page = request.params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
-	/**
-	 *  冻结此券
-	 * @param id
-	 */
+        JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
+        render(couponPage, condition);
+    }
+
+    /**
+     * 冻结此券
+     *
+     * @param id
+     */
     public static void freeze(long id) {
-    	ECoupon.freeze(id);
-        index();
+        ECoupon.freeze(id);
+        index(null);
     }
 
-	/**
-	 *  解冻此券
-	 * @param id
-	 */
+    /**
+     * 解冻此券
+     *
+     * @param id
+     */
     public static void unfreeze(long id) {
-    	ECoupon.unfreeze(id);
-        index();
+        ECoupon.unfreeze(id);
+        index(null);
     }
-    
 
-	/**
-	 * 重发短信
-	 * @param id
-	 */
+
+    /**
+     * 重发短信
+     *
+     * @param id
+     */
     public static void sendMessage(long id) {
-    	boolean sendFalg = ECoupon.sendMessage(id);
-        renderJSON(sendFalg ?"0":"1");
+        boolean sendFalg = ECoupon.sendMessage(id);
+        renderJSON(sendFalg ? "0" : "1");
     }
 }

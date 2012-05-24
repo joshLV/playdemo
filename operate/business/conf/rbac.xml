@@ -58,7 +58,7 @@
     <navigation key="order_app" text="订单">
       <navigation key="order_index" action="OperateOrders.index" text="运营订单管理" permissions="ORDERS"/>
     </navigation>
-    <navigation key="coupon_app" text="消费券" action="OperateCoupons.index">
+    <navigation key="coupon_app" text="消费券">
       <navigation key="coupons_index" action="OperateCoupons.index" text="消费券管理" permissions="COUPONS"/>
     </navigation>
   </navigation>

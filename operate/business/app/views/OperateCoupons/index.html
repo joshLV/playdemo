@@ -1,80 +1,140 @@
 #{extends 'layout_operate/layout.html' /}
- #{include 'share/nav.html' /}
+#{include 'share/nav.html' /}
 #{set title:'券号列表' /}
 <script type="text/javascript">
-	function sendMessage(id){
+    function sendMessage(id) {
         $.ajax({
-            url: "/coupons-message/"+id+"/send",
-            type: 'GET',
-            error: function() { alert('发送失败!'); },
-            success: function(data) {
+            url:"/coupons-message/" + id + "/send",
+            type:'GET',
+            error:function () {
+                alert('发送失败!');
+            },
+            success:function (data) {
                 if (data == '0') {
-                	alert("发送成功！");
+                    alert("发送成功！");
                 } else {
                     alert("发送失败!");
                 }
 
             }
         });
-		
-	}
+
+    }
 </script>
 <div class="body">
- <legend>券号列表</legend>
- <form class="form-horizontal" name="frmlist" action="@{OperateCoupons.index()}" method="GET">
-  <div style="margin-bottom: 12px">
-  <button class="btn btn-primary" type="button">导出报表</button> 
-  </div>
+    <legend>${title}</legend>
+    <form class="well form-inline" name="frmlist" id="frmlist" action="@{OperateCoupons.index()}" method="GET">
+        <table>
+            <tbody>
+            <tr>
+                <td> 店员工号
+                    <input type="text" name="condition.jobNumber" value="${condition?.jobNumber}">
+                </td>
+                <td> 订&nbsp;&nbsp;单&nbsp;&nbsp;号
+                    <input type="text" name="condition.orderNumber" value="${condition?.orderNumber}">
+                </td>
+                <td> 券号
+                    <input type="text" name="condition.eCouponSn" value="${condition?.eCouponSn}">
+                </td>
+            </tr>
+            <tr>
+                <td> 商品名称
+                    <input type="text" name="condition.goodsName" value="${condition.goodsName}">
+                </td>
+                <td> 消费门店
+                    <input type="text" name="condition.shopLike" value="${condition.shopLike}">
+                </td>
+                <td> 状态
+                #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
+                    #{option ""}不限#{/option}
+                    #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
+                    #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
+                    #{option "REFUND"}&{'coupon.REFUND'}#{/option}
+                #{/select}
+                </td>
+            </tr>
+            <tr>
+                <td>消费时间
+                    <input type="text" id="condition_consumed_begin" class="input-medium Wdate"
+                           name="condition.consumedAtBegin"
+                           onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtBegin?.format()}"> -
+                    <input type="text" id="condition_consumed_end" class="input-medium Wdate"
+                           name="condition.consumedAtEnd"
+                           onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtEnd?.format()}">
+                </td>
+                <td>退款时间
+                    <input type="text" id="condition_refund_begin" class="input-medium Wdate"
+                           name="condition.refundAtBegin"
+                           onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtBegin?.format()}"> -
+                    <input type="text" id="condition_refund_end" class="input-medium Wdate" name="condition.refundAtEnd"
+                           onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtEnd?.format()}">
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-primary" id="search">搜索</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-  <table class="table table-striped table-bordered table-condensed">
-   <thead>
-    <tr>
-     <th>券号</th>
-     <th>订单号</th>
-     <th>商品名称</th>
-     <th>单价</th>
-     <th>有效期</th>
-     <th>消费时间</th>
-     <th>退款时间</th>
-     <th>退款金额</th>
-     <th>状态</th>
-     <th>操作</th>
-    </tr>
-   </thead>
 
-   <tbody>
+    </form>
+*{<div style="margin-bottom: 12px">}*
+*{<button class="btn btn-primary" type="button">导出报表</button>}*
+*{</div>}*
+#{vx.tab name:'coupon',enumItems: models.order.ECouponStatus.values(),select:'condition_status',value:condition?.status/}
 
-    #{paginate.list items:couponsList, as:'coupon'}
-    <tr>
-    <td>${coupon?.getMaskedEcouponSn()}</td>
-    <td>${coupon?.order.orderNumber}</td>
-     <td><img src="${coupon?.goods?.imageTinyPath}"/>${coupon?.goods?.name}</td>
-     <td>${coupon?.salePrice}</td>
-     <td>${coupon?.goods.effectiveAt ?.format()}/
-         ${coupon?.expireAt?.format()}</td>
-     <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-     <td>${coupon?.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-     <td>${coupon?.salePrice}</td>
-     <td>&{'coupon.'+coupon?.status}</td>
-     <td>#{if  models.order.ECouponStatus.UNCONSUMED == coupon.status }
-             #{if coupon.isFreeze == 0} 
-             #{vx.operateLink name:"freeze_"+coupon.id,text:"冻结",url:"/coupons/"+coupon.id+"/freeze",confirm:true, targetName:coupon?.getMaskedEcouponSn(),method:"PUT"/}
-             <a href="javascript:sendMessage(${coupon.id})">发送短信</a>#{/if}
-             #{ else } #{vx.operateLink name:"unfreeze_"+coupon.id,text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}#{/else}
-         #{/if}
-     
-       </td>
-    </tr>
-    #{/paginate.list}
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+        <tr>
+            <th>券号</th>
+            <th>订单号</th>
+            <th>商品名称</th>
+            <th>单价</th>
+            <th>消费门店</th>
+            <th>有效期</th>
+            <th>消费时间</th>
+            <th>店员</th>
+            <th>退款时间</th>
+            <th>退款金额</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        </thead>
 
-   </tbody>
-  </table>
-  <div class="pagination" align="center">
-     <ul>
-    #{paginate.controls items:couponsList /}
-    </ul>
-  </div>
-   </form>
+        <tbody>
 
+        #{paginate.list items:couponPage, as:'coupon'}
+        <tr>
+            <td>${coupon?.getMaskedEcouponSn()}</td>
+            <td>${coupon?.order?.orderNumber}</td>
+            <td>${coupon?.goods?.name}</td>
+            <td>${coupon?.originalPrice?.formatCurrency('CNY')}</td>
+            <td>${coupon?.getConsumedShop()}</td>
+            <td>${coupon?.goods?.effectiveAt ?.format()} -
+            ${coupon?.goods?.expireAt?.format()}</td>
+            <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>#{if coupon?.supplierUser?.userName!=null}${coupon?.supplierUser?.userName}#{/if}
+                #{if coupon?.supplierUser?.jobNumber!=null}(工号: ${coupon?.supplierUser?.jobNumber})#{/if}</td>
+            <td>${coupon?.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>${coupon?.refundPrice}</td>
+            <td>&{'coupon.'+coupon?.status}</td>
+            <td>#{if  models.order.ECouponStatus.UNCONSUMED == coupon.status }
+                #{if coupon.isFreeze == 0}
+                    #{vx.operateLink name:"freeze_"+coupon.id,text:"冻结",url:"/coupons/"+coupon.id+"/freeze",confirm:true, targetName:coupon?.getMaskedEcouponSn(),method:"PUT"/}
+                    <a href="javascript:sendMessage(${coupon.id})">发送短信</a>#{/if}
+                #{else} #{vx.operateLink name:"unfreeze_"+coupon.id,text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}#{/else}
+            #{/if}
+
+            </td>
+        </tr>
+        #{/paginate.list}
+
+        </tbody>
+    </table>
+    <div class="pagination" align="center">
+        <ul>
+        #{paginate.controls items:couponPage /}
+        </ul>
+    </div>
 </div>
 
