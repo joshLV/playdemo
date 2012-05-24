@@ -289,7 +289,7 @@ public class Goods extends Model {
      */
     @Transient
     public Supplier getSupplier() {
-        if (supplierId == null){
+        if (supplierId == null) {
             return null;
         }
         return Supplier.findById(supplierId);
@@ -368,9 +368,13 @@ public class Goods extends Model {
         }
         if (discount.compareTo(BigDecimal.ZERO) < 0) {
             return "";
-        }
 
-        return String.valueOf(discount) + "折";
+        }
+        String express = String.valueOf(discount);
+        if (express.contains(".")) {
+            return express.substring(0, express.indexOf('.') + 2);
+        }
+        return express + "折";
     }
 
     public void setLevelPrices(List<GoodsLevelPrice> levelPrices) {
@@ -392,7 +396,7 @@ public class Goods extends Model {
      * 不同分销商等级所对应的价格, 此方法可确保返回的价格数量与分销等级的数量相同
      */
     public List<GoodsLevelPrice> getLevelPrices() {
-        if (levelPrices!= null && levelPrices.size() == ResalerLevel.values().length){
+        if (levelPrices != null && levelPrices.size() == ResalerLevel.values().length) {
             return levelPrices;
         }
         setLevelPrices();
@@ -806,9 +810,9 @@ public class Goods extends Model {
         Query q = entityManager.createQuery("select i.goods from OrderItems i where i.goods.status = :status " +
                 "and i.goods.deleted = :deleted and i.goods.baseSale >= 1 and i.goods.expireAt > :expireAt " +
                 "group by i.goods order by i.createdAt DESC");
-        q.setParameter("status",GoodsStatus.ONSALE);
-        q.setParameter("deleted",DeletedStatus.UN_DELETED);
-        q.setParameter("expireAt",new Date());
+        q.setParameter("status", GoodsStatus.ONSALE);
+        q.setParameter("deleted", DeletedStatus.UN_DELETED);
+        q.setParameter("expireAt", new Date());
         q.setMaxResults(limit);
         return q.getResultList();
     }
@@ -842,7 +846,7 @@ public class Goods extends Model {
      */
     public static List<Goods> findTopRecommend(int limit) {
         return Goods.find("status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by recommend DESC",
-                GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date() ).fetch(limit);
+                GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
     }
 
     public void setPublishedPlatforms(List<GoodsPublishedPlatformType> publishedPlatforms) {
