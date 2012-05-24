@@ -123,6 +123,9 @@
         <div class="alert alert-info binary" style="float:right">
             一共收入 ${summary.vostroCount} 笔 / ${summary.vostroAmount} 元
         </div>
+        <div class="alert alert-info binary" style="float:right">
+            余额 ${condition.account.amount} 元
+        </div>
     </div>
 
 #{vx.tab name:'account_sequence',enumItems: [models.accounts.AccountSequenceType.CHARGE,

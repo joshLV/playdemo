@@ -27,17 +27,17 @@ table td.amount {
 }
 .pagination a {
     float: left;
-    margin-right: 8px;
     padding: 3px 9px;
     color: #0082CA;
     border: 1px solid #A8ACAD;
 }
 .pagination a:hover {
     text-decoration: none;
+    color: #005580;
 }
 .pagination .active {
     color: #F8F8F8;
     font-weight: 700;
-    background-color: #25B4AB;
-    border: 1px solid #25B4AB;
+    background-color: #0082CA;
+    border: 1px solid #0082CA;
 }
