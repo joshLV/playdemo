@@ -33,7 +33,7 @@ $(window).load(function(){
 						$("#checkName").html("");
 						$("#checkMobile").html("");
 						$("#operForm").attr("method", "POST");
-						$("#operForm").action = "/users/create";
+						$("#operForm").action = "/users/"+hiddenId;
 						$("#operForm").submit();
 					}
 				},

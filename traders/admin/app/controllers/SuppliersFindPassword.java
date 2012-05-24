@@ -27,11 +27,11 @@ public class SuppliersFindPassword  extends Controller {
 		//手机存在
 		if (isExisted) {
 			String validCode = RandomNumberUtil.generateSerialNumber(4);
-            String comment = "【券市场】您您的验证码是" + validCode + ", 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码";
+            String comment = "【券市场】您的验证码是" + validCode + ", 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码";
 			SMSUtil.send(comment, mobile, "0000");
 			//保存手机和验证码
-			Cache.set("validCode_", validCode, "10mn");
-			Cache.set("mobile_", mobile, "10mn");
+			Cache.set("validCode_", validCode, "30mn");
+			Cache.set("mobile_", mobile, "30mn");
 		}
 		renderJSON(isExisted ? "1":"0");
 	}
@@ -62,7 +62,6 @@ public class SuppliersFindPassword  extends Controller {
 			renderJSON(DataConstants.TWO.getValue());
 		}
 		Cache.delete("validCode_");
-		Cache.delete("mobile_");
 
 		renderJSON(DataConstants.ZERO.getValue());
 	}
@@ -71,9 +70,11 @@ public class SuppliersFindPassword  extends Controller {
 	 * 找回密码页面
 	 */
 	public static void resetPassword() {
-		String mobile = request.params.get("mobile");
+         Object mobile = Cache.get("mobile_");
+        System.out.println("11111111111");
+		//String mobile = request.params.get("mobile");
 		SupplierUser supplierUser= SupplierUser.find("mobile", mobile).first();
-		
+		Cache.set("setMobile", mobile,"30mn");
 		render(mobile,supplierUser);
 	}
 	
@@ -83,8 +84,13 @@ public class SuppliersFindPassword  extends Controller {
 	 * @param mobile 手机
 	 */
 	public static void updatePassword(Long supplierUserId, String mobile, String password, String confirmPassword) {
+        Object objMobile = Cache.get("mobile_");
+        System.out.println(objMobile+">>>>>>>>>>>>"+mobile);
+        if (!mobile.equals(objMobile)) {
+            renderJSON("-1");
+        }
 		if (StringUtils.isBlank(String.valueOf(supplierUserId)) && StringUtils.isBlank(mobile)) {
-			renderJSON("-1");
+			renderJSON("-2");
 		}
 
 		//根据手机有邮箱更改密码

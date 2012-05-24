@@ -37,7 +37,9 @@
 </head>
 
 <form class="form-horizontal" method="POST">
-    <legend style="padding-left:500px">找回密码</legend>
+
+
+    <legend style="padding-left:300px;padding-top:0px ">券市场 - 验证手机</legend>
     <div class="control-group">
         <label for="input01" class="control-label"><span style="color: red;">*</span>注册手机</label>
         <div class="controls">
@@ -55,7 +57,7 @@
 
     </div>
     <div class="controls error" style="font-align: center" id="checkByTel"></div>
-    <div class="form-actions">
+    <div class="form-actions" style="background-color:#fff;border-top:0">
         <input id="next" class="btn btn-primary" type="button" onClick="getpwsbyemail()" value="下一步" />
     </div>
 </form>
@@ -127,7 +129,7 @@
         $.post("/reset",{mobile : mobile,validCode : checkcode},
             function(data) {
                 if (data == 0) {
-                    var url = "/resetPassword?mobile=" + mobile;
+                    var url = "/reset-password";
                     setTimeout(function() {location.href = url;}, 10);
                 } else if (data == 1) {
                     $("#checkByTel").html("<span class='redInfo allstep_info'><b></b><em>手机验证码错误或已过期</em></span>");

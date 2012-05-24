@@ -13,15 +13,15 @@ POST    /users/{id}                             SupplierUsers.update
 DELETE  /users/{id}                             SupplierUsers.delete
 
 GET     /profile                                SupplierProfiles.index
-GET     /users/password                         SuppliersPassword.edit
-POST    /users/{id}/update                      SuppliersPassword.update
+GET     /edit-password                          SuppliersPassword.edit
+POST    /edit-password                          SuppliersPassword.update
 
 #找回密码
-GET     /forget-password                         SuppliersFindPassword.index
+GET     /forget-password                        SuppliersFindPassword.index
 POST    /checkByTel                             SuppliersFindPassword.checkByTel
 POST    /reset                                  SuppliersFindPassword.reset
-GET     /resetPassword                          SuppliersFindPassword.resetPassword
-POST    /updatePassword                         SuppliersFindPassword.updatePassword
+GET     /reset-password                         SuppliersFindPassword.resetPassword
+POST    /reset-password                         SuppliersFindPassword.updatePassword
 
 
 # Ignore favicon requests

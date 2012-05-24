@@ -35,8 +35,7 @@ public class UsernameLengthAuthnHandler extends AbstractUsernamePasswordAuthenti
         if (log.isDebugEnabled()) {
             log.debug("username=" + username);
         }
-        System.out.println(">>>>>>>>>>>>>>.."+username);
-        System.out.println(">>>>>>>>>>>>>>.."+password);
+
         String sql = "select * from resaler where  login_name = ? and status = 'APPROVED'";
         Object[] params = new Object[] { username };
 

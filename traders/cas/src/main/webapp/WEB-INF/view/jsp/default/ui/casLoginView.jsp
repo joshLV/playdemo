@@ -1,66 +1,91 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<%--
-
-    Licensed to Jasig under one or more contributor license
-    agreements. See the NOTICE file distributed with this work
-    for additional information regarding copyright ownership.
-    Jasig licenses this file to you under the Apache License,
-    Version 2.0 (the "License"); you may not use this file
-    except in compliance with the License. You may obtain a
-    copy of the License at:
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on
-    an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, either express or implied. See the License for the
-    specific language governing permissions and limitations
-    under the License.
-
---%>
-
 <%@ page contentType="text/html; charset=UTF-8" %>
-<jsp:directive.include file="includes/top.jsp" />
-  <div class="box fl-panel" id="login">
-			<form:form method="post" id="fm1" cssClass="fm-v clearfix" commandName="${commandName}" htmlEscape="true">
-                  <form:errors path="*" id="msg" cssClass="errors" element="div" />
-                <!-- <spring:message code="screen.welcome.welcome" /> -->
-                    <h2><spring:message code="screen.welcome.instructions" /></h2>
-                    <div class="row fl-controls-left">
-                        <label for="username" class="fl-label"><spring:message code="screen.welcome.label.netid" /></label>
-						<c:if test="${empty sessionScope.openIdLocalId}">
-						<spring:message code="screen.welcome.label.netid.accesskey" var="userNameAccessKey" />
-						<form:input cssClass="required" cssErrorClass="error" id="username" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="false" htmlEscape="true" />
-						</c:if>
-                    </div>
-                    <div class="row fl-controls-left">
-                        <label for="password" class="fl-label"><spring:message code="screen.welcome.label.password" /></label>
-						<%--
-						NOTE: Certain browsers will offer the option of caching passwords for a user.  There is a non-standard attribute,
-						"autocomplete" that when set to "off" will tell certain browsers not to prompt to cache credentials.  For more
-						information, see the following web page:
-						http://www.geocities.com/technofundo/tech/web/ie_autocomplete.html
-						--%>
-						<spring:message code="screen.welcome.label.password.accesskey" var="passwordAccessKey" />
-						<form:password cssClass="required" cssErrorClass="error" id="password" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
-                    </div>
-  
-  
-  
-                    <div class="row btn-row">
-						<input type="hidden" name="lt" value="${loginTicket}" />
-						<input type="hidden" name="execution" value="${flowExecutionKey}" />
-						<input type="hidden" name="_eventId" value="submit" />
-                        
-                        <input id="warn" name="warn" value="true" tabindex="3" accesskey="<spring:message code="screen.welcome.label.warn.accesskey" />" type="hidden" />   
-                        
-                        <input class="btn-submit" name="submit" accesskey="l" value="<spring:message code="screen.welcome.button.login" />" tabindex="4" type="submit" />
-                        <input class="btn-reset" name="reset" accesskey="c" value="<spring:message code="screen.welcome.button.clear" />" tabindex="5" type="reset" />
-                    </div>
-            </form:form>
-          </div>
-<jsp:directive.include file="includes/bottom.jsp" />
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>商户管理中心 - 用户登录</title>
+    <link rel="stylesheet" href="css/traders-login.css"/>
+    <script src="http://a.uhcdn.com/js/u/jquery-1.7.2.min.js"></script>
+    <% String url = request.getQueryString();
+
+        String domain = "";
+        if (url.contains("localhost")) {
+            domain = url.substring(url.indexOf("=") + 1, url.lastIndexOf("/"));
+            domain += "/forget-password";
+        } else {
+            url = url.substring(url.lastIndexOf("//") + 2);
+            domain = "http://" + url.substring(0, url.indexOf("."));
+            domain += ".admin.uhuila.net/forget-password";
+        }
+        System.out.println(domain);
+    %>
+
+</head>
+<%--<jsp:directive.include file="includes/top.jsp" />--%>
+<body>
+<form:form method="post" id="fm1" cssClass="fm-v clearfix" commandName="${commandName}" htmlEscape="true">
+<div id="login">
+    <h1>券市场<span> - 商户管理中心<span></h1>
+
+    <div class="item">
+        <label>用户名：</label>
+        <form:input cssClass="required" cssErrorClass="error" id="username" size="25" tabindex="1"
+                    accesskey="${userNameAccessKey}" path="username" autocomplete="false" htmlEscape="true"/>
+                  <span id="username-error" class="error"
+                        style="display: block; padding-left: 48px; padding-top: 10px;">
+                    <form:errors path="*" id="msg"/>
+                </span>
+    </div>
+    <div class="item">
+        <label>密　码：</label>
+        <form:password cssClass="required" cssErrorClass="error" id="password" size="25" tabindex="2" path="password"
+                       accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off"/>
+
+        <span id="password-error" class="error" style="display: block; padding-left: 48px; padding-top: 10px;"></span>
+    </div>
+    <div class="btn-box">
+        <input type="hidden" name="lt" value="${loginTicket}"/>
+        <input type="hidden" name="execution" value="${flowExecutionKey}"/>
+        <input type="hidden" name="_eventId" value="submit"/>
+
+
+        <button type="submit" tabindex="3">登 录</button>
+        <a class="forgot"
+           href="<%=domain%>">忘记密码?</a>
+    </div>
+    </form:form>
+</div>
+<div id="footer">©2012 券市场 quanMX.com 版权所有 沪ICP备08114451号</div>
+<script>
+    (function ($) {
+        var u = $('#username'),
+                p = $('#password');
+        $('#fm1').submit(function () {
+            if (u.val() == '') {
+                u.css('border', '1px solid #F50');
+                $('#username-error').text('请输入用户名');
+                return false;
+            }
+
+            if (p.val() == '') {
+                p.css('border-color', '1px solid #F50');
+                $('#password-error').text('请输入密码');
+                return false;
+            }
+        });
+        u.blur(function () {
+            u.css('border-color', '#AAA #DDD #DDD #AAA');
+            u.nextAll('.error').text("");
+        });
+        p.blur(function () {
+            p.css('border-color', '#AAA #DDD #DDD #AAA');
+            p.nextAll('.error').text("");
+        });
+    })(jQuery);
+</script>
+
+</body>
+</html>

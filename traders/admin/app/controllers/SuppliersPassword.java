@@ -32,13 +32,8 @@ public class SuppliersPassword extends Controller {
 	/**
 	 * 修改密码
 	 */
-	public static void update(long id, SupplierUser supplierUser) {
-		SupplierUser newSupplierUser = null;
-		if(id == 0 ) {
-			newSupplierUser = SupplierUser.findById(SupplierRbac.currentUser().id);
-		} else {
-			newSupplierUser = SupplierUser.findById(id);
-		}
+	public static void update(SupplierUser supplierUser) {
+		SupplierUser newSupplierUser = SupplierUser.findById(SupplierRbac.currentUser().id);
 
 		//密码验证
 		checkPassword(supplierUser, newSupplierUser);

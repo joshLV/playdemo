@@ -16,6 +16,7 @@ public class SupplierProfiles extends Controller {
      * 用户信息
      */
     public static void index() {
+        System.out.println(">>>>>>>>>>");
         Long id = SupplierRbac.currentUser().id;
         SupplierUser supplierUser = SupplierUser.findById(id);
         String roleIds = "";
@@ -25,12 +26,10 @@ public class SupplierProfiles extends Controller {
             }
         }
 
-        List rolesList = SupplierRole.findRoleOrderById();
-        supplierUser.roles.addAll(rolesList);
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         List shopList = Shop.findShopBySupplier(supplierId);
         String okFlag = "ok";
-        render(supplierUser, roleIds, rolesList,shopList,okFlag);
+        render(supplierUser, roleIds, shopList,okFlag);
 
     }
 

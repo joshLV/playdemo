@@ -39,7 +39,7 @@
         </div>
         <div class="btn-box">
             <button type="submit" tabindex="3">登 录</button>
-            <a class="forgot" href="">忘记密码?</a>
+            <a class="forgot" href="http://home.114bsgo.com/register">马上注册</a>
         </div>
         <input type="hidden" name="lt" value="${loginTicket}"/>
         <input type="hidden" name="execution" value="${flowExecutionKey}"/>
