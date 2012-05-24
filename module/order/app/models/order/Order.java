@@ -681,6 +681,36 @@ public class Order extends Model {
             if (MaterialType.REAL.equals(orderItem.goods.materialType)) {
                 orderItem.status = OrderStatus.SENT;
                 orderItem.save();
+
+                BigDecimal platformCommission = BigDecimal.ZERO;
+                if (orderItem.salePrice.compareTo(orderItem.resalerPrice) < 0) {
+                    //如果成交价小于分销商成本价（这种情况只有在一百券网站上才会发生），
+                    //那么一百券就没有佣金，平台的佣金也变为成交价减成本价
+                    platformCommission = orderItem.salePrice.subtract(orderItem.originalPrice);
+                } else {
+                    //平台的佣金等于分销商成本价减成本价
+                    platformCommission = orderItem.resalerPrice.subtract(orderItem.originalPrice);
+                    //如果是在一百券网站下的单，还要给一百券佣金
+                    if (order.userType == AccountType.CONSUMER) {
+                        TradeBill uhuilaCommissionTrade = TradeUtil.createCommissionTrade(
+                                AccountUtil.getUhuilaAccount(),
+                                orderItem.salePrice.subtract(orderItem.resalerPrice),
+                                "",
+                                order.getId());
+
+                        TradeUtil.success(uhuilaCommissionTrade, "收款(" + order.description + ")");
+                    }
+                }
+
+                if (platformCommission.compareTo(BigDecimal.ZERO) >= 0) {
+                    //给优惠券平台佣金
+                    TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(
+                            AccountUtil.getPlatformCommissionAccount(),
+                            platformCommission,
+                            "",
+                            order.getId());
+                    TradeUtil.success(platformCommissionTrade, "收款(" + order.description + ")");
+                }
             }
         }
 

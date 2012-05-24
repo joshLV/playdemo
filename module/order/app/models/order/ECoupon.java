@@ -298,8 +298,7 @@ public class ECoupon extends Model {
                 TradeUtil.success(uhuilaCommissionTrade, "收款(" + order.description + ")");
             }
         }
-
-        if (platformCommission.compareTo(BigDecimal.ZERO) > 0) {
+        if (platformCommission.compareTo(BigDecimal.ZERO) >= 0) {
             //给优惠券平台佣金
             TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(
                     AccountUtil.getPlatformCommissionAccount(),
