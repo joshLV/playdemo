@@ -24,13 +24,15 @@ insert into areas (id,area_type,display_order,name,parent_id)
 
 -- Table brand Initial --
 insert into categories (name,display_order,parent_id)
-  values('饮食', 100, null);
+  values('热门分类', 100, null);
 insert into categories (name,display_order,parent_id)
-  values('旅游', 200, null);
+  values('面包甜点券', 200, null);
 insert into categories (name,display_order,parent_id)
-  values('渝信川菜', 100, 1);
+  values('休闲食品券', 300, null);
 insert into categories (name,display_order,parent_id)
-  values('国旅', 200, 2);
+  values('餐饮券', 400, null);
+insert into categories (name,display_order,parent_id)
+  values('其他', 500, null);
 
 -- Table brand Initial --
 insert into brands (name,logo,display_order)

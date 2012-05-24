@@ -44,8 +44,16 @@
 <div id="nav">
     <ul class="clearfix">
         <li #{if categoryId == 0}class="current"#{/if}><a href="http://www.yibaiquan.com">首页</a></li>
-        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/1" #{if categoryId == 1}class="current"#{/if}>饮食</a></li>
-        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/2" #{if categoryId == 2}class="current"#{/if}>礼品</a></li>
+        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/1" #{if
+        categoryId == 1}class="current"#{/if}>热门分类</a></li>
+        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/2" #{if
+        categoryId == 2}class="current"#{/if}>面包甜点券</a></li>
+        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/3" #{if
+        categoryId == 3}class="current"#{/if}>休闲食品券</a></li>
+        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/4" #{if
+        categoryId == 4}class="current"#{/if}>餐饮券</a></li>
+        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/5" #{if
+        categoryId == 5}class="current"#{/if}>其他</a></li>
         *{
         #{list categories, as: 'category'}
         <li class="hot_shangpin_li"><a #{if categoryId == category.id}class="tab_selected"#{/if}
