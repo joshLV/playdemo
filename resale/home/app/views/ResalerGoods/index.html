@@ -96,37 +96,37 @@
         #{if orderBy == 1}
             <a #{if orderByType == 1}class="current prop rank-desc"#{/if}
                #{else}class="current prop rank-asc"#{/else}
-               href="/goods/list/${brandId}-${priceFrom}-${priceTo}-1-${orderByType}-${type}-1">销量</a>
+               href="/goods/list/${brandId}-${priceFrom}-${priceTo}-1-${orderByType}-${type}-1-${orderByType==0?1:0}">销量</a>
         #{/if}
         #{else}
-            <a class="prop" href="/goods/list/${brandId}-${priceFrom}-${priceTo}-1-${orderByType}-${type}-1">销量</a>
+            <a class="prop" href="/goods/list/${brandId}-${priceFrom}-${priceTo}-1-${orderByType}-${type}-1-${orderByType==0?1:0}">销量</a>
         #{/else}
 
         #{if orderBy == 2}
             <a #{if orderByType == 1}class="current prop rank-desc"#{/if}
                #{else}class="current prop rank-asc"#{/else}
-               href="/goods/list/${brandId}-${priceFrom}-${priceTo}-2-${orderByType}-${type}-2">价格</a>
+               href="/goods/list/${brandId}-${priceFrom}-${priceTo}-2-${orderByType}-${type}-2-${orderByType==0?1:0}">价格</a>
         #{/if}
         #{else}
-            <a class="prop" href="/goods/list/${brandId}-${priceFrom}-${priceTo}-2-${orderByType}-${type}-2">价格</a>
+            <a class="prop" href="/goods/list/${brandId}-${priceFrom}-${priceTo}-2-${orderByType}-${type}-2-${orderByType==0?1:0}">价格</a>
         #{/else}
 
         #{if orderBy == 3}
             <a #{if orderByType == 1}class="current prop rank-desc"#{/if}
                #{else}class="current prop rank-asc"#{/else}
-               href="/goods/list/${brandId}-${priceFrom}-${priceTo}-3-${orderByType}-${type}-3">折扣</a>
+               href="/goods/list/${brandId}-${priceFrom}-${priceTo}-3-${orderByType}-${type}-3-${orderByType==0?1:0}">折扣</a>
         #{/if}
         #{else}
-            <a class="prop" href="/goods/list/${brandId}-${priceFrom}-${priceTo}-3-${orderByType}-${type}-3">折扣</a>
+            <a class="prop" href="/goods/list/${brandId}-${priceFrom}-${priceTo}-3-${orderByType}-${type}-3-${orderByType==0?1:0}">折扣</a>
         #{/else}
 
         #{if orderBy == 4}
             <a #{if orderByType == 1}class="current prop rank-desc"#{/if}
                #{else}class="current prop rank-asc"#{/else}
-               href="/goods/list/${brandId}-${priceFrom}-${priceTo}-4-${orderByType}-${type}-4">最新</a>
+               href="/goods/list/${brandId}-${priceFrom}-${priceTo}-4-${orderByType}-${type}-4-${orderByType==0?1:0}">最新</a>
         #{/if}
         #{else}
-            <a class="prop" href="/goods/list/${brandId}-${priceFrom}-${priceTo}-4-${orderByType}-${type}-4">最新</a>
+            <a class="prop" href="/goods/list/${brandId}-${priceFrom}-${priceTo}-4-${orderByType}-${type}-4-${orderByType==0?1:0}">最新</a>
         #{/else}
     </div>
 
