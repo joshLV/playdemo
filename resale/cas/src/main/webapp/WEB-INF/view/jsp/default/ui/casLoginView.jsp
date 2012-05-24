@@ -5,87 +5,76 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
-        <title>分销会员登录</title>
-        <meta charset="">
-        <link rel="stylesheet" type="text/css" media="screen"   href="public/stylesheets/main.css">
-        <link rel="stylesheet" type="text/css" media="screen"   href="public/stylesheets/updateinfo.css">
-        <link rel="shortcut icon" type="image/png" href="public/images/favicon.png">
-        <script src="public/javascripts/jquery-1.6.4.min.js" type="text/javascript"></script>
-    </head>
-    <body>
-<style type="text/css">
-#header {
-    height: 123px;
-}
+<head>
+    <title>分销会员登录</title>
+    <meta charset="">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/login-cas.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
-.headmain {
-    border-bottom: #b73a24 2px solid;
-    height: 98px;
-    padding-bottom: 10px;
-}
-
-.error {
-    padding-left: 10px;
-    color: red;
-}
-</style>
-
-<div id="index_main">
-    <div id="main">
-        <div id="maincontainer" style="overflow: hidden; margin-bottom: 40px; margin-left: 30px;">
-
-            <form:form method="post" id="fm1"  commandName="${commandName}" htmlEscape="true">
-                  <form:errors path="*" id="msg" cssClass="errors" element="div" />
-            <div style="margin: 145px 18pt 0pt 10px;" class="loginbg">
-                <strong style="font-size: 14px; margin-bottom: 6px; display: block;">登录</strong>
-                <div class="login">
-                    <ul class="loginUl">
-                        <li class="field" id="showmess">
-                            <div class="pwderror">
-                                <h1 class="colorred"></h1>
-
-                            </div>
-                        </li>
-                        <li class="field">
-                            <div class="input">
-                                <label>用户名：</label>
-                                <form:input  cssErrorClass="error" id="username" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="false" htmlEscape="true" />
-                            </div>
-                        </li>
-
-                        <li class="field">
-                            <div class="input">
-                                <label>密码：</label>
-                                <form:password  cssErrorClass="error" id="password" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
-                            </div>
-                        </li>
-                        <li class="submit-field">
-                        <input type="hidden" name="lt" value="${loginTicket}" />
-                        <input type="hidden" name="execution" value="${flowExecutionKey}" />
-                        <input type="hidden" name="_eventId" value="submit" />
-
-                        <button id="loginbutton" type="submit"
-                                class="bt colorw bold">登录</button>
-                </li>
-                <li class="fieldnot"><span>还没有分销账号?</span> <span
-                    class="colorred">&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://home.114bsgo.com/register">注册</a></span></li>
-
-                </ul>
-                <div class="clear"></div>
-            </div>
-            </form:form>
-
-            <p class="loginfj">
-                <span class="colorred">注：</span>如您手机已经绑定过一百券"优卡"(会员卡)，<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;并且首次登录网站请<a href="#">点击</a>
-            </p>
-        </div>
-    </div>
-
+</head>
+<body>
+<div id="header" class="clearfix">
+    <h1 id="logo"><img src="images/xlogo.png" alt="券市场"/></h1>
 </div>
+<div id="login">
+    <h2>分销商登录</h2>
+    <form:form method="post" id="login-form" commandName="${commandName}" htmlEscape="true">
+        <div class="item">
+            <label>用户名：</label>
+            <form:input cssErrorClass="error" id="username" size="25" tabindex="1"
+                        accesskey="${userNameAccessKey}" path="username" autocomplete="false"
+                        htmlEscape="true"/>
 
-    </body>
+                  <span id="username-error" class="error">
+                    <form:errors path="*" id="msg"/>
+                </span>
+        </div>
+        <div class="item">
+            <label>密　码：</label>
+            <form:password cssErrorClass="error" id="password" size="25" tabindex="2"
+                           path="password" accesskey="${passwordAccessKey}" htmlEscape="true"
+                           autocomplete="off"/>
+
+            <span id="password-error-error" class="error"></span>
+        </div>
+        <div class="btn-box">
+            <button type="submit" tabindex="3">登 录</button>
+            <a class="forgot" href="">忘记密码?</a>
+        </div>
+        <input type="hidden" name="lt" value="${loginTicket}"/>
+        <input type="hidden" name="execution" value="${flowExecutionKey}"/>
+        <input type="hidden" name="_eventId" value="submit"/>
+    </form:form>
+</div>
+<div id="footer">©2012 券市场 quanFX.com 版权所有 沪ICP备08114451号</div>
+<script>
+    (function ($) {
+        var u = $('#username'),
+                p = $('#password');
+        $('#login-form').submit(function () {
+            if (u.val() == '') {
+                u.css('border', '1px solid #F50');
+                u.nextAll('.error').text("请输入用户名");
+                return false;
+            }
+            if (p.val() == '') {
+                p.css('border-color', '1px solid #F50');
+                p.nextAll('.error').text("请输入密码");
+                return false;
+            }
+        });
+        u.blur(function () {
+            u.css('border-color', '#AAA #DDD #DDD #AAA');
+            u.nextAll('.error').text("");
+        });
+        p.blur(function () {
+            p.css('border-color', '#AAA #DDD #DDD #AAA');
+            p.nextAll('.error').text("");
+        });
+    })(jQuery);
+</script>
+
+</body>
 </html>
 
 
