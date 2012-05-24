@@ -43,7 +43,7 @@
 </div>
 <div id="nav">
     <ul class="clearfix">
-        <li #{if categoryId == 0}class="current"#{/if}><a href="http://www.yibaiquan.com">首页</a></li>
+        <li #{if categoryId == 0}class="current"#{/if}><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}">首页</a></li>
         <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/1" #{if
         categoryId == 1}class="current"#{/if}>美食券</a></li>
         <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/2" #{if
