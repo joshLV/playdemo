@@ -1,54 +1,38 @@
 #{extends 'main.html' /}
-#{set title:'一百券 - 支付成功' /}
+#{set title:'一百券 - 支付结果' /}
 #{set 'moreStyles'}
-<link href="@@{'/public/stylesheets/order_result.css'}" rel="stylesheet" type="text/css"/>
+<link href="@@{'/public/stylesheets/order_info.css'}" rel="stylesheet" type="text/css"/>
+<link href="@@{'/public/stylesheets/payment_info.css'}" rel="stylesheet" type="text/css"/>
+<link href="@@{'/public/stylesheets/carts-step.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
-    <div id="wrap_content">
 
-        <div class="div_step_title">
-            <div class="div_step_3">1</div>
-            <div class="div_step_text_1">查看购物车<span>>></span></div>
-            <div class="div_step_3">2</div>
-            <div class="div_step_text_1">确认订单信息<span>>></span></div>
-            <div class="div_step_3">3</div>
-            <div class="div_step_text_1">确认付款<span>>></span></div>
-            <div class="div_step_2">4</div>
-            <div class="div_step_text_2">支付成功</div>
-        </div>
-        %{String rtnOK=(String)request.params.get("rtnOK");}%
-        <div class="dingdan_info">
-            #{if errorMessage}
-            <div style="margin:20px 0">
-                ${errorMessage}
-            </div>
-            #{/if}
-            #{else}
-            
-            <div class="success_dingdan">
-             #{if rtnOK =='-1'}没有此订单信息！#{/if }
-             #{ elseif rtnOK =='-2'}订单支付金额不相符！#{/elseif }
-             #{elseif rtnOK =='-3'}支付失败！#{/elseif}
-             #{else}恭喜，交易成功！ #{/else}</div>
-            <div  class="chakan_info">
-                <a href="#"><span class="font_blue">点击查看</span></a>
-                消费门店地址，您随时可至以上点消费
-            </div>
-            <div class="succe_box">
-                <div class="chakan_info_one" >您还可以再“
-                    <span class="font_blue">
-                        <a href="3" class="font_blue">我的一百券</a>>
-                        <a href="3" class="font_blue">我购买的商品</a>>
-                        <a href="3" class="font_blue">订单详情</a>
-                    </span>”查看商品情况。
-                </div>
-                <div class="chakan_info_two" >凭取货短信到门店直接消费</div>
-            </div>
-            <div  class="chakan_info_img">
-                <span><a class="chakan_bg" href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}/orders">查看详情</a></span>
-                <span class="margin_left15"> 
-                    <a href="/"  class="jixu_bg" >继续购物</a>
-                </span>
-            </div>
-            #{/else}
-        </div>
+<ol class="buy-step step4 clearfix">
+    <li><span>1</span>查看购物车 <em>>></em></li>
+    <li><span>2</span>确认订单信息 <em>>></em></li>
+    <li><span>3</span>确认付款 <em>>></em></li>
+    <li class="buy-step-curr"><span>4</span>支付结果 <em>>></em></li>
+</ol>
+
+<div class="order-success">
+    %{baseDomain = play.Play.configuration.getProperty("application.baseDomain")}%
+    #{if !errorMessage}
+    <div class="order-wish">恭喜您付款成功</div>
+    <ul>
+        <li>您还可以在  “
+            <a href="http://home.${baseDomain}">我的一百券</a> >
+            <a href="http://home.${baseDomain}">我购买的商品</a> >
+            <a href="http://home.${baseDomain}/orders/${orderNumber}">订单详情</a>” 查看商品券号或配送详情</li>
+        <li>凭短信的券号到取货门店直接取货。</li>
+        <li class="service">电子券商品，只要您末进行消费，且保持一百券订单有效，我们将提供随时退款的服务。<br/>
+            我们的客服电话：400-6262-166 我们的客服邮件是：uhuila@seewi.com.cn</li>
+    </ul>
+    #{/if}
+    #{else}
+    <div class="order-wish">暂时未能读取您的支付信息</div>
+    #{/else}
+    <div class="btn">
+        <a href="http://home.${baseDomain}/orders/${orderNumber}"><span>查看订单详情</span></a>
+        <a href="http://www.${baseDomain}"><span>继续购物</span></a>
     </div>
+</div>
+

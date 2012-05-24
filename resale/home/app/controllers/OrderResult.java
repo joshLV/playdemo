@@ -19,8 +19,8 @@ public class OrderResult extends Controller {
         Map<String, String> result = paymentFlow.urlReturn(PaymentUtil.filterPlayParameter(params.all()));
         String  errorMessage = "对不起，暂时无法读取信息，请您稍后再试";
 
+        String orderNumber = result.get(PaymentFlow.ORDER_NUMBER);
         if(PaymentFlow.VERIFY_RESULT_OK.equals(result.get(PaymentFlow.VERIFY_RESULT))){
-            String orderNumber = result.get(PaymentFlow.ORDER_NUMBER);
             String fee         = result.get(PaymentFlow.TOTAL_FEE);
             boolean processOrderResult = Order.verifyAndPay(orderNumber, fee);
 
@@ -28,6 +28,6 @@ public class OrderResult extends Controller {
                 errorMessage = null;
             }
         }
-        renderTemplate("OrderResult/index.html", errorMessage);
+        renderTemplate("OrderResult/index.html", errorMessage, orderNumber);
     }
 }
