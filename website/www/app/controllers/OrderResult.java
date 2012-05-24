@@ -1,51 +1,40 @@
 package controllers;
 
 
+import models.order.Order;
+import models.payment.PaymentUtil;
+import models.payment.alipay.AliPaymentFlow;
 import org.apache.commons.lang.StringUtils;
 
-import models.payment.AliPaymentFlow;
-import models.payment.BillPaymentFlow;
 import models.payment.PaymentFlow;
-import models.payment.TenpayPaymentFlow;
 import play.mvc.Controller;
 import play.mvc.With;
 import controllers.modules.website.cas.SecureCAS;
 
+import java.util.Map;
+
 @With({SecureCAS.class, WebsiteInjector.class})
 public class OrderResult extends Controller {
-	private static PaymentFlow paymentFlow = new AliPaymentFlow();
 
-	//支付宝
-	public static void alipayReturn() {
+    /**
+     * 支付 url 跳转回来.
+     *
+     * @param partner 第三方支付
+     */
+    public static void urlReturn(String partner){
+        PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(partner);
+        Map<String, String> result = paymentFlow.urlReturn(PaymentUtil.filterPlayParameter(params.all()));
+        String  errorMessage = "对不起，暂时无法读取信息，请您稍后再试";
 
-		//验证通知结果
-		String errorMessage = null;
-		if (!paymentFlow.paymentNotify(params.all())){
-			errorMessage = "对不起，暂时无法读取信息，请您稍后再试";
-		}
+        if(PaymentFlow.VERIFY_RESULT_OK.equals(result.get(PaymentFlow.VERIFY_RESULT))){
+            String orderNumber = result.get(PaymentFlow.ORDER_NUMBER);
+            String fee         = result.get(PaymentFlow.TOTAL_FEE);
+            boolean processOrderResult = Order.verifyAndPay(orderNumber, fee);
 
-		renderTemplate("OrderResult/index.html", errorMessage);
-
-	}
-
-	/**
-	 * 财付通
-	 */
-	public static void tenpayReturn() {
-		String error =  request.params.get("error");
-		String errorMessage ="";
-		if (StringUtils.isNotBlank(error)) {
-			errorMessage = "对不起，暂时无法读取信息，请您稍后再试";
-		}
-		renderTemplate("OrderResult/index.html",errorMessage);
-	}
-
-
-	/**
-	 * 快钱
-	 */
-	public static void kuaiqianReturn() {
-		render("OrderResult/index.html");
-
-	}
+            if(processOrderResult){
+                errorMessage = null;
+            }
+        }
+        renderTemplate("OrderResult/index.html", errorMessage);
+    }
 }

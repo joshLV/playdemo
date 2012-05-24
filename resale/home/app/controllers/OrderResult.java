@@ -1,43 +1,33 @@
 package controllers;
 
+import models.order.Order;
+import models.payment.PaymentUtil;
+import models.payment.alipay.AliPaymentFlow;
 import org.apache.commons.lang.StringUtils;
 
-import models.payment.AliPaymentFlow;
 import models.payment.PaymentFlow;
 import play.mvc.Controller;
 
+import java.util.Map;
+
 public class OrderResult extends Controller {
-	private static PaymentFlow paymentFlow = new AliPaymentFlow();
+    private static PaymentFlow paymentFlow = new AliPaymentFlow();
 
-	public static void alipayReturn() {
+    public static void urlReturn(String partner) {
 
-		//验证通知结果
-		String errorMessage = null;
-		if (!paymentFlow.paymentNotify(params.all())){
-			errorMessage = "对不起，暂时无法读取信息，请您稍后再试";
-		}
+        PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(partner);
+        Map<String, String> result = paymentFlow.urlReturn(PaymentUtil.filterPlayParameter(params.all()));
+        String  errorMessage = "对不起，暂时无法读取信息，请您稍后再试";
 
-		renderTemplate("OrderResult/index.html", errorMessage);
+        if(PaymentFlow.VERIFY_RESULT_OK.equals(result.get(PaymentFlow.VERIFY_RESULT))){
+            String orderNumber = result.get(PaymentFlow.ORDER_NUMBER);
+            String fee         = result.get(PaymentFlow.TOTAL_FEE);
+            boolean processOrderResult = Order.verifyAndPay(orderNumber, fee);
 
-	}
-	/**
-	 * 财付通
-	 */
-	public static void tenpayReturn() {
-		String error =  request.params.get("error");
-		String errorMessage ="";
-		if (StringUtils.isNotBlank(error)) {
-			errorMessage = "对不起，暂时无法读取信息，请您稍后再试";
-		}
-		renderTemplate("OrderResult/index.html",errorMessage);
-	}
-
-
-	/**
-	 * 快钱
-	 */
-	public static void kuaiqianReturn() {
-		render("OrderResult/index.html");
-
-	}
+            if(processOrderResult){
+                errorMessage = null;
+            }
+        }
+        renderTemplate("OrderResult/index.html", errorMessage);
+    }
 }

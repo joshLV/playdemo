@@ -38,18 +38,10 @@ DELETE  /carts/{goodsIds}                       Carts.delete
 POST    /payment_info/confirm                   PaymentInfo.confirm
 GET     /payment_info/{orderNumber}             PaymentInfo.index
 
-# 接收支付宝回调
-POST    /pay/alipay_notify                      PamentNotify.aliPayNotify
-# 接收财付通回调
-GET     /pay/tenpay_notify                      PamentNotify.tenpayNotify
-# 接收快钱回调
-GET     /pay/99bill_notify                      PamentNotify.kuaiqianNotify
-# 显示支付结果
-GET     /orders/alipay_result                   OrderResult.alipayReturn
-# 显示财付通回调结果
-GET     /orders/tenpay_result                   OrderResult.tenpayReturn
-# 显示快钱回调结果
-GET     /orders/99billpay_result                OrderResult.kuaiqianReturn
+# 接收支付回调
+*       /pay_notify/{partner}                   PaymentNotify.notify
+*       /order_result/{partner}                 OrderResult.urlReturn
+
 GET     /sms                                    SMS.index
 POST    /sms/send                               SMS.send
 

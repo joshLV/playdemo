@@ -1,21 +1,14 @@
 package controllers;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.util.List;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
-import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
-import models.accounts.util.TradeUtil;
 import models.order.Order;
 import models.order.OrderItems;
-import models.order.OrderType;
-import models.payment.AliPaymentFlow;
-import models.payment.BillPaymentFlow;
+import models.payment.PaymentUtil;
 import models.payment.PaymentFlow;
-import models.payment.TenpayPaymentFlow;
 import models.resale.Resaler;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -23,9 +16,6 @@ import controllers.modules.resale.cas.SecureCAS;
 
 @With(SecureCAS.class)
 public class PaymentInfo extends Controller {
-	private static PaymentFlow alipayPaymentFlow = new AliPaymentFlow();
-	private static TenpayPaymentFlow tenpayPaymentFlow = new TenpayPaymentFlow();
-	private static BillPaymentFlow billPaymentFlow = new BillPaymentFlow();
 
     /**
      * 展示确认支付信息页.
@@ -57,47 +47,17 @@ public class PaymentInfo extends Controller {
     public static void confirm(String orderNumber, boolean useBalance, String paymentSourceCode) {
         Resaler resaler = SecureCAS.getResaler();
         Order order = Order.findOneByUser(orderNumber, resaler.getId(), AccountType.RESALER);
-
         if (order == null){
             error(500,"no such order");
         }
-
         Account account = AccountUtil.getAccount(resaler.getId(), AccountType.RESALER);
 
-        //计算使用余额支付和使用银行卡支付的金额
-        BigDecimal balancePaymentAmount = BigDecimal.ZERO;
-        BigDecimal ebankPaymentAmount = BigDecimal.ZERO;
-        if (useBalance && order.orderType == OrderType.CONSUME){
-            balancePaymentAmount = account.amount.min(order.needPay);
-            ebankPaymentAmount = order.needPay.subtract(balancePaymentAmount);
+        if(Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode)){
+            PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
+            render(order, paymentSource);
         }else {
-            ebankPaymentAmount = order.needPay;
+            error(500, "can no confirm the payment info");
         }
-        order.accountPay = balancePaymentAmount;
-        order.discountPay = ebankPaymentAmount;
-
-        //创建订单交易
-        PaymentSource paymentSource = PaymentSource.find("byCode", paymentSourceCode).first();
-
-        order.payMethod = paymentSourceCode;
-
-        //如果使用余额足以支付，则付款直接成功
-        if (ebankPaymentAmount.compareTo(BigDecimal.ZERO) == 0 && balancePaymentAmount.compareTo(order.needPay) == 0){
-            order.payMethod = PaymentSource.getBalanceSource().code;
-            order.paid();
-
-            render(order,paymentSource);
-        }
-
-        /*网银付款*/
-
-        //无法确定支付渠道
-        if(paymentSource == null){
-            error(500, "can not get paymentSource");
-        }
-
-        order.save();
-        render(order, paymentSource);
 
     }
 
@@ -110,29 +70,17 @@ public class PaymentInfo extends Controller {
         Resaler resaler = SecureCAS.getResaler();
         Order order = Order.findOneByUser(orderNumber, resaler.getId(), AccountType.RESALER);
 
-        if (order == null){
-            error(500,"no such order");
+        PaymentSource paymentSource = PaymentSource.findByCode(paymentCode);
+
+        if (order == null || paymentSource == null){
+            error(500,"no such order or payment source is invalid");
+            return;
         }
 
-    	String form = "";
-		if ("tenpay".equals(paymentCode)) {
-			try {
-				form = tenpayPaymentFlow.generatetTenpayForm(order);
-				//直接跳转到财付通
-				redirect(form);
-			} catch (UnsupportedEncodingException e) {
-				error(500,"no such order");
-			}
-		} else if ("alipay".equals(paymentCode)) {
-			form = alipayPaymentFlow.generateForm(order);
-			render(form);
-		} else {
-			form = billPaymentFlow.generateForm(order);
-			render(form);
-		}
-
+        PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(paymentSource.paymentCode);
+        String form = paymentFlow.getRequestForm(order.orderNumber, order.description,
+                order.discountPay, paymentSource.subPaymentCode, request.remoteAddress);
+        render(form);
     }
-
-
 }
 

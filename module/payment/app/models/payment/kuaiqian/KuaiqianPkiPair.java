@@ -1,4 +1,4 @@
-package models.payment;
+package models.payment.kuaiqian;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -11,26 +11,23 @@ import java.security.Signature;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
+import play.Logger;
 import play.Play;
 
 
-public class KuaiQianPkipair {
-
-
-	public  String signMsg( String signMsg) {
-
+public class KuaiqianPkiPair {
+	public static String signMsg( String signMsg) {
 		String base64 = "";
 		try {
 			// 密钥仓库
 			KeyStore ks = KeyStore.getInstance("PKCS12");
 
 			// 读取密钥仓库（相对路径）
-			String path = Play.configuration.getProperty("99bill.privateKey","/opt/99bill/tester-rsa.pfx");
-			System.out.println("path===="+path);
-			FileInputStream ksfis = new FileInputStream(path);
+			String privateKeyPath = KuaiqianConfig.PRIVATE_KEY_PATH;
+			FileInputStream ksfis = new FileInputStream(privateKeyPath);
 			BufferedInputStream ksbufin = new BufferedInputStream(ksfis);
 
-			char[] keyPwd = "yu@uhuila.seewi".toCharArray();
+			char[] keyPwd = KuaiqianConfig.KEY_PWD.toCharArray();
 			ks.load(ksbufin, keyPwd);
 			// 从密钥仓库得到私钥
 			PrivateKey priK = (PrivateKey) ks.getKey("test-alias", keyPwd);
@@ -41,16 +38,16 @@ public class KuaiQianPkipair {
 			base64 = encoder.encode(signature.sign());
 
 		} catch(FileNotFoundException e){
-			System.out.println("文件找不到");
+            Logger.error(e,"can not find private key file of 99bill kuaiqian:" + KuaiqianConfig.PRIVATE_KEY_PATH);
 		}catch (Exception ex) {
-			ex.printStackTrace();
+            Logger.error(ex, "load private key of 99bill / kuaiqian failed:" + KuaiqianConfig.PRIVATE_KEY_PATH);
 		}
 		return base64;
 	}
-	public  boolean enCodeByCer( String val, String msg) {
+	public static  boolean enCodeByCer( String val, String msg) {
 		boolean flag = false;
 		try {
-			String path = Play.configuration.getProperty("99bill.publickey","/opt/99bill/99bill.cert.rsa.20140728.cer");
+			String path = KuaiqianConfig.PUBLIC_KEY_PATH;
 
 			InputStream inStream = new FileInputStream(path);
 			CertificateFactory cf = CertificateFactory.getInstance("X.509");
@@ -65,9 +62,8 @@ public class KuaiQianPkipair {
 			sun.misc.BASE64Decoder decoder = new sun.misc.BASE64Decoder();
 			flag = signature.verify(decoder.decodeBuffer(msg));
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("no");
-		} 
+            Logger.error(e, "load public key of 99bill / kuaiqian failed:" + KuaiqianConfig.PRIVATE_KEY_PATH);
+		}
 		return flag;
 	}
 }

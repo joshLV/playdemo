@@ -16,6 +16,7 @@ import models.resale.util.ResaleUtil;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sms.SMSUtil;
+import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
@@ -24,7 +25,13 @@ import play.modules.paginate.JPAExtPaginator;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 
 @Entity
@@ -32,6 +39,7 @@ import java.util.*;
 public class Order extends Model {
     public static final BigDecimal FREIGHT = new BigDecimal("6");
     private static final DecimalFormat decimalFormat = new DecimalFormat("0000000");
+    private static final SimpleDateFormat COUPON_EXPIRE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     @Column(name = "user_id")
     public long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
@@ -360,7 +368,7 @@ public class Order extends Model {
         //先将用户银行支付的钱充值到自己账户上
         if (this.discountPay.compareTo(BigDecimal.ZERO) > 0) {
             TradeBill chargeTradeBill = TradeUtil.createChargeTrade(account, this.discountPay, paymentSource, this.getId());
-            TradeUtil.success(chargeTradeBill, "充值(" + this.description + ")");
+            TradeUtil.success(chargeTradeBill, "充值");
             /*
             JPAPlugin.closeTx(false);
             JPAPlugin.startTx(true);
@@ -374,7 +382,7 @@ public class Order extends Model {
                     account,
                     this.accountPay,
                     this.discountPay,
-                    paymentSource,
+                    PaymentSource.getBalanceSource(),
                     this.getId());
             TradeUtil.success(tradeBill, "支付(" + this.description + ")");
             this.payRequestId = tradeBill.getId();
@@ -408,7 +416,7 @@ public class Order extends Model {
 
                     if (!Play.runingInTestMode()) {
                         SMSUtil.send(goods.name + "券号:" + eCoupon.eCouponSn + "," +
-                                "截止日期：" + eCoupon.expireAt + ",如有疑问请致电：400-6262-166",
+                                "截止日期：" + COUPON_EXPIRE_FORMAT.format(eCoupon.expireAt) + ",如有疑问请致电：400-6262-166",
                                 orderItem.phone, eCoupon.replyCode);
                     }
                     couponCodes.add(eCoupon.getMaskedEcouponSn());
@@ -683,5 +691,56 @@ public class Order extends Model {
         return Order.find("byOrderNumberAndUserIdAndUserType", orderNumber, userId, accountType).first();
     }
 
+    public static boolean verifyAndPay(String orderNumber, String fee) {
+        Order order = Order.find("byOrderNumber", orderNumber).first();
+        if(order == null){
+            Logger.error("payment_notify:找不到订单:" + orderNumber);
+            return  false;
+        }
+        if (order.status == OrderStatus.PAID){
+            Logger.error("payment_notify:订单已支付:" + orderNumber);
+            return true;
+        }
+        if (fee== null || new BigDecimal(fee).compareTo(order.discountPay) < 0){
+            Logger.error("payment_notify:支付金额非法:订单:" + orderNumber + ";支付金额:" + fee);
+            return false;
+        }
 
+        order.paid();
+        return true;
+    }
+
+    public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance, String paymentSourceCode){
+        //计算使用余额支付和使用银行卡支付的金额
+        BigDecimal balancePaymentAmount = BigDecimal.ZERO;
+        BigDecimal ebankPaymentAmount = BigDecimal.ZERO;
+        if (useBalance && order.orderType == OrderType.CONSUME){
+            balancePaymentAmount = account.amount.min(order.needPay);
+            ebankPaymentAmount = order.needPay.subtract(balancePaymentAmount);
+        }else {
+            ebankPaymentAmount = order.needPay;
+        }
+        order.accountPay = balancePaymentAmount;
+        order.discountPay = ebankPaymentAmount;
+
+        //创建订单交易
+        PaymentSource paymentSource = PaymentSource.findByCode(paymentSourceCode);
+
+        order.payMethod = paymentSourceCode;
+
+        //如果使用余额足以支付，则付款直接成功
+        if (ebankPaymentAmount.compareTo(BigDecimal.ZERO) == 0 && balancePaymentAmount.compareTo(order.needPay) == 0){
+            order.payMethod = PaymentSource.getBalanceSource().code;
+            order.paid();
+            return true;
+        }
+
+        //无法确定支付渠道
+        if(paymentSource == null){
+            return false;
+        }
+
+        order.save();
+        return true;
+    }
 }

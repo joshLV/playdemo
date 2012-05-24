@@ -1,7 +1,7 @@
 package functional.models.payment;
 
 import models.order.Order;
-import models.payment.AliPaymentFlow;
+import models.payment.alipay.AliPaymentFlow;
 import models.payment.PaymentFlow;
 import org.junit.Before;
 import org.junit.Test;

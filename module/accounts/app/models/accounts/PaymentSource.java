@@ -11,7 +11,7 @@ import javax.persistence.Table;
 public class PaymentSource extends Model {
     public String name;
     public String detail;
-    public String code;                 //银行代码
+    public String code;                 //全表唯一的银行代码,一般是paymentCode-subPaymentCode
     public String logo;
     @Column(name = "show_order")
     public int showOrder;
@@ -19,11 +19,19 @@ public class PaymentSource extends Model {
     @Column(name = "payment_code")
     public String paymentCode;          //最终用哪个支付渠道支付
 
+    @Column(name = "sub_payment_code")
+    public String subPaymentCode;       //支付渠道中使用的哪个支付方式(银行)
+
 
     public static String findNameByCode(String code) {
         PaymentSource source = PaymentSource.find("byCode", code).first();
         return source == null ? "" : source.name;
     }
+
+    public static PaymentSource findByCode(String code){
+        return PaymentSource.find("byCode", code).first();
+    }
+
     public static PaymentSource getBalanceSource(){
         PaymentSource source = PaymentSource.find("byCode", "balance").first();
         if(source == null){
@@ -34,6 +42,7 @@ public class PaymentSource extends Model {
             source.logo = null;
             source.showOrder = 0;
             source.paymentCode = "balance";
+            source.subPaymentCode = "balance";
             source.save();
         }
         return source;
