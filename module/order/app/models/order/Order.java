@@ -9,6 +9,7 @@ import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.consumer.Address;
 import models.consumer.User;
+import models.consumer.UserInfo;
 import models.mail.CouponMessage;
 import models.mail.MailUtil;
 import models.resale.Resaler;
@@ -22,7 +23,18 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -156,6 +168,10 @@ public class Order extends Model {
     private Order(long userId, AccountType userType) {
         this.userId = userId;
         this.userType = userType;
+        User user = User.findById(userId);
+        UserInfo userInfo = UserInfo.findByUser(user);
+        this.buyerMobile = user.mobile;
+        this.buyerPhone = userInfo.phone;
 
         this.status = OrderStatus.UNPAID;
         this.deleted = DeletedStatus.UN_DELETED;
@@ -224,6 +240,16 @@ public class Order extends Model {
             this.description = this.orderItems.get(0).goodsName + "等商品";
         }
     }
+
+    public boolean containsRealGoods() {
+        for (OrderItems orderItem : orderItems) {
+           if (MaterialType.REAL.equals(orderItem.goods.materialType)) {
+               return true;
+           }
+        }
+        return false;
+    }
+
 
     /**
      * 添加订单条目.

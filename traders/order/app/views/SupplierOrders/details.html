@@ -1,66 +1,113 @@
 #{extends 'layout_trader/layout.html' /}
 #{include 'Share/nav.html' /}
-#{set title:'订单详细信息' /}
+#{set title:'订单详请' /}
 #{set 'moreScripts'}
-  <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 
 <div class="body">
- <legend>订单详细</legend>
-  <table width="80%">
-   <tr><td>订单号：${orders.orderNumber}</td>
-   <td>订单时间：${orders.createdAt == null ?'':orders.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
-   <td>支付时间：${orders.paidAt == null ?'':orders.paidAt.format("yyyy-MM-dd HH:mm:ss")}</td>
-   </tr>
-   </table>
+    <legend>${title}</legend>
+    <ul class="nav">
+        <li class="active"><a href="#"> 基本信息</a></li>
+        <table class="table table-bordered">
+            <tr>
+                <td>订 单 号：${orders.orderNumber}</td>
+                <td>订单时间：${orders.createdAt == null ?'':orders.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
+                <td>支付时间：${orders.paidAt == null ?'':orders.paidAt.format("yyyy-MM-dd HH:mm:ss")}</td>
+            </tr>
+            <tr>
+                <td>支付方式： ${orders.payMethod=='1'?'支付宝':'网银'}</td>
+                <td>订单状态： &{'order.'+orders.status}</td>
+                <td>物流方式： ${orders.deliveryType=='2'?'有物流':'无物流'}</td>
+            </tr>
+        </table>
+    </ul>
+    <ul class="nav">
+        <li class="active"><a href="#"> 商品信息</a></li>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>商品编号</th>
+                <th>商品名称</th>
+                <th>类型</th>
+                <th>单价</th>
+                <th>数量</th>
+                <th>有效期</th>
+                <th>需要支付金额</th>
+                <th>订单状态</th>
+            </tr>
+            </thead>
+            <tbody>
+            #{list items:orderItems, as:'orderItem' }
+            <tr>
+                <td>${orderItem.goods.no}</td>
+                <td>${orderItem.goodsName}</td>
+                <td>${'goods.'+orderItem.goods.materialType}</td>
+                <td>${orderItem.salePrice?.formatCurrency('CNY')}</td>
+                <td>${orderItem.buyNumber}</td>
+                <td>${orderItem.goods.effectiveAt?.format("yyyy-MM-dd")}
+                    - ${orderItem.goods.expireAt?.format("yyyy-MM-dd")}
+                </td>
+                <td>${'orders.'+orders.status}</td>
+                <td>0</td>
+            </tr>
+            #{/list}
+            </tbody>
+            <tr>
+                <td colspan="7">商品金额： ${orders.amount} &nbsp;元 &nbsp;+运费：${models.order.Order.FREIGHT} 元= &nbsp;总金额：
+                ${orders.amount} 元
+                </td>
+            </tr>
+        </table>
+    </ul>
+    <ul class="nav">
+        <li class="active"><a href="#"> 收货信息</a></li>
+        <table class="table table-bordered table-striped">
 
- <legend>商品信息</legend>
-  <table class="table">
-   <thead>
-    <tr>
-     <th>商品编号</th>
-     <th>商品名称</th>
-     <th>单价</th>
-     <th>数量</th>
-     <th>有效期</th>
-     <th>需要支付金额</th>
-     <th>获得积分</th>
-    </tr>
-   </thead>
-   <tbody>
-    #{list items:orderItems, as:'row' }
-    <tr>
-     <td>${row.goods.no}</td>
-     <td>${row.goodsName}</td>
-     <td>${row.salePrice}</td>
-     <td>${row.buyNumber}</td>
-     <td>${row.goods.effectiveAt == null ?'':row.goods.effectiveAt.format("yyyy-MM-dd")}  /
-         ${row.goods.expireAt == null ?'':row.goods.expireAt.format("yyyy-MM-dd")}
-     </td>
-     <td>${orders.needPay}</td>
-     <td>0</td>
-    </tr>
-    #{/list}
-   </tbody>
-   <tr><td colspan="6">商品金额： ${orders.amount} &nbsp;元 &nbsp;+运费：0 &nbsp;-折扣：0 &nbsp;元= &nbsp;总金额： ${orders.amount} 元</td></tr>
-   </table>
-    <table class="table">
-   <tr><td>订单状态： &{'order.'+orders.status}</td></tr>
-   <tr><td>物流方式： ${orders.deliveryType=='2'?'有物流':'无物流'}</td></tr>
-   </table>
-
-   <table class="table">
-   <tr><td>订购者信息</td></tr>
-   <tr><td>订购者帐号： ${orders.payMethod}</td></tr>
-   <tr><td>订购者手机： ${orders.buyerMobile}/ ${orders.buyerPhone}</td></tr>
-   <tr><td>备注： ${orders.remark}</td></tr>
-  </table>
+        #{if orders.containsRealGoods()}
+            <tr>
+                <td>收货人姓名： ${orders.receiverName}</td>
+            </tr>
+            <tr>
+                <td>收货地址： ${orders.receiverAddress}</td>
+            </tr>
+        #{/if}
+            <tr>
+                <td>手机： ${orders.receiverMobile}</td>
+            </tr>
+        </table>
+    </ul>
+    <ul class="nav">
+        <li class="active"><a href="#"> 订购者信息</a></li>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <td>订购者帐号： ${orders.user.loginName}</td>
+            </tr>
+            <tr>
+                <td>订购者手机： ${orders.buyerMobile}#{if orders.buyerPhone != null}/ ${orders.buyerPhone}#{/if}</td>
+            </tr>
+            <tr>
+                <td>备注： ${orders.remark}</td>
+            </tr>
+        </table>
+    </ul>
 #{if orders.refundAt != null }
-   <table class="table">
-   <tr><td>退款信息</td></tr>
-   <tr><td>申请退款时间：${orders.refundAt == null ?'':orders.refundAt.format("yyyy-MM-dd HH:mm:ss")}</td></tr>
-   <tr><td>退款时间： ${orders.refundAt == null ?'':orders.refundAt.format("yyyy-MM-dd HH:mm:ss")}</td></tr>
-   <tr><td>退款金额：</td></tr>
-  </table>
+    <ul class="nav">
+        <li class="active"><a href="#"> 退款信息</a></li>
+        <table class="table">
+            <tr>
+                <td>退款信息</td>
+            </tr>
+            <tr>
+                <td>申请退款时间：${orders.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            </tr>
+            <tr>
+                <td>退款时间： ${orders.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            </tr>
+            <tr>
+                <td>退款金额：</td>
+            </tr>
+        </table>
+    </ul>
 #{/if}
 </div>

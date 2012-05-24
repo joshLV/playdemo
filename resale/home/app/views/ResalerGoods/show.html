@@ -80,7 +80,7 @@
                 <li class="cost">市 场 价：
                     <del>&yen;${goods.faceValue}</del>
                 </li>
-                <li class="discount">折　　扣：<span>${goods.discountExpress.yesno(goods.discountExpress+'折','无优惠')}</span></li>
+                <li class="discount">折　　扣：<span>${goods.discountExpress}</span></li>
                 <li class="inventory">库　　存：<span id="inventory">${goods.baseSale}</span></li>
                 <li class="deadline">有效期：<span>${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span></li>
                 <li class="amount">购买数量：

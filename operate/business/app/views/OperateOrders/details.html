@@ -6,7 +6,7 @@
 #{/set}
 
 <div class="body">
-    <legend>订单详请</legend>
+    <legend>${title}</legend>
     <ul class="nav">
         <li class="active"><a href="#"> 基本信息</a></li>
         <table class="table table-bordered">
@@ -29,11 +29,12 @@
             <tr>
                 <th>商品编号</th>
                 <th>商品名称</th>
+                <th>类型</th>
                 <th>单价</th>
                 <th>数量</th>
                 <th>有效期</th>
                 <th>需要支付金额</th>
-                <th>获得积分</th>
+                <th>订单状态</th>
             </tr>
             </thead>
             <tbody>
@@ -41,18 +42,20 @@
             <tr>
                 <td>${orderItem.goods.no}</td>
                 <td>${orderItem.goodsName}</td>
-                <td>${orderItem.salePrice}</td>
+                <td>${'goods.'+orderItem.goods.materialType}</td>
+                <td>${orderItem.salePrice?.formatCurrency('CNY')}</td>
                 <td>${orderItem.buyNumber}</td>
                 <td>${orderItem.goods.effectiveAt?.format("yyyy-MM-dd")}
-                    / ${orderItem.goods.expireAt?.format("yyyy-MM-dd")}
+                    - ${orderItem.goods.expireAt?.format("yyyy-MM-dd")}
                 </td>
-                <td>${orders.needPay}</td>
+                <td>${'orders.'+orders.status}</td>
                 <td>0</td>
             </tr>
             #{/list}
             </tbody>
             <tr>
-                <td colspan="7">商品总金额：${orders.amount} 元
+                <td colspan="7">商品金额： ${orders.amount} &nbsp;元 &nbsp;+运费：${models.order.Order.FREIGHT} 元= &nbsp;总金额：
+                ${orders.amount} 元
                 </td>
             </tr>
         </table>
@@ -61,7 +64,7 @@
         <li class="active"><a href="#"> 收货信息</a></li>
         <table class="table table-bordered table-striped">
 
-        #{if orders.orderItems.goods.materialType==models.sales.MaterialType.REAL}
+        #{if orders.containsRealGoods()}
             <tr>
                 <td>收货人姓名： ${orders.receiverName}</td>
             </tr>
@@ -78,10 +81,10 @@
         <li class="active"><a href="#"> 订购者信息</a></li>
         <table class="table table-bordered table-striped">
             <tr>
-                <td>订购者帐号： ${orders.payMethod}</td>
+                <td>订购者帐号： ${orders.user.loginName}</td>
             </tr>
             <tr>
-                <td>订购者手机： ${orders.buyerMobile}/ ${orders.buyerPhone}</td>
+                <td>订购者手机： ${orders.buyerMobile}#{if orders.buyerPhone != null}/ ${orders.buyerPhone}#{/if}</td>
             </tr>
             <tr>
                 <td>备注： ${orders.remark}</td>
