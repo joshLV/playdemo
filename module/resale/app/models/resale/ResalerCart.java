@@ -83,20 +83,30 @@ public class ResalerCart extends Model {
         if (resaler == null || goods == null || phone == null || !phonePattern.matcher(phone).matches()) {
             return null;
         }
+        if (goods.baseSale <= 0 || !goods.onSale()){
+            return null;
+        }
 
         ResalerCart cart = ResalerCart.find("byResalerAndGoodsAndPhone", resaler, goods, phone).first();
 
         //如果记录已存在，则更新记录，否则新建购物车记录
         if (cart != null) {
-            if (cart.number + increment > 0) {
-                cart.number += increment;
-                cart.updatedAt = new Date();
-                cart.save();
-                return cart;
-            } else {
-                //不允许存在数量小于等于0的购物车记录
+            int newCount = (int)cart.number + increment;
+            if (newCount <=  0){
+                cart.delete();
                 return null;
             }
+            if (newCount > 999){
+                newCount = 999;
+            }
+            if (newCount > goods.baseSale){
+                newCount = goods.baseSale.intValue();
+            }
+
+            cart.number = newCount;
+            cart.updatedAt = new Date();
+            cart.save();
+            return cart;
         } else {
             if (increment <= 0) {
                 return null;

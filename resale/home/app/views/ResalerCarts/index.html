@@ -28,11 +28,17 @@
                 <h3>从我的分销库选择商品：</h3>
                 <ul>
                 #{list items:favs, as:'favItem'}
+                    %{
+                        radioStatus="";
+                        info="";
+                        if (favItem.goods.baseSale <= 0){ info += "<em>已无库存</em>"; radioStatus = "disabled"}
+                        if (!favItem.goods.onSale()){info += "<em>已下架</em>"; radioStatus = "disabled"}
+                    }%
                     <li>
-                        <input type="radio" name="goodsId" value="${favItem.goods.id}" id="goods_${favItem.goods.id}" />
+                        <input type="radio" name="goodsId" value="${favItem.goods.id}" id="goods_${favItem.goods.id}" ${radioStatus.raw()} />
                         <label for="goods_${favItem.goods.id}">${favItem.goods.name}</label>
                         <span>${favItem.goods.getResalePrice(resaler.level)}</span>元
-                        <em>已无库存</em>
+                        ${info.raw()}
                     </li>
                 #{/list}
                 </ul>
