@@ -92,14 +92,14 @@
                     <td>&{'goods.'+favItem.goods?.status}</td>
                     <td class="action">
                         <a href="#" id="del_${favItem.id}" name="${favItem.goods.id}">删除</a>
-                        #{if favItem.taobaoItemId}
-                            | <a href="/top-add?goodsId=${favItem.goods.id}">重新发布到淘宝</a>
-                        #{/if}
-                        #{else}
-                            #{if favItem.goods.canPublishTo(models.sales.GoodsPublishedPlatformType.TAOBAO)}
-                            | <a href="/top-add?goodsId=${favItem.goods.id}">发布到淘宝</a>
-                            #{/if}
-                        #{/else}
+                        <!--#{if favItem.taobaoItemId}-->
+                            <!--| <a href="/top-add?goodsId=${favItem.goods.id}">重新发布到淘宝</a>-->
+                        <!--#{/if}-->
+                        <!--#{else}-->
+                            <!--#{if favItem.goods.canPublishTo(models.sales.GoodsPublishedPlatformType.TAOBAO)}-->
+                            <!--| <a href="/top-add?goodsId=${favItem.goods.id}">发布到淘宝</a>-->
+                            <!--#{/if}-->
+                        <!--#{/else}-->
                     </td>
                 </tr>
                 </tbody>
