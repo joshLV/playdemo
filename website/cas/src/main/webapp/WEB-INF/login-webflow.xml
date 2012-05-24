@@ -71,6 +71,7 @@
         </binder>
         <on-entry>
             <set name="viewScope.commandName" value="'credentials'" />
+            <evaluate expression="authenticationViaFormAction.doEntry(flowRequestContext, flowScope.credentials)"/>
         </on-entry>
 		<transition on="submit" bind="true" validate="true" to="realSubmit">
             <evaluate expression="authenticationViaFormAction.doBind(flowRequestContext, flowScope.credentials)" />

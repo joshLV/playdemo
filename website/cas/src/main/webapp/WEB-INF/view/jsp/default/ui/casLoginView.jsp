@@ -18,7 +18,24 @@
         <a href="http://www.uhuila.cn"><img src="http://a.uhcdn.com/images/u/logo.png" width="248" height="88" alt="优惠啦"/></a>
     </div>
 </div>
-
+<%
+// 恶心的JSP，用来实现记录当前用户名
+boolean checkRememberUsername = true;
+String lastUsername = "";
+Cookie[] cookies = request.getCookies();
+int n = 0;
+if (cookies!=null) {
+  n = cookies.length;
+  for (int i=0; i<cookies.length; i++) {
+     if ("unremember_user".equals(cookies[i].getName())) {
+         checkRememberUsername = false;
+     }
+     if ("last_username".equals(cookies[i].getName())) {
+         lastUsername = cookies[i].getValue();
+     }
+  }
+}
+%>
 <div id="content">
     <div class="form-hd"><h2>用户登录</h2><b></b></div>
     <div class="form-bd clearfix">
@@ -53,8 +70,8 @@
             </c:if>
             
             <div class="field" id="auto">
-                <input type="checkbox" id="remember" tabindex="3" />
-                <label for="remember">记住用户名</label>
+                <input type="checkbox" id="rememberUsername" name="rememberUsername" tabindex="3" value="true" <% if (checkRememberUsername) { %> checked="checked" <% } %>/>
+                <label for="rememberUsername">记住用户名</label>
             </div>
             <input type="hidden" name="lt" value="${loginTicket}" />
             <input type="hidden" name="execution" value="${flowExecutionKey}" />

@@ -1,4 +1,4 @@
 <%
-String redirectURL = "http://www.uhuila.cn/";
+String redirectURL = "http://www.yibaiquan.com/";
 response.sendRedirect(redirectURL);
 %>

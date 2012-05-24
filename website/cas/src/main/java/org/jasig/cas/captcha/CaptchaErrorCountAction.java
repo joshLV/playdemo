@@ -8,6 +8,7 @@ import org.springframework.webflow.execution.RequestContext;
 public final class CaptchaErrorCountAction extends AbstractAction {
  
    protected Event doExecute(final RequestContext context) {
+
       int count;
       try {
          count = (Integer)context.getFlowScope().get("count");

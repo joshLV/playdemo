@@ -212,7 +212,7 @@
 		p:warnCookieGenerator-ref="warnCookieGenerator"
 		p:ticketGrantingTicketCookieGenerator-ref="ticketGrantingTicketCookieGenerator" />
 	
-	<bean id="authenticationViaFormAction" class="org.jasig.cas.web.flow.AuthenticationViaFormAction"
+	<bean id="authenticationViaFormAction" class="com.uhuila.website.cas.web.AuthenticationViaFormAction"
 		p:centralAuthenticationService-ref="centralAuthenticationService"
 		p:warnCookieGenerator-ref="warnCookieGenerator" />
 	

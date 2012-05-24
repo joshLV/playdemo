@@ -2,10 +2,9 @@ package org.jasig.cas.userauthentication;
 
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jasig.cas.authentication.handler.AuthenticationException;
-
+import org.jasig.cas.authentication.handler.BlockedCredentialsAuthenticationException;
 import org.jasig.cas.authentication.handler.support.AbstractUsernamePasswordAuthenticationHandler;
 import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
 import org.slf4j.Logger;
@@ -36,7 +35,7 @@ public class UsernameLengthAuthnHandler extends AbstractUsernamePasswordAuthenti
         if (log.isDebugEnabled()) {
             log.debug("email=" + username);
         }
-        String sql = "select * from users where email= ? or mobile=?";
+        String sql = "select * from users where (email= ? or mobile=?)";
         Object[] params = new Object[] { username, username };
 
         List<Map<String, Object>> userlist = getJdbcTemplate().queryForList(sql, params);
@@ -45,6 +44,10 @@ public class UsernameLengthAuthnHandler extends AbstractUsernamePasswordAuthenti
             return false;
         }
         Map<String, Object> user = userlist.get(0);
+        
+        if (!"NORMAL".equals(user.get("status"))) {
+            throw new BlockedCredentialsAuthenticationException();
+        }
 
         if (!DigestUtils.md5Hex(password + user.get("password_salt")).equals(user.get("encrypted_password"))) {
             return false;
