@@ -503,6 +503,14 @@ public class Goods extends Model {
         return false;
     }
 
+    public GoodsStatus getStatus() {
+        if (status == GoodsStatus.ONSALE) {
+            if (expireAt.before(new Date()) || baseSale <= 0) {
+                status = GoodsStatus.OFFSALE;
+            }
+        }
+        return status;
+    }
 
     //=================================================== 数据库操作 ====================================================
 

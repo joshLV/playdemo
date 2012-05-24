@@ -110,7 +110,7 @@
                 <td class="amount">${goods?.saleCount}</td>
                 <td>${goods?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>&{'goods.'+goods?.materialType}</td>
-                <td>&{'goods.'+goods.status}
+                <td>&{'goods.'+goods?.getStatus()}
                     #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}
                         <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale",method:"PUT"/}
                         <br/>#{vx.operateLink text:"拒绝上架", url:"/goods/"+goods?.id+"/reject",method:"PUT"/}#{/if}

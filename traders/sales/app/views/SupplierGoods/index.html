@@ -91,7 +91,7 @@
                 <td class="amount">${goods?.baseSale}</td>
                 <td class="amount">${goods?.saleCount}</td>
                 <td>${goods.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-                <td>&{'goods.'+goods.status}
+                <td>&{'goods.'+goods?.getStatus()}
                     #{if models.sales.GoodsStatus.OFFSALE.equals(goods?.status)}<br/>
                         #{vx.operateLink text:"申请上架", url:"/goods/"+goods.id+"/apply", method:"PUT"/}#{/if}
                     #{if models.sales.GoodsStatus.ONSALE.equals(goods?.status)}<br/>
