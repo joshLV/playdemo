@@ -60,7 +60,7 @@ public class PaymentInfo extends Controller {
         if (order == null){
             error(500,"no such order");
         }
-        Account account = AccountUtil.getAccount(user.getId(), AccountType.RESALER);
+        Account account = AccountUtil.getAccount(user.getId(), AccountType.CONSUMER);
 
 
         if(Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode)){
