@@ -184,7 +184,7 @@ public class ECoupon extends Model {
 
         EntityManager entityManager = play.db.jpa.JPA.em();
         StringBuilder sql = new StringBuilder();
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         sql.append("select distinct e from ECoupon e where 1=1 ");
         if (supplierId != null) {
             sql.append(" and e.goods.supplierId = :supplierId");
@@ -200,7 +200,12 @@ public class ECoupon extends Model {
         }
         sql.append(" order by e.createdAt desc");
 
-        return (ECoupon) couponQuery.getSingleResult();
+        List<ECoupon> queryList = couponQuery.getResultList();
+        if (queryList.size() == 0) {
+            return null;
+        }
+
+        return queryList.get(0);
     }
 
     /**
@@ -212,7 +217,7 @@ public class ECoupon extends Model {
      */
     public static Map<String, Object> queryInfo(String eCouponSn, Long supplierId, Long shopId) {
         ECoupon eCoupon = query(eCouponSn, supplierId);
-        Map<String, Object> queryMap = new HashMap();
+        Map<String, Object> queryMap = new HashMap<>();
         if (eCoupon != null) {
             boolean timeFlag = true;
 
