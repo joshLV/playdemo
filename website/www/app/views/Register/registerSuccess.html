@@ -21,11 +21,11 @@
 function init(){
     var times=5;
     for(var i=times;i>=0;i--){
-        window.setTimeout('doUpda(' + i + ')', (times-i) * 1000);
+        window.setTimeout('doUpdate(' + i + ')', (times-i) * 1000);
     }
 }
 
-function doUpda(num){
+function doUpdate(num){
     if(num == 0) 
     { 
         window.location.href="/";
