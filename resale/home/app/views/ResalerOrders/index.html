@@ -48,7 +48,10 @@ $(window).load(function () {
                 </span>
                 <button type="submit" class="search-btn" id="search">搜素</button>
             </form>
-            #{vx.tab enumItems: models.order.OrderStatus.values(),name:'order',select:'condition_status',value:status,form:'orderForm'/}
+            #{vx.tab enumItems: [models.order.OrderStatus.UNPAID,models.order.OrderStatus.PAID,
+            models.order.OrderStatus.CANCELED],name:'order',
+            select:'condition_status',
+            value:status,form:'orderForm'/}
 
             <div id="stats" class="clearfix">
                 <div class="this-month">
@@ -90,8 +93,9 @@ $(window).load(function () {
                 </tr>
                 <tr class="order-bd">
                     <td class="alileft">
-                        <img src="${rowItem.goods.imageTinyPath}" />
-                        <a href="">${rowItem.goods.name}</a>
+                        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${rowItem.goods.id}"
+                           target="_blank"><img src="${rowItem.goods.imageTinyPath}" />
+                        ${rowItem.goods.name}</a>
                     </td>
                     <td>${rowItem?.phone}</td>
                     <td>${rowItem?.resalerPrice?.formatCurrency('CNY').raw()}</td>

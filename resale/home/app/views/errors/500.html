@@ -1,21 +1,51 @@
-<!DOCTYPE html>
 
+<!DOCTYPE HTML>
 <html>
-    <head>
-        <title>Application error</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=${_response_encoding}"/>	
-    </head>
-    <body>
-        #{if play.mode.name() == 'DEV'}
-            #{500 exception /}
-        #{/if}
-        #{else}
-            <h1>Oops, an error occured</h1>
-            #{if exception instanceof play.exceptions.PlayException}
-                <p>
-                    This exception has been logged with id <strong>${exception.id}</strong>.
-                </p>
-            #{/if}
-        #{/else}
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>很抱歉，你访问的页面不存在</title>
+    <style type="text/css">
+        body {
+            font: 12px/1.5 tahoma,arial,宋体;
+            background-color: #FBFBFB;
+        }
+        #header {
+            width: 960px;
+            margin: 0 auto;
+        }
+        #err404 {
+            width: 560px;
+            padding:  30px 200px;
+            margin: 0 auto;
+            border: 1px solid #e4e4e4;
+        }
+        #err404 h2 {
+            font-size: 22px;
+        }
+        #footer {
+            padding: 30px 0;
+            color: #999;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="header" class="clearfix">
+    <h1 id="logo"><img src="http://img.uhcdn.com/images/r/xlogo.png" alt="券市场" /></h1>
+</div>
+<div id="err404">
+    <h2>很抱歉，系统发生错误 ^_^ </h2>
+    <ul>
+    #{if play.mode.name() == 'DEV'}
+        #{500 exception /}
+    #{/if}
+    #{else}
+        <li>请尝试刷新这个页面</li>
+        <li>或者向我们报告错误: support@quanFX.com，谢谢!</li>
+    #{/else}
+    </ul>
+</div>
+
+<div id="footer">©2012 券市场 quanFX.com 版权所有 沪ICP备08114451号</div>
+</body>
 </html>
