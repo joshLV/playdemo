@@ -57,6 +57,10 @@ body {
     color: #F50;
     font-style: normal;
 }
+#content .error {
+    padding-left: 2px;
+    color: #F50;
+}
 #content .btn {
     padding-left: 122px;
 }
