@@ -159,8 +159,7 @@ public class ECoupon extends Model {
      * @return
      */
     private String generateAvailableReplayCode(long userId, AccountType userType) {
-
-        String randomNumber = null;
+        String randomNumber;
         do {
             randomNumber = RandomNumberUtil.generateSerialNumber(4);
             System.out.println("randomNumber=" + randomNumber);
