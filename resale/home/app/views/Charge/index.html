@@ -53,7 +53,7 @@
 </div>
 <script src="@@{'/public/javascripts/payment_info.js'}"></script>
 <script>
-    var userreg=/^[1-9][0-9]?([.]{1}[0-9]{1,2})?$/;
+    var userreg=/^[1-9][0-9]*([\.]{1}[0-9]{1,2})?$/;
 
     $(window).load(function(){
         $(window).scroll(function(){reset_result_dialog()});
@@ -61,6 +61,7 @@
 
         $("#submit").click(function(){
             $("#error").text("");
+
             if (!userreg.test($("#amount").val())) {
                 $("#error").text("最低充值1元! 小数点后不超过两位!");
                 return false;
