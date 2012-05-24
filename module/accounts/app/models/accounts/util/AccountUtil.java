@@ -61,7 +61,7 @@ public class AccountUtil {
 
         Account account = Account.findById(accountId);
         if(account == null){
-            throw new AccountNotFoundException("can not find the specified account");
+            throw new AccountNotFoundException("can not find the specified account:" + accountId);
         }
 
         if(billId == null || sequenceType == null){
@@ -80,6 +80,15 @@ public class AccountUtil {
         }
 
         account.save();
+        //申请提现或者是提现被拒绝
+        if (sequenceType == AccountSequenceType.FREEZE || sequenceType == AccountSequenceType.UNFREEZE){
+            return account;
+        }
+        //提现成功
+        if(sequenceType == AccountSequenceType.WITHDRAW){
+            accountChanged(account.getId(), uncashAugend, BigDecimal.ZERO, billId, sequenceType, note, orderId);
+            return account;
+        }
         accountChanged(account.getId(), cashAugend, uncashAugend, billId, sequenceType, note, orderId);
         return account;
     }
@@ -88,7 +97,7 @@ public class AccountUtil {
                                        Long billId, AccountSequenceType sequenceType, String note, Long orderId){
         Account account = Account.findById(accountId);
         if(account == null){
-            throw new RuntimeException("can not find the specified account");
+            throw new RuntimeException("can not find the specified account:" + accountId);
         }
 
         //保存账户变动信息
