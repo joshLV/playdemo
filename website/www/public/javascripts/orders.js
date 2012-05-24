@@ -191,6 +191,13 @@ $(function () {
             $('#J_addrAll').hide();
             var checkedId = $('#J_addrAll input:checked').attr('id'),
                 checkHTML = $('#J_addrAll label[for="' + checkedId + '"]').html();
+            $.ajax({
+                url:'/orders/addresses/' + $('#J_addrAll input:checked').attr("value") + "/default",
+                type:'PUT',
+                data:{},
+                success:function (data) {
+                }
+            });
             $('#J_addrCurrent').html(checkHTML);
         }
     });
