@@ -36,6 +36,7 @@ admin.SupplierUser(user3):
  "updatedAt": "2012-03-12T17:33:49"
  "deleted": "UN_DELETED"
  "supplier": kfc
+ "shop": "Shop_4"
  "roles":
  - "admin"
  - "sales"

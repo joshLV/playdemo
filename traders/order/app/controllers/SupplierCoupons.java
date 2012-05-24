@@ -30,20 +30,20 @@ public class SupplierCoupons extends Controller {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Long supplierUserId = SupplierRbac.currentUser().id;
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
-                 List shopList = Shop.findShopBySupplier(supplierId);
-        if (shopList.size()==0) {
+        List shopList = Shop.findShopBySupplier(supplierId);
+        if (shopList.size() == 0) {
             error("该商户没有添加门店信息！");
         }
-        if (supplierUser.shop==null) {
-               render(shopList, supplierUser);
+        if (supplierUser.shop == null) {
+            render(shopList, supplierUser);
         } else {
-            Shop shop = (Shop)shopList.get(0);
+            Shop shop = (Shop) shopList.get(0);
             render(shop, supplierUser);
         }
 //        List shopList = Shop.findShopBySupplier(supplierId);
         //SupplierSetting supplierSetting = SupplierSetting.getSetting(supplierUserId);
         // render(shopList, supplierUser, supplierSetting);
-       
+
     }
 
 

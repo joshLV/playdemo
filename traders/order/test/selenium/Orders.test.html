@@ -5,8 +5,8 @@
     models.sales.Category.class,models.sales.Area.class,
     models.sales.Shop.class, models.sales.Goods.class,
     models.order.OrderItems.class,models.order.ECoupon.class,] ,
-load:['fixture/roles.yml','fixture/supplier_users.yml',
-    'fixture/goods_base.yml','fixture/goods.yml','fixture/user.yml','fixture/orders.yml','fixture/orderItems.yml'] /}
+ load:['fixture/roles.yml','fixture/goods_base.yml','fixture/goods.yml','fixture/supplier_users.yml',
+      'fixture/user.yml','fixture/orders.yml','fixture/orderItems.yml'] /}
 #{selenium "查看订单界面"}
     #{include 'test/selenium/step/login.selenium' /}
     open('/orders')
@@ -28,7 +28,7 @@ order.save()
 }%
 #{selenium '查看订单详细信息-无权限'}
     open('/orders/${order.orderNumber}')
-    assertTitle('很抱歉，您访问的页面不存在')
+    assertTitle('很抱歉，系统发生错误')
 #{/selenium}
 
 
