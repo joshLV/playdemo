@@ -28,7 +28,7 @@ order.save()
 }%
 #{selenium '查看订单详细信息-无权限'}
     open('/orders/${order.orderNumber}')
-    assertTitle('很抱歉，系统发生错误')
+    assertTitle('很抱歉，您访问的页面不存在')
 #{/selenium}
 
 

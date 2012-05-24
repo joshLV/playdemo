@@ -1,19 +1,15 @@
 package controllers;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import models.accounts.AccountType;
-import models.order.ECoupon;
 import models.order.OrderItems;
 import models.order.OrdersCondition;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
-
-import play.Logger;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @With(SupplierRbac.class)
 @ActiveNavigation("order_index")
@@ -63,7 +59,7 @@ public class SupplierOrders extends Controller {
             }
         }
         if(orderItems.size() == 0){
-            error("access denied");
+            error(404, "该订单不存在！");
         }
 		//收货信息
 		render(orders, orderItems);
