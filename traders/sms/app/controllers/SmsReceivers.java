@@ -76,8 +76,8 @@ public class SmsReceivers extends Controller {
             SupplierUser supplierUser = SupplierUser.findByMobileAndSupplier(mobile, supplier);
             List<Brand> brandList = Brand.findByOrder(supplier);
             if (supplierUser == null || !brandList.contains(ecoupon.goods.brand)) {
-                SMSUtil.send("店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166", mobile, code);
-                renderText("店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166");
+                SMSUtil.send("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166", mobile, code);
+                renderText("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166");
             }
 
             Long shopId = supplierUser.shop.id;
@@ -125,9 +125,9 @@ public class SmsReceivers extends Controller {
 
         if (supplierUser == null) {
             // 发给消费者
-            SMSUtil.send("店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166",
+            SMSUtil.send("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166",
                     mobile, code);
-            renderText("店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166");
+            renderText("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166");
         }
 
         boolean isExisted = false;
