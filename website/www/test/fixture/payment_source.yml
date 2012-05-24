@@ -5,3 +5,4 @@ accounts.PaymentSource(alipay):
   logo: "abc"
   showOrder: 1
   paymentCode: "alipay"
+  subPaymentCode: "alipay"

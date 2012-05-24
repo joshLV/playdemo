@@ -1,5 +1,6 @@
 package functional.models.payment;
 
+import models.accounts.PaymentSource;
 import models.order.Order;
 import models.payment.alipay.AliPaymentFlow;
 import models.payment.PaymentFlow;
@@ -35,11 +36,13 @@ public class AliPaymentFlowTest extends FunctionalTest{
 
     @Test
     public void testGenerageForm(){
-        Long id = (long) Fixtures.idCache.get("models.order.Order-order_unpaid");
+        Long id =  (Long)(Fixtures.idCache.get("models.order.Order-order_unpaid"));
         Order order = Order.findById(id);
         assertNotNull(order);
         PaymentFlow paymentFlow = new AliPaymentFlow();
-        assertNotNull(paymentFlow.generateForm(order));
+        PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
+        assertNotNull(paymentSource);
+        assertNotNull(paymentFlow.getRequestForm(order.orderNumber,order.description,order.discountPay,paymentSource.subPaymentCode,"127.0.0.1"));
     }
 
 }

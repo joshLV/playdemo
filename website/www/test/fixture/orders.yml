@@ -50,7 +50,7 @@ order.Order(order_unpaid):
   "lockVersion": "0"
   "deleted": "UN_DELETED"
   "deliveryType": "0"
-  "paymentSourceCode": ""
+  "payMethod": "alipay"
   "payRequestId": "0"
 
 order.OrderItems(order_unpaid_items_1):
