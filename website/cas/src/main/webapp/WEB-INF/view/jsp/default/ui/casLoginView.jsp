@@ -129,7 +129,6 @@ $(function(){
     <div class="ft-nav">
         <a href="http://www.yibaiquan.com/about" target="_blank">关于我们</a> |
         <a href="http://www.yibaiquan.com/contact" target="_blank">联系我们</a> |
-        <a href="http://quanmx.com/" target="_blank">商户入驻</a> |
         <a href="http://www.yibaiquan.com/help" target="_blank">常见问题</a>
     </div>
     <div class="copyright">
