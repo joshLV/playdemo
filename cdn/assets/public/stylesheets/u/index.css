@@ -179,7 +179,7 @@
 }
 .tuangou-bd .image {
     display: block;
-    padding: 5px 4px 0;
+    padding: 6px 4px 0;
 }
 .tuangou-bd .title {
     display: block;
@@ -220,7 +220,7 @@
 }
 .tuangou-bd .detail {
     height: 45px;
-    padding: 0 5px;
+    padding: 1px 5px;
 }
 .tuangou-bd .price {
     float: right;

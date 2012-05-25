@@ -53,7 +53,7 @@
         #{list recommendGoodsList, as:'aGoods'}
             <li>
                 <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}" width="150"
-                                                                   height="130" alt="${aGoods.name}"/></a>
+                                                                   height="110" alt="${aGoods.name}"/></a>
                 <p><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
                 <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
                 <span>现价:<strong>&yen;${aGoods.salePrice}</strong></span>
@@ -65,7 +65,7 @@
         <div class="tuangou-hd">今日团购</div>
         <div class="tuangou-bd">
             <a class="image" href="" target="_blank"><img src="#{asset.url href:'/images/u/tuan.png'/}" width="220"
-                                                          height="170" alt=""/></a>
+                                                          height="150" alt=""/></a>
             <a class="title" href="" href="_blank">麦当劳59元超值营养套餐9折优惠券</a>
 
             <div class="detail clearfix">

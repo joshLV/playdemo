@@ -5,21 +5,23 @@
 .photo {
     float: left;
     margin-right: 20px;
-    width: 265px;
+    width: 360px;
+    padding: 11px 0;
     border: 1px solid #E4E4E4;
     font-size: 0;
+    text-align: center;
 }
 
 /** 券属性 **/
 .property {
     float: left;
-    width: 410px;
+    width: 315px;
     margin-right: 20px;
     border-top: 1px dotted #E4E4E4;
 }
 .property li {
     color: #666;
-    line-height: 35px;
+    line-height: 34px;
 }
 .property span {
     color: #333;
