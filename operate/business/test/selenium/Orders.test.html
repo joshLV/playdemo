@@ -17,6 +17,12 @@ load:['fixture/roles.yml','fixture/supplierusers.yml',
 'fixture/goods_unit.yml','fixture/orders.yml','fixture/orderItems.yml'] /}
 
 #{selenium "查看订单界面"}
+%{
+// 为平台帐户设置初始金额。
+account = models.accounts.util.AccountUtil.getPlatformIncomingAccount()
+account.amount = new java.math.BigDecimal("10000")
+account.save()
+}%
     #{include 'test/selenium/step/login.selenium' /}
     open('/orders')
     assertTitle('商品订单')
@@ -49,8 +55,8 @@ load:['fixture/roles.yml','fixture/supplierusers.yml',
     clickAndWait('id=freeze_${play.test.Fixtures.idCache.get("models.order.ECoupon-coupon1")}')
     assertConfirmation('您确定要冻结******7001吗？')
     verifyTitle('券号列表')
-    
+
     clickAndWait('id=unfreeze_${play.test.Fixtures.idCache.get("models.order.ECoupon-coupon1")}')
     verifyTitle('券号列表')
-    
+
 #{/selenium}
