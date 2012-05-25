@@ -57,7 +57,7 @@ public class SmsReceivers extends Controller {
     private static void checkClerk(String mobile, String msg, String code) {
         String[] couponArray = msg.split("#");
 
-        //验证店员是否存在        
+        //验证店员是否存在
         String couponNumber = "";
         int couponCount = couponArray.length;
         for (int i = 1; i < couponCount; i++) {
@@ -69,6 +69,7 @@ public class SmsReceivers extends Controller {
             ECoupon ecoupon = ECoupon.query(couponNumber, null);
 
             if (ecoupon == null) {
+                SMSUtil.send("【券市场】券号不存在");
                 renderText("Not Found the coupon");
             } else {
                 Long supplierId = ecoupon.goods.supplierId;
@@ -167,6 +168,7 @@ public class SmsReceivers extends Controller {
         //门店不在
         if (isExisted) {
             SMSUtil.send("【券市场】您的券号不能在" + shopName + "消费，请与店员确认。如有疑问请致电：400-6262-166", mobile, code);
+            renderText("【券市场】您的券号不能在" + shopName + "消费，mobile:" + mobile);
         }
 
         if (ecoupon.status == ECouponStatus.UNCONSUMED) {
@@ -177,7 +179,7 @@ public class SmsReceivers extends Controller {
             SMSUtil.send("【券市场】," + getMaskedMobile(mobile) + "消费者的尾号" + coupon + "的券（面值：" + ecoupon
                     .faceValue + "元）于" + dateTime + "已验证成功，使用门店：" + shopName + "。客服热线：400" +
                     "-6262-166", supplierUser.mobile, code);
-            // 发给消费者     
+            // 发给消费者
             SMSUtil.send("【券市场】您尾号" + coupon + "的券号于" + dateTime
                     + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166", mobile, code);
 
