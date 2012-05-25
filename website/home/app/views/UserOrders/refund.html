@@ -89,6 +89,11 @@ $("#refund").click(function(){
     	alert("请选择一条数据！");
     	return false;
     }
+    if (confirm("确定退款吗？")) {
+        return true;
+    } else {
+        return false;
+    }
 });
 
 var all_checked= function(){

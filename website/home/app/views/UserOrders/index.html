@@ -25,22 +25,30 @@
     #{breadcrumbs/breadcrumb breadcrumbs/}
         <div class="tab_top2">
             <form class="form-horizontal" id="orderForm" action="@{UserOrders.index()}" method="GET">
+                <input type="hidden" name="condition.searchKey" value="2"/>
                 <table width="774" border="0" cellpadding="0" cellspacing="0">
                     <tr>
-                        <td align="left">商品名称：</td>
+                        <td align="right">商品名称：</td>
                         <td height="35"><label> <input class="long_input" type="text" name="condition.goodsName"
                                                        value="${condition.goodsName}"/></label></td>
-                        <td width="61" align="right">成交时间：</td>
-                        <td width="259" height="35">
-                            <input class="short_input Wdate" type="text" name="condition.createdAtBegin"
-                                   value="${condition.createdAtBegin?.format()}"
-                                   onfocus="WdatePicker({readOnly:true})"/> -
-                            <input class="short_input Wdate" type="text" name="condition.createdAtEnd"
-                                   value="${condition.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})"/>
-                        </td>
-                        <td colspan="2" align="right" valign="middle"><button class="search-btn" id="search"> 搜　索
-                            </button></td>
+                        <td width="61">订单号：</td>
+                        <td width="259" height="35"><label> <input class="short_input" type="text" name="condition.searchItems"
+                                                                   value="${condition.searchItems}"/></label></td>
                     </tr>
+                     <tr>
+                         <td width="61" align="right">成交时间：</td>
+                         <td width="159" height="35">
+                             <input class="short_input Wdate" type="text" name="condition.createdAtBegin"
+                                    value="${condition.createdAtBegin?.format()}"
+                                    onfocus="WdatePicker({readOnly:true})"/> -
+                             <input class="short_input Wdate" type="text" name="condition.createdAtEnd"
+                                    value="${condition.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})"/>
+                         </td>
+                         <td colspan="2" align="left" valign="middle"><button class="search-btn" id="search"> 搜　索
+                         </button></td>
+                    </tr>
+
+
                 </table>
 
                 <table class="order-tab" cellpadding="0" cellspacing="0">
@@ -84,12 +92,19 @@
                             </td>
                             <td align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
                             <td align="center">${rowItem.buyNumber}</td>
-                             <td align="center">
-                             #{if row.status == models.order.OrderStatus.PAID && models.sales.MaterialType.ELECTRONIC.equals(rowItem?.goods?.materialType)}
-                            <div class="caozuo_std">
+                           %{ status =rowItem.getECouponStatus();}%
+                            <td align="center">
+                             #{if status == models.order.ECouponStatus.UNCONSUMED && row.status == models.order
+                             .OrderStatus.PAID&& models.sales.MaterialType
+                             .ELECTRONIC.equals(rowItem?.goods?.materialType)}
+                              <div class="caozuo_std">
                                 <a style="color:#3366CC"  href="/orders/refund/${row.orderNumber}"  id="apply_${row.orderNumber}">申请退款</a>
-                            </div>
-                            #{/if}</td>
+                              </div>
+                             #{/if}
+                                 #{else}
+                                 &{'coupon.'+status}
+                                 #{/else}
+                             </td>
                             #{if (++m == 1) }
                                 <td align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
                                 <td align="center" rowspan="${row.orderItems.size()}">&{'order.'+

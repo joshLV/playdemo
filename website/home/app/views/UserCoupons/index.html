@@ -29,14 +29,16 @@
     function applyRefund(id, money) {
         $("#coupon_id").val(id);
         $("#money").html("¥" + money);
-        if (confirm("确定要申请退款吗？")) {
-            $.common.dialog({'id':'refund', 'title':'申请退款'});
-        }
+        $.common.dialog({'id':'refund', 'title':'申请退款'});
+    }
+
+    function cancel() {
+        $("#popup_close").click();
 
     }
     function confirmApply() {
         var coupon_id = $("#coupon_id").val();
-        var apply_note = $("#apply_note").val();
+//        var apply_note = $("#apply_note").val();
 //        if (apply_note == "") {
 //            alert("请输入退款理由！");
 //            return;
@@ -44,7 +46,7 @@
         var url = "/coupons/refund/" + coupon_id;
         $.post(
                 url,
-                {"applyNote":apply_note},
+                {"applyNote":""},
                 function (data) {
                     if (data.error != 'ok') {
                         alert("申请失败: " + data.error);
@@ -145,28 +147,32 @@
                     </td>
                     <td align="center">${coupon.order.orderNumber}</td>
                     <td align="center">${coupon?.expireAt?.format()}</td>
-                    <td align="center">${coupon?.consumedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-                %{now = new java.util.Date()}%
-                    #{if coupon.expireAt?.before(now) }
+                    %{now = new java.util.Date()
+                    isExpired = coupon.expireAt?.before(now) ;
+                    }%
+                    #{if isExpired }
                         <td width="95" align="center" style="color:#03C">
                             <span id="status_apply_${coupon.id}">已过期</span>
                         </td>
                     #{/if}
                     #{else}
-                        <td width="95" align="center">
-                            <span id="status_apply_${coupon.id}">&{'coupon.'+coupon?.status}</span>
-                        </td>
+                    <td align="center">${coupon?.consumedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                     #{/else}
+                    <td width="95" align="center">
+                          <span id="status_apply_${coupon.id}">&{'coupon.'+coupon?.status}</span>
+                    </td>
+
                     <td width="103" align="center">
                         #{if coupon.status == models.order.ECouponStatus.UNCONSUMED }
                             <a href="javascript:applyRefund('${coupon.id}','${coupon.salePrice}')" name="apply_refund"
-                               id="apply_${coupon
-                      .id}">申请退款</a>
-                            <br>
-                            #{if coupon.downloadTimes != 3}
-                                <a href="#" id="send_${coupon.id}" onclick="sendMessage('${coupon.id}',
-                                        '${coupon.orderItems.phone}')">发送短信</a>
-                            #{/if}
+                               id="apply_${coupon.id}">申请退款</a>
+
+                        #{/if}
+                        <br>
+                        #{if !isExpired && coupon.status == models.order.ECouponStatus.UNCONSUMED && coupon
+                        .downloadTimes != 3}
+                            <a href="#" id="send_${coupon.id}" onclick="sendMessage('${coupon.id}',
+                                    '${coupon.orderItems.phone}')">发送短信</a>
                         #{/if}
                     </td>
                 </tr>
@@ -199,19 +205,18 @@
 </div>
 
 <div id="refund">
-    <div id="apply_dialog" class="popup-content" style="width:450px;height:180px">
+    <div id="apply_dialog" class="popup-content" style="width:350px;height:100px">
 
         <ul>
-            <li class="item">
-                <label>退款金额：<span id="money"></span></label>
+            <li class="item btn-box" style="padding-top:10px">
+                退款金额：<span id="money"></span>  <button type="button" onClick="confirmApply()">确定</button>
+                   <button type="button" onClick="cancel()">取消</button>
             </li>
 
-            <li class="item">
-                <label>退款理由：</label><textarea rows="5" cols="35" id="apply_note"></textarea>
-            </li>
-            <li class="item btn-box">
-                <button type="button" onClick="confirmApply()">确定</button>
-            </li>
+            *{<li class="item">}*
+                *{<label>退款理由：</label><textarea rows="5" cols="35" id="apply_note"></textarea>}*
+            *{</li>}*
+
         </ul>
         <input type="hidden" id="coupon_id"/>
     </div>

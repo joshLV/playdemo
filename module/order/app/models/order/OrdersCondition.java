@@ -2,19 +2,14 @@ package models.order;
 
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
-
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.resale.Resaler;
-
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 public class OrdersCondition {
 	public Map<String, Object> paramsMap = new HashMap<>();
@@ -80,7 +75,7 @@ public class OrdersCondition {
 			paramsMap.put("name", "%" + searchItems + "%");
 		}
 		//按照商品订单检索
-		if ("2".equals(searchKey)) {
+		if ("2".equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
 			sql.append(" and o.orderNumber like :orderNumber");
 			paramsMap.put("orderNumber", "%" + searchItems + "%");
 		}

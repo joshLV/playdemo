@@ -31,7 +31,7 @@ coupon.DEALING=处理中
 coupon.CONSUMED=已消费
 coupon.UNCONSUMED=未消费
 coupon.REFUND=已退款
-coupon.EXPIRED=已过期
+coupon.null=
 
 goods.REAL=实物
 goods.ELECTRONIC=电子券

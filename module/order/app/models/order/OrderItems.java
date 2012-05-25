@@ -61,7 +61,7 @@ public class OrderItems extends Model {
 
     @Transient
     public BigDecimal getAmount() {
-        if (salePrice != null && buyNumber != null){
+        if (salePrice != null && buyNumber != null) {
             return salePrice.multiply(new BigDecimal(buyNumber));
         }
         return BigDecimal.ZERO;
@@ -129,5 +129,19 @@ public class OrderItems extends Model {
             sn.append("\n");
         }
         return sn.toString();
+    }
+
+    /**
+     * 处理券号
+     *
+     * @return 券号
+     */
+    public ECouponStatus getECouponStatus() {
+        ECoupon ecoupon = ECoupon.find("order=? and goods=? and orderItems = ?", order, goods, this).first();
+
+        if (ecoupon == null) {
+            return null;
+        }
+        return ecoupon.status;
     }
 }
