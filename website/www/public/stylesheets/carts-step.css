@@ -353,6 +353,16 @@
 	text-align: center;
 	background-color: #25B4AB;
 }
+.confirm-pay-form {
+    padding: 15px 10px;
+}
+.confirm-pay-form a {
+    color: #0082CA;
+    line-height: 42px;
+}
+.confirm-pay2 {
+    padding: 3px 10px;
+}
 
 .order-success {
 	margin: 20px 0 40px 0;

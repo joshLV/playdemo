@@ -50,12 +50,14 @@
         <div id="order-box" class="clearfix">
             <div class="order-num">您已选择 ${paymentSource.name} 支付 ${order.discountPay} 元</div>
         </div>
+        <div class="confirm-pay-form">
         #{form @payIt(), target:"_blank", id: "pay_it_form"}
             <input name="paymentCode" value="${paymentSource.code}" type="hidden"/>
             <input name="orderNumber" value="${order.orderNumber}" type="hidden"/>
-            <button type="submit" id="confirm_pay">确认支付</button>
+            <button type="submit" class="confirm-pay2" id="confirm_pay">确认支付</button>
         #{/form}
         <a href="/payment_info/${order.orderNumber}">返回重新选择支付方式</a>
+        </div>
         <script>
         $(window).load(
         function () {
