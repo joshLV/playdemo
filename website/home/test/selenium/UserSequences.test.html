@@ -28,6 +28,7 @@ load:['fixture/user.yml','fixture/goods_base.yml','fixture/goods.yml','fixture/o
         id = play.test.Fixtures.idCache.get("models.accounts.Account-Account_1");
         accounts = models.accounts.Account.findById(id);
         accounts.uid=userId;
+        accounts.accountType=models.accounts.AccountType.CONSUMER;
         accounts.save();
        
         list = models.accounts.AccountSequence.findAll();
