@@ -15,16 +15,16 @@
     <!-- Data source definition -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName">
-            <value>com.mysql.jdbc.Driver</value>
+            <value>${db.driver}</value>
         </property>
         <property name="url">
-            <value>jdbc:mysql://192.168.18.235:3306/sales?autoReconnect=true</value>
+            <value>${db.url}</value>
         </property>
         <property name="username">
-            <value>root</value>
+            <value>${db.username}</value>
         </property>
         <property name="password">
-            <value>seewidb</value>
+            <value>${db.password}</value>
         </property>
         <property name="maxActive">
           <value>50</value>
