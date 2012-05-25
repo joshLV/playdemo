@@ -12,8 +12,8 @@
         <table class="table table-bordered">
             <tr>
                 <td>订 单 号：${orders.orderNumber}</td>
-                <td>订单时间：${orders.createdAt == null ?'':orders.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
-                <td>支付时间：${orders.paidAt == null ?'':orders.paidAt.format("yyyy-MM-dd HH:mm:ss")}</td>
+                <td>成交时间：${orders.createdAt == null ?'':orders.createdAt.format("yyyy-MM-dd HH:mm:ss")}</td>
+                <td>付款时间：${orders.paidAt == null ?'':orders.paidAt.format("yyyy-MM-dd HH:mm:ss")}</td>
             </tr>
             <tr>
                 <td>支付方式： &{'order.payMethod.'+orders.payMethod}</td>
@@ -32,9 +32,9 @@
                 <th>类型</th>
                 <th>单价</th>
                 <th>数量</th>
+                <th>手机</th>
                 <th>有效期</th>
                 <th>需要支付金额</th>
-                <th>订单状态</th>
             </tr>
             </thead>
             <tbody>
@@ -45,6 +45,7 @@
                 <td>&{'goods.'+orderItem.goods.materialType}</td>
                 <td>${orderItem.salePrice?.formatCurrency('CNY')}</td>
                 <td>${orderItem.buyNumber}</td>
+                <td>${orderItem.phone}</td>
                 <td>${orderItem.goods.effectiveAt?.format("yyyy-MM-dd")}
                     - ${orderItem.goods.expireAt?.format("yyyy-MM-dd")}
                 </td>
@@ -55,7 +56,7 @@
             </tbody>
             <tr>
                 <td colspan="8">商品金额： #{if orders.containsRealGoods()}
-                ${orders.amount.remainder(models.order.Order.FREIGHT)}#{/if}#{else}${orders.amount}#{/else}&nbsp;元
+                ${orders.amount.subtract(models.order.Order.FREIGHT)}#{/if}#{else}${orders.amount}#{/else}&nbsp;元
                     &nbsp;+ 运费：
                 #{if orders.containsRealGoods()}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else} 元 = &nbsp;总金额：
                 ${orders.amount} 元
@@ -63,31 +64,36 @@
             </tr>
         </table>
     </ul>
+#{if orders.containsRealGoods()}
     <ul class="nav">
         <li class="active"><a href="#"> 收货信息</a></li>
         <table class="table table-bordered table-striped">
 
-        #{if orders.containsRealGoods()}
             <tr>
-                <td>收货人姓名： ${orders.receiverName}</td>
+                <td>收货人： ${orders.receiverName}</td>
             </tr>
             <tr>
-                <td>收货地址： ${orders.receiverAddress}</td>
+                <td>地址： ${orders.receiverAddress} 邮编:${orders.postcode}</td>
             </tr>
-        #{/if}
             <tr>
-                <td>收货手机： ${orders.receiverMobile}</td>
+                <td>手机： ${orders.receiverMobile}</td>
+            </tr>
+            <tr>
+                <td>电话： ${orders.receiverPhone}</td>
             </tr>
         </table>
     </ul>
-    <ul class="nav">
-        <li class="active"><a href="#"> 订购者信息</a></li>
+#{/if}    <ul class="nav">
+        <li class="active"><a href="#"> 订购人信息</a></li>
         <table class="table table-bordered table-striped">
             <tr>
-                <td>订购者帐号： ${orders.user?.loginName}</td>
+                <td>帐号： ${orders.user?.loginName}</td>
             </tr>
             <tr>
-                <td>订购者手机： ${orders.buyerMobile}#{if orders.buyerPhone != null}/ ${orders.buyerPhone}#{/if}</td>
+                <td>手机： ${orders.buyerMobile}</td>
+            </tr>
+            <tr>
+                <td>电话： ${orders.buyerPhone}</td>
             </tr>
             <tr>
                 <td>备注： ${orders.remark}</td>
@@ -99,16 +105,10 @@
         <li class="active"><a href="#"> 退款信息</a></li>
         <table class="table">
             <tr>
-                <td>退款信息</td>
-            </tr>
-            <tr>
                 <td>申请退款时间：${orders.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
             </tr>
             <tr>
                 <td>退款时间： ${orders.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-            </tr>
-            <tr>
-                <td>退款金额：</td>
             </tr>
         </table>
     </ul>
