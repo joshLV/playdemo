@@ -59,19 +59,19 @@ public class Images extends Controller {
         String imageSizeType = "";
         if (imageName.contains(TINY)) {
             width = 60;
-            height = 36;
+            height = 46;
             imageSizeType = TINY;
         } else if (imageName.contains(SMALL)) {
-            width = 75;
-            height = 45;
+            width = 150;
+            height = 110;
             imageSizeType = SMALL;
         } else if (imageName.contains(MIDDLE)) {
-            width = 150;
-            height = 90;
+            width = 170;
+            height = 130;
             imageSizeType = MIDDLE;
         } else if (imageName.contains(LARGE)) {
-            width = 300;
-            height = 180;
+            width = 340;
+            height = 260;
             imageSizeType = LARGE;
         } else if (imageName.contains(LOGO)) {
             width = 300;
