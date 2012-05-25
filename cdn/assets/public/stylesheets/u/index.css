@@ -191,6 +191,8 @@
     _line-height: 32px;
     font-weight: 700;
     text-indent: 4px;
+    height: 30px;
+    overflow: hidden;
 }
 .tuangou-bd .title:hover {
     color: #25B4AB;
@@ -223,11 +225,11 @@
 }
 .tuangou-bd .detail {
     height: 45px;
-    padding: 1px 5px;
+    padding: 1px 2px;
 }
 .tuangou-bd .price {
     float: right;
-    width: 68px;
+    width: 78px;
     overflow: hidden;
 }
 .tuangou-bd .price span {
@@ -237,6 +239,14 @@
 .tuangou-bd .price del,
 .tuangou-bd .price em {
     margin-left: 5px;
+}
+.tuangou-bd .price del {
+    width: 45px;
+    width: 42px\9;
+    overflow: hidden;
+    display: inline-block;
+    height: 15px;
+    *line-height: 13px;
 }
 
 /** 精选商品 **/
