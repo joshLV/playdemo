@@ -1,17 +1,11 @@
 package controllers;
 
-import java.util.Date;
-
+import controllers.modules.resale.cas.SecureCAS;
 import models.accounts.AccountType;
-import models.consumer.User;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
-import models.order.ECouponStatus;
 import models.resale.Resaler;
-
 import org.apache.commons.lang.StringUtils;
-
-import controllers.modules.resale.cas.SecureCAS;
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
@@ -62,6 +56,7 @@ public class Coupons extends Controller{
 		renderArgs.put("createdAtEnd", condition.createdAtEnd);
 		renderArgs.put("status", condition.status);
 		renderArgs.put("goodsName", condition.goodsName);
+        renderArgs.put("eCouponSn", condition.eCouponSn);
 		renderArgs.put("orderNumber", condition.orderNumber);
 		renderArgs.put("phone", condition.phone);
 	}

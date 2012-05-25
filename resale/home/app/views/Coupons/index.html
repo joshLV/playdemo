@@ -31,6 +31,10 @@
                 成交时间：
                 <input class="short_input Wdate" type="text" name="condition.createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
                 <input class="short_input Wdate" type="text" name="condition.createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
+                商品名称：
+                <input class="long_input" type="text" name="condition.goodsName" value="${goodsName}"/>
+                券号：
+                <input class="short_input" type="text" name="condition.eCouponSn" value="${eCouponSn}"/>
                 订单状态：
                 #{select 'condition.status', id:'status', class:'dingdan_stauts_bg', value:status}
                     #{option ""}不限#{/option}
@@ -38,8 +42,7 @@
                     #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
                     #{option "REFUND"}&{'coupon.REFUND'}#{/option}
                 #{/select}
-                商品名称：
-                <input class="long_input" type="text" name="condition.goodsName" value="${goodsName}"/>
+
                 <input type="submit" class="search-btn" value="搜索"/>
             </form>
             <table class="order-tab">
