@@ -86,9 +86,6 @@ public class Address extends Model {
     @Transient
     public String getPhone() {
         String phoneStr = getNormalPhone();
-        if (mobile != null && !mobile.equals("")) {
-            return mobile + " " + phoneStr;
-        }
         return phoneStr;
     }
 
