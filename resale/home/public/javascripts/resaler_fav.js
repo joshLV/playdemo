@@ -118,8 +118,8 @@ $(window).load(
                 success:function(data){
                     for(var i = 0; i< checked.length; i++){
                         $("#row_" + checked[i]).remove();
-                        $("#row_hd_" + goods_id).remove();
-                        $("#row_sep_" + goods_id).remove();
+                        $("#row_hd_" + checked[i]).remove();
+                        $("#row_sep_" + checked[i]).remove();
                     }
                     set_all_select_all_checkbox(false);
                 }});
