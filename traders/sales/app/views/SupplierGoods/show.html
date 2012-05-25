@@ -42,25 +42,11 @@
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label">进&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
+            <label class="control-label">采&nbsp;&nbsp;&nbsp;购&nbsp;&nbsp;&nbsp;&nbsp;价</label>
 
             <div class="controls">${goods?.originalPrice?.formatCurrency('CNY')}
             </div>
         </div>
-        <div class="control-group">
-            <label class="control-label">现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
-
-            <div class="controls">${goods?.salePrice?.formatCurrency('CNY')}
-            </div>
-        </div>
-    #{list items:goods?.levelPrices, as: 'level'}
-        <div class="control-group">
-            <label class="control-label">&{'goods.levelPrice.'+level?.level}</label>
-
-            <div class="controls">${level.price?.formatCurrency('CNY')}
-            </div>
-        </div>
-    #{/list}
         <div class="control-group">
             <label class="control-label">库&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</label>
 
