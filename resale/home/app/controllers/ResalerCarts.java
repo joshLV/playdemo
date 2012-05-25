@@ -1,20 +1,23 @@
 package controllers;
 
-import java.math.BigDecimal;
-import java.util.*;
-
+import controllers.modules.resale.cas.SecureCAS;
 import models.accounts.AccountType;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
-import models.order.OrderItems;
 import models.resale.Resaler;
 import models.resale.ResalerCart;
 import models.resale.ResalerFav;
 import models.sales.Goods;
-import models.sales.MaterialType;
+import play.data.validation.Required;
+import play.data.validation.Valid;
+import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.resale.cas.SecureCAS;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 购物车控制器，提供http接口对购物车进行增删该查
@@ -78,8 +81,13 @@ public class ResalerCarts extends Controller {
      * @param goodsId  商品ID
      * @param phones   手机号列表，以回车或者空格等空白字符分割
      */
-    public static void formAdd(long goodsId, String phones) {
+    public static void formAdd(@Valid @Required Long goodsId, @Valid @Required String phones) {
         Resaler resaler = SecureCAS.getResaler();
+        if (Validation.hasErrors()){
+            params.flash();
+            Validation.keep();
+            index();
+        }
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
         List<String> phoneLines = Arrays.asList(phones.split("\\s+"));
 

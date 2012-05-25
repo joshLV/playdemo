@@ -9,11 +9,11 @@
 #{/set}
 
 #{set 'navMenu'}
-    <li><a href="/">首　页</a></li>
-    <li><a class="current" href="/goods">商品库</a></li>
-    <li><a href="/library">我的分销库</a></li>
-    <li><a href="/charge">账户充值</a></li>
-    <li><a href="/withdraw">账户提现</a></li>
+<li><a href="/">首　页</a></li>
+<li><a class="current" href="/goods">商品库</a></li>
+<li><a href="/library">我的分销库</a></li>
+<li><a href="/charge">账户充值</a></li>
+<li><a href="/withdraw">账户提现</a></li>
 #{/set}
 
 <div id="content">
@@ -28,24 +28,26 @@
                 <h3>从我的分销库选择商品：</h3>
                 <ul>
                 #{list items:favs, as:'favItem'}
-                    %{
+                %{
                         radioStatus="";
                         info="";
                         if (favItem.goods.baseSale <= 0){ info += "<em>已无库存</em>"; radioStatus = "disabled"}
                         if (!favItem.goods.onSale()){info += "<em>已下架</em>"; radioStatus = "disabled"}
                     }%
                     <li>
-                        <input type="radio" name="goodsId" value="${favItem.goods.id}" id="goods_${favItem.goods.id}" ${radioStatus.raw()} />
+                        <input type="radio" name="goodsId" value="${favItem.goods.id}"
+                               id="goods_${favItem.goods.id}" ${radioStatus.raw()} />
                         <label for="goods_${favItem.goods.id}">${favItem.goods.name}</label>
                         <span>${favItem.goods.getResalePrice(resaler.level)}</span>元
-                        ${info.raw()}
+                    ${info.raw()}
                     </li>
                 #{/list}
+
                 </ul>
             </div>
             <div class="phones">
-                <h3>添加接收手机号码：</h3>
-                <textarea name="phones" cols="20" rows="12"></textarea>
+                    <h3>添加接收手机号码：</h3>
+                    <textarea name="phones" cols="20" rows="12"></textarea>
                 <span>
                     同一个商品，不同的收货人。<br/><br/>
                     例：13472228877<br/>
@@ -53,7 +55,10 @@
                 </span>
             </div>
         </div>
-        <div class="submit-btn"><button type="submit" id="submit"> 添 加 </button></div>
+        <div style="color:#F50;text-align:center;line-height:22px">#{error 'goodsId'/} #{error 'phones'/}</div>
+        <div class="submit-btn">
+            <button type="submit" id="submit"> 添 加</button>
+        </div>
     </form>
 
     <div class="selected">
@@ -74,38 +79,44 @@
             #{list items:carts, as:'goodsGroup'}
             %{index = 0}%
                 #{list items:goodsGroup, as:'cartItem'}
-            <tr id="row_${cartItem.goods.id}">
-                #{if ++index==1}
-                <td rowspan="${goodsGroup.size()}">${cartItem.goods.name}&nbsp;&nbsp; | &nbsp;&nbsp;
-                    <a href="#" id="batch_del_${cartItem.goods.id}">删除</a>
-                </td>
-                #{/if}
+                <tr id="row_${cartItem.goods.id}">
+                    #{if ++index==1}
+                        <td rowspan="${goodsGroup.size()}">${cartItem.goods.name}&nbsp;&nbsp; | &nbsp;&nbsp;
+                            <a href="#" id="batch_del_${cartItem.goods.id}">删除</a>
+                        </td>
+                    #{/if}
 
-                <td><span id="phone_${cartItem.goods.id}">${cartItem.phone}</span></td>
-                <td>${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
-                <td class="price" id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level)}</td>
-                <td>
-                    <a href="#" class="reduce_box" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
-                        <img src="@{'/public/images/sub_anniu.jpg'}"  id="inc_sub_${cartItem.goods.id}-${cartItem.phone}"/>
-                    </a>
-                    <input class="num-input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}-${cartItem.phone}" />
-                    <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}-${cartItem.phone}"/>
-                    <input type="hidden" value="${cartItem.goods.baseSale}" id="stock_${cartItem.goods.id}-${cartItem.phone}">
-                    <a class="add_box" href="#" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
-                        <img src="@{'/public/images/add_anniu.jpg'}"  id="inc_add_${cartItem.goods.id}-${cartItem.phone}"/>
-                    </a>
-                </td>
-                <td class="amount">
-                    <span id="subtotal_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level).multiply(cartItem.number)}</span>
-                </td>
-                <td>
-                    <form method="POST" action="/carts/form-delete">
-                        <input name="goodsId" type="hidden" value="${cartItem.goods.id}"/>
-                        <input name="phone" type="hidden" value="${cartItem.phone}"/>
-                        <input type="SUBMIT" value=" 删 除 " id="del_${cartItem.goods.id}-${cartItem.phone}"/>
-                    </form>
-                </td>
-            </tr>
+                    <td><span id="phone_${cartItem.goods.id}">${cartItem.phone}</span></td>
+                    <td>${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
+                    <td class="price"
+                        id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level)}</td>
+                    <td>
+                        <a href="#" class="reduce_box" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
+                            <img src="@{'/public/images/sub_anniu.jpg'}"
+                                 id="inc_sub_${cartItem.goods.id}-${cartItem.phone}"/>
+                        </a>
+                        <input class="num-input" type="text" value="${cartItem.number}"
+                               id="num_${cartItem.goods.id}-${cartItem.phone}"/>
+                        <input type="hidden" value="${cartItem.number}"
+                               id="last_num_${cartItem.goods.id}-${cartItem.phone}"/>
+                        <input type="hidden" value="${cartItem.goods.baseSale}"
+                               id="stock_${cartItem.goods.id}-${cartItem.phone}">
+                        <a class="add_box" href="#" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
+                            <img src="@{'/public/images/add_anniu.jpg'}"
+                                 id="inc_add_${cartItem.goods.id}-${cartItem.phone}"/>
+                        </a>
+                    </td>
+                    <td class="amount">
+                        <span id="subtotal_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level).multiply(cartItem.number)}</span>
+                    </td>
+                    <td>
+                        <form method="POST" action="/carts/form-delete">
+                            <input name="goodsId" type="hidden" value="${cartItem.goods.id}"/>
+                            <input name="phone" type="hidden" value="${cartItem.phone}"/>
+                            <input type="SUBMIT" value=" 删 除 " id="del_${cartItem.goods.id}-${cartItem.phone}"/>
+                        </form>
+                    </td>
+                </tr>
                 #{/list}
             #{/list}
 
@@ -119,7 +130,8 @@
     </div>
 
     <div class="total-box">
-        商品共<span class="total-num" id="total_num">0</span>件，总合计（不含运费）：<span class="carts-amount" id="carts_amount"></span>元
+        商品共<span class="total-num" id="total_num">0</span>件，总合计（不含运费）：<span class="carts-amount"
+                                                                            id="carts_amount"></span>元
         <a class="confirm-pay" href="/carts/show"> 下一步 </a>
     </div>
 </div>
