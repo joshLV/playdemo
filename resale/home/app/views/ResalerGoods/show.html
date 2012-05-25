@@ -71,14 +71,14 @@
                     <span id="notEnough" class="error">#{error 'number' /}</span>
                 </li>
                 <li class="action">
-                    <a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
+                    *{<a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>}*
                     <a class="add" id="link_add_cart" href="#">加入分销库</a>
                 </li>
                 <li id="add_cart_result" class="buttom_dibu"
                     style="display: none;">已成功添加到分销库！
                     <a id="link_buy_more" href="#"><span
                             class="zi_gray">继续购买</span></a>
-                    <a href="/carts"><span class="zi_gray">查看分销库</span></a>
+                    <a href="/library"><span class="zi_gray">查看分销库</span></a>
                 </li>
             </ul>
         </div><!-- .summary END -->
