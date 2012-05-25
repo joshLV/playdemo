@@ -18,60 +18,43 @@
 #{/set}
 
 <div id="content" class="clearfix">
-    <div class="aside">
-        <h3>搜索该产品的用户还看过</h3>
-        <ul>
-            <li>
-                <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div>
-                <div class="name"><a href="">来伊价</a></div>
-                <div class="price clearfix">
-                    <span class="purchass">采购价：<b>&yen; 14.8</b></span>
-                    <span class="market">市场价：<del>Y:20.00</del></span>
-                </div>
-            </li>
-            <li>
-                <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div>
-                <div class="name"><a href="">来伊价</a></div>
-                <div class="price clearfix">
-                    <span class="purchass">采购价：<b>&yen; 14.8</b></span>
-                    <span class="market">市场价：<del>Y:20.00</del></span>
-                </div>
-            </li>
-            <li>
-                <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div>
-                <div class="name"><a href="">来伊价</a></div>
-                <div class="price clearfix">
-                    <span class="purchass">采购价：<b>&yen; 14.8</b></span>
-                    <span class="market">市场价：<del>Y:20.00</del></span>
-                </div>
-            </li>
-            <li>
-                <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div>
-                <div class="name"><a href="">来伊价</a></div>
-                <div class="price clearfix">
-                    <span class="purchass">采购价：<b>&yen; 14.8</b></span>
-                    <span class="market">市场价：<del>Y:20.00</del></span>
-                </div>
-            </li>
-            <li>
-                <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div>
-                <div class="name"><a href="">来伊价</a></div>
-                <div class="price clearfix">
-                    <span class="purchass">采购价：<b>&yen; 14.8</b></span>
-                    <span class="market">市场价：<del>Y:20.00</del></span>
-                </div>
-            </li>
-            <li>
-                <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div>
-                <div class="name"><a href="">来伊价</a></div>
-                <div class="price clearfix">
-                    <span class="purchass">采购价：<b>&yen; 14.8</b></span>
-                    <span class="market">市场价：<del>Y:20.00</del></span>
-                </div>
-            </li>
-        </ul>
-    </div><!-- .aside END -->
-    <div class="section">
+    <!-- <div class="aside"> -->
+        <!-- <h3>搜索该产品的用户还看过</h3> -->
+        <!-- <ul> -->
+            <!-- <li> -->
+                <!-- <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div> -->
+                <!-- <div class="name"><a href="">来伊价</a></div> -->
+                <!-- <div class="price clearfix"> -->
+                    <!-- <span class="purchass">采购价：<b>&yen; 14.8</b></span> -->
+                    <!-- <span class="market">市场价：<del>Y:20.00</del></span> -->
+                <!-- </div> -->
+            <!-- </li> -->
+            <!-- <li> -->
+                <!-- <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div> -->
+                <!-- <div class="name"><a href="">来伊价</a></div> -->
+                <!-- <div class="price clearfix"> -->
+                    <!-- <span class="purchass">采购价：<b>&yen; 14.8</b></span> -->
+                    <!-- <span class="market">市场价：<del>Y:20.00</del></span> -->
+                <!-- </div> -->
+            <!-- </li> -->
+            <!-- <li> -->
+                <!-- <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div> -->
+                <!-- <div class="name"><a href="">来伊价</a></div> -->
+                <!-- <div class="price clearfix"> -->
+                    <!-- <span class="purchass">采购价：<b>&yen; 14.8</b></span> -->
+                    <!-- <span class="market">市场价：<del>Y:20.00</del></span> -->
+                <!-- </div> -->
+            <!-- </li> -->
+            <!-- <li> -->
+                <!-- <div class="image"><a href=""><img src="@@{'/public/images/chanpin/1.jpg'}" width="200" height="110" /></a></div> -->
+                <!-- <div class="name"><a href="">来伊价</a></div> -->
+                <!-- <div class="price clearfix"> -->
+                    <!-- <span class="purchass">采购价：<b>&yen; 14.8</b></span> -->
+                    <!-- <span class="market">市场价：<del>Y:20.00</del></span> -->
+                <!-- </div> -->
+            <!-- </li> -->
+        <!-- </ul> -->
+    <!-- </div>[> .aside END <] -->
         <div class="summary clearfix">
             <h3>${goods.name}</h3>
             <div class="photo"><img src="${goods.imageLargePath}" width="280" height="168"/></div>
@@ -109,18 +92,21 @@
         </div>
         <div class="intro">
             <h3>使用门店</h3>
-            <table width="700" border="0" cellpadding="0" cellspacing="0">
-            #{if goods.shops.size() > 0}
-                #{list goods.shops, as:'shop'}
-                    <tr>
-                        <td width="120" height="30">${shop.name}</td>
-                        <td>${shop.address}</td>
-                        <td>${shop.phone}</td>
-                    </tr>
-                #{/list}
-            #{/if}
-            </table>
+            <div class="intro-bd">
+                <table width="700" border="0" cellpadding="0" cellspacing="0">
+                #{if goods.shops.size() > 0}
+                    #{list goods.shops, as:'shop'}
+                        <tr>
+                            <td width="120" height="30">${shop.name}</td>
+                            <td>${shop.address}</td>
+                            <td>${shop.phone}</td>
+                        </tr>
+                    #{/list}
+                #{/if}
+                </table>
+            </div>
         </div>
+    <div class="section">
     </div><!-- .section END -->
 </div>
 

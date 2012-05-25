@@ -147,76 +147,77 @@
 /**
  * 详情页
  */
-.aside {
-    float: left;
-    width: 220px;
-    margin-top: 25px;
-}
-.aside h3 {
-    text-indent: 5px;
-    font-size: 13px;
-    line-height: 32px;
-    color: #F2F2F2;
-    background-color: #AF2F15;
-}
-.aside ul {
-    padding: 2px 10px;
-    border: 1px solid #FCC3B7;
-}
-.aside li {
-    padding: 8px 0;
-}
-.aside .image {
-    font-size: 0;
-    text-align: center;
-}
-.aside .image a {
-    font-size: 0;
-}
-.aside .name {
-    padding: 5px 0 2px;
-}
-.aside .name a {
-    font-size: 14px;
-    font-weight: 700;
-}
-.aside .purchass {
-    float: right;
-}
-.aside .purchass b {
-    color: #F50;
-    font: 700 14px Arial;
-}
-.aside .market {
-    float: left;
-}
-.aside .market del {
-    font: 12px Arial;
-}
-.section {
-    float: right;
-    width: 720px;
-    margin-top: 25px;
-}
-.section .summary {
+/* .aside { */
+    /* float: left; */
+    /* width: 220px; */
+    /* margin-top: 25px; */
+/* } */
+/* .aside h3 { */
+    /* text-indent: 5px; */
+    /* font-size: 13px; */
+    /* line-height: 32px; */
+    /* color: #F2F2F2; */
+    /* background-color: #AF2F15; */
+/* } */
+/* .aside ul { */
+    /* padding: 2px 10px; */
+    /* border: 1px solid #FCC3B7; */
+/* } */
+/* .aside li { */
+    /* padding: 8px 0; */
+/* } */
+/* .aside .image { */
+    /* font-size: 0; */
+    /* text-align: center; */
+/* } */
+/* .aside .image a { */
+    /* font-size: 0; */
+/* } */
+/* .aside .name { */
+    /* padding: 5px 0 2px; */
+/* } */
+/* .aside .name a { */
+    /* font-size: 14px; */
+    /* font-weight: 700; */
+/* } */
+/* .aside .purchass { */
+    /* float: right; */
+/* } */
+/* .aside .purchass b { */
+    /* color: #F50; */
+    /* font: 700 14px Arial; */
+/* } */
+/* .aside .market { */
+    /* float: left; */
+/* } */
+/* .aside .market del { */
+    /* font: 12px Arial; */
+/* } */
+/* .section { */
+    /* float: right; */
+    /* width: 720px; */
+    /* margin-top: 25px; */
+/* } */
+.summary {
+    margin-top: 20px;
     padding: 10px;
     border: 1px solid #E4E4E4;
 }
-.section .summary h3 {
+.summary h3 {
     padding: 8px 0 10px;
     font-size: 16px;
 }
-.section .photo {
+.photo {
     float: left;
     width: 300px;
     padding: 10px 9px;
     margin-right: 20px;
     font-size: 0;
 }
-.section .property {
+.property {
     line-height: 26px;
 }
-.section .property li {
+.property li {
     color:
 }
 
