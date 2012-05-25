@@ -1,99 +1,28 @@
 #{extends 'main.html' /}
-#{set title:'券市场 - 购物车' /}
+#{set title:'券市场 - 支付结果' /}
 #{set 'moreStyles'}
-<link href="@@{'/public/stylesheets/order_result.css'}" rel="stylesheet" type="text/css"/>
+    #{asset.css src:['/r/base.css', '/r/carts.css'] /}
 #{/set}
-<div id="wrap_main">
-    <div id="wrap_top">
-        <!--    最顶部导航-->
-        <!--    最顶部导航-->
-        <div id="wrap_top_top">
-            <div class="top_margin_left" >
-                <div class="wellcome">
-                    您好，欢迎您来到券市场！
-                    <a class="zi_gray" href="#">请登录</a>
-                </div>
-                <div class="top_ul_box">
-                    <div class="user_reg_div_top">
-                        <ul class="re_top_top_ul">
-                            <li class="re_top_top_li">
-                            <a class="zi_gray"  href="#">新用户注册</a>
-                            </li>
-                            <li class="re_top_top_li">|</li>
-                            <li class="re_top_top_li">
-                            <div class="top_car_icon"></div>
-                            <a class="zi_gray"  href="#">购物车</a>
-                            </li>
-                            <li class="re_top_top_li">|</li>
-                            <li class="re_top_top_li">
-                            <a class="zi_gray"  href="#" >收藏夹</a>
-                            </li>
-                            <li class="re_top_top_li">|</li>
-                            <li class="re_top_top_li">
-                            <a class="zi_gray"  href="#">网站导航</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="font_16_red">400-6262-166</div>
-                </div>
-            </div>
-        </div>
 
-        <div id="wrap_top_header">
-            <div id="wrap_top_header_left" >
-                <img src="@{'/public/images/logo.jpg'}" />
-            </div>
-            <div id="wrap_top_middle" >券生活-惠生活</div>
-        </div>
-        <div style="clear:both"></div>
-        <div class="fen_g"></div>
-    </div>
-    <!--主体内容部分-->
-    <div id="wrap_content">
-
-        <div class="div_step_title">
-            <div class="div_step_3">1</div>
-            <div class="div_step_text_1">查看购物车<span>>></span></div>
-            <div class="div_step_3">2</div>
-            <div class="div_step_text_1">确认订单信息<span>>></span></div>
-            <div class="div_step_3">3</div>
-            <div class="div_step_text_1">确认付款<span>>></span></div>
-            <div class="div_step_2">4</div>
-            <div class="div_step_text_2">支付成功</div>
-        </div>
-   %{String rtnOK=(String)request.params.get("rtnOK");}%
-        <div class="dingdan_info">
-            #{if errorMessage}
-            <div style="margin:20px 0">
-                ${errorMessage}
-            </div>
-            #{/if}
-            #{else}
-            <div class="success_dingdan">
-             #{if rtnOK =='-1'}没有此订单信息！#{/if }
-             #{ elseif rtnOK =='-2'}订单支付金额不相符！#{/elseif }
-             #{elseif rtnOK =='-3'}支付失败！#{/elseif}
-             #{else}恭喜，交易成功！ #{/else}</div>
-            <div  class="chakan_info">
-                <a href="#"><span class="font_blue">点击查看</span></a>
-                消费门店地址，您随时可至以上点消费
-            </div>
-            <div class="succe_box">
-                <div class="chakan_info_one" >您还可以在“
-                    <span class="font_blue">
-                        <a href="3" class="font_blue">我的券市场</a>>
-                        <a href="3" class="font_blue">我购买的商品</a>>
-                        <a href="3" class="font_blue">订单详情</a>
-                    </span>”查看商品情况。
-                </div>
-                <div class="chakan_info_two" >凭取货短信到门店直接消费</div>
-            </div>
-            <div  class="chakan_info_img">
-                <span><a class="chakan_bg" href="#">查看详情</a></span>
-                <span class="margin_left15">
-                    <a href="/"  class="jixu_bg" >继续购物</a>
-                </span>
-            </div>
-            #{/else}
-        </div>
-    </div>
+<div id="content">
+   <div class="pay-success">
+       #{if !errorMessage}
+       <h2 class="pay-wish">恭喜您，付款成功</h2>
+       <ul>
+           <li>已经发货至您指定接收手机号码，请注意查收。</li>
+           <li>您还可以在“<a href="/library">我的分销库</a> > <a href="/orders">我的订单</a> >  <a href="/orders/${orderNumber}">订单详情</a>”查看商品配送情况。</li>
+           <li>凭短信内的券号到取货门店直接取货。</li>
+           <li>如有遗失券号短信，请联系客户重新发送。</li>
+           <li class="service">电子券商品，只要您末进行消费，且保持订单有效，我们将提供随时退款的服务。<br/>
+               我们的客服电话：400-6262-166 我们的客服邮件是：uhuila@seewi.com.cn</li>
+       </ul>
+       #{/if}
+       #{else}
+       <h2 class="pay-wish">对不起,暂时未能读取您的订单支付结果,请稍后查看订单详情</h2>
+       #{/else}
+       <div class="btn">
+           <a href="/orders/${orderNumber}"><span>查看订单详情</span></a>
+           <a href="/carts"><span>继续下单</span></a>
+       </div>
+   </div>
+</div>

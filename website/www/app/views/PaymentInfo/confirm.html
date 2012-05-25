@@ -9,6 +9,8 @@
 <script src="@@{'/public/javascripts/payment_info.js'}"></script>
 #{/set}
 
+%{baseDomain = play.Play.configuration.getProperty("application.baseDomain")}%
+
 <div id="full_bg"></div>
 <div id="payment_result">
         <a class="close" href="#" onclick="close_result_dialog();">关闭</a><br/><br/>
@@ -16,7 +18,7 @@
     #{if order}
         <a class="repay" href="/payment_info/${order.orderNumber}">遇到问题？</a>
     #{/if}
-        <a class="payed" href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}/orders">已完成付款</a>
+        <a class="payed" href="http://home.${baseDomain}/orders">已完成付款</a>
 </div>
 
 <ol class="buy-step step4 clearfix">
@@ -30,7 +32,6 @@
     <div class="order-success">
         <div class="order-wish">恭喜您付款成功</div>
         <ul>
-            %{baseDomain = play.Play.configuration.getProperty("application.baseDomain")}%
             <li>您还可以在  “
                 <a href="http://home.${baseDomain}">我的一百券</a> >
                 <a href="http://home.${baseDomain}">我购买的商品</a> >
