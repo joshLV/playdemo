@@ -172,3 +172,54 @@
     color: #4991D4;
     border: 1px solid #BBB;
 }
+
+.order-detail {
+    padding-top: 10px;
+}
+.order-detail h2 {
+    font-size: 22px;
+    line-height: 38px;
+}
+.order-detail .order-info {
+    padding: 8px 0 10px;
+}
+.order-detail .order-no,
+.order-detail .order-deal,
+.order-detail .total-price,
+.order-detail .order-status {
+    padding-right: 15px;
+}
+.order-detail table tfoot td {
+    border-bottom: 0;
+}
+.order-detail table th {
+    padding: 10px 0;
+    background-color: #F7FAFD;
+    border-top: 1px solid #E4E4E4;
+    border-bottom: 1px solid #E4E4E4;
+}
+.order-detail table td {
+    padding: 12px 0;
+    line-height: 22px;
+    border-bottom: 1px solid #E4E4E4;
+}
+.order-detail table th input,
+.order-detail table td input {
+    position: relative;
+    top: 3px;
+    *top: -2px;
+    margin-right: 5px;
+}
+.order-detail .select_all {
+    padding-left: 10px;
+}
+.order-detail .apply-refund {
+    position: relative;
+    top: -1px;
+    padding: 3px 10px;
+    margin-left: 8px;
+}
+.order-detail .goods-sum {
+    float: right;
+    padding-right: 10px;
+}

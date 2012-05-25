@@ -3,61 +3,57 @@
 #{set 'moreStyles'}
     #{asset.css src:['/r/base.css', '/r/orders.css'] /}
 #{/set}
-<div id="content">
+<div id="content" class="order-detail">
     <h2>商品详情</h2>
-    <div class="tab_top_info">
-        <span class="tab_one">订单号：${order.orderNumber}</span>
-        <span class="tab_two">成交时间：${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
-        <span>商品总价：${order.amount?.formatCurrency('CNY').raw()}(含运费)</span>
-        <span>订单状态：&{'order.'+order.status}</span>
+    <div class="order-info">
+        <span class="order-no">订单号：${order.orderNumber}</span>
+        <span class="order-deal">成交时间：${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
+        <span class="total-price">商品总价：${order.amount?.formatCurrency('CNY').raw()}(含运费)</span>
+        <span class="order-status">订单状态：&{'order.'+order.status}</span>
         <span>付款时间：${order.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
     </div>
     <form action="/orders/batch-refund" method="post">
-        <table border="1" cellpadding="0" cellspacing="0" bordercolor="#EEEEEE">
+        <table width="100%" cellpadding="0" cellspacing="0">
             <thead>
                 <tr>
-                    <th width="70"><input type="checkbox" name="select_all_checkbox" />全选</th>
-                    <th><span>商品</span></th>
-                    <th width="69"><span>收货手机</span></th>
-                    <th width="69">分销价（元）</th>
-                    <th width="81">原价（元）</th>
-                    <th width="163">券号</th>
-                    <th width="93">券状态</th>
+                    <th align="center" width="40"><input type="checkbox" name="select_all_checkbox" /></th>
+                    <th align="left">商品</th>
+                    <th align="left" width="120"><span>收货手机</span></th>
+                    <th align="left" width="120">分销价（元）</th>
+                    <th align="left" width="120">原价（元）</th>
+                    <th align="left" width="120">券号</th>
+                    <th align="left" width="120">券状态</th>
                 </tr>
             </thead>
             <tbody>
             #{list items:eCoupons, as:'coupon' }
             <tr>
-                <td>
+                <td align="center">
                     #{if coupon.status == models.order.ECouponStatus.UNCONSUMED}
                     <input type="checkbox" id="check_coupon_${coupon.id}" value="${coupon.id}" name="couponIds"/>
                     #{/if}
                 </td>
-                <td align="center" valign="middle">
-                    <div class="col_one_text">${coupon.goods.name}</div>
-                </td>
-                <td width="69" align="center" valign="middle">${coupon.orderItems.phone}</td>
-                <td width="69" align="center" valign="middle">
-                    ${coupon.orderItems.resalerPrice?.formatCurrency('CNY').raw()}
-                </td>
-                <td width="81" align="center" valign="middle">
-                    ${coupon.orderItems.originalPrice?.formatCurrency('CNY').raw()}
-                </td>
-                <td align="center" valign="middle">
-                    <div class="caozuo_std">${coupon?.getMaskedEcouponSn()}</div>
-                </td>
-                <td align="center" valign="middle">&{'coupon.'+coupon.status}</td>
+                <td valign="middle">${coupon.goods.name}</td>
+                <td valign="middle">${coupon.orderItems.phone}</td>
+                <td valign="middle">${coupon.orderItems.resalerPrice?.formatCurrency('CNY').raw()}</td>
+                <td valign="middle">${coupon.orderItems.originalPrice?.formatCurrency('CNY').raw()}</td>
+                <td valign="middle">${coupon?.getMaskedEcouponSn()}</td>
+                <td valign="middle">&{'coupon.'+coupon.status}</td>
             </tr>
             #{/list}
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="7">
+                        <span class="select_all"><input class="th_one_input" type="checkbox" name="select_all_checkbox" />全选</span>
+                        <input class="apply-refund" type="submit" value="申请退款" />
+                        <input type="hidden" value="${order.orderNumber}" name="orderNumber" />
+                        <span class="goods-sum">商品金额：<em>${order.amount}</em>元</span>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
-        <input class="th_one_input" type="checkbox" name="select_all_checkbox" />全选
-        <input type="submit" value="申请退款">
-        <input type="hidden" value="${order.orderNumber}" name="orderNumber">
     </form>
-    <div class="buttom_tab_info2">
-        商品金额：<span class="font_cheng">${order.amount}元</span>
-    </div>
 </div>
 
 <script>
