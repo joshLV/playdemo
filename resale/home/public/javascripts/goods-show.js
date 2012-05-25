@@ -27,7 +27,7 @@ $(window).load(
                 });
         });
 
-        $("#link_buy_more").click(function () {
+        $("#close_div").click(function () {
             $('#add_cart_result').hide();
         });
 

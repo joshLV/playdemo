@@ -73,12 +73,11 @@
                 <li class="action">
                     *{<a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>}*
                     <a class="add" id="link_add_cart" href="#">加入分销库</a>
-                </li>
-                <li id="add_cart_result" class="buttom_dibu"
-                    style="display: none;">已成功添加到分销库！
-                    <a id="link_buy_more" href="#"><span
-                            class="zi_gray">继续购买</span></a>
-                    <a href="/library"><span class="zi_gray">查看分销库</span></a>
+                    <div id="add_cart_result" class="add-cart-success" style="display: none;">
+                        <h3>已成功添加到分销库！</h3>
+                        <span id="close_div" class="close-div">关闭</span>
+                        <a href="/library">查看分销库</a>
+                    </div>
                 </li>
             </ul>
         </div><!-- .summary END -->
