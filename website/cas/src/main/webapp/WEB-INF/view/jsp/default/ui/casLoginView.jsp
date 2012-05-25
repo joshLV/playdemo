@@ -79,8 +79,8 @@ if (cookies!=null) {
             <button type="submit" id="submit" tabindex="4"> 登 录 </button>
         </form:form>
         <div class="guide">
-            <h5>还不是优惠啦用户？</h5>
-            <p>惠打折，惠生活；不打折，不消费！立刻免费注册成为优惠啦用户，轻松享受优惠生活。</p>
+            <h5>还不是一百券用户？</h5>
+            <p>惠打折，惠生活；不打折，不消费！立刻免费注册成为一百券用户，轻松享受优惠生活。</p>
             <a class="regist" id="regist" href="http://www.yibaiquan.com/register">注册新用户</a>
         </div>
     </div>
