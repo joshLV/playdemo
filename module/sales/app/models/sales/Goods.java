@@ -33,6 +33,7 @@ import javax.persistence.*;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -370,11 +371,8 @@ public class Goods extends Model {
             return "";
 
         }
-        String express = String.valueOf(discount);
-        if (express.contains(".")) {
-            return express.substring(0, express.indexOf('.') + 2) + "折";
-        }
-        return express + "折";
+        DecimalFormat format = new DecimalFormat("#.#");
+        return format.format(discount.doubleValue())+ "折";
     }
 
     public void setLevelPrices(List<GoodsLevelPrice> levelPrices) {

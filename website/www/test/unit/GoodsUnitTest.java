@@ -85,6 +85,11 @@ public class GoodsUnitTest extends UnitTest {
         goods.setDiscount(new BigDecimal("1"));
         assertEquals("1折", goods.getDiscountExpress());
 
+        goods.setDiscount(new BigDecimal("8.00"));
+        assertEquals("8折", goods.getDiscountExpress());
+
+        goods.setDiscount(new BigDecimal("9.88"));
+        assertEquals("9.9折", goods.getDiscountExpress());
 
         goods.setDiscount(new BigDecimal("12"));
         assertEquals("无优惠", goods.getDiscountExpress());
