@@ -1,62 +1,5 @@
 #{extends 'main.html' /}
 #{set title:'提现申请' /}
-
-<!--主体内容部分-->
-<div class="wrap clearfix">
-    #{include "share/left.html"/}
-    <div class="section">
-        #{breadcrumbs/breadcrumb breadcrumbs/}
-        <form action="@{Withdraw.index()}" method="GET" id="form" style="display:none">
-            #{select 'condition.status',id:'condition_status',value:condition?.status}
-            #{option ""}全部#{/option}
-            #{option "APPLIED"}&{'withdraw.APPLIED'}#{/option}
-            #{option "SUCCESS"}&{'withdraw.SUCCESS'}#{/option}
-            #{option "REJECTED"}&{'withdraw.REJECTED'}#{/option}
-            #{/select}
-        </form>
-        #{vx.tab
-        name:'withdraw',
-        enumItems: models.accounts.WithdrawBillStatus,
-        select:'condition_status',
-        value:condition.status,
-        form:'form'/}
-        <div style="float:right;margin-top:-28px;background-color: #25b4ab; padding:4px;">
-            <a  href="/withdraw/apply" style="color: white">申请提现</a>
-        </div>
-        <div style="clear: both"></div>
-        <div class="tab_top2">
-            #{if billPage.size() == 0}
-            暂无提现申请记录
-            #{/if}
-            #{else}
-            <table class="order-tab" cellpadding="0" cellspacing="0" style="width:100%">
-                <tr class="col-name">
-                    <th>申请时间</th>
-                    <th>收款人</th>
-                    <th>银行</th>
-                    <th>银行卡号</th>
-                    <th>申请金额</th>
-                    <th>申请状态</th>
-                    <th>操作</th>
-                </tr>
-                #{paginate.list items:billPage, as:'withdrawBill'}
-                <tr align="center">
-                    <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-                    <td>${withdrawBill.userName}</td>
-                    <td>${withdrawBill.bankName}</td>
-                    <td>${withdrawBill.cardNumber}</td>
-                    <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
-                    <td>&{'withdraw.' + withdrawBill.status}</td>
-                    <td>
-                        <a href="/withdraw/detail/${withdrawBill.id}"> 查看详情 </a>
-                    </td>
-                </tr>
-                #{/paginate.list}
-            </table>
-            #{/else}
-        </div>
-    </div>
-</div>
 #{set 'moreStyles'}
 <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
 <link href="@{'/public/stylesheets/user-center.css'}" rel="stylesheet" type="text/css"/>
@@ -264,6 +207,64 @@ border-bottom-color: #ffffff;
 opacity: 1;
 filter: alpha(opacity=100);
 }
+.order-tab td {
+padding: 5px 0;
+}
 </style>
 #{/set}
 
+<div class="wrap clearfix">
+    #{include "share/left.html"/}
+    <div class="section">
+        #{breadcrumbs/breadcrumb breadcrumbs/}
+        <form action="@{Withdraw.index()}" method="GET" id="form" style="display:none">
+            #{select 'condition.status',id:'condition_status',value:condition?.status}
+            #{option ""}全部#{/option}
+            #{option "APPLIED"}&{'withdraw.APPLIED'}#{/option}
+            #{option "SUCCESS"}&{'withdraw.SUCCESS'}#{/option}
+            #{option "REJECTED"}&{'withdraw.REJECTED'}#{/option}
+            #{/select}
+        </form>
+        #{vx.tab
+        name:'withdraw',
+        enumItems: models.accounts.WithdrawBillStatus,
+        select:'condition_status',
+        value:condition.status,
+        form:'form'/}
+        <div style="float:right;margin-top:-28px;background-color: #25b4ab; padding:4px;">
+            <a  href="/withdraw/apply" style="color: white">申请提现</a>
+        </div>
+        <div style="clear: both"></div>
+        <div class="tab_top2">
+            #{if billPage.size() == 0}
+            暂无提现申请记录
+            #{/if}
+            #{else}
+            <table class="order-tab" cellpadding="0" cellspacing="0" style="width:100%">
+                <tr class="col-name">
+                    <th>申请时间</th>
+                    <th>收款人</th>
+                    <th>银行</th>
+                    <th>银行卡号</th>
+                    <th>申请金额</th>
+                    <th>申请状态</th>
+                    <th>操作</th>
+                </tr>
+                #{paginate.list items:billPage, as:'withdrawBill'}
+                <tr align="center">
+                    <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                    <td>${withdrawBill.userName}</td>
+                    <td>${withdrawBill.bankName}</td>
+                    <td>${withdrawBill.cardNumber}</td>
+                    <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
+                    <td>&{'withdraw.' + withdrawBill.status}</td>
+                    <td>
+                        <a href="/withdraw/detail/${withdrawBill.id}"> 查看详情 </a>
+                    </td>
+                </tr>
+                #{/paginate.list}
+            </table>
+            #{/else}
+        </div>
+    </div>
+</div>

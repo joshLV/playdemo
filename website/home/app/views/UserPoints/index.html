@@ -45,15 +45,15 @@
             <form class="form-horizontal" id="couponsFrm" action="@{UserPoints.index()}" method="GET">
                  <table width="774" border="0" cellpadding="0" cellspacing="0">
                     <tr>
-                        <td width="12">&nbsp;</td>
-                        <td width="65" align="right">操作时间：</td>
-                        <td width="259" height="35"><input class="short_input Wdate" type="text"
+                        <th width="12">&nbsp;</th>
+                        <th width="65" align="right">操作时间：</th>
+                        <th width="259" height="35"><input class="short_input Wdate" type="text"
                             name="condition.createdAtBegin" id="createdAtBegin" value="${createdAtBegin?.format()}"
                             onfocus="WdatePicker({readOnly:true})" /> - <input class="short_input Wdate" type="text"
                             id="createdAtEnd" name="condition.createdAtEnd" value="${createdAtEnd?.format()}"
-                            onfocus="WdatePicker({readOnly:true})" /></td>
-                        <td width="77">操作类型：</td>
-                        <td width="353">
+                            onfocus="WdatePicker({readOnly:true})" /></th>
+                        <th width="77">操作类型：</th>
+                        <th width="353">
                             <div class="pos_abs">#{select 'condition.pointNumber', id:'pointNumber',
                                 class:'dingdan_stauts_bg', value:pointNumber} 
                                 #{option ''}不限#{/option}
@@ -61,8 +61,8 @@
                                     #{option config?.pointNumber}${config?.pointTitle}#{/option}
                                 #{/list}
                                 #{/select}</div>
-                        </td>
-                        <td valign="middle"><button class="search-btn" id="search"> 搜　索 </button></td>
+                        </th>
+                        <th valign="middle"><button class="search-btn" id="search"> 搜　索 </button></th>
                     </tr>
                 </table>
             </form>

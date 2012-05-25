@@ -5,50 +5,52 @@
 <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
 <link href="@{'/public/stylesheets/user-center.css'}" rel="stylesheet" type="text/css"/>
 <style>
+.infodetail {
+    margin-top: 17px;
+    height: auto;
+}
+.infodetail .hobbies {
+    float: left;
+    width: 350px;
+}
+.infodetail .hobbies span {
+    width: auto;
+    display: block;
+    float: left;
+    white-space: nowrap;
+    margin-right: 8px;
+}
+.hobbies input, .hobbies b {
+    display: inline-block;
 
-    .infodetail {
-        margin-top: 17px;
-        height: auto;
-    }
-
-    .infodetail .hobbies {
-        float: left;
-        width: 350px;
-    }
-
-    .infodetail .hobbies span {
-        width: auto;
-        display: block;
-        float: left;
-        white-space: nowrap;
-        margin-right: 8px;
-    }
-
-    .hobbies input, .hobbies b {
-        display: inline-block;
-
-        float: left;
-    }
-
-    .hobbies b {
-        font-weight: normal;
-    }
-
-    .infodetail li .input {
-        width: 750px;
-        height: 32px;
-        valign: middle;
-    }
-
-    .infodetail li label {
-        display: block;
-        font-size: 12px;
-        height: 24px;
-        line-height: 24px;
-        text-align: right;
-        width: 200px;
-        float: left;
-    }
+    float: left;
+}
+.hobbies b {
+    font-weight: normal;
+    margin-left: 5px;
+}
+.hobbies span {
+    margin-right: 10px;
+    margin-bottom: 8px;
+}
+.hobbies input {
+    position: relative;
+    top: 3px;
+}
+.infodetail li .input {
+    width: 750px;
+    height: 32px;
+    valign: middle;
+}
+.infodetail li label {
+    display: block;
+    font-size: 12px;
+    height: 24px;
+    line-height: 24px;
+    text-align: right;
+    width: 200px;
+    float: left;
+}
 </style>
 #{/set}
 #{set 'moreScripts'}
@@ -67,7 +69,6 @@
     <li>
         <div class="input">
              <label><span class="font_red">*</span> 用户名：</label>
-
             <div class="mem_infod_username">${user?.loginName}</div>
         </div>
     </li>
@@ -197,7 +198,7 @@
                 <div class="hobbies">
                     <input type="hidden" name="interest" id="interest" value="${userInfo?.interest}"/>
                     <span><input name="likeName[]" type="checkbox" value="1" class="check"
-                                 #{if userInfo?.interest?.contains(String.valueOf(1))}checked#{/if}/><b>美食</b></span>
+                         #{if userInfo?.interest?.contains(String.valueOf(1))}checked#{/if}/><b>美食</b></span>
                     <span><input name="likeName[]" type="checkbox" value="2" class="check"
                         #{if userInfo?.interest?.contains(String.valueOf(2))}checked#{/if}/><b>购物</b></span>
                     <span><input name="likeName[]" type="checkbox" value="3" class="check"
@@ -228,10 +229,8 @@
                         #{if userInfo?.interest?.contains(String.valueOf(5))}checked#{/if}/><b>美容美发</b></span>
                 </div>
                 <div>
-                    <span style="width: 30px; clear: both;">其他</span><input type="text" id="elselike"
-                                                                            name="userInfo.otherInfo"
-                                                                            value="${userInfo?.otherInfo}"
-                                                                            class="long_input"/>
+                    <span style="width: 30px; clear: both;">其他</span>
+                    <input type="text" id="elselike" name="userInfo.otherInfo" value="${userInfo?.otherInfo}" class="long_input"/>
                 </div>
                 <div style="height: 10px; clear: both"></div>
                 <div class="button">
@@ -267,7 +266,6 @@
             </ul>
         </div>
     </div>
-
     <div id="bindusertel">
         <div id="layoutbind" class="popup-content" style="width:450px;height:200px">
             <ul>
