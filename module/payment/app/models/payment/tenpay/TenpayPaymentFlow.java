@@ -70,13 +70,19 @@ public class TenpayPaymentFlow extends PaymentFlow {
         params.put("seller_id", "");                   //卖家商户号，为空则等同于partner
 
 
-        String  requestUrl = TenpayUtil.getRequestUrl(params, TenpayUtil.PAY_GATE_URL);
+//        String  requestUrl = TenpayUtil.getRequestUrl(params, TenpayUtil.PAY_GATE_URL);
+
+        TenpayUtil.addSign(params);
 
         StringBuilder sbHtml = new StringBuilder();
+        sbHtml.append("<form id=\"tenPay\" name=\"tenPay\" action=\"" + TenpayUtil.PAY_GATE_URL + "\" method=\"get\" >");
 
-        sbHtml.append("<form id=\"tenPay\" name=\"tenPay\" action=\"" + requestUrl + "\" method=\"get\" >");
+        for(Map.Entry<String, String> entry : params.entrySet()){
+            sbHtml.append("<input type=\"hidden\" name=\"" + entry.getKey() + "\" value=\"" + entry.getValue() + "\"/>");
+        }
 
         sbHtml.append("</form><script>document.forms['tenPay'].submit();</script>");
+
         return sbHtml.toString();
 
 //        return "<script language=\"javascript\">\r\n" +
