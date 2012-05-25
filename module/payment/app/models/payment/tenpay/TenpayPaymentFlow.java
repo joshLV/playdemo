@@ -72,9 +72,16 @@ public class TenpayPaymentFlow extends PaymentFlow {
 
         String  requestUrl = TenpayUtil.getRequestUrl(params, TenpayUtil.PAY_GATE_URL);
 
-        return "<script language=\"javascript\">\r\n" +
-                "window.location.href='" + requestUrl + "';\r\n" +
-                "</script>";
+        StringBuilder sbHtml = new StringBuilder();
+
+        sbHtml.append("<form id=\"tenPay\" name=\"tenPay\" action=\"" + requestUrl + "\" method=\"get\" >");
+
+        sbHtml.append("</form><script>document.forms['tenPay'].submit();</script>");
+        return sbHtml.toString();
+
+//        return "<script language=\"javascript\">\r\n" +
+//                "window.location.href='" + requestUrl + "';\r\n" +
+//                "</script>";
     }
 
 
