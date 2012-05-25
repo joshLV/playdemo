@@ -49,7 +49,7 @@ function calItem(goods_id){
 //计算订单总价
 function refreshAmount(){
     var number = 0;
-    $("input.num_input").each(function(){number += Number($(this).val())});
+    $("input.num-input").each(function(){number += Number($(this).val())});
     $("#total_num").text(number);
 
     var amount = new BigNumber("0");
