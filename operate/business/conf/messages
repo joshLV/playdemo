@@ -156,6 +156,9 @@ order.RESALER=分销商
 order.deliveryCompany=物流公司
 order.deliveryNo=物流单号
 
+order.LOGISTICS=物流
+order.SMS=短信
+
 account_sequence.CHARGE=充值
 account_sequence.WITHDRAW=提现
 account_sequence.PAY=支付

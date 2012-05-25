@@ -12,9 +12,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OrderColumn;
 import javax.persistence.Query;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +58,14 @@ public class OrderItems extends Model {
 
     @Enumerated(EnumType.STRING)
     public OrderStatus status;
+
+    @Transient
+    public BigDecimal getAmount() {
+        if (salePrice != null && buyNumber != null){
+            return salePrice.multiply(new BigDecimal(buyNumber));
+        }
+        return BigDecimal.ZERO;
+    }
 
     public OrderItems(Order order, Goods goods, long buyNumber, String phone, BigDecimal salePrice, BigDecimal resalerPrice) {
         this.order = order;
