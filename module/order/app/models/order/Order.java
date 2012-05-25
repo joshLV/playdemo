@@ -717,10 +717,13 @@ public class Order extends Model {
         return buider.toString();
     }
 
-    public void sendRealGoods() {
+    public static void sendRealGoods(long id, String deliveryCompany, String deliveryNo) {
         Order order = Order.findById(id);
-        order.deliveryCompany = this.deliveryCompany;
-        order.deliveryNo = this.deliveryNo;
+        if (order == null || order.deliveryCompany != null || order.deliveryNo != null){
+            return;
+        }
+        order.deliveryCompany = deliveryCompany;
+        order.deliveryNo = deliveryNo;
         order.save();
         for (OrderItems orderItem : order.orderItems) {
             if (MaterialType.REAL.equals(orderItem.goods.materialType)) {
@@ -729,7 +732,11 @@ public class Order extends Model {
 
                 //给商户打钱
                 Account supplierAccount = AccountUtil.getAccount(orderItem.goods.supplierId, AccountType.SUPPLIER);
-                TradeBill consumeTrade = TradeUtil.createConsumeTrade(orderItem.goods.name, supplierAccount, orderItem.originalPrice, order.getId());
+                TradeBill consumeTrade = TradeUtil.createConsumeTrade(
+                        orderItem.goods.name,
+                        supplierAccount,
+                        orderItem.originalPrice.multiply(new BigDecimal(orderItem.buyNumber)),
+                        order.getId());
                 TradeUtil.success(consumeTrade, order.description);
 
                 BigDecimal platformCommission;
@@ -744,7 +751,7 @@ public class Order extends Model {
                     if (order.userType == AccountType.CONSUMER) {
                         TradeBill uhuilaCommissionTrade = TradeUtil.createCommissionTrade(
                                 AccountUtil.getUhuilaAccount(),
-                                orderItem.salePrice.subtract(orderItem.resalerPrice),
+                                orderItem.salePrice.subtract(orderItem.resalerPrice).multiply(new BigDecimal(orderItem.buyNumber)),
                                 "",
                                 order.getId());
 
@@ -756,7 +763,7 @@ public class Order extends Model {
                     //给优惠券平台佣金
                     TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(
                             AccountUtil.getPlatformCommissionAccount(),
-                            platformCommission,
+                            platformCommission.multiply(new BigDecimal(orderItem.buyNumber)),
                             "",
                             order.getId());
                     TradeUtil.success(platformCommissionTrade, order.description);

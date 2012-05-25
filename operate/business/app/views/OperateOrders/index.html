@@ -137,13 +137,15 @@
                 <td>#{if models.sales.MaterialType.ELECTRONIC.equals(order.realGoods.get(0).materialType)}<img
                         src="@@{'/public/images/electronic-goods.png'}"> #{/if}
                     #{else}<img src="@@{'/public/images/real-goods.png'}"> &nbsp;#{/else}${order.realGoods.get(0).name}&nbsp;</td>
-                <td rowspan="${order.realGoods.size()}">#{if order.deliveryNo!=null}<a id="sendInfo_${order.id}"
-                                                                                       href="#" class="label label-info"
-                                                                                       rel="popover"
-                                                                                       data-content="运单号: ${order.deliveryNo}"
-                                                                                       data-original-title="物流公司: ${order.deliveryCompany}"
-                                                                                       onmouseover="$('#sendInfo_${order.id}').popover();">&{'order.'+
-                    order.realGoodsStatus}</a>
+                <td rowspan="${order.realGoods.size()}">
+                    #{if order.deliveryNo!=null}
+                        <a id="sendInfo_${order.id}"
+                           href="#" class="label label-info"
+                           rel="popover"
+                           data-content="运单号: ${order.deliveryNo}"
+                           data-original-title="物流公司: ${order.deliveryCompany}"
+                           onmouseover="$('#sendInfo_${order.id}').popover();">
+                         &{'order.'+ order.realGoodsStatus}</a>
                 #{/if}
                     #{else}&{'order.'+order.realGoodsStatus}#{/else}
                     #{if models.order.OrderStatus.PAID.equals(order.realGoodsStatus)}

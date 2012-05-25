@@ -28,7 +28,6 @@ public class OperateOrders extends Controller {
         }
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        System.out.println("condition.deliveryType:" + condition.deliveryType);
         JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
         render(orderList,condition);
 
@@ -39,9 +38,10 @@ public class OperateOrders extends Controller {
      */
     public static void send(Long id, Order order) {
         Order originalOrder = Order.findById(id);
-        originalOrder.deliveryNo = order.deliveryNo;
-        originalOrder.deliveryCompany = order.deliveryCompany;
-        originalOrder.sendRealGoods();
+        if (originalOrder == null){
+            error(500, "can not find the order:" + id);
+        }
+        Order.sendRealGoods(id, order.deliveryCompany, order.deliveryNo);
         index(null);
     }
 
