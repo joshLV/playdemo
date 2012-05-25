@@ -3,6 +3,7 @@
 
 test_passed_regex = /^~\s+(unit|functional|selenium)\/\w+\.{3}\s+PASSED/
 test_failed_regex = /^~\s+(unit|functional|selenium)\/\w+\.{3}\s+FAILED/
+test_failed_regex2 = /FAILED/
 
 play_home="/app/play-1.2.4/"
 #play_home = ""
@@ -58,6 +59,11 @@ IO.popen(cmd) { |output|
     if line =~ test_failed_regex
       failed_test_count += 1
       failed_result << "#{dir}: #{line}"
+    else
+      if line =~ test_failed_regex2
+        failed_test_count += 1
+        failed_result << "#{dir}: #{line}"
+      end
     end
     puts "#{line}"
   }
