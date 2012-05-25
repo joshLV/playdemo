@@ -38,8 +38,10 @@ public class OperateOrders extends Controller {
      * 订单发货.
      */
     public static void send(Long id, Order order) {
-        order.id = id;
-        order.sendRealGoods();
+        Order originalOrder = Order.findById(id);
+        originalOrder.deliveryNo = order.deliveryNo;
+        originalOrder.deliveryCompany = order.deliveryCompany;
+        originalOrder.sendRealGoods();
         index(null);
     }
 
