@@ -4,17 +4,27 @@
 <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
 <link href="@{'/public/stylesheets/user-center.css'}" rel="stylesheet" type="text/css"/>
 <link href="@{'/public/stylesheets/shop_info_more.css'}" rel="stylesheet" type="text/css"/>
+<style>
+.order-tab td {
+    padding: 5px;
+}
+.order-info {
+    padding: 5px 0 8px;
+}
+.order-info span {
+    margin-right: 20px;
+}
+</style>
 #{/set}
 <body>
 <div class="wrap clearfix">
 #{breadcrumbs/breadcrumb breadcrumbs/}
-    <div class="tab_top">我的订单</div>
-    <div class="tab_top2">
-        <span class="tab_one">订单号：${order.orderNumber}</span><span
-            class="tab_two">成交时间：${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
+    <h3 style="padding: 6px 0;font-size:16px">我的订单</h3>
+    <div class="order-info">
+        <span class="order-no">订单号：${order.orderNumber}</span>
+        <span class="order-deal">成交时间：${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
         <span>付款时间：${order.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
     </div>
-
     <table class="order-tab" cellpadding="0" cellspacing="0">
         <tr class="col-name">
             <th width="369" height="30">商品</th>
@@ -31,12 +41,10 @@
     #{list items:orderItems, as:'row' }
         <tr>
             <td align="left" valign="middle">
-                <div class="left_shangpin"><a
-                        href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${row.goods.id}"
-                        target="_blank"><img src="${row.goods.imageTinyPath}"/></a></div>
-                <div class="right_shangpin"><a
-                        href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${row.goods.id}"
-                        target="_blank">${row.goods.name}</a></div>
+                <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${row.goods.id}" target="_blank">
+                    <img style="float:left;margin-right:5px" src="${row.goods.imageTinyPath}"/>${row.goods.name}
+                </a>
+            </td>
             <td width="69" align="center" valign="middle">&{'goods.'+row.goods.materialType}</td>
             <td width="81" align="center" valign="middle">${row.salePrice?.formatCurrency('CNY').raw()}</td>
             <td width="66" align="center" valign="middle">${row.buyNumber}</td>
@@ -78,10 +86,7 @@
 </div>
 <div style="clear: both"></div>
 #{if order.containsRealGoods()}
-<div class="tab_top">
-    <span>收货信息</span>
-</div>
-<div class="tab_top_box ren_info">
+    <h3 style="padding: 6px 0;">收货信息</h3>
     <table class="order-tab" cellpadding="0" cellspacing="0">
         <tr>
             <td width=380>收货人：${order.receiverName}</td>
@@ -97,6 +102,6 @@
         </tr>
 
     </table>
-</div>
 #{/if}
-</body>
+<br/>
+<br/>
