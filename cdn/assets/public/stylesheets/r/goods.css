@@ -251,8 +251,8 @@
     margin-top: 9px;
 }
 .property .action a {
-    float: left;
-    display: block;
+    /* float: left; */
+    /* display: block; */
     padding: 6px 15px 7px;
     color: #FFF;
     font-size: 14px;
