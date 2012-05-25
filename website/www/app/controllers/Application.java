@@ -26,4 +26,8 @@ public class Application extends Controller {
     public static void contact() {
         render();
     }
+
+    public static void service() {
+        render();
+    }
 }

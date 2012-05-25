@@ -101,6 +101,9 @@
     padding: 3px 0 3px 50px;
     color: #999;
 }
+.service-bd li a:hover {
+    text-decoration: none;
+}
 .service-bd li span {
     color: #007e76;
     font-weight: 700;

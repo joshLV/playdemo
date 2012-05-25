@@ -191,6 +191,9 @@
     padding: 8px 0 8px 50px;
     color: #999;
 }
+.service-bd li a {
+    text-decoration: none;
+}
 .service-bd li span {
     color: #007e76;
     font-weight: 700;
