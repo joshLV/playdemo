@@ -73,7 +73,7 @@ public class AddressUnitTest extends UnitTest {
         address.phoneNumber = "1234567";
         address.phoneExtNumber = "123";
         address.mobile = "13412341234";
-        assertEquals("13412341234 021-1234567-123", address.getPhone());
+        assertEquals("021-1234567-123", address.getPhone());
     }
 
     @Test
