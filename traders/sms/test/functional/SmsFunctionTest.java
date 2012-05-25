@@ -15,6 +15,7 @@ import models.sms.MockSMSProvider;
 import models.sms.SMSMessage;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.Fixtures;
@@ -121,6 +122,7 @@ public class SmsFunctionTest extends FunctionalTest {
     }
 
     @Test
+    @Ignore
     public void testClerk() {
         String message = "mobiles=15900002342&msg=#12i34567003#&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808" +
                 "&dt" +
@@ -201,18 +203,41 @@ public class SmsFunctionTest extends FunctionalTest {
         assertEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", msg.getContent());
 
 
+    }
+
+    @Test
+    public void testConsumered() {
+
         //已消费的验证
-        id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon4");
-        ecoupon = ECoupon.findById(id);
-        message = "mobiles=15800002341&msg=#" + ecoupon.eCouponSn + "#&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808&dt" +
+        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon4");
+
+        Long supplierId = (Long) play.test.Fixtures.idCache.get("models.supplier.Supplier-kfc3");
+        Supplier supplier = Supplier.findById(supplierId);
+        Long shopId = (Long) play.test.Fixtures.idCache.get("models.sales.Shop-Shop_4");
+        Shop shop = Shop.findById(shopId);
+        shop.supplierId = supplierId;
+        shop.save();
+
+        Long brandId = (Long) play.test.Fixtures.idCache.get("models.sales.Brand-Brand_2");
+        Brand brand = Brand.findById(brandId);
+        brand.supplier = supplier;
+        brand.save();
+
+        Long  goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
+        Goods goods = Goods.findById(goodsId);
+        goods.supplierId = supplierId;
+        goods.save();
+        ECoupon ecoupon = ECoupon.findById(id);
+        String message = "mobiles=15800002341&msg=#" + ecoupon.eCouponSn +
+                "#&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808&dt" +
                 "=1319873904&code=1028";
         assertEquals(ECouponStatus.CONSUMED, ecoupon.status);
-        response = GET("/getsms?" + message);
+        Http.Response response = GET("/getsms?" + message);
 
         ecoupon = ECoupon.findById(id);
         ecoupon.refresh();
         assertEquals(ECouponStatus.CONSUMED, ecoupon.status);
-        msg = MockSMSProvider.getLastSMSMessage();
+        SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertNotNull("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166");
         assertEquals("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", msg.getContent());
     }

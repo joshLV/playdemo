@@ -28,7 +28,7 @@ sales.Brand(Brand_4):
  "displayOrder": "300"
  "category": "Category_1"
  "supplier": "kfc3"
-
+ "deleted": "UN_DELETED"
 sales.Area(Area_021):
  id: "021"
  name: "上海"

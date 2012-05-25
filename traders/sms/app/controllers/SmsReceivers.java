@@ -95,7 +95,7 @@ public class SmsReceivers extends Controller {
                     SMSUtil.send("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166", mobile, code);
                     renderText("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166");
                 }
-                System.out.println("::::::::::::::::::::::::::" + ecoupon.status);
+
                 Long shopId = supplierUser.shop.id;
                 Shop shop = Shop.findById(shopId);
                 String shopName = shop.name;
