@@ -82,7 +82,7 @@ public class KuaiqianPaymentFlow extends PaymentFlow {
 		//银行代码，如果payType为00，该值可以为空；如果payType为10，该值必须填写，具体请参考银行列表。
 		//		String bankId = "";
 		//同一订单禁止重复提交标志，实物购物车填1，虚拟产品用0。1代表只能提交一次，0代表在支付不成功情况下可以再提交。可为空。
-		String redoFlag = "1";
+		String redoFlag = "0";
 		//快钱合作伙伴的帐户号，即商户编号，可为空。
 		String pid = "";
 		// signMsg 签名字符串 不可空，生成加密签名串
