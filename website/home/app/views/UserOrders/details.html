@@ -70,14 +70,14 @@
 </div>
 <div class="buttom_tab_info2">
     商品金额：<span
-        class="font_cheng">#{if orders.containsRealGoods()}${orders.amount.subtract(models.order.Order.FREIGHT)}#{/if}#{else}${orders.amount}#{/else}
+        class="font_cheng">#{if order.containsRealGoods()}${order.amount.subtract(models.order.Order.FREIGHT)}#{/if}#{else}${order.amount}#{/else}
     元</span>
-    运费：<span class="font_cheng">#{if orders.containsRealGoods()}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else}
+    运费：<span class="font_cheng">#{if order.containsRealGoods()}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else}
     元</span>
     合计：<span class="font_cheng">${order.amount}元</span>
 </div>
 <div style="clear: both"></div>
-#{if orders.containsRealGoods()}
+#{if order.containsRealGoods()}
 <div class="tab_top">
     <span>收货信息</span>
 </div>
@@ -85,7 +85,7 @@
     <table class="order-tab" cellpadding="0" cellspacing="0">
         <tr>
             <td width=380>收货人：${order.receiverName}</td>
-            <td width=980 height="30">地址：${order.receiverAddress}邮编：${orders.postcode}</td>
+            <td width=980 height="30">地址：${order.receiverAddress}邮编：${order.postcode}</td>
         </tr>
         <tr>
             <td width=380 height="30">电话：${order.receiverPhone}</td>
