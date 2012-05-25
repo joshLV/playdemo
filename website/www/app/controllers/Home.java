@@ -6,6 +6,7 @@ import models.cms.Block;
 import models.cms.BlockType;
 import models.sales.Area;
 import models.sales.Category;
+import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
 import controllers.modules.website.cas.SecureCAS;
@@ -47,8 +48,27 @@ public class Home extends Controller {
         Date currentDate = new Date();
         List<Block> slides = Block.findByType(BlockType.WEBSITE_SLIDE, currentDate);
         List<Block> dailySpecials = Block.findByType(BlockType.DAILY_SPECIAL, currentDate);
+        models.sales.Goods dailySpecialGoods = null;
+        Block dailySpecial = null;
+        if (dailySpecials.size() >= 1) {
+            dailySpecial = dailySpecials.get(0);
+            try {
+                Long goodsId = Long.parseLong(dailySpecial.title);
+                dailySpecialGoods = models.sales.Goods.findById(goodsId);
+            } catch (Exception e) {
+                Logger.warn("每日特卖异常", e);
+            }
+            if (dailySpecialGoods == null) {
+                Logger.info("设置每日特卖商品失败，找不到" + dailySpecial.title + "对应的商品，使用推荐商品");
+                dailySpecialGoods = recommendGoodsList.get(0);
+            }
+        } else {
+            Logger.info("没有设置每日特卖商品，使用推荐商品");
+            dailySpecialGoods = recommendGoodsList.get(0);
+        }
         renderArgs.put("slides", slides);
-        renderArgs.put("dailySpecials", dailySpecials);
+        renderArgs.put("dailySpecial", dailySpecial);
+        renderArgs.put("dailySpecialGoods", dailySpecialGoods);
 
         render(goodsList, recentGoodsList, recommendGoodsList, categories, districts, areas);
     }

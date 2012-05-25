@@ -39,7 +39,7 @@
             #{paginate.list items:blockPage, as:'block'}
             <tr>
                 <td>${block?.displayOrder}</td>
-                <td>${block?.title}</td>
+                <td><img src="${block.getShowImageUrlTiny()}"/> ${block?.title}</td>
                 <td><a href="${block?.link}" target="_blank">${block?.link}</a></td>
                 <td>&{'block.'+block?.type}</td>
                 <td>${block?.effectiveAt?.format('yyyy-MM-dd')}</td>

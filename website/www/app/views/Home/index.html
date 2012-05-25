@@ -62,20 +62,20 @@
         </ul>
     </div>
     <div class="tuangou">
-        <div class="tuangou-hd">今日团购</div>
+        <div class="tuangou-hd">今日特卖</div>
         <div class="tuangou-bd">
-            <a class="image" href="" target="_blank"><img src="#{asset.url href:'/images/u/tuan.png'/}" width="220"
-                                                          height="150" alt=""/></a>
-            <a class="title" href="" href="_blank">麦当劳59元超值营养套餐9折优惠券</a>
+        
+            <a href="${dailySpecial.link}" target="_blank"><img src="${dailySpecial.getShowImageUrl()}" width="220" height="150"/></a>
+            <a class="title" href="${dailySpecial.link}" href="_blank">${dailySpecialGoods.name}</a>
 
             <div class="detail clearfix">
                 <div class="action">
-                    <strong><i>&yen;</i>52.00</strong>
-                    <a href="" target="_blank"></a>
+                    <strong><i>&yen;</i>${dailySpecialGoods.salePrice}</strong>
+                    <a href="${dailySpecial.link}" target="_blank"></a>
                 </div>
                 <div class="price">
-                    <span>原价:<del>59元</del></span>
-                    <span>折扣:<em>7.8折</em></span>
+                    <span>原价:<del>${dailySpecialGoods.faceValue}元</del></span>
+                    <span>折扣:<em>${dailySpecialGoods.discountExpress}</em></span>
                 </div>
             </div>
         </div>

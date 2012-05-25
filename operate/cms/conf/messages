@@ -6,7 +6,7 @@ play-paginate.last=尾页&nbsp;&raquo;
 #Block
 block.WEBSITE_SLIDE=首页展示
 block.DAILY_SPECIAL=每日特卖
-block.title=标题
+block.title=标题(或商品ID)
 block.link=链接
 block.imageUrl=图片
 block.type=消息类型

@@ -39,7 +39,7 @@ public class Block extends Model {
             ("image.server", "img0.uhcdn.com");
     
     @Required
-    @MinSize(3)
+    @MinSize(1)
     @MaxSize(60)
     public String title;
 
@@ -85,6 +85,11 @@ public class Block extends Model {
     @Transient
     public String getShowImageUrlMiddle() {
         return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, ImageSize.MIDDLE);
+    }
+    
+    @Transient
+    public String getShowImageUrlTiny() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, ImageSize.TINY);
     }
     
     /**
@@ -149,11 +154,19 @@ public class Block extends Model {
         List<Block> blocks = Block.find("deleted = ? and type = ? and effectiveAt <= ? and expireAt >= ? order by " + orderBy,
                     DeletedStatus.UN_DELETED, type, currentDate, currentDate).fetch();
         
+            System.out.println("find ================= " + type);
         if (blocks.size() == 0) {
+            
+            System.out.println("not found ========= " + type);
             blocks = Block.find("deleted = ? and type = ? order by " + orderBy,
                     DeletedStatus.UN_DELETED, type).fetch();
         }
+        System.out.println("find result=" + blocks.size());
         
         return blocks;
+    }
+
+    public static List<Block> findLastByType(BlockType websiteSlide, int i) {
+        return null;
     }
 }
