@@ -1,10 +1,8 @@
 package controllers;
 
 import controllers.modules.website.cas.SecureCAS;
-import models.accounts.Account;
-import models.accounts.AccountSequence;
-import models.accounts.AccountSequenceCondition;
-import models.accounts.PaymentSource;
+import models.accounts.*;
+import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.order.Order;
 import org.apache.commons.lang.StringUtils;
@@ -28,7 +26,7 @@ public class UserSequences extends Controller {
         if (condition == null) {
             condition = new AccountSequenceCondition();
         }
-        Account account = Account.find("byUid", user.getId()).first();
+        Account account = AccountUtil.getAccount(user.getId(), AccountType.CONSUMER);
         condition.account = account;
         JPAExtPaginator<AccountSequence> amountList = AccountSequence.findByCondition(condition, pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : amountList) {
