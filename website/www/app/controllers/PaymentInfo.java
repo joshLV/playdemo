@@ -86,6 +86,8 @@ public class PaymentInfo extends Controller {
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(paymentSource.paymentCode);
         String form = paymentFlow.getRequestForm(order.orderNumber, order.description,
                 order.discountPay, paymentSource.subPaymentCode, request.remoteAddress);
+        Logger.info("payment form params: orderNumber,"+order.orderNumber + ";description,"+order.discountPay
+                + ";subPaymentCode,"+paymentSource.paymentCode + ";remoteAddress," + request.remoteAddress);
         Logger.info("payment form:" + form);
         render(form);
 	}
