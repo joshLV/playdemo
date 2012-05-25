@@ -102,7 +102,6 @@ public class SmsReceivers extends Controller {
 
                 if (ecoupon.status == ECouponStatus.UNCONSUMED) {
                     ecoupon.consumed(supplierUser.shop.id, supplierUser);
-                    System.out.println("::::::::::::::::::::::::::" + ecoupon.status);
                     String coupon = ecoupon.getMaskedEcouponSn();
                     coupon = coupon.substring(coupon.lastIndexOf("*") + 1);
 

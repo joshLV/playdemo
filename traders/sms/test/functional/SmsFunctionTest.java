@@ -15,7 +15,6 @@ import models.sms.MockSMSProvider;
 import models.sms.SMSMessage;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.Fixtures;
@@ -83,9 +82,45 @@ public class SmsFunctionTest extends FunctionalTest {
 
     }
 
+    @Test
+    public void testClerk1() {
+        //店员符合
+        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
+        ECoupon ecoupon = ECoupon.findById(id);
+
+        Long supplierId = (Long) play.test.Fixtures.idCache.get("models.supplier.Supplier-kfc");
+        Supplier supplier = Supplier.findById(supplierId);
+        Long shopId = (Long) play.test.Fixtures.idCache.get("models.sales.Shop-Shop_4");
+        Shop shop = Shop.findById(shopId);
+        shop.supplierId = supplierId;
+        shop.save();
+
+        Long brandId = (Long) play.test.Fixtures.idCache.get("models.sales.Brand-Brand_2");
+        Brand brand = Brand.findById(brandId);
+        brand.supplier = supplier;
+        brand.save();
+
+        String message = "mobiles=15900002342&msg=#" + ecoupon.eCouponSn +
+                "#&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808&dt" +
+                "=1319873904&code=1028";
+        assertEquals(ECouponStatus.UNCONSUMED, ecoupon.status);
+        Http.Response response = GET("/getsms?" + message);
+
+        ecoupon = ECoupon.findById(id);
+        ecoupon.refresh();
+        assertEquals(ECouponStatus.CONSUMED, ecoupon.status);
+
+//        SMSMessage msg = MockSMSProvider.getLastSMSMessage();
+//        assertNotNull("【券市场】您尾号7002的券号于4月23日19时41分已成功消费，使用门店：优惠拉。如有疑问请致电：400-6262-166", msg);
+//        assertEquals("【券市场】您尾号7002的券号于4月23日19时41分已成功消费，使用门店：优惠拉。如有疑问请致电：400-6262-166", msg.getContent());
+//
+//        msg = MockSMSProvider.getLastSMSMessage();
+//        assertNotNull("【券市场】,159*****342消费者的尾号7002的券（面值：10.00元）于4月23日19时44分已验证成功，使用门店：优惠拉。客服热线：400-6262-166", msg);
+//        assertEquals("【券市场】,159*****342消费者的尾号7002的券（面值：10.00元）于4月23日19时44分已验证成功，使用门店：优惠拉。客服热线：400-6262-166", msg.getContent());
+
+    }
 
     @Test
-    @Ignore
     public void testClerk() {
         String message = "mobiles=15900002342&msg=#12i34567003#&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808" +
                 "&dt" +
@@ -151,39 +186,6 @@ public class SmsFunctionTest extends FunctionalTest {
         assertNotNull("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", msg);
         assertEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", msg.getContent());
 
-        //店员符合
-        id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
-        ecoupon = ECoupon.findById(id);
-
-        supplierId = (Long) play.test.Fixtures.idCache.get("models.supplier.Supplier-kfc");
-        Long shopId = (Long) play.test.Fixtures.idCache.get("models.sales.Shop-Shop_4");
-        Shop shop = Shop.findById(shopId);
-        shop.supplierId = supplierId;
-        shop.save();
-
-        Long brandId = (Long) play.test.Fixtures.idCache.get("models.sales.Brand-Brand_2");
-        Brand brand = Brand.findById(brandId);
-        brand.supplier = supplier;
-        brand.save();
-
-        message = "mobiles=15900002342&msg=#" + ecoupon.eCouponSn + "#&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808&dt" +
-                "=1319873904&code=1028";
-        assertEquals(ECouponStatus.UNCONSUMED, ecoupon.status);
-        response = GET("/getsms?" + message);
-
-        ecoupon = ECoupon.findById(id);
-        ecoupon.refresh();
-
-//        assertEquals(ECouponStatus.CONSUMED, ecoupon.status);
-
-//        msg = MockSMSProvider.getLastSMSMessage();
-//        assertNotNull("【券市场】您尾号7002的券号于4月23日19时41分已成功消费，使用门店：优惠拉。如有疑问请致电：400-6262-166", msg);
-//        assertEquals("【券市场】您尾号7002的券号于4月23日19时41分已成功消费，使用门店：优惠拉。如有疑问请致电：400-6262-166", msg.getContent());
-//
-//        msg = MockSMSProvider.getLastSMSMessage();
-//        assertNotNull("【券市场】,159*****342消费者的尾号7002的券（面值：10.00元）于4月23日19时44分已验证成功，使用门店：优惠拉。客服热线：400-6262-166", msg);
-//        assertEquals("【券市场】,159*****342消费者的尾号7002的券（面值：10.00元）于4月23日19时44分已验证成功，使用门店：优惠拉。客服热线：400-6262-166", msg.getContent());
-
 
         //不是商户品牌的券号
         id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon5");
@@ -213,8 +215,6 @@ public class SmsFunctionTest extends FunctionalTest {
         msg = MockSMSProvider.getLastSMSMessage();
         assertNotNull("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166");
         assertEquals("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", msg.getContent());
-
-
     }
 
 

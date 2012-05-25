@@ -84,8 +84,8 @@ public class Suppliers extends Controller {
 
         //发送密码给商户管理员手机
         String comment = Play.configuration.getProperty("message.comment", "【券市场】 恭喜您已开通券市场账号，用户名：username，密码：password。（请及时修改密码）客服热线：400-6262-166");
-        comment.replace("username", admin.loginName);
-        comment.replace("password", password);
+        comment = comment.replace("username", admin.loginName);
+        comment = comment.replace("password", password);
         SMSUtil.send(comment, admin.mobile, "0000");
 
         index();
