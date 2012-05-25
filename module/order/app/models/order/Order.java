@@ -471,8 +471,8 @@ public class Order extends Model {
                     if (this.orderItems.size()>1) {
                         note = "等件";
                     }
-                    String content ="您已成功购买"+goods.name+note+"<br>订单号是"+this
-                            .orderNumber+"，支付金额是"+this.amount+"元。<br>";
+                    String content ="您已成功购买"+goods.name+note+"订单号是"+this
+                            .orderNumber+"，支付金额是"+this.amount+"元。\r";
 
                     mail.setFullName(content);
 //                    if (orderItem.order.getUser().userInfo == null) {

@@ -85,8 +85,10 @@ public class SupplierCoupons extends Controller {
         if (eCoupon.status == ECouponStatus.UNCONSUMED) {
             eCoupon.consumed(shopId, SupplierRbac.currentUser());
             String dateTime = DateUtil.getNowTime();
+            String coupon = eCoupon.getMaskedEcouponSn();
+            coupon = coupon.substring(coupon.lastIndexOf("*") + 1);
             // 发给消费者
-            SMSUtil.send("【券市场】您尾号" + eCoupon.getMaskedEcouponSn() + "的券号于" + dateTime
+            SMSUtil.send("【券市场】您尾号" +coupon + "的券号于" + dateTime
                     + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166", eCoupon.orderItems.phone, eCoupon.replyCode);
         } else {
             renderJSON(eCoupon.status);
