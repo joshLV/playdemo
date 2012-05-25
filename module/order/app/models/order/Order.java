@@ -88,6 +88,9 @@ public class Order extends Model {
     @Column(name = "need_pay")
     public BigDecimal needPay;      //订单应付金额
 
+    @Column(name = "freight")
+    public BigDecimal freight;      //运费
+
     @Column(name = "buyer_phone")
     public String buyerPhone;
 
@@ -187,6 +190,7 @@ public class Order extends Model {
         this.needPay = BigDecimal.ZERO;
         this.accountPay = BigDecimal.ZERO;
         this.discountPay = BigDecimal.ZERO;
+        this.freight = BigDecimal.ZERO;
 
         this.lockVersion = 0;
 
@@ -283,6 +287,7 @@ public class Order extends Model {
     public void addFreight() {
         this.amount = this.amount.add(FREIGHT);
         this.needPay = this.amount;
+        this.freight = FREIGHT;
     }
 
 
@@ -716,10 +721,16 @@ public class Order extends Model {
         Order order = Order.findById(id);
         order.deliveryCompany = this.deliveryCompany;
         order.deliveryNo = this.deliveryNo;
+        order.save();
         for (OrderItems orderItem : order.orderItems) {
             if (MaterialType.REAL.equals(orderItem.goods.materialType)) {
                 orderItem.status = OrderStatus.SENT;
                 orderItem.save();
+
+                //给商户打钱
+                Account supplierAccount = AccountUtil.getAccount(orderItem.goods.supplierId, AccountType.SUPPLIER);
+                TradeBill consumeTrade = TradeUtil.createConsumeTrade(orderItem.goods.name, supplierAccount, orderItem.originalPrice, order.getId());
+                TradeUtil.success(consumeTrade, order.description);
 
                 BigDecimal platformCommission;
                 if (orderItem.salePrice.compareTo(orderItem.resalerPrice) < 0) {
@@ -752,8 +763,17 @@ public class Order extends Model {
                 }
             }
         }
-
         order.save();
+
+        if(order.freight != null && order.freight.compareTo(BigDecimal.ZERO) >= 0){
+            //给优惠券平台佣金
+            TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(
+                    AccountUtil.getPlatformCommissionAccount(),
+                    order.freight,
+                    "",
+                    order.getId());
+            TradeUtil.success(platformCommissionTrade, "运费:" + order.description);
+        }
     }
 
     public static Order findOneByUser(String orderNumber, Long userId, AccountType accountType) {
