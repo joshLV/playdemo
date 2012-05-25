@@ -63,40 +63,46 @@ public class SmsReceivers extends Controller {
         for (int i = 1; i < couponCount; i++) {
             couponNumber = couponArray[i];
             if (!FieldCheckUtil.isNumeric(couponNumber)) {
+                SMSUtil.send("【券市场】您输入的券号" + couponNumber + "无效，请确认！", mobile, code);
                 renderText("券号无效！");
             }
 
             ECoupon ecoupon = ECoupon.query(couponNumber, null);
 
             if (ecoupon == null) {
-                SMSUtil.send("【券市场】券号不存在");
-                renderText("Not Found the coupon");
+                SMSUtil.send("【券市场】您输入的券号" + couponNumber + "不存在，请确认！", mobile, code);
+                renderText("【券市场】您输入的券号" + couponNumber + "不存在，请确认！");
             } else {
                 Long supplierId = ecoupon.goods.supplierId;
 
                 Supplier supplier = Supplier.findById(supplierId);
 
                 if (supplier == null || supplier.deleted == DeletedStatus.DELETED) {
-                    renderText("Not Found the supplier");
+                    SMSUtil.send("【券市场】该商户不存在或被删除了！，请确认！", mobile, code);
+                    renderText("【券市场】该商户不存在或被删除了！，请确认！");
                 }
 
                 if (supplier.status == SupplierStatus.FREEZE) {
-                    renderText("The supplier was freeze!");
+                    SMSUtil.send("【券市场】该商户已被锁定，请确认！", mobile, code);
+                    renderText("【券市场】该商户已被锁定，请确认！");
                 }
 
                 SupplierUser supplierUser = SupplierUser.findByMobileAndSupplier(mobile, supplier);
+
                 List<Brand> brandList = Brand.findByOrder(supplier);
+
                 if (supplierUser == null || !brandList.contains(ecoupon.goods.brand)) {
                     SMSUtil.send("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166", mobile, code);
                     renderText("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166");
                 }
-
+                System.out.println("::::::::::::::::::::::::::" + ecoupon.status);
                 Long shopId = supplierUser.shop.id;
                 Shop shop = Shop.findById(shopId);
                 String shopName = shop.name;
+
                 if (ecoupon.status == ECouponStatus.UNCONSUMED) {
                     ecoupon.consumed(supplierUser.shop.id, supplierUser);
-
+                    System.out.println("::::::::::::::::::::::::::" + ecoupon.status);
                     String coupon = ecoupon.getMaskedEcouponSn();
                     coupon = coupon.substring(coupon.lastIndexOf("*") + 1);
 
@@ -186,9 +192,8 @@ public class SmsReceivers extends Controller {
         } else if (ecoupon.status == ECouponStatus.CONSUMED) {
             // 发给消费者
             SMSUtil.send("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", mobile, code);
-        }
-        //过期
-        if (ecoupon.expireAt.before(new Date())) {
+        } else if (ecoupon.expireAt.before(new Date())) {
+            //过期
             SMSUtil.send("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", mobile, code);
         }
     }
