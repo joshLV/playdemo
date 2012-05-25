@@ -8,7 +8,7 @@
         <permission key="USER_EDIT" text="修改" roles="admin" />
     </permission>
 
-    <navigation key="main" text="系统管理" action="Application.index" permissions="SYSTEM_HOME" display-order="1000">
+    <navigation key="main" text="系统管理" action="OperateUsers.index" permissions="SYSTEM_HOME" display-order="1000">
         <navigation key="user" text="用户管理" permissions="USER">
           <navigation key="user_add" text="新增用户" action="OperateUsers.add" permissions="USER"/>
           <navigation key="user_search" text="查询用户" action="OperateUsers.index" permissions="USER"/>
