@@ -103,5 +103,5 @@ accountSequence.PAY=支付
 accountSequence.REFUND=退款
 accountSequence.RECEIVE=收款
 accountSequence.FREEZE=冻结
-accountSequence.CANCEL=交易取消
+accountSequence.PAY_REFUND=支付退款
 accountSequence.UNFREEZE=取消冻结
