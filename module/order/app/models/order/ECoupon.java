@@ -143,7 +143,7 @@ public class ECoupon extends Model {
         this.consumedAt = null;
         this.refundAt = null;
         this.status = ECouponStatus.UNCONSUMED;
-        this.eCouponSn = RandomNumberUtil.generateSerialNumber(10);
+        this.eCouponSn = generateAvailableEcouponSn();
         this.orderItems = orderItems;
         this.downloadTimes = 0;
         this.isFreeze = 0;
@@ -167,9 +167,25 @@ public class ECoupon extends Model {
         return randomNumber;
     }
 
+    /**
+     * 生成消费者唯一的券号.
+     */
+    private String generateAvailableEcouponSn() {
+        String randomNumber;
+        do {
+            randomNumber = RandomNumberUtil.generateSerialNumber(10);
+        } while (isNotUniqueEcouponSn(randomNumber));
+        return randomNumber;
+    }
+
+
     private boolean isNotUniqueReplyCode(String randomNumber, long userId, AccountType userType) {
         return ECoupon.find("from ECoupon where replyCode=? and order.userId=? and order.userType=?",
                 randomNumber, userId, userType).fetch().size() > 0;
+    }
+
+    private boolean isNotUniqueEcouponSn(String randomNumber) {
+        return ECoupon.find("from ECoupon where eCouponSn=?",randomNumber).fetch().size() > 0;
     }
 
     /**
@@ -358,8 +374,8 @@ public class ECoupon extends Model {
     /**
      * 退款
      *
-     * @param eCoupon   券信息
-     * @param userId    用户信息
+     * @param eCoupon 券信息
+     * @param userId  用户信息
      * @return
      */
     public static String applyRefund(ECoupon eCoupon, Long userId, AccountType accountType) {

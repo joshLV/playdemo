@@ -154,6 +154,7 @@ public class SmsReceivers extends Controller {
 
         boolean isExisted = false;
         Long shopId = supplierUser.shop.id;
+
         //判断该券是否属于所在消费门店
         if (!ecoupon.goods.isAllShop) {
             int cnt = 0;
@@ -167,6 +168,7 @@ public class SmsReceivers extends Controller {
 
             }
         }
+
         //取得消费门店
         Shop shop = Shop.findById(shopId);
         String shopName = shop.name;

@@ -70,8 +70,13 @@
                     <span id="notEnough" class="error">#{error 'number' /}</span>
                 </li>
                 <li class="action">
-                    *{<a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>}*
-                    <a class="add" id="link_add_cart" href="#">加入分销库</a>
+                   #{if goods.isExistLibrary(resaler)}
+                       <a class="buy" href="/carts" id="link_buy_now">立即购买</a>
+                       <span>已加入分销库</span>
+                   #{/if}
+                  #{else}
+                      <a class="add" id="link_add_cart" href="#">加入分销库</a>
+                  #{/else}
                     <div id="add_cart_result" class="add-cart-success" style="display: none;">
                         <h3>已成功添加到分销库！</h3>
                         <span id="close_div" class="close-div">关闭</span>
