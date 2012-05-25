@@ -415,7 +415,7 @@ public class Order extends Model {
                     this.discountPay,
                     PaymentSource.getBalanceSource(),
                     this.getId());
-            TradeUtil.success(tradeBill, "支付(" + this.description + ")");
+            TradeUtil.success(tradeBill, this.description);
             this.payRequestId = tradeBill.getId();
         }
         this.save();
@@ -729,7 +729,7 @@ public class Order extends Model {
                                 "",
                                 order.getId());
 
-                        TradeUtil.success(uhuilaCommissionTrade, "收款(" + order.description + ")");
+                        TradeUtil.success(uhuilaCommissionTrade, order.description);
                     }
                 }
 
@@ -740,7 +740,7 @@ public class Order extends Model {
                             platformCommission,
                             "",
                             order.getId());
-                    TradeUtil.success(platformCommissionTrade, "收款(" + order.description + ")");
+                    TradeUtil.success(platformCommissionTrade, order.description);
                 }
             }
         }

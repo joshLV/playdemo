@@ -295,7 +295,7 @@ public class ECoupon extends Model {
                         eCouponSn,
                         order.getId());
 
-                TradeUtil.success(uhuilaCommissionTrade, "收款(" + order.description + ")");
+                TradeUtil.success(uhuilaCommissionTrade, order.description);
             }
         }
         if (platformCommission.compareTo(BigDecimal.ZERO) >= 0) {
@@ -305,7 +305,7 @@ public class ECoupon extends Model {
                     platformCommission,
                     eCouponSn,
                     order.getId());
-            TradeUtil.success(platformCommissionTrade, "收款(" + order.description + ")");
+            TradeUtil.success(platformCommissionTrade, order.description);
         }
 
         this.shop = Shop.findById(shopId);
