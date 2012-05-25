@@ -33,7 +33,7 @@ public class ResalerInfoUnitTest extends UnitTest {
 		resaler.address ="徐家汇";
 		resaler.mobile = "139555555555";
 		resaler.userName = "xiao";
-		resaler.updateInfo(resalerId, resaler);
+		Resaler.updateInfo(resalerId, resaler);
 		Resaler updresaler =Resaler.findById(resalerId);
 		assertEquals("徐家汇", updresaler.address);  
 		assertEquals("139555555555", updresaler.mobile);  

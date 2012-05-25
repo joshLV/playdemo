@@ -203,7 +203,7 @@ public class Resaler extends Model {
      * @param id      ID
      * @param resaler 分销商信息
      */
-    public void updateInfo(Long id, Resaler resaler) {
+    public static void updateInfo(Long id, Resaler resaler) {
         Resaler updResaler = Resaler.findById(id);
         updResaler.address = resaler.address;
         updResaler.mobile = resaler.mobile;

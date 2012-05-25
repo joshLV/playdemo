@@ -2,6 +2,7 @@ package controllers;
 
 import controllers.modules.resale.cas.SecureCAS;
 import models.resale.Resaler;
+import play.Play;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
@@ -22,12 +23,13 @@ public class ResalerInfos extends Controller {
 	 * 修改资料
 	 */
 	public static void update(@Valid Resaler resaler){
-          Resaler newResaler = SecureCAS.getResaler();
-
 		if (Validation.hasErrors()) {
-			render("ResalerInfos/index.html", resaler);
+            Validation.keep();
+            index();
 		}
-		resaler.updateInfo(newResaler.id,resaler);
-		index();
+		Resaler.updateInfo(SecureCAS.getResaler().getId(),resaler);
+        renderArgs.put("flag", "1");
+        resaler = SecureCAS.getResaler();
+        render("ResalerInfos/index.html", resaler);
 	}
 }
