@@ -1,24 +1,14 @@
 <html>
-<body><head>[一百券] 您订购的消费券</head><body>
+<body><head>[一百券] 您订购的消费券</head>
 <p>
-您好 ${message.fullName}, 
+亲爱的 ${message.email}:
 </p>
 <p>
-您在优惠啦网站上订购的优惠券如下：<br>
-<ul>
-#{list items:message.coupons, as:'coupon'}
-  <li>${coupon}</li>
-#{/list}
-</ul>
+   ${message.fullName}
+    您可随时登录一百券—“券号列表”中下载打印券号，或把券号发送到手机，凭券去商家消费。<br>
+    详情请见：http://home.uhuila.cn/orders
+
+    ----一百券
 </p>
-
-亲爱的jaygongjingyue@163.com：
-您已成功购买【仅46元！抢50元必胜客现金券一张！凭本券可到必胜客各连锁店直接当做50元现金使用！等件】 （一个商品时显示一个商品名称多个商品时加“等件”）
-订单号是39354077，支付金额是170.00元。
-您可随时登录一百券—“券号列表”中下载打印券号，或把券号发送到手机，凭券去商家消费。
-详情请见：http://home.uhuila.cn/orders
-
-----一百券
-
 </body>
 </html>

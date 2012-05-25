@@ -458,15 +458,23 @@ public class Order extends Model {
                 if (AccountType.RESALER.equals(orderItem.order.userType)) {
                     String userName = orderItem.order.getResaler().userName;
                     mail.setEmail(orderItem.order.getResaler().email);
-                    mail.setFullName(userName);
+                   // mail.setFullName(userName);
                 } else {
                     //消费者
                     mail.setEmail(orderItem.order.getUser().loginName);
-                    if (orderItem.order.getUser().userInfo == null) {
-                        mail.setFullName(orderItem.order.getUser().loginName);
-                    } else {
-                        mail.setFullName(orderItem.order.getUser().userInfo.fullName);
+                    String note= "";
+                    if (this.orderItems.size()>1) {
+                        note = "等件";
                     }
+                    String content ="您已成功购买"+goods.name+note+"<br>订单号是"+this
+                            .orderNumber+"，支付金额是"+this.amount+"元。<br>";
+
+                    mail.setFullName(content);
+//                    if (orderItem.order.getUser().userInfo == null) {
+//                        mail.setFullName(orderItem.order.getUser().loginName);
+//                    } else {
+//                        mail.setFullName(orderItem.order.getUser().userInfo.fullName);
+//                    }
                 }
                 mail.setCoupons(couponCodes);
                 MailUtil.send(mail);
