@@ -64,3 +64,8 @@ goods.REJECT=拒绝上架
 withdraw.APPLIED=等待审批
 withdraw.SUCCESS=成功
 withdraw.REJECTED=被拒绝
+
+withdraw.userName=姓名
+withdraw.subBankName=支行名称
+withdraw.cardNumber=银行卡号
+withdraw.amount=提现金额
