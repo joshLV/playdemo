@@ -39,11 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * User: pwg
- * Date: 12-3-5
- * Time: 下午5:16
- */
 @Entity
 @Table(name = "e_coupon")
 public class ECoupon extends Model {

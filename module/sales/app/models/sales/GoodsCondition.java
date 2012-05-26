@@ -131,7 +131,7 @@ public class GoodsCondition {
         }
         if (categoryId != 0) {
             condBuilder.append(" and g.id in (select g.id from " +
-                    "g.categories c where c.id = :categoryId)");
+                    "g.categories c where (c.id = :categoryId or (c.parentCategory is not null and c.parentCategory.id=:categoryId)))");
             paramMap.put("categoryId", categoryId);
         }
         if (brandId != 0) {

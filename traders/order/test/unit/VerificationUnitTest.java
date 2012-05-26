@@ -94,8 +94,8 @@ public class VerificationUnitTest extends UnitTest {
         eCouponSn = "1234567003";
         goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
         goods = Goods.findById(goodsId);
-        goods.useBeginTime = "19:00";
-        goods.useEndTime = "20:00";
+        goods.useBeginTime = "04:00";
+        goods.useEndTime = "04:05";
         goods.save();
         shopId = (Long) Fixtures.idCache.get("models.sales.Shop-Shop_5");
         map = ECoupon.queryInfo(eCouponSn, supplierId, shopId);
