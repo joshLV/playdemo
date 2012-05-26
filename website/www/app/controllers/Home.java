@@ -43,7 +43,7 @@ public class Home extends Controller {
         List<Area> areas = Area.findTopAreas(13);
         List<Category> categories = Category.findTop(8);
         renderArgs.put("categoryId", categoryId);
-        
+
         // CMS 区块
         Date currentDate = new Date();
         List<Block> slides = Block.findByType(BlockType.WEBSITE_SLIDE, currentDate);
@@ -60,11 +60,13 @@ public class Home extends Controller {
             }
             if (dailySpecialGoods == null) {
                 Logger.info("设置每日特卖商品失败，找不到" + dailySpecial.title + "对应的商品，使用推荐商品");
+            }
+        }
+        if (dailySpecialGoods == null) {
+            Logger.info("没有设置每日特卖商品，使用推荐商品");
+            if (recommendGoodsList.size() > 0) {
                 dailySpecialGoods = recommendGoodsList.get(0);
             }
-        } else {
-            Logger.info("没有设置每日特卖商品，使用推荐商品");
-            dailySpecialGoods = recommendGoodsList.get(0);
         }
         renderArgs.put("slides", slides);
         renderArgs.put("dailySpecial", dailySpecial);
