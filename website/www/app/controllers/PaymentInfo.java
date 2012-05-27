@@ -11,6 +11,7 @@ import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderType;
+import models.payment.PaymentJournal;
 import models.payment.alipay.AliPaymentFlow;
 import models.payment.kuaiqian.KuaiqianPaymentFlow;
 import models.payment.PaymentFlow;
@@ -86,9 +87,15 @@ public class PaymentInfo extends Controller {
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(paymentSource.paymentCode);
         String form = paymentFlow.getRequestForm(order.orderNumber, order.description,
                 order.discountPay, paymentSource.subPaymentCode, request.remoteAddress);
-        Logger.info("payment form params: orderNumber,"+order.orderNumber + ";description,"+order.discountPay
-                + ";subPaymentCode,"+paymentSource.paymentCode + ";remoteAddress," + request.remoteAddress);
-        Logger.info("payment form:" + form);
+
+        PaymentJournal.savePayRequestJournal(
+                order.orderNumber,
+                order.description,
+                order.discountPay.toString(),
+                paymentSource.paymentCode,
+                paymentSource.subPaymentCode,
+                request.remoteAddress,
+                form);
         render(form);
 	}
 }

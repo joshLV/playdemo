@@ -12,7 +12,6 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
 import play.Logger;
-import play.Play;
 
 
 public class KuaiqianPkiPair {

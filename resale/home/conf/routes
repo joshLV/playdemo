@@ -34,7 +34,7 @@ GET     /withdraw/apply                         Withdraw.apply
 POST    /withdraw/apply                         Withdraw.create
 
 # 显示支付结果
-*       /order_result/{partner}                 OrderResult.urlReturn
+*       /order_result/{shihui_partner}                 OrderResult.urlReturn
 
 # 购物车
 GET     /carts                                  ResalerCarts.index

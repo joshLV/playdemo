@@ -8,12 +8,14 @@ import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.accounts.util.AccountUtil;
 import models.order.Order;
+import models.payment.PaymentJournal;
 import models.payment.PaymentUtil;
 import models.payment.PaymentFlow;
 import models.resale.Resaler;
 
 import controllers.modules.resale.cas.SecureCAS;
 
+import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -53,7 +55,14 @@ public class Charge extends Controller{
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(paymentSource.paymentCode);
         String form = paymentFlow.getRequestForm(order.orderNumber, order.description,
                 order.discountPay, paymentSource.subPaymentCode, request.remoteAddress);
-
+        PaymentJournal.savePayRequestJournal(
+                order.orderNumber,
+                order.description,
+                order.discountPay.toString(),
+                paymentSource.paymentCode,
+                paymentSource.subPaymentCode,
+                request.remoteAddress,
+                form);
         render(form);
     }
 

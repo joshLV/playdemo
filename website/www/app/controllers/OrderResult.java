@@ -2,6 +2,7 @@ package controllers;
 
 
 import models.order.Order;
+import models.payment.PaymentJournal;
 import models.payment.PaymentUtil;
 import models.payment.alipay.AliPaymentFlow;
 import org.apache.commons.lang.StringUtils;
@@ -27,14 +28,17 @@ public class OrderResult extends Controller {
         String  errorMessage = "对不起，暂时无法读取信息，请您稍后再试";
 
         String orderNumber = result.get(PaymentFlow.ORDER_NUMBER);
+        String fee         = result.get(PaymentFlow.TOTAL_FEE);
+        boolean  success = false;
         if(PaymentFlow.VERIFY_RESULT_OK.equals(result.get(PaymentFlow.VERIFY_RESULT))){
-            String fee         = result.get(PaymentFlow.TOTAL_FEE);
             boolean processOrderResult = Order.verifyAndPay(orderNumber, fee);
 
             if(processOrderResult){
                 errorMessage = null;
+                success = true;
             }
         }
+        PaymentJournal.saveUrlReturnJournal(orderNumber, params.all(), result, success);
         renderTemplate("OrderResult/index.html", errorMessage, orderNumber);
     }
 }

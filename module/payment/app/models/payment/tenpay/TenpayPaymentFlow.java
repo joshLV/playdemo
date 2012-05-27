@@ -70,63 +70,26 @@ public class TenpayPaymentFlow extends PaymentFlow {
         params.put("seller_id", "");                   //卖家商户号，为空则等同于partner
 
 
-//        String  requestUrl = TenpayUtil.getRequestUrl(params, TenpayUtil.PAY_GATE_URL);
-
         TenpayUtil.addSign(params);
 
         StringBuilder sbHtml = new StringBuilder();
         sbHtml.append("<form id=\"tenPay\" name=\"tenPay\" action=\"" + TenpayUtil.PAY_GATE_URL + "\" method=\"get\" >");
 
         for(Map.Entry<String, String> entry : params.entrySet()){
-            sbHtml.append("<input type=\"hidden\" name=\"" + entry.getKey() + "\" value=\"" + entry.getValue() + "\"/>");
+            sbHtml.append("<input type=\"hidden\" name=\"")
+                  .append(entry.getKey())
+                  .append("\" value=\"")
+                  .append(entry.getValue())
+                  .append("\"/>");
         }
 
         sbHtml.append("</form><script>document.forms['tenPay'].submit();</script>");
 
         return sbHtml.toString();
 
-//        return "<script language=\"javascript\">\r\n" +
-//                "window.location.href='" + requestUrl + "';\r\n" +
-//                "</script>";
     }
 
 
-
-    @Override
-    public Map<String, String> urlReturn(Map<String, String[]> requestParams){
-        //创建支付应答对象
-        Map<String, String> result = new HashMap<>();
-        Map<String, String> params = parseRequestParams(requestParams);
-        result.put(VERIFY_RESULT, VERIFY_RESULT_ERROR);
-
-        //判断签名
-        if(TenpayUtil.isTenpaySign(new TreeMap<String, String>(params))) {
-
-            //商户订单号
-            String outTradeNo = params.get("out_trade_no");
-            //金额,以分为单位
-            String totalFee = params.get("total_fee");
-
-            result.put(ORDER_NUMBER, outTradeNo);
-            BigDecimal fee = new BigDecimal(totalFee);
-            result.put(TOTAL_FEE, fee.divide(new BigDecimal("100"), 2, RoundingMode.HALF_DOWN).toString());
-            result.put(SUCCESS_INFO, "failed");
-
-
-            //支付结果
-            String trade_state = params.get("trade_state");
-            //交易模式，1即时到账，2中介担保
-            String trade_mode = params.get("trade_mode");
-
-            if("1".equals(trade_mode)){       //即时到账
-                if( "0".equals(trade_state)){
-                    result.put(VERIFY_RESULT, VERIFY_RESULT_OK);
-                    result.put(SUCCESS_INFO, "success");
-                }
-            }
-        }
-        return result;
-    }
 
     /**
      * 验证支付返回参数是否合法.
@@ -144,7 +107,7 @@ public class TenpayPaymentFlow extends PaymentFlow {
         Map<String, String> params = parseRequestParams(requestParams);
         result.put(VERIFY_RESULT, VERIFY_RESULT_ERROR);
 
-        if (TenpayUtil.isTenpaySign(new TreeMap<String, String>(params))){
+        if (TenpayUtil.isTenpaySign(new TreeMap<>(params))){
             //通知id
             String notify_id = params.get("notify_id");
             //通信对象
@@ -169,6 +132,7 @@ public class TenpayPaymentFlow extends PaymentFlow {
                 try {
                     queryRes.setContent(httpClient.getResContent());
                 } catch (Exception e) {
+                    Logger.error("tenpay notify: setContent failed");
                     return result;
                 }
                 Logger.info("tenpay: 验证ID返回字符串:" + httpClient.getResContent());
@@ -198,9 +162,52 @@ public class TenpayPaymentFlow extends PaymentFlow {
                         }
                     }
                 }
+                Logger.info("tenpay notify: retcode:" + retcode + ";trade_state:" + trade_state + ";trade_mode:" + trade_mode);
+            }else {
+                Logger.error("tenpay notify: httpClient call failed");
             }
+        }else {
+            Logger.error("tenpay notify: isTenpaySign failed");
         }
 
         return result;
     }
+
+    @Override
+    public Map<String, String> urlReturn(Map<String, String[]> requestParams){
+        //创建支付应答对象
+        Map<String, String> result = new HashMap<>();
+        Map<String, String> params = parseRequestParams(requestParams);
+        result.put(VERIFY_RESULT, VERIFY_RESULT_ERROR);
+
+        //判断签名
+        if(TenpayUtil.isTenpaySign(new TreeMap<>(params))) {
+
+            //商户订单号
+            String outTradeNo = params.get("out_trade_no");
+            result.put(ORDER_NUMBER, outTradeNo);
+
+            //金额,以分为单位
+            String totalFee = params.get("total_fee");
+            BigDecimal fee = new BigDecimal(totalFee);
+            result.put(TOTAL_FEE, fee.divide(new BigDecimal("100"), 2, RoundingMode.HALF_DOWN).toString());
+
+
+            //支付结果
+            String trade_state = params.get("trade_state");
+            //交易模式，1即时到账，2中介担保
+            String trade_mode = params.get("trade_mode");
+
+            if("1".equals(trade_mode)){       //即时到账
+                if( "0".equals(trade_state)){
+                    result.put(VERIFY_RESULT, VERIFY_RESULT_OK);
+                }
+            }
+            Logger.info("tenpay url return: trade_mode:" + trade_mode + ";trade_state:" + trade_state);
+        }else {
+            Logger.error("tenpay url return: isTenpaySign failed");
+        }
+        return result;
+    }
+
 }

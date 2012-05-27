@@ -2,16 +2,10 @@ package models.payment.alipay;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
-import models.accounts.PaymentCallbackLog;
-import models.accounts.TradeBill;
-import models.accounts.util.TradeUtil;
-import models.order.*;
 import models.payment.PaymentFlow;
 import play.Logger;
-import play.mvc.Http;
 import thirdpart.alipay.services.AlipayService;
 import thirdpart.alipay.util.AlipayNotify;
 
@@ -148,5 +142,10 @@ public class AliPaymentFlow extends PaymentFlow {
             result.put(SUCCESS_INFO, "failed");
         }
         return result;
+    }
+
+    @Override
+    public Map<String, String> urlReturn(Map<String, String[]> requestParams){
+        return notify(requestParams);
     }
 }

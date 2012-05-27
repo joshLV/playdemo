@@ -4,11 +4,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import models.order.Order;
-import models.order.OrderStatus;
-import play.Logger;
-import play.mvc.Http;
-
 /**
  * @author likang
  *         Date: 12-3-16
@@ -38,7 +33,7 @@ public abstract class PaymentFlow {
 
     /**
      * 验证支付后台调用返回参数是否合法.
-     * 同时返回三个String参数:
+     * 同时返回四个String参数:
      *   VERIFY_RESULT   是否验证成功, true/false
      *   ORDER_NUMBER    订单号
      *   TOTAL_FEE       支付金额
@@ -49,12 +44,17 @@ public abstract class PaymentFlow {
      */
     public abstract Map<String, String> notify(Map<String, String[]> requestParams);
 
-    /*
+    /**
      * 验证前台页面跳转支付参数是否合法
+     * 同时返回三个String参数:
+     *   VERIFY_RESULT   是否验证成功, true/false
+     *   ORDER_NUMBER    订单号
+     *   TOTAL_FEE       支付金额
+     *
+     * @param requestParams 请求 参数
+     * @return 支付返回参数是否合法等信息
      */
-    public Map<String, String> urlReturn(Map<String, String[]> requestParams){
-        return notify(requestParams);
-    }
+    public abstract Map<String, String> urlReturn(Map<String, String[]> requestParams);
 
     /**
      * 解析请求参数
