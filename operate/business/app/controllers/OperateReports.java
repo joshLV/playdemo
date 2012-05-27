@@ -134,14 +134,9 @@ public class OperateReports extends Controller {
             Supplier supplier = Supplier.findById(accountSequence.account.uid);
             if (supplier != null) {
                 accountSequence.supplierName = supplier.fullName;
+                accountSequence.accountName = supplier.loginName;
             }
-            Order order = setOrderInfo(accountSequence);
-            if (order != null) {
-                User consumer = order.getUser();
-                if (consumer != null) {
-                    accountSequence.accountName = consumer.loginName;
-                }
-            }
+            setOrderInfo(accountSequence);
         }
 
         AccountSequenceSummary summary = AccountSequence.findSummaryByCondition(condition);
