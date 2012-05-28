@@ -52,7 +52,7 @@
         <ul class="recommendation-bd clearfix">
         #{list recommendGoodsList, as:'aGoods'}
             <li>
-                <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}" width="150"
+                <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="150"
                                                                    height="110" alt="${aGoods.name}"/></a>
                 <p><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
                 <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
@@ -86,7 +86,8 @@
     <ul class="boutique-bd clearfix">
     #{list goodsList, as:'aGoods'}
         <li>
-            <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="170" height="130"
+            <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="170"
+                                                               height="130"
                                                                alt="${aGoods.name}"/></a>
             <p><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
             <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
@@ -101,7 +102,7 @@
     <ul class="boutique-bd clearfix">
     #{list recentGoodsList, as:'aGoods'}
         <li>
-            <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="170" height="130"
+            <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="170" height="130"
                                                                alt="${aGoods.name}"/></a>
             <p><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
             <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
@@ -110,23 +111,3 @@
     #{/list}
     </ul>
 </div>
-
-
-<!-- Will Delete SOON.
-        <div id="left_content_top3">
-            <div>
-                <ul class="hot_shangpin">
-                    <li class="hot_shangpin_li"><a #{if categoryId == 0}class="tab_selected"#{/if}
-                                                   #{else}class="tab_unselected"#{/else}
-                                                   href="/">热门</a></li>
-                    #{list categories, as: 'category'}
-                    <li class="hot_shangpin_li"><a #{if categoryId == category.id}class="tab_selected"#{/if}
-                                                   #{else}class="tab_unselected"#{/else}
-                                                   href="/${category.id}">${category.name}</a></li>
-                    #{/list}
-                    <li width="235px" class="hot_shangpin_li" align="right"><a href="/goods"
-                                                                      class="tab_unselected">更多>></a></li>
-                </ul>
-            </div>
-       -->
-

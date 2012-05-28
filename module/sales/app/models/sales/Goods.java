@@ -33,6 +33,7 @@ import javax.persistence.*;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -459,6 +460,11 @@ public class Goods extends Model {
     @Transient
     public String getImageLargePath() {
         return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.LARGE);
+    }
+    
+    @Transient
+    public String getImageOriginalPath() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.ORIGINAL);
     }
 
     public String getPrompt() {
