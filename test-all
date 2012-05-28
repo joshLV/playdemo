@@ -9,8 +9,10 @@
 # ~ selenium/ShopsAdd...                PASSED     2s
 
 
-test_passed_regex = /^~\s+(unit|functional|selenium)\/\w+\.{3}\s+PASSED/
-test_failed_regex = /^~\s+(unit|functional|selenium)\/\w+\.{3}\s+FAILED/
+#test_passed_regex = /^~\s+(unit|functional|function|selenium)\/\w+\.{3}\s+PASSED/
+#test_failed_regex = /^~\s+(unit|functional|function|selenium)\/\w+\.{3}\s+FAILED/
+test_passed_regex = /PASSED/
+test_failed_regex = /FAILED/
 
 require 'pathname'
 current_dir = Pathname.new(File.dirname(__FILE__)).realpath
@@ -24,8 +26,12 @@ app_dirs = [
             'traders/order',
             'traders/home',
             'traders/admin',
+            'traders/sms',
+            'traders/report',
             'cdn/image-server',
             'cdn/assets',
+            'mq_consumer',
+            'operate/report',
             'operate/admin',
             'operate/business',
             'operate/cms',
@@ -42,8 +48,6 @@ app_dirs.each do |dir|
         cd #{current_dir}/#{dir}
         play clean;
         play auto-test --deps
-        find . -name [0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]* -exec rm '{}' \;
-        find . -name core -exec rm '{}' \;
 END
   IO.popen(cmd) { |output|
     output.each_line { |line|
@@ -72,6 +76,8 @@ end
 printf("----------------------------------------------------\n")
 printf("| %-30s | %6d | %6d |\n", "Total", total_passed, total_failed)
 printf("----------------------------------------------------\n")
+
+system "#{current_dir}/selenium-clean.sh"
 
 unless failed_result.empty?
   puts "Test Failured!"
