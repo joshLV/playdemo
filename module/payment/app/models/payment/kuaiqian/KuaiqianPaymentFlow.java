@@ -99,7 +99,7 @@ public class KuaiqianPaymentFlow extends PaymentFlow {
         verifyParams.put("payType",params.get("payType"));
         verifyParams.put("bankId",params.get("bankId")); //获取银行代码 参见银行代码列表
         verifyParams.put("orderId",params.get("orderId")); //获取商户订单号
-        verifyParams.put("orderTime","orderTime"); //获取订单提交时间 ///获取商户提交订单时的时间.14位数字。年[4位]月[2位]日[2位]时[2位]分[2位]秒[2位] ///如：20080101010101
+        verifyParams.put("orderTime",params.get("orderTime")); //获取订单提交时间 ///获取商户提交订单时的时间.14位数字。年[4位]月[2位]日[2位]时[2位]分[2位]秒[2位] ///如：20080101010101
         verifyParams.put("orderAmount",params.get("orderAmount")); //获取原始订单金额 订单提交到快钱时的金额，单位为分。 比方2 ，代表0.02元
         verifyParams.put("dealId",params.get("dealId")); //获取快钱交易号 获取该交易在快钱的交易号
         verifyParams.put("bankDealId",params.get("bankDealId")); //获取银行交易号 如果使用银行卡支付时，在银行的交易号。如不是通过银行支付，则为空
