@@ -172,10 +172,10 @@ public class Order extends Model {
         this.userId = userId;
         this.userType = userType;
 
-        if (userType == AccountType.CONSUMER){
+        if (userType == AccountType.CONSUMER) {
             User user = User.findById(userId);
             UserInfo userInfo = UserInfo.findByUser(user);
-            if (userInfo!= null){
+            if (userInfo != null) {
                 this.buyerPhone = userInfo.phone;
             }
             this.buyerMobile = user.mobile;
@@ -252,9 +252,9 @@ public class Order extends Model {
 
     public boolean containsRealGoods() {
         for (OrderItems orderItem : orderItems) {
-           if (MaterialType.REAL.equals(orderItem.goods.materialType)) {
-               return true;
-           }
+            if (MaterialType.REAL.equals(orderItem.goods.materialType)) {
+                return true;
+            }
         }
         return false;
     }
@@ -452,7 +452,7 @@ public class Order extends Model {
                     ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
 
                     if (!Play.runingInTestMode()) {
-                        SMSUtil.send("【券市场】"+goods.name + "券号:" + eCoupon.eCouponSn + "," +
+                        SMSUtil.send("【券市场】" + goods.name + "券号:" + eCoupon.eCouponSn + "," +
                                 "截止日期：" + COUPON_EXPIRE_FORMAT.format(eCoupon.expireAt) + ",如有疑问请致电：400-6262-166",
                                 orderItem.phone, eCoupon.replyCode);
                     }
@@ -464,16 +464,16 @@ public class Order extends Model {
                 if (AccountType.RESALER.equals(orderItem.order.userType)) {
                     String userName = orderItem.order.getResaler().userName;
                     mail.setEmail(orderItem.order.getResaler().email);
-                   // mail.setFullName(userName);
+                    // mail.setFullName(userName);
                 } else {
                     //消费者
                     mail.setEmail(orderItem.order.getUser().loginName);
-                    String note= "";
-                    if (this.orderItems.size()>1) {
+                    String note = "";
+                    if (this.orderItems.size() > 1) {
                         note = "等件";
                     }
-                    String content ="您已成功购买"+goods.name+note+"订单号是"+this
-                            .orderNumber+"，支付金额是"+this.amount+"元。\r";
+                    String content = "您已成功购买" + goods.name + note + "订单号是" + this
+                            .orderNumber + "，支付金额是" + this.amount + "元。\r";
 
                     mail.setFullName(content);
 //                    if (orderItem.order.getUser().userInfo == null) {
@@ -720,7 +720,7 @@ public class Order extends Model {
 
     public static void sendRealGoods(long id, String deliveryCompany, String deliveryNo) {
         Order order = Order.findById(id);
-        if (order == null || order.deliveryCompany != null || order.deliveryNo != null){
+        if (order == null || order.deliveryCompany != null || order.deliveryNo != null) {
             return;
         }
         order.deliveryCompany = deliveryCompany;
@@ -771,9 +771,11 @@ public class Order extends Model {
                 }
             }
         }
+
+        modifyOrderStatusByItems(order);
         order.save();
 
-        if(order.freight != null && order.freight.compareTo(BigDecimal.ZERO) >= 0){
+        if (order.freight != null && order.freight.compareTo(BigDecimal.ZERO) >= 0) {
             //给优惠券平台佣金
             TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(
                     AccountUtil.getPlatformCommissionAccount(),
@@ -784,21 +786,40 @@ public class Order extends Model {
         }
     }
 
+    /**
+     * 检查订单项的发货状态，只要有一个未发货就认为是未发货，只有全部为已发货状态的才能认为订单是已发货。
+     * @param order
+     */
+    private static void modifyOrderStatusByItems(Order order) {
+        OrderStatus status = OrderStatus.SENT;
+        if (order.status.equals(OrderStatus.PAID)) {
+            for (OrderItems item : order.orderItems) {
+                if (!item.status.equals(OrderStatus.SENT)){
+                    status = OrderStatus.PAID;
+                }
+                if (status.equals(OrderStatus.SENT)){
+                    order.status = OrderStatus.SENT;
+                }
+            }
+
+        }
+    }
+
     public static Order findOneByUser(String orderNumber, Long userId, AccountType accountType) {
         return Order.find("byOrderNumberAndUserIdAndUserType", orderNumber, userId, accountType).first();
     }
 
     public static boolean verifyAndPay(String orderNumber, String fee) {
         Order order = Order.find("byOrderNumber", orderNumber).first();
-        if(order == null){
+        if (order == null) {
             Logger.error("payment_notify:找不到订单:" + orderNumber);
-            return  false;
+            return false;
         }
-        if (order.status == OrderStatus.PAID){
+        if (order.status == OrderStatus.PAID) {
             Logger.error("payment_notify:订单已支付:" + orderNumber);
             return true;
         }
-        if (fee== null || new BigDecimal(fee).compareTo(order.discountPay) < 0){
+        if (fee == null || new BigDecimal(fee).compareTo(order.discountPay) < 0) {
             Logger.error("payment_notify:支付金额非法:订单:" + orderNumber + ";支付金额:" + fee);
             return false;
         }
@@ -807,14 +828,14 @@ public class Order extends Model {
         return true;
     }
 
-    public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance, String paymentSourceCode){
+    public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance, String paymentSourceCode) {
         //计算使用余额支付和使用银行卡支付的金额
         BigDecimal balancePaymentAmount = BigDecimal.ZERO;
         BigDecimal ebankPaymentAmount = BigDecimal.ZERO;
-        if (useBalance && order.orderType == OrderType.CONSUME){
+        if (useBalance && order.orderType == OrderType.CONSUME) {
             balancePaymentAmount = account.amount.min(order.needPay);
             ebankPaymentAmount = order.needPay.subtract(balancePaymentAmount);
-        }else {
+        } else {
             ebankPaymentAmount = order.needPay;
         }
         order.accountPay = balancePaymentAmount;
@@ -826,14 +847,14 @@ public class Order extends Model {
         order.payMethod = paymentSourceCode;
 
         //如果使用余额足以支付，则付款直接成功
-        if (ebankPaymentAmount.compareTo(BigDecimal.ZERO) == 0 && balancePaymentAmount.compareTo(order.needPay) == 0){
+        if (ebankPaymentAmount.compareTo(BigDecimal.ZERO) == 0 && balancePaymentAmount.compareTo(order.needPay) == 0) {
             order.payMethod = PaymentSource.getBalanceSource().code;
             order.paid();
             return true;
         }
 
         //无法确定支付渠道
-        if(paymentSource == null){
+        if (paymentSource == null) {
             return false;
         }
 
