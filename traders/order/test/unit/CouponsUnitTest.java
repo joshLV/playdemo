@@ -123,14 +123,12 @@ public class CouponsUnitTest extends UnitTest {
 
         ECoupon.sendUserMessage(id);
         ECoupon eCoupon = ECoupon.findById(id);
-        assertEquals(1, eCoupon.downloadTimes.intValue());
-        ECoupon.sendUserMessage(id);
         assertEquals(2, eCoupon.downloadTimes.intValue());
         ECoupon.sendUserMessage(id);
-        assertEquals(3, eCoupon.downloadTimes.intValue());
-
+        assertEquals(1, eCoupon.downloadTimes.intValue());
         ECoupon.sendUserMessage(id);
-        assertEquals(3, eCoupon.downloadTimes.intValue());
+        assertEquals(0, eCoupon.downloadTimes.intValue());
+
     }
 
 
