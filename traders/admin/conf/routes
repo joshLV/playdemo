@@ -13,6 +13,7 @@ POST    /users/{id}                             SupplierUsers.update
 DELETE  /users/{id}                             SupplierUsers.delete
 
 GET     /profile                                SupplierProfiles.index
+POST    /profile/{id}                           SupplierProfiles.update
 GET     /edit-password                          SuppliersPassword.edit
 POST    /edit-password                          SuppliersPassword.update
 

@@ -47,3 +47,18 @@
 #{/selenium}
 
 
+ #{selenium "edit 个人信息"}
+   #{include 'test/selenium/step/login.selenium' /}
+   open('/profile')
+   assertTitle('个人信息')
+   verifyTextPresent('yan')
+   assertValue('id=mobile','13211111111')
+   assertValue('id=jobNumber','1003')
+   type('id=mobile','13211111121')
+   type('id=jobNumber','1009')
+   clickAndWait('id=save')
+   assertValue('id=mobile','13211111121')
+   assertValue('id=jobNumber','1009')
+
+#{/selenium}
+

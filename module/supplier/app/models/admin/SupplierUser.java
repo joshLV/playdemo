@@ -6,6 +6,7 @@ import models.supplier.Supplier;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
+import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.libs.Images;
@@ -33,6 +34,8 @@ public class SupplierUser extends Model {
      * TODO: 员工工号需要保证在同一个Supplier中唯一
      */
     @Column(name = "job_number")
+    @Required
+    @MaxSize(value = 6)
     public String jobNumber;
 
     @Column(name = "encrypted_password")
@@ -106,8 +109,6 @@ public class SupplierUser extends Model {
         sql.append("supplier.id = :supplierId");
         params.put("supplierId", supplierId);
 
-        //		sql.append(" and loginName <> 'admin' ");
-
         sql.append(" and deleted = :deleted ");
         params.put("deleted", DeletedStatus.UN_DELETED);
 
@@ -153,7 +154,7 @@ public class SupplierUser extends Model {
      * @param mobile     手机
      * @param supplierId
      */
-    public static String checkValue(Long id, String loginName, String mobile, Long supplierId) {
+    public static String checkValue(Long id, String loginName, String mobile, String jobNumber, Long supplierId) {
         StringBuilder sq = new StringBuilder("loginName = ? and supplier=? ");
         List params = new ArrayList();
         params.add(loginName);
@@ -162,24 +163,37 @@ public class SupplierUser extends Model {
             sq.append("and id <> ?");
             params.add(id);
         }
-        List<SupplierUser> supplierUserList = SupplierUser.find(sq.toString(), params.toArray()).fetch();
         String returnFlag = "0";
+        List<SupplierUser> supplierUserList = SupplierUser.find(sq.toString(), params.toArray()).fetch();
+
         //用户名存在的情况
-        if (supplierUserList.size() > 0) returnFlag = "1";
-        else {
-            sq = new StringBuilder("mobile = ? and supplier=? ");
-            params = new ArrayList();
-            params.add(mobile);
-            params.add(new Supplier(supplierId));
-            if (id != null) {
-                sq.append("and id <> ?");
-                params.add(id);
-            }
-            //手机存在的情况
-            List<SupplierUser> mList = SupplierUser.find(sq.toString(), params.toArray()).fetch();
-            if (mList.size() > 0) returnFlag = "2";
+        if (supplierUserList.size() > 0) return "1";
+
+        sq = new StringBuilder("mobile = ? and supplier=? ");
+        params = new ArrayList();
+        params.add(mobile);
+        params.add(new Supplier(supplierId));
+        if (id != null) {
+            sq.append("and id <> ?");
+            params.add(id);
         }
-        return returnFlag;
+        //手机存在的情况
+        supplierUserList = SupplierUser.find(sq.toString(), params.toArray()).fetch();
+        if (supplierUserList.size() > 0) return "2";
+
+        //工号存在
+        sq = new StringBuilder("jobNumber = ? and supplier=? ");
+        params = new ArrayList();
+        params.add(jobNumber);
+        params.add(new Supplier(supplierId));
+        if (id != null) {
+            sq.append("and id <> ?");
+            params.add(id);
+        }
+        supplierUserList = SupplierUser.find(sq.toString(), params.toArray()).fetch();
+        if (supplierUserList.size() > 0) return "3";
+
+        return "0";
     }
 
     /**
@@ -283,13 +297,14 @@ public class SupplierUser extends Model {
 
     /**
      * 查询操作员信息
-     * @param mobile 手机
+     *
+     * @param mobile   手机
      * @param supplier 商户ID
      * @return 操作员
      */
     public static SupplierUser findByMobileAndSupplier(String mobile, Supplier supplier) {
         SupplierUser supplierUser = SupplierUser.find("deleted = ? and mobile = ? and supplier = ?",
-                DeletedStatus.UN_DELETED,mobile,supplier).first();
+                DeletedStatus.UN_DELETED, mobile, supplier).first();
         return supplierUser;
     }
 

@@ -55,9 +55,10 @@
  </div>
 
  <div class="control-group">
-  <label for="jobNumber" class="control-label">工号</label>
+  <label for="jobNumber" class="control-label"><span style="color: red; ">*</span>工号</label>
   <div class="controls">
-   <input type="text" name="supplierUser.jobNumber" class="input-large" id="jobNumber" value="${supplierUser?.jobNumber}"/>
+   <input type="text" name="supplierUser.jobNumber" class="input-large" id="jobNumber" maxlength="6" value="${supplierUser?.jobNumber}"/><span style="color:#808080;">(*限6位数字)</span>
+   <span class="error" id="checkJobNumber">#{error 'supplierUser.jobNumber' /}</span>
   </div>
  </div>
   

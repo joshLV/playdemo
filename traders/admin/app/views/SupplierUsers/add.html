@@ -30,6 +30,7 @@
   <label for="loginName" class="control-label"><span style="color: red; ">*</span>用户名</label>
   <div class="controls">
    <input type="text" name="supplierUser.loginName" class="input-large" id="loginName" value="${supplierUser?.loginName}"/>
+    <span style="color:#808080;">(*限字母，数字)</span>
     <span class="error" id="checkName">#{error 'supplierUser.loginName' /}</span>
   </div>
  </div>
@@ -56,9 +57,12 @@
  </div>
 
  <div class="control-group">
-  <label for="jobNumber" class="control-label">工号</label>
+  <label for="jobNumber" class="control-label"><span style="color: red; ">*</span>工号</label>
   <div class="controls">
-   <input type="text" name="supplierUser.jobNumber" class="input-large" id="jobNumber" value="${supplierUser?.jobNumber}"/>
+   <input type="text" name="supplierUser.jobNumber" class="input-large" id="jobNumber" maxlength="6"
+          value="${supplierUser?.jobNumber}"/>
+   <span style="color:#808080;">(*限6位数字)</span>
+   <span class="error" id="checkJobNumber">#{error 'supplierUser.jobNumber' /}</span>
   </div>
  </div>
   

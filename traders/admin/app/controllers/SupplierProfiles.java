@@ -3,6 +3,8 @@ package controllers;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.sales.Shop;
+import play.data.validation.Valid;
+import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -16,7 +18,6 @@ public class SupplierProfiles extends Controller {
      * 用户信息
      */
     public static void index() {
-        System.out.println(">>>>>>>>>>");
         Long id = SupplierRbac.currentUser().id;
         SupplierUser supplierUser = SupplierUser.findById(id);
         String roleIds = "";
@@ -28,9 +29,44 @@ public class SupplierProfiles extends Controller {
 
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         List shopList = Shop.findShopBySupplier(supplierId);
-        String okFlag = "ok";
-        render(supplierUser, roleIds, shopList,okFlag);
+        render(supplierUser, roleIds, shopList );
 
+    }
+
+    /**
+     * 操作员信息修改
+     *
+     * @param id           ID
+     * @param supplierUser 用户信息
+     */
+    public static void update(Long id, @Valid SupplierUser supplierUser) {
+
+        checkValid(id, supplierUser);
+        // 更新用户信息
+        SupplierUser.update(id, supplierUser);
+        index();
+    }
+
+    /**
+     * 验证
+     *
+     * @param supplierUser 操作员信息
+     */
+    private static void checkValid(Long id, SupplierUser supplierUser) {
+        Validation.required("supplierUser.encryptedPassword", supplierUser.encryptedPassword);
+        Validation.required("supplierUser.confirmPassword", supplierUser.confirmPassword);
+        Validation.match("validation.jobNumber", supplierUser.jobNumber, "^[0-9]*");
+        if (Validation.hasErrors()) {
+            List rolesList = SupplierRole.findAll();
+            String roleIds = "";
+            if (supplierUser.roles != null && supplierUser.roles.size() > 0) {
+                for (SupplierRole role : supplierUser.roles) {
+                    roleIds += role.id + ",";
+                }
+            }
+            supplierUser.id = id;
+            render("SupplierProfiles/index.html", supplierUser, roleIds, rolesList);
+        }
     }
 
 }

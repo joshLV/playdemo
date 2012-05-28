@@ -75,13 +75,16 @@ public class SupplierUserUnitTest extends UnitTest {
 		Long id = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user3");
         SupplierUser user = SupplierUser.findById(id);
         Long supplierUserId = user.supplier.id;
-		String returnFlag = SupplierUser.checkValue(id,"2", "", supplierUserId);
+		String returnFlag = SupplierUser.checkValue(id,"2", "","", supplierUserId);
 		assertEquals("1",returnFlag); 
 
-		returnFlag = SupplierUser.checkValue(id,"808", "1300000000", supplierUserId);
+		returnFlag = SupplierUser.checkValue(id,"808", "1300000000","", supplierUserId);
 		assertEquals("2",returnFlag); 
 
-		returnFlag = SupplierUser.checkValue(id,"808", "1300000003", supplierUserId);
+        returnFlag = SupplierUser.checkValue(id,"808", "1300000004","1001", supplierUserId);
+		assertEquals("3",returnFlag);
+
+		returnFlag = SupplierUser.checkValue(id,"808", "1300000003","1009", supplierUserId);
 		assertEquals("0",returnFlag);
 	}
 }
