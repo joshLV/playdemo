@@ -21,7 +21,7 @@
         <label class="control-label"><span style="color: red; ">*</span>银行</label>
         <div class="controls">
             <select class="input-small" name="withdrawAccount.bankName">
-                <option value="招商银行" #{if "招商银行".equals(withdrawAccount?.bankName)}  selected #{/}>招商银行</option>
+                <!--<option value="招商银行" #{if "招商银行".equals(withdrawAccount?.bankName)}  selected #{/}>招商银行</option>-->
                 <option value="中国工商银行" #{if "中国工商银行".equals(withdrawAccount?.bankName)}  selected #{/}>中国工商银行</option>
                 <option value="中国建设银行""" #{if "中国建设银行".equals(withdrawAccount?.bankName)}  selected #{/}>中国建设银行</option>
             </select>
@@ -74,7 +74,7 @@
                 <td><input type="text" class="input-small" name="withdrawAccount.userName" value="${account?.userName}"></td>
                 <td>
                     <select class="input-small" name="withdrawAccount.bankName">
-                        <option value="招商银行" #{if "招商银行".equals(account.bankName)}  selected #{/}>招商银行</option>
+                        <!--<option value="招商银行" #{if "招商银行".equals(account.bankName)}  selected #{/}>招商银行</option>-->
                         <option value="中国工商银行" #{if "中国工商银行".equals(account.bankName)}  selected #{/}>中国工商银行</option>
                         <option value="中国建设银行""" #{if "中国建设银行".equals(account.bankName)}  selected #{/}>中国建设银行</option>
                     </select>
