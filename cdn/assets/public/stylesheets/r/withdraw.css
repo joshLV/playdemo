@@ -10,3 +10,21 @@
     color: #333;
     text-decoration: none;
 }
+
+.apply-tips {
+    margin-top: 30px;
+}
+.apply-tips h4 {
+    margin-top: 10px;
+}
+.apply-tips li {
+    line-height: 22px;
+}
+.apply-tips table {
+    margin-left: 18px;
+    border: 1px solid #ACACAC;
+}
+.apply-tips table td {
+    padding: 3px 5px;
+    border: 1px solid #ACACAC;
+}
