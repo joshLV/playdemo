@@ -35,6 +35,8 @@ public class Images extends Controller {
 
     public static void showOriginalImage(String path1, String path2, String path3, String path4) {
         final String path = "/" + path1 + "/" + path2 + "/" + path3 + "/" + path4;
+        System.out.println("path:" + path);
+        System.out.println("ROOT_PATH:" + ROOT_PATH);
         String targetImagePath = ROOT_PATH + path;
 
         File targetImage = new File(targetImagePath);

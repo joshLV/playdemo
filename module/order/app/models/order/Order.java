@@ -518,6 +518,9 @@ public class Order extends Model {
      */
     public static JPAExtPaginator<Order> findUserOrders(User user, OrdersCondition condition,
                                                         int pageNumber, int pageSize) {
+        if (user == null) {
+            user = new User();
+        }
         JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
                 ("Order o", "o", Order.class, condition.getFilter(user),
                         condition.paramsMap)
@@ -788,16 +791,17 @@ public class Order extends Model {
 
     /**
      * 检查订单项的发货状态，只要有一个未发货就认为是未发货，只有全部为已发货状态的才能认为订单是已发货。
+     *
      * @param order
      */
     private static void modifyOrderStatusByItems(Order order) {
         OrderStatus status = OrderStatus.SENT;
         if (order.status.equals(OrderStatus.PAID)) {
             for (OrderItems item : order.orderItems) {
-                if (!item.status.equals(OrderStatus.SENT)){
+                if (!item.status.equals(OrderStatus.SENT)) {
                     status = OrderStatus.PAID;
                 }
-                if (status.equals(OrderStatus.SENT)){
+                if (status.equals(OrderStatus.SENT)) {
                     order.status = OrderStatus.SENT;
                 }
             }
