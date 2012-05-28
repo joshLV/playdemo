@@ -140,7 +140,7 @@ public class ECoupon extends Model {
         this.status = ECouponStatus.UNCONSUMED;
         this.eCouponSn = generateAvailableEcouponSn();
         this.orderItems = orderItems;
-        this.downloadTimes = 0;
+        this.downloadTimes = 3;
         this.isFreeze = 0;
         this.lockVersion = 0;
         this.replyCode = generateAvailableReplayCode(order.userId, order.userType);
@@ -559,14 +559,15 @@ public class ECoupon extends Model {
      */
     public static boolean sendUserMessage(long id) {
         ECoupon eCoupon = ECoupon.findById(id);
-        boolean sendFalg = false;
-        if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED && eCoupon.downloadTimes < 3) {
+        boolean sendFlag = false;
+        if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED && eCoupon.downloadTimes >0 && eCoupon
+                .downloadTimes <4) {
             send(eCoupon);
-            eCoupon.downloadTimes++;
+            eCoupon.downloadTimes--;
             eCoupon.save();
-            sendFalg = true;
+            sendFlag = true;
         }
-        return sendFalg;
+        return sendFlag;
     }
 
     /**

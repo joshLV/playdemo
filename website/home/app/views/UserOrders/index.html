@@ -107,8 +107,9 @@
                              </td>
                             #{if (++m == 1) }
                                 <td align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
-                                <td align="center" rowspan="${row.orderItems.size()}">&{'order.'+
-                                    row.status}
+                                <td align="center" rowspan="${row.orderItems.size()}">
+                                     #{if (row.status == models.order.OrderStatus.SENT)}交易成功#{/if}
+                                     #{else}&{'order.'+row.status}#{/else}
                                      <div class="caozuo_std"><a style="color:#3366CC" href="@{UserOrders.details(row.orderNumber)}"
                                                                target="_blank"
                                             >订单详情</a></div>

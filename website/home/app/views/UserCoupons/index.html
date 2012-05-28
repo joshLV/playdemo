@@ -61,16 +61,19 @@
     }
 
 
-    var cnt = 0;
-    function sendMessage(id, phone) {
-        cnt++;
-        if (cnt == 3) {
-            $("#send_msg_" + id).html("");
+
+    function sendMessage(id, phone,times) {
+        $("#downloadTimes").html(times);
+        if (times ==0) {
+            $("#send").html("<div style='text-align:center;padding-top:15px'>您3次机会已经用完！</div>");
+            $("#ul").html("");
         }
         $("#mobile").html(phone);
         $("#id").val(id);
         $.common.dialog({'id':'sendMsg', 'title':'发送短信'});
     }
+
+
     function sendMessageDialog() {
         var id = $("#id").val();
         $.ajax({
@@ -82,12 +85,15 @@
             success:function (data) {
                 if (data == '0') {
                     $("#send_dialog").html("<div style='text-align:center;padding-top:15px'>短信已发送成功，请查收！</div>");
+                    $("#popup_close").click();
+                    window.location.href="/coupons";
                 } else {
                     alert("发送失败!");
                 }
-
             }
+
         });
+
     }
 </script>
 #{/set}
@@ -169,10 +175,9 @@
 
                         #{/if}
                         <br>
-                        #{if !isExpired && coupon.status == models.order.ECouponStatus.UNCONSUMED && coupon
-                        .downloadTimes != 3}
-                            <a href="#" id="send_${coupon.id}" onclick="sendMessage('${coupon.id}',
-                                    '${coupon.orderItems.phone}')">发送短信</a>
+                        #{if !isExpired && coupon.status == models.order.ECouponStatus.UNCONSUMED}
+                            <a href="#" id="send_${coupon.id}" class="times" onclick="sendMessage('${coupon.id}',
+                                    '${coupon.orderItems.phone}','${coupon.downloadTimes}')">发送短信</a>
                         #{/if}
                     </td>
                 </tr>
@@ -189,10 +194,10 @@
 
 <div id="sendMsg">
     <div id="send_dialog" class="popup-content" style="width:450px;height:120px">
-        <div class="faq-tips">
-            为了避免券损失，只能发送至购买时的手机号码，3次重发机会。
+        <div class="faq-tips" id="send">
+            为了避免券损失，只能发送至购买时的手机号码，还有<span id="downloadTimes"></span>次重发机会。
         </div>
-        <ul>
+        <ul id="ul">
             <li class="item">
                 <label>手机号码：</label><span id="mobile"></span>
             </li>

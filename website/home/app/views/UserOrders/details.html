@@ -68,7 +68,8 @@
                     valign="middle">${order?.amount?.formatCurrency('CNY').raw()}<br/> (含运费)
                 </td>
                 <td rowspan="${orderItems.size()}" align="center" valign="middle">
-                &{'order.'+order.status}
+                  #{if (row.status == models.order.OrderStatus.SENT)}交易成功#{/if}
+                                     #{else}&{'order.'+row.status}#{/else}
                 </td>
             #{/if}
 

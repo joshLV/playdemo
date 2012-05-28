@@ -13,10 +13,10 @@ import java.util.Map;
 
 public class OrdersCondition {
 	public Map<String, Object> paramsMap = new HashMap<>();
-	public Date createdAtBegin; 
-	public Date createdAtEnd; 
-	public Date refundAtBegin; 
-	public Date refundAtEnd; 
+	public Date createdAtBegin;
+	public Date createdAtEnd;
+	public Date refundAtBegin;
+	public Date refundAtEnd;
 	public OrderStatus status;
 	public String goodsName;
 	public DeliveryType deliveryType;
