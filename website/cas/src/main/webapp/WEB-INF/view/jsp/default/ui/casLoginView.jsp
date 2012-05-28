@@ -15,7 +15,7 @@
 <body>
 <div id="header" class="clearfix">
     <div id="logo">
-        <a href="http://www.yibaiquan.com"><img src="http://a.uhcdn.com/images/u/logo.png" width="248" alt="一百券"/></a>
+        <a href="http://www.yibaiquan.com"><img src="http://a.uhcdn.com/images/u/logo.png" alt="一百券"/></a>
     </div>
 </div>
 <%
@@ -79,8 +79,8 @@ if (cookies!=null) {
             <button type="submit" id="submit" tabindex="4"> 登 录 </button>
         </form:form>
         <div class="guide">
-            <h5>还不是一百券用户？</h5>
-            <p>惠打折，惠生活；不打折，不消费！立刻免费注册成为一百券用户，轻松享受优惠生活。</p>
+            <h5>还不是优惠啦用户？</h5>
+            <p>惠打折，惠生活；不打折，不消费！立刻免费注册成为优惠啦用户，轻松享受优惠生活。</p>
             <a class="regist" id="regist" href="http://www.yibaiquan.com/register">注册新用户</a>
         </div>
     </div>
@@ -129,6 +129,7 @@ $(function(){
     <div class="ft-nav">
         <a href="http://www.yibaiquan.com/about" target="_blank">关于我们</a> |
         <a href="http://www.yibaiquan.com/contact" target="_blank">联系我们</a> |
+        <a href="http://quanmx.com/" target="_blank">商户入驻</a> |
         <a href="http://www.yibaiquan.com/help" target="_blank">常见问题</a>
     </div>
     <div class="copyright">
