@@ -1,0 +1,8 @@
+accounts.PaymentSource(alipay):
+  name: "zhifubao"
+  detail: "zhifubao"
+  code: "alipay"
+  logo: "abc"
+  showOrder: 1
+  paymentCode: "alipay"
+  subPaymentCode: "alipay"
