@@ -148,7 +148,7 @@ public class KuaiqianPaymentFlow extends PaymentFlow {
     private String join(Map<String, String> params){
         StringBuilder result = new StringBuilder();
         for(Map.Entry<String, String> entry : params.entrySet()){
-            if (!"".equals(entry.getKey())){
+            if (!"".equals(entry.getKey()) && !"".equals(entry.getValue())){
                 result.append(entry.getKey())
                       .append("=")
                       .append(entry.getValue())
