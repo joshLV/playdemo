@@ -49,6 +49,9 @@ admin.SupplierUser(admin-test):
  "deleted": "UN_DELETED"
  "encryptedPassword": "ff7edd82576fd2b9066cdf9a978f6ab5"
  "passwordSalt": "KC3CeW"
+ "lastLoginIP": "127.0.1.1"
+ "lastLoginAt": "2012-03-12T17:33:49"
+ "jobNumber": "1234"
  "roles":
  - "supplier-admin"
  - "supplier-sales"

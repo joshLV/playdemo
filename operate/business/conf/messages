@@ -106,6 +106,8 @@ supplier.phone=负责人电话
 supplier.userName=负责人姓名
 admin.loginName=管理员用户名
 admin.mobile=管理员手机
+validation.jobNumber=工号只能是数字！
+admin.jobNumber=工号
 
 resaler.NORMAL=普通会员
 resaler.VIP1=VIP1

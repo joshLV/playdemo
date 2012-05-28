@@ -15,6 +15,7 @@ note:'.'+baseDomain+' (只能是字母、数字、下划线，且长度限定在
 <input type="hidden" name="admin.loginName" value="${admin?.loginName}">
 #{/else}
 #{layout_operate.textField name:'admin.mobile', value:admin?.mobile, required:true/}
+#{layout_operate.textField name:'admin.jobNumber', value:admin?.jobNumber, required:true/}
 *{#{if "edit".equals(action)}#{layout_operate.passwordField name:'admin.encryptedPassword', value:""/}#{/if}
 #{else}#{layout_operate.passwordField name:'admin.encryptedPassword', value:"",required:true/}#{/else}}*
 *{#{layout_operate.passwordField name:'admin.encryptedPassword1', value="", required:true/}}*

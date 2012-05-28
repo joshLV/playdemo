@@ -68,6 +68,8 @@ public class Suppliers extends Controller {
         admin.encryptedPassword = password;
         admin.confirmPassword = password;
 
+        Validation.match("validation.jobNumber", admin.jobNumber, "^[0-9]*");
+
         if (Validation.hasErrors()) {
             renderArgs.put("baseDomain", BASE_DOMAIN);
             render("Suppliers/add.html");
@@ -194,6 +196,9 @@ public class Suppliers extends Controller {
 
     public static void update(Long id, @Valid Supplier supplier, File image, @Valid SupplierUser admin, Long adminId) {
         checkItems(supplier);
+
+        Validation.match("validation.jobNumber", admin.jobNumber, "^[0-9]*");
+
         if (Validation.hasErrors()) {
             for (String key : validation.errorsMap().keySet()) {
                 warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));

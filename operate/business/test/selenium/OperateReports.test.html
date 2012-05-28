@@ -9,6 +9,8 @@ models.sales.Category.class,
 models.sales.Area.class,
 models.sales.Shop.class,
 models.accounts.AccountSequence.class,
+models.accounts.PaymentSource.class,
+models.accounts.TradeBill.class,
 models.accounts.Account.class] ,
 load:['fixture/roles.yml','fixture/supplierusers.yml',
 'fixture/areas_unit.yml',
@@ -19,7 +21,9 @@ load:['fixture/roles.yml','fixture/supplierusers.yml',
 'fixture/orders.yml',
 'fixture/orderItems.yml',
 'fixture/accounts.yml',
-'fixture/account_sequence.yml'] /}
+'fixture/account_sequence.yml',
+'fixture/payment_source.yml',
+'fixture/trade_bill.yml'] /}
 %{
     account = models.accounts.util.AccountUtil.getUhuilaAccount()
 
@@ -41,10 +45,12 @@ load:['fixture/roles.yml','fixture/supplierusers.yml',
 
     account = models.accounts.util.AccountUtil.getPlatformIncomingAccount()
 
+    Long tradeId = play.test.Fixtures.idCache.get("models.accounts.TradeBill-tradebill");
     sequenceId = play.test.Fixtures.idCache.get("models.accounts.AccountSequence-seq_003");
     accountSequences = models.accounts.AccountSequence.findById(sequenceId);
     accountSequences.each{
         it.account = account
+        it.tradeId = tradeId;
         it.save()
     }
 }%

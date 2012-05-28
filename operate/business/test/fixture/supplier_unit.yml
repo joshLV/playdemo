@@ -5,8 +5,11 @@ supplier.Supplier(Supplier1):
     description: 来一份公司是一家食品公司
     createdAt: "2012-02-29T16:33:18"
     deleted: UN_DELETED
+
 supplier.Supplier(Supplier2):
     domainName: 'localhost'
+    position: "经理"
+    mobile: 13612341234
     fullName: 本地
     status: NORMAL
     createdAt: "2012-03-19T16:33:18"
