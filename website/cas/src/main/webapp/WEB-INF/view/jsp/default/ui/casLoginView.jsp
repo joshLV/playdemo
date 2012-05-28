@@ -15,7 +15,7 @@
 <body>
 <div id="header" class="clearfix">
     <div id="logo">
-        <a href="http://www.yibaiquan.com"><img src="http://a.uhcdn.com/images/u/logo.png" width="248" height="88" alt="一百券"/></a>
+        <a href="http://www.yibaiquan.com"><img src="http://a.uhcdn.com/images/u/logo.png" width="248" alt="一百券"/></a>
     </div>
 </div>
 <%
