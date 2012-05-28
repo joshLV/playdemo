@@ -10,8 +10,8 @@
     #{include "share/left.html"/}
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
-        <div class="tab_top"><span id="addressTitle">申请提现</span>
-        </div>
+        <div class="tab_top"><span id="addressTitle">申请提现</span></div>
+
         <div class="tab_top2" style="border:1px solid lightGrey;padding-bottom:10px;">
             #{form @create()}
             <table width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -76,5 +76,45 @@
             </table>
             #{/form}
         </div>
+        <div class="apply-tips">
+            <h4>取款费率说明：</h4>
+            <ol>
+                <li>1、向上海地区个人账号转账：一个工作日内到账，不收手续费</li>
+                <li>2、向其他地区个人账号转账：（非上海地区为异地）</li>
+            </ol>
+            <table cellpadding="0" cellspacing="0" border="1">
+                <thead>
+                <tr>
+                    <th width="80">银行名称</th>
+                    <th width="180">到账时间</th>
+                    <th width="320">提款手续费（此手续费实为银行收取）</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>招商银行</td>
+                    <td>24小时到账（银行系统正常） </td>
+                    <td>异地按照0.25%收取，最低5元，最高25元</td>
+                </tr>
+                <tr>
+                    <td>建设银行</td>
+                    <td>24小时到账（银行系统正常） </td>
+                    <td>异地按照0.5%收取，最低2元，最高50元</td>
+                </tr>
+                <tr>
+                    <td>工商银行</td>
+                    <td>24小时到账（银行系统正常） </td>
+                    <td>异地按照1%收取，最低1元，最高50元</td>
+                </tr>
+                </tbody>
+            </table>
+            <h4>温馨提示：</h4>
+            <ol>
+                <li>1、为了保障您的资金安全，您的提款申请需要我们的财务人员核对，核对无误后通过人工办理汇款。</li>
+                <li>2、因为需要手工处理您的提款要求，10元以下的提款我们暂不接受。</li>
+                <li>3、若五个工作日内款还没划到您的账户上，请及时与本站工作人员联系。400-6262-166。</li>
+                <li>4、提款周一至周五每日处理，法定节假日除外。工作日17点前申请提款，当日处理；17点后申请的提款，次日处理。</li>
+            </ol>
+        </div><!-- .apply-tips END -->
     </div>
 </div>
