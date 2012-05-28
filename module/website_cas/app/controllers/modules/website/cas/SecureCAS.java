@@ -66,7 +66,11 @@ public class SecureCAS extends Controller {
         if (username == null || "".equals(username)) {
             return null;
         }
-        return User.find("byLoginName", username).first();
+        User u = User.find("byLoginName", username).first();
+        if (u == null) {
+            u = User.find("byMobile", username).first();
+        }
+        return u;
     }
 
     /**
