@@ -27,7 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class VerificationUnitTest extends UnitTest {
     @Before
@@ -72,46 +71,11 @@ public class VerificationUnitTest extends UnitTest {
     }
 
     /**
-     * 测试订单列表
-     */
-    @Test
-    public void queryInfo() {
-        String eCouponSn = "003";
-        Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
-        Long shopId = (Long) Fixtures.idCache.get("models.sales.Shop-Shop_4");
-        Map<String, Object> map = ECoupon.queryInfo(eCouponSn, supplierId, shopId);
-        assertEquals(0, map.size());
-
-        eCouponSn = "1234567002";
-        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
-        Goods goods = Goods.findById(goodsId);
-        goods.useBeginTime = "00:00";
-        goods.useEndTime = "23:50";
-        map = ECoupon.queryInfo(eCouponSn, supplierId, shopId);
-        assertEquals("哈根达斯200元抵用券", map.get("name"));
-        assertEquals(0, map.get("error"));
-
-        eCouponSn = "1234567003";
-        goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        goods = Goods.findById(goodsId);
-        goods.useBeginTime = "04:00";
-        goods.useEndTime = "04:05";
-        goods.save();
-        shopId = (Long) Fixtures.idCache.get("models.sales.Shop-Shop_5");
-        map = ECoupon.queryInfo(eCouponSn, supplierId, shopId);
-        assertEquals(2, map.get("error"));
-
-        eCouponSn = "1234567002";
-        shopId = (Long) Fixtures.idCache.get("models.sales.Shop-Shop_6");
-        map = ECoupon.queryInfo(eCouponSn, supplierId, shopId);
-        assertEquals(1, map.get("error"));
-    }
-
-    /**
      * 测试用户中心券列表
      */
     @Test
     public void testGetTimeRegion() {
+
         SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
         Date d = new Date();
         Calendar calendar = Calendar.getInstance();
@@ -121,11 +85,12 @@ public class VerificationUnitTest extends UnitTest {
         Calendar calendar1 = Calendar.getInstance();
         calendar1.setTime(d);
         calendar1.add(calendar1.HOUR, 1);
-
+        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
+        ECoupon eCoupon = ECoupon.findById(id);
         String timeBegin = time.format(calendar.getTime());
         String timeEnd = time.format(calendar1.getTime());
-        boolean timeFlag = ECoupon.getTimeRegion(timeBegin, timeEnd);
-       // assertTrue(timeFlag);
+        boolean timeFlag = eCoupon.getTimeRegion(timeBegin, timeEnd);
+       assertTrue(timeFlag);
 
         Calendar calendar3 = Calendar.getInstance();
         calendar3.setTime(d);
@@ -137,7 +102,7 @@ public class VerificationUnitTest extends UnitTest {
 
         timeBegin = time.format(calendar3.getTime());
         timeEnd = time.format(calendar4.getTime());
-        timeFlag = ECoupon.getTimeRegion(timeBegin, timeEnd);
+        timeFlag = eCoupon.getTimeRegion(timeBegin, timeEnd);
         assertFalse(timeFlag);
 
 
@@ -151,7 +116,7 @@ public class VerificationUnitTest extends UnitTest {
 
         timeBegin = time.format(calendar5.getTime());
         timeEnd = time.format(calendar4.getTime());
-        timeFlag = ECoupon.getTimeRegion(timeBegin, timeEnd);
+        timeFlag = eCoupon.getTimeRegion(timeBegin, timeEnd);
         assertFalse(timeFlag);
 
         Calendar calendar6 = Calendar.getInstance();
@@ -164,7 +129,7 @@ public class VerificationUnitTest extends UnitTest {
 
         timeBegin = time.format(calendar5.getTime());
         timeEnd = time.format(calendar4.getTime());
-        timeFlag = ECoupon.getTimeRegion(timeBegin, timeEnd);
+        timeFlag = eCoupon.getTimeRegion(timeBegin, timeEnd);
         assertFalse(timeFlag);
     }
 

@@ -15,7 +15,6 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.List;
-import java.util.Map;
 
 @With(SupplierRbac.class)
 public class SupplierCoupons extends Controller {
@@ -37,13 +36,9 @@ public class SupplierCoupons extends Controller {
         if (supplierUser.shop == null) {
             render(shopList, supplierUser);
         } else {
-            Shop shop = (Shop) shopList.get(0);
+            Shop shop = supplierUser.shop;
             render(shop, supplierUser);
         }
-//        List shopList = Shop.findShopBySupplier(supplierId);
-        //SupplierSetting supplierSetting = SupplierSetting.getSetting(supplierUserId);
-        // render(shopList, supplierUser, supplierSetting);
-
     }
 
 
@@ -54,15 +49,16 @@ public class SupplierCoupons extends Controller {
      */
     @ActiveNavigation("coupons_verify")
     public static void query(Long shopId, String eCouponSn) {
-
         if (Validation.hasErrors()) {
             render("../views/SupplierCoupons/index.html", eCouponSn);
         }
 
         Long supplierId = SupplierRbac.currentUser().supplier.id;
+
         //根据页面录入券号查询对应信息
-        Map<String, Object> queryMap = ECoupon.queryInfo(eCouponSn, supplierId, shopId);
-        renderJSON(queryMap);
+        ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
+
+        render("/SupplierCoupons/consume.html", shopId, ecoupon);
     }
 
     /**
@@ -83,19 +79,20 @@ public class SupplierCoupons extends Controller {
             renderJSON("err");
         }
         if (eCoupon.status == ECouponStatus.UNCONSUMED) {
+            if (!eCoupon.isBelongShop(shopId)) {
+                renderJSON("1");
+            }
             eCoupon.consumed(shopId, SupplierRbac.currentUser());
             String dateTime = DateUtil.getNowTime();
-            String coupon = eCoupon.getMaskedEcouponSn();
-            coupon = coupon.substring(coupon.lastIndexOf("*") + 1);
+            String coupon = eCoupon.getLastCode(4);
+
             // 发给消费者
-            SMSUtil.send("【券市场】您尾号" +coupon + "的券号于" + dateTime
+            SMSUtil.send("【券市场】您尾号" + coupon + "的券号于" + dateTime
                     + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166", eCoupon.orderItems.phone, eCoupon.replyCode);
         } else {
             renderJSON(eCoupon.status);
         }
 
-//        SupplierSetting supplierSetting = new SupplierSetting();
-//        supplierSetting.save(SupplierRbac.currentUser().id, shopId, shopName);
         renderJSON("0");
     }
 

@@ -4,8 +4,8 @@
 #{set 'moreScripts'}
  <script src="@{'/public/javascripts/coupons.js'}" type="text/javascript" charset="UTF-8"></script>
  <script type="text/javascript">
- $(window).load(function(){
-	 if (!${timeFlag}) {
+     /**	 $(window).load(function(){
+ if (!${timeFlag}) {
 		 $("#shopId").attr("disabled",true);
 		 $("#eCouponSn").attr("disabled",true);
 		 $("#query").attr("disabled",true);
@@ -16,7 +16,7 @@
          $("#eCouponSn").attr("disabled",false);
 		 $("#statusw").html("");
 	 }
- });
+ });*/
 </script>
  
 #{/set}
@@ -48,8 +48,11 @@
 	     <span class="control-group" id="checksn"></span>
 	   </div>
    </div>
-     <div class="control-group" id="statusw"></div>
+     <div class="control-group" style="display: none">#{include 'SupplierCoupons/consume.html' /}</div>
      <div class="control-group" id="showinfo"></div>
+      <div class="control-group" id="statusw" ></div>
+
+
    <div class="form-actions">
   <button class="btn btn-primary" id="query" >查询</button>
     <button class="btn btn-primary" id="sure" disabled>验证</button>

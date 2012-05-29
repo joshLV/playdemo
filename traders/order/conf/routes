@@ -11,7 +11,7 @@ GET     /coupons                                SupplierCoupons.index
 #验证电子券页面
 GET     /coupons/verify                         SupplierCoupons.verify
 #验证电子券有效性
-POST    /coupons/query                          SupplierCoupons.query
+GET    /coupons/query                           SupplierCoupons.query
 #更新电子券状态及产生交易
 POST    /coupons/update                         SupplierCoupons.update
 

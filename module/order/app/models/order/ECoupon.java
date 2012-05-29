@@ -45,7 +45,7 @@ public class ECoupon extends Model {
     private static java.text.DateFormat df = new java.text.SimpleDateFormat(
             "yyyy-MM-dd");
     public static SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
-
+    private static final SimpleDateFormat COUPON_EXPIRE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = true)
     public Order order;
@@ -180,7 +180,7 @@ public class ECoupon extends Model {
     }
 
     private boolean isNotUniqueEcouponSn(String randomNumber) {
-        return ECoupon.find("from ECoupon where eCouponSn=?",randomNumber).fetch().size() > 0;
+        return ECoupon.find("from ECoupon where eCouponSn=?", randomNumber).fetch().size() > 0;
     }
 
     /**
@@ -217,61 +217,24 @@ public class ECoupon extends Model {
         return queryList.get(0);
     }
 
+
     /**
-     * 根据页面录入券号查询对应信息
+     * 是否属于所在消费门店
      *
-     * @param eCouponSn  券号
-     * @param supplierId 商户ID
-     * @return queryMap 查询信息
+     * @param shopId 门店ID
+     * @return
      */
-    public static Map<String, Object> queryInfo(String eCouponSn, Long supplierId, Long shopId) {
-        ECoupon eCoupon = query(eCouponSn, supplierId);
-        Map<String, Object> queryMap = new HashMap<>();
-        if (eCoupon != null) {
-            boolean timeFlag = true;
-
-            String timeBegin = eCoupon.goods.useBeginTime;
-            String timeEnd = eCoupon.goods.useEndTime;
-            if (StringUtils.isNotBlank(timeBegin) && StringUtils.isNotBlank(timeEnd)) {
-                timeFlag = ECoupon.getTimeRegion(timeBegin, timeEnd);
-            }
-            //不在这个制定时间范围内
-            if (!timeFlag) {
-                queryMap.put("timeBegin", timeBegin);
-                queryMap.put("timeEnd", timeEnd);
-                queryMap.put("error", 2);
-                return queryMap;
-            }
-
-
-            //判断该券是否属于所在消费门店
-            if (!eCoupon.goods.isAllShop) {
-                int cnt = 0;
-                for (Shop shop : eCoupon.goods.shops) {
-                    if (shop.id.compareTo(shopId) == 0) {
-                        cnt++;
-                    }
-                }
-                if (cnt == 0) {
-                    queryMap.put("error", 1);
-                    return queryMap;
+    public boolean isBelongShop(Long shopId) {
+        //判断该券是否属于所在消费门店
+        if (!this.goods.isAllShop) {
+            for (Shop shop : this.goods.shops) {
+                if (shop.id.compareTo(shopId) == 0) {
+                    return true;
                 }
             }
-
-            queryMap.put("name", eCoupon.goods.name);
-            queryMap.put("expireAt", eCoupon.expireAt != null ? df.format(eCoupon.expireAt) : null);
-            queryMap.put("consumedAt", eCoupon.consumedAt != null ? df.format(eCoupon.consumedAt) : null);
-            queryMap.put("eCouponSn", eCoupon.eCouponSn);
-            queryMap.put("refundAt", eCoupon.refundAt != null ? df.format(eCoupon.refundAt) : null);
-            queryMap.put("status", eCoupon.status);
-            queryMap.put("isFreeze", eCoupon.isFreeze);
-            queryMap.put("error", 0);
-            if (eCoupon.expireAt.before(new Date())) {
-                queryMap.put("status", "EXPIRED");
-            }
+            return false;
         }
-        return queryMap;
-
+        return true;
     }
 
     /**
@@ -480,14 +443,20 @@ public class ECoupon extends Model {
      *
      * @return 在该范围内：true
      */
-    public static boolean getTimeRegion(String timeBegin, String timeEnd) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        String date = time.format(calendar.getTime());
-        if (date.compareTo(timeBegin) > 0 && date.compareTo(timeEnd) < 0) {
-            return true;
+    public boolean getTimeRegion(String timeBegin,String timeEnd) {
+        boolean timeFlag = false;
+        if (StringUtils.isNotBlank(timeBegin) && StringUtils.isNotBlank(timeEnd)) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            String date = time.format(calendar.getTime());
+            if (date.compareTo(timeBegin) > 0 && date.compareTo(timeEnd) < 0) {
+                timeFlag = true;
+            }
+        } else {//没设定消费时间的场合
+            timeFlag = true;
         }
-        return false;
+
+        return timeFlag;
     }
 
     /**
@@ -532,7 +501,10 @@ public class ECoupon extends Model {
      * 发送短信
      */
     private static void send(ECoupon eCoupon) {
-        SMSUtil.send(eCoupon.goods.name + "券号:" + eCoupon.eCouponSn, eCoupon.orderItems.phone, eCoupon.replyCode);
+//        SMSUtil.send(eCoupon.goods.name + "券号:" + eCoupon.eCouponSn, eCoupon.orderItems.phone, eCoupon.replyCode);
+        SMSUtil.send("【券市场】" + eCoupon.goods.name + "券号:" + eCoupon.eCouponSn + "," +
+                "截止日期：" + COUPON_EXPIRE_FORMAT.format(eCoupon.expireAt) + ",如有疑问请致电：400-6262-166",
+                eCoupon.orderItems.phone, eCoupon.replyCode);
     }
 
     /**
@@ -560,8 +532,8 @@ public class ECoupon extends Model {
     public static boolean sendUserMessage(long id) {
         ECoupon eCoupon = ECoupon.findById(id);
         boolean sendFlag = false;
-        if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED && eCoupon.downloadTimes >0 && eCoupon
-                .downloadTimes <4) {
+        if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED && eCoupon.downloadTimes > 0 && eCoupon
+                .downloadTimes < 4) {
             send(eCoupon);
             eCoupon.downloadTimes--;
             eCoupon.save();
