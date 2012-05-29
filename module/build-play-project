@@ -1,12 +1,15 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
-test_passed_regex = /^~\s+(unit|functional|selenium)\/\w+\.{3}\s+PASSED/
-test_failed_regex = /^~\s+(unit|functional|selenium)\/\w+\.{3}\s+FAILED/
-test_failed_regex2 = /FAILED/
+#test_passed_regex = /^~\s+(unit|functional|selenium)\/\w+\.{3}\s+PASSED/
+#test_failed_regex = /^~\s+(unit|functional|selenium)\/\w+\.{3}\s+FAILED/
+#test_failed_regex2 = /FAILED/
+test_passed_regex = /PASSED/
+test_failed_regex = /FAILED/
+test_error_regex = /ERROR/
 
-play_home="/app/play-1.2.4/"
-#play_home = ""
+#play_home="/app/play-1.2.4/"
+play_home = ""
 dir = ARGV[0]
 
 if ARGV.size() < 1
@@ -56,14 +59,9 @@ IO.popen(cmd) { |output|
     if line =~ test_passed_regex
       passed_test_count += 1
     end
-    if line =~ test_failed_regex
+    if line =~ test_failed_regex or line =~ test_error_regex
       failed_test_count += 1
       failed_result << "#{dir}: #{line}"
-    else
-      if line =~ test_failed_regex2
-        failed_test_count += 1
-        failed_result << "#{dir}: #{line}"
-      end
     end
     puts "#{line}"
   }

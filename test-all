@@ -13,6 +13,7 @@
 #test_failed_regex = /^~\s+(unit|functional|function|selenium)\/\w+\.{3}\s+FAILED/
 test_passed_regex = /PASSED/
 test_failed_regex = /FAILED/
+test_error_regex = /ERROR/
 
 require 'pathname'
 current_dir = Pathname.new(File.dirname(__FILE__)).realpath
@@ -54,7 +55,7 @@ END
       if line =~ test_passed_regex
         passed_hash[dir] += 1
       end
-      if line =~ test_failed_regex
+      if line =~ test_failed_regex or line =~ test_error_regex
         failed_hash[dir] += 1
         failed_result << "#{dir}: #{line}"
       end
