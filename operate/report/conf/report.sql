@@ -50,3 +50,17 @@ sale_amount decimal,
 original_amount decimal not null,
 order_count decimal,
 created_at DATE not null);
+
+--运营后台商户报表
+drop table report_daily_supplier;
+create table report_daily_goods
+(
+id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+supplier_id BIGINT not null,
+goods_id BIGINT not null,
+buy_count BIGINT not null,
+resale_amount decimal,
+sale_amount decimal,
+original_amount decimal not null,
+order_count decimal,
+created_at DATE not null);
