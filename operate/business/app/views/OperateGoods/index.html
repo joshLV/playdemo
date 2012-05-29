@@ -7,7 +7,7 @@
 #{set 'moreStyles'}
 <style type="text/css">
     .table-striped tbody .tr-offsale{
-        color: #C4C4C4;
+        color: #A0A0A0;
     }
 
     .table-striped tbody tr.transparent td td{
@@ -117,7 +117,7 @@
                         <tr>
                             <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${goods.id}?preview=true" target="_blank"><img
                                     src="${goods?.imageTinyPath}"/></a></td>
-                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${goods.id}?preview=true">${goods?.name}</a></td>
+                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${goods.id}?preview=true" target="_blank">${goods?.name}</a></td>
                         </tr>
                         </tbody>
                     </table>

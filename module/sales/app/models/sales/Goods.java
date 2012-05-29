@@ -33,7 +33,6 @@ import javax.persistence.*;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -275,12 +274,15 @@ public class Goods extends Model {
 
     static {
         //增加可信标签到白名单
-        HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div");
+        HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div", "table", "tbody", "tr", "td",
+                "background-color","width");
         //增加可信属性
         HTML_WHITE_TAGS.addAttributes(":all", "style", "class", "id", "name");
+        HTML_WHITE_TAGS.addAttributes("table", "style", "cellpadding", "cellspacing", "border", "bordercolor","align");
         HTML_WHITE_TAGS.addAttributes("object", "width", "height", "classid", "codebase");
         HTML_WHITE_TAGS.addAttributes("param", "name", "value");
-        HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen", "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
+        HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen",
+                "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
     }
 
 
@@ -295,16 +297,6 @@ public class Goods extends Model {
             return null;
         }
         return Supplier.findById(supplierId);
-    }
-
-    static {
-        //增加可信标签到白名单
-        HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div");
-        //增加可信属性
-        HTML_WHITE_TAGS.addAttributes(":all", "style", "class", "id", "name");
-        HTML_WHITE_TAGS.addAttributes("object", "width", "height", "classid", "codebase");
-        HTML_WHITE_TAGS.addAttributes("param", "name", "value");
-        HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen", "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
     }
 
     @Column(name = "is_all_shop")
@@ -373,7 +365,7 @@ public class Goods extends Model {
 
         }
         DecimalFormat format = new DecimalFormat("#.#");
-        return format.format(discount.doubleValue())+ "折";
+        return format.format(discount.doubleValue()) + "折";
     }
 
     public void setLevelPrices(List<GoodsLevelPrice> levelPrices) {
@@ -461,13 +453,16 @@ public class Goods extends Model {
     public String getImageLargePath() {
         return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.LARGE);
     }
-    
+
     @Transient
     public String getImageOriginalPath() {
         return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.ORIGINAL);
     }
 
     public String getPrompt() {
+        /*if (id!= null && id.intValue() == 110) {
+            System.out.println("get prompt:" + prompt);
+        }*/
         if (StringUtils.isBlank(prompt)) {
             return "";
         }
@@ -475,6 +470,9 @@ public class Goods extends Model {
     }
 
     public void setPrompt(String prompt) {
+        /*if (id!= null && id.intValue() == 110) {
+            System.out.println("set prompt:" + prompt);
+        }*/
         this.prompt = Jsoup.clean(prompt, HTML_WHITE_TAGS);
     }
 
@@ -516,14 +514,13 @@ public class Goods extends Model {
     }
 
     /**
-     * 
      * @return
      */
     @Transient
     public boolean isExpired() {
-        return expireAt!=null && expireAt.before(new Date());
+        return expireAt != null && expireAt.before(new Date());
     }
-    
+
 
     //=================================================== 数据库操作 ====================================================
 
