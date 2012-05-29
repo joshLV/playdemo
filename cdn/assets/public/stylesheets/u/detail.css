@@ -100,6 +100,8 @@
     right: 3px;
     padding-left: 12px;
     color: #999;
+    line-height: 21px\9;  /* for IE9 all */
+    line-height: 22px\9\0; /* for IE9 only */
     background: url(http://img.uhcdn.com/images/u/close.png) no-repeat 0 6px;
 }
 
@@ -144,6 +146,7 @@
     border-bottom: 1px solid #AADBDB;
 }
 .tabbar li {
+    _position: relative;
     float: left;
     width: 70px;
     padding: 5px 15px;
