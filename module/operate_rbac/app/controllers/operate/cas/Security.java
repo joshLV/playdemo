@@ -16,15 +16,13 @@
  */
 package controllers.operate.cas;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
 import play.Logger;
 import play.Play;
-import play.operate.cas.models.CASUser;
+import play.cache.Cache;
 import play.mvc.Scope;
 import play.mvc.results.Forbidden;
-import play.utils.Java;
+import play.operate.cas.models.CASUser;
+import controllers.OperateRbac;
 
 /**
  * The Security class interface. This is the entry point where you can plug your own security manager, like how to check
@@ -45,6 +43,7 @@ public class Security {
     public static void setLoginUserForTest(String login) {
         if (Play.mode == Play.Mode.DEV) {
             _loginNameForTest = login;
+            Cache.add(OperateRbac.SESSION_USER_KEY + _loginNameForTest, Boolean.TRUE);
         }
     }
 
@@ -52,6 +51,7 @@ public class Security {
      * 在@After方法中要调用一下这个，以避免影响selenium.
      */
     public static void cleanLoginUserForTest() {
+        Cache.delete(OperateRbac.SESSION_USER_KEY + _loginNameForTest);
         _loginNameForTest = null;
     }
 

@@ -27,7 +27,6 @@ import navigation.NavigationHandler;
 import navigation.annotations.ActiveNavigation;
 import navigation.annotations.Right;
 import org.apache.commons.lang.StringUtils;
-import controllers.supplier.cas.Security;
 import play.Logger;
 import play.Play;
 import play.cache.Cache;
@@ -37,8 +36,8 @@ import play.mvc.Finally;
 import play.mvc.Http.Request;
 import play.mvc.Router;
 import play.supplier.cas.CASUtils;
-import play.supplier.cas.annotation.Check;
 import play.supplier.cas.models.CASUser;
+import controllers.supplier.cas.Security;
 
 /**
  * This class is a part of the play module secure-cas. It add the ability to check if the user have access to the
@@ -79,14 +78,16 @@ public class SupplierRbac extends Controller {
         if (request.invokedMethod == null)
             return;
 
-        String userName = getDomainUserName(session.get(SupplierRbac.SESSION_USER_KEY));
+        String userName = getDomainUserName(session.get(SESSION_USER_KEY));
         String subDomain = CASUtils.getSubDomain();
 
-        Logger.debug("================================================================ currentUser = " + userName + ", domain=" + subDomain);
+        Logger.info(" currentUser = " + userName + ", domain=" + subDomain);
+        Logger.info(" === username=" + userName + ", cache=" + Cache.get(SESSION_USER_KEY + userName));             
 
         SupplierUser user = null;
         // 检查权限
-        if (userName != null) {
+        // Single Sign Out: 如果Cache.get(SESSION_USER_KEY + userName)为空，则已经被其它应用注销.
+        if (userName != null && Cache.get(SESSION_USER_KEY + userName) != null) {
             // 查出当前用户的所有权限
             user = SupplierUser.findUserByDomainName(subDomain, userName);
             Logger.debug(" ---------------------------- user : " + user);
@@ -99,7 +100,7 @@ public class SupplierRbac extends Controller {
                 for (SupplierRole role : user.roles) {
                     Logger.debug("user.role=" + role.key);
                 }
-            }
+            }            
             _user.set(user);
             ContextedPermission.init(user);
         }
@@ -247,6 +248,7 @@ public class SupplierRbac extends Controller {
 
         // we clear cache
         Cache.delete("pgt_" + username);
+        Cache.delete(SESSION_USER_KEY + username);
 
         // we clear session
         session.clear();
@@ -277,11 +279,12 @@ public class SupplierRbac extends Controller {
         Boolean isAuthenticated = Boolean.FALSE;
         String ticket = params.get("ticket");
         if (ticket != null) {
-            Logger.debug("[SupplierRbac]: Try to validate ticket " + ticket);
+            Logger.info("[SupplierRbac]: Try to validate ticket " + ticket);
             CASUser user = CASUtils.valideCasTicket(ticket);
             if (user != null) {
                 isAuthenticated = Boolean.TRUE;
                 session.put(SESSION_USER_KEY, user.getUsername());
+                Cache.add(SESSION_USER_KEY + getDomainUserName(user.getUsername()), Boolean.TRUE);
                 // we invoke the implementation of onAuthenticate
                 Security.onAuthenticated(user);
             }

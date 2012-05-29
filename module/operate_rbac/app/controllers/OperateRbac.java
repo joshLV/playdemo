@@ -65,6 +65,7 @@ public class OperateRbac extends Controller {
 
         // we clear cache
         Cache.delete("pgt_" + username);
+        Cache.delete(SESSION_USER_KEY + username);
 
         // we clear session
         session.clear();
@@ -100,6 +101,7 @@ public class OperateRbac extends Controller {
             if (user != null) {
                 isAuthenticated = Boolean.TRUE;
                 session.put(SESSION_USER_KEY, user.getUsername());
+                Cache.add(SESSION_USER_KEY + user.getUsername(), Boolean.TRUE);
                 // we invoke the implementation of onAuthenticate
                 Security.onAuthenticated(user);
             }
@@ -156,7 +158,7 @@ public class OperateRbac extends Controller {
 
         OperateUser user = null;
         // 检查权限
-        if (userName != null) {
+        if (userName != null && Cache.get(SESSION_USER_KEY + userName) != null) {
             // 查出当前用户的所有权限
             user = OperateUser.findUser(userName);
             Logger.debug(" ---------------------------- user : " + user);
