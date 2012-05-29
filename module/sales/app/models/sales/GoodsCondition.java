@@ -113,15 +113,15 @@ public class GoodsCondition {
         paramMap.put("notMatchStatus", GoodsStatus.UNCREATED);
 
         if (isValidAreaId(areaId)) {
-            condBuilder.append(" and g.id in (select g.id from Shop s " +
+            condBuilder.append(" and g.id in (select g.id from g.shops s " +
                     "where s.areaId = :areaId)");
             paramMap.put("areaId", areaId);
         } else if (isValidAreaId(districtId)) {
-            condBuilder.append(" and g.id in (select g.id from Shop s " +
+            condBuilder.append(" and g.id in (select g.id from g.shops s " +
                     "where s.areaId like :areaId)");
             paramMap.put("areaId", districtId + "%");
         } else if (isValidAreaId(cityId)) {
-            condBuilder.append(" and g.id in (select g.id from Shop s " +
+            condBuilder.append(" and g.id in (select g.id from g.shops s " +
                     "where s.areaId like :areaId)");
             paramMap.put("areaId", cityId + "%");
         }
