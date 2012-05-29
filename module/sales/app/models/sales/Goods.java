@@ -515,6 +515,16 @@ public class Goods extends Model {
         return status;
     }
 
+    /**
+     * 
+     * @return
+     */
+    @Transient
+    public boolean isExpired() {
+        return expireAt!=null && expireAt.before(new Date());
+    }
+    
+
     //=================================================== 数据库操作 ====================================================
 
     @Override

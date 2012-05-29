@@ -4,7 +4,29 @@
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/goods.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
+#{set 'moreStyles'}
+<style type="text/css">
+    .table-striped tbody .tr-offsale{
+        color: #C4C4C4;
+    }
 
+    .table-striped tbody tr.transparent td td{
+        border-left: 0px;
+        background: transparent;
+    }
+
+    .expired{
+        color: #ffbe28;
+        font-weight: bold;
+    }
+
+    .zeroBaseSale{
+        color: #942e8f;
+        font-weight: bold;
+    }
+
+</style>
+#{/set}
 <div class="body">
     <legend>${title}</legend>
     <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateGoods.index()}" method="GET">
@@ -85,7 +107,7 @@
             <tbody>
 
             #{paginate.list items:goodsPage, as:'goods'}
-            <tr>
+            <tr class="#{if goods.isExpired() || goods.baseSale?.intValue() == 0}tr-offsale#{/if} transparent">
                 <td><input type="checkbox" id="checkoption" value="${goods.id}" name="id"/></td>
                 <td>${goods?.getSupplier()?.fullName}</td>
                 <td>${goods?.no}</td>
@@ -110,7 +132,9 @@
                 <td class="amount">${goods?.saleCount}</td>
                 <td>${goods?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>&{'goods.'+goods?.materialType}</td>
-                <td>&{'goods.'+goods?.getStatus()}
+                <td> #{if goods.isExpired()}<span class="expired">已过期</span><br/>#{/if}
+                    #{if goods.baseSale?.intValue() == 0}<span class="zeroBaseSale">零库存</span><br/>#{/if}
+                &{'goods.'+goods?.getStatus()}
                     #{if models.sales.GoodsStatus.APPLY.equals(goods.status)}
                         <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale",method:"PUT"/}
                         <br/>#{vx.operateLink text:"拒绝上架", url:"/goods/"+goods?.id+"/reject",method:"PUT"/}#{/if}

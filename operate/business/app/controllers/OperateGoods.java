@@ -61,6 +61,7 @@ public class OperateGoods extends Controller {
 
         if (condition == null) {
             condition = new GoodsCondition();
+            condition.status = GoodsStatus.ONSALE;
         }
         condition.orderBy = "g.createdAt";
 
