@@ -16,6 +16,7 @@
  */
 package controllers.modules.website.cas;
 
+import org.apache.commons.lang.StringUtils;
 import models.consumer.User;
 import play.Logger;
 import play.cache.Cache;
@@ -63,7 +64,7 @@ public class SecureCAS extends Controller {
 
     public static User getUser() {
         String username = session.get(SESSION_USER_KEY);
-        if (username == null || "".equals(username)) {
+        if (StringUtils.isEmpty(username)) {
             return null;
         }
         User u = User.find("byLoginName", username).first();
@@ -101,6 +102,7 @@ public class SecureCAS extends Controller {
 
         // we clear cache
         Cache.delete("pgt_" + username);
+        Cache.delete(SESSION_USER_KEY + username);
 
         // we clear session
         session.clear();
@@ -136,6 +138,7 @@ public class SecureCAS extends Controller {
             if (user != null) {
                 isAuthenticated = Boolean.TRUE;
                 session.put(SESSION_USER_KEY, user.getUsername());
+                Cache.add(SESSION_USER_KEY + user.getUsername(), Boolean.TRUE);
                 // we invoke the implementation of onAuthenticate
                 Security.invoke("onAuthenticated", user);
             }
@@ -195,7 +198,10 @@ public class SecureCAS extends Controller {
         }
 
         // if user is authenticated, the username is in session !
-        if (!session.contains(SESSION_USER_KEY)) {
+        // Single Sign Out: 如果Cache.get(SESSION_USER_KEY + session.get(SESSION_USER_KEY))为空，则已经被其它应用注销.
+        if (!session.contains(SESSION_USER_KEY)
+                || (session.contains(SESSION_USER_KEY) && Cache.get(SESSION_USER_KEY + session.get(SESSION_USER_KEY)) == null)
+                ) {
             Logger.debug("[SecureCAS]: user is not authenticated");
             // we put into cache the url we come from
             Cache.add("url_" + session.getId(), request.method == "GET" ? request.url : "/", "10min");
