@@ -19,9 +19,8 @@
 #{if rCartList.size()>0}
 <div class="order">
     <h3 class="clearfix"><span>实物凭证 - 订单信息</span></h3>
-    <div class="addr">收货地址：<span id="J_addrCurrent">#{include '/Addresses/show.html'/}</span> <a class="modify-addr"
-                                                                                            id="J_modifyAddr"
-                                                                                            href="#">[修改]</a>
+    <div class="addr">收货地址：<span id="J_addrCurrent">#{include '/Addresses/show.html'/}</span>
+        <a class="modify-addr" id="J_modifyAddr" href="#">[修改]</a>
         <span class="required" id="err-addressInfo">#{error 'address'/}</span>
         <div class="addr-all" id="J_addrAll">
             <ul id="J_addrList">

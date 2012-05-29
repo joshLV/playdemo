@@ -65,6 +65,7 @@
     border: 0;
 }
 .order-tab td {
+    padding: 3px 5px;
     border: 1px solid #C4E8E8;
 }
 .order-tab .order-hd {
@@ -82,6 +83,10 @@
 }
 .order-tab .order-time {
     padding-left: 20px;
+}
+.order-tab .goods-image {
+    float: left;
+    margin: 0 3px;
 }
 
 .apply-tips {

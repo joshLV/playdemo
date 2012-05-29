@@ -1,4 +1,4 @@
-$(function () {
+$(function ($) {
     $('#J_modifyAddr').click(function (ev) {
         ev.preventDefault();
         if ($(this).text() == '[修改]') {

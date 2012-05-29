@@ -39,15 +39,14 @@
             <form class="form-horizontal" id="couponsFrm" action="@{UserPoints.index()}" method="GET">
                  <table width="774" border="0" cellpadding="0" cellspacing="0">
                     <tr>
-                        <th width="12">&nbsp;</th>
-                        <th width="65" align="right">操作时间：</th>
-                        <th width="259" height="35"><input class="short_input Wdate" type="text"
+                        <td width="65" align="right">操作时间：</td>
+                        <td width="240" height="35"><input class="short_input Wdate" type="text"
                             name="condition.createdAtBegin" id="createdAtBegin" value="${createdAtBegin?.format()}"
                             onfocus="WdatePicker({readOnly:true})" /> - <input class="short_input Wdate" type="text"
                             id="createdAtEnd" name="condition.createdAtEnd" value="${createdAtEnd?.format()}"
-                            onfocus="WdatePicker({readOnly:true})" /></th>
-                        <th width="77">操作类型：</th>
-                        <th width="353">
+                            onfocus="WdatePicker({readOnly:true})" /></td>
+                        <td width="65">操作类型：</td>
+                        <td width="160">
                             <div class="pos_abs">#{select 'condition.pointNumber', id:'pointNumber',
                                 class:'dingdan_stauts_bg', value:pointNumber} 
                                 #{option ''}不限#{/option}
@@ -55,19 +54,19 @@
                                     #{option config?.pointNumber}${config?.pointTitle}#{/option}
                                 #{/list}
                                 #{/select}</div>
-                        </th>
-                        <th valign="middle"><button class="search-btn" id="search"> 搜　索 </button></th>
+                        </td>
+                        <td width="230"><button class="search-btn" id="search"> 搜　索 </button></td>
                     </tr>
                 </table>
             </form>
             <table class="order-tab" cellpadding="0" cellspacing="0">
                 <thead>
                     <tr class="col-name">              
-                        <td width="200">操作时间</td>
-                        <td width="150">获得积分 </td>
-                        <td width="150">使用积分</td>
-                        <td width="150">当前积分</td>
-                        <td width="120">操作类型</td>
+                        <th width="200">操作时间</th>
+                        <th width="150">获得积分 </th>
+                        <th width="150">使用积分</th>
+                        <th width="150">当前积分</th>
+                        <th width="120">操作类型</th>
                     </tr>
                 </thead>
                 #{paginate.list items:pointList, as:'point'}
