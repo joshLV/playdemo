@@ -62,20 +62,27 @@
 
 
 
-    function sendMessage(id, phone,times) {
+    function sendMessage(id, phone) {
+        var times = $("#times_"+id).val();
         $("#downloadTimes").html(times);
-        if (times ==0) {
-            $("#send").html("<div style='text-align:center;padding-top:15px'>您3次机会已经用完！</div>");
-            $("#ul").html("");
+        if (times == 0) {
+            $("#send").hide();
+            $("#gone").show();
+            $.common.dialog({'id':'sendMsg', 'title':'发送短信'});
+        } else {
+            $("#mobile").html(phone);
+            $("#id").val(id);
+            $.common.dialog({'id':'sendMsg', 'title':'发送短信'});
+            $("#gone").hide();
+            $("#send").show();
         }
-        $("#mobile").html(phone);
-        $("#id").val(id);
-        $.common.dialog({'id':'sendMsg', 'title':'发送短信'});
+
     }
 
 
     function sendMessageDialog() {
         var id = $("#id").val();
+        var cnt = $("#times_"+id).val();
         $.ajax({
             url:"/coupons-message/" + id + "/send",
             type:'GET',
@@ -85,8 +92,8 @@
             success:function (data) {
                 if (data == '0') {
                     $("#send_dialog").html("<div style='text-align:center;padding-top:15px'>短信已发送成功，请查收！</div>");
-                    $("#popup_close").click();
-                    window.location.href="/coupons";
+                    cnt--;
+                    $("#times_"+id).val(cnt);
                 } else {
                     alert("发送失败!");
                 }
@@ -176,8 +183,9 @@
                         #{/if}
                         <br>
                         #{if !isExpired && coupon.status == models.order.ECouponStatus.UNCONSUMED}
-                            <a href="#" id="send_${coupon.id}" class="times" onclick="sendMessage('${coupon.id}',
-                                    '${coupon.orderItems.phone}','${coupon.downloadTimes}')">发送短信</a>
+                            <a href="#" id="send_${coupon.id}" onclick="sendMessage('${coupon.id}',
+                                    '${coupon.orderItems.phone}')">发送短信</a>
+                        <input type="hidden" id="times_${coupon.id}" value="${coupon.downloadTimes}"/>
                         #{/if}
                     </td>
                 </tr>
@@ -196,18 +204,22 @@
     <div id="send_dialog" class="popup-content" style="width:450px;height:120px">
         <div class="faq-tips" id="send">
             为了避免券损失，只能发送至购买时的手机号码，还有<span id="downloadTimes"></span>次重发机会。
+            <ul id="ul">
+                <li class="item">
+                    <label>手机号码：</label><span id="mobile"></span>
+                </li>
+                <li class="item btn-box">
+                    <button type="submit" onClick="sendMessageDialog()">发送短信</button>
+                </li>
+            </ul>
         </div>
-        <ul id="ul">
-            <li class="item">
-                <label>手机号码：</label><span id="mobile"></span>
-            </li>
-            <li class="item btn-box">
-                <button type="submit" onClick="sendMessageDialog()">发送短信</button>
-            </li>
-        </ul>
+        <div id="gone" style="text-align:center;padding-top:15px;display: none">您3次机会已经用完！</div>
+
         <input type="hidden" id="id"/>
     </div>
+
 </div>
+
 
 <div id="refund">
     <div id="apply_dialog" class="popup-content" style="width:350px;height:100px">
