@@ -1,0 +1,46 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>很抱歉，系统发生错误</title>
+    <style type="text/css">
+        body {
+            font: 12px/1.5 tahoma,arial,宋体;
+            background-color: #FBFBFB;
+        }
+        #header {
+            width: 960px;
+            margin: 0 auto;
+        }
+        #err404 {
+            width: 560px;
+            padding:  30px 200px;
+            margin: 0 auto;
+            border: 1px solid #e4e4e4;
+        }
+        #err404 h2 {
+            font-size: 22px;
+        }
+        #footer {
+            padding: 30px 0;
+            color: #999;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="err404">
+    <h2>很抱歉，系统发生错误 ^_^ </h2>
+    <ul>
+    #{if play.mode.name() == 'DEV'}
+        #{500 exception /}
+    #{/if}
+    #{else}
+        <li>请尝试刷新这个页面</li>
+        <li>或者向我们报告错误: support@quanMX.com，谢谢!</li>
+    #{/else}
+    </ul>
+</div>
+</body>
+</html>
