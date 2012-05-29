@@ -27,7 +27,7 @@ validation.save=%s保存失败!
 validation.moreThanFaceValue=%s不能超过原价!
 validation.beforeThanEffectiveAt=%s不能早于有效期开始时间!
 validation.beforeThanUseTime=%s要大于开始时间!
-validation.allRequiredUseTime=请把使用时间输入完整!
+validation.allRequiredUseTime=请把可用时段输入完整!
 
 goods.no=编号
 goods.name=名称
@@ -57,7 +57,7 @@ goods.levelPrice.VIP2=VIP2加价
 goods.levelPrice.VIP3=VIP3加价
 goods.useBeginTime=使用开始时间
 goods.useEndTime=使用结束时间
-goods.useTime=使用时间
+goods.useTime=可用时段
 imagePath=图片
 shop.name=门店名称
 shop.address=门店地址

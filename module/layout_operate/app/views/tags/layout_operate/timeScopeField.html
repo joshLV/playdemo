@@ -8,6 +8,7 @@
 <div class="control-group">
     #{layout_operate.labelText name:_name, required:_required/}
     <div class="controls">
+        在有效期内每天
     #{field _begin}
     <input type="text" class="input-medium Wdate" id="${field.id}" name="${field.name}"
     value="${params[field.name]?.escape()?.raw() ?: field.error?.message ==
@@ -21,7 +22,7 @@
     value="${params[field.name]?.escape()?.raw() ?: field.error?.message ==
                'validation.required' ? '' :_endValue?.escape()?.raw()}"
      onfocus="WdatePicker({dateFmt:'HH:mm',minDate:'00:00',maxDate:'23:59'})"/>
-    #{/field}
+    #{/field}之间 <span style="font-family: italic">(例：午餐券可用时段为11：00至14：00)</span>
     #{field _begin}
         <span class="error">${field?.error?.raw()}</span>
     #{/field}
