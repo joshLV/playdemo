@@ -46,7 +46,7 @@ public class OperateShops extends Controller {
             }
         }
 
-        List<Supplier> supplierList = Supplier.findAll();
+        List<Supplier> supplierList = Supplier.findUnDeleted();
 
         render(shopPage, supplierList, shopCondition);
     }
@@ -80,7 +80,7 @@ public class OperateShops extends Controller {
     }
 
     private static void renderParams(Shop shop) {
-        List<Supplier> supplierList = Supplier.findAll();
+        List<Supplier> supplierList = Supplier.findUnDeleted();
         if (StringUtils.isNotEmpty(shop.areaId)) {
             Area district = Area.findParent(shop.areaId);
             shop.districtId = district.id;

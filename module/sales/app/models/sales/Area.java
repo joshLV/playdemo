@@ -100,11 +100,11 @@ public class Area extends GenericModel {
      */
     public static List<Area> findAllSubAreas(String areaId) {
         if (areaId == null || "".equals(areaId)) {
-            return find("areaType=? and deleted=? order by displayOrder",
-                    AreaType.CITY, DeletedStatus.UN_DELETED).fetch();
+            return find("areaType=? order by displayOrder",
+                    AreaType.CITY).fetch();
         }
-        return find("parent=? and deleted=? order by displayOrder",
-                new Area(areaId), DeletedStatus.UN_DELETED).fetch();
+        return find("parent=? order by displayOrder",
+                new Area(areaId)).fetch();
     }
 
     /**
@@ -113,8 +113,8 @@ public class Area extends GenericModel {
      * @param limit 获取的条数限制
      */
     public static List<Area> findTopAreas(String areaId, int limit) {
-        return find("parent=? and deleted=? order by displayOrder",
-                new Area(areaId), DeletedStatus.UN_DELETED).fetch(limit);
+        return find("parent=? order by displayOrder",
+                new Area(areaId)).fetch(limit);
     }
 
     /**
