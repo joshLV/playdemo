@@ -3,6 +3,7 @@ sales.Area(Area_021):
  name: "上海"
  displayOrder: "100"
  areaType: CITY
+ deleted: UN_DELETED
 
 sales.Area(Area_02101):
  id: "02101"
@@ -10,6 +11,7 @@ sales.Area(Area_02101):
  parent: Area_021
  displayOrder: "100"
  areaType: DISTRICT
+ deleted: UN_DELETED
 
 sales.Area(Area_02101001):
  id: "02101001"
@@ -17,6 +19,7 @@ sales.Area(Area_02101001):
  parent: Area_02101
  displayOrder: "100"
  areaType: AREA
+ deleted: UN_DELETED
 
 sales.Area(Area_02101002):
  id: "02101002"
@@ -24,3 +27,5 @@ sales.Area(Area_02101002):
  parent: Area_02101
  displayOrder: "200"
  areaType: AREA
+ deleted: UN_DELETED
+

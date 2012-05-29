@@ -3,37 +3,49 @@ sales.Area(city1):
   id: 1
   displayOrder: 100
   areaType: CITY
+  deleted: UN_DELETED
+
 sales.Area(city2):
   name: city2
   id: 2
   displayOrder: 200
   areaType: CITY
+  deleted: UN_DELETED
+
 sales.Area(city3):
   name: city3
   id: 3
   displayOrder: 300
   areaType: CITY
+  deleted: UN_DELETED
+
 sales.Area(city4):
   name: city4
   id: 4
   displayOrder: 400
   areaType: CITY
+  deleted: UN_DELETED
+
 sales.Area(city5):
   name: city5
   id: 5
   displayOrder: 500
   areaType: CITY
+  deleted: UN_DELETED
+
 sales.Area(city6):
   name: city6
   id: 6
   displayOrder: 600
   areaType: CITY
+  deleted: UN_DELETED
+
 sales.Area(city7):
   name: city7
   id: 7
   displayOrder: 700
   areaType: CITY
-
+  deleted: UN_DELETED
 
 
 sales.Area(district1):
@@ -42,42 +54,55 @@ sales.Area(district1):
   displayOrder: 100
   areaType: DISTRICT
   parent: city1
+  deleted: UN_DELETED
+
 sales.Area(district2):
   name: district2
   id: 12
   displayOrder: 200
   areaType: DISTRICT
   parent: city1
+  deleted: UN_DELETED
+
 sales.Area(district3):
   name: district3
   id: 13
   displayOrder: 300
   areaType: DISTRICT
   parent: city1
+  deleted: UN_DELETED
+
 sales.Area(district4):
   name: district4
   id: 14
   displayOrder: 400
   areaType: DISTRICT
   parent: city1
+  deleted: UN_DELETED
+
 sales.Area(district5):
   name: district5
   id: 15
   displayOrder: 500
   areaType: DISTRICT
   parent: city1
+  deleted: UN_DELETED
+
 sales.Area(district6):
   name: district6
   id: 16
   displayOrder: 600
   areaType: DISTRICT
   parent: city1
+  deleted: UN_DELETED
+
 sales.Area(district7):
   name: district7
   id: 17
   displayOrder: 700
   areaType: DISTRICT
   parent: city1
+  deleted: UN_DELETED
 
 
 
@@ -87,21 +112,29 @@ sales.Area(area1):
   displayOrder: 100
   areaType: AREA
   parent: district1
+  deleted: UN_DELETED
+
 sales.Area(area2):
   name: area2
   id: 112
   displayOrder: 200
   areaType: AREA
   parent: district1
+  deleted: UN_DELETED
+
 sales.Area(area3):
   name: area3
   id: 113
   displayOrder: 300
   areaType: AREA
   parent: district1
+  deleted: UN_DELETED
+
 sales.Area(area10):
   name: area10
   id: 121
   displayOrder: 400
   areaType: AREA
   parent: district2
+  deleted: UN_DELETED
+
