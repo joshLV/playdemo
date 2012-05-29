@@ -18,26 +18,37 @@
 #{/set}
 #{set 'moreScripts'}
 <script>
-function init(){
-    var times=5;
-    for(var i=times;i>=0;i--){
-        window.setTimeout('doUpdate(' + i + ')', (times-i) * 1000);
-    }
-}
 
 function doUpdate(num){
     if(num == 0) 
     { 
-        window.location.href="/";
+        //window.location.href="/";
+        $("#login-form").submit();
     }else{
         $("#time").html(num);
     }
 }
+
+(function(){
+    var times=5;
+    for(var i=times;i>=0;i--){
+        window.setTimeout('doUpdate(' + i + ')', (times-i) * 1000);
+    }
+})();
 </script>
 #{/set}
-<body onload="init()">
+
 <div id="content">
     <div class="wish">
-        恭喜您注册成功！<span id="time">5</span>秒之后自动跳转到登录页面
+        恭喜您注册成功！<span id="time">5</span>秒之后自动跳转到首页
     </div>
 </div>
+
+<form id="login-form" action="http://cas.${play.Play.configuration.getProperty("application.baseDomain")}/login?service=http://www.${play.Play.configuration.getProperty("application.baseDomain")}/authenticate" method="post">
+    <input type="hidden" name="username" value="${user.loginName}" />
+    <input type="hidden" name="password" value="${user.confirmPassword}" />
+    <input type="hidden" name="lt" value="" />
+    <input type="hidden" name="execution" value="e1s1" />
+    <input type="hidden" name="_eventId" value="submit" />
+</form>
+

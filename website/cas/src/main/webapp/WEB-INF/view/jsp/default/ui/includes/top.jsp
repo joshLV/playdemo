@@ -8,9 +8,10 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <spring:theme code="mobile.custom.css.file" var="mobileCss" text="" />
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-	<head>
-	    <title>一百券 - 用户登录</title>
+        <head>
+            <title>一百券 - 用户登录</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	    <link rel="icon" href="<c:url value="/favicon.ico" />" type="image/x-icon" />
-	</head>
-	<body id="cas" class="fl-theme-iphone">
+            <link rel="icon" href="http://a.uhcdn.com/images/u/favicon.ico" type="image/x-icon" />
+            <link rel="shortcut icon" href="http://a.uhcdn.com/images/u/favicon.ico" type="image/x-icon" />
+        </head>
+        <body id="cas" class="fl-theme-iphone">

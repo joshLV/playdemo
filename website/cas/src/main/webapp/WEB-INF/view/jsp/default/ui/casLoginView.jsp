@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="http://a.uhcdn.com/css/u/base.css" />
     <link rel="stylesheet" href="http://a.uhcdn.com/css/u/login.css" />
     <script src="http://a.uhcdn.com/js/u/jquery-1.7.2.min.js"></script>
+    <link rel="icon" href="http://a.uhcdn.com/images/u/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="http://a.uhcdn.com/images/u/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="header" class="clearfix">

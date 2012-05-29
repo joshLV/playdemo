@@ -67,6 +67,9 @@ public class SecureCAS extends Controller {
         if (StringUtils.isEmpty(username)) {
             return null;
         }
+        if (Cache.get(SESSION_USER_KEY + username) == null) {
+            return null;
+        }
         User u = User.find("byLoginName", username).first();
         if (u == null) {
             u = User.find("byMobile", username).first();
