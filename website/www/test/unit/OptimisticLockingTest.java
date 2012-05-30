@@ -34,6 +34,7 @@ public class OptimisticLockingTest extends UnitTest{
     }
 
     @Test
+    @Ignore
     public void testWithoutOptimisticLocking() throws Exception{
 
         Thread a = new Thread(){
@@ -72,6 +73,7 @@ public class OptimisticLockingTest extends UnitTest{
     }
 
     @Test
+    @Ignore
     public void testWitOptimisticLocking() throws Exception{
 
         Thread a = new Thread(){
