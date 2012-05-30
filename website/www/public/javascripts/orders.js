@@ -23,6 +23,9 @@ $(function ($) {
                 $('#J_confirm').text('保存并送到这个地址').attr('data-action', 'add-addr');
             });
         } else {
+            var thisid = $(this).attr('id'),
+                thisaddr = $('label[for='+ thisid +']').html();
+            $('#J_addrCurrent').html(thisaddr);
             $('#J_confirm').text('送到这个地址');
         }
     });
