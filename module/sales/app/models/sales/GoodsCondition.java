@@ -43,9 +43,10 @@ public class GoodsCondition {
     public long baseSaleBegin = -1;
     public long baseSaleEnd = -1;
 
-    private Map<String, Object> paramMap = new HashMap<>();
     public Date expireAtBegin;
     public Date expireAtEnd;
+
+    private Map<String, Object> paramMap = new HashMap<>();
 
     public GoodsCondition() {
 
@@ -113,17 +114,17 @@ public class GoodsCondition {
         paramMap.put("notMatchStatus", GoodsStatus.UNCREATED);
 
         if (isValidAreaId(areaId)) {
-            condBuilder.append(" and g.id in (select g.id from Shop s " +
+            condBuilder.append(" and g.id in (select g.id from g.shops s " +
                     "where s.areaId = :areaId)");
             paramMap.put("areaId", areaId);
         } else if (isValidAreaId(districtId)) {
-            condBuilder.append(" and g.id in (select g.id from Shop s " +
-                    "where s.areaId like :areaId)");
-            paramMap.put("areaId", districtId + "%");
+            condBuilder.append(" and g.id in (select g.id from g.shops s " +
+                    "where s.areaId like :districtId)");
+            paramMap.put("districtId", districtId + "%");
         } else if (isValidAreaId(cityId)) {
-            condBuilder.append(" and g.id in (select g.id from Shop s " +
-                    "where s.areaId like :areaId)");
-            paramMap.put("areaId", cityId + "%");
+            condBuilder.append(" and g.id in (select g.id from g.shops s " +
+                    "where s.areaId like :cityId)");
+            paramMap.put("cityId", cityId + "%");
         }
         if (supplierId != 0) {
             condBuilder.append(" and g.supplierId = :supplierId");
@@ -131,7 +132,7 @@ public class GoodsCondition {
         }
         if (categoryId != 0) {
             condBuilder.append(" and g.id in (select g.id from " +
-                    "g.categories c where (c.id = :categoryId or (c.parentCategory is not null and c.parentCategory.id=:categoryId)))");
+                    "g.categories c where c.id = :categoryId or (c.parentCategory is not null and c.parentCategory.id=:categoryId))");
             paramMap.put("categoryId", categoryId);
         }
         if (brandId != 0) {
@@ -213,6 +214,8 @@ public class GoodsCondition {
             paramMap.put("materialType", materialType);
         }
         System.out.println("condBuilder.toString():" + condBuilder.toString());
+        System.out.println("================"+toString());
+
         return condBuilder.toString();
     }
 
@@ -372,5 +375,15 @@ public class GoodsCondition {
         }
 
         return sql.toString();
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "[supplierId:" + supplierId + ",categoryId:" + categoryId + ",cityId:" + cityId + "," +
+                "districtId:" + districtId + ",areaId:" + areaId + ",brandId:" + brandId + ",priceFrom:" + priceFrom + "," +
+                "priceTo:" + priceTo + ",type:" + type + ",name:" + name + ",no:" + no + ",salePriceBegin:" + salePriceBegin + "," +
+                "salePriceEnd:" + salePriceEnd + ",saleCountBegin:" + saleCountBegin + ",saleCountEnd:" + saleCountEnd + "," +
+                "materialType:" + materialType + ",status:" + status + ",baseSaleBegin:" + baseSaleBegin + "," +
+                "baseSaleEnd:" + baseSaleEnd + ",expireAtBegin:" + expireAtBegin + ",expireAtEnd:" + expireAtEnd + "]";
     }
 }
