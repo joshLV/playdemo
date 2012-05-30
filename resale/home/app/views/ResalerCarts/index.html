@@ -46,7 +46,7 @@
                 </ul>
             </div>
             <div class="phones">
-                    <h3>添加接收手机号码：</h3>
+                    <h3>添加接收券号的手机：</h3>
                     <textarea name="phones" cols="20" rows="12"></textarea>
                 <span>
                     同一个商品，不同的收货人。<br/><br/>
@@ -55,7 +55,10 @@
                 </span>
             </div>
         </div>
-        <div style="color:#F50;text-align:center;line-height:22px">#{error 'goodsId'/} #{error 'phones'/}</div>
+        <div class="saletip clearfix">
+            <span class="saletip-left">#{error 'goodsId'/}</span>
+            <span class="saletip-right">#{error 'phones'/}</span>
+        </div>
         <div class="submit-btn">
             <button type="submit" id="submit"> 添 加</button>
         </div>
@@ -92,18 +95,13 @@
                         id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level)}</td>
                     <td>
                         <a href="#" class="reduce_box" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
-                            <img src="@{'/public/images/sub_anniu.jpg'}"
-                                 id="inc_sub_${cartItem.goods.id}-${cartItem.phone}"/>
+                            <img src="@{'/public/images/sub_anniu.jpg'}" id="inc_sub_${cartItem.goods.id}-${cartItem.phone}"/>
                         </a>
-                        <input class="num-input" type="text" value="${cartItem.number}"
-                               id="num_${cartItem.goods.id}-${cartItem.phone}"/>
-                        <input type="hidden" value="${cartItem.number}"
-                               id="last_num_${cartItem.goods.id}-${cartItem.phone}"/>
-                        <input type="hidden" value="${cartItem.goods.baseSale}"
-                               id="stock_${cartItem.goods.id}-${cartItem.phone}">
+                        <input class="num-input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}-${cartItem.phone}"/>
+                        <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}-${cartItem.phone}"/>
+                        <input type="hidden" value="${cartItem.goods.baseSale}" id="stock_${cartItem.goods.id}-${cartItem.phone}">
                         <a class="add_box" href="#" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
-                            <img src="@{'/public/images/add_anniu.jpg'}"
-                                 id="inc_add_${cartItem.goods.id}-${cartItem.phone}"/>
+                            <img src="@{'/public/images/add_anniu.jpg'}" id="inc_add_${cartItem.goods.id}-${cartItem.phone}"/>
                         </a>
                     </td>
                     <td class="amount">

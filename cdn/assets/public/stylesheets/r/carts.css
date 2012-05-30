@@ -68,6 +68,19 @@
     padding: 8px;
     color: #B16666;
 }
+.saletip {
+    padding: 5px 0;
+    color: #F50;
+}
+.saletip .saletip-left {
+    float: left;
+    width: 465px;
+}
+.saletip .saletip-right {
+    float: right;
+    width: 465px;
+    text-align: left;
+}
 .phones {
     float: right;
     width: 445px;
@@ -276,12 +289,6 @@
     font-weight: 700;
     background: url(http://img.uhcdn.com/images/r/pay_btn.png) repeat-x 0 0;
     cursor: pointer;
-}
-.pay-success {
-    padding: 50px 30px;
-    /* color: #227b10; */
-    font-size: 14px;
-    font-weight: 700;
 }
 
 .pay-success {
