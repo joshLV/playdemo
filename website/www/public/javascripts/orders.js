@@ -1,13 +1,17 @@
 $(function ($) {
     $('#J_modifyAddr').click(function (ev) {
         ev.preventDefault();
-        if ($(this).text() == '[修改]') {
+        var _this = $(this);
+
+        if (_this.text() == '[修改]') {
             $("#err-addressInfo").hide();
-            $(this).text('[关闭]');
-            $('#J_addrAll').show();
+            _this.text('[关闭]');
+            $('#J_addrList').load('/Addresses/index', function() {
+                $('#J_addrAll').show(100);
+            });
             $('#J_addrEditBox').html("");
         } else {
-            $(this).text('[修改]');
+            _this.text('[修改]');
             $('#J_addrAll').hide();
             $('#J_useAddr').hide();
             $('#J_confirm').text('送到这个地址').removeAttr('data-action');
@@ -39,7 +43,7 @@ $(function ($) {
 
         $(this).append('<div class="addr-del-confirm">您要删除该地址吗？<br><b>确定删除</b> <b>取消</b><img src="http://img.uhcdn.com/images/u/o_jian.png" /></div>');
 
-        $('.addr-del-confirm').click(function (ev) {
+        $('.addr-del-confirm').live('click', function (ev) {
             var txt = $(ev.target).text();
             if (txt == '确定删除') {
                 $.ajax({
@@ -49,10 +53,8 @@ $(function ($) {
                         $('#addr-li-' + addrId).remove();
                         //如果被删除的地址是默认地址的话，则默认收货地址信息和地址列表都要重新加载
                         if (isDefault) {
-                            $('#J_addrCurrent').load('/orders/addresses/default', function (data) {
-                            });
-                            $('#J_addrList').load('/orders/addresses', function (data) {
-                            });
+                            $('#J_addrCurrent').load('/orders/addresses/default');
+                            $('#J_addrList').load('/orders/addresses');
                         }
                     }
                 });
@@ -63,7 +65,8 @@ $(function ($) {
     });
 
     // 编辑地址
-    $('.addr-edit').live('click', function () {
+    $('.addr-edit').live('click', function (ev) {
+        ev.preventDefault();
         var addrId = $(this).attr('data-addrid');
 
         $('#J_addrEditBox').load('/orders/addresses/' + addrId + '/edit', function (data) {
@@ -121,8 +124,7 @@ $(function ($) {
                     'address.phoneExtNumber':$.trim($('#J_addrPhoneExt').val()),
                     'address.isDefault':true
                 }, function (data) {
-                    $('#J_addrCurrent').load('/orders/addresses/default', function (data) {
-                    });
+                    $('#J_addrCurrent').load('/orders/addresses/default');
                     $('#J_modifyAddr').text('[修改]');
                     $('#J_addrAll').hide();
 

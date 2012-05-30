@@ -1,7 +1,6 @@
 #{extends 'main.html' /}
 #{set title:'一百券 - 确认订单信息' /}
 #{set 'moreStyles'}
-<!--<link href="@@{'/public/stylesheets/order_info.css'}" rel="stylesheet" type="text/css"/>-->
 <link href="@@{'/public/stylesheets/carts-step.css'}" rel="stylesheet" type="text/css"/>
 #{/set}
 #{set 'moreScripts'}
@@ -24,7 +23,9 @@
         <span class="required" id="err-addressInfo">#{error 'address'/}</span>
         <div class="addr-all" id="J_addrAll">
             <ul id="J_addrList">
+            *{
                 #{include '/Addresses/index.html'/}
+            }*
             </ul>
             <div id="J_addrEditBox"></div>
             <a class="confirm" id="J_confirm" href="#">送到这个地址</a>
@@ -49,7 +50,7 @@
                 #{if (++i) == 1 }
                 <td rowspan="${rCartList.size()}" align="center" valign="middle">
                     ${rCartAmount.formatCurrency('CNY').raw()}<br/>
-                        （含${models.order.Order.FREIGHT.formatCurrency('CNY').raw()}元运费）<span class="strong_gray"></span></td>
+                    （含${models.order.Order.FREIGHT.formatCurrency('CNY').raw()}元运费）<span class="strong_gray"></span></td>
                 #{/if}
             </tr>
             #{/list}
@@ -65,9 +66,11 @@
 #{if eCartList.size()>0}
 <div class="order">
     <h3 class="clearfix"><span>电子凭证 - 订单信息</span></h3>
-    <div class="addr"><span class="required">*</span>接收手机：<input class="num_input_bg" type="text" name="mobile" value="${user?.mobile}"
-                                                                 id="ecart_mobile"/>
-        <span class="required">#{error 'mobile'/}</span></div>
+    <div class="addr">
+        <span class="required">*</span>接收手机：
+        <input class="num_input_bg" type="text" name="mobile" value="${user?.mobile}" id="ecart_mobile"/>
+        <span class="required">#{error 'mobile'/}</span>
+    </div>
     <table class="order-list" border="0" cellpadding="0" cellspacing="0">
         <thead>
             <tr bgcolor="F6F6F6">
