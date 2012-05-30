@@ -14,7 +14,7 @@ import play.db.jpa.JPAPlugin;
 import play.test.UnitTest;
 
 public class OptimisticLockingTest extends UnitTest{
-    
+
     @Before
     public void setup(){
         Book.deleteAll();
@@ -23,11 +23,11 @@ public class OptimisticLockingTest extends UnitTest{
         Book book = new Book();
         book.count = 0L;
         book.save();
-        
+
         MyBook mybook = new MyBook();
         mybook.count = 0L;
         mybook.save();
-        
+
         BookEnhance book2 = new BookEnhance();
         book2.count = 0L;
         book2.save();
@@ -35,10 +35,10 @@ public class OptimisticLockingTest extends UnitTest{
 
     @Test
     public void testWithoutOptimisticLocking() throws Exception{
-        
+
         Thread a = new Thread(){
-            
-            public void run(){  
+
+            public void run(){
                 JPAPlugin.startTx(false);
                 System.out.println("Thread1");
                 Book book = (Book)Book.findAll().get(0);
@@ -52,8 +52,8 @@ public class OptimisticLockingTest extends UnitTest{
                 book.save();
                 System.out.println("Thread3");
             }
-        };        
-        
+        };
+
         Book book = (Book)Book.findAll().get(0);
         System.out.println("Main0");
         a.start();
@@ -70,13 +70,13 @@ public class OptimisticLockingTest extends UnitTest{
         System.out.println("Main3");
         assertEquals(new Long(2l), book.count);
     }
-    
+
     @Test
     public void testWitOptimisticLocking() throws Exception{
-        
+
         Thread a = new Thread(){
-            
-            public void run(){  
+
+            public void run(){
                 JPAPlugin.startTx(false);
                 System.out.println("Thread1");
                 MyBook book = (MyBook)MyBook.findAll().get(0);
@@ -90,8 +90,8 @@ public class OptimisticLockingTest extends UnitTest{
                 book.save();
                 System.out.println("Thread3");
             }
-        };        
-        
+        };
+
         MyBook book = (MyBook)MyBook.findAll().get(0);
         System.out.println("Main0");
         a.start();
@@ -108,20 +108,20 @@ public class OptimisticLockingTest extends UnitTest{
         System.out.println("Main3");
         assertEquals(new Long(3l), book.count);
     }
-    
-    
+
+    @Ignore
     @Test
     public void testWitOptimisticLockingAndRetry() throws Exception{
-        
+
         Thread a = new Thread(){
-            
+
             public void updateCount(long id, long count) {
                 MyBook book = MyBook.findById(id);
                 book.count = count;
                 book.save();
             }
-            
-            public void run(){  
+
+            public void run(){
                 JPAPlugin.startTx(false);
                 System.out.println("Thread1");
                 MyBook book = (MyBook)MyBook.findAll().get(0);
@@ -143,8 +143,8 @@ public class OptimisticLockingTest extends UnitTest{
                 }
                 System.out.println("Thread3");
             }
-        };        
-        
+        };
+
         MyBook book = (MyBook)MyBook.findAll().get(0);
         System.out.println("Main0");
         a.start();
@@ -162,14 +162,14 @@ public class OptimisticLockingTest extends UnitTest{
         System.out.println("Main3");
         assertEquals(new Long(2l), book.count);
     }
-    
-    
+
+
     @Test
     public void testWithLockAndRetry() throws Exception{
-        
+
         Thread a = new Thread(){
-            
-            public void run(){  
+
+            public void run(){
                 JPAPlugin.startTx(false);
                 System.out.println("Thread1");
                 BookEnhance book = (BookEnhance)BookEnhance.findAll().get(0);
@@ -195,8 +195,8 @@ public class OptimisticLockingTest extends UnitTest{
                 }
                 System.out.println("Thread3");
             }
-        };        
-        
+        };
+
         BookEnhance book = (BookEnhance)BookEnhance.findAll().get(0);
         System.out.println("Main0");
         a.start();
@@ -214,5 +214,5 @@ public class OptimisticLockingTest extends UnitTest{
         System.out.println("Main3");
         assertEquals(new Long(2l), book.count);
     }
-    
+
 }
