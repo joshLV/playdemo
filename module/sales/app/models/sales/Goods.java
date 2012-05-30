@@ -275,10 +275,10 @@ public class Goods extends Model {
     static {
         //增加可信标签到白名单
         HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div", "table", "tbody", "tr", "td",
-                "background-color","width");
+                "background-color", "width");
         //增加可信属性
         HTML_WHITE_TAGS.addAttributes(":all", "style", "class", "id", "name");
-        HTML_WHITE_TAGS.addAttributes("table", "style", "cellpadding", "cellspacing", "border", "bordercolor","align");
+        HTML_WHITE_TAGS.addAttributes("table", "style", "cellpadding", "cellspacing", "border", "bordercolor", "align");
         HTML_WHITE_TAGS.addAttributes("object", "width", "height", "classid", "codebase");
         HTML_WHITE_TAGS.addAttributes("param", "name", "value");
         HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen",
@@ -652,6 +652,17 @@ public class Goods extends Model {
         goodsPage.setPageSize(pageSize);
         goodsPage.setBoundaryControlsEnabled(false);
         return goodsPage;
+    }
+
+
+    public static List<Brand> findBrandByCondition(GoodsCondition condition) {
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("select distinct g.brand from Goods g where " + condition.getFilter());
+        for (String key : condition.getParamMap().keySet()) {
+            q.setParameter(key, condition.getParamMap().get(key));
+        }
+
+        return q.getResultList();
     }
 
     public static void delete(Long... ids) {

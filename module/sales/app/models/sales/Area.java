@@ -3,6 +3,7 @@ package models.sales;
 import com.uhuila.common.constants.DeletedStatus;
 import org.apache.commons.lang.StringUtils;
 import play.db.jpa.GenericModel;
+import play.db.jpa.Transactional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -57,6 +58,15 @@ public class Area extends GenericModel {
         this.id = id;
     }
 
+    public static boolean isArea(String areaId){
+        return (StringUtils.isNotBlank(areaId) && areaId.length() == 8);
+    }
+    
+    public static boolean isDistrict(String district){
+        return (StringUtils.isNotBlank(district) && district.length() == 5);
+    }
+    
+    
     /**
      * 获取前n个城市，主要用于主页上的显示.
      *

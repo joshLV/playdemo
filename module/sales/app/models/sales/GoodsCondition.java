@@ -24,6 +24,7 @@ public class GoodsCondition {
     public String cityId = SHANGHAI;
     public String districtId = "0";
     public String areaId = "0";
+    public String searchAreaId = "0";
     public long brandId = 0;
     public BigDecimal priceFrom = new BigDecimal(0);
     public BigDecimal priceTo = new BigDecimal(0);
@@ -68,42 +69,41 @@ public class GoodsCondition {
                     .parseLong(args[0]);
         }
         if (args.length > 1) {
-            cityId = StringUtils.isBlank(args[1]) ? SHANGHAI : args[1];
+            searchAreaId = StringUtils.isBlank(args[1]) ? SHANGHAI : args[1];
+            if (searchAreaId.length() == 8) {
+                districtId = searchAreaId.substring(0, 5);
+                areaId = searchAreaId;
+            } else if (searchAreaId.length() == 5) {
+                districtId = searchAreaId;
+                areaId="0";
+            }
+            System.out.println("-----------------------------districtId:" + districtId);
         }
         if (args.length > 2) {
-            districtId = args[2];
+            brandId = StringUtils.isBlank(args[2]) ? 0 : Long
+                    .parseLong(args[2]);
         }
         if (args.length > 3) {
-            areaId = args[3];
+            priceFrom = StringUtils.isBlank(args[3]) ? new
+                    BigDecimal(0) : new BigDecimal(args[3]);
         }
         if (args.length > 4) {
-            if (isValidAreaId(districtId) && !areaId.contains(districtId)) {
-                areaId = "0";
-            }
-            brandId = StringUtils.isBlank(args[4]) ? 0 : Long
-                    .parseLong(args[4]);
+            priceTo = StringUtils.isBlank(args[4]) ? new
+                    BigDecimal(0) : new BigDecimal(args[4]);
         }
         if (args.length > 5) {
-            priceFrom = StringUtils.isBlank(args[5]) ? new
-                    BigDecimal(0) : new BigDecimal(args[5]);
+            orderByNum = StringUtils.isBlank(args[5]) ? 0 : Integer.parseInt(args[5]);
+            orderBy = StringUtils.isBlank(args[5]) ? getOrderBy(0)
+                    : getOrderBy(Integer.parseInt(args[5]));
         }
         if (args.length > 6) {
-            priceTo = StringUtils.isBlank(args[6]) ? new
-                    BigDecimal(0) : new BigDecimal(args[6]);
+            orderByTypeNum = StringUtils.isBlank(args[6]) ? 1 : Integer.parseInt
+                    (args[6]);
+            orderByType = "1".equals(args[6]) ? "DESC" : "ASC";
         }
         if (args.length > 7) {
-            orderByNum = StringUtils.isBlank(args[7]) ? 0 : Integer.parseInt(args[7]);
-            orderBy = StringUtils.isBlank(args[7]) ? getOrderBy(0)
-                    : getOrderBy(Integer.parseInt(args[7]));
-        }
-        if (args.length > 8) {
-            orderByTypeNum = StringUtils.isBlank(args[8]) ? 1 : Integer.parseInt
-                    (args[8]);
-            orderByType = "1".equals(args[8]) ? "DESC" : "ASC";
-        }
-        if (args.length > 9) {
-            materialType = StringUtils.isBlank(args[9]) ? MaterialType.ELECTRONIC :
-                    MaterialType.values()[Integer.parseInt(args[9])];
+            materialType = StringUtils.isBlank(args[7]) ? MaterialType.ELECTRONIC :
+                    MaterialType.values()[Integer.parseInt(args[7])];
         }
     }
 
@@ -113,18 +113,11 @@ public class GoodsCondition {
         paramMap.put("deleted", DeletedStatus.UN_DELETED);
         paramMap.put("notMatchStatus", GoodsStatus.UNCREATED);
 
-        if (isValidAreaId(areaId)) {
-            condBuilder.append(" and g.id in (select g.id from g.shops s " +
-                    "where s.areaId = :areaId)");
-            paramMap.put("areaId", areaId);
-        } else if (isValidAreaId(districtId)) {
-            condBuilder.append(" and g.id in (select g.id from g.shops s " +
-                    "where s.areaId like :districtId)");
-            paramMap.put("districtId", districtId + "%");
-        } else if (isValidAreaId(cityId)) {
-            condBuilder.append(" and g.id in (select g.id from g.shops s " +
-                    "where s.areaId like :cityId)");
-            paramMap.put("cityId", cityId + "%");
+        if (isValidAreaId(searchAreaId)) {
+            condBuilder.append(" and ((g.isAllShop = true and g.supplierId in (select g.supplierId from Shop gs " +
+                    "where gs.supplierId = g.supplierId and gs.areaId like :areaId)) or ( g.isAllShop = false and" +
+                    " g.id in (select g.id from g.shops s where s.areaId like :areaId)))");
+            paramMap.put("areaId", searchAreaId + "%");
         }
         if (supplierId != 0) {
             condBuilder.append(" and g.supplierId = :supplierId");
@@ -214,7 +207,10 @@ public class GoodsCondition {
             paramMap.put("materialType", materialType);
         }
         System.out.println("condBuilder.toString():" + condBuilder.toString());
-        System.out.println("================"+toString());
+        System.out.println("================" + toString());
+        for (String key : paramMap.keySet()) {
+            System.out.println(key + ":" + paramMap.get(key));
+        }
 
         return condBuilder.toString();
     }
@@ -251,7 +247,6 @@ public class GoodsCondition {
         return orderBy;
     }
 
-
     public static boolean isValidAreaId(String id) {
         if (StringUtils.contains(id, ' ')) {
             return false;
@@ -273,13 +268,15 @@ public class GoodsCondition {
     }
 
     public String getUrl() {
-        return "/goods/list/" + categoryId + '-' + cityId + '-' + districtId + '-' + areaId + '-' + brandId + '-' + priceFrom + '-' + priceTo
+        return "/goods/list/" + categoryId + '-' + areaId + '-' + brandId + '-' + priceFrom + '-' + priceTo
                 + '-' + orderByNum + '-' + orderByTypeNum;
     }
 
+
+
     public boolean isDefault() {
-        return categoryId == 0 && SHANGHAI.equals(cityId) && !isValidAreaId(districtId) && !isValidAreaId(areaId) &&
-                brandId == 0 && priceFrom.compareTo(BigDecimal.ZERO) == 0 && priceTo.compareTo(BigDecimal.ZERO) == 0;
+        return categoryId == 0 && !isValidAreaId(areaId) && brandId == 0 && priceFrom.compareTo(BigDecimal.ZERO) == 0
+                && priceTo.compareTo(BigDecimal.ZERO) == 0;
     }
 
     /**
@@ -379,11 +376,13 @@ public class GoodsCondition {
 
     @Override
     public String toString() {
-        return super.toString() + "[supplierId:" + supplierId + ",categoryId:" + categoryId + ",cityId:" + cityId + "," +
-                "districtId:" + districtId + ",areaId:" + areaId + ",brandId:" + brandId + ",priceFrom:" + priceFrom + "," +
-                "priceTo:" + priceTo + ",type:" + type + ",name:" + name + ",no:" + no + ",salePriceBegin:" + salePriceBegin + "," +
-                "salePriceEnd:" + salePriceEnd + ",saleCountBegin:" + saleCountBegin + ",saleCountEnd:" + saleCountEnd + "," +
-                "materialType:" + materialType + ",status:" + status + ",baseSaleBegin:" + baseSaleBegin + "," +
-                "baseSaleEnd:" + baseSaleEnd + ",expireAtBegin:" + expireAtBegin + ",expireAtEnd:" + expireAtEnd + "]";
+        return super.toString() + "[supplierId:" + supplierId + ",categoryId:" + categoryId +
+                ",districtId:" + districtId + ",cityId:" + cityId +
+                ",areaId:" + areaId + ",brandId:" + brandId + ",priceFrom:" + priceFrom + ",priceTo:" + priceTo +
+                ",type:" + type +
+                ",name:" + name + ",no:" + no + ",salePriceBegin:" + salePriceBegin + ",salePriceEnd:" + salePriceEnd +
+                ",saleCountBegin:" + saleCountBegin + ",saleCountEnd:" + saleCountEnd +
+                ",materialType:" + materialType + ",status:" + status + ",baseSaleBegin:" + baseSaleBegin +
+                ",baseSaleEnd:" + baseSaleEnd + ",expireAtBegin:" + expireAtBegin + ",expireAtEnd:" + expireAtEnd + "]";
     }
 }

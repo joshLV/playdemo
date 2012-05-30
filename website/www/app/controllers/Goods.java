@@ -89,7 +89,7 @@ public class Goods extends Controller {
             breadcrumbs.append(category.name, "/goods/list/" + category.id);
         }
         if (goods.brand != null) {
-            breadcrumbs.append(goods.brand.name, "/goods/list/" + categoryId + "-" + SHANGHAI + "-0-0-" + goods.brand
+            breadcrumbs.append(goods.brand.name, "/goods/list/" + categoryId + "-021-" + goods.brand
                     .id);
         }
         renderArgs.put("goods", goods);
@@ -116,10 +116,10 @@ public class Goods extends Controller {
         if (cookie != null) {
             if (!cookie.value.contains("," + id + ",")) {
                 sawGoodsIds = "," + id + cookie.value;
-                if (sawGoodsIds.length() > 100){
+                if (sawGoodsIds.length() > 100) {
                     sawGoodsIds = sawGoodsIds.substring(0, 100);
                 }
-            }else{
+            } else {
                 sawGoodsIds = cookie.value;
             }
         }
@@ -174,8 +174,9 @@ public class Goods extends Controller {
             List<Area> districts = Area.findTopDistricts(SHANGHAI, LIMIT, goodsCond.districtId);
             List<Area> areas = Area.findTopAreas(goodsCond.districtId, AREA_LIMIT, goodsCond.areaId);
             List<Category> categories = Category.findTop(LIMIT, goodsCond.categoryId);
-            List<Brand> brands = Brand.findTop(LIMIT, goodsCond.brandId);
-
+            GoodsCondition brandCond = new GoodsCondition(condition);
+            brandCond.brandId = 0;
+            List<Brand> brands = models.sales.Goods.findBrandByCondition(brandCond);
 
             BreadcrumbList breadcrumbs = createBreadcrumbs(goodsCond);
 
@@ -193,6 +194,7 @@ public class Goods extends Controller {
         renderArgs.put("cityId", goodsCond.cityId);
         renderArgs.put("districtId", goodsCond.districtId);
         renderArgs.put("areaId", goodsCond.areaId);
+        renderArgs.put("searchAreaId", goodsCond.searchAreaId);
         renderArgs.put("brandId", goodsCond.brandId);
         renderArgs.put("priceFrom", goodsCond.priceFrom);
         renderArgs.put("priceTo", goodsCond.priceTo);
@@ -208,8 +210,7 @@ public class Goods extends Controller {
         if (goodsCond.isDefault()) {
             return breadcrumbs;
         }
-        if (goodsCond.priceFrom.compareTo(BigDecimal.ZERO) > 0 || goodsCond.priceTo.compareTo(BigDecimal.ZERO) >
-                0) {
+        if (goodsCond.priceFrom.compareTo(BigDecimal.ZERO) > 0 || goodsCond.priceTo.compareTo(BigDecimal.ZERO) > 0) {
             breadcrumbs.add(createCategoryCrumb(goodsCond));
             breadcrumbs.add(createDistrictCrumb(goodsCond));
             breadcrumbs.add(createAreaCrumb(goodsCond));

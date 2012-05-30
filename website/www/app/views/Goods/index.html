@@ -32,9 +32,9 @@
     <div id="section">
         <div class="tabbar clearfix">
             <a #{if materialType == null}class="current"#{/if} href="/goods/list/0">全部</a>
-            <a href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-1"
+            <a href="/goods/list/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-1"
                #{if models.sales.MaterialType.ELECTRONIC.equals(materialType)}class="current"#{/if}>电子券</a>
-            <a href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-0"
+            <a href="/goods/list/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-0"
                #{if models.sales.MaterialType.REAL.equals(materialType)}class="current"#{/if}>实体券</a>
         </div>
         <div class="filter">
@@ -44,7 +44,8 @@
                 #{if "0".equals(districtId)}<span class="selected_box">全部</span>
                 #{/if}
                 #{else}<a id="district"
-                          href="/goods/list/${categoryId}-${cityId}-0-${areaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                          href="/goods/list/${categoryId}-021-${brandId}-${priceFrom}-${priceTo}-${orderBy}-$
+                          {orderByType}"
                           class="font_blue">全部</a>
                 #{/else}
                 #{list districts, as:'district'}
@@ -53,7 +54,7 @@
                             <span id="district" class="selected_box">${district.name}</span>
                         #{/if}
                         #{else}<a
-                                href="/goods/list/${categoryId}-${cityId}-${district.id}-${areaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                                href="/goods/list/${categoryId}-${district.id}-0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
                                 class="font_blue">${district.name}</a>
                         #{/else}
                     #{/if}
@@ -66,7 +67,7 @@
                 #{if "0".equals(areaId)}<span class="selected_box">全部</span>
                 #{/if}
                 #{else}<a
-                        href="/goods/list/${categoryId}-${cityId}-${districtId}-0-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                        href="/goods/list/${categoryId}-0-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
                         class="font_blue">全部</a>
                 #{/else}
                 #{list areas, as:'area'}
@@ -75,7 +76,7 @@
                             <span id="area" class="selected_box">${area.name}</span>
                         #{/if}
                         #{else}<a
-                                href="/goods/list/${categoryId}-${cityId}-${districtId}-${area.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                                href="/goods/list/${categoryId}-${area.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
                                 class="font_blue">${area.name}</a>
                         #{/else}
                     #{/if}
@@ -88,7 +89,8 @@
                 #{if brandId == 0}<span class="selected_box">全部</span>
                 #{/if}
                 #{else}<a
-                        href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                        href="/goods/list/${categoryId}-${searchAreaId}-0-${priceFrom}-${priceTo}-${orderBy}-$
+                        {orderByType}"
                         class="font_blue">全部</a>
                 #{/else}
                 #{list brands, as:'brand'}
@@ -96,7 +98,7 @@
                         <span id="area" class="selected_box">${brand.name}</span>
                     #{/if}
                     #{else}<a
-                            href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                            href="/goods/list/${categoryId}-${searchAreaId}-${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
                             class="font_blue">${brand.name}</a>
                     #{/else}
                 #{/list}
@@ -107,19 +109,19 @@
             排序：
 
             <a #{if orderBy == 0}class="selected"#{/if}
-               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-0"
+               href="/goods/list/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-0"
                value="${orderBy}">最佳匹配</a>
             <a #{if orderBy == 4}class="selected"#{/if}
-               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-4-${orderByType==0?1:0}">#{if orderBy==4 && orderByType == 1}最新#{/if}#{else}最早#{/else}发布</a>
+               href="/goods/list/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-4-${orderByType==0?1:0}">#{if orderBy==4 && orderByType == 1}最新#{/if}#{else}最早#{/else}发布</a>
 
             <a #{if orderBy == 1}class="selected"#{/if}
-               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-1-${orderByType==0?1:0}">销量#{if orderBy==1 && orderByType == 1}最多#{/if}#{else}最少#{/else}</a>
+               href="/goods/list/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-1-${orderByType==0?1:0}">销量#{if orderBy==1 && orderByType == 1}最多#{/if}#{else}最少#{/else}</a>
 
             <a #{if orderBy == 2}class="selected"#{/if}
-               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-2-${orderByType==0?1:0}">价格#{if orderBy==2 && orderByType == 1}最高#{/if}#{else}最低#{/else}</a>
+               href="/goods/list/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-2-${orderByType==0?1:0}">价格#{if orderBy==2 && orderByType == 1}最高#{/if}#{else}最低#{/else}</a>
 
             <a #{if orderBy == 3}class="selected"#{/if}
-               href="/goods/list/${categoryId}-${cityId}-${districtId}-${areaId}-${brandId}-${priceFrom}-${priceTo}-3-${orderByType==0?1:0}">折扣#{if orderBy==3 && orderByType == 1}最大#{/if}#{else}最小#{/else}</a>
+               href="/goods/list/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-3-${orderByType==0?1:0}">折扣#{if orderBy==3 && orderByType == 1}最大#{/if}#{else}最小#{/else}</a>
         </div>
         <div class="list-content clearfix">
             <ul class="clearfix">

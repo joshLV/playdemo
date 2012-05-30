@@ -11,12 +11,12 @@
         <div class="bizarea-bd">
             <ul class="area clearfix">
             #{list districts, as:'district'}
-                <li><a href="/goods/list/0-021-${district.id}">${district.name}</a></li>
+                <li><a href="/goods/list/0-${district.id}">${district.name}</a></li>
             #{/list}
             </ul>
             <ul class="ring clearfix">
             #{list areas, as:'area'}
-                <li><a href="/goods/list/0-021-0-${area.id}">${area.name}</a></li>
+                <li><a href="/goods/list/0-${area.id}">${area.name}</a></li>
             #{/list}
             </ul>
         </div>
