@@ -1,11 +1,20 @@
 package models.admin;
 
-import play.db.jpa.Model;
-
-import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import play.db.jpa.Model;
 
 @Entity
 @Table(name = "supplier_roles")
@@ -48,6 +57,18 @@ public class SupplierRole extends Model {
         return SupplierRole.find("byKey",key).first();
     }
 
+    public List<SupplierPermission> getSortedPermissions() {
+        List<SupplierPermission> sortedPermissions = new ArrayList<>();
+        sortedPermissions.addAll(permissions);
+        Collections.sort(sortedPermissions, new Comparator<SupplierPermission>() {
+            @Override
+            public int compare(SupplierPermission o1, SupplierPermission o2) {
+                return (int) (o1.id - o2.id);
+            }
+        });
+        return sortedPermissions;
+    }
+    
     /**
      * 查询系统管理员以外的角色
      * @return
