@@ -1,7 +1,11 @@
 <b class="upRightLine"></b>
 #{if carts?.size() > 0 }
 <ul>
+   #{set number=0 /}
+    #{set total=0 /}
     #{list items:carts, as:'cartItem'}
+    #{set number+=cartItem.number/}
+    #{set total+=(cartItem.goods.salePrice * cartItem.number)/}
     <li class="carts-item clearfix" id="row_${cartItem.goods.id}">
         <a class="goods-img" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${cartItem.goods.id}"><img src="${cartItem.goods.imageTinyPath}" width="48" /></a>
         <a class="goods-name" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${cartItem.goods.id}">${cartItem.goods.name}</a>
@@ -9,9 +13,14 @@
         <a href="#" class="cart-delete" goods_id="${cartItem.goods.id}" count="${cartItem.number}">删除</a>
     </li>
     #{/list}
+    <li class="carts-item"   style="text-align: right">共  <span class="goods-price"><strong> ${number}</strong></span>
+            件商品，
+        共计 <span class="goods-price"><strong>${total.formatCurrency('CNY')}</strong></span></li>
+     <li style="text-align: right">
     <a class="view-carts" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">查看购物车</a>
     <a id="order_confirm" class="view-carts" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/orders?items=#{list items:carts,
-    as:'cartItem'}${cartItem.goods.id}-${cartItem.number},#{/list}">去结算</a>
+    as:'cartItem'}${cartItem.goods.id}-${cartItem.number},#{/list}">去结算</a></li>
+
 </ul>
 #{/if}
 #{else}
