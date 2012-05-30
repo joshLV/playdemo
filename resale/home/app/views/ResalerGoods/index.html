@@ -150,7 +150,7 @@
                 <span>截止日期：${goods.expireAt}</span>
             </div>
             <div class="price">
-                市场价：${goods.faceValue?.formatCurrency('CNY').raw()}<br>
+                市场价：${goods.faceValue?.formatCurrency('CNY')}<br>
                 采购价：<span class="purchass-price">￥${goods.getResalePrice(resaler?.level)}</span><br>
                 折扣：${goods.discountExpress}
             </div>
