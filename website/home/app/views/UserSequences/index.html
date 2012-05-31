@@ -77,18 +77,18 @@
                         <th width="120">时间</th>
                         <th width="100">余额</th>
                         <th width="280">名称/备注 
-                         #{select 'condition.sequenceType', id:'sequenceType',class:'dingdan_stauts_bg', value:condition?.sequenceType} 
-                               #{option ''}交易类型#{/option}
-                               #{option "CHARGE"}&{'accountSequence.CHARGE'}#{/option}
-                               #{option "WITHDRAW"}&{'accountSequence.WITHDRAW'}#{/option}
-                               #{option "PAY"}&{'accountSequence.PAY'}#{/option}
-                               #{option "REFUND"}&{'accountSequence.REFUND'}#{/option}
-                               #{option "RECEIVE"}&{'accountSequence.RECEIVE'}#{/option}
-                               #{option "FREEZE"}&{'accountSequence.FREEZE'}#{/option} 
-                               #{option "CANCEL"}&{'accountSequence.CANCEL'}#{/option}
-                               #{option "UNFREEZE"}&{'accountSequence.UNFREEZE'}#{/option}   
-                                #{/select}
-                         </th>
+                        #{select 'condition.sequenceType', id:'sequenceType',class:'dingdan_stauts_bg', value:condition?.sequenceType} 
+                            #{option ''}交易类型#{/option}
+                            #{option "CHARGE"}&{'accountSequence.CHARGE'}#{/option}
+                            #{option "WITHDRAW"}&{'accountSequence.WITHDRAW'}#{/option}
+                            #{option "PAY"}&{'accountSequence.PAY'}#{/option}
+                            #{option "REFUND"}&{'accountSequence.REFUND'}#{/option}
+                            #{option "RECEIVE"}&{'accountSequence.RECEIVE'}#{/option}
+                            #{option "FREEZE"}&{'accountSequence.FREEZE'}#{/option} 
+                            #{option "CANCEL"}&{'accountSequence.CANCEL'}#{/option}
+                            #{option "UNFREEZE"}&{'accountSequence.UNFREEZE'}#{/option}   
+                        #{/select}
+                        </th>
                         <th width="100">支出</th>
                         <th width="100">收入</th>
                         <th width="110">支付方式</th>
