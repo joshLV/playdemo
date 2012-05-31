@@ -32,8 +32,8 @@ $(window).load(function () {
            <h3>我的商品订单</h3>
            <form class="search-order" id="orderForm" action="@{ResalerOrders.index()}" method="GET">
                 <span>下单时间：
-                    <input type="text" name="condition.createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
-                    <input type="text" name="condition.createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
+                    <input class="short-input Wdate" type="text" name="condition.createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
+                    <input class="short-input Wdate" type="text" name="condition.createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
                 </span>
                 <span>订单状态：
                     #{select 'condition.status', id:'condition_status', class:'dingdan_stauts_bg', value:status}
@@ -44,7 +44,7 @@ $(window).load(function () {
                     #{/select}
                 </span>
                 <span>商品名称：
-                    <input type="text" name="condition.goodsName" value="${goodsName}" />
+                    <input class="medium-input" type="text" name="condition.goodsName" value="${goodsName}" />
                 </span>
                 <button type="submit" class="search-btn" id="search">搜素</button>
             </form>

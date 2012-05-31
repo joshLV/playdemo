@@ -37,6 +37,13 @@
 .search-order {
     padding: 8px 0 18px;
 }
+.short-input {
+    width: 100px;
+}
+.medium-input {
+    width: 150px;
+    height: 18px;
+}
 .search-btn {
     width: 67px;
     height: 25px;

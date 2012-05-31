@@ -30,15 +30,22 @@
 #filter .selected {
     display: inline-block;
     padding: 0 5px 3px;
+    padding: 2px 5px 1px\9;
+    _padding: 0 5px 3px;
     color: #F9F9F9;
     background-color: #4991D4;
 }
 #filter input {
     width: 35px;
+    height: 18px;
+    padding: 0 2px;
     border: 1px solid #C4C4C4;
 }
 #filter .submit {
     padding: 0 5px;
+    position: relative\9;
+    top: -1px\9;
+    _top: 0;
     border: 1px solid #C4C4C4;
     border-radius: 2px;
     background-color: #FCFCFD;
@@ -131,6 +138,7 @@
     float: left;
     width: 280px;
     margin-right: 20px;
+    font-family: tahoma,arial;
 }
 #lists .price .purchass-price {
     color: red;

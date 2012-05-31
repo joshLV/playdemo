@@ -43,6 +43,8 @@
     background-color: #F2F2F2;
 }
 .salehub ul {
+    position: relative;
+    z-index: 15;
     height: 210px;
     padding: 6px 0 0 0;
     overflow-y: scroll;
@@ -59,6 +61,7 @@
 .salehub ul input {
     position: relative;
     top: 2px;
+    z-index: 10;
 }
 .salehub ul span {
     padding-left: 10px;
@@ -90,6 +93,7 @@
 .phones textarea {
     float: left;
     width: 230px;
+    height: 218px;
     border: 1px solid #D2D2D2;
 }
 .phones span {

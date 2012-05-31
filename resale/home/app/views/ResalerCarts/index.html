@@ -28,7 +28,7 @@
                 <h3>从我的分销库选择商品：</h3>
                 <ul>
                 #{list items:favs, as:'favItem'}
-                %{
+                    %{
                         radioStatus="";
                         info="";
                         if (favItem.goods.baseSale <= 0){ info += "<em>已无库存</em>"; radioStatus = "disabled"}
@@ -46,8 +46,8 @@
                 </ul>
             </div>
             <div class="phones">
-                    <h3>添加接收券号的手机：</h3>
-                    <textarea name="phones" cols="20" rows="12"></textarea>
+                <h3>添加接收券号的手机：</h3>
+                <textarea name="phones" cols="20" rows="12"></textarea>
                 <span>
                     同一个商品，不同的收货人。<br/><br/>
                     例：13472228877<br/>

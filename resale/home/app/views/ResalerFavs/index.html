@@ -2,7 +2,6 @@
 #{set title:'券市场 - 分销库' /}
 #{set 'moreStyles'}
     #{asset.css src:['/r/base.css', '/r/orders.css'] /}
-<!-- <link href="@{'/public/assets/css/bootstrap.css'}" rel="stylesheet"> -->
 <style>
 #full_bg{
     background-color: Gray;
@@ -11,21 +10,18 @@
     position:absolute;
     left:0px;
     top:0px;
-    filter:Alpha(Opacity=30);
-    /* IE */
-    -moz-opacity:0.4;
-    /* Moz + FF */
+    filter:Alpha(Opacity=30); /* IE */
+    -moz-opacity:0.4; /* Moz + FF */
     opacity: 0.4;
-  }
-
-  #payment_result {
-      position:absolute;
-      width:400px;
-      height:200px;
-      background:white;
-      display: none;
-      z-index: 5;
- }
+}
+#payment_result {
+    position:absolute;
+    width:400px;
+    height:200px;
+    background:white;
+    display: none;
+    z-index: 5;
+}
 </style>
 #{/set} 
 #{set 'moreScripts'}
@@ -62,10 +58,10 @@
             <h3>分销库</h3>
             <form class="form-horizontal" id="orderForm" action="@{ResalerFavs.index()}" method="GET">
                 <span class="label">加入时间：</span>
-                <input class="short_input Wdate" type="text" name="createdAtBegin" id="createdAtBegin"  value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
-                <input class="short_input Wdate" type="text" name="createdAtEnd"  id="createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
+                <input class="short-input Wdate" type="text" name="createdAtBegin" id="createdAtBegin"  value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
+                <input class="short-input Wdate" type="text" name="createdAtEnd"  id="createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
                 <span class="label">商品名称：</span>
-                <input class="long_input" type="text" id="goodsName" name="goodsName" value="${goodsName}"/>
+                <input class="medium-input" type="text" id="goodsName" name="goodsName" value="${goodsName}"/>
                 <button type="submit" class="search-btn" id="search">搜素</button>
             </form>
             <table class="order-tab" border="0" cellpadding="0" cellspacing="0">

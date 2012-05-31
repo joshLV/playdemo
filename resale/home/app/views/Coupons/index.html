@@ -29,12 +29,12 @@
             <h3>券订单列表</h3>
             <form class="form-horizontal" id="couponsFrm" action="@{Coupons.index()}" method="GET">
                 成交时间：
-                <input class="short_input Wdate" type="text" name="condition.createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
-                <input class="short_input Wdate" type="text" name="condition.createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
+                <input class="short-input Wdate" type="text" name="condition.createdAtBegin" value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
+                <input class="short-input Wdate" type="text" name="condition.createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
                 商品名称：
-                <input class="long_input" type="text" name="condition.goodsName" value="${goodsName}"/>
+                <input class="medium-input" type="text" name="condition.goodsName" value="${goodsName}"/>
                 券号：
-                <input class="short_input" type="text" name="condition.eCouponSn" value="${eCouponSn}"/>
+                <input class="medium-input" type="text" name="condition.eCouponSn" value="${eCouponSn}"/>
                 订单状态：
                 #{select 'condition.status', id:'status', class:'dingdan_stauts_bg', value:status}
                     #{option ""}不限#{/option}
