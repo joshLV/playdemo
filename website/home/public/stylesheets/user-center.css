@@ -44,7 +44,9 @@
     color: #25B4AB;
 }
 
-
+.search-box {
+    padding: 5px 0 10px 0;
+}
 .search-btn {
     width: 67px;
     height: 25px;

@@ -2,25 +2,7 @@
 #{set title:'一百券 - 我的券' /}
 #{set 'moreStyles'}
     #{asset.css src:['/u/list.css','/u/popup.css'] /}
-<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
 <link href="@{'/public/stylesheets/user-center.css'}" rel="stylesheet" type="text/css"/>
-<style type="text/css">
-    .left_shangpin {
-        float: left;
-        width: 62px;
-        height: 36px;
-        margin: 2px 2px;
-    }
-
-    .right_shangpin {
-        width: 190px;
-        margin: 2px 0px;
-        line-height: 24px;
-        float: left;
-        font-weight: bold;
-        overflow: hidden;
-    }
-</style>
 #{/set}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/common.jq.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -76,7 +58,6 @@
             $("#gone").hide();
             $("#send").show();
         }
-
     }
 
 
@@ -98,9 +79,7 @@
                     alert("发送失败!");
                 }
             }
-
         });
-
     }
 </script>
 #{/set}
@@ -110,25 +89,16 @@
     <div class="section">
     #{breadcrumbs/breadcrumb breadcrumbs/}
         <form class="form-horizontal" id="couponsFrm" action="@{UserCoupons.index()}" method="GET">
-            <table width="774" border="0" cellpadding="0" cellspacing="0">
-                <tr>
-                    <td align="left">商品名称：</td>
-                    <td height="35"><label> <input class="long_input" type="text" name="condition.goodsName"
-                                                   value="${condition.goodsName}"/>
-                    </label></td>
-                    <td width="61" align="left">成交时间：</td>
-                    <td width="259">
-                        <input class="short_input Wdate" type="text" name="condition.createdAtBegin" id="createdAtBegin"
-                               value="${condition.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})
-                               "/> -
-                        <input class="short_input Wdate" type="text" name="condition.createdAtEnd" id="createdAtEnd"
-                               value="${condition.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})"/>
-                    </td>
-                    <td colspan="2" align="left" valign="middle">
-                        <button class="search-btn" id="search"> 搜　索</button>
-                    </td>
-                </tr>
-            </table>
+            <div class="search-box">
+                <label>商品名称：</label>
+                 <input class="long_input" type="text" name="condition.goodsName" value="${condition.goodsName}"/>
+                <label>成交时间：</label>
+                    <input class="short_input Wdate" type="text" name="condition.createdAtBegin" id="createdAtBegin"
+                           value="${condition.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"/> -
+                    <input class="short_input Wdate" type="text" name="condition.createdAtEnd" id="createdAtEnd"
+                           value="${condition.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})"/>
+                    <button class="search-btn" id="search"> 搜　索</button>
+            </div>
             <table class="order-tab" cellpadding="0" cellspacing="0">
                 <tr class="col-name">
                     <th width="100" align="center" height="30">劵号</th>
@@ -148,15 +118,10 @@
                 <tr>
                     <td height="30" align="center">${coupon?.eCouponSn}</td>
                     <td width="320">
-                        <div class="left_shangpin">
-                            <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${coupon.goods.id}"
-                               target="_blank"><img
-                                    src="${coupon?.goods?.imageTinyPath}"/></a>
-                        </div>
-                        <div class="right_shangpin">
-                            <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${coupon.goods.id}"
-                               target="_blank">${coupon?.goods?.name}</a>
-                        </div>
+                        <a class="goods-image" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${coupon.goods.id}"
+                           target="_blank"><img src="${coupon?.goods?.imageTinyPath}"/></a>
+                        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${coupon.goods.id}"
+                           target="_blank">${coupon?.goods?.name}</a>
                     </td>
                     <td align="center">${coupon.order.orderNumber}</td>
                     <td align="center">${coupon?.expireAt?.format()}</td>
@@ -214,26 +179,20 @@
             </ul>
         </div>
         <div id="gone" style="text-align:center;padding-top:15px;display: none">您3次机会已经用完！</div>
-
         <input type="hidden" id="id"/>
     </div>
-
 </div>
-
 
 <div id="refund">
     <div id="apply_dialog" class="popup-content" style="width:350px;height:100px">
-
         <ul>
             <li class="item btn-box" style="padding-top:10px">
                 退款金额：<span id="money"></span>  <button type="button" onClick="confirmApply()">确定</button>
-                   <button type="button" onClick="cancel()">取消</button>
+               <button type="button" onClick="cancel()">取消</button>
             </li>
-
             *{<li class="item">}*
                 *{<label>退款理由：</label><textarea rows="5" cols="35" id="apply_note"></textarea>}*
             *{</li>}*
-
         </ul>
         <input type="hidden" id="coupon_id"/>
     </div>

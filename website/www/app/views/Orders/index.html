@@ -1,11 +1,10 @@
 #{extends 'main.html' /}
 #{set title:'一百券 - 确认订单信息' /}
 #{set 'moreStyles'}
-<link href="@@{'/public/stylesheets/carts-step.css'}" rel="stylesheet" type="text/css"/>
+    #{asset.css src:['/u/carts-step.css'] /}
 #{/set}
 #{set 'moreScripts'}
-<script src="@@{'/public/javascripts/location.js'}"></script>
-<script src="@@{'/public/javascripts/orders.js'}"></script>
+    #{asset.js src:['/u/location.js', '/u/orders.js'] /}
 #{/set}
 
 <ol class="buy-step step2 clearfix">

@@ -1,0 +1,153 @@
+@charset "utf-8";
+
+#full_bg {
+    background-color: Gray;
+    display: none;
+    z-index: 3;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    filter: Alpha(Opacity=30); /* IE */
+    -moz-opacity: 0.4; /* Moz + FF */
+    opacity: 0.4;
+}
+#payment_result {
+    position: absolute;
+    width: 450px;
+    height: 160px;
+    z-index: 5;
+    text-align: center;
+    background-color: white;
+    border: 6px solid #AAA;
+    display: none;
+}
+#payment_result .close {
+    position: absolute;
+    top: 3px;
+    right: 5px;
+    z-index: 5;
+    color: #666;
+}
+#payment_result .pay-tips {
+    line-height: 30px;
+    margin-bottom: 30px;
+}
+#payment_result .repay {
+    margin-right: 55px;
+}
+#payment_result .repay,
+#payment_result .payed {
+    display: inline-block;
+    padding: 0 15px;
+    color: #25B4AB;
+    line-height: 32px;
+    border: 1px solid #DDD;
+    background-color: #F2F2F2;
+}
+
+#balance-pay {
+    margin: 0 auto 20px;
+    padding-bottom: 20px;
+    width: 958px;
+    border: 1px solid #D4D4D4;
+}
+#order-box {
+    padding: 5px 20px;
+    font-size: 14px;
+    background-color: #FFFCED;
+    border-bottom: 1px solid #D4D4D4;
+}
+#order-box .order-num {
+    float: left;
+    font-weight: 700;
+    line-height: 32px;
+}
+#order-box .pay-num {
+    float: right;
+    line-height: 28px;
+}
+#order-box .pay-num strong {
+    color: #F50;
+    font-size: 20px;
+}
+#account-box {
+    margin: 10px 20px;
+    padding: 0 60px 10px;
+    font-size: 14px;
+    line-height: 30px;
+    border-bottom: 1px dashed #E4E4E4;
+}
+#account-box .balance span {
+    padding-right: 3px;
+    color: #25B4AB;
+    font-weight: 700;
+}
+#payment {
+    margin: 10px 20px;
+    padding: 0 0 10px 135px;
+}
+#payment input {
+    position: relative;
+    top: 2px;
+}
+#payment span {
+    padding: 0 3px;
+    color: #F50;
+    font-weight: 700;
+}
+#confirm-pay {
+    border: 0;
+    margin-left: 155px;
+    width: 100px;
+    height: 32px;
+    color: #FFF;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    background: url(http://img.uhcdn.com/images/u/pay_btn.png) repeat-x 0 0;
+    cursor: pointer;
+}
+#other-pay {
+    margin-bottom: 20px;
+    padding:  5px 15px 20px;
+    border: 1px solid #D4D4D4;
+}
+#other-pay h3 {
+    font-size: 14px;
+    line-height: 32px;
+    border-bottom: 1px solid #D4D4D4;
+}
+#other-pay h4 {
+    color: #666;
+    font-size: 14px;
+}
+#other-pay input {
+    margin-right: 5px;
+}
+.zhifu {
+    padding: 30px 20px 40px;
+}
+.zhifu li {
+    float: left;
+    margin-right: 50px;
+}
+.kuaiqian {
+    padding: 20px;
+}
+.kuaiqian li {
+    float: left;
+    margin: 0 30px 25px 0;
+}
+#confirm {
+    display: block;
+    margin-left: 20px;
+    width: 100px;
+    height: 32px;
+    line-height: 32px;
+    color: #FFF;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    background: url(http://img.uhcdn.com/images/u/pay_btn.png) repeat-x 0 0;
+    cursor: pointer;
+}
