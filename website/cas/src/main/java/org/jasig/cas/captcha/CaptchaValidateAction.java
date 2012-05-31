@@ -19,7 +19,7 @@ public final class CaptchaValidateAction extends AbstractAction {
          System.out.println("sessionid=" + id);
          if(id != null){
             try {
-               valid = jcaptchaService.validateResponseForID(id, captcha_response).booleanValue();
+               valid = jcaptchaService.validateResponseForID(id.toUpperCase(), captcha_response).booleanValue();
             } catch (CaptchaServiceException cse) {
                 cse.printStackTrace();
             }
