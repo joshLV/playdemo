@@ -121,7 +121,7 @@ table {
 .page_text_info input{ width:55px; height:23px; border:solid 1px #CCCCCC; margin-left:5px; margin-right:5px; line-height:23px; vertical-align:middle}
 
 .short_input{ width:110px; height:21px; line-height:21px; border:solid 1px #A8ACAD}
-.long_input{ width:240px; height:21px; border:solid 1px #A8ACAD; line-height:21px;}
+.long_input{ width:170px; height:21px; border:solid 1px #A8ACAD; line-height:21px;}
 
 .pos_abs{ position:relative}
 .dingdan_stauts_bg{ background:url(../images/dingdan_stauts_bg.jpg) repeat-x; width:86px; height:21px; border:solid 1px #D6D8D8; line-height:21px; }

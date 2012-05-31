@@ -93,6 +93,9 @@
     margin: 0 5px;
     color: #0082CA;
 }
+.filter dd span {
+    margin: 0 5px;
+}
 .rankbar {
     padding: 5px;
     margin-bottom: 10px;
@@ -130,6 +133,10 @@
     margin: 3px 0;
     line-height: 20px;
     overflow: hidden;
+}
+.list-content li p a {
+    color: #0082CA;
+    *line-height: 20px;
 }
 .list-content li span {
     display: block;

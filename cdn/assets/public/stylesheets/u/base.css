@@ -72,6 +72,9 @@ mark { background: #ff0; }
     float: left;
     height: 88px;
 }
+#logo a:hover {
+    text-decoration: none;
+}
 #logo .uhuila {
     position: relative;
     top: -32px;
