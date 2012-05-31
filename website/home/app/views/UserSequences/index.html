@@ -40,7 +40,6 @@
 </script>
 
 #{/set}
-<!--主体内容部分-->
 <div class="clearfix">
     #{include "share/left.html"/}
     <div class="section">
@@ -52,13 +51,13 @@
                     <tr>
                         <td width="12">&nbsp;</td>
                         <td width="65" align="right">成交时间：</td>
-                        <td width="259" height="35"><input class="short_input Wdate" type="text"
+                        <td width="280" height="35"><input class="short_input Wdate" type="text"
                             name="condition.createdAtBegin" id="createdAtBegin" value="${condition?.createdAtBegin?.format()}"
                             onfocus="WdatePicker({readOnly:true})" /> - <input class="short_input Wdate" type="text"
                             id="createdAtEnd" name="condition.createdAtEnd" value="${condition?.createdAtEnd?.format()}"
                             onfocus="WdatePicker({readOnly:true})" /></td>
-                        <td width="77">资金流向：</td>
-                        <td width="353">
+                        <td width="65">资金流向：</td>
+                        <td width="135">
                             <div class="pos_abs">#{select 'condition.sequenceFlag', id:'sequenceFlag',
                                 class:'dingdan_stauts_bg', value:condition?.sequenceFlag} 
                                 #{option ''}不限#{/option}
@@ -74,9 +73,9 @@
                 <thead>
                     <tr class="col-name">              
                         <th width="180">流水号</th>
-                        <th width="120">时间</th>
-                        <th width="100">余额</th>
-                        <th width="280">名称/备注 
+                        <th width="140">时间</th>
+                        <th width="80">余额</th>
+                        <th width="300">名称/备注 
                         #{select 'condition.sequenceType', id:'sequenceType',class:'dingdan_stauts_bg', value:condition?.sequenceType} 
                             #{option ''}交易类型#{/option}
                             #{option "CHARGE"}&{'accountSequence.CHARGE'}#{/option}
@@ -91,7 +90,7 @@
                         </th>
                         <th width="100">支出</th>
                         <th width="100">收入</th>
-                        <th width="110">支付方式</th>
+                        <th width="90">支付方式</th>
                     </tr>
                 </thead>
                 #{paginate.list items:amountList, as:'accountSequence'}
