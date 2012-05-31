@@ -5,6 +5,11 @@
 # Home page
 GET     /                                       Application.index
 
+# 财务报表
+GET     /reports                                Reports.showPurchaseTaxReport
+GET     /reports/purchase                       Reports.showPurchaseTaxReport
+
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

@@ -78,4 +78,5 @@ public class DetailDailyReport extends Model {
             return new ReportSummary(0, 0, BigDecimal.ZERO);
         }
         return new ReportSummary((Long) summary[0], (Long) summary[1], (BigDecimal) summary[2]);
-    }}
+    }
+}

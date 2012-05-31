@@ -30,7 +30,7 @@ public class OperateReports extends Controller {
     private static final int PAGE_SIZE = 10;
 
     /**
-     * 查询消费者报表.
+     * 查询消费者资金明细.
      *
      * @param condition 查询条件对象
      */
@@ -76,7 +76,7 @@ public class OperateReports extends Controller {
     }
 
     /**
-     * 查询分销商报表.
+     * 查询分销商资金明细.
      *
      * @param condition 查询条件对象
      */
@@ -110,7 +110,7 @@ public class OperateReports extends Controller {
     }
 
     /**
-     * 查询商户报表.
+     * 查询商户资金明细.
      *
      * @param condition 查询条件对象
      */
@@ -145,7 +145,7 @@ public class OperateReports extends Controller {
     }
 
     /**
-     * 查询一百券佣金账户报表.
+     * 查询一百券佣金账户资金明细.
      */
     @ActiveNavigation("websites_account_reports")
     public static void showWebsiteReport(AccountSequenceCondition condition) {
@@ -179,7 +179,7 @@ public class OperateReports extends Controller {
     }
 
     /**
-     * 查询平台佣金账户报表.
+     * 查询平台佣金账户资金明细.
      */
     @ActiveNavigation("platforms_account_reports")
     public static void showPlatformReport(AccountSequenceCondition condition) {
@@ -202,7 +202,7 @@ public class OperateReports extends Controller {
     }
 
     /**
-     * 查询收款账户报表.
+     * 查询收款账户资金明细.
      */
     @ActiveNavigation("incomings_account_reports")
     public static void showIncomingReport(AccountSequenceCondition condition) {

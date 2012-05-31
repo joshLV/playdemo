@@ -16,12 +16,15 @@ require:
     - supplier -> supplier
     - paginate_ext -> paginate_ext
     - org.jsoup -> jsoup 1.6.1
+    - operate_rbac -> operate_rbac
     - resale -> resale
     - consumer -> consumer
     - order -> order
     - accounts -> accounts
     - report -> report
     - sms -> sms
+    - asset_package -> asset_package
+
 
 repositories:
     - mavenRepository:
@@ -49,8 +52,10 @@ repositories:
             - resale -> *
             - supplier -> *
             - paginate_ext -> *
+            - operate_rbac -> *
             - consumer -> *
             - order -> *
             - accounts -> *
             - report -> *
             - sms -> *
+            - asset_package -> *

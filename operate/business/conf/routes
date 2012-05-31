@@ -65,6 +65,7 @@ POST    /brands                                 OperateBrands.create
 DELETE  /brands/{id}                            OperateBrands.delete
 GET     /brands/{id}/edit                       OperateBrands.edit
 PUT     /brands/{id}                            OperateBrands.update
+
 # 财务报表
 GET     /reports                                OperateReports.showSystemReport
 GET     /reports/consumer                       OperateReports.showConsumerReport
