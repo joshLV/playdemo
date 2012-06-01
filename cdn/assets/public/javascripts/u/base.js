@@ -30,6 +30,9 @@ $(function () {
         ev.preventDefault();
         var buyCount = parseInt($(this).attr("count"));
         var goods_id = $(this).attr("goods_id");
+        var sale_price = $(this).attr("sale_price");
+        var all_number = parseInt($("#all_number").html());
+        var all_price = $("#all_price").html();
         $.ajax({
             type:'DELETE',
             url:'/carts/' + goods_id,
@@ -37,15 +40,18 @@ $(function () {
                 var oldSize = parseInt($("#carts_size").html());
                 var currentCount = oldSize - buyCount;
                 $("#carts_size").html(currentCount);
+
                 if (currentCount == 0) {
                     $("#row_" + goods_id).html('您的购物车中没有任何商品。<br/>');
                     $("#order_confirm").hide();
+                    $("#detail").hide();
                 } else {
                     $("#row_" + goods_id).remove();
+                    $("#all_number").html(all_number - buyCount);
+                    $("#all_price").html((all_price - (sale_price * buyCount)).toFixed(2));
                 }
             }});
     });
-
 
     $('#slides').slides({
         play:5000,

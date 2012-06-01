@@ -10,12 +10,13 @@
         <a class="goods-img" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${cartItem.goods.id}"><img src="${cartItem.goods.imageTinyPath}" width="48" /></a>
         <a class="goods-name" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${cartItem.goods.id}">${cartItem.goods.name}</a>
         <span class="goods-price">${cartItem.goods.salePrice?.formatCurrency('CNY')} x ${cartItem.number}</span>
-        <a href="#" class="cart-delete" goods_id="${cartItem.goods.id}" count="${cartItem.number}">删除</a>
+        <a href="#" class="cart-delete" goods_id="${cartItem.goods.id}" sale_price="${cartItem.goods.salePrice}"
+           count="${cartItem.number}">删除</a>
     </li>
     #{/list}
-    <li class="carts-item"   style="text-align: right">共  <span class="goods-price"><strong> ${number}</strong></span>
-            件商品，
-        共计 <span class="goods-price"><strong>${total.formatCurrency('CNY')}</strong></span></li>
+    <li class="carts-item" id="detail" style="text-align: right">共  <span class="goods-price">
+        <strong id="all_number">${number}</strong></span>件商品，
+        共计 <span class="goods-price">￥<strong id="all_price">${total}</strong></span></li>
      <li style="text-align: right">
     <a class="view-carts" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">查看购物车</a>
     <a id="order_confirm" class="view-carts" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/orders?items=#{list items:carts,

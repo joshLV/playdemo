@@ -30,6 +30,7 @@ order.OrderItems(orderItems1):
   "goodsName": "哈根达斯100元抵用券"
   "createdAt": "2012-03-05T00:00:00"
   "goods": "Goods_001"
+  "phone": "15312345671"
 
 order.Order(order_unpaid):
   "user": "user"
@@ -61,5 +62,6 @@ order.OrderItems(order_unpaid_items_1):
   "goodsName": "哈根达斯100元抵用券"
   "createdAt": "2012-03-05T00:00:00"
   "goods": "Goods_001"
+  "phone": "15312345674"
   
   

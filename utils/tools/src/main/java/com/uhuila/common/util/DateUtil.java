@@ -1,5 +1,6 @@
 package com.uhuila.common.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.Date;
  */
 public class DateUtil {
     public static SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+    public static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     public static Date getEndOfDay(Date day) {
         if (day == null) {
@@ -28,18 +30,29 @@ public class DateUtil {
     }
 
     /**
-     * 判断当日的时间是否在11点和14点之间
+     * 7天后的结束时间
      *
-     * @return 在该范围内：true
+     * @return
+     * @throws ParseException
      */
-    public static boolean getTimeRegion() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        String date = df.format(calendar.getTime());
-        if (date.compareTo("09:00:00") > 0 && date.compareTo("18:00:00") < 0) {
-            return true;
-        }
-        return false;
+    public static Date getEndExpiredDate() throws ParseException {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, +7);
+        Date date = DateUtil.getEndOfDay(cal.getTime());
+        return date;
+    }
+
+    /**
+     * 7天后的开始时间
+     *
+     * @return
+     * @throws ParseException
+     */
+    public static Date getBeginExpiredDate() throws ParseException {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, +6);
+        Date date = DateUtil.getEndOfDay(cal.getTime());
+        return date;
     }
 
     public static Date getYesterday() {
@@ -53,6 +66,31 @@ public class DateUtil {
     }
 
     /**
+     * 判断是否还有7天到期
+     *
+     * @param date 截止日期
+     * @return true false
+     * @throws ParseException
+     */
+    public static boolean getDiffDate(Date date) {
+        long dateRange = 0l;
+        long time = 1000 * 3600 * 24; //A day in milliseconds
+        String now = format.format(new Date());
+        Date sysDate = null;
+        try {
+            sysDate = format.parse(now);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        dateRange = date.getTime() - sysDate.getTime();
+        if (dateRange / time == 7) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * 当前时间
      *
      * @return
@@ -60,10 +98,10 @@ public class DateUtil {
     public static String getNowTime() {
 
         Calendar c = Calendar.getInstance();
-        String nowTime = c.get(Calendar.MONTH)+1 + "月" + c.get(Calendar.DATE) + "日"+ c.get(Calendar.HOUR_OF_DAY)+"时"+c
-                .get(Calendar.MINUTE)+"分";
+        String nowTime = c.get(Calendar.MONTH) + 1 + "月" + c.get(Calendar.DATE) + "日" + c.get(Calendar.HOUR_OF_DAY) + "时" + c
+                .get(Calendar.MINUTE) + "分";
 
         return nowTime;
     }
-   
+
 }
