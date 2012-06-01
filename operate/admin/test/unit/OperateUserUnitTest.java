@@ -12,7 +12,7 @@ import play.test.UnitTest;
 import java.util.Date;
 import java.util.List;
 
-public class SupplierUserUnitTest extends UnitTest {
+public class OperateUserUnitTest extends UnitTest {
 
     @org.junit.Before
     public void setup() {
@@ -80,5 +80,19 @@ public class SupplierUserUnitTest extends UnitTest {
 
         returnFlag = OperateUser.checkValue(id,"808", "1300000003");
         assertEquals("0",returnFlag);
+    }
+         @Test
+    public void testUpdatePassword() {
+        Long id = (Long) Fixtures.idCache.get("models.admin.OperateUser-user3");
+        OperateUser supplierUser = new OperateUser();
+        supplierUser.encryptedPassword = "1234567";
+
+        OperateUser newUser = OperateUser.findById(id);
+        OperateUser.updatePassword(newUser, supplierUser);
+
+        OperateUser user = OperateUser.findById(id);
+
+        assertEquals(DigestUtils.md5Hex("1234567"+user.passwordSalt), user.encryptedPassword);
+
     }
 }

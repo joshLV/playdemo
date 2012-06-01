@@ -11,6 +11,13 @@ POST    /users/checkLoginName                   OperateUsers.checkLoginName
 GET     /users/{id}/edit                        OperateUsers.edit
 POST    /users/{id}                             OperateUsers.update
 DELETE  /users/{id}                             OperateUsers.delete
+
+GET     /profile                                OperateUsersProfiles.index
+POST    /profile                                OperateUsersProfiles.update
+GET     /edit-password                          OperateUsersPassword.index
+POST    /edit-password                          OperateUsersPassword.update
+
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

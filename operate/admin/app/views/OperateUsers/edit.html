@@ -9,54 +9,54 @@
 
 #{set title:'操作员编辑' /}
 #{set 'moreScripts'}
-  <script src="@{'/public/javascripts/supplierUsers.js'}" type="text/javascript" charset="UTF-8"></script>
+  <script src="@{'/public/javascripts/operateUsers.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
-#{form @OperateUsers.update(supplierUser.id) , id:'operForm',class:"form-horizontal" }
+#{form @OperateUsers.update(operateUser?.id) , id:'operForm',class:"form-horizontal" }
  <legend>操作员编辑</legend>
   <div class="control-group">
   <label for="input01" class="control-label">角色</label>
   <div class="controls">
   #{list items:rolesList, as:'role'}
    <label class="checkbox inline">
-       <input type="checkbox" value="${role.id}" id="supplierUser.roles.id" name="supplierUser.roles.id" #{if roleIds?.contains(String.valueOf(role?.id))}checked#{/if}/> ${role.text}
+       <input type="checkbox" value="${role.id}" id="operateUser.roles.id" name="operateUser.roles.id" #{if roleIds?.contains(String.valueOf(role?.id))}checked#{/if}/> ${role.text}
      </label>
   #{/list}
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <span class="error">#{error 'supplierUser.roles' /}</span>
+    <span class="error">#{error 'operateUser.roles' /}</span>
    </div>
  </div>
  <div class="control-group">
   <label for="input01" class="control-label">用户名</label>
   <div class="controls">
-   ${supplierUser?.loginName}
-   <input type="hidden" name="supplierUser.loginName" class="input-large" id="loginName" value="${supplierUser.loginName}"/>
+   ${operateUser?.loginName}
+   <input type="hidden" name="operateUser.loginName" class="input-large" id="loginName" value="${operateUser?.loginName}"/>
   </div>
  </div>
  <div class="control-group">
   <label for="input01" class="control-label"><span style="color: red; ">*</span>手机</label>
   <div class="controls">
-   <input type="text" name="supplierUser.mobile" class="input-large" id="mobile" maxlength="11" value="${supplierUser.mobile}"/>
-   <span class="error" id="checkMobile">#{error 'supplierUser.mobile' /}</span>
+   <input type="text" name="operateUser.mobile" class="input-large" id="mobile" maxlength="11" value="${operateUser?.mobile}"/>
+   <span class="error" id="checkMobile">#{error 'operateUser.mobile' /}</span>
   </div>
  </div>
  <div class="control-group">
   <label for="input01" class="control-label"><span style="color: red; ">*</span>密码</label>
   <div class="controls">
-   <input type="password" name="supplierUser.encryptedPassword" class="input-large" value="******" />
-    <span class="error">#{error 'supplierUser.encryptedPassword' /}</span>
+   <input type="password" name="operateUser.encryptedPassword" class="input-large" value="******" />
+    <span class="error">#{error 'operateUser.encryptedPassword' /}</span>
   </div>
  </div>
  <div class="control-group">
   <label for="input01" class="control-label">姓名</label>
   <div class="controls">
-   <input type="text" name="supplierUser.userName" class="input-large" id="userName" value="${supplierUser?.userName}"/>
+   <input type="text" name="operateUser.userName" class="input-large" id="userName" value="${operateUser?.userName}"/>
   </div>
  </div>
  <div class="form-actions">
   <button class="btn btn-primary" id="save" type="button">保 存</button>
   <button class="btn btn-primary" onclick="javascript:window.history.back(-1)" type="button">返回</button>
  </div>
- <input type="hidden" id="hiddenId" value="${supplierUser.id}"/>
+ <input type="hidden" id="hiddenId" value="${operateUser?.id}"/>
 #{/form}
 
 <h3>角色权限对应说明</h3>

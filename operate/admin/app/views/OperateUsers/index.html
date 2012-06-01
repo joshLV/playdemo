@@ -8,7 +8,7 @@
 
 #{set title:'操作员一览' /}
 #{set 'moreScripts'}
-<script src="@{'/public/javascripts/supplierUsers.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/operateUsers.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 <legend>操作员一览</legend>
 #{form @OperateUsers.index() , id:'operForm',class:"form-horizontal" }
@@ -35,7 +35,7 @@
 
     <tbody>
 
-    #{paginate.list items:supplierUsersPage, as:'row'}
+    #{paginate.list items:operateUserPage, as:'row'}
     <tr>
         <td>${row.loginName}</td>
         <td>${row.roles.text ==[] ?'':row.roles.text}</td>
@@ -52,6 +52,6 @@
 </table>
 <div class="pagination" align="center">
     <ul>
-    #{paginate.controls items:supplierUsersPage /}
+    #{paginate.controls items:operateUserPage /}
     </ul>
 </div>

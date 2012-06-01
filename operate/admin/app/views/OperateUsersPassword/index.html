@@ -1,0 +1,62 @@
+#{extends 'layout_operate/layout.html' /}
+#{set 'topbar-nav'}
+    #{include 'share/topbar-nav.html'/}
+#{/set}
+#{set 'sidebar-nav'}
+    #{include 'share/left-nav.html'/}
+#{/set}
+#{set title:'修改密码' /} #{set 'moreStyles'}
+#{/set}
+#{set 'moreScripts'}
+<script type="text/javascript">
+    function isOk(val){
+        if (val=="isOk") {
+            alert("密码修改成功！");
+        }
+
+    }
+</script>
+
+#{/set}
+<body onload="isOk('${isOk}')">
+<legend>修改密码</legend>
+<div class="control-group">
+    <form class="form-horizontal" action="@{OperateUsersPassword.update()}" method="POST">
+        <div class="control-group">
+            <label for="input01" class="control-label"><span style="color: red;">*</span>原&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;&nbsp;码&nbsp;
+            </label>
+
+            <div class="controls">
+                <input name="operateUser.oldPassword" type="password" id="old_password" size="26"
+                       maxlength="20" class="inputBox" value="${operateUser?.oldPassword}"/><span
+                    class="error">#{error 'operateUser.oldPassword' /}</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="input01" class="control-label"><span style="color: red;">*</span>新&nbsp;&nbsp;&nbsp;密&nbsp;&nbsp;&nbsp;码&nbsp;
+            </label>
+
+            <div class="controls">
+                <input name="operateUser.encryptedPassword" type="password" id="password" size="26" maxlength="20"
+                       value="${operateUser?.encryptedPassword}"
+                       class="inputBox" onkeyup="javascript:ChangeQD();"/> <span style="color:#808080;">(*至少6位数字)</span><span
+                    class="error">#{error 'operateUser.newPassword' /}</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label for="input01" class="control-label"><span style="color: red;">*</span>确认新密码</label>
+
+            <div class="controls">
+                <input name="operateUser.confirmPassword" type="password" id="confirmPassword" size="26" maxlength="20"
+                       class="inputBox" value="${operateUser?.confirmPassword}"/><span
+                    class="error">#{error 'operateUser.newConfirmPassword' /}</span>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" id="sure_submit" type="submit">确认</button>
+        </div>
+
+
+    </form>
+</div>

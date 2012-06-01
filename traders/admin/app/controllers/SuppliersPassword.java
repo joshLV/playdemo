@@ -1,11 +1,8 @@
 package controllers;
 
 import models.admin.SupplierUser;
-import navigation.annotations.ActiveNavigation;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -49,11 +46,7 @@ public class SuppliersPassword extends Controller {
 
 	/**
 	 * 验证密码
-	 * 
-	 * @param supplierUser 新分销商密码信息
-	 *            
-	 * @param oldResaler 原分销商密码信息
-	 *            
+	 *
 	 */
 	private static void checkPassword(SupplierUser supplierUser, SupplierUser newSupplierUser) {
 		// 新密码
@@ -70,9 +63,9 @@ public class SuppliersPassword extends Controller {
 			Validation.addError("supplierUser.newPassword", "validation.newPassword.maxSize");
 		}
 		// 新密码比较
-		if (!StringUtils.isNotBlank(newPassword)
-				&& newPassword.equals(supplierUser.confirmPassword)) {
-			Validation.addError("supplierUser.confirmPassword", "validation.confirmPassword");
+		if (StringUtils.isNotBlank(newPassword)
+				&& !newPassword.equals(supplierUser.confirmPassword)) {
+			Validation.addError("supplierUser.newConfirmPassword", "validation.confirmPassword");
 		}
 
 		// 加密后的原密码比较

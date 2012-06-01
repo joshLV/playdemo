@@ -1,15 +1,10 @@
 package operate.rbac;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import models.admin.OperateNavigation;
-import play.Logger;
 import play.Play;
 import play.mvc.Http.Request;
+
+import java.util.*;
 
 public class NavigationHandler {
 
@@ -35,7 +30,7 @@ public class NavigationHandler {
         }
         Set<String> navigationNameStackSets = new HashSet<>();
         for (OperateNavigation nav : navigateionStackList) {
-            navigationNameStackSets.add(nav.name);            
+            navigationNameStackSets.add(nav.name);
         }
         stackMenuNames.set(navigationNameStackSets);
     }
@@ -97,7 +92,7 @@ public class NavigationHandler {
             String fullName = Play.configuration.getProperty("application.name") + "." + name;
             menu = namedMenus.get(fullName);
         }
-        if(menu == null) {
+        if (menu == null) {
             throw new IllegalArgumentException("Menu '" + name + "' not defined.");
         }
         return new ContextedMenu(menu, getMenuContext());
@@ -112,7 +107,7 @@ public class NavigationHandler {
 
     public static MenuContext getMenuContext() {
         MenuContext context = menuContext.get();
-        if(context == null) {
+        if (context == null) {
             context = buildMenuContext();
             menuContext.set(context);
         }
@@ -132,4 +127,10 @@ public class NavigationHandler {
     public static List<ContextedMenu> getSecondLevelMenus() {
         return secondLevelMenus.get();
     }
+
+    public static String getOperatorProfileUrl() {
+        String baseUrl = Play.configuration.getProperty("application.baseDomain");
+        return baseUrl + ".admin/profile";
+    }
+
 }

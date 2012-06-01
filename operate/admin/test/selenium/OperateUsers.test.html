@@ -18,10 +18,10 @@
 #{selenium}
    #{include 'test/selenium/step/login.selenium' /}
    open('/users/${play.test.Fixtures.idCache.get("models.admin.OperateUser-user3")}/edit')
-   click('xpath=(//input[@id='supplierUser.roles.id'])[2]')
+   click('xpath=(//input[@id='operateUser.roles.id'])[2]')
    verifyTextPresent('tom')
    type('id=mobile','13012012011')
-   type('name=supplierUser.encryptedPassword','')
+   type('name=operateUser.encryptedPassword','')
    clickAndWait('id=save')
    verifyTextPresent('请输入密码!')
 #{/selenium}
@@ -29,10 +29,10 @@
 #{selenium "edit user"}
    #{include 'test/selenium/step/login.selenium' /}
    open('/users/${play.test.Fixtures.idCache.get("models.admin.OperateUser-test")}/edit')
-   click('xpath=(//input[@id='supplierUser.roles.id'])[2]')
+   click('xpath=(//input[@id='operateUser.roles.id'])[2]')
    verifyTextPresent('test')
    type('id=mobile','13088092012')
-   type('name=supplierUser.encryptedPassword','123')
+   type('name=operateUser.encryptedPassword','123456')
    clickAndWait('id=save')
    assertNotTitle('操作员编辑')
 
@@ -54,3 +54,16 @@
 #{/selenium}
 
 
+ #{selenium "edit 个人信息"}
+   #{include 'test/selenium/step/login.selenium' /}
+   open('/profile')
+   assertTitle('个人信息')
+   verifyTextPresent('tom')
+   assertValue('id=mobile','13211111111')
+   type('id=mobile','13211111121')
+   type('id=userName','yyy')
+   clickAndWait('id=save')
+   assertValue('id=mobile','13211111121')
+   assertValue('id=userName','yyy')
+
+#{/selenium}

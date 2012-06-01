@@ -1,0 +1,55 @@
+#{extends 'layout_operate/layout.html' /}
+#{set 'topbar-nav'}
+    #{include 'share/topbar-nav.html'/}
+#{/set}
+#{set 'sidebar-nav'}
+    #{include 'share/left-nav.html'/}
+#{/set}
+
+#{set title:'个人信息' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/operateUsers.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{form @OperateUsersProfiles.update() , id:'operForm',class:"form-horizontal" }
+<legend>个人信息编辑</legend>
+<div class="control-group">
+    <label for="input01" class="control-label">角色</label>
+    <div class="controls">
+        #{list items:operateUser.roles,as:'role'}
+            <label class="checkbox inline">
+                <input type="hidden" name="operateUser.roles.id" value="${role.id}">
+                <input type="checkbox" value="${role.id}" id="operateUser.roles.id" name="supplierUser.roles.id"
+                       disabled="true"
+                       #{if roleIds?.contains(String.valueOf(role?.id))}checked#{/if}/> ${role.text}
+            </label>
+        #{/list}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="error">#{error 'operateUser.roles' /}</span>
+    </div>
+</div>
+<div class="control-group">
+    <label for="input01" class="control-label">用户名</label>
+    <div class="controls">
+    ${operateUser?.loginName}
+        <input type="hidden" name="operateUser.loginName" class="input-large" id="loginName" value="${operateUser.loginName}"/>
+    </div>
+</div>
+<div class="control-group">
+    <label for="input01" class="control-label"><span style="color: red; ">*</span>手机</label>
+    <div class="controls">
+        <input type="text" name="operateUser.mobile" class="input-large" id="mobile" maxlength="11" value="${operateUser.mobile}"/>
+        <span class="error" id="checkMobile">#{error 'operateUser.mobile' /}</span>
+    </div>
+</div>
+<div class="control-group">
+    <label for="input01" class="control-label">姓名</label>
+    <div class="controls">
+        <input type="text" name="operateUser.userName" class="input-large" id="userName" value="${operateUser?.userName}"/>
+    </div>
+</div>
+<div class="form-actions">
+    <button class="btn btn-primary" id="save" type="button">保 存</button>
+</div>
+<input type="hidden" name="operateUser.encryptedPassword" class="input-large" value="******" />
+<input type="hidden" id="hiddenId" value="${operateUser.id}"/>
+#{/form}
