@@ -347,3 +347,22 @@
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e05721', endColorstr='#bf3e23');
 	background: linear-gradient(left, #e05721, #bf3e23);
 }
+.third-pay {
+    padding: 30px 0 50px;
+}
+.third-method {
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 32px;
+}
+.third-method span {
+    font-weight: 700;
+}
+.third-confirm {
+    padding: 5px 15px;
+    margin-right: 10px;
+}
+.third-pay a {
+    color: #4991D4;
+}
+/* }}} */

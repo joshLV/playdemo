@@ -37,30 +37,29 @@
     </div>
     #{/if}
 #{else }
-    <div>已选择 ${paymentSource.name} 支付 ${order.discountPay} 元</div>
+    <div class="third-pay">
+        #{form @payIt(), target:play.Play.runingInTestMode() ? "_self" : "_blank", id: "pay_it_form"}
+            <div class="third-method">已选择 <span>${paymentSource.name}</span> 支付 ${order.discountPay} 元</div>
+            <input name="paymentCode" value="${paymentSource.code}" type="hidden"/>
+            <input name="orderNumber" value="${order.orderNumber}" type="hidden"/>
+            <input class="third-confirm" type="submit" value="确认支付" id="confirm_pay_it"/>
+            <a href="/payment_info/${order.orderNumber}">返回重新选择支付方式</a>
+        #{/form}
+        <script type="text/javascript">
+        $(window).load(function(){
+            $(window).scroll(function(){reset_result_dialog()});
+            $(window).resize(function(){reset_result_dialog()});
 
-    #{form @payIt(), target:play.Play.runingInTestMode() ? "_self" : "_blank", id: "pay_it_form"}
-    <input name="paymentCode" value="${paymentSource.code}" type="hidden"/>
-        <input name="orderNumber" value="${order.orderNumber}" type="hidden"/>
-        <input type="submit" value="确认支付" id="confirm_pay_it"/>
-    #{/form}
-    <a href="/payment_info/${order.orderNumber}">返回重新选择支付方式</a>
-
-<script type="text/javascript">
-$(window).load(function(){
-    $(window).scroll(function(){reset_result_dialog()});
-    $(window).resize(function(){reset_result_dialog()});
-
-    $("#confirm_pay_it").click(function(){
-        $("#full_bg").css({display:"block"});
-        reset_result_dialog();
-        $(this).attr("disabled","disabled");
-        $("#pay_it_form").submit();
-        return false;
-
-    });
-});
-</script>
+            $("#confirm_pay_it").click(function(){
+                $("#full_bg").css({display:"block"});
+                reset_result_dialog();
+                $(this).attr("disabled","disabled");
+                $("#pay_it_form").submit();
+                return false;
+            });
+        });
+        </script>
+    </div>
 #{/else}
 
 
