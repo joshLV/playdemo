@@ -1,10 +1,8 @@
 #{extends 'main.html' /} 
 #{set title:'一百券 - 资金明细' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/u/list.css'] /}
-<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
-<link href="@{'/public/stylesheets/user-center.css'}" rel="stylesheet" type="text/css" />
-<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+    #{asset.css src:['/u/list.css', '/u/user-center.css'] /}
+    <link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
 <style type="text/css">
 #full_bg {
 	background-color: Gray;
@@ -28,6 +26,7 @@
 </style>
 #{/set}
 #{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script>
     $(window).load(function () {
         $("#sequenceType").change(function() {
@@ -99,15 +98,15 @@
                 <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>${accountSequence.amount?.formatCurrency('CNY')}</td>
                 <td>${accountSequence.remark}
-                #{if accountSequence.orderId != null && accountSequence.sequenceType.isOrder()}
+                #{if accountSequence.orderId != null && accountSequence.sequenceType?.isOrder()}
                     <br/>订单号：<a style="color:#3366CC"  href="/orders/${accountSequence.orderId}" target="_blank">
                     ${accountSequence?.orderNumber}</a>#{/if}</td>
                 <td>
                 #{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
-                    ${accountSequence.cashAmount.add(accountSequence .uncashAmount)?.formatCurrency('CNY')}
+                    ${accountSequence.cashAmount?.add(accountSequence .uncashAmount)?.formatCurrency('CNY')}
                 #{/if}</td>
                 <td>#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
-                    <div class="alert alert-info">${accountSequence.cashAmount.add(accountSequence.uncashAmount)?.formatCurrency('CNY')}</div>#{/if}</td>
+                    <div class="alert alert-info">${accountSequence.cashAmount?.add(accountSequence.uncashAmount)?.formatCurrency('CNY')}</div>#{/if}</td>
 
                 <td>${accountSequence?.payMethod}</td>
             </tr>
