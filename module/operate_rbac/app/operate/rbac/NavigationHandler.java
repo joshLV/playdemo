@@ -130,7 +130,7 @@ public class NavigationHandler {
 
     public static String getOperatorProfileUrl() {
         String baseUrl = Play.configuration.getProperty("application.baseDomain");
-        return baseUrl + ".admin/profile";
+        return "http:/admin."+baseUrl + "/profile";
     }
 
 }
