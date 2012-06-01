@@ -1,0 +1,110 @@
+.aside {
+    float: left;
+    width: 148px;
+    margin-right: 10px;
+    border: 1px solid #D3D3D3;
+}
+.menu h3 {
+    padding: 4px 0 4px 10px;
+    color: #25B4AB;
+    font-size: 12px;
+    border-bottom: solid 1px #DADADA;
+    background: url(http://img.uhcdn.com/images/u/u_left_bg.png) repeat-x 0 0;
+}
+.menu ul {
+    border-bottom: solid 1px #DADADA;
+}
+.menu li {
+    margin: 5px 0;
+    _line-height: 0;
+}
+.menu li a {
+    display: block;
+    padding: 3px 0 3px 12px;
+    color: #444;
+}
+.menu li .current,
+.menu li a:hover {
+    color: #25B4AB;
+    text-decoration: none;
+    background-color: #F6F6F6;
+}
+
+.section {
+    float: right;
+    width: 800px;
+}
+.zhu_nav_title {
+    padding: 4px 0 4px 8px;
+    margin-bottom: 10px;
+    border: 1px solid #E4E4E4;
+    background-color: #F9FAFC;
+}
+.zhu_nav_title a:hover {
+    color: #25B4AB;
+}
+
+.search-box {
+    padding: 5px 0 10px 0;
+}
+.search-btn {
+    width: 67px;
+    height: 25px;
+    border: 0;
+    background: url(http://img.uhcdn.com/images/u/u_btn.png) repeat-x 0 0;
+}
+.search-btn:hover {
+    background-position: 0 -26px;
+}
+.order-tab .sep-row {
+    height: 7px;
+}
+.order-tab .col-name {
+    line-height: 30px;
+    background-color: #AADBDB;
+}
+.order-tab .sep-row td {
+    border: 0;
+}
+.order-tab td {
+    padding: 3px 5px;
+    border: 1px solid #C4E8E8;
+}
+.order-tab .order-hd {
+    background-color: #C4E8E8;
+}
+.order-tab .order-hd td {
+        line-height: 25px;
+}
+.order-tab .order-bd {
+    border: solid #AADBDB;
+    border-width: 0 1px 1px 1px;
+}
+.order-tab .order-no {
+    padding-left: 10px;
+}
+.order-tab .order-time {
+    padding-left: 20px;
+}
+.order-tab .goods-image {
+    float: left;
+    margin: 0 3px;
+}
+
+.apply-tips {
+    margin-top: 30px;
+}
+.apply-tips h4 {
+    margin-top: 10px;
+}
+.apply-tips li {
+    line-height: 22px;
+}
+.apply-tips table {
+    margin-left: 18px;
+    border: 1px solid #ACACAC;
+}
+.apply-tips table td {
+    padding: 3px 5px;
+    border: 1px solid #ACACAC;
+}
