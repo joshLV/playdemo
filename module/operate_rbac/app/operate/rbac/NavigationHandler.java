@@ -128,9 +128,4 @@ public class NavigationHandler {
         return secondLevelMenus.get();
     }
 
-    public static String getOperatorProfileUrl() {
-        String baseUrl = Play.configuration.getProperty("application.baseDomain");
-        return "http:/admin."+baseUrl + "/profile";
-    }
-
 }

@@ -194,7 +194,6 @@ public class OperateRbac extends Controller {
 
         renderArgs.put("topMenus", NavigationHandler.getTopMenus());
         renderArgs.put("secondLevelMenu", NavigationHandler.getSecondLevelMenus());
-        renderArgs.put("operatorProfileUrl", NavigationHandler.getOperatorProfileUrl());
         // 检查权限
         checkRight(currentMenuName);
     }
