@@ -14,6 +14,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -40,8 +41,6 @@ public class SalesTaxReport extends Model {
     @Enumerated(EnumType.STRING)
     public GoodsLevelPriceName levelPriceName;
 
-    public BigDecimal price;
-
     @Column(name = "buy_count")
     public long buyCount;
 
@@ -56,13 +55,12 @@ public class SalesTaxReport extends Model {
     @Column(name = "no_tax_amount")
     public BigDecimal noTaxAmount;
 
-    public SalesTaxReport(Supplier supplier, Goods goods, GoodsLevelPriceName levelPriceName, BigDecimal price,
+    public SalesTaxReport(Supplier supplier, Goods goods, GoodsLevelPriceName levelPriceName,
                           long buyCount, long orderCount, BigDecimal originalAmount,
                           BigDecimal tax, BigDecimal noTaxAmount) {
         this.supplier = supplier;
         this.goods = goods;
         this.levelPriceName = levelPriceName;
-        this.price = price;
         this.buyCount = buyCount;
         this.orderCount = orderCount;
         this.originalAmount = originalAmount;
@@ -73,7 +71,7 @@ public class SalesTaxReport extends Model {
     public static JPAExtPaginator<SalesTaxReport> query(ReportCondition condition, int pageNumber,
                                                         int pageSize) {
         JPAExtPaginator<SalesTaxReport> page = new JPAExtPaginator<>("SalesTaxReport r",
-                "new SalesTaxReport(r.supplier,r.goods, r.levelPriceName, r.price, sum(r.buyCount), " +
+                "new SalesTaxReport(r.supplier,r.goods, r.levelPriceName, sum(r.buyCount), " +
                         "sum(r.orderCount), sum(r.originalAmount), sum(r.tax),sum(r.noTaxAmount))",
                 SalesTaxReport.class, condition.getFilter(),
                 condition.getParamMap()).groupBy("r.supplier,r.goods,r.levelPriceName")
@@ -96,5 +94,13 @@ public class SalesTaxReport extends Model {
         }
         return new ReportSummary((Long) summary[0], 0, (BigDecimal) summary[1], (BigDecimal) summary[2],
                 (BigDecimal) summary[3]);
+    }
+
+    /**
+     * 平均单价
+     */
+    @Transient
+    public BigDecimal getPrice() {
+        return originalAmount.divide(new BigDecimal(buyCount));
     }
 }

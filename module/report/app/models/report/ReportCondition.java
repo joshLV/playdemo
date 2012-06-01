@@ -28,6 +28,8 @@ public class ReportCondition implements Serializable {
     public String orderByType = "DESC";
     public String interval = "0d";
 
+    public GoodsLevelPriceName levelPriceName;
+
     private Map<String, Object> paramMap = new HashMap<>();
 
     public String getFilter() {
@@ -41,9 +43,10 @@ public class ReportCondition implements Serializable {
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
         }
 
-        if (supplier != null) {
+        if (supplier != null && supplier.id != 0) {
             condBuilder.append(" and r.supplier = :supplier");
             paramMap.put("supplier", supplier);
+            System.out.println("supplier.id:" + supplier.id);
         }
 
         if (StringUtils.isNotBlank(goodsLike)) {
@@ -80,6 +83,11 @@ public class ReportCondition implements Serializable {
 
             condBuilder.append(" and r.supplier.fullName like :supplierLike");
             paramMap.put("supplierLike", "%" + supplierLike + "%");
+        }
+
+        if (levelPriceName != null) {
+            condBuilder.append(" and levelPriceName = :levelPriceName");
+            paramMap.put("levelPriceName", levelPriceName);
         }
         System.out.println("condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();

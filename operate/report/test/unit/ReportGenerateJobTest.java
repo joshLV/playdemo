@@ -48,7 +48,6 @@ public class ReportGenerateJobTest extends UnitTest {
         Fixtures.loadModels("fixture/shops_unit.yml");
         Fixtures.loadModels("fixture/goods_unit.yml");
         Fixtures.loadModels("fixture/orders.yml");
-        Fixtures.loadModels("fixture/orderItems.yml");
         Fixtures.loadModels("fixture/detail_daily_reports.yml");
         Fixtures.loadModels("fixture/shop_daily_reports.yml");
         Fixtures.loadModels("fixture/goods_daily_reports.yml");
@@ -96,7 +95,6 @@ public class ReportGenerateJobTest extends UnitTest {
         ReportGenerateJob job = new ReportGenerateJob();
         job.doJob();
 
-        System.out.println("job:" + job);
         dailyReports = DetailDailyReport.findAll();
         assertEquals(5, dailyReports.size());
         List<ShopDailyReport> shopReports = ShopDailyReport.findAll();

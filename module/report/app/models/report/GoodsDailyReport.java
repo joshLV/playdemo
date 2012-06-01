@@ -1,7 +1,6 @@
 package models.report;
 
 import models.sales.Goods;
-import models.sales.Shop;
 import models.supplier.Supplier;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
@@ -13,7 +12,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 /**
@@ -28,13 +29,13 @@ import java.util.Date;
 public class GoodsDailyReport extends Model {
     @ManyToOne
     public Supplier supplier;
-    @Column(name="created_at")
+    @Column(name = "created_at")
     public Date createdAt;
     @ManyToOne
     public Goods goods;
-    @Column(name="buy_count")
+    @Column(name = "buy_count")
     public long buyCount;
-    @Column(name="order_count")
+    @Column(name = "order_count")
     public long orderCount;
     @Column(name = "sale_amount")
     public BigDecimal saleAmount;
@@ -42,12 +43,17 @@ public class GoodsDailyReport extends Model {
     public BigDecimal resaleAmount;
     @Column(name = "original_amount")
     public BigDecimal originalAmount;
+    @Column(name = "tax_amount")
+    public BigDecimal taxAmount;
+    @Column(name = "no_tax_amount")
+    public BigDecimal noTaxAmount;
 
     public GoodsDailyReport() {
 
     }
 
-    public GoodsDailyReport(Goods goods, long buyCount, long orderCount, BigDecimal originalAmount) {
+    public GoodsDailyReport(Supplier supplier, Goods goods, long buyCount, long orderCount, BigDecimal originalAmount) {
+        this.supplier = supplier;
         this.goods = goods;
         this.buyCount = buyCount;
         this.orderCount = orderCount;
@@ -55,11 +61,11 @@ public class GoodsDailyReport extends Model {
     }
 
     public static JPAExtPaginator<GoodsDailyReport> query(ReportCondition condition, int pageNumber,
-                                                         int pageSize) {
+                                                          int pageSize) {
         JPAExtPaginator<GoodsDailyReport> page = new JPAExtPaginator<>("GoodsDailyReport r",
-                "new GoodsDailyReport(r.goods, sum(r.buyCount), sum(r.orderCount), sum(r.originalAmount))",
+                "new GoodsDailyReport(r.supplier,r.goods, sum(r.buyCount), sum(r.orderCount), sum(r.originalAmount))",
                 GoodsDailyReport.class, condition.getFilter(),
-                condition.getParamMap()).groupBy("r.goods").orderBy("r.goods");
+                condition.getParamMap()).groupBy("r.supplier,r.goods").orderBy("r.supplier,r.goods");
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
         return page;
@@ -78,4 +84,18 @@ public class GoodsDailyReport extends Model {
         }
         return new ReportSummary((Long) summary[0], (Long) summary[1], (BigDecimal) summary[2]);
     }
+
+    /**
+     * 平均单价
+     */
+    @Transient
+    public BigDecimal getPrice() {
+        System.out.println("originalAmount:" + originalAmount);
+        System.out.println("buyCount:" + buyCount);
+        if (buyCount <= 0) {
+            return null;
+        }
+        return originalAmount.divide(new BigDecimal(buyCount), 2, RoundingMode.HALF_EVEN);
+    }
+
 }

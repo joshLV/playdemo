@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -85,5 +86,4 @@ public class PurchaseTaxReport extends Model {
         return new ReportSummary((Long) summary[0], 0, (BigDecimal) summary[1], (BigDecimal) summary[2],
                 (BigDecimal) summary[3]);
     }
-
 }

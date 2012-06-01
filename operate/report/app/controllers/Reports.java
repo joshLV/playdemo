@@ -1,8 +1,10 @@
 package controllers;
 
+import models.report.GoodsDailyReport;
 import models.report.PurchaseTaxReport;
 import models.report.ReportCondition;
 import models.report.ReportSummary;
+import models.report.SalesTaxReport;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
@@ -33,9 +35,29 @@ public class Reports extends Controller {
             condition = new ReportCondition();
         }
 
-        JPAExtPaginator<PurchaseTaxReport> reportPage = PurchaseTaxReport.query(condition, pageNumber, PAGE_SIZE);
+        JPAExtPaginator<GoodsDailyReport> reportPage = GoodsDailyReport.query(condition, pageNumber, PAGE_SIZE);
 
         ReportSummary summary = PurchaseTaxReport.summary(condition);
+
+        render(reportPage, summary, condition);
+    }
+
+    /**
+     * 查询采购税务报表.
+     *
+     * @param condition
+     */
+    @ActiveNavigation("sales_tax_reports")
+    public static void showSalesTaxReport(ReportCondition condition) {
+        int pageNumber = getPageNumber();
+
+        if (condition == null) {
+            condition = new ReportCondition();
+        }
+
+        JPAExtPaginator<SalesTaxReport> reportPage = SalesTaxReport.query(condition, pageNumber, PAGE_SIZE);
+
+        ReportSummary summary = SalesTaxReport.summary(condition);
 
         render(reportPage, summary, condition);
     }

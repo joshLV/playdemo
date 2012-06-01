@@ -46,7 +46,6 @@ public class DetailDailyReport extends Model {
     public BigDecimal originalAmount;
 
 
-
     public DetailDailyReport(Shop shop, Goods goods,long buyCount, long orderCount, BigDecimal originalAmount) {
         this.shop = shop;
         this.goods = goods;

@@ -8,6 +8,7 @@ GET     /                                       Application.index
 # 财务报表
 GET     /reports                                Reports.showPurchaseTaxReport
 GET     /reports/purchase                       Reports.showPurchaseTaxReport
+GET     /reports/sales                          Reports.showSalesTaxReport
 
 
 # Ignore favicon requests

@@ -97,10 +97,10 @@
     商品名称：<input type="text" name="condition.goodsLike" class="input-medium"
                 value="${condition?.goodsLike}"/>
     单价类型：
-#{select 'condition.resalerLevel', id:resalerLevel, class:'select', value:condition?.resalerLevel}
+#{select 'condition.levelPriceName', id:levelPriceName, value:condition?.levelPriceName}
     #{option "0"}不限#{/option}
-    #{list items:models.resale.ResalerLevel.values(), as:'resalerLevel'}
-        #{option resalerLevel}&{resalerLevel}#{/option}
+    #{list items:models.report.GoodsLevelPriceName.values(), as:'levelPriceName'}
+        #{option levelPriceName}&{'levelPriceName.'+levelPriceName}#{/option}
     #{/list}
 #{/select}
     起止日期
@@ -134,7 +134,7 @@
     <th>商户</th>
     <th>商品</th>
     <th>单价名称</th>
-    <th>单价</th>
+    <th>单价(平均)</th>
     <th>数量</th>
     <th>总金额</th>
     <th>税额</th>

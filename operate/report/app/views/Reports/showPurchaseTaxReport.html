@@ -126,7 +126,7 @@
     <th>序号</th>
     <th>商户</th>
     <th>商品</th>
-    <th>采购价</th>
+    <th>采购价(平均)</th>
     <th>数量</th>
     <th>总金额</th>
     <th>税额</th>
@@ -140,10 +140,10 @@
         <td>${report?.supplier?.fullName}</td>
         <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${report?.goods?.id}"
                target="_blank"><img src="${report?.goods?.imageTinyPath}"/>${report?.goods?.name}</a></td>
-        <td>${report?.goods?.originalPrice?.formatCurrency('CNY')}</td>
+        <td>${report?.price?.formatCurrency('CNY')}</td>
         <td>${report?.buyCount}</td>
         <td>${report?.originalAmount?.formatCurrency('CNY')}</td>
-        <td>${report?.tax?.formatCurrency('CNY')}</td>
+        <td>${report?.taxAmount?.formatCurrency('CNY')}</td>
         <td>${report?.noTaxAmount?.formatCurrency('CNY')}</td>
     </tr>
 #{/paginate.list}
