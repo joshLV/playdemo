@@ -42,6 +42,7 @@
                 <th>&{'user.loginIp'}</th>
                 <th>&{'user.createdAt'}</th>
                 <th>&{'user.status'}</th>
+                <th>&{'user.amount'}</th>
                 <th>操 作</th>
             </tr>
             </thead>
@@ -55,6 +56,7 @@
                 <td>${user?.loginIp}</td>
                 <td>${user?.createdAt}</td>
                 <td>&{'user.status.'+user?.status}</td>
+                <td>${user?.AccountMoney()?.formatCurrency('CNY')}</td>
                 <td><a href="@{OperateConsumers.show(user?.id)}">详细信息</a>
                     #{if models.consumer.UserStatus.NORMAL.equals(user?.status)}
                         / #{vx.operateLink text:"冻结", name:'freeze_'+user.id,url:"/consumers/"+user.id+"/freeze",
@@ -62,6 +64,7 @@
                     #{if models.consumer.UserStatus.FREEZE.equals(user?.status)}
                         / #{vx.operateLink text:"解冻", name:'unfreeze_'+user.id, url:"/consumers/"+user.id+"/unfreeze",
                     method:"PUT",confirm:true,targetName:user?.loginName/}#{/if}
+
             </tr>
             #{/paginate.list}
             </tbody>

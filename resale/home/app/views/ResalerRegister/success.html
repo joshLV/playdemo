@@ -1,25 +1,4 @@
 #{set title:'注册成功' /}
-
-#{set 'moreScripts'}
-<script>
-    function init() {
-        var times = 5;
-        for (var i = times; i >= 0; i--) {
-            window.setTimeout('doUpda(' + i + ')', (times - i) * 1000);
-        }
-    }
-
-    function doUpda(num) {
-        if (num == 0) {
-             window.location.href="/";
-        } else {
-            $("#time").html(num);
-        }
-    }
-</script>
-#{/set}
-
-
 <html>
 <head>
     <meta charset="UTF-8">
@@ -29,11 +8,12 @@
 </head>
 <body onload="init()">
 <div id="header">
-    <h1 id="logo"><img src="http://img.uhcdn.com/images/r/xlogo.png" alt="100券"/></h1>
+    <h1 id="logo"><a href="/"><img src="http://img.uhcdn.com/images/r/xlogo.png"
+                                                              alt="100券"/></a></h1>
 </div>
 
 <div id="content">
-    恭喜您注册成功！<span id="time">5</span>秒之后自动跳转到登录页面
+    恭喜您注册成功，我们将在2-3个工作日内完成审核！如有问题请致电：400-6262-166
 </div>
 </body>
 <div id="footer">版权所有：上海视惠信息科技有限公司 ©2012 quanFX.COM 沪ICP备08114451号</div>

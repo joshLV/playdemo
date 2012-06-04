@@ -7,12 +7,12 @@
 <div class="body">
     <form class="form-horizontal" name="frm" action="" method="post">
         <legend>分销商详细信息</legend>
-        <div class="control-group">
+      <!--  <div class="control-group">
             <label class="control-label">帐户类型</label>
 
             <div class="controls">&{'resaler.'+resaler?.accountType}
             </div>
-        </div>
+        </div>-->
         <div class="control-group">
             <label class="control-label">分销商状态</label>
 
@@ -23,6 +23,12 @@
             <label class="control-label">用户名</label>
 
             <div class="controls">${resaler?.loginName}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">身份证号码</label>
+
+            <div class="controls">${resaler?.identityNo}
             </div>
         </div>
         <div class="control-group">

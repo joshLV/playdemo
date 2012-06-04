@@ -203,6 +203,7 @@ user.lastLoginAt=最后登录时间
 user.loginIp=最后登录IP
 user.createdAt=注册时间
 user.status=状态
+user.amount=账户余额
 user.status.NORMAL=正常
 user.status.FREEZE=冻结
 user.status.null=

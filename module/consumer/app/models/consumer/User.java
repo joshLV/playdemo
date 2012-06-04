@@ -1,5 +1,7 @@
 package models.consumer;
 
+import models.accounts.Account;
+import models.accounts.AccountType;
 import models.mail.CouponMessage;
 import models.mail.MailUtil;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -15,15 +17,8 @@ import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Mobile;
 import play.mvc.Http.Request;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -270,5 +265,21 @@ public class User extends Model {
         }
         user.status = status;
         user.save();
+    }
+
+    /**
+     * 取得账户余额
+     *
+     * @return 余额
+     */
+    public BigDecimal AccountMoney() {
+
+        Account account = Account.find("byUidAndAccountType", this.id, AccountType.CONSUMER).first();
+
+        if (account == null) {
+            return new BigDecimal(0);
+        }
+        BigDecimal amount = account.amount;
+        return amount;
     }
 }

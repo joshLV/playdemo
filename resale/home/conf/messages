@@ -25,6 +25,8 @@ validation.invalid=手机格式不对!
 goodsId=商品
 phones=手机号
 
+validation.loginName=用户名已存在！
+validation.mobile=手机已存在！
 resaler.loginName=用户名
 resaler.password=密码
 resaler.confirmPassword=确认密码

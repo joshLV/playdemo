@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
-@Table(name="accounts")
+@Table(name = "accounts")
 public class Account extends Model {
     public long uid;
 
@@ -30,15 +30,15 @@ public class Account extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
-    public static final long PLATFORM_INCOMING     = 1L;   //券平台收款账户
-    public static final long PLATFORM_COMMISSION   = 2L;   //券平台佣金账户
-    public static final long UHUILA_COMMISSION     = 3L;   //一百券佣金账户
+    public static final long PLATFORM_INCOMING = 1L;   //券平台收款账户
+    public static final long PLATFORM_COMMISSION = 2L;   //券平台佣金账户
+    public static final long UHUILA_COMMISSION = 3L;   //一百券佣金账户
 
-    public Account(){
+    public Account() {
 
     }
 
-    public Account(long uid, AccountType type){
+    public Account(long uid, AccountType type) {
         this.uid = uid;
         this.accountType = type;
         this.amount = new BigDecimal(0);
@@ -46,6 +46,5 @@ public class Account extends Model {
         this.status = AccountStatus.NORMAL;
         this.createdAt = new Date();
     }
-    
 
 }

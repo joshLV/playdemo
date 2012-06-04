@@ -36,9 +36,9 @@ $(window).load(function(){
 				{loginName:loginName,mobile:mobile},
 				function(data){
 					if(data == 1 ){
-						$("#checkName").html("<font color=red>对不起，该用户名已经存在!</font");
+						$("#checkName").html("<font color=red>对不起，该用户名已经存在!</font>");
 					} else if(data == 2){
-						$("#checkMobile").html("<font color=red>对不起，该手机已经存在!</font");
+						$("#checkMobile").html("<font color=red>对不起，该手机已经存在!</font>");
 						$("#checkName").html("");
 					} else{
 						$("#checkName").html("");
@@ -75,9 +75,9 @@ function checkLoginNameAndMobile(){
 			{loginName:loginName,mobile:mobile},
 			function(data){
 				if(data == 1 ){
-					$("#checkName").html("<font color=red>对不起，该用户名已经存在!</font");
+					$("#checkName").html("<font color=red>对不起，该用户名已经存在!</font>");
 				} else if(data == 2){
-					$("#checkMobile").html("<font color=red>对不起，该手机已经存在!</font");
+					$("#checkMobile").html("<font color=red>对不起，该手机已经存在!</font>");
 					$("#checkName").html("");
 				} else {
 					$("#checkName").html("");
@@ -96,7 +96,7 @@ function checkIDCard (str) {
 	isIDCard2=/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{4}$/; 
 	//验证身份证，返回结果 
 	if(!( isIDCard1.test(str)||isIDCard2.test(str))){
-		$("#checkIdentityNo").html("<font color=red>请输入有效身份证号码!</font");
+		$("#checkIdentityNo").html("<font color=red>请输入有效身份证号码!</font>");
 		return false;
 	} else {
 		$("#checkIdentityNo").html("");

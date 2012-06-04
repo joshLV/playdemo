@@ -27,7 +27,7 @@
     <table class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>
-            <th>帐户类型</th>
+        <!--    <th>帐户类型</th>-->
             <th>用户名</th>
             <th>姓名</th>
             <th>手机</th>
@@ -41,7 +41,7 @@
 
         #{paginate.list items:resalers, as:'resaler'}
         <tr>
-            <td>&{'resaler.'+resaler.accountType}</td>
+           <!--  <td>&{'resaler.'+resaler.accountType}</td> -->
             <td>${resaler.loginName}</td>
             <td>${resaler.userName}</td>
             <td>${resaler.mobile}</td>
@@ -54,7 +54,7 @@
              <a href="@{Resalers.detail(resaler.id,'1')}">查看</a>
              #{/if}
               #{if models.resale.ResalerStatus.APPROVED.equals(resaler.status)}
-                     #{vx.operateLink text:"冻结", url:"/resalers/"+resaler.id+"/freeze", method:"PUT"/}#{/if}
+                     /#{vx.operateLink text:"冻结", url:"/resalers/"+resaler.id+"/freeze", method:"PUT"/}#{/if}
                     *{/ <a href="@{Resalers.freeze(resaler.id)}">冻结</a>/#{/if}}*
                 #{if models.resale.ResalerStatus.FREEZE.equals(resaler.status)}
                      #{vx.operateLink text:"解冻", url:"/resalers/"+resaler.id+"/unfreeze", method:"PUT"/}#{/if}
