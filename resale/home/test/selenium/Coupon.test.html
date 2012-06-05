@@ -1,0 +1,34 @@
+#{fixture delete:[models.order.Order.class,models.sales.Category.class,models.sales.Area.class,
+models.sales.Shop.class, models.sales.Goods.class,models.order.OrderItems.class,models.resale.Resaler.class,
+models.order.ECoupon.class] ,
+load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_unit.yml',
+'fixture/shops_unit.yml','fixture/goods_unit.yml','fixture/level_price.yml','fixture/resaler.yml','fixture/orders.yml','fixture/orderItems.yml'] /}
+%{
+id = play.test.Fixtures.idCache.get("models.order.ECoupon-coupon1")
+
+
+resalerId = play.test.Fixtures.idCache.get("models.resale.Resaler-Resaler_1")
+resaler = models.resale.Resaler.findById(resalerId)
+
+
+list = models.order.Order.findAll();
+for (models.order.Order order :list) {
+    order.userId = resaler.getId()
+    order.userType = models.accounts.AccountType.RESALER
+    order.save()
+}
+
+}%
+#{selenium "查看券列表"}
+    #{include 'test/selenium/step/login.selenium' /}
+    open('/ecoupons')
+    assertTitle('券订单列表')
+#{/selenium}
+#{selenium '退款'}
+    #{include 'test/selenium/step/login.selenium' /}
+     open('/ecoupons')
+
+    verifyTextPresent('未消费')
+clickAndWait('id=apply_${id}')
+    verifyTextPresent('已退款')
+#{/selenium}

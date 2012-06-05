@@ -1,0 +1,21 @@
+#{fixture delete:'all', load:['fixture/user.yml','fixture/users.yml','fixture/goods.yml','fixture/addresses.yml'] /}
+#{selenium 'Test Address/edit.html'}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods4")}')
+verifyTitle('一百券 - 商品详情')
+clickAndWait('id=link_buy_now')
+verifyTextPresent('实物凭证 - 订单信息')
+waitForText('id=J_addrCurrent','上海市 黄浦区 市辖区 test3 (sujie1 收) 13764081569')
+click('id=J_modifyAddr')
+waitForElementPresent('link=编辑')
+click('link=编辑')
+waitForElementPresent('id=J_addrMobile')
+type('id=J_addrMobile','13245678961')
+type('id=J_addrName','校长')
+click('id=J_confirm')
+waitForText('id=J_modifyAddr','[修改]')
+*{waitForElementPresent(}*
+*{verifyTextPresent('上海市 市辖区 黄浦区 test3 (校长 收) 13245678961')}*
+
+#{/selenium}
+

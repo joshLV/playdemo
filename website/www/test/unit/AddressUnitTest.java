@@ -22,6 +22,7 @@ public class AddressUnitTest extends UnitTest {
     public void setup() {
         Fixtures.delete(Address.class);
         Fixtures.delete(User.class);
+        Fixtures.loadModels("fixture/user.yml");
         Fixtures.loadModels("fixture/users.yml");
         Fixtures.loadModels("fixture/addresses.yml");
     }

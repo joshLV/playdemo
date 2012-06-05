@@ -38,6 +38,7 @@ sales.Goods(goods4):
   status: ONSALE
   deleted: UN_DELETED
   supplierId: 1
+  materialType: "REAL"
   effectiveAt: 2012-02-01
   expireAt: 2092-02-02
 sales.Goods(goods5):
@@ -49,5 +50,8 @@ sales.Goods(goods5):
   status: ONSALE
   deleted: UN_DELETED
   supplierId: 1
+  materialType: "REAL"
   effectiveAt: 2012-02-01
   expireAt: 2092-02-02
+
+

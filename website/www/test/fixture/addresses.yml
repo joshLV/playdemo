@@ -8,4 +8,13 @@ consumer.Address(test2):
   address: test2
   isDefault: "true"
   user: User1
-
+consumer.Address(test3):
+  name: sujie1
+  province: '上海市'
+  district: '市辖区'
+  city: '黄浦区'
+  postcode: 123456
+  mobile: 13764081569
+  address: test3
+  isDefault: true
+  user: user
