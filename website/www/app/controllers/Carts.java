@@ -1,5 +1,6 @@
 package controllers;
 
+import com.google.gson.JsonSerializer;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import models.consumer.User;

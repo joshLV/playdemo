@@ -74,6 +74,7 @@ GET     /reports/supplier                       OperateReports.showSupplierRepor
 GET     /reports/website                        OperateReports.showWebsiteReport
 GET     /reports/platform                       OperateReports.showPlatformReport
 GET     /reports/incoming                       OperateReports.showIncomingReport
+GET     /reports/withdraw                       OperateReports.showWithdrawReport
 
 # 提现管理
 GET     /withdraw                               WithdrawApproval.index

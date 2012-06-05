@@ -51,7 +51,7 @@
             <div class="order-num">您已选择 ${paymentSource.name} 支付 ${order.discountPay} 元</div>
         </div>
         <div class="confirm-pay-form">
-        #{form @payIt(), target:"_blank", id: "pay_it_form"}
+        #{form @payIt(), target:play.Play.runingInTestMode() ? "_self" : "_blank", id: "pay_it_form"}
             <input name="paymentCode" value="${paymentSource.code}" type="hidden"/>
             <input name="orderNumber" value="${order.orderNumber}" type="hidden"/>
             <button type="submit" class="confirm-pay2" id="confirm_pay">确认支付</button>

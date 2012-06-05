@@ -29,7 +29,7 @@
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script>
     $(window).load(function () {
-        $("#sequenceType").change(function() {
+        $("#tradeType").change(function() {
             $('#amountFrm').submit();
         });
         $("#sequenceFlag").change(function() {
@@ -75,16 +75,12 @@
                         <th width="140">时间</th>
                         <th width="80">余额</th>
                         <th width="300">名称/备注 
-                        #{select 'condition.sequenceType', id:'sequenceType',class:'dingdan_stauts_bg', value:condition?.sequenceType} 
+                        #{select 'condition.tradeType', id:'tradeType',class:'dingdan_stauts_bg', value:condition?.tradeType}
                             #{option ''}交易类型#{/option}
                             #{option "CHARGE"}&{'accountSequence.CHARGE'}#{/option}
                             #{option "WITHDRAW"}&{'accountSequence.WITHDRAW'}#{/option}
                             #{option "PAY"}&{'accountSequence.PAY'}#{/option}
                             #{option "REFUND"}&{'accountSequence.REFUND'}#{/option}
-                            #{option "RECEIVE"}&{'accountSequence.RECEIVE'}#{/option}
-                            #{option "FREEZE"}&{'accountSequence.FREEZE'}#{/option} 
-                            #{option "CANCEL"}&{'accountSequence.CANCEL'}#{/option}
-                            #{option "UNFREEZE"}&{'accountSequence.UNFREEZE'}#{/option}   
                         #{/select}
                         </th>
                         <th width="100">支出</th>
@@ -96,17 +92,17 @@
                 <tr>
                 <td>${accountSequence.serialNumber}</td>
                 <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-                <td>${accountSequence.amount?.formatCurrency('CNY')}</td>
+                <td>${accountSequence.balance?.formatCurrency('CNY')}</td>
                 <td>${accountSequence.remark}
-                #{if accountSequence.orderId != null && accountSequence.sequenceType?.isOrder()}
+                #{if accountSequence.orderId != null && accountSequence.tradeType.isOrder()}
                     <br/>订单号：<a style="color:#3366CC"  href="/orders/${accountSequence.orderId}" target="_blank">
                     ${accountSequence?.orderNumber}</a>#{/if}</td>
                 <td>
                 #{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
-                    ${accountSequence.cashAmount?.add(accountSequence .uncashAmount)?.formatCurrency('CNY')}
+                    ${accountSequence.changeAmount?.formatCurrency('CNY')}
                 #{/if}</td>
                 <td>#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
-                    <div class="alert alert-info">${accountSequence.cashAmount?.add(accountSequence.uncashAmount)?.formatCurrency('CNY')}</div>#{/if}</td>
+                    <div class="alert alert-info">${accountSequence.changeAmount?.formatCurrency('CNY')}</div>#{/if}</td>
 
                 <td>${accountSequence?.payMethod}</td>
             </tr>

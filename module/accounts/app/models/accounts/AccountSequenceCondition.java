@@ -19,7 +19,7 @@ import java.util.Map;
 public class AccountSequenceCondition implements Serializable {
     public Account account;
     public AccountSequenceFlag sequenceFlag;    //账务变动方向：来账，往账
-    public AccountSequenceType sequenceType;    //资金变动类型
+    public TradeType tradeType;    //资金变动类型
     public Date createdAtBegin;
     public Date createdAtEnd;
     public String interval;
@@ -54,9 +54,9 @@ public class AccountSequenceCondition implements Serializable {
             filter.append(" and sequenceFlag= :sequenceFlag");
             params.put("sequenceFlag", sequenceFlag);
         }
-        if (sequenceType != null) {
-            filter.append(" and sequenceType= :sequenceType");
-            params.put("sequenceType", sequenceType);
+        if (tradeType != null) {
+            filter.append(" and tradeType = :tradeType");
+            params.put("tradeType", tradeType);
         }
         return filter.toString();
     }

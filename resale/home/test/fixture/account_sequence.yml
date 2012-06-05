@@ -1,14 +1,14 @@
 accounts.AccountSequence(seq_001):
  serialNumber: "001"
  sequenceFlag: "VOSTRO"
- amount: "10.00"
+ changeAmount: "10.00"
 
 accounts.AccountSequence(seq_002):
  serialNumber: "002"
  sequenceFlag: "VOSTRO"
- amount: "9.00"
+ changeAmount: "9.00"
 
 accounts.AccountSequence(seq_003):
  serialNumber: "003"
  sequenceFlag: "NOSTRO"
- amount: "8.00"
+ changeAmount: "8.00"

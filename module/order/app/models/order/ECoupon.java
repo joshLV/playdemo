@@ -3,11 +3,8 @@ package models.order;
 import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.Account;
 import models.accounts.AccountType;
-import models.accounts.RefundBill;
 import models.accounts.TradeBill;
-import models.accounts.TradeStatus;
 import models.accounts.util.AccountUtil;
-import models.accounts.util.RefundUtil;
 import models.accounts.util.TradeUtil;
 import models.admin.SupplierUser;
 import models.sales.Goods;
@@ -349,30 +346,18 @@ public class ECoupon extends Model {
             return returnFlg;
         }
         //查找原订单信息
-        Order order = eCoupon.order;
-        TradeBill tradeBill = null;
-        OrderItems orderItem = null;
 
-        if (order != null) {
-            tradeBill = TradeBill.find("byOrderIdAndTradeStatus", order.getId(), TradeStatus.SUCCESS).first();
-            orderItem = OrderItems.find("byOrderAndGoods", order, eCoupon.goods).first();
-        }
-        if (order == null || tradeBill == null || orderItem == null) {
-            returnFlg = "{\"error\":\"can not get the trade bill\"}";
-            return returnFlg;
-        }
+        Account account = AccountUtil.getAccount(userId, accountType);
+        TradeBill tradeBill = TradeUtil.createRefundTrade(account, eCoupon.salePrice, eCoupon.order.getId());
 
-        //创建退款流程
-        RefundBill refundBill = RefundUtil.create(tradeBill, order.getId(), orderItem.getId(),
-                orderItem.salePrice, "退款(" + eCoupon.goods.name + ")");
-        if (!RefundUtil.success(refundBill)) {
+        if (!TradeUtil.success(tradeBill, "退款成功.券号:" + eCoupon.getMaskedEcouponSn() + ",商品:" + eCoupon.goods.name)) {
             returnFlg = "{\"error\":\"refound failed\"}";
             return returnFlg;
         }
 
         //更改库存
-        eCoupon.goods.baseSale += orderItem.buyNumber;
-        eCoupon.goods.saleCount -= orderItem.buyNumber;
+        eCoupon.goods.baseSale += 1;
+        eCoupon.goods.saleCount -= 1;
         eCoupon.goods.save();
 
         //更改订单状态

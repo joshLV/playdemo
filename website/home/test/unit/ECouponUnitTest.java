@@ -1,6 +1,8 @@
 package unit;
 
+import models.accounts.Account;
 import models.accounts.AccountType;
+import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
@@ -16,6 +18,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -106,8 +109,9 @@ public class ECouponUnitTest extends UnitTest {
         String ret = ECoupon.applyRefund(null, userId, AccountType.CONSUMER);
         assertEquals("{\"error\":\"no such eCoupon\"}", ret);
 
-        ret = ECoupon.applyRefund(eCoupon, userId, AccountType.CONSUMER);
-        assertEquals("{\"error\":\"can not get the trade bill\"}", ret);
+        Account account = AccountUtil.getPlatformIncomingAccount();
+        account.amount = new BigDecimal("1000000");
+        account.save();
 
 
         id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");

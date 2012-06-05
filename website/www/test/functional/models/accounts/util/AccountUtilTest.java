@@ -19,8 +19,6 @@ public class AccountUtilTest extends FunctionalTest{
     public void setup(){
         Fixtures.delete(Account.class);
         Fixtures.delete(AccountSequence.class);
-        Fixtures.delete(CertificateDetail.class);
-        Fixtures.delete(SubjectDetail.class);
         Fixtures.loadModels("fixture/accounts.yml");
         Fixtures.loadModels("fixture/account_uhuila.yml");
     }
@@ -39,7 +37,7 @@ public class AccountUtilTest extends FunctionalTest{
 
         Boolean exception = false;
         try{
-            AccountUtil.addBalance(null, null, null, null, AccountSequenceType.REFUND, "test note",null);
+            AccountUtil.addBalanceAndSaveSequence(null, null, null, null, TradeType.REFUND, AccountSequenceFlag.VOSTRO, "test note", null);
         }catch (RuntimeException e){
             exception = true;
         } catch (BalanceNotEnoughException e) {
@@ -52,7 +50,7 @@ public class AccountUtilTest extends FunctionalTest{
         }
         exception = false;
         try{
-            AccountUtil.addBalance(null, null,null, new Long(1), null, "test note",null);
+            AccountUtil.addBalanceAndSaveSequence(null, null, null, new Long(1), null, null, "test note", null);
         }catch (RuntimeException e){
             exception = true;
         } catch (BalanceNotEnoughException e) {
@@ -67,8 +65,8 @@ public class AccountUtilTest extends FunctionalTest{
 
         BigDecimal augend = new BigDecimal(1);
         try {
-            AccountUtil.addBalance(account.getId(), augend, BigDecimal.ZERO, new Long(1),
-                    AccountSequenceType.CHARGE, "test note", null);
+            AccountUtil.addBalanceAndSaveSequence(account.getId(), augend, BigDecimal.ZERO, new Long(1),
+                    TradeType.CHARGE, AccountSequenceFlag.VOSTRO, "test note", null);
         } catch (BalanceNotEnoughException e) {
 
         } catch (AccountNotFoundException e) {
@@ -76,8 +74,5 @@ public class AccountUtilTest extends FunctionalTest{
         assertEquals(originAmount.add(augend), account.amount);
 
         assertEquals(1, AccountSequence.findAll().size());
-        assertEquals(1, CertificateDetail.findAll().size());
-        assertEquals(2, SubjectDetail.findAll().size());
-        
     }
 }

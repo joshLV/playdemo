@@ -2,7 +2,7 @@ package functional.models.payment;
 
 import models.accounts.PaymentSource;
 import models.order.Order;
-import models.payment.alipay.AliPaymentFlow;
+import models.payment.PaymentUtil;
 import models.payment.PaymentFlow;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,14 +35,36 @@ public class AliPaymentFlowTest extends FunctionalTest{
     }
 
     @Test
-    public void testGenerageForm(){
+    public void testGenerateAliForm(){
         Long id =  (Long)(Fixtures.idCache.get("models.order.Order-order_unpaid"));
         Order order = Order.findById(id);
         assertNotNull(order);
-        PaymentFlow paymentFlow = new AliPaymentFlow();
+        PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow("alipay");
         PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
         assertNotNull(paymentSource);
         assertNotNull(paymentFlow.getRequestForm(order.orderNumber,order.description,order.discountPay,paymentSource.subPaymentCode,"127.0.0.1"));
+    }
+
+    @Test
+    public void testGenerateTenpayForm(){
+        Long id =  (Long)(Fixtures.idCache.get("models.order.Order-order_unpaid"));
+        Order order = Order.findById(id);
+        assertNotNull(order);
+        PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow("tenpay");
+        PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
+        assertNotNull(paymentSource);
+        assertNotNull(paymentFlow.getRequestForm(order.orderNumber, order.description, order.discountPay, paymentSource.subPaymentCode, "127.0.0.1"));
+    }
+
+    @Test
+    public void testGenerateKuaiqianForm(){
+        Long id =  (Long)(Fixtures.idCache.get("models.order.Order-order_unpaid"));
+        Order order = Order.findById(id);
+        assertNotNull(order);
+        PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow("99bill");
+        PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
+        assertNotNull(paymentSource);
+        assertNotNull(paymentFlow.getRequestForm(order.orderNumber, order.description, order.discountPay, paymentSource.subPaymentCode, "127.0.0.1"));
     }
 
 }

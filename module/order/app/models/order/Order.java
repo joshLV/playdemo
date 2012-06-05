@@ -397,8 +397,6 @@ public class Order extends Model {
             }
         }
 
-        this.status = OrderStatus.PAID;
-        this.paidAt = new Date();
         Account account = AccountUtil.getAccount(this.userId, this.userType);
         PaymentSource paymentSource = PaymentSource.find("byCode", this.payMethod).first();
 
@@ -419,11 +417,15 @@ public class Order extends Model {
                     account,
                     this.accountPay,
                     this.discountPay,
+                    BigDecimal.ZERO,
                     PaymentSource.getBalanceSource(),
                     this.getId());
             TradeUtil.success(tradeBill, this.description);
             this.payRequestId = tradeBill.getId();
         }
+
+        this.status = OrderStatus.PAID;
+        this.paidAt = new Date();
         this.save();
 
         //发送电子券

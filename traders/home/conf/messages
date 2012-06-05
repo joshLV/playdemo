@@ -3,12 +3,13 @@ play-paginate.prev=&lsaquo;&nbsp;上一页
 play-paginate.next=下一页&nbsp;&rsaquo;
 play-paginate.last=尾页&nbsp;&raquo;
 
-account_sequence.CHARGE=充值
-account_sequence.WITHDRAW=提现
-account_sequence.PAY=支付
-account_sequence.REFUND=交易退款
-account_sequence.PAY_REFUND=支付退款
-account_sequence.RECEIVE=收款
+trade_type.CHARGE=充值
+trade_type.WITHDRAW=提现
+trade_type.PAY=支付
+trade_type.REFUND=交易退款
+trade_type.COMMISSION=佣金
+trade_type.PURCHASE_COSTING=出售
+trade_type.FREIGHT=运费
 
 supplier.fullName=公司名称
 supplier.domainName=域名

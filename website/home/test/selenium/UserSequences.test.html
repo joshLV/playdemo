@@ -50,7 +50,7 @@ load:['fixture/user.yml','fixture/goods_base.yml','fixture/goods.yml','fixture/o
     verifyTextPresent('002')
     open('/orders')
     clickAndWait('id=amount')
-    type('id=sequenceType','支付')
+    type('id=tradeType','支付')
     verifyTextPresent('001')
     verifyTextPresent('002')
     

@@ -20,13 +20,37 @@ order.setUser(user.getId(), models.accounts.AccountType.CONSUMER);
 id = play.test.Fixtures.idCache.get("models.order.Order-order_unpaid");
 order = models.order.Order.findById(id);
 order.setUser(user.getId(), models.accounts.AccountType.CONSUMER);
+order.save()
+//此时order.needPay 是0, 因此默认应该勾选使用余额支付
 }%
 
 
-#{selenium "测试打开支付页"}
+#{selenium "测试支付0元"}
     #{include 'test/selenium/step/login.selenium' /}
-	open('/payment_info/${order.orderNumber}')
+	openAndWait('/payment_info/${order.orderNumber}')
     assertTitle('一百券 - 确认付款')
-    verifyTextNotPresent('对不起，找不到您所需要的订单:(')
-    openAndWait('/logout')
+    verifyNotVisible('id=other-pay')
+    verifyVisible('id=confirm-pay')
+    clickAndWait('id=confirm-pay')
+    verifyTextPresent('恭喜您付款成功')
+    openAndWait('/payment_info/${order.orderNumber}')
+    verifyTextPresent('已被处理')
 #{/selenium}
+
+
+
+
+*{
+#{selenium "测试使用支付宝"}
+    #{include 'test/selenium/step/login.selenium' /}
+    openAndWait('/payment_info/${order.orderNumber}')
+    click('id=alipay')
+    verifyTitle('一百券 - 确认付款')
+    verifyTextPresent('您已选择 支付宝')
+    clickAndWait('id=confirm_pay')
+    verifyTitle('支付宝 - 网上支付 安全快速！')
+    verifyTextPresent('收款方： 上海视惠信息科技')
+
+#{/selenium}
+}*
+

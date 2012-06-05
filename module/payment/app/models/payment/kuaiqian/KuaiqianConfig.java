@@ -13,4 +13,5 @@ public class KuaiqianConfig {
     public static final String KEY_PWD = Play.configuration.getProperty("99bill.key_pwd","yu@uhuila.seewi");
     public static final String NOTIFY_URL = Play.configuration.getProperty("99bill.notify_url");
     public static final String RETURN_URL = Play.configuration.getProperty("99bill.return_url");
+    public static final String SERVER_URL = "https://www.99bill.com/gateway/recvMerchantInfoAction.htm";
 }

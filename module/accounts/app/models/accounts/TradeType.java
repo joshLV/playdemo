@@ -4,11 +4,20 @@ package models.accounts;
  * User: likang
  */
 public enum TradeType {
-    CHARGE,     //充值
-    WITHDRAW,   //提现
-    PAY,        //支付
-    REFUND,     //交易退款
-    TRANSFER,   //转账
-    CONSUME,    //消费
-    COMMISSION  //佣金
+    CHARGE,             //充值
+    WITHDRAW,           //提现
+    PAY,                //支付
+    REFUND,             //交易退款
+    COMMISSION,         //佣金
+    PURCHASE_COSTING,   //采购成本
+    FREIGHT;            //运费
+
+    /**
+     * 是否与订单相关的类型.
+     *
+     * @return 是否与订单相关的类型
+     */
+    public boolean isOrder() {
+        return !(this.equals(CHARGE) || this.equals(WITHDRAW));
+    }
 }

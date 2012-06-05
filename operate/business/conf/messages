@@ -161,14 +161,13 @@ order.deliveryNo=物流单号
 order.LOGISTICS=物流
 order.SMS=短信
 
-account_sequence.CHARGE=充值
-account_sequence.WITHDRAW=提现
-account_sequence.PAY=支付
-account_sequence.PAY_REFUND=支付退款
-account_sequence.REFUND=交易退款
-account_sequence.RECEIVE=收款
-account_sequence.FREEZE=冻结
-account_sequence.UNFREEZE=取消冻结
+trade_type.CHARGE=充值
+trade_type.WITHDRAW=提现
+trade_type.PAY=支付
+trade_type.REFUND=交易退款
+trade_type.COMMISSION=佣金
+trade_type.PURCHASE_COSTING=采购成本
+trade_type.FREIGHT=运费
 
 platform.CONSUMER=一百券网站
 platform.RESALER=分销网

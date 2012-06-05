@@ -26,6 +26,10 @@ public class AccountUtil {
         return getAccount(Account.PLATFORM_COMMISSION, AccountType.PLATFORM);
     }
 
+    public static Account getPlatformWithdrawAccount(){
+        return getAccount(Account.PLATFORM_WITHDRAW, AccountType.PLATFORM);
+    }
+
     public static boolean accountExist(long uid, AccountType type){
         return Account.find("byUidAndAccountType", uid, type).first() != null;
     }
@@ -44,19 +48,39 @@ public class AccountUtil {
     }
 
 
-    /**
+    /*
+     * 变更账户余额，同时不保存凭证相关信息.
+     */
+    public static Account addBalanceWithoutSavingSequence(Long accountId, BigDecimal cashAugend,
+                                                  BigDecimal uncashAugend, Long billId, String note, Long orderId)
+            throws BalanceNotEnoughException,AccountNotFoundException{
+        return addBalance(accountId, cashAugend, uncashAugend, billId, null, null, note, orderId, false);
+    }
+
+
+    /*
      * 变更账户余额，同时保存凭证相关信息.
+     */
+    public static Account addBalanceAndSaveSequence(Long accountId, BigDecimal cashAugend, BigDecimal uncashAugend, Long billId,
+                         TradeType tradeType, AccountSequenceFlag sequenceFlag, String note, Long orderId)
+            throws BalanceNotEnoughException,AccountNotFoundException{
+        return addBalance(accountId, cashAugend, uncashAugend, billId, tradeType, sequenceFlag, note, orderId, true);
+    }
+
+    /**
+     * 变更账户余额，同时根据需要保存凭证相关信息.
      *
      * @param accountId     需要变更的账户ID
      * @param cashAugend    可提现金额变更额度
      * @param uncashAugend  不可提现金额变更额度
      * @param billId        关联的交易ID
-     * @param sequenceType  账户资金变动类型
+     * @param tradeType     交易类型
+     * @param sequenceFlag  账户资金变动类型,进账or出账
      * @param note          变动备注
      * @return              变更后的账户
      */
-    public static Account addBalance(Long accountId, BigDecimal cashAugend, BigDecimal uncashAugend, Long billId,
-                                     AccountSequenceType sequenceType, String note, Long orderId)
+    private static Account addBalance(Long accountId, BigDecimal cashAugend, BigDecimal uncashAugend, Long billId,
+                TradeType tradeType, AccountSequenceFlag sequenceFlag, String note, Long orderId, boolean saveSequence)
             throws BalanceNotEnoughException,AccountNotFoundException{
 
         Account account = Account.findById(accountId);
@@ -64,7 +88,7 @@ public class AccountUtil {
             throw new AccountNotFoundException("can not find the specified account:" + accountId);
         }
 
-        if(billId == null || sequenceType == null){
+        if(billId == null || ( saveSequence && (tradeType== null || sequenceFlag == null))){
             throw new IllegalArgumentException("error while add balance to account: miss parameter");
         }
 
@@ -80,71 +104,30 @@ public class AccountUtil {
         }
 
         account.save();
-        //申请提现或者是提现被拒绝
-        if (sequenceType == AccountSequenceType.FREEZE || sequenceType == AccountSequenceType.UNFREEZE){
-            return account;
+        if(saveSequence){
+            accountChanged(account, cashAugend.add(uncashAugend), billId, tradeType, sequenceFlag, note, orderId);
         }
-        //提现成功
-        if(sequenceType == AccountSequenceType.WITHDRAW){
-            accountChanged(account.getId(), uncashAugend, BigDecimal.ZERO, billId, sequenceType, note, orderId);
-            return account;
-        }
-        accountChanged(account.getId(), cashAugend, uncashAugend, billId, sequenceType, note, orderId);
         return account;
     }
 
-    private static void accountChanged(Long accountId, BigDecimal cashAmount, BigDecimal uncashAmount,
-                                       Long billId, AccountSequenceType sequenceType, String note, Long orderId){
-        Account account = Account.findById(accountId);
+    private static void accountChanged(Account account, BigDecimal amount, Long billId,
+            TradeType tradeType, AccountSequenceFlag sequenceFlag, String note, Long orderId){
         if(account == null){
-            throw new RuntimeException("can not find the specified account:" + accountId);
+            throw new IllegalArgumentException("accountChanged: account can not be null");
         }
-        AccountSequenceFlag flag = AccountSequenceFlag.VOSTRO;
-        if(sequenceType == AccountSequenceType.PAY || sequenceType == AccountSequenceType.PAY_REFUND){
-            flag = AccountSequenceFlag.NOSTRO;
-        }
-
         //保存账户变动信息
         AccountSequence accountSequence = new AccountSequence(
                 account,
-                flag,                                               //账务变动方向
-                sequenceType,                                       //变动类型
-                account.amount.subtract(cashAmount),                //变动前资金
-                account.amount,                                     //变动后资金
-                cashAmount,                                         //可提现金额
-                uncashAmount,                                       //不可提现金额
+                sequenceFlag,                                       //账务变动方向
+                tradeType,                                          //变动类型
+                amount,                                             //变动金额
+                account.amount.add(account.uncashAmount),           //变动后总余额
+                account.amount,                                     //变动后可提现余额
+                account.uncashAmount,                               //变动后不可提现余额
                 billId);                                            //相关流水号
         accountSequence.remark = note;
         accountSequence.orderId = orderId;
         accountSequence.save();                                     //保存账户变动信息
-
-        //保存凭证明细
-        CertificateDetail certificateDetail = new CertificateDetail(
-                cashAmount.compareTo(BigDecimal.ZERO) > 0 ? CertificateType.DEBIT : CertificateType.CREDIT,
-                cashAmount,
-                billId,
-                note
-        );
-        certificateDetail.save();
-
-        //保存两个科目明细
-        SubjectDetail subjectDetailA = new SubjectDetail(
-                cashAmount.compareTo(BigDecimal.ZERO) > 0 ? SubjectType.DEBIT : SubjectType.CREDIT,
-                certificateDetail,
-                cashAmount,
-                uncashAmount,
-                note
-        );
-        subjectDetailA.save();
-
-        SubjectDetail subjectDetailB = new SubjectDetail(
-                cashAmount.compareTo(BigDecimal.ZERO) < 0 ? SubjectType.DEBIT : SubjectType.CREDIT,
-                certificateDetail,
-                uncashAmount,
-                cashAmount,
-                note
-        );
-        subjectDetailB.save();
     }
     
 }

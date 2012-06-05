@@ -33,6 +33,7 @@ public class Account extends Model {
     public static final long PLATFORM_INCOMING = 1L;   //券平台收款账户
     public static final long PLATFORM_COMMISSION = 2L;   //券平台佣金账户
     public static final long UHUILA_COMMISSION = 3L;   //一百券佣金账户
+    public static final long PLATFORM_WITHDRAW     = 4L;   //提现账户,用户提现金额都会汇总到这里
 
     public Account() {
 

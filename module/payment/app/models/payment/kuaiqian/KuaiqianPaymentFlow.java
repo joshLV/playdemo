@@ -60,7 +60,9 @@ public class KuaiqianPaymentFlow extends PaymentFlow {
         params.put("signMsg", signMsg);
 
 		StringBuilder sbHtml = new StringBuilder();
-		sbHtml.append("<form id=\"kqPay\" name=\"kqPay\" action=\"https://www.99bill.com/gateway/recvMerchantInfoAction.htm\" method=\"post\" >");
+		sbHtml.append("<form id=\"kqPay\" name=\"kqPay\" action=\"")
+              .append(KuaiqianConfig.SERVER_URL)
+              .append("\" method=\"post\" >");
         for(Map.Entry<String, String> entry : params.entrySet()){
             sbHtml.append("<input type=\"hidden\" name=\"")
                   .append(entry.getKey())

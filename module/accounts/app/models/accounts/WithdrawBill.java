@@ -2,6 +2,7 @@ package models.accounts;
 
 import models.accounts.util.AccountUtil;
 import models.accounts.util.SerialNumberUtil;
+import models.accounts.util.TradeUtil;
 import play.Logger;
 import play.data.validation.Min;
 import play.data.validation.Required;
@@ -81,8 +82,8 @@ public class WithdrawBill extends Model {
         this.save();
 
         try {
-            AccountUtil.addBalance(account.getId(),this.amount.negate(), this.amount,
-                    this.getId(),AccountSequenceType.FREEZE,"申请提现", null);
+            AccountUtil.addBalanceWithoutSavingSequence(account.getId(), this.amount.negate(), this.amount,
+                    this.getId(), "申请提现", null);
         } catch (BalanceNotEnoughException e) {
             Logger.error(e, e.getMessage());
             return false;
@@ -110,8 +111,8 @@ public class WithdrawBill extends Model {
         }
 
         try {
-            AccountUtil.addBalance(this.account.getId(), this.amount, this.amount.negate(),
-                    this.getId(), AccountSequenceType.UNFREEZE,"拒绝提现", null);
+            AccountUtil.addBalanceWithoutSavingSequence(this.account.getId(), this.amount, this.amount.negate(),
+                    this.getId(), "拒绝提现", null);
         } catch (BalanceNotEnoughException e) {
             Logger.error(e, e.getMessage());
             return false;
@@ -138,16 +139,8 @@ public class WithdrawBill extends Model {
             return false;
         }
 
-        try {
-            AccountUtil.addBalance(this.account.getId(), BigDecimal.ZERO, this.amount.negate(),
-                    this.getId(), AccountSequenceType.WITHDRAW, "提现成功", null);
-        } catch (BalanceNotEnoughException e) {
-            Logger.error(e, e.getMessage());
-            return false;
-        } catch (AccountNotFoundException e) {
-            Logger.error(e, e.getMessage());
-            return false;
-        }
+        TradeBill tradeBill = TradeUtil.createWithdrawTrade(this.account, this.amount);
+        TradeUtil.success(tradeBill, "提现成功");
 
         this.status = WithdrawBillStatus.SUCCESS;
         this.comment = comment;

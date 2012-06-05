@@ -21,6 +21,7 @@ order.Order(order1):
   "deliveryType": "0"
   "paymentSourceCode": ""
   "payRequestId": "0"
+  "orderType": "CONSUME"
 
 order.OrderItems(orderItems1):
   "order": "order1"
@@ -53,6 +54,7 @@ order.Order(order_unpaid):
   "deliveryType": "0"
   "payMethod": "alipay"
   "payRequestId": "0"
+  "orderType": "CONSUME"
 
 order.OrderItems(order_unpaid_items_1):
   "order": "order_unpaid"

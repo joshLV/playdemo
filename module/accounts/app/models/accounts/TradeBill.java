@@ -42,6 +42,9 @@ public class TradeBill extends Model {
     @Column(name = "ebank_payment_amount")
     public BigDecimal ebankPaymentAmount;   //网银支付金额
 
+    @Column(name = "uncash_payment_amount")
+    public BigDecimal uncashPaymentAmount;  //不可提现余额支付金额
+
     @ManyToOne
     @JoinColumn(name = "payment_source")
     public PaymentSource paymentSource;     //网银渠道
@@ -67,6 +70,7 @@ public class TradeBill extends Model {
     	this.amount = BigDecimal.ZERO;
     	this.balancePaymentAmount = BigDecimal.ZERO;
     	this.ebankPaymentAmount = BigDecimal.ZERO;
+        this.uncashPaymentAmount = BigDecimal.ZERO;
     	this.paymentSource = null;
     	this.tradeType = null;
     	this.tradeStatus = TradeStatus.UNPAID;
@@ -84,40 +88,5 @@ public class TradeBill extends Model {
         this.returnCode = null;
         this.returnNote = null;
     }
-
-    public TradeBill(Account fromAccount,Account toAccount, BigDecimal balancePaymentAmount,
-                     BigDecimal ebankPaymentAmount, TradeType tradeType, PaymentSource paymentSource, Long orderId){
-        this.fromAccount = fromAccount;
-        this.toAccount = toAccount;
-
-        if(balancePaymentAmount == null){
-            this.balancePaymentAmount = BigDecimal.ZERO;
-        }else {
-            this.balancePaymentAmount = balancePaymentAmount;
-        }
-
-        this.ebankPaymentAmount = ebankPaymentAmount;
-        if(ebankPaymentAmount == null){
-            this.ebankPaymentAmount = BigDecimal.ZERO;
-        }else {
-            this.ebankPaymentAmount = ebankPaymentAmount;
-        }
-
-        this.amount = this.balancePaymentAmount.add(this.ebankPaymentAmount);
-
-        this.tradeType = tradeType;
-        this.tradeStatus = TradeStatus.UNPAID;
-        this.paymentSource = paymentSource;
-        this.orderId = orderId;
-
-        this.createdAt = new Date();
-        this.serialNumber = SerialNumberUtil.generateSerialNumber(this.createdAt);
-
-        this.returnCode = null;
-        this.returnNote = null;
-    }
-
-
-
 }
 

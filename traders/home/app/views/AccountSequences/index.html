@@ -32,14 +32,10 @@
                            #{if models.accounts.AccountSequenceFlag.NOSTRO.equals(condition.sequenceFlag)}checked#{/if}/>支出
                 </td>
                 <td width="20%"><label class="control-label">交易类型:</label>
-                #{select 'condition.sequenceType', value:condition.sequenceType, id:'select1', class:"input-small"}
+                #{select 'condition.tradeType', value:condition.tradeType, id:'select1', class:"input-small"}
                     #{option ""}不限#{/option}
-                    #{option "CHARGE"}&{'account_sequence.CHARGE'}#{/option}
-                    #{option "WITHDRAW"}&{'account_sequence.WITHDRAW'}#{/option}
-                    #{option "PAY"}&{'account_sequence.PAY'}#{/option}
-                    #{option "REFUND"}&{'account_sequence.REFUND'}#{/option}
-                    #{option "CANCEL"}&{'account_sequence.CANCEL'}#{/option}
-                    #{option "RECEIVE"}&{'account_sequence.RECEIVE'}#{/option}
+                    #{option "WITHDRAW"}&{'trade_type.WITHDRAW'}#{/option}
+                    #{option "PURCHASE_COSTING"}&{'trade_type.PURCHASE_COSTING'}#{/option}
                 #{/select}
                 </td>
                 <td width="5%">
@@ -57,7 +53,6 @@
             <td width="10%">交易类型</td>
             <td width="10%">收入(元)</td>
             <td width="10%">支出(元)</td>
-        *{<td width="5%">支付方式</td>}*
             <td width="10%">账户余额(元)</td>
         </tr>
     #{paginate.list items:accountSequences, as:'accountSequence'}
@@ -66,15 +61,14 @@
             <td>${accountSequence?.orderId}</td>
             <td>${accountSequence?.remark}</td>
             <td>${accountSequence?.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-            <td>&{'account_sequence.'+accountSequence?.sequenceType}</td>
+            <td>&{'trade_type.'+accountSequence?.tradeType}</td>
             <td>#{if accountSequence?.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
-                    ${accountSequence.cashAmount.add(accountSequence.uncashAmount)}
+                    ${accountSequence?.changeAmount?.formatCurrency('CNY')}
                 #{/if}</td>
             <td>#{if accountSequence?.sequenceFlag == models.accounts.AccountSequenceFlag.NOSTRO}
-                ${accountSequence?.cashAmount.add(accountSequence?.uncashAmount)}
+                ${accountSequence?.changeAmount?.formatCurrency('CNY')}
             #{/if}</td>
-        *{<td>&{'account_sequence.'+accountSequence?.sequenceType}</td>}*
-            <td>${accountSequence?.amount}</td>
+            <td>${accountSequence?.balance}</td>
         </tr>
     #{/paginate.list}
 

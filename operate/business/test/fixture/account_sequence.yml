@@ -1,64 +1,52 @@
 accounts.AccountSequence(seq_001):
  serialNumber: "001"
  sequenceFlag: "VOSTRO"
- amount: "10.00"
- sequenceType: "PAY"
- cashAmount: "10.00"
- uncashAmount: "100.00"
+ changeAmount: "10.00"
+ tradeType: "PAY"
  createdAt: 2012-03-27
  tradeId: 1
 
 accounts.AccountSequence(seq_002):
  serialNumber: "002"
  sequenceFlag: "VOSTRO"
- amount: "9.00"
- cashAmount: "10.00"
- uncashAmount: "100.00"
- sequenceType: "PAY"
+ changeAmount: "9.00"
+ tradeType: "PAY"
  createdAt: 2012-03-27   
  tradeId: 1
 
 accounts.AccountSequence(seq_003):
  serialNumber: "003"
  sequenceFlag: "NOSTRO"
- amount: "8.00"
- cashAmount: "10.00"
- uncashAmount: "100.00"
- sequenceType: "PAY"
+ changeAmount: "8.00"
+ tradeType: "PAY"
  createdAt: 2012-03-27   
  tradeId: 1
 
 accounts.AccountSequence(seq_004):
  serialNumber: "004"
  sequenceFlag: "NOSTRO"
- amount: "7.00"
- cashAmount: "10.00"
- uncashAmount: "100.00"
+ changeAmount: "7.00"
  account: account_1
- sequenceType: "PAY"
+ tradeType: "PAY"
  createdAt: 2012-03-27   
  tradeId: 1
 
 accounts.AccountSequence(seq_005):
  serialNumber: "005"
  sequenceFlag: "NOSTRO"
- amount: "6.00"
- cashAmount: "10.00"
- uncashAmount: "100.00"
+ changeAmount: "6.00"
  account: account_2
- sequenceType: "PAY"
+ tradeType: "PAY"
  createdAt: 2012-03-27   
  tradeId: 1
 
 accounts.AccountSequence(seq_006):
  serialNumber: "006"
  sequenceFlag: "NOSTRO"
- amount: "5.00"
- cashAmount: "10.00"
- uncashAmount: "100.00"
+ changeAmount: "5.00"
  account: account_3
  remark: "test 6"
- sequenceType: "PAY"
+ tradeType: "PAY"
  createdAt: 2012-03-27   
  tradeId: 1
 

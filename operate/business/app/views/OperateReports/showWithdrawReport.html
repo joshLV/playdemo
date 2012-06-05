@@ -1,5 +1,5 @@
 #{extends 'layout_operate/layout.html' /}
-#{set title:'一百券佣金账户的资金明细' /}
+#{set title:'提现账户的资金明细' /}
 #{include '/share/nav.html' /}
 
 #{set 'moreScripts'}
@@ -94,7 +94,7 @@
     #{select 'condition.tradeType', value:condition.tradeType, id:'condition_trade_type',
     class:"input-small"}
         #{option ""}不限#{/option}
-        #{option "COMMISSION"}&{'trade_type.COMMISSION'}#{/option}
+        #{option "WITHDRAW"}&{'trade_type.WITHDRAW'}#{/option}
     #{/select}
         <button type="submit" class="btn btn-primary">搜索</button>
         <ul class="nav nav-pills">
@@ -121,7 +121,7 @@
         </div>
     </div>
 
-#{vx.tab name:'trade_type',enumItems: [models.accounts.TradeType.COMMISSION] ,
+#{vx.tab name:'trade_type',enumItems: [models.accounts.TradeType.WITHDRAW] ,
 select:'condition_trade_type',value:condition.tradeType,form:'form'/}
     <div class="tab-content">
         <table class="table table-striped seq">

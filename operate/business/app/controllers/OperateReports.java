@@ -223,4 +223,23 @@ public class OperateReports extends Controller {
 
         render(accountSequencePage, summary, condition);
     }
+
+    @ActiveNavigation("withdraw_account_reports")
+    public static void showWithdrawReport(AccountSequenceCondition condition){
+        int pageNumber = getPageNumber();
+        if (condition == null) {
+            condition = new AccountSequenceCondition();
+        }
+
+        condition.account = AccountUtil.getPlatformWithdrawAccount();
+        JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
+                pageNumber, PAGE_SIZE);
+        for (AccountSequence accountSequence : accountSequencePage) {
+            setOrderInfo(accountSequence);
+            setPlatform(accountSequence);
+        }
+
+        AccountSequenceSummary summary = AccountSequence.findSummaryByCondition(condition);
+        render(accountSequencePage, summary, condition);
+    }
 }
