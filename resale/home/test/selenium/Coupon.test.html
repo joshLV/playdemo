@@ -30,5 +30,6 @@ for (models.order.Order order :list) {
 
     verifyTextPresent('未消费')
 clickAndWait('id=apply_${id}')
-    verifyTextPresent('已退款')
+*{assertTitle('券订单列表')
+    verifyTextPresent('已退款')}*
 #{/selenium}
