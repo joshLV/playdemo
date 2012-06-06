@@ -2,6 +2,10 @@
     padding: 5px 0 10px;
     font-size: 18px;
 }
+.section {
+    float: left;
+    width: 730px;
+}
 .photo {
     float: left;
     margin-right: 20px;
@@ -104,7 +108,18 @@
     line-height: 22px\9\0; /* for IE9 only */
     background: url(http://img.uhcdn.com/images/u/close.png) no-repeat 0 6px;
 }
-
+.online {
+    clear: both;
+    padding-top: 10px;
+}
+.online span {
+    font-size: 16px;
+}
+.online a,
+.online span {
+    float: left;
+    margin-right: 5px;
+}
 /** 服务、品牌 **/
 .aside {
     float: left;

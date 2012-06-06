@@ -91,51 +91,57 @@
 
 <div class="wrap clearfix">
     <h3 class="title">${goods.name}</h3>
-
-    <div class="photo">
-        <img src="${goods.imageLargePath}" width="340" height="260"/>
-    </div>
-    <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
-    <ul class="property">
-    #{if params['isSupplier']== null || !params['isSupplier']}
-        <li class="price">现　　价:<span>${goods.salePrice?.formatCurrency('CNY')}</span></li>
-    #{/if}
-    #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
-        <li class="cost">原　　价:
-            <del>${goods.faceValue?.formatCurrency('CNY')}</del>
-        </li>
+    <div class="section">
+        <div class="photo">
+            <img src="${goods.imageLargePath}" width="340" height="260"/>
+        </div>
+        <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
+        <ul class="property">
         #{if params['isSupplier']== null || !params['isSupplier']}
-            <li class="discount">折　　扣:<span>${goods.discountExpress}</span></li>
+            <li class="price">现　　价:<span>${goods.salePrice?.formatCurrency('CNY')}</span></li>
         #{/if}
-    #{/if}
-        <li class="type">商品类型:<span>&{'goods.'+goods.materialType}</span></li>
-        <li class="shipmod">配送方式:<span>#{if models.sales.MaterialType.ELECTRONIC.equals(goods.materialType)}
-            手机短信#{/if}#{else}快递#{/else}</span></li>
-        <li class="deadline">券有效期:<span>${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span></li>
-        <li class="amount">购买数量:
-            <span><input class="num_input_bg" id="number" name="number" type="text" value="1"/> 件</span>
-            <span id="stock_hit" style="display:none;color:#f50">库存${goods.baseSale}件</span>
-            <span class="error">#{error 'number' /}</span>
-            <input type="hidden" id="stock" value="${goods.baseSale}">
-        </li>
-    #{if goods.onSale()}
-        <li class="action clearfix">
-            <a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
-            <a class="add" id="link_add_cart" href="#">加入购物车</a>
+        #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
+            <li class="cost">原　　价:
+                <del>${goods.faceValue?.formatCurrency('CNY')}</del>
+            </li>
+            #{if params['isSupplier']== null || !params['isSupplier']}
+                <li class="discount">折　　扣:<span>${goods.discountExpress}</span></li>
+            #{/if}
+        #{/if}
+            <li class="type">商品类型:<span>&{'goods.'+goods.materialType}</span></li>
+            <li class="shipmod">配送方式:<span>#{if models.sales.MaterialType.ELECTRONIC.equals(goods.materialType)}
+                手机短信#{/if}#{else}快递#{/else}</span></li>
+            <li class="deadline">券有效期:<span>${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span></li>
+            <li class="amount">购买数量:
+                <span><input class="num_input_bg" id="number" name="number" type="text" value="1"/> 件</span>
+                <span id="stock_hit" style="display:none;color:#f50">库存${goods.baseSale}件</span>
+                <span class="error">#{error 'number' /}</span>
+                <input type="hidden" id="stock" value="${goods.baseSale}">
+            </li>
+        #{if goods.onSale()}
+            <li class="action clearfix">
+                <a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
+                <a class="add" id="link_add_cart" href="#">加入购物车</a>
 
-            <div id="add_cart_result" class="add-tips" style="display: none;">
-                <h4>已成功添加到购物车！</h4>
+                <div id="add_cart_result" class="add-tips" style="display: none;">
+                    <h4>已成功添加到购物车！</h4>
 
-                <p>购物车共有<em id="result-count"></em>件，总计<strong id="result-amount"></strong>元。</p>
-                <a class="see-carts" href="/carts">查看购物车</a>
-                <a class="close-tips" id="J_closeTips" href="#">关闭</a>
-            </div>
-        </li>
-    #{/if}
-    #{elseif params['isSupplier']== null || !params['isSupplier']}
-        <li class="buttom_dibu"><span class="zi_gray">已下架</span></li>
-    #{/elseif}
-    </ul>
+                    <p>购物车共有<em id="result-count"></em>件，总计<strong id="result-amount"></strong>元。</p>
+                    <a class="see-carts" href="/carts">查看购物车</a>
+                    <a class="close-tips" id="J_closeTips" href="#">关闭</a>
+                </div>
+            </li>
+        #{/if}
+        #{elseif params['isSupplier']== null || !params['isSupplier']}
+            <li class="buttom_dibu"><span class="zi_gray">已下架</span></li>
+        #{/elseif}
+        </ul>
+        <div class="online">
+            <span>在线客服:</span>
+            <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=2281971081&site=qq&menu=yes"><img border="0" src="http://wpa.qq.com/pa?p=2:2281971081:42" alt="点这里咨询客服" title="点这里咨询客服"></a>
+            <a target="_blank" href="http://www.taobao.com/webww/ww.php?ver=3&touid=%E5%88%B8%E7%94%9F%E6%B4%BB8&siteid=cntaobao&status=1&charset=utf-8"><img border="0" height="22" src="http://amos.alicdn.com/online.aw?v=2&uid=%E5%88%B8%E7%94%9F%E6%B4%BB8&site=cntaobao&s=1&charset=utf-8" alt="点这里咨询客服" /></a>
+        </div>
+    </div><!-- .section -->
     <div class="aside">
         <div class="service">
             <div class="service-hd">承诺</div>
