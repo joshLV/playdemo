@@ -51,7 +51,6 @@ public class Addresses extends Controller {
 
         address.user = SecureCAS.getUser();
         address.save();
-
         render("Addresses/line.html", address);
     }
 

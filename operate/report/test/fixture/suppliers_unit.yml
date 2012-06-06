@@ -10,3 +10,33 @@ supplier.Supplier(Supplier1):
  "deleted": UN_DELETED
  "userName": "zhangsan"
  "status": "NORMAL"
+
+admin.OperateRole(account):
+ "text": "财务"
+ "key": "account"
+ "loadVersion": "1331545508967"
+ "lockVersion": "0"
+ "createdAt": "2012-03-12T11:14:56"
+ "updatedAt": "2012-03-12T17:45:09"
+admin.OperateRole(admin):
+ "text": "系统管理员"
+ "key": "admin"
+ "loadVersion": "1331545508967"
+ "lockVersion": "0"
+ "createdAt": "2012-03-12T11:14:56"
+ "updatedAt": "2012-03-12T17:45:09"
+
+admin.OperateUser(user1):
+ "loginName": "tom"
+ "mobile": "13211111111"
+ "encryptedPassword": "ff7edd82576fd2b9066cdf9a978f6ab5"
+ "passwordSalt": "KC3CeW"
+ "lastLoginIP": "127.0.1.1"
+ "lastLoginAt": "2012-03-12T17:33:49"
+ "lockVersion": "1"
+ "createdAt": "2012-03-12T14:39:20"
+ "updatedAt": "2012-03-12T17:33:49"
+ "deleted": "UN_DELETED"
+ "roles":
+ - "account"
+ - "admin"
