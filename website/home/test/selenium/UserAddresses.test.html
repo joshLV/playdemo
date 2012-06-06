@@ -4,22 +4,6 @@ load:['fixture/user.yml','fixture/addresses.yml'] /}
      id = play.test.Fixtures.idCache.get("models.consumer.Address-test1");
 }%
 
-#{selenium '查看地址管理 添加地址'}
-    #{include 'test/selenium/step/login.selenium' /}
-open('/addresses')
-verifyTitle('一百券 - 地址管理')
-verifyTextPresent('新增地址')
-type('id=address_name','sujie1-test')
-type('id=address_address','address-test')
-type('id=address_postcode','200100')
-type('id=address_mobile','13511112222')
-type('id=address_areaCode','3123')
-type('id=address_phoneNumber','123')
-type('id=address_phoneExtNumber','3123')
-clickAndWait('id=save')
-verifyTextPresent('200100')
-verifyTextPresent('13511112222')
-#{/selenium}
 
 #{selenium '查看地址管理 修改地址'}
     #{include 'test/selenium/step/login.selenium' /}
@@ -37,22 +21,9 @@ type('id=address_areaCode','3123')
 type('id=address_phoneNumber','123')
 type('id=address_phoneExtNumber','3123')
 click('id=address_isDefault')
-clickAndWait('id=save')
-verifyTextPresent('sujie-test')
+click('id=save')  
+  *{  waitForText('id=address_name_${id}','sujie-test')}*
 #{/selenium}
 
-#{selenium '删除地址'}
-    #{include 'test/selenium/step/login.selenium' /}
-open('/addresses')
-verifyTitle('一百券 - 地址管理')
-verifyTextPresent('sujie')
-verifyTextPresent('200100')
-verifyTextPresent('13511112222')
-verifyTextPresent('上海市')
-verifyTextPresent('test1')
-verifyTextPresent('黄浦区')
-click('id=del_${play.test.Fixtures.idCache.get("models.consumer.Address-test2")}')
-assertConfirmation('您确定要删除sujie吗？')
-verifyTitle('一百券 - 地址管理')
-#{/selenium}
+
 
