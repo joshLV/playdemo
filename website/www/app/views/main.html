@@ -45,9 +45,9 @@
     <ul class="clearfix">
         <li #{if categoryId == 0}class="current"#{/if}><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}">首页</a></li>
         <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/1" #{if
-        categoryId == 1}class="current"#{/if}>美食券</a></li>
+        categoryId == 1}class="current"#{/if}>餐饮美食</a></li>
         <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/2" #{if
-        categoryId == 2}class="current"#{/if}>食品券</a></li>
+        categoryId == 2}class="current"#{/if}>食品干货</a></li>
         *{
         #{list categories, as: 'category'}
         <li class="hot_shangpin_li"><a #{if categoryId == category.id}class="tab_selected"#{/if}
