@@ -40,10 +40,10 @@ POST    /user/edit-password                           UserPasswords.update
 GET     /user-point                                   UserPoints.index
 
 # 提现申请
-GET     /withdraw                                   Withdraw.index
-GET     /withdraw/detail/{id}                       Withdraw.detail
-GET     /withdraw/apply                             Withdraw.apply
-POST    /withdraw/apply                             Withdraw.create
+GET     /withdraw                                       UserWithdraw.index
+GET     /withdraw/detail/{id}                           UserWithdraw.detail
+GET     /withdraw/apply                                 UserWithdraw.apply
+POST    /withdraw/apply                                 UserWithdraw.create
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

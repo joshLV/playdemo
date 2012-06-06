@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 @With(SupplierRbac.class)
-public class Withdraw extends Controller{
+public class SupplierWithdraw extends Controller{
     private static final int PAGE_SIZE = 20;
 
     @Right("STATS")

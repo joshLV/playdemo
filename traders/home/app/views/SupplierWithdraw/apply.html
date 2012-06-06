@@ -8,10 +8,10 @@
 
 <legend>申请提现</legend>
 #{if withdrawAccounts.size() == 0 }
-暂无收款账户,请联系管理员
+暂无收款账户,请联系管理员添加.
 #{/if}
 #{else}
-    #{form @Withdraw.create(), class:'form-horizontal'}
+    #{form @SupplierWithdraw.create(), class:'form-horizontal'}
         <fieldset>
             <div class="control-group">
                 <label class="control-label">选择收款账户</label>

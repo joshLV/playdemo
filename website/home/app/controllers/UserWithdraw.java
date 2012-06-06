@@ -21,7 +21,7 @@ import play.mvc.With;
  * Date: 12-5-10
  */
 @With(SecureCAS.class)
-public class Withdraw extends Controller{
+public class UserWithdraw extends Controller{
     private static final int PAGE_SIZE = 20;
 
     public static void index(WithdrawBillCondition condition){
@@ -55,11 +55,11 @@ public class Withdraw extends Controller{
         Account account = AccountUtil.getAccount(user.getId(), AccountType.CONSUMER);
 
         if(Validation.hasErrors()){
-            render("Withdraw/apply.html", withdraw, account);
+            render("UserWithdraw/apply.html", withdraw, account);
         }
         if(withdraw.amount.compareTo(account.amount) > 0){
             Validation.addError("withdraw.amount", "提现金额不能大于余额！！");
-            render("Withdraw/apply.html", withdraw, account);
+            render("UserWithdraw/apply.html", withdraw, account);
         }
         if(withdraw.apply(user.loginName, account)){
             index(null);

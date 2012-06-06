@@ -15,7 +15,7 @@ resaler.VIP2=VIP2
 resaler.VIP3=VIP3
     
 validation.required=请输入%s!
-validation.min=只能是数字！
+validation.min=低于最低额度！
 validation.minSize=%s的长度至少%d位!
 validation.maxSize=%s的长度不能超过%d!
 validation.maxFileSize=%s的长度不能超过%d个字节!

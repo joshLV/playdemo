@@ -29,9 +29,9 @@ GET     /charge                                 Charge.index
 
 # 提现
 #*       /withdraw                              module:crud
-GET     /withdraw                               Withdraw.index
-GET     /withdraw/apply                         Withdraw.apply
-POST    /withdraw/apply                         Withdraw.create
+GET     /withdraw                               ResalerWithdraw.index
+GET     /withdraw/apply                         ResalerWithdraw.apply
+POST    /withdraw/apply                         ResalerWithdraw.create
 
 # 显示支付结果
 *       /order_result/{shihui_partner}                 OrderResult.urlReturn

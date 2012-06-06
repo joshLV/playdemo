@@ -8,10 +8,10 @@ GET     /                                       Home.index
 # 资金帐户明细
 GET     /account-sequences                      AccountSequences.index
 # 提现申请
-GET     /withdraw                               Withdraw.index
-GET     /withdraw/detail/{id}                   Withdraw.detail
-GET     /withdraw/apply                         Withdraw.apply
-POST    /withdraw/apply                         Withdraw.create
+GET     /withdraw                               SupplierWithdraw.index
+GET     /withdraw/detail/{id}                   SupplierWithdraw.detail
+GET     /withdraw/apply                         SupplierWithdraw.apply
+POST    /withdraw/apply                         SupplierWithdraw.create
 
 # 商户信息
 GET     /info                                   HomeSuppliers.show

@@ -37,7 +37,7 @@
                     <span class="error">#{error 'withdraw.bankName'/}</span>
                 </div>
                 <div class="item clearfix">
-                    <span class="label">支行:</span>
+                    <span class="label"><i>*</i>支行:</span>
                     <input type="text" name="withdraw.subBankName" value="${withdraw?.subBankName}">
                     <span class="error">#{error 'withdraw.subBankName'/}</span>
                 </div>
@@ -48,7 +48,7 @@
                 </div>
                 <div class="item clearfix">
                     <span class="label"><i>*</i>提现金额:</span>
-                    <input type="text" name="withdraw.amount" value="${withdraw?.amount}"> 您的账户余额：${account?.amount}元
+                    <input type="text" name="withdraw.amount" value="${withdraw?.amount}"> 您的账户余额：${account?.amount}元,一次最少提现10元
                     <span class="error">#{error 'withdraw.amount'/}</span>
                 </div>
                 <div class="btn-box">

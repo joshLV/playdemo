@@ -1,0 +1,32 @@
+#{fixture delete:'all' , load:['fixture/user.yml','fixture/userInfo.yml'] /}
+%{
+id = play.test.Fixtures.idCache.get("models.consumer.User-selenium");
+user = models.consumer.User.findById(id);
+account = models.accounts.util.AccountUtil.getAccount(user.getId(), models.accounts.AccountType.CONSUMER)
+account.amount = new java.math.BigDecimal("300.00")
+account.save()
+}%
+#{selenium '用户提现测试'}
+    #{include 'test/selenium/step/login.selenium' /}
+    open('/withdraw')
+    clickAndWait('link=申请提现')
+    type('name=withdraw.userName','张三')
+    type('name=withdraw.subBankName','支行啊支行')
+    type('name=withdraw.cardNumber','123')
+    type('name=withdraw.amount','1')
+    clickAndWait('css=input.search-btn')
+    verifyTextPresent('提现金额必须大于或等于')
+    type('name=withdraw.amount','20000')
+    clickAndWait('css=input.search-btn')
+    verifyTextPresent('提现金额不能大于余额')
+    type('name=withdraw.amount','20')
+    clickAndWait('css=input.search-btn')
+    verifyTitle('提现申请')
+    verifyTextPresent('待审批')
+    clickAndWait('link=查看详情')
+    verifyTextPresent('待审批')
+    clickAndWait('link=返回')
+    verifyTitle('提现申请')
+    clickAndWait('link=待审批')
+    verifyTextPresent('张三')
+#{/selenium}

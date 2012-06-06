@@ -218,7 +218,7 @@
     #{include "share/left.html"/}
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
-        <form action="@{Withdraw.index()}" method="GET" id="form" style="display:none">
+        <form action="@{UserWithdraw.index()}" method="GET" id="form" style="display:none">
             #{select 'condition.status',id:'condition_status',value:condition?.status}
             #{option ""}全部#{/option}
             #{option "APPLIED"}&{'withdraw.APPLIED'}#{/option}

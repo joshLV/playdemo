@@ -16,7 +16,7 @@ import java.util.List;
  * Date: 12-5-7
  */
 @With(SecureCAS.class)
-public class Withdraw extends Controller{
+public class ResalerWithdraw extends Controller{
 
     public static void index(){
         Resaler user = SecureCAS.getResaler();
@@ -36,11 +36,11 @@ public class Withdraw extends Controller{
         Account account = AccountUtil.getAccount(user.getId(), AccountType.RESALER);
 
         if(Validation.hasErrors()){
-            render("Withdraw/apply.html", withdraw, account);
+            render("ResalerWithdraw/apply.html", withdraw, account);
         }
         if(withdraw.amount.compareTo(account.amount)>0){
             Validation.addError("withdraw.amount", "提现金额不能大于余额！！");
-            render("Withdraw/apply.html", withdraw, account);
+            render("ResalerWithdraw/apply.html", withdraw, account);
         }
         if(withdraw.apply(user.loginName, account)){
             index();

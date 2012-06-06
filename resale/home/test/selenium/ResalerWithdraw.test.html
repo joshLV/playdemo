@@ -1,0 +1,32 @@
+#{fixture delete:'all', load:['fixture/resaler.yml']/}
+%{
+id = play.test.Fixtures.idCache.get("models.resale.Resaler-Resaler_1");
+resaler = models.resale.Resaler.findById(id);
+account = models.accounts.util.AccountUtil.getAccount(resaler.getId(), models.accounts.AccountType.RESALER)
+account.amount = new java.math.BigDecimal("300.00")
+account.save()
+}%
+
+#{selenium '测试提现'}
+    #{include 'test/selenium/step/login.selenium' /}
+
+    openAndWait('/withdraw/apply')
+    clickAndWait('css=button.submit-btn')
+    verifyTextPresent('请输入姓名')
+    verifyTextPresent('请输入支行名称')
+    verifyTextPresent('请输入银行卡号')
+    verifyTextPresent('请输入提现金额')
+    type('name=withdraw.userName','张三')
+    type('name=withdraw.subBankName','支行名称支行')
+    type('name=withdraw.cardNumber','123455')
+    type('name=withdraw.amount','1')
+    clickAndWait('css=button.submit-btn')
+    verifyTextPresent('低于最低')
+    type('name=withdraw.amount','9999999')
+    clickAndWait('css=button.submit-btn')
+    verifyTextPresent('提现金额不能大于余额')
+    type('name=withdraw.amount','20')
+    clickAndWait('css=button.submit-btn')
+    verifyTextPresent('张三')
+
+#{/selenium}

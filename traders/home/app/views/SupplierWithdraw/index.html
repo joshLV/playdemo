@@ -8,7 +8,7 @@
 
 <div class="clearfix"><a class="btn btn-primary pull-right" href="/withdraw/apply">申请提现</a></div>
 
-<form action="@{Withdraw.index()}" method="GET" id="form" style="display:none">
+<form action="@{SupplierWithdraw.index()}" method="GET" id="form" style="display:none">
 #{select 'condition.status',id:'condition_status',value:condition?.status}
     #{option ""}全部#{/option}
     #{option "APPLIED"}&{'withdraw.APPLIED'}#{/option}
