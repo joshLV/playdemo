@@ -1,0 +1,58 @@
+#{fixture delete:'all' ,
+load:['fixture/suppliers_unit.yml','fixture/categories_unit.yml','fixture/brands_unit.yml',
+'fixture/shops_unit.yml',
+'fixture/goods_unit.yml','fixture/orders.yml','fixture/detail_daily_reports.yml',
+'fixture/shop_daily_reports.yml','fixture/goods_daily_reports.yml','fixture/total_daily_reports.yml'] /}
+%{
+        //先设置商品的supplierId
+         supplierId =  play.test.Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
+         supplier = models.supplier.Supplier.findById(supplierId);
+        List<models.sales.Brand> brands = models.sales.Brand.findAll();
+        for (models.sales.Brand brand : brands) {
+
+            brand.supplier = supplier;
+            brand.save();
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DATE,cal.get(Calendar.DATE)-6);
+        List<models.order.Order> orderList = models.order.Order.findAll();
+        for (models.order.Order order : orderList) {
+            order.createdAt = cal.getTime();
+            order.save();
+        }
+        List<models.order.OrderItems> orderItemsList = models.order.OrderItems.findAll();
+        for (models.order.OrderItems orderItems : orderItemsList) {
+            orderItems.createdAt = cal.getTime();
+            orderItems.save();
+        }
+        List<models.sales.Goods> goodsList = models.sales.Goods.findAll();
+        for (models.sales.Goods goods : goodsList) {
+            goods.supplierId = supplierId;
+            goods.save();
+        }
+        List<models.sales.Shop> shops = models.sales.Shop.findAll();
+        for (models.sales.Shop shop : shops) {
+            shop.supplierId = supplierId;
+            shop.save();
+        }
+
+
+}%
+#{selenium "查询采购税务报表"}
+#{include 'test/selenium/step/login.selenium' /}
+open('/reports')
+assertTitle('采购税务表')
+type('id=condition_begin','2012-03-01')
+clickAndWait('id=search')
+verifyTextPresent('肯德基')
+#{/selenium}
+
+#{selenium "查询销售税务报表"}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/reports/sales')
+assertTitle('销售税务表')
+type('id=condition_begin','2012-03-01')
+clickAndWait('id=search')
+verifyTextPresent('肯德基')
+
+#{/selenium}
