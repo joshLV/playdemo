@@ -13,7 +13,10 @@ type('id=address_name','sujie1-test')
 type('id=address_address','address-test')
 type('id=address_postcode','200100')
 type('id=address_mobile','13511112222')
-click('id=update_${id}')
+type('id=address_areaCode','3123')
+type('id=address_phoneNumber','123')
+type('id=address_phoneExtNumber','3123')
+clickAndWait('id=save')
 verifyTextPresent('200100')
 verifyTextPresent('13511112222')
 #{/selenium}
@@ -30,8 +33,12 @@ verifyTextPresent('黄浦区')
 click('id=update_${id}')
 waitForValue('id=address_name','sujie')
 type('id=address_name','sujie-test')
-*{clickAndWait('id=save')}*
-*{verifyTextPresent('sujie-test')}*
+type('id=address_areaCode','3123')
+type('id=address_phoneNumber','123')
+type('id=address_phoneExtNumber','3123')
+click('id=address_isDefault')
+clickAndWait('id=save')
+verifyTextPresent('sujie-test')
 #{/selenium}
 
 #{selenium '删除地址'}

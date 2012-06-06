@@ -28,6 +28,7 @@ public class UserCarts extends Controller {
      * 在顶部展示所有购物车内容
      */
     public static void tops() {
+
         User user = SecureCAS.getUser();
         Http.Cookie cookie = request.cookies.get("identity");
         String cookieValue = cookie == null ? null : cookie.value;
@@ -64,6 +65,7 @@ public class UserCarts extends Controller {
             error(500, "can not identity current user");
             return;
         }
+
         if (goodsIds == null || goodsIds.size() == 0) {
             error(500, "no goods specified");
             return;
