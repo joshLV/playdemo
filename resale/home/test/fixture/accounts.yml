@@ -1,0 +1,15 @@
+accounts.Account(Account_1):
+ "uid": "1"
+ "accountType": "PLATFORM"
+ "amount": "1000.02"
+ "status": "NORMAL"
+ "uncashAmount": "10.2"
+ "createdAt": "2012-03-07T17:29:59"
+
+accounts.Account(Account_2):
+ "uid": "2"
+ "accountType": "CONSUMER"
+ "amount": "1000.02"
+ "status": "NORMAL"
+ "uncashAmount": "10.2"
+ "createdAt": "2012-03-07T17:29:59"
