@@ -15,7 +15,7 @@
   <navigation key="account" text="财务管理" action="AccountSequences.index" display-order="100">
     <navigation key="account_bar" text="账户" permissions="ACCOUNT_REPORT">
       <navigation key="account_sequence" text="账户明细" action="AccountSequences.index" permissions="ACCOUNT_REPORT"/>
-      <navigation key="account_withdraw" text="账户提现" action="Withdraw.index" permissions="ACCOUNT_WITHDRAW"/>
+      <navigation key="account_withdraw" text="账户提现" action="SupplierWithdraw.index" permissions="ACCOUNT_WITHDRAW"/>
     </navigation>
   </navigation>
 </application>
