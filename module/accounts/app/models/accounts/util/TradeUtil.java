@@ -83,7 +83,7 @@ public class TradeUtil {
         }
         
         TradeBill tradeBill = new TradeBill();
-        tradeBill.fromAccount          = null;              //无付款方
+        tradeBill.fromAccount          = AccountUtil.getPaymentPartnerAccount(paymentSource.paymentCode);//付款方为第三方支付的虚拟账户
         tradeBill.toAccount            = account;           //收款方账户为本人
         tradeBill.balancePaymentAmount = BigDecimal.ZERO;   //付款方不使用余额支付
         tradeBill.ebankPaymentAmount   = amount;            //充值金额全部使用网银支付
@@ -240,33 +240,28 @@ public class TradeUtil {
      * @return  是否成功
      * */
     public static boolean success(TradeBill tradeBill, String note) {
-        if (tradeBill.fromAccount == null && tradeBill.toAccount == null){
-            throw new RuntimeException("invalid trade: none of the fromAccount and toAccount is available");
+        if (tradeBill.fromAccount == null || tradeBill.toAccount == null){
+            throw new RuntimeException("invalid trade: none of the fromAccount or toAccount is available. trade:" + tradeBill.getId());
         }
         try {
-            //如果不是充值,则首先支付此笔订单
-            if(tradeBill.fromAccount != null){
-                AccountUtil.addBalanceAndSaveSequence(
-                        tradeBill.fromAccount.getId(),
-                        tradeBill.balancePaymentAmount.add(tradeBill.ebankPaymentAmount).negate(),
-                        tradeBill.uncashPaymentAmount.negate(),
-                        tradeBill.getId(),
-                        tradeBill.tradeType,
-                        AccountSequenceFlag.NOSTRO,
-                        note,
-                        tradeBill.orderId);
-            }
-            if(tradeBill.toAccount != null){
-                AccountUtil.addBalanceAndSaveSequence(
-                        tradeBill.toAccount.getId(),
-                        tradeBill.ebankPaymentAmount.add(tradeBill.balancePaymentAmount),
-                        tradeBill.uncashPaymentAmount,
-                        tradeBill.getId(),
-                        tradeBill.tradeType,
-                        AccountSequenceFlag.VOSTRO,
-                        note,
-                        tradeBill.orderId);
-            }
+            AccountUtil.addBalanceAndSaveSequence(
+                    tradeBill.fromAccount.getId(),
+                    tradeBill.balancePaymentAmount.add(tradeBill.ebankPaymentAmount).negate(),
+                    tradeBill.uncashPaymentAmount.negate(),
+                    tradeBill.getId(),
+                    tradeBill.tradeType,
+                    AccountSequenceFlag.NOSTRO,
+                    note,
+                    tradeBill.orderId);
+            AccountUtil.addBalanceAndSaveSequence(
+                    tradeBill.toAccount.getId(),
+                    tradeBill.ebankPaymentAmount.add(tradeBill.balancePaymentAmount),
+                    tradeBill.uncashPaymentAmount,
+                    tradeBill.getId(),
+                    tradeBill.tradeType,
+                    AccountSequenceFlag.VOSTRO,
+                    note,
+                    tradeBill.orderId);
         } catch (BalanceNotEnoughException e) {
             Logger.error(e, e.getMessage());
             throw new RuntimeException("balance not enough, trade bill: " + tradeBill.getId(), e);

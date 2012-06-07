@@ -30,17 +30,62 @@ public class AccountUtil {
         return getAccount(Account.PLATFORM_WITHDRAW, AccountType.PLATFORM);
     }
 
+    public static Account getFinancingIncomingAccount(){
+        return getCreditableAccount(Account.FINANCING_INCOMING, AccountType.PLATFORM);
+    }
+
+    public static Account getPaymentPartnerAccount(String partner){
+        switch (partner){
+            case "alipay":
+                return getCreditableAccount(Account.PARTNER_ALIPAY, AccountType.PLATFORM);
+            case "tenpay":
+                return getCreditableAccount(Account.PARTNER_TENPAY, AccountType.PLATFORM);
+            case "99bill":
+                return getCreditableAccount(Account.PARTNER_KUAIQIAN, AccountType.PLATFORM);
+            default:
+                return null;
+        }
+    }
+
     public static boolean accountExist(long uid, AccountType type){
         return Account.find("byUidAndAccountType", uid, type).first() != null;
     }
 
+    /**
+     * 获取不可欠款账户,若不存在则新建
+     * 当账户余额小于0时,将抛出BalanceNotEnoughException
+     *
+     * @param uid 用户ID
+     * @param type 用户类型
+     * @return 不可欠款账户
+     */
     public static Account getAccount(long uid, AccountType type){
+        return getAccount(uid, type, false);
+    }
+
+    /**
+     * 获取可欠款账户,若不存在则新建
+     * 账户余额可以小于0
+     *
+     * @param uid 用户ID
+     * @param type 用户类型
+     * @return 可欠款账户
+     */
+    public static Account getCreditableAccount(long uid, AccountType type){
+        return getAccount(uid, type, true);
+    }
+
+    public static Account getAccount(long uid, AccountType type, boolean creditable){
         Account account = Account.find("byUidAndAccountType", uid, type).first();
         if(account == null){
             synchronized(Account.class){
                 account = Account.find("byUidAndAccountType", uid, type).first();
                 if(account == null){
-                    return new Account(uid, type).save();
+                    account = new Account(uid, type);
+                    if(creditable){
+                        account.creditable = AccountCreditable.YES;
+                    }
+                    return account.save();
                 }
             }
         }
@@ -92,12 +137,12 @@ public class AccountUtil {
             throw new IllegalArgumentException("error while add balance to account: miss parameter");
         }
 
-        if (account.amount.add(cashAugend).compareTo(BigDecimal.ZERO) >= 0 ){
+        if (account.amount.add(cashAugend).compareTo(BigDecimal.ZERO) >= 0 || account.isCreditable()){
             account.amount = account.amount.add(cashAugend);
         }else {
             throw new BalanceNotEnoughException("error while add cash to account: balance not enough");
         }
-        if (account.uncashAmount.add(uncashAugend).compareTo(BigDecimal.ZERO) >= 0){
+        if (account.uncashAmount.add(uncashAugend).compareTo(BigDecimal.ZERO) >= 0 || account.isCreditable()){
             account.uncashAmount = account.uncashAmount.add(uncashAugend);
         }else {
             throw new BalanceNotEnoughException("error while add uncashAmount to account: balance not enough");

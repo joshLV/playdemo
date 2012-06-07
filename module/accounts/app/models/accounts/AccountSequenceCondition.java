@@ -38,10 +38,6 @@ public class AccountSequenceCondition implements Serializable {
             filter.append(" and account = :account");
             params.put("account", account);
         }
-        if (createdAtBegin == null && createdAtEnd == null) {
-            Date now = new Date();
-            createdAtBegin = DateUtils.addMonths(now, -3);
-        }
         if (createdAtBegin != null) {
             filter.append(" and createdAt >= :createdAtBegin");
             params.put("createdAtBegin", createdAtBegin);

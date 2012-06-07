@@ -65,8 +65,8 @@ public class OrdersCondition {
 			paramsMap.put("deliveryType", deliveryType);
 		}
 		if (StringUtils.isNotBlank(payMethod)) {
-			sql.append(" and o.payMethod = :payMethod");
-			paramsMap.put("payMethod", payMethod);
+			sql.append(" and o.payMethod like :payMethod");
+			paramsMap.put("payMethod", "" + payMethod + "%");
 		}
 
 		//按照商品名称检索
