@@ -5,6 +5,7 @@
 .section {
     float: left;
     width: 730px;
+    _width: 715px;
 }
 .photo {
     float: left;
@@ -20,6 +21,7 @@
 .property {
     float: left;
     width: 315px;
+    _width: 300px;
     margin-right: 20px;
     border-top: 1px dotted #E4E4E4;
 }
