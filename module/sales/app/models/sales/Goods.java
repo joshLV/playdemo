@@ -235,6 +235,12 @@ public class Goods extends Model {
     public Brand brand;
 
     /**
+     * 限购数量
+     */
+    @Column(name = "limit_number")
+    public Integer limitNumber = 0;
+
+    /**
      * 推荐指数.
      */
     public Integer recommend = 0;
@@ -566,6 +572,7 @@ public class Goods extends Model {
         updateGoods.brand = goods.brand;
         updateGoods.isAllShop = goods.isAllShop;
         updateGoods.status = goods.status;
+        updateGoods.limitNumber = goods.limitNumber;
         if (!StringUtils.isEmpty(goods.imagePath)) {
             updateGoods.imagePath = goods.imagePath;
         }

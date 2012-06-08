@@ -53,5 +53,40 @@ sales.Goods(goods5):
   materialType: "REAL"
   effectiveAt: 2012-02-01
   expireAt: 2092-02-02
+  limitNumber: 1
+
+order.Order(order10):
+  "user": "user"
+  "supplier_id": 1
+  "orderNumber": "201202220324134991598"
+  "status": "PAID"
+  "amount": "0"
+  "accountPay": "0"
+  "discountPay": "0"
+  "needPay": "0"
+  "createdAt": "2012-03-15T16:40:28"
+  "updatedAt": "2012-03-15T16:40:28"
+  "receiverPhone": "13512341234"
+  "eceiverMobile": "13512341234"
+  "receiverAddress": "内蒙古 呼和浩特市 玉泉区 凌兆路"
+  "receiverName": "苏杰1"
+  "postcode": "200120"
+  "lockVersion": "0"
+  "deleted": "UN_DELETED"
+  "deliveryType": "0"
+  "paymentSourceCode": ""
+  "payRequestId": "0"
+  "orderType": "CONSUME"
+
+order.OrderItems(orderItems10):
+  "order": "order10"
+  "buyNumber": 1
+  "salePrice": "10"
+  "originalPrice": "20"
+  "goodsName": "哈根达斯100元抵用券"
+  "createdAt": "2012-03-05T00:00:00"
+  "goods": "goods5"
+  "phone": "15312365671"
+  "status": "PAID"
 
 

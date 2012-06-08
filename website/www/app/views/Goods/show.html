@@ -10,6 +10,7 @@
          *点击加入购物车按钮
          */
         $("#link_add_cart").click(function () {
+
             $.post(
                     "/carts",
                     {'goodsId':$("#goodsId").val(), 'increment':$("#number").val()},
@@ -35,6 +36,13 @@
         });
 
         $("#link_buy_now").click(function () {
+            var limitNumber ='${goods.limitNumber}';
+            var number = Number($("#number").val());
+            if (limitNumber !='' && number >limitNumber) {
+               $(".error").html("<strong>只能购买"+limitNumber+"个<strong>").css('color','#F55');
+                return false;
+            }
+
             var t = $(this);
             t.attr("href", t.attr("href") + '-' + $("#number").val());
             return true;
@@ -49,7 +57,7 @@
         // 详情页tab
         $('#J_tabbar li').click(function () {
             var that = $(this),
-                    attr = that.attr('name');
+            attr = that.attr('name');
 
             $('#J_tabbar li').removeClass('current');
             that.addClass('current');
@@ -115,13 +123,17 @@
             <li class="amount">购买数量:
                 <span><input class="num_input_bg" id="number" name="number" type="text" value="1"/> 件</span>
                 <span id="stock_hit" style="display:none;color:#f50">库存${goods.baseSale}件</span>
+                #{if goods.limitNumber >0}
+                <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
+                #{/if}
                 <span class="error">#{error 'number' /}</span>
                 <input type="hidden" id="stock" value="${goods.baseSale}">
             </li>
         #{if goods.onSale()}
             <li class="action clearfix">
-                <a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
-                <a class="add" id="link_add_cart" href="#">加入购物车</a>
+                #{if !bought}<a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
+                <a class="add" id="link_add_cart" href="#">加入购物车#{/if}</a>
+                #{else}<strong style="color: red">您已经购买过此商品！</strong>#{/else}
 
                 <div id="add_cart_result" class="add-tips" style="display: none;">
                     <h4>已成功添加到购物车！</h4>

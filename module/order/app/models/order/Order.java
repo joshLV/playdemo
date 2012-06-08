@@ -297,24 +297,34 @@ public class Order extends Model {
         this.save();
     }
 
+
     /**
-     * 计算订单中有多少个商品
+     * 计算会员订单明细中已购买的商品
      *
-     * @param order
+     * @param user    会员ID
+     * @param goodsId 商品ID
+     * @param number  购买数量
      * @return
      */
-    public static long itemsNumber(Order order) {
-        long itemsNumber = 0L;
-        if (order == null) {
-            return itemsNumber;
+    public static boolean checkLimitNumber(User user, Long goodsId, int number) {
+
+        Long buyNumber = 0l;
+        //该用户曾经购买该商品的数量
+        buyNumber = OrderItems.itemsNumber(user, goodsId);
+        //取出商品的限购数量
+        Goods goods = Goods.findById(goodsId);
+        int limitNumber = 0;
+        if (goods.limitNumber != null) {
+            limitNumber = goods.limitNumber;
         }
-        EntityManager entityManager = JPA.em();
-        Object result = entityManager.createQuery("SELECT sum( buyNumber ) FROM Order o,o.orderItems WHERE Order.id ="
-                + order.getId()).getSingleResult();
-        if (result != null) {
-            itemsNumber = ((java.math.BigDecimal) result).longValue();
+        System.out.println(">>>>>>>>>>"+buyNumber);
+
+        //超过限购数量,则表示已经购买过差商品
+        if (limitNumber > 0 && (number > limitNumber || limitNumber <= buyNumber)) {
+            return true;
         }
-        return itemsNumber;
+          System.out.println("22");
+        return false;
     }
 
     /**

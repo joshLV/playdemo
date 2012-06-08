@@ -1,8 +1,9 @@
-#{fixture delete:'all', load:'fixture/carts.yml' /}
+#{fixture delete:'all', load:['fixture/user.yml','fixture/goods.yml','fixture/carts.yml'] /}
 #{selenium 'Test Carts/index.html'}
 %{
     goodsA = play.test.Fixtures.idCache.get("models.sales.Goods-Goods_1")
     goodsB = play.test.Fixtures.idCache.get("models.sales.Goods-Goods_2")
+    goodsC = play.test.Fixtures.idCache.get("models.sales.Goods-goods5")
 }%
 openAndWait('/goods/${goodsA}')
 assertText('id=carts_size','0')
@@ -27,4 +28,27 @@ waitForElementNotPresent('id=del_row_${goodsA}')
 verifyText('id=total_num','1')
 openAndWait('/carts/tops')
 verifyTextPresent('1件商品')
+
+
+*{openAndWait('/goods/${goodsC}')}*
+*{click('id=link_add_cart')}*
+*{waitForVisible('id=add_cart_result')}*
+*{openAndWait('/carts')}*
+*{assertText('id=carts_size','2')}*
+*{verifyTextPresent('测试商品5 （限购1件）')}*
+/**
+%{
+    id = play.test.Fixtures.idCache.get("models.consumer.User-user");
+    user = models.consumer.User.findById(id);
+
+    id = play.test.Fixtures.idCache.get("models.order.Order-order10");
+    order = models.order.Order.findById(id);
+    order.setUser(user.getId(), models.accounts.AccountType.CONSUMER);
+
+}%
+*/
+ *{#{include 'test/selenium/step/login.selenium' /}}*
+ *{openAndWait('/carts')}*
+ *{verifyTextPresent('您已经购买过此商品，不能继续购买！')}*
+
 #{/selenium}

@@ -26,8 +26,10 @@ GET     /service                                Application.service
 
 GET     /goods                                  Goods.index
 GET     /goods/list/{condition}                 Goods.list
+
 GET     /goods/{id}                             Goods.show
 GET     /goods/{uuid}/preview                   Goods.preview
+
 
 # 购物车
 GET     /carts                                  Carts.index
@@ -49,6 +51,7 @@ POST    /sms/send                               SMS.send
 # 订单
 GET     /orders                                 Orders.index
 POST    /orders/new                             Orders.create
+GET     /orders_number                          Orders.checkLimitNumber
 
 # 地址
 GET     /orders/addresses                       Addresses.index

@@ -13,7 +13,7 @@ function reorder(goods_id,increment){
     var element = $("#num_" + goods_id);
     var last_num_ele = $("#last_num_" + goods_id);
     var stock = Number($("#stock_" + goods_id).val());
-
+    var limitNumber = Number($("#limit_" + goods_id).val());
     var last_num = Number(last_num_ele.val())
     var new_num = last_num + increment;
     if(new_num <= 0){
@@ -27,6 +27,13 @@ function reorder(goods_id,increment){
     if(new_num > stock){
         new_num = stock;
         increment = stock - last_num;
+    }
+
+
+    if(limitNumber > 0 && element.val()>=limitNumber) {
+       new_num = limitNumber;
+       element.val(limitNumber);
+       increment=limitNumber-last_num;
     }
     if(increment == 0){
         element.val(last_num);
@@ -116,7 +123,12 @@ $(window).load(
         };
         var set_all_goods_checkbox = function(checked){
             $("input[id^=check_goods_]").each(function(){
+                if ($("#limit_goods_"+this.value).html() !=null) {
+                    this.checked = false;
+                    $("#check_goods_"+this.value).attr('disabled',true);
+                } else {
                 this.checked = checked
+                }
             }); 
         };
         //点击全选
@@ -150,7 +162,8 @@ $(window).load(
         $("input[id^=check_goods_]").each(function(){ 
             $(this).click( function(){
                 if(all_checked()){
-                    set_all_select_all_checkbox(true);
+                  set_all_select_all_checkbox(true);
+
                 }else{
                     set_all_select_all_checkbox(false);
                 }
@@ -197,10 +210,10 @@ $(window).load(
             if(items.length == 0){
                 return false;
             }
-        	
-        	var t = $(this);
-        	t.attr("href", t.attr("href") + items);
-        	return true;
+
+            var t = $(this);
+            t.attr("href", t.attr("href") + items);
+
         });
         
         

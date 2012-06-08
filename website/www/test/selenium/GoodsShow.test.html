@@ -1,4 +1,4 @@
-#{fixture delete:'all', load:'fixture/goods.yml' /}
+#{fixture delete:'all', load:['fixture/user.yml','fixture/goods.yml'] /}
 #{selenium 'Test Goods/show.html Normal'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods1")}')
 verifyTitle('一百券 - 商品详情')
@@ -19,6 +19,25 @@ verifyTextPresent('测试商品3')
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods4")}')
 verifyTitle('一百券 - 商品详情')
 verifyTextPresent('测试商品4')
+#{/selenium}
+
+#{selenium 'Test Goods/show.html 限购商品'}
+open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods5")}')
+verifyTitle('一百券 - 商品详情')
+verifyTextPresent('限购1件')
+%{
+     id = play.test.Fixtures.idCache.get("models.consumer.User-user");
+    user = models.consumer.User.findById(id);
+
+    id = play.test.Fixtures.idCache.get("models.order.Order-order10");
+    order = models.order.Order.findById(id);
+    order.setUser(user.getId(), models.accounts.AccountType.CONSUMER);
+
+}%
+ #{include 'test/selenium/step/login.selenium' /}
+open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods5")}')
+verifyTitle('一百券 - 商品详情')
+verifyTextPresent('您已经购买过此商品！')
 #{/selenium}
 #{selenium 'Test Goods/show.html Not found'}
 open('/goods/10000000000000')

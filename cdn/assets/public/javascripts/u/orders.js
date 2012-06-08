@@ -208,7 +208,7 @@ $(function ($) {
     });
 
     $("#link_confirm_pay").click(function () {
-      /**  var url='/orders_number?items=' + $('#items').val();
+       var url='/orders_number?items=' + $('#items').val();
         $.ajax({
             url:url,
             type:'GET',
@@ -219,8 +219,8 @@ $(function ($) {
                     $("#order_create_form").submit();
                 }
             }
-        });*/
-         $("#order_create_form").submit();
+        });
+
     });
 
 

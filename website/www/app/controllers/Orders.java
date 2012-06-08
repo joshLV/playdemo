@@ -4,10 +4,7 @@ import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
-import models.order.Cart;
-import models.order.DeliveryType;
-import models.order.NotEnoughInventoryException;
-import models.order.Order;
+import models.order.*;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import play.Logger;
@@ -33,181 +30,213 @@ import static play.Logger.warn;
  */
 @With({SecureCAS.class, WebsiteInjector.class})
 public class Orders extends Controller {
-	/**
-	 * 预览订单.
-	 *
-	 * @param items 选择的商品及数量，格式为 goods1-num1,goods2-num2-.....
-	 */
-	public static void index(String items) {
-		if (items == null) {
-			error("no goods specified");
-			return;
-		}
-		User user = SecureCAS.getUser();
-		showOrder(items);
-		render(user);
-	}
+    /**
+     * 预览订单.
+     *
+     * @param items 选择的商品及数量，格式为 goods1-num1,goods2-num2-.....
+     */
+    public static void index(String items) {
+        if (items == null) {
+            error("no goods specified");
+            return;
+        }
+        User user = SecureCAS.getUser();
+        showOrder(items);
+        render(user);
+    }
 
-	private static void showOrder(String items) {
-		//解析提交的商品及数量
-		List<Long> goodsIds = new ArrayList<>();
-		Map<Long, Integer> itemsMap = new HashMap<>();
-		parseItems(items, goodsIds, itemsMap);
+    private static void showOrder(String items) {
+        //解析提交的商品及数量
+        List<Long> goodsIds = new ArrayList<>();
+        Map<Long, Integer> itemsMap = new HashMap<>();
+        parseItems(items, goodsIds, itemsMap);
 
-		//计算电子商品列表和非电子商品列表
-		List<Cart> eCartList = new ArrayList<>();
-		BigDecimal eCartAmount = BigDecimal.ZERO;
-		List<Cart> rCartList = new ArrayList<>();
-		BigDecimal rCartAmount = BigDecimal.ZERO;
+        //计算电子商品列表和非电子商品列表
+        List<Cart> eCartList = new ArrayList<>();
+        BigDecimal eCartAmount = BigDecimal.ZERO;
+        List<Cart> rCartList = new ArrayList<>();
+        BigDecimal rCartAmount = BigDecimal.ZERO;
 
-		List<models.sales.Goods> goods = models.sales.Goods.findInIdList(goodsIds);
-		for (models.sales.Goods g : goods) {
-			Integer number = itemsMap.get(g.getId());
-			if (g.materialType == models.sales.MaterialType.REAL) {
-				rCartList.add(new Cart(g, number));
-				rCartAmount = rCartAmount.add(g.salePrice.multiply(new BigDecimal(number.toString())));
-			} else if (g.materialType == models.sales.MaterialType.ELECTRONIC) {
-				eCartList.add(new Cart(g, number));
-				eCartAmount = eCartAmount.add(g.salePrice.multiply(new BigDecimal(number.toString())));
-			}
-		}
+        List<models.sales.Goods> goods = models.sales.Goods.findInIdList(goodsIds);
+        for (models.sales.Goods g : goods) {
 
-		if (rCartList.size() == 0 && eCartList.size() == 0) {
-			error("no goods specified");
-			return;
-		}
+            Integer number = itemsMap.get(g.getId());
+            if (g.materialType == models.sales.MaterialType.REAL) {
+                rCartList.add(new Cart(g, number));
+                rCartAmount = rCartAmount.add(g.salePrice.multiply(new BigDecimal(number.toString())));
+            } else if (g.materialType == models.sales.MaterialType.ELECTRONIC) {
+                eCartList.add(new Cart(g, number));
+                eCartAmount = eCartAmount.add(g.salePrice.multiply(new BigDecimal(number.toString())));
+            }
+        }
 
-		List<Address> addressList = Address.findByOrder(SecureCAS.getUser());
-		Address defaultAddress = Address.findDefault(SecureCAS.getUser());
+        if (rCartList.size() == 0 && eCartList.size() == 0) {
+            error("no goods specified");
+            return;
+        }
 
-		//如果有实物商品，加上运费
-		if (rCartList.size() > 0) {
-			rCartAmount = rCartAmount.add(Order.FREIGHT);
-		}
-		BigDecimal totalAmount = eCartAmount.add(rCartAmount);
-		BigDecimal goodsAmount = rCartList.size() == 0 ? eCartAmount : totalAmount.subtract(Order.FREIGHT);
+        List<Address> addressList = Address.findByOrder(SecureCAS.getUser());
+        Address defaultAddress = Address.findDefault(SecureCAS.getUser());
 
-		renderArgs.put("goodsAmount", goodsAmount);
-		renderArgs.put("totalAmount", totalAmount);
-		renderArgs.put("addressList", addressList);
-		renderArgs.put("address", defaultAddress);
-		renderArgs.put("eCartList", eCartList);
-		renderArgs.put("eCartAmount", eCartAmount);
-		renderArgs.put("rCartList", rCartList);
-		renderArgs.put("rCartAmount", rCartAmount);
-		renderArgs.put("items", items);
-	}
+        //如果有实物商品，加上运费
+        if (rCartList.size() > 0) {
+            rCartAmount = rCartAmount.add(Order.FREIGHT);
+        }
+        BigDecimal totalAmount = eCartAmount.add(rCartAmount);
+        BigDecimal goodsAmount = rCartList.size() == 0 ? eCartAmount : totalAmount.subtract(Order.FREIGHT);
 
-	/**
-	 * 提交订单.
-	 */
-	public static void create(String items, String mobile) {
-		//如果订单中有电子券，则必须填写手机号
-		Http.Cookie cookie = request.cookies.get("identity");
-		String cookieValue = cookie == null ? null : cookie.value;
-		User user = SecureCAS.getUser();
+        renderArgs.put("goodsAmount", goodsAmount);
+        renderArgs.put("totalAmount", totalAmount);
+        renderArgs.put("addressList", addressList);
+        renderArgs.put("address", defaultAddress);
+        renderArgs.put("eCartList", eCartList);
+        renderArgs.put("eCartAmount", eCartAmount);
+        renderArgs.put("rCartList", rCartList);
+        renderArgs.put("rCartAmount", rCartAmount);
+        renderArgs.put("items", items);
+    }
 
-		//解析提交的商品及数量
-		List<Long> goodsIds = new ArrayList<>();
-		Map<Long, Integer> itemsMap = new HashMap<>();
-		parseItems(items, goodsIds, itemsMap);
-		List<models.sales.Goods> goodsList = models.sales.Goods.findInIdList(goodsIds);
-		boolean containsElectronic = containsMaterialType(goodsList, MaterialType.ELECTRONIC);
-		boolean containsReal = containsMaterialType(goodsList, MaterialType.REAL);
+    /**
+     * 提交订单.
+     */
+    public static void create(String items, String mobile) {
+        //如果订单中有电子券，则必须填写手机号
+        Http.Cookie cookie = request.cookies.get("identity");
+        String cookieValue = cookie == null ? null : cookie.value;
+        User user = SecureCAS.getUser();
 
-		//电子券必须校验手机号
-		if (containsElectronic) {
-			Validation.required("mobile", mobile);
-			Validation.match("mobile", mobile, "^1[3|4|5|8][0-9]\\d{4,8}$");
-		}
+        //解析提交的商品及数量
+        List<Long> goodsIds = new ArrayList<>();
+        Map<Long, Integer> itemsMap = new HashMap<>();
+        parseItems(items, goodsIds, itemsMap);
+        List<models.sales.Goods> goodsList = models.sales.Goods.findInIdList(goodsIds);
+        boolean containsElectronic = containsMaterialType(goodsList, MaterialType.ELECTRONIC);
+        boolean containsReal = containsMaterialType(goodsList, MaterialType.REAL);
 
-		//实物券必须校验收货地址信息
-		Address defaultAddress = null;
-		String receiverMobile = "";
-		if (containsReal) {
-			defaultAddress = Address.findDefault(SecureCAS.getUser());
-			if (defaultAddress == null) {
-				Validation.addError("address", "validation.required");
-			}else {
+        //电子券必须校验手机号
+        if (containsElectronic) {
+            Validation.required("mobile", mobile);
+            Validation.match("mobile", mobile, "^1[3|4|5|8][0-9]\\d{4,8}$");
+        }
+
+        //实物券必须校验收货地址信息
+        Address defaultAddress = null;
+        String receiverMobile = "";
+        if (containsReal) {
+            defaultAddress = Address.findDefault(SecureCAS.getUser());
+            if (defaultAddress == null) {
+                Validation.addError("address", "validation.required");
+            } else {
                 receiverMobile = defaultAddress.mobile;
             }
-		}
+        }
 
 
-		if (Validation.hasErrors()) {
-			for (String key : validation.errorsMap().keySet()) {
-				warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
-			}
+        if (Validation.hasErrors()) {
+            for (String key : validation.errorsMap().keySet()) {
+                warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
+            }
 
-			showOrder(items);
-			render("Orders/index.html", user);
-		}
+            showOrder(items);
+            render("Orders/index.html", user);
+        }
 
-		//创建订单
-		Order order = Order.createConsumeOrder(user.getId(), AccountType.CONSUMER);
-        if (containsElectronic){
+        //创建订单
+        Order order = Order.createConsumeOrder(user.getId(), AccountType.CONSUMER);
+        if (containsElectronic) {
             order.deliveryType = DeliveryType.SMS;
-        }else if (containsReal){
+        } else if (containsReal) {
             order.deliveryType = DeliveryType.LOGISTICS;
         }
-		if (defaultAddress != null) {
-			order.setAddress(defaultAddress);
-		}
-		//添加订单条目
-		try {
-			for (models.sales.Goods goodsItem : goodsList) {
-				if (goodsItem.materialType == MaterialType.REAL) {
-					order.addOrderItem(goodsItem, itemsMap.get(goodsItem.getId()), receiverMobile,
-							goodsItem.salePrice, //最终成交价
-							goodsItem.getResalerPriceOfUhuila()//一百券作为分销商的成本价
-							);
-				} else {
-					order.addOrderItem(goodsItem, itemsMap.get(goodsItem.getId()), mobile,
-							goodsItem.salePrice, //最终成交价
-							goodsItem.getResalerPriceOfUhuila()//一百券作为分销商的成本价
-							);
-				}
+        if (defaultAddress != null) {
+            order.setAddress(defaultAddress);
+        }
+        //添加订单条目
+        try {
+            for (models.sales.Goods goodsItem : goodsList) {
+                if (goodsItem.materialType == MaterialType.REAL) {
+                    order.addOrderItem(goodsItem, itemsMap.get(goodsItem.getId()), receiverMobile,
+                            goodsItem.salePrice, //最终成交价
+                            goodsItem.getResalerPriceOfUhuila()//一百券作为分销商的成本价
+                    );
+                } else {
+                    order.addOrderItem(goodsItem, itemsMap.get(goodsItem.getId()), mobile,
+                            goodsItem.salePrice, //最终成交价
+                            goodsItem.getResalerPriceOfUhuila()//一百券作为分销商的成本价
+                    );
+                }
 
-			}
+            }
 
 
-		} catch (NotEnoughInventoryException e) {
-			//todo 缺少库存
-			Logger.error(e, "inventory not enough");
-			error("inventory not enough");
-		}
+        } catch (NotEnoughInventoryException e) {
+            //todo 缺少库存
+            Logger.error(e, "inventory not enough");
+            error("inventory not enough");
+        }
 
-		//确认订单
-		order.createAndUpdateInventory();
-		//删除购物车中相应物品
-		Cart.delete(user, cookieValue, goodsIds);
+        //确认订单
+        order.createAndUpdateInventory();
+        //删除购物车中相应物品
+        Cart.delete(user, cookieValue, goodsIds);
 
-		redirect("/payment_info/" + order.orderNumber);
-	}
+        redirect("/payment_info/" + order.orderNumber);
+    }
 
-	private static boolean containsMaterialType(List<Goods> goods, MaterialType type) {
-		boolean containsElectronic = false;
-		for (Goods good : goods) {
-			if (type.equals(good.materialType)) {
-				containsElectronic = true;
-				break;
-			}
-		}
-		return containsElectronic;
-	}
+    private static boolean containsMaterialType(List<Goods> goods, MaterialType type) {
+        boolean containsElectronic = false;
+        for (Goods good : goods) {
+            if (type.equals(good.materialType)) {
+                containsElectronic = true;
+                break;
+            }
+        }
+        return containsElectronic;
+    }
 
-	private static void parseItems(String items, List<Long> goodsIds, Map<Long, Integer> itemsMap) {
-		String[] itemSplits = items.split(",");
-		for (String split : itemSplits) {
-			String[] goodsItem = split.split("-");
-			if (goodsItem.length == 2) {
-				Integer number = Integer.parseInt(goodsItem[1]);
-				if (number > 0) {
-					Long goodsId = Long.parseLong(goodsItem[0]);
-					goodsIds.add(goodsId);
-					itemsMap.put(goodsId, number);
-				}
-			}
-		}
-	}
+    private static void parseItems(String items, List<Long> goodsIds, Map<Long, Integer> itemsMap) {
+        User user = SecureCAS.getUser();
+        String[] itemSplits = items.split(",");
+        for (String split : itemSplits) {
+            String[] goodsItem = split.split("-");
+            if (goodsItem.length == 2) {
+                Integer number = Integer.parseInt(goodsItem[1]);
+                if (number > 0) {
+                    Long goodsId = Long.parseLong(goodsItem[0]);
+                    boolean isBuyFlag = Order.checkLimitNumber(user, goodsId, number);
+                    if (isBuyFlag) {
+                        error("你所购买商品超过限购数量，请确认！");
+                        return;
+                    }
+                    goodsIds.add(goodsId);
+                    itemsMap.put(goodsId, number);
+                }
+            }
+        }
+    }
+
+    /**
+     * 判断限购数量
+     *
+     * @param items 商品列表
+     */
+    public static void checkLimitNumber(String items) {
+        User user = SecureCAS.getUser();
+        String[] itemSplits = items.split(",");
+        for (String split : itemSplits) {
+            String[] goodsItem = split.split("-");
+            if (goodsItem.length == 2) {
+                Integer number = Integer.parseInt(goodsItem[1]);
+                if (number > 0) {
+                    Long goodsId = Long.parseLong(goodsItem[0]);
+                    boolean isCanBuyFlag = Order.checkLimitNumber(user, goodsId, number);
+                    if (isCanBuyFlag) {
+                        renderJSON("1");
+                    }
+                }
+            }
+        }
+        renderJSON("0");
+    }
+
 }

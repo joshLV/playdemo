@@ -2,11 +2,9 @@ package controllers;
 
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
-import models.sales.Area;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.GoodsCondition;
-import models.sales.GoodsStatus;
+import models.consumer.User;
+import models.order.Order;
+import models.sales.*;
 import org.apache.commons.lang.StringUtils;
 import play.modules.breadcrumbs.Breadcrumb;
 import play.modules.breadcrumbs.BreadcrumbList;
@@ -81,6 +79,15 @@ public class Goods extends Controller {
         if (goods == null) {
             notFound();
         }
+        //登陆的场合，判断该会员是否已经购买过此限购商品
+        User user = SecureCAS.getUser();
+        if (user != null) {
+            boolean isBuyFlag = Order.checkLimitNumber(user, goods.id,1);
+            if (isBuyFlag){
+                renderArgs.put("bought", true);
+            }
+        }
+       
         BreadcrumbList breadcrumbs = new BreadcrumbList();
         long categoryId = 0;
         if (goods.categories != null && goods.categories.size() > 0) {
@@ -109,7 +116,6 @@ public class Goods extends Controller {
         }
         //增加商品推荐指数
         models.sales.Goods.addRecommend(goods, false);
-
         //记录用户浏览过的商品
         Http.Cookie cookie = request.cookies.get("saw_goods_ids");
         String sawGoodsIds = ",";

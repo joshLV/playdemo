@@ -1,10 +1,10 @@
 package controllers;
 
-import com.google.gson.JsonSerializer;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import models.consumer.User;
 import models.order.Cart;
+import models.order.Order;
 import org.apache.commons.lang.StringUtils;
 import play.data.binding.As;
 import play.modules.paginate.ValuePaginator;
@@ -35,18 +35,26 @@ public class Carts extends Controller {
         String cookieValue = cookie == null ? null : cookie.value;
 
         List<Cart> carts = Cart.findAll(user, cookieValue);
-
-
         //显示最近浏览过的商品
         cookie = request.cookies.get("saw_goods_ids");
         String sawGoodsIds = cookie == null ? "" : cookie.value;
         List<Long> goodsIds = new ArrayList<>();
         for (String goodsId : sawGoodsIds.split(",")) {
-            if (StringUtils.isNotEmpty(goodsId) && goodsIds.size() < 5) {
+            if (StringUtils.isNotEmpty(goodsId) && goodsIds.size() < 5) {                
                 goodsIds.add(new Long(goodsId));
             }
         }
+
         List<models.sales.Goods> sawGoodsList = goodsIds.size() > 0 ? models.sales.Goods.findInIdList(goodsIds) : new ArrayList<models.sales.Goods>();
+         //登陆的场合，判断该会员是否已经购买过此限购商品
+        if (user != null) {
+            for (Cart cart:carts) {
+                boolean isBuyFlag = Order.checkLimitNumber(user, cart.goods.id, (int)cart.number);
+                if (isBuyFlag) {
+                    renderArgs.put("limit","您已经购买过此商品，不能继续购买！");
+                }
+            }
+        }
 
         render(carts, sawGoodsList);
     }

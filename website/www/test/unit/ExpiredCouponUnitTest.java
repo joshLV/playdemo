@@ -26,7 +26,7 @@ import java.util.List;
  * Date: 12-5-31
  * Time: 下午3:09
  */
-public class ExpiedCouponUnitTest extends UnitTest {
+public class ExpiredCouponUnitTest extends UnitTest {
     public static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Before
