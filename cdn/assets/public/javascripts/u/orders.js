@@ -6,7 +6,7 @@ $(function ($) {
         if (_this.text() == '[修改]') {
             $("#err-addressInfo").hide();
             _this.text('[关闭]');
-            $('#J_addrList').load('/Addresses/index', function() {
+            $('#J_addrList').load('/Addresses/index', function () {
                 $('#J_addrAll').show(100);
             });
             $('#J_addrEditBox').html("");
@@ -28,7 +28,7 @@ $(function ($) {
             });
         } else {
             var thisid = $(this).attr('id'),
-                thisaddr = $('label[for='+ thisid +']').html();
+                thisaddr = $('label[for=' + thisid + ']').html();
             $('#J_addrCurrent').html(thisaddr);
             $('#J_confirm').text('送到这个地址');
         }
@@ -208,6 +208,19 @@ $(function ($) {
     });
 
     $("#link_confirm_pay").click(function () {
-        $("#order_create_form").submit();
+        var url='/orders_number?items=' + $('#items').val();
+        $.ajax({
+            url:url,
+            type:'GET',
+            success:function (data) {
+                if (data == '1') {
+                   $("#limit").html("你所购买商品超过限购数量，请确认！");
+                } else {
+                    $("#order_create_form").submit();
+                }
+            }
+        });
     });
+
+
 });
