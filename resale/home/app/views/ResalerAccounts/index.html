@@ -89,7 +89,7 @@ $(window).load(function(){
                         #{else} 支出 #{/else}
                     </td>
                     <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-                    <td>${accountSequence.amount}</td>
+                    <td>${accountSequence.changeAmount}</td>
                 </tr>
                 #{/paginate.list}
                 </tbody>
