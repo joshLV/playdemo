@@ -738,6 +738,11 @@ public class Order extends Model {
         return buider.toString();
     }
 
+    public static void sendRealGoodsAndPayCommissions(long id, String deliveryCompany, String deliveryNo){
+        sendRealGoods(id, deliveryCompany, deliveryNo);
+        payRealGoodsCommissions(id);
+    }
+
     public static void sendRealGoods(long id, String deliveryCompany, String deliveryNo) {
         Order order = Order.findById(id);
         if (order == null || order.deliveryCompany != null || order.deliveryNo != null) {
@@ -750,6 +755,20 @@ public class Order extends Model {
             if (MaterialType.REAL.equals(orderItem.goods.materialType)) {
                 orderItem.status = OrderStatus.SENT;
                 orderItem.save();
+            }
+        }
+
+        modifyOrderStatusByItems(order);
+        order.save();
+    }
+
+    public static void payRealGoodsCommissions(long id){
+        Order order = Order.findById(id);
+        if (order == null) {
+            return;
+        }
+        for (OrderItems orderItem : order.orderItems) {
+            if (MaterialType.REAL.equals(orderItem.goods.materialType)) {
 
                 //给商户打钱
                 Account supplierAccount = AccountUtil.getSupplierAccount(orderItem.goods.supplierId);
@@ -792,17 +811,14 @@ public class Order extends Model {
             }
         }
 
-        modifyOrderStatusByItems(order);
-        order.save();
-
         if (order.freight != null && order.freight.compareTo(BigDecimal.ZERO) >= 0) {
             //给优惠券平台佣金
-            TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(
+            TradeBill freightTrade = TradeUtil.createFreightTrade(
                     AccountUtil.getPlatformCommissionAccount(),
                     order.freight,
-                    "",
-                    order.getId());
-            TradeUtil.success(platformCommissionTrade, "运费:" + order.description);
+                    order.getId()
+            );
+            TradeUtil.success(freightTrade, "运费:" + order.description);
         }
     }
 

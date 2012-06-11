@@ -1,0 +1,53 @@
+sales.Goods(goods_real):
+  name: "测试实物商品"
+  faceValue: 20
+  originalPrice: 8
+  salePrice: 15
+  supplierId: 1
+  materialType: REAL
+
+sales.Goods(goods_e):
+  name: "测试电子商品"
+  faceValue: 15
+  originalPrice: 5
+  salePrice: 10
+  supplierId: 1
+  materialType: ELECTRONIC
+
+order.Order(simple_order):
+  status: UNPAID
+  amount: 46
+  accountPay: 10
+  discountPay: 36
+  needPay: 46
+  freight: 6
+  payMethod: alipay
+  orderType: CONSUME
+
+order.OrderItems(order_item_real):
+  order: simple_order
+  buyNumber: 2
+  faceValue: 20
+  originalPrice: 8
+  resalerPrice: 10
+  salePrice: 15
+  goods: goods_real
+
+order.OrderItems(order_item_e):
+  order: simple_order
+  buyNumber: 1
+  faceValue: 15
+  originalPrice: 5
+  resalerPrice: 8
+  salePrice: 10
+  goods: goods_e
+
+order.ECoupon(coupon):
+  order: simple_order
+  orderItems: order_item_e
+  goods: goods_e
+  eCouponSn: 1234567001
+  faceValue: 15
+  originalPrice: 5
+  resalerPrice: 8
+  salePrice: 10

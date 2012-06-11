@@ -41,7 +41,7 @@ public class OperateOrders extends Controller {
         if (originalOrder == null){
             error(500, "can not find the order:" + id);
         }
-        Order.sendRealGoods(id, order.deliveryCompany, order.deliveryNo);
+        Order.sendRealGoodsAndPayCommissions(id, order.deliveryCompany, order.deliveryNo);
         index(null);
     }
 

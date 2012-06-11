@@ -170,6 +170,37 @@ public class TradeUtil {
     }
 
     /**
+     * 创建运费交易，发货后,平台佣金账户将收取运费
+     *
+     * @param account   收取佣金的账户,目前请设置为平台佣金账户
+     * @param amount    运费金额
+     * @return 新建立的运费交易信息
+     */
+    public static TradeBill createFreightTrade(Account account, BigDecimal amount, Long orderId){
+        if (account == null) {
+            throw new IllegalArgumentException("error while create commission trade: invalid account");
+        }
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("error while create commission trade: invalid amount");
+        }
+
+        TradeBill tradeBill = new TradeBill();
+        tradeBill.fromAccount          = AccountUtil.getPlatformIncomingAccount();  //付款方账户为平台收款账户
+        tradeBill.toAccount            = account;                                   //收款方账户
+        tradeBill.balancePaymentAmount = amount;                                    //全部使用平台收款账户的余额支付
+        tradeBill.ebankPaymentAmount   = BigDecimal.ZERO;                           //不使用网银支付
+        tradeBill.uncashPaymentAmount  = BigDecimal.ZERO;                           //不使用不可提现余额支付
+        tradeBill.tradeType            = TradeType.FREIGHT;                         //交易类型为运费
+        tradeBill.eCouponSn            = "";                                        //保存对应的券号，以便核查
+        tradeBill.amount = tradeBill.balancePaymentAmount
+                .add(tradeBill.ebankPaymentAmount)
+                .add(tradeBill.uncashPaymentAmount);
+        tradeBill.orderId = orderId;
+
+        return tradeBill.save();
+    }
+
+    /**
      * 创建提现交易,提现成功后,账户的不可用余额将减少
      *
      * 注意,只有在提现审批通过时才有必要创建此trade,申请和拒绝时不必创建

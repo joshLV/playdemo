@@ -234,6 +234,11 @@ public class ECoupon extends Model {
         return true;
     }
 
+    public void consumeAndPayCommission(Long shopId, SupplierUser supplierUser){
+        consumed(shopId, supplierUser);
+        payCommission();
+    }
+
     /**
      * 优惠券被消费。
      * 修改优惠券状态、发佣金、给商户打钱
@@ -244,6 +249,14 @@ public class ECoupon extends Model {
         if (this.status != ECouponStatus.UNCONSUMED) {
             return;
         }
+        this.shop = Shop.findById(shopId);
+        this.status = ECouponStatus.CONSUMED;
+        this.consumedAt = new Date();
+        this.supplierUser = supplierUser;
+        this.save();
+    }
+
+    public void payCommission(){
         Account supplierAccount = AccountUtil.getSupplierAccount(orderItems.goods.supplierId);
 
         //给商户打钱
@@ -278,12 +291,6 @@ public class ECoupon extends Model {
                     order.getId());
             TradeUtil.success(platformCommissionTrade, order.description);
         }
-
-        this.shop = Shop.findById(shopId);
-        this.status = ECouponStatus.CONSUMED;
-        this.consumedAt = new Date();
-        this.supplierUser = supplierUser;
-        this.save();
     }
 
     /**
