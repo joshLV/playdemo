@@ -16,8 +16,11 @@
  */
 package controllers.modules.resale.cas;
 
+import java.util.Date;
 import models.resale.Resaler;
+import models.resale.ResalerLoginHistory;
 import play.Logger;
+import play.Play;
 import play.cache.Cache;
 import play.modules.resale.cas.CASUtils;
 import play.modules.resale.cas.annotation.Check;
@@ -117,9 +120,10 @@ public class SecureCAS extends Controller {
     public static void authenticate() throws Throwable {
         Boolean isAuthenticated = Boolean.FALSE;
         String ticket = params.get("ticket");
+        CASUser user = null;
         if (ticket != null) {
             Logger.debug("[SecureCAS]: Try to validate ticket " + ticket);
-            CASUser user = CASUtils.valideCasTicket(ticket);
+            user = CASUtils.valideCasTicket(ticket);
             if (user != null) {
                 isAuthenticated = Boolean.TRUE;
                 session.put(SESSION_USER_KEY, user.getUsername());
@@ -129,6 +133,21 @@ public class SecureCAS extends Controller {
         }
 
         if (isAuthenticated) {
+            // 登录记录    
+            Resaler resaler = getResaler();
+            resaler.loginIp = request.remoteAddress;
+            resaler.save();
+
+            if (user != null) {
+                ResalerLoginHistory history = new ResalerLoginHistory();
+                history.resaler = resaler;
+                history.loginAt = new Date();
+                history.loginIp = request.remoteAddress;
+                history.applicationName = Play.configuration.getProperty("application.name");
+                history.sessionId = session.getId();
+                history.save();            
+            }
+            
             // we redirect to the original URL
             String url = (String) Cache.get("url_" + session.getId());
             Cache.delete("url_" + session.getId());

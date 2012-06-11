@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import play.db.jpa.Model;
 
 @Entity
-@Table(name="supplier_user_login_history")
+@Table(name="supplier_user_login_histories")
 public class SupplierUserLoginHistory extends Model {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_user_id")

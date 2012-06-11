@@ -1,11 +1,10 @@
 package org.jasig.cas.userauthentication;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jasig.cas.authentication.handler.AuthenticationException;
-
 import org.jasig.cas.authentication.handler.support.AbstractUsernamePasswordAuthenticationHandler;
 import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
 import org.slf4j.Logger;
@@ -49,6 +48,10 @@ public class UsernameLengthAuthnHandler extends AbstractUsernamePasswordAuthenti
         if (!DigestUtils.md5Hex(password + user.get("password_salt")).equals(user.get("encrypted_password"))) {
             return false;
         }
+        
+        // 登录成功，记录一下登录的时间
+        String timeSql = "update resaler set last_login_at=? where id=?";
+        getJdbcTemplate().update(timeSql, new Date(), user.get("id"));
 
         return true;
     }
