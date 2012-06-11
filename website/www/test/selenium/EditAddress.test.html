@@ -1,7 +1,7 @@
 #{fixture delete:'all', load:['fixture/user.yml','fixture/users.yml','fixture/goods.yml','fixture/addresses.yml'] /}
 #{selenium 'Test Address/edit.html'}
     #{include 'test/selenium/step/login.selenium' /}
-open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods4")}')
+open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods6")}')
 verifyTitle('一百券 - 商品详情')
 clickAndWait('id=link_buy_now')
 verifyTextPresent('实物凭证 - 订单信息')

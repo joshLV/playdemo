@@ -54,7 +54,19 @@ sales.Goods(goods5):
   effectiveAt: 2012-02-01
   expireAt: 2092-02-02
   limitNumber: 1
-
+sales.Goods(goods6):
+  name: "测试商品6"
+  originalPrice: 100
+  salePrice: 80
+  baseSale: 1000
+  createdAt: 2012-02-27
+  status: ONSALE
+  deleted: UN_DELETED
+  supplierId: 1
+  materialType: "REAL"
+  effectiveAt: 2012-02-01
+  expireAt: 2092-02-02
+  limitNumber: 1
 order.Order(order10):
   "user": "user"
   "supplier_id": 1
