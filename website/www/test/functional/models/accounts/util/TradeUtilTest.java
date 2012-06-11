@@ -21,8 +21,6 @@ public class TradeUtilTest extends FunctionalTest{
         Fixtures.delete(Account.class);
         Fixtures.delete(PaymentSource.class);
 //        Fixtures.delete(AccountSequence.class);
-//        Fixtures.delete(CertificateDetail.class);
-//        Fixtures.delete(SubjectDetail.class);
         Fixtures.loadModels("fixture/accounts.yml");
         Fixtures.loadModels("fixture/account_uhuila.yml");
         Fixtures.loadModels("fixture/payment_source.yml");
