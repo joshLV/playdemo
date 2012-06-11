@@ -48,6 +48,10 @@
         categoryId == 1}class="current"#{/if}>餐饮美食</a></li>
         <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/2" #{if
         categoryId == 2}class="current"#{/if}>食品干货</a></li>
+        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/7" #{if
+        categoryId == 7}class="current"#{/if}>休闲娱乐</a></li>
+        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/1001" #{if
+        categoryId == 1001}class="current"#{/if}>舌尖上的端午</a></li>
         *{
         #{list categories, as: 'category'}
         <li class="hot_shangpin_li"><a #{if categoryId == category.id}class="tab_selected"#{/if}
