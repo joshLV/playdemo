@@ -162,6 +162,7 @@ public class SecureCAS extends Controller {
             history.loginAt = new Date();
             history.loginIp = request.remoteAddress;
             history.applicationName = Play.configuration.getProperty("application.name");
+            history.sessionId = session.getId();
             history.save();
             
             // we redirect to the original URL

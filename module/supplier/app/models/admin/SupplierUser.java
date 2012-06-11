@@ -139,11 +139,8 @@ public class SupplierUser extends Model {
         updatedUser.userName = supplierUser.userName;
         updatedUser.mobile = supplierUser.mobile;
         updatedUser.shop = supplierUser == null ? null : supplierUser.shop;
-        updatedUser.lastLoginAt = new Date();
         updatedUser.updatedAt = new Date();
         updatedUser.jobNumber = supplierUser.jobNumber;
-        //获得IP
-        updatedUser.lastLoginIP = Request.current().remoteAddress;
 
         updatedUser.save();
     }
@@ -216,8 +213,6 @@ public class SupplierUser extends Model {
         lockVersion = 0;
         this.supplier = supplier;
         deleted = DeletedStatus.UN_DELETED;
-        // 获得IP
-        lastLoginIP = Request.current().remoteAddress;
         return super.create();
     }
 

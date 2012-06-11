@@ -56,7 +56,6 @@ public class UsernameLengthAuthnHandler extends AbstractUsernamePasswordAuthenti
         
         // 登录成功，记录一下登录的时间
         String timeSql = "update users set last_login_at=? where id=?";
-        System.out.println("update sql=" + timeSql);
         getJdbcTemplate().update(timeSql, new Date(), user.get("id"));
 
         return true;

@@ -1,5 +1,6 @@
 package com.uhuila.suppliers.cas;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -62,6 +63,10 @@ public class DomainUserAuthnHandler extends AbstractUsernamePasswordAuthenticati
         if (!DigestUtils.md5Hex(password + user.get("password_salt")).equals(user.get("encrypted_password"))) {
             return false;
         }
+        
+        // 登录成功，记录一下登录的时间
+        String timeSql = "update supplier_users set last_login_at=? where id=?";
+        getJdbcTemplate().update(timeSql, new Date(), user.get("id"));
 
         return true;
     }

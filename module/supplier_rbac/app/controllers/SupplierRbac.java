@@ -16,12 +16,14 @@
  */
 package controllers;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import models.admin.SupplierNavigation;
 import models.admin.SupplierPermission;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
+import models.admin.SupplierUserLoginHistory;
 import navigation.ContextedPermission;
 import navigation.NavigationHandler;
 import navigation.annotations.ActiveNavigation;
@@ -278,19 +280,35 @@ public class SupplierRbac extends Controller {
     public static void authenticate() throws Throwable {
         Boolean isAuthenticated = Boolean.FALSE;
         String ticket = params.get("ticket");
+        CASUser casUser = null;
         if (ticket != null) {
             Logger.info("[SupplierRbac]: Try to validate ticket " + ticket);
-            CASUser user = CASUtils.valideCasTicket(ticket);
-            if (user != null) {
+            casUser = CASUtils.valideCasTicket(ticket);
+            if (casUser != null) {
                 isAuthenticated = Boolean.TRUE;
-                session.put(SESSION_USER_KEY, user.getUsername());
-                Cache.add(SESSION_USER_KEY + getDomainUserName(user.getUsername()), Boolean.TRUE);
+                session.put(SESSION_USER_KEY, casUser.getUsername());
+                Cache.add(SESSION_USER_KEY + getDomainUserName(casUser.getUsername()), Boolean.TRUE);
                 // we invoke the implementation of onAuthenticate
-                Security.onAuthenticated(user);
+                Security.onAuthenticated(casUser);
             }
         }
 
         if (isAuthenticated) {
+            // 登录记录
+            String userName = getDomainUserName(casUser.getUsername());
+            String subDomain = CASUtils.getSubDomain();      
+            SupplierUser user = SupplierUser.findUserByDomainName(subDomain, userName);
+
+            if (user != null) {
+                SupplierUserLoginHistory history = new SupplierUserLoginHistory();
+                history.user = user;
+                history.loginAt = new Date();
+                history.loginIp = request.remoteAddress;
+                history.applicationName = Play.configuration.getProperty("application.name");
+                history.sessionId = session.getId();
+                history.save();            
+            }
+            
             // we redirect to the original URL
             String url = (String) Cache.get("url_" + session.getId());
             Cache.delete("url_" + session.getId());

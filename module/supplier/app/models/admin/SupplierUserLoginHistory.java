@@ -1,4 +1,4 @@
-package models.consumer;
+package models.admin;
 
 import java.util.Date;
 import javax.persistence.CascadeType;
@@ -11,19 +11,19 @@ import javax.persistence.Table;
 import play.db.jpa.Model;
 
 @Entity
-@Table(name = "user_login_histories")
-public class UserLoginHistory extends Model {
+@Table(name="supplier_user_login_history")
+public class SupplierUserLoginHistory extends Model {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    public User user;
+    @JoinColumn(name = "supplier_user_id")
+    public SupplierUser user;
 
-    @Column(name="application_name", length=50)
+    @Column(name="application_name")
     public String applicationName;
     
     @Column(name="login_at")
     public Date loginAt;
     
-    @Column(name="login_ip", length=50)
+    @Column(name="login_ip")
     public String loginIp;
     
     @Column(name="session_id", length=50)
