@@ -84,6 +84,13 @@ public class CommissionsTest extends UnitTest{
                 .subtract(realOrderItem.resalerPrice)
                 .multiply(new BigDecimal(realOrderItem.buyNumber))
                 .compareTo(AccountUtil.getUhuilaAccount().amount));//一百券佣金
+
+        //8条账户变动记录:
+        //商户收到成本价
+        //一百券收到佣金
+        //券佣金账户收到运费
+        //券佣金账户收到佣金
+        assertEquals(8, AccountSequence.findAll().size());
     }
 
     @Test
@@ -115,5 +122,11 @@ public class CommissionsTest extends UnitTest{
                 eCoupon.salePrice
                         .subtract(eCoupon.resalerPrice)
                         .compareTo(AccountUtil.getUhuilaAccount().amount));//一百券佣金
+
+        //6条账户变动记录:
+        //商户收到成本价
+        //一百券收到佣金
+        //券佣金账户收到佣金
+        assertEquals(6, AccountSequence.findAll().size());
     }
 }
