@@ -37,7 +37,8 @@
                   <span id="limitNumber" style="color:#f50">（限购${cartItem.goods.limitNumber}件）</span>
 
                 #{/if}
-            <span id="limit_goods_${cartItem.goods.id}"style="color:#f50">${limit}</span>
+            <span id="limit_goods_${cartItem.goods.id}"style="color:#f50">
+            #{if cartItem.goods.id==limit_goodsId}您已经过此商品或者超过限购数量，不能继续购买，请确认! #{/if}</span>
         </td>
         <td>${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
         <td id="price_${cartItem.goods.id}">${cartItem.goods.salePrice}</td>
