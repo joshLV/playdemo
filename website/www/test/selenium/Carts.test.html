@@ -30,12 +30,8 @@ openAndWait('/carts/tops')
 verifyTextPresent('1件商品')
 
 
-*{openAndWait('/goods/${goodsC}')}*
-*{click('id=link_add_cart')}*
-*{waitForVisible('id=add_cart_result')}*
-*{openAndWait('/carts')}*
-*{assertText('id=carts_size','2')}*
-*{verifyTextPresent('测试商品5 （限购1件）')}*
+openAndWait('/goods/${goodsC}')
+verifyTextPresent('您已经购买过此商品！')
 /**
 %{
     id = play.test.Fixtures.idCache.get("models.consumer.User-user");

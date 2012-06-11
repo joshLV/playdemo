@@ -317,13 +317,16 @@ public class Order extends Model {
         if (goods.limitNumber != null) {
             limitNumber = goods.limitNumber;
         }
-        System.out.println(">>>>>>>>>>"+buyNumber);
 
+//        //当购买数量超过限购数量，并且第一次购买时返回false;
+//        if (number > limitNumber && buyNumber == 0) {
+//            return false;
+//        }
         //超过限购数量,则表示已经购买过差商品
         if (limitNumber > 0 && (number > limitNumber || limitNumber <= buyNumber)) {
             return true;
         }
-          System.out.println("22");
+
         return false;
     }
 

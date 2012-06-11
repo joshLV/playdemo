@@ -51,7 +51,7 @@ public class Carts extends Controller {
             for (Cart cart:carts) {
                 boolean isBuyFlag = Order.checkLimitNumber(user, cart.goods.id, (int)cart.number);
                 if (isBuyFlag) {
-                    renderArgs.put("limit","您已经购买过此商品，不能继续购买！");
+                    renderArgs.put("limit","超过限购数量，请确认!");
                 }
             }
         }
