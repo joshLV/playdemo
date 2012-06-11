@@ -1,11 +1,13 @@
 package controllers;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import models.admin.OperateNavigation;
 import models.admin.OperatePermission;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
+import models.admin.OperateUserLoginHistory;
 import operate.rbac.ContextedPermission;
 import operate.rbac.NavigationHandler;
 import operate.rbac.annotations.ActiveNavigation;
@@ -95,19 +97,33 @@ public class OperateRbac extends Controller {
     public static void authenticate() throws Throwable {
         Boolean isAuthenticated = Boolean.FALSE;
         String ticket = params.get("ticket");
+        CASUser casUser = null;
         if (ticket != null) {
             Logger.debug("[OperateCAS]: Try to validate ticket " + ticket);
-            CASUser user = CASUtils.valideCasTicket(ticket);
-            if (user != null) {
+            casUser = CASUtils.valideCasTicket(ticket);
+            if (casUser != null) {
                 isAuthenticated = Boolean.TRUE;
-                session.put(SESSION_USER_KEY, user.getUsername());
-                Cache.add(SESSION_USER_KEY + user.getUsername(), Boolean.TRUE);
+                session.put(SESSION_USER_KEY, casUser.getUsername());
+                Cache.add(SESSION_USER_KEY + casUser.getUsername(), Boolean.TRUE);
                 // we invoke the implementation of onAuthenticate
-                Security.onAuthenticated(user);
+                Security.onAuthenticated(casUser);
             }
         }
 
         if (isAuthenticated) {
+            // 登录记录
+            OperateUser user = OperateUser.findUser(casUser.getUsername());
+            user.lastLoginIP = request.remoteAddress;
+            user.save();
+            
+            OperateUserLoginHistory history = new OperateUserLoginHistory();
+            history.user = user;
+            history.loginAt = new Date();
+            history.loginIp = request.remoteAddress;
+            history.applicationName = Play.configuration.getProperty("application.name");
+            history.sessionId = session.getId();
+            history.save();
+            
             // we redirect to the original URL
             String url = (String) Cache.get("url_" + session.getId());
             Cache.delete("url_" + session.getId());

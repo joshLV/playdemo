@@ -52,10 +52,9 @@
          <property name = "dataSource" ref="dataSource"/>
     </bean>
 
-    <bean  id="usernameLengthAuthnHandler"  class = "org.jasig.cas.userauthentication.UsernameLengthAuthnHandler">
+    <bean  id="usernameLengthAuthnHandler"  class="com.uhuila.operate.cas.authentication.UsernameLengthAuthnHandler">
          <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
-
 
     <bean id="md5PasswordEncoder" class="org.jasig.cas.authentication.handler.DefaultPasswordEncoder" p:characterEncoding="UTF-8" >
         <constructor-arg index="0" value="MD5" />

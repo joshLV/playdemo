@@ -298,6 +298,8 @@ public class SupplierRbac extends Controller {
             String userName = getDomainUserName(casUser.getUsername());
             String subDomain = CASUtils.getSubDomain();      
             SupplierUser user = SupplierUser.findUserByDomainName(subDomain, userName);
+            user.lastLoginIP = request.remoteAddress;
+            user.save();
 
             if (user != null) {
                 SupplierUserLoginHistory history = new SupplierUserLoginHistory();
