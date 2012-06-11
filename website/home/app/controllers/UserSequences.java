@@ -26,7 +26,7 @@ public class UserSequences extends Controller {
         if (condition == null) {
             condition = new AccountSequenceCondition();
         }
-        Account account = AccountUtil.getAccount(user.getId(), AccountType.CONSUMER);
+        Account account = AccountUtil.getConsumerAccount(user.getId());
         condition.account = account;
         JPAExtPaginator<AccountSequence> amountList = AccountSequence.findByCondition(condition, pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : amountList) {

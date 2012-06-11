@@ -1,13 +1,11 @@
 package controllers;
 
-import models.resale.Resaler;
-import models.resale.ResalerCondition;
-import models.resale.ResalerLevel;
-import models.resale.ResalerStatus;
+import models.resale.*;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
+import play.mvc.Scope;
 import play.mvc.With;
 
 @With(OperateRbac.class)
@@ -44,15 +42,14 @@ public class Resalers extends Controller {
 	 * @param status 状态
 	 * @param remark 备注
 	 */
-	public static void update(Long id,ResalerStatus status,ResalerLevel level,String remark) {
+	public static void update(Long id,ResalerStatus status,ResalerLevel level,String remark, ResalerCreditable creditable) {
 		if (status == ResalerStatus.UNAPPROVED) {
 			level = null;
 		}
-		Resaler.update(id,status,level,remark);
+		Resaler.update(id,status,level,remark, creditable);
 		index(null);
 	}
 	
-
     public static void freeze(long id) {
     	Resaler.freeze(id);
         index(null);

@@ -25,7 +25,7 @@ public class Charge extends Controller{
     public static void index(){
         //加载用户账户信息
         Resaler user = SecureCAS.getResaler();
-        Account account = AccountUtil.getAccount(user.getId(), AccountType.RESALER);
+        Account account = AccountUtil.getResalerAccount(user.getId());
 
         List<PaymentSource> paymentSources = PaymentSource.findAll();
         render(user, account, paymentSources);

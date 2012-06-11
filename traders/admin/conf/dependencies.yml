@@ -20,6 +20,7 @@ require:
     - commons-lang -> commons-lang 2.6
     - resale -> resale
     - sms -> sms
+    - accounts -> accounts
 
 repositories:
     - mavenRepository:
@@ -50,3 +51,4 @@ repositories:
             - sales -> *
             - resale -> *
             - sms -> *
+            - accounts -> *

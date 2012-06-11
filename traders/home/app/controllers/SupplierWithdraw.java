@@ -28,7 +28,7 @@ public class SupplierWithdraw extends Controller{
     public static void index(WithdrawBillCondition condition){
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
-        Account account = AccountUtil.getAccount(supplier.getId(), AccountType.SUPPLIER);
+        Account account = AccountUtil.getSupplierAccount(supplier.getId());
 
         String page = request.params.get("page");
         int pageNumber =  StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
@@ -47,7 +47,7 @@ public class SupplierWithdraw extends Controller{
     public static void apply(){
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
-        Account account = AccountUtil.getAccount(supplier.getId(), AccountType.SUPPLIER);
+        Account account = AccountUtil.getSupplierAccount(supplier.getId());
         List<WithdrawAccount> withdrawAccounts = WithdrawAccount.findByUser(supplier.getId(), AccountType.SUPPLIER);
         render(account, withdrawAccounts);
     }
@@ -56,7 +56,7 @@ public class SupplierWithdraw extends Controller{
     public static void create(Long withdrawAccountId, BigDecimal amount){
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         Supplier supplier = Supplier.findById(supplierId);
-        Account account = AccountUtil.getAccount(supplier.getId(), AccountType.SUPPLIER);
+        Account account = AccountUtil.getSupplierAccount(supplier.getId());
         WithdrawAccount withdrawAccount = WithdrawAccount.findByIdAndUser(
                 withdrawAccountId, supplier.getId(), AccountType.SUPPLIER);
         if(withdrawAccount == null){

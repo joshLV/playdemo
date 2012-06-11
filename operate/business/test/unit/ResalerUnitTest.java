@@ -3,10 +3,7 @@ package unit;
 import java.util.HashMap;
 import java.util.Map;
 
-import models.resale.Resaler;
-import models.resale.ResalerCondition;
-import models.resale.ResalerLevel;
-import models.resale.ResalerStatus;
+import models.resale.*;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 
@@ -55,13 +52,13 @@ public class ResalerUnitTest extends UnitTest {
 	public void updateStatus() {
 		Long id = (Long) Fixtures.idCache.get("models.resale.Resaler-resaler_2");
 		String remark ="";
-		Resaler.update(id, ResalerStatus.APPROVED,ResalerLevel.NORMAL, remark);
+		Resaler.update(id, ResalerStatus.APPROVED,ResalerLevel.NORMAL, remark, ResalerCreditable.NO);
 		Resaler resaler = Resaler.findById(id);
 		assertEquals(ResalerStatus.APPROVED,resaler.status );
 		assertEquals(ResalerLevel.NORMAL,resaler.level );
 
 		remark ="该分销商信用不够！";
-		Resaler.update(id, ResalerStatus.UNAPPROVED,ResalerLevel.NORMAL, remark);
+		Resaler.update(id, ResalerStatus.UNAPPROVED,ResalerLevel.NORMAL, remark, ResalerCreditable.NO);
 		resaler = Resaler.findById(id);
 		assertEquals(ResalerStatus.UNAPPROVED,resaler.status );
 		assertEquals(remark,resaler.remark );

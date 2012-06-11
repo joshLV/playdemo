@@ -5,7 +5,6 @@ import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceCondition;
 import models.accounts.AccountSequenceFlag;
-import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import models.resale.Resaler;
 import org.apache.commons.lang.StringUtils;
@@ -27,7 +26,7 @@ public class ResalerAccounts extends Controller{
     public static void index(AccountSequenceCondition condition){
 
         Resaler resaler = SecureCAS.getResaler();
-        Account account = AccountUtil.getAccount(resaler.getId(), AccountType.RESALER);
+        Account account = AccountUtil.getResalerAccount(resaler.getId());
 
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);

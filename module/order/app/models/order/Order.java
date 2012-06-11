@@ -395,6 +395,11 @@ public class Order extends Model {
         }
     }
 
+    public void payAndSendECoupon(){
+        paid();
+        sendECoupon();
+    }
+
     /**
      * 订单已支付，修改支付状态、时间，更改库存，发送电子券密码
      */
@@ -440,9 +445,6 @@ public class Order extends Model {
         this.status = OrderStatus.PAID;
         this.paidAt = new Date();
         this.save();
-
-        //发送电子券
-        sendECoupon();
     }
 
     /**
@@ -750,7 +752,7 @@ public class Order extends Model {
                 orderItem.save();
 
                 //给商户打钱
-                Account supplierAccount = AccountUtil.getAccount(orderItem.goods.supplierId, AccountType.SUPPLIER);
+                Account supplierAccount = AccountUtil.getSupplierAccount(orderItem.goods.supplierId);
                 TradeBill consumeTrade = TradeUtil.createConsumeTrade(
                         orderItem.goods.name,
                         supplierAccount,
@@ -843,7 +845,7 @@ public class Order extends Model {
             return false;
         }
 
-        order.paid();
+        order.payAndSendECoupon();
         return true;
     }
 
@@ -868,7 +870,7 @@ public class Order extends Model {
         //如果使用余额足以支付，则付款直接成功
         if (ebankPaymentAmount.compareTo(BigDecimal.ZERO) == 0 && balancePaymentAmount.compareTo(order.needPay) == 0) {
             order.payMethod = PaymentSource.getBalanceSource().code;
-            order.paid();
+            order.payAndSendECoupon();
             return true;
         }
 

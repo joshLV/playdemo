@@ -1,6 +1,5 @@
 package controllers;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import models.accounts.Account;
@@ -10,14 +9,9 @@ import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
-import models.order.OrderType;
 import models.payment.PaymentJournal;
-import models.payment.alipay.AliPaymentFlow;
-import models.payment.kuaiqian.KuaiqianPaymentFlow;
 import models.payment.PaymentFlow;
 import models.payment.PaymentUtil;
-import models.payment.tenpay.TenpayPaymentFlow;
-import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
 import controllers.modules.website.cas.SecureCAS;
@@ -33,7 +27,7 @@ public class PaymentInfo extends Controller {
 	public static void index(String orderNumber) {
 		//加载用户账户信息
 		User user = SecureCAS.getUser();
-		Account account = AccountUtil.getAccount(user.getId(), AccountType.CONSUMER);
+		Account account = AccountUtil.getConsumerAccount(user.getId());
 
 		//加载订单信息
 		Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
@@ -58,7 +52,7 @@ public class PaymentInfo extends Controller {
         if (order == null){
             error(500,"no such order");
         }
-        Account account = AccountUtil.getAccount(user.getId(), AccountType.CONSUMER);
+        Account account = AccountUtil.getConsumerAccount(user.getId());
 
 
         if(Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode)){

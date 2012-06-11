@@ -3,7 +3,6 @@ package controllers;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceCondition;
-import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import navigation.annotations.ActiveNavigation;
 import navigation.annotations.Right;
@@ -34,7 +33,7 @@ public class AccountSequences extends Controller {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
-        Account account = AccountUtil.getAccount(accountId, AccountType.SUPPLIER);
+        Account account = AccountUtil.getSupplierAccount(accountId);
         if (condition == null) {
             condition = new AccountSequenceCondition();
         }

@@ -27,7 +27,7 @@ public class PaymentInfo extends Controller {
     public static void index(String orderNumber) {
         //加载用户账户信息
         Resaler user = SecureCAS.getResaler();
-        Account account = AccountUtil.getAccount(user.getId(), AccountType.RESALER);
+        Account account = AccountUtil.getResalerAccount(user.getId());
 
         //加载订单信息
         Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.RESALER);
@@ -52,7 +52,7 @@ public class PaymentInfo extends Controller {
         if (order == null){
             error(500,"no such order");
         }
-        Account account = AccountUtil.getAccount(resaler.getId(), AccountType.RESALER);
+        Account account = AccountUtil.getResalerAccount(resaler.getId());
 
         if(Order.confirmPaymentInfo(order, account, useBalance, paymentSourceCode)){
             PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);

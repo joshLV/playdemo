@@ -83,6 +83,22 @@
             #{/else}
             </div>
         </div>
+        <div class="control-group">
+            <label class="control-label">账户可欠款</label>
+            <div class="controls">
+                #{if !"1".equals(flag)}
+                    <label class="radio">
+                        <input type="radio" name="creditable" value="YES" #{if "YES".equals(resaler?.creditable?.toString())} checked#{/if}>是
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="creditable" value="NO"  #{if !"YES".equals(resaler?.creditable?.toString())} checked#{/if}>否
+                    </label>
+                #{/if}
+                #{else}
+                    &{'resaler.creditable.' + resaler.creditable}
+                #{/else}
+            </div>
+        </div>
          <div class="control-group">
             <label class="control-label">备注</label>
             <div class="controls">

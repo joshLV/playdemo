@@ -88,7 +88,7 @@ $(window).load(function(){
                         #{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO} 收入 #{/if}
                         #{else} 支出 #{/else}
                     </td>
-                    <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                    <td>${accountSequence.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                     <td>${accountSequence.changeAmount}</td>
                 </tr>
                 #{/paginate.list}

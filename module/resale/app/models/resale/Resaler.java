@@ -1,5 +1,8 @@
 package models.resale;
 
+import models.accounts.Account;
+import models.accounts.AccountCreditable;
+import models.accounts.util.AccountUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Email;
@@ -31,6 +34,12 @@ public class Resaler extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "account_type")
     public AccountType accountType;
+
+    /**
+     * 是否可欠款
+     */
+    @Enumerated(EnumType.STRING)
+    public ResalerCreditable creditable;
 
     @Column(name = "login_name")
     @Required
@@ -113,6 +122,10 @@ public class Resaler extends Model {
     @Transient
     public String oldPassword;
 
+    public boolean isCreditable(){
+        return this.creditable == ResalerCreditable.YES;
+    }
+
     /**
      * 判断用户名和手机是否唯一
      *
@@ -163,20 +176,32 @@ public class Resaler extends Model {
      * @param status 状态
      * @param remark 备注
      */
-    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark) {
+    public static void update(Long id, ResalerStatus status, ResalerLevel level, String remark, ResalerCreditable creditable) {
         Resaler resaler = Resaler.findById(id);
-        resaler.status = status;
-        if (StringUtils.isNotEmpty(remark)) resaler.remark = remark;
+        if (status != null) resaler.status = status;
         if (level != null) resaler.level = level;
+        if (StringUtils.isNotEmpty(remark)) resaler.remark = remark;
+
+        //修改现金账户是否可欠款
+        if (creditable != null){
+            resaler.creditable = creditable;
+            Account account = AccountUtil.getResalerAccount(resaler.getId());
+            if (resaler.isCreditable()){
+                account.creditable = AccountCreditable.YES;
+            }else {
+                account.creditable = AccountCreditable.NO;
+            }
+            account.save();
+        }
         resaler.save();
     }
 
     public static void freeze(long id) {
-        update(id, ResalerStatus.FREEZE, null, null);
+        update(id, ResalerStatus.FREEZE, null, null, null);
     }
 
     public static void unfreeze(long id) {
-        update(id, ResalerStatus.APPROVED, null, null);
+        update(id, ResalerStatus.APPROVED, null, null, null);
     }
 
     /**

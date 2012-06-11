@@ -244,7 +244,7 @@ public class ECoupon extends Model {
         if (this.status != ECouponStatus.UNCONSUMED) {
             return;
         }
-        Account supplierAccount = AccountUtil.getAccount(orderItems.goods.supplierId, AccountType.SUPPLIER);
+        Account supplierAccount = AccountUtil.getSupplierAccount(orderItems.goods.supplierId);
 
         //给商户打钱
         TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn, supplierAccount, originalPrice, order.getId());

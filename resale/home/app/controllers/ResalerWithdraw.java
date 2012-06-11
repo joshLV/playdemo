@@ -19,21 +19,21 @@ import java.util.List;
 public class ResalerWithdraw extends Controller{
 
     public static void index(){
-        Resaler user = SecureCAS.getResaler();
-        Account account = AccountUtil.getAccount(user.getId(), AccountType.RESALER);
+        Resaler resaler = SecureCAS.getResaler();
+        Account account = AccountUtil.getResalerAccount(resaler.getId());
         List<WithdrawBill> withdrawBills = WithdrawBill.find("account =? order by appliedAt desc",account).fetch();
         render(withdrawBills);
     }
 
     public static void apply(){
-        Resaler user = SecureCAS.getResaler();
-        Account account = AccountUtil.getAccount(user.getId(), AccountType.RESALER);
+        Resaler resaler = SecureCAS.getResaler();
+        Account account = AccountUtil.getResalerAccount(resaler.getId());
         render(account);
     }
 
     public static void create(@Valid WithdrawBill withdraw){
-        Resaler user = SecureCAS.getResaler();
-        Account account = AccountUtil.getAccount(user.getId(), AccountType.RESALER);
+        Resaler resaler = SecureCAS.getResaler();
+        Account account = AccountUtil.getResalerAccount(resaler.getId());
 
         if(Validation.hasErrors()){
             render("ResalerWithdraw/apply.html", withdraw, account);
@@ -42,7 +42,7 @@ public class ResalerWithdraw extends Controller{
             Validation.addError("withdraw.amount", "提现金额不能大于余额！！");
             render("ResalerWithdraw/apply.html", withdraw, account);
         }
-        if(withdraw.apply(user.loginName, account)){
+        if(withdraw.apply(resaler.loginName, account)){
             index();
         }else {
             error("申请失败");

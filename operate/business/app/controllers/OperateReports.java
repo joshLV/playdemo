@@ -43,7 +43,7 @@ public class OperateReports extends Controller {
 
         User user = User.findByLoginName(condition.accountName);
         if (user != null) {
-            condition.account = AccountUtil.getAccount(user.id, AccountType.CONSUMER);
+            condition.account = AccountUtil.getConsumerAccount(user.id);
         } else {
             condition.account = new Account();
             condition.account.accountType = AccountType.CONSUMER;
@@ -89,7 +89,7 @@ public class OperateReports extends Controller {
 
         Resaler user = Resaler.findByLoginName(condition.accountName);
         if (user != null) {
-            condition.account = AccountUtil.getAccount(user.id, AccountType.RESALER);
+            condition.account = AccountUtil.getResalerAccount(user.id);
         } else {
             condition.account = new Account();
             condition.account.accountType = AccountType.RESALER;
@@ -123,7 +123,7 @@ public class OperateReports extends Controller {
 
         Supplier user = Supplier.findByFullName(condition.accountName);
         if (user != null) {
-            condition.account = AccountUtil.getAccount(user.id, AccountType.SUPPLIER);
+            condition.account = AccountUtil.getSupplierAccount(user.id);
         } else {
             condition.account = new Account();
             condition.account.accountType = AccountType.SUPPLIER;

@@ -3,7 +3,6 @@ package models.accounts.util;
 import models.accounts.*;
 
 import java.math.BigDecimal;
-import java.util.MissingFormatArgumentException;
 
 /**
  * 账户资金变动流水工具.
@@ -49,6 +48,19 @@ public class AccountUtil {
 
     public static boolean accountExist(long uid, AccountType type){
         return Account.find("byUidAndAccountType", uid, type).first() != null;
+    }
+
+
+    public static Account getConsumerAccount(long uid){
+        return getAccount(uid, AccountType.CONSUMER, false);
+    }
+
+    public static Account getResalerAccount(long uid){
+        return getAccount(uid, AccountType.RESALER, false);
+    }
+
+    public static Account getSupplierAccount(long uid){
+        return getAccount(uid, AccountType.SUPPLIER, false);
     }
 
     /**

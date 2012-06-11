@@ -1,6 +1,7 @@
 package controllers;
 
 import models.resale.Resaler;
+import models.resale.ResalerCreditable;
 import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -62,6 +63,7 @@ public class ResalerRegister extends Controller {
         resaler.loginIp = request.remoteAddress;
         resaler.lastLoginAt = new Date();
         resaler.createdAt = new Date();
+        resaler.creditable = ResalerCreditable.NO;
         resaler.save();
 
         render("ResalerRegister/success.html");

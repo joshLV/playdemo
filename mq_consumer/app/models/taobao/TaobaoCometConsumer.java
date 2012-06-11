@@ -182,7 +182,7 @@ public class TaobaoCometConsumer extends RabbitMQConsumer<TaobaoCometMessage>{
                                          models.order.Order resalerOrder) {
         // 如果两边子订单数量一致,并且分销商账户中余额足够,则自动设置淘宝订单为已发货,并结算本地账户
         if(resalerOrder.orderItems.size() == taobaoOrder.getTrade().getOrders().size()){
-            Account account = AccountUtil.getAccount(oAuthToken.getId(), AccountType.RESALER);
+            Account account = AccountUtil.getResalerAccount(oAuthToken.getId());
             //余额足够
             if(account.amount.compareTo(resalerOrder.needPay) >=0){
                 LogisticsDummySendResponse taobaoOrderSend = setTaobaoOrderSend(taobaoOrder.getTrade().getTid(), oAuthToken);
@@ -193,7 +193,7 @@ public class TaobaoCometConsumer extends RabbitMQConsumer<TaobaoCometMessage>{
 
                     resalerOrder.payMethod = PaymentSource.getBalanceSource().code;
 
-                    resalerOrder.paid();
+                    resalerOrder.payAndSendECoupon();
                 }else {
                     Logger.info("auto process resaler order failed: set taobao order send failed");
                 }

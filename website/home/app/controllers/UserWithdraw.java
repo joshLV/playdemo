@@ -26,7 +26,7 @@ public class UserWithdraw extends Controller{
 
     public static void index(WithdrawBillCondition condition){
         User user = SecureCAS.getUser();
-        Account account = AccountUtil.getAccount(user.getId(), AccountType.CONSUMER);
+        Account account = AccountUtil.getConsumerAccount(user.getId());
 
         String page = request.params.get("page");
         int pageNumber =  StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
@@ -45,14 +45,14 @@ public class UserWithdraw extends Controller{
 
     public static void apply(){
         User user = SecureCAS.getUser();
-        Account account = AccountUtil.getAccount(user.getId(), AccountType.CONSUMER);
+        Account account = AccountUtil.getConsumerAccount(user.getId());
         BreadcrumbList breadcrumbs = new BreadcrumbList("提现申请", "/withdraw");
         render(account, breadcrumbs);
     }
 
     public static void create(@Valid WithdrawBill withdraw){
         User user = SecureCAS.getUser();
-        Account account = AccountUtil.getAccount(user.getId(), AccountType.CONSUMER);
+        Account account = AccountUtil.getConsumerAccount(user.getId());
 
         if(Validation.hasErrors()){
             render("UserWithdraw/apply.html", withdraw, account);
