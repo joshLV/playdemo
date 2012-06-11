@@ -173,9 +173,7 @@ public class User extends Model {
         status = UserStatus.NORMAL;
         //随机码
         passwordSalt = salt;
-        //获得IP
-        loginIp = Request.current().remoteAddress;
-        lastLoginAt = new Date();
+
         createdAt = new Date();
         return super.create();
 

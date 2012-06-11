@@ -130,11 +130,8 @@ public class OperateUser extends Model {
         updatedUser.loginName = user.loginName;
         updatedUser.userName = user.userName;
         updatedUser.mobile = user.mobile;
-        updatedUser.lastLoginAt = new Date();
         updatedUser.updatedAt = new Date();
         updatedUser.roles = user.roles;
-        //获得IP
-        updatedUser.lastLoginIP = Request.current().remoteAddress;
 
         updatedUser.save();
     }
@@ -190,8 +187,6 @@ public class OperateUser extends Model {
         createdAt = new Date();
         lockVersion = 0;
         deleted = DeletedStatus.UN_DELETED;
-        // 获得IP
-        lastLoginIP = Request.current().remoteAddress;
         return super.create();
     }
 

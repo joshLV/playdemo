@@ -59,9 +59,6 @@ public class ResalerRegister extends Controller {
         //随机码
         resaler.passwordSalt = passwordSalt;
         resaler.level= ResalerLevel.NORMAL;
-        //获得IP
-        resaler.loginIp = request.remoteAddress;
-        resaler.lastLoginAt = new Date();
         resaler.createdAt = new Date();
         resaler.creditable = ResalerCreditable.NO;
         resaler.save();
