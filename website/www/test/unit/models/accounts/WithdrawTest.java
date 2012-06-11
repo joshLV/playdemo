@@ -27,6 +27,7 @@ public class WithdrawTest extends UnitTest{
         Fixtures.delete(Account.class);
         Fixtures.delete(AccountSequence.class);
         Fixtures.delete(TradeBill.class);
+        Fixtures.delete(WithdrawBill.class);
 
         Account account = getConsumerAccount();
         account.amount = balance;
