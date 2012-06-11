@@ -3,6 +3,7 @@ package unit.models.accounts;
 import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.TradeBill;
+import models.accounts.WithdrawBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import org.junit.Before;
@@ -30,7 +31,7 @@ public class WithdrawTest extends UnitTest{
         Fixtures.delete(TradeBill.class);
 
         Account account = getConsumerAccount();
-        account.uncashAmount = balance;
+        account.amount = balance;
         account.save();
     }
 
@@ -38,11 +39,27 @@ public class WithdrawTest extends UnitTest{
     public void testRefund(){
 
         assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformWithdrawAccount().amount));
+        assertEquals(0, balance.compareTo(getConsumerAccount().amount));
+        assertEquals(0, BigDecimal.ZERO.compareTo(getConsumerAccount().uncashAmount));
+
+        WithdrawBill bill = new WithdrawBill();
+        bill.amount = balance;
+        bill.save();
+        bill.apply("测试提现者", getConsumerAccount());
+
+        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformWithdrawAccount().amount));
         assertEquals(0, BigDecimal.ZERO.compareTo(getConsumerAccount().amount));
         assertEquals(0, balance.compareTo(getConsumerAccount().uncashAmount));
 
-        TradeBill tradeBill = TradeUtil.createWithdrawTrade(getConsumerAccount(), balance);
-        TradeUtil.success(tradeBill, "提现");
+        bill.reject("测试拒绝");
+
+        assertEquals(0, BigDecimal.ZERO.compareTo(AccountUtil.getPlatformWithdrawAccount().amount));
+        assertEquals(0, balance.compareTo(getConsumerAccount().amount));
+        assertEquals(0, BigDecimal.ZERO.compareTo(getConsumerAccount().uncashAmount));
+
+
+        bill.apply("测试提现者", getConsumerAccount());
+        bill.agree(BigDecimal.ZERO, "测试提现成功");
 
         assertEquals(0, balance.compareTo(AccountUtil.getPlatformWithdrawAccount().uncashAmount));
         assertEquals(0, BigDecimal.ZERO.compareTo(getConsumerAccount().amount));
