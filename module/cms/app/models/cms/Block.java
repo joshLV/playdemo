@@ -154,14 +154,10 @@ public class Block extends Model {
         List<Block> blocks = Block.find("deleted = ? and type = ? and effectiveAt <= ? and expireAt >= ? order by " + orderBy,
                     DeletedStatus.UN_DELETED, type, currentDate, currentDate).fetch();
         
-            System.out.println("find ================= " + type);
         if (blocks.size() == 0) {
-            
-            System.out.println("not found ========= " + type);
             blocks = Block.find("deleted = ? and type = ? order by " + orderBy,
                     DeletedStatus.UN_DELETED, type).fetch();
         }
-        System.out.println("find result=" + blocks.size());
         
         return blocks;
     }

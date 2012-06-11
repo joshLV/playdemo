@@ -68,6 +68,7 @@ public class SupplierUser extends Model {
 
     @Transient
     public String confirmPassword;
+    
     @Transient
     public String oldPassword;
 

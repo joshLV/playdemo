@@ -16,9 +16,12 @@
  */
 package controllers.modules.website.cas;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.Date;
 import models.consumer.User;
+import models.consumer.UserLoginHistory;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
+import play.Play;
 import play.cache.Cache;
 import play.modules.website.cas.CASUtils;
 import play.modules.website.cas.annotation.Check;
@@ -135,19 +138,32 @@ public class SecureCAS extends Controller {
     public static void authenticate() throws Throwable {
         Boolean isAuthenticated = Boolean.FALSE;
         String ticket = params.get("ticket");
+        CASUser casUser = null;
         if (ticket != null) {
             Logger.debug("[SecureCAS]: Try to validate ticket " + ticket);
-            CASUser user = CASUtils.valideCasTicket(ticket);
-            if (user != null) {
+            casUser = CASUtils.valideCasTicket(ticket);
+            if (casUser != null) {
                 isAuthenticated = Boolean.TRUE;
-                session.put(SESSION_USER_KEY, user.getUsername());
-                Cache.add(SESSION_USER_KEY + user.getUsername(), Boolean.TRUE);
+                session.put(SESSION_USER_KEY, casUser.getUsername());
+                Cache.add(SESSION_USER_KEY + casUser.getUsername(), Boolean.TRUE);
                 // we invoke the implementation of onAuthenticate
-                Security.invoke("onAuthenticated", user);
+                Security.invoke("onAuthenticated", casUser);
             }
         }
 
         if (isAuthenticated) {
+            // 记录登录IP及时间
+            User user = getUser();
+            user.loginIp = request.remoteAddress;
+            user.save();
+            
+            UserLoginHistory history = new UserLoginHistory();
+            history.user = user;
+            history.loginAt = new Date();
+            history.loginIp = request.remoteAddress;
+            history.applicationName = Play.configuration.getProperty("application.name");
+            history.save();
+            
             // we redirect to the original URL
             String url = (String) Cache.get("url_" + session.getId());
             Cache.delete("url_" + session.getId());

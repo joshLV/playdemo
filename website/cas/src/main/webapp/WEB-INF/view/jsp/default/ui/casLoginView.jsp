@@ -64,21 +64,21 @@ if (cookies!=null) {
             <c:if test="${not empty count && count >= 3}">
             <div class="field">
                 <label for="checkcode">验证码：</label>
-                <input type="text" id="checkcode" name="j_captcha_response" maxlength="20" tabindex="5" />
+                <input type="text" id="checkcode" name="j_captcha_response" maxlength="20" tabindex="3" />
                 <img id="captchaImg" style="" src="captcha" />
-                <span>看不清？<a id="newcode" href="">换一张</a></span>
+                <span>看不清？<a id="newcode" href="" tabindex="4">换一张</a></span>
                 <span id="checkcode-error" class="error"></span>
             </div>
             </c:if>
 
             <div class="field" id="auto">
-                <input type="checkbox" id="rememberUsername" name="rememberUsername" tabindex="3" value="true" <% if (checkRememberUsername) { %> checked="checked" <% } %>/>
+                <input type="checkbox" id="rememberUsername" name="rememberUsername" tabindex="5" value="true" <% if (checkRememberUsername) { %> checked="checked" <% } %>/>
                 <label for="rememberUsername">记住用户名</label>
             </div>
             <input type="hidden" name="lt" value="${loginTicket}" />
             <input type="hidden" name="execution" value="${flowExecutionKey}" />
             <input type="hidden" name="_eventId" value="submit" />
-            <button type="submit" id="submit" tabindex="4"> 登 录 </button>
+            <button type="submit" id="submit" tabindex="6"> 登 录 </button>
         </form:form>
         <div class="guide">
             <h5>还不是一百券用户？</h5>

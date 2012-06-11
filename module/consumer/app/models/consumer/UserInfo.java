@@ -27,7 +27,7 @@ public class UserInfo extends Model {
     public String mobile;
 
     /**
-     * 性别
+     * 性别 
      */
     @Column(name = "user_sex")
     public Integer userSex;
