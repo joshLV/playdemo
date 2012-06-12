@@ -462,7 +462,7 @@ public class OperateGoods extends Controller {
     }
 
     /**
-     * 拒绝上架申请.
+     * 设置精选级别.
      *
      * @param id 商品ID
      */
