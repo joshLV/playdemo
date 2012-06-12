@@ -246,6 +246,12 @@ public class Goods extends Model {
     public Integer recommend = 0;
 
     /**
+     * 优先指数.
+     */
+    @Min(1)
+    @Max(5)
+    public Integer priority = 0;
+    /**
      * 收藏指数.
      */
     public Integer favorite = 0;
@@ -689,6 +695,19 @@ public class Goods extends Model {
 
             goods.save();
         }
+    }
+
+    /**
+     * 更新精选指数
+     * @param id
+     * @param priority
+     */
+    public static void updatePriority(Long id, int priority) {
+
+        models.sales.Goods goods = models.sales.Goods.findById(id);
+        goods.priority = priority;
+        goods.save();
+
     }
 
     private static final String expiration = "30mn";
