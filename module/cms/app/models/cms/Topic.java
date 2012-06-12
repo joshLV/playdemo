@@ -12,14 +12,9 @@ import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 公告通知.
@@ -35,7 +30,7 @@ public class Topic extends Model {
     @MinSize(10)
     @MaxSize(60)
     public String title;
-    
+
     /**
      * 有效开始日
      */
@@ -55,10 +50,9 @@ public class Topic extends Model {
     public Integer displayOrder;
 
     @Required
-    @MinSize(7)
-    @MaxSize(4000)
+    @Lob
     private String content;
-    
+
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
 
     @Enumerated(EnumType.STRING)
@@ -92,7 +86,7 @@ public class Topic extends Model {
         ModelPaginator<Topic> topicPage;
         final String orderBy = "displayOrder, type, effectiveAt desc, expireAt";
         if (platformType == null) {
-            topicPage = new ModelPaginator<Topic>(Topic.class,"deleted = ?",DeletedStatus.UN_DELETED).orderBy(orderBy);
+            topicPage = new ModelPaginator<Topic>(Topic.class, "deleted = ?", DeletedStatus.UN_DELETED).orderBy(orderBy);
         } else if (type == null) {
             topicPage = new ModelPaginator<Topic>(Topic.class, "deleted = ? and platformType=?",
                     DeletedStatus.UN_DELETED, platformType).orderBy(orderBy);
@@ -121,5 +115,19 @@ public class Topic extends Model {
         oldTopic.type = topic.type;
         oldTopic.title = topic.title;
         oldTopic.save();
+    }
+
+    public static List<Topic> findByType(PlatformType platformType, TopicType type, Date currentDate) {
+        final String orderBy = "displayOrder, effectiveAt desc, expireAt";
+
+        List<Topic> topics = Topic.find("deleted = ? and  platformType= ? and type = ? and effectiveAt <= ? and expireAt >= ? order by " + orderBy,
+                DeletedStatus.UN_DELETED, platformType, type, currentDate, currentDate).fetch();
+
+        if (topics.size() == 0) {
+            topics = Topic.find("deleted = ?  and platformType = ? and type = ? order by " + orderBy,
+                    DeletedStatus.UN_DELETED, platformType, type).fetch();
+        }
+
+        return topics;
     }
 }
