@@ -567,8 +567,8 @@ public class Goods extends Model {
         updateGoods.salePrice = goods.salePrice;
         updateGoods.baseSale = goods.baseSale;
         updateGoods.materialType = goods.materialType;
-
-
+        updateGoods.topCategoryId = goods.topCategoryId;
+        updateGoods.categories = goods.categories;
         updateGoods.setPrompt(goods.getPrompt());
         updateGoods.setDetails(goods.getDetails());
         updateGoods.updatedAt = new Date();
@@ -697,6 +697,7 @@ public class Goods extends Model {
 
     /**
      * 更新精选指数
+     *
      * @param id
      * @param priority
      */
