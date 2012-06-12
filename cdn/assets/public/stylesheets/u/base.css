@@ -83,102 +83,87 @@ mark { background: #ff0; }
     font-weight: 700;
     font-family: "Microsoft Yahei";
 }
-#menu {
+#user {
     height: 48px;
     padding: 40px 0 0 0;
     float: right;
 }
-#menu .welcom {
-    float: left;
-    margin-left: 10px;
+
+/** 导航 **/
+#navbar {
+    *position: relative;
+    *z-index: 90;
+    background-color: #006d6d;
+    margin-bottom: 20px;
+    height: 35px;
 }
-#menu .welcom a {
-    color: #666;
+#navbar .inner {
+    width: 960px;
+    margin: 0 auto;
+}
+#navbar a:hover {
+    text-decoration: none;
+}
+#menu {
+    float: left;
+    width: 758px;
+}
+#menu li {
+    float: left;
+}
+#menu a {
+    display: block;
+    padding: 0 20px;
+    color: #ffffff;
+    line-height: 35px;
+    font-size: 14px;
+    font-weight: 700;
 }
 #menu a:hover {
-    color: #F50;
+    background: #b3dbdb url(http://img.uhcdn.com/images/u/navbg.png) bottom center no-repeat;
 }
-#menu .myUhuila {
-    float: left;
+#menu .current {
+    color: #333333;
+    background: #b3dbdb url(http://img.uhcdn.com/images/u/navbg.png) bottom center no-repeat;
+}
+#cart {
     position: relative;
-    width: 60px;
-    padding: 0 12px 0 10px;
-    background: url(http://img.uhcdn.com/images/u/arrow.png) no-repeat;
-    background-position: 73px 9px;
+    float: right;
+    margin: 3px 0;
+    width: 202px;
+    height: 29px;
+    background: #d5e9ed url(http://img.uhcdn.com/images/u/cartsbg.png) bottom center no-repeat;
 }
-#menu .myUhuila-bd {
+#cart .cart-hd {
+    display: block;
+    float: left;
+    padding: 5px 8px 6px 35px;
+    background: url(http://img.uhcdn.com/images/u/drop.png) right 14px no-repeat;
+}
+#cart .cart-hd strong {
+    color: #f50;
+    padding-right: 2px;
+}
+#cart .cart-bd {
     display: none;
-    overflow: hidden;
     position: absolute;
-    top: 22px;
-    left: -1px;
-    width: 60px;
+    top: 29px;
+    right: 0;
+    z-index: 100;
     padding: 10px;
-    border: solid #209890;
-    border-width: 0 1px 1px 1px;
+    width: 280px;
+    border: 2px solid #015859;
     background-color: #fff;
 }
-#menu .myUhuila-on {
-    margin-top: -1px;
-    padding: 0 11px 4px 9px;
-    border: solid #209890;
-    border-width: 1px 1px 0 1px;
-    background-position: 72px 9px;
+.carts-item {
+    padding: 6px 0 3px;
+    border-top: 1px dotted #e4e4e4;
 }
-#menu .carts {
+.carts-item .goods-img {
     float: left;
-    position: relative;
-    width: 66px;
-    padding: 0 10px 0 5px;
-    line-height: 16px;
-    background: url(http://img.uhcdn.com/images/u/arrow.png) no-repeat;
-    background-position: 74px 9px;
+    margin-right: 5px;
 }
-#menu .carts-hd {
-    text-align: right;
-    line-height: 16px;
-}
-#menu .carts .carts-size {
-    padding: 0 1px;
-    color: #F50;
-    font-weight: 700;
-    text-align: center;
-    line-height: 16px;
-}
-#menu .carts-on {
-    margin-top: -1px;
-    padding: 0 9px 4px 4px;
-    border: solid #209890;
-    border-width: 1px 1px 0 1px;
-    background-position: 73px 9px;
-}
-#menu .carts-bd {
-    display: none;
-    overflow: hidden;
-    position: absolute;
-    top: 22px;
-    left: -1px;
-    width: 220px;
-    padding: 2px 10px 10px 10px;
-    border: solid #209890;
-    border-width: 0 1px 1px 1px;
-    background-color: #fff;
-}
-#menu .carts-bd .upRightLine {
-    position: absolute;
-    top: 0;
-    left: 79px;
-    border-top: 1px solid #209890;
-    width: 165px;
-}
-#menu .carts-item {
-    margin: 8px 0;
-}
-#menu .carts-item .goods-img {
-    float: left;
-    margin: 5px 5px 0 0;
-}
-#menu .carts-item .goods-name {
+.carts-item .goods-name {
     display: inline-block;
     margin-bottom: 2px;
     width: 165px;
@@ -188,74 +173,33 @@ mark { background: #ff0; }
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
 }
-#menu .carts-item .goods-price {
+.carts-item .goods-price {
     color: #f50;
     font: 12px arial;
 }
-#menu .carts-item .cart-delete {
-    *margin-top: -18px;
+.carts-item .cart-delete {
     float: right;
     color: #25B4AB;
 }
-#menu .carts-bd .view-carts {
+.carts-bd .view-carts {
     display: inline-block;
     padding: 0 3px;
     margin: 10px 5px 0 5px;
     color: #F8F8F8;
     background-color: #209890;
 }
-#menu .carts-item .view-carts:hover {
+.carts-item .view-carts:hover {
     text-decoration: none;
 }
-#menu .help {
-    float: left;
-    margin-left: 6px;
-    width: 48px;
-}
-#menu .login {
-    width: 24px;
-}
-#menu .regist {
-    width: 48px;
-}
-#menu .login,
-#menu .regist {
-    float: left;
-    margin-left: 10px;
-    padding: 0 5px 2px;
-    padding: 2px 5px 0\9;
-    background-color: #209890;
-}
-#menu .login a,
-#menu .regist a {
-    color: #fff;
-} 
 
-/** 导航 **/
-#nav {
-    background-color: #25b4ab;
-    margin-bottom: 20px;
-}
-#nav ul {
-    width: 960px;
-    margin: 0 auto;
-}
-#nav li {
-    float: left;
-}
-#nav a {
+#cart .cart-btn {
     display: block;
-    padding: 0 20px;
-    color: #F8F8F8;
-    line-height: 35px;
-    font-size: 15px;
+    float: right;
+    padding: 4px 0;
+    width: 66px;
+    color: #fff;
+    text-align: center;
     font-weight: 700;
-}
-#nav a:hover {
-    text-decoration: none;
-}
-#nav .current {
-    background-color: #209890;
 }
 
 #content {

@@ -1,4 +1,3 @@
-<b class="upRightLine"></b>
 #{if carts?.size() > 0 }
 <ul>
    #{set number=0 /}
@@ -14,18 +13,11 @@
            count="${cartItem.number}">删除</a>
     </li>
     #{/list}
-    <li class="carts-item" id="detail" style="text-align: right">共  <span class="goods-price">
+    <li class="carts-item" id="detail" style="text-align: right">共<span class="goods-price">
         <strong id="all_number">${number}</strong></span>件商品，
-        共计 <span class="goods-price">￥<strong id="all_price">${total}</strong></span></li>
-     <li style="text-align: right">
-    <a class="view-carts" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">查看购物车</a>
-    <a id="order_confirm" class="view-carts" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/orders?items=#{list items:carts,
-    as:'cartItem'}${cartItem.goods.id}-${cartItem.number},#{/list}">去结算</a></li>
-
+        共计<span class="goods-price">￥<strong id="all_price">${total}</strong></span></li>
 </ul>
 #{/if}
 #{else}
-您的购物车中没有任何商品。<br/>
-<a class="view-carts" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">查看购物车</a>
+您的购物车中没有任何商品。
 #{/else}
-*{<input type="hidden" id="goods_count" value="${count}">}*

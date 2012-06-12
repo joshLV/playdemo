@@ -14,52 +14,47 @@
         <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}">
             <img src="#{asset.url href:'/images/u/logo.gif'/}" width="180" height="88" alt="一百券"/>
         </a>
-        <!-- <span class="uhuila">◁ 原优惠啦</span> -->
     </div>
-    <div id="menu">
-        <div class="welcom">
+    <div id="user">
         #{if cas?.isLogin}
-            欢迎您, <a class="zi_gray" href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}"
-                    id="login_name">${cas.loginName}</a> <a class="zi_gray" href="/logout">退出</a>
+            欢迎您, <a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}"
+                    id="login_name">${cas.loginName}</a> <a href="/logout">退出</a>
         #{/if}
         #{else}
-            您好，欢迎您来到一百券！ [<a class="zi_gray" id="login_name" href="/login">登录</a>] [<a href="/register">免费注册</a>]
+            您好，欢迎您来到一百券！ [<a id="login_name" href="/login">登录</a>] [<a href="/register">免费注册</a>]
         #{/else}
-        </div>
-        <div class="myUhuila">
-            <div class="myUhuila-hd"><a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}/">我的一百券</a></div>
-            <div class="myUhuila-bd">
-                <a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}/orders">我的订单</a>
-            </div>
-        </div>
-        <div class="carts">
-            <div class="carts-hd"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">购物车<span class="carts-size" id="carts_size">${count}</span>件</a></div>
-            <input type="hidden" id="reload" value="true"/>
-            <div class="carts-bd" id="cart-list"></div>
-
-        </div>
-        <div class="help"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/help">常见问题</a></div>
+    </div>
+        <!-- <div class="myUhuila"> -->
+            <!-- <div class="myUhuila-hd"><a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}/">我的一百券</a></div> -->
+            <!-- <div class="myUhuila-bd"> -->
+                <!-- <a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}/orders">我的订单</a> -->
+            <!-- </div> -->
+        <!-- </div> -->
+        <!-- <div class="carts"> -->
+            <!-- <div class="carts-hd"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">购物车<span class="carts-size" id="carts_size">${count}</span>件</a></div> -->
+            <!-- <input type="hidden" id="reload" value="true"/> -->
+            <!-- <div class="carts-bd" id="cart-list"></div> -->
+        <!-- </div> -->
+        <!-- <div class="help"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/help">常见问题</a></div> -->
+    <div id="menu">
     </div>
 </div>
-<div id="nav">
-    <ul class="clearfix">
-        <li #{if categoryId == 0}class="current"#{/if}><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}">首页</a></li>
-        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/1" #{if
-        categoryId == 1}class="current"#{/if}>餐饮美食</a></li>
-        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/2" #{if
-        categoryId == 2}class="current"#{/if}>食品干货</a></li>
-        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/7" #{if
-        categoryId == 7}class="current"#{/if}>休闲娱乐</a></li>
-        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/1001" #{if
-        categoryId == 1001}class="current"#{/if}>舌尖上的端午</a></li>
-        *{
-        #{list categories, as: 'category'}
-        <li class="hot_shangpin_li"><a #{if categoryId == category.id}class="tab_selected"#{/if}
-                                                   #{else}class="tab_unselected"#{/else}
-                                                   href="/${category.id}">${category.name}</a></li>
-        #{/list}
-        }*
-    </ul>
+<div id="navbar">
+    <div class="inner">
+        <ul id="menu">
+            <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}" #{if categoryId == 0}class="current"#{/if}>首页</a></li>
+            <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/1" #{if categoryId == 1}class="current"#{/if}>餐饮美食</a></li>
+            <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/2" #{if categoryId == 2}class="current"#{/if}>食品干货</a></li>
+			<li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/7" #{if categoryId == 7}class="current"#{/if}>休闲娱乐</a></li>
+			<li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/1001" #{if categoryId == 1001}class="current"#{/if}>舌尖上的端午</a></li>
+        </ul>
+        <div id="cart">
+            <a class="cart-hd" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">购物车：<strong id="cart-count">${count}</strong>件</a>
+            <div class="cart-bd" id="cart-list"></div>
+            <a class="cart-btn" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/orders?items=#{list items:carts,
+                as:'cartItem'}${cartItem.goods.id}-${cartItem.number},#{/list}">去结算</a>
+        </div>
+    </div>
 </div>
 <div id="content">
   #{doLayout /}

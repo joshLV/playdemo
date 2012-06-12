@@ -118,6 +118,29 @@
     background: url(http://img.uhcdn.com/images/u/icon_3.png) no-repeat 10px 15px;
 }
 
+.sidebar {
+    float: right;
+}
+.promise {
+    font-size: 0;
+}
+.notice {
+    margin-top: 15px;
+}
+.notice-hd {
+    text-indent: 8px;
+    font-weight: 700;
+    line-height: 24px;
+    background-color: #ededed;
+}
+.notice-bd {
+    padding: 8px;
+    border: 1px solid #ededed;
+}
+.notice-bd li {
+    line-height: 20px;
+}
+
 /** 网友推荐 **/
 .recommendation {
     float: left;
