@@ -1,6 +1,9 @@
 #{extends 'main.html' /}
-#{set title:'一百券 - 首页' /}
-
+#{set title:'一百券-网上消费券首选门户,消费券,代金券,优惠券,美食券,电子券,提货券' /}
+#{set 'metaContent'}
+<meta name="Description" content="一百券-致力于本地生活消费的互联网电子商务网站，将线下本地生活服务与线上互联网结合在一起，让互联网成为线下本地生活服务交易的前台">
+<meta name="Keywords" content="上海优惠券,一百券,消费券,代金券,优惠券,美食券,电子券,优惠上海,提货券">
+#{/set}
 #{set 'moreStyles'}
     #{asset.css src:['/u/index.css'] /}
 #{/set}
@@ -11,12 +14,12 @@
         <div class="bizarea-bd">
             <ul class="area clearfix">
             #{list districts, as:'district'}
-                <li><a href="/goods/list/0-${district.id}">${district.name}</a></li>
+                <li><a href="/s/0-${district.id}">${district.name}</a></li>
             #{/list}
             </ul>
             <ul class="ring clearfix">
             #{list areas, as:'area'}
-                <li><a href="/goods/list/0-${area.id}">${area.name}</a></li>
+                <li><a href="/s/0-${area.id}">${area.name}</a></li>
             #{/list}
             </ul>
         </div>
@@ -49,9 +52,9 @@
         <ul class="recommendation-bd clearfix">
         #{list recommendGoodsList, as:'aGoods'}
             <li>
-                <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="150"
+                <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="150"
                                                                    height="110" alt="${aGoods.name}"/></a>
-                <p><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
+                <p><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
                 <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
                 <span>现价:<strong>&yen;${aGoods.salePrice}</strong></span>
             </li>
@@ -61,10 +64,10 @@
     <div class="tuangou">
         <div class="tuangou-hd">今日特卖</div>
         <div class="tuangou-bd">
-        
+
             <a href="${dailySpecial?.link}" target="_blank" class="image"><img src="${dailySpecial?.getShowImageUrl()}"
                                                                   width="220" height="150"/></a>
-            <a class="title" href="${dailySpecial?.link}" href="_blank">${dailySpecial?.content}</a>
+            <a class="title" href="${dailySpecial?.link}" href="_blank">${dailySpecial?.content.raw()}</a>
 
             <div class="detail clearfix">
                 <div class="action">
@@ -84,10 +87,10 @@
     <ul class="boutique-bd clearfix">
     #{list goodsList, as:'aGoods'}
         <li>
-            <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="170"
+            <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="170"
                                                                height="130"
                                                                alt="${aGoods.name}"/></a>
-            <p><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
+            <p><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
             <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
             <span>现价:<strong>&yen;${aGoods.salePrice}</strong></span>
         </li>
@@ -100,9 +103,9 @@
     <ul class="boutique-bd clearfix">
     #{list recentGoodsList, as:'aGoods'}
         <li>
-            <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="170" height="130"
+            <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="170" height="130"
                                                                alt="${aGoods.name}"/></a>
-            <p><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
+            <p><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
             <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
             <span>现价:<strong>&yen;${aGoods.salePrice}</strong></span>
         </li>

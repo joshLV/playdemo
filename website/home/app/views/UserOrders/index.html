@@ -31,7 +31,7 @@
                     <label>成交时间：</label>
                     <input class="short_input Wdate" type="text" name="condition.createdAtBegin" value="${condition.createdAtBegin?.format()}"
                         onfocus="WdatePicker({readOnly:true})"/> -
-                    <input class="short_input Wdate" type="text" name="condition.createdAtEnd" value="${condition.createdAtEnd?.format()}" 
+                    <input class="short_input Wdate" type="text" name="condition.createdAtEnd" value="${condition.createdAtEnd?.format()}"
                         onfocus="WdatePicker({readOnly:true})"/>
                     <button class="search-btn" id="search" style="margin-left:15px"> 搜　索</button>
                 </div>
@@ -71,8 +71,8 @@
                         #{list row.orderItems, as:'rowItem'}
                         <tr class="order-bd">
                             <td align="left">
-                                <a class="goods-image" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${rowItem.goods.id}" target="_blank"><img src="${rowItem.goods.imageTinyPath}"/></a>
-                                <a class="goods-name" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${rowItem.goods.id}" target="_blank">${rowItem.goods.name}</a>
+                                <a class="goods-image" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${rowItem.goods.id}" target="_blank"><img src="${rowItem.goods.imageTinyPath}"/></a>
+                                <a class="goods-name" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${rowItem.goods.id}" target="_blank">${rowItem.goods.name}</a>
                             </td>
                             <td align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
                             <td align="center">${rowItem.buyNumber}</td>

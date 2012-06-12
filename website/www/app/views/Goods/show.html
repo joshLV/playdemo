@@ -1,5 +1,9 @@
 #{extends 'main.html' /}
-#{set title:'一百券 - 商品详情' /}
+#{set title: '【' + (goods.brand == null ? '一百券' : goods.brand?.name) + '】' + goods.name + '-一百券-网上消费券首选门户' /}
+#{set 'metaContent'}
+<meta name="Description" content="一百券-${goods.brand?.name} ${goods.name},消费券,代金券,优惠券,美食券,电子券,提货券">
+<meta name="Keywords" content="上海优惠券,一百券,${goods.brand?.name},${goods.name},消费券,代金券,优惠券,美食券,电子券,优惠上海,提货券">
+#{/set}
 #{set 'moreStyles'}
     #{asset.css src:['/u/detail.css']/}
 #{/set}
@@ -165,10 +169,10 @@
         </div>
         <div class="brand">
             <h4 class="brand-name">
-                品牌名称: <a href="/goods/list/0-0-0-0-${goods.brand?.id}"><span>${goods.brand?.name}</span></a>
+                品牌名称: <a href="/s/0-0-0-0-${goods.brand?.id}"><span>${goods.brand?.name}</span></a>
             </h4>
             <p class="brand-logo">
-                <a href="/goods/list/0-0-0-0-${goods.brand?.id}">
+                <a href="/s/0-0-0-0-${goods.brand?.id}">
                     <img src="${goods.brand?.showLogo}" width="210" alt="${goods.brand?.name}"/>
                 </a>
             </p>

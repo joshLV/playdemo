@@ -6,8 +6,8 @@
     #{set number+=cartItem.number/}
     #{set total+=(cartItem.goods.salePrice * cartItem.number)/}
     <li class="carts-item clearfix" id="row_${cartItem.goods.id}">
-        <a class="goods-img" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${cartItem.goods.id}"><img src="${cartItem.goods.imageTinyPath}" width="48" /></a>
-        <a class="goods-name" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${cartItem.goods.id}">${cartItem.goods.name}</a>
+        <a class="goods-img" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${cartItem.goods.id}"><img src="${cartItem.goods.imageTinyPath}" width="48" /></a>
+        <a class="goods-name" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${cartItem.goods.id}">${cartItem.goods.name}</a>
         <span class="goods-price">${cartItem.goods.salePrice?.formatCurrency('CNY')} x ${cartItem.number}</span>
         <a href="#" class="cart-delete" goods_id="${cartItem.goods.id}" sale_price="${cartItem.goods.salePrice}"
            count="${cartItem.number}">删除</a>

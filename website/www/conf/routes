@@ -25,6 +25,10 @@ GET     /help                                   Application.help
 GET     /service                                Application.service
 GET     /topic/{id}                             Application.topic
 
+GET     /s                                      Goods.index
+GET     /s/{condition}                          Goods.list
+GET     /g/{id}                                 Goods.show
+
 GET     /goods                                  Goods.index
 GET     /goods/list/{condition}                 Goods.list
 

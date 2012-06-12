@@ -94,9 +94,9 @@
     <ul class="recent-bd clearfix">
     #{list items: sawGoodsList, as:'goods'}
         <li>
-            <a href="/goods/${goods.id}" target="_blank"><img src="${goods.imageMiddlePath}" width="170" height="130"/></a>
+            <a href="/g/${goods.id}" target="_blank"><img src="${goods.imageMiddlePath}" width="170" height="130"/></a>
 
-            <p><a href="/goods/39" target="_blank">${goods.name}</a></p>
+            <p><a href="/g/${goods.id}" target="_blank">${goods.name}</a></p>
             <span>原价:<del>${goods.faceValue}</del> | ${goods.discountExpress}</span>
             <span>现价:<strong>${goods.salePrice.formatCurrency('CNY')}</strong></span>
         </li>

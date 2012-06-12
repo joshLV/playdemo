@@ -1,13 +1,13 @@
 package models.sales;
 
-import com.uhuila.common.constants.DeletedStatus;
-import models.resale.Resaler;
-import org.apache.commons.lang.StringUtils;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import models.resale.Resaler;
+import org.apache.commons.lang.StringUtils;
+import play.Logger;
+import com.uhuila.common.constants.DeletedStatus;
 
 /**
  * 商品查询条件.
@@ -77,7 +77,7 @@ public class GoodsCondition {
                 districtId = searchAreaId;
                 areaId="0";
             }
-            System.out.println("-----------------------------districtId:" + districtId);
+            Logger.debug("-----------------------------districtId:" + districtId);
         }
         if (args.length > 2) {
             brandId = StringUtils.isBlank(args[2]) ? 0 : Long
@@ -206,12 +206,13 @@ public class GoodsCondition {
             condBuilder.append(" and g.materialType=:materialType");
             paramMap.put("materialType", materialType);
         }
-        System.out.println("condBuilder.toString():" + condBuilder.toString());
-        System.out.println("================" + toString());
-        for (String key : paramMap.keySet()) {
-            System.out.println(key + ":" + paramMap.get(key));
+        Logger.debug("condBuilder.toString():" + condBuilder.toString());
+        Logger.debug("================" + toString());
+        if (Logger.isDebugEnabled()) {
+            for (String key : paramMap.keySet()) {
+                Logger.debug(key + ":" + paramMap.get(key));
+            }
         }
-
         return condBuilder.toString();
     }
 

@@ -1,5 +1,9 @@
 #{extends 'main.html' /}
-#{set title:'一百券 - 商品列表' /}
+#{set title:'一百券-' + condsTitle + ',网上消费券首选门户,消费券,代金券,优惠券,美食券,电子券,提货券' /}
+#{set 'metaContent'}
+<meta name="Description" content="一百券-${condsTitle},消费券,代金券,优惠券,美食券,电子券,提货券">
+<meta name="Keywords" content="上海优惠券,一百券,${condsTitle},消费券,代金券,优惠券,美食券,电子券,优惠上海,提货券">
+#{/set}
 
 #{set 'moreStyles'}
     #{asset.css src:['/u/list.css'] /}
@@ -15,13 +19,13 @@
             <ul class="popular-bd">
             #{list recommendGoodsList, as:'recommendGoods'}
                 <li>
-                    <a href="/goods/${recommendGoods.id}" target="_blank"><img src="${recommendGoods.imageMiddlePath}"
+                    <a href="/g/${recommendGoods.id}" target="_blank"><img src="${recommendGoods.imageMiddlePath}"
                                                                                width="170"
                                                                                height="130"
                                                                                alt="${recommendGoods.name}" width="170"
                                                                                height="130"/></a>
 
-                    <p><a href="/goods/${recommendGoods.id}" target="_blank">${recommendGoods.name}</a></p>
+                    <p><a href="/g/${recommendGoods.id}" target="_blank">${recommendGoods.name}</a></p>
                     <span>原价:<del>${recommendGoods.faceValue}</del> | ${recommendGoods.discountExpress}</span>
                     <span>现价:<strong>&yen;${recommendGoods.salePrice}</strong></span>
                 </li>
@@ -31,10 +35,10 @@
     </div>
     <div id="section">
         <div class="tabbar clearfix">
-            <a #{if materialType == null}class="current"#{/if} href="/goods/list/0">全部</a>
-            <a href="/goods/list/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-1"
+            <a #{if materialType == null}class="current"#{/if} href="/s/0">全部</a>
+            <a href="/s/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-1"
                #{if models.sales.MaterialType.ELECTRONIC.equals(materialType)}class="current"#{/if}>电子券</a>
-            <a href="/goods/list/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-0"
+            <a href="/s/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-0"
                #{if models.sales.MaterialType.REAL.equals(materialType)}class="current"#{/if}>实体券</a>
         </div>
         <div class="filter">
@@ -44,7 +48,7 @@
                 #{if "0".equals(districtId)}<span class="selected_box">全部</span>
                 #{/if}
                 #{else}<a id="district"
-                          href="/goods/list/${categoryId}-021-${brandId}-${priceFrom}-${priceTo}-${orderBy}-$
+                          href="/s/${categoryId}-021-${brandId}-${priceFrom}-${priceTo}-${orderBy}-$
                           {orderByType}"
                           class="font_blue">全部</a>
                 #{/else}
@@ -54,7 +58,7 @@
                             <span id="district" class="selected_box">${district.name}</span>
                         #{/if}
                         #{else}<a
-                                href="/goods/list/${categoryId}-${district.id}-0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                                href="/s/${categoryId}-${district.id}-0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
                                 class="font_blue">${district.name}</a>
                         #{/else}
                     #{/if}
@@ -67,7 +71,7 @@
                 #{if "0".equals(areaId)}<span class="selected_box">全部</span>
                 #{/if}
                 #{else}<a
-                        href="/goods/list/${categoryId}-0-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                        href="/s/${categoryId}-0-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
                         class="font_blue">全部</a>
                 #{/else}
                 #{list areas, as:'area'}
@@ -76,7 +80,7 @@
                             <span id="area" class="selected_box">${area.name}</span>
                         #{/if}
                         #{else}<a
-                                href="/goods/list/${categoryId}-${area.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                                href="/s/${categoryId}-${area.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
                                 class="font_blue">${area.name}</a>
                         #{/else}
                     #{/if}
@@ -89,7 +93,7 @@
                 #{if brandId == 0}<span class="selected_box">全部</span>
                 #{/if}
                 #{else}<a
-                        href="/goods/list/${categoryId}-${searchAreaId}-0-${priceFrom}-${priceTo}-${orderBy}-$
+                        href="/s/${categoryId}-${searchAreaId}-0-${priceFrom}-${priceTo}-${orderBy}-$
                         {orderByType}"
                         class="font_blue">全部</a>
                 #{/else}
@@ -98,7 +102,7 @@
                         <span id="area" class="selected_box">${brand.name}</span>
                     #{/if}
                     #{else}<a
-                            href="/goods/list/${categoryId}-${searchAreaId}-${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                            href="/s/${categoryId}-${searchAreaId}-${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
                             class="font_blue">${brand.name}</a>
                     #{/else}
                 #{/list}
@@ -109,28 +113,28 @@
             排序：
 
             <a #{if orderBy == 0}class="selected"#{/if}
-               href="/goods/list/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-0"
+               href="/s/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-0"
                value="${orderBy}">最佳匹配</a>
             <a #{if orderBy == 4}class="selected"#{/if}
-               href="/goods/list/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-4-${orderByType==0?1:0}">#{if orderBy==4 && orderByType == 1}最新#{/if}#{else}最早#{/else}发布</a>
+               href="/s/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-4-${orderByType==0?1:0}">#{if orderBy==4 && orderByType == 1}最新#{/if}#{else}最早#{/else}发布</a>
 
             <a #{if orderBy == 1}class="selected"#{/if}
-               href="/goods/list/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-1-${orderByType==0?1:0}">销量#{if orderBy==1 && orderByType == 1}最多#{/if}#{else}最少#{/else}</a>
+               href="/s/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-1-${orderByType==0?1:0}">销量#{if orderBy==1 && orderByType == 1}最多#{/if}#{else}最少#{/else}</a>
 
             <a #{if orderBy == 2}class="selected"#{/if}
-               href="/goods/list/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-2-${orderByType==0?1:0}">价格#{if orderBy==2 && orderByType == 1}最高#{/if}#{else}最低#{/else}</a>
+               href="/s/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-2-${orderByType==0?1:0}">价格#{if orderBy==2 && orderByType == 1}最高#{/if}#{else}最低#{/else}</a>
 
             <a #{if orderBy == 3}class="selected"#{/if}
-               href="/goods/list/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-3-${orderByType==0?1:0}">折扣#{if orderBy==3 && orderByType == 1}最大#{/if}#{else}最小#{/else}</a>
+               href="/s/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-3-${orderByType==0?1:0}">折扣#{if orderBy==3 && orderByType == 1}最大#{/if}#{else}最小#{/else}</a>
         </div>
         <div class="list-content clearfix">
             <ul class="clearfix">
             #{paginate.list items:goodsPage, as:'aGoods'}
                 <li>
-                    <a href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="170"
+                    <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="170"
                                                                        height="130" alt=""/></a>
 
-                    <p><a href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
+                    <p><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
                     <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
                     <span>现价:<strong>&yen;${aGoods.salePrice}</strong></span>
                 </li>

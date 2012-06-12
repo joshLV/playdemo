@@ -1,10 +1,16 @@
 package controllers;
 
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import models.consumer.User;
 import models.order.Order;
-import models.sales.*;
+import models.sales.Area;
+import models.sales.Brand;
+import models.sales.Category;
+import models.sales.GoodsCondition;
+import models.sales.GoodsStatus;
 import org.apache.commons.lang.StringUtils;
 import play.modules.breadcrumbs.Breadcrumb;
 import play.modules.breadcrumbs.BreadcrumbList;
@@ -13,10 +19,8 @@ import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 
 /**
  * 商品控制器.
@@ -63,6 +67,7 @@ public class Goods extends Controller {
         BreadcrumbList breadcrumbs = createBreadcrumbs(goodsCond);
 
         renderGoodsCond(goodsCond);
+        renderGoodsListTitle(goodsCond);
         render(recommendGoodsList, goodsPage, areas, districts, categories, brands, breadcrumbs);
     }
 
@@ -87,16 +92,16 @@ public class Goods extends Controller {
                 renderArgs.put("bought", true);
             }
         }
-       
+
         BreadcrumbList breadcrumbs = new BreadcrumbList();
         long categoryId = 0;
         if (goods.categories != null && goods.categories.size() > 0) {
             Category category = goods.categories.iterator().next();
             categoryId = category.id;
-            breadcrumbs.append(category.name, "/goods/list/" + category.id);
+            breadcrumbs.append(category.name, "/s/" + category.id);
         }
         if (goods.brand != null) {
-            breadcrumbs.append(goods.brand.name, "/goods/list/" + categoryId + "-021-" + goods.brand
+            breadcrumbs.append(goods.brand.name, "/s/" + categoryId + "-021-" + goods.brand
                     .id);
         }
         renderArgs.put("goods", goods);
@@ -187,6 +192,7 @@ public class Goods extends Controller {
             BreadcrumbList breadcrumbs = createBreadcrumbs(goodsCond);
 
             renderGoodsCond(goodsCond);
+            renderGoodsListTitle(goodsCond);
             render("/Goods/index.html", goodsPage, recommendGoodsList, areas, districts, categories, brands,
                     breadcrumbs);
         } catch (Exception e) {
@@ -209,7 +215,37 @@ public class Goods extends Controller {
         renderArgs.put("materialType", goodsCond.materialType);
     }
 
-    private static final String LIST_URL_HEAD = "/goods/list/";
+    private static void renderGoodsListTitle(GoodsCondition goodsCond) {
+        List<String> titleList = new ArrayList<>();
+        if (goodsCond.categoryId > 0) {
+            Category c = Category.findById(goodsCond.categoryId);
+            titleList.add(c.name);
+        }
+        if (!"0".equals(goodsCond.cityId)) {
+            Area city = Area.findById(goodsCond.cityId);
+            titleList.add(city.name);
+        }
+        if (!"0".equals(goodsCond.districtId)) {
+            Area district = Area.findById(goodsCond.districtId);
+            titleList.add(district.name);
+        }
+        if (!"0".equals(goodsCond.areaId)) {
+            Area area = Area.findById(goodsCond.areaId);
+            titleList.add(area.name);
+        }
+        if (goodsCond.brandId > 0) {
+            Brand brand = Brand.findById(goodsCond.brandId);
+            titleList.add(brand.name);
+        }
+
+        if (titleList.size() > 0) {
+            renderArgs.put("condsTitle", StringUtils.join(titleList, " "));
+        } else {
+            renderArgs.put("condsTitle", "所有商品");
+        }
+    }
+
+    private static final String LIST_URL_HEAD = "/s/";
 
     private static BreadcrumbList createBreadcrumbs(GoodsCondition goodsCond) {
         BreadcrumbList breadcrumbs = new BreadcrumbList();

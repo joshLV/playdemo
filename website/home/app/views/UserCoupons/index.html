@@ -117,9 +117,9 @@
                 <tr>
                     <td height="30" align="center">${coupon?.eCouponSn}</td>
                     <td width="320">
-                        <a class="goods-image" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${coupon.goods.id}"
+                        <a class="goods-image" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${coupon.goods.id}"
                            target="_blank"><img src="${coupon?.goods?.imageTinyPath}"/></a>
-                        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/${coupon.goods.id}"
+                        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${coupon.goods.id}"
                            target="_blank">${coupon?.goods?.name}</a>
                     </td>
                     <td align="center">${coupon.order.orderNumber}</td>

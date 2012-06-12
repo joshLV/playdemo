@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>#{get 'title' /}</title>
+    #{get 'metaContent'/}
     <link rel="shortcut icon" href="#{asset.url href:'/images/u/favicon.ico'/}" type="image/x-icon" />
     #{asset.css src:['/u/base.css'] /}
     #{get 'moreStyles' /}
@@ -32,11 +33,11 @@
     <div class="inner">
         <ul id="menu">
             <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}" #{if categoryId == 0}class="current"#{/if}>首页</a></li>
-            <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/1" #{if categoryId == 1}class="current"#{/if}>餐饮美食</a></li>
-            <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/2" #{if categoryId == 2}class="current"#{/if}>食品干货</a></li>
-			<li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/7" #{if categoryId == 7}class="current"#{/if}>休闲娱乐</a></li>
+            <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/1" #{if categoryId == 1}class="current"#{/if}>餐饮美食</a></li>
+            <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/2" #{if categoryId == 2}class="current"#{/if}>食品干货</a></li>
+                        <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/7" #{if categoryId == 7}class="current"#{/if}>休闲娱乐</a></li>
             <li id="duanwu">
-            <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/1001">
+            <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/1001">
                 #{if categoryId == 1001}
                 <img src="http://img.uhcdn.com/images/u/duanwu-cur.gif" />
                 #{/if}
