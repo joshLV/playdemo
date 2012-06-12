@@ -121,7 +121,8 @@
 .sidebar {
     float: right;
 }
-.promise {
+.promise,
+.promise a {
     font-size: 0;
 }
 .notice {
