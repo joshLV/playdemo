@@ -1,0 +1,20 @@
+#{extends 'main.html' /}
+#{set title:'一百券 - 公告' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/u/about.css'] /}
+#{/set}
+<style type="text/css">
+    #section {
+        float: none;
+        padding-left: 120px;
+        text-align: center;
+        width: 760px;
+    }</style>
+<div id="content" class="clearfix">
+    <div id="section">
+        <h3>${topic.title}</h3>
+<pre>
+${topic.getContent()?.raw()}
+</pre>
+    </div>
+</div>
