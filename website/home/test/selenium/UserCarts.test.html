@@ -6,5 +6,5 @@ load:['fixture/user.yml','fixture/goods_base.yml','fixture/goods.yml','fixture/c
 %{id=play.test.Fixtures.idCache.get("models.order.Cart-cart2")}%
  #{include 'test/selenium/step/login.selenium' /}
 open('/orders')
-verifyTextPresent('购物车9件')
+assertText('id=cart-count','9')
 #{/selenium}
