@@ -1,13 +1,6 @@
 #!/usr/bin/env ruby
 
-# ~ unit/GoodsUnitTest...               PASSED     0s
-# ~ unit/ShopUnitTest...                PASSED     0s
-# ~ unit/ShopsTest...                   PASSED     0s
-# ~ function/ShopFunctionTest...        PASSED     0s
-# ~ function/SupplierGoodsTest...       PASSED     2s
-# ~ selenium/Shops...                   PASSED     6s
-# ~ selenium/ShopsAdd...                PASSED     2s
-
+require 'popen4'
 
 #test_passed_regex = /^~\s+(unit|functional|function|selenium)\/\w+\.{3}\s+PASSED/
 #test_failed_regex = /^~\s+(unit|functional|function|selenium)\/\w+\.{3}\s+FAILED/
@@ -51,8 +44,8 @@ app_dirs.each do |dir|
         play clean;
         play auto-test --deps
 END
-    IO.popen(cmd) { |output|
-      output.each_line { |line|
+    POpen4::popen4(cmd) { |stdout, stderr, stdin|
+      stdout.each { |line|
         if line =~ test_passed_regex
           passed_hash[dir] += 1
         end
