@@ -11,7 +11,7 @@ test_failed_regex = /FAILED/
 test_error_regex = /ERROR/
 
 play_home="/app/play-1.2.4/"
-play_home = ""
+# play_home = ""
 dir = ARGV[0]
 
 if ARGV.size() < 1
