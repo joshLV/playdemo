@@ -1,16 +1,20 @@
 package controllers;
 
-import java.util.Date;
-import java.util.List;
+import com.uhuila.common.constants.PlatformType;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 import models.cms.Block;
 import models.cms.BlockType;
+import models.cms.Topic;
+import models.cms.TopicType;
 import models.sales.Area;
 import models.sales.Category;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 首页控制器.
@@ -43,9 +47,11 @@ public class Home extends Controller {
         List<Area> areas = Area.findTopAreas(13);
         List<Category> categories = Category.findTop(8);
         renderArgs.put("categoryId", categoryId);
+        Date currentDate = new Date();
+        //公告
+        List<Topic> topics = Topic.findByType(PlatformType.UHUILA, TopicType.NEWS, currentDate);
 
         // CMS 区块
-        Date currentDate = new Date();
         List<Block> slides = Block.findByType(BlockType.WEBSITE_SLIDE, currentDate);
         List<Block> dailySpecials = Block.findByType(BlockType.DAILY_SPECIAL, currentDate);
         models.sales.Goods dailySpecialGoods = null;
@@ -72,6 +78,6 @@ public class Home extends Controller {
         renderArgs.put("dailySpecial", dailySpecial);
         renderArgs.put("dailySpecialGoods", dailySpecialGoods);
 
-        render(goodsList, recentGoodsList, recommendGoodsList, categories, districts, areas);
+        render(goodsList, recentGoodsList, recommendGoodsList, categories, districts, areas,topics);
     }
 }
