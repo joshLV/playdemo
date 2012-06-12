@@ -44,24 +44,26 @@ passed_hash = Hash.new(0)
 failed_hash = Hash.new(0)
 
 app_dirs.each do |dir|
-  # Dir.chdir("#{current_dir}/#{dir}")
-  cmd =<<END
+  unless failed_result.size > 0
+    # Dir.chdir("#{current_dir}/#{dir}")
+    cmd =<<END
         cd #{current_dir}/#{dir}
         play clean;
         play auto-test --deps
 END
-  IO.popen(cmd) { |output|
-    output.each_line { |line|
-      if line =~ test_passed_regex
-        passed_hash[dir] += 1
-      end
-      if line =~ test_failed_regex or line =~ test_error_regex
-        failed_hash[dir] += 1
-        failed_result << "#{dir}: #{line}"
-      end
-      puts "#{line}"
+    IO.popen(cmd) { |output|
+      output.each_line { |line|
+        if line =~ test_passed_regex
+          passed_hash[dir] += 1
+        end
+        if line =~ test_failed_regex or line =~ test_error_regex
+          failed_hash[dir] += 1
+          failed_result << "#{dir}: #{line}"
+        end
+        puts "#{line}"
+      }
     }
-  }
+  end
 end
 
 printf("=================== %s ====================\n", "Test Report")
