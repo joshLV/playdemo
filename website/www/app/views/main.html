@@ -24,20 +24,6 @@
             您好，欢迎您来到一百券！ [<a id="login_name" href="/login">登录</a>] [<a href="/register">免费注册</a>]
         #{/else}
     </div>
-        <!-- <div class="myUhuila"> -->
-            <!-- <div class="myUhuila-hd"><a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}/">我的一百券</a></div> -->
-            <!-- <div class="myUhuila-bd"> -->
-                <!-- <a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}/orders">我的订单</a> -->
-            <!-- </div> -->
-        <!-- </div> -->
-        <!-- <div class="carts"> -->
-            <!-- <div class="carts-hd"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">购物车<span class="carts-size" id="carts_size">${count}</span>件</a></div> -->
-            <!-- <input type="hidden" id="reload" value="true"/> -->
-            <!-- <div class="carts-bd" id="cart-list"></div> -->
-        <!-- </div> -->
-        <!-- <div class="help"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/help">常见问题</a></div> -->
-    <div id="menu">
-    </div>
 </div>
 <div id="navbar">
     <div class="inner">
@@ -46,7 +32,9 @@
             <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/1" #{if categoryId == 1}class="current"#{/if}>餐饮美食</a></li>
             <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/2" #{if categoryId == 2}class="current"#{/if}>食品干货</a></li>
 			<li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/7" #{if categoryId == 7}class="current"#{/if}>休闲娱乐</a></li>
-			<li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/1001" #{if categoryId == 1001}class="current"#{/if}>舌尖上的端午</a></li>
+            <li id="duanwu">
+                <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/goods/list/1001" #{if categoryId == 1001}class="current"#{/if}><img src="http://img.uhcdn.com/images/u/duanwu.gif" /></a>
+            </li>
         </ul>
         <div id="cart">
             <a class="cart-hd" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">购物车：<strong id="cart-count">${count}</strong>件</a>

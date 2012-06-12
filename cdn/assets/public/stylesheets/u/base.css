@@ -120,12 +120,23 @@ mark { background: #ff0; }
     font-weight: 700;
 }
 #menu a:hover {
-    background: #b3dbdb url(http://img.uhcdn.com/images/u/navbg.png) bottom center no-repeat;
+    background: #5eb6b6 url(http://img.uhcdn.com/images/u/navbg.png) bottom center no-repeat;
 }
 #menu .current {
     color: #333333;
     background: #b3dbdb url(http://img.uhcdn.com/images/u/navbg.png) bottom center no-repeat;
 }
+#duanwu {
+    position: relative;
+}
+#duanwu a {
+    position: absolute;
+    top: -21px;
+}
+#duanwu a:hover {
+    background: none;
+}
+
 #cart {
     position: relative;
     float: right;
