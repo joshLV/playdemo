@@ -608,7 +608,7 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTop(int limit) {
-        return find("status=? and deleted=? and baseSale >=1 and expireAt > ? order by createdAt DESC",
+        return find("status=? and deleted=? and baseSale >=1 and expireAt > ? order by priority DESC,createdAt DESC",
                 GoodsStatus.ONSALE,
                 DeletedStatus.UN_DELETED,
                 new Date()).fetch(limit);
@@ -624,7 +624,7 @@ public class Goods extends Model {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
                 "and g.baseSale >= 1 and g.expireAt > :now and g.id in (select g.id from g.categories c where c.id = :categoryId) " +
-                "order by g.updatedAt, g.createdAt DESC");
+                "order by priority DESC,createdAt DESC");
         q.setParameter("status", GoodsStatus.ONSALE);
         q.setParameter("deleted", DeletedStatus.UN_DELETED);
         q.setParameter("now", new Date());
