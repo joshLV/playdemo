@@ -83,6 +83,7 @@ goods.null=
 goods.useBeginTime=使用开始时间
 goods.useEndTime=使用结束时间
 goods.useTime=可用时段
+goods.priority=精选指数
 imagePath=图片
 shop.name=门店名称
 shop.address=门店地址
