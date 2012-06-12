@@ -75,6 +75,7 @@ GET     /areas/subs/{areaId}/{limit}            Areas.showTopSubAreas
 
 GET     /votes                                  Votes.index
 POST    /votes                                  Votes.update
+GET     /is_voted                               Votes.isVoted
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
