@@ -35,9 +35,9 @@
         <div class="notice">
             <div class="notice-hd">公告</div>
             <ul class="notice-bd">
-                <li><a href="/service"><span>未消费无条件退款</span></a></li>
-                <li><a href="/service"><span>过期未消费，一键立即退款</span></a></li>
-                <li><a href="/service"><span>消费不满意，24小时及时处理</span></a></li>
+                #{list topics, as:'topic'}
+                <li><a href="/topic/${topic.id}"><span>${topic.title}</span></a></li>
+                #{/list}
             </ul>
         </div>
     </div>
