@@ -83,10 +83,17 @@ mark { background: #ff0; }
     font-weight: 700;
     font-family: "Microsoft Yahei";
 }
-#user {
-    height: 48px;
-    padding: 40px 0 0 0;
+#right {
     float: right;
+}
+#user {
+    line-height: 22px;
+}
+#line {
+    padding-top: 20px;
+    color: #f50;
+    font-size: 16px;
+    text-align: right;
 }
 
 /** 导航 **/

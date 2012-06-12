@@ -15,14 +15,17 @@
             <img src="#{asset.url href:'/images/u/logo.gif'/}" width="180" height="88" alt="一百券"/>
         </a>
     </div>
-    <div id="user">
-        #{if cas?.isLogin}
-            欢迎您, <a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}"
-                    id="login_name">${cas.loginName}</a> <a href="/logout">退出</a>
-        #{/if}
-        #{else}
-            您好，欢迎您来到一百券！ [<a id="login_name" href="/login">登录</a>] [<a href="/register">免费注册</a>]
-        #{/else}
+    <div id="right">
+        <div id="user">
+            #{if cas?.isLogin}
+                欢迎您, <a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}"
+                        id="login_name">${cas.loginName}</a> <a href="/logout">退出</a>
+            #{/if}
+            #{else}
+                您好，欢迎您来到一百券！ [<a id="login_name" href="/login">登录</a>] [<a href="/register">免费注册</a>]
+            #{/else}
+        </div>
+        <div id="line">客服热线： 400-6262-166</div>
     </div>
 </div>
 <div id="navbar">
