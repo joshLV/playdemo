@@ -30,7 +30,6 @@ $(function () {
             sale_price = $(this).attr("sale_price"),
             all_number = parseInt($("#all_number").html()),
             all_price = $("#all_price").html();
-
         $.ajax({
             type:'DELETE',
             url:'/carts/' + goods_id,

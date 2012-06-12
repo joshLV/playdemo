@@ -29,6 +29,16 @@ public class DateUtil {
         return calendar.getTime();
     }
 
+    public static Date getBeginOfDay() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 000);
+        return calendar.getTime();
+    }
+
     /**
      * 7天后的结束时间
      *

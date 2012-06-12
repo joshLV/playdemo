@@ -23,6 +23,7 @@ GET     /about                                  Application.about
 GET     /contact                                Application.contact
 GET     /help                                   Application.help
 GET     /service                                Application.service
+GET     /topic/{id}                             Application.topic
 
 GET     /goods                                  Goods.index
 GET     /goods/list/{condition}                 Goods.list
@@ -72,6 +73,8 @@ GET     /areas/areas/{areaId}                   Areas.showArea
 GET     /areas/subs/{areaId}                    Areas.showAllSubAreas
 GET     /areas/subs/{areaId}/{limit}            Areas.showTopSubAreas
 
+GET     /votes                                  Votes.index
+POST    /votes                                  Votes.update
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
