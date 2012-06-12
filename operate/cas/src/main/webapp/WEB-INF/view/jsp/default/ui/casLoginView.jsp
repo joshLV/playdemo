@@ -49,14 +49,14 @@
                         </li>
                         <li class="field">
                             <div class="input">
-                                <label>用户名：</label> 
+                                <label>用户名：</label>
                                 <form:input  cssErrorClass="error" id="username" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="false" htmlEscape="true" />
                             </div>
                         </li>
 
                         <li class="field">
                             <div class="input">
-                                <label>密码：</label> 
+                                <label>密码：</label>
                                 <form:password  cssErrorClass="error" id="password" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
                             </div>
                         </li>
@@ -65,26 +65,18 @@
                         <input type="hidden" name="execution" value="${flowExecutionKey}" />
                         <input type="hidden" name="_eventId" value="submit" />
 
-                        <button id="loginbutton" type="submit" 
-                                class="bt colorw bold">登录</button> 
+                        <button id="loginbutton" type="submit"
+                                class="bt colorw bold">登录</button>
                 </li>
-                <li class="fieldnot"><span>还没有一百券账号?</span> <span
-                    class="colorred">&nbsp;&nbsp;&nbsp;&nbsp;</span></li>
-
                 </ul>
                 <div class="clear"></div>
             </div>
             </form:form>
-            
-            <p class="loginfj">
-                <span class="colorred">注：</span>如您手机已经绑定过一百券"优卡"(会员卡)，<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;并且首次登录网站请<a href="#">点击</a>
-            </p>
         </div>
     </div>
 
 </div>
-        
+
     </body>
 </html>
 
