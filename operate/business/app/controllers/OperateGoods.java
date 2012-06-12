@@ -462,6 +462,17 @@ public class OperateGoods extends Controller {
     }
 
     /**
+     * 拒绝上架申请.
+     *
+     * @param id 商品ID
+     */
+    public static void priority(Long id, Goods goods) {
+        models.sales.Goods.updatePriority(id, goods.priority);
+
+        index(null);
+    }
+
+    /**
      * 上下架指定商品
      *
      * @param status 商品状态

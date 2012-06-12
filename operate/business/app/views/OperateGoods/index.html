@@ -117,7 +117,10 @@
                         <tr>
                             <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${goods.id}?preview=true" target="_blank"><img
                                     src="${goods?.imageTinyPath}"/></a></td>
-                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${goods.id}?preview=true" target="_blank">${goods?.name}</a></td>
+                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${goods.id}?preview=true" target="_blank">${goods?.name}
+                           </a>
+                            #{if goods.priority != null}
+                            &nbsp;<span style="color: #ff0000;">&{'goods.priority'}:${goods.priority}</span>#{/if}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -151,6 +154,9 @@
                     #{if !models.sales.GoodsStatus.ONSALE.equals(goods.status) && !models.sales.GoodsStatus.APPLY
                 .equals(goods.status)}/ <a href="@{OperateGoods.edit(goods.id)}">修改</a>
                         / #{vx.deleteLink action:"goods", id:goods.id, name:goods.name/}#{/if}
+                / #{if models.sales.GoodsStatus.ONSALE.equals(goods.status) }
+                    <a href="#" id="linkSend_${goods.id}" onclick="prepareSend('${goods.id}')">设置精选</a>
+                #{/if}
             </tr>
             #{/paginate.list}
             </tbody>
@@ -162,3 +168,48 @@
         </ul>
     </div>
 </div>
+
+ <div class="modal" id="sendModal" style="display: none;">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+
+        <h3>设置精选</h3>
+    </div>
+    <div class="modal-body">
+    #{form @OperateOrders.index(), id:"setForm", name:"setForm",class:"form-horizontal",method:"PUT"}
+    #{layout_operate.textField name:'goods.priority', value:goods?.priority, required:true/}
+    #{/form}
+    </div>
+    <div class="modal-footer">
+        <a href="#" id="sure" class="btn btn-primary">确定</a>
+        <a href="#" class="btn" data-dismiss="modal">取消</a>
+    </div>
+</div>
+
+ <script type="text/javascript">
+    function prepareSend(id) {
+        $("#setForm").attr("action", "/goods/" + id + "/priority?x-http-method-override=PUT");
+        $('#sendModal').modal('show');
+    }
+
+    $(function () {
+            $("#sure").click(function () {
+                var result = true;
+                if ($("#goods_priority").val().trim() == "") {
+//                $("#note_order_deliveryNo").addClass("error");
+                    $("#note_goods_priority").html("<span style='display: block;color: #ff0000;'>请输入精选指数!</span>");
+                    $("#note_goods_priority").focus();
+                    result = false;
+                }
+
+                if (isNaN($("#goods_priority").val().trim())) {
+                    $("#note_goods_priority").html("<span style='display: block;color: #ff0000;'>精选指数无效!</span>");
+                    $("#note_goods_priority").focus();
+                    result = false;
+                }
+                if (result) {
+                    $("#setForm").submit();
+                }
+            });
+    });
+</script>

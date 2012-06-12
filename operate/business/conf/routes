@@ -13,6 +13,7 @@ PUT     /goods/{id}                             OperateGoods.update
 PUT     /goods/{id}/onSale                      OperateGoods.onSale
 PUT     /goods/{id}/offSale                     OperateGoods.offSale
 PUT     /goods/{id}/reject                      OperateGoods.reject
+PUT     /goods/{id}/priority                    OperateGoods.priority
 DELETE  /goods/{id}                             OperateGoods.delete
 POST    /goods/images                           UploadFiles.uploadJson
 POST    /goods/filemanager                      UploadFiles.fileManagerJson
