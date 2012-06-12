@@ -1,7 +1,7 @@
 #{fixture delete:'all', load:['fixture/user.yml','fixture/goods.yml'] /}
 #{selenium 'Test Goods/show.html Normal'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods1")}')
-verifyTitle('一百券 - 商品详情')
+verifyTitle('【一百券】测试商品1-一百券-网上消费券首选门户')
 verifyTextPresent('测试商品1')
 verifyTextPresent('2012-02-01')
 verifyTextPresent('2092-02-02')
@@ -12,18 +12,18 @@ verifyTitle('很抱歉，您访问的页面不存在')
 #{/selenium}
 #{selenium 'Test Goods/show.html OFFSALE'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods3")}')
-verifyTitle('一百券 - 商品详情')
+verifyTitle('【一百券】测试商品3-一百券-网上消费券首选门户')
 verifyTextPresent('测试商品3')
 #{/selenium}
 #{selenium 'Test Goods/show.html expired'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods4")}')
-verifyTitle('一百券 - 商品详情')
+verifyTitle('【一百券】测试商品4-一百券-网上消费券首选门户')
 verifyTextPresent('测试商品4')
 #{/selenium}
 
 #{selenium 'Test Goods/show.html 限购商品'}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods5")}')
-verifyTitle('一百券 - 商品详情')
+verifyTitle('【一百券】测试商品5-一百券-网上消费券首选门户')
 verifyTextPresent('限购1件')
 %{
      id = play.test.Fixtures.idCache.get("models.consumer.User-user");
@@ -36,7 +36,7 @@ verifyTextPresent('限购1件')
 }%
  #{include 'test/selenium/step/login.selenium' /}
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods5")}')
-verifyTitle('一百券 - 商品详情')
+verifyTitle('【一百券】测试商品5-一百券-网上消费券首选门户')
 verifyTextPresent('您已经购买过此商品！')
 #{/selenium}
 #{selenium 'Test Goods/show.html Not found'}

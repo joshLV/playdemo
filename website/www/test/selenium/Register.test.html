@@ -18,8 +18,8 @@ long time = System.currentTimeMillis();
     type('id=password','admin${time}@uhuila.com')
     clickAndWait('css=input[type="submit"]')
     assertNotTitle('CAS Mock Server - Login')
-        
-    verifyTitle('一百券 - 首页')
+
+    verifyTitle('一百券-网上消费券首选门户,消费券,代金券,优惠券,美食券,电子券,提货券')
     verifyText('id=login_name','admin${time}@uhuila.com')
     assertElementPresent('css=body')
 #{/selenium}

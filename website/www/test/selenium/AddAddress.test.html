@@ -5,7 +5,7 @@
     #{include 'test/selenium/step/login.selenium' /}
 
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods6")}')
-verifyTitle('一百券 - 商品详情')
+verifyTitle('【一百券】测试商品6-一百券-网上消费券首选门户')
 clickAndWait('id=link_buy_now')
 verifyTextPresent('实物凭证 - 订单信息')
 waitForElementPresent('id=J_addrCurrent')
