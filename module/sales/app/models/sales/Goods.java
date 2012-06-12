@@ -248,8 +248,6 @@ public class Goods extends Model {
     /**
      * 优先指数.
      */
-    @Min(1)
-    @Max(5)
     public Integer priority = 0;
     /**
      * 收藏指数.
