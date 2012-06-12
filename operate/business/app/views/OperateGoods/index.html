@@ -155,7 +155,9 @@
                 .equals(goods.status)}/ <a href="@{OperateGoods.edit(goods.id)}">修改</a>
                         / #{vx.deleteLink action:"goods", id:goods.id, name:goods.name/}#{/if}
                 / #{if models.sales.GoodsStatus.ONSALE.equals(goods.status) }
-                    <a href="#" id="linkSend_${goods.id}" onclick="prepareSend('${goods.id}')">设置精选</a>
+                    <a href="#" id="linkSend_${goods.id}" onclick="prepareSend('${goods
+                    .id}','${goods.priority}')
+                            ">设置精选</a>
                 #{/if}
             </tr>
             #{/paginate.list}
@@ -177,7 +179,7 @@
     </div>
     <div class="modal-body">
     #{form @OperateOrders.index(), id:"setForm", name:"setForm",class:"form-horizontal",method:"PUT"}
-    #{layout_operate.textField name:'goods.priority', value:goods?.priority, required:true/}
+    #{layout_operate.textField name:'goods.priority',value:'',required:true/}
     #{/form}
     </div>
     <div class="modal-footer">
@@ -187,16 +189,16 @@
 </div>
 
  <script type="text/javascript">
-    function prepareSend(id) {
+    function prepareSend(id,priority) {
         $("#setForm").attr("action", "/goods/" + id + "/priority?x-http-method-override=PUT");
         $('#sendModal').modal('show');
+        $("#goods_priority").val( priority);
     }
 
     $(function () {
             $("#sure").click(function () {
                 var result = true;
                 if ($("#goods_priority").val().trim() == "") {
-//                $("#note_order_deliveryNo").addClass("error");
                     $("#note_goods_priority").html("<span style='display: block;color: #ff0000;'>请输入精选指数!</span>");
                     $("#note_goods_priority").focus();
                     result = false;

@@ -7,12 +7,11 @@
     #section {
         float: none;
         padding-left: 120px;
-        text-align: center;
         width: 760px;
     }</style>
 <div id="content" class="clearfix">
     <div id="section">
-        <h3>${topic.title}</h3>
+        <h3 style="text-align: center">${topic.title}</h3>
 <pre>
 ${topic.getContent()?.raw()}
 </pre>

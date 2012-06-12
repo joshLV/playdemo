@@ -6,7 +6,6 @@ load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/resaler.yml'] /}
     #{include 'test/selenium/step/login.selenium' /}
     open('/resalers')
     assertTextPresent('分销商一览')
-    assertTextPresent('个人')
     assertTextPresent('yanjy')
     assertTextPresent('13213123121')
     assertTextPresent('审核未通过')
