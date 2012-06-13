@@ -11,6 +11,7 @@ require:
     - com.taobao -> taobao-top 20120405
     - resale -> resale
     - sms -> sms
+    - cms -> cms
     - accounts -> accounts
     - play1 -> paginate head
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
@@ -39,6 +40,7 @@ repositories:
         artifact:   "${application.path}/../module/[module]"
         contains:
             - sms -> *
+            - cms -> *
             - resale -> *
             - accounts  -> *
             - oauth -> *
