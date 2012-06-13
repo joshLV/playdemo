@@ -220,6 +220,9 @@ public class Goods extends Controller {
         if (goodsCond.categoryId > 0) {
             Category c = Category.findById(goodsCond.categoryId);
             titleList.add(c.name);
+            if (StringUtils.isNotBlank(c.keywords)) {
+                titleList.add(c.keywords);
+            }
         }
         if (!"0".equals(goodsCond.cityId)) {
             Area city = Area.findById(goodsCond.cityId);

@@ -4,8 +4,14 @@
  */
 package controllers;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.FileUploadUtil;
+import static play.Logger.warn;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import models.resale.ResalerLevel;
 import models.sales.Brand;
 import models.sales.Category;
@@ -27,16 +33,8 @@ import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
-import static play.Logger.warn;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.FileUploadUtil;
 
 /**
  * 通用说明：
@@ -467,8 +465,11 @@ public class OperateGoods extends Controller {
      * @param id 商品ID
      */
     public static void priority(Long id, Goods goods) {
-        models.sales.Goods.updatePriority(id, goods.priority);
-
+        models.sales.Goods updateGoods = models.sales.Goods.findById(id);
+        updateGoods.keywords = goods.keywords;
+        updateGoods.priority = goods.priority;
+        updateGoods.save();
+        
         index(null);
     }
 

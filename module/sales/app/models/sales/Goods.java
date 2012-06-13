@@ -268,6 +268,12 @@ public class Goods extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "material_type")
     public MaterialType materialType;
+    
+    /**
+     * SEO关键字.
+     */
+    @Column(name="keywords")
+    public String keywords;
 
     /**
      * 不允许发布的电子商务网站.
@@ -576,6 +582,7 @@ public class Goods extends Model {
         updateGoods.brand = goods.brand;
         updateGoods.isAllShop = goods.isAllShop;
         updateGoods.status = goods.status;
+        updateGoods.keywords = goods.keywords;
         updateGoods.limitNumber = goods.limitNumber;
         if (!StringUtils.isEmpty(goods.imagePath)) {
             updateGoods.imagePath = goods.imagePath;
@@ -693,20 +700,6 @@ public class Goods extends Model {
 
             goods.save();
         }
-    }
-
-    /**
-     * 更新精选指数
-     *
-     * @param id
-     * @param priority
-     */
-    public static void updatePriority(Long id, int priority) {
-
-        models.sales.Goods goods = models.sales.Goods.findById(id);
-        goods.priority = priority;
-        goods.save();
-
     }
 
     private static final String expiration = "30mn";

@@ -27,6 +27,12 @@ public class Category extends Model {
      */
     @Column(name = "display_order")
     public int displayOrder;
+    
+    /**
+     * SEO关键字.
+     */
+    @Column(name="keywords")
+    public String keywords;
 
     /**
      * 所属分类Id

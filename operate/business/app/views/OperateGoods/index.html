@@ -115,12 +115,16 @@
                     <table>
                         <tbody>
                         <tr>
-                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${goods.id}?preview=true" target="_blank"><img
+                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/g/${goods.id}?preview=true" target="_blank"><img
                                     src="${goods?.imageTinyPath}"/></a></td>
-                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${goods.id}?preview=true" target="_blank">${goods?.name}
+                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/g/${goods.id}?preview=true" target="_blank">${goods?.name}
                            </a>
                             #{if goods.priority != null}
-                            &nbsp;<span style="color: #ff0000;">&{'goods.priority'}:${goods.priority}</span>#{/if}</td>
+                              &nbsp;<span style="color: #ff0000;">&{'goods.priority'}:${goods.priority}</span>#{/if}
+                            #{if goods.keywords != null}
+                              <br/>SEO关键字: ${goods.keywords}
+                            #{/if}
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -156,8 +160,8 @@
                         / #{vx.deleteLink action:"goods", id:goods.id, name:goods.name/}#{/if}
                 / #{if models.sales.GoodsStatus.ONSALE.equals(goods.status) }
                     <a href="#" id="linkSend_${goods.id}" onclick="prepareSend('${goods
-                    .id}','${goods.priority}')
-                            ">设置精选</a>
+                    .id}','${goods.priority}','${goods.keywords}')
+                            ">网站选项</a>
                 #{/if}
             </tr>
             #{/paginate.list}
@@ -175,11 +179,12 @@
     <div class="modal-header">
         <a class="close" data-dismiss="modal">×</a>
 
-        <h3>设置精选</h3>
+        <h3>设置网站发布选项</h3>
     </div>
     <div class="modal-body">
     #{form @OperateOrders.index(), id:"setForm", name:"setForm",class:"form-horizontal",method:"PUT"}
     #{layout_operate.textField name:'goods.priority',value:'',required:true/}
+    #{layout_operate.textField name:'goods.keywords', value:'' /}
     #{/form}
     </div>
     <div class="modal-footer">
@@ -189,10 +194,11 @@
 </div>
 
  <script type="text/javascript">
-    function prepareSend(id,priority) {
+    function prepareSend(id,priority,keywords) {
         $("#setForm").attr("action", "/goods/" + id + "/priority?x-http-method-override=PUT");
         $('#sendModal').modal('show');
-        $("#goods_priority").val( priority);
+        $("#goods_priority").val(priority);
+        $("#goods_keywords").val(keywords);
     }
 
     $(function () {
