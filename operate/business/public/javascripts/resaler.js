@@ -5,7 +5,8 @@ function checkResaler(id,status,flg){
 	}else {
 		$("#checkRemark").html("");
 		var level= $("#level").val();
-		var url="/resalers/update?id="+id+"&status="+status+"&level="+level+"&remark="+remark;
+		var creditable = $("input:radio[name='creditable']:checked").val()
+		var url="/resalers/update?id="+id+"&status="+status+"&level="+level+"&remark="+remark+"&creditable="+creditable;
 		$("#checkFrm").attr("method", "POST");
 		$("#checkFrm").attr("action", url);
 		$("#checkFrm").submit();

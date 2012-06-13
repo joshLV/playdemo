@@ -88,10 +88,10 @@
             <div class="controls">
                 #{if !"1".equals(flag)}
                     <label class="radio">
-                        <input type="radio" name="creditable" value="YES" #{if "YES".equals(resaler?.creditable?.toString())} checked#{/if}>是
+                        <input type="radio" name="creditable" value="YES" #{if resaler?.creditable} checked#{/if}>是
                     </label>
                     <label class="radio">
-                        <input type="radio" name="creditable" value="NO"  #{if !"YES".equals(resaler?.creditable?.toString())} checked#{/if}>否
+                        <input type="radio" name="creditable" value="NO"  #{if !resaler?.creditable} checked#{/if}>否
                     </label>
                 #{/if}
                 #{else}
