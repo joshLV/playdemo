@@ -61,13 +61,16 @@ public class OperateGoods extends Controller {
             condition = new GoodsCondition();
             condition.status = GoodsStatus.ONSALE;
         }
-        condition.orderBy = "g.createdAt";
+        if (condition.priority == 1) {
+            condition.orderBy = "g.priority";
+        } else {
+            condition.orderBy = "g.createdAt";
+        }
 
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(true);
         List<Supplier> supplierList = Supplier.findAll();
-
         render(goodsPage, supplierList, condition);
     }
 

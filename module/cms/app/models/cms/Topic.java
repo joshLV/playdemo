@@ -54,6 +54,19 @@ public class Topic extends Model {
     private String content;
 
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
+    static {
+        //增加可信标签到白名单
+        HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div", "table", "tbody", "tr", "td",
+                "background-color", "width");
+        //增加可信属性
+        HTML_WHITE_TAGS.addAttributes(":all", "style", "class", "id", "name");
+        HTML_WHITE_TAGS.addAttributes("table", "style", "cellpadding", "cellspacing", "border", "bordercolor", "align");
+        HTML_WHITE_TAGS.addAttributes("span", "style","border","align");
+        HTML_WHITE_TAGS.addAttributes("object", "width", "height", "classid", "codebase");
+        HTML_WHITE_TAGS.addAttributes("param", "name", "value");
+        HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen",
+                "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
+    }
 
     @Enumerated(EnumType.STRING)
     public DeletedStatus deleted;

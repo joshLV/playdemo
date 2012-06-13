@@ -21,7 +21,13 @@ DELETE  /blocks/{id}                            CmsBlocks.delete
 GET     /blocks/{id}/edit                       CmsBlocks.edit
 PUT     /blocks/{id}                            CmsBlocks.update
 
-
+#问卷调查管理
+GET     /votes                                 WebVotes.index
+GET     /votes/new                             WebVotes.add
+POST    /votes                                 WebVotes.create
+DELETE  /votes/{id}                            WebVotes.delete
+GET     /votes/{id}/edit                       WebVotes.edit
+PUT     /votes/{id}                            WebVotes.update
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

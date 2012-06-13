@@ -7,6 +7,8 @@
         <permission key="TOPICS" text="公告管理" roles="editor"/>
         <permission key="BLOCKS_NEW" text="新增内容块管理" roles="editor"/>
         <permission key="BLOCKS" text="内容块管理" roles="editor"/>
+        <permission key="VOTE_NEW" text="新增有奖调查" roles="editor"/>
+        <permission key="VOTES" text="有奖调查管理" roles="editor"/>
     </permission>
     <navigation key="cms_main" text="网站管理" action="CmsBlocks.index" permission="CMS" display-order="200">
         <navigation key="topic" text="公告" permission="TOPICS_NEW,TOPICS">
@@ -16,6 +18,10 @@
         <navigation key="block" text="内容块" permission="BLOCKS_NEW,BLOCKS">
             <navigation key="blocks_add" action="CmsBlocks.add" text="内容块添加" permission="BLOCKS_NEW"/>
             <navigation key="blocks_index" action="CmsBlocks.index" text="内容块管理" permission="BLOCKS"/>
+        </navigation>
+          <navigation key="vote" text="有奖调查" permission="VOTE_NEW,VOTES">
+            <navigation key="votes_add" action="WebVotes.add" text="有奖调查添加" permission="VOTE_NEW"/>
+            <navigation key="votes_index" action="WebVotes.index" text="有奖调查管理" permission="VOTES"/>
         </navigation>
     </navigation>
 </application>

@@ -65,7 +65,13 @@
                     #{option "OFFSALE"}&{'goods.OFFSALE'}#{/option}
                     #{option "APPLY"}&{'goods.APPLY'}#{/option}
                     #{option "REJECT"}&{'goods.REJECT'}#{/option}
-                #{/select}</td>
+                #{/select}
+                    &nbsp; &nbsp;
+                    设置精选：<input type="checkbox" name="condition.priority" id="priority" class="input-medium"
+                               value="${condition?.priority}" ${condition?.priority == 1 ?'checked':''}/>
+                </td>
+
+
                 <td>
                     <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
                 </td>
@@ -219,5 +225,14 @@
                     $("#setForm").submit();
                 }
             });
+
+          $("#priority").click(function () {
+              if(this.checked){
+                this.value="1";
+              } else {
+                 this.value="0"  ;
+              }
+              $("#frmlist").submit();
+          });
     });
 </script>

@@ -1,0 +1,69 @@
+#{extends 'main.html' /}
+#{set title:'一百券 - 有奖问答' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/u/carts-step.css'] /}
+#{/set}
+#{set 'moreScripts'}
+<script type="text/javascript">
+    $(window).load(function () {
+        if ('${isVoted}' == 'voted') {
+            alert("您已经参与过了！");
+            window.location.href = "/";
+            return;
+        }
+    });
+    $("#bt_submit").click(function () {
+        var checked = [];
+        var answers = "";
+        $("input[id^=answer_]").each(function () {
+            if (this.checked) {
+                checked.push(this.value);
+                var id_temp = $(this).attr("id");
+                answers += checked.push(id_temp.substr(id_temp.lastIndexOf("_") + 1)) + "-" + this.value + ",";
+            }
+        })
+        if (answers.length == 0) {
+            alert("请选择答案！");
+            return;
+        }
+        $("#answers").val(answers);
+        $.get("/is_voted?answers=" + answers, function (data) {
+            if (data == 'voted') {
+                alert("您已经参与过了！");
+                return;
+            } else {
+                $("#vote_form").submit();
+            }
+        }, "text");
+    });
+
+
+</script>
+#{/set}
+#{set i:0} #{/set}
+<div class="form-bd">
+#{form @Votes.update() , id:"vote_form"}
+    #{if votes.size()>0}
+    #{list items:votes, as:'vote' }
+        <div class="field">
+            <label class="label">${++i} ${vote.content}</label><br>
+            <input name="question.answer_${i}" id="answer_${i}" type="radio" value="A"/>${vote.answer1}
+            <input name="question.answer_${i}" id="answer_${i}" type="radio" value="B"/>${vote.answer2}
+            #{if vote.answer3 != ''}
+            <input name="question.answer_${i}" id="answer_${i}" type="radio" value="C"/>${vote.answer3}
+            #{/if}
+            #{if vote.answer4 != ''}
+            <input name="question.answer_${i}" id="answer_${i}" type="radio" value="D"/>${vote.answer4}
+             #{/if}
+        </div>
+    #{/list}
+    <input type="hidden" id="answers" name="answers"/>
+    <input type="hidden" id="voteIds" name="voteIds">
+    <span id="bt" style="display: block"><a class="buy" href="#" id="bt_submit">提交</a></span>
+#{/if}
+    #{else}
+       <div style="text-align:center;padding:10px 0;font-size: 18px;">今天没有有奖问答活动，请逛逛其他的吧:)<div>
+    #{/else}
+#{/form}
+</div>
+

@@ -123,7 +123,7 @@
         #{/if}
             <li class="type">商品类型:<span>&{'goods.'+goods.materialType}</span></li>
             <li class="shipmod">配送方式:<span>#{if models.sales.MaterialType.ELECTRONIC.equals(goods.materialType)}
-                手机短信#{/if}#{else}快递#{/else}</span></li>
+                手机短信#{/if}#{else}快递 (运费：${models.order.Order.FREIGHT} 元)#{/else}</span></li>
             <li class="deadline">券有效期:<span>${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span></li>
             <li class="amount">购买数量:
                 <span><input class="num_input_bg" id="number" name="number" type="text" value="1"/> 件</span>

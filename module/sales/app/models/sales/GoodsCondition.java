@@ -1,13 +1,14 @@
 package models.sales;
 
+import com.uhuila.common.constants.DeletedStatus;
+import models.resale.Resaler;
+import org.apache.commons.lang.StringUtils;
+import play.Logger;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import models.resale.Resaler;
-import org.apache.commons.lang.StringUtils;
-import play.Logger;
-import com.uhuila.common.constants.DeletedStatus;
 
 /**
  * 商品查询条件.
@@ -43,6 +44,7 @@ public class GoodsCondition {
     public GoodsStatus status;
     public long baseSaleBegin = -1;
     public long baseSaleEnd = -1;
+    public int priority;
 
     public Date expireAtBegin;
     public Date expireAtEnd;
