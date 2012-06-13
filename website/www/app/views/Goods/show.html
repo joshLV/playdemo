@@ -2,8 +2,8 @@
 #{set title: '【' + (goods.brand == null ? '一百券' : goods.brand?.name) + '】' + goods.name
       + '-一百券-网上消费券首选门户' + (goods.keywords == null ? '' : ("【" + goods.keywords + "】") ) /}
 #{set 'metaContent'}
-<meta name="Description" content="一百券-${goods.brand?.name} ${goods.name},消费券,代金券,优惠券,美食券,电子券,提货券">
-<meta name="Keywords" content="上海优惠券,一百券,${goods.brand?.name},${goods.name},${goods.keywords},消费券,代金券,优惠券,美食券,电子券,优惠上海,提货券">
+<meta name="Description" content="一百券-${goods.brand?.name} ${goods.name},${goodsKeywords}消费券,代金券,优惠券,美食券,电子券,提货券">
+<meta name="Keywords" content="上海优惠券,一百券,${goods.brand?.name},${goods.name},${goodsKeywords},消费券,代金券,优惠券,美食券,电子券,优惠上海,提货券">
 #{/set}
 #{set 'moreStyles'}
     #{asset.css src:['/u/detail.css']/}

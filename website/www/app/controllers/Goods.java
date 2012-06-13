@@ -121,6 +121,34 @@ public class Goods extends Controller {
         }
         //增加商品推荐指数
         models.sales.Goods.addRecommend(goods, false);
+
+        //设置导航栏位置及类别相关的关键字.
+        List<String> categoryKeywords = new ArrayList<>();
+        if (goods.categories != null) {
+            for (Category c : goods.categories) {
+                if (c.parentCategory != null) {
+                    renderArgs.put("categoryId", c.parentCategory.id);
+                } else {
+                    renderArgs.put("categoryId", c.id);
+                }
+                if (StringUtils.isNotBlank(c.keywords)) {
+                    String[] ks = c.keywords.split("[,;\\s]+");
+                    for (String k : ks) {
+                        categoryKeywords.add(k);
+                    }
+                }
+            }
+        }
+        if (StringUtils.isNotBlank(goods.keywords)) {
+            String[] ks = goods.keywords.split("[,;\\s]+");
+            for (String k : ks) {
+                categoryKeywords.add(k);
+            }
+        }
+        if (categoryKeywords.size() > 0) {
+            renderArgs.put("goodsKeywords", StringUtils.join(categoryKeywords, ","));
+        }
+
         //记录用户浏览过的商品
         Http.Cookie cookie = request.cookies.get("saw_goods_ids");
         String sawGoodsIds = ",";
@@ -222,6 +250,9 @@ public class Goods extends Controller {
             titleList.add(c.name);
             if (StringUtils.isNotBlank(c.keywords)) {
                 titleList.add(c.keywords);
+            }
+            if (c.parentCategory != null) {
+                renderArgs.put("categoryId", c.parentCategory.id);
             }
         }
         if (!"0".equals(goodsCond.cityId)) {
