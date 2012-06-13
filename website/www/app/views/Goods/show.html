@@ -43,7 +43,7 @@
         $("#link_buy_now").click(function () {
             var limitNumber ='${goods.limitNumber}';
             var number = Number($("#number").val());
-            if (limitNumber !='' && number >limitNumber) {
+            if (limitNumber > 0 && number >limitNumber) {
                $(".error").html("<strong>只能购买"+limitNumber+"个<strong>").css('color','#F55');
                 return false;
             }

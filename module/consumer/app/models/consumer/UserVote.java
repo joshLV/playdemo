@@ -1,9 +1,13 @@
 package models.consumer;
 
+import com.uhuila.common.constants.DeletedStatus;
 import models.cms.VoteQuestion;
+import models.cms.VoteType;
 import play.db.jpa.Model;
+import play.modules.paginate.ModelPaginator;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * TODO.
@@ -23,11 +27,30 @@ public class UserVote extends Model {
     @JoinColumn(name = "vote_id", nullable = true)
     public VoteQuestion vote;
 
+    @Column(name = "created_at")
+    public Date createdAt;
+
     public String answer;
+    @Enumerated(EnumType.STRING)
+    public DeletedStatus deleted;
 
     public UserVote(User user, VoteQuestion vote, String answer) {
         this.user = user;
         this.vote = vote;
         this.answer = answer;
+        this.createdAt = new Date();
+
     }
+
+    public static ModelPaginator getPage(int pageNumber, int pageSize,VoteType type) {
+
+        ModelPaginator<UserVote> votePage;
+        votePage = new ModelPaginator<UserVote>(UserVote.class, "deleted = ? ",
+                DeletedStatus.UN_DELETED).orderBy("createdAt desc");
+
+        votePage.setPageNumber(pageNumber);
+        votePage.setPageSize(pageSize);
+        return votePage;
+    }
+
 }

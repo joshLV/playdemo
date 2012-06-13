@@ -87,7 +87,7 @@ GET     /consumers                              OperateConsumers.index
 GET     /consumers/{id}                         OperateConsumers.show
 PUT     /consumers/{id}/freeze                  OperateConsumers.freeze
 PUT     /consumers/{id}/unfreeze                OperateConsumers.unfreeze
-
+GET     /consumers_votes                        OperateConsumersWinningInfo.index
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

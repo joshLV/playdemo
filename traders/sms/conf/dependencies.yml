@@ -19,6 +19,7 @@ require:
     - accounts -> accounts
     - org.jsoup -> jsoup 1.6.1
     - sms -> sms
+    - cms -> cms
     - view_ext -> view_ext
 
 repositories:
@@ -50,3 +51,4 @@ repositories:
             - paginate_ext -> *
             - sms -> *
             - view_ext -> *
+            - cms -> *

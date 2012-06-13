@@ -22,7 +22,7 @@ require:
     - order -> order
     - accounts -> accounts
     - sms -> sms
-
+    - cms -> cms
 repositories:
     - mavenRepository:
         type:       iBiblio
@@ -54,3 +54,4 @@ repositories:
             - order -> *
             - accounts -> *
             - sms -> *
+            - cms -> *

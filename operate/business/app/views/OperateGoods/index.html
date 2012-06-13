@@ -125,7 +125,7 @@
                                     src="${goods?.imageTinyPath}"/></a></td>
                             <td><a href="http://${play.Play.configuration.getProperty("www.url")}/g/${goods.id}?preview=true" target="_blank">${goods?.name}
                            </a>
-                            #{if goods.priority != null}
+                            #{if goods.priority != null && goods.priority >0}
                               &nbsp;<span style="color: #ff0000;">&{'goods.priority'}:${goods.priority}</span>#{/if}
                             #{if goods.keywords != null}
                               <br/>SEO关键字: ${goods.keywords}

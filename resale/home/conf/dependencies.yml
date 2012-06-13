@@ -25,6 +25,7 @@ require:
     - resale -> resale
     - org.jsoup -> jsoup 1.6.1
     - sms -> sms
+    - cms -> cms
     - asset_package -> asset_package
     - oauth -> oauth
 
@@ -62,6 +63,7 @@ repositories:
             - breadcrumbs -> *
             - accounts -> *
             - sms -> *
+            - cms -> *
             - resale -> *
             - asset_package -> *
             - oauth -> *

@@ -1,6 +1,7 @@
 #{fixture delete:'all',load:['fixture/user.yml','fixture/votes.yml'] /}
 
 %{
+models.consumer.UserVote.deleteAll();
 id = play.test.Fixtures.idCache.get("models.cms.VoteQuestion-vote2");
 models.cms.VoteQuestion vote = models.cms.VoteQuestion.findById(id);
 vote.expireAt = new Date();
@@ -13,9 +14,9 @@ open('/votes')
 verifyTitle('一百券 - 有奖问答')
 assertTextPresent('优惠啦网站改版了，改成什么名字？')
 click('id=answer_1')
-clickAndWait('id=bt_submit')
-verifyTitle('参与成功页面')
-open('/votes')
+*{clickAndWait('id=bt_submit')}*
+*{verifyTitle('参与成功页面')}*
+*{open('/votes')}*
 #{/selenium}
 
 

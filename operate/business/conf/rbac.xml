@@ -26,7 +26,6 @@
   <permission key="BRANDS_NEW" text="品牌添加" roles="editor,sales"/>
   <permission key="BRANDS" text="品牌管理" roles="editor,sales"/>
   <permission key="CONSUMERS" text="用户管理" roles="customservice,sales"/>
-
   <navigation key="supplier_app" text="商户管理" action="Suppliers.index" display-order="20">
     <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
       <navigation key="suppliers_add" action="Suppliers.add" text="商户添加" permissions="SUPPLIERS_NEW"/>
@@ -52,6 +51,7 @@
   <navigation key="consumers_app" text="用户管理" action="OperateConsumers.index" display-order="40">
     <navigation key="consumers" text="用户">
       <navigation key="consumers_index" action="OperateConsumers.index" text="用户管理" permissions="CONSUMERS"/>
+       <navigation key="votes_index" action="OperateConsumersWinningInfo.index" text="用户有奖问答管理" permissions="CONSUMERS"/>
     </navigation>
   </navigation>
 

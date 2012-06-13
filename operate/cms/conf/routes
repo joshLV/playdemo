@@ -28,6 +28,8 @@ POST    /votes                                 WebVotes.create
 DELETE  /votes/{id}                            WebVotes.delete
 GET     /votes/{id}/edit                       WebVotes.edit
 PUT     /votes/{id}                            WebVotes.update
+
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

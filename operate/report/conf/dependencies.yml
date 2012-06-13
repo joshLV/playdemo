@@ -23,6 +23,7 @@ require:
     - accounts -> accounts
     - report -> report
     - sms -> sms
+    - cms -> cms
     - asset_package -> asset_package
 
 
@@ -58,4 +59,5 @@ repositories:
             - accounts -> *
             - report -> *
             - sms -> *
+            - cms -> *
             - asset_package -> *

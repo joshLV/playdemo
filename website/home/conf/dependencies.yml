@@ -24,7 +24,7 @@ require:
     - sms -> sms
     - asset_package -> asset_package
     - layout_website -> layout_website
-
+    - cms -> cms
 repositories:
     - mavenRepository:
         type:       iBiblio
@@ -61,3 +61,4 @@ repositories:
             - sms -> *
             - asset_package -> *
             - layout_website -> *
+            - cms -> *

@@ -20,6 +20,7 @@ require:
     - supplier_rbac -> supplier_rbac
     - org.jsoup -> jsoup 1.6.1
     - sms -> sms
+    - cms -> cms
     - view_ext -> view_ext
 repositories:
     - mavenRepository:
@@ -50,4 +51,5 @@ repositories:
             - paginate_ext -> *
             - supplier_rbac -> *
             - sms -> *
+            - cms -> *
             - view_ext -> *

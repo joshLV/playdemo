@@ -247,6 +247,8 @@ user.userInfo.interest=兴趣爱好
 user.userInfo.industry=行业
 user.userInfo.otherInfo=其他行业
 user.userInfo.totalPoints=积分
-
+vote.type=调查类型
+vote.QUIZ=有奖问答
+vote.INQUIRY=用户调查
 
 
