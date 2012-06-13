@@ -41,12 +41,6 @@
             <li id="dw">
             <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/1001" #{if categoryId == 1001}class="current"#{/if}></a>
             </li>
-                <!-- #{if categoryId == 1001} -->
-                <!-- <img src="http://img.uhcdn.com/images/u/duanwu-cur.gif" /> -->
-                <!-- #{/if} -->
-                <!-- #{else} -->
-                <!-- <img src="http://img.uhcdn.com/images/u/duanwu.gif" /> -->
-                <!-- #{/else} -->
         </ul>
         <div id="cart">
             <a class="cart-hd" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">购物车：<strong id="cart-count">${count}</strong>件</a>

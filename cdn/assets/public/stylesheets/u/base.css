@@ -170,6 +170,8 @@ mark { background: #ff0; }
     display: block;
     float: left;
     padding: 5px 8px 6px 35px;
+    padding: 7px 8px 6px 35px\9;
+    _padding: 5px 8px 6px 35px;
     background: url(http://img.uhcdn.com/images/u/drop.png) right 14px no-repeat;
 }
 #cart .cart-hd strong {
@@ -184,28 +186,34 @@ mark { background: #ff0; }
     z-index: 100;
     padding: 10px;
     width: 280px;
+    min-height: 80px;
     border: 2px solid #015859;
     background-color: #fff;
 }
+#cart .loading {
+    background: url(http://img.uhcdn.com/images/u/loading.gif) no-repeat center center;
+}
 .carts-item {
-    padding: 6px 0 3px;
+    padding: 5px 0 3px 52px;
     border-top: 1px dotted #e4e4e4;
 }
 .carts-item .goods-img {
     float: left;
-    margin-right: 5px;
+    margin: 4px 5px 0 -50px;
+    margin: 1px 5px 0 -50\9;
 }
 .carts-item .goods-name {
-    display: inline-block;
-    margin-bottom: 2px;
-    width: 165px;
-    _width: 162px;
+    display: block;
+    float: left;
+    width: 225px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
 }
 .carts-item .goods-price {
+    display: block;
+    float: left;
     color: #f50;
     font: 12px arial;
 }
@@ -213,15 +221,13 @@ mark { background: #ff0; }
     float: right;
     color: #25B4AB;
 }
-.carts-bd .view-carts {
-    display: inline-block;
-    padding: 0 3px;
-    margin: 10px 5px 0 5px;
-    color: #F8F8F8;
-    background-color: #209890;
+.carts-detail {
+    text-align: right;
 }
-.carts-item .view-carts:hover {
-    text-decoration: none;
+.carts-detail strong {
+    padding: 0 2px;
+    color: #f50;
+    font-family: arial;
 }
 
 #cart .cart-btn {

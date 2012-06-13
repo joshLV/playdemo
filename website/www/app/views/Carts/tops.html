@@ -13,9 +13,9 @@
            count="${cartItem.number}">删除</a>
     </li>
     #{/list}
-    <li class="carts-item" id="detail" style="text-align: right">共<span class="goods-price">
-        <strong id="all_number">${number}</strong></span>件商品，
-        共计<span class="goods-price">￥<strong id="all_price">${total}</strong></span></li>
+    <li class="carts-item carts-detail" id="detail">
+        共<strong id="all_number">${number}</strong>件商品，共计<strong>&yen;<span id="all_price">${total}</span></strong>
+    </li>
 </ul>
 #{/if}
 #{else}

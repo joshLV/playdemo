@@ -7,15 +7,17 @@ $(function () {
     });
 
     // 购物车
-    var isLoaded = false;
+    var isLoaded = false,
+        cartBd = $('.cart-bd');
     $('#cart').mouseover(function () {
         if (isLoaded == false) {
+            cartBd.show().addClass('loading');
             $("#cart-list").load("/carts/tops", function (data) {
                 isLoaded = true;
-                $('.cart-bd').show();
+                cartBd.removeClass('loading');
             });
         } else {
-            $('.cart-bd').show();
+            cartBd.show();
         }
     });
     $('#cart').mouseout(function () {
