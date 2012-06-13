@@ -89,6 +89,9 @@ mark { background: #ff0; }
 #user {
     line-height: 22px;
 }
+#user a {
+    color: #006d6d;
+}
 #line {
     padding-top: 20px;
     color: #f50;

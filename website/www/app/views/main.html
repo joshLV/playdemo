@@ -19,8 +19,10 @@
     <div id="right">
         <div id="user">
             #{if cas?.isLogin}
-                欢迎您, <a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}"
-                        id="login_name">${cas.loginName}</a> <a href="/logout">退出</a>
+                欢迎您,
+                <a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}" id="login_name">${cas.loginName}</a>
+                <a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}">我的一百券</a>
+                <a href="/logout">退出</a>
             #{/if}
             #{else}
                 您好，欢迎您来到一百券！ [<a id="login_name" href="/login">登录</a>] [<a href="/register">免费注册</a>]
