@@ -146,6 +146,17 @@ mark { background: #ff0; }
 #duanwu a:hover {
     background: none;
 }
+#dw a {
+    width: 144px;
+    height: 35px;
+    background: url(http://img.uhcdn.com/images/u/dw.gif) bottom center no-repeat;
+}
+#dw a:hover {
+    background: url(http://img.uhcdn.com/images/u/dwh.gif) bottom center no-repeat;
+}
+#dw a.current {
+    background: url(http://img.uhcdn.com/images/u/dwc.gif) bottom center no-repeat;
+}
 
 #cart {
     position: relative;

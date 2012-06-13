@@ -38,16 +38,15 @@
             <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/1" #{if categoryId == 1}class="current"#{/if}>餐饮美食</a></li>
             <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/2" #{if categoryId == 2}class="current"#{/if}>食品干货</a></li>
                         <li><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/7" #{if categoryId == 7}class="current"#{/if}>休闲娱乐</a></li>
-            <li id="duanwu">
-            <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/1001">
-                #{if categoryId == 1001}
-                <img src="http://img.uhcdn.com/images/u/duanwu-cur.gif" />
-                #{/if}
-                #{else}
-                <img src="http://img.uhcdn.com/images/u/duanwu.gif" />
-                #{/else}
-            </a>
+            <li id="dw">
+            <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/1001" #{if categoryId == 1001}class="current"#{/if}></a>
             </li>
+                <!-- #{if categoryId == 1001} -->
+                <!-- <img src="http://img.uhcdn.com/images/u/duanwu-cur.gif" /> -->
+                <!-- #{/if} -->
+                <!-- #{else} -->
+                <!-- <img src="http://img.uhcdn.com/images/u/duanwu.gif" /> -->
+                <!-- #{/else} -->
         </ul>
         <div id="cart">
             <a class="cart-hd" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">购物车：<strong id="cart-count">${count}</strong>件</a>
