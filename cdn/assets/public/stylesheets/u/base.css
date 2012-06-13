@@ -132,7 +132,7 @@ mark { background: #ff0; }
 #menu a:hover {
     background: #5eb6b6 url(http://img.uhcdn.com/images/u/navbg.png) bottom center no-repeat;
 }
-#menu .current {
+#menu a.current {
     color: #333333;
     background: #b3dbdb url(http://img.uhcdn.com/images/u/navbg.png) bottom center no-repeat;
 }
