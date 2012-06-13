@@ -280,6 +280,16 @@
     font-weight: 700;
     border-bottom: 2px solid #e4e4e4;
 }
+.boutique-hd .more {
+    *margin-top: -25px;
+    padding-right: 5px;
+    float: right;
+    color: #999;
+}
+.boutique-hd .more:hover {
+    color: #25B4AB;
+    text-decoration: none;
+}
 .boutique-bd {
     padding: 20px 5px;
 }
