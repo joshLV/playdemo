@@ -153,12 +153,12 @@ public class Block extends Model {
             
         List<Block> blocks = Block.find("deleted = ? and type = ? and effectiveAt <= ? and expireAt >= ? order by " + orderBy,
                     DeletedStatus.UN_DELETED, type, currentDate, currentDate).fetch();
-        
+
+        //如果都过期了，取一个最近的日期进行显示
         if (blocks.size() == 0) {
-            blocks = Block.find("deleted = ? and type = ? order by " + orderBy,
-                    DeletedStatus.UN_DELETED, type).fetch();
+            blocks = Block.find("deleted = ? and type = ? order by expireAt desc",
+                    DeletedStatus.UN_DELETED, type).fetch(1);
         }
-        
         return blocks;
     }
 
