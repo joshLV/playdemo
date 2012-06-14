@@ -1,10 +1,11 @@
 package controllers;
 
-import models.cms.VoteType;
+import com.uhuila.common.constants.DeletedStatus;
 import models.consumer.UserVote;
+import models.consumer.UserVoteCondition;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
-import play.modules.paginate.ModelPaginator;
+import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -19,12 +20,21 @@ import play.mvc.With;
 public class OperateConsumersWinningInfo extends Controller {
     private static final int PAGE_SIZE = 15;
 
-
-    public static void index(VoteType type) {
+    @ActiveNavigation("votes_index")
+    public static void index(UserVoteCondition condition) {
         String page = request.params.get("page");
+        if (condition == null) {
+            condition = new UserVoteCondition();
+        }
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        ModelPaginator votePage = UserVote.getPage(pageNumber, PAGE_SIZE,type);
-        System.out.println(">>>>>>>>>>>"+votePage.size());
-        render("/WinningInfo/index.html",votePage);
+        JPAExtPaginator<UserVote> votePage = UserVote.getPage(pageNumber, PAGE_SIZE, condition);
+        render("/WinningInfo/index.html", votePage, condition);
+    }
+
+    public static void delete(Long id) {
+        UserVote vote = UserVote.findById(id);
+        vote.deleted = DeletedStatus.DELETED;
+        vote.save();
+        index(null);
     }
 }

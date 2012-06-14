@@ -1,15 +1,27 @@
 #{extends 'layout_operate/layout.html' /}
 #{set title:'用户参加有奖问答一览' /}
 #{include '/share/nav.html' /}
-
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <div class="body">
     <legend></legend>
-    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateConsumersWinningInfo.index()}" method="GET">
+    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateConsumersWinningInfo.index()}"
+          method="GET">
         <table width="100%">
             <tr>
-                <td width="30%">&{'vote.type'}：
-                #{select 'type', id:'type', class:'input-middle', value:type}
-                    #{option "null"}不限#{/option}
+                <td width="15%">帐号：<input type="text" name="condition.loginName" class="input-medium"
+                                          value="${condition?.loginName}"/></td>
+                 <td width="15%">姓名：<input type="text" name="condition.fullName" class="input-medium"
+                                          value="${condition?.fullName}"/></td>
+                <td width="30%">参与时间：<input type="text" id="createdAtBegin" name="condition.createdAtBegin"
+                                value="${condition?.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"
+                                class="input-medium Wdate"/>至 <input type="text" id="createdAtEnd"
+                                                                     name="condition.createdAtEnd"
+                                                                     value="${condition?.createdAtEnd?.format()}"
+                                                                     onfocus="WdatePicker({readOnly:true})"
+                                                                     class="input-medium Wdate"/></td>
+                <td width="20%">&{'vote.type'}：
+                #{select 'condition.type', id:'type', class:'input-middle', value:type}
+                    #{option ""}不限#{/option}
                     #{option models.cms.VoteType.QUIZ}&{'vote.QUIZ'}#{/option}
                     #{option models.cms.VoteType.INQUIRY}&{'vote.INQUIRY'}#{/option}
                 #{/select}</td>
@@ -35,12 +47,12 @@
             <tbody>
             #{paginate.list items:votePage, as:'user'}
             <tr>
-                 <td>${user?.user?.loginName}</td>
-                  <td>${user?.user?.userInfo?.fullName}</td>
+                <td>${user?.user?.loginName}</td>
+                <td>${user?.user?.userInfo?.fullName}</td>
                 <td>${user?.vote.content}</td>
                 <td>&{'vote.'+user?.vote.type}</td>
                 <td>${user?.createdAt?.format('yyyy-MM-dd')}</td>
-                <td>#{vx.deleteLink action:"votes", id:user.id/}
+                <td>#{vx.deleteLink action:"consumers_votes", id:user.id/}
             </tr>
             #{/paginate.list}
             </tbody>
