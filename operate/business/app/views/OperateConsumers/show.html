@@ -15,6 +15,12 @@
             <div class="controls">${user?.loginName}</div>
         </div>
         <div class="control-group">
+            <label class="control-label">&{'user.amount'}</label>
+
+            <div class="controls">${user?.AccountMoney().formatCurrency('CNY')}
+            </div>
+        </div>
+        <div class="control-group">
             <label class="control-label">&{'user.mobile'}</label>
 
             <div class="controls">${user?.mobile}

@@ -32,6 +32,7 @@
             </tr>
         </table>
     </form>
+    <div style="color:#0082CA;"> 总计： ${users.size()} 条记录</div>
     <form class="form-horizontal" name="deletefrm" id="deletefrm">
         <table class="table table-striped table-bordered table-condensed">
             <thead>
@@ -73,6 +74,12 @@
     <div class="pagination" align="center">
         <ul>
         #{paginate.controls items:users /}
+
+
         </ul>
+
+
+
+
     </div>
 </div>
