@@ -23,9 +23,13 @@
   <permission key="INCOMINGS_REPORT" text="收款账户资金明细" roles="account"/>
   <permission key="WITHDRAW_REPORT" text="提现账户资金明细" roles="account"/>
   <permission key="WITHDRAW_APPROVAL" text="审批提现申请" roles="account"/>
+  <permission key="FINANCING_INCOMING_NOTE" text="记录收款" roles="account"/>
+  <permission key="FINANCING_ACCOUNT_REPORT" text="券平台财务收款账户资金明细" roles="account"/>
   <permission key="BRANDS_NEW" text="品牌添加" roles="editor,sales"/>
   <permission key="BRANDS" text="品牌管理" roles="editor,sales"/>
   <permission key="CONSUMERS" text="用户管理" roles="customservice,sales"/>
+  <permission key="PROMOTION_LIST" text="活动管理" roles="customservice,editor"/>
+
   <navigation key="supplier_app" text="商户管理" action="Suppliers.index" display-order="20">
     <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
       <navigation key="suppliers_add" action="Suppliers.add" text="商户添加" permissions="SUPPLIERS_NEW"/>
@@ -51,7 +55,6 @@
   <navigation key="consumers_app" text="用户管理" action="OperateConsumers.index" display-order="40">
     <navigation key="consumers" text="用户">
       <navigation key="consumers_index" action="OperateConsumers.index" text="用户管理" permissions="CONSUMERS"/>
-       <navigation key="votes_index" action="OperateConsumersWinningInfo.index" text="用户有奖问答管理" permissions="CONSUMERS"/>
     </navigation>
   </navigation>
 
@@ -74,6 +77,8 @@
     <navigation key="withdraw" text="提现审批">
       <navigation key="withdraw_approval_index" action="WithdrawApproval.index" text="提现申请列表"
                     permission="WITHDRAW_APPROVAL"/>
+      <navigation key="financing_incoming_note" action="FinancingIncomingNote.add" text="记录收款"
+                  permission="FINANCING_INCOMING_NOTE"/>
     </navigation>
     <navigation key="report_app" text="财务报表">
       <navigation key="consumers_account_reports" action="OperateReports.showConsumerReport" text="消费者资金明细"
@@ -88,8 +93,17 @@
                   permission="WEBSITES_REPORT"/>
       <navigation key="platforms_account_reports" action="OperateReports.showPlatformReport" text="券平台佣金账户资金明细"
                   permission="PLATFORMS_REPORT"/>
+      <navigation key="financing_incoming_reports" action="OperateReports.showFinancingIncomingReport"
+                  text="券平台财务收款账户" permission="FINANCING_ACCOUNT_REPORT"/>
       <navigation key="incomings_account_reports" action="OperateReports.showIncomingReport" text="收款账户资金明细"
                   permission="INCOMINGS_REPORT"/>
     </navigation>
   </navigation>
+
+  <navigation key="promotion_manage" text="活动管理" action="Promotions.index" display-order="90">
+    <navigation key="promotion" text="活动管理">
+        <navigation key="promotion_list" action="Promotions.index" text="活动列表" permission="PROMOTION_LIST"/>
+    </navigation>
+  </navigation>
+
 </application>

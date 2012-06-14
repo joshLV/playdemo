@@ -2,11 +2,7 @@ package models.accounts;
 
 import play.db.jpa.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -32,6 +28,9 @@ public class Account extends Model {
 
     @Column(name = "created_at")
     public Date createdAt;
+
+    @Transient
+    public String info;
 
     public static final long PLATFORM_INCOMING      = 1L;   //券平台收款账户
     public static final long PLATFORM_COMMISSION    = 2L;   //券平台佣金账户

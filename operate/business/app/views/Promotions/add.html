@@ -1,0 +1,52 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'编辑活动' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{set 'moreStyles'}
+<style type="text/css">
+</style>
+#{/set}
+<legend>新建活动</legend>
+#{form @Promotions.create(), class:"form-horizontal"}
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>活动名称</label>
+    <div class="controls">
+        <input type="text" class="input" name="promotion.name" value="${promotion?.name}">
+        <span class="error"> #{error 'promotion.name'/}</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>活动预算</label>
+    <div class="controls">
+        <input type="text" class="input" name="promotion.budget" value="${promotion?.budget}">
+        <span class="error"> #{error 'promotion.budget'/}</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>开始日期</label>
+    <div class="controls">
+        <input type="text" name="promotion.effectAt"
+               value="${promotion?.effectAt?.format()}" onfocus="WdatePicker({readOnly:true})" class="input-medium Wdate"/>
+        <span class="error"> #{error 'promotion.effectAt'/}</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>截止日期</label>
+    <div class="controls">
+        <input type="text" name="promotion.expiredAt"
+               value="${promotion?.expiredAt?.format()}" onfocus="WdatePicker({readOnly:true})" class="input-medium Wdate"/>
+        <span class="error"> #{error 'promotion.expiredAt'/}</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">活动备注</label>
+    <div class="controls">
+        <textarea class="input-xlarge" rows="3" name="promotion.description">${promotion?.description}</textarea>
+    </div>
+</div>
+<div class="form-actions">
+    <button class="btn btn-primary" type="submit">新 建</button>
+</div>
+#{/form}

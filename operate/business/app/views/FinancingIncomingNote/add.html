@@ -1,0 +1,34 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'记录收款' /}
+#{include '/share/nav.html' /}
+#{set 'moreStyles'}
+<style type="text/css">
+</style>
+#{/set}
+<legend>记录外部收款</legend>
+#{form @FinancingIncomingNote.create(), class:"form-horizontal"}
+<div class="control-group">
+    <label class="control-label">打款金额</label>
+    <div class="controls">
+        <input type="text" class="input" name="amount" value="${amount}">
+        <span class="error"> #{error 'financing_incoming.amount'/}</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">分销商</label>
+    <div class="controls">
+        <ul>
+            #{list items:accounts, as:'account'}
+            <label class="radio">
+                <input type="radio" name="id" value="${account.id}" #{if id==account.id} checked#{/if} >
+                ${account.info}
+            </label>
+            #{/list}
+        </ul>
+        <span class="error"> #{error 'financing_incoming.account'/}</span>
+    </div>
+</div>
+<div class="form-actions">
+    <button class="btn btn-primary" type="submit">记录</button>
+</div>
+#{/form}

@@ -1,0 +1,27 @@
+#{fixture delete:[models.admin.SupplierUser.class,
+models.admin.SupplierRole.class,
+models.accounts.AccountSequence.class,
+models.accounts.TradeBill.class,
+models.accounts.Account.class] ,
+load:['fixture/roles.yml','fixture/supplierusers.yml'] /}
+%{
+    models.accounts.util.AccountUtil.getCreditableAccount(999L,models.accounts.AccountType.RESALER)
+}%
+
+#{selenium "财务收款账户打款测试"}
+    #{include 'test/selenium/step/login.selenium' /}
+
+    open('/financing_incoming_add')
+    assertTitle('记录收款')
+    clickAndWait('css=button.btn.btn-primary')
+    verifyTextPresent('未选择账户,或所选无效账户')
+    click('name=id')
+    clickAndWait('css=button.btn.btn-primary')
+    verifyTextPresent('无效金额')
+    type('name=amount','1')
+    clickAndWait('css=button.btn.btn-primary')
+    verifyTitle('券平台财务收款账户的资金明细')
+    verifyTextPresent('财务收到款项')
+    verifyTextPresent('-¥ 1.00')
+
+#{/selenium}

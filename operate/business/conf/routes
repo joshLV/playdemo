@@ -76,6 +76,9 @@ GET     /reports/website                        OperateReports.showWebsiteReport
 GET     /reports/platform                       OperateReports.showPlatformReport
 GET     /reports/incoming                       OperateReports.showIncomingReport
 GET     /reports/withdraw                       OperateReports.showWithdrawReport
+GET     /reports/financing_incoming             OperateReports.showFinancingIncomingReport
+
+GET     /financing_incoming_add                 FinancingIncomingNote.add
 
 # 提现管理
 GET     /withdraw                               WithdrawApproval.index
@@ -89,6 +92,12 @@ PUT     /consumers/{id}/freeze                  OperateConsumers.freeze
 PUT     /consumers/{id}/unfreeze                OperateConsumers.unfreeze
 GET     /consumers_votes                        OperateConsumersWinningInfo.index
 DELETE  /consumers_votes/{id}                        OperateConsumersWinningInfo.delete
+# 活动管理
+GET     /promotions                             Promotions.index
+GET     /promotions/add                         Promotions.add
+GET     /promotions/detail/{id}                 Promotions.detail
+POST    /promotions                             Promotions.create
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

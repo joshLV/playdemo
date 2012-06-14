@@ -10,7 +10,8 @@ public enum TradeType {
     REFUND,             //交易退款
     COMMISSION,         //佣金
     PURCHASE_COSTING,   //采购成本
-    FREIGHT;            //运费
+    FREIGHT,            //运费
+    TRANSFER;           //转账
 
     /**
      * 是否与订单相关的类型.

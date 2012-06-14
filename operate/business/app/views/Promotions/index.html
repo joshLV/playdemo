@@ -1,0 +1,47 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'活动管理' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{set 'moreStyles'}
+<style type="text/css">
+</style>
+#{/set}
+<a class="btn btn-primary" href="/promotions/add">新建活动</a><br/>
+#{if promotionPage.size() > 0 }
+<div class="row-fluid">
+    <table class="table table-striped">
+        <tr>
+            <th>创建时间</th>
+            <th>名称</th>
+            <th>预算</th>
+            <th>已花费</th>
+            <th>生效时间</th>
+            <th>截止日期</th>
+            <th>操作</th>
+        </tr>
+        #{paginate.list items:promotionPage, as:'promotion'}
+        <tr>
+            <td>${promotion.createdAt?.format('yyyy-MM-dd')}</td>
+            <td>${promotion.name}</td>
+            <td>${promotion.budget?.formatCurrency('CNY')}</td>
+            <td>${promotion.expenses?.formatCurrency('CNY')}</td>
+            <td>${promotion.effectAt?.format('yyyy-MM-dd')}</td>
+            <td>${promotion.expiredAt?.format('yyyy-MM-dd')}</td>
+            <td>
+                <a href="/promotions/detail/${promotion.id}"> 查看详情 </a>
+            </td>
+        </tr>
+        #{/paginate.list}
+    </table>
+</div>
+<div class="pagination">
+    <ul>
+        #{paginate.controls items:promotionPage /}
+    </ul>
+</div>
+#{/if}
+#{else}
+        暂无活动
+#{/else}

@@ -242,4 +242,24 @@ public class OperateReports extends Controller {
         AccountSequenceSummary summary = AccountSequence.findSummaryByCondition(condition);
         render(accountSequencePage, summary, condition);
     }
+
+    @ActiveNavigation("financing_incoming_reports")
+    public static void showFinancingIncomingReport(AccountSequenceCondition condition){
+        int pageNumber = getPageNumber();
+        if (condition == null) {
+            condition = new AccountSequenceCondition();
+        }
+
+        condition.account = AccountUtil.getFinancingIncomingAccount();
+        JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
+                pageNumber, PAGE_SIZE);
+        for (AccountSequence accountSequence : accountSequencePage) {
+            setOrderInfo(accountSequence);
+            setPlatform(accountSequence);
+        }
+
+        AccountSequenceSummary summary = AccountSequence.findSummaryByCondition(condition);
+        render(accountSequencePage, summary, condition);
+    }
 }
+

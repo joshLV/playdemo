@@ -99,6 +99,7 @@
             #{option "WITHDRAW"}&{'trade_type.WITHDRAW'}#{/option}
             #{option "PAY"}&{'trade_type.PAY'}#{/option}
             #{option "REFUND"}&{'trade_type.REFUND'}#{/option}
+            #{option "TRANSFER"}&{'trade_type.TRANSFER'}#{/option}
         #{/select}
         <button type="submit" class="btn btn-primary">搜索</button>
         <ul class="nav nav-pills">
@@ -126,7 +127,7 @@
 
 #{vx.tab name:'trade_type',enumItems: [models.accounts.TradeType.CHARGE,
 models.accounts.TradeType.WITHDRAW,models.accounts.TradeType.PAY,
-models.accounts.TradeType.REFUND],
+models.accounts.TradeType.REFUND,models.accounts.TradeType.TRANSFER],
 select:'condition_trade_type',value:condition.tradeType,form:'form'/}
     <div class="tab-content">
         <table class="table table-striped seq">

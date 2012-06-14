@@ -1,5 +1,5 @@
 #{extends 'layout_operate/layout.html' /}
-#{set title:'分销商的资金明细' /}
+#{set title:'券平台财务收款账户的资金明细' /}
 #{include '/share/nav.html' /}
 
 #{set 'moreScripts'}
@@ -84,23 +84,18 @@
 #{/set}
 
 <div class="body">
-    <form class="well form-inline" action="@{OperateReports.showResaleReport()}" method="GET" id="form" name="form">
-        账户
-        <input type="text" name="condition.accountName" value="${condition.accountName}">
+    <form class="well form-inline" action="@{OperateReports.showWebsiteReport()}" method="GET" id="form" name="form">
         起止日期
         <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
                onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
         <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
                onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
         <label class="control-label">交易类型:</label>
-        #{select 'condition.tradeType', value:condition.tradeType, id:'condition_trade_type', class:"input-small"}
-            #{option ""}不限#{/option}
-            #{option "CHARGE"}&{'trade_type.CHARGE'}#{/option}
-            #{option "WITHDRAW"}&{'trade_type.WITHDRAW'}#{/option}
-            #{option "PAY"}&{'trade_type.PAY'}#{/option}
-            #{option "REFUND"}&{'trade_type.REFUND'}#{/option}
-            #{option "TRANSFER"}&{'trade_type.TRANSFER'}#{/option}
-        #{/select}
+    #{select 'condition.tradeType', value:condition.tradeType, id:'condition_trade_type',
+    class:"input-small"}
+        #{option ""}不限#{/option}
+        #{option "TRANSFER"}&{'trade_type.TRANSFER'}#{/option}
+    #{/select}
         <button type="submit" class="btn btn-primary">搜索</button>
         <ul class="nav nav-pills">
             <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">今天</a></li>
@@ -113,7 +108,8 @@
     </form>
 
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#">统计金额</a></li>
+        <li class="active"><a href="#">统计金额 <span style="color: #08c">(余额:${condition.account.amount} 元)
+        </span></a></li>
     *{<li><a href="#">下载查询结果</a></li>}*
     </ul>
     <div class="tab-content" style="margin-bottom: 10px">
@@ -125,35 +121,23 @@
         </div>
     </div>
 
-    #{vx.tab
-        name:'trade_type',
-        enumItems: [models.accounts.TradeType.CHARGE,
-            models.accounts.TradeType.WITHDRAW,
-            models.accounts.TradeType.PAY,
-            models.accounts.TradeType.REFUND,
-            models.account.TradeType.TRANSFER],
-        select:'condition_trade_type',
-        value:condition.tradeType,
-        form:'form'
-    /}
+#{vx.tab name:'trade_type',enumItems: [models.accounts.TradeType.TRANSFER] ,
+select:'condition_trade_type',value:condition.tradeType,form:'form'/}
     <div class="tab-content">
         <table class="table table-striped seq">
             <tr>
                 <th>流水号</th>
                 <th>时间</th>
-                <th>账号</th>
                 <th>余额</th>
                 <th>类型</th>
                 <th>名称/备注</th>
                 <th>支出</th>
                 <th>收入</th>
-                <th>支付方式</th>
             </tr>
         #{paginate.list items:accountSequencePage, as:'accountSequence'}
             <tr>
                 <td>${accountSequence.serialNumber}</td>
                 <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
-                <td>${accountSequence.accountName}</td>
                 <td>${accountSequence.balance?.formatCurrency('CNY')}/<br/>
                     ${accountSequence.uncashBalance?.formatCurrency('CNY')}
                 </td>
@@ -172,7 +156,6 @@
                     <div class="alert alert-info">${accountSequence.changeAmount?.formatCurrency('CNY')}</div>
                     #{/if}
                 </td>
-                <td>${accountSequence.payMethod}</td>
             </tr>
         #{/paginate.list}
         </table>

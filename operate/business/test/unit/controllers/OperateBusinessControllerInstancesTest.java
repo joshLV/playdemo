@@ -24,5 +24,6 @@ public class OperateBusinessControllerInstancesTest extends UnitTest{
         assertTrue(new Suppliers() instanceof Controller);
         assertTrue(new UploadFiles() instanceof Controller);
         assertTrue(new WithdrawApproval() instanceof Controller);
+        assertTrue(new Promotions() instanceof Controller);
     }
 }

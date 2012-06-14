@@ -196,6 +196,7 @@ trade_type.REFUND=交易退款
 trade_type.COMMISSION=佣金
 trade_type.PURCHASE_COSTING=采购成本
 trade_type.FREIGHT=运费
+trade_type.TRANSFER=转账
 
 platform.CONSUMER=一百券网站
 platform.RESALER=分销网
@@ -216,6 +217,12 @@ withdrawAccount.cardNumber=银行卡号
 
 withdraw.apply.withdraw_account=收款账户
 withdraw.apply.amount=提现金额
+
+# 活动
+promotion.name=活动名称
+promotion.budget=活动预算
+promotion.effectAt=开始日期
+promotion.expiredAt=截止日期
 
 # 账户类型
 account.type.CONSUMER=消费者

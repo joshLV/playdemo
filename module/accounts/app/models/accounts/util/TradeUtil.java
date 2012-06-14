@@ -19,25 +19,25 @@ public class TradeUtil {
      * @param account              支付订单的账户
      * @param balancePaymentAmount 账户余额中应扣款
      * @param ebankPaymentAmount   网银应支付款
-     * @param uncachPaymentAmount  不可提现余额应扣款
+     * @param uncashPaymentAmount  不可提现余额应扣款
      * @param paymentSource        网银信息
      * @param orderId              关联的订单
      * @return 创建的订单交易记录
      */
     public static TradeBill createOrderTrade(
-            Account account, BigDecimal balancePaymentAmount, BigDecimal ebankPaymentAmount, BigDecimal uncachPaymentAmount,
+            Account account, BigDecimal balancePaymentAmount, BigDecimal ebankPaymentAmount, BigDecimal uncashPaymentAmount,
             PaymentSource paymentSource, Long orderId) {
         if (account == null) {
             throw new IllegalArgumentException("error while create order trade: no account specified");
         }
         if (balancePaymentAmount == null || balancePaymentAmount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("error while create order trade: invalid balancePaymentAmount");
+            throw new IllegalArgumentException("error while create order trade. invalid balancePaymentAmount: " + balancePaymentAmount);
         }
         if (ebankPaymentAmount == null || ebankPaymentAmount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("error while create order trade: invalid ebankPaymentAmount");
+            throw new IllegalArgumentException("error while create order trade. invalid ebankPaymentAmount: " + ebankPaymentAmount);
         }
-        if (uncachPaymentAmount == null || uncachPaymentAmount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("error while create order trade: invalid uncachPaymentAmount");
+        if (uncashPaymentAmount == null || uncashPaymentAmount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("error while create order trade. invalid uncashPaymentAmount: " + uncashPaymentAmount);
         }
         if (paymentSource == null) {
             throw new IllegalArgumentException("error while create order trade: invalid paymentSource");
@@ -51,7 +51,7 @@ public class TradeUtil {
         tradeBill.toAccount            = AccountUtil.getPlatformIncomingAccount(); //默认收款账户为平台收款账户
         tradeBill.balancePaymentAmount = balancePaymentAmount;                     //使用余额支付金额
         tradeBill.ebankPaymentAmount   = ebankPaymentAmount;                       //使用网银支付金额
-        tradeBill.uncashPaymentAmount  = uncachPaymentAmount;                      //使用不可提现余额支付金额
+        tradeBill.uncashPaymentAmount  = uncashPaymentAmount;                      //使用不可提现余额支付金额
         tradeBill.tradeType            = TradeType.PAY;                            //交易类型为支付
         tradeBill.paymentSource        = paymentSource;                            //银行信息
         tradeBill.orderId              = orderId;                                  //订单信息
@@ -73,13 +73,13 @@ public class TradeUtil {
     public static TradeBill createChargeTrade(Account account, BigDecimal amount,
                                               PaymentSource paymentSource, Long orderId) {
         if (account == null) {
-            throw new IllegalArgumentException("error while create order trade: no account specified");
+            throw new IllegalArgumentException("error while create charge trade: no account specified");
         }
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("error while create order trade: invalid balancePaymentAmount");
+            throw new IllegalArgumentException("error while create charge trade. invalid amount: " + amount);
         }
         if (paymentSource == null) {
-            throw new IllegalArgumentException("error while create order trade: invalid paymentSource");
+            throw new IllegalArgumentException("error while create charge trade: invalid paymentSource");
         }
         
         TradeBill tradeBill = new TradeBill();
@@ -115,7 +115,7 @@ public class TradeUtil {
             throw new IllegalArgumentException("error while create consume trade: invalid eCouponSn");
         }
         if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("error while create consume trade: invalid consumePrice");
+            throw new IllegalArgumentException("error while create consume trade. invalid amount: " + amount);
         }
 
         TradeBill tradeBill = new TradeBill();
@@ -150,7 +150,7 @@ public class TradeUtil {
             throw new IllegalArgumentException("error while create commission trade: invalid eCouponSn");
         }
         if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("error while create commission trade: invalid amount");
+            throw new IllegalArgumentException("error while create commission trade. invalid amount: " + amount);
         }
 
         TradeBill tradeBill = new TradeBill();
@@ -181,7 +181,7 @@ public class TradeUtil {
             throw new IllegalArgumentException("error while create commission trade: invalid account");
         }
         if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("error while create commission trade: invalid amount");
+            throw new IllegalArgumentException("error while create commission trade. invalid amount: " + amount);
         }
 
         TradeBill tradeBill = new TradeBill();
@@ -214,7 +214,7 @@ public class TradeUtil {
             throw new IllegalArgumentException("error while create withdraw trade: invalid account");
         }
         if(amount == null || amount.compareTo(BigDecimal.ZERO) <= 0){
-            throw new IllegalArgumentException("error while create withdraw trade: invalid amount");
+            throw new IllegalArgumentException("error while create withdraw trade. invalid amount: " + amount);
         }
         TradeBill tradeBill = new TradeBill();
         tradeBill.fromAccount           = account;                                  //付款方为提款账户
@@ -243,7 +243,7 @@ public class TradeUtil {
             throw new IllegalArgumentException("error while create refund trade: invalid account");
         }
         if(amount == null || amount.compareTo(BigDecimal.ZERO) <= 0){
-            throw new IllegalArgumentException("error while create refund trade: invalid amount");
+            throw new IllegalArgumentException("error while create refund trade. invalid amount: " + amount);
         }
         if(orderId == null){
             throw new IllegalArgumentException("error while create refund trade: invalid orderId");
@@ -264,6 +264,40 @@ public class TradeUtil {
         return tradeBill.save();
     }
 
+    /**
+     * 创建转账交易记录.
+     *
+     * @param fromAccount   付款账户
+     * @param toAccount     收款账户
+     * @param cashAmount    可提现金额
+     * @param uncashAmount  不可提现金额
+     * @return  转账交易
+     */
+    public static TradeBill createTransferTrade(Account fromAccount, Account toAccount,
+                                                BigDecimal cashAmount, BigDecimal uncashAmount){
+        if(fromAccount == null || toAccount == null){
+            throw new IllegalArgumentException("error while create transfer trade: invalid account" );
+        }
+        if(cashAmount == null || cashAmount.compareTo(BigDecimal.ZERO) < 0){
+            throw new IllegalArgumentException("error while create transfer trade: invalid cashAmount: " + cashAmount);
+        }
+        if(uncashAmount == null || uncashAmount.compareTo(BigDecimal.ZERO) < 0){
+            throw new IllegalArgumentException("error while create transfer trade: invalid uncashAmount: " + uncashAmount);
+        }
+
+        TradeBill tradeBill = new TradeBill();
+        tradeBill.fromAccount           = fromAccount;                              //付款账户
+        tradeBill.toAccount             = toAccount;                                //收款账户
+        tradeBill.balancePaymentAmount  = cashAmount;                               //可提现余额支付金额
+        tradeBill.ebankPaymentAmount    = BigDecimal.ZERO;                          //不使用网银支付
+        tradeBill.uncashPaymentAmount   = uncashAmount;                             //不可提现余额支付金额
+        tradeBill.tradeType             = TradeType.TRANSFER;                       //交易类型为退款
+        tradeBill.amount = tradeBill.balancePaymentAmount
+                .add(tradeBill.ebankPaymentAmount)
+                .add(tradeBill.uncashPaymentAmount);
+
+        return tradeBill.save();
+    }
      /**
      * 交易成功
      *
