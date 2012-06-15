@@ -27,8 +27,14 @@ public class CmsQuestion extends Model {
     @Column(name = "user_id")
     public Long userId;
 
+    @Column(name = "cookie_id")
+    public String cookieId;
+
     @Column(name = "operate_user_id")
     public Long operateUserId;
+
+    @Column(name = "goods_id")
+    public Long goodsId;
 
     @Column(name = "created_at")
     public Date createdAt;
@@ -37,6 +43,13 @@ public class CmsQuestion extends Model {
     public Date repliedAt;
 
     public Boolean visible = true;
+
+    public CmsQuestion(){
+        this.createdAt = new Date();
+        this.userId = null;
+        this.cookieId = null;
+    }
+
 
     public static JPAExtPaginator<CmsQuestion> getQuestionList(int pageNumber, int pageSize) {
         StringBuilder sql = new StringBuilder("1=1");
