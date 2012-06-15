@@ -10,6 +10,32 @@
 #{/set}
 #{set 'moreScripts'}
 <script>
+    function append_questions(questions){
+        var q_size = Number($("#q-size").val());
+
+        for(var i = 0; i < questions.length; i ++ ) {
+            var odd_style = q_size % 2 == 1 ? "qa-odd" : "";
+            $("#q-list").append('                                       \
+            <div class="qa-item ' + odd_style + '">                     \
+                <div class="user">                                      \
+                    <span class="name">' + questions[i].user + '</span>         \
+                    <span>' + questions[i].date + '</span>                      \
+                </div>                                                  \
+                <dl class="question">                                   \
+                    <dt>咨询内容：</dt>                                  \
+                    <dd>' + questions[i].content + '</dd>                       \
+                </dl>                                                   \
+                <dl class="answer">                                     \
+                    <dt>待回复,</dt>                                    \
+                    <dd>请耐心等待^_^</dd>                               \
+                </dl>                                                   \
+            </div>                                                      \
+            ' );
+            q_size += 1;
+        }
+
+        $("#q-size").val(q_size);
+    }
     $(function () {
         /**
          *点击加入购物车按钮
@@ -44,7 +70,7 @@
             var limitNumber ='${goods.limitNumber}';
             var number = Number($("#number").val());
             if (limitNumber > 0 && number >limitNumber) {
-               $(".error").html("<strong>只能购买"+limitNumber+"个<strong>").css('color','#F55');
+               $(".error").html("<strong>只能购买"+limitNumber+"个</strong>").css('color','#F55');
                 return false;
             }
 
@@ -97,6 +123,31 @@
             } catch (e) {
                 $(this).val(1);
             }
+        });
+
+        //提交问题
+        $("#submit-question").click(function(){
+            var question = $("#question").val();
+            if(question.replace(/(^\s*)|(\s*$)/g,"") == ""){
+                alert("请输入问题内容");
+                return;
+            }
+            $.post(
+                "/user-question",
+                {"content":question,"goodsId":$("#goodsId").val()},
+                function(data){
+                    if(data.error){
+                        $("#q-error").html(data.error).show();
+                    }else{
+                        append_questions(data.questions)
+                        $("#question").val("");
+                        $("#q-error").hide().html("");
+                    }
+                }
+            )
+            .error(function(){
+                $("#q-error").html("网络错误").show();
+            });
         });
     });
 </script>
@@ -225,76 +276,38 @@
 
 <div class="wrap qa">
     <h4>购买咨询</h4>
-    <div class="qa-item">
-        <div class="user">网友：<span class="name">唱有思歌</span> 2012-6-28 18:09:34</div>
-        <dl class="question">
-            <dt>咨询内容：</dt>
-            <dd>有家川菜的电子券怎么用呀？</dd>
-        </dl>
-        <dl class="answer">
-            <dt>客户回复：</dt>
-            <dd>有家川菜的电子券怎么用呀？</dd>
-        </dl>
-    </div>
-    <div class="qa-item qa-odd">
-        <div class="user"><span class="name">网友：唱有思歌</span> 2012-6-28 18:09:34</div>
-        <dl class="question">
-            <dt>咨询内容：</dt>
-            <dd>有家川菜的电子券怎么用呀？</dd>
-        </dl>
-        <dl class="answer">
-            <dt>客户回复：</dt>
-            <dd>有家川菜的电子券怎么用呀？</dd>
-        </dl>
-    </div>
-    <div class="qa-item">
-        <div class="user"><span class="name">网友：唱有思歌</span> 2012-6-28 18:09:34</div>
-        <dl class="question">
-            <dt>咨询内容：</dt>
-            <dd>有家川菜的电子券怎么用呀？</dd>
-        </dl>
-        <dl class="answer">
-            <dt>客户回复：</dt>
-            <dd>有家川菜的电子券怎么用呀？</dd>
-        </dl>
-    </div>
-    <div class="qa-item qa-odd">
-        <div class="user"><span class="name">网友：唱有思歌</span> 2012-6-28 18:09:34</div>
-        <dl class="question">
-            <dt>咨询内容：</dt>
-            <dd>有家川菜的电子券怎么用呀？</dd>
-        </dl>
-        <dl class="answer">
-            <dt>客户回复：</dt>
-            <dd>有家川菜的电子券怎么用呀？</dd>
-        </dl>
-    </div>
-    <div class="qa-item">
-        <div class="user"><span class="name">网友：唱有思歌</span> 2012-6-28 18:09:34</div>
-        <dl class="question">
-            <dt>咨询内容：</dt>
-            <dd>有家川菜的电子券怎么用呀？</dd>
-        </dl>
-        <dl class="answer">
-            <dt>客户回复：</dt>
-            <dd>有家川菜的电子券怎么用呀？</dd>
-        </dl>
-    </div>
-    <div class="qa-item qa-odd">
-        <div class="user"><span class="name">网友：唱有思歌</span> 2012-6-28 18:09:34</div>
-        <dl class="question">
-            <dt>咨询内容：</dt>
-            <dd>有家川菜的电子券怎么用呀？</dd>
-        </dl>
-        <dl class="answer">
-            <dt>客户回复：</dt>
-            <dd>有家川菜的电子券怎么用呀？</dd>
-        </dl>
+    <div id="q-list">
+        <input type="hidden" value="${questions.size()}" id="q-size"/>
+        %{q_index = 0}%
+        #{list items:questions, as:'question'}
+        %{
+            q_style = q_index%2 == 1 ? "qa-odd" : ""
+            q_index += 1
+        }%
+        <div class="qa-item ${q_style}">
+            <div class="user"><span class="name">${question.userName == null ? "游客" : question.userName}</span> ${question.createdAt.format()}</div>
+            <dl class="question">
+                <dt>咨询内容：</dt>
+                <dd>${question.content}</dd>
+            </dl>
+            <dl class="answer">
+                #{if question.reply != null}
+                    <dt>客服回复：</dt>
+                    <dd>${question.reply}</dd>
+                #{/if}
+                #{else}
+                    <dt>待回复,</dt>
+                    <dd>请耐心等待^_^</dd>
+                #{/else}
+            </dl>
+        </div>
+        #{/list}
     </div>
     <div class="qa-more"><a href="#">更多>></a></div>
     <div class="qa-form">
         <div class="tit">发表咨询：</div>
-        <textarea class="con" cols="80" rows="5"></textarea>
-        <div class="btn"><button type="submit"> 提 交 </button></div>
+        <textarea class="con" cols="80" rows="5" id="question"></textarea>
+        <span id="q-error" style="display:none"></span>
+        <div class="btn"><button id="submit-question"> 提 交 </button></div>
     </div>
 </div>

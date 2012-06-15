@@ -36,6 +36,9 @@ GET     /goods/{id}                             Goods.show
 GET     /goods/{uuid}/preview                   Goods.preview
 
 
+POST    /user-question                          UserQuestions.add
+
+
 # 购物车
 GET     /carts                                  Carts.index
 GET     /carts/tops                             Carts.tops

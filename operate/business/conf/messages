@@ -132,6 +132,7 @@ order.CANCELED=交易关闭
 order.SENT=已发货
 
 #订单支付方式
+order.payMethod.null=未选择
 order.payMethod.alipay=支付宝
 order.payMethod.tenpay=财付通
 order.payMethod.balance=余额支付

@@ -271,10 +271,11 @@
     text-align: right;
 }
 .qa-more a {
-    display: inline-block;
     padding: 2px 8px;
     color: #007e76;
     border: 1px solid #E4E4E4;
+    text-align:center;
+    background-color:#E4E4E4;
 }
 .qa-more a:hover {
     border: 1px solid #007e76;

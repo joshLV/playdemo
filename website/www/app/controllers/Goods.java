@@ -2,8 +2,11 @@ package controllers;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import models.cms.CmsQuestion;
 import models.consumer.User;
 import models.order.Order;
 import models.sales.Area;
@@ -133,17 +136,13 @@ public class Goods extends Controller {
                 }
                 if (StringUtils.isNotBlank(c.keywords)) {
                     String[] ks = c.keywords.split("[,;\\s]+");
-                    for (String k : ks) {
-                        categoryKeywords.add(k);
-                    }
+                    Collections.addAll(categoryKeywords, ks);
                 }
             }
         }
         if (StringUtils.isNotBlank(goods.keywords)) {
             String[] ks = goods.keywords.split("[,;\\s]+");
-            for (String k : ks) {
-                categoryKeywords.add(k);
-            }
+            Collections.addAll(categoryKeywords, ks);
         }
         if (categoryKeywords.size() > 0) {
             renderArgs.put("goodsKeywords", StringUtils.join(categoryKeywords, ","));
@@ -167,6 +166,12 @@ public class Goods extends Controller {
 
         showGoods(goods);
 
+        Http.Cookie idCookie = request.cookies.get("identity");
+        String cookieValue = idCookie == null ? null : idCookie.value;
+        Long userId = SecureCAS.getUser() == null ? null : SecureCAS.getUser().getId();
+
+        List<CmsQuestion> questions = CmsQuestion.findOnGoodsShow(userId, cookieValue, id);
+        renderArgs.put("questions", questions);
 
         render();
     }

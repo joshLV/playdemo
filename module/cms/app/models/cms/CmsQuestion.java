@@ -6,10 +6,12 @@ import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,6 +46,9 @@ public class CmsQuestion extends Model {
     @Column(name = "replay_at")
     public Date repliedAt;
 
+    @Column(name = "user_name")
+    public String userName;
+
     public Boolean visible = true;
 
     @Transient
@@ -55,6 +60,7 @@ public class CmsQuestion extends Model {
         this.createdAt = new Date();
         this.userId = null;
         this.cookieId = null;
+        this.userName = null;
     }
 
 
@@ -69,5 +75,28 @@ public class CmsQuestion extends Model {
         questions.setPageSize(pageSize);
         return questions;
 
+    }
+
+    public static List<CmsQuestion> findOnGoodsShow(Long userId, String cookieValue, Long goodsId) {
+        StringBuilder sql = new StringBuilder("select q from CmsQuestion q where goodsId = :goodsId and ( (visible = :visible and reply IS NOT NULL) ");
+        Map<String, Object> params = new HashMap<>();
+        params.put("goodsId", goodsId);
+        params.put("visible", true);
+
+        if (userId != null){
+            sql.append("or userId = :userId ");
+            params.put("userId", userId);
+        }
+        if(cookieValue != null){
+            sql.append("or cookieId = :cookieId");
+            params.put("cookieId", cookieValue);
+        }
+        sql.append(")");
+
+        Query query =  CmsQuestion.em().createQuery(sql.toString());
+        for(Map.Entry<String, Object> entry : params.entrySet()){
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        return query.getResultList();
     }
 }

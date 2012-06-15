@@ -4,8 +4,6 @@ package controllers;
 import models.order.Order;
 import models.payment.PaymentJournal;
 import models.payment.PaymentUtil;
-import models.payment.alipay.AliPaymentFlow;
-import org.apache.commons.lang.StringUtils;
 
 import models.payment.PaymentFlow;
 import play.mvc.Controller;
