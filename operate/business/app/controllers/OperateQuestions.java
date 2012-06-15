@@ -39,7 +39,7 @@ public class OperateQuestions extends Controller {
         for (CmsQuestion question : questions) {
             setItems(question);
         }
-        render(questions);
+        render(questions,condition);
     }
 
 
@@ -57,7 +57,7 @@ public class OperateQuestions extends Controller {
         updateQuestion.operateUserId = operateUser.id;
         updateQuestion.reply = question.reply;
         updateQuestion.save();
-        index();
+        index(null);
     }
 
     public static void edit(Long id) {
@@ -82,6 +82,6 @@ public class OperateQuestions extends Controller {
     }
 
     public static void delete(Long id) {
-        index();
+        index(null);
     }
 }

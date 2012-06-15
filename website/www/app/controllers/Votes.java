@@ -1,6 +1,7 @@
 package controllers;
 
 import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 import models.cms.VoteQuestion;
 import models.cms.VoteType;
 import models.consumer.User;
@@ -21,6 +22,7 @@ public class Votes extends Controller {
     /**
      * 问卷调查
      */
+    @SkipCAS
     public static void index() {
         List<VoteQuestion> votes = VoteQuestion.getPage(VoteType.QUIZ);
         User user = SecureCAS.getUser();
@@ -54,6 +56,7 @@ public class Votes extends Controller {
         render("/Votes/vote_success.html");
     }
 
+    @SkipCAS
     public static void viewAnswer() {
         User user = SecureCAS.getUser();
         VoteQuestion vote = VoteQuestion.getPage(VoteType.QUIZ).get(0);
@@ -66,6 +69,7 @@ public class Votes extends Controller {
      *
      * @param answers 答案
      */
+    @SkipCAS
     public static void isVoted(String answers) {
 
         User user = SecureCAS.getUser();

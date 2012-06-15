@@ -1,14 +1,11 @@
 package models.cms;
 
+import models.consumer.UserVoteCondition;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -63,18 +60,13 @@ public class CmsQuestion extends Model {
         this.userName = null;
     }
 
+    public static JPAExtPaginator<CmsQuestion> getQuestionList(UserVoteCondition condition, int pageNumber, int pageSize) {
 
-    public static JPAExtPaginator<CmsQuestion> getQuestionList(int pageNumber, int pageSize) {
-        StringBuilder sql = new StringBuilder("1=1");
-        Map params = new HashMap();
-        sql.append("and visible =:visible");
-        params.put("visible", true);
         JPAExtPaginator<CmsQuestion> questions = new JPAExtPaginator<>("CmsQuestion q", "q",
-                CmsQuestion.class, sql.toString(), params).orderBy("createdAt desc");
+                CmsQuestion.class, condition.getFitter(), condition.paramsMap).orderBy("createdAt desc");
         questions.setPageNumber(pageNumber);
         questions.setPageSize(pageSize);
         return questions;
-
     }
 
     public static List<CmsQuestion> findOnGoodsShow(Long userId, String cookieValue, Long goodsId) {
@@ -83,18 +75,18 @@ public class CmsQuestion extends Model {
         params.put("goodsId", goodsId);
         params.put("visible", true);
 
-        if (userId != null){
+        if (userId != null) {
             sql.append("or userId = :userId ");
             params.put("userId", userId);
         }
-        if(cookieValue != null){
+        if (cookieValue != null) {
             sql.append("or cookieId = :cookieId");
             params.put("cookieId", cookieValue);
         }
         sql.append(")");
 
-        Query query =  CmsQuestion.em().createQuery(sql.toString());
-        for(Map.Entry<String, Object> entry : params.entrySet()){
+        Query query = CmsQuestion.em().createQuery(sql.toString());
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
         }
         return query.getResultList();

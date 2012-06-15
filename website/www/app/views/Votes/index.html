@@ -34,17 +34,17 @@
         var answers = $("#answers").val();
         var mobile = $("#mobile").val();
         if (answers.length == 0) {
-            alert("请选择答案！");
-            return;
+            $("#msg").html("请选择答案！");
+            return false;
         }
         $("#answers").val(answers);
         if (mobile == undefined || mobile == '') {
-            alert("请输入手机号！");
-            return;
+            $("#msg").html("请输入手机号！");
+            return false;
         }
         if (checkTel(mobile)) {
-            alert("手机号不对！");
-            return;
+            $("#msg").html("手机号不对！");
+            return false;
         }
 
         $.get("/is_voted?answers=" + answers, function (data) {
@@ -69,7 +69,7 @@
         #{list items:votes, as:'vote' }
             <div class="question">
                 <strong>${vote.content}</strong>
-                <a href="@{Votes.viewAnswer()}" id="view" target="_blank"> >> 查看答案 </a>
+                <a href="http://img.uhcdn.com/notice/1.html" id="view" target="_blank"> >> 查看答案 </a>
             </div>
             <ul class="ask" id="J_ask">
                 <li data-value="A" id="answer_${vote.id}">${vote.answer1}</li>
@@ -84,8 +84,10 @@
         #{/list}
         <div class="prize-phone">请输入领奖手机号码：<input type="text" id="mobile" name="mobile" maxlength="11"
                                                   value="${user?.userInfo?.mobile}"/><span id="info">手机用来领取电子奖品奖票</span>
+            <span id="msg" style="color: #ff0000;display: block;padding-top: 15px" ></span>
         </div>
         <div class="btn">
+
         *{<a class="buy" href="#" id="bt_submit"><img src="http://img.uhcdn.com/images/wenda/btn.jpg"/></a>}*
             <button id="bt_submit"><img src="http://img.uhcdn.com/images/wenda/btn.jpg"/></button>
         </div>
