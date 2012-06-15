@@ -10,7 +10,6 @@
         <permission key="VOTE_NEW" text="新增有奖调查" roles="editor"/>
         <permission key="VOTES" text="有奖调查管理" roles="editor"/>
         <permission key="QUESTION" text="咨询管理" roles="editor"/>
-        <permission key="QUESTION_REPLY" text="咨询回复" roles="editor"/>
     </permission>
 
     <navigation key="cms_main" text="网站管理" action="CmsBlocks.index" permission="CMS" display-order="200">
@@ -26,9 +25,8 @@
             <navigation key="votes_add" action="WebVotes.add" text="有奖调查添加" permission="VOTE_NEW"/>
             <navigation key="votes_index" action="WebVotes.index" text="有奖调查管理" permission="VOTES"/>
         </navigation>
-        <navigation key="question" text="咨询管理" permission="QUESTION_REPLY,QUESTION">
-            <navigation key="question_edit" action="question.edit" text="咨询回复" permission="QUESTION_REPLY"/>
-            <navigation key="question_index" action="question.index" text="咨询管理" permission="QUESTION"/>
+        <navigation key="question" text="咨询管理" permission="QUESTION">
+            <navigation key="questions_index" action="CmsQuestions.index" text="咨询管理" permission="QUESTION"/>
         </navigation>
     </navigation>
 </application>

@@ -39,6 +39,7 @@
                 <th>用户姓名</th>
                 <th>手机</th>
                 <th>题目</th>
+                <th>用户答案</th>
                 <th>题目类型</th>
                 <th>参加时间</th>
                 <th>操 作</th>
@@ -52,6 +53,7 @@
                 <td>${user?.user?.userInfo?.fullName}</td>
                 <td>${user?.mobile}</td>
                 <td>${user?.vote.content}</td>
+                <td>${user?.vote.getAnswer()}</td>
                 <td>&{'vote.'+user?.vote.type}</td>
                 <td>${user?.createdAt?.format('yyyy-MM-dd')}</td>
                 <td>#{vx.deleteLink action:"consumers_votes", id:user.id/}

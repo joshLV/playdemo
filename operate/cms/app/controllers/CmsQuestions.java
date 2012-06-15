@@ -14,12 +14,12 @@ import org.apache.commons.lang.StringUtils;
  * Time: 下午2:35
  */
 @With(OperateRbac.class)
-@ActiveNavigation("question_index")
+@ActiveNavigation("questions_index")
 public class CmsQuestions extends Controller {
     private static final int PAGE_SIZE = 15;
 
+    @ActiveNavigation("questions_index")
     public static void index() {
-
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
@@ -34,6 +34,7 @@ public class CmsQuestions extends Controller {
 
         index();
     }
+
     @ActiveNavigation("question_edit")
     public static void edit(Long id) {
         render();

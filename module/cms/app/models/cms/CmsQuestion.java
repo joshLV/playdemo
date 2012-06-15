@@ -36,14 +36,13 @@ public class CmsQuestion extends Model {
     @Column(name = "replay_at")
     public Date repliedAt;
 
-    public boolean visible = true;
-
+    public Boolean visible = true;
 
     public static JPAExtPaginator<CmsQuestion> getQuestionList(int pageNumber, int pageSize) {
-        StringBuffer sql = new StringBuffer("1=1");
+        StringBuilder sql = new StringBuilder("1=1");
         Map params = new HashMap();
-//        sql.append(" visible = :visible");
-//        params.put("visible", "true");
+        sql.append("and visible =:visible");
+        params.put("visible", true);
         JPAExtPaginator<CmsQuestion> questions = new JPAExtPaginator<>("CmsQuestion q", "q",
                 CmsQuestion.class, sql.toString(), params).orderBy("createdAt desc");
         questions.setPageNumber(pageNumber);

@@ -30,7 +30,7 @@ public class UserVoteCondition {
         sql.append(" u.deleted = :deleted");
         paramsMap.put("deleted", DeletedStatus.UN_DELETED);
 
-        sql.append(" and u.vote.correctAnswer= u.answer");
+//        sql.append(" and u.vote.correctAnswer= u.answer");
         if (type != null) {
             sql.append(" and u.vote.type=:type)");
             paramsMap.put("type", type);

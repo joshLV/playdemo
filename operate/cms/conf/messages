@@ -50,4 +50,4 @@ vote.INQUIRY=用户调查
 question.content=咨询内容
 question.reply=咨询回复
 question.createdAt=咨询时间
-question.replyAt=回复时间
+question.repliedAt=回复时间

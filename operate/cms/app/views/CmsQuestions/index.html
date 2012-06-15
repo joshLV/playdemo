@@ -22,7 +22,7 @@
                 <th>&{'question.content'}</th>
                 <th>&{'question.reply'}</th>
                 <th>&{'question.createdAt'}</th>
-                <th>&{'question.replyAt'}</th>
+                <th>&{'question.repliedAt'}</th>
                 <th>操 作</th>
             </tr>
             </thead>
@@ -31,9 +31,9 @@
             #{paginate.list items:questions, as:'question'}
             <tr>
                 <td>${question?.content}</td>
-                <td>&{'question.'+vote?.type}</td>
+                <td>${question?.reply}</td>
                 <td>${question?.createdAt?.format('yyyy-MM-dd')}</td>
-                <td>${question?.replyAt?.format('yyyy-MM-dd')}</td>
+                <td>${question?.repliedAt?.format('yyyy-MM-dd')}</td>
                 <td><a href="@{CmsQuestions.edit(question.id)}">修改</a>
                     / #{vx.deleteLink action:"questions", id:question.id/}
             </tr>
