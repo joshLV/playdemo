@@ -16,11 +16,11 @@ import play.mvc.With;
  * Time: 下午4:14
  */
 @With(OperateRbac.class)
-@ActiveNavigation("votes_index")
+@ActiveNavigation("winning_index")
 public class OperateConsumersWinningInfo extends Controller {
     private static final int PAGE_SIZE = 15;
 
-    @ActiveNavigation("votes_index")
+    @ActiveNavigation("winning_index")
     public static void index(UserVoteCondition condition) {
         String page = request.params.get("page");
         if (condition == null) {

@@ -60,4 +60,29 @@ public class VoteUnitTest extends UnitTest {
         assertEquals(DeletedStatus.DELETED, vote.deleted);
     }
 
+    @Test
+    public void testGetAnswer() {
+        long id = (Long) Fixtures.idCache.get("models.cms.VoteQuestion-vote2");
+        VoteQuestion vote = VoteQuestion.findById(id);
+        vote.getAnswer();
+        assertEquals("D.一百券", vote.getAnswer());
+
+        vote.correctAnswer = "B";
+        vote.save();
+        vote = VoteQuestion.findById(id);
+        vote.getAnswer();
+        assertEquals("B.原优惠啦", vote.getAnswer());
+
+        vote.correctAnswer = "C";
+        vote.save();
+        vote = VoteQuestion.findById(id);
+        vote.getAnswer();
+        assertEquals("C.不知道", vote.getAnswer());
+
+        vote.correctAnswer = "A";
+        vote.save();
+        vote = VoteQuestion.findById(id);
+        vote.getAnswer();
+        assertEquals("A.优惠拉", vote.getAnswer());
+    }
 }

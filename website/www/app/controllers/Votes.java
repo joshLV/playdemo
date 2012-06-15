@@ -27,11 +27,11 @@ public class Votes extends Controller {
         for (VoteQuestion vote : votes) {
             List<VoteQuestion> voteList = UserVote.find("user=? and vote=?", user, vote).fetch();
             if (voteList.size() > 0) {
-                renderArgs.put("isVoted", "voted");
+                viewAnswer();
                 break;
             }
         }
-        render(votes);
+        render(votes, user);
     }
 
     /**
@@ -39,16 +39,25 @@ public class Votes extends Controller {
      *
      * @param answers 答案
      */
-    public static void update(String answers) {
+    public static void update(String answers, String mobile) {
+
         User user = SecureCAS.getUser();
         String[] answerSplits = answers.split(",");
         for (String split : answerSplits) {
             String[] voteSplits = split.split("-");
             VoteQuestion vote = VoteQuestion.findById(Long.parseLong(voteSplits[0]));
-            UserVote userVote = new UserVote(user, vote, voteSplits[1]);
+            UserVote userVote = new UserVote(user, vote, voteSplits[1], mobile);
             userVote.save();
+            renderArgs.put("answer", vote.getAnswer());
         }
 
+        render("/Votes/vote_success.html");
+    }
+
+    public static void viewAnswer() {
+        User user = SecureCAS.getUser();
+        VoteQuestion vote = VoteQuestion.getPage(VoteType.QUIZ).get(0);
+        renderArgs.put("answer", vote.getAnswer());
         render("/Votes/vote_success.html");
     }
 

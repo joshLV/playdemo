@@ -5,7 +5,7 @@
 #{/set}
 <script>
     function checkTel(tel) {
-        var telreg = /^((15)\d{9})$|^((13)\d{9})$|^((18)\d{9})$/i;
+        var telreg = /^((15)\d{9})$|^((13)\d{9})$|^((18)\d{9})$/;
         if (tel.match(telreg) == null) {
             return true;
         } else {

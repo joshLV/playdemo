@@ -13,10 +13,16 @@ vote.save();
 open('/votes')
 verifyTitle('一百券 - 有奖问答')
 assertTextPresent('优惠啦网站改版了，改成什么名字？')
-click('id=answer_1')
+
+open('/votes/view')
+verifyTitle('参与成功页面')
+assertTextPresent('D.一百券')
+
+open('/votes')
+click('id=answer_${id}')
 *{clickAndWait('id=bt_submit')}*
 *{verifyTitle('参与成功页面')}*
-*{open('/votes')}*
+
 #{/selenium}
 
 

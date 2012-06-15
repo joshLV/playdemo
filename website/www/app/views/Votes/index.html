@@ -5,31 +5,52 @@
 #{/set}
 #{set 'moreScripts'}
 <script type="text/javascript">
-    $(window).load(function () {
-        if ('${isVoted}' == 'voted') {
-            alert("您已经参与过了！");
-            window.location.href = "/";
-            return;
+    function checkTel(tel) {
+        var telreg = /^((15)\d{9})$|^((13)\d{9})$|^((18)\d{9})$/;
+        if (tel.match(telreg) == null) {
+            return true;
+        } else {
+            return false;
         }
-    });
-    $("#bt_submit").click(function () {
+    }
+
+    var item = $('#J_ask li');
+    item.click(function () {
         var checked = [];
         var answers = "";
-        $("input[id^=answer_]").each(function () {
-            if (this.checked) {
-                checked.push(this.value);
-                var id_temp = $(this).attr("id");
-                answers += checked.push(id_temp.substr(id_temp.lastIndexOf("_") + 1)) + "-" + this.value + ",";
-            }
-        })
+        var answer = "";
+        item.removeClass('selected');
+        $(this).addClass('selected');
+        if ($(this).attr("class", "selected")) {
+            answer = $(this).attr("data-value");
+            var id_temp = $(this).attr("id");
+            answers += id_temp.substr(id_temp.lastIndexOf("_") + 1) + "-" + answer + ",";
+        }
+        $("#answers").val(answers);
+    });
+
+
+    $("#bt_submit").click(function () {
+        var answers = $("#answers").val();
+        var mobile = $("#mobile").val();
         if (answers.length == 0) {
             alert("请选择答案！");
             return;
         }
         $("#answers").val(answers);
+        if (mobile == undefined || mobile == '') {
+            alert("请输入手机号！");
+            return;
+        }
+        if (checkTel(mobile)) {
+            alert("手机号不对！");
+            return;
+        }
+
         $.get("/is_voted?answers=" + answers, function (data) {
             if (data == 'voted') {
-                alert("您已经参与过了！");
+                $("#info").html("您已经参与过了！");
+                $("#bt_submit").attr("disabled", true);
                 return;
             } else {
                 $("#vote_form").submit();
@@ -37,33 +58,221 @@
         }, "text");
     });
 
-
 </script>
 #{/set}
 #{set i:0} #{/set}
-<div class="form-bd">
-#{form @Votes.update() , id:"vote_form"}
-    #{if votes.size()>0}
-    #{list items:votes, as:'vote' }
-        <div class="field">
-            <label class="label">${++i} ${vote.content}</label><br>
-            <input name="question.answer_${i}" id="answer_${i}" type="radio" value="A"/>${vote.answer1}
-            <input name="question.answer_${i}" id="answer_${i}" type="radio" value="B"/>${vote.answer2}
-            #{if vote.answer3 != ''}
-            <input name="question.answer_${i}" id="answer_${i}" type="radio" value="C"/>${vote.answer3}
-            #{/if}
-            #{if vote.answer4 != ''}
-            <input name="question.answer_${i}" id="answer_${i}" type="radio" value="D"/>${vote.answer4}
-             #{/if}
+<div id="active">
+    <div><img src="http://img.uhcdn.com/images/wenda/b.jpg"/></div>
+#{if votes.size()>0}
+    #{form @Votes.update() , id:"vote_form"}
+        <input type="hidden" id="answers" name="answers"/>
+        #{list items:votes, as:'vote' }
+            <div class="question">
+                <strong>${vote.content}</strong>
+                <a href="@{Votes.viewAnswer()}" id="view" target="_blank"> >> 查看答案 </a>
+            </div>
+            <ul class="ask" id="J_ask">
+                <li data-value="A" id="answer_${vote.id}">${vote.answer1}</li>
+                <li data-value="B" id="answer_${vote.id}">${vote.answer2}</li>
+                #{if vote.answer3 != ''}
+                    <li data-value="C" id="answer_${vote.id}">${vote.answer3}</li>
+                #{/if}
+                #{if vote.answer4 != ''}
+                    <li data-value="D" id="answer_${vote.id}">${vote.answer4}</li>
+                #{/if}
+            </ul>
+        #{/list}
+        <div class="prize-phone">请输入领奖手机号码：<input type="text" id="mobile" name="mobile" maxlength="11"
+                                                  value="${user?.userInfo?.mobile}"/><span id="info">手机用来领取电子奖品奖票</span>
         </div>
-    #{/list}
-    <input type="hidden" id="answers" name="answers"/>
-    <input type="hidden" id="voteIds" name="voteIds">
-    <span id="bt" style="display: block"><a class="buy" href="#" id="bt_submit">提交</a></span>
+        <div class="btn">
+        *{<a class="buy" href="#" id="bt_submit"><img src="http://img.uhcdn.com/images/wenda/btn.jpg"/></a>}*
+            <button id="bt_submit"><img src="http://img.uhcdn.com/images/wenda/btn.jpg"/></button>
+        </div>
+    #{/form}
 #{/if}
-    #{else}
-       <div style="text-align:center;padding:10px 0;font-size: 18px;">今天没有有奖问答活动，请逛逛其他的吧:)<div>
-    #{/else}
-#{/form}
+#{else}
+    <p style="margin-bottom:30px;color:#b1b1b1;font:700 24px 'Microsoft Yahei';text-align:center;">今天没有活动，请明天再来！</p>
+#{/else}
+    <div class="act-txt clearfix">
+        <div class="txt-left">
+            <h3 class="activities"><b>活动内容</b></h3>
+
+            <p>活动为5天，每日的更换问答题，最终答案一致是优惠啦升级为一百券。以最简单的方式，2个答案的单项模式。对每天回答正确名单进行抽取5个名额，第二天统一发送奖品。消费
+                者可以重发参加，但是每天只能参加一次。</p>
+
+            <h3 class="introduction"><b>活动详情</b></h3>
+
+            <p>
+                1.时间上午10：30开始，每天10:30更新问题<br/>
+                2.活动第二天10:30 导出名单，下午16:00发送礼品<br/>
+                3.每天随即抽取30名有家川菜现金奖和5名电影票兑换奖</p>
+
+            <h3 class="modalities"><b>参加方式</b></h3>
+
+            <p><strong style="color:#333">登陆一百券网站，进入活动页面，提交答案和收货信息。</strong></p>
+
+            <p style="padding-left:30px;">
+                <span style="margin-left:-30px;color:#f00;font-weight:700">注：</span>1.本次有奖调查活动的获奖者限定在上海人士。<br/>
+                2.原是优惠啦的会员，请先登录一百券，进入活动页面即可参加。<br/>
+                3.不是一百券会员，请先注册成为一百券会员，就可以参加有奖问答活动。<br/>
+                4.一个账号每天只有一次机会。<br/>
+                5.手机用来作为收取电子奖品，请务必填写正确。<br/>
+                6.“一百券”对此次有奖问答活动保留最终解释权。
+            </p>
+        </div>
+        <div class="txt-right">
+            <h3 class="time"><b>活动时间</b></h3>
+
+            <p style="color:#7f7f7f;font-size:16px">2012年6月17日—2012年6月21日</p>
+
+            <h3 class="prize"><b>活动奖品</b></h3>
+
+            <p><img src="http://img.uhcdn.com/images/wenda/youjia.jpg"/></p>
+
+            <p style="padding-left:44px;">
+                <span style="margin-left:-44px;color:#b40000;font-weight:700">奖票：</span>价值120元电影票电子兑换券<br/>价值20元有家川菜电子现金券
+            </p>
+
+            <h3 class="contact"><b>联系方式</b></h3>
+            <span style="display:inline-block;padding:0 5px;border-radius:3px;color:#fff;font-size:16px;font-weight:700;background-color:#faab17;">联系热线：400-6262-166</span>
+
+            <p>一百券官网：www.yibaiquan.com</p>
+        </div>
+    </div>
 </div>
+<style>
+    #active {
+        width: 960px;
+        margin: 0 auto;
+    }
+
+    #active .question {
+        padding: 65px 0 20px;
+        text-align: center;
+    }
+
+    #active .question strong {
+        color: #006d6d;
+        font: 700 46px 'Microsoft Yahei';
+    }
+
+    #active .question a {
+        padding-left: 10px;
+        color: #1368dc;
+        font-size: 14px;
+        text-decoration: underline;
+    }
+
+    #active .ask {
+        padding: 30px 300px;
+    }
+
+    #active .ask li {
+        float: left;
+        width: 150px;
+        padding-left: 30px;
+        color: #faab17;
+        font: 700 22px 'Microsoft Yahei';
+        background: url(http://img.uhcdn.com/images/wenda/radio.png) no-repeat 0 4px;
+        cursor: pointer;
+    }
+
+    #active .ask li.selected {
+        background-position: 0 -36px;
+    }
+
+    #active .prize-phone {
+        margin: 30px 0;
+        padding-left: 35px;
+        color: #9c9c9c;
+        font: 14px 'Microsoft Yahei';
+    }
+
+    #active .prize-phone input {
+        padding: 0 3px;
+        width: 190px;
+        height: 28px;
+        border: 1px solid #c4c4c4;
+        border-radius: 5px;
+    }
+
+    #active .prize-phone span {
+        padding-left: 10px;
+        color: #e0655c;
+    }
+
+    #active .btn,
+    #active .prize-phone {
+        text-align: center;
+    }
+
+    #active .btn button {
+        padding: 0;
+        margin: 0;
+        border: 0;
+        background: none;
+        cursor: pointer;
+    }
+
+    #active .txt-left {
+        float: left;
+        width: 560px;
+    }
+
+    #active .txt-right {
+        float: right;
+        width: 280px;
+    }
+
+    #active .act-txt {
+        padding-bottom: 30px;
+    }
+
+    #active .act-txt h3 {
+        margin-top: 20px;
+        padding: 15px 0;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    #active .act-txt h3 b {
+        display: block;
+        height: 28px;
+        text-indent: -9999px;
+        background: url(http://img.uhcdn.com/images/wenda/tit.png) no-repeat -9999px -9999px;
+    }
+
+    #active .act-txt .activities b {
+        background-position: 0 0;
+    }
+
+    #active .act-txt .introduction b {
+        background-position: 0 -28px;
+    }
+
+    #active .act-txt .modalities b {
+        background-position: 0 -56px;
+    }
+
+    #active .act-txt .time b {
+        background-position: 0 -84px;
+    }
+
+    #active .act-txt .prize b {
+        background-position: 0 -112px;
+    }
+
+    #active .act-txt .contact b {
+        background-position: 0 -140px;
+    }
+
+    #active .act-txt p {
+        color: #7f7f7f;
+        font-size: 14px;
+        line-height: 26px;
+    }
+</style>
+
+
+
 

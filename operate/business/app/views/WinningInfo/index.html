@@ -37,6 +37,7 @@
             <tr>
                 <th>用户帐号</th>
                 <th>用户姓名</th>
+                <th>手机</th>
                 <th>题目</th>
                 <th>题目类型</th>
                 <th>参加时间</th>
@@ -49,6 +50,7 @@
             <tr>
                 <td>${user?.user?.loginName}</td>
                 <td>${user?.user?.userInfo?.fullName}</td>
+                <td>${user?.mobile}</td>
                 <td>${user?.vote.content}</td>
                 <td>&{'vote.'+user?.vote.type}</td>
                 <td>${user?.createdAt?.format('yyyy-MM-dd')}</td>

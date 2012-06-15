@@ -55,6 +55,7 @@
   <navigation key="consumers_app" text="用户管理" action="OperateConsumers.index" display-order="40">
     <navigation key="consumers" text="用户">
       <navigation key="consumers_index" action="OperateConsumers.index" text="用户管理" permissions="CONSUMERS"/>
+      <navigation key="winning_index" action="OperateConsumersWinningInfo.index" text="用户参加有奖问答管理" permissions="CONSUMERS"/>
     </navigation>
   </navigation>
 

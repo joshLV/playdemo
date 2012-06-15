@@ -2,8 +2,10 @@ package models.consumer;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.cms.VoteQuestion;
+import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
+import play.modules.view_ext.annotation.Mobile;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -20,7 +22,9 @@ public class UserVote extends Model {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = true)
     public User user;
-
+    @Mobile
+    @Required
+    public String mobile;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vote_id", nullable = true)
     public VoteQuestion vote;
@@ -32,10 +36,12 @@ public class UserVote extends Model {
     @Enumerated(EnumType.STRING)
     public DeletedStatus deleted;
 
-    public UserVote(User user, VoteQuestion vote, String answer) {
+    public UserVote(User user, VoteQuestion vote, String answer, String mobile) {
         this.user = user;
         this.vote = vote;
         this.answer = answer;
+        this.mobile = mobile;
+        this.deleted = DeletedStatus.UN_DELETED;
         this.createdAt = new Date();
 
     }

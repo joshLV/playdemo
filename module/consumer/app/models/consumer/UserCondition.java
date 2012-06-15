@@ -14,7 +14,7 @@ public class UserCondition {
     public String mobile;
     public String loginName;
     public UserStatus status;
-
+    public String interval = "0";
 
     public String pointNumber;
     public Map<String, Object> paramsMap = new HashMap<>();

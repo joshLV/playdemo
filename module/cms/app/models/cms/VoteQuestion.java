@@ -6,6 +6,7 @@ import play.data.validation.InFuture;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
+import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -75,8 +76,8 @@ public class VoteQuestion extends Model {
 
     public static List<VoteQuestion> getPage(VoteType type) {
         List<VoteQuestion> votesList = VoteQuestion.find("deleted = ? and type=? and effectiveAt >= ?" +
-                " and expireAt <=?", DeletedStatus.UN_DELETED, VoteType.QUIZ, DateUtil.getBeginOfDay(),
-               DateUtil.getEndOfDay(new Date())).fetch();
+                " and expireAt <=? order by expireAt desc", DeletedStatus.UN_DELETED, VoteType.QUIZ, DateUtil.getBeginOfDay(),
+                DateUtil.getEndOfDay(new Date())).fetch();
         return votesList;
     }
 
@@ -106,5 +107,23 @@ public class VoteQuestion extends Model {
         VoteQuestion vote = VoteQuestion.findById(id);
         vote.deleted = DeletedStatus.DELETED;
         vote.save();
+    }
+
+    /**
+     * 取得正确答案
+     * @return
+     */
+    public String getAnswer() {
+        String answer = "";
+        if (answer1.contains(correctAnswer)) {
+            answer = answer1;
+        } else if (answer2.contains(correctAnswer)) {
+            answer = answer2;
+        } else if (StringUtils.isNotBlank(answer3) && answer3.contains(correctAnswer)) {
+            answer = answer3;
+        } else if (StringUtils.isNotBlank(answer4) && answer4.contains(correctAnswer)) {
+            answer = answer4;
+        }
+        return answer;
     }
 }
