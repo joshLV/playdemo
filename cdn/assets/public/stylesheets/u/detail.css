@@ -227,3 +227,58 @@
 .service-bd .item-3 {
     background: url(http://img.uhcdn.com/images/u/icon_3.png) no-repeat 14px 5px;
 }
+
+.qa h4 {
+    text-indent: 5px;
+    font-size: 16px;
+    line-height: 32px;
+    background-color: #AADBDB;
+}
+.qa-item {
+    padding: 8px 10px;
+    border-bottom: 1px solid #E4E4E4;
+}
+.qa-odd {
+    background-color: #f8f8f8;
+}
+.qa-item .user {
+    float: right;
+    color: #999;
+    text-align: right;
+}
+.qa-item .user .name {
+    color: #666;
+    margin-right: 20px;
+}
+.qa-item dl {
+    line-height: 22px;
+}
+.qa-item dt {
+    padding-left: 20px;
+    float: left;
+}
+.qa-item .question dt {
+    background: url(http://img.uhcdn.com/images/u/qa.png) no-repeat 0 5px;
+}
+.qa-item .answer dt {
+    background: url(http://img.uhcdn.com/images/u/qa.png) no-repeat 0 -27px;
+}
+.qa-item .answer {
+    color: #f50;
+}
+.qa-form {
+    margin: 20px 0;
+    padding: 5px 10px;
+    background-color: #f2f2f2;
+}
+.qa-form .tit {
+    font-weight: 700;
+}
+.qa-form .con {
+    margin: 3px 0;
+    padding: 1px 3px;
+    height: 80px;
+}
+.qa-form .btn button {
+    padding: 2px 15px;
+}

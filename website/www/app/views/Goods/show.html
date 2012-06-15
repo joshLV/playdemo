@@ -206,13 +206,11 @@
     #{if models.sales.MaterialType.REAL!=goods.materialType}
         <div class="applicable-store txt-item clearfix">
             <h4 class="txt-item-hd">适用门店</h4>
-            <table class="txt-item-bd" width="700" border="0" cellpadding="0"
-                   cellspacing="0">
+            <table class="txt-item-bd" width="700" border="0" cellpadding="0" cellspacing="0">
             #{if goods?.getShopList()?.size() >0}
                 #{list goods?.getShopList(), as:'shop'}
                     <tr>
-                        <td width="120" height="30"
-                            class="table_td">${shop.name}</td>
+                        <td width="120" height="30" class="table_td">${shop.name}</td>
                         <td class="table_td">${shop.address}</td>
                         <td class="table_td">${shop.phone}</td>
                     </tr>
@@ -222,5 +220,80 @@
         </div>
     #{/if}
 
+    </div><!-- tabtxt END -->
+</div>
+
+<div class="wrap qa">
+    <h4>购买咨询</h4>
+    <div class="qa-item">
+        <div class="user">网友：<span class="name">唱有思歌</span> 2012-6-28 18:09:34</div>
+        <dl class="question">
+            <dt>咨询内容：</dt>
+            <dd>有家川菜的电子券怎么用呀？</dd>
+        </dl>
+        <dl class="answer">
+            <dt>客户回复：</dt>
+            <dd>有家川菜的电子券怎么用呀？</dd>
+        </dl>
+    </div>
+    <div class="qa-item qa-odd">
+        <div class="user"><span class="name">网友：唱有思歌</span> 2012-6-28 18:09:34</div>
+        <dl class="question">
+            <dt>咨询内容：</dt>
+            <dd>有家川菜的电子券怎么用呀？</dd>
+        </dl>
+        <dl class="answer">
+            <dt>客户回复：</dt>
+            <dd>有家川菜的电子券怎么用呀？</dd>
+        </dl>
+    </div>
+    <div class="qa-item">
+        <div class="user"><span class="name">网友：唱有思歌</span> 2012-6-28 18:09:34</div>
+        <dl class="question">
+            <dt>咨询内容：</dt>
+            <dd>有家川菜的电子券怎么用呀？</dd>
+        </dl>
+        <dl class="answer">
+            <dt>客户回复：</dt>
+            <dd>有家川菜的电子券怎么用呀？</dd>
+        </dl>
+    </div>
+    <div class="qa-item qa-odd">
+        <div class="user"><span class="name">网友：唱有思歌</span> 2012-6-28 18:09:34</div>
+        <dl class="question">
+            <dt>咨询内容：</dt>
+            <dd>有家川菜的电子券怎么用呀？</dd>
+        </dl>
+        <dl class="answer">
+            <dt>客户回复：</dt>
+            <dd>有家川菜的电子券怎么用呀？</dd>
+        </dl>
+    </div>
+    <div class="qa-item">
+        <div class="user"><span class="name">网友：唱有思歌</span> 2012-6-28 18:09:34</div>
+        <dl class="question">
+            <dt>咨询内容：</dt>
+            <dd>有家川菜的电子券怎么用呀？</dd>
+        </dl>
+        <dl class="answer">
+            <dt>客户回复：</dt>
+            <dd>有家川菜的电子券怎么用呀？</dd>
+        </dl>
+    </div>
+    <div class="qa-item qa-odd">
+        <div class="user"><span class="name">网友：唱有思歌</span> 2012-6-28 18:09:34</div>
+        <dl class="question">
+            <dt>咨询内容：</dt>
+            <dd>有家川菜的电子券怎么用呀？</dd>
+        </dl>
+        <dl class="answer">
+            <dt>客户回复：</dt>
+            <dd>有家川菜的电子券怎么用呀？</dd>
+        </dl>
+    </div>
+    <div class="qa-form">
+        <div class="tit">发表咨询：</div>
+        <textarea class="con" cols="80" rows="5"></textarea>
+        <div class="btn"><button type="submit"> 提 交 </button></div>
     </div>
 </div>
