@@ -4,7 +4,7 @@
 
 <div class="body">
     <legend></legend>
-    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{CmsQuestions.index()}" method="GET">
+    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateQuestions.index()}" method="GET">
         <table width="100%">
             <tr>
                 <td width="30%">
@@ -23,6 +23,8 @@
                 <th>&{'question.reply'}</th>
                 <th>&{'question.createdAt'}</th>
                 <th>&{'question.repliedAt'}</th>
+                <th>回复者</th>
+                <th>用户</th>
                 <th>操 作</th>
             </tr>
             </thead>
@@ -34,7 +36,9 @@
                 <td>${question?.reply}</td>
                 <td>${question?.createdAt?.format('yyyy-MM-dd')}</td>
                 <td>${question?.repliedAt?.format('yyyy-MM-dd')}</td>
-                <td><a href="@{CmsQuestions.edit(question.id)}">修改</a>
+                <td>${question?.operateUser}</td>
+                <td>${question?.user}</td>
+                <td><a href="@{OperateQuestions.edit(question.id)}">回复</a>
                     / #{vx.deleteLink action:"questions", id:question.id/}
             </tr>
             #{/paginate.list}

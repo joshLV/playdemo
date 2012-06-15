@@ -98,6 +98,13 @@ GET     /promotions/add                         Promotions.add
 GET     /promotions/detail/{id}                 Promotions.detail
 POST    /promotions                             Promotions.create
 
+
+#咨询管理
+GET     /questions                              OperateQuestions.index
+DELETE  /questions/{id}                         OperateQuestions.delete
+GET     /questions/{id}/edit                    OperateQuestions.edit
+POST    /questions/{id}                         OperateQuestions.update
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
@@ -105,6 +112,7 @@ GET     /favicon.ico                            404
 GET     /public/                                staticDir:public
 
 *       /                                       module:operate_rbac
+
 
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}

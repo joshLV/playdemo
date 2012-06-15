@@ -258,4 +258,7 @@ vote.type=调查类型
 vote.QUIZ=有奖问答
 vote.INQUIRY=用户调查
 
-
+question.content=咨询内容
+question.reply=回复
+question.createdAt=咨询时间
+question.repliedAt=回复时间

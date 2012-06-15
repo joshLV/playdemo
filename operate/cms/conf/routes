@@ -29,12 +29,6 @@ DELETE  /votes/{id}                            WebVotes.delete
 GET     /votes/{id}/edit                       WebVotes.edit
 PUT     /votes/{id}                            WebVotes.update
 
-#咨询管理
-GET     /questions                              CmsQuestions.index
-DELETE  /questions/{id}                         CmsQuestions.delete
-GET     /questions/{id}/edit                    CmsQuestions.edit
-PUT     /questions/{id}                         CmsQuestions.update
-
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

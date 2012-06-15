@@ -1,11 +1,13 @@
 package models.cms;
 
+import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +23,7 @@ import java.util.Map;
 public class CmsQuestion extends Model {
 
     public String content;
-
+    @Required
     public String reply;
 
     @Column(name = "user_id")
@@ -44,7 +46,12 @@ public class CmsQuestion extends Model {
 
     public Boolean visible = true;
 
-    public CmsQuestion(){
+    @Transient
+    public String user;
+    @Transient
+    public String operateUser;
+
+    public CmsQuestion() {
         this.createdAt = new Date();
         this.userId = null;
         this.cookieId = null;

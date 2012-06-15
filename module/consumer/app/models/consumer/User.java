@@ -15,7 +15,6 @@ import play.db.jpa.Model;
 import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Mobile;
-import play.mvc.Http.Request;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
