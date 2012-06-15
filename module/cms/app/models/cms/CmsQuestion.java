@@ -49,8 +49,6 @@ public class CmsQuestion extends Model {
     public Boolean visible = true;
 
     @Transient
-    public String user;
-    @Transient
     public String operateUser;
 
     public CmsQuestion() {

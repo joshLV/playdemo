@@ -43,10 +43,10 @@
             <tr>
                 <td>${question?.content}</td>
                 <td>${question?.reply}</td>
-                <td>${question?.createdAt?.format('yyyy-MM-dd')}</td>
-                <td>${question?.repliedAt?.format('yyyy-MM-dd')}</td>
+                <td>${question?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${question?.repliedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>${question?.operateUser}</td>
-                <td>${question?.user}</td>
+                <td>${question?.userName}</td>
                 <td><a href="@{OperateQuestions.edit(question.id)}">回复</a>
                     / #{vx.deleteLink action:"questions", id:question.id/}
             </tr>

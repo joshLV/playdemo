@@ -2,7 +2,6 @@ package controllers;
 
 import models.admin.OperateUser;
 import models.cms.CmsQuestion;
-import models.consumer.User;
 import models.consumer.UserVoteCondition;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -68,11 +67,8 @@ public class OperateQuestions extends Controller {
     }
 
     private static void setItems(CmsQuestion question) {
-        if (question.userId != null) {
-            User user = User.findById(question.userId);
-            question.user = user.loginName;
-        } else {
-            question.user = "游客";
+        if (question.userId == null) {
+            question.userName= "游客";
         }
         if (question.operateUserId != null) {
             OperateUser operateUser = OperateUser.findById(question.operateUserId);

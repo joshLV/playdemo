@@ -13,7 +13,7 @@
         <label class="control-label">用户帐号</label>
 
         <div class="controls">
-        ${question?.user}
+        ${question?.userName}
         </div>
     </div>
     <div class="control-group">
@@ -23,16 +23,6 @@
         </div>
     </div>
     #{layout_operate.textareaField name:'question.reply', value:question?.reply, required:true/}
-    *{<div class="control-group">}*
-        *{<label class="control-label"><span style="color: red; ">*</span> 回复时间</label>}*
-        *{<div class="controls">}*
-            *{<input type="text" id="condition_begin" name="question.repliedAt"}*
-                   *{value="${question?.repliedAt?.format()}"}*
-                   *{onfocus="WdatePicker({readOnly:true})"}*
-                   *{class="input-medium Wdate"/>}*
-            *{<span class="error">#{error 'question.repliedAt' /}</span>}*
-        *{</div>}*
-    *{</div>}*
     <div class="control-group">
         <label class="control-label">回复者</label>
 
