@@ -2,7 +2,7 @@ package controllers;
 
 import models.admin.OperateUser;
 import models.cms.CmsQuestion;
-import models.consumer.UserVoteCondition;
+import models.cms.QuestionCondition;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
@@ -27,18 +27,18 @@ public class OperateQuestions extends Controller {
     private static final int PAGE_SIZE = 15;
 
     @ActiveNavigation("questions_index")
-    public static void index(UserVoteCondition condition) {
+    public static void index(QuestionCondition condition) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         if (condition == null) {
-            condition = new UserVoteCondition();
+            condition = new QuestionCondition();
         }
-        JPAExtPaginator<CmsQuestion> questions = CmsQuestion.getQuestionList(condition,pageNumber, PAGE_SIZE);
+        JPAExtPaginator<CmsQuestion> questions = CmsQuestion.getQuestionList(condition, pageNumber, PAGE_SIZE);
 
         for (CmsQuestion question : questions) {
             setItems(question);
         }
-        render(questions,condition);
+        render(questions, condition);
     }
 
 
@@ -68,7 +68,7 @@ public class OperateQuestions extends Controller {
 
     private static void setItems(CmsQuestion question) {
         if (question.userId == null) {
-            question.userName= "游客";
+            question.userName = "游客";
         }
         if (question.operateUserId != null) {
             OperateUser operateUser = OperateUser.findById(question.operateUserId);

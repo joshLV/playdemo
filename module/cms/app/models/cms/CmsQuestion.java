@@ -1,6 +1,5 @@
 package models.cms;
 
-import models.consumer.UserVoteCondition;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
@@ -58,7 +57,7 @@ public class CmsQuestion extends Model {
         this.userName = null;
     }
 
-    public static JPAExtPaginator<CmsQuestion> getQuestionList(UserVoteCondition condition, int pageNumber, int pageSize) {
+    public static JPAExtPaginator<CmsQuestion> getQuestionList(QuestionCondition condition, int pageNumber, int pageSize) {
 
         JPAExtPaginator<CmsQuestion> questions = new JPAExtPaginator<>("CmsQuestion q", "q",
                 CmsQuestion.class, condition.getFitter(), condition.paramsMap).orderBy("createdAt desc");
