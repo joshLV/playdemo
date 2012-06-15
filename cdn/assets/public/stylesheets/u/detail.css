@@ -266,31 +266,19 @@
 .qa-item .answer {
     color: #f50;
 }
-.qa-page {
+.qa-more {
     margin-top: 10px;
     text-align: right;
 }
-.qa-page a {
+.qa-more a {
     display: inline-block;
-    margin: 0 3px;
-    padding: 2px 7px;
-    color: #666;
-    text-decoration: none;
+    padding: 2px 8px;
+    color: #007e76;
     border: 1px solid #E4E4E4;
 }
-.qa-page a:hover {
-    color: #fff;
-    background-color: #007e76;
-    text-decoration: none;
-}
-.qa-page span.current {
-    display: inline-block;
-    margin: 0 3px;
-    padding: 2px 7px;
-    color: #fff;
-    font-weight: 700;
+.qa-more a:hover {
     border: 1px solid #007e76;
-    background-color: #007e76;
+    text-decoration: none;
 }
 .qa-form {
     margin: 10px 0 20px;
