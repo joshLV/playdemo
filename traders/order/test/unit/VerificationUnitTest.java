@@ -5,10 +5,7 @@ import models.accounts.util.AccountUtil;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.consumer.User;
-import models.order.ECoupon;
-import models.order.ECouponStatus;
-import models.order.Order;
-import models.order.OrderItems;
+import models.order.*;
 import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
@@ -142,7 +139,7 @@ public class VerificationUnitTest extends UnitTest {
         assertNotNull(eCoupon);
 
         Long shopId = (Long) Fixtures.idCache.get("models.sales.Shop-Shop_4");
-        eCoupon.consumed(shopId, user);
+        eCoupon.consumed(shopId, user, VerifyCouponType.SHOP);
         List<ECoupon> couponList = ECoupon.find("byECouponSn", eCouponSn).fetch();
         assertEquals(ECouponStatus.CONSUMED, couponList.get(0).status);
         assertEquals(shopId, couponList.get(0).shop.id);
