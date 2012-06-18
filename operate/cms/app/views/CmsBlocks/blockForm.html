@@ -13,7 +13,8 @@ class:'span2'}
 <div class="control-group">
     <label for='levelPrices_${level}' class="control-label"> </label>
 
-    <div class="controls">(修改前)<br/><img src="${block.getShowImageUrlMiddle()}"/></div>
+    <div class="controls">(修改前)<br/><img src="${imagePath}"/>
+    <input type="hidden" name="imagePath" value="${imagePath}"></div>
 </div>
 #{/else}
 #{layout_operate.textField name:'block.displayOrder', value:block?.displayOrder, required:true/}

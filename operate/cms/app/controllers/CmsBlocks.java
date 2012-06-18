@@ -1,8 +1,7 @@
 package controllers;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.FileUploadUtil;
 import models.cms.Block;
 import models.cms.BlockType;
 import operate.rbac.annotations.ActiveNavigation;
@@ -15,8 +14,10 @@ import play.data.validation.Validation;
 import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.FileUploadUtil;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 
 @With(OperateRbac.class)
 @ActiveNavigation("blocks_index")
@@ -27,7 +28,7 @@ public class CmsBlocks extends Controller {
     public static String FILE_TYPES = Play.configuration.getProperty("newsImg.fileTypes", "");
     public static long MAX_SIZE = Long.parseLong(Play.configuration.getProperty("upload.size", String.valueOf(1024 * 1024)));
 
-    
+
     public static void index(BlockType type) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
@@ -48,25 +49,25 @@ public class CmsBlocks extends Controller {
                 Logger.warn("remove:     validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
             Validation.clear();
-        }        
+        }
         checkExpireAt(block);
         checkImageFile(image);
-            
+
         if (Validation.hasErrors()) {
             for (String key : validation.errorsMap().keySet()) {
                 Logger.warn("remove:     validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
-                        
+
             render("CmsBlocks/add.html", block);
         }
-        
+
         try {
             block.imageUrl = uploadFile(image, null);
         } catch (IOException e) {
             e.printStackTrace();
             error(500, "brand.image_upload_failed");
-        }        
-        
+        }
+
         block.deleted = DeletedStatus.UN_DELETED;
         block.create();
         index(null);
@@ -124,9 +125,11 @@ public class CmsBlocks extends Controller {
             Validation.addError("block.imageUrl", "validation.invalidType", StringUtils.join(fileTypes, ','));
         }
     }
-    
+
     public static void edit(Long id) {
+
         Block block = Block.findById(id);
+        renderArgs.put("imagePath", block.getShowImageUrlMiddle());
         render(block);
     }
 
@@ -140,7 +143,7 @@ public class CmsBlocks extends Controller {
         }
         checkExpireAt(block);
         checkImageFile(image);
-        
+
         if (Validation.hasErrors()) {
             for (String key : validation.errorsMap().keySet()) {
                 Logger.warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
@@ -152,12 +155,8 @@ public class CmsBlocks extends Controller {
             Block oldBlock = Block.findById(id);
             String oldImagePath = oldBlock == null ? null : oldBlock.imageUrl;
             String imageUrl = uploadFile(image, oldImagePath);
-            System.out.println("================================================================");
-            System.out.println("oldImage=" + oldImagePath);
-            System.out.println("newImage=" + imageUrl);
             if (StringUtils.isNotEmpty(imageUrl)) {
                 block.imageUrl = imageUrl;
-                System.out.println("block.imageUrl=" + block.imageUrl);
             }
         } catch (IOException e) {
             e.printStackTrace();

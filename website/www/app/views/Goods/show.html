@@ -209,10 +209,12 @@
             <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=2281971081&site=qq&menu=yes"><img border="0" src="http://wpa.qq.com/pa?p=2:2281971081:42" alt="点这里咨询客服" title="点这里咨询客服"></a>
             <a target="_blank" href="http://www.taobao.com/webww/ww.php?ver=3&touid=%E5%88%B8%E7%94%9F%E6%B4%BB8&siteid=cntaobao&status=1&charset=utf-8"><img border="0" height="22" src="http://amos.alicdn.com/online.aw?v=2&uid=%E5%88%B8%E7%94%9F%E6%B4%BB8&site=cntaobao&s=1&charset=utf-8" alt="点这里咨询客服" /></a>
         </div>
+        #{if goods.materialType == models.sales.MaterialType.ELECTRONIC}
         <div class="diagram">
             <img src="http://img.uhcdn.com/images/u/diagram.png" alt="消费流程示意图" />
             <p class="tips"><span>注</span> 假如您没有收到短信，您可以在“我的一百券”-“我的券”中使用“重发短信”功能。</p>
         </div>
+        #{/if}
     </div><!-- .section -->
     <div class="aside">
         <div class="service">
