@@ -2,7 +2,7 @@ $(function () {
     $('#slides').slides({
         play:5000,
         pause:2500,
-        slideSpeed:600,
+        slideSpeed:500,
         hoverPause:true
     });
 

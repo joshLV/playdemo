@@ -92,6 +92,17 @@ mark { background: #ff0; }
 #user a {
     color: #006d6d;
 }
+#user a:hover {
+    color: #f50;
+    text-decoration: none;
+}
+#user .weibo {
+    margin-left: 5px;
+    padding-left: 18px;
+    background: url(http://img.uhcdn.com/images/u/weibo.png) no-repeat 0 0;
+    *background-position: 0 -2px;
+    _background-position: 0 -1px;
+}
 #line {
     padding-top: 20px;
     color: #f50;
@@ -135,16 +146,6 @@ mark { background: #ff0; }
 #menu a.current {
     color: #333333;
     background: #b3dbdb url(http://img.uhcdn.com/images/u/navbg.png) bottom center no-repeat;
-}
-#duanwu {
-    position: relative;
-}
-#duanwu a {
-    position: absolute;
-    top: -18px;
-}
-#duanwu a:hover {
-    background: none;
 }
 #dw a {
     width: 144px;
