@@ -3,6 +3,7 @@ package controllers;
 import models.admin.OperateUser;
 import models.cms.CmsQuestion;
 import models.cms.QuestionCondition;
+import models.sales.Goods;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
@@ -73,6 +74,11 @@ public class OperateQuestions extends Controller {
         if (question.operateUserId != null) {
             OperateUser operateUser = OperateUser.findById(question.operateUserId);
             question.operateUser = operateUser.userName;
+        }
+
+        if (question.goodsId != null) {
+            Goods goods = Goods.findById(question.goodsId);
+            question.goodsName = goods.name;
         }
         question.save();
     }

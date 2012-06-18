@@ -55,7 +55,7 @@
             #{/list}
             </tbody>
             <tr>
-                <td colspan="8">商品金额： #{if orders.containsRealGoods()}
+                <td colspan="9">商品金额： #{if orders.containsRealGoods()}
                 ${orders.amount.subtract(models.order.Order.FREIGHT)}#{/if}#{else}${orders.amount}#{/else}&nbsp;元
                     &nbsp;+ 运费：
                 #{if orders.containsRealGoods()}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else} 元 = &nbsp;总金额：

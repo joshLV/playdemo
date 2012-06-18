@@ -30,6 +30,7 @@
             <tr>
                 <th>&{'question.content'}</th>
                 <th>&{'question.reply'}</th>
+                <th>商品名称</th>
                 <th>&{'question.createdAt'}</th>
                 <th>&{'question.repliedAt'}</th>
                 <th>回复者</th>
@@ -43,6 +44,7 @@
             <tr>
                 <td>${question?.content}</td>
                 <td>${question?.reply}</td>
+                <td>${question?.goodsName}</td>
                 <td>${question?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>${question?.repliedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>${question?.operateUser}</td>

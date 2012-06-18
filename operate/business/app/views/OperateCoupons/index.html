@@ -118,7 +118,7 @@
         #{paginate.list items:couponPage, as:'coupon'}
         <tr>
             <td>${coupon?.getMaskedEcouponSn()}</td>
-            <td>${coupon?.order?.orderNumber}</td>
+            <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr></td>
             <td>${coupon?.goods?.name}</td>
             <td>${coupon?.originalPrice?.formatCurrency('CNY')}</td>
             <td>${coupon?.getConsumedShop()}</td>
