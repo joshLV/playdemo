@@ -122,6 +122,21 @@
     float: left;
     margin-right: 5px;
 }
+.diagram {
+    margin-top: 20px;
+}
+.diagram .tips {
+    margin-top: 5px;
+    color: #1f8e87;
+}
+.diagram .tips span {
+    display: inline-block;
+    padding: 0 3px 2px;
+    padding: 1px 3px 0px\9;
+    color: #fff;
+    background-color: #25b4ab;
+    border-radius: 3px;
+}
 /** 服务、品牌 **/
 .aside {
     float: left;
