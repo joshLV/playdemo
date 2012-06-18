@@ -6,6 +6,7 @@ import com.uhuila.common.util.FieldCheckUtil;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.VerifyCouponType;
 import models.sales.Brand;
 import models.sales.Shop;
 import models.sms.SMSUtil;
@@ -101,7 +102,7 @@ public class SmsReceivers extends Controller {
                 String shopName = shop.name;
 
                 if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-                    ecoupon.consumed(supplierUser.shop.id, supplierUser);
+                    ecoupon.consumed(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE);
                     String coupon = ecoupon.getMaskedEcouponSn();
                     coupon = coupon.substring(coupon.lastIndexOf("*") + 1);
 
@@ -179,7 +180,7 @@ public class SmsReceivers extends Controller {
         }
 
         if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-            ecoupon.consumed(supplierUser.shop.id, supplierUser);
+            ecoupon.consumed(supplierUser.shop.id, supplierUser,VerifyCouponType.CONSUMER_MESSAGE);
             String coupon = ecoupon.getLastCode(4);
             String dateTime = DateUtil.getNowTime();
             // 发给店员

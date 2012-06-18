@@ -1,15 +1,15 @@
 package controllers;
 
 
+import controllers.modules.website.cas.SecureCAS;
 import models.order.Order;
+import models.payment.PaymentFlow;
 import models.payment.PaymentJournal;
 import models.payment.PaymentUtil;
-
-import models.payment.PaymentFlow;
 import play.mvc.Controller;
 import play.mvc.With;
-import controllers.modules.website.cas.SecureCAS;
 
+import java.util.List;
 import java.util.Map;
 
 @With({SecureCAS.class, WebsiteInjector.class})
@@ -36,7 +36,10 @@ public class OrderResult extends Controller {
                 success = true;
             }
         }
+          //近日成交商品
+        List<models.sales.Goods> recentGoodsList = models.sales.Goods.findTradeRecently(5);
+        System.out.println("。=========recentGoodsList==="+recentGoodsList.size());
         PaymentJournal.saveUrlReturnJournal(orderNumber, params.all(), result, success);
-        renderTemplate("OrderResult/index.html", errorMessage, orderNumber);
+        renderTemplate("OrderResult/index.html", errorMessage, orderNumber,recentGoodsList);
     }
 }

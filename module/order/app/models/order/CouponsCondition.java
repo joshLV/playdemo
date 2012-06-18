@@ -30,7 +30,7 @@ public class CouponsCondition {
     public String shopLike;
     public String jobNumber;
     public String eCouponSn;
-
+    public VerifyCouponType verifyType;
     private Map<String, Object> paramMap = new HashMap<>();
 
     public String getOrderByExpress() {
@@ -105,6 +105,12 @@ public class CouponsCondition {
             sql.append(" and e.status = :status");
             paramMap.put("status", status);
         }
+
+         if ( verifyType!= null) {
+            sql.append(" and e.verifyType = :verifyType");
+            paramMap.put("verifyType", verifyType);
+        }
+
         if (excludeStatus != null) {
             sql.append(" and e.status != :excludeStatus");
             paramMap.put("excludeStatus", excludeStatus);

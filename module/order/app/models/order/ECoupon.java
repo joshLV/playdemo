@@ -16,6 +16,7 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
+import sun.invoke.util.VerifyType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -103,6 +104,8 @@ public class ECoupon extends Model {
 
     @Column(name = "download_times")
     public Integer downloadTimes;
+    @Enumerated(EnumType.STRING)
+    public VerifyCouponType verifyType;
     /**
      * 用于短信回复的code，将会成为消费者看到的发送手机号的最后4位。
      * <p/>
@@ -234,8 +237,8 @@ public class ECoupon extends Model {
         return true;
     }
 
-    public void consumeAndPayCommission(Long shopId, SupplierUser supplierUser){
-        consumed(shopId, supplierUser);
+    public void consumeAndPayCommission(Long shopId, SupplierUser supplierUser) {
+        consumed(shopId, supplierUser, VerifyCouponType.SHOP);
         payCommission();
     }
 
@@ -245,18 +248,20 @@ public class ECoupon extends Model {
      *
      * @return
      */
-    public void consumed(Long shopId, SupplierUser supplierUser) {
+    public void consumed(Long shopId, SupplierUser supplierUser, VerifyCouponType type) {
         if (this.status != ECouponStatus.UNCONSUMED) {
             return;
         }
+
         this.shop = Shop.findById(shopId);
         this.status = ECouponStatus.CONSUMED;
         this.consumedAt = new Date();
         this.supplierUser = supplierUser;
+        this.verifyType = type;
         this.save();
     }
 
-    public void payCommission(){
+    public void payCommission() {
         Account supplierAccount = AccountUtil.getSupplierAccount(orderItems.goods.supplierId);
 
         //给商户打钱
@@ -435,7 +440,7 @@ public class ECoupon extends Model {
      *
      * @return 在该范围内：true
      */
-    public boolean getTimeRegion(String timeBegin,String timeEnd) {
+    public boolean getTimeRegion(String timeBegin, String timeEnd) {
         boolean timeFlag = false;
         if (StringUtils.isNotBlank(timeBegin) && StringUtils.isNotBlank(timeEnd)) {
             Calendar calendar = Calendar.getInstance();

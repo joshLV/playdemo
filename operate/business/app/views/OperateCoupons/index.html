@@ -1,6 +1,7 @@
 #{extends 'layout_operate/layout.html' /}
 #{include 'share/nav.html' /}
 #{set title:'券号列表' /}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript">
     function sendMessage(id) {
         $.ajax({
@@ -33,7 +34,7 @@
                 <td> 订&nbsp;&nbsp;单&nbsp;&nbsp;号
                     <input type="text" name="condition.orderNumber" value="${condition?.orderNumber}">
                 </td>
-                <td> 券号
+                <td> 券&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号
                     <input type="text" name="condition.eCouponSn" value="${condition?.eCouponSn}">
                 </td>
             </tr>
@@ -44,7 +45,7 @@
                 <td> 消费门店
                     <input type="text" name="condition.shopLike" value="${condition.shopLike}">
                 </td>
-                <td> 状态
+                <td> 状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态
                 #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
                     #{option ""}不限#{/option}
                     #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
@@ -52,9 +53,10 @@
                     #{option "REFUND"}&{'coupon.REFUND'}#{/option}
                 #{/select}
                 </td>
+
             </tr>
             <tr>
-                <td>消费时间
+                <td> 消费时间
                     <input type="text" id="condition_consumed_begin" class="input-medium Wdate"
                            name="condition.consumedAtBegin"
                            onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtBegin?.format()}"> -
@@ -62,13 +64,22 @@
                            name="condition.consumedAtEnd"
                            onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtEnd?.format()}">
                 </td>
-                <td>退款时间
+                <td> 退款时间
                     <input type="text" id="condition_refund_begin" class="input-medium Wdate"
                            name="condition.refundAtBegin"
                            onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtBegin?.format()}"> -
                     <input type="text" id="condition_refund_end" class="input-medium Wdate" name="condition.refundAtEnd"
                            onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtEnd?.format()}">
                 </td>
+                 <td> 验证方式
+                #{select 'condition.verifyType', id:'condition_verifyType', class:'input-small', value:condition?.verifyType}
+                    #{option ""}不限#{/option}
+                    #{option "CLERK_MESSAGE"}&{'coupon.CLERK_MESSAGE'}#{/option}
+                    #{option "CONSUMER_MESSAGE"}&{'coupon.CONSUMER_MESSAGE'}#{/option}
+                    #{option "SHOP"}&{'coupon.SHOP'}#{/option}
+                #{/select}
+                </td>
+
                 <td>
                     <button type="submit" class="btn btn-primary" id="search">搜索</button>
                 </td>
@@ -94,6 +105,7 @@
             <th>有效期</th>
             <th>消费时间</th>
             <th>店员</th>
+            <th>验证方式</th>
             <th>退款时间</th>
             <th>退款金额</th>
             <th>状态</th>
@@ -115,6 +127,7 @@
             <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
             <td>#{if coupon?.supplierUser?.userName!=null}${coupon?.supplierUser?.userName}#{/if}
                 #{if coupon?.supplierUser?.jobNumber!=null}(工号: ${coupon?.supplierUser?.jobNumber})#{/if}</td>
+            <td>&{'coupon.'+coupon?.verifyType}</td>
             <td>${coupon?.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
             <td>${coupon?.refundPrice}</td>
             <td>&{'coupon.'+coupon?.status}</td>

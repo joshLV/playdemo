@@ -36,3 +36,17 @@
     </div>
 </div>
 
+ <div class="wrap">
+    <div class="boutique-hd">近日成交商品</div>
+    <ul class="boutique-bd clearfix">
+    #{list recentGoodsList, as:'aGoods'}
+        <li>
+            <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="170" height="130"
+                                                               alt="${aGoods.name}"/></a>
+            <p><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
+            <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
+            <span>现价:<strong>&yen;${aGoods.salePrice}</strong></span>
+        </li>
+    #{/list}
+    </ul>
+</div>

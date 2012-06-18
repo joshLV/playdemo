@@ -44,6 +44,10 @@
             });
         #{/else}
     });
+  function changeList(status){
+    $("#condition_status").val(status);
+    $("#frmlist").submit();
+}
 </script>
 #{/set}
 #{set 'moreStyles'}
@@ -55,7 +59,7 @@
 #{/set}
 <div class="body">
     <legend>商品订单</legend>
-    <form class="form-horizontal" name="frmlist" action="@{OperateOrders.index()}" method="GET">
+    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateOrders.index()}" method="GET">
         <table width="80%">
             <tr>
                 <td>成交时间：<input type="text" id="createdAtBegin" name="condition.createdAtBegin"
@@ -115,7 +119,8 @@
     <div style="margin-bottom: 12px">
         <button class="btn btn-primary" type="button">导出报表</button>
     </div>
-
+   #{vx.tab name:'order',enumItems: models.order.OrderStatus.values(),
+    select:'condition_status',value:condition?.status/}
     <table class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>
@@ -197,7 +202,7 @@
             #{list items:order.electronicGoods, as:'aElectronicGoods'}
                 #{if (order.realGoods.size()==0 && j>0) ||(order.realGoods.size()>0) }
                 <tr>
-                    <td><img src="@@{'/public/images/electronic-goods.png'}">aaa ${aElectronicGoods?.name}bbb</td>
+                    <td><img src="@@{'/public/images/electronic-goods.png'}">${aElectronicGoods?.name}</td>
                     #{if showElectronicStatus && order.realGoods.size()>0}
                         <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
                         #{set showElectronicStatus:false/}
