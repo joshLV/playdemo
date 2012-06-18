@@ -27,8 +27,7 @@ public class Votes extends Controller {
         List<VoteQuestion> votes = VoteQuestion.getPage(VoteType.QUIZ);
         User user = SecureCAS.getUser();
         for (VoteQuestion vote : votes) {
-            List<VoteQuestion> voteList = UserVote.find("user=? and vote=?", user, vote).fetch();
-            if (voteList.size() > 0) {
+            if (UserVote.isVoted(user, vote)) {
                 viewAnswer();
                 break;
             }
@@ -48,11 +47,14 @@ public class Votes extends Controller {
         for (String split : answerSplits) {
             String[] voteSplits = split.split("-");
             VoteQuestion vote = VoteQuestion.findById(Long.parseLong(voteSplits[0]));
+            renderArgs.put("answer", vote.getAnswer());
+            if (UserVote.isVoted(user, vote)) {
+                break;
+            }
             UserVote userVote = new UserVote(user, vote, voteSplits[1], mobile);
             userVote.save();
-            renderArgs.put("answer", vote.getAnswer());
-        }
 
+        }
         render("/Votes/vote_success.html");
     }
 
@@ -77,8 +79,7 @@ public class Votes extends Controller {
         for (String split : answerSplits) {
             String[] voteSplits = split.split("-");
             VoteQuestion vote = VoteQuestion.findById(Long.parseLong(voteSplits[0]));
-            List<VoteQuestion> voteList = UserVote.find("user=? and vote=?", user, vote).fetch();
-            if (voteList.size() > 0) {
+            if (UserVote.isVoted(user, vote)) {
                 renderJSON("voted");
             }
         }

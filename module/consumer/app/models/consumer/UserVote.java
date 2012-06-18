@@ -9,6 +9,7 @@ import play.modules.view_ext.annotation.Mobile;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p/>
@@ -55,4 +56,12 @@ public class UserVote extends Model {
         return votePage;
     }
 
+
+    public static boolean isVoted(User user,VoteQuestion vote) {
+        List<UserVote> voteList = UserVote.find("user=? and vote=?", user, vote).fetch();
+        if (voteList.size() > 0) {
+            return true;
+        }
+        return false;
+    }
 }
