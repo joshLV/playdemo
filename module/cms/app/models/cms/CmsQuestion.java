@@ -88,4 +88,18 @@ public class CmsQuestion extends Model {
         }
         return query.getResultList();
     }
+
+
+    public static void hide(long id) {
+        CmsQuestion question = CmsQuestion.findById(id);
+        question.visible = false;
+        question.save();
+    }
+
+    public static void show(long id) {
+        CmsQuestion question = CmsQuestion.findById(id);
+        question.visible = true;
+        question.save();
+    }
+
 }

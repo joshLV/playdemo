@@ -48,7 +48,15 @@
                 <td>${question?.operateUser}</td>
                 <td>${question?.userName}</td>
                 <td><a href="@{OperateQuestions.edit(question.id)}">回复</a>
-                    / #{vx.deleteLink action:"questions", id:question.id/}
+
+                #{if question?.visible}
+                     /#{vx.operateLink text:"隐藏", url:"/questions/"+question.id+"/hide", method:"PUT"/}
+                #{/if}
+                #{else}
+                    /#{vx.operateLink text:"显示", url:"/questions/"+question.id+"/show", method:"PUT"/}
+                #{/else}
+                /#{vx.deleteLink action:"questions", id:question.id/}
+                </td>
             </tr>
             #{/paginate.list}
             </tbody>

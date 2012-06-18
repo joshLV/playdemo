@@ -24,8 +24,8 @@ public class QuestionCondition {
 
     public String getFitter() {
         StringBuilder sql = new StringBuilder("1=1");
-        sql.append(" and q.visible =:visible");
-        paramsMap.put("visible", true);
+//        sql.append(" and q.visible =:visible");
+//        paramsMap.put("visible", true);
         if (createdAtBegin != null) {
             sql.append(" and q.createdAt >= :createdAtBegin");
             paramsMap.put("createdAtBegin", createdAtBegin);

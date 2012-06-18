@@ -104,7 +104,8 @@ GET     /questions                              OperateQuestions.index
 DELETE  /questions/{id}                         OperateQuestions.delete
 GET     /questions/{id}/edit                    OperateQuestions.edit
 POST    /questions/{id}                         OperateQuestions.update
-
+PUT     /questions/{id}/hide                  OperateQuestions.hide
+PUT     /questions/{id}/show                OperateQuestions.show
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

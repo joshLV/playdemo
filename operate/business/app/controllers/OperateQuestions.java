@@ -77,7 +77,22 @@ public class OperateQuestions extends Controller {
         question.save();
     }
 
-    public static void delete(Long id) {
+    public static void delete(long id) {
+        CmsQuestion question = CmsQuestion.findById(id);
+        question.delete();
+
         index(null);
     }
+
+
+    public static void hide(long id) {
+        CmsQuestion.hide(id);
+        index(null);
+    }
+
+    public static void show(long id) {
+        CmsQuestion.show(id);
+        index(null);
+    }
+
 }
