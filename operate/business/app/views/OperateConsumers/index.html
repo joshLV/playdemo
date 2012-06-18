@@ -17,7 +17,7 @@
 
                 var interval = $(this).attr("start");
                 var sig = interval.charAt(interval.length - 1);
-                if (sig == "") {
+                if (sig == 0) {
                     $("#condition_begin").val("");
                     $("#condition_end").val("");
                 } else {
@@ -131,7 +131,7 @@
                     <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
                     <li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>
                     <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
-                    <li #{if condition.interval=='0'} class="active" #{/if}  ><a start="3m" href="#">全部</a></li>
+                    <li #{if condition.interval=='0'} class="active" #{/if}  ><a start="0" href="#">全部</a></li>
                 </ul>
             </tr>
         </table>
