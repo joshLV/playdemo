@@ -154,10 +154,15 @@ public class CmsBlocks extends Controller {
         try {
             Block oldBlock = Block.findById(id);
             String oldImagePath = oldBlock == null ? null : oldBlock.imageUrl;
-            String imageUrl = uploadFile(image, oldImagePath);
-            if (StringUtils.isNotEmpty(imageUrl)) {
-                block.imageUrl = imageUrl;
+            if (image != null) {
+                String imageUrl = uploadFile(image, oldImagePath);
+                if (StringUtils.isNotEmpty(imageUrl)) {
+                    block.imageUrl = imageUrl;
+                }
+            } else {
+               block.imageUrl =oldImagePath ;
             }
+
         } catch (IOException e) {
             e.printStackTrace();
             error(e);

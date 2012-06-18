@@ -6,7 +6,7 @@
     #{layout_operate.labelText name:_name, required:_required/}
 
     <div class="controls">
-        <input type="file" id="${field.id}]" name="${field.name}" class="input-file"/>
+        <input type="file" id="${field.id}" name="${field.name}" class="input-file"/>
     </div>
     #{ifError field.name}
     <div class="controls"><span class="error">${field.error.raw()}</span></div>
