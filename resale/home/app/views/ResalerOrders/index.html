@@ -13,6 +13,18 @@ $(window).load(function () {
         $('#orderForm').submit();
     });
 });
+
+function doCancel(id){
+if(confirm("确定取消此订单吗？")){
+    $.ajax({
+        type:'PUT',
+        url:'/orders/'+id+"/cancel",
+        success:function(data){
+            window.location.reload();
+        }
+    });
+}
+}
 </script>
 #{/set}
 
@@ -105,10 +117,11 @@ $(window).load(function () {
                         #{if row.status == models.order.OrderStatus.PAID}
                         <div><a href="@{ResalerOrders.show(row.orderNumber)}" target="_blank">查看详情</a></div>
                         #{/if}
-
-                        #{if (row.status != models.order.OrderStatus.PAID)}
-                        <div><a href="#">取消</a></div>
-                        #{/if}
+                        <div class="caozuo_std" id="cancel_${row.orderNumber}">
+                            #{if (row.status == models.order.OrderStatus.UNPAID)}
+                                  <a class="font_red_one" href="#" onclick="doCancel(${row.orderNumber})">取消</a>
+                            #{/if}
+                        </div>
                     </td>
                     #{/if}
                 </tr>

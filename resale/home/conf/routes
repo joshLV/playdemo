@@ -55,7 +55,7 @@ GET     /orders                                 ResalerOrders.index
 POST    /orders/batch-refund                    ResalerOrders.batchRefund
 GET     /orders/{orderNumber}                   ResalerOrders.show
 GET     /payment/{orderNumber}                  ResalerOrders.pay
-
+PUT     /orders/{orderNumber}/cancel            ResalerOrders.cancelOrder
 GET     /account_seq                            ResalerAccounts.index
 
 GET     /top-oauth-callback                     TaobaoOauthCallback.index

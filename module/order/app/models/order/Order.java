@@ -375,6 +375,21 @@ public class Order extends Model {
         return orderPage;
     }
 
+    /**
+     * 取消定单，增加库存，减少销量
+     */
+    public void cancelAndUpdateOrder() {
+        this.status = OrderStatus.CANCELED;
+        for (OrderItems orderItem : this.orderItems) {
+            orderItem.goods.baseSale += orderItem.buyNumber;
+            orderItem.goods.saleCount -= orderItem.buyNumber;
+            orderItem.goods.save();
+            orderItem.save();
+        }
+        this.save();
+    }
+
+
     public void createAndUpdateInventory() {
         generateOrderDescription();
         save();
@@ -395,7 +410,7 @@ public class Order extends Model {
         }
     }
 
-    public void payAndSendECoupon(){
+    public void payAndSendECoupon() {
         paid();
         sendECoupon();
     }
@@ -738,7 +753,7 @@ public class Order extends Model {
         return buider.toString();
     }
 
-    public static void sendRealGoodsAndPayCommissions(long id, String deliveryCompany, String deliveryNo){
+    public static void sendRealGoodsAndPayCommissions(long id, String deliveryCompany, String deliveryNo) {
         sendRealGoods(id, deliveryCompany, deliveryNo);
         payRealGoodsCommissions(id);
     }
@@ -762,7 +777,7 @@ public class Order extends Model {
         order.save();
     }
 
-    public static void payRealGoodsCommissions(long id){
+    public static void payRealGoodsCommissions(long id) {
         Order order = Order.findById(id);
         if (order == null) {
             return;

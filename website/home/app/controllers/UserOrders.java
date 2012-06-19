@@ -3,10 +3,7 @@ package controllers;
 import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
 import models.consumer.User;
-import models.order.ECoupon;
-import models.order.Order;
-import models.order.OrderItems;
-import models.order.OrdersCondition;
+import models.order.*;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.modules.breadcrumbs.BreadcrumbList;
@@ -95,6 +92,19 @@ public class UserOrders extends Controller {
             ECoupon.applyRefund(eCoupon, user.getId(), AccountType.CONSUMER);
         }
         refund(orderNumber);
+    }
+
+    /**
+     * 订单关闭
+     */
+    public static void cancelOrder(String orderNumber) {
+        //加载用户账户信息
+        User user = SecureCAS.getUser();
+           //加载订单信息
+        Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
+        //更新订单信息
+        order.cancelAndUpdateOrder();
+        renderJSON("");
     }
 
 }
