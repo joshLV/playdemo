@@ -102,7 +102,7 @@ public class SmsReceivers extends Controller {
                 String shopName = shop.name;
 
                 if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-                    ecoupon.consumed(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE);
+                    ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE);
                     String coupon = ecoupon.getMaskedEcouponSn();
                     coupon = coupon.substring(coupon.lastIndexOf("*") + 1);
 
@@ -180,7 +180,7 @@ public class SmsReceivers extends Controller {
         }
 
         if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-            ecoupon.consumed(supplierUser.shop.id, supplierUser,VerifyCouponType.CONSUMER_MESSAGE);
+            ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser,VerifyCouponType.CONSUMER_MESSAGE);
             String coupon = ecoupon.getLastCode(4);
             String dateTime = DateUtil.getNowTime();
             // 发给店员

@@ -5,6 +5,7 @@ import models.admin.SupplierUser;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.VerifyCouponType;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import navigation.annotations.ActiveNavigation;
@@ -82,7 +83,7 @@ public class SupplierCoupons extends Controller {
             if (!eCoupon.isBelongShop(shopId)) {
                 renderJSON("1");
             }
-            eCoupon.consumeAndPayCommission(shopId, SupplierRbac.currentUser());
+            eCoupon.consumeAndPayCommission(shopId, SupplierRbac.currentUser(), VerifyCouponType.SHOP);
             String dateTime = DateUtil.getNowTime();
             String coupon = eCoupon.getLastCode(4);
 

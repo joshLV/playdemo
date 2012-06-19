@@ -237,8 +237,8 @@ public class ECoupon extends Model {
         return true;
     }
 
-    public void consumeAndPayCommission(Long shopId, SupplierUser supplierUser) {
-        consumed(shopId, supplierUser, VerifyCouponType.SHOP);
+    public void consumeAndPayCommission(Long shopId, SupplierUser supplierUser, VerifyCouponType type) {
+        consumed(shopId, supplierUser, type);
         payCommission();
     }
 
