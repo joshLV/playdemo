@@ -1,0 +1,23 @@
+#{fixture delete:[models.admin.OperateUser.class,models.admin.OperateRole.class,
+models.cms.CmsQuestion.class],
+load:['fixture/roles.yml','fixture/supplierusers.yml',
+'fixture/user.yml','fixture/user_questions.yml'] /}
+
+#{selenium '咨询管理'}
+    #{include 'test/selenium/step/login.selenium' /}
+*{open('/consumers_votes')}*
+*{verifyTitle('用户参加有奖问答一览')}*
+*{assertTextPresent('优惠啦网站改版了，改成什么名字？')}*
+*{assertTextPresent('2012-06-13')}*
+*{assertTextPresent('2012-06-13')}*
+*{assertTextPresent('有奖问答')}*
+#{/selenium}
+
+#{selenium '咨询管理'}
+    #{include 'test/selenium/step/login.selenium' /}
+*{open('/consumers_votes')}*
+*{verifyTitle('用户参加有奖问答一览')}*
+*{click('id=del_${play.test.Fixtures.idCache.get("models.consumer.UserVote-seq_001")}')}*
+*{assertConfirmation('您确定要删除吗？')}*
+*{verifyTitle('用户参加有奖问答一览')}*
+#{/selenium}
