@@ -96,7 +96,14 @@ mark { background: #ff0; }
     color: #f50;
     text-decoration: none;
 }
-#user .weibo {
+#user #favorite {
+    margin-left: 5px;
+    padding-left: 18px;
+    background: url(http://img.uhcdn.com/images/u/favorite.png) no-repeat 0 0;
+    *background-position: 0 -2px;
+    _background-position: 0 -1px;
+}
+#user #weibo {
     margin-left: 5px;
     padding-left: 18px;
     background: url(http://img.uhcdn.com/images/u/weibo.png) no-repeat 0 0;

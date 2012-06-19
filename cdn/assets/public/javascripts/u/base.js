@@ -1,4 +1,4 @@
-$(function () {
+$(function($) {
     $('#slides').slides({
         play:5000,
         pause:2500,
@@ -53,5 +53,23 @@ $(function () {
                 }
             }
         });
+    });
+
+    var addToFavorite = function(url, title) {
+        try {
+            window.external.AddFavorite(url, title);
+        } catch(e) {
+            try {
+                window.sidebar.addPanel(title, url, '');
+            } catch(e) {
+                alert('对不起，您的浏览器不支持自动收藏，请使用Ctrl+D进行手动收藏！');
+            }
+        }
+    };
+    $('#favorite').click(function(evt) {
+        evt.preventDefault();
+        var url = window.location,
+            title = document.title;
+        addToFavorite(url, title);
     });
 });
