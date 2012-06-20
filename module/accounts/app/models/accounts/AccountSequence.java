@@ -119,7 +119,7 @@ public class AccountSequence extends Model {
         JPAExtPaginator<AccountSequence> page = new JPAExtPaginator<>(null, null, AccountSequence.class, condition.getFilter(),
                 condition.getParams());
 
-        page.orderBy("createdAt DESC");
+        page.orderBy("createdAt DESC, id DESC");
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
         return page;
