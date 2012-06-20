@@ -40,27 +40,27 @@ public class DateUtil {
     }
 
     /**
-     * 7天后的结束时间
+     * n天后的结束时间
      *
      * @return
      * @throws ParseException
      */
-    public static Date getEndExpiredDate() throws ParseException {
+    public static Date getEndExpiredDate(int n) throws ParseException {
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, +7);
+        cal.add(Calendar.DAY_OF_MONTH, +n);
         Date date = DateUtil.getEndOfDay(cal.getTime());
         return date;
     }
 
     /**
-     * 7天后的开始时间
+     * n天后的开始时间
      *
      * @return
      * @throws ParseException
      */
-    public static Date getBeginExpiredDate() throws ParseException {
+    public static Date getBeginExpiredDate(int n) throws ParseException {
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, +6);
+        cal.add(Calendar.DAY_OF_MONTH, +n);
         Date date = DateUtil.getEndOfDay(cal.getTime());
         return date;
     }

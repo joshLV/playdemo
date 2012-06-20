@@ -59,7 +59,6 @@ public class PaymentInfo extends Controller {
             PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
             //近日成交商品
             List<models.sales.Goods> recentGoodsList = models.sales.Goods.findTradeRecently(5);
-            System.out.println("。=========recentGoodsList===" + recentGoodsList.size());
             render(order, paymentSource,recentGoodsList);
         } else {
             error(500, "can no confirm the payment info");

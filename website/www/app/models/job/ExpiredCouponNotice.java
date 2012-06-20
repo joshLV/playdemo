@@ -30,13 +30,12 @@ public class ExpiredCouponNotice extends Job {
                 ":expireEndAt) order by e.id";
         Query query = ECoupon.em().createQuery(sql);
         query.setParameter("status", ECouponStatus.UNCONSUMED);
-        query.setParameter("expireBeginAt", DateUtil.getBeginExpiredDate());
-        query.setParameter("expireEndAt", DateUtil.getEndExpiredDate());
+        query.setParameter("expireBeginAt", DateUtil.getBeginExpiredDate(6));
+        query.setParameter("expireEndAt", DateUtil.getEndExpiredDate(7));
         query.setFirstResult(0);
         query.setMaxResults(200);
         ECoupon coupon = null;
         List<ECoupon> expiredCoupons = query.getResultList();
-        int i = expiredCoupons.size();
         Iterator<ECoupon> it = expiredCoupons.iterator();
 
         String pre_phone = "";
@@ -61,8 +60,8 @@ public class ExpiredCouponNotice extends Job {
             query.setParameter("status", ECouponStatus.UNCONSUMED);
             query.setFirstResult(0);
             query.setMaxResults(200);
-            query.setParameter("expireBeginAt", DateUtil.getBeginExpiredDate());
-            query.setParameter("expireEndAt", DateUtil.getEndExpiredDate());
+            query.setParameter("expireBeginAt", DateUtil.getBeginExpiredDate(6));
+            query.setParameter("expireEndAt", DateUtil.getEndExpiredDate(7));
             expiredCoupons = query.getResultList();
             it = expiredCoupons.iterator();
         }

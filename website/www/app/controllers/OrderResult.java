@@ -38,7 +38,6 @@ public class OrderResult extends Controller {
         }
           //近日成交商品
         List<models.sales.Goods> recentGoodsList = models.sales.Goods.findTradeRecently(5);
-        System.out.println("。=========recentGoodsList==="+recentGoodsList.size());
         PaymentJournal.saveUrlReturnJournal(orderNumber, params.all(), result, success);
         renderTemplate("OrderResult/index.html", errorMessage, orderNumber,recentGoodsList);
     }

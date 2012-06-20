@@ -3,6 +3,7 @@ sales.Goods(goods1):
   originalPrice: 100
   salePrice: 80
   baseSale: 1000
+  saleCount: 100
   createdAt: 2012-02-27
   status: ONSALE
   deleted: UN_DELETED
