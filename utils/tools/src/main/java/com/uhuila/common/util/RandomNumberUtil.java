@@ -1,10 +1,8 @@
 package com.uhuila.common.util;
 
-import java.text.DecimalFormat;
 import java.util.Random;
 
 public class RandomNumberUtil {
-    private static DecimalFormat decimalFormat = new DecimalFormat("00000");
 	private static String chars = "0123456789";
 
 	/**

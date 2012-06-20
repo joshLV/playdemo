@@ -16,7 +16,6 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
-import sun.invoke.util.VerifyType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,10 +39,8 @@ import java.util.Map;
 @Entity
 @Table(name = "e_coupon")
 public class ECoupon extends Model {
-    private static java.text.DateFormat df = new java.text.SimpleDateFormat(
-            "yyyy-MM-dd");
-    public static SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
-    private static final SimpleDateFormat COUPON_EXPIRE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    public static final String TIME_FORMAT = "HH:mm:ss";
+    private static final String COUPON_EXPIRE_FORMAT = "yyyy-MM-dd";
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = true)
     public Order order;
@@ -445,7 +442,8 @@ public class ECoupon extends Model {
         if (StringUtils.isNotBlank(timeBegin) && StringUtils.isNotBlank(timeEnd)) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
-            String date = time.format(calendar.getTime());
+            SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
+            String date = dateFormat.format(calendar.getTime());
             if (date.compareTo(timeBegin) > 0 && date.compareTo(timeEnd) < 0) {
                 timeFlag = true;
             }
@@ -499,8 +497,9 @@ public class ECoupon extends Model {
      */
     private static void send(ECoupon eCoupon) {
 //        SMSUtil.send(eCoupon.goods.name + "券号:" + eCoupon.eCouponSn, eCoupon.orderItems.phone, eCoupon.replyCode);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
         SMSUtil.send("【券市场】" + eCoupon.goods.name + "券号:" + eCoupon.eCouponSn + "," +
-                "截止日期：" + COUPON_EXPIRE_FORMAT.format(eCoupon.expireAt) + ",如有疑问请致电：400-6262-166",
+                "截止日期：" + dateFormat.format(eCoupon.expireAt) + ",如有疑问请致电：400-6262-166",
                 eCoupon.orderItems.phone, eCoupon.replyCode);
     }
 

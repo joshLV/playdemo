@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ResaleUtil {
-	public static SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd" );
+	public static String DATE_FORMAT = "yyyy-MM-dd";
 	/**   
 	 * 得到本月的第一天和最后一天   
 	 * @return   
@@ -22,9 +22,10 @@ public class ResaleUtil {
 		lastCalendar.set(Calendar.DAY_OF_MONTH, calendar     
 				.getActualMaximum(Calendar.DAY_OF_MONTH)); 
 
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("fromDay", df.format(calendar.getTime()));
-		map.put("toDay", df.format(lastCalendar.getTime()));
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+		Map<String, String> map = new HashMap<>();
+		map.put("fromDay", dateFormat.format(calendar.getTime()));
+		map.put("toDay", dateFormat.format(lastCalendar.getTime()));
 		return map;     
 	}     
 
@@ -35,6 +36,7 @@ public class ResaleUtil {
 	 * @return MAP{prevMonthFD:当前日期上个月的第一天带时间}{prevMonthPD:当前日期上个月的最后一天带时间}
 	 */
 	public static Map<String, String> findLastMonth() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 		Calendar cal = Calendar.getInstance();
 		GregorianCalendar gcLast = (GregorianCalendar) Calendar.getInstance();
 		Calendar calendar = Calendar.getInstance();
@@ -44,7 +46,7 @@ public class ResaleUtil {
 		Date theDate = calendar.getTime();
 		gcLast.setTime(theDate);
 		gcLast.set(Calendar.DAY_OF_MONTH, 1);
-		String day_first_prevM = df.format(gcLast.getTime());
+		String day_first_prevM = dateFormat.format(gcLast.getTime());
 		StringBuffer str = new StringBuffer().append(day_first_prevM).append(
 				" 00:00:00");
 		day_first_prevM = str.toString();
@@ -52,7 +54,7 @@ public class ResaleUtil {
 		calendar.add(cal.MONTH, 1);
 		calendar.set(cal.DATE, 1);
 		calendar.add(cal.DATE, -1);
-		String day_end_prevM = df.format(calendar.getTime());
+		String day_end_prevM = dateFormat.format(calendar.getTime());
 		StringBuffer endStr = new StringBuffer().append(day_end_prevM).append(
 				" 23:59:59");
 		day_end_prevM = endStr.toString();

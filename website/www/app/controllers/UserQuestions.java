@@ -20,7 +20,7 @@ import java.util.Map;
 @With({SecureCAS.class, WebsiteInjector.class})
 @SkipCAS
 public class UserQuestions extends Controller{
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static String DATE_FORMAT = "yyyy-MM-dd";
 
     public static void add(String content, Long goodsId){
         User user = SecureCAS.getUser();
@@ -65,6 +65,7 @@ public class UserQuestions extends Controller{
         question.save();
 
         questionMap.put("content", content);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         questionMap.put("date", dateFormat.format(question.createdAt));
         List<Map<String, String>> questions = new ArrayList<>();
         questions.add(questionMap);

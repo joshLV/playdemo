@@ -11,7 +11,6 @@ import play.jobs.On;
 
 import javax.persistence.Query;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,7 +22,6 @@ import java.util.List;
  */
 @On("0 0 12 * * ?")
 public class ExpiredCouponNotice extends Job {
-    public static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public void doJob() throws ParseException {

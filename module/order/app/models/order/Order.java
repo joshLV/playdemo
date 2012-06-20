@@ -50,8 +50,8 @@ import java.util.Random;
 @Table(name = "orders")
 public class Order extends Model {
     public static final BigDecimal FREIGHT = new BigDecimal("6");
-    private static final DecimalFormat decimalFormat = new DecimalFormat("0000000");
-    private static final SimpleDateFormat COUPON_EXPIRE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final String DECIMAL_FORMAT = "0000000";
+    private static final String COUPON_EXPIRE_FORMAT = "yyyy-MM-dd";
 
     @Column(name = "user_id")
     public long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
@@ -340,6 +340,7 @@ public class Order extends Model {
         for (int i = 0; i < 100000; i++) {
             int random = new Random().nextInt(10000000);
             //使用7位的格式化工具对数字进行补零
+            DecimalFormat decimalFormat = new DecimalFormat(DECIMAL_FORMAT);
             String orderNumber = numberHeader + decimalFormat.format(random);
             Order order = Order.find("byOrderNumber", orderNumber).first();
             if (order == null) {
@@ -483,9 +484,10 @@ public class Order extends Model {
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
 
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
                     if (!Play.runingInTestMode()) {
                         SMSUtil.send("【券市场】" + goods.name + "券号:" + eCoupon.eCouponSn + "," +
-                                "截止日期：" + COUPON_EXPIRE_FORMAT.format(eCoupon.expireAt) + ",如有疑问请致电：400-6262-166",
+                                "截止日期：" + dateFormat.format(eCoupon.expireAt) + ",如有疑问请致电：400-6262-166",
                                 orderItem.phone, eCoupon.replyCode);
                     }
                     couponCodes.add(eCoupon.getMaskedEcouponSn());

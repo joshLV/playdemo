@@ -12,7 +12,7 @@ import models.payment.PaymentFlow;
 import play.Logger;
 
 public class KuaiqianPaymentFlow extends PaymentFlow {
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+    private static final String DATE_FORMAT = "yyyyMMddHHmmss";
 
 	/**
 	 * 产生表单数据
@@ -26,6 +26,7 @@ public class KuaiqianPaymentFlow extends PaymentFlow {
     public String getRequestForm(String orderNumber, String description, BigDecimal fee,
                                  String subPaymentCode, String remoteIp) {
         String orderAmount= fee.multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).toString();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
         //参数需要按照顺序添加
         Map<String, String> params =  new LinkedHashMap<>();
