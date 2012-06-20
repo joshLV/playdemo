@@ -1,22 +1,22 @@
 cms.VoteQuestion(vote1):
- content: asfa
+ content: "asfa"
  deleted: UN_DELETED
- effectiveAt: 2012-06-12 00:00:00
- expireAt: 2012-06-12 00:00:00
+ effectiveAt: "2012-06-12 00:00:00"
+ expireAt: "2012-06-12 00:00:00"
  type: INQUIRY
- answer1: 4213
- answer2: 1241
- answer3: asfa
- answer4: ghg
+ answer1: "4213"
+ answer2: "1241"
+ answer3: "asfa"
+ answer4: "ghg"
  correctAnswer: A
 cms.VoteQuestion(vote2):
- content: 优惠啦网站改版了，改成什么名字？
+ content: "优惠啦网站改版了，改成什么名字？"
  deleted: UN_DELETED
- effectiveAt: 2012-06-13 00:00:00
- expireAt: 2012-06-13 00:00:00
+ effectiveAt: "2012-06-13 00:00:00"
+ expireAt: "2012-06-13 00:00:00"
  type: QUIZ
- answer1: A.优惠拉
- answer2: B.原优惠啦
- answer3: C.不知道
- answer4: D.一百券
+ answer1: "A.优惠拉"
+ answer2: "B.原优惠啦"
+ answer3: "C.不知道"
+ answer4: "D.一百券"
  correctAnswer: D

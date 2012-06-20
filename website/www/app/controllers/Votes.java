@@ -47,15 +47,11 @@ public class Votes extends Controller {
         for (String split : answerSplits) {
             String[] voteSplits = split.split("-");
             VoteQuestion vote = VoteQuestion.findById(Long.parseLong(voteSplits[0]));
-            renderArgs.put("answer", vote.getAnswer());
-            if (UserVote.isVoted(user, vote)) {
-                break;
+            if (!UserVote.isVoted(user, vote)) {
+                new UserVote(user, vote, voteSplits[1], mobile).save();
             }
-            UserVote userVote = new UserVote(user, vote, voteSplits[1], mobile);
-            userVote.save();
-
         }
-        render("/Votes/vote_success.html");
+        viewAnswer();
     }
 
     @SkipCAS

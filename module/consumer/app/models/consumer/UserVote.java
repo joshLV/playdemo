@@ -48,7 +48,7 @@ public class UserVote extends Model {
     }
 
     public static JPAExtPaginator getPage(int pageNumber, int pageSize, UserVoteCondition condition) {
-        JPAExtPaginator<UserVote> votePage = new JPAExtPaginator<>("UserVote u", "u",
+        JPAExtPaginator<UserVote> votePage = new JPAExtPaginator<>(" UserVote u", "u",
                 UserVote.class, condition.getCondition(), condition.paramsMap).orderBy("u.createdAt desc");
 
         votePage.setPageNumber(pageNumber);
@@ -59,9 +59,6 @@ public class UserVote extends Model {
 
     public static boolean isVoted(User user,VoteQuestion vote) {
         List<UserVote> voteList = UserVote.find("user=? and vote=?", user, vote).fetch();
-        if (voteList.size() > 0) {
-            return true;
-        }
-        return false;
+        return voteList.size() > 0;
     }
 }

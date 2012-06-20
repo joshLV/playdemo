@@ -24,8 +24,8 @@
         $(this).addClass('selected');
         if ($(this).attr("class", "selected")) {
             answer = $(this).attr("data-value");
-            var id_temp = $(this).attr("id");
-            answers += id_temp.substr(id_temp.lastIndexOf("_") + 1) + "-" + answer + ",";
+            var voteId= $(this).attr("voteId");
+            answers += voteId + "-" + answer + ",";
         }
         $("#answers").val(answers);
     });
@@ -73,13 +73,13 @@
                 <a href="http://img.uhcdn.com/notice/1.html" id="view" target="_blank"> >> 查看答案 </a>
             </div>
             <ul class="ask" id="J_ask">
-                <li data-value="A" id="answer_${vote.id}">${vote.answer1}</li>
-                <li data-value="B" id="answer_${vote.id}">${vote.answer2}</li>
+                <li data-value="A" voteId="${vote.id}">${vote.answer1}</li>
+                <li data-value="B" voteId="${vote.id}">${vote.answer2}</li>
                 #{if vote.answer3 != ''}
-                    <li data-value="C" id="answer_${vote.id}">${vote.answer3}</li>
+                    <li data-value="C" voteId="${vote.id}">${vote.answer3}</li>
                 #{/if}
                 #{if vote.answer4 != ''}
-                    <li data-value="D" id="answer_${vote.id}">${vote.answer4}</li>
+                    <li data-value="D" voteId="${vote.id}">${vote.answer4}</li>
                 #{/if}
             </ul>
         #{/list}

@@ -45,7 +45,10 @@ public class UserVoteCondition {
             sql.append(" and u.createdAt <= :createdAtEnd");
             paramsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
         }
-
+        if (StringUtils.isNotBlank(content)) {
+            sql.append(" and u.vote.content like :content");
+            paramsMap.put("content", "%" + content + "%");
+        }
         if (StringUtils.isNotBlank(loginName)) {
             sql.append(" and u.user.loginName like :loginName");
             paramsMap.put("loginName", "%" + loginName + "%");
