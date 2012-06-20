@@ -73,4 +73,29 @@ public class UserQuestions extends Controller{
         renderJSON(result);
     }
 
+    public static void moreQuestions(Long goodsId, int firstResult, int size){
+        Http.Cookie idCookie = request.cookies.get("identity");
+        String cookieValue = idCookie == null ? null : idCookie.value;
+        Long userId = SecureCAS.getUser() == null ? null : SecureCAS.getUser().getId();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+
+        List<CmsQuestion> questions = CmsQuestion.findOnGoodsShow(userId, cookieValue, goodsId, firstResult, size);
+        List<Map<String, String>> mappedQuestions = new ArrayList<>();
+        for (CmsQuestion question : questions){
+            Map<String, String> mappedQuestion = new HashMap<>();
+            mappedQuestion.put("content", question.content);
+            mappedQuestion.put("date", dateFormat.format(question.createdAt));
+            if(question.userName != null){
+                mappedQuestion.put("user", question.userName);
+            }else {
+                mappedQuestion.put("user", "游客");
+            }
+
+            mappedQuestions.add(mappedQuestion);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("questions", mappedQuestions);
+        renderJSON(result);
+    }
 }

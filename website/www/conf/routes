@@ -37,6 +37,7 @@ GET     /goods/{uuid}/preview                   Goods.preview
 
 
 POST    /user-question                          UserQuestions.add
+GET     /more-questions                         UserQuestions.moreQuestions
 
 
 # 购物车

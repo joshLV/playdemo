@@ -170,7 +170,7 @@ public class Goods extends Controller {
         String cookieValue = idCookie == null ? null : idCookie.value;
         Long userId = SecureCAS.getUser() == null ? null : SecureCAS.getUser().getId();
 
-        List<CmsQuestion> questions = CmsQuestion.findOnGoodsShow(userId, cookieValue, id);
+        List<CmsQuestion> questions = CmsQuestion.findOnGoodsShow(userId, cookieValue, id, 0, 10);
         renderArgs.put("questions", questions);
 
         render();

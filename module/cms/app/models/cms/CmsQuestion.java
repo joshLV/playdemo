@@ -5,10 +5,7 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p/>
@@ -68,7 +65,10 @@ public class CmsQuestion extends Model {
         return questions;
     }
 
-    public static List<CmsQuestion> findOnGoodsShow(Long userId, String cookieValue, Long goodsId) {
+    public static List<CmsQuestion> findOnGoodsShow(Long userId, String cookieValue, Long goodsId, int firstResult, int size) {
+        if (firstResult < 0 || size < 0){
+            return new ArrayList<>();
+        }
         StringBuilder sql = new StringBuilder("select q from CmsQuestion q where goodsId = :goodsId and ( (visible = :visible and reply IS NOT NULL) ");
         Map<String, Object> params = new HashMap<>();
         params.put("goodsId", goodsId);
@@ -88,6 +88,8 @@ public class CmsQuestion extends Model {
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
         }
+        query.setFirstResult(firstResult);
+        query.setMaxResults(firstResult + size);
         return query.getResultList();
     }
 

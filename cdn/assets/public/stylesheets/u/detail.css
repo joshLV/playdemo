@@ -291,6 +291,7 @@
     border: 1px solid #E4E4E4;
     text-align:center;
     background-color:#E4E4E4;
+    display:block;
 }
 .qa-more a:hover {
     border: 1px solid #007e76;

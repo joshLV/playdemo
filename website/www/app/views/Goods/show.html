@@ -149,6 +149,22 @@
                 $("#q-error").html("网络错误").show();
             });
         });
+        //点击更多
+        $("#show-more").click(function(){
+            var max_result = Number($("#max-result").val())
+            $.get(
+                "/more-questions",
+                {"goodsId":$("#goodsId").val(), "firstResult":max_result, "size":10},
+                function(data){
+                    append_questions(data.questions);
+                    $("#max-result").val(max_result + data.questions.length);
+                    if(data.questions.length < 10){
+                        $("#more-questions").css("display","none");
+                    }
+                }
+            );
+            return false;
+        });
     });
 </script>
 #{/set}
@@ -307,7 +323,10 @@
         </div>
         #{/list}
     </div>
-    <div class="qa-more"><a href="#">更多>></a></div>
+    #{if questions.size() == 10}
+        <div class="qa-more" id="more-questions"><a href="#" id="show-more">更多>></a></div>
+        <input type="hidden" id="max-result" value="${questions.size() + 1}">
+    #{/if}
     <div class="qa-form">
         <div class="tit">发表咨询：</div>
         <textarea class="con" cols="80" rows="5" id="question"></textarea>
