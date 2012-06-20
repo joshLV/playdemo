@@ -6,6 +6,11 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * 现金账户
+ *
+ * @author likang
+ */
 @Entity
 @Table(name = "accounts")
 public class Account extends Model {

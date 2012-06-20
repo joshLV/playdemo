@@ -1,7 +1,7 @@
 package models.accounts;
 
 /**
- * User: likang
+ * @author likang
  */
 public enum AccountStatus {
     NORMAL,

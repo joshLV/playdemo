@@ -1,7 +1,7 @@
 package models.accounts;
 
 /**
- * User: likang
+ * @author likang
  */
 public enum TradeType {
     CHARGE,             //充值

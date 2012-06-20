@@ -6,6 +6,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * 第三方支付
+ *
+ * @author likang
+ */
 @Entity
 @Table(name = "payment_source")
 public class PaymentSource extends Model {

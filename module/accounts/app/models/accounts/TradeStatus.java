@@ -1,10 +1,10 @@
 package models.accounts;
 
 /**
- * User: likang
+ * @author likang
  */
 public enum TradeStatus {
-    UNPAID,
-    SUCCESS,
-    FAILED,
+    UNPAID,     //未支付
+    SUCCESS,    //成功
+    FAILED,     //失败
 }

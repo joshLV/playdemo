@@ -7,6 +7,8 @@ import javax.persistence.*;
 import java.util.List;
 
 /**
+ * 预设的提现账户，用于运营人员给分销商或者商家设置提现账户
+ *
  * @author likang
  * Date: 12-5-8
  */

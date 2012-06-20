@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * 交易流水
  *
- * User:likang
+ * @author likang
  */
 @Entity
 @Table(name="trade_bill")

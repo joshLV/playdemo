@@ -23,8 +23,8 @@ import play.modules.paginate.JPAExtPaginator;
 
 /**
  * 账户资金变动流水
- * <p/>
- * User: likang
+ *
+ * @author likang
  */
 @Entity
 @Table(name = "account_sequence")
