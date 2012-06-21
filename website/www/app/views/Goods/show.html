@@ -267,6 +267,7 @@
         <li name="product-info" class="current">商品信息</li>
     #{if models.sales.MaterialType.REAL!=goods.materialType}
         <li name="applicable-store">适用门店</li>
+        <li name="qa">购买咨询</li>
     #{/if}
     </ul>
     <div id="J_tabtxt" class="tabtxt">
@@ -291,46 +292,47 @@
         </div>
     #{/if}
 
+        <div class="qa">
+            <h4>购买咨询</h4>
+            <div id="q-list">
+                <input type="hidden" value="${questions.size()}" id="q-size"/>
+                %{q_index = 0}%
+                #{list items:questions, as:'question'}
+                %{
+                    q_style = q_index%2 == 1 ? "qa-odd" : ""
+                    q_index += 1
+                }%
+                <div class="qa-item ${q_style}">
+                    <div class="user"><span class="name">${question.userName == null ? "游客" : question.userName}</span> ${question.createdAt.format()}</div>
+                    <dl class="question">
+                        <dt>咨询内容：</dt>
+                        <dd>${question.content}</dd>
+                    </dl>
+                    <dl class="answer">
+                        #{if question.reply != null}
+                            <dt>客服回复：</dt>
+                            <dd>${question.reply}</dd>
+                        #{/if}
+                        #{else}
+                            <dt>待回复,</dt>
+                            <dd>请耐心等待^_^</dd>
+                        #{/else}
+                    </dl>
+                </div>
+                #{/list}
+            </div>
+            #{if questions.size() == 10}
+                <div class="qa-more" id="more-questions"><a href="#" id="show-more">更多>></a></div>
+                <input type="hidden" id="max-result" value="${questions.size() + 1}">
+            #{/if}
+            <div class="qa-form">
+                <div class="tit">发表咨询：</div>
+                <textarea class="con" cols="80" rows="5" id="question"></textarea>
+                <span id="q-error" style="display:none"></span>
+                <div class="btn"><button id="submit-question"> 提 交 </button></div>
+            </div>
+        </div><!-- qa -->
+
     </div><!-- tabtxt END -->
 </div>
 
-<div class="wrap qa">
-    <h4>购买咨询</h4>
-    <div id="q-list">
-        <input type="hidden" value="${questions.size()}" id="q-size"/>
-        %{q_index = 0}%
-        #{list items:questions, as:'question'}
-        %{
-            q_style = q_index%2 == 1 ? "qa-odd" : ""
-            q_index += 1
-        }%
-        <div class="qa-item ${q_style}">
-            <div class="user"><span class="name">${question.userName == null ? "游客" : question.userName}</span> ${question.createdAt.format()}</div>
-            <dl class="question">
-                <dt>咨询内容：</dt>
-                <dd>${question.content}</dd>
-            </dl>
-            <dl class="answer">
-                #{if question.reply != null}
-                    <dt>客服回复：</dt>
-                    <dd>${question.reply}</dd>
-                #{/if}
-                #{else}
-                    <dt>待回复,</dt>
-                    <dd>请耐心等待^_^</dd>
-                #{/else}
-            </dl>
-        </div>
-        #{/list}
-    </div>
-    #{if questions.size() == 10}
-        <div class="qa-more" id="more-questions"><a href="#" id="show-more">更多>></a></div>
-        <input type="hidden" id="max-result" value="${questions.size() + 1}">
-    #{/if}
-    <div class="qa-form">
-        <div class="tit">发表咨询：</div>
-        <textarea class="con" cols="80" rows="5" id="question"></textarea>
-        <span id="q-error" style="display:none"></span>
-        <div class="btn"><button id="submit-question"> 提 交 </button></div>
-    </div>
-</div>
