@@ -22,6 +22,7 @@ import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
+import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -487,7 +488,7 @@ public class Order extends Model {
 
                     SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
                     if (!Play.runingInTestMode()) {
-                        SMSUtil.send("【券市场】" + goods.title+ "券号:" + eCoupon.eCouponSn + "," +
+                        SMSUtil.send("【券市场】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : goods.name) + "券号:" + eCoupon.eCouponSn + "," +
                                 "截止日期：" + dateFormat.format(eCoupon.expireAt) + ",如有疑问请致电：400-6262-166",
                                 orderItem.phone, eCoupon.replyCode);
                     }
