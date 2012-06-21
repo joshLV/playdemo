@@ -1,6 +1,7 @@
 sales.Goods(Goods_001):
  "no": "001"
  "name": "哈根达斯100元抵用券"
+ "title": "哈根达斯100元抵用券"
  "supplierId": "1"
  "brand": "Brand_2"
  "imagePath": "/0/0/133/origin.jpg"

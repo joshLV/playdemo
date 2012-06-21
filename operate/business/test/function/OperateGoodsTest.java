@@ -81,6 +81,7 @@ public class OperateGoodsTest extends FunctionalTest {
         goodsParams.put("goods.name", "laiyifen1");
         goodsParams.put("goods.no", "20000000");
         goodsParams.put("goods.supplierId", "0");
+        goodsParams.put("goods.title", "阿森发送发送分10元");
         goodsParams.put("goods.status", GoodsStatus.ONSALE.toString());
         goodsParams.put("goods.prompt", "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
         goodsParams.put("goods.details", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -151,7 +152,7 @@ public class OperateGoodsTest extends FunctionalTest {
         assertContentType("text/html", response);
         assertCharset(Play.defaultWebEncoding, response);
 
-        String params = "goods.supplierId=" + supplierId + "&goods.name=test123&goods.faceValue=120&goods" +
+        String params = "goods.supplierId=" + supplierId + "&goods.name=test123&goods.title=test123&goods.faceValue=120&goods" +
                 ".originalPrice=120&goods.details=abcdefgh&goods.salePrice=123&goods.categories.id=" +
                 categoryId + "&goods.expireAt=2015-12-12&goods.effectiveAt=2012-03-12&goods.baseSale=1000" +
                 "&levelPrices=1&goods.brand.id=" + brandId;

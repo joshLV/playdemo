@@ -13,8 +13,7 @@
                value="${params[field.name]?.escape()?.raw() ?: field.error?.message == 'validation.required' ?
                "":_value?.escape()?.raw()}" maxlength="${_length?_length*2:80}" onfocus="checkName(this)"
                onkeyup="checkName(this)" onkeydown="checkName(this)"
-               onchange="checkName(this)"/><span style="color: red">(必须填写商品面值)</span><span
-            id="tip_head">最多可输入</span><span
+               onchange="checkName(this)"/><span id="tip_head">最多可输入</span><span
             id="tip" class="warn">${_length?:40}</span> 个字
         #{ifError field.name}
             <span class="error">${field.error.raw()}</span>
