@@ -8,6 +8,15 @@ package models.sales;
  * Time: 12:37 PM
  */
 public enum MaterialType {
-    REAL,
-    ELECTRONIC
+    REAL(0),
+    ELECTRONIC(1);
+    
+    int _value;
+    MaterialType(int value) {
+        _value = value;
+    }
+    
+    public int getIntValue() {
+        return _value;
+    }
 }

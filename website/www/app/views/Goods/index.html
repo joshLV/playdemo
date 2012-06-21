@@ -48,8 +48,7 @@
                 #{if "0".equals(districtId)}<span class="selected_box">全部</span>
                 #{/if}
                 #{else}<a id="district"
-                          href="/s/${categoryId}-021-${brandId}-${priceFrom}-${priceTo}-${orderBy}-$
-                          {orderByType}"
+                          href="/s/${categoryId}-021-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}ss#{if materialType != null}-${materialType.getIntValue()}#{/if}"
                           class="font_blue">全部</a>
                 #{/else}
                 #{list districts, as:'district'}
@@ -58,7 +57,7 @@
                             <span id="district" class="selected_box">${district.name}</span>
                         #{/if}
                         #{else}<a
-                                href="/s/${categoryId}-${district.id}-0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                                href="/s/${categoryId}-${district.id}-0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
                                 class="font_blue">${district.name}</a>
                         #{/else}
                     #{/if}
@@ -71,7 +70,7 @@
                 #{if "0".equals(areaId)}<span class="selected_box">全部</span>
                 #{/if}
                 #{else}<a
-                        href="/s/${categoryId}-0-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                        href="/s/${categoryId}-0-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
                         class="font_blue">全部</a>
                 #{/else}
                 #{list areas, as:'area'}
@@ -80,7 +79,7 @@
                             <span id="area" class="selected_box">${area.name}</span>
                         #{/if}
                         #{else}<a
-                                href="/s/${categoryId}-${area.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                                href="/s/${categoryId}-${area.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
                                 class="font_blue">${area.name}</a>
                         #{/else}
                     #{/if}
@@ -93,8 +92,7 @@
                 #{if brandId == 0}<span class="selected_box">全部</span>
                 #{/if}
                 #{else}<a
-                        href="/s/${categoryId}-${searchAreaId}-0-${priceFrom}-${priceTo}-${orderBy}-$
-                        {orderByType}"
+                        href="/s/${categoryId}-${searchAreaId}-0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
                         class="font_blue">全部</a>
                 #{/else}
                 #{list brands, as:'brand'}
@@ -102,7 +100,7 @@
                         <span id="area" class="selected_box">${brand.name}</span>
                     #{/if}
                     #{else}<a
-                            href="/s/${categoryId}-${searchAreaId}-${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}"
+                            href="/s/${categoryId}-${searchAreaId}-${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
                             class="font_blue">${brand.name}</a>
                     #{/else}
                 #{/list}
