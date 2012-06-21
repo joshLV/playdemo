@@ -38,10 +38,17 @@ public class CancelOrdersUnitTest extends UnitTest {
     public void testJob() throws ParseException {
         List<Order> orderList = Order.findAll();
         for (Order order : orderList) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 10);
-            order.createdAt = calendar.getTime();
-            order.save();
+            if ("2012034997599".equals(order.orderNumber)) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 11);
+                order.createdAt = calendar.getTime();
+                order.save();
+            } else {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 10);
+                order.createdAt = calendar.getTime();
+                order.save();
+            }
         }
 
         Long id = (Long) Fixtures.idCache.get("models.sales.Goods-goods1");

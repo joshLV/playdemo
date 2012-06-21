@@ -381,6 +381,7 @@ public class Order extends Model {
      */
     public void cancelAndUpdateOrder() {
         this.status = OrderStatus.CANCELED;
+        this.updatedAt = new Date();
         for (OrderItems orderItem : this.orderItems) {
             orderItem.goods.baseSale += orderItem.buyNumber;
             orderItem.goods.saleCount -= orderItem.buyNumber;
@@ -485,8 +486,14 @@ public class Order extends Model {
                     ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
 
                     SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
+                    //消费者
+                    BigDecimal price = goods.salePrice;
+                    //分销商
+                    if (AccountType.RESALER.equals(orderItem.order.userType)) {
+                        price = orderItem.goods.getResalePrice(orderItem.order.getResaler().level);
+                    }
                     if (!Play.runingInTestMode()) {
-                        SMSUtil.send("【券市场】" + goods.name + "券号:" + eCoupon.eCouponSn + "," +
+                        SMSUtil.send("【券市场】" + goods.name + "[面值]" + price + "元,券号:" + eCoupon.eCouponSn + "," +
                                 "截止日期：" + dateFormat.format(eCoupon.expireAt) + ",如有疑问请致电：400-6262-166",
                                 orderItem.phone, eCoupon.replyCode);
                     }

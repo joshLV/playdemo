@@ -99,3 +99,37 @@ order.OrderItems(cancel_orderItems_paid3):
   "createdAt": "2012-03-05T00:00:00"
   "goods": "goods1"
   "phone": "15312345674"
+
+order.Order(cancel_order_unpaid4):
+  "userId": "999"
+  "userType": "RESALER"
+  "supplier_id": 1
+  "orderNumber": "2012034997599"
+  "status": "UNPAID"
+  "amount": "0"
+  "accountPay": "0"
+  "discountPay": "0"
+  "needPay": "0"
+  "createdAt": "2012-06-15T16:40:28"
+  "updatedAt": "2012-06-15T16:40:28"
+  "receiverPhone": "13512341234"
+  "eceiverMobile": "13512341234"
+  "receiverAddress": "内蒙古 呼和浩特市 玉泉区 凌兆路"
+  "receiverName": "苏杰1"
+  "postcode": "200120"
+  "lockVersion": "0"
+  "deleted": "UN_DELETED"
+  "deliveryType": "0"
+  "payMethod": "alipay"
+  "payRequestId": "0"
+  "orderType": "CONSUME"
+
+order.OrderItems(cancel_orderItems_unpaid4):
+  "order": "cancel_order_unpaid4"
+  "buyNumber": 1
+  "salePrice": "10"
+  "originalPrice": "20"
+  "goodsName": "哈根达斯100元抵用券"
+  "createdAt": "2012-03-05T00:00:00"
+  "goods": "goods1"
+  "phone": "15312345674"

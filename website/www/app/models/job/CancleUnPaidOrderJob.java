@@ -18,7 +18,7 @@ import java.util.List;
  * Date: 12-6-20
  * Time: 上午11:09
  */
-@On("0 0 0 * * ?")  //每天凌晨执行,十天后自动取消未付款的订单
+@On("0 0 1 * * ?")  //每天凌晨执行,自动取消十天之前未付款的订单
 public class CancleUnPaidOrderJob extends Job {
 
     @Override
@@ -29,8 +29,8 @@ public class CancleUnPaidOrderJob extends Job {
                 ") order by o.id";
         Query query = Order.em().createQuery(sql);
         query.setParameter("status", OrderStatus.UNPAID);
-        query.setParameter("createdAtBegin", DateUtil.getBeginExpiredDate(9));
-        query.setParameter("createdAtEnd", DateUtil.getEndExpiredDate(10));
+        query.setParameter("createdAtBegin", DateUtil.getBeginExpiredDate(-11));
+        query.setParameter("createdAtEnd", DateUtil.getEndExpiredDate(-10));
         query.setFirstResult(0);
         query.setMaxResults(200);
 
@@ -46,8 +46,8 @@ public class CancleUnPaidOrderJob extends Job {
             }
             query = Order.em().createQuery(sql);
             query.setParameter("status", OrderStatus.UNPAID);
-            query.setParameter("createdAtBegin", DateUtil.getBeginExpiredDate(9));
-            query.setParameter("createdAtEnd", DateUtil.getEndExpiredDate(10));
+            query.setParameter("createdAtBegin", DateUtil.getBeginExpiredDate(-11));
+            query.setParameter("createdAtEnd", DateUtil.getEndExpiredDate(-10));
             query.setFirstResult(0);
             query.setMaxResults(200);
             orderList = query.getResultList();
