@@ -14,10 +14,10 @@
 #{layout_operate.textField name:'brand.displayOrder', value:brand?.displayOrder, required:true/}
 #{layout_operate.textareaField name:'brand.introduce', value:brand?.introduce/}
 #{if "add".equals(action)}
-    #{layout_operate.fileField name:'logoImage', required:true/}
+    #{layout_operate.fileField name:'logoImage',note:'图片尺寸：(300*180像素)', required:true/}
 #{/if}
 #{else}
-    #{layout_operate.fileField name:'logoImage'/}
+    #{layout_operate.fileField name:'logoImage',note:'图片尺寸：(300*180像素)',/}
 <div class="control-group">
     <label for='levelPrices_${level}' class="control-label"> </label>
 

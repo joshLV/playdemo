@@ -75,10 +75,10 @@
     beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
 
     #{if "add".equals(action)}
-        #{layout_operate.fileField name:'imagePath', required:true/}
+        #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)', required:true/}
     #{/if}
     #{else}
-        #{layout_operate.fileField name:'imagePath'/}
+        #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)'/}
     <div class="control-group">
         <label for='levelPrices_${level}' class="control-label"> </label>
 
