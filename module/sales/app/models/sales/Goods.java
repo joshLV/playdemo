@@ -97,6 +97,13 @@ public class Goods extends Model {
     @Required
     @MaxSize(60)
     public String name;
+
+    /**
+     * 商品标题（短信发送用）
+     */
+    @Required
+    @MaxSize(60)
+    public String title;
     /**
      * 所属商户ID
      */
@@ -268,11 +275,11 @@ public class Goods extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "material_type")
     public MaterialType materialType;
-    
+
     /**
      * SEO关键字.
      */
-    @Column(name="keywords")
+    @Column(name = "keywords")
     public String keywords;
 
     /**
@@ -295,7 +302,7 @@ public class Goods extends Model {
         //增加可信属性
         HTML_WHITE_TAGS.addAttributes(":all", "style", "class", "id", "name");
         HTML_WHITE_TAGS.addAttributes("table", "style", "cellpadding", "cellspacing", "border", "bordercolor", "align");
-        HTML_WHITE_TAGS.addAttributes("span", "style","border","align");
+        HTML_WHITE_TAGS.addAttributes("span", "style", "border", "align");
         HTML_WHITE_TAGS.addAttributes("object", "width", "height", "classid", "codebase");
         HTML_WHITE_TAGS.addAttributes("param", "name", "value");
         HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen",
@@ -592,7 +599,7 @@ public class Goods extends Model {
             updateGoods.supplierId = goods.supplierId;
         }
         updateGoods.shops = goods.shops;
-
+        updateGoods.title = goods.title;
         updateGoods.setPublishedPlatforms(goods.getPublishedPlatforms());
 
         updateGoods.useBeginTime = goods.useBeginTime;
