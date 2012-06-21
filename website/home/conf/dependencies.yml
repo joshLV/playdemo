@@ -25,6 +25,8 @@ require:
     - asset_package -> asset_package
     - layout_website -> layout_website
     - cms -> cms
+    - cache_helper -> cache_helper
+
 repositories:
     - mavenRepository:
         type:       iBiblio
@@ -48,6 +50,7 @@ repositories:
         type:       local
         artifact:   "${application.path}/../../module/[module]"
         contains:
+            - cache_helper -> *
             - sales -> *
             - supplier -> *
             - resale -> *

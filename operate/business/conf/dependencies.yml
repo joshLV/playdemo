@@ -26,6 +26,7 @@ require:
     - cms -> cms
     - sms -> sms
     - asset_package -> asset_package
+    - cache_helper -> cache_helper
 
 repositories:
     - mavenRepository:
@@ -60,3 +61,4 @@ repositories:
             - cms -> *
             - sms -> *
             - asset_package -> *
+            - cache_helper -> *

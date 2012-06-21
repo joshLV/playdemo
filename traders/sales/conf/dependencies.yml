@@ -23,6 +23,8 @@ require:
     - accounts -> accounts
     - sms -> sms
     - cms -> cms
+    - cache_helper -> cache_helper
+
 repositories:
     - mavenRepository:
         type:       iBiblio
@@ -55,3 +57,4 @@ repositories:
             - accounts -> *
             - sms -> *
             - cms -> *
+            - cache_helper -> *

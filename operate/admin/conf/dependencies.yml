@@ -13,6 +13,7 @@ require:
     - base_rbac -> base_rbac
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - asset_package -> asset_package
+    - cache_helper -> cache_helper
 
 repositories:
     - mavenRepository:
@@ -37,3 +38,4 @@ repositories:
             - operate_rbac -> *
             - base_rbac -> *
             - asset_package -> *
+            - cache_helper -> *

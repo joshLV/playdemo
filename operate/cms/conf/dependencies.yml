@@ -16,6 +16,7 @@ require:
     - org.jsoup -> jsoup 1.6.1
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - asset_package -> asset_package
+    - cache_helper -> cache_helper
 
 repositories:
     - mavenRepository:
@@ -43,3 +44,4 @@ repositories:
             - asset_package -> *
             - cms -> *
             - view_ext -> *
+            - cache_helper -> *

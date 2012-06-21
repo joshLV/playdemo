@@ -21,6 +21,7 @@ require:
     - resale -> resale
     - sms -> sms
     - accounts -> accounts
+    - cache_helper -> cache_helper
 
 repositories:
     - mavenRepository:
@@ -52,3 +53,4 @@ repositories:
             - resale -> *
             - sms -> *
             - accounts -> *
+            - cache_helper -> *
