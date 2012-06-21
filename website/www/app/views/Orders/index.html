@@ -104,13 +104,15 @@
     <input type="hidden" name="items" id="items" value="${items}"/>
     <input type="hidden" id="addressId"/>
     #{if rCartList.size() > 0 || eCartList.size() > 0}
-        <div class="order-total">
+        <div style="float:left;">订单留言：<input type="text" size="50" name="remark"></div>
+        <div class="order-total" style="float:right;padding:0">
             #{if rCartList.size() > 0}
             总金额：<span>${goodsAmount.formatCurrency('CNY').raw()}</span>
             运费：<span >${models.order.Order.FREIGHT.formatCurrency('CNY').raw()}</span>
             #{/if}
             合计：<span>${totalAmount.formatCurrency('CNY').raw()}</span><br />
         </div>
+        <div class="clearfix"></div>
 
         <div class="confirm-box clearfix"><a id="link_confirm_pay" class="confirm-pay-btn" href="#">确认付款</a></div>
     #{/if}

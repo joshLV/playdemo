@@ -3,6 +3,47 @@
 #{set title:'订单详请' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+    function prepareSend(id) {
+        $("#sendForm").attr("action", "/orders/" + id + "/send?x-http-method-override=PUT");
+        $('#sendModal').modal('show');
+    }
+    $(function () {
+        #{if !play.Play.runingInTestMode()}
+            $("#send").click(function () {
+                var result = true;
+                if ($("#order_deliveryNo").val().trim() == "") {
+        //                $("#note_order_deliveryNo").addClass("error");
+                $("#note_order_deliveryNo").html("请输入单号!");
+                $("#order_deliveryNo").focus();
+                result = false;
+                }
+                else {
+                    //                $("#note_order_deliveryCompany").removeClass("error");
+                    $("#note_order_deliveryCompany").html("");
+                }
+                if ($("#order_deliveryCompany").val().trim() == "") {
+                    //                $("#note_order_deliveryCompany").addClass("error");
+                    $("#note_order_deliveryCompany").html("请输入公司!");
+                    $("#order_deliveryCompany").val("");
+                    $("#order_deliveryCompany").focus();
+                    result = false;
+                } else {
+                    $("#note_order_deliveryCompany").removeClass("error");
+                    $("#note_order_deliveryCompany").html("");
+                }
+                if (result) {
+                    $("#sendForm").submit();
+                }
+                });
+        #{/if}
+        #{else}
+            $("#send").click(function () {
+                $("#sendForm").submit();
+            });
+        #{/else}
+    });
+</script>
 #{/set}
 
 <div class="body">
@@ -87,8 +128,14 @@
             <tr>
                 <td>物流单号： ${orders.deliveryNo}</td>
             </tr>
+            <tr>
+                <td>买家备注： ${orders.remark}</td>
+            </tr>
         </table>
     </ul>
+    #{if models.order.OrderStatus.PAID.equals(orders.realGoodsStatus)}
+        <a class="btn btn-primary" onclick="prepareSend(${orders.id})">发货</a><br/><br/>
+    #{/if}
 #{/if}
     <ul class="nav">
         <li class="active"><a href="#"> 订购人信息</a></li>
@@ -101,9 +148,6 @@
             </tr>
             <tr>
                 <td>电话： ${orders.buyerPhone}</td>
-            </tr>
-            <tr>
-                <td>备注： ${orders.remark}</td>
             </tr>
         </table>
     </ul>
@@ -121,3 +165,24 @@
     </ul>
 #{/if}
 </div>
+
+<div class="modal" id="sendModal" style="display: none;">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+
+        <h3>发货信息</h3>
+    </div>
+    <div class="modal-body">
+        #{form @OperateOrders.index(), id:"sendForm", name:"sendForm", enctype:'multipart/form-data',
+        class:"form-horizontal",method:"PUT"}
+        #{layout_operate.textField name:'order.deliveryCompany', value:order?.deliveryCompany, required:true,
+        err:"deliveryCompany"/}
+        #{layout_operate.textField name:'order.deliveryNo', value:order?.deliveryNo, required:true/}
+        #{/form}
+    </div>
+    <div class="modal-footer">
+        <a href="#" id="send" class="btn btn-primary">发货</a>
+        <a href="#" class="btn" data-dismiss="modal">取消</a>
+    </div>
+</div>
+

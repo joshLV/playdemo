@@ -99,7 +99,7 @@ public class Orders extends Controller {
     /**
      * 提交订单.
      */
-    public static void create(String items, String mobile) {
+    public static void create(String items, String mobile, String remark) {
         //如果订单中有电子券，则必须填写手机号
         Http.Cookie cookie = request.cookies.get("identity");
         String cookieValue = cookie == null ? null : cookie.value;
@@ -174,6 +174,7 @@ public class Orders extends Controller {
             Logger.error(e, "inventory not enough");
             error("inventory not enough");
         }
+        order.remark = remark;
 
         //确认订单
         order.createAndUpdateInventory();
