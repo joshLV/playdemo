@@ -31,7 +31,7 @@
                 $("#condition_begin").val(startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate());
                 $("#condition_end").val(tomorrow.getFullYear() + "-" + (tomorrow.getMonth() + 1) + "-" + tomorrow.getDate());
                 $("#condition_interval").val(interval);
-                $("#search_form").submit();
+                $("#form").submit();
                 return false;
             });
         });
@@ -84,7 +84,7 @@
 #{/set}
 
 <div class="body">
-    <form class="well form-inline" action="@{OperateReports.showWebsiteReport()}" method="GET" id="form" name="form">
+    <form class="well form-inline" action="@{OperateReports.showWithdrawReport()}" method="GET" id="form" name="form">
         起止日期
         <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
                onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
