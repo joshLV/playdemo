@@ -126,6 +126,10 @@ public class CouponsCondition {
             paramMap.put("phone", "%" + phone + "%");
         }
 
+		if (supplier != null) {
+			sql.append(" and e.orderItems.goods.supplierId = :supplierId)");
+			paramMap.put("supplierId",supplier.id );
+		}
         return sql.toString();
     }
 
