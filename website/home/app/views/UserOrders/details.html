@@ -74,6 +74,12 @@
             #{/if}
 
         </tr>
+        #{if !order.containsRealGoods()}
+        <tr>
+            <td colspan="9">订单留言：${order.remark}</td>
+        </tr>
+        #{/if}
+
     #{/list}
     </table>
 </div>
