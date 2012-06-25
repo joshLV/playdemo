@@ -52,8 +52,14 @@
                     #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
                     #{option "REFUND"}&{'coupon.REFUND'}#{/option}
                 #{/select}
+                &nbsp;&nbsp;验证方式
+                #{select 'condition.verifyType', id:'condition_verifyType', class:'input-small', value:condition?.verifyType}
+                    #{option ""}不限#{/option}
+                    #{option "CLERK_MESSAGE"}&{'coupon.CLERK_MESSAGE'}#{/option}
+                    #{option "CONSUMER_MESSAGE"}&{'coupon.CONSUMER_MESSAGE'}#{/option}
+                    #{option "SHOP"}&{'coupon.SHOP'}#{/option}
+                #{/select}
                 </td>
-
             </tr>
             <tr>
                 <td> 消费时间
@@ -71,15 +77,9 @@
                     <input type="text" id="condition_refund_end" class="input-medium Wdate" name="condition.refundAtEnd"
                            onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtEnd?.format()}">
                 </td>
-                 <td> 验证方式
-                #{select 'condition.verifyType', id:'condition_verifyType', class:'input-small', value:condition?.verifyType}
-                    #{option ""}不限#{/option}
-                    #{option "CLERK_MESSAGE"}&{'coupon.CLERK_MESSAGE'}#{/option}
-                    #{option "CONSUMER_MESSAGE"}&{'coupon.CONSUMER_MESSAGE'}#{/option}
-                    #{option "SHOP"}&{'coupon.SHOP'}#{/option}
-                #{/select}
+                <td>手&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;机
+                    <input type="text" class="input-medium" name="condition.phone" value="${condition?.phone}">
                 </td>
-
                 <td>
                     <button type="submit" class="btn btn-primary" id="search">搜索</button>
                 </td>
