@@ -168,7 +168,13 @@ public class OperateReports extends Controller {
 
     private static void setPlatform(AccountSequence accountSequence) {
         TradeBill bill = TradeBill.findById(accountSequence.tradeId);
-        if (bill != null && bill.fromAccount != null && bill.fromAccount.accountType != null) {
+        if (bill == null) {
+            return;
+        }
+
+        if (bill.fromAccount.getId().equals(accountSequence.account.getId())) {
+            accountSequence.platform = bill.toAccount.accountType.name();
+        } else {
             accountSequence.platform = bill.fromAccount.accountType.name();
         }
     }
@@ -225,7 +231,7 @@ public class OperateReports extends Controller {
     }
 
     @ActiveNavigation("withdraw_account_reports")
-    public static void showWithdrawReport(AccountSequenceCondition condition){
+    public static void showWithdrawReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
             condition = new AccountSequenceCondition();
@@ -244,7 +250,7 @@ public class OperateReports extends Controller {
     }
 
     @ActiveNavigation("financing_incoming_reports")
-    public static void showFinancingIncomingReport(AccountSequenceCondition condition){
+    public static void showFinancingIncomingReport(AccountSequenceCondition condition) {
         int pageNumber = getPageNumber();
         if (condition == null) {
             condition = new AccountSequenceCondition();
