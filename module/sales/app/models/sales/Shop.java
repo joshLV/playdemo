@@ -1,11 +1,10 @@
 package models.sales;
 
-import com.uhuila.common.constants.DeletedStatus;
-import org.apache.commons.lang.StringUtils;
-import play.data.validation.Required;
-import play.db.jpa.Model;
-import play.modules.paginate.ModelPaginator;
-
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,17 +14,19 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.apache.commons.lang.StringUtils;
+import play.data.validation.Required;
+import play.db.jpa.Model;
+import play.modules.paginate.ModelPaginator;
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
 
 @Entity
 @Table(name = "shops")
 public class Shop extends Model {
 
-
+    private static final long serialVersionUID = 36632320609113062L;
+    
     @Column(name = "supplier_id")
     public long supplierId;
 
@@ -88,6 +89,27 @@ public class Shop extends Model {
     @Transient
     public String districtId;
 
+
+    public static final String CACHEKEY = "SHOP";    
+    
+    public static final String CACHEKEY_SUPPLIERID = "SHOP_SUPPLIER_ID";
+    
+    @Override
+    public void _save() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        CacheHelper.delete(CACHEKEY_SUPPLIERID + this.supplierId);
+        super._save();
+    }
+    
+    @Override
+    public void _delete() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);        
+        CacheHelper.delete(CACHEKEY_SUPPLIERID + this.supplierId);
+        super._delete();
+    }
+    
     /**
      * 读取某商户的全部门店记录
      *

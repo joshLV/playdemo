@@ -10,6 +10,9 @@ import java.util.Map;
  * @author likang
  */
 public class PromotionCondition implements Serializable {
+    
+    private static final long serialVersionUID = 83409113062L;
+    
     public String name;
     public Date effectAt;       //起始时间
     public Date expiredAt;      //截止日期

@@ -13,6 +13,9 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "goods_level_prices")
 public class GoodsLevelPrice extends Model {
+    
+    private static final long serialVersionUID = 7163232064793062L;
+    
     @ManyToOne
     public Goods goods;
     @Required

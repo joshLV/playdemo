@@ -1,7 +1,15 @@
 package models.cms;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.constants.PlatformType;
+import java.util.Date;
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -11,10 +19,9 @@ import play.data.validation.MinSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
-
-import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.constants.PlatformType;
 
 /**
  * 公告通知.
@@ -26,6 +33,9 @@ import java.util.List;
 @Entity
 @Table(name = "cms_topic")
 public class Topic extends Model {
+    
+    private static final long serialVersionUID = 70632320609113062L;
+    
     @Required
     @MinSize(10)
     @MaxSize(60)
@@ -71,6 +81,22 @@ public class Topic extends Model {
     @Enumerated(EnumType.STRING)
     public DeletedStatus deleted;
 
+    public static final String CACHEKEY = "TOPIC";
+    
+    @Override
+    public void _save() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        super._save();
+    }
+    
+    @Override
+    public void _delete() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);        
+        super._delete();
+    }
+    
     /**
      * 公告内容
      *

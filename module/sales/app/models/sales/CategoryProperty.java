@@ -14,6 +14,9 @@ import javax.persistence.*;
 @Entity
 @Table(name = "category_properties")
 public class CategoryProperty extends Model {
+    
+    private static final long serialVersionUID = 7063981609113062L;
+    
     /**
      * 属性名.
      */

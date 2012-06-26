@@ -17,6 +17,8 @@ import java.util.*;
 @Table(name = "user_question")
 public class CmsQuestion extends Model {
 
+    private static final long serialVersionUID = 81232409113062L;
+    
     public String content;
     @Required
     public String reply;

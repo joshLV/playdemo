@@ -22,6 +22,8 @@ import java.util.Set;
 @Table(name = "supplier_permissions")
 public class SupplierPermission extends Model {
 
+    private static final long serialVersionUID = 81890609113062L;
+    
     public String text;
 
     public String key;

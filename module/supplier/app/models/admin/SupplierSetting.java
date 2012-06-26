@@ -11,6 +11,9 @@ import play.db.jpa.Model;
 @Entity
 @Table(name = "supplier_setting")
 public class SupplierSetting extends Model {
+    
+    private static final long serialVersionUID = 1340609113062L;
+    
 	@Column(name = "supplierUser_key")
 	public Long supplierUserKey;
 

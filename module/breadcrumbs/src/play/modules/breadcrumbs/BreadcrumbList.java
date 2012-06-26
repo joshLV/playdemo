@@ -1,6 +1,7 @@
 package play.modules.breadcrumbs;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  * 面包屑导航列表对象，方便生成较长的导航条.
@@ -9,7 +10,9 @@ import java.util.ArrayList;
  * Date: 3/7/12
  * Time: 10:41 AM
  */
-public class BreadcrumbList extends ArrayList<Breadcrumb> {
+public class BreadcrumbList extends ArrayList<Breadcrumb> implements Serializable {
+
+    private static final long serialVersionUID = 71320609117821L;
 
     public BreadcrumbList(String... crumbArgs) {
         for (int i = 0; i < crumbArgs.length; i += 2) {

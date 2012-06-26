@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.io.Serializable;
 
 /**
  * JPA翻页处理策略.
@@ -21,7 +22,10 @@ import java.util.Map;
  * Date: 3/5/12
  * Time: 4:41 PM
  */
-public class JPAExtStrategy<T> extends JPARecordLocatorStrategy {
+public class JPAExtStrategy<T> extends JPARecordLocatorStrategy implements Serializable {
+
+    private static final long serialVersionUID = 718761609117821L;
+
     private Class<T> typeToken;
     private Map<String, Object> paramMap;
     private String filter;

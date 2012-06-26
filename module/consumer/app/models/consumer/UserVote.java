@@ -20,6 +20,9 @@ import java.util.List;
 @Entity
 @Table(name = "user_vote")
 public class UserVote extends Model {
+    
+    private static final long serialVersionUID = 812320609176823L;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = true)
     public User user;

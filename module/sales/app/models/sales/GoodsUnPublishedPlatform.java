@@ -20,6 +20,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "goods_unpublished_platform")
 public class GoodsUnPublishedPlatform extends Model {
+    
+    private static final long serialVersionUID = 20611810609113062L;
+    
     @ManyToOne(cascade = CascadeType.ALL)
     public Goods goods;
 

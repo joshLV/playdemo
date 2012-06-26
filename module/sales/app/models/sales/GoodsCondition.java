@@ -1,14 +1,14 @@
 package models.sales;
 
-import com.uhuila.common.constants.DeletedStatus;
-import models.resale.Resaler;
-import org.apache.commons.lang.StringUtils;
-import play.Logger;
-
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import models.resale.Resaler;
+import org.apache.commons.lang.StringUtils;
+import play.Logger;
+import com.uhuila.common.constants.DeletedStatus;
 
 /**
  * 商品查询条件.
@@ -17,7 +17,10 @@ import java.util.Map;
  * Date: 2/29/12
  * Time: 4:25 PM
  */
-public class GoodsCondition {
+public class GoodsCondition implements Serializable {
+    
+    private static final long serialVersionUID = 73232320609113062L;
+    
     public static final String SHANGHAI = "021";
 
     public long supplierId = 0;

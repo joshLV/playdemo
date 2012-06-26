@@ -1,6 +1,26 @@
 package models.order;
 
-import com.uhuila.common.constants.DeletedStatus;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -17,39 +37,21 @@ import models.resale.util.ResaleUtil;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sms.SMSUtil;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
-import org.apache.commons.lang.StringUtils;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
 
 
 @Entity
 @Table(name = "orders")
 public class Order extends Model {
+    private static final long serialVersionUID = 7063112063912330652L;
+    
     public static final BigDecimal FREIGHT = new BigDecimal("6");
     private static final String DECIMAL_FORMAT = "0000000";
     private static final String COUPON_EXPIRE_FORMAT = "yyyy-MM-dd";
@@ -169,6 +171,25 @@ public class Order extends Model {
     public Order() {
     }
 
+    public static final String CACHEKEY = "ORDER";
+    public static final String CACHEKEY_BASEUSERID = "ORDER_USERID";
+    
+    @Override
+    public void _save() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        CacheHelper.delete(CACHEKEY_BASEUSERID + this.userId);
+        super._save();
+    }
+    
+    @Override
+    public void _delete() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);      
+        CacheHelper.delete(CACHEKEY_BASEUSERID + this.userId);        
+        super._delete();
+    }
+    
     private Order(long userId, AccountType userType) {
         this.userId = userId;
         this.userType = userType;
@@ -307,7 +328,7 @@ public class Order extends Model {
      * @param number  购买数量
      * @return
      */
-    public static boolean checkLimitNumber(User user, Long goodsId, int number) {
+    public static Boolean checkLimitNumber(User user, Long goodsId, int number) {
 
         Long buyNumber = 0l;
         //该用户曾经购买该商品的数量
@@ -325,10 +346,10 @@ public class Order extends Model {
 //        }
         //超过限购数量,则表示已经购买过差商品
         if (limitNumber > 0 && (number > limitNumber || limitNumber <= buyNumber)) {
-            return true;
+            return Boolean.TRUE;
         }
 
-        return false;
+        return Boolean.FALSE;
     }
 
     /**

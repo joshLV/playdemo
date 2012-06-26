@@ -10,6 +10,9 @@ import play.db.jpa.Model;
 @Entity
 @Table(name = "user_point_config")
 public class UserPointConfig extends Model {
+    
+    private static final long serialVersionUID = 81232060911L;
+    
 	@Column(name = "point_type")
 	public int pointType;
 

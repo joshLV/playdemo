@@ -23,6 +23,8 @@ import java.util.List;
 @Table(name = "vote_question")
 public class VoteQuestion extends Model {
 
+    private static final long serialVersionUID = 8123206783262L;
+   
     /**
      * 有效开始日
      */

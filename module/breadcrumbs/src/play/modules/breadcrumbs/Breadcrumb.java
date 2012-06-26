@@ -1,5 +1,7 @@
 package play.modules.breadcrumbs;
 
+import java.io.Serializable;
+
 /**
  * 面包屑导航条中的导航链接对象.
  * <p/>
@@ -7,7 +9,10 @@ package play.modules.breadcrumbs;
  * Date: 3/6/12
  * Time: 4:34 PM
  */
-public class Breadcrumb {
+public class Breadcrumb implements Serializable {
+
+    private static final long serialVersionUID = 71320609117821L;
+
     public String url;
     public String desc;
 

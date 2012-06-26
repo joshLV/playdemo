@@ -16,6 +16,9 @@ import java.util.List;
 @Entity
 @Table(name = "users_info")
 public class UserInfo extends Model {
+    
+    private static final long serialVersionUID = 812220609113062L;
+    
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     public User user;

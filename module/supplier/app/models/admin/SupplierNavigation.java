@@ -25,6 +25,8 @@ import play.db.jpa.Model;
 @Table(name = "supplier_navigations")
 public class SupplierNavigation extends Model {
 
+    private static final long serialVersionUID = 240609113062L;
+    
     public String name;
 
     public String text;

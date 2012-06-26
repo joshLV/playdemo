@@ -19,6 +19,9 @@ import java.util.*;
 @Entity
 @Table(name = "supplier_users")
 public class SupplierUser extends Model {
+    
+    private static final long serialVersionUID = 812328646862L;
+    
     @Column(name = "login_name")
     @Required
     public String loginName;

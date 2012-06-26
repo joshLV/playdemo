@@ -23,7 +23,9 @@ import play.modules.paginate.JPAExtPaginator;
 @Entity
 @Table(name = "user_points")
 public class UserPoint extends Model {
-
+    
+    private static final long serialVersionUID = 182320609113062L;
+    
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id", nullable = true)
 	public Order order;

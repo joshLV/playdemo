@@ -3,6 +3,7 @@ package models.cms;
 import com.uhuila.common.util.DateUtil;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +15,10 @@ import java.util.Map;
  * Date: 12-6-15
  * Time: 下午6:57
  */
-public class QuestionCondition {
+public class QuestionCondition implements Serializable {
+    
+    private static final long serialVersionUID = 812320608652311L;
+    
     public Date createdAtBegin;
     public Date createdAtEnd;
 

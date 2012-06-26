@@ -21,6 +21,9 @@ import cache.CacheHelper;
 @Entity
 @Table(name = "cart")
 public class Cart extends Model {
+    
+    private static final long serialVersionUID = 1632320609113062L;
+    
     @ManyToOne
     public User user;
 

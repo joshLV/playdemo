@@ -24,7 +24,9 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User extends Model {
-
+    
+    private static final long serialVersionUID = 812320609113062L;
+    
     @Column(name = "email")
     @Required
     @Email

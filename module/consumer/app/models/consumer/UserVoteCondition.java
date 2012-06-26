@@ -5,6 +5,7 @@ import com.uhuila.common.util.DateUtil;
 import models.cms.VoteType;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +16,10 @@ import java.util.Map;
  * Date: 12-6-14
  * Time: 下午1:11
  */
-public class UserVoteCondition {
+public class UserVoteCondition implements Serializable {
+    
+    private static final long serialVersionUID = 8123206386412L;
+    
     public VoteType type;
 
     public Date createdAtBegin;

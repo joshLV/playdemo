@@ -1,10 +1,7 @@
 package models.sales;
 
-import com.uhuila.common.constants.DeletedStatus;
-import org.apache.commons.lang.StringUtils;
-import play.db.jpa.GenericModel;
-import play.db.jpa.Transactional;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,8 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang.StringUtils;
+import cache.CacheHelper;
+import play.db.jpa.GenericModel;
 
 /**
  * 商圈区域.
@@ -26,6 +24,9 @@ import java.util.List;
 @Entity
 @Table(name = "areas")
 public class Area extends GenericModel {
+
+    private static final long serialVersionUID = 706109123113062L;
+    
     @Id
     public String id;
 
@@ -66,6 +67,22 @@ public class Area extends GenericModel {
         return (StringUtils.isNotBlank(district) && district.length() == 5);
     }
     
+    public static final String CACHEKEY = "AREA";
+        
+    @Override
+    public void _save() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        super._save();
+    }
+    
+    @Override
+    public void _delete() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);        
+        super._delete();
+    }
+
     
     /**
      * 获取前n个城市，主要用于主页上的显示.

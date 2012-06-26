@@ -1,10 +1,7 @@
 package controllers;
 
-import cache.CacheCallBack;
-import cache.CacheHelper;
-import com.uhuila.common.constants.PlatformType;
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+import java.util.Date;
+import java.util.List;
 import models.cms.Block;
 import models.cms.BlockType;
 import models.cms.Topic;
@@ -15,9 +12,11 @@ import play.Logger;
 import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.With;
-
-import java.util.Date;
-import java.util.List;
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import com.uhuila.common.constants.PlatformType;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 
 /**
  * 首页控制器.
@@ -34,12 +33,12 @@ public class Home extends Controller {
         CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPS"),
                 CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECENTS"),
                 CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS"),
-                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_DISTRICTS"),
-                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_SAILY_SPEC"),
-                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_SLIDES"),
-                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPICS"),
-                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPCATEGORIES"),
-                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_AREAS")
+                CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_DISTRICTS"),
+                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SAILY_SPEC"),
+                CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SLIDES"),
+                CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_TOPICS"),
+                CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOPCATEGORIES"),
+                CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_AREAS")
         );
         
         //精选商品        
@@ -67,21 +66,21 @@ public class Home extends Controller {
         });
 
         //前n个区域
-        List<Area> districts = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_DISTRICTS"), new CacheCallBack<List<Area>>() {
+        List<Area> districts = CacheHelper.getCache(CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_DISTRICTS"), new CacheCallBack<List<Area>>() {
             @Override
             public List<Area> loadData() {
                 return Area.findTopDistricts(Goods.SHANGHAI, 12);
             }
         });
         //前n个商圈
-        List<Area> areas = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_AREAS"), new CacheCallBack<List<Area>>() {
+        List<Area> areas = CacheHelper.getCache(CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_AREAS"), new CacheCallBack<List<Area>>() {
             @Override
             public List<Area> loadData() {
                 return Area.findTopAreas(13);
             }
         });
         
-        List<Category> categories = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPCATEGORIES"), new CacheCallBack<List<Category>>() {
+        List<Category> categories = CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOPCATEGORIES"), new CacheCallBack<List<Category>>() {
             @Override
             public List<Category> loadData() {
                 return Category.findTop(8);
@@ -92,7 +91,7 @@ public class Home extends Controller {
         final Date currentDate = new Date();
         
         //公告
-        List<Topic> topics = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPICS"), new CacheCallBack<List<Topic> >() {
+        List<Topic> topics = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_TOPICS"), new CacheCallBack<List<Topic> >() {
             @Override
             public List<Topic>  loadData() {
                 return Topic.findByType(PlatformType.UHUILA, TopicType.NEWS, currentDate);
@@ -100,19 +99,20 @@ public class Home extends Controller {
         });
 
         // CMS 区块
-        List<Block> slides = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_SLIDES"), new CacheCallBack<List<Block>>() {
+        List<Block> slides = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SLIDES"), new CacheCallBack<List<Block>>() {
             @Override
             public List<Block> loadData() {
                 return Block.findByType(BlockType.WEBSITE_SLIDE, currentDate);
             }
         });
         
-        List<Block> dailySpecials = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_SAILY_SPEC"), new CacheCallBack<List<Block>>() {
+        List<Block> dailySpecials = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SAILY_SPEC"), new CacheCallBack<List<Block>>() {
             @Override
             public List<Block> loadData() {
                 return Block.findByType(BlockType.DAILY_SPECIAL, currentDate);
             }
         });
+        
         models.sales.Goods dailySpecialGoods = null;
         Block dailySpecial = null;
         if (dailySpecials.size() >= 1) {

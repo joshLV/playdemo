@@ -21,6 +21,7 @@ import play.data.validation.MinSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
+import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.constants.ImageSize;
 import com.uhuila.common.util.PathUtil;
@@ -33,6 +34,8 @@ import com.uhuila.common.util.PathUtil;
 @Table(name = "cms_block")
 public class Block extends Model {
 
+    private static final long serialVersionUID = 701232063912330652L;
+    
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
 
     private static final String IMAGE_SERVER = Play.configuration.getProperty
@@ -90,6 +93,22 @@ public class Block extends Model {
     @Transient
     public String getShowImageUrlTiny() {
         return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, ImageSize.TINY);
+    }
+
+    public static final String CACHEKEY = "BLOCK";
+    
+    @Override
+    public void _save() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        super._save();
+    }
+    
+    @Override
+    public void _delete() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);        
+        super._delete();
     }
     
     /**

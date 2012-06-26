@@ -35,6 +35,9 @@ import java.util.List;
 @Entity
 @Table(name = "suppliers")
 public class Supplier extends Model {
+    
+    private static final long serialVersionUID = 7122320609113062L;
+    
     /**
      * 域名
      */

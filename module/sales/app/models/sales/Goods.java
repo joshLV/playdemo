@@ -10,9 +10,9 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -55,6 +55,7 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Money;
+import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.constants.ImageSize;
@@ -65,6 +66,8 @@ import com.uhuila.common.util.PathUtil;
 @Entity
 @Table(name = "goods")
 public class Goods extends Model {
+    private static final long serialVersionUID = 7063232063912330652L;
+    
     public static final String PREVIEW_IMG_ROOT = "/9999/9999/9999/";
 
     //  ========= 不同的价格列表 =======
@@ -347,6 +350,10 @@ public class Goods extends Model {
 
     @Transient
     public Long topCategoryId;
+    
+    
+    @Transient
+    public boolean skipUpdateCache = false;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
@@ -631,11 +638,27 @@ public class Goods extends Model {
         updateGoods.save();
     }
     
+
+    public static final String CACHEKEY = "SALES_GOODS";    
+    
+    public static final String CACHEKEY_BASEID = "SALES_GOODS_ID";
+    
     @Override
     public void _save() {
-        CacheHelper.delete(CACHEKEY);
-        CacheHelper.delete(CACHEKEY + this.id);
+        if (!this.skipUpdateCache) {
+            CacheHelper.delete(CACHEKEY);
+            CacheHelper.delete(CACHEKEY + this.id);
+            CacheHelper.delete(CACHEKEY_BASEID + this.id);
+        }
         super._save();
+    }
+    
+    @Override
+    public void _delete() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);        
+        CacheHelper.delete(CACHEKEY_BASEID + this.id);
+        super._delete();
     }
 
     public static void update(Long id, Goods goods) {
@@ -737,8 +760,6 @@ public class Goods extends Model {
     }
 
     private static final String expiration = "30mn";
-
-    public static final String CACHEKEY = "SALES_GOODS";
 
     /**
      * 将预览商品存入缓存.
@@ -875,11 +896,16 @@ public class Goods extends Model {
         return prices;
     }
 
-    public Iterator<Shop> getShopList() {
+    public Collection<Shop> getShopList() {
         if (isAllShop) {
-            return Shop.findShopBySupplier(supplierId).iterator();
+            return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId, "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {
+                @Override
+                public List<Shop> loadData() {
+                    return Shop.findShopBySupplier(supplierId);
+                }
+            });
         }
-        return shops.iterator();
+        return shops;
     }
 
     /**
@@ -910,15 +936,20 @@ public class Goods extends Model {
         if (goods == null) {
             return;
         }
+        // 因为goods可能是从缓存中读取出来的，所以需要先从数据库中读取一次
+        Goods updateGoods = Goods.findById(goods.id);
         int number = 1;
         if (like) {
             number = 100;
         }
-        if (goods.recommend == null) {
-            goods.recommend = 0;
+        if (updateGoods.recommend == null) {
+            updateGoods.recommend = 0;
         }
-        goods.recommend += number;
-        goods.save();
+        updateGoods.recommend += number;
+        
+        // 这一操作不应当更新缓存
+        updateGoods.skipUpdateCache = true;
+        updateGoods.save();
     }
 
     /**

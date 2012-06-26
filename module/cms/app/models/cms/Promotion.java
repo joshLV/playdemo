@@ -16,6 +16,9 @@ import java.util.Date;
 @Entity
 @Table(name = "promotion")
 public class Promotion extends Model {
+    
+    private static final long serialVersionUID = 81232060913162L;
+    
     @Required
     public String name;         //活动名
 

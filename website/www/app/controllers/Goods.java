@@ -4,8 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import models.cms.CmsQuestion;
 import models.consumer.User;
 import models.order.Order;
@@ -19,9 +20,12 @@ import play.modules.breadcrumbs.Breadcrumb;
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ValuePaginator;
+import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
+import cache.CacheCallBack;
+import cache.CacheHelper;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
 
@@ -42,7 +46,8 @@ public class Goods extends Controller {
     public static int PAGE_SIZE = 20;
 
     /**
-     * 商品列表初始页
+     * 商品列表初始页。
+     * 这个页面用得少，就不缓存了。
      */
     public static void index() {
         String page = params.get("page");
@@ -74,6 +79,76 @@ public class Goods extends Controller {
         render(recommendGoodsList, goodsPage, areas, districts, categories, brands, breadcrumbs);
     }
 
+    /**
+     * 商品列表按条件查询页.
+     *
+     * @param condition 查询条件
+     */
+    public static void list(String condition) {
+        String page = params.get("page");
+        final int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+
+        try {
+
+            final GoodsCondition goodsCond = new GoodsCondition(condition);
+            goodsCond.status = GoodsStatus.ONSALE;
+            goodsCond.baseSaleBegin = 1;
+            goodsCond.expireAtBegin = new Date();
+            
+            //网友推荐商品
+            List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "LIST_TOPRECOMMEND"), new CacheCallBack<List<models.sales.Goods>>() {
+                @Override
+                public List<models.sales.Goods> loadData() {
+                    return models.sales.Goods.findTopRecommend(6);
+                }
+            });
+
+            JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(goodsCond, pageNumber, PAGE_SIZE);
+            
+            //默认取出前n个上海的区
+            List<Area> districts = CacheHelper.getCache(CacheHelper.getCacheKey(Area.CACHEKEY, "LIST_DISTRICTS" + goodsCond.districtId + "_" + LIMIT),
+                    new CacheCallBack<List<Area>>() {
+                        @Override
+                        public List<Area> loadData() {
+                            return Area.findTopDistricts(SHANGHAI, LIMIT, goodsCond.districtId);
+                        }
+                    });
+            List<Area> areas = CacheHelper.getCache(CacheHelper.getCacheKey(Area.CACHEKEY, "LIST_AREAS" + goodsCond.districtId + "_" + goodsCond.areaId + "_" + AREA_LIMIT), 
+                    new CacheCallBack<List<Area>>() {
+                        @Override
+                        public List<Area> loadData() {
+                            return Area.findTopAreas(goodsCond.districtId, AREA_LIMIT, goodsCond.areaId);
+                        }
+                    });
+            List<Category> categories = CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY, "LIST_CATEGORIES" + goodsCond.categoryId + "_" + LIMIT), 
+                    new CacheCallBack<List<Category>>() {
+                @Override
+                public List<Category> loadData() {
+                    return Category.findTop(LIMIT, goodsCond.categoryId);
+                }
+            });
+            final GoodsCondition brandCond = new GoodsCondition(condition);
+            brandCond.brandId = 0;
+            List<Brand> brands = CacheHelper.getCache(CacheHelper.getCacheKey(Brand.CACHEKEY, "LIST_BRANDS" + condition), 
+                    new CacheCallBack<List<Brand>>() {
+                        @Override
+                        public List<Brand> loadData() {
+                            return models.sales.Goods.findBrandByCondition(brandCond);
+                        }
+                    });
+
+            BreadcrumbList breadcrumbs = createBreadcrumbs(goodsCond);
+
+            renderGoodsCond(goodsCond);
+            renderGoodsListTitle(goodsCond);
+            render("/Goods/index.html", goodsPage, recommendGoodsList, areas, districts, categories, brands,
+                    breadcrumbs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            index();
+        }
+    }
+    
     public static void preview(String uuid, boolean isSupplier) {
         models.sales.Goods goods = models.sales.Goods.getPreviewGoods(uuid);
         if (goods == null) {
@@ -83,19 +158,40 @@ public class Goods extends Controller {
         render("Goods/show.html", isSupplier);
     }
 
-    private static void showGoods(models.sales.Goods goods) {
+    private static void showGoods(final models.sales.Goods goods) {
         if (goods == null) {
             notFound();
         }
         //登陆的场合，判断该会员是否已经购买过此限购商品
-        User user = SecureCAS.getUser();
+        final User user = SecureCAS.getUser();
         if (user != null) {
-            boolean isBuyFlag = Order.checkLimitNumber(user, goods.id,1);
-            if (isBuyFlag){
-                renderArgs.put("bought", true);
-            }
+            Boolean isBuyFlag = CacheHelper.getCache(
+                    CacheHelper.getCacheKey(new String[] {
+                            Order.CACHEKEY_BASEUSERID + user.id,
+                            models.sales.Goods.CACHEKEY_BASEID + goods.id },
+                            "LIMITNUMBER"),
+                    new CacheCallBack<Boolean>() {
+                        @Override
+                        public Boolean loadData() {
+                            return Order.checkLimitNumber(user, goods.id, 1);
+                        }
+                    });
+            renderArgs.put("bought", isBuyFlag);
         }
 
+        BreadcrumbList breadcrumbs = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY_BASEID + goods.id, "BREADCRUMBS"), 
+                new CacheCallBack<BreadcrumbList>() {
+                    @Override
+                    public BreadcrumbList loadData() {
+                        return getGoodsBreadCrumbs(goods.id);
+                    }
+                });
+        renderArgs.put("goods", goods);
+        renderArgs.put("breadcrumbs", breadcrumbs);
+    }
+
+    private static BreadcrumbList getGoodsBreadCrumbs(long id) {
+        models.sales.Goods goods = models.sales.Goods.findById(id);
         BreadcrumbList breadcrumbs = new BreadcrumbList();
         long categoryId = 0;
         if (goods.categories != null && goods.categories.size() > 0) {
@@ -107,9 +203,7 @@ public class Goods extends Controller {
             breadcrumbs.append(goods.brand.name, "/s/" + categoryId + "-021-" + goods.brand
                     .id);
         }
-        renderArgs.put("goods", goods);
-        renderArgs.put("breadcrumbs", breadcrumbs);
-
+        return breadcrumbs;
     }
 
     /**
@@ -117,8 +211,14 @@ public class Goods extends Controller {
      *
      * @param id 商品
      */
-    public static void show(long id) {
-        models.sales.Goods goods = models.sales.Goods.findUnDeletedById(id);
+    public static void show(final long id) {
+        models.sales.Goods goods = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id, "UNDELETED"), new CacheCallBack<models.sales.Goods>() {
+            @Override
+            public models.sales.Goods loadData() {
+                return models.sales.Goods.findUnDeletedById(id);
+            }
+        });
+        
         if (goods == null) {
             error(404, "没有找到该商品！");
         }
@@ -126,28 +226,16 @@ public class Goods extends Controller {
         models.sales.Goods.addRecommend(goods, false);
 
         //设置导航栏位置及类别相关的关键字.
-        List<String> categoryKeywords = new ArrayList<>();
-        if (goods.categories != null) {
-            for (Category c : goods.categories) {
-                if (c.parentCategory != null) {
-                    renderArgs.put("categoryId", c.parentCategory.id);
-                } else {
-                    renderArgs.put("categoryId", c.id);
-                }
-                if (StringUtils.isNotBlank(c.keywords)) {
-                    String[] ks = c.keywords.split("[,;\\s]+");
-                    Collections.addAll(categoryKeywords, ks);
-                }
+        Map<String, String> keywordsMap = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id, "KEYWORDMAP"), new CacheCallBack<Map<String, String>>() {
+            @Override
+            public Map<String, String> loadData() {
+                return generateKeywordsMap(id);
             }
-        }
-        if (StringUtils.isNotBlank(goods.keywords)) {
-            String[] ks = goods.keywords.split("[,;\\s]+");
-            Collections.addAll(categoryKeywords, ks);
-        }
-        if (categoryKeywords.size() > 0) {
-            renderArgs.put("goodsKeywords", StringUtils.join(categoryKeywords, ","));
-        }
+        });
 
+        renderArgs.put("goodsKeywords", keywordsMap.get("goodsKeywords"));
+        renderArgs.put("categoryId", keywordsMap.get("categoryId")); 
+        
         //记录用户浏览过的商品
         Http.Cookie cookie = request.cookies.get("saw_goods_ids");
         String sawGoodsIds = ",";
@@ -167,13 +255,46 @@ public class Goods extends Controller {
         showGoods(goods);
 
         Http.Cookie idCookie = request.cookies.get("identity");
-        String cookieValue = idCookie == null ? null : idCookie.value;
-        Long userId = SecureCAS.getUser() == null ? null : SecureCAS.getUser().getId();
+        final String cookieValue = idCookie == null ? null : idCookie.value;
+        final Long userId = SecureCAS.getUser() == null ? null : SecureCAS.getUser().getId();
 
-        List<CmsQuestion> questions = CmsQuestion.findOnGoodsShow(userId, cookieValue, id, 0, 10);
+        List<CmsQuestion> questions = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id, "QUESTION_u" + userId + "_c" + cookieValue), new CacheCallBack<List<CmsQuestion>>() {
+            @Override
+            public List<CmsQuestion> loadData() {
+                return CmsQuestion.findOnGoodsShow(userId, cookieValue, id, 0, 10);
+            }
+        });
         renderArgs.put("questions", questions);
 
         render();
+    }
+
+    private static Map<String, String> generateKeywordsMap(long id) {
+        models.sales.Goods goods = models.sales.Goods.findById(id);
+        Map<String, String> keywordsMap = new HashMap<>();
+        
+        List<String> categoryKeywords = new ArrayList<>();
+        if (goods.categories != null) {
+            for (Category c : goods.categories) {
+                if (c.parentCategory != null) {
+                    keywordsMap.put("categoryId", String.valueOf(c.parentCategory.id));
+                } else {
+                    keywordsMap.put("categoryId", String.valueOf(c.id));
+                }
+                if (StringUtils.isNotBlank(c.keywords)) {
+                    String[] ks = c.keywords.split("[,;\\s]+");
+                    Collections.addAll(categoryKeywords, ks);
+                }
+            }
+        }
+        if (StringUtils.isNotBlank(goods.keywords)) {
+            String[] ks = goods.keywords.split("[,;\\s]+");
+            Collections.addAll(categoryKeywords, ks);
+        }
+        if (categoryKeywords.size() > 0) {
+            keywordsMap.put("goodsKeywords", StringUtils.join(categoryKeywords, ","));
+        }
+        return keywordsMap;
     }
 
     /**
@@ -194,44 +315,11 @@ public class Goods extends Controller {
     }
 
     /**
-     * 商品列表按条件查询页.
-     *
-     * @param condition 查询条件
+     * 清理预读缓存.
      */
-    public static void list(String condition) {
-        String page = params.get("page");
-        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-
-        try {
-            //网友推荐商品
-            List<models.sales.Goods> recommendGoodsList = models.sales.Goods.findTopRecommend(6);
-
-            GoodsCondition goodsCond = new GoodsCondition(condition);
-            goodsCond.status = GoodsStatus.ONSALE;
-            goodsCond.baseSaleBegin = 1;
-            goodsCond.expireAtBegin = new Date();
-
-            JPAExtPaginator<models.sales.Goods> goodsPage = models.sales
-                    .Goods.findByCondition(goodsCond, pageNumber, PAGE_SIZE);
-
-            //默认取出前n个上海的区
-            List<Area> districts = Area.findTopDistricts(SHANGHAI, LIMIT, goodsCond.districtId);
-            List<Area> areas = Area.findTopAreas(goodsCond.districtId, AREA_LIMIT, goodsCond.areaId);
-            List<Category> categories = Category.findTop(LIMIT, goodsCond.categoryId);
-            GoodsCondition brandCond = new GoodsCondition(condition);
-            brandCond.brandId = 0;
-            List<Brand> brands = models.sales.Goods.findBrandByCondition(brandCond);
-
-            BreadcrumbList breadcrumbs = createBreadcrumbs(goodsCond);
-
-            renderGoodsCond(goodsCond);
-            renderGoodsListTitle(goodsCond);
-            render("/Goods/index.html", goodsPage, recommendGoodsList, areas, districts, categories, brands,
-                    breadcrumbs);
-        } catch (Exception e) {
-            e.printStackTrace();
-            index();
-        }
+    @After
+    public static void clearCache() {
+        CacheHelper.cleanPreRead();
     }
 
     private static void renderGoodsCond(GoodsCondition goodsCond) {
