@@ -245,7 +245,7 @@ public class ECoupon extends Model {
      *
      * @return
      */
-    public void consumed(Long shopId, SupplierUser supplierUser, VerifyCouponType type) {
+    private void consumed(Long shopId, SupplierUser supplierUser, VerifyCouponType type) {
         if (this.status != ECouponStatus.UNCONSUMED) {
             return;
         }

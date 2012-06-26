@@ -6,6 +6,7 @@
 GET     /                                       Application.index
 
 GET     /getsms                                 SmsReceivers.getSms
+*       /tel-verify                             TelephoneVerify.verify
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
