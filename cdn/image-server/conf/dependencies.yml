@@ -6,8 +6,16 @@ require:
     - play1 -> appconfiguration 0.1
     - play1 -> cobertura 2.4p3
     - play1 -> app-version 0.1
+    - net.coobird -> thumbnailator 0.4.1
 
 repositories:
+
+    - mavenRepository:
+        type:       iBiblio
+        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
+        contains:
+            - net.coobird -> *
+        m2compatible: true
 
     - play1ContributedModules:
         type: http

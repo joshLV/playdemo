@@ -1,10 +1,12 @@
 package controllers;
 
+import net.coobird.thumbnailator.Thumbnails;
 import play.Logger;
 import play.Play;
 import play.mvc.Controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -116,7 +118,12 @@ public class Images extends Controller {
                 }
             }
             //创建缩略图
-            play.libs.Images.resize(originImage, targetImage, width, height);
+            //play.libs.Images.resize(originImage, targetImage, width, height);
+            try {
+                Thumbnails.of(originImage).size(width, height).outputQuality(0.99f).toFile(targetImage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         renderBinary(targetImage);
     }
