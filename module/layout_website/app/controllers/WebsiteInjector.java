@@ -1,27 +1,34 @@
 package controllers;
 
-import controllers.modules.website.cas.SecureCAS;
+import java.util.List;
 import models.consumer.User;
 import models.order.Cart;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
-
-import java.util.List;
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import controllers.modules.website.cas.SecureCAS;
 
 public class WebsiteInjector extends Controller {
 
     @Before
     public static void injectCarts() {
-        User user = SecureCAS.getUser();
+        final User user = SecureCAS.getUser();
         Http.Cookie cookie = request.cookies.get("identity");
-        String cookieValue = cookie == null ? null : cookie.value;
+        final String cookieValue = cookie == null ? null : cookie.value;
 
-        List<Cart> carts = Cart.findAll(user, cookieValue);
-        int count = 0;
-        for (Cart cart : carts) {
-            count += cart.number;
-        }
-        renderArgs.put("count", count);
+        Integer cart_size = CacheHelper.getCache(Cart.getCartCacheKey(user, cookieValue), new CacheCallBack<Integer>() {
+            @Override
+            public Integer loadData() {
+                List<Cart> carts = Cart.findAll(user, cookieValue);
+                int count = 0;
+                for (Cart cart : carts) {
+                    count += cart.number;
+                }                
+                return new Integer(count);
+            }
+        });
+        renderArgs.put("count", cart_size);
     }
 }

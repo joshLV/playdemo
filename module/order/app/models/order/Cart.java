@@ -5,18 +5,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
-
+import org.codehaus.groovy.tools.shell.commands.ClearCommand;
 import models.consumer.User;
 import models.sales.Goods;
 import models.sales.GoodsStatus;
 import models.sales.MaterialType;
 import play.db.jpa.Model;
+import cache.CacheHelper;
 
 @Entity
 @Table(name = "cart")
@@ -55,6 +55,15 @@ public class Cart extends Model {
         this.createdAt = new Date();
         this.updatedAt = this.createdAt;
     }
+    
+    public static final String CACHE_KEY = "CART";
+    private static void clearCache(User user, String cookieIdentity) {
+        CacheHelper.delete(getCartCacheKey(user, cookieIdentity));
+    }
+
+    public static String getCartCacheKey(User user, String cookieIdentity) {
+        return CACHE_KEY + "_USER" + (user == null ? "_NULL" : user.id) + "_" + cookieIdentity;
+    }
 
     /**
      * 加入或修改购物车列表
@@ -80,6 +89,7 @@ public class Cart extends Model {
             cart = Cart.find("byCookieIdentityAndGoods", cookie, goods).first();
         }
 
+        clearCache(user, cookie);
         //如果记录已存在，则更新记录，否则新建购物车记录
         if (cart != null) {
             // 不允许一次购买超过999
@@ -106,7 +116,6 @@ public class Cart extends Model {
                 return new Cart(null, cookie, goods, increment).save();
             }
         }
-
     }
 
     /**
@@ -141,6 +150,8 @@ public class Cart extends Model {
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
         }
+        
+        clearCache(user, cookie);
         return query.executeUpdate();
     }
 

@@ -4,11 +4,38 @@
  */
 package models.sales;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.constants.ImageSize;
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.FileUploadUtil;
-import com.uhuila.common.util.PathUtil;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.resale.ResalerLevel;
@@ -28,20 +55,12 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Money;
-
-import javax.persistence.*;
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.constants.ImageSize;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.FileUploadUtil;
+import com.uhuila.common.util.PathUtil;
 
 @Entity
 @Table(name = "goods")
@@ -608,8 +627,15 @@ public class Goods extends Model {
             for (int i = 0; i < goods.levelPrices.size(); i++) {
                 updateGoods.getLevelPrices().get(i).price = goods.levelPrices.get(i).price;
             }
-        }
+        }  
         updateGoods.save();
+    }
+    
+    @Override
+    public void _save() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        super._save();
     }
 
     public static void update(Long id, Goods goods) {
@@ -711,6 +737,8 @@ public class Goods extends Model {
     }
 
     private static final String expiration = "30mn";
+
+    public static final String CACHEKEY = "SALES_GOODS";
 
     /**
      * 将预览商品存入缓存.

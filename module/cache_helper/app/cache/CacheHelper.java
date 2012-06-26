@@ -26,7 +26,8 @@ import play.cache.Cache;
  * @author <a href="mailto:tangliqun@uhuila.com">唐力群</a>
  */
 public class CacheHelper {
-    private String defaultExpireSeconds = "3h"; // 默认超时时间
+    private static final String defaultExpireSeconds = "3h"; // 默认超时时间
+    private static final String defaultBaseKeyExpireSeconds = "240h"; // 默认BaseKey超时时间
 
     private static Logger log = LoggerFactory.getLogger(CacheHelper.class);
 
@@ -39,8 +40,13 @@ public class CacheHelper {
      * @param subKey
      * @return
      */
-    public String getCacheKey(String[] baseKeys, String subKey) {
-        return getCacheKey(baseKeys, subKey, defaultExpireSeconds);
+
+    public static String getCacheKey(String baseKey, String subKey) {
+        return getCacheKey(new String[]{baseKey}, subKey, defaultBaseKeyExpireSeconds);
+    }
+    
+    public static String getCacheKey(String[] baseKeys, String subKey) {
+        return getCacheKey(baseKeys, subKey, defaultBaseKeyExpireSeconds);
     }
 
     /**
@@ -50,7 +56,7 @@ public class CacheHelper {
      * @param expireSeconds
      * @return
      */
-    public String getCacheKey(String[] baseKeys, String subKey, String expireSeconds) {
+    public static String getCacheKey(String[] baseKeys, String subKey, String expireSeconds) {
         if (baseKeys == null || baseKeys.length == 0) {
             throw new IllegalArgumentException("baseKey不能为空");
         }
@@ -73,11 +79,11 @@ public class CacheHelper {
         return fullBaseKey + subKey;
     }
 
-    public void setCache(String key, Object value) {
-        setCache(key, defaultExpireSeconds, value);
+    public static void setCache(String key, Object value) {
+        setCache(key, value, defaultExpireSeconds);
     }
 
-    public void setCache(String key, String expireSeconds, Object value) {
+    public static void setCache(String key, Object value, String expireSeconds) {
         if (StringUtils.isBlank(key)) {
             throw new IllegalArgumentException("key不能为空");
         }
@@ -91,50 +97,36 @@ public class CacheHelper {
         }
     }
 
-    public void setCache(String[] baseKeys, String subKey, Object value) {
+    public static void setCache(String[] baseKeys, String subKey, Object value) {
         setCache(getCacheKey(baseKeys, subKey), value);
     }
 
-    public void setCache(String[] baseKeys, String subKey, String expireSeconds, Object value) {
-        setCache(getCacheKey(baseKeys, subKey, expireSeconds), expireSeconds, value);
+    public static void setCache(String[] baseKeys, String subKey, Object value, String expireSeconds) {
+        setCache(getCacheKey(baseKeys, subKey, expireSeconds), value, expireSeconds);
     }
 
-    public <T> T getCache(String key) {
-        return getCache(key, null, defaultExpireSeconds, new CacheCallBack<T>() {
-
-            @Override
-            public T loadData() {
-                return null;
-            }
-
-        });
+    public static <T> T getCache(String key) {
+        return getCache(key, null, defaultExpireSeconds, null);
     }
 
-    public <T> T getCache(String key, Class<T> targetClass) {
-        return getCache(key, targetClass, defaultExpireSeconds, new CacheCallBack<T>() {
-
-            @Override
-            public T loadData() {
-                return null;
-            }
-
-        });
+    public static <T> T getCache(String key, Class<T> targetClass) {
+        return getCache(key, targetClass, defaultExpireSeconds, null);
     }
 
-    public <T> T getCache(String key, CacheCallBack<T> callback) {
+    public static <T> T getCache(String key, CacheCallBack<T> callback) {
         return getCache(key, null, defaultExpireSeconds, callback);
     }
 
-    public <T> T getCache(String key, Class<T> targetClass, CacheCallBack<T> callback) {
+    public static <T> T getCache(String key, Class<T> targetClass, CacheCallBack<T> callback) {
         return getCache(key, targetClass, defaultExpireSeconds, callback);
     }
 
-    public <T> T getCache(String key, String expireSeconds, CacheCallBack<T> callback) {
+    public static <T> T getCache(String key, String expireSeconds, CacheCallBack<T> callback) {
         return getCache(key, null, expireSeconds, callback);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getCache(String key, Class<T> targetClass, String expireSeconds, CacheCallBack<T> callback) {
+    public static <T> T getCache(String key, Class<T> targetClass, String expireSeconds, CacheCallBack<T> callback) {
         if (StringUtils.isBlank(key)) {
             throw new IllegalArgumentException("key不能为空");
         }
@@ -213,7 +205,7 @@ public class CacheHelper {
         return null;
     }
 
-    public <T> T getCache(String[] baseKeys, String subKey) {
+    public static <T> T getCache(String[] baseKeys, String subKey) {
         return getCache(getCacheKey(baseKeys, subKey), null, defaultExpireSeconds, new CacheCallBack<T>() {
             public T loadData() {
                 return null;
@@ -222,7 +214,7 @@ public class CacheHelper {
         });
     }
 
-    public <T> T getCache(String[] baseKeys, String subKey, Class<T> targetClass) {
+    public static <T> T getCache(String[] baseKeys, String subKey, Class<T> targetClass) {
         return getCache(getCacheKey(baseKeys, subKey), targetClass, defaultExpireSeconds, new CacheCallBack<T>() {
             @Override
             public T loadData() {
@@ -232,24 +224,24 @@ public class CacheHelper {
         });
     }
 
-    public <T> T getCache(String[] baseKeys, String subKey, CacheCallBack<T> callback) {
+    public static <T> T getCache(String[] baseKeys, String subKey, CacheCallBack<T> callback) {
         return getCache(getCacheKey(baseKeys, subKey), null, defaultExpireSeconds, callback);
     }
 
-    public <T> T getCache(String[] baseKeys, String subKey, Class<T> targetClass, CacheCallBack<T> callback) {
+    public static <T> T getCache(String[] baseKeys, String subKey, Class<T> targetClass, CacheCallBack<T> callback) {
         return getCache(getCacheKey(baseKeys, subKey), targetClass, defaultExpireSeconds, callback);
     }
 
-    public <T> T getCache(String[] baseKeys, String subKey, String expireSeconds, CacheCallBack<T> callback) {
+    public static <T> T getCache(String[] baseKeys, String subKey, String expireSeconds, CacheCallBack<T> callback) {
         return getCache(getCacheKey(baseKeys, subKey), null, expireSeconds, callback);
     }
 
-    public <T> T getCache(String[] baseKeys, String subKey, Class<T> targetClass, String expireSeconds,
+    public static <T> T getCache(String[] baseKeys, String subKey, Class<T> targetClass, String expireSeconds,
             CacheCallBack<T> callback) {
         return getCache(getCacheKey(baseKeys, subKey), targetClass, expireSeconds, callback);
     }
 
-    public void delete(String key) {
+    public static void delete(String key) {
         if (StringUtils.isBlank(key)) {
             throw new IllegalArgumentException("key不能为空");
         }
@@ -261,7 +253,7 @@ public class CacheHelper {
         }
     }
 
-    public void delete(String[] baseKeys, String subKey) {
+    public static void delete(String[] baseKeys, String subKey) {
         delete(getCacheKey(baseKeys, subKey));
     }
 
@@ -282,11 +274,11 @@ public class CacheHelper {
      *
      * @param keys
      */
-    public void preRead(List<String> keys) {
+    public static void preRead(List<String> keys) {
         preRead(keys.toArray(new String[]{}));
     }
 
-    public void preRead(String... keys) {
+    public static void preRead(String... keys) {
         if (isPreReadCache()) {
             try {
                 Map<String, Object> maps = Cache.get(keys);
@@ -317,7 +309,7 @@ public class CacheHelper {
      * @param key
      * @return
      */
-    protected Object getFromPreReadMap(String key) {
+    protected static Object getFromPreReadMap(String key) {
         if (isPreReadCache() && preReadCacheMap.get() != null) {
             return preReadCacheMap.get().get(key);
         }
@@ -330,7 +322,7 @@ public class CacheHelper {
      * @param key
      * @param value
      */
-    protected void addToPreReadMap(String key, Object value) {
+    protected static void addToPreReadMap(String key, Object value) {
         if (isPreReadCache()) {
             if (preReadCacheMap.get() == null) {
                 preReadCacheMap.set(new HashMap<String, Object>());
@@ -345,7 +337,7 @@ public class CacheHelper {
      * @param key
      * @param value
      */
-    protected void deleteToPreReadMap(String key) {
+    protected static void deleteToPreReadMap(String key) {
         if (isPreReadCache()) {
             if (preReadCacheMap.get() == null) {
                 preReadCacheMap.set(new HashMap<String, Object>());
@@ -354,16 +346,7 @@ public class CacheHelper {
         }
     }
 
-
-    public String getDefaultExpireSeconds() {
-        return defaultExpireSeconds;
-    }
-
-    public void setDefaultExpireSeconds(String defaultExpireSeconds) {
-        this.defaultExpireSeconds = defaultExpireSeconds;
-    }
-
-    private String getRandomKey(String originalKey) {
+    private static String getRandomKey(String originalKey) {
         return UUID.randomUUID().toString();
     }
 
