@@ -168,8 +168,9 @@ public class SupplierUser extends Model {
         //用户名存在的情况
         if (supplierUserList.size() > 0) return "1";
 
-        sq = new StringBuilder("mobile = ? and supplier=? ");
+        sq = new StringBuilder("deleted=? and mobile = ? and supplier=? ");
         params = new ArrayList();
+        params.add(DeletedStatus.UN_DELETED);
         params.add(mobile);
         params.add(new Supplier(supplierId));
         if (id != null) {
@@ -180,8 +181,9 @@ public class SupplierUser extends Model {
         supplierUserList = SupplierUser.find(sq.toString(), params.toArray()).fetch();
         if (supplierUserList.size() > 0) return "2";
         //工号存在
-        sq = new StringBuilder("jobNumber = ? and supplier=? ");
+        sq = new StringBuilder("deleted=? and jobNumber = ? and supplier=? ");
         params = new ArrayList();
+        params.add(DeletedStatus.UN_DELETED);
         params.add(jobNumber);
         params.add(new Supplier(supplierId));
         if (id != null) {

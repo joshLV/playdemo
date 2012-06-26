@@ -80,7 +80,6 @@ public class OperateSupplierUsers extends Controller {
     @ActiveNavigation("supplierUsers_add")
     public static void create(@Valid SupplierUser supplierUser) {
         checkValid(null, supplierUser);
-        System.out.println(">>>>>>>>>>>>");
         supplierUser.create(supplierUser.supplier.id);
         index(null);
     }
