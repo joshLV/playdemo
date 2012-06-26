@@ -24,6 +24,7 @@ require:
     - report -> report
     - sms -> sms
     - cms -> cms
+    - cache_helper -> cache_helper
 
 repositories:
     - mavenRepository:
@@ -58,3 +59,4 @@ repositories:
             - report -> *
             - sms -> *
             - cms -> *
+            - cache_helper -> *

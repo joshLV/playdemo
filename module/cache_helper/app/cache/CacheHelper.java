@@ -26,7 +26,7 @@ import play.cache.Cache;
  * @author <a href="mailto:tangliqun@uhuila.com">唐力群</a>
  */
 public class CacheHelper {
-    private static final String defaultExpireSeconds = "3h"; // 默认超时时间
+    private static final String defaultExpireSeconds = "24h"; // 默认超时时间
     private static final String defaultBaseKeyExpireSeconds = "240h"; // 默认BaseKey超时时间
 
     private static Logger log = LoggerFactory.getLogger(CacheHelper.class);

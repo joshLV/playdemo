@@ -21,6 +21,7 @@ require:
     - sms -> sms
     - cms -> cms
     - view_ext -> view_ext
+    - cache_helper -> cache_helper
 
 repositories:
     - mavenRepository:
@@ -52,3 +53,4 @@ repositories:
             - sms -> *
             - view_ext -> *
             - cms -> *
+            - cache_helper -> *

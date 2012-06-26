@@ -28,6 +28,7 @@ require:
     - cms -> cms
     - asset_package -> asset_package
     - oauth -> oauth
+    - cache_helper -> cache_helper
 
 repositories:
     - mavenRepository:
@@ -67,3 +68,4 @@ repositories:
             - resale -> *
             - asset_package -> *
             - oauth -> *
+            - cache_helper -> *

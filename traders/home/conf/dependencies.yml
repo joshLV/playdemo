@@ -17,6 +17,7 @@ require:
     - supplier_rbac -> supplier_rbac
     - org.jsoup -> jsoup 1.6.1
     - view_ext -> view_ext
+    - cache_helper -> cache_helper
 
 repositories:
     - mavenRepository:
@@ -45,3 +46,4 @@ repositories:
             - resale -> *
             - supplier_rbac -> *
             - view_ext -> *
+            - cache_helper -> *

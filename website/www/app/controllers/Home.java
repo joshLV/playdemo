@@ -12,6 +12,7 @@ import models.cms.TopicType;
 import models.sales.Area;
 import models.sales.Category;
 import play.Logger;
+import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -30,6 +31,17 @@ import java.util.List;
 public class Home extends Controller {
 
     public static void index(final long categoryId) {
+        CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPS"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECENTS"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_DISTRICTS"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_SAILY_SPEC"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_SLIDES"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPICS"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPCATEGORIES"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_AREAS")
+        );
+        
         //精选商品        
         List<models.sales.Goods> goodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPS"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
@@ -131,6 +143,11 @@ public class Home extends Controller {
         renderArgs.put("dailySpecialGoods", dailySpecialGoods);
 
         render(goodsList, recentGoodsList, recommendGoodsList, categories, districts, areas,topics);
+    }
+    
+    @After
+    public static void clearCache() {
+        CacheHelper.cleanPreRead();
     }
 
     private static List<models.sales.Goods> getTopGoods(long categoryId) {

@@ -23,6 +23,7 @@ require:
     - view_ext -> view_ext
     - supplier -> supplier
     - org.jsoup -> jsoup 1.6.1
+    - cache_helper -> cache_helper
 
 repositories:
     - mavenRepository:
@@ -50,6 +51,7 @@ repositories:
             - consumer -> *
             - view_ext -> *
             - supplier -> *
+            - cache_helper -> *
 
     - play1ContributedModules:
         type: http
