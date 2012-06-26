@@ -4,7 +4,9 @@ import com.uhuila.common.constants.DeletedStatus;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.sales.Shop;
-import navigation.annotations.ActiveNavigation;
+import models.supplier.Supplier;
+import operate.rbac.annotations.ActiveNavigation;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
@@ -12,60 +14,62 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 操作员CRUD
- *
- * @author yanjy
+ * <p/>
+ * User: yanjy
+ * Date: 12-6-26
+ * Time: 上午9:50
  */
-
-@With(SupplierRbac.class)
-@ActiveNavigation("user_search")
-public class SupplierUsers extends Controller {
+@With(OperateRbac.class)
+@ActiveNavigation("supplierUsers_index")
+public class OperateSupplierUsers extends Controller {
     public static int PAGE_SIZE = 15;
 
     /**
      * 操作员一览
      */
-    @ActiveNavigation("user_search")
-    public static void index() {
-
-        Long supplierUserId = SupplierRbac.currentUser().id;
-        SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
-        List<SupplierRole> roles = supplierUser.roles;
-        List<String> keyList = new ArrayList<String>();
-        for (SupplierRole role : roles) {
-            keyList.add(role.key);
-        }
-
-        if (!keyList.contains("admin")) {
-            redirect("/profile");
-        }
-
+    public static void index(Long supplierId) {
         String page = request.params.get("page");
         String loginName = request.params.get("loginName");
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<SupplierUser> supplierUsersPage = SupplierUser
                 .getSupplierUserList(loginName,
                         supplierId, pageNumber,
                         PAGE_SIZE);
-
+        List<Supplier> supplierList = Supplier.findUnDeleted();
         renderArgs.put("loginName", loginName);
-        render(supplierUsersPage);
+        render(supplierUsersPage, supplierList, supplierId);
     }
 
     /**
      * 操作员添加页面
      */
-    @ActiveNavigation("user_add")
+    @ActiveNavigation("supplierUsers_add")
     public static void add() {
         List rolesList = SupplierRole.findRoleOrderById();
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
-        List shopList = Shop.findShopBySupplier(supplierId);
-        render(rolesList, shopList);
+        Long supplierId = null;
+        List<Supplier> supplierList = Supplier.findUnDeleted();
+        if (CollectionUtils.isNotEmpty(supplierList)) {
+            supplierId = supplierList.get(0).id;
+            checkShops(supplierId);
+            renderShopList(supplierId);
+
+        }
+        render(rolesList, supplierList);
+    }
+
+    private static void checkShops(Long supplierId) {
+        if (!Shop.containsShop(supplierId)) {
+            renderArgs.put("noShop", "noShop");
+            Validation.addError("supplierUser.supplierId", "validation.noShop");
+        }
+    }
+
+    private static void renderShopList(Long supplierId) {
+        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+        renderArgs.put("shopList", shopList);
     }
 
     /**
@@ -73,11 +77,12 @@ public class SupplierUsers extends Controller {
      *
      * @param supplierUser 操作员信息
      */
-    @ActiveNavigation("user_add")
+    @ActiveNavigation("supplierUsers_add")
     public static void create(@Valid SupplierUser supplierUser) {
         checkValid(null, supplierUser);
-        supplierUser.create(SupplierRbac.currentUser().supplier.id);
-        index();
+        System.out.println(">>>>>>>>>>>>");
+        supplierUser.create(supplierUser.supplier.id);
+        index(null);
     }
 
     /**
@@ -87,7 +92,7 @@ public class SupplierUsers extends Controller {
         SupplierUser user = SupplierUser.findById(id);
         user.deleted = DeletedStatus.DELETED;
         user.save();
-        index();
+        index(null);
     }
 
     /**
@@ -101,10 +106,8 @@ public class SupplierUsers extends Controller {
                 roleIds += role.id + ",";
             }
         }
-
         List rolesList = SupplierRole.findRoleOrderById();
-        supplierUser.roles.addAll(rolesList);
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
+        Long supplierId = supplierUser.supplier.id;
         List shopList = Shop.findShopBySupplier(supplierId);
         render(supplierUser, roleIds, rolesList, shopList);
     }
@@ -119,7 +122,7 @@ public class SupplierUsers extends Controller {
         checkValid(id, supplierUser);
         // 更新用户信息
         SupplierUser.update(id, supplierUser);
-        index();
+        index(null);
     }
 
     /**
@@ -131,7 +134,6 @@ public class SupplierUsers extends Controller {
         Validation.required("supplierUser.encryptedPassword", supplierUser.encryptedPassword);
         Validation.required("supplierUser.confirmPassword", supplierUser.confirmPassword);
         Validation.match("validation.jobNumber", supplierUser.jobNumber, "^[0-9]*");
-        // checkLoginName(id,supplierUser.loginName,supplierUser.mobile,supplierUser.jobNumber);
         if (Validation.hasErrors()) {
             List rolesList = SupplierRole.findAll();
             String roleIds = "";
@@ -142,9 +144,9 @@ public class SupplierUsers extends Controller {
             }
             supplierUser.id = id;
             if (id != null) {
-                render("SupplierUsers/edit.html", supplierUser, roleIds, rolesList);
+                render("OperateSupplierUsers/edit.html", supplierUser, roleIds, rolesList);
             } else {
-                render("SupplierUsers/add.html", supplierUser, roleIds, rolesList);
+                render("OperateSupplierUsers/add.html", supplierUser, roleIds, rolesList);
             }
         }
 
@@ -156,10 +158,10 @@ public class SupplierUsers extends Controller {
      * @param loginName 用户名
      * @param mobile    手机
      */
-    public static void checkLoginName(Long id, String loginName, String mobile, String jobNumber) {
-        Long supplierId = SupplierRbac.currentUser().supplier.id;
+    public static void checkLoginName(Long id,Long supplierId, String loginName, String mobile, String jobNumber) {
         String returnFlag = SupplierUser.checkValue(id, loginName, mobile, jobNumber,
                 supplierId);
+
         renderJSON(returnFlag);
     }
 

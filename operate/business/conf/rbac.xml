@@ -10,6 +10,8 @@
     <permission key="GOODS" text="商品管理" roles="editor,customservice"/>
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="editor"/>
     <permission key="SUPPLIERS" text="商户管理" roles="editor,customservice"/>
+     <permission key="SUPPLIERS_USERS_NEW" text="商户操作员添加" roles="editor"/>
+    <permission key="SUPPLIER_USERS" text="商户操作员管理" roles="editor,customservice"/>
     <permission key="SHOPS_NEW" text="门店添加" roles="editor"/>
     <permission key="SHOPS" text="门店管理" roles="editor,customservice"/>
     <permission key="RESALERS" text="分销商管理" roles="customservice,sales"/>
@@ -35,6 +37,10 @@
         <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
             <navigation key="suppliers_add" action="Suppliers.add" text="商户添加" permissions="SUPPLIERS_NEW"/>
             <navigation key="suppliers_index" action="Suppliers.index" text="商户管理" permissions="SUPPLIERS"/>
+        </navigation>
+         <navigation key="supplierUsers" text="商户操作员" permissions="SUPPLIER_USERS_NEW,SUPPLIER_USERS">
+            <navigation key="supplierUsers_add" action="OperateSupplierUsers.add" text="商户操作员添加" permissions="SUPPLIER_USERS_NEW"/>
+            <navigation key="supplierUsers_index" action="OperateSupplierUsers.index" text="商户操作员管理" permissions="SUPPLIER_USERS"/>
         </navigation>
         <navigation key="shops" text="门店" permission="SHOPS_NEW,SHOPS">
             <navigation key="shops_add" action="OperateShops.add" text="门店添加" permissions="SHOPS_NEW"/>

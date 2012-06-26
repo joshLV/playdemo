@@ -7,7 +7,7 @@
     #{layout_operate.labelText name:_name, required:_required/}
 
 <div class="controls">
-    #{select field.name, id:field.id, class:_class?:'input-small', value:params[field.name]?.escape()?.raw() ?:
+    #{select field.name, id:field.id, class:_class?:'input-larger', value:params[field.name]?.escape()?.raw() ?:
     field.error?.message == 'validation.required' ? '' :_value?.escape()?.raw()}
         #{list items:_list, as:'row' }
             #{option row.id}${row.name}#{/option}

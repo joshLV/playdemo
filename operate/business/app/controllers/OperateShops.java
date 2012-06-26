@@ -179,4 +179,9 @@ public class OperateShops extends Controller {
         List<Shop> shopList = Shop.findShopBySupplier(supplierId);
         render(shopList);
     }
+    @ActiveNavigation("supplierUsers_add")
+     public static void showSupplierShops(Long supplierId) {
+        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+        render(shopList);
+    }
 }

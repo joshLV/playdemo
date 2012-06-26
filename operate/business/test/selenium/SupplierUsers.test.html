@@ -1,0 +1,60 @@
+#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class,models.supplier.Supplier.class],load:['fixture/supplier_roles.yml','fixture/supplier_users.yml'] /}
+
+#{selenium}
+   #{include 'test/selenium/step/login.selenium' /}
+   open('/users')
+   assertTitle('操作员一览')
+   verifyTextNotPresent('admin')
+   type('id=loginName','小王')
+   *{type('id=supplierId','${play.test.Fixtures.idCache.get("models.admin.Supplier-kfc")}')}*
+   clickAndWait('id=search')
+   verifyTextNotPresent('小王')
+
+   type('id=loginName','test')
+   *{select('id=supplierId','label=肯德基')}*
+   *{type('id=supplierId','${play.test.Fixtures.idCache.get("models.admin.Supplier-kfc")}')}*
+   clickAndWait('id=search')
+   verifyTextPresent('test')
+   verifyTextPresent('肯德基')
+#{/selenium}
+
+#{selenium "edit"}
+   #{include 'test/selenium/step/login.selenium' /}
+   open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-user1")}/edit')
+   assertTitle('操作员编辑')
+#{/selenium}
+
+
+#{selenium "edit user"}
+   #{include 'test/selenium/step/login.selenium' /}
+   open('/users')
+   assertTitle('操作员一览')
+   verifyText('//tr[3]/td','肯德基')
+   verifyText('//tr[3]/td[6]','[测试角色]')
+   verifyText('//tr[3]/td[3]','')
+   open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-test")}/edit')
+   verifyValue('id=supplierUser_supplier','肯德基')
+   verifyTextPresent('test')
+   verifyTextPresent('测试角色')
+   type('id=mobile','13088092013')
+   type('id=userName','asfaf')
+   clickAndWait('id=save')
+   open('/users')
+   assertTitle('操作员一览')
+   verifyText('//tr[3]/td[3]','asfaf')
+   verifyText('//tr[3]/td[6]','[测试角色]')
+#{/selenium}
+
+#{selenium "delete user"}
+  #{include 'test/selenium/step/login.selenium' /}
+  open('/users')
+  assertTitle('操作员一览')
+  verifyTextPresent('test_delete_user')
+  clickAndWait('id=del_${play.test.Fixtures.idCache.get("models.admin.SupplierUser-deleteuser")}')
+  assertConfirmation('确定删除吗？')
+
+  verifyTextPresent('操作员一览')
+  verifyTextNotPresent('test_delete_user')
+#{/selenium}
+
+

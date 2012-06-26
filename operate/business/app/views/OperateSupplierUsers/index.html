@@ -1,0 +1,66 @@
+#{extends 'layout_operate/layout.html' /}
+#{include 'share/nav.html'/}
+
+#{set title:'操作员一览' /}
+#{set 'moreScripts'}
+  <script src="@{'/public/javascripts/supplierUser.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+ <legend>操作员一览</legend>
+ #{form @OperateSupplierUsers.index() , id:'operForm',class:"form-horizontal" }
+  <table class="table table-striped table-bordered table-condensed">
+   <tr>
+    <td>用户名<input type="text" name="loginName" id="loginName" value="${loginName}" class="input-large"/>
+    &nbsp;商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
+                #{select 'supplierId', id:supplierId, class:'select', value:supplierId}
+                    #{option ""}不限#{/option}
+                    #{list items:supplierList, as:'supplier'}
+                        #{option supplier?.id}${supplier?.fullName}#{/option}
+                    #{/list}
+                #{/select}
+     <button class="btn btn-primary" id="search" type="submit">搜索</button>
+     <a href="@{OperateSupplierUsers.add()}" class="btn btn-primary">添加操作员</a>
+    </td>
+   </tr>
+  </table>
+  #{/form}
+  <table class="table table-striped table-bordered table-condensed">
+
+   <thead>
+    <tr>
+     <th>商户</th>
+     <th>用户名</th>
+     <th>姓名</th>
+     <th>工号</th>
+     <th>手机号</th>
+     <th>角色</th>
+     <th>创建时间</th>
+     <th>上次登录时间</th>
+     <th>操 作</th>
+    </tr>
+   </thead>
+
+   <tbody>
+
+    #{paginate.list items:supplierUsersPage, as:'row'}
+    <tr>
+     <td>${row?.supplier?.fullName}</td>
+     <td>${row.loginName}</td>
+     <td>${row.userName}</td>
+     <td>${row.jobNumber}</td>
+     <td>${row.mobile}</td>
+     <td>${row.roles.text ==[] ?'':row.roles.text}</td>
+     <td>${row.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+     <td>${row.lastLoginAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
+     <td>
+        <a href="@{OperateSupplierUsers.edit(row.id)}">修改</a> /
+        <a href="/users/${row.id}" id="del_${row.id}" onclick="if (confirm('确定删除吗？')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href + '?x-http-method-override=DELETE'; f.submit(); };return false;">删除</a>
+     </td>
+    </tr>
+    #{/paginate.list}
+   </tbody>
+  </table>
+  <div class="pagination" align="center">
+     <ul>
+    #{paginate.controls items:supplierUsersPage /}
+    </ul>
+  </div>

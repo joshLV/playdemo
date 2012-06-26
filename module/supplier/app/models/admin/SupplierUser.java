@@ -12,7 +12,6 @@ import play.db.jpa.Model;
 import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Mobile;
-import play.mvc.Http.Request;
 
 import javax.persistence.*;
 import java.util.*;
@@ -105,10 +104,12 @@ public class SupplierUser extends Model {
      */
     public static JPAExtPaginator<SupplierUser> getSupplierUserList(String loginName, Long supplierId,
                                                                     int pageNumber, int pageSize) {
-        StringBuffer sql = new StringBuffer();
+        StringBuffer sql = new StringBuffer("1=1");
         Map params = new HashMap();
-        sql.append("supplier.id = :supplierId");
-        params.put("supplierId", supplierId);
+        if (supplierId !=null) {
+            sql.append(" and supplier.id = :supplierId");
+            params.put("supplierId", supplierId);
+        }
 
         sql.append(" and deleted = :deleted ");
         params.put("deleted", DeletedStatus.UN_DELETED);
@@ -178,7 +179,6 @@ public class SupplierUser extends Model {
         //手机存在的情况
         supplierUserList = SupplierUser.find(sq.toString(), params.toArray()).fetch();
         if (supplierUserList.size() > 0) return "2";
-
         //工号存在
         sq = new StringBuilder("jobNumber = ? and supplier=? ");
         params = new ArrayList();

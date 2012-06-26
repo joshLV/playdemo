@@ -1,0 +1,109 @@
+#{extends 'layout_operate/layout.html' /}
+#{include '/share/nav.html' /}
+
+#{set title:'操作员添加' /}
+#{set 'moreScripts'}
+  <script src="@{'/public/javascripts/supplierUser.js'}" type="text/javascript" charset="UTF-8"></script>
+ <SCRIPT type=text/javascript>
+$(window).load(
+    function () {
+        if ('${noShop}' =='noShop') {
+           $("#err-supplierUser_supplier_id").html("该商户没有门店，请先为商户添加门店！");
+           $("#save").attr('disabled',true);
+        } else {
+           $("#err-supplierUser_supplier_id").html("");
+           $("#save").attr('disabled',false);
+        }
+
+        $("#supplierUser_supplier_id").change(function () {
+           $("#shop").load("/shops/" + $("#supplierUser_supplier_id").val() + "/showSupplierShops",function (data) {});
+        });
+    });
+</SCRIPT>
+#{/set}
+#{form @OperateSupplierUsers.create() , id:'operForm',class:"form-horizontal" }
+ <legend>操作员添加</legend>
+  <div class="control-group">
+  <label for="input01" class="control-label">角色</label>
+  <div class="controls">
+  #{list items:rolesList, as:'role'}
+   <label class="checkbox inline">
+       <input type="checkbox" value="${role.id}" name="supplierUser.roles.id" id="supplierUser.roles_${role.id}"
+       #{if roleIds?.contains(String.valueOf(role?.id))}checked#{/if}/> ${role.text}
+     </label>
+  #{/list}
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span class="error">#{error 'supplierUser.roles' /}</span>
+   </div>
+ </div>
+#{layout_operate.selectField name:'supplierUser.supplier.id', class:'span2', value:supplierUser?.supplier?.id,
+        error:'supplierUser.supplierId'}
+            #{list items:supplierList, as:'supplier' }
+                #{option supplier.id}${supplier.fullName}#{/option}
+            #{/list}
+        #{/layout_operate.selectField}
+ <div class="control-group">
+ <div class="control-group">
+  <label for="loginName" class="control-label"><span style="color: red; ">*</span>用户名</label>
+  <div class="controls">
+   <input type="text" name="supplierUser.loginName" class="input-large" id="loginName" value="${supplierUser?.loginName}"/>
+    <span style="color:#808080;">(*限字母，数字)</span>
+    <span class="error" id="checkName">#{error 'supplierUser.loginName' /}</span>
+  </div>
+ </div>
+ <div class="control-group">
+  <label for="mobile" class="control-label"><span style="color: red; ">*</span>手机</label>
+  <div class="controls">
+   <input type="text" name="supplierUser.mobile" class="input-large" id="mobile" maxlength="11" value="${supplierUser?.mobile}"/>
+   <span class="error" id="checkMobile">#{error 'supplierUser.mobile' /}</span>
+  </div>
+ </div>
+ <div class="control-group">
+  <label for="confirmPassword" class="control-label"><span style="color: red; ">*</span>密码</label>
+  <div class="controls">
+   <input type="password" name="supplierUser.encryptedPassword" class="input-large" id ="encryptedPassword" value="${supplierUser?.encryptedPassword}" />
+    <input type="hidden" name="supplierUser.confirmPassword" class="input-large" id ="confirmPassword" value="**" />
+    <span class="error">#{error 'supplierUser.encryptedPassword' /}</span>
+  </div>
+ </div>
+ <div class="control-group">
+  <label for="userName" class="control-label">姓名</label>
+  <div class="controls">
+   <input type="text" name="supplierUser.userName" class="input-large" id="userName" value="${supplierUser?.userName}"/>
+  </div>
+ </div>
+
+ <div class="control-group">
+  <label for="jobNumber" class="control-label"><span style="color: red; ">*</span>工号</label>
+  <div class="controls">
+   <input type="text" name="supplierUser.jobNumber" class="input-large" id="jobNumber" maxlength="6"
+          value="${supplierUser?.jobNumber}"/>
+   <span style="color:#808080;">(*限6位数字)</span>
+   <span class="error" id="checkJobNumber">#{error 'supplierUser.jobNumber' /}</span>
+  </div>
+ </div>
+ <div id="shop">#{include '/OperateShops/showSupplierShops.html'/}</div>
+ <div class="form-actions">
+  <button class="btn btn-primary" id="save" type="button">保 存</button>
+ </div>
+#{/form}
+
+<h3>角色权限对应说明</h3>
+<table class="table table-striped table-bordered table-condensed">
+   <thead>
+    <tr>
+     <th>角色名</th>
+     <th>权限</th>
+    </tr>
+   </thead>
+   <tbody>
+#{list items:rolesList, as:'role'}
+    <tr>
+     <td>${role.text}</td>
+     <td>
+     #{list items:role.getSortedPermissions(), as:'perm'} ${perm.text} #{/list}
+     </td>
+    </tr>
+#{/list}
+   </tbody>
+</table>

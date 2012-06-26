@@ -1,0 +1,25 @@
+#{fixture delete:[models.admin.SupplierUser.class,models.admin.SupplierRole.class,models.supplier.Supplier.class],
+load:['fixture/supplier_roles.yml','fixture/supplier_users.yml','fixture/shops_unit.yml'] /}
+
+#{selenium}
+    #{include 'test/selenium/step/login.selenium' /}
+%{
+    Long supplierId = play.test.Fixtures.idCache.get("models.supplier.Supplier-kfc");
+    models.sales.Shop shop = new models.sales.Shop();
+    shop.address = "test-shop";
+    shop.name = "test-name";
+    shop.supplierId = supplierId;
+    shop.deleted = com.uhuila.common.constants.DeletedStatus.UN_DELETED;
+    shop.create();
+
+}%
+    open('/users/new')
+    assertTitle('操作员添加')
+    click('xpath=(//input[@id='supplierUser.roles.id'])[2]')
+    type('id=loginName','小王')
+    type('id=mobile','1311231217')
+    type('id=encryptedPassword','')
+    type('id=jobNumber','1006')
+    clickAndWait('id=save')
+    verifyTextPresent('请输入密码!')
+#{/selenium}

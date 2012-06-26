@@ -268,3 +268,11 @@ question.content=咨询内容
 question.reply=回复
 question.createdAt=咨询时间
 question.repliedAt=回复时间
+
+
+supplierUser.shop.id=门店
+supplierUser.supplier=商户
+supplierUser.supplier.id=商户
+supplierUser.encryptedPassword=密码
+supplierUser.mobile=手机
+supplierUser.jobNumber=工号

@@ -28,7 +28,7 @@ POST    /shops/{id}                             OperateShops.update
 DELETE  /shops/{id}                             OperateShops.delete
 GET     /shops/area                             OperateShops.showAreas
 GET     /shops/{supplierId}/showGoodsShops      OperateShops.showGoodsShops
-
+GET     /shops/{supplierId}/showSupplierShops   OperateShops.showSupplierShops
 GET     /suppliers                              Suppliers.index
 GET     /suppliers/new                          Suppliers.add
 POST    /suppliers                              Suppliers.create
@@ -37,7 +37,14 @@ PUT     /suppliers/{id}                         Suppliers.update
 PUT     /suppliers/{id}/freeze                  Suppliers.freeze
 PUT     /suppliers/{id}/unfreeze                Suppliers.unfreeze
 DELETE  /suppliers/{id}                         Suppliers.delete
-
+#商户操作员管理
+GET     /users                                  OperateSupplierUsers.index
+GET     /users/new                              OperateSupplierUsers.add
+POST    /users                                  OperateSupplierUsers.create
+POST    /users/checkLoginName                   OperateSupplierUsers.checkLoginName
+GET     /users/{id}/edit                        OperateSupplierUsers.edit
+POST    /users/{id}                             OperateSupplierUsers.update
+DELETE  /users/{id}                             OperateSupplierUsers.delete
 # 增加提现账户
 POST    /withdraw-account                       Suppliers.withdrawAccountCreateAndUpdate
 POST    /withdraw-account/delete                Suppliers.withdrawAccountDelete

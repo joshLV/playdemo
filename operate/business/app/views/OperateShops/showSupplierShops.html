@@ -1,0 +1,15 @@
+#{layout_operate.selectField name:'supplierUser.shop.id', value:supplierUser?.shop?.id, error:'supplierUser.shop', required:true}
+#{list items:shopList, as:'shop'}
+ #{option shop?.id}${shop?.name}#{/option}
+#{/list}
+#{/layout_operate.selectField}
+ <SCRIPT type=text/javascript>
+    #{if shopList== null || shopList.size()==0}
+    $("#err-supplierUser_supplierId").html("该商户没有门店，请先为商户添加门店！");
+    $("#save").attr('disabled',true);
+    #{/if}
+    #{else}
+    $("#err-supplierUser_supplierId").html("");
+     $("#save").attr('disabled',false);
+    #{/else}
+</SCRIPT>
