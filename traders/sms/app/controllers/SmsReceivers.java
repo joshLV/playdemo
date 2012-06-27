@@ -7,7 +7,6 @@ import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
-import models.sales.Brand;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
@@ -15,7 +14,6 @@ import models.supplier.SupplierStatus;
 import play.mvc.Controller;
 
 import java.util.Date;
-import java.util.List;
 
 public class SmsReceivers extends Controller {
 
@@ -184,6 +182,7 @@ public class SmsReceivers extends Controller {
         if (ecoupon.expireAt.before(new Date())) {
             //过期
             SMSUtil.send("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", mobile, code);
+            renderText("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166");
         } else if (ecoupon.status == ECouponStatus.UNCONSUMED) {
             ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser,VerifyCouponType.CONSUMER_MESSAGE);
             String coupon = ecoupon.getLastCode(4);
@@ -196,9 +195,12 @@ public class SmsReceivers extends Controller {
             SMSUtil.send("【券市场】您尾号" + coupon + "的券号于" + dateTime
                     + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166", mobile, code);
 
+            renderText("【券市场】您尾号" + coupon + "的券号于" + dateTime
+                            + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166");
         } else if (ecoupon.status == ECouponStatus.CONSUMED) {
             // 发给消费者
             SMSUtil.send("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", mobile, code);
+            renderText("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166");
         }
     }
 
