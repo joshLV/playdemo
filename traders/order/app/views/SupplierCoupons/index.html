@@ -10,47 +10,42 @@
         <table>
             <tbody>
             <tr>
-                <td> 店员工号
-                    <input type="text" name="condition.jobNumber" value="${condition?.jobNumber}">
-                </td>
-                <td> 订&nbsp;&nbsp;单&nbsp;&nbsp;号
-                    <input type="text" name="condition.orderNumber" value="${condition?.orderNumber}">
-                </td>
-                <td> 券号
-                    <input type="text" name="condition.eCouponSn" value="${condition?.eCouponSn}">
+                 <td>关&nbsp;&nbsp;键&nbsp;&nbsp;字
+                #{select 'condition.searchKey', class:'input-medium', value:condition.searchKey}
+                    #{option 0}不限#{/option}
+                    #{option 1}商品名称#{/option}
+                    #{option 2}店员工号#{/option}
+                    #{option 3}订单号#{/option}
+                    #{option 4}消费门店#{/option}
+                    #{option 5}券号#{/option}
+                    #{option 6}手机#{/option}
+                #{/select} &nbsp; &nbsp;
+                <input type="text" name="condition.searchItems" value="${condition?.searchItems}" class="input-medium"/></td>
+                <td>
+                验证方式
+                #{select 'condition.verifyType', id:'condition_verifyType', class:'input-medium', value:condition?.verifyType}
+                    #{option ""}不限#{/option}
+                    #{option "CLERK_MESSAGE"}&{'coupon.CLERK_MESSAGE'}#{/option}
+                    #{option "CONSUMER_MESSAGE"}&{'coupon.CONSUMER_MESSAGE'}#{/option}
+                    #{option "SHOP"}&{'coupon.SHOP'}#{/option}
+                #{/select}
                 </td>
             </tr>
             <tr>
-                <td> 商品名称
-                    <input type="text" name="condition.goodsName" value="${condition?.goodsName}">
-                </td>
-                <td> 消费门店
-                    <input type="text" name="condition.shopLike" value="${condition?.shopLike}">
-                </td>
-                <td> 状态
-                #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
-                    #{option ""}不限#{/option}
-                    #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
-                    #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
-                    #{option "REFUND"}&{'coupon.REFUND'}#{/option}
-                #{/select}
-                </td>
-           </tr>
-            <tr>
-                <td>消费时间
+                <td> 消费时间
                     <input type="text" id="condition_consumed_begin" class="input-medium Wdate"
                            name="condition.consumedAtBegin"
-                           onfocus="WdatePicker({readOnly:true})" value="${condition?.consumedAtBegin?.format()}"> -
+                           onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtBegin?.format()}"> -
                     <input type="text" id="condition_consumed_end" class="input-medium Wdate"
                            name="condition.consumedAtEnd"
-                           onfocus="WdatePicker({readOnly:true})" value="${condition?.consumedAtEnd?.format()}">
+                           onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtEnd?.format()}">
                 </td>
-                <td>退款时间
+                <td> 退款时间
                     <input type="text" id="condition_refund_begin" class="input-medium Wdate"
                            name="condition.refundAtBegin"
-                           onfocus="WdatePicker({readOnly:true})" value="${condition?.refundAtBegin?.format()}"> -
+                           onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtBegin?.format()}"> -
                     <input type="text" id="condition_refund_end" class="input-medium Wdate" name="condition.refundAtEnd"
-                           onfocus="WdatePicker({readOnly:true})" value="${condition?.refundAtEnd?.format()}">
+                           onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtEnd?.format()}">
                 </td>
                 <td>
                     <button type="submit" class="btn btn-primary" id="search">搜索</button>
@@ -70,8 +65,8 @@
     <table class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>
-            <th>券号</th>
             <th>订单号</th>
+            <th>券号</th>
             <th>商品名称</th>
             <th>单价</th>
             <th>消费门店</th>
@@ -85,13 +80,26 @@
         </thead>
 
         <tbody>
-
+        #{set i:0/}
         #{paginate.list items:couponPage, as:'coupon'}
         <tr>
+              #{set orderNo:coupon?.order?.orderNumber/}
+          #{set preOrderNo:""/}
+          #{set j:coupon?.order?.orderItems.size() /}
+               #{if !preOrderNo.equals(orderNo)}
+                    %{ preOrderNo = orderNo; i=0;}%
+               #{/if}
+            #{if j>1 &&  ++i==1 }
+                <td rowspan="${j}"><a href="@{SupplierOrders.details(coupon?.order?.orderNumber)}">${coupon?.order?.orderNumber}</a></abbr></td>
+                 *{<td rowspan="${j}">${coupon?.orderItems?.phone}</td>}*
+            #{/if}
+            #{if j==1 || j ==0}
+                <td><a href="@{SupplierOrders.details(coupon?.order?.orderNumber)}">${coupon?.order?.orderNumber}</a></abbr></td>
+                *{<td>${coupon?.orderItems?.phone}</td>}*
+            #{/if}
             <td>${coupon?.getMaskedEcouponSn()}</td>
-            <td>${coupon?.order?.orderNumber}</td>
             <td>${coupon?.goods?.name}</td>
-            <td>${coupon?.originalPrice?.formatCurrency('CNY')}</td>
+            <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
             <td>${coupon?.getConsumedShop()}</td>
             <td>${coupon?.goods?.effectiveAt ?.format()} -
             ${coupon?.goods?.expireAt?.format()}</td>

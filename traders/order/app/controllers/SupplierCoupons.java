@@ -105,6 +105,7 @@ public class SupplierCoupons extends Controller {
         if (condition == null) {
             condition = new CouponsCondition();
         }
+
         condition.supplier = SupplierRbac.currentUser().supplier;
 
         String page = request.params.get("page");

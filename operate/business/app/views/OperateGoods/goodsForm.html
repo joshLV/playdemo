@@ -73,7 +73,14 @@
 
     #{layout_operate.timeScopeField name:'goods.useTime', begin:'goods.useBeginTime',end:'goods.useEndTime',
     beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
-
+     <div class="control-group">
+    <label class="control-label">抽奖商品
+    </label>
+    <div class="controls">
+        <input type="checkbox" name="goods.isLottery" id="isLottery" class="input-medium"
+               value="${goods?.isLottery}" ${goods?.isLottery?'checked':''}/>
+    </div>
+</div>
     #{if "add".equals(action)}
         #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)', required:true/}
     #{/if}

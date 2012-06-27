@@ -3,6 +3,7 @@ package models.order;
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.sales.Goods;
+import models.sales.MaterialType;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
@@ -84,6 +85,18 @@ public class OrderItems extends Model {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE order = :order");
         q.setParameter("order", order);
+        Object result = q.getSingleResult();
+        return result == null ? 0 : (Long) result;
+    }
+    public static long itemsNumberElectronic(Order order) {
+        long itemsNumber = 0L;
+        if (order == null) {
+            return itemsNumber;
+        }
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE order = :order and goods.materialType=:materialType");
+        q.setParameter("order", order);
+         q.setParameter("materialType", MaterialType.ELECTRONIC);
         Object result = q.getSingleResult();
         return result == null ? 0 : (Long) result;
     }

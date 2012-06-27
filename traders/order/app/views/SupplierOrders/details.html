@@ -63,23 +63,23 @@
             </tr>
         </table>
     </ul>
+#{if orders.containsRealGoods()}
     <ul class="nav">
         <li class="active"><a href="#"> 收货信息</a></li>
         <table class="table table-bordered table-striped">
-
-        #{if orders.containsRealGoods()}
             <tr>
                 <td>收货人姓名： ${orders.receiverName}</td>
             </tr>
             <tr>
                 <td>收货地址： ${orders.receiverAddress}</td>
             </tr>
-        #{/if}
+
             <tr>
                 <td>收货手机： ${orders.receiverMobile}</td>
             </tr>
         </table>
     </ul>
+#{/if}
     <ul class="nav">
         <li class="active"><a href="#"> 订购者信息</a></li>
         <table class="table table-bordered table-striped">

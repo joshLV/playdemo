@@ -146,7 +146,7 @@
 
                         #{/if}
                         <br>
-                        #{if !isExpired && coupon.status == models.order.ECouponStatus.UNCONSUMED}
+                        #{if !coupon.goods.isLottery && !isExpired && coupon.status == models.order.ECouponStatus.UNCONSUMED}
                             <a href="#" id="send_${coupon.id}" onclick="sendMessage('${coupon.id}',
                                     '${coupon.orderItems.phone}')">发送短信</a>
                         <input type="hidden" id="times_${coupon.id}" value="${coupon.downloadTimes}"/>

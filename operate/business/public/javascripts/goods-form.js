@@ -10,7 +10,8 @@ $(window).load(
     function () {
         $("#goods_supplierId").change(function () {
 
-            $("#brand").load("/goods_brands/" + $("#goods_supplierId").val(),function (data) {});
+            $("#brand").load("/goods_brands/" + $("#goods_supplierId").val(), function (data) {
+            });
             $("#tableShop").load("/shops/" + $("#goods_supplierId").val() + "/showGoodsShops", function (data) {
                 $("#selectAll").click();
             });
@@ -29,10 +30,10 @@ $(window).load(
         $("#onsales").click(function () {
             if ($("#baseSale").val() > 0) {
                 $("#status").val("ONSALE");
-                $("#form").attr("target","_self");
+                $("#form").attr("target", "_self");
             } else {
                 $("#errorBaseSale").text("上架商品的库存不能为0！");
-                $("#form").attr("target","_self");
+                $("#form").attr("target", "_self");
                 return false;
             }
         });
@@ -41,15 +42,23 @@ $(window).load(
         });
         $("#save").click(function () {
             $("#status").val("OFFSALE");
-            $("#form").attr("target","_self");
+            $("#form").attr("target", "_self");
         });
         $("#onsale").click(function () {
             $("#status").val("ONSALE");
-            $("#form").attr("target","_self");
+            $("#form").attr("target", "_self");
         });
         $("#preview").click(function () {
             $("#status").val("UNCREATED");
             $("#form").attr("target", "_blank");
+        });
+        $("#isLottery").click(function () {
+            if (this.checked) {
+                this.value = true;
+                $("#isLottery").val(true)
+            } else {
+                $("#isLottery").val(false)
+            }
         });
     }
 );

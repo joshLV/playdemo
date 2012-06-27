@@ -46,7 +46,6 @@ public class SupplierOrders extends Controller {
 	 */
 	public static void details(String orderNumber) {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
-
 		models.order.Order orders = models.order.Order.find("byOrderNumber", orderNumber).first();
         if(orders == null || orders.orderItems == null){
             error("order can not find:" + orderNumber);

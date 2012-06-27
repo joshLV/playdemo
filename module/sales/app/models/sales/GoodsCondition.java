@@ -1,14 +1,15 @@
 package models.sales;
 
+import com.uhuila.common.constants.DeletedStatus;
+import models.resale.Resaler;
+import org.apache.commons.lang.StringUtils;
+import play.Logger;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import models.resale.Resaler;
-import org.apache.commons.lang.StringUtils;
-import play.Logger;
-import com.uhuila.common.constants.DeletedStatus;
 
 /**
  * 商品查询条件.
@@ -18,9 +19,9 @@ import com.uhuila.common.constants.DeletedStatus;
  * Time: 4:25 PM
  */
 public class GoodsCondition implements Serializable {
-    
+
     private static final long serialVersionUID = 73232320609113062L;
-    
+
     public static final String SHANGHAI = "021";
 
     public long supplierId = 0;
@@ -48,8 +49,9 @@ public class GoodsCondition implements Serializable {
     public long baseSaleBegin = -1;
     public long baseSaleEnd = -1;
     public int priority;
-
+    public boolean isLottery;
     public Date expireAtBegin;
+
     public Date expireAtEnd;
 
     private Map<String, Object> paramMap = new HashMap<>();
@@ -80,7 +82,7 @@ public class GoodsCondition implements Serializable {
                 areaId = searchAreaId;
             } else if (searchAreaId.length() == 5) {
                 districtId = searchAreaId;
-                areaId="0";
+                areaId = "0";
             }
             Logger.debug("-----------------------------districtId:" + districtId);
         }
@@ -211,8 +213,10 @@ public class GoodsCondition implements Serializable {
             condBuilder.append(" and g.materialType=:materialType");
             paramMap.put("materialType", materialType);
         }
-        Logger.debug("condBuilder.toString():" + condBuilder.toString());
-        Logger.debug("================" + toString());
+        if (isLottery) {
+            condBuilder.append(" and g.isLottery=:isLottery");
+            paramMap.put("isLottery", isLottery);
+        }
         if (Logger.isDebugEnabled()) {
             for (String key : paramMap.keySet()) {
                 Logger.debug(key + ":" + paramMap.get(key));
@@ -277,7 +281,6 @@ public class GoodsCondition implements Serializable {
         return "/goods/list/" + categoryId + '-' + areaId + '-' + brandId + '-' + priceFrom + '-' + priceTo
                 + '-' + orderByNum + '-' + orderByTypeNum;
     }
-
 
 
     public boolean isDefault() {

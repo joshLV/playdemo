@@ -43,11 +43,22 @@
                 $("#sendForm").submit();
             });
         #{/else}
+
+     $("#isLottery").click(function () {
+              if(this.checked){
+                this.value=true;
+              } else {
+                 this.value=false;
+              }
+              $("#frmlist").submit();
+          });
+
     });
   function changeList(status){
     $("#condition_status").val(status);
     $("#frmlist").submit();
 }
+
 </script>
 #{/set}
 #{set 'moreStyles'}
@@ -100,7 +111,7 @@
                     #{option "2"}订单号#{/option}
                 #{/select}
 
-                    <input type="text" name="condition.searchItems" value="${condition.searchItems}" class="input-medium"/></td>
+                <input type="text" name="condition.searchItems" value="${condition.searchItems}" class="input-medium"/></td>
                 <td>订单状态：
                 #{select 'condition.status', id:'condition_status', class:'input-small', value:condition.status}
                     #{option ""}不限#{/option}
@@ -109,7 +120,8 @@
                     #{option "CANCELED"}&{'order.CANCELED'}#{/option}
                     #{option "SENT"}&{'order.SENT'}#{/option}
                 #{/select}
-
+                 抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
+                               value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
                 <td>
                     <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
                 </td>

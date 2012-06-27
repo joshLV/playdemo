@@ -36,6 +36,9 @@ public class CouponsCondition implements Serializable {
     public String eCouponSn;
     public VerifyCouponType verifyType;
     private Map<String, Object> paramMap = new HashMap<>();
+    public String searchItems;
+    public int searchKey;
+    public boolean isLottery;
 
     public String getOrderByExpress() {
         return "e.createdAt desc";
@@ -53,11 +56,6 @@ public class CouponsCondition implements Serializable {
             sql.append(" and e.order.userId = :userId and e.order.userType = :userType");
             paramMap.put("userId", userId);
             paramMap.put("userType", accountType);
-        }
-
-        if (StringUtils.isNotBlank(eCouponSn)) {
-            sql.append(" and e.eCouponSn like :eCouponSn");
-            paramMap.put("eCouponSn", "%" + eCouponSn + "%");
         }
 
         if (createdAtBegin != null) {
@@ -89,28 +87,61 @@ public class CouponsCondition implements Serializable {
             sql.append(" and e.refundAt <= :refundAtEnd");
             paramMap.put("refundAtEnd", DateUtil.getEndOfDay(refundAtEnd));
         }
-
-        if (StringUtils.isNotBlank(jobNumber)) {
-            sql.append(" and e.supplierUser.jobNumber=:jobNumber");
-            paramMap.put("jobNumber", jobNumber);
+        switch (searchKey) {
+            case 1:
+                if (StringUtils.isNotBlank(searchItems)) {
+                    sql.append(" and e.goods.name like :name");
+                    paramMap.put("name", "%" + searchItems + "%");
+                }
+                break;
+            case 2:
+                if (StringUtils.isNotBlank(searchItems)) {
+                    sql.append(" and e.supplierUser.jobNumber=:jobNumber");
+                    paramMap.put("jobNumber", searchItems);
+                }
+                break;
+            case 3:
+                if (StringUtils.isNotBlank(searchItems)) {
+                    sql.append(" and e.order.orderNumber like :orderNumber");
+                    paramMap.put("orderNumber", "%" + searchItems + "%");
+                }
+                break;
+            case 4:
+                if (StringUtils.isNotBlank(searchItems)) {
+                    sql.append(" and (e.shop.name like :shopLike or e.shop.address like :shopLike)");
+                    paramMap.put("shopLike", "%" + searchItems + "%");
+                }
+                break;
+            case 5:
+                if (StringUtils.isNotBlank(searchItems)) {
+                    sql.append(" and e.eCouponSn like :eCouponSn");
+                    paramMap.put("eCouponSn", "%" + searchItems + "%");
+                }
+                break;
+            case 6:
+                if (StringUtils.isNotBlank(searchItems)) {
+                    sql.append(" and e.orderItems.phone like :phone");
+                    paramMap.put("phone", "%" + searchItems + "%");
+                }
+                break;
         }
-
         if (StringUtils.isNotBlank(goodsName)) {
             sql.append(" and e.goods.name like :name");
             paramMap.put("name", "%" + goodsName + "%");
         }
-
-        if (StringUtils.isNotBlank(shopLike)) {
-            sql.append(" and (e.shop.name like :shopLike or e.shop.address like :shopLike)");
-            paramMap.put("shopLike", "%" + shopLike + "%");
-        }
-
         if (status != null) {
             sql.append(" and e.status = :status");
             paramMap.put("status", status);
         }
+        if (userId == null) {
+            if (isLottery) {
+                sql.append(" and e.goods.isLottery = true)");
+            } else {
+                sql.append(" and e.goods.isLottery = false)");
+            }
+        }
 
-         if ( verifyType!= null) {
+        if (verifyType != null) {
             sql.append(" and e.verifyType = :verifyType");
             paramMap.put("verifyType", verifyType);
         }
@@ -120,20 +151,11 @@ public class CouponsCondition implements Serializable {
             paramMap.put("excludeStatus", excludeStatus);
         }
 
-        if (StringUtils.isNotBlank(orderNumber)) {
-            sql.append(" and e.order.orderNumber like :orderNumber");
-            paramMap.put("orderNumber", "%" + orderNumber + "%");
-        }
 
-        if (StringUtils.isNotBlank(phone)) {
-            sql.append(" and e.orderItems.phone like :phone");
-            paramMap.put("phone", "%" + phone + "%");
+        if (supplier != null) {
+            sql.append(" and e.orderItems.goods.supplierId = :supplierId)");
+            paramMap.put("supplierId", supplier.id);
         }
-
-		if (supplier != null) {
-			sql.append(" and e.orderItems.goods.supplierId = :supplierId)");
-			paramMap.put("supplierId",supplier.id );
-		}
         return sql.toString();
     }
 

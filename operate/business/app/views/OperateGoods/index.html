@@ -69,6 +69,8 @@
                     &nbsp; &nbsp;
                     设置精选：<input type="checkbox" name="condition.priority" id="priority" class="input-medium"
                                value="${condition?.priority}" ${condition?.priority == 1 ?'checked':''}/>
+                    &nbsp; &nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
+                               value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
                 </td>
 
 
@@ -235,6 +237,15 @@
                 this.value="1";
               } else {
                  this.value="0"  ;
+              }
+              $("#frmlist").submit();
+          });
+
+          $("#isLottery").click(function () {
+              if(this.checked){
+                this.value=true;
+              } else {
+                 this.value=false;
               }
               $("#frmlist").submit();
           });

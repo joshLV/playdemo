@@ -36,6 +36,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
+
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.resale.ResalerLevel;
@@ -67,7 +68,7 @@ import com.uhuila.common.util.PathUtil;
 @Table(name = "goods")
 public class Goods extends Model {
     private static final long serialVersionUID = 7063232063912330652L;
-    
+
     public static final String PREVIEW_IMG_ROOT = "/9999/9999/9999/";
 
     //  ========= 不同的价格列表 =======
@@ -350,8 +351,13 @@ public class Goods extends Model {
 
     @Transient
     public Long topCategoryId;
-    
-    
+
+    /**
+     * 是否抽奖商品
+     */
+    @Column(name = "is_lottery")
+    public Boolean isLottery;
+
     @Transient
     public boolean skipUpdateCache = false;
 
@@ -634,15 +640,16 @@ public class Goods extends Model {
             for (int i = 0; i < goods.levelPrices.size(); i++) {
                 updateGoods.getLevelPrices().get(i).price = goods.levelPrices.get(i).price;
             }
-        }  
+        }
+        updateGoods.isLottery = goods.isLottery;
         updateGoods.save();
     }
-    
 
-    public static final String CACHEKEY = "SALES_GOODS";    
-    
+
+    public static final String CACHEKEY = "SALES_GOODS";
+
     public static final String CACHEKEY_BASEID = "SALES_GOODS_ID";
-    
+
     @Override
     public void _save() {
         if (!this.skipUpdateCache) {
@@ -652,11 +659,11 @@ public class Goods extends Model {
         }
         super._save();
     }
-    
+
     @Override
     public void _delete() {
         CacheHelper.delete(CACHEKEY);
-        CacheHelper.delete(CACHEKEY + this.id);        
+        CacheHelper.delete(CACHEKEY + this.id);
         CacheHelper.delete(CACHEKEY_BASEID + this.id);
         super._delete();
     }
@@ -956,7 +963,7 @@ public class Goods extends Model {
             updateGoods.recommend = 0;
         }
         updateGoods.recommend += number;
-        
+
         // 这一操作不应当更新缓存
         updateGoods.skipUpdateCache = true;
         updateGoods.save();
