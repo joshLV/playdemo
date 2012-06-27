@@ -123,7 +123,7 @@ public class Images extends Controller {
             try {
                 Thumbnails.Builder<File> imageBuilder = Thumbnails.of(originImage) .size(width, height) .outputQuality(0.99f);
 
-                if(imageSizeType.equals(SMALL) || imageSizeType.equals(MIDDLE) || imageSizeType.equals(LARGE)){
+                if(!imageSizeType.equals(TINY) && !imageSizeType.equals(LOGO) && !imageSizeType.equals(SLIDE)){
                     BufferedImage watermark = ImageIO.read(new File(Play.applicationPath,
                             joinPath("public", "images", "watermark_" + imageSizeType + ".png")));
                     imageBuilder.watermark(Positions.BOTTOM_RIGHT, watermark, 0.5f);
