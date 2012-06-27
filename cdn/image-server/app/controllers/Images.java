@@ -110,6 +110,7 @@ public class Images extends Controller {
 
         if (!targetImage.exists()) {
             File originImage = new File(originImagePath);
+            boolean isDefaultImg = false;
             if (!originImage.exists()) {
                 //访问的原始文件不存在时直接返回默认图片的相应规格的图片
                 originImage = new File(Play.applicationPath,joinPath("public", "images", "default.png"));
@@ -121,13 +122,14 @@ public class Images extends Controller {
                 if (targetImage.exists()) {
                     renderBinary(targetImage);
                 }
+                isDefaultImg = true;
             }
             //创建缩略图和水印
             //play.libs.Images.resize(originImage, targetImage, width, height);
             try {
                 Thumbnails.Builder<File> imageBuilder = Thumbnails.of(originImage) .size(width, height) .outputQuality(0.99f);
 
-                if(!imageSizeType.equals(TINY) && !imageSizeType.equals(LOGO) && !imageSizeType.equals(SLIDE)){
+                if(!imageSizeType.equals(TINY) && !imageSizeType.equals(LOGO) && !imageSizeType.equals(SLIDE) && !isDefaultImg){
                     BufferedImage watermark = ImageIO.read(new File(Play.applicationPath,
                             joinPath("public", "images", "watermark_" + imageSizeType + ".png")));
                     imageBuilder.watermark(Positions.BOTTOM_RIGHT, watermark, 0.5f);
