@@ -11,6 +11,7 @@ import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import org.apache.commons.codec.digest.DigestUtils;
+import play.Logger;
 import play.Play;
 import play.mvc.Controller;
 
@@ -24,7 +25,7 @@ import java.util.Date;
 /**
  */
 public class TelephoneVerify extends Controller{
-    private static final String APP_KEY = Play.configuration.getProperty("tel_verify.app_key", "exos8BHw");
+    public static final String APP_KEY = Play.configuration.getProperty("tel_verify.app_key", "exos8BHw");
 
     /**
      * 电话验证
@@ -76,7 +77,7 @@ public class TelephoneVerify extends Controller{
         if (supplier == null || supplier.deleted == DeletedStatus.DELETED || supplier.status == SupplierStatus.FREEZE) {
             renderText("对不起，商户不存在");
         }
-
+        Logger.info("==========:" + supplierId + "," + employee);
         SupplierUser supplierUser = SupplierUser.find("from SupplierUser where supplier.id=? and jobNumber=?", supplierId, employee).first();
         if(supplierUser == null){
             renderText("未找到该店员");
