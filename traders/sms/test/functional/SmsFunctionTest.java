@@ -233,12 +233,12 @@ public class SmsFunctionTest extends FunctionalTest {
                 "=1319873904&code=1028";
         assertEquals(ECouponStatus.CONSUMED, ecoupon.status);
         Http.Response response = GET("/getsms?" + message);
+        assertContentEquals("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", response);
 
         ecoupon = ECoupon.findById(id);
         ecoupon.refresh();
         assertEquals(ECouponStatus.CONSUMED, ecoupon.status);
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertNotNull("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166");
         assertEquals("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", msg.getContent());
     }
 

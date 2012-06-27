@@ -11,6 +11,7 @@ import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import org.apache.commons.codec.digest.DigestUtils;
+import play.Play;
 import play.mvc.Controller;
 
 import java.text.SimpleDateFormat;
@@ -23,7 +24,7 @@ import java.util.Date;
 /**
  */
 public class TelephoneVerify extends Controller{
-    private static final String APP_KEY_A = "exos8BHw";
+    private static final String APP_KEY = Play.configuration.getProperty("tel_verify.app_key", "exos8BHw");
 
     /**
      * 电话验证
@@ -57,7 +58,7 @@ public class TelephoneVerify extends Controller{
             renderText("请求超时");
         }
         //验证密码
-        if(!DigestUtils.md5Hex(APP_KEY_A + timestamp).equals(sign)){
+        if(!DigestUtils.md5Hex(APP_KEY + timestamp).equals(sign)){
             renderText("签名错误");
         }
 
