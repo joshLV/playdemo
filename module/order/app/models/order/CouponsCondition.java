@@ -5,11 +5,15 @@ import models.accounts.AccountType;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CouponsCondition {
+public class CouponsCondition implements Serializable {
+    
+    private static final long serialVersionUID = 1632320311301L;
+    
     public Date createdAtBegin;
     public Date createdAtEnd;
 

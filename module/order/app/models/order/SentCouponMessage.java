@@ -17,6 +17,9 @@ import java.util.Date;
 @Entity
 @Table(name = "sent_coupon_message")
 public class SentCouponMessage extends Model {
+    
+    private static final long serialVersionUID = 163232031234112L;
+    
     @Column(name = "coupon_number")
     @Unique
     public String couponNumber;

@@ -95,6 +95,13 @@ public class Goods extends Controller {
             goodsCond.baseSaleBegin = 1;
             goodsCond.expireAtBegin = new Date();
             
+            CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "LIST_TOPRECOMMEND"),
+                    CacheHelper.getCacheKey(Area.CACHEKEY, "LIST_DISTRICTS" + goodsCond.districtId + "_" + LIMIT),
+                    CacheHelper.getCacheKey(Area.CACHEKEY, "LIST_AREAS" + goodsCond.districtId + "_" + goodsCond.areaId + "_" + AREA_LIMIT),
+                    CacheHelper.getCacheKey(Category.CACHEKEY, "LIST_CATEGORIES" + goodsCond.categoryId + "_" + LIMIT),
+                    CacheHelper.getCacheKey(Brand.CACHEKEY, "LIST_BRANDS" + condition)
+                    );
+            
             //网友推荐商品
             List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "LIST_TOPRECOMMEND"), new CacheCallBack<List<models.sales.Goods>>() {
                 @Override
@@ -212,6 +219,19 @@ public class Goods extends Controller {
      * @param id 商品
      */
     public static void show(final long id) {
+        Http.Cookie idCookie = request.cookies.get("identity");
+        final String cookieValue = idCookie == null ? null : idCookie.value;
+        final Long userId = SecureCAS.getUser() == null ? null : SecureCAS.getUser().getId();
+        
+        CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id, "UNDELETED"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id, "KEYWORDMAP"), 
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id, "QUESTION_u" + userId + "_c" + cookieValue),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id, "BREADCRUMBS"),
+                CacheHelper.getCacheKey(new String[] {
+                            Order.CACHEKEY_BASEUSERID + userId,
+                            models.sales.Goods.CACHEKEY_BASEID + id },
+                            "LIMITNUMBER")
+                );
         models.sales.Goods goods = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id, "UNDELETED"), new CacheCallBack<models.sales.Goods>() {
             @Override
             public models.sales.Goods loadData() {
@@ -253,10 +273,6 @@ public class Goods extends Controller {
         response.setCookie("saw_goods_ids", sawGoodsIds);
 
         showGoods(goods);
-
-        Http.Cookie idCookie = request.cookies.get("identity");
-        final String cookieValue = idCookie == null ? null : idCookie.value;
-        final Long userId = SecureCAS.getUser() == null ? null : SecureCAS.getUser().getId();
 
         List<CmsQuestion> questions = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id, "QUESTION_u" + userId + "_c" + cookieValue), new CacheCallBack<List<CmsQuestion>>() {
             @Override

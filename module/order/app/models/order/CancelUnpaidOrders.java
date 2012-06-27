@@ -17,6 +17,8 @@ import java.util.Date;
 @Table(name = "cancel_unpaid_orders")
 public class CancelUnpaidOrders extends Model {
 
+    private static final long serialVersionUID = 16323203113062L;
+    
     @Column(name = "order_number")
     @Unique
     public String orderNumber;

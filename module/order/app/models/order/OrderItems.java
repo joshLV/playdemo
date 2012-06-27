@@ -15,6 +15,8 @@ import java.util.List;
 @Table(name = "order_items")
 public class OrderItems extends Model {
 
+    private static final long serialVersionUID = 16323208753562L;
+    
     // ====  价格列表  ====
     @Column(name = "face_value")
     public BigDecimal faceValue;        //商品面值、市场价

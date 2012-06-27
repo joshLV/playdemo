@@ -905,7 +905,14 @@ public class Goods extends Model {
                 }
             });
         }
-        return shops;
+        final long goodsId = this.id;
+        return CacheHelper.getCache(CacheHelper.getCacheKey(Goods.CACHEKEY_BASEID + goodsId, "GOODS_SHOPS"), new CacheCallBack<Set<Shop>>() {
+                @Override
+                public Set<Shop> loadData() {
+                    Goods goods = Goods.findById(goodsId);
+                    return goods.shops;
+                }
+            });
     }
 
     /**

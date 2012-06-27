@@ -9,6 +9,7 @@ import play.db.jpa.Model;
 @Entity
 @Table(name = "discount")
 public class Discount extends Model {
+    private static final long serialVersionUID = 1632320311992L;
 
 	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="order_id",nullable=true)

@@ -39,6 +39,9 @@ import java.util.Map;
 @Entity
 @Table(name = "e_coupon")
 public class ECoupon extends Model {
+    
+    private static final long serialVersionUID = 16993203113062L;
+    
     public static final String TIME_FORMAT = "HH:mm:ss";
     private static final String COUPON_EXPIRE_FORMAT = "yyyy-MM-dd";
     @ManyToOne(fetch = FetchType.LAZY)
@@ -433,7 +436,7 @@ public class ECoupon extends Model {
     }
 
     /**
-     * 判断当日的时间是否在11点和14点之间
+     * 判断当日的时间是否在指定时间范围内
      *
      * @return 在该范围内：true
      */
