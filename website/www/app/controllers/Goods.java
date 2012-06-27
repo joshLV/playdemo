@@ -194,6 +194,7 @@ public class Goods extends Controller {
                     }
                 });
         renderArgs.put("goods", goods);
+        renderArgs.put("shops", goods.getShopList());
         renderArgs.put("breadcrumbs", breadcrumbs);
     }
 

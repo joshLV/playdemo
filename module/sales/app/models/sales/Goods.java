@@ -909,8 +909,11 @@ public class Goods extends Model {
         return CacheHelper.getCache(CacheHelper.getCacheKey(Goods.CACHEKEY_BASEID + goodsId, "GOODS_SHOPS"), new CacheCallBack<Set<Shop>>() {
                 @Override
                 public Set<Shop> loadData() {
-                    Goods goods = Goods.findById(goodsId);
-                    return goods.shops;
+                    Goods goods1 = Goods.findById(goodsId);
+                    if (goods1.shops.size() == 0) {
+                        return new HashSet<Shop>();
+                    }
+                    return goods1.shops;
                 }
             });
     }

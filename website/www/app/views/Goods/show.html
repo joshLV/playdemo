@@ -279,8 +279,8 @@
         <div class="applicable-store txt-item clearfix">
             <h4 class="txt-item-hd">适用门店</h4>
             <table class="txt-item-bd" width="700" border="0" cellpadding="0" cellspacing="0">
-            #{if goods?.getShopList()?.size() >0}
-                #{list goods?.getShopList(), as:'shop'}
+            #{if shops?.size() >0}
+                #{list shops, as:'shop'}
                     <tr>
                         <td width="120" height="30" class="table_td">${shop.name}</td>
                         <td class="table_td">${shop.address}</td>
