@@ -10,7 +10,15 @@ order.OrderItems(orderItems1):
   "createdAt": "2012-03-05T00:00:00"
   "goods": "Goods_001"
   "phone": "02101111111"
-
+order.OrderItems(orderItems3):
+  "order": "order1"
+  "buyNumber": 1
+  "salePrice": "10"
+  "originalPrice": "20"
+  "goodsName": "哈根达斯100元抵用券"
+  "createdAt": "2012-03-05T00:00:00"
+  "goods": "Goods_003"
+  "phone": "02101111111"
 order.OrderItems(orderItems2):
   "order": "order2"
   "buyNumber": 1

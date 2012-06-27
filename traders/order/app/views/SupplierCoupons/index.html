@@ -85,7 +85,7 @@
         <tr>
               #{set orderNo:coupon?.order?.orderNumber/}
           #{set preOrderNo:""/}
-          #{set j:coupon?.order?.orderItems.size() /}
+          #{set j:coupon?.order?.orderItems?.size() /}
                #{if !preOrderNo.equals(orderNo)}
                     %{ preOrderNo = orderNo; i=0;}%
                #{/if}

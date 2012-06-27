@@ -11,6 +11,9 @@ load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/areas.yml','fixtu
     #{include 'test/selenium/step/login.selenium' /}
     open('/goods')
     assertTextPresent('商品一览')
+    select('id=condition_status','label=不限')
+    clickAndWait('id=isLottery')
+    verifyTextPresent('测试商品3')
 #{/selenium}
 
 #{selenium '查看商品'}

@@ -135,9 +135,9 @@ public class CouponsCondition implements Serializable {
         }
         if (userId == null) {
             if (isLottery) {
-                sql.append(" and e.goods.isLottery = true)");
+                sql.append(" and e.goods.isLottery = true");
             } else {
-                sql.append(" and e.goods.isLottery = false)");
+                sql.append(" and e.goods.isLottery = false");
             }
         }
 

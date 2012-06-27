@@ -139,6 +139,9 @@ public class OrderUnitTest extends UnitTest {
         Long orderId = (Long) Fixtures.idCache.get("models.order.Order-order1");
         Order orders = Order.findById(orderId);
         long itemsNumber = OrderItems.itemsNumber(orders);
+        assertEquals(3L, itemsNumber);
+
+        itemsNumber = OrderItems.itemsNumberElectronic(orders);
         assertEquals(2L, itemsNumber);
     }
 
