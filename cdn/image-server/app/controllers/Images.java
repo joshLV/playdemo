@@ -113,7 +113,11 @@ public class Images extends Controller {
             if (!originImage.exists()) {
                 //访问的原始文件不存在时直接返回默认图片的相应规格的图片
                 originImage = new File(Play.applicationPath,joinPath("public", "images", "default.png"));
-                targetImage = new File(joinPath(IMAGE_ROOT_GENERATED, "1", "1", "1", "default_" + imageSizeType + ".png"));
+                File defaultDir = new File(joinPath(IMAGE_ROOT_GENERATED, "1", "1", "1"));
+                if(!defaultDir.isDirectory()){
+                    defaultDir.mkdirs();
+                }
+                targetImage = new File(defaultDir, "default_" + imageSizeType + ".png");
                 if (targetImage.exists()) {
                     renderBinary(targetImage);
                 }
