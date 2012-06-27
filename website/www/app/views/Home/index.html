@@ -52,7 +52,7 @@
         <ul class="recommendation-bd clearfix">
         #{list recommendGoodsList, as:'aGoods'}
             <li>
-                <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="150"
+                <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}" width="150"
                                                                    height="110" alt="${aGoods.name}"/></a>
                 <p><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
                 <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
@@ -87,7 +87,7 @@
     <ul class="boutique-bd clearfix">
     #{list goodsList, as:'aGoods'}
         <li>
-            <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="170"
+            <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="170"
                                                                height="130"
                                                                alt="${aGoods.name}"/></a>
             <p><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
@@ -103,7 +103,7 @@
     <ul class="boutique-bd clearfix">
     #{list recentGoodsList, as:'aGoods'}
         <li>
-            <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="170" height="130"
+            <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="170" height="130"
                                                                alt="${aGoods.name}"/></a>
             <p><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
             <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
