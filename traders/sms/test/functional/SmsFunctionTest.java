@@ -1,6 +1,7 @@
 package functional;
 
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierRole;
@@ -242,6 +243,42 @@ public class SmsFunctionTest extends FunctionalTest {
         assertEquals("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", msg.getContent());
     }
 
+    @Test
+    public void testExpired() {
+
+        //已过期的验证
+        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon4");
+
+        Long supplierId = (Long) play.test.Fixtures.idCache.get("models.supplier.Supplier-kfc3");
+        Supplier supplier = Supplier.findById(supplierId);
+        Long shopId = (Long) play.test.Fixtures.idCache.get("models.sales.Shop-Shop_4");
+        Shop shop = Shop.findById(shopId);
+        shop.supplierId = supplierId;
+        shop.save();
+
+        Long brandId = (Long) play.test.Fixtures.idCache.get("models.sales.Brand-Brand_2");
+        Brand brand = Brand.findById(brandId);
+        brand.supplier = supplier;
+        brand.save();
+
+        Long  goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
+        Goods goods = Goods.findById(goodsId);
+        goods.supplierId = supplierId;
+        goods.save();
+        ECoupon ecoupon = ECoupon.findById(id);
+        ecoupon.expireAt= DateUtil.getYesterday();
+        ecoupon.save();
+
+        String message = "mobiles=15800002341&msg=#" + ecoupon.eCouponSn +
+                "#&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808&dt" +
+                "=1319873904&code=1028";
+
+        Http.Response response = GET("/getsms?" + message);
+        assertContentEquals("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", response);
+
+        SMSMessage msg = MockSMSProvider.getLastSMSMessage();
+        assertEquals("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", msg.getContent());
+    }
 
     @Test
     public void testConsumer() {
