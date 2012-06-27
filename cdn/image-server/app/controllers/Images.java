@@ -1,10 +1,13 @@
 package controllers;
 
 import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.geometry.Positions;
 import play.Logger;
 import play.Play;
 import play.mvc.Controller;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -36,15 +39,14 @@ public class Images extends Controller {
     public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
 
     public static void showOriginalImage(String path1, String path2, String path3, String path4) {
-        final String path = "/" + path1 + "/" + path2 + "/" + path3 + "/" + path4;
-        System.out.println("path:" + path);
+        String targetImagePath = joinPath(ROOT_PATH, path1, path2, path3, path4);
+        System.out.println("path:" + targetImagePath);
         System.out.println("ROOT_PATH:" + ROOT_PATH);
-        String targetImagePath = ROOT_PATH + path;
 
         File targetImage = new File(targetImagePath);
         if (!targetImage.exists()) {
             Logger.warn(targetImagePath + " Not Found!");
-            error(404, path + "图片文件不存在！");
+            error(404, "图片文件不存在！");
         }
         renderBinary(targetImage);
     }
@@ -57,7 +59,7 @@ public class Images extends Controller {
      * @param thirdDir
      * @param imageName
      */
-    public static void showImage(long firstDir, long secondDir, long thirdDir, String imageName) {
+    public static void showImage(String firstDir, String secondDir, String thirdDir, String imageName) {
         int width = 0;
         int height = 0;
         String imageSizeType = "";
@@ -95,15 +97,14 @@ public class Images extends Controller {
             notFound();
         }
 
-        String targetImageParent = IMAGE_ROOT_GENERATED + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir;
+        String targetImageParent = joinPath(IMAGE_ROOT_GENERATED, firstDir, secondDir, thirdDir);
 
         if (!(new File(targetImageParent).isDirectory())) {
             new File(targetImageParent).mkdirs();
         }
 
-        String targetImagePath = targetImageParent + File.separator + imageName;
-        String originImagePath = IMAGE_ROOT_ORIGINAL + File.separator + firstDir + File.separator + secondDir + File.separator + thirdDir + File.separator + matcher.group(1) + "." + matcher.group(3);
-
+        String targetImagePath = joinPath(targetImageParent, imageName);
+        String originImagePath = joinPath(IMAGE_ROOT_ORIGINAL, firstDir, secondDir, thirdDir, matcher.group(1) + "." + matcher.group(3));
 
         File targetImage = new File(targetImagePath);
 
@@ -111,21 +112,41 @@ public class Images extends Controller {
             File originImage = new File(originImagePath);
             if (!originImage.exists()) {
                 //访问的原始文件不存在时直接返回默认图片的相应规格的图片
-                originImage = new File(IMAGE_ROOT_ORIGINAL + "/1/1/1/default.png");
-                targetImage = new File(IMAGE_ROOT_GENERATED + "/1/1/1/default_" + imageSizeType + ".png");
+                originImage = new File(Play.applicationPath,joinPath("public", "images", "default.png"));
+                targetImage = new File(joinPath(IMAGE_ROOT_GENERATED, "1", "1", "1", "default_" + imageSizeType + ".png"));
                 if (targetImage.exists()) {
                     renderBinary(targetImage);
                 }
             }
-            //创建缩略图
+            //创建缩略图和水印
             //play.libs.Images.resize(originImage, targetImage, width, height);
             try {
-                Thumbnails.of(originImage).size(width, height).outputQuality(0.99f).toFile(targetImage);
+                Thumbnails.Builder<File> imageBuilder = Thumbnails.of(originImage) .size(width, height) .outputQuality(0.99f);
+
+                if(imageSizeType.equals(SMALL) || imageSizeType.equals(MIDDLE) || imageSizeType.equals(LARGE)){
+                    BufferedImage watermark = ImageIO.read(new File(Play.applicationPath,
+                            joinPath("public", "images", "watermark_" + imageSizeType + ".png")));
+                    imageBuilder.watermark(Positions.BOTTOM_RIGHT, watermark, 0.5f);
+                }
+
+                imageBuilder.toFile(targetImage);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
         renderBinary(targetImage);
+    }
+
+    private static String joinPath(String... nodes){
+        StringBuilder path = new StringBuilder();
+        for(String node: nodes){
+            path.append(node).append(File.separator);
+        }
+        if(nodes.length > 0){
+            return path.substring(0, path.length() - File.separator.length());
+        }else {
+            return "";
+        }
     }
 
 }
