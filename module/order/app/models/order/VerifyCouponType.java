@@ -7,7 +7,8 @@ package models.order;
  * Time: 上午10:48
  */
 public enum VerifyCouponType {
-    CLERK_MESSAGE,//店员短信验证
-    CONSUMER_MESSAGE,//消费者短信验证
-    SHOP//门店验证
+    CLERK_MESSAGE,      //店员短信验证
+    CONSUMER_MESSAGE,   //消费者短信验证
+    SHOP,               //门店验证
+    TELEPHONE           //电话验证
 }

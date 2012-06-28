@@ -106,6 +106,9 @@ public class ECoupon extends Model {
     public Integer downloadTimes;
     @Enumerated(EnumType.STRING)
     public VerifyCouponType verifyType;
+
+    @Column(name = "verify_tel")
+    public String verifyTel;
     /**
      * 用于短信回复的code，将会成为消费者看到的发送手机号的最后4位。
      * <p/>

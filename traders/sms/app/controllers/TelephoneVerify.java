@@ -37,29 +37,37 @@ public class TelephoneVerify extends Controller{
      * @param sign      请求签名，由 分配的app_key+timestamp 拼接后进行MD5编码组成
      */
     public static void verify(String caller, String employee, String coupon, Long timestamp, String sign){
+        Logger.debug("telephone verify; caller: %s; employee: %s; coupon: %s; timestamp: %s; sign: %s", caller, employee, coupon, timestamp, sign);
         if(caller == null || caller.trim().equals("")){
+            Logger.error("telephone verify failed: invalid caller");
             renderText("主叫号码无效");
         }
         if(employee == null || employee.trim().equals("")){
+            Logger.error("telephone verify failed: invalid employee");
             renderText("员工编号无效");
         }
         if(coupon == null || coupon.trim().equals("")){
+            Logger.error("telephone verify failed: invalid coupon");
             renderText("券号无效");
         }
         if(timestamp == null){
+            Logger.error("telephone verify failed: invalid timestamp");
             renderText("时间戳无效");
         }
         if(sign == null || sign.trim().equals("")){
+            Logger.error("telephone verify failed: invalid sign");
             renderText("签名无效");
         }
 
         long t = System.currentTimeMillis();
         //5分钟的浮动
         if(Math.abs(timestamp - t) > 300000){
+            Logger.error("telephone verify failed: request timeout");
             renderText("请求超时");
         }
         //验证密码
         if(!DigestUtils.md5Hex(APP_KEY + timestamp).equals(sign)){
+            Logger.error("telephone verify failed: wrong sign");
             renderText("签名错误");
         }
 
@@ -67,6 +75,7 @@ public class TelephoneVerify extends Controller{
         ECoupon ecoupon = ECoupon.query(coupon, null);
 
         if (ecoupon == null) {
+            Logger.error("telephone verify failed: coupon not found");
             renderText("对不起，未找到此券");
         }
 
@@ -75,11 +84,12 @@ public class TelephoneVerify extends Controller{
         Supplier supplier = Supplier.findById(supplierId);
 
         if (supplier == null || supplier.deleted == DeletedStatus.DELETED || supplier.status == SupplierStatus.FREEZE) {
+            Logger.error("telephone verify failed: invalid supplier %s",supplierId);
             renderText("对不起，商户不存在");
         }
-        Logger.info("==========:" + supplierId + "," + employee);
         SupplierUser supplierUser = SupplierUser.find("from SupplierUser where supplier.id=? and jobNumber=?", supplierId, employee).first();
         if(supplierUser == null){
+            Logger.error("telephone verify failed: supplier user not found %s %s",supplierId, employee);
             renderText("未找到该店员");
         }
 
@@ -88,20 +98,26 @@ public class TelephoneVerify extends Controller{
         String shopName = shop.name;
 
         if (ecoupon.expireAt.before(new Date())) {
+            Logger.error("telephone verify failed: coupon expired");
             renderText("对不起，该券已过期");
         } else if (ecoupon.status == ECouponStatus.UNCONSUMED) {
             ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE);
-            String eEoupon = ecoupon.getMaskedEcouponSn();
-            eEoupon = eEoupon.substring(eEoupon.lastIndexOf("*") + 1);
+            String eCouponNumber = ecoupon.getMaskedEcouponSn();
+            eCouponNumber = eCouponNumber.substring(eCouponNumber.lastIndexOf("*") + 1);
 
             String dateTime = DateUtil.getNowTime();
 
             // 发给消费者
-            SMSUtil.send("【券市场】您尾号" + eEoupon + "的券号于" + dateTime
+            SMSUtil.send("【券市场】您尾号" + eCouponNumber + "的券号于" + dateTime
                     + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166", ecoupon.orderItems.phone, ecoupon.replyCode);
+            ecoupon.verifyType = VerifyCouponType.TELEPHONE;
+            ecoupon.verifyTel = caller;
+            ecoupon.save();
 
+            Logger.debug("telephone verify success; caller: %s; employee: %s; coupon: %s; timestamp: %s; sign: %s", caller, employee, coupon, timestamp, sign);
             renderText("消费成功，价值" + ecoupon.faceValue + "元");
         } else if (ecoupon.status == ECouponStatus.CONSUMED) {
+            Logger.error("telephone verify failed: coupon consumed");
             renderText("该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(ecoupon.consumedAt));
         }
     }
