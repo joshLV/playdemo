@@ -21,6 +21,7 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
+
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -51,7 +52,7 @@ import com.uhuila.common.constants.DeletedStatus;
 @Table(name = "orders")
 public class Order extends Model {
     private static final long serialVersionUID = 7063112063912330652L;
-    
+
     public static final BigDecimal FREIGHT = new BigDecimal("6");
     private static final String DECIMAL_FORMAT = "0000000";
     private static final String COUPON_EXPIRE_FORMAT = "yyyy-MM-dd";
@@ -173,7 +174,7 @@ public class Order extends Model {
 
     public static final String CACHEKEY = "ORDER";
     public static final String CACHEKEY_BASEUSERID = "ORDER_USERID";
-    
+
     @Override
     public void _save() {
         CacheHelper.delete(CACHEKEY);
@@ -181,15 +182,15 @@ public class Order extends Model {
         CacheHelper.delete(CACHEKEY_BASEUSERID + this.userId);
         super._save();
     }
-    
+
     @Override
     public void _delete() {
         CacheHelper.delete(CACHEKEY);
-        CacheHelper.delete(CACHEKEY + this.id);      
-        CacheHelper.delete(CACHEKEY_BASEUSERID + this.userId);        
+        CacheHelper.delete(CACHEKEY + this.id);
+        CacheHelper.delete(CACHEKEY_BASEUSERID + this.userId);
         super._delete();
     }
-    
+
     private Order(long userId, AccountType userType) {
         this.userId = userId;
         this.userType = userType;
@@ -508,38 +509,39 @@ public class Order extends Model {
                     ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
                     SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
                     if (!Play.runingInTestMode() && (goods.isLottery == null || !goods.isLottery)) {
-                        SMSUtil.send("【券市场】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name+"["+goods.faceValue+"元]"))+ "券号:" + eCoupon.eCouponSn + "," +
+                        SMSUtil.send("【券市场】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name + "[" + goods.faceValue + "元]")) + "券号:" + eCoupon.eCouponSn + "," +
                                 "截止日期：" + dateFormat.format(eCoupon.expireAt) + ",如有疑问请致电：400-6262-166",
                                 orderItem.phone, eCoupon.replyCode);
                     }
                     couponCodes.add(eCoupon.getMaskedEcouponSn());
                 }
+                if (goods.isLottery == null || !goods.isLottery) {
+                    CouponMessage mail = new CouponMessage();
+                    //分销商
+                    if (AccountType.RESALER.equals(orderItem.order.userType)) {
+                        String userName = orderItem.order.getResaler().userName;
+                        mail.setEmail(orderItem.order.getResaler().email);
+                        // mail.setFullName(userName);
+                    } else {
+                        //消费者
+                        mail.setEmail(orderItem.order.getUser().loginName);
+                        String note = "";
+                        if (this.orderItems.size() > 1) {
+                            note = "等件";
+                        }
+                        String content = "您已成功购买" + goods.name + note + "订单号是" + this
+                                .orderNumber + "，支付金额是" + this.amount + "元。\r";
 
-                CouponMessage mail = new CouponMessage();
-                //分销商
-                if (AccountType.RESALER.equals(orderItem.order.userType)) {
-                    String userName = orderItem.order.getResaler().userName;
-                    mail.setEmail(orderItem.order.getResaler().email);
-                    // mail.setFullName(userName);
-                } else {
-                    //消费者
-                    mail.setEmail(orderItem.order.getUser().loginName);
-                    String note = "";
-                    if (this.orderItems.size() > 1) {
-                        note = "等件";
-                    }
-                    String content = "您已成功购买" + goods.name + note + "订单号是" + this
-                            .orderNumber + "，支付金额是" + this.amount + "元。\r";
-
-                    mail.setFullName(content);
+                        mail.setFullName(content);
 //                    if (orderItem.order.getUser().userInfo == null) {
 //                        mail.setFullName(orderItem.order.getUser().loginName);
 //                    } else {
 //                        mail.setFullName(orderItem.order.getUser().userInfo.fullName);
 //                    }
+                    }
+                    mail.setCoupons(couponCodes);
+                    MailUtil.send(mail);
                 }
-                mail.setCoupons(couponCodes);
-                MailUtil.send(mail);
             }
             goods.save();
         }
