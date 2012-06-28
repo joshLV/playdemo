@@ -204,7 +204,10 @@
         #{if goods.onSale()}
             <li class="action clearfix">
                 #{if !bought}<a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
-                <a class="add" id="link_add_cart" href="#">加入购物车#{/if}</a>
+                #{if !goods?.isLottery}
+                   <a class="add" id="link_add_cart" href="#">加入购物车</a>
+                #{/if}
+                #{/if}
                 #{else}<strong style="color: red">您已经购买过此商品！</strong>#{/else}
 
                 <div id="add_cart_result" class="add-tips" style="display: none;">

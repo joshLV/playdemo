@@ -92,7 +92,7 @@ if(confirm("确定取消此订单吗？")){
                             <td align="center">
                              #{if status == models.order.ECouponStatus.UNCONSUMED && row.status == models.order
                              .OrderStatus.PAID&& models.sales.MaterialType
-                             .ELECTRONIC.equals(rowItem?.goods?.materialType)}
+                             .ELECTRONIC.equals(rowItem?.goods?.materialType) && !rowItem?.goods?.isLottery}
                               <div class="caozuo_std">
                                 <a style="color:#3366CC"  href="/orders/refund/${row.orderNumber}"  id="apply_${row.orderNumber}">申请退款</a>
                               </div>

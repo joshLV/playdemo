@@ -140,7 +140,7 @@
                     </td>
 
                     <td width="103" align="center">
-                        #{if coupon.status == models.order.ECouponStatus.UNCONSUMED }
+                        #{if coupon.status == models.order.ECouponStatus.UNCONSUMED && !coupon?.goods?.isLottery}
                             <a href="javascript:applyRefund('${coupon.id}','${coupon.salePrice}')" name="apply_refund"
                                id="apply_${coupon.id}">申请退款</a>
 
