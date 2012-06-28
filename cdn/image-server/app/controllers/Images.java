@@ -26,6 +26,7 @@ public class Images extends Controller {
     public static final String LARGE = "large";
     public static final String TINY = "tiny";
     public static final String LOGO = "logo";
+    public static final String RAW = "raw";
     
     public static final String SLIDE = "slide";
 
@@ -87,6 +88,8 @@ public class Images extends Controller {
             width = 478;
             height = 218;
             imageSizeType = SLIDE;
+        } else if (imageName.contains(RAW)){
+            imageSizeType = RAW;
         } else {
             notFound();
         }
@@ -127,7 +130,11 @@ public class Images extends Controller {
             //创建缩略图和水印
             //play.libs.Images.resize(originImage, targetImage, width, height);
             try {
-                Thumbnails.Builder<File> imageBuilder = Thumbnails.of(originImage) .size(width, height) .outputQuality(0.99f);
+                Thumbnails.Builder<File> imageBuilder = Thumbnails.of(originImage).outputQuality(0.99f);
+                //raw的不改变大小，只加水印
+                if(!imageSizeType.equals(RAW)){
+                    imageBuilder.size(width, height);
+                }
 
                 if(!imageSizeType.equals(TINY) && !imageSizeType.equals(LOGO) && !imageSizeType.equals(SLIDE) && !isDefaultImg){
                     BufferedImage watermark = ImageIO.read(new File(Play.applicationPath,

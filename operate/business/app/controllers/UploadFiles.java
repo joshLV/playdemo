@@ -63,8 +63,9 @@ public class UploadFiles extends Controller {
             map.put("error", 0);
 
             String path = targetFilePath.substring(ROOT_PATH.length(), targetFilePath.length());
+            path = path.replace(".", "_raw.");
 
-            map.put("url", "http://" + Goods.IMAGE_SERVER + "/o" + path);
+            map.put("url", "http://" + Goods.IMAGE_SERVER + "/p" + path);
 
 
             renderJSON(map);
