@@ -134,6 +134,8 @@ public class Images extends Controller {
                 //raw的不改变大小，只加水印
                 if(!imageSizeType.equals(RAW)){
                     imageBuilder.size(width, height);
+                }else {
+                    imageBuilder.scale(1.0D);
                 }
 
                 if(!imageSizeType.equals(TINY) && !imageSizeType.equals(LOGO) && !imageSizeType.equals(SLIDE) && !isDefaultImg){
