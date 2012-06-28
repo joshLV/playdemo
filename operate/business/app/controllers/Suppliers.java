@@ -195,7 +195,10 @@ public class Suppliers extends Controller {
     }
 
     public static void update(Long id, @Valid Supplier supplier, File image, @Valid SupplierUser admin, Long adminId) {
-        checkItems(supplier);
+         Supplier oldSupplier = Supplier.findById(id);
+        if (StringUtils.isNotBlank(supplier.domainName) && !oldSupplier.domainName.equals(supplier.domainName)) {
+            checkItems(supplier);
+        }
 
         Validation.match("validation.jobNumber", admin.jobNumber, "^[0-9]*");
 
@@ -203,7 +206,7 @@ public class Suppliers extends Controller {
             for (String key : validation.errorsMap().keySet()) {
                 warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
-
+            renderArgs.put("baseDomain", BASE_DOMAIN);
             render("Suppliers/edit.html", id, admin);
         }
 
