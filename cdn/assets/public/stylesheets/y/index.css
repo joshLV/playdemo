@@ -217,6 +217,13 @@
     border: 1px solid #e8e8e8;
     border-top: 3px solid #f97311;
 }
+#content .more {
+    float: right;
+    width: 64px;
+    height: 32px;
+    *margin-top: -33px;
+    *margin-right: 1px;
+}
 #hot-cat {
     line-height: 28px;
 }

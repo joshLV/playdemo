@@ -7,6 +7,7 @@
 #navbar,
 #notice span,
 #content .hd,
+#content .more,
 #bargain .buy a,
 #bargain .buy span, 
 .attri .coupon,
@@ -15,6 +16,7 @@
 #popular .index a,
 #popular .ft {
     background: url(http://img.uhcdn.com/images/y/sprite.png) no-repeat -9999px -9999px;
+    /* background: url(../images/sprite.png) no-repeat -9999px -9999px; */
 }
 
 #topbar {
@@ -50,6 +52,9 @@
 #content .hd {
     background-repeat: repeat-x;
     background-position: 0 -228px;
+}
+#content .more {
+    background-position: 0 -302px;
 }
 #bargain .buy a {
     background-position: 0 -128px;
