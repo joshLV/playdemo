@@ -408,6 +408,7 @@ public class Order extends Model {
         for (OrderItems orderItem : this.orderItems) {
             orderItem.goods.baseSale += orderItem.buyNumber;
             orderItem.goods.saleCount -= orderItem.buyNumber;
+            orderItem.status = OrderStatus.CANCELED;
             orderItem.goods.save();
             orderItem.save();
         }
