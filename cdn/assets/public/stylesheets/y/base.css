@@ -53,3 +53,129 @@ mark { background: #ff0; }
 /**
  * CSS RESET END }}}
  * **/
+
+/** 顶通 **/
+#topbar {
+    height: 25px;
+    line-height: 25px;
+}
+#topbar-bd {
+    width: 960px;
+    margin: 0 auto;
+}
+#topbar-bd li {
+    float: left;
+}
+#topbar-bd a {
+    padding: 0 15px;
+    color: #707070;
+}
+#topbar-bd a:hover {
+    color: #f96e0f;
+}
+#topbar-bd .login,
+#topbar-bd .signup {
+    color: #f96e0f;
+}
+#topbar-bd .favorite {
+    padding-left: 25px;
+}
+#topbar-bd .follow {
+    padding-left: 25px;
+}
+#topbar-bd .first a {
+    padding-left: 0;
+}
+#topbar-bd .last {
+    background: none;
+}
+#topbar-bd .hotline {
+    float: right;
+    color: #707070;
+}
+#topbar-bd .hotline strong {
+    color: #9ac72c;
+}
+
+/** 头部 **/
+#header {
+    width: 960px;
+    margin: 0 auto;
+}
+#logo, #promise {
+    float: left;
+}
+#cart {
+    float: right;
+    margin-top: 45px;
+}
+#cart em {
+    color: #fc7410;
+}
+#cart span {
+    padding: 0 5px 0 22px;
+    color: #fc7410;
+}
+#cart a {
+    display: inline-block;
+    padding: 0px 9px 3px;
+    margin-left: 5px;
+    color: #fff;
+    line-height: 22px\9;
+    *line-height: 22px;
+    _line-height: 18px;
+}
+#cart a:hover {
+    text-decoration: none;
+}
+
+/** 导航 **/
+#navbar {
+    height: 42px;
+}
+#nav {
+    width: 960px;
+    margin: 0 auto;
+}
+#nav a {
+    display: block;
+    float: left;
+    padding: 0 28px;
+    margin: 3px 0;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 38px;
+}
+#nav .curr {
+    background-color: #d6480a;
+}
+#nav a:hover {
+    text-decoration: none;
+    background-color: #d6480a;
+}
+
+/** 页尾 **/
+#footer {
+    position: relative;
+    padding: 20px 0 35px;
+    margin: 0 auto;
+    text-align: center;
+    border-top: 1px solid #d5d5d5;
+    background-color: #F9F9F9;
+}
+.ft-nav {
+    color: #909090;
+    text-align: center;
+}
+.ft-nav a {
+    color: #707070;
+    margin: 0 10px;
+}
+.copyright {
+    color: #909090;
+    line-height: 26px;
+}
+.copyright span {
+    margin: 0 10px;
+}

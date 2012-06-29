@@ -1,0 +1,152 @@
+#content {
+    width: 960px;
+    margin: 10px auto;
+}
+#content h1 {
+    font-size: 16px;
+    line-height: 48px;
+}
+#gallery {
+    float: left;
+    width: 340px;
+    padding: 10px;
+    margin-right: 20px;
+    border: 1px solid #e4e4e4;
+}
+
+#property {
+    float: left;
+    width: 378px;
+    padding-top: 10px;
+}
+#property li {
+    color: #7d7d7d;
+    line-height: 28px;
+}
+#property .price {
+    color: #f00;
+    font: 700 24px arial;
+}
+#property del {
+    font-family: arial;
+}
+#metaBox .amount {
+    width: 36px;
+    height: 16px;
+    padding: 2px;
+    color: #fa7512;
+    font-weight: 700;
+    border: 1px solid #b7b7b7;
+}
+#metaBox .increase {
+    width: 18px;
+    height: 10px;
+}
+#metaBox .decrease {
+    width: 18px;
+    height: 10px;
+}
+
+#bizinfo {
+    float: right;
+    width: 200px;
+}
+
+#content .hd {
+    margin-top: 10px;
+    color: #f97311;
+    text-indent: 12px;
+    font-weight: 700;
+    line-height: 32px;
+    border: 1px solid #e8e8e8;
+    border-top: 3px solid #f97311;
+}
+#recommend ul {
+    padding: 0 1px;
+}
+#recommend li {
+    float: left;
+    height: 225px;
+    padding: 15px 22px 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+#recommend li.last {
+    padding-right: 0;
+}
+#recommend .image {
+    border: 1px solid #f4f4f4;
+    font-size: 0;
+}
+#recommend .image a {
+    font-size: 0;
+}
+#recommend .title {
+    overflow: hidden;
+    width: 174px;
+    height: 44px;
+}
+#recommend .title a {
+    color: #707070;
+    line-height: 22px;
+}
+#recommend .title a:hover {
+    color: #e65d00;
+}
+#recommend .attri {
+    color: #707070;
+    overflow: hidden;
+    width: 174px;
+    height: 22px;
+}
+#recommend .attri del {
+    float: left;
+    width: 100px;
+    display: inline-block;
+}
+.attri .coupon {
+    float: right;
+    *line-height: 21px;
+    _line-height: 20px;
+    padding-left: 20px;
+}
+#recommend .price {
+    color: #7d7d7d;
+    line-height: 22px;
+}
+#recommend .price b {
+    color: #f00;
+    font: 700 16px arial;
+}
+
+#tabbar {
+    margin-top: 10px;
+    border-bottom: 2px solid #f50;
+}
+#tabbar ul {
+    float: left;
+    width: 500px;
+}
+#tabbar li {
+    float: left;
+    margin-right: -1px;
+    padding: 8px 25px;
+    border: 1px solid #d8d8d8;
+    border-bottom: 0;
+}
+#tabbar li.curr {
+    padding: 8px 30px;
+    border: 1px solid #f60;
+    border-bottom: 0;
+    background: #f60;
+}
+#tabbar li.curr a {
+    color: #fff;
+    font-weight: 700;
+}
+#tabbar a {
+    font-size: 14px;
+    color: #707070;
+}
+#tabbar a:hover {
+    text-decoration: none;
+}

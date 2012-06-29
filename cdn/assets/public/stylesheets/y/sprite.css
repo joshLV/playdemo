@@ -14,9 +14,10 @@
 #news li,
 #popular .index span,
 #popular .index a,
-#popular .ft {
-    background: url(http://img.uhcdn.com/images/y/sprite.png) no-repeat -9999px -9999px;
-    /* background: url(../images/sprite.png) no-repeat -9999px -9999px; */
+#popular .ft,
+#listview .qtype { 
+    /* background: url(http://img.uhcdn.com/images/y/sprite.png) no-repeat -9999px -9999px; */
+    background: url(../img/sprite.png) no-repeat -9999px -9999px;
 }
 
 #topbar {
@@ -78,6 +79,7 @@
 #news li.hot {
     background-position: -190px -296px;
 }
+
 #popular .index span {
     background-position: -175px -80px;
 }
@@ -87,3 +89,13 @@
 #popular .ft {
     background-position: 1px -257px;
 }
+
+/** list page **/
+#listview .qtype {
+    background-position: -182px -20px;
+    _background-position: -182px -18px;
+}
+#listview .shiti {
+    background-position: -180px -51px;
+}
+
