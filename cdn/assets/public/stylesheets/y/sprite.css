@@ -15,7 +15,16 @@
 #popular .index span,
 #popular .index a,
 #popular .ft,
-#listview .qtype { 
+#listview .qtype,
+#amount .increase-btn,
+#amount .decrease-btn,
+#btnBox #nowBuy,
+#btnBox #addCart,
+#bizinfo .index span,
+#bizinfo .index a,
+#diagram .tips,
+#consult .hd b,
+#consult dt {
     background: url(http://img.uhcdn.com/images/y/sprite.png) no-repeat -9999px -9999px;
     /* background: url(../img/sprite.png) no-repeat -9999px -9999px; */
 }
@@ -99,3 +108,35 @@
     background-position: -180px -51px;
 }
 
+#amount .increase-btn {
+    background-position: -88px -313px;
+}
+#amount .decrease-btn {
+    background-position: -88px -324px;
+}
+#btnBox #nowBuy {
+    background-position: 0 -334px;
+}
+#btnBox #addCart {
+    background-position: 0 -384px;
+}
+#bizinfo .index span {
+    background-position: -175px -80px;
+}
+#bizinfo .index a {
+    background-position: -158px -112px;
+}
+#diagram .tips {
+    background-position: -180px -441px;
+}
+#consult .hd b {
+    background-position: -170px -350px;
+}
+#consult .question dt {
+    background-position: -182px -380px;
+    background-position: -182px -382px\9;
+}
+#consult .answer dt {
+    background-position: -182px -412px;
+    background-position: -182px -414px\9;
+}
