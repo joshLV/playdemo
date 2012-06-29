@@ -39,12 +39,15 @@
     border: 1px solid #b7b7b7;
 }
 #metaBox .increase {
+    position: relative;
     width: 18px;
     height: 10px;
+    display: inline-block;
 }
 #metaBox .decrease {
     width: 18px;
     height: 10px;
+    display: inline-block;
 }
 
 #bizinfo {
