@@ -1,8 +1,6 @@
 package controllers;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.FieldCheckUtil;
+import java.util.Date;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -12,8 +10,9 @@ import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import play.mvc.Controller;
-
-import java.util.Date;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.FieldCheckUtil;
 
 public class SmsReceivers extends Controller {
 
@@ -32,6 +31,11 @@ public class SmsReceivers extends Controller {
         System.out.println("mobile=" + mobile + ",msg=" + msg + ",username="
                 + username + ",pwd=" + pwd + ",dt=" + dt + ",code=" + code);
 
+        // TODO: 检查dt和pwd
+        if (!validUserPassDt(username, pwd, dt)) {
+            renderText("Invaild request!");
+        }
+
         if (FieldCheckUtil.isNumeric(msg)) {
             // 消费者验证的情况
             checkConsumer(mobile, msg, code);
@@ -40,8 +44,11 @@ public class SmsReceivers extends Controller {
             checkClerk(mobile, msg, code);
         } else {
             renderText("msg is wrong");
-
         }
+    }
+
+    private static boolean validUserPassDt(String username, String pwd, String dt) {
+        return false;
     }
 
     /**

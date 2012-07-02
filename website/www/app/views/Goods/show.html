@@ -298,7 +298,7 @@
         <div class="qa txt-item">
             <h4 class="txt-item-hd">购买咨询</h4>
             <div class="txt-item-bd" id="q-list">
-                <input type="hidden" value="${questions.size()}" id="q-size"/>
+                <input type="hidden" value="${questions?.size()}" id="q-size"/>
                 %{q_index = 0}%
                 #{list items:questions, as:'question'}
                 %{
@@ -324,7 +324,7 @@
                 </div>
                 #{/list}
             </div>
-            #{if questions.size() == 10}
+            #{if questions?.size() == 10}
                 <div class="qa-more" id="more-questions"><a href="#" id="show-more">更多>></a></div>
                 <input type="hidden" id="max-result" value="${questions.size() + 1}">
             #{/if}
@@ -338,4 +338,3 @@
 
     </div><!-- tabtxt END -->
 </div>
-
