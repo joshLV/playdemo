@@ -28,9 +28,9 @@ import play.Play;
  */
 public class BjenSMSProvider implements SMSProvider {
 
-    private final String SEND_URL = Play.configuration.getProperty("sms.http.send_url");
-    private final String USERNAME = Play.configuration.getProperty("sms.http.username");
-    private final String PASSWORD = Play.configuration.getProperty("sms.http.password");
+    private final String SEND_URL = Play.configuration.getProperty("ensms.http.send_url");
+    private final String USERNAME = Play.configuration.getProperty("ensms.http.username");
+    private final String PASSWORD = Play.configuration.getProperty("ensms.http.password");
 
     @Override
     public int send(SMSMessage message) {

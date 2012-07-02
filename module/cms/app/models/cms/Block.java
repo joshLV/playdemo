@@ -82,7 +82,7 @@ public class Block extends Model {
 
     @Transient
     public String getShowImageUrl() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, ImageSize.ORIGINAL);
+        return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, ImageSize.SLIDE);
     }
     
     @Transient
