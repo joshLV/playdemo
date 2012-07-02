@@ -11,7 +11,7 @@ String timeEnd = ecoupon.goods.useEndTime;}%
         $("#sure").attr("disabled", true);
     </script>
     <font color=red>此券已消费!</font>  <br>
-    券编号: ${ecoupon.eCouponSn}<br/>商品名称: ${ecoupon.goods.name}<br>消费日期：${ecoupon.consumedAt?.format()}
+    券编号: ${ecoupon.eCouponSn}<br/>商品名称: ${ecoupon.goods.name}<br>消费日期：${ecoupon.consumedAt?.format('yyyy-MM-dd HH:mm:ss')}
     #{/elseif}
 
     #{elseif ecoupon.status == models.order.ECouponStatus.REFUND}
@@ -19,7 +19,7 @@ String timeEnd = ecoupon.goods.useEndTime;}%
         $("#sure").attr("disabled", true);
     </script>
     <font color=red>此券已经退款，无法再使用该券号进行消费!</font><br>
-    券编号: ${ecoupon.eCouponSn}<br/>商品名称: ${ecoupon.goods.name}<br>退款日期：${ecoupon.refundAt?.format()}
+    券编号: ${ecoupon.eCouponSn}<br/>商品名称: ${ecoupon.goods.name}<br>退款日期：${ecoupon.refundAt?.format('yyyy-MM-dd HH:mm:ss')}
     #{/elseif}
 
     #{elseif ecoupon.expireAt.before(new java.util.Date())}
@@ -27,7 +27,7 @@ String timeEnd = ecoupon.goods.useEndTime;}%
         $("#sure").attr("disabled", true);
     </script>
     <font color=red>此券已过期!</font><br>
-    券编号: ${ecoupon.eCouponSn}<br/>商品名称: ${ecoupon.goods.name}<br>截止日期：${ecoupon.expireAt?.format()}
+    券编号: ${ecoupon.eCouponSn}<br/>商品名称: ${ecoupon.goods.name}<br>截止日期：${ecoupon.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
     #{/elseif}
 
     #{elseif  !ecoupon.getTimeRegion(timeBegin,timeEnd) }
@@ -51,6 +51,6 @@ String timeEnd = ecoupon.goods.useEndTime;}%
         $("#sure").attr("disabled", false);
     </script>
     券状态:未消费<br>
-    券编号: ${ecoupon.eCouponSn}<br/>商品名称: ${ecoupon.goods.name} <br/>截止日期：${ecoupon.expireAt?.format()}
+    券编号: ${ecoupon.eCouponSn}<br/>原价:${ecoupon.goods.faceValue}元<br/>商品名称: ${ecoupon.goods.name} <br/>截止日期:${ecoupon.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
     #{/else}
 #{/else}

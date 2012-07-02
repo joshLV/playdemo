@@ -83,25 +83,13 @@
         #{set i:0/}
         #{paginate.list items:couponPage, as:'coupon'}
         <tr>
-              #{set orderNo:coupon?.order?.orderNumber/}
-          #{set preOrderNo:""/}
-          #{set j:coupon?.order?.orderItems?.size() /}
-               #{if !preOrderNo.equals(orderNo)}
-                    %{ preOrderNo = orderNo; i=0;}%
-               #{/if}
-            #{if j>1 &&  ++i==1 }
-                <td rowspan="${j}"><a href="@{SupplierOrders.details(coupon?.order?.orderNumber)}">${coupon?.order?.orderNumber}</a></abbr></td>
-                 *{<td rowspan="${j}">${coupon?.orderItems?.phone}</td>}*
-            #{/if}
-            #{if j==1 || j ==0}
-                <td><a href="@{SupplierOrders.details(coupon?.order?.orderNumber)}">${coupon?.order?.orderNumber}</a></abbr></td>
-                *{<td>${coupon?.orderItems?.phone}</td>}*
-            #{/if}
+
+           <td><a href="@{SupplierOrders.details(coupon?.order?.orderNumber)}">${coupon?.order?.orderNumber}</a></abbr></td>
             <td>${coupon?.getMaskedEcouponSn()}</td>
             <td>${coupon?.goods?.name}</td>
             <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
             <td>${coupon?.getConsumedShop()}</td>
-            <td>${coupon?.goods?.effectiveAt ?.format()} -
+            <td>${coupon?.goods?.effectiveAt ?.format()} /
             ${coupon?.goods?.expireAt?.format()}</td>
             <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
             <td>#{if coupon?.supplierUser?.userName!=null}${coupon?.supplierUser?.userName}#{/if}

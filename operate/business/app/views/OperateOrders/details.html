@@ -129,7 +129,7 @@
                 <td>物流单号： ${orders.deliveryNo}</td>
             </tr>
             <tr>
-                <td>买家备注： ${orders.remark}</td>
+                <td>订单留言： ${orders.remark}</td>
             </tr>
         </table>
     </ul>
@@ -148,6 +148,9 @@
             </tr>
             <tr>
                 <td>电话： ${orders.buyerPhone}</td>
+            </tr>
+            <tr>
+                <td>订单留言： ${orders.remark}</td>
             </tr>
         </table>
     </ul>
@@ -172,6 +175,7 @@
 
         <h3>发货信息</h3>
     </div>
+
     <div class="modal-body">
         #{form @OperateOrders.index(), id:"sendForm", name:"sendForm", enctype:'multipart/form-data',
         class:"form-horizontal",method:"PUT"}
