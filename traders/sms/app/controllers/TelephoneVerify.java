@@ -97,10 +97,16 @@ public class TelephoneVerify extends Controller{
         Shop shop = Shop.findById(shopId);
         String shopName = shop.name;
 
-        if (ecoupon.expireAt.before(new Date())) {
+        if (ecoupon.status == ECouponStatus.CONSUMED) {
+            Logger.error("telephone verify failed: coupon consumed");
+            renderText("11;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(ecoupon.consumedAt));
+        } else if (ecoupon.status != ECouponStatus.UNCONSUMED){
+            Logger.error("telephone verify failed: coupon status invalid. %s", ecoupon.status);
+            renderText("12;对不起，该券无法消费");
+        } else if (ecoupon.expireAt.before(new Date())) {
             Logger.error("telephone verify failed: coupon expired");
-            renderText("11;对不起，该券已过期");
-        } else if (ecoupon.status == ECouponStatus.UNCONSUMED) {
+            renderText("13;对不起，该券已过期");
+        }  else {
             ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE);
             String eCouponNumber = ecoupon.getMaskedEcouponSn();
             eCouponNumber = eCouponNumber.substring(eCouponNumber.lastIndexOf("*") + 1);
@@ -118,9 +124,6 @@ public class TelephoneVerify extends Controller{
 
             Logger.debug("telephone verify success; caller: %s; employee: %s; coupon: %s; timestamp: %s; sign: %s", caller, employee, coupon, timestamp, sign);
             renderText("0;消费成功，价值" + ecoupon.faceValue + "元");
-        } else if (ecoupon.status == ECouponStatus.CONSUMED) {
-            Logger.error("telephone verify failed: coupon consumed");
-            renderText("12;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(ecoupon.consumedAt));
         }
     }
 }
