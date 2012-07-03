@@ -85,9 +85,7 @@ public class Images extends Controller {
             height = 180;
             imageSizeType = LOGO;
         } else if (imageName.contains(SLIDE)) {
-            width = 478;
-            height = 218;
-            imageSizeType = SLIDE;
+            imageSizeType = RAW;
         } else if (imageName.contains(RAW)){
             imageSizeType = RAW;
         } else {
@@ -138,7 +136,7 @@ public class Images extends Controller {
                     imageBuilder.scale(1.0D);
                 }
 
-                if(!imageSizeType.equals(TINY) && !imageSizeType.equals(LOGO) && !imageSizeType.equals(SLIDE) && !isDefaultImg){
+                if(!imageSizeType.equals(TINY) && !imageSizeType.equals(LOGO) && !imageSizeType.equals(RAW) && !isDefaultImg){
                     BufferedImage watermark = ImageIO.read(new File(Play.applicationPath,
                             joinPath("public", "images", "watermark_" + imageSizeType + ".png")));
                     imageBuilder.watermark(Positions.BOTTOM_RIGHT, watermark, 0.5f);
