@@ -199,7 +199,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         eCoupon.status = ECouponStatus.CONSUMED;
         eCoupon.save();
         Http.Response response = GET("/tel-verify?caller=" + caller + "&employee=" + employee + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals("12;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(eCoupon.consumedAt), response);
+        assertContentEquals("11;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(eCoupon.consumedAt), response);
 
         eCoupon.status = ECouponStatus.UNCONSUMED;
         eCoupon.save();
