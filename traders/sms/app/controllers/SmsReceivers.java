@@ -48,7 +48,7 @@ public class SmsReceivers extends Controller {
     }
 
     private static boolean validUserPassDt(String username, String pwd, String dt) {
-        return false;
+        return true;
     }
 
     /**
