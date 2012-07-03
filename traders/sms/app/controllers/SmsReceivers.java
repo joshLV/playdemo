@@ -1,6 +1,8 @@
 package controllers;
 
-import java.util.Date;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.FieldCheckUtil;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -10,9 +12,8 @@ import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import play.mvc.Controller;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.FieldCheckUtil;
+
+import java.util.Date;
 
 public class SmsReceivers extends Controller {
 
@@ -100,9 +101,15 @@ public class SmsReceivers extends Controller {
                     renderText("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166");
                 }
 
-                Long shopId = supplierUser.shop.id;
-                Shop shop = Shop.findById(shopId);
-                String shopName = shop.name;
+
+                String shopName = "未知";
+                if (supplierUser.shop != null) {
+                    //判断该券是否属于所在消费门店
+                    Long shopId = supplierUser.shop.id;
+                    //取得消费门店
+                    Shop shop = Shop.findById(shopId);
+                    shopName = shop.name;
+                }
 
                 if (ecoupon.expireAt.before(new Date())) {
                     SMSUtil.send("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", mobile, code);
@@ -161,25 +168,19 @@ public class SmsReceivers extends Controller {
         }
 
         boolean isExisted = false;
-        Long shopId = supplierUser.shop.id;
 
-        //判断该券是否属于所在消费门店
-        if (!ecoupon.goods.isAllShop) {
-            int cnt = 0;
-            for (Shop shop : ecoupon.goods.shops) {
-                if (shop.id.compareTo(shopId) == 0) {
-                    cnt++;
-                }
-            }
-            if (cnt == 0) {
+        String shopName = "未知";
+        if (supplierUser.shop != null) {
+            //判断该券是否属于所在消费门店
+            Long shopId = supplierUser.shop.id;
+            if (!ecoupon.isBelongShop(shopId)) {
                 isExisted = true;
-
             }
+            //取得消费门店
+            Shop shop = Shop.findById(shopId);
+            shopName = shop.name;
         }
 
-        //取得消费门店
-        Shop shop = Shop.findById(shopId);
-        String shopName = shop.name;
         //门店不在
         if (isExisted) {
             SMSUtil.send("【券市场】您的券号不能在" + shopName + "消费，请与店员确认。如有疑问请致电：400-6262-166", mobile, code);
@@ -191,7 +192,7 @@ public class SmsReceivers extends Controller {
             SMSUtil.send("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", mobile, code);
             renderText("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166");
         } else if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-            ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser,VerifyCouponType.CONSUMER_MESSAGE);
+            ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CONSUMER_MESSAGE);
             String coupon = ecoupon.getLastCode(4);
             String dateTime = DateUtil.getNowTime();
             // 发给店员
@@ -203,7 +204,7 @@ public class SmsReceivers extends Controller {
                     + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166", mobile, code);
 
             renderText("【券市场】您尾号" + coupon + "的券号于" + dateTime
-                            + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166");
+                    + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166");
         } else if (ecoupon.status == ECouponStatus.CONSUMED) {
             // 发给消费者
             SMSUtil.send("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", mobile, code);
