@@ -62,7 +62,7 @@ public class TelephoneVerify extends Controller{
         long t = System.currentTimeMillis();
         //5分钟的浮动
         if(Math.abs(timestamp - t) > 300000){
-            Logger.error("telephone verify failed: request timeout %s", timestamp);
+            Logger.error("telephone verify failed: request timeout %s-%s", t, timestamp);
             renderText("6;请求超时");
         }
         //验证密码
