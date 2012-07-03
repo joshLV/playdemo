@@ -37,7 +37,7 @@ public class TelephoneVerify extends Controller{
      * @param sign      请求签名，由 分配的app_key+timestamp 拼接后进行MD5编码组成
      */
     public static void verify(String caller, String employee, String coupon, Long timestamp, String sign){
-        Logger.debug("telephone verify; caller: %s; employee: %s; coupon: %s; timestamp: %s; sign: %s", caller, employee, coupon, timestamp, sign);
+        Logger.info("telephone verify; caller: %s; employee: %s; coupon: %s; timestamp: %s; sign: %s", caller, employee, coupon, timestamp, sign);
         if(caller == null || caller.trim().equals("")){
             Logger.error("telephone verify failed: invalid caller");
             renderText("1;主叫号码无效");
@@ -62,7 +62,7 @@ public class TelephoneVerify extends Controller{
         long t = System.currentTimeMillis();
         //5分钟的浮动
         if(Math.abs(timestamp - t) > 300000){
-            Logger.error("telephone verify failed: request timeout");
+            Logger.error("telephone verify failed: request timeout %s", timestamp);
             renderText("6;请求超时");
         }
         //验证密码
