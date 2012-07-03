@@ -98,7 +98,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         String caller = "partner";
         String employee = "1213";
         String coupon = "1234567001";
-        Long timestamp = System.currentTimeMillis();
+        Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
         Http.Response response = GET("/tel-verify?employee=" + employee + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
@@ -135,7 +135,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         String caller = "partner";
         String employee = "1213";
         String coupon = eCoupon.eCouponSn;
-        Long timestamp = System.currentTimeMillis();
+        Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
         Http.Response response = GET("/tel-verify?caller=" + caller + "&employee=" + employee + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
@@ -152,7 +152,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         String caller = "partner";
         String employee = "1213";
         String coupon = "1234567001";
-        Long timestamp = System.currentTimeMillis();
+        Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
         Http.Response response = GET("/tel-verify?caller=" + caller + "&employee=" + employee + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
@@ -189,7 +189,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         String caller = "partner";
         String employee = "1213";
         String coupon = "1234567001";
-        Long timestamp = System.currentTimeMillis();
+        Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
 
@@ -208,7 +208,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
 
         /*
-        eCoupon.expireAt = new Date(System.currentTimeMillis() - 30000000);
+        eCoupon.expireAt = new Date(System.currentTimeMillis()/1000 - 30000);
         eCoupon.save();
         response = GET("/tel-verify?caller=" + caller + "&employee=" + employee + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
         assertContentEquals("对不起，该券已过期", response);
