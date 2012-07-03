@@ -136,8 +136,20 @@ public class SupplierUser extends Model {
      * @param supplierUser 用户信息
      */
     public static void update(long id, SupplierUser supplierUser) {
-
         SupplierUser updatedUser = SupplierUser.findById(id);
+         String updatedUser_encryptedPassword =
+                StringUtils.isNotEmpty(updatedUser.encryptedPassword) ?
+                        updatedUser.encryptedPassword : "!&NOTSETPASSWORD!";
+
+        if (StringUtils.isNotEmpty(supplierUser.encryptedPassword) &&
+                !"******".equals(supplierUser.encryptedPassword) &&
+                !supplierUser.encryptedPassword.equals(DigestUtils.md5Hex(updatedUser_encryptedPassword))) {
+            Images.Captcha captcha = Images.captcha();
+            String passwordSalt = captcha.getText(6);
+            //随机码
+            updatedUser.passwordSalt = passwordSalt;
+            updatedUser.encryptedPassword = DigestUtils.md5Hex(supplierUser.encryptedPassword + passwordSalt);
+        }
         updatedUser.roles = supplierUser.roles;
         updatedUser.loginName = supplierUser.loginName;
         updatedUser.userName = supplierUser.userName;

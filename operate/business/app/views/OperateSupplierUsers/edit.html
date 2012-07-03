@@ -10,10 +10,9 @@
   <div class="control-group">
   <label for="input01" class="control-label">角色</label>
   <div class="controls">
-   #{list items:supplierUser?.roles, as:'role'}
+   #{list items:rolesList, as:'role'}
             <label class="checkbox inline">
-                <input type="hidden" name="supplierUser.roles.id" value="${role.id}">
-                <input type="checkbox" value="${role.id}" id="supplierUser.roles_${role.id}" disabled="true"
+                <input type="checkbox" value="${role.id}" id="supplierUser.roles_${role.id}" name="supplierUser.roles.id"
                       #{if roleIds?.contains(java.lang.String.valueOf(role?.id))}checked#{/if}/>
             ${role.text}
             </label>
@@ -45,7 +44,13 @@
    <input type="text" name="supplierUser.userName" class="input-large" id="userName" value="${supplierUser?.userName}"/>
   </div>
  </div>
-
+  <div class="control-group">
+  <label for="input01" class="control-label"><span style="color: red; ">*</span>密码</label>
+  <div class="controls">
+   <input type="password" name="supplierUser.encryptedPassword" class="input-large" value="******" />
+    <span class="error">#{error 'supplierUser.encryptedPassword' /}</span>
+  </div>
+ </div>
  <div class="control-group">
   <label for="jobNumber" class="control-label"><span style="color: red; ">*</span>工号</label>
   <div class="controls">
@@ -72,7 +77,6 @@
   <button class="btn btn-primary" onclick="javascript:window.history.back(-1)" type="button">返回</button>
  </div>
   <input type="hidden" id="hiddenId" value="${supplierUser.id}"/>
-  <input type="hidden" name="supplierUser.encryptedPassword" class="input-large" value="******" />
   <input type="hidden" name="supplierUser.confirmPassword" class="input-large" id ="confirmPassword" value="******" />
 #{/form}
 
