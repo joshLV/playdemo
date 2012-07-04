@@ -64,7 +64,7 @@ public class Sms2SendConsumer extends RabbitMQConsumer<SMSMessage> {
             int resultCode = getSMSProvider(SMS_TYPE).send(message);
             saveJournal(message, resultCode, null);
         } catch (SMSException e) {
-            Logger.error("SmsSenderConsumer: send message" + message + " failed:" + e.getResultCode());
+            Logger.error("Sms2SenderConsumer: send message" + message + " failed:" + e.getResultCode());
             saveJournal(message, e.getResultCode(), e.getMessage());
             throw e;
         }
