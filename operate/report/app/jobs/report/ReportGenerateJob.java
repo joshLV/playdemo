@@ -25,7 +25,7 @@ import java.util.Date;
 public class ReportGenerateJob extends Job {
     @Override
     public void doJob() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-HH-dd");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
         final String today = format.format(new Date());
         Logger.info("=================Start ReportGenerateJob(" + today + ") ...");
