@@ -1,22 +1,15 @@
 package models.order;
 
-import com.uhuila.common.util.RandomNumberUtil;
-import models.accounts.Account;
-import models.accounts.AccountType;
-import models.accounts.TradeBill;
-import models.accounts.util.AccountUtil;
-import models.accounts.util.TradeUtil;
-import models.admin.SupplierUser;
-import models.sales.Goods;
-import models.sales.Shop;
-import models.sms.SMSUtil;
-import org.apache.commons.lang.StringUtils;
-import play.data.validation.Required;
-import play.db.jpa.JPA;
-import play.db.jpa.Model;
-import play.modules.paginate.JPAExtPaginator;
-import play.modules.paginate.ModelPaginator;
-
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -28,13 +21,23 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import models.accounts.Account;
+import models.accounts.AccountType;
+import models.accounts.TradeBill;
+import models.accounts.util.AccountUtil;
+import models.accounts.util.TradeUtil;
+import models.admin.SupplierUser;
+import models.sales.Goods;
+import models.sales.Shop;
+import models.sms.SMSUtil;
+import org.apache.commons.lang.StringUtils;
+import play.Logger;
+import play.data.validation.Required;
+import play.db.jpa.JPA;
+import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
+import play.modules.paginate.ModelPaginator;
+import com.uhuila.common.util.RandomNumberUtil;
 
 @Entity
 @Table(name = "e_coupon")
@@ -149,42 +152,74 @@ public class ECoupon extends Model {
         this.replyCode = generateAvailableReplayCode(order.userId, order.userType);
     }
 
-    /**
+
+   /**
      * 生成当前用户唯一的ReplyCode，用于发送短信.
      *
      * @param userId
      * @param userType
      * @return
      */
-    private String generateAvailableReplayCode(long userId, AccountType userType) {
-        String randomNumber;
-        do {
-            randomNumber = RandomNumberUtil.generateSerialNumber(4);
-            System.out.println("randomNumber=" + randomNumber);
-        } while (isNotUniqueReplyCode(randomNumber, userId, userType));
-        return randomNumber;
-    }
-
-    /**
+   private String generateAvailableReplayCode(long userId, AccountType userType) {
+       String randomNumber;
+       do {
+           randomNumber = RandomNumberUtil.generateSerialNumber(4);
+           System.out.println("randomNumber=" + randomNumber);
+       } while (isNotUniqueReplyCode(randomNumber, userId, userType));
+       return randomNumber;
+   }
+ 
+   /**
      * 生成消费者唯一的券号.
      */
-    private String generateAvailableEcouponSn() {
-        String randomNumber;
-        do {
-            randomNumber = RandomNumberUtil.generateSerialNumber(10);
-        } while (isNotUniqueEcouponSn(randomNumber));
-        return randomNumber;
+   private String generateAvailableEcouponSn() {
+       String randomNumber;
+       do {
+           randomNumber = RandomNumberUtil.generateSerialNumber(10);
+       } while (isNotUniqueEcouponSn(randomNumber));
+       return randomNumber;
+   }
+ 
+ 
+   private boolean isNotUniqueReplyCode(String randomNumber, long userId, AccountType userType) {
+       return ECoupon.find("from ECoupon where replyCode=? and order.userId=? and order.userType=?",
+               randomNumber, userId, userType).fetch().size() > 0;
+   }
+ 
+   private boolean isNotUniqueEcouponSn(String randomNumber) {
+       return ECoupon.find("from ECoupon where eCouponSn=?", randomNumber).fetch().size() > 0;
+   }
+    
+    /**
+     * 生成当前用户相对于商户的ReplyCode，用于发送短信.
+     * 即用户在一个商户购买的所有商品都在一个短信下
+     * 暂时不使用。。。。
+     * @param userId
+     * @param userType
+     * @return
+     */
+    private String generateAvailableReplayCode(long userId, AccountType userType, long supplierId) {
+        ECoupon ecoupon = getLastECoupon(userId, userType, supplierId);
+        if (ecoupon != null) {
+            return ecoupon.replyCode;
+        }
+        
+        // 似乎不需要锁 ~ by TangLiqun
+        synchronized(ECoupon.class) {
+            ecoupon = getLastECoupon(userId, userType, supplierId);
+            if (ecoupon != null) {
+                return ecoupon.replyCode;
+            }
+            return RandomNumberUtil.generateSerialNumber(4);
+        }
     }
 
 
-    private boolean isNotUniqueReplyCode(String randomNumber, long userId, AccountType userType) {
-        return ECoupon.find("from ECoupon where replyCode=? and order.userId=? and order.userType=?",
-                randomNumber, userId, userType).fetch().size() > 0;
+    private ECoupon getLastECoupon(long userId, AccountType userType, long supplierId) {
+        return ECoupon.find("from ECoupon where order.userId=? and order.userType=? and goods.supplierId=?",
+                userId, userType, supplierId).first();
     }
-
-    private boolean isNotUniqueEcouponSn(String randomNumber) {
-        return ECoupon.find("from ECoupon where eCouponSn=?", randomNumber).fetch().size() > 0;
-    }
+    
 
     /**
      * 根据页面录入券号查询对应信息
@@ -559,5 +594,28 @@ public class ECoupon extends Model {
             q.setParameter(key, condition.getParamMap().get(key));
         }
         return (BigDecimal) q.getSingleResult();
+    }
+
+    public static List<ECoupon> selectCheckECoupons(BigDecimal payValue,
+            List<ECoupon> ecoupons) {
+        Collections.sort(ecoupons, new Comparator<ECoupon>() {
+            @Override
+            public int compare(ECoupon e1, ECoupon e2) {
+                return e2.faceValue.compareTo(e1.faceValue);
+            }
+        });
+        BigDecimal totalValue = new BigDecimal(0);
+        List<ECoupon> selectECoupons = new ArrayList<>();
+        
+        for (ECoupon ecoupon : ecoupons) {
+            if (totalValue.add(ecoupon.faceValue).compareTo(payValue) > 0) {
+                continue;
+            } else {
+                totalValue = totalValue.add(ecoupon.faceValue);
+                selectECoupons.add(ecoupon);
+            }
+        }
+        
+        return selectECoupons;
     }
 }

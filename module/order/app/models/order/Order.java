@@ -345,6 +345,7 @@ public class Order extends Model {
 //        if (number > limitNumber && buyNumber == 0) {
 //            return false;
 //        }
+        
         //超过限购数量,则表示已经购买过差商品
         if (limitNumber > 0 && (number > limitNumber || limitNumber <= buyNumber)) {
             return Boolean.TRUE;
