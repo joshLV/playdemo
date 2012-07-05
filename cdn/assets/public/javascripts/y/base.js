@@ -23,7 +23,7 @@ $(function($){
 
     cart.mouseover(function(){
         cartBox.addClass('hover').addClass('loading');
-        cartBoxBd.load("/carts/tops", function(data) {
+        cartBoxBd.load("/carts/minCarts", function(data) {
             isLoaded = true;
             cartBoxBd.removeClass('loading');
         });
