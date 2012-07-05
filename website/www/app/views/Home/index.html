@@ -174,8 +174,10 @@
             <ul class="bd">
             #{list recommendGoodsList, as:'aGoods'}
                 <li>
-                    <div class="index"><span>人气指数：<em id="summary_${aGoods.id}">${aGoods.summaryCount()}</em></span>
-                        <a href="#" onclick="support('${aGoods.id}','LIKE')" >支持</a></div>
+                    <div class="index">
+                        <span>人气指数：<em id="summary_${aGoods.id}">${aGoods.summaryCount()}</em></span>
+                        <a href="#" class="index-btn" data-goodsid="${aGoods.id}">支持</a>
+                    </div>
                     <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}"
                                                                        alt="${aGoods.name}"/></a></div>
                     <div class="title"><a href="/g/${aGoods.id}" target="_blank"></a>${aGoods.name}</div>

@@ -1,4 +1,5 @@
 $(function($){
+    // 加入收藏夹
     var addToFavorite = function(url, title) {
         try {
             window.external.AddFavorite(url, title);
@@ -17,6 +18,7 @@ $(function($){
         addToFavorite(url, title);
     });
 
+    // minCarts
     var cart = $('#cart'),
         cartBox = $('#cart .cart-box'),
         cartBoxBd = $('#cart .cart-box-bd');
@@ -32,7 +34,6 @@ $(function($){
         cartBox.removeClass('hover');
     });
 
-    //购物车记录删除
     $('.goods-del').live('click', function (ev) {
         ev.preventDefault();
         var buyCount = parseInt($(this).attr("count")),
@@ -59,5 +60,16 @@ $(function($){
                 }
             }
         });
+    });
+
+    // 人气指数
+    $('.index-btn').click(function(e){
+        e.preventDefault();
+        var id = $(this).attr('data-goodsid');
+        $.post('/goods/statistics', {'id': id, 'statisticsType': 'LIKE'},
+            function(data) {
+                $('#summary_' + id).html(data);
+            }
+        );
     });
 });

@@ -83,11 +83,11 @@
         </div>
         <div id="bizinfo">
             <h3>消费券提供商：</h3>
-            <a href="/s/0-0-0-0-${goods.brand?.id}"><img src="${goods.brand?.showLogo}" width="200"
-                                                         alt="${goods.brand?.name}"/></a>
-
-            <div class="index"><span>人气指数：<em id="summary_${goods.id}">${goods.summaryCount()}</em></span>
-                <a href="#" onclick="support('${goods.id}','LIKE')" >支持</a></div>
+            <a href="/s/0-0-0-0-${goods.brand?.id}"><img src="${goods.brand?.showLogo}" width="200" alt="${goods.brand?.name}"/></a>
+            <div class="index">
+                <span>人气指数：<em id="summary_${goods.id}">${goods.summaryCount()}</em></span>
+                <a href="#" class="index-btn" data-goodsid="${goods.id}">支持</a>
+            </div>
             <div class="bdshare clearfix">
                 <!-- Baidu Button BEGIN -->
                 <div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare">

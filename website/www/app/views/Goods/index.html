@@ -38,12 +38,9 @@
                     #{if models.sales.MaterialType.REAL.equals(materialType)}
                     %{ m=0 }%
                     #{/if}
-                    <div class="cat-kind">
-                        区域：#{if "0".equals(districtId)}<a class="curr">全部</a>#{/if}
-                             #{else}<a id="district"
-                             href="/s/${categoryId}-021-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
-                             >全部</a>
-                           #{/else}
+                    <div class="cat-kind">区域：
+                        #{if "0".equals(districtId)}<a class="curr">全部</a>#{/if}
+                        #{else}<a id="district" href="/s/${categoryId}-021-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}">全部</a>#{/else}
                     </div>
                     <div class="cat-list">
                         #{list districts, as:'district'}
@@ -59,12 +56,9 @@
                     </div>
                 </li>
                 <li class="zone clearfix">
-                    <div class="cat-kind">
-                        商圈：
-                         #{if "0".equals(areaId)}<a class="curr">全部</a>#{/if}
-                        #{else}<a href="/s/${categoryId}-0-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
-                            >全部</a>
-                        #{/else}
+                    <div class="cat-kind">商圈：
+                        #{if "0".equals(areaId)}<a class="curr">全部</a>#{/if}
+                        #{else}<a href="/s/${categoryId}-0-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}">全部</a>#{/else}
                     </div>
                     <div class="cat-list">
                         #{list areas, as:'area'}
@@ -81,14 +75,9 @@
                 </li>
 
                 <li class="zone clearfix">
-                    <div class="cat-kind">
-                        品牌：
-                    #{if brandId == 0}<a class="curr">全部</a>
-                    #{/if}
-                    #{else}<a
-                            href="/s/${categoryId}-${searchAreaId}-0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
-                            >全部</a>
-                    #{/else}
+                    <div class="cat-kind">品牌：
+                    #{if brandId == 0}<a class="curr">全部</a>#{/if}
+                    #{else}<a href="/s/${categoryId}-${searchAreaId}-0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}">全部</a>#{/else}
                     </div>
                     <div class="cat-list">
                          #{list brands, as:'brand'}
@@ -163,8 +152,10 @@
             <ul class="bd">
              #{list recommendGoodsList, as:'aGoods'}
                 <li>
-                    <div class="index"><span>人气指数：<em id="summary_${aGoods.id}">${aGoods.summaryCount()}</em></span>
-                    <a href="#" onclick="support('${aGoods.id}','LIKE')" >支持</a></div>
+                    <div class="index">
+                        <span>人气指数：<em id="summary_${aGoods.id}">${aGoods.summaryCount()}</em></span>
+                        <a href="#" class="index-btn" data-goodsid="${aGoods.id}">支持</a>
+                    </div>
                     <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" alt="${aGoods.name}"/></a></div>
                     <div class="title"><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
                     <div class="attri">
