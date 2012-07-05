@@ -202,15 +202,6 @@ function reorder(goods_id, increment) {
             last_num_ele.val(new_num);
         });
 }
-function support(id, type) {
-    $.post(
-        "/goods/statistics ",
-        {'id':id, 'statisticsType':type},
-        function (data) {
-            $('#summary_' + id).html(data);
-        }
-    );
-}
 
 $("#link_add_cart").click(function () {
     var id = $("#goodsId").val();

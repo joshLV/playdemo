@@ -8,7 +8,6 @@
     #{asset.css src:['/y/list.css'] /}
 #{/set}
 #{set 'moreScripts'}
- #{asset.js src:['/u/goods.js'] /}
 <script type="text/javascript">
    $(function() {
 		$("#dz").click(function() {
@@ -67,7 +66,7 @@
                                 <a class="curr">${area.name}</a>
                             #{/if}
                          #{else}
-                         <a href="/s/0-${area.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-${m}">${area.name}</a>
+                            <a href="/s/0-${area.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-${m}">${area.name}</a>
                          #{/else}
                          #{/if}
                          #{/list}
@@ -82,11 +81,10 @@
                     <div class="cat-list">
                          #{list brands, as:'brand'}
                     #{if brandId == brand.id}
-                        <span id="area" class="curr">${brand.name}</span>
+                        <a class="curr">${brand.name}</a>
                     #{/if}
-                    #{else}<a
-                            href="/s/${categoryId}-${searchAreaId}-${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
-                            class="font_blue">${brand.name}</a>
+                    #{else}<a href="/s/${categoryId}-${searchAreaId}-${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
+                            >${brand.name}</a>
                     #{/else}
                 #{/list}
                     </div>
