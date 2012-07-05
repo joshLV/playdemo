@@ -104,6 +104,7 @@ mark { background: #ff0; }
 }
 #logo, #promise {
     float: left;
+    font-size: 0;
 }
 #cart {
     float: right;
@@ -112,20 +113,25 @@ mark { background: #ff0; }
 #cart em {
     color: #fc7410;
 }
-#cart span {
-    padding: 0 5px 0 22px;
+#cart .cart-icon {
+    float: left;
+    display: inline-block;
+    padding: 3px 5px 0 22px;
     color: #fc7410;
 }
-#cart a {
+#cart .cart-num {
+    float: left;
     display: inline-block;
-    padding: 0px 9px 3px;
-    margin-left: 5px;
-    color: #fff;
-    line-height: 22px\9;
-    *line-height: 22px;
-    _line-height: 18px;
+    padding-top: 3px;
 }
-#cart a:hover {
+#cart .cart-btn {
+    float: left;
+    display: inline-block;
+    padding: 1px 10px 6px;
+    margin-left: 8px;
+    color: #fff;
+}
+#cart .cart-btn:hover {
     text-decoration: none;
 }
 
@@ -147,12 +153,12 @@ mark { background: #ff0; }
     font-weight: 700;
     line-height: 38px;
 }
-#nav .curr {
-    background-color: #d6480a;
+#nav .curr,
+#nav a:hover {
+    background: #d6480a url(http://img.uhcdn.com/images/y/nav-curr-bg.png) repeat-x 0 0;
 }
 #nav a:hover {
     text-decoration: none;
-    background-color: #d6480a;
 }
 
 /** 页尾 **/

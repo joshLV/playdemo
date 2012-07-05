@@ -204,10 +204,20 @@ public class Orders extends Controller {
                 Integer number = Integer.parseInt(goodsItem[1]);
                 if (number > 0) {
                     Long goodsId = Long.parseLong(goodsItem[0]);
-                    boolean isBuyFlag = Order.checkLimitNumber(user, goodsId, number);
+                    Long boughtNumber = OrderItems.itemsNumber(user, goodsId);
+                    boolean isBuyFlag = Order.checkLimitNumber(user, goodsId, boughtNumber, number);
                     if (isBuyFlag) {
                         error("你所购买商品超过限购数量，请确认！");
                         return;
+                    }
+                    //取出商品的限购数量
+                    Goods goods = Goods.findById(goodsId);
+                    int limitNumber = 0;
+                    if (goods.limitNumber != null) {
+                        limitNumber = goods.limitNumber;
+                    }
+                    if ((limitNumber > boughtNumber) && number > (limitNumber - boughtNumber.intValue())) {
+                        number = limitNumber - boughtNumber.intValue();
                     }
                     goodsIds.add(goodsId);
                     itemsMap.put(goodsId, number);
@@ -221,6 +231,7 @@ public class Orders extends Controller {
      *
      * @param items 商品列表
      */
+
     public static void checkLimitNumber(String items) {
         User user = SecureCAS.getUser();
         String[] itemSplits = items.split(",");
@@ -230,7 +241,8 @@ public class Orders extends Controller {
                 Integer number = Integer.parseInt(goodsItem[1]);
                 if (number > 0) {
                     Long goodsId = Long.parseLong(goodsItem[0]);
-                    boolean isCanBuyFlag = Order.checkLimitNumber(user, goodsId, number);
+                    Long boughtNumber = OrderItems.itemsNumber(user, goodsId);
+                    boolean isCanBuyFlag = Order.checkLimitNumber(user, goodsId, boughtNumber, number);
                     if (isCanBuyFlag) {
                         renderJSON("1");
                     }

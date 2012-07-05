@@ -1,287 +1,167 @@
-#{extends 'main.html' /}
+#{extends 'top.html' /}
 #{set title: '【' + (goods.brand == null ? '一百券' : goods.brand?.name) + '】' + goods.name
-      + '-一百券-网上消费券首选门户' + (goods.keywords == null ? '' : ("【" + goods.keywords + "】") ) /}
++ '-一百券-网上消费券首选门户' + (goods.keywords == null ? '' : ("【" + goods.keywords + "】") ) /}
 #{set 'metaContent'}
 <meta name="Description" content="一百券-${goods.brand?.name} ${goods.name},${goodsKeywords}消费券,代金券,优惠券,美食券,电子券,提货券">
-<meta name="Keywords" content="上海优惠券,一百券,${goods.brand?.name},${goods.name},${goodsKeywords},消费券,代金券,优惠券,美食券,电子券,优惠上海,提货券">
+<meta name="Keywords"
+      content="上海优惠券,一百券,${goods.brand?.name},${goods.name},${goodsKeywords},消费券,代金券,优惠券,美食券,电子券,优惠上海,提货券">
 #{/set}
 #{set 'moreStyles'}
-    #{asset.css src:['/u/detail.css']/}
+    #{asset.css src:['/y/detail.css']/}
 #{/set}
 #{set 'moreScripts'}
-<script>
-    function append_questions(questions){
-        var q_size = Number($("#q-size").val());
-
-        for(var i = 0; i < questions.length; i ++ ) {
-            var odd_style = q_size % 2 == 1 ? "qa-odd" : "";
-            $("#q-list").append('                                       \
-            <div class="qa-item ' + odd_style + '">                     \
-                <div class="user">                                      \
-                    <span class="name">' + questions[i].user + '</span>         \
-                    <span>' + questions[i].date + '</span>                      \
-                </div>                                                  \
-                <dl class="question">                                   \
-                    <dt>咨询内容：</dt>                                  \
-                    <dd>' + questions[i].content + '</dd>                       \
-                </dl>                                                   \
-                <dl class="answer">                                     \
-                    <dt>待回复,</dt>                                    \
-                    <dd>请耐心等待^_^</dd>                               \
-                </dl>                                                   \
-            </div>                                                      \
-            ' );
-            q_size += 1;
-        }
-
-        $("#q-size").val(q_size);
-    }
-    $(function () {
-        /**
-         *点击加入购物车按钮
-         */
-        $("#link_add_cart").click(function () {
-
-            $.post(
-                    "/carts",
-                    {'goodsId':$("#goodsId").val(), 'increment':$("#number").val()},
-                    function (data) {
-                        $('#add_cart_result').show();
-                        $('#add_cart_result').show();
-                        //5秒后自动消失
-                        setTimeout("$('#add_cart_result').css('display','none')", 5000);
-                        //显示最新的购物车信息
-                        $("#result-count").text(data.count);
-                        $("#result-amount").text(data.amount);
-
-                        //修改顶部购物车商品数量
-                        $("#cart-count").html(data.count);
-                        $("#reload").val("true");
-                        $("#order_confirm").hide();
-                    }
-            );
-        });
-
-        $("#link_buy_more").click(function () {
-            $('#add_cart_result').hide();
-        });
-
-        $("#link_buy_now").click(function () {
-            var limitNumber ='${goods.limitNumber}';
-            var number = Number($("#number").val());
-            if (limitNumber > 0 && number >limitNumber) {
-               $(".error").html("<strong>只能购买"+limitNumber+"个</strong>").css('color','#F55');
-                return false;
-            }
-
-            var t = $(this);
-            t.attr("href", t.attr("href") + '-' + $("#number").val());
-            return true;
-        });
-
-        $("#J_closeTips").click(function (ev) {
-            ev.preventDefault();
-            $('#add_cart_result').hide();
-        });
-
-
-        // 详情页tab
-        $('#J_tabbar li').click(function () {
-            var that = $(this),
-            attr = that.attr('name');
-
-            $('#J_tabbar li').removeClass('current');
-            that.addClass('current');
-
-            if (attr == 'product-info') {
-                $('#J_tabtxt .txt-item').show();
-                $('#J_tabtxt .txt-item-hd').show();
-            } else {
-                $('#J_tabtxt .txt-item').hide();
-                $('#J_tabtxt .' + attr + ' .txt-item-hd').hide();
-                $('#J_tabtxt .' + attr).show();
-            }
-        });
-
-        //直接在文本框里输入购买数量
-        $("#number").blur(function () {
-            try {
-                var number = Number($(this).val())
-                var stock = Number($("#stock").val())
-                if (number <= 0) {
-                    $(this).val(1);
-                }
-                if (number > 999) {
-                    $(this).val(999);
-                }
-                ;
-                if (number > stock) {
-                    $(this).val(stock)
-                    $("#stock_hit").css("display", "inline")
-                }
-                ;
-            } catch (e) {
-                $(this).val(1);
-            }
-        });
-
-        //提交问题
-        $("#submit-question").click(function(){
-            var question = $("#question").val();
-            if(question.replace(/(^\s*)|(\s*$)/g,"") == ""){
-                alert("请输入问题内容");
-                return;
-            }
-            $.post(
-                "/user-question",
-                {"content":question,"goodsId":$("#goodsId").val()},
-                function(data){
-                    if(data.error){
-                        $("#q-error").html(data.error).show();
-                    }else{
-                        append_questions(data.questions)
-                        $("#question").val("");
-                        $("#q-error").hide().html("");
-                    }
-                }
-            )
-            .error(function(){
-                $("#q-error").html("网络错误").show();
-            });
-        });
-        //点击更多
-        $("#show-more").click(function(){
-            var max_result = Number($("#max-result").val())
-            $.get(
-                "/more-questions",
-                {"goodsId":$("#goodsId").val(), "firstResult":max_result, "size":10},
-                function(data){
-                    append_questions(data.questions);
-                    $("#max-result").val(max_result + data.questions.length);
-                    if(data.questions.length < 10){
-                        $("#more-questions").css("display","none");
-                    }
-                }
-            );
-            return false;
-        });
-    });
-</script>
+ #{asset.js src:['/u/goods-show.js'] /}
 #{/set}
 
-<div class="wrap clearfix">
-    <h1 class="title">${goods.name}</h1>
-    <div class="section">
-        <div class="photo">
-            <img src="${goods.imageLargePath}" width="340" height="260"/>
+<div id="content">
+    <h1>${goods.name}</h1>
+
+    <div id="summary" class="clearfix">
+        <div id="gallery">
+            <img src="${goods.imageLargePath}"/>
         </div>
         <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
-        <ul class="property">
-        #{if params['isSupplier']== null || !params['isSupplier']}
-            <li class="price">现　　价:<span>${goods.salePrice?.formatCurrency('CNY')}</span></li>
-        #{/if}
-        #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
-            <li class="cost">原　　价:
-                <del>${goods.faceValue?.formatCurrency('CNY')}</del>
-            </li>
+
+        <div id="property">
+            <ul id="metaBox">
             #{if params['isSupplier']== null || !params['isSupplier']}
-                <li class="discount">折　　扣:<span>${goods.discountExpress}</span></li>
+                <li>现　　价：<span class="price">&yen;${goods.salePrice}</span></li>
             #{/if}
-        #{/if}
-            <li class="type">商品类型:<span>&{'goods.'+goods.materialType}</span></li>
-            <li class="shipmod">配送方式:<span>#{if models.sales.MaterialType.ELECTRONIC.equals(goods.materialType)}
-                手机短信#{/if}#{else}快递 (运费：${models.order.Order.FREIGHT} 元)#{/else}</span></li>
-            <li class="deadline">券有效期:<span>${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span></li>
-            <li class="amount">购买数量:
-                <span><input class="num_input_bg" id="number" name="number" type="text" value="1"/> 件</span>
-                <span id="stock_hit" style="display:none;color:#f50">库存${goods.baseSale}件</span>
-                #{if goods.limitNumber >0}
-                <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
+            #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
+                <li>原　　价：
+                    <del>&yen;${goods.faceValue}</del>
+                </li>
+                #{if params['isSupplier']== null || !params['isSupplier']}
+                    <li>折　　扣：<em class="discount">${goods.discountExpress}</em></li>
                 #{/if}
-                <span class="error">#{error 'number' /}</span>
-                <input type="hidden" id="stock" value="${goods.baseSale}">
-            </li>
-        #{if goods.onSale()}
-            <li class="action clearfix">
-                #{if !bought}<a class="buy" href="/orders?items=${goods.getId()}" id="link_buy_now">立即购买</a>
-                #{if !goods?.isLottery}
-                   <a class="add" id="link_add_cart" href="#">加入购物车</a>
+            #{/if}
+                <li>商品类型：&{'goods.'+goods.materialType}</li>
+                <li>配送方式：#{if models.sales.MaterialType.ELECTRONIC.equals(goods.materialType)}
+                    手机短信#{/if}#{else}快递 (运费：${models.order.Order.FREIGHT} 元)#{/else}</li>
+                <li>券有效期：${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</li>
+                <li class="amount">购买数量:
+                    <span id="amount">
+                    <input class="amount-ipt" id="number" name="number" type="text" value="1"/>
+                            <span class="increase-btn" id="increase-btn" name="${goods.id}"></span>
+                            <span class="decrease-btn" id="decrease-btn" name="${goods.id}"></span>
+                        <input type="hidden" value="1" id="last_num_${goods.id}"/>
+                        <input type="hidden" value="${goods.baseSale}" id="stock_${goods.id}">
+                        <input type="hidden" value="${goods.limitNumber}" id="limit_${goods.id}">
+                    </span> 件
+                    <span id="stock_hit" style="display:none;color:#f50">库存${goods.baseSale}件</span>
+                #{if goods.limitNumber > 0}
+                    <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
+                    #{if goods.limitNumber-boughtNumber > 0}
+                        <span class="buy_info">#{if user !=null}您还可以购买${goods.limitNumber-boughtNumber}件#{/if}</span>
+                    #{/if}
                 #{/if}
+                    <span class="error">#{error 'number' /}</span>
+                    <input type="hidden" id="stock" value="${goods.baseSale}">
+                </li>
+            </ul>
+            <div id="btnBox">
+            #{if goods.onSale()}
+                #{if !bought}
+                    <a href="/orders?items=${goods.getId()}" id="link_buy_now" class="nowBuy">立即购买<b></b></a>
+                    <a id="link_add_cart" href="#" class="addCart">加入购物车<b></b></a>
                 #{/if}
-                #{else}<strong style="color: red">您已经购买过此商品！</strong>#{/else}
-
-                <div id="add_cart_result" class="add-tips" style="display: none;">
-                    <h4>已成功添加到购物车！</h4>
-
-                    <p>购物车共有<em id="result-count"></em>件，总计<strong id="result-amount"></strong>元。</p>
-                    <a class="see-carts" href="/carts">查看购物车</a>
+                #{else}
+                    <strong style="color: red">您已经购买过此商品！</strong>
+                #{/else}
+                <div id="add_cart_result" class="addCart-tips" style="display: none;">
+                    <span class="addCart-icon"></span>
+                    <h4>已成功添加到购物车</h4>
+                    <p>购物车共有<em id="result-count"></em>件，总计<strong id="result-amount"></strong>元</p>
+                    <a class="view-carts" href="/carts">查看购物车<b></b></a>
                     <a class="close-tips" id="J_closeTips" href="#">关闭</a>
                 </div>
-            </li>
-        #{/if}
-        #{elseif params['isSupplier']== null || !params['isSupplier']}
-            <li class="buttom_dibu"><span class="zi_gray">已下架</span></li>
-        #{/elseif}
-        </ul>
-        <div class="online clearfix">
-            <span>在线客服:</span>
-            <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=2281971081&site=qq&menu=yes"><img border="0" src="http://wpa.qq.com/pa?p=2:2281971081:42" alt="点这里咨询客服" title="点这里咨询客服"></a>
-            <a target="_blank" href="http://www.taobao.com/webww/ww.php?ver=3&touid=%E5%88%B8%E7%94%9F%E6%B4%BB8&siteid=cntaobao&status=1&charset=utf-8"><img border="0" height="22" src="http://amos.alicdn.com/online.aw?v=2&uid=%E5%88%B8%E7%94%9F%E6%B4%BB8&site=cntaobao&s=1&charset=utf-8" alt="点这里咨询客服" /></a>
+            #{/if}
+            #{elseif params['isSupplier']== null || !params['isSupplier']}
+                <span>已下架</span>
+            #{/elseif}
+            </div>
         </div>
-        #{if goods.materialType == models.sales.MaterialType.ELECTRONIC}
-        <div class="diagram">
-            <img src="http://img.uhcdn.com/images/u/diagram.png" alt="消费流程示意图" />
-            <p class="tips"><span>注</span> 假如您没有收到短信，您可以在“我的一百券”-“我的券”中使用“重发短信”功能。</p>
-        </div>
-        #{/if}
-    </div><!-- .section -->
-    <div class="aside">
-        <div class="service">
-            <div class="service-hd">承诺</div>
-            <ul class="service-bd">
-                <li class="item-1"><a href="/service" target="_blank"><span>未消费无条件退款</span></a></li>
-                <li class="item-2"><a href="/service" target="_blank"><span>过期未消费，一键立即退款</span></a></li>
-                <li class="item-3"><a href="/service" target="_blank"><span>消费不满意，24小时及时处理</span></a></li>
-            </ul>
-        </div>
-        <div class="brand">
-            <h4 class="brand-name">
-                品牌名称: <a href="/s/0-0-0-0-${goods.brand?.id}"><span>${goods.brand?.name}</span></a>
-            </h4>
-            <p class="brand-logo">
-                <a href="/s/0-0-0-0-${goods.brand?.id}"><img src="${goods.brand?.showLogo}" width="210" alt="${goods.brand?.name}"/></a>
-            </p>
-            <div class="brand-text">${goods.brand?.introduce?.raw()}</div>
-        </div>
-    </div>
-</div>
+        <div id="bizinfo">
+            <h3>消费券提供商：</h3>
+            <a href="/s/0-0-0-0-${goods.brand?.id}"><img src="${goods.brand?.showLogo}" width="200"
+                                                         alt="${goods.brand?.name}"/></a>
 
-#{if goods.prompt != null}
-<div class="wrap warm-tips">
-    <h4>温馨提示</h4>
-    <div class="warm-content">
-    ${goods?.prompt?.raw()}
+            <div class="index"><span>人气指数：<em id="summary_${goods.id}">${goods.summaryCount()}</em></span>
+                <a href="#" onclick="support('${goods.id}','LIKE')" >支持</a></div>
+            <div class="bdshare clearfix">
+                <!-- Baidu Button BEGIN -->
+                <div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare">
+                    <a class="bds_tsina"></a>
+                    <a class="bds_tqq"></a>
+                    <a class="bds_renren"></a>
+                    <a class="bds_qzone"></a>
+                    <a class="bds_kaixin001"></a>
+                    <a class="bds_taobao"></a>
+                    <a class="bds_hi"></a>
+                    <span class="bds_more">更多</span>
+                </div>
+                <script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=763119"></script>
+                <script type="text/javascript" id="bdshell_js"></script>
+                <script type="text/javascript">document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();
+                </script>
+                <!-- Baidu Button END -->
+            </div>
+            <div class="qvalue">${goods.brand?.introduce?.raw()}</div>
+        </div>
     </div>
-</div>
+    <!-- #summary -->
+#{if goods.materialType == models.sales.MaterialType.ELECTRONIC}
+    <div id="diagram">
+        <img src="http://img.uhcdn.com/images/y/diagram.png" alt="消费流程示意图" width="960" height="37"/>
+
+        <p class="tips">假如您没有收到短信，您可以在“我的一百券” - “我的券”中使用“重发短信”功能。</p>
+    </div>
+    <!-- #diagram -->
 #{/if}
+    <div id="recommend">
+        <div class="hd">推荐商品</a></div>
+        <ul class="bd clearfix">
+        #{list recommendGoodsList, as:'aGoods'}
+            <li>
+                <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}"
+                                                                                  alt="${aGoods.name}"/></a></div>
+                <div class="title"><a href="" target="_blank"></a>${aGoods.name}</div>
+                <div class="attri">
+                    <del>原价：${aGoods.faceValue}</del>
+                    <span class="coupon">&{'goods.'+goods.materialType}</span></div>
+                <div class="price">现价：<b>&yen;${aGoods.salePrice}</b></div>
+            </li>
+        #{/list}
+        </ul>
+    </div>
+    <!-- #recommend -->
 
-<div class="wrap clearfix">
-    <ul id="J_tabbar" class="tabbar clearfix">
-        <li name="product-info" class="current">商品信息</li>
-    #{if models.sales.MaterialType.REAL!=goods.materialType}
-        <li name="applicable-store">适用门店</li>
-    #{/if}
-        <li name="qa">购买咨询</li>
-    </ul>
-    <div id="J_tabtxt" class="tabtxt">
-        <div class="product-info txt-item txt-item-bd clearfix">
-        ${goods?.details?.raw()}
+    <div id="tabbar" class="clearfix">
+        <ul>
+            <li class="curr" data-id="warmtips">温馨提示</li>
+            <li data-id="details">商品详情</li>
+            <li data-id="store">适用门店</li>
+            <li data-id="consult">购买咨询</li>
+        </ul>
+    </div>
+    <!-- #tabbar -->
+
+    <div id="warmtips" class="tab-item">
+    #{if goods.prompt != null}
+            ${goods?.prompt?.raw()}
+        #{/if}
+    </div>
+    <div id="details" class="tab-item">
+        <div class="hd">商品详情</a></div>
+        <div class="bd">${goods?.details?.raw()}
         </div>
+    </div>
+    <!-- #details -->
 
-        #{if models.sales.MaterialType.REAL!=goods.materialType}
-        <div class="applicable-store txt-item clearfix">
-            <h4 class="txt-item-hd">适用门店</h4>
-            <table class="txt-item-bd" width="700" border="0" cellpadding="0" cellspacing="0">
+    <div id="store" class="tab-item">
+        <div class="hd">适用门店</a></div>
+        <div class="bd">
+            <table border="0" cellpadding="0" cellspacing="0">
             #{if shops?.size() >0}
                 #{list shops, as:'shop'}
                     <tr>
@@ -293,48 +173,48 @@
             #{/if}
             </table>
         </div>
+    </div>
+    <!-- #store -->
+
+    <div id="consult" class="tab-item">
+        <div class="hd">
+            <b>购买咨询</b>
+        #{if questions.size() == 10}
+            <a href="##question-form" id="show-more">更多>></a>
+            <input type="hidden" id="max-result" value="${questions.size() + 1}">
         #{/if}
-
-        <div class="qa txt-item">
-            <h4 class="txt-item-hd">购买咨询</h4>
-            <div class="txt-item-bd" id="q-list">
-                <input type="hidden" value="${questions?.size()}" id="q-size"/>
-                %{q_index = 0}%
-                #{list items:questions, as:'question'}
-                %{
-                    q_style = q_index%2 == 1 ? "qa-odd" : ""
-                    q_index += 1
-                }%
-                <div class="qa-item ${q_style}">
-                    <div class="user"><span class="name">${question.userName == null ? "游客" : question.userName}</span> ${question.createdAt.format()}</div>
-                    <dl class="question">
-                        <dt>咨询内容：</dt>
-                        <dd>${question.content}</dd>
-                    </dl>
-                    <dl class="answer">
-                        #{if question.reply != null}
-                            <dt>客服回复：</dt>
-                            <dd>${question.reply}</dd>
-                        #{/if}
-                        #{else}
-                            <dt>待回复,</dt>
-                            <dd>请耐心等待^_^</dd>
-                        #{/else}
-                    </dl>
-                </div>
-                #{/list}
+        </div>
+        <div class="bd" id="q-list">
+            <input type="hidden" value="${questions.size()}" id="q-size"/> #{list items:questions, as:'question'}
+            <div class="question">
+                <dl>
+                    <dt>${question.userName == null ? "游客" : question.userName}</dt>
+                    <dd>
+                    ${question.content}<span class="date">${question.createdAt.format('yyyy-MM-dd HH:mm:ss')}</span>
+                    </dd>
+                </dl>
             </div>
-            #{if questions?.size() == 10}
-                <div class="qa-more" id="more-questions"><a href="#" id="show-more">更多>></a></div>
-                <input type="hidden" id="max-result" value="${questions.size() + 1}">
-            #{/if}
-            <div class="qa-form">
-                <div class="tit">发表咨询：</div>
-                <textarea class="con" cols="80" rows="5" id="question"></textarea>
-                <span id="q-error" style="display:none"></span>
-                <div class="btn"><button id="submit-question"> 提 交 </button></div>
+            <div class="answer">
+                <dl>
+                    #{if question.reply != null}
+                        <dt>客服回复：</dt>
+                        <dd>
+                        ${question.reply}<span class="date">${question.repliedAt.format('yyyy-MM-dd HH:mm:ss')}</span>
+                        </dd>
+                    #{/if} #{else}
+                    <dt>待回复,</dt>
+                    <dd>请耐心等待^_^</dd>
+                #{/else}
+                </dl>
             </div>
-        </div><!-- qa -->
-
-    </div><!-- tabtxt END -->
-</div>
+        #{/list}
+        </div>
+        <form id="question-form">
+            <label>发表咨询：</label>
+            <textarea class="con" cols="80" rows="5" id="question"></textarea>
+            <span id="q-error" style="display: none"></span>
+            <button class="submit" id="submit-question">提 交</button>
+        </form>
+    </div>
+    <!-- #consult -->
+</div><!-- #content -->

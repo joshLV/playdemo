@@ -284,6 +284,7 @@ public class Goods extends Model {
      */
     public Integer favorite = 0;
 
+
     @Transient
     public String salePriceBegin;
     @Transient
@@ -292,6 +293,9 @@ public class Goods extends Model {
     public int saleCountBegin = -1;
     @Transient
     public int saleCountEnd = -1;
+    @Transient
+    public GoodsStatistics statistics;
+
     /**
      * 商品类型
      */
@@ -356,7 +360,7 @@ public class Goods extends Model {
      * 是否抽奖商品
      */
     @Column(name = "is_lottery")
-    public Boolean isLottery;
+    public Boolean isLottery = false;
 
     @Transient
     public boolean skipUpdateCache = false;
@@ -422,6 +426,23 @@ public class Goods extends Model {
         }
         DecimalFormat format = new DecimalFormat("#.#");
         return format.format(discount.doubleValue()) + "折";
+    }
+
+    @Transient
+    public String getDiscountExpress1() {
+        BigDecimal discount = getDiscount();
+        if (discount.compareTo(BigDecimal.ZERO) == 0) {
+            return "";
+        }
+        if (discount.compareTo(BigDecimal.TEN) >= 0) {
+            return "";
+        }
+        if (discount.compareTo(BigDecimal.ZERO) < 0) {
+            return "";
+
+        }
+        DecimalFormat format = new DecimalFormat("0.0");
+        return format.format(discount.doubleValue());
     }
 
     public void setLevelPrices(List<GoodsLevelPrice> levelPrices) {
@@ -914,15 +935,15 @@ public class Goods extends Model {
         }
         final long goodsId = this.id;
         return CacheHelper.getCache(CacheHelper.getCacheKey(Goods.CACHEKEY_BASEID + goodsId, "GOODS_SHOPS"), new CacheCallBack<Set<Shop>>() {
-                @Override
-                public Set<Shop> loadData() {
-                    Goods goods1 = Goods.findById(goodsId);
-                    if (goods1.shops.size() == 0) {
-                        return new HashSet<Shop>();
-                    }
-                    return goods1.shops;
+            @Override
+            public Set<Shop> loadData() {
+                Goods goods1 = Goods.findById(goodsId);
+                if (goods1.shops.size() == 0) {
+                    return new HashSet<Shop>();
                 }
-            });
+                return goods1.shops;
+            }
+        });
     }
 
     /**
@@ -976,7 +997,26 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTopRecommend(int limit) {
-        return Goods.find("status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by recommend DESC",
+        String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
+                " and g.status =:status and g.deleted =:deleted and g.expireAt >:expireAt and g.baseSale>=1 order by s.summaryCount desc";
+        Query query = Goods.em().createQuery(sql);
+        query.setParameter("status", GoodsStatus.ONSALE);
+        query.setParameter("deleted", DeletedStatus.UN_DELETED);
+        query.setParameter("expireAt", new Date());
+        query.setMaxResults(limit);
+        List<Goods> goodsList = query.getResultList();
+        return goodsList;
+
+    }
+
+    /**
+     * 获取最新商品
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Goods> findNewGoods(int limit) {
+        return Goods.find("status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by createdAt DESC",
                 GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
     }
 
@@ -1011,4 +1051,13 @@ public class Goods extends Model {
         return (GoodsStatus.ONSALE.equals(status) && expireAt.after(new Date()) &&
                 baseSale > 0 && DeletedStatus.UN_DELETED.equals(deleted));
     }
+
+    public Long summaryCount() {
+        GoodsStatistics statistics = GoodsStatistics.find("goodsId", this.id).first();
+        if (statistics == null) {
+            return 0l;
+        }
+        return statistics.summaryCount;
+    }
+
 }

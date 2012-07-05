@@ -27,6 +27,6 @@ validation.newPassword.maxSize=密码不能大于20位！
 validation.loginName=对不起，该邮箱已经存在!
 user.newPassword=密码
 
-goods.REAL=实物
+goods.REAL=实体券
 goods.ELECTRONIC=电子券
 goods.null=

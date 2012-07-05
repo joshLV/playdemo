@@ -1,22 +1,14 @@
 package models.order;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import org.codehaus.groovy.tools.shell.commands.ClearCommand;
+import cache.CacheHelper;
 import models.consumer.User;
 import models.sales.Goods;
 import models.sales.GoodsStatus;
 import models.sales.MaterialType;
 import play.db.jpa.Model;
-import cache.CacheHelper;
+
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
 @Table(name = "cart")
@@ -65,7 +57,7 @@ public class Cart extends Model {
     }
 
     public static String getCartCacheKey(User user, String cookieIdentity) {
-        return CACHE_KEY + "_USER" + (user == null ? "_NULL" : user.id) + "_" + cookieIdentity;
+        return CACHE_KEY + "_U" + (user == null ? "_NULL" : user.id) + "_" + cookieIdentity;
     }
 
     /**

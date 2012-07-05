@@ -1,101 +1,101 @@
-#{extends 'main.html' /}
+#{extends 'top.html' /}
 #{set title:'一百券 - 确认付款' /}
 #{set 'moreStyles'}
-<link href="@@{'/public/stylesheets/order_info.css'}" rel="stylesheet" type="text/css"/>
-    #{asset.css src:['/u/payment_info.css', '/u/carts-step.css'] /}
+    #{asset.css src:['/y/payment.css', '/y/step.css'] /}
 #{/set}
 #{set 'moreScripts'}
     #{asset.js src:['/u/payment_info.js'] /}
 #{/set}
 
 %{baseDomain = play.Play.configuration.getProperty("application.baseDomain")}%
+<div id="content">
+    <div id="full_bg"></div>
+    <div id="payment_result">
+            <a class="close" href="#" onclick="close_result_dialog();">关闭</a><br/><br/>
+            <div class="pay-tips">付款完成前请不要关闭此窗口。完成付款后请根据您的情况点击下面的按钮：</div>
+        #{if order}
+            <a class="repay" href="/payment_info/${order.orderNumber}">遇到问题？</a>
+        #{/if}
+            <a class="payed" href="http://home.${baseDomain}/orders">已完成付款</a>
+    </div>
 
-<div id="full_bg"></div>
-<div id="payment_result">
-        <a class="close" href="#" onclick="close_result_dialog();">关闭</a><br/><br/>
-        <div class="pay-tips">付款完成前请不要关闭此窗口。完成付款后请根据您的情况点击下面的按钮：</div>
+    <ol class="buy-step step4 clearfix">
+        <li><span>1</span>查看购物车 <em>>></em></li>
+        <li><span>2</span>确认订单信息 <em>>></em></li>
+        <li><span>3</span>确认付款 <em>>></em></li>
+        <li class="buy-step-curr"><span>4</span>成功提交订单 <em>>></em></li>
+    </ol>
     #{if order}
-        <a class="repay" href="/payment_info/${order.orderNumber}">遇到问题？</a>
+        #{if order.status == models.order.OrderStatus.PAID}
+        <div class="order-success">
+            <div class="order-wish">恭喜您付款成功</div>
+            <ul>
+                <li>您还可以在  “
+                    <a href="http://home.${baseDomain}">我的一百券</a> >
+                    <a href="http://home.${baseDomain}">我购买的商品</a> >
+                    <a href="http://home.${baseDomain}/orders/${order.orderNumber}">订单详情</a>” 查看商品券号或配送详情</li>
+                <li>凭短信的券号到取货门店直接取货。</li>
+                <li class="service">电子券商品，只要您末进行消费，且保持一百券订单有效，我们将提供随时退款的服务。<br/>
+                    我们的客服电话：400-6262-166 我们的客服邮件是：uhuila@seewi.com.cn</li>
+            </ul>
+            <div class="btn">
+                <a href="http://home.${baseDomain}/orders/${order.orderNumber}"><span>查看订单详情</span></a>
+                <a href="http://www.${baseDomain}"><span>继续购物</span></a>
+            </div>
+        </div>
+        <div class="wrap">
+            <div class="boutique-hd">近日成交商品</div>
+            <ul class="boutique-bd clearfix">
+                #{list recentGoodsList, as:'aGoods'}
+                    <li>
+                        <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="170" height="130"
+                                                                       alt="${aGoods.name}"/></a>
+                        <p><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
+                        <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
+                        <span>现价:<strong>&yen;${aGoods.salePrice}</strong></span>
+                    </li>
+                #{/list}
+            </ul>
+        </div>
+
+        #{/if}
+        #{else }
+        <div id="balance-pay" class="clearfix">
+            <div id="order-box" class="clearfix">
+                <div class="order-num">您已选择 ${paymentSource.name} 支付 ${order.discountPay} 元</div>
+            </div>
+            <div class="confirm-pay-form">
+            #{form @payIt(), target:play.Play.runingInTestMode() ? "_self" : "_blank", id: "pay_it_form"}
+                <input name="paymentCode" value="${paymentSource.code}" type="hidden"/>
+                <input name="orderNumber" value="${order.orderNumber}" type="hidden"/>
+                <button type="submit" class="confirm-pay2" id="confirm_pay"> 确认支付 </button>
+            #{/form}
+                <a href="/payment_info/${order.orderNumber}">返回重新选择支付方式</a>
+            </div>
+            <script>
+            $(window).load(
+            function () {
+                $(window).scroll(function () {
+                    reset_result_dialog()
+                });
+
+                $(window).resize(function () {
+                    reset_result_dialog()
+                });
+
+                $("#confirm_pay").click(function () {
+                    $("#full_bg").css({display:"block"});
+                    reset_result_dialog();
+                    $(this).attr("disabled", "disabled");
+                    $("#pay_it_form").submit();
+                });
+            });
+            </script>
+        </div>
+        #{/else}
     #{/if}
-        <a class="payed" href="http://home.${baseDomain}/orders">已完成付款</a>
+
+    #{if !order}
+    <div class="order-num"> 对不起，找不到您所需要的订单:(</div>
+    #{/if}
 </div>
-
-<ol class="buy-step step4 clearfix">
-    <li><span>1</span>查看购物车 <em>>></em></li>
-    <li><span>2</span>确认订单信息 <em>>></em></li>
-    <li><span>3</span>确认付款 <em>>></em></li>
-    <li class="buy-step-curr"><span>4</span>成功提交订单 <em>>></em></li>
-</ol>
-#{if order}
-    #{if order.status == models.order.OrderStatus.PAID}
-    <div class="order-success">
-        <div class="order-wish">恭喜您付款成功</div>
-        <ul>
-            <li>您还可以在  “
-                <a href="http://home.${baseDomain}">我的一百券</a> >
-                <a href="http://home.${baseDomain}">我购买的商品</a> >
-                <a href="http://home.${baseDomain}/orders/${order.orderNumber}">订单详情</a>” 查看商品券号或配送详情</li>
-            #{if order.orderItems.size() >0 && !order.orderItems.get(0)?.goods?.isLottery}<li>凭短信的券号到取货门店直接取货。</li>#{/if}
-            <li class="service">电子券商品，只要您末进行消费，且保持一百券订单有效，我们将提供随时退款的服务。<br/>
-                我们的客服电话：400-6262-166 我们的客服邮件是：uhuila@seewi.com.cn</li>
-        </ul>
-        <div class="btn">
-            <a href="http://home.${baseDomain}/orders/${order.orderNumber}"><span>查看订单详情</span></a>
-            <a href="http://www.${baseDomain}"><span>继续购物</span></a>
-        </div>
-    </div>
-    <div class="wrap">
-        <div class="boutique-hd">近日成交商品</div>
-        <ul class="boutique-bd clearfix">
-            #{list recentGoodsList, as:'aGoods'}
-                <li>
-                    <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="170" height="130"
-                                                                   alt="${aGoods.name}"/></a>
-                    <p><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
-                    <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
-                    <span>现价:<strong>&yen;${aGoods.salePrice}</strong></span>
-                </li>
-            #{/list}
-        </ul>
-    </div>
-
-    #{/if}
-    #{else }
-    <div id="balance-pay" class="clearfix">
-        <div id="order-box" class="clearfix">
-            <div class="order-num">您已选择 ${paymentSource.name} 支付 ${order.discountPay} 元</div>
-        </div>
-        <div class="confirm-pay-form">
-        #{form @payIt(), target:play.Play.runingInTestMode() ? "_self" : "_blank", id: "pay_it_form"}
-            <input name="paymentCode" value="${paymentSource.code}" type="hidden"/>
-            <input name="orderNumber" value="${order.orderNumber}" type="hidden"/>
-            <button type="submit" class="confirm-pay2" id="confirm_pay">确认支付</button>
-        #{/form}
-        <a href="/payment_info/${order.orderNumber}">返回重新选择支付方式</a>
-        </div>
-        <script>
-        $(window).load(
-        function () {
-            $(window).scroll(function () {
-                reset_result_dialog()
-            });
-
-            $(window).resize(function () {
-                reset_result_dialog()
-            });
-
-            $("#confirm_pay").click(function () {
-                $("#full_bg").css({display:"block"});
-                reset_result_dialog();
-                $(this).attr("disabled", "disabled");
-                $("#pay_it_form").submit();
-            });
-        });
-        </script>
-    </div>
-    #{/else}
-#{/if}
-
-#{if !order}
-<div class="order-num"> 对不起，找不到您所需要的订单:(</div>
-#{/if}

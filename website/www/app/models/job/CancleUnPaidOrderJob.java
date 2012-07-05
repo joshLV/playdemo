@@ -44,17 +44,7 @@ public class CancleUnPaidOrderJob extends Job {
                 order.cancelAndUpdateOrder();
                 new CancelUnpaidOrders(order.orderNumber, order.userType, order.userId).save();
             }
-            query = Order.em().createQuery(sql);
-            query.setParameter("status", OrderStatus.UNPAID);
-            query.setParameter("createdAtBegin", DateUtil.getBeginExpiredDate(-11));
-            query.setParameter("createdAtEnd", DateUtil.getEndExpiredDate(-10));
-            query.setFirstResult(0);
-            query.setMaxResults(200);
-            orderList = query.getResultList();
-            it = orderList.iterator();
         }
-
-
     }
 
 }

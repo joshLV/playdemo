@@ -1,102 +1,103 @@
-#{extends 'main.html' /}
+#{extends 'top.html' /}
 #{set title:'一百券 - 购物车' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/u/carts-step.css'] /}
+    #{asset.css src:['/y/carts.css', '/y/step.css'] /}
 #{/set}
 #{set 'moreScripts'}
     #{asset.js src:['/u/bignumber.js', '/u/carts.js'] /}
 
 #{/set}
 
-<ol class="buy-step step1 clearfix">
-    <li class="buy-step-curr"><span>1</span>查看购物车 <em>>></em></li>
-    <li><span>2</span>确认订单信息 <em>>></em></li>
-    <li><span>3</span>确认付款 <em>>></em></li>
-    <li><span>4</span>成功提交订单 <em>>></em></li>
-</ol>
+<div id="content">
+    <ol class="buy-step step1 clearfix">
+        <li class="buy-step-curr"><span>1</span>查看购物车 <em>>></em></li>
+        <li><span>2</span>确认订单信息 <em>>></em></li>
+        <li><span>3</span>确认付款 <em>>></em></li>
+        <li><span>4</span>成功提交订单 <em>>></em></li>
+    </ol>
 
-<table id="carts-list">
-    <thead>
-    <tr>
-        <th class="select-all" width="80"><input type="checkbox" name="select_all_checkbox"/> <label
-                for="select_all_checkbox">全选</label></th>
-        <th width="420">商品</th>
-        <th width="100">类型</th>
-        <th width="90">单价（元）</th>
-        <th width="90">数量</th>
-        <th width="90">小计</th>
-        <th width="90">操作</th>
-    </tr>
-    </thead>
-    <tbody>
-    #{list items:carts, as:'cartItem'}
-    <tr id="row_${cartItem.goods.id}">
-        <td><input type="checkbox" id="check_goods_${cartItem.goods.id}"/></td>
-        <td class="goods-name"><img src="${cartItem.goods.imageTinyPath}"/> ${cartItem.goods.name}
-                  #{if cartItem.goods.limitNumber >0}
-                  <span id="limitNumber" style="color:#f50">（限购${cartItem.goods.limitNumber}件）</span>
+    <table id="carts-list">
+        <thead>
+        <tr>
+            <th class="select-all" width="80"><input type="checkbox" name="select_all_checkbox"/> <label
+                    for="select_all_checkbox">全选</label></th>
+            <th width="420">商品</th>
+            <th width="100">类型</th>
+            <th width="90">单价（元）</th>
+            <th width="90">数量</th>
+            <th width="90">小计</th>
+            <th width="90">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        #{list items:carts, as:'cartItem'}
+        <tr id="row_${cartItem.goods.id}">
+            <td><input type="checkbox" id="check_goods_${cartItem.goods.id}"/></td>
+            <td class="goods-name"><img src="${cartItem.goods.imageTinyPath}"/> ${cartItem.goods.name}
+                      #{if cartItem.goods.limitNumber >0}
+                      <span id="limitNumber" style="color:#f50">（限购${cartItem.goods.limitNumber}件）</span>
 
-                #{/if}
-            <span id="limit_goods_${cartItem.goods.id}"style="color:#f50">
-            #{if cartItem.goods.id==limit_goodsId}您已经过此商品或者超过限购数量，不能继续购买，请确认! #{/if}</span>
-        </td>
-        <td>${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
-        <td id="price_${cartItem.goods.id}">${cartItem.goods.salePrice}</td>
-        <td>
-            <a href="#" class="reduce_box" name="${cartItem.goods.id}">
-                <img src="@{'/public/images/sub_anniu.jpg'}" id="sub_img_${cartItem.goods.id}"/>
-            </a>
-            <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}"/>
-            <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}"/>
-            <input type="hidden" value="${cartItem.goods.baseSale}" id="stock_${cartItem.goods.id}">
-            <input type="hidden" value="${cartItem.goods.limitNumber}" id="limit_${cartItem.goods.id}">
+                    #{/if}
+                <span id="limit_goods_${cartItem.goods.id}"style="color:#f50">
+                #{if cartItem.goods.id==limit_goodsId}您已经过此商品或者超过限购数量，不能继续购买，请确认! #{/if}</span>
+            </td>
+            <td>${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
+            <td id="price_${cartItem.goods.id}">${cartItem.goods.salePrice}</td>
+            <td>
+                <a href="#" class="reduce_box" name="${cartItem.goods.id}">
+                    <img src="@{'/public/images/sub_anniu.jpg'}" id="sub_img_${cartItem.goods.id}"/>
+                </a>
+                <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}"/>
+                <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}"/>
+                <input type="hidden" value="${cartItem.goods.baseSale}" id="stock_${cartItem.goods.id}">
+                <input type="hidden" value="${cartItem.goods.limitNumber}" id="limit_${cartItem.goods.id}">
+                <a class="add_box" href="#" name="${cartItem.goods.id}">
+                    <img src="@{'/public/images/add_anniu.jpg'}" id="add_img_${cartItem.goods.id}"/>
+                </a>
 
-            <a class="add_box" href="#" name="${cartItem.goods.id}">
-                <img src="@{'/public/images/add_anniu.jpg'}" id="add_img_${cartItem.goods.id}"/>
-            </a>
+            </td>
+            <td><span class="strong_gray"
+                      id="subtotal_${cartItem.goods.id}">${cartItem.goods.salePrice?.multiply(cartItem.number)}</span></td>
+            <td><a href="#" class="del" name="del_row" goods_id="${cartItem.goods.id}"
+                   id="del_row_${cartItem.goods.id}">删除</a></td>
+        </tr>
+        #{/list}
 
-        </td>
-        <td><span class="strong_gray"
-                  id="subtotal_${cartItem.goods.id}">${cartItem.goods.salePrice?.multiply(cartItem.number)}</span></td>
-        <td><a href="#" class="del" name="del_row" goods_id="${cartItem.goods.id}"
-               id="del_row_${cartItem.goods.id}">删除</a></td>
-    </tr>
-    #{/list}
+        #{if carts.size() == 0}
+        <tr>
+            <td colspan="6" style="text-align:center;padding:10px 0">您还没有添加商品哦，再逛逛吧:)</td>
+        </tr>
+        #{/if}
+        </tbody>
+    </table>
 
-    #{if carts.size() == 0}
-    <tr>
-        <td colspan="6" style="text-align:center;padding:10px 0">您还没有添加商品哦，再逛逛吧:)</td>
-    </tr>
-    #{/if}
-    </tbody>
-</table>
-
-<div id="carts-ft" class="clearfix">
-    <div class="select-all">
-        <input type="checkbox" id="uuuu" value="" name="select_all_checkbox"/>全选
+    <div id="carts-ft" class="clearfix">
+        <div class="select-all">
+            <input type="checkbox" id="uuuu" value="" name="select_all_checkbox"/>全选
+        </div>
+        <div class="delete-all">
+            <button id="batch_delete">批量删除</button>
+        </div>
+        <div class="carts-info">
+            商品共<span id="total_num">0</span>件，总合计（不含运费）：<b id="carts_amount"></b>元
+        </div>
+        <div class="confirm-order">
+            <a href="/orders?items=" id="confirm_to_order">确认结账</a>
+        </div>
     </div>
-    <div class="delete-all">
-        <button id="batch_delete">批量删除</button>
-    </div>
-    <div class="carts-info">
-        商品共<span id="total_num">0</span>件，总合计（不含运费）：<b id="carts_amount"></b>元
-    </div>
-    <div class="confirm-order">
-        <a href="/orders?items=" id="confirm_to_order">确认结账</a>
-    </div>
-</div>
 
-<div id="recent" class="wrap">
-    <div class="recent-hd">最近浏览商品</div>
-    <ul class="recent-bd clearfix">
-    #{list items: sawGoodsList, as:'goods'}
-        <li>
-            <a href="/g/${goods.id}" target="_blank"><img src="${goods.imageMiddlePath}" width="170" height="130"/></a>
+    <div id="recent" class="wrap">
+        <div class="recent-hd">最近浏览商品</div>
+        <ul class="recent-bd clearfix">
+        #{list items: sawGoodsList, as:'goods'}
+            <li>
+                <a href="/g/${goods.id}" target="_blank"><img src="${goods.imageMiddlePath}" width="170" height="130"/></a>
 
-            <p><a href="/g/${goods.id}" target="_blank">${goods.name}</a></p>
-            <span>原价:<del>${goods.faceValue}</del> | ${goods.discountExpress}</span>
-            <span>现价:<strong>${goods.salePrice.formatCurrency('CNY')}</strong></span>
-        </li>
-    #{/list}
-    </ul>
+                <p><a href="/g/${goods.id}" target="_blank">${goods.name}</a></p>
+                <span>原价:<del>${goods.faceValue}</del> | ${goods.discountExpress}</span>
+                <span>现价:<strong>${goods.salePrice.formatCurrency('CNY')}</strong></span>
+            </li>
+        #{/list}
+        </ul>
+    </div>
 </div>

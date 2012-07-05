@@ -1,0 +1,187 @@
+#content {
+    width: 960px;
+    margin: 0 auto;
+}
+
+.order {
+	margin: 30px 0;
+}
+.order h3 {
+	margin-bottom: 15px;
+	color: #656565;
+	font-size: 14px;
+	border-bottom: 1px solid #E4E4E4;
+}
+.order h3 span {
+	float: left;
+	display: block;
+	margin-bottom: -1px;
+	color: #656565;
+	font-size: 14px;
+	line-height: 24px;
+	border-bottom: 1px solid #a3c832;
+}
+.order h3 a {
+	margin-top: 2px;
+	color: #25B4AB;
+}
+.addr {
+	padding: 5px;
+	line-height: 25px;
+	background-color: #F2F2F2;
+}
+.addr .modify-addr {
+	margin-left: 10px;
+	color: #25B4AB;
+}
+.addr em {
+	color: #999;
+}
+.addr .confirm {
+	display: block;
+	margin: 5px 0;
+	width: 130px;
+	color: #F8F8F8;
+	font-weight: 700;
+	text-align: center;
+	line-height: 28px;
+	background-color: #25B4AB;
+	border-radius: 2px;
+}
+.addr-all {
+	display: none;
+	padding: 0 60px;
+}
+.addr-all li {
+	line-height: 25px;
+}
+.addr-all li:hover {
+	background-color: #CEECEC;
+}
+.addr-all li input,
+.addr-all li label {
+	vertical-align: middle;
+}
+.addr-one {
+	float: left;
+}
+.addr-action {
+	float: right;
+	margin-right: 360px;
+}
+.addr-action a {
+	color: #666;
+}
+.addr-action a:hover {
+	*text-decoration: none;
+}
+.addr-action .addr-del {
+	position: relative;
+}
+.addr-action .addr-del-confirm {
+	position: absolute;
+	top: -65px;
+	left: -30px;
+	padding: 2px 8px;
+	width: 110px;
+	line-height: 25px;
+	border: 1px solid #25B4AB;
+	background-color: #FFF;
+}
+.addr-action .addr-del-confirm b {
+	color: #25B4AB;
+	padding: 3px 5px;
+	font-weight: normal;
+}
+.addr-action .addr-del-confirm img {
+	position: absolute;
+	top: 54px;
+	left: 30px;
+}
+.addr-new {
+	border-bottom: 1px dotted #A4A4A4;
+}
+.use-addr {
+	display: none;
+}
+.use-addr caption {
+	text-align: left;
+	font-weight: 700;
+}
+.use-addr td {
+	height: 30px;
+	font-family: "宋体";
+}
+.use-addr select {
+	width: 100px;
+	height: 22px;
+	color: #341527;
+	line-height: 22px;
+	border: 1px solid #939496;
+}
+.use-addr input {
+	width: 150px;
+}
+.use-addr .addr-street {
+	width: 303px;
+}
+.use-addr .addr-mobile {
+	width: 100px;
+}
+.use-addr .addr-area-code {
+	width: 35px;
+}
+.use-addr .addr-phone-num {
+	width: 90px;
+}
+.use-addr .addr-phone-ext {
+	width: 70px;
+}
+.required {
+	padding-right: 3px;
+	color: #F40;
+	line-height: 24px;
+	font-style: normal;
+	font-family: 'simsun';
+}
+
+
+.order-list {
+	margin-top: 15px;
+}
+.order-list thead tr {
+	border-right: 1px solid #C4E8E8;
+}
+.order-list thead th {
+	height: 30px;
+	background-color: #a3c832;
+}
+.order-list tbody td {
+	padding: 3px 5px;
+	border: solid #a3c832;
+	border-width: 0 1px 1px 1px;
+}
+
+.order-total {
+	padding: 20px 0 5px;
+	text-align: right;
+}
+.order-total span {
+	padding: 0 12px 0 1px;
+	color: #F50;
+	font: 700 16px arial;
+}
+.confirm-box {
+	margin: 20px 0;
+}
+.confirm-box .confirm-pay-btn {
+	display: block;
+	float: right;
+	width: 80px;
+	padding: 5px 10px;
+	color: #FFF;
+	font-size: 14px;
+	font-weight: 700;
+	text-align: center;
+	background-color: #a3c832;
+}

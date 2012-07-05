@@ -157,7 +157,13 @@
     white-space: nowrap;
 }
 
+#bargain {
+    height: 730px;
+    *height: 721px;
+    overflow: hidden;
+}
 #bargain li {
+    position: relative;
     float: left;
     padding: 20px 21px 20px 0;
     border-bottom: 1px solid #f0f0f0;
@@ -224,6 +230,34 @@
     height: 22px;
     *line-height: 24px;
 }
+#bargain .discount {
+    position: absolute;
+    top: 2px;
+    right: 25px;
+    z-index: 120;
+    width: 64px;
+    height: 71px;
+    overflow: hidden;
+    padding-left: 7px;
+    color: #fff;
+    *line-height: 24px;
+    _line-height: 28px;
+    background: url(//img.uhcdn.com/images/y/discount.png) no-repeat 0 0;
+    _background: url(//img.uhcdn.com/images/y/discount.gif) no-repeat 0 0;
+}
+#bargain .last .discount {
+    right: 4px;
+}
+#bargain .discount em {
+    display: inline-block;
+    margin: 10px 0 0 0;
+    *line-height: 42px;
+    _line-height: 46px;
+    overflow: hidden;
+    width: 44px;
+    height: 39px;
+    font-size: 32px;
+}
 
 #product {
     margin-bottom: -1px;
@@ -288,6 +322,11 @@
     border-width: 0 1px 1px;
 }
 #news li {
+    width: 166px;
+    height: 30px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     padding-left: 8px;
     line-height: 30px;
     border-bottom: 1px solid #f4f4f4;

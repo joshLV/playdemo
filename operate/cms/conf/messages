@@ -7,6 +7,8 @@ validation.beforeThanEffectiveAt=%s不能早于有效期开始时间!
 #Block
 block.WEBSITE_SLIDE=首页展示
 block.DAILY_SPECIAL=每日特卖
+block.WEBSITE_RIGHT_SLIDE=首页右侧展示
+block.WEBSITE_SUPPLIER=合作商家
 block.title=标题(或商品ID)
 block.link=链接
 block.imageUrl=图片

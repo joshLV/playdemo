@@ -36,6 +36,7 @@ import models.mail.MailUtil;
 import models.resale.Resaler;
 import models.resale.util.ResaleUtil;
 import models.sales.Goods;
+import models.sales.GoodsStatistics;
 import models.sales.MaterialType;
 import models.sms.SMSUtil;
 import org.apache.commons.lang.StringUtils;
@@ -329,11 +330,11 @@ public class Order extends Model {
      * @param number  购买数量
      * @return
      */
-    public static Boolean checkLimitNumber(User user, Long goodsId, int number) {
+    public static Boolean checkLimitNumber(User user, Long goodsId,Long boughtNumber, int number) {
 
-        Long buyNumber = 0l;
-        //该用户曾经购买该商品的数量
-        buyNumber = OrderItems.itemsNumber(user, goodsId);
+//        Long buyNumber = 0l;
+//        //该用户曾经购买该商品的数量
+//        buyNumber = OrderItems.itemsNumber(user, goodsId);
         //取出商品的限购数量
         Goods goods = Goods.findById(goodsId);
         int limitNumber = 0;
@@ -345,9 +346,8 @@ public class Order extends Model {
 //        if (number > limitNumber && buyNumber == 0) {
 //            return false;
 //        }
-        
-        //超过限购数量,则表示已经购买过差商品
-        if (limitNumber > 0 && (number > limitNumber || limitNumber <= buyNumber)) {
+        //超过限购数量,则表示已经购买过该商品
+        if (limitNumber > 0 && (number > limitNumber || limitNumber <= boughtNumber)) {
             return Boolean.TRUE;
         }
 
@@ -440,6 +440,7 @@ public class Order extends Model {
     public void payAndSendECoupon() {
         paid();
         sendECoupon();
+
     }
 
     /**
@@ -453,6 +454,7 @@ public class Order extends Model {
         if (this.orderItems != null) {
             for (OrderItems orderItem : this.orderItems) {
                 orderItem.status = OrderStatus.PAID;
+                GoodsStatistics.addBuyCount(orderItem.goods.id);
                 orderItem.save();
             }
         }

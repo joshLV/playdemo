@@ -156,15 +156,15 @@ public class Topic extends Model {
         oldTopic.save();
     }
 
-    public static List<Topic> findByType(PlatformType platformType, TopicType type, Date currentDate) {
+    public static List<Topic> findByType(PlatformType platformType, TopicType type, Date currentDate,int limit) {
         final String orderBy = "displayOrder, effectiveAt desc, expireAt";
 
         List<Topic> topics = Topic.find("deleted = ? and  platformType= ? and type = ? and effectiveAt <= ? and expireAt >= ? order by " + orderBy,
-                DeletedStatus.UN_DELETED, platformType, type, currentDate, currentDate).fetch();
+                DeletedStatus.UN_DELETED, platformType, type, currentDate, currentDate).fetch(limit);
 
         if (topics.size() == 0) {
             topics = Topic.find("deleted = ?  and platformType = ? and type = ? order by " + orderBy,
-                    DeletedStatus.UN_DELETED, platformType, type).fetch();
+                    DeletedStatus.UN_DELETED, platformType, type).fetch(limit);
         }
 
         return topics;

@@ -2,8 +2,8 @@
 #topbar-bd li,
 #topbar-bd .favorite,
 #topbar-bd .follow,
-#cart span,
-#cart a,
+#cart .cart-icon,
+#cart .cart-btn,
 #navbar,
 #notice span,
 #content .hd,
@@ -18,15 +18,18 @@
 #listview .qtype,
 #amount .increase-btn,
 #amount .decrease-btn,
-#btnBox #nowBuy,
-#btnBox #addCart,
+#btnBox .nowBuy b,
+#btnBox .addCart b,
+.addCart-tips .view-carts b,
+.addCart-tips .close-tips,
+.addCart-tips .addCart-icon,
 #bizinfo .index span,
 #bizinfo .index a,
 #diagram .tips,
 #consult .hd b,
 #consult dt {
-    background: url(http://img.uhcdn.com/images/y/sprite.png) no-repeat -9999px -9999px;
     /* background: url(../img/sprite.png) no-repeat -9999px -9999px; */
+    background: url(//img.uhcdn.com/images/y/sprite.png) no-repeat -9999px -9999px;
 }
 
 #topbar {
@@ -46,10 +49,10 @@
     *background-position: 6px -26px;
     _background-position: 6px -24px;
 }
-#cart span {
-    background-position: 0 -46px;
+#cart .cart-icon {
+    background-position: 0 -42px;
 }
-#cart a {
+#cart .cart-btn {
     background-position: 0 -72px;
 }
 #navbar {
@@ -114,11 +117,20 @@
 #amount .decrease-btn {
     background-position: -88px -324px;
 }
-#btnBox #nowBuy {
+#btnBox .nowBuy b {
     background-position: 0 -334px;
 }
-#btnBox #addCart {
+#btnBox .addCart b {
     background-position: 0 -384px;
+}
+.addCart-tips .addCart-icon {
+    background-position: 0px -472px;
+}
+.addCart-tips .view-carts b {
+    background-position: 0 -432px;
+}
+.addCart-tips .close-tips {
+    background-position:  -186px -473px;
 }
 #bizinfo .index span {
     background-position: -175px -80px;

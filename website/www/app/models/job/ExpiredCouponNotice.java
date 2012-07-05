@@ -56,14 +56,6 @@ public class ExpiredCouponNotice extends Job {
                 }
                 new SentCouponMessage(coupon.eCouponSn, mobile, coupon.goods.name).save();
             }
-            query = ECoupon.em().createQuery(sql);
-            query.setParameter("status", ECouponStatus.UNCONSUMED);
-            query.setFirstResult(0);
-            query.setMaxResults(200);
-            query.setParameter("expireBeginAt", DateUtil.getBeginExpiredDate(6));
-            query.setParameter("expireEndAt", DateUtil.getEndExpiredDate(7));
-            expiredCoupons = query.getResultList();
-            it = expiredCoupons.iterator();
         }
     }
 

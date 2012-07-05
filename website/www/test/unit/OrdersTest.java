@@ -40,13 +40,13 @@ public class OrdersTest extends UnitTest {
         order.userId = id;
         order.save();
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-goods5");
-
-        boolean isBuy = Order.checkLimitNumber(user, goodsId, 1);
+        Long boughtNumber = OrderItems.itemsNumber(user, goodsId);
+        boolean isBuy = Order.checkLimitNumber(user, goodsId, boughtNumber, 1);
         assertTrue(isBuy);
 
         goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-goods4");
-
-        isBuy = Order.checkLimitNumber(user, goodsId, 1);
+        boughtNumber = OrderItems.itemsNumber(user, goodsId);
+        isBuy = Order.checkLimitNumber(user, goodsId, boughtNumber, 1);
         assertFalse(isBuy);
 
 

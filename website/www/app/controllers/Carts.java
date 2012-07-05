@@ -5,6 +5,7 @@ import controllers.modules.website.cas.annotations.SkipCAS;
 import models.consumer.User;
 import models.order.Cart;
 import models.order.Order;
+import models.order.OrderItems;
 import org.apache.commons.lang.StringUtils;
 import play.data.binding.As;
 import play.modules.paginate.ValuePaginator;
@@ -40,22 +41,24 @@ public class Carts extends Controller {
         String sawGoodsIds = cookie == null ? "" : cookie.value;
         List<Long> goodsIds = new ArrayList<>();
         for (String goodsId : sawGoodsIds.split(",")) {
-            if (StringUtils.isNotEmpty(goodsId) && goodsIds.size() < 5) {                
+            if (StringUtils.isNotEmpty(goodsId) && goodsIds.size() < 5) {
                 goodsIds.add(new Long(goodsId));
             }
         }
 
         List<models.sales.Goods> sawGoodsList = goodsIds.size() > 0 ? models.sales.Goods.findInIdList(goodsIds) : new ArrayList<models.sales.Goods>();
-         //登陆的场合，判断该会员是否已经购买过此限购商品
+        //登陆的场合，判断该会员是否已经购买过此限购商品
         if (user != null) {
-            for (Cart cart:carts) {
-                boolean isBuyFlag = Order.checkLimitNumber(user, cart.goods.id, (int)cart.number);
+            //该用户曾经购买该商品的数量
+            Long boughtNumber = 0l;
+            for (Cart cart : carts) {
+                boughtNumber = OrderItems.itemsNumber(user, cart.goods.id);
+                boolean isBuyFlag = Order.checkLimitNumber(user, cart.goods.id, boughtNumber, (int) cart.number);
                 if (isBuyFlag) {
-                    renderArgs.put("limit_goodsId",cart.goods.id);
+                    renderArgs.put("limit_goodsId", cart.goods.id);
                 }
             }
         }
-
         render(carts, sawGoodsList);
     }
 
@@ -87,7 +90,7 @@ public class Carts extends Controller {
         List<Cart> carts = Cart.findAll(user, cookieValue);
         BigDecimal amount = BigDecimal.ZERO;
         int count = 0;
-        for(Cart cart : carts){
+        for (Cart cart : carts) {
             amount = amount.add(cart.goods.salePrice.multiply(new BigDecimal(cart.number)));
             count += cart.number;
         }

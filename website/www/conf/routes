@@ -34,7 +34,7 @@ GET     /goods/list/{condition}                 Goods.list
 
 GET     /goods/{id}                             Goods.show
 GET     /goods/{uuid}/preview                   Goods.preview
-
+POST    /goods/statistics                       Goods.statistics
 
 POST    /user-question                          UserQuestions.add
 GET     /more-questions                         UserQuestions.moreQuestions

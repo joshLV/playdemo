@@ -35,7 +35,7 @@ public class GoodsCondition implements Serializable {
     public BigDecimal priceTo = new BigDecimal(0);
     public String orderBy = getOrderBy(0);
     public String orderByType = "DESC";
-    public int orderByNum = 0;
+    public int orderByNum = 9;
     public int orderByTypeNum = 0;
     public int type = 0;
     public String name;

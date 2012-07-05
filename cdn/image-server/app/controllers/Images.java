@@ -69,12 +69,12 @@ public class Images extends Controller {
             height = 46;
             imageSizeType = TINY;
         } else if (imageName.contains(SMALL)) {
-            width = 150;
-            height = 110;
+            width = 172;
+            height = 132;
             imageSizeType = SMALL;
         } else if (imageName.contains(MIDDLE)) {
-            width = 170;
-            height = 130;
+            width = 234;
+            height = 178;
             imageSizeType = MIDDLE;
         } else if (imageName.contains(LARGE)) {
             width = 340;
