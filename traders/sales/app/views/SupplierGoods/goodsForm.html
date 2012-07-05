@@ -81,6 +81,8 @@ beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
     #{vx.cancelButton url:'/goods', class:'btn btn-primary'/}
 #{/if}
     <input type="hidden" id="status" name="goods.status" value="${goods?.status?:'OFFSALE'}"/>
+    <input type="hidden" name="goods.title" value="${goods?.title}"/>
+
 </div>
 <script type="text/javascript">
     $("input[name='goods.isAllShop']:checked").val() == 'false' ? $("#shop").show() : $("#shop").hide();

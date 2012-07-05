@@ -300,6 +300,9 @@ public class SupplierGoods extends Controller {
 
         checkExpireAt(goods);
         checkOriginalPrice(goods);
+          for (String key : validation.errorsMap().keySet()) {
+            warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
+        }
         if (Validation.hasErrors()) {
             renderInit(goods);
             renderArgs.put("imageLargePath", imageLargePath);
