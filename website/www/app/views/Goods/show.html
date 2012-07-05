@@ -7,10 +7,10 @@
       content="上海优惠券,一百券,${goods.brand?.name},${goods.name},${goodsKeywords},消费券,代金券,优惠券,美食券,电子券,优惠上海,提货券">
 #{/set}
 #{set 'moreStyles'}
-    #{asset.css src:['/y/detail.css']/}
+    #{asset.css src:['/y/detail.min.css']/}
 #{/set}
 #{set 'moreScripts'}
- #{asset.js src:['/u/goods-show.js'] /}
+    #{asset.js src:['/u/goods-show.js'] /}
 #{/set}
 
 <div id="content">
@@ -173,8 +173,7 @@
             #{/if}
             </table>
         </div>
-    </div>
-    <!-- #store -->
+    </div><!-- #store -->
 
     <div id="consult" class="tab-item">
         <div class="hd">
@@ -188,7 +187,7 @@
             <input type="hidden" value="${questions.size()}" id="q-size"/> #{list items:questions, as:'question'}
             <div class="question">
                 <dl>
-                    <dt>${question.userName == null ? "游客" : question.userName}</dt>
+                    <dt>咨询内容：</dt>
                     <dd>
                     ${question.content}<span class="date">${question.createdAt.format('yyyy-MM-dd HH:mm:ss')}</span>
                     </dd>
@@ -215,6 +214,5 @@
             <span id="q-error" style="display: none"></span>
             <button class="submit" id="submit-question">提 交</button>
         </form>
-    </div>
-    <!-- #consult -->
+    </div><!-- #consult -->
 </div><!-- #content -->

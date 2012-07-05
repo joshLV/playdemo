@@ -36,10 +36,11 @@
     border-width: 0 1px 1px;
 }
 #hot-cat .bd li {
-    padding: 10px 0;
-}
-#hot-cat .bd .area {
+    padding: 5px 0;
     border-bottom: 1px solid #f4f4f4;
+}
+#hot-cat .bd .brand {
+    border-bottom: 0;
 }
 #hot-cat a {
     color: #434343;
@@ -117,8 +118,10 @@
     padding-right: 0;
 }
 #listview .image {
-    border: 1px solid #f4f4f4;
+    width: 234px;
+    height: 178px;
     font-size: 0;
+    border: 1px solid #f4f4f4;
 }
 #listview .image a {
     font-size: 0;
@@ -196,8 +199,10 @@
     *line-height: 34px;
 }
 #popular .image {
-    border: 1px solid #f4f4f4;
+    width: 172px;
+    height: 132px;
     font-size: 0;
+    border: 1px solid #f4f4f4;
 }
 #popular .image a {
     font-size: 0;

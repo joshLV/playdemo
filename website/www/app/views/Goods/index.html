@@ -5,7 +5,7 @@
     <meta name="Keywords" content="上海优惠券,一百券,${condsTitle},消费券,代金券,优惠券,美食券,电子券,优惠上海,提货券">
 #{/set} 
 #{set 'moreStyles'} 
-    #{asset.css src:['/y/list.css'] /} 
+    #{asset.css src:['/y/list.min.css'] /} 
 #{/set} 
 #{set 'moreScripts'}
  #{asset.js src:['/u/goods.js'] /}
@@ -80,7 +80,7 @@
                       </div>
                 </li>
 
-                <li class="zone clearfix">
+                <li class="brand clearfix">
                     <div class="cat-kind">
                         品牌：
                     #{if brandId == 0}<a class="curr">全部</a>
@@ -103,8 +103,7 @@
                     </div>
                 </li>
             </ul>
-        </div>
-        <!-- #hot-cat -->
+        </div><!-- #hot-cat -->
 
         <div id="filter" class="clearfix">
             <ul>
@@ -124,10 +123,9 @@
                 <input id="qb" type="radio" #{if materialType == "" || materialType == null }checked #{/if}/><label for="qb">全部</label>
                 <input id="dz" type="radio"#{if models.sales.MaterialType.ELECTRONIC.equals(materialType)}checked #{/if}/><label for="dz">电子券</label> 
                 <input id="st" type="radio"#{if models.sales.MaterialType.REAL.equals(materialType)}checked #{/if} /><label for="st">实体券</label>
-                
             </form>
-        </div>
-        <!-- #filter -->
+        </div><!-- #filter -->
+
         #{set i:1/}
         <ul id="listview" class="clearfix">
             #{paginate.list items:goodsPage, as:'aGoods'}
@@ -153,9 +151,7 @@
             #{/paginate.list}
         </ul>
         #{paginate.controls items:goodsPage /}
-    </div>
-     
-    <!-- #section -->
+    </div><!-- #section -->
     
      <div id="sidebar">
         <div id="popular">
