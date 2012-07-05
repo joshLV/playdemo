@@ -662,7 +662,9 @@ public class Goods extends Model {
                 updateGoods.getLevelPrices().get(i).price = goods.levelPrices.get(i).price;
             }
         }
-        updateGoods.isLottery = goods.isLottery;
+        if (goods.isLottery != null) {
+            updateGoods.isLottery = goods.isLottery;
+        }
         updateGoods.save();
     }
 
