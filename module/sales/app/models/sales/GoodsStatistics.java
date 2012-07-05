@@ -15,7 +15,6 @@ import javax.persistence.*;
 @Table(name = "goods_statistics")
 public class GoodsStatistics extends Model {
 
-    public static Integer number = 1;
     public Long goodsId;
     /**
      * 浏览指数
