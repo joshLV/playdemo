@@ -38,6 +38,7 @@
                 <span class="cart-icon">购物车</span>
                 <span class="cart-num">有(<em id="cart-count">${count}</em>)件商品</span>
                 <b class="arrow"></b>
+                <input type="hidden" id="reload" value="true" />
             </div>
             <div class="cart-box-bd">
             </div>
@@ -50,7 +51,7 @@
     <div id="nav">
         <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}" #{if categoryId == 0}class="current"#{/if}>首页</a>
         <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/1" #{if categoryId == 1}class="current"#{/if}>餐饮美食</a>
-        <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/2" #{if categoryId == 2}class="current"#{/if}>食品干货</a>
+        <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/2" #{if categoryId == 2}class="current"#{/if}>食品饮料</a>
         <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/7" #{if categoryId == 7}class="current"#{/if}>休闲娱乐</a>
     </div>
 </div><!-- #navbar -->

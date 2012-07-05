@@ -24,11 +24,14 @@ $(function($){
         cartBoxBd = $('#cart .cart-box-bd');
 
     cart.mouseover(function(){
-        cartBox.addClass('hover').addClass('loading');
-        cartBoxBd.load("/carts/tops", function(data) {
-            isLoaded = true;
-            cartBoxBd.removeClass('loading');
-        });
+        if ($('#reload').val() == 'true') {
+            cartBoxBd.load("/carts/tops", function(data) {
+                cartBox.addClass('hover');
+                $('#reload').val(false);
+            });
+        } else {
+            cartBox.addClass('hover');
+        }
     })
     .mouseout(function(){
         cartBox.removeClass('hover');
