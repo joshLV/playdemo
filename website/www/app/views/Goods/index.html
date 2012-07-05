@@ -100,26 +100,6 @@
                             class="font_blue">${brand.name}</a>
                     #{/else}
                 #{/list}
-
-
-                <dt>品牌:</dt>
-                <dd>
-                #{if brandId == 0}<a class="curr">全部</a>
-                #{/if}
-                #{else}<a
-                        href="/s/${categoryId}-${searchAreaId}-0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
-                       >全部</a>
-                #{/else}
-                #{list brands, as:'brand'}
-                    #{if brandId == brand.id}
-                        <span id="area" class="curr">${brand.name}</span>
-                    #{/if}
-                    #{else}<a
-                            href="/s/${categoryId}-${searchAreaId}-${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
-                            class="font_blue">${brand.name}</a>
-                    #{/else}
-                #{/list}
-
                     </div>
                 </li>
             </ul>
