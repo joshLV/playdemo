@@ -58,7 +58,7 @@
     </div>
     <div id="promos">
     #{list rightSlides, as:'rightSlides'}
-        <img src="${slide.getShowImageUrl()}"/>
+        <img src="${rightSlides.getShowImageUrlMiddle()}"/>
     #{/list}
     </div>
 </div><!-- #banner -->
@@ -194,7 +194,7 @@
             <div class="hd">合作商家</div>
             <ul class="bd">
             #{list suppliers, as:'supplier'}
-                <li><a href="" target="_blank"><img src="${supplier.getShowImageUrl()}"/></a></li>
+                <li><img src="${supplier.getShowImageUrl()}"/></li>
             #{/list}
             </ul>
         </div>
