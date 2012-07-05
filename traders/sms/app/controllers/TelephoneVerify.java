@@ -31,20 +31,15 @@ public class TelephoneVerify extends Controller{
      * 电话验证
      *
      * @param caller    主叫号码
-     * @param employee  员工编号
      * @param coupon    券号
      * @param timestamp 时间戳，UTC时间1970年1月1日零点至今的秒数，允许5分钟的上下浮动
      * @param sign      请求签名，由 分配的app_key+timestamp 拼接后进行MD5编码组成
      */
-    public static void verify(String caller, String employee, String coupon, Long timestamp, String sign){
-        Logger.info("telephone verify; caller: %s; employee: %s; coupon: %s; timestamp: %s; sign: %s", caller, employee, coupon, timestamp, sign);
+    public static void verify(String caller, String coupon, Long timestamp, String sign){
+        Logger.info("telephone verify; caller: %s; coupon: %s; timestamp: %s; sign: %s", caller, coupon, timestamp, sign);
         if(caller == null || caller.trim().equals("")){
             Logger.error("telephone verify failed: invalid caller");
             renderText("1;主叫号码无效");
-        }
-        if(employee == null || employee.trim().equals("")){
-            Logger.error("telephone verify failed: invalid employee");
-            renderText("2;员工编号无效");
         }
         if(coupon == null || coupon.trim().equals("")){
             Logger.error("telephone verify failed: invalid coupon");
@@ -87,9 +82,9 @@ public class TelephoneVerify extends Controller{
             Logger.error("telephone verify failed: invalid supplier %s",supplierId);
             renderText("9;对不起，商户不存在");
         }
-        SupplierUser supplierUser = SupplierUser.find("from SupplierUser where supplier.id=? and jobNumber=?", supplierId, employee).first();
+        SupplierUser supplierUser = SupplierUser.find("from SupplierUser where supplier.id=? and loginName=?", supplierId, caller).first();
         if(supplierUser == null){
-            Logger.error("telephone verify failed: supplier user not found %s %s",supplierId, employee);
+            Logger.error("telephone verify failed: supplier user not found %s %s",supplierId, caller);
             renderText("10;对不起，未找到该店员");
         }
 
@@ -122,7 +117,7 @@ public class TelephoneVerify extends Controller{
             ecoupon.verifyTel = caller;
             ecoupon.save();
 
-            Logger.debug("telephone verify success; caller: %s; employee: %s; coupon: %s; timestamp: %s; sign: %s", caller, employee, coupon, timestamp, sign);
+            Logger.info("telephone verify success; caller: %s; coupon: %s; timestamp: %s; sign: %s", caller, coupon, timestamp, sign);
             renderText("0;消费成功，价值" + ecoupon.faceValue + "元");
         }
     }
