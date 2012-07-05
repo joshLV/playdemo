@@ -5,8 +5,8 @@
     <meta name="Keywords" content="上海优惠券,一百券,${condsTitle},消费券,代金券,优惠券,美食券,电子券,优惠上海,提货券">
 #{/set} 
 #{set 'moreStyles'} 
-    #{asset.css src:['/y/list.min.css'] /} 
-#{/set} 
+    #{asset.css src:['/y/list.css'] /}
+#{/set}
 #{set 'moreScripts'}
  #{asset.js src:['/u/goods.js'] /}
 <script type="text/javascript">
@@ -33,53 +33,98 @@
                 <li class="area clearfix">
                  #{set m=null/}
                     #{if models.sales.MaterialType.ELECTRONIC.equals(materialType)}
-                        %{ m=1 }%
+                    %{ m=1 }%
                     #{/if}
                     #{if models.sales.MaterialType.REAL.equals(materialType)}
-                        %{ m=0 }%
+                    %{ m=0 }%
                     #{/if}
-                    <div class="cat-kind">区域：
-                        #{if "0".equals(districtId)}<a class="curr">全部</a>#{/if}
-                        #{else}<a id="district" href="/s/${categoryId}-021-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}">全部</a>#{/else}
+                    <div class="cat-kind">
+                        区域：#{if "0".equals(districtId)}<a class="curr">全部</a>#{/if}
+                             #{else}<a id="district"
+                             href="/s/${categoryId}-021-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
+                             >全部</a>
+                           #{/else}
                     </div>
                     <div class="cat-list">
-                        #{list districts, as:'district'} 
-                            #{if district != null}
-                                #{if district.id.equals(districtId)}<a class="curr">${district.name}</a>#{/if}
-                                #{else}<a href="/s/0-${district.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-${m}">${district.name}</a>#{/else}
-                            #{/if}
+                        #{list districts, as:'district'}
+                        #{if district != null}
+                        #{if district.id.equals(districtId)}
+                         <a class="curr">${district.name}</a>
+                        #{/if}
+                        #{else}
+                        <a href="/s/0-${district.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-${m}">${district.name}</a>
+                         #{/else}
+                         #{/if}
                         #{/list}
                     </div>
                 </li>
                 <li class="zone clearfix">
-                    <div class="cat-kind">商圈：
-                        #{if "0".equals(areaId)}<a class="curr">全部</a>#{/if}
-                        #{else}<a href="/s/${categoryId}-0-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}">全部</a>#{/else}
+                    <div class="cat-kind">
+                        商圈：
+                         #{if "0".equals(areaId)}<a class="curr">全部</a>#{/if}
+                        #{else}<a href="/s/${categoryId}-0-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
+                            >全部</a>
+                        #{/else}
                     </div>
                     <div class="cat-list">
                         #{list areas, as:'area'}
-                        #{if area != null}
-                            #{if areaId.equals(area.id)}<a class="curr">${area.name}</a>#{/if}
-                            #{else}<a href="/s/0-${area.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-${m}">${area.name}</a>#{/else}
-                        #{/if}
-                        #{/list}
-                    </div>
+                         #{if area != null}
+                            #{if areaId.equals(area.id)}
+                                <a class="curr">${area.name}</a>
+                            #{/if}
+                         #{else}
+                         <a href="/s/0-${area.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-${m}">${area.name}</a>
+                         #{/else}
+                         #{/if}
+                         #{/list}
+                      </div>
                 </li>
 
-                <li class="brand clearfix">
-                    <div class="cat-kind">品牌：
-                        #{if brandId == 0}<a class="curr">全部</a>#{/if}
-                        #{else}<a href="/s/${categoryId}-${searchAreaId}-0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}">全部</a>#{/else}
+                <li class="zone clearfix">
+                    <div class="cat-kind">
+                        品牌：
+                    #{if brandId == 0}<a class="curr">全部</a>
+                    #{/if}
+                    #{else}<a
+                            href="/s/${categoryId}-${searchAreaId}-0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
+                            >全部</a>
+                    #{/else}
                     </div>
                     <div class="cat-list">
-                        #{list brands, as:'brand'}
-                            #{if brandId == brand.id}<a class="curr">${brand.name}</a>#{/if}
-                            #{else}<a href="/s/${categoryId}-${searchAreaId}-${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}">${brand.name}</a>#{/else}
-                        #{/list}
+                         #{list brands, as:'brand'}
+                    #{if brandId == brand.id}
+                        <span id="area" class="curr">${brand.name}</span>
+                    #{/if}
+                    #{else}<a
+                            href="/s/${categoryId}-${searchAreaId}-${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
+                            class="font_blue">${brand.name}</a>
+                    #{/else}
+                #{/list}
+
+
+                <dt>品牌:</dt>
+                <dd>
+                #{if brandId == 0}<a class="curr">全部</a>
+                #{/if}
+                #{else}<a
+                        href="/s/${categoryId}-${searchAreaId}-0-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
+                       >全部</a>
+                #{/else}
+                #{list brands, as:'brand'}
+                    #{if brandId == brand.id}
+                        <span id="area" class="curr">${brand.name}</span>
+                    #{/if}
+                    #{else}<a
+                            href="/s/${categoryId}-${searchAreaId}-${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
+                            class="font_blue">${brand.name}</a>
+                    #{/else}
+                #{/list}
+
                     </div>
                 </li>
             </ul>
-        </div><!-- #hot-cat -->
+        </div>
+        <!-- #hot-cat -->
 
         <div id="filter" class="clearfix">
             <ul>
@@ -97,11 +142,12 @@
             </ul>
             <form class="">
                 <input id="qb" type="radio" #{if materialType == "" || materialType == null }checked #{/if}/><label for="qb">全部</label>
-                <input id="dz" type="radio"#{if models.sales.MaterialType.ELECTRONIC.equals(materialType)}checked #{/if}/><label for="dz">电子券</label> 
+                <input id="dz" type="radio"#{if models.sales.MaterialType.ELECTRONIC.equals(materialType)}checked #{/if}/><label for="dz">电子券</label>
                 <input id="st" type="radio"#{if models.sales.MaterialType.REAL.equals(materialType)}checked #{/if} /><label for="st">实体券</label>
-            </form>
-        </div><!-- #filter -->
 
+            </form>
+        </div>
+        <!-- #filter -->
         #{set i:1/}
         <ul id="listview" class="clearfix">
             #{paginate.list items:goodsPage, as:'aGoods'}
@@ -122,12 +168,14 @@
                     <span>现价：<b>&yen;${aGoods.salePrice}</b></span>
                 </div>
                 <div class="qtype">&{'goods.'+materialType}</div>
-            </li> 
+            </li>
              #{set i:i+1/}
             #{/paginate.list}
         </ul>
         #{paginate.controls items:goodsPage /}
-    </div><!-- #section -->
+    </div>
+
+    <!-- #section -->
     
      <div id="sidebar">
         <div id="popular">
