@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>#{get 'title' /}</title>
     #{get 'metaContent'/}    
-    #{asset.css src:['/y/base.css', '/y/sprite.css'] /}
+    #{asset.css src:['/y/base.min.css', '/y/sprite.min.css'] /}
 
     #{get 'moreStyles' /}
-    #{asset.js src:['/u/jquery-1.7.2.min.js'] /}
+    #{asset.js src:['/u/jquery-1.7.2.min.js', '/y/base.js'] /}
 </head>
 <body>
  <div id="topbar">
@@ -32,12 +32,18 @@
 <div id="header" class="clearfix">
     <div id="logo"><img src="http://img.uhcdn.com/images/y/logo.png" width="180" height="96" /></div>
     <div id="promise"><img src="http://img.uhcdn.com/images/y/promise.png" width="525" height="96" /></div>
-     <div id="cart">
-         <a href="/carts"><span class="cart-icon">购物车</span><a>
-         <span class="cart-num">有(<em><strong id="cart-count">${count}</strong></em>)件商品</span>
-          <a class="cart-btn" target="_blank" href="/orders?items=#{list items:carts,
-            as:'cartItem'}${cartItem.goods.id}-${cartItem.number},#{/list}">去结算</a>
-     </div>
+    <div id="cart">
+        <div class="cart-box">
+            <div class="cart-box-hd clearfix">
+                <span class="cart-icon">购物车</span>
+                <span class="cart-num">有(<em id="cart-count">${count}</em>)件商品</span>
+                <b class="arrow"></b>
+            </div>
+            <div class="cart-box-bd">
+            </div>
+        </div>
+        <a class="cart-btn" target="_blank" href="/orders?items=#{list items:carts, as:'cartItem'}${cartItem.goods.id}-${cartItem.number},#{/list}">去结算</a>
+    </div>
 </div><!-- #header -->
 
 <div id="navbar">
@@ -64,26 +70,5 @@
 </div><!-- #footer -->
 
 #{get 'moreScripts' /}
-<script>
-$(function($){
-    var addToFavorite = function(url, title) {
-        try {
-            window.external.AddFavorite(url, title);
-        } catch(e) {
-            try {
-                window.sidebar.addPanel(title, url, '');
-            } catch(e) {
-                alert('对不起，您的浏览器不支持自动收藏，请使用Ctrl+D进行手动收藏！');
-            }
-        }
-    };
-    $('#favorite').click(function(evt) {
-        evt.preventDefault();
-        var url = window.location,
-            title = document.title;
-        addToFavorite(url, title);
-    });
-});
-</script>
 </body>
 </html>

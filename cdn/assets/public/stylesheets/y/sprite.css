@@ -4,6 +4,8 @@
 #topbar-bd .follow,
 #cart .cart-icon,
 #cart .cart-btn,
+#cart .cart-box-bd .goods-del,
+#cart .cart-box-bd .totalcart a,
 #navbar,
 #notice span,
 #content .hd,
@@ -54,6 +56,12 @@
 }
 #cart .cart-btn {
     background-position: 0 -72px;
+}
+#cart .cart-box-bd .goods-del {
+    background-position: 0 -525px;
+}
+#cart .cart-box-bd .totalcart a {
+    background-position: 0 -552px;
 }
 #navbar {
     background-repeat: repeat-x;

@@ -1,5 +1,7 @@
 /** 广告 **/
 #banner {
+    *position: relative;
+    z-index: 100;
     clear: both;
     width: 960px;
     margin: 10px auto;
@@ -172,8 +174,10 @@
     padding-right: 0;
 }
 #bargain .image {
-    border: 1px solid #f4f4f4;
+    width: 234px;
+    height: 178px;
     font-size: 0;
+    border: 1px solid #f4f4f4;
 }
 #bargain .image a {
     font-size: 0;
@@ -272,8 +276,10 @@
     padding-right: 0;
 }
 #product .image {
-    border: 1px solid #f4f4f4;
+    width: 172px;
+    height: 132px;
     font-size: 0;
+    border: 1px solid #f4f4f4;
 }
 #product .image a {
     font-size: 0;
@@ -377,8 +383,10 @@
     *line-height: 34px;
 }
 #popular .image {
-    border: 1px solid #f4f4f4;
+    width: 172px;
+    height: 132px;
     font-size: 0;
+    border: 1px solid #f4f4f4;
 }
 #popular .image a {
     font-size: 0;
