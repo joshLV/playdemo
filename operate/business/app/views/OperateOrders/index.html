@@ -204,7 +204,7 @@
             #{list items:order.realGoods, as:'aRealGoods'}
                 #{if i>0}
                 <tr test="i=${i}">
-                    <td><img src="@@{'/public/images/real-goods.png'}">bb ${aRealGoods.name}</td>
+                    <td><img src="@@{'/public/images/real-goods.png'}">${aRealGoods.name}</td>
                     *{#{if showRealStatus}}*
                         *{<td rowspan="${order.realGoods.size()}">&{'order.'+}*
                             *{order.realGoodsStatus}#{if models.order.OrderStatus.PAID.equals(order.status)}}*
