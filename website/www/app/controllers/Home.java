@@ -1,23 +1,23 @@
 package controllers;
 
-import cache.CacheCallBack;
-import cache.CacheHelper;
-import com.uhuila.common.constants.PlatformType;
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+import java.util.Date;
+import java.util.List;
 import models.cms.Block;
 import models.cms.BlockType;
 import models.cms.Topic;
 import models.cms.TopicType;
+import models.order.Order;
 import models.sales.Area;
 import models.sales.Category;
 import play.Logger;
 import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.With;
-
-import java.util.Date;
-import java.util.List;
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import com.uhuila.common.constants.PlatformType;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 
 /**
  * 首页控制器.
@@ -51,7 +51,7 @@ public class Home extends Controller {
         });
 
         //近日成交商品
-        List<models.sales.Goods> recentGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECENTS"), new CacheCallBack<List<models.sales.Goods>>() {
+        List<models.sales.Goods> recentGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(new String[]{models.sales.Goods.CACHEKEY, Order.CACHEKEY}, "WWW_RECENTS"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
                 return models.sales.Goods.findTradeRecently(5);
