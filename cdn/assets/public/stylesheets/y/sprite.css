@@ -16,6 +16,7 @@
 #news li,
 #popular .index span,
 #popular .index a,
+#popular .index .index-tips,
 #popular .ft,
 #listview .qtype,
 #amount .increase-btn,
@@ -108,6 +109,9 @@
 }
 #popular .ft {
     background-position: 1px -257px;
+}
+#popular .index .index-tips {
+    background-position:  0 -580px;
 }
 
 /** list page **/

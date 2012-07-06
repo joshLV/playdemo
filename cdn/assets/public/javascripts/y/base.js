@@ -68,9 +68,18 @@ $(function($){
     // 人气指数
     $('.index-btn').click(function(e){
         e.preventDefault();
-        var id = $(this).attr('data-goodsid');
+        var that = $(this),
+            id = that.attr('data-goodsid'),
+            tips = that.next('.index-tips');
         $.post('/goods/statistics', {'id': id, 'statisticsType': 'LIKE'}, function(data) {
             $('#summary_' + id).html(data);
+            tips.show();
+            setTimeout(function() {
+                tips.hide();
+            }, 5000);
         });
+    });
+    $('.index-close').click(function(e){
+        $(this).parent().hide();
     });
 });
