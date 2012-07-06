@@ -1,8 +1,11 @@
 package models.sales;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import play.db.jpa.Model;
-
-import javax.persistence.*;
+import cache.CacheHelper;
 
 
 /**
@@ -53,6 +56,28 @@ public class GoodsStatistics extends Model {
         this.cartCount = 0;
         this.summaryCount = 0l;
     }
+    
+
+    public static final String CACHEKEY = "GOODSSTATISTICS";
+
+    public static final String CACHEKEY_GOODSID = "GOODSSTATISTICS_GOODSID";
+
+    @Override
+    public void _save() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        CacheHelper.delete(CACHEKEY_GOODSID + this.goodsId);
+        super._save();
+    }
+
+    @Override
+    public void _delete() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        CacheHelper.delete(CACHEKEY_GOODSID + this.goodsId);
+        super._delete();
+    }
+    
 
     public static void addCartCount(Long goodsId) {
         GoodsStatistics statistics = GoodsStatistics.find("goodsId", goodsId).first();

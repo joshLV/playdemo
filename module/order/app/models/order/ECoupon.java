@@ -124,6 +124,9 @@ public class ECoupon extends Model {
     @JoinColumn(name = "shop_id", nullable = true)
     public Shop shop;
 
+    /**
+     * 验证店员
+     */
     @ManyToOne
     @JoinColumn(name = "supplier_user_id", nullable = true)
     public SupplierUser supplierUser;

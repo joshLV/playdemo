@@ -1061,7 +1061,13 @@ public class Goods extends Model {
     }
 
     public Long summaryCount() {
-        GoodsStatistics statistics = GoodsStatistics.find("goodsId", this.id).first();
+        final Long goodsId = this.id;
+        GoodsStatistics statistics = CacheHelper.getCache(CacheHelper.getCacheKey(GoodsStatistics.CACHEKEY_GOODSID + goodsId, "GOODSSTATS"), new CacheCallBack<GoodsStatistics>() {
+            @Override
+            public GoodsStatistics loadData() {
+                return GoodsStatistics.find("goodsId", goodsId).first();
+            }
+        });
         if (statistics == null) {
             return 0l;
         }
