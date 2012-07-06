@@ -1,5 +1,6 @@
 package functional;
 
+import com.uhuila.common.util.PathUtil;
 import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
@@ -15,34 +16,36 @@ import play.test.FunctionalTest;
 public class ImagesTest extends FunctionalTest {
 
     @Test
-    public void testShowImage() {
-        Http.Response response = GET("/p/1/1/1/origin_100x100.jpg");
-        assertIsNotFound(response);
-    }
-    @Test
-    public void testShowImageBySmall() {
-        Http.Response response = GET("/p/1/1/1/origin_small.jpg");
-        assertIsOk(response);
-        assertContentType("image/jpeg", response);
-    }
-
-    @Test
-    public void testShowImageByMiddle() {
-        Http.Response response = GET("/p/1/1/1/origin_middle.jpg");
-        assertIsOk(response);
-        assertContentType("image/jpeg", response);
-    }
-
-    @Test
-    public void testShowImageByLarge() {
-        Http.Response response = GET("/p/1/1/1/origin_large.jpg");
-        assertIsOk(response);
-        assertContentType("image/jpeg", response);
-    }
-
-    @Test
-    public void testShowImageByIllegal() {
+    public void testInvalidSign() {
         Http.Response response = GET("/p/1/1/1/origin.jpg");
         assertIsNotFound(response);
+
+        response = GET("/p/1/1/1/abc_origin.jpg");
+        assertIsNotFound(response);
     }
+
+    @Test
+    @Ignore
+    public void testDefaultImg(){
+        Http.Response response = GET(PathUtil.imgSign("/p/1/1/1/none.jpg"));
+        assertIsOk(response);
+        assertContentType("image/jpeg", response);
+    }
+
+    @Test
+    @Ignore
+    public void testShowImageWithoutWatermark() {
+        Http.Response response = GET(PathUtil.imgSign("/p/1/1/1/origin_nw.jpg"));
+        assertIsOk(response);
+        assertContentType("image/jpeg", response);
+    }
+
+    @Test
+    @Ignore
+    public void testShowResizeImage() {
+        Http.Response response = GET(PathUtil.imgSign("/p/1/1/1/origin_100x100.jpg"));
+        assertIsOk(response);
+        assertContentType("image/jpeg", response);
+    }
+
 }
