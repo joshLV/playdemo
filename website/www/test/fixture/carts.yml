@@ -21,6 +21,7 @@ sales.Goods(Goods_1):
   supplierId: 1
   effectiveAt: 2012-02-01
   expireAt: 2022-02-02
+  "imagePath": "/0/0/133/origin.jpg"
 
 sales.Goods(Goods_2):
   name: "测试商品2"
@@ -33,3 +34,4 @@ sales.Goods(Goods_2):
   supplierId: 1
   effectiveAt: 2012-02-01
   expireAt: 2022-02-02
+  "imagePath": "/0/0/133/origin.jpg"

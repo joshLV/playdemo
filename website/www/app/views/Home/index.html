@@ -161,8 +161,10 @@
         <div id="news">
             <div class="hd">最新动态<!--<a class="more" href="/" target="_blank"></a>--></div>
             <ul class="bd">
+               #{set n:1/}
             #{list newTopics, as:'topic'}
-            <li class="hot"><a href="/topic/${topic.id}" target="_blank"><span>${topic.title}</span></a>
+            <li #{if newTopics.size()==n}class="last"#{/if}#{else}class="hot"#{/else}><a href="/topic/${topic.id}" target="_blank"><span>${topic.title}</span></a>
+              #{set n:n++/}
             #{/list}
             </ul>
         </div>
