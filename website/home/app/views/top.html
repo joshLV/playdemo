@@ -7,7 +7,7 @@
     #{asset.css src:['/y/base.min.css', '/y/sprite.min.css'] /}
 
     #{get 'moreStyles' /}
-    #{asset.js src:['/u/jquery-1.7.2.min.js', '/y/base.js'] /}
+    #{asset.js src:['/u/jquery-1.7.2.min.js', '/y/base.js','/u/location.js'] /}
 </head>
 <body>
  <div id="topbar">
@@ -70,6 +70,6 @@
     </div>
 </div><!-- #footer -->
 
-#{get 'moreScripts' /}
+*{#{get 'moreScripts' /}}*
 </body>
 </html>

@@ -62,7 +62,7 @@ public class UserAddresses extends Controller {
     }
 
     private static void checkAddress(Address address, User user) {
-        if (StringUtils.isBlank(address.getPhone())) {
+        if (StringUtils.isBlank(address.getPhone()) && StringUtils.isBlank(address.mobile)) {
             Validation.addError("address.mobile", "validation.required");
         }
         if (Validation.hasErrors()) {
