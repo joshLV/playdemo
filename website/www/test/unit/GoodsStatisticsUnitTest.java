@@ -51,7 +51,7 @@ public class GoodsStatisticsUnitTest extends UnitTest {
 
         statistics = GoodsStatistics.find("goodsId", id).first();;
 
-        assertEquals(7, statistics.summaryCount.intValue());
+        assertEquals(37, statistics.summaryCount.intValue());
 
     }
 
