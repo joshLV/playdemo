@@ -1,5 +1,6 @@
 package controllers;
 
+import com.uhuila.common.util.PathUtil;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
 import play.Logger;
@@ -20,24 +21,14 @@ import java.util.regex.Pattern;
  * Time: 11:42 AM
  */
 public class Images extends Controller {
-
-    public static final String SMALL = "small";
-    public static final String MIDDLE = "middle";
-    public static final String LARGE = "large";
-    public static final String TINY = "tiny";
-    public static final String LOGO = "logo";
-    public static final String RAW = "raw";
-    
-    public static final String SLIDE = "slide";
-
-    private static final Pattern targetImagePattern = Pattern.compile("^([^_]+)_([a-z0-9]+).(jpg|png|gif|jpeg)$");
-    private static final String IMAGE_ROOT_ORIGINAL = play.Play
-            .configuration.getProperty("image.root.original",
-                    "/nfs/images/o"); //原始图根目录
-    private static final String IMAGE_ROOT_GENERATED = play.Play
-            .configuration.getProperty("image.root.generated",
-                    "/nfs/images/p"); //缩略图根目录
+    private static final String IMAGE_ROOT_ORIGINAL = play.Play .configuration.getProperty("image.root.original", "/nfs/images/o"); //原始图根目录
+    private static final String IMAGE_ROOT_GENERATED = play.Play .configuration.getProperty("image.root.generated", "/nfs/images/p"); //缩略图根目录
     public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
+
+    private static final Pattern imageNamePattern = Pattern.compile("([a-z0-9]{8})_([^_]+)(_.+)*\\.(jpg|jpeg|png|gif)$");
+    private static final Pattern sizePattern = Pattern.compile(".+_([0-9]+)x([0-9]+)(_.+)*\\.(jpg|jpeg|png|gif)$");
+    private static final Pattern waterPattern = Pattern.compile(".+_nw(_.+)*\\.(jpg|jpeg|png|gif)$");
+
 
     public static void showOriginalImage(String path1, String path2, String path3, String path4) {
         String targetImagePath = joinPath(ROOT_PATH, path1, path2, path3, path4);
@@ -61,85 +52,89 @@ public class Images extends Controller {
      * @param imageName
      */
     public static void showImage(String firstDir, String secondDir, String thirdDir, String imageName) {
-        int width = 0;
-        int height = 0;
-        String imageSizeType = "";
-        if (imageName.contains(TINY)) {
-            width = 60;
-            height = 46;
-            imageSizeType = TINY;
-        } else if (imageName.contains(SMALL)) {
-            width = 172;
-            height = 132;
-            imageSizeType = SMALL;
-        } else if (imageName.contains(MIDDLE)) {
-            width = 234;
-            height = 178;
-            imageSizeType = MIDDLE;
-        } else if (imageName.contains(LARGE)) {
-            width = 340;
-            height = 260;
-            imageSizeType = LARGE;
-        } else if (imageName.contains(LOGO)) {
-            width = 300;
-            height = 180;
-            imageSizeType = LOGO;
-        } else if (imageName.contains(SLIDE)) {
-            imageSizeType = RAW;
-        } else if (imageName.contains(RAW)){
-            imageSizeType = RAW;
-        } else {
+        Matcher imageNameMatcher = imageNamePattern.matcher(imageName);
+        if (!imageNameMatcher.matches()) {
+            Logger.error("image not found: %s", imageName);
             notFound();
         }
 
-        Matcher matcher = targetImagePattern.matcher(imageName);
-
-        if (!matcher.matches()) {
+        String sign = imageNameMatcher.group(1);
+        String fileRawName = imageNameMatcher.group(2);
+        String fileFixName = imageNameMatcher.group(3);
+        String fileExtension = imageNameMatcher.group(4);
+        fileFixName = fileFixName == null ? "" : fileFixName;
+        //验证签名
+        if(!PathUtil.imgSign(fileRawName + fileFixName + "." + fileExtension).equals(sign)){
+            Logger.error("image sign failed: " + imageName);
             notFound();
         }
 
-        String targetImageParent = joinPath(IMAGE_ROOT_GENERATED, firstDir, secondDir, thirdDir);
 
-        if (!(new File(targetImageParent).isDirectory())) {
-            new File(targetImageParent).mkdirs();
+        File originImage = new File(joinPath(IMAGE_ROOT_ORIGINAL, firstDir, secondDir, thirdDir), fileRawName  + "." + fileExtension);
+
+        //访问的原始文件不存在时直接返回默认图片的相应规格的图片
+        if (!originImage.exists()) {
+            originImage = new File(Play.applicationPath,joinPath("public", "images", "default.png"));
+            firstDir = secondDir = thirdDir = "1";
+            imageName = "359e9dab_default_nw.png";
+            imageNameMatcher = imageNamePattern.matcher(imageName);
+            imageNameMatcher.matches();
+            fileRawName = imageNameMatcher.group(2);
+            fileExtension = imageNameMatcher.group(4);
         }
 
-        String targetImagePath = joinPath(targetImageParent, imageName);
-        String originImagePath = joinPath(IMAGE_ROOT_ORIGINAL, firstDir, secondDir, thirdDir, matcher.group(1) + "." + matcher.group(3));
+        StringBuilder targetFileName = new StringBuilder(fileRawName);
 
-        File targetImage = new File(targetImagePath);
+        File targetParent = new File(joinPath(IMAGE_ROOT_GENERATED, firstDir, secondDir, thirdDir));
+        //检查目标目录
+        if (!targetParent.exists()) {
+            if(!targetParent.mkdirs()){
+                Logger.error("can not mkdir on %s", targetParent.getPath());
+                error("can not mkdir on " + targetParent.getPath());
+            }
+        }
+
+        //检查是否指定了目标大小
+        Matcher sizeMatcher = sizePattern.matcher(imageName);
+        int width = 0, height = 0;
+        boolean resize = false, noWatermark = false;
+        if(sizeMatcher.matches()){
+            resize = true;
+            width = Integer.parseInt(sizeMatcher.group(1));
+            height = Integer.parseInt(sizeMatcher.group(2));
+            targetFileName.append("_").append(width).append("x").append(height);
+        }
+
+        //检查是否指定了不需要水印
+        if(waterPattern.matcher(imageName).matches()){
+            noWatermark = true;
+            targetFileName.append("_nw");
+        }
+
+        targetFileName.append(".").append(fileExtension);
+
+        File targetImage = new File(targetParent, targetFileName.toString());
 
         if (!targetImage.exists()) {
-            File originImage = new File(originImagePath);
-            boolean isDefaultImg = false;
-            if (!originImage.exists()) {
-                //访问的原始文件不存在时直接返回默认图片的相应规格的图片
-                originImage = new File(Play.applicationPath,joinPath("public", "images", "default.png"));
-                File defaultDir = new File(joinPath(IMAGE_ROOT_GENERATED, "1", "1", "1"));
-                if(!defaultDir.isDirectory()){
-                    defaultDir.mkdirs();
-                }
-                targetImage = new File(defaultDir, "default_" + imageSizeType + ".png");
-                if (targetImage.exists()) {
-                    renderBinary(targetImage);
-                }
-                isDefaultImg = true;
-            }
             //创建缩略图和水印
-            //play.libs.Images.resize(originImage, targetImage, width, height);
             try {
                 Thumbnails.Builder<File> imageBuilder = Thumbnails.of(originImage).outputQuality(0.99f);
-                //raw的不改变大小，只加水印
-                if(!imageSizeType.equals(RAW)){
-                    imageBuilder.size(width, height);
-                }else {
-                    imageBuilder.scale(1.0D);
-                }
 
-                if(!imageSizeType.equals(TINY) && !imageSizeType.equals(LOGO) && !imageSizeType.equals(RAW) && !isDefaultImg){
-                    BufferedImage watermark = ImageIO.read(new File(Play.applicationPath,
-                            joinPath("public", "images", "watermark_" + imageSizeType + ".png")));
-                    imageBuilder.watermark(Positions.BOTTOM_RIGHT, watermark, 0.5f);
+                //缩放
+                if(resize){ imageBuilder.size(width, height); }
+                else { imageBuilder.scale(1.0D); }
+
+                //水印
+                if(!noWatermark){
+                    BufferedImage img = imageBuilder.asBufferedImage();
+                    //水印大小为原图片大小的1/5
+                    int waterWidth = img.getWidth()/5;
+                    int waterHeight = img.getHeight()/5;
+                    Thumbnails.Builder<File> waterBuilder = Thumbnails.of(
+                            new File(Play.applicationPath, joinPath("public", "images", "watermark.png")))
+                            .outputQuality(0.99f)
+                            .size(waterWidth, waterHeight);
+                    imageBuilder.watermark(Positions.BOTTOM_RIGHT, waterBuilder.asBufferedImage(), 0.5f);
                 }
 
                 imageBuilder.toFile(targetImage);

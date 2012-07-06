@@ -7,6 +7,7 @@ require:
     - play1 -> cobertura 2.4p3
     - play1 -> app-version 0.1
     - net.coobird -> thumbnailator 0.4.1
+    - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
 
 repositories:
 
@@ -15,6 +16,7 @@ repositories:
         root:       "http://dev.uhuila.cn/nexus/content/groups/public"
         contains:
             - net.coobird -> *
+            - com.uhuila.utils -> *
         m2compatible: true
 
     - play1ContributedModules:
