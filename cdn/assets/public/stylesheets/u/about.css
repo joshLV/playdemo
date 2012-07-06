@@ -1,4 +1,6 @@
 #content {
+    width: 960px;
+    margin: 0 auto;
     padding-top: 10px;
 }
 #sidebar {
@@ -7,7 +9,7 @@
 }
 #sidebar ul {
     padding-bottom: 5px;
-    border-top: 2px solid #25B4AB;
+    border-top: 2px solid #f98821;
     background-color: #F4F4F4;
 }
 #sidebar li a {
