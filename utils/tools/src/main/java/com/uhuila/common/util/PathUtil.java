@@ -16,7 +16,7 @@ public class PathUtil {
 
     private static final String IMAGE_ROOT_GENERATED = "/p";
     private static final String IMAGE_ROOT_ORIGINAL = "/o";
-    private static final Pattern IMAGE_PATTERN = Pattern.compile("^/([0-9]+)/([0-9]+)/([0-9]+)/(.+).(jpg|png|gif|jpeg)$");
+    private static final Pattern IMAGE_PATTERN = Pattern.compile("^/([0-9]+)/([0-9]+)/([0-9]+)/(.+).((?i)(jpg|png|gif|jpeg))$");
     private static final Pattern FILENAME_PATTERN = Pattern.compile("(.*/)*(.*)$");
     public static Pattern PATH_MARKER_PATTERN = Pattern.compile("^(.+)(\\..+)$");
     private static final String HTTP_HEAD = "http://";

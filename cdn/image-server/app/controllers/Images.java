@@ -25,9 +25,9 @@ public class Images extends Controller {
     private static final String IMAGE_ROOT_GENERATED = play.Play .configuration.getProperty("image.root.generated", "/nfs/images/p"); //缩略图根目录
     public static String ROOT_PATH = Play.configuration.getProperty("upload.imagepath", "");
 
-    private static final Pattern imageNamePattern = Pattern.compile("([a-z0-9]{8})_([^_]+)(_.+)*\\.(jpg|jpeg|png|gif)$");
-    private static final Pattern sizePattern = Pattern.compile(".+_([0-9]+)x([0-9]+)(_.+)*\\.(jpg|jpeg|png|gif)$");
-    private static final Pattern waterPattern = Pattern.compile(".+_nw(_.+)*\\.(jpg|jpeg|png|gif)$");
+    private static final Pattern imageNamePattern = Pattern.compile("([a-z0-9]{8})_([^_]+)(_.+)*\\.((?i)(jpg|jpeg|png|gif))$");
+    private static final Pattern sizePattern = Pattern.compile(".+_([0-9]+)x([0-9]+)(_.+)*\\.((?i)(jpg|jpeg|png|gif))$");
+    private static final Pattern waterPattern = Pattern.compile(".+_nw(_.+)*\\.((?i)(jpg|jpeg|png|gif))$");
 
 
     public static void showOriginalImage(String path1, String path2, String path3, String path4) {
