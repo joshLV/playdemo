@@ -355,7 +355,12 @@ public class Goods extends Model {
         if (supplierId == null) {
             return null;
         }
-        return Supplier.findById(supplierId);
+        return CacheHelper.getCache(CacheHelper.getCacheKey(Supplier.CACHEKEY + this.supplierId, "GOODS_SUPPLIER"), new CacheCallBack<Supplier>() {
+            @Override
+            public Supplier loadData() {
+                return Supplier.findById(supplierId);
+            }
+        });
     }
 
     @Column(name = "is_all_shop")

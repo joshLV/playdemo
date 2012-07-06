@@ -1,17 +1,8 @@
 package models.supplier;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.PathUtil;
-import models.sales.Brand;
-import org.apache.commons.lang.StringUtils;
-import play.Play;
-import play.data.validation.Match;
-import play.data.validation.MaxSize;
-import play.data.validation.Phone;
-import play.data.validation.Required;
-import play.db.jpa.Model;
-import play.modules.view_ext.annotation.Mobile;
-
+import java.beans.Transient;
+import java.util.Date;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,9 +13,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
-import java.beans.Transient;
-import java.util.Date;
-import java.util.List;
+import models.sales.Brand;
+import org.apache.commons.lang.StringUtils;
+import play.Play;
+import play.data.validation.Match;
+import play.data.validation.MaxSize;
+import play.data.validation.Phone;
+import play.data.validation.Required;
+import play.db.jpa.Model;
+import play.modules.view_ext.annotation.Mobile;
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.PathUtil;
 
 /**
  * 供应商（商户）
@@ -128,6 +128,24 @@ public class Supplier extends Model {
     public Supplier(Long id) {
         this.id = id;
     }
+    
+
+    public static final String CACHEKEY = "SUPPLIER";
+
+    @Override
+    public void _save() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        super._save();
+    }
+
+    @Override
+    public void _delete() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        super._delete();
+    }
+
 
     @Transient
     public String getSmallLogo() {

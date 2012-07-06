@@ -86,6 +86,7 @@ public class GoodsStatistics extends Model {
         }
         statistics.cartCount++;
         statistics.likeCount++;
+        updateSummaryCount(statistics);
         statistics.save();
 
     }
@@ -96,6 +97,7 @@ public class GoodsStatistics extends Model {
             statistics = new GoodsStatistics(goodsId);
         }
         statistics.likeCount++;
+        updateSummaryCount(statistics);
         statistics.save();
 
     }
@@ -106,6 +108,7 @@ public class GoodsStatistics extends Model {
             statistics = new GoodsStatistics(goodsId);
         }
         statistics.buyCount++;
+        updateSummaryCount(statistics);
         statistics.save();
 
     }
@@ -116,16 +119,21 @@ public class GoodsStatistics extends Model {
             statistics = new GoodsStatistics(goodsId);
         }
         statistics.visitorCount++;
+        updateSummaryCount(statistics);
         statistics.save();
 
     }
 
     public static GoodsStatistics addSummaryCount(Long goodsId) {
         GoodsStatistics statistics = GoodsStatistics.find("goodsId", goodsId).first();
-        Integer summary = statistics.visitorCount+ statistics.likeCount  + statistics.cartCount+ statistics.buyCount ;
-        statistics.summaryCount = Long.parseLong(String.valueOf(summary));
+        updateSummaryCount(statistics);
         statistics.save();
         return statistics;
+    }
+
+    private static void updateSummaryCount(GoodsStatistics statistics) {
+        Integer summary = statistics.visitorCount + statistics.likeCount * 3  + statistics.cartCount * 7 + statistics.buyCount * 13 ;
+        statistics.summaryCount = Long.parseLong(String.valueOf(summary));
     }
 
 }

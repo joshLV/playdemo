@@ -43,7 +43,7 @@ public class Reports extends Controller {
     }
 
     /**
-     * 查询采购税务报表.
+     * 查询销售税务报表.
      *
      * @param condition
      */

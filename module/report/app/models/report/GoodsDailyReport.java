@@ -59,11 +59,29 @@ public class GoodsDailyReport extends Model {
         this.orderCount = orderCount;
         this.originalAmount = originalAmount;
     }
+    
+    public GoodsDailyReport(Goods goods, long buyCount, long orderCount, BigDecimal originalAmount) {        
+        this.goods = goods;
+        this.supplier = goods.getSupplier();
+        this.buyCount = buyCount;
+        this.orderCount = orderCount;
+        this.originalAmount = originalAmount;
+    }    
 
     public static JPAExtPaginator<GoodsDailyReport> query(ReportCondition condition, int pageNumber,
                                                           int pageSize) {
-        JPAExtPaginator<GoodsDailyReport> page = new JPAExtPaginator<>("GoodsDailyReport r",
-                "new GoodsDailyReport(r.supplier,r.goods, sum(r.buyCount), sum(r.orderCount), sum(r.originalAmount))",
+        /*
+         * 
+select date_format(i.created_at, '%Y-%m-%d'), g.supplier_id, i.goods_id, s.shop_id, sum(i.buy_number), sum(i.resaler_price*i.buy_number), sum(i.sale_price*i.buy_number), sum(i.original_price*i.buy_number), count(i.order_id), min(i.id)
+from order_items i left join goods g on i.goods_id=g.id
+     left join e_coupon s on i.id=s.item_id
+where i.status='PAID'  -- and i.created_at>=CURRENT_DATE-INTERVAL 1 DAY and i.created_at<CURRENT_DATE 
+group by i.goods_id,s.shop_id, g.supplier_id, date_format(i.created_at, '%Y-%m-%d') 
+order by  date_format(i.created_at, '%Y-%m-%d') desc;
+         
+         */
+        JPAExtPaginator<GoodsDailyReport> page = new JPAExtPaginator<>("ECoupon r",
+                "new GoodsDailyReport(r.goods, sum(r.orderItems.buyCount), count(r.id), sum(r.originalAmount))",
                 GoodsDailyReport.class, condition.getFilter(),
                 condition.getParamMap()).groupBy("r.supplier,r.goods").orderBy("r.supplier,r.goods");
         page.setPageNumber(pageNumber);

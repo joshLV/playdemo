@@ -122,7 +122,7 @@ public class SmsReceivers extends Controller {
                     String dateTime = DateUtil.getNowTime();
 
                     // 发给店员
-                    SMSUtil.send2("【券市场】," + getMaskedMobile(mobile) + "消费者的尾号" + coupon + "的券（面值：" + ecoupon
+                    SMSUtil.send("【券市场】," + getMaskedMobile(mobile) + "消费者的尾号" + coupon + "的券（面值：" + ecoupon
                             .faceValue + "元）于" + dateTime + "已验证成功，使用门店：" + shopName + "。客服热线：400" +
                             "-6262-166", supplierUser.mobile, code);
                     // 发给消费者
@@ -196,7 +196,7 @@ public class SmsReceivers extends Controller {
             String coupon = ecoupon.getLastCode(4);
             String dateTime = DateUtil.getNowTime();
             // 发给店员
-            SMSUtil.send2("【券市场】," + getMaskedMobile(mobile) + "消费者的尾号" + coupon + "的券（面值：" + ecoupon
+            SMSUtil.send("【券市场】," + getMaskedMobile(mobile) + "消费者的尾号" + coupon + "的券（面值：" + ecoupon
                     .faceValue + "元）于" + dateTime + "已验证成功，使用门店：" + shopName + "。客服热线：400" +
                     "-6262-166", supplierUser.mobile, code);
             // 发给消费者
