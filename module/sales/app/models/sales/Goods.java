@@ -59,7 +59,6 @@ import play.modules.view_ext.annotation.Money;
 import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.constants.ImageSize;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.PathUtil;
@@ -70,6 +69,15 @@ public class Goods extends Model {
     private static final long serialVersionUID = 7063232063912330652L;
 
     public static final String PREVIEW_IMG_ROOT = "/9999/9999/9999/";
+
+    public static final String IMAGE_TINY = "60x46_nw";
+    public static final String IMAGE_SMALL   ="172x132";
+    public static final String IMAGE_MIDDLE  ="234x178";
+    public static final String IMAGE_LARGE   ="340x260";
+    public static final String IMAGE_LOGO    ="300x180_nw";
+    public static final String IMAGE_SLIDE   ="nw";
+    public static final String IMAGE_ORIGINAL="nw";
+    public static final String IMAGE_DEFAULT ="";
 
     //  ========= 不同的价格列表 =======
     /**
@@ -503,7 +511,7 @@ public class Goods extends Model {
      */
     @Transient
     public String getImageTinyPath() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.TINY);
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_TINY);
     }
 
     /**
@@ -511,7 +519,7 @@ public class Goods extends Model {
      */
     @Transient
     public String getImageSmallPath() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.SMALL);
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_SMALL);
     }
 
 
@@ -520,7 +528,7 @@ public class Goods extends Model {
      */
     @Transient
     public String getImageMiddlePath() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.MIDDLE);
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_MIDDLE);
     }
 
     /**
@@ -528,12 +536,12 @@ public class Goods extends Model {
      */
     @Transient
     public String getImageLargePath() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.LARGE);
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_LARGE);
     }
 
     @Transient
     public String getImageOriginalPath() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, ImageSize.ORIGINAL);
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_ORIGINAL);
     }
 
     public String getPrompt() {

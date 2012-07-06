@@ -18,7 +18,6 @@ import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.constants.ImageSize;
 import com.uhuila.common.util.PathUtil;
 
 @Entity
@@ -26,7 +25,15 @@ import com.uhuila.common.util.PathUtil;
 public class Brand extends Model {
     
     private static final long serialVersionUID = 7063232060911301L;
-    
+    public static final String IMAGE_TINY = "60x46_nw";
+    public static final String IMAGE_SMALL   ="172x132";
+    public static final String IMAGE_MIDDLE  ="234x178";
+    public static final String IMAGE_LARGE   ="340x260";
+    public static final String IMAGE_LOGO    ="300x180_nw";
+    public static final String IMAGE_SLIDE   ="nw";
+    public static final String IMAGE_ORIGINAL="nw";
+    public static final String IMAGE_DEFAULT ="";
+
     @Required
     @MaxSize(20)
     public String name;
@@ -68,17 +75,17 @@ public class Brand extends Model {
 
     @Transient
     public String getShowLogo() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, logo, ImageSize.LOGO);
+        return PathUtil.getImageUrl(IMAGE_SERVER, logo, IMAGE_LOGO);
     }
 
     @Transient
     public String getTinyLogo() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, logo, ImageSize.TINY);
+        return PathUtil.getImageUrl(IMAGE_SERVER, logo, IMAGE_TINY);
     }
 
     @Transient
     public String getOriginalLogo() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, logo, ImageSize.ORIGINAL);
+        return PathUtil.getImageUrl(IMAGE_SERVER, logo, IMAGE_ORIGINAL);
     }
 
     /*

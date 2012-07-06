@@ -1,7 +1,6 @@
 package models.supplier;
 
 import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.constants.ImageSize;
 import com.uhuila.common.util.PathUtil;
 import models.sales.Brand;
 import org.apache.commons.lang.StringUtils;
@@ -37,7 +36,15 @@ import java.util.List;
 public class Supplier extends Model {
     
     private static final long serialVersionUID = 7122320609113062L;
-    
+    public static final String IMAGE_TINY = "60x46_nw";
+    public static final String IMAGE_SMALL   ="172x132";
+    public static final String IMAGE_MIDDLE  ="234x178";
+    public static final String IMAGE_LARGE   ="340x260";
+    public static final String IMAGE_LOGO    ="300x180_nw";
+    public static final String IMAGE_SLIDE   ="nw";
+    public static final String IMAGE_ORIGINAL="nw";
+    public static final String IMAGE_DEFAULT ="";
+
     /**
      * 域名
      */
@@ -124,12 +131,12 @@ public class Supplier extends Model {
 
     @Transient
     public String getSmallLogo() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, logo, ImageSize.SMALL);
+        return PathUtil.getImageUrl(IMAGE_SERVER, logo, IMAGE_SMALL);
     }
 
     @Transient
     public String getOriginalLogo() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, logo, ImageSize.ORIGINAL);
+        return PathUtil.getImageUrl(IMAGE_SERVER, logo, IMAGE_ORIGINAL);
     }
 
     private static final String IMAGE_SERVER = Play.configuration.getProperty

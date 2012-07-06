@@ -53,7 +53,6 @@ if(confirm("确定取消此订单吗？")){
                         <th width="340">商品</th>
                         <th width="100">单价（元）</th>
                         <th width="38">数量</th>
-                        <th width="70">售后</th>
                         <th width="78">实付款（元）</th>
                         <th width="85">
                             <div class="pos_abs">
@@ -88,19 +87,6 @@ if(confirm("确定取消此订单吗？")){
                             </td>
                             <td align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
                             <td align="center">${rowItem.buyNumber}</td>
-                           %{ status =rowItem.getECouponStatus();}%
-                            <td align="center">
-                             #{if status == models.order.ECouponStatus.UNCONSUMED && row.status == models.order
-                             .OrderStatus.PAID&& models.sales.MaterialType
-                             .ELECTRONIC.equals(rowItem?.goods?.materialType) && !rowItem?.goods?.isLottery}
-                              <div class="caozuo_std">
-                                <a style="color:#3366CC"  href="/orders/refund/${row.orderNumber}"  id="apply_${row.orderNumber}">申请退款</a>
-                              </div>
-                             #{/if}
-                                 #{else}
-                                 &{'coupon.'+status}
-                                 #{/else}
-                             </td>
                             #{if (++m == 1) }
                                 <td align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
                                 <td align="center" rowspan="${row.orderItems.size()}">

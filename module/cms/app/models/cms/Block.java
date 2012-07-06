@@ -23,7 +23,6 @@ import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.constants.ImageSize;
 import com.uhuila.common.util.PathUtil;
 
 /**
@@ -40,7 +39,15 @@ public class Block extends Model {
 
     private static final String IMAGE_SERVER = Play.configuration.getProperty
             ("image.server", "img0.uhcdn.com");
-    
+    public static final String IMAGE_TINY = "60x46_nw";
+    public static final String IMAGE_SMALL   ="172x132";
+    public static final String IMAGE_MIDDLE  ="234x178";
+    public static final String IMAGE_LARGE   ="340x260";
+    public static final String IMAGE_LOGO    ="300x180_nw";
+    public static final String IMAGE_SLIDE   ="nw";
+    public static final String IMAGE_ORIGINAL="nw";
+    public static final String IMAGE_DEFAULT ="";
+
     @Required
     @MinSize(1)
     @MaxSize(60)
@@ -82,17 +89,17 @@ public class Block extends Model {
 
     @Transient
     public String getShowImageUrl() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, ImageSize.SLIDE);
+        return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, IMAGE_SLIDE);
     }
     
     @Transient
     public String getShowImageUrlMiddle() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, ImageSize.MIDDLE);
+        return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, IMAGE_MIDDLE);
     }
     
     @Transient
     public String getShowImageUrlTiny() {
-        return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, ImageSize.TINY);
+        return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, IMAGE_TINY);
     }
 
     public static final String CACHEKEY = "BLOCK";

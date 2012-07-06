@@ -40,6 +40,7 @@ import models.sales.GoodsStatistics;
 import models.sales.MaterialType;
 import models.sms.SMSUtil;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.Index;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -163,6 +164,10 @@ public class Order extends Model {
 
     @Column(name = "delivery_company")
     public String deliveryCompany;
+
+    @Index(name = "ext_order")
+    @Column(name = "ext_order_id")
+    public String extOrderId;
 
     /**
      * 支付方式名称

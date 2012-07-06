@@ -1,6 +1,5 @@
 package com.uhuila.common.util;
 
-import com.uhuila.common.constants.ImageSize;
 import junit.framework.TestCase;
 import org.junit.Test;
 
@@ -29,9 +28,9 @@ public class PathUtilTest extends TestCase {
         assertEquals("http://imgserver/p/1/1/1/34a90a66_1.jpg",
                 PathUtil.getImageUrl("imgserver","/1/1/1/1.jpg", null));
         assertEquals("http://imgserver/p/1/1/1/28a84735_1_nw.jpg",
-                PathUtil.getImageUrl("imgserver","/1/1/1/1.jpg", ImageSize.ORIGINAL));
+                PathUtil.getImageUrl("imgserver","/1/1/1/1.jpg", "nw"));
         assertEquals("http://imgserver/p/1/1/1/03da66dd_1_172x132.jpg",
-                PathUtil.getImageUrl("imgserver","/1/1/1/1.jpg", ImageSize.SMALL));
+                PathUtil.getImageUrl("imgserver","/1/1/1/1.jpg", "172x132"));
     }
 
 }

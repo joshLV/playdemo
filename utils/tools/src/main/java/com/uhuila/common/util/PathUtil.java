@@ -1,6 +1,5 @@
 package com.uhuila.common.util;
 
-import com.uhuila.common.constants.ImageSize;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.regex.Matcher;
@@ -82,9 +81,9 @@ public class PathUtil {
      * @param fix        图片大小规格
      * @return 完整的图片url
      */
-    public static String getImageUrl(String imageServer, String imagePath, ImageSize fix) {
+    public static String getImageUrl(String imageServer, String imagePath, String fix) {
         if(fix == null){
-            fix = ImageSize.DEFAULT;
+            fix = "";
         }
         String server = imageServer != null && imageServer.startsWith("http://") ? imageServer : HTTP_HEAD + imageServer;
         Matcher matcher = IMAGE_PATTERN.matcher(imagePath);
@@ -92,7 +91,7 @@ public class PathUtil {
             return null;
         }
 
-        String fixName = fix == ImageSize.DEFAULT ? "" : "_" + fix;
+        String fixName = fix.equals("")  ? "" : "_" + fix;
 
         String newFileName = matcher.group(4) + fixName + "." + matcher.group(5);
 

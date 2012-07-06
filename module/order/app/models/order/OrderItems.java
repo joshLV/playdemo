@@ -157,18 +157,4 @@ public class OrderItems extends Model {
         }
         return sn.toString();
     }
-
-    /**
-     * 处理券号
-     *
-     * @return 券号
-     */
-    public ECouponStatus getECouponStatus() {
-        ECoupon ecoupon = ECoupon.find("order=? and goods=? and orderItems = ?", order, goods, this).first();
-
-        if (ecoupon == null) {
-            return null;
-        }
-        return ecoupon.status;
-    }
 }
