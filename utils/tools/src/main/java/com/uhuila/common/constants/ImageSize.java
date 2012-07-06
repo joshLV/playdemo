@@ -8,7 +8,16 @@ package com.uhuila.common.constants;
  * Time: 11:49 AM
  */
 public enum ImageSize {
-    TINY("tiny"), SMALL("small"), MIDDLE("middle"), LARGE("large"),LOGO("logo"), SLIDE("slide"), ORIGINAL(""), RAW("raw");
+    // nw 代表 no watermark
+    // 不指定大小就不用写大小
+    TINY    ("60x46_nw"),
+    SMALL   ("172x132"),
+    MIDDLE  ("234x178"),
+    LARGE   ("340x260"),
+    LOGO    ("300x180_nw"),
+    SLIDE   ("nw"),
+    ORIGINAL("nw"),
+    DEFAULT ("");
     
     private String value;
     private ImageSize(String value){

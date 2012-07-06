@@ -1,6 +1,7 @@
 package com.uhuila.common.util;
 
 import com.uhuila.common.constants.ImageSize;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,8 +16,12 @@ public class PathUtil {
 
     private static final String IMAGE_ROOT_GENERATED = "/p";
     private static final String IMAGE_ROOT_ORIGINAL = "/o";
-    private static final Pattern IMAGE_PATTERN = Pattern.compile("^/([0-9]+)/([0-9]+)/([0-9]+)/([^_]+).(jpg|png|gif|jpeg)$");
+    private static final Pattern IMAGE_PATTERN = Pattern.compile("^/([0-9]+)/([0-9]+)/([0-9]+)/(.+).(jpg|png|gif|jpeg)$");
+    private static final Pattern FILENAME_PATTERN = Pattern.compile("(.*/)*(.*)$");
+    public static Pattern PATH_MARKER_PATTERN = Pattern.compile("^(.+)(\\..+)$");
     private static final String HTTP_HEAD = "http://";
+
+    private static final String SIZE_KEY = "sJ34fds29h@d";
 
     /**
      * 根据图片id生成三级目录的路径.
@@ -35,38 +40,67 @@ public class PathUtil {
     }
 
     /**
+     * 添加图片标识，如nw则不加水印，WIDTHxHEIGHT指定长宽等
+     *
+     * @param path 路径
+     * @param mark 标识
+     * @return 添加了标识的图片路径
+     */
+    public static String addImgPathMark(String path, String mark){
+        Matcher matcher = PATH_MARKER_PATTERN.matcher(path);
+        if(!matcher.matches()){
+            return null;
+        }
+        return matcher.group(1) + "_" + mark + matcher.group(2);
+    }
+
+    /**
+     * 请求加密后的图片路径
+     *
+     * @param requestUri 文件路径 接受 /a/b/c.abc  /a.bc  a.bc 等不同形式的参数
+     * @return 请求签名
+     */
+    public static String signImgPath(String requestUri){
+        Matcher matcher = FILENAME_PATTERN.matcher(requestUri);
+        if(!matcher.matches()){
+            return null;
+        }
+        String pre = matcher.group(1) == null ? "" : matcher.group(1);
+        String sign = imgSign(matcher.group(2));
+        return pre + sign + "_" + matcher.group(2);
+    }
+
+    public static String imgSign(String fileName){
+        return DigestUtils.md5Hex(fileName + "-" + SIZE_KEY).substring(24);
+    }
+
+    /**
      * 根据图片服务器以及图片路径生成图片的url.
      *
      * @param imageServer 图片服务器域名或ip
      * @param imagePath   图片路径
-     * @param size        图片大小规格
+     * @param fix        图片大小规格
      * @return 完整的图片url
      */
-    public static String getImageUrl(String imageServer, String imagePath, ImageSize size) {
-        String sizeType;
-        String rootPath;
-        if (size == null || ImageSize.ORIGINAL.equals(size)) {
-            sizeType = "";
-            rootPath = IMAGE_ROOT_ORIGINAL;
-        } else {
-            sizeType = "_" + size.toString();
-            rootPath = IMAGE_ROOT_GENERATED;
+    public static String getImageUrl(String imageServer, String imagePath, ImageSize fix) {
+        if(fix == null){
+            fix = ImageSize.DEFAULT;
         }
         String server = imageServer != null && imageServer.startsWith("http://") ? imageServer : HTTP_HEAD + imageServer;
-        String defaultImage = server + rootPath + "/1/1/1/default" + sizeType + ".png";
-        if (imagePath == null || imagePath.equals("")) {
-            return defaultImage;
-        }
         Matcher matcher = IMAGE_PATTERN.matcher(imagePath);
-        if (!matcher.matches()) {
-            return defaultImage;
-        }
-        if (size == null || ImageSize.ORIGINAL.equals(size)) {
-            return server + rootPath + imagePath;
+        if(!matcher.matches()){
+            return null;
         }
 
-        String imageHeadStr = IMAGE_ROOT_GENERATED + imagePath;
-        return server + imageHeadStr.replace("/" + matcher.group(4) + "." + matcher.group(5),
-                "/" + matcher.group(4) + sizeType + "." + matcher.group(5));
+        String fixName = fix == ImageSize.DEFAULT ? "" : "_" + fix;
+
+        String newFileName = matcher.group(4) + fixName + "." + matcher.group(5);
+
+        return server +  IMAGE_ROOT_GENERATED + signImgPath(
+                "/" + matcher.group(1)
+                + "/" + matcher.group(2)
+                + "/" + matcher.group(3)
+                + "/" + newFileName
+            );
     }
 }
