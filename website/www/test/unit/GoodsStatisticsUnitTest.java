@@ -49,7 +49,7 @@ public class GoodsStatisticsUnitTest extends UnitTest {
         statistics = GoodsStatistics.find("goodsId", id).first();
         assertEquals(1, statistics.visitorCount.intValue());
 
-        statistics = GoodsStatistics.addSummaryCount(id);
+        statistics = GoodsStatistics.find("goodsId", id).first();;
 
         assertEquals(7, statistics.summaryCount.intValue());
 

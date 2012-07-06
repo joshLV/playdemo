@@ -65,34 +65,6 @@ $(function () {
         $('#add_cart_result').hide();
     });
 
-
-    //直接在文本框里输入购买数量
-    $("#number").blur(function () {
-        try {
-            var limitNumber = '${goods.limitNumber}';
-            var boughtNumber = '${boughtNumber}';
-            var number = Number($(this).val())
-            var stock = Number($("#stock").val())
-            if (number <= 0) {
-                $(this).val(1);
-            }
-            if (number > 999) {
-                $(this).val(999);
-            }
-
-            if ((limitNumber > boughtNumber) && number > (limitNumber - boughtNumber)) {
-                $(this).val(limitNumber - boughtNumber);
-            }
-            if (number > stock) {
-                $(this).val(stock)
-                $("#stock_hit").css("display", "inline")
-            }
-            ;
-        } catch (e) {
-            $(this).val(1);
-        }
-    });
-
     //提交问题
     $("#submit-question").click(function () {
         var question = $("#question").val();
