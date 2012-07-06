@@ -239,7 +239,7 @@ public class Goods extends Controller {
                 new CacheCallBack<List<models.sales.Goods>>() {
                     @Override
                     public List<models.sales.Goods> loadData() {
-                        return models.sales.Goods.findTopRecommend(4);
+                        return models.sales.Goods.findTopRecommend(5);
                     }
                 });
         GoodsStatistics.addVisitorCount(goods.id);
