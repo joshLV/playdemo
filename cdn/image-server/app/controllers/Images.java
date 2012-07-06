@@ -118,7 +118,7 @@ public class Images extends Controller {
         if (!targetImage.exists()) {
             //创建缩略图和水印
             try {
-                Thumbnails.Builder<File> imageBuilder = Thumbnails.of(originImage).outputQuality(0.99f);
+                Thumbnails.Builder<File> imageBuilder = Thumbnails.of(originImage).outputQuality(0.99f).keepAspectRatio(false);
 
                 //缩放
                 if(resize){ imageBuilder.size(width, height); }
