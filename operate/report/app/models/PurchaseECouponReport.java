@@ -72,7 +72,7 @@ public class PurchaseECouponReport extends Model {
     public static JPAExtPaginator<PurchaseECouponReport> query(PurchaseECouponReportCondition condition, int pageNumber,
                                                            int pageSize) {
         JPAExtPaginator<PurchaseECouponReport> page = new JPAExtPaginator<>("ECoupon r",
-                "new PurchaseECouponReport(r.goods, count(r.id), r.salePrice, sum(r.salePrice)) ",
+                "new PurchaseECouponReport(r.goods, count(r.id), r.originalPrice, sum(r.originalPrice)) ",
                 PurchaseECouponReport.class, condition.getFilter(),
                 condition.getParamMap()).groupBy("r.goods, r.salePrice").orderBy("r.goods.supplierId");
         page.setPageNumber(pageNumber);
@@ -82,7 +82,7 @@ public class PurchaseECouponReport extends Model {
 
     public static PurchaseECouponReport summary(PurchaseECouponReportCondition condition) {
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select count(r.id), (sum(r.salePrice)/count(r.id)), sum(r.salePrice) " +
+        Query q = entityManager.createQuery("select count(r.id), (sum(r.originalPrice)/count(r.id)), sum(r.originalPrice) " +
                 "from ECoupon r where " + condition.getFilter());
         for (String key : condition.getParamMap().keySet()) {
             q.setParameter(key, condition.getParamMap().get(key));
