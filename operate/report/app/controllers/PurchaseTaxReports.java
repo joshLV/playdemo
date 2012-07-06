@@ -1,8 +1,8 @@
 package controllers;
 
 import java.util.List;
-import models.PurchaseTaxReport;
-import models.PurchaseTaxReportCondition;
+import models.PurchaseECouponReport;
+import models.PurchaseECouponReportCondition;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -27,16 +27,16 @@ public class PurchaseTaxReports extends Controller {
      * @param condition
      */
     @ActiveNavigation("purchase_tax_reports")
-    public static void index(PurchaseTaxReportCondition condition) {
+    public static void index(PurchaseECouponReportCondition condition) {
         int pageNumber = getPageNumber();
 
         if (condition == null) {
-            condition = new PurchaseTaxReportCondition();
+            condition = new PurchaseECouponReportCondition();
         }
 
-        JPAExtPaginator<PurchaseTaxReport> reportPage = PurchaseTaxReport.query(condition, pageNumber, PAGE_SIZE);
+        JPAExtPaginator<PurchaseECouponReport> reportPage = PurchaseECouponReport.query(condition, pageNumber, PAGE_SIZE);
 
-        PurchaseTaxReport summary = PurchaseTaxReport.summary(condition);
+        PurchaseECouponReport summary = PurchaseECouponReport.summary(condition);
         
         List<Supplier> supplierList = Supplier.findUnDeleted();
 

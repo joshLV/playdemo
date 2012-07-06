@@ -24,8 +24,8 @@ import play.modules.paginate.JPAExtPaginator;
  * Time: 10:44 AM
  */
 @Entity
-@Table(name="sales_tax_reports")
-public class SalesTaxReport extends Model {
+@Table(name="report_sales_order_item")
+public class SalesOrderItemReport extends Model {
     @ManyToOne
     public Supplier supplier;
 
@@ -41,6 +41,7 @@ public class SalesTaxReport extends Model {
     @Column(name = "order_count")
     public long orderCount;
     
+    @Column(name = "sale_price")
     public BigDecimal salePrice;
 
     @Column(name = "original_amount")
@@ -51,7 +52,7 @@ public class SalesTaxReport extends Model {
     @Column(name = "no_tax_amount")
     public BigDecimal noTaxAmount;
 
-    public SalesTaxReport(Supplier supplier, Goods goods, BigDecimal salePrice,
+    public SalesOrderItemReport(Supplier supplier, Goods goods, BigDecimal salePrice,
                           long buyCount, long orderCount, BigDecimal originalAmount,
                           BigDecimal tax, BigDecimal noTaxAmount) {
         this.supplier = supplier;
@@ -65,7 +66,7 @@ public class SalesTaxReport extends Model {
     }
     
     
-    public SalesTaxReport(Goods goods, BigDecimal salePrice,
+    public SalesOrderItemReport(Goods goods, BigDecimal salePrice,
                           long buyCount, BigDecimal originalAmount) {
         this.supplier = goods.getSupplier();
         this.goods = goods;
@@ -76,18 +77,18 @@ public class SalesTaxReport extends Model {
         this.noTaxAmount = BigDecimal.ZERO;
     }    
 
-    public SalesTaxReport(long buyCount, BigDecimal originalAmount) {
+    public SalesOrderItemReport(long buyCount, BigDecimal originalAmount) {
         this.buyCount = buyCount;
         this.originalAmount = originalAmount;
         this.tax = BigDecimal.ZERO;
         this.noTaxAmount = BigDecimal.ZERO;
     }        
 
-    public static JPAExtPaginator<SalesTaxReport> query(SalesTaxReportCondition condition, int pageNumber,
+    public static JPAExtPaginator<SalesOrderItemReport> query(SalesOrderItemReportCondition condition, int pageNumber,
                                                         int pageSize) {
-        JPAExtPaginator<SalesTaxReport> page = new JPAExtPaginator<>("OrderItems r, Supplier s ",
-                "new SalesTaxReport(r.goods, r.salePrice, sum(r.buyNumber), sum(r.salePrice*r.buyNumber))",
-                SalesTaxReport.class, condition.getFilter(),
+        JPAExtPaginator<SalesOrderItemReport> page = new JPAExtPaginator<>("OrderItems r, Supplier s ",
+                "new SalesOrderItemReport(r.goods, r.salePrice, sum(r.buyNumber), sum(r.salePrice*r.buyNumber))",
+                SalesOrderItemReport.class, condition.getFilter(),
                 condition.getParamMap()).groupBy("r.goods, r.salePrice")
                 .orderBy("r.goods");
         page.setPageNumber(pageNumber);
@@ -95,7 +96,7 @@ public class SalesTaxReport extends Model {
         return page;
     }
 
-    public static SalesTaxReport summary(SalesTaxReportCondition condition) {
+    public static SalesOrderItemReport summary(SalesOrderItemReportCondition condition) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select sum(r.buyNumber), sum(r.salePrice*r.buyNumber) " +
                 "from OrderItems r, Supplier s where " + condition.getFilter());
@@ -104,9 +105,9 @@ public class SalesTaxReport extends Model {
         }
         Object[] summary = (Object[]) q.getSingleResult();
         if (summary == null || summary[0] == null) {
-            return new SalesTaxReport(0, BigDecimal.ZERO);
+            return new SalesOrderItemReport(0, BigDecimal.ZERO);
         }
-        return new SalesTaxReport((Long) summary[0], (BigDecimal) summary[1]);        
+        return new SalesOrderItemReport((Long) summary[0], (BigDecimal) summary[1]);        
     }
 
     /**

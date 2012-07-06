@@ -17,14 +17,14 @@ import play.modules.paginate.JPAExtPaginator;
 /**
  * 采购税表.
  * <p/>
- * <p/>
+ * 采购对应的是电子券ECoupon已经消费的记录
  * User: sujie
  * Date: 5/30/12
  * Time: 4:08 PM
  */
 @Entity
-@Table(name = "report_daily_purchase_tax")
-public class PurchaseTaxReport extends Model {
+@Table(name = "report_purchase_ecoupon")
+public class PurchaseECouponReport extends Model {
     @ManyToOne
     public Supplier supplier;
 
@@ -52,7 +52,7 @@ public class PurchaseTaxReport extends Model {
     public BigDecimal noTaxAmount;
 
 
-    public PurchaseTaxReport(Goods goods, long buyCount, BigDecimal salePrice, BigDecimal originalAmount) {
+    public PurchaseECouponReport(Goods goods, long buyCount, BigDecimal salePrice, BigDecimal originalAmount) {
         this.supplier = goods.getSupplier();
         this.goods = goods;
         this.buyCount = buyCount;
@@ -62,35 +62,35 @@ public class PurchaseTaxReport extends Model {
         this.noTaxAmount = BigDecimal.ZERO;
     }
 
-    public PurchaseTaxReport(long buyCount, BigDecimal salePrice, BigDecimal originalAmount) {
+    public PurchaseECouponReport(long buyCount, BigDecimal salePrice, BigDecimal originalAmount) {
         this.buyCount = buyCount;
         this.originalAmount = originalAmount;
         this.tax = BigDecimal.ZERO;
         this.noTaxAmount = BigDecimal.ZERO;
     }    
 
-    public static JPAExtPaginator<PurchaseTaxReport> query(PurchaseTaxReportCondition condition, int pageNumber,
+    public static JPAExtPaginator<PurchaseECouponReport> query(PurchaseECouponReportCondition condition, int pageNumber,
                                                            int pageSize) {
-        JPAExtPaginator<PurchaseTaxReport> page = new JPAExtPaginator<>("ECoupon r",
-                "new PurchaseTaxReport(r.goods, count(r.id), r.salePrice, sum(r.salePrice)) ",
-                PurchaseTaxReport.class, condition.getFilter(),
+        JPAExtPaginator<PurchaseECouponReport> page = new JPAExtPaginator<>("ECoupon r",
+                "new PurchaseECouponReport(r.goods, count(r.id), r.salePrice, sum(r.salePrice)) ",
+                PurchaseECouponReport.class, condition.getFilter(),
                 condition.getParamMap()).groupBy("r.goods, r.salePrice").orderBy("r.goods.supplierId");
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
         return page;
     }
 
-    public static PurchaseTaxReport summary(PurchaseTaxReportCondition condition) {
+    public static PurchaseECouponReport summary(PurchaseECouponReportCondition condition) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select count(r.id), (sum(r.salePrice)/count(r.id)), sum(r.salePrice) " +
                 "from ECoupon r where " + condition.getFilter());
         for (String key : condition.getParamMap().keySet()) {
             q.setParameter(key, condition.getParamMap().get(key));
         }
-         Object[] summary = (Object[]) q.getSingleResult();
+        Object[] summary = (Object[]) q.getSingleResult();
         if (summary == null || summary[0] == null) {
-            return new PurchaseTaxReport(0, BigDecimal.ZERO, BigDecimal.ZERO);
+            return new PurchaseECouponReport(0, BigDecimal.ZERO, BigDecimal.ZERO);
         }
-        return new PurchaseTaxReport((Long) summary[0], (BigDecimal) summary[1], (BigDecimal) summary[2]);
+        return new PurchaseECouponReport((Long) summary[0], (BigDecimal) summary[1], (BigDecimal) summary[2]);
     }
 }

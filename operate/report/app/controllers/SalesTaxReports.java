@@ -1,7 +1,7 @@
 package controllers;
 
-import models.SalesTaxReport;
-import models.SalesTaxReportCondition;
+import models.SalesOrderItemReport;
+import models.SalesOrderItemReportCondition;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
@@ -19,16 +19,16 @@ public class SalesTaxReports extends Controller {
      * @param condition
      */
     @ActiveNavigation("sales_tax_reports")
-    public static void index(SalesTaxReportCondition condition) {
+    public static void index(SalesOrderItemReportCondition condition) {
         int pageNumber = getPageNumber();
 
         if (condition == null) {
-            condition = new SalesTaxReportCondition();
+            condition = new SalesOrderItemReportCondition();
         }
 
-        JPAExtPaginator<SalesTaxReport> reportPage = SalesTaxReport.query(condition, pageNumber, PAGE_SIZE);
+        JPAExtPaginator<SalesOrderItemReport> reportPage = SalesOrderItemReport.query(condition, pageNumber, PAGE_SIZE);
 
-        SalesTaxReport summary = SalesTaxReport.summary(condition);
+        SalesOrderItemReport summary = SalesOrderItemReport.summary(condition);
 
         render(reportPage, summary, condition);
     }
