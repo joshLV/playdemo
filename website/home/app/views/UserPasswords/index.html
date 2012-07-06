@@ -66,10 +66,20 @@
         padding: 15px 0 0 224px;
     }
 </style>
-#{/set} #{set 'moreScripts'}
-<script src="@{'/public/javascripts/password.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
-<body onload="isOk('${isOk}')">
+#{set 'moreScripts'}
+*{<script src="@{'/public/javascripts/password.js'}" type="text/javascript" charset="UTF-8"></script>}*
+<script type="text/javascript">
+     	$(function(){
+        alert('${isOk}')
+        if ( '${isOk}'== "isOk") {
+            alert("密码修改成功！");
+        }
+
+    });
+
+</script>
+#{/set}
 <div class="wrap clearfix">
     #{include "share/left.html"/}
     <div class="section">
@@ -85,9 +95,9 @@
                     <label><span class="required">*</span>新密码：</label>
                     <input class="input" name="user.password" type="password" id="password" size="26" maxlength="20" value="${user?.password}" onkeyup="javascript:ChangeQD();"/>
                     <span class="error">#{error 'user.newPassword' /}</span>
-                    <span class="qdbox_hongse setClose" id="qdbox">
-                        <span id="pwQiangdu" class="qd qdhongse">很弱</span>
-                    </span>
+                    *{<span class="qdbox_hongse setClose" id="qdbox">}*
+                        *{<span id="pwQiangdu" class="qd qdhongse">很弱</span>}*
+                    *{</span>}*
                 </div>
                 <div class="confirm-password">
                     <label><span class="required">*</span>重复新密码：</label>
