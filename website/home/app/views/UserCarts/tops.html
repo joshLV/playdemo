@@ -1,17 +1,21 @@
-<b class="upRightLine"></b>
-#{if carts?.size() > 0 }
-        #{list items:carts, as:'cartItem'}
-        <p id="row_${cartItem.goods.id}"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${cartItem.goods.id}"><img
-                src="${cartItem.goods.imageTinyPath}"/>${cartItem.goods.name}</a> ${cartItem.goods.salePrice?.formatCurrency('CNY')}
-            x${cartItem.number} <a href="#" class="cart-delete" goods_id="${cartItem.goods.id}"
-                                   count="${cartItem.number}">删除</a></p>
-        #{/list}
-    <a class="view-carts" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">查看购物车</a>
-    <a id="order_confirm" class="view-carts" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/orders?items=#{list items:carts,
-    as:'cartItem'}${cartItem.goods.id}-${cartItem.number},#{/list}">去结算</a>
+ #{if carts?.size() > 0 }
+    <ul>
+    #{set number=0 /}
+    #{set total=0 /}
+    #{list items:carts, as:'cartItem'}
+    #{set number+=cartItem.number/}
+    #{set total+=(cartItem.goods.salePrice * cartItem.number)/}
+        <li class="carts-item clearfix" id="row_${cartItem.goods.id}">
+            <a class="goods-img" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${cartItem.goods.id}"><img src="${cartItem.goods.imageTinyPath}" width="48" /></a>
+            <a class="goods-name" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${cartItem.goods.id}">${cartItem.goods.name}</a>
+            <span class="goods-price">${cartItem.goods.salePrice?.formatCurrency('CNY')} x ${cartItem.number}</span>
+            <span class="goods-del" title="删除" goods_id="${cartItem.goods.id}" sale_price="${cartItem.goods.salePrice}" count="${cartItem.number}"></span>
+        </li>
+    #{/list}
+    </ul>
+    <div class="totalcart">共<em id="all_number">${number}</em>件商品，共计<em id="all_price">${total}</em>元 <a href="">购买</a></div>
 #{/if}
 #{else}
-您的购物车中没有任何商品。<br/>
-<a class="view-carts" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">查看购物车</a>
+    <div class="emptycart">你的购物车里没有任何商品。</div>
+    <div class="totalcart">共<em>0</em>件商品，共计<em>0.00</em>元</div>
 #{/else}
-*{<input type="hidden" id="goods_count" value="${count}">}*

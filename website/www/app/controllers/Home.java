@@ -107,7 +107,7 @@ public class Home extends Controller {
         List<Topic> newTopics = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_NEWS"), new CacheCallBack<List<Topic>>() {
             @Override
             public List<Topic> loadData() {
-                return Topic.findByType(PlatformType.UHUILA, TopicType.NEWS, currentDate, 4);
+                return Topic.findByType(PlatformType.UHUILA, TopicType.NEWS, currentDate, 5);
             }
         });
 
@@ -115,7 +115,7 @@ public class Home extends Controller {
         List<Topic> topics = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_TOPICS"), new CacheCallBack<List<Topic>>() {
             @Override
             public List<Topic> loadData() {
-                return Topic.findByType(PlatformType.UHUILA, TopicType.TOPIC, currentDate, 4);
+                return Topic.findByType(PlatformType.UHUILA, TopicType.TOPIC, currentDate, 10);
             }
         });
         //右侧图片展示
