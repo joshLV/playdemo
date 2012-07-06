@@ -1,6 +1,7 @@
 package controllers;
 
 import com.uhuila.common.util.FileUploadUtil;
+import com.uhuila.common.util.PathUtil;
 import models.sales.Goods;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -59,15 +60,18 @@ public class UploadFiles extends Controller {
         try {
             String targetFilePath = FileUploadUtil.storeImage(imgFile, ROOT_PATH);
 
-            Map map = new HashMap();
+            Map<String, Object> map = new HashMap<>();
             map.put("error", 0);
 
             String path = targetFilePath.substring(ROOT_PATH.length(), targetFilePath.length());
-            path = path.replace(".", "_raw.");
+            //不加水印
+            path = PathUtil.addImgPathMark(path, "nw");
+            if(path == null){
+                getError("上传失败，服务器忙，请稍后再试。");
+            }
+            path = PathUtil.signImgPath(path);
 
             map.put("url", "http://" + Goods.IMAGE_SERVER + "/p" + path);
-
-
             renderJSON(map);
         } catch (Exception e) {
             getError("上传失败，服务器忙，请稍候再试。");
