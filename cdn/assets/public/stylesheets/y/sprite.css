@@ -28,6 +28,7 @@
 .addCart-tips .addCart-icon,
 #bizinfo .index span,
 #bizinfo .index a,
+#bizinfo .index .index-tips,
 #diagram .tips,
 #consult .hd b,
 #consult dt {
@@ -110,7 +111,8 @@
 #popular .ft {
     background-position: 1px -257px;
 }
-#popular .index .index-tips {
+#popular .index .index-tips,
+#bizinfo .index .index-tips {
     background-position:  0 -580px;
 }
 
