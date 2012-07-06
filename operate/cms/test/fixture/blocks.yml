@@ -7,3 +7,4 @@ cms.Block(Test):
   content: '测试内容如下'
   type: WEBSITE_SLIDE
   deleted: UN_DELETED
+  imageUrl: ''
