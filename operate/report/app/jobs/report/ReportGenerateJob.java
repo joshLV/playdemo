@@ -21,7 +21,7 @@ import java.util.Date;
  * Date: 5/17/12
  * Time: 11:19 AM
  */
-@On("0 0 5 * * ?")  //每天凌晨5点执行
+// @On("0 0 5 * * ?")  //每天凌晨5点执行
 public class ReportGenerateJob extends Job {
     @Override
     public void doJob() {
