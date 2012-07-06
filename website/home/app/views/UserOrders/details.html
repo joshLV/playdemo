@@ -1,4 +1,4 @@
-#{extends 'main.html' /}
+#{extends 'top.html' /}
 #{set title:'一百券 - 商品详情' /}
 #{set 'moreStyles'}
     #{asset.css src:['/u/user-center.css'] /}
@@ -16,7 +16,6 @@
 }
 </style>
 #{/set}
-<body>
 <div class="wrap clearfix">
 #{breadcrumbs/breadcrumb breadcrumbs/}
     <h3 style="padding: 6px 0;font-size:16px">我的订单</h3>
@@ -83,35 +82,37 @@
     #{/list}
     </table>
 </div>
-<div class="buttom_tab_info2">
-    商品金额：<span
-        class="font_cheng">#{if order.containsRealGoods()}${order.amount.subtract(models.order.Order.FREIGHT)}#{/if}#{else}${order.amount}#{/else}
-    元</span>
-    运费：<span class="font_cheng">#{if order.containsRealGoods()}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else}
-    元</span>
-    合计：<span class="font_cheng">${order.amount}元</span>
-</div>
-<div style="clear: both"></div>
-#{if order.containsRealGoods()}
-    <h3 style="padding: 6px 0;">收货信息</h3>
-    <table class="order-tab" cellpadding="0" cellspacing="0">
-        <tr>
-            <td width=380>收货人：${order.receiverName}</td>
-            <td width=980 height="30">地址：${order.receiverAddress}邮编：${order.postcode}</td>
-        </tr>
-        <tr>
-            <td width=380 height="30">电话：${order.receiverPhone}</td>
-            <td width=980 height="30">手机：${order.receiverMobile}</td>
-        </tr>
-        <tr>
-            <td width=380>物流公司：${order.deliveryCompany}</td>
-            <td width=980 height="30">物流单号：${order.deliveryNo}</td>
-        </tr>
-        <tr>
-            <td colspan="2">订单留言：${order.remark}</td>
-        </tr>
+<div class="wrap">
+    <div class="buttom_tab_info2">
+        商品金额：<span
+            class="font_cheng">#{if order.containsRealGoods()}${order.amount.subtract(models.order.Order.FREIGHT)}#{/if}#{else}${order.amount}#{/else}
+        元</span>
+        运费：<span class="font_cheng">#{if order.containsRealGoods()}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else}
+        元</span>
+        合计：<span class="font_cheng">${order.amount}元</span>
+    </div>
+    <div style="clear: both"></div>
+    #{if order.containsRealGoods()}
+        <h3 style="padding: 6px 0;">收货信息</h3>
+        <table class="order-tab" cellpadding="0" cellspacing="0">
+            <tr>
+                <td width=380>收货人：${order.receiverName}</td>
+                <td width=980 height="30">地址：${order.receiverAddress}邮编：${order.postcode}</td>
+            </tr>
+            <tr>
+                <td width=380 height="30">电话：${order.receiverPhone}</td>
+                <td width=980 height="30">手机：${order.receiverMobile}</td>
+            </tr>
+            <tr>
+                <td width=380>物流公司：${order.deliveryCompany}</td>
+                <td width=980 height="30">物流单号：${order.deliveryNo}</td>
+            </tr>
+            <tr>
+                <td colspan="2">订单留言：${order.remark}</td>
+            </tr>
 
-    </table>
-#{/if}
-<br/>
-<br/>
+        </table>
+    #{/if}
+    <br/>
+    <br/>
+</div>

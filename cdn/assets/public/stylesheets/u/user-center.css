@@ -1,3 +1,8 @@
+.wrap {
+    width: 960px;
+    margin: 10px auto;
+    clear: both;
+}
 .aside {
     float: left;
     width: 148px;

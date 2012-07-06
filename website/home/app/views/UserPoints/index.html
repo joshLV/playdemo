@@ -1,4 +1,4 @@
-#{extends 'main.html' /} 
+#{extends 'top.html' /} 
 #{set title:'一百券 - 我的积分' /}
 #{set 'moreStyles'}
     #{asset.css src:['/u/list.css', '/u/user-center.css'] /}
@@ -29,7 +29,7 @@
 #{set 'moreScripts'}
 
 #{/set}
-<div class="clearfix">
+<div class="wrap clearfix">
     #{include "share/left.html"/}
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
