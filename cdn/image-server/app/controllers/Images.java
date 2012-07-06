@@ -121,10 +121,13 @@ public class Images extends Controller {
                 Thumbnails.Builder<File> imageBuilder = Thumbnails.of(originImage).outputQuality(0.99f);
 
                 //缩放
-                if(resize){ imageBuilder.size(width, height); }
-                else { imageBuilder.scale(1.0D); }
+                if(resize){
+                    imageBuilder.size(width, height);
+                    imageBuilder.keepAspectRatio(false);
+                } else {
+                    imageBuilder.scale(1.0D);
+                }
 
-                imageBuilder.keepAspectRatio(false);
                 //水印
                 if(!noWatermark){
                     BufferedImage img = imageBuilder.asBufferedImage();
