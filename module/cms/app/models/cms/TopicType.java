@@ -8,5 +8,5 @@ package models.cms;
  * Time: 11:08 AM
  */
 public enum TopicType {
-    NOTICE, NEWS
+    NOTICE, NEWS,TOPIC
 }

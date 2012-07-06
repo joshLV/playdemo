@@ -113,8 +113,7 @@
                 #{/else}
                 <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}"
                                                                                   alt="${aGoods.name}" width="234" height="178" /></a></div>
-                <div class="tags"><a href="/g/${aGoods.id}" target="_blank">${aGoods.getSupplier()?.fullName}
-                    | ${aGoods.discountExpress}</a></div>
+                <div class="tags"><a href="/g/${aGoods.id}" target="_blank">${aGoods.getSupplier()?.fullName}</a></div>
                 <div class="title"><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
                 <div class="price">
                     <del>原价：${aGoods.faceValue}</del>
@@ -162,7 +161,7 @@
         <div id="news">
             <div class="hd">最新动态<!--<a class="more" href="/" target="_blank"></a>--></div>
             <ul class="bd">
-            #{list topics, as:'topic'}
+            #{list newTopics, as:'topic'}
             <li class="hot"><a href="/topic/${topic.id}" target="_blank"><span>${topic.title}</span></a>
             #{/list}
             </ul>

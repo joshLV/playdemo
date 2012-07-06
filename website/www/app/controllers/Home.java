@@ -2,6 +2,7 @@ package controllers;
 
 import java.util.Date;
 import java.util.List;
+
 import models.cms.Block;
 import models.cms.BlockType;
 import models.cms.Topic;
@@ -37,9 +38,12 @@ public class Home extends Controller {
                 CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_DISTRICTS"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SAILY_SPEC"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SLIDES"),
+                CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_RIGHT_SLIDES"),
+                CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_NEWS"),
                 CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_TOPICS"),
                 CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOPCATEGORIES"),
-                CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_AREAS")
+                CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_AREAS"),
+                CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_SUPPLIER")
         );
 
         //精选商品        
@@ -99,11 +103,19 @@ public class Home extends Controller {
         renderArgs.put("categoryId", categoryId);
         final Date currentDate = new Date();
 
+        //最新动态
+        List<Topic> newTopics = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_NEWS"), new CacheCallBack<List<Topic>>() {
+            @Override
+            public List<Topic> loadData() {
+                return Topic.findByType(PlatformType.UHUILA, TopicType.NEWS, currentDate, 4);
+            }
+        });
+
         //公告
         List<Topic> topics = CacheHelper.getCache(CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_TOPICS"), new CacheCallBack<List<Topic>>() {
             @Override
             public List<Topic> loadData() {
-                return Topic.findByType(PlatformType.UHUILA, TopicType.NEWS, currentDate,4);
+                return Topic.findByType(PlatformType.UHUILA, TopicType.TOPIC, currentDate, 4);
             }
         });
         //右侧图片展示
@@ -130,7 +142,7 @@ public class Home extends Controller {
         });
 
         //合作商家信息
-         List<Block> suppliers = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SUPPLIER"), new CacheCallBack<List<Block>>() {
+        List<Block> suppliers = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SUPPLIER"), new CacheCallBack<List<Block>>() {
             @Override
             public List<Block> loadData() {
                 return Block.findByType(BlockType.WEBSITE_SUPPLIER, currentDate);
@@ -163,6 +175,7 @@ public class Home extends Controller {
             }
         }
         renderArgs.put("slides", slides);
+        renderArgs.put("newTopics", newTopics);
         renderArgs.put("dailySpecial", dailySpecial);
         renderArgs.put("dailySpecialGoods", dailySpecialGoods);
         renderArgs.put("rightSlides", rightSlides);

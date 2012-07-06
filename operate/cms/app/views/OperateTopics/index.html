@@ -16,8 +16,9 @@
                 <td width="30%">&{'topic.type'}：
                 #{select 'type', id:'type', class:'input-middle', value:type}
                     #{option "null"}不限#{/option}
-                    #{option models.cms.TopicType.NOTICE}&{'topic.NOTICE'}#{/option}
                     #{option models.cms.TopicType.NEWS}&{'topic.NEWS'}#{/option}
+                    #{option models.cms.TopicType.TOPIC}&{'topic.TOPIC'}#{/option}
+                    #{option models.cms.TopicType.NOTICE}&{'topic.NOTICE'}#{/option}
                 #{/select}</td>
                 <td>
                     <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
