@@ -59,7 +59,8 @@ public class Carts extends Controller {
                 }
             }
         }
-        render(carts, sawGoodsList);
+
+        render(user,carts, sawGoodsList);
     }
 
     /**

@@ -1,10 +1,12 @@
 package models.order;
 
 import cache.CacheHelper;
+import models.accounts.AccountType;
 import models.consumer.User;
 import models.sales.Goods;
 import models.sales.GoodsStatus;
 import models.sales.MaterialType;
+import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
@@ -149,7 +151,25 @@ public class Cart extends Model {
         clearCache(user, cookie);
         return query.executeUpdate();
     }
+    /**
+     * 取出该用户购买制定商品的数量
+     * @param user 用户
+     * @param goodsId 商品ID
+     * @return
+     */
+    public static long itemsNumber(User user, Long goodsId) {
+        long itemsNumber = 0L;
 
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE goods.id=:goodsId and " +
+                "order.userId=:userId and order.userType=:userType and status=:status");
+        q.setParameter("goodsId", goodsId);
+        q.setParameter("userId", user.id);
+        q.setParameter("userType", AccountType.CONSUMER);
+        q.setParameter("status", OrderStatus.PAID);
+        Object result = q.getSingleResult();
+        return result == null ? 0 : (Long) result;
+    }
     /**
      * 列出所有符合条件的购物车条目，合并数量后输出
      *

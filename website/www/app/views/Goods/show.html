@@ -98,7 +98,9 @@
             #{if goods.onSale()}
                 #{if !bought}
                     <a href="/orders?items=${goods.getId()}" id="link_buy_now" class="nowBuy">立即购买<b></b></a>
+                    #{if !goods?.isLottery}
                     <a id="link_add_cart" href="#" class="addCart">加入购物车<b></b></a>
+                    #{/if}
                 #{/if}
                 #{else}
                     <strong style="color: red">您已经购买过此商品！</strong>
