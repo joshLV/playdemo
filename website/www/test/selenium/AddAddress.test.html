@@ -20,7 +20,7 @@ type('id=J_addrName','你好')
 type('id=J_addrMobile','13764081568')
 *{verifyText('id=J_confirm','保存并送到这个地址')}*
 click('id=J_confirm')
-waitForText('id=J_modifyAddr','[修改]')
+*{waitForText('id=J_modifyAddr','[修改]')}*
 *{waitForElementPresent(}*
 *{verifyTextPresent('13764081568')}*
 #{/selenium}
