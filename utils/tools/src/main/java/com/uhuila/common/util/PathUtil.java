@@ -82,6 +82,10 @@ public class PathUtil {
      * @return 完整的图片url
      */
     public static String getImageUrl(String imageServer, String imagePath, String fix) {
+        if(imageServer == null || imagePath == null){
+            return null;
+        }
+
         if(fix == null){
             fix = "";
         }
