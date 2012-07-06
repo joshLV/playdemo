@@ -69,10 +69,8 @@ $(function($){
     $('.index-btn').click(function(e){
         e.preventDefault();
         var id = $(this).attr('data-goodsid');
-        $.post('/goods/statistics', {'id': id, 'statisticsType': 'LIKE'},
-            function(data) {
-                $('#summary_' + id).html(data);
-            }
-        );
+        $.post('/goods/statistics', {'id': id, 'statisticsType': 'LIKE'}, function(data) {
+            $('#summary_' + id).html(data);
+        });
     });
 });
