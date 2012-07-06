@@ -6,7 +6,7 @@ import play.jobs.Job;
 /**
  * @author likang
  */
-@Every("1m")
+//@Every("1m")
 public class YihaodianResendOrders extends Job {
     @Override
     public void doJob(){

@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 /**
  * @author likang
  */
-@Every("1m")
+//@Every("1m")
 public class YihaodianNewOrders extends Job {
     @Override
     public void doJob() throws NotEnoughInventoryException{
