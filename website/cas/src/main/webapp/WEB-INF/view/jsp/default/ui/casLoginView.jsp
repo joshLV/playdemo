@@ -17,7 +17,7 @@
 <body>
 <div id="header" class="clearfix">
     <div id="logo">
-        <a href="http://www.yibaiquan.com"><img src="http://a.uhcdn.com/images/u/logo.png" alt="一百券"/></a>
+        <a href="http://www.yibaiquan.com"><img src="http://a.uhcdn.com/images/y/logo.png" alt="一百券"/></a>
     </div>
 </div>
 <%
@@ -140,4 +140,3 @@ $(function(){
 </div>
 </body>
 </html>
-
