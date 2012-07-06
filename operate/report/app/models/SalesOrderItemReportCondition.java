@@ -41,6 +41,12 @@ public class SalesOrderItemReportCondition implements Serializable {
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
         }
 
+        if (supplier != null && supplier.id != 0) {
+            condBuilder.append(" and s = :supplier");
+            paramMap.put("supplier", supplier);
+            System.out.println("supplier.id:" + supplier.id);
+        }
+        
         if (StringUtils.isNotBlank(goodsLike)) {
             condBuilder.append(" and r.goods.name like :goodsLike");
             paramMap.put("goodsLike", "%" + goodsLike + "%");

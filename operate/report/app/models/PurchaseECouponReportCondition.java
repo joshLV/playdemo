@@ -42,8 +42,8 @@ public class PurchaseECouponReportCondition implements Serializable {
         }
 
         if (supplier != null && supplier.id != 0) {
-            condBuilder.append(" and r.shop.supplier = :supplier");
-            paramMap.put("supplier", supplier);
+            condBuilder.append(" and r.shop.supplierId = :supplier");
+            paramMap.put("supplier", supplier.id);
             System.out.println("supplier.id:" + supplier.id);
         }
 
@@ -57,12 +57,6 @@ public class PurchaseECouponReportCondition implements Serializable {
             paramMap.put("shopLike", "%" + shopLike + "%");
         }
         if (StringUtils.isNotBlank(supplierLike)) {
-//            List<Supplier> suppliers = Supplier.findListByFullName(supplierLike);
-//            String supplierIds = "0";
-//            for (Supplier supplier : suppliers) {
-//                supplierIds += "," + suppliers.id;
-//            }
-
             condBuilder.append(" and r.shop.supplier.fullName like :supplierLike");
             paramMap.put("supplierLike", "%" + supplierLike + "%");
         }
