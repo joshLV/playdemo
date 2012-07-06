@@ -11,7 +11,7 @@ import play.mvc.With;
 @With(OperateRbac.class)
 public class SalesTaxReports extends Controller {
 
-    private static final int PAGE_SIZE = 20;
+    private static final int PAGE_SIZE = 30;
     
     /**
      * 查询销售税务报表.

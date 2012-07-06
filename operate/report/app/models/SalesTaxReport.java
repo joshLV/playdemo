@@ -2,6 +2,7 @@ package models;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -96,12 +97,16 @@ public class SalesTaxReport extends Model {
 
     public static SalesTaxReport summary(SalesTaxReportCondition condition) {
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select new SalesTaxReport(sum(r.buyNumber), sum(r.salePrice*r.buyNumber)) " +
+        Query q = entityManager.createQuery("select sum(r.buyNumber), sum(r.salePrice*r.buyNumber) " +
                 "from OrderItems r, Supplier s where " + condition.getFilter());
         for (String key : condition.getParamMap().keySet()) {
             q.setParameter(key, condition.getParamMap().get(key));
         }
-        return (SalesTaxReport)q.getSingleResult();
+        Object[] summary = (Object[]) q.getSingleResult();
+        if (summary == null || summary[0] == null) {
+            return new SalesTaxReport(0, BigDecimal.ZERO);
+        }
+        return new SalesTaxReport((Long) summary[0], (BigDecimal) summary[1]);        
     }
 
     /**

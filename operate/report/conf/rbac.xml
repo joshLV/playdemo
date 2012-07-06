@@ -7,11 +7,11 @@
     <permission key="PURCHASE_TAX_REPORT" text="采购税务表" roles="account"/>
     <permission key="SALES_TAX_REPORT" text="销售税务表" roles="account"/>
 
-    <navigation key="reports_app" text="财务报表" action="Reports.showPurchaseTaxReport" display-order="80">
+    <navigation key="reports_app" text="报表" action="PurchaseTaxReports.index" display-order="80">
         <navigation key="account_report_app" text="财务报表">
-            <navigation key="purchase_tax_reports" action="Reports.showPurchaseTaxReport" text="采购税务表"
+            <navigation key="purchase_tax_reports" action="PurchaseTaxReports.index" text="采购税务表"
                         permission="PURCHASE_TAX_REPORT"/>
-            <navigation key="sales_tax_reports" action="Reports.showSalesTaxReport" text="销售税务表"
+            <navigation key="sales_tax_reports" action="SalesTaxReports.index" text="销售税务表"
                         permission="SALES_TAX_REPORT"/>
         </navigation>
     </navigation>

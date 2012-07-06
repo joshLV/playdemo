@@ -3,11 +3,11 @@
 # ~~~~
 
 # Home page
-GET     /                                       Application.index
+GET     /                                       PurchaseTaxReports.index
 
 # 财务报表
-GET     /reports                                Reports.showPurchaseTaxReport
-GET     /reports/purchase                       Reports.showPurchaseTaxReport
+GET     /reports                                PurchaseTaxReports.index
+GET     /reports/purchase                       PurchaseTaxReports.index
 GET     /reports/sales                          SalesTaxReports.index
 
 

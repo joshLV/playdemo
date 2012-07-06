@@ -85,7 +85,7 @@
 </style>
 #{/set}
 
-<form class="well form-inline" action="@{Reports.showPurchaseTaxReport()}" method="GET" id="form"
+<form class="well form-inline" action="@{PurchaseTaxReports.index()}" method="GET" id="form"
       name="form">
     商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
     #{select 'condition.supplier.id', id:supplierId, class:'select', value:condition?.supplier?.id}
@@ -117,8 +117,7 @@
 *{<li><a href="#">导出报表</a></li>}*
 *{</ul>}*
 <div class="alert alert-success">
-    <span>在此期间 总计销售 <b>${summary?.goodsCount}</b> 件商品</span>
-    <span>合计 <b>${summary?.orderCount}</b> 笔订单</span>
+    <span>在此期间 总计销售 <b>${summary?.buyCount}</b> 件商品</span>
     <span>共计 <b>${summary?.originalAmount}</b> 元</span>
 </div>
 <table class="table table-striped table-bordered table-condensed">
@@ -140,10 +139,10 @@
         <td>${report?.supplier?.fullName}</td>
         <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${report?.goods?.id}"
                target="_blank"><img src="${report?.goods?.imageTinyPath}"/>${report?.goods?.name}</a></td>
-        <td>${report?.price?.formatCurrency('CNY')}</td>
+        <td>${report?.salePrice?.formatCurrency('CNY')}</td>
         <td>${report?.buyCount}</td>
         <td>${report?.originalAmount?.formatCurrency('CNY')}</td>
-        <td>${report?.taxAmount?.formatCurrency('CNY')}</td>
+        <td>${report?.tax?.formatCurrency('CNY')}</td>
         <td>${report?.noTaxAmount?.formatCurrency('CNY')}</td>
     </tr>
 #{/paginate.list}
