@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import play.db.jpa.Model;
 import cache.CacheHelper;
 
@@ -17,6 +18,7 @@ import cache.CacheHelper;
 @Entity
 @Table(name = "goods_statistics")
 public class GoodsStatistics extends Model {
+   private static final long serialVersionUID = 7063132063912120652L;
 
     public Long goodsId;
     /**
@@ -56,7 +58,7 @@ public class GoodsStatistics extends Model {
         this.cartCount = 0;
         this.summaryCount = 0l;
     }
-    
+
 
     public static final String CACHEKEY = "GOODSSTATISTICS";
 
@@ -77,7 +79,7 @@ public class GoodsStatistics extends Model {
         CacheHelper.delete(CACHEKEY_GOODSID + this.goodsId);
         super._delete();
     }
-    
+
 
     public static void addCartCount(Long goodsId) {
         GoodsStatistics statistics = GoodsStatistics.find("goodsId", goodsId).first();
@@ -124,15 +126,8 @@ public class GoodsStatistics extends Model {
 
     }
 
-    public static GoodsStatistics addSummaryCount(Long goodsId) {
-        GoodsStatistics statistics = GoodsStatistics.find("goodsId", goodsId).first();
-        updateSummaryCount(statistics);
-        statistics.save();
-        return statistics;
-    }
-
     private static void updateSummaryCount(GoodsStatistics statistics) {
-        Integer summary = statistics.visitorCount + statistics.likeCount * 3  + statistics.cartCount * 7 + statistics.buyCount * 13 ;
+        Integer summary = statistics.visitorCount + statistics.likeCount * 3 + statistics.cartCount * 7 + statistics.buyCount * 13;
         statistics.summaryCount = Long.parseLong(String.valueOf(summary));
     }
 

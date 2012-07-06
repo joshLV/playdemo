@@ -43,7 +43,9 @@ public class Home extends Controller {
                 CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_TOPICS"),
                 CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOPCATEGORIES"),
                 CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_AREAS"),
+                CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_NEW"),
                 CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_SUPPLIER")
+
         );
 
         //精选商品        

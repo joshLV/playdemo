@@ -36,7 +36,7 @@ public class Goods extends Controller {
     public static String SHANGHAI = "021";
     public static int LIMIT = 13;
     public static int AREA_LIMIT = 11;
-    public static int PAGE_SIZE = 20;
+    public static int PAGE_SIZE = 18;
 
     /**
      * 商品列表初始页。 这个页面用得少，就不缓存了。
@@ -243,8 +243,6 @@ public class Goods extends Controller {
                     }
                 });
         GoodsStatistics.addVisitorCount(goods.id);
-
-        GoodsStatistics.addSummaryCount(goods.id);
         renderArgs.put("goods", goods);
         renderArgs.put("shops", goods.getShopList());
         renderArgs.put("breadcrumbs", breadcrumbs);
@@ -397,8 +395,13 @@ public class Goods extends Controller {
         } else if (statisticsType == GoodsStatisticsType.VISITOR) {
             GoodsStatistics.addVisitorCount(id);
         }
-        GoodsStatistics statistics = GoodsStatistics.addSummaryCount(id);
-
+        final Long goodsId = id;
+        GoodsStatistics statistics = CacheHelper.getCache(CacheHelper.getCacheKey(GoodsStatistics.CACHEKEY_GOODSID + goodsId, "GOODSSTATS"), new CacheCallBack<GoodsStatistics>() {
+            @Override
+            public GoodsStatistics loadData() {
+                return GoodsStatistics.find("goodsId", goodsId).first();
+            }
+        });
         renderJSON(statistics.summaryCount.toString());
     }
 
