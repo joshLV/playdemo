@@ -24,19 +24,17 @@ $(function($){
         cartBoxBd = $('#cart .cart-box-bd');
 
     cart.mouseover(function(){
-         $('#reload').val(true);
-//        if ($('#reload').val() == 'true') {
+        if ($('#reload').val() == 'true') {
             cartBoxBd.load("/carts/tops", function(data) {
                 cartBox.addClass('hover');
-//                $('#reload').val(false);
+                $('#reload').val(false);
             });
-//        } else {
-//            cartBox.addClass('hover');
-//        }
+        } else {
+            cartBox.addClass('hover');
+        }
     })
     .mouseout(function(){
         cartBox.removeClass('hover');
-        $('#reload').val(false);
     });
 
     $('.goods-del').live('click', function (ev) {
