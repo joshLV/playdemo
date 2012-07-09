@@ -15,7 +15,7 @@ function reorder(goods_id, increment) {
     var stock = Number($("#stock_" + goods_id).val());
     var limitNumber = Number($("#limit_" + goods_id).val());
     var last_num = Number(last_num_ele.val())
-    var boughtNumber= Number($("#boughtNumber_" + goods_id).val());
+    var boughtNumber = Number($("#boughtNumber_" + goods_id).val());
     var new_num = last_num + increment;
     if (new_num <= 0) {
         element.val(last_num);
@@ -46,13 +46,16 @@ function reorder(goods_id, increment) {
     }
 
     $.post('/carts',
-            {goodsId:goods_id, increment:increment},
-            function (data) {
-                element.val(new_num);
-                last_num_ele.val(new_num);
-                calItem(goods_id);
-                refreshAmount();
+        {goodsId:goods_id, increment:increment},
+        function (data) {
+            element.val(new_num);
+            last_num_ele.val(new_num);
+            calItem(goods_id);
+            refreshAmount();
+            var cartBoxBd = $('#cart .cart-box-bd');
+            cartBoxBd.load("/carts/tops", function (data) {
             });
+        });
 }
 //计算单行的总价
 function calItem(goods_id) {
