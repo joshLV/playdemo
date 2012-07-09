@@ -61,6 +61,7 @@ public class Register extends Controller {
         user.save();
 
         // session.put(SESSION_USER_KEY, user.loginName);
+        renderArgs.put("count",0);
         render("Register/registerSuccess.html", user);
     }
 
