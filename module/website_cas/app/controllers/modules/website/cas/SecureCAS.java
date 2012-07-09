@@ -154,6 +154,10 @@ public class SecureCAS extends Controller {
         if (isAuthenticated) {
             // 记录登录IP及时间
             User user = getUser();
+            if (user == null) {
+                Logger.error("CAS check failed! username=(" + casUser.getUsername() + ")");
+                fail();
+            }
             user.loginIp = request.remoteAddress;
             user.save();
             

@@ -347,7 +347,7 @@ public class CacheHelper {
     }
 
     private static String getRandomKey(String originalKey) {
-        return UUID.randomUUID().toString();
+        return originalKey + UUID.randomUUID().toString();
     }
 
 }
