@@ -15,9 +15,9 @@ import java.util.*;
 @Entity
 @Table(name = "cart")
 public class Cart extends Model {
-    
+
     private static final long serialVersionUID = 1632320609113062L;
-    
+
     @ManyToOne
     public User user;
 
@@ -52,8 +52,9 @@ public class Cart extends Model {
         this.createdAt = new Date();
         this.updatedAt = this.createdAt;
     }
-    
+
     public static final String CACHE_KEY = "CART";
+
     private static void clearCache(User user, String cookieIdentity) {
         CacheHelper.delete(getCartCacheKey(user, cookieIdentity));
     }
@@ -90,7 +91,7 @@ public class Cart extends Model {
         //如果记录已存在，则更新记录，否则新建购物车记录
         if (cart != null) {
             // 不允许一次购买超过999
-            if (cart.number + increment > 0){
+            if (cart.number + increment > 0) {
                 cart.number += increment;
                 cart.number = cart.number > 999 ? 999 : cart.number;
                 cart.number = cart.number > goods.baseSale ? goods.baseSale : cart.number;
@@ -147,13 +148,15 @@ public class Cart extends Model {
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
         }
-        
+
         clearCache(user, cookie);
         return query.executeUpdate();
     }
+
     /**
      * 取出该用户购买制定商品的数量
-     * @param user 用户
+     *
+     * @param user    用户
      * @param goodsId 商品ID
      * @return
      */
@@ -170,6 +173,7 @@ public class Cart extends Model {
         Object result = q.getSingleResult();
         return result == null ? 0 : (Long) result;
     }
+
     /**
      * 列出所有符合条件的购物车条目，合并数量后输出
      *
@@ -186,7 +190,7 @@ public class Cart extends Model {
         //构建查询条件
         StringBuilder sql = new StringBuilder(
                 "select new Cart(c.goods, SUM(c.number)) from Cart c where " +
-                "c.goods is not null and c.goods.status = :status and ( 1=2 ");
+                        "c.goods is not null and c.goods.status = :status and ( 1=2 ");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("status", GoodsStatus.ONSALE);
 
@@ -218,5 +222,42 @@ public class Cart extends Model {
      */
     public static List<Cart> findAll(User user, String cookie) {
         return findAll(user, cookie, null);
+    }
+
+    /**
+     * 用户所有的购物车列表
+     */
+    public static int findAllByGoodsId(User user, Goods goods) {
+        if (user == null) {
+            return 0;
+        }
+        //构建查询条件
+        StringBuilder sql = new StringBuilder(
+                "select new Cart(c.goods, SUM(c.number)) from Cart c where " +
+                        "c.goods = :goods and c.goods.status = :status ");
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("status", GoodsStatus.ONSALE);
+
+        if (user != null) {
+            sql.append(" and c.user = :user ");
+            params.put("user", user);
+        }
+        if (goods != null) {
+            sql.append("and c.goods = :goods ");
+            params.put("goods", goods);
+        }
+        sql.append(" group by c.goods");
+
+        Query query = play.db.jpa.JPA.em().createQuery(sql.toString());
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        int count = 0;
+        List<Cart> cartList = query.getResultList();
+        for (Cart cart : cartList) {
+            count += cart.number;
+        }
+
+        return count;
     }
 }

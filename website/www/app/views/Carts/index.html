@@ -35,15 +35,21 @@
         #{if user !=null} %{boughtNumber = cartItem.itemsNumber(user,cartItem.goods.id)}%#{/if}
         <input type="hidden" id="boughtNumber_${cartItem.goods.id}" value="${boughtNumber}"/>
         <tr id="row_${cartItem.goods.id}">
-            <td><input type="checkbox" id="check_goods_${cartItem.goods.id}"/></td>
+            <td>
+                #{if cartItem.goods.limitNumber >0 && cartItem.goods.limitNumber-boughtNumber==0}
+                  <input type="checkbox" disabled="false" />
+                #{/if}
+                #{else}
+                   <input type="checkbox" id="check_goods_${cartItem.goods.id}"/>
+                #{/else}
+            </td>
             <td class="goods-name"><img src="${cartItem.goods.imageTinyPath}"/> ${cartItem.goods.name}
                       #{if cartItem.goods.limitNumber >0}
                       <span id="limitNumber" style="display:block;color:#f50">（限购${cartItem.goods.limitNumber}件
-                          #{if user !=null},您还可以购买${cartItem.goods.limitNumber-boughtNumber}件#{/if})</span>
-
+                          #{if user !=null},您已经购买${boughtNumber}件#{/if})</span>
                     #{/if}
                 <span id="limit_goods_${cartItem.goods.id}"style="color:#f50">
-                #{if cartItem.goods.id==limit_goodsId && cartItem.goods.limitNumber>0 && cartItem.goods.limitNumber-boughtNumber==0}您已经过此商品或者超过限购数量，不能继续购买，请确认! #{/if}</span>
+                #{if cartItem.goods.id==limit_goodsId && cartItem.goods.limitNumber>0 && cartItem.goods.limitNumber-boughtNumber==0}不能继续购买，请确认! #{/if}</span>
             </td>
             <td>${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
             <td id="price_${cartItem.goods.id}">${cartItem.goods.salePrice}</td>
@@ -51,11 +57,16 @@
                 <a href="#" class="reduce_box" name="${cartItem.goods.id}">
                     <img src="@{'/public/images/sub_anniu.jpg'}" id="sub_img_${cartItem.goods.id}"/>
                 </a>
-                #{if cartItem.goods.limitNumber >0 && cartItem.goods.limitNumber-boughtNumber > 0}
-                <input class="num_input" type="text" value="${cartItem.goods.limitNumber-boughtNumber}" id="num_${cartItem.goods.id}"/>
+                #{if cartItem.goods.limitNumber >0}
+                     #{if cartItem.goods.limitNumber-boughtNumber > 0}
+                      <input class="num_input" type="text" value="${cartItem.goods.limitNumber-boughtNumber}" id="num_${cartItem.goods.id}"/>
+                     #{/if}
+                     #{else}
+                      <input class="num_input" type="text" value="1" id="num_${cartItem.goods.id}"/>
+                     #{/else}
                 #{/if}
                 #{else}
-                <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}"/>
+                    <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}"/>
                 #{/else}
                 <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}"/>
                 <input type="hidden" value="${cartItem.goods.baseSale}" id="stock_${cartItem.goods.id}">
@@ -65,13 +76,13 @@
                 </a>
 
             </td>
-            <td><span class="strong_gray"
-                      id="subtotal_${cartItem.goods.id}">
-              #{if cartItem.goods.limitNumber >0 && cartItem.goods.limitNumber-boughtNumber > 0}
-                         ${cartItem.goods.salePrice?.multiply(cartItem.goods.limitNumber-boughtNumber)}
+            <td><span class="strong_gray" id="subtotal_${cartItem.goods.id}">
+              #{if cartItem.goods.limitNumber >0}
+                    #{if cartItem.goods.limitNumber-boughtNumber > 0}${cartItem.goods.salePrice?.multiply(cartItem.goods.limitNumber-boughtNumber)}#{/if}
+                    #{else}${cartItem.goods.salePrice}#{/else}
                 #{/if}
                 #{else}
-                ${cartItem.goods.salePrice?.multiply(cartItem.number)}
+                   ${cartItem.goods.salePrice?.multiply(cartItem.number)}
                 #{/else}</span></td>
             <td><a href="#" class="del" name="del_row" goods_id="${cartItem.goods.id}"
                    id="del_row_${cartItem.goods.id}">删除</a></td>

@@ -8,6 +8,7 @@ import models.cms.Block;
 import models.cms.BlockType;
 import models.cms.CmsQuestion;
 import models.consumer.User;
+import models.order.Cart;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.*;
@@ -204,8 +205,9 @@ public class Goods extends Controller {
         final User user = SecureCAS.getUser();
         //该用户曾经购买该商品的数量
         Long boughtNumber = 0l;
+        int addCartNumber = 0;
         if (user != null) {
-
+            addCartNumber = Cart.findAllByGoodsId(user, goods);
             boughtNumber = OrderItems.itemsNumber(user, goods.id);
 
             final Long finalBoughtNumber = boughtNumber;
@@ -219,6 +221,8 @@ public class Goods extends Controller {
                 }
             });
             renderArgs.put("user", user);
+            System.out.println(addCartNumber+">>>>");
+            renderArgs.put("addCartNumber", addCartNumber);
             renderArgs.put("bought", isBuyFlag);
         }
         renderArgs.put("boughtNumber", boughtNumber);

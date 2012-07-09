@@ -15,6 +15,7 @@
         //直接在文本框里输入购买数量
     $("#number").blur(function () {
         try {
+            var goods_id=$("#goodsId").val();
             var limitNumber = '${goods.limitNumber}';
             var boughtNumber = '${boughtNumber}';
             var number = Number($(this).val())
@@ -27,18 +28,24 @@
                 $(this).val(999);
                 return false;
             }
-            if (number > limitNumber) {
+
+            if (limitNumber >0 && number > limitNumber) {
+                alert("a");
                 $(this).val(limitNumber-boughtNumber);
+                $("#last_num_" + goods_id).val(limitNumber - boughtNumber);
                 return false;
             }
-            if ((limitNumber > boughtNumber) && number > (limitNumber - boughtNumber)) {
+            if (limitNumber>0 && (limitNumber > boughtNumber) && number > (limitNumber - boughtNumber)) {
+                 alert("b");
                 $(this).val(limitNumber - boughtNumber);
+                $("#last_num_" + goods_id).val(limitNumber - boughtNumber);
                 return false;
             }
             if (number > stock) {
                 $(this).val(stock)
                 $("#stock_hit").css("display", "inline")
             }
+             $("#last_num_" + goods_id).val($(this).val())
             ;
         } catch (e) {
             $(this).val(1);
@@ -93,6 +100,8 @@
                 #{/if}
                     <span class="error">#{error 'number' /}</span>
                     <input type="hidden" id="stock" value="${goods.baseSale}">
+                    <input type="hidden" id="boughtNumber" value="${boughtNumber}">
+                    <input type="hidden" id="addCartNumber" value="${addCartNumber}">
                 </li>
             </ul>
             <div id="btnBox">
@@ -164,8 +173,14 @@
     <div id="recommend">
         <div class="hd">推荐商品</a></div>
         <ul class="bd clearfix">
+        #{set i:1/}
         #{list recommendGoodsList, as:'aGoods'}
-            <li>
+            #{if i%5==0}
+                <li class="last">
+                #{/if}
+                #{else}
+                <li>
+                #{/else}
                 <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}"
                                                                                   alt="${aGoods.name}"/></a></div>
                 <div class="title"><a href="" target="_blank"></a>${aGoods.name}</div>
@@ -174,6 +189,7 @@
                     <span class="coupon">&{'goods.'+goods.materialType}</span></div>
                 <div class="price">现价：<b>&yen;${aGoods.salePrice}</b></div>
             </li>
+        #{set i:i+1/}
         #{/list}
         </ul>
     </div>

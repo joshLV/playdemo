@@ -23,10 +23,26 @@ $(function () {
      */
     $("#link_add_cart").click(function () {
         var id = $("#goodsId").val();
+        var element = $("#number").val();
+        var boughtNumber = Number($("#boughtNumber").val());
+        var addCartNumber = Number($("#addCartNumber").val());
+        var limitNumber = Number($("#limit_" + id).val());
+        if (limitNumber > 0 && limitNumber - boughtNumber > 0 && addCartNumber == (limitNumber - boughtNumber)) {
+            $(".error").html("<strong style='display: block;'>已经超过限购数量，不能继续加入购物车！</strong>").css('color', '#F55');
+            return false;
+        }
+
+        if (limitNumber > 0 && element > (limitNumber - boughtNumber)) {
+            element.val(limitNumber - boughtNumber);
+            return false;
+        }
+//        var id = $("#goodsId").val();
+
         $.post(
             "/carts",
             {'goodsId':id, 'increment':$("#number").val()},
             function (data) {
+                $("#addCartNumber").val(data.count);
                 $('#add_cart_result').show();
                 $('#add_cart_result').show();
                 //5秒后自动消失
@@ -143,6 +159,7 @@ function reorder(goods_id, increment) {
     var limitNumber = Number($("#limit_" + goods_id).val());
     var last_num = Number(last_num_ele.val())
     var new_num = last_num + increment;
+    var boughtNumber = Number($("#boughtNumber").val());
     if (new_num <= 0) {
         element.val(last_num);
         return;
@@ -156,22 +173,24 @@ function reorder(goods_id, increment) {
         increment = stock - last_num;
     }
 
-    if (limitNumber > 0 && new_num > limitNumber) {
-        new_num = limitNumber;
-        element.val(limitNumber);
+    if (limitNumber > 0 && new_num > (limitNumber - boughtNumber)) {
+        element.val(limitNumber - boughtNumber);
         increment = limitNumber - last_num;
+        return false;
     }
+
     if (increment == 0) {
         element.val(last_num);
         return;
     }
-
-    $.post('/carts',
-        {goodsId:goods_id, increment:increment},
-        function (data) {
-            element.val(new_num);
-            last_num_ele.val(new_num);
-        });
+    element.val(new_num);
+    last_num_ele.val(new_num);
+//    $.post('/carts',
+//        {goodsId:goods_id, increment:increment},
+//        function (data) {
+//            element.val(new_num);
+//            last_num_ele.val(new_num);
+//        });
 }
 
 $("#link_add_cart").click(function () {
