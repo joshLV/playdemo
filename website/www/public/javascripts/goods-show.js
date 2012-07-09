@@ -25,9 +25,9 @@ $(function () {
         var id = $("#goodsId").val();
         var element = $("#number").val();
         var boughtNumber = Number($("#boughtNumber").val());
-        var addCartNumber = Number($("#addCartNumber").val());
+        var addCartNumber = Number($("#addCartNumber").val())+element*1;
         var limitNumber = Number($("#limit_" + id).val());
-        if (limitNumber > 0 && limitNumber - boughtNumber > 0 && addCartNumber == (limitNumber - boughtNumber)) {
+        if (limitNumber > 0 && limitNumber - boughtNumber > 0 && addCartNumber > (limitNumber - boughtNumber)) {
             $(".error").html("<strong style='display: block;'>已经超过限购数量，不能继续加入购物车！</strong>").css('color', '#F55');
             return false;
         }
@@ -42,8 +42,7 @@ $(function () {
             "/carts",
             {'goodsId':id, 'increment':$("#number").val()},
             function (data) {
-                $("#addCartNumber").val(data.count);
-                $('#add_cart_result').show();
+                $("#addCartNumber").val(addCartNumber);
                 $('#add_cart_result').show();
                 //5秒后自动消失
                 setTimeout("$('#add_cart_result').css('display','none')", 5000);
