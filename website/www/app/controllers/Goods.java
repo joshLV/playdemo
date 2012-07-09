@@ -171,7 +171,7 @@ public class Goods extends Controller {
 
             final Date currentDate = new Date();
             //合作商家信息
-            List<Block> suppliers = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SUPPLIER"), new CacheCallBack<List<Block>>() {
+            List<Block> suppliers = CacheHelper.getCache(CacheHelper.getCacheKey(Block.CACHEKEY, "LIST_SUPPLIER"), new CacheCallBack<List<Block>>() {
                 @Override
                 public List<Block> loadData() {
                     return Block.findByType(BlockType.WEBSITE_SUPPLIER, currentDate);
