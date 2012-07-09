@@ -52,6 +52,7 @@
     <h1>${goods.name}</h1>
 
     <div id="summary" class="clearfix">
+        <div id="leftBox"><!-- 此div为了规避.qvalu元素中最后一个文字被复制的问题 by Junyi -->
         <div id="gallery">
             <img src="${goods.imageLargePath}"/>
         </div>
@@ -118,6 +119,9 @@
             #{/elseif}
             </div>
         </div>
+        <!-- #property -->
+        </div>
+
         <div id="bizinfo">
             <h3>消费券提供商：</h3>
             <a href="/s/0-0-0-0-${goods?.brand?.id}"><img src="${goods?.brand?.showLogo}" width="200" alt="${goods?.brand?.name}"/></a>
@@ -146,6 +150,7 @@
             </div>
             <div class="qvalue">${goods.brand?.introduce?.raw()}</div>
         </div>
+        <!-- #bizinfo -->
     </div>
     <!-- #summary -->
 #{if goods.materialType == models.sales.MaterialType.ELECTRONIC}

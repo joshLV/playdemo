@@ -16,6 +16,11 @@
     border: 1px solid #e4e4e4;
 }
 
+#leftBox {
+    float: left;
+    position: relative;
+    z-index: 60;
+}
 #property {
     float: left;
     width: 378px;
@@ -177,6 +182,8 @@
 #bizinfo {
     float: right;
     width: 200px;
+    position: relative;
+    z-index: 50;
 }
 #bizinfo h3 {
     margin-bottom: 5px;
