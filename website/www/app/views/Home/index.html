@@ -1,4 +1,4 @@
-#{extends 'top.html' /}
+#{extends 'main.html' /}
 #{set title:'一百券-网上消费券首选门户,消费券,代金券,优惠券,美食券,电子券,提货券' /}
 #{set 'metaContent'}
 <meta name="Description" content="一百券-致力于本地生活消费的互联网电子商务网站，将线下本地生活服务与线上互联网结合在一起，让互联网成为线下本地生活服务交易的前台">
@@ -180,7 +180,7 @@
                         <a href="#" class="index-btn" data-goodsid="${aGoods.id}">支持</a>
                         <b class="index-tips" style="display:none"><s class="index-close" title="关闭"></s></b>
                     </div>
-                    <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}"
+                    <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}"
                                                                        alt="${aGoods.name}" width="172" height="132" /></a></div>
                     <div class="title"><a href="/g/${aGoods.id}" target="_blank"></a>${aGoods.name}</div>
                     <div class="attri">

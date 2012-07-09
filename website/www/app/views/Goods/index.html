@@ -1,4 +1,4 @@
-#{extends 'top.html' /} 
+#{extends 'main.html' /}
 #{set title:'一百券-' + condsTitle + ',网上消费券首选门户,消费券,代金券,优惠券,美食券,电子券,提货券' /} 
 #{set 'metaContent'}
     <meta name="Description" content="一百券-${condsTitle},消费券,代金券,优惠券,美食券,电子券,提货券">
@@ -155,7 +155,7 @@
                         <a href="#" class="index-btn" data-goodsid="${aGoods.id}">支持</a>
                         <b class="index-tips" style="display:none"><s class="index-close" title="关闭"></s></b>
                     </div>
-                    <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" alt="${aGoods.name}" width="172" height="132" /></a></div>
+                    <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}" alt="${aGoods.name}" width="172" height="132" /></a></div>
                     <div class="title"><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
                     <div class="attri">
                         <del>原价：${aGoods.faceValue}</del>
@@ -171,7 +171,7 @@
             <div class="hd">合作商家</div>
             <ul class="bd">
                #{list suppliers, as:'supplier'}
-                   <li><img src="${supplier.getShowImageUrl()}"/></li>
+                   <li><a href="${supplier.link}"><img src="${supplier.getShowImageUrl()}"/></a></li>
                #{/list}
             </ul>
         </div><!-- #cooperation -->

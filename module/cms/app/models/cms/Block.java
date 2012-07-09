@@ -102,6 +102,11 @@ public class Block extends Model {
         return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, IMAGE_TINY);
     }
 
+    @Transient
+    public String getShowImageUrlOrigin() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imageUrl, IMAGE_ORIGINAL);
+    }
+
     public static final String CACHEKEY = "BLOCK";
     
     @Override
