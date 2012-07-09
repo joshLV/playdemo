@@ -44,26 +44,26 @@ public class TelephoneVerify extends Controller{
         }
         if(coupon == null || coupon.trim().equals("")){
             Logger.error("telephone verify failed: invalid coupon");
-            renderText("3");//券号无效
+            renderText("2");//券号无效
         }
         if(timestamp == null){
             Logger.error("telephone verify failed: invalid timestamp");
-            renderText("4");//时间戳无效
+            renderText("3");//时间戳无效
         }
         if(sign == null || sign.trim().equals("")){
             Logger.error("telephone verify failed: invalid sign");
-            renderText("5");//签名无效
+            renderText("4");//签名无效
         }
 
         //5分钟的浮动
         if(requestTimeout(timestamp, 300)){
             Logger.error("telephone verify failed: request timeout %s", timestamp);
-            renderText("6");//请求超时
+            renderText("5");//请求超时
         }
         //验证密码
         if(!validSign(timestamp, sign)){
             Logger.error("telephone verify failed: wrong sign");
-            renderText("7");//签名错误
+            renderText("6");//签名错误
         }
 
         //开始验证
@@ -71,7 +71,7 @@ public class TelephoneVerify extends Controller{
 
         if (ecoupon == null) {
             Logger.error("telephone verify failed: coupon not found");
-            renderText("8");//对不起，未找到此券
+            renderText("7");//对不起，未找到此券
         }
 
         Long supplierId = ecoupon.goods.supplierId;
@@ -80,12 +80,12 @@ public class TelephoneVerify extends Controller{
 
         if (supplier == null || supplier.deleted == DeletedStatus.DELETED || supplier.status == SupplierStatus.FREEZE) {
             Logger.error("telephone verify failed: invalid supplier %s",supplierId);
-            renderText("9");//对不起，商户不存在
+            renderText("8");//对不起，商户不存在
         }
         SupplierUser supplierUser = SupplierUser.find("from SupplierUser where supplier.id=? and loginName=?", supplierId, caller).first();
         if(supplierUser == null){
             Logger.error("telephone verify failed: supplier user not found %s %s",supplierId, caller);
-            renderText("10");//对不起，未找到该店员
+            renderText("9");//对不起，未找到该店员
         }
 
         Long shopId = supplierUser.shop.id;
@@ -94,13 +94,13 @@ public class TelephoneVerify extends Controller{
 
         if (ecoupon.status == ECouponStatus.CONSUMED) {
             Logger.error("telephone verify failed: coupon consumed");
-            renderText("11");//该券无法重复消费。消费时间为
+            renderText("10");//该券无法重复消费。消费时间为
         } else if (ecoupon.status != ECouponStatus.UNCONSUMED){
             Logger.error("telephone verify failed: coupon status invalid. %s", ecoupon.status);
-            renderText("12");//对不起，该券无法消费
+            renderText("11");//对不起，该券无法消费
         } else if (ecoupon.expireAt.before(new Date())) {
             Logger.error("telephone verify failed: coupon expired");
-            renderText("13");//对不起，该券已过期
+            renderText("12");//对不起，该券已过期
         }  else {
             ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE);
             String eCouponNumber = ecoupon.getMaskedEcouponSn();

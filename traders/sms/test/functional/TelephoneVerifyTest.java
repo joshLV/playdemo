@@ -103,22 +103,22 @@ public class TelephoneVerifyTest extends FunctionalTest{
         assertContentEquals("1", response);//;主叫号码无效
 
         response = GET("/tel-verify?caller=" + caller + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals("3", response);//;券号无效
+        assertContentEquals("2", response);//;券号无效
 
         response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&sign=" + sign);
-        assertContentEquals("4", response);//;时间戳无效
+        assertContentEquals("3", response);//;时间戳无效
 
         response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp);
-        assertContentEquals("5", response);//;签名无效
+        assertContentEquals("4", response);//;签名无效
 
 
         response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + DigestUtils.md5Hex("wrongpasswd" + timestamp));
-        assertContentEquals("7", response);//;签名错误
+        assertContentEquals("6", response);//;签名错误
 
         timestamp = timestamp - 500000;
         sign = getSign(timestamp);
         response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals("6", response);//;请求超时
+        assertContentEquals("5", response);//;请求超时
     }
 
     @Test
@@ -133,7 +133,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         String sign = getSign(timestamp);
 
         Http.Response response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals("8", response);//;对不起，未找到此券
+        assertContentEquals("7", response);//;对不起，未找到此券
     }
 
     @Test
@@ -149,14 +149,14 @@ public class TelephoneVerifyTest extends FunctionalTest{
         String sign = getSign(timestamp);
 
         Http.Response response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals("9", response);//;对不起，商户不存在
+        assertContentEquals("8", response);//;对不起，商户不存在
 
         supplier.deleted = DeletedStatus.UN_DELETED;
         supplier.status = SupplierStatus.FREEZE;
         supplier.save();
 
         response = GET("/tel-verify?caller=" + caller +  "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals("9", response);//;对不起，商户不存在
+        assertContentEquals("8", response);//;对不起，商户不存在
 
         supplier.status = SupplierStatus.NORMAL;
         supplier.save();
@@ -166,7 +166,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         supplierUser.delete();
         supplier.delete();
         response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals("9", response);//;对不起，商户不存在
+        assertContentEquals("8", response);//;对不起，商户不存在
     }
 
     @Test
@@ -186,7 +186,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         eCoupon.status = ECouponStatus.CONSUMED;
         eCoupon.save();
         Http.Response response = GET("/tel-verify?caller=" + caller + "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals("11", response);//;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(eCoupon.consumedAt)
+        assertContentEquals("10", response);//;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(eCoupon.consumedAt)
 
         eCoupon.status = ECouponStatus.UNCONSUMED;
         eCoupon.save();
