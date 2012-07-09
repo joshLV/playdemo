@@ -207,6 +207,7 @@ public class Goods extends Controller {
         Long boughtNumber = 0l;
         int addCartNumber = 0;
         if (user != null) {
+            //取得已经加入购物车的数量
             addCartNumber = Cart.findAllByGoodsId(user, goods);
             boughtNumber = OrderItems.itemsNumber(user, goods.id);
 
@@ -221,7 +222,6 @@ public class Goods extends Controller {
                 }
             });
             renderArgs.put("user", user);
-            System.out.println(addCartNumber+">>>>");
             renderArgs.put("addCartNumber", addCartNumber);
             renderArgs.put("bought", isBuyFlag);
         }

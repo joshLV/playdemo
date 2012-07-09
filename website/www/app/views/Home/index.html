@@ -198,7 +198,7 @@
             <div class="hd">合作商家</div>
             <ul class="bd">
             #{list suppliers, as:'supplier'}
-                <li><img src="${supplier.getShowImageUrl()}"/></li>
+                <li><a href="${supplier.link}"><img src="${supplier.getShowImageUrl()}"/></a></li>
             #{/list}
             </ul>
         </div>
