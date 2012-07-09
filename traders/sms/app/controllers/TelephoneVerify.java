@@ -15,6 +15,7 @@ import play.Logger;
 import play.Play;
 import play.mvc.Controller;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -39,31 +40,30 @@ public class TelephoneVerify extends Controller{
         Logger.info("telephone verify; caller: %s; coupon: %s; timestamp: %s; sign: %s", caller, coupon, timestamp, sign);
         if(caller == null || caller.trim().equals("")){
             Logger.error("telephone verify failed: invalid caller");
-            renderText("1;主叫号码无效");
+            renderText("1");//主叫号码无效
         }
         if(coupon == null || coupon.trim().equals("")){
             Logger.error("telephone verify failed: invalid coupon");
-            renderText("3;券号无效");
+            renderText("3");//券号无效
         }
         if(timestamp == null){
             Logger.error("telephone verify failed: invalid timestamp");
-            renderText("4;时间戳无效");
+            renderText("4");//时间戳无效
         }
         if(sign == null || sign.trim().equals("")){
             Logger.error("telephone verify failed: invalid sign");
-            renderText("5;签名无效");
+            renderText("5");//签名无效
         }
 
-        long t = System.currentTimeMillis()/1000;
         //5分钟的浮动
-        if(Math.abs(timestamp - t) > 300){
-            Logger.error("telephone verify failed: request timeout %s-%s", t, timestamp);
-            renderText("6;请求超时");
+        if(requestTimeout(timestamp, 300)){
+            Logger.error("telephone verify failed: request timeout %s", timestamp);
+            renderText("6");//请求超时
         }
         //验证密码
-        if(!DigestUtils.md5Hex(APP_KEY + timestamp).equals(sign)){
+        if(!validSign(timestamp, sign)){
             Logger.error("telephone verify failed: wrong sign");
-            renderText("7;签名错误");
+            renderText("7");//签名错误
         }
 
         //开始验证
@@ -71,7 +71,7 @@ public class TelephoneVerify extends Controller{
 
         if (ecoupon == null) {
             Logger.error("telephone verify failed: coupon not found");
-            renderText("8;对不起，未找到此券");
+            renderText("8");//对不起，未找到此券
         }
 
         Long supplierId = ecoupon.goods.supplierId;
@@ -80,12 +80,12 @@ public class TelephoneVerify extends Controller{
 
         if (supplier == null || supplier.deleted == DeletedStatus.DELETED || supplier.status == SupplierStatus.FREEZE) {
             Logger.error("telephone verify failed: invalid supplier %s",supplierId);
-            renderText("9;对不起，商户不存在");
+            renderText("9");//对不起，商户不存在
         }
         SupplierUser supplierUser = SupplierUser.find("from SupplierUser where supplier.id=? and loginName=?", supplierId, caller).first();
         if(supplierUser == null){
             Logger.error("telephone verify failed: supplier user not found %s %s",supplierId, caller);
-            renderText("10;对不起，未找到该店员");
+            renderText("10");//对不起，未找到该店员
         }
 
         Long shopId = supplierUser.shop.id;
@@ -94,13 +94,13 @@ public class TelephoneVerify extends Controller{
 
         if (ecoupon.status == ECouponStatus.CONSUMED) {
             Logger.error("telephone verify failed: coupon consumed");
-            renderText("11;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(ecoupon.consumedAt));
+            renderText("11");//该券无法重复消费。消费时间为
         } else if (ecoupon.status != ECouponStatus.UNCONSUMED){
             Logger.error("telephone verify failed: coupon status invalid. %s", ecoupon.status);
-            renderText("12;对不起，该券无法消费");
+            renderText("12");//对不起，该券无法消费
         } else if (ecoupon.expireAt.before(new Date())) {
             Logger.error("telephone verify failed: coupon expired");
-            renderText("13;对不起，该券已过期");
+            renderText("13");//对不起，该券已过期
         }  else {
             ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE);
             String eCouponNumber = ecoupon.getMaskedEcouponSn();
@@ -118,7 +118,92 @@ public class TelephoneVerify extends Controller{
             ecoupon.save();
 
             Logger.info("telephone verify success; caller: %s; coupon: %s; timestamp: %s; sign: %s", caller, coupon, timestamp, sign);
-            renderText("0;消费成功，价值" + ecoupon.faceValue + "元");
+            renderText("0");//消费成功，价值" + ecoupon.faceValue + "元
         }
+    }
+
+    public static void faceValue(String coupon, Long timestamp, String sign){
+        Logger.info("query face value; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
+
+        ECoupon ecoupon = ECoupon.query(coupon, null);
+
+        if (ecoupon == null) {
+            Logger.error("query face value failed: coupon not found");
+            renderText("此券不存在");
+        }
+        if(timestamp == null){
+            Logger.error("query face value failed: invalid timestamp");
+            renderText("时间戳无效");//时间戳无效
+        }
+        if(sign == null || sign.trim().equals("")){
+            Logger.error("query face value failed: invalid sign");
+            renderText("签名无效");//签名无效
+        }
+
+        //5分钟的浮动
+        if(requestTimeout(timestamp, 300)){
+            Logger.error("query face value failed: request timeout %s", timestamp);
+            renderText("请求超时");//请求超时
+        }
+        //验证密码
+        if(!validSign(timestamp, sign)){
+            Logger.error("query face value failed: wrong sign");
+            renderText("签名错误");
+        }
+
+        int cents = ecoupon.faceValue.multiply(new BigDecimal("100")).intValue();
+        StringBuilder value = new StringBuilder(cents/100 + "元");
+        if ((cents%100)/10 != 0){
+            value.append((cents%100)/10).append("角");
+        }
+        if (cents%10 != 0){
+            value.append(cents%10).append("分");
+        }
+        renderText(value);
+    }
+
+    public static void consumedAt(String coupon, Long timestamp, String sign){
+        //开始验证
+        ECoupon ecoupon = ECoupon.query(coupon, null);
+
+        if (ecoupon == null) {
+            Logger.error("query face value failed: coupon not found");
+            renderText("此券不存在");
+        }
+        if(timestamp == null){
+            Logger.error("query face value failed: invalid timestamp");
+            renderText("时间戳无效");//时间戳无效
+        }
+        if(sign == null || sign.trim().equals("")){
+            Logger.error("query face value failed: invalid sign");
+            renderText("签名无效");//签名无效
+        }
+
+        //5分钟的浮动
+        if(requestTimeout(timestamp, 300)){
+            Logger.error("query face value failed: request timeout %s", timestamp);
+            renderText("请求超时");//请求超时
+        }
+        //验证密码
+        if(!validSign(timestamp, sign)){
+            Logger.error("query face value failed: wrong sign");
+            renderText("签名错误");
+        }
+
+        if (ecoupon.consumedAt == null){
+            Logger.error("telephone verify failed: coupon not consumed");
+            renderText("未消费");
+        }else {
+            renderText(new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(ecoupon.consumedAt));
+        }
+    }
+
+    private static boolean requestTimeout(Long timestamp, int seconds){
+        long t = System.currentTimeMillis()/1000;
+        return Math.abs(timestamp - t) > seconds;
+    }
+
+    private static boolean validSign(Long timestamp, String sign){
+        return DigestUtils.md5Hex(APP_KEY + timestamp).equals(sign);
     }
 }
