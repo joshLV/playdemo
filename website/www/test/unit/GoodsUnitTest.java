@@ -19,6 +19,7 @@ import models.supplier.Supplier;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import play.cache.Cache;
 import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
@@ -278,13 +279,12 @@ public class GoodsUnitTest extends UnitTest {
     @Test
     public void testPreview() throws IOException {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
-        models.sales.Goods goods = Goods.findById(goodsId);
-        models.sales.Goods updatedGoods = new Goods();
-        updatedGoods.name = "abcd";
-        updatedGoods.imagePath = "abc.jpg";
-        updatedGoods.salePrice = new BigDecimal(99);
-        String uuid = Goods.preview(goodsId, updatedGoods, null, "/nfs/images/o");
-        Goods cacheGoods = Goods.getPreviewGoods(uuid);
+        Goods goods = Goods.findById(goodsId);
+        goods.name = "abcd";
+        goods.imagePath = "abc.jpg";
+        goods.salePrice = new BigDecimal(99);
+        String uuid = Goods.preview(goodsId, goods, null, "/nfs/images/o");
+        Goods cacheGoods = Goods.findById(Long.parseLong(Cache.get(uuid.toString()).toString()));
         assertEquals(goods.imagePath, cacheGoods.imagePath);
         assertEquals("abcd", cacheGoods.name);
         assertEquals(99, cacheGoods.salePrice.longValue());
@@ -338,7 +338,7 @@ public class GoodsUnitTest extends UnitTest {
         List<GoodsPublishedPlatformType> platforms = new ArrayList<>();
         platforms.add(GoodsPublishedPlatformType.DANGDANG);
         goods.setPublishedPlatforms(platforms);
-        Goods.update(goodsId,goods);
+        Goods.update(goodsId, goods);
 
         List<GoodsUnPublishedPlatform> unPublishedPlatforms = GoodsUnPublishedPlatform.find("goods.id is null").fetch();
         assertEquals(0, unPublishedPlatforms.size());
@@ -350,7 +350,7 @@ public class GoodsUnitTest extends UnitTest {
         platforms.add(GoodsPublishedPlatformType.TAOBAO);
         platforms.add(GoodsPublishedPlatformType.YIHAODIAN);
         goods2.setPublishedPlatforms(platforms);
-        Goods.update(goodsId,goods);
+        Goods.update(goodsId, goods);
 
         goods2 = Goods.findById(goodsId);
         assertEquals(1, goods2.unPublishedPlatforms.size());
