@@ -10,15 +10,11 @@
     }
 </style>
 #{/set}
-#{set 'moreScripts'}
-<script src="@@{'/public/javascripts/location.js'}"></script>
-#{/set}
-
 <script type="text/javascript">
     function editAddress(addressId) {
         $("#addressTitle").html("修改地址");
         $("#form").load("/addresses/" + addressId + "/edit", function (data) {
-            setAreaValue(addressId);
+//            setAreaValue(addressId);
             $("#form").attr("action", "/addresses/" + addressId + "?x-http-method-override=PUT");
             $("#form").attr("method", "POST");
         });
