@@ -209,7 +209,7 @@ public class Orders extends Controller {
                     Long boughtNumber = OrderItems.itemsNumber(user, goodsId);
                     boolean isBuyFlag = Order.checkLimitNumber(user, goodsId, boughtNumber, number);
                     if (isBuyFlag) {
-                        redirect("http://"+WWW_URL+"/g/"+goodsId);
+                        redirect(WWW_URL+"/g/"+goodsId);
                         return;
                     }
                     //取出商品的限购数量
