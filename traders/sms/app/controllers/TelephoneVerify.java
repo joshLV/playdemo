@@ -122,6 +122,13 @@ public class TelephoneVerify extends Controller{
         }
     }
 
+    /**
+     * 查询面值
+     *
+     * @param coupon    券号
+     * @param timestamp 时间戳，UTC时间1970年1月1日零点至今的秒数，允许5分钟的上下浮动
+     * @param sign      请求签名，由 分配的app_key+timestamp 拼接后进行MD5编码组成
+     */
     public static void faceValue(String coupon, Long timestamp, String sign){
         Logger.info("query face value; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
 
@@ -151,17 +158,17 @@ public class TelephoneVerify extends Controller{
             renderText("签名错误");
         }
 
-        int cents = ecoupon.faceValue.multiply(new BigDecimal("100")).intValue();
-        StringBuilder value = new StringBuilder(cents/100 + "元");
-        if ((cents%100)/10 != 0){
-            value.append((cents%100)/10).append("角");
-        }
-        if (cents%10 != 0){
-            value.append(cents%10).append("分");
-        }
-        renderText(value);
+        //只返回整数
+        renderText("" + ecoupon.faceValue.intValue());
     }
 
+    /**
+     * 查询消费时间
+     *
+     * @param coupon    券号
+     * @param timestamp 时间戳，UTC时间1970年1月1日零点至今的秒数，允许5分钟的上下浮动
+     * @param sign      请求签名，由 分配的app_key+timestamp 拼接后进行MD5编码组成
+     */
     public static void consumedAt(String coupon, Long timestamp, String sign){
         //开始验证
         ECoupon ecoupon = ECoupon.query(coupon, null);
