@@ -201,7 +201,7 @@ public class TelephoneVerify extends Controller{
             Logger.error("telephone verify failed: coupon not consumed");
             renderText("未消费");
         }else {
-            renderText(new SimpleDateFormat("yyyy年M月d日h点m分").format(ecoupon.consumedAt));
+            renderText(new SimpleDateFormat("yyyy年M月d日H点m分").format(ecoupon.consumedAt));
         }
     }
 
