@@ -8,6 +8,7 @@ import models.order.*;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import play.Logger;
+import play.Play;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -30,6 +31,7 @@ import static play.Logger.warn;
  */
 @With({SecureCAS.class, WebsiteInjector.class})
 public class Orders extends Controller {
+      public static String WWW_URL = Play.configuration.getProperty("application.baseUrl", "");
     /**
      * 预览订单.
      *
@@ -207,7 +209,7 @@ public class Orders extends Controller {
                     Long boughtNumber = OrderItems.itemsNumber(user, goodsId);
                     boolean isBuyFlag = Order.checkLimitNumber(user, goodsId, boughtNumber, number);
                     if (isBuyFlag) {
-                        error("你所购买商品超过限购数量，请确认！");
+                        redirect("http://"+WWW_URL+"/g/"+goodsId);
                         return;
                     }
                     //取出商品的限购数量
