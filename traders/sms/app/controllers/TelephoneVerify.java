@@ -132,6 +132,11 @@ public class TelephoneVerify extends Controller{
     public static void faceValue(String coupon, Long timestamp, String sign){
         Logger.info("query face value; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
 
+        if(coupon == null || coupon.trim().equals("")){
+            Logger.error("query face value failed: invalid coupon");
+            renderText("券号无效");//券号无效
+        }
+
         ECoupon ecoupon = ECoupon.query(coupon, null);
 
         if (ecoupon == null) {
@@ -170,12 +175,19 @@ public class TelephoneVerify extends Controller{
      * @param sign      请求签名，由 分配的app_key+timestamp 拼接后进行MD5编码组成
      */
     public static void consumedAt(String coupon, Long timestamp, String sign){
+        Logger.info("query consumed at; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
+
+        if(coupon == null || coupon.trim().equals("")){
+            Logger.error("query face value failed: invalid coupon");
+            renderText("券号无效");//券号无效
+        }
+
         //开始验证
         ECoupon ecoupon = ECoupon.query(coupon, null);
 
         if (ecoupon == null) {
             Logger.error("query face value failed: coupon not found");
-            renderText("此券不存在");
+            renderText("券号无效");
         }
         if(timestamp == null){
             Logger.error("query face value failed: invalid timestamp");

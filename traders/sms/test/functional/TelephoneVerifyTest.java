@@ -202,6 +202,86 @@ public class TelephoneVerifyTest extends FunctionalTest{
         */
     }
 
+    @Test
+    public void testFaceValueParams(){
+        String coupon = "1234567001";
+        Long timestamp = System.currentTimeMillis()/1000;
+        String sign = getSign(timestamp);
+
+        Http.Response response = GET("/tel-verify/face-value?timestamp=" + timestamp + "&sign=" + sign);
+        assertContentEquals("券号无效", response);//;券号无效
+
+        response = GET("/tel-verify/face-value?coupon=" + coupon + "&sign=" + sign);
+        assertContentEquals("时间戳无效", response);//;时间戳无效
+
+        response = GET("/tel-verify/face-value?coupon=" + coupon + "&timestamp=" + timestamp);
+        assertContentEquals("签名无效", response);//;签名无效
+
+
+        response = GET("/tel-verify/face-value?coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + DigestUtils.md5Hex("wrongpasswd" + timestamp));
+        assertContentEquals("签名错误", response);//;签名错误
+
+        timestamp = timestamp - 500000;
+        sign = getSign(timestamp);
+        response = GET("/tel-verify/face-value?coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
+        assertContentEquals("请求超时", response);//;请求超时
+    }
+
+    @Test
+    public void testFacevalue(){
+        long couponId = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
+        ECoupon eCoupon = ECoupon.findById(couponId);
+
+        String coupon = "1234567001";
+        Long timestamp = System.currentTimeMillis()/1000;
+        String sign = getSign(timestamp);
+
+        Http.Response response = GET("/tel-verify/face-value?coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
+        assertContentEquals("" + eCoupon.faceValue.intValue(), response);//
+    }
+
+    @Test
+    public void testConsumedAtParams(){
+        String coupon = "1234567001";
+        Long timestamp = System.currentTimeMillis()/1000;
+        String sign = getSign(timestamp);
+
+        Http.Response response = GET("/tel-verify/consumed-at?timestamp=" + timestamp + "&sign=" + sign);
+        assertContentEquals("券号无效", response);//;券号无效
+
+        response = GET("/tel-verify/consumed-at?coupon=" + coupon + "&sign=" + sign);
+        assertContentEquals("时间戳无效", response);//;时间戳无效
+
+        response = GET("/tel-verify/consumed-at?coupon=" + coupon + "&timestamp=" + timestamp);
+        assertContentEquals("签名无效", response);//;签名无效
+
+
+        response = GET("/tel-verify/consumed-at?coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + DigestUtils.md5Hex("wrongpasswd" + timestamp));
+        assertContentEquals("签名错误", response);//;签名错误
+
+        timestamp = timestamp - 500000;
+        sign = getSign(timestamp);
+        response = GET("/tel-verify/consumed-at?coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
+        assertContentEquals("请求超时", response);//;请求超时
+    }
+
+    @Test
+    public void testConsumedAt(){
+        long couponId = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
+        ECoupon eCoupon = ECoupon.findById(couponId);
+
+        String coupon = "1234567001";
+        Long timestamp = System.currentTimeMillis()/1000;
+        String sign = getSign(timestamp);
+
+        Date consumedAt = new Date();
+        eCoupon.status = ECouponStatus.CONSUMED;
+        eCoupon.consumedAt = consumedAt;
+        eCoupon.save();
+
+        Http.Response response = GET("/tel-verify/consumed-at?coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
+        assertContentEquals(new SimpleDateFormat("yyyy年M月d日H点m分").format(consumedAt), response);//;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(eCoupon.consumedAt)
+    }
     private String getSign(long timestamp){
         return DigestUtils.md5Hex(TelephoneVerify.APP_KEY + timestamp);
     }
