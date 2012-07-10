@@ -833,7 +833,7 @@ public class Goods extends Model {
             goods.imagePath = imagePath;
         }
         UUID cacheId = UUID.randomUUID();
-        play.cache.Cache.set(cacheId.toString(), goods, expiration);
+        play.cache.Cache.set(cacheId.toString(), goods.id, expiration);
         return cacheId.toString();
     }
 

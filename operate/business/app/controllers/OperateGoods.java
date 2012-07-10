@@ -164,7 +164,8 @@ public class OperateGoods extends Controller {
             e.printStackTrace();
             error(500, "goods.image_upload_failed");
         }
-        redirect("http://" + WWW_URL + "/goods/" + cacheId + "/preview");
+        cacheId = play.cache.Cache.get(cacheId.toString()).toString();
+        redirect("http://" + WWW_URL + "/g/" + cacheId + "?preview=true");
     }
 
     /**
@@ -298,6 +299,18 @@ public class OperateGoods extends Controller {
      * 取得指定商品信息
      */
     public static void edit(Long id) {
+        models.sales.Goods goods = models.sales.Goods.findById(id);
+        checkShops(goods.supplierId);
+        renderInit(goods);
+        renderArgs.put("imageLargePath", goods.getImageLargePath());
+        render(id);
+
+    }
+
+    /**
+     * 取得指定商品信息
+     */
+    public static void copy(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
         checkShops(goods.supplierId);
         renderInit(goods);
@@ -466,7 +479,7 @@ public class OperateGoods extends Controller {
         updateGoods.keywords = goods.keywords;
         updateGoods.priority = goods.priority;
         updateGoods.save();
-        
+
         index(null);
     }
 

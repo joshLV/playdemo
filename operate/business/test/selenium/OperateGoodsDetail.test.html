@@ -33,3 +33,15 @@ load:['fixture/roles.yml','fixture/supplierusers.yml','fixture/areas.yml','fixtu
     open('/goods?page=1')
 #{/selenium}
 
+#{selenium '复制商品'}
+    #{include 'test/selenium/step/login.selenium' /}
+    open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-Goods2")}/copy')
+    verifyTitle('复制商品')
+    verifyValue('id=goods_no','')
+    verifyValue('id=goods_name','测试商品2')
+    verifyValue('id=goods_effectiveAt','')
+    verifyValue('id=goods_expireAt','')
+    verifyValue('id=goods_originalPrice','0')
+    verifyValue('id=goods_salePrice','0')
+    verifyValue('id=goods_baseSale','0')
+#{/selenium}

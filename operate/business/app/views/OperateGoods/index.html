@@ -174,7 +174,8 @@
                     #{if models.sales.GoodsStatus.ONSALE.equals(goods.status) }
                     /<a href="#" id="linkSend_${goods.id}" onclick="prepareSend('${goods.id}','${goods.priority}','${goods.keywords}')
                             ">网站选项</a>
-                #{/if}
+
+                    #{/if}/<a href="@{OperateGoods.copy(goods.id)}">复制</a>
             </tr>
             #{/paginate.list}
             </tbody>

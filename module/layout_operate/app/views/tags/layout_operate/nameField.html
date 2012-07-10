@@ -10,10 +10,9 @@
 
     <div class="controls">
     #{field _name}
-        <input type="text" id="${_id?:field.id}" name="${field.name}"  width: 530px;
+        <input type="text" id="${_id?:field.id}" name="${field.name}"  style=" width: 530px;"
                value="${params[field.name]?.escape()?.raw() ?: field.error?.message == 'validation.required' ?
-               "":_value?.escape()?.raw()}" maxlength="${_length?_length*2:80}" onfocus="checkName(this)"
-               onkeyup="checkName(this)" onkeydown="checkName(this)"
+               "":_value?.escape()?.raw()}" maxlength="${_length?_length*2:80}" onkeyup="checkName(this)"
                onchange="checkName(this)"/><span style="color: red" id="note_${_id?:field.id}">${_note}</span><span
             id="tip_head_${_id?:field.id}">最多可输入</span><span
             id="tip_${_id?:field.id}" class="warn">${_length?:40}</span> 个字

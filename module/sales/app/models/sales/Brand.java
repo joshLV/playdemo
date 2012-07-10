@@ -48,7 +48,7 @@ public class Brand extends Model {
 //    public String workAt;      //营业时间上班时间
 //    @Time
 //    public String closeAt;     //营业时间下班时间
-    @MaxSize(500)
+    @MaxSize(4000)
     public String introduce;     //特色产品介绍
 
     @Enumerated(EnumType.ORDINAL)
