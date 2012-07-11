@@ -103,7 +103,7 @@ public class SmsFunctionTest extends FunctionalTest {
         brand.save();
 
         String message = "mobiles=15900002342&msg=#" + ecoupon.eCouponSn +
-                "#&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808&dt" +
+                "&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808&dt" +
                 "=1319873904&code=1028";
         assertEquals(ECouponStatus.UNCONSUMED, ecoupon.status);
         Http.Response response = GET("/getsms?" + message);

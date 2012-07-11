@@ -167,7 +167,6 @@ public class ECoupon extends Model {
        String randomNumber;
        do {
            randomNumber = RandomNumberUtil.generateSerialNumber(4);
-           System.out.println("randomNumber=" + randomNumber);
        } while (isNotUniqueReplyCode(randomNumber, userId, userType));
        return randomNumber;
    }
@@ -185,6 +184,9 @@ public class ECoupon extends Model {
  
  
    private boolean isNotUniqueReplyCode(String randomNumber, long userId, AccountType userType) {
+       if ("0000".equals(randomNumber)) {
+           return true;
+       }
        return ECoupon.find("from ECoupon where replyCode=? and order.userId=? and order.userType=?",
                randomNumber, userId, userType).fetch().size() > 0;
    }
