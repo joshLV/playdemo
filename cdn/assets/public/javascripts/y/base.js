@@ -51,7 +51,7 @@ $(function($){
                 var oldSize = parseInt($("#cart-count").html());
                 var currentCount = oldSize - buyCount;
                 $("#cart-count").html(currentCount);
-
+                $('#reload').val(true);
                 if (currentCount == 0) {
                     cartBoxBd.html('<div class="emptycart">你的购物车里没有任何商品。</div><div class="totalcart">共<em>0</em>件商品，共计<em>0.00</em>元</div>');
                 } else {
