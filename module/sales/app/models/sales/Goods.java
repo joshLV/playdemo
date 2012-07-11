@@ -1063,12 +1063,19 @@ public class Goods extends Model {
      * @param limit
      * @return
      */
-    public static List<Goods> findTopRecommendByCategory(int limit, Goods goods) {
+    public static List<Goods> findTopRecommendByCategory(final int limit, final Goods goods) {
+        final Long goodsId = goods.id;
+        Long categoryId = CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY + goodsId, "GOODS_CATE"), new CacheCallBack<Long>() {
+            @Override
+            public Long loadData() {
+                Long id = 0l;
+                for (Category ca : goods.categories) {
+                    id = ca.id;
+                }
+                return id;
+            }
+        });
 
-        Long categoryId = 0l;
-        for (Category ca : goods.categories) {
-            categoryId = ca.id;
-        }
         String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
                 " and g.status =:status and g.deleted =:deleted and " +
                 " g.id in (select g.id from g.categories c where c.id = :categoryId or (c.parentCategory is not null and c.parentCategory.id=:categoryId))" +
@@ -1080,7 +1087,11 @@ public class Goods extends Model {
 
         query.setParameter("goodsId", goods.id);
         query.setParameter("supplierId", goods.supplierId);
-        query.setParameter("expireAt", new Date());
+        query.setParameter("expireAt", new
+
+                Date()
+
+        );
         query.setMaxResults(limit);
         List<Goods> goodsList = query.getResultList();
         return goodsList;

@@ -238,12 +238,12 @@ public class Goods extends Controller {
 
         // 网友推荐商品
         List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(
-                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY_BASEID+goods.id,
+                CacheHelper.getCacheKey(new String[]{models.sales.Goods.CACHEKEY,models.sales.Goods.CACHEKEY+goods.id},
                         "SHOW_TOPRECOMMEND"),
                 new CacheCallBack<List<models.sales.Goods>>() {
                     @Override
                     public List<models.sales.Goods> loadData() {
-                        return models.sales.Goods.findSupplierTopRecommend(5, goods);
+                        return models.sales.Goods.findSupplierTopRecommend(5,goods);
                     }
                 });
         GoodsStatistics.addVisitorCount(goods.id);
