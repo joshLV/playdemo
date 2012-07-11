@@ -60,7 +60,6 @@ $(function($){
                     $("#all_number").html(all_number - buyCount);
                     $("#all_price").html((all_price - (sale_price * buyCount)).toFixed(2));
                 }
-                $('#reload').val(true);
             }
         });
     });
