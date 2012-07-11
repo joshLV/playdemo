@@ -134,7 +134,7 @@
                     <del>原价：${aGoods.faceValue}</del>
                     <span>现价：<b>&yen;${aGoods.salePrice}</b></span>
                 </div>
-                <div class="qtype">&{'goods.'+materialType}</div>
+                <div #{if aGoods.materialType ==models.sales.MaterialType.ELECTRONIC}class="qtype"#{/if}#{else}class="qtype shiti"#{/else} >&{'goods.'+aGoods.materialType}</div>
             </li>
              #{set i:i+1/}
             #{/paginate.list}
@@ -159,7 +159,8 @@
                     <div class="title"><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
                     <div class="attri">
                         <del>原价：${aGoods.faceValue}</del>
-                        <span class="coupon">电子券</span></div>
+                        <span #{if aGoods.materialType ==models.sales.MaterialType.ELECTRONIC}class="coupon" #{/if}#{else}class="coupon entity"#{/else}>&{'goods.'+aGoods.materialType}</span>
+                    </div>
                     <div class="price">现价：<b>&yen;${aGoods.salePrice}</b></div>
                 </li>
             #{/list}

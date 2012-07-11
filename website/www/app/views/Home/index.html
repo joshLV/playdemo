@@ -120,7 +120,7 @@
                     <span>现价：<b>&yen;${aGoods.salePrice}</b></span></div>
                 <div class="buy">
                     <a href="/g/${aGoods.id}">立即购买</a>
-                    <span class="electron">&{'goods.'+aGoods.materialType}</span>
+                     <span #{if aGoods.materialType ==models.sales.MaterialType.ELECTRONIC}class="coupon" #{/if}#{else}class="coupon entity"#{/else}>&{'goods.'+aGoods.materialType}</span>
                 </div>
                 #{if aGoods.discountExpress1 !=""}
                  <div class="discount"><em>${aGoods.discountExpress1}</em>折</div>
@@ -147,7 +147,8 @@
                 <div class="title"><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
                 <div class="attri">
                     <del>原价：${aGoods.faceValue}</del>
-                    <span class="coupon entity">&{'goods.'+aGoods.materialType}</span></div>
+                    <span #{if aGoods.materialType ==models.sales.MaterialType.ELECTRONIC}class="coupon" #{/if}#{else}class="coupon entity"#{/else}>&{'goods.'+aGoods.materialType}</span>
+                </div>
                 <div class="price">现价：<b>&yen;${aGoods.salePrice}</b></div>
             </li>
                 #{set m:m++/}
@@ -185,7 +186,8 @@
                     <div class="title"><a href="/g/${aGoods.id}" target="_blank"></a>${aGoods.name}</div>
                     <div class="attri">
                         <del>原价：${aGoods.faceValue}</del>
-                        <span class="coupon">&{'goods.'+aGoods.materialType}</span></div>
+                        <span #{if aGoods.materialType ==models.sales.MaterialType.ELECTRONIC}class="coupon" #{/if}#{else}class="coupon entity"#{/else}>&{'goods.'+aGoods.materialType}</span>
+                    </div>
                     <div class="price">现价：<b>&yen;${aGoods.salePrice}</b></div>
                 </li>
             #{/list}
