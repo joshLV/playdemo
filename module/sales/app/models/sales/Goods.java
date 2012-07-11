@@ -71,13 +71,13 @@ public class Goods extends Model {
     public static final String PREVIEW_IMG_ROOT = "/9999/9999/9999/";
 
     public static final String IMAGE_TINY = "60x46_nw";
-    public static final String IMAGE_SMALL   ="172x132";
-    public static final String IMAGE_MIDDLE  ="234x178";
-    public static final String IMAGE_LARGE   ="340x260";
-    public static final String IMAGE_LOGO    ="300x180_nw";
-    public static final String IMAGE_SLIDE   ="nw";
-    public static final String IMAGE_ORIGINAL="nw";
-    public static final String IMAGE_DEFAULT ="";
+    public static final String IMAGE_SMALL = "172x132";
+    public static final String IMAGE_MIDDLE = "234x178";
+    public static final String IMAGE_LARGE = "340x260";
+    public static final String IMAGE_LOGO = "300x180_nw";
+    public static final String IMAGE_SLIDE = "nw";
+    public static final String IMAGE_ORIGINAL = "nw";
+    public static final String IMAGE_DEFAULT = "";
 
     //  ========= 不同的价格列表 =======
     /**
@@ -1011,10 +1011,75 @@ public class Goods extends Model {
      */
     public static List<Goods> findTopRecommend(int limit) {
         String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
-                " and g.status =:status and g.deleted =:deleted and g.expireAt >:expireAt and g.baseSale>=1 order by s.summaryCount desc";
+                " and g.status =:status and g.deleted =:deleted and g.expireAt >:expireAt and g.baseSale>=1 and g.isLottery is false order by s.summaryCount desc";
         Query query = Goods.em().createQuery(sql);
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
+        query.setParameter("expireAt", new Date());
+        query.setMaxResults(limit);
+        List<Goods> goodsList = query.getResultList();
+        return goodsList;
+
+    }
+
+    /**
+     * 获取同一商户前n个推荐商品
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Goods> findSupplierTopRecommend(int limit, Goods goods) {
+        String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
+                " and g.status =:status and g.supplierId=:supplierId and g.deleted =:deleted and " +
+                " g.id <> :goodsId and g.expireAt >:expireAt and g.baseSale>=1 and g.isLottery is false order by s.summaryCount desc";
+        Query query = Goods.em().createQuery(sql);
+        query.setParameter("status", GoodsStatus.ONSALE);
+        query.setParameter("supplierId", goods.supplierId);
+        query.setParameter("deleted", DeletedStatus.UN_DELETED);
+
+        query.setParameter("goodsId", goods.id);
+        query.setParameter("expireAt", new Date());
+        query.setMaxResults(limit);
+        List<Goods> goodsList = query.getResultList();
+        List<Goods> newGoodsList = new ArrayList<>();
+        List<Goods> doGoodsList = new ArrayList<>();
+        int goodsCount = goodsList.size();
+        if (goodsCount < 5) {
+            newGoodsList = findTopRecommendByCategory(5 - goodsCount, goods);
+            for (Goods goods1 : newGoodsList) {
+                goodsList.add(goods1);
+            }
+        }
+        for (Goods goods2 : goodsList) {
+            doGoodsList.add(goods2);
+        }
+        return doGoodsList;
+
+    }
+
+    /**
+     * 获取同一种子分类的其他商品
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Goods> findTopRecommendByCategory(int limit, Goods goods) {
+
+        Long categoryId = 0l;
+        for (Category ca : goods.categories) {
+            categoryId = ca.id;
+        }
+        String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
+                " and g.status =:status and g.deleted =:deleted and " +
+                " g.id in (select g.id from g.categories c where c.id = :categoryId or (c.parentCategory is not null and c.parentCategory.id=:categoryId))" +
+                "and g.id <> :goodsId and g.supplierId <> :supplierId and g.expireAt >:expireAt and g.baseSale>=1 and g.isLottery is false order by s.summaryCount desc";
+        Query query = Goods.em().createQuery(sql);
+        query.setParameter("status", GoodsStatus.ONSALE);
+        query.setParameter("deleted", DeletedStatus.UN_DELETED);
+        query.setParameter("categoryId", categoryId);
+
+        query.setParameter("goodsId", goods.id);
+        query.setParameter("supplierId", goods.supplierId);
         query.setParameter("expireAt", new Date());
         query.setMaxResults(limit);
         List<Goods> goodsList = query.getResultList();
