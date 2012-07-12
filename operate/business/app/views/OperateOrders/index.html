@@ -161,7 +161,7 @@
                         <img src="@@{'/public/images/electronic-goods.png'}">
                     #{/if}
                     #{else}
-                        <img src="@@{'/public/images/real-goods.png'}"> &nbsp;
+                        <img src="@@{'/public/images/real-goods.png'}">&nbsp;
                     #{/else}
                     ${order.realGoods.get(0).name}&nbsp;
                 </td>
@@ -185,7 +185,7 @@
             #{else}
             *{有电子券时}*
                 #{if order.electronicGoods.size()>0}
-                    <td><img src="@@{'/public/images/electronic-goods.png'}"> ${order.electronicGoods.get(0).name}&nbsp;</td>
+                    <td><img src="@@{'/public/images/electronic-goods.png'}">${order.electronicGoods.get(0).name}&nbsp;</td>
                     <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
                 #{/if}
                  #{else}
