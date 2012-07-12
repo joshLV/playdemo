@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class CouponsCondition implements Serializable {
     
-    private static final long serialVersionUID = 1632320311301L;
+//    private static final long serialVersionUID = 1632320311301L;
     
     public Date createdAtBegin;
     public Date createdAtEnd;
@@ -153,9 +153,10 @@ public class CouponsCondition implements Serializable {
 
 
         if (supplier != null) {
-            sql.append(" and e.orderItems.goods.supplierId = :supplierId)");
+            sql.append(" and e.orderItems.goods.supplierId = :supplierId");
             paramMap.put("supplierId", supplier.id);
         }
+
         return sql.toString();
     }
 
