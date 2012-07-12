@@ -1,5 +1,6 @@
 package controllers;
-
+import cache.CacheCallBack;
+import cache.CacheHelper;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import models.consumer.User;
@@ -29,11 +30,16 @@ public class UserCarts extends Controller {
      */
     public static void tops() {
 
-        User user = SecureCAS.getUser();
+        final User user = SecureCAS.getUser();
         Http.Cookie cookie = request.cookies.get("identity");
-        String cookieValue = cookie == null ? null : cookie.value;
+        final String cookieValue = cookie == null ? null : cookie.value;
 
-        List<Cart> cartList = Cart.findAll(user, cookieValue);
+        List<Cart> cartList = CacheHelper.getCache(Cart.getCartCacheKey(user, cookieValue), new CacheCallBack<List<Cart>>() {
+            @Override
+            public List<Cart> loadData() {
+                return Cart.findAll(user, cookieValue);
+            }
+        });
         int count = 0;
         for (Cart cart : cartList) {
             count += cart.number;
