@@ -104,9 +104,10 @@ public class SmsReceivers extends Controller {
 
 
                 String shopName = "未知";
+                Long shopId = null;
                 if (supplierUser.shop != null) {
                     //判断该券是否属于所在消费门店
-                    Long shopId = supplierUser.shop.id;
+                    shopId = supplierUser.shop.id;
                     //取得消费门店
                     Shop shop = Shop.findById(shopId);
                     shopName = shop.name;
@@ -116,7 +117,7 @@ public class SmsReceivers extends Controller {
                     SMSUtil.send("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", mobile, code);
                     renderText("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166");
                 } else if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-                    ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CLERK_MESSAGE);
+                    ecoupon.consumeAndPayCommission(shopId, supplierUser, VerifyCouponType.CLERK_MESSAGE);
                     String coupon = ecoupon.getMaskedEcouponSn();
                     coupon = coupon.substring(coupon.lastIndexOf("*") + 1);
 
@@ -180,9 +181,10 @@ public class SmsReceivers extends Controller {
         boolean isExisted = false;
 
         String shopName = "未知";
+        Long shopId = null;
         if (supplierUser.shop != null) {
             //判断该券是否属于所在消费门店
-            Long shopId = supplierUser.shop.id;
+            shopId = supplierUser.shop.id;
             if (!ecoupon.isBelongShop(shopId)) {
                 isExisted = true;
             }
@@ -202,7 +204,7 @@ public class SmsReceivers extends Controller {
             SMSUtil.send("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", mobile, code);
             renderText("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166");
         } else if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-            ecoupon.consumeAndPayCommission(supplierUser.shop.id, supplierUser, VerifyCouponType.CONSUMER_MESSAGE);
+            ecoupon.consumeAndPayCommission(shopId, supplierUser, VerifyCouponType.CONSUMER_MESSAGE);
             String coupon = ecoupon.getLastCode(4);
             String dateTime = DateUtil.getNowTime();
             // 发给店员

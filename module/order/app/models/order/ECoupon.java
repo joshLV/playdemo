@@ -296,7 +296,9 @@ public class ECoupon extends Model {
             return;
         }
 
-        this.shop = Shop.findById(shopId);
+        if (shopId != null) {
+            this.shop = Shop.findById(shopId);
+        }
         this.status = ECouponStatus.CONSUMED;
         this.consumedAt = new Date();
         this.supplierUser = supplierUser;
