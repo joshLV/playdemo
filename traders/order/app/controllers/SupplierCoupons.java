@@ -112,7 +112,6 @@ public class SupplierCoupons extends Controller {
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
         JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
-        System.out.println(couponPage.size()+"-----------------------------");
         render(couponPage, condition);
     }
 }
