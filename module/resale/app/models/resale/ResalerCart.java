@@ -1,22 +1,17 @@
 package models.resale;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import java.util.regex.Pattern;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.Query;
 import javax.persistence.Table;
 
 import models.sales.Goods;
-import models.sales.MaterialType;
 import play.db.jpa.Model;
 
 @Entity
@@ -42,7 +37,7 @@ public class ResalerCart extends Model {
     public Date updatedAt;
 
 
-    private static Pattern phonePattern = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$"); 
+    private static Pattern phonePattern = Pattern.compile("^1\\d{10}$");
 
     public ResalerCart(Resaler resaler, Goods goods, String phone, long number) {
         this.resaler = resaler;
