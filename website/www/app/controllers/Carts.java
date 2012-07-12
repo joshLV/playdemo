@@ -1,5 +1,7 @@
 package controllers;
 
+import cache.CacheCallBack;
+import cache.CacheHelper;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import models.consumer.User;
@@ -60,7 +62,7 @@ public class Carts extends Controller {
             }
         }
 
-        render(user,carts, sawGoodsList);
+        render(user, carts, sawGoodsList);
     }
 
     /**
@@ -102,11 +104,15 @@ public class Carts extends Controller {
      * 在顶部展示所有购物车内容,最多显示5条购物车记录.
      */
     public static void tops() {
-        User user = SecureCAS.getUser();
+        final User user = SecureCAS.getUser();
         Http.Cookie cookie = request.cookies.get("identity");
-        String cookieValue = cookie == null ? null : cookie.value;
-
-        List<Cart> cartList = Cart.findAll(user, cookieValue);
+        final String cookieValue = cookie == null ? null : cookie.value;
+        List<Cart> cartList = CacheHelper.getCache(Cart.getCartCacheKey(user, cookieValue), new CacheCallBack<List<Cart>>() {
+            @Override
+            public List<Cart> loadData() {
+                return Cart.findAll(user, cookieValue);
+            }
+        });
         int count = 0;
         for (Cart cart : cartList) {
             count += cart.number;
