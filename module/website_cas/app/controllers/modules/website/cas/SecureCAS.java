@@ -16,7 +16,7 @@
  */
 package controllers.modules.website.cas;
 
-import java.util.Date;
+import controllers.modules.website.cas.annotations.SkipCAS;
 import models.consumer.User;
 import models.consumer.UserLoginHistory;
 import org.apache.commons.lang.StringUtils;
@@ -30,7 +30,8 @@ import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Router;
-import controllers.modules.website.cas.annotations.SkipCAS;
+
+import java.util.Date;
 
 /**
  * This class is a part of the play module secure-cas. It add the ability to check if the user have access to the
@@ -49,7 +50,12 @@ public class SecureCAS extends Controller {
         Http.Cookie cookieId = request.cookies.get("identity");
         if (cookieId == null) {
             Logger.debug("[SecureCAS]: set a new cookie identity");
-            response.setCookie("identity", session.getId(), "365d");
+            String baseDomain = Play.configuration.getProperty("application.baseDomain");
+            if (request.host.indexOf(baseDomain) >= 0) {
+                response.setCookie("identity", session.getId(), "." + baseDomain, "/", 360000, false);
+            } else {
+                response.setCookie("identity", session.getId(), "365d");
+            }
         }
     }
 
