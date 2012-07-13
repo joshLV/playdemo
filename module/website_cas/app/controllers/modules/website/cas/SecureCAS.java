@@ -38,12 +38,11 @@ import java.util.Date;
  * request. If the user is note logged, it redirect the user to the CAS login page and authenticate it.
  *
  * @author bsimard
- *
  */
 public class SecureCAS extends Controller {
 
     public static final String SESSION_USER_KEY = "website_login";
-    
+
     @Before
     public static void addTrace() {
         Logger.debug("[SecureCAS]: check cookie identity");
@@ -51,8 +50,8 @@ public class SecureCAS extends Controller {
         if (cookieId == null) {
             Logger.debug("[SecureCAS]: set a new cookie identity");
             String baseDomain = Play.configuration.getProperty("application.baseDomain");
-            System.out.println(request.host+">>>>>");
-            if (request.host.indexOf(baseDomain) >= 0) {
+            System.out.println(request.host + ">>>>>");
+            if (request.host == null || request.host.indexOf(baseDomain) >= 0) {
                 response.setCookie("identity", session.getId(), "365d");
             } else {
                 response.setCookie("identity", session.getId(), "." + baseDomain, "/", 360000, false);
@@ -167,7 +166,7 @@ public class SecureCAS extends Controller {
             }
             user.loginIp = request.remoteAddress;
             user.save();
-            
+
             UserLoginHistory history = new UserLoginHistory();
             history.user = user;
             history.loginAt = new Date();
@@ -175,7 +174,7 @@ public class SecureCAS extends Controller {
             history.applicationName = Play.configuration.getProperty("application.name");
             history.sessionId = session.getId();
             history.save();
-            
+
             // we redirect to the original URL
             String url = (String) Cache.get("url_" + session.getId());
             Cache.delete("url_" + session.getId());
@@ -184,8 +183,7 @@ public class SecureCAS extends Controller {
             }
             Logger.debug("[SecureCAS]: redirect to url -> " + url);
             redirect(url);
-        }
-        else {
+        } else {
             fail();
         }
     }
@@ -203,8 +201,8 @@ public class SecureCAS extends Controller {
             Cache.set(pgtIou, pgtId);
         }
     }
-    
-    
+
+
     private static boolean skipCAS() {
         if (getActionAnnotation(SkipCAS.class) != null ||
                 getControllerInheritedAnnotation(SkipCAS.class) != null) {
@@ -218,7 +216,7 @@ public class SecureCAS extends Controller {
      *
      * @throws Throwable
      */
-    @Before(unless = { "login", "logout", "fail", "authenticate", "pgtCallBack" })
+    @Before(unless = {"login", "logout", "fail", "authenticate", "pgtCallBack"})
     public static void filter() throws Throwable {
         Logger.debug("[SecureCAS]: CAS Filter for URL -> " + request.url);
 
