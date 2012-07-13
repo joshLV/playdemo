@@ -50,8 +50,7 @@ public class SecureCAS extends Controller {
         if (cookieId == null) {
             Logger.debug("[SecureCAS]: set a new cookie identity");
             String baseDomain = Play.configuration.getProperty("application.baseDomain");
-            System.out.println(request.host + ">>>>>");
-            if (request.host == null || request.host.indexOf(baseDomain) >= 0) {
+            if (request.host == null || request.host.indexOf(baseDomain) == -1) {
                 response.setCookie("identity", session.getId(), "365d");
             } else {
                 response.setCookie("identity", session.getId(), "." + baseDomain, "/", 360000, false);
