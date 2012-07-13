@@ -65,38 +65,23 @@ public class TelephoneVerify extends Controller{
             Logger.error("telephone verify failed: wrong sign");
             renderText("6");//签名错误
         }
-        SupplierUser supplierUser = SupplierUser.find("byLoginName", caller).first();
 
-        if(supplierUser == null){
+        //查找店员
+        SupplierUser supplierUser = SupplierUser.find("byLoginName", caller).first();
+        if(supplierUser == null || supplierUser.shop == null
+                || supplierUser.supplier == null
+                || supplierUser.supplier.deleted == DeletedStatus.DELETED
+                || supplierUser.supplier.status == SupplierStatus.FREEZE){
             Logger.error("telephone verify failed: invalid caller %s", caller);
             renderText("8");//对不起，商户不存在
         }
 
         //开始验证
         ECoupon ecoupon = ECoupon.query(coupon, null);
-
         if (ecoupon == null) {
             Logger.error("telephone verify failed: coupon not found");
             renderText("7");//对不起，未找到此券
         }
-
-        Long supplierId = ecoupon.goods.supplierId;
-
-        Supplier supplier = Supplier.findById(supplierId);
-
-        if (supplier == null || supplier.deleted == DeletedStatus.DELETED || supplier.status == SupplierStatus.FREEZE) {
-            Logger.error("telephone verify failed: invalid supplier %s",supplierId);
-            renderText("8");//对不起，商户不存在
-        }
-        supplierUser = SupplierUser.find("from SupplierUser where supplier.id=? and loginName=?", supplierId, caller).first();
-        if(supplierUser == null){
-            Logger.error("telephone verify failed: supplier user not found %s %s",supplierId, caller);
-            renderText("9");//对不起，未找到该店员
-        }
-
-        Long shopId = supplierUser.shop.id;
-        Shop shop = Shop.findById(shopId);
-        String shopName = shop.name;
 
         if (ecoupon.status == ECouponStatus.CONSUMED) {
             Logger.error("telephone verify failed: coupon consumed");
@@ -117,7 +102,7 @@ public class TelephoneVerify extends Controller{
             // 发给消费者
             if(Play.mode.isProd()){
                 SMSUtil.send("【券市场】您尾号" + eCouponNumber + "的券号于" + dateTime
-                        + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166", ecoupon.orderItems.phone, ecoupon.replyCode);
+                        + "已成功消费，使用门店：" + supplierUser.shop.name + "。如有疑问请致电：400-6262-166", ecoupon.orderItems.phone, ecoupon.replyCode);
             }
             ecoupon.verifyType = VerifyCouponType.TELEPHONE;
             ecoupon.verifyTel = caller;
@@ -218,9 +203,14 @@ public class TelephoneVerify extends Controller{
         if (ecoupon.consumedAt == null){
             Logger.error("telephone verify failed: coupon not consumed");
             renderText("未消费");
-        }else {
-            renderText(new SimpleDateFormat("yyyy年M月d日H点m分").format(ecoupon.consumedAt));
         }
+        String shopName = "";
+        if (ecoupon.shop == null) {
+            Logger.error("telephone verify failed: coupon consumed, but do not know where it consumed at");
+        }else {
+            shopName = "," + ecoupon.shop.name;
+        }
+        renderText(new SimpleDateFormat("yyyy年M月d日H点m分").format(ecoupon.consumedAt) + shopName);
     }
 
     private static boolean requestTimeout(Long timestamp, int seconds){
