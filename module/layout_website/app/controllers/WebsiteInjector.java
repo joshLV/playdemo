@@ -1,17 +1,21 @@
 package controllers;
 
-import cache.CacheCallBack;
-import cache.CacheHelper;
-import controllers.modules.website.cas.SecureCAS;
+import java.util.List;
+import java.util.UUID;
 import models.consumer.User;
 import models.order.Cart;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
-
-import java.util.List;
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import controllers.modules.website.cas.SecureCAS;
 
 public class WebsiteInjector extends Controller {
+    
+    private static String baseDomain = play.Play.configuration.getProperty("application.baseDomain");
+    
+    public static final String WEB_TRACK_COOKIE = "ybq_track";
 
     @Before
     public static void injectCarts() {
@@ -33,6 +37,19 @@ public class WebsiteInjector extends Controller {
 
         renderArgs.put("carts", carts);
         renderArgs.put("count", count);
+    }
+    
+    @Before
+    public static void injectWebIdentification() {
 
+        final User user = SecureCAS.getUser();
+        Http.Cookie cookie = request.cookies.get("identity");
+        if (cookie == null) {
+            String uuid = UUID.randomUUID().toString();
+            //cookie = response.setCookie(name, value, domain, path, maxAge, secure);
+        }
+        final String cookieValue = cookie.value;
+        
+        
     }
 }
