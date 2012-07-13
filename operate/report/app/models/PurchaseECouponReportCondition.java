@@ -33,12 +33,12 @@ public class PurchaseECouponReportCondition implements Serializable {
     public String getFilter() {
         StringBuilder condBuilder = new StringBuilder("r.status='CONSUMED'"); //只统计已经消费的
         if (createdAtBegin != null) {
-            condBuilder.append(" and r.createdAt >= :createdAtBegin");
-            paramMap.put("createdAtBegin", createdAtBegin);
+            condBuilder.append(" and r.consumedAt >= :consumedAtBegin");
+            paramMap.put("consumedAtBegin", createdAtBegin);
         }
         if (createdAtEnd != null) {
-            condBuilder.append(" and r.createdAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
+            condBuilder.append(" and r.consumedAt < :consumedAtEnd");
+            paramMap.put("consumedAtEnd", DateUtil.getEndOfDay(createdAtEnd)); //TODO: 表单名改成consumedAt
         }
 
         if (supplier != null && supplier.id != 0) {
