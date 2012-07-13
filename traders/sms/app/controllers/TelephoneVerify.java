@@ -65,6 +65,12 @@ public class TelephoneVerify extends Controller{
             Logger.error("telephone verify failed: wrong sign");
             renderText("6");//签名错误
         }
+        SupplierUser supplierUser = SupplierUser.find("byLoginName", caller).first();
+
+        if(supplierUser == null){
+            Logger.error("telephone verify failed: invalid caller %s", caller);
+            renderText("8");//对不起，商户不存在
+        }
 
         //开始验证
         ECoupon ecoupon = ECoupon.query(coupon, null);
@@ -82,7 +88,7 @@ public class TelephoneVerify extends Controller{
             Logger.error("telephone verify failed: invalid supplier %s",supplierId);
             renderText("8");//对不起，商户不存在
         }
-        SupplierUser supplierUser = SupplierUser.find("from SupplierUser where supplier.id=? and loginName=?", supplierId, caller).first();
+        supplierUser = SupplierUser.find("from SupplierUser where supplier.id=? and loginName=?", supplierId, caller).first();
         if(supplierUser == null){
             Logger.error("telephone verify failed: supplier user not found %s %s",supplierId, caller);
             renderText("9");//对不起，未找到该店员
