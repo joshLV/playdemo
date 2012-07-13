@@ -44,8 +44,9 @@ public class SmsReceivers extends Controller {
             // 消费者验证的情况
             checkConsumer(mobile, msg, code);
         } else {
+            SMSUtil.send("【券市场】券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：400-6262-166",
+                    mobile, code);
             renderText("msg is wrong");
-            SMSUtil.send("【券市场】如果您是店员，请按照#券号的", mobile, code);
         }
     }
 
@@ -125,7 +126,7 @@ public class SmsReceivers extends Controller {
 
                     // 发给店员
                     SMSUtil.send("【券市场】," + getMaskedMobile(mobile) + "消费者的尾号" + coupon + "的券（面值：" + ecoupon
-                            .faceValue + "元）于" + dateTime + "已验证成功，使用门店：" + shopName + "。客服热线：400" +
+                            .faceValue + "元）于" + dateTime + "验证成功，使用门店：" + shopName + "。客服热线：400" +
                             "-6262-166", supplierUser.mobile, code);
                     // 发给消费者
                     SMSUtil.send("【券市场】您尾号" + coupon + "的券号于" + dateTime
@@ -139,7 +140,7 @@ public class SmsReceivers extends Controller {
             }
         }
         if (couponCount == 0) {
-            SMSUtil.send("【券市场】格式不对，请重新短信编辑#券号#券号发送，如有疑问请致电：400-6262-166",
+            SMSUtil.send("【券市场】券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：400-6262-166",
                     mobile, code);
             renderText("券号无效！");
         }
@@ -159,7 +160,7 @@ public class SmsReceivers extends Controller {
         ECoupon ecoupon = ECoupon.findByMobileAndCode(mobile, code);
         if (ecoupon == null) {
             if ("0000".equals(code)) {
-                SMSUtil.send("【券市场】格式错误，请编辑短信\"#券号#券号\"重新发送，如有疑问请致电：400-6262-166",
+                SMSUtil.send("【券市场】券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：400-6262-166",
                         mobile, code);
             } else {
                 SMSUtil.send("【券市场】店员工号无效，请核实工号是否正确!如有疑问请致电：400-6262-166", mobile, code);
@@ -209,7 +210,7 @@ public class SmsReceivers extends Controller {
             String dateTime = DateUtil.getNowTime();
             // 发给店员
             SMSUtil.send("【券市场】," + getMaskedMobile(mobile) + "消费者的尾号" + coupon + "的券（面值：" + ecoupon
-                    .faceValue + "元）于" + dateTime + "已验证成功，使用门店：" + shopName + "。客服热线：400" +
+                    .faceValue + "元）于" + dateTime + "验证成功，使用门店：" + shopName + "。客服热线：400" +
                     "-6262-166", supplierUser.mobile, code);
             // 发给消费者
             SMSUtil.send("【券市场】您尾号" + coupon + "的券号于" + dateTime
