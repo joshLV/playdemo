@@ -208,9 +208,9 @@ public class TelephoneVerify extends Controller{
         if (ecoupon.shop == null) {
             Logger.error("telephone verify failed: coupon consumed, but do not know where it consumed at");
         }else {
-            shopName = "," + ecoupon.shop.name;
+            shopName = ",消费门店为" + ecoupon.shop.name;
         }
-        renderText(new SimpleDateFormat("yyyy年M月d日H点m分").format(ecoupon.consumedAt) + shopName);
+        renderText(new SimpleDateFormat("M月d日H点m分").format(ecoupon.consumedAt) + shopName);
     }
 
     private static boolean requestTimeout(Long timestamp, int seconds){

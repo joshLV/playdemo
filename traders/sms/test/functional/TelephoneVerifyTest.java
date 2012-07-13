@@ -280,7 +280,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         eCoupon.save();
 
         Http.Response response = GET("/tel-verify/consumed-at?coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
-        assertContentEquals(new SimpleDateFormat("yyyy年M月d日H点m分").format(consumedAt), response);//;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(eCoupon.consumedAt)
+        assertContentEquals(new SimpleDateFormat("M月d日H点m分").format(consumedAt), response);//;该券无法重复消费。消费时间为" + new SimpleDateFormat("yyyy年MM月dd日hh点mm分").format(eCoupon.consumedAt)
     }
     private String getSign(long timestamp){
         return DigestUtils.md5Hex(TelephoneVerify.APP_KEY + timestamp);
