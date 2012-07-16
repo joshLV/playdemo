@@ -3,6 +3,8 @@ play-paginate.prev=&lsaquo;&nbsp;上一页
 play-paginate.next=下一页&nbsp;&rsaquo;
 play-paginate.last=尾页&nbsp;&raquo;
 validation.required=请输入%s!
+validation.match=无效的%s!
+validation.invalid=无效的%s!
 validation.beforeThanEffectiveAt=%s不能早于有效期开始时间!
 #Block
 block.WEBSITE_SLIDE=首页展示
@@ -49,3 +51,13 @@ vote.effectiveAt=开始时间
 vote.expireAt=到期时间
 vote.QUIZ=有奖问答
 vote.INQUIRY=用户调查
+#友情链接
+friendsLinks.linkName=链接名称
+friendsLinks.link=链接地址
+friendsLinks.userName=联系人姓名
+friendsLinks.mobile=手机
+friendsLinks.email=邮箱
+friendsLinks.displayOrder=显示顺序
+friendsLinks.qq=QQ
+
+

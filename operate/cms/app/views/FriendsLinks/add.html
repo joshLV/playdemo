@@ -1,0 +1,12 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'添加友情链接' /}
+#{set 'moreScripts'}
+#{/set}
+#{include '/share/nav.html' /}
+<div class="body">
+#{form @FriendsLinks.create() , id:'form',class:"form-horizontal" }
+    <legend>${title}</legend>
+    #{set action:"add"/}
+    #{include '/FriendsLinks/friendsLinksForm.html'/}
+#{/form}
+</div>

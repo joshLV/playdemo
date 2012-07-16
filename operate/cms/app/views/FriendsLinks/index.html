@@ -1,0 +1,67 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'友情链接' /}
+#{include '/share/nav.html' /}
+
+<div class="body">
+    <legend>${title}</legend>
+    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{FriendsLinks.index()}" method="GET">
+        *{<table width="100%">}*
+            *{<tr>}*
+                *{<td width="30%">&{'friendsLink.platformType'}：}*
+                *{#{select 'platformType', id:'platformType', class:'input-middle', value:platformType}}*
+                    *{#{option "null"}不限#{/option}}*
+                    *{#{option "RESALE"}&{'friendsLink.RESALE'}#{/option}}*
+                    *{#{option "UHUILA"}&{'friendsLink.UHUILA'}#{/option}}*
+                *{#{/select}</td>}*
+                *{<td width="30%">&{'friendsLink.type'}：}*
+                *{#{select 'type', id:'type', class:'input-middle', value:type}}*
+                    *{#{option "null"}不限#{/option}}*
+                    *{#{option models.cms.TopicType.NEWS}&{'friendsLink.NEWS'}#{/option}}*
+                    *{#{option models.cms.TopicType.TOPIC}&{'friendsLink.TOPIC'}#{/option}}*
+                    *{#{option models.cms.TopicType.NOTICE}&{'friendsLink.NOTICE'}#{/option}}*
+                *{#{/select}</td>}*
+                *{<td>}*
+                    *{<button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>}*
+                *{</td>}*
+            *{</tr>}*
+        *{</table>}*
+    </form>
+    <form class="form-horizontal" name="deletefrm" id="deletefrm">
+
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+            <tr>
+                <th>&{'friendsLinks.linkName'}</th>
+                <th>&{'friendsLinks.link'}</th>
+                <th>&{'friendsLinks.userName'}</th>
+                <th>&{'friendsLinks.displayOrder'}</th>
+                <th>&{'friendsLinks.mobile'}</th>
+                <th>&{'friendsLinks.email'}</th>
+                <th>&{'friendsLinks.qq'}</th>
+                <th>操 作</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            #{paginate.list items:friendsLinkList, as:'friendsLink'}
+            <tr>
+                <td>${friendsLink?.linkName}</td>
+                <td>${friendsLink?.link}</td>
+                <td>${friendsLink?.userName}</td>
+                <td>${friendsLink?.displayOrder}</td>
+                <td>${friendsLink?.mobile}</td>
+                <td>${friendsLink?.email}</td>
+                <td>${friendsLink?.qq}</td>
+                <td><a href="@{FriendsLinks.edit(friendsLink.id)}">修改</a>
+                    / #{vx.deleteLink action:"friendsLinks", id:friendsLink.id, name:friendsLink.linkName/}
+            </tr>
+            #{/paginate.list}
+            </tbody>
+        </table>
+    </form>
+    <div class="pagination" align="center">
+        <ul>
+        #{paginate.controls items:friendsLinkList /}
+        </ul>
+    </div>
+</div>

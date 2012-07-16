@@ -2,6 +2,8 @@ package controllers;
 
 import java.util.List;
 import java.util.UUID;
+
+import models.cms.FriendsLink;
 import models.consumer.User;
 import models.order.Cart;
 import play.mvc.Before;
@@ -12,9 +14,9 @@ import cache.CacheHelper;
 import controllers.modules.website.cas.SecureCAS;
 
 public class WebsiteInjector extends Controller {
-    
+
     private static String baseDomain = play.Play.configuration.getProperty("application.baseDomain");
-    
+
     public static final String WEB_TRACK_COOKIE = "ybq_track";
 
     @Before
@@ -37,8 +39,17 @@ public class WebsiteInjector extends Controller {
 
         renderArgs.put("carts", carts);
         renderArgs.put("count", count);
+
+        //友情链接
+        List<FriendsLink> friendsLinks = CacheHelper.getCache(CacheHelper.getCacheKey(FriendsLink.CACHEKEY, "FRIENDS_LINK"), new CacheCallBack<List<FriendsLink>>() {
+            @Override
+            public List<FriendsLink> loadData() {
+                return FriendsLink.findAllByDeleted();
+            }
+        });
+        renderArgs.put("friendsLinks", friendsLinks);
     }
-    
+
     @Before
     public static void injectWebIdentification() {
 
@@ -49,7 +60,7 @@ public class WebsiteInjector extends Controller {
             //cookie = response.setCookie(name, value, domain, path, maxAge, secure);
         }
         final String cookieValue = cookie.value;
-        
-        
+
+
     }
 }

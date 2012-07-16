@@ -9,7 +9,8 @@
         <permission key="BLOCKS" text="内容块管理" roles="editor"/>
         <permission key="VOTE_NEW" text="新增有奖调查" roles="editor"/>
         <permission key="VOTES" text="有奖调查管理" roles="editor"/>
-        <permission key="QUESTIONS" text="有奖调查管理" roles="editor"/>
+        <permission key="FRIENDS_NEW" text="友情链接" roles="editor"/>
+        <permission key="FRIENDS" text="友情链接管理" roles="editor"/>
     </permission>
     <navigation key="cms_main" text="网站管理" action="CmsBlocks.index" permission="CMS" display-order="200">
         <navigation key="topic" text="公告" permission="TOPICS_NEW,TOPICS">
@@ -23,6 +24,10 @@
           <navigation key="vote" text="有奖调查" permission="VOTE_NEW,VOTES">
             <navigation key="votes_add" action="WebVotes.add" text="有奖调查添加" permission="VOTE_NEW"/>
             <navigation key="votes_index" action="WebVotes.index" text="有奖调查管理" permission="VOTES"/>
+        </navigation>
+        <navigation key="friends" text="友情链接" permission="FRIENDS_NEW,FRIENDS">
+            <navigation key="friends_add" action="FriendsLinks.add" text="友情链接添加" permission="FRIENDS_NEW"/>
+            <navigation key="friends_index" action="FriendsLinks.index" text="友情链接管理" permission="FRIENDS"/>
         </navigation>
     </navigation>
 </application>

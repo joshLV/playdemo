@@ -20,7 +20,13 @@ POST    /blocks                                 CmsBlocks.create
 DELETE  /blocks/{id}                            CmsBlocks.delete
 GET     /blocks/{id}/edit                       CmsBlocks.edit
 PUT     /blocks/{id}                            CmsBlocks.update
-
+#友情链接管理
+GET     /friendsLinks                           FriendsLinks.index
+GET     /friendsLinks/new                       FriendsLinks.add
+POST    /friendsLinks                           FriendsLinks.create
+DELETE  /friendsLinks/{id}                      FriendsLinks.delete
+GET     /friendsLinks/{id}/edit                 FriendsLinks.edit
+PUT     /friendsLinks/{id}                      FriendsLinks.update
 #问卷调查管理
 GET     /votes                                 WebVotes.index
 GET     /votes/new                             WebVotes.add

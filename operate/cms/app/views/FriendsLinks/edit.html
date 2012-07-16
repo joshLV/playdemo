@@ -1,0 +1,12 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'修改友情链接' /}
+#{set 'moreScripts'}
+#{/set}
+#{include '/share/nav.html' /}
+<div class="body">
+#{form @FriendsLinks.update(friendsLinks.id) , id:'form',class:"form-horizontal" }
+    <legend>${title}</legend>
+    #{set action:"edit"/}
+    #{include '/FriendsLinks/friendsLinksForm.html'/}
+#{/form}
+</div>

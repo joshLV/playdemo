@@ -1,0 +1,13 @@
+#{layout_operate.textField name:'friendsLinks.linkName', value:friendsLinks?.linkName, required:true/}
+#{layout_operate.textField name:'friendsLinks.link', value:friendsLinks?.link, required:true/}
+#{layout_operate.textField name:'friendsLinks.displayOrder', value:friendsLinks?.displayOrder/}
+#{layout_operate.textField name:'friendsLinks.userName', value:friendsLinks?.userName/}
+#{layout_operate.textField name:'friendsLinks.mobile', value:friendsLinks?.mobile/}
+#{layout_operate.textField name:'friendsLinks.email', value:friendsLinks?.email/}
+#{layout_operate.textField name:'friendsLinks.qq', value:friendsLinks?.qq/}
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="保存"/>
+#{if "edit".equals(action)}
+    #{vx.cancelButton url:'/friendsLinks', class:'btn btn-primary'/}
+#{/if}
+</div>
