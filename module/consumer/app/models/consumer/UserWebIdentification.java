@@ -30,4 +30,12 @@ public class UserWebIdentification extends Model {
     @Column(name = "created_at")
     public Date createdAt;
     
+    /**
+     * 按用户id和cookie值找到跟踪的值.
+     * @param cookieValue
+     * @return
+     */
+    public static UserWebIdentification findOne(String cookieValue) {
+        return UserWebIdentification.find("cookieId=?", cookieValue).first();
+    }
 }

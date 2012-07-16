@@ -221,7 +221,7 @@ public class GoodsUnitTest extends UnitTest {
         prices[1] = BigDecimal.ONE;
         prices[2] = BigDecimal.ONE;
         goods.setLevelPrices(prices);
-        List<GoodsLevelPrice> priceList = goods.getLevelPrices();
+        List<GoodsLevelPrice> priceList = goods.safeGetLevelPrices();
         assertEquals(4, priceList.size());
         assertEquals(1, priceList.get(0).price.intValue());
         assertEquals(1, priceList.get(1).price.intValue());

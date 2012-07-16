@@ -460,14 +460,14 @@ public class Goods extends Model {
 
     public void setLevelPrices(List<GoodsLevelPrice> levelPrices) {
         this.levelPrices = levelPrices;
-        setLevelPrices();
+        safeSetLevelPrices();
     }
 
     public void setLevelPrices(BigDecimal[] prices) {
         if (prices == null || prices.length == 0) {
             return;
         }
-        setLevelPrices();
+        safeSetLevelPrices();
         for (int i = 0; i < prices.length; i++) {
             levelPrices.get(i).price = prices[i];
         }
@@ -476,15 +476,15 @@ public class Goods extends Model {
     /**
      * 不同分销商等级所对应的价格, 此方法可确保返回的价格数量与分销等级的数量相同
      */
-    public List<GoodsLevelPrice> getLevelPrices() {
+    public List<GoodsLevelPrice> safeGetLevelPrices() {
         if (levelPrices != null && levelPrices.size() == ResalerLevel.values().length) {
             return levelPrices;
         }
-        setLevelPrices();
+        safeSetLevelPrices();
         return levelPrices;
     }
 
-    private void setLevelPrices() {
+    private void safeSetLevelPrices() {
         if (levelPrices == null) {
             levelPrices = new ArrayList<>();
         }
@@ -672,7 +672,7 @@ public class Goods extends Model {
         updateGoods.useEndTime = goods.useEndTime;
         if (!noLevelPrices) {
             for (int i = 0; i < goods.levelPrices.size(); i++) {
-                updateGoods.getLevelPrices().get(i).price = goods.levelPrices.get(i).price;
+                updateGoods.safeGetLevelPrices().get(i).price = goods.levelPrices.get(i).price;
             }
         }
         updateGoods.isLottery = goods.isLottery;
@@ -877,7 +877,7 @@ public class Goods extends Model {
     public BigDecimal getResalePrice(ResalerLevel level) {
         BigDecimal resalePrice = faceValue;
 
-        for (GoodsLevelPrice goodsLevelPrice : getLevelPrices()) {
+        for (GoodsLevelPrice goodsLevelPrice : safeGetLevelPrices()) {
             if (goodsLevelPrice.level == level) {
                 resalePrice = originalPrice.add(goodsLevelPrice.price);
                 break;
@@ -915,7 +915,7 @@ public class Goods extends Model {
         if (prices == null || prices.length == 0) {
             return;
         }
-        getLevelPrices();
+        safeGetLevelPrices();
         for (int i = 0; i < prices.length; i++) {
             this.id = id;
             levelPrices.get(i).price = prices[i];
@@ -929,7 +929,7 @@ public class Goods extends Model {
             return prices;
         }
 
-        List<GoodsLevelPrice> levelPriceList = getLevelPrices();
+        List<GoodsLevelPrice> levelPriceList = safeGetLevelPrices();
         for (int i = 0; i < levelPriceList.size(); i++) {
             GoodsLevelPrice levelPrice = levelPriceList.get(i);
             prices[i] = (levelPrice == null || levelPrice.price == null) ? BigDecimal.ZERO : levelPrice.price;
