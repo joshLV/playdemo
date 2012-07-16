@@ -51,6 +51,7 @@ public class FriendsLinks extends Controller {
 
     public static void update(Long id, @Valid FriendsLink friendsLinks) {
         if (Validation.hasErrors()) {
+            friendsLinks.id = id;
             render("FriendsLinks/edit.html", friendsLinks);
         }
         FriendsLink.update(id, friendsLinks);

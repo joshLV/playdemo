@@ -4,7 +4,7 @@
 #{/set}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @FriendsLinks.update(friendsLinks.id) , id:'form',class:"form-horizontal" }
+#{form @FriendsLinks.update(friendsLinks?.id) , id:'form',class:"form-horizontal" }
     <legend>${title}</legend>
     #{set action:"edit"/}
     #{include '/FriendsLinks/friendsLinksForm.html'/}

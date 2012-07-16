@@ -22,7 +22,7 @@ import java.util.List;
 @Table(name = "friends_link")
 public class FriendsLink extends Model {
 
-    private static final long serialVersionUID = 81232405113012L;
+    private static final long serialVersionUID = 80131405113012L;
 
     /**
      * 链接名称
@@ -47,7 +47,7 @@ public class FriendsLink extends Model {
     @Mobile
     public String mobile;
 
-    @Match(value = "^[0-9]")
+    @Match(value = "[1-9][0-9]{4,}")
     public String qq;
 
     @Enumerated(EnumType.STRING)
