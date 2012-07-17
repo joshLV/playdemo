@@ -73,10 +73,6 @@ public class WebsiteInjector extends Controller {
             cookieValue = cookie.value;
         }
         
-        for (String key : request.headers.keySet()) {
-            Logger.info("header- key:" + key + ", value:" + request.headers.get(key).value() + ".");
-        }
-        
         final String identificationValue = cookieValue;
         final Long userId = user != null ? user.getId() : 0l;
         UserWebIdentification identification = CacheHelper.getCache("WEBIDENTI_" + identificationValue + "_" + userId, new CacheCallBack<UserWebIdentification>() {
@@ -113,7 +109,7 @@ public class WebsiteInjector extends Controller {
             uwi.firstPage = request.url;
             uwi.createdAt = new Date();
             uwi.referCode = request.params.get("tj");  //使用tj参数得到推荐码.
-            Header header = request.headers.get("Referer");
+            Header header = request.headers.get("referer");
             if (header != null) {
                 uwi.referer = header.value();
                 if (uwi.referer != null) {
