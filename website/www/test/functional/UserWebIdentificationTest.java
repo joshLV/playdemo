@@ -70,9 +70,9 @@ public class UserWebIdentificationTest extends FunctionalTest {
 
     @Test
     public void testRefererPageWorks() {
-        Header header = new Header("Referer", "http://www.google.com/search?s=xxx");
+        Header header = new Header("referer", "http://www.google.com/search?s=xxx");
         Map<String, Header> headers = new HashMap<>();
-        headers.put("Referer", header);
+        headers.put("referer", header);
         Request request = Request.createRequest(
                 null,
                 "GET",
