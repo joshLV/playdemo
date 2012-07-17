@@ -4,7 +4,15 @@
 #{layout_operate.textField name:'friendsLinks.userName', value:friendsLinks?.userName/}
 #{layout_operate.textField name:'friendsLinks.mobile', value:friendsLinks?.mobile/}
 #{layout_operate.textField name:'friendsLinks.email', value:friendsLinks?.email/}
-#{layout_operate.textField name:'friendsLinks.qq', value:friendsLinks?.qq/}
+#{layout_operate.textField name:'friendsLinks.qq', value:friendsLinks?.qq,note:'*限5位数字以上'/}
+#{layout_operate.selectField name:'friendsLinks.status', value:friendsLinks?.status, error:'friendsLinks.status.',
+class:'span2'}
+    #{option models.cms.LinkStatus.OPEN}&{'friendsLinks.OPEN'}#{/option}
+    #{option models.cms.LinkStatus.SAVE}&{'friendsLinks.SAVE'}#{/option}
+    #{option models.cms.LinkStatus.FORBID}&{'friendsLinks.FORBID'}#{/option}
+    #{option models.cms.LinkStatus.BLACK}&{'friendsLinks.BLACK'}#{/option}
+#{/layout_operate.selectField}
+#{layout_operate.textareaField name:'friendsLinks.content', value:friendsLinks?.content/}
 <div class="form-actions">
     <input class="btn btn-primary" id="save" type="submit" value="保存"/>
 #{if "edit".equals(action)}

@@ -52,12 +52,19 @@ vote.expireAt=到期时间
 vote.QUIZ=有奖问答
 vote.INQUIRY=用户调查
 #友情链接
-friendsLinks.linkName=链接名称
-friendsLinks.link=链接地址
+friendsLinks.linkName=关键词
+friendsLinks.link=URL
 friendsLinks.userName=联系人姓名
 friendsLinks.mobile=手机
 friendsLinks.email=邮箱
 friendsLinks.displayOrder=显示顺序
 friendsLinks.qq=QQ
+friendsLinks.content=内容
+friendsLinks.status=状态
+friendsLinks.FORBID=禁止
+friendsLinks.OPEN=开放
+friendsLinks.SAVE=保存但不开放
+friendsLinks.BLACK=黑名单
+friendsLinks.null=
 
 

@@ -50,12 +50,15 @@ public class FriendsLink extends Model {
     @Match(value = "[1-9][0-9]{4,}")
     public String qq;
 
+    public LinkStatus status;
     @Enumerated(EnumType.STRING)
     public DeletedStatus deleted;
 
     public Integer displayOrder;
     public static final String CACHEKEY = "FRIENDS_LINK";
 
+    @MaxSize(4000)
+    public String content;
     @Override
     public void _save() {
         CacheHelper.delete(CACHEKEY);

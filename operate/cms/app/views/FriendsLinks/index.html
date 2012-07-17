@@ -38,22 +38,24 @@
                 <th>&{'friendsLinks.mobile'}</th>
                 <th>&{'friendsLinks.email'}</th>
                 <th>&{'friendsLinks.qq'}</th>
+                <th>&{'friendsLinks.status'}</th>
                 <th>操 作</th>
             </tr>
             </thead>
 
             <tbody>
-            #{paginate.list items:friendsLinkList, as:'friendsLink'}
+            #{paginate.list items:friendsLinkList, as:'friendsLinks'}
             <tr>
-                <td>${friendsLink?.linkName}</td>
-                <td>${friendsLink?.link}</td>
-                <td>${friendsLink?.userName}</td>
-                <td>${friendsLink?.displayOrder}</td>
-                <td>${friendsLink?.mobile}</td>
-                <td>${friendsLink?.email}</td>
-                <td>${friendsLink?.qq}</td>
-                <td><a href="@{FriendsLinks.edit(friendsLink.id)}">修改</a>
-                    / #{vx.deleteLink action:"friendsLinks", id:friendsLink.id, name:friendsLink.linkName/}
+                <td>${friendsLinks?.linkName}</td>
+                <td>${friendsLinks?.link}</td>
+                <td>${friendsLinks?.userName}</td>
+                <td>${friendsLinks?.displayOrder}</td>
+                <td>${friendsLinks?.mobile}</td>
+                <td>${friendsLinks?.email}</td>
+                <td>${friendsLinks?.qq}</td>
+                <td>&{'friendsLinks.'+friendsLinks?.status}</td>
+                <td><a href="@{FriendsLinks.edit(friendsLinks.id)}">修改</a>
+                    / #{vx.deleteLink action:"friendsLinks", id:friendsLinks.id, name:friendsLinks.linkName/}
             </tr>
             #{/paginate.list}
             </tbody>

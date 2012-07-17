@@ -147,14 +147,14 @@ public class Home extends Controller {
                 return Block.findByType(BlockType.WEBSITE_SUPPLIER, currentDate);
             }
         });
-          //友情链接
-        List<FriendsLink> friendsLinks = CacheHelper.getCache(CacheHelper.getCacheKey(FriendsLink.CACHEKEY, "FRIENDS_LINK"), new CacheCallBack<List<FriendsLink>>() {
-            @Override
-            public List<FriendsLink> loadData() {
-                return FriendsLink.findAllByDeleted();
-            }
-        });
-        renderArgs.put("friendsLinks", friendsLinks);
+//          //友情链接
+//        List<FriendsLink> friendsLinks = CacheHelper.getCache(CacheHelper.getCacheKey(FriendsLink.CACHEKEY, "FRIENDS_LINK"), new CacheCallBack<List<FriendsLink>>() {
+//            @Override
+//            public List<FriendsLink> loadData() {
+//                return FriendsLink.findAllByDeleted();
+//            }
+//        });
+//        renderArgs.put("friendsLinks", friendsLinks);
         models.sales.Goods dailySpecialGoods = null;
         Block dailySpecial = null;
         if (dailySpecials.size() >= 1) {
