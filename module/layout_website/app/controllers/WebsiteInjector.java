@@ -9,6 +9,7 @@ import models.cms.FriendsLink;
 import models.consumer.User;
 import models.consumer.UserWebIdentification;
 import models.order.Cart;
+import play.mvc.After;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -24,6 +25,8 @@ public class WebsiteInjector extends Controller {
     public static final String WEB_TRACK_COOKIE = "ybq_track";
 
     private static final Pattern hostPattern = Pattern.compile("(https?://)?([^/]*)(/?.*)");
+    
+    private static ThreadLocal<UserWebIdentification> _userWebIdentification = new ThreadLocal<>();
   
     @Before
     public static void injectCarts() {
@@ -77,7 +80,16 @@ public class WebsiteInjector extends Controller {
                 return findUserWebIdentification(user, identificationValue);
             }
         });
-        renderArgs.put("userWebIdentification", identification);
+        _userWebIdentification.set(identification);
+    }
+    
+    public UserWebIdentification getUserWebIdentification() {
+        return _userWebIdentification.get();
+    }
+    
+    @After
+    public static void cleanWebIdentification() {
+        _userWebIdentification.set(null);
     }
     
     /**
