@@ -5,12 +5,14 @@ import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.order.Order;
+import models.order.OrderStatus;
 import models.payment.PaymentFlow;
 import models.payment.PaymentJournal;
 import models.payment.PaymentUtil;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import javax.persistence.OptimisticLockException;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +33,17 @@ public class OrderResult extends Controller {
         String fee = result.get(PaymentFlow.TOTAL_FEE);
         boolean success = false;
         if (PaymentFlow.VERIFY_RESULT_OK.equals(result.get(PaymentFlow.VERIFY_RESULT))) {
-            boolean processOrderResult = Order.verifyAndPay(orderNumber, fee);
+            boolean processOrderResult = false;
+            try {
+                processOrderResult = Order.verifyAndPay(orderNumber, fee);
+            }catch (OptimisticLockException e) {
+                //乐观锁异常，通常是因为第三方支付已在后台回调了支付成功的接口
+                Order order = Order.find("byOrderNumber", orderNumber).first();
+                order.refresh();
+                if(order.status == OrderStatus.PAID) {
+                    processOrderResult = true;
+                }
+            }
 
             if (processOrderResult) {
                 errorMessage = null;
