@@ -29,7 +29,7 @@ public class OperateOrders extends Controller {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
-        render(orderList,condition);
+        render(orderList, condition);
 
     }
 
@@ -38,7 +38,7 @@ public class OperateOrders extends Controller {
      */
     public static void send(Long id, Order order) {
         Order originalOrder = Order.findById(id);
-        if (originalOrder == null){
+        if (originalOrder == null) {
             error(500, "can not find the order:" + id);
         }
         Order.sendRealGoodsAndPayCommissions(id, order.deliveryCompany, order.deliveryNo);
@@ -56,5 +56,20 @@ public class OperateOrders extends Controller {
         List<OrderItems> orderItems = orders.orderItems;
         //收货信息
         render(orders, orderItems);
+    }
+
+
+    public static void orderExcelOut(OrdersCondition condition) {
+
+        if (condition == null) {
+            condition = new OrdersCondition();
+        }
+        String page = request.params.get("page");
+        request.format = "xls";
+        String __EXCEL_FILE_NAME__ = "订单_" + System.currentTimeMillis() + "xls";
+        renderArgs.put("__EXCEL_FILE_NAME__", __EXCEL_FILE_NAME__);
+        JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, 1, PAGE_SIZE);
+        render(__EXCEL_FILE_NAME__, orderList);
+
     }
 }

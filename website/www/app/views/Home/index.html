@@ -212,16 +212,10 @@
 <div id="partner-links">
     <div class="inner">
         <ul class="clearfix">
-            <li>合作链接：</li>
-            <li><a href="" target="">淘宝网</a></li>
-            <li><a href="" target="">小米商城</a></li>
-            <li><a href="" target="">淘宝网</a></li>
-            <li><a href="" target="">京东商城</a></li>
-            <li><a href="" target="">凡客诚品</a></li>
-            <li><a href="" target="">魅族商城</a></li>
-            <li><a href="" target="">淘券</a></li>
-            <li><a href="" target="">优惠券</a></li>
-            <li><a href="" target="">淘淘谷</a></li>
+            <li>友情链接：</li>
+            #{list friendsLinks, as:'friendsLinks'}
+            <li><a href="${friendsLinks?.link}"target="_blank">${friendsLinks?.linkName}</a></li>
+           #{/list}
         </ul>
     </div>
 </div>

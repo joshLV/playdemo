@@ -1,12 +1,11 @@
 package controllers;
 
-import java.util.Date;
-import java.util.List;
-
-import models.cms.Block;
-import models.cms.BlockType;
-import models.cms.Topic;
-import models.cms.TopicType;
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import com.uhuila.common.constants.PlatformType;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
+import models.cms.*;
 import models.order.Order;
 import models.sales.Area;
 import models.sales.Category;
@@ -14,11 +13,9 @@ import play.Logger;
 import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.With;
-import cache.CacheCallBack;
-import cache.CacheHelper;
-import com.uhuila.common.constants.PlatformType;
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 首页控制器.
@@ -150,7 +147,14 @@ public class Home extends Controller {
                 return Block.findByType(BlockType.WEBSITE_SUPPLIER, currentDate);
             }
         });
-
+          //友情链接
+        List<FriendsLink> friendsLinks = CacheHelper.getCache(CacheHelper.getCacheKey(FriendsLink.CACHEKEY, "FRIENDS_LINK"), new CacheCallBack<List<FriendsLink>>() {
+            @Override
+            public List<FriendsLink> loadData() {
+                return FriendsLink.findAllByDeleted();
+            }
+        });
+        renderArgs.put("friendsLinks", friendsLinks);
         models.sales.Goods dailySpecialGoods = null;
         Block dailySpecial = null;
         if (dailySpecials.size() >= 1) {

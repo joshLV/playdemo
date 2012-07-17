@@ -65,13 +65,6 @@
 #{doLayout /}
 
 <div id="footer">
-    *{<div class="copyright">}*
-       *{<ul>}*
-           *{#{list friendsLinks, as:'friendsLinks'}}*
-           *{<a href="${friendsLinks?.link}"><li>${friendsLinks?.linkName}</li></a>}*
-           *{#{/list}}*
-       *{</ul>}*
-    *{</div>}*
     <div class="ft-nav">
         <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/about" target="_blank">关于我们</a> |
         <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/contact" target="_blank">联系我们</a> |

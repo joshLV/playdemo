@@ -21,22 +21,33 @@
         });
 
     }
- $(function () {
- $("#isLottery").click(function () {
-              if(this.checked){
-                this.value=true;
-              } else {
-                 this.value=false;
-              }
-              $("#frmlist").submit();
-          });
-
+    $(function () {
+        $("#isLottery").click(function () {
+            if (this.checked) {
+                this.value = true;
+            } else {
+                this.value = false;
+            }
+            $("#frmlist").submit();
+        });
+        $("#search").click(function () {
+            $("#frmlist").attr("action", "@{OperateCoupons.index()}");
+            $("#frmlist").attr("method", "get");
+            $("#frmlist").submit();
+        });
     });
 
+    function couponExcel() {
+        $("#frmlist").attr("action", "@{OperateCoupons.couponExcelOut()}");
+        $("#frmlist").attr("method", "get");
+        $("#frmlist").submit();
+        return false;
+    }
+    ;
 </script>
 <div class="body">
     <legend>${title}</legend>
-    <form class="well form-inline" name="frmlist" id="frmlist" action="@{OperateCoupons.index()}" method="GET">
+    <form class="well form-inline" name="frmlist" id="frmlist" method="GET">
         <table>
             <tbody>
             <tr>
@@ -90,6 +101,7 @@
                 </td>
                 <td>
                     <button type="submit" class="btn btn-primary" id="search">搜索</button>
+                    <button class="btn btn-primary" id="searchbtn" onclick="couponExcel()">导出报表</button>
                 </td>
             </tr>
             </tbody>
@@ -97,9 +109,7 @@
 
 
     </form>
-*{<div style="margin-bottom: 12px">}*
-*{<button class="btn btn-primary" type="button">导出报表</button>}*
-*{</div>}*
+
 #{vx.tab name:'coupon',enumItems: models.order.ECouponStatus.values(),select:'condition_status',value:condition?.status/}
 
     <table class="table table-striped table-bordered table-condensed">

@@ -21,6 +21,7 @@ POST    /goods/filemanager                      UploadFiles.fileManagerJson
 GET     /goods_brands/{id}                      OperateBrands.goodsBrands
 GET     /category/sub/{id}                      Categories.showSubs
 
+
 GET     /shops                                  OperateShops.index
 GET     /shops/new                              OperateShops.add
 POST    /shops                                  OperateShops.create
@@ -61,12 +62,35 @@ DELETE  /resalers/{id}                          Resalers.delete
 GET     /orders                                 OperateOrders.index
 GET     /orders/{id}                            OperateOrders.details
 PUT     /orders/{id}/send                       OperateOrders.send
+GET     /order_excel                            OperateOrders.orderExcelOut
 
+GET     /shops                                  OperateShops.index
+GET     /shops/new                              OperateShops.add
+POST    /shops                                  OperateShops.create
+GET     /shops/{id}/edit                        OperateShops.edit
+POST    /shops/{id}                             OperateShops.update
+DELETE  /shops/{id}                             OperateShops.delete
+GET     /shops/area                             OperateShops.showAreas
 GET     /coupons                                OperateCoupons.index
 PUT     /coupons/{id}/freeze                    OperateCoupons.freeze
 PUT     /coupons/{id}/unfreeze                  OperateCoupons.unfreeze
 GET     /coupons-message/{id}/send              OperateCoupons.sendMessage
+GET     /coupon_excel                           OperateCoupons.couponExcelOut
 
+GET     /shops                                  OperateShops.index
+GET     /shops/new                              OperateShops.add
+POST    /shops                                  OperateShops.create
+GET     /shops/{id}/edit                        OperateShops.edit
+POST    /shops/{id}                             OperateShops.update
+DELETE  /shops/{id}                             OperateShops.delete
+GET     /shops/area                             OperateShops.showAreas
+GET     /shops/{supplierId}/showGoodsShops      OperateShops.showGoodsShops
+GET     /shops/{supplierId}/showSupplierShops   OperateShops.showSupplierShops
+GET     /suppliers                              Suppliers.index
+GET     /suppliers/new                          Suppliers.add
+POST    /suppliers                              Suppliers.create
+GET     /suppliers/{id}/edit                    Suppliers.edit
+PUT     /suppliers/{id}                         Suppliers.update
 # 品牌管理
 GET     /brands                                 OperateBrands.index
 GET     /brands/new                             OperateBrands.add

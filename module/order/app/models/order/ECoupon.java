@@ -1,26 +1,6 @@
 package models.order;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
@@ -31,20 +11,23 @@ import models.sales.Goods;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import org.apache.commons.lang.StringUtils;
-import play.Logger;
 import play.data.validation.Required;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
-import com.uhuila.common.util.RandomNumberUtil;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Entity
 @Table(name = "e_coupon")
 public class ECoupon extends Model {
-    
+
     private static final long serialVersionUID = 16993203113062L;
-    
+
     public static final String TIME_FORMAT = "HH:mm:ss";
     private static final String COUPON_EXPIRE_FORMAT = "yyyy-MM-dd";
     @ManyToOne(fetch = FetchType.LAZY)
@@ -124,6 +107,14 @@ public class ECoupon extends Model {
     @JoinColumn(name = "shop_id", nullable = true)
     public Shop shop;
 
+    @Transient
+    public String shopName;
+    @Transient
+    public String clerkInfo;
+    @Transient
+    public String verifyName;
+    @Transient
+    public String statusInfo;
     /**
      * 验证店员
      */
@@ -156,49 +147,50 @@ public class ECoupon extends Model {
     }
 
 
-   /**
+    /**
      * 生成当前用户唯一的ReplyCode，用于发送短信.
      *
      * @param userId
      * @param userType
      * @return
      */
-   private String generateAvailableReplayCode(long userId, AccountType userType) {
-       String randomNumber;
-       do {
-           randomNumber = RandomNumberUtil.generateSerialNumber(4);
-       } while (isNotUniqueReplyCode(randomNumber, userId, userType));
-       return randomNumber;
-   }
- 
-   /**
+    private String generateAvailableReplayCode(long userId, AccountType userType) {
+        String randomNumber;
+        do {
+            randomNumber = RandomNumberUtil.generateSerialNumber(4);
+        } while (isNotUniqueReplyCode(randomNumber, userId, userType));
+        return randomNumber;
+    }
+
+    /**
      * 生成消费者唯一的券号.
      */
-   private String generateAvailableEcouponSn() {
-       String randomNumber;
-       do {
-           randomNumber = RandomNumberUtil.generateSerialNumber(10);
-       } while (isNotUniqueEcouponSn(randomNumber));
-       return randomNumber;
-   }
- 
- 
-   private boolean isNotUniqueReplyCode(String randomNumber, long userId, AccountType userType) {
-       if ("0000".equals(randomNumber)) {
-           return true;
-       }
-       return ECoupon.find("from ECoupon where replyCode=? and order.userId=? and order.userType=?",
-               randomNumber, userId, userType).fetch().size() > 0;
-   }
- 
-   private boolean isNotUniqueEcouponSn(String randomNumber) {
-       return ECoupon.find("from ECoupon where eCouponSn=?", randomNumber).fetch().size() > 0;
-   }
-    
+    private String generateAvailableEcouponSn() {
+        String randomNumber;
+        do {
+            randomNumber = RandomNumberUtil.generateSerialNumber(10);
+        } while (isNotUniqueEcouponSn(randomNumber));
+        return randomNumber;
+    }
+
+
+    private boolean isNotUniqueReplyCode(String randomNumber, long userId, AccountType userType) {
+        if ("0000".equals(randomNumber)) {
+            return true;
+        }
+        return ECoupon.find("from ECoupon where replyCode=? and order.userId=? and order.userType=?",
+                randomNumber, userId, userType).fetch().size() > 0;
+    }
+
+    private boolean isNotUniqueEcouponSn(String randomNumber) {
+        return ECoupon.find("from ECoupon where eCouponSn=?", randomNumber).fetch().size() > 0;
+    }
+
     /**
      * 生成当前用户相对于商户的ReplyCode，用于发送短信.
      * 即用户在一个商户购买的所有商品都在一个短信下
      * 暂时不使用。。。。
+     *
      * @param userId
      * @param userType
      * @return
@@ -208,9 +200,9 @@ public class ECoupon extends Model {
         if (ecoupon != null) {
             return ecoupon.replyCode;
         }
-        
+
         // 似乎不需要锁 ~ by TangLiqun
-        synchronized(ECoupon.class) {
+        synchronized (ECoupon.class) {
             ecoupon = getLastECoupon(userId, userType, supplierId);
             if (ecoupon != null) {
                 return ecoupon.replyCode;
@@ -224,7 +216,7 @@ public class ECoupon extends Model {
         return ECoupon.find("from ECoupon where order.userId=? and order.userType=? and goods.supplierId=?",
                 userId, userType, supplierId).first();
     }
-    
+
 
     /**
      * 根据页面录入券号查询对应信息
@@ -604,7 +596,7 @@ public class ECoupon extends Model {
     }
 
     public static List<ECoupon> selectCheckECoupons(BigDecimal payValue,
-            List<ECoupon> ecoupons) {
+                                                    List<ECoupon> ecoupons) {
         Collections.sort(ecoupons, new Comparator<ECoupon>() {
             @Override
             public int compare(ECoupon e1, ECoupon e2) {
@@ -613,7 +605,7 @@ public class ECoupon extends Model {
         });
         BigDecimal totalValue = new BigDecimal(0);
         List<ECoupon> selectECoupons = new ArrayList<>();
-        
+
         for (ECoupon ecoupon : ecoupons) {
             if (totalValue.add(ecoupon.faceValue).compareTo(payValue) > 0) {
                 continue;
@@ -622,7 +614,7 @@ public class ECoupon extends Model {
                 selectECoupons.add(ecoupon);
             }
         }
-        
+
         return selectECoupons;
     }
 }

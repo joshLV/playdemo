@@ -49,15 +49,6 @@ public class WebsiteInjector extends Controller {
 
         renderArgs.put("carts", carts);
         renderArgs.put("count", count);
-
-        //友情链接
-        List<FriendsLink> friendsLinks = CacheHelper.getCache(CacheHelper.getCacheKey(FriendsLink.CACHEKEY, "FRIENDS_LINK"), new CacheCallBack<List<FriendsLink>>() {
-            @Override
-            public List<FriendsLink> loadData() {
-                return FriendsLink.findAllByDeleted();
-            }
-        });
-        renderArgs.put("friendsLinks", friendsLinks);
     }
 
     @Before
