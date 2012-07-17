@@ -26,9 +26,9 @@ public class WebsiteInjector extends Controller {
     public static final String WEB_TRACK_COOKIE = "ybq_track";
 
     private static final Pattern hostPattern = Pattern.compile("(https?://)?([^/]*)(/?.*)");
-    
+
     private static ThreadLocal<UserWebIdentification> _userWebIdentification = new ThreadLocal<>();
-  
+
     @Before
     public static void injectCarts() {
         final User user = SecureCAS.getUser();
@@ -63,7 +63,7 @@ public class WebsiteInjector extends Controller {
         } else {
             cookieValue = cookie.value;
         }
-        
+
         final String identificationValue = cookieValue;
         final Long userId = user != null ? user.getId() : 0l;
         UserWebIdentification identification = CacheHelper.getCache("WEBIDENTI_" + identificationValue + "_" + userId, new CacheCallBack<UserWebIdentification>() {
@@ -74,16 +74,16 @@ public class WebsiteInjector extends Controller {
         });
         _userWebIdentification.set(identification);
     }
-    
+
     public static UserWebIdentification getUserWebIdentification() {
         return _userWebIdentification.get();
     }
-    
+
     @After
     public static void cleanWebIdentification() {
         _userWebIdentification.set(null);
     }
-    
+
     /**
      * 基于用户信息和cookie值创建或更新userWebIdentification
      * @param user
@@ -99,6 +99,7 @@ public class WebsiteInjector extends Controller {
             uwi.user = user;
             uwi.firstPage = request.url;
             uwi.createdAt = new Date();
+            uwi.ip = request.remoteAddress;
             uwi.referCode = request.params.get("tj");  //使用tj参数得到推荐码.
             Header header = request.headers.get("referer");
             if (header != null) {
@@ -126,5 +127,5 @@ public class WebsiteInjector extends Controller {
             return m.group(2);
         }
         return null;
-    }    
+    }
 }
