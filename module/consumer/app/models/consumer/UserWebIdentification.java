@@ -1,5 +1,6 @@
 package models.consumer;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,6 +40,24 @@ public class UserWebIdentification extends Model {
      */
     @Column(name = "refer_code")
     public String referCode;
+    
+    /**
+     * 加入购物车的数量
+     */
+    @Column(name = "cart_count")
+    public Integer cartCount;
+    
+    /**
+     * 成功支付的订单数量
+     */
+    @Column(name = "order_count")
+    public Integer orderCount;
+    
+    /**
+     * 成功支付的金额.
+     */
+    @Column(name = "pay_amount")
+    public BigDecimal payAmount;
     
     /**
      * 按用户id和cookie值找到跟踪的值.

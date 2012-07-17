@@ -5,6 +5,7 @@ import cache.CacheHelper;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import models.consumer.User;
+import models.consumer.UserWebIdentification;
 import models.order.Cart;
 import models.order.Order;
 import models.order.OrderItems;
@@ -97,6 +98,13 @@ public class Carts extends Controller {
             amount = amount.add(cart.goods.salePrice.multiply(new BigDecimal(cart.number)));
             count += cart.number;
         }
+        
+        if (WebsiteInjector.getUserWebIdentification() != null) {
+            UserWebIdentification uwi = UserWebIdentification.findById(WebsiteInjector.getUserWebIdentification().id);
+            uwi.cartCount = count;
+            uwi.save();
+        }
+        
         renderJSON("{\"count\":" + count + ", \"amount\":\"" + amount + "\"}");
     }
 

@@ -9,6 +9,7 @@ import models.cms.FriendsLink;
 import models.consumer.User;
 import models.consumer.UserWebIdentification;
 import models.order.Cart;
+import play.Logger;
 import play.mvc.After;
 import play.mvc.Before;
 import play.mvc.Controller;
@@ -72,6 +73,10 @@ public class WebsiteInjector extends Controller {
             cookieValue = cookie.value;
         }
         
+        for (String key : request.headers.keySet()) {
+            Logger.info("header- key:" + key + ", value:" + request.headers.get(key).value() + ".");
+        }
+        
         final String identificationValue = cookieValue;
         final Long userId = user != null ? user.getId() : 0l;
         UserWebIdentification identification = CacheHelper.getCache("WEBIDENTI_" + identificationValue + "_" + userId, new CacheCallBack<UserWebIdentification>() {
@@ -83,7 +88,7 @@ public class WebsiteInjector extends Controller {
         _userWebIdentification.set(identification);
     }
     
-    public UserWebIdentification getUserWebIdentification() {
+    public static UserWebIdentification getUserWebIdentification() {
         return _userWebIdentification.get();
     }
     

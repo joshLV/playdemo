@@ -1,10 +1,19 @@
 package controllers;
 
-import controllers.modules.website.cas.SecureCAS;
+import static play.Logger.warn;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
-import models.order.*;
+import models.order.Cart;
+import models.order.DeliveryType;
+import models.order.NotEnoughInventoryException;
+import models.order.Order;
+import models.order.OrderItems;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import play.Logger;
@@ -13,14 +22,7 @@ import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static play.Logger.warn;
+import controllers.modules.website.cas.SecureCAS;
 
 /**
  * 用户订单确认控制器.
@@ -150,9 +152,15 @@ public class Orders extends Controller {
         } else if (containsReal) {
             order.deliveryType = DeliveryType.LOGISTICS;
         }
+        //记录来源跟踪ID
+        if (WebsiteInjector.getUserWebIdentification() != null) {
+            order.webIdentificationId = WebsiteInjector.getUserWebIdentification().id;
+        }
+        
         if (defaultAddress != null) {
             order.setAddress(defaultAddress);
         }
+        
         //添加订单条目
         try {
             for (models.sales.Goods goodsItem : goodsList) {

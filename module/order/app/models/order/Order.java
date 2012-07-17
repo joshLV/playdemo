@@ -31,6 +31,7 @@ import models.accounts.util.TradeUtil;
 import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
+import models.consumer.UserWebIdentification;
 import models.mail.CouponMessage;
 import models.mail.MailUtil;
 import models.resale.Resaler;
@@ -155,6 +156,9 @@ public class Order extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "delivery_type")
     public DeliveryType deliveryType;
+
+    @Column(name = "web_identification_id")
+    public Long webIdentificationId; 
 
     @Transient
     public String searchKey;
@@ -461,6 +465,21 @@ public class Order extends Model {
                 orderItem.status = OrderStatus.PAID;
                 GoodsStatistics.addBuyCount(orderItem.goods.id);
                 orderItem.save();
+            }
+        }
+        
+        if (this.webIdentificationId != null) {
+            UserWebIdentification uwi = UserWebIdentification.findById(this.webIdentificationId);
+            if (uwi != null) {
+                if (uwi.orderCount == null) {
+                    uwi.orderCount = 0;
+                }
+                uwi.orderCount += 1;
+                if (uwi.payAmount == null) {
+                    uwi.payAmount = BigDecimal.ZERO;
+                }
+                uwi.payAmount = uwi.payAmount.add(this.amount);
+                uwi.save();
             }
         }
 
