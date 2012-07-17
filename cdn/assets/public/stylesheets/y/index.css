@@ -463,3 +463,28 @@
     border: 1px solid #f3f3f3;
     font-size: 0;
 }
+
+#partner-links {
+    position: relative;
+    padding: 1px 0;
+    line-height: 45px;
+    border-top: 1px solid #e3e3e3;
+}
+#partner-links .inner {
+    background-color: #f9f9f9;
+}
+#partner-links ul {
+    width: 960px;
+    margin: 0 auto;
+}
+#partner-links li {
+    float: left;
+    color: #707070;
+}
+#partner-links li a {
+    color: #707070;
+    padding: 0 25px 0 5px;
+}
+#footer {
+    background-color: transparent;
+}
