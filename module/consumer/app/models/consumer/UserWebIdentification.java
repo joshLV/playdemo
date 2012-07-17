@@ -30,6 +30,16 @@ public class UserWebIdentification extends Model {
     @Column(name = "created_at")
     public Date createdAt;
     
+    @Column(name = "first_page")
+    public String firstPage;
+    
+    /**
+     * 推荐码.
+     * 第一个入站请求中的tj参数，记录为referCode.
+     */
+    @Column(name = "refer_code")
+    public String referCode;
+    
     /**
      * 按用户id和cookie值找到跟踪的值.
      * @param cookieValue

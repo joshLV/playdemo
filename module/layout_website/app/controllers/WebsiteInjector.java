@@ -23,7 +23,7 @@ public class WebsiteInjector extends Controller {
 
     public static final String WEB_TRACK_COOKIE = "ybq_track";
 
-    private static final Pattern hostPattern = Pattern.compile("http(s?):\\/\\/([^\\/\\:]*)");
+    private static final Pattern hostPattern = Pattern.compile("(https?://)?([^/]*)(/?.*)");
   
     @Before
     public static void injectCarts() {
@@ -80,7 +80,12 @@ public class WebsiteInjector extends Controller {
         renderArgs.put("userWebIdentification", identification);
     }
     
-
+    /**
+     * 基于用户信息和cookie值创建或更新userWebIdentification
+     * @param user
+     * @param identificationValue
+     * @return
+     */
     private static UserWebIdentification findUserWebIdentification(
             final User user, final String identificationValue) {
         UserWebIdentification uwi = UserWebIdentification.findOne(identificationValue);
@@ -88,21 +93,14 @@ public class WebsiteInjector extends Controller {
             uwi = new UserWebIdentification();
             uwi.cookieId = identificationValue;
             uwi.user = user;
+            uwi.firstPage = request.url;
             uwi.createdAt = new Date();
+            uwi.referCode = request.params.get("tj");  //使用tj参数得到推荐码.
             Header header = request.headers.get("Referer");
-            System.out.println("header:" + header);
             if (header != null) {
-                
-            System.out.println("header.value:" + header.value());
                 uwi.referer = header.value();
                 if (uwi.referer != null) {
-                    Matcher m = hostPattern.matcher(uwi.referer);
-                    if (m.matches()) {
-                        System.out.println("match================");
-                        uwi.refererHost = m.group(1);
-                    } else {
-                        System.out.println("NOT matcher++++++++++++++++");
-                    }
+                    uwi.refererHost = matchTheHostName(uwi.referer);
                 }
             }
             uwi.save();
@@ -111,5 +109,18 @@ public class WebsiteInjector extends Controller {
             uwi.save();
         }
         return uwi;
+    }
+
+    /**
+     * 从URL中匹配出主机名.
+     * @param referer
+     * @return
+     */
+    public static String matchTheHostName(String referer) {
+        Matcher m = hostPattern.matcher(referer);
+        if (m.matches()) {
+            return m.group(2);
+        }
+        return null;
     }    
 }

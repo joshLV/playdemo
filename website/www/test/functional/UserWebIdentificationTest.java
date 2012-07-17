@@ -44,8 +44,29 @@ public class UserWebIdentificationTest extends FunctionalTest {
    
         UserWebIdentification uwi = UserWebIdentification.find("byCookieId", cookie.value).first();
         assertNotNull(uwi);
+        assertNotNull(uwi.firstPage);
         assertNull(uwi.user);
     }
+    
+
+    @Test
+    public void testReferCode() {
+        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-goods4");
+        Response response = GET("/g/" + goodsId + "?tj=JKKIFESFDF");
+        
+        assertIsOk(response);
+        assertContentType("text/html", response);
+        assertCharset(play.Play.defaultWebEncoding, response);
+        
+        Cookie cookie = response.cookies.get(WebsiteInjector.WEB_TRACK_COOKIE);
+        assertNotNull(cookie);
+   
+        UserWebIdentification uwi = UserWebIdentification.find("byCookieId", cookie.value).first();
+        assertNotNull(uwi);
+        assertNull(uwi.user);
+        assertNotNull(uwi.firstPage);
+        assertNotNull(uwi.referCode);
+    }    
 
     @Test
     public void testRefererPageWorks() {
@@ -80,7 +101,17 @@ public class UserWebIdentificationTest extends FunctionalTest {
         UserWebIdentification uwi = UserWebIdentification.find("byCookieId", cookie.value).first();
         assertNotNull(uwi);
         assertNotNull(uwi.referer);
-        //assertNotNull(uwi.refererHost);
+        assertNotNull(uwi.refererHost);
+        assertEquals("www.google.com", uwi.refererHost);
+    }
+    
+    @Test
+    public void testMatchHostName() throws Exception {
+        assertEquals("www.google.com", WebsiteInjector.matchTheHostName("http://www.google.com/search?s=xxx"));
+        assertEquals("localhost:8080", WebsiteInjector.matchTheHostName("http://localhost:8080/search?s=xxx"));
+        assertEquals("www.google.com", WebsiteInjector.matchTheHostName("https://www.google.com/search?s=xxx"));
+        assertEquals("localhost:8080", WebsiteInjector.matchTheHostName("https://localhost:8080/search?s=xxx"));
+        
     }
 
 }
