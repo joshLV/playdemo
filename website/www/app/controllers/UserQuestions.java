@@ -53,6 +53,7 @@ public class UserQuestions extends Controller{
         CmsQuestion question = new CmsQuestion();
         question.content = content;
         question.goodsId = goodsId;
+        question.remoteIP = request.remoteAddress;
         Map<String, String> questionMap = new HashMap<>();
         if(user != null){
             question.userId = user.getId();

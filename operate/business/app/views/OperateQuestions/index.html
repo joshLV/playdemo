@@ -34,7 +34,8 @@
                 <th width="50px">&{'question.createdAt'}</th>
                 <th width="50px">&{'question.repliedAt'}</th>
                 <th width="30px">回复者</th>
-                <th width="50px">咨询者</th>
+                <th width="20px">咨询者</th>
+                <th width="30px">IP</th>
                 <th width="30px">操 作</th>
             </tr>
             </thead>
@@ -49,6 +50,7 @@
                 <td>${question?.repliedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>${question?.operateUser}</td>
                 <td>${question?.userName}</td>
+                <td>${question?.remoteIP}</td>
                 <td><a href="@{OperateQuestions.edit(question.id)}">回复</a>
 
                 #{if question?.visible}
