@@ -43,7 +43,12 @@
         $("#frmlist").submit();
         return false;
     }
-    ;
+    function changeList(status) {
+        $("#condition_status").val(status);
+        $("#frmlist").attr("method", "get");
+        $("#frmlist").attr("action", "@{OperateCoupons.index()}");
+        $("#frmlist").submit();
+    }
 </script>
 <div class="body">
     <legend>${title}</legend>
@@ -110,7 +115,7 @@
 
     </form>
 
-#{vx.tab name:'coupon',enumItems: models.order.ECouponStatus.values(),select:'condition_status',value:condition?.status/}
+#{vx.other_tab name:'coupon',enumItems: models.order.ECouponStatus.values(),select:'condition_status',value:condition?.status/}
 
     <table class="table table-striped table-bordered table-condensed">
         <thead>
