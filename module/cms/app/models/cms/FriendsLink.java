@@ -1,14 +1,14 @@
 package models.cms;
 
+import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import play.data.validation.*;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
 import play.modules.view_ext.annotation.Mobile;
-import cache.CacheCallBack;
-import cache.CacheHelper;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +22,7 @@ import java.util.List;
 @Table(name = "friends_link")
 public class FriendsLink extends Model {
 
-    private static final long serialVersionUID = 80131405113012L;
+    private static final long serialVersionUID = 82131405113012L;
 
     /**
      * 链接名称
@@ -59,6 +59,7 @@ public class FriendsLink extends Model {
 
     @MaxSize(4000)
     public String content;
+
     @Override
     public void _save() {
         CacheHelper.delete(CACHEKEY);
@@ -89,11 +90,30 @@ public class FriendsLink extends Model {
         friendsLink.linkName = friendsLinks.linkName;
         friendsLink.mobile = friendsLinks.mobile;
         friendsLink.qq = friendsLinks.qq;
+        friendsLink.content = friendsLinks.content;
+        friendsLink.status = friendsLinks.status;
         friendsLink.save();
     }
 
     public static List<FriendsLink> findAllByDeleted() {
-        List<FriendsLink> friendsLinks = FriendsLink.find("deleted=? order by displayOrder desc", DeletedStatus.UN_DELETED).fetch();
+        List<FriendsLink> friendsLinks = FriendsLink.find("status =? and deleted=? order by displayOrder desc", LinkStatus.OPEN, DeletedStatus.UN_DELETED).fetch();
         return friendsLinks;
+    }
+
+    public static boolean isExisted(Long id, String link) {
+        StringBuilder sq = new StringBuilder("link=? and deleted=? ");
+        List params = new ArrayList();
+        params.add(link);
+        params.add(DeletedStatus.UN_DELETED);
+        if (id != null) {
+            sq.append("and id <> ?");
+            params.add(id);
+        }
+        List<FriendsLink> friendsLinks = FriendsLink.find(sq.toString(), params.toArray()).fetch();
+
+        if (friendsLinks.size() > 0) {
+            return true;
+        }
+        return false;
     }
 }

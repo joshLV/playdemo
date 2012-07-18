@@ -151,7 +151,7 @@ select:'condition_status',value:condition?.status/}
             <th width="10">订单</th>
             <th width="50">商品名称</th>
             <th width="10">订单状态</th>
-            <th width="15">消费者帐号</th>
+            <th width="15">帐号</th>
             <th width="10">订单来源</th>
             <th width="30">总金额</th>
             <th width="50">成交时间</th>
@@ -204,7 +204,12 @@ select:'condition_status',value:condition?.status/}
                     <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
                 #{/else}
             #{/else}
-            <td rowspan="${order.orderItems.size()}">${order?.user?.loginName}</td>
+            #{if order.userType ==models.accounts.AccountType.RESALER}
+             <td rowspan="${order.orderItems.size()}">${order?.resaler?.loginName}</td>
+            #{/if}
+            #{if order.userType == models.accounts.AccountType.CONSUMER}
+             <td rowspan="${order.orderItems.size()}">${order?.user?.loginName}</td>
+            #{/if}
             <td rowspan="${order.orderItems.size()}">&{'order.'+order.userType}</td>
             <td rowspan="${order.orderItems.size()}">${order.amount}</td>
             <td rowspan="${order.orderItems.size()}">${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>

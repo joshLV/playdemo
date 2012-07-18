@@ -1,5 +1,6 @@
 package controllers;
 
+import Helper.Title;
 import cache.CacheCallBack;
 import cache.CacheHelper;
 import controllers.modules.website.cas.SecureCAS;
@@ -23,7 +24,10 @@ import play.mvc.Http;
 import play.mvc.With;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 商品控制器.
@@ -292,7 +296,7 @@ public class Goods extends Controller {
                 new String[]{Order.CACHEKEY_BASEUSERID + userId,
                         models.sales.Goods.CACHEKEY_BASEID + id},
                 "LIMITNUMBER"));
-        models.sales.Goods goods = CacheHelper.getCache(CacheHelper
+        final models.sales.Goods goods = CacheHelper.getCache(CacheHelper
                 .getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id,
                         "UNDELETED"), new CacheCallBack<models.sales.Goods>() {
             @Override
@@ -304,22 +308,6 @@ public class Goods extends Controller {
         if (goods == null) {
             error(404, "没有找到该商品！");
         }
-        // 增加商品推荐指数
-//        models.sales.Goods.addRecommend(goods, false);
-
-        // 设置导航栏位置及类别相关的关键字.
-        Map<String, String> keywordsMap = CacheHelper.getCache(CacheHelper
-                .getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id,
-                        "KEYWORDMAP"),
-                new CacheCallBack<Map<String, String>>() {
-                    @Override
-                    public Map<String, String> loadData() {
-                        return generateKeywordsMap(id);
-                    }
-                });
-
-        renderArgs.put("goodsKeywords", keywordsMap.get("goodsKeywords"));
-        renderArgs.put("categoryId", keywordsMap.get("categoryId"));
 
         // 记录用户浏览过的商品
         Http.Cookie cookie = request.cookies.get("saw_goods_ids");
@@ -352,36 +340,6 @@ public class Goods extends Controller {
         renderArgs.put("questions", questions);
 
         render();
-    }
-
-    private static Map<String, String> generateKeywordsMap(long id) {
-        models.sales.Goods goods = models.sales.Goods.findById(id);
-        Map<String, String> keywordsMap = new HashMap<>();
-
-        List<String> categoryKeywords = new ArrayList<>();
-        if (goods.categories != null) {
-            for (Category c : goods.categories) {
-                if (c.parentCategory != null) {
-                    keywordsMap.put("categoryId",
-                            String.valueOf(c.parentCategory.id));
-                } else {
-                    keywordsMap.put("categoryId", String.valueOf(c.id));
-                }
-                if (StringUtils.isNotBlank(c.keywords)) {
-                    String[] ks = c.keywords.split("[,;\\s]+");
-                    Collections.addAll(categoryKeywords, ks);
-                }
-            }
-        }
-        if (StringUtils.isNotBlank(goods.keywords)) {
-            String[] ks = goods.keywords.split("[,;\\s]+");
-            Collections.addAll(categoryKeywords, ks);
-        }
-        if (categoryKeywords.size() > 0) {
-            keywordsMap.put("goodsKeywords",
-                    StringUtils.join(categoryKeywords, ","));
-        }
-        return keywordsMap;
     }
 
     /**

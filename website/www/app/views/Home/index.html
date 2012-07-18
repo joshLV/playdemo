@@ -1,8 +1,8 @@
 #{extends 'main.html' /}
-#{set title: util.Title.getHomeTitle() /}
+#{set title: Helper.Title.getHomeTitle() /}
 #{set 'metaContent'}
 <meta name="Description" content="一百券-致力于本地生活消费的互联网电子商务网站，将线下本地生活服务与线上互联网结合在一起，让互联网成为线下本地生活服务交易的前台">
-<meta name="Keywords" content="上海优惠券,一百券,消费券,代金券,优惠券,美食券,电子券,优惠上海,提货券">
+<meta name="Keywords" content="优惠券网,代金券，优惠券">
 #{/set}
 #{set 'moreStyles'}
     #{asset.css src:['/y/index.min.css'] /}
@@ -51,14 +51,14 @@
     <div id="slides">
         <div class="slides_container">
         #{list slides, as:'slide'}
-            <a href="${slide.link}" target="_blank" title="${slide.title}"><img src="${slide.getShowImageUrl()}"
+            <a href="${slide.link}" target="_blank" title="${slide.title}"><img src="${slide.getShowImageUrl()}" alt="${slide.title}"
                                                                                 width="748" height="324"/></a>
         #{/list}
         </div>
     </div>
     <div id="promos">
     #{list rightSlides, as:'rightSlides'}
-        <a href="${rightSlides.link}" target="_blank"><img src="${rightSlides.getShowImageUrl()}" width="200"/></a>
+        <a href="${rightSlides.link}" target="_blank"><img src="${rightSlides.getShowImageUrl()}" alt="${rightSlides?.title}" width="200"/></a>
     #{/list}
     </div>
 </div><!-- #banner -->
@@ -142,7 +142,7 @@
                 #{else}
                 <li>
                 #{/else}
-                <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}" width="172" height="132" /></a>
+                <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}" width="172" height="132" alt="${aGoods.name}"/></a>
                 </div>
                 <div class="title"><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
                 <div class="attri">
@@ -200,7 +200,7 @@
             <div class="hd">合作商家</div>
             <ul class="bd">
             #{list suppliers, as:'supplier'}
-                <li><a href="${supplier.link}"><img src="${supplier.getShowImageUrl()}"/></a></li>
+                <li><a href="${supplier.link}"><img src="${supplier.getShowImageUrl()}" alt="${supplier?.title}"/></a></li>
             #{/list}
             </ul>
         </div>
@@ -209,13 +209,13 @@
     <!-- #sidebar -->
 </div><!-- #content -->
 
-*{<div id="partner-links">}*
-    *{<div class="inner">}*
-        *{<ul class="clearfix">}*
-            *{<li>友情链接：</li>}*
-            *{#{list friendsLinks, as:'friendsLinks'}}*
-            *{<li><a href="${friendsLinks?.link}"target="_blank">${friendsLinks?.linkName}</a></li>}*
-           *{#{/list}}*
-        *{</ul>}*
-    *{</div>}*
-*{</div>}*
+<div id="partner-links">
+    <div class="inner">
+        <ul class="clearfix">
+            <li>友情链接：</li>
+            #{list friendsLinks, as:'friendsLinks'}
+            <li><a href="${friendsLinks?.link}"target="_blank">${friendsLinks?.linkName}</a></li>
+           #{/list}
+        </ul>
+    </div>
+</div>

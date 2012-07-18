@@ -16,6 +16,31 @@ class:'span2'}
 <div class="form-actions">
     <input class="btn btn-primary" id="save" type="submit" value="保存"/>
 #{if "edit".equals(action)}
+<input type="hidden" id="id" value="${friendsLinks.id}"/>
     #{vx.cancelButton url:'/friendsLinks', class:'btn btn-primary'/}
 #{/if}
 </div>
+<script type="text/javascript">
+    $("#friendsLinks_link").blur(function () {
+        var link = $("#friendsLinks_link").val();
+        var id = $("#id").val();
+        if (id = 'undefined') {
+            id = 0;
+        }
+        var url = "/friendsLinks/check_url?id="+id+"&link=" + link;
+        $.ajax({
+            url:url,
+            type:'GET',
+            dataType:'text',
+            error:function () {
+                alert('取得失败!');
+            },
+            success:function (msg) {
+                if (msg == "existed") {
+                    $("#note_friendsLinks_link").html("<font color='red'>注意该URL已经存在！</font>");
+                }
+            }
+        });
+
+    })
+</script>

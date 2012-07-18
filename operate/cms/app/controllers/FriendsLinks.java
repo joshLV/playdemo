@@ -10,6 +10,8 @@ import play.modules.paginate.ModelPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.List;
+
 /**
  * <p/>
  * User: yanjy
@@ -56,6 +58,13 @@ public class FriendsLinks extends Controller {
         }
         FriendsLink.update(id, friendsLinks);
         index();
+    }
+
+    public static void checkUrl(Long id,String link) {
+        if ( FriendsLink.isExisted(id,link)) {
+            renderJSON("existed");
+        }
+        renderJSON("");
     }
 
     public static void delete(Long id) {

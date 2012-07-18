@@ -1,10 +1,9 @@
 #{extends 'main.html' /}
-#{set title: '【' + (goods.brand == null ? '一百券' : goods.brand?.name) + '】' + goods.name
-+ '-一百券-网上消费券首选门户' + (goods.keywords == null ? '' : ("【" + goods.keywords + "】") ) /}
+#{set title: Helper.Title.getDetailTitle(goods) /}
 #{set 'metaContent'}
-<meta name="Description" content="一百券-${goods.brand?.name} ${goods.name},${goodsKeywords}消费券,代金券,优惠券,美食券,电子券,提货券">
-<meta name="Keywords"
-      content="上海优惠券,一百券,${goods.brand?.name},${goods.name},${goodsKeywords},消费券,代金券,优惠券,美食券,电子券,优惠上海,提货券">
+ #{set detailKeywords: Helper.Title.getDetailKeyWords(goods) /}
+<meta name="Description" content="一百券-${goods.brand?.name} ${goods.name},${detailKeywords}消费券,代金券,优惠券,美食券,电子券,提货券">
+<meta name="Keywords" content="${detailKeywords}">
 #{/set}
 #{set 'moreStyles'}
     #{asset.css src:['/y/detail.min.css']/}
@@ -59,7 +58,7 @@
     <div id="summary" class="clearfix">
         <div id="leftBox"><!-- 此div为了规避.qvalu元素中最后一个文字被复制的问题 by Junyi -->
         <div id="gallery">
-            <img src="${goods.imageLargePath}"/>
+            <img src="${goods.imageLargePath}" alt="${goods.name}"/>
         </div>
         <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
 
