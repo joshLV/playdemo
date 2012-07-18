@@ -5,11 +5,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import models.cms.FriendsLink;
 import models.consumer.User;
 import models.consumer.UserWebIdentification;
 import models.order.Cart;
-import play.Logger;
 import play.mvc.After;
 import play.mvc.Before;
 import play.mvc.Controller;
@@ -55,7 +53,7 @@ public class WebsiteInjector extends Controller {
     public static void injectWebIdentification() {
 
         final User user = SecureCAS.getUser();
-        Http.Cookie cookie = request.cookies.get("identity");
+        Http.Cookie cookie = request.cookies.get(WEB_TRACK_COOKIE);
         String cookieValue = null;
         if (cookie == null) {
             cookieValue = UUID.randomUUID().toString();

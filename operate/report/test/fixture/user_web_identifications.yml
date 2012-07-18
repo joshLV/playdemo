@@ -1,0 +1,30 @@
+models.consumer.UserWebIdentification(uwi1):
+  cookieId: 0d9c5df0-2fd4-4bd6-9b86-efeee318e841
+  createdAt: "2012-07-18T14:21:33"
+  referer: http://localhost:9001/
+  refererHost: localhost:9001
+  firstPage: /g/74
+  ip: 0:0:0:0:0:0:0:1
+
+models.consumer.UserWebIdentification(uwi2):
+  cookieId: 727cd86d-e39b-43dc-b6dd-59c8c816524a
+  createdAt: "2012-07-18T14:31:21"
+  referer: http://dev.uhuila.cn/
+  refererHost: dev.uhuila.cn
+  user_id: 11
+  firstPage: /
+  cartCount: 1
+  orderCount: 1
+  payAmount: 80.00
+  ip: 192.168.18.250
+
+models.consumer.UserWebIdentification(uwi3):
+  cookieId: 3c167b70-26fb-48ee-969e-c4bea847bfe8
+  createdAt: "2012-07-18T14:45:08"
+  referer: http://www.uhuila.cn/payment_info/confirm
+  refererHost: www.uhuila.cn
+  userId: 11
+  firstPage: /orders/13358381
+  referCode: "joinme"
+  ip: 192.168.18.250
+  

@@ -1,5 +1,7 @@
 package unit;
 
+import java.util.Calendar;
+import java.util.List;
 import jobs.report.ReportGenerateJob;
 import models.order.Order;
 import models.order.OrderItems;
@@ -13,12 +15,10 @@ import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.test.Fixtures;
 import play.test.UnitTest;
-
-import java.util.Calendar;
-import java.util.List;
 
 /**
  * 报表生成任务测试.
@@ -54,6 +54,7 @@ public class ReportGenerateJobTest extends UnitTest {
         Fixtures.loadModels("fixture/total_daily_reports.yml");
     }
 
+    @Ignore
     @Test
     public void testDoJob() throws InterruptedException {
         assertEquals(1, Supplier.findAll().size());

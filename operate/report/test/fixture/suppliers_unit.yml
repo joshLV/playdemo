@@ -18,6 +18,7 @@ admin.OperateRole(account):
  "lockVersion": "0"
  "createdAt": "2012-03-12T11:14:56"
  "updatedAt": "2012-03-12T17:45:09"
+ 
 admin.OperateRole(admin):
  "text": "系统管理员"
  "key": "admin"
@@ -25,7 +26,15 @@ admin.OperateRole(admin):
  "lockVersion": "0"
  "createdAt": "2012-03-12T11:14:56"
  "updatedAt": "2012-03-12T17:45:09"
-
+ 
+admin.OperateRole(webop):
+ "text": "网站运营"
+ "key": "webop"
+ "loadVersion": "1331545508967"
+ "lockVersion": "0"
+ "createdAt": "2012-03-12T11:14:56"
+ "updatedAt": "2012-03-12T17:45:09"
+ 
 admin.OperateUser(user1):
  "loginName": "tom"
  "mobile": "13211111111"
@@ -40,3 +49,4 @@ admin.OperateUser(user1):
  "roles":
  - "account"
  - "admin"
+ - "webop"
