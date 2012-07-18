@@ -7,8 +7,10 @@ import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
+import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.With;
+import utils.PaginateUtil;
 
 /**
  * 财务报表.
@@ -34,9 +36,11 @@ public class PurchaseTaxReports extends Controller {
             condition = new PurchaseECouponReportCondition();
         }
 
-        JPAExtPaginator<PurchaseECouponReport> reportPage = PurchaseECouponReport.query(condition, pageNumber, PAGE_SIZE);
+        List<PurchaseECouponReport> resultList = PurchaseECouponReport.query(condition);
+        
+        ValuePaginator<PurchaseECouponReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
-        PurchaseECouponReport summary = PurchaseECouponReport.summary(condition);
+        PurchaseECouponReport summary = PurchaseECouponReport.summary(resultList);
         
         List<Supplier> supplierList = Supplier.findUnDeleted();
 

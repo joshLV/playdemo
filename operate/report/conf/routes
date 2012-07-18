@@ -2,11 +2,8 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
-GET     /                                       PurchaseTaxReports.index
 
 # 财务报表
-GET     /reports                                PurchaseTaxReports.index
 GET     /reports/purchase                       PurchaseTaxReports.index
 GET     /reports/sales                          SalesTaxReports.index
 
@@ -16,6 +13,11 @@ GET     /webop/refcodes                         WebTrackReports.refCodes
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
+
+GET     /reports                                PurchaseTaxReports.index
+
+# Home page
+GET     /                                       PurchaseTaxReports.index
 
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public

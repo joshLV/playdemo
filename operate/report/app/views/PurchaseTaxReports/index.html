@@ -85,8 +85,8 @@
 </style>
 #{/set}
 
-<form class="well form-inline" action="@{PurchaseTaxReports.index()}" method="GET" id="form"
-      name="form">
+<form class="well form-inline" action="@{PurchaseTaxReports.index()}" method="GET" id="search_form"
+      name="search_form">
     商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
     #{select 'condition.supplier.id', id:supplierId, class:'select', value:condition?.supplier?.id}
         #{option "0"}不限#{/option}
@@ -147,8 +147,10 @@
     </tr>
 #{/paginate.list}
 </table>
+#{if reportPage.getPageCount() > 1}
 <div class="pagination">
     <ul>
     #{paginate.controls items:reportPage /}
     </ul>
 </div>
+#{/if}

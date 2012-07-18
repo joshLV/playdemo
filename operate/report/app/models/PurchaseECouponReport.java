@@ -2,17 +2,18 @@ package models;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.Table;
+import javax.persistence.TypedQuery;
 import models.sales.Goods;
 import models.supplier.Supplier;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
-import play.modules.paginate.JPAExtPaginator;
 
 /**
  * 采购税表.
@@ -69,28 +70,31 @@ public class PurchaseECouponReport extends Model {
         this.noTaxAmount = BigDecimal.ZERO;
     }    
 
-    public static JPAExtPaginator<PurchaseECouponReport> query(PurchaseECouponReportCondition condition, int pageNumber,
-                                                           int pageSize) {
-        JPAExtPaginator<PurchaseECouponReport> page = new JPAExtPaginator<>("ECoupon r",
-                "new PurchaseECouponReport(r.goods, count(r.id), r.originalPrice, sum(r.originalPrice)) ",
-                PurchaseECouponReport.class, condition.getFilter(),
-                condition.getParamMap()).groupBy("r.goods, r.salePrice").orderBy("r.goods.supplierId");
-        page.setPageNumber(pageNumber);
-        page.setPageSize(pageSize);
-        return page;
+    public static List<PurchaseECouponReport> query(PurchaseECouponReportCondition condition) {
+        TypedQuery<PurchaseECouponReport> query = JPA.em()
+                .createQuery(
+                        "select new PurchaseECouponReport(r.goods, count(r.id), r.originalPrice, sum(r.originalPrice)) "
+                                + " from ECoupon r where "
+                                + condition.getFilter() + " group by r.goods, r.salePrice order by r.goods.supplierId",
+                        PurchaseECouponReport.class);
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        return query.getResultList();
     }
 
-    public static PurchaseECouponReport summary(PurchaseECouponReportCondition condition) {
-        EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select count(r.id), (sum(r.originalPrice)/count(r.id)), sum(r.originalPrice) " +
-                "from ECoupon r where " + condition.getFilter());
-        for (String key : condition.getParamMap().keySet()) {
-            q.setParameter(key, condition.getParamMap().get(key));
-        }
-        Object[] summary = (Object[]) q.getSingleResult();
-        if (summary == null || summary[0] == null) {
+    public static PurchaseECouponReport summary(List<PurchaseECouponReport> resultList) {
+        if (resultList == null || resultList.size() == 0) {
             return new PurchaseECouponReport(0, BigDecimal.ZERO, BigDecimal.ZERO);
         }
-        return new PurchaseECouponReport((Long) summary[0], (BigDecimal) summary[1], (BigDecimal) summary[2]);
+        long buyCount = 0l;
+        BigDecimal salePrice = BigDecimal.ZERO;
+        BigDecimal originalAmount = BigDecimal.ZERO;        
+        for (PurchaseECouponReport item : resultList) {
+            buyCount += item.buyCount;
+            salePrice = salePrice.add(item.salePrice);
+            originalAmount = originalAmount.add(item.originalAmount);
+        }
+        return new PurchaseECouponReport(buyCount, salePrice, originalAmount);
     }
 }
