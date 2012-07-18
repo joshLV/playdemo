@@ -85,8 +85,8 @@
 </style>
 #{/set}
 
-<form class="well form-inline" action="@{SalesTaxReports.index()}" method="GET" id="form"
-      name="form">
+<form class="well form-inline" action="@{SalesTaxReports.index()}" method="GET" id="search_form"
+      name="search_form">
     商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
 #{select 'condition.supplier.id', id:supplierId, class:'select', value:condition?.supplier?.id}
     #{option "0"}不限#{/option}
@@ -101,8 +101,7 @@
            onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
     <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
            onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
-
-    <button type="submit" class="btn btn-primary" id="search">搜索</button>
+    <button type="submit" class="btn btn-primary" id="search">搜索</button>           
     <ul class="nav nav-pills">
         <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">昨天</a></li>
         <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
@@ -147,8 +146,10 @@
     </tr>
 #{/paginate.list}
 </table>
+#{if reportPage.getPageCount() > 1}
 <div class="pagination">
     <ul>
     #{paginate.controls items:reportPage /}
     </ul>
 </div>
+#{/if}

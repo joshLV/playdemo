@@ -4,17 +4,13 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.ManyToOne;
 import javax.persistence.Query;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 import models.sales.Goods;
 import models.supplier.Supplier;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
-import play.modules.paginate.JPAExtPaginator;
 
 /**
  * 销售税表.
@@ -23,33 +19,23 @@ import play.modules.paginate.JPAExtPaginator;
  * Date: 5/31/12
  * Time: 10:44 AM
  */
-@Entity
-@Table(name="report_sales_order_item")
 public class SalesOrderItemReport extends Model {
-    @ManyToOne
     public Supplier supplier;
 
-    @Column(name = "created_at")
     public Date createdAt;
 
-    @ManyToOne
     public Goods goods;
 
-    @Column(name = "buy_count")
     public long buyCount;
 
-    @Column(name = "order_count")
     public long orderCount;
     
-    @Column(name = "sale_price")
     public BigDecimal salePrice;
 
-    @Column(name = "original_amount")
     public BigDecimal originalAmount;
 
     public BigDecimal tax;
 
-    @Column(name = "no_tax_amount")
     public BigDecimal noTaxAmount;
 
     public SalesOrderItemReport(Supplier supplier, Goods goods, BigDecimal salePrice,
@@ -77,37 +63,39 @@ public class SalesOrderItemReport extends Model {
         this.noTaxAmount = BigDecimal.ZERO;
     }    
 
-    public SalesOrderItemReport(long buyCount, BigDecimal originalAmount) {
+    public SalesOrderItemReport(Long buyCount, BigDecimal originalAmount) {
         this.buyCount = buyCount;
         this.originalAmount = originalAmount;
         this.tax = BigDecimal.ZERO;
         this.noTaxAmount = BigDecimal.ZERO;
     }        
 
-    public static JPAExtPaginator<SalesOrderItemReport> query(SalesOrderItemReportCondition condition, int pageNumber,
-                                                        int pageSize) {
-        JPAExtPaginator<SalesOrderItemReport> page = new JPAExtPaginator<>("OrderItems r, Supplier s ",
-                "new SalesOrderItemReport(r.goods, r.salePrice, sum(r.buyNumber), sum(r.salePrice*r.buyNumber))",
-                SalesOrderItemReport.class, condition.getFilter(),
-                condition.getParamMap()).groupBy("r.goods, r.salePrice")
-                .orderBy("r.goods");
-        page.setPageNumber(pageNumber);
-        page.setPageSize(pageSize);
-        return page;
+    public static List<SalesOrderItemReport> query(
+            SalesOrderItemReportCondition condition) {
+        Query query = JPA.em()
+                .createQuery(
+                        "select new models.SalesOrderItemReport(r.goods, r.salePrice, sum(r.buyNumber), sum(r.salePrice*r.buyNumber))"
+                                + " from OrderItems r, Supplier s where "
+                                + condition.getFilter() + " group by r.goods, r.salePrice order by r.goods",
+                        SalesOrderItemReport.class);
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        return query.getResultList();
     }
 
-    public static SalesOrderItemReport summary(SalesOrderItemReportCondition condition) {
-        EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select sum(r.buyNumber), sum(r.salePrice*r.buyNumber) " +
-                "from OrderItems r, Supplier s where " + condition.getFilter());
-        for (String key : condition.getParamMap().keySet()) {
-            q.setParameter(key, condition.getParamMap().get(key));
+    public static SalesOrderItemReport summary(List<SalesOrderItemReport> resultList) {
+        if (resultList == null || resultList.size() == 0) {
+            return new SalesOrderItemReport(0l, BigDecimal.ZERO);
         }
-        Object[] summary = (Object[]) q.getSingleResult();
-        if (summary == null || summary[0] == null) {
-            return new SalesOrderItemReport(0, BigDecimal.ZERO);
+        long buyCount = 0l;
+        BigDecimal amount = BigDecimal.ZERO;
+        for (SalesOrderItemReport item : resultList) {
+            buyCount += item.buyCount;
+            amount = amount.add(item.originalAmount);
         }
-        return new SalesOrderItemReport((Long) summary[0], (BigDecimal) summary[1]);        
+        return new SalesOrderItemReport(buyCount, amount);
     }
 
     /**
