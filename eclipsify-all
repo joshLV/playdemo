@@ -8,16 +8,19 @@ failed_result = []
 app_dirs = [
             'website/www',
             'website/home',
+            'mq_consumer',
             'traders/sales',
             'traders/order',
             'traders/home',
             'traders/admin',
             'traders/sms',
+            'traders/report',
             'cdn/image-server',
             'cdn/assets',
             'operate/admin',
             'operate/business',
             'operate/cms',
+            'operate/report',
             'resale/home'
            ]
 
