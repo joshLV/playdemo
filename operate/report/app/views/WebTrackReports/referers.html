@@ -122,7 +122,15 @@
     <tr>
         #{set i:i+1/}
         <td>${(reportPage.pageNumber-1)*reportPage.pageSize+i}</td>
-        <td>${report?.subject == null ? "直接访问" : report?.subject}</td>
+        <td>
+        #{if report?.subject == null }
+          直接访问
+        #{/if}
+        #{else}
+            <a href="${report?.subject}" target="_blank">${report?.getShortSubject()}</a>
+        #{/else}        
+            
+        </td>
         <td>${report?.visitCount}</td>
         <td>${report?.cartCount}</td>
         <td>${report?.orderCount}</td>

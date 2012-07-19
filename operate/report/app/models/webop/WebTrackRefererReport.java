@@ -46,7 +46,14 @@ public class WebTrackRefererReport {
         this.cartCount = 0l;
         this.orderCount = 0l;
         this.payAmount = BigDecimal.ZERO; 
-    }    
+    }
+    
+    public String getShortSubject() {
+        if (this.subject != null && this.subject.length() > 30) {
+            return this.subject.substring(0, 30);
+        }
+        return this.subject;
+    }
     
     /**
      * 查询外链汇总报表.

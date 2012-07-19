@@ -30,7 +30,7 @@ public class WebTrackReferCodeReport {
      * 下单总金额
      */
     public BigDecimal payAmount;
-    
+        
     
     public WebTrackReferCodeReport(String referCode, Long visitCount,
             Long cartCount, Long orderCount, BigDecimal payAmount) {
