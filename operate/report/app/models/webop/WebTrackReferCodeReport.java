@@ -10,35 +10,35 @@ public class WebTrackReferCodeReport {
      * 推荐码
      */
     public String referCode;
-    
+
     /**
      * 访问数
      */
-    public Integer visitCount;
-    
+    public Long visitCount;
+
     /**
      * 加入购物车数量
      */
-    public Integer cartCount;
-    
+    public Long cartCount;
+
     /**
      * 订单数
      */
-    public Integer orderCount;
-    
+    public Long orderCount;
+
     /**
      * 注册用户数
      */
-    public Integer registerCount;
-    
+    public Long registerCount;
+
     /**
      * 下单总金额
      */
     public BigDecimal payAmount;
-        
-    
-    public WebTrackReferCodeReport(String referCode, Integer visitCount,
-            Integer registerCount, Integer cartCount, Integer orderCount, BigDecimal payAmount) {
+
+
+    public WebTrackReferCodeReport(String referCode, Long visitCount,
+            Long registerCount, Long cartCount, Long orderCount, BigDecimal payAmount) {
         this.referCode = referCode;
         this.visitCount = visitCount;
         this.cartCount = cartCount;
@@ -52,9 +52,9 @@ public class WebTrackReferCodeReport {
         this.cartCount = 0;
         this.orderCount = 0;
         this.registerCount = 0;
-        this.payAmount = BigDecimal.ZERO; 
-    }    
-    
+        this.payAmount = BigDecimal.ZERO;
+    }
+
     /**
      * 查询推荐码汇总报表.
      * @param condition
@@ -71,14 +71,14 @@ public class WebTrackReferCodeReport {
         }
         return query.getResultList();
     }
-    
+
     public static WebTrackReferCodeReport summary(List<WebTrackReferCodeReport> resultList) {
         if (resultList == null || resultList.size() == 0) {
             return new WebTrackReferCodeReport();
         }
-        
+
         WebTrackReferCodeReport sum = new WebTrackReferCodeReport();
-            
+
         for (WebTrackReferCodeReport report : resultList) {
             if (report.visitCount != null) sum.visitCount += report.visitCount;
             if (report.cartCount != null) sum.cartCount += report.cartCount;
@@ -86,7 +86,7 @@ public class WebTrackReferCodeReport {
             if (report.registerCount != null) sum.registerCount += report.registerCount;
             if (report.payAmount != null) sum.payAmount = sum.payAmount.add(report.payAmount);
         }
-        
+
         return sum;
     }
 }

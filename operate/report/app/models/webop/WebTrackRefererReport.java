@@ -10,35 +10,35 @@ public class WebTrackRefererReport {
      * 分组名称
      */
     public String subject;
-    
+
     /**
      * 访问数
      */
-    public Integer visitCount;
-    
+    public Long visitCount;
+
     /**
      * 加入购物车数量
      */
-    public Integer cartCount;
-    
+    public Long cartCount;
+
     /**
      * 订单数
      */
-    public Integer orderCount;
-    
+    public Long orderCount;
+
     /**
      * 注册数
      */
-    public Integer registerCount;
-    
+    public Long registerCount;
+
     /**
      * 下单总金额
      */
     public BigDecimal payAmount;
-    
-    
-    public WebTrackRefererReport(String subject, Integer visitCount,
-            Integer registerCount, Integer cartCount, Integer orderCount, BigDecimal payAmount) {
+
+
+    public WebTrackRefererReport(String subject, Long visitCount,
+            Long registerCount, Long cartCount, Long orderCount, BigDecimal payAmount) {
         this.subject = subject;
         this.visitCount = visitCount;
         this.cartCount = cartCount;
@@ -52,16 +52,16 @@ public class WebTrackRefererReport {
         this.cartCount = 0;
         this.registerCount = 0;
         this.orderCount = 0;
-        this.payAmount = BigDecimal.ZERO; 
+        this.payAmount = BigDecimal.ZERO;
     }
-    
+
     public String getShortSubject() {
         if (this.subject != null && this.subject.length() > 30) {
             return this.subject.substring(0, 30) + "...";
         }
         return this.subject;
     }
-    
+
     /**
      * 查询外链汇总报表.
      * @param condition
@@ -78,14 +78,14 @@ public class WebTrackRefererReport {
         }
         return query.getResultList();
     }
-    
+
     public static WebTrackRefererReport summary(List<WebTrackRefererReport> resultList) {
         if (resultList == null || resultList.size() == 0) {
             return new WebTrackRefererReport();
         }
-        
+
         WebTrackRefererReport sum = new WebTrackRefererReport();
-            
+
         for (WebTrackRefererReport report : resultList) {
             if (report.visitCount != null) sum.visitCount += report.visitCount;
             if (report.cartCount != null) sum.cartCount += report.cartCount;
@@ -93,7 +93,7 @@ public class WebTrackRefererReport {
             if (report.orderCount != null) sum.orderCount += report.orderCount;
             if (report.payAmount != null) sum.payAmount = sum.payAmount.add(report.payAmount);
         }
-        
+
         return sum;
     }
 }
