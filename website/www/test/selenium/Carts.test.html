@@ -27,7 +27,7 @@ click('id=del_row_${goodsA}')
 waitForElementNotPresent('id=del_row_${goodsA}')
 verifyText('id=total_num','1')
 openAndWait('/carts/tops')
-verifyTextPresent('1件商品')
+verifyTextPresent('件商品')
 
 
 openAndWait('/goods/${goodsC}')
