@@ -258,7 +258,8 @@ public class CacheHelper {
     }
 
     public static boolean isPreReadCache() {
-        return Boolean.TRUE.equals(preReadCache.get());
+        // return Boolean.TRUE.equals(preReadCache.get());
+        return true;
     }
 
     public static void setPreReadCache(boolean preReadCache) {

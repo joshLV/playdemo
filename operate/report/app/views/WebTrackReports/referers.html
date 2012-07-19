@@ -113,6 +113,7 @@
     <th>序号</th>
     <th>外链</th>
     <th>访问数</th>
+    <th>新注册用户数</th>
     <th>加入购物车数</th>
     <th>订单数</th>
     <th>订单总金额</th>
@@ -129,9 +130,9 @@
         #{else}
             <a href="${report?.subject}" target="_blank">${report?.getShortSubject()}</a>
         #{/else}        
-            
         </td>
         <td>${report?.visitCount}</td>
+        <td>${report?.registerCount}</td>
         <td>${report?.cartCount}</td>
         <td>${report?.orderCount}</td>
         <td>${report?.payAmount?.formatCurrency('CNY')}</td>

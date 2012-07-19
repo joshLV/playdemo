@@ -111,6 +111,7 @@
     <th>序号</th>
     <th>外链</th>
     <th>访问数</th>
+    <th>新注册用户数</th>
     <th>加入购物车数</th>
     <th>订单数</th>
     <th>订单总金额</th>
@@ -122,6 +123,7 @@
         <td>${(reportPage.pageNumber-1)*reportPage.pageSize+i}</td>
         <td>${report?.referCode == null ? "直接访问" : report?.referCode}</td>
         <td>${report?.visitCount}</td>
+        <td>${report?.registerCount}</td>
         <td>${report?.cartCount}</td>
         <td>${report?.orderCount}</td>
         <td>${report?.payAmount?.formatCurrency('CNY')}</td>

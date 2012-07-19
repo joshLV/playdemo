@@ -31,12 +31,15 @@ public class UserWebIdentification extends Model {
 
     @Column(name = "created_at")
     public Date createdAt;
-
+    
     @Column(name = "first_page", length=4000)
     public String firstPage;
 
     @Column(name = "ip")
     public String ip;
+    
+    @Column(name="user_agent", length=512)
+    public String userAgent;
 
     /**
      * 推荐码.
@@ -56,7 +59,13 @@ public class UserWebIdentification extends Model {
      */
     @Column(name = "order_count")
     public Integer orderCount;
-
+    
+    /**
+     * 注册数
+     */
+    @Column(name = "register_count")
+    public Integer registerCount;
+    
     /**
      * 成功支付的金额.
      */

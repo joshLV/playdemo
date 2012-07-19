@@ -30,6 +30,8 @@ public class WebsiteInjector extends Controller {
     @Before
     public static void injectCarts() {
         final User user = SecureCAS.getUser();
+        injectWebIdentification(user);
+        
         Http.Cookie cookie = request.cookies.get("identity");
         final String cookieValue = cookie == null ? null : cookie.value;
 
@@ -49,10 +51,8 @@ public class WebsiteInjector extends Controller {
         renderArgs.put("count", count);
     }
 
-    @Before
-    public static void injectWebIdentification() {
+    public static void injectWebIdentification(final User user) {
 
-        final User user = SecureCAS.getUser();
         Http.Cookie cookie = request.cookies.get(WEB_TRACK_COOKIE);
         String cookieValue = null;
         if (cookie == null) {
@@ -95,7 +95,7 @@ public class WebsiteInjector extends Controller {
             uwi = new UserWebIdentification();
             uwi.cookieId = identificationValue;
             uwi.user = user;
-            uwi.firstPage = request.url;
+            uwi.firstPage = request.host + request.url;
             uwi.createdAt = new Date();
             uwi.ip = request.remoteAddress;
             uwi.referCode = request.params.get("tj");  //使用tj参数得到推荐码.
@@ -105,6 +105,10 @@ public class WebsiteInjector extends Controller {
                 if (uwi.referer != null) {
                     uwi.refererHost = matchTheHostName(uwi.referer);
                 }
+            }
+            Header headerAgent = request.headers.get("user-agent");
+            if (headerAgent != null) {
+                uwi.userAgent = headerAgent.value();
             }
             uwi.save();
         } else {

@@ -14,17 +14,22 @@ public class WebTrackReferCodeReport {
     /**
      * 访问数
      */
-    public Long visitCount;
+    public Integer visitCount;
     
     /**
      * 加入购物车数量
      */
-    public Long cartCount;
+    public Integer cartCount;
     
     /**
      * 订单数
      */
-    public Long orderCount;
+    public Integer orderCount;
+    
+    /**
+     * 注册用户数
+     */
+    public Integer registerCount;
     
     /**
      * 下单总金额
@@ -32,19 +37,21 @@ public class WebTrackReferCodeReport {
     public BigDecimal payAmount;
         
     
-    public WebTrackReferCodeReport(String referCode, Long visitCount,
-            Long cartCount, Long orderCount, BigDecimal payAmount) {
+    public WebTrackReferCodeReport(String referCode, Integer visitCount,
+            Integer registerCount, Integer cartCount, Integer orderCount, BigDecimal payAmount) {
         this.referCode = referCode;
         this.visitCount = visitCount;
         this.cartCount = cartCount;
         this.orderCount = orderCount;
+        this.registerCount = registerCount;
         this.payAmount = payAmount;
     }
 
     public WebTrackReferCodeReport() {
-        this.visitCount = 0l;
-        this.cartCount = 0l;
-        this.orderCount = 0l;
+        this.visitCount = 0;
+        this.cartCount = 0;
+        this.orderCount = 0;
+        this.registerCount = 0;
         this.payAmount = BigDecimal.ZERO; 
     }    
     
@@ -56,7 +63,7 @@ public class WebTrackReferCodeReport {
     public static List<WebTrackReferCodeReport> queryReferCodeReport(WebTrackReferCodeCondition condition) {
         Query query = JPA.em()
                 .createQuery(
-                        "select new models.webop.WebTrackReferCodeReport(w.referCode, count(w.id), sum(w.cartCount), sum(w.orderCount), sum(w.payAmount)) "
+                        "select new models.webop.WebTrackReferCodeReport(w.referCode, count(w.id), sum(w.registerCount), sum(w.cartCount), sum(w.orderCount), sum(w.payAmount)) "
                                 + " from UserWebIdentification w where "
                                 + condition.getFilter() + " group by w.referCode order by sum(w.orderCount) DESC, count(w.id) DESC");
         for (String param : condition.getParamMap().keySet()) {
@@ -76,6 +83,7 @@ public class WebTrackReferCodeReport {
             if (report.visitCount != null) sum.visitCount += report.visitCount;
             if (report.cartCount != null) sum.cartCount += report.cartCount;
             if (report.orderCount != null) sum.orderCount += report.orderCount;
+            if (report.registerCount != null) sum.registerCount += report.registerCount;
             if (report.payAmount != null) sum.payAmount = sum.payAmount.add(report.payAmount);
         }
         
