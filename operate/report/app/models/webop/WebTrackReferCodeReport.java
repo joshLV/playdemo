@@ -48,10 +48,10 @@ public class WebTrackReferCodeReport {
     }
 
     public WebTrackReferCodeReport() {
-        this.visitCount = 0;
-        this.cartCount = 0;
-        this.orderCount = 0;
-        this.registerCount = 0;
+        this.visitCount = 0l;
+        this.cartCount = 0l;
+        this.orderCount = 0l;
+        this.registerCount = 0l;
         this.payAmount = BigDecimal.ZERO;
     }
 
