@@ -51,7 +51,7 @@ public class WebsiteInjector extends Controller {
         renderArgs.put("count", count);
     }
 
-    public static void injectWebIdentification(final User user) {
+    protected static void injectWebIdentification(final User user) {
 
         Http.Cookie cookie = request.cookies.get(WEB_TRACK_COOKIE);
         String cookieValue = null;
