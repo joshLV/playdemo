@@ -29,7 +29,6 @@ public class Images extends Controller {
     private static final Pattern sizePattern = Pattern.compile(".+_([0-9]+)x([0-9]+)(_.+)*\\.((?i)(jpg|jpeg|png|gif))$");
     private static final Pattern waterPattern = Pattern.compile(".+_nw(_.+)*\\.((?i)(jpg|jpeg|png|gif))$");
 
-
     public static void showOriginalImage(String path1, String path2, String path3, String path4) {
         String targetImagePath = joinPath(ROOT_PATH, path1, path2, path3, path4);
         System.out.println("path:" + targetImagePath);
@@ -76,14 +75,8 @@ public class Images extends Controller {
         if (!originImage.exists()) {
             originImage = new File(Play.applicationPath,joinPath("public", "images", "default.png"));
             firstDir = secondDir = thirdDir = "1";
-            imageName = "359e9dab_default_nw.png";
-            imageNameMatcher = imageNamePattern.matcher(imageName);
-            imageNameMatcher.matches();
-            fileRawName = imageNameMatcher.group(2);
-            fileExtension = imageNameMatcher.group(4);
+            imageName = PathUtil.imgSign("default_nw.png") + "_default_nw.png";
         }
-
-        StringBuilder targetFileName = new StringBuilder(fileRawName);
 
         File targetParent = new File(joinPath(IMAGE_ROOT_GENERATED, firstDir, secondDir, thirdDir));
         //检查目标目录
@@ -102,18 +95,14 @@ public class Images extends Controller {
             resize = true;
             width = Integer.parseInt(sizeMatcher.group(1));
             height = Integer.parseInt(sizeMatcher.group(2));
-            targetFileName.append("_").append(width).append("x").append(height);
         }
 
         //检查是否指定了不需要水印
         if(waterPattern.matcher(imageName).matches()){
             noWatermark = true;
-            targetFileName.append("_nw");
         }
 
-        targetFileName.append(".").append(fileExtension);
-
-        File targetImage = new File(targetParent, targetFileName.toString());
+        File targetImage = new File(targetParent, imageName);
 
         if (!targetImage.exists()) {
             //创建缩略图和水印
@@ -160,5 +149,4 @@ public class Images extends Controller {
             return "";
         }
     }
-
 }
