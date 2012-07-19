@@ -1,4 +1,4 @@
-$(window).load(function () {
+$(function () {
     $("#eCouponSn").click(function () {
         $("#checksn").html("");
         $("#showinfo").html("");

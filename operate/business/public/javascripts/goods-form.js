@@ -6,7 +6,7 @@
  * Time: 7:00 PM
  */
 
-$(window).load(
+$(
     function () {
         $("#goods_supplierId").change(function () {
 

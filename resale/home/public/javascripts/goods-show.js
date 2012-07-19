@@ -4,8 +4,7 @@
  * Date: 2/20/12
  * Time: 11:28 AM
  */
-$(window).load(
-		
+$(
     function () {
         /**
          *点击加入分销库按钮

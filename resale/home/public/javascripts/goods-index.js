@@ -9,7 +9,7 @@ function buyNow(goodsId){
 	$('#buy_now_form_'+goodsId).submit();
 }
 
-$(window).load(
+$(
 		function () {
 			/**
 			 * 排序点击事件

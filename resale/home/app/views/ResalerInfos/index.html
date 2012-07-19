@@ -9,7 +9,7 @@
 #{/set}
 #{set 'moreScripts'}
 <script>
-    $(window).load(function(){
+    $(function(){
         if ('${flag}' == '1') {
             #{if !play.Play.runingInTestMode()}
                 alert("修改成功！");

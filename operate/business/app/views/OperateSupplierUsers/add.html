@@ -5,7 +5,7 @@
 #{set 'moreScripts'}
   <script src="@{'/public/javascripts/supplierUser.js'}" type="text/javascript" charset="UTF-8"></script>
  <SCRIPT type=text/javascript>
-$(window).load(
+$(
     function () {
         if ('${noShop}' =='noShop') {
            $("#err-supplierUser_supplier_id").html("该商户没有门店，请先为商户添加门店！");

@@ -35,7 +35,7 @@ function close_result_dialog(){
     $("#payment_result").css({display:"none"});
 }
 
-$(window).load(
+$(
     function(){
         //点击删除
         $("a.delete_gift").click(function(){  

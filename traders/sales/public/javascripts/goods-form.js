@@ -5,7 +5,7 @@
  * Date: 3/9/12
  * Time: 7:00 PM
  */
-$(window).load(
+$(
     function () {
         $("#goods_topCategoryId").change(function () {
             $("#goods_categories_id").load("/category/sub/" + $("#goods_topCategoryId").val(), function (data) {

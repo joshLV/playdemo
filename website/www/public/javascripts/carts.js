@@ -71,7 +71,7 @@ function refreshAmount(){
     $("#carts_amount").text(amount.toString());
 }
 
-$(window).load(
+$(
     function(){
         //点击+按钮
         $("a.add_box").click(function() {

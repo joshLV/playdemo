@@ -1,4 +1,4 @@
-$(window).load(function(){
+$(function(){
 	//验证用户名
 	$("#loginName").blur(function() {
 		checkLoginNameAndMobile();
