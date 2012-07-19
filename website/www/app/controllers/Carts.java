@@ -99,9 +99,12 @@ public class Carts extends Controller {
             count += cart.number;
         }
         
-        if (WebsiteInjector.getUserWebIdentification() != null) {
+        if (increment > 0 && WebsiteInjector.getUserWebIdentification() != null) {
             UserWebIdentification uwi = UserWebIdentification.findById(WebsiteInjector.getUserWebIdentification().id);
-            uwi.cartCount = count;
+            if (uwi.cartCount == null) {
+                uwi.cartCount = 0;
+            } 
+            uwi.cartCount += increment;
             uwi.save();
         }
         
