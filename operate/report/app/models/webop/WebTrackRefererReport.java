@@ -50,7 +50,7 @@ public class WebTrackRefererReport {
     
     public String getShortSubject() {
         if (this.subject != null && this.subject.length() > 30) {
-            return this.subject.substring(0, 30);
+            return this.subject.substring(0, 30) + "...";
         }
         return this.subject;
     }
