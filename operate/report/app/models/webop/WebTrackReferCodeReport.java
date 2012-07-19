@@ -2,7 +2,7 @@ package models.webop;
 
 import java.math.BigDecimal;
 import java.util.List;
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 import play.db.jpa.JPA;
 
 public class WebTrackReferCodeReport {
@@ -54,12 +54,11 @@ public class WebTrackReferCodeReport {
      * @return
      */
     public static List<WebTrackReferCodeReport> queryReferCodeReport(WebTrackReferCodeCondition condition) {
-        TypedQuery<WebTrackReferCodeReport> query = JPA.em()
+        Query query = JPA.em()
                 .createQuery(
                         "select new models.webop.WebTrackReferCodeReport(w.referCode, sum(w.id), sum(w.cartCount), sum(w.orderCount), sum(w.payAmount)) "
                                 + " from UserWebIdentification w where "
-                                + condition.getFilter() + " group by w.referCode order by sum(w.id) DESC",
-                        WebTrackReferCodeReport.class);
+                                + condition.getFilter() + " group by w.referCode order by sum(w.id) DESC");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }

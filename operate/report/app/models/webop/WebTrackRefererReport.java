@@ -2,7 +2,7 @@ package models.webop;
 
 import java.math.BigDecimal;
 import java.util.List;
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 import play.db.jpa.JPA;
 
 public class WebTrackRefererReport {
@@ -54,12 +54,11 @@ public class WebTrackRefererReport {
      * @return
      */
     public static List<WebTrackRefererReport> queryRefererReport(WebTrackRefererCondition condition) {
-        TypedQuery<WebTrackRefererReport> query = JPA.em()
+        Query query = JPA.em()
                 .createQuery(
                         "select new models.webop.WebTrackRefererReport(" + condition.getSubjectName() + ", sum(w.id), sum(w.cartCount), sum(w.orderCount), sum(w.payAmount)) "
                                 + " from UserWebIdentification w where "
-                                + condition.getFilter() + " group by " + condition.getSubjectName() + " order by sum(w.id) DESC",
-                        WebTrackRefererReport.class);
+                                + condition.getFilter() + " group by " + condition.getSubjectName() + " order by sum(w.id) DESC");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
