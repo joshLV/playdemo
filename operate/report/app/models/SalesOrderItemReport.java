@@ -1,16 +1,15 @@
 package models;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Transient;
 import models.sales.Goods;
 import models.supplier.Supplier;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
+
+import javax.persistence.Query;
+import javax.persistence.Transient;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 销售税表.
@@ -76,8 +75,8 @@ public class SalesOrderItemReport extends Model {
                 .createQuery(
                         "select new models.SalesOrderItemReport(r.goods, r.salePrice, sum(r.buyNumber), sum(r.salePrice*r.buyNumber))"
                                 + " from OrderItems r, Supplier s where "
-                                + condition.getFilter() + " group by r.goods, r.salePrice order by r.goods",
-                        SalesOrderItemReport.class);
+                                + condition.getFilter() + " group by r.goods, r.salePrice order by r.goods"
+                        );
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));

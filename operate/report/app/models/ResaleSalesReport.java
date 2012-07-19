@@ -31,7 +31,7 @@ public class ResaleSalesReport extends Model {
         Query query = JPA.em()
                 .createQuery(
                         "select new models.ResaleSalesReport(e.status, oi.salePrice, sum(oi.buyNumber),sum(oi.salePrice*oi.buyNumber))"
-                                + " from ECoupon e, Order o,OrderItems oi where "
+                                + " from ECoupon e where "
                                 + condition.getFilter() + " group by r.order, r.salePrice order by r.goods",
                         ResaleSalesReport.class);
 
