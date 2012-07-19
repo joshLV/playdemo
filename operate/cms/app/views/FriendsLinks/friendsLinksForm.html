@@ -10,7 +10,6 @@ class:'span2'}
     #{option models.cms.LinkStatus.OPEN}&{'friendsLinks.OPEN'}#{/option}
     #{option models.cms.LinkStatus.SAVE}&{'friendsLinks.SAVE'}#{/option}
     #{option models.cms.LinkStatus.FORBID}&{'friendsLinks.FORBID'}#{/option}
-    #{option models.cms.LinkStatus.BLACK}&{'friendsLinks.BLACK'}#{/option}
 #{/layout_operate.selectField}
 #{layout_operate.textareaField name:'friendsLinks.content', value:friendsLinks?.content/}
 <div class="form-actions">
@@ -36,8 +35,8 @@ class:'span2'}
                 alert('取得失败!');
             },
             success:function (msg) {
-                if (msg == "existed") {
-                    $("#note_friendsLinks_link").html("<font color='red'>注意该URL已经存在！</font>");
+                if (msg != "") {
+                    $("#note_friendsLinks_link").html("<font color='red'>"+msg+"<font>");
                 }
             }
         });

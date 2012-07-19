@@ -60,11 +60,9 @@ public class FriendsLinks extends Controller {
         index();
     }
 
-    public static void checkUrl(Long id,String link) {
-        if ( FriendsLink.isExisted(id,link)) {
-            renderJSON("existed");
-        }
-        renderJSON("");
+    public static void checkUrl(Long id, String link) {
+        String info = FriendsLink.isExisted(id, link);
+        renderJSON(info);
     }
 
     public static void delete(Long id) {

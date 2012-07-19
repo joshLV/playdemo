@@ -100,7 +100,7 @@ public class FriendsLink extends Model {
         return friendsLinks;
     }
 
-    public static boolean isExisted(Long id, String link) {
+    public static String isExisted(Long id, String link) {
         StringBuilder sq = new StringBuilder("link=? and deleted=? ");
         List params = new ArrayList();
         params.add(link);
@@ -111,9 +111,18 @@ public class FriendsLink extends Model {
         }
         List<FriendsLink> friendsLinks = FriendsLink.find(sq.toString(), params.toArray()).fetch();
 
+        String info = "";
         if (friendsLinks.size() > 0) {
-            return true;
+            for (FriendsLink friendsLink : friendsLinks) {
+                if (friendsLink.status == LinkStatus.FORBID) {
+                    info = "注意该URL已经禁止！";
+                    break;
+                } else {
+                    info = "注意该URL已经存在！";
+                }
+            }
+
         }
-        return false;
+        return info;
     }
 }
