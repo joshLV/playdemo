@@ -9,7 +9,7 @@ import play.jobs.OnApplicationStart;
 import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 
 @OnApplicationStart(async = true)
-public class FindPasswordMailConsumer extends RabbitMQConsumer<CouponMessage> {
+public class FindPasswordMailConsumer extends RabbitMQConsumer<MailMessage> {
 
 
 	/**
@@ -24,26 +24,25 @@ public class FindPasswordMailConsumer extends RabbitMQConsumer<CouponMessage> {
 	}
 
 	@Override
-	protected void consume(CouponMessage message) {
+	protected void consume(MailMessage message) {
 		try {
-			String content  = message.getEmail() + " | " + 0 + "|邮件找回密码|" + "发送成功";
+			String content  = message.getOneRecipient() + " | " + 0 + "|邮件找回密码|" + "发送成功";
 			FindPassWordMails.notify(message);
 			saveJournal(content);
 		} catch (MailException e) {
-			Logger.warn(e, "发送邮件(" + message.getEmail() + ")时出现异常");
-			String content  =  "发送邮件(" + message.getEmail() + ")时出现异常:" + e.getMessage();
+			Logger.warn(e, "发送邮件(" + message.getOneRecipient() + ")时出现异常");
+			String content  =  "发送邮件(" + message.getOneRecipient() + ")时出现异常:" + e.getMessage();
 			saveJournal(content);
 		}
 	}
 
 	@Override
 	protected Class getMessageType() {
-		return CouponMessage.class;
+		return MailMessage.class;
 	}
 
 	@Override
 	protected String queue() {
 		return MailUtil.MAIL_QUEUE_NAME;
 	}
-
 }

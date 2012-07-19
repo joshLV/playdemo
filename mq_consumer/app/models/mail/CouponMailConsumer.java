@@ -9,7 +9,7 @@ import play.jobs.OnApplicationStart;
 import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 
 @OnApplicationStart(async = true)
-public class CouponMailConsumer extends RabbitMQConsumer<CouponMessage> {
+public class CouponMailConsumer extends RabbitMQConsumer<MailMessage> {
 
 
     /**
@@ -19,26 +19,26 @@ public class CouponMailConsumer extends RabbitMQConsumer<CouponMessage> {
      * @param status  状态
      * @param info 成功序列号
      */
-    private void saveJournal(CouponMessage message, int status, String info) {
+    private void saveJournal(MailMessage message, int status, String info) {
         JPAPlugin.startTx(false);
-        new MQJournal(queue(), message.getFullName() + " | " + message.getEmail() + " | " + status + "|" + message.getCoupons().size() + "个优惠码发送|" + info).save();
+        new MQJournal(queue(), message.getParam("full_name") + " | " + message.getOneRecipient() + " | " + status + "|" +  info).save();
         JPAPlugin.closeTx(false);
     }
     
     @Override
-    protected void consume(CouponMessage message) {
+    protected void consume(MailMessage message) {
         try {
             CouponMails.notify(message);
             saveJournal(message, 0, "发送成功");
         } catch (MailException e) {
-            Logger.warn(e, "发送邮件(" + message.getEmail() + ")时出现异常");
-            saveJournal(message, -1, "发送邮件(" + message.getEmail() + ")时出现异常:" + e.getMessage());
+            Logger.warn(e, "发送邮件(" + message.getOneRecipient() + ")时出现异常");
+            saveJournal(message, -1, "发送邮件(" + message.getOneRecipient() + ")时出现异常:" + e.getMessage());
         }
     }
 
     @Override
     protected Class getMessageType() {
-        return CouponMessage.class;
+        return MailMessage.class;
     }
 
     @Override

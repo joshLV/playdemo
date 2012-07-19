@@ -1,10 +1,10 @@
 <html>
 <body><head>[一百券] 您订购的消费券</head>
 <p>
-亲爱的 ${message.email}:
+亲爱的 ${message.getOneRecipient()}:
 </p>
 <p>
-    ${message.fullName}
+    ${message.getParam("full_name")}
     您可随时登录一百券—“券号列表”中下载打印券号，或把券号发送到手机，凭券去商家消费。<br>
     详情请见：http://home.yibaiquan.com/orders
 

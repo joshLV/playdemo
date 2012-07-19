@@ -32,7 +32,7 @@ import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.consumer.UserWebIdentification;
-import models.mail.CouponMessage;
+import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.resale.Resaler;
 import models.resale.util.ResaleUtil;
@@ -169,9 +169,9 @@ public class Order extends Model {
     @Column(name = "delivery_company")
     public String deliveryCompany;
 
-    @Index(name = "ext_order")
-    @Column(name = "ext_order_id")
-    public String extOrderId;
+    @Index(name = "ext_request_sn")
+    @Column(name = "ext_request_sn")
+    public String extRequestSN;
 
     /**
      * 支付方式名称
@@ -548,15 +548,13 @@ public class Order extends Model {
                     couponCodes.add(eCoupon.getMaskedEcouponSn());
                 }
                 if (goods.isLottery == null || !goods.isLottery) {
-                    CouponMessage mail = new CouponMessage();
+                    MailMessage mail = new MailMessage();
                     //分销商
                     if (AccountType.RESALER.equals(orderItem.order.userType)) {
-                        String userName = orderItem.order.getResaler().userName;
-                        mail.setEmail(orderItem.order.getResaler().email);
-                        // mail.setFullName(userName);
+                        mail.addRecipient(orderItem.order.getResaler().email);
                     } else {
                         //消费者
-                        mail.setEmail(orderItem.order.getUser().loginName);
+                        mail.addRecipient(orderItem.order.getUser().loginName);
                         String note = "";
                         if (this.orderItems.size() > 1) {
                             note = "等件";
@@ -564,15 +562,14 @@ public class Order extends Model {
                         String content = "您已成功购买" + goods.name + note + "订单号是" + this
                                 .orderNumber + "，支付金额是" + this.amount + "元。\r";
 
-                        mail.setFullName(content);
+                        mail.putParam("full_name", content);
 //                    if (orderItem.order.getUser().userInfo == null) {
 //                        mail.setFullName(orderItem.order.getUser().loginName);
 //                    } else {
 //                        mail.setFullName(orderItem.order.getUser().userInfo.fullName);
 //                    }
                     }
-                    mail.setCoupons(couponCodes);
-                    MailUtil.send(mail);
+                    MailUtil.sendCouponMail(mail);
                 }
             }
             goods.save();

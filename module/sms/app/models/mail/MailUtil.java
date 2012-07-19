@@ -8,7 +8,7 @@ public class MailUtil {
 	    (Play.runingInTestMode() ? "coupon_mail_" + System.currentTimeMillis() : "coupon_mail_dev");
 	public static final String MAIL_QUEUE_NAME = Play.mode.isProd() ? "find_password_mail" : "find_password_mail_dev";
 	private MailUtil(){}
-	public static void send(MailMessage message){
+	public static void sendCouponMail(MailMessage message){
 		RabbitMQPublisher.publish(COUPON_MAIL_QUEUE_NAME, message);
 	}
 

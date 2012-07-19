@@ -1,30 +1,78 @@
 package models.mail;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
+import javax.persistence.Transient;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class MailMessage {
+public class MailMessage implements Serializable {
+    private static final long serialVersionUID = -8570949259782104651L;
 
-	private String email;
-	private String fullName;
+    private List<String> recipients;
+    private String subject;
+    private String content;
 
-	public MailMessage() {
-		super();
-	}
+    private Map<String, Object> params;
 
-	public String getEmail() {
-	    return email;
-	}
+    public MailMessage() {
+        this.subject = "";
+        this.content = "";
+        this.recipients = new ArrayList<>();
+        this.params = new HashMap<>();
+    }
+    public List<String> getRecipients() {
+        return recipients;
+    }
 
-	public void setEmail(String email) {
-	    this.email = email;
-	}
+    @Transient
+    @JsonIgnore
+    public String getOneRecipient() {
+        return recipients.size() > 0 ? recipients.get(0) : null;
+    }
 
-	public String getFullName() {
-	    return fullName;
-	}
+    public void setRecipients(List<String> recipients) {
+        this.recipients = recipients;
+    }
 
-	public void setFullName(String fullName) {
-	    this.fullName = fullName;
-	}
+    public void addRecipient(String recipient) {
+        this.recipients.add(recipient);
+    }
 
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Map<String, Object> getParams() {
+        return params;
+    }
+
+    public void setParams(Map<String, Object> params) {
+        this.params = params;
+    }
+
+    public void putParam(String key, Object obj) {
+        this.params.put(key, obj);
+    }
+
+    @Transient
+    @JsonIgnore
+    public Object getParam(String key) {
+        return this.params.get(key);
+    }
 }

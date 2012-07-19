@@ -7,7 +7,7 @@ public class FindPassWordMails extends Mailer {
 
     public static void notify(MailMessage message) {
         setSubject("[一百券] 找回密码");
-        addRecipient(message.getEmail());
+        addRecipient(message.getOneRecipient());
         setFrom("yibaiquan <noreplay@uhuila.com>");
         send(message);
     }

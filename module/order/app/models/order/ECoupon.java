@@ -536,7 +536,7 @@ public class ECoupon extends Model {
      * 发送短信
      */
     private static void send(ECoupon eCoupon) {
-//        SMSUtil.send(eCoupon.goods.name + "券号:" + eCoupon.eCouponSn, eCoupon.orderItems.phone, eCoupon.replyCode);
+//        SMSUtil.sendCouponMail(eCoupon.goods.name + "券号:" + eCoupon.eCouponSn, eCoupon.orderItems.phone, eCoupon.replyCode);
         SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
         SMSUtil.send("【券市场】" + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name +
                 "[" + eCoupon.goods.faceValue + "元]")) + ",券号:" + eCoupon.eCouponSn + "," +

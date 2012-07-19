@@ -5,6 +5,7 @@ import models.accounts.AccountCreditable;
 import models.accounts.util.AccountUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.Index;
 import play.data.validation.Email;
 import play.data.validation.MaxSize;
 import play.data.validation.MinSize;
@@ -94,6 +95,13 @@ public class Resaler extends Model {
     @Column(name = "identity_no")
     @Required
     public String identityNo;
+
+    @Column(name = "key")
+    @Index(name = "app_key")
+    public String appKey;
+
+    @Column(name = "app_secret_key")
+    public String appSecretKey;
 
     /**
      * 分销商状态

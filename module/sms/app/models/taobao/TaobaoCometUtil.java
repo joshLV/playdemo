@@ -4,7 +4,7 @@ import play.Play;
 import play.modules.rabbitmq.producer.RabbitMQPublisher;
 
 /**
- * @author : likang
+ * @author likang
  * Date: 12-5-3
  */
 public class TaobaoCometUtil {

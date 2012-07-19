@@ -1,6 +1,6 @@
 package functional;
 
-import models.mail.CouponMessage;
+import models.mail.MailMessage;
 import models.mail.MailUtil;
 import notifiers.CouponMails;
 import org.junit.Test;
@@ -21,13 +21,12 @@ public class CouponMailsTest extends FunctionalTest {
 
         String coupon1 = "0280ec55a4fb4dde3aef27ee287d61c9";
         String coupon2 = "2720737f2d56c6f50528fc3307d5fa91";
-        CouponMessage message = new CouponMessage();
-        message.setEmail(email);
-        message.setFullName(fullName);
+        MailMessage message = new MailMessage();
+        message.addRecipient(email);
+        message.putParam("full_name", fullName);
         ArrayList<String> coupons = new ArrayList<String>();
         coupons.add(coupon1);
         coupons.add(coupon2);
-        message.setCoupons(coupons);
 
         CouponMails.notify(message);
 
@@ -46,15 +45,14 @@ public class CouponMailsTest extends FunctionalTest {
         String fullName = "您已成功购买faasfaf,订单号是3423543543，支付金额是+46456457元。\r";
         String coupon1 = "9780ec55a4fb4ddeabef27ee287d61c9";
         String coupon2 = "0420737f2d56c1150528fc3307d5fa91";
-        CouponMessage message = new CouponMessage();
-        message.setEmail(email);
-        message.setFullName(fullName);
+        MailMessage message = new MailMessage();
+        message.addRecipient(email);
+        message.putParam("full_name", fullName);
         ArrayList<String> coupons = new ArrayList<String>();
         coupons.add(coupon1);
         coupons.add(coupon2);
-        message.setCoupons(coupons);
 
-        MailUtil.send(message);
+        MailUtil.sendCouponMail(message);
         Thread.sleep(500);
 
         RabbitMQPlugin.retries();

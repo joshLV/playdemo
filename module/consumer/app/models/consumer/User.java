@@ -2,7 +2,7 @@ package models.consumer;
 
 import models.accounts.Account;
 import models.accounts.AccountType;
-import models.mail.CouponMessage;
+import models.mail.MailMessage;
 import models.mail.MailUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
@@ -130,10 +130,10 @@ public class User extends Model {
             user.sendMailAt = new Date();
             user.save();
             //发送邮件
-            CouponMessage mail = new CouponMessage();
+            MailMessage mail = new MailMessage();
             String url = Play.configuration.getProperty("resetpassword.mail_url");
-            mail.setMailUrl(url + "?token=" + token);
-            mail.setEmail(loginName);
+            mail.putParam("mail_url", url + "?token=" + token);
+            mail.addRecipient(loginName);
             MailUtil.sendFindPasswordMail(mail);
         }
         return isExisted;
