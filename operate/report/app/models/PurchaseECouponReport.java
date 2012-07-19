@@ -1,19 +1,14 @@
 package models;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.TypedQuery;
 import models.sales.Goods;
 import models.supplier.Supplier;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 采购税表.
@@ -71,12 +66,11 @@ public class PurchaseECouponReport extends Model {
     }    
 
     public static List<PurchaseECouponReport> query(PurchaseECouponReportCondition condition) {
-        TypedQuery<PurchaseECouponReport> query = JPA.em()
+        Query query = JPA.em()
                 .createQuery(
                         "select new PurchaseECouponReport(r.goods, count(r.id), r.originalPrice, sum(r.originalPrice)) "
                                 + " from ECoupon r where "
-                                + condition.getFilter() + " group by r.goods, r.salePrice order by r.goods.supplierId",
-                        PurchaseECouponReport.class);
+                                + condition.getFilter() + " group by r.goods, r.salePrice order by r.goods.supplierId");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
