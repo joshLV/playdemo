@@ -1,5 +1,6 @@
 package controllers;
 
+import models.accounts.AccountType;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrdersCondition;
@@ -69,6 +70,14 @@ public class OperateOrders extends Controller {
         String __EXCEL_FILE_NAME__ = "订单_" + System.currentTimeMillis() + "xls";
         renderArgs.put("__EXCEL_FILE_NAME__", __EXCEL_FILE_NAME__);
         JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, 1, PAGE_SIZE);
+        for (Order order : orderList) {
+            if (order.userType == AccountType.CONSUMER) {
+                order.accountEmail = order.getUser().loginName;
+            } else if (order.userType == AccountType.RESALER) {
+                order.accountEmail = order.getResaler().loginName;
+            }
+//            order.save();
+        }
         render(__EXCEL_FILE_NAME__, orderList);
 
     }

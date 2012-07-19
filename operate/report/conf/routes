@@ -10,7 +10,8 @@ GET     /reports/sales                          SalesTaxReports.index
 # 网站运营报表
 GET     /webop/referers                         WebTrackReports.referers
 GET     /webop/refcodes                         WebTrackReports.refCodes
-
+#分销商销售报表
+GET     /resale/sales                           ResaleSalesReports.index
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

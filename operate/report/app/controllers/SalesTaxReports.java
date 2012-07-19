@@ -1,6 +1,5 @@
 package controllers;
 
-import java.util.List;
 import models.SalesOrderItemReport;
 import models.SalesOrderItemReportCondition;
 import models.supplier.Supplier;
@@ -10,6 +9,8 @@ import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 import utils.PaginateUtil;
+
+import java.util.List;
 
 @With(OperateRbac.class)
 public class SalesTaxReports extends Controller {

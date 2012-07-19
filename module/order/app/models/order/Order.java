@@ -158,7 +158,7 @@ public class Order extends Model {
     public DeliveryType deliveryType;
 
     @Column(name = "web_identification_id")
-    public Long webIdentificationId; 
+    public Long webIdentificationId;
 
     @Transient
     public String searchKey;
@@ -178,7 +178,11 @@ public class Order extends Model {
      */
     @Transient
     public String payMethodName;
-
+    /**
+     * 记录是消费者还是分销商的帐号,导出报表用
+     */
+     @Transient
+    public String accountEmail;
     public Order() {
     }
 
@@ -467,7 +471,7 @@ public class Order extends Model {
                 orderItem.save();
             }
         }
-        
+
         if (this.webIdentificationId != null) {
             UserWebIdentification uwi = UserWebIdentification.findById(this.webIdentificationId);
             if (uwi != null) {
