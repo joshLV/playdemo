@@ -32,6 +32,7 @@ public class ResaleSalesReports extends Controller {
 
         // 查询出所有结果
         List<ResaleSalesReport> resultList = ResaleSalesReport.query(condition);
+        System.out.println(resultList.size());
         // 分页
         ValuePaginator<ResaleSalesReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 

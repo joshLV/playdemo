@@ -60,7 +60,7 @@ public class ECoupon extends Model {
     // ====  价格列表  ====
 
     @Column(name = "refund_price")
-    public BigDecimal refundPrice;
+    public BigDecimal refundPrice = new BigDecimal(0);
 
     @Column(name = "created_at")
     public Date createdAt;
