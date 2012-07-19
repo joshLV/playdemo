@@ -23,6 +23,7 @@ public class UserWebIdentification extends Model {
     @JoinColumn(name = "user_id", nullable = true)
     public User user;
 
+    @Column(name = "referer", length=4000)
     public String referer;
 
     @Column(name="referer_host")
@@ -31,7 +32,7 @@ public class UserWebIdentification extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
-    @Column(name = "first_page")
+    @Column(name = "first_page", length=4000)
     public String firstPage;
 
     @Column(name = "ip")
