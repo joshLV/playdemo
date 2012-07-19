@@ -56,9 +56,9 @@ public class WebTrackRefererReport {
     public static List<WebTrackRefererReport> queryRefererReport(WebTrackRefererCondition condition) {
         Query query = JPA.em()
                 .createQuery(
-                        "select new models.webop.WebTrackRefererReport(" + condition.getSubjectName() + ", sum(w.id), sum(w.cartCount), sum(w.orderCount), sum(w.payAmount)) "
+                        "select new models.webop.WebTrackRefererReport(" + condition.getSubjectName() + ", count(w.id), sum(w.cartCount), sum(w.orderCount), sum(w.payAmount)) "
                                 + " from UserWebIdentification w where "
-                                + condition.getFilter() + " group by " + condition.getSubjectName() + " order by sum(w.id) DESC");
+                                + condition.getFilter() + " group by " + condition.getSubjectName() + " order by sum(w.orderCount) DESC, count(w.id) DESC");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }

@@ -56,9 +56,9 @@ public class WebTrackReferCodeReport {
     public static List<WebTrackReferCodeReport> queryReferCodeReport(WebTrackReferCodeCondition condition) {
         Query query = JPA.em()
                 .createQuery(
-                        "select new models.webop.WebTrackReferCodeReport(w.referCode, sum(w.id), sum(w.cartCount), sum(w.orderCount), sum(w.payAmount)) "
+                        "select new models.webop.WebTrackReferCodeReport(w.referCode, count(w.id), sum(w.cartCount), sum(w.orderCount), sum(w.payAmount)) "
                                 + " from UserWebIdentification w where "
-                                + condition.getFilter() + " group by w.referCode order by sum(w.id) DESC");
+                                + condition.getFilter() + " group by w.referCode order by sum(w.orderCount) DESC, count(w.id) DESC");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
