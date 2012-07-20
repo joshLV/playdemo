@@ -24,6 +24,10 @@ import org.apache.http.message.BasicNameValuePair;
 import play.Logger;
 import play.Play;
 
+/**
+ * 上海领时网络接口.
+ * @author <a href="mailto:tangliqun@uhuila.com">唐力群</a>
+ */
 public class LingshiSMSProvider implements SMSProvider {
 
     private final String SEND_URL = Play.configuration.getProperty("lingshi.http.send_url");
@@ -72,7 +76,7 @@ public class LingshiSMSProvider implements SMSProvider {
                 Matcher m = RESULTCODE_PATTERN.matcher(result);
                 if (m.find()) {
                     //发送成功
-                    String code = m.group(0);
+                    String code = m.group(1);
                     resultCode = Integer.parseInt(code);
                     httpget.abort();
                     if (resultCode != 0 && resultCode != 1 && resultCode != 3) {
