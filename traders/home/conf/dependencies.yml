@@ -6,12 +6,17 @@ require:
     - play1 -> appconfiguration 0.1
     - play1 -> cobertura 2.4p3
     - play1 -> paginate head
+    - play1 -> rabbitmq 0.3
     - play1 -> app-version 0.1
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - paginate_ext -> paginate_ext
     - layout_trader -> layout_trader
     - sales -> sales
     - accounts -> accounts
+    - consumer -> consumer
+    - sms -> sms
+    - cms -> cms
+    - order -> order
     - supplier -> supplier
     - resale -> resale
     - supplier_rbac -> supplier_rbac
