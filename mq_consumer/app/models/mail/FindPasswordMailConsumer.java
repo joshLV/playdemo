@@ -43,6 +43,6 @@ public class FindPasswordMailConsumer extends RabbitMQConsumer<MailMessage> {
 
 	@Override
 	protected String queue() {
-		return MailUtil.MAIL_QUEUE_NAME;
+		return MailUtil.FIND_PWD_MAIL_QUEUE_NAME;
 	}
 }

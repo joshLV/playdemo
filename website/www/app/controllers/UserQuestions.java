@@ -4,6 +4,9 @@ import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import models.cms.CmsQuestion;
 import models.consumer.User;
+import models.mail.MailMessage;
+import models.mail.MailUtil;
+import play.Play;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
@@ -71,6 +74,12 @@ public class UserQuestions extends Controller{
         List<Map<String, String>> questions = new ArrayList<>();
         questions.add(questionMap);
         result.put("questions", questions);
+
+        MailMessage mailMessage = new MailMessage();
+        mailMessage.addRecipient("op@uhuila.com");
+        mailMessage.setSubject(Play.mode.isProd() ? "用户咨询" : "用户咨询【测试】");
+        mailMessage.setContent(question.createdAt + " " + questionMap.get("user") + ":" + question.content + "[" + goods.name + "]");
+        MailUtil.sendOperatorNotificationMail(mailMessage);
         renderJSON(result);
     }
 
