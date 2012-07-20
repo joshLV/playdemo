@@ -1,9 +1,7 @@
 package models.sms.impl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -11,7 +9,6 @@ import java.util.regex.Pattern;
 import models.sms.SMSException;
 import models.sms.SMSMessage;
 import models.sms.SMSProvider;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -64,7 +61,7 @@ public class LingshiSMSProvider implements SMSProvider {
         HttpResponse response = null;
 
         System.out.println("url=" + url + "++++++++++++++++");
-        Logger.debug("************ LingshiSMS: request url:"  + url + "*************");
+        Logger.info("************ LingshiSMS: request url:"  + url + "*************");
 
         try {
             response = httpclient.execute(httpget);
