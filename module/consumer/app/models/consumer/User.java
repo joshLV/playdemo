@@ -174,7 +174,7 @@ public class User extends Model {
         status = UserStatus.NORMAL;
         //随机码
         passwordSalt = salt;
-
+        this.loginName = this.loginName.toLowerCase().trim();
         createdAt = new Date();
         return super.create();
 

@@ -36,7 +36,7 @@ public class UsernameLengthAuthnHandler extends AbstractUsernamePasswordAuthenti
         }
 
         String sql = "select * from resaler where  login_name = ? and status = 'APPROVED'";
-        Object[] params = new Object[] { username };
+        Object[] params = new Object[] { username.toLowerCase() };
 
         List<Map<String, Object>> userlist = getJdbcTemplate().queryForList(sql, params);
 

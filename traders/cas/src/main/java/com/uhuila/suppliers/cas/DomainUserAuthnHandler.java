@@ -47,7 +47,7 @@ public class DomainUserAuthnHandler extends AbstractUsernamePasswordAuthenticati
 
         String sql = "select a.*, b.status as supplier_status from supplier_users a inner join suppliers b on a.supplier_id=b.id where a.login_name = ? " +
                 "and b.domain_name = ? and a.deleted=0 and b.deleted=0";
-        Object[] params = new Object[] { loginName, domainName };
+        Object[] params = new Object[] { loginName.toLowerCase(), domainName };
 
         List<Map<String, Object>> userlist = getJdbcTemplate().queryForList(sql, params);
 

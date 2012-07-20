@@ -5,6 +5,7 @@ import models.resale.ResalerCreditable;
 import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.libs.Images;
@@ -60,6 +61,7 @@ public class ResalerRegister extends Controller {
         resaler.passwordSalt = passwordSalt;
         resaler.level= ResalerLevel.NORMAL;
         resaler.createdAt = new Date();
+        resaler.loginName = resaler.loginName.toLowerCase().trim();
         resaler.creditable = ResalerCreditable.NO;
         resaler.save();
 

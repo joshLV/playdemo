@@ -1,6 +1,6 @@
 package controllers;
 
-import com.uhuila.common.constants.DeletedStatus;
+import java.util.List;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.sales.Shop;
@@ -13,8 +13,7 @@ import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-
-import java.util.List;
+import com.uhuila.common.constants.DeletedStatus;
 
 /**
  * <p/>
@@ -51,11 +50,10 @@ public class OperateSupplierUsers extends Controller {
         List rolesList = SupplierRole.findRoleOrderById();
         Long supplierId = null;
         List<Supplier> supplierList = Supplier.findUnDeleted();
-        if (CollectionUtils.isNotEmpty(supplierList)) {
+        if (supplierList != null && supplierList.size() > 0) {
             supplierId = supplierList.get(0).id;
             checkShops(supplierId);
             renderShopList(supplierId);
-
         }
         render(rolesList, supplierList);
     }

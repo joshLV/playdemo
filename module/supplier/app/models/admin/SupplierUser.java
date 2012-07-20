@@ -229,6 +229,7 @@ public class SupplierUser extends Model {
         createdAt = new Date();
         lockVersion = 0;
         this.supplier = supplier;
+        this.loginName = this.loginName.toLowerCase().trim();
         deleted = DeletedStatus.UN_DELETED;
         return super.create();
     }
