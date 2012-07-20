@@ -1,8 +1,8 @@
 package controllers;
 
-import com.uhuila.common.constants.DataConstants;
 import models.consumer.User;
 import models.consumer.UserInfo;
+import models.consumer.UserWebIdentification;
 import org.apache.commons.lang.StringUtils;
 import play.cache.Cache;
 import play.data.validation.Valid;
@@ -10,6 +10,7 @@ import play.data.validation.Validation;
 import play.libs.Codec;
 import play.libs.Images;
 import play.mvc.Controller;
+import com.uhuila.common.constants.DataConstants;
 
 /**
  * 前台注册用户
@@ -59,7 +60,16 @@ public class Register extends Controller {
         user.create();
         user.userInfo = new UserInfo(user);
         user.save();
-
+        
+        if (WebsiteInjector.getUserWebIdentification() != null) {
+            UserWebIdentification uwi = UserWebIdentification.findById(WebsiteInjector.getUserWebIdentification().id);
+            if (uwi.registerCount == null) {
+                uwi.registerCount = 0;
+            } 
+            uwi.registerCount += 1;
+            uwi.save();
+        }
+        
         // session.put(SESSION_USER_KEY, user.loginName);
         renderArgs.put("count",0);
         render("Register/registerSuccess.html", user);

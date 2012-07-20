@@ -52,7 +52,6 @@ public class WebsiteInjector extends Controller {
     }
 
     protected static void injectWebIdentification(final User user) {
-
         Http.Cookie cookie = request.cookies.get(WEB_TRACK_COOKIE);
         String cookieValue = null;
         if (cookie == null) {
