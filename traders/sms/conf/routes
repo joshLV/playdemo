@@ -5,7 +5,12 @@
 # Home page
 GET     /                                       Application.index
 
-GET     /getsms                                 SmsReceivers.getSms
+# 北京ensms接收接口
+GET     /getsms                                 EnSmsReceivers.getSms
+
+# 领时网络SMS接收接口
+GET     /lingshi                                LingShiSmsReceivers.getSms
+
 *       /tel-verify                             TelephoneVerify.verify
 *       /tel-verify/face-value                  TelephoneVerify.faceValue
 *       /tel-verify/consumed-at                 TelephoneVerify.consumedAt

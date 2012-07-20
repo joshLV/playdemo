@@ -1,9 +1,6 @@
 package models.sms;
 
 import models.journal.MQJournal;
-import models.sms.impl.BjenSMSProvider;
-import models.sms.impl.C123HttpSMSProvider;
-import models.sms.impl.HaduoHttpSMSProvider;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPAPlugin;
@@ -23,15 +20,7 @@ public class SmsSendConsumer extends RabbitMQConsumer<SMSMessage> {
     
     public SMSProvider getSMSProvider(String smsType) {
         if (smsProvider == null) {
-            if ("ensms".equalsIgnoreCase(SMS_TYPE)) {
-                smsProvider = new BjenSMSProvider(); 
-            } else if ("c123".endsWith(SMS_TYPE)) {
-                smsProvider = new C123HttpSMSProvider();
-            } else if ("haduo".endsWith(SMS_TYPE)) {
-                smsProvider = new HaduoHttpSMSProvider();
-            } else {
-                smsProvider = new MockSMSProvider();
-            }
+            smsProvider = SMSFactory.getSMSProvider(smsType);
         }
         return smsProvider;
     }
