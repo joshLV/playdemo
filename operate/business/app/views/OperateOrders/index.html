@@ -170,12 +170,11 @@ select:'condition_status',value:condition?.status/}
             #{if order.realGoods.size()>0}
                 <td>
                     #{if models.sales.MaterialType.ELECTRONIC.equals(order.realGoods.get(0).materialType)}
-                        <img src="@@{'/public/images/electronic-goods.png'}">
+                        <img src="@@{'/public/images/electronic-goods.png'}">${order.realGoods.get(0).name}
                     #{/if}
                     #{else}
-                        <img src="@@{'/public/images/real-goods.png'}">&nbsp;
+                        <img src="@@{'/public/images/real-goods.png'}">${order.realGoods.get(0).name}
                     #{/else}
-                ${order.realGoods.get(0).name}&nbsp;
                 </td>
                 <td rowspan="${order.realGoods.size()}">
                     #{if order.deliveryNo!=null}

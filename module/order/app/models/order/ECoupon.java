@@ -60,7 +60,7 @@ public class ECoupon extends Model {
     // ====  价格列表  ====
 
     @Column(name = "refund_price")
-    public BigDecimal refundPrice = new BigDecimal(0);
+    public BigDecimal refundPrice;
 
     @Column(name = "created_at")
     public Date createdAt;
@@ -137,6 +137,7 @@ public class ECoupon extends Model {
 
         this.consumedAt = null;
         this.refundAt = null;
+        this.refundPrice = new BigDecimal(0);
         this.status = ECouponStatus.UNCONSUMED;
         this.eCouponSn = generateAvailableEcouponSn();
         this.orderItems = orderItems;

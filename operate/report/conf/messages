@@ -134,8 +134,8 @@ account.type.CONSUMER=消费者
 account.type.SUPPLIER=商户
 account.type.RESALER=分销商
 account.type.PLATFORM=平台
-
-
+report.CONSUMER=消费者
+report.RESALER=分销商
 
 
 

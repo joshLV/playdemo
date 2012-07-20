@@ -78,7 +78,7 @@ public class OrdersCondition {
         //按照商品名称检索
         if ("1".equals(searchKey)) {
             sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.name like :name)");
-            paramsMap.put("name", "%" + searchItems + "%");
+            paramsMap.put("name", "%" + searchItems.trim() + "%");
         }
         //按照商品订单检索
         if ("2".equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {

@@ -345,9 +345,6 @@ public class Order extends Model {
      */
     public static Boolean checkLimitNumber(User user, Long goodsId,Long boughtNumber, int number) {
 
-//        Long buyNumber = 0l;
-//        //该用户曾经购买该商品的数量
-//        buyNumber = OrderItems.itemsNumber(user, goodsId);
         //取出商品的限购数量
         Goods goods = Goods.findById(goodsId);
         int limitNumber = 0;
@@ -355,10 +352,6 @@ public class Order extends Model {
             limitNumber = goods.limitNumber;
         }
 
-//        //当购买数量超过限购数量，并且第一次购买时返回false;
-//        if (number > limitNumber && buyNumber == 0) {
-//            return false;
-//        }
         //超过限购数量,则表示已经购买过该商品
         if (limitNumber > 0 && (number > limitNumber || limitNumber <= boughtNumber)) {
             return Boolean.TRUE;

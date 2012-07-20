@@ -57,7 +57,7 @@ public class UserCondition {
 
         if (StringUtils.isNotBlank(loginName)) {
             sql.append(" and u.loginName like :loginName");
-            paramsMap.put("loginName", "%" + loginName + "%");
+            paramsMap.put("loginName", "%" + loginName.trim() + "%");
         }
         if (StringUtils.isNotBlank(mobile)) {
             sql.append(" and u.mobile = :mobile");

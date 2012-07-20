@@ -17,14 +17,16 @@ import java.util.Map;
  */
 public class ResaleSalesReportCondition {
 
-    public Date createdAtBegin = DateUtil.getYesterday();
-    public Date createdAtEnd = DateUtil.getEndOfDay(DateUtil.getYesterday());
-    public String interval = "0d";
+    public Date createdAtBegin;
+    public Date createdAtEnd;
+    public String interval = "0";
+    public AccountType accountType;
     private Map<String, Object> paramMap = new HashMap<>();
 
-    public String getFilter() {
+    public String getFilter(AccountType type) {
         StringBuilder condBuilder = new StringBuilder(" where e.order.userType = :userType");
-        paramMap.put("userType", AccountType.RESALER);
+
+            paramMap.put("userType", type);
 
         if (createdAtBegin != null) {
             condBuilder.append(" and e.order.createdAt >= :createdAtBegin");
