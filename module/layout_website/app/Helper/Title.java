@@ -52,7 +52,7 @@ public class Title {
                         return Title.generateKeywordsMap(final_goods);
                     }
                 });
-        String keyWords = StringUtils.trimToEmpty(keywordsMap.get("goodsKeywords"));
+        String keyWords = (keywordsMap == null) ? "" : StringUtils.trimToEmpty(keywordsMap.get("goodsKeywords"));
         return "优惠券,优惠券网,代金券," + keyWords;
     }
 
