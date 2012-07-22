@@ -49,7 +49,8 @@ public class Title {
                 new CacheCallBack<Map<String, String>>() {
                     @Override
                     public Map<String, String> loadData() {
-                        return Title.generateKeywordsMap(final_goods);
+                        Goods g = Goods.findById(final_goods.id);
+                        return Title.generateKeywordsMap(g);
                     }
                 });
         String keyWords = (keywordsMap == null) ? "" : StringUtils.trimToEmpty(keywordsMap.get("goodsKeywords"));
