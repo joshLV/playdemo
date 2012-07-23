@@ -9,7 +9,6 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
-import play.mvc.Controller;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FieldCheckUtil;
@@ -129,7 +128,7 @@ public class SmsReceiverUtil {
         }
 
         Supplier supplier = Supplier.findById(ecoupon.goods.supplierId);
-        SupplierUser supplierUser = SupplierUser.find("from SupplierUser where supplier.id=? and jobNumber=?", ecoupon.goods.supplierId, msg).first();
+        SupplierUser supplierUser = SupplierUser.find("from SupplierUser where deleted = ? and supplier.id=? and jobNumber=?", DeletedStatus.UN_DELETED,  ecoupon.goods.supplierId, msg).first();
 
         if (supplierUser == null) {
             // 发给消费者
