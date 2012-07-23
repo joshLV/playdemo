@@ -45,9 +45,12 @@ public class SupplierUnitTest extends UnitTest {
     public void testGetSmallLogo(){
         Long id = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
         Supplier supplier = Supplier.findById(id);
-        assertEquals(PathUtil.getImageUrl(Play.configuration.getProperty
-                ("image.server", "img0.uhcdn.com"), "logo.jpg", "172x132"),
-                supplier.getOriginalLogo());
+        String imageSever = "http://"+Play.configuration.getProperty
+                ("image.server", "img0.uhcdn.com");
+        System.out.println("image server is "+imageSever);
+        String imageURL = PathUtil.getImageUrl(imageSever, "/0/0/0/logo.jpg", "172x132");
+        System.out.println("image URL is "+imageURL);
+        assertEquals(imageURL, supplier.getSmallLogo());
     }
 
     @Test
@@ -67,6 +70,7 @@ public class SupplierUnitTest extends UnitTest {
     }
 
     @Test
+    // Check updateAt() 方法不可行，因为update的时候没有改变, 比较supplier.Date()没有意义
     public void testUpdateWithNull(){
         Long id = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
         Supplier supplier = Supplier.findById(id);
@@ -91,11 +95,17 @@ public class SupplierUnitTest extends UnitTest {
 
     @Test
     public void testDeleteNull(){
+        // record old size
         List<Supplier> suppliers = Supplier.findUnDeleted();
+        int oldSize = suppliers.size();
+        // nothing is deleted
         Long emptyId = 123456789L;
         Supplier.delete(emptyId);
-        // nothing is deleted
-        assertEquals(2, suppliers.size());
+        // record new size
+        suppliers = Supplier.findUnDeleted();
+        int newSize = suppliers.size();
+        // compare
+        assertEquals(oldSize, newSize);
     }
 
     @Test
