@@ -2,12 +2,14 @@ package unit;
 
 import java.util.List;
 
+import com.uhuila.common.util.PathUtil;
 import models.sales.Brand;
 import models.supplier.Supplier;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import play.Play;
 import play.modules.paginate.ModelPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
@@ -58,4 +60,26 @@ public class BrandUnitTest extends UnitTest {
 		assertEquals("来一份", firstBrand.name);
 	}
 
+    @Test
+    public void testGetOriginalLogo(){
+        long brandId = (Long) Fixtures.idCache.get("models.sales.Brand-Brand_1");
+        Brand brand = Brand.findById(brandId);
+        String imageServer = Play.configuration.getProperty
+                ("image.server", "img0.dev.uhcdn.com");
+        System.out.println("Image Server:  "+imageServer);
+        String imageURL = PathUtil.getImageUrl(imageServer , "/0/0/0/logo.jpg", "nw");
+        System.out.println("Image URL: "+imageURL);
+        assertEquals(imageURL,brand.getOriginalLogo());
+    }
+
+    @Test
+    // TODO need to be improved
+    public void testUpdateNullBrand(){
+        long brandId = (Long) Fixtures.idCache.get("models.sales.Brand-Brand_1");
+        Brand brand = Brand.findById(brandId);
+        long emptyId = 123L;
+        Brand.update(emptyId,brand);
+        Brand updatedBrand = Brand.findById(emptyId);
+        assertNotSame(updatedBrand,brand);
+    }
 }
