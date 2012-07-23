@@ -21,7 +21,7 @@ import play.test.UnitTest;
  * @author wangjia
  * @date 2012-7-20 下午5:50:39
  */
-public class OperateConsumersWinningInfoUnitTest extends UnitTest {
+public class OperateConsumersWinningInfoTest extends UnitTest {
 
 	@Before
 	public void setup() {
@@ -36,60 +36,49 @@ public class OperateConsumersWinningInfoUnitTest extends UnitTest {
 
 	@Test
 	public void testUserVote() {
-
 		List<UserVote> userVoteResult = UserVote.findAll();
 		assertEquals(3, userVoteResult.size());
-
 		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
 		User user = User.findById(userId);
-
-		Long voteId = (Long) Fixtures.idCache
-				.get("models.cms.VoteQuestion-vote1");
+		Long voteId = (Long) Fixtures.idCache.get("models.cms.VoteQuestion-vote1");
 		VoteQuestion votequestion = VoteQuestion.findById(voteId);
-
 		String answer = "D";
 		String mobile = "15618096151";
 		new UserVote(user, votequestion, answer, mobile).save();
 		userVoteResult = UserVote.findAll();
+		// 增加一条记录
 		assertEquals(4, userVoteResult.size());
-		List<UserVote> userVoteResultLatest = UserVote.find("order by id desc")
-				.fetch();
+		List<UserVote> userVoteResultLatest = UserVote.find("order by id desc").fetch();
 		UserVote vote = userVoteResultLatest.get(0);
-
+		// 判断增加的记录的内容是否正确
 		assertEquals("selenium@uhuila.com", vote.user.loginName);
 		assertEquals(VoteType.INQUIRY, vote.vote.type);
-
 		assertEquals("D", vote.answer);
 		assertEquals("15618096151", vote.mobile);
 
 	}
 
 	@Test
-	public void testgetPage() {
+	public void testGetPage() {
 		UserVoteCondition userVoteCondition = new UserVoteCondition();
 		userVoteCondition.type = VoteType.QUIZ;
-
-		JPAExtPaginator<UserVote> userVotePage = UserVote.getPage(1, 15,
-				userVoteCondition);
+		JPAExtPaginator<UserVote> userVotePage = UserVote.getPage(1, 15,userVoteCondition);
+		// 匹配条件的记录数
 		assertEquals(2, userVotePage.size());
 	}
-	
+
 	@Test
 	public void isVoted() {
-	Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
-	User user = User.findById(userId);
-
-	Long voteId = (Long) Fixtures.idCache
-			.get("models.cms.VoteQuestion-vote1");
-	VoteQuestion votequestion = VoteQuestion.findById(voteId);
-	
-	assertTrue(UserVote.isVoted(user,votequestion));
-	
-	userId = (long) Fixtures.idCache.get("models.consumer.User-user_test1");
-	user = User.findById(userId);
-
-	assertFalse(UserVote.isVoted(user,votequestion));
-	
+		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
+		User user = User.findById(userId);
+		// 已投票
+		Long voteId = (Long) Fixtures.idCache.get("models.cms.VoteQuestion-vote1");
+		VoteQuestion votequestion = VoteQuestion.findById(voteId);
+		assertTrue(UserVote.isVoted(user, votequestion));
+		// 未投票
+		userId = (long) Fixtures.idCache.get("models.consumer.User-user_test1");
+		user = User.findById(userId);
+		assertFalse(UserVote.isVoted(user, votequestion));
 	}
-	
+
 }
