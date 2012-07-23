@@ -1,6 +1,7 @@
 sales.Brand(Brand_1):
  "name": "来一份"
  "displayOrder": "100"
+ "logo": logo.jpg
  "supplier": Supplier1
  "deleted": UN_DELETED
 
