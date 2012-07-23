@@ -1,7 +1,7 @@
 #{extends 'main.html' /}
-#{set title: Helper.Title.getDetailTitle(goods) /}
+#{set title: helper.Title.getDetailTitle(goods) /}
 #{set 'metaContent'}
- #{set detailKeywords: Helper.Title.getDetailKeyWords(goods) /}
+ #{set detailKeywords: helper.Title.getDetailKeyWords(goods) /}
 <meta name="Description" content="一百券-${goods.brand?.name} ${goods.name},${detailKeywords}消费券,代金券,优惠券,美食券,电子券,提货券">
 <meta name="Keywords" content="${detailKeywords}">
 #{/set}
@@ -58,7 +58,7 @@
     <div id="summary" class="clearfix">
         <div id="leftBox"><!-- 此div为了规避.qvalu元素中最后一个文字被复制的问题 by Junyi -->
         <div id="gallery">
-            <img src="${goods.imageLargePath}" alt="${goods.name}"/>
+            <img src="${goods.imageLargePath}" alt="${title}"/>
         </div>
         <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
 
@@ -173,6 +173,7 @@
         <ul class="bd clearfix">
         #{set i:1/}
         #{list recommendGoodsList, as:'aGoods'}
+            #{set goodsAlt:helper.Title.getDetailTitle(aGoods) /}
             #{if i%5==0}
                 <li class="last">
                 #{/if}
@@ -180,7 +181,7 @@
                 <li>
                 #{/else}
                 <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}"
-                                                                                  alt="${aGoods.name}"/></a></div>
+                                                                                  alt="${goodsAlt}"/></a></div>
                 <div class="title"><a href="" target="_blank"></a>${aGoods.name}</div>
                 <div class="attri">
                     <del>原价：${aGoods.faceValue}</del>

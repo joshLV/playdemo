@@ -117,7 +117,9 @@
         <!-- #filter -->
         #{set i:1/}
         <ul id="listview" class="clearfix">
+
             #{paginate.list items:goodsPage, as:'aGoods'}
+                #{set altTitle: helper.Title.getDetailTitle(aGoods) /}
               #{if i%3==0}
                 <li class="last">
                 #{/if}
@@ -125,7 +127,7 @@
                 <li>
                 #{/else}
                 <div class="image">
-                    <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="234" height="178"alt="${aGoods.name}" /></a>
+                    <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}" width="234" height="178"alt="${altTitle}" /></a>
                 </div>
                 <div class="title">
                     <a href="/g/${aGoods.id}" target="_blank">${aGoods.name} </a>
@@ -149,13 +151,14 @@
             <div class="hd">人气商品<!--<a class="more" href="/s" target="_blank"></a>--></div>
             <ul class="bd">
              #{list recommendGoodsList, as:'aGoods'}
+                 #{set altTitle: helper.Title.getDetailTitle(aGoods) /}
                 <li>
                     <div class="index">
                         <span>人气指数：<em id="summary_${aGoods.id}">${aGoods.summaryCount()}</em></span>
                         <a href="#" class="index-btn" data-goodsid="${aGoods.id}">支持</a>
                         <b class="index-tips" style="display:none"><s class="index-close" title="关闭"></s></b>
                     </div>
-                    <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}" alt="${aGoods.name}" width="172" height="132" /></a></div>
+                    <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}" alt="${altTitle}" width="172" height="132" /></a></div>
                     <div class="title"><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
                     <div class="attri">
                         <del>原价：${aGoods.faceValue}</del>
