@@ -7,19 +7,19 @@
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods6")}')
 verifyTitle('【一百券】测试商品6-优惠券,优惠券网,代金券')
 clickAndWait('id=link_buy_now')
-verifyTextPresent('实物凭证 - 订单信息')
-waitForElementPresent('id=J_addrCurrent')
-verifyText('id=J_addrCurrent','上海市 黄浦区 市辖区 test3 (sujie1 收) 13764081569')
-click('id=J_modifyAddr')
-waitForElementPresent('id=addrId_new')
-click('id=addrId_new')
-waitForElementPresent('id=J_addrStreet')
-type('id=J_addrStreet','新地址')
-type('id=J_addrPost','123456')
-type('id=J_addrName','你好')
-type('id=J_addrMobile','13764081568')
+verifyTextPresent('收货地址')
+*{waitForElementPresent('id=J_addrCurrent')}*
+*{verifyText('id=J_addrCurrent','上海市 黄浦区 市辖区 test3 (sujie1 收) 13764081569')}*
+*{click('id=J_modifyAddr')}*
+*{waitForElementPresent('id=addrId_new')}*
+*{click('id=addrId_new')}*
+*{waitForElementPresent('id=J_addrStreet')}*
+*{type('id=J_addrStreet','新地址')}*
+*{type('id=J_addrPost','123456')}*
+*{type('id=J_addrName','你好')}*
+*{type('id=J_addrMobile','13764081568')}*
 *{verifyText('id=J_confirm','保存并送到这个地址')}*
-click('id=J_confirm')
+*{click('id=J_confirm')}*
 *{waitForText('id=J_modifyAddr','[修改]')}*
 *{waitForElementPresent(}*
 *{verifyTextPresent('13764081568')}*
