@@ -24,6 +24,7 @@ import java.util.Map;
 @SkipCAS
 public class UserQuestions extends Controller{
     private static String DATE_FORMAT = "yyyy-MM-dd";
+    private static String MAIL_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     public static void add(String content, Long goodsId){
         User user = SecureCAS.getUser();
@@ -78,7 +79,9 @@ public class UserQuestions extends Controller{
         MailMessage mailMessage = new MailMessage();
         mailMessage.addRecipient("op@uhuila.com");
         mailMessage.setSubject(Play.mode.isProd() ? "用户咨询" : "用户咨询【测试】");
-        mailMessage.setContent(question.createdAt + " " + questionMap.get("user") + ":" + question.content + "[" + goods.name + "]");
+        mailMessage.setContent(
+                new SimpleDateFormat(MAIL_DATE_FORMAT).format(question.createdAt)
+                        + " " + questionMap.get("user") + ":" + question.content + "[" + goods.name + "]");
         MailUtil.sendOperatorNotificationMail(mailMessage);
         renderJSON(result);
     }
