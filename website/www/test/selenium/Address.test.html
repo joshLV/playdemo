@@ -4,17 +4,16 @@
 open('/g/${play.test.Fixtures.idCache.get("models.sales.Goods-goods6")}')
 verifyTitle('【一百券】测试商品6-优惠券,优惠券网,代金券')
 clickAndWait('id=link_buy_now')
-verifyTextPresent('实物凭证 - 订单信息')
-verifyTextPresent('收货地址：无 [修改]')
-click('id=J_modifyAddr')
-waitForElementPresent('id=addrId_new')
-click('id=addrId_new')
-waitForElementPresent('id=J_addrStreet')
-type('id=J_addrStreet','fasfa')
-type('id=J_addrPost','123456')
-type('id=J_addrName','一样')
-type('id=J_addrMobile','13764081569')
-click('id=J_confirm')
+verifyTextPresent('收货地址')
+*{click('id=J_modifyAddr')}*
+*{waitForElementPresent('id=addrId_new')}*
+*{click('id=addrId_new')}*
+*{waitForElementPresent('id=J_addrStreet')}*
+*{type('id=J_addrStreet','fasfa')}*
+*{type('id=J_addrPost','123456')}*
+*{type('id=J_addrName','一样')}*
+*{type('id=J_addrMobile','13764081569')}*
+*{click('id=J_confirm')}*
 *{waitForText('id=J_modifyAddr','[修改]')}*
 *{waitForElementPresent()
 verifyTextPresent('13764081569')}*
