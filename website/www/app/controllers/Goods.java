@@ -1,6 +1,5 @@
 package controllers;
 
-import Helper.Title;
 import cache.CacheCallBack;
 import cache.CacheHelper;
 import controllers.modules.website.cas.SecureCAS;
@@ -23,6 +22,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
 
+import helper.Title;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;

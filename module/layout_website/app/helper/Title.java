@@ -1,4 +1,4 @@
-package Helper;
+package helper;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
@@ -53,7 +53,7 @@ public class Title {
                         return Title.generateKeywordsMap(g);
                     }
                 });
-        String keyWords = (keywordsMap == null) ? "" : StringUtils.trimToEmpty(keywordsMap.get("goodsKeywords"));
+        String keyWords = StringUtils.trimToEmpty(keywordsMap.get("goodsKeywords"));
         return "优惠券,优惠券网,代金券," + keyWords;
     }
 
@@ -88,6 +88,8 @@ public class Title {
         if (categoryKeywords.size() > 0) {
             keywordsMap.put("goodsKeywords",
                     StringUtils.join(categoryKeywords, ","));
+        } else {
+            keywordsMap.put("goodsKeywords", "");
         }
         return keywordsMap;
     }
