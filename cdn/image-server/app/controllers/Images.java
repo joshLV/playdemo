@@ -108,7 +108,7 @@ public class Images extends Controller {
             noWatermark = true;
         }
 
-        defaultTargetImageName.append("_nw.png");
+        defaultTargetImageName.append(".png");
         if(!originImageExist){
             imageName = defaultTargetImageName.toString();
         }
