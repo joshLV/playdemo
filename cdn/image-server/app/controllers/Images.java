@@ -57,11 +57,12 @@ public class Images extends Controller {
             notFound();
         }
 
-        String sign = imageNameMatcher.group(1);
-        String fileRawName = imageNameMatcher.group(2);
-        String fileFixName = imageNameMatcher.group(3);
-        String fileExtension = imageNameMatcher.group(4);
+        String sign = imageNameMatcher.group(1);                //图片签名
+        String fileRawName = imageNameMatcher.group(2);         //纯文件名
+        String fileFixName = imageNameMatcher.group(3);         //文件名中的附加后缀
+        String fileExtension = imageNameMatcher.group(4);       //文件扩展名
         fileFixName = fileFixName == null ? "" : fileFixName;
+
         //验证签名
         if(!PathUtil.imgSign(fileRawName + fileFixName + "." + fileExtension).equals(sign)){
             Logger.error("image sign failed: " + imageName);
@@ -71,11 +72,14 @@ public class Images extends Controller {
 
         File originImage = new File(joinPath(IMAGE_ROOT_ORIGINAL, firstDir, secondDir, thirdDir), fileRawName  + "." + fileExtension);
 
-        //访问的原始文件不存在时直接返回默认图片的相应规格的图片
+        //访问的原始文件不存在时，读取默认图片作为图片源，同时修改生成文件的目录为/1/1/1/
+        boolean originImageExist = true;
+        StringBuilder defaultTargetImageName = new StringBuilder("default");
         if (!originImage.exists()) {
             originImage = new File(Play.applicationPath,joinPath("public", "images", "default.png"));
+
+            originImageExist = false;
             firstDir = secondDir = thirdDir = "1";
-            imageName = PathUtil.imgSign("default_nw.png") + "_default_nw.png";
         }
 
         File targetParent = new File(joinPath(IMAGE_ROOT_GENERATED, firstDir, secondDir, thirdDir));
@@ -87,7 +91,7 @@ public class Images extends Controller {
             }
         }
 
-        //检查是否指定了目标大小
+        //检查是否指定了目标大小，如果指定了大小，那么生成的默认图片的文件名也要更改
         Matcher sizeMatcher = sizePattern.matcher(imageName);
         int width = 0, height = 0;
         boolean resize = false, noWatermark = false;
@@ -95,11 +99,18 @@ public class Images extends Controller {
             resize = true;
             width = Integer.parseInt(sizeMatcher.group(1));
             height = Integer.parseInt(sizeMatcher.group(2));
+
+            defaultTargetImageName.append("_").append(width).append("x").append(height);
         }
 
-        //检查是否指定了不需要水印
-        if(waterPattern.matcher(imageName).matches()){
+        //检查是否指定了不需要水印，默认图片无需加水印
+        if(waterPattern.matcher(imageName).matches() || !originImageExist){
             noWatermark = true;
+        }
+
+        defaultTargetImageName.append("_nw.png");
+        if(!originImageExist){
+            imageName = defaultTargetImageName.toString();
         }
 
         File targetImage = new File(targetParent, imageName);
@@ -129,7 +140,6 @@ public class Images extends Controller {
                             .size(waterWidth, waterHeight);
                     imageBuilder.watermark(Positions.BOTTOM_RIGHT, waterBuilder.asBufferedImage(), 0.5f);
                 }
-
                 imageBuilder.toFile(targetImage);
             } catch (IOException e) {
                 throw new RuntimeException(e);
