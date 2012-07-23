@@ -71,7 +71,8 @@ $(function () {
         }
 
         var t = $(this);
-        t.attr("href", t.attr("href") + '-' + $("#number").val());
+        var buyHref=t.attr("href");
+        t.attr("href", buyHref.substring(0, buyHref.length - 1) + $("#number").val());
         return true;
     });
 
