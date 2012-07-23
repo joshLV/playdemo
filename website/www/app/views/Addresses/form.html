@@ -1,3 +1,160 @@
+<table class="edit-addr" id="J_editAddr">
+#{if address!= null }
+    <caption style="font-weight:700;text-align:left;padding:8px 0 3px 10px;">编辑以下地址：</caption>
+#{/if}
+    <tr>
+        <td class="left"><em>*</em>收 货 人：</td>
+        <td class="right">
+            <input class="addr-name" id="J_addrName" type="text" value="${address?.name}" placeholder="请填写您的真实姓名" />
+            <span class="error" id="err-name"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="left"><em>*</em>地　　区：</td>
+        <td class="right">
+            <select class="addr-prov" id="J_addrProv" name="addr-prov"></select>
+            <select class="addr-city" id="J_addrCity" name="addr-city"></select>
+            <select class="addr-dist" id="J_addrDist" name="addr-dist"></select>
+            <span class="error" id="err-district"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="left"><em>*</em>街道地址：</td>
+        <td class="right">
+            <input class="addr-street" id="J_addrStreet" type="text" value="${address?.address}" placeholder="请填写详细路名及门牌号" />
+            <span class="error" id="err-street"></span></td>
+    </tr>
+    <tr>
+        <td class="left"><em>*</em>邮政编码：</td>
+        <td class="right"><input class="addr-post" id="J_addrPost" type="text" value="${address?.postcode}" placeholder="请填写正确的邮政编码" />
+            <span class="error" id="err-post"></span></td>
+    </tr>
+    <tr>
+        <td class="left"><em>*</em>手　　机：</td>
+        <td class="right">
+            <input class="addr-mobile" id="J_addrMobile" type="text" value="${address?.mobile}" placeholder="手机和电话请至少填写一个" />
+            <span style="margin-left:25px;">座机：</span>
+            <input class="addr-phone" id="J_addrPhone" type="text" value="${address?.phoneNumber}" placeholder="手机和电话请至少填写一个"/>
+            <span class="error" id="err-phone"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="left"></td>
+        <td class="right">
+            <a class="save-new-addr" id="J_saveNewAddr" data-addrId="${address?.id}" href="#">保存并送到这个地址</a>
+        </td>
+    </tr>
+</table>
+<script>
+var SPT = "--请选择省份--",
+    SCT = "--请选择城市--",
+    SAT = "--请选择地区--",
+    ShowT = 0, //提示文字 0:不显示 1:显示
+    PCAD="上海市$市辖区,黄浦区,徐汇区,长宁区,静安区,普陀区,闸北区,虹口区,杨浦区,闵行区,宝山区,嘉定区,浦东新区,金山区,松江区,青浦区,奉贤区|市辖县,崇明县";
+
+if (ShowT) {
+    PCAD = SPT + "$" + SCT + "," + SAT + "#" + PCAD;
+}
+
+var PCAArea = [],
+    PCAP = [],
+    PCAC = [],
+    PCAA = [],
+    PCAN = PCAD.split("#");
+
+for (i = 0; i < PCAN.length; i++) {
+    PCAA[i] = [];
+    TArea = PCAN[i].split("$")[1].split("|");
+    for (j = 0; j < TArea.length; j++) {
+        PCAA[i][j] = TArea[j].split(",");
+        if (PCAA[i][j].length == 1) {
+            PCAA[i][j][1] = SAT;
+        }
+        TArea[j] = TArea[j].split(",")[0]
+    }
+    PCAArea[i] = PCAN[i].split("$")[0] + "," + TArea.join(",");
+    PCAP[i] = PCAArea[i].split(",")[0];
+    PCAC[i] = PCAArea[i].split(',');
+}
+
+function PCAS() {
+    this.SelP = document.getElementsByName(arguments[0])[0];
+    this.SelC = document.getElementsByName(arguments[1])[0];
+    this.SelA = document.getElementsByName(arguments[2])[0];
+    this.DefP = this.SelA ? arguments[3] : arguments[2];
+    this.DefC = this.SelA ? arguments[4] : arguments[3];
+    this.DefA = this.SelA ? arguments[5] : arguments[4];
+    this.SelP.PCA = this;
+    this.SelC.PCA = this;
+    this.SelP.onchange = function() {
+        PCAS.SetC(this.PCA);
+    };
+    if (this.SelA)
+        this.SelC.onchange = function() {
+            PCAS.SetA(this.PCA);
+        };
+    PCAS.SetP(this);
+}
+
+PCAS.SetP = function(PCA) {
+    for (i = 0; i < PCAP.length; i++) {
+        PCAPT = PCAPV = PCAP[i];
+        if (PCAPT == SPT) {
+            PCAPV = "";
+        }
+        PCA.SelP.options.add(new Option(PCAPT, PCAPV));
+        if (PCA.DefP == PCAPV) {
+            PCA.SelP[i].selected = true;
+        }
+    }
+    PCAS.SetC(PCA)
+}
+
+PCAS.SetC = function(PCA) {
+    PI = PCA.SelP.selectedIndex;
+    PCA.SelC.length = 0;
+    for (i = 1; i < PCAC[PI].length; i++) {
+        PCACT = PCACV = PCAC[PI][i];
+        if (PCACT == SCT) {
+            PCACV = "";
+        }
+        PCA.SelC.options.add(new Option(PCACT, PCACV));
+        if (PCA.DefC == PCACV) {
+            PCA.SelC[i - 1].selected = true;
+        }
+    }
+    if (PCA.SelA) {
+        PCAS.SetA(PCA);
+    }
+}
+
+PCAS.SetA = function(PCA) {
+    PI = PCA.SelP.selectedIndex;
+    CI = PCA.SelC.selectedIndex;
+    PCA.SelA.length = 0;
+    for (i = 1; i < PCAA[PI][CI].length; i++) {
+        PCAAT = PCAAV = PCAA[PI][CI][i];
+        if (PCAAT == SAT) {
+            PCAAV = "";
+        }
+        PCA.SelA.options.add(new Option(PCAAT, PCAAV));
+        if (PCA.DefA == PCAAV) {
+            PCA.SelA[i - 1].selected = true;
+        }
+    }
+}
+
+// 省市区三级联动
+#{if address!= null }
+    new PCAS('addr-prov','addr-city','addr-dist','${address?.province}','${address?.city}','${address?.district}');
+#{/if}
+#{else}
+    new PCAS('addr-prov', 'addr-city', 'addr-dist', '上海市', '市辖区', '黄浦区');
+#{/else}
+</script>
+
+
+*{
 <table id="J_editAddr" border="0" cellpadding="0" cellspacing="0">
 #{if address!= null }
     <caption>编辑以下地址：</caption>
@@ -52,3 +209,4 @@
         new PCAS('addr-prov', 'addr-city', 'addr-dist', '上海市', '市辖区', '黄浦区');
     #{/else}
 </script>
+}*

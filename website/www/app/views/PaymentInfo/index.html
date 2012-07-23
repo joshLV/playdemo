@@ -1,31 +1,226 @@
 #{extends 'main.html' /}
 #{set title:'一百券 - 确认付款' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/y/payment.min.css', '/y/step.min.css'] /}
+    #{asset.css src:['/y/cart/flowstep.css', '/y/cart/payment.css'] /}
 #{/set}
 #{set 'moreScripts'}
-    #{asset.js src:['/u/payment_info.js'] /}
-<script type="text/javascript">
-    $( function(){
-        var do_not_need_epay = $("#do_not_need_epay").val();
-        $("#confirm").click(function(){$("#confirm_form").submit()});
-        $("#use_balance").click(function(){
-            if($(this).attr("checked") == "checked"){
-                if (do_not_need_epay == "1"){
-                    $("#other-pay").css("display","none");
-                    $("#confirm-pay").css("display","block");
-                }
-            }else{
-                if (do_not_need_epay == "1"){
-                    $("#other-pay").css("display","block");
-                    $("#confirm-pay").css("display","none");
-                }
-            }
-        });
-    });
-</script>
+    #{asset.js src:['/u/payment_info.js', '/y/payment.js'] /}
 #{/set}
 
+<div id="content" class="clearfix">
+    <div class="flowstep step3"></div>
+
+    #{if order && order.status == models.order.OrderStatus.UNPAID}
+    #{form @confirm() , id:"confirm_form"}
+    <input type="hidden" value="${order.orderNumber}" name="orderNumber"/>
+    %{
+        doNotNeedEPay = "0"
+        if (account.amount.compareTo(order.needPay) >= 0) {
+            doNotNeedEPay = "1"
+        }
+    }%
+    <input type="hidden" value="${doNotNeedEPay}" id="do_not_need_epay">
+    <div class="cashier">
+        <h3>一百券收银台</h3>
+        <div class="cashier-info">
+            <div class="inner clearfix">
+                <div class="order-num">共<em>${goodsNumber}</em>笔订单</div>
+                <div class="money-num">总金额：<em>${order.needPay}</em>元</div>
+            </div>
+        </div>
+        <div class="account">
+            <div class="account-name">你的账户：<strong>${user.loginName}</strong></div>
+            <div class="account-balance">可用余额：<strong>${account.amount}</strong>元</div>
+        </div>
+        %{
+            useBalanceDisplay = "block"
+            //只有一种情况不显示用余额付款的选项:订单金额大于0,并且账户余额是0
+            if(order.needPay.compareTo(BigDecimal.ZERO) > 0 && account.amount.compareTo(BigDecimal.ZERO) == 0){
+                useBalanceDisplay = "none"
+            }
+            useBalanceStatus=""
+            confirmPayDisplay = "none"
+            //当订单金额是0时,用余额付款选项默认勾选
+            if (order.needPay.compareTo(BigDecimal.ZERO) == 0) {
+                useBalanceStatus = "checked disabled"
+                confirmPayDisplay = "block"
+            }
+        }%
+        <div class="balance-payment">
+            <input type="checkbox" name="useBalance" id="use_balance" ${useBalanceStatus} />
+            <label for="balance-payment">
+                用余额付款<em>${account.amount.min(order.needPay)}</em>元
+                #{if account.amount.compareTo(order.needPay) < 0}
+                    剩余 <strong>${order.needPay.subtract(account.amount)}</strong> 元可选择其他付款方式付款。
+                #{/if}
+            </label>
+        </div>
+    </div>
+
+    <div class="onlinepay">
+        <h3 class="onlinepay-hd">在线支付</h3>
+        <div class="onlinepay-bd">
+            <dl class="d3fzhifu">
+                <dt>支付平台：</dt>
+                <dd class="clearfix">
+                    <div class="item">
+                        <input name="paymentSourceCode" type="radio" id="alipay" value="alipay"/>
+                        <label for="alipay"><img src="http://img.uhcdn.com/images/y/cart/zfb.png"/></label>
+                    </div>
+                </dd>
+            </dl>
+            <dl class="kuaiqian">
+                <dt>银行或机构支付：</dt>
+                <dd class="clearfix">
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_ICBC" value="99bill_ICBC"/>
+                        <label for="99bill_ICBC"><img src="http://img.uhcdn.com/images/y/cart/bank_icbc.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_CMB" value="99bill_CMB"/>
+                        <label for="99bill_CMB"><img src="http://img.uhcdn.com/images/y/cart/bank_cmb.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_ABC" value="99bill_ABC"/>
+                        <label for="99bill_ABC"><img src="http://img.uhcdn.com/images/y/cart/bank_abc.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_BCOM" value="99bill_BCOM"/>
+                        <label for="99bill_BCOM"><img src="http://img.uhcdn.com/images/y/cart/bank_bcom.png"/></label>
+                    </div>
+                    <!--
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_BJRCB" value="99bill_BJRCB"/>
+                        <label for="99bill_BJRCB"><img src="http://img.uhcdn.com/images/y/cart/bank_bjrcb.png"/></label>
+                    </div>
+                    -->
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_BOC" value="99bill_BOC"/>
+                        <label for="99bill_BOC"><img src="http://img.uhcdn.com/images/y/cart/bank_boc.png"/></label>
+                    </div>
+                    <!--
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_CBHB" value="99bill_CBHB"/>
+                        <label for="99bill_CBHB"><img src="http://img.uhcdn.com/images/y/cart/bank_cbhb.png"/></label>
+                    </div>
+                    -->
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_CCB" value="99bill_CCB"/>
+                        <label for="99bill_CCB"><img src="http://img.uhcdn.com/images/y/cart/bank_ccb.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_CEB" value="99bill_CEB"/>
+                        <label for="99bill_CEB"><img src="http://img.uhcdn.com/images/y/cart/bank_ceb.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_CIB" value="99bill_CIB"/>
+                        <label for="99bill_CIB"><img src="http://img.uhcdn.com/images/y/cart/bank_cib.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_GDB" value="99bill_GDB"/>
+                        <label for="99bill_GDB"><img src="http://img.uhcdn.com/images/y/cart/bank_gdb.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_CITIC" value="99bill_CITIC"/>
+                        <label for="99bill_CITIC"><img src="http://img.uhcdn.com/images/y/cart/bank_citic.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_CMBC" value="99bill_CMBC"/>
+                        <label for="99bill_CMBC"><img src="http://img.uhcdn.com/images/y/cart/bank_cmbc.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_CZB" value="99bill_CZB"/>
+                        <label for="99bill_CZB"><img src="http://img.uhcdn.com/images/y/cart/bank_czb.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_BEA" value="99bill_BEA"/>
+                        <label for="99bill_BEA"><img src="http://img.uhcdn.com/images/y/cart/bank_bea.png"/></label>
+                    </div>
+                    <!--
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_GZCB" value="99bill_GZCB"/>
+                        <label for="99bill_GZCB"><img src="http://img.uhcdn.com/images/y/cart/bank_gzcb.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_GZRCC" value="99bill_GZRCC"/>
+                        <label for="99bill_GZRCC"><img src="http://img.uhcdn.com/images/y/cart/bank_gzrcc.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_HSB" value="99bill_HSB"/>
+                        <label for="99bill_HSB"><img src="http://img.uhcdn.com/images/y/cart/bank_hsb.png"/></label>
+                    </div>
+                    -->
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_BOB" value="99bill_BOB"/>
+                        <label for="99bill_BOB"><img src="http://img.uhcdn.com/images/y/cart/bank_bob.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_HXB" value="99bill_HXB"/>
+                        <label for="99bill_HXB"><img src="http://img.uhcdn.com/images/y/cart/bank_hxb.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_HZB" value="99bill_HZB"/>
+                        <label for="99bill_HZB"><img src="http://img.uhcdn.com/images/y/cart/bank_hzb.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_NBCB" value="99bill_NBCB"/>
+                        <label for="99bill_NBCB"><img src="http://img.uhcdn.com/images/y/cart/bank_nbcb.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_NJCB" value="99bill_NJCB"/>
+                        <label for="99bill_NJCB"><img src="http://img.uhcdn.com/images/y/cart/bank_njcb.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_PAB" value="99bill_PAB"/>
+                        <label for="99bill_PAB"><img src="http://img.uhcdn.com/images/y/cart/bank_pab.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_POST" value="99bill_POST"/>
+                        <label for="99bill_POST"><img src="http://img.uhcdn.com/images/y/cart/bank_post.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_SDB" value="99bill_SDB"/>
+                        <label for="99bill_SDB"><img src="http://img.uhcdn.com/images/y/cart/bank_sdb.png"/></label>
+                    </div>
+                    <!--
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_SHB" value="99bill_SHB"/>
+                        <label for="99bill_SHB"><img src="http://img.uhcdn.com/images/y/cart/bank_shb.png"/></label>
+                    </div>
+                    -->
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_SHRCC" value="99bill_SHRCC"/>
+                        <label for="99bill_SHRCC"><img src="http://img.uhcdn.com/images/y/cart/bank_shrcc.png"/></label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="paymentSourceCode" id="99bill_SPDB" value="99bill_SPDB"/>
+                        <label for="99bill_SPDB"><img src="http://img.uhcdn.com/images/y/cart/bank_spdb.png"/></label>
+                    </div>
+                </dd>
+             </dl>
+            <a class="nextstep" id="confirm" href="#">下一步<b></b></a>
+        </div>
+    </div><!-- #other-pay END-->
+    #{/form}
+    #{/if}
+
+    #{if order && order.status != models.order.OrderStatus.UNPAID}
+    <div style="margin:20px auto">
+        订单已被处理!
+    </div>
+    #{/if}
+    #{if !order}
+    <div style="margin:20px auto">
+        对不起，找不到您所需要的订单:(
+    </div>
+    #{/if}
+
+</div>
+
+
+
+
+*{
 <div id="content">
     <div id="full_bg"></div>
     <div id="payment_result">
@@ -134,5 +329,4 @@
     </div>
     #{/if}
 </div>
-
-
+}*

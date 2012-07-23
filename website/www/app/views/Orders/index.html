@@ -1,15 +1,139 @@
 #{extends 'main.html' /}
 #{set title:'一百券 - 确认订单信息' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/y/step.css', '/y/orders.css'] /}
+    #{asset.css src:['/y/cart/flowstep.css', '/y//cart/order.css'] /}
 #{/set}
 #{set 'moreScripts'}
-    #{asset.js src:['/u/location.js', '/u/orders.js'] /}
+    #{asset.js src:['/y/order.js'] /}
 #{/set}
 
 <div id="content">
-    <ol class="buy-step step2 clearfix">
-        <li><span>1</span>查看购物车 <em>>></em></li>
+    <div class="flowstep step2"></div>
+
+    <div class="order">
+        <div class="addr" id="J_addr">
+        #{if address == null}
+            <div class="addr-hd"><b>收货地址</b></div>
+            <div class="addr-bd">
+                #{include '/Addresses/form.html'/}
+            </div><!-- .addr-hd -->
+        #{/if}
+        #{else}
+        <div class="addr-hd"><b>收货地址</b></div>
+            <div class="addr-bd">
+                <div class="addr-all" id="J_addrAll">
+                    <ul class="addr-list" id="J_addrList">
+                        #{include '/Addresses/index.html'/}
+                    </ul>
+                    <div class="addr-new">
+                        <input type="radio" name="addr" id="addrId_new"/>
+                        <label for="addrId_new">添加新地址</label>
+                    </div>
+                    <div id="J_addrEditBox"></div>
+                    <a class="save-addr" id="J_saveAddr" href="#">送到这个地址</a>
+                </div>
+            </div><!-- .addr-hd -->
+        #{/else}
+        </div>
+        <table class="orderlist">
+            <caption>产品清单</caption>
+            <thead>
+                <tr>
+                    <th align="left">商品</th>
+                    <th>单价（元）</th>
+                    <th>数量</th>
+                    <th>小计</th>
+                </tr>
+            </thead>
+            <tbody>
+                #{set i:0} #{/set}
+                #{list rCartList, as:'rCart'}
+                <tr>
+                    <td style="text-align:left">${rCart.goods.name}</td>
+                    <td>${rCart.goods.salePrice}</td>
+                    <td>${rCart.number}</td>
+                    #{if (++i) == 1 }
+                    <td rowspan="${rCartList.size()}" valign="middle">
+                        ${rCartAmount.formatCurrency('CNY').raw()}<br/>
+                        （含${models.order.Order.FREIGHT.formatCurrency('CNY').raw()}元运费）</td>
+                    #{/if}
+                </tr>
+                #{/list}
+                #{set i:0} #{/set}
+            <tbody>
+        </table>
+        <div class="freight">运费：￥12.00</div>
+        <div class="subtotal">商品共3件，合计：<em>312.00</em>元</div>
+    </div><!-- .order -->
+
+    #{form @Orders.create(), id:'order_create_form' }
+    <div class="order">
+        <div class="mobi">
+            <div class="mobi-hd">电子凭证-收货手机</div>
+            <div class="mobi-bd">
+                <div class="receive-mobi"><em>*</em>接收手机：<input type="text" class="mobi-num" name="mobile" value="${user?.mobile}" id="ecart_mobile" /></div>
+                <dl><dt>历史手机：</dt>
+                    <dd class="history-mobi">
+                        <span class="mobi-item">19283829482</span>
+                        <span class="mobi-item">16223789087</span>
+                        <span class="mobi-item">18845674928</span>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+        <table class="orderlist">
+            <caption>产品清单</caption>
+            <thead>
+                <tr>
+                    <th align="left">商品</th>
+                    <th>单价（元）</th>
+                    <th>数量</th>
+                    <th>小计</th>
+                </tr>
+            </thead>
+            <tbody>
+                #{set j:0/}
+                #{list eCartList, as:'eCart'}
+                <tr>
+                    <td style="text-align:left">${eCart.goods.name}
+                    #{if eCart.goods.limitNumber > 0}
+                        <span id="limitNumber" style="color:#f50">（限购${eCart.goods.limitNumber}件）
+                    #{/if}
+                    </td>
+                    <td>${eCart.goods.salePrice.formatCurrency('CNY').raw()}</td>
+                    <td>${eCart.number}</td>
+                    #{if (++j) == 1 }
+                    <td rowspan="${eCartList.size()}" valign="middle">${eCartAmount.formatCurrency('CNY').raw()}</td>
+                    #{/if}
+                </tr>
+                #{/list}
+            <tbody>
+        </table>
+        <div class="subtotal">商品共3件，合计：<em>312.00</em>元</div>
+    </div><!-- .order -->
+    
+    #{if rCartList.size() > 0 || eCartList.size() > 0}
+    <div class="explain">
+        <div class="explain-hd" id="J_explainHd">附加说明</div>
+        <div class="explain-bd"><textarea class="explain-text" id="J_explainText" name="remark" style="display:none"></textarea></div>
+    </div><!-- .explain -->
+    <div class="totalize">
+        商品共3件，总合计：<em>${goodsAmount.formatCurrency('CNY').raw()}</em>元 
+        <a class="confirm-order" id="J_confirmOrder" href="#">确认下单<b></b></a>
+    </div><!-- .totalize -->
+    #{/if}
+    #{else}
+        对不起，您的购物车内没有商品
+    #{/else}
+
+    <input type="hidden" name="items" id="items" value="${items}" />
+    <input type="hidden" id="addressId" />
+    #{/form}
+</div>
+
+*{
+<div id="content">
+    <ol class="buy-step step2 clearfix"> <li><span>1</span>查看购物车 <em>>></em></li>
         <li class="buy-step-curr"><span>2</span>确认订单信息 <em>>></em></li>
         <li><span>3</span>确认付款 <em>>></em></li>
         <li><span>4</span>成功提交订单 <em>>></em></li>
@@ -25,7 +149,7 @@
                 <ul id="J_addrList">
                 *{
                     #{include '/Addresses/index.html'/}
-                }*
+                } *
                 </ul>
                 <div id="J_addrEditBox"></div>
                 <a class="confirm" id="J_confirm" href="#">送到这个地址</a>
@@ -122,3 +246,4 @@
         #{/else}
     #{/form}
 </div>
+*}

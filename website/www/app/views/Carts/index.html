@@ -1,32 +1,27 @@
 #{extends 'main.html' /}
 #{set title:'一百券 - 购物车' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/y/carts.min.css', '/y/step.min.css'] /}
+    #{asset.css src:['/y/cart/flowstep.css', '/y/cart/viewcart.css'] /}
 #{/set}
 #{set 'moreScripts'}
     #{asset.js src:['/u/bignumber.js','/u/carts.js'] /}
 #{/set}
 
-<div id="content">
-    <ol class="buy-step step1 clearfix">
-        <li class="buy-step-curr"><span>1</span>查看购物车 <em>>></em></li>
-        <li><span>2</span>确认订单信息 <em>>></em></li>
-        <li><span>3</span>确认付款 <em>>></em></li>
-        <li><span>4</span>成功提交订单 <em>>></em></li>
-    </ol>
-
-    <table id="carts-list">
+<div id="content" class="clearfix">
+    <div class="flowstep step1"></div>
+    <div class="cartlist">
+        <h3>我的购物车</h3>
+        <table>
         <thead>
-        <tr>
-            <th class="select-all" width="80"><input type="checkbox" name="select_all_checkbox"/> <label
-                    for="select_all_checkbox">全选</label></th>
-            <th width="420">商品</th>
-            <th width="100">类型</th>
-            <th width="90">单价（元）</th>
-            <th width="90">数量</th>
-            <th width="90">小计</th>
-            <th width="90">操作</th>
-        </tr>
+            <tr>
+                <th class="select-all" width="80"><input type="checkbox" name="select_all_checkbox"/> <label for="select_all_checkbox">全选</label></th>
+                <th width="420">商品</th>
+                <th width="100">类型</th>
+                <th width="90">单价（元）</th>
+                <th width="90">数量</th>
+                <th width="90">小计</th>
+                <th width="90">操作</th>
+            </tr>
         </thead>
         <tbody>
         #{set boughtNumber:0/}
@@ -35,8 +30,8 @@
         #{if user !=null} %{boughtNumber = cartItem.itemsNumber(user,cartItem.goods.id)}%#{/if}
         <input type="hidden" id="boughtNumber_${cartItem.goods.id}" value="${boughtNumber}"/>
         <tr id="row_${cartItem.goods.id}">
-            <td>
-                #{if cartItem.goods.limitNumber >0 && cartItem.goods.limitNumber-boughtNumber==0}
+            <td class="select">
+                #{if cartItem.goods.limitNumber > 0 && cartItem.goods.limitNumber-boughtNumber == 0}
                   <input type="checkbox" disabled="false" />
                 #{/if}
                 #{else}
@@ -44,40 +39,35 @@
                 #{/else}
             </td>
             <td class="goods-name"><img src="${cartItem.goods.imageTinyPath}"/> ${cartItem.goods.name}
-                      #{if cartItem.goods.limitNumber >0}
+                      #{if cartItem.goods.limitNumber > 0}
                       <span id="limitNumber" style="display:block;color:#f50">（限购${cartItem.goods.limitNumber}件
                           #{if user !=null},您已经购买${boughtNumber}件#{/if})</span>
                     #{/if}
                 <span id="limit_goods_${cartItem.goods.id}"style="color:#f50">
-                #{if cartItem.goods.id==limit_goodsId && cartItem.goods.limitNumber>0 && cartItem.goods.limitNumber-boughtNumber==0}不能继续购买，请确认! #{/if}</span>
+                #{if cartItem.goods.id==limit_goodsId && cartItem.goods.limitNumber > 0 && cartItem.goods.limitNumber-boughtNumber==0}不能继续购买，请确认! #{/if}</span>
             </td>
             <td>${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
             <td id="price_${cartItem.goods.id}">${cartItem.goods.salePrice}</td>
             <td>
-                <a href="#" class="reduce_box" name="${cartItem.goods.id}">
-                    <img src="@{'/public/images/sub_anniu.jpg'}" id="sub_img_${cartItem.goods.id}"/>
-                </a>
-                #{if cartItem.goods.limitNumber >0}
+                <span class="reduce-btn" name="${cartItem.goods.id}"></span>
+                #{if cartItem.goods.limitNumber > 0}
                      #{if cartItem.goods.limitNumber-boughtNumber > 0}
-                      <input class="num_input" type="text" value="${cartItem.goods.limitNumber-boughtNumber}" id="num_${cartItem.goods.id}"/>
+                      <input class="num-ipt" type="text" value="${cartItem.goods.limitNumber-boughtNumber}" id="num_${cartItem.goods.id}"/>
                      #{/if}
                      #{else}
-                      <input class="num_input" type="text" value="1" id="num_${cartItem.goods.id}"/>
+                      <input class="num-ipt" type="text" value="1" id="num_${cartItem.goods.id}"/>
                      #{/else}
                 #{/if}
                 #{else}
-                    <input class="num_input" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}"/>
+                    <input class="num-ipt" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}"/>
                 #{/else}
                 <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}"/>
                 <input type="hidden" value="${cartItem.goods.baseSale}" id="stock_${cartItem.goods.id}">
                 <input type="hidden" value="${cartItem.goods.limitNumber}" id="limit_${cartItem.goods.id}">
-                <a class="add_box" href="#" name="${cartItem.goods.id}">
-                    <img src="@{'/public/images/add_anniu.jpg'}" id="add_img_${cartItem.goods.id}"/>
-                </a>
-
+                <span class="add-btn" name="${cartItem.goods.id}"></span>
             </td>
             <td><span class="strong_gray" id="subtotal_${cartItem.goods.id}">
-              #{if cartItem.goods.limitNumber >0}
+              #{if cartItem.goods.limitNumber > 0}
                     #{if cartItem.goods.limitNumber-boughtNumber > 0}${cartItem.goods.salePrice?.multiply(cartItem.goods.limitNumber-boughtNumber)}#{/if}
                     #{else}${cartItem.goods.salePrice}#{/else}
                 #{/if}
@@ -95,35 +85,38 @@
         </tr>
         #{/if}
         </tbody>
-    </table>
+        </table>
+    </div><!-- .cartlist -->
 
-    <div id="carts-ft" class="clearfix">
-        <div class="select-all">
-            <input type="checkbox" id="uuuu" value="" name="select_all_checkbox"/>全选
-        </div>
-        <div class="delete-all">
-            <button id="batch_delete">批量删除</button>
-        </div>
-        <div class="carts-info">
-            商品共<span id="total_num">0</span>件，总合计（不含运费）：<b id="carts_amount"></b>元
-        </div>
-        <div class="confirm-order">
-            <a href="/orders?items=" id="confirm_to_order">确认结账</a>
-        </div>
+    <div class="cart-action">
+        <input type="checkbox" name="select_all_checkbox"/>全选
+        <a href="#" id="batch_delete">批量删除</a>
     </div>
 
-    <div id="recent" class="wrap">
-        <div class="recent-hd">最近浏览商品</div>
-        <ul class="recent-bd clearfix">
-        #{list items: sawGoodsList, as:'goods'}
-            <li>
-                <a href="/g/${goods.id}" target="_blank"><img src="${goods.imageMiddlePath}" width="170" height="130"/></a>
+    <div class="cart-total">
+        商品共<span id="total_num">0</span>件，总合计（不含运费）：<b class="cart-amount" id="carts_amount">234.00</b>元
+        <a class="confirm-order" href="/orders?items=" id="confirm_to_order">确认订单<b></b></a>
+    </div>
 
-                <p><a href="/g/${goods.id}" target="_blank">${goods.name}</a></p>
-                <span>原价:<del>${goods.faceValue}</del> | ${goods.discountExpress}</span>
-                <span>现价:<strong>${goods.salePrice.formatCurrency('CNY')}</strong></span>
+    <div class="recent">
+        <div class="hd">最近浏览商品</div>
+        <ul class="bd clearfix">
+        #{list items: sawGoodsList, as:'goods'}
+            #{set i:1/}
+            #{if i++==5}
+            <li class="last">
+            #{/if}
+            #{else}
+            <li>
+            #{/else}
+                <div class="image"><a href="/g/${goods.id}" target="_blank"><img src="${goods.imageSmallPath}" alt="${goods.name}"/></a></div>
+                <div class="title"><a href="/g/${goods.id}" target="_blank"></a>${goods.name}</div>
+                <div class="attri">
+                    <del>原价：${goods.faceValue}</del>
+                    <span #{if goods.materialType ==models.sales.MaterialType.ELECTRONIC}class="coupon" #{/if}#{else}class="coupon entity"#{/else}>电子券</span></div>
+                <div class="price">现价：<b>&yen;${goods.salePrice}</b></div>
             </li>
         #{/list}
         </ul>
-    </div>
+    </div><!-- .recent -->
 </div>

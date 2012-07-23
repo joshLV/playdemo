@@ -1,12 +1,69 @@
 #{extends 'main.html' /}
 #{set title:'一百券 - 确认付款' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/y/payment.min.css', '/y/step.min.css'] /}
+    #{asset.css src:['/y/cart/flowstep.css', '/y/cart/payok.css'] /}
 #{/set}
 #{set 'moreScripts'}
     #{asset.js src:['/u/payment_info.js'] /}
 #{/set}
 
+%{baseDomain = play.Play.configuration.getProperty("application.baseDomain")}%
+<div id="content" class="clearfix">
+    <div class="flowstep step4"></div>
+
+    #{if order}
+        #{if order.status == models.order.OrderStatus.PAID}
+            <div class="payok yuepay">
+                <h3>一百券收银台</h3>
+                <div class="pay-ok">恭喜您付款成功！</div>
+                <div class="pay-btn">
+                    <a class="vieworder" href="http://home.${baseDomain}/orders/${order.orderNumber}">查看订单详情<b></b></a>
+                    <a class="goshop" href="http://www.${baseDomain}">继续购物<b></b></a>
+                </div>
+                <div class="note"><i>注</i>：您还可以在 “ <a href="http://www.${baseDomain}" target="_blank">我的一百券</a> > <a href="http://www.${baseDomain}" target="_blank">我购买的商品</a> > <a href="http://home.${baseDomain}/orders/${order.orderNumber}" target="_blank">订单详情</a>”查看商品券号或配送详情，凭短信的券号到取货门店直接取货。电子券商品，只要您末进行消费，且保持一百券订单有效，我们将提供随时退款的服务。我们的客服电话：400-6262-166  我们的客服邮件是：uhuila@seewi.com.cn
+                </div>
+            </div>
+        #{/if}
+        #{else }
+            <div class="payok alipay">
+                <h3>一百券收银台</h3>
+                <div class="pay-money">你已选择 ${paymentSource.name} 支付 <span>${order.discountPay}</span>元</div>
+            #{form @payIt(), target:play.Play.runingInTestMode() ? "_self" : "_blank", id: "pay_it_form"}
+                <input name="paymentCode" value="${paymentSource.code}" type="hidden"/>
+                <input name="orderNumber" value="${order.orderNumber}" type="hidden"/>
+                <a class="confirm-pay" id="confirm_pay">确认支付<b></b></a>
+            #{/form}
+                <a href="/payment_info/${order.orderNumber}" class="reselect">重新选择支付方式</a>
+            </div>
+            <script>
+            $(function() {
+                $(window).scroll(function () {
+                    reset_result_dialog()
+                });
+
+                $(window).resize(function () {
+                    reset_result_dialog()
+                });
+
+                $("#confirm_pay").click(function () {
+                    $("#full_bg").css({display:"block"});
+                    reset_result_dialog();
+                    $(this).attr("disabled", "disabled");
+                    $("#pay_it_form").submit();
+                });
+            });
+            </script>
+        #{/else}
+    #{/if}
+
+    #{if !order}
+    <div> 对不起，找不到您所需要的订单 :(</div>
+    #{/if}
+</div>
+
+
+
+*{
 %{baseDomain = play.Play.configuration.getProperty("application.baseDomain")}%
 <div id="content">
     <div id="full_bg"></div>
@@ -99,3 +156,4 @@
     <div class="order-num"> 对不起，找不到您所需要的订单:(</div>
     #{/if}
 </div>
+)*
