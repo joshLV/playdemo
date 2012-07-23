@@ -739,6 +739,9 @@ public class Goods extends Model {
     }
 
     public static List<Goods> findInIdList(List<Long> goodsIds) {
+        if(goodsIds == null || goodsIds.size() == 0) {
+            return new ArrayList<>();
+        }
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
                 "and g.id in :ids");
