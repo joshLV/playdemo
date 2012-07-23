@@ -35,7 +35,7 @@
         <a href="http://www.${baseDomain}"><span>继续购物</span></a>
     </div>
 </div>
-
+#{if recentGoodsList.size()>0}
  <div class="wrap">
     <div class="boutique-hd">近日成交商品</div>
     <ul class="boutique-bd clearfix">
@@ -50,3 +50,4 @@
     #{/list}
     </ul>
 </div>
+#{/if}

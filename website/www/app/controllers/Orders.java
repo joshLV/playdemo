@@ -1,11 +1,13 @@
 package controllers;
 
 import static play.Logger.warn;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
@@ -16,6 +18,7 @@ import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
 import models.sales.MaterialType;
+import org.hibernate.usertype.UserType;
 import play.Logger;
 import play.Play;
 import play.data.validation.Validation;
@@ -33,7 +36,8 @@ import controllers.modules.website.cas.SecureCAS;
  */
 @With({SecureCAS.class, WebsiteInjector.class})
 public class Orders extends Controller {
-      public static String WWW_URL = Play.configuration.getProperty("application.baseUrl", "");
+    public static String WWW_URL = Play.configuration.getProperty("application.baseUrl", "");
+
     /**
      * 预览订单.
      *
@@ -46,7 +50,10 @@ public class Orders extends Controller {
         }
         User user = SecureCAS.getUser();
         showOrder(items);
-        render(user);
+
+        List<String> orderItems_mobiles = OrderItems.getMobiles(user);
+
+        render(user, orderItems_mobiles);
     }
 
     private static void showOrder(String items) {
@@ -88,6 +95,7 @@ public class Orders extends Controller {
         }
         BigDecimal totalAmount = eCartAmount.add(rCartAmount);
         BigDecimal goodsAmount = rCartList.size() == 0 ? eCartAmount : totalAmount.subtract(Order.FREIGHT);
+
 
         renderArgs.put("goodsAmount", goodsAmount);
         renderArgs.put("totalAmount", totalAmount);
@@ -140,9 +148,9 @@ public class Orders extends Controller {
             for (String key : validation.errorsMap().keySet()) {
                 warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
-
+            List<String> orderItems_mobiles = OrderItems.getMobiles(user);
             showOrder(items);
-            render("Orders/index.html", user);
+            render("Orders/index.html", user, orderItems_mobiles);
         }
 
         //创建订单
@@ -156,11 +164,11 @@ public class Orders extends Controller {
         if (WebsiteInjector.getUserWebIdentification() != null) {
             order.webIdentificationId = WebsiteInjector.getUserWebIdentification().id;
         }
-        
+
         if (defaultAddress != null) {
             order.setAddress(defaultAddress);
         }
-        
+
         //添加订单条目
         try {
             for (models.sales.Goods goodsItem : goodsList) {
@@ -217,7 +225,7 @@ public class Orders extends Controller {
                     Long boughtNumber = OrderItems.itemsNumber(user, goodsId);
                     boolean isBuyFlag = Order.checkLimitNumber(user, goodsId, boughtNumber, number);
                     if (isBuyFlag) {
-                        redirect(WWW_URL+"/g/"+goodsId);
+                        redirect(WWW_URL + "/g/" + goodsId);
                         return;
                     }
                     //取出商品的限购数量

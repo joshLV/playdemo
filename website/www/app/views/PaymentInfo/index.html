@@ -4,7 +4,30 @@
     #{asset.css src:['/y/cart/flowstep.css', '/y/cart/payment.css'] /}
 #{/set}
 #{set 'moreScripts'}
-    #{asset.js src:['/u/payment_info.js', '/y/payment.js'] /}
+    #{asset.js src:['/u/payment_info.js'] /}
+<script type="text/javascript">
+      $(function(){
+    var do_not_need_epay = $("#do_not_need_epay").val();
+    $("#confirm").click(function(){
+        $("#confirm_form").submit();
+    });
+
+    $("#use_balance").click(function(){
+        if($(this).attr("checked") == "checked"){
+            if (do_not_need_epay == "1"){
+                $("#other-pay").css("display","none");
+                $("#confirm-pay").css("display","block");
+            }
+        } else {
+            if (do_not_need_epay == "1"){
+                $("#other-pay").css("display","block");
+                $("#confirm-pay").css("display","none");
+            }
+        }
+    });
+});
+
+</script>
 #{/set}
 
 <div id="content" class="clearfix">
@@ -46,7 +69,7 @@
                 confirmPayDisplay = "block"
             }
         }%
-        <div class="balance-payment">
+        <div id="payment" class="balance-payment">
             <input type="checkbox" name="useBalance" id="use_balance" ${useBalanceStatus} />
             <label for="balance-payment">
                 用余额付款<em>${account.amount.min(order.needPay)}</em>元
@@ -55,9 +78,10 @@
                 #{/if}
             </label>
         </div>
+         <button id="confirm-pay" type="submit" style="display:${confirmPayDisplay}" >确认付款</button>
     </div>
 
-    <div class="onlinepay">
+    <div id="other-pay" class="onlinepay">
         <h3 class="onlinepay-hd">在线支付</h3>
         <div class="onlinepay-bd">
             <dl class="d3fzhifu">
@@ -72,6 +96,17 @@
             <dl class="kuaiqian">
                 <dt>银行或机构支付：</dt>
                 <dd class="clearfix">
+                    *{#{list items:paymentSources, as:'payment'}}*
+                        *{#{if payment.paymentCode =='99bill'}}*
+
+                            *{<div class="item">}*
+                                *{<input type="radio" name="paymentSourceCode" id="${payment.code}"}*
+                                       *{value="${payment.code}"/>}*
+                                *{<label for="${payment.code}"><img src="/public/${payment.logo}"/></label>}*
+                            *{</div>}*
+                        *{#{/if}}*
+                    *{#{/list}}*
+
                     <div class="item">
                         <input type="radio" name="paymentSourceCode" id="99bill_ICBC" value="99bill_ICBC"/>
                         <label for="99bill_ICBC"><img src="http://img.uhcdn.com/images/y/cart/bank_icbc.png"/></label>
