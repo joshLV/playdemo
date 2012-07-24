@@ -66,6 +66,7 @@ GET     /orders_number                          Orders.checkLimitNumber
 GET     /orders/addresses                       Addresses.index
 POST    /orders/addresses/new                   Addresses.create
 GET     /orders/addresses/new                   Addresses.add
+GET     /orders/addresses/list                  Addresses.list
 GET     /orders/addresses/default               Addresses.showDefault
 GET     /orders/addresses/{id}                  Addresses.show
 GET     /orders/addresses/{id}/edit             Addresses.edit

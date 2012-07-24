@@ -1,13 +1,14 @@
-#{list addressList, as:'address'}
-    #{set i:1/}
-    <li class="#{if i++==1}first #{/if}clearfix" id="addr-li-${address?.id}">
-        <div class="addr-one">
-            <input type="radio" name="addr" #{if address?.isDefault}checked#{/if} id="addrId_${address?.id}" value="${address?.id}" />
-            <label for="addrId_${address?.id}"><span class="addr-user">${address?.name}</span> ${address?.fullAddress} ${address.mobile}</label>
+<div class="addr-hd"><b>收货地址</b></div>
+<div class="addr-bd">
+    <div class="addr-all" id="J_addrAll">
+        <ul class="addr-list" id="J_addrList">
+            #{include '/Addresses/list.html'/}
+        </ul>
+        <div class="addr-new">
+            <input type="radio" name="addr" id="addrId_new"/>
+            <label for="addrId_new">添加新地址</label>
         </div>
-        <div class="addr-action">
-            <a class="addr-edit" data-addrid="${address?.id}" href="#">编辑</a>
-            <a class="addr-del" data-addrid="${address?.id}" href="#">删除</a>
-        </div>
-    </li>
-#{/list}
+        <div id="J_addrEditBox"></div>
+        <a class="save-addr" id="J_saveAddr" href="#">送到这个地址</a>
+    </div>
+</div><!-- .addr-hd -->

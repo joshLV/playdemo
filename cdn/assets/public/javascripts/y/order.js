@@ -26,7 +26,8 @@ $(function() {
             $("#err-phone").html("手机和电话请至少填写一个！");
             return;
         }
-        if ( !/^[1-9]\d{10}$/.test($.trim(addrMobile.val())) && $.trim(addrPhone.val()) == '' ) {
+        var mobi = /^((15)\d{9})$|^((13)\d{9})$|^((18)\d{9})$/i;
+        if ( !mobi.test($.trim(addrMobile.val())) && $.trim(addrPhone.val()) == '' ) {
             $("#err-phone").html("手机号码格式不正确！");
             return;
         }
@@ -80,9 +81,10 @@ $(function() {
     $('.addr-del').live('click', function(ev){
         ev.preventDefault();
 
-        var addrId = $(this).attr('data-addrid');
-        var isDefault = $("#addrId_" + addrId).attr('checked') == 'checked';
+        var addrId = $(this).attr('data-addrid'),
+            isDefault = $("#addrId_" + addrId).attr('checked') == 'checked';
 
+        $('#J_addrEditBox').html('');
         $(this).parent().append('<div class="addr-del-confirm">您要删除该地址吗？<br><b>确定删除</b> <b>取消</b><img src="http://img.uhcdn.com/images/u/o_jian.png" /></div>');
 
         $('.addr-del-confirm').live('click', function(ev){
@@ -95,8 +97,7 @@ $(function() {
                         $('#addr-li-' + addrId).remove();
                         //如果被删除的地址是默认地址的话，则默认收货地址信息和地址列表都要重新加载
                         if (isDefault) {
-                            $('#J_addrCurrent').load('/orders/addresses/default');
-                            $('#J_addrList').load('/orders/addresses');
+                            $('#J_addrList').load('/orders/addresses/list');
                         }
                     }
                 });
@@ -174,6 +175,11 @@ $(function() {
             }
         });
 
+    });
+
+    $('#J_modifyAddr').live('click', function(ev){
+        ev.preventDefault();
+        $('#J_addr').load('/orders/addresses', function(){});
     });
 
 });

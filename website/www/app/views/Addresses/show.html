@@ -1,1 +1,15 @@
-#{include '/Addresses/line.html'/}
+<div class="addr-hd"><b>收货地址</b> <a href="" id="J_modifyAddr">[修改]</a></div>
+<div class="addr-bd">
+    <div class="addr-sure">
+        <span class="sure-name">${address?.name}</span>
+        <span class="sure-addr">${address?.fullAddress}</span>
+        <span class="sure-mobi">
+            #{if address?.mobile == null}
+                ${address?.phoneNumber}
+            #{/if}
+            #{else}
+                ${address?.mobile}
+            #{/else}
+        </span>
+    </div>
+</div><!-- .addr-hd -->

@@ -173,7 +173,6 @@
 .orderlist tbody td {
     text-align: center;
     padding: 8px 3px;
-    border-bottom: 1px solid #7a7f89;
 }
 .freight,
 .subtotal {
@@ -183,6 +182,9 @@
 .subtotal em {
     color: #f50;
 }
+/* .freight { */
+    /* border-top: 1px solid #7a7f89; */
+/* } */
 
 .mobi .mobi-hd {
     color: #666;
@@ -206,16 +208,18 @@
     border: 1px solid #a5afc3;
 }
 .mobi .mobi-bd dl {
-    padding: 15px 0;
+    padding: 15px 0 15px 70px;
 }
 .mobi .mobi-bd dt {
     float: left;
+    margin-left: -70px;
+    _margin-left: -35px;
     padding: 5px 0 5px 10px;
 }
 .mobi .mobi-bd dl span {
     display: inline-block;
     padding: 5px 10px;
-    margin-right: 20px;
+    margin: 0 20px 10px 0;
     border: 1px solid #ebecef;
     color: #afafaf;
     cursor: pointer;

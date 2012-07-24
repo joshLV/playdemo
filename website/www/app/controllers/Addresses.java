@@ -23,6 +23,12 @@ public class Addresses extends Controller {
         render(addressList);
     }
 
+    public static void list() {
+
+        List<Address> addressList = Address.findByOrder(SecureCAS.getUser());
+        render(addressList);
+    }
+
     public static void add() {
         render();
     }
