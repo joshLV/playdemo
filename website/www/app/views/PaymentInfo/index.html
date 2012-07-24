@@ -71,7 +71,7 @@
         }%
         <div id="payment" class="balance-payment">
             <input type="checkbox" name="useBalance" id="use_balance" ${useBalanceStatus} />
-            <label for="balance-payment">
+            <label for="use_balance">
                 用余额付款<em>${account.amount.min(order.needPay)}</em>元
                 #{if account.amount.compareTo(order.needPay) < 0}
                     剩余 <strong>${order.needPay.subtract(account.amount)}</strong> 元可选择其他付款方式付款。
