@@ -3,6 +3,7 @@ package controllers;
 import models.sms.SMSUtil;
 import play.mvc.Controller;
 import com.uhuila.common.util.FieldCheckUtil;
+import play.Logger;
 
 public class LingShiSmsReceivers extends Controller {
     /**
@@ -14,6 +15,7 @@ public class LingShiSmsReceivers extends Controller {
         String msg = params.get("Content");
         String code = params.get("AppendID");
 
+        Logger.info("LingShiSMS: mobile=" + mobile + ", msg=" + msg + ", code=" + code);
         if (msg.contains("#")) {
             // 店员验证
             renderText(SmsReceiverUtil.checkClerk(mobile, msg, code));

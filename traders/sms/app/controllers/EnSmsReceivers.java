@@ -12,6 +12,7 @@ import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import play.mvc.Controller;
+import play.Logger;
 
 import java.util.Date;
 
@@ -29,7 +30,7 @@ public class EnSmsReceivers extends Controller {
         String dt = params.get("dt");
         String code = params.get("code");
 
-        System.out.println("mobile=" + mobile + ",msg=" + msg + ",username="
+        Logger.info("EnSmsReceiver: mobile=" + mobile + ",msg=" + msg + ",username="
                 + username + ",pwd=" + pwd + ",dt=" + dt + ",code=" + code);
 
         // TODO: 检查dt和pwd
