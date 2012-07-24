@@ -1,3 +1,6 @@
+body {
+	overflow-y: scroll;
+}
 #content {
     clear: both;
     width: 960px;
