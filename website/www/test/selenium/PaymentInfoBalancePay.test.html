@@ -44,9 +44,9 @@ load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_uni
     *{verifyNotVisible('id=other-pay')}*
     *{verifyVisible('id=confirm-pay')}*
 
-    clickAndWait('id=confirm')
+   *{ clickAndWait('id=confirm')
     verifyTextPresent('恭喜您付款成功')
     openAndWait('/payment_info/${order.orderNumber}')
-    verifyTextPresent('已被处理')
+    verifyTextPresent('已被处理')}*
 #{/selenium}
 
