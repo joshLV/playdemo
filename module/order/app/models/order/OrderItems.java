@@ -157,4 +157,19 @@ public class OrderItems extends Model {
         }
         return sn.toString();
     }
+
+    /**
+     * 取得购买过得手机号
+     * @param user
+     * @return
+     */
+	public static List<String> getMobiles(User user) {
+		 Query query = play.db.jpa.JPA.em().createQuery(
+	                "select o from OrderItems o where o.order.userId = :userId and o.order.userType =:userType ");
+	        query.setParameter("userId",user.id);
+	        query.setParameter("userType", AccountType.CONSUMER);
+	        List<String> mobileList = query.getResultList();
+		
+		return mobileList;
+	}
 }
