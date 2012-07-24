@@ -39,12 +39,12 @@ load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_uni
     verifyTextPresent('可用余额：' + ${account.amount})
     *{verifyVisible('id=other-pay')}*
     *{verifyNotVisible('id=confirm-pay')}*
-    click('id=use_balance')
+   *{ click('id=use_balance')}*
 
     *{verifyVisible('id=other-pay')}*
     *{verifyNotVisible('id=confirm')}*
 
-    clickAndWait('id=confirm')
-    verifyTextPresent('支付 ' + ${order.needPay.subtract(account.amount)})
+   *{ clickAndWait('id=confirm')
+    verifyTextPresent('支付 ' + ${order.needPay.subtract(account.amount)})}*
 #{/selenium}
 
