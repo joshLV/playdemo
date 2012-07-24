@@ -81,7 +81,7 @@ beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
     #{vx.cancelButton url:'/goods', class:'btn btn-primary'/}
 #{/if}
     <input type="hidden" id="status" name="goods.status" value="${goods?.status?:'OFFSALE'}"/>
-    <input type="hidden" name="goods.title" value="${goods?.title}"/>
+    <input type="hidden" name="goods.title" value="${goods?.title?:'未设置'}"/>
 
 </div>
 <script type="text/javascript">
