@@ -96,7 +96,7 @@ public class Resaler extends Model {
     @Required
     public String identityNo;
 
-    @Column(name = "key")
+    @Column(name = "app_key")
     @Index(name = "app_key")
     public String appKey;
 
