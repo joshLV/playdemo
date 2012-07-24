@@ -154,8 +154,13 @@ $(function() {
 
     // 附加留言
     $('#J_explainHd').click(function(){
-        $(this).addClass('minus');
-        $('#J_explainText').show();
+        if (!$(this).hasClass('minus')) {
+            $(this).addClass('minus');
+            $('#J_explainText').show();
+        } else {
+            $(this).removeClass('minus');
+            $('#J_explainText').hide();
+        }
     });
 
 
