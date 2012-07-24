@@ -57,6 +57,13 @@
 .balance-payment em {
     color: #fb7512;
 }
+.confirmpay {
+    padding: 0 0 5px 138px;
+    background-color: #f5f9ea;
+}
+.confirmpay .confirm-pay {
+    padding: 5px 20px;
+}
 
 .onlinepay {
     margin: 20px 0;
