@@ -50,6 +50,8 @@ body {
     color: #fb7512;
 }
 .balance-payment {
+    overflow: hidden;
+    height: 19px;
     padding: 28px 140px;
     border-top: 1px solid #e3e8d9;
 }
@@ -65,7 +67,9 @@ body {
     background-color: #f5f9ea;
 }
 .confirmpay .confirm-pay {
-    padding: 5px 20px;
+    width: 127px;
+    border: 0;
+    padding: 10px 40px;
 }
 
 .onlinepay {

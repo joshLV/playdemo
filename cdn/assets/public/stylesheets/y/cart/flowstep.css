@@ -29,6 +29,7 @@
 .balance-payment,
 .cartlist .add-btn,
 .cartlist .reduce-btn,
+.confirmpay .confirm-pay,
 .cart-total .confirm-order b,
 .mobi .mobi-bd dl span.selected {
     /* background: url(../ico/sprite.png) no-repeat -9999px -9999px; */
@@ -74,4 +75,7 @@
 }
 .goshop b {
     background-position: 0 -299px;
+}
+.confirmpay .confirm-pay {
+    background-position: 0 -379px;
 }
