@@ -1090,11 +1090,7 @@ public class Goods extends Model {
 
         query.setParameter("goodsId", goods.id);
         query.setParameter("supplierId", goods.supplierId);
-        query.setParameter("expireAt", new
-
-                Date()
-
-        );
+        query.setParameter("expireAt", new Date());
         query.setMaxResults(limit);
         List<Goods> goodsList = query.getResultList();
         return goodsList;

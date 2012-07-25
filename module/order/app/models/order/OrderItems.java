@@ -17,7 +17,7 @@ import java.util.List;
 public class OrderItems extends Model {
 
     private static final long serialVersionUID = 16323208753562L;
-    
+
     // ====  价格列表  ====
     @Column(name = "face_value")
     public BigDecimal faceValue;        //商品面值、市场价
@@ -88,6 +88,7 @@ public class OrderItems extends Model {
         Object result = q.getSingleResult();
         return result == null ? 0 : (Long) result;
     }
+
     public static long itemsNumberElectronic(Order order) {
         long itemsNumber = 0L;
         if (order == null) {
@@ -96,14 +97,15 @@ public class OrderItems extends Model {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE order = :order and goods.materialType=:materialType");
         q.setParameter("order", order);
-         q.setParameter("materialType", MaterialType.ELECTRONIC);
+        q.setParameter("materialType", MaterialType.ELECTRONIC);
         Object result = q.getSingleResult();
         return result == null ? 0 : (Long) result;
     }
 
     /**
      * 取出该用户购买制定商品的数量
-     * @param user 用户
+     *
+     * @param user    用户
      * @param goodsId 商品ID
      * @return
      */
@@ -160,16 +162,18 @@ public class OrderItems extends Model {
 
     /**
      * 取得购买过得手机号
+     *
      * @param user
      * @return
      */
-	public static List<String> getMobiles(User user) {
-		 Query query = play.db.jpa.JPA.em().createQuery(
-	                "select distinct o.phone from OrderItems o where o.order.userId = :userId and o.order.userType =:userType ");
-	        query.setParameter("userId",user.id);
-	        query.setParameter("userType", AccountType.CONSUMER);
-	        List<String> mobileList = query.getResultList();
-		
-		return mobileList;
-	}
+    public static List<String> getMobiles(User user) {
+        Query query = play.db.jpa.JPA.em().createQuery(
+                "select distinct o.phone from OrderItems o where o.order.userId = :userId and o.order.userType =:userType order by createdAt desc ");
+        query.setParameter("userId", user.id);
+        query.setParameter("userType", AccountType.CONSUMER);
+        query.setMaxResults(10);
+        List<String> mobileList = query.getResultList();
+
+        return mobileList;
+    }
 }
