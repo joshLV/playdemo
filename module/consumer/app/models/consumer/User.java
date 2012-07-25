@@ -103,12 +103,9 @@ public class User extends Model {
      * @param mobile 手机
      */
     public static boolean checkMobile(String mobile) {
-
-        boolean isExisted = false;
         //手机存在的情况
-        List<User> mList = User.find("byMobile", mobile).fetch();
-        if (mList.size() > 0) isExisted = true;
-        return isExisted;
+        List<UserInfo> mList = UserInfo.find("byMobile", mobile).fetch();
+        return mList.size() > 0;
     }
 
     /**
