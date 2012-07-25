@@ -50,7 +50,7 @@ public class UserInfosTest extends FunctionalTest {
 	
 	
 	@Test
-	public void testSendValidCode() {
+	public void testSendValidCodeOldphoneNotExist() {
 		Map<String, String> mobileParams = new HashMap<>();
 		
 		//旧手机号不存在
@@ -65,10 +65,14 @@ public class UserInfosTest extends FunctionalTest {
 		assertCharset("utf-8", response); // this is OK
 		assertEquals("3", response.out.toString()); // 浏览器相应
 			
+	}
+	@Test
+	public void testSendValidCodeNewOldphoneExist() {
 		//新手机号存在 旧手机号存在
+		Map<String, String> mobileParams = new HashMap<>();
 		mobileParams.put("mobile", "15026666507");
 		mobileParams.put("oldMobile", "15026666506");
-		response = POST("/user-info/send", mobileParams);
+		Response response = POST("/user-info/send", mobileParams);
 		response.setContentTypeIfNotSet("text/html; charset=GBK");
 		assertStatus(200, response);
 		assertNotNull(response); // this is OK
@@ -76,11 +80,15 @@ public class UserInfosTest extends FunctionalTest {
 		assertContentType("application/json", response); // this is OK
 		assertCharset("utf-8", response); // this is OK
 		assertEquals("2", response.out.toString()); // 浏览器相应
-				
+	}
+	
+	@Test
+	public void testSendValidCodeChangePhone() {
 		//旧手机号存在 新手机号格式正确
+		Map<String, String> mobileParams = new HashMap<>();
 		mobileParams.put("mobile", "15026666505");
 		mobileParams.put("oldMobile", "15026666506");
-		response = POST("/user-info/send", mobileParams);
+		Response response = POST("/user-info/send", mobileParams);
 		response.setContentTypeIfNotSet("text/html; charset=GBK");
 		assertStatus(200, response);
 		assertNotNull(response); // this is OK
@@ -88,13 +96,19 @@ public class UserInfosTest extends FunctionalTest {
 		assertContentType("application/json", response); // this is OK
 		assertCharset("utf-8", response); // this is OK
 		assertEquals("1", response.out.toString()); // 浏览器相应
-        
+	}
+	
+	@Test
+	public void testSendValidCodeCache() {
 		//测试cache
 		Object objCode = Cache.get("validCode_");
 		Object objMobile = Cache.get("mobile_");
 		assertEquals("123456",objCode.toString());
 		assertEquals("15026666505",objMobile.toString());
-
+	}
+	
+	@Test
+	public void testSendValidCode() {
 		//验证手机发送的验证码
 		SMSMessage msg = MockSMSProvider.getLastSMSMessage();
 		assertNotNull("【券市场】您的验证码是123456, 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码",msg);
@@ -103,7 +117,7 @@ public class UserInfosTest extends FunctionalTest {
 	}
 
 	@Test
-	public void testBindMobile() {
+	public void testBindMobileOldPhoneNotExist() {
 		Map<String, String> mobileParams = new HashMap<>();
 	
 		//旧手机号不存在
@@ -118,12 +132,17 @@ public class UserInfosTest extends FunctionalTest {
 		assertContentType("application/json", response); // this is OK
 		assertCharset("utf-8", response); // this is OK
 		assertEquals("3", response.out.toString()); // 浏览器相应
+	}
+	
+	@Test
+	public void testBindMobileWrongCode() {
+		Map<String, String> mobileParams = new HashMap<>();
 		
-		//验证码不正确
+		//验证码不正确	
 		mobileParams.put("mobile", "15026666505");
 		mobileParams.put("oldMobile", "15026666506");
 		mobileParams.put("validCode", "123443");
-		response = POST("/user-info/mobile-bind", mobileParams);
+		Response response = POST("/user-info/mobile-bind", mobileParams);
 		response.setContentTypeIfNotSet("text/html; charset=GBK");
 		assertStatus(200, response);
 		assertNotNull(response); // this is OK
@@ -131,6 +150,11 @@ public class UserInfosTest extends FunctionalTest {
 		assertContentType("application/json", response); // this is OK
 		assertCharset("utf-8", response); // this is OK
 		assertEquals("1", response.out.toString()); // 浏览器相应
+	}
+	
+	@Test
+	public void testBindMobileWrongNewPhone() {
+		Map<String, String> mobileParams = new HashMap<>();
 		
 		//新手机号不正确
 		String mobile="15026666504";
@@ -139,7 +163,7 @@ public class UserInfosTest extends FunctionalTest {
 		mobileParams.put("mobile", "15026666503");
 		mobileParams.put("oldMobile", "15026666506");
 		mobileParams.put("validCode", "123456");
-		response = POST("/user-info/mobile-bind", mobileParams);
+		Response response = POST("/user-info/mobile-bind", mobileParams);
 		Cache.set("validCode_", validCode, "10mn");    //
 		response.setContentTypeIfNotSet("text/html; charset=GBK");
 		assertStatus(200, response);
@@ -148,15 +172,21 @@ public class UserInfosTest extends FunctionalTest {
 		assertContentType("application/json", response); // this is OK
 		assertCharset("utf-8", response); // this is OK
 		assertEquals("2", response.out.toString()); // 浏览器相应
+	}
+	 
+	@Test
+	public void testBindMobileUpdatePhone() {
+		Map<String, String> mobileParams = new HashMap<>();
+		String validCode="123456";
 		
 		//更新手机信息
-		mobile="15026666503";
+		String mobile="15026666503";
 		Cache.set("mobile_", mobile, "10mn");
 		Cache.set("validCode_", validCode, "10mn");    //
 		mobileParams.put("mobile", "15026666503");
 		mobileParams.put("oldMobile", "15026666506");
 		mobileParams.put("validCode", "123456");
-		response = POST("/user-info/mobile-bind", mobileParams);
+		Response response = POST("/user-info/mobile-bind", mobileParams);
 		response.setContentTypeIfNotSet("text/html; charset=GBK");
 		assertStatus(200, response);
 		assertNotNull(response); // this is OK
@@ -187,7 +217,6 @@ public class UserInfosTest extends FunctionalTest {
 		assertEquals("xxx",user1.fullName);
 		assertEquals("yyy",user1.interest);
 	
-
 	}
 
 }
