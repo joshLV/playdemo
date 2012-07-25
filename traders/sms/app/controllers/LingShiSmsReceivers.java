@@ -14,6 +14,10 @@ public class LingShiSmsReceivers extends Controller {
         String mobile = params.get("SrcMobile");
         String msg = params.get("Content");
         String code = params.get("AppendID");
+        
+        if (code != null && code.length() > 4) {
+            code = code.substring(code.length() - 4);
+        }
 
         Logger.info("LingShiSMS: mobile=" + mobile + ", msg=" + msg + ", code=" + code);
         if (msg.contains("#")) {
