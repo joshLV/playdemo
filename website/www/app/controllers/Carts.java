@@ -118,12 +118,12 @@ public class Carts extends Controller {
         final User user = SecureCAS.getUser();
         Http.Cookie cookie = request.cookies.get("identity");
         final String cookieValue = cookie == null ? null : cookie.value;
-        List<Cart> cartList = CacheHelper.getCache(Cart.getCartCacheKey(user, cookieValue), new CacheCallBack<List<Cart>>() {
+        List<Cart> cartList = Cart.findAll(user, cookieValue); /* CacheHelper.getCache(Cart.getCartCacheKey(user, cookieValue), new CacheCallBack<List<Cart>>() {
             @Override
             public List<Cart> loadData() {
                 return Cart.findAll(user, cookieValue);
             }
-        });
+        }); */
         int count = 0;
         for (Cart cart : cartList) {
             count += cart.number;
