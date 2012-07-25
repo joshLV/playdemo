@@ -2,6 +2,7 @@ $(function () {
     $("#eCouponSn").focus(function () {
         $("#checksn").html("");
         $("#showinfo").html("");
+        $("#statusw").html("");
     });
 
     $("#query").click(function () {
