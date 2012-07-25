@@ -219,6 +219,11 @@ public class SecureCAS extends Controller {
     public static void filter() throws Throwable {
         Logger.debug("[SecureCAS]: CAS Filter for URL -> " + request.url);
 
+        // 测试用，见 @Security.setLoginUserForTest说明
+        if (Security.isTestLogined()) {
+            session.put(SESSION_USER_KEY, Security.getLoginUserForTest());
+        }
+        
         Logger.debug("session contains=" + session.contains(SESSION_USER_KEY) + ", value=" + session.get(SESSION_USER_KEY));
         if (skipCAS()) {
             Logger.debug("[SecureCAS]: Skip the CAS.");
