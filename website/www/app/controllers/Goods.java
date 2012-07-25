@@ -1,9 +1,9 @@
 package controllers;
 
-import cache.CacheCallBack;
-import cache.CacheHelper;
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import models.cms.Block;
 import models.cms.BlockType;
 import models.cms.CmsQuestion;
@@ -11,7 +11,13 @@ import models.consumer.User;
 import models.order.Cart;
 import models.order.Order;
 import models.order.OrderItems;
-import models.sales.*;
+import models.sales.Area;
+import models.sales.Brand;
+import models.sales.Category;
+import models.sales.GoodsCondition;
+import models.sales.GoodsStatistics;
+import models.sales.GoodsStatisticsType;
+import models.sales.GoodsStatus;
 import org.apache.commons.lang.StringUtils;
 import play.modules.breadcrumbs.Breadcrumb;
 import play.modules.breadcrumbs.BreadcrumbList;
@@ -21,13 +27,10 @@ import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-
-import helper.Title;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 
 /**
  * 商品控制器.
@@ -242,7 +245,8 @@ public class Goods extends Controller {
 
         // 网友推荐商品
         List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(
-                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY,
+                CacheHelper.getCacheKey(new String[] {models.sales.Goods.CACHEKEY, 
+                                    models.sales.Goods.CACHEKEY_BASEID + goods.id},
                         "SHOW_TOP5RECOMMEND"),
                 new CacheCallBack<List<models.sales.Goods>>() {
                     @Override
