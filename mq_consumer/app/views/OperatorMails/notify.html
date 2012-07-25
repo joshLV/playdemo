@@ -1,6 +1,16 @@
 <html>
 <body>
-<head>用户咨询</head>
-${message.content}
+<table>
+    <tr>
+        <td>${message.getParam("date").format("yy-MM-dd HH:mm:ss")}</td>
+        <td>${message.getParam("goods")}</td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            ${message.getParam("user")}:<br/>
+            ${message.getParam("content")}
+        </td>
+    </tr>
+</table>
 </body>
 </html>
