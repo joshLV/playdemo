@@ -412,7 +412,7 @@ sales.Goods(Goods_017):
  "details": "阿斯<br />"
  "saleCount": "0"
  "baseSale": "10"
- "status": "ONSALE"
+ "status": "APPLY"
  "createdAt": "2012-02-28T14:41:33"
  "createdBy": "yanjy"
  "deleted": "UN_DELETED"
