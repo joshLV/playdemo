@@ -4,18 +4,17 @@
 open('/goods/${play.test.Fixtures.idCache.get("models.sales.Goods-goods6")}')
 verifyTitle('【一百券】测试商品6-优惠券,优惠券网,代金券')
 clickAndWait('id=link_buy_now')
-verifyTextPresent('收货地址')
-*{waitForText('id=J_addrCurrent','上海市 黄浦区 市辖区 test3 (sujie1 收) 13764081569')}*
-*{click('id=J_modifyAddr')}*
-*{waitForElementPresent('link=编辑')}*
-*{click('link=编辑')}*
-*{waitForElementPresent('id=J_addrMobile')}*
-*{type('id=J_addrMobile','13245678961')}*
-*{type('id=J_addrName','校长')}*
-*{click('id=J_confirm')}*
-*{waitForText('id=J_modifyAddr','[修改]')}*
-*{waitForElementPresent(}*
-*{verifyTextPresent('上海市 市辖区 黄浦区 test3 (校长 收) 13245678961')}*
+verifyTextPresent('收货地址 [修改]');
+verifyTextPresent('sujie1 上海市 黄浦区 市辖区 test3 13764081569')
+click('id=J_modifyAddr')
+waitForElementPresent('link=编辑')
+click('link=编辑')
+waitForElementPresent('id=J_addrMobile')
+type('id=J_addrMobile','13245678961')
+type('id=J_addrName','校长')
+click('id=J_saveNewAddr')
+waitForText('id=J_modifyAddr','[修改]')
+verifyTextPresent('校长 上海市 市辖区 黄浦区 test3 13245678961')
 
 #{/selenium}
 

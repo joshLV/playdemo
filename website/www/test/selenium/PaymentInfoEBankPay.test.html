@@ -37,14 +37,14 @@ load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_uni
     assertTitle('一百券 - 确认付款')
     verifyTextPresent('总金额 ' + ${order.needPay})
     verifyTextPresent('可用余额：' + ${account.amount})
-    *{verifyVisible('id=other-pay')}*
-    *{verifyNotVisible('id=confirm-pay')}*
-   *{ click('id=use_balance')}*
+    verifyVisible('id=other-pay')
+    verifyNotVisible('id=confirm-pay')
+    click('id=use_balance')
 
-    *{verifyVisible('id=other-pay')}*
-    *{verifyNotVisible('id=confirm')}*
+    verifyVisible('id=other-pay')
+    verifyNotVisible('id=confirm-pay')
 
-   *{ clickAndWait('id=confirm')
-    verifyTextPresent('支付 ' + ${order.needPay.subtract(account.amount)})}*
+    clickAndWait('id=confirm-pay')
+    verifyTextPresent('支付 ' + ${order.needPay.subtract(account.amount)})
 #{/selenium}
 

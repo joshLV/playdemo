@@ -36,7 +36,7 @@
                 #{set i:0} #{/set}
                 #{list rCartList, as:'rCart'}
                 <tr>
-                    <td style="text-align:left">${rCart.goods.name}</td>
+                    <td style="text-align:left"><a href="/g/eCart.goods.id">${rCart.goods.name}</a></td>
                     <td>${rCart.goods.salePrice}</td>
                     <td>${rCart.number}</td>
                     *{#{if (++i) == 1 }}*
@@ -85,7 +85,7 @@
                 #{set j:0/}
                 #{list eCartList, as:'eCart'}
                 <tr>
-                    <td style="text-align:left"><a >${eCart.goods.name}</a>
+                    <td style="text-align:left"><a href="/g/eCart.goods.id">${eCart.goods.name}</a>
                     #{if eCart.goods.limitNumber > 0}
                         <span id="limitNumber" style="color:#f50">（限购${eCart.goods.limitNumber}件）
                     #{/if}

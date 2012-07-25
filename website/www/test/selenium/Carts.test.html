@@ -17,17 +17,17 @@ openAndWait('/carts')
 assertText('id=cart-count','2')
 verifyValue('id=num_${goodsB}','1')
 verifyValue('id=num_${goodsA}','1')
-*{click('id=add_img_${goodsA}')}*
-*{waitForValue('id=num_${goodsA}','2')}*
-*{click('id=sub_img_${goodsA}')}*
-*{waitForValue('id=num_${goodsA}','1')}*
-*{click('id=sub_img_${goodsA}')}*
-*{waitForValue('id=num_${goodsA}','1')}*
-*{click('id=del_row_${goodsA}')}*
+click('id=add_img_${goodsA}')
+waitForValue('id=num_${goodsA}','2')
+click('id=sub_img_${goodsA}')
+waitForValue('id=num_${goodsA}','1')
+click('id=sub_img_${goodsA}')
+waitForValue('id=num_${goodsA}','1')
+click('id=del_row_${goodsA}')
 *{waitForElementNotPresent('id=del_row_${goodsA}')}*
 *{verifyText('id=total_num','1')}*
-openAndWait('/carts/tops')
-verifyTextPresent('件商品')
+*{openAndWait('/carts/tops')}*
+*{verifyTextPresent('件商品')}*
 
 
 openAndWait('/goods/${goodsC}')
