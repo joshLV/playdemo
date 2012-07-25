@@ -15,9 +15,15 @@ import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+/**
+ * Edited by Juno
+ * 2012-07-24
+ */
 
 public class SupplierGoodsTest extends FunctionalTest {
 
@@ -96,21 +102,104 @@ public class SupplierGoodsTest extends FunctionalTest {
     @Test
     @Ignore
     public void testCreate() {
+
+        Long id = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_003");
+        Goods goods = Goods.findById(id);
+        List<Goods> list = Goods.findAll();
+        // 记录创建新商品前的商品数
+        int oldSize = list.size();
+        System.out.println("Before ****************************************** "+ list.size());
         Map<String, String> goodsParams = new HashMap<>();
         goodsParams.put("goods.name", "laiyifen1");
         goodsParams.put("goods.no", "20000000");
-        goodsParams.put("goods.supplierId", "0");
+        goodsParams.put("goods.supplierId", "1");
+        goodsParams.put("goods.brand.id",goods.brand.id.toString());
+        goodsParams.put("goods.originalPrice","10");
+        goodsParams.put("goods.salePrice","20");
+        goodsParams.put("goods.faceValue","20");
+        goodsParams.put("goods.title","title");
+        goodsParams.put("goods.categories", goods.categories.toString());
+        goodsParams.put("goods.effectiveAt","2012-02-28T14:41:33");
+        goodsParams.put("goods.expireAt","2015-02-28T14:41:33");
+        goodsParams.put("goods.baseSale","100");
         goodsParams.put("goods.status", GoodsStatus.ONSALE.toString());
-        goodsParams.put("goods.prompt", "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+        //goodsParams.put(goods.prompt  ", "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
         goodsParams.put("goods.details", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        goodsParams.put("goods.imagePath", "/opt/3.jpg");
-        goodsParams.put("goods.deleted", DeletedStatus.DELETED.toString());
+        //goodsParams.put("goods.imagePath", "/0/0/0");
+        goodsParams.put("goods.deleted", DeletedStatus.UN_DELETED.toString());
         goodsParams.put("goods.createdBy", "yanjy");
+
+        Map<String, File> files = new HashMap<>();
+        File imagePath = new File("test/pic.jpg");
+        files.put("imagePath", imagePath);
+
+        System.out.println("fileeeeeeeeeeeeeeeeeeeeeeeeeeeeeee     "+files.get("imagePath").exists());
+        //System.out.println("should be      "+goods.brand.id.toString());
+        System.out.println("GOOOOOOOOOOOOOOOOOOOOOOD CATE     "+goodsParams.get("goods.categories"));
         Response response = POST("/goods", goodsParams);
         response.setContentTypeIfNotSet("text/html; charset=GBK");
         assertStatus(200, response);
-        List<Goods> list = Goods.findAll();
-        Assert.assertNotNull(list);
+
+        // 创建成功 size + 1
+        list = Goods.findAll();
+        int newSize = list.size();
+        System.out.println("After ***************************************** "+ list.size());
+        assertEquals(oldSize+1, newSize);
+    }
+
+    /**
+     * 测试更新商品信息
+     * 将001更新成003
+     */
+    @Test
+    public void testUpdate(){
+        // 将要更新成的目标ID
+        Long targetId = (Long) Fixtures.idCache.get("models.sales" +
+                ".Goods-Goods_003");
+        Goods targetGood = Goods.findById(targetId);
+        // 需要更新的原始ID
+        Long baseId = (Long) Fixtures.idCache.get("models.sales" +
+                ".Goods-Goods_001");
+        // 获取categories的ID
+        Long cateId = (Long) Fixtures.idCache.get("models.sales.Category-Category_1");
+        Long cateId2 = (Long) Fixtures.idCache.get("models.sales.Category-Category_2");
+        System.out.println("Cate ID ===================  "+cateId.toString());
+        System.out.println("Cate ID 2 ===================  "+cateId2.toString());
+        // 连接到原始商品更新页面
+        Http.Response response = GET("/goods/" + baseId + "/edit");
+        assertIsOk(response);
+        assertContentType("text/html", response);
+        assertCharset(Play.defaultWebEncoding, response);
+
+        // 生产更新参数
+        String params = "goods.name=testName&goods.no=001" +
+                "&goods.supplierId=" +targetGood.supplierId+
+                "&goods.originalPrice=" +targetGood.originalPrice+
+                "&goods.salePrice=" +targetGood.salePrice+
+                "&goods.title=" +targetGood.title+
+                "&goods.categories[].id="+cateId+
+                "&goods.categories[].id="+cateId2+
+                "&goods.effectiveAt=2012-02-28T14:41:33" +
+                "&goods.expireAt=2015-02-28T14:41:33" +
+                "&goods.baseSale=" + targetGood.baseSale+
+                "&goods.details= AAAAAAAAAAAAA"+
+                "&goods.faceValue=1000"+
+                "&goods.brand.id="+targetGood.brand.id.toString();
+        response = PUT("/goods/" + baseId,"application/x-www-form-urlencoded", params);
+        // 更新响应正确
+        assertStatus(302,response);
+        // 获取更新后的商品信息
+        Goods updatedGoods = Goods.findById(baseId);
+        // 测试更新信息是否正确
+        assertEquals("testName",updatedGoods.name);
+        assertEquals("001",updatedGoods.no);
+        assertEquals(targetGood.supplierId,updatedGoods.supplierId);
+        assertEquals(targetGood.originalPrice,updatedGoods.originalPrice);
+        assertEquals(targetGood.salePrice,updatedGoods.salePrice);
+        assertEquals(targetGood.baseSale,updatedGoods.baseSale);
+        assertEquals(targetGood.brand.id,updatedGoods.brand.id);
+
+
     }
 
     /**
@@ -134,5 +223,13 @@ public class SupplierGoodsTest extends FunctionalTest {
         //验证状态改为已删除状态
         Goods goods1 = Goods.findById(goodsId);
         assertEquals(DeletedStatus.DELETED, goods1.deleted);
+    }
+
+    /**
+     * 测试取消上品上架申请
+     */
+    @Test
+    public void testCancelApply(){
+
     }
 }
