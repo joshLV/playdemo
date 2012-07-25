@@ -93,6 +93,7 @@ public class OrdersCondition {
                 paramsMap.put("user", user.getId());
             }
         }
+        System.out.println(sql.toString()+">>>>>>>>>.");
         return sql.toString();
     }
 
