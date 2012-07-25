@@ -242,8 +242,8 @@ public class Goods extends Controller {
 
         // 网友推荐商品
         List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(
-                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY_BASEID + goods.id,
-                        "SHOW_TOPRECOMMEND"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY,
+                        "SHOW_TOP5RECOMMEND"),
                 new CacheCallBack<List<models.sales.Goods>>() {
                     @Override
                     public List<models.sales.Goods> loadData() {
