@@ -1,21 +1,21 @@
 package controllers;
 
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
-import models.cms.CmsQuestion;
-import models.consumer.User;
-import models.mail.MailMessage;
-import models.mail.MailUtil;
-import play.Play;
-import play.mvc.Controller;
-import play.mvc.Http;
-import play.mvc.With;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import models.cms.CmsQuestion;
+import models.consumer.User;
+import models.mail.MailMessage;
+import models.mail.MailUtil;
+import play.Play;
+import play.cache.Cache;
+import play.mvc.Controller;
+import play.mvc.Http;
+import play.mvc.With;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 
 /**
  * @author likang
@@ -75,6 +75,8 @@ public class UserQuestions extends Controller{
         List<Map<String, String>> questions = new ArrayList<>();
         questions.add(questionMap);
         result.put("questions", questions);
+        
+        Cache.delete(models.sales.Goods.CACHEKEY_BASEID + goodsId);
 
         //发送提醒邮件
         MailMessage mailMessage = new MailMessage();
