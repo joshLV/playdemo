@@ -168,7 +168,7 @@ public class OrderItems extends Model {
      */
     public static List<String> getMobiles(User user) {
         Query query = play.db.jpa.JPA.em().createQuery(
-                "select distinct o.phone from OrderItems o where o.order.userId = :userId and o.order.userType =:userType group by o.order order by o.order desc ");
+                "select o.phone from OrderItems o where o.order.userId = :userId and o.order.userType =:userType group by o.phone order by o.order desc ");
         query.setParameter("userId", user.id);
         query.setParameter("userType", AccountType.CONSUMER);
         query.setFirstResult(0);
