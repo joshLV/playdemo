@@ -52,3 +52,4 @@ repositories:
             - supplier_rbac -> *
             - view_ext -> *
             - cache_helper -> *
+            - order -> *
