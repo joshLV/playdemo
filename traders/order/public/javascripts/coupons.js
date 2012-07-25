@@ -1,5 +1,5 @@
 $(function () {
-    $("#eCouponSn").click(function () {
+    $("#eCouponSn").focus(function () {
         $("#checksn").html("");
         $("#showinfo").html("");
     });
