@@ -29,6 +29,19 @@ public class DateUtil {
         return calendar.getTime();
     }
 
+    public static Date getBeginOfDay(Date day) {
+        if (day == null) {
+            return null;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(day);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 1);
+        return calendar.getTime();
+    }
+
     public static Date getBeginOfDay() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
