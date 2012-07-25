@@ -85,7 +85,7 @@
                 #{set j:0/}
                 #{list eCartList, as:'eCart'}
                 <tr>
-                    <td style="text-align:left">${eCart.goods.name}
+                    <td style="text-align:left"><a >${eCart.goods.name}</a>
                     #{if eCart.goods.limitNumber > 0}
                         <span id="limitNumber" style="color:#f50">（限购${eCart.goods.limitNumber}件）
                     #{/if}

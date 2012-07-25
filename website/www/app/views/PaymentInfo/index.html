@@ -59,8 +59,13 @@
             <button id="confirm-pay" class="confirm-pay" type="submit" style="display:${confirmPayDisplay}"></button>
         </div>
     </div>
-
-    <div id="other-pay" class="onlinepay">
+    %{
+    otherPayDisplay = "block"
+    if (order.needPay.compareTo(BigDecimal.ZERO) == 0){
+    otherPayDisplay = "none"
+    }
+    }%
+    <div id="other-pay" class="onlinepay"style="display:${otherPayDisplay}">
         <h3 class="onlinepay-hd">在线支付</h3>
         <div class="onlinepay-bd">
             <dl class="d3fzhifu">
