@@ -25,11 +25,9 @@ public class CancleUnPaidOrderJob extends Job {
     public void doJob() throws ParseException {
 
         String sql = "select o from Order o where o.orderNumber not in (select c.orderNumber from CancelUnpaidOrders " +
-                "c ) and o.status =:status and (o.createdAt > :createdAtBegin and o.createdAt <=:createdAtEnd " +
-                ") order by o.id";
+                "c ) and o.status =:status and o.createdAt <=:createdAtEnd order by o.id";
         Query query = Order.em().createQuery(sql);
         query.setParameter("status", OrderStatus.UNPAID);
-        query.setParameter("createdAtBegin", DateUtil.getBeginExpiredDate(-11));
         query.setParameter("createdAtEnd", DateUtil.getEndExpiredDate(-10));
         query.setFirstResult(0);
         query.setMaxResults(200);

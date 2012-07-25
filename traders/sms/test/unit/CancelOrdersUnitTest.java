@@ -62,17 +62,17 @@ public class CancelOrdersUnitTest extends UnitTest {
         job.doJob();
 
         count = CancelUnpaidOrders.findAll().size();
-        assertEquals(2, count);
+        assertEquals(3, count);
         goods = Goods.findById(id);
-        assertEquals(1003, goods.baseSale.intValue());
-        assertEquals(97, goods.saleCount);
+        assertEquals(1004, goods.baseSale.intValue());
+        assertEquals(96, goods.saleCount);
 
 
         job.doJob();
         count = CancelUnpaidOrders.findAll().size();
-        assertEquals(2, count);
-        assertEquals(1003, goods.baseSale.intValue());
-        assertEquals(97, goods.saleCount);
+        assertEquals(3, count);
+        assertEquals(1004, goods.baseSale.intValue());
+        assertEquals(96, goods.saleCount);
     }
 }
 
