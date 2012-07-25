@@ -3,7 +3,7 @@ function append_questions(questions) {
     for (var i = 0; i < questions.length; i++) {
         $("#q-list").append('                                       \
                     <div class="question"><dl>                                      \
-                            <dt>' + questions[i].user + '</dt>         \
+                            <dt>咨询内容：</dt>         \
                             <dd>' + questions[i].content + '<span class="date">' + questions[i].date + '</span></dd>                      \
                         </dl></div>                                                    \
                         <div class="answer"> <dl>                                     \
