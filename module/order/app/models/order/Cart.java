@@ -154,15 +154,13 @@ public class Cart extends Model {
     }
 
     /**
-     * 取出该用户购买制定商品的数量
+     * 取出该用户购买指定商品的数量
      *
      * @param user    用户
      * @param goodsId 商品ID
      * @return
      */
     public static long itemsNumber(User user, Long goodsId) {
-        long itemsNumber = 0L;
-
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE goods.id=:goodsId and " +
                 "order.userId=:userId and order.userType=:userType and status=:status");
@@ -234,7 +232,7 @@ public class Cart extends Model {
         //构建查询条件
         StringBuilder sql = new StringBuilder(
                 "select new Cart(c.goods, SUM(c.number)) from Cart c where " +
-                        "c.goods = :goods and c.goods.status = :status ");
+                        "c.goods.status = :status ");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("status", GoodsStatus.ONSALE);
 
