@@ -44,12 +44,7 @@
             <div class="cart-box-bd">
             </div>
         </div>
-        #{if carts?.size()>0}
-        <a class="cart-btn" target="_blank" href="/orders?items=#{list items:carts, as:'cartItem'}${cartItem.goods.id}-${cartItem.number},#{/list}">去结算</a>
-        #{/if}
-        #{else}
         <a class="cart-btn" target="_blank" href="/carts">去结算</a>
-        #{/else}
     </div>
 </div><!-- #header -->
 
