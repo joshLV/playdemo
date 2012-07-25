@@ -63,7 +63,7 @@ public class OrdersCondition {
         }
         if (isLottery) {
             sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.isLottery = true)");
-        }else {
+        } else {
             sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.isLottery = false)");
         }
         if (deliveryType != null) {
@@ -85,7 +85,14 @@ public class OrdersCondition {
             sql.append(" and o.orderNumber like :orderNumber");
             paramsMap.put("orderNumber", "%" + searchItems + "%");
         }
-
+        //按照帐号检索
+        if ("3".equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
+            User user=User.findByLoginName(searchItems.trim());
+            if (user != null) {
+                sql.append(" and o.userId = :user");
+                paramsMap.put("user", user.getId());
+            }
+        }
         return sql.toString();
     }
 
@@ -117,7 +124,7 @@ public class OrdersCondition {
 
         //按照商品名称检索
         if (StringUtils.isNotBlank(goodsName)) {
-            sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.name like :goodsName)");
+            sql.append(" and o.userId in (select u.id from  userux where oi.goods.name like :goodsName)");
             paramsMap.put("goodsName", "%" + goodsName + "%");
         }
 
