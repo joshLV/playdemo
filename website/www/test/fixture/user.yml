@@ -26,7 +26,7 @@ consumer.User(user_test2):
  "sendMailAt": "2012-04-24T15:40:07"
 consumer.UserInfo(userInfo1):
  "fullName": ""
- "mobile": ""
+ "mobile": "15618096151"
  "birthday": "2001-01-01"
  "phone": ""
  "marryState": "0"
