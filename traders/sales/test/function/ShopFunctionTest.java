@@ -78,8 +78,7 @@ public class ShopFunctionTest extends FunctionalTest {
 	 */
 	@Test
 	public void testDetails() {
-		Long shopId = (Long) Fixtures.idCache.get("models.sales" +
-				".Shop-shop2");
+		Long shopId = (Long) Fixtures.idCache.get("models.sales.Shop-shop2");
 		Map<String, String> goodsParams = new HashMap<String,String>();
 		goodsParams.put("shop.name", "test");
 		Response response = POST("/shops/"+shopId, goodsParams);
@@ -88,4 +87,28 @@ public class ShopFunctionTest extends FunctionalTest {
 		Assert.assertEquals("一百券二店", shop.name);
 	}
 
+    /**
+     * 测试 update()
+     */
+    public void testUpdate(){
+        Long shopId = (Long) Fixtures.idCache.get("models.sales.Shop-shop2");
+        Long shopId2 = (Long) Fixtures.idCache.get("models.sales.Shop-shop1");
+        Shop shop2 = Shop.findById(shopId2);
+        Map<String,String> goodsParams = new HashMap<String,String>();
+        goodsParams.put("shop.name","test");
+        goodsParams.put("shop.areaId",shop2.areaId);
+        goodsParams.put("shop.address",shop2.areaId);
+        goodsParams.put("shop.phone",shop2.phone);
+        goodsParams.put("shop.updatedAt",shop2.updatedAt.toString());
+
+        Response response = POST("/shops/"+shopId, goodsParams);
+        assertStatus(302,response);
+        Shop shop = Shop.findById(shopId);
+
+        assertEquals(shop2.name,shop.name);
+        assertEquals(shop2.phone,shop.phone);
+        assertEquals(shop2.areaId,shop.areaId);
+        assertEquals(shop2.updatedAt,shop.updatedAt);
+        assertEquals(shop2.address,shop.address);
+    }
 }
