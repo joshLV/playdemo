@@ -1,13 +1,11 @@
 package cache;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import play.Logger;
 import play.cache.Cache;
 
 /**
@@ -28,8 +26,6 @@ import play.cache.Cache;
 public class CacheHelper {
     private static final String defaultExpireSeconds = "24h"; // 默认超时时间
     private static final String defaultBaseKeyExpireSeconds = "240h"; // 默认BaseKey超时时间
-
-    private static Logger log = LoggerFactory.getLogger(CacheHelper.class);
 
     private static final ThreadLocal<HashMap<String, Object>> preReadCacheMap = new ThreadLocal<HashMap<String, Object>>();
     private static final ThreadLocal<Boolean> preReadCache = new ThreadLocal<Boolean>();
@@ -71,11 +67,14 @@ public class CacheHelper {
             }
             String cachedBaseKey = getCache(baseKey, expireSeconds, new CacheCallBack<String>() {
                 public String loadData() {
-                    return getRandomKey(baseKey);
+                    String randomKey = getRandomKey(baseKey);
+                    Logger.debug("重新生成Key:" + randomKey);
+                    return randomKey;
                 }
             });
             fullBaseKey.append(cachedBaseKey).append("_");
         }
+        Logger.debug("返回CacheKey:" + fullBaseKey + subKey);
         return fullBaseKey + subKey;
     }
 
@@ -92,7 +91,7 @@ public class CacheHelper {
             // 加到预读Map中，同一线程下次读取时会成为本地内存读取，速度更快
             addToPreReadMap(key, value);
         } catch (Exception e) {
-            log.warn("When set cache[key:" + key + "] found exception.", e);
+            Logger.warn("When set cache[key:" + key + "] found exception.", e);
             delete(key);
         }
     }
@@ -137,9 +136,10 @@ public class CacheHelper {
                 try {
                     // 检测类型是否正确
                     targetClass.cast(preReadObject);
+                    Logger.debug("预读Key:%s成功，返回值%s", key, preReadObject);
                     return (T) preReadObject;
                 } catch (ClassCastException e) {
-                    log.warn("Get Object[" + key + "] from preReadMap Error. can't cast to " + targetClass.getName()
+                    Logger.warn("Get Object[" + key + "] from preReadMap Error. can't cast to " + targetClass.getName()
                             + " from " + preReadObject.getClass().getName(), e);
                     // 防止下次出错，删除后，重新加载进缓存
                     deleteToPreReadMap(key);
@@ -155,7 +155,11 @@ public class CacheHelper {
                 if (callback != null) {
                     // TODO: 使用类或实例级别锁粒度太粗，在并发过1k后，容易因为别的key的缓存操作而阻塞.
                     synchronized (CacheHelper.class) {
-                        Object dataObject = callback.loadData();
+                        Object dataObject = Cache.get(key);
+                        if (dataObject == null) {
+                            Logger.debug(" 调用loadData(), key:%s", key);
+                            dataObject = callback.loadData();
+                        }
                         if (dataObject != null) {
                             if (targetClass != null) {
                                 try {
@@ -166,7 +170,7 @@ public class CacheHelper {
                                     addToPreReadMap(key, dataObject);
                                     return (T) dataObject;
                                 } catch (ClassCastException e) {
-                                    log.warn("Get Object[" + key + "] from callback Error. can't cast to "
+                                    Logger.warn("Get Object[" + key + "] from callback Error. can't cast to "
                                             + targetClass.getName() + " from " + dataObject.getClass().getName(), e);
                                 }
                             } else {
@@ -187,7 +191,7 @@ public class CacheHelper {
                         addToPreReadMap(key, cacheObject);
                         return (T) cacheObject;
                     } catch (ClassCastException e) {
-                        log.warn("Get Object[" + key + "] from callback Error. can't cast to " + targetClass.getName()
+                        Logger.warn("Get Object[" + key + "] from callback Error. can't cast to " + targetClass.getName()
                                 + " from " + cacheObject.getClass().getName(), e);
                         // 防止下次出错，删除后，重新加载进缓存
                         delete(key);
@@ -199,7 +203,7 @@ public class CacheHelper {
                 }
             }
         } catch (Exception e) {
-            log.warn("When get cache[key:" + key + "] found exception.", e);
+            Logger.warn("When get cache[key:" + key + "] found exception.", e);
             delete(key);
         }
         return null;
@@ -242,6 +246,7 @@ public class CacheHelper {
     }
 
     public static void delete(String key) {
+        Logger.info("删除Key:" + key);
         if (StringUtils.isBlank(key)) {
             throw new IllegalArgumentException("key不能为空");
         }
@@ -249,7 +254,7 @@ public class CacheHelper {
             Cache.delete(key);
             deleteToPreReadMap(key);
         } catch (Exception e1) {
-            log.warn("When delete cache[key:" + key + "] found exception.", e1);
+            Logger.warn("When delete cache[key:" + key + "] found exception.", e1);
         }
     }
 
@@ -288,7 +293,7 @@ public class CacheHelper {
                 }
                 preReadCacheMap.get().putAll(maps);
             } catch (Exception e) {
-                log.warn("When get cache[key:" + StringUtils.join(keys, ",") + "] found exception.", e);
+                Logger.warn("When get cache[key:" + StringUtils.join(keys, ",") + "] found exception.", e);
             }
         }        
     }
