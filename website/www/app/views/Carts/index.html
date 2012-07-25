@@ -38,8 +38,8 @@
                    <input type="checkbox" id="check_goods_${cartItem.goods.id}"/>
                 #{/else}
             </td>
-            <td class="goods-name"><img src="${cartItem.goods.imageTinyPath}"/> ${cartItem.goods.name}
-                      #{if cartItem.goods.limitNumber > 0}
+            <td class="goods-name"><a href="/g/${cartItem.goods.id}"><img src="${cartItem.goods.imageTinyPath}"/>${cartItem.goods.name}</a>
+                #{if cartItem.goods.limitNumber > 0}
                       <span id="limitNumber" style="display:block;color:#f50">（限购${cartItem.goods.limitNumber}件
                           #{if user !=null && boughtNumber>0},您已经购买${boughtNumber}件#{/if})</span>
                     #{/if}
