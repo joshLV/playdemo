@@ -17,8 +17,8 @@ public class WebTrackRefererCondition {
     
     public Boolean isHost;
 
-    public Date begin = DateUtil.getYesterday();
-    public Date end = DateUtil.getEndOfDay(DateUtil.getYesterday());
+    public Date begin = DateUtil.getBeginOfDay();
+    public Date end = DateUtil.getEndOfDay(new Date());    
     public String orderBy = "w.createdAt";
     public String orderByType = "DESC";
     public String interval = "0d";

@@ -1,13 +1,10 @@
 package models;
 
-import com.uhuila.common.util.DateUtil;
-import models.accounts.Account;
-import models.accounts.AccountType;
-import org.apache.commons.lang.StringUtils;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import models.accounts.AccountType;
+import com.uhuila.common.util.DateUtil;
 
 /**
  * <p/>
@@ -17,8 +14,8 @@ import java.util.Map;
  */
 public class ResaleSalesReportCondition {
 
-    public Date createdAtBegin;
-    public Date createdAtEnd;
+    public Date createdAtBegin = DateUtil.getBeginOfDay();
+    public Date createdAtEnd = DateUtil.getEndOfDay(new Date());    
     public String interval = "0";
     public AccountType accountType;
     private Map<String, Object> paramMap = new HashMap<>();

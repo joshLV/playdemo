@@ -22,8 +22,8 @@ public class PurchaseECouponReportCondition implements Serializable {
     public String supplierLike;
 
     public Supplier supplier;
-    public Date createdAtBegin = DateUtil.getYesterday();
-    public Date createdAtEnd = DateUtil.getEndOfDay(DateUtil.getYesterday());
+    public Date createdAtBegin = DateUtil.getBeginOfDay();
+    public Date createdAtEnd = DateUtil.getEndOfDay(new Date());
     public String orderBy = "r.createdAt";
     public String orderByType = "DESC";
     public String interval = "0d";

@@ -1,13 +1,12 @@
 package models;
 
-import com.uhuila.common.util.DateUtil;
-import models.supplier.Supplier;
-import org.apache.commons.lang.StringUtils;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import models.supplier.Supplier;
+import org.apache.commons.lang.StringUtils;
+import com.uhuila.common.util.DateUtil;
 
 /**
  * 报表查询条件.
@@ -22,8 +21,8 @@ public class SalesOrderItemReportCondition implements Serializable {
     public String supplierLike;
 
     public Supplier supplier;
-    public Date createdAtBegin = DateUtil.getYesterday();
-    public Date createdAtEnd = DateUtil.getEndOfDay(DateUtil.getYesterday());
+    public Date createdAtBegin = DateUtil.getBeginOfDay();
+    public Date createdAtEnd = DateUtil.getEndOfDay(new Date());        
     public String orderBy = "r.createdAt";
     public String orderByType = "DESC";
     public String interval = "0d";
