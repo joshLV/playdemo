@@ -6,6 +6,8 @@ import models.consumer.User;
 import models.consumer.UserInfo;
 import models.sms.SMSUtil;
 import org.apache.commons.lang.StringUtils;
+
+import play.Play;
 import play.cache.Cache;
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.mvc.Controller;
@@ -29,7 +31,7 @@ public class UserInfos extends Controller {
      */
     public static void update(Long id, UserInfo userInfo, String interest) {
         User user = SecureCAS.getUser();
-        UserInfo userInfos = UserInfo.findById(user.id);
+        UserInfo userInfos = UserInfo.find("user=?",user).first();
         if (userInfos != null) {
             //存在则修改
             userInfos.update(userInfo, interest);
@@ -47,11 +49,15 @@ public class UserInfos extends Controller {
         if (StringUtils.isNotBlank(oldMobile) && !User.checkMobile(oldMobile)) {
             renderJSON("3");
         }
-        if (User.checkMobile(oldMobile)) {
+        //判断新手机号码是否存在
+        if (User.checkMobile(mobile)) {
             renderJSON("2");
         }
         String validCode = RandomNumberUtil.generateSerialNumber(4);
-        String comment = "【券市场】您您的验证码是" + validCode + ", 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码";
+        if (Play.runingInTestMode()){
+        	validCode="123456";
+        }
+        String comment = "【券市场】您的验证码是" + validCode + ", 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码";
         SMSUtil.send(comment, mobile, "0000");
         //保存手机和验证码
         Cache.set("validCode_", validCode, "10mn");
@@ -67,8 +73,7 @@ public class UserInfos extends Controller {
     public static void bindMobile(String mobile, String oldMobile, String validCode) {
         //判断旧手机号码是否存在
         if (StringUtils.isNotBlank(oldMobile) && !User.checkMobile(oldMobile)) {
-
-            renderJSON("3");
+        	renderJSON("3");
         }
         Object objCode = Cache.get("validCode_");
         Object objMobile = Cache.get("mobile_");
@@ -78,6 +83,7 @@ public class UserInfos extends Controller {
         if (!StringUtils.normalizeSpace(cacheValidCode).equals(validCode)) {
             renderJSON("1");
         }
+        
         //判断手机是否正确
         if (!StringUtils.normalizeSpace(cacheMobile).equals(mobile)) {
             renderJSON("2");
