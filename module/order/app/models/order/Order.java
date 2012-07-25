@@ -604,7 +604,7 @@ public class Order extends Model {
         JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
                 ("Order o", "o", Order.class, condition.getFilter(user),
                         condition.paramsMap)
-                .orderBy(condition.getOrderByExpress());
+                .orderBy(condition.getUserOrderByExpress());
         orderPage.setPageNumber(pageNumber);
         orderPage.setPageSize(pageSize);
         return orderPage;
