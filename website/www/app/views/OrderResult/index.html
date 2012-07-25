@@ -1,53 +1,55 @@
 #{extends 'main.html' /}
 #{set title:'一百券 - 支付结果' /}
 #{set 'moreStyles'}
-<link href="@@{'/public/stylesheets/order_info.css'}" rel="stylesheet" type="text/css"/>
-    #{asset.css src:['/u/payment_info.css', '/u/carts-step.css'] /}
+    #{asset.css src:['/y/cart/flowstep.css', '/y/cart/payok.css', '/y/cart/viewcart.css'] /}
 #{/set}
 
-<ol class="buy-step step4 clearfix">
-    <li><span>1</span>查看购物车 <em>>></em></li>
-    <li><span>2</span>确认订单信息 <em>>></em></li>
-    <li><span>3</span>确认付款 <em>>></em></li>
-    <li class="buy-step-curr"><span>4</span>支付结果 <em>>></em></li>
-</ol>
 
-<div class="order-success">
+<div id="content">
+    <div class="flowstep step4"></div>
     %{baseDomain = play.Play.configuration.getProperty("application.baseDomain")}%
     #{if !errorMessage}
-    <div class="order-wish">恭喜您付款成功</div>
-    <ul>
-        <li>您还可以在  “
-            <a href="http://home.${baseDomain}">aaa我的一百券</a> >
-            <a href="http://home.${baseDomain}">我购买的商品</a> >
-            <a href="http://home.${baseDomain}/orders/${orderNumber}">订单详情</a>” 查看商品券号或配送详情</li>
-        <li>回复短信认证的方式仅限本手机有效。</li>
-        #{if order.orderItems.size() >0 && !order.orderItems.get(0)?.goods?.isLottery}<li>凭短信的券号到取货门店直接取货。</li>#{/if}
-        <li class="service">电子券商品，只要您末进行消费，且保持一百券订单有效，我们将提供随时退款的服务。<br/>
-            我们的客服电话：400-6262-166 我们的客服邮件是：uhuila@seewi.com.cn</li>
-    </ul>
+    <div class="payok">
+        <div class="pay-ok">恭喜您付款成功！</div>
+        <div class="pay-btn">
+            <a class="vieworder" href="http://home.${baseDomain}/orders/${orderNumber}">查看订单详情<b></b></a>
+            <a class="goshop" href="http://www.${baseDomain}">继续购物<b></b></a>
+        </div>
+        <div class="note"><i>注</i>：您还可以在 “ <a href="http://home.${baseDomain}" target="_blank">我的一百券</a> >
+            <a href="http://home.${baseDomain}" target="_blank">我购买的商品</a> >
+            <a href="http://home.${baseDomain}/orders/${orderNumber}" target="_blank">订单详情</a>”查看商品券号或配送详情，凭短信的券号到取货门店直接取货。电子券商品，只要您末进行消费，且保持一百券订单有效，我们将提供随时退款的服务。我们的客服电话：400-6262-166  我们的客服邮件是：uhuila@seewi.com.cn
+        </div>
+    </div>
     #{/if}
     #{else}
-    <div class="order-wish">暂时未能读取您的支付信息</div>
-    #{/else}
-    <div class="btn">
-        <a href="http://home.${baseDomain}/orders/${orderNumber}"><span>查看订单详情</span></a>
-        <a href="http://www.${baseDomain}"><span>继续购物</span></a>
+    <div class="payok">
+        <div class="note" style="padding:70px 20px;font-size:22px;text-align:center">暂时未能读取您的支付信息，请进入 <a style="font-size:22px;" href="http://home.${baseDomain}" target="_blank">我的一百券</a> >
+            <a style="font-size:22px;" href="http://home.${baseDomain}" target="_blank">我购买的商品</a> 重新付款！
+        </div>
     </div>
+    #{/else}
+
+    #{if recentGoodsList?.size()>0}
+    <div class="recent">
+        <div class="hd">最近浏览商品</div>
+        <ul class="bd clearfix">
+        #{list recentGoodsList, as:'goods'}
+            #{set i:1/}
+            #{if i++==5}
+            <li class="last">
+            #{/if}
+            #{else}
+            <li>
+            #{/else}
+                <div class="image"><a href="/g/${goods.id}" target="_blank"><img src="${goods.imageSmallPath}" alt="${goods.name}"/></a></div>
+                <div class="title"><a href="/g/${goods.id}" target="_blank"></a>${goods.name}</div>
+                <div class="attri">
+                    <del>原价：${goods.faceValue}</del>
+                    <span #{if goods.materialType ==models.sales.MaterialType.ELECTRONIC}class="coupon" #{/if}#{else}class="coupon entity"#{/else}>电子券</span></div>
+                <div class="price">现价：<b>&yen;${goods.salePrice}</b></div>
+            </li>
+        #{/list}
+        </ul>
+    </div><!-- .recent -->
+    #{/if}
 </div>
-#{if recentGoodsList.size()>0}
- <div class="wrap">
-    <div class="boutique-hd">近日成交商品</div>
-    <ul class="boutique-bd clearfix">
-    #{list recentGoodsList, as:'aGoods'}
-        <li>
-            <a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageOriginalPath}" width="170" height="130"
-                                                               alt="${aGoods.name}"/></a>
-            <p><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></p>
-            <span>原价:<del>${aGoods.faceValue}</del> | ${aGoods.discountExpress}</span>
-            <span>现价:<strong>&yen;${aGoods.salePrice}</strong></span>
-        </li>
-    #{/list}
-    </ul>
-</div>
-#{/if}
