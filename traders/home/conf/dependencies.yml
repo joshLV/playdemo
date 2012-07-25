@@ -53,3 +53,6 @@ repositories:
             - view_ext -> *
             - cache_helper -> *
             - order -> *
+            - consumer -> *
+            - sms -> *
+            - cms -> *
