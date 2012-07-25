@@ -7,15 +7,17 @@ import models.admin.SupplierUser;
 import models.sales.*;
 import models.supplier.Supplier;
 import navigation.RbacLoader;
+import org.apache.commons.fileupload.FileItem;
 import org.junit.*;
 import play.Play;
+import play.data.FileUpload;
 import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
-import java.io.File;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,11 +103,14 @@ public class SupplierGoodsTest extends FunctionalTest {
      */
     @Test
     @Ignore
+    // 该测试在 post files 的时候，在controller 中得不到 file.imagePath。而在工作环境中可以得到。故测试不通过
     public void testCreate() {
 
         Long id = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_003");
         Goods goods = Goods.findById(id);
         List<Goods> list = Goods.findAll();
+        Long cateId = (Long) Fixtures.idCache.get("models.sales.Category-Category_1");
+
         // 记录创建新商品前的商品数
         int oldSize = list.size();
         System.out.println("Before ****************************************** "+ list.size());
@@ -118,14 +123,12 @@ public class SupplierGoodsTest extends FunctionalTest {
         goodsParams.put("goods.salePrice","20");
         goodsParams.put("goods.faceValue","20");
         goodsParams.put("goods.title","title");
-        goodsParams.put("goods.categories", goods.categories.toString());
+        goodsParams.put("goods.categories[].id", cateId.toString());
         goodsParams.put("goods.effectiveAt","2012-02-28T14:41:33");
         goodsParams.put("goods.expireAt","2015-02-28T14:41:33");
         goodsParams.put("goods.baseSale","100");
         goodsParams.put("goods.status", GoodsStatus.ONSALE.toString());
-        //goodsParams.put(goods.prompt  ", "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
         goodsParams.put("goods.details", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        //goodsParams.put("goods.imagePath", "/0/0/0");
         goodsParams.put("goods.deleted", DeletedStatus.UN_DELETED.toString());
         goodsParams.put("goods.createdBy", "yanjy");
 
@@ -134,11 +137,12 @@ public class SupplierGoodsTest extends FunctionalTest {
         files.put("imagePath", imagePath);
 
         System.out.println("fileeeeeeeeeeeeeeeeeeeeeeeeeeeeeee     "+files.get("imagePath").exists());
-        //System.out.println("should be      "+goods.brand.id.toString());
-        System.out.println("GOOOOOOOOOOOOOOOOOOOOOOD CATE     "+goodsParams.get("goods.categories"));
-        Response response = POST("/goods", goodsParams);
+        System.out.println("GOOOOOOOOOOOOOOOOOOOOOOD CATE     "+goodsParams.get("goods.categories[].id"));
+
+        //发送请求
+        Response response = POST("/goods", goodsParams, files);
         response.setContentTypeIfNotSet("text/html; charset=GBK");
-        assertStatus(200, response);
+        assertStatus(302, response);
 
         // 创建成功 size + 1
         list = Goods.findAll();
@@ -230,6 +234,12 @@ public class SupplierGoodsTest extends FunctionalTest {
      */
     @Test
     public void testCancelApply(){
+
+        long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_017");
+        Response response = PUT("/goods/" + goodsId + "/cancelApply", "text/html", "");
+        assertStatus(302, response);
+        Goods good = Goods.findById(goodsId);
+        assertEquals(GoodsStatus.OFFSALE,good.status);
 
     }
 }
