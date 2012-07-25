@@ -87,7 +87,6 @@ public class Cart extends Model {
             cart = Cart.find("byCookieIdentityAndGoods", cookie, goods).first();
         }
 
-        clearCache(user, cookie);
         //如果记录已存在，则更新记录，否则新建购物车记录
         if (cart != null) {
             // 不允许一次购买超过999
@@ -96,10 +95,12 @@ public class Cart extends Model {
                 cart.number = cart.number > 999 ? 999 : cart.number;
                 cart.number = cart.number > goods.baseSale ? goods.baseSale : cart.number;
                 cart.save();
+                clearCache(user, cookie);
                 return cart;
             } else {
                 cart.delete();
                 //不允许存在数量小于等于0的购物车记录
+                clearCache(user, cookie);
                 return null;
             }
         } else {
@@ -109,8 +110,10 @@ public class Cart extends Model {
             increment = increment > 999 ? 999 : increment;
             increment = increment > goods.baseSale.intValue() ? goods.baseSale.intValue() : increment;
             if (user != null) {
+                clearCache(user, cookie);
                 return new Cart(user, null, goods, increment).save();
             } else {
+                clearCache(user, cookie);
                 return new Cart(null, cookie, goods, increment).save();
             }
         }

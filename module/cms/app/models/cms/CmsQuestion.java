@@ -87,7 +87,7 @@ public class CmsQuestion extends Model {
             sql.append("or cookieId = :cookieId");
             params.put("cookieId", cookieValue);
         }
-        sql.append(")");
+        sql.append(") order by createdAt desc");
 
         Query query = CmsQuestion.em().createQuery(sql.toString());
         for (Map.Entry<String, Object> entry : params.entrySet()) {
