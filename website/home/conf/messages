@@ -104,3 +104,12 @@ trade_type.REFUND=交易退款
 trade_type.COMMISSION=佣金
 trade_type.PURCHASE_COSTING=采购成本
 trade_type.FREIGHT=运费
+
+accountSequence.CHARGE=充值
+accountSequence.WITHDRAW=提现
+accountSequence.PAY=支付
+accountSequence.REFUND=退款
+accountSequence.RECEIVE=收款
+accountSequence.FREEZE=冻结
+accountSequence.CANCEL=交易取消
+accountSequence.UNFREEZE=取消冻结

@@ -167,7 +167,7 @@ public class OrdersCondition {
     }
 
     public String getOrderByExpress() {
-        String orderBySql = "o.createdAt desc";
+        String orderBySql = "o.paidAt desc,o.createdAt desc";
         return orderBySql;
     }
 }
