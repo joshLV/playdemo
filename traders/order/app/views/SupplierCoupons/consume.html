@@ -12,7 +12,7 @@ String timeEnd = ecoupon.goods.useEndTime;}%
         </script>
         <font color=red>此券已消费!</font>  <br/>
         券编号: ${ecoupon.eCouponSn}<br/>
-        商品名称: ${ecoupon.goods.name}<br/>
+        商品名称: ${ecoupon.goods.title}<br/>
         消费日期：${ecoupon.consumedAt?.format('yyyy-MM-dd HH:mm:ss')}<br/>
         验证门店：${ecoupon.shop?.name}<br/>
         验证方式：&{'coupon.'+ecoupon.verifyType}<br/>
@@ -25,7 +25,7 @@ String timeEnd = ecoupon.goods.useEndTime;}%
         </script>
         <font color=red>此券已经退款，无法再使用该券号进行消费!</font><br>
         券编号: ${ecoupon.eCouponSn}<br/>
-        商品名称: ${ecoupon.goods.name}<br>
+        商品名称: ${ecoupon.goods.title}<br>
         退款日期：${ecoupon.refundAt?.format('yyyy-MM-dd HH:mm:ss')}
     #{/elseif}
 
@@ -35,7 +35,7 @@ String timeEnd = ecoupon.goods.useEndTime;}%
         </script>
         <font color=red>此券已过期!</font><br>
         券编号: ${ecoupon.eCouponSn}<br/>
-        商品名称: ${ecoupon.goods.name}<br/>
+        商品名称: ${ecoupon.goods.title}<br/>
         截止日期：${ecoupon.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
     #{/elseif}
 
@@ -59,7 +59,7 @@ String timeEnd = ecoupon.goods.useEndTime;}%
         券状态:未消费<br/>
         券编号: ${ecoupon.eCouponSn}<br/>
         原价:${ecoupon.goods.faceValue}元<br/>
-        商品名称: ${ecoupon.goods.name} <br/>
+        商品名称: ${ecoupon.goods.title} <br/>
         截止日期:${ecoupon.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
     #{/else}
 #{/else}
