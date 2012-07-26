@@ -3,6 +3,13 @@
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
+#{set 'moreStyles'}
+        <style type="text/css">
+            .controls{
+                padding: 5px 0px;
+            }
+        </style>
+#{/set}
 #{include '/share/nav.html' /}
 <div class="body">
 #{form @OperateQuestions.update(question.id) , id:'form',class:"form-horizontal" }
@@ -11,9 +18,31 @@
     <legend>回复页面</legend>
     <div class="control-group">
         <label class="control-label">用户帐号</label>
-
         <div class="controls">
-        ${question?.userName}
+            #{if question.userId}
+                <a href="/consumers/${question.userId}" target="_blank">${question.userName}</a>
+            #{/if}
+            #{else}
+                ${question?.userName}
+            #{/else}
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">咨询时间</label>
+        <div class="controls">
+            ${question.createdAt.format("yyyy-MM-dd HH:mm:ss")}
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">IP地址</label>
+        <div class="controls">
+            ${question.remoteIP}
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">商品</label>
+        <div class="controls">
+            <a href="/goods/${question.goodsId}" target="_blank">${question.goodsName}</a>
         </div>
     </div>
     <div class="control-group">
@@ -25,9 +54,8 @@
     #{layout_operate.textareaField name:'question.reply', value:question?.reply, required:true/}
     <div class="control-group">
         <label class="control-label">回复者</label>
-
         <div class="controls">
-        ${operateUser.userName}
+            ${operateUser.userName}
         </div>
     </div>
 
