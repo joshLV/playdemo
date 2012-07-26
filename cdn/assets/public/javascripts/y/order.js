@@ -166,7 +166,6 @@ $(function() {
 
     $("#J_confirmOrder b").click(function(ev) {
         ev.preventDefault();
-        console.log(0);
        var url='/orders_number?items=' + $('#items').val();
         $.ajax({
             url:url,
