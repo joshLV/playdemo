@@ -18,7 +18,7 @@ GET     /favicon.ico                            404
 GET     /reports                                PurchaseTaxReports.index
 
 # Home page
-GET     /                                       PurchaseTaxReports.index
+GET     /                                       Application.index
 
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public
