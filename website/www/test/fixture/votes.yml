@@ -1,5 +1,5 @@
 cms.VoteQuestion(vote1):
- content: asfa
+ content: asfa1
  deleted: UN_DELETED
  effectiveAt: 2012-06-12 00:00:00
  expireAt: 2012-06-12 00:00:00
@@ -10,7 +10,7 @@ cms.VoteQuestion(vote1):
  answer4: ghg
  correctAnswer: A
 cms.VoteQuestion(vote2):
- content: 优惠啦网站改版了，改成什么名字？
+ content: 优惠啦网站改版了，改成什么名字？2
  deleted: UN_DELETED
  effectiveAt: 2012-06-13 00:00:00
  expireAt: 2012-06-13 00:00:00
@@ -20,3 +20,14 @@ cms.VoteQuestion(vote2):
  answer3: C.不知道
  answer4: D.一百券
  correctAnswer: D
+cms.VoteQuestion(vote3):
+ content: 优惠啦网站改版了，改成什么名字？3
+ deleted: UN_DELETED
+ effectiveAt: 2012-06-13 00:00:00
+ expireAt: 2012-06-13 00:00:00
+ type: INQUIRY
+ answer1: A.优惠拉
+ answer2: B.原优惠啦
+ answer3: C.不知道
+ answer4: D.一百券
+ correctAnswer: D 

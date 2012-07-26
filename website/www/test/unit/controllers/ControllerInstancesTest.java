@@ -25,5 +25,6 @@ public class ControllerInstancesTest extends UnitTest{
         assertTrue(new PaymentInfo() instanceof Controller);
         assertTrue(new PaymentNotify() instanceof Controller);
         assertTrue(new Register() instanceof Controller);
+        assertTrue(new Votes() instanceof Controller);
     }
 }
