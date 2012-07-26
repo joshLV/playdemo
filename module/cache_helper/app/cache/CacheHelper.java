@@ -246,7 +246,7 @@ public class CacheHelper {
     }
 
     public static void delete(String key) {
-        Logger.info("删除Key:" + key);
+        Logger.debug("删除Key:" + key);
         if (StringUtils.isBlank(key)) {
             throw new IllegalArgumentException("key不能为空");
         }

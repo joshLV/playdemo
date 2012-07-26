@@ -19,7 +19,7 @@ order.OrderItems(orderItems2):
   "goodsName": "哈根达斯200元抵用券"
   "createdAt": "2012-03-05T00:00:00"
   "goods": "Goods_002"
-  "phone": "02101111112"
+  "phone": "18621736594"
 
 order.ECoupon(coupon1):
   "order": "order1"

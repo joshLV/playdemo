@@ -47,7 +47,7 @@ public class EnSmsReceivers extends Controller {
         } else {
             SMSUtil.send("【券市场】券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：400-6262-166",
                     mobile, code);
-            renderText("msg is wrong");
+            renderText("Unsupport Message");
         }
     }
 
