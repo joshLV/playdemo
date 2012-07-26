@@ -92,6 +92,7 @@ public class FriendsLink extends Model {
         friendsLink.qq = friendsLinks.qq;
         friendsLink.content = friendsLinks.content;
         friendsLink.status = friendsLinks.status;
+        friendsLink.userName = friendsLinks.userName;
         friendsLink.save();
     }
 
