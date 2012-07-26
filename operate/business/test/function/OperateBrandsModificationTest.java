@@ -1,5 +1,6 @@
 package function;
 
+import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
@@ -12,6 +13,10 @@ import play.test.FunctionalTest;
 import org.junit.*;
 import play.vfs.VirtualFile;
 import unit.BrandUnitTest;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -107,6 +112,29 @@ public class OperateBrandsModificationTest extends FunctionalTest {
 
         Http.Response response = DELETE("/brands/" + brandId);
         assertStatus(302, response);
+    }
+
+    /**
+     * 测试添加品牌
+     */
+    @Test
+    public void testCreate() {
+        Map<String, String> goodsParams = new HashMap<>();
+        goodsParams.put("goods.name", "laiyifen1");
+        goodsParams.put("goods.no", "20000000");
+        goodsParams.put("goods.supplierId", "0");
+        goodsParams.put("goods.title", "阿森发送发送分10元");
+        goodsParams.put("goods.status", GoodsStatus.ONSALE.toString());
+        goodsParams.put("goods.prompt", "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+        goodsParams.put("goods.details", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+//        goodsParams.put("goods.imagePath", "/opt/3.jpg");
+        goodsParams.put("goods.deleted", DeletedStatus.DELETED.toString());
+        goodsParams.put("goods.createdBy", "yanjy");
+        Http.Response response = POST("/goods", goodsParams);
+        response.setContentTypeIfNotSet("text/html; charset=GBK");
+        assertStatus(200, response);
+        List<Goods> list = Goods.findAll();
+        assertNotNull(list);
     }
 
 }
