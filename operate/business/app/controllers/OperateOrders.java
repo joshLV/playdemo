@@ -10,6 +10,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @With(OperateRbac.class)
@@ -30,7 +31,9 @@ public class OperateOrders extends Controller {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
-        render(orderList, condition);
+
+        BigDecimal amountSummary = Order.summary(orderList);
+        render(orderList, condition,amountSummary);
 
     }
 

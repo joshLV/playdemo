@@ -44,4 +44,11 @@ coupon.null=未知
 goods.REAL=实物
 goods.ELECTRONIC=电子券
 
+queryType.GOODS_NAME=商品名称
+queryType.ORDER_NUMBER=订单号
+queryType.LOGIN_NAME=帐号
+queryType.MOBILE=手机
+queryType.CLERK_JOB_NUMBER=店员工号
+queryType.SHOP_NAME=消费门店
+queryType.COUPON=券号
 

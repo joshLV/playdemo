@@ -37,7 +37,6 @@ if(confirm("确定取消此订单吗？")){
         <div class="tab_top2">
             <form class="form-horizontal" id="orderForm" action="@{UserOrders.index()}" method="GET">
                 <div class="search-box">
-                    <input type="hidden" name="condition.searchKey" value="2"/>
                     <label>商品名称：</label><input class="long_input" type="text" name="condition.goodsName" value="${condition.goodsName}"/>
                     <label>订单号：</label><input class="short_input" type="text" name="condition.searchItems" value="${condition.searchItems}"/>
                     <label>成交时间：</label>

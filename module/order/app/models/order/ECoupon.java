@@ -369,7 +369,7 @@ public class ECoupon extends Model {
     public static JPAExtPaginator<ECoupon> query(CouponsCondition condition, int pageNumber, int pageSize) {
         JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
                 ("ECoupon e", "e", ECoupon.class, condition.getFilter(),
-                        condition.getParamMap()).orderBy("e.createdAt desc");
+                        condition.getParamMap()).orderBy("e.consumedAt desc,e.createdAt desc");
 
         couponsPage.setPageNumber(pageNumber);
         couponsPage.setPageSize(pageSize);
@@ -618,5 +618,19 @@ public class ECoupon extends Model {
         }
 
         return selectECoupons;
+    }
+
+    /**
+     * 统计券金额
+     * @param couponPage
+     * @return
+     */
+    public static BigDecimal summary(JPAExtPaginator<ECoupon> couponPage) {
+        BigDecimal amount = BigDecimal.ZERO;
+
+        for (ECoupon coupon : couponPage) {
+            amount = amount.add(coupon.salePrice);
+        }
+        return amount;
     }
 }

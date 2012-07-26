@@ -181,8 +181,9 @@ public class Order extends Model {
     /**
      * 记录是消费者还是分销商的帐号,导出报表用
      */
-     @Transient
+    @Transient
     public String accountEmail;
+
     public Order() {
     }
 
@@ -343,7 +344,7 @@ public class Order extends Model {
      * @param number  购买数量
      * @return
      */
-    public static Boolean checkLimitNumber(User user, Long goodsId,Long boughtNumber, int number) {
+    public static Boolean checkLimitNumber(User user, Long goodsId, Long boughtNumber, int number) {
 
         //取出商品的限购数量
         Goods goods = Goods.findById(goodsId);
@@ -960,5 +961,20 @@ public class Order extends Model {
 
         order.save();
         return true;
+    }
+
+    /**
+     * 统计订单总金额/
+     * @param orderList
+     * @return
+     */
+    public static BigDecimal summary(JPAExtPaginator<Order> orderList) {
+
+        BigDecimal amount = BigDecimal.ZERO;
+
+        for (Order order : orderList) {
+            amount = amount.add(order.amount);
+        }
+        return amount;
     }
 }

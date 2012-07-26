@@ -24,6 +24,7 @@ public class OrdersCondition {
     public String searchKey;
     public String searchItems;
     public boolean isLottery;
+    public AccountType userType;
 
     /**
      * 查询条件hql.
@@ -40,7 +41,10 @@ public class OrdersCondition {
             sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.supplierId = :supplierId)");
             paramsMap.put("supplierId", supplierId);
         }
-
+        if (userType != null) {
+            sql.append(" and o.userType=:userType)");
+            paramsMap.put("userType", userType);
+        }
         if (createdAtBegin != null) {
             sql.append(" and o.createdAt >= :createdAtBegin");
             paramsMap.put("createdAtBegin", createdAtBegin);
@@ -76,24 +80,34 @@ public class OrdersCondition {
         }
 
         //按照商品名称检索
-        if ("1".equals(searchKey)) {
+        if (QueryType.GOODS_NAME.toString().equals(searchKey)) {
             sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.name like :name)");
             paramsMap.put("name", "%" + searchItems.trim() + "%");
         }
         //按照商品订单检索
-        if ("2".equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
+        if (QueryType.ORDER_NUMBER.toString().equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
             sql.append(" and o.orderNumber like :orderNumber");
             paramsMap.put("orderNumber", "%" + searchItems + "%");
         }
         //按照帐号检索
-        if ("3".equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
-            User user=User.findByLoginName(searchItems.trim());
+        if (QueryType.LOGIN_NAME.toString().equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
+            User user = User.findByLoginName(searchItems.trim());
             if (user != null) {
                 sql.append(" and o.userId = :user");
                 paramsMap.put("user", user.getId());
             }
+            Resaler resaler =Resaler.findByLoginName(searchItems.trim());
+            if(resaler != null) {
+                sql.append(" and o.userId = :user");
+                paramsMap.put("user", resaler.id);
+            }
         }
-        System.out.println(sql.toString()+">>>>>>>>>.");
+        //按照手机检索
+        if (QueryType.MOBILE.toString().equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
+            sql.append(" and o.id in (select o.id from o.orderItems oi where oi.phone =:phone)");
+            paramsMap.put("phone", searchItems);
+        }
+
         return sql.toString();
     }
 
@@ -122,7 +136,11 @@ public class OrdersCondition {
             sql.append(" and o.status = :status");
             paramsMap.put("status", status);
         }
-
+          //按照订单检索
+        if (StringUtils.isNotEmpty(searchItems)) {
+            sql.append(" and o.orderNumber like :orderNumber");
+            paramsMap.put("orderNumber", "%" + searchItems + "%");
+        }
         //按照商品名称检索
         if (StringUtils.isNotBlank(goodsName)) {
             sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.name like :goodsName)");
@@ -175,5 +193,5 @@ public class OrdersCondition {
     public String getUserOrderByExpress() {
         String orderBySql = "o.createdAt desc";
         return orderBySql;
-    }    
+    }
 }

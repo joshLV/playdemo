@@ -10,6 +10,8 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.math.BigDecimal;
+
 @With(OperateRbac.class)
 @ActiveNavigation("coupons_index")
 public class OperateCoupons extends Controller {
@@ -29,7 +31,9 @@ public class OperateCoupons extends Controller {
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
         JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
-        render(couponPage, condition);
+
+        BigDecimal amountSummary = ECoupon.summary(couponPage);
+        render(couponPage, condition,amountSummary);
     }
 
     /**

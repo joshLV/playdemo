@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CouponsCondition implements Serializable {
-    
+
 //    private static final long serialVersionUID = 1632320311301L;
-    
+
     public Date createdAtBegin;
     public Date createdAtEnd;
 
@@ -37,7 +37,7 @@ public class CouponsCondition implements Serializable {
     public VerifyCouponType verifyType;
     private Map<String, Object> paramMap = new HashMap<>();
     public String searchItems;
-    public int searchKey;
+    public String searchKey;
     public boolean isLottery;
 
     public String getOrderByExpress() {
@@ -87,44 +87,38 @@ public class CouponsCondition implements Serializable {
             sql.append(" and e.refundAt <= :refundAtEnd");
             paramMap.put("refundAtEnd", DateUtil.getEndOfDay(refundAtEnd));
         }
-        switch (searchKey) {
-            case 1:
-                if (StringUtils.isNotBlank(searchItems)) {
-                    sql.append(" and e.goods.name like :name");
-                    paramMap.put("name", "%" + searchItems + "%");
-                }
-                break;
-            case 2:
-                if (StringUtils.isNotBlank(searchItems)) {
-                    sql.append(" and e.supplierUser.jobNumber=:jobNumber");
-                    paramMap.put("jobNumber", searchItems);
-                }
-                break;
-            case 3:
-                if (StringUtils.isNotBlank(searchItems)) {
-                    sql.append(" and e.order.orderNumber like :orderNumber");
-                    paramMap.put("orderNumber", "%" + searchItems + "%");
-                }
-                break;
-            case 4:
-                if (StringUtils.isNotBlank(searchItems)) {
-                    sql.append(" and (e.shop.name like :shopLike or e.shop.address like :shopLike)");
-                    paramMap.put("shopLike", "%" + searchItems + "%");
-                }
-                break;
-            case 5:
-                if (StringUtils.isNotBlank(searchItems)) {
-                    sql.append(" and e.eCouponSn like :eCouponSn");
-                    paramMap.put("eCouponSn", "%" + searchItems + "%");
-                }
-                break;
-            case 6:
-                if (StringUtils.isNotBlank(searchItems)) {
-                    sql.append(" and e.orderItems.phone like :phone");
-                    paramMap.put("phone", "%" + searchItems + "%");
-                }
-                break;
+
+        if (QueryType.GOODS_NAME.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
+
+            sql.append(" and e.goods.name like :name");
+            paramMap.put("name", "%" + searchItems + "%");
         }
+
+        if (QueryType.CLERK_JOB_NUMBER.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
+            sql.append(" and e.supplierUser.jobNumber=:jobNumber");
+            paramMap.put("jobNumber", searchItems);
+        }
+
+        if (QueryType.ORDER_NUMBER.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
+            sql.append(" and e.order.orderNumber like :orderNumber");
+            paramMap.put("orderNumber", "%" + searchItems + "%");
+        }
+
+        if (QueryType.SHOP_NAME.toString().equals(searchKey)&& StringUtils.isNotBlank(searchItems)) {
+            sql.append(" and (e.shop.name like :shopLike or e.shop.address like :shopLike)");
+            paramMap.put("shopLike", "%" + searchItems + "%");
+        }
+
+        if (QueryType.COUPON.toString().equals(searchKey)&& StringUtils.isNotBlank(searchItems)) {
+            sql.append(" and e.eCouponSn like :eCouponSn");
+            paramMap.put("eCouponSn", "%" + searchItems + "%");
+        }
+
+        if (QueryType.MOBILE.toString().equals(searchKey)&& StringUtils.isNotBlank(searchItems)) {
+            sql.append(" and e.orderItems.phone like :phone");
+            paramMap.put("phone", "%" + searchItems + "%");
+        }
+
         if (StringUtils.isNotBlank(goodsName)) {
             sql.append(" and e.goods.name like :name");
             paramMap.put("name", "%" + goodsName + "%");
