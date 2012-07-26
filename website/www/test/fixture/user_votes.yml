@@ -1,0 +1,17 @@
+consumer.UserVote(seq_001):
+ answer: A
+ user: "user"
+ vote: "vote3"
+ deleted: UN_DELETED
+consumer.UserVote(seq_002):
+ answer: D
+ user: "user"
+ vote: "vote2"
+ createdAt: "2012-06-13 16:55:47"
+ deleted: UN_DELETED
+consumer.UserVote(seq_003):
+ answer: B
+ user: "user"
+ vote: "vote3"
+ createdAt: "2012-07-13 16:55:47"
+ deleted: UN_DELETED
