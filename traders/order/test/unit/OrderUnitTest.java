@@ -76,7 +76,7 @@ public class OrderUnitTest extends UnitTest {
         order.searchKey = "1";
         order.searchItems = "哈根达斯200";
         list = Order.query(order, supplierId, pageNumber, pageSize);
-        assertEquals(1, list.size());
+        assertEquals(2, list.size());
 
         order = new OrdersCondition();
         try {
