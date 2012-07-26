@@ -29,7 +29,7 @@ cms.FriendsLink(Link3):
   email: "123@abc.com"
   mobile: "12345678900"
   qq: "111111111"
-  status: OPEN
+  status: FORBID
   deleted: UN_DELETED
   displayOrder: 1
   content: "This is uhuila link"
