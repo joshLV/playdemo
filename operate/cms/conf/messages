@@ -6,6 +6,7 @@ validation.required=请输入%s!
 validation.match=无效的%s!
 validation.invalid=无效的%s!
 validation.beforeThanEffectiveAt=%s不能早于有效期开始时间!
+validation.future=%s必须填写未来的时间!
 #Block
 block.WEBSITE_SLIDE=首页展示
 block.DAILY_SPECIAL=每日特卖

@@ -133,7 +133,7 @@ public class CmsBlocks extends Controller {
         render(block);
     }
 
-    public static void update(Long id, Block block, File image) {
+    public static void update(Long id,@Valid Block block, File image) {
         //TODO 仅仅在测试环境中会产生一个validation.invalid的错误，以下这段是为了让测试用例通过增加的代码
         if (Play.runingInTestMode() && validation.errorsMap().containsKey("image")) {
             for (String key : validation.errorsMap().keySet()) {
