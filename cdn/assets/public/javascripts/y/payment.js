@@ -20,7 +20,11 @@ $(function(){
         var ipt = $('input[name=paymentSourceCode]:checked');
 
         if (ipt.length == 0) {
-            $('.onlinepay-bd').append('<span id="onlinepay-error" style="padding:2px;color:#f00">请选择支付方式</span>');;
+			if ($('#onlinepay-error')) {
+				$('#onlinepay-error').show();
+			} else {
+	            $('.onlinepay-bd').append('<span id="onlinepay-error" style="padding:2px;color:#f00">请选择支付方式</span>');;
+			}
         } else {
             $("#confirm_form").submit();
         }
