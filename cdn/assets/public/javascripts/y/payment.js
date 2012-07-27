@@ -20,7 +20,7 @@ $(function(){
         var ipt = $('input[name=paymentSourceCode]:checked');
 
         if (ipt.length == 0) {
-			if ($('#onlinepay-error')) {
+			if ($('#onlinepay-error').length != 0) {
 				$('#onlinepay-error').show();
 			} else {
 	            $('.onlinepay-bd').append('<span id="onlinepay-error" style="padding:2px;color:#f00">请选择支付方式</span>');;
