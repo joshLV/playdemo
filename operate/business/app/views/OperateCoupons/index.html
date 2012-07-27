@@ -31,10 +31,11 @@
             $("#frmlist").submit();
         });
         $("#search").click(function () {
-            $("#frmlist").attr("action", "@{OperateCoupons.index()}");
-            $("#frmlist").attr("method", "get");
-            $("#frmlist").submit();
+           formSubmit();
         });
+        $("#brandId").click(function(){
+                formSubmit();
+        })
     });
 
     function couponExcel() {
@@ -45,6 +46,9 @@
     }
     function changeList(status) {
         $("#condition_status").val(status);
+        formSubmit();
+    }
+     function formSubmit(){
         $("#frmlist").attr("method", "get");
         $("#frmlist").attr("action", "@{OperateCoupons.index()}");
         $("#frmlist").submit();
@@ -68,7 +72,14 @@
                 #{/select} &nbsp; &nbsp;
                 <input type="text" name="condition.searchItems" value="${condition?.searchItems}" class="input-medium"/></td>
                 <td>
-                验证方式
+                 &nbsp;&nbsp;品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌&nbsp;&nbsp;
+                 #{select 'condition.brandId', id:'brandId', class:'input-medium', value:condition?.brandId}
+                     #{option "0"}不限#{/option}
+                     #{list items:brandList, as:'brand'}
+                         #{option brand?.id}${brand?.name}#{/option}
+                 #{/list}
+                 #{/select}
+                &nbsp;&nbsp;验证方式&nbsp;&nbsp;
                 #{select 'condition.verifyType', id:'condition_verifyType', class:'input-medium', value:condition?.verifyType}
                     #{option ""}不限#{/option}
                     #{option "CLERK_MESSAGE"}&{'coupon.CLERK_MESSAGE'}#{/option}
@@ -86,7 +97,7 @@
                 </td>
             </tr>
             <tr>
-                <td> 消费时间
+                <td>消费时间
                     <input type="text" id="condition_consumed_begin" class="input-medium Wdate"
                            name="condition.consumedAtBegin"
                            onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtBegin?.format()}"> -
@@ -94,14 +105,13 @@
                            name="condition.consumedAtEnd"
                            onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtEnd?.format()}">
                 </td>
-                <td> 退款时间
+                <td>&nbsp;&nbsp;退款时间&nbsp;&nbsp;
                     <input type="text" id="condition_refund_begin" class="input-medium Wdate"
                            name="condition.refundAtBegin"
                            onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtBegin?.format()}"> -
                     <input type="text" id="condition_refund_end" class="input-medium Wdate" name="condition.refundAtEnd"
                            onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtEnd?.format()}">
-
-                    抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
+                     &nbsp;&nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
                                value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
                 </td>
                 <td>

@@ -77,5 +77,7 @@ $(function () {
             $("#deletefrm").submit();
         }
     });
-
+    $("#brandId").click(function(){
+        $("#frmlist").submit();
+    })
 });

@@ -5,6 +5,7 @@ import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.resale.Resaler;
+import models.sales.Brand;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Date;
@@ -25,6 +26,7 @@ public class OrdersCondition {
     public String searchItems;
     public boolean isLottery;
     public AccountType userType;
+    public long brandId = 0;
 
     /**
      * 查询条件hql.
@@ -78,7 +80,12 @@ public class OrdersCondition {
             sql.append(" and o.payMethod like :payMethod");
             paramsMap.put("payMethod", "" + payMethod + "%");
         }
-
+        if (brandId != 0) {
+            sql.append("and o.id in (select o.id from o.orderItems oi where oi.goods.brand =:brand)");
+            Brand brand = new Brand();
+            brand.id = brandId;
+            paramsMap.put("brand", brand);
+        }
         //按照商品名称检索
         if (QueryType.GOODS_NAME.toString().equals(searchKey)) {
             sql.append(" and o.id in (select o.id from o.orderItems oi where oi.goods.name like :name)");
@@ -96,8 +103,8 @@ public class OrdersCondition {
                 sql.append(" and o.userId = :user");
                 paramsMap.put("user", user.getId());
             }
-            Resaler resaler =Resaler.findByLoginName(searchItems.trim());
-            if(resaler != null) {
+            Resaler resaler = Resaler.findByLoginName(searchItems.trim());
+            if (resaler != null) {
                 sql.append(" and o.userId = :user");
                 paramsMap.put("user", resaler.id);
             }
@@ -136,7 +143,7 @@ public class OrdersCondition {
             sql.append(" and o.status = :status");
             paramsMap.put("status", status);
         }
-          //按照订单检索
+        //按照订单检索
         if (StringUtils.isNotEmpty(searchItems)) {
             sql.append(" and o.orderNumber like :orderNumber");
             paramsMap.put("orderNumber", "%" + searchItems + "%");

@@ -2,6 +2,7 @@ package models.order;
 
 import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
+import models.sales.Brand;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 
@@ -22,7 +23,7 @@ public class CouponsCondition implements Serializable {
 
     public Date refundAtBegin;
     public Date refundAtEnd;
-
+    public Long brandId = 0l;
     public ECouponStatus status;
     public ECouponStatus excludeStatus;
     public String goodsName;
@@ -104,21 +105,26 @@ public class CouponsCondition implements Serializable {
             paramMap.put("orderNumber", "%" + searchItems + "%");
         }
 
-        if (QueryType.SHOP_NAME.toString().equals(searchKey)&& StringUtils.isNotBlank(searchItems)) {
+        if (QueryType.SHOP_NAME.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
             sql.append(" and (e.shop.name like :shopLike or e.shop.address like :shopLike)");
             paramMap.put("shopLike", "%" + searchItems + "%");
         }
 
-        if (QueryType.COUPON.toString().equals(searchKey)&& StringUtils.isNotBlank(searchItems)) {
+        if (QueryType.COUPON.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
             sql.append(" and e.eCouponSn like :eCouponSn");
             paramMap.put("eCouponSn", "%" + searchItems + "%");
         }
 
-        if (QueryType.MOBILE.toString().equals(searchKey)&& StringUtils.isNotBlank(searchItems)) {
+        if (QueryType.MOBILE.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
             sql.append(" and e.orderItems.phone like :phone");
             paramMap.put("phone", "%" + searchItems + "%");
         }
-
+        if (brandId != 0) {
+            sql.append("and e.orderItems.goods.brand =:brand)");
+            Brand brand = new Brand();
+            brand.id = brandId;
+            paramMap.put("brand", brand);
+        }
         if (StringUtils.isNotBlank(goodsName)) {
             sql.append(" and e.goods.name like :name");
             paramMap.put("name", "%" + goodsName + "%");

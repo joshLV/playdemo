@@ -78,7 +78,7 @@
     </label>
     <div class="controls">
         <input type="checkbox" name="goods.isLottery" id="isLottery" class="input-medium"
-               value="${goods?.isLottery}" ${goods?.isLottery?'checked':''}/>
+               value="${goods?.isLottery}" ${goods?.isLottery?'checked':''}/><span id="err-isLottery"></span>
     </div>
 </div>
     #{if "add".equals(action)}

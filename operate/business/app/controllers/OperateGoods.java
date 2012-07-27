@@ -65,6 +65,10 @@ public class OperateGoods extends Controller {
                 PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(true);
         List<Supplier> supplierList = Supplier.findAll();
+
+        List<Brand> brandList = Brand.findByOrder(null);
+        renderArgs.put("brandList", brandList);
+
         render(goodsPage, supplierList, condition);
     }
 

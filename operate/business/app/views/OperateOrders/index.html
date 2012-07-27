@@ -53,10 +53,11 @@
             $("#frmlist").submit();
         });
            $("#search").click(function () {
-            $("#frmlist").attr("action", "@{OperateOrders.index()}");
-            $("#frmlist").attr("method", "get");
-            $("#frmlist").submit();
+                formSubmit();
         });
+        $("#brandId").click(function(){
+                formSubmit();
+        })
     });
    function orderExcel() {
         $("#frmlist").attr("action", "@{OperateOrders.orderExcelOut()}");
@@ -64,14 +65,16 @@
         $("#frmlist").submit();
     };
 
-
     function changeList(status) {
         $("#condition_status").val(status);
+        formSubmit();
+    }
+
+    function formSubmit(){
         $("#frmlist").attr("method", "get");
         $("#frmlist").attr("action", "@{OperateOrders.index()}");
         $("#frmlist").submit();
     }
-
 </script>
 #{/set}
 #{set 'moreStyles'}
@@ -93,7 +96,15 @@
                                                                      value="${condition.createdAtEnd?.format()}"
                                                                      onfocus="WdatePicker({readOnly:true})"
                                                                      class="input-medium Wdate"/></td>
-                <td>物流方式：
+                <td>
+                 品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
+                 #{select 'condition.brandId', id:'brandId', class:'input-medium', value:condition?.brandId}
+                     #{option "0"}不限#{/option}
+                     #{list items:brandList, as:'brand'}
+                         #{option brand?.id}${brand?.name}#{/option}
+                 #{/list}
+                 #{/select}
+                 &nbsp;&nbsp;&nbsp;物流方式：
                 #{select 'condition.deliveryType', class:'input-small', value:condition.deliveryType}
                     #{option ""}不限#{/option}
                     #{option models.order.DeliveryType.SMS}无物流#{/option}
@@ -108,13 +119,13 @@
                                                                      value="${condition.refundAtEnd?.format()}"
                                                                      onfocus="WdatePicker({readOnly:true})"
                                                                      class="input-medium Wdate"/></td>
-                <td>支付方式：#{select 'condition.payMethod', class:'input-small', value:condition.payMethod}
+                <td>支付方式：#{select 'condition.payMethod', class:'input-medium', value:condition.payMethod}
                     #{option ""}不限#{/option}
                     #{option "alipay"}支付宝#{/option}
                     #{option "tenpay"}财付通#{/option}
                     #{option "99bill"}快钱#{/option}
                 #{/select}
-                  &nbsp;&nbsp;订单来源：#{select 'condition.userType', class:'input-small', value:condition.userType}
+                  &nbsp;&nbsp;&nbsp;订单来源：#{select 'condition.userType', class:'input-small', value:condition.userType}
                     #{option ""}不限#{/option}
                     #{option "CONSUMER"}&{'order.CONSUMER'}#{/option}
                     #{option "RESALER"}&{'order.RESALER'}#{/option}
@@ -141,7 +152,7 @@
                     #{option "CANCELED"}&{'order.CANCELED'}#{/option}
                     #{option "SENT"}&{'order.SENT'}#{/option}
                 #{/select}
-                    抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
+                    &nbsp;&nbsp;&nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
                                 value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
                 <td>
                     <button class="btn btn-primary" id="search" type="submit">搜索</button>

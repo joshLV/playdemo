@@ -4,6 +4,7 @@ import models.accounts.AccountType;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrdersCondition;
+import models.sales.Brand;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
@@ -33,7 +34,9 @@ public class OperateOrders extends Controller {
         JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
 
         BigDecimal amountSummary = Order.summary(orderList);
-        render(orderList, condition,amountSummary);
+        List<Brand> brandList = Brand.findByOrder(null);
+        renderArgs.put("brandList", brandList);
+        render(orderList, condition, amountSummary);
 
     }
 

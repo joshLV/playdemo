@@ -56,8 +56,13 @@ $(
             if (this.checked) {
                 this.value = true;
                 $("#isLottery").val(true)
+                if ($("#goods_supplierId").val() !=5){
+                     $("#err-isLottery").html("抽奖商品只能选择上海视惠信息科技有限公司！").css("color","#ff0000");
+                     $("#goods_supplierId").val(5);
+                }
             } else {
                 $("#isLottery").val(false)
+                $("#err-isLottery").html("");
             }
         });
     }

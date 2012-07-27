@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import models.supplier.Supplier;
 import play.Play;
 import play.data.validation.MaxSize;
@@ -23,16 +24,16 @@ import com.uhuila.common.util.PathUtil;
 @Entity
 @Table(name = "brands")
 public class Brand extends Model {
-    
+
     private static final long serialVersionUID = 7063232060911301L;
     public static final String IMAGE_TINY = "60x46_nw";
-    public static final String IMAGE_SMALL   ="172x132";
-    public static final String IMAGE_MIDDLE  ="234x178";
-    public static final String IMAGE_LARGE   ="340x260";
-    public static final String IMAGE_LOGO    ="300x180_nw";
-    public static final String IMAGE_SLIDE   ="nw";
-    public static final String IMAGE_ORIGINAL="nw";
-    public static final String IMAGE_DEFAULT ="";
+    public static final String IMAGE_SMALL = "172x132";
+    public static final String IMAGE_MIDDLE = "234x178";
+    public static final String IMAGE_LARGE = "340x260";
+    public static final String IMAGE_LOGO = "300x180_nw";
+    public static final String IMAGE_SLIDE = "nw";
+    public static final String IMAGE_ORIGINAL = "nw";
+    public static final String IMAGE_DEFAULT = "";
 
     @Required
     @MaxSize(20)
@@ -55,21 +56,21 @@ public class Brand extends Model {
     public DeletedStatus deleted;
 
     public static final String CACHEKEY = "BRAND";
-        
+
     @Override
     public void _save() {
         CacheHelper.delete(CACHEKEY);
         CacheHelper.delete(CACHEKEY + this.id);
         super._save();
     }
-    
+
     @Override
     public void _delete() {
         CacheHelper.delete(CACHEKEY);
-        CacheHelper.delete(CACHEKEY + this.id);        
+        CacheHelper.delete(CACHEKEY + this.id);
         super._delete();
     }
-    
+
     private static final String IMAGE_SERVER = Play.configuration.getProperty
             ("image.server", "img0.dev.uhcdn.com");
 
@@ -146,7 +147,16 @@ public class Brand extends Model {
     }
 
     public static List<Brand> findByOrder(Supplier supplier) {
-        return find("deleted = ? and supplier = ? order by displayOrder", DeletedStatus.UN_DELETED, supplier).fetch();
+        StringBuilder sq = new StringBuilder("deleted = ?");
+        List params = new ArrayList();
+        params.add(DeletedStatus.UN_DELETED);
+
+        if (supplier != null) {
+            sq.append(" and supplier = ?");
+            params.add(supplier);
+        }
+
+        return find(sq.toString(), params.toArray()).fetch();
     }
 
     public static List<Brand> findTop(int limit, long brandId) {

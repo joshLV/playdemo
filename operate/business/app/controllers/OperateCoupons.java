@@ -4,6 +4,7 @@ import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
+import models.sales.Brand;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
@@ -11,6 +12,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @With(OperateRbac.class)
 @ActiveNavigation("coupons_index")
@@ -31,9 +33,10 @@ public class OperateCoupons extends Controller {
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
         JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
-
+        List<Brand> brandList = Brand.findByOrder(null);
+        renderArgs.put("brandList", brandList);
         BigDecimal amountSummary = ECoupon.summary(couponPage);
-        render(couponPage, condition,amountSummary);
+        render(couponPage, condition, amountSummary);
     }
 
     /**

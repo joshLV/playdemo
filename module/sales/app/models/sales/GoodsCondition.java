@@ -51,7 +51,6 @@ public class GoodsCondition implements Serializable {
     public int priority;
     public boolean isLottery;
     public Date expireAtBegin;
-
     public Date expireAtEnd;
 
     private Map<String, Object> paramMap = new HashMap<>();
@@ -84,7 +83,6 @@ public class GoodsCondition implements Serializable {
                 districtId = searchAreaId;
                 areaId = "0";
             }
-            Logger.debug("-----------------------------districtId:" + districtId);
         }
         if (args.length > 2) {
             brandId = StringUtils.isBlank(args[2]) ? 0 : Long
@@ -135,6 +133,7 @@ public class GoodsCondition implements Serializable {
                     "g.categories c where c.id = :categoryId or (c.parentCategory is not null and c.parentCategory.id=:categoryId))");
             paramMap.put("categoryId", categoryId);
         }
+
         if (brandId != 0) {
             condBuilder.append(" and g.brand = :brand");
             Brand brand = new Brand();
@@ -217,11 +216,7 @@ public class GoodsCondition implements Serializable {
             condBuilder.append(" and g.isLottery=:isLottery");
             paramMap.put("isLottery", isLottery);
         }
-        if (Logger.isDebugEnabled()) {
-            for (String key : paramMap.keySet()) {
-                Logger.debug(key + ":" + paramMap.get(key));
-            }
-        }
+
         return condBuilder.toString();
     }
 

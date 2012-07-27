@@ -39,6 +39,7 @@
                         #{option supplier?.id}${supplier?.fullName}#{/option}
                     #{/list}
                 #{/select}</td>
+
                 <td width="30%">商品名称：<input type="text" name="condition.name" class="input-medium"
                                             value="${condition?.name}"/></td>
                 <td width="30%">商品编号：<input type="text" name="condition.no" class="input-medium"
@@ -46,7 +47,30 @@
                 <td></td>
             </tr>
             <tr>
-                <td>现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：<input type="text" name="condition.salePriceBegin"
+                 <td width="30%">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
+                 #{select 'condition.brandId', id:'brandId', class:'select', value:condition?.brandId}
+                     #{option "0"}不限#{/option}
+                     #{list items:brandList, as:'brand'}
+                         #{option brand?.id}${brand?.name}#{/option}
+                     #{/list}
+                 #{/select}</td>
+                <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
+                #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
+                    #{option ""}不限#{/option}
+                    #{option "ONSALE"}&{'goods.ONSALE'}#{/option}
+                    #{option "OFFSALE"}&{'goods.OFFSALE'}#{/option}
+                    #{option "APPLY"}&{'goods.APPLY'}#{/option}
+                    #{option "REJECT"}&{'goods.REJECT'}#{/option}
+                #{/select}
+                &nbsp; &nbsp;
+                设置精选：<input type="checkbox" name="condition.priority" id="priority" class="input-medium"
+                            value="${condition?.priority}" ${condition?.priority == 1 ?'checked':''}/>
+                &nbsp; &nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
+                                         value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
+            </td>
+            </tr>
+            <tr>
+                <td width="30%">现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价：<input type="text" name="condition.salePriceBegin"
                                                                   class="input-medium"
                                                                   value="${condition?.salePriceBegin}"/>
                     至 <input type="text" name="condition.salePriceEnd" class="input-medium"
@@ -58,22 +82,6 @@
                     至 <input type="text" name="condition.saleCountEnd" class="input-medium"
                              value="#{if condition?.saleCountEnd >=0}${condition?.saleCountEnd}#{/if}"/>
                 </td>
-                <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
-                #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
-                    #{option ""}不限#{/option}
-                    #{option "ONSALE"}&{'goods.ONSALE'}#{/option}
-                    #{option "OFFSALE"}&{'goods.OFFSALE'}#{/option}
-                    #{option "APPLY"}&{'goods.APPLY'}#{/option}
-                    #{option "REJECT"}&{'goods.REJECT'}#{/option}
-                #{/select}
-                    &nbsp; &nbsp;
-                    设置精选：<input type="checkbox" name="condition.priority" id="priority" class="input-medium"
-                               value="${condition?.priority}" ${condition?.priority == 1 ?'checked':''}/>
-                    &nbsp; &nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
-                               value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
-                </td>
-
-
                 <td>
                     <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
                 </td>
