@@ -28,7 +28,6 @@ POST     /user-info                                    UserInfos.update
 GET      /user-sequences                               Usersequences.index
 #收货地址
 GET     /addresses                                    UserAddresses.index
-GET     /addresses/new                                UserAddresses.add
 POST    /addresses                                    UserAddresses.create
 GET     /addresses/{id}/edit                          UserAddresses.edit
 PUT     /addresses/{id}                               UserAddresses.update

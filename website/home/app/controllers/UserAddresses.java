@@ -29,10 +29,6 @@ public class UserAddresses extends Controller {
         render(addressList, breadcrumbs, user);
     }
 
-    public static void add() {
-        render();
-    }
-
     public static void edit(long id) {
         User user = SecureCAS.getUser();
         Address address = Address.findById(id);
