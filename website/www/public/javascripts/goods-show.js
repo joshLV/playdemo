@@ -36,7 +36,6 @@ $(function () {
             element.val(limitNumber - boughtNumber);
             return false;
         }
-//        var id = $("#goodsId").val();
 
         $.post(
             "/carts",
@@ -70,10 +69,8 @@ $(function () {
             return false;
         }
 
-        var t = $(this);
-        var buyHref=t.attr("href");
-        t.attr("href", buyHref.substring(0, buyHref.length - 1) + $("#number").val());
-        return true;
+        $("#order_create_form").submit();
+        return false;
     });
 
     $("#J_closeTips").click(function (ev) {
@@ -171,7 +168,12 @@ function reorder(goods_id, increment) {
     if (new_num > stock) {
         new_num = stock;
         increment = stock - last_num;
+        $("#stock_hit").css("display","inline-block");
+        return;
+    }else {
+        $("#stock_hit").css("display","none");
     }
+
 
     if (limitNumber > 0 && new_num > (limitNumber - boughtNumber)) {
         element.val(limitNumber - boughtNumber);

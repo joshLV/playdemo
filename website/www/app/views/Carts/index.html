@@ -9,12 +9,13 @@
 
 <div id="content" class="clearfix">
     <div class="flowstep step1"></div>
+    #{form @Orders.index(), id:'order_create_form' }
     <div class="cartlist">
         <h3>我的购物车</h3>
         <table>
         <thead>
             <tr>
-                <th class="select-all" width="80"><input type="checkbox" name="select_all_checkbox"/> <label for="select_all_checkbox">全选</label></th>
+                <th class="select-all" width="80"><input type="checkbox" id="select_all_checkbox"/> <label for="select_all_checkbox">全选</label></th>
                 <th width="420">商品</th>
                 <th width="100">类型</th>
                 <th width="90">单价（元）</th>
@@ -23,6 +24,7 @@
                 <th width="90">操作</th>
             </tr>
         </thead>
+
         <tbody>
         #{set boughtNumber:0/}
         #{list items:carts, as:'cartItem'}
@@ -32,48 +34,48 @@
         <tr id="row_${cartItem.goods.id}">
             <td class="select">
                 #{if cartItem.goods.limitNumber > 0 && cartItem.goods.limitNumber-boughtNumber == 0}
-                  <input type="checkbox" disabled="false" />
+                  <input type="checkbox" name="gid" disabled="false" value="${cartItem.goods.id}" />
                 #{/if}
                 #{else}
-                   <input type="checkbox" id="check_goods_${cartItem.goods.id}"/>
+                   <input type="checkbox" name="gid" id="check_goods_${cartItem.goods.id}" value="${cartItem.goods.id}"/>
                 #{/else}
             </td>
             <td class="goods-name"><a href="/g/${cartItem.goods.id}">${cartItem.goods.name}</a>
                 #{if cartItem.goods.limitNumber > 0}
                       <span id="limitNumber" style="display:block;color:#f50">（限购${cartItem.goods.limitNumber}件
-                          #{if user !=null && boughtNumber>0},您已经购买${boughtNumber}件#{/if})</span>
+                          #{if user !=null && (cartItem.goods.limitNumber-boughtNumber>0)},您还可以购买${cartItem.goods.limitNumber-boughtNumber}件#{/if})</span>
                     #{/if}
                 <span id="limit_goods_${cartItem.goods.id}"style="color:#f50">
-                #{if cartItem.goods.id==limit_goodsId && cartItem.goods.limitNumber > 0 && cartItem.goods.limitNumber-boughtNumber==0}不能继续购买，请确认! #{/if}</span>
+                    #{if cartItem.goods.id==limit_goodsId && cartItem.goods.limitNumber > 0 && cartItem.goods.limitNumber-boughtNumber==0}
+                    您已购买了${boughtNumber}件,不能继续购买，请确认!
+                    #{/if}
+                </span>
             </td>
             <td>${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
             <td id="price_${cartItem.goods.id}">${cartItem.goods.salePrice}</td>
             <td>
                 <span class="reduce-btn" name="${cartItem.goods.id}"id="sub_img_${cartItem.goods.id}" ></span>
-                *{#{if cartItem.goods.limitNumber > 0}}*
-                     *{#{if cartItem.goods.limitNumber-boughtNumber > 0}}*
-                      *{<input class="num-ipt" type="text" value="${cartItem.goods.limitNumber-boughtNumber}" id="num_${cartItem.goods.id}"/>}*
-                     *{#{/if}}*
-                     *{#{else}}*
-                      *{<input class="num-ipt" type="text" value="1" id="num_${cartItem.goods.id}"/>}*
-                     *{#{/else}}*
-                *{#{/if}}*
-                *{#{else}}*
-                    <input class="num-ipt" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}"/>
-                *{#{/else}}*
+                #{if cartItem.goods.limitNumber > 0}
+                     #{if cartItem.goods.limitNumber-boughtNumber == 0}
+                      <input class="num-ipt" type="text" name="g${cartItem.goods.id}" value="0" id="num_${cartItem.goods.id}" disabled="true"/>
+                     #{/}
+                     #{elseif cartItem.number >(cartItem.goods.limitNumber-boughtNumber ) }
+                      <input class="num-ipt" type="text" name="g${cartItem.goods.id}" value="${cartItem.goods.limitNumber-boughtNumber}" id="num_${cartItem.goods.id}"/>
+                     #{/elseif}
+                #{else}
+                      <input class="num-ipt" type="text" name="g${cartItem.goods.id}" value="${cartItem.number}" id="num_${cartItem.goods.id}"/>
+                #{/else}
+                #{/if}
+                #{else}
+                    <input class="num-ipt" name="g${cartItem.goods.id}" type="text" value="${cartItem.number}" id="num_${cartItem.goods.id}"/>
+                #{/else}
                 <input type="hidden" value="${cartItem.number}" id="last_num_${cartItem.goods.id}"/>
                 <input type="hidden" value="${cartItem.goods.baseSale}" id="stock_${cartItem.goods.id}">
                 <input type="hidden" value="${cartItem.goods.limitNumber}" id="limit_${cartItem.goods.id}">
                 <span class="add-btn" name="${cartItem.goods.id}" id="add_img_${cartItem.goods.id}"></span>
             </td>
             <td><span class="strong_gray" id="subtotal_${cartItem.goods.id}">
-              *{#{if cartItem.goods.limitNumber > 0}}*
-                    *{#{if cartItem.goods.limitNumber-boughtNumber > 0}${cartItem.goods.salePrice?.multiply(cartItem.goods.limitNumber-boughtNumber)}#{/if}}*
-                    *{#{else}${cartItem.goods.salePrice}#{/else}}*
-                *{#{/if}}*
-                *{#{else}}*
                    ${cartItem.goods.salePrice?.multiply(cartItem.number)}
-                *{#{/else}}*
             </span></td>
             <td><a href="#" class="del" name="del_row" goods_id="${cartItem.goods.id}"
                    id="del_row_${cartItem.goods.id}">删除</a></td>
@@ -96,9 +98,9 @@
 
     <div class="cart-total">
         商品共<span id="total_num">0</span>件，总合计（不含运费）：<b class="cart-amount" id="carts_amount"></b>元
-        <a class="confirm-order" href="/orders?items=" id="confirm_to_order">确认订单<b></b></a>
+        <a class="confirm-order" href="#" id="confirm_to_order">确认订单<b></b></a>
     </div>
-
+    #{/form}
     #{if sawGoodsList?.size()>0}
     <div class="recent">
         <div class="hd">最近浏览商品</div>

@@ -98,16 +98,16 @@ public class Carts extends Controller {
             amount = amount.add(cart.goods.salePrice.multiply(new BigDecimal(cart.number)));
             count += cart.number;
         }
-        
+
         if (increment > 0 && WebsiteInjector.getUserWebIdentification() != null) {
             UserWebIdentification uwi = UserWebIdentification.findById(WebsiteInjector.getUserWebIdentification().id);
             if (uwi.cartCount == null) {
                 uwi.cartCount = 0;
-            } 
+            }
             uwi.cartCount += increment;
             uwi.save();
         }
-        
+
         renderJSON("{\"count\":" + count + ", \"amount\":\"" + amount + "\"}");
     }
 

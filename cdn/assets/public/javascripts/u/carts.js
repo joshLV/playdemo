@@ -32,14 +32,14 @@ function reorder(goods_id, increment) {
 
     if ((limitNumber > boughtNumber) && new_num > (limitNumber - boughtNumber)) {
         element.val(limitNumber - boughtNumber);
-        return false;
-    }
-    if (limitNumber > 0 && element.val() >= limitNumber) {
-        new_num = limitNumber;
-        element.val(limitNumber);
-        increment = limitNumber - last_num;
         return;
     }
+    if (limitNumber > 0 && new_num > (limitNumber - boughtNumber)) {
+        element.val(limitNumber - boughtNumber);
+        increment = limitNumber - last_num;
+        return false;
+    }
+
     if (increment == 0) {
         element.val(last_num);
         return;
@@ -87,7 +87,7 @@ function refreshAmount() {
     $("#carts_amount").text(amount.toString());
 }
 
-$(function() {
+$(function () {
 
     //点击+按钮
     $(".add-btn").click(function () {
@@ -99,13 +99,29 @@ $(function() {
     });
 
     //直接在文本框里输入
-    $("input.num_input").blur(function () {
+    $(".num-ipt").blur(function () {
         var el_id = $(this).attr("id");
         var last_num = $("#last_" + el_id);
         var re = /^\d+(\.\d+)?$/;
+        var stock = Number($("#stock_" + el_id).val());
+        var limitNumber = Number($("#limit_" + el_id).val());
+        var boughtNumber = Number($("#boughtNumber_" + el_id).val());
+
+        if (limitNumber > 0 && limitNumber - boughtNumber==0 ) {
+            $(this).val(limitNumber - boughtNumber);
+            return false;
+        }
+        if (limitNumber > 0 && (limitNumber > boughtNumber) && last_num > (limitNumber - boughtNumber)) {
+            $(this).val(limitNumber - boughtNumber);
+            return false;
+        }
         if (!re.test($(this).val())) {
             $(this).val(last_num.val());
             return;
+        }
+
+        if (last_num==0) {
+            $(this).val(1);
         }
         var goods_id = el_id.substr(el_id.lastIndexOf("_") + 1);
         reorder(goods_id, Number($(this).val()) - Number(last_num.val()));
@@ -125,22 +141,22 @@ $(function() {
     });
 
     var set_all_select_all_checkbox = function (checked) {
-        $("input[name=select_all_checkbox]").each(function () {
+        $("input[id=select_all_checkbox]").each(function () {
             this.checked = checked
         });
     };
     var set_all_goods_checkbox = function (checked) {
         $("input[id^=check_goods_]").each(function () {
-            if ($("#limit_goods_" + this.value).html() != null) {
-                this.checked = false;
-                $("#check_goods_" + this.value).attr('disabled', true);
-            } else {
-                this.checked = checked
-            }
+//            if ($("#limit_goods_" + this.value).html() != null ) {
+//                this.checked = false;
+//                $("#check_goods_" + this.value).attr('disabled', true);
+//            } else {
+            this.checked = checked
+//            }
         });
     };
     //点击全选
-    $("input[name=select_all_checkbox]").each(function () {
+    $("input[id=select_all_checkbox]").each(function () {
         $(this).click(
             function () {
                 if (this.checked) {
@@ -220,9 +236,8 @@ $(function() {
             return false;
         }
 
-        var t = $(this);
-        t.attr("href", t.attr("href") + items);
-
+        $("#order_create_form").submit();
+        return false;
     });
 
 
@@ -230,3 +245,4 @@ $(function() {
     set_all_goods_checkbox(true);
     refreshAmount();
 });
+

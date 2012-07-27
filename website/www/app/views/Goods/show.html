@@ -60,9 +60,9 @@
         <div id="gallery">
             <img src="${goods.imageLargePath}" alt="${title}"/>
         </div>
-        <input type="hidden" id="goodsId" name="goodsId" value="${goods.id}">
 
         <div id="property">
+        #{form @Orders.index(), id:'order_create_form' }
             <ul id="metaBox">
             #{if params['isSupplier']== null || !params['isSupplier']}
                 <li>现　　价：<span class="price">&yen;${goods.salePrice}</span></li>
@@ -81,7 +81,7 @@
                 <li>券有效期：${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</li>
                 <li class="amount">购买数量:
                     <span id="amount">
-                    <input class="amount-ipt" id="number" name="number" type="text" value="1"/>
+                    <input class="amount-ipt" id="number" name="g${goods.id}" type="text" value="1"/>
                             <span class="increase-btn" id="increase-btn" name="${goods.id}"></span>
                             <span class="decrease-btn" id="decrease-btn" name="${goods.id}"></span>
                         <input type="hidden" value="1" id="last_num_${goods.id}"/>
@@ -101,10 +101,12 @@
                     <input type="hidden" id="addCartNumber" value="${addCartNumber}">
                 </li>
             </ul>
+
+            <input type="hidden" id="goodsId" name="gid" value="${goods.id}">
             <div id="btnBox">
             #{if goods.onSale()}
                 #{if !bought}
-                    <a href="/orders?items=${goods.getId()}-1" id="link_buy_now" class="nowBuy">立即购买<b></b></a>
+                    <a href="#" id="link_buy_now" class="nowBuy">立即购买<b></b></a>
                     #{if !goods?.isLottery}
                     <a id="link_add_cart" href="#" class="addCart">加入购物车<b></b></a>
                     #{/if}
@@ -124,6 +126,7 @@
                 <span>已下架</span>
             #{/elseif}
             </div>
+        #{/form}
         </div>
         <!-- #property -->
         </div>

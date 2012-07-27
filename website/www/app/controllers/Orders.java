@@ -1,6 +1,18 @@
 package controllers;
 
-import static play.Logger.warn;
+import controllers.modules.website.cas.SecureCAS;
+import models.accounts.AccountType;
+import models.consumer.Address;
+import models.consumer.User;
+import models.order.*;
+import models.sales.Goods;
+import models.sales.MaterialType;
+import play.Logger;
+import play.Play;
+import play.data.validation.Validation;
+import play.mvc.Controller;
+import play.mvc.Http;
+import play.mvc.With;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -8,24 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import models.accounts.AccountType;
-import models.consumer.Address;
-import models.consumer.User;
-import models.order.Cart;
-import models.order.DeliveryType;
-import models.order.NotEnoughInventoryException;
-import models.order.Order;
-import models.order.OrderItems;
-import models.sales.Goods;
-import models.sales.MaterialType;
-import org.hibernate.usertype.UserType;
-import play.Logger;
-import play.Play;
-import play.data.validation.Validation;
-import play.mvc.Controller;
-import play.mvc.Http;
-import play.mvc.With;
-import controllers.modules.website.cas.SecureCAS;
+import static play.Logger.warn;
 
 /**
  * 用户订单确认控制器.
@@ -41,13 +36,25 @@ public class Orders extends Controller {
     /**
      * 预览订单.
      *
-     * @param items 选择的商品及数量，格式为 goods1-num1,goods2-num2-.....
+     * @param gid=37&gid=102&g37=2&g102=3
      */
-    public static void index(String items) {
-        if (items == null) {
+    public static void index(List<Long> gid) {
+        if (gid.size() == 0) {
             error("no goods specified");
             return;
         }
+
+        Map<String, String[]> params = request.params.all();
+        String items = "";
+        for (Long goodsId : gid) {
+            String[] numberStr = params.get("g" + goodsId);
+            int number = 1;
+            if (numberStr != null && numberStr.length > 0) {
+                number = Integer.parseInt(numberStr[0]);
+            }
+            items += goodsId + "-" + number + ",";
+        }
+
         User user = SecureCAS.getUser();
         showOrder(items);
 
