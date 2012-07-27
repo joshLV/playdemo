@@ -252,7 +252,7 @@
                 <dl>
                     <dt>咨询内容：</dt>
                     <dd>
-                    ${question.content}<span class="date">${question.createdAt.format('yyyy-MM-dd HH:mm:ss')}</span>
+                    ${question.content}<span class="date">${question?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</span>
                     </dd>
                 </dl>
             </div>
@@ -261,7 +261,7 @@
                     #{if question.reply != null}
                         <dt>客服回复：</dt>
                         <dd>
-                        ${question.reply}<span class="date">${question.repliedAt.format('yyyy-MM-dd HH:mm:ss')}</span>
+                        ${question.reply}<span class="date">${question?.repliedAt?.format('yyyy-MM-dd HH:mm:ss')}</span>
                         </dd>
                     #{/if} #{else}
                     <dt>待回复,</dt>

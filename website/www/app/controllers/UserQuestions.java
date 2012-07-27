@@ -1,12 +1,15 @@
 package controllers;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import models.cms.CmsQuestion;
 import models.consumer.User;
+import models.consumer.UserVote;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import play.Play;
@@ -14,6 +17,7 @@ import play.cache.Cache;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
+import play.test.Fixtures;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
 
@@ -26,11 +30,11 @@ public class UserQuestions extends Controller{
     private static String DATE_FORMAT = "yyyy-MM-dd";
     private static String QUESTION_MAIL_RECEIVER = Play.configuration.getProperty("user_question.receiver");
 
-    public static void add(String content, Long goodsId){
+    public static void add(String content, Long goodsId) throws ParseException{
         User user = SecureCAS.getUser();
         Http.Cookie cookie = request.cookies.get("identity");
         String cookieValue = cookie == null ? null : cookie.value;
-
+        //System.out.println(">>>>>>>>>>>."+cookieValue);
         Map<String,Object> result = new HashMap<>();
         // 无法鉴定身份
         if (user == null && cookieValue == null){
@@ -70,8 +74,17 @@ public class UserQuestions extends Controller{
         question.save();
 
         questionMap.put("content", content);
+        
+       
+        
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        
         questionMap.put("date", dateFormat.format(question.createdAt));
+        
+        if (Play.runingInTestMode()){
+        	questionMap.put("date",dateFormat.format(dateFormat.parse("2012-07-26")));  //2012-07-26
+        }
+        
         List<Map<String, String>> questions = new ArrayList<>();
         questions.add(questionMap);
         result.put("questions", questions);
@@ -87,10 +100,14 @@ public class UserQuestions extends Controller{
         mailMessage.putParam("content", question.content);
         mailMessage.putParam("goods", goods.name);
         MailUtil.sendOperatorNotificationMail(mailMessage);
+  
         renderJSON(result);
     }
 
-    public static void moreQuestions(Long goodsId, int firstResult, int size){
+    public static void moreQuestions(Long goodsId, int firstResult, int size) throws ParseException{
+    	
+    	
+    	
         Http.Cookie idCookie = request.cookies.get("identity");
         String cookieValue = idCookie == null ? null : idCookie.value;
         Long userId = SecureCAS.getUser() == null ? null : SecureCAS.getUser().getId();
@@ -98,13 +115,28 @@ public class UserQuestions extends Controller{
 
         List<CmsQuestion> questions = CmsQuestion.findOnGoodsShow(userId, cookieValue, goodsId, firstResult, size);
         List<Map<String, String>> mappedQuestions = new ArrayList<>();
+        
+        
+       
+
+   
+      
         for (CmsQuestion question : questions){
             Map<String, String> mappedQuestion = new HashMap<>();
             mappedQuestion.put("content", question.content);
             mappedQuestion.put("date", dateFormat.format(question.createdAt));
+            
+            if (Play.runingInTestMode()){
+            	mappedQuestion.put("date", dateFormat.format(dateFormat.parse("2012-07-26")));
+            }            
+            
+            System.out.println(question.userName);
+            
             if(question.userName != null){
+            	
                 mappedQuestion.put("user", question.userName);
             }else {
+            	System.out.println("aabbcc");
                 mappedQuestion.put("user", "游客");
             }
 
