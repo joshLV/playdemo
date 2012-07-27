@@ -18,7 +18,7 @@ public class VoteQuestionTest  extends UnitTest {
 	@Before
 	public void setup() {
 		Fixtures.delete(VoteQuestion.class);
-		Fixtures.loadModels("fixture/votes.yml");
+		Fixtures.loadModels("fixture/votes_votestest.yml");
 	}
 	
 	 @Test
@@ -27,6 +27,7 @@ public class VoteQuestionTest  extends UnitTest {
 			VoteQuestion votequestion2 = VoteQuestion.findById(voteId2);	
 			Long voteId3 = (Long) Fixtures.idCache.get("models.cms.VoteQuestion-vote3");
 			VoteQuestion votequestion3 = VoteQuestion.findById(voteId3);	
+			System.out.println(votequestion3.content);
 			assertEquals("优惠啦网站改版了，改成什么名字？3",votequestion3.content);
 			//3-->2
 			votequestion2.update(voteId3,votequestion2);		

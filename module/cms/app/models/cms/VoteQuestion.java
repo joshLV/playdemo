@@ -1,16 +1,24 @@
 package models.cms;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import play.data.validation.InFuture;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.apache.commons.lang.StringUtils;
+
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
-import org.apache.commons.lang.StringUtils;
 
-import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 
 
 /**
@@ -78,7 +86,7 @@ public class VoteQuestion extends Model {
 
     public static List<VoteQuestion> getPage(VoteType type) {
         List<VoteQuestion> votesList = VoteQuestion.find("deleted = ? and type=? and effectiveAt >= ?" +
-                " and expireAt <=? order by expireAt desc", DeletedStatus.UN_DELETED, VoteType.QUIZ, DateUtil.getBeginOfDay(),
+                " and expireAt <=? order by expireAt desc", DeletedStatus.UN_DELETED,type, DateUtil.getBeginOfDay(),
                 DateUtil.getEndOfDay(new Date())).fetch();
         return votesList;
     }
@@ -102,6 +110,7 @@ public class VoteQuestion extends Model {
         newVote.type = vote.type;
         newVote.correctAnswer = vote.correctAnswer;
         newVote.save();
+        
 
     }
 
