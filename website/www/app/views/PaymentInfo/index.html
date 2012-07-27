@@ -46,7 +46,7 @@
                 confirmPayDisplay = "block"
             }
         }%
-        <div id="payment" class="balance-payment">
+        <div id="payment" style="display:${useBalanceDisplay}" class="balance-payment">
             <input type="checkbox" name="useBalance" id="use_balance" ${useBalanceStatus} />
             <label for="use_balance">
                 用余额付款<em>${account.amount.min(order.needPay)}</em>元
@@ -56,7 +56,7 @@
             </label>
         </div>
         <div class="confirmpay">
-            <button id="confirm-pay" class="confirm-pay" type="submit" style="display:${confirmPayDisplay}"></button>
+            <button id="confirm-pay" class="confirm-pay" type="submit"style="display:${confirmPayDisplay}"></button>
         </div>
     </div>
     %{
