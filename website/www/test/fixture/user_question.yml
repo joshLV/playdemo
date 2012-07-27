@@ -1,0 +1,10 @@
+cms.CmsQuestion(cmsquestion1):
+ "content": "满百送电影票活动，是不是拍一张这个面值一百的就可以了？还是这个只算80块？"
+ "cookieId": "61edf4ff-2867-433e-9ced-dd9442ed10c3"
+ "createdAt": "2012-06-18T07:58:56"
+ "operateUserId": 3
+ "replayAt": "2012-07-03T10:24:43"
+ "reply": "亲，满百送电影票需要购物金额到100元哦~如果只买1张100的券算80哟！"
+ "visible": "true"
+ "userName": 用户
+ "goodsName": "限时促-[多商区]有家川菜现金券-免预约不限时100"
