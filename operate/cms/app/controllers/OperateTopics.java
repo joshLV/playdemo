@@ -60,7 +60,7 @@ public class OperateTopics extends Controller {
         render(topic);
     }
 
-    public static void update(Long id, Topic topic) {
+    public static void update(Long id, @Valid Topic topic) {
         checkExpireAt(topic);
         if (Validation.hasErrors()) {
             for (String key : validation.errorsMap().keySet()) {
