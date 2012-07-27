@@ -1,0 +1,138 @@
+package functional;
+
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.CmsBlocks;
+import controllers.operate.cas.Security;
+import models.admin.OperateUser;
+import models.cms.Block;
+import operate.rbac.RbacLoader;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import play.Play;
+import play.mvc.Http;
+import play.test.Fixtures;
+import play.test.FunctionalTest;
+import play.vfs.VirtualFile;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: Juno
+ * Date: 12-7-27
+ * Time: 上午10:08
+ * To change this template use File | Settings | File Templates.
+ */
+public class CmsBlocksFunctionalTest extends FunctionalTest{
+
+    @Before
+    public void setup() {
+        Fixtures.delete(Block.class);
+        Fixtures.loadModels("fixture/blocks.yml");
+
+        Fixtures.loadModels("fixture/roles.yml");
+        Fixtures.loadModels("fixture/users.yml");
+
+
+        // 重新加载配置文件
+        VirtualFile file = VirtualFile.open("conf/rbac.xml");
+        RbacLoader.init(file);
+
+        Long id = (Long) Fixtures.idCache.get("models.admin.OperateUser-user3");
+        OperateUser user = OperateUser.findById(id);
+        // 设置测试登录的用户名
+        Security.setLoginUserForTest(user.loginName);
+    }
+
+    @After
+    public void tearDown() {
+        // 清除登录Mock
+        Security.cleanLoginUserForTest();
+    }
+
+    @Test
+    public void testIndex(){
+        Http.Response response = GET("/blocks");
+        assertIsOk(response);
+        assertContentType("text/html", response);
+    }
+
+    @Test
+    public void testAdd(){
+        Http.Response response = GET("/blocks/new");
+        assertIsOk(response);
+        assertContentMatch("添加内容块", response);
+    }
+
+    @Test
+    // CmsBlock.java 中的create()方法 添加了忽略测试代码中上传文件为空的异常，以通过测试
+    public void testCreate(){
+        //配置 BLOCK 参数
+        Map<String,String> params = new HashMap<>();
+        params.put("block.title","TestTitle");
+        params.put("block.displayOrder","1");
+        params.put("block.effectiveAt","2012-3-21");
+        params.put("block.expireAt","2013-3-21");
+        params.put("content","TestContent");
+
+        //配置 图片 参数
+        Map<String,File> files = new HashMap<>();
+        File file = Play.getFile("test/p.jpg");
+        //确认正确获得图片路径
+        assertTrue(file.exists());
+        files.put("imageUrl", file);
+
+        Http.Response response = POST("/blocks",params,files);
+        int size = Block.findAll().size();
+        // 创建成功 size增加
+        assertEquals(2,size);
+    }
+
+    @Test
+    public void testEdit(){
+        long id = (Long) Fixtures.idCache.get("models.cms.Block-Test");
+        assertNotNull(id);
+
+        Http.Response response = GET("/blocks/" + id + "/edit");
+        assertIsOk(response);
+        assertContentMatch("修改内容块",response);
+    }
+
+    @Test
+    public void testUpdate(){
+        long id = (Long) Fixtures.idCache.get("models.cms.Block-Test");
+        String params = "block.title=TestTitle" +
+                        "&block.displayOrder=1" +
+                        "&block.effectiveAt=2012-3-21" +
+                        "&block.expireAt=2013-3-21" +
+                        "&content=Test Content";
+        Http.Response response =  PUT("/blocks/"+id,"application/x-www-form-urlencoded",params);
+        assertStatus(302,response);
+        Block block = Block.findById(id);
+        assertTrue((block.title).equals("TestTitle"));
+    }
+
+    @Test
+    public void testUpdateWithError(){
+        long id = (Long) Fixtures.idCache.get("models.cms.Block-Test");
+        String params = "block.title=TestTitle";
+        // 传一个空的参数给UPDATE，更新不成功
+        Http.Response response =  PUT("/blocks/"+id,"application/x-www-form-urlencoded",params);
+        assertStatus(200,response);
+        Block block = Block.findById(id);
+        assertFalse((block.title).equals("TestTitle"));
+    }
+
+    @Test
+    public void testDelete(){
+        long id = (Long) Fixtures.idCache.get("models.cms.Block-Test");
+        Http.Response response = DELETE("/blocks/"+id);
+        assertStatus(302,response);
+        Block block = Block.findById(id);
+        assertEquals(DeletedStatus.DELETED,block.deleted);
+    }
+
+}
