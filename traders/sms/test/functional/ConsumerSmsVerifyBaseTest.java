@@ -27,6 +27,7 @@ import play.test.FunctionalTest;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 
+@Ignore
 public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
 
     public void setupTestData() {
