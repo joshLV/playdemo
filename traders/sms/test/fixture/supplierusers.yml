@@ -28,6 +28,7 @@ admin.SupplierUser(user1):
  "passwordSalt": "gXP0W9"
  "lastLoginAt": "2012-03-12T14:39:20"
  "lockVersion": "1"
+ "jobNumber": "775822"
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETED"
  "supplier": kfc2
@@ -38,6 +39,7 @@ admin.SupplierUser(user2):
  "passwordSalt": "gXP0W9"
  "lastLoginAt": "2012-03-12T14:39:20"
  "lockVersion": "1"
+ "jobNumber": "775821"
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETE"
  "supplier": kfc
@@ -55,6 +57,7 @@ admin.SupplierUser(user3):
  "createdAt": "2012-03-12T14:39:20"
  "updatedAt": "2012-03-12T17:33:49"
  "deleted": "UN_DELETED"
+ "jobNumber": "338412"
  "supplier": kfc3
  "shop": "Shop_4"
  "roles":
@@ -74,6 +77,7 @@ admin.SupplierUser(test):
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETED"
  "supplier": kfc
+ "jobNumber": "448341"
  "shop": "Shop_4"
  "roles":
  - "test" 

@@ -77,8 +77,8 @@ public class SmsReceiverUtil {
                     }
 
                     if (ecoupon.expireAt.before(new Date())) {
-                        SMSUtil.send("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", mobile, code);
-                        return ("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166");
+                        SMSUtil.send("【券市场】券号" + couponNumber + "已过期，无法进行消费。如有疑问请致电：400-6262-166", mobile, code);
+                        return ("【券市场】券号" + couponNumber + "已过期，无法进行消费");
                     } else if (ecoupon.status == ECouponStatus.UNCONSUMED) {
                         ecoupon.consumeAndPayCommission(shopId, supplierUser, VerifyCouponType.CLERK_MESSAGE);
                         String coupon = ecoupon.getMaskedEcouponSn();
@@ -97,8 +97,8 @@ public class SmsReceiverUtil {
                         return ("【券市场】您尾号" + coupon + "的券号于" + dateTime
                                 + "已成功消费，门店：" + shopName + "。客服4006262166");
                     } else if (ecoupon.status == ECouponStatus.CONSUMED) {
-                        SMSUtil.send("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", mobile, code);
-                        return ("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166");
+                        SMSUtil.send("【券市场】券号" + couponNumber + "已消费，无法再次消费。如有疑问请致电：400-6262-166", mobile, code);
+                        return ("【券市场】券号" + couponNumber + "已消费，无法再次消费");
                     }
                 }
             }
@@ -163,17 +163,17 @@ public class SmsReceiverUtil {
                 return ("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166");
             } else if (ecoupon.status == ECouponStatus.UNCONSUMED) {
                 ecoupon.consumeAndPayCommission(shopId, supplierUser, VerifyCouponType.CONSUMER_MESSAGE);
-                String coupon = ecoupon.getLastCode(4);
+                String couponLastCode = ecoupon.getLastCode(4);
                 String dateTime = DateUtil.getNowTime();
+        
                 // 发给店员
-                SMSUtil.send("【券市场】" + getMaskedMobile(mobile) + "消费者的尾号" + coupon + "券（面值" + ecoupon
-                        .faceValue + "元）于" + dateTime + "验证成功，门店：" + shopName + "。咨询4006262166", supplierUser.mobile, code);
+                SMSUtil.send("【券市场】" + getMaskedMobile(mobile) + "的尾号" + couponLastCode + "券（面值" + ecoupon
+                        .faceValue + "元）于" + dateTime + "验证成功，门店：" + shopName + "。客服4006262166", supplierUser.mobile, code);
                 // 发给消费者
-                SMSUtil.send("【券市场】您尾号" + coupon + "的券号于" + dateTime
-                        + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166", mobile, code);
-
-                return ("【券市场】您尾号" + coupon + "的券号于" + dateTime
-                        + "已成功消费，使用门店：" + shopName + "。如有疑问请致电：400-6262-166");
+                SMSUtil.send("【券市场】您尾号" + couponLastCode + "券于" + dateTime
+                        + "成功消费，门店：" + shopName + "。客服4006262166", mobile, code);
+                return ("【券市场】您尾号" + couponLastCode + "的券号于" + dateTime
+                        + "已成功消费，门店：" + shopName + "。客服4006262166");                
             } else if (ecoupon.status == ECouponStatus.CONSUMED) {
                 // 发给消费者
                 SMSUtil.send("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", mobile, code);

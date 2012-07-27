@@ -39,15 +39,14 @@ import controllers.EnSmsReceivers;
 public class ClerkSmsVerifyBaseTest extends FunctionalTest {
     
     @Test
-    public void testTheType() {
+    public void 类型检查() {
         assertTrue(new EnSmsReceivers() instanceof Controller);
     }
 
-
     /**
-     * Asserts response body matched a pattern or contains some text.
-     * @param pattern a regular expression pattern or a regular text, ( which must be escaped using Pattern.quote)
-     * @param response server response
+     * 使用正则匹配结果.
+     * @param pattern
+     * @param content
      */
     public static void assertMatch(String pattern, String content) {
         Pattern ptn = Pattern.compile(pattern);
@@ -66,11 +65,6 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
     
     public interface InvalidMessageSender {
         public Response doMessageSend(String msg);
-    }
-
-    @org.junit.Before
-    public void setup() {
-        setupTestData();
     }
 
     /**
@@ -131,7 +125,6 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
      * @param sendMessage
      */
     public void testNormalClerkCheck(MessageSender messageSender) {
-        //店员符合
         Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
         ECoupon ecoupon = ECoupon.findById(id);
 
@@ -298,13 +291,13 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         assertEquals(ECouponStatus.CONSUMED, ecoupon.status);
         
         Http.Response response = messageSender.doMessageSend("15800002341", ecoupon);
-        assertContentEquals("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", response);
+        assertContentEquals("【券市场】券号" + ecoupon.eCouponSn + "已消费，无法再次消费", response);
 
         ecoupon = ECoupon.findById(id);
         ecoupon.refresh();
         assertEquals(ECouponStatus.CONSUMED, ecoupon.status);
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertEquals("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", msg.getContent());
+        assertEquals("【券市场】券号" + ecoupon.eCouponSn + "已消费，无法再次消费。如有疑问请致电：400-6262-166", msg.getContent());
     }
 
     /**
@@ -336,10 +329,10 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         ecoupon.save();
 
         Http.Response response = messageSender.doMessageSend("15800002341", ecoupon);
-        assertContentEquals("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", response);
+        assertContentEquals("【券市场】券号" + ecoupon.eCouponSn + "已过期，无法进行消费", response);
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertEquals("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", msg.getContent());
+        assertEquals("【券市场】券号" + ecoupon.eCouponSn + "已过期，无法进行消费。如有疑问请致电：400-6262-166", msg.getContent());
     }
 
 
