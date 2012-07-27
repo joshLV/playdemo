@@ -60,8 +60,9 @@
         <div class="mobi">
             <div class="mobi-hd">电子凭证-收货手机</div>
             <div class="mobi-bd">
-                <div class="receive-mobi"><em>*</em>接收手机：<input type="text" class="mobi-num" name="mobile" value="${user?.mobile}" id="ecart_mobile" />
+                <div class="receive-mobi"><em>*</em>接收手机：<input type="text" class="mobi-num" name="mobile" maxlength="11" value="${user?.mobile}" id="ecart_mobile" />
                  <span style="display: inline;color: #ff0000;" id="limit">#{error 'mobile'/}</span></div>
+                #{if orderItems_mobiles?.size()>0}
                 <dl><dt>历史手机：</dt>
                     <dd class="history-mobi">
                          #{list orderItems_mobiles, as:'item'}
@@ -69,6 +70,7 @@
                          #{/list}
                     </dd>
                 </dl>
+               #{/if}
             </div>
         </div>
         <table class="orderlist">
