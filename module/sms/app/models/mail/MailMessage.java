@@ -15,12 +15,14 @@ public class MailMessage implements Serializable {
     private List<String> recipients;
     private String subject;
     private String content;
+    private String from;
 
     private Map<String, Object> params;
 
     public MailMessage() {
         this.subject = "";
         this.content = "";
+        this.from = "";
         this.recipients = new ArrayList<>();
         this.params = new HashMap<>();
     }
@@ -74,5 +76,13 @@ public class MailMessage implements Serializable {
     @JsonIgnore
     public Object getParam(String key) {
         return this.params.get(key);
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
     }
 }

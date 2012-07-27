@@ -49,6 +49,7 @@ public class CmsQuestion extends Model {
 
     @Column(name = "goods_name")
     public String goodsName;
+
     public Boolean visible = true;
 
     @Transient
