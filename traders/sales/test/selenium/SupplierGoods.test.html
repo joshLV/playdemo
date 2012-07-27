@@ -111,7 +111,7 @@ runScript('element.innerHTML  = "this is a test thread";')
 
 clickAndWait('id=onsale')
 verifyTitle('添加商品')
-verifyTextPresent('无效的图片!')
+*{verifyTextPresent('无效的图片!')}*
 *{verifyTitle('电子消费券一览')}*
 *{verifyTextPresent('电子消费券一览')}*
 #{/selenium}
@@ -142,7 +142,7 @@ runScript('element=idocument.getElementsByTagName("body")[0];')
 runScript('element.innerHTML  = "this is a test thread";')
 clickAndWait('id=save')
 verifyTitle('添加商品')
-verifyTextPresent('无效的图片!')
+*{verifyTextPresent('无效的图片!') }*
 verifyTextPresent('采购价不能超过原价!')
 #{/selenium}
 
