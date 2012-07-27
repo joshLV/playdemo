@@ -74,8 +74,8 @@ public class CmsBlocksFunctionalTest extends FunctionalTest{
         Map<String,String> params = new HashMap<>();
         params.put("block.title","TestTitle");
         params.put("block.displayOrder","1");
-        params.put("block.effectiveAt","2012-3-21");
-        params.put("block.expireAt","2013-3-21");
+        params.put("block.effectiveAt","2012-3-21T00:00:00");
+        params.put("block.expireAt","2013-3-21T00:00:00");
         params.put("content","TestContent");
 
         //配置 图片 参数
