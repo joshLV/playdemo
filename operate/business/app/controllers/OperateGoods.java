@@ -497,7 +497,7 @@ public class OperateGoods extends Controller {
         for (Long id : ids) {
             models.sales.Goods goods = Goods.findById(id);
             Supplier supplier = Supplier.findById(goods.supplierId);
-            if (StringUtils.isNotBlank(supplier.email)) {
+            if (StringUtils.isNotEmpty(supplier.email)) {
                 //发送提醒邮件
                 MailMessage mailMessage = new MailMessage();
                 mailMessage.addRecipient(supplier.email);
