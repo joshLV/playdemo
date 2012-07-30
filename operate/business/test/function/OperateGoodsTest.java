@@ -4,13 +4,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
-import models.resale.ResalerLevel;
-import models.sales.Area;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.GoodsStatus;
-import models.sales.Shop;
+import models.sales.*;
 import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Ignore;
@@ -22,11 +16,7 @@ import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
-import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class OperateGoodsTest extends FunctionalTest {
 
@@ -115,11 +105,14 @@ public class OperateGoodsTest extends FunctionalTest {
     @Test
     public void testOffSale() {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
-
-        Response response = PUT("/goods/" + goodsId + "/offSale", "text/html", "");
-
-        assertStatus(302, response);
+        Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
         Goods goods = Goods.findById(goodsId);
+        goods.supplierId = supplierId;
+        goods.save();
+        Response response = PUT("/goods/" + goodsId + "/offSale", "text/html", "");
+        assertStatus(302, response);
+        goods = Goods.findById(goodsId);
+        goods.refresh();
         assertEquals(GoodsStatus.OFFSALE, goods.status);
     }
 
@@ -165,8 +158,8 @@ public class OperateGoodsTest extends FunctionalTest {
         // 获取categories的ID
         Long cateId = (Long) Fixtures.idCache.get("models.sales.Category-Category_1");
         Long cateId2 = (Long) Fixtures.idCache.get("models.sales.Category-Category_2");
-        System.out.println("Cate ID ===================  "+cateId.toString());
-        System.out.println("Cate ID 2 ===================  "+cateId2.toString());
+        System.out.println("Cate ID ===================  " + cateId.toString());
+        System.out.println("Cate ID 2 ===================  " + cateId2.toString());
         // 连接到原始商品更新页面
         Http.Response response = GET("/goods/" + baseId + "/edit");
         assertIsOk(response);
@@ -174,38 +167,37 @@ public class OperateGoodsTest extends FunctionalTest {
         assertCharset(Play.defaultWebEncoding, response);
 
 
-
         // 生产更新参数
         String params = "goods.name=testName&goods.no=001" +
-                "&goods.supplierId=" +targetGood.supplierId+
+                "&goods.supplierId=" + targetGood.supplierId +
                 "&goods.originalPrice=100" +
                 "&goods.salePrice=200" +
-                "&goods.title=" +targetGood.title+
+                "&goods.title=" + targetGood.title +
                 "&levelPrices=4" +
                 "&levelPrices=3" +
                 "&levelPrices=2" +
                 "&levelPrices=1" +
-                "&goods.categories[].id="+cateId+
-                "&goods.categories[].id="+cateId2+
+                "&goods.categories[].id=" + cateId +
+                "&goods.categories[].id=" + cateId2 +
                 "&goods.effectiveAt=2012-02-28T14:41:33" +
                 "&goods.expireAt=2015-02-28T14:41:33" +
-                "&goods.baseSale=" + targetGood.baseSale+
-                "&goods.details= AAAAAAAAAAAAA"+
-                "&goods.faceValue=1000"+
-                "&goods.brand.id="+targetGood.brand.id.toString();
-        response = PUT("/goods/" + baseId,"application/x-www-form-urlencoded", params);
+                "&goods.baseSale=" + targetGood.baseSale +
+                "&goods.details= AAAAAAAAAAAAA" +
+                "&goods.faceValue=1000" +
+                "&goods.brand.id=" + targetGood.brand.id.toString();
+        response = PUT("/goods/" + baseId, "application/x-www-form-urlencoded", params);
         // 更新响应正确
-        assertStatus(302,response);
+        assertStatus(302, response);
         // 获取更新后的商品信息
         Goods updatedGoods = Goods.findById(baseId);
         // 测试更新信息是否正确
-        assertEquals("testName",updatedGoods.name);
-        assertEquals("001",updatedGoods.no);
-        assertEquals(targetGood.supplierId,updatedGoods.supplierId);
+        assertEquals("testName", updatedGoods.name);
+        assertEquals("001", updatedGoods.no);
+        assertEquals(targetGood.supplierId, updatedGoods.supplierId);
         assertEquals(0, updatedGoods.originalPrice.compareTo(new BigDecimal("100")));
         assertEquals(0, new BigDecimal("200").compareTo(updatedGoods.salePrice));
-        assertEquals(targetGood.baseSale,updatedGoods.baseSale);
-        assertEquals(targetGood.brand.id,updatedGoods.brand.id);
+        assertEquals(targetGood.baseSale, updatedGoods.baseSale);
+        assertEquals(targetGood.brand.id, updatedGoods.brand.id);
 
     }
 }
