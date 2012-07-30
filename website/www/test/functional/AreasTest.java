@@ -1,8 +1,11 @@
 package functional;
 
 import models.consumer.Address;
+
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
 import play.mvc.Http;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
@@ -57,5 +60,15 @@ public class AreasTest extends FunctionalTest {
         assertIsOk(response);
         assertContentType("application/json", response);
     }
-
+    
+    
+    @Test
+    public void testShowArea() {   	
+    	String areaId = (String) Fixtures.idCache.get("models.sales.Area-city1");
+        Http.Response response = GET("/areas/areas/"+areaId);
+        assertIsOk(response);
+        assertContentType("application/json", response);
+        assertEquals("{\"id\":\"1\",\"name\":\"city1\",\"displayOrder\":100,\"areaType\":\"CITY\"}",response.out.toString());
+        //output:  {"id":"1","name":"city1","displayOrder":100,"areaType":"CITY"}      
+    }
 }
