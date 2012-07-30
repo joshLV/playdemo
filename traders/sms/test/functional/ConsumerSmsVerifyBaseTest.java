@@ -64,7 +64,16 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
     /**
      * 测试用店员.
      */
-    SupplierUser clerk = null;
+    SupplierUser kfcClerk = null;
+    
+    /**
+     * 测试用门店.
+     */
+    Shop kfcShop = null;
+    
+    Supplier supplierKFC = null;
+    
+    ECoupon ecouponKFC = null;
     
     /**
      * 准备测试数据的公共方法。
@@ -89,37 +98,61 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
                 "fixture/orderItems.yml");
 
 
-        Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
+        Long kfcId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
 
+        supplierKFC = Supplier.findById(kfcId);
+        
+        
         Goods goods = Goods.findById(goodsId);
-        goods.supplierId = supplierId;
+        goods.supplierId = kfcId;
         goods.save();
 
-        supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc1");
+        Long kfc1Id = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc1");
         goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
         goods = Goods.findById(goodsId);
-        goods.supplierId = supplierId;
+        goods.supplierId = kfc1Id;
         goods.save();
 
-        supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc2");
+        Long kfc2Id = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc2");
         goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_003");
         goods = Goods.findById(goodsId);
-        goods.supplierId = supplierId;
+        goods.supplierId = kfc2Id;
         goods.save();
 
-        supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc3");
+        Long kfc3Id = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc3");
         goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
         goods = Goods.findById(goodsId);
-        goods.supplierId = supplierId;
+        goods.supplierId = kfc3Id;
         goods.save();
 
         Account account = AccountUtil.getPlatformIncomingAccount();
         account.amount = new BigDecimal("99999");
         account.save();
 
-        Long clerkId = (Long) play.test.Fixtures.idCache.get("models.admin.SupplierUser-user2");
-        clerk = SupplierUser.findById(clerkId);
+        Long  goods2Id = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
+        Goods goods2 = Goods.findById(goods2Id);
+        goods2.supplierId = supplierKFC.id;
+        goods2.save();
+        
+        Long brandId = (Long) play.test.Fixtures.idCache.get("models.sales.Brand-Brand_2");
+        Brand brand = Brand.findById(brandId);
+        brand.supplier = supplierKFC;
+        brand.save();
+        
+        Long shopId = (Long) play.test.Fixtures.idCache.get("models.sales.Shop-Shop_4");
+        kfcShop = Shop.findById(shopId);
+        kfcShop.supplierId = kfcId;
+        kfcShop.save();
+        
+        Long kfcClerkId = (Long) play.test.Fixtures.idCache.get("models.admin.SupplierUser-user2");
+        kfcClerk = SupplierUser.findById(kfcClerkId);
+        kfcClerk.deleted = DeletedStatus.UN_DELETED;
+        kfcClerk.shop = kfcShop;
+        kfcClerk.save();
+
+        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
+        ecouponKFC = ECoupon.findById(id);
         
     }
 
@@ -129,46 +162,25 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
      */
     public void testNormalConsumerCheck(MessageSender messageSender) {
 
-        Long supplierId = (Long) play.test.Fixtures.idCache.get("models.supplier.Supplier-kfc");
-        Supplier supplier = Supplier.findById(supplierId);
+        assertEquals(supplierKFC.id, kfcClerk.supplier.id);
+        assertEquals(ecouponKFC.goods.supplierId, kfcClerk.supplier.id);
         
-        Long  goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
-        Goods goods = Goods.findById(goodsId);
-        goods.supplierId = supplierId;
-        goods.save();
-        
-        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
-        ECoupon ecoupon = ECoupon.findById(id);
-
-        Long shopId = (Long) play.test.Fixtures.idCache.get("models.sales.Shop-Shop_4");
-        Shop shop = Shop.findById(shopId);
-        shop.supplierId = supplierId;
-        shop.save();
-
-        Long brandId = (Long) play.test.Fixtures.idCache.get("models.sales.Brand-Brand_2");
-        Brand brand = Brand.findById(brandId);
-        brand.supplier = supplier;
-        brand.save();
-        
-        assertEquals(supplierId, clerk.supplier.id);
-        assertEquals(ecoupon.goods.supplierId, clerk.supplier.id);
-        
-        assertEquals(ECouponStatus.UNCONSUMED, ecoupon.status);
-        Http.Response response = messageSender.doMessageSend(ecoupon, clerk.jobNumber, null);
+        assertEquals(ECouponStatus.UNCONSUMED, ecouponKFC.status);
+        Http.Response response = messageSender.doMessageSend(ecouponKFC, kfcClerk.jobNumber, null);
 
         assertStatus(200, response); 
 
         // 消费者短信
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertMatch("【券市场】您尾号" + getLastString(ecoupon.eCouponSn, 4) + "券于\\d+月\\d+日\\d+时\\d+分成功消费，门店：优惠拉。客服4006262166", 
+        assertMatch("【券市场】您尾号" + getLastString(ecouponKFC.eCouponSn, 4) + "券于\\d+月\\d+日\\d+时\\d+分成功消费，门店：优惠拉。客服4006262166", 
                 msg.getContent());
         // 店员短信
         msg = MockSMSProvider.getLastSMSMessage();
-        assertMatch("【券市场】" + getBeginString(ecoupon.orderItems.phone, 3) + "\\*\\*\\*\\*\\*" + 
-                getLastString(ecoupon.orderItems.phone, 3) + "的尾号" + getLastString(ecoupon.eCouponSn, 4) + "券（面值" +
-                		ecoupon.faceValue + "元）于\\d+月\\d+日\\d+时\\d+分验证成功，门店：优惠拉。客服4006262166", msg.getContent());
+        assertMatch("【券市场】" + getBeginString(ecouponKFC.orderItems.phone, 3) + "\\*\\*\\*\\*\\*" + 
+                getLastString(ecouponKFC.orderItems.phone, 3) + "的尾号" + getLastString(ecouponKFC.eCouponSn, 4) + "券（面值" +
+                		ecouponKFC.faceValue + "元）于\\d+月\\d+日\\d+时\\d+分验证成功，门店：优惠拉。客服4006262166", msg.getContent());
 
-        ecoupon = ECoupon.findById(id);
+        ECoupon ecoupon = ECoupon.findById(ecouponKFC.id);
         ecoupon.refresh();
         assertEquals(ECouponStatus.CONSUMED, ecoupon.status);        
     }
@@ -177,27 +189,31 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
      * 券格式无效的测试
      * @param messageSender
      */
-    public void testInvalidFormatMessage(InvalidMessageSender messageSender) {
-        Http.Response response = messageSender.doMessageSend("abc");
+    public void testInvalidFormatMessage(MessageSender messageSender) {
+        Http.Response response = messageSender.doMessageSend(ecouponKFC, "abc", null);
         assertEquals("Unsupport Message", response.out.toString());
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertMatch("【券市场】券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：400-6262-166",
                 msg.getContent());      
     }
 
-
     /**
-     * 券不存在.
+     * 店员工号不存在.
      * @param messageSender
      */
-    public void testEcouponNotExists(InvalidMessageSender messageSender) {
-        String couponNumber = "1123456700";
-        Http.Response response = messageSender.doMessageSend("#" + couponNumber);
-        assertContentEquals("【券市场】您输入的券号" + couponNumber + "不存在，请确认！", response);
+    public void testNotExistsJobNumber(MessageSender messageSender) {
+        Http.Response response = messageSender.doMessageSend(ecouponKFC, "998788", null);
 
+        assertStatus(200, response); 
+
+        // 消费者短信
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertMatch("【券市场】您输入的券号" + couponNumber + "不存在，请与消费者确认，如有疑问请致电：400-6262-166",
-                msg.getContent());        
+        assertMatch("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplierKFC.fullName + "门店。如有疑问请致电：400-6262-166", 
+                msg.getContent());
+
+        ECoupon ecoupon = ECoupon.findById(ecouponKFC.id);
+        ecoupon.refresh();
+        assertEquals(ECouponStatus.UNCONSUMED, ecoupon.status);          
     }
 
     /**
@@ -205,18 +221,15 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
      * @param messageSender
      */
     public void testInvalidSupplier(MessageSender messageSender) {
-        Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc1");
-        Supplier supplier = Supplier.findById(supplierId);
-        supplier.deleted = DeletedStatus.DELETED;
-        supplier.save();
-        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
-        ECoupon ecoupon = ECoupon.findById(id);
+        Supplier kfc = Supplier.findById(supplierKFC.id);
+        kfc.deleted = DeletedStatus.DELETED;
+        kfc.save();
 
-        Response response = messageSender.doMessageSend(ecoupon, clerk.jobNumber, null);
-        assertContentEquals("【券市场】" + supplier.fullName + "未在券市场登记使用", response);
+        Response response = messageSender.doMessageSend(ecouponKFC, kfcClerk.jobNumber, null);
+        assertContentEquals("【券市场】" + kfc.fullName + "未在券市场登记使用", response);
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertMatch("【券市场】" + supplier.fullName + "未在券市场登记使用，如有疑问请致电：400-6262-166",
+        assertMatch("【券市场】" + kfc.fullName + "未在券市场登记使用，请致电400-6262-166咨询",
                 msg.getContent());                              
     }
 
@@ -224,42 +237,17 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
      * 商户被冻结.
      */
     public void testLockedSupplier(MessageSender messageSender) {
-        Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc1");
-        Supplier supplier = Supplier.findById(supplierId);
-        supplier.deleted = DeletedStatus.UN_DELETED;
-        supplier.status = SupplierStatus.FREEZE;
-        supplier.save();
-        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon3");
-        ECoupon ecoupon = ECoupon.findById(id);
+        Supplier kfc = Supplier.findById(supplierKFC.id);
+        kfc.deleted = DeletedStatus.UN_DELETED;
+        kfc.status = SupplierStatus.FREEZE;
+        kfc.save();
 
-        Response response = messageSender.doMessageSend(ecoupon, clerk.jobNumber, null);
-        assertContentEquals("【券市场】" + supplier.fullName + "已被券市场锁定", response);
+        Response response = messageSender.doMessageSend(ecouponKFC, kfcClerk.jobNumber, null);
+        assertContentEquals("【券市场】" + kfc.fullName + "已被券市场锁定", response);
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertMatch("【券市场】" + supplier.fullName + "已被券市场锁定，如有疑问请致电：400-6262-166",
+        assertMatch("【券市场】" + kfc.fullName + "已被券市场锁定，请致电400-6262-166咨询",
                 msg.getContent());              
-    }
-
-    /**
-     * 店号工号无效.
-     */
-    public void testInvalidClerk(MessageSender messageSender) {
-        //店员不符合的情况
-        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon3");
-        Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc1");
-
-        ECoupon ecoupon = ECoupon.findById(id);
-
-        Supplier supplier = Supplier.findById(supplierId);
-        supplier.status = SupplierStatus.NORMAL;
-        supplier.deleted = DeletedStatus.UN_DELETED;
-        supplier.save();
-
-        Response response = messageSender.doMessageSend(ecoupon, clerk.jobNumber, null);
-        assertContentEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店", response);
-        
-        SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", msg.getContent());
     }
 
     /**
@@ -270,7 +258,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon5");
         ECoupon ecoupon = ECoupon.findById(id);
 
-        Response response = messageSender.doMessageSend(ecoupon, clerk.jobNumber, null);
+        Response response = messageSender.doMessageSend(ecoupon, kfcClerk.jobNumber, null);
         
         assertContentEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店", response);
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
@@ -281,67 +269,40 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
      * 测试已经消费的券重复验证
      */
     public void testConsumeredECoupon(MessageSender messageSender) {
-        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon4");
-
-        Long supplierId = (Long) play.test.Fixtures.idCache.get("models.supplier.Supplier-kfc3");
-        Supplier supplier = Supplier.findById(supplierId);
-        Long shopId = (Long) play.test.Fixtures.idCache.get("models.sales.Shop-Shop_4");
-        Shop shop = Shop.findById(shopId);
-        shop.supplierId = supplierId;
-        shop.save();
-
-        Long brandId = (Long) play.test.Fixtures.idCache.get("models.sales.Brand-Brand_2");
-        Brand brand = Brand.findById(brandId);
-        brand.supplier = supplier;
-        brand.save();
-
-        Long  goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
-        Goods goods = Goods.findById(goodsId);
-        goods.supplierId = supplierId;
-        goods.save();
-        ECoupon ecoupon = ECoupon.findById(id);
-
-        assertEquals(ECouponStatus.CONSUMED, ecoupon.status);
+        assertEquals(supplierKFC.id, kfcClerk.supplier.id);
+        assertEquals(ecouponKFC.goods.supplierId, kfcClerk.supplier.id);
         
-        Response response = messageSender.doMessageSend(ecoupon, clerk.jobNumber, null);
+        ecouponKFC.status = ECouponStatus.CONSUMED;
+        ecouponKFC.save();
+        
+        Http.Response response = messageSender.doMessageSend(ecouponKFC, kfcClerk.jobNumber, null);
+
+        assertStatus(200, response); 
+        
         assertContentEquals("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", response);
 
-        ecoupon = ECoupon.findById(id);
-        ecoupon.refresh();
-        assertEquals(ECouponStatus.CONSUMED, ecoupon.status);
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertEquals("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", msg.getContent());
+        
+        ECoupon ecoupon = ECoupon.findById(ecouponKFC.id);
+        ecoupon.refresh();
+        assertEquals(ECouponStatus.CONSUMED, ecoupon.status);
+        
     }
 
     /**
      * 测试券过期的情况
      */
     public void testExpiredECoupon(MessageSender messageSender) {
+        assertEquals(supplierKFC.id, kfcClerk.supplier.id);
+        assertEquals(ecouponKFC.goods.supplierId, kfcClerk.supplier.id);
+        
+        ecouponKFC.expireAt = DateUtil.getYesterday();
+        ecouponKFC.save();
+        
+        assertEquals(ECouponStatus.UNCONSUMED, ecouponKFC.status);
+        Http.Response response = messageSender.doMessageSend(ecouponKFC, kfcClerk.jobNumber, null);
 
-        //已过期的验证
-        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon4");
-
-        Long supplierId = (Long) play.test.Fixtures.idCache.get("models.supplier.Supplier-kfc3");
-        Supplier supplier = Supplier.findById(supplierId);
-        Long shopId = (Long) play.test.Fixtures.idCache.get("models.sales.Shop-Shop_4");
-        Shop shop = Shop.findById(shopId);
-        shop.supplierId = supplierId;
-        shop.save();
-
-        Long brandId = (Long) play.test.Fixtures.idCache.get("models.sales.Brand-Brand_2");
-        Brand brand = Brand.findById(brandId);
-        brand.supplier = supplier;
-        brand.save();
-
-        Long  goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
-        Goods goods = Goods.findById(goodsId);
-        goods.supplierId = supplierId;
-        goods.save();
-        ECoupon ecoupon = ECoupon.findById(id);
-        ecoupon.expireAt= DateUtil.getYesterday();
-        ecoupon.save();
-
-        Response response = messageSender.doMessageSend(ecoupon, clerk.jobNumber, null);
         assertContentEquals("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", response);
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();

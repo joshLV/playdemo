@@ -131,13 +131,25 @@ public class SmsReceiverUtil {
         }
 
         Supplier supplier = Supplier.findById(ecoupon.goods.supplierId);
+    
+        if (supplier == null || supplier.deleted == DeletedStatus.DELETED) {
+            SMSUtil.send("【券市场】" + supplier.fullName + "未在券市场登记使用，请致电400-6262-166咨询", mobile, code);
+            return ("【券市场】" + supplier.fullName + "未在券市场登记使用");
+        }
+
+        if (supplier.status == SupplierStatus.FREEZE) {
+            SMSUtil.send("【券市场】" + supplier.fullName + "已被券市场锁定，请致电400-6262-166咨询", mobile, code);
+            return ("【券市场】" + supplier.fullName + "已被券市场锁定");
+        }
+        
+        Logger.info("supperId=%s, jobNumber=%s", ecoupon.goods.supplierId, msg);
         SupplierUser supplierUser = SupplierUser.find("from SupplierUser where deleted = ? and supplier.id=? and jobNumber=?", DeletedStatus.UN_DELETED,  ecoupon.goods.supplierId, msg).first();
 
         if (supplierUser == null) {
             // 发给消费者
             SMSUtil.send("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166",
                     mobile, code);
-            return ("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店。如有疑问请致电：400-6262-166");
+            return ("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplier.fullName + "门店");
         }
 
         boolean canNotUserInThisShop = false;

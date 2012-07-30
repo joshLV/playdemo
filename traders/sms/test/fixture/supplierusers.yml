@@ -41,7 +41,7 @@ admin.SupplierUser(user2):
  "lockVersion": "1"
  "jobNumber": "775821"
  "createdAt": "2012-03-12T14:39:20"
- "deleted": "UN_DELETE"
+ "deleted": UN_DELETE
  "supplier": kfc
  "roles":
  - "test"

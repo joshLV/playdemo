@@ -34,6 +34,7 @@ order.ECoupon(coupon1):
   "status": "UNCONSUMED"
   "goods": "Goods_001"
   "orderItems": "orderItems1"
+  "replyCode": "1262"
   "isFreeze": "0"
   "downloadTimes": "0"
 
@@ -50,6 +51,7 @@ order.ECoupon(coupon2):
   "status": "UNCONSUMED"
   "goods": "Goods_002"
   "orderItems": "orderItems2"
+  "replyCode": "8762"
   "isFreeze": "0"
   "downloadTimes": "0"
   "effectiveAt": "2012-03-01T00:00:00"
@@ -85,6 +87,7 @@ order.ECoupon(coupon4):
   "goods": "Goods_004"
   "orderItems": "orderItems1"
   "shop": "Shop_4"
+  "replyCode": "6519"
   "isFreeze": "0"
   "downloadTimes": "0"
 
@@ -102,4 +105,5 @@ order.ECoupon(coupon5):
   "goods": "Goods_003"
   "orderItems": "orderItems2"
   "isFreeze": "0"
+  "replyCode": "2381"
   "downloadTimes": "0"

@@ -3,6 +3,7 @@ package functional;
 import models.order.ECoupon;
 import org.junit.Before;
 import org.junit.Test;
+import play.Logger;
 import play.mvc.Http.Response;
 
 public class EnsmsConsumerVerifyTest extends ConsumerSmsVerifyBaseTest {
@@ -28,6 +29,7 @@ public class EnsmsConsumerVerifyTest extends ConsumerSmsVerifyBaseTest {
                          + msg +
                          "&username=wang&pwd=5a1a023fd486e2f0edbc595854c0d808&dt=1319873904&code="
                          + ecoupon.replyCode;
+                 Logger.info("url=%s", message);
                  return GET("/getsms?"
                          + message);
              }
@@ -56,34 +58,38 @@ public class EnsmsConsumerVerifyTest extends ConsumerSmsVerifyBaseTest {
     /**
      * 消息应当是数字开头
      */
-    public void 店员发送错误格式短信() {
-        testInvalidFormatMessage(getInvalidMessageSender());
+    @Test
+    public void 消费者发送错误格式短信() {
+        testInvalidFormatMessage(getTheMessageSender());
+        // TODO: 错误格式提示要和店员的不同
     }
     
-    public void 店员发送不存在的券号() {
-        testEcouponNotExists(getInvalidMessageSender());
+    @Test
+    public void 发送不存在的店员工号() {
+        testNotExistsJobNumber(getTheMessageSender());
     }
     
+    @Test
     public void 无效的商户代码() {
         testInvalidSupplier(getTheMessageSender());
     }
 
-
+    @Test
     public void 商户被冻结() {
         testLockedSupplier(getTheMessageSender());
     }    
     
-
+    @Test
     public void 不是当前商户所发行的券() {
         testTheGoodsFromOtherSupplier(getTheMessageSender());
     }
     
-
+    @Test
     public void 券已经被消费() {
         testConsumeredECoupon(getTheMessageSender());
     }
     
-
+    @Test
     public void 券已经过期() {
         testExpiredECoupon(getTheMessageSender());
     }
