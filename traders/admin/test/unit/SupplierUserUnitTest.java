@@ -6,6 +6,7 @@ import models.admin.SupplierUser;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
 import play.libs.Images;
+import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
 
@@ -49,11 +50,13 @@ public class SupplierUserUnitTest extends UnitTest {
     @Test
     public void testGetCuserList() {
         String loginName = "1";
+        String userName = "asdf";
+        String jobNumber = "1001";
         Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc");
         int pageNumber = 1;
         int pageSize = 15;
-        List<SupplierUser> list = SupplierUser.getSupplierUserList(loginName, supplierId, pageNumber, pageSize);
-        assertEquals(1, list.size());
+        JPAExtPaginator<SupplierUser> list = SupplierUser.getSupplierUserList(loginName, userName, jobNumber, supplierId, pageNumber, pageSize);
+        assertEquals(1,list.size());
     }
 
     //更改用户名和手机
@@ -80,7 +83,7 @@ public class SupplierUserUnitTest extends UnitTest {
 
         SupplierUser user = SupplierUser.findById(id);
 
-        assertEquals(DigestUtils.md5Hex("1234567"+user.passwordSalt), user.encryptedPassword);
+        assertEquals(DigestUtils.md5Hex("1234567" + user.passwordSalt), user.encryptedPassword);
 
     }
 

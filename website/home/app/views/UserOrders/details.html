@@ -103,8 +103,9 @@
         </table>
     #{/if}
    </div>
-
+#{if order?.remark != null && order?.remark !=""}
    <div style="clear: both;padding-top: 8px"></div>
     订单留言：${order.remark}
    </div>
  </div>
+#{/if}

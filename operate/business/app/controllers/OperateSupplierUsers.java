@@ -1,19 +1,19 @@
 package controllers;
 
-import java.util.List;
+import com.uhuila.common.constants.DeletedStatus;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
-import com.uhuila.common.constants.DeletedStatus;
+
+import java.util.List;
 
 /**
  * <p/>
@@ -32,13 +32,18 @@ public class OperateSupplierUsers extends Controller {
     public static void index(Long supplierId) {
         String page = request.params.get("page");
         String loginName = request.params.get("loginName");
+        String userName = request.params.get("userName");
+        String jobNumber = request.params.get("jobNumber");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<SupplierUser> supplierUsersPage = SupplierUser
-                .getSupplierUserList(loginName,
+                .getSupplierUserList(loginName, userName, jobNumber,
                         supplierId, pageNumber,
                         PAGE_SIZE);
+
         List<Supplier> supplierList = Supplier.findUnDeleted();
         renderArgs.put("loginName", loginName);
+        renderArgs.put("userName", userName);
+        renderArgs.put("jobNumber", jobNumber);
         render(supplierUsersPage, supplierList, supplierId);
     }
 
@@ -155,7 +160,7 @@ public class OperateSupplierUsers extends Controller {
      * @param loginName 用户名
      * @param mobile    手机
      */
-    public static void checkLoginName(Long id,Long supplierId, String loginName, String mobile, String jobNumber) {
+    public static void checkLoginName(Long id, Long supplierId, String loginName, String mobile, String jobNumber) {
         String returnFlag = SupplierUser.checkValue(id, loginName, mobile, jobNumber,
                 supplierId);
 

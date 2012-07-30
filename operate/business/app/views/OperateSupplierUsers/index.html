@@ -9,7 +9,10 @@
  #{form @OperateSupplierUsers.index() , id:'operForm',class:"form-horizontal" }
   <table class="table table-striped table-bordered table-condensed">
    <tr>
-    <td>用户名<input type="text" name="loginName" id="loginName" value="${loginName}" class="input-large"/>
+    <td>用户名<input type="text" name="loginName" id="loginName" value="${loginName}" class="input-medium"/>
+    &nbsp;&nbsp;姓名<input type="text" name="userName" id="userName" value="${userName}" class="input-medium"/>
+    &nbsp;&nbsp;工号<input type="text" name="jobNumber" id="jobNumber" value="${jobNumber}" class="input-medium"/>
+
     &nbsp;商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
                 #{select 'supplierId', id:supplierId, class:'select', value:supplierId}
                     #{option ""}不限#{/option}

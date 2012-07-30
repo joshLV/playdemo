@@ -19,9 +19,9 @@ import java.util.*;
 @Entity
 @Table(name = "supplier_users")
 public class SupplierUser extends Model {
-    
+
     private static final long serialVersionUID = 812328646862L;
-    
+
     @Column(name = "login_name")
     @Required
     public String loginName;
@@ -70,7 +70,7 @@ public class SupplierUser extends Model {
 
     @Transient
     public String confirmPassword;
-    
+
     @Transient
     public String oldPassword;
 
@@ -105,11 +105,11 @@ public class SupplierUser extends Model {
      * @param pageSize   记录数
      * @return 操作员信息
      */
-    public static JPAExtPaginator<SupplierUser> getSupplierUserList(String loginName, Long supplierId,
+    public static JPAExtPaginator<SupplierUser> getSupplierUserList(String loginName, String userName, String jobNumber, Long supplierId,
                                                                     int pageNumber, int pageSize) {
         StringBuffer sql = new StringBuffer("1=1");
         Map params = new HashMap();
-        if (supplierId !=null) {
+        if (supplierId != null) {
             sql.append(" and supplier.id = :supplierId");
             params.put("supplierId", supplierId);
         }
@@ -121,7 +121,14 @@ public class SupplierUser extends Model {
             sql.append(" and loginName like :loginName");
             params.put("loginName", loginName + "%");
         }
-
+        if (StringUtils.isNotBlank(userName)) {
+            sql.append(" and userName like :userName");
+            params.put("userName", userName + "%");
+        }
+        if (StringUtils.isNotBlank(jobNumber)) {
+            sql.append(" and jobNumber =:jobNumber");
+            params.put("jobNumber", jobNumber);
+        }
         JPAExtPaginator<SupplierUser> usersPage = new JPAExtPaginator<>("SupplierUser s", "s",
                 SupplierUser.class, sql.toString(), params).orderBy("createdAt desc");
         usersPage.setPageNumber(pageNumber);
@@ -137,7 +144,7 @@ public class SupplierUser extends Model {
      */
     public static void update(long id, SupplierUser supplierUser) {
         SupplierUser updatedUser = SupplierUser.findById(id);
-         String updatedUser_encryptedPassword =
+        String updatedUser_encryptedPassword =
                 StringUtils.isNotEmpty(updatedUser.encryptedPassword) ?
                         updatedUser.encryptedPassword : "!&NOTSETPASSWORD!";
 

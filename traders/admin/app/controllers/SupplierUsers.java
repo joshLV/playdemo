@@ -46,13 +46,16 @@ public class SupplierUsers extends Controller {
 
         String page = request.params.get("page");
         String loginName = request.params.get("loginName");
+        String userName = request.params.get("userName");
+        String jobNumber = request.params.get("jobNumber");
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<SupplierUser> supplierUsersPage = SupplierUser
-                .getSupplierUserList(loginName,
+                .getSupplierUserList(loginName, userName, jobNumber,
                         supplierId, pageNumber,
                         PAGE_SIZE);
-
+        renderArgs.put("userName", userName);
+        renderArgs.put("jobNumber", jobNumber);
         renderArgs.put("loginName", loginName);
         render(supplierUsersPage);
     }

@@ -12,6 +12,7 @@ admin.SupplierUser(user1):
  "createdAt": "2012-03-12T14:39:20"
  "deleted": "UN_DELETED"
  "jobNumber": "1001"
+ "userName": "asdf"
  "supplier": kfc
 
 admin.SupplierUser(user2):
