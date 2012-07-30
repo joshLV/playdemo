@@ -26,6 +26,8 @@
     <thead>
     <tr>
         <th>用户名</th>
+        <th>姓名</th>
+        <th>手机号</th>
         <th>角色</th>
         <th>创建时间</th>
         <th>上次登录时间</th>
@@ -38,6 +40,8 @@
     #{paginate.list items:operateUserPage, as:'row'}
     <tr>
         <td>${row.loginName}</td>
+        <td>${row.userName}</td>
+        <td>${row.mobile}</td>
         <td>${row.roles.text ==[] ?'':row.roles.text}</td>
         <td>${row.createdAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
         <td>${row.lastLoginAt ?.format("yyyy-MM-dd HH:mm:ss")}</td>
