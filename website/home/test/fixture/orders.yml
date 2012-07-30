@@ -3,6 +3,7 @@
 order.Order(order1):
   "user": "selenium"
   "orderNumber": "201202220324134991598"
+  "userType": "CONSUMER"
   "status": "UNPAID"
   "amount": "0"
   "accountPay": "0"

@@ -94,19 +94,48 @@ public class UserAddressesFuncTest extends FunctionalTest {
 
     }
 
-    //@Test  TODO
+    @Test
     public void testUpdate(){
-        long id = (Long) Fixtures.idCache.get("models.consumer.Address-test1");
-        String params = "address.name=testName" +
-                "&address.province=上海市" +
-                "&address.city=市辖区" +
-                "&address.district=黄浦区" +
-                "&address.address=宛平南路" +
-                "&address.postcode=200000" +
-                "&address.mobile=12345678900";
 
-        Http.Response response = PUT("/addresses/"+id,"text/html",params);
+        long id = (Long) Fixtures.idCache.get("models.consumer.Address-test1");
+        assertNotNull(id);
+        String params = "address.name=testName&address.province=上海市&address.city=市辖区&address.district=黄浦区&address.address=宛平南路&address.postcode=200000&address.mobile=15812345678";
+
+        Http.Response response = PUT("/addresses/"+id,"application/x-www-form-urlencoded",params);
         assertStatus(302,response);
+        Address address = Address.findById(id);
+        assertEquals("testName",address.name);
+        assertEquals("15812345678",address.mobile);
+    }
+
+    @Test
+    public void testUpdateDefault(){
+
+        long id = (Long) Fixtures.idCache.get("models.consumer.Address-test1");
+        assertNotNull(id);
+        Address oldAddress = Address.findById(id);
+        assertFalse(oldAddress.isDefault);
+
+        Http.Response response = PUT("/addresses/"+id+"/default", "application/x-www-form-urlencoded", "");
+        assertStatus(302,response);
+        Address newAddress = Address.findById(id);
+        newAddress.refresh();
+        assertTrue(newAddress.isDefault);
+
+    }
+
+    @Test
+    public void testDelete(){
+        int oldSize = Address.findAll().size();
+
+        long id = (Long) Fixtures.idCache.get("models.consumer.Address-test1");
+        Http.Response response = DELETE("/addresses/"+id);
+        assertStatus(302, response);
+
+        int newSize = Address.findAll().size();
+        assertEquals(oldSize-1,newSize);
+
+
     }
 
 }

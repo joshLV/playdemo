@@ -171,7 +171,7 @@ public class UserInfosTest extends FunctionalTest {
 		assertIsOk(response); // this is OK
 		assertContentType("application/json", response); // this is OK
 		assertCharset("utf-8", response); // this is OK
-		assertEquals("2", response.out.toString()); // 浏览器相应
+
 	}
 	 
 	@Test
