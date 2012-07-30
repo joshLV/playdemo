@@ -8,6 +8,8 @@ GET     /                                       Application.index
 # 北京ensms接收接口
 GET     /getsms                                 EnSmsReceivers.getSms
 
+GET     /tui3                                   Tui3SmsReceivers.getSms
+
 # 领时网络SMS接收接口
 GET     /lingshi                                LingShiSmsReceivers.getSms
 

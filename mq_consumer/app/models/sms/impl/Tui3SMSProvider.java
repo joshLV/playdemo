@@ -21,17 +21,12 @@ import org.apache.http.message.BasicNameValuePair;
 import play.Logger;
 import play.Play;
 
-/**
- * 上海领时网络接口.
- * @author <a href="mailto:tangliqun@uhuila.com">唐力群</a>
- */
-public class LingshiSMSProvider implements SMSProvider {
+public class Tui3SMSProvider implements SMSProvider {
 
-    private final String SEND_URL = Play.configuration.getProperty("lingshi.http.send_url");
-    private final String USERNAME = Play.configuration.getProperty("lingshi.http.username");
-    private final String PASSWORD = Play.configuration.getProperty("lingshi.http.password");
+    private final String SEND_URL = Play.configuration.getProperty("tui3.http.send_url");
+    private final String API_KEY = Play.configuration.getProperty("tui3.http.api_key");
 
-    private final Pattern RESULTCODE_PATTERN = Pattern.compile("<code>(\\d+)</code>");
+    private final Pattern RESULTCODE_PATTERN = Pattern.compile("<err_code>(\\d+)</err_code>");
     @Override
     public int send(SMSMessage message) {
         int resultCode = 0;
@@ -39,21 +34,13 @@ public class LingshiSMSProvider implements SMSProvider {
         String phoneArgs = StringUtils.join(message.getPhoneNumbers(), ",");
 
         List<NameValuePair> qparams = new ArrayList<NameValuePair>();
-        qparams.add(new BasicNameValuePair("OperID", USERNAME));
-        qparams.add(new BasicNameValuePair("OperPass", PASSWORD));
-        qparams.add(new BasicNameValuePair("AppendID", message.getCode()));
-        qparams.add(new BasicNameValuePair("ContentType", "15"));
-        /*
-        try {
-            qparams.add(new BasicNameValuePair("Content", URLEncoder.encode(message.getContent(), "GBK")));
-        } catch (UnsupportedEncodingException e1) {
-            Logger.warn("发送:(" + message.getContent() + ")时转码失败");
-            qparams.add(new BasicNameValuePair("Content", message.getContent()));
-        }
-        */
-        qparams.add(new BasicNameValuePair("Content", message.getContent()));
-        qparams.add(new BasicNameValuePair("DesMobile", phoneArgs));
-        String url = SEND_URL.replace(":sms_info", URLEncodedUtils.format(qparams, "GBK"));
+        qparams.add(new BasicNameValuePair("k", API_KEY));
+        qparams.add(new BasicNameValuePair("p", "1")); // 短信产品, 1表示推信
+        qparams.add(new BasicNameValuePair("r", "xml")); // 结果格式， xml
+        qparams.add(new BasicNameValuePair("c", message.getContent()));
+        qparams.add(new BasicNameValuePair("s", message.getCode()));
+        qparams.add(new BasicNameValuePair("t", phoneArgs));
+        String url = SEND_URL.replace(":sms_info", URLEncodedUtils.format(qparams, "UTF-8"));
 
         //准备http请求
         AbstractHttpClient httpclient = new DefaultHttpClient();
@@ -61,7 +48,7 @@ public class LingshiSMSProvider implements SMSProvider {
         HttpResponse response = null;
 
         System.out.println("url=" + url + "++++++++++++++++");
-        Logger.info("************ LingshiSMS: request url:"  + url + "*************");
+        Logger.info("************ Tui3SMS: request url:"  + url + "*************");
 
         try {
             response = httpclient.execute(httpget);
@@ -99,7 +86,7 @@ public class LingshiSMSProvider implements SMSProvider {
 
     @Override
     public String getProviderName() {
-        return "LingshiSMSProvider";
+        return "Tui3SMSProvider";
     }
 
     private String inputStream2String(InputStream in) throws IOException {

@@ -4,6 +4,7 @@ import models.sms.impl.BjenSMSProvider;
 import models.sms.impl.C123HttpSMSProvider;
 import models.sms.impl.HaduoHttpSMSProvider;
 import models.sms.impl.LingshiSMSProvider;
+import models.sms.impl.Tui3SMSProvider;
 
 /**
  * 短信提供商工厂类.
@@ -15,7 +16,9 @@ public class SMSFactory {
     public static SMSProvider getSMSProvider(String sysType) {
         SMSProvider smsProvider = null;
 
-        if ("ensms".equalsIgnoreCase(sysType)) {
+        if ("tui3".equalsIgnoreCase(sysType)) {
+            smsProvider = new Tui3SMSProvider();
+        } else if ("ensms".equalsIgnoreCase(sysType)) {
             smsProvider = new BjenSMSProvider();
         } else if ("c123".endsWith(sysType)) {
             smsProvider = new C123HttpSMSProvider();
