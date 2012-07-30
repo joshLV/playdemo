@@ -35,7 +35,9 @@ public class AddressesTest extends FunctionalTest {
 	        Fixtures.delete(Address.class);
 	        Fixtures.delete(User.class);
 	        Fixtures.loadModels("fixture/user.yml");
+	        Fixtures.loadModels("fixture/users.yml");
 	        Fixtures.loadModels("fixture/addresses.yml");
+	        
 	        
 	        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
 			User user = User.findById(userId);
