@@ -97,7 +97,7 @@ public class OperateGoods extends Controller {
             goods.setLevelPrices(levelPrices);
             goods.materialType = MaterialType.ELECTRONIC;
             goods.unPublishedPlatforms = new HashSet<>();
-            if (CollectionUtils.isNotEmpty(supplierList)) {
+            if (supplierList != null && supplierList.size() > 0) {
                 goods.supplierId = supplierList.get(0).id;
                 checkShops(goods.supplierId);
                 renderShopList(goods.supplierId);
@@ -497,7 +497,7 @@ public class OperateGoods extends Controller {
         for (Long id : ids) {
             models.sales.Goods goods = Goods.findById(id);
             Supplier supplier = Supplier.findById(goods.supplierId);
-            if (StringUtils.isNotEmpty(supplier.email)) {
+            if (supplier != null && StringUtils.isNotEmpty(supplier.email)) {
                 //发送提醒邮件
                 MailMessage mailMessage = new MailMessage();
                 mailMessage.addRecipient(supplier.email);

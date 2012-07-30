@@ -541,8 +541,8 @@ public class ECoupon extends Model {
 //        SMSUtil.send(eCoupon.goods.name + "券号:" + eCoupon.eCouponSn, eCoupon.orderItems.phone, eCoupon.replyCode);
         SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
         SMSUtil.send("【券市场】" + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name +
-                "[" + eCoupon.goods.faceValue + "元]")) + ",券号:" + eCoupon.eCouponSn + "," +
-                "截止日期:" + dateFormat.format(eCoupon.expireAt) + ",如有疑问请致电：400-6262-166",
+                "[" + eCoupon.goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
+                "截止" + dateFormat.format(eCoupon.expireAt) + ",客服：4006262166",
                 eCoupon.orderItems.phone, eCoupon.replyCode);
     }
 

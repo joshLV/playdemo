@@ -90,12 +90,19 @@ public class OperateGoodsTest extends FunctionalTest {
 
         //修改商品状态为下架状态
         response = PUT("/goods/" + goodsId + "/offSale", "text/html", "");
+
+        Goods goods0 = Goods.findById(goodsId);
+        goods0.refresh();
+        assertEquals(GoodsStatus.OFFSALE, goods0.status);
+        
+        
         //再次删除
         response = DELETE("/goods/" + goodsId);
         assertStatus(302, response);
 
         //验证状态改为已删除状态
         Goods goods1 = Goods.findById(goodsId);
+        goods1.refresh();
         assertEquals(DeletedStatus.DELETED, goods1.deleted);
     }
 
@@ -109,7 +116,14 @@ public class OperateGoodsTest extends FunctionalTest {
         Goods goods = Goods.findById(goodsId);
         goods.supplierId = supplierId;
         goods.save();
-        Response response = PUT("/goods/" + goodsId + "/offSale", "text/html", "");
+
+        Response response = PUT("/goods/" + goodsId + "/onSale", "text/html", "");
+        assertStatus(200, response);
+        goods = Goods.findById(goodsId);
+        goods.refresh();
+        assertEquals(GoodsStatus.ONSALE, goods.status);
+        
+        response = PUT("/goods/" + goodsId + "/offSale", "text/html", "");
         assertStatus(302, response);
         goods = Goods.findById(goodsId);
         goods.refresh();

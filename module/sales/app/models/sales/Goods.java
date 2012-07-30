@@ -36,7 +36,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
-
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.resale.ResalerLevel;
@@ -239,6 +238,13 @@ public class Goods extends Model {
      */
     @Column(name = "created_by")
     public String createdBy;
+    
+    /**
+     * 最早上架时间
+     */
+    @Column(name = "first_onsale_at")
+    public Date firstOnSaleAt;
+    
     /**
      * 修改时间
      */
@@ -799,6 +805,10 @@ public class Goods extends Model {
         for (Long id : ids) {
             models.sales.Goods goods = models.sales.Goods.findById(id);
             goods.status = status;
+            
+            if (status == GoodsStatus.ONSALE && goods.firstOnSaleAt == null) {
+                goods.firstOnSaleAt = new Date();
+            }
 
             goods.save();
         }
