@@ -6,6 +6,8 @@ package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.FileUploadUtil;
+import models.mail.MailMessage;
+import models.mail.MailUtil;
 import models.resale.ResalerLevel;
 import models.sales.*;
 import models.supplier.Supplier;
@@ -24,10 +26,7 @@ import play.mvc.With;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static play.Logger.warn;
 
@@ -495,7 +494,22 @@ public class OperateGoods extends Controller {
      */
     private static void updateStatus(GoodsStatus status, Long... ids) {
         models.sales.Goods.updateStatus(status, ids);
-
+        for (Long id : ids) {
+            models.sales.Goods goods = Goods.findById(id);
+            Supplier supplier = Supplier.findById(goods.supplierId);
+            if (StringUtils.isNotBlank(supplier.email)) {
+                //发送提醒邮件
+                MailMessage mailMessage = new MailMessage();
+                mailMessage.addRecipient(supplier.email);
+                mailMessage.setSubject(Play.mode.isProd() ? "商品下架" : "商品下架【测试】");
+                mailMessage.putParam("date", new Date());
+                mailMessage.putParam("supplier", supplier.fullName);
+                mailMessage.putParam("goodsName", goods.name);
+                mailMessage.putParam("faceValue", goods.faceValue);
+                mailMessage.putParam("operateUser",OperateRbac.currentUser().userName);
+                MailUtil.sendOperatorNotificationMail(mailMessage);
+            }
+        }
         index(null);
     }
 

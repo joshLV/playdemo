@@ -22,7 +22,7 @@
         #{/layout_operate.selectField}
     #{/if}
     #{else}
-    <input type="hidden" name="goods.supplierId" value="${goods?.supplierId}">
+    <input type="hidden" id="goods_supplierId" name="goods.supplierId" value="${goods?.supplierId}">
         #{layout_operate.textField name:'goods.supplier', value:goods?.supplier?.fullName, disabled:true/}
     #{/else}
 <div class="control-group">
@@ -109,7 +109,7 @@
     </div>
 </div>
 <div class="form-actions">
-    <input class="btn btn-primary" id="save" type="submit" value="保存"/>
+    <input class="btn btn-primary" id="save" type="submit" value="保存"  #{if "edit".equals(action) && goods?.status == models.sales.GoodsStatus.ONSALE}disabled #{/if}/>
     <input class="btn btn-primary" id="onsale" type="submit" value="保存并上架"/>
     #{if "edit".equals(action)}
     <input class="btn btn-primary" id="preview" type="submit" value="预览"/>

@@ -1,30 +1,19 @@
 package models.supplier;
 
-import java.beans.Transient;
-import java.util.Date;
-import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-import models.sales.Brand;
-import org.apache.commons.lang.StringUtils;
-import play.Play;
-import play.data.validation.Match;
-import play.data.validation.MaxSize;
-import play.data.validation.Phone;
-import play.data.validation.Required;
-import play.db.jpa.Model;
-import play.modules.view_ext.annotation.Mobile;
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.PathUtil;
+import models.sales.Brand;
+import org.apache.commons.lang.StringUtils;
+import play.Play;
+import play.data.validation.*;
+import play.db.jpa.Model;
+import play.modules.view_ext.annotation.Mobile;
+
+import javax.persistence.*;
+import java.beans.Transient;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 供应商（商户）
@@ -34,16 +23,16 @@ import com.uhuila.common.util.PathUtil;
 @Entity
 @Table(name = "suppliers")
 public class Supplier extends Model {
-    
+
     private static final long serialVersionUID = 7122320609113062L;
     public static final String IMAGE_TINY = "60x46_nw";
-    public static final String IMAGE_SMALL   ="172x132";
-    public static final String IMAGE_MIDDLE  ="234x178";
-    public static final String IMAGE_LARGE   ="340x260";
-    public static final String IMAGE_LOGO    ="300x180_nw";
-    public static final String IMAGE_SLIDE   ="nw";
-    public static final String IMAGE_ORIGINAL="nw";
-    public static final String IMAGE_DEFAULT ="";
+    public static final String IMAGE_SMALL = "172x132";
+    public static final String IMAGE_MIDDLE = "234x178";
+    public static final String IMAGE_LARGE = "340x260";
+    public static final String IMAGE_LOGO = "300x180_nw";
+    public static final String IMAGE_SLIDE = "nw";
+    public static final String IMAGE_ORIGINAL = "nw";
+    public static final String IMAGE_DEFAULT = "";
 
     /**
      * 域名
@@ -114,6 +103,8 @@ public class Supplier extends Model {
      * 描述
      */
     public String remark;
+    @Email
+    public String email;
     /**
      * 删除状态
      */
@@ -128,7 +119,7 @@ public class Supplier extends Model {
     public Supplier(Long id) {
         this.id = id;
     }
-    
+
 
     public static final String CACHEKEY = "SUPPLIER";
 
@@ -185,6 +176,7 @@ public class Supplier extends Model {
         sp.phone = supplier.phone;
         sp.position = supplier.position;
         sp.userName = supplier.userName;
+        sp.email = supplier.email;
         sp.updatedAt = new Date();
         sp.save();
     }
