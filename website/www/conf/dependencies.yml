@@ -35,7 +35,7 @@ require:
     - cms -> cms
     - emaillogs -> emaillogs
     - cache_helper -> cache_helper
-
+    - operate_rbac -> operate_rbac
 repositories:
 
     - mavenRepository:
@@ -74,3 +74,4 @@ repositories:
             - cms -> *
             - emaillogs -> *
             - cache_helper -> *
+            - operate_rbac ->*
