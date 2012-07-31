@@ -12,7 +12,7 @@ order.Order(order1):
   "createdAt": "2012-03-15T16:40:28"
   "updatedAt": "2012-03-15T16:40:28"
   "receiverPhone": "13512341234"
-  "eceiverMobile": "13512341234"
+  "receiverMobile": "13512341234"
   "receiverAddress": "内蒙古 呼和浩特市 玉泉区 凌兆路"
   "receiverName": "苏杰1"
   "postcode": "200120"
