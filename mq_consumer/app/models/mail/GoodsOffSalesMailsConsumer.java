@@ -6,6 +6,7 @@ import play.Logger;
 import play.db.jpa.JPAPlugin;
 import play.exceptions.MailException;
 import play.jobs.OnApplicationStart;
+import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 
 /**
  * <p/>

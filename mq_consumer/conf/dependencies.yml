@@ -25,7 +25,7 @@ require:
     - org.jsoup -> jsoup 1.6.1
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
-
+    - operate_rbac -> operate_rbac
 repositories:
     - mavenRepository:
         type:       iBiblio
@@ -54,7 +54,7 @@ repositories:
             - supplier -> *
             - cache_helper -> *
             - emaillogs -> *
-
+            - operate_rbac -> *
     - play1ContributedModules:
         type: http
         artifact: "http://dev.uhuila.cn/play/modules/[module]-[revision].zip"
