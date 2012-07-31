@@ -359,7 +359,7 @@ public class ECoupon extends Model {
     }
 
     /**
-     * 会员中心 券号列表
+     * 券号列表
      *
      * @param condition  条件
      * @param pageNumber 页数
@@ -375,7 +375,23 @@ public class ECoupon extends Model {
         couponsPage.setPageSize(pageSize);
         return couponsPage;
     }
+     /**
+     * 会员中心 券号列表
+     *
+     * @param condition  条件
+     * @param pageNumber 页数
+     * @param pageSize   记录数
+     * @return couponsPage 券记录
+     */
+    public static JPAExtPaginator<ECoupon> getUserCoupons(CouponsCondition condition, int pageNumber, int pageSize) {
+        JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
+                ("ECoupon e", "e", ECoupon.class, condition.getFilter(),
+                        condition.getParamMap()).orderBy("e.createdAt desc");
 
+        couponsPage.setPageNumber(pageNumber);
+        couponsPage.setPageSize(pageSize);
+        return couponsPage;
+    }
     /**
      * 退款
      *

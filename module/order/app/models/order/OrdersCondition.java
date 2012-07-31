@@ -44,7 +44,7 @@ public class OrdersCondition {
             paramsMap.put("supplierId", supplierId);
         }
         if (userType != null) {
-            sql.append(" and o.userType=:userType)");
+            sql.append(" and o.userType=:userType");
             paramsMap.put("userType", userType);
         }
         if (createdAtBegin != null) {

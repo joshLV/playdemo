@@ -90,6 +90,9 @@ public class ECouponUnitTest extends UnitTest {
         JPAExtPaginator<ECoupon> list = ECoupon.query(condition, pageNumber, pageSize);
         assertEquals(2, list.size());
 
+        list = ECoupon.getUserCoupons(condition, pageNumber, pageSize);
+        assertEquals(2, list.size());
+
     }
 
 

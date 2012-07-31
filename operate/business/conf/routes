@@ -77,6 +77,10 @@ PUT     /coupons/{id}/unfreeze                  OperateCoupons.unfreeze
 GET     /coupons-message/{id}/send              OperateCoupons.sendMessage
 GET     /coupon_excel                           OperateCoupons.couponExcelOut
 
+#验证消费券
+GET     /coupons/index                          OperateVerifyCoupons.index
+GET     /coupons/verify                         OperateVerifyCoupons.verify
+
 GET     /shops                                  OperateShops.index
 GET     /shops/new                              OperateShops.add
 POST    /shops                                  OperateShops.create
