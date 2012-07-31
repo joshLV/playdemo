@@ -62,7 +62,6 @@ public class OperateVerifyCoupons extends Controller {
         if (ecoupon.operateUserId != null) {
             OperateUser operateUser = OperateUser.findById(ecoupon.operateUserId);
             ecoupon.operateUserName = operateUser.userName;
-            System.out.println(">>>>>>>>>>"+ecoupon.operateUserName);
         }
         render("/OperateVerifyCoupons/verify.html", shopList, shopId, ecoupon);
     }

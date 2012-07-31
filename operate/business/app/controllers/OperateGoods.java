@@ -503,10 +503,10 @@ public class OperateGoods extends Controller {
                 mailMessage.addRecipient(supplier.email);
                 mailMessage.setSubject(Play.mode.isProd() ? "商品下架" : "商品下架【测试】");
                 mailMessage.putParam("date", new Date());
-                mailMessage.putParam("supplier", supplier.fullName);
+                mailMessage.putParam("supplierName", supplier.fullName);
                 mailMessage.putParam("goodsName", goods.name);
                 mailMessage.putParam("faceValue", goods.faceValue);
-                mailMessage.putParam("operateUser",OperateRbac.currentUser().userName);
+                mailMessage.putParam("operateUserName",OperateRbac.currentUser().userName);
                 MailUtil.sendGoodsOffSalesMail(mailMessage);
             }
         }

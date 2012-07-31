@@ -1,6 +1,7 @@
 <html>
 <body>
-     ${messages.getParam("supplier")},商品：${messages.getParam("goodsName")},面值：${messages.getParam("faceValue")},
-     于${message.getParam("date").format("yy-MM-dd HH:mm:ss")} ，被${messages.getParam("operateUser")}下架！
+     ${message.getParam("supplierName")},商品：${message.getParam("goodsName")},面值：${message.getParam("faceValue")},
+     于${message.getParam("date").format("yyyy-MM-dd HH:mm:ss")} ，被${message.getParam("operateUserName")}下架！
 </body>
 </html>
+
