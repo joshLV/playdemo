@@ -6,6 +6,7 @@ require:
     - play1 -> betterlogs 1.0
     - play1 -> appconfiguration 0.1
     - asset_package -> asset_package
+    - emaillogs -> emaillogs
 
 repositories:
 
@@ -14,6 +15,7 @@ repositories:
         artifact:   "${application.path}/../../module/[module]"
         contains:
             - asset_package -> *
+            - emaillogs -> *
 
     - play1ContributedModules:
         type: http

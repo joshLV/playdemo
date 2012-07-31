@@ -8,6 +8,7 @@ require:
     - play1 -> app-version 0.1
     - net.coobird -> thumbnailator 0.4.1
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - emaillogs -> emaillogs
 
 repositories:
 
@@ -18,6 +19,12 @@ repositories:
             - net.coobird -> *
             - com.uhuila.utils -> *
         m2compatible: true
+
+    - customModules:
+        type:       local
+        artifact:   "${application.path}/../module/[module]"
+        contains:
+            - emaillogs -> *
 
     - play1ContributedModules:
         type: http

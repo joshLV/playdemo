@@ -28,6 +28,7 @@ require:
     - sms -> sms
     - asset_package -> asset_package
     - cache_helper -> cache_helper
+    - emaillogs -> emaillogs
 
 repositories:
     - mavenRepository:
@@ -63,3 +64,5 @@ repositories:
             - sms -> *
             - asset_package -> *
             - cache_helper -> *
+            - emaillogs -> *
+

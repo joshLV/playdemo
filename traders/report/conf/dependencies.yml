@@ -24,6 +24,7 @@ require:
     - report -> report
     - sms -> sms
     - cms -> cms
+    - emaillogs -> emaillogs
     - cache_helper -> cache_helper
 
 repositories:
@@ -60,3 +61,5 @@ repositories:
             - sms -> *
             - cms -> *
             - cache_helper -> *
+            - emaillogs -> *
+

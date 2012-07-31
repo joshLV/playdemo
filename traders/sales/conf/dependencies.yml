@@ -23,6 +23,7 @@ require:
     - accounts -> accounts
     - sms -> sms
     - cms -> cms
+    - emaillogs -> emaillogs
     - cache_helper -> cache_helper
 
 repositories:
@@ -57,4 +58,5 @@ repositories:
             - accounts -> *
             - sms -> *
             - cms -> *
+            - emaillogs -> *
             - cache_helper -> *

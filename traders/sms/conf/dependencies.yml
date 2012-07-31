@@ -20,6 +20,7 @@ require:
     - org.jsoup -> jsoup 1.6.1
     - sms -> sms
     - cms -> cms
+    - emaillogs -> emaillogs
     - view_ext -> view_ext
     - cache_helper -> cache_helper
 
@@ -53,4 +54,5 @@ repositories:
             - sms -> *
             - view_ext -> *
             - cms -> *
+            - emaillogs -> *
             - cache_helper -> *

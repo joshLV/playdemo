@@ -24,6 +24,7 @@ require:
     - supplier -> supplier
     - org.jsoup -> jsoup 1.6.1
     - cache_helper -> cache_helper
+    - emaillogs -> emaillogs
 
 repositories:
     - mavenRepository:
@@ -52,6 +53,7 @@ repositories:
             - view_ext -> *
             - supplier -> *
             - cache_helper -> *
+            - emaillogs -> *
 
     - play1ContributedModules:
         type: http

@@ -43,7 +43,7 @@ String timeEnd = ecoupon.goods.useEndTime;}%
         <script type="text/javascript">
             $("#sure").attr("disabled", true);
         </script>
-        <font color=red>对不起，只能在今天${timeBegin}~${timeEnd}时间内使用该券!</font>
+        <font color=red>对不起，只能在每天${timeBegin}~${timeEnd}时间内使用该券!</font>
     #{/elseif}
 
     #{elseif  !ecoupon.isBelongShop(shopId)}

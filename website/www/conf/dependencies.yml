@@ -33,6 +33,7 @@ require:
     - asset_package -> asset_package
     - layout_website -> layout_website
     - cms -> cms
+    - emaillogs -> emaillogs
     - cache_helper -> cache_helper
 
 repositories:
@@ -71,4 +72,5 @@ repositories:
             - asset_package -> *
             - layout_website -> *
             - cms -> *
+            - emaillogs -> *
             - cache_helper -> *

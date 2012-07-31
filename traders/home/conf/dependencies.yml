@@ -23,6 +23,7 @@ require:
     - org.jsoup -> jsoup 1.6.1
     - view_ext -> view_ext
     - cache_helper -> cache_helper
+    - emaillogs -> emaillogs
 
 repositories:
     - mavenRepository:
@@ -56,3 +57,5 @@ repositories:
             - consumer -> *
             - sms -> *
             - cms -> *
+            - emaillogs -> *
+

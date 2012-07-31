@@ -17,6 +17,7 @@ require:
     - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
     - asset_package -> asset_package
     - cache_helper -> cache_helper
+    - emaillogs -> emaillogs
 
 repositories:
     - mavenRepository:
@@ -45,3 +46,5 @@ repositories:
             - cms -> *
             - view_ext -> *
             - cache_helper -> *
+            - emaillogs -> *
+

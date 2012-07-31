@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" threshold="all">
+    <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ABSOLUTE} %p: %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="SYSLOG" class="org.apache.log4j.net.SyslogAppender">
+        <param name="syslogHost" value="logserver:29101"/>
+        <param name="Facility" value="LOCAL1"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ABSOLUTE} %p: %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="GMAIL" class="play.modules.emaillogs.EmailLoggerAppender">
+        <param name="SMTPProtocol" value="smtps" />
+        <param name="SMTPHost" value="smtp.gmail.com" />
+        <param name="SMTPPort" value="465" />
+        <param name="SMTPUsername" value="uhuila.notify@gmail.com"/>
+        <param name="SMTPPassword" value="1qaz@WSX#EDC"/>
+        <param name="From" value="yibaiquan &lt;noreplay@uhuila.com&gt;" />
+        <param name="To" value="likang@uhuila.com" />
+        <param name="Subject" value="Exception Occurred" />
+        <param name="BufferSize" value="1" />
+        <param name="threshold" value="ERROR" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="EMAIL" class="org.apache.log4j.AsyncAppender">
+        <appender-ref ref="GMAIL"/>
+    </appender>
+
+    <logger name="play">
+        <level value="INFO" />
+    </logger>
+
+    <root>
+        <level value="WARN" />
+        <appender-ref ref="Console" />
+        <appender-ref ref="SYSLOG" />
+        <appender-ref ref="EMAIL" />
+    </root>
+</log4j:configuration>
