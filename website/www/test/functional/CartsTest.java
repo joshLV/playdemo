@@ -53,6 +53,7 @@ public class CartsTest  extends FunctionalTest {
 		Fixtures.loadModels("fixture/categories_unit.yml");
 		Fixtures.loadModels("fixture/shops_unit.yml");
 		Fixtures.loadModels("fixture/brands_unit.yml");
+		Fixtures.loadModels("fixture/goods.yml");
 		Fixtures.loadModels("fixture/goods_unit.yml");
 		Fixtures.loadModels("fixture/orders.yml");
 		Fixtures.loadModels("fixture/orderItems.yml");
