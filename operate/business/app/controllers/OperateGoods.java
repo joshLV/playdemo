@@ -63,7 +63,7 @@ public class OperateGoods extends Controller {
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
         goodsPage.setBoundaryControlsEnabled(true);
-        List<Supplier> supplierList = Supplier.findAll();
+        List<Supplier> supplierList = Supplier.findUnDeleted();
 
         List<Brand> brandList = Brand.findByOrder(null);
         renderArgs.put("brandList", brandList);
@@ -507,7 +507,7 @@ public class OperateGoods extends Controller {
                 mailMessage.putParam("goodsName", goods.name);
                 mailMessage.putParam("faceValue", goods.faceValue);
                 mailMessage.putParam("operateUser",OperateRbac.currentUser().userName);
-                MailUtil.sendOperatorNotificationMail(mailMessage);
+                MailUtil.sendGoodsOffSalesMail(mailMessage);
             }
         }
         index(null);
