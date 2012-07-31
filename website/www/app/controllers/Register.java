@@ -3,20 +3,27 @@ package controllers;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.consumer.UserWebIdentification;
+
 import org.apache.commons.lang.StringUtils;
+
 import play.cache.Cache;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.libs.Codec;
 import play.libs.Images;
 import play.mvc.Controller;
+import play.mvc.With;
+
 import com.uhuila.common.constants.DataConstants;
+
+import controllers.modules.website.cas.annotations.SkipCAS;
 
 /**
  * 前台注册用户
  *
  * @author yanjy
  */
+@With(WebsiteInjector.class)
 public class Register extends Controller {
 
     public static final String SESSION_USER_KEY = "website_login";
@@ -38,6 +45,8 @@ public class Register extends Controller {
         if (Validation.hasError("user.mobile")
                 && Validation.hasError("user")) {
             Validation.clear();
+          
+            
         }
 
         if(User.checkLoginName(user.loginName)){
@@ -46,9 +55,12 @@ public class Register extends Controller {
         if (!user.password.equals(user.confirmPassword)) {
             Validation.addError("user.confirmPassword", "validation.confirmPassword");
         }
+        
         if (!"dev".equals(play.Play.configuration.get("application.mode"))) {
+        	
             if (StringUtils.isNotEmpty(user.captcha) && !user.captcha.toUpperCase().equals(Cache.get(params.get("randomID")))) {
                 Validation.addError("user.captcha", "validation.captcha");
+              
             }
         }
 
@@ -61,13 +73,15 @@ public class Register extends Controller {
         user.userInfo = new UserInfo(user);
         user.save();
         
+        
         if (WebsiteInjector.getUserWebIdentification() != null) {
             UserWebIdentification uwi = UserWebIdentification.findById(WebsiteInjector.getUserWebIdentification().id);
             if (uwi.registerCount == null) {
-                uwi.registerCount = 0;
+            	uwi.registerCount = 0;
             } 
             uwi.registerCount += 1;
             uwi.save();
+           
         }
         
         // session.put(SESSION_USER_KEY, user.loginName);
