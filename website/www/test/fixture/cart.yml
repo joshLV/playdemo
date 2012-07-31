@@ -1,0 +1,55 @@
+order.Cart(cart1):
+ "user": "user"
+ "goods": "Goods_002"
+ "createdAt": "2012-05-28T15:00:48"
+ "lockVersion": "0"
+ "number": "10000000000000"
+ "updatedAt": "2012-05-28T15:00:48"
+ 
+order.Cart(cart2):
+ "user": "user"
+ "goods": "Goods_001"
+ "createdAt": "2012-05-28T15:00:48"
+ "lockVersion": "0"
+ "number": "1"
+ "updatedAt": "2012-05-28T15:00:48"
+ 
+order.Cart(cart3):
+ "user": "user"
+ "goods": "goods1"
+ "createdAt": "2012-05-28T15:00:48"
+ "lockVersion": "0"
+ "number": "1"
+ "updatedAt": "2012-05-28T15:00:48"
+ 
+order.Cart(cart4):
+ "user": "user"
+ "goods": "goods2"
+ "createdAt": "2012-05-28T15:00:48"
+ "lockVersion": "0"
+ "number": "1"
+ "updatedAt": "2012-05-28T15:00:48"
+ 
+order.Cart(cart5):
+ "user": "user"
+ "goods": "goods3"
+ "createdAt": "2012-05-28T15:00:48"
+ "lockVersion": "0"
+ "number": "1"
+ "updatedAt": "2012-05-28T15:00:48"
+
+order.Cart(cart6):
+ "user": "user"
+ "goods": "goods4"
+ "createdAt": "2012-05-28T15:00:48"
+ "lockVersion": "0"
+ "number": "1"
+ "updatedAt": "2012-05-28T15:00:48"
+
+order.Cart(cart7):
+ "user": "user"
+ "goods": "goods5"
+ "createdAt": "2012-05-28T15:00:48"
+ "lockVersion": "0"
+ "number": "1"
+ "updatedAt": "2012-05-28T15:00:48"
