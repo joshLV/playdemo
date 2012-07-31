@@ -6,7 +6,6 @@ import models.accounts.AccountType;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
-import models.admin.OperateUser;
 import models.admin.SupplierUser;
 import models.sales.Goods;
 import models.sales.Shop;
@@ -123,11 +122,10 @@ public class ECoupon extends Model {
     @JoinColumn(name = "supplier_user_id", nullable = true)
     public SupplierUser supplierUser;
     /**
-     * 验证操作员
+     * 代理验证ID
      */
-    @ManyToOne
-    @JoinColumn(name = "operate_user_id", nullable = true)
-    public OperateUser operateUser;
+    @Column(name = "operate_user_id")
+    public Long operateUserId;
 
     public ECoupon(Order order, Goods goods, OrderItems orderItems) {
         this.order = order;
@@ -280,8 +278,8 @@ public class ECoupon extends Model {
         return true;
     }
 
-    public void consumeAndPayCommission(Long shopId, OperateUser operateUser, SupplierUser supplierUser, VerifyCouponType type) {
-        consumed(shopId, operateUser, supplierUser, type);
+    public void consumeAndPayCommission(Long shopId, Long operateUserId, SupplierUser supplierUser, VerifyCouponType type) {
+        consumed(shopId, operateUserId, supplierUser, type);
         payCommission();
     }
 
@@ -291,7 +289,7 @@ public class ECoupon extends Model {
      *
      * @return
      */
-    private void consumed(Long shopId, OperateUser operateUser, SupplierUser supplierUser, VerifyCouponType type) {
+    private void consumed(Long shopId, Long operateUserId, SupplierUser supplierUser, VerifyCouponType type) {
         if (this.status != ECouponStatus.UNCONSUMED) {
             return;
         }
@@ -302,7 +300,7 @@ public class ECoupon extends Model {
         this.status = ECouponStatus.CONSUMED;
         this.consumedAt = new Date();
         this.supplierUser = supplierUser != null ? supplierUser : null;
-        this.operateUser = operateUser != null ? operateUser : null;
+        this.operateUserId = operateUserId != null ? operateUserId : null;
         this.verifyType = type;
         this.save();
     }
