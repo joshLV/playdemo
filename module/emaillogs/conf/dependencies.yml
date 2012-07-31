@@ -1,0 +1,4 @@
+self: play -> emaillogs 0.1
+
+require:
+    - play
