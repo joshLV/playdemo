@@ -160,3 +160,16 @@ order.ECoupon(coupon6):
   "status": "UNCONSUMED"
   "goods": "goods5"
   "orderItems": "orderItems5"
+  
+order.ECoupon(coupon6):
+  "order": "order3"
+  "eCouponSn": "12345670026"
+  "faceValue": "10.0"
+  "originalPrice": "10.0"
+  "refundPrice": "1.0"
+  "createdAt": "2012-03-05T00:00:00"
+  "consumedAt": "2012-03-05T00:00:00"
+  "expireAt": "2012-06-07T00:00:00"
+  "status": "UNCONSUMED"
+  "goods": "goods5"
+  "orderItems": "orderItems5"
