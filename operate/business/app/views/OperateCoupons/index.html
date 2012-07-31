@@ -141,7 +141,7 @@
             <th width="50px">付款时间</th>
             <th width="50px">消费时间</th>
             <th width="30px">店员</th>
-            <th width="60px">操作员</th>
+            <th width="60px">代理验证员</th>
             <th width="40px">验证方式</th>
             <th width="50px">退款时间</th>
             <th width="50px">退款金额</th>
@@ -166,7 +166,7 @@
             <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
             <td>#{if coupon?.supplierUser?.userName!=null}${coupon?.supplierUser?.userName}#{/if}
                 #{if coupon?.supplierUser?.jobNumber!=null}(工号: ${coupon?.supplierUser?.jobNumber})#{/if}</td>
-            <td>${coupon?.operateUser?.userName}</td>
+            <td>${coupon?.operateUserName}</td>
             <td>&{'coupon.'+coupon?.verifyType}</td>
             <td>${coupon?.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
             <td>${coupon?.refundPrice}</td>

@@ -1,6 +1,7 @@
 package controllers;
 
 import com.uhuila.common.util.DateUtil;
+import models.admin.OperateUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
@@ -58,6 +59,11 @@ public class OperateVerifyCoupons extends Controller {
         //根据页面录入券号查询对应信息
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
 
+        if (ecoupon.operateUserId != null) {
+            OperateUser operateUser = OperateUser.findById(ecoupon.operateUserId);
+            ecoupon.operateUserName = operateUser.userName;
+            System.out.println(">>>>>>>>>>"+ecoupon.operateUserName);
+        }
         render("/OperateVerifyCoupons/verify.html", shopList, shopId, ecoupon);
     }
 

@@ -126,6 +126,8 @@ public class ECoupon extends Model {
      */
     @Column(name = "operate_user_id")
     public Long operateUserId;
+    @Transient
+    public String operateUserName;
 
     public ECoupon(Order order, Goods goods, OrderItems orderItems) {
         this.order = order;

@@ -1,5 +1,6 @@
 package controllers;
 
+import models.admin.OperateUser;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -33,6 +34,12 @@ public class OperateCoupons extends Controller {
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
         JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
+        for (ECoupon coupon : couponPage) {
+            if (coupon.operateUserId != null) {
+                OperateUser operateUser = OperateUser.findById(coupon.operateUserId);
+                coupon.operateUserName = operateUser.userName;
+            }
+        }
         List<Brand> brandList = Brand.findByOrder(null);
         renderArgs.put("brandList", brandList);
         BigDecimal amountSummary = ECoupon.summary(couponPage);
