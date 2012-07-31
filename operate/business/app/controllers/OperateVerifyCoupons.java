@@ -3,6 +3,7 @@ package controllers;
 import com.uhuila.common.util.DateUtil;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.VerifyCouponType;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
@@ -42,7 +43,6 @@ public class OperateVerifyCoupons extends Controller {
 
     }
 
-
     /**
      * 查询
      *
@@ -68,10 +68,10 @@ public class OperateVerifyCoupons extends Controller {
      */
     @ActiveNavigation("coupons_verify")
     public static void update(Long shopId, Long supplierId, String eCouponSn, String shopName) {
+        List shopList = Shop.findShopBySupplier(supplierId);
         if (Validation.hasErrors()) {
-            render("../views/SupplierCoupons/index.html", eCouponSn);
+            render("/OperateVerifyCoupons/index.html", shopList, eCouponSn, supplierId);
         }
-
 
         ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
         //根据页面录入券号查询对应信息,并产生消费交易记录
@@ -83,7 +83,7 @@ public class OperateVerifyCoupons extends Controller {
                 renderJSON("1");
             }
 
-//            eCoupon.consumeAndPayCommission(shopId, OperateRbac.currentUser(), VerifyCouponType.SHOP);
+            eCoupon.consumeAndPayCommission(shopId, OperateRbac.currentUser(), null, VerifyCouponType.SHOP);
             String dateTime = DateUtil.getNowTime();
             String coupon = eCoupon.getLastCode(4);
 

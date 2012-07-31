@@ -139,7 +139,7 @@ public class VerificationUnitTest extends UnitTest {
         assertNotNull(eCoupon);
 
         Long shopId = (Long) Fixtures.idCache.get("models.sales.Shop-Shop_4");
-        eCoupon.consumeAndPayCommission(shopId, user, VerifyCouponType.SHOP);
+        eCoupon.consumeAndPayCommission(shopId, null, user, VerifyCouponType.SHOP);
         List<ECoupon> couponList = ECoupon.find("byECouponSn", eCouponSn).fetch();
         assertEquals(ECouponStatus.CONSUMED, couponList.get(0).status);
         assertEquals(shopId, couponList.get(0).shop.id);

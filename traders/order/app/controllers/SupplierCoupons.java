@@ -83,7 +83,7 @@ public class SupplierCoupons extends Controller {
             if (!eCoupon.isBelongShop(shopId)) {
                 renderJSON("1");
             }
-            eCoupon.consumeAndPayCommission(shopId, SupplierRbac.currentUser(), VerifyCouponType.SHOP);
+            eCoupon.consumeAndPayCommission(shopId, null,SupplierRbac.currentUser(), VerifyCouponType.SHOP);
             String dateTime = DateUtil.getNowTime();
             String coupon = eCoupon.getLastCode(4);
 

@@ -6,6 +6,7 @@ import models.accounts.AccountType;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
+import models.admin.OperateUser;
 import models.admin.SupplierUser;
 import models.sales.Goods;
 import models.sales.Shop;
@@ -121,6 +122,12 @@ public class ECoupon extends Model {
     @ManyToOne
     @JoinColumn(name = "supplier_user_id", nullable = true)
     public SupplierUser supplierUser;
+    /**
+     * 验证操作员
+     */
+    @ManyToOne
+    @JoinColumn(name = "operate_user_id", nullable = true)
+    public OperateUser operateUser;
 
     public ECoupon(Order order, Goods goods, OrderItems orderItems) {
         this.order = order;
@@ -273,8 +280,8 @@ public class ECoupon extends Model {
         return true;
     }
 
-    public void consumeAndPayCommission(Long shopId, SupplierUser supplierUser, VerifyCouponType type) {
-        consumed(shopId, supplierUser, type);
+    public void consumeAndPayCommission(Long shopId, OperateUser operateUser, SupplierUser supplierUser, VerifyCouponType type) {
+        consumed(shopId, operateUser, supplierUser, type);
         payCommission();
     }
 
@@ -284,7 +291,7 @@ public class ECoupon extends Model {
      *
      * @return
      */
-    private void consumed(Long shopId, SupplierUser supplierUser, VerifyCouponType type) {
+    private void consumed(Long shopId, OperateUser operateUser, SupplierUser supplierUser, VerifyCouponType type) {
         if (this.status != ECouponStatus.UNCONSUMED) {
             return;
         }
@@ -294,7 +301,8 @@ public class ECoupon extends Model {
         }
         this.status = ECouponStatus.CONSUMED;
         this.consumedAt = new Date();
-        this.supplierUser = supplierUser;
+        this.supplierUser = supplierUser != null ? supplierUser : null;
+        this.operateUser = operateUser != null ? operateUser : null;
         this.verifyType = type;
         this.save();
     }
@@ -375,7 +383,8 @@ public class ECoupon extends Model {
         couponsPage.setPageSize(pageSize);
         return couponsPage;
     }
-     /**
+
+    /**
      * 会员中心 券号列表
      *
      * @param condition  条件
@@ -392,6 +401,7 @@ public class ECoupon extends Model {
         couponsPage.setPageSize(pageSize);
         return couponsPage;
     }
+
     /**
      * 退款
      *
@@ -638,6 +648,7 @@ public class ECoupon extends Model {
 
     /**
      * 统计券金额
+     *
      * @param couponPage
      * @return
      */

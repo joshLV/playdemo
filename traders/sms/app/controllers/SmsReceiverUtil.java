@@ -1,7 +1,8 @@
 package controllers;
 
-import play.Logger;
-import java.util.Date;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.FieldCheckUtil;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -10,9 +11,9 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.FieldCheckUtil;
+import play.Logger;
+
+import java.util.Date;
 
 public class SmsReceiverUtil {
 
@@ -80,12 +81,12 @@ public class SmsReceiverUtil {
                         SMSUtil.send("【券市场】券号" + couponNumber + "已过期，无法进行消费。如有疑问请致电：400-6262-166", mobile, code);
                         return ("【券市场】券号" + couponNumber + "已过期，无法进行消费");
                     } else if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-                        ecoupon.consumeAndPayCommission(shopId, supplierUser, VerifyCouponType.CLERK_MESSAGE);
+                        ecoupon.consumeAndPayCommission(shopId, null, supplierUser, VerifyCouponType.CLERK_MESSAGE);
                         String coupon = ecoupon.getMaskedEcouponSn();
                         coupon = coupon.substring(coupon.lastIndexOf("*") + 1);
 
                         String dateTime = DateUtil.getNowTime();
-                        
+
                         String consumerPhone = ecoupon.orderItems.phone;
 
                         // 发给店员
@@ -131,7 +132,7 @@ public class SmsReceiverUtil {
         }
 
         Supplier supplier = Supplier.findById(ecoupon.goods.supplierId);
-    
+
         if (supplier == null || supplier.deleted == DeletedStatus.DELETED) {
             SMSUtil.send("【券市场】" + supplier.fullName + "未在券市场登记使用，请致电400-6262-166咨询", mobile, code);
             return ("【券市场】" + supplier.fullName + "未在券市场登记使用");
@@ -141,9 +142,9 @@ public class SmsReceiverUtil {
             SMSUtil.send("【券市场】" + supplier.fullName + "已被券市场锁定，请致电400-6262-166咨询", mobile, code);
             return ("【券市场】" + supplier.fullName + "已被券市场锁定");
         }
-        
+
         Logger.info("supperId=%s, jobNumber=%s", ecoupon.goods.supplierId, msg);
-        SupplierUser supplierUser = SupplierUser.find("from SupplierUser where deleted = ? and supplier.id=? and jobNumber=?", DeletedStatus.UN_DELETED,  ecoupon.goods.supplierId, msg).first();
+        SupplierUser supplierUser = SupplierUser.find("from SupplierUser where deleted = ? and supplier.id=? and jobNumber=?", DeletedStatus.UN_DELETED, ecoupon.goods.supplierId, msg).first();
 
         if (supplierUser == null) {
             // 发给消费者
@@ -174,10 +175,10 @@ public class SmsReceiverUtil {
                 SMSUtil.send("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", mobile, code);
                 return ("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166");
             } else if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-                ecoupon.consumeAndPayCommission(shopId, supplierUser, VerifyCouponType.CONSUMER_MESSAGE);
+                ecoupon.consumeAndPayCommission(shopId, null, supplierUser, VerifyCouponType.CONSUMER_MESSAGE);
                 String couponLastCode = ecoupon.getLastCode(4);
                 String dateTime = DateUtil.getNowTime();
-        
+
                 // 发给店员
                 SMSUtil.send("【券市场】" + getMaskedMobile(mobile) + "的尾号" + couponLastCode + "券（面值" + ecoupon
                         .faceValue + "元）于" + dateTime + "验证成功，门店：" + shopName + "。客服4006262166", supplierUser.mobile, code);
@@ -185,7 +186,7 @@ public class SmsReceiverUtil {
                 SMSUtil.send("【券市场】您尾号" + couponLastCode + "券于" + dateTime
                         + "成功消费，门店：" + shopName + "。客服4006262166", mobile, code);
                 return ("【券市场】您尾号" + couponLastCode + "的券号于" + dateTime
-                        + "已成功消费，门店：" + shopName + "。客服4006262166");                
+                        + "已成功消费，门店：" + shopName + "。客服4006262166");
             } else if (ecoupon.status == ECouponStatus.CONSUMED) {
                 // 发给消费者
                 SMSUtil.send("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166", mobile, code);
