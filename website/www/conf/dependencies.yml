@@ -74,4 +74,4 @@ repositories:
             - cms -> *
             - emaillogs -> *
             - cache_helper -> *
-            - operate_rbac ->*
+            - operate_rbac -> *
