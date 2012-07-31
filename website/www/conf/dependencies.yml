@@ -36,6 +36,7 @@ require:
     - emaillogs -> emaillogs
     - cache_helper -> cache_helper
     - operate_rbac -> operate_rbac
+    - base_rbac -> base_rbac
 repositories:
 
     - mavenRepository:
@@ -75,3 +76,4 @@ repositories:
             - emaillogs -> *
             - cache_helper -> *
             - operate_rbac -> *
+            - base_rabc -> *
