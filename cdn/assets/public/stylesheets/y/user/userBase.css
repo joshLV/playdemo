@@ -1,0 +1,94 @@
+body {
+    overflow-y: scroll;
+}
+#content {
+    clear: both;
+    width: 960px;
+    margin: 15px auto;
+}
+.aside {
+    float: left;
+    width: 148px;
+    border: solid #d3d3d3;
+    border-width: 1px 1px 0 1px;
+}
+.aside h3 {
+    color: #666;
+    padding: 3px 15px;
+    border: 1px solid;
+    border-color: #ffffff #f6f6f6 #f6f6f6 #f6f6f6;
+    background-color: #efefef;
+}
+.aside h3.active {
+    position: relative;
+    margin: -1px;
+    height: 23px;
+    border: 0;
+    color: #fff;
+    background: url(//img.uhcdn.com/images/y/user/aside_h3_bg.png) no-repeat 0 0;
+}
+.aside ul {
+    padding: 2px 0 3px;
+    border: solid #d3d3d3;
+    border-width: 1px 0;
+}
+.aside li {
+    height: 28px;
+    padding: 3px 0 2px;
+}
+.aside li a {
+    display: block;
+    padding: 5px;
+    text-decoration: none;
+}
+.aside li a:hover,
+.aside li .current {
+    color: #9ac92b;
+    font-weight: 700;
+    text-decoration: none;
+    background-color: #f6f6f6;
+}
+
+.section {
+    float: right;
+    width: 800px;
+}
+/* 面包屑 */
+.crumbs {
+    padding: 4px 0 4px 8px;
+    margin-bottom: 10px;
+    border: 1px solid #E4E4E4;
+    background-color: #F9FAFC;
+}
+.crumbs a:hover {
+    color: #26a7e0;
+}
+/* 分页 */
+.pagination-container {
+    text-align: center;
+    margin: 10px 0;
+}
+.pagination {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+.pagination li {
+    float: left;
+}
+.pagination a {
+    float: left;
+    margin-right: 8px;
+    padding: 1px 7px;
+    color: #a5a5a5;
+    border: 1px solid #d8d8d8;
+}
+.pagination a:hover {
+    text-decoration: none;
+}
+.pagination .active {
+    color: #F8F8F8;
+    font-weight: 700;
+    background-color: #9ac82b;
+    border: 1px solid #9ac82b;
+}

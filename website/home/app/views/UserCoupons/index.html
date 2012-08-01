@@ -1,7 +1,7 @@
 #{extends 'main.html' /}
 #{set title:'一百券 - 我的券' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/u/list.css','/u/popup.css', '/u/user-center.css'] /}
+    #{asset.css src:['/y/user/userBase.css', '/y/user/userCoupons.css', '/u/popup.css'] /}
 #{/set}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/common.jq.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -19,11 +19,6 @@
     }
     function confirmApply() {
         var coupon_id = $("#coupon_id").val();
-//        var apply_note = $("#apply_note").val();
-//        if (apply_note == "") {
-//            alert("请输入退款理由！");
-//            return;
-//        }
         var url = "/coupons/refund/" + coupon_id;
         $.post(
                 url,
@@ -41,8 +36,6 @@
                 }, "json");
     }
 
-
-
     function sendMessage(id, phone) {
         var times = $("#times_"+id).val();
         $("#downloadTimes").html(times);
@@ -58,7 +51,6 @@
             $("#send").show();
         }
     }
-
 
     function sendMessageDialog() {
         var id = $("#id").val();
@@ -82,9 +74,91 @@
     }
 </script>
 #{/set}
-<!--主体内容部分-->
-<div class="wrap clearfix">
-#{include "share/left.html"/}
+<div id="content" class="clearfix">
+    #{include "share/left.html"/}
+
+    <div class="section">
+        #{breadcrumbs/breadcrumb breadcrumbs/}
+        <form class="form-horizontal" id="orderForm" action="/" method="GET">
+            <div class="search-box">
+                <input type="hidden" name="condition.searchKey" value="2" />
+                <label>商品名称：</label>
+                <input class="medium-input goods-name" type="text" name="condition.goodsName" value="${condition.goodsName}" />
+                <label>订单号：</label>
+                <input class="short-input order-num" type="text" name="condition.searchItems" />
+                <label>成交时间：</label>
+                <input class="short-input Wdate" type="text" name="condition.createdAtBegin" value="${condition.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"/>
+                -
+                <input class="short-input Wdate" type="text" name="condition.createdAtEnd" value="${condition.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})"/>
+                <button class="search-btn" id="search"> 搜　索</button>
+            </div>
+            <table class="order-tab">
+                <thead>
+                    <tr class="col-name">
+                        <th width="80">劵号</th>
+                        <th>商品名称</th>
+                        <th width="80">订单号</th>
+                        <th width="100">截止日期</th>
+                        <th width="80">消费时间</th>
+                        <th width="80">
+                            #{select 'condition.status', id:'status', value:condition?.status}
+                                #{option ""}券状态#{/option}
+                                #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
+                                #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
+                                #{option "REFUND"}&{'coupon.REFUND'}#{/option}
+                            #{/select}
+                        </th>
+                        <th width="80">操作</th>
+                    </tr>
+                </thead>
+            #{paginate.list items:couponsList, as:'coupon'}
+                <tbody>
+                    <tr class="sep-row"><td colspan="7"></td></tr>
+                    <tr class="order-bd">
+                        <td height="30" align="center">${coupon?.eCouponSn}</td>
+                        <td>
+                            <a class="goods-image" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${coupon.goods.id}" target="_blank"><img src="${coupon?.goods?.imageTinyPath}"/></a>
+                            <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${coupon.goods.id}" target="_blank">${coupon?.goods?.name}</a>
+                        </td>
+                        <td align="center">${coupon.order.orderNumber}</td>
+                        <td align="center">
+                            ${coupon?.expireAt?.format()}<br>
+                            <span class="remain-days">还有150天到期</span>
+                        </td>
+                        %{
+                            now = new java.util.Date();
+                            isExpired = coupon.expireAt?.before(now);
+                        }%
+                        #{if isExpired }<td align="center"><span id="status_apply_${coupon.id}">已过期</span></td>#{/if}
+                        #{else}<td align="center">${coupon?.consumedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>#{/else}
+                        <td align="center">
+                            #{if coupon?.status == models.order.ECouponStatus.CONSUMED }<span class="consumed">已消费</span>#{/if}  
+                            #{elseif coupon?.status == models.order.ECouponStatus.REFUND}<span class="unconsumed">未消费</span>#{/elseif}
+                            #{else}<span class="refund">已退款</span>#{/else}
+                        </td>
+                        <td align="center">
+                            #{if !coupon.goods.isLottery && !isExpired && coupon.status == models.order.ECouponStatus.UNCONSUMED}
+                                <a class="send-sms" href="#" id="send_${coupon.id}" onclick="sendMessage('${coupon.id}', '${coupon.orderItems.phone}')">发送短信</a>
+                                <input type="hidden" id="times_${coupon.id}" value="${coupon.downloadTimes}"/>
+                                <br>
+                            #{/if}
+                            #{if coupon.status == models.order.ECouponStatus.UNCONSUMED && !coupon?.goods?.isLottery}
+                                <a class="apply-refund" href="javascript:applyRefund('${coupon.id}','${coupon.salePrice}')" name="apply_refund" id="apply_${coupon.id}">申请退款</a>
+                            #{/if}
+                        </td>
+                    </tr>
+                </tbody>
+            #{/paginate.list}
+            </table>
+        </form>
+        <div class="pagination">
+            <ul>
+            #{paginate.controls items:couponsList /}
+            </ul>
+        </div>
+    </div>
+    
+    *{
     <div class="section">
     #{breadcrumbs/breadcrumb breadcrumbs/}
         <form class="form-horizontal" id="couponsFrm" action="@{UserCoupons.index()}" method="GET">
@@ -162,6 +236,7 @@
             </ul>
         </div>
     </div>
+    }*
 </div>
 
 <div id="sendMsg">

@@ -1,34 +1,64 @@
 #{extends 'main.html' /}
 #{set title:'一百券 - 我的积分' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/u/list.css', '/u/user-center.css'] /}
-<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css" />
-<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
-<style type="text/css">
-#full_bg {
-	background-color: Gray;
-	display: none;
-	z-index: 3;
-	position: absolute;
-	left: 0px;
-	top: 0px;
-	filter: Alpha(Opacity = 30); /* IE */
-	-moz-opacity: 0.4; /* Moz + FF */
-	opacity: 0.4;
-}
-#apply_dialog {
-	position: absolute;
-	width: 400px;
-	height: 200px;
-	background: white;
-	display: none;
-	z-index: 5;
-}
-</style>
+    #{asset.css src:['/y/user/userBase.css', '/y/user/UserPoints.css'] /}
 #{/set}
-#{set 'moreScripts'}
 
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
+<div id="content" class="clearfix">
+    #{include "share/left.html"/}
+    <div class="section">
+        #{breadcrumbs/breadcrumb breadcrumbs/}
+        <div class="user-account">
+            账户：<strong>${user?.loginName}</strong> 积分：<span>${user?.userInfo?.totalPoints}</span>
+        </div>
+        <div class="search-box">
+            <label>操作类型：</label>
+            #{select 'condition.pointNumber', id:'pointNumber',
+                class:'sequence-flag', value:pointNumber} 
+                #{option ''}不限#{/option}
+                #{list items:configList, as:'config'}
+                    #{option config?.pointNumber}${config?.pointTitle}#{/option}
+                #{/list}
+            #{/select}
+            <label>操作时间：</label>
+            <input class="Wdate" type="text" name="condition.createdAtBegin" id="createdAtBegin" value="" onfocus="WdatePicker({readOnly:true})" />
+            -
+            <input class="Wdate" type="text" id="createdAtEnd" name="condition.createdAtEnd" value="" onfocus="WdatePicker({readOnly:true})" />
+            <button class="search-btn" id="search"> 搜　索 </button>
+        </div>
+        <table class="order-tab">
+            <thead>
+                <tr class="col-name">
+                    <th width="160">操作时间</th>
+                    <th width="160">获得积分</th>
+                    <th width="160">使用积分</th>
+                    <th width="160">当前积分</th>
+                    <th width="154">操作类型</th>
+                </tr>
+            </thead>
+            #{paginate.list items:pointList, as:'point'}
+            <tbody>
+                <tr class="sep-row"><td colspan="5"></td></tr>
+                <tr class="order-bd">
+                    <td>${point?.createdAt?.format()}</td>
+                    <td class="get-integral">${point?.dealType=='1' ? point?.dealPoints:''}</td>
+                    <td class="use-integral">${point?.dealType=='0'? point?.dealPoints:''}</td>
+                    <td class="current-integral">${point?.currentPoints}</td>
+                    <td> ${point?.getPointTitle()}</td> 
+                </tr>
+            </tbody>
+            #{/paginate.list}
+        </table>
+        <div class="pagination">
+            <ul>#{paginate.controls items:pointList /}</ul>
+        </div>
+    </div><!-- .section -->
+</div>
+
+*{
 <div class="wrap clearfix">
     #{include "share/left.html"/}
     <div class="section">
@@ -85,3 +115,4 @@
         </div>
     </div>
 </div>
+}*

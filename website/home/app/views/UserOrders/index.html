@@ -1,8 +1,7 @@
 #{extends 'main.html' /}
 #{set title:'一百券 - 我的订单' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/u/list.css', '/u/user-center.css'] /}
-<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
+    #{asset.css src:['/y/user/userBase.css', '/y/user/userOrders.css'] /}
 #{/set}
 
 #{set 'moreScripts'}
@@ -18,20 +17,106 @@
    });
 
 function doCancel(id){
-if(confirm("确定取消此订单吗？")){
-    $.ajax({
-        type:'PUT',
-        url:'/orders/'+id+"/cancel",
-        success:function(data){
-            window.location.reload();
-        }
-    });
-}
+    if(confirm("确定取消此订单吗？")){
+        $.ajax({
+            type:'PUT',
+            url:'/orders/'+id+"/cancel",
+            success:function(data){
+                window.location.reload();
+            }
+        });
+    }
 }
 </script>
 #{/set}
-<div class="wrap clearfix">
-#{include "share/left.html"/}
+<div id="content" class="clearfix">
+    #{include "share/left.html"/}
+    <div class="section">
+        #{breadcrumbs/breadcrumb breadcrumbs/}
+        <form class="form-horizontal" id="orderForm" action="@{UserOrders.index()}" method="GET">
+            <div class="search-box">
+                <input type="hidden" name="condition.searchKey" value="2" />
+                <label>商品名称：</label>
+                <input class="medium-input goods-name" type="text" name="condition.goodsName" value="${condition.goodsName}" />
+                <label>订单号：</label>
+                <input class="short-input order-num" type="text" name="condition.searchItems" value="${condition.searchItems}" />
+                <label>成交时间：</label>
+                <input class="short-input Wdate" type="text" name="condition.createdAtBegin" value="${condition.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"/>
+                -
+                <input class="short-input Wdate" type="text" name="condition.createdAtEnd" value="${condition.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})"/>
+                <button class="search-btn" id="search"> 搜　索</button>
+            </div>
+            <table class="order-tab">
+                <thead>
+                    <tr class="col-name">
+                        <th width="420">商品</th>
+                        <th width="80">单价（元）</th>
+                        <th width="40">数量</th>
+                        <th width="100">实付款（元）</th>
+                        <th width="80">
+                            #{select 'condition.status', id:'status', class:'order-status', value:condition.status}
+                                #{option ""}交易状态#{/option}
+                                #{option "UNPAID"}&{'order.UNPAID'}#{/option}
+                                #{option "PAID"}&{'order.PAID'}#{/option}
+                                #{option "CANCELED"}&{'order.CANCELED'}#{/option}
+                            #{/select}
+                        </th>
+                        <th width="80">交易操作</th>
+                    </tr>
+                </thead>
+                #{paginate.list items:orderList, as:'row'}
+                <tbody>
+                    <tr class="sep-row">
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr class="order-hd">
+                        <td colspan="7"><span class="order-no">订单号：${row.orderNumber}</span> <span class="order-time">成交时间：${row.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</span></td>
+                    </tr>
+                    #{set m=0/}
+                    #{list row.orderItems, as:'rowItem'}
+                    <tr class="order-bd">
+                        <td align="left">
+                            <a class="goods-image" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${rowItem.goods.id}" target="_blank"><img src="${rowItem.goods.imageTinyPath}"/></a>
+                            <a class="goods-name" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${rowItem.goods.id}" target="_blank">${rowItem.goods.name}</a>
+                        </td>
+                        <td align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
+                        <td align="center">${rowItem.buyNumber}</td>
+                        #{if (++m == 1) }
+                        <td align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
+                        <td align="center" rowspan="${row.orderItems.size()}">
+                            #{if (row.status == models.order.OrderStatus.SENT || row.status == models.order.OrderStatus.PAID)}<span class="order-status paid">交易成功</span>#{/if}
+                            #{else}
+                                #{if row.status == models.order.OrderStatus.UNPAID }<span class="order-status unpaid">#{/if}
+                                #{elseif row.status == models.order.OrderStatus.CANCELED }<span class="order-status canceled">#{/elseif}&{'order.'+row.status}</span>
+                            #{/else}
+                            <a class="order-detail" href="@{UserOrders.details(row.orderNumber)}" target="_blank">订单详情</a>
+                        </td>
+                        <td align="center" rowspan="${row.orderItems.size()}">
+                            #{if (row.status == models.order.OrderStatus.PAID)}
+                                <a id="apply_${row.orderNumber}" href="/orders/refund/${row.orderNumber}">申请退款</a>
+                            #{/if}
+                            #{if (row.status == models.order.OrderStatus.UNPAID)}
+                                <a class="order-payment" href="@{UserOrders.pay(row.orderNumber)}"></a>
+                            #{/if}
+                            #{if (row.status == models.order.OrderStatus.UNPAID)}
+                                <a class="order-cancel" href="#" onclick="doCancel(${row.orderNumber})">取消</a>
+                            #{/if}
+                        </td>
+                        #{/if}
+                    </tr>
+                    #{/list}
+                </tbody>
+                #{/paginate.list}
+            </table>
+            <div class="pagination">
+                <ul>
+                #{paginate.controls items:orderList /}
+                </ul>
+            </div>
+        </form>
+    </div>
+
+    *{
     <div class="section">
     #{breadcrumbs/breadcrumb breadcrumbs/}
         <div class="tab_top2">
@@ -120,4 +205,5 @@ if(confirm("确定取消此订单吗？")){
             </div>
         </div>
     </div>
+    }*
 </div>

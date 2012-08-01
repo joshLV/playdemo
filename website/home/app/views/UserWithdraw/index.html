@@ -1,224 +1,153 @@
 #{extends 'main.html' /}
 #{set title:'提现申请' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/u/user-center.css'] /}
-<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
-<style type="text/css">
-.nav {
-    margin-left: 0;
-    margin-bottom: 18px;
-    list-style: none;
-}
-.nav li a {
-    display: block;
-}
-.nav li a:hover {
-    text-decoration: none;
-    background-color: #eeeeee;
-}
-.nav .nav-header {
-    display: block;
-    padding: 3px 15px;
-    font-size: 11px;
-    font-weight: bold;
-    line-height: 18px;
-    color: #999999;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-    text-transform: uppercase;
-}
-.nav li + .nav-header {
-    margin-top: 9px;
-}
-.nav-list {
-    padding-left: 15px;
-    padding-right: 15px;
-    margin-bottom: 0;
-}
-.nav-list li  a,
-.nav-list .nav-header {
-    margin-left: -15px;
-    margin-right: -15px;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-}
-.nav-list li a {
-    padding: 3px 15px;
-}
-.nav-list .active a,
-.nav-list .active a:hover {
-    color: #ffffff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
-    background-color: #0088cc;
-}
-.nav-list [class^="icon-"] {
-    margin-right: 2px;
-}
-.nav-list .divider {
-    height: 1px;
-    margin: 8px 1px;
-    overflow: hidden;
-    background-color: #e5e5e5;
-    border-bottom: 1px solid #ffffff;
-    *width: 100%;
-    *margin: -5px 0 5px;
-}
-.nav-tabs,
-.nav-pills {
-    *zoom: 1;
-}
-.nav-tabs:before,
-.nav-pills:before,
-.nav-tabs:after,
-.nav-pills:after {
-    display: table;
-    content: "";
-}
-.nav-tabs:after,
-.nav-pills:after {
-    clear: both;
-}
-.nav-tabs li,
-.nav-pills li {
-    float: left;
-}
-.nav-tabs li  a,
-.nav-pills li  a {
-    padding-right: 12px;
-    padding-left: 12px;
-    margin-right: 2px;
-    line-height: 14px;
-}
-.nav-tabs {
-    border-bottom: 1px solid #ddd;
-}
-.nav-tabs li {
-    margin-bottom: -1px;
-}
-.nav-tabs li a {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    line-height: 18px;
-    border: 1px solid transparent;
-    _border: 1px solid #fff;
-    -webkit-border-radius: 4px 4px 0 0;
-    -moz-border-radius: 4px 4px 0 0;
-    border-radius: 4px 4px 0 0;
-}
-.nav-tabs li a:hover {
-    border-color: #eeeeee #eeeeee #dddddd;
-}
-.nav-tabs .active a,
-.nav-tabs .active a:hover {
-    color: #555555;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-bottom-color: transparent;
-    cursor: default;
-}
-.nav-pills li a {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    margin-top: 2px;
-    margin-bottom: 2px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-}
-.nav-pills .active a,
-.nav-pills .active a:hover {
-    color: #ffffff;
-    background-color: #0088CC;
-}
-.nav-stacked li {
-    float: none;
-}
-.nav-stacked li a {
-    margin-right: 0;
-}
-.nav-tabs.nav-stacked {
-    border-bottom: 0;
-}
-.nav-tabs.nav-stacked li a {
-    border: 1px solid #ddd;
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 0;
-}
-.nav-tabs.nav-stacked li:first-child a {
-    -webkit-border-radius: 4px 4px 0 0;
-    -moz-border-radius: 4px 4px 0 0;
-    border-radius: 4px 4px 0 0;
-}
-.nav-tabs.nav-stacked li:last-child a {
-    -webkit-border-radius: 0 0 4px 4px;
-    -moz-border-radius: 0 0 4px 4px;
-    border-radius: 0 0 4px 4px;
-}
-.nav-tabs.nav-stacked li a:hover {
-    border-color: #ddd;
-    z-index: 2;
-}
-.nav-pills.nav-stacked li a {
-    margin-bottom: 3px;
-}
-.nav-pills.nav-stacked li:last-child a {
-    margin-bottom: 1px;
-}
-.nav-tabs .dropdown-menu,
-.nav-pills .dropdown-menu {
-    margin-top: 1px;
-    border-width: 1px;
-}
-.nav-pills .dropdown-menu {
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-}
-.nav-tabs .dropdown-toggle .caret,
-.nav-pills .dropdown-toggle .caret {
-    border-top-color: #0088cc;
-    border-bottom-color: #0088cc;
-    margin-top: 6px;
-}
-.nav-tabs .dropdown-toggle:hover .caret,
-.nav-pills .dropdown-toggle:hover .caret {
-    border-top-color: #005580;
-    border-bottom-color: #005580;
-}
-.nav-tabs .active .dropdown-toggle .caret,
-.nav-pills .active .dropdown-toggle .caret {
-    border-top-color: #333333;
-    border-bottom-color: #333333;
-}
-.nav .dropdown.active a:hover {
-    color: #000000;
-    cursor: pointer;
-}
-.nav-tabs .open .dropdown-toggle,
-.nav-pills .open .dropdown-toggle,
-.nav  .open.active  a:hover {
-    color: #ffffff;
-    background-color: #999999;
-    border-color: #999999;
-}
-.nav .open .caret,
-.nav .open.active .caret,
-.nav .open a:hover .caret {
-    border-top-color: #ffffff;
-    border-bottom-color: #ffffff;
-    opacity: 1;
-    filter: alpha(opacity=100);
-}
-.order-tab td {
-    padding: 5px 0;
-}
-</style>
+    #{asset.css src:['/y/user/userBase.css', '/y/user/userWithdraw.css'] /}
 #{/set}
 
+<div id="content" class="clearfix">
+    #{include "share/left.html"/}
+    <div class="section">
+        #{breadcrumbs/breadcrumb breadcrumbs/}
+        <div class="user-account">
+            账户：<strong>mxwoio@yibaiquan.com</strong> 账户余额：<span>289290.00</span>元
+            <a class="withdraw-btn" href=""> 提 现 </a>
+        </div>
+        <table class="order-tab">
+            <thead>
+                <tr class="col-name">
+                    <th width="160">申请时间</th>
+                    <th width="100">收款人</th>
+                    <th width="120">银行</th>
+                    <th>银行卡号</th>
+                    <th width="100">申请金额</th>
+                    <th width="80">申请状态</th>
+                    <th width="80">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            #{if billPage.size() == 0}
+                <tr class="order-bd"><td colspan="7">暂无提现申请记录</td></tr>
+            #{/if}
+            #{else}
+                #{paginate.list items:billPage, as:'withdrawBill'}
+                <tr class="order-bd">
+                    <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                    <td>${withdrawBill.userName}</td>
+                    <td>${withdrawBill.bankName}</td>
+                    <td>${withdrawBill.cardNumber}</td>
+                    <td><span class="apply-money">${withdrawBill.amount.formatCurrency('CNY')}</span></td>
+                    <td>
+                        <!-- <span class="approval-success">审批成功</span> -->
+                        <!-- <span class="rejected">被拒绝</span> -->
+                        <span class="pending-approval">&{'withdraw.' + withdrawBill.status}</span>
+                    </td>
+                    <td><a class="view-detail" href="/withdraw/detail/${withdrawBill.id}">查看详情</a></td>
+                </tr>
+                #{/paginate.list}
+            #{/else}
+            </tbody>
+        </table>
+
+        <table class="withdraw-tab">
+            <tr>
+                <td class="right"><span class="required">*</span>开户名：</td>
+                <td align="left">
+                    <input type="text" class="long-input" name="withdraw.userName" value="">
+                    <span class="error"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="right"><span class="required">*</span>选择银行：</td>
+                <td align="left">
+                    <select name="withdraw.bankName" class="long-input">
+                        <option value="中国工商银行">中国工商银行</option>
+                        <option value="中国建设银行">中国建设银行</option>
+                    </select>
+                    <span class="error"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="right"><span class="required">*</span>银行所在城市：</td>
+                <td align="left">
+                    <input type="text" name="withdraw.bankCity" class="long-input" disabled value="上海">
+                    <span class="error"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="right"><span class="required">*</span>支行：</td>
+                <td align="left">
+                    <input type="text" name="withdraw.subBankName" class="long-input" value="">
+                    <span class="error"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="right"><span class="required">*</span>银行卡号：</td>
+                <td align="left">
+                    <input type="text" name="withdraw.cardNumber" class="long-input" value="">
+                    <span class="error"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="right"><span class="required">*</span>提现金额：</td>
+                <td align="left">
+                    <input type="text" name="withdraw.amount" class="long-input" value="">
+                    <span class="balance-tips">余额:<em>1985.90</em>元，最少提现10元!</span>
+                    <span class="error"></span>
+                </td>
+            </tr>
+            <tr>
+                <td align="right" width="100px"></td>
+                <td align="left">
+                    <input type="submit" value=" 申 请 " class="search-btn">
+                </td>
+            </tr>
+        </table>
+
+        <div class="apply-tips">
+            <h4>取款费率说明：</h4>
+            <ol>
+                <li>1、向上海地区个人账号转账：一个工作日内到账，不收手续费</li>
+                <li>2、向其他地区个人账号转账：（非上海地区为异地）</li>
+            </ol>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="80">银行名称</th>
+                        <th width="180">到账时间</th>
+                        <th width="260">提款手续费（此手续费实为银行收取）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>建设银行</td>
+                        <td>24小时到账（银行系统正常） </td>
+                        <td>异地按照1%收取，最高50元</td>
+                    </tr>
+                    <tr>
+                        <td>工商银行</td>
+                        <td>24小时到账（银行系统正常） </td>
+                        <td>异地按照1%收取，最高50元</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>温馨提示：</h4>
+            <ol>
+                <li>1、为了保障您的资金安全，您的提款申请需要我们的财务人员核对，核对无误后通过人工办理汇款。</li>
+                <li>2、因为需要手工处理您的提款要求，10元以下的提款我们暂不接受。</li>
+                <li>3、若五个工作日内款还没划到您的账户上，请及时与本站工作人员联系。400-6262-166。</li>
+                <li>4、提款周一至周五每日处理，法定节假日除外。工作日17点前申请提款，当日处理；17点后申请的提款，次日处理。</li>
+            </ol>
+        </div><!-- .apply-tips END -->
+        
+    </div>
+</div>
+
+*{
 <div class="wrap clearfix">
     #{include "share/left.html"/}
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
-        <form action="@{UserWithdraw.index()}" method="GET" id="form" style="display:none">
+        <form action="@{UserWithdraw.index()}" method="GET" id="form">
             #{select 'condition.status',id:'condition_status',value:condition?.status}
             #{option ""}全部#{/option}
             #{option "APPLIED"}&{'withdraw.APPLIED'}#{/option}
@@ -267,3 +196,4 @@
         </div>
     </div>
 </div>
+}*

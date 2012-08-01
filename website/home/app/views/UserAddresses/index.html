@@ -1,14 +1,7 @@
 #{extends 'main.html' /}
 #{set title:'一百券 - 地址管理' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/u/list.css', '/u/user-center.css'] /}
-<link href="@{'/public/stylesheets/my_good.css'}" rel="stylesheet" type="text/css"/>
-<style type="text/css">
-    .tab_top2 {
-        border: 1px solid #D3D3D3;
-        margin-bottom: 8px;
-    }
-</style>
+    #{asset.css src:['/y/user/userBase.css', '/y/user/userAddresses.css'] /}
 #{/set}
 <script type="text/javascript">
     function editAddress(addressId) {
@@ -27,7 +20,126 @@
                 $("#address_district").attr("selectedValue"));
     }
 </script>
-<!--主体内容部分-->
+<div id="content" class="clearfix">
+    #{include "share/left.html"/}
+    <div class="section">
+        #{breadcrumbs/breadcrumb breadcrumbs/}
+        <div class="ship-addr"><strong>收货地址</strong></div>
+        <div class="addresses">
+            <ul>
+                <li class="clearfix">
+                    <div class="left"><span class="required">*</span>收 货 人：</div>
+                    <div>
+                        <input class="long-input" type="text" name="address.name" id="address_name" placeholder="请准确填写真实姓名"/>
+                        <p class="error">请准确填写真实姓名<p>
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <div class="left"><span class="required">*</span>选择地区：</div>
+                    <div width="610" align="left">
+                        <select name="address.province" id="address_province" selected Value=""> </select>
+                        <select name="address.city" id="address_city" selected Value=""> </select>
+                        <select name="address.disliict" id="address_disliict" selected Value=""> </select>
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <div class="left"><span class="required">*</span>街道地址：</div>
+                    <div>
+                        <input class="long-input" type="text" name="address.address" id="address_address" placeholder="请填写详细路名和门牌号"/>
+                        <p class="error"></p>
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <div class="left"><span class="required">*</span>邮政编码：</div>
+                    <div>
+                        <input class="long-input" type="text" name="address.postcode" id="address_postcode" placeholder="请填写正确的邮政编码"/>
+                        <p class="error"></p></div>
+                </li>
+                <li class="clearfix">
+                    <div class="left"><span class="required">*</span>手　　机：</div>
+                    <div>
+                        <input class="long-input" name="address.mobile" type="text" id="address_mobile" placeholder="手机和座机至少填写一个"/>
+                        <p class="error"></p>
+                    </div>
+                    <div class="left" style="margin-left:10px">座 机：</div>
+                    <div>
+                        <input class="long-input" name="address.phoneNumber" type="text" id="address_phoneNumber" placeholder="手机和座机至少填写一个"/>
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <div class="left">设为默认：</div>
+                    <div style="padding-top:6px">
+                        <input type="checkbox" value="liue" name="address.isDefault" id="address_isDefault"/>
+                    </div>
+                </li>
+                <li class="btn">
+                    <input type="submit" class="save-btn" id="save" value="保存"/>
+                </li>
+            </ul>
+            <script>
+                // 省市区三级联动
+                // new PCAS('address.province', 'address.city', 'address.district', '上海市', '市辖区', '黄浦区');
+            </script>
+        </div>
+
+        <table class="order-tab">
+            <thead>
+                <tr class="col-name">
+                    <th width="80">收货人</th>
+                    <th width="160">所在地区</th>
+                    <th>街道地址</th>
+                    <th width="80">邮编</th>
+                    <th width="160">手机\电话</th>
+                    <th width="120"></th>
+                    <th width="80">操作</th>
+                </tr>
+            </thead>
+            *{
+                <tr id="tr_address_${address.id}" height="35px">
+                    <td align="left" id="address_name_${address?.id}">&nbsp;${address.name}</td>
+                    <td id="address_area_${address?.id}">${address.area}</td>
+                    <td id="address_address_${address?.id}">${address.address}</td>
+                    <td id="address_postcode_${address?.id}">${address.postcode}</td>
+                    <td id="address_phone_${address?.id}">${address.mobile}<br/>${address.normalPhone}</td>
+                    <td align="center" id="address_isDefault_${address?.id}">#{if address.isDefault}
+                        默认地址#{/if}#{else}#{vx.operateLink url:'/addresses/'+address.id+'/default',
+                    text:'设为默认', method:'PUT'/}#{/else}</td>
+                    <td width="80" align="center">
+                        <a id="update_${address?.id}" class="address_span_modify" href="#"
+                           onclick="editAddress(${address?.id})
+                                   ">修改</a> |
+                        #{vx.deleteLink action:"addresses", id:address.id, name:address.name/}
+                    </td>
+                </tr>
+                }*
+            #{list items:addressList, as:'address'}
+            <tbody>
+                <tr class="sep-row"><td colspan="5"></td></tr>
+                <tr class="order-bd">
+                    <td>${address.name}</td>
+                    <td>${address.area}</td>
+                    <td>${address.address}</td>
+                    <td>${address.postcode}</td>
+                    <td>
+                        ${address.mobile}<br />
+                        ${address.normalPhone}
+                    </td>
+                    <td>
+                        #{if address.isDefault}默认地址#{/if}
+                        #{else}#{vx.operateLink url:'/addresses/'+address.id+'/default', text:'设为默认', method:'PUT'/}#{/else}
+                    </td>
+                    <td class="action">
+                        <a  href="#" onclick="editAddress(${address?.id})">修改</a>
+                        #{vx.deleteLink action:"addresses", id:address.id, name:address.name/}
+                        </td>
+                </tr>
+            </tbody>
+            #{/list}
+        </table>
+    </div>
+</div>
+
+*{
 <div class="wrap clearfix">
 #{include "share/left.html"/}
     <div class="section">
@@ -75,10 +187,7 @@
                 #{/list}
                 </tbody>
             </table>
-        *{<ul>
-                <li class="nav_bg_li">最多保存10个有效地址</li>
-            </ul>}*
         </div>
 
     </div>
-</div>
+}*

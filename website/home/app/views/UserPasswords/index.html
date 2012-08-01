@@ -1,71 +1,7 @@
 #{extends 'main.html' /}
 #{set title:'修改密码' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/u/user-center.css'] /}
-<style type="text/css">
-    .qd {
-        height: 14px;
-        padding: 3px 8px;
-        line-height: 14px;
-        text-align: center;
-        font-size: 12px;
-        color: #ffffff;
-        border: 1px solid #ffffff;
-    }
-
-    /*25%红色*/
-    .qdhongse {
-        width: 40px;
-        background-color: #cc0000;
-    }
-
-    /*50%橙色*/
-    .qdcengse {
-        width: 80px;
-        background-color: #FF6600;
-    }
-
-    /*75%蓝色*/
-    .qdlanse {
-        width: 120px;
-        background-color: #0033ff;
-    }
-
-    /*75%绿色*/
-    .qdluse {
-        width: 160px;
-        background-color: #00cc00;
-    }
-    .section .input {
-        height: 20px;
-        border: 1px solid;
-        border-color: #AAA #DDD #DDD #AAA;
-    }
-    .change-password {
-        padding: 20px 100px;
-    }
-    .change-password label {
-        display: inline-block;
-        width: 220px;
-        line-height: 46px;
-        text-align: right;
-    }
-    .change-password .required {
-        position: relative;
-        top: 4px;
-        color: #F50;
-        padding: 0 2px;
-    }
-    .old-password {
-        border-bottom: 1px dashed #DDD;
-    }
-    .new-password {
-        padding: 12px 0 0;
-    }
-    .ensure-password {
-        padding: 15px 0 0 224px;
-    }
-</style>
+    #{asset.css src:['/y/user/userBase.css', '/y/user/userPassword.css'] /}
 #{/set}
 #{set 'moreScripts'}
 *{<script src="@{'/public/javascripts/password.js'}" type="text/javascript" charset="UTF-8"></script>}*
@@ -76,9 +12,38 @@
         }
 
     });
-
 </script>
 #{/set}
+<div id="content" class="clearfix">
+    #{include "share/left.html"/}
+    <div class="section">
+        #{breadcrumbs/breadcrumb breadcrumbs/}
+        <div class="change-password">
+        <form class="form-horizontal" action="/user/edit-password" method="POST">
+            <div class="old-password">
+                <label><span class="required">*</span>原密码：</label>
+                <input class="input" name="user.oldPassword" type="password" id="old_password" size="26" maxlength="20" value=""/>
+                <span class="error"></span>
+            </div>
+            <div class="new-password">
+                <label><span class="required">*</span>新密码：</label>
+                <input class="input" name="user.password" type="password" id="password" size="26" maxlength="20" value="" onkeyup="javascript:ChangeQD();"/>
+                <span class="error"></span>
+                                                                            </div>
+            <div class="confirm-password">
+                <label><span class="required">*</span>确认新密码：</label>
+                <input class="input" name="user.confirmPassword" type="password" id="confirmPassword" size="26" maxlength="20" value=""/>
+                <span class="error"></span>
+            </div>
+            <div class="ensure-password">
+                <button type="submit" id="sure_submit"> 确 定 </button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+
+*{
 <div class="wrap clearfix">
     #{include "share/left.html"/}
     <div class="section">
@@ -94,9 +59,6 @@
                     <label><span class="required">*</span>新密码：</label>
                     <input class="input" name="user.password" type="password" id="password" size="26" maxlength="20" value="${user?.password}" onkeyup="javascript:ChangeQD();"/>
                     <span class="error">#{error 'user.newPassword' /}</span>
-                    *{<span class="qdbox_hongse setClose" id="qdbox">}*
-                        *{<span id="pwQiangdu" class="qd qdhongse">很弱</span>}*
-                    *{</span>}*
                 </div>
                 <div class="confirm-password">
                     <label><span class="required">*</span>重复新密码：</label>
@@ -110,3 +72,4 @@
         </div>
     </div>
 </div>
+}*

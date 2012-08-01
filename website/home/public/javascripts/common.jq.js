@@ -21,8 +21,7 @@ $.common = {
 		 opts = $.extend({}, $.popup.defaults,opts || {});
 		 opts.title = "系统提示信息";
 		 $.popup.confirm(opts);
-	 }
-	 ,
+	 },
 	 dialog:function(opts){		 
 		 opts = $.extend({}, $.popup.defaults,opts || {});
 		 if (opts.title == '' || typeof opts.title == 'undefined') {
@@ -73,12 +72,10 @@ $.popup = {
 	},
 	confirm:function(opts){
 		Confirm(opts);
-	}
-	,
+	},
 	dialog:function(opts){
 		Dialog(opts);
-	}
-	,
+	},
 	hide:function(){
 		$('#popupbox').remove();
 		$('#popup_overlay').remove();
@@ -91,7 +88,7 @@ $.popup = {
 		auto:false,
 		autotime:777,
 		css:{ 
-			zIndex:3,
+			zIndex:2003,
 			opacity:1.0,
 			width:'270px',
 			height:"120px"
@@ -126,11 +123,11 @@ $.overlay = {
 		});
 	},
 	defaults:{
-		opacity:0.5,
-		width:'100%',
+		opacity: 0.5,
+		width: '100%',
 		top: '0px',
 		left: '0px',
-		zIndex: 2
+		zIndex: 2000
     }
 };
 // 透明渐变
@@ -223,7 +220,7 @@ function Dialog(opts) {
 
 	$("#popupbox .uhlbox_c").html(strhtml);
 	
-	$(_popup_container).css({"height":outerHeight + 67,"width":outerWidth,"zIndex":"2"});
+	$(_popup_container).css({"height":outerHeight + 67,"width":outerWidth,"zIndex":"2000"});
 	// $("#popupbox .uhlbox_c").css({"height":outerHeight,"width":outerWidth, "overflow":"hidden"});
 	$.common.center($(_popup_container));
 	$(_popup_container).show();
