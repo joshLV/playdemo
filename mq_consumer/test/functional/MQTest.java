@@ -30,11 +30,11 @@ public class MQTest extends FunctionalTest{
             RabbitMQPublisher.publish(MQTestConsumer.QUEUE, "test message" + i);
         }
 
-        Thread.sleep(10000);
+        Thread.sleep(20000);
         List<MQTestJournal> journals = MQTestJournal.findAll();
         assertTrue(journals.size() > 0);
         Logger.info("first consumed time:" + format.format(journals.get(0).createdAt));
         Logger.info("last consumed time:" + format.format(journals.get(journals.size() - 1).createdAt));
-        assertEquals(journals.size(), count);
+        assertEquals(count,journals.size());
     }
 }
