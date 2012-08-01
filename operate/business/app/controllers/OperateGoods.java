@@ -5,6 +5,7 @@
 package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
@@ -506,7 +507,7 @@ public class OperateGoods extends Controller {
                     MailMessage mailMessage = new MailMessage();
                     mailMessage.addRecipient(supplier.email);
                     mailMessage.setSubject(Play.mode.isProd() ? "商品下架" : "商品下架【测试】");
-                    mailMessage.putParam("date", new Date());
+                    mailMessage.putParam("date", DateUtil.getNowTime());
                     mailMessage.putParam("supplierName", supplier.fullName);
                     mailMessage.putParam("goodsName", goods.name);
                     mailMessage.putParam("faceValue", goods.faceValue);
