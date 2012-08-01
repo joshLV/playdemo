@@ -6,12 +6,11 @@ package functional;
 import java.util.HashMap;
 import java.util.Map;
 
-import models.cms.VoteQuestion;
 import models.consumer.User;
-import models.consumer.UserVote;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import play.cache.Cache;
@@ -38,6 +37,7 @@ public class FindPasswordTest extends FunctionalTest{
 
 		// 设置测试登录的用户名
 		Security.setLoginUserForTest(user.loginName);
+		Cache.delete("mobile_");
 	}
 
 	@After
@@ -80,24 +80,21 @@ public class FindPasswordTest extends FunctionalTest{
 		assertEquals("1", response.out.toString()); // 浏览器相应	
 	}
 	
-	@Test  
-	public void testCheckMobilePhoneWrong() {
-		
-		//Object objMobile =Cache.set("mobile_","123","30mn");
-		
-		Cache.set("mobile_", "123","30mn");
-		//Object objMobile = Cache.get("mobile_");
 	
+	
+	
+	
+	@Test
+	public void testCheckMobile() {
+		Cache.set("mobile_", "15618096151","30mn");
 		Response response = GET("/check-mobile?mobile=15618096151&validCode=123456");
 		assertStatus(200, response);
 		assertNotNull(response); // this is OK
 		assertIsOk(response); // this is OK 200
 		assertContentType("application/json", response); // this is OK
-		assertCharset("utf-8", response); // this is OK 
-		assertEquals("1", response.out.toString()); // 浏览器相应	
-		
+		assertCharset("utf-8", response); // this is OK 	
+		assertEquals("0", response.out.toString()); // 浏览器相应	
 	}
-	
 	
 	@Test
 	public void testUpdatePassword() {
@@ -112,7 +109,6 @@ public class FindPasswordTest extends FunctionalTest{
 	
 	@Test
 	public void testUpdatePasswordMobileBlank() {
-		
 		Map<String, String> passwordParams = new HashMap<>();
 		passwordParams.put("mobile","15618096151");
 		passwordParams.put("password","123");
@@ -122,6 +118,17 @@ public class FindPasswordTest extends FunctionalTest{
 	}
 	
 	
-	
+	@Test  
+	public void testCheckMobilePhoneWrong() {
+		Cache.set("mobile_", "123","30mn");
+		Response response = GET("/check-mobile?mobile=15618096151&validCode=123456");
+		assertStatus(200, response);
+		assertNotNull(response); // this is OK
+		assertIsOk(response); // this is OK 200
+		assertContentType("application/json", response); // this is OK
+		assertCharset("utf-8", response); // this is OK 
+		assertEquals("2", response.out.toString()); // 浏览器相应	
+
+	}
 
 }
