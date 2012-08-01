@@ -132,6 +132,7 @@ public class OperateShops extends Controller {
         sp.name = shop.name;
         sp.address = shop.address;
         sp.phone = shop.phone;
+        sp.managerMobiles = shop.managerMobiles;
         sp.updatedAt = new Date();
         sp.save();
         index(null);
