@@ -158,7 +158,7 @@
                         <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale",method:"PUT"/}
                         <br/>#{vx.operateLink text:"拒绝上架", url:"/goods/"+goods?.id+"/reject",method:"PUT"/}#{/if}
                     #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
-                        <br/>#{vx.operateLink text:"强制下架", url:"/goods/"+goods?.id+"/reject",method:"PUT"/}#{/if}
+                        <br/>#{vx.operateLink text:"强制下架", url:"/goods/"+goods?.id+"/offSale",method:"PUT"/}#{/if}
                     #{if models.sales.GoodsStatus.REJECT.equals(goods.status)}
                         <br/>#{vx.operateLink text:"同意上架", url:"/goods/"+goods?.id+"/onSale",method:"PUT"/}#{/if}
                     #{if models.sales.GoodsStatus.OFFSALE.equals(goods.status)}
