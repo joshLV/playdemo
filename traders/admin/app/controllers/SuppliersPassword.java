@@ -30,6 +30,7 @@ public class SuppliersPassword extends Controller {
 	 * 修改密码
 	 */
 	public static void update(SupplierUser supplierUser) {
+        System.out.println();
 		SupplierUser newSupplierUser = SupplierUser.findByUnDeletedId(SupplierRbac.currentUser().id);
 
 		//密码验证

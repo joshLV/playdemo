@@ -244,11 +244,11 @@ public class SupplierUser extends Model {
     // FIXME: findAdmin这个名字，是指只找Admin用户？这个应该是findUser
     public static SupplierUser findAdmin(Long supplierId, String admin) {
         Supplier supplier = Supplier.findById(supplierId);
-        return find("bySupplierAndLoginName", supplier, admin).first();
+        return find("bySupplierAndLoginNameAndDeleted", supplier, admin,DeletedStatus.UN_DELETED).first();
     }
 
     public static SupplierUser findUserByDomainName(String domainName, String loginName) {
-        Supplier supplier = Supplier.find("byDomainName", domainName).first();
+        Supplier supplier = Supplier.find("byDomainNameAndDeleted", domainName,DeletedStatus.UN_DELETED).first();
         if (supplier == null) {
             return null;
         }
@@ -258,7 +258,7 @@ public class SupplierUser extends Model {
             Logger.debug("----- user.id:" + user.id + ", supplierId:" + user.supplier.id + ", loginName:" + user.loginName);
         }
 
-        return SupplierUser.find("bySupplierAndLoginName", supplier, loginName).first();
+        return SupplierUser.find("bySupplierAndLoginNameAndDeleted", supplier, loginName,DeletedStatus.UN_DELETED).first();
     }
 
     /**
