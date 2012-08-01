@@ -11,7 +11,7 @@ import java.util.Date;
 public class GoodsMailsTest extends FunctionalTest {
 
     @Test
-    public void testDirectCouponMailSend() {
+    public void testMailSend() {
         Long time = System.currentTimeMillis() + 1;
         String email = "test" + time + "@uhuila.com";
 
