@@ -3,6 +3,7 @@ package models.sms;
 import play.Play;
 import play.modules.rabbitmq.producer.RabbitMQPublisher;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -30,12 +31,12 @@ public class SMSUtil {
             RabbitMQPublisher.publish(SMS_QUEUE, new SMSMessage(content, phoneNumber, code));
         }
     }
-    public static void send(String content, List<String> phoneNumbers){
+    public static void send(String content, String... phoneNumbers){
         if (Play.runingInTestMode()) {
             MockSMSProvider mockSms = new MockSMSProvider();
-            mockSms.send(new SMSMessage(content, phoneNumbers));
+            mockSms.send(new SMSMessage(content, Arrays.asList(phoneNumbers)));
         } else {
-            RabbitMQPublisher.publish(SMS_QUEUE, new SMSMessage(content, phoneNumbers));
+            RabbitMQPublisher.publish(SMS_QUEUE, new SMSMessage(content, Arrays.asList(phoneNumbers)));
         }
     }
         

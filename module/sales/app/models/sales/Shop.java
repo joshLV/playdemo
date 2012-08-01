@@ -64,6 +64,9 @@ public class Shop extends Model {
     @Column(name = "updated_by")
     public String updatedBy;
 
+    @Column(name = "manager_mobiles")
+    public String managerMobiles;   //店长手机号，以半角逗号','分割
+
     /**
      * 逻辑删除,0:未删除，1:已删除
      */
