@@ -329,4 +329,9 @@ public class SupplierUser extends Model {
         return supplierUser;
     }
 
+    public static SupplierUser findByUnDeletedId(Long id) {
+          SupplierUser supplierUser = SupplierUser.find("deleted = ? and id = ?",
+                DeletedStatus.UN_DELETED,id).first();
+        return supplierUser;
+    }
 }

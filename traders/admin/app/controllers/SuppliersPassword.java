@@ -21,7 +21,7 @@ public class SuppliersPassword extends Controller {
 	 */
 
 	public static void edit() {
-		SupplierUser supplierUser = SupplierUser.findById(SupplierRbac.currentUser().id);
+		SupplierUser supplierUser = SupplierUser.findByUnDeletedId(SupplierRbac.currentUser().id);
 		supplierUser.encryptedPassword = "";
 		render(supplierUser);
 	}
@@ -30,7 +30,7 @@ public class SuppliersPassword extends Controller {
 	 * 修改密码
 	 */
 	public static void update(SupplierUser supplierUser) {
-		SupplierUser newSupplierUser = SupplierUser.findById(SupplierRbac.currentUser().id);
+		SupplierUser newSupplierUser = SupplierUser.findByUnDeletedId(SupplierRbac.currentUser().id);
 
 		//密码验证
 		checkPassword(supplierUser, newSupplierUser);
