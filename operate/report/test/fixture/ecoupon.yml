@@ -14,10 +14,10 @@ models.order.ECoupon(ecoupon_001):
  "expireAt": "2092-03-30T00:00:00"
  "status": "UNCONSUMED"
 
-models.order.ECoupon(ecoupon_001):
- "order": "order1"
- "goods": "Goods_001"
- "orderItems": "orderItems1"
+models.order.ECoupon(ecoupon_002):
+ "order": "order2"
+ "goods": "Goods_002"
+ "orderItems": "orderItems2"
  "eCouponSn": "123456789"
  "downloadTimes": "1"
  "faceValue": "100"
@@ -29,4 +29,5 @@ models.order.ECoupon(ecoupon_001):
  "effectiveAt": "2012-03-01T00:00:00"
  "expireAt": "2092-03-30T00:00:00"
  "status": "CONSUMED"
+ "consumedAt": "2012-07-16T15:02:02"
 

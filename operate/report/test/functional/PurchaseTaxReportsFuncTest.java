@@ -1,10 +1,12 @@
 package functional;
 
 import controllers.operate.cas.Security;
+import models.PurchaseECouponReport;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.admin.SupplierUser;
 import models.consumer.UserWebIdentification;
+import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
 import models.report.DetailDailyReport;
@@ -20,10 +22,13 @@ import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import play.modules.paginate.ValuePaginator;
 import play.mvc.Http;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -63,6 +68,7 @@ public class PurchaseTaxReportsFuncTest extends FunctionalTest {
         Fixtures.loadModels("fixture/goods_daily_reports.yml");
         Fixtures.loadModels("fixture/total_daily_reports.yml");
         Fixtures.loadModels("fixture/user_web_identifications.yml");
+        Fixtures.loadModels("fixture/ecoupon.yml");
 
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
@@ -84,6 +90,20 @@ public class PurchaseTaxReportsFuncTest extends FunctionalTest {
         Http.Response response = GET("/reports/purchase");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
+    }
 
+    @Test
+    public void testSearchWithRightCondition(){
+        List<ECoupon> eCoupons = ECoupon.findAll();
+        System.out.println("size----------------------: "+eCoupons.size());
+        for ( ECoupon eCoupon : eCoupons){
+            System.out.println("id: "+eCoupon.getId()+" and ComsumedAt"+ (eCoupon.consumedAt==null? "null":eCoupon.consumedAt.toString()));
+        }
+
+        Http.Response response = GET("/reports/purchase?condition.supplier.id=0&condition.goodsLike=&condition.createdAtBegin=2012-07-01&condition.createdAtEnd=2012-08-01&condition.interval=");
+        assertIsOk(response);
+        assertNotNull(renderArgs("reportPage"));
+        ValuePaginator<PurchaseECouponReport> reportPage = (ValuePaginator<PurchaseECouponReport>)renderArgs("reportPage");
+        assertEquals(1, reportPage.getRowCount());
     }
 }
