@@ -461,20 +461,8 @@ public class OperateGoods extends Controller {
      */
     public static void offSale(@As(",") Long... id) {
         updateStatus(GoodsStatus.OFFSALE, id);
-        models.sales.Goods goods = Goods.findById(id);
-        Supplier supplier = Supplier.findById(goods.supplierId);
-        if (supplier != null && StringUtils.isNotEmpty(supplier.email)) {
-            //发送提醒邮件
-            MailMessage mailMessage = new MailMessage();
-            mailMessage.addRecipient(supplier.email);
-            mailMessage.setSubject(Play.mode.isProd() ? "商品下架" : "商品下架【测试】");
-            mailMessage.putParam("date", new Date());
-            mailMessage.putParam("supplierName", supplier.fullName);
-            mailMessage.putParam("goodsName", goods.name);
-            mailMessage.putParam("faceValue", goods.faceValue);
-            mailMessage.putParam("operateUserName", OperateRbac.currentUser().userName);
-            MailUtil.sendGoodsOffSalesMail(mailMessage);
-        }
+
+
     }
 
     /**
@@ -507,7 +495,26 @@ public class OperateGoods extends Controller {
      * @param ids    商品ID
      */
     private static void updateStatus(GoodsStatus status, Long... ids) {
+        System.out.println(status + "");
         models.sales.Goods.updateStatus(status, ids);
+        if (status == GoodsStatus.OFFSALE) {
+            for (Long id : ids) {
+                models.sales.Goods goods = Goods.findById(id);
+                Supplier supplier = Supplier.findById(goods.supplierId);
+                if (supplier != null && StringUtils.isNotEmpty(supplier.email)) {
+                    //发送提醒邮件
+                    MailMessage mailMessage = new MailMessage();
+                    mailMessage.addRecipient(supplier.email);
+                    mailMessage.setSubject(Play.mode.isProd() ? "商品下架" : "商品下架【测试】");
+                    mailMessage.putParam("date", new Date());
+                    mailMessage.putParam("supplierName", supplier.fullName);
+                    mailMessage.putParam("goodsName", goods.name);
+                    mailMessage.putParam("faceValue", goods.faceValue);
+                    mailMessage.putParam("operateUserName", OperateRbac.currentUser().userName);
+                    MailUtil.sendGoodsOffSalesMail(mailMessage);
+                }
+            }
+        }
         index(null);
     }
 
