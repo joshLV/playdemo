@@ -94,7 +94,7 @@ public class FindPasswordTest extends FunctionalTest{
 		assertIsOk(response); // this is OK 200
 		assertContentType("application/json", response); // this is OK
 		assertCharset("utf-8", response); // this is OK 
-		assertEquals("2", response.out.toString()); // 浏览器相应	
+		assertEquals("1", response.out.toString()); // 浏览器相应	
 		
 	}
 	
