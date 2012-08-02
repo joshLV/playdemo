@@ -7,7 +7,6 @@ import models.accounts.WithdrawBill;
 import models.accounts.WithdrawBillCondition;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
-import models.resale.Resaler;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
@@ -40,7 +39,7 @@ public class UserWithdraw extends Controller{
 
         BreadcrumbList breadcrumbs = new BreadcrumbList("提现申请", "/withdraw");
 
-        render(billPage, condition, breadcrumbs);
+        render(user,account,billPage, condition, breadcrumbs);
     }
 
     public static void apply(){

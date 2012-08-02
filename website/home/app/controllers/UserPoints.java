@@ -29,6 +29,7 @@ public class UserPoints extends Controller{
 		}
 		JPAExtPaginator<UserPoint>  pointList = UserPoint.findUserPoints(user, condition,pageNumber, PAGE_SIZE);
 		BreadcrumbList breadcrumbs = new BreadcrumbList("我的积分", "/userPoint");
+        System.out.println(pointList.size()+">>>>>>>>>>>>>>>");
 		List<UserPointConfig> configList = UserPointConfig.findAll();
 		renderArgs.put("createdAtBegin", condition.createdAtBegin);
 		renderArgs.put("createdAtEnd", condition.createdAtEnd);

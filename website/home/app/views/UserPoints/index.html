@@ -14,6 +14,8 @@
         <div class="user-account">
             账户：<strong>${user?.loginName}</strong> 积分：<span>${user?.userInfo?.totalPoints}</span>
         </div>
+
+        <form class="form-horizontal" id="couponsFrm" action="@{UserPoints.index()}" method="GET">
         <div class="search-box">
             <label>操作类型：</label>
             #{select 'condition.pointNumber', id:'pointNumber',
@@ -29,6 +31,7 @@
             <input class="Wdate" type="text" id="createdAtEnd" name="condition.createdAtEnd" value="" onfocus="WdatePicker({readOnly:true})" />
             <button class="search-btn" id="search"> 搜　索 </button>
         </div>
+        </form>
         <table class="order-tab">
             <thead>
                 <tr class="col-name">
