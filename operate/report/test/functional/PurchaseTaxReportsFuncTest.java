@@ -28,7 +28,9 @@ import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -94,16 +96,46 @@ public class PurchaseTaxReportsFuncTest extends FunctionalTest {
 
     @Test
     public void testSearchWithRightCondition(){
+        /*
         List<ECoupon> eCoupons = ECoupon.findAll();
         System.out.println("size----------------------: "+eCoupons.size());
         for ( ECoupon eCoupon : eCoupons){
             System.out.println("id: "+eCoupon.getId()+" and ComsumedAt"+ (eCoupon.consumedAt==null? "null":eCoupon.consumedAt.toString()));
         }
+         */
+        /*
+        long id = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_002");
+        assertNotNull(id);
+        ECoupon eCoupon = ECoupon.findById(id);
+        assertNotNull(eCoupon);
+        System.out.println(eCoupon.order.userType);
+
+        Set<String> keys = Fixtures.idCache.keySet();
+        List<ECoupon> coupons = new ArrayList<>();
+        for(String key : keys){
+            if (key.startsWith("models.order.ECoupon")){
+                ECoupon coupon = ECoupon.findById((Long)(Fixtures.idCache.get(key)));
+                if(coupon != null){
+                    coupons.add(coupon);
+                }
+            }
+        }
+        System.out.println("----------------- "+ coupons.size());
+        */
 
         Http.Response response = GET("/reports/purchase?condition.supplier.id=0&condition.goodsLike=&condition.createdAtBegin=2012-07-01&condition.createdAtEnd=2012-08-01&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<PurchaseECouponReport> reportPage = (ValuePaginator<PurchaseECouponReport>)renderArgs("reportPage");
         assertEquals(1, reportPage.getRowCount());
+    }
+
+    @Test
+    public void testSearchWithError(){
+        Http.Response response = GET("/reports/purchase?condition.supplier.id=5&condition.goodsLike=&condition.createdAtBegin=2012-07-01&condition.createdAtEnd=2012-08-01&condition.interval=");
+        assertIsOk(response);
+        assertNotNull(renderArgs("reportPage"));
+        ValuePaginator<PurchaseECouponReport> reportPage = (ValuePaginator<PurchaseECouponReport>)renderArgs("reportPage");
+        assertEquals(0, reportPage.getRowCount());
     }
 }
