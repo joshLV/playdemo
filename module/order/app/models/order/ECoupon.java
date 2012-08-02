@@ -660,4 +660,5 @@ public class ECoupon extends Model {
         }
         return amount;
     }
+
 }

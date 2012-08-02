@@ -96,16 +96,8 @@ public class DateUtil {
      * @throws ParseException
      */
     public static boolean getDiffDate(Date date) {
-        long dateRange = 0l;
         long time = 1000 * 3600 * 24; //A day in milliseconds
-        String now = format.format(new Date());
-        Date sysDate = null;
-        try {
-            sysDate = format.parse(now);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        dateRange = date.getTime() - sysDate.getTime();
+        long dateRange = diffDay(date);
         if (dateRange / time == 7) {
             return true;
         }
@@ -125,6 +117,20 @@ public class DateUtil {
                 .get(Calendar.MINUTE) + "分";
 
         return nowTime;
+    }
+
+    public static Long diffDay(Date date) {
+        long dateRange = 0l;
+        String now = format.format(new Date());
+        Date sysDate = null;
+        try {
+            sysDate = format.parse(now);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        dateRange = date.getTime() - sysDate.getTime();
+
+        return dateRange;
     }
 
 }
