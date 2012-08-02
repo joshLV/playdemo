@@ -183,21 +183,18 @@ public class Supplier extends Model {
     }
 
     public static void delete(long id) {
-                   System.out.println(id+">>>>");
         Supplier supplier = Supplier.findById(id);
         if (supplier == null) {
             return;
         }
         if (!DeletedStatus.DELETED.equals(supplier.deleted)) {
-            supplier.deleted = DeletedStatus.DELETED;
-            supplier.save();
-
             SupplierUser supplierUser = SupplierUser.findUserByDomainName(supplier.domainName, supplier.loginName);
-            System.out.println(supplierUser+">>>>");
             if (supplierUser != null) {
                 supplierUser.deleted = DeletedStatus.DELETED;
                 supplierUser.save();
             }
+            supplier.deleted = DeletedStatus.DELETED;
+            supplier.save();
         }
     }
 
