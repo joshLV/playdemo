@@ -1,7 +1,8 @@
 supplier.Supplier(kfc):
  "domainName": "localhost"
  "fullName": "肯德基"
-
+ "loginName": "tom"
+ "deleted": "UN_DELETED"
 admin.SupplierUser(user1):
  "loginName": "1"
  "mobile": "1300000000"
