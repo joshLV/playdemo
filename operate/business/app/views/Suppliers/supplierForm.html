@@ -1,5 +1,6 @@
 <input type="hidden" name="adminId" value="${admin?.id}">
 #{layout_operate.textField name:'supplier.fullName', value:supplier?.fullName, required:true/}
+#{layout_operate.textField name:'supplier.otherName', value:supplier?.otherName, required:true/}
 #{layout_operate.textField name:'supplier.domainName', value:supplier?.domainName,
 note:'.quanmx.com (只能是字母、数字、下划线，且长度限定在3-20位内)',required:true/}
 *{#{layout_operate.fileField name:'image'/}}*

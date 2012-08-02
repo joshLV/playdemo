@@ -52,6 +52,14 @@ public class Supplier extends Model {
     public String fullName;
 
     /**
+     * 公司别名称
+     */
+    @Required
+    @MaxSize(50)
+    @Column(name = "other_name")
+    public String otherName;
+
+    /**
      * 职务
      */
     @Required
@@ -172,6 +180,7 @@ public class Supplier extends Model {
         }
         sp.domainName = supplier.domainName;
         sp.fullName = supplier.fullName;
+        sp.otherName = supplier.otherName;
         sp.remark = supplier.remark;
         sp.mobile = supplier.mobile;
         sp.phone = supplier.phone;

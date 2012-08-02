@@ -103,6 +103,7 @@ shop.cityId=城市
 supplier.NORMAL=正常
 supplier.FREEZE=冻结
 supplier.fullName=公司名称
+supplier.otherName=短名称
 supplier.domainName=域名
 supplier.remark=备注
 supplier.status=状态

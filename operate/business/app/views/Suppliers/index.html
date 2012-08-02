@@ -12,6 +12,7 @@
         <thead>
         <tr>
             <th width="198px">公司名称</th>
+            <th width="198px">短名称</th>
             <th width="200px">域名</th>
             <th width="95px">负责人姓名</th>
             <th width="60px">负责人手机</th>
@@ -31,6 +32,7 @@
         #{paginate.list items:suppliers, as:'supplier'}
         <tr>
             <td>${supplier?.fullName}</td>
+            <td>${supplier?.otherName}</td>
             <td>${supplier?.domainName}.quanmx.com</td>
             <td>${supplier?.userName}</td>
             <td>${supplier?.mobile}&nbsp;</td>

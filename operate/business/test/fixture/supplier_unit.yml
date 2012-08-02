@@ -6,6 +6,8 @@ supplier.Supplier(Supplier1):
     description: 来一份公司是一家食品公司
     createdAt: "2012-02-29T16:33:18"
     deleted: UN_DELETED
+    loginName: "aaa"
+    otherName: "来一份"
 
 supplier.Supplier(Supplier2):
     domainName: 'localhost'
@@ -15,3 +17,16 @@ supplier.Supplier(Supplier2):
     status: NORMAL
     createdAt: "2012-03-19T16:33:18"
     deleted: UN_DELETED
+
+admin.SupplierUser(user_test1):
+ "loginName": "aaa"
+ "mobile": "1300000000"
+ "encryptedPassword": "ff7edd82576fd2b9066cdf9a978f6ab5"
+ "passwordSalt": "gXP0W9"
+ "lastLoginAt": "2012-03-12T14:39:20"
+ "lockVersion": "1"
+ "createdAt": "2012-03-12T14:39:20"
+ "lastLoginIP": "127.0.1.1"
+ "deleted": "UN_DELETED"
+ "jobNumber": "1001"
+ "supplier": "Supplier1"

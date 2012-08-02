@@ -14,10 +14,10 @@
     &nbsp;&nbsp;工号<input type="text" name="jobNumber" id="jobNumber" value="${jobNumber}" class="input-medium"/>
 
     &nbsp;商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-                #{select 'supplierId', id:supplierId, class:'select', value:supplierId}
+                #{select 'supplierId', id:supplierId, class:'input-medium', value:supplierId}
                     #{option ""}不限#{/option}
                     #{list items:supplierList, as:'supplier'}
-                        #{option supplier?.id}${supplier?.fullName}#{/option}
+                        #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
                     #{/list}
                 #{/select}
      <button class="btn btn-primary" id="search" type="submit">搜索</button>
