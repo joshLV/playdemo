@@ -42,6 +42,9 @@ validation.noShop=该商户没有门店，请先为商户添加门店！
 validation.existed=%s已经存在！
 
 goods.materialType=券类型
+
+pointGoods.materialType=商品类型
+
 goods.materialType_1=电子券
 goods.materialType_2=实物
 
@@ -54,6 +57,19 @@ goods.supplierId=商户
 goods.supplier=商户
 goods.no=编号
 goods.name=名称
+
+
+pointGoods.name=积分商品名称
+pointGoods.pointPrice=积分价
+pointGoods.effective=券有效期
+pointGoods.baseSale=库存
+pointGoods.limitNumber=限量
+pointGoods.imagePath=图片
+pointGoods.details=详情
+pointGoods.materialType_1=电子券
+pointGoods.materialType_2=实物
+
+
 goods.title=短信标题
 goods.category=分类
 goods.brand=品牌
