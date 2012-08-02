@@ -105,6 +105,7 @@ GET     /brands/{id}/edit                       OperateBrands.edit
 PUT     /brands/{id}                            OperateBrands.update
 
 # 财务报表
+GET     /account/index                          Application.account
 GET     /reports                                OperateReports.showSystemReport
 GET     /reports/consumer                       OperateReports.showConsumerReport
 GET     /reports/resale                         OperateReports.showResaleReport

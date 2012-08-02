@@ -29,6 +29,7 @@ require:
     - asset_package -> asset_package
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
+    - report -> report
 
 repositories:
     - mavenRepository:
@@ -65,4 +66,5 @@ repositories:
             - asset_package -> *
             - cache_helper -> *
             - emaillogs -> *
+            - report -> *
 
