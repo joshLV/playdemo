@@ -1,5 +1,6 @@
 package models.order;
 
+import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.Account;
 import models.accounts.AccountType;
@@ -661,4 +662,11 @@ public class ECoupon extends Model {
         return amount;
     }
 
+    /**
+     * 取得过期的天数
+     * @return
+     */
+    public Long getExpiredAt() {
+        return DateUtil.diffDay(this.expireAt);
+    }
 }

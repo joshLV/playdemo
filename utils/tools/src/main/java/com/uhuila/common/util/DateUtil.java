@@ -96,9 +96,8 @@ public class DateUtil {
      * @throws ParseException
      */
     public static boolean getDiffDate(Date date) {
-        long time = 1000 * 3600 * 24; //A day in milliseconds
         long dateRange = diffDay(date);
-        if (dateRange / time == 7) {
+        if (dateRange == 7) {
             return true;
         }
 
@@ -129,8 +128,8 @@ public class DateUtil {
             e.printStackTrace();
         }
         dateRange = date.getTime() - sysDate.getTime();
-
-        return dateRange;
+        long time = 1000 * 3600 * 24; //A day in milliseconds
+        return dateRange / time;
     }
 
 }

@@ -72,14 +72,21 @@
             }
         });
     }
+    $(function () {
+
+        $("#status").click(function () {
+            $("#orderForm").attr("action", "@{UserCoupons.index()}");
+            $("#orderForm").attr("method", "get");
+            $("#orderForm").submit();
+        })
+    });
 </script>
 #{/set}
 <div id="content" class="clearfix">
     #{include "share/left.html"/}
-
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
-        <form class="form-horizontal" id="orderForm" action="/" method="GET">
+        <form class="form-horizontal" id="orderForm" action="@{UserCoupons.index()}" method="GET">
             <div class="search-box">
                 <input type="hidden" name="condition.searchKey" value="2" />
                 <label>商品名称：</label>
@@ -123,18 +130,23 @@
                         <td align="center">${coupon.order.orderNumber}</td>
                         <td align="center">
                             ${coupon?.expireAt?.format()}<br>
-                            <span class="remain-days">还有150天到期</span>
+                                #{if coupon?.getExpiredAt() >0}
+                                <span class="remain-days">还有${coupon?.getExpiredAt()}天到期</span>
+                                #{/if}
                         </td>
                         %{
                             now = new java.util.Date();
                             isExpired = coupon.expireAt?.before(now);
                         }%
-                        #{if isExpired }<td align="center"><span id="status_apply_${coupon.id}">已过期</span></td>#{/if}
-                        #{else}<td align="center">${coupon?.consumedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>#{/else}
+
+                        <td align="center">${coupon?.consumedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                         <td align="center">
-                            #{if coupon?.status == models.order.ECouponStatus.CONSUMED }<span class="consumed">已消费</span>#{/if}  
-                            #{elseif coupon?.status == models.order.ECouponStatus.REFUND}<span class="unconsumed">未消费</span>#{/elseif}
-                            #{else}<span class="refund">已退款</span>#{/else}
+                        #{if isExpired }<span>已过期</span>#{/if}
+                        #{else}
+                            #{if coupon?.status == models.order.ECouponStatus.CONSUMED }<span class="consumed">已消费</span>#{/if}
+                            #{elseif coupon?.status == models.order.ECouponStatus.UNCONSUMED}<span class="unconsumed">未消费</span>#{/elseif}
+                            #{elseif coupon?.status == models.order.ECouponStatus.REFUND}<span class="refund">已退款</span>#{/elseif}
+                        #{/else}
                         </td>
                         <td align="center">
                             #{if !coupon.goods.isLottery && !isExpired && coupon.status == models.order.ECouponStatus.UNCONSUMED}
