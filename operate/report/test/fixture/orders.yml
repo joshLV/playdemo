@@ -2,6 +2,7 @@
 # This module is a part of LogiSima (http://www.logisima.com).
 order.Order(order1):
   "user": "user"
+  "userId": "1"
   "orderNumber": "201202220324134991598"
   "status": "UNPAID"
   "amount": "0"
@@ -20,9 +21,11 @@ order.Order(order1):
   "deliveryType": "0"
   "payMethod": "alipay"
   "payRequestId": "0"
+  "userType": "CONSUMER"
   
 order.Order(order2):
   "user": "user"
+  "userId": "2"
   "orderNumber": "201202220324134991599"
   "status": "PAID"
   "amount": "0"
@@ -41,6 +44,7 @@ order.Order(order2):
   "deliveryType": "1"
   "payMethod": "alipay"
   "payRequestId": "0"
+  "userType": "CONSUMER"
 
 order.OrderItems(orderItems1):
   "order": "order1"
