@@ -6,15 +6,17 @@
 GET     /register                               Register.index
 POST    /register                               Register.create
 GET     /captcha                                Register.captcha
+
 GET     /forget-password                        FindPassword.index
 GET     /find-password                          FindPassword.findByEmailOrMobile
-GET     /send-message_code                      FindPassword.sendMessageCode
-
-GET     /check-mobile                           FindPassword.checkMobile
 GET     /reset-password                         FindPassword.resetPassword
+GET     /send-email/success                     FindPassword.sendEmailSuccess
+
+GET     /send-message_code                      FindPassword.sendMessageCode
+GET     /check-mobile                           FindPassword.checkMobile
 POST    /reset-password                         FindPassword.updatePassword
 
-GET     /send-email/success                    FindPassword.sendEmailSuccess
+
 
 # Home page
 GET     /                                       Home.index

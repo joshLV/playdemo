@@ -72,6 +72,7 @@ public class CmsBlocks extends Controller {
         block.create();
         index(null);
     }
+    
 
     private static void checkExpireAt(Block block) {
         if (block.effectiveAt != null && block.expireAt != null && block.expireAt.before(block.effectiveAt)) {

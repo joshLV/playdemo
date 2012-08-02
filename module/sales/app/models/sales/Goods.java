@@ -280,6 +280,7 @@ public class Goods extends Model {
 
     /**
      * 限购数量
+     * 
      */
     @Column(name = "limit_number")
     public Integer limitNumber = 0;

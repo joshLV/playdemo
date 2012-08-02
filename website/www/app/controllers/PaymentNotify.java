@@ -17,12 +17,12 @@ public class PaymentNotify extends Controller {
         boolean success = false;
         String orderNumber = result.get(PaymentFlow.ORDER_NUMBER);
         String fee         = result.get(PaymentFlow.TOTAL_FEE);
+        
         if(PaymentFlow.VERIFY_RESULT_OK.equals(result.get(PaymentFlow.VERIFY_RESULT))){
             success = Order.verifyAndPay(orderNumber, fee);
         }
 
         PaymentJournal.saveNotifyJournal(orderNumber, params.all(), result, success);
-
         if(success){
             renderText(result.get(PaymentFlow.SUCCESS_INFO));
         }else {

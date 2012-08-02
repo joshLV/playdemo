@@ -148,11 +148,9 @@ public class UserQuestionsTest extends FunctionalTest {
 	@Test
 	public void testMoreQuestionsUser() {
 		Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-goods1");
-		Response response = GET("/more-questions?goodsId=" + goodsId
-				+ "&firstResult=0" + "&size=5");// ?goodsId="+goodsId        +"&size=1"
+		Response response = GET("/more-questions?goodsId=" + goodsId+ "&firstResult=0" + "&size=5");// ?goodsId="+goodsId        +"&size=1"
 		assertStatus(200, response);
-		assertEquals("{\"questions\":[{\"content\":\"满百送电影票活动，是不是拍一张这个面值一百的就可以了？还是这个只算80块？\",\"date\":\"2012-07-26\",\"user\":\"用户\"}]}",
-				response.out.toString()); // 浏览器相应
+		assertEquals("{\"questions\":[{\"content\":\"满百送电影票活动，是不是拍一张这个面值一百的就可以了？还是这个只算80块？\",\"date\":\"2012-07-26\",\"user\":\"用户\"}]}",response.out.toString()); // 浏览器相应
 
 	}
 

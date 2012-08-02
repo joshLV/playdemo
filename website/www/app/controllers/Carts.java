@@ -15,6 +15,7 @@ import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
+import play.test.Fixtures;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -54,9 +55,11 @@ public class Carts extends Controller {
         if (user != null) {
             //该用户曾经购买该商品的数量
             Long boughtNumber = 0l;
+           
             for (Cart cart : carts) {
                 boughtNumber = OrderItems.itemsNumber(user, cart.goods.id);
                 boolean isBuyFlag = Order.checkLimitNumber(user, cart.goods.id, boughtNumber, (int) cart.number);
+               
                 if (isBuyFlag) {
                     renderArgs.put("limit_goodsId", cart.goods.id);
                 }
@@ -84,8 +87,11 @@ public class Carts extends Controller {
             error(500, "no such goods: " + goodsId);
             return;
         }
+       
         if (user == null && cookie == null) {
+        	 
             error(500, "can not identity current user");
+           
             return;
         }
 
@@ -124,16 +130,24 @@ public class Carts extends Controller {
                 return Cart.findAll(user, cookieValue);
             }
         }); */
+        
+        
+        
         int count = 0;
         for (Cart cart : cartList) {
             count += cart.number;
         }
+      
+        
         if (cartList.size() <= 5) {
             renderArgs.put("carts", cartList);
         } else {
+        	
             ValuePaginator<Cart> carts = new ValuePaginator<>(cartList);
             carts.setPageNumber(1);
             carts.setPageSize(TOP_LIMIT);
+        
+           
             renderArgs.put("carts", carts);
         }
 
@@ -155,6 +169,7 @@ public class Carts extends Controller {
             error(500, "can not identity current user");
             return;
         }
+
         if (goodsIds == null || goodsIds.size() == 0) {
             error(500, "no goods specified");
             return;

@@ -21,6 +21,12 @@ POST    /goods/filemanager                      UploadFiles.fileManagerJson
 GET     /goods_brands/{id}                      OperateBrands.goodsBrands
 GET     /category/sub/{id}                      Categories.showSubs
 
+# 积分商品
+GET     /                                       OperatePointGoods.index
+GET     /pointgoods                             OperatePointGoods.index
+GET     /pointgoods/new                         OperatePointGoods.add
+POST    /pointgoods                             OperatePointGoods.create
+GET     /pointgoods/{id}/edit                   OperatePointGoods.edit
 
 GET     /shops                                  OperateShops.index
 GET     /shops/new                              OperateShops.add

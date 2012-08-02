@@ -55,7 +55,6 @@ public class VotesTest extends FunctionalTest {
 
 	@Test
 	public void testIndexUserVote() {
-
 		Response response = GET("/votes");
 		assertStatus(302, response); // redirect
 		response = GET("/votes/view");

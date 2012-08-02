@@ -32,22 +32,10 @@ public class UserInfos extends Controller {
     public static void update(Long id, UserInfo userInfo, String interest) {
         User user = SecureCAS.getUser();
         UserInfo userInfos = UserInfo.find("user=?",user).first();
-        System.out.print("<<<<");
         if (userInfos != null) {
-            //存在则修改
-        	System.out.print(">>>>");
-        	System.out.print(userInfo.fullName);
-        	System.out.print(".....");
-        	
-            userInfos.update(userInfo, interest);
-            
-            System.out.print("prev");
-            System.out.print(userInfos.fullName);
-            System.out.print(userInfos.interest);
-            System.out.print("latter");
+            //存在则修改	
+            userInfos.update(userInfo, interest);            
         }
-        System.out.print("change!!");
-   
         index();
     }
 

@@ -116,7 +116,6 @@ public class User extends Model {
      */
     public static boolean isExisted(String loginName) {
         boolean isExisted = false;
-
         User user = findByLoginName(loginName);
         //用户名存在的情况
         if (user != null) {

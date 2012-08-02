@@ -217,10 +217,11 @@ public class SecureCAS extends Controller {
      */
     @Before(unless = {"login", "logout", "fail", "authenticate", "pgtCallBack"})
     public static void filter() throws Throwable {
-        Logger.debug("[SecureCAS]: CAS Filter for URL -> " + request.url);
-
+        Logger.debug("[SecureCAS]: CAS Filter for URL -> " + request.url + ", test=" + Security.isTestLogined());
+        
         // 测试用，见 @Security.setLoginUserForTest说明
         if (Security.isTestLogined()) {
+        	Logger.debug("set test user %s", Security.getLoginUserForTest());
             session.put(SESSION_USER_KEY, Security.getLoginUserForTest());
         }
         

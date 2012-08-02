@@ -39,11 +39,13 @@ public class Orders extends Controller {
      * @param gid=37&gid=102&g37=2&g102=3
      */
     public static void index(List<Long> gid) {
+
+    	 
         if (gid.size() == 0) {
             error("no goods specified");
             return;
         }
-
+        
         Map<String, String[]> params = request.params.all();
         String items = "";
         for (Long goodsId : gid) {

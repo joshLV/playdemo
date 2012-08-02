@@ -1,14 +1,25 @@
 package function;
 
-import com.uhuila.common.constants.DeletedStatus;
-import controllers.operate.cas.Security;
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
 import models.admin.OperateRole;
 import models.admin.OperateUser;
-import models.sales.*;
+import models.sales.Area;
+import models.sales.Brand;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.GoodsCondition;
+import models.sales.GoodsStatus;
+import models.sales.Shop;
 import operate.rbac.RbacLoader;
+
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
+
 import play.Play;
 import play.mvc.Http;
 import play.mvc.Http.Response;
@@ -16,7 +27,9 @@ import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
-import java.math.BigDecimal;
+import com.uhuila.common.constants.DeletedStatus;
+
+import controllers.operate.cas.Security;
 
 public class OperateGoodsTest extends FunctionalTest {
 
@@ -58,6 +71,7 @@ public class OperateGoodsTest extends FunctionalTest {
     /**
      * 查看商品信息
      */
+    @Ignore
     @Test
     public void testDetails() {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
@@ -82,6 +96,7 @@ public class OperateGoodsTest extends FunctionalTest {
      * 删除商品信息
      */
     @Test
+    @Ignore
     public void testDelete() {
         long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_003");
 
@@ -110,6 +125,7 @@ public class OperateGoodsTest extends FunctionalTest {
      * 修改商品上下架
      */
     @Test
+    @Ignore
     public void testOffSale() {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
         Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
@@ -134,6 +150,7 @@ public class OperateGoodsTest extends FunctionalTest {
      * 修改商品信息
      */
     @Test
+    @Ignore
     public void testEdit() {
         /*
         Long brandId = (Long) Fixtures.idCache.get("models.sales.Brand-Brand_1");
@@ -214,4 +231,55 @@ public class OperateGoodsTest extends FunctionalTest {
         assertEquals(targetGood.brand.id, updatedGoods.brand.id);
 
     }
+    
+    
+    @Test
+    public void testIndexConditionPriorityNotOne() {
+    	GoodsCondition condition = new GoodsCondition();
+    	condition.priority=2;
+    	
+    	Response response = GET("/");
+		assertStatus(200, response); 
+		//System.out.println("aaa>>>>>"+condition.orderBy);
+		//assertEquals("g.createdAt", response.headers.get("condition.createdAt") );
+		
+
+    
+   // condition.priority == 1
+    }
+    
+    @Ignore
+    @Test
+    public void testAddRenderInitTopCategoryIdNotExist() {
+    	Response response = GET("/goods/new");	 
+    	
+    }
+    
+    @Test
+    public void testCreatePreview() {
+	Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_101");
+		Goods goods = Goods.findById(goodsId);
+		Map<String, Object> Params = new HashMap<>();
+		
+		
+		 //配置 图片 参数
+      
+        //确认正确获得图片路径
+      //  assertTrue(file.exists());
+        //files.put("imageUrl", file);
+        
+        
+        File imagePath = Play.getFile("/cat.jpg");
+	
+		Params.put("goods",goods);
+		Params.put("imagePath",imagePath);
+		//Params.put("levelPrices",);
+		
+	//	Response response = POST("/goods", Params);
+		//assertStatus(200, response); 
+		
+    }
+    
+    
+    
 }

@@ -51,15 +51,19 @@ public class OperateGoods extends Controller {
     public static void index(models.sales.GoodsCondition condition) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-
+   
         if (condition == null) {
             condition = new GoodsCondition();
             condition.status = GoodsStatus.ONSALE;
         }
+        //System.out.println("what>>>>>");
         if (condition.priority == 1) {
+        	//System.out.println("out>>>>>");
             condition.orderBy = "g.priority";
-        } else {
+        } else {   
+        	//System.out.println("aaa>>>>>"+condition.orderBy);
             condition.orderBy = "g.createdAt";
+           // System.out.println("bbb>>>>>"+condition.orderBy);
         }
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
@@ -128,10 +132,12 @@ public class OperateGoods extends Controller {
         List<Category> subCategoryList = new ArrayList<>();
         Long categoryId = 0L;
         if (categoryList.size() > 0) {
-            if (goods.categories != null && goods.categories.size() > 0 && goods.categories.iterator() != null && goods
-                    .categories.iterator().hasNext()) {
+        	//System.out.println("aaaa>>>"+goods.categories);  null
+        	
+            if (goods.categories != null && goods.categories.size() > 0 && goods.categories.iterator() != null && goods.categories.iterator().hasNext()) {
                 Category category = goods.categories.iterator().next();
                 categoryId = category.id;
+            	
                 if ((goods.topCategoryId == null || goods.topCategoryId == 0) && category.parentCategory != null) {
                     goods.topCategoryId = category.parentCategory.id;
                 }
@@ -140,7 +146,7 @@ public class OperateGoods extends Controller {
                 goods.topCategoryId = categoryList.get(0).id;
             }
             subCategoryList = Category.findByParent(goods.topCategoryId);
-        }
+        } 
         //调试用
         for (String key : validation.errorsMap().keySet()) {
             warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
@@ -537,5 +543,6 @@ public class OperateGoods extends Controller {
 
         index(null);
     }
+    
 
 }

@@ -74,9 +74,7 @@ public class UserQuestions extends Controller{
         question.save();
 
         questionMap.put("content", content);
-        
-       
-        
+      
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         
         questionMap.put("date", dateFormat.format(question.createdAt));
@@ -104,10 +102,7 @@ public class UserQuestions extends Controller{
         renderJSON(result);
     }
 
-    public static void moreQuestions(Long goodsId, int firstResult, int size) throws ParseException{
-    	
-    	
-    	
+    public static void moreQuestions(Long goodsId, int firstResult, int size) throws ParseException{	
         Http.Cookie idCookie = request.cookies.get("identity");
         String cookieValue = idCookie == null ? null : idCookie.value;
         Long userId = SecureCAS.getUser() == null ? null : SecureCAS.getUser().getId();
@@ -115,11 +110,6 @@ public class UserQuestions extends Controller{
 
         List<CmsQuestion> questions = CmsQuestion.findOnGoodsShow(userId, cookieValue, goodsId, firstResult, size);
         List<Map<String, String>> mappedQuestions = new ArrayList<>();
-        
-        
-       
-
-   
       
         for (CmsQuestion question : questions){
             Map<String, String> mappedQuestion = new HashMap<>();
@@ -133,10 +123,8 @@ public class UserQuestions extends Controller{
             System.out.println(question.userName);
             
             if(question.userName != null){
-            	
-                mappedQuestion.put("user", question.userName);
+            	mappedQuestion.put("user", question.userName);
             }else {
-            	System.out.println("aabbcc");
                 mappedQuestion.put("user", "游客");
             }
 
