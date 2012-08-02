@@ -1,0 +1,129 @@
+#{if noShopTip != null}
+<h1>${noShopTip.raw()}</h1>
+#{/if}
+#{else}
+    #{set 'moreScripts'}
+        #{get 'moreScripts'/}
+    <script src="@{'/public/javascripts/goods-form.js'}" type="text/javascript" charset="UTF-8"></script>
+    #{/set}
+    #{layout_operate.radioField name:'pointGoods.materialType',
+    value1:models.sales.MaterialType.ELECTRONIC.toString(),
+    value2:models.sales.MaterialType.REAL.toString(),
+    value:goods?.materialType?.toString(), required:true/}
+
+
+<div id="brand">#{include '/OperateBrands/goodsBrands.html'/}</div>
+    #{layout_operate.nameField name:'pointGoods.name', value:goods?.name, required:true, length:30/}
+    #{layout_operate.dateScopeField name:'pointGoods.effective', begin:'pointGoods.effectiveAt',end:'pointGoods.expireAt',
+    beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), required:true/}
+
+    #{layout_operate.textField name:'pointGoods.pointPrice', value:goods?.salePrice?:"0", note:'元', required:true/}
+    #{set i:0/}
+
+
+    #{layout_operate.textField name:'pointGoods.baseSale', value:goods?.baseSale, note:'件', required:true/}
+
+    #{layout_operate.textField name:'pointGoods.limitNumber', value:goods?.limitNumber, note:'个'/}
+
+
+    #{if "add".equals(action)}
+        #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)', required:true/}
+    #{/if}
+    #{else}
+        #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)'/}
+    <div class="control-group">
+        <label for='levelPrices_${level}' class="control-label"> </label>
+
+        <div class="controls">(修改前)<br/><img src="${imageLargePath}"/>
+            <input type="hidden" name="imageLargePath" value="${imageLargePath}"></div>
+    </div>
+    #{/else}
+
+    #{layout_operate.htmlField name:'pointGoods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}
+
+
+
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="保存"  #{if "edit".equals(action) && goods?.status == models.sales.GoodsStatus.ONSALE}disabled #{/if}/>
+    <input class="btn btn-primary" id="onsale" type="submit" value="保存并上架"/>
+    #{if "edit".equals(action)}
+        <input class="btn btn-primary" id="preview" type="submit" value="预览"/>
+    #{/if}
+    #{if "edit".equals(action)}
+        #{vx.cancelButton url:'/goods', class:'btn btn-primary'/}
+    #{/if}
+    <input type="hidden" id="status" name="pointGoods.status" value="${goods?.getStatus()?:'OFFSALE'}"/>
+</div>
+
+<script type="text/javascript">
+    $("input[name='goods.isAllShop']:checked").val() == 'false' ? $("#shop").show() : $("#shop").hide();
+
+    function showPrice(nameField) {
+        var originalPrice = $("#goods_originalPrice").val() == null ? 0 : $("#goods_originalPrice").val();
+        var price = parseFloat($(nameField).val()) + parseFloat(originalPrice);
+        price = (price == null || price.toString() == "NaN") ? 0 : price;
+        $("#realPrice_" + nameField.id).html(price.toFixed(2));
+    }
+
+    function showAddedPrice() {
+        var originalPrice = $("#goods_originalPrice").val() == null ? 0 : $("#goods_originalPrice").val();
+        #{list items:models.resale.ResalerLevel.values(), as: 'level'}
+            var price = parseFloat($('#levelPrices_${level}').val()) + parseFloat(originalPrice);
+            price = (price == null || price.toString() == "NaN") ? 0 : price;
+            $("#realPrice_levelPrices_${level}").html(price.toFixed(2));
+        #{/list}
+    }
+
+    showAddedPrice();
+
+    $(function () {
+
+        $("#goods_faceValue").keyup(function () {
+            limitMoneyFormat(this, $("#goods_faceValue").val());
+        })
+
+        $("#goods_salePrice").keyup(function () {
+            limitMoneyFormat(this, $("#goods_salePrice").val());
+        })
+
+        $("#goods_originalPrice").keyup(function () {
+            limitMoneyFormat(this, $("#goods_originalPrice").val());
+            showAddedPrice();
+        })
+        $("#goods_originalPrice").keydown(function () {
+            limitMoneyFormat(this, $("#goods_originalPrice").val());
+            showAddedPrice();
+        })
+        $("#goods_originalPrice").change(function () {
+            showAddedPrice();
+        })
+        $("#goods_originalPrice").focus(function () {
+            limitMoneyFormat(this, $("#goods_originalPrice").val());
+            showAddedPrice();
+        })
+        $("#goods_isAllShop_2").click(function () {
+            $("#shop").show();//显示门店列表
+            #{if "edit".equals(action)}
+                $("#selectAll").click();
+            #{/if}
+        });
+    });
+
+    function limitMoneyFormat(obj, value) {
+        if (value != null && value != '') {
+            var decimalIndex = value.indexOf('.');
+            if (decimalIndex == '-1') {
+                return false;
+            } else {
+                var decimalPart = value.substring(decimalIndex + 1, value.length);
+                if (decimalPart.length > 2) {
+
+                    $(obj).val(value.substring(0, decimalIndex + 3));
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+</script>
+#{/else}
