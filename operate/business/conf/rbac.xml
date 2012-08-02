@@ -33,6 +33,7 @@
     <permission key="PROMOTION_LIST" text="活动管理" roles="customservice,editor"/>
     <permission key="QUESTION" text="咨询管理" roles="customservice,editor"/>
 
+
     <navigation key="supplier_app" text="商户管理" action="Suppliers.index" display-order="20">
         <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
             <navigation key="suppliers_add" action="Suppliers.add" text="商户添加" permissions="SUPPLIERS_NEW"/>
@@ -81,7 +82,7 @@
         </navigation>
     </navigation>
 
-    <navigation key="account_app" text="财务管理" action="Application.account" display-order="80">
+    <navigation key="account_app" text="财务管理" action="OperateReports.showIncomingReport" display-order="80">
         <navigation key="withdraw" text="提现审批">
             <navigation key="withdraw_approval_index" action="WithdrawApproval.index" text="提现申请列表"
                         permission="WITHDRAW_APPROVAL"/>
@@ -120,4 +121,13 @@
             <navigation key="questions_index" action="OperateQuestions.index" text="咨询管理" permission="QUESTION"/>
         </navigation>
     </navigation>
+
+    <navigation key="point_goods_app" text="积分商品管理" action="OperatePointGoods.index" display-order="30">
+        <navigation key="point_goods" text="积分商品">
+            <navigation key="point_goods_add" action="OperatePointGoods.add" text="积分商品添加" permissions="Point_GOODS_NEW"/>
+            <navigation key="point_goods_index" action="OperatePointGoods.index" text="积分商品管理" permissions="Point_GOODS"/>
+        </navigation>
+    </navigation>
+
+
 </application>
