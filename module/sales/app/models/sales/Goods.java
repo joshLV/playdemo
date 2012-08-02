@@ -339,7 +339,7 @@ public class Goods extends Model {
     static {
         //增加可信标签到白名单
         HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div", "table", "tbody", "tr", "td",
-                "background-color", "width");
+                "background-color", "width", "figure", "figcaption", "strong", "p", "dl", "dt", "dd");
         //增加可信属性
         HTML_WHITE_TAGS.addAttributes(":all", "style", "class", "id", "name");
         HTML_WHITE_TAGS.addAttributes("table", "style", "cellpadding", "cellspacing", "border", "bordercolor", "align");

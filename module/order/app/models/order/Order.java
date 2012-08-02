@@ -536,7 +536,7 @@ public class Order extends Model {
                     SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
                     if (!Play.runingInTestMode() && (goods.isLottery == null || !goods.isLottery)) {
                         SMSUtil.send("【券市场】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name + "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
-                                "截止" + dateFormat.format(eCoupon.expireAt) + ",客服4006262166",
+                                "截止" + dateFormat.format(eCoupon.expireAt) + "客服4006262166",
                                 orderItem.phone, eCoupon.replyCode);
                     }
                     couponCodes.add(eCoupon.getMaskedEcouponSn());

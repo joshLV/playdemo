@@ -26,6 +26,12 @@ public class SmsReceiverUtil {
      */
     public static String checkClerk(String mobile, String msg, String code) {
         String[] couponArray = msg.split("#");
+        
+        // 非法手机号
+        if (mobile == null || mobile.length() < 10) {
+            Logger.warn("手机号%s非法", mobile);
+            return "无效的手机号" + mobile;
+        }
 
         //验证店员是否存在
         String couponNumber = "";
