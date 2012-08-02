@@ -109,6 +109,8 @@ public class OperateCoupons extends Controller {
                 coupon.verifyName = "消费者短信验证";
             } else if (coupon.verifyType == VerifyCouponType.TELEPHONE) {
                 coupon.verifyName = "电话验证";
+            } else if (coupon.verifyType == VerifyCouponType.OP_VERIFY) {
+                coupon.verifyName = "运营代理验证";
             }
             if (coupon.status == ECouponStatus.UNCONSUMED) {
                 coupon.statusInfo = "未消费";

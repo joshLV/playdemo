@@ -88,7 +88,7 @@ public class OperateVerifyCoupons extends Controller {
                 renderJSON("1");
             }
 
-            eCoupon.consumeAndPayCommission(shopId, OperateRbac.currentUser().id, null, VerifyCouponType.SHOP);
+            eCoupon.consumeAndPayCommission(shopId, OperateRbac.currentUser().id, null, VerifyCouponType.OP_VERIFY);
             String dateTime = DateUtil.getNowTime();
             String coupon = eCoupon.getLastCode(4);
 

@@ -29,6 +29,7 @@
                     #{option "CONSUMER_MESSAGE"}&{'coupon.CONSUMER_MESSAGE'}#{/option}
                     #{option "SHOP"}&{'coupon.SHOP'}#{/option}
                     #{option "TELEPHONE"}&{'coupon.TELEPHONE'}#{/option}
+                    #{option "OP_VERIFY"}&{'coupon.OP_VERIFY'}#{/option}
                 #{/select}
                &nbsp;&nbsp;状态
                 #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
@@ -78,6 +79,7 @@
             <th width="120px">商品名称</th>
             <th width="30px">单价</th>
             <th width="50px">消费门店</th>
+            <th width="40px">验证方式</th>
             <th width="80px">有效期</th>
             <th width="50px">消费时间</th>
             <th width="50px">店员</th>
@@ -97,6 +99,7 @@
             <td>${coupon?.goods?.name}</td>
             <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
             <td>${coupon?.getConsumedShop()}</td>
+            <td>&{'coupon.'+coupon?.verifyType}</td>
             <td>${coupon?.effectiveAt ?.format()} /
             ${coupon?.expireAt?.format()}</td>
             <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
