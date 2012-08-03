@@ -17,19 +17,19 @@ import play.mvc.With;
 
 /**
  * @author likang
- * Date: 12-5-10
+ *         Date: 12-5-10
  */
 @With(SecureCAS.class)
-public class UserWithdraw extends Controller{
+public class UserWithdraw extends Controller {
     private static final int PAGE_SIZE = 20;
 
-    public static void index(WithdrawBillCondition condition){
+    public static void index(WithdrawBillCondition condition) {
         User user = SecureCAS.getUser();
         Account account = AccountUtil.getConsumerAccount(user.getId());
 
         String page = request.params.get("page");
-        int pageNumber =  StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        if(condition == null){
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        if (condition == null) {
             condition = new WithdrawBillCondition();
         }
         condition.account = account;
@@ -39,38 +39,38 @@ public class UserWithdraw extends Controller{
 
         BreadcrumbList breadcrumbs = new BreadcrumbList("提现申请", "/withdraw");
 
-        render(user,account,billPage, condition, breadcrumbs);
+        render(user, account, billPage, condition, breadcrumbs);
     }
 
-    public static void apply(){
+    public static void apply() {
         User user = SecureCAS.getUser();
         Account account = AccountUtil.getConsumerAccount(user.getId());
         BreadcrumbList breadcrumbs = new BreadcrumbList("提现申请", "/withdraw");
         render(account, breadcrumbs);
     }
 
-    public static void create(@Valid WithdrawBill withdraw){
+    public static void create(@Valid WithdrawBill withdraw) {
         User user = SecureCAS.getUser();
         Account account = AccountUtil.getConsumerAccount(user.getId());
-
-        if(Validation.hasErrors()){
-            render("UserWithdraw/apply.html", withdraw, account);
-        }
-        if(withdraw.amount.compareTo(account.amount) > 0){
+        if (withdraw.amount.compareTo(account.amount) > 0) {
             Validation.addError("withdraw.amount", "提现金额不能大于余额！！");
             render("UserWithdraw/apply.html", withdraw, account);
         }
-        if(withdraw.apply(user.loginName, account)){
+        if (Validation.hasErrors()) {
+            render("UserWithdraw/apply.html", withdraw, account);
+        }
+
+        if (withdraw.apply(user.loginName, account)) {
             index(null);
-        }else {
+        } else {
             error("申请失败");
         }
     }
 
-    public static void detail(Long id){
+    public static void detail(Long id) {
         User user = SecureCAS.getUser();
         WithdrawBill bill = WithdrawBill.findByIdAndUser(id, user.getId(), AccountType.CONSUMER);
-        if (bill == null){
+        if (bill == null) {
             error("withdraw bill not found");
         }
         BreadcrumbList breadcrumbs = new BreadcrumbList("提现申请", "/withdraw");

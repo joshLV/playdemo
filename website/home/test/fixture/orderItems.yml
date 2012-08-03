@@ -41,7 +41,8 @@ order.ECoupon(coupon1):
   "status": "UNCONSUMED"
   "goods": "Goods_001"
   "orderItems": "orderItems1"
-
+  "effectiveAt": "2012-03-01T00:00:00"
+  "expireAt": "2092-03-30T00:00:00"
 order.ECoupon(coupon2):
   "order": "order1"
   "eCouponSn": "1234567002"
@@ -55,7 +56,8 @@ order.ECoupon(coupon2):
   "status": "CONSUMED"
   "goods": "Goods_002"
   "orderItems": "orderItems2"
-  
+  "effectiveAt": "2012-03-01T00:00:00"
+  "expireAt": "2092-03-30T00:00:00"
 order.ECoupon(coupon3):
   "order": "order1"
   "eCouponSn": "1234567002"
@@ -69,3 +71,5 @@ order.ECoupon(coupon3):
   "status": "UNCONSUMED"
   "goods": "Goods_002"
   "orderItems": "orderItems2"
+  "effectiveAt": "2012-03-01T00:00:00"
+  "expireAt": "2092-03-30T00:00:00"

@@ -4,11 +4,10 @@
     #{asset.css src:['/y/user/userBase.css', '/y/user/userPassword.css'] /}
 #{/set}
 #{set 'moreScripts'}
-*{<script src="@{'/public/javascripts/password.js'}" type="text/javascript" charset="UTF-8"></script>}*
 <script type="text/javascript">
      	$(function(){
         if ( '${isOk}'== "isOk") {
-            alert("密码修改成功！");
+              $("#updateOk").html("密码修改成功！").css("color","#ff0000");
         }
 
     });
@@ -19,24 +18,26 @@
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
         <div class="change-password">
-        <form class="form-horizontal" action="/user/edit-password" method="POST">
+        <form class="form-horizontal" action="@{UserPasswords.update()}" method="POST">
             <div class="old-password">
                 <label><span class="required">*</span>原密码：</label>
-                <input class="input" name="user.oldPassword" type="password" id="old_password" size="26" maxlength="20" value=""/>
-                <span class="error"></span>
+                <input class="input" name="user.oldPassword" type="password" id="old_password" size="26" maxlength="20" value="${user?.oldPassword}"/>
+                <span class="error">#{error 'user.oldPassword' /}</span>
             </div>
             <div class="new-password">
                 <label><span class="required">*</span>新密码：</label>
-                <input class="input" name="user.password" type="password" id="password" size="26" maxlength="20" value="" onkeyup="javascript:ChangeQD();"/>
-                <span class="error"></span>
+                <input class="input" name="user.password" type="password" id="password" size="26" maxlength="20" value="${user?.password}" onkeyup="javascript:ChangeQD();"/>
+                <span class="error">#{error 'user.newPassword' /}</span>
                                                                             </div>
             <div class="confirm-password">
                 <label><span class="required">*</span>确认新密码：</label>
-                <input class="input" name="user.confirmPassword" type="password" id="confirmPassword" size="26" maxlength="20" value=""/>
-                <span class="error"></span>
+                <input class="input" name="user.confirmPassword" type="password" id="confirmPassword" size="26" maxlength="20" value="${user?.confirmPassword}"/>
+                <span class="error">#{error 'user.newConfirmPassword' /}</span>
             </div>
             <div class="ensure-password">
+                <div id="updateOk"></div>
                 <button type="submit" id="sure_submit"> 确 定 </button>
+
             </div>
         </form>
         </div>

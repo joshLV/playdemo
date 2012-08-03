@@ -52,26 +52,28 @@ function changeTel(telidentify) {
         $("#shownewtelcheck").html("");
         $("#showchangecode").html("");
         var old_mobile = $.trim($("#old_mobile").val());
-        var new_mobile= $.trim($("#new_mobile").val());
+        var new_mobile = $.trim($("#new_mobile").val());
         var telcheckcode = $("#telcheckcode").val();
-        if (old_mobile  && checkTel(old_mobile )) {
-            alert("原手机号码输入有误!");
+        if (old_mobile == "" && checkTel(old_mobile)) {
+            $("#showoldtelcheck").html("原手机号码输入有误!").css("color", "#ff0000");
+            $("#showoldtelcheck").css("padding-left", "100px");
             return false;
         }
 
-       if (new_mobile == '' || checkTel(new_mobile)) {
-            alert("新手机号码输入有误!");
+        if (new_mobile == '' || checkTel(new_mobile)) {
+            $("#shownewtelcheck").html("新手机号码输入有误!").css("color", "#ff0000");
+            $("#shownewtelcheck").css("padding-left", "100px");
             return false;
         }
 
         if (telcheckcode == '') {
-            alert("必须输入验证码!");
+            $("#showchangecode").html("必须输入验证码!").css("color", "#ff0000");
+            $("#showchangecode").css("padding-left", "100px");
             return false;
         }
-        $("#new_mobile").attr("disabled", "");
         $.post(
             "/user-info/mobile-bind",
-            {mobile:new_mobile,oldMobile:old_mobile, validCode:telcheckcode},
+            {mobile:new_mobile, oldMobile:old_mobile, validCode:telcheckcode},
             function (data) {
                 if (data == 0) {
                     $("#layout").hide();
@@ -79,12 +81,15 @@ function changeTel(telidentify) {
                     setTimeout(function () {
                         location.href = "/user-info"
                     }, 10);
-                } else if (data ==3)  {
-                    alert('旧手机号码不存在！');
+                } else if (data == 3) {
+                    $("#showoldtelcheck").html("旧手机号码不存在！").css("color", "#ff0000");
+                    $("#showoldtelcheck").css("padding-left", "100px");
                 } else if (data == 2) {
-                    alert('输入的手机号和不一致！');
+                    $("#shownewtelcheck").html("输入的手机号码不一致！").css("color", "#ff0000");
+                    $("#shownewtelcheck").css("padding-left", "100px");
                 } else if (data == 1) {
-                    alert('验证码有误或已过期');
+                    $("#showchangecode").html("验证码有误或已过期").css("color", "#ff0000");
+                    $("#showchangecode").css("padding-left", "100px");
                 }
             },
             "json"
@@ -94,20 +99,23 @@ function changeTel(telidentify) {
         var bind_mobile = $.trim($("#bind_mobile").val());
         var bindcheckcode = $.trim($("#bindcheckcode").val());
         if (bind_mobile == '') {
-            alert("请输入手机号！");
+            $("#err_bind_mobile").html("请输入手机号！").css("color", "#ff0000");
+            $("#err_bind_mobile").css("padding-left", "100px");
             return false;
         }
         if (checkTel(bind_mobile)) {
-            alert("手机号格式不对！");
+            $("#err_bind_mobile").html("手机号格式不对！").css("color", "#ff0000");
+            $("#err_bind_mobile").css("padding-left", "100px");
             return false;
         }
         if (bindcheckcode == '') {
-            alert('验证码不能为空');
+            $("#showbindtelcheck").html("手验证码不能为空！").css("color", "#ff0000");
+            $("#showbindtelcheck").css("padding-left", "100px");
             return false;
         }
         $("#bind_mobile").attr("disabled", "");
         $.post("/user-info/mobile-bind",
-            {mobile:bind_mobile,oldMobile:'', validCode:bindcheckcode}, function (data) {
+            {mobile:bind_mobile, oldMobile:'', validCode:bindcheckcode}, function (data) {
                 if (data == 0) {
                     $("#layout").hide();
                     //修改成功跳转
@@ -115,9 +123,11 @@ function changeTel(telidentify) {
                         location.href = "/user-info"
                     }, 10);
                 } else if (data == 2) {
-                    alert('输入的手机号和不一致！');
+                    $("#err_bind_mobile").html("输入的手机号和不一致！").css("color", "#ff0000");
+                    $("#err_bind_mobile").css("padding-left", "100px");
                 } else if (data == 1) {
-                    alert('验证码有误');
+                    $("#showbindtelcheck").html("验证码有误").css("color", "#ff0000");
+                    $("#showbindtelcheck").css("padding-left", "100px");
                 }
             },
             "text"
@@ -125,29 +135,35 @@ function changeTel(telidentify) {
     }
 }
 
+
 function getBindCode(codeidy) {
     if (codeidy == 1) {
         var bind_mobile = $.trim($("#bind_mobile").val());
         if (bind_mobile == '') {
-            alert("请输入手机号！");
+            $("#err_bind_mobile").html("请输入手机号！").css("color", "#ff0000");
+            $("#err_bind_mobile").css("padding-left", "100px");
+            $("#err_bind_mobile").css("display", "block");
             return false;
         }
         if (checkTel(bind_mobile)) {
-            alert("手机号格式不对！");
+            $("#err_bind_mobile").html("手机号格式不对！").css("color", "#ff0000");
+            $("#err_bind_mobile").css("padding-left", "100px");
             return false;
         }
-       // $("#getBindCode").attr("disabled", "disabled");
         $.post(
             "/user-info/send",
-            {mobile:bind_mobile,oldMobile:''},
+            {mobile:bind_mobile, oldMobile:''},
             function (data) {
                 if (data == 1) {
-                    alert("验证码已成功发送，请查收！");
+                    $("#showbindtelcheck").html("验证码已成功发送，请查收！").css("color", "#ff0000");
+                    $("#showbindtelcheck").css("padding-left", "100px");
                     $("#getBindCode").attr("disabled", "");
                 } else if (data == 2) {
-                    alert('该手机已经绑定！');
+                    $("#err_bind_mobile").html("该手机已经绑定！").css("color", "#ff0000");
+                    $("#err_bind_mobile").css("padding-left", "100px");
                 } else if (data == -1) {
-                    alert("网络错误，请重发");
+                    $("#showbindtelcheck").html("网络错误，请重发").css("color", "#ff0000");
+                    $("#showbindtelcheck").css("padding-left", "100px");
                     $("#getBindCode").attr("disabled", "");
                 }
             },
@@ -156,41 +172,49 @@ function getBindCode(codeidy) {
     } else if (codeidy == 2) {
         var old_mobile = $.trim($("#old_mobile").val());
         if (old_mobile == '') {
-            alert("请输入原手机号！");
+            $("#showoldtelcheck").html("请输入原手机号！").css("color", "#ff0000");
+            $("#showoldtelcheck").css("padding-left", "100px");
             return false;
         }
         if (checkTel(old_mobile)) {
-            alert("原手机号格式不对！");
+            $("#showoldtelcheck").html("原手机号格式不对！").css("color", "#ff0000");
+            $("#showoldtelcheck").css("padding-left", "100px");
             return false;
         }
         var new_mobile = $.trim($("#new_mobile").val());
         if (new_mobile == '') {
-            alert("请输入新手机号！");
+            $("#shownewtelcheck").html("请输入新手机号！").css("color", "#ff0000");
+            $("#shownewtelcheck").css("padding-left", "100px");
             return false;
         }
         if (checkTel(new_mobile)) {
-            alert("新手机号格式不对！");
+            $("#shownewtelcheck").html("新手机号格式不对！").css("color", "#ff0000");
+            $("#shownewtelcheck").css("padding-left", "100px");
             return false;
         }
 
         if (old_mobile == new_mobile) {
-            alert("新手机号和原手机号一样！");
+            $("#shownewtelcheck").html("新手机号和原手机号一样！").css("color", "#ff0000");
+            $("#shownewtelcheck").css("padding-left", "100px");
             return false;
         }
-      //  $("#getchangeCode").attr("disabled", "disabled");
         $.post(
             "/user-info/send",
-            {mobile:new_mobile,oldMobile:old_mobile},
+            {mobile:new_mobile, oldMobile:old_mobile},
             function (data) {
                 if (data == 1) {
-                    alert("验证码已成功发送，请查收！");
+                    $("#showchangecode").html("验证码已成功发送，请查收！").css("color", "#ff0000");
+                    $("#showchangecode").css("padding-left", "100px");
                     $("#getchangeCode").attr("disabled", "");
-                 } else if (data == 2) {
-                    alert('该手机已经绑定！');
-                } else if(data ==3){
-                  alert("旧手机号码不存在！");
+                } else if (data == 2) {
+                    $("#shownewtelcheck").html("该手机已经绑定！").css("color", "#ff0000");
+                    $("#shownewtelcheck").css("padding-left", "100px");
+                } else if (data == 3) {
+                    $("#showoldtelcheck").html("旧手机号码不存在！").css("color", "#ff0000");
+                    $("#showoldtelcheck").css("padding-left", "100px");
                 } else if (data == -1) {
-                    alert("网络错误，请重发");
+                    $("#showchangecode").html("网络错误，请重发").css("color", "#ff0000");
+                    $("#showchangecode").css("padding-left", "100px");
                     $("#getchangeCode").attr("disabled", "");
                 }
             },
@@ -198,36 +222,7 @@ function getBindCode(codeidy) {
         );
     }
 }
-//发送验证码到手机
-function sendCheckCode() {
-    var usertel = $.trim($("#usertel").val());
-    if (usertel == '' || checkTel(usertel)) {
-        $("#passtelcheck").html("<span class='redInfo allstep_info'><b></b><em>请输入11位手机号码</em></span>");
-        return false;
-    }
-  //  $("#getcodebutton").attr("disabled", "disabled");
-    $.post(
-        "user.php?act=sendcheckcode",
-        {usertel:usertel},
-        function (data) {
-            if (data.errno == 1) {
-                $("#passtelcheck").html("<span class='yellowInfo allstep_info'><b></b><em>验证码已成功发送，请查收！</em></span>");
-                updateTimer('showspan', 60);
-            } else if (data.errno == -1) {
-                $("#passtelcheck").html("<span class='yellowInfo allstep_info'><b></b><em>网络错误，请重发</em></span>");
-                $("#getcodebutton").attr("disabled", "");
-            } else if (data.errno == -2) {
-                $("#passtelcheck").html("<span class='yellowInfo allstep_info'><b></b><em>此手机并未注册</em></span>");
-                $("#getcodebutton").attr("disabled", "");
-            }
-            else if (data.errno == -3) {
-                $("#passtelcheck").html("<span class='yellowInfo allstep_info'><b></b><em>请使用此账号绑定手机</em></span>");
-                $("#getcodebutton").attr("disabled", "");
-            }
-        },
-        "json"
-    );
-}
+
 //60秒倒计时
 function updateTimer(showspan, timeval) {
     if (timeval >= 0) {
@@ -243,37 +238,6 @@ function updateTimer(showspan, timeval) {
     }
 
 }
-//关闭弹出层
-function closediv(closeidy) {
-    if (closeidy == 1) {
-        $("#changeusertel").hide();
-        window.location.reload();
-    } else if (closeidy == 2) {
-        $("#bindusertel").hide();
-        window.location.reload();
-    }
-}
-//激活邮箱
-function activationEmail() {
-
-    $.post(
-        "user.php?act=activationemail",
-        {},
-        function (data) {
-            if (data.errno == 1) {
-                alert("已经发送激活邮件到您的邮箱，请注意查收");
-                $("#jihuo").attr("onclick", "");
-                $("#jihuo").click(function (e) {
-                    alert('对不起,您已经发送过邮箱激活邮件！')
-                });
-            } else {
-                alert("发送失败");
-            }
-        },
-        "json"
-    );
-}
-
 
 function checkRealName(realname) {
     var realnamereg = /^([a-zA-Z\u4e00-\u9fa5]* ?)*[a-zA-Z\u4e00-\u9fa5]*$/;

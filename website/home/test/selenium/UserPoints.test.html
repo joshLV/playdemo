@@ -3,8 +3,7 @@ load:['fixture/user.yml','fixture/userInfo.yml','fixture/goods_base.yml','fixtur
 
 #{selenium 'Test UserPoints/index.html Normal'}
 #{include 'test/selenium/step/login.selenium' /}
-open('/orders')
-clickAndWait('id=points')
+open('/user-point')
 verifyTitle('一百券 - 我的积分')
 verifyTextPresent('selenium@uhuila.com')
 verifyTextPresent('100')

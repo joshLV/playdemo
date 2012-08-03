@@ -39,21 +39,21 @@
             <tr>
                 <td class="right"><span class="required">*</span>支行：</td>
                 <td align="left">
-                    <input type="text" name="withdraw.subBankName" class="long-input" value="">
+                    <input type="text" name="withdraw.subBankName" class="long-input" value="${withdraw?.subBankName}">
                     <span class="error">#{error 'withdraw.subBankName'/}</span>
                 </td>
             </tr>
             <tr>
                 <td class="right"><span class="required">*</span>银行卡号：</td>
                 <td align="left">
-                    <input type="text" name="withdraw.cardNumber" class="long-input" value="">
+                    <input type="text" name="withdraw.cardNumber" class="long-input" value="${withdraw?.cardNumber}">
                     <span class="error">#{error 'withdraw.cardNumber'/}</span>
                 </td>
             </tr>
             <tr>
                 <td class="right"><span class="required">*</span>提现金额：</td>
                 <td align="left">
-                    <input type="text" name="withdraw.amount" class="long-input" value="">
+                    <input type="text" name="withdraw.amount" class="long-input" value="${withdraw?.amount}">
                     <span class="balance-tips">余额:<em>${account?.amount}</em>元，最少提现10元!</span>
                     <span class="error">#{error 'withdraw.amount'/}</span>
                 </td>

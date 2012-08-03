@@ -40,16 +40,14 @@ load:['fixture/user.yml','fixture/goods_base.yml','fixture/goods.yml','fixture/o
 
 #{selenium "查看资金明细"}
     #{include 'test/selenium/step/login.selenium' /}
-    open('/orders')
-    clickAndWait('id=amount')
+    open('/user-sequences')
     assertTitle('一百券 - 资金明细')
     verifyTextPresent('selenium@uhuila.com')
     verifyTextPresent('1000.02')
     type('id=sequenceFlag','收入')
     verifyTextPresent('001')
     verifyTextPresent('002')
-    open('/orders')
-    clickAndWait('id=amount')
+    open('/user-sequences')
     type('id=tradeType','支付')
     verifyTextPresent('001')
     verifyTextPresent('002')

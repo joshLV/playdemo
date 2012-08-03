@@ -10,6 +10,7 @@
         <div class="edit-tips">为了最大限度保障您的账户安全，请如实填写以下信息请完善以下资料，这将有助于我们更好的为您服务。</div>
         <div class="userinfo">
             <ul>
+                <form class="userinfo" id="userForm" action="@{UserInfos.edit()}" method="get">
                 <li class="clearfix">
                     <label><span class="required">*</span>用户名：</label>
                     <div class="right">${user?.loginName}</div>
@@ -28,7 +29,7 @@
                 </li>
                 <li class="clearfix">
                     <label>手机号码：</label>
-                    <div class="right">${userInfo?.mobile}</div>
+                    <div class="right">#{if userInfo?.mobile== ""}<button type="submit" class="submit-btn">绑定手机</button>#{/if}#{else}${userInfo?.mobile}#{/else}</div>
                 </li>
                 <li class="clearfix">
                     <label>固定电话：</label>
@@ -75,9 +76,8 @@
                     </div>
                 </li>
 
-                <form class="userinfo" id="userForm" action="@{UserInfos.edit()}" method="get">
                 <li class="clearfix btn">
-                    <button type="submit" class="submit-btn"> 修 改 </button>
+                    <button type="submit" class="submit-btn" id="update_Info"> 修 改 </button>
                 </li>
                 </form>
             </ul>

@@ -1,91 +1,163 @@
-<div id="div_add_address">
-    <table width="700" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-            <td height="30" align="right"><span class="font_red">*</span>收&nbsp;&nbsp;货&nbsp;&nbsp;人：</td>
-            <td align="left">
-                <input class="long_input" type="text" name="address.name" id="address_name"
-                       value="${address?.name}"/><span
-                    class="error">#{error 'address.name'/}</span>
-            </td>
-        </tr>
-        <tr>
-            <td width="90" height="30" align="right"><span class="font_red">*</span>选择地区：</td>
-            <td width="610" align="left">
-                    <select class="dingdan_stauts_bg" name="address.province" id="address_province"
-                            selectedValue="${address?.province}">
-                    </select>
-                    <select class="dingdan_stauts_bg" name="address.city" id="address_city"
-                            selectedValue="${address?.city}">
-                    </select>
-                    <select class="dingdan_stauts_bg" name="address.district" id="address_district"
-                            selectedValue="${address?.district}">
-                    </select>
-            </td>
-        </tr>
-        <tr>
-            <td height="30" align="right"><span class="font_red">*</span>街道地址：</td>
-            <td align="left">
-                <input class="long_input input_adress" type="text" name="address.address"
-                       id="address_address"
-                       value="${address?.address}"/>不需要重复填写省/市/区 <span
-                    class="error">#{error 'address.address'/}</span></td>
-        </tr>
-        <tr>
-            <td height="30" align="right"><span class="font_red">*</span>邮政编码：</td>
-            <td align="left"><input class="long_input" type="text" name="address.postcode"
-                                    id="address_postcode"
-                                    value="${address?.postcode}"/><span
-                    class="error">#{error 'address.postcode'/}</span></td>
-        </tr>
-        <tr>
-            <td height="30" align="right"><span class="font_red">*</span>手　　机：</td>
-            <td align="left" class="font_yanse">
-                <input name="address.mobile" type="text" class="long_input"
-                       id="address_mobile"
-                       value="${address?.mobile}"/>手机和固定电话至少填写一项<span
-                    class="error">#{error 'address.mobile'/}</span>
-            </td>
-        </tr>
-        <tr>
-            <td height="30" align="right"><span class="font_red">*</span>固定电话：</td>
-            <td align="left" class="font_yanse"><input name="address.areaCode" type="text"
-                                                       class="short_input area_input"
-                                                       id="address_areaCode"
-                                                       fs="区号" placeholder="区号"
-                                                       value="${address?.areaCode}"/>-
-                <input name="address.phoneNumber" type="text" class="short_input"
-                       id="address_phoneNumber"
-                       fs="电话号码" placeholder="电话号码"
-                       value="${address?.phoneNumber}"/>-
-                <input name="address.phoneExtNumber" type="text" class="short_input"
-                       id="address_phoneExtNumber"
-                       fs="分机号（可选）" placeholder="分机号（可选）"
-                       value="${address?.phoneExtNumber}"/><span
-                       class="error">#{error 'address.phone'/}</span>
-            </td>
-        </tr>
-        <tr>
-            <td height="30" align="right"><span class="font_red">*</span>设为默认：</td>
-            <td align="left" class="font_yanse"><input type="checkbox"
+<div class="addresses">
+    <ul>
+        <li class="clearfix">
+            <div class="left"><span class="required">*</span>收 货 人：</div>
+            <div>
+                <input class="long-input" type="text" name="address.name" id="address_name" placeholder="请准确填写真实姓名" value="${address?.name}"/>
+                <p class="error">#{error 'address.name'/}</p>
+            </div>
+        </li>
+        <li class="clearfix">
+            <div class="left"><span class="required">*</span>选择地区：</div>
+            <div width="610" align="left">
+                <select name="address.province" id="address_province" selectedValue="${address?.province}"> </select>
+                <select name="address.city" id="address_city" selectedValue="${address?.city}"> </select>
+                <select name="address.district" id="address_district" selectedValue="${address?.district}"> </select>
+            </div>
+        </li>
+        <li class="clearfix">
+            <div class="left"><span class="required">*</span>街道地址：</div>
+            <div>
+                <input class="long-input" type="text" name="address.address" value="${address?.address}" id="address_address" placeholder="请填写详细路名和门牌号"/>
+                <p class="error">#{error 'address.address'/}</p>
+            </div>
+        </li>
+        <li class="clearfix">
+            <div class="left"><span class="required">*</span>邮政编码：</div>
+            <div>
+                <input class="long-input" type="text" name="address.postcode" value="${address?.postcode}" id="address_postcode" placeholder="请填写正确的邮政编码"/>
+                <p class="error">#{error 'address.postcode'/}</p>
+        </li>
+        <li class="clearfix">
+            <div class="left"><span class="required">*</span>手　　机：</div>
+            <div>
+                <input class="long-input" name="address.mobile" type="text" value="${address?.mobile}" id="address_mobile" placeholder="手机和座机至少填写一个"/>
+                <p class="error">#{error 'address.mobile'/}</p>
+            </div>
+            <div class="left" style="margin-left:10px">座 机：</div>
+            <div>
+                <input class="long-input" name="address.phoneNumber" value="${address?.phoneNumber}" type="text" id="address_phoneNumber" placeholder="手机和座机至少填写一个"/>
+                 <p class="error">#{error 'address.phoneNumber'/}</p>
+            </div>
+
+        </li>
+        <li class="clearfix">
+            <div class="left">设为默认：</div>
+            <div style="padding-top:6px">
+                <input type="checkbox"
                                                        value="true"
                                                        #{if address?.isDefault}checked#{/if}
-                                                       name="address.isDefault" id="address_isDefault"/></td>
-        </tr>
-        <tr>
-            <td height="30" align="right"></td>
-            <td align="left">
-                <input type="submit" class="search-btn" id="save" value="保存"/>
-            </td>
-        </tr>
-    </table>
-    <script type="text/javascript">
+                                                       name="address.isDefault" id="address_isDefault"/>
+            </div>
+        </li>
+        <li class="btn">
+            <input type="submit" class="save-btn" id="save" value="保存"/>
+        </li>
+    </ul>
+
+         <script type="text/javascript">
         // 省市区三级联动
         #{if address!= null }
         new PCAS('address.province', 'address.city', 'address.district', '${address?.province}', '${address?.city}',
                 '${address?.district}');
         #{/if}
         #{else}
-        new PCAS('address.province', 'address.city', 'address.district', '上海市', '市辖区', '黄浦区');
+         new PCAS('address.province', 'address.city', 'address.district', '上海市', '市辖区', '黄浦区');
         #{/else}
+
+        // 省市区三级联动
+        // new PCAS('address.province', 'address.city', 'address.district', '上海市', '市辖区', '黄浦区');
     </script>
 </div>
+
+*{<div id="div_add_address">}*
+    *{<table width="700" border="0" cellpadding="0" cellspacing="0">}*
+        *{<tr>}*
+            *{<td height="30" align="right"><span class="font_red">*</span>收&nbsp;&nbsp;货&nbsp;&nbsp;人：</td>}*
+            *{<td align="left">}*
+                *{<input class="long_input" type="text" name="address.name" id="address_name"}*
+                       *{value="${address?.name}"/><span}*
+                    *{class="error">#{error 'address.name'/}</span>}*
+            *{</td>}*
+        *{</tr>}*
+        *{<tr>}*
+            *{<td width="90" height="30" align="right"><span class="font_red">*</span>选择地区：</td>}*
+            *{<td width="610" align="left">}*
+                    *{<select class="dingdan_stauts_bg" name="address.province" id="address_province"}*
+                            *{selectedValue="${address?.province}">}*
+                    *{</select>}*
+                    *{<select class="dingdan_stauts_bg" name="address.city" id="address_city"}*
+                            *{selectedValue="${address?.city}">}*
+                    *{</select>}*
+                    *{<select class="dingdan_stauts_bg" name="address.district" id="address_district"}*
+                            *{selectedValue="${address?.district}">}*
+                    *{</select>}*
+            *{</td>}*
+        *{</tr>}*
+        *{<tr>}*
+            *{<td height="30" align="right"><span class="font_red">*</span>街道地址：</td>}*
+            *{<td align="left">}*
+                *{<input class="long_input input_adress" type="text" name="address.address"}*
+                       *{id="address_address"}*
+                       *{value="${address?.address}"/>不需要重复填写省/市/区 <span}*
+                    *{class="error">#{error 'address.address'/}</span></td>}*
+        *{</tr>}*
+        *{<tr>}*
+            *{<td height="30" align="right"><span class="font_red">*</span>邮政编码：</td>}*
+            *{<td align="left"><input class="long_input" type="text" name="address.postcode"}*
+                                    *{id="address_postcode"}*
+                                    *{value="${address?.postcode}"/><span}*
+                    *{class="error">#{error 'address.postcode'/}</span></td>}*
+        *{</tr>}*
+        *{<tr>}*
+            *{<td height="30" align="right"><span class="font_red">*</span>手　　机：</td>}*
+            *{<td align="left" class="font_yanse">}*
+                *{<input name="address.mobile" type="text" class="long_input"}*
+                       *{id="address_mobile"}*
+                       *{value="${address?.mobile}"/>手机和固定电话至少填写一项<span}*
+                    *{class="error">#{error 'address.mobile'/}</span>}*
+            *{</td>}*
+        *{</tr>}*
+        *{<tr>}*
+            *{<td height="30" align="right"><span class="font_red">*</span>固定电话：</td>}*
+            *{<td align="left" class="font_yanse"><input name="address.areaCode" type="text"}*
+                                                       *{class="short_input area_input"}*
+                                                       *{id="address_areaCode"}*
+                                                       *{fs="区号" placeholder="区号"}*
+                                                       *{value="${address?.areaCode}"/>-}*
+                *{<input name="address.phoneNumber" type="text" class="short_input"}*
+                       *{id="address_phoneNumber"}*
+                       *{fs="电话号码" placeholder="电话号码"}*
+                       *{value="${address?.phoneNumber}"/>-}*
+                *{<input name="address.phoneExtNumber" type="text" class="short_input"}*
+                       *{id="address_phoneExtNumber"}*
+                       *{fs="分机号（可选）" placeholder="分机号（可选）"}*
+                       *{value="${address?.phoneExtNumber}"/><span}*
+                       *{class="error">#{error 'address.phone'/}</span>}*
+            *{</td>}*
+        *{</tr>}*
+        *{<tr>}*
+            *{<td height="30" align="right"><span class="font_red">*</span>设为默认：</td>}*
+            *{<td align="left" class="font_yanse"><input type="checkbox"}*
+                                                       *{value="true"}*
+                                                       *{#{if address?.isDefault}checked#{/if}}*
+                                                       *{name="address.isDefault" id="address_isDefault"/></td>}*
+        *{</tr>}*
+        *{<tr>}*
+            *{<td height="30" align="right"></td>}*
+            *{<td align="left">}*
+                *{<input type="submit" class="search-btn" id="save" value="保存"/>}*
+            *{</td>}*
+        *{</tr>}*
+    *{</table>}*
+    *{<script type="text/javascript">}*
+        *{// 省市区三级联动}*
+        *{#{if address!= null }}*
+        *{new PCAS('address.province', 'address.city', 'address.district', '${address?.province}', '${address?.city}',}*
+                *{'${address?.district}');}*
+        *{#{/if}}*
+        *{#{else}}*
+        *{new PCAS('address.province', 'address.city', 'address.district', '上海市', '市辖区', '黄浦区');}*
+        *{#{/else}}*
+    *{</script>}*
+*{</div>}*

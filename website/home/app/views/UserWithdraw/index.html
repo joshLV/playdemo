@@ -10,7 +10,7 @@
         #{breadcrumbs/breadcrumb breadcrumbs/}
         <div class="user-account">
             账户：<strong>${user?.loginName}</strong> 账户余额：<span>${account?.amount}</span>元
-            <a class="withdraw-btn" href="/withdraw/apply"> 提 现 </a>
+            <a class="withdraw-btn" id="apply" href="/withdraw/apply"> 提 现 </a>
         </div>
         <table class="order-tab">
             <thead>
@@ -39,7 +39,7 @@
                     <td>
                         <span class="pending-approval">&{'withdraw.' + withdrawBill.status}</span>
                     </td>
-                    <td><a class="view-detail" href="/withdraw/detail/${withdrawBill.id}">查看详情</a></td>
+                    <td><a class="view-detail" id="view" href="/withdraw/detail/${withdrawBill.id}">查看详情</a></td>
                 </tr>
                 #{/paginate.list}
             #{/else}

@@ -7,7 +7,7 @@
     function editAddress(addressId) {
         $("#addressTitle").html("修改地址");
         $("#form").load("/addresses/" + addressId + "/edit", function (data) {
-//            setAreaValue(addressId);
+            setAreaValue(addressId);
             $("#form").attr("action", "/addresses/" + addressId + "?x-http-method-override=PUT");
             $("#form").attr("method", "POST");
         });
@@ -25,64 +25,10 @@
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
         <div class="ship-addr"><strong>收货地址</strong></div>
-        <div class="addresses">
-            <ul>
-                <li class="clearfix">
-                    <div class="left"><span class="required">*</span>收 货 人：</div>
-                    <div>
-                        <input class="long-input" type="text" name="address.name" id="address_name" placeholder="请准确填写真实姓名"/>
-                        <p class="error">请准确填写真实姓名<p>
-                    </div>
-                </li>
-                <li class="clearfix">
-                    <div class="left"><span class="required">*</span>选择地区：</div>
-                    <div width="610" align="left">
-                        <select name="address.province" id="address_province" selected Value=""> </select>
-                        <select name="address.city" id="address_city" selected Value=""> </select>
-                        <select name="address.disliict" id="address_disliict" selected Value=""> </select>
-                    </div>
-                </li>
-                <li class="clearfix">
-                    <div class="left"><span class="required">*</span>街道地址：</div>
-                    <div>
-                        <input class="long-input" type="text" name="address.address" id="address_address" placeholder="请填写详细路名和门牌号"/>
-                        <p class="error"></p>
-                    </div>
-                </li>
-                <li class="clearfix">
-                    <div class="left"><span class="required">*</span>邮政编码：</div>
-                    <div>
-                        <input class="long-input" type="text" name="address.postcode" id="address_postcode" placeholder="请填写正确的邮政编码"/>
-                        <p class="error"></p></div>
-                </li>
-                <li class="clearfix">
-                    <div class="left"><span class="required">*</span>手　　机：</div>
-                    <div>
-                        <input class="long-input" name="address.mobile" type="text" id="address_mobile" placeholder="手机和座机至少填写一个"/>
-                        <p class="error"></p>
-                    </div>
-                    <div class="left" style="margin-left:10px">座 机：</div>
-                    <div>
-                        <input class="long-input" name="address.phoneNumber" type="text" id="address_phoneNumber" placeholder="手机和座机至少填写一个"/>
-                    </div>
-                </li>
-                <li class="clearfix">
-                    <div class="left">设为默认：</div>
-                    <div style="padding-top:6px">
-                        <input type="checkbox" value="liue" name="address.isDefault" id="address_isDefault"/>
-                    </div>
-                </li>
-                <li class="btn">
-                    <input type="submit" class="save-btn" id="save" value="保存"/>
-                </li>
-            </ul>
-            <script>
-                // 省市区三级联动
-                // new PCAS('address.province', 'address.city', 'address.district', '上海市', '市辖区', '黄浦区');
-            </script>
-        </div>
-
-        <table class="order-tab">
+            <form class="form-horizontal" id="form" action="@{UserAddresses.create()}" method="POST">
+            #{include "UserAddresses/form.html"/}
+            </form>
+           <table class="order-tab">
             <thead>
                 <tr class="col-name">
                     <th width="80">收货人</th>
@@ -129,7 +75,7 @@
                         #{else}#{vx.operateLink url:'/addresses/'+address.id+'/default', text:'设为默认', method:'PUT'/}#{/else}
                     </td>
                     <td class="action">
-                        <a  href="#" onclick="editAddress(${address?.id})">修改</a>
+                        <a  href="#" id="update_${address?.id}" onclick="editAddress(${address?.id})">修改</a>
                         #{vx.deleteLink action:"addresses", id:address.id, name:address.name/}
                         </td>
                 </tr>

@@ -36,8 +36,8 @@ public class UserPasswords extends Controller {
         }
 
         User.updatePassword(newUser, user);
-        String isOk = "isOk";
-        render("UserPasswords/index.html", user, isOk, breadcrumbs);
+        renderArgs.put("isOk","isOk");
+        render("UserPasswords/index.html", user,breadcrumbs);
     }
 
     /**
@@ -61,9 +61,9 @@ public class UserPasswords extends Controller {
             Validation.addError("user.newPassword", "validation.newPassword.maxSize");
         }
         // 新密码比较
-        if (!StringUtils.isNotBlank(newPassword)
-                && newPassword.equals(user.confirmPassword)) {
-            Validation.addError("user.confirmPassword", "validation.confirmPassword");
+        if (StringUtils.isNotBlank(newPassword)
+                && !newPassword.equals(user.confirmPassword)) {
+            Validation.addError("user.newConfirmPassword", "validation.confirmPassword");
         }
 
         // 加密后的原密码比较
