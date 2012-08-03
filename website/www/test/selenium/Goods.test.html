@@ -2,9 +2,11 @@
 'fixture/shops_unit.yml','fixture/goods_unit.yml'] /}
 #{selenium 'Test Goods/index.html Normal'}
 open('/goods')
+*{
 verifyTextPresent('商圈')
 verifyTextPresent('浦东新区')
 verifyTextPresent('陆家嘴')
+*}
 
 *{
 verifyTextPresent('全部 来一份 豆捞坊')
