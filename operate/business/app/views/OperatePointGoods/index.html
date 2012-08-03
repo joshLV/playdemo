@@ -3,6 +3,10 @@
 #{include '/share/nav.html' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/goods.js'}" type="text/javascript" charset="UTF-8"></script>
+
+
+
+
 #{/set}
 #{set 'moreStyles'}
 <style type="text/css">
@@ -32,15 +36,8 @@
     <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateGoods.index()}" method="GET">
         <table width="100%">
             <tr>
-                <td width="30%">商&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：
-                #{select 'condition.supplierId', id:supplierId, class:'select', value:condition?.supplierId}
-                    #{option "0"}不限#{/option}
-                    #{list items:supplierList, as:'supplier'}
-                        #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
-                    #{/list}
-                #{/select}</td>
 
-                <td width="30%">商品名称：<input type="text" name="condition.name" class="input-medium"
+                <td width="30%">积分商品名称：<input type="text" name="condition.name" class="input-medium"
                                             value="${condition?.name}"/></td>
                 <td width="30%">商品编号：<input type="text" name="condition.no" class="input-medium"
                                             value="${condition?.no}"/></td>

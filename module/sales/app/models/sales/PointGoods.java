@@ -1,7 +1,6 @@
 package models.sales;
 
 
-import cache.CacheCallBack;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
@@ -99,6 +98,7 @@ public class PointGoods extends Model {
     /**
      * 商品类型（单选 电子券/实物券）
      */
+
     @Enumerated(EnumType.STRING)
     @Column(name = "material_type")
     public MaterialType materialType;

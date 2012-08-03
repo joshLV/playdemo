@@ -3,7 +3,40 @@
 *{value:     文本框中的值}*
 *{class:     文本框的css class（选填，默认为control-label）}*
 *{required: 文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+
+
 #{field _name}
-    <label for="${field?.id}" class="${_class?:"control-label"}">
-        #{if _required}<span style="color: red; " id="required_star_${field?.id}">*</span>#{/if}&{field?.name}</label>
+
+*{
+%{
+    dis = "none"
+    if (_required){
+        dis = "inline";
+    }
+}%
+
+
+
+<label for="${field?.id}" class="${_class?:"control-label"}">
+   <span style="color: #ff0000; display:${dis};"  id="required_star_${field?.id}">*</span>
+   &{field?.name}
+</label>
+
+}*
+
+
+
+#{if _required}
+<label for="${field?.id}" class="${_class?:"control-label"}">
+    <span style="color: #ff0000; display:inline;"  id="required_star_${field?.id}">*</span>
+&{field?.name}</label>
+#{/if}
+#{else }
+<label for="${field?.id}" class="${_class?:"control-label"}">
+    <span style="color: #ff0000; display:${dis};"  id="required_star_${field?.id}">*</span>
+&{field?.name}</label>
+#{/else}
+
+
+
 #{/field}

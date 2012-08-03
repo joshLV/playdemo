@@ -22,7 +22,6 @@ GET     /goods_brands/{id}                      OperateBrands.goodsBrands
 GET     /category/sub/{id}                      Categories.showSubs
 
 # 积分商品
-GET     /                                       OperatePointGoods.index
 GET     /pointgoods                             OperatePointGoods.index
 GET     /pointgoods/new                         OperatePointGoods.add
 POST    /pointgoods                             OperatePointGoods.create
