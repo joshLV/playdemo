@@ -42,7 +42,8 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
      * @param pattern
      * @param content
      */
-    public static void assertMatch(String pattern, String content) {
+    public static void assertSMSContentMatch(String pattern, String content) {
+        assertTrue("短信内容(" + content + ")超过67字符, size:" + content.length(), content.length() <= 67);
         Pattern ptn = Pattern.compile(pattern);
         boolean ok = ptn.matcher(content).find();
         assertTrue("The content (" + content + ") does not match '" + pattern + "'", ok);
@@ -172,13 +173,13 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
 
         // 消费者短信
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertMatch("【券市场】您尾号" + getLastString(ecouponKFC.eCouponSn, 4) + "券于\\d+月\\d+日\\d+时\\d+分成功消费，门店：优惠拉。客服4006262166", 
+        assertSMSContentMatch("【券市场】您尾号" + getLastString(ecouponKFC.eCouponSn, 4) + "券于\\d+月\\d+日\\d+时\\d+分成功消费，门店：优惠拉。客服4006262166", 
                 msg.getContent());
         // 店员短信
         msg = MockSMSProvider.getLastSMSMessage();
-        assertMatch("【券市场】" + getBeginString(ecouponKFC.orderItems.phone, 3) + "\\*\\*\\*\\*\\*" + 
-                getLastString(ecouponKFC.orderItems.phone, 3) + "的尾号" + getLastString(ecouponKFC.eCouponSn, 4) + "券（面值" +
-                		ecouponKFC.faceValue + "元）于\\d+月\\d+日\\d+时\\d+分验证成功，门店：优惠拉。客服4006262166", msg.getContent());
+        assertSMSContentMatch("【券市场】" + getBeginString(ecouponKFC.orderItems.phone, 3) + "\\*\\*\\*\\*\\*" + 
+                getLastString(ecouponKFC.orderItems.phone, 3) + "尾号" + getLastString(ecouponKFC.eCouponSn, 4) + "券（面值" +
+                		ecouponKFC.faceValue + "元）于\\d+月\\d+日\\d+时\\d+分在优惠拉验证成功。客服4006262166", msg.getContent());
 
         ECoupon ecoupon = ECoupon.findById(ecouponKFC.id);
         ecoupon.refresh();
@@ -193,7 +194,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         Http.Response response = messageSender.doMessageSend(ecouponKFC, "abc", null);
         assertEquals("Unsupport Message", response.out.toString());
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertMatch("【券市场】券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：400-6262-166",
+        assertSMSContentMatch("【券市场】券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：400-6262-166",
                 msg.getContent());      
     }
 
@@ -208,7 +209,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
 
         // 消费者短信
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertMatch("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplierKFC.fullName + "门店。如有疑问请致电：400-6262-166", 
+        assertSMSContentMatch("【券市场】店员工号无效，请核实工号是否正确或是否是" + supplierKFC.fullName + "门店。如有疑问请致电：400-6262-166", 
                 msg.getContent());
 
         ECoupon ecoupon = ECoupon.findById(ecouponKFC.id);
@@ -229,7 +230,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         assertContentEquals("【券市场】" + kfc.fullName + "未在券市场登记使用", response);
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertMatch("【券市场】" + kfc.fullName + "未在券市场登记使用，请致电400-6262-166咨询",
+        assertSMSContentMatch("【券市场】" + kfc.fullName + "未在券市场登记使用，请致电400-6262-166咨询",
                 msg.getContent());                              
     }
 
@@ -246,7 +247,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         assertContentEquals("【券市场】" + kfc.fullName + "已被券市场锁定", response);
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertMatch("【券市场】" + kfc.fullName + "已被券市场锁定，请致电400-6262-166咨询",
+        assertSMSContentMatch("【券市场】" + kfc.fullName + "已被券市场锁定，请致电400-6262-166咨询",
                 msg.getContent());              
     }
 

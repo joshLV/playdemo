@@ -1,20 +1,7 @@
 package controllers;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.FieldCheckUtil;
-import models.admin.SupplierUser;
-import models.order.ECoupon;
-import models.order.ECouponStatus;
-import models.order.VerifyCouponType;
-import models.sales.Shop;
-import models.sms.SMSUtil;
-import models.supplier.Supplier;
-import models.supplier.SupplierStatus;
-import play.mvc.Controller;
 import play.Logger;
-
-import java.util.Date;
+import play.mvc.Controller;
 
 public class EnSmsReceivers extends Controller {
 

@@ -1,7 +1,7 @@
 package controllers;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -12,9 +12,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import play.Logger;
 import play.Play;
 import play.mvc.Controller;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 
 /**
  * @author likang

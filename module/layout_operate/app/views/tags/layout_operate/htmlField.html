@@ -21,7 +21,7 @@
     $(function () {
         var editorPrompt${'_'+field.id} = KindEditor.create('textarea[name="${field.name}"]',
                 {
-                    filterMode:true,
+                    filterMode:false,
                     uploadJson:'${_uploadImgUrl}',
                     allowFileManager:false
                 });
