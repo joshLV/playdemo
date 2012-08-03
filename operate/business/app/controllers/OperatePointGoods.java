@@ -209,28 +209,12 @@ public class OperatePointGoods extends Controller {
 
 
     private static void checkPointPrice( PointGoods pointGoods) {
-//        if (pointGoods.pointPrice == null) {
-//            Validation.addError("pointGoods.pointPrice", "validation.required");
-//        }
-//        if (pointGoods.originalPrice == null) {
-//            Validation.addError("pointGoods.originalPrice", "validation.required");
-//        }
-        if (pointGoods.pointPrice != null && pointGoods.originalPrice != null && pointGoods.pointPrice.compareTo(pointGoods.originalPrice) > 0) {
-            Validation.addError("pointGoods.pointPrice", "validation.lessThanOriginalPrice");
+        if (pointGoods.pointPrice == null) {
+            Validation.addError("pointGoods.pointPrice", "validation.required");
         }
-
-
-
-
-//
-//        if (goods.faceValue != null && goods.originalPrice != null && goods.originalPrice.compareTo(goods.faceValue) > 0) {
-//            Validation.addError("goods.originalPrice", "validation.moreThanFaceValue");
-//        }
-//        if (goods.salePrice != null && goods.originalPrice != null && goods.salePrice.compareTo(goods.originalPrice) < 0) {
-//            Validation.addError("goods.salePrice", "validation.lessThanOriginalPrice");
-//        }
-
-
+        if (pointGoods.faceValue == null) {
+            Validation.addError("pointGoods.faceValue", "validation.required");
+        }
     }
 
 

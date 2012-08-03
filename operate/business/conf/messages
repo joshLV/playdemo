@@ -61,7 +61,7 @@ goods.name=名称
 
 pointGoods.name=积分商品名称
 pointGoods.pointPrice=积分价
-pointGoods.originalPrice=原价
+pointGoods.faceValue=原价
 pointGoods.effective=券有效期
 pointGoods.baseSale=库存
 pointGoods.limitNumber=限量

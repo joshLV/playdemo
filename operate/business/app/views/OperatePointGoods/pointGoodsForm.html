@@ -14,16 +14,26 @@
 
 
     #{layout_operate.nameField name:'pointGoods.name', value:pointGoods?.name, required:true, length:30/}
+
     #{layout_operate.dateScopeField name:'pointGoods.effective', begin:'pointGoods.effectiveAt',end:'pointGoods.expireAt',
-    beginValue:pointGoods?.effectiveAt?.format(), endValue:pointGoods?.expireAt?.format(), required:true/}
-    #{layout_operate.textField name:'pointGoods.originalPrice', value:pointGoods?.originalPrice?:"0",note:'元', required:true/}
-    #{layout_operate.textField name:'pointGoods.pointPrice', value:pointGoods?.pointPrice?:"0", note:'元', required:true/}
+    beginValue:pointGoods?.effectiveAt?.format(), endValue:pointGoods?.expireAt?.format(),
+    required:pointGoods?.materialType?.toString() == models.sales.MaterialType.ELECTRONIC.toString() /}
+
+
+    #{layout_operate.textField name:'pointGoods.faceValue', value:pointGoods?.faceValue?:"",note:'元', required:true/}
+    #{layout_operate.textField name:'pointGoods.pointPrice', value:pointGoods?.pointPrice?:"", note:'点', required:true/}
     #{set i:0/}
 
 
     #{layout_operate.textField name:'pointGoods.baseSale', value:pointGoods?.baseSale, note:'件', required:true/}
 
-    #{layout_operate.textField name:'pointGoods.limitNumber', value:pointGoods?.limitNumber, note:'个'/}
+
+
+
+
+
+
+    #{layout_operate.textField name:'pointGoods.limitNumber', value:pointGoods?.limitNumber?:"", note:'个'/}
 
 
     #{if "add".equals(action)}
@@ -39,7 +49,7 @@
     </div>
     #{/else}
 
-    #{layout_operate.htmlField name:'pointGoods.details', value:pointGoods?.details, uploadImgUrl:'/pointGoods/images', required:true/}
+    #{layout_operate.htmlField name:'pointGoods.details', value:pointGoods?.details, uploadImgUrl:'/Goods/images', required:true/}
 
 
 
@@ -59,14 +69,14 @@
 
 
     function showPrice(nameField) {
-        var originalPrice = $("#pointGoods_originalPrice").val() == null ? 0 : $("#pointGoods_originalPrice").val();
-        var price = parseFloat($(nameField).val()) + parseFloat(originalPrice);
+        var faceValue = $("#pointGoods_faceValue").val() == null ? 0 : $("#pointGoods_faceValue").val();
+        var price = parseFloat($(nameField).val()) + parseFloat(faceValue);
         price = (price == null || price.toString() == "NaN") ? 0 : price;
         $("#realPrice_" + nameField.id).html(price.toFixed(2));
     }
 
     function showAddedPrice() {
-        var originalPrice = $("#pointGoods_originalPrice").val() == null ? 0 : $("#pointGoods_originalPrice").val();
+        var faceValue = $("#pointGoods_faceValue").val() == null ? 0 : $("#pointGoods_faceValue").val();
 
     }
 
@@ -80,19 +90,19 @@
             limitMoneyFormat(this, $("#pointGoods_pointPrice").val());
         })
 
-        $("#pointGoods_originalPrice").keyup(function () {
-            limitMoneyFormat(this, $("#pointGoods_originalPrice").val());
+        $("#pointGoods_faceValue").keyup(function () {
+            limitMoneyFormat(this, $("#pointGoods_faceValue").val());
             showAddedPrice();
         })
-        $("#pointGoods_originalPrice").keydown(function () {
-            limitMoneyFormat(this, $("#pointGoods_originalPrice").val());
+        $("#pointGoods_faceValue").keydown(function () {
+            limitMoneyFormat(this, $("#pointGoods_faceValue").val());
             showAddedPrice();
         })
-        $("#pointGoods_originalPrice").change(function () {
+        $("#pointGoods_faceValue").change(function () {
             showAddedPrice();
         })
-        $("#goods_originalPrice").focus(function () {
-            limitMoneyFormat(this, $("#pointGoods_originalPrice").val());
+        $("#goods_faceValue").focus(function () {
+            limitMoneyFormat(this, $("#pointGoods_faceValue").val());
             showAddedPrice();
         })
       ;
