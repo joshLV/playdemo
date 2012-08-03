@@ -56,57 +56,46 @@
 </div>
 
 <script type="text/javascript">
-    $("input[name='goods.isAllShop']:checked").val() == 'false' ? $("#shop").show() : $("#shop").hide();
+
 
     function showPrice(nameField) {
-        var originalPrice = $("#goods_originalPrice").val() == null ? 0 : $("#goods_originalPrice").val();
+        var originalPrice = $("#pointGoods_originalPrice").val() == null ? 0 : $("#pointGoods_originalPrice").val();
         var price = parseFloat($(nameField).val()) + parseFloat(originalPrice);
         price = (price == null || price.toString() == "NaN") ? 0 : price;
         $("#realPrice_" + nameField.id).html(price.toFixed(2));
     }
 
     function showAddedPrice() {
-        var originalPrice = $("#goods_originalPrice").val() == null ? 0 : $("#goods_originalPrice").val();
-        #{list items:models.resale.ResalerLevel.values(), as: 'level'}
-            var price = parseFloat($('#levelPrices_${level}').val()) + parseFloat(originalPrice);
-            price = (price == null || price.toString() == "NaN") ? 0 : price;
-            $("#realPrice_levelPrices_${level}").html(price.toFixed(2));
-        #{/list}
+        var originalPrice = $("#pointGoods_originalPrice").val() == null ? 0 : $("#pointGoods_originalPrice").val();
+
     }
 
     showAddedPrice();
 
     $(function () {
 
-        $("#goods_faceValue").keyup(function () {
-            limitMoneyFormat(this, $("#goods_faceValue").val());
+
+
+        $("#pointGoods_pointPrice").keyup(function () {
+            limitMoneyFormat(this, $("#pointGoods_pointPrice").val());
         })
 
-        $("#goods_salePrice").keyup(function () {
-            limitMoneyFormat(this, $("#goods_salePrice").val());
-        })
-
-        $("#goods_originalPrice").keyup(function () {
-            limitMoneyFormat(this, $("#goods_originalPrice").val());
+        $("#pointGoods_originalPrice").keyup(function () {
+            limitMoneyFormat(this, $("#pointGoods_originalPrice").val());
             showAddedPrice();
         })
-        $("#goods_originalPrice").keydown(function () {
-            limitMoneyFormat(this, $("#goods_originalPrice").val());
+        $("#pointGoods_originalPrice").keydown(function () {
+            limitMoneyFormat(this, $("#pointGoods_originalPrice").val());
             showAddedPrice();
         })
-        $("#goods_originalPrice").change(function () {
+        $("#pointGoods_originalPrice").change(function () {
             showAddedPrice();
         })
         $("#goods_originalPrice").focus(function () {
-            limitMoneyFormat(this, $("#goods_originalPrice").val());
+            limitMoneyFormat(this, $("#pointGoods_originalPrice").val());
             showAddedPrice();
         })
-        $("#goods_isAllShop_2").click(function () {
-            $("#shop").show();//显示门店列表
-            #{if "edit".equals(action)}
-                $("#selectAll").click();
-            #{/if}
-        });
+      ;
     });
 
     function limitMoneyFormat(obj, value) {

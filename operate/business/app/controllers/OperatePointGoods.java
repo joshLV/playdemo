@@ -1,10 +1,9 @@
 package controllers;
 
 import com.uhuila.common.util.FileUploadUtil;
-import models.resale.ResalerLevel;
-import models.sales.*;
-import models.sales.Goods;
-import models.supplier.Supplier;
+import models.sales.GoodsStatus;
+import models.sales.MaterialType;
+import models.sales.PointGoods;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -17,11 +16,7 @@ import play.mvc.With;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 
 import static play.Logger.warn;
 
@@ -213,16 +208,29 @@ public class OperatePointGoods extends Controller {
     }
 
 
-    private static void checkPointPrice(PointGoods pointGoods) {
-        if (pointGoods.pointPrice == null) {
-            Validation.addError("pointGoods.pointPrice", "validation.required");
-        }
-        if (pointGoods.originalPrice != null) {
-            Validation.addError("pointGoods.originalPrice", "validation.required");
-        }
-        if (pointGoods.pointPrice != null && pointGoods.originalPrice != null && pointGoods.pointPrice.compareTo(pointGoods.originalPrice) < 0) {
+    private static void checkPointPrice( PointGoods pointGoods) {
+//        if (pointGoods.pointPrice == null) {
+//            Validation.addError("pointGoods.pointPrice", "validation.required");
+//        }
+//        if (pointGoods.originalPrice == null) {
+//            Validation.addError("pointGoods.originalPrice", "validation.required");
+//        }
+        if (pointGoods.pointPrice != null && pointGoods.originalPrice != null && pointGoods.pointPrice.compareTo(pointGoods.originalPrice) > 0) {
             Validation.addError("pointGoods.pointPrice", "validation.lessThanOriginalPrice");
         }
+
+
+
+
+//
+//        if (goods.faceValue != null && goods.originalPrice != null && goods.originalPrice.compareTo(goods.faceValue) > 0) {
+//            Validation.addError("goods.originalPrice", "validation.moreThanFaceValue");
+//        }
+//        if (goods.salePrice != null && goods.originalPrice != null && goods.salePrice.compareTo(goods.originalPrice) < 0) {
+//            Validation.addError("goods.salePrice", "validation.lessThanOriginalPrice");
+//        }
+
+
     }
 
 
