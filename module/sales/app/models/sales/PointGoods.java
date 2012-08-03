@@ -4,15 +4,12 @@ package models.sales;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
-import cache.CacheCallBack;
+
 import cache.CacheHelper;
-import com.mysql.jdbc.PingTarget;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.PathUtil;
-import models.resale.ResalerFav;
-import models.supplier.Supplier;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
@@ -26,7 +23,6 @@ import javax.persistence.*;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -55,17 +51,6 @@ public class PointGoods extends Model {
     public static final String IMAGE_DEFAULT = "";
 
     //  ========= 不同的价格列表 =======
-    /**
-     * 商户填写的商品市场价 (积分商品不需要）
-    */
-    /*
-    @Required
-    @Min(0.01)
-    @Max(999999)
-    @Money
-    @Column(name = "face_value")
-    public BigDecimal faceValue;
-    */
 
     /**
      * 积分商品原价
@@ -101,46 +86,12 @@ public class PointGoods extends Model {
     @MaxSize(60)
     public String name;
 
-    /**
-     * 商品标题（短信发送用）
-     */
-    /*
-    @Required
-    @MaxSize(60)
-    public String title;
-    */
-
-    /**
-     * 所属商户ID
-     */
-    @Column(name = "supplier_id")
-    public Long supplierId;
-
-    @ManyToMany(cascade = CascadeType.REFRESH)
-    @JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name
-            = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))
-    public Set<Shop> shops;
-
-    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinTable(name = "goods_categories", inverseJoinColumns = @JoinColumn(name
-            = "category_id"), joinColumns = @JoinColumn(name = "goods_id"))
-    @Required
-    public Set<Category> categories;
 
     /**
      * 原始图片路径
      */
     @Column(name = "image_path")
     public String imagePath;
-
-    /**
-     * 进货量
-     */
-    /*
-    @Column(name = "income_goods_count")
-    public Long incomeGoodsCount;
-    */
-
 
 
     /**
@@ -174,8 +125,6 @@ public class PointGoods extends Model {
     public String useEndTime;
 
 
-    private BigDecimal discount;
-
     /**
      * 积分商品的详情
      */
@@ -184,15 +133,6 @@ public class PointGoods extends Model {
     @MaxSize(65000)
     @Lob
     private String details;
-
-    /**
-     * 温馨提示
-     */
-    /*
-    @MaxSize(65000)
-    @Lob
-    private String prompt;
-    */
 
     /**
      * 售出数量
@@ -220,12 +160,6 @@ public class PointGoods extends Model {
      */
     @Column(name = "limit_number")
     public Integer limitNumber = 0;
-
-    /**
-     * 创建来源
-     */
-    @Column(name = "created_from")
-    public String createdFrom;
 
     /**
      * 创建时间
@@ -273,12 +207,6 @@ public class PointGoods extends Model {
      */
     @Column(name = "display_order")
     public String displayOrder;
-
-    @Required
-    @ManyToOne
-    @JoinColumn(name = "brand_id")
-    public Brand brand;
-
 
     /**
      * 推荐指数.
@@ -344,50 +272,8 @@ public class PointGoods extends Model {
     }
 
 
-    /**
-     * 获取商品所属的商户信息.
-     *
-     * @return
-     */
-    @Transient
-    public Supplier getSupplier() {
-        if (supplierId == null) {
-            return null;
-        }
-        return CacheHelper.getCache(CacheHelper.getCacheKey(Supplier.CACHEKEY + this.supplierId, "GOODS_SUPPLIER"), new CacheCallBack<Supplier>() {
-            @Override
-            public Supplier loadData() {
-                return Supplier.findById(supplierId);
-            }
-        });
-    }
-
-    /*
-    //是否使用全部店
-    @Column(name = "is_all_shop")
-    public Boolean isAllShop = true;
-    */
-
-    /*
-    @Transient
-    public Long topCategoryId;
-    */
-
-    /**
-     * 是否抽奖商品
-     */
-    /*
-    @Column(name = "is_lottery")
-    public Boolean isLottery = false;
-    */
-
     @Transient
     public boolean skipUpdateCache = false;
-
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "goods_id")
-    public List<ResalerFav> resalerFavs;
 
 
     /**
@@ -404,67 +290,6 @@ public class PointGoods extends Model {
 
     public void setDetails(String details) {
         this.details = Jsoup.clean(details, HTML_WHITE_TAGS);
-    }
-
-    public void setDiscount(BigDecimal discount) {
-        if (discount != null && discount.compareTo(BigDecimal.ZERO) >= 0 && discount.compareTo(BigDecimal.TEN) <= 0) {
-            this.discount = discount;
-        } else if (discount.compareTo(BigDecimal.ZERO) < 0) {
-            this.discount = BigDecimal.ZERO;
-        } else if (discount.compareTo(BigDecimal.TEN) > 0) {
-            this.discount = BigDecimal.TEN;
-        }
-    }
-
-    @Column(name = "discount")
-    public BigDecimal getDiscount() {
-        if (discount != null && discount.compareTo(BigDecimal.ZERO) > 0) {
-            return discount;
-        }
-        /*
-        if (faceValue != null && salePrice != null && faceValue.compareTo(BigDecimal.ZERO) > 0) {
-            this.discount = salePrice.divide(faceValue, 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.TEN);
-            if (this.discount.compareTo(BigDecimal.TEN) >= 0) {
-                this.discount = BigDecimal.TEN;
-            }
-        } else {
-            this.discount = BigDecimal.ZERO;
-        } */
-        return BigDecimal.ZERO;
-    }
-
-    @Transient
-    public String getDiscountExpress() {
-        BigDecimal discount = getDiscount();
-        if (discount.compareTo(BigDecimal.ZERO) == 0) {
-            return "0折";
-        }
-        if (discount.compareTo(BigDecimal.TEN) >= 0) {
-            return "无优惠";
-        }
-        if (discount.compareTo(BigDecimal.ZERO) < 0) {
-            return "";
-
-        }
-        DecimalFormat format = new DecimalFormat("#.#");
-        return format.format(discount.doubleValue()) + "折";
-    }
-
-    @Transient
-    public String getDiscountExpress1() {
-        BigDecimal discount = getDiscount();
-        if (discount.compareTo(BigDecimal.ZERO) == 0) {
-            return "";
-        }
-        if (discount.compareTo(BigDecimal.TEN) >= 0) {
-            return "";
-        }
-        if (discount.compareTo(BigDecimal.ZERO) < 0) {
-            return "";
-
-        }
-        DecimalFormat format = new DecimalFormat("0.0");
-        return format.format(discount.doubleValue());
     }
 
     /**
@@ -534,25 +359,19 @@ public class PointGoods extends Model {
         updateGoods.effectiveAt = pointGoods.effectiveAt;
         updateGoods.expireAt = DateUtil.getEndOfDay(pointGoods.expireAt);
         updateGoods.originalPrice = pointGoods.originalPrice;
-        pointGoods.discount = null;
-        updateGoods.setDiscount(pointGoods.getDiscount());
         updateGoods.pointPrice = pointGoods.pointPrice;
         updateGoods.baseSale = pointGoods.baseSale;
         updateGoods.materialType = pointGoods.materialType;
-        updateGoods.categories = pointGoods.categories;
         updateGoods.setDetails(pointGoods.getDetails());
         updateGoods.updatedAt = new Date();
         updateGoods.updatedBy = pointGoods.updatedBy;
-        updateGoods.brand = pointGoods.brand;
         updateGoods.status = pointGoods.status;
         updateGoods.keywords = pointGoods.keywords;
         updateGoods.limitNumber = pointGoods.limitNumber;
         if (!StringUtils.isEmpty(pointGoods.imagePath)) {
             updateGoods.imagePath = pointGoods.imagePath;
         }
-        if (pointGoods.supplierId != null) {
-            updateGoods.supplierId = pointGoods.supplierId;
-        }
+
         updateGoods.useBeginTime = pointGoods.useBeginTime;
         updateGoods.useEndTime = pointGoods.useEndTime;
 
@@ -593,25 +412,6 @@ public class PointGoods extends Model {
                 GoodsStatus.ONSALE,
                 DeletedStatus.UN_DELETED,
                 new Date()).fetch(limit);
-    }
-
-    /**
-     * 根据商品分类和数量取出指定数量的商品.
-     *
-     * @param limit
-     * @return
-     */
-    public static List<PointGoods> findTopByCategory(long categoryId, int limit) {
-        EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select g from PointGoods g where g.status=:status and g.deleted=:deleted " +
-                "and g.baseSale >= 1 and g.expireAt > :now and g.id in (select g.id from g.categories c where c.id = :categoryId) " +
-                "order by priority DESC,createdAt DESC");
-        q.setParameter("status", GoodsStatus.ONSALE);
-        q.setParameter("deleted", DeletedStatus.UN_DELETED);
-        q.setParameter("now", new Date());
-        q.setParameter("categoryId", categoryId);
-        q.setMaxResults(limit);
-        return q.getResultList();
     }
 
     public static List<PointGoods> findInIdList(List<Long> goodsIds) {
