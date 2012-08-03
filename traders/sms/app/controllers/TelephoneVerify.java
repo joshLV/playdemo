@@ -68,25 +68,25 @@ public class TelephoneVerify extends Controller {
                 || supplierUser.supplier == null
                 || supplierUser.supplier.deleted == DeletedStatus.DELETED
                 || supplierUser.supplier.status == SupplierStatus.FREEZE) {
-            Logger.error("telephone verify failed: invalid caller %s", caller);
+            Logger.info("telephone verify failed: invalid caller %s", caller);
             renderText("8");//对不起，商户不存在
         }
 
         //开始验证
         ECoupon ecoupon = ECoupon.query(coupon, null);
         if (ecoupon == null) {
-            Logger.error("telephone verify failed: coupon not found");
+            Logger.info("telephone verify failed: coupon not found");
             renderText("7");//对不起，未找到此券
         }
 
         if (ecoupon.status == ECouponStatus.CONSUMED) {
-            Logger.error("telephone verify failed: coupon consumed");
+            Logger.info("telephone verify failed: coupon consumed");
             renderText("10");//该券无法重复消费。消费时间为
         } else if (ecoupon.status != ECouponStatus.UNCONSUMED) {
-            Logger.error("telephone verify failed: coupon status invalid. %s", ecoupon.status);
+            Logger.info("telephone verify failed: coupon status invalid. %s", ecoupon.status);
             renderText("11");//对不起，该券无法消费
         } else if (ecoupon.expireAt.before(new Date())) {
-            Logger.error("telephone verify failed: coupon expired");
+            Logger.info("telephone verify failed: coupon expired");
             renderText("12");//对不起，该券已过期
         } else {
             ecoupon.consumeAndPayCommission(supplierUser.shop.id, null, supplierUser, VerifyCouponType.CLERK_MESSAGE);
