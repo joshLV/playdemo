@@ -4,6 +4,8 @@
 
 # Home page
 GET     /                                       Application.index
+GET     /index                                  PointGoods.index
+GET     /goods/{id}                             PointGoods.show
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

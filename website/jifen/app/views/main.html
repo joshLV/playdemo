@@ -1,16 +1,92 @@
 <!DOCTYPE html>
-
 <html>
-    <head>
-        <title>#{get 'title' /}</title>
-        <meta charset="${_response_encoding}">
-        <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
-        #{get 'moreStyles' /}
-        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
-        <script src="@{'/public/javascripts/jquery-1.6.4.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
-        #{get 'moreScripts' /}
-    </head>
-    <body>
-        #{doLayout /}
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>#{get 'title' /}</title>
+#{get 'metaContent'/}
+#{asset.css src:['/y/base.min.css', '/y/sprite.min.css'] /}
+    <link rel="shortcut icon" href="#{asset.url href:'/images/y/favicon.ico'/}" type="image/x-icon" />
+#{get 'moreStyles' /}
+#{asset.js src:['/u/jquery-1.7.2.min.js', '/y/base.js'] /}
+
+</head>
+<body>
+<div id="topbar">
+    <div id="topbar-bd">
+        <ul>
+        #{if cas?.isLogin}
+            <li><a class="login" target="_blank" href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}" id="login_name">${cas.loginName}</a></li>
+            <li><a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}">我的一百券</a></li>
+            <li><a href="/logout">退出</a></li>
+        #{/if}
+        #{else}
+            <li class="first"><a class="login" id="login_name" href="/login">登录</a></li> <li><a class="signup" href="/register">注册</a></li>
+            <!-- <li><a class="quick" href="" target="_blank">快捷登录</a></li> -->
+        #{/else}
+            <li><a id="favorite" class="favorite" href="">收藏一百券</a></li>
+            <li class="last"><a class="follow" id="weibo" href="http://weibo.com/uhuila1" target="_blank">关注我们</a></li>
+        </ul>
+        <div class="hotline">客服热线：<strong>400-6262-166</strong></div>
+    </div>
+</div><!-- #topbar -->
+
+<div id="header" class="clearfix">
+    <div id="logo"><a href="http://www.yibaiquan.com/"><img src="http://img.uhcdn.com/images/y/logo.png" width="180" height="96" /></a></div>
+    <div id="promise"><a href="http://www.yibaiquan.com/service"><img src="http://img.uhcdn.com/images/y/promise.png" width="525" height="96" /></a></div>
+    <div id="cart">
+        <div class="cart-box">
+            <div class="cart-box-hd clearfix">
+                <span class="cart-icon">购物车</span>
+                <span class="cart-num">有(<em id="cart-count">${count}</em>)件商品</span>
+                <b class="arrow"></b>
+                <input type="hidden" id="reload" value="true" />
+            </div>
+            <div class="cart-box-bd">
+            </div>
+        </div>
+        <a class="cart-btn" target="_blank" href="/carts">去结算</a>
+    </div>
+</div><!-- #header -->
+
+<div id="navbar">
+    <div id="nav">
+        <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}" #{if categoryId == 0}class="curr"#{/if}>首页</a>
+        <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/1" #{if categoryId == 1}class="curr"#{/if}>餐饮美食</a>
+        <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/2" #{if categoryId == 2}class="curr"#{/if}>食品饮料</a>
+        <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/7" #{if categoryId == 7}class="curr"#{/if}>休闲娱乐</a>
+        <a target="_blank" href="http://jf.${play.Play.configuration.getProperty("application.baseDomain")}/index" #{if categoryId == 7}class="curr"#{/if}>积分商城</a>
+    </div>
+</div><!-- #navbar -->
+
+#{doLayout /}
+
+<div id="footer">
+    <div class="ft-nav">
+        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/about" target="_blank">关于我们</a> |
+        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/contact" target="_blank">联系我们</a> |
+        <!--<a href="http://quanmx.com/" target="_blank">商户入驻</a> |-->
+        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/help" target="_blank">常见问题</a>
+    </div>
+    <div class="copyright">
+        Copyright © 2012 一百券YiBaiQuan.COM 版权所有 <span> 沪ICP备08114451号-4</span>
+    </div>
+</div><!-- #footer -->
+
+#{get 'moreScripts' /}
+<div style="display:none">
+    <script src="http://s84.cnzz.com/stat.php?id=4205049&web_id=4205049" language="JavaScript"></script>
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', '${play.Play.configuration.getProperty("google.analytics.account")}']);
+        _gaq.push(['_setDomainName', '${play.Play.configuration.getProperty("application.baseDomain")}']);
+        _gaq.push(['_setAllowLinker', true]);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+</div>
+</body>
 </html>

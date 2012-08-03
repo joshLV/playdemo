@@ -1,0 +1,219 @@
+#{extends 'main.html' /}
+#{set title: helper.JifenTitle.getDetailTitle(goods) /}
+#{set 'metaContent'}
+    #{set detailKeywords: helper.JifenTitle.getDetailKeyWords(goods) /}
+<meta name="Description" content="一百券-,${detailKeywords}消费券,代金券,优惠券,美食券,电子券,提货券">
+<meta name="Keywords" content="${detailKeywords}">
+#{/set}
+#{set 'moreStyles'}
+    #{asset.css src:['/y/jifen/detail.css']/}
+#{/set}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/goods-show.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+    //直接在文本框里输入购买数量
+    $("#number").blur(function () {
+        try {
+            var goods_id=$("#goodsId").val();
+            var limitNumber = '${goods.limitNumber}';
+            var boughtNumber = '${boughtNumber}';
+            var number = Number($(this).val())
+            var stock = Number($("#stock").val())
+            if (number <= 0) {
+                $(this).val(1);
+                return false;
+            }
+            if (number > 999) {
+                $(this).val(999);
+                return false;
+            }
+
+            if (limitNumber >0 && number > limitNumber) {
+                $(this).val(limitNumber-boughtNumber);
+                $("#last_num_" + goods_id).val(limitNumber - boughtNumber);
+                return false;
+            }
+            if (limitNumber>0 && (limitNumber > boughtNumber) && number > (limitNumber - boughtNumber)) {
+                $(this).val(limitNumber - boughtNumber);
+                $("#last_num_" + goods_id).val(limitNumber - boughtNumber);
+                return false;
+            }
+            if (number > stock) {
+                $(this).val(stock)
+                $("#stock_hit").css("display", "inline")
+            }
+            $("#last_num_" + goods_id).val($(this).val())
+            ;
+        } catch (e) {
+            $(this).val(1);
+        }
+    });
+
+</script>
+#{/set}
+
+<div id="content">
+<h1>${goods.name}</h1>
+
+<div id="summary" class="clearfix">
+    <div id="leftBox"><!-- 此div为了规避.qvalu元素中最后一个文字被复制的问题 by Junyi -->
+        <div id="gallery">
+            <img src="${goods.imageLargePath}" alt="${title}"/>
+        </div>
+
+        <div id="property">
+        #{form @index(), id:'order_create_form' }
+
+            <ul id="metaBox">
+                #{if params['isSupplier']== null || !params['isSupplier']}
+                    <li>积 分 价：<span class="price">&{goods.pointPrice}</span>分</li>
+                #{/if}
+                #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
+                    <li>原　　价：
+                        <del>&yen;${goods.faceValue}</del>
+                    </li>
+                #{/if}
+                <li>商品类型：&{'goods.'+goods.materialType}</li>
+                <li>配送方式：#{if models.sales.MaterialType.ELECTRONIC.equals(goods.materialType)}
+                    手机短信#{/if}#{else}快递 (运费：${models.order.Order.FREIGHT} 元)#{/else}</li>
+                <li>券有效期：${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</li>
+                <li>购买数量：
+                        <span id="amount">
+                            <input class="amount-ipt" type="text" value="1" />
+                            <span class="increase-btn"></span>
+                            <span class="decrease-btn"></span>
+                        </span>
+                    件
+                </li>
+
+            </ul>
+
+            <div id="btnBox">
+                #{if goods.onSale()}
+
+
+                    <a class="btn" href="#">立即兑换<b></b></a>
+
+
+                    <div class="error" style="display:none">
+                        <span class="icon"></span>
+                        <h4 class="text">您没有足够积分兑换该商品</h4>
+                        <a class="close" id="J_close" href="#" title="关闭"></a>
+                    </div>
+                #{/if}
+                #{elseif params['isSupplier']== null || !params['isSupplier']}
+                    <span>已下架</span>
+                #{/elseif}
+            </div>
+
+        #{/form}
+        </div>
+        <!-- #property -->
+    </div>
+
+    #{if recommendPointGoodsList?.size()>0}
+        <div id="hotex">
+            <div class="hd">热门兑换 <a class="more" href=""></a></div>
+            <ul class="bd">
+            #{set i:1/}
+            #{list recommendPointGoodsList, as:'aGoods'}
+                #{set goodsAlt:helper.JifenTitle.getDetailTitle(aGoods) /}
+                #{if i%5==0}
+                <li class="last">
+                #{/if}
+                #{else}
+                <li>
+                #{/else}
+                <a class="image" href="" target="_blank"><img src="${aGoods.imageSmallPath}" width="48"></a>
+
+                <a class="title" href="" target="_blank">${aGoods.name}</a>
+
+                <span>积分价：<b>${aGoods.pointPrice}</b>分</span>
+                </li>
+                #{set i:i+1/}
+            #{/list}
+            </ul>
+        </div> <!-- #hotex -->
+    #{/if}
+
+</div>
+<!-- #summary -->
+
+#{if recommendGoodsList?.size()>0}
+<div id="recommend">
+    <div class="hd">推荐商品</div>
+    <ul class="bd clearfix">
+        #{set i:1/}
+        #{list recommendGoodsList, as:'aGoods'}
+            #{set goodsAlt:helper.Title.getDetailTitle(aGoods) /}
+            #{if i%5==0}
+            <li class="last">
+            #{/if}
+            #{else}
+            <li>
+            #{/else}
+            <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}"
+                                                                             </a></div>
+            <div class="title"><a href="" target="_blank">${aGoods.name}</a></div>
+            <div class="attri">
+                <del>原价：${aGoods.faceValue}</del>
+                <span #{if aGoods.materialType ==models.sales.MaterialType.ELECTRONIC}class="coupon" #{/if}#{else}class="coupon entity"#{/else}>&{'goods.'+aGoods.materialType}</span>
+            </div>
+            <div class="price">现价：<b>&yen;${aGoods.salePrice}</b></div>
+        </li>
+            #{set i:i+1/}
+        #{/list}
+    </ul>
+</div>
+#{/if}
+<!-- #recommend -->
+
+<div id="details" class="tab-item">
+    <div class="hd">商品详情</a></div>
+    <div class="bd">${goods?.details?.raw()}
+    </div>
+</div>
+<!-- #details -->
+
+
+<div id="consult" class="tab-item">
+    <div class="hd">
+        <b>购买咨询</b>
+    #{if questions.size() == 10}
+        <a href="##question-form" id="show-more">更多>></a>
+        <input type="hidden" id="max-result" value="${questions.size() + 1}">
+    #{/if}
+    </div>
+    <div class="bd" id="q-list">
+        <input type="hidden" value="${questions.size()}" id="q-size"/> #{list items:questions, as:'question'}
+        <div class="question">
+            <dl>
+                <dt>咨询内容：</dt>
+                <dd>
+                ${question.content}<span class="date">${question?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</span>
+                </dd>
+            </dl>
+        </div>
+        <div class="answer">
+            <dl>
+                #{if question.reply != null}
+                    <dt>客服回复：</dt>
+                    <dd>
+                    ${question.reply}<span class="date">${question?.repliedAt?.format('yyyy-MM-dd HH:mm:ss')}</span>
+                    </dd>
+                #{/if} #{else}
+                <dt>待回复,</dt>
+                <dd>请耐心等待^_^</dd>
+            #{/else}
+            </dl>
+        </div>
+    #{/list}
+    </div>
+    <form id="question-form">
+        <label>发表咨询：</label>
+        <textarea class="con" cols="80" rows="5" id="question"></textarea>
+        <span id="q-error" style="display: none"></span>
+        <button class="submit" id="submit-question">提 交</button>
+    </form>
+</div><!-- #consult -->
+</div><!-- #content -->
