@@ -1,6 +1,7 @@
 package models.sales;
 
 
+import cache.CacheCallBack;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
@@ -574,5 +575,23 @@ public class PointGoods extends Model {
 
     }
 
+    public boolean onSale() {
+        return (GoodsStatus.ONSALE.equals(status) && expireAt.after(new Date()) &&
+                baseSale > 0 && DeletedStatus.UN_DELETED.equals(deleted));
+    }
+
+    public Long summaryCount() {
+        final Long goodsId = this.id;
+        GoodsStatistics statistics = CacheHelper.getCache(CacheHelper.getCacheKey(GoodsStatistics.CACHEKEY_GOODSID + goodsId, "GOODSSTATS"), new CacheCallBack<GoodsStatistics>() {
+            @Override
+            public GoodsStatistics loadData() {
+                return GoodsStatistics.find("goodsId", goodsId).first();
+            }
+        });
+        if (statistics == null) {
+            return 0l;
+        }
+        return statistics.summaryCount;
+    }
 
 }
