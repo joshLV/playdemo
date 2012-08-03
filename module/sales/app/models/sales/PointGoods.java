@@ -1,14 +1,29 @@
 package models.sales;
 
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import com.mysql.jdbc.PingTarget;
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.FileUploadUtil;
+import com.uhuila.common.util.PathUtil;
+import models.resale.ResalerFav;
+import models.supplier.Supplier;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.data.validation.*;
+import play.db.jpa.JPA;
 import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.*;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Set;
+import java.text.DecimalFormat;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,6 +50,40 @@ public class PointGoods extends Model {
     public static final String IMAGE_ORIGINAL = "nw";
     public static final String IMAGE_DEFAULT = "";
 
+    //  ========= 不同的价格列表 =======
+    /**
+     * 商户填写的商品市场价 (积分商品不需要）
+    */
+    /*
+    @Required
+    @Min(0.01)
+    @Max(999999)
+    @Money
+    @Column(name = "face_value")
+    public BigDecimal faceValue;
+    */
+
+    /**
+     * 积分商品原价
+     */
+    @Required
+    @Min(0)
+    @Max(999999)
+    @Money
+    @Column(name = "original_price")
+    public BigDecimal originalPrice;
+
+    /**
+     * 积分商品 积分兑换价
+     */
+    @Min(0)
+    @Max(999999)
+    @Money
+    @Column(name = "point_price")
+    public BigDecimal pointPrice;
+
+    //  ======  价格列表结束 ==========
+
     /**
      * 商品编号
      */
@@ -48,77 +97,14 @@ public class PointGoods extends Model {
     @MaxSize(60)
     public String name;
 
-
-
     /**
-     * 积分价
+     * 商品标题（短信发送用）
      */
-    @Min(0)
-    @Max(999999)
-    @Money
-    @Column(name = "point_price")
-    public BigDecimal pointPrice;
-
-
-
-    /**
-     * 商品类型（单选 电子券/实物券）
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "material_type")
-    public MaterialType materialType;
-
-    /**
-     * 券有效期（电子券必填，实物券不需要）
-     */
+    /*
     @Required
-    @Column(name = "effective_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date effectiveAt;
-
-
-
-    /**
-     * 库存
-     */
-    @Required
-    @Min(0)
-    @Max(999999)
-    @Column(name = "base_sale")
-    public Long baseSale;
-
-
-    /**
-     * 售出数量
-     */
-    @Column(name = "sale_count")
-    public int saleCount;
-
-
-
-    /**
-     * 限量
-     */
-    @Column(name = "limit_number")
-    public Integer limitNumber = 0;
-
-
-    /**
-     * 原始图片路径
-     */
-    @Column(name = "image_path")
-    public String imagePath;
-
-
-    /**
-     * 详情
-     */
-    @Required
-    @MinSize(7)
-    @MaxSize(65000)
-    @Lob
-    private String details;
-
+    @MaxSize(60)
+    public String title;
+    */
 
     /**
      * 所属商户ID
@@ -137,13 +123,36 @@ public class PointGoods extends Model {
     @Required
     public Set<Category> categories;
 
+    /**
+     * 原始图片路径
+     */
+    @Column(name = "image_path")
+    public String imagePath;
 
     /**
      * 进货量
      */
+    /*
     @Column(name = "income_goods_count")
     public Long incomeGoodsCount;
+    */
 
+
+
+    /**
+     * 商品类型（单选 电子券/实物券）
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "material_type")
+    public MaterialType materialType;
+
+    /**
+     * 券有效开始日
+     */
+    @Required
+    @Column(name = "effective_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date effectiveAt;
 
     /**
      * 券有效结束日
@@ -161,17 +170,59 @@ public class PointGoods extends Model {
     public String useEndTime;
 
 
+    private BigDecimal discount;
+
+    /**
+     * 积分商品的详情
+     */
+    @Required
+    @MinSize(7)
+    @MaxSize(65000)
+    @Lob
+    private String details;
+
+    /**
+     * 温馨提示
+     */
+    /*
+    @MaxSize(65000)
+    @Lob
+    private String prompt;
+    */
+
+    /**
+     * 售出数量
+     */
+    @Column(name = "sale_count")
+    public int saleCount;
+
+    /**
+     * 库存
+     */
+    @Required
+    @Min(0)
+    @Max(999999)
+    @Column(name = "base_sale")
+    public Long baseSale;
 
     /**
      * 积分商品状态,
      */
     @Enumerated(EnumType.STRING)
     public GoodsStatus status;
+
+    /**
+     * 限量
+     */
+    @Column(name = "limit_number")
+    public Integer limitNumber = 0;
+
     /**
      * 创建来源
      */
     @Column(name = "created_from")
     public String createdFrom;
+
     /**
      * 创建时间
      */
@@ -200,12 +251,12 @@ public class PointGoods extends Model {
     @Column(name = "updated_by")
     public String updatedBy;
 
-
     /**
      * 逻辑删除,0:未删除，1:已删除
      */
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
+
     /**
      * 乐观锁
      */
@@ -258,10 +309,466 @@ public class PointGoods extends Model {
     @Column(name = "keywords")
     public String keywords;
 
+    /**
+     * 不允许发布的电子商务网站.
+     * 设置后将不允许自动发布到这些电子商务网站上
+     */
+    /*
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "goods")
+    public Set<GoodsUnPublishedPlatform> unPublishedPlatforms;
+    */
 
+    // 图片服务器
+    public static final String IMAGE_SERVER = Play.configuration.getProperty
+            ("image.server", "img0.uhcdn.com");
+    //    private static final String IMAGE_ROOT_GENERATED = Play.configuration
+    //            .getProperty("image.root", "/p");
+    public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
+
+    static {
+        //增加可信标签到白名单
+        HTML_WHITE_TAGS.addTags("embed", "object", "param", "span", "div", "table", "tbody", "tr", "td",
+                "background-color", "width", "figure", "figcaption", "strong", "p", "dl", "dt", "dd");
+        //增加可信属性
+        HTML_WHITE_TAGS.addAttributes(":all", "style", "class", "id", "name");
+        HTML_WHITE_TAGS.addAttributes("table", "style", "cellpadding", "cellspacing", "border", "bordercolor", "align");
+        HTML_WHITE_TAGS.addAttributes("span", "style", "border", "align");
+        HTML_WHITE_TAGS.addAttributes("object", "width", "height", "classid", "codebase");
+        HTML_WHITE_TAGS.addAttributes("param", "name", "value");
+        HTML_WHITE_TAGS.addAttributes("embed", "src", "quality", "width", "height", "allowFullScreen",
+                "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
+    }
+
+
+    /**
+     * 获取商品所属的商户信息.
+     *
+     * @return
+     */
+    @Transient
+    public Supplier getSupplier() {
+        if (supplierId == null) {
+            return null;
+        }
+        return CacheHelper.getCache(CacheHelper.getCacheKey(Supplier.CACHEKEY + this.supplierId, "GOODS_SUPPLIER"), new CacheCallBack<Supplier>() {
+            @Override
+            public Supplier loadData() {
+                return Supplier.findById(supplierId);
+            }
+        });
+    }
+
+    /*
     //是否使用全部店
     @Column(name = "is_all_shop")
     public Boolean isAllShop = true;
+    */
+
+    /*
+    @Transient
+    public Long topCategoryId;
+    */
+
+    /**
+     * 是否抽奖商品
+     */
+    /*
+    @Column(name = "is_lottery")
+    public Boolean isLottery = false;
+    */
+
+    @Transient
+    public boolean skipUpdateCache = false;
+
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "goods_id")
+    public List<ResalerFav> resalerFavs;
+
+
+    /**
+     * 商品详情
+     *
+     * @return
+     */
+    public String getDetails() {
+        if (StringUtils.isBlank(details) || "<br />".equals(details)) {
+            return "";
+        }
+        return Jsoup.clean(details, HTML_WHITE_TAGS);
+    }
+
+    public void setDetails(String details) {
+        this.details = Jsoup.clean(details, HTML_WHITE_TAGS);
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        if (discount != null && discount.compareTo(BigDecimal.ZERO) >= 0 && discount.compareTo(BigDecimal.TEN) <= 0) {
+            this.discount = discount;
+        } else if (discount.compareTo(BigDecimal.ZERO) < 0) {
+            this.discount = BigDecimal.ZERO;
+        } else if (discount.compareTo(BigDecimal.TEN) > 0) {
+            this.discount = BigDecimal.TEN;
+        }
+    }
+
+    @Column(name = "discount")
+    public BigDecimal getDiscount() {
+        if (discount != null && discount.compareTo(BigDecimal.ZERO) > 0) {
+            return discount;
+        }
+        /*
+        if (faceValue != null && salePrice != null && faceValue.compareTo(BigDecimal.ZERO) > 0) {
+            this.discount = salePrice.divide(faceValue, 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.TEN);
+            if (this.discount.compareTo(BigDecimal.TEN) >= 0) {
+                this.discount = BigDecimal.TEN;
+            }
+        } else {
+            this.discount = BigDecimal.ZERO;
+        } */
+        return BigDecimal.ZERO;
+    }
+
+    @Transient
+    public String getDiscountExpress() {
+        BigDecimal discount = getDiscount();
+        if (discount.compareTo(BigDecimal.ZERO) == 0) {
+            return "0折";
+        }
+        if (discount.compareTo(BigDecimal.TEN) >= 0) {
+            return "无优惠";
+        }
+        if (discount.compareTo(BigDecimal.ZERO) < 0) {
+            return "";
+
+        }
+        DecimalFormat format = new DecimalFormat("#.#");
+        return format.format(discount.doubleValue()) + "折";
+    }
+
+    @Transient
+    public String getDiscountExpress1() {
+        BigDecimal discount = getDiscount();
+        if (discount.compareTo(BigDecimal.ZERO) == 0) {
+            return "";
+        }
+        if (discount.compareTo(BigDecimal.TEN) >= 0) {
+            return "";
+        }
+        if (discount.compareTo(BigDecimal.ZERO) < 0) {
+            return "";
+
+        }
+        DecimalFormat format = new DecimalFormat("0.0");
+        return format.format(discount.doubleValue());
+    }
+
+    /**
+     * 小规格图片路径
+     */
+    @Transient
+    public String getImageSmallPath() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_SMALL);
+    }
+
+
+    /**
+     * 中等规格图片路径
+     */
+    @Transient
+    public String getImageMiddlePath() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_MIDDLE);
+    }
+
+    /**
+     * 大规格图片路径
+     */
+    @Transient
+    public String getImageLargePath() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_LARGE);
+    }
+
+    @Transient
+    public String getImageOriginalPath() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_ORIGINAL);
+    }
+
+    public GoodsStatus getStatus() {
+        if (status != null && GoodsStatus.ONSALE.equals(status) &&
+                (expireAt != null && expireAt.before(new Date())) || (baseSale != null && baseSale <= 0)) {
+            status = GoodsStatus.OFFSALE;
+        }
+        return status;
+    }
+
+    /**
+     * @return
+     */
+    @Transient
+    public boolean isExpired() {
+        return expireAt != null && expireAt.before(new Date());
+    }
+
+    //=================================================== 数据库操作 ====================================================
+
+    @Override
+    public boolean create() {
+        deleted = DeletedStatus.UN_DELETED;
+        saleCount = 0;
+        createdAt = new Date();
+        expireAt = DateUtil.getEndOfDay(expireAt);
+        return super.create();
+    }
+
+    public static void update(Long id, PointGoods pointGoods) {
+        models.sales.PointGoods updateGoods = models.sales.PointGoods.findById(id);
+        if (updateGoods == null) {
+            return;
+        }
+        updateGoods.name = pointGoods.name;
+        updateGoods.no = pointGoods.no;
+        updateGoods.effectiveAt = pointGoods.effectiveAt;
+        updateGoods.expireAt = DateUtil.getEndOfDay(pointGoods.expireAt);
+        updateGoods.originalPrice = pointGoods.originalPrice;
+        pointGoods.discount = null;
+        updateGoods.setDiscount(pointGoods.getDiscount());
+        updateGoods.pointPrice = pointGoods.pointPrice;
+        updateGoods.baseSale = pointGoods.baseSale;
+        updateGoods.materialType = pointGoods.materialType;
+        updateGoods.categories = pointGoods.categories;
+        updateGoods.setDetails(pointGoods.getDetails());
+        updateGoods.updatedAt = new Date();
+        updateGoods.updatedBy = pointGoods.updatedBy;
+        updateGoods.brand = pointGoods.brand;
+        updateGoods.status = pointGoods.status;
+        updateGoods.keywords = pointGoods.keywords;
+        updateGoods.limitNumber = pointGoods.limitNumber;
+        if (!StringUtils.isEmpty(pointGoods.imagePath)) {
+            updateGoods.imagePath = pointGoods.imagePath;
+        }
+        if (pointGoods.supplierId != null) {
+            updateGoods.supplierId = pointGoods.supplierId;
+        }
+        updateGoods.useBeginTime = pointGoods.useBeginTime;
+        updateGoods.useEndTime = pointGoods.useEndTime;
+
+        updateGoods.save();
+    }
+
+
+    public static final String CACHEKEY = "SALES_GOODS";
+
+    public static final String CACHEKEY_BASEID = "SALES_GOODS_ID";
+
+    @Override
+    public void _save() {
+        if (!this.skipUpdateCache) {
+            CacheHelper.delete(CACHEKEY);
+            CacheHelper.delete(CACHEKEY + this.id);
+            CacheHelper.delete(CACHEKEY_BASEID + this.id);
+        }
+        super._save();
+    }
+
+    @Override
+    public void _delete() {
+        CacheHelper.delete(CACHEKEY);
+        CacheHelper.delete(CACHEKEY + this.id);
+        CacheHelper.delete(CACHEKEY_BASEID + this.id);
+        super._delete();
+    }
+
+    /**
+     * 根据商品分类和数量取出指定数量的商品.
+     *
+     * @param limit
+     * @return
+     */
+    public static List<PointGoods> findTop(int limit) {
+        return find("status=? and deleted=? and baseSale >=1 and expireAt > ? order by priority DESC,createdAt DESC",
+                GoodsStatus.ONSALE,
+                DeletedStatus.UN_DELETED,
+                new Date()).fetch(limit);
+    }
+
+    /**
+     * 根据商品分类和数量取出指定数量的商品.
+     *
+     * @param limit
+     * @return
+     */
+    public static List<PointGoods> findTopByCategory(long categoryId, int limit) {
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("select g from PointGoods g where g.status=:status and g.deleted=:deleted " +
+                "and g.baseSale >= 1 and g.expireAt > :now and g.id in (select g.id from g.categories c where c.id = :categoryId) " +
+                "order by priority DESC,createdAt DESC");
+        q.setParameter("status", GoodsStatus.ONSALE);
+        q.setParameter("deleted", DeletedStatus.UN_DELETED);
+        q.setParameter("now", new Date());
+        q.setParameter("categoryId", categoryId);
+        q.setMaxResults(limit);
+        return q.getResultList();
+    }
+
+    public static List<PointGoods> findInIdList(List<Long> goodsIds) {
+        if(goodsIds == null || goodsIds.size() == 0) {
+            return new ArrayList<>();
+        }
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("select g from PointGoods g where g.status=:status and g.deleted=:deleted " +
+                "and g.id in :ids");
+        q.setParameter("status", GoodsStatus.ONSALE);
+        q.setParameter("deleted", DeletedStatus.UN_DELETED);
+        q.setParameter("ids", goodsIds);
+        return q.getResultList();
+    }
+
+    public static PointGoods findUnDeletedById(long id) {
+        return find("id=? and deleted=?", id, DeletedStatus.UN_DELETED).first();
+    }
+
+    public static PointGoods findOnSale(long id) {
+        return find("id=? and deleted=? and status=? and baseSale >= 1 and expireAt > ?", id,
+                DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).first();
+    }
+
+    public static JPAExtPaginator<PointGoods> findByCondition(GoodsCondition condition,
+                                                         int pageNumber, int pageSize) {
+
+        JPAExtPaginator<PointGoods> goodsPage = new JPAExtPaginator<>
+                ("PointGoods g", "g", PointGoods.class, condition.getFilter(),
+                        condition.getParamMap())
+                .orderBy(condition.getOrderByExpress());
+        goodsPage.setPageNumber(pageNumber);
+        goodsPage.setPageSize(pageSize);
+        goodsPage.setBoundaryControlsEnabled(false);
+        return goodsPage;
+    }
+
+
+    public static List<Brand> findBrandByCondition(GoodsCondition condition) {
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("select distinct g.brand from PointGoods g where " + condition.getFilter());
+        for (String key : condition.getParamMap().keySet()) {
+            q.setParameter(key, condition.getParamMap().get(key));
+        }
+
+        return q.getResultList();
+    }
+
+    // 删除商品（修改状态为deleted）
+    public static void delete(Long... ids) {
+        for (Long id : ids) {
+            models.sales.PointGoods goods = models.sales.PointGoods.findById(id);
+            if (goods != null) {
+                goods.deleted = DeletedStatus.DELETED;
+                goods.save();
+            }
+        }
+    }
+
+    // 修改上下架状态
+    public static void updateStatus(GoodsStatus status, Long... ids) {
+        for (Long id : ids) {
+            models.sales.PointGoods goods = models.sales.PointGoods.findById(id);
+            goods.status = status;
+
+            if (status == GoodsStatus.ONSALE && goods.firstOnSaleAt == null) {
+                goods.firstOnSaleAt = new Date();
+            }
+
+            goods.save();
+        }
+    }
+
+    private static final String expiration = "30mn";
+
+    /**
+     * 将预览商品存入缓存.
+     * <p/>
+     * 商品图片移动到指定目录下，指定目录下的预览用的商品图片将通过后台crontab的方式定时删除.
+     *
+     * @param goods
+     * @return uuid
+     */
+    public static String preview(Long id, PointGoods goods, File imageFile, String rootDir) throws IOException {
+        goods.status = GoodsStatus.UNCREATED;
+
+        if (id == null && imageFile == null) {
+            goods.imagePath = null;
+        } else if (imageFile == null || imageFile.getName() == null) {
+            PointGoods originalGoods = PointGoods.findById(id);
+            goods.imagePath = originalGoods.imagePath;
+        } else {
+            String ext = imageFile.getName().substring(imageFile.getName().lastIndexOf("."));
+            String imagePath = PREVIEW_IMG_ROOT + FileUploadUtil.generateUniqueId() + ext;
+            File targetDir = new File(rootDir + PREVIEW_IMG_ROOT);
+            if (!targetDir.exists()) {
+                targetDir.mkdirs();
+            }
+            FileUtils.moveFile(imageFile, new File(rootDir + imagePath));
+            goods.imagePath = imagePath;
+        }
+        UUID cacheId = UUID.randomUUID();
+        play.cache.Cache.set(cacheId.toString(), goods.id, expiration);
+        return cacheId.toString();
+    }
+
+    /**
+     * 获取商品预览对象.
+     *
+     * @param uuid 缓存键值
+     * @return 预览商品
+     */
+    public static PointGoods getPreviewGoods(String uuid) {
+        return (PointGoods) play.cache.Cache.get(uuid);
+    }
+
+
+    /**
+     * 增加商品的推荐指数.
+     *
+     * @param goods
+     * @param like
+     */
+    public static void addRecommend(PointGoods goods, boolean like) {
+        if (goods == null) {
+            return;
+        }
+        // 因为goods可能是从缓存中读取出来的，所以需要先从数据库中读取一次
+        PointGoods updateGoods = PointGoods.findById(goods.id);
+        int number = 1;
+        if (like) {
+            number = 100;
+        }
+        if (updateGoods.recommend == null) {
+            updateGoods.recommend = 0;
+        }
+        updateGoods.recommend += number;
+
+        // 这一操作不应当更新缓存
+        updateGoods.skipUpdateCache = true;
+        updateGoods.save();
+    }
+
+    /**
+     * 获取推荐指数高的前n个商品
+     *
+     * @param limit
+     * @return
+     */
+    public static List<PointGoods> findTopRecommend(int limit) {
+        String sql = "select g from PointGoods g,GoodsStatistics s  where g.id =s.goodsId " +
+                " and g.status =:status and g.deleted =:deleted and g.expireAt >:expireAt and g.baseSale>=1 and g.isLottery is false order by s.summaryCount desc";
+        Query query = PointGoods.em().createQuery(sql);
+        query.setParameter("status", GoodsStatus.ONSALE);
+        query.setParameter("deleted", DeletedStatus.UN_DELETED);
+        query.setParameter("expireAt", new Date());
+        query.setMaxResults(limit);
+        List<PointGoods> goodsList = query.getResultList();
+        return goodsList;
+
+    }
 
 
 }
