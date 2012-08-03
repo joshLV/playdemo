@@ -56,14 +56,14 @@ public class OperateGoods extends Controller {
             condition = new GoodsCondition();
             condition.status = GoodsStatus.ONSALE;
         }
-        //System.out.println("what>>>>>");
+
         if (condition.priority == 1) {
-        	//System.out.println("out>>>>>");
+
             condition.orderBy = "g.priority";
         } else {   
-        	//System.out.println("aaa>>>>>"+condition.orderBy);
+
             condition.orderBy = "g.createdAt";
-           // System.out.println("bbb>>>>>"+condition.orderBy);
+
         }
         JPAExtPaginator<models.sales.Goods> goodsPage = models.sales.Goods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);

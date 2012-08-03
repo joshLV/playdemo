@@ -4,26 +4,26 @@
 #{else}
     #{set 'moreScripts'}
         #{get 'moreScripts'/}
-    <script src="@{'/public/javascripts/goods-form.js'}" type="text/javascript" charset="UTF-8"></script>
+    <script src="@{'/public/javascripts/pointgoods-form.js'}" type="text/javascript" charset="UTF-8"></script>
     #{/set}
     #{layout_operate.radioField name:'pointGoods.materialType',
     value1:models.sales.MaterialType.ELECTRONIC.toString(),
     value2:models.sales.MaterialType.REAL.toString(),
-    value:goods?.materialType?.toString(), required:true/}
+    value:pointGoods?.materialType?.toString(), required:true/}
 
 
-<div id="brand">#{include '/OperateBrands/goodsBrands.html'/}</div>
-    #{layout_operate.nameField name:'pointGoods.name', value:goods?.name, required:true, length:30/}
+
+    #{layout_operate.nameField name:'pointGoods.name', value:pointGoods?.name, required:true, length:30/}
     #{layout_operate.dateScopeField name:'pointGoods.effective', begin:'pointGoods.effectiveAt',end:'pointGoods.expireAt',
-    beginValue:goods?.effectiveAt?.format(), endValue:goods?.expireAt?.format(), required:true/}
-
-    #{layout_operate.textField name:'pointGoods.pointPrice', value:goods?.salePrice?:"0", note:'元', required:true/}
+    beginValue:pointGoods?.effectiveAt?.format(), endValue:pointGoods?.expireAt?.format(), required:true/}
+    #{layout_operate.textField name:'pointGoods.originalPrice', value:pointGoods?.originalPrice?:"0",note:'元', required:true/}
+    #{layout_operate.textField name:'pointGoods.pointPrice', value:pointGoods?.pointPrice?:"0", note:'元', required:true/}
     #{set i:0/}
 
 
-    #{layout_operate.textField name:'pointGoods.baseSale', value:goods?.baseSale, note:'件', required:true/}
+    #{layout_operate.textField name:'pointGoods.baseSale', value:pointGoods?.baseSale, note:'件', required:true/}
 
-    #{layout_operate.textField name:'pointGoods.limitNumber', value:goods?.limitNumber, note:'个'/}
+    #{layout_operate.textField name:'pointGoods.limitNumber', value:pointGoods?.limitNumber, note:'个'/}
 
 
     #{if "add".equals(action)}
@@ -39,18 +39,18 @@
     </div>
     #{/else}
 
-    #{layout_operate.htmlField name:'pointGoods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}
+    #{layout_operate.htmlField name:'pointGoods.details', value:pointGoods?.details, uploadImgUrl:'/pointGoods/images', required:true/}
 
 
 
 <div class="form-actions">
-    <input class="btn btn-primary" id="save" type="submit" value="保存"  #{if "edit".equals(action) && goods?.status == models.sales.GoodsStatus.ONSALE}disabled #{/if}/>
+    <input class="btn btn-primary" id="save" type="submit" value="保存"  #{if "edit".equals(action) && pointGoods?.status == models.sales.GoodsStatus.ONSALE}disabled #{/if}/>
     <input class="btn btn-primary" id="onsale" type="submit" value="保存并上架"/>
     #{if "edit".equals(action)}
         <input class="btn btn-primary" id="preview" type="submit" value="预览"/>
     #{/if}
     #{if "edit".equals(action)}
-        #{vx.cancelButton url:'/goods', class:'btn btn-primary'/}
+        #{vx.cancelButton url:'/pointgoods', class:'btn btn-primary'/}
     #{/if}
     <input type="hidden" id="status" name="pointGoods.status" value="${goods?.getStatus()?:'OFFSALE'}"/>
 </div>

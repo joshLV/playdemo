@@ -118,9 +118,9 @@ public class OperatePointGoods extends Controller {
 
         checkImageFile(imagePath);
 
+        checkExpireAt(pointGoods);
 
-        //checkExpireAt(goods);
-
+        checkPointPrice(pointGoods);
 
         if (Validation.hasErrors()) {
             renderInit(pointGoods);
@@ -223,6 +223,15 @@ public class OperatePointGoods extends Controller {
         if (pointGoods.pointPrice != null && pointGoods.originalPrice != null && pointGoods.pointPrice.compareTo(pointGoods.originalPrice) < 0) {
             Validation.addError("pointGoods.pointPrice", "validation.lessThanOriginalPrice");
         }
+    }
+
+
+    private static void checkExpireAt(PointGoods pointGoods) {
+        if (pointGoods.effectiveAt != null &&pointGoods.expireAt != null &&pointGoods.expireAt.before(pointGoods.effectiveAt)) {
+            Validation.addError("pointGoods.expireAt", "validation.beforeThanEffectiveAt");
+        }
+
+
     }
 
 }

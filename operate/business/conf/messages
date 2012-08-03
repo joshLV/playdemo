@@ -61,6 +61,7 @@ goods.name=名称
 
 pointGoods.name=积分商品名称
 pointGoods.pointPrice=积分价
+pointGoods.originalPrice=原价
 pointGoods.effective=券有效期
 pointGoods.baseSale=库存
 pointGoods.limitNumber=限量
@@ -69,6 +70,8 @@ pointGoods.details=详情
 pointGoods.materialType_1=电子券
 pointGoods.materialType_2=实物
 
+pointGoods.effectiveAt=开始时间
+pointGoods.expireAt=到期时间
 
 goods.title=短信标题
 goods.category=分类
