@@ -64,8 +64,9 @@ public class PointGoods extends Model {
     public BigDecimal faceValue;
 
     /**
-     * 积分商品 积分兑换价
+     * 积分价
      */
+    @Required
     @Min(0)
     @Max(999999)
     @Money
@@ -105,7 +106,6 @@ public class PointGoods extends Model {
     /**
      * 券有效开始日
      */
-    @Required
     @Column(name = "effective_at")
     @Temporal(TemporalType.TIMESTAMP)
     public Date effectiveAt;
@@ -113,7 +113,6 @@ public class PointGoods extends Model {
     /**
      * 券有效结束日
      */
-    @Required
     @InFuture
     @Column(name = "expire_at")
     @Temporal(TemporalType.TIMESTAMP)

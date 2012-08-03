@@ -5,12 +5,25 @@
     #{set 'moreScripts'}
         #{get 'moreScripts'/}
     <script src="@{'/public/javascripts/pointgoods-form.js'}" type="text/javascript" charset="UTF-8"></script>
+    <script type="text/javascript">
+        $(function(){
+            var checkedFuc = function(){
+                if($("#pointGoods_materialType_1").is(":checked")){
+                    $("#required_star_pointGoods_effective").show();
+                }
+                if($("#pointGoods_materialType_2").is(":checked")){
+                    $("#required_star_pointGoods_effective").hide();
+                }
+            }
+            $("#pointGoods_materialType_1").click(checkedFuc);
+            $("#pointGoods_materialType_2").click(checkedFuc);
+        });
+    </script>
     #{/set}
     #{layout_operate.radioField name:'pointGoods.materialType',
     value1:models.sales.MaterialType.ELECTRONIC.toString(),
     value2:models.sales.MaterialType.REAL.toString(),
     value:pointGoods?.materialType?.toString(), required:true/}
-
 
 
     #{layout_operate.nameField name:'pointGoods.name', value:pointGoods?.name, required:true, length:30/}
@@ -26,10 +39,6 @@
 
 
     #{layout_operate.textField name:'pointGoods.baseSale', value:pointGoods?.baseSale, note:'件', required:true/}
-
-
-
-
 
 
 

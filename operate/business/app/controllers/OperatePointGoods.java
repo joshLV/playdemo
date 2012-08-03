@@ -117,6 +117,8 @@ public class OperatePointGoods extends Controller {
 
         checkPointPrice(pointGoods);
 
+        checkTime(pointGoods);
+
         if (Validation.hasErrors()) {
             renderInit(pointGoods);
             //   boolean selectAll = false;
@@ -225,6 +227,18 @@ public class OperatePointGoods extends Controller {
 
 
     }
+
+
+    private static void checkTime( PointGoods pointGoods) {
+        if (pointGoods.effectiveAt == null) {
+            Validation.addError("pointGoods.effectiveAt", "validation.required");
+        }
+        if (pointGoods.expireAt == null) {
+            Validation.addError("pointGoods.expireAt", "validation.required");
+        }
+    }
+
+
 
 }
 

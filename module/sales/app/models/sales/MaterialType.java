@@ -19,4 +19,5 @@ public enum MaterialType {
     public int getIntValue() {
         return _value;
     }
+
 }
