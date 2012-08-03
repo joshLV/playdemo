@@ -1,0 +1,68 @@
+# Application dependencies
+
+require:
+    - play 1.2.4
+    - play1 -> betterlogs 1.0
+    - play1 -> appconfiguration 0.1
+    - play1 -> cobertura 2.4p3
+    - play1 -> rabbitmq 0.3
+    - play1 -> paginate head
+    - play1 -> app-version 0.1
+    - paginate_ext -> paginate_ext
+    - sales -> sales
+    - supplier -> supplier
+    - resale -> resale
+    - consumer -> consumer
+    - order -> order
+    - commons-lang -> commons-lang 2.6
+    - sms -> sms
+    - website_cas -> website_cas
+    - accounts  -> accounts
+    - breadcrumbs  -> breadcrumbs
+    - com.uhuila.utils -> tools 1.0.1-SNAPSHOT
+    - org.apache.httpcomponents -> httpclient 4.1.3
+    - org.jsoup -> jsoup 1.6.1
+    - view_ext -> view_ext
+    - asset_package -> asset_package
+    - layout_website -> layout_website
+    - cms -> cms
+    - emaillogs -> emaillogs
+    - cache_helper -> cache_helper
+
+repositories:
+
+    - mavenRepository:
+        type:       iBiblio
+        root:       "http://dev.uhuila.cn/nexus/content/groups/public"
+        contains:
+            - com.uhuila.utils -> *
+            - commons-lang -> *
+            - org.jsoup -> *
+        m2compatible: true
+
+    - play1ContributedModules:
+        type: http
+        artifact: "http://dev.uhuila.cn/play/modules/[module]-[revision].zip"
+        contains:
+            - play1 -> *
+
+    - customModules:
+        type:       local
+        artifact:   "${application.path}/../../module/[module]"
+        contains:
+            - paginate_ext -> *
+            - sales -> *
+            - supplier -> *
+            - resale -> *
+            - consumer -> *
+            - order -> *
+            - website_cas -> *
+            - accounts  -> *
+            - sms -> *
+            - breadcrumbs -> *
+            - view_ext -> *
+            - asset_package -> *
+            - layout_website -> *
+            - cms -> *
+            - emaillogs -> *
+            - cache_helper -> *
