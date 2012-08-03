@@ -48,84 +48,63 @@ public class OperatePointGoods  extends Controller {
      * @param pointGoods
      */
     private static void renderInit(models.sales.PointGoods pointGoods) {
-        List<Supplier> supplierList = Supplier.findUnDeleted();
-
         if (pointGoods == null) {
             pointGoods = new models.sales.PointGoods();
-            BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
-            Arrays.fill(levelPrices, null);
-
             pointGoods.materialType = MaterialType.ELECTRONIC;
-
-
-            renderArgs.put("goods.materialType", MaterialType.ELECTRONIC);
-            renderArgs.put("selectAll", true);
+            renderArgs.put("pointGoods.materialType", MaterialType.ELECTRONIC);
         }
-
-
 
         //调试用
         for (String key : validation.errorsMap().keySet()) {
             warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
         }
-
-
-
-
         renderArgs.put("pointGoods", pointGoods);
     }
 
 
 
-//    /**
-//     * 添加商品
-//     * 商户只能添加电子券.
-//     *
-//     * @param imagePath
-//     * @param goods
-//     */
-//    @ActiveNavigation("goods_add")
-//    public static void create(@Valid models.sales.Goods goods, @Required File imagePath, BigDecimal[] levelPrices) {
-//
-//        checkImageFile(imagePath);
-//
-//        goods.setLevelPrices(levelPrices);
-//
-//        checkExpireAt(goods);
-//        checkSalePrice(goods);
-//        checkLevelPrice(levelPrices);
-//        checkShops(goods.supplierId);
-//
-//        if (Validation.hasErrors()) {
-//            renderInit(goods);
-//            boolean selectAll = false;
-//            render("OperateGoods/add.html", selectAll);
-//        }
-//        //预览
-//        if (GoodsStatus.UNCREATED.equals(goods.status)) {
-//            preview(null, goods, imagePath);
-//        }
-//
-//        //添加商品处理
-//        if (goods.unPublishedPlatforms != null) {
-//            for (GoodsUnPublishedPlatform unPublishedPlatform : goods.unPublishedPlatforms) {
-//                if (unPublishedPlatform == null) {
-//                    goods.unPublishedPlatforms.remove(unPublishedPlatform);
-//                }
-//            }
-//        }
-//        goods.createdBy = OperateRbac.currentUser().loginName;
-//
-//        goods.create();
-//        try {
-//            goods.imagePath = uploadImagePath(imagePath, goods.id, null);
-//        } catch (IOException e) {
-//            error(500, "goods.image_upload_failed");
-//        }
-//        goods.save();
-//
-//        index(null);
-//    }
+    /**
+     * 添加商品
+     * 商户只能添加电子券.
+     *
+     * @param imagePath
+     * @param goods
+     */
+    @ActiveNavigation("point_goods_add")
+    public static void create(@Valid models.sales.Goods pointGoods, @Required File imagePath) {
+
+        checkImageFile(imagePath);
+
+
+
+        //checkExpireAt(goods);
+        checkSalePrice(pointGoods);
+
+        if (Validation.hasErrors()) {
+            renderInit(pointGoods);
+         //   boolean selectAll = false;
+          //  render("OperateGoods/add.html", selectAll);
+            render("OperateGoods/add.html");
+        }
+
+        //预览
+        if (GoodsStatus.UNCREATED.equals(pointGoods.status)) {
+            preview(null, goods, imagePath);
+        }
+
+
+       // goods.createdBy = OperateRbac.currentUser().loginName;
+
+        pointGoods.create();
+        try {
+            pointGoods.imagePath = uploadImagePath(imagePath, goods.id, null);
+        } catch (IOException e) {
+            error(500, "goods.image_upload_failed");
+        }
+        pointGoods.save();
+
+        index(null);
+    }
 
 
 
