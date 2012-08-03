@@ -115,9 +115,12 @@ public class OperatePointGoods extends Controller {
 
         checkExpireAt(pointGoods);
 
-        checkPointPrice(pointGoods);
 
+
+        checkPointPrice(pointGoods);
+        if(pointGoods.materialType.toString() == models.sales.MaterialType.ELECTRONIC.toString())
         checkTime(pointGoods);
+
 
         if (Validation.hasErrors()) {
             renderInit(pointGoods);
@@ -125,6 +128,7 @@ public class OperatePointGoods extends Controller {
             //  render("OperateGoods/add.html", selectAll);
             render("OperatePointGoods/add.html");
         }
+
 
         //预览
         if (GoodsStatus.UNCREATED.equals(pointGoods.status)) {
