@@ -93,6 +93,7 @@ public class OperateSupplierUsers extends Controller {
     public static void delete(Long id) {
         SupplierUser user = SupplierUser.findById(id);
         user.deleted = DeletedStatus.DELETED;
+        user.loginName=user.loginName+"@"+System.currentTimeMillis();
         user.save();
         index(null);
     }

@@ -176,8 +176,9 @@ public class SupplierUser extends Model {
      * @param supplierId
      */
     public static String checkValue(Long id, String loginName, String mobile, String jobNumber, Long supplierId) {
-        StringBuilder sq = new StringBuilder("loginName = ? and supplier=? ");
+        StringBuilder sq = new StringBuilder("deleted =? and loginName = ? and supplier=? ");
         List params = new ArrayList();
+        params.add(DeletedStatus.UN_DELETED);
         params.add(loginName);
         params.add(new Supplier(supplierId));
         if (id != null) {
