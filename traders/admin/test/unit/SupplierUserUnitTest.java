@@ -3,6 +3,7 @@ package unit;
 import com.uhuila.common.constants.DeletedStatus;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
+import models.supplier.Supplier;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
 import play.libs.Images;
@@ -17,6 +18,7 @@ public class SupplierUserUnitTest extends UnitTest {
 
     @org.junit.Before
     public void setup() {
+        Fixtures.delete(Supplier.class);
         Fixtures.delete(SupplierUser.class);
         Fixtures.delete(SupplierRole.class);
         Fixtures.loadModels("fixture/roles.yml");
@@ -56,7 +58,7 @@ public class SupplierUserUnitTest extends UnitTest {
         int pageNumber = 1;
         int pageSize = 15;
         JPAExtPaginator<SupplierUser> list = SupplierUser.getSupplierUserList(loginName, userName, jobNumber, supplierId, pageNumber, pageSize);
-        assertEquals(1,list.size());
+        assertEquals(1, list.size());
     }
 
     //更改用户名和手机

@@ -24,7 +24,7 @@ admin.SupplierUser(user2):
  "lastLoginAt": "2012-03-12T14:39:20"
  "lockVersion": "1"
  "createdAt": "2012-03-12T14:39:20"
- "deleted": "UN_DELETE"
+ "deleted": "UN_DELETED"
  "jobNumber": "1002"
  "supplier": kfc
  "roles":

@@ -95,6 +95,8 @@
                     #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
                     #{option "REFUND"}&{'coupon.REFUND'}#{/option}
                 #{/select}
+                    &nbsp;&nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
+                                                  value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
                 </td>
             </tr>
             <tr>
@@ -106,14 +108,20 @@
                            name="condition.consumedAtEnd"
                            onfocus="WdatePicker({readOnly:true})" value="${condition.consumedAtEnd?.format()}">
                 </td>
-                <td>&nbsp;&nbsp;退款时间&nbsp;&nbsp;
+                <td>&nbsp;&nbsp付款时间&nbsp;&nbsp;
+                    <input type="text" id="condition_paid_begin" class="input-medium Wdate"
+                           name="condition.paidAtBegin"
+                           onfocus="WdatePicker({readOnly:true})" value="${condition?.paidAtBegin?.format()}"> -
+                    <input type="text" id="condition_paid_end" class="input-medium Wdate" name="condition.paidAtEnd"
+                           onfocus="WdatePicker({readOnly:true})" value="${condition?.paidAtEnd?.format()}">
+
+                &nbsp;&nbsp;退款时间&nbsp;&nbsp;
                     <input type="text" id="condition_refund_begin" class="input-medium Wdate"
                            name="condition.refundAtBegin"
                            onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtBegin?.format()}"> -
                     <input type="text" id="condition_refund_end" class="input-medium Wdate" name="condition.refundAtEnd"
                            onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtEnd?.format()}">
-                     &nbsp;&nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
-                               value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
+
                 </td>
                 <td>
                     <button type="submit" class="btn btn-primary" id="search">搜索</button>

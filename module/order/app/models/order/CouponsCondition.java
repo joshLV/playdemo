@@ -40,6 +40,8 @@ public class CouponsCondition implements Serializable {
     public String searchItems;
     public String searchKey;
     public boolean isLottery;
+    public Date paidAtBegin;
+    public Date paidAtEnd;
 
     public String getOrderByExpress() {
         return "e.createdAt desc";
@@ -88,7 +90,15 @@ public class CouponsCondition implements Serializable {
             sql.append(" and e.refundAt <= :refundAtEnd");
             paramMap.put("refundAtEnd", DateUtil.getEndOfDay(refundAtEnd));
         }
+        if (paidAtBegin != null) {
+            sql.append(" and e.order.paidAt>= :paidAtBegin");
+            paramMap.put("paidAtBegin", paidAtBegin);
+        }
 
+        if (paidAtEnd != null) {
+            sql.append(" and e.order.paidAt<= :paidAtEnd");
+            paramMap.put("paidAtEnd", DateUtil.getEndOfDay(paidAtEnd));
+        }
         if (QueryType.GOODS_NAME.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
 
             sql.append(" and e.goods.name like :name");
