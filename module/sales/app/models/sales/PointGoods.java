@@ -59,8 +59,8 @@ public class PointGoods extends Model {
     @Min(0)
     @Max(999999)
     @Money
-    @Column(name = "original_price")
-    public BigDecimal originalPrice;
+    @Column(name = "face_value")
+    public BigDecimal faceValue;
 
     /**
      * 积分商品 积分兑换价
@@ -358,7 +358,7 @@ public class PointGoods extends Model {
         updateGoods.no = pointGoods.no;
         updateGoods.effectiveAt = pointGoods.effectiveAt;
         updateGoods.expireAt = DateUtil.getEndOfDay(pointGoods.expireAt);
-        updateGoods.originalPrice = pointGoods.originalPrice;
+        updateGoods.faceValue = pointGoods.faceValue;
         updateGoods.pointPrice = pointGoods.pointPrice;
         updateGoods.baseSale = pointGoods.baseSale;
         updateGoods.materialType = pointGoods.materialType;
