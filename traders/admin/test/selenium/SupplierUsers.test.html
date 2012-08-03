@@ -18,19 +18,19 @@
    #{include 'test/selenium/step/login.selenium' /}
    open('/users')
    assertTitle('操作员一览')
-   verifyText('//tr[3]/td','test')
-   verifyText('//tr[3]/td[5]','[测试角色]')
+   verifyText('//tr[3]/td','yan')
+   verifyText('//tr[3]/td[5]','[销售经理, 系统管理员]')
 
    open('/users/${play.test.Fixtures.idCache.get("models.admin.SupplierUser-test")}/edit')
    click('id=supplierUser.roles_${play.test.Fixtures.idCache.get("models.admin.SupplierRole-sales")}')
-   verifyTextPresent('test')
+   verifyTextPresent('yan')
    type('id=mobile','13088092013')
    *{type('name=supplierUser.encryptedPassword','123')}*
    clickAndWait('id=save')
    open('/users')
    assertTitle('操作员一览')
-   verifyText('//tr[3]/td','test')
-   verifyText('//tr[3]/td[5]','[销售经理, 测试角色]')
+   verifyText('//tr[3]/td','yan')
+   verifyText('//tr[3]/td[5]','[销售经理, 系统管理员]')
    verifyText('//tr[3]/td[6]','2012-03-12 00:00:00')
 #{/selenium}
 
