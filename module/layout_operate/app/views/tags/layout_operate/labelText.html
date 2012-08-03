@@ -7,12 +7,12 @@
 
 #{field _name}
 
-*{
+
 %{
     dis = "none"
     if (_required){
         dis = "inline";
-    }
+   }
 }%
 
 
@@ -22,20 +22,22 @@
    &{field?.name}
 </label>
 
-}*
 
 
 
-#{if _required}
-<label for="${field?.id}" class="${_class?:"control-label"}">
-    <span style="color: #ff0000; display:inline;"  id="required_star_${field?.id}">*</span>
-&{field?.name}</label>
-#{/if}
-#{else }
-<label for="${field?.id}" class="${_class?:"control-label"}">
-    <span style="color: #ff0000; display:${dis};"  id="required_star_${field?.id}">*</span>
-&{field?.name}</label>
-#{/else}
+
+*{#{if _required}}*
+*{<label for="${field?.id}" class="${_class?:"control-label"}">}*
+    *{<span style="color: #ff0000; display:inline;"  id="required_star_${field?.id}">*</span>}*
+*{&{field?.name}</label>}*
+*{#{/if}}*
+
+
+*{#{else }}*
+*{<label for="${field?.id}" class="${_class?:"control-label"}">}*
+    *{<span style="color: #ff0000; display:${dis};"  id="required_star_${field?.id}">*</span>}*
+*{&{field?.name}</label>}*
+*{#{/else}}*
 
 
 
