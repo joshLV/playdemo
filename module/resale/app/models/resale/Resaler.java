@@ -130,7 +130,7 @@ public class Resaler extends Model {
     @Transient
     public String oldPassword;
 
-    public boolean isCreditable(){
+    public boolean isCreditable() {
         return this.creditable == ResalerCreditable.YES;
     }
 
@@ -191,12 +191,12 @@ public class Resaler extends Model {
         if (StringUtils.isNotEmpty(remark)) resaler.remark = remark;
 
         //修改现金账户是否可欠款
-        if (creditable != null){
+        if (creditable != null) {
             resaler.creditable = creditable;
             Account account = AccountUtil.getResalerAccount(resaler.getId());
-            if (resaler.isCreditable()){
+            if (resaler.isCreditable()) {
                 account.creditable = AccountCreditable.YES;
-            }else {
+            } else {
                 account.creditable = AccountCreditable.NO;
             }
             account.save();
@@ -250,5 +250,9 @@ public class Resaler extends Model {
 
     public static Resaler findByLoginName(String loginName) {
         return find("loginName like ?", "%" + loginName + "%").first();
+    }
+
+    public static Resaler findOneLoginName(String loginName) {
+        return find("loginName = ?", loginName.trim()).first();
     }
 }

@@ -103,12 +103,13 @@ public class OrdersCondition {
                 sql.append(" and o.userId = :user");
                 paramsMap.put("user", user.getId());
             }
-            Resaler resaler = Resaler.findByLoginName(searchItems.trim());
+            Resaler resaler = Resaler.findOneLoginName(searchItems.trim());
             if (resaler != null) {
                 sql.append(" and o.userId = :user");
                 paramsMap.put("user", resaler.id);
             }
         }
+
         //按照手机检索
         if (QueryType.MOBILE.toString().equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
             sql.append(" and o.id in (select o.id from o.orderItems oi where oi.phone =:phone)");
