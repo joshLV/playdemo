@@ -8,6 +8,10 @@
 
     <permission key="GOODS_NEW" text="商品添加" roles="editor"/>
     <permission key="GOODS" text="商品管理" roles="editor,customservice"/>
+
+    <permission key="Point_GOODS_NEW" text="商品添加" roles="editor"/>
+    <permission key="Point_GOODS" text="商品管理" roles="editor,customservice"/>
+
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="editor"/>
     <permission key="SUPPLIERS" text="商户管理" roles="editor,customservice"/>
      <permission key="SUPPLIERS_USERS_NEW" text="商户操作员添加" roles="editor"/>
