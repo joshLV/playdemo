@@ -9,7 +9,12 @@
 
 %{baseDomain = play.Play.configuration.getProperty("application.baseDomain")}%
 <div id="content" class="clearfix">
-    <div class="flowstep step4"></div>
+    <ul class="flowstep step4">
+        <li class="done"><a href="/carts">1. 查看购物车</a></li>
+        <li class="done"><a href="">2. 确认订单信息</a></li>
+        <li class="done"><a href="">3. 确认付款</a></li>
+        <li class="done">4. 成功提交订单</li>
+    </ul>
 
     #{if order}
         #{if order.status == models.order.OrderStatus.PAID}

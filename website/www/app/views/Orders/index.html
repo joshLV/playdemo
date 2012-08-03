@@ -8,7 +8,13 @@
 #{/set}
 
 <div id="content">
-    <div class="flowstep step2"></div>
+    <ul class="flowstep step2">
+        <li class="done"><a href="/carts">1. 查看购物车</a></li>
+        <li class="done">2. 确认订单信息</li>
+        <li>3. 确认付款</li>
+        <li>4. 成功提交订单</li>
+    </ul>
+
 #{if rCartList.size()>0}
     <div class="order">
         <div class="addr" id="J_addr">
@@ -105,14 +111,19 @@
     </div><!-- .order -->
      #{/if}
     #{if rCartList.size() > 0 || eCartList.size() > 0}
-    <div class="explain">
-        <div class="explain-hd" id="J_explainHd">附加说明</div>
-        <div class="explain-bd"><textarea class="explain-text" id="J_explainText" name="remark" style="display:none"></textarea></div>
-    </div><!-- .explain -->
-    <div class="totalize">
-        商品共${rCartList.size()+eCartList.size()}件，总合计：<em>${totalAmount.formatCurrency('CNY').raw()}</em>元
-        <a class="confirm-order" id="J_confirmOrder" href="#">确认下单<b></b></a>
-    </div><!-- .totalize -->
+    <div class="summary clearfix">
+        <div class="explain">
+            <div class="explain-hd" id="J_explainHd">附加说明</div>
+            <div class="explain-bd" id="J_explainBd" style="display:none">
+                <div class="tips">留言请在50字以内</div>
+                <textarea class="explain-text" id="J_explainText" name="remark"></textarea>
+            </div>
+        </div><!-- .explain -->
+        <div class="totalize">
+            商品共${rCartList.size()+eCartList.size()}件，总合计：<em>${totalAmount.formatCurrency('CNY').raw()}</em>元
+            <a class="confirm-order" id="J_confirmOrder" href="#">确认下单<b></b></a>
+        </div><!-- .totalize -->
+    </div>
     #{/if}
     #{else}
         对不起，您的购物车内没有商品

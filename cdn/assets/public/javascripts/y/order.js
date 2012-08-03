@@ -156,10 +156,10 @@ $(function() {
     $('#J_explainHd').click(function(){
         if (!$(this).hasClass('minus')) {
             $(this).addClass('minus');
-            $('#J_explainText').show();
+            $('#J_explainBd').show();
         } else {
             $(this).removeClass('minus');
-            $('#J_explainText').hide();
+            $('#J_explainBd').hide();
         }
     });
 
