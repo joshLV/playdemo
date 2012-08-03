@@ -3,6 +3,7 @@ package operate.rbac;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import play.Logger;
 import models.admin.OperatePermission;
 import models.admin.OperateUser;
 
@@ -38,6 +39,7 @@ public class ContextedPermission {
             return;
         }
         
+        Logger.debug("user: %s, permissions: %d", user.loginName, user.permissions.size());
         for (OperatePermission perm : user.permissions) {
             addAllowPermission(perm.key);
         }
@@ -45,6 +47,7 @@ public class ContextedPermission {
         // 查出当前用户从角色继承的所有权限
         List<OperatePermission> rolePerms = OperatePermission.findByUserRole(user.id);
         for (OperatePermission perm : rolePerms) {
+            Logger.debug("user: %s rold: %s", user.loginName, perm.key);
             addAllowPermission(perm.key);
         }
         

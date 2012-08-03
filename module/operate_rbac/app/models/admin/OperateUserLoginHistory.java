@@ -13,6 +13,9 @@ import play.db.jpa.Model;
 @Entity
 @Table(name="operate_user_login_histories")
 public class OperateUserLoginHistory extends Model {
+    
+    private static final long serialVersionUID = 2406119113062L;
+    
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "operate_user_id")
     public OperateUser user;

@@ -78,3 +78,22 @@ admin.SupplierUser(deleteuser):
  "roles":
    - "test"
 
+admin.OperateUser(user3):
+ "loginName": "tom"
+ "mobile": "13211111111"
+ "encryptedPassword": "ff7edd82576fd2b9066cdf9a978f6ab5"
+ "passwordSalt": "KC3CeW"
+ "lastLoginIP": "127.0.1.1"
+ "lastLoginAt": "2012-03-12T17:33:49"
+ "lockVersion": "1"
+ "createdAt": "2012-03-12T14:39:20"
+ "updatedAt": "2012-03-12T17:33:49"
+ "deleted": "UN_DELETED"
+ "roles":
+ - "admin"
+ - "sales"
+ - "customservice"
+ - "editor"
+ - "account"
+
+

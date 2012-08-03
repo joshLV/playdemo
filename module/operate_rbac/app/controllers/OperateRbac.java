@@ -2,6 +2,7 @@ package controllers;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import models.admin.OperateNavigation;
 import models.admin.OperatePermission;
@@ -113,16 +114,18 @@ public class OperateRbac extends Controller {
         if (isAuthenticated) {
             // 登录记录
             OperateUser user = OperateUser.findUser(casUser.getUsername());
-            user.lastLoginIP = request.remoteAddress;
-            user.save();
-            
-            OperateUserLoginHistory history = new OperateUserLoginHistory();
-            history.user = user;
-            history.loginAt = new Date();
-            history.loginIp = request.remoteAddress;
-            history.applicationName = Play.configuration.getProperty("application.name");
-            history.sessionId = session.getId();
-            history.save();
+            if (user != null) {
+                user.lastLoginIP = request.remoteAddress;
+                user.save();
+                
+                OperateUserLoginHistory history = new OperateUserLoginHistory();
+                history.user = user;
+                history.loginAt = new Date();
+                history.loginIp = request.remoteAddress;
+                history.applicationName = Play.configuration.getProperty("application.name");
+                history.sessionId = session.getId();
+                history.save();
+            }
             
             // we redirect to the original URL
             String url = (String) Cache.get("url_" + session.getId());
@@ -173,6 +176,12 @@ public class OperateRbac extends Controller {
         Logger.debug("======================================== currentUser = " + userName);
 
         OperateUser user = null;
+        
+        List<OperateRole> testRoles = OperateRole.findAll();
+        for (OperateRole role : testRoles) {
+            Logger.debug("all: role.id=%d, role.key=%s, loadversion=%d", role.id, role.key, role.loadVersion);
+        }
+        
         // 检查权限
         if (userName != null && Cache.get(SESSION_USER_KEY + userName) != null) {
             // 查出当前用户的所有权限
@@ -185,7 +194,7 @@ public class OperateRbac extends Controller {
                 Logger.debug("user.id = " + user.id + ", name=" + user.loginName);
                 Logger.debug("get role " + user.roles);
                 for (OperateRole role : user.roles) {
-                    Logger.debug("user.role=" + role.key);
+                    Logger.debug("user.role=%s, rold.id=%d", role.key, role.id);
                 }
             }
             _user.set(user);

@@ -1,4 +1,4 @@
-#{fixture delete:[models.accounts.WithdrawBill.class],
+#{fixture delete:[models.admin.OperateUser.class,models.admin.OperateRole.class,models.accounts.WithdrawBill.class],
 load:['fixture/withdraw_bill.yml', 'fixture/roles.yml','fixture/supplierusers.yml'] /}
 %{
     id = play.test.Fixtures.idCache.get("models.accounts.WithdrawBill-bill_01");

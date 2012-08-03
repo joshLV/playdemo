@@ -20,8 +20,11 @@ import play.db.jpa.Model;
 @Table(name = "operate_roles")
 public class OperateRole extends Model {
 
+    private static final long serialVersionUID = 234143062L;
+    
     public String text;
 
+    @Column(unique=true)
     public String key;
 
     public String description;

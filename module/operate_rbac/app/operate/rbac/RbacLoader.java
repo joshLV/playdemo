@@ -131,6 +131,7 @@ public class RbacLoader {
                 OperateRole role = OperateRole.find("byKey", roleName).first();
                 if (role != null) {
                     operatePermission.roles.add(role);
+                    Logger.debug("  add %s permission to role(%s, id:%d)", operatePermission.key, role.key, role.id);
                 }
             }
         }
@@ -156,11 +157,15 @@ public class RbacLoader {
     }
 
     private static void saveRoleToDB(long loadVersion, Role role) {
+        Logger.debug("try to load role:%s", role.key);
         OperateRole operateRole = OperateRole.find("byKey", role.key).first();
         if (operateRole == null) {
+            Logger.debug("role is null");
             operateRole = new OperateRole();
             operateRole.key = role.key;
             operateRole.createdAt = new Date();
+        } else {
+            Logger.debug("role is not null, %d", operateRole.loadVersion);
         }
         operateRole.text = role.text;
         operateRole.loadVersion = loadVersion;

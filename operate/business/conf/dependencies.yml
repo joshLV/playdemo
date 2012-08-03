@@ -18,7 +18,6 @@ require:
     - paginate_ext -> paginate_ext
     - org.jsoup -> jsoup 1.6.1
     - operate_rbac -> operate_rbac
-#    - supplier_navigation -> supplier_navigation
     - resale -> resale
     - order -> order
     - consumer -> consumer

@@ -21,6 +21,8 @@ import play.db.jpa.Model;
 @Table(name = "operate_permissions")
 public class OperatePermission extends Model {
 
+    private static final long serialVersionUID = 234119113062L;
+    
     public String text;
 
     public String key;

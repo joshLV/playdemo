@@ -18,6 +18,9 @@ import java.util.*;
 @Entity
 @Table(name = "operate_users")
 public class OperateUser extends Model {
+
+    private static final long serialVersionUID = 21943311362L;
+    
     @Column(name = "login_name")
     @Required
     public String loginName;

@@ -25,6 +25,8 @@ import play.db.jpa.Model;
 @Entity
 @Table(name = "operate_navigations")
 public class OperateNavigation extends Model {
+    
+    private static final long serialVersionUID = 219113062L;
 
     public String name;
 
