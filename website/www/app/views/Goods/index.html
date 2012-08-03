@@ -48,7 +48,7 @@
                          <a class="curr">${district.name}</a>
                         #{/if}
                         #{else}
-                        <a href="/s/0-${district.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-${m}">${district.name}</a>
+                        <a href="/s/${categoryId}-${district.id}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-${m}">${district.name}</a>
                          #{/else}
                          #{/if}
                         #{/list}
@@ -82,10 +82,10 @@
                     <div class="cat-list">
                          #{list brands, as:'brand'}
                     #{if brandId == brand.id}
-                        <a class="curr">${brand.name}</a>
+                        <a class="curr">#{if brand.isHot}<strong style="color:red">#{/if}${brand.name}#{if brand.isHot}</strong>#{/if}</a>
                     #{/if}
                     #{else}<a href="/s/${categoryId}-${searchAreaId}-${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}#{if materialType != null}-${materialType.getIntValue()}#{/if}"
-                            >${brand.name}</a>
+                            >#{if brand.isHot}<strong style="color:red">#{/if}${brand.name}#{if brand.isHot}</strong>#{/if}</a>
                     #{/else}
                 #{/list}
                     </div>

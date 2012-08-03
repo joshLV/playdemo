@@ -65,15 +65,18 @@ public class GoodsCondition implements Serializable {
      * @param condStr hql的查询条件
      */
     public GoodsCondition(String condStr) {
+        Logger.info("查询条件：%s", condStr);
         String[] args = condStr.split("-");
         if (args == null || args.length < 1) {
             throw new IllegalArgumentException("GoodsCondition is illegal!");
         }
 
+        Logger.info("categoryId=" + categoryId + ", args[0]=" + args[0]);
         if (args.length > 0) {
             categoryId = StringUtils.isBlank(args[0]) ? 0 : Long
                     .parseLong(args[0]);
         }
+        Logger.info("categoryId=" + categoryId);
         if (args.length > 1) {
             searchAreaId = StringUtils.isBlank(args[1]) ? SHANGHAI : args[1];
             if (searchAreaId.length() == 8) {

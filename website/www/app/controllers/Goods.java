@@ -19,6 +19,7 @@ import models.sales.GoodsStatistics;
 import models.sales.GoodsStatisticsType;
 import models.sales.GoodsStatus;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.modules.breadcrumbs.Breadcrumb;
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
@@ -380,6 +381,7 @@ public class Goods extends Controller {
     }
 
     private static void renderGoodsCond(GoodsCondition goodsCond) {
+        Logger.info("goodsCond.categoryId=" + goodsCond.categoryId);
         renderArgs.put("categoryId", goodsCond.categoryId);
         renderArgs.put("cityId", goodsCond.cityId);
         renderArgs.put("districtId", goodsCond.districtId);

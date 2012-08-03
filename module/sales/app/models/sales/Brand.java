@@ -54,6 +54,9 @@ public class Brand extends Model {
 
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
+    
+    @Column(name="is_hot")
+    public Boolean isHot;
 
     public static final String CACHEKEY = "BRAND";
 
@@ -136,6 +139,7 @@ public class Brand extends Model {
         oldBrand.name = brand.name;
         oldBrand.displayOrder = brand.displayOrder;
         oldBrand.introduce = brand.introduce;
+        oldBrand.isHot = (brand.isHot == null) ? Boolean.FALSE : brand.isHot;
         if (brand.logo != null) {
             oldBrand.logo = brand.logo;
         }
@@ -188,7 +192,7 @@ public class Brand extends Model {
             page = new ModelPaginator(Brand.class, "deleted = ? and supplier.id=?", DeletedStatus.UN_DELETED,
                     supplierId).orderBy("displayOrder,name");
         } else {
-            page = new ModelPaginator(Brand.class, "deleted = ? ", DeletedStatus.UN_DELETED).orderBy("displayOrder,name");
+            page = new ModelPaginator(Brand.class, "deleted = ? ", DeletedStatus.UN_DELETED).orderBy("displayOrder desc,name");
         }
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);

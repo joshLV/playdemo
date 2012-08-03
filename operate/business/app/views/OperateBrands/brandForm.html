@@ -12,6 +12,9 @@
 #{/else}
 #{layout_operate.textField name:'brand.name', value:brand?.name, required:true/}
 #{layout_operate.textField name:'brand.displayOrder', value:brand?.displayOrder, required:true/}
+
+#{layout_operate.radioField name:'brand.isHot', value:brand.isHot?:false, required:true/}
+
 #{layout_operate.textareaField name:'brand.introduce', value:brand?.introduce/}
 #{if "add".equals(action)}
     #{layout_operate.fileField name:'logoImage',note:'图片尺寸：(300*180像素)', required:true/}
