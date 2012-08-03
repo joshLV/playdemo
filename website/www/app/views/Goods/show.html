@@ -183,9 +183,8 @@
                 #{else}
                 <li>
                 #{/else}
-                <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}"
-                                                                                  alt="${goodsAlt}"/></a></div>
-                <div class="title"><a href="" target="_blank">${aGoods.name}</a></div>
+                <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}" alt="${goodsAlt}"/></a></div>
+                <div class="title"><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
                 <div class="attri">
                     <del>原价：${aGoods.faceValue}</del>
                     <span #{if aGoods.materialType ==models.sales.MaterialType.ELECTRONIC}class="coupon" #{/if}#{else}class="coupon entity"#{/else}>&{'goods.'+aGoods.materialType}</span>

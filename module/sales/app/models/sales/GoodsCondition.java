@@ -243,10 +243,10 @@ public class GoodsCondition implements Serializable {
                 orderBy = "g.discount";
                 break;
             case 4:
-                orderBy = "g.createdAt";
+                orderBy = "g.materialType, g.createdAt"; //电子券优化显示
                 break;
             default:
-                orderBy = "g.recommend";
+                orderBy = "g.materialType, g.recommend"; //电子券优化显示
                 break;
         }
         return orderBy;
