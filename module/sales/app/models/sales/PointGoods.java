@@ -163,7 +163,7 @@ public class PointGoods extends Model {
 
 
     /**
-     * 商品状态,
+     * 积分商品状态,
      */
     @Enumerated(EnumType.STRING)
     public GoodsStatus status;
