@@ -43,22 +43,22 @@ public class TelephoneVerify extends Controller {
             renderText("2");//券号无效
         }
         if (timestamp == null) {
-            Logger.error("telephone verify failed: invalid timestamp");
+            Logger.error("telephone verify failed: invalid timestamp; caller: %s; coupon: %s; timestamp: %s; sign: %s", caller, coupon, timestamp, sign);
             renderText("3");//时间戳无效
         }
         if (sign == null || sign.trim().equals("")) {
-            Logger.error("telephone verify failed: invalid sign");
+            Logger.error("telephone verify failed: invalid sign; caller: %s; coupon: %s; timestamp: %s; sign: %s", caller, coupon, timestamp, sign);
             renderText("4");//签名无效
         }
 
         //5分钟的浮动
         if (requestTimeout(timestamp, 300)) {
-            Logger.error("telephone verify failed: request timeout %s", timestamp);
+            Logger.error("telephone verify failed: request timeout %s; caller: %s; coupon: %s; timestamp: %s; sign: %s", caller, coupon, timestamp, sign);
             renderText("5");//请求超时
         }
         //验证密码
         if (!validSign(timestamp, sign)) {
-            Logger.error("telephone verify failed: wrong sign");
+            Logger.error("telephone verify failed: wrong sign; caller: %s; coupon: %s; timestamp: %s; sign: %s", caller, coupon, timestamp, sign);
             renderText("6");//签名错误
         }
 
@@ -131,22 +131,22 @@ public class TelephoneVerify extends Controller {
             renderText("此券不存在");
         }
         if (timestamp == null) {
-            Logger.error("query face value failed: invalid timestamp");
+            Logger.error("query face value failed: invalid timestamp; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
             renderText("时间戳无效");//时间戳无效
         }
         if (sign == null || sign.trim().equals("")) {
-            Logger.error("query face value failed: invalid sign");
+            Logger.error("query face value failed: invalid sign; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
             renderText("签名无效");//签名无效
         }
 
         //5分钟的浮动
         if (requestTimeout(timestamp, 300)) {
-            Logger.error("query face value failed: request timeout %s", timestamp);
+            Logger.error("query face value failed; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
             renderText("请求超时");//请求超时
         }
         //验证密码
         if (!validSign(timestamp, sign)) {
-            Logger.error("query face value failed: wrong sign");
+            Logger.error("query face value failed: wrong sign; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
             renderText("签名错误");
         }
 
@@ -177,22 +177,22 @@ public class TelephoneVerify extends Controller {
             renderText("券号无效");
         }
         if (timestamp == null) {
-            Logger.error("query face value failed: invalid timestamp");
+            Logger.error("query face value failed: invalid timestamp; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
             renderText("时间戳无效");//时间戳无效
         }
         if (sign == null || sign.trim().equals("")) {
-            Logger.error("query face value failed: invalid sign");
+            Logger.error("query face value failed: invalid sign; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
             renderText("签名无效");//签名无效
         }
 
         //5分钟的浮动
         if (requestTimeout(timestamp, 300)) {
-            Logger.error("query face value failed: request timeout %s", timestamp);
+            Logger.error("query face value failed; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
             renderText("请求超时");//请求超时
         }
         //验证密码
         if (!validSign(timestamp, sign)) {
-            Logger.error("query face value failed: wrong sign");
+            Logger.error("query face value failed: wrong sign; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
             renderText("签名错误");
         }
 
