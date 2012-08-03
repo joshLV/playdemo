@@ -1,5 +1,9 @@
 package models.sales;
 
+
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
+
 import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.mysql.jdbc.PingTarget;
