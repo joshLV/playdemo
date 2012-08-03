@@ -7,7 +7,11 @@ import models.accounts.WithdrawBill;
 import models.accounts.WithdrawBillCondition;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
+import models.mail.MailMessage;
+import models.mail.MailUtil;
+import models.sms.SMSUtil;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.modules.breadcrumbs.BreadcrumbList;
@@ -22,6 +26,8 @@ import play.mvc.With;
 @With(SecureCAS.class)
 public class UserWithdraw extends Controller {
     private static final int PAGE_SIZE = 20;
+    private static String NOTIFICATION_EMAIL = Play.configuration.getProperty("withdraw_notification.email.receiver", "jingyue.gong@seewi.com.cn");
+    private static String NOTIFICATION_MOBILE = Play.configuration.getProperty("withdraw_notification.mobile", "").trim();
 
     public static void index(WithdrawBillCondition condition) {
         User user = SecureCAS.getUser();
@@ -61,6 +67,7 @@ public class UserWithdraw extends Controller {
         }
 
         if (withdraw.apply(user.loginName, account)) {
+            sendNotification(withdraw);
             index(null);
         } else {
             error("申请失败");
@@ -77,5 +84,18 @@ public class UserWithdraw extends Controller {
         render(bill, breadcrumbs);
     }
 
+    private static void sendNotification(WithdrawBill withdrawBill) {
+        // 发邮件
+        MailMessage message = new MailMessage();
+        message.addRecipient(NOTIFICATION_EMAIL);
+        message.setSubject("用户提现提醒");
+        message.putParam("withdrawBill", withdrawBill);
+        message.setTemplate("withdraw");
+        MailUtil.sendFinanceNotificationMail(message);
+
+        if(!"".equals(NOTIFICATION_MOBILE)){
+            SMSUtil.send("一百券用户" + withdrawBill.applier + "申请提现" + withdrawBill.amount + "元", NOTIFICATION_MOBILE);
+        }
+    }
 
 }

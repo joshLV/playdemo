@@ -3,7 +3,11 @@ package controllers;
 import controllers.modules.resale.cas.SecureCAS;
 import models.accounts.*;
 import models.accounts.util.AccountUtil;
+import models.mail.MailMessage;
+import models.mail.MailUtil;
 import models.resale.Resaler;
+import models.sms.SMSUtil;
+import play.Play;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.Controller;
@@ -17,6 +21,9 @@ import java.util.List;
  */
 @With(SecureCAS.class)
 public class ResalerWithdraw extends Controller{
+
+    private static String NOTIFICATION_EMAIL = Play.configuration.getProperty("withdraw_notification.email.receiver", "jingyue.gong@seewi.com.cn");
+    private static String NOTIFICATION_MOBILE = Play.configuration.getProperty("withdraw_notification.mobile", "").trim();
 
     public static void index(){
         Resaler resaler = SecureCAS.getResaler();
@@ -46,6 +53,20 @@ public class ResalerWithdraw extends Controller{
             index();
         }else {
             error("申请失败");
+        }
+    }
+
+    private static void sendNotification(WithdrawBill withdrawBill) {
+        // 发邮件
+        MailMessage message = new MailMessage();
+        message.addRecipient(NOTIFICATION_EMAIL);
+        message.setSubject("用户提现提醒");
+        message.putParam("withdrawBill", withdrawBill);
+        message.setTemplate("withdraw");
+        MailUtil.sendFinanceNotificationMail(message);
+
+        if(!"".equals(NOTIFICATION_MOBILE)){
+            SMSUtil.send("一百券用户" + withdrawBill.applier + "申请提现" + withdrawBill.amount + "元", NOTIFICATION_MOBILE);
         }
     }
 }

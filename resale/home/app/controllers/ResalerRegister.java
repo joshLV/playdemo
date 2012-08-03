@@ -1,11 +1,16 @@
 package controllers;
 
+import models.accounts.WithdrawBill;
+import models.mail.MailMessage;
+import models.mail.MailUtil;
 import models.resale.Resaler;
 import models.resale.ResalerCreditable;
 import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
+import models.sms.SMSUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.libs.Images;
@@ -19,6 +24,9 @@ import java.util.Date;
  * @author yanjy
  */
 public class ResalerRegister extends Controller {
+
+    private static String NOTIFICATION_EMAIL = Play.configuration.getProperty("register_notification.resaler.email.receiver", "jingyue.gong@seewi.com.cn");
+    private static String NOTIFICATION_MOBILE = Play.configuration.getProperty("register_notification.resaler.mobile", "").trim();
 
     /**
      * 注册页面
@@ -65,6 +73,7 @@ public class ResalerRegister extends Controller {
         resaler.creditable = ResalerCreditable.NO;
         resaler.save();
 
+        sendNotification(resaler);
         render("ResalerRegister/success.html");
     }
 
@@ -77,5 +86,19 @@ public class ResalerRegister extends Controller {
     public static void checkLoginName(String loginName, String mobile) {
         String returnFlag = Resaler.checkValue(loginName, mobile);
         renderJSON(returnFlag);
+    }
+
+    private static void sendNotification(Resaler resaler) {
+        // 发邮件
+        MailMessage message = new MailMessage();
+        message.addRecipient(NOTIFICATION_EMAIL);
+        message.setSubject("分销商注册申请");
+        message.putParam("resaler", resaler);
+        message.setTemplate("resalerRegister");
+        MailUtil.sendFinanceNotificationMail(message);
+
+        if(!"".equals(NOTIFICATION_MOBILE)){
+            SMSUtil.send("分销商注册申请，账号：" +resaler.loginName, NOTIFICATION_MOBILE);
+        }
     }
 }

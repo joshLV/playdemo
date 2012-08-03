@@ -12,7 +12,7 @@ import play.mvc.Mailer;
 public class GoodsOffSalesMails extends Mailer {
     public static void notify(MailMessage message) {
         setSubject(message.getSubject());
-        addRecipient(message.getOneRecipient());
+        addRecipient(message.getRecipients().toArray(new String[message.getRecipients().size()]));
         setFrom("yibaiquan <noreplay@uhuila.com>");
         send(message);
     }

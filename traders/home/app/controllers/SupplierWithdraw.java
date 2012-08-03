@@ -2,10 +2,14 @@ package controllers;
 
 import models.accounts.*;
 import models.accounts.util.AccountUtil;
+import models.mail.MailMessage;
+import models.mail.MailUtil;
+import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import navigation.annotations.Right;
 import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
@@ -22,6 +26,8 @@ import java.util.List;
 @With(SupplierRbac.class)
 public class SupplierWithdraw extends Controller{
     private static final int PAGE_SIZE = 20;
+    private static String NOTIFICATION_EMAIL = Play.configuration.getProperty("withdraw_notification.email.receiver", "jingyue.gong@seewi.com.cn");
+    private static String NOTIFICATION_MOBILE = Play.configuration.getProperty("withdraw_notification.mobile", "").trim();
 
     @Right("STATS")
     @ActiveNavigation("account_withdraw")
@@ -79,6 +85,7 @@ public class SupplierWithdraw extends Controller{
         withdraw.amount = amount;
 
         if (withdraw.apply(supplier.fullName+"-"+SupplierRbac.currentUser().loginName, account)){
+            sendNotification(withdraw);
             index(null);
         }else {
             error("申请失败");
@@ -96,5 +103,19 @@ public class SupplierWithdraw extends Controller{
             error("withdraw bill not found");
         }
         render(bill);
+    }
+
+    private static void sendNotification(WithdrawBill withdrawBill) {
+        // 发邮件
+        MailMessage message = new MailMessage();
+        message.addRecipient(NOTIFICATION_EMAIL);
+        message.setSubject("用户提现提醒");
+        message.putParam("withdrawBill", withdrawBill);
+        message.setTemplate("withdraw");
+        MailUtil.sendFinanceNotificationMail(message);
+
+        if(!"".equals(NOTIFICATION_MOBILE)){
+            SMSUtil.send("一百券用户" + withdrawBill.applier + "申请提现" + withdrawBill.amount + "元", NOTIFICATION_MOBILE);
+        }
     }
 }
