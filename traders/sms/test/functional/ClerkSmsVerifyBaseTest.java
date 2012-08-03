@@ -1,6 +1,7 @@
 package functional;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
@@ -49,11 +50,14 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
      * @param content
      */
     public static void assertSMSContentMatch(String pattern, String content) {
-        assertTrue("短信内容(" + content + ")超过67字符, size:" + content.length(), content.length() <= 67);
-        
+        assertSMSContentLength(content);
         Pattern ptn = Pattern.compile(pattern);
         boolean ok = ptn.matcher(content).find();
         assertTrue("The content (" + content + ") does not match '" + pattern + "'", ok);
+    }
+
+    protected static void assertSMSContentLength(String content) {
+        assertTrue("短信内容(" + content + ")超过67字符, size:" + content.length(), content.length() <= 67);
     }
     
     /**
@@ -248,6 +252,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         assertContentEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店", response);
         
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
+        assertSMSContentLength(msg.getContent());
         assertEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", msg.getContent());
     }
 
@@ -263,6 +268,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         
         assertContentEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店", response);
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
+        assertSMSContentLength(msg.getContent());
         assertEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", msg.getContent());
     }
 
@@ -295,11 +301,14 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         Http.Response response = messageSender.doMessageSend("15800002341", ecoupon);
         assertContentEquals("【券市场】券号" + ecoupon.eCouponSn + "已消费，无法再次消费", response);
 
+        SimpleDateFormat df = new SimpleDateFormat("MM-dd HH:mm");
         ecoupon = ECoupon.findById(id);
         ecoupon.refresh();
         assertEquals(ECouponStatus.CONSUMED, ecoupon.status);
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertEquals("【券市场】券号" + ecoupon.eCouponSn + "已消费，无法再次消费。如有疑问请致电：400-6262-166", msg.getContent());
+        assertSMSContentLength(msg.getContent());
+        assertEquals("【券市场】158*****341尾号" + getLastString(ecoupon.eCouponSn, 4) + "券（" + ecoupon
+                                .faceValue + "元）不能重复消费，已于" + df.format(ecoupon.consumedAt) + "在优惠拉消费过", msg.getContent());
     }
 
     /**
@@ -334,6 +343,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         assertContentEquals("【券市场】券号" + ecoupon.eCouponSn + "已过期，无法进行消费", response);
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
+        assertSMSContentLength(msg.getContent());
         assertEquals("【券市场】券号" + ecoupon.eCouponSn + "已过期，无法进行消费。如有疑问请致电：400-6262-166", msg.getContent());
     }
 

@@ -35,11 +35,11 @@ public class TelephoneVerify extends Controller {
     public static void verify(String caller, String coupon, Long timestamp, String sign) {
         Logger.info("telephone verify; caller: %s; coupon: %s; timestamp: %s; sign: %s", caller, coupon, timestamp, sign);
         if (caller == null || caller.trim().equals("")) {
-            Logger.error("telephone verify failed: invalid caller");
+            Logger.info("telephone verify failed: invalid caller");
             renderText("1");//主叫号码无效
         }
         if (coupon == null || coupon.trim().equals("")) {
-            Logger.error("telephone verify failed: invalid coupon");
+            Logger.info("telephone verify failed: invalid coupon");
             renderText("2");//券号无效
         }
         if (timestamp == null) {
@@ -120,14 +120,14 @@ public class TelephoneVerify extends Controller {
         Logger.info("query face value; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
 
         if (coupon == null || coupon.trim().equals("")) {
-            Logger.error("query face value failed: invalid coupon");
+            Logger.info("query face value failed: invalid coupon");
             renderText("券号无效");//券号无效
         }
 
         ECoupon ecoupon = ECoupon.query(coupon, null);
 
         if (ecoupon == null) {
-            Logger.error("query face value failed: coupon not found");
+            Logger.info("query face value failed: coupon not found");
             renderText("此券不存在");
         }
         if (timestamp == null) {
@@ -165,7 +165,7 @@ public class TelephoneVerify extends Controller {
         Logger.info("query consumed at; coupon: %s; timestamp: %s; sign: %s", coupon, timestamp, sign);
 
         if (coupon == null || coupon.trim().equals("")) {
-            Logger.error("query face value failed: invalid coupon");
+            Logger.info("query face value failed: invalid coupon");
             renderText("券号无效");//券号无效
         }
 
@@ -173,7 +173,7 @@ public class TelephoneVerify extends Controller {
         ECoupon ecoupon = ECoupon.query(coupon, null);
 
         if (ecoupon == null) {
-            Logger.error("query face value failed: coupon not found");
+            Logger.info("query face value failed: coupon not found");
             renderText("券号无效");
         }
         if (timestamp == null) {
@@ -197,12 +197,12 @@ public class TelephoneVerify extends Controller {
         }
 
         if (ecoupon.consumedAt == null) {
-            Logger.error("telephone verify failed: coupon not consumed");
+            Logger.info("telephone verify failed: coupon not consumed");
             renderText("未消费");
         }
         String shopName = "";
         if (ecoupon.shop == null) {
-            Logger.error("telephone verify failed: coupon consumed, but do not know where it consumed at");
+            Logger.info("telephone verify failed: coupon consumed, but do not know where it consumed at");
         } else {
             shopName = ",消费门店 " + ecoupon.shop.name;
         }
