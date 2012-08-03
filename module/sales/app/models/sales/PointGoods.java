@@ -563,7 +563,7 @@ public class PointGoods extends Model {
      */
     public static List<PointGoods> findTopRecommend(int limit) {
         String sql = "select g from PointGoods g,GoodsStatistics s  where g.id =s.goodsId " +
-                " and g.status =:status and g.deleted =:deleted and g.expireAt >:expireAt and g.baseSale>=1 and g.isLottery is false order by s.summaryCount desc";
+                " and g.status =:status and g.deleted =:deleted and g.expireAt >:expireAt and g.baseSale>=1 order by s.summaryCount desc";
         Query query = PointGoods.em().createQuery(sql);
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
@@ -575,6 +575,8 @@ public class PointGoods extends Model {
     }
 
     public boolean onSale() {
+        //System.out.println("onsale---------------"+GoodsStatus.ONSALE.equals(status));
+        //System.out.println("delete------"+ DeletedStatus.UN_DELETED.equals(deleted));
         return (GoodsStatus.ONSALE.equals(status) && expireAt.after(new Date()) &&
                 baseSale > 0 && DeletedStatus.UN_DELETED.equals(deleted));
     }
