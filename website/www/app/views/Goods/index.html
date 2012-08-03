@@ -17,7 +17,7 @@
 			window.location.href = "/s/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-0";
 		});
 		$("#qb").click(function() {
-			window.location.href = "/s";
+			window.location.href = "/s/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}";
 		});
 	});
 </script>
@@ -110,15 +110,15 @@
             </ul>
             <form class="">
                 <input id="qb" type="radio" #{if materialType == "" || materialType == null }checked #{/if}/><label for="qb">全部</label>
-                <input id="dz" type="radio"#{if models.sales.MaterialType.ELECTRONIC.equals(materialType)}checked #{/if}/><label for="dz">电子券</label>
-                <input id="st" type="radio"#{if models.sales.MaterialType.REAL.equals(materialType)}checked #{/if} /><label for="st">实体券</label>
+                <input id="dz" type="radio" #{if models.sales.MaterialType.ELECTRONIC.equals(materialType)}checked #{/if}/><label for="dz">电子券</label>
+                <input id="st" type="radio" #{if models.sales.MaterialType.REAL.equals(materialType)}checked #{/if} /><label for="st">实体券</label>
 
             </form>
         </div>
         <!-- #filter -->
+        #{if goodsPage.rowCount > 0}
         #{set i:1/}
         <ul id="listview" class="clearfix">
-
             #{paginate.list items:goodsPage, as:'aGoods'}
                 #{set altTitle: helper.Title.getDetailTitle(aGoods) /}
               #{if i%3==0}
@@ -143,6 +143,13 @@
             #{/paginate.list}
         </ul>
         #{paginate.controls items:goodsPage /}
+        #{/if}
+        #{else}
+        <p align="center">
+        <br/><br/>
+         抱歉，没有找到符合条件的商品！请重新选择查询条件。
+        </p>
+        #{/else}
     </div>
 
     <!-- #section -->
