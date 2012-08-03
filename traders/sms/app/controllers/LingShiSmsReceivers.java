@@ -1,9 +1,6 @@
 package controllers;
 
-import models.sms.SMSUtil;
 import play.mvc.Controller;
-import com.uhuila.common.util.FieldCheckUtil;
-import play.Logger;
 
 public class LingShiSmsReceivers extends Controller {
     /**
@@ -14,22 +11,14 @@ public class LingShiSmsReceivers extends Controller {
         String mobile = params.get("SrcMobile");
         String msg = params.get("Content");
         String code = params.get("AppendID");
-        
+
+        // 这家返回的code是完整的号码，需要另外处理
         if (code != null && code.length() > 4) {
             code = code.substring(code.length() - 4);
         }
 
-        Logger.info("LingShiSMS: mobile=" + mobile + ", msg=" + msg + ", code=" + code);
-        if (msg.contains("#")) {
-            // 店员验证
-            renderText(SmsReceiverUtil.checkClerk(mobile, msg, code));
-        } else if (FieldCheckUtil.isNumeric(msg)) {
-            // 消费者验证的情况
-            renderText(SmsReceiverUtil.checkConsumer(mobile, msg, code));
-        } else {
-            SMSUtil.send("【券市场】券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：400-6262-166",
-                    mobile, code);
-            renderText("msg is wrong");
-        }
+        String result = SmsReceiverUtil.processMessage(mobile, msg, code);
+        renderText(result);
     }
+
 }

@@ -38,17 +38,8 @@ public class EnSmsReceivers extends Controller {
             renderText("Invaild request!");
         }
 
-        if (msg.contains("#")) {
-            // 店员验证
-            renderText(SmsReceiverUtil.checkClerk(mobile, msg, code));
-        } else if (FieldCheckUtil.isNumeric(msg)) {
-            // 消费者验证的情况
-            renderText(SmsReceiverUtil.checkConsumer(mobile, msg, code));
-        } else {
-            SMSUtil.send("【券市场】券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：400-6262-166",
-                    mobile, code);
-            renderText("Unsupport Message");
-        }
+        String result = SmsReceiverUtil.processMessage(mobile, msg, code);
+        renderText(result);
     }
 
     private static boolean validUserPassDt(String username, String pwd, String dt) {
