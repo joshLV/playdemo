@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 require 'popen4'
+$stdout.sync = true
 
 #test_passed_regex = /^~\s+(unit|functional|selenium)\/\w+\.{3}\s+PASSED/
 #test_failed_regex = /^~\s+(unit|functional|selenium)\/\w+\.{3}\s+FAILED/
