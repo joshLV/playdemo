@@ -78,6 +78,10 @@ public class SupplierUser extends Model {
     @JoinColumn(name = "shop_id", nullable = true)
     public Shop shop;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "supplier_user_type")
+    public SupplierUserType supplierUserType;
+
     /**
      * 逻辑删除,0:未删除，1:已删除
      */
@@ -97,6 +101,11 @@ public class SupplierUser extends Model {
             joinColumns = @JoinColumn(name = "user_id"))
     public Set<SupplierPermission> permissions;
 
+    public SupplierUser(){
+        supplierUserType = SupplierUserType.HUMAN;
+        createdAt = new Date();
+    }
+
     /**
      * 查询操作员信息
      *
@@ -107,19 +116,41 @@ public class SupplierUser extends Model {
      */
     public static JPAExtPaginator<SupplierUser> getSupplierUserList(String loginName, String userName, String jobNumber, Long supplierId,
                                                                     int pageNumber, int pageSize) {
-        StringBuffer sql = new StringBuffer("1=1");
-        Map params = new HashMap();
+        return getSupplierUserList(SupplierUserType.HUMAN, loginName, userName, jobNumber, supplierId, pageNumber, pageSize);
+    }
+        /**
+         * 查询操作员信息
+         *
+         * @param loginName  用户名
+         * @param pageNumber 页数
+         * @param pageSize   记录数
+         * @return 操作员信息
+         */
+        public static JPAExtPaginator<SupplierUser> getSupplierUserList(SupplierUserType type, String loginName, String userName, String jobNumber, Long supplierId,
+        int pageNumber, int pageSize) {
+        StringBuilder sql = new StringBuilder("1=1");
+        Map<String, Object> params = new HashMap<>();
         if (supplierId != null) {
             sql.append(" and supplier.id = :supplierId");
             params.put("supplierId", supplierId);
         }
+
+        if (type != null) {
+            if(type == SupplierUserType.HUMAN) {
+                sql.append(" and (s.supplierUserType = :supplierUserType or s.supplierUserType is null)");
+            }else {
+                sql.append(" and s.supplierUserType = :supplierUserType");
+            }
+            params.put("supplierUserType", type);
+        }
+
 
         sql.append(" and deleted = :deleted ");
         params.put("deleted", DeletedStatus.UN_DELETED);
 
         if (StringUtils.isNotBlank(loginName)) {
             sql.append(" and loginName like :loginName");
-            params.put("loginName", loginName + "%");
+            params.put("loginName", "%" + loginName + "%");
         }
         if (StringUtils.isNotBlank(userName)) {
             sql.append(" and userName like :userName");
@@ -234,7 +265,6 @@ public class SupplierUser extends Model {
                 + password_salt);
         // 随机码
         passwordSalt = password_salt;
-        createdAt = new Date();
         lockVersion = 0;
         this.supplier = supplier;
         this.loginName = this.loginName.toLowerCase().trim();

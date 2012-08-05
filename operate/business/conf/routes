@@ -52,6 +52,15 @@ POST    /users/checkLoginName                   OperateSupplierUsers.checkLoginN
 GET     /users/{id}/edit                        OperateSupplierUsers.edit
 POST    /users/{id}                             OperateSupplierUsers.update
 DELETE  /users/{id}                             OperateSupplierUsers.delete
+#商户验证电话管理
+GET     /verify-tel                             OperateVerifyPhones.index
+GET     /verify-tel/supplier-shops/{id}         OperateVerifyPhones.showSupplierShops
+GET     /verify-tel/new                         OperateVerifyPhones.add
+POST    /verify-tel                             OperateVerifyPhones.create
+POST    /verify-tel/checkLoginName              OperateVerifyPhones.checkLoginName
+GET     /verify-tel/{id}/edit                   OperateVerifyPhones.edit
+POST    /verify-tel/{id}                        OperateVerifyPhones.update
+DELETE  /verify-tel/{id}                        OperateVerifyPhones.delete
 # 增加提现账户
 POST    /withdraw-account                       Suppliers.withdrawAccountCreateAndUpdate
 POST    /withdraw-account/delete                Suppliers.withdrawAccountDelete

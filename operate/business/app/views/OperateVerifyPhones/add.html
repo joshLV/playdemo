@@ -1,0 +1,55 @@
+#{extends 'layout_operate/layout.html' /}
+#{include '/share/nav.html' /}
+
+#{set title:'添加电话验证机' /}
+#{set 'moreScripts'}
+<SCRIPT type=text/javascript>
+    $(function(){
+        if($("#shop").find("option").length == 0 ){
+            $("#save").attr("disabled", true);
+        }
+        $("#supplierUser_supplier_id").change(function () {
+            $("#shop").load("/verify-tel/supplier-shops/"+ $("#supplierUser_supplier_id").val(),
+                function (data) {}
+            );
+            if($("#shop").find("option").length == 0 ){
+                $("#save").attr("disabled", true);
+            }else{
+                $("#save").attr("disabled", false);
+            }
+        });
+    });
+    </SCRIPT>
+#{/set}
+#{if supplierList?.size() > 0 }
+    #{form @OperateVerifyPhones.create() , id:'operForm',class:"form-horizontal" }
+     <legend>添加电话验证机</legend>
+    #{layout_operate.selectField name:'supplierUser.supplier.id', class:'span2', value:supplierUser?.supplier?.id,
+            error:'supplierUser.supplierId'}
+                #{list items:supplierList, as:'supplier' }
+                    #{option supplier.id}${supplier.fullName}#{/option}
+                #{/list}
+            #{/layout_operate.selectField}
+     <div class="control-group">
+      <label for="loginName" class="control-label"><span style="color: red; ">*</span>电话号码</label>
+      <div class="controls">
+       <input type="text" name="supplierUser.loginName" class="input-large" id="loginName" value="${supplierUser?.loginName}"/>
+        <span style="color:#808080;">(要加区号，如02150504740)</span>
+        <span class="error" id="checkName">#{error 'supplierUser.loginName' /}</span>
+      </div>
+     </div>
+    <div id="shop">
+        #{layout_operate.selectField name:'supplierUser.shop.id', value:supplierUser?.shop?.id, error:'supplierUser.shop', required:true}
+        #{list items:shopList, as:'shop'}
+        #{option shop?.id}${shop?.name}#{/option}
+        #{/list}
+        #{/layout_operate.selectField}
+    </div>
+     <div class="form-actions">
+      <button class="btn btn-primary" id="save" type="submit">保 存</button>
+     </div>
+    #{/form}
+#{/if}
+#{else}
+        没有商户，请首先添加商户。
+#{/else}

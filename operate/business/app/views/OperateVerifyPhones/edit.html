@@ -1,0 +1,44 @@
+#{extends 'layout_operate/layout.html' /}
+#{include '/share/nav.html' /}
+
+#{set title:'修改电话验证机' /}
+#{set 'moreStyles'}
+    <style type="text/css">
+        .controls{
+            padding-top:5px;
+            magin-bottom:5px;
+        }
+    </style>
+#{/set}
+
+
+
+    #{form @OperateVerifyPhones.update() , id:'operForm',class:"form-horizontal" }
+     <legend>修改电话验证机</legend>
+    <div class="control-group">
+        <label class="control-label">商户</label>
+        <div class="controls">
+            <span class="input-large">${supplierUser.supplier.fullName}</span>
+        </div>
+    </div>
+     <div class="control-group">
+      <label for="loginName" class="control-label"><span style="color: red; ">*</span>电话号码</label>
+      <div class="controls">
+       <input type="text" name="loginName" class="input-large" id="loginName" value="${supplierUser?.loginName}"/>
+        <span style="color:#808080;">(要加区号，如02150504740)</span>
+        <span class="error" id="checkName">#{error 'supplierUser.loginName' /}</span>
+      </div>
+     </div>
+
+    <div class="control-group">
+        <label class="control-label">门店</label>
+        <div class="controls">
+            <span class="input-large">${supplierUser.shop.name}</span>
+        </div>
+    </div>
+     <div class="form-actions">
+         <input type="hidden" name="id" value="${supplierUser?.id}"/>
+      <button class="btn btn-primary" id="save" type="submit">保 存</button>
+     </div>
+    #{/form}
+
