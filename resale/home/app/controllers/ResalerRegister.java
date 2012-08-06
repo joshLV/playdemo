@@ -92,7 +92,7 @@ public class ResalerRegister extends Controller {
         // 发邮件
         MailMessage message = new MailMessage();
         message.addRecipient(NOTIFICATION_EMAILS);
-        message.setFrom("yibaiquan <noreplay@uhuila.com");
+        message.setFrom("yibaiquan <noreplay@uhuila.com>");
         message.setSubject("分销商注册申请");
         message.putParam("resaler", resaler.loginName);
         message.setTemplate("resalerRegister");
