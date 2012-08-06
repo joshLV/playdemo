@@ -1,6 +1,10 @@
 package models.sales;
 
 
+import cache.CacheCallBack;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -22,6 +26,7 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import play.Play;
@@ -36,11 +41,26 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Money;
 import cache.CacheCallBack;
+
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.PathUtil;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import play.Play;
+import play.data.validation.*;
+import play.db.jpa.JPA;
+import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
+import play.modules.view_ext.annotation.Money;
+
+import javax.persistence.*;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -115,7 +135,6 @@ public class PointGoods extends Model {
     /**
      * 商品类型（单选 电子券/实物券）
      */
-
     @Enumerated(EnumType.STRING)
     @Column(name = "material_type")
     public MaterialType materialType;
@@ -589,6 +608,18 @@ public class PointGoods extends Model {
         List<PointGoods> goodsList = query.getResultList();
         return goodsList;
 
+    }
+
+    public static List<PointGoods> findTopSaleGoods(int limit) {
+        String sql = "select g from PointGoods g where " +
+                "g.status =:status and g.deleted =:deleted and g.expireAt >:expireAt and g.baseSale>=1 order by g.saleCount desc";
+        Query query = PointGoods.em().createQuery(sql);
+        query.setParameter("status", GoodsStatus.ONSALE);
+        query.setParameter("deleted", DeletedStatus.UN_DELETED);
+        query.setParameter("expireAt", new Date());
+        query.setMaxResults(limit);
+        List<PointGoods> goodsList = query.getResultList();
+        return goodsList;
     }
 
     public boolean onSale() {
