@@ -5,10 +5,12 @@
 # Home page
 GET     /                                       PointGoods.index
 GET     /index                                  PointGoods.index
-GET     /goods/{id}                             PointGoods.show
-GET     /goods/{uuid}/preview                   PointGoods.preview
+GET     /pointgoods/{id}                        PointGoods.show
+GET     /pointgoods/{uuid}/preview              PointGoods.preview
 
-POST    /user-question                          PointGoodsUserQuestions.add
+POST    /goods/statistics                       PointGoods.statistics
+
+POST    /user-question                          PointGoodsUserQuestion.add
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
