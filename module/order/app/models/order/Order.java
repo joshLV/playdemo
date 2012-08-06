@@ -1,27 +1,8 @@
 package models.order;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -40,6 +21,7 @@ import models.sales.Goods;
 import models.sales.GoodsStatistics;
 import models.sales.MaterialType;
 import models.sms.SMSUtil;
+import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Index;
 import play.Logger;
@@ -47,15 +29,19 @@ import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
-import cache.CacheHelper;
-import com.uhuila.common.constants.DeletedStatus;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 @Entity
 @Table(name = "orders")
 public class Order extends Model {
     private static final long serialVersionUID = 7063112063912330652L;
-
+    public static String EMAIL_RECEIVER = Play.configuration.getProperty("goods_not_enough.receiver", "dev@uhuila.com");
     public static final BigDecimal FREIGHT = new BigDecimal("6");
     private static final String DECIMAL_FORMAT = "0000000";
     private static final String COUPON_EXPIRE_FORMAT = "yyyy-MM-dd";
@@ -435,6 +421,19 @@ public class Order extends Model {
             orderItem.save();
             if (orderItem.goods.materialType == MaterialType.REAL) {
                 haveFreight = true;
+            }
+            if (orderItem.goods.baseSale == 3 || orderItem.goods.baseSale == 0) {
+                //发送提醒邮件
+                MailMessage mailMessage = new MailMessage();
+                mailMessage.addRecipient(EMAIL_RECEIVER);
+                mailMessage.setSubject(Play.mode.isProd() ? "库存不足，商品即将下架" : "商品下架【测试】");
+                Supplier supplier = Supplier.findById(orderItem.goods.supplierId);
+                mailMessage.putParam("supplierName", supplier.fullName);
+                mailMessage.putParam("goodsName", orderItem.goods.name);
+                mailMessage.putParam("faceValue", orderItem.goods.faceValue);
+                mailMessage.putParam("baseSales", orderItem.goods.baseSale);
+                mailMessage.putParam("offSalesFlag", "noInventory");
+                MailUtil.sendGoodsOffSalesMail(mailMessage);
             }
         }
 
@@ -965,6 +964,7 @@ public class Order extends Model {
 
     /**
      * 统计订单总金额/
+     *
      * @param orderList
      * @return
      */
