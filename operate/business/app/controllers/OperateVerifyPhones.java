@@ -131,8 +131,8 @@ public class OperateVerifyPhones extends Controller {
                     Validation.addError("supplierUser.loginName", "该电话号码已存在");
                 }
             }
+            supplierUser.loginName = loginName;
         }
-        supplierUser.loginName = loginName;
         if (Validation.hasErrors()) {
             render("OperateVerifyPhones/edit.html", supplierUser);
         }
