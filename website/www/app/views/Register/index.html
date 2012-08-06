@@ -1,27 +1,58 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>新用户注册</title>
-    #{asset.css src:['/u/base.css'] /}
-    #{asset.js src:['/u/jquery-1.7.2.min.js'] /}
-    #{asset.css src:['/u/login.css'] /}
+<meta charset="UTF-8">
+<title>新用户注册</title>
+<link rel="shortcut icon" href="http://a.uhcdn.com/images/y/favicon.ico" type="image/x-icon" />
+<style>
+body, h2, h3, p { padding: 0; margin: 0; }
+body, a, button, input { color: #3E3E3E; font: 12px/1.5 tahoma, arial, \5b8b\4f53, sans-serif; }
+#header { width: 960px; margin: 0 auto; }
+#header img { border: 0; }
+.clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+.clearfix { *+height: 1%; }
+
+#content { width: 960px; margin: 0 auto; padding: 25px 0 10px; }
+.form-hd { height: 32px; color: #f97311; line-height: 32px; text-indent: 10px; font-weight: 700; background: url(//img.uhcdn.com/images/y/register.png) repeat-x 0 0; border: 1px solid #e8e8e8; border-top: 3px solid #f97311; }
+.form-bd { padding: 35px 20px; border: solid #D1D1D1; border-width: 0 1px 1px 1px; }
+
+#regist { width: 525px; margin: 0 auto; }
+.field { padding: 3px 0; }
+.label { display: inline-block; width: 80px; text-align: right; }
+.label i { color: #fc7410; padding-right: 3px; font-style: normal; font-family: sans-serif, \5b8b\4f53; }
+.medium { width: 240px; height: 22px; padding: 0 2px; font-size: 12px; line-height: 22px; border: 1px solid #D1D1D1; }
+.forget { color: #fc7410; padding-left: 5px; text-decoration: none; }
+.error { display: block; width: 204px; height: 20px; padding-left: 52px; color: #f00; }
+
+.regist { display: block; width: 197px; height: 39px; color: #FFF; margin-top: 20px; font-size: 14px; font-weight: 700; line-height: 39px; text-align: center; text-indent: -9999px; background: url(//img.uhcdn.com/images/y/register.png) no-repeat 0 -33px; }
+#captchaImg { position: relative; top: 8px; }
+#checkcode { width: 70px; } 
+
+#protocol { display: block; width: 600px; height: 120px; overflow-y: scroll; padding: 5px 0 0 5px; margin: 20px auto 0; border: 1px solid #D1D1D1; }
+#protocol h3 { text-align: center; line-height: 30px; }
+
+#footer { padding: 10px 0 20px; margin: 0 auto; text-align: center; }
+.ft-nav { color: #999; text-align: center; }
+.ft-nav a { color: #3E3E3E; margin: 0 10px; text-decoration: none }
+.ft-nav a:hover { color: #fc7410; text-decoration: none }
+.copyright { color: #999; line-height: 26px; }
+.copyright span { margin: 0 10px; }
+</style>
+<script src="http://a.uhcdn.com/js/u/jquery-1.7.2.min.js"></script>
 </head>
 <body>
 
 %{ randomID = controllers.Register.genRandomId(); }%
 
-<div id="header" class="clearfix">
-    <div id="logo">
-                  <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}"><img src="#{asset.url href:'/images/y/logo.png'/}" width="180" height="88"
-                                            alt="一百券"/></a>
-    </div>
+<div id="header">
+    <a href="http://www.yibaiquan.com"><img src="http://img.uhcdn.com/images/y/logo.png" alt="一百券" width="180" height="96px" /></a>
 </div>
 
+
 <div id="content">
-    <div class="form-hd"><h2>新用户注册</h2><b></b></div>
+    <div class="form-hd">新用户注册</div>
     <div class="form-bd">
-        <form id="regist-form" method="post" action="">
+        <form id="regist" method="post" action="">
             <div class="field">
                 <label for="loginName" class="label"><i>*</i>邮箱：</label>
                 <input type="text" id="loginName" class="medium" maxlength="32" tabindex="1" name="user.loginName" value="${user?.loginName}" />
@@ -262,7 +293,7 @@ function checkLoginNameAndMobile(){
     <div class="ft-nav">
         <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/about" target="_blank">关于我们</a> |
         <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/contact" target="_blank">联系我们</a> |
-    *{<a href="http://quanmx.com/" target="_blank">商户入驻</a> |}*
+        *{<a href="http://quanmx.com/" target="_blank">商户入驻</a> |}*
         <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/help" target="_blank">常见问题</a>
     </div>
     <div class="copyright">
