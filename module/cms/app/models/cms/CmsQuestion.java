@@ -6,6 +6,7 @@ import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.*;
 import java.util.*;
+import models.cms.GoodsType;
 
 /**
  * <p/>
@@ -25,6 +26,11 @@ public class CmsQuestion extends Model {
 
     @Column(name = "user_id")
     public Long userId;
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "goods_type")
+    public GoodsType goodsType;
 
     @Column(name = "cookie_id")
     public String cookieId;
@@ -60,6 +66,7 @@ public class CmsQuestion extends Model {
         this.userId = null;
         this.cookieId = null;
         this.userName = null;
+        this.goodsType = GoodsType.NORMALGOODS;
     }
 
     public static JPAExtPaginator<CmsQuestion> getQuestionList(QuestionCondition condition, int pageNumber, int pageSize) {
@@ -71,13 +78,17 @@ public class CmsQuestion extends Model {
         return questions;
     }
 
-    public static List<CmsQuestion> findOnGoodsShow(Long userId, String cookieValue, Long goodsId, int firstResult, int size) {
+    public static List<CmsQuestion> findOnGoodsShow(Long userId, String cookieValue, Long goodsId, GoodsType goodsType, int firstResult, int size) {
         if (firstResult < 0 || size < 0){
             return new ArrayList<>();
         }
-        StringBuilder sql = new StringBuilder("select q from CmsQuestion q where goodsId = :goodsId and ( (visible = :visible and reply IS NOT NULL) ");
+        if (goodsType == null){
+            goodsType = GoodsType.NORMALGOODS;
+        }
+        StringBuilder sql = new StringBuilder("select q from CmsQuestion q where goodsId = :goodsId and goodsType = :goodsType and ( (visible = :visible and reply IS NOT NULL) ");
         Map<String, Object> params = new HashMap<>();
         params.put("goodsId", goodsId);
+        params.put("goodsType", goodsType);
         params.put("visible", true);
 
         if (userId != null) {
