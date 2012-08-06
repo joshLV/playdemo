@@ -77,13 +77,26 @@
                 <li>配送方式：#{if models.sales.MaterialType.ELECTRONIC.equals(goods.materialType)}
                     手机短信#{/if}#{else}快递 (运费：${models.order.Order.FREIGHT} 元)#{/else}</li>
                 <li>券有效期：${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</li>
-                <li>购买数量：
-                        <span id="amount">
-                            <input class="amount-ipt" type="text" value="1" />
-                            <span class="increase-btn"></span>
-                            <span class="decrease-btn"></span>
-                        </span>
-                    件
+                <li class="amount">购买数量:
+                    <span id="amount">
+                    <input class="amount-ipt" id="number" name="g${goods.id}" type="text" value="1"/>
+                            <span class="increase-btn" id="increase-btn" name="${goods.id}"></span>
+                            <span class="decrease-btn" id="decrease-btn" name="${goods.id}"></span>
+                        <input type="hidden" value="1" id="last_num_${goods.id}"/>
+                        <input type="hidden" value="${goods.baseSale}" id="stock_${goods.id}">
+                        <input type="hidden" value="${goods.limitNumber}" id="limit_${goods.id}">
+                    </span> 件
+                    <span id="stock_hit" style="display:none;color:#f50">库存${goods.baseSale}件</span>
+                    #{if goods.limitNumber > 0}
+                        <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
+                        #{if goods.limitNumber-boughtNumber > 0}
+                            <span class="buy_info">#{if user !=null}您还可以购买${goods.limitNumber-boughtNumber}件#{/if}</span>
+                        #{/if}
+                    #{/if}
+                    <span class="error">#{error 'number' /}</span>
+                    <input type="hidden" id="stock" value="${goods.baseSale}">
+                    <input type="hidden" id="boughtNumber" value="${boughtNumber}">
+                    <input type="hidden" id="addCartNumber" value="${addCartNumber}">
                 </li>
 
             </ul>
@@ -124,9 +137,9 @@
                 #{else}
                 <li>
                 #{/else}
-                <a class="image" href="" target="_blank"><img src="${aGoods.imageSmallPath}" width="48"></a>
+                <a class="image" href="/goods/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}" width="48"></a>
 
-                <a class="title" href="" target="_blank">${aGoods.name}</a>
+                <a class="title" href="/goods/${aGoods.id}" target="_blank">${aGoods.name}</a>
 
                 <span>积分价：<b>${aGoods.pointPrice}</b>分</span>
                 </li>
@@ -152,9 +165,9 @@
             #{else}
             <li>
             #{/else}
-            <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}"
+            <div class="image"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}"
                                                                              </a></div>
-            <div class="title"><a href="" target="_blank">${aGoods.name}</a></div>
+            <div class="title"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
             <div class="attri">
                 <del>原价：${aGoods.faceValue}</del>
                 <span #{if aGoods.materialType ==models.sales.MaterialType.ELECTRONIC}class="coupon" #{/if}#{else}class="coupon entity"#{/else}>&{'goods.'+aGoods.materialType}</span>

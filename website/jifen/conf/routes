@@ -3,9 +3,12 @@
 # ~~~~
 
 # Home page
-GET     /                                       Application.index
+GET     /                                       PointGoods.index
 GET     /index                                  PointGoods.index
 GET     /goods/{id}                             PointGoods.show
+GET     /goods/{uuid}/preview                   PointGoods.preview
+
+POST    /user-question                          PointGoodsUserQuestions.add
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

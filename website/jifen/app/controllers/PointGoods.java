@@ -4,17 +4,19 @@ import cache.CacheCallBack;
 import cache.CacheHelper;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
-import models.cms.CmsQuestion;
-import models.consumer.User;
-import models.order.Cart;
-import models.order.Order;
-import models.order.OrderItems;
+import models.PointGoodsCmsQuestion;
 import models.sales.*;
+import models.sales.Goods;
+import org.apache.commons.lang.StringUtils;
+import play.modules.breadcrumbs.Breadcrumb;
 import play.modules.breadcrumbs.BreadcrumbList;
+import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,7 +38,23 @@ public class PointGoods extends Controller {
     public static int PAGE_SIZE = 18;
 
     public static void index(){
-        render();
+
+        String page = params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        // 网友推荐商品
+        List<models.sales.Goods> recommendGoodsList = models.sales.Goods
+                .findTopRecommend(4);
+
+        GoodsCondition goodsCond = new GoodsCondition();
+        goodsCond.status = GoodsStatus.ONSALE;
+        goodsCond.baseSaleBegin = 1;
+        goodsCond.expireAtBegin = new Date();
+
+
+        List<models.sales.PointGoods> goodsList = models.sales.PointGoods.findByCondition(goodsCond,1,60);
+
+        render(recommendGoodsList, goodsList);
+
     }
 
 
@@ -77,14 +95,14 @@ public class PointGoods extends Controller {
 
         showGoods(pointGoods);
 
-        // CMSQuestion 需要重写，这个是用goods的，为了测试用
-        List<CmsQuestion> questions = CacheHelper.getCache(CacheHelper
+
+        List<PointGoodsCmsQuestion> questions = CacheHelper.getCache(CacheHelper
                 .getCacheKey(models.sales.PointGoods.CACHEKEY_BASEID + id,
                         "QUESTION_u" + userId + "_c" + cookieValue),
-                new CacheCallBack<List<CmsQuestion>>() {
+                new CacheCallBack<List<PointGoodsCmsQuestion>>() {
                     @Override
-                    public List<CmsQuestion> loadData() {
-                        return CmsQuestion.findOnGoodsShow(userId, cookieValue,
+                    public List<PointGoodsCmsQuestion> loadData() {
+                        return PointGoodsCmsQuestion.findOnGoodsShow(userId, cookieValue,
                                 id, 0, 10);
                     }
                 });
@@ -98,7 +116,7 @@ public class PointGoods extends Controller {
             notFound();
         }
         // 热门积分兑换商品
-        List<models.sales.PointGoods> recommendPointGoodsList = models.sales.PointGoods.findTopRecommend(3);
+        List<models.sales.PointGoods> recommendPointGoodsList = models.sales.PointGoods.findTopSaleGoods(3);
         System.out.println("rec list length   ========== "+recommendPointGoodsList.size());
 
         // 网友推荐商品
@@ -114,9 +132,22 @@ public class PointGoods extends Controller {
                 });
 
         GoodsStatistics.addVisitorCount(goods.id);
+        Long boughtNumber = 0l;
+        int addCartNumber = 0;
+        renderArgs.put("addCartNumber", addCartNumber);
+        renderArgs.put("boughtNumber",boughtNumber);
         renderArgs.put("goods", goods);
         renderArgs.put("recommendPointGoodsList",recommendPointGoodsList);
         renderArgs.put("recommendGoodsList", recommendGoodsList);
+    }
+
+    public static void preview(String uuid, boolean isSupplier) {
+        models.sales.PointGoods goods = models.sales.PointGoods.getPreviewGoods(uuid);
+        if (goods == null) {
+            error(404, "没有找到该商品！");
+        }
+        showGoods(goods);
+        render("Goods/show.html", isSupplier);
     }
 
 }
