@@ -17,6 +17,6 @@ public class MailSender extends Mailer{
         addAttachment(message.getAttachments().toArray(
                 new EmailAttachment[message.getAttachments().size()]));
         setFrom(message.getFrom());
-        send("MailSender/" + message.getTemplate() + ".html", message);
+        send("MailSender/" + message.getTemplate(), message);
     }
 }
