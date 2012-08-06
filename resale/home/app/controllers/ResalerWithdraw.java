@@ -22,8 +22,8 @@ import java.util.List;
 @With(SecureCAS.class)
 public class ResalerWithdraw extends Controller{
 
-    private static String NOTIFICATION_EMAIL = Play.configuration.getProperty("withdraw_notification.email.receiver", "jingyue.gong@seewi.com.cn");
-    private static String NOTIFICATION_MOBILE = Play.configuration.getProperty("withdraw_notification.mobile", "").trim();
+    private static String[] NOTIFICATION_EMAILS = Play.configuration.getProperty("withdraw_notification.email.receiver", "jingyue.gong@seewi.com.cn").split(",");
+    private static String[] NOTIFICATION_MOBILES = Play.configuration.getProperty("withdraw_notification.mobile", "").trim().split(",");
 
     public static void index(){
         Resaler resaler = SecureCAS.getResaler();
@@ -59,16 +59,16 @@ public class ResalerWithdraw extends Controller{
     private static void sendNotification(WithdrawBill withdrawBill) {
         // 发邮件
         MailMessage message = new MailMessage();
-        message.addRecipient(NOTIFICATION_EMAIL);
-        message.setFrom(NOTIFICATION_EMAIL);
+        message.addRecipient(NOTIFICATION_EMAILS);
+        message.setFrom("yibaiquan <noreplay@uhuila.com");
         message.setSubject("用户提现提醒");
         message.putParam("applier", withdrawBill.applier);
         message.putParam("amount", withdrawBill.amount);
         message.setTemplate("withdraw");
         MailUtil.sendFinanceNotificationMail(message);
 
-        if(!"".equals(NOTIFICATION_MOBILE)){
-            SMSUtil.send("一百券用户" + withdrawBill.applier + "申请提现" + withdrawBill.amount + "元", NOTIFICATION_MOBILE);
+        if(NOTIFICATION_MOBILES.length > 0 && !"".equals(NOTIFICATION_MOBILES[0])){
+            SMSUtil.send("一百券用户" + withdrawBill.applier + "申请提现" + withdrawBill.amount + "元", NOTIFICATION_MOBILES);
         }
     }
 }

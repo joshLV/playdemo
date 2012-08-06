@@ -25,8 +25,8 @@ import java.util.Date;
  */
 public class ResalerRegister extends Controller {
 
-    private static String NOTIFICATION_EMAIL = Play.configuration.getProperty("register_notification.resaler.email.receiver", "jingyue.gong@seewi.com.cn");
-    private static String NOTIFICATION_MOBILE = Play.configuration.getProperty("register_notification.resaler.mobile", "").trim();
+    private static String[] NOTIFICATION_EMAILS = Play.configuration.getProperty("withdraw_notification.email.receiver", "jingyue.gong@seewi.com.cn").split(",");
+    private static String[] NOTIFICATION_MOBILES = Play.configuration.getProperty("withdraw_notification.mobile", "").trim().split(",");
 
     /**
      * 注册页面
@@ -91,15 +91,15 @@ public class ResalerRegister extends Controller {
     private static void sendNotification(Resaler resaler) {
         // 发邮件
         MailMessage message = new MailMessage();
-        message.addRecipient(NOTIFICATION_EMAIL);
-        message.setFrom(NOTIFICATION_EMAIL);
+        message.addRecipient(NOTIFICATION_EMAILS);
+        message.setFrom("yibaiquan <noreplay@uhuila.com");
         message.setSubject("分销商注册申请");
         message.putParam("resaler", resaler.loginName);
         message.setTemplate("resalerRegister");
         MailUtil.sendFinanceNotificationMail(message);
 
-        if(!"".equals(NOTIFICATION_MOBILE)){
-            SMSUtil.send("分销商注册申请，账号：" +resaler.loginName, NOTIFICATION_MOBILE);
+        if(NOTIFICATION_MOBILES.length > 0 && !"".equals(NOTIFICATION_MOBILES[0])){
+            SMSUtil.send("分销商注册申请，账号：" +resaler.loginName, NOTIFICATION_MOBILES);
         }
     }
 }
