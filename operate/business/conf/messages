@@ -334,3 +334,7 @@ queryType.MOBILE=手机
 queryType.CLERK_JOB_NUMBER=店员工号
 queryType.SHOP_NAME=消费门店
 queryType.COUPON=券号
+
+
+resaler.creditable.true=可欠款
+resaler.creditable.false=不可欠款
