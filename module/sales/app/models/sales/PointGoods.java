@@ -336,6 +336,14 @@ public class PointGoods extends Model {
         return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_SMALL);
     }
 
+    /**
+     * 最小规格图片路径
+     */
+    @Transient
+    public String getImageTinyPath() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_TINY);
+    }
+
 
     /**
      * 中等规格图片路径
@@ -390,6 +398,7 @@ public class PointGoods extends Model {
         if (updateGoods == null) {
             return;
         }
+        //System.out.println(">>>>>"+pointGoods.name);
         updateGoods.name = pointGoods.name;
         updateGoods.no = pointGoods.no;
         updateGoods.effectiveAt = pointGoods.effectiveAt;
@@ -472,17 +481,17 @@ public class PointGoods extends Model {
                 DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).first();
     }
 
-    public static JPAExtPaginator<PointGoods> findByCondition(GoodsCondition condition,
+    public static JPAExtPaginator<PointGoods> findByCondition(PointGoodsCondition condition,
                                                          int pageNumber, int pageSize) {
 
-        JPAExtPaginator<PointGoods> goodsPage = new JPAExtPaginator<>
+        JPAExtPaginator<PointGoods> pointGoodsPage = new JPAExtPaginator<>
                 ("PointGoods g", "g", PointGoods.class, condition.getFilter(),
                         condition.getParamMap())
                 .orderBy(condition.getOrderByExpress());
-        goodsPage.setPageNumber(pageNumber);
-        goodsPage.setPageSize(pageSize);
-        goodsPage.setBoundaryControlsEnabled(false);
-        return goodsPage;
+        pointGoodsPage.setPageNumber(pageNumber);
+        pointGoodsPage.setPageSize(pageSize);
+        pointGoodsPage.setBoundaryControlsEnabled(false);
+        return pointGoodsPage;
     }
 
 
@@ -528,17 +537,21 @@ public class PointGoods extends Model {
      * <p/>
      * 商品图片移动到指定目录下，指定目录下的预览用的商品图片将通过后台crontab的方式定时删除.
      *
-     * @param goods
+     * @param pointGoods
      * @return uuid
      */
-    public static String preview(Long id, PointGoods goods, File imageFile, String rootDir) throws IOException {
-        goods.status = GoodsStatus.UNCREATED;
+    public static String preview(Long id, PointGoods pointGoods, File imageFile, String rootDir) throws IOException {
+        pointGoods.status = GoodsStatus.UNCREATED;
+
+
+       // System.out.println(" UUID cacheIdididid>>>>"+ pointGoods.id);
+
 
         if (id == null && imageFile == null) {
-            goods.imagePath = null;
+            pointGoods.imagePath = null;
         } else if (imageFile == null || imageFile.getName() == null) {
             PointGoods originalGoods = PointGoods.findById(id);
-            goods.imagePath = originalGoods.imagePath;
+            pointGoods.imagePath = originalGoods.imagePath;
         } else {
             String ext = imageFile.getName().substring(imageFile.getName().lastIndexOf("."));
             String imagePath = PREVIEW_IMG_ROOT + FileUploadUtil.generateUniqueId() + ext;
@@ -547,10 +560,12 @@ public class PointGoods extends Model {
                 targetDir.mkdirs();
             }
             FileUtils.moveFile(imageFile, new File(rootDir + imagePath));
-            goods.imagePath = imagePath;
+            pointGoods.imagePath = imagePath;
         }
         UUID cacheId = UUID.randomUUID();
-        play.cache.Cache.set(cacheId.toString(), goods.id, expiration);
+//        System.out.println(" UUID cacheId>>>>"+cacheId.toString());
+//        System.out.println(" UUID cacheIdididid>>>>"+ pointGoods.id);
+        play.cache.Cache.set(cacheId.toString(), id, expiration);
         return cacheId.toString();
     }
 
@@ -643,4 +658,8 @@ public class PointGoods extends Model {
         return statistics.summaryCount;
     }
 
+
+
+
 }
+

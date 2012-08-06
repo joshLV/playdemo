@@ -11,14 +11,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
- * 商品查询条件.
- * <p/>
- * User: sujie
- * Date: 2/29/12
- * Time: 4:25 PM
+ * 积分商品查询条件.
+ *
+/**
+ * Created with IntelliJ IDEA.
+ * User: clara
+ * Date: 12-8-6
+ * Time: 下午1:09
+ * To change this template use File | Settings | File Templates.
  */
-public class GoodsCondition implements Serializable {
+
+
+public class PointGoodsCondition implements Serializable {
 
     private static final long serialVersionUID = 73232320609113062L;
 
@@ -41,12 +47,11 @@ public class GoodsCondition implements Serializable {
     public String name;
     public String no;
 
+
     public BigDecimal pointPriceBegin;
     public BigDecimal pointPriceEnd;
 
 
-    public BigDecimal salePriceBegin;
-    public BigDecimal salePriceEnd;
     public Integer saleCountBegin;
     public Integer saleCountEnd;
     public MaterialType materialType;
@@ -60,7 +65,7 @@ public class GoodsCondition implements Serializable {
 
     private Map<String, Object> paramMap = new HashMap<>();
 
-    public GoodsCondition() {
+    public PointGoodsCondition() {
 
     }
 
@@ -69,11 +74,11 @@ public class GoodsCondition implements Serializable {
      *
      * @param condStr hql的查询条件
      */
-    public GoodsCondition(String condStr) {
+    public PointGoodsCondition(String condStr) {
         Logger.info("查询条件：%s", condStr);
         String[] args = condStr.split("-");
         if (args == null || args.length < 1) {
-            throw new IllegalArgumentException("GoodsCondition is illegal!");
+            throw new IllegalArgumentException("PointGoodsCondition is illegal!");
         }
 
         Logger.info("categoryId=" + categoryId + ", args[0]=" + args[0]);
@@ -126,36 +131,8 @@ public class GoodsCondition implements Serializable {
         paramMap.put("deleted", DeletedStatus.UN_DELETED);
         paramMap.put("notMatchStatus", GoodsStatus.UNCREATED);
 
-        if (isValidAreaId(searchAreaId)) {
-            condBuilder.append(" and ((g.isAllShop = true and g.supplierId in (select g.supplierId from Shop gs " +
-                    "where gs.supplierId = g.supplierId and gs.areaId like :areaId)) or ( g.isAllShop = false and" +
-                    " g.id in (select g.id from g.shops s where s.areaId like :areaId)))");
-            paramMap.put("areaId", searchAreaId + "%");
-        }
-        if (supplierId != 0) {
-            condBuilder.append(" and g.supplierId = :supplierId");
-            paramMap.put("supplierId", supplierId);
-        }
-        if (categoryId != 0) {
-            condBuilder.append(" and g.id in (select g.id from " +
-                    "g.categories c where c.id = :categoryId or (c.parentCategory is not null and c.parentCategory.id=:categoryId))");
-            paramMap.put("categoryId", categoryId);
-        }
 
-        if (brandId != 0) {
-            condBuilder.append(" and g.brand = :brand");
-            Brand brand = new Brand();
-            brand.id = brandId;
-            paramMap.put("brand", brand);
-        }
-        if (priceFrom.compareTo(new BigDecimal(0)) > 0) {
-            condBuilder.append(" and g.salePrice >= :priceFrom");
-            paramMap.put("priceFrom", priceFrom);
-        }
-        if (priceTo.compareTo(new BigDecimal(0)) > 0) {
-            condBuilder.append(" and g.salePrice <= :priceTo");
-            paramMap.put("priceTo", priceTo);
-        }
+
 
         if (StringUtils.isNotBlank(name)) {
             condBuilder.append(" and g.name like :name");
@@ -177,7 +154,6 @@ public class GoodsCondition implements Serializable {
         }
 
 
-
         if (pointPriceBegin != null) {
             condBuilder.append(" and g.pointPrice >= :pointPriceBegin");
             paramMap.put("pointPriceBegin", pointPriceBegin);
@@ -189,15 +165,6 @@ public class GoodsCondition implements Serializable {
         }
 
 
-        if (salePriceBegin != null) {
-            condBuilder.append(" and g.salePrice >= :salePriceBegin");
-            paramMap.put("salePriceBegin", salePriceBegin);
-        }
-
-        if (salePriceEnd != null) {
-            condBuilder.append(" and g.salePrice <= :salePriceEnd");
-            paramMap.put("salePriceEnd", salePriceEnd);
-        }
 
         if (saleCountBegin != null && saleCountBegin >= 0) {
             condBuilder.append(" and g.saleCount >= :saleCountBegin");
@@ -219,24 +186,21 @@ public class GoodsCondition implements Serializable {
             paramMap.put("baseSaleEnd", baseSaleEnd);
         }
 
-        if (expireAtBegin != null) {
-            condBuilder.append(" and g.expireAt > :expireAtBegin");
-            paramMap.put("expireAtBegin", expireAtBegin);
-        }
-
-        if (expireAtEnd != null) {
-            condBuilder.append(" and g.expireAt <= :expireAtEnd");
-            paramMap.put("expireAtEnd", expireAtEnd);
-        }
+//        if (expireAtBegin != null) {
+//            condBuilder.append(" and g.expireAt > :expireAtBegin");
+//            paramMap.put("expireAtBegin", expireAtBegin);
+//        }
+//
+//        if (expireAtEnd != null) {
+//            condBuilder.append(" and g.expireAt <= :expireAtEnd");
+//            paramMap.put("expireAtEnd", expireAtEnd);
+//        }
 
         if (materialType != null) {
             condBuilder.append(" and g.materialType=:materialType");
             paramMap.put("materialType", materialType);
         }
-        if (isLottery) {
-            condBuilder.append(" and g.isLottery=:isLottery");
-            paramMap.put("isLottery", isLottery);
-        }
+
 
         return condBuilder.toString();
     }
@@ -309,7 +273,7 @@ public class GoodsCondition implements Serializable {
      *
      * @param condStr hql的查询条件
      */
-    public GoodsCondition(boolean isResaler, String condStr) {
+    public PointGoodsCondition(boolean isResaler, String condStr) {
         String[] args = condStr.split("-");
         if (args == null || args.length < 1) {
             throw new IllegalArgumentException("ResalerGoodsCondition is illegal!");
@@ -405,7 +369,7 @@ public class GoodsCondition implements Serializable {
                 ",districtId:" + districtId + ",cityId:" + cityId +
                 ",areaId:" + areaId + ",brandId:" + brandId + ",priceFrom:" + priceFrom + ",priceTo:" + priceTo +
                 ",type:" + type +
-                ",name:" + name + ",no:" + no + ",salePriceBegin:" + salePriceBegin + ",salePriceEnd:" + salePriceEnd +
+                ",name:" + name + ",no:" + no + ",salePriceBegin:" + pointPriceBegin + ",salePriceEnd:" + pointPriceEnd +
                 ",saleCountBegin:" + saleCountBegin + ",saleCountEnd:" + saleCountEnd +
                 ",materialType:" + materialType + ",status:" + status + ",baseSaleBegin:" + baseSaleBegin +
                 ",baseSaleEnd:" + baseSaleEnd + ",expireAtBegin:" + expireAtBegin + ",expireAtEnd:" + expireAtEnd + "]";

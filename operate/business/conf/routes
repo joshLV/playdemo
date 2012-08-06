@@ -27,6 +27,18 @@ GET     /pointgoods/new                         OperatePointGoods.add
 POST    /pointgoods                             OperatePointGoods.create
 GET     /pointgoods/{id}/edit                   OperatePointGoods.edit
 
+GET     /pointgoods/{id}                             OperatePointGoods.show
+PUT     /pointgoods/{id}                             OperatePointGoods.update
+PUT     /pointgoods/{id}/onSale                      OperatePointGoods.onSale
+PUT     /pointgoods/{id}/offSale                     OperatePointGoods.offSale
+PUT     /pointgoods/{id}/reject                      OperatePointGoods.reject
+DELETE  /pointgoods/{id}                             OperatePointGoods.delete
+POST    /pointgoods/images                           UploadFiles.uploadJson
+POST    /pointgoods/filemanager                      UploadFiles.fileManagerJson
+
+
+
+
 GET     /shops                                  OperateShops.index
 GET     /shops/new                              OperateShops.add
 POST    /shops                                  OperateShops.create

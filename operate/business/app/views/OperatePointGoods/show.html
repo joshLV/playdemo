@@ -1,0 +1,111 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'查看积分商品' /}
+#{include '/share/nav.html' /}
+<style type="text/css">
+    .controls {
+        padding-top: 5px;
+    }
+</style>
+<div class="body">
+    <form class="form-horizontal" name="frm" id="frm" method="post">
+        <legend>${title}</legend>
+        <div class="control-group">
+            <label class="control-label">&{'pointGoods.materialType'}</label>
+
+            <div class="controls">&{'pointGoods.'+pointGoods?.materialType}
+
+
+            </div>
+        </div>
+
+
+        <div class="control-group">
+            <label class="control-label">&{'pointGoods.name'}</label>
+
+            <div class="controls">${pointGoods?.name}
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">&{'pointGoods.effective'}</label>
+
+            <div class="controls">
+            #{if pointGoods?.effectiveAt!=null&&pointGoods?.expireAt!=null }
+            ${pointGoods?.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}
+                至 ${pointGoods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
+
+            #{/if}
+
+
+
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">&{'pointGoods.faceValue'}</label>
+
+            <div class="controls">${pointGoods?.faceValue} 点
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">&{'pointGoods.pointPrice'}</label>
+
+            <div class="controls">${pointGoods?.pointPrice?.formatCurrency('CNY')}
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">&{'pointGoods.baseSale'}</label>
+
+            <div class="controls">${pointGoods?.baseSale}件
+            </div>
+        </div>
+
+
+        <div class="control-group">
+            <label class="control-label">&{'pointGoods.limitNumber'}</label>
+
+            <div class="controls">
+
+            #{if pointGoods?.limitNumber>=0}
+            ${pointGoods?.limitNumber}件
+            #{/if}
+
+
+            </div>
+        </div>
+
+
+        <div class="control-group">
+            <label class="control-label">&{'pointGoods.imagePath'}</label>
+
+            <div class="controls">
+                <img src="${pointGoods?.imageLargePath}"/>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">&{'pointGoods.details'}</label>
+
+            <div class="controls">${pointGoods?.details?.raw()}
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">&{'pointGoods.status'}</label>
+
+            <div class="controls">&{'pointGoods.'+pointGoods.status}
+            </div>
+        </div>
+        <div class="form-actions">
+
+        #{if models.sales.GoodsStatus.ONSALE.equals(pointGoods.status)}
+            #{vx.operateLink text:"强制下架",form:'frm',url:"/pointgoods/"+pointGoods.id+"/reject",method:"PUT",
+            class:"btn btn-primary" /}#{/if}
+        #{if models.sales.GoodsStatus.OFFSALE.equals(pointGoods.status)}
+            #{vx.operateButton text:"同意上架",form:'frm',url:"/pointgoods/"+pointGoods.id+"/onSale",method:"PUT",
+            class:"btn btn-primary" /}#{/if}
+            #{vx.cancelButton url:'/pointgoods', class:'btn btn-primary'/}
+        </div>
+    </form>
+</div>

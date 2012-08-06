@@ -16,8 +16,6 @@
     <permission key="SUPPLIERS" text="商户管理" roles="editor,customservice"/>
      <permission key="SUPPLIERS_USERS_NEW" text="商户操作员添加" roles="editor"/>
     <permission key="SUPPLIER_USERS" text="商户操作员管理" roles="editor,customservice"/>
-    <permission key="SUPPLIERS_VERIFY_PHONES_NEW" text="添加电话验证机" roles="editor"/>
-    <permission key="SUPPLIER_VERIFY_PHONES" text="管理电话验证机" roles="editor"/>
     <permission key="SHOPS_NEW" text="门店添加" roles="editor"/>
     <permission key="SHOPS" text="门店管理" roles="editor,customservice"/>
     <permission key="RESALERS" text="分销商管理" roles="customservice,sales"/>
@@ -49,10 +47,6 @@
             <navigation key="supplierUsers_add" action="OperateSupplierUsers.add" text="商户操作员添加" permissions="SUPPLIER_USERS_NEW"/>
             <navigation key="supplierUsers_index" action="OperateSupplierUsers.index" text="商户操作员管理" permissions="SUPPLIER_USERS"/>
         </navigation>
-        <navigation key="supplierVerifyPhones" text="电话验证机" permissions="SUPPLIER_VERIFY_PHONES_NEW,SUPPLIER_VERIFY_PHONES">
-            <navigation key="supplierVerifyPhones_add" action="OperateVerifyPhones.add" text="添加电话验证机" permissions="SUPPLIER_VERIFY_PHONES_NEW"/>
-            <navigation key="supplierVerifyPhones_index" action="OperateVerifyPhones.index" text="管理电话验证机" permissions="SUPPLIER_VERIFY_PHONES"/>
-        </navigation>
         <navigation key="shops" text="门店" permission="SHOPS_NEW,SHOPS">
             <navigation key="shops_add" action="OperateShops.add" text="门店添加" permissions="SHOPS_NEW"/>
             <navigation key="shops_index" action="OperateShops.index" text="门店管理" permissions="SHOPS"/>
@@ -68,6 +62,12 @@
             <navigation key="goods_add" action="OperateGoods.add" text="商品添加" permissions="GOODS_NEW"/>
             <navigation key="goods_index" action="OperateGoods.index" text="商品管理" permissions="GOODS"/>
         </navigation>
+
+        <navigation key="point_goods" text="积分商品">
+            <navigation key="point_goods_add" action="OperatePointGoods.add" text="积分商品添加" permissions="Point_GOODS_NEW"/>
+            <navigation key="point_goods_index" action="OperatePointGoods.index" text="积分商品管理" permissions="Point_GOODS"/>
+        </navigation>
+
     </navigation>
 
     <navigation key="consumers_app" text="用户管理" action="OperateConsumers.index" display-order="40">
@@ -131,13 +131,5 @@
             <navigation key="questions_index" action="OperateQuestions.index" text="咨询管理" permission="QUESTION"/>
         </navigation>
     </navigation>
-
-    <navigation key="point_goods_app" text="积分商品管理" action="OperatePointGoods.index" display-order="30">
-        <navigation key="point_goods" text="积分商品">
-            <navigation key="point_goods_add" action="OperatePointGoods.add" text="积分商品添加" permissions="Point_GOODS_NEW"/>
-            <navigation key="point_goods_index" action="OperatePointGoods.index" text="积分商品管理" permissions="Point_GOODS"/>
-        </navigation>
-    </navigation>
-
 
 </application>

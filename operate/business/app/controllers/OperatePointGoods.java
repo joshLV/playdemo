@@ -1,12 +1,11 @@
 package controllers;
 
 import com.uhuila.common.util.FileUploadUtil;
-import models.sales.GoodsStatus;
-import models.sales.MaterialType;
-import models.sales.PointGoods;
+import models.sales.*;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
+import play.data.binding.As;
 import play.data.validation.Required;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
@@ -16,6 +15,7 @@ import play.mvc.With;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static play.Logger.warn;
@@ -37,42 +37,34 @@ public class OperatePointGoods extends Controller {
 
 
     /**
-     * 展示商品一览页面
+     * 展示积分商品一览页面
      */
     @ActiveNavigation("point_goods_index")
-    public static void index(models.sales.GoodsCondition condition) {
+    public static void index(PointGoodsCondition condition) {
+
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
-//        if (condition == null) {
-//            condition = new GoodsCondition();
-//            condition.status = GoodsStatus.ONSALE;
-//        }
-//
-//        if (condition.priority == 1) {
-//            condition.orderBy = "g.priority";
-//        } else {
-//            condition.orderBy = "g.createdAt";
-//        }
-        //JPAExtPaginator<PointGoods> pointGoodsPage = models.sales.PointGoods.findByCondition(condition, pageNumber, PAGE_SIZE);
+        if (condition == null) {
+            condition = new PointGoodsCondition();
+
+            condition.status = GoodsStatus.ONSALE;
+        }
 
 
-        JPAExtPaginator<PointGoods> pointGoodsPage = new JPAExtPaginator<>(PointGoods.class);
-
-        pointGoodsPage.setPageNumber(pageNumber);
-        pointGoodsPage.setPageSize(PAGE_SIZE);
-
-
+      JPAExtPaginator<models.sales.PointGoods> pointGoodsPage = models.sales.PointGoods.findByCondition(condition, pageNumber,
+                PAGE_SIZE);
         pointGoodsPage.setBoundaryControlsEnabled(true);
 
 
-        // render(goodsPage, supplierList, condition);
-        render(pointGoodsPage);
+
+
+        render(pointGoodsPage,condition);
     }
 
 
     /**
-     * 展示添加商品页面
+     * 展示添加积分商品页面
      */
     @ActiveNavigation("point_goods_add")
     public static void add() {
@@ -102,7 +94,7 @@ public class OperatePointGoods extends Controller {
 
 
     /**
-     * 添加商品
+     * 添加积分商品
      * 商户只能添加电子券.
      *
      * @param imagePath
@@ -115,9 +107,11 @@ public class OperatePointGoods extends Controller {
 
         checkExpireAt(pointGoods);
 
-
-
         checkPointPrice(pointGoods);
+
+        checkCount(pointGoods);
+
+
         if(pointGoods.materialType.toString() == models.sales.MaterialType.ELECTRONIC.toString())
         checkTime(pointGoods);
 
@@ -198,19 +192,27 @@ public class OperatePointGoods extends Controller {
     }
 
     /**
-     * 展示添加商品页面
+     * 展示添加积分商品页面
      */
 
     private static void preview(Long pointGoodsId, PointGoods pointGoods, File imagePath) {
+       // System.out.println("bbbbbbbbbbbbb>>>>>");
         String cacheId = "0";
         try {
-            cacheId = PointGoods.preview(pointGoodsId, pointGoods, imagePath, UploadFiles.ROOT_PATH);
+            cacheId = pointGoods.preview(pointGoodsId, pointGoods, imagePath, UploadFiles.ROOT_PATH);
         } catch (IOException e) {
             e.printStackTrace();
             error(500, "goods.image_upload_failed");
         }
+
         cacheId = play.cache.Cache.get(cacheId.toString()).toString();
-        redirect("http://" + WWW_URL + "/g/" + cacheId + "?preview=true");
+        redirect("http://localhost:9003/goods/"+cacheId+"?preview=true");
+
+      //  redirect("http://localhost:9003/goods/1");
+
+      //  redirect("http://localhost:9003/goods/"+ pointGoodsId+"?preview=true");
+
+
     }
 
 
@@ -242,7 +244,186 @@ public class OperatePointGoods extends Controller {
         }
     }
 
+    //限量不能大于库存
+    private static void checkCount( PointGoods pointGoods) {
+
+        if (pointGoods.baseSale <=pointGoods.limitNumber) {
+            Validation.addError("pointGoods.limitNumber", "validation.largarThanBaseSale");
+        }
+
+    }
+
+    /**
+     * 取得指定积分商品信息
+     */
+    public static void show(Long id) {
+        models.sales.PointGoods pointGoods = models.sales.PointGoods.findById(id);
+        renderTemplate("OperatePointGoods/show.html", pointGoods);
+    }
+
+
+    /**
+     * 取得指定积分商品信息
+     */
+    public static void edit(Long id) {
+        models.sales.PointGoods pointGoods = models.sales.PointGoods.findById(id);
+        renderInit(pointGoods);
+        renderArgs.put("imageLargePath", pointGoods.getImageLargePath());
+        render(id);
+
+    }
+
+
+
+    /**
+     * 更新指定商品信息
+     */
+    public static void update(Long id, @Valid models.sales.PointGoods pointGoods, File imagePath, BigDecimal[] levelPrices,
+                              String imageLargePath) {
+
+        //System.out.println("aaaaaaaaaaa>>>aaaa>>>"+pointGoods.name);
+        checkImageFile(imagePath);
+
+        checkExpireAt(pointGoods);
+
+        checkPointPrice(pointGoods);
+
+
+        if (Validation.hasErrors()) {
+
+            renderArgs.put("imageLargePath", imageLargePath);
+            renderInit(pointGoods);
+
+            render("OperatePointGoods/edit.html", pointGoods, id);
+        }
+       // System.out.println("ccccccccc>"+pointGoods.status);
+
+        //预览的情况
+        if (GoodsStatus.UNCREATED.equals(pointGoods.status)) {
+
+            preview(id, pointGoods, imagePath);
+        }
+
+
+        try {
+            PointGoods oldGoods = PointGoods.findById(id);
+            String oldImagePath = oldGoods == null ? null : oldGoods.imagePath;
+            String image = uploadImagePath(imagePath, id, oldImagePath);
+            if (StringUtils.isNotEmpty(image)) {
+                pointGoods.imagePath = image;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            error(e);
+        }
+
+
+        pointGoods.update(id, pointGoods);
+
+        index(null);
+    }
+
+    /**
+     * 上下架指定积分商品
+     *
+     * @param status 积分商品状态
+     * @param ids    积分商品ID
+     */
+    private static void updateStatus(GoodsStatus status, Long... ids) {
+      //  System.out.println(status + "");
+        models.sales.PointGoods.updateStatus(status, ids);
+        if (status == GoodsStatus.OFFSALE) {
+//            for (Long id : ids) {
+//                models.sales.PointGoods pointGoods = PointGoods.findById(id);
+//
+//                if (supplier != null && StringUtils.isNotEmpty(supplier.email)) {
+//                    //发送提醒邮件
+//                    MailMessage mailMessage = new MailMessage();
+//                    mailMessage.addRecipient(supplier.email);
+//                    mailMessage.setSubject(Play.mode.isProd() ? "商品下架" : "商品下架【测试】");
+//                    mailMessage.putParam("date", DateUtil.getNowTime());
+//                    mailMessage.putParam("supplierName", supplier.fullName);
+//                    mailMessage.putParam("goodsName", goods.name);
+//                    mailMessage.putParam("faceValue", goods.faceValue);
+//                    mailMessage.putParam("operateUserName", OperateRbac.currentUser().userName);
+//                    MailUtil.sendGoodsOffSalesMail(mailMessage);
+//                }
+//            }
+        }
+        index(null);
+    }
+
+    /**
+     * 删除指定商品
+     *
+     * @param id 商品ID
+     */
+    public static void delete(@As(",") Long... id) {
+        for (Long pointGoodsId : id) {        //已上架的商品不可以删除
+            PointGoods pointGoods = PointGoods.findById(pointGoodsId);
+            warn("pointGoods.status:" + pointGoods.status);
+            if (GoodsStatus.ONSALE.equals(pointGoods.status)) {
+                index(null);
+            }
+        }
+
+        models.sales.PointGoods.delete(id);
+
+        index(null);
+    }
+
+
+    /**
+     * 上架商品.
+     * shopIds
+     *
+     * @param id 商品ID
+     */
+    public static void onSale(@As(",") Long... id) {
+
+        for (Long pointGoodsId : id) {
+            models.sales.PointGoods pointGoods = PointGoods.findById(pointGoodsId);
+            if (pointGoods != null) {
+                checkPointPrice(pointGoods);
+
+            }
+
+            renderArgs.put("imageLargePath", pointGoods.getImageLargePath());
+
+            if (Validation.hasErrors() && id.length > 0) {
+
+                renderInit(pointGoods);
+                renderArgs.put("id", pointGoodsId);
+                render("OperatePointGoods/edit.html", pointGoods);
+            }
+        }
+        updateStatus(GoodsStatus.ONSALE, id);
+    }
+
+    /**
+     * 下架积分商品.
+     *
+     * @param id 商品ID
+     */
+    public static void offSale(@As(",") Long... id) {
+        updateStatus(GoodsStatus.OFFSALE, id);
+
+
+    }
+
+
+    /**
+     * 强制下架.
+     *
+     * @param id 商品ID
+     */
+    public static void reject(@As(",") Long... id) {
+        updateStatus(GoodsStatus.OFFSALE, id);
+    }
+
+
 
 
 }
+
 

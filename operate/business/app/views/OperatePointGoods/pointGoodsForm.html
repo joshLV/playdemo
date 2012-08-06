@@ -44,7 +44,7 @@
 
 
 
-    #{layout_operate.textField name:'pointGoods.limitNumber', value:pointGoods?.limitNumber?:"", note:'个'/}
+    #{layout_operate.textField name:'pointGoods.limitNumber', value:pointGoods?.limitNumber?:"", note:'个',required:false/}
 
 
     #{if "add".equals(action)}
@@ -65,7 +65,7 @@
 
 
 <div class="form-actions">
-    <input class="btn btn-primary" id="save" type="submit" value="保存"  #{if "edit".equals(action) && pointGoods?.status == models.sales.GoodsStatus.ONSALE}disabled #{/if}/>
+    <input class="btn btn-primary" id="save" type="submit" value="保存"  />
     <input class="btn btn-primary" id="onsale" type="submit" value="保存并上架"/>
     #{if "edit".equals(action)}
         <input class="btn btn-primary" id="preview" type="submit" value="预览"/>
@@ -73,50 +73,46 @@
     #{if "edit".equals(action)}
         #{vx.cancelButton url:'/pointgoods', class:'btn btn-primary'/}
     #{/if}
-    <input type="hidden" id="status" name="pointGoods.status" value="${goods?.getStatus()?:'OFFSALE'}"/>
+    <input type="hidden" id="status" name="pointGoods.status" value="${pointGoods?.getStatus()?:'OFFSALE'}"/>
 </div>
 
 <script type="text/javascript">
 
 
-    function showPrice(nameField) {
-        var faceValue = $("#pointGoods_faceValue").val() == null ? 0 : $("#pointGoods_faceValue").val();
-        var price = parseFloat($(nameField).val()) + parseFloat(faceValue);
-        price = (price == null || price.toString() == "NaN") ? 0 : price;
-        $("#realPrice_" + nameField.id).html(price.toFixed(2));
-    }
 
-    function showAddedPrice() {
-        var faceValue = $("#pointGoods_faceValue").val() == null ? 0 : $("#pointGoods_faceValue").val();
 
-    }
 
-    showAddedPrice();
 
     $(function () {
 
-
-
-        $("#pointGoods_pointPrice").keyup(function () {
-            limitMoneyFormat(this, $("#pointGoods_pointPrice").val());
+        $("#goods_faceValue").keyup(function () {
+            limitMoneyFormat(this, $("#goods_faceValue").val());
         })
 
-        $("#pointGoods_faceValue").keyup(function () {
-            limitMoneyFormat(this, $("#pointGoods_faceValue").val());
+        $("#goods_salePrice").keyup(function () {
+            limitMoneyFormat(this, $("#goods_salePrice").val());
+        })
+
+        $("#goods_originalPrice").keyup(function () {
+            limitMoneyFormat(this, $("#goods_originalPrice").val());
             showAddedPrice();
         })
-        $("#pointGoods_faceValue").keydown(function () {
-            limitMoneyFormat(this, $("#pointGoods_faceValue").val());
+        $("#goods_originalPrice").keydown(function () {
+            limitMoneyFormat(this, $("#goods_originalPrice").val());
             showAddedPrice();
         })
-        $("#pointGoods_faceValue").change(function () {
+        $("#goods_originalPrice").change(function () {
             showAddedPrice();
         })
-        $("#goods_faceValue").focus(function () {
-            limitMoneyFormat(this, $("#pointGoods_faceValue").val());
+        $("#goods_originalPrice").focus(function () {
+            limitMoneyFormat(this, $("#goods_originalPrice").val());
             showAddedPrice();
         })
-      ;
+
+            #{if "edit".equals(action)}
+                $("#selectAll").click();
+            #{/if}
+        });
     });
 
     function limitMoneyFormat(obj, value) {
