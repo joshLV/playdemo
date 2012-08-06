@@ -16,8 +16,8 @@
     <permission key="SUPPLIERS" text="商户管理" roles="editor,customservice"/>
      <permission key="SUPPLIERS_USERS_NEW" text="商户操作员添加" roles="editor"/>
     <permission key="SUPPLIER_USERS" text="商户操作员管理" roles="editor,customservice"/>
-    <permission key="SUPPLIERS_VERIFY_PHONES_NEW" text="商户操作员添加" roles="editor"/>
-    <permission key="SUPPLIER_VERIFY_PHONES" text="商户操作员管理" roles="editor"/>
+    <permission key="SUPPLIERS_VERIFY_PHONES_NEW" text="添加电话验证机" roles="editor"/>
+    <permission key="SUPPLIER_VERIFY_PHONES" text="管理电话验证机" roles="editor"/>
     <permission key="SHOPS_NEW" text="门店添加" roles="editor"/>
     <permission key="SHOPS" text="门店管理" roles="editor,customservice"/>
     <permission key="RESALERS" text="分销商管理" roles="customservice,sales"/>
