@@ -139,14 +139,15 @@
                             isExpired = coupon.expireAt?.before(now);
                         }%
 
-                        <td align="center">${coupon?.consumedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                        <td align="center"> #{if coupon?.status != models.order.ECouponStatus.CONSUMED && isExpired }<span>已过期</span>#{/if}
+                        #{else}${coupon?.consumedAt?.format('yyyy-MM-dd HH:mm:ss')} #{/else}</td>
                         <td align="center">
-                        #{if isExpired }<span>已过期</span>#{/if}
-                        #{else}
+                        *{#{if isExpired }<span>已过期</span>#{/if}}*
+                        *{#{else}}*
                             #{if coupon?.status == models.order.ECouponStatus.CONSUMED }<span class="consumed">已消费</span>#{/if}
                             #{elseif coupon?.status == models.order.ECouponStatus.UNCONSUMED}<span class="unconsumed">未消费</span>#{/elseif}
-                            #{elseif coupon?.status == models.order.ECouponStatus.REFUND}<span class="refund">已退款</span>#{/elseif}
-                        #{/else}
+                            #{elseif coupon?.status == models.order.ECouponStatus.REFUND}<span class="refund" id="status_apply_${coupon.id}">已退款</span>#{/elseif}
+                        *{#{/else}}*
                         </td>
                         <td align="center">
                             #{if !coupon.goods.isLottery && !isExpired && coupon.status == models.order.ECouponStatus.UNCONSUMED}
