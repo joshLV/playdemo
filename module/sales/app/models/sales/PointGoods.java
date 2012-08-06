@@ -112,7 +112,7 @@ public class PointGoods extends Model {
     //  ======  价格列表结束 ==========
 
     /**
-     * 商品编号
+     * 积分商品编号
      */
     @MaxSize(30)
     public String no;
@@ -485,7 +485,7 @@ public class PointGoods extends Model {
                                                          int pageNumber, int pageSize) {
 
         JPAExtPaginator<PointGoods> pointGoodsPage = new JPAExtPaginator<>
-                ("pointGoods g", "g", PointGoods.class, condition.getFilter(),
+                ("PointGoods g", "g", PointGoods.class, condition.getFilter(),
                         condition.getParamMap())
                 .orderBy(condition.getOrderByExpress());
         pointGoodsPage.setPageNumber(pageNumber);
@@ -495,15 +495,7 @@ public class PointGoods extends Model {
     }
 
 
-    public static List<Brand> findBrandByCondition(GoodsCondition condition) {
-        EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select distinct g.brand from PointGoods g where " + condition.getFilter());
-        for (String key : condition.getParamMap().keySet()) {
-            q.setParameter(key, condition.getParamMap().get(key));
-        }
 
-        return q.getResultList();
-    }
 
     // 删除商品（修改状态为deleted）
     public static void delete(Long... ids) {

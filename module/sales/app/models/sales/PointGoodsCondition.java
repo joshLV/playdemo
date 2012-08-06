@@ -133,7 +133,6 @@ public class PointGoodsCondition implements Serializable {
 
 
 
-
         if (StringUtils.isNotBlank(name)) {
             condBuilder.append(" and g.name like :name");
             paramMap.put("name", "%" + name.trim() + "%");
@@ -154,6 +153,7 @@ public class PointGoodsCondition implements Serializable {
         }
 
 
+
         if (pointPriceBegin != null) {
             condBuilder.append(" and g.pointPrice >= :pointPriceBegin");
             paramMap.put("pointPriceBegin", pointPriceBegin);
@@ -165,6 +165,15 @@ public class PointGoodsCondition implements Serializable {
         }
 
 
+        if (pointPriceBegin != null) {
+            condBuilder.append(" and g.pointPrice >= :pointPriceBegin");
+            paramMap.put("pointPriceBegin", pointPriceBegin);
+        }
+
+        if (pointPriceEnd != null) {
+            condBuilder.append(" and g.pointPrice <= :pointPriceEnd");
+            paramMap.put("pointPriceEnd", pointPriceEnd);
+        }
 
         if (saleCountBegin != null && saleCountBegin >= 0) {
             condBuilder.append(" and g.saleCount >= :saleCountBegin");
@@ -203,6 +212,13 @@ public class PointGoodsCondition implements Serializable {
 
 
         return condBuilder.toString();
+
+
+
+
+
+
+
     }
 
     public String getOrderByExpress() {
