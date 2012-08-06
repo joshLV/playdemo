@@ -96,6 +96,13 @@
                                                                      value="${condition.createdAtEnd?.format()}"
                                                                      onfocus="WdatePicker({readOnly:true})"
                                                                      class="input-medium Wdate"/></td>
+                 <td>付款时间：<input type="text" id="paidAtBegin" name="condition.paidAtBegin"
+                                value="${condition.paidAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"
+                                class="input-medium Wdate"/>至 <input type="text" id="paidAtEnd"
+                                                                     name="condition.paidAtEnd"
+                                                                     value="${condition.paidAtEnd?.format()}"
+                                                                     onfocus="WdatePicker({readOnly:true})"
+                                                                     class="input-medium Wdate"/></td>
                 <td>
                  品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
                  #{select 'condition.brandId', id:'brandId', class:'input-medium', value:condition?.brandId}
@@ -104,12 +111,7 @@
                          #{option brand?.id}${brand?.name}#{/option}
                  #{/list}
                  #{/select}
-                 &nbsp;&nbsp;&nbsp;物流方式：
-                #{select 'condition.deliveryType', class:'input-small', value:condition.deliveryType}
-                    #{option ""}不限#{/option}
-                    #{option models.order.DeliveryType.SMS}无物流#{/option}
-                    #{option models.order.DeliveryType.LOGISTICS}有物流#{/option}
-                #{/select}
+
                 </td>
             </tr>
             <tr>
@@ -151,6 +153,12 @@
                     #{option "PAID"}&{'order.PAID'}#{/option}
                     #{option "CANCELED"}&{'order.CANCELED'}#{/option}
                     #{option "SENT"}&{'order.SENT'}#{/option}
+                #{/select}
+                    &nbsp;&nbsp;&nbsp;物流方式：
+                #{select 'condition.deliveryType', class:'input-small', value:condition.deliveryType}
+                    #{option ""}不限#{/option}
+                    #{option models.order.DeliveryType.SMS}无物流#{/option}
+                    #{option models.order.DeliveryType.LOGISTICS}有物流#{/option}
                 #{/select}
                     &nbsp;&nbsp;&nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
                                 value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
