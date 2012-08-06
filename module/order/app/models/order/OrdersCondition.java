@@ -16,6 +16,8 @@ public class OrdersCondition {
     public Map<String, Object> paramsMap = new HashMap<>();
     public Date createdAtBegin;
     public Date createdAtEnd;
+    public Date paidAtBegin;
+    public Date paidAtEnd;
     public Date refundAtBegin;
     public Date refundAtEnd;
     public OrderStatus status;
@@ -54,6 +56,14 @@ public class OrdersCondition {
         if (createdAtEnd != null) {
             sql.append(" and o.createdAt <= :createdAtEnd");
             paramsMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
+        }
+        if (paidAtBegin != null) {
+            sql.append(" and o.paidAt >= :paidAtBegin");
+            paramsMap.put("paidAtBegin", paidAtBegin);
+        }
+        if (paidAtEnd != null) {
+            sql.append(" and o.paidAt <= :paidAtEnd");
+            paramsMap.put("paidAtEnd", DateUtil.getEndOfDay(paidAtEnd));
         }
         if (refundAtBegin != null) {
             sql.append(" and o.refundAt >= :refundAtBegin");
