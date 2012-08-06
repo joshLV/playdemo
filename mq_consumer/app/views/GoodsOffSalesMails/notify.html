@@ -3,7 +3,7 @@
 <!--库存即将不足-->
 #{if message.getParam("offSalesFlag") =='noInventory'}
 ${message.getParam("supplierName")}，面值[${message.getParam("faceValue")}]元的商品:${message.getParam("goodsName")}
-库存只有${message.getParam("baseSales")}件，请尽快处理！
+库存只剩下${message.getParam("baseSales")}件，请尽快处理！
 #{/if}
 #{else}
 ${message.getParam("supplierName")}，面值[${message.getParam("faceValue")}]元的商品:${message.getParam("goodsName")}
