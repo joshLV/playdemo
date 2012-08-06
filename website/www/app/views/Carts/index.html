@@ -52,7 +52,7 @@
                           #{if user !=null && (cartItem.goods.limitNumber-boughtNumber>0)},您还可以购买${cartItem.goods.limitNumber-boughtNumber}件#{/if})</span>
                     #{/if}
                 <span id="limit_goods_${cartItem.goods.id}"style="color:#f50">
-                    #{if cartItem.goods.id==limit_goodsId && cartItem.goods.limitNumber > 0 && cartItem.goods.limitNumber-boughtNumber==0}
+                    #{if cartItem.goods.id==limit_goodsId && cartItem.goods.limitNumber > 0 && cartItem.goods.limitNumber<=boughtNumber}
                     您已购买了${boughtNumber}件,不能继续购买，请确认!
                     #{/if}
                 </span>
@@ -65,9 +65,12 @@
                      #{if cartItem.goods.limitNumber-boughtNumber == 0}
                       <input class="num-ipt" type="text" name="g${cartItem.goods.id}" value="0" id="num_${cartItem.goods.id}" disabled="true"/>
                      #{/}
-                     #{elseif cartItem.number >(cartItem.goods.limitNumber-boughtNumber ) }
+                     #{elseif (cartItem.goods.limitNumber>boughtNumber ) && cartItem.number > (cartItem.goods.limitNumber-boughtNumber ) }
                       <input class="num-ipt" type="text" name="g${cartItem.goods.id}" value="${cartItem.goods.limitNumber-boughtNumber}" id="num_${cartItem.goods.id}"/>
                      #{/elseif}
+                     #{else}
+                      <input class="num-ipt" type="text" name="g${cartItem.goods.id}" value="0" id="num_${cartItem.goods.id}"/>
+                     #{/else}
                 #{else}
                       <input class="num-ipt" type="text" name="g${cartItem.goods.id}" value="${cartItem.number}" id="num_${cartItem.goods.id}"/>
                 #{/else}
