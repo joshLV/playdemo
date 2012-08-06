@@ -1,0 +1,75 @@
+.ship-addr {
+    margin: 15px 0 8px;
+}
+.addresses {
+    margin-bottom: 15px;
+    padding: 20px 50px;
+    border: 1px solid #d4d4d4;
+}
+.addresses .left {
+    width: 70px;
+    color: #656565;
+    padding-top: 4px;
+    font-family: '宋体';
+    text-align: right;
+}
+.addresses .required {
+    color: #f00;
+    padding-right: 3px;
+    font-family: sans-serif;
+}
+.addresses .error {
+    color: #f00;
+    padding: 2px 0;
+}
+.addresses .long-input {
+    height: 21px;
+    width: 180px;
+    border: 1px solid #a5afc3;
+}
+.addresses select {
+    height: 24px;
+    width: 100px;
+    padding: 1px;
+}
+.addresses li {
+    padding: 5px 0;
+}
+.addresses li div {
+    float: left;
+}
+.addresses .btn {
+    padding-left: 68px;
+}
+.addresses .save-btn {
+    color: #fff;
+    padding: 5px 18px;
+    font-weight: 700;
+    border: 0;
+    border-radius: 2px;
+    background-color: #9ac72c;
+}
+
+.order-tab {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+}
+.order-tab th {
+    color: #fff;
+    padding: 5px 0;
+    background-color: #adadad;
+    border: 1px solid #adadad;
+}
+.sep-row td {
+    height: 10px;
+}
+.order-bd td {
+    color: #787878;
+    text-align: center;
+    padding: 10px 5px;
+    border: 1px solid #d4d4d4;
+}
+.order-tab .action a {
+    color: #9ac82b;
+}

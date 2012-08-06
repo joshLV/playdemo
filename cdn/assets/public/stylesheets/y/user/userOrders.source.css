@@ -1,0 +1,86 @@
+.search-box {
+    padding: 20px 0;
+}
+.search-box input {
+    height: 21px;
+}
+.search-box .short-input {
+    width: 100px;
+}
+.search-box .medium-input {
+    width: 180px;
+}
+.search-box .goods-name {
+    margin-right: 10px;
+}
+.search-box .order-num {
+    margin-right: 10px;
+}
+.search-box .search-btn {
+    position: relative;
+    top: -1px;
+    width: 67px;
+    height: 25px;
+    border: 0;
+    cursor: pointer;
+    margin-left: 13px;
+    *margin-left: 10px;
+    _margin-left: 17px;
+    background: url(//img.uhcdn.com/images/y/user/btn.png) no-repeat 0 0;
+}
+.search-box .search-btn:hover {
+    background-position: 0 -26px;
+}
+
+.order-tab {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+}
+.order-tab th {
+    color: #fff;
+    padding: 5px 0;
+    background-color: #adadad;
+}
+.col-name .order-status {
+    height: 22px;
+    padding: 1px;
+}
+.sep-row td {
+    height: 10px;
+}
+.order-hd td {
+    padding: 5px;
+    background-color: #f7ffe4;
+    border: 1px solid #d4d4d4;
+}
+.order-bd td {
+    padding: 10px 5px;
+    border: 1px solid #d4d4d4;
+}
+.order-bd .goods-image {
+    float: left;
+    margin-right: 5px;
+}
+.order-bd .goods-name {
+    color: #26a7e0;
+}
+.order-bd .paid {
+    color: #77aa00;
+}
+.order-bd .unpaid {
+    color: #fe0000;
+}
+.order-bd .canceled {
+    color: #848484;
+}
+.order-bd .order-detail {
+    color: #29a8df;
+    white-space: nowrap;
+}
+.order-bd .order-payment {
+    display: block;
+    width: 66px;
+    height: 29px;
+    background: url(//img.uhcdn.com/images/y/user/order-payment.png) no-repeat 0 0;
+}
