@@ -110,7 +110,8 @@ public class SupplierWithdraw extends Controller{
         MailMessage message = new MailMessage();
         message.addRecipient(NOTIFICATION_EMAIL);
         message.setSubject("用户提现提醒");
-        message.putParam("withdrawBill", withdrawBill);
+        message.putParam("applier", withdrawBill.applier);
+        message.putParam("amount", withdrawBill.amount);
         message.setTemplate("withdraw");
         MailUtil.sendFinanceNotificationMail(message);
 

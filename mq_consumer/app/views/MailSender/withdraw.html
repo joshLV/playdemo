@@ -1,15 +1,14 @@
 <html>
 <body>
-%{withdraw = (models.accounts.WithdrawBill)message.getParam("withdrawBill")}%
 新的提现申请：<br/>
 <table>
     <tr>
         <td>申请者：</td>
-        <td>withdraw.applier</td>
+        <td>${message.getParam("applier")}</td>
     </tr>
     <tr>
         <td>申请金额：</td>
-        <td>withdraw.amount</td>
+        <td>${message.getParam("amount")}</td>
     </tr>
 </table>
 <br/>

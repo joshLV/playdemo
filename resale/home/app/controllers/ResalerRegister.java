@@ -93,7 +93,7 @@ public class ResalerRegister extends Controller {
         MailMessage message = new MailMessage();
         message.addRecipient(NOTIFICATION_EMAIL);
         message.setSubject("分销商注册申请");
-        message.putParam("resaler", resaler);
+        message.putParam("resaler", resaler.loginName);
         message.setTemplate("resalerRegister");
         MailUtil.sendFinanceNotificationMail(message);
 
