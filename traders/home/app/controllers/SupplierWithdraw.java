@@ -109,7 +109,7 @@ public class SupplierWithdraw extends Controller{
         // 发邮件
         MailMessage message = new MailMessage();
         message.addRecipient(NOTIFICATION_EMAILS);
-        message.setFrom("yibaiquan <noreplay@uhuila.com");
+        message.setFrom("yibaiquan <noreplay@uhuila.com>");
         message.setSubject("用户提现提醒");
         message.putParam("applier", withdrawBill.applier);
         message.putParam("amount", withdrawBill.amount);
