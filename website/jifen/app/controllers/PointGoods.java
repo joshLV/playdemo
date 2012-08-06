@@ -4,7 +4,8 @@ import cache.CacheCallBack;
 import cache.CacheHelper;
 import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
-import models.PointGoodsCmsQuestion;
+import models.cms.CmsQuestion;
+import models.cms.GoodsType;
 import models.sales.*;
 import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
@@ -91,18 +92,21 @@ public class PointGoods extends Controller {
         response.setCookie("saw_goods_ids", sawGoodsIds);
 
         showGoods(pointGoods);
-
-        List<PointGoodsCmsQuestion> questions = CacheHelper.getCache(CacheHelper
+        /*
+        List<CmsQuestion> questions = CacheHelper.getCache(CacheHelper
                 .getCacheKey(models.sales.PointGoods.CACHEKEY_BASEID + id,
                         "QUESTION_u" + userId + "_c" + cookieValue),
-                new CacheCallBack<List<PointGoodsCmsQuestion>>() {
+                new CacheCallBack<List<CmsQuestion>>() {
                     @Override
-                    public List<PointGoodsCmsQuestion> loadData() {
-                        return PointGoodsCmsQuestion.findOnGoodsShow(userId, cookieValue,
-                                id, 0, 10);
+                    public List<CmsQuestion> loadData() {
+                        return CmsQuestion.findOnGoodsShow(userId, cookieValue,
+                                id, GoodsType.POINTGOODS, 0, 10);
                     }
-                });
-        renderArgs.put("questions", questions);
+                }); */
+
+       List<CmsQuestion> questions = CmsQuestion.findOnGoodsShow(userId,cookieValue,id,GoodsType.POINTGOODS,0,10);
+
+       renderArgs.put("questions", questions);
 
         render();
     }

@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import models.PointGoodsCmsQuestion;
 import models.cms.CmsQuestion;
+import models.cms.GoodsType;
 import models.consumer.User;
 import models.consumer.UserVote;
 import models.mail.MailMessage;
@@ -64,9 +63,11 @@ public class PointGoodsUserQuestion extends Controller {
         }
 
         //保存并返回提问结果
-        PointGoodsCmsQuestion question = new PointGoodsCmsQuestion();
+        CmsQuestion question = new CmsQuestion();
         question.content = content;
-        question.pointGoodsId = goodsId;
+        question.goodsId = goodsId;
+        // save goods type of point goods
+        question.goodsType = GoodsType.POINTGOODS;
         question.remoteIP = request.remoteAddress;
         Map<String, String> questionMap = new HashMap<>();
         if(user != null){
@@ -96,7 +97,7 @@ public class PointGoodsUserQuestion extends Controller {
         Cache.delete(models.sales.PointGoods.CACHEKEY_BASEID + goodsId);
 
         //发送提醒邮件
-        /*
+
         MailMessage mailMessage = new MailMessage();
         mailMessage.addRecipient(QUESTION_MAIL_RECEIVER);
         mailMessage.setSubject(Play.mode.isProd() ? "用户咨询" : "用户咨询【测试】");
@@ -105,7 +106,7 @@ public class PointGoodsUserQuestion extends Controller {
         mailMessage.putParam("content", question.content);
         mailMessage.putParam("goods", goods.name);
         MailUtil.sendOperatorNotificationMail(mailMessage);
-        */
+
         renderJSON(result);
     }
 
@@ -115,10 +116,10 @@ public class PointGoodsUserQuestion extends Controller {
         Long userId = SecureCAS.getUser() == null ? null : SecureCAS.getUser().getId();
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
-        List<PointGoodsCmsQuestion> questions = PointGoodsCmsQuestion.findOnGoodsShow(userId, cookieValue, goodsId, firstResult, size);
+        List<CmsQuestion> questions = CmsQuestion.findOnGoodsShow(userId, cookieValue, goodsId, GoodsType.POINTGOODS, firstResult, size);
         List<Map<String, String>> mappedQuestions = new ArrayList<>();
 
-        for (PointGoodsCmsQuestion question : questions){
+        for (CmsQuestion question : questions){
             Map<String, String> mappedQuestion = new HashMap<>();
             mappedQuestion.put("content", question.content);
             mappedQuestion.put("date", dateFormat.format(question.createdAt));
