@@ -638,18 +638,20 @@ public class PointGoods extends Model {
     }
 
     public boolean onSale() {
-        //System.out.println("onsale---------------"+GoodsStatus.ONSALE.equals(status));
-        //System.out.println("delete------"+ DeletedStatus.UN_DELETED.equals(deleted));
-        return (GoodsStatus.ONSALE.equals(status) && expireAt.after(new Date()) &&
+        boolean isEffective = true;
+        if (expireAt != null && expireAt.before(new Date())){
+            isEffective = false;
+        }
+        return (GoodsStatus.ONSALE.equals(status) && isEffective &&
                 baseSale > 0 && DeletedStatus.UN_DELETED.equals(deleted));
     }
 
     public Long summaryCount() {
-        final Long goodsId = this.id;
-        GoodsStatistics statistics = CacheHelper.getCache(CacheHelper.getCacheKey(GoodsStatistics.CACHEKEY_GOODSID + goodsId, "GOODSSTATS"), new CacheCallBack<GoodsStatistics>() {
+        final Long pointGoodsId = this.id;
+        GoodsStatistics statistics = CacheHelper.getCache(CacheHelper.getCacheKey(GoodsStatistics.CACHEKEY_GOODSID + pointGoodsId, "GOODSSTATS"), new CacheCallBack<GoodsStatistics>() {
             @Override
             public GoodsStatistics loadData() {
-                return GoodsStatistics.find("goodsId", goodsId).first();
+                return GoodsStatistics.find("goodsId", pointGoodsId).first();
             }
         });
         if (statistics == null) {
