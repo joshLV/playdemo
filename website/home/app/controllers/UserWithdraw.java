@@ -58,7 +58,7 @@ public class UserWithdraw extends Controller {
     public static void create(@Valid WithdrawBill withdraw) {
         User user = SecureCAS.getUser();
         Account account = AccountUtil.getConsumerAccount(user.getId());
-        if (withdraw.amount.compareTo(account.amount) > 0) {
+        if (withdraw.amount != null && withdraw.amount.compareTo(account.amount) > 0) {
             Validation.addError("withdraw.amount", "提现金额不能大于余额！！");
             render("UserWithdraw/apply.html", withdraw, account);
         }
