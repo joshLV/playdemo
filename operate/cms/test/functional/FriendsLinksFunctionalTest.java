@@ -1,8 +1,10 @@
 package functional;
 
-import com.uhuila.common.constants.DeletedStatus;
-import controllers.operate.cas.Security;
+import java.util.HashMap;
+import java.util.Map;
+import models.admin.OperateRole;
 import models.admin.OperateUser;
+import models.cms.FriendsLink;
 import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Test;
@@ -10,10 +12,8 @@ import play.mvc.Http;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import models.cms.FriendsLink;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.operate.cas.Security;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,6 +28,8 @@ public class FriendsLinksFunctionalTest extends FunctionalTest {
     public void setup() {
 
     Fixtures.delete(FriendsLink.class);
+    Fixtures.delete(OperateUser.class);
+    Fixtures.delete(OperateRole.class);
     Fixtures.loadModels("fixture/FriendsLink.yml");
     Fixtures.loadModels("fixture/roles.yml");
     Fixtures.loadModels("fixture/users.yml");

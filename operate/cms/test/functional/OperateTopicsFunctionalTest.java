@@ -2,6 +2,7 @@ package functional;
 
 import com.uhuila.common.constants.DeletedStatus;
 import controllers.operate.cas.Security;
+import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.cms.Topic;
 import operate.rbac.RbacLoader;
@@ -28,6 +29,8 @@ public class OperateTopicsFunctionalTest extends FunctionalTest {
     @Before
     public void setup() {
         Fixtures.delete(Topic.class);
+        Fixtures.delete(OperateUser.class);
+        Fixtures.delete(OperateRole.class);
         Fixtures.loadModels("fixture/topics.yml");
 
         Fixtures.loadModels("fixture/roles.yml");

@@ -1,8 +1,9 @@
 package functional;
 
-import com.uhuila.common.constants.DeletedStatus;
-import controllers.CmsBlocks;
-import controllers.operate.cas.Security;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.cms.Block;
 import operate.rbac.RbacLoader;
@@ -14,10 +15,8 @@ import play.mvc.Http;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import com.uhuila.common.constants.DeletedStatus;
+import controllers.operate.cas.Security;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,6 +30,9 @@ public class CmsBlocksFunctionalTest extends FunctionalTest{
     @Before
     public void setup() {
         Fixtures.delete(Block.class);
+
+        Fixtures.delete(OperateUser.class);
+        Fixtures.delete(OperateRole.class);        
         Fixtures.loadModels("fixture/blocks.yml");
 
         Fixtures.loadModels("fixture/roles.yml");
