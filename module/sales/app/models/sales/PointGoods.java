@@ -485,7 +485,7 @@ public class PointGoods extends Model {
                                                          int pageNumber, int pageSize) {
 
         JPAExtPaginator<PointGoods> pointGoodsPage = new JPAExtPaginator<>
-                ("PointGoods g", "g", PointGoods.class, condition.getFilter(),
+                ("pointGoods g", "g", PointGoods.class, condition.getFilter(),
                         condition.getParamMap())
                 .orderBy(condition.getOrderByExpress());
         pointGoodsPage.setPageNumber(pageNumber);
