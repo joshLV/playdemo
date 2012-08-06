@@ -98,7 +98,7 @@
 /** 主体 **/
 #content {
     width: 960px;
-    margin: 0 auto;
+    margin: 0 auto 10px;
 }
 #section {
     width: 750px;
