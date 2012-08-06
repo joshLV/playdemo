@@ -43,13 +43,7 @@
             <div class="cart-box-bd">
             </div>
         </div>
-        #{if carts?.size()>0}
-            <a class="cart-btn" target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">去结算</a>
-           *{<a class="cart-btn" target="_blank" href="/orders?items=#{list items:carts, as:'cartItem'}${cartItem.goods.id}-${cartItem.number},#{/list}">去结算</a>}*
-        #{/if}
-
-
-        *{#{/else}}*
+        <a class="cart-btn" target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">去结算</a>
     </div>
 </div><!-- #header -->
 
