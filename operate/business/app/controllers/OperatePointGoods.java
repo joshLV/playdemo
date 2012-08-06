@@ -206,11 +206,9 @@ public class OperatePointGoods extends Controller {
         }
 
         cacheId = play.cache.Cache.get(cacheId.toString()).toString();
-        redirect("http://localhost:9003/goods/"+cacheId+"?preview=true");
+        redirect("http://localhost:9003/pointgoods/"+cacheId+"?preview=true");
 
-      //  redirect("http://localhost:9003/goods/1");
-
-      //  redirect("http://localhost:9003/goods/"+ pointGoodsId+"?preview=true");
+    // redirect("http://" + WWW_URL + "/goods/" + cacheId + "?preview=true");
 
 
     }

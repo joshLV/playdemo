@@ -111,10 +111,22 @@
                         <tr>
 
 
-                            <td><img src="${pointGoods?.imageTinyPath}"/></td>
 
-                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/g/${pointGoods.id}?preview=true" target="_blank">${pointGoods?.name}
+
+
+                            <td><a href="http://localhost:9003/pointgoods/${pointGoods.id}?preview=true" target="_blank"><img
+                                    src="${pointGoods?.imageTinyPath}"/></a></td>
+                            <td><a href="http://localhost:9003/pointgoods/${pointGoods.id}?preview=true" target="_blank">${pointGoods?.name}
                             </a>
+
+
+
+                            *{<td><img src="${pointGoods?.imageTinyPath}"/></td>}*
+
+                            *{<td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${pointGoods.id}?preview=true" target="_blank"><img}*
+                                    *{src="${pointGoods?.imageTinyPath}"/></a></td>}*
+                            *{<td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${pointGoods.id}?preview=true" target="_blank">${pointGoods?.name}}*
+                            *{</a>}*
 
 
                             </td>
