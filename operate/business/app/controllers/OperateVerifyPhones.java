@@ -1,5 +1,6 @@
 package controllers;
 
+import com.uhuila.common.constants.DeletedStatus;
 import models.admin.SupplierUser;
 import models.admin.SupplierUserType;
 import models.sales.Shop;
@@ -97,7 +98,8 @@ public class OperateVerifyPhones extends Controller {
     public static void delete(Long id) {
         SupplierUser user = SupplierUser.findById(id);
         if (user != null) {
-            user.delete();
+            user.deleted = DeletedStatus.DELETED;
+            user.save();
         }
         index(null);
     }
