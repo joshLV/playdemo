@@ -249,6 +249,9 @@ public class Resaler extends Model {
     }
 
     public static Resaler findByLoginName(String loginName) {
+        if(loginName == null || loginName.trim().equals("")){
+            return null;
+        }
         return find("loginName like ?", "%" + loginName + "%").first();
     }
 
