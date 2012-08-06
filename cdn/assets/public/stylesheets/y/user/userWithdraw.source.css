@@ -84,6 +84,9 @@
     cursor: pointer;
     background: url(http://img.uhcdn.com/images/u/u_btn.png) repeat-x 0 0;
 }
+.withdraw-tab .error {
+    color: #f00;
+}
 .apply-tips {
     margin-top: 45px;
     padding-top: 20px;
