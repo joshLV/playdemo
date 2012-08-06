@@ -1,6 +1,7 @@
 package play.modules.emaillogs;
 
 import org.apache.log4j.net.SMTPAppender;
+import play.Logger;
 import play.Play;
 
 /**
@@ -21,37 +22,44 @@ public class EmailLoggerAppender extends SMTPAppender{
 
     @Override
     public void setSubject(String s){
+        Logger.info("set email logger subject. applicationName: %s, subject[conf]: %s, subject[param]: %s", applicationName, subject, s);
         String prefix = applicationName == null ? "" : "[" + applicationName + "] ";
         super.setSubject(prefix + (subject == null ? s : subject));
     }
 
     @Override
     public void setTo(String to){
+        Logger.info("set email logger receiver. receiver[conf]: %s, receiver[param]: %s", receiver, to);
         super.setTo(receiver == null ? to : receiver);
     }
 
     @Override
     public void setSMTPHost(String h) {
+        Logger.info("set email logger SMTPHost. host[conf]: %s, host[param]: %s", host, h);
         super.setSMTPHost(host == null ? h : host);
     }
 
     @Override
     public void setSMTPUsername(String u) {
+        Logger.info("set email logger SMTPUser. user[conf]: %s, user[param]: %s", username, u);
         super.setSMTPUsername(username == null ? u : username);
     }
 
     @Override
     public void setSMTPPassword(String p) {
+        Logger.info("set email logger SMTPPassword. password[conf]: %s, password[param]: %s", password, p);
         super.setSMTPPassword(password == null ? p : password);
     }
 
     @Override
     public void setFrom(String f) {
+        Logger.info("set email logger From. from[conf]: %s, from[param]: %s", from, f);
         super.setFrom(from == null ? f : from);
     }
 
     @Override
     public void setBufferSize(int bs) {
+        Logger.info("set email logger buffer. buffer[conf]: %s, buffer[param]: %s", bufferSize, bs);
         super.setBufferSize(bufferSize == null ? bs : Integer.parseInt(bufferSize));
     }
 }
