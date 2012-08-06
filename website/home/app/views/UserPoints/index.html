@@ -6,6 +6,13 @@
 
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script>
+    $(function () {
+        $("#pointNumber").click(function () {
+            $('#couponsFrm').submit();
+        });
+   });
+</script>
 #{/set}
 <div id="content" class="clearfix">
     #{include "share/left.html"/}
@@ -19,7 +26,7 @@
         <div class="search-box">
             <label>操作类型：</label>
             #{select 'condition.pointNumber', id:'pointNumber',
-                class:'sequence-flag', value:pointNumber} 
+                class:'sequence-flag', value:pointNumber}
                 #{option ''}不限#{/option}
                 #{list items:configList, as:'config'}
                     #{option config?.pointNumber}${config?.pointTitle}#{/option}

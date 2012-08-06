@@ -38,7 +38,7 @@ public class ResaleSalesReport extends Model {
     public ResaleSalesReport(Order order, BigDecimal salePrice, Long buyNumber) {
         this.order = order;
         if (order.userType == AccountType.CONSUMER) {
-            this.loginName = order.getUser().loginName;
+            this.loginName = "一百券";
         } else {
             this.loginName = order.getResaler().loginName;
             this.userName = order.getResaler().userName;
@@ -56,18 +56,23 @@ public class ResaleSalesReport extends Model {
 
     public static List<ResaleSalesReport> query(
             ResaleSalesReportCondition condition, AccountType type) {
+        String sql = "select new models.ResaleSalesReport(e.order,sum(e.salePrice),count(e.orderItems.buyNumber)) from ECoupon e ";
+        String groupBy = " group by e.order.userId ";
+
+        if (type == AccountType.CONSUMER) {
+            groupBy = " group by e.order.userType ";
+        }
         Query query = JPA.em()
-                .createQuery(
-                        "select new models.ResaleSalesReport(e.order,sum(e.salePrice),count(e.orderItems.buyNumber))"
-                                + " from ECoupon e "
-                                + condition.getFilter(type) + " group by e.order.userId order by sum(e.salePrice) desc");
+                .createQuery(sql + condition.getFilter(type) + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
+
         //取得退款的金额
-        String sql = "";
         List<ResaleSalesReport> resultList = query.getResultList();
+
+
         for (ResaleSalesReport resaleSalesReport : resultList) {
             sql = "select sum(t.amount) from TradeBill t where t.tradeType='" + TradeType.REFUND + "' and t.orderId=" + resaleSalesReport.order.id;
             Object obj = JPA.em().createQuery(sql).getSingleResult();
