@@ -41,6 +41,7 @@ import java.util.List;
  * Time: 上午9:38
  * To change this template use File | Settings | File Templates.
  */
+@Ignore
 public class ResaleSalesReportFuncTest extends FunctionalTest {
 
     @Before
