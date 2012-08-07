@@ -11,6 +11,7 @@ GET     /pointgoods/{uuid}/preview              PointGoods.preview
 POST    /goods/statistics                       PointGoods.statistics
 
 POST    /user-question                          PointGoodsUserQuestion.add
+GET     /more-questions                         PointGoodsUserQuestion.moreQuestions
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
