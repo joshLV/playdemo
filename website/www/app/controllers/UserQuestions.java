@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import models.cms.CmsQuestion;
+import models.cms.GoodsType;
 import models.consumer.User;
 import models.consumer.UserVote;
 import models.mail.MailMessage;
@@ -108,7 +109,7 @@ public class UserQuestions extends Controller{
         Long userId = SecureCAS.getUser() == null ? null : SecureCAS.getUser().getId();
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
-        List<CmsQuestion> questions = CmsQuestion.findOnGoodsShow(userId, cookieValue, goodsId, firstResult, size);
+        List<CmsQuestion> questions = CmsQuestion.findOnGoodsShow(userId, cookieValue, goodsId, GoodsType.NORMALGOODS, firstResult, size);
         List<Map<String, String>> mappedQuestions = new ArrayList<>();
       
         for (CmsQuestion question : questions){
