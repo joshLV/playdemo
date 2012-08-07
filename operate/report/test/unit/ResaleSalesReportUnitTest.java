@@ -1,12 +1,12 @@
-package functional;
+package unit;
 
-import com.uhuila.common.util.DateUtil;
 import controllers.operate.cas.Security;
 import models.ResaleSalesReport;
 import models.ResaleSalesReportCondition;
 import models.accounts.AccountType;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
+import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
@@ -20,23 +20,21 @@ import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import play.modules.paginate.ValuePaginator;
-import play.mvc.Http;
 import play.test.Fixtures;
-import play.test.FunctionalTest;
+import play.test.UnitTest;
 import play.vfs.VirtualFile;
 
 import java.util.Calendar;
-import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
- * User: hejun
+ * User:yjy
  * Date: 12-8-2
  * Time: 上午9:38
  * To change this template use File | Settings | File Templates.
  */
-public class ResaleSalesReportFuncTest extends FunctionalTest {
+public class ResaleSalesReportUnitTest extends UnitTest {
 
     @Before
     public void setup() {
@@ -50,6 +48,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
         Fixtures.delete(Category.class);
         Fixtures.delete(Brand.class);
         Fixtures.delete(Supplier.class);
+        Fixtures.delete(SupplierUser.class);
         Fixtures.delete(Resaler.class);
         Fixtures.delete(ECoupon.class);
         Fixtures.loadModels("fixture/suppliers_unit.yml");
@@ -80,6 +79,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
         calendar.set(Calendar.DATE, calendar.get(Calendar.DATE));
         coupon.createdAt = calendar.getTime();
         coupon.save();
+
     }
 
     @After
@@ -89,52 +89,26 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
     }
 
     @Test
-    public void testIndexDefault() {
-        Http.Response response = GET("/resale/sales");
-        assertIsOk(response);
-        assertNotNull(renderArgs("reportPage"));
+    public void testQueryConsumer() {
+        ResaleSalesReportCondition condition = new ResaleSalesReportCondition();
+        List<ResaleSalesReport> list = ResaleSalesReport.queryConsumer(condition);
+        assertEquals(1, list.size());
+
+
     }
 
     @Test
-    public void testSearchWithRightConditionNull() {
-        long id = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_001");
-        ECoupon eCoupon = ECoupon.findById(id);
-        long id2 = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_002");
-        ECoupon eCoupon2 = ECoupon.findById(id2);
+    public void testQueryResaler() {
+        ResaleSalesReportCondition condition = new ResaleSalesReportCondition();
+        List<ResaleSalesReport> list = ResaleSalesReport.query(condition);
+        assertEquals(1, list.size());
 
-        Http.Response response = GET("/resale/sales?condition.accountType=null&condition.createdAtBegin=2012-02-01&condition.createdAtEnd=2012-08-01&condition.interval=");
-        assertIsOk(response);
-        assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
-        assertEquals(1, reportPage.getRowCount());
-    }
+        ResaleSalesReport report = ResaleSalesReport.summary(list);
+        assertEquals(1, report.totalNumber.intValue());
+        assertEquals(0, report.totalRefundPrice.intValue());
+        assertEquals(90, report.amount.intValue());
+        assertEquals(0, report.consumedPrice.intValue());
 
-    @Test
-    public void testSearchWithRightConditionConsumer() {
-        Http.Response response = GET("/resale/sales?condition.accountType=CONSUMER&condition.createdAtBegin=2012-02-01&condition.createdAtEnd=2012-08-01&condition.interval=");
-        assertIsOk(response);
-        assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
-        assertEquals(1, reportPage.getRowCount());
-    }
-
-    @Test
-    public void testSearchWithRightConditionResaler() {
-        Http.Response response = GET("/resale/sales?condition.accountType=RESALER&" +
-                "condition.createdAtBegin=" + DateUtil.getBeginOfDay() + "&condition.createdAtEnd=" + DateUtil.getEndOfDay(new Date()) + "&condition.interval=");
-        assertIsOk(response);
-        assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
-        assertEquals(1, reportPage.getRowCount());
-    }
-
-    @Test
-    public void testSearchWithError() {
-        Http.Response response = GET("/resale/sales?condition.accountType=null&condition.createdAtBegin=2012-06-06&condition.createdAtEnd=2012-06-03&condition.interval=");
-        assertIsOk(response);
-        assertNotNull(renderArgs("reportPage"));
-        ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
-        assertEquals(1, reportPage.getRowCount());
     }
 
 }

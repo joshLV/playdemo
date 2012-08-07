@@ -95,6 +95,11 @@
                     #{option "CONSUMED"}&{'coupon.CONSUMED'}#{/option}
                     #{option "REFUND"}&{'coupon.REFUND'}#{/option}
                 #{/select}
+                  &nbsp;&nbsp;&nbsp;订单来源：#{select 'condition.accountType', class:'input-small', value:condition.accountType}
+                    #{option ""}不限#{/option}
+                    #{option "CONSUMER"}&{'order.CONSUMER'}#{/option}
+                    #{option "RESALER"}&{'order.RESALER'}#{/option}
+                 #{/select}
                     &nbsp;&nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
                                                   value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
                 </td>

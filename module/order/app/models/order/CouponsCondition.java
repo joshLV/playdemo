@@ -149,6 +149,10 @@ public class CouponsCondition implements Serializable {
             } else {
                 sql.append(" and e.goods.isLottery = false");
             }
+            if (accountType != null) {
+                sql.append(" and e.order.userType = :userType");
+                paramMap.put("userType", accountType);
+            }
         }
 
         if (verifyType != null) {

@@ -134,7 +134,7 @@ public class ResaleSalesReport extends Model {
         BigDecimal totRefundPrice = BigDecimal.ZERO;
 
         List<ResaleSalesReport> resultList = query.getResultList();
-
+        System.out.println(resultList.size());
         List<Order> newList = new ArrayList<Order>();
         for (ResaleSalesReport item : resultList) {
             long consumedCount = 0l;
