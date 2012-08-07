@@ -1,0 +1,100 @@
+#{extends 'layout_operate/simple.html' /}
+#{set title:'商户销售明细' /}
+
+#{set 'moreStyles'}
+<style type="text/css">
+    .form-inline ul {
+        display: inline-block;
+        margin-bottom: -15px;
+    }
+
+    .nav-tabs {
+        margin-bottom: 0px;
+    }
+
+    .tab-content {
+        border-left: 1px solid #DDD;
+        border-right: 1px solid #DDD;
+        border-bottom: 1px solid #DDD;
+        clear: both;
+    }
+
+    .tab-content .binary {
+        width: 40%;
+        float: left;
+        text-align: center;
+        margin: 5px 1%;
+    }
+
+    .seq {
+        margin-top: 20px;
+    }
+
+    .alert {
+        margin-bottom: 0px;
+    }
+
+    .seq thead tr :first {
+        background-color: #f5f5f5;
+    }
+    td.amount {
+    text-align: right;
+    }
+    footer {
+        margin-top: 20px;
+    }
+</style>
+#{/set}
+
+
+<table class="table table-striped table-bordered table-condensed">
+    <thead>
+    <tr>
+        <th width="10px">订单号</th>
+        <th width="8px">手机</th>
+        <th width="8px">券号</th>
+        <th width="90px">商品名称</th>
+        <th width="30px">面值</th>
+        <th width="30px">单价</th>
+        <th width="50px">消费门店</th>
+        <th width="30px">有效期</th>
+        <th width="50px">消费时间</th>
+        <th width="30px">店员</th>
+        <th width="60px">代理验证员</th>
+        <th width="40px">验证方式</th>
+        <th width="20px">状态</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    #{list items:ecoupons, as:'coupon'}
+    <tr>
+         <td>${coupon?.order?.orderNumber}</td>
+         <td>${coupon?.orderItems?.phone}</td>
+        <td>${coupon?.getMaskedEcouponSn()}</td>
+        <td>${coupon?.goods?.name}</td>
+        <td class="amount">${coupon?.faceValue?.formatCurrency('CNY')}</td>
+        <td class="amount">${coupon?.salePrice?.formatCurrency('CNY')}</td>
+        <td>${coupon?.getConsumedShop()}</td>
+        <td>${coupon?.goods?.effectiveAt ?.format()} /
+        ${coupon?.goods?.expireAt?.format()}</td>
+        <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+        <td>#{if coupon?.supplierUser?.userName!=null}${coupon?.supplierUser?.userName}#{/if}
+            #{if coupon?.supplierUser?.jobNumber!=null}(工号: ${coupon?.supplierUser?.jobNumber})#{/if}</td>
+        <td>${coupon?.operateUserName}</td>
+        <td>&{'coupon.'+coupon?.verifyType}</td>
+        <td>&{'coupon.'+coupon?.status}</td>
+    </tr>
+    #{/list}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="2" class="amount">汇总</td>
+            <td class="amount">${summary?.checkedCount}</td>
+            <td></td>
+            <td class="amount">${summary?.sumFaceValue?.formatCurrency('CNY')}</td>
+            <td class="amount">${summary?.sumAmount?.formatCurrency('CNY')}</td>
+            <td colspan="7"></td>
+        </tr>
+    </tfoot>
+</table>

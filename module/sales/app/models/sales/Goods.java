@@ -767,6 +767,12 @@ public class Goods extends Model {
         return find("id=? and deleted=? and status=? and baseSale >= 1 and expireAt > ?", id,
                 DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).first();
     }
+    
+
+    public static List<Goods> findBySupplierId(Long supplierId) {
+        return find("supplierId=? and deleted=? and isLottery=?", supplierId,
+                DeletedStatus.UN_DELETED, Boolean.FALSE).fetch();
+    }    
 
     public static JPAExtPaginator<Goods> findByCondition(GoodsCondition condition,
                                                          int pageNumber, int pageSize) {

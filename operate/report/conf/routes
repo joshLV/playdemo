@@ -17,6 +17,12 @@ GET     /favicon.ico                            404
 
 GET     /reports                                PurchaseTaxReports.index
 
+
+# 商户销售汇总表
+GET     /totalsales/trends                      TotalSalesReports.trends
+GET     /totalsales/ratios                      TotalSalesReports.ratios
+GET     /totalsales/list                        TotalSalesReports.list
+
 # Home page
 GET     /                                       OperateReportApplication.index
 

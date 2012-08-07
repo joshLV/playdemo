@@ -26,3 +26,7 @@
     background-color: #0082CA;
     border: 1px solid #0082CA;
 }
+
+table td.amount {
+    text-align: right;
+}

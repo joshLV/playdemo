@@ -137,5 +137,22 @@ account.type.PLATFORM=平台
 report.CONSUMER=消费者
 report.RESALER=分销商
 
+totalsales.trends.key.0=商户
+totalsales.trends.key.1=门店
+totalsales.trends.key.2=商品名
 
 
+# 验证类型
+coupon.CLERK_MESSAGE=店员短信验证
+coupon.CONSUMER_MESSAGE=消费者短信验证
+coupon.SHOP=电脑验证
+coupon.TELEPHONE=电话验证
+coupon.OP_VERIFY=运营代理验证
+coupon.null=
+
+
+coupon.DEALING=处理中
+coupon.CONSUMED=已消费
+coupon.UNCONSUMED=未消费
+coupon.REFUND=已退款
+coupon.EXPIRED=已过期

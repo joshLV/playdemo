@@ -1,0 +1,195 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'商户销售趋势报表' /}
+#{include '/share/nav.html' /}
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript" charset="utf-8">
+    $(function () {
+        $("#supplierId,#goodsId,#shopId,#ctype").change(function() {
+            $("#search_form").submit();
+        });
+        $("[start]").each(function () {
+            $(this).click(function () {
+                if ($(this).parent().attr("class") == 'active') {
+                    return false;
+                }
+                var today = new Date();
+                var endDay = new Date();
+                var startDay = new Date();
+
+                startDay.setDate(today.getDate() - 1)
+                endDay.setDate(today.getDate() - 1)
+
+                var interval = $(this).attr("start");
+                var sig = interval.charAt(interval.length - 1);
+                var count = parseInt(interval.substring(0, interval.length - 1));
+                if (sig == 'd') {
+                    startDay.setDate(startDay.getDate() - count);
+                } else if (sig == 'm') {
+                    startDay.setMonth(startDay.getMonth() - count);
+                } else if (sig == 'y') {
+                    startDay.setFullYear(startDay.getFullYear() - count);
+                }
+
+                $("#condition_begin").val(startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate());
+                $("#condition_end").val(today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + endDay.getDate());
+                $("#condition_interval").val(interval);
+                $("#search_form").submit();
+                return false;
+            });
+        });
+
+    });
+</script>
+#{/set}
+
+#{set 'moreStyles'}
+<style type="text/css">
+    .form-inline ul {
+        display: inline-block;
+        margin-bottom: -15px;
+    }
+
+    .nav-tabs {
+        margin-bottom: 0px;
+    }
+
+    .tab-content {
+        border-left: 1px solid #DDD;
+        border-right: 1px solid #DDD;
+        border-bottom: 1px solid #DDD;
+        clear: both;
+    }
+
+    .tab-content .binary {
+        width: 40%;
+        float: left;
+        text-align: center;
+        margin: 5px 1%;
+    }
+
+    .seq {
+        margin-top: 20px;
+    }
+
+    .alert {
+        margin-bottom: 0px;
+    }
+
+    .seq thead tr :first {
+        background-color: #f5f5f5;
+    }
+
+    footer {
+        margin-top: 20px;
+    }
+</style>
+#{/set}
+
+<form class="well form-inline" action="@{TotalSalesReports.trends()}" method="GET" id="search_form"
+      name="search_form">
+  <div class="form-inline">
+    报表类型：
+    #{select 'condition.type', id:"ctype", class:'select', value:condition?.type}
+        #{option "0"}商户报表#{/option}
+        #{option "1"}门店报表#{/option}
+        #{option "2"}商品报表#{/option}
+    #{/select}      
+    #{select 'condition.supplierId', id:"supplierId", class:'select', value:condition?.supplierId}
+        #{option ""}请选择商户#{/option}
+        #{list items:suppliers, as:'supplier'}
+            #{option supplier?.id}${supplier?.fullName}#{/option}
+        #{/list}
+    #{/select}
+    #{if shops != null && condition?.type != 0 && condition?.type == 1 }
+    #{select 'condition.shopId', id:"shopId", class:'select', value:condition?.shopId}
+        #{option "0"}请选择门店#{/option}
+        #{list items:shops, as:'shop'}
+            #{option shop?.id}${shop?.name}#{/option}
+        #{/list}
+    #{/select}
+    #{/if}
+        
+    #{if allGoods != null  && condition?.type == 2 }
+    #{select 'condition.goodsId', id:"goodsId", class:'select', value:condition?.goodsId}
+        #{option "0"}请选择商品#{/option}
+        #{list items:allGoods, as:'goods'}
+            #{option goods?.id}${goods?.title}#{/option}
+        #{/list}
+    #{/select}
+    #{/if}
+  </div>
+  <div class="form-inline">
+    起止日期
+    <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.beginAt"
+           onfocus="WdatePicker({readOnly:true})" value="${condition.beginAt?.format()}"> -
+    <input type="text" id="condition_end" class="input-medium Wdate" name="condition.endAt"
+           onfocus="WdatePicker({readOnly:true})" value="${condition.endAt?.format()}">
+
+    <button type="submit" class="btn btn-primary" id="search">搜索</button>
+    <ul class="nav nav-pills">
+        <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">昨天</a></li>
+        <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
+        <li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>
+        <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
+    </ul>
+    <input type="hidden" id="condition_interval" name="condition.interval"/>
+   </div>
+</form>
+
+*{<ul class="nav nav-tabs">}*
+*{<li class="active"><a href="#">统计金额</a></li>}*
+*{<li><a href="#">导出报表</a></li>}*
+*{</ul>}*
+
+<div class="row-fluid">
+  <div class="span6">
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+            <th>日期</th>
+            <th>&{'totalsales.trends.key.' + condition.type}</th>
+            <th>验证笔数</th>
+            <th>总面值金额</th>
+            <th>总收款金额</th>
+        </thead>
+    #{set i:0/}
+    #{paginate.list items:reportPage, as:'report'}
+        <tr>
+            <td>${report?.checkedOn}</td>
+            <td>${report?.key}</td>
+            <td class="amount">
+              <a href="@{TotalSalesReports.list()}?condition.type=${condition.type}&condition.supplierId=${condition.supplierId}&condition.goodsId=${condition.goodsId}&condition.shopId=${condition.shopId}&condition.beginAt=${report?.checkedOn}&condition.endAt=${report?.checkedOn}" target="_blank">
+                ${report?.checkedCount}
+              </a>
+            </td>
+            <td class="amount">
+              <a href="@{TotalSalesReports.list()}?condition.type=${condition.type}&condition.supplierId=${condition.supplierId}&condition.goodsId=${condition.goodsId}&condition.shopId=${condition.shopId}&condition.beginAt=${report?.checkedOn}&condition.endAt=${report?.checkedOn}" target="_blank">
+                ${report?.sumFaceValue?.formatCurrency('CNY')}
+              </a>
+            </td>
+            <td class="amount">
+              <a href="@{TotalSalesReports.list()}?condition.type=${condition.type}&condition.supplierId=${condition.supplierId}&condition.goodsId=${condition.goodsId}&condition.shopId=${condition.shopId}&condition.beginAt=${report?.checkedOn}&condition.endAt=${report?.checkedOn}" target="_blank">
+                ${report?.sumAmount?.formatCurrency('CNY')}
+              </a>
+            </td>
+        </tr>
+    #{/paginate.list}
+    </table>
+    #{if reportPage?.getPageCount() > 1}
+    <div class="pagination">
+        <ul>
+        #{paginate.controls items:reportPage /}
+        </ul>
+    </div>
+    #{/if}
+  </div>
+  
+  <div class="span6">
+    <div class="alert alert-success">
+        <span>此处放图</span>
+    </div>
+
+  </div>
+
+</div>
