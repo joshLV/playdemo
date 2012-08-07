@@ -9,7 +9,7 @@ import play.Play;
  * @author likang
  *         Date: 12-7-30
  *
- * 自定义 Appender 配置，使其允许从 Play! 的配置文件中读取配置
+ * SMTPAppender的过滤器
  */
 public class EmailLoggerAppender extends SMTPAppender{
 

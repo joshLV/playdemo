@@ -9,6 +9,8 @@ import play.PlayPlugin;
 /**
  * @author likang
  * Date: 12-7-27
+ * 当运行在测试环境或者非生产环境时，删除邮件发送的Appender
+ * 同时自定义 Appender 配置，使其允许从 Play! 的配置文件中读取配置
  */
 
 public class EmailAppenderPlugin extends PlayPlugin{
