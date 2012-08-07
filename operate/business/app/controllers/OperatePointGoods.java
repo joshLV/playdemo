@@ -423,16 +423,16 @@ public class OperatePointGoods extends Controller {
     }
 
 
-    /**
-     * 取得上传图片名字
-     */
-    public static void imageName(File imagePath) {
-
-        //用于修改内容的时候
-        String imageName = imagePath.getName();
-        renderJSON(imageName);
-
-    }
+//    /**
+//     * 取得上传图片名字
+//     */
+//    public static void imageName(File imagePath) {
+//
+//        //用于修改内容的时候
+//        String imageName = imagePath.getName();
+//        renderJSON(imageName);
+//
+//    }
 
 
 
