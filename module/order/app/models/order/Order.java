@@ -916,7 +916,7 @@ public class Order extends Model {
             return false;
         }
         if (order.status == OrderStatus.PAID) {
-            Logger.error("payment_notify:订单已支付:" + orderNumber);
+            Logger.info("payment_notify:订单已支付:" + orderNumber);
             return true;
         }
         if (fee == null || new BigDecimal(fee).compareTo(order.discountPay) < 0) {
