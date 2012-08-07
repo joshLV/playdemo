@@ -119,7 +119,7 @@ public class OperateCoupons extends Controller {
             } else if (coupon.status == ECouponStatus.REFUND) {
                 coupon.statusInfo = "已退款";
             }
-            coupon.save();
+            coupon.eCouponSn = coupon.getMaskedEcouponSn();
         }
 
         render(__EXCEL_FILE_NAME__, couponsList);
