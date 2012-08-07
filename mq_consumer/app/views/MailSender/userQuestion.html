@@ -1,0 +1,21 @@
+<html>
+<body>
+%{
+    questionId = message.getParam("questionId")
+    goodsId = message.getParam("goodsId")
+}%
+<table>
+    <tr>
+        <td>${message.getParam("date")}</td>
+        <td><a href="http://business.qgongchang.com/goods/${goodsId}" target="_blank">${message.getParam("goods")}</a> </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            ${message.getParam("user")}:<br/>
+            ${message.getParam("content")}
+        </td>
+    </tr>
+</table>
+<a href="http://business.qgongchang.com/questions/${questionId}/edit" target="_blank">去运营后台回复</a>
+</body>
+</html>

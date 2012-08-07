@@ -33,7 +33,8 @@ import controllers.modules.website.cas.annotations.SkipCAS;
 public class PointGoodsUserQuestion extends Controller {
 
     private static String DATE_FORMAT = "yyyy-MM-dd";
-    private static String QUESTION_MAIL_RECEIVER = Play.configuration.getProperty("user_question.receiver");
+    private static String QUESTION_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static String[] QUESTION_MAIL_RECEIVERS = Play.configuration.getProperty("user_question.receivers","").split(",");
 
     public static void add(String content, Long goodsId) throws ParseException{
         User user = SecureCAS.getUser();
@@ -97,15 +98,20 @@ public class PointGoodsUserQuestion extends Controller {
         Cache.delete(models.sales.PointGoods.CACHEKEY_BASEID + goodsId);
 
         //发送提醒邮件
-
-        MailMessage mailMessage = new MailMessage();
-        mailMessage.addRecipient(QUESTION_MAIL_RECEIVER);
-        mailMessage.setSubject(Play.mode.isProd() ? "用户咨询" : "用户咨询【测试】");
-        mailMessage.putParam("date", question.createdAt);
-        mailMessage.putParam("user", questionMap.get("user"));
-        mailMessage.putParam("content", question.content);
-        mailMessage.putParam("goods", goods.name);
-        MailUtil.sendOperatorNotificationMail(mailMessage);
+        if (QUESTION_MAIL_RECEIVERS.length > 0 && !"".equals(QUESTION_MAIL_RECEIVERS[0])){
+            MailMessage mailMessage = new MailMessage();
+            mailMessage.addRecipient(QUESTION_MAIL_RECEIVERS);
+            mailMessage.setSubject(Play.mode.isProd() ? "一百券用户咨询" : "一百券用户咨询【测试】");
+            mailMessage.setFrom("一百券 <noreplay@uhuila.com>");
+            mailMessage.putParam("date", new SimpleDateFormat(QUESTION_DATE_FORMAT).format(question.createdAt));
+            mailMessage.putParam("user", questionMap.get("user"));
+            mailMessage.putParam("content", question.content);
+            mailMessage.putParam("goods", goods.name);
+            mailMessage.putParam("questionId", question.id);
+            mailMessage.putParam("goodsId", goods.id);
+            mailMessage.setTemplate("userQuestion");
+            MailUtil.sendOperatorNotificationMail(mailMessage);
+        }
 
         renderJSON(result);
     }
