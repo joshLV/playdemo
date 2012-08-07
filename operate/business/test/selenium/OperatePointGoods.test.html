@@ -29,9 +29,11 @@ type('id=pointGoods_pointPrice','1000')
 type('id=pointGoods_baseSale','8')
 type('id=pointGoods_limitNumber','10')
 
+
 clickAndWait('id=save')
 
-*{verifyTextPresent('到期时间必须填写未来的时间!")}*
+verifyTextPresent('到期时间必须填写未来的时间!")
+
 clickAndWait('限量要小于或等于库存!');
 clickAndWait('请输入图片!');
 clickAndWait('请输入详情!');

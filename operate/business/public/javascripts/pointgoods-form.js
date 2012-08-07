@@ -55,10 +55,31 @@ $(
 //        });
         $("#imagePath").change(function(){
             var fileName =  $(this).val().split(/\\/).pop();
-            var fileNameFull =  $("#imagePath").val();
+           // var fileNameFull =  $("#imagePath").val();
+//                   var pointGoodsId=  $("#pointGoodsId").val();
 
             if (fileName != undefined && fileName != ""){
                 $("#info").html(fileName);
+
+
+
+//                $.ajax({
+//                    url:'/pointgoods/',
+//                    data: pointGoodsId,
+//                    type:'POST',
+//                    error:function () {
+//                        alert('取得失败!');
+//                    },
+//
+//                    success:function (msg) {
+//                        $("#imageLargePath").attr("src",msg);
+//                    }
+//                });
+
+
+//                PUT     /pointgoods/{id}
+//                d update(Long id, @Valid models.sales.PointGoods pointGoods, File imagePath, BigDecimal[] levelPrices,
+//                    String imageLargePath) {
 //                $("#editTime").html("修改后");
 //                alert(fileNameFull)
 //                  $("#imgPath").attr("src",fileNameFull);

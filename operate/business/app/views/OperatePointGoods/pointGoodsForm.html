@@ -71,6 +71,9 @@
     <img id="imgPath" src="${imageLargePath}"/>
             <input type="hidden" name="imageLargePath" value="${imageLargePath}"></div>
     </div>
+
+    <input type="hidden" id="pointGoodsId" name="pointGoodsId" value="${id}"/>
+
     #{/else}
 
     #{layout_operate.htmlField name:'pointGoods.details', value:pointGoods?.details, uploadImgUrl:'/Goods/images', required:true/}
@@ -87,6 +90,9 @@
         #{vx.cancelButton url:'/pointgoods', class:'btn btn-primary'/}
     #{/if}
     <input type="hidden" id="status" name="pointGoods.status" value="${pointGoods?.getStatus()?:'OFFSALE'}"/>
+
+
+
 </div>
 
 <script type="text/javascript">
