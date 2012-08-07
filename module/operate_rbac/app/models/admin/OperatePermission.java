@@ -23,8 +23,10 @@ public class OperatePermission extends Model {
 
     private static final long serialVersionUID = 234119113062L;
     
+    @Column(name="perm_text")
     public String text;
 
+    @Column(name="perm_key")
     public String key;
 
     public String description;

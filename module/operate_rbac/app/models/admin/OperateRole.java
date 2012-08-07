@@ -22,9 +22,10 @@ public class OperateRole extends Model {
 
     private static final long serialVersionUID = 234143062L;
     
+    @Column(name="perm_text")
     public String text;
 
-    @Column(unique=true)
+    @Column(name="perm_key", unique=true)
     public String key;
 
     public String description;

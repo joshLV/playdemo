@@ -28,8 +28,10 @@ public class OperateNavigation extends Model {
     
     private static final long serialVersionUID = 219113062L;
 
+    @Column(name="nav_name")
     public String name;
 
+    @Column(name="nav_text")
     public String text;
 
     public String description;
