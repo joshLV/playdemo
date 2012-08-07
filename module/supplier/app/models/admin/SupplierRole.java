@@ -21,9 +21,11 @@ import play.db.jpa.Model;
 public class SupplierRole extends Model {
 
     private static final long serialVersionUID = 84730609113062L;
-    
+
+    @Column(name="role_text")
     public String text;
 
+    @Column(name="role_key")
     public String key;
 
     public String description;
