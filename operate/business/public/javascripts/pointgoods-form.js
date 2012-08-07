@@ -11,7 +11,6 @@ $(
     function () {
 
 
-
         $("#onsales").click(function () {
             if ($("#baseSale").val() > 0) {
                 $("#status").val("ONSALE");
@@ -36,5 +35,35 @@ $(
             $("#form").attr("target", "_blank");
         });
 
+
+//        $("#imagePath").click(function () {
+//            var imagePath = $("#imagePath").val();
+//            if (imagePath != '') {
+//                $.ajax({
+//                    url:'/pointgoods/imageName',
+//                    data:'imagePath=' +imagePath,
+//                    type:'GET',
+//                    error:function () {
+//                        alert('取得失败!');
+//                    },
+//                    success:function (msg) {
+//                        $("#info").html(msg);
+//                    }
+//                });
+//            }
+//
+//        });
+        $("#imagePath").change(function(){
+            var fileName =  $(this).val().split(/\\/).pop();
+            var fileNameFull =  $("#imagePath").val();
+
+            if (fileName != undefined && fileName != ""){
+                $("#info").html(fileName);
+//                $("#editTime").html("修改后");
+//                alert(fileNameFull)
+//                  $("#imgPath").attr("src",fileNameFull);
+//                $("#imageLargePath").val(fileNameFull);
+            }
+        });
     }
 );
