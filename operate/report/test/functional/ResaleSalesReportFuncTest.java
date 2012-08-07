@@ -41,7 +41,6 @@ import java.util.List;
  * Time: 上午9:38
  * To change this template use File | Settings | File Templates.
  */
-@Ignore
 public class ResaleSalesReportFuncTest extends FunctionalTest {
 
     @Before
@@ -49,10 +48,6 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
 
         Fixtures.delete(OperateUser.class);
         Fixtures.delete(OperateRole.class);
-        Fixtures.delete(DetailDailyReport.class);
-        Fixtures.delete(ShopDailyReport.class);
-        Fixtures.delete(GoodsDailyReport.class);
-        Fixtures.delete(TotalDailyReport.class);
         Fixtures.delete(OrderItems.class);
         Fixtures.delete(Order.class);
         Fixtures.delete(Goods.class);
@@ -61,18 +56,12 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
         Fixtures.delete(Brand.class);
         Fixtures.delete(Supplier.class);
         Fixtures.delete(SupplierUser.class);
-        Fixtures.delete(UserWebIdentification.class);
         Fixtures.loadModels("fixture/suppliers_unit.yml");
         Fixtures.loadModels("fixture/categories_unit.yml");
         Fixtures.loadModels("fixture/brands_unit.yml");
         Fixtures.loadModels("fixture/shops_unit.yml");
         Fixtures.loadModels("fixture/goods_unit.yml");
         Fixtures.loadModels("fixture/orders.yml");
-        Fixtures.loadModels("fixture/detail_daily_reports.yml");
-        Fixtures.loadModels("fixture/shop_daily_reports.yml");
-        Fixtures.loadModels("fixture/goods_daily_reports.yml");
-        Fixtures.loadModels("fixture/total_daily_reports.yml");
-        Fixtures.loadModels("fixture/user_web_identifications.yml");
         Fixtures.loadModels("fixture/ecoupon.yml");
         Fixtures.loadModels("fixture/user.yml");
 
@@ -100,48 +89,16 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
 
     @Test
     public void testSearchWithRightConditionNull(){
-/*
-
-        try {
-            ResultSet rs =  DB.executeQuery("select goods_id, id from e_coupon");
-            while (rs.next()){
-                System.out.println("coupon: " + rs.getLong(1) + "," + rs.getLong(2));
-            }
-            rs.close();
-            rs = DB.executeQuery("select id from goods");
-            while (rs.next()){
-                System.out.println("goods: " + rs.getInt(1));
-            }
-            rs.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        */
-        /*
-        List<ECoupon> eCoupons = ECoupon.findAll();
-
-        List<Order> orders = Order.findAll();
-        for (Order order : orders){
-            System.out.println("---------------"+order.userType);
-        }
-
-        for (ECoupon eCoupon : eCoupons){
-            System.out.println("++++++   "+eCoupon.order.userType);
-        }
-         */
-
         long id = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_001");
         ECoupon eCoupon = ECoupon.findById(id);
-        System.out.println("Type-------- "+eCoupon.order.userType+"  ID  "+eCoupon.order.userId);
         long id2 = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_002");
         ECoupon eCoupon2 = ECoupon.findById(id2);
-        System.out.println("Type-------- "+eCoupon2.order.userType+" ID  "+eCoupon2.order.userId);
 
         Http.Response response = GET("/resale/sales?condition.accountType=null&condition.createdAtBegin=2012-02-01&condition.createdAtEnd=2012-08-01&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>)renderArgs("reportPage");
-        assertEquals(2, reportPage.getRowCount());
+        assertEquals(1, reportPage.getRowCount());
     }
 
     @Test
@@ -150,7 +107,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>)renderArgs("reportPage");
-        assertEquals(2, reportPage.getRowCount());
+        assertEquals(1, reportPage.getRowCount());
     }
 
     @Test
@@ -168,7 +125,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>)renderArgs("reportPage");
-        assertEquals(0, reportPage.getRowCount());
+        assertEquals(1, reportPage.getRowCount());
     }
 
 }

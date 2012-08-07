@@ -33,12 +33,12 @@ public class ResaleSalesReports extends Controller {
         List<ResaleSalesReport> resultList = null;
         // 查询出分销的所有结果
         if (condition.accountType == AccountType.RESALER) {
-            resultList = ResaleSalesReport.query(condition, AccountType.RESALER);
+            resultList = ResaleSalesReport.query(condition);
         } else if (condition.accountType == AccountType.CONSUMER) {
-            resultList = ResaleSalesReport.query(condition, AccountType.CONSUMER);
+            resultList = ResaleSalesReport.queryConsumer(condition);
         } else {
-            resultList = ResaleSalesReport.query(condition, AccountType.RESALER);
-            List<ResaleSalesReport> consumerList = ResaleSalesReport.query(condition, AccountType.CONSUMER);
+            resultList = ResaleSalesReport.query(condition);
+            List<ResaleSalesReport> consumerList = ResaleSalesReport.queryConsumer(condition);
             // 查询出所有结果
             for (ResaleSalesReport resaleSalesReport : consumerList) {
                 resultList.add(resaleSalesReport);

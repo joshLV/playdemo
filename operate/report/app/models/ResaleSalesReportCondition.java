@@ -16,12 +16,12 @@ public class ResaleSalesReportCondition {
 
     public Date createdAtBegin = DateUtil.getBeginOfDay();
     public Date createdAtEnd = DateUtil.getEndOfDay(new Date());    
-    public String interval = "0";
+    public String interval = "-1d";
     public AccountType accountType;
     private Map<String, Object> paramMap = new HashMap<>();
 
     public String getFilter(AccountType type) {
-        StringBuilder condBuilder = new StringBuilder(" where e.order.userType = :userType");
+        StringBuilder condBuilder = new StringBuilder(" where e.order.userType = :userType and e.goods.isLottery=false");
 
             paramMap.put("userType", type);
 

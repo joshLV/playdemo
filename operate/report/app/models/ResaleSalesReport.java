@@ -2,12 +2,15 @@ package models;
 
 import models.accounts.AccountType;
 import models.accounts.TradeType;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.order.Order;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,11 +28,43 @@ public class ResaleSalesReport extends Model {
     public Order order;
     public String loginName;
     public String userName;
+    /**
+     * 售出券数
+     */
     public long buyNumber;
 
+    /**
+     * 退款券数
+     */
+    public long refundNumber;
+    /**
+     * 消费券数
+     */
+    public long consumedNumber;
+
+    /**
+     * 售出金额
+     */
     public BigDecimal salePrice;
 
+    /**
+     * 退款金额
+     */
     public BigDecimal refundPrice;
+
+    /**
+     * 消费金额
+     */
+    public BigDecimal consumedPrice;
+
+    /**
+     * 应收款金额
+     */
+    public BigDecimal shouldGetPrice;
+    /**
+     * 已收款金额
+     */
+    public BigDecimal haveGetPrice;
 
     public Long totalNumber;
     public BigDecimal amount;
@@ -37,66 +72,187 @@ public class ResaleSalesReport extends Model {
 
     public ResaleSalesReport(Order order, BigDecimal salePrice, Long buyNumber) {
         this.order = order;
-        if (order.userType == AccountType.CONSUMER) {
-            this.loginName = "一百券";
-        } else {
-            this.loginName = order.getResaler().loginName;
-            this.userName = order.getResaler().userName;
+        if (order != null) {
+            if (order.userType == AccountType.CONSUMER) {
+                this.loginName = "一百券";
+            } else {
+                this.loginName = order.getResaler().loginName;
+                this.userName = order.getResaler().userName;
+            }
         }
+
         this.salePrice = salePrice;
         this.buyNumber = buyNumber;
     }
 
-    public ResaleSalesReport(long totalNumber, BigDecimal amount, BigDecimal totalRefundPrice) {
+    public ResaleSalesReport(BigDecimal salePrice, Long buyNumber, BigDecimal refundPrice, Long refundCount, BigDecimal consumedPrice, Long consumedCount) {
+        this.userName = "一百券";
+        this.salePrice = salePrice;
+        this.buyNumber = buyNumber;
+        this.refundPrice = refundPrice;
+        this.refundNumber = refundCount;
+        this.consumedPrice = consumedPrice;
+        this.consumedNumber = consumedCount;
+
+    }
+
+    public ResaleSalesReport(long totalNumber, BigDecimal amount, BigDecimal totalRefundPrice, Long refundNumber,
+                             BigDecimal consumedPrice, Long consumedNumber, BigDecimal shouldGetPrice, BigDecimal haveGetPrice) {
         this.totalNumber = totalNumber;
         this.amount = amount;
         this.totalRefundPrice = totalRefundPrice;
+        this.refundNumber = refundNumber;
+        this.consumedPrice = consumedPrice;
+        this.consumedNumber = consumedNumber;
+        this.shouldGetPrice = shouldGetPrice;
+        this.haveGetPrice = haveGetPrice;
     }
 
-
+    /**
+     * 分销商报表统计
+     *
+     * @param condition
+     * @return
+     */
     public static List<ResaleSalesReport> query(
-            ResaleSalesReportCondition condition, AccountType type) {
+            ResaleSalesReportCondition condition) {
         String sql = "select new models.ResaleSalesReport(e.order,sum(e.salePrice),count(e.orderItems.buyNumber)) from ECoupon e ";
-        String groupBy = " group by e.order.userId ";
+        String groupBy = " group by e.order.userId";
 
-        if (type == AccountType.CONSUMER) {
-            groupBy = " group by e.order.userType ";
-        }
         Query query = JPA.em()
-                .createQuery(sql + condition.getFilter(type) + groupBy + " order by sum(e.salePrice) desc");
+                .createQuery(sql + condition.getFilter(AccountType.RESALER) + groupBy + " order by sum(e.salePrice) desc");
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
 
-        //取得退款的金额
+        long refundCount = 0l;
+        BigDecimal consumedPrice = BigDecimal.ZERO;
+        long buyCount = 0l;
+        BigDecimal amount = BigDecimal.ZERO;
+        BigDecimal refundPrice = BigDecimal.ZERO;
+        BigDecimal totRefundPrice = BigDecimal.ZERO;
+
         List<ResaleSalesReport> resultList = query.getResultList();
 
+        List<Order> newList = new ArrayList<Order>();
+        for (ResaleSalesReport item : resultList) {
+            long consumedCount = 0l;
+            newList = Order.find("userId=? and userType=?", item.order.userId, AccountType.RESALER).fetch();
+            for (Order order : newList) {
+                for (ECoupon coupon : order.eCoupons) {
+                    if (coupon.status == ECouponStatus.CONSUMED) {
+                        consumedCount++;
+                        consumedPrice = consumedPrice.add(coupon.salePrice == null ? new BigDecimal(0) : coupon.salePrice);
+                    }
+                }
+            }
+            item.consumedPrice = consumedPrice;
+            item.consumedNumber = consumedCount;
+        }
 
+        //取得分销商退款的金额
+        for (ResaleSalesReport resaleSalesReport : resultList) {
+            sql = "select sum(t.amount) from TradeBill t where t.tradeType='" + TradeType.REFUND + "' and t.orderId=" + resaleSalesReport.order.id;
+            Object obj = JPA.em().createQuery(sql).getSingleResult();
+            BigDecimal price = obj == null ? BigDecimal.ZERO : new BigDecimal(obj.toString());
+            resaleSalesReport.refundNumber = refundCount++;
+            resaleSalesReport.refundPrice = price;
+        }
+
+        return resultList;
+    }
+
+    /**
+     * 消费者和分销商合计
+     *
+     * @param resultList
+     * @return
+     */
+    public static ResaleSalesReport summary(List<ResaleSalesReport> resultList) {
+        if (resultList == null || resultList.size() == 0) {
+            return new ResaleSalesReport(0l, BigDecimal.ZERO, BigDecimal.ZERO, 0l, BigDecimal.ZERO, 0l, BigDecimal.ZERO, BigDecimal.ZERO);
+        }
+        long refundCount = 0l;
+        long consumedCount = 0l;
+        BigDecimal consumedPrice = BigDecimal.ZERO;
+        long buyCount = 0l;
+        BigDecimal amount = BigDecimal.ZERO;
+        BigDecimal refundPrice = BigDecimal.ZERO;
+        BigDecimal totRefundPrice = BigDecimal.ZERO;
+        BigDecimal shouldGetPrice = BigDecimal.ZERO;
+        BigDecimal haveGetPrice = BigDecimal.ZERO;
+        for (ResaleSalesReport item : resultList) {
+            buyCount += item.buyNumber;
+            amount = amount.add(item.salePrice == null ? new BigDecimal(0) : item.salePrice);
+            totRefundPrice = item.refundPrice == null ? new BigDecimal(0) : item.refundPrice;
+            refundPrice = refundPrice.add(totRefundPrice);
+            refundCount += item.refundNumber;
+            consumedCount += item.consumedNumber;
+            consumedPrice = consumedPrice.add(item.consumedPrice);
+            shouldGetPrice = amount.subtract(refundPrice);
+            haveGetPrice = BigDecimal.ZERO;
+        }
+        return new ResaleSalesReport(buyCount, amount, refundPrice, refundCount, consumedPrice, consumedCount, shouldGetPrice, haveGetPrice);
+    }
+
+    /**
+     * 消费者报表统计
+     *
+     * @param condition
+     * @return
+     */
+    public static List<ResaleSalesReport> queryConsumer(ResaleSalesReportCondition condition) {
+        String sql = "select new models.ResaleSalesReport(e.order,sum(e.salePrice),count(e.orderItems.buyNumber)) from ECoupon e ";
+        String groupBy = " group by e.order";
+
+        Query query = JPA.em()
+                .createQuery(sql + condition.getFilter(AccountType.CONSUMER) + groupBy + " order by sum(e.salePrice) desc");
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+
+        List<ResaleSalesReport> resultList = query.getResultList();
+        //取得消费者退款的金额
         for (ResaleSalesReport resaleSalesReport : resultList) {
             sql = "select sum(t.amount) from TradeBill t where t.tradeType='" + TradeType.REFUND + "' and t.orderId=" + resaleSalesReport.order.id;
             Object obj = JPA.em().createQuery(sql).getSingleResult();
             BigDecimal price = obj == null ? BigDecimal.ZERO : new BigDecimal(obj.toString());
             resaleSalesReport.refundPrice = price;
         }
-        return resultList;
-    }
+        long refundCount = 0l;
+        long consumedCount = 0l;
+        BigDecimal consumedPrice = BigDecimal.ZERO;
 
-    public static ResaleSalesReport summary(List<ResaleSalesReport> resultList) {
-        if (resultList == null || resultList.size() == 0) {
-            return new ResaleSalesReport(0l, BigDecimal.ZERO, BigDecimal.ZERO);
-        }
         long buyCount = 0l;
         BigDecimal amount = BigDecimal.ZERO;
         BigDecimal refundPrice = BigDecimal.ZERO;
         BigDecimal totRefundPrice = BigDecimal.ZERO;
+        BigDecimal shouldGetPrice = BigDecimal.ZERO;
+        BigDecimal haveGetPrice = BigDecimal.ZERO;
+        List<ResaleSalesReport> newList = new ArrayList<ResaleSalesReport>();
         for (ResaleSalesReport item : resultList) {
+            for (ECoupon coupon : item.order.eCoupons) {
+                if (coupon.status == ECouponStatus.REFUND) {
+                    refundCount++;
+                    totRefundPrice = item.refundPrice == null ? new BigDecimal(0) : item.refundPrice;
+                    refundPrice = refundPrice.add(totRefundPrice);
+                } else if (coupon.status == ECouponStatus.CONSUMED) {
+                    consumedCount++;
+                    consumedPrice = consumedPrice.add(coupon.salePrice == null ? new BigDecimal(0) : coupon.salePrice);
+                }
+            }
+
             buyCount += item.buyNumber;
             amount = amount.add(item.salePrice);
-            totRefundPrice = item.refundPrice == null ? new BigDecimal(0) : item.refundPrice;
-            refundPrice = refundPrice.add(totRefundPrice);
-
+//            shouldGetPrice = amount.subtract(refundPrice);
+//            haveGetPrice = BigDecimal.ZERO;
         }
-        return new ResaleSalesReport(buyCount, amount, refundPrice);
+
+        newList.add(new ResaleSalesReport(amount, buyCount, refundPrice, refundCount, consumedPrice, consumedCount));
+
+        return newList;
     }
+
 }
