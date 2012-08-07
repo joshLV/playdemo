@@ -85,8 +85,17 @@ public class CmsQuestion extends Model {
         if (goodsType == null){
             goodsType = GoodsType.NORMALGOODS;
         }
-        StringBuilder sql = new StringBuilder("select q from CmsQuestion q where goodsId = :goodsId and goodsType = :goodsType and ( (visible = :visible and reply IS NOT NULL) ");
+
+        StringBuilder sql;
         Map<String, Object> params = new HashMap<>();
+
+        if (goodsType == GoodsType.NORMALGOODS){
+            sql = new StringBuilder("select q from CmsQuestion q where goodsId = :goodsId and ((goodsType = :goodsType) OR (goodsType IS NULL)) and ( (visible = :visible and reply IS NOT NULL) ");
+        }
+        else{
+            sql = new StringBuilder("select q from CmsQuestion q where goodsId = :goodsId and goodsType = :goodsType and ( (visible = :visible and reply IS NOT NULL) ");
+        }
+
         params.put("goodsId", goodsId);
         params.put("goodsType", goodsType);
         params.put("visible", true);
