@@ -1083,8 +1083,9 @@ public class Goods extends Model {
         Long categoryId = CacheHelper.getCache(CacheHelper.getCacheKey(Category.CACHEKEY + goodsId, "GOODS_CATE"), new CacheCallBack<Long>() {
             @Override
             public Long loadData() {
+                Goods g = Goods.findById(goodsId);
                 Long id = 0l;
-                for (Category ca : goods.categories) {
+                for (Category ca : g.categories) {
                     id = ca.id;
                 }
                 return id;
