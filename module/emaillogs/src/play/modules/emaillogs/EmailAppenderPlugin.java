@@ -1,6 +1,7 @@
 package play.modules.emaillogs;
 
 import org.apache.log4j.Appender;
+import org.apache.log4j.AsyncAppender;
 import org.apache.log4j.net.SMTPAppender;
 import play.Logger;
 import play.Play;
@@ -16,10 +17,12 @@ import play.PlayPlugin;
 public class EmailAppenderPlugin extends PlayPlugin{
     @Override
     public void onLoad(){
-        Logger.info("loading EmailAppenderPlugin");
         if(Play.runingInTestMode() || !Play.mode.isProd()){
-            Logger.info("remove log4j appender: EMAIL");
-            org.apache.log4j.Logger.getRootLogger().removeAppender("EMAIL");
+            Appender appender = org.apache.log4j.Logger.getRootLogger().getAppender("EMAIL");
+            if(appender != null) {
+                AsyncAppender asyncAppender = (AsyncAppender) appender;
+                asyncAppender.removeAppender("GMAIL");
+            }
         }
     }
 
@@ -27,6 +30,11 @@ public class EmailAppenderPlugin extends PlayPlugin{
     public void onApplicationStart(){
         Appender appender = org.apache.log4j.Logger.getRootLogger().getAppender("EMAIL");
         if(appender == null) {
+            return;
+        }
+        AsyncAppender asyncAppender = (AsyncAppender) appender;
+        SMTPAppender smtpAppender = (SMTPAppender)asyncAppender.getAppender("GMAIL");
+        if (smtpAppender == null) {
             return;
         }
 
@@ -40,7 +48,7 @@ public class EmailAppenderPlugin extends PlayPlugin{
         String bufferSize = Play.configuration.getProperty("email_log.buffer_size", null);
 
 
-        SMTPAppender smtpAppender = (SMTPAppender) appender;
+
 
         if (applicationName != null || subject != null) {
             String subjectPrefix =  applicationName == null ? "" : ("[" + applicationName + "] ");
