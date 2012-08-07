@@ -6,10 +6,14 @@
     #{layout_operate.labelText name:_name, required:_required/}
 
     <div class="controls">
-        <input type="file" id="${field.id}" name="${field.name}" class="input-file"/><span style="color: red" id="note_${_id?:field.id}">${_note}</span>
+
+        <input type="file" id="${field.id}" name="${field.name}" class="input-file" /><span style="color: red" id="note_${_id?:field.id}">${_note}</span>
     </div>
     #{ifError field.name}
     <div class="controls"><span class="error">${field.error.raw()}</span></div>
     #{/ifError}
 </div>
 #{/field}
+
+*{<input type="file" id="imagePath" name="imagePath" class="input-file">}*
+*{<span style="color: red" id="note_imagePath">图片尺寸：(340*260像素)</span>}*

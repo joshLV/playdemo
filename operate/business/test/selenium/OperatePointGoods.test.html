@@ -1,0 +1,53 @@
+#{fixture delete:[
+models.admin.OperateUser.class,
+models.admin.OperateRole.class,
+models.sales.PointGoods.class,
+models.supplier.Supplier.class],
+load:['fixture/roles.yml','fixture/pointGoods.yml','fixture/supplierusers.yml'] /}
+%{
+
+}%
+
+
+#{selenium '添加商品数据-保存按钮验证 不保存数据'}
+#{include 'test/selenium/step/login.selenium' /}
+open('/pointgoods')
+clickAndWait('link=积分商品添加')
+assertTitle('添加积分商品')
+verifyTextPresent('电子券')
+verifyTextPresent('实物')
+assertText('css=label.radio.inline','电子券')
+
+
+type('id=pointGoods_name','cat10')
+*{click('css=td.WdayOn')}*
+*{click('css=td.WdayOn')}*
+type('id=pointGoods_effectiveAt','2012-08-07')
+type('id=pointGoods_expireAt','2012-08-01')
+type('id=pointGoods_faceValue','100')
+type('id=pointGoods_pointPrice','1000')
+type('id=pointGoods_baseSale','8')
+type('id=pointGoods_limitNumber','10')
+
+clickAndWait('id=save')
+
+*{verifyTextPresent('到期时间必须填写未来的时间!")}*
+clickAndWait('限量要小于或等于库存!');
+clickAndWait('请输入图片!');
+clickAndWait('请输入详情!');
+
+
+*{type('id=goods_effectiveAt','2012-08-07')}*
+*{type('id=goods_expireAt','2012-08-01')}*
+
+*{type('id=pointGoods_baseSale','8')}*
+*{type('id=pointGoods_limitNumber','10')}*
+
+*{runScript('var element= window.document.getElementsByTagName("iframe")[1];')}*
+*{runScript('idocument = element.contentDocument;')}*
+*{runScript('element=idocument.getElementsByTagName("body")[0];')}*
+*{runScript('element.innerHTML  = "this is a test thread";')}*
+*{clickAndWait('id=save')}*
+
+
+#{/selenium}

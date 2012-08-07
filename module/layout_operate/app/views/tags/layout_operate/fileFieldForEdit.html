@@ -1,0 +1,36 @@
+<style>
+
+    .input-file-hidden{position:absolute; z-index:100; margin-left:-180px; font-size:60px;opacity:0;filter:alpha(opacity=0); margin-top:-5px;}
+</style>
+
+
+
+*{文件上传框}*
+*{name:      文本框的名称}*
+*{_required: 文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+#{field _name}
+<div class="control-group">
+    #{layout_operate.labelText name:_name, required:_required/}
+
+    <div class="controls">
+        *{<input type="button" id="${field.id}" name="${field.name}"  class="input-file"  value="请选择新文件"  onclick="javascript:openBrowse();"/>}*
+
+        <input type="button" id="${field.id}-edit" name="${field.name}-edit"  class="input-file" value="请选择新文件" />
+
+
+            <input type="file" id="${field.id}" name="${field.name}" class="input-file-hidden" />
+            <div id="info"> </div>
+        <span style="color: red" id="note_${_id?:field.id}">${_note}</span>
+
+    </div>
+    #{ifError field.name}
+        <div class="controls"><span class="error">${field.error.raw()}</span></div>
+    #{/ifError}
+</div>
+
+
+
+#{/field}
+
+*{<input type="file" id="imagePath" name="imagePath" class="input-file">}*
+*{<span style="color: red" id="note_imagePath">图片尺寸：(340*260像素)</span>}*

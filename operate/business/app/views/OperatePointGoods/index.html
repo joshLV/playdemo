@@ -158,6 +158,10 @@
 
                 &{'pointGoods.'+pointGoods?.getStatus()}
 
+                    #{if models.sales.GoodsStatus.OFFSALE.equals(pointGoods?.getStatus())}
+                        <br/>#{vx.operateLink text:"同意上架", url:"/pointgoods/"+pointGoods?.id+"/onSale",method:"PUT"/}#{/if}
+                    #{if models.sales.GoodsStatus.ONSALE.equals(pointGoods?.getStatus())}
+                        <br/>#{vx.operateLink text:"强制下架", url:"/pointgoods/"+pointGoods?.id+"/offSale",method:"PUT"/}#{/if}
                 </td>
                 <td>
 

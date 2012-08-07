@@ -52,14 +52,12 @@ public class OperatePointGoods extends Controller {
         }
 
 
-      JPAExtPaginator<models.sales.PointGoods> pointGoodsPage = models.sales.PointGoods.findByCondition(condition, pageNumber,
+        JPAExtPaginator<models.sales.PointGoods> pointGoodsPage = models.sales.PointGoods.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
         pointGoodsPage.setBoundaryControlsEnabled(true);
 
 
-
-
-        render(pointGoodsPage,condition);
+        render(pointGoodsPage, condition);
     }
 
 
@@ -103,6 +101,7 @@ public class OperatePointGoods extends Controller {
     @ActiveNavigation("point_goods_add")
     public static void create(@Valid models.sales.PointGoods pointGoods, @Required File imagePath) {
 
+
         checkImageFile(imagePath);
 
         checkExpireAt(pointGoods);
@@ -112,8 +111,8 @@ public class OperatePointGoods extends Controller {
         checkCount(pointGoods);
 
 
-        if(pointGoods.materialType.toString() == models.sales.MaterialType.ELECTRONIC.toString())
-        checkTime(pointGoods);
+        if (pointGoods.materialType.toString() == models.sales.MaterialType.ELECTRONIC.toString())
+            checkTime(pointGoods);
 
 
         if (Validation.hasErrors()) {
@@ -196,7 +195,7 @@ public class OperatePointGoods extends Controller {
      */
 
     private static void preview(Long pointGoodsId, PointGoods pointGoods, File imagePath) {
-       // System.out.println("bbbbbbbbbbbbb>>>>>");
+        // System.out.println("bbbbbbbbbbbbb>>>>>");
         String cacheId = "0";
         try {
             cacheId = pointGoods.preview(pointGoodsId, pointGoods, imagePath, UploadFiles.ROOT_PATH);
@@ -206,15 +205,15 @@ public class OperatePointGoods extends Controller {
         }
 
         cacheId = play.cache.Cache.get(cacheId.toString()).toString();
-        redirect("http://localhost:9003/pointgoods/"+cacheId+"?preview=true");
+        redirect("http://localhost:9003/pointgoods/" + cacheId + "?preview=true");
 
-    // redirect("http://" + WWW_URL + "/goods/" + cacheId + "?preview=true");
+        // redirect("http://" + WWW_URL + "/goods/" + cacheId + "?preview=true");
 
 
     }
 
 
-    private static void checkPointPrice( PointGoods pointGoods) {
+    private static void checkPointPrice(PointGoods pointGoods) {
         if (pointGoods.pointPrice == null) {
             Validation.addError("pointGoods.pointPrice", "validation.required");
         }
@@ -225,7 +224,7 @@ public class OperatePointGoods extends Controller {
 
 
     private static void checkExpireAt(PointGoods pointGoods) {
-        if (pointGoods.effectiveAt != null &&pointGoods.expireAt != null &&pointGoods.expireAt.before(pointGoods.effectiveAt)) {
+        if (pointGoods.effectiveAt != null && pointGoods.expireAt != null && pointGoods.expireAt.before(pointGoods.effectiveAt)) {
             Validation.addError("pointGoods.expireAt", "validation.beforeThanEffectiveAt");
         }
 
@@ -233,7 +232,7 @@ public class OperatePointGoods extends Controller {
     }
 
 
-    private static void checkTime( PointGoods pointGoods) {
+    private static void checkTime(PointGoods pointGoods) {
         if (pointGoods.effectiveAt == null) {
             Validation.addError("pointGoods.effectiveAt", "validation.required");
         }
@@ -243,9 +242,9 @@ public class OperatePointGoods extends Controller {
     }
 
     //限量不能大于库存
-    private static void checkCount( PointGoods pointGoods) {
+    private static void checkCount(PointGoods pointGoods) {
 
-        if (pointGoods.baseSale <=pointGoods.limitNumber) {
+        if (pointGoods.baseSale <= pointGoods.limitNumber) {
             Validation.addError("pointGoods.limitNumber", "validation.largarThanBaseSale");
         }
 
@@ -272,14 +271,15 @@ public class OperatePointGoods extends Controller {
     }
 
 
-
     /**
      * 更新指定商品信息
      */
     public static void update(Long id, @Valid models.sales.PointGoods pointGoods, File imagePath, BigDecimal[] levelPrices,
                               String imageLargePath) {
 
-        //System.out.println("aaaaaaaaaaa>>>aaaa>>>"+pointGoods.name);
+        System.out.println(imagePath+"aaaaaaaaaaa>>>aaaa>>>"+pointGoods.name);
+
+
         checkImageFile(imagePath);
 
         checkExpireAt(pointGoods);
@@ -294,7 +294,7 @@ public class OperatePointGoods extends Controller {
 
             render("OperatePointGoods/edit.html", pointGoods, id);
         }
-       // System.out.println("ccccccccc>"+pointGoods.status);
+        // System.out.println("ccccccccc>"+pointGoods.status);
 
         //预览的情况
         if (GoodsStatus.UNCREATED.equals(pointGoods.status)) {
@@ -307,6 +307,7 @@ public class OperatePointGoods extends Controller {
             PointGoods oldGoods = PointGoods.findById(id);
             String oldImagePath = oldGoods == null ? null : oldGoods.imagePath;
             String image = uploadImagePath(imagePath, id, oldImagePath);
+            System.out.println(">>>>>>>>>>"+image);
             if (StringUtils.isNotEmpty(image)) {
                 pointGoods.imagePath = image;
             }
@@ -328,7 +329,7 @@ public class OperatePointGoods extends Controller {
      * @param ids    积分商品ID
      */
     private static void updateStatus(GoodsStatus status, Long... ids) {
-      //  System.out.println(status + "");
+        //  System.out.println(status + "");
         models.sales.PointGoods.updateStatus(status, ids);
         if (status == GoodsStatus.OFFSALE) {
 //            for (Long id : ids) {
@@ -419,6 +420,17 @@ public class OperatePointGoods extends Controller {
         updateStatus(GoodsStatus.OFFSALE, id);
     }
 
+
+    /**
+     * 取得上传图片名字
+     */
+    public static void imageName(File imagePath) {
+
+        //用于修改内容的时候
+        String imageName = imagePath.getName();
+        renderJSON(imageName);
+
+    }
 
 
 

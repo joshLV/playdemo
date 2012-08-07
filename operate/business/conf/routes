@@ -35,6 +35,7 @@ PUT     /pointgoods/{id}/reject                      OperatePointGoods.reject
 DELETE  /pointgoods/{id}                             OperatePointGoods.delete
 POST    /pointgoods/images                           UploadFiles.uploadJson
 POST    /pointgoods/filemanager                      UploadFiles.fileManagerJson
+GET     /pointgoods/imageName                        OperatePointGoods.imageName
 
 
 
