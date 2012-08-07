@@ -349,24 +349,8 @@ public class OperatePointGoods extends Controller {
     private static void updateStatus(GoodsStatus status, Long... ids) {
         //  System.out.println(status + "");
         models.sales.PointGoods.updateStatus(status, ids);
-        if (status == GoodsStatus.OFFSALE) {
-//            for (Long id : ids) {
-//                models.sales.PointGoods pointGoods = PointGoods.findById(id);
-//
-//                if (supplier != null && StringUtils.isNotEmpty(supplier.email)) {
-//                    //发送提醒邮件
-//                    MailMessage mailMessage = new MailMessage();
-//                    mailMessage.addRecipient(supplier.email);
-//                    mailMessage.setSubject(Play.mode.isProd() ? "商品下架" : "商品下架【测试】");
-//                    mailMessage.putParam("date", DateUtil.getNowTime());
-//                    mailMessage.putParam("supplierName", supplier.fullName);
-//                    mailMessage.putParam("goodsName", goods.name);
-//                    mailMessage.putParam("faceValue", goods.faceValue);
-//                    mailMessage.putParam("operateUserName", OperateRbac.currentUser().userName);
-//                    MailUtil.sendGoodsOffSalesMail(mailMessage);
-//                }
-//            }
-        }
+
+
         index(null);
     }
 
