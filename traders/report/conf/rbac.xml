@@ -19,5 +19,12 @@
             <navigation key="shops_report" action="SupplierReports.showShopReport" text="门店报表"
                         permissions="SHOP_REPORT"/>
         </navigation>
+
+        <navigation key="sales_report_app" text="销售报表">
+            <navigation key="supplier_sales_ratios_reports" action="SupplierTotalSalesReports.ratios" text="商户销售汇总报表"
+                        permissions="REPORT"/>
+            <navigation key="supplier_sales_trends_reports" action="SupplierTotalSalesReports.trends" text="商户销售趋势报表"
+                        permissions="REPORT"/>
+        </navigation>        
     </navigation>
 </application>

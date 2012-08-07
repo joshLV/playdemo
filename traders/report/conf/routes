@@ -10,6 +10,13 @@ GET     /reports/total                          SupplierReports.showTotalReport
 GET     /reports/shop                           SupplierReports.showShopReport
 GET     /reports/goods                          SupplierReports.showGoodsReport
 
+
+
+# 商户销售汇总表
+GET     /totalsales/trends                      SupplierTotalSalesReports.trends
+GET     /totalsales/ratios                      SupplierTotalSalesReports.ratios
+GET     /totalsales/list                        SupplierTotalSalesReports.list
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

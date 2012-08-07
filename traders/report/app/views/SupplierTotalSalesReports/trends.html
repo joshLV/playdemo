@@ -1,4 +1,4 @@
-#{extends 'layout_operate/layout.html' /}
+#{extends 'layout_trader/layout.html' /}
 #{set title:'商户销售趋势报表' /}
 #{include '/share/nav.html' /}
 
@@ -6,7 +6,7 @@
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript" charset="utf-8">
     $(function () {
-        $("#supplierId,#goodsId,#shopId,#ctype").change(function() {
+        $("#goodsId,#shopId,#ctype").change(function() {
             $("#search_form").submit();
         });
         $("[start]").each(function () {
@@ -87,20 +87,13 @@
 </style>
 #{/set}
 
-<form class="well form-inline" action="@{TotalSalesReports.trends()}" method="GET" id="search_form"
+<form class="well form-inline" action="@{SupplierTotalSalesReports.trends()}" method="GET" id="search_form"
       name="search_form">
   <div class="form-inline">
     报表类型：
     #{select 'condition.type', id:"ctype", class:'select', value:condition?.type}
-        #{option "0"}汇总报表#{/option}
         #{option "1"}门店报表#{/option}
         #{option "2"}商品报表#{/option}
-    #{/select}      
-    #{select 'condition.supplierId', id:"supplierId", class:'select', value:condition?.supplierId}
-        #{option ""}请选择商户#{/option}
-        #{list items:suppliers, as:'supplier'}
-            #{option supplier?.id}${supplier?.fullName}#{/option}
-        #{/list}
     #{/select}
     #{if shops != null && condition?.type != 0 && condition?.type == 1 }
     #{select 'condition.shopId', id:"shopId", class:'select', value:condition?.shopId}
@@ -164,17 +157,17 @@
                 <td>${report?.checkedOn}</td>
                 <td>${report?.key}</td>
                 <td class="amount">
-                  <a href="@{TotalSalesReports.list()}?condition.type=${condition.type}&condition.supplierId=${condition.supplierId}&condition.goodsId=${condition.goodsId}&condition.shopId=${condition.shopId}&condition.beginAt=${report?.checkedOn}&condition.endAt=${report?.checkedOn}" target="_blank">
+                  <a href="@{SupplierTotalSalesReports.list()}?condition.type=${condition.type}&condition.supplierId=${condition.supplierId}&condition.goodsId=${condition.goodsId}&condition.shopId=${condition.shopId}&condition.beginAt=${report?.checkedOn}&condition.endAt=${report?.checkedOn}" target="_blank">
                     ${report?.checkedCount}
                   </a>
                 </td>
                 <td class="amount">
-                  <a href="@{TotalSalesReports.list()}?condition.type=${condition.type}&condition.supplierId=${condition.supplierId}&condition.goodsId=${condition.goodsId}&condition.shopId=${condition.shopId}&condition.beginAt=${report?.checkedOn}&condition.endAt=${report?.checkedOn}" target="_blank">
+                  <a href="@{SupplierTotalSalesReports.list()}?condition.type=${condition.type}&condition.supplierId=${condition.supplierId}&condition.goodsId=${condition.goodsId}&condition.shopId=${condition.shopId}&condition.beginAt=${report?.checkedOn}&condition.endAt=${report?.checkedOn}" target="_blank">
                     ${report?.sumFaceValue?.formatCurrency('CNY')}
                   </a>
                 </td>
                 <td class="amount">
-                  <a href="@{TotalSalesReports.list()}?condition.type=${condition.type}&condition.supplierId=${condition.supplierId}&condition.goodsId=${condition.goodsId}&condition.shopId=${condition.shopId}&condition.beginAt=${report?.checkedOn}&condition.endAt=${report?.checkedOn}" target="_blank">
+                  <a href="@{SupplierTotalSalesReports.list()}?condition.type=${condition.type}&condition.supplierId=${condition.supplierId}&condition.goodsId=${condition.goodsId}&condition.shopId=${condition.shopId}&condition.beginAt=${report?.checkedOn}&condition.endAt=${report?.checkedOn}" target="_blank">
                     ${report?.sumAmount?.formatCurrency('CNY')}
                   </a>
                 </td>
