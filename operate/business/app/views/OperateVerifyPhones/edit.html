@@ -2,6 +2,7 @@
 #{include '/share/nav.html' /}
 
 #{set title:'修改电话验证机' /}
+
 #{set 'moreStyles'}
     <style type="text/css">
         .controls{
@@ -13,8 +14,8 @@
 
 
 
-    #{form @OperateVerifyPhones.update() , id:'operForm',class:"form-horizontal" }
-     <legend>修改电话验证机</legend>
+#{form @OperateVerifyPhones.update() , id:'operForm',class:"form-horizontal" }
+    <legend>修改电话验证机</legend>
     <div class="control-group">
         <label class="control-label">商户</label>
         <div class="controls">
@@ -30,15 +31,31 @@
       </div>
      </div>
 
-    <div class="control-group">
-        <label class="control-label">门店</label>
-        <div class="controls">
-            <span class="input-large">${supplierUser?.shop?.name}</span>
+    #{if shopList?.size()>0}
+        <div class="control-group">
+            <label class="control-label">门店</label>
+            <div class="controls">
+                #{select 'shopId', id:shopId, class:'span2', value:supplierUser?.shop?.id}
+                #{list items:shopList, as:'shop'}
+                    #{option shop?.id}${shop?.name}#{/option}
+                #{/list}
+                #{/select}
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span class="error">#{error 'supplierUser.shop' /}</span>
+            </div>
         </div>
-    </div>
-     <div class="form-actions">
-         <input type="hidden" name="id" value="${supplierUser?.id}"/>
-      <button class="btn btn-primary" id="save" type="submit">保 存</button>
-     </div>
-    #{/form}
+         <div class="form-actions">
+             <input type="hidden" name="id" value="${supplierUser?.id}"/>
+          <button class="btn btn-primary" id="save" type="submit">保 存</button>
+         </div>
+    #{/if}
+    #{else}
+        <div class="control-group">
+            <label class="control-label">门店</label>
+            <div class="controls">
+                没有门店，请先添加门店
+            </div>
+        </div>
+    #{/else}
+#{/form}
 

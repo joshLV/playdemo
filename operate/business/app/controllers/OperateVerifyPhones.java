@@ -12,6 +12,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -109,7 +110,8 @@ public class OperateVerifyPhones extends Controller {
      */
     public static void edit(Long id) {
         SupplierUser supplierUser = SupplierUser.findById(id);
-        render(supplierUser);
+        List<Shop> shopList = Shop.findShopBySupplier(supplierUser.supplier.id);
+        render(supplierUser, shopList);
     }
 
     /**
@@ -118,7 +120,7 @@ public class OperateVerifyPhones extends Controller {
      * @param id           ID
      * @param loginName    电话号码
      */
-    public static void update(Long id, String loginName) {
+    public static void update(Long id, String loginName, Long shopId) {
         SupplierUser  supplierUser = SupplierUser.findById(id);
         if (supplierUser == null) {
             Validation.addError("supplierUser.loginName", "该记录不存在");
@@ -133,10 +135,24 @@ public class OperateVerifyPhones extends Controller {
             }
             supplierUser.loginName = loginName;
         }
+        Shop shop = Shop.findById(shopId);
+        if (shop == null) {
+            Validation.addError("supplierUser.shop", "无效的门店");
+        }else {
+            if (supplierUser!= null && shop.supplierId != supplierUser.supplier.id ){
+                Validation.addError("supplierUser.shop", "无效的门店");
+            }
+        }
+
         if (Validation.hasErrors()) {
-            render("OperateVerifyPhones/edit.html", supplierUser);
+            List<Shop> shopList = new ArrayList<>();
+            if (supplierUser != null) {
+                shopList = Shop.findShopBySupplier(supplierUser.supplier.id);
+            }
+            render("OperateVerifyPhones/edit.html", supplierUser, shopList);
         }
         // 更新用户信息
+        supplierUser.shop = shop;
         supplierUser.save();
         index(null);
     }

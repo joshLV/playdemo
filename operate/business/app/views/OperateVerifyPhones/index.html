@@ -28,6 +28,7 @@
    <thead>
     <tr>
      <th>商户</th>
+     <th>门店</th>
      <th>电话号码</th>
      <th>创建时间</th>
      <th>操 作</th>
@@ -39,6 +40,7 @@
     #{paginate.list items:supplierUsersPage, as:'row'}
     <tr>
      <td>${row?.supplier?.fullName}</td>
+     <td>${row?.shop?.name}</td>
      <td>${row.loginName}</td>
      <td>${row.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
      <td>
