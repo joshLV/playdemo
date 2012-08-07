@@ -16,10 +16,17 @@
                 if($("#pointGoods_materialType_2").is(":checked")){
                     $("#required_star_pointGoods_effective").hide();
                 }
+
+
             }
             $("#pointGoods_materialType_1").click(checkedFuc);
             $("#pointGoods_materialType_2").click(checkedFuc);
+
+
         });
+
+
+
     </script>
     #{/set}
     #{layout_operate.radioField name:'pointGoods.materialType',
@@ -51,11 +58,17 @@
         #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)', required:true/}
     #{/if}
     #{else}
-        #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)'/}
-    <div class="control-group">
-        <label for='levelPrices_${level}' class="control-label"> </label>
+       #{layout_operate.fileFieldForEdit name:'imagePath',note:'图片尺寸：(340*260像素)',  required:true/}
 
-        <div class="controls">(修改前)<br/><img src="${imageLargePath}"/>
+
+
+    <div class="control-group">
+        *{<label for='levelPrices_${level}' class="control-label"> </label>}*
+
+
+        <div class="controls" id="editTime">(修改前) <br/>  </div>
+    <div class="controls">
+    <img id="imgPath" src="${imageLargePath}"/>
             <input type="hidden" name="imageLargePath" value="${imageLargePath}"></div>
     </div>
     #{/else}
@@ -109,10 +122,7 @@
             showAddedPrice();
         })
 
-            #{if "edit".equals(action)}
-                $("#selectAll").click();
-            #{/if}
-        });
+
     });
 
     function limitMoneyFormat(obj, value) {
