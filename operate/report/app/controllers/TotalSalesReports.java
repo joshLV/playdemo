@@ -28,8 +28,8 @@ public class TotalSalesReports extends Controller {
         condition = initData(condition);
         int pageNumber = getPageNumber();
         
-        if (condition.needQuery()) {
-            List<TotalSalesReport> totalSales = TotalSalesReport.query(condition);
+        if (condition.needQueryTrends()) {
+            List<TotalSalesReport> totalSales = TotalSalesReport.queryTrends(condition);
             renderArgs.put("totalSales", totalSales);
         
             ValuePaginator<TotalSalesReport> reportPage = PaginateUtil.wrapValuePaginator(totalSales, pageNumber, PAGE_SIZE);
@@ -46,7 +46,19 @@ public class TotalSalesReports extends Controller {
      */
     @ActiveNavigation("supplier_sales_ratios_reports")
     public static void ratios(TotalSalesCondition condition) {
-        initData(condition);
+        condition = initData(condition);
+        int pageNumber = getPageNumber();
+        
+        if (condition.needQueryRatios()) {
+            List<TotalSalesReport> totalSales = TotalSalesReport.queryRatios(condition);
+            renderArgs.put("totalSales", totalSales);
+        
+            ValuePaginator<TotalSalesReport> reportPage = PaginateUtil.wrapValuePaginator(totalSales, pageNumber, PAGE_SIZE);
+            TotalSalesReport summary = TotalSalesReport.summary(totalSales);
+            
+            render(reportPage, summary, condition);      
+        }
+        render();        
     }
     
     /**
@@ -56,7 +68,7 @@ public class TotalSalesReports extends Controller {
     public static void list(TotalSalesCondition condition) {
         condition = initData(condition);
 
-        if (condition.needQuery()) {
+        if (condition.needQueryTrends()) {
             List<ECoupon> ecoupons = TotalSalesReport.queryList(condition);
             renderArgs.put("ecoupons", ecoupons);
             TotalSalesReport summary = TotalSalesReport.summaryList(ecoupons);

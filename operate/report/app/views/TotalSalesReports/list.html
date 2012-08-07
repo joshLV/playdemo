@@ -54,8 +54,6 @@
         <th width="8px">手机</th>
         <th width="8px">券号</th>
         <th width="90px">商品名称</th>
-        <th width="30px">面值</th>
-        <th width="30px">单价</th>
         <th width="50px">消费门店</th>
         <th width="30px">有效期</th>
         <th width="50px">消费时间</th>
@@ -63,6 +61,8 @@
         <th width="60px">代理验证员</th>
         <th width="40px">验证方式</th>
         <th width="20px">状态</th>
+        <th width="30px">面值</th>
+        <th width="30px">售价</th>
     </tr>
     </thead>
 
@@ -73,8 +73,6 @@
          <td>${coupon?.orderItems?.phone}</td>
         <td>${coupon?.getMaskedEcouponSn()}</td>
         <td>${coupon?.goods?.name}</td>
-        <td class="amount">${coupon?.faceValue?.formatCurrency('CNY')}</td>
-        <td class="amount">${coupon?.salePrice?.formatCurrency('CNY')}</td>
         <td>${coupon?.getConsumedShop()}</td>
         <td>${coupon?.goods?.effectiveAt ?.format()} /
         ${coupon?.goods?.expireAt?.format()}</td>
@@ -84,17 +82,18 @@
         <td>${coupon?.operateUserName}</td>
         <td>&{'coupon.'+coupon?.verifyType}</td>
         <td>&{'coupon.'+coupon?.status}</td>
+        <td class="amount">${coupon?.faceValue?.formatCurrency('CNY')}</td>
+        <td class="amount">${coupon?.salePrice?.formatCurrency('CNY')}</td>
     </tr>
     #{/list}
     </tbody>
     <tfoot>
         <tr>
             <td colspan="2" class="amount">汇总</td>
-            <td class="amount">${summary?.checkedCount}</td>
-            <td></td>
+            <td class="amount">${summary?.checkedCount}张</td>
+            <td colspan="8"></td>
             <td class="amount">${summary?.sumFaceValue?.formatCurrency('CNY')}</td>
             <td class="amount">${summary?.sumAmount?.formatCurrency('CNY')}</td>
-            <td colspan="7"></td>
         </tr>
     </tfoot>
 </table>

@@ -106,6 +106,20 @@ public class TotalSalesCondition {
         return "e.goods.supplierId";
     }
 
+    public String getKeyIdColumn() {
+        switch(type) {
+            case BY_SUPPLIER:
+                return "e.goods.supplierId";
+            case BY_SHOP:
+                return "e.shop.id";
+            case BY_GOODS:
+                return "e.goods.id";
+            case BY_VERIFY_TYPE:
+                return "e.verifyType";
+        }
+        return "e.goods.supplierId";
+    }
+    
     public String getGroupBy() {
         StringBuilder sb = new StringBuilder();
         switch(type) {
@@ -122,7 +136,7 @@ public class TotalSalesCondition {
     }
     
 
-    public boolean needQuery() {
+    public boolean needQueryTrends() {
         switch(type) {
             case BY_SUPPLIER:
                 return supplierId != null && supplierId > 0l;
@@ -134,4 +148,15 @@ public class TotalSalesCondition {
         return false;
     }
     
+    public boolean needQueryRatios() {
+        switch(type) {
+            case BY_SUPPLIER:
+                return true;
+            case BY_SHOP:
+                return supplierId != null && supplierId > 0l;
+            case BY_GOODS:
+                return supplierId != null && supplierId > 0l;
+        }
+        return false;
+    }
 }
