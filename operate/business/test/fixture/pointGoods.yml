@@ -1,10 +1,10 @@
-sales.PointGoods(Goods1):
+sales.PointGoods(PointGoods1):
  no: 001
  name: 测试积分商品1
  imagePath: /0/0/114/origin.jpg
  effectiveAt: 2012-02-28
  expiredAt: 2012-02-29
- faceValue: 200
+ faceValue: 2000
  pointPrice: 10
  details: test
  baseSale: 10
@@ -13,7 +13,7 @@ sales.PointGoods(Goods1):
  limitNumber: 5
  materialType: ELECTRONIC
 
-sales.PointGoods(Goods2):
+sales.PointGoods(PointGoods2):
  no: 002
  name: 测试积分商品2
  imagePath: /0/0/112/cat.jpg

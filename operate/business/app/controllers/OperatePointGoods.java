@@ -262,7 +262,6 @@ public class OperatePointGoods extends Controller {
             Validation.addError("pointGoods.baseSale", "validation.required");
 
 
-
        else if ( pointGoods.limitNumber!=null && pointGoods.baseSale <= pointGoods.limitNumber)
             Validation.addError("pointGoods.limitNumber", "validation.largarThanBaseSale");
 
