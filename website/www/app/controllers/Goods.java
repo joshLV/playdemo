@@ -7,6 +7,7 @@ import java.util.List;
 import models.cms.Block;
 import models.cms.BlockType;
 import models.cms.CmsQuestion;
+import models.cms.GoodsType;
 import models.consumer.User;
 import models.order.Cart;
 import models.order.Order;
@@ -339,7 +340,7 @@ public class Goods extends Controller {
                     @Override
                     public List<CmsQuestion> loadData() {
                         return CmsQuestion.findOnGoodsShow(userId, cookieValue,
-                                id, 0, 10);
+                                id, GoodsType.NORMALGOODS, 0, 10);
                     }
                 });
         renderArgs.put("questions", questions);
