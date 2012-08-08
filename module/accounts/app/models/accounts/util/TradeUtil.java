@@ -238,7 +238,7 @@ public class TradeUtil {
      * @param orderId 关联的订单号
      * @return  退款交易
      */
-    public static TradeBill createRefundTrade(Account account, BigDecimal amount, Long orderId){
+    public static TradeBill createRefundTrade(Account account, BigDecimal amount, Long orderId, String eCouponSn){
         if(account == null){
             throw new IllegalArgumentException("error while create refund trade: invalid account");
         }
@@ -257,6 +257,7 @@ public class TradeUtil {
         tradeBill.uncashPaymentAmount   = BigDecimal.ZERO;                          //不使用不可提现余额支付
         tradeBill.tradeType             = TradeType.REFUND;                         //交易类型为退款
         tradeBill.orderId               = orderId;                                  //冗余订单ID
+        tradeBill.eCouponSn             = eCouponSn;                                //冗余券编号
         tradeBill.amount = tradeBill.balancePaymentAmount
                 .add(tradeBill.ebankPaymentAmount)
                 .add(tradeBill.uncashPaymentAmount);
