@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.List;
+import java.util.Map;
 import models.order.ECoupon;
 import models.sales.Goods;
 import models.sales.Shop;
@@ -35,6 +36,10 @@ public class TotalSalesReports extends Controller {
             ValuePaginator<TotalSalesReport> reportPage = PaginateUtil.wrapValuePaginator(totalSales, pageNumber, PAGE_SIZE);
             TotalSalesReport summary = TotalSalesReport.summary(totalSales);
             
+            List<String> dateList = TotalSalesReport.generateDateList(condition);
+            Map<String, List<TotalSalesReport>> chartsMap = TotalSalesReport.mapTrendsCharts(totalSales, dateList);
+            renderArgs.put("dateList", dateList);
+            renderArgs.put("chartsMap", chartsMap);
             render(reportPage, summary, condition);      
         }
         render();

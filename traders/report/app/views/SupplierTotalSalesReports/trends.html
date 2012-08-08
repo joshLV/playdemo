@@ -173,6 +173,20 @@
                 </td>
             </tr>
         #{/paginate.list}
+            <tfoot>
+                <tr>
+                    <td colspan="2" class="amount">汇总</td>
+                    <td class="amount">
+                        ${summary?.checkedCount}
+                    </td>
+                    <td class="amount">
+                        ${summary?.sumFaceValue?.formatCurrency('CNY')}
+                    </td>
+                    <td class="amount">
+                        ${summary?.sumOriginValue?.formatCurrency('CNY')}
+                    </td>
+                </tr>            
+            </tfoot>     
         </table>
         #{if reportPage?.getPageCount() > 1}
         <div class="pagination">
