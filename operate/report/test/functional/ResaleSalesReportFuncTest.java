@@ -100,7 +100,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
         long id2 = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_002");
         ECoupon eCoupon2 = ECoupon.findById(id2);
 
-        Http.Response response = GET("/resale/sales?condition.accountType=null&condition.createdAtBegin=2012-02-01&condition.createdAtEnd=2012-08-01&condition.interval=");
+        Http.Response response = GET("/reports/resale?condition.accountType=null&condition.createdAtBegin=2012-02-01&condition.createdAtEnd=2012-08-01&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
@@ -109,7 +109,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
 
     @Test
     public void testSearchWithRightConditionConsumer() {
-        Http.Response response = GET("/resale/sales?condition.accountType=CONSUMER&condition.createdAtBegin=2012-02-01&condition.createdAtEnd=2012-08-01&condition.interval=");
+        Http.Response response = GET("/reports/resale?condition.accountType=CONSUMER&condition.createdAtBegin=2012-02-01&condition.createdAtEnd=2012-08-01&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
@@ -118,7 +118,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
 
     @Test
     public void testSearchWithRightConditionResaler() {
-        Http.Response response = GET("/resale/sales?condition.accountType=RESALER&" +
+        Http.Response response = GET("/reports/resale?condition.accountType=RESALER&" +
                 "condition.createdAtBegin=" + DateUtil.getBeginOfDay() + "&condition.createdAtEnd=" + DateUtil.getEndOfDay(new Date()) + "&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
@@ -128,7 +128,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
 
     @Test
     public void testSearchWithError() {
-        Http.Response response = GET("/resale/sales?condition.accountType=null&condition.createdAtBegin=2012-06-06&condition.createdAtEnd=2012-06-03&condition.interval=");
+        Http.Response response = GET("/reports/resale?condition.accountType=null&condition.createdAtBegin=2012-06-06&condition.createdAtEnd=2012-06-03&condition.interval=");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
