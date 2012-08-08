@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import models.sales.MaterialType;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import com.uhuila.common.util.DateUtil;
@@ -19,10 +21,10 @@ public class SalesOrderItemReportCondition implements Serializable {
     public String shopLike;
     public String goodsLike;
     public String supplierLike;
-
+    public MaterialType materialType;
     public Supplier supplier;
     public Date createdAtBegin = DateUtil.getBeginOfDay();
-    public Date createdAtEnd = DateUtil.getEndOfDay(new Date());        
+    public Date createdAtEnd = DateUtil.getEndOfDay(new Date());
     public String orderBy = "r.createdAt";
     public String orderByType = "DESC";
     public String interval = "0d";
@@ -43,9 +45,12 @@ public class SalesOrderItemReportCondition implements Serializable {
         if (supplier != null && supplier.id != 0) {
             condBuilder.append(" and s = :supplier");
             paramMap.put("supplier", supplier);
-            System.out.println("supplier.id:" + supplier.id);
         }
-        
+
+        if (materialType != null) {
+            condBuilder.append(" and r.goods.materialType = :materialType");
+            paramMap.put("materialType", materialType);
+        }
         if (StringUtils.isNotBlank(goodsLike)) {
             condBuilder.append(" and r.goods.name like :goodsLike");
             paramMap.put("goodsLike", "%" + goodsLike + "%");
@@ -55,7 +60,7 @@ public class SalesOrderItemReportCondition implements Serializable {
             condBuilder.append(" and r.shop.name like :shopLike");
             paramMap.put("shopLike", "%" + shopLike + "%");
         }
-        
+
         if (StringUtils.isNotBlank(supplierLike)) {
             condBuilder.append(" and s.fullName like :supplierLike");
             paramMap.put("supplierLike", "%" + supplierLike + "%");

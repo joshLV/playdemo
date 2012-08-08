@@ -136,7 +136,7 @@
     <th width="78px">类型</th>
     <th width="78px">单价</th>
     <th width="50px">数量</th>
-    <th width="50px">总退款金额</th>
+    <th width="50px">退款金额</th>
     </thead>
 #{set i:0/}
 #{paginate.list items:reportPage, as:'report'}
@@ -144,7 +144,8 @@
         #{set i:i+1/}
         <td>${(reportPage.pageNumber-1)*reportPage.pageSize+i}</td>
         <td>${report.supplierName}</td>
-        <td>${report.goods.name}</td>
+        <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${report?.goods?.id}"
+               target="_blank"><img src="${report?.goods?.imageTinyPath}"/>${report?.goods?.name}</a></td>
         <td>&{'goods.'+report?.goods?.materialType}</td>
         <td>${report?.salePrice?.formatCurrency('CNY')}</td>
         <td>${report?.buyNumber}</td>
