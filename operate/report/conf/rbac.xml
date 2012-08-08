@@ -19,6 +19,7 @@
                         permission="SALES_TAX_REPORT"/>
             <navigation key="payment_reports" action="PaymentReports.index" text="支付渠道报表"
                         permissions="PAYMENT_REPORT"/>
+
         </navigation>
         <navigation key="web_report_app" text="网站运营">
             <navigation key="web_referer_reort" action="WebTrackReports.referers" text="外链转化"
@@ -32,6 +33,8 @@
             <navigation key="supplier_sales_ratios_reports" action="TotalSalesReports.ratios" text="商户销售汇总报表"
                         permissions="SALES_REPORT"/>
             <navigation key="supplier_sales_trends_reports" action="TotalSalesReports.trends" text="商户销售趋势报表"
+                        permissions="SALES_REPORT"/>
+            <navigation key="refund_reports" action="RefundReports.index" text="退款报表"
                         permissions="SALES_REPORT"/>
         </navigation>
     </navigation>

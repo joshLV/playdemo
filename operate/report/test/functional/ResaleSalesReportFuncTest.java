@@ -73,13 +73,11 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
         Order order = Order.findById(id);
         order.userId = resalerId;
         order.userType = AccountType.RESALER;
-        order.save();
-        id = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_001");
-        ECoupon coupon = ECoupon.findById(id);
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DATE, calendar.get(Calendar.DATE));
-        coupon.createdAt = calendar.getTime();
-        coupon.save();
+        order.paidAt = calendar.getTime();
+        order.save();
+
     }
 
     @After

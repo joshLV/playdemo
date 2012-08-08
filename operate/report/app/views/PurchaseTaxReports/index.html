@@ -91,7 +91,7 @@
     #{select 'condition.supplier.id', id:supplierId, class:'select', value:condition?.supplier?.id}
         #{option "0"}不限#{/option}
         #{list items:supplierList, as:'supplier'}
-            #{option supplier?.id}${supplier?.fullName}#{/option}
+            #{option supplier?.id}${supplier?.otherName}#{/option}
         #{/list}
     #{/select}
     商品名称：<input type="text" name="condition.goodsLike" class="input-medium"
