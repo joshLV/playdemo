@@ -22,6 +22,7 @@ require:
     - sms -> sms
     - accounts -> accounts
     - cache_helper -> cache_helper
+    - asset_package -> asset_package
     - emaillogs -> emaillogs
 
 repositories:
@@ -54,6 +55,6 @@ repositories:
             - resale -> *
             - sms -> *
             - accounts -> *
+            - asset_package -> *
             - cache_helper -> *
             - emaillogs -> *
-

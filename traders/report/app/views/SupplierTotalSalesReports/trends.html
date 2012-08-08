@@ -3,6 +3,7 @@
 #{include '/share/nav.html' /}
 
 #{set 'moreScripts'}
+#{asset.js src:['/charts/highcharts.js', '/charts/modules/exporting.js'] /}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript" charset="utf-8">
     $(function () {
@@ -39,6 +40,57 @@
                 return false;
             });
         });
+#{if chartsMap?.size() > 0}
+var chart;
+$(document).ready(function() {
+	chart = new Highcharts.Chart({
+		chart: { renderTo: 'chart1', type: 'line'},
+		title: {
+			text: '券消费趋势图'
+		},
+		subtitle: {
+			text: '2012年'
+		},
+		xAxis: {
+			categories: [#{list items:dateList, as:'d'}'${d}'${d_isLast ? '' : ','} #{/list}]
+		},
+		yAxis: {
+			title: {
+				text: '金额(元)'
+			},
+			min: 0
+		},
+		tooltip: {
+			enabled: true,
+			formatter: function() {
+				return '<b>'+ this.series.name +'</b><br/>'+
+					this.x +': '+ this.y +'元';
+			}
+		},
+		plotOptions: {
+			line: {
+				dataLabels: {
+					enabled: true
+				},
+				enableMouseTracking: true
+			}
+		},
+		series: [
+       #{list items:chartsMap.keySet(), as:'key'}
+                  {
+                    name: '${key}面值',
+                    data: [#{list items:chartsMap.get(key), as:'item'}${item.sumFaceValue}${item_isLast ? '' : ','} #{/list}]
+                  }, 
+                  {
+                    name: '${key}收款',
+                    data: [#{list items:chartsMap.get(key), as:'item'}${item.sumOriginValue}${item_isLast ? '' : ','} #{/list}]
+                  }${key_isLast ? '' : ','}                 
+       #{/list}		
+		]
+	});
+});
+
+#{/if}
 
     });
 </script>
@@ -197,9 +249,7 @@
         #{/if}        
       </div>
       <div class="tab-pane" id="tab2">
-        <div class="alert alert-success">
-            <span>此处放图</span>
-        </div>      
+        <div id="chart1" class="span12" style="height: 500px"></div>
       </div>
     </div>
 </div>

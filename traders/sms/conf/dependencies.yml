@@ -14,6 +14,7 @@ require:
     - consumer -> consumer
     - paginate_ext -> paginate_ext
     - sales -> sales
+    - asset_package -> asset_package
     - supplier -> supplier
     - resale -> resale
     - accounts -> accounts
@@ -55,4 +56,5 @@ repositories:
             - view_ext -> *
             - cms -> *
             - emaillogs -> *
+            - asset_package -> *
             - cache_helper -> *

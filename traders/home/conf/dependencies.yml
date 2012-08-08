@@ -20,6 +20,7 @@ require:
     - supplier -> supplier
     - resale -> resale
     - supplier_rbac -> supplier_rbac
+    - asset_package -> asset_package
     - org.jsoup -> jsoup 1.6.1
     - view_ext -> view_ext
     - cache_helper -> cache_helper
@@ -56,6 +57,6 @@ repositories:
             - order -> *
             - consumer -> *
             - sms -> *
+            - asset_package -> *
             - cms -> *
             - emaillogs -> *
-

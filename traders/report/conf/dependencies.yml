@@ -20,6 +20,7 @@ require:
     - supplier_rbac -> supplier_rbac
     - consumer -> consumer
     - order -> order
+    - asset_package -> asset_package
     - accounts -> accounts
     - report -> report
     - sms -> sms
@@ -59,6 +60,7 @@ repositories:
             - accounts -> *
             - report -> *
             - sms -> *
+            - asset_package -> *
             - cms -> *
             - cache_helper -> *
             - emaillogs -> *

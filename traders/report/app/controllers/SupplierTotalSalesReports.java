@@ -1,10 +1,10 @@
 package controllers;
 
 import java.util.List;
+import java.util.Map;
 import models.order.ECoupon;
 import models.sales.Goods;
 import models.sales.Shop;
-import models.supplier.Supplier;
 import models.totalsales.TotalSalesCondition;
 import models.totalsales.TotalSalesReport;
 import navigation.annotations.ActiveNavigation;
@@ -31,9 +31,14 @@ public class SupplierTotalSalesReports extends Controller {
         if (condition.needQueryTrends()) {
             List<TotalSalesReport> totalSales = TotalSalesReport.queryTrends(condition);
             renderArgs.put("totalSales", totalSales);
-        
+                    
             ValuePaginator<TotalSalesReport> reportPage = PaginateUtil.wrapValuePaginator(totalSales, pageNumber, PAGE_SIZE);
             TotalSalesReport summary = TotalSalesReport.summary(totalSales);
+            
+            List<String> dateList = TotalSalesReport.generateDateList(condition);
+            Map<String, List<TotalSalesReport>> chartsMap = TotalSalesReport.mapTrendsCharts(totalSales, dateList);
+            renderArgs.put("dateList", dateList);
+            renderArgs.put("chartsMap", chartsMap);
             
             render(reportPage, summary, condition);      
         }

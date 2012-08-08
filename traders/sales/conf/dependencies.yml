@@ -17,6 +17,7 @@ require:
     - paginate_ext -> paginate_ext
     - org.jsoup -> jsoup 1.6.1
     - supplier_rbac -> supplier_rbac
+    - asset_package -> asset_package
     - resale -> resale
     - consumer -> consumer
     - order -> order
@@ -58,5 +59,6 @@ repositories:
             - accounts -> *
             - sms -> *
             - cms -> *
+            - asset_package -> *
             - emaillogs -> *
             - cache_helper -> *
