@@ -34,7 +34,7 @@ $(function () {
             alert("请至少选择一条数据！");
         } else {
             if (confirm("您确定要删除吗？")) {
-                var url = "/pointgoods/"+checkedgoods.join(",")+"?x-http-method-override=DELETE";
+                var url = "/pointgoods/"+checkedGoods.join(",")+"?x-http-method-override=DELETE";
                 $("#deletefrm").attr("method","POST") ;
                 $("#deletefrm").attr("action",url) ;
                 $("#deletefrm").submit();

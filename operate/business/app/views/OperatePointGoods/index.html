@@ -172,7 +172,7 @@
                     #{/if}
                     #{if !models.sales.GoodsStatus.ONSALE.equals(pointGoods.status) && !models.sales.GoodsStatus.APPLY
                     .equals(pointGoods.status)}
-                        / #{vx.deleteLink action:"pointGoods", id:pointGoods.id, name:pointGoods.name/}
+                        / #{vx.deleteLink action:"pointgoods", id:pointGoods.id, name:pointGoods.name/}
                     #{/if}
 
             </tr>

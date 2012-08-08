@@ -43,3 +43,35 @@ sales.PointGoods(PointGoods3):
  deleted: UN_DELETED
  limitNumber: 5
  materialType: ELECTRONIC
+
+
+
+ sales.PointGoods(PointGoods4):
+  no: 004
+  name: 测试积分商品4
+  imagePath: /0/0/112/cat.jpg
+  effectiveAt: 2012-02-28
+  expiredAt: 2012-02-29
+  faceValue: 200
+  pointPrice: 10
+  details: test1
+  baseSale: 10
+  status: OFFSALE
+  deleted: UN_DELETED
+  limitNumber: 5
+  materialType: ELECTRONIC
+
+  sales.PointGoods(PointGoods5):
+   no: 005
+   name: 测试积分商品5
+   imagePath: /0/0/112/cat.jpg
+   effectiveAt: 2012-02-28
+   expiredAt: 2012-02-29
+   faceValue: 200
+   pointPrice: 10
+   details: test1
+   baseSale: 10
+   status: OFFSALE
+   deleted: UN_DELETED
+   limitNumber: 5
+   materialType: ELECTRONIC

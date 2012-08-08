@@ -10,7 +10,7 @@ load:['fixture/roles.yml','fixture/pointGoods.yml','fixture/supplierusers.yml'] 
 
 
 #{selenium '添加商品数据-保存按钮验证不保存数据+保存'}
-#{include 'test/selenium/step/login.selenium' /}
+    #{include 'test/selenium/step/login.selenium' /}
 open('/pointgoods')
 clickAndWait('link=积分商品添加')
 assertTitle('添加积分商品')
@@ -89,11 +89,11 @@ verifyTextPresent('2000')
 #{/selenium}
 
 
-*{#{selenium '修改积分商品'}}*
-    *{#{include 'test/selenium/step/login.selenium' /}}*
-*{open('/pointgoods/${play.test.Fixtures.idCache.get("models.sales.PointGoods-PointGoods1")}/edit')}*
-*{verifyTitle('修改积分商品')}*
-*{type('id=pointGoods_pointPrice','6000')}*
+#{selenium '修改积分商品'}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/pointgoods/${play.test.Fixtures.idCache.get("models.sales.PointGoods-PointGoods1")}/edit')
+verifyTitle('修改积分商品')
+type('id=pointGoods_pointPrice','6000')
 
 *{type('id=imagePath','/home/clara/下载/creative.jpg')}*
 
@@ -101,14 +101,14 @@ verifyTextPresent('2000')
 *{type('id=imagePath','/0/0/112/cat.jpg')}*
 
 
-*{clickAndWait('id=onsale')}*
- *{assertTextPresent('积分商品一览')}*
+clickAndWait('id=onsale')
+*{assertTextPresent('积分商品一览')}*
 
 *{open('/pointgoods/${play.test.Fixtures.idCache.get("models.sales.PointGoods-PointGoods1")}')}*
 *{verifyTitle('查看积分商品')}*
 *{verifyTextPresent('测试积分商品1')}*
 *{verifyTextPresent('6000')}*
-*{#{/selenium}}*
+#{/selenium}
 
 
 *{#{selenium '强制下架和同意上架'}}*
@@ -121,21 +121,12 @@ verifyTextPresent('2000')
 
 
 #{selenium '预览'}
-#{include 'test/selenium/step/login.selenium' /}
+    #{include 'test/selenium/step/login.selenium' /}
 open('/pointgoods/${play.test.Fixtures.idCache.get("models.sales.PointGoods-PointGoods1")}/edit')
 type('id=pointGoods_pointPrice','6000')
 click('id=preview')
 #{/selenium}
 
-
-#{selenium '删除'}
-    #{include 'test/selenium/step/login.selenium' /}
-open('/pointgoods')
-clickAndWait('link=已下架')
-click('id=del_${play.test.Fixtures.idCache.get("models.sales.PointGoods-PointGoods3")}')
-assertConfirmation('您确定要删除测试积分商品3吗?')
-*{assertTextPresent('积分商品一览')}*
-#{/selenium}
 
 
 #{selenium '同意上架'}
@@ -144,7 +135,6 @@ open('/pointgoods')
 clickAndWait('link=已下架')
 click('id=checkoption')
 clickAndWait('id=onsales')
-
 #{/selenium}
 
 
@@ -153,4 +143,14 @@ clickAndWait('id=onsales')
 open('/pointgoods')
 click('id=checkoption')
 clickAndWait('id=offsales')
+#{/selenium}
+
+
+#{selenium '删除'}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/pointgoods')
+clickAndWait('link=已下架')
+click('id=del_${play.test.Fixtures.idCache.get("models.sales.PointGoods-PointGoods1")}')
+assertConfirmation('您确定要删除测试积分商品1吗?')
+*{assertTextPresent('积分商品一览')}*
 #{/selenium}

@@ -40,6 +40,8 @@ GET     /pointgoods/imageName                        OperatePointGoods.imageName
 
 
 
+
+
 GET     /shops                                  OperateShops.index
 GET     /shops/new                              OperateShops.add
 POST    /shops                                  OperateShops.create
