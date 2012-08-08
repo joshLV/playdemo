@@ -6,6 +6,7 @@ import org.apache.commons.lang.time.DateUtils;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,6 +19,7 @@ import java.util.Map;
  */
 public class AccountSequenceCondition implements Serializable {
     public Account account;
+    public List<Account> accounts;
     public AccountSequenceFlag sequenceFlag;    //账务变动方向：来账，往账
     public TradeType tradeType;    //资金变动类型
     public Date createdAtBegin;
@@ -27,7 +29,7 @@ public class AccountSequenceCondition implements Serializable {
     //用于保存界面的查询条件
     public String accountName;
 
-    private Map<String, Object> params = new HashMap<>();
+    public Map<String, Object> params = new HashMap<>();
 
     public String getFilter() {
         StringBuilder filter = new StringBuilder("1=1");

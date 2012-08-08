@@ -12,6 +12,9 @@ import java.math.BigDecimal;
  */
 
 public class AccountUtil {
+    public static final String PARTNER_ALIPAY = "alipay";
+    public static final String PARTNER_TENPAY = "tenpay";
+    public static final String PARTNER_99BILL = "99bill";
 
     public static Account getUhuilaAccount(){
         return getAccount(Account.UHUILA_COMMISSION, AccountType.PLATFORM);
@@ -35,11 +38,11 @@ public class AccountUtil {
 
     public static Account getPaymentPartnerAccount(String partner){
         switch (partner){
-            case "alipay":
+            case PARTNER_ALIPAY:
                 return getCreditableAccount(Account.PARTNER_ALIPAY, AccountType.PLATFORM);
-            case "tenpay":
+            case PARTNER_TENPAY:
                 return getCreditableAccount(Account.PARTNER_TENPAY, AccountType.PLATFORM);
-            case "99bill":
+            case PARTNER_99BILL:
                 return getCreditableAccount(Account.PARTNER_KUAIQIAN, AccountType.PLATFORM);
             default:
                 return null;
