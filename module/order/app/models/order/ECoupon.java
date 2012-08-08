@@ -657,13 +657,18 @@ public class ECoupon extends Model {
         BigDecimal amount = BigDecimal.ZERO;
 
         for (ECoupon coupon : couponPage) {
-            amount = amount.add(coupon.salePrice);
+            if (coupon.status == ECouponStatus.REFUND) {
+                amount = amount.add(coupon.refundPrice == null ? BigDecimal.ZERO : coupon.refundPrice);
+            } else {
+                amount = amount.add(coupon.salePrice);
+            }
         }
         return amount;
     }
 
     /**
      * 取得过期的天数
+     *
      * @return
      */
     public Long getExpiredAt() {
