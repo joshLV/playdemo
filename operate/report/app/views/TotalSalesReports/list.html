@@ -63,6 +63,7 @@
         <th width="20px">状态</th>
         <th width="30px">面值</th>
         <th width="30px">售价</th>
+        <th width="30px">进价</th>
     </tr>
     </thead>
 
@@ -84,6 +85,7 @@
         <td>&{'coupon.'+coupon?.status}</td>
         <td class="amount">${coupon?.faceValue?.formatCurrency('CNY')}</td>
         <td class="amount">${coupon?.salePrice?.formatCurrency('CNY')}</td>
+        <td class="amount">${coupon?.originalPrice?.formatCurrency('CNY')}</td>
     </tr>
     #{/list}
     </tbody>
@@ -93,7 +95,8 @@
             <td class="amount">${summary?.checkedCount}张</td>
             <td colspan="8"></td>
             <td class="amount">${summary?.sumFaceValue?.formatCurrency('CNY')}</td>
-            <td class="amount">${summary?.sumAmount?.formatCurrency('CNY')}</td>
+            <td class="amount">${summary?.sumSalesAmount?.formatCurrency('CNY')}</td>
+            <td class="amount">${summary?.sumOriginValue?.formatCurrency('CNY')}</td>
         </tr>
     </tfoot>
 </table>

@@ -1,5 +1,5 @@
 #{extends 'layout_operate/layout.html' /}
-#{set title:'商户销售趋势报表' /}
+#{set title:'券消费趋势报表' /}
 #{include '/share/nav.html' /}
 
 #{set 'moreScripts'}
@@ -48,7 +48,7 @@ $(document).ready(function() {
 	chart = new Highcharts.Chart({
 		chart: { renderTo: 'chart1', type: 'line'},
 		title: {
-			text: '商户销售趋势图'
+			text: '券消费趋势图'
 		},
 		subtitle: {
 			text: '2012年'

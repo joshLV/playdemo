@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                                       SupplierReports.showTotalReport
+GET     /                                       SupplierReportsApplication.index
 
 # 财务报表
 GET     /reports/total                          SupplierReports.showTotalReport

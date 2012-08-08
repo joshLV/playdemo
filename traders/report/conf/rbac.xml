@@ -10,7 +10,7 @@
         <permission key="SHOP_REPORT" text="门店报表" roles="account,sales"/>
     </permission>
 
-    <navigation key="finance_app" text="报表" action="SupplierReports.showTotalReport" display-order="110">
+    <navigation key="finance_app" text="报表" action="SupplierReportsApplication.index" display-order="110">
         <navigation key="sales_report_app" text="销售报表">
             <navigation key="supplier_sales_ratios_reports" action="SupplierTotalSalesReports.ratios" text="商户销售汇总报表"
                         permissions="REPORT"/>

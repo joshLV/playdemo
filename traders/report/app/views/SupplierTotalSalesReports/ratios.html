@@ -3,6 +3,7 @@
 #{include '/share/nav.html' /}
 
 #{set 'moreScripts'}
+#{asset.js src:['/charts/highcharts.js', '/charts/modules/exporting.js'] /}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript" charset="utf-8">
     $(function () {
@@ -39,7 +40,50 @@
                 return false;
             });
         });
-
+#{if totalSales?.size() > 0}        
+        var chart2;
+        $(document).ready(function() {
+        	chart2 = new Highcharts.Chart({
+        		chart: {
+        			renderTo: 'chart2',
+        			plotBackgroundColor: null,
+        			plotBorderWidth: null,
+        			plotShadow: false
+        		},
+        		title: {
+        			text: '收款金额占比图'
+        		},
+        		tooltip: {
+        			formatter: function() {
+        				return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.percentage, 2) +' %';
+        			}
+        		},
+        		plotOptions: {
+        			pie: {
+        				allowPointSelect: true,
+        				cursor: 'pointer',
+        				dataLabels: {
+        					enabled: true,
+        					color: '#000000',
+        					connectorColor: '#000000',
+        					formatter: function() {
+        						return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.percentage, 2) +' %';
+        					}
+        				}
+        			}
+        		},
+        		series: [{
+        			type: 'pie',
+        			name: 'Browser share',
+        			data: [
+                #{list items:totalSales, as:'item'}        			       
+        				['${item.key}', ${item.sumOriginValue}]${item_isLast ? '' : ','}
+        	    #{/list}
+        			]
+        		}]
+        	});
+        });        
+#{/if}       
     });
 </script>
 #{/set}
@@ -129,7 +173,7 @@
 <div class="tabbable" style="margin-bottom: 18px;">
     <ul class="nav nav-tabs">
       <li class="active"><a href="#tab1" data-toggle="tab">数据</a></li>
-      <li class=""><a href="#tab2" data-toggle="tab">饼图</a></li>
+      <li class=""><a href="#tab3" data-toggle="tab">收款金额占比图</a></li>
     </ul>
     <div class="tab-content" style="padding-bottom: 9px; border-bottom: 1px solid #ddd;">
       <div class="tab-pane active" id="tab1">
@@ -156,11 +200,25 @@
                 </td>
                 <td class="amount">
                   <a href="@{SupplierTotalSalesReports.list()}?condition.type=${condition.type}&condition.beginAt=${condition.beginAt?.format("yyyy-MM-dd")}&condition.endAt=${condition.endAt?.format("yyyy-MM-dd")}#{if condition.type == 0}&condition.supplierId=${report?.keyId}#{/if}#{if condition.type == 1}&condition.shopId=${report?.keyId}#{/if}#{if condition.type == 2}&condition.goodsId=${report?.keyId}#{/if}" target="_blank">
-                    ${report?.sumAmount?.formatCurrency('CNY')}
+                    ${report?.sumOriginValue?.formatCurrency('CNY')}
                   </a>
                 </td>
             </tr>
         #{/paginate.list}
+            <tfoot>
+                <tr>
+                    <td class="amount">汇总</td>
+                    <td class="amount">
+                        ${summary?.checkedCount}
+                    </td>
+                    <td class="amount">
+                        ${summary?.sumFaceValue?.formatCurrency('CNY')}
+                    </td>`
+                    <td class="amount">
+                        ${summary?.sumOriginValue?.formatCurrency('CNY')}
+                    </td>
+                </tr>            
+            </tfoot>        
         </table>
         #{if reportPage?.getPageCount() > 1}
         <div class="pagination">
@@ -170,10 +228,8 @@
         </div>
         #{/if}        
       </div>
-      <div class="tab-pane" id="tab2">
-        <div class="alert alert-success">
-            <span>此处放图</span>
-        </div>      
+      <div class="tab-pane" id="tab3">
+        <div id="chart2" class="span12" style="height: 500px"></div>
       </div>
     </div>
 </div>

@@ -220,7 +220,7 @@ $(document).ready(function() {
                 </td>
                 <td class="amount">
                   <a href="@{SupplierTotalSalesReports.list()}?condition.type=${condition.type}&condition.supplierId=${condition.supplierId}&condition.goodsId=${condition.goodsId}&condition.shopId=${condition.shopId}&condition.beginAt=${report?.checkedOn}&condition.endAt=${report?.checkedOn}" target="_blank">
-                    ${report?.sumAmount?.formatCurrency('CNY')}
+                    ${report?.sumOriginValue?.formatCurrency('CNY')}
                   </a>
                 </td>
             </tr>
