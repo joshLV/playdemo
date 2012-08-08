@@ -26,11 +26,11 @@ public class ResaleSalesReportCondition {
             paramMap.put("userType", type);
 
         if (createdAtBegin != null) {
-            condBuilder.append(" and e.createdAt >= :createdAtBegin");
+            condBuilder.append(" and e.order.paidAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", createdAtBegin);
         }
         if (createdAtEnd != null) {
-            condBuilder.append(" and e.createdAt < :createdAtEnd");
+            condBuilder.append(" and e.order.paidAt < :createdAtEnd");
             paramMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
         }
 
