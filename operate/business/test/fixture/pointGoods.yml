@@ -27,3 +27,19 @@ sales.PointGoods(PointGoods2):
  deleted: UN_DELETED
  limitNumber: 5
  materialType: ELECTRONIC
+
+
+sales.PointGoods(PointGoods3):
+ no: 003
+ name: 测试积分商品3
+ imagePath: /0/0/112/cat.jpg
+ effectiveAt: 2012-02-28
+ expiredAt: 2012-02-29
+ faceValue: 200
+ pointPrice: 10
+ details: test1
+ baseSale: 10
+ status: OFFSALE
+ deleted: UN_DELETED
+ limitNumber: 5
+ materialType: ELECTRONIC

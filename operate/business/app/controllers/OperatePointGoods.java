@@ -110,9 +110,9 @@ public class OperatePointGoods extends Controller {
 
         checkPointPrice(pointGoods);
 
-        System.out.println("limitnumber>>>"+pointGoods.limitNumber);
+//        System.out.println("limitnumber>>>"+pointGoods.limitNumber);
 
-        System.out.println("basesale>>>"+pointGoods.baseSale);
+//        System.out.println("basesale>>>"+pointGoods.baseSale);
 
 
 
@@ -295,7 +295,7 @@ public class OperatePointGoods extends Controller {
     public static void update(Long id, @Valid models.sales.PointGoods pointGoods, File imagePath, BigDecimal[] levelPrices,
                               String imageLargePath) {
 
-        System.out.println(imagePath+"aaaaaaaaaaa>>>aaaa>>>"+pointGoods.name);
+//        System.out.println(imagePath+"aaaaaaaaaaa>>>aaaa>>>"+pointGoods.name);
 
 
         checkImageFile(imagePath);

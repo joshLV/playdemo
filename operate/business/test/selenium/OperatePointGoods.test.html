@@ -19,8 +19,6 @@ verifyTextPresent('实物')
 assertText('css=label.radio.inline','电子券')
 
 type('id=pointGoods_name','cat10')
-*{click('css=td.WdayOn')}*
-*{click('css=td.WdayOn')}*
 type('id=pointGoods_effectiveAt','2012-08-30')
 type('id=pointGoods_expireAt','2012-08-01')
 type('id=pointGoods_faceValue','100')
@@ -65,8 +63,8 @@ clickAndWait('id=onsale')
 
 *{clickAndWait('id=onsale')}*
 *{verifyTitle('积分商品一览')}*
-verifyTitle('添加积分商品')
-verifyTextPresent('无效的图片!')
+*{verifyTitle('添加积分商品')}*
+*{verifyTextPresent('无效的图片!')}*
 *{verifyTitle('商品一览')}*
 *{verifyTextPresent('商品一览')}*
 #{/selenium}
@@ -91,27 +89,68 @@ verifyTextPresent('2000')
 #{/selenium}
 
 
-#{selenium '修改商品'}
-    #{include 'test/selenium/step/login.selenium' /}
-open('/pointgoods/${play.test.Fixtures.idCache.get("models.sales.PointGoods-PointGoods1")}/edit')
-verifyTitle('修改积分商品')
-type('id=pointGoods_pointPrice','6000')
-clickAndWait('id=onsale')
+*{#{selenium '修改积分商品'}}*
+    *{#{include 'test/selenium/step/login.selenium' /}}*
+*{open('/pointgoods/${play.test.Fixtures.idCache.get("models.sales.PointGoods-PointGoods1")}/edit')}*
+*{verifyTitle('修改积分商品')}*
+*{type('id=pointGoods_pointPrice','6000')}*
 
-open('/pointgoods/${play.test.Fixtures.idCache.get("models.sales.PointGoods-PointGoods1")}')
-verifyTitle('查看积分商品')
-verifyTextPresent('测试积分商品1')
+*{type('id=imagePath','/home/clara/下载/creative.jpg')}*
+
+
+*{type('id=imagePath','/0/0/112/cat.jpg')}*
+
+
+*{clickAndWait('id=onsale')}*
+ *{assertTextPresent('积分商品一览')}*
+
+*{open('/pointgoods/${play.test.Fixtures.idCache.get("models.sales.PointGoods-PointGoods1")}')}*
+*{verifyTitle('查看积分商品')}*
+*{verifyTextPresent('测试积分商品1')}*
 *{verifyTextPresent('6000')}*
+*{#{/selenium}}*
 
+
+*{#{selenium '强制下架和同意上架'}}*
+    *{#{include 'test/selenium/step/login.selenium' /}}*
+*{open('/pointgoods')}*
+*{clickAndWait('id=operate')}*
+*{clickAndWait('link=已下架')}*
+*{clickAndWait('id=operate')}*
+*{#{/selenium}}*
+
+
+#{selenium '预览'}
+#{include 'test/selenium/step/login.selenium' /}
+open('/pointgoods/${play.test.Fixtures.idCache.get("models.sales.PointGoods-PointGoods1")}/edit')
+type('id=pointGoods_pointPrice','6000')
+click('id=preview')
 #{/selenium}
 
-#{selenium '强制下架和同意上架'}
+
+#{selenium '删除'}
     #{include 'test/selenium/step/login.selenium' /}
 open('/pointgoods')
-clickAndWait('id=operate')
-*{clickAndWait('link=已下架')}*
-clickAndWait('id=operate')
+clickAndWait('link=已下架')
+click('id=del_${play.test.Fixtures.idCache.get("models.sales.PointGoods-PointGoods3")}')
+assertConfirmation('您确定要删除测试积分商品3吗?')
+*{assertTextPresent('积分商品一览')}*
 #{/selenium}
 
 
+#{selenium '同意上架'}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/pointgoods')
+clickAndWait('link=已下架')
+click('id=checkoption')
+clickAndWait('id=onsales')
 
+#{/selenium}
+
+
+#{selenium '批量下架'}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/pointgoods')
+click('id=checkoption')
+clickAndWait('id=offsales')
+#{/selenium}
