@@ -122,12 +122,13 @@
                 if(report.get("财付通")) tenpay = alipay.add(report.get("财付通"))
                 if(report.get("快钱")) kuaiqian = alipay.add(report.get("快钱"))
                 rdate = report.get("RowKey")
+                dateUrl = baseUri + "/orders?condition.status=PAID&condition.paidAtBegin=" + rdate + "&condition.paidAtEnd=" + rdate
             }%
             <tr>
-                <td><a href="${baseUri}/orders?condition.createdAtBegin=${rdate}&condition.createdAtEnd=${rdate}" target="_blank">${rdate}</a></td>
-                <td>${report.get("支付宝")?:"0"}</td>
-                <td>${report.get("财付通")?:"0"}</td>
-                <td>${report.get("快钱")?:"0"}</td>
+                <td><a href="${dateUrl}" target="_blank">${rdate}</a></td>
+                <td><a href="${dateUrl}&condition.payMethod=alipay" target="_blank">${report.get("支付宝")?:"0"}</a> </td>
+                <td><a href="${dateUrl}&condition.payMethod=tenpay" target="_blank">${report.get("财付通")?:"0"}</a></td>
+                <td><a href="${dateUrl}&condition.payMethod=99bill" target="_blank">${report.get("快钱")?:"0"}</a></td>
             </tr>
         #{/paginate.list}
             <tr>
