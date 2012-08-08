@@ -25,7 +25,7 @@ public class CrossTableUtil {
         LinkedHashMap<String, Map<String, Object>> mappedCrossTable = new LinkedHashMap<>();
         for (T target : list) {
             String key = converter.getRowKey(target);
-            Logger.info("Row key: %s", key);
+            Logger.debug("Row key: %s", key);
             Map<String, Object> item = mappedCrossTable.get(key);
             if (item == null) {
                 item = new HashMap<>();

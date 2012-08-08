@@ -87,8 +87,8 @@ public class OrdersCondition {
             paramsMap.put("deliveryType", deliveryType);
         }
         if (StringUtils.isNotBlank(payMethod)) {
-            sql.append(" and o.payMethod like :payMethod");
-            paramsMap.put("payMethod", "" + payMethod + "%");
+            sql.append(" and o.payMethod = :payMethod");
+            paramsMap.put("payMethod", payMethod);
         }
         if (brandId != 0) {
             sql.append("and o.id in (select o.id from o.orderItems oi where oi.goods.brand =:brand)");

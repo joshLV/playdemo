@@ -52,9 +52,6 @@
     }
 
     .tab-content {
-        border-left: 1px solid #DDD;
-        border-right: 1px solid #DDD;
-        border-bottom: 1px solid #DDD;
         clear: both;
     }
 
@@ -66,7 +63,7 @@
     }
 
     .seq {
-        margin-top: 20px;
+        margin-top: -1px;
     }
 
     .alert {
@@ -113,14 +110,32 @@
                 <th>财付通</th>
                 <th>快钱</th>
             </tr>
+        %{
+            alipay = new java.math.BigDecimal("0")
+            tenpay = new java.math.BigDecimal("0")
+            kuaiqian = new java.math.BigDecimal("0")
+            baseUri = play.Play.configuration.getProperty("uri.operate_business")
+        }%
         #{paginate.list items:reportPage, as:'report'}
+            %{
+                if(report.get("支付宝")) alipay = alipay.add(report.get("支付宝"))
+                if(report.get("财付通")) tenpay = alipay.add(report.get("财付通"))
+                if(report.get("快钱")) kuaiqian = alipay.add(report.get("快钱"))
+                rdate = report.get("RowKey")
+            }%
             <tr>
-                <td>${report.get("RowKey")?:"0"}</td>
+                <td><a href="${baseUri}/orders?condition.createdAtBegin=${rdate}&condition.createdAtEnd=${rdate}" target="_blank">${rdate}</a></td>
                 <td>${report.get("支付宝")?:"0"}</td>
                 <td>${report.get("财付通")?:"0"}</td>
                 <td>${report.get("快钱")?:"0"}</td>
             </tr>
         #{/paginate.list}
+            <tr>
+                <td>汇总</td>
+                <td>${alipay}</td>
+                <td>${tenpay}</td>
+                <td>${kuaiqian}</td>
+            </tr>
         </table>
     </div>
     <div class="pagination">
