@@ -88,7 +88,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
 
     @Test
     public void testIndexDefault() {
-        Http.Response response = GET("/resale/sales");
+        Http.Response response = GET("/reports/resale");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
     }
