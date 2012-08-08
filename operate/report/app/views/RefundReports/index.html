@@ -139,18 +139,22 @@
     <th width="50px">退款金额</th>
     </thead>
 #{set i:0/}
+%{
+    wwwUrl=play.Play.configuration.getProperty("www.url");
+    baseUrl=play.Play.configuration.getProperty("uri.operate_business");
+    }%
 #{paginate.list items:reportPage, as:'report'}
     <tr>
         #{set i:i+1/}
         <td>${(reportPage.pageNumber-1)*reportPage.pageSize+i}</td>
         <td>${report.supplierName}</td>
-        <td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${report?.goods?.id}"
+        <td><a href="http://${wwwUrl}/goods/${report?.goods?.id}"
                target="_blank"><img src="${report?.goods?.imageTinyPath}"/>${report?.goods?.name}</a></td>
         <td>&{'goods.'+report?.goods?.materialType}</td>
         <td>${report?.salePrice?.formatCurrency('CNY')}</td>
         <td>${report?.buyNumber}</td>
         <td>
-            <a href="http://business.seewi.com.cn/coupons?condition.searchKey=GOODS_NAME&condition.status=REFUND&condition.searchItems=${report.goods.name}"
+            <a href="${baseUrl}/coupons?condition.searchKey=GOODS_NAME&condition.status=REFUND&condition.searchItems=${report.goods.name}"
                target="_blank">${report?.amount?.formatCurrency('CNY')}</a></td>
     </tr>
 #{/paginate.list}
