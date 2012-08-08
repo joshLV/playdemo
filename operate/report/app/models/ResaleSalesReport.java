@@ -228,16 +228,12 @@ public class ResaleSalesReport extends Model {
         long buyCount = 0l;
         BigDecimal amount = BigDecimal.ZERO;
         BigDecimal refundPrice = BigDecimal.ZERO;
-        BigDecimal totRefundPrice = BigDecimal.ZERO;
-        BigDecimal shouldGetPrice = BigDecimal.ZERO;
-        BigDecimal haveGetPrice = BigDecimal.ZERO;
         List<ResaleSalesReport> newList = new ArrayList<ResaleSalesReport>();
         for (ResaleSalesReport item : resultList) {
             for (ECoupon coupon : item.order.eCoupons) {
                 if (coupon.status == ECouponStatus.REFUND) {
                     refundCount++;
-                    totRefundPrice = item.refundPrice == null ? new BigDecimal(0) : item.refundPrice;
-                    refundPrice = refundPrice.add(totRefundPrice);
+                    refundPrice = refundPrice.add(coupon.refundPrice == null ? new BigDecimal(0) : coupon.refundPrice);
                 } else if (coupon.status == ECouponStatus.CONSUMED) {
                     consumedCount++;
                     consumedPrice = consumedPrice.add(coupon.salePrice == null ? new BigDecimal(0) : coupon.salePrice);
@@ -246,8 +242,6 @@ public class ResaleSalesReport extends Model {
 
             buyCount += item.buyNumber;
             amount = amount.add(item.salePrice);
-//            shouldGetPrice = amount.subtract(refundPrice);
-//            haveGetPrice = BigDecimal.ZERO;
         }
 
         newList.add(new ResaleSalesReport(amount, buyCount, refundPrice, refundCount, consumedPrice, consumedCount));
