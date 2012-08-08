@@ -100,10 +100,11 @@
 
 <form class="well form-inline" action="@{RefundReports.index()}" method="GET" id="form"
       name="form">
-    商户：#{select 'condition.supplierName', class:'input-small', value:condition?.supplierName}
-    #{option "null"}不限#{/option}
-    #{option "CONSUMER"}&{'report.CONSUMER'}#{/option}
-    #{option "RESALER"}&{'report.RESALER'}#{/option}
+    商户：#{select 'condition.supplierName', class:'input-larger', value:condition?.supplierName}
+    #{option ""}不限#{/option}
+    #{list items:supplierList, as:'supplier'}
+        #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
+    #{/list}
 #{/select}
     商品名称：<input type="text" name="condition.goodsName" class="input-medium"
                 value="${condition?.goodsName}"/>
@@ -116,7 +117,6 @@
     <button type="submit" class="btn btn-primary" id="search">搜索</button>
     <ul class="nav nav-pills">
         <li #{if condition.interval=='-1d'} class="active" #{/if}  ><a start="-1d" href="#">今天</a></li>
-    *{<li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">昨天</a></li>}*
         <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
         <li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>
         <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
@@ -124,49 +124,35 @@
     </ul>
     <input type="hidden" id="condition_interval" name="condition.interval"/>
 </form>
-
+<div class="alert alert-success">
+    <span>在此期间 总计退款 <b>${summary?.buyNumber}</b> 件商品</span>
+    <span>共计退款 <b>${summary?.totalAmount}</b> 元</span>
+</div>
 <table class="table table-striped table-bordered table-condensed">
     <thead>
     <th width="10px">序号</th>
-    <th width="20px">渠道来源</th>
-    <th width="50px">帐号</th>
-    <th width="78px">售出券数量</th>
-    <th width="50px">售出金额</th>
-    <th width="50px">消费券数量</th>
-    <th width="50px">消费金额</th>
-    <th width="50px">退款券数量</th>
-    <th width="50px">退款金额</th>
-    <th width="30px">应收款金额</th>
-    <th width="50px">已收款金额</th>
+    <th width="20px">商户</th>
+    <th width="50px">商品名称</th>
+    <th width="78px">类型</th>
+    <th width="78px">单价</th>
+    <th width="50px">数量</th>
+    <th width="50px">总退款金额</th>
     </thead>
 #{set i:0/}
 #{paginate.list items:reportPage, as:'report'}
     <tr>
         #{set i:i+1/}
         <td>${(reportPage.pageNumber-1)*reportPage.pageSize+i}</td>
-        <td>${report?.order?.userType==models.accounts.AccountType.RESALER ? '分销商':'消费者'}</td>
-        <td>${report.userName}<br>${report?.loginName}</td>
-        <td>${report?.buyNumber}</td>
+        <td>${report.supplierName}</td>
+        <td>${report.goods.name}</td>
+        <td>&{'goods.'+report?.goods?.materialType}</td>
         <td>${report?.salePrice?.formatCurrency('CNY')}</td>
-        <td>${report?.consumedNumber}</td>
-        <td>${report?.consumedPrice?.formatCurrency('CNY')}</td>
-        <td>${report?.refundNumber}</td>
-        <td>${report?.refundPrice?.formatCurrency('CNY')}</td>
-        <td>${(report?.salePrice-report?.refundPrice)?.formatCurrency('CNY')}</td>
-        <td>0</td>
+        <td>${report?.buyNumber}</td>
+        <td>
+            <a href="http://business.seewi.com.cn/coupons?condition.searchKey=GOODS_NAME&condition.status=REFUND&condition.searchItems=${report.goods.name}"
+               target="_blank">${report?.amount?.formatCurrency('CNY')}</a></td>
     </tr>
 #{/paginate.list}
-    <tr>
-        <td colspan="3">汇总</td>
-        <td>${summary?.totalNumber}</td>
-        <td>${summary?.amount?.formatCurrency("CNY")}</td>
-        <td>${summary?.consumedNumber}</td>
-        <td>${summary?.consumedPrice?.formatCurrency("CNY")}</td>
-        <td>${summary?.refundNumber}</td>
-        <td>${summary?.totalRefundPrice?.formatCurrency('CNY')}</td>
-        <td>${summary?.shouldGetPrice?.formatCurrency('CNY')}</td>
-        <td>${summary?.haveGetPrice?.formatCurrency('CNY')}</td>
-    </tr>
 </table>
 <div class="pagination">
     <ul>

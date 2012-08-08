@@ -33,8 +33,8 @@ public class RefundReports extends Controller {
         // 分页
         ValuePaginator<RefundReport> reportPage = utils.PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
         List<Supplier> supplierList = Supplier.findUnDeleted();
-//        OperateRefundReport summary = OperateRefundReport.summary(resultList);
-        render(reportPage, condition, supplierList);
+        RefundReport summary = RefundReport.summary(resultList);
+        render(reportPage, condition, supplierList, summary);
     }
 
     private static int getPageNumber() {

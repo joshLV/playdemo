@@ -1,11 +1,10 @@
 package models;
 
 import models.sales.Goods;
-import models.sales.MaterialType;
 import models.supplier.Supplier;
-import org.h2.util.StringUtils;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
+import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.Query;
 import java.math.BigDecimal;
@@ -19,30 +18,31 @@ import java.util.List;
  */
 public class RefundReport extends Model {
     public String supplierName;
-    public String goodsName;
-    public MaterialType materialType;
-
     public Goods goods;
     public BigDecimal salePrice;
     public Long buyNumber;
     public BigDecimal amount;
+    public BigDecimal totalAmount;
 
     public RefundReport(Goods goods, BigDecimal salePrice, Long buyNumber) {
         this.goods = goods;
         if (goods != null) {
-            this.goodsName = goods.name;
-            Supplier supplier = Supplier.findById(goods.id);
-            this.supplierName = StringUtils.isNullOrEmpty(supplier.otherName) ? supplier.fullName : supplier.otherName;
-
+            Supplier supplier = Supplier.findById(goods.supplierId);
+            this.supplierName = StringUtils.isNotBlank(supplier.otherName) ? supplier.otherName : supplier.fullName;
         }
-
         this.salePrice = salePrice;
         this.buyNumber = buyNumber;
     }
 
+    public RefundReport(long buyCount, BigDecimal amount, BigDecimal totAmount) {
+        this.amount = amount;
+        this.buyNumber = buyCount;
+        this.totalAmount = totAmount;
+    }
+
     public static List<RefundReport> query(RefundReportCondition condition) {
 
-        String sql = "select new models.RefundReport(e.orderItems.goods,sum(e.salePrice),count(e.orderItems.buyNumber)) from ECoupon e ";
+        String sql = "select new models.RefundReport(e.orderItems.goods,e.salePrice,count(e.orderItems.buyNumber)) from ECoupon e ";
         String groupBy = " group by e.orderItems.goods";
 
         Query query = JPA.em()
@@ -53,11 +53,28 @@ public class RefundReport extends Model {
         }
 
         List<RefundReport> resultList = query.getResultList();
+        for (RefundReport refundReport : resultList) {
+            refundReport.amount = refundReport.salePrice.multiply(new BigDecimal(refundReport.buyNumber));
+        }
         return resultList;
     }
 
     public static RefundReport summary(List<RefundReport> resultList) {
-        return new RefundReport(new Goods(), BigDecimal.ZERO, 0l);
+        if (resultList.size() == 0) {
+            return new RefundReport(0l, BigDecimal.ZERO, BigDecimal.ZERO);
+        }
+
+        long buyCount = 0l;
+        BigDecimal amount = BigDecimal.ZERO;
+        BigDecimal totAmount = BigDecimal.ZERO;
+        for (RefundReport item : resultList) {
+            buyCount += item.buyNumber;
+            amount = amount.add(item.salePrice == null ? new BigDecimal(0) : item.salePrice);
+            totAmount = totAmount.add(item.amount == null ? new BigDecimal(0) : item.amount);
+
+        }
+        return new RefundReport(buyCount, amount, totAmount);
+
     }
 }
 
