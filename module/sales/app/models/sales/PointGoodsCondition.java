@@ -51,6 +51,9 @@ public class PointGoodsCondition implements Serializable {
     public BigDecimal pointPriceBegin;
     public BigDecimal pointPriceEnd;
 
+    public Date createdAtBegin;
+    public Date createdAtEnd;
+
 
     public Integer saleCountBegin;
     public Integer saleCountEnd;
@@ -163,15 +166,15 @@ public class PointGoodsCondition implements Serializable {
         }
 
 
-        if (pointPriceBegin != null) {
-            condBuilder.append(" and g.pointPrice >= :pointPriceBegin");
-            paramMap.put("pointPriceBegin", pointPriceBegin);
-        }
-
-        if (pointPriceEnd != null) {
-            condBuilder.append(" and g.pointPrice <= :pointPriceEnd");
-            paramMap.put("pointPriceEnd", pointPriceEnd);
-        }
+//        if (pointPriceBegin != null) {
+//            condBuilder.append(" and g.pointPrice >= :pointPriceBegin");
+//            paramMap.put("pointPriceBegin", pointPriceBegin);
+//        }
+//
+//        if (pointPriceEnd != null) {
+//            condBuilder.append(" and g.pointPrice <= :pointPriceEnd");
+//            paramMap.put("pointPriceEnd", pointPriceEnd);
+//        }
 
         if (saleCountBegin != null && saleCountBegin >= 0) {
             condBuilder.append(" and g.saleCount >= :saleCountBegin");
@@ -182,6 +185,23 @@ public class PointGoodsCondition implements Serializable {
             condBuilder.append(" and g.saleCount <= :saleCountEnd");
             paramMap.put("saleCountEnd", saleCountEnd);
         }
+
+          //添加时间搜索
+        if (createdAtBegin != null )
+//            createdAtBegin >= 0
+        {
+            condBuilder.append(" and g.createdAt >= :createdAtBegin");
+            paramMap.put("createdAtBegin", createdAtBegin);
+        }
+
+        if (createdAtEnd != null)
+        // && saleCountEnd >= 0
+        {
+            condBuilder.append(" and g.createdAt <= :createdAtEnd");
+            paramMap.put("createdAtEnd", createdAtEnd);
+        }
+
+
 
         if (baseSaleBegin >= 0) {
             condBuilder.append(" and g.baseSale >= :baseSaleBegin");
@@ -244,6 +264,8 @@ public class PointGoodsCondition implements Serializable {
             case 4:
                 orderBy = "g.materialType, g.createdAt"; //电子券优化显示
                 break;
+            case 5:
+                orderBy="g.createdAt"; //添加时间
             default:
                 orderBy = "g.materialType, g.recommend"; //电子券优化显示
                 break;

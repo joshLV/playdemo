@@ -3,9 +3,7 @@
 #{include '/share/nav.html' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/pointgoods.js'}" type="text/javascript" charset="UTF-8"></script>
-
-
-
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 
 #{/set}
 #{set 'moreStyles'}
@@ -70,13 +68,23 @@
 
 
 
-                <td>添&nbsp;&nbsp;加&nbsp;&nbsp;时&nbsp;&nbsp;间：<input type="text" name="condition.saleCountBegin"
-                                                                  class="input-medium"
-                                                                  value="#{if condition?.saleCountBegin >=0}${condition?.saleCountBegin}#{/if}"/>
-                    至 <input type="text" name="condition.saleCountEnd" class="input-medium"
-                             value="#{if condition?.saleCountEnd >=0}${condition?.saleCountEnd}#{/if}"/>
-                </td>
+                *{<td>添&nbsp;&nbsp;加&nbsp;&nbsp;时&nbsp;&nbsp;间：<input type="text" name="condition.createdAtBegin"}*
+                                                                    *{class="input-medium Wdate"}*
+                                                                    *{onfocus="WdatePicker({readOnly:true})"}*
 
+                                                                    *{value="#{if condition?.createdAtBegin >=0}${condition?.createdAtBegin}#{/if}"/>}*
+                    *{至 <input type="text" name="condition.createdAtEnd" class="input-medium Wdate"}*
+                             *{onfocus="WdatePicker({readOnly:true})"   value="#{if condition?.createdAtEnd >=0}${condition?.createdAtEnd}#{/if}"/>}*
+                *{</td>}*
+
+
+
+                <td>添&nbsp;&nbsp;加&nbsp;&nbsp;时&nbsp;&nbsp;间：
+                <input type="text" id="condition_createdAtBegin" class="input-medium Wdate" name="condition.createdAtBegin"
+                       onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
+                    至  <input type="text" id="condition_createdAtEnd" class="input-medium Wdate" name="condition.createdAtEnd"
+                       onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
+                </td>
 
             </tr>
             <tr>
@@ -115,6 +123,9 @@
                 <th width="200px">&{'pointGoods.effective'}</th>
                 <th width="100px">&{'pointGoods.baseSale'}</th>
                 <th width="200px">&{'pointGoods.saleCount'}(件)</th>
+
+                <th width="200px">&{'pointGoods.createdAt'}</th>
+
                 <th width="50px">&{'pointGoods.status'}</th>
                 <th width="50px">操 作</th>
 
@@ -171,14 +182,15 @@
 
 
 
+                <td class="#{if pointGoods.isExpired()} tr-offsale  #{/if} transparent"> ${pointGoods?.expireAt?.format("yyyy-MM-dd hh:mm:ss")}</td>
 
-                <td class="#{if pointGoods.isExpired()} tr-offsale  #{/if} transparent"> ${pointGoods?.expireAt}</td>
+                *{<td >${pointGoods?.expireAt.format("yyyy-MM-dd hh:mm:ss")}</td>}*
 
 
                 <td class="amount">${pointGoods?.baseSale}</td>
                 <td class="amount">${pointGoods?.saleCount}</td>
 
-
+                <td >${pointGoods?.createdAt.format("yyyy-MM-dd hh:mm:ss")}</td>
 
 
 

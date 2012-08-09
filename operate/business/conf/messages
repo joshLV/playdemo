@@ -75,9 +75,7 @@ pointGoods.OFFSALE=已下架
 pointGoods.APPLY=申请上架
 pointGoods.REJECT=拒绝上架
 
-
-
-
+pointGoods.createdAt=添加时间
 
 
 pointGoods.saleCount=兑换量
