@@ -39,7 +39,8 @@ public class OperatePointGoodsOrders extends Controller {
         }
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        JPAExtPaginator<Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
+        JPAExtPaginator<Order> orderList =
+                models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
 
         BigDecimal amountSummary = Order.summary(orderList);
 //        List<Brand> brandList = Brand.findByOrder(null);

@@ -142,7 +142,7 @@
 
 
 
-    <navigation key="point_goods_app" text="积分商城" action="OperateGoods.index" display-order="100">
+    <navigation key="point_goods_app" text="积分商城" action="OperatePointGoods.index" display-order="100">
     <navigation key="point_goods" text="积分商品">
         <navigation key="point_goods_add" action="OperatePointGoods.add" text="积分商品添加" permissions="Point_GOODS_NEW"/>
         <navigation key="point_goods_index" action="OperatePointGoods.index" text="积分商品管理" permissions="Point_GOODS"/>
