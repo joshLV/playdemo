@@ -206,12 +206,6 @@ public class PointGoodsOrder extends Model {
 
     }
 
-    public void setUser(long userId) {
-        this.userId = userId;
-        this.save();
-    }
-
-
     /**
      * 生成订单编号.
      *
@@ -235,12 +229,11 @@ public class PointGoodsOrder extends Model {
     /**
      * 计算会员订单明细中已购买的商品
      *
-     * @param user    会员ID
      * @param pointGoodsId 商品ID
-     * @param number  购买数量
+     * @param boughtNumber  购买数量
      * @return
      */
-    public static Boolean checkLimitNumber(User user, Long pointGoodsId, Long boughtNumber, int number) {
+    public static Boolean checkLimitNumber(Long pointGoodsId, Long boughtNumber) {
 
         //取出商品的限购数量
         PointGoods goods = PointGoods.findById(pointGoodsId);
@@ -250,7 +243,7 @@ public class PointGoodsOrder extends Model {
         }
 
         //超过限购数量,则表示已经购买过该商品
-        if (limitNumber > 0 && (number > limitNumber || limitNumber <= boughtNumber)) {
+        if (limitNumber > 0 && limitNumber < boughtNumber) {
             return Boolean.TRUE;
         }
 
