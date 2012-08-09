@@ -118,12 +118,12 @@ assertTextPresent('积分商品一览')
 *{#{/selenium}}*
 
 
-#{selenium '预览'}
-    #{include 'test/selenium/step/login.selenium' /}
-open('/pointgoods/${play.test.Fixtures.idCache.get("models.sales.PointGoods-PointGoods1")}/edit')
-type('id=pointGoods_pointPrice','6000')
-click('id=preview')
-#{/selenium}
+*{#{selenium '预览'}}*
+    *{#{include 'test/selenium/step/login.selenium' /}}*
+*{open('/pointgoods/${play.test.Fixtures.idCache.get("models.sales.PointGoods-PointGoods1")}/edit')}*
+*{type('id=pointGoods_pointPrice','6000')}*
+*{click('id=preview')}*
+*{#{/selenium}}*
 
 
 
