@@ -131,8 +131,6 @@ public class PointGoodsCondition implements Serializable {
         paramMap.put("deleted", DeletedStatus.UN_DELETED);
         paramMap.put("notMatchStatus", GoodsStatus.UNCREATED);
 
-
-
         if (StringUtils.isNotBlank(name)) {
             condBuilder.append(" and g.name like :name");
             paramMap.put("name", "%" + name.trim() + "%");

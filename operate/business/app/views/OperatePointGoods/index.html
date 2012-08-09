@@ -11,7 +11,8 @@
 #{set 'moreStyles'}
 <style type="text/css">
     .table-striped tbody .tr-offsale{
-        color: #A0A0A0;
+        /*color: #A0A0A0;*/
+        color: red;
     }
 
     .table-striped tbody tr.transparent td td{
@@ -40,6 +41,20 @@
                 <td width="30%">积分商品名称：<input type="text" name="condition.name" class="input-medium"
                                               value="${condition?.name}"/></td>
 
+
+                <td>销&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：<input type="text" name="condition.saleCountBegin"
+                                                                  class="input-medium"
+                                                                  value="#{if condition?.saleCountBegin >=0}${condition?.saleCountBegin}#{/if}"/>
+                    至 <input type="text" name="condition.saleCountEnd" class="input-medium"
+                             value="#{if condition?.saleCountEnd >=0}${condition?.saleCountEnd}#{/if}"/>
+                </td>
+
+
+
+
+
+
+
             </tr>
             <tr>
 
@@ -52,6 +67,17 @@
                 #{/select}
 
                 </td>
+
+
+
+                <td>添&nbsp;&nbsp;加&nbsp;&nbsp;时&nbsp;&nbsp;间：<input type="text" name="condition.saleCountBegin"
+                                                                  class="input-medium"
+                                                                  value="#{if condition?.saleCountBegin >=0}${condition?.saleCountBegin}#{/if}"/>
+                    至 <input type="text" name="condition.saleCountEnd" class="input-medium"
+                             value="#{if condition?.saleCountEnd >=0}${condition?.saleCountEnd}#{/if}"/>
+                </td>
+
+
             </tr>
             <tr>
                 <td width="30%">积&nbsp;&nbsp;&nbsp;分&nbsp;&nbsp;&nbsp;价：<input type="text" name="condition.pointPriceBegin"
@@ -60,12 +86,8 @@
                                                                                                                                value="${condition?.pointPriceEnd}"/>
 
                 </td>
-                <td>销&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：<input type="text" name="condition.saleCountBegin"
-                                                                  class="input-medium"
-                                                                  value="#{if condition?.saleCountBegin >=0}${condition?.saleCountBegin}#{/if}"/>
-                    至 <input type="text" name="condition.saleCountEnd" class="input-medium"
-                             value="#{if condition?.saleCountEnd >=0}${condition?.saleCountEnd}#{/if}"/>
-                </td>
+
+
                 <td>
                     <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
                 </td>
@@ -88,6 +110,7 @@
                 <th width="30px"><input type="checkbox" id="selectall" name="selectall">全选</th>
                 <th width="200px">&{'pointGoods.name'}</th>
                 <th width="200px">&{'pointGoods.pointPrice'}</th>
+                <th width="200px">&{'pointGoods.faceValue'}</th>
                 <th width="200px">&{'pointGoods.materialType'}</th>
                 <th width="200px">&{'pointGoods.effective'}</th>
                 <th width="100px">&{'pointGoods.baseSale'}</th>
@@ -102,7 +125,10 @@
             <tbody>
 
             #{paginate.list items:pointGoodsPage, as:'pointGoods'}
-            <tr class="#{if pointGoods.isExpired() || pointGoods.baseSale?.intValue() == 0}tr-offsale#{/if} transparent">
+            *{<tr class="#{if pointGoods.isExpired() || pointGoods.baseSale?.intValue() == 0}tr-offsale#{/if} transparent">}*
+            <tr class="transparent">
+
+
                 <td style="text-align:center"><input type="checkbox" id="checkoption" value="${pointGoods.id}" name="id"/></td>
 
                 <td>
@@ -114,9 +140,9 @@
 
 
 
-                            <td><a href="http://localhost:9003/pointgoods/${pointGoods.id}?preview=true" target="_blank"><img
+                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/pointgoods/${pointGoods.id}?preview=true" target="_blank"><img
                                     src="${pointGoods?.imageTinyPath}"/></a></td>
-                            <td><a href="http://localhost:9003/pointgoods/${pointGoods.id}?preview=true" target="_blank">${pointGoods?.name}
+                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/pointgoods/${pointGoods.id}?preview=true" target="_blank">${pointGoods?.name}
                             </a>
 
 
@@ -134,7 +160,10 @@
                         </tbody>
                     </table>
                 </td>
-                <td class="amount">${pointGoods?.pointPrice?.formatCurrency('CNY')}</td>
+                <td class="amount">${pointGoods?.pointPrice} 点</td>
+
+
+                <td class="amount">${pointGoods?.faceValue?.formatCurrency('CNY')}</td>
 
 
 
@@ -143,7 +172,7 @@
 
 
 
-                <td> ${pointGoods?.expireAt}</td>
+                <td class="#{if pointGoods.isExpired()} tr-offsale  #{/if} transparent"> ${pointGoods?.expireAt}</td>
 
 
                 <td class="amount">${pointGoods?.baseSale}</td>
@@ -154,9 +183,12 @@
 
 
 
-                <td>
+                <td >
 
-                &{'pointGoods.'+pointGoods?.getStatus()}
+                &{'pointGoods.'+pointGoods?.getCurrentStatus()}
+
+
+
 
                     #{if models.sales.GoodsStatus.OFFSALE.equals(pointGoods?.getStatus())}
                         <br/>#{vx.operateLink text:"同意上架", url:"/pointgoods/"+pointGoods?.id+"/onSale",method:"PUT"/}#{/if}

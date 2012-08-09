@@ -2,6 +2,9 @@ package models.sales;
 
 
 import cache.CacheCallBack;
+import models.mail.MailMessage;
+import models.mail.MailUtil;
+import models.supplier.Supplier;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
@@ -74,6 +77,8 @@ import java.util.*;
 @Entity
 @Table(name = "point_goods")
 public class PointGoods extends Model {
+    public static String EMAIL_RECEIVER = Play.configuration.getProperty("goods_not_enough.receiver", "dev@uhuila.com");
+
     private static final long serialVersionUID = 7063232063912330652L;
 
     public static final String PREVIEW_IMG_ROOT = "/9999/9999/9999/";
@@ -367,19 +372,47 @@ public class PointGoods extends Model {
     }
 
     public GoodsStatus getStatus() {
-        if (status != null && GoodsStatus.ONSALE.equals(status) &&
-                (expireAt != null && expireAt.before(new Date())) || (baseSale != null && baseSale <= 0)) {
-            status = GoodsStatus.OFFSALE;
-        }
+//        if (status != null && GoodsStatus.ONSALE.equals(status) &&
+//                (expireAt != null && expireAt.before(new Date())) || (baseSale != null && baseSale <= 0)) {
+//            status = GoodsStatus.OFFSALE;
+//        }
         return status;
     }
+
+
+    public GoodsStatus getCurrentStatus() {
+
+        return status;
+    }
+
 
     /**
      * @return
      */
     @Transient
     public boolean isExpired() {
-        return expireAt != null && expireAt.before(new Date());
+        boolean isExpired=false;
+        if(expireAt != null && expireAt.before(new Date()))
+        {    isExpired=true;
+
+
+//            //发送提醒邮件
+//            MailMessage mailMessage = new MailMessage();
+//            mailMessage.addRecipient(EMAIL_RECEIVER);
+//            mailMessage.setSubject(Play.mode.isProd() ? "积分商品 " : "商品下架【测试】");
+//
+//
+//            PointGoods pointGoods = PointGoods.findById(orderItem.goods.supplierId);
+//
+//            mailMessage.putParam("goodsName", pointGoods.name);
+//            mailMessage.putParam("pointPrice", pointGoods.pointPrice);
+//            mailMessage.putParam("expireAt", pointGoods.expireAt);
+//
+//
+//            MailUtil.sendGoodsOffSalesMail(mailMessage);
+        }
+
+        return  isExpired;
     }
 
     //=================================================== 数据库操作 ====================================================
@@ -619,7 +652,7 @@ public class PointGoods extends Model {
 
     public static List<PointGoods> findTopSaleGoods(int limit) {
         String sql = "select g from PointGoods g where " +
-                "g.status =:status and g.deleted =:deleted and (g.expireAt >:expireAt or g.expireAt IS NULL) and g.baseSale>=1 order by g.saleCount  desc";
+                "g.status =:status and g.deleted =:deleted and g.expireAt >:expireAt and g.baseSale>=1 order by g.saleCount desc";
         Query query = PointGoods.em().createQuery(sql);
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
