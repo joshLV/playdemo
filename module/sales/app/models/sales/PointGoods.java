@@ -107,7 +107,7 @@ public class PointGoods extends Model {
     @Max(999999)
     @Money
     @Column(name = "point_price")
-    public BigDecimal pointPrice;
+    public Long pointPrice;
 
     //  ======  价格列表结束 ==========
 
