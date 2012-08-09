@@ -8,22 +8,22 @@
 #{/set}
 #{set 'moreStyles'}
 <style type="text/css">
-    .table-striped tbody .tr-offsale{
+    .table-striped tbody .tr-offsale {
         /*color: #A0A0A0;*/
         color: red;
     }
 
-    .table-striped tbody tr.transparent td td{
+    .table-striped tbody tr.transparent td td {
         border-left: 0px;
         background: transparent;
     }
 
-    .expired{
+    .expired {
         color: #ffbe28;
         font-weight: bold;
     }
 
-    .zeroBaseSale{
+    .zeroBaseSale {
         color: #942e8f;
         font-weight: bold;
     }
@@ -31,204 +31,207 @@
 </style>
 #{/set}
 <div class="body">
-    <legend>${title}</legend>
-    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperatePointGoods.index()}" method="GET">
-        <table width="100%">
-            <tr>
+<legend>${title}</legend>
+<form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperatePointGoods.index()}" method="GET">
+    <table width="100%">
+        <tr>
 
-                <td width="30%">积分商品名称：<input type="text" name="condition.name" class="input-medium"
-                                              value="${condition?.name}"/></td>
-
-
-                <td>销&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：<input type="text" name="condition.saleCountBegin"
-                                                                  class="input-medium"
-                                                                  value="#{if condition?.saleCountBegin >=0}${condition?.saleCountBegin}#{/if}"/>
-                    至 <input type="text" name="condition.saleCountEnd" class="input-medium"
-                             value="#{if condition?.saleCountEnd >=0}${condition?.saleCountEnd}#{/if}"/>
-                </td>
+            <td width="30%">积分商品名称：<input type="text" name="condition.name" class="input-medium"
+                                          value="${condition?.name}"/></td>
 
 
+            <td>销&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：<input type="text" name="condition.saleCountBegin"
+                                                              class="input-medium"
+                                                              value="#{if condition?.saleCountBegin >=0}${condition?.saleCountBegin}#{/if}"/>
+                至<input type="text" name="condition.saleCountEnd" class="input-medium"
+                        value="#{if condition?.saleCountEnd >=0}${condition?.saleCountEnd}#{/if}"/>
+            </td>
 
 
+        </tr>
+        <tr>
 
+            <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
+            #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
+                #{option ""}不限#{/option}
+                #{option "ONSALE"}&{'goods.ONSALE'}#{/option}
+                #{option "OFFSALE"}&{'goods.OFFSALE'}#{/option}
 
+            #{/select}
 
-            </tr>
-            <tr>
-
-                <td width="30%">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
-                #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
-                    #{option ""}不限#{/option}
-                    #{option "ONSALE"}&{'goods.ONSALE'}#{/option}
-                    #{option "OFFSALE"}&{'goods.OFFSALE'}#{/option}
-
-                #{/select}
-
-                </td>
+            </td>
 
 
 
-                *{<td>添&nbsp;&nbsp;加&nbsp;&nbsp;时&nbsp;&nbsp;间：<input type="text" name="condition.createdAtBegin"}*
-                                                                    *{class="input-medium Wdate"}*
-                                                                    *{onfocus="WdatePicker({readOnly:true})"}*
+        *{<td>添&nbsp;&nbsp;加&nbsp;&nbsp;时&nbsp;&nbsp;间：<input type="text" name="condition.createdAtBegin"}*
+        *{class="input-medium Wdate"}*
+        *{onfocus="WdatePicker({readOnly:true})"}*
 
-                                                                    *{value="#{if condition?.createdAtBegin >=0}${condition?.createdAtBegin}#{/if}"/>}*
-                    *{至 <input type="text" name="condition.createdAtEnd" class="input-medium Wdate"}*
-                             *{onfocus="WdatePicker({readOnly:true})"   value="#{if condition?.createdAtEnd >=0}${condition?.createdAtEnd}#{/if}"/>}*
-                *{</td>}*
-
-
-
-                <td>添&nbsp;&nbsp;加&nbsp;&nbsp;时&nbsp;&nbsp;间：
-                <input type="text" id="condition_createdAtBegin" class="input-medium Wdate" name="condition.createdAtBegin"
-                       onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
-                    至  <input type="text" id="condition_createdAtEnd" class="input-medium Wdate" name="condition.createdAtEnd"
-                       onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
-                </td>
-
-            </tr>
-            <tr>
-                <td width="30%">积&nbsp;&nbsp;&nbsp;分&nbsp;&nbsp;&nbsp;价：<input type="text" name="condition.pointPriceBegin"
-                                                                               class="input-medium"
-                                                                               value="${condition?.pointPriceBegin}"/> 至 <input type="text" name="condition.pointPriceEnd" class="input-medium"
-                                                                                                                               value="${condition?.pointPriceEnd}"/>
-
-                </td>
-
-
-                <td>
-                    <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
-                </td>
-            </tr>
-        </table>
-    </form>
-    <form class="form-horizontal" name="deletefrm" id="deletefrm">
-        <div style="margin-bottom: 12px">
-            <button class="btn btn-primary" id="onsales" type="button">同意上架</button>
-            <button class="btn btn-primary" id="offsales" type="button">批量下架</button>
-            <button class="btn btn-primary" id="deletebtn" type="button">删除</button>
-        </div>
-
-
-    #{vx.tab name:'pointGoods',enumItems: [models.sales.GoodsStatus.ONSALE,models.sales.GoodsStatus.OFFSALE],
-    select:'condition_status',value:condition?.status/}
-        <table class="table table-striped table-bordered table-condensed">
-            <thead>
-            <tr>
-                <th width="30px"><input type="checkbox" id="selectall" name="selectall">全选</th>
-                <th width="200px">&{'pointGoods.name'}</th>
-                <th width="200px">&{'pointGoods.pointPrice'}</th>
-                <th width="200px">&{'pointGoods.faceValue'}</th>
-                <th width="200px">&{'pointGoods.materialType'}</th>
-                <th width="200px">&{'pointGoods.effective'}</th>
-                <th width="100px">&{'pointGoods.baseSale'}</th>
-                <th width="200px">&{'pointGoods.saleCount'}(件)</th>
-
-                <th width="200px">&{'pointGoods.createdAt'}</th>
-
-                <th width="50px">&{'pointGoods.status'}</th>
-                <th width="50px">操 作</th>
-
-
-            </tr>
-            </thead>
-
-            <tbody>
-
-            #{paginate.list items:pointGoodsPage, as:'pointGoods'}
-            *{<tr class="#{if pointGoods.isExpired() || pointGoods.baseSale?.intValue() == 0}tr-offsale#{/if} transparent">}*
-            <tr class="transparent">
-
-
-                <td style="text-align:center"><input type="checkbox" id="checkoption" value="${pointGoods.id}" name="id"/></td>
-
-                <td>
-                    <table>
-                        <tbody>
-                        <tr>
+        *{value="#{if condition?.createdAtBegin >=0}${condition?.createdAtBegin}#{/if}"/>}*
+        *{至 <input type="text" name="condition.createdAtEnd" class="input-medium Wdate"}*
+        *{onfocus="WdatePicker({readOnly:true})"   value="#{if condition?.createdAtEnd >=0}${condition?.createdAtEnd}#{/if}"/>}*
+        *{</td>}*
 
 
 
+        *{<td>添&nbsp;&nbsp;加&nbsp;&nbsp;时&nbsp;&nbsp;间：}*
+        *{<input type="text" id="condition_createdAtBegin" class="ack" name="condition.createdAtBegin"}*
+        *{onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}">}*
+        *{至  <input type="text" id="condition_createdAtEnd" class="input-medium Wdate" name="condition.createdAtEnd"}*
+        *{onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">}*
+        *{</td>}*
 
 
-                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/pointgoods/${pointGoods.id}?preview=true" target="_blank"><img
+            <td>添加时间：<input type="text" name="condition.createdAtBegin" value="${condition.createdAtBegin?.format()}"
+                            onfocus="WdatePicker({readOnly:true})"
+                            class="input-medium Wdate"/>至 <input type="text" name="condition.createdAtEnd"
+                                                                 value="${condition.createdAtEnd?.format()}"
+                                                                 onfocus="WdatePicker({readOnly:true})"
+                                                                 class="input-medium Wdate"/></td>
+
+
+        </tr>
+        <tr>
+            <td width="30%">积&nbsp;&nbsp;&nbsp;分&nbsp;&nbsp;&nbsp;价：<input type="text" name="condition.pointPriceBegin"
+                                                                           class="input-medium"
+                                                                           value="${condition?.pointPriceBegin}"/> 至
+                <input type="text" name="condition.pointPriceEnd" class="input-medium"
+                       value="${condition?.pointPriceEnd}"/>
+
+            </td>
+
+
+            <td>
+                <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
+            </td>
+        </tr>
+    </table>
+</form>
+<form class="form-horizontal" name="deletefrm" id="deletefrm">
+    <div style="margin-bottom: 12px">
+        <button class="btn btn-primary" id="onsales" type="button">同意上架</button>
+        <button class="btn btn-primary" id="offsales" type="button">批量下架</button>
+        <button class="btn btn-primary" id="deletebtn" type="button">删除</button>
+    </div>
+
+
+#{vx.tab name:'pointGoods',enumItems: [models.sales.GoodsStatus.ONSALE,models.sales.GoodsStatus.OFFSALE],
+select:'condition_status',value:condition?.status/}
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+        <tr>
+            <th width="30px"><input type="checkbox" id="selectall" name="selectall">全选</th>
+            <th width="200px">&{'pointGoods.name'}</th>
+            <th width="200px">&{'pointGoods.pointPrice'}</th>
+            <th width="200px">&{'pointGoods.faceValue'}</th>
+            <th width="200px">&{'pointGoods.materialType'}</th>
+            <th width="200px">&{'pointGoods.effective'}</th>
+            <th width="100px">&{'pointGoods.baseSale'}</th>
+            <th width="200px">&{'pointGoods.saleCount'}(件)</th>
+
+            <th width="200px">&{'pointGoods.createdAt'}</th>
+
+            <th width="50px">&{'pointGoods.status'}</th>
+            <th width="50px">操 作</th>
+
+
+        </tr>
+        </thead>
+
+        <tbody>
+
+        #{paginate.list items:pointGoodsPage, as:'pointGoods'}
+        *{<tr class="#{if pointGoods.isExpired() || pointGoods.baseSale?.intValue() == 0}tr-offsale#{/if} transparent">}*
+        <tr class="transparent">
+
+
+            <td style="text-align:center"><input type="checkbox" id="checkoption" value="${pointGoods.id}" name="id"/>
+            </td>
+
+            <td>
+                <table>
+                    <tbody>
+                    <tr>
+
+
+                        <td>
+                            <a href="http://${play.Play.configuration.getProperty("www.url")}/pointgoods/${pointGoods.id}?preview=true"
+                               target="_blank"><img
                                     src="${pointGoods?.imageTinyPath}"/></a></td>
-                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/pointgoods/${pointGoods.id}?preview=true" target="_blank">${pointGoods?.name}
+                        <td>
+                            <a href="http://${play.Play.configuration.getProperty("www.url")}/pointgoods/${pointGoods.id}?preview=true"
+                               target="_blank">${pointGoods?.name}
                             </a>
 
 
 
-                            *{<td><img src="${pointGoods?.imageTinyPath}"/></td>}*
+                        *{<td><img src="${pointGoods?.imageTinyPath}"/></td>}*
 
-                            *{<td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${pointGoods.id}?preview=true" target="_blank"><img}*
-                                    *{src="${pointGoods?.imageTinyPath}"/></a></td>}*
-                            *{<td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${pointGoods.id}?preview=true" target="_blank">${pointGoods?.name}}*
-                            *{</a>}*
-
-
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </td>
-                <td class="amount">${pointGoods?.pointPrice} 点</td>
+                        *{<td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${pointGoods.id}?preview=true" target="_blank"><img}*
+                        *{src="${pointGoods?.imageTinyPath}"/></a></td>}*
+                        *{<td><a href="http://${play.Play.configuration.getProperty("www.url")}/goods/${pointGoods.id}?preview=true" target="_blank">${pointGoods?.name}}*
+                        *{</a>}*
 
 
-                <td class="amount">${pointGoods?.faceValue?.formatCurrency('CNY')}</td>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td class="amount">${pointGoods?.pointPrice} 点</td>
 
 
-
-                <td>&{'goods.'+pointGoods?.materialType}</td>
-
+            <td class="amount">${pointGoods?.faceValue?.formatCurrency('CNY')}</td>
 
 
-                <td class="#{if pointGoods.isExpired()} tr-offsale  #{/if} transparent"> ${pointGoods?.expireAt?.format("yyyy-MM-dd hh:mm:ss")}</td>
-
-                *{<td >${pointGoods?.expireAt.format("yyyy-MM-dd hh:mm:ss")}</td>}*
+            <td>&{'goods.'+pointGoods?.materialType}</td>
 
 
-                <td class="amount">${pointGoods?.baseSale}</td>
-                <td class="amount">${pointGoods?.saleCount}</td>
+            <td class="#{if pointGoods.isExpired()} tr-offsale  #{/if} transparent"> ${pointGoods?.expireAt?.format("yyyy-MM-dd hh:mm:ss")}</td>
 
-                <td >${pointGoods?.createdAt.format("yyyy-MM-dd hh:mm:ss")}</td>
-
+        *{<td >${pointGoods?.expireAt.format("yyyy-MM-dd hh:mm:ss")}</td>}*
 
 
+            <td class="amount">${pointGoods?.baseSale}</td>
+            <td class="amount">${pointGoods?.saleCount}</td>
 
-                <td >
+            <td>${pointGoods?.createdAt.format("yyyy-MM-dd hh:mm:ss")}</td>
 
-                &{'pointGoods.'+pointGoods?.getCurrentStatus()}
+
+            <td>
+
+            &{'pointGoods.'+pointGoods?.getStatus()}
 
 
 
 
-                    #{if models.sales.GoodsStatus.OFFSALE.equals(pointGoods?.getStatus())}
-                        <br/>#{vx.operateLink text:"同意上架", url:"/pointgoods/"+pointGoods?.id+"/onSale",method:"PUT"/}#{/if}
-                    #{if models.sales.GoodsStatus.ONSALE.equals(pointGoods?.getStatus())}
-                        <br/>#{vx.operateLink text:"强制下架", url:"/pointgoods/"+pointGoods?.id+"/offSale",method:"PUT"/}#{/if}
-                </td>
-                <td>
+                #{if models.sales.GoodsStatus.OFFSALE.equals(pointGoods?.getStatus())}
+                    <br/>#{vx.operateLink text:"同意上架", url:"/pointgoods/"+pointGoods?.id+"/onSale",method:"PUT"/}#{/if}
+                #{if models.sales.GoodsStatus.ONSALE.equals(pointGoods?.getStatus())}
+                    <br/>#{vx.operateLink text:"强制下架", url:"/pointgoods/"+pointGoods?.id+"/offSale",method:"PUT"/}#{/if}
+            </td>
+            <td>
 
-                    <a href="@{OperatePointGoods.show(pointGoods.id)}">查看</a>
+                <a href="@{OperatePointGoods.show(pointGoods.id)}">查看</a>
 
-                    #{if !models.sales.GoodsStatus.APPLY.equals(pointGoods.status)}
-                        /<a href="@{OperatePointGoods.edit(pointGoods.id)}">修改</a>
-                    #{/if}
-                    #{if !models.sales.GoodsStatus.ONSALE.equals(pointGoods.status) && !models.sales.GoodsStatus.APPLY
-                    .equals(pointGoods.status)}
-                        / #{vx.deleteLink action:"pointgoods", id:pointGoods.id, name:pointGoods.name/}
-                    #{/if}
+                #{if !models.sales.GoodsStatus.APPLY.equals(pointGoods.status)}
+                    /<a href="@{OperatePointGoods.edit(pointGoods.id)}">修改</a>
+                #{/if}
+                #{if !models.sales.GoodsStatus.ONSALE.equals(pointGoods.status) && !models.sales.GoodsStatus.APPLY
+                .equals(pointGoods.status)}
+                    / #{vx.deleteLink action:"pointgoods", id:pointGoods.id, name:pointGoods.name/}
+                #{/if}
 
-            </tr>
-            #{/paginate.list}
-            </tbody>
-        </table>
-    </form>
-    <div class="pagination" align="center">
-        <ul>
-        #{paginate.controls items:pointGoodsPage /}
-        </ul>
-    </div>
+        </tr>
+        #{/paginate.list}
+        </tbody>
+    </table>
+</form>
+<div class="pagination" align="center">
+    <ul>
+    #{paginate.controls items:pointGoodsPage /}
+    </ul>
+</div>
 </div>
 
 <div class="modal" id="sendModal" style="display: none;">
@@ -250,7 +253,7 @@
 </div>
 
 <script type="text/javascript">
-    function prepareSend(id,priority,keywords) {
+    function prepareSend(id, priority, keywords) {
         $("#setForm").attr("action", "/goods/" + id + "/priority?x-http-method-override=PUT");
         $('#sendModal').modal('show');
         $("#goods_priority").val(priority);
@@ -277,19 +280,19 @@
         });
 
         $("#priority").click(function () {
-            if(this.checked){
-                this.value="1";
+            if (this.checked) {
+                this.value = "1";
             } else {
-                this.value="0" ;
+                this.value = "0";
             }
             $("#frmlist").submit();
         });
 
         $("#isLottery").click(function () {
-            if(this.checked){
-                this.value=true;
+            if (this.checked) {
+                this.value = true;
             } else {
-                this.value=false;
+                this.value = false;
             }
             $("#frmlist").submit();
         });

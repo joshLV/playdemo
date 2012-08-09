@@ -51,7 +51,7 @@ public class OperatePointGoods extends Controller {
         if (condition == null) {
             condition = new PointGoodsCondition();
 
-            condition.status = GoodsStatus.ONSALE;
+//            condition.status = GoodsStatus.ONSALE;
         }
 
 
@@ -124,7 +124,6 @@ public class OperatePointGoods extends Controller {
 //        System.out.println("basesale>>>"+pointGoods.baseSale);
 
 
-
         checkCount(pointGoods);
 
 
@@ -161,7 +160,7 @@ public class OperatePointGoods extends Controller {
 //                          System.out.println("aaaaaaaaaaaaa<<<<<"+imagePath+"cccccccc>>>>>");
 
 
-       // renderJSON(imagePath);
+        // renderJSON(imagePath);
 
         index(null);
     }
@@ -268,12 +267,12 @@ public class OperatePointGoods extends Controller {
     //限量不能大于库存
     private static void checkCount(PointGoods pointGoods) {
 
-        if (pointGoods.baseSale==null)
+        if (pointGoods.baseSale == null)
 
             Validation.addError("pointGoods.baseSale", "validation.required");
 
 
-       else if ( pointGoods.limitNumber!=null && pointGoods.baseSale <= pointGoods.limitNumber)
+        else if (pointGoods.limitNumber != null && pointGoods.baseSale <= pointGoods.limitNumber)
             Validation.addError("pointGoods.limitNumber", "validation.largarThanBaseSale");
 
 
@@ -451,10 +450,6 @@ public class OperatePointGoods extends Controller {
 //        renderJSON(imageName);
 //
 //    }
-
-
-
-
 
 
 }

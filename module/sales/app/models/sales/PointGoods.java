@@ -380,10 +380,10 @@ public class PointGoods extends Model {
     }
 
 
-    public GoodsStatus getCurrentStatus() {
-
-        return status;
-    }
+//    public GoodsStatus getCurrentStatus() {
+//
+//        return status;
+//    }
 
 
     /**
@@ -520,7 +520,7 @@ public class PointGoods extends Model {
         JPAExtPaginator<PointGoods> pointGoodsPage = new JPAExtPaginator<>
                 ("PointGoods g", "g", PointGoods.class, condition.getFilter(),
                         condition.getParamMap())
-                .orderBy(condition.getOrderByExpress());
+                .orderBy(condition.getOrderByCreatedAtDesc());
         pointGoodsPage.setPageNumber(pageNumber);
         pointGoodsPage.setPageSize(pageSize);
         pointGoodsPage.setBoundaryControlsEnabled(false);

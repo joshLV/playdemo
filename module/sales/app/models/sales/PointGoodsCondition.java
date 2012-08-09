@@ -1,6 +1,7 @@
 package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 import models.resale.Resaler;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
@@ -198,8 +199,14 @@ public class PointGoodsCondition implements Serializable {
         // && saleCountEnd >= 0
         {
             condBuilder.append(" and g.createdAt <= :createdAtEnd");
-            paramMap.put("createdAtEnd", createdAtEnd);
+            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
         }
+
+
+
+
+
+
 
 
 
@@ -242,6 +249,10 @@ public class PointGoodsCondition implements Serializable {
     public String getOrderByExpress() {
         String orderType = StringUtils.isBlank(orderByType) ? "DESC" : orderByType;
         return StringUtils.isBlank(orderBy) ? "g.createdAt DESC" : orderBy + " " + orderType;
+    }
+
+    public String getOrderByCreatedAtDesc() {
+        return  "g.createdAt DESC" ;
     }
 
     public Map<String, Object> getParamMap() {
@@ -400,6 +411,7 @@ public class PointGoodsCondition implements Serializable {
     }
 
     @Override
+    //没有加上 createdAt
     public String toString() {
         return super.toString() + "[supplierId:" + supplierId + ",categoryId:" + categoryId +
                 ",districtId:" + districtId + ",cityId:" + cityId +
