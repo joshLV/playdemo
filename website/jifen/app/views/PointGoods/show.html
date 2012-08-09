@@ -108,7 +108,7 @@
                 #{if goods.onSale()}
 
 
-                    <a class="btn" href="#">立即兑换<b></b></a>
+                    <a class="btn" href="/orders/${goods.id}">立即兑换<b></b></a>
 
 
                     <div class="error" style="display:none">
@@ -117,7 +117,10 @@
                         <a class="close" id="J_close" href="#" title="关闭"></a>
                     </div>
                 #{/if}
-                #{elseif params['isSupplier']== null || !params['isSupplier']}
+                #{elseif goods.isExpired()}
+                    <span>已过期</span>
+                #{/elseif}
+                #{elseif}
                     <span>已下架</span>
                 #{/elseif}
             </div>
