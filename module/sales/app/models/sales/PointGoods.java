@@ -619,7 +619,7 @@ public class PointGoods extends Model {
 
     public static List<PointGoods> findTopSaleGoods(int limit) {
         String sql = "select g from PointGoods g where " +
-                "g.status =:status and g.deleted =:deleted and g.expireAt >:expireAt and g.baseSale>=1 order by g.saleCount desc";
+                "g.status =:status and g.deleted =:deleted and (g.expireAt >:expireAt or g.expireAt IS NULL) and g.baseSale>=1 order by g.saleCount  desc";
         Query query = PointGoods.em().createQuery(sql);
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
