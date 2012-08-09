@@ -106,10 +106,10 @@
     #{option "RESALER"}&{'report.RESALER'}#{/option}
 #{/select}
     起止日期
-    <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
-    <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
+    <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.paidAtBegin"
+           onfocus="WdatePicker({readOnly:true})" value="${condition.paidAtBegin?.format()}"> -
+    <input type="text" id="condition_end" class="input-medium Wdate" name="condition.paidAtEnd"
+           onfocus="WdatePicker({readOnly:true})" value="${condition.paidAtEnd?.format()}">
 
     <button type="submit" class="btn btn-primary" id="search">搜索</button>
     <ul class="nav nav-pills">
@@ -138,30 +138,65 @@
     <th width="50px">已收款金额</th>
     </thead>
 #{set i:0/}
+%{
+    baseUrl=play.Play.configuration.getProperty("uri.operate_business");
+
+    }%
 #{paginate.list items:reportPage, as:'report'}
+%{
+    userType=report?.order?.userType== null ? 'CONSUMER':report?.order?.userType;
+    paidAtBegin=condition?.paidAtBegin?.format();
+    paidAtEnd=condition?.paidAtEnd?.format();
+
+    userName="condition.userName="+report?.loginName;
+    }%
     <tr>
         #{set i:i+1/}
         <td>${(reportPage.pageNumber-1)*reportPage.pageSize+i}</td>
         <td>${report?.order?.userType==models.accounts.AccountType.RESALER ? '分销商':'消费者'}</td>
         <td>${report.userName}<br>${report?.loginName}</td>
-        <td>${report?.buyNumber}</td>
-        <td>${report?.salePrice?.formatCurrency('CNY')}</td>
-        <td>${report?.consumedNumber}</td>
-        <td>${report?.consumedPrice?.formatCurrency('CNY')}</td>
-        <td>${report?.refundNumber}</td>
-        <td>${report?.refundPrice?.formatCurrency('CNY')}</td>
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+               target="_blank">${report?.buyNumber}</a></td>
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+               target="_blank">${report?.salePrice?.formatCurrency('CNY')}</a></td>
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+               target="_blank">${report?.consumedNumber}</a></td>
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=CONSUMED&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+               target="_blank">${report?.consumedPrice?.formatCurrency('CNY')}</a></td>
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+               target="_blank">${report?.refundNumber}</a></td>
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${userType}&${userName}&condition.status=REFUND&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+               target="_blank">${report?.refundPrice?.formatCurrency('CNY')}</a></td>
         <td>${(report?.salePrice-report?.refundPrice)?.formatCurrency('CNY')}</td>
         <td>0</td>
     </tr>
 #{/paginate.list}
     <tr>
         <td colspan="3">汇总</td>
-        <td>${summary?.totalNumber}</td>
-        <td>${summary?.amount?.formatCurrency("CNY")}</td>
-        <td>${summary?.consumedNumber}</td>
-        <td>${summary?.consumedPrice?.formatCurrency("CNY")}</td>
-        <td>${summary?.refundNumber}</td>
-        <td>${summary?.totalRefundPrice?.formatCurrency('CNY')}</td>
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+               target="_blank">${summary?.totalNumber}</a></td>
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+               target="_blank">${summary?.amount?.formatCurrency("CNY")}</a></td>
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=CONSUMED&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+               target="_blank">${summary?.consumedNumber}</a></td>
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=CONSUMED&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+               target="_blank">${summary?.consumedPrice?.formatCurrency("CNY")}</a></td>
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=REFUND&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+               target="_blank">${summary?.refundNumber}</a></td>
+        <td>
+            <a href="${baseUrl}/coupons?condition.accountType=${condition?.accountType}&condition.status=REFUND&condition.paidAtBegin=${paidAtBegin}&condition.paidAtEnd=${paidAtEnd}"
+               target="_blank">${summary?.totalRefundPrice?.formatCurrency('CNY')}</a></td>
         <td>${summary?.shouldGetPrice?.formatCurrency('CNY')}</td>
         <td>${summary?.haveGetPrice?.formatCurrency('CNY')}</td>
     </tr>

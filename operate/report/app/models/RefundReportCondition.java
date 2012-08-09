@@ -15,24 +15,23 @@ import java.util.Map;
  * Time: 下午4:51
  */
 public class RefundReportCondition {
-    public Date createdAtBegin = DateUtil.getBeginOfDay();
-    public Date createdAtEnd = DateUtil.getEndOfDay(new Date());
+    public Date refundAtBegin = DateUtil.getBeginOfDay();
+    public Date refundAtEnd = DateUtil.getEndOfDay(new Date());
     public String interval = "-1d";
     public String goodsName;
     public String supplierName;
-    public String supplierId;
     private Map<String, Object> paramMap = new HashMap<>();
 
     public String getFilter() {
         StringBuilder condBuilder = new StringBuilder(" where e.status=:status and  e.goods.isLottery=false");
         paramMap.put("status", ECouponStatus.REFUND);
-        if (createdAtBegin != null) {
-            condBuilder.append(" and e.refundAt >= :createdAtBegin");
-            paramMap.put("createdAtBegin", createdAtBegin);
+        if (refundAtBegin != null) {
+            condBuilder.append(" and e.refundAt >= :refundAtBegin");
+            paramMap.put("refundAtBegin", refundAtBegin);
         }
-        if (createdAtEnd != null) {
-            condBuilder.append(" and e.refundAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
+        if (refundAtEnd != null) {
+            condBuilder.append(" and e.refundAt < :refundAtEnd");
+            paramMap.put("refundAtEnd", DateUtil.getEndOfDay(refundAtEnd));
         }
         if (StringUtils.isNotBlank(goodsName)) {
             condBuilder.append(" and e.goods.name like :name");

@@ -1,7 +1,6 @@
 package models;
 
 import models.accounts.AccountType;
-import models.accounts.TradeType;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
@@ -126,38 +125,37 @@ public class ResaleSalesReport extends Model {
             query.setParameter(param, condition.getParamMap().get(param));
         }
 
-        long refundCount = 0l;
-        BigDecimal consumedPrice = BigDecimal.ZERO;
-        long buyCount = 0l;
-        BigDecimal amount = BigDecimal.ZERO;
-        BigDecimal refundPrice = BigDecimal.ZERO;
-        BigDecimal totRefundPrice = BigDecimal.ZERO;
+
 
         List<ResaleSalesReport> resultList = query.getResultList();
-        System.out.println(resultList.size());
         List<Order> newList = new ArrayList<Order>();
         for (ResaleSalesReport item : resultList) {
             long consumedCount = 0l;
+            long refundCount = 0l;
+            BigDecimal consumedPrice = BigDecimal.ZERO;
+            long buyCount = 0l;
+            BigDecimal amount = BigDecimal.ZERO;
+            BigDecimal refundPrice = BigDecimal.ZERO;
+            BigDecimal totRefundPrice = BigDecimal.ZERO;
             newList = Order.find("userId=? and userType=?", item.order.userId, AccountType.RESALER).fetch();
             for (Order order : newList) {
+
                 for (ECoupon coupon : order.eCoupons) {
                     if (coupon.status == ECouponStatus.CONSUMED) {
                         consumedCount++;
                         consumedPrice = consumedPrice.add(coupon.salePrice == null ? new BigDecimal(0) : coupon.salePrice);
                     }
+
+                    if (coupon.status == ECouponStatus.REFUND) {
+                        refundCount++;
+                        refundPrice = refundPrice.add(coupon.refundPrice == null ? new BigDecimal(0) : coupon.refundPrice);
+                    }
                 }
             }
             item.consumedPrice = consumedPrice;
             item.consumedNumber = consumedCount;
-        }
-
-        //取得分销商退款的金额
-        for (ResaleSalesReport resaleSalesReport : resultList) {
-            sql = "select sum(t.amount) from TradeBill t where t.tradeType='" + TradeType.REFUND + "' and t.orderId=" + resaleSalesReport.order.id;
-            Object obj = JPA.em().createQuery(sql).getSingleResult();
-            BigDecimal price = obj == null ? BigDecimal.ZERO : new BigDecimal(obj.toString());
-            resaleSalesReport.refundNumber = refundCount++;
-            resaleSalesReport.refundPrice = price;
+            item.refundNumber = refundCount;
+            item.refundPrice = refundPrice;
         }
 
         return resultList;
@@ -214,13 +212,6 @@ public class ResaleSalesReport extends Model {
         }
 
         List<ResaleSalesReport> resultList = query.getResultList();
-        //取得消费者退款的金额
-        for (ResaleSalesReport resaleSalesReport : resultList) {
-            sql = "select sum(t.amount) from TradeBill t where t.tradeType='" + TradeType.REFUND + "' and t.orderId=" + resaleSalesReport.order.id;
-            Object obj = JPA.em().createQuery(sql).getSingleResult();
-            BigDecimal price = obj == null ? BigDecimal.ZERO : new BigDecimal(obj.toString());
-            resaleSalesReport.refundPrice = price;
-        }
         long refundCount = 0l;
         long consumedCount = 0l;
         BigDecimal consumedPrice = BigDecimal.ZERO;

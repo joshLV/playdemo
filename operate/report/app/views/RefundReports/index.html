@@ -109,10 +109,10 @@
     商品名称：<input type="text" name="condition.goodsName" class="input-medium"
                 value="${condition?.goodsName}"/>
     起止日期
-    <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
-    <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
+    <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.refundAtBegin"
+           onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtBegin?.format()}"> -
+    <input type="text" id="condition_end" class="input-medium Wdate" name="condition.refundAtEnd"
+           onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtEnd?.format()}">
 
     <button type="submit" class="btn btn-primary" id="search">搜索</button>
     <ul class="nav nav-pills">
@@ -142,6 +142,9 @@
 %{
     wwwUrl=play.Play.configuration.getProperty("www.url");
     baseUrl=play.Play.configuration.getProperty("uri.operate_business");
+
+    refundAtBegin=condition?.refundAtBegin?.format();
+    refundAtEnd=condition?.refundAtEnd?.format();
     }%
 #{paginate.list items:reportPage, as:'report'}
     <tr>
@@ -154,7 +157,7 @@
         <td>${report?.salePrice?.formatCurrency('CNY')}</td>
         <td>${report?.buyNumber}</td>
         <td>
-            <a href="${baseUrl}/coupons?condition.searchKey=GOODS_NAME&condition.status=REFUND&condition.searchItems=${report.goods.name}"
+            <a href="${baseUrl}/coupons?condition.searchKey=GOODS_NAME&condition.status=REFUND&condition.searchItems=${report.goods.name}&condition.refundAtBegin=${refundAtBegin}&condition.refundAtEnd=${refundAtEnd}"
                target="_blank">${report?.amount?.formatCurrency('CNY')}</a></td>
     </tr>
 #{/paginate.list}

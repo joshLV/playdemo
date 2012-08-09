@@ -3,6 +3,7 @@ package models;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import models.accounts.AccountType;
 import com.uhuila.common.util.DateUtil;
 
@@ -14,8 +15,8 @@ import com.uhuila.common.util.DateUtil;
  */
 public class ResaleSalesReportCondition {
 
-    public Date createdAtBegin = DateUtil.getBeginOfDay();
-    public Date createdAtEnd = DateUtil.getEndOfDay(new Date());    
+    public Date paidAtBegin = DateUtil.getBeginOfDay();
+    public Date paidAtEnd = DateUtil.getEndOfDay(new Date());
     public String interval = "-1d";
     public AccountType accountType;
     private Map<String, Object> paramMap = new HashMap<>();
@@ -23,15 +24,15 @@ public class ResaleSalesReportCondition {
     public String getFilter(AccountType type) {
         StringBuilder condBuilder = new StringBuilder(" where e.order.userType = :userType and e.goods.isLottery=false");
 
-            paramMap.put("userType", type);
+        paramMap.put("userType", type);
 
-        if (createdAtBegin != null) {
+        if (paidAtBegin != null) {
             condBuilder.append(" and e.order.paidAt >= :createdAtBegin");
-            paramMap.put("createdAtBegin", createdAtBegin);
+            paramMap.put("createdAtBegin", paidAtBegin);
         }
-        if (createdAtEnd != null) {
+        if (paidAtEnd != null) {
             condBuilder.append(" and e.order.paidAt < :createdAtEnd");
-            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
+            paramMap.put("createdAtEnd", DateUtil.getEndOfDay(paidAtEnd));
         }
 
 

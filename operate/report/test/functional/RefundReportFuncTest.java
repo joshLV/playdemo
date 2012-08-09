@@ -107,7 +107,7 @@ public class RefundReportFuncTest extends FunctionalTest {
 
     @Test
     public void testSearchWithRightCondition() {
-        Http.Response response = GET("/reports/refund?condition.createdAtBegin =" + DateUtil.getBeginOfDay() + "&condition.createdAtEnd =" + DateUtil.getEndOfDay(new Date()));
+        Http.Response response = GET("/reports/refund?condition.paidAtBegin =" + DateUtil.getBeginOfDay() + "&condition.paidAtEnd =" + DateUtil.getEndOfDay(new Date()));
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<RefundReport> reportPage = (ValuePaginator<RefundReport>) renderArgs("reportPage");

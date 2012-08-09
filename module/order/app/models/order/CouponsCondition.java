@@ -2,6 +2,8 @@ package models.order;
 
 import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
+import models.consumer.User;
+import models.resale.Resaler;
 import models.sales.Brand;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
@@ -42,6 +44,7 @@ public class CouponsCondition implements Serializable {
     public boolean isLottery;
     public Date paidAtBegin;
     public Date paidAtEnd;
+    public String userName;
 
     public String getOrderByExpress() {
         return "e.createdAt desc";
@@ -165,12 +168,19 @@ public class CouponsCondition implements Serializable {
             paramMap.put("excludeStatus", excludeStatus);
         }
 
-
         if (supplier != null) {
             sql.append(" and e.orderItems.goods.supplierId = :supplierId");
             paramMap.put("supplierId", supplier.id);
         }
 
+        //按照帐号检索
+        if (userName != null) {
+            Resaler resaler = Resaler.findOneLoginName(userName.trim());
+            if (resaler != null) {
+                sql.append(" and e.order.userId = :user");
+                paramMap.put("user", resaler.id);
+            }
+        }
         return sql.toString();
     }
 
