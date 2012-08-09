@@ -38,6 +38,12 @@ POST    /pointgoods/filemanager                      UploadFiles.fileManagerJson
 GET     /pointgoods/imageName                        OperatePointGoods.imageName
 
 
+# 运营后台积分商品订单
+GET     /pointgoods_orders                                 OperatePointGoodsOrders.index
+GET     /pointgoods_orders/{id}                            OperatePointGoodsOrders.details
+PUT     /pointgoods_orders/{id}/send                       OperatePointGoodsOrders.send
+GET     /pointgoods_order_excel                            OperatePointGoodsOrders.orderExcelOut
+
 
 
 

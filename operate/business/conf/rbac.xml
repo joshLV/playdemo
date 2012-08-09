@@ -12,6 +12,10 @@
     <permission key="Point_GOODS_NEW" text="积分商品添加" roles="editor"/>
     <permission key="Point_GOODS" text="积分商品管理" roles="editor,customservice"/>
 
+    <permission key=" Point_GOODS_ORDER" text="积分商品订单管理" roles="customservice,account,sales"/>
+
+
+
     <permission key="SUPPLIERS_NEW" text="商户添加" roles="editor"/>
     <permission key="SUPPLIERS" text="商户管理" roles="editor,customservice"/>
      <permission key="SUPPLIERS_USERS_NEW" text="商户操作员添加" roles="editor"/>
@@ -69,10 +73,7 @@
             <navigation key="goods_index" action="OperateGoods.index" text="商品管理" permissions="GOODS"/>
         </navigation>
 
-        <navigation key="point_goods" text="积分商品">
-            <navigation key="point_goods_add" action="OperatePointGoods.add" text="积分商品添加" permissions="Point_GOODS_NEW"/>
-            <navigation key="point_goods_index" action="OperatePointGoods.index" text="积分商品管理" permissions="Point_GOODS"/>
-        </navigation>
+
 
     </navigation>
 
@@ -132,10 +133,22 @@
                         permissions="PROMOTION_LIST"/>
         </navigation>
     </navigation>
-    <navigation key="question_manage" text="咨询管理" action="OperateQuestions.index" display-order="100">
+    <navigation key="question_manage" text="咨询管理" action="OperateQuestions.index" display-order="110">
         <navigation key="question" text="咨询管理" permission="QUESTION">
             <navigation key="questions_index" action="OperateQuestions.index" text="咨询管理" permission="QUESTION"/>
         </navigation>
     </navigation>
+
+
+
+
+    <navigation key="point_goods_app" text="积分商城" action="OperateGoods.index" display-order="100">
+    <navigation key="point_goods" text="积分商品">
+        <navigation key="point_goods_add" action="OperatePointGoods.add" text="积分商品添加" permissions="Point_GOODS_NEW"/>
+        <navigation key="point_goods_index" action="OperatePointGoods.index" text="积分商品管理" permissions="Point_GOODS"/>
+        <navigation key="point_goods_order" action="OperatePointGoodsOrders.index" text="积分商品订单管理" permissions="Point_GOODS_ORDER"/>
+    </navigation>
+    </navigation>
+
 
 </application>

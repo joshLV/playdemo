@@ -246,6 +246,11 @@ order.deliveryNo=物流单号
 order.LOGISTICS=物流
 order.SMS=短信
 
+
+pointGoodsOrder.apply=审核
+pointGoodsOrder.apply_1=通过
+pointGoodsOrder.apply_2=未通过
+
 trade_type.CHARGE=充值
 trade_type.WITHDRAW=提现
 trade_type.PAY=支付

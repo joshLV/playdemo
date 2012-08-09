@@ -1,0 +1,407 @@
+#{extends 'layout_operate/layout.html' /}
+#{include 'share/nav.html' /}
+#{set title:'积分商品订单' /}
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+
+
+    function prepareSend(id) {
+        $("#sendForm").attr("action", "/pointgoods_orders/" + id + "/send?x-http-method-override=PUT");
+        $('#sendModal').modal('show');
+    }
+
+    $(function () {
+
+
+//        var obj = $('input:[name=pointGoodsOrder.apply]:radio');
+//        $(obj).click(function () {
+//            alert("1")
+//            if (obj.checked) {
+//                alert($(this).val())
+//            }
+//        });
+
+
+        var checkedFuc = function(){
+            if($("#pointGoodsOrder_apply_2").is(":checked")){
+                $("#reason").show();
+            }
+            if($("#pointGoodsOrder_apply_1").is(":checked")){
+                $("#reason").hide();
+            }
+
+
+        }
+        $("#pointGoodsOrder_apply_2").click(checkedFuc);
+        $("#pointGoodsOrder_apply_1").click(checkedFuc);
+
+
+
+        #{if !play.Play.runingInTestMode()}
+            $("#send").click(function () {
+//                var result = true;
+//                if ($("#order_deliveryNo").val().trim() == "") {
+////                $("#note_order_deliveryNo").addClass("error");
+//                    $("#note_order_deliveryNo").html("请输入单号!");
+//                    $("#order_deliveryNo").focus();
+//                    result = false;
+//                }
+//                else {
+////                $("#note_order_deliveryCompany").removeClass("error");
+//                    $("#note_order_deliveryCompany").html("");
+//                }
+//                if ($("#order_deliveryCompany").val().trim() == "") {
+////                $("#note_order_deliveryCompany").addClass("error");
+//                    $("#note_order_deliveryCompany").html("请输入公司!");
+//                    $("#order_deliveryCompany").val("");
+//                    $("#order_deliveryCompany").focus();
+//                    result = false;
+//                } else {
+//                    $("#note_order_deliveryCompany").removeClass("error");
+//                    $("#note_order_deliveryCompany").html("");
+//                }
+//                if (result) {
+
+
+
+
+//                for (i=0;i<document.forms[sendForm][pointGoodsOrder.apply].length;i++)
+//                {
+//                    System.out.println("aaaa>>.cccc<<<cc>>");
+//            if (document.forms[sendForm][pointGoodsOrder.apply][i].checked)
+//                alert("this radio button was clicked: " + document.forms[sendForm][pointGoodsOrder.apply][i].value)
+//
+//                }
+
+                //   $("#sendForm").submit();
+//                }
+
+
+            });
+        #{/if}
+        #{else}
+            $("#send").click(function () {
+                $("#sendForm").submit();
+            });
+        #{/else}
+
+        $("#isLottery").click(function () {
+            if (this.checked) {
+                this.value = true;
+            } else {
+                this.value = false;
+            }
+            $("#frmlist").submit();
+        });
+        $("#search").click(function () {
+            formSubmit();
+        });
+        $("#brandId").click(function () {
+            formSubmit();
+        })
+    });
+    function orderExcel() {
+        $("#frmlist").attr("action", "@{OperateOrders.orderExcelOut()}");
+        $("#frmlist").attr("method", "get");
+        $("#frmlist").submit();
+    }
+    ;
+
+    function changeList(status) {
+        $("#condition_status").val(status);
+        formSubmit();
+    }
+
+    function formSubmit() {
+        $("#frmlist").attr("method", "get");
+        $("#frmlist").attr("action", "@{OperateOrders.index()}");
+        $("#frmlist").submit();
+    }
+</script>
+#{/set}
+#{set 'moreStyles'}
+<style type="text/css">
+    .table td {
+        vertical-align: middle;
+    }
+</style>
+#{/set}
+<div class="body">
+<legend>积分商品订单</legend>
+<form class="form-horizontal" name="frmlist" id="frmlist" method="GET">
+    <table width="80%">
+        <tr>
+            <td>成交时间：<input type="text" id="createdAtBegin" name="condition.createdAtBegin"
+                            value="${condition.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"
+                            class="input-medium Wdate"/>至 <input type="text" id="createdAtEnd"
+                                                                 name="condition.createdAtEnd"
+                                                                 value="${condition.createdAtEnd?.format()}"
+                                                                 onfocus="WdatePicker({readOnly:true})"
+                                                                 class="input-medium Wdate"/></td>
+        *{<td>付款时间：<input type="text" id="paidAtBegin" name="condition.paidAtBegin"}*
+        *{value="${condition.paidAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"}*
+        *{class="input-medium Wdate"/>至 <input type="text" id="paidAtEnd"}*
+        *{name="condition.paidAtEnd"}*
+        *{value="${condition.paidAtEnd?.format()}"}*
+        *{onfocus="WdatePicker({readOnly:true})"}*
+        *{class="input-medium Wdate"/></td>}*
+        *{<td>}*
+        *{品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：}*
+        *{#{select 'condition.brandId', id:'brandId', class:'input-medium', value:condition?.brandId}}*
+        *{#{option "0"}不限#{/option}}*
+        *{#{list items:brandList, as:'brand'}}*
+        *{#{option brand?.id}${brand?.name}#{/option}}*
+        *{#{/list}}*
+        *{#{/select}}*
+
+        *{</td>}*
+        </tr>
+    *{<tr>}*
+    *{<td>退款时间：<input type="text" name="condition.refundAtBegin" value="${condition.refundAtBegin?.format()}"}*
+    *{onfocus="WdatePicker({readOnly:true})"}*
+    *{class="input-medium Wdate"/>至 <input type="text" name="condition.refundAtEnd"}*
+    *{value="${condition.refundAtEnd?.format()}"}*
+    *{onfocus="WdatePicker({readOnly:true})"}*
+    *{class="input-medium Wdate"/></td>}*
+    *{<td>支付方式：#{select 'condition.payMethod', class:'input-medium', value:condition.payMethod}}*
+    *{#{option ""}不限#{/option}}*
+    *{#{option "alipay"}支付宝#{/option}}*
+    *{#{option "tenpay"}财付通#{/option}}*
+    *{#{option "99bill"}快钱#{/option}}*
+    *{#{/select}}*
+    *{&nbsp;&nbsp;&nbsp;订单来源：#{select 'condition.userType', class:'input-small', value:condition.userType}}*
+    *{#{option ""}不限#{/option}}*
+    *{#{option "CONSUMER"}&{'order.CONSUMER'}#{/option}}*
+    *{#{option "RESALER"}&{'order.RESALER'}#{/option}}*
+    *{#{/select}}*
+    *{</td>}*
+    *{</tr>}*
+        <tr>
+            <td>关&nbsp;键&nbsp;字：
+            #{select 'condition.searchKey', class:'input-medium', value:condition.searchKey}
+                #{option ""}不限#{/option}
+                #{option "GOODS_NAME"}&{'queryType.GOODS_NAME'}#{/option}
+                #{option "ORDER_NUMBER"}&{'queryType.ORDER_NUMBER'}#{/option}
+                #{option "LOGIN_NAME"}&{'queryType.LOGIN_NAME'}#{/option}
+                #{option "MOBILE"}&{'queryType.MOBILE'}#{/option}
+            #{/select}
+
+                <input type="text" name="condition.searchItems" value="${condition.searchItems}"
+                       class="input-larger"/></td>
+            <td>订单状态：
+            #{select 'condition.status', id:'condition_status', class:'input-medium', value:condition.status}
+                #{option ""}不限#{/option}
+                #{option "UNPAID"}&{'order.UNPAID'}#{/option}
+                #{option "PAID"}&{'order.PAID'}#{/option}
+                #{option "CANCELED"}&{'order.CANCELED'}#{/option}
+                #{option "SENT"}&{'order.SENT'}#{/option}
+            #{/select}
+                &nbsp;&nbsp;&nbsp;物流方式：
+            #{select 'condition.deliveryType', class:'input-small', value:condition.deliveryType}
+                #{option ""}不限#{/option}
+                #{option models.order.DeliveryType.SMS}无物流#{/option}
+                #{option models.order.DeliveryType.LOGISTICS}有物流#{/option}
+            #{/select}
+            *{&nbsp;&nbsp;&nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"}*
+            *{value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>}*
+            <td>
+                <button class="btn btn-primary" id="search" type="submit">搜索</button>
+                <button class="btn btn-primary" id="searchbtn" onclick="orderExcel()">导出报表</button>
+            </td>
+        </tr>
+    </table>
+</form>
+<div style="color:#0082CA;padding-bottom: 15px"> 总计：${orderList.size()}
+    条记录&nbsp;&nbsp;&nbsp;总金额：${amountSummary?.formatCurrency('CNY')}</div>
+#{vx.other_tab name:'order',enumItems: models.order.OrderStatus.values(),  select:'condition_status',value:condition?.status/}
+
+<table class="table table-striped table-bordered table-condensed">
+    <thead>
+    <tr>
+        <th width="20">订单号</th>
+        <th width="90">商品名称</th>
+        <th width="90">订单状态</th>
+        <th width="60">帐号</th>
+        <th width="90">单价积分</th>
+        <th width="60">数量</th>
+        <th width="40">总积分</th>
+        <th width="90">申请时间</th>
+        <th width="60">操 作</th>
+
+    </tr>
+    </thead>
+
+    <tbody>
+    #{paginate.list items:orderList, as:'order'}
+    <tr>
+
+    *{订单号}*
+        <td rowspan="${order.orderItems.size()}">${order.orderNumber}</td>
+
+    *{商品名称 订单状态 --> 待审核 审核通过 （未发货/已发货） 审核未通过（理由） }*
+    *{有实物券时}*
+        #{if order.realGoods.size()>0}
+            <td>
+                #{if models.sales.MaterialType.ELECTRONIC.equals(order.realGoods.get(0).materialType)}
+                    <img src="@@{'/public/images/electronic-goods.png'}">${order.realGoods.get(0).name}
+                #{/if}
+                #{else}
+                    <img src="@@{'/public/images/real-goods.png'}">${order.realGoods.get(0).name}
+                #{/else}
+            </td>
+            <td rowspan="${order.realGoods.size()}">
+                #{if order.deliveryNo!=null}
+                    <a id="sendInfo_${order.id}"
+                       href="#" class="label label-info"
+                       rel="popover"
+                       data-content="运单号: ${order.deliveryNo}"
+                       data-original-title="物流公司: ${order.deliveryCompany}"
+                       onmouseover="$('#sendInfo_${order.id}').popover();">
+                    &{'order.'+ order.realGoodsStatus}</a>
+                #{/if}
+                #{else}&{'order.'+order.realGoodsStatus}#{/else}
+                #{if models.order.OrderStatus.PAID.equals(order.realGoodsStatus)}
+                    <br/><a href="#" id="linkSend_${order.id}" onclick="prepareSend(${order.id})">发货</a>
+                #{/if}
+            </td>
+        #{/if}
+
+        #{else}
+        *{有电子券时}*
+            #{if order.electronicGoods.size()>0}
+                <td><img src="@@{'/public/images/electronic-goods.png'}">${order.electronicGoods.get(0).name}&nbsp;
+                </td>
+                <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
+            #{/if}
+            #{else}
+                <td>&nbsp;</td>
+                <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
+            #{/else}
+        #{/else}
+
+    *{帐号}*
+    *{#{if order.userType ==models.accounts.AccountType.RESALER}}*
+    *{<td rowspan="${order.orderItems.size()}">${order?.resaler?.loginName}</td>}*
+    *{#{/if}}*
+    *{#{if order.userType ==models.accounts.AccountType.CONSUMER}}*
+        <td rowspan="${order.orderItems.size()}">${order?.user?.loginName}</td>
+    *{#{/if}}*
+    *{<td rowspan="${order.orderItems.size()}">&{'order.'+order.userType}</td>}*
+
+
+
+    *{单价积分}*
+
+    *{数量}*
+
+    *{总积分}*
+        <td rowspan="${order.orderItems.size()}">${order.amount?.formatCurrency('CNY')}</td>
+
+    *{申请时间}*
+
+    *{<td rowspan="${order.orderItems.size()}">${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>}*
+    *{<td rowspan="${order.orderItems.size()}">${order.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>}*
+    *{<td rowspan="${order.orderItems.size()}">${order.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>}*
+
+    *{查看  操 作 --> 查看 审核（点击后弹出window提示框，单选 通过/未通过 ，未通过需要填写理由，通过后 需要显示发货操作）}*
+
+        <td rowspan="${order.orderItems.size()}"><a href="@{OperateOrders.details(order.id)}">查看</a></td>
+    </tr>
+        #{set i:0/}
+        #{set showRealStatus:true/}
+        #{list items:order.realGoods, as:'aRealGoods'}
+            #{if i>0}
+            <tr test="i=${i}">
+                <td><img src="@@{'/public/images/real-goods.png'}">${aRealGoods.name}</td>
+            *{#{if showRealStatus}}*
+            *{<td rowspan="${order.realGoods.size()}">&{'order.'+}*
+            *{order.realGoodsStatus}#{if models.order.OrderStatus.PAID.equals(order.status)}}*
+            *{<br/><a href="#" id="linkSend">发货</a>#{/if}}*
+            *{</td>}*
+            *{#{set showRealStatus:false/}}*
+            *{#{/if}}*
+
+            </tr>
+            #{/if}
+            #{set i:i+1/}
+        #{/list}
+
+        #{set j:0/}
+        #{set showElectronicStatus:true/}
+        #{list items:order.electronicGoods, as:'aElectronicGoods'}
+            #{if (order.realGoods.size()==0 && j>0) ||(order.realGoods.size()>0) }
+            <tr>
+                <td><img src="@@{'/public/images/electronic-goods.png'}">${aElectronicGoods?.name}</td>
+                #{if showElectronicStatus && order.realGoods.size()>0}
+                    <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
+                    #{set showElectronicStatus:false/}
+                #{/if}
+            </tr>
+            #{/if}
+            #{set j:j+1/}
+        #{/list}
+
+    #{/paginate.list}
+    </tbody>
+</table>
+<div class="pagination" align="center">
+    <ul>
+    #{paginate.controls items:orderList /}
+    </ul>
+</div>
+
+</div>
+
+
+*{<div class="modal" id="sendModal" style="display: none;">}*
+*{<div class="modal-header">}*
+*{<a class="close" data-dismiss="modal">×</a>}*
+
+*{<h3>发货信息</h3>}*
+*{</div>}*
+*{<div class="modal-body">}*
+*{#{form @OperateOrders.index(), id:"sendForm", name:"sendForm", enctype:'multipart/form-data',}*
+*{class:"form-horizontal",method:"PUT"}}*
+*{#{layout_operate.textField name:'order.deliveryCompany', value:order?.deliveryCompany, required:true,}*
+*{err:"deliveryCompany"/}}*
+*{#{layout_operate.textField name:'order.deliveryNo', value:order?.deliveryNo, required:true/}}*
+*{#{/form}}*
+*{</div>}*
+*{<div class="modal-footer">}*
+*{<a href="#" id="send" class="btn btn-primary">发货</a>}*
+*{<a href="#" class="btn" data-dismiss="modal">取消</a>}*
+*{</div>}*
+*{</div>}*
+
+
+
+<div class="modal" id="sendModal" style="display: none;">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+
+        <h3>审核处理</h3>
+    </div>
+
+    <div class="modal-body">
+    #{form @OperatePointGoodsOrders.index(), id:"sendForm", name:"sendForm", enctype:'multipart/form-data',
+    class:"form-horizontal",method:"PUT"}
+        #{layout_operate.radioField name:'pointGoodsOrder.apply',required:true,
+        err:"deliveryCompany"/}
+    *{#{layout_operate.radioField name:'pointGoodsOrder.fail', value:order?.deliveryNo, required:true/}}*
+
+        <div id="reason"><input type="text" name="pointGoodsOrder.reason" display=none></div>
+
+    #{/form}
+    </div>
+    <div class="modal-footer">
+        <a href="#" id="send" class="btn btn-primary">确认</a>
+        <a href="#" class="btn" data-dismiss="modal">取消</a>
+    </div>
+</div>
+
+
+
+
+
