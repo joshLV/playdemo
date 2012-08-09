@@ -167,7 +167,7 @@ public class PointGoodsOrder extends Model {
         super._delete();
     }
 
-    private PointGoodsOrder(long userId, PointGoods pointGoods, Long buyNumber) throws NotEnoughInventoryException{
+    public PointGoodsOrder(long userId, PointGoods pointGoods, Long buyNumber) throws NotEnoughInventoryException{
         checkInventory(pointGoods, buyNumber);
         this.userId = userId;
         User user = User.findById(userId);
