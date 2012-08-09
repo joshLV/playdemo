@@ -2,14 +2,12 @@ package models;
 
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
-import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.order.DeliveryType;
 import models.order.NotEnoughInventoryException;
-import models.order.OrderStatus;
-import models.order.OrdersCondition;
+import models.sales.GoodsStatus;
 import models.sales.PointGoods;
 import play.Play;
 import play.db.jpa.Model;
@@ -20,6 +18,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -42,11 +41,6 @@ public class PointGoodsOrder extends Model {
     @Column(name = "user_id")
     public long userId;
 
-    // 兑换用户类型
-    @Enumerated(EnumType.STRING)
-    @Column(name = "user_type")
-    public AccountType userType;
-
     // 兑换订单号
     @Column(name = "order_no")
     public String orderNumber;
@@ -55,21 +49,28 @@ public class PointGoodsOrder extends Model {
     @Enumerated(EnumType.STRING)
     public PointGoodsOrderStatus status;
 
-    // 订单总积分数
-    public BigDecimal amount;
+    // 兑换数量
+    @Column(name = "buy_number")
+    public Long buyNumber;
 
-    @Column(name = "point_Price")
-    public BigDecimal pointPrice;
-
+    // 积分商品信息
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "point_goods_id", nullable = true)
     public PointGoods pointGoods;
 
+    // 积分商品名称
     @Column(name = "point_goods_name")
     public String pointGoodsName;
 
-    @Column(name = "buy_number")
-    public Long buyNumber;
+    // 积分商品价格
+    @Column(name = "point_Price")
+    public Long pointPrice;
+
+    // 订单总积分数
+    public int amount;
+
+    // 用户积分总数
+    public int totalPoint;
 
     @Column(name = "buyer_phone")
     public String buyerPhone;
@@ -103,7 +104,7 @@ public class PointGoodsOrder extends Model {
 
     // 审核员ID
     @Column(name = "operate_user_id")
-    public String operateUserId;
+    public Long operateUserId;
 
     // 积分退还时间
     @Column(name = "refund_at")
@@ -131,9 +132,6 @@ public class PointGoodsOrder extends Model {
     @Enumerated(EnumType.STRING)
     @Column(name = "delivery_type")
     public DeliveryType deliveryType;
-
-    @Column(name = "web_identification_id")
-    public Long webIdentificationId;
 
     @Transient
     public String searchKey;
@@ -167,27 +165,28 @@ public class PointGoodsOrder extends Model {
         super._delete();
     }
 
-    private PointGoodsOrder(long userId, AccountType userType) {
+    private PointGoodsOrder(long userId, PointGoods pointGoods, Long buyNumber) throws NotEnoughInventoryException{
+        checkInventory(pointGoods, buyNumber);
         this.userId = userId;
-        this.userType = userType;
-
-        if (userType == AccountType.CONSUMER) {
-            User user = User.findById(userId);
-            UserInfo userInfo = UserInfo.findByUser(user);
-            if (userInfo != null) {
-                this.buyerPhone = userInfo.phone;
-            }
-            this.buyerMobile = user.mobile;
+        User user = User.findById(userId);
+        UserInfo userInfo = UserInfo.findByUser(user);
+        if (userInfo != null) {
+            this.buyerPhone = userInfo.phone;
         }
+        this.buyerMobile = user.mobile;
 
+        this.orderNumber = generateOrderNumber();
+        this.buyNumber = buyNumber;
+        this.pointGoods = pointGoods;
+        this.pointPrice = pointGoods.pointPrice;
+        this.pointGoodsName = pointGoods.name;
+        this.setAmount();
+        this.totalPoint = findUserTotalPoint(userId);
         this.status = PointGoodsOrderStatus.APPLY;
         this.deleted = DeletedStatus.UN_DELETED;
-        this.orderNumber = generateOrderNumber();
         this.applyAt = new Date();
-        this.amount = BigDecimal.ZERO;
 
         this.lockVersion = 0;
-
         this.updatedAt = new Date();
     }
 
@@ -207,9 +206,8 @@ public class PointGoodsOrder extends Model {
 
     }
 
-    public void setUser(long userId, AccountType accountType) {
+    public void setUser(long userId) {
         this.userId = userId;
-        this.userType = accountType;
         this.save();
     }
 
@@ -259,6 +257,12 @@ public class PointGoodsOrder extends Model {
         return Boolean.FALSE;
     }
 
+    /**
+     * 查询库存是否充足
+     * @param pointGoods
+     * @param number
+     * @throws NotEnoughInventoryException
+     */
     public void checkInventory(PointGoods pointGoods, long number) throws NotEnoughInventoryException {
         if (pointGoods.baseSale < number) {
             throw new NotEnoughInventoryException();
@@ -285,46 +289,140 @@ public class PointGoodsOrder extends Model {
     }
 
     /**
-     * 订单审核不通过，增加库存，减少销量
+     * 订单审核不通过，增加库存，减少销量，返还积分
      */
     public void cancelAndUpdateOrder() {
+        //返还积分
+        int updatedPoint = totalPoint+amount;
+        updateUserTotalPoint(userId,updatedPoint);
+        this.totalPoint = findUserTotalPoint(userId);
+        // 更新状态
         this.status = PointGoodsOrderStatus.CANCELED;
+        this.refundAt = new Date();
         this.updatedAt = new Date();
         pointGoods.baseSale += buyNumber;
         pointGoods.saleCount -= buyNumber;
         pointGoods.save();
+
         this.save();
 
     }
 
-//    public void createAndUpdateInventory() {
-//
-//            orderItem.goods.baseSale -= orderItem.buyNumber;
-//            orderItem.goods.saleCount += orderItem.buyNumber;
-//            orderItem.goods.save();
-//            orderItem.save();
-//            if (orderItem.goods.materialType == MaterialType.REAL) {
-//                haveFreight = true;
-//            }
-//            if (orderItem.goods.baseSale == 3 || orderItem.goods.baseSale == 0) {
-//                //发送提醒邮件
-//                MailMessage mailMessage = new MailMessage();
-//                mailMessage.addRecipient(EMAIL_RECEIVER);
-//                mailMessage.setSubject(Play.mode.isProd() ? "库存不足，商品即将下架" : "商品下架【测试】");
-//                Supplier supplier = Supplier.findById(orderItem.goods.supplierId);
-//                mailMessage.putParam("supplierName", supplier.fullName);
-//                mailMessage.putParam("goodsName", orderItem.goods.name);
-//                mailMessage.putParam("faceValue", orderItem.goods.faceValue);
-//                mailMessage.putParam("baseSales", orderItem.goods.baseSale);
-//                mailMessage.putParam("offSalesFlag", "noInventory");
-//                MailUtil.sendGoodsOffSalesMail(mailMessage);
-//            }
-//
-//
-//        if (haveFreight) {
-//            addFreight();
-//            save();
-//        }
-//    }
+    /**
+     * 创建订单，减少库存，增加销量，扣除积分
+     */
+    public void createAndUpdateInventory() {
+        // 扣除积分
+        if (isAfford()){
+            int updatedPoint = totalPoint-amount;
+            updateUserTotalPoint(userId,updatedPoint);
+            this.totalPoint = findUserTotalPoint(userId);
+
+            pointGoods.baseSale -= buyNumber;
+            pointGoods.saleCount += buyNumber;
+            this.status = PointGoodsOrderStatus.APPLY;
+            pointGoods.save();
+
+            this.applyAt = new Date();
+            this.updatedAt = new Date();
+            this.save();
+        }
+        else{
+            System.out.println("not afford");
+        }
+
+    }
+
+    /**
+     * 更改状态至申请已接受
+     */
+    public void accept(Long operateUserId){
+        if (this.status != PointGoodsOrderStatus.APPLY){
+            throw new RuntimeException("can not pay order:" + this.getId() + " since it's "+ this.status.toString());
+        }
+        else{
+            this.status = PointGoodsOrderStatus.ACCEPT;
+            this.acceptAt = new Date();
+            this.updatedAt = new Date();
+            this.operateUserId = operateUserId;
+        }
+    }
+
+    /**
+     * 设置 订单总积分数
+     */
+    public void setAmount(){
+        if (pointPrice == null || buyNumber  == null){
+            throw new ExceptionInInitializerError("Please check point price and buy number, are they null?");
+        }
+        else{
+            this.amount =(int) (pointPrice*buyNumber) ;
+        }
+    }
+
+
+    /**
+     * 会员中心订单查询
+     *
+     * @param user       用户信息
+     * @param condition  查询条件
+     * @param pageNumber 第几页
+     * @param pageSize   每页记录
+     * @return ordersPage 订单信息
+     */
+    public static JPAExtPaginator<PointGoodsOrder> findUserOrders(User user, PointGoodsOrderCondition condition,
+                                                        int pageNumber, int pageSize) {
+        if (user == null) {
+            user = new User();
+        }
+        JPAExtPaginator<PointGoodsOrder> orderPage = new JPAExtPaginator<>
+                ("Order o", "o", PointGoodsOrder.class, condition.getFilter(user),
+                        condition.paramsMap)
+                .orderBy(condition.getUserOrderByExpress());
+        orderPage.setPageNumber(pageNumber);
+        orderPage.setPageSize(pageSize);
+        return orderPage;
+    }
+
+    /**
+     * 查询用户总积分
+     * @param userId
+     * @return  用户总积分
+     */
+    public static int findUserTotalPoint(Long userId) {
+        UserInfo ui = UserInfo.find("byUser", User.findById(userId)).first();
+        if (ui == null){
+            return 0;
+        }
+        return ui.totalPoints;
+    }
+
+    /**
+     * 更新用户总积分
+     * @param userId
+     * @param totalPoint
+     * @throws Exception
+     */
+    public static void updateUserTotalPoint(Long userId,int totalPoint) {
+        UserInfo ui = UserInfo.find("byUser", User.findById(userId)).first();
+        if (ui == null){
+            return;
+        }
+        ui.totalPoints = totalPoint;
+        ui.save();
+    }
+
+    /**
+     *
+     * @return True 用户总积分足够完成兑换
+     *         False 用户总积分不能完成兑换
+     */
+    public boolean isAfford(){
+        boolean afford = true;
+        if (totalPoint >= amount  ){
+            return afford;
+        }
+        return !afford;
+    }
 
 }

@@ -75,7 +75,7 @@
                 #{/if}
                 <li>商品类型：&{'goods.'+goods.materialType}</li>
                 <li>配送方式：#{if models.sales.MaterialType.ELECTRONIC.equals(goods.materialType)}
-                    手机短信#{/if}#{else}快递 (运费：${models.order.Order.FREIGHT} 元)#{/else}</li>
+                    手机短信#{/if}#{else}快递 #{/else}</li>
                 #{if goods.effectiveAt != null && goods.expireAt != null}
                     <li>券有效期：${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</li>
                 #{/if}
