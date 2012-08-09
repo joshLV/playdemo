@@ -41,13 +41,16 @@ public class OperateReports extends Controller {
             condition = new AccountSequenceCondition();
         }
 
-        User user = User.findByLoginName(condition.accountName);
-        if (user != null) {
-            condition.account = AccountUtil.getConsumerAccount(user.id);
-        } else {
-            condition.account = new Account();
-            condition.account.accountType = AccountType.CONSUMER;
+        if(condition.accountName != null && !condition.accountName.trim().equals("")){
+            User user = User.findByLoginName(condition.accountName);
+            if (user != null) {
+                condition.account = AccountUtil.getConsumerAccount(user.id);
+            }else {
+                condition.account = new Account();
+                condition.account.id = -1L;
+            }
         }
+        condition.accountType = AccountType.CONSUMER;
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage) {
@@ -87,13 +90,16 @@ public class OperateReports extends Controller {
             condition = new AccountSequenceCondition();
         }
 
-        Resaler user = Resaler.findByLoginName(condition.accountName);
-        if (user != null) {
-            condition.account = AccountUtil.getResalerAccount(user.id);
-        } else {
-            condition.account = new Account();
-            condition.account.accountType = AccountType.RESALER;
+        if(condition.accountName != null && !condition.accountName.trim().equals("")){
+            Resaler user = Resaler.findByLoginName(condition.accountName);
+            if (user != null) {
+                condition.account = AccountUtil.getResalerAccount(user.id);
+            } else {
+                condition.account = new Account();
+                condition.account.id = -1L;
+            }
         }
+        condition.accountType = AccountType.RESALER;
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage) {
@@ -121,13 +127,16 @@ public class OperateReports extends Controller {
             condition = new AccountSequenceCondition();
         }
 
-        Supplier user = Supplier.findByFullName(condition.accountName);
-        if (user != null) {
-            condition.account = AccountUtil.getSupplierAccount(user.id);
-        } else {
-            condition.account = new Account();
-            condition.account.accountType = AccountType.SUPPLIER;
+        if(condition.accountName != null && !condition.accountName.trim().equals("")){
+            Supplier user = Supplier.findByFullName(condition.accountName);
+            if (user != null) {
+                condition.account = AccountUtil.getSupplierAccount(user.id);
+            } else {
+                condition.account = new Account();
+                condition.account.id = -1L;
+            }
         }
+        condition.accountType = AccountType.SUPPLIER;
         JPAExtPaginator<AccountSequence> accountSequencePage = AccountSequence.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
         for (AccountSequence accountSequence : accountSequencePage) {

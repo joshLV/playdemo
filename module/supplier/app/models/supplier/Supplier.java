@@ -235,7 +235,7 @@ public class Supplier extends Model {
     }
 
     public static Supplier findByFullName(String fullName) {
-        return find("fullName like ?", "%" + fullName + "%").first();
+        return Supplier.find("fullName like ?", "%" + fullName + "%").first();
     }
 
     public static List<Supplier> findListByFullName(String fullName) {

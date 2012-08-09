@@ -7,6 +7,7 @@
 GET     /reports/purchase                       PurchaseTaxReports.index
 GET     /reports/sales                          SalesTaxReports.index
 GET     /reports/payment                        PaymentReports.index
+GET     /reports/withdraw                       WithdrawReports.index
 
 # 网站运营报表
 GET     /webop/referers                         WebTrackReports.referers

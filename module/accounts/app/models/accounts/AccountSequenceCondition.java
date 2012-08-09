@@ -20,6 +20,7 @@ import java.util.Map;
 public class AccountSequenceCondition implements Serializable {
     public Account account;
     public List<Account> accounts;
+    public AccountType accountType;
     public AccountSequenceFlag sequenceFlag;    //账务变动方向：来账，往账
     public TradeType tradeType;    //资金变动类型
     public Date createdAtBegin;
@@ -33,12 +34,13 @@ public class AccountSequenceCondition implements Serializable {
 
     public String getFilter() {
         StringBuilder filter = new StringBuilder("1=1");
-        if (account != null && account.accountType != null && account.id == null) {
-            filter.append(" and account.accountType = :accountType ");
-            params.put("accountType", account.accountType);
-        } else if (account != null && account.id != null) {
+        if (account != null) {
             filter.append(" and account = :account");
             params.put("account", account);
+        }
+        if (accountType != null) {
+            filter.append(" and account.accountType = :accountType ");
+            params.put("accountType", accountType);
         }
         if (createdAtBegin != null) {
             filter.append(" and createdAt >= :createdAtBegin");
