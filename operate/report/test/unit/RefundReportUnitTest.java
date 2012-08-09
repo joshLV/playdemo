@@ -100,8 +100,8 @@ public class RefundReportUnitTest extends UnitTest {
     @Test
     public void testIndexDefault() {
         RefundReportCondition condition = new RefundReportCondition();
-        condition.createdAtBegin = new Date();
-        condition.createdAtEnd = new Date();
+        condition.refundAtBegin = new Date();
+        condition.refundAtEnd = new Date();
         List<RefundReport> list = RefundReport.query(condition);
         assertEquals(0, list.size());
 
