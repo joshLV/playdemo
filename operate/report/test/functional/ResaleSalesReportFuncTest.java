@@ -104,7 +104,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
-        assertEquals(1, reportPage.getRowCount());
+        assertEquals(2, reportPage.getRowCount());
     }
 
     @Test
@@ -132,7 +132,7 @@ public class ResaleSalesReportFuncTest extends FunctionalTest {
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<ResaleSalesReport> reportPage = (ValuePaginator<ResaleSalesReport>) renderArgs("reportPage");
-        assertEquals(1, reportPage.getRowCount());
+        assertEquals(2, reportPage.getRowCount());
     }
 
 }

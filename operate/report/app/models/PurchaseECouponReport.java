@@ -70,9 +70,13 @@ public class PurchaseECouponReport extends Model {
                 .createQuery(
                         "select new PurchaseECouponReport(r.goods, count(r.id), r.originalPrice, sum(r.originalPrice)) "
                                 + " from ECoupon r where "
-                                + condition.getFilter() + " group by r.goods, r.salePrice order by r.goods.supplierId");
+                                + condition.getFilter() + " group by r.goods order by r.goods.supplierId");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
+        }
+          List<PurchaseECouponReport> list=  query.getResultList();
+        for (PurchaseECouponReport report:list){
+            System.out.println(">>>>>>>>>>>"+report.goods.name);
         }
         return query.getResultList();
     }
