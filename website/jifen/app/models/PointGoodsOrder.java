@@ -5,6 +5,8 @@ import com.uhuila.common.constants.DeletedStatus;
 import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
+import models.mail.MailMessage;
+import models.mail.MailUtil;
 import models.order.DeliveryType;
 import models.order.NotEnoughInventoryException;
 import models.sales.GoodsStatus;
@@ -33,7 +35,7 @@ import java.util.Random;
 @Table(name = "point_goods_orders")
 public class PointGoodsOrder extends Model {
 
-    public static String EMAIL_RECEIVER = Play.configuration.getProperty("goods_not_enough.receiver", "dev@uhuila.com");
+    public static String EMAIL_RECEIVER = Play.configuration.getProperty("goods_not_enough.receiver", "op@uhuila.com");
     public static final BigDecimal FREIGHT = new BigDecimal("6");
     private static final String DECIMAL_FORMAT = "0000000";
 
@@ -326,6 +328,18 @@ public class PointGoodsOrder extends Model {
             this.applyAt = new Date();
             this.updatedAt = new Date();
             this.save();
+
+            if (pointGoods.baseSale == 3 || pointGoods.baseSale == 0) {
+                //发送提醒邮件
+                MailMessage mailMessage = new MailMessage();
+                mailMessage.addRecipient(EMAIL_RECEIVER);
+                mailMessage.setSubject(Play.mode.isProd() ? "库存不足，商品即将下架" : "商品下架【测试】");
+                mailMessage.putParam("goodsName", pointGoods.name);
+                mailMessage.putParam("pointPrice", pointGoods.pointPrice);
+                mailMessage.putParam("baseSales", pointGoods.baseSale);
+                mailMessage.putParam("offSalesFlag", "noInventory");
+                MailUtil.sendGoodsOffSalesMail(mailMessage);
+            }
         }
         else{
             System.out.println("not afford");
