@@ -29,7 +29,8 @@ public class PurchaseECouponReport extends Model {
 
     @Column(name = "sale_price")
     public BigDecimal salePrice;
-    
+    @Column(name = "face_value")
+    public BigDecimal faceValue;
     @ManyToOne
     public Goods goods;
 
@@ -48,7 +49,7 @@ public class PurchaseECouponReport extends Model {
     public BigDecimal noTaxAmount;
 
 
-    public PurchaseECouponReport(Goods goods, long buyCount, BigDecimal salePrice, BigDecimal originalAmount) {
+    public PurchaseECouponReport(Goods goods, long buyCount, BigDecimal faceValue, BigDecimal salePrice, BigDecimal originalAmount) {
         this.supplier = goods.getSupplier();
         this.goods = goods;
         this.buyCount = buyCount;
@@ -56,6 +57,7 @@ public class PurchaseECouponReport extends Model {
         this.originalAmount = originalAmount;
         this.tax = BigDecimal.ZERO;
         this.noTaxAmount = BigDecimal.ZERO;
+        this.faceValue = faceValue;
     }
 
     public PurchaseECouponReport(long buyCount, BigDecimal salePrice, BigDecimal originalAmount) {
@@ -63,21 +65,18 @@ public class PurchaseECouponReport extends Model {
         this.originalAmount = originalAmount;
         this.tax = BigDecimal.ZERO;
         this.noTaxAmount = BigDecimal.ZERO;
-    }    
+    }
 
     public static List<PurchaseECouponReport> query(PurchaseECouponReportCondition condition) {
         Query query = JPA.em()
                 .createQuery(
-                        "select new PurchaseECouponReport(r.goods, count(r.id), r.originalPrice, sum(r.originalPrice)) "
+                        "select new PurchaseECouponReport(r.goods, count(r.id),r.faceValue, r.originalPrice, sum(r.originalPrice)) "
                                 + " from ECoupon r where "
                                 + condition.getFilter() + " group by r.goods order by r.goods.supplierId");
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
-          List<PurchaseECouponReport> list=  query.getResultList();
-        for (PurchaseECouponReport report:list){
-            System.out.println(">>>>>>>>>>>"+report.goods.name);
-        }
+
         return query.getResultList();
     }
 
@@ -87,7 +86,7 @@ public class PurchaseECouponReport extends Model {
         }
         long buyCount = 0l;
         BigDecimal salePrice = BigDecimal.ZERO;
-        BigDecimal originalAmount = BigDecimal.ZERO;        
+        BigDecimal originalAmount = BigDecimal.ZERO;
         for (PurchaseECouponReport item : resultList) {
             buyCount += item.buyCount;
             salePrice = salePrice.add(item.salePrice);

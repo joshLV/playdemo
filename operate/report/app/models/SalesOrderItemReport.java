@@ -28,7 +28,7 @@ public class SalesOrderItemReport extends Model {
     public long buyCount;
 
     public long orderCount;
-    
+
     public BigDecimal salePrice;
 
     public BigDecimal originalAmount;
@@ -36,10 +36,11 @@ public class SalesOrderItemReport extends Model {
     public BigDecimal tax;
 
     public BigDecimal noTaxAmount;
+    public BigDecimal faceValue;
 
     public SalesOrderItemReport(Supplier supplier, Goods goods, BigDecimal salePrice,
-                          long buyCount, long orderCount, BigDecimal originalAmount,
-                          BigDecimal tax, BigDecimal noTaxAmount) {
+                                long buyCount, long orderCount, BigDecimal originalAmount,
+                                BigDecimal tax, BigDecimal noTaxAmount) {
         this.supplier = supplier;
         this.goods = goods;
         this.salePrice = salePrice;
@@ -49,34 +50,35 @@ public class SalesOrderItemReport extends Model {
         this.tax = tax;
         this.noTaxAmount = noTaxAmount;
     }
-    
-    
-    public SalesOrderItemReport(Goods goods, BigDecimal salePrice,
-                          long buyCount, BigDecimal originalAmount) {
+
+
+    public SalesOrderItemReport(Goods goods, BigDecimal salePrice, BigDecimal faceValue,
+                                long buyCount, BigDecimal originalAmount) {
         this.supplier = goods.getSupplier();
         this.goods = goods;
+        this.faceValue = faceValue;
         this.salePrice = salePrice;
         this.buyCount = buyCount;
         this.originalAmount = originalAmount;
         this.tax = BigDecimal.ZERO;
         this.noTaxAmount = BigDecimal.ZERO;
-    }    
+    }
 
     public SalesOrderItemReport(Long buyCount, BigDecimal originalAmount) {
         this.buyCount = buyCount;
         this.originalAmount = originalAmount;
         this.tax = BigDecimal.ZERO;
         this.noTaxAmount = BigDecimal.ZERO;
-    }        
+    }
 
     public static List<SalesOrderItemReport> query(
             SalesOrderItemReportCondition condition) {
         Query query = JPA.em()
                 .createQuery(
-                        "select new models.SalesOrderItemReport(r.goods, r.salePrice, sum(r.buyNumber), sum(r.salePrice*r.buyNumber))"
+                        "select new models.SalesOrderItemReport(r.goods, r.salePrice,r.faceValue, sum(r.buyNumber), sum(r.salePrice*r.buyNumber))"
                                 + " from OrderItems r, Supplier s where "
                                 + condition.getFilter() + " group by r.goods, r.salePrice order by r.goods"
-                        );
+                );
 
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
