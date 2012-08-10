@@ -21,6 +21,8 @@ public class WithdrawBillCondition implements Serializable {
     public Date processedAtBegin;
     public Date processedAtEnd;
 
+    public String interval;
+
     private Map<String, Object> params = new HashMap<>();
     public String getFilter(){
         StringBuilder filter = new StringBuilder("1=1");
