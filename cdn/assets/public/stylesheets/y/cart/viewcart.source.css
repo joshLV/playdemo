@@ -86,6 +86,7 @@
 }
 .cart-total {
     text-align: right;
+    margin-bottom: 45px;
 }
 .cart-total .cart-amount {
     color: #f50;
@@ -93,19 +94,19 @@
 }
 .cart-total .confirm-order {
     position: relative;
-    top: -12px;
-    *top: 0;
+    top: -5px;
+    *top: 5px;
     width: 127px;
     height: 39px;
-    margin-left: 25px;
+    border: 0;
+    color: #F8F8F8;
+    margin-left: 20px;
+    font-weight: 700;
+    line-height: 39px;
+    text-indent: -999px;
     display: inline-block;
-}
-.cart-total .confirm-order b {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 127px;
-    height: 39px;
+    background-color: #F76B22;
+    cursor: pointer;
 }
 .recent .hd {
     margin-top: 10px;

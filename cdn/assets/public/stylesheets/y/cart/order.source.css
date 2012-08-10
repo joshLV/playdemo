@@ -260,17 +260,17 @@
 }
 .confirm-order {
     position: relative;
-    top: -12px;
+    top: -5px;
     *top: 5px;
     width: 127px;
     height: 39px;
-    display: inline-block;
+    border: 0;
+    color: #F8F8F8;
     margin-left: 20px;
-}
-.confirm-order b {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 127px;
-    height: 39px;
+    font-weight: 700;
+    line-height: 39px;
+    text-indent: -999px;
+    display: inline-block;
+    background-color: #F76B22;
+    cursor: pointer;
 }
