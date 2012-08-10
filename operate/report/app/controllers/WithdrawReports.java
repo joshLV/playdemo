@@ -1,9 +1,8 @@
 package controllers;
 
-import models.accounts.Account;
 import models.accounts.AccountSequenceCondition;
 import models.accounts.TradeType;
-import models.webop.PaymentReport;
+import models.webop.WithdrawReport;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.ValuePaginator;
@@ -12,7 +11,6 @@ import play.mvc.With;
 import utils.CrossTableUtil;
 import utils.PaginateUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -37,9 +35,9 @@ public class WithdrawReports extends Controller {
         }
         condition.tradeType = TradeType.WITHDRAW;
 
-        List<PaymentReport> resultList = PaymentReport.queryPaymentReport(condition);
+        List<WithdrawReport> resultList = WithdrawReport.queryWithdrawReport(condition);
 
-        List<Map<String, Object>>  report = CrossTableUtil.generateCrossTable(resultList, PaymentReport.converter);
+        List<Map<String, Object>>  report = CrossTableUtil.generateCrossTable(resultList, WithdrawReport.converter);
         // 分页
         ValuePaginator<Map<String, Object>> reportPage = PaginateUtil.wrapValuePaginator(report, pageNumber, PAGE_SIZE);
         render(reportPage, condition);

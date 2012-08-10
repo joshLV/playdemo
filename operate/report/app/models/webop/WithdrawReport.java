@@ -35,10 +35,10 @@ public class WithdrawReport {
      * @param condition
      * @return
      */
-    public static List<WithdrawReport> queryPaymentReport(AccountSequenceCondition condition) {
+    public static List<WithdrawReport> queryWithdrawReport(AccountSequenceCondition condition) {
         Query query = JPA.em()
                 .createQuery(
-                        "select new models.webop.PaymentReport(s.createdAt, s.account, sum(s.changeAmount)) "
+                        "select new models.webop.WithdrawReport(s.createdAt, s.account, sum(s.changeAmount)) "
                                 + " from AccountSequence s where "
                                 + processFilter(condition) + " group by cast(s.createdAt as date) order by cast(s.createdAt as date) DESC");
         for (Map.Entry<String, Object> param : condition.getParams().entrySet()) {
@@ -48,7 +48,9 @@ public class WithdrawReport {
     }
 
     public static String processFilter(AccountSequenceCondition condition){
-        StringBuilder filter = new StringBuilder("1=1");
+        Account platformWithdrawAccount = AccountUtil.getPlatformWithdrawAccount();
+        StringBuilder filter = new StringBuilder("s.account != :pAccount ");
+        condition.params.put("pAccount", platformWithdrawAccount);
 
         if (condition.createdAtBegin != null) {
             filter.append(" and s.createdAt >= :createdAtBegin");

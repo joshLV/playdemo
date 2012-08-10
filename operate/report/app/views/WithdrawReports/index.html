@@ -118,9 +118,9 @@
         }%
         #{paginate.list items:reportPage, as:'report'}
             %{
-                consumerAmount = report.get(models.accounts.AccountType.CONSUMER.toString())?:new java.math.BigDecimal("0")
-                supplierAmount = report.get(models.accounts.AccountType.SUPPLIER.toString())?:new java.math.BigDecimal("0")
-                resalerAmount = report.get(models.accounts.AccountType.RESALER.toString())?:new java.math.BigDecimal("0")
+                consumerAmount = report.get("CONSUMER") ?: new java.math.BigDecimal("0.00")
+                supplierAmount = report.get("SUPPLIER")?:new java.math.BigDecimal("0.00")
+                resalerAmount = report.get("RESALER")?:new java.math.BigDecimal("0.00")
 
                 consumerTotal = consumerTotal.add(consumerAmount)
                 supplierTotal = supplierTotal.add(supplierAmount)
@@ -130,16 +130,16 @@
             }%
             <tr>
                 <td><a href="${dateUrl}" target="_blank">${rdate}</a></td>
-                <td><a href="${dateUrl}&condition.payMethod=alipay" target="_blank">${consumerAmount}</a> </td>
-                <td><a href="${dateUrl}&condition.payMethod=tenpay" target="_blank">${supplierAmount}</a></td>
-                <td><a href="${dateUrl}&condition.payMethod=99bill" target="_blank">${resalerAmount}</a></td>
+                <td><a href="${dateUrl}&condition.payMethod=alipay" target="_blank">${consumerAmount.negate()}</a> </td>
+                <td><a href="${dateUrl}&condition.payMethod=tenpay" target="_blank">${supplierAmount.negate()}</a></td>
+                <td><a href="${dateUrl}&condition.payMethod=99bill" target="_blank">${resalerAmount.negate()}</a></td>
             </tr>
         #{/paginate.list}
             <tr>
                 <td>汇总</td>
-                <td>${consumerTotal}</td>
-                <td>${supplierTotal}</td>
-                <td>${resalerTotal}</td>
+                <td>${consumerTotal.negate()}</td>
+                <td>${supplierTotal.negate()}</td>
+                <td>${resalerTotal.negate()}</td>
             </tr>
         </table>
     </div>
