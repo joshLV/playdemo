@@ -111,9 +111,9 @@
                 <th>快钱</th>
             </tr>
         %{
-            alipay = new java.math.BigDecimal("0")
-            tenpay = new java.math.BigDecimal("0")
-            kuaiqian = new java.math.BigDecimal("0")
+            alipay = new java.math.BigDecimal("0.00")
+            tenpay = new java.math.BigDecimal("0.00")
+            kuaiqian = new java.math.BigDecimal("0.00")
             baseUri = play.Play.configuration.getProperty("uri.operate_business")
         }%
         #{paginate.list items:reportPage, as:'report'}
@@ -126,9 +126,9 @@
             }%
             <tr>
                 <td><a href="${dateUrl}" target="_blank">${rdate}</a></td>
-                <td><a href="${dateUrl}&condition.payMethod=alipay" target="_blank">${report.get("支付宝")?:"0"}</a> </td>
-                <td><a href="${dateUrl}&condition.payMethod=tenpay" target="_blank">${report.get("财付通")?:"0"}</a></td>
-                <td><a href="${dateUrl}&condition.payMethod=99bill" target="_blank">${report.get("快钱")?:"0"}</a></td>
+                <td><a href="${dateUrl}&condition.payMethod=alipay" target="_blank">${report.get("支付宝")?:"0.00"}</a> </td>
+                <td><a href="${dateUrl}&condition.payMethod=tenpay" target="_blank">${report.get("财付通")?:"0.00"}</a></td>
+                <td><a href="${dateUrl}&condition.payMethod=99bill" target="_blank">${report.get("快钱")?:"0.00"}</a></td>
             </tr>
         #{/paginate.list}
             <tr>

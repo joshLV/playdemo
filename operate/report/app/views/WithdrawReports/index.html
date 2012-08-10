@@ -126,13 +126,13 @@
                 supplierTotal = supplierTotal.add(supplierAmount)
                 resalerTotal = resalerTotal.add(resalerAmount)
                 rdate = report.get("RowKey")
-                dateUrl = baseUri + "/orders?condition.status=PAID&condition.paidAtBegin=" + rdate + "&condition.paidAtEnd=" + rdate
+                dateUrl = baseUri + "/withdraw?condition.status=SUCCESS&condition.processedAtBegin=" + rdate + "&condition.processedAtEnd=" + rdate
             }%
             <tr>
                 <td><a href="${dateUrl}" target="_blank">${rdate}</a></td>
-                <td><a href="${dateUrl}&condition.payMethod=alipay" target="_blank">${consumerAmount.negate()}</a> </td>
-                <td><a href="${dateUrl}&condition.payMethod=tenpay" target="_blank">${supplierAmount.negate()}</a></td>
-                <td><a href="${dateUrl}&condition.payMethod=99bill" target="_blank">${resalerAmount.negate()}</a></td>
+                <td><a href="${dateUrl}&condition.accountType=CONSUMER" target="_blank">${consumerAmount.negate()}</a> </td>
+                <td><a href="${dateUrl}&condition.accountType=SUPPLIER" target="_blank">${supplierAmount.negate()}</a></td>
+                <td><a href="${dateUrl}&condition.accountType=RESALER" target="_blank">${resalerAmount.negate()}</a></td>
             </tr>
         #{/paginate.list}
             <tr>

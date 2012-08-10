@@ -9,11 +9,15 @@
 #{select 'condition.status',id:'condition_status',value:condition?.status}
     #{option ""}全部#{/option}
     #{option "APPLIED"}&{'withdraw.APPLIED'}#{/option}
+    #{option "REJECTED"}&{'withdraw.REJECTED'}#{/option}
+    #{option "SUCCESS"}&{'withdraw.SUCCESS'}#{/option}
 #{/select}
 </form>
 #{vx.tab
     name:'withdraw',
-    enumItems: [models.accounts.WithdrawBillStatus.APPLIED],
+    enumItems: [models.accounts.WithdrawBillStatus.APPLIED,
+                models.accounts.WithdrawBillStatus.REJECTED,
+                models.accounts.WithdrawBillStatus.SUCCESS],
     select:'condition_status',
     value:condition.status,
     form:'form'/}
