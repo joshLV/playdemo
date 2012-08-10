@@ -207,6 +207,7 @@ select:'condition_status',value:condition?.status/}
                 <td rowspan="${order.realGoods.size()}">
                     #{if order.deliveryNo!=null}
                         <a id="sendInfo_${order.id}"
+
                            href="#" class="label label-info"
                            rel="popover"
                            data-content="运单号: ${order.deliveryNo}"
@@ -233,6 +234,7 @@ select:'condition_status',value:condition?.status/}
                     <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
                 #{/else}
             #{/else}
+
             #{if order.userType ==models.accounts.AccountType.RESALER}
              <td rowspan="${order.orderItems.size()}">${order?.resaler?.loginName}</td>
             #{/if}

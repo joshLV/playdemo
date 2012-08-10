@@ -211,6 +211,18 @@ order.payMethod.99bill_SHB=快钱-上海银行
 order.payMethod.99bill_SHRCC=快钱-上海农村商业银行
 order.payMethod.99bill_SPDB=快钱-浦发银行
 
+
+#积分商品订单
+pointGoodsOrder.APPLY=待审核
+pointGoodsOrder.ACCEPT=未发货
+     #审核通过
+pointGoodsOrder.CANCELED=审核未通过
+pointGoodsOrder.SENT=已发货
+     #审核通过
+
+
+pointGoodsOrder.note=备注
+
 #券状态
 coupon.DEALING=处理中
 coupon.CONSUMED=已消费
