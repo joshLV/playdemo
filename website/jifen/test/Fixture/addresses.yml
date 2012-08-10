@@ -1,0 +1,17 @@
+consumer.Address(test1):
+  name: sujie
+  address: test1
+  isDefault: "false"
+  user: user
+
+consumer.Address(test3):
+  name: sujie1
+  province: '上海市'
+  district: '市辖区'
+  city: '黄浦区'
+  postcode: 123456
+  mobile: 13764081569
+  address: test3
+  isDefault: true
+  user: user
+

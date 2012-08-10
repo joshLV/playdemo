@@ -1,0 +1,17 @@
+consumer.UserPoint(UserPoint1):
+  createdAt: 2012-04-09 00:00:00
+  currentPoints: 100
+  dealPoints: 10
+  dealType: 1
+  order: "order1"
+  user: "selenium"
+  pointNumber: 100
+  
+consumer.UserPoint(UserPoint2):
+  createdAt: 2012-04-10 00:00:00
+  currentPoints: 0
+  dealPoints: 100
+  dealType: 0
+  order: "order1"
+  user: "selenium"
+  pointNumber: 101

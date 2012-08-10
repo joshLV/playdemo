@@ -53,7 +53,7 @@
                 <del>原价：${aGoods.faceValue}</del>
                 <span>积分价：<b>${aGoods.pointPrice}</b> 分 </span>
             </div>
-                <div class="btn"><a href="" target="_blank">立即兑换</a></div>
+                <div class="btn"><a href="/pointgoods/${aGoods.id}" target="_blank">立即兑换</a></div>
             </li>
             #{set i:i+1/}
             #{/paginate.list}

@@ -1,4 +1,4 @@
-package models;
+package models.sales;
 
 /**
  * Created with IntelliJ IDEA.

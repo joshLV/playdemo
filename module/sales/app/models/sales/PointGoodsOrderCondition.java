@@ -1,4 +1,4 @@
-package models;
+package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;

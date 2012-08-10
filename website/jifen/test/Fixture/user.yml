@@ -5,8 +5,9 @@ consumer.User(user):
  "lastLoginAt": "2012-02-24T15:40:07"
  "status": "NORMAL"
  "mobile": "15618096151"
+ "totalPoint": "200000"
  
-consumer.User(user_test1):
+consumer.User(selenium1):
  "loginName": "selenium1@uhuila.com"
  "password": "63dc778349e8f64e7c1c3b9370848ba1"
  "passwordSalt": "gXP0W9"
@@ -18,28 +19,3 @@ consumer.User(user_test1):
 
 
 
-consumer.User(user_test2):
- "loginName": "selenium2@uhuila.com"
- "password": "63dc778349e8f64e7c1c3b9370848ba1"
- "passwordSalt": "gXP0W9"
- "lastLoginAt": "2012-02-24T15:40:07"
- "status": "NORMAL"
- "mobile": "15618096151"
- "passwordToken": "63dc778349e8f64e7c1c3b9370848ba1"
- "sendMailAt": "2012-04-24T15:40:07"
-consumer.UserInfo(userInfo1):
- "fullName": ""
- "mobile": "15618096151"
- "birthday": "2001-01-01"
- "phone": ""
- "marryState": "0"
- "position": "0"
- "userqq": ""
- "salary": ""
- "interest": ""
- "industry": ""
- "otherInfo": ""
- "createdAt": "2012-02-24T15:40:07"
- "bindMobileAt": ""
- "user": "user"
- "totalPoints": "100"

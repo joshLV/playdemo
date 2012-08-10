@@ -1,0 +1,103 @@
+consumer.UserPointConfig(UserPointConfig1):
+  pointType: 1
+  pointNumber: 100
+  dealPoints: 200
+  pointNote: 成功注册获得积分
+  pointTitle: 注册
+consumer.UserPointConfig(UserPointConfig2):
+  pointType: 1
+  pointNumber: 101
+  dealPoints: 100
+  pointNote: 补充完整会员资料获得积分
+  pointTitle: 补充完资料
+consumer.UserPointConfig(UserPointConfig3):
+  pointType: 1
+  pointNumber: 102
+  dealPoints: 100
+  pointNote: 用户每天登录网站/每天只算一次
+  pointTitle: 登录
+consumer.UserPointConfig(UserPointConfig4):
+  pointType: 1
+  pointNumber: 103
+  dealPoints: 0
+  pointNote: 用户每月第一笔充值增送积分
+  pointTitle: 充值
+consumer.UserPointConfig(UserPointConfig5):
+  pointType: 1
+  pointNumber: 104
+  dealPoints: 10
+  pointNote: 网站或终端打印优惠券，每天计算10张
+  pointTitle: 打印优惠券/短信优惠券
+consumer.UserPointConfig(UserPointConfig6):
+  pointType: 1
+  pointNumber: 105
+  dealPoints: 0
+  pointNote: 自由的给商户的评论，每天计算10条
+  pointTitle: 普通商户评论
+consumer.UserPointConfig(UserPointConfig7):
+  pointType: 1
+  pointNumber: 106
+  dealPoints: 0
+  pointNote: 给商户上传的图片，每天计算10条
+  pointTitle: 上传图片
+consumer.UserPointConfig(UserPointConfig8):
+  pointType: 1
+  pointNumber: 107
+  dealPoints: 0
+  pointNote: 购买消费后给商户的评论
+  pointTitle: 消费给商户评论
+consumer.UserPointConfig(UserPointConfig9):
+  pointType: 1
+  pointNumber: 109
+  dealPoints: 10
+  pointNote: 1元获得1积分，优卡会员双倍积分
+  pointTitle: 购买商品
+consumer.UserPointConfig(UserPointConfig10):
+  pointType: 1
+  pointNumber: 110
+  dealPoints: 10
+  pointNote: 1元获得1积分，优卡会员双倍积分
+  pointTitle: 团购
+consumer.UserPointConfig(UserPointConfig11):
+  pointType: 0
+  pointNumber: 120
+  dealPoints: 0
+  pointNote: 删除图片扣除积分
+  pointTitle: 删除图片
+consumer.UserPointConfig(UserPointConfig12):
+  pointType: 0
+  pointNumber: 121
+  dealPoints: 0
+  pointNote: 删除评论扣除积分
+  pointTitle: 删除评论
+consumer.UserPointConfig(UserPointConfig13):
+  pointType: 1
+  pointNumber: 122
+  dealPoints: 2000
+  pointNote: 邀请积分
+  pointTitle: 邀请积分
+consumer.UserPointConfig(UserPointConfig14):
+  pointType: 1
+  pointNumber: 123
+  dealPoints: 10
+  pointNote: 退款
+  pointTitle: 退款
+consumer.UserPointConfig(UserPointConfig15):
+  pointType: 1
+  pointNumber: 124
+  dealPoints: 1000
+  pointNote: 会员帐号绑定手机获得积分, 只计算第一次
+  pointTitle: 绑定手机
+consumer.UserPointConfig(UserPointConfig16):
+  pointType: 1
+  pointNumber: 125
+  dealPoints: 500
+  pointNote: 会员帐号绑定邮箱优卡获得积分, 只计算第一次
+  pointTitle: 绑定邮箱
+consumer.UserPointConfig(UserPointConfig17):
+  pointType: 1
+  pointNumber: 126
+  dealPoints: 2000
+  pointNote: 会员帐号优卡获得积分，只计算第一次(首次)
+  pointTitle: 绑定优卡
+...

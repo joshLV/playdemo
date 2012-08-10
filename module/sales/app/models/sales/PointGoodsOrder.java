@@ -1,4 +1,4 @@
-package models;
+package models.sales;
 
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
@@ -7,8 +7,6 @@ import models.consumer.User;
 import models.consumer.UserInfo;
 import models.order.DeliveryType;
 import models.order.NotEnoughInventoryException;
-import models.sales.GoodsStatus;
-import models.sales.PointGoods;
 import play.Play;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
@@ -16,9 +14,7 @@ import play.modules.paginate.JPAExtPaginator;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 /**
