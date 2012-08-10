@@ -84,8 +84,7 @@ public class OperateCoupons extends Controller {
         }
         String page = request.params.get("page");
         request.format = "xls";
-        String __EXCEL_FILE_NAME__ = "券列表_" + System.currentTimeMillis() + "xls";
-        renderArgs.put("__EXCEL_FILE_NAME__", __EXCEL_FILE_NAME__);
+        renderArgs.put("__FILE_NAME__", "券列表_" + System.currentTimeMillis() + ".xls");
         JPAExtPaginator<ECoupon> couponsList = ECoupon.query(condition, 1, PAGE_SIZE);
         for (ECoupon coupon : couponsList) {
             coupon.shopName = coupon.getConsumedShop();
@@ -122,7 +121,7 @@ public class OperateCoupons extends Controller {
             coupon.eCouponSn = coupon.getMaskedEcouponSn();
         }
 
-        render(__EXCEL_FILE_NAME__, couponsList);
+        render(couponsList);
 
     }
 }

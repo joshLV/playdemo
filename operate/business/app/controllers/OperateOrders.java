@@ -73,8 +73,7 @@ public class OperateOrders extends Controller {
         }
         String page = request.params.get("page");
         request.format = "xls";
-        String __EXCEL_FILE_NAME__ = "订单_" + System.currentTimeMillis() + "xls";
-        renderArgs.put("__EXCEL_FILE_NAME__", __EXCEL_FILE_NAME__);
+        renderArgs.put("__FILE_NAME__","订单_" + System.currentTimeMillis() + ".xls" );
         JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, 1, PAGE_SIZE);
         for (Order order : orderList) {
             if (order.userType == AccountType.CONSUMER) {
@@ -82,9 +81,8 @@ public class OperateOrders extends Controller {
             } else if (order.userType == AccountType.RESALER) {
                 order.accountEmail = order.getResaler().loginName;
             }
-//            order.save();
         }
-        render(__EXCEL_FILE_NAME__, orderList);
+        render(orderList);
 
     }
 }

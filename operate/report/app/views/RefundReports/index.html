@@ -157,11 +157,22 @@
         <td>${report?.salePrice?.formatCurrency('CNY')}</td>
         <td>${report?.buyNumber}</td>
         <td>
-            <a href="${baseUrl}/coupons?condition.searchKey=GOODS_NAME&condition.status=REFUND&condition.searchItems=${report?.goods?.name}&condition.refundAtBegin=${refundAtBegin}&condition.refundAtEnd=${refundAtEnd}"
-               target="_blank">${report?.amount?.formatCurrency('CNY')}</a></td>
+            <a href="#"
+               onclick="aForm('${baseUrl}','${report?.goods?.name}','${refundAtBegin}','${refundAtEnd}')">${report?.amount?.formatCurrency('CNY')}</a>
+        </td>
     </tr>
 #{/paginate.list}
 </table>
+<script type="text/javascript">
+
+    function aForm(baseUrl, goodsName, refundAtBegin, refundAtEnd) {
+
+        goodsName = encodeURIComponent(goodsName);
+        var url = baseUrl + "/coupons?condition.searchKey=GOODS_NAME&condition.status=REFUND&condition.searchItems=" + goodsName + "&condition.refundAtBegin=" + refundAtBegin + "&condition.refundAtEnd=" + refundAtEnd;
+        window.location.target = "_blank";
+        window.open(url);
+    }
+</script>
 <div class="pagination">
     <ul>
     #{paginate.controls items:reportPage /}
