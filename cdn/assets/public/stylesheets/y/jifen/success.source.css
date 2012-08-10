@@ -1,0 +1,57 @@
+#content {
+    clear: both;
+    width: 960px;
+    margin: 10px auto;
+}
+
+.success {
+    padding: 15px 20px;
+    border: 1px solid #dcdfe5;
+}
+.success h3 {
+    color: #666;
+}
+.success .congratulation {
+    width: 300px;
+    margin: 20px auto;
+}
+.success .btn {
+    padding: 0 325px 45px;
+}
+.success .btn a {
+    float: left;
+    display: block;
+    overflow: hidden;
+    width: 127px;
+    height: 39px;
+    color: #f8f8f8;
+    font-weight: 700;
+    line-height: 39px;
+    text-align: center;
+    text-indent: 100%;
+    white-space: nowrap;
+    background: #8db800;
+}
+.success .btn a:hover {
+    text-decoration: none;
+}
+.success .btn a.lookup {
+    background: url(//img/uhcdn.com/images/y/jifen/lookup-exhange-detail.png) no-repeat 0 0;
+}
+.success .btn a.continue {
+    margin-left: 8px;
+    background: url(//img/uhcdn.com/images/y/jifen/contine-exchange.png) no-repeat 0 0;
+}
+.success .note {
+    padding: 24px;
+    text-align: left;
+    line-height: 22px;
+}
+.success .note i {
+    color: #fb7512;
+    font-style: normal;
+    margin-left: -24px;
+}
+.success .note a {
+    color: #99c928;
+}
