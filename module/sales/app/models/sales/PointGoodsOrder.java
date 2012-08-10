@@ -365,7 +365,7 @@ public class PointGoodsOrder extends Model {
             user = new User();
         }
         JPAExtPaginator<PointGoodsOrder> orderPage = new JPAExtPaginator<>
-                ("Order o", "o", PointGoodsOrder.class, condition.getFilter(user),
+                ("PointOrder o", "o", PointGoodsOrder.class, condition.getFilter(user),
                         condition.paramsMap)
                 .orderBy(condition.getUserOrderByExpress());
         orderPage.setPageNumber(pageNumber);
@@ -393,8 +393,10 @@ public class PointGoodsOrder extends Model {
      * @throws Exception
      */
     public static void updateUserTotalPoint(Long userId,int totalPoint) {
-        UserInfo ui = UserInfo.find("byUser", User.findById(userId)).first();
+        User user = User.findById(userId);
+        UserInfo ui = UserInfo.find("byUser", user).first();
         if (ui == null){
+            System.out.println("----------------User Info is NULL-----------------");
             return;
         }
         ui.totalPoints = totalPoint;
