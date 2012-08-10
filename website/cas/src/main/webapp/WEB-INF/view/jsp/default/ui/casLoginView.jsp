@@ -8,17 +8,51 @@
 <head>
         <meta charset="UTF-8">
         <title>一百券 - 用户登录</title>
-    <link rel="stylesheet" href="http://a.uhcdn.com/css/u/base.css" />
-    <link rel="stylesheet" href="http://a.uhcdn.com/css/u/login.css" />
+    <%--<link rel="stylesheet" href="http://a.uhcdn.com/css/u/base.css" />--%>
+    <%--<link rel="stylesheet" href="http://a.uhcdn.com/css/u/login.css" />--%>
     <script src="http://a.uhcdn.com/js/u/jquery-1.7.2.min.js"></script>
     <link rel="icon" href="http://a.uhcdn.com/images/u/favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="http://a.uhcdn.com/images/u/favicon.ico" type="image/x-icon" />
+  <style>
+body, h2, h3, p { padding: 0; margin: 0; }
+body, a, button, input { color: #3E3E3E; font: 12px/1.5 tahoma, arial, \5b8b\4f53, sans-serif; }
+#header { width: 960px; margin: 0 auto; }
+#header img { border: 0; }
+.clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+.clearfix { *+height: 1%; }
+
+#content { width: 960px; margin: 0 auto; padding: 25px 0 10px; }
+.form-hd { height: 32px; color: #f97311; line-height: 32px; text-indent: 10px; font-weight: 700; background: url(//img.uhcdn.com/images/y/login.png) repeat-x 0 0; border: 1px solid #e8e8e8; border-top: 3px solid #f97311; }
+.form-bd { padding: 35px 20px; border: solid #D1D1D1; border-width: 0 1px 1px 1px; }
+.login { float: left; width: 420px; padding: 10px 50px 10px 70px; border-right: 1px solid #D1D1D1; }
+.field { padding: 3px 0; }
+.label { display: inline-block; width: 80px; text-align: right; }
+.medium { width: 240px; height: 22px; padding: 0 2px; font-size: 12px; line-height: 22px; border: 1px solid #D1D1D1; }
+.forget { color: #fc7410; padding-left: 5px; text-decoration: none; }
+.error { display: block; width: 204px; height: 20px; padding-left: 52px; color: #f00; }
+#auto { padding-left: 48px; }
+#auto input { position: relative; top: 2px; }
+#remember { position: relative; top: 2px; }
+#submit { width: 127px; height: 37px; margin: 20px 0 0 52px; border: 0; color: #F8F8F8; font-size: 14px; font-weight: 700; text-indent: -9999px; background: url(//img.uhcdn.com/images/y/login.png) no-repeat 0 -33px; cursor: pointer; }
+
+.guide { float: right; width: 320px; padding-left: 40px; }
+.guide h3 { margin: 0 0; font-size: 14px; line-height: 35px; }
+.guide p { line-height: 20px; }
+.regist { display: block; width: 127px; height: 39px; color: #FFF; margin-top: 20px; font-size: 14px; font-weight: 700; line-height: 39px; text-align: center; text-indent: -9999px; background: url(//img.uhcdn.com/images/y/login.png) no-repeat 0 -71px; }
+#captchaImg { position: relative; top: 8px; }
+#checkcode { width: 70px; }
+#footer { padding: 10px 0 20px; margin: 0 auto; text-align: center; }
+.ft-nav { color: #999; text-align: center; }
+.ft-nav a { color: #3E3E3E; margin: 0 10px; text-decoration: none }
+.ft-nav a:hover { color: #fc7410; text-decoration: none }
+.copyright { color: #999; line-height: 26px; }
+.copyright span { margin: 0 10px; }
+</style>
+
 </head>
 <body>
-<div id="header" class="clearfix">
-    <div id="logo">
+<div id="header">
         <a href="http://www.yibaiquan.com"><img src="http://img.uhcdn.com/images/y/logo.png" alt="一百券"/></a>
-    </div>
 </div>
 <%
 // 恶心的JSP，用来实现记录当前用户名
@@ -39,9 +73,9 @@ if (cookies!=null) {
 }
 %>
 <div id="content">
-    <div class="form-hd"><h2>用户登录</h2><b></b></div>
+    <div class="form-hd">用户登录</div>
     <div class="form-bd clearfix">
-        <form:form method="post" id="login-form"  commandName="${commandName}" htmlEscape="true">
+        <form:form method="post" class="login" id="login-form"  commandName="${commandName}" htmlEscape="true">
            <!--
             <form:errors path="*" id="msg" cssClass="errors" element="div" />
              -->
