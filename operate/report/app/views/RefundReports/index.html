@@ -157,7 +157,7 @@
         <td>${report?.salePrice?.formatCurrency('CNY')}</td>
         <td>${report?.buyNumber}</td>
         <td>
-            <a href="${baseUrl}/coupons?condition.searchKey=GOODS_NAME&condition.status=REFUND&condition.searchItems=${report.goods.name}&condition.refundAtBegin=${refundAtBegin}&condition.refundAtEnd=${refundAtEnd}"
+            <a href="${baseUrl}/coupons?condition.searchKey=GOODS_NAME&condition.status=REFUND&condition.searchItems=${report?.goods?.name}&condition.refundAtBegin=${refundAtBegin}&condition.refundAtEnd=${refundAtEnd}"
                target="_blank">${report?.amount?.formatCurrency('CNY')}</a></td>
     </tr>
 #{/paginate.list}

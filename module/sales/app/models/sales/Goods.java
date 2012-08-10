@@ -36,6 +36,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
+
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.resale.ResalerLevel;
@@ -238,13 +239,13 @@ public class Goods extends Model {
      */
     @Column(name = "created_by")
     public String createdBy;
-    
+
     /**
      * 最早上架时间
      */
     @Column(name = "first_onsale_at")
     public Date firstOnSaleAt;
-    
+
     /**
      * 修改时间
      */
@@ -280,7 +281,6 @@ public class Goods extends Model {
 
     /**
      * 限购数量
-     * 
      */
     @Column(name = "limit_number")
     public Integer limitNumber = 0;
@@ -653,7 +653,7 @@ public class Goods extends Model {
         updateGoods.setDiscount(goods.getDiscount());
         updateGoods.salePrice = goods.salePrice;
         updateGoods.baseSale = goods.baseSale;
-        System.out.println(goods.materialType+">>>>>>>>>>>>>>>>>>>");
+        System.out.println(goods.materialType + ">>>>>>>>>>>>>>>>>>>");
         updateGoods.materialType = goods.materialType;
         updateGoods.topCategoryId = goods.topCategoryId;
         updateGoods.categories = goods.categories;
@@ -747,7 +747,7 @@ public class Goods extends Model {
     }
 
     public static List<Goods> findInIdList(List<Long> goodsIds) {
-        if(goodsIds == null || goodsIds.size() == 0) {
+        if (goodsIds == null || goodsIds.size() == 0) {
             return new ArrayList<>();
         }
         EntityManager entityManager = JPA.em();
@@ -767,12 +767,12 @@ public class Goods extends Model {
         return find("id=? and deleted=? and status=? and baseSale >= 1 and expireAt > ?", id,
                 DeletedStatus.UN_DELETED, GoodsStatus.ONSALE, new Date()).first();
     }
-    
+
 
     public static List<Goods> findBySupplierId(Long supplierId) {
         return find("supplierId=? and deleted=? and isLottery=?", supplierId,
                 DeletedStatus.UN_DELETED, Boolean.FALSE).fetch();
-    }    
+    }
 
     public static JPAExtPaginator<Goods> findByCondition(GoodsCondition condition,
                                                          int pageNumber, int pageSize) {
@@ -812,7 +812,7 @@ public class Goods extends Model {
         for (Long id : ids) {
             models.sales.Goods goods = models.sales.Goods.findById(id);
             goods.status = status;
-            
+
             if (status == GoodsStatus.ONSALE && goods.firstOnSaleAt == null) {
                 goods.firstOnSaleAt = new Date();
             }
@@ -1062,11 +1062,20 @@ public class Goods extends Model {
         query.setParameter("expireAt", new Date());
         query.setMaxResults(limit);
         List<Goods> goodsList = query.getResultList();
+        List<Goods> otherGoodsList = new ArrayList<>();
         List<Goods> newGoodsList = new ArrayList<>();
         List<Goods> doGoodsList = new ArrayList<>();
         int goodsCount = goodsList.size();
         if (goodsCount < 5) {
-            newGoodsList = findTopRecommendByCategory(5 - goodsCount, goods);
+            otherGoodsList = findTopRecommendByCategory(5 - goodsCount, goods);
+            for (Goods goods1 : otherGoodsList) {
+                goodsList.add(goods1);
+            }
+        }
+
+        goodsCount = goodsList.size();
+        if (goodsCount < 5) {
+            newGoodsList = findNewGoodsOfOthers(goods.id, 5 - goodsCount);
             for (Goods goods1 : newGoodsList) {
                 goodsList.add(goods1);
             }
@@ -1106,7 +1115,6 @@ public class Goods extends Model {
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
         query.setParameter("categoryId", categoryId);
-
         query.setParameter("goodsId", goods.id);
         query.setParameter("supplierId", goods.supplierId);
         query.setParameter("expireAt", new Date());
@@ -1125,6 +1133,17 @@ public class Goods extends Model {
     public static List<Goods> findNewGoods(int limit) {
         return Goods.find("status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by createdAt DESC",
                 GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
+    }
+
+    /**
+     * 获取除本身以外的最新商品
+     *
+     * @param limit
+     * @return
+     */
+    public static List<Goods> findNewGoodsOfOthers(Long id, int limit) {
+        return Goods.find(" id <> ? and status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by createdAt DESC",
+                id, GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
     }
 
     public void setPublishedPlatforms(List<GoodsPublishedPlatformType> publishedPlatforms) {

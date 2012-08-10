@@ -36,8 +36,12 @@ public class Application extends Controller {
     public static void service() {
         render();
     }
+
     public static void topic(Long id) {
         Topic topic = Topic.findById(id);
+        if (topic == null) {
+            error(404, "没有找到该商品！");
+        }
         render(topic);
     }
 }
