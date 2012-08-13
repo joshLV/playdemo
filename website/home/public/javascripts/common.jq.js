@@ -119,7 +119,8 @@ $.overlay = {
         var doc = $(document.documentElement)[0];
 	    $("#popup_overlay").css({
 				width:(doc.scrollLeft==0?doc.clientWidth:doc.scrollWidth)+"px",
-				height:(doc.scrollTop==0?doc.clientHeight:doc.scrollHeight)+"px"
+				// height:(doc.scrollTop==0?doc.clientHeight:doc.scrollHeight)+"px"
+				height:(doc.scrollTop==0?$(document).height():doc.scrollHeight)+"px"
 		});
 	},
 	defaults:{
@@ -211,9 +212,8 @@ function Dialog(opts) {
 	_popup_content.html("");
 	//将结构体封装在这个变量中
 	var indiv = "<div class='box'>"
-        +"  <div class='uhlbox_t clearfix'><b>"+ opts.title +"</b><a href='javascript:void(0);' class='close' id='popup_close'>X</a></div>"
+        +"  <div class='uhlbox_t clearfix'><b>"+ opts.title +"</b><a href='javascript:void(0);' class='close' id='popup_close' title='关闭'>X</a></div>"
         +"  <div class='uhlbox_c'>"+ opts.content +"</div>"
-        //+"  <div class='uhlbox_b'><div class='table_bl'></div><div class='table_br'></div></div>"
         +"</div>";
 
 	$(_popup_container).html(indiv);
@@ -221,7 +221,6 @@ function Dialog(opts) {
 	$("#popupbox .uhlbox_c").html(strhtml);
 	
 	$(_popup_container).css({"height":outerHeight + 67,"width":outerWidth,"zIndex":"2000"});
-	// $("#popupbox .uhlbox_c").css({"height":outerHeight,"width":outerWidth, "overflow":"hidden"});
 	$.common.center($(_popup_container));
 	$(_popup_container).show();
 	
@@ -428,7 +427,7 @@ function center(obj){
 	 var _objWidth     = $(obj).outerWidth();  
 	 $(obj).css({   
 		  "position": "absolute",   
-		  "top": (_windowHeight - _objHeight)/2+$(document.documentElement).scrollTop() + "px",   
+          "top": (_windowHeight - _objHeight)/2+$(document).scrollTop() + "px",   
 		  "left":(_windowWidth - _objWidth)/2 + "px"
 	 }); 
 }

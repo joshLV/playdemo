@@ -30,8 +30,7 @@
                         $.popup.hide();
                         $("#apply_" + coupon_id).html("");
                         $("#send_" + coupon_id).html("");
-
-                        $("#status_apply_" + coupon_id).html("已退款");
+                        $("#status_apply_" + coupon_id).html("已退款").removeClass().addClass('refund');
                     }
                 }, "json");
     }
@@ -142,8 +141,8 @@
                         <td align="center"> #{if coupon?.status != models.order.ECouponStatus.CONSUMED && isExpired }<span>已过期</span>#{/if}
                         #{else}${coupon?.consumedAt?.format('yyyy-MM-dd HH:mm:ss')} #{/else}</td>
                         <td align="center">
-                            #{if coupon?.status == models.order.ECouponStatus.CONSUMED }<span class="consumed">已消费</span>#{/if}
-                            #{elseif coupon?.status == models.order.ECouponStatus.UNCONSUMED}<span class="unconsumed">未消费</span>#{/elseif}
+                            #{if coupon?.status == models.order.ECouponStatus.CONSUMED }<span class="consumed" id="status_apply_${coupon.id}">已消费</span>#{/if}
+                            #{elseif coupon?.status == models.order.ECouponStatus.UNCONSUMED}<span class="unconsumed" id="status_apply_${coupon.id}">未消费</span>#{/elseif}
                             #{elseif coupon?.status == models.order.ECouponStatus.REFUND}<span class="refund" id="status_apply_${coupon.id}">已退款</span>#{/elseif}
                         *{#{/else}}*
                         </td>
@@ -192,14 +191,13 @@
     <div id="apply_dialog" class="popup-content" style="width:350px;height:100px">
         <ul>
             <li class="item btn-box" style="padding-top:10px">
-                退款金额：<span id="money"></span>  <button type="button" onClick="confirmApply()">确定</button>
-               <button type="button" onClick="cancel()">取消</button>
+                退款金额：<span id="money"></span>
             </li>
-            *{<li class="item">}*
-                *{<label>退款理由：</label><textarea rows="5" cols="35" id="apply_note"></textarea>}*
-            *{</li>}*
+            <li class="item btn-box" style="padding-top:25px">
+                <button type="button" onClick="confirmApply()">确定</button>
+                <button type="button" onClick="cancel()">取消</button>
+            </li>
         </ul>
         <input type="hidden" id="coupon_id"/>
     </div>
 </div>
-
