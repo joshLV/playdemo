@@ -8,7 +8,7 @@
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script>
     $(function () {
-        $("#pointNumber").click(function () {
+        $("#pointNumber").change(function () {
             $('#couponsFrm').submit();
         });
    });
@@ -33,9 +33,9 @@
                 #{/list}
             #{/select}
             <label>操作时间：</label>
-            <input class="Wdate" type="text" name="condition.createdAtBegin" id="createdAtBegin" value="" onfocus="WdatePicker({readOnly:true})" />
+            <input class="Wdate" type="text" name="condition.createdAtBegin" id="createdAtBegin" value="${condition?.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" />
             -
-            <input class="Wdate" type="text" id="createdAtEnd" name="condition.createdAtEnd" value="" onfocus="WdatePicker({readOnly:true})" />
+            <input class="Wdate" type="text" id="createdAtEnd" name="condition.createdAtEnd" value="${condition?.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
             <button class="search-btn" id="search"> 搜　索 </button>
         </div>
         </form>

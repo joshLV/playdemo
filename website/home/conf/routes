@@ -24,7 +24,7 @@ GET      /user-info                                    UserInfos.index
 POST     /user-info/send                               UserInfos.sendValidCode
 POST     /user-info/mobile-bind                        UserInfos.bindMobile
 POST     /user-info                                    UserInfos.update
-GET      /use-edit                                     UserInfos.edit
+GET      /user-edit                                     UserInfos.edit
 
 POST     /user-info/send                               UserInfos.sendValidCode
 GET      /user-sequences                               Usersequences.index
