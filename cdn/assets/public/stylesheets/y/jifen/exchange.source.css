@@ -6,7 +6,7 @@
 
 .exchange {
     border: 1px solid #dcdfe5;
-    background: url(//img/uhcdn.com/images/y/jifen/exchange-bg.png) repeat-x 0 bottom;
+    background: url(//img.uhcdn.com/images/y/jifen/exchange-bg.png) repeat-x 0 bottom;
 }
 .exchange h3 {
     color: #666;
@@ -57,5 +57,5 @@
     line-height: 39px;
     text-align: center;
     text-indent: -9999px;
-    background: #f76b22 url(//img/uhcdn.com/images/y/jifen/exchange-button.png) no-repeat 0 0;
+    background: #f76b22 url(//img.uhcdn.com/images/y/jifen/exchange-button.png) no-repeat 0 0;
 }

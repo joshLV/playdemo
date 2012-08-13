@@ -36,11 +36,11 @@
     text-decoration: none;
 }
 .success .btn a.lookup {
-    background: url(//img/uhcdn.com/images/y/jifen/lookup-exhange-detail.png) no-repeat 0 0;
+    background: url(//img.uhcdn.com/images/y/jifen/lookup-exhange-detail.png) no-repeat 0 0;
 }
 .success .btn a.continue {
     margin-left: 8px;
-    background: url(//img/uhcdn.com/images/y/jifen/contine-exchange.png) no-repeat 0 0;
+    background: url(//img.uhcdn.com/images/y/jifen/contine-exchange.png) no-repeat 0 0;
 }
 .success .note {
     padding: 24px;
