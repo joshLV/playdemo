@@ -5,6 +5,11 @@
 # Home page
 GET     /                                       Application.index
 
+# API
+*       /api/order/create                       OrderAPI.createOrder
+*       /api/order/refund                       OrderAPI.refund
+*       /api/order/resend                       OrderAPI.resend
+
 # 北京ensms接收接口
 GET     /getsms                                 EnSmsReceivers.getSms
 

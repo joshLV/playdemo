@@ -19,7 +19,7 @@ import java.util.TreeMap;
  * @author likang
  */
 public class OrderAPI extends Controller{
-    public static void newOrder(String serial_number, long goods_id,
+    public static void createOrder(String serial_number, long goods_id,
                                 int number, String mobile, String app_key, String sign){
         Logger.info("order api %s:%s %s:%s %s:%s %s:%s %s:%s %s:%s",
                 "serial_number", serial_number, "goods_id", goods_id, "number", number,
@@ -98,6 +98,10 @@ public class OrderAPI extends Controller{
     }
 
     public static void refund(){
+
+    }
+
+    public static void resend(){
 
     }
 
