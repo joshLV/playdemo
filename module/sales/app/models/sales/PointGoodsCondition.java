@@ -1,11 +1,8 @@
-package models.order;
+package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import models.resale.Resaler;
-import models.sales.Brand;
-import models.sales.GoodsStatus;
-import models.sales.MaterialType;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 

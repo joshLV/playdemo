@@ -2,7 +2,6 @@ package models.sales;
 
 
 import cache.CacheCallBack;
-import models.order.PointGoodsCondition;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
