@@ -198,10 +198,10 @@ select:'condition_status',value:condition?.status/}
             #{if order.realGoods.size()>0}
                 <td>
                     #{if models.sales.MaterialType.ELECTRONIC.equals(order.realGoods.get(0).materialType)}
-                        <img src="@@{'/public/images/electronic-goods.png'}">${order.realGoods.get(0).name}
+                        <img src="${order.realGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}">${order.realGoods.get(0).name}
                     #{/if}
                     #{else}
-                        <img src="@@{'/public/images/real-goods.png'}">${order.realGoods.get(0).name}
+                        <img src="${order.realGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}">${order.realGoods.get(0).name}
                     #{/else}
                 </td>
                 <td rowspan="${order.realGoods.size()}">
@@ -225,7 +225,7 @@ select:'condition_status',value:condition?.status/}
             #{else}
             *{有电子券时}*
                 #{if order.electronicGoods.size()>0}
-                    <td><img src="@@{'/public/images/electronic-goods.png'}">${order.electronicGoods.get(0).name}&nbsp;
+                    <td><img src="${order.electronicGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}">${order.electronicGoods.get(0).name}&nbsp;
                     </td>
                     <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
                 #{/if}
@@ -253,7 +253,7 @@ select:'condition_status',value:condition?.status/}
             #{list items:order.realGoods, as:'aRealGoods'}
                 #{if i>0}
                 <tr test="i=${i}">
-                    <td><img src="@@{'/public/images/real-goods.png'}">${aRealGoods.name}</td>
+                    <td><img src="${order.aRealGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}">${aRealGoods.name}</td>
                 *{#{if showRealStatus}}*
                 *{<td rowspan="${order.realGoods.size()}">&{'order.'+}*
                 *{order.realGoodsStatus}#{if models.order.OrderStatus.PAID.equals(order.status)}}*
@@ -272,7 +272,7 @@ select:'condition_status',value:condition?.status/}
             #{list items:order.electronicGoods, as:'aElectronicGoods'}
                 #{if (order.realGoods.size()==0 && j>0) ||(order.realGoods.size()>0) }
                 <tr>
-                    <td><img src="@@{'/public/images/electronic-goods.png'}">${aElectronicGoods?.name}</td>
+                    <td><img src="${aElectronicGoods.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}">${aElectronicGoods?.name}</td>
                     #{if showElectronicStatus && order.realGoods.size()>0}
                         <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
                         #{set showElectronicStatus:false/}
