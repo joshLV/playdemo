@@ -177,7 +177,6 @@ public class GoodsCondition implements Serializable {
         }
 
 
-
         if (pointPriceBegin != null) {
             condBuilder.append(" and g.pointPrice >= :pointPriceBegin");
             paramMap.put("pointPriceBegin", pointPriceBegin);
@@ -365,7 +364,7 @@ public class GoodsCondition implements Serializable {
         StringBuilder sql = new StringBuilder();
         sql.append(" g.deleted = :deleted");
         paramMap.put("deleted", DeletedStatus.UN_DELETED);
-
+        sql.append(" and g.isLottery = false");
         sql.append(" and g.materialType = :materialType");
         paramMap.put("materialType", MaterialType.ELECTRONIC);
 
