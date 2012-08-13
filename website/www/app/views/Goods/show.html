@@ -59,6 +59,7 @@
         <div id="leftBox"><!-- 此div为了规避.qvalu元素中最后一个文字被复制的问题 by Junyi -->
         <div id="gallery">
             <img src="${goods.imageLargePath}" alt="${title}"/>
+
         </div>
 
         <div id="property">
@@ -114,6 +115,7 @@
                 #{else}
                     <strong style="color: red">您已经购买过此商品！</strong>
                 #{/else}
+
                 <div id="add_cart_result" class="addCart-tips" style="display: none;">
                     <span class="addCart-icon"></span>
                     <h4>已成功添加到购物车</h4>
@@ -126,10 +128,14 @@
                 <span>已下架</span>
             #{/elseif}
             </div>
+
+
+
         #{/form}
         </div>
         <!-- #property -->
         </div>
+
 
         <div id="bizinfo">
             <h3>消费券提供商：</h3>
@@ -139,28 +145,51 @@
                 <a href="#" class="index-btn" data-goodsid="${goods.id}">支持</a>
                 <b class="index-tips" style="display:none"><s class="index-close" title="关闭"></s></b>
             </div>
-            <div class="bdshare clearfix">
-                <!-- Baidu Button BEGIN -->
-                <div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare">
-                    <a class="bds_tsina"></a>
-                    <a class="bds_tqq"></a>
-                    <a class="bds_renren"></a>
-                    <a class="bds_qzone"></a>
-                    <a class="bds_kaixin001"></a>
-                    <a class="bds_taobao"></a>
-                    <a class="bds_hi"></a>
-                    <span class="bds_more">更多</span>
-                </div>
-                <script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=763119"></script>
-                <script type="text/javascript" id="bdshell_js"></script>
-                <script type="text/javascript">document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();
-                </script>
-                <!-- Baidu Button END -->
-            </div>
             <div class="qvalue">${goods.brand?.introduce?.raw()}</div>
+            <div class="bdshare clearfix">
+                *{<!-- Baidu Button BEGIN -->}*
+                *{<div id="bdshare" class="bdshare_t bds_tools_32 get-codes-bdshare">}*
+                    *{<a class="bds_tsina"></a>}*
+                    *{<a class="bds_qzone"></a>}*
+                    *{<a class="bds_renren"></a>}*
+                    *{<a class="bds_kaixin001"></a>}*
+                    *{<a class="bds_taobao"></a>}*
+                    *{<a class="bds_tqq"></a>}*
+                    *{<a class="bds_douban"></a>}*
+                    *{<a class="bds_msn"></a>}*
+                    *{<a class="bds_baidu"></a>}*
+                    *{<span class="bds_more">更多</span>}*
+                *{</div>}*
+                *{<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=763119" ></script>}*
+                *{<script type="text/javascript" id="bdshell_js"></script>}*
+                *{<script type="text/javascript">}*
+                    *{document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();}*
+                *{</script>}*
+                *{<!-- Baidu Button END -->}*
+            </div>
         </div>
         <!-- #bizinfo -->
     </div>
+
+    <!-- Baidu Button BEGIN -->
+    <div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare">
+        <span class="bds_more">分享到：</span>
+        <a class="bds_tsina"></a>
+        <a class="bds_qzone"></a>
+        <a class="bds_renren"></a>
+        <a class="bds_kaixin001"></a>
+        <a class="bds_taobao"></a>
+        <a class="bds_tqq"></a>
+        <a class="bds_douban"></a>
+        <a class="bds_msn"></a>
+        <a class="bds_baidu"></a>
+    </div>
+    <script type="text/javascript" id="bdshare_js" data="type=tools&amp;mini=1&amp;uid=763119" ></script>
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script type="text/javascript">
+        document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();
+    </script>
+    <!-- Baidu Button END -->
     <!-- #summary -->
 #{if goods.materialType == models.sales.MaterialType.ELECTRONIC}
     <div id="diagram">
@@ -214,14 +243,14 @@
         #{/if}
     </div>
     <div id="details" class="tab-item">
-        <div class="hd">商品详情</a></div>
+        <div class="hd">商品详情</div>
         <div class="bd">${goods?.details?.raw()}
         </div>
     </div>
     <!-- #details -->
 
     <div id="store" class="tab-item">
-        <div class="hd">适用门店</a></div>
+        <div class="hd">适用门店</div>
         <div class="bd">
             <table border="0" cellpadding="0" cellspacing="0">
             #{if shops?.size() >0}
