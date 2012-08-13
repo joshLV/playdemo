@@ -27,7 +27,7 @@
     #{layout_operate.selectField name:'supplierUser.supplier.id', class:'span2', value:supplierUser?.supplier?.id,
             error:'supplierUser.supplierId'}
                 #{list items:supplierList, as:'supplier' }
-                    #{option supplier.id}${supplier.fullName}#{/option}
+                  #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
                 #{/list}
             #{/layout_operate.selectField}
      <div class="control-group">

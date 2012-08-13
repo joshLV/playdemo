@@ -12,7 +12,7 @@
                 <td>#{select 'shopCondition.supplierId', id:supplierId, class:'select', value:shopCondition?.supplierId}
                     #{option "0"}不限#{/option}
                     #{list items:supplierList, as:'supplier'}
-                        #{option supplier?.id}${supplier?.fullName}#{/option}
+                        #{option supplier?.id}${supplier?.otherName==null?supplier?.fullName:supplier?.otherName}#{/option}
                     #{/list}
                 #{/select}</td>
                 <td>门店</td>
