@@ -1,8 +1,11 @@
-package models.sales;
+package models.order;
 
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import models.resale.Resaler;
+import models.sales.Brand;
+import models.sales.GoodsStatus;
+import models.sales.MaterialType;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 
@@ -135,10 +138,16 @@ public class PointGoodsCondition implements Serializable {
         paramMap.put("deleted", DeletedStatus.UN_DELETED);
         paramMap.put("notMatchStatus", GoodsStatus.UNCREATED);
 
+//        if (StringUtils.isNotBlank(name)) {
+//            condBuilder.append(" and g.name like :name");
+//            paramMap.put("name", "%" + name.trim() + "%");
+//        }
+
         if (StringUtils.isNotBlank(name)) {
-            condBuilder.append(" and g.name like :name");
-            paramMap.put("name", "%" + name.trim() + "%");
+            condBuilder.append(" and g.name =:name");
+            paramMap.put("name", name.trim());
         }
+
 
         if (StringUtils.isNotBlank(no)) {
             condBuilder.append(" and g.no like :no ");

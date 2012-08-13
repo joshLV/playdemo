@@ -1,10 +1,10 @@
 package controllers;
 
 import com.uhuila.common.util.FileUploadUtil;
+import models.order.PointGoodsCondition;
 import models.sales.GoodsStatus;
 import models.sales.MaterialType;
 import models.sales.PointGoods;
-import models.sales.PointGoodsCondition;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;

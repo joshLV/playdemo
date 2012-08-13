@@ -1,7 +1,7 @@
 package controllers;
 
-import models.sales.PointGoodsOrder;
-import models.sales.PointGoodsOrderCondition;
+import models.order.PointGoodsOrder;
+import models.order.PointGoodsOrderCondition;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
@@ -39,7 +39,7 @@ public class OperatePointGoodsOrders extends Controller {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<PointGoodsOrder> orderList =
-        models.sales.PointGoodsOrder.query(condition,pageNumber, PAGE_SIZE);
+        PointGoodsOrder.query(condition, pageNumber, PAGE_SIZE);
 
 //        BigDecimal amountSummary = PointGoodsOrder.findUserTotalPoint  (orderList);
 //        List<Brand> brandList = Brand.findByOrder(null);
@@ -59,20 +59,21 @@ public class OperatePointGoodsOrders extends Controller {
             error(500, "can not deal with the order:" + id);
         }
 
-        if(originalOrder.note==null)
+//        System.out.println("originalOrder.note"+originalOrder.note);
+
+        if(pointGoodsOrder.note==null||pointGoodsOrder.note.trim().isEmpty())
         originalOrder.acceptOrder(id);
         else
         originalOrder.cancelOrder(id,pointGoodsOrder.note);
-
         index(null);
     }
 
     /**
-     *
+     * 订单发货
      * @param id
      * @param pointGoodsOrder
      */
-//    订单发货
+
 
     public static void sendGoods(Long id,PointGoodsOrder pointGoodsOrder) {
         PointGoodsOrder originalOrder = PointGoodsOrder.findById(id);
@@ -97,10 +98,11 @@ public class OperatePointGoodsOrders extends Controller {
      */
     public static void details(Long id) {
         //订单信息
-        models.order.Order orders = models.order.Order.findById(id);
+        models.order. PointGoodsOrder  pointGoodsOrder = models.order. PointGoodsOrder.findById(id);
 //        List<OrderItems> orderItems = orders.orderItems;
         //收货信息
 //        render(orders, orderItems);
+        render(pointGoodsOrder);
     }
 
 

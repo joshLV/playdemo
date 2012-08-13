@@ -6,14 +6,13 @@ import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import models.cms.CmsQuestion;
 import models.cms.GoodsType;
+import models.order.PointGoodsCondition;
 import models.sales.*;
-import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 

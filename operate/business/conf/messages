@@ -214,7 +214,7 @@ order.payMethod.99bill_SPDB=快钱-浦发银行
 
 #积分商品订单
 pointGoodsOrder.APPLY=待审核
-pointGoodsOrder.ACCEPT=未发货
+pointGoodsOrder.ACCEPT=审核通过
      #审核通过
 pointGoodsOrder.CANCELED=审核未通过
 pointGoodsOrder.SENT=已发货

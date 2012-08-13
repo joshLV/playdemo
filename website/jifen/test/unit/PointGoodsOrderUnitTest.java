@@ -1,6 +1,6 @@
 package unit;
 
-import models.sales.PointGoodsOrder;
+import models.order.PointGoodsOrder;
 import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;

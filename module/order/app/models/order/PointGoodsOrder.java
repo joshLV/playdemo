@@ -1,12 +1,12 @@
-package models.sales;
+package models.order;
 
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
-import models.order.DeliveryType;
-import models.order.NotEnoughInventoryException;
+import models.sales.MaterialType;
+import models.sales.PointGoods;
 import play.Play;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
@@ -57,6 +57,10 @@ public class PointGoodsOrder extends Model {
     // 积分商品名称
     @Column(name = "point_goods_name")
     public String pointGoodsName;
+
+    // 积分商品原价
+    @Column(name = "face_Value")
+    public BigDecimal faceValue;
 
     // 积分商品价格
     @Column(name = "point_Price")
@@ -118,6 +122,9 @@ public class PointGoodsOrder extends Model {
     // 订单描述
     public String description;
 
+    //审核未通过理由 或 发货备注
+    public String note;
+
     // 逻辑删除,0:未删除，1:已删除
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
@@ -174,6 +181,8 @@ public class PointGoodsOrder extends Model {
         this.orderNumber = generateOrderNumber();
         this.buyNumber = buyNumber;
         this.pointGoods = pointGoods;
+
+        this.faceValue= pointGoods.faceValue;
         this.pointPrice = pointGoods.pointPrice;
         this.pointGoodsName = pointGoods.name;
         this.setAmount();
@@ -226,7 +235,7 @@ public class PointGoodsOrder extends Model {
      * 计算会员订单明细中已购买的商品
      *
      * @param pointGoodsId 商品ID
-     * @param boughtNumber  购买数量
+     * @param boughtNumber 购买数量
      * @return
      */
     public static Boolean checkLimitNumber(Long pointGoodsId, Long boughtNumber) {
@@ -248,6 +257,7 @@ public class PointGoodsOrder extends Model {
 
     /**
      * 查询库存是否充足
+     *
      * @param pointGoods
      * @param number
      * @throws NotEnoughInventoryException
@@ -283,7 +293,7 @@ public class PointGoodsOrder extends Model {
     public void cancelAndUpdateOrder() {
         //返还积分
         int updatedPoint = totalPoint+amount;
-        updateUserTotalPoint(userId,updatedPoint);
+        updateUserTotalPoint(userId, updatedPoint);
         this.totalPoint = findUserTotalPoint(userId);
         // 更新状态
         this.status = PointGoodsOrderStatus.CANCELED;
@@ -337,6 +347,63 @@ public class PointGoodsOrder extends Model {
         }
     }
 
+
+
+
+    public void acceptOrder(Long id) {
+        PointGoodsOrder order = PointGoodsOrder.findById(id);
+
+        if (order.status != PointGoodsOrderStatus.APPLY) {
+            throw new RuntimeException("can not deal with order:" + order.getId() + " since it's " + order.status.toString());
+        } else {
+//            if (order == null) {
+//                return;
+//            }
+            order.status = PointGoodsOrderStatus.ACCEPT;
+            order.acceptAt = new Date();
+            order.updatedAt = new Date();
+            order.save();
+        }
+    }
+
+    public void cancelOrder(Long id, String note) {
+        PointGoodsOrder orderNew = PointGoodsOrder.findById(id);
+
+        if (orderNew.status != PointGoodsOrderStatus.APPLY) {
+            throw new RuntimeException("can not deal with order:" + orderNew.getId() + " since it's " + orderNew.status.toString());
+        } else {
+            if (orderNew == null) {
+                return;
+            }
+            orderNew.status = PointGoodsOrderStatus.CANCELED;
+//            order.acceptAt = new Date();
+            orderNew.updatedAt = new Date();
+            orderNew.note=note;
+            orderNew.save();
+        }
+    }
+
+
+    public void sendGoods(Long id, String note) {
+        PointGoodsOrder orderNew = PointGoodsOrder.findById(id);
+
+        if (orderNew.status != PointGoodsOrderStatus.ACCEPT) {
+            throw new RuntimeException("can not deal with order:" + orderNew.getId() + " since it's " + orderNew.status.toString());
+        } else {
+            if (orderNew == null) {
+                return;
+            }
+            orderNew.status = PointGoodsOrderStatus.SENT;
+//            order.acceptAt = new Date();
+            orderNew.updatedAt = new Date();
+            orderNew.note=note;
+            orderNew.save();
+        }
+    }
+
+
+
+
     /**
      * 设置 订单总积分数
      */
@@ -365,7 +432,7 @@ public class PointGoodsOrder extends Model {
             user = new User();
         }
         JPAExtPaginator<PointGoodsOrder> orderPage = new JPAExtPaginator<>
-                ("PointOrder o", "o", PointGoodsOrder.class, condition.getFilter(user),
+                ("PointGoodsOrder o", "o", PointGoodsOrder.class, condition.getFilter(user),
                         condition.paramsMap)
                 .orderBy(condition.getUserOrderByExpress());
         orderPage.setPageNumber(pageNumber);
@@ -393,10 +460,8 @@ public class PointGoodsOrder extends Model {
      * @throws Exception
      */
     public static void updateUserTotalPoint(Long userId,int totalPoint) {
-        User user = User.findById(userId);
-        UserInfo ui = UserInfo.find("byUser", user).first();
+        UserInfo ui = UserInfo.find("byUser", User.findById(userId)).first();
         if (ui == null){
-            System.out.println("----------------User Info is NULL-----------------");
             return;
         }
         ui.totalPoints = totalPoint;
@@ -415,5 +480,26 @@ public class PointGoodsOrder extends Model {
         }
         return !afford;
     }
+
+    private User user;
+
+
+    public User getUser() {
+        if (user == null) {
+            user = User.findById(userId);
+        }
+        return user;
+    }
+
+
+    public boolean containsRealGoods() {
+
+            if (MaterialType.REAL.equals(pointGoods.materialType)) {
+                return true;
+            }
+
+        return false;
+    }
+
 
 }

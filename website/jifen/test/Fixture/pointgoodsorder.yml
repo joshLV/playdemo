@@ -1,4 +1,4 @@
-models.sales.PointGoodsOrder(order1):
+models.order.PointGoodsOrder(order1):
   "userId": "user"
   "orderNumber": "1213231412"
   "status": "APPLY"

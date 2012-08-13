@@ -42,7 +42,7 @@ GET     /pointgoods/imageName                        OperatePointGoods.imageName
 GET     /pointgoods_orders                                 OperatePointGoodsOrders.index
 GET     /pointgoods_orders/{id}                            OperatePointGoodsOrders.details
 PUT     /pointgoods_orders/{id}/send                       OperatePointGoodsOrders.send
-PUT     /pointgoods_orders/{id}/sendGoods                 OperatePointGoodsOrders.sendGoods
+PUT     /pointgoods_orders/{id}/sendGoods                  OperatePointGoodsOrders.sendGoods
 GET     /pointgoods_order_excel                            OperatePointGoodsOrders.orderExcelOut
 
 

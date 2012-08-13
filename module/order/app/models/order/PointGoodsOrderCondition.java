@@ -1,11 +1,9 @@
-package models.sales;
+package models.order;
 
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
 import models.consumer.User;
-import models.order.DeliveryType;
-import models.order.QueryType;
 import models.resale.Resaler;
 import org.apache.commons.lang.StringUtils;
 
@@ -34,6 +32,8 @@ public class PointGoodsOrderCondition {
     public String searchKey;
     public String searchItems;
     public AccountType userType;
+    public String loginName;
+    public String orderNumber;
 
     /**
      * 查询条件hql.
@@ -88,24 +88,120 @@ public class PointGoodsOrderCondition {
             sql.append(" and o.pointGoodsName like :name");
             paramsMap.put("name", "%" + searchItems.trim() + "%");
         }
+
+
+        //商品名称
+        if (StringUtils.isNotBlank(pointGoodsName)) {
+            sql.append(" and o.pointGoodsName =:pointGoodsName");
+            paramsMap.put("pointGoodsName", pointGoodsName.trim());
+        }
+
+        //订单号
+        if (StringUtils.isNotBlank(orderNumber)) {
+            sql.append(" and o.orderNumber =:orderNumber");
+            paramsMap.put("orderNumber", orderNumber.trim());
+        }
+
+        //帐号
+//        if (StringUtils.isNotBlank(loginName)) {
+//            sql.append(" and o.user.loginName =:loginName");
+//            paramsMap.put("loginName", loginName.trim());
+//        }
+
+
+        if (StringUtils.isNotBlank(loginName)) {
+            User user = User.findByLoginName(loginName.trim());
+
+            if (user != null) {
+                sql.append(" and o.userId = :userId");
+                paramsMap.put("userId",user.id);
+            }
+            else
+            {
+                sql.append(" and o.userId = :userId");
+                paramsMap.put("userId",0l);
+            }
+
+        }
+
+
+
+        //按照帐号检索
+//        if (QueryType.LOGIN_NAME.toString().equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
+//            User user = User.findByLoginName(searchItems.trim());
+//            if (user != null) {
+//                sql.append(" and o.userId = :user");
+//                paramsMap.put("user", user.getId());
+//            }
+//            Resaler resaler = Resaler.findOneLoginName(searchItems.trim());
+//            if (resaler != null) {
+//                sql.append(" and o.userId = :user");
+//                paramsMap.put("user", resaler.id);
+//            }
+//        }
+
+
+
+
+//        if (StringUtils.isNotBlank(loginName)) {
+////            System.out.println("aaaa<<<bbbb");
+////            User user = User.findByLoginName(loginName.trim());
+////            if(user!=null)
+////            {
+//
+////                System.out.println("aaaa<<<bbbb");
+//            sql.append(" and o.user.loginName =:loginName");
+//            paramsMap.put("loginName", loginName.trim() );
+////        }
+//        }
+
+
+
         //按照商品订单检索
+//        if (QueryType.ORDER_NUMBER.toString().equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
+//            sql.append(" and o.orderNumber like :orderNumber");
+//            paramsMap.put("orderNumber", "%" + searchItems + "%");
+//        }
+
         if (QueryType.ORDER_NUMBER.toString().equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
             sql.append(" and o.orderNumber like :orderNumber");
-            paramsMap.put("orderNumber", "%" + searchItems + "%");
+            paramsMap.put("orderNumber", searchItems);
         }
+
+
+
+
         //按照帐号检索
-        if (QueryType.LOGIN_NAME.toString().equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
-            User user = User.findByLoginName(searchItems.trim());
-            if (user != null) {
-                sql.append(" and o.userId = :user");
-                paramsMap.put("user", user.getId());
-            }
-            Resaler resaler = Resaler.findOneLoginName(searchItems.trim());
-            if (resaler != null) {
-                sql.append(" and o.userId = :user");
-                paramsMap.put("user", resaler.id);
-            }
-        }
+//        if (QueryType.LOGIN_NAME.toString().equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
+//            User user = User.findByLoginName(searchItems.trim());
+//            if (user != null) {
+//                sql.append(" and o.userId = :user");
+//                paramsMap.put("user", user.getId());
+//            }
+//            Resaler resaler = Resaler.findOneLoginName(searchItems.trim());
+//            if (resaler != null) {
+//                sql.append(" and o.userId = :user");
+//                paramsMap.put("user", resaler.id);
+//            }
+//        }
+
+
+        //按照帐号检索
+//        if (QueryType.LOGIN_NAME.toString().equals(loginName) && StringUtils.isNotEmpty(loginName)) {
+//            User user = User.findByLoginName(loginName.trim());
+//            if (user != null) {
+////                sql.append(" and o.userId = :user");
+////                paramsMap.put("user", user.getId());
+//
+//                sql.append(" and o.user.loginName = :loginName");
+//                paramsMap.put("loginName", loginName.trim());
+//            }
+//
+//        }
+
+
+
+
 
         //按照手机检索
         if (QueryType.MOBILE.toString().equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
@@ -147,9 +243,14 @@ public class PointGoodsOrderCondition {
             paramsMap.put("orderNumber", "%" + searchItems + "%");
         }
         //按照商品名称检索
+//        if (StringUtils.isNotBlank(pointGoodsName)) {
+//            sql.append(" and o.pointGoods.name like :pointGoodsName");
+//            paramsMap.put("pointGoodsName", "%" + pointGoodsName + "%");
+//        }
+
         if (StringUtils.isNotBlank(pointGoodsName)) {
-            sql.append(" and o.pointGoods.name like :pointGoodsName");
-            paramsMap.put("pointGoodsName", "%" + pointGoodsName + "%");
+            sql.append(" and o.pointGoods.name =:pointGoodsName");
+            paramsMap.put("pointGoodsName",pointGoodsName.trim());
         }
 
         return sql.toString();

@@ -1,4 +1,4 @@
-package models.sales;
+package models.order;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,8 +9,9 @@ package models.sales;
  */
 public enum PointGoodsOrderStatus {
     APPLY,      //订单提交待审核
-    ACCEPT,     //审核通过待发货
-    CANCELED,   //审核未通过交易关闭
-    SENT        //已发送或已发货
+    ACCEPT,     //审核通过未发货
+    SENT,      //已发送或已发货
+    CANCELED   //审核未通过交易关闭
+
 
 }
