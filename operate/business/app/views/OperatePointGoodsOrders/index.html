@@ -593,7 +593,7 @@ models.order.PointGoodsOrderStatus.CANCELED],  select:'condition_status',value:c
         err:"deliveryCompany"/}
     *{#{layout_operate.radioField name:'pointGoodsOrder.fail', value:order?.deliveryNo, required:true/}}*
 
-        *{<div id="reason" class="middle">}*
+        <div id="reason" class="middle">
         *{<input type="textarea" name="pointGoodsOrder.reason" display=none>}*
             *{<div name="pointGoodsOrder.reason">}*
                 *{<span style="color: #ff0000;">*</span> 请填写审核不通过理由:}*
@@ -650,7 +650,7 @@ models.order.PointGoodsOrderStatus.CANCELED],  select:'condition_status',value:c
 
         <span id="error_note"></span>
 
-
+         </div>
 
     #{/form}
     </div>
