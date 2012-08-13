@@ -23,7 +23,7 @@ import play.mvc.With;
  * @author likang
  *         Date: 12-5-10
  */
-@With(SecureCAS.class)
+@With({SecureCAS.class, WebsiteInjector.class})
 public class UserWithdraw extends Controller {
     private static final int PAGE_SIZE = 20;
     private static String[] NOTIFICATION_EMAILS = Play.configuration.getProperty("withdraw_notification.email.receiver", "jingyue.gong@seewi.com.cn").split(",");
