@@ -137,7 +137,8 @@ public class TotalSalesReport {
         for (TotalSalesReport report : resultList) {
             if (report.checkedCount != null) sum.checkedCount += report.checkedCount;
             if (report.sumFaceValue != null) sum.sumFaceValue = sum.sumFaceValue.add(report.sumFaceValue);
-            if (report.sumFaceValue != null) sum.sumOriginValue = sum.sumOriginValue.add(report.sumOriginValue);
+            if (report.sumOriginValue != null) sum.sumOriginValue = sum.sumOriginValue.add(report.sumOriginValue);
+            if (report.sumSalesAmount != null) sum.sumSalesAmount = sum.sumSalesAmount.add(report.sumSalesAmount);
         }
 
         return sum;
@@ -163,7 +164,8 @@ public class TotalSalesReport {
         for (ECoupon ecoupon : ecoupons) {
             sum.checkedCount += 1;
             if (ecoupon.faceValue != null) sum.sumFaceValue = sum.sumFaceValue.add(ecoupon.faceValue);
-            if (ecoupon.salePrice != null) sum.sumOriginValue = sum.sumOriginValue.add(ecoupon.salePrice);
+            if (ecoupon.salePrice != null) sum.sumSalesAmount = sum.sumSalesAmount.add(ecoupon.salePrice);
+            if (ecoupon.originalPrice != null) sum.sumOriginValue = sum.sumOriginValue.add(ecoupon.originalPrice);
         }
 
         return sum;
