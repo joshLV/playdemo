@@ -5,7 +5,6 @@ consumer.User(user):
  "lastLoginAt": "2012-02-24T15:40:07"
  "status": "NORMAL"
  "mobile": "15618096151"
- "totalPoint": "200000"
  
 consumer.User(selenium1):
  "loginName": "selenium1@uhuila.com"

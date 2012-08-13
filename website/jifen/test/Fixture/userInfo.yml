@@ -13,7 +13,7 @@ consumer.UserInfo(userInfo1):
  "otherInfo": ""
  "createdAt": "2012-02-24T15:40:07"
  "bindMobileAt": ""
- "totalPoints": "100"
+ "totalPoints": "200000"
  
 consumer.UserInfo(userInfo2):
  "user": "selenium1"
@@ -30,4 +30,4 @@ consumer.UserInfo(userInfo2):
  "otherInfo": ""
  "createdAt": "2012-02-24T15:40:07"
  "bindMobileAt": ""
- "totalPoints": "100"
+ "totalPoints": "200000"

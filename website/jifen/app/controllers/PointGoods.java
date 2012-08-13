@@ -133,7 +133,6 @@ public class PointGoods extends Controller {
         GoodsStatistics.addVisitorCount(goods.id);
         Long boughtNumber = 0l;
         int addCartNumber = 0;
-        renderArgs.put("addCartNumber", addCartNumber);
         renderArgs.put("boughtNumber",boughtNumber);
         renderArgs.put("goods", goods);
         renderArgs.put("recommendPointGoodsList",recommendPointGoodsList);

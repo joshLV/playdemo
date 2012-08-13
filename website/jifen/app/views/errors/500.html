@@ -1,21 +1,221 @@
-<!DOCTYPE html>
-
+<!DOCTYPE HTML>
 <html>
-    <head>
-        <title>Application error</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=${_response_encoding}"/>	
-    </head>
-    <body>
-        #{if play.mode.name() == 'DEV'}
-            #{500 exception /}
-        #{/if}
-        #{else}
-            <h1>Oops, an error occured</h1>
-            #{if exception instanceof play.exceptions.PlayException}
-                <p>
-                    This exception has been logged with id <strong>${exception.id}</strong>.
-                </p>
-            #{/if}
-        #{/else}
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>很抱歉，系统发生错误</title>
+</head>
+<style type="text/css">
+        /**
+       * CSS RESET START {{{
+       * **/
+        /** 清除内外边距 **/
+    body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, /* structural elements 结构元素 */
+    dl, dt, dd, ul, ol, li, /* list elements 列表元素 */
+    pre, /* text formatting elements 文本格式元素 */
+    form, fieldset, legend, button, input, textarea, /* form elements 表单元素 */
+    th, td /* table elements 表格元素 */
+    {
+        margin: 0;
+        padding: 0;
+    }
+
+        /** 设置默认字体 **/
+    body, a, button, input, select, textarea /* for ie */
+    {
+        color: #3E3E3E;
+        font: 12px/1.5 tahoma, arial, \5b8b\4f53, sans-serif;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-size: 100%;
+    }
+
+    address, cite, dfn, em, var {
+        font-style: normal;
+    }
+
+        /* 将斜体扶正 */
+    code, kbd, pre, samp {
+        font-family: courier new, courier, monospace;
+    }
+
+        /* 统一等宽字体 */
+    small {
+        font-size: 12px;
+    }
+
+        /* 小于 12px 的中文很难阅读，让 small 正常化 */
+
+        /** 重置列表元素 **/
+    ul, ol {
+        list-style: none;
+    }
+
+        /** 重置文本格式元素 **/
+    a {
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    sup {
+        vertical-align: text-top;
+    }
+
+        /* 重置，减少对行高的影响 */
+    sub {
+        vertical-align: text-bottom;
+    }
+
+        /** 重置表单元素 **/
+    legend {
+        color: #000;
+    }
+
+        /* for ie6 */
+    fieldset, img {
+        border: 0;
+    }
+
+        /* img 搭车：让链接里的 img 无边框 */
+    button, input, select, textarea {
+        font-size: 100%;
+    }
+
+        /* 使得表单元素在 ie 下能继承字体大小 */
+        /* 注：optgroup 无法扶正 */
+
+        /** 重置表格元素 **/
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+        /* 重置 HTML5 元素 */
+    article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section,
+    summary, time, mark, audio, video {
+        display: block;
+        margin: 0;
+        padding: 0;
+    }
+
+    mark {
+        background: #ff0;
+    }
+
+        /** 清除浮动 **/
+    .clearfix:after {
+        content: ".";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+    }
+
+    .clearfix {
+
+    *+height:
+
+    1
+    %
+    ;
+        }
+
+        /**
+       * CSS RESET END }}}
+       * **/
+    #error-tips {
+        width: 560px;
+        margin: 20px auto;
+        padding: 50px 200px;
+        border: 1px solid #E4E4E4;
+    }
+
+    #error-tips h2 {
+        padding: 15px 0 15px 70px;
+        font-size: 24px;
+        background: url(http://img.uhcdn.com/images/u/404icon.png) no-repeat 0 5px;
+    }
+
+    #error-tips h3 {
+        padding: 15px 0 5px 70px;
+        font-size: 14px;
+        line-height: 22px;
+    }
+
+    #error-tips li {
+        padding-left: 70px;
+        line-height: 22px;
+        font-weight: 700;
+    }
+
+    #error-tips li a {
+        padding: 0 3px;
+        color: #25B4AB;
+    }
+
+    #header {
+        width: 960px;
+        margin: 0 auto;
+    }
+
+    #logo {
+        float: left;
+        width: 248px;
+        height: 88px;
+    }
+
+        /** 页尾 **/
+    #footer {
+        padding: 10px 0 20px;
+        margin: 0 auto;
+        text-align: center;
+        border-top: 1px solid #d5d5d5;
+        background-color: #F9F9F9;
+    }
+
+    .ft-nav {
+        color: #999;
+        text-align: center;
+    }
+
+    .ft-nav a {
+        color: #3E3E3E;
+        margin: 0 10px;
+    }
+
+    .ft-nav a:hover {
+        color: #25b4ab;
+    }
+
+    .copyright {
+        color: #999;
+        line-height: 26px;
+    }
+
+    .copyright span {
+        margin: 0 10px;
+    }
+
+</style>
+<body>
+
+<div id="error-tips">
+    <h2>很抱歉，系统发生错误 ^_^ </h2>
+    <ul>
+    #{if play.mode.name() == 'DEV'}
+        #{500 exception /}
+    #{/if}
+    #{else}
+        <li>请尝试刷新这个页面</li>
+        <li>或者向我们报告错误: support@yibaiquan.com，谢谢!</li>
+        <!-- 
+        #{500 exception /}
+        -->
+    #{/else}
+    </ul>
+</div>
+</body>
 </html>

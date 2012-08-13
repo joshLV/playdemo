@@ -9,7 +9,7 @@
     #{asset.css src:['/y/jifen/detail.css']/}
 #{/set}
 #{set 'moreScripts'}
-<script src="@{'/public/javascripts/goods-show.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/pointgoods-show.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript">
     //直接在文本框里输入购买数量
     $("#number").blur(function () {
@@ -62,7 +62,7 @@
         </div>
 
         <div id="property">
-        #{form @index(), id:'order_create_form' }
+        #{form @PointGoodsOrder.index(), id:'order_create_form' }
 
             <ul id="metaBox">
                 #{if params['isSupplier']== null || !params['isSupplier']}
@@ -99,7 +99,6 @@
                     <input type="hidden" id="goodsId" name="gid" value="${goods.id}">
                     <input type="hidden" id="stock" value="${goods.baseSale}">
                     <input type="hidden" id="boughtNumber" value="${boughtNumber}">
-                    <input type="hidden" id="addCartNumber" value="${addCartNumber}">
                 </li>
 
             </ul>
@@ -107,9 +106,7 @@
             <div id="btnBox">
                 #{if goods.onSale()}
 
-
-                    <a class="btn" href="/orders/${goods.id}">立即兑换<b></b></a>
-
+                    <a class="btn" id="link_buy_now">立即兑换<b></b></a>
 
                     <div class="error" style="display:none">
                         <span class="icon"></span>

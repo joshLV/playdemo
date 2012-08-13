@@ -15,7 +15,20 @@ POST    /user-question                          PointGoodsUserQuestion.add
 GET     /more-questions                         PointGoodsUserQuestion.moreQuestions
 
 # 订单
-GET     /orders/{id}                                 PointGoodsOrder.index
+*     /orders                                   PointGoodsOrder.index
+POST  /orders/new                               PointGoodsOrder.create
+
+# 地址
+GET     /orders/addresses                       Addresses.index
+POST    /orders/addresses/new                   Addresses.create
+GET     /orders/addresses/new                   Addresses.add
+GET     /orders/addresses/list                  Addresses.list
+GET     /orders/addresses/default               Addresses.showDefault
+GET     /orders/addresses/{id}                  Addresses.show
+GET     /orders/addresses/{id}/edit             Addresses.edit
+PUT     /orders/addresses/{id}                  Addresses.update
+PUT     /orders/addresses/{id}/default          Addresses.updateDefault
+DELETE  /orders/addresses/{id}                  Addresses.delete
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

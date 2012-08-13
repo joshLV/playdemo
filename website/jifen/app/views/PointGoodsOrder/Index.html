@@ -1,8 +1,144 @@
 #{extends 'main.html' /}
-#{set title:'一百券 - 确认订单信息' /}
+#{set title:'一百券 - 确认积分商品订单信息' /}
 #{set 'moreStyles'}
-    #{asset.css src:['/y/cart/flowstep.css', '/y/cart/order.css'] /}
+    #{asset.css src:['/y/jifen/flowstep.css', '/y/jifen/order.css'] /}
 #{/set}
 #{set 'moreScripts'}
     #{asset.js src:['/y/order.js'] /}
 #{/set}
+<script src="@{'/public/javascripts/confirmorder.js'}" type="text/javascript" charset="UTF-8"></script>
+
+
+<div id="content">
+    <ul class="flowstep step1">
+        <li class="done">1. 核对订单信息</li>
+        <li>2. 确认兑换</li>
+        <li>3. 兑换成功</li>
+    </ul>
+
+    <!--如果是实物，则显示收获地址模块-->
+    #{if rGoodsList.size()>0}
+        <div class="order">
+            <!--收获地址编辑模块-->
+            <div class="addr" id="J_addr">
+                #{if address == null}
+                    <div class="addr-hd"><b>收货地址</b> <span id="address_info" style="display:inline;color: #ff0000">#{error 'address'/}</span></div>
+                    <div class="addr-bd">
+                        #{include '/Addresses/form.html'/}
+                    </div><!-- .addr-hd -->
+                #{/if}
+                #{else}
+                    #{include '/Addresses/show.html'/}
+                #{/else}
+            </div>
+
+            <!--显示实物清单-->
+            <table class="orderlist">
+                <caption>产品清单</caption>
+                <thead>
+                <tr>
+                    <th align="left">商品</th>
+                    <th width="80">单价（元）</th>
+                    <th width="50">数量</th>
+                    <th width="80">小计</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #{set i:0} #{/set}
+                    #{list rGoodsList, as:'rGoods'}
+                    <tr>
+                        <td style="text-align:left"><a href="/pointgoods/${rGoods.id}">${rGoods.name}</a></td>
+                        <td>${rGoods.pointPrice}</td>
+                        <td>${number}</td>
+                    *{#{if (++i) == 1 }}*
+                        <td valign="middle">
+                        ${(rGoods.pointPrice*number)} 分 <br/>
+                        </td>
+                    *{#{/if}}*
+                    </tr>
+                    <input type="hidden" name="rGoodsId" value="${rGoods.id}" />
+                    #{/list}
+                    #{set i:0} #{/set}
+                <tbody>
+            </table>
+            <div class="subtotal">商品共${rGoodsList?.size()}件，合计：<em>${rGoodsAmount}</em> 分 </div>
+        </div><!-- .order -->
+    #{/if}
+
+    #{form @PointGoodsOrder.create(), id:'order_create_form' }
+    #{if eGoodsList.size()>0}
+        <div class="order">
+            <div class="mobi">
+                <div class="mobi-hd">电子凭证-收货手机</div>
+                <div class="mobi-bd">
+                    <div class="receive-mobi"><em>*</em>接收手机：<input type="text" class="mobi-num" name="mobile" maxlength="11" value="${user?.mobile}" id="ecart_mobile" />
+                        <span style="display: inline;color: #ff0000;" id="limit">#{error 'mobile'/}</span></div>
+                    #{if orderItems_mobiles?.size()>0}
+                        <dl><dt>历史手机：</dt>
+                            <dd class="history-mobi">
+                                #{list orderItems_mobiles, as:'item'}
+                                    <span class="mobi-item">${item}</span>
+                                #{/list}
+                            </dd>
+                        </dl>
+                    #{/if}
+                </div>
+            </div>
+            <table class="orderlist">
+                <caption>产品清单</caption>
+                <thead>
+                <tr>
+                    <th align="left">商品</th>
+                    <th width="80">单价（元）</th>
+                    <th width="50">数量</th>
+                    <th width="80">小计</th>
+                </tr>
+                </thead>
+                <tbody>
+                    #{set j:0/}
+                    #{list eGoodsList, as:'eGoods'}
+                    <tr>
+                        <td style="text-align:left"><a href="/pointgoods/${eGoods.id}">${eGoods.name}</a>
+                            #{if eGoods.limitNumber > 0}
+                            <span id="limitNumber" style="color:#f50">（限购${eGoods.limitNumber}件）
+                            #{/if}
+                        </td>
+                        <td>${eGoods.pointPrice} 分 </td>
+                        <td>${number}</td>
+                        <td valign="middle">${(eGoods.pointPrice)} 分 </td>
+                    </tr>
+                    <input type="hidden" name="eGoodId" value="${eGoods.id}" />
+                    #{/list}
+                <tbody>
+            </table>
+            <div class="subtotal" style="border-top: 1px solid #7A7F89">商品共${number}件，合计：<em>${eGoodsAmount}</em> 分 </div>
+        </div><!-- .order -->
+    #{/if}
+    #{if rGoodsList.size() > 0 || eGoodsList.size() > 0}
+        <div class="summary clearfix">
+            <div class="explain">
+                <div class="explain-hd" id="J_explainHd">附加说明</div>
+                <div class="explain-bd" id="J_explainBd" style="display:none">
+                    <div class="tips">留言请在50字以内</div>
+                    <textarea class="explain-text" id="J_explainText" name="remark"></textarea>
+                </div>
+            </div><!-- .explain -->
+            <div class="totalize">
+                商品共${rGoodsList.size()+eGoodsList.size()}件，总合计：<em>${totalAmount}</em>  分
+                <a class="confirm-order" id="confirmOrder">确认下单<b></b></a>
+            </div><!-- .totalize -->
+        </div>
+    #{/if}
+    #{else}
+        对不起，您的购物车内没有商品
+    #{/else}
+
+    <input type="hidden" name="items" id="items" value="${items}" />
+    <input type="hidden" id="addressId" />
+    #{/form}
+
+</div>
+
+
+
+
