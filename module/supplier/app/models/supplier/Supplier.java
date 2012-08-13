@@ -62,7 +62,6 @@ public class Supplier extends Model {
     /**
      * 职务
      */
-    @Required
     @MaxSize(100)
     public String position;
 
@@ -81,7 +80,6 @@ public class Supplier extends Model {
     /**
      * 负责人姓名
      */
-    @Required
     @Column(name = "user_name")
     public String userName;
 
