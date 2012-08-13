@@ -74,7 +74,7 @@
     }
     $(function () {
 
-        $("#status").click(function () {
+        $("#status").change(function () {
             $("#orderForm").attr("action", "@{UserCoupons.index()}");
             $("#orderForm").attr("method", "get");
             $("#orderForm").submit();
