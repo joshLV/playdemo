@@ -12,6 +12,7 @@ import utils.CrossTableUtil;
 import utils.PaginateUtil;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -33,11 +34,14 @@ public class WithdrawReports extends Controller {
         int pageNumber = getPageNumber();
         if (condition == null) {
             condition = new AccountSequenceCondition();
+            condition.createdAtBegin = new Date();
+            condition.createdAtEnd = new Date();
         }
         condition.tradeType = TradeType.WITHDRAW;
-        List<Map<String, Object>> report = getReport(condition);
+        List<Map<String, Object>> reportPage = getReport(condition);
+//        List<Map<String, Object>> report = getReport(condition);
         // 分页
-        ValuePaginator<Map<String, Object>> reportPage = PaginateUtil.wrapValuePaginator(report, pageNumber, PAGE_SIZE);
+//        ValuePaginator<Map<String, Object>> reportPage = PaginateUtil.wrapValuePaginator(report, pageNumber, PAGE_SIZE);
         render(reportPage, condition);
     }
 

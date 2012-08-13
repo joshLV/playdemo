@@ -109,6 +109,7 @@
                 <th>支付宝</th>
                 <th>财付通</th>
                 <th>快钱</th>
+                <th>每日汇总</th>
             </tr>
         %{
             alipay = new java.math.BigDecimal("0.00")
@@ -118,17 +119,22 @@
         }%
         #{paginate.list items:reportPage, as:'report'}
             %{
-                if(report.get("支付宝")) alipay = alipay.add(report.get("支付宝"))
-                if(report.get("财付通")) tenpay = alipay.add(report.get("财付通"))
-                if(report.get("快钱")) kuaiqian = alipay.add(report.get("快钱"))
+                alipayAmount = report.get("支付宝")?:new java.math.BigDecimal("0.00")
+                tenpayAmount = report.get("财付通")?:new java.math.BigDecimal("0.00")
+                kuaiqianAmount = report.get("快钱")?:new java.math.BigDecimal("0.00")
+
+                alipay = alipay.add(alipayAmount)
+                tenpay = alipay.add(tenpayAmount)
+                kuaiqian = alipay.add(kuaiqianAmount)
                 rdate = report.get("RowKey")
                 dateUrl = baseUri + "/orders?condition.status=PAID&condition.paidAtBegin=" + rdate + "&condition.paidAtEnd=" + rdate
             }%
             <tr>
                 <td><a href="${dateUrl}" target="_blank">${rdate}</a></td>
-                <td><a href="${dateUrl}&condition.payMethod=alipay" target="_blank">${report.get("支付宝")?:"0.00"}</a> </td>
-                <td><a href="${dateUrl}&condition.payMethod=tenpay" target="_blank">${report.get("财付通")?:"0.00"}</a></td>
-                <td><a href="${dateUrl}&condition.payMethod=99bill" target="_blank">${report.get("快钱")?:"0.00"}</a></td>
+                <td><a href="${dateUrl}&condition.payMethod=alipay" target="_blank">${alipayAmount}</a> </td>
+                <td><a href="${dateUrl}&condition.payMethod=tenpay" target="_blank">${tenpayAmount}</a></td>
+                <td><a href="${dateUrl}&condition.payMethod=99bill" target="_blank">${kuaiqianAmount}</a></td>
+                <td>${alipayAmount.add(tenpayAmount).add(kuaiqianAmount)}</td>
             </tr>
         #{/paginate.list}
             <tr>
@@ -136,13 +142,15 @@
                 <td>${alipay}</td>
                 <td>${tenpay}</td>
                 <td>${kuaiqian}</td>
+                <td>${alipay.add(tenpay).add(kuaiqian)}</td>
             </tr>
         </table>
     </div>
+    *{
     <div class="pagination">
         <ul>
         #{paginate.controls items:reportPage /}
         </ul>
     </div>
-
+    *}
 </div>

@@ -110,6 +110,7 @@
                 <th>消费者</th>
                 <th>商户</th>
                 <th>分销商</th>
+                <th>每日汇总</th>
             </tr>
         %{
             consumerTotal = new java.math.BigDecimal("0")
@@ -134,6 +135,7 @@
                 <td><a href="${dateUrl}&condition.accountType=CONSUMER" target="_blank">${consumerAmount.negate()}</a> </td>
                 <td><a href="${dateUrl}&condition.accountType=SUPPLIER" target="_blank">${supplierAmount.negate()}</a></td>
                 <td><a href="${dateUrl}&condition.accountType=RESALER" target="_blank">${resalerAmount.negate()}</a></td>
+                <td>${consumerAmount.add(supplierAmount).add(resalerAmount).negate()}</td>
             </tr>
         #{/paginate.list}
             <tr>
@@ -141,13 +143,16 @@
                 <td>${consumerTotal.negate()}</td>
                 <td>${supplierTotal.negate()}</td>
                 <td>${resalerTotal.negate()}</td>
+                <td>${consumerTotal.add(supplierTotal).add(resalerTotal).negate()}</td>
             </tr>
         </table>
     </div>
+    *{
     <div class="pagination">
         <ul>
         #{paginate.controls items:reportPage /}
         </ul>
     </div>
+    }*
 
 </div>
