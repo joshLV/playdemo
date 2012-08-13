@@ -88,10 +88,10 @@
 
 
                 <td>物流状态：
-                #{if models.order.PointGoodsOrderStatus.ACCEPT.equals(pointGoodsOrder?.status)}
+                #{if models.order.PointGoodsOrderStatus.ACCEPT.equals(pointGoodsOrder?.status)&& models.order.PointGoodsOrderSentStatus.UNSENT.equals(pointGoodsOrder?.sentStatus)}
                 未发货
                 #{/if}
-                #{if models.order.PointGoodsOrderStatus.SENT.equals(pointGoodsOrder?.status)}
+                #{if models.order.PointGoodsOrderSentStatus.SENT.equals(pointGoodsOrder?.sentStatus) && models.order.PointGoodsOrderStatus.ACCEPT.equals(pointGoodsOrder?.status)}
                 已发货
                 #{/if}
 

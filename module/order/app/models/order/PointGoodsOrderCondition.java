@@ -27,6 +27,7 @@ public class PointGoodsOrderCondition {
     public Date refundAtBegin;
     public Date refundAtEnd;
     public PointGoodsOrderStatus status;
+    public PointGoodsOrderSentStatus sentStatus;
     public String pointGoodsName;
     public DeliveryType deliveryType;
     public String searchKey;
@@ -34,6 +35,9 @@ public class PointGoodsOrderCondition {
     public AccountType userType;
     public String loginName;
     public String orderNumber;
+
+
+
 
     /**
      * 查询条件hql.
@@ -78,6 +82,12 @@ public class PointGoodsOrderCondition {
             sql.append(" and o.status = :status");
             paramsMap.put("status", status);
         }
+
+        if (sentStatus != null) {
+            sql.append(" and o.sentStatus = :sentStatus");
+            paramsMap.put("sentStatus", sentStatus);
+        }
+
         if (deliveryType != null) {
             sql.append(" and o.deliveryType = :deliveryType");
             paramsMap.put("deliveryType", deliveryType);

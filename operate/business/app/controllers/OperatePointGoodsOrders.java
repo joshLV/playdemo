@@ -37,7 +37,11 @@ public class OperatePointGoodsOrders extends Controller {
             condition = new PointGoodsOrderCondition();
         }
         String page = request.params.get("page");
+
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+
+
+
         JPAExtPaginator<PointGoodsOrder> orderList =
         PointGoodsOrder.query(condition, pageNumber, PAGE_SIZE);
 

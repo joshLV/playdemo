@@ -45,6 +45,10 @@ public class PointGoodsOrder extends Model {
     @Enumerated(EnumType.STRING)
     public PointGoodsOrderStatus status;
 
+    // 兑换发货状态
+    @Enumerated(EnumType.STRING)
+    public PointGoodsOrderSentStatus sentStatus;
+
     // 兑换数量
     @Column(name = "buy_number")
     public Long buyNumber;
@@ -190,6 +194,7 @@ public class PointGoodsOrder extends Model {
         this.status = PointGoodsOrderStatus.APPLY;
         this.deleted = DeletedStatus.UN_DELETED;
         this.applyAt = new Date();
+        this.sentStatus= PointGoodsOrderSentStatus.UNSENT;
 
         this.lockVersion = 0;
         this.updatedAt = new Date();
@@ -393,7 +398,7 @@ public class PointGoodsOrder extends Model {
             if (orderNew == null) {
                 return;
             }
-            orderNew.status = PointGoodsOrderStatus.SENT;
+            orderNew.sentStatus = PointGoodsOrderSentStatus.SENT;
 //            order.acceptAt = new Date();
             orderNew.updatedAt = new Date();
             orderNew.note=note;

@@ -338,10 +338,10 @@
 
 
         <td>发货状态：
-        #{select 'condition.status', id:'condition_status', class:'input-medium', value:condition.status}
+        #{select 'condition.sentStatus', id:'conditsion_sentStatus', class:'input-medium', value:condition.sentStatus}
             #{option ""}不限#{/option}
             #{option "SENT"}已发货#{/option}
-            #{option "ACCEPT"}未发货#{/option}
+            #{option "UNSENT"}未发货#{/option}
 
 
         #{/select}
@@ -464,6 +464,11 @@ models.order.PointGoodsOrderStatus.CANCELED],  select:'condition_status',value:c
                 </a>
             #{/if}
 
+
+            #{elseif  models.order.PointGoodsOrderSentStatus.SENT.equals(pointGoodsOrder?.sentStatus)}
+               已发货
+            #{/elseif}
+
             #{elseif  models.order.PointGoodsOrderStatus.ACCEPT.equals(pointGoodsOrder?.status)}
             &{'pointGoodsOrder.'+ pointGoodsOrder?.status}
                 *{<br/>}*
@@ -498,7 +503,7 @@ models.order.PointGoodsOrderStatus.CANCELED],  select:'condition_status',value:c
                 <a href="#" id="linkSend_${pointGoodsOrder.id}" onclick="prepareSend(${pointGoodsOrder.id})">审核</a>
 
             #{/if}
-            #{if models.order.PointGoodsOrderStatus.ACCEPT.equals(pointGoodsOrder?.status)}
+            #{if models.order.PointGoodsOrderStatus.ACCEPT.equals(pointGoodsOrder?.status)&& ! models.order.PointGoodsOrderSentStatus.SENT.equals(pointGoodsOrder?.sentStatus)}
 
                 <a href="#" id="linkSend_${pointGoodsOrder.id}" onclick="prepareSendGoods(${pointGoodsOrder.id})">发货</a>
 
