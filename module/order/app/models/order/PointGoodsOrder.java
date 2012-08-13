@@ -365,6 +365,7 @@ public class PointGoodsOrder extends Model {
 //                return;
 //            }
             order.status = PointGoodsOrderStatus.ACCEPT;
+            order.sentStatus = PointGoodsOrderSentStatus.UNSENT;
             order.acceptAt = new Date();
             order.updatedAt = new Date();
             order.save();
@@ -381,6 +382,7 @@ public class PointGoodsOrder extends Model {
                 return;
             }
             orderNew.status = PointGoodsOrderStatus.CANCELED;
+            orderNew.sentStatus = PointGoodsOrderSentStatus.UNAPPROVED;
 //            order.acceptAt = new Date();
             orderNew.updatedAt = new Date();
             orderNew.note=note;

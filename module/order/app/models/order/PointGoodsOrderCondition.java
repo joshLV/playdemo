@@ -83,10 +83,14 @@ public class PointGoodsOrderCondition {
             paramsMap.put("status", status);
         }
 
+
+
         if (sentStatus != null) {
             sql.append(" and o.sentStatus = :sentStatus");
             paramsMap.put("sentStatus", sentStatus);
         }
+
+
 
         if (deliveryType != null) {
             sql.append(" and o.deliveryType = :deliveryType");

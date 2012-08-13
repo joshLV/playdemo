@@ -10,5 +10,7 @@ package models.order;
 
 public enum PointGoodsOrderSentStatus {
     SENT,      //已发货
-    UNSENT    //未发货
+    UNSENT,    //未发货
+    UNAPPROVED  //审核未通过
+
 }
