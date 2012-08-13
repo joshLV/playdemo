@@ -33,7 +33,7 @@ function doCancel(id){
     #{include "share/left.html"/}
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
-        <form class="form-horizontal" id="orderForm" action="@{UserOrders.index()}" method="GET">
+        <form class="form-horizontal" id="orderForm" action="/orders" method="GET">
             <div class="search-box">
                 <input type="hidden" name="condition.searchKey" value="2" />
                 <label>商品名称：</label>
