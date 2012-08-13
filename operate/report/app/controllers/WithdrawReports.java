@@ -11,6 +11,7 @@ import play.mvc.With;
 import utils.CrossTableUtil;
 import utils.PaginateUtil;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -34,13 +35,34 @@ public class WithdrawReports extends Controller {
             condition = new AccountSequenceCondition();
         }
         condition.tradeType = TradeType.WITHDRAW;
-
-        List<WithdrawReport> resultList = WithdrawReport.queryWithdrawReport(condition);
-
-        List<Map<String, Object>>  report = CrossTableUtil.generateCrossTable(resultList, WithdrawReport.converter);
+        List<Map<String, Object>> report = getReport(condition);
         // 分页
         ValuePaginator<Map<String, Object>> reportPage = PaginateUtil.wrapValuePaginator(report, pageNumber, PAGE_SIZE);
         render(reportPage, condition);
+    }
+
+    public static void download(AccountSequenceCondition condition){
+        if (condition == null) {
+            condition = new AccountSequenceCondition();
+        }
+        condition.tradeType = TradeType.WITHDRAW;
+        List<Map<String, Object>> report = getReport(condition);
+        response.contentType = "text/csv";
+        response.setHeader("Content-Disposition", "attachment;filename=withdraw.csv");
+        response.writeChunk("日期,消费者,商户,分销商");
+        for (Map<String, Object> m : report) {
+            response.writeChunk(m.get("RowKey") + ","
+                    + (m.get("CONSUMER")) + ","
+                    + (m.get("SUPPLIER")) + ","
+                    + (m.get("RESALER")));
+        }
+    }
+
+    public static List<Map<String, Object>> getReport(AccountSequenceCondition condition) {
+
+        List<WithdrawReport> resultList = WithdrawReport.queryWithdrawReport(condition);
+
+        return  CrossTableUtil.generateCrossTable(resultList, WithdrawReport.converter);
     }
 
     private static int getPageNumber() {

@@ -3,6 +3,9 @@
 # ~~~~
 
 
+# 报表下载
+GET     /reports/download/withdraw              WithdrawReports.download
+
 # 财务报表
 GET     /reports/purchase                       PurchaseTaxReports.index
 GET     /reports/sales                          SalesTaxReports.index

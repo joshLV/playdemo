@@ -81,7 +81,7 @@
 #{/set}
 
 <div class="body">
-    <form class="well form-inline" action="@{PaymentReports.index()}" method="GET" id="form" name="form">
+    <form class="well form-inline" action="@{WithdrawReports.index()}" method="GET" id="form" name="form">
         起止日期
         <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
                onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
@@ -100,6 +100,7 @@
 
     <ul class="nav nav-tabs">
         <li class="active"><a href="#">统计金额</a></li>
+        <li><a href="/reports/download/withdraw">下载</a></li>
     </ul>
 
     <div class="tab-content">
