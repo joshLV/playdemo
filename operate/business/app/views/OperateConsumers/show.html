@@ -59,7 +59,7 @@
         <div class="control-group">
             <label class="control-label">&{'user.userInfo.userSex'}</label>
 
-            <div class="controls">${user.userInfo?.userSex}
+            <div class="controls">${(user?.userInfo?.userSex==1 || user?.userInfo?.userSex==0) ?'男':'女'}
             </div>
         </div>
         <div class="control-group">
@@ -77,13 +77,13 @@
         <div class="control-group">
             <label class="control-label">&{'user.userInfo.marryState'}</label>
 
-            <div class="controls">${user.userInfo?.marryState}件
+            <div class="controls">${user?.userInfo?.marryState==1 ?'未婚':'已婚'}
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">&{'user.userInfo.position'}</label>
 
-            <div class="controls">${user.userInfo?.position}</div>
+            <div class="controls">&{'userInfo.position'+user?.userInfo?.position}</div>
         </div>
         <div class="control-group">
             <label class="control-label">&{'user.userInfo.userqq'}</label>
@@ -94,19 +94,33 @@
         <div class="control-group">
             <label class="control-label">&{'user.userInfo.salary'}</label>
 
-            <div class="controls">${user.userInfo?.salary}
+            <div class="controls">&{'userInfo.salary'+user?.userInfo?.salary}
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">&{'user.userInfo.interest'}</label>
 
-            <div class="controls">${user.userInfo?.interest}
+            <div class="controls"><span>#{if userInfo?.interest?.contains(String.valueOf(1))}美食#{/if}</span>
+                        <span>#{if user?.userInfo?.interest?.contains(String.valueOf(2))}购物#{/if}</span>
+                        <span>#{if user?.userInfo?.interest?.contains(String.valueOf(3))}电影#{/if}</span>
+                        <span>#{if user?.userInfo?.interest?.contains(String.valueOf(4))}游戏#{/if}</span>
+                        <span>#{if user?.userInfo?.interest?.contains(String.valueOf(6))}学习#{/if}</span>
+                        <span>#{if user?.userInfo?.interest?.contains(String.valueOf(7))}舞蹈#{/if}</span>
+                        <span>#{if user?.userInfo?.interest?.contains(String.valueOf(8))}音乐#{/if}</span>
+                        <span>#{if user?.userInfo?.interest?.contains(String.valueOf(9))}网络#{/if}</span>
+                        <span>#{if user?.userInfo?.interest?.contains(String.valueOf(10))}园艺#{/if}</span>
+                        <span>#{if user?.userInfo?.interest?.contains(String.valueOf(12))}小说#{/if}</span>
+                        <span>#{if user?.userInfo?.interest?.contains(String.valueOf(13))}汽车#{/if}</span>
+                        <span>#{if user?.userInfo?.interest?.contains(String.valueOf(14))}生活#{/if}</span>
+                        <span>#{if user?.userInfo?.interest?.contains(String.valueOf(15))}体育#{/if}</span>
+                        <span>#{if user?.userInfo?.interest?.contains(String.valueOf(11))}计算机#{/if}</span>
+                        <span>#{if user?.userInfo?.interest?.contains(String.valueOf(5))}美容美发#{/if}</span>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">&{'user.userInfo.industry'}</label>
 
-            <div class="controls">${user.userInfo?.industry}
+            <div class="controls">&{'userInfo.industry'+user?.userInfo?.industry}
             </div>
         </div>
         <div class="control-group">
