@@ -221,27 +221,25 @@
             </div>
 
             <div id="bindusertel">
-                <div id="layoutbind" class="popup-content" style="width:450px;height:200px">
+                <div id="layoutbind" class="popup-content" style="width:450px;height:230px">
                     <ul>
                         <li class="item">
                             <label>手机号码：</label>
-                            <input type="text" id="bind_mobile" class="input140 inputbg"onblur="bindMobileBlur()" />
+                            <input type="text" id="bind_mobile" class="input140 inputbg" maxlength="11" onblur="bindMobileBlur()" />
                             <button id="getBindCode" type="submit" class="search-btn" onclick="getBindCode(1)">获取验证码</button>
                             <div id="err_bind_mobile"></div>
                         </li>
                         <li class="item">
                             <label>输入验证码：</label>
                             <input type="text" id="bindcheckcode"/>
-                            <div id="showbindtelcheck" style="float: left;"></div>
-                        </li>
-                        <li class="item btn-box">
                             <button type="submit" onClick="changeTel(2)" class="search-btn">确认</button>
+                            <div id="showbindtelcheck" style="float: left;"></div>
                         </li>
                     </ul>
                     <dl class="faq-tips">
                         <dt>使用遇到问题？ 手机收不到校验码，怎么办？</dt>
-                        <dd>答：有时经过网关时有可能网络通讯异常造成短信丢失，<br/> 如果出现丢失几条或者延时收到短信，这种情况是属于<br/>
-                        正常的。需要您耐心等待一下，或者过会儿再重新试一下。<br/>
+                        <dd>答：有时经过网关时有可能网络通讯异常造成短信丢失， 如果<br/>出现丢失几条或者延时收到短信，这种情况是属于
+                        正常的。<br/>需要您耐心等待一下，或者过会儿再重新试一下。<br/>
                         </dd>
                     </dl>
                 </div>

@@ -157,14 +157,12 @@ function getBindCode(codeidy) {
                 if (data == 1) {
                     $("#showbindtelcheck").html("验证码已成功发送，请查收！").css("color", "#ff0000");
                     $("#showbindtelcheck").css("padding-left", "100px");
-                    $("#getBindCode").attr("disabled", "");
                 } else if (data == 2) {
                     $("#err_bind_mobile").html("该手机已经绑定！").css("color", "#ff0000");
                     $("#err_bind_mobile").css("padding-left", "100px");
                 } else if (data == -1) {
                     $("#showbindtelcheck").html("网络错误，请重发").css("color", "#ff0000");
                     $("#showbindtelcheck").css("padding-left", "100px");
-                    $("#getBindCode").attr("disabled", "");
                 }
             },
             "json"
@@ -205,7 +203,6 @@ function getBindCode(codeidy) {
                 if (data == 1) {
                     $("#showchangecode").html("验证码已成功发送，请查收！").css("color", "#ff0000");
                     $("#showchangecode").css("padding-left", "100px");
-                    $("#getchangeCode").attr("disabled", "");
                 } else if (data == 2) {
                     $("#shownewtelcheck").html("该手机已经绑定！").css("color", "#ff0000");
                     $("#shownewtelcheck").css("padding-left", "100px");
@@ -215,7 +212,6 @@ function getBindCode(codeidy) {
                 } else if (data == -1) {
                     $("#showchangecode").html("网络错误，请重发").css("color", "#ff0000");
                     $("#showchangecode").css("padding-left", "100px");
-                    $("#getchangeCode").attr("disabled", "");
                 }
             },
             "json"
