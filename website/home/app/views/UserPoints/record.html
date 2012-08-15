@@ -110,7 +110,13 @@
                     <td>${point?.orderNumber}</td>
                     <td>${point?.applyAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
 
-                    <td class="goods-name" >${point?.pointGoodsName}</td>
+                    <td class="goods-name" >
+                        <a href="http://wwww.${play.Play.configuration.getProperty("application.baseDomain")}/pointgoods/${point?.pointGoods?.id}"
+                           target="_blank">
+                    ${point?.pointGoodsName}
+
+                        </a>
+                    </td>
                     <td>${point?.buyNumber}</td>
                     <td class="use-integral">${point?.amount}</td>
 

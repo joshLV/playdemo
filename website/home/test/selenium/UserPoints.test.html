@@ -1,5 +1,6 @@
 #{fixture delete:'all' ,
-load:['fixture/user.yml','fixture/userInfo.yml','fixture/goods_base.yml','fixture/goods.yml','fixture/orders.yml','fixture/userPoints.yml','fixture/userPointsConfig.yml'] /}
+load:['fixture/user.yml','fixture/userInfo.yml','fixture/goods_base.yml','fixture/goods.yml'
+,'fixture/pointGoods.yml','fixture/pointGoodsOrder.yml','fixture/userPoints.yml','fixture/userPointsConfig.yml'] /}
 
 #{selenium 'Test UserPoints/index.html Normal'}
 #{include 'test/selenium/step/login.selenium' /}
@@ -19,3 +20,13 @@ verifyTextPresent('注册')
  
 #{/selenium}
 
+
+#{selenium 'Test UserPoints/record.html Normal'}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/user-point-record')
+verifyTitle('一百券 - 我的积分-兑换记录')
+verifyTextPresent('201202220324134991598')
+verifyTextPresent('测试积分商品1')
+
+
+#{/selenium}
