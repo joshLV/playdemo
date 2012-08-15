@@ -5,8 +5,9 @@ import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.order.NotEnoughInventoryException;
+import models.order.PointGoodsOrderStatus;
 import models.sales.PointGoods;
-import models.sales.PointGoodsOrderStatus;
+import models.order.PointGoodsOrderStatus;
 import org.junit.Before;
 import org.junit.Test;
 import play.test.Fixtures;
@@ -54,7 +55,7 @@ public class PointGoodsOrderUnitTest extends UnitTest {
 
     @Test
     public void testSetAddress(){
-        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.sales.PointGoodsOrder-order1");
+        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.order.PointGoodsOrder-order1");
         assertNotNull(pointGoodsOrderId);
         PointGoodsOrder pointGoodsOrder = PointGoodsOrder.findById(pointGoodsOrderId);
 
@@ -78,7 +79,7 @@ public class PointGoodsOrderUnitTest extends UnitTest {
         Long pointGoodsId = (Long) Fixtures.idCache.get("models.sales.PointGoods-pointgoods1");
         PointGoods pointGoods = PointGoods.findById(pointGoodsId);
 
-        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.sales.PointGoodsOrder-order1");
+        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.order.PointGoodsOrder-order1");
         assertNotNull(pointGoodsOrderId);
         PointGoodsOrder pointGoodsOrder = PointGoodsOrder.findById(pointGoodsOrderId);
 
@@ -92,7 +93,7 @@ public class PointGoodsOrderUnitTest extends UnitTest {
         Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
         User user = User.findById(userId);
 
-        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.sales.PointGoodsOrder-order1");
+        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.order.PointGoodsOrder-order1");
         assertNotNull(pointGoodsOrderId);
         PointGoodsOrder pointGoodsOrder = PointGoodsOrder.findById(pointGoodsOrderId);
         pointGoodsOrder.userId = userId;
@@ -115,7 +116,7 @@ public class PointGoodsOrderUnitTest extends UnitTest {
 
     @Test
     public void testAccept(){
-        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.sales.PointGoodsOrder-order1");
+        Long pointGoodsOrderId = (Long) Fixtures.idCache.get("models.order.PointGoodsOrder-order1");
         assertNotNull(pointGoodsOrderId);
         PointGoodsOrder pointGoodsOrder = PointGoodsOrder.findById(pointGoodsOrderId);
         pointGoodsOrder.status = PointGoodsOrderStatus.APPLY;
@@ -124,10 +125,5 @@ public class PointGoodsOrderUnitTest extends UnitTest {
         assertEquals(PointGoodsOrderStatus.ACCEPT,pointGoodsOrder.status);
 
     }
-
-
-
-
-
 
 }
