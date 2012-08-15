@@ -426,15 +426,26 @@ public class ECoupon extends Model {
 
         Account account = AccountUtil.getAccount(userId, accountType);
         //计算需要退款的活动金金额
+        //计算方法：本订单中，抛开已消费的和已经退款过的活动金，先退活动金
+        //例如，订单金额100，用活动金支付40，用余额支付60，若此时退款，则首先退到活动金中。
+        //如果已经消费了20， 那仍然首先退到活动金，但是最多退40-20=20元，也就是说，视用户消费时首先消费的是活动金
         BigDecimal cashAmount = eCoupon.salePrice;
         BigDecimal promotionAmount = BigDecimal.ZERO;
+        BigDecimal consumedAmount = BigDecimal.ZERO;
         if (eCoupon.order.refundedPromotionAmount == null) {
             eCoupon.order.refundedPromotionAmount = BigDecimal.ZERO;
         }
-        if(eCoupon.order.promotionBalancePay.subtract(eCoupon.order.refundedPromotionAmount).compareTo(BigDecimal.ZERO) > 0) {
-            promotionAmount = cashAmount.min(eCoupon.order.promotionBalancePay.subtract(eCoupon.order.refundedPromotionAmount));
+        List<ECoupon> eCoupons = ECoupon.find("byOrderAndStatus", eCoupon.order, ECouponStatus.CONSUMED).fetch();
+        for(ECoupon c : eCoupons){
+            consumedAmount = consumedAmount.add(eCoupon.salePrice);
+        }
+        BigDecimal usedPromotionAmount = eCoupon.order.refundedPromotionAmount.add(consumedAmount);
+        if(eCoupon.order.promotionBalancePay.compareTo(usedPromotionAmount) > 0) {
+            promotionAmount = cashAmount.min(eCoupon.order.promotionBalancePay.subtract(usedPromotionAmount));
             cashAmount = cashAmount.subtract(promotionAmount);
         }
+
+        //创建退款交易
         TradeBill tradeBill = TradeUtil.createRefundTrade(account, cashAmount, promotionAmount, eCoupon.order.getId(), eCoupon.eCouponSn);
 
         if (!TradeUtil.success(tradeBill, "退款成功.券号:" + eCoupon.getMaskedEcouponSn() + ",商品:" + eCoupon.goods.name)) {
