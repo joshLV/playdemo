@@ -35,7 +35,7 @@ public class PointGoodsOrder extends Model {
 
     // 兑换用户ID
     @Column(name = "user_id")
-    public long userId;
+    public Long userId;
 
     // 兑换订单号
     @Column(name = "order_no")
@@ -71,10 +71,10 @@ public class PointGoodsOrder extends Model {
     public Long pointPrice;
 
     // 订单总积分数
-    public int amount;
+    public long amount;
 
     // 用户积分总数
-    public int totalPoint;
+    public long totalPoint;
 
     @Column(name = "buyer_phone")
     public String buyerPhone;
@@ -198,6 +198,7 @@ public class PointGoodsOrder extends Model {
 
         this.lockVersion = 0;
         this.updatedAt = new Date();
+        this.save();
     }
 
     /**
@@ -297,7 +298,7 @@ public class PointGoodsOrder extends Model {
      */
     public void cancelAndUpdateOrder() {
         //返还积分
-        int updatedPoint = totalPoint+amount;
+        long updatedPoint = totalPoint+amount;
         updateUserTotalPoint(userId, updatedPoint);
         this.totalPoint = findUserTotalPoint(userId);
         // 更新状态
@@ -318,7 +319,7 @@ public class PointGoodsOrder extends Model {
     public void createAndUpdateInventory() {
         // 扣除积分
         if (isAfford()){
-            int updatedPoint = totalPoint-amount;
+            long updatedPoint = totalPoint-amount;
             updateUserTotalPoint(userId,updatedPoint);
             this.totalPoint = findUserTotalPoint(userId);
 
@@ -452,7 +453,7 @@ public class PointGoodsOrder extends Model {
      * @param userId
      * @return  用户总积分
      */
-    public static int findUserTotalPoint(Long userId) {
+    public static long findUserTotalPoint(Long userId) {
         UserInfo ui = UserInfo.find("byUser", User.findById(userId)).first();
         if (ui == null){
             return 0;
@@ -466,7 +467,7 @@ public class PointGoodsOrder extends Model {
      * @param totalPoint
      * @throws Exception
      */
-    public static void updateUserTotalPoint(Long userId,int totalPoint) {
+    public static void updateUserTotalPoint(Long userId,long totalPoint) {
         UserInfo ui = UserInfo.find("byUser", User.findById(userId)).first();
         if (ui == null){
             return;

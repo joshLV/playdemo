@@ -63,7 +63,7 @@ public class UserInfo extends Model {
     public Date bindMobileAt;
 
     @Column(name = "total_points")
-    public Integer totalPoints;
+    public Long totalPoints;
 
     public UserInfo(User user) {
         this.user = user;
