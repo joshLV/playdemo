@@ -136,8 +136,8 @@
                 #{/else}
             </div>
             <input type="hidden" id="totalPoints" value="${totalPoints}">
-            #{if user != null}
-                <input type="hidden" id="loginName" value="${user.loginName}">
+            #{if cas?.isLogin}
+                <input type="hidden" id="loginName" value="${cas.loginName}">
             #{/if}
             #{else}
                 <input type="hidden" id="loginName" value="no">
@@ -205,7 +205,7 @@
 <!-- #recommend -->
 
 <div id="details" class="tab-item">
-    <div class="hd">商品详情</a></div>
+    <div class="hd">商品详情</div>
     <div class="bd">${goods?.details?.raw()}
     </div>
 </div>

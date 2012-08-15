@@ -32,7 +32,7 @@ import java.util.List;
 public class PointGoodsPaymentInfo extends Controller {
 
     public static void index(Long gid, int number, String mobile, String remark){
-        System.out.println("gid------gid----------"+ gid);
+
         //加载用户账户信息
         User user = SecureCAS.getUser();
         PointGoods pointGoods = PointGoods.findById(gid);
@@ -57,7 +57,7 @@ public class PointGoodsPaymentInfo extends Controller {
      * @param remark    附言
      */
     public static void create(Long goodsId, int number, String mobile, String remark){
-        System.out.println("create goodsId====== " + goodsId);
+
         //如果订单中有电子券，则必须填写手机号
         Http.Cookie cookie = request.cookies.get("identity");
         String cookieValue = cookie == null ? null : cookie.value;
@@ -74,9 +74,10 @@ public class PointGoodsPaymentInfo extends Controller {
 
         //实物券必须校验收货地址信息
         Address defaultAddress = null;
-        String receiverMobile = "";
-        if (pointGoods.materialType == MaterialType.ELECTRONIC) {
+        String receiverMobile = mobile;
+        if (pointGoods.materialType == MaterialType.REAL) {
             defaultAddress = Address.findDefault(SecureCAS.getUser());
+
             if (defaultAddress == null) {
                 Validation.addError("address", "validation.required");
             } else {
@@ -131,13 +132,13 @@ public class PointGoodsPaymentInfo extends Controller {
             }
             else{
                 pointGoodsOrder.deliveryType = DeliveryType.SMS;
-                pointGoodsOrder.buyerMobile = mobile;
+                pointGoodsOrder.receiverMobile = receiverMobile;
             }
             // 添加用户的留言信息
             pointGoodsOrder.remark = remark;
             // 创建订单，减少库存，增加销量，扣除积分
             pointGoodsOrder.createAndUpdateInventory();
-            System.out.println("执行 create and update");
+            System.out.println("执行 创建订单");
 
             // 添加用户积分使用记录
             UserPoint userPoint = new UserPoint();
