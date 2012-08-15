@@ -4,6 +4,7 @@ import controllers.modules.website.cas.SecureCAS;
 import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
+import models.consumer.UserPoint;
 import models.order.DeliveryType;
 import models.order.NotEnoughInventoryException;
 import models.order.OrderItems;
@@ -137,13 +138,18 @@ public class PointGoodsPaymentInfo extends Controller {
             // 创建订单，减少库存，增加销量，扣除积分
             pointGoodsOrder.createAndUpdateInventory();
             System.out.println("执行 create and update");
+
+            // 添加用户积分使用记录
+            UserPoint userPoint = new UserPoint();
+            userPoint.addRecord(user,"127","0",pointGoodsOrder.amount,pointGoodsOrder.totalPoint);
+            System.out.println("添加 用户积分使用记录");
+
             // 跳转兑换明细
             redirect("/payment_info/" + pointGoodsOrder.orderNumber);
         }
         catch (NotEnoughInventoryException e){
             error(404, "商品库存不足，很抱歉给您造成不便！");
         }
-
 
     }
 

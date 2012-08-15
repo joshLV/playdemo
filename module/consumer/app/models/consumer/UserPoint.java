@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import models.order.PointGoodsOrder;
 import org.apache.commons.lang.StringUtils;
 
 import com.uhuila.common.util.DateUtil;
@@ -28,7 +29,7 @@ public class UserPoint extends Model {
     
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id", nullable = true)
-	public Order order;
+	public PointGoodsOrder order;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = true)
@@ -41,13 +42,17 @@ public class UserPoint extends Model {
 	public String dealType;
 
 	@Column(name = "deal_points")
-	public int dealPoints;
+	public Long dealPoints;
 
 	@Column(name = "current_points")
-	public int currentPoints;
+	public Long currentPoints;
 
 	@Column(name = "created_at")
 	public Date createdAt;
+
+    public UserPoint(){
+        this.createdAt = new Date();
+    }
 
 	/**
 	 * 取得积分信息
@@ -81,4 +86,23 @@ public class UserPoint extends Model {
 		UserPointConfig userPointConfig = UserPointConfig.find("byPointNumber", pointNumber).first();
 		return userPointConfig.pointTitle;
 	}
+
+    /**
+     * 添加用户的积分记录
+     * @param user
+     * @param pointNumber
+     * @param dealType
+     * @param dealPoints
+     * @param currentPoints
+     */
+    public void addRecord(User user, String pointNumber, String dealType, Long dealPoints,Long currentPoints){
+
+        this.user = user;
+        this.pointNumber = pointNumber;
+        this.dealType = dealType;
+        this.dealPoints = dealPoints;
+        this.currentPoints = currentPoints;
+        this.save();
+
+    }
 }
