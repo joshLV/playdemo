@@ -26,7 +26,8 @@ public class PointGoodsOrderCondition {
     public Date acceptAtEnd;
     public Date refundAtBegin;
     public Date refundAtEnd;
-    public PointGoodsOrderStatus status;
+    public String status;
+    //    public PointGoodsOrderStatus status;
     public PointGoodsOrderSentStatus sentStatus;
     public String pointGoodsName;
     public DeliveryType deliveryType;
@@ -37,11 +38,8 @@ public class PointGoodsOrderCondition {
     public String orderNumber;
 
 
-
-
     /**
      * 查询条件hql.
-     *
      *
      * @return sql 查询条件
      */
@@ -79,17 +77,39 @@ public class PointGoodsOrderCondition {
             paramsMap.put("refundAtEnd", DateUtil.getEndOfDay(refundAtEnd));
         }
         if (status != null) {
-            sql.append(" and o.status = :status");
-            paramsMap.put("status", status);
-        }
+            if ("APPLY".equals(status) ) {
+                sql.append(" and o.status = :status");
+                paramsMap.put("status", PointGoodsOrderStatus.APPLY);
+            }
 
+            if ("ACCEPT".equals(status) ) {
+                sql.append(" and o.status = :status");
+                paramsMap.put("status", PointGoodsOrderStatus.ACCEPT);
+            }
+
+            if ("CANCELED".equals(status) ) {
+                sql.append(" and o.status = :status");
+                paramsMap.put("status", PointGoodsOrderStatus.CANCELED);
+            }
+
+            if ("SENT".equals(status) ) {
+                sql.append(" and o.sentStatus = :status");
+                paramsMap.put("status", PointGoodsOrderSentStatus.SENT);
+            }
+
+            if ("UNSENT".equals(status) ) {
+                sql.append(" and o.sentStatus = :status");
+                paramsMap.put("status", PointGoodsOrderSentStatus.UNSENT);
+            }
+
+
+        }
 
 
         if (sentStatus != null) {
             sql.append(" and o.sentStatus = :sentStatus");
             paramsMap.put("sentStatus", sentStatus);
         }
-
 
 
         if (deliveryType != null) {
@@ -128,16 +148,13 @@ public class PointGoodsOrderCondition {
 
             if (user != null) {
                 sql.append(" and o.userId = :userId");
-                paramsMap.put("userId",user.id);
-            }
-            else
-            {
+                paramsMap.put("userId", user.id);
+            } else {
                 sql.append(" and o.userId = :userId");
-                paramsMap.put("userId",0l);
+                paramsMap.put("userId", 0l);
             }
 
         }
-
 
 
         //按照帐号检索
@@ -155,8 +172,6 @@ public class PointGoodsOrderCondition {
 //        }
 
 
-
-
 //        if (StringUtils.isNotBlank(loginName)) {
 ////            System.out.println("aaaa<<<bbbb");
 ////            User user = User.findByLoginName(loginName.trim());
@@ -170,7 +185,6 @@ public class PointGoodsOrderCondition {
 //        }
 
 
-
         //按照商品订单检索
 //        if (QueryType.ORDER_NUMBER.toString().equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
 //            sql.append(" and o.orderNumber like :orderNumber");
@@ -181,8 +195,6 @@ public class PointGoodsOrderCondition {
             sql.append(" and o.orderNumber like :orderNumber");
             paramsMap.put("orderNumber", searchItems);
         }
-
-
 
 
         //按照帐号检索
@@ -212,9 +224,6 @@ public class PointGoodsOrderCondition {
 //            }
 //
 //        }
-
-
-
 
 
         //按照手机检索
@@ -264,7 +273,7 @@ public class PointGoodsOrderCondition {
 
         if (StringUtils.isNotBlank(pointGoodsName)) {
             sql.append(" and o.pointGoods.name =:pointGoodsName");
-            paramsMap.put("pointGoodsName",pointGoodsName.trim());
+            paramsMap.put("pointGoodsName", pointGoodsName.trim());
         }
 
         return sql.toString();

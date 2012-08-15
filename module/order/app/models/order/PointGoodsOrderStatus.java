@@ -10,7 +10,8 @@ package models.order;
 public enum PointGoodsOrderStatus {
     APPLY,      //订单提交待审核
     ACCEPT,     //审核通过
-    CANCELED   //审核未通过
-
+    CANCELED,   //审核未通过
+    SENT,
+    UNSENT
 
 }

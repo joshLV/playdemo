@@ -1,0 +1,48 @@
+#{fixture delete:[models.admin.OperateUser.class,
+models.admin.OperateRole.class,
+models.order.PointGoodsOrder.class,
+models.sales.PointGoods.class] ,
+load:['fixture/roles.yml','fixture/supplierusers.yml',
+'fixture/pointGoods.yml','fixture/pointGoodsOrder.yml'] /}
+
+#{selenium '查看积分商品'}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/pointgoods_orders')
+verifyTitle('积分商品订单')
+verifyTextPresent('测试积分商品1')
+('测试积分商品2')
+#{/selenium}
+
+
+#{selenium '审核'}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/pointgoods_orders')
+verifyTextPresent（’待审核')
+click('id=linkSend_${play.test.Fixtures.idCache.get("models.order.PointGoodsOrder-PointGoodsOrder1")}')
+click('id=pointGoodsOrder_apply_1')
+clickAndWait('id=send')
+verifyTextPresent（’审核通过 未发货')
+
+open('/pointgoods_orders')
+verifyTextPresent（’待审核')
+click('id=linkSend_${play.test.Fixtures.idCache.get("models.order.PointGoodsOrder-PointGoodsOrder2")}')
+type('id=pointGoodsOrder_note','no')
+clickAndWait('id=send')
+verifyTextPresent（’审核未通过')
+#{/selenium}
+
+#{selenium '发货'}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/pointgoods_orders')
+click('id=linkSend_${play.test.Fixtures.idCache.get("models.order.PointGoodsOrder-PointGoodsOrder1")}')
+type('id=pointGoodsOrder_note1','sent')
+click('id=send_goods')
+verifyTextPresent（’已发货')
+#{/selenium}
+
+#{selenium '查看'}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/pointgoods_orders')
+clickAndWait('link=查看')
+verifyTextPresent（’积分商品订单详请')
+#{/selenium}

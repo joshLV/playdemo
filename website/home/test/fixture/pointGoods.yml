@@ -1,0 +1,77 @@
+sales.PointGoods(PointGoods1):
+ no: 001
+ name: 测试积分商品1
+ imagePath: /0/0/114/origin.jpg
+ effectiveAt: 2012-09-28
+ expireAt: 2012-09-29
+ faceValue: 2000
+ pointPrice: 10
+ details: test测试积分商品1
+ baseSale: 10
+ status: ONSALE
+ deleted: UN_DELETED
+ limitNumber: 5
+ materialType: ELECTRONIC
+
+sales.PointGoods(PointGoods2):
+ no: 002
+ name: 测试积分商品2
+ imagePath: /0/0/112/cat.jpg
+ effectiveAt: 2012-02-28
+ expireAt: 2012-02-29
+ faceValue: 200
+ pointPrice: 10
+ details: test1测试积分商品2
+ baseSale: 10
+ status: ONSALE
+ deleted: UN_DELETED
+ limitNumber: 5
+ materialType: ELECTRONIC
+
+
+sales.PointGoods(PointGoods3):
+ no: 003
+ name: 测试积分商品3
+ imagePath: /0/0/112/cat.jpg
+ effectiveAt: 2012-02-28
+ expireAt: 2012-02-29
+ faceValue: 200
+ pointPrice: 10
+ details: test1测试积分商品3
+ baseSale: 10
+ status: OFFSALE
+ deleted: UN_DELETED
+ limitNumber: 5
+ materialType: ELECTRONIC
+
+
+
+sales.PointGoods(PointGoods4):
+ no: 004
+ name: 测试积分商品4
+ imagePath: /0/0/112/cat.jpg
+ effectiveAt: 2012-02-28
+ expireAt: 2012-02-29
+ faceValue: 200
+ pointPrice: 10
+ details: test1测试积分商品4
+ baseSale: 10
+ status: OFFSALE
+ deleted: UN_DELETED
+ limitNumber: 5
+ materialType: ELECTRONIC
+
+sales.PointGoods(PointGoods5):
+ no: 005
+ name: 测试积分商品5
+ imagePath: /0/0/112/cat.jpg
+ effectiveAt: 2012-02-28
+ expireAt: 2012-02-29
+ faceValue: 200
+ pointPrice: 10
+ details: test1测试积分商品5
+ baseSale: 10
+ status: OFFSALE
+ deleted: UN_DELETED
+ limitNumber: 5
+ materialType: ELECTRONIC

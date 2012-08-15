@@ -5,6 +5,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
+import models.consumer.UserPoint;
 import models.sales.MaterialType;
 import models.sales.PointGoods;
 import play.Play;
@@ -173,7 +174,7 @@ public class PointGoodsOrder extends Model {
         super._delete();
     }
 
-    public PointGoodsOrder(long userId, PointGoods pointGoods, Long buyNumber) throws NotEnoughInventoryException{
+    public PointGoodsOrder(long userId, PointGoods pointGoods, Long buyNumber) throws NotEnoughInventoryException {
         checkInventory(pointGoods, buyNumber);
         this.userId = userId;
         User user = User.findById(userId);
@@ -187,7 +188,7 @@ public class PointGoodsOrder extends Model {
         this.buyNumber = buyNumber;
         this.pointGoods = pointGoods;
 
-        this.faceValue= pointGoods.faceValue;
+        this.faceValue = pointGoods.faceValue;
         this.pointPrice = pointGoods.pointPrice;
         this.pointGoodsName = pointGoods.name;
         this.setAmount();
@@ -195,7 +196,7 @@ public class PointGoodsOrder extends Model {
         this.status = PointGoodsOrderStatus.APPLY;
         this.deleted = DeletedStatus.UN_DELETED;
         this.applyAt = new Date();
-        this.sentStatus= PointGoodsOrderSentStatus.UNSENT;
+        this.sentStatus = PointGoodsOrderSentStatus.UNSENT;
 
         this.lockVersion = 0;
         this.updatedAt = new Date();
@@ -299,7 +300,7 @@ public class PointGoodsOrder extends Model {
      */
     public void cancelAndUpdateOrder() {
         //返还积分
-        long updatedPoint = totalPoint+amount;
+        long updatedPoint = totalPoint + amount;
         updateUserTotalPoint(userId, updatedPoint);
         this.totalPoint = findUserTotalPoint(userId);
         // 更新状态
@@ -319,9 +320,9 @@ public class PointGoodsOrder extends Model {
      */
     public void createAndUpdateInventory() {
         // 扣除积分
-        if (isAfford()){
-            long updatedPoint = totalPoint-amount;
-            updateUserTotalPoint(userId,updatedPoint);
+        if (isAfford()) {
+            long updatedPoint = totalPoint - amount;
+            updateUserTotalPoint(userId, updatedPoint);
             this.totalPoint = findUserTotalPoint(userId);
 
             pointGoods.baseSale -= buyNumber;
@@ -332,8 +333,7 @@ public class PointGoodsOrder extends Model {
             this.applyAt = new Date();
             this.updatedAt = new Date();
             this.save();
-        }
-        else{
+        } else {
             System.out.println("not afford");
         }
 
@@ -342,19 +342,16 @@ public class PointGoodsOrder extends Model {
     /**
      * 更改状态至申请已接受
      */
-    public void accept(Long operateUserId){
-        if (this.status != PointGoodsOrderStatus.APPLY){
-            throw new RuntimeException("can not pay order:" + this.getId() + " since it's "+ this.status.toString());
-        }
-        else{
+    public void accept(Long operateUserId) {
+        if (this.status != PointGoodsOrderStatus.APPLY) {
+            throw new RuntimeException("can not pay order:" + this.getId() + " since it's " + this.status.toString());
+        } else {
             this.status = PointGoodsOrderStatus.ACCEPT;
             this.acceptAt = new Date();
             this.updatedAt = new Date();
             this.operateUserId = operateUserId;
         }
     }
-
-
 
 
     public void acceptOrder(Long id) {
@@ -383,12 +380,23 @@ public class PointGoodsOrder extends Model {
             if (orderNew == null) {
                 return;
             }
+
+
+            User user = User.findById(orderNew.userId);
+
+            orderNew.cancelAndUpdateOrder();
+
+            UserPoint userPoint = new UserPoint();
+            userPoint.addRecord(user, "128", "1", orderNew.amount, orderNew.totalPoint);
+
             orderNew.status = PointGoodsOrderStatus.CANCELED;
             orderNew.sentStatus = PointGoodsOrderSentStatus.UNAPPROVED;
 //            order.acceptAt = new Date();
             orderNew.updatedAt = new Date();
-            orderNew.note=note;
+            orderNew.note = note;
             orderNew.save();
+
+
         }
     }
 
@@ -405,23 +413,20 @@ public class PointGoodsOrder extends Model {
             orderNew.sentStatus = PointGoodsOrderSentStatus.SENT;
 //            order.acceptAt = new Date();
             orderNew.updatedAt = new Date();
-            orderNew.note=note;
+            orderNew.note = note;
             orderNew.save();
         }
     }
 
 
-
-
     /**
      * 设置 订单总积分数
      */
-    public void setAmount(){
-        if (pointPrice == null || buyNumber  == null){
+    public void setAmount() {
+        if (pointPrice == null || buyNumber == null) {
             throw new ExceptionInInitializerError("Please check point price and buy number, are they null?");
-        }
-        else{
-            this.amount =(int) (pointPrice*buyNumber) ;
+        } else {
+            this.amount = (int) (pointPrice * buyNumber);
         }
     }
 
@@ -436,7 +441,7 @@ public class PointGoodsOrder extends Model {
      * @return ordersPage 订单信息
      */
     public static JPAExtPaginator<PointGoodsOrder> findUserOrders(User user, PointGoodsOrderCondition condition,
-                                                        int pageNumber, int pageSize) {
+                                                                  int pageNumber, int pageSize) {
         if (user == null) {
             user = new User();
         }
@@ -449,10 +454,10 @@ public class PointGoodsOrder extends Model {
         return orderPage;
     }
 
-    public static PointGoodsOrder findByOrderNumber(String orderNumber){
+    public static PointGoodsOrder findByOrderNumber(String orderNumber) {
         List<PointGoodsOrder> pointGoodsOrderList = PointGoodsOrder.findAll();
-        for (PointGoodsOrder pointGoodsOrder : pointGoodsOrderList){
-            if (pointGoodsOrder.orderNumber.equals(orderNumber)){
+        for (PointGoodsOrder pointGoodsOrder : pointGoodsOrderList) {
+            if (pointGoodsOrder.orderNumber.equals(orderNumber)) {
                 return pointGoodsOrder;
             }
         }
@@ -461,12 +466,13 @@ public class PointGoodsOrder extends Model {
 
     /**
      * 查询用户总积分
+     *
      * @param userId
-     * @return  用户总积分
+     * @return 用户总积分
      */
     public static long findUserTotalPoint(Long userId) {
         UserInfo ui = UserInfo.find("byUser", User.findById(userId)).first();
-        if (ui == null){
+        if (ui == null) {
             return 0;
         }
         return ui.totalPoints;
@@ -474,13 +480,14 @@ public class PointGoodsOrder extends Model {
 
     /**
      * 更新用户总积分
+     *
      * @param userId
      * @param totalPoint
      * @throws Exception
      */
-    public static void updateUserTotalPoint(Long userId,long totalPoint) {
+    public static void updateUserTotalPoint(Long userId, long totalPoint) {
         UserInfo ui = UserInfo.find("byUser", User.findById(userId)).first();
-        if (ui == null){
+        if (ui == null) {
             return;
         }
         ui.totalPoints = totalPoint;
@@ -488,13 +495,12 @@ public class PointGoodsOrder extends Model {
     }
 
     /**
-     *
      * @return True 用户总积分足够完成兑换
      *         False 用户总积分不能完成兑换
      */
-    public boolean isAfford(){
+    public boolean isAfford() {
         boolean afford = true;
-        if (totalPoint >= amount  ){
+        if (totalPoint >= amount) {
             return afford;
         }
         return !afford;
@@ -513,9 +519,9 @@ public class PointGoodsOrder extends Model {
 
     public boolean containsRealGoods() {
 
-            if (MaterialType.REAL.equals(pointGoods.materialType)) {
-                return true;
-            }
+        if (MaterialType.REAL.equals(pointGoods.materialType)) {
+            return true;
+        }
 
         return false;
     }

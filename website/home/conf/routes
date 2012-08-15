@@ -40,6 +40,7 @@ GET     /user/edit-password                           UserPasswords.index
 POST    /user/edit-password                           UserPasswords.update
 
 GET     /user-point                                   UserPoints.index
+GET     /user-point-record                            UserPoints.record
 
 # 提现申请
 GET     /withdraw                                       UserWithdraw.index

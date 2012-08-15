@@ -21,7 +21,8 @@
 
         <h3 #{if request.url.contains("/user-point")}class="active"#{/if}>我的积分</h3>
         <ul>
-            <li><a #{if request.url.contains("/user-point")}class="current"#{/if} href="/user-point">» 积分明细</a></li>
+            <li><a #{if request.url.equals("/user-point")}class="current"#{/if} href="/user-point">» 积分明细</a></li>
+            <li><a #{if request.url.contains("/user-point-record")}class="current"#{/if} href="/user-point-record">» 兑换记录</a></li>
         </ul>
 
         <h3

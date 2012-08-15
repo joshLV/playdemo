@@ -127,7 +127,7 @@
                 <td>${pointGoodsOrder.pointPrice}点</td>
                 <td>${pointGoodsOrder.buyNumber}</td>
                 <td>${pointGoodsOrder.amount}点</td>
-                <td>${pointGoodsOrder.buyerMobile}</td>
+                <td>${pointGoodsOrder.receiverMobile}</td>
 
                 *{<td>&{'goods.'+orderItem.goods.materialType}</td>}*
 
@@ -164,6 +164,11 @@
 
                 *{<td>手机： ${pointGoodsOrder?.receiverMobile}</td>}*
             *{</tr>}*
+
+            <tr>
+                <td>手机： ${pointGoodsOrder?.receiverMobile}</td>
+            </tr>
+
             <tr>
                 <td>电话： ${pointGoodsOrder?.receiverPhone}</td>
             </tr>
