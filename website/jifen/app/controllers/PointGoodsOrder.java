@@ -36,13 +36,14 @@ public class PointGoodsOrder extends Controller {
      * @param gid 商品ID
      */
     public static void index(Long gid){
+        if (gid == null) {
+            error(404, "没有找到该商品！");
+        }
 
         // 查询商品
         PointGoods pointGoods = PointGoods.findById(gid);
         System.out.println("商品名称 --------- " + pointGoods.name);
-        if (pointGoods == null) {
-            error(404, "没有找到该商品！");
-        }
+
 
         // 解析商品数量
         Map<String, String[]> params = request.params.all();

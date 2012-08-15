@@ -15,7 +15,7 @@ POST    /user-question                          PointGoodsUserQuestion.add
 GET     /more-questions                         PointGoodsUserQuestion.moreQuestions
 
 # 订单
-*       /orders                                 PointGoodsOrder.index
+GET     /orders                                 PointGoodsOrder.index
 
 # 确认兑换信息
 POST    /payment_info/index                     PointGoodsPaymentInfo.index
@@ -40,6 +40,9 @@ GET     /favicon.ico                            404
 
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public
+
+# Import Secure routes
+*        /                                      module:website_cas
 
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}

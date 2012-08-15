@@ -154,7 +154,11 @@ public class PointGoodsPaymentInfo extends Controller {
 
     }
 
-    public static void success(){
+    public static void success(String orderNumber){
+        PointGoodsOrder order = PointGoodsOrder.findByOrderNumber(orderNumber);
+        if (order == null){
+            error(404, "没有找到该商品！");
+        }
         render();
     }
 }

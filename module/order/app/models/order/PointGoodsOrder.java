@@ -15,6 +15,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -446,6 +447,16 @@ public class PointGoodsOrder extends Model {
         orderPage.setPageNumber(pageNumber);
         orderPage.setPageSize(pageSize);
         return orderPage;
+    }
+
+    public static PointGoodsOrder findByOrderNumber(String orderNumber){
+        List<PointGoodsOrder> pointGoodsOrderList = PointGoodsOrder.findAll();
+        for (PointGoodsOrder pointGoodsOrder : pointGoodsOrderList){
+            if (pointGoodsOrder.orderNumber.equals(orderNumber)){
+                return pointGoodsOrder;
+            }
+        }
+        return null;
     }
 
     /**
