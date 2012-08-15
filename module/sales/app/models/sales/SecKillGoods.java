@@ -36,7 +36,7 @@ public class SecKillGoods extends Model {
      * 限购数量
      */
     @Column(name = "limit_number")
-    public Integer limitNumber;
+    public Integer limitNumber = 0;
 
     /**
      * 创建时间
