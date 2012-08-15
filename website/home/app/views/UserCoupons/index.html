@@ -31,6 +31,7 @@
                         $("#apply_" + coupon_id).html("");
                         $("#send_" + coupon_id).html("");
                         $("#status_apply_" + coupon_id).html("已退款").removeClass().addClass('refund');
+                        window.location.reload();
                     }
                 }, "json");
     }
@@ -153,7 +154,7 @@
                                 <br>
                             #{/if}
                             #{if coupon.status == models.order.ECouponStatus.UNCONSUMED && !coupon?.goods?.isLottery}
-                                <a class="apply-refund" href="javascript:applyRefund('${coupon.id}','${coupon.salePrice}')" name="apply_refund" id="apply_${coupon.id}">申请退款</a>
+                                <a class="apply-refund" href="javascript:applyRefund('${coupon.id}','${coupon.salePrice}')" id="apply_${coupon.id}">申请退款</a>
                             #{/if}
                         </td>
                     </tr>
