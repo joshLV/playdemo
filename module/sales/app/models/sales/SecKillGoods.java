@@ -6,6 +6,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import play.Play;
 import play.data.validation.MaxSize;
+import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
@@ -39,6 +40,7 @@ public class SecKillGoods extends Model {
     /**
      * 限购数量
      */
+    @Required
     @Column(name = "limit_number")
     public Integer limitNumber = 0;
 

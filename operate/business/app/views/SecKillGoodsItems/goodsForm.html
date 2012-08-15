@@ -7,21 +7,34 @@
 #{layout_operate.textField name:'secKillGoodsItem.saleCount', value:secKillGoodsItem?.saleCount, note:'个'/}
 #{layout_operate.textField name:'secKillGoodsItem.virtualSale', value:secKillGoodsItem?.virtualSale, note:'个'/}
 #{layout_operate.dateTimeScopeField name:'secKillGoodsItem.secKillAt', begin:'secKillGoodsItem.secKillBeginAt',end:'secKillGoodsItem.secKillEndAt',
-    beginValue:secKillGoodsItem?.secKillBeginAt?.format('yyyy-MM-dd HH:mm:ss'), endValue:secKillGoodsItem?.secKillEndAt?.format('yyyy-MM-dd HH:mm:ss'), required:true/}
-
+beginValue:secKillGoodsItem?.secKillBeginAt?.format('yyyy-MM-dd HH:mm:ss'), endValue:secKillGoodsItem?.secKillEndAt?.format('yyyy-MM-dd HH:mm:ss'), required:true/}
 <div class="form-actions">
-    <input class="btn btn-primary" id="save" type="submit" value="保存">
+    <input class="btn btn-primary" id="save" type="submit" value="保存"
+           #{if "edit".equals(action) && secKillGoodsItem?.status == models.sales.SecKillGoodsStatus.ONSALE}disabled #{/if}/>
     <input class="btn btn-primary" id="onsale" type="submit" value="保存并上架"/>
+*{#{if "edit".equals(action)}}*
+    *{<input class="btn btn-primary" id="preview" type="submit" value="预览"/>}*
+*{#{/if}}*
 #{if "edit".equals(action)}
-    <input class="btn btn-primary" id="preview" type="submit" value="预览"/>
+%{
+    id = secKillGoodsItem.secKillGoods.id;
+    url="/seckill_goods/"+id+"/item";
+    }%
+    #{vx.cancelButton url:url, class:'btn btn-primary'/}
 #{/if}
-#{if "edit".equals(action)}
-    #{vx.cancelButton url:'/secKillGoodsItems', class:'btn btn-primary'/}
-#{/if}
+    <input type="hidden" id="status" name="secKillGoodsItem.status"
+           value="${secKillGoodsItem?.getStatus()?:'OFFSALE'}"/>
 </div>
 <script type="text/javascript">
     $(function () {
-
+        $("#save").click(function () {
+            $("#status").val("OFFSALE");
+            $("#form").attr("target", "_self");
+        });
+        $("#onsale").click(function () {
+            $("#status").val("ONSALE");
+            $("#form").attr("target", "_self");
+        });
 
     })
 </script>

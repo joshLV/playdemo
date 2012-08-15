@@ -6,6 +6,7 @@ import play.data.validation.MaxSize;
 import play.data.validation.Min;
 import play.data.validation.Required;
 import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Money;
 
 import javax.persistence.*;
@@ -32,7 +33,7 @@ public class SecKillGoodsItem extends Model {
      */
     @Required
     @Column(name = "seckill_begin_at")
-    @As(lang={"*"}, value={"yyyy-MM-dd HH:mm:ss"})
+    @As(lang = {"*"}, value = {"yyyy-MM-dd HH:mm:ss"})
     public Date secKillBeginAt;
 
     /**
@@ -40,11 +41,11 @@ public class SecKillGoodsItem extends Model {
      */
     @Required
     @Column(name = "seckill_end_at")
-    @As(lang={"*"}, value={"yyyy-MM-dd HH:mm:ss"})
+    @As(lang = {"*"}, value = {"yyyy-MM-dd HH:mm:ss"})
     public Date secKillEndAt;
 
     @Required
-    @MaxSize(60)
+    @MaxSize(255)
     @Column(name = "goods_title")
     public String goodsTitle;
 
@@ -70,7 +71,7 @@ public class SecKillGoodsItem extends Model {
     @Column(name = "sale_count")
     public int saleCount;
     /**
-     * 库存
+     * 实际库存
      */
     @Required
     @Min(0)
@@ -78,7 +79,13 @@ public class SecKillGoodsItem extends Model {
     @Column(name = "base_sale")
     public Long baseSale;
 
-
+    /**
+     * 虚拟库存
+     */
+    @Min(0)
+    @Max(999999)
+    @Column(name = "virtual_nventory")
+    public Long virtualInventory;
     /**
      * 虚拟售出数量
      */
@@ -104,9 +111,33 @@ public class SecKillGoodsItem extends Model {
         dbItem.secKillEndAt = secKillGoodsItem.secKillEndAt;
         dbItem.virtualSale = secKillGoodsItem.virtualSale;
         dbItem.status = secKillGoodsItem.status;
-
-
-//        dbItem.secKillGoods = secKillGoodsItem.secKillGoods;
         dbItem.save();
+    }
+
+    public static JPAExtPaginator<SecKillGoodsItem> findByCondition(SecKillGoodsCondition condition, Long seckillId, int pageNumber, int pageSize) {
+
+        JPAExtPaginator<SecKillGoodsItem> goodsPage = new JPAExtPaginator<>
+                ("SecKillGoodsItem g", "g", SecKillGoodsItem.class, condition.getItemFilter(seckillId),
+                        condition.getParamMap())
+                .orderBy("g.secKillBeginAt");
+        goodsPage.setPageNumber(pageNumber);
+        goodsPage.setPageSize(pageSize);
+        goodsPage.setBoundaryControlsEnabled(false);
+
+        return goodsPage;
+    }
+
+    public static void updateStatus(SecKillGoodsStatus status, Long id) {
+        SecKillGoodsItem goods = SecKillGoodsItem.findById(id);
+        goods.status = status;
+        goods.save();
+    }
+
+    /**
+     * @return
+     */
+    @Transient
+    public boolean isExpired() {
+        return secKillEndAt != null && secKillEndAt.before(new Date());
     }
 }

@@ -1,6 +1,7 @@
 package controllers;
 
 import com.uhuila.common.util.FileUploadUtil;
+import models.sales.Goods;
 import models.sales.SecKillGoodsCondition;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -59,7 +60,8 @@ public class SecKillGoods extends Controller {
     public static void create(@Valid models.sales.SecKillGoods secKillGoods, @Required File imagePath) {
         checkImageFile(imagePath);
         if (Validation.hasErrors()) {
-            render("SecKillGoods/add.html");
+            String goodsName = "商品名："+secKillGoods.goods.name;
+            render("SecKillGoods/add.html", goodsName);
         }
 
         secKillGoods.createdAt = new Date();
@@ -151,5 +153,12 @@ public class SecKillGoods extends Controller {
         }
         return absolutePath.substring(UploadFiles.ROOT_PATH.length(), absolutePath.length());
 
+    }
+
+    public static void checkGoodsId(Long id) {
+        Goods goods = Goods.findById(id);
+        if (goods != null) {
+            renderText(goods.name);
+        }
     }
 }

@@ -7,7 +7,7 @@
 #{/set}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @SecKillGoodsItems.create() , id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
+#{form @SecKillGoodsItems.create(seckillId) , id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
      <input type="hidden" name="secKillGoodsItem.secKillGoods.id" value="${seckillId}">
     <legend>${title}</legend>
     #{set action:"add"/}

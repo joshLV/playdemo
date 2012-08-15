@@ -1,9 +1,14 @@
 package controllers;
 
+import models.sales.SecKillGoodsCondition;
 import models.sales.SecKillGoodsItem;
+import models.sales.SecKillGoodsStatus;
 import operate.rbac.annotations.ActiveNavigation;
+import org.apache.commons.lang.StringUtils;
+import play.data.binding.As;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
+import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -16,42 +21,55 @@ import play.mvc.With;
 @With(OperateRbac.class)
 @ActiveNavigation("seckill_goods_add")
 public class SecKillGoodsItems extends Controller {
+    public static int PAGE_SIZE = 15;
 
     /**
      * 展示添加商品页面
      */
-    public static void index(Long seckillId) {
-        models.sales.SecKillGoods secKillGoods = models.sales.SecKillGoods.findById(seckillId);
-        render(secKillGoods);
+    public static void index(Long seckillId, SecKillGoodsCondition condition) {
+        String page = request.params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+
+        if (condition == null) {
+            condition = new SecKillGoodsCondition();
+
+        }
+
+        JPAExtPaginator<SecKillGoodsItem> secKillGoodsItems = SecKillGoodsItem.findByCondition(condition, seckillId, pageNumber,
+                PAGE_SIZE);
+        secKillGoodsItems.setBoundaryControlsEnabled(true);
+
+        render(secKillGoodsItems, seckillId, condition);
     }
 
     public static void add(Long seckillId) {
         render(seckillId);
     }
 
-    public static void create(@Valid SecKillGoodsItem secKillGoodsItem) {
+    public static void create(Long seckillId, @Valid SecKillGoodsItem secKillGoodsItem) {
         if (Validation.hasErrors()) {
-            render("SecKillGoodsItems/add.html");
+            render("SecKillGoodsItems/add.html", seckillId);
         }
 
-        models.sales.SecKillGoods goods = models.sales.SecKillGoods.findById(secKillGoodsItem.secKillGoods.id);
+        models.sales.SecKillGoods goods = models.sales.SecKillGoods.findById(seckillId);
         secKillGoodsItem.secKillGoods = goods;
 
+        secKillGoodsItem.status = SecKillGoodsStatus.OFFSALE;
         secKillGoodsItem.save();
 
         render("SecKillGoods/index.html");
     }
 
-    public static void edit(Long id) {
-
+    public static void edit(Long seckillId, Long id) {
+        System.out.println(seckillId);
         SecKillGoodsItem secKillGoodsItem
                 = SecKillGoodsItem.findById(id);
 
-        render(secKillGoodsItem);
+        render(secKillGoodsItem, seckillId);
     }
 
-    public static void update(Long id, @Valid SecKillGoodsItem secKillGoodsItem) {
-        System.out.println(">>>>>>>>>>>>" + secKillGoodsItem.secKillEndAt);
+    public static void update(Long id, Long seckillId, @Valid SecKillGoodsItem secKillGoodsItem) {
+
         checkExpireAt(secKillGoodsItem);
 
         if (Validation.hasErrors()) {
@@ -60,7 +78,7 @@ public class SecKillGoodsItems extends Controller {
 
         SecKillGoodsItem.update(id, secKillGoodsItem);
 
-        render("SecKillGoods/index.html");
+        index(seckillId, null);
     }
 
     private static void checkExpireAt(SecKillGoodsItem goods) {
@@ -68,5 +86,25 @@ public class SecKillGoodsItems extends Controller {
             Validation.addError("SecKillGoodsItem.secKillAt", "validation.beforeThanEffectiveAt");
         }
 
+    }
+
+    /**
+     * 下架商品.
+     *
+     * @param id 商品ID
+     */
+    public static void offSale(Long seckillId, Long id) {
+        SecKillGoodsItem.updateStatus(SecKillGoodsStatus.OFFSALE, id);
+        index(seckillId, null);
+    }
+
+    /**
+     * 上架商品.
+     *
+     * @param id 商品ID
+     */
+    public static void onSale(Long seckillId, Long id) {
+        SecKillGoodsItem.updateStatus(SecKillGoodsStatus.ONSALE, id);
+        index(seckillId, null);
     }
 }

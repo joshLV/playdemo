@@ -76,7 +76,9 @@ secKillGoods.imagePath=图片
 secKillGoods.prompt=温馨提示
 secKillGoods.limitNumber=限购数量
 
-
+secKillGoodsItem.null=
+secKillGoodsItem.ONSALE=已上架
+secKillGoodsItem.OFFSALE=已下架
 secKillGoodsItem.goodsTitle=商品标题
 secKillGoodsItem.salePrice=秒杀价
 secKillGoodsItem.status=状态
