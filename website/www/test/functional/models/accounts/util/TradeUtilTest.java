@@ -37,35 +37,35 @@ public class TradeUtilTest extends FunctionalTest{
         assertNotNull(aliPayment);
 
         try{
-            TradeUtil.createOrderTrade(null,new BigDecimal(1), new BigDecimal(1),BigDecimal.ZERO, aliPayment,10L);
+            TradeUtil.createOrderTrade(null,new BigDecimal(1), new BigDecimal(1), BigDecimal.ZERO, BigDecimal.ZERO, aliPayment,10L);
         }catch (IllegalArgumentException e){}
 
         try{
-            TradeUtil.createOrderTrade(account,new BigDecimal(-1), new BigDecimal(1),BigDecimal.ZERO, aliPayment,10L);
+            TradeUtil.createOrderTrade(account,new BigDecimal(-1), new BigDecimal(1), BigDecimal.ZERO, BigDecimal.ZERO, aliPayment,10L);
         }catch (IllegalArgumentException e){}
 
         try{
-            TradeUtil.createOrderTrade(account,new BigDecimal(1), new BigDecimal(-1),BigDecimal.ZERO, aliPayment,10L);
+            TradeUtil.createOrderTrade(account,new BigDecimal(1), new BigDecimal(-1), BigDecimal.ZERO, BigDecimal.ZERO, aliPayment,10L);
         }catch (IllegalArgumentException e){}
 
         try{
-            TradeUtil.createOrderTrade(account,new BigDecimal(1), new BigDecimal(1),BigDecimal.ZERO, null ,10L);
+            TradeUtil.createOrderTrade(account,new BigDecimal(1), new BigDecimal(1),BigDecimal.ZERO, BigDecimal.ZERO, null ,10L);
         }catch (IllegalArgumentException e){}
 
         try{
-            TradeUtil.createOrderTrade(account,new BigDecimal(1), new BigDecimal(1),BigDecimal.ZERO, aliPayment ,null);
+            TradeUtil.createOrderTrade(account,new BigDecimal(1), new BigDecimal(1),BigDecimal.ZERO, BigDecimal.ZERO, aliPayment ,null);
         }catch (IllegalArgumentException e){}
 
         try{
-            TradeUtil.createOrderTrade(account,null, new BigDecimal(1),BigDecimal.ZERO, aliPayment ,10L);
+            TradeUtil.createOrderTrade(account,null, new BigDecimal(1),BigDecimal.ZERO, BigDecimal.ZERO, aliPayment ,10L);
         }catch (IllegalArgumentException e){}
 
         try{
-            TradeUtil.createOrderTrade(account,new BigDecimal(1), null, BigDecimal.ZERO, aliPayment ,10L);
+            TradeUtil.createOrderTrade(account,new BigDecimal(1), null, BigDecimal.ZERO, BigDecimal.ZERO, aliPayment ,10L);
         }catch (IllegalArgumentException e){}
 
 
-        TradeBill tradeBill = TradeUtil.createOrderTrade(account,new BigDecimal(1), new BigDecimal(1), BigDecimal.ZERO, aliPayment ,10L);
+        TradeBill tradeBill = TradeUtil.createOrderTrade(account,new BigDecimal(1), new BigDecimal(1), BigDecimal.ZERO, BigDecimal.ZERO, aliPayment ,10L);
         assertNotNull(tradeBill);
         assertNotNull(tradeBill.getId());
     }

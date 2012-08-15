@@ -36,6 +36,10 @@ public class AccountUtil {
         return getCreditableAccount(Account.FINANCING_INCOMING, AccountType.PLATFORM);
     }
 
+    public static Account getPromotionAccount(){
+        return getCreditableAccount(Account.PROMOTION, AccountType.PLATFORM);
+    }
+
     public static Account getPaymentPartnerAccount(String partner){
         switch (partner){
             case PARTNER_ALIPAY:
@@ -112,19 +116,19 @@ public class AccountUtil {
      * 变更账户余额，同时不保存凭证相关信息.
      */
     public static Account addBalanceWithoutSavingSequence(Long accountId, BigDecimal cashAugend,
-                                                  BigDecimal uncashAugend, Long billId, String note, Long orderId)
+                BigDecimal uncashAugend, BigDecimal promotionAugend, Long billId, String note, Long orderId)
             throws BalanceNotEnoughException,AccountNotFoundException{
-        return addBalance(accountId, cashAugend, uncashAugend, billId, null, null, note, orderId, false);
+        return addBalance(accountId, cashAugend, uncashAugend, promotionAugend, billId, null, null, note, orderId, false);
     }
 
 
     /*
      * 变更账户余额，同时保存凭证相关信息.
      */
-    public static Account addBalanceAndSaveSequence(Long accountId, BigDecimal cashAugend, BigDecimal uncashAugend, Long billId,
-                         TradeType tradeType, AccountSequenceFlag sequenceFlag, String note, Long orderId)
+    public static Account addBalanceAndSaveSequence(Long accountId, BigDecimal cashAugend, BigDecimal uncashAugend, BigDecimal promotionAugend,
+                Long billId, TradeType tradeType, AccountSequenceFlag sequenceFlag, String note, Long orderId)
             throws BalanceNotEnoughException,AccountNotFoundException{
-        return addBalance(accountId, cashAugend, uncashAugend, billId, tradeType, sequenceFlag, note, orderId, true);
+        return addBalance(accountId, cashAugend, uncashAugend, promotionAugend, billId, tradeType, sequenceFlag, note, orderId, true);
     }
 
     /**
@@ -137,15 +141,30 @@ public class AccountUtil {
      * @param tradeType     交易类型
      * @param sequenceFlag  账户资金变动类型,进账or出账
      * @param note          变动备注
+     * @param orderId       冗余订单ID
+     * @param saveSequence  是否保存账户变更记录
      * @return              变更后的账户
      */
-    private static Account addBalance(Long accountId, BigDecimal cashAugend, BigDecimal uncashAugend, Long billId,
+    private static Account addBalance(Long accountId, BigDecimal cashAugend, BigDecimal uncashAugend, BigDecimal promotionAugend, Long billId,
                 TradeType tradeType, AccountSequenceFlag sequenceFlag, String note, Long orderId, boolean saveSequence)
             throws BalanceNotEnoughException,AccountNotFoundException{
 
+        if (cashAugend == null || uncashAugend == null || promotionAugend == null) {
+            throw new IllegalArgumentException("invalid augend while adding balance");
+        }
         Account account = Account.findById(accountId);
         if(account == null){
             throw new AccountNotFoundException("can not find the specified account:" + accountId);
+        }
+
+        if (account.amount == null) {
+            account.amount = BigDecimal.ZERO;
+        }
+        if (account.uncashAmount == null) {
+            account.uncashAmount = BigDecimal.ZERO;
+        }
+        if (account.promotionAmount == null) {
+            account.promotionAmount = BigDecimal.ZERO;
         }
 
         if(billId == null || ( saveSequence && (tradeType== null || sequenceFlag == null))){
@@ -163,14 +182,20 @@ public class AccountUtil {
             throw new BalanceNotEnoughException("error while add uncashAmount to account: balance not enough");
         }
 
+        if (account.promotionAmount.add(promotionAugend).compareTo(BigDecimal.ZERO) >= 0 || account.isCreditable()) {
+            account.promotionAmount = account.promotionAmount.add(promotionAugend);
+        }else {
+            throw new BalanceNotEnoughException("error while add promotionAmount to account: balance not enough");
+        }
+
         account.save();
         if(saveSequence){
-            accountChanged(account, cashAugend.add(uncashAugend), billId, tradeType, sequenceFlag, note, orderId);
+            accountChanged(account, cashAugend.add(uncashAugend), promotionAugend, billId, tradeType, sequenceFlag, note, orderId);
         }
         return account;
     }
 
-    private static void accountChanged(Account account, BigDecimal amount, Long billId,
+    private static void accountChanged(Account account, BigDecimal amount, BigDecimal promotionAmount, Long billId,
             TradeType tradeType, AccountSequenceFlag sequenceFlag, String note, Long orderId){
         if(account == null){
             throw new IllegalArgumentException("accountChanged: account can not be null");
@@ -181,9 +206,10 @@ public class AccountUtil {
                 sequenceFlag,                                       //账务变动方向
                 tradeType,                                          //变动类型
                 amount,                                             //变动金额
-                account.amount.add(account.uncashAmount),           //变动后总余额
+                promotionAmount,                                    //变动活动金
                 account.amount,                                     //变动后可提现余额
                 account.uncashAmount,                               //变动后不可提现余额
+                account.promotionAmount,                            //变动后活动金
                 billId);                                            //相关流水号
         accountSequence.remark = note;
         accountSequence.orderId = orderId;

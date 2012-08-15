@@ -40,7 +40,7 @@ public class RefundTest extends UnitTest{
         assertEquals(0, balance.compareTo(AccountUtil.getPlatformIncomingAccount().amount));
         assertEquals(0, BigDecimal.ZERO.compareTo(getConsumerAccount().amount));
 
-        TradeBill tradeBill = TradeUtil.createRefundTrade(getConsumerAccount(), refundAmount, 1L, "1");
+        TradeBill tradeBill = TradeUtil.createRefundTrade(getConsumerAccount(), refundAmount, BigDecimal.ZERO, 1L, "1");
         TradeUtil.success(tradeBill, "退款");
 
         assertEquals(0, refundAmount.compareTo(getConsumerAccount().amount));

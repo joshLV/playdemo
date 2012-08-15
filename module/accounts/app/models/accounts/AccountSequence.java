@@ -44,7 +44,7 @@ public class AccountSequence extends Model {
     @Column(name = "trade_type")
     public TradeType tradeType;
 
-    public BigDecimal balance;                  //变动后总余额
+    public BigDecimal balance;                  //变动后可提现余额与不可提现余额余额
 
     @Column(name = "cash_balance")
     public BigDecimal cashBalance;              //变动后可提现余额
@@ -52,9 +52,15 @@ public class AccountSequence extends Model {
     @Column(name = "uncash_balance")
     public BigDecimal uncashBalance;            //变动后不可提现余额
 
+    @Column(name = "promotion_balance")
+    public BigDecimal promotionBalance;         //变动后活动金余额
+
 
     @Column(name = "change_amount")
-    public BigDecimal changeAmount;            //变动发生额
+    public BigDecimal changeAmount;             //可提现余额（包括账户余额和因提现而冻结的余额）变动发生额
+
+    @Column(name = "promotion_change_amount")
+    public BigDecimal promotionChangeAmount;    //不可提现余额发生额（活动金余额）
 
     @Column(name = "trade_id")
     public Long tradeId;                        //关联交易流水ID
@@ -93,26 +99,28 @@ public class AccountSequence extends Model {
      * @param sequenceFlag  入账或者出账
      * @param tradeType     交易类型
      * @param changeAmount 变动总金额
-     * @param balance       变动后账户总余额
      * @param cashBalance   变动后账户可提现余额
      * @param uncashBalance 变动后账户不可提现余额
      * @param tradeId       交易ID
      */
     public AccountSequence(Account account, AccountSequenceFlag sequenceFlag, TradeType tradeType,
-            BigDecimal changeAmount, BigDecimal balance,BigDecimal cashBalance, BigDecimal uncashBalance,  long tradeId) {
+            BigDecimal changeAmount, BigDecimal promotionChangeAmount,
+            BigDecimal cashBalance, BigDecimal uncashBalance, BigDecimal promotionBalance,  long tradeId) {
 
-        this.account        = account;
-        this.sequenceFlag   = sequenceFlag;
-        this.tradeType      = tradeType;
-        this.changeAmount = changeAmount;
-        this.balance        = balance;
-        this.cashBalance    = cashBalance;
-        this.uncashBalance  = uncashBalance;
-        this.tradeId        = tradeId;
+        this.account                = account;
+        this.sequenceFlag           = sequenceFlag;
+        this.tradeType              = tradeType;
+        this.changeAmount           = changeAmount;
+        this.promotionChangeAmount  = promotionChangeAmount;
+        this.balance                = cashBalance.add(uncashBalance);
+        this.cashBalance            = cashBalance;
+        this.uncashBalance          = uncashBalance;
+        this.promotionBalance       = promotionBalance;
+        this.tradeId                = tradeId;
 
-        this.createdAt      = new Date();
-        this.serialNumber   = SerialNumberUtil.generateSerialNumber(this.createdAt);
-        this.remark         = null;
+        this.createdAt              = new Date();
+        this.serialNumber           = SerialNumberUtil.generateSerialNumber(this.createdAt);
+        this.remark                 = null;
     }
 
     public static JPAExtPaginator<AccountSequence> findByCondition(AccountSequenceCondition condition, int pageNumber, int pageSize) {

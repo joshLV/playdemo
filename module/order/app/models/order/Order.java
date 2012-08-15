@@ -78,6 +78,9 @@ public class Order extends Model {
     @Column(name = "discount_pay")
     public BigDecimal discountPay;  //使用网银付款金额
 
+    @Column(name = "promotion_balance_pay")
+    public BigDecimal promotionBalancePay;  //使用活动金余额付款金额
+
     @Column(name = "need_pay")
     public BigDecimal needPay;      //订单应付金额
 
@@ -214,6 +217,7 @@ public class Order extends Model {
         this.needPay = BigDecimal.ZERO;
         this.accountPay = BigDecimal.ZERO;
         this.discountPay = BigDecimal.ZERO;
+        this.promotionBalancePay = BigDecimal.ZERO;
         this.freight = BigDecimal.ZERO;
 
         this.lockVersion = 0;
@@ -500,6 +504,7 @@ public class Order extends Model {
                     account,
                     this.accountPay,
                     this.discountPay,
+                    this.promotionBalancePay,
                     BigDecimal.ZERO,
                     PaymentSource.getBalanceSource(),
                     this.getId());

@@ -16,17 +16,17 @@ public class TradeUtil {
     /**
      * 创建订单交易.
      *
-     * @param account              支付订单的账户
-     * @param balancePaymentAmount 账户余额中应扣款
-     * @param ebankPaymentAmount   网银应支付款
-     * @param uncashPaymentAmount  不可提现余额应扣款
-     * @param paymentSource        网银信息
-     * @param orderId              关联的订单
+     * @param account                   支付订单的账户
+     * @param balancePaymentAmount      账户余额中应扣款
+     * @param ebankPaymentAmount        网银应支付款
+     * @param uncashPaymentAmount       不可提现余额应扣款
+     * @param promotionPaymentAmount    活动金使用
+     * @param paymentSource             网银信息
+     * @param orderId                   关联的订单
      * @return 创建的订单交易记录
      */
-    public static TradeBill createOrderTrade(
-            Account account, BigDecimal balancePaymentAmount, BigDecimal ebankPaymentAmount, BigDecimal uncashPaymentAmount,
-            PaymentSource paymentSource, Long orderId) {
+    public static TradeBill createOrderTrade( Account account, BigDecimal balancePaymentAmount, BigDecimal ebankPaymentAmount,
+            BigDecimal uncashPaymentAmount, BigDecimal promotionPaymentAmount, PaymentSource paymentSource, Long orderId) {
         if (account == null) {
             throw new IllegalArgumentException("error while create order trade: no account specified");
         }
@@ -47,17 +47,19 @@ public class TradeUtil {
         }
 
         TradeBill tradeBill = new TradeBill();
-        tradeBill.fromAccount          = account;                                  //付款方账户
-        tradeBill.toAccount            = AccountUtil.getPlatformIncomingAccount(); //默认收款账户为平台收款账户
-        tradeBill.balancePaymentAmount = balancePaymentAmount;                     //使用余额支付金额
-        tradeBill.ebankPaymentAmount   = ebankPaymentAmount;                       //使用网银支付金额
-        tradeBill.uncashPaymentAmount  = uncashPaymentAmount;                      //使用不可提现余额支付金额
-        tradeBill.tradeType            = TradeType.PAY;                            //交易类型为支付
-        tradeBill.paymentSource        = paymentSource;                            //银行信息
-        tradeBill.orderId              = orderId;                                  //订单信息
+        tradeBill.fromAccount               = account;                                  //付款方账户
+        tradeBill.toAccount                 = AccountUtil.getPlatformIncomingAccount(); //默认收款账户为平台收款账户
+        tradeBill.balancePaymentAmount      = balancePaymentAmount;                     //使用余额支付金额
+        tradeBill.ebankPaymentAmount        = ebankPaymentAmount;                       //使用网银支付金额
+        tradeBill.uncashPaymentAmount       = uncashPaymentAmount;                      //使用不可提现余额支付金额
+        tradeBill.promotionPaymentAmount    = promotionPaymentAmount;                   //使用活动金余额支付金额
+        tradeBill.tradeType                 = TradeType.PAY;                            //交易类型为支付
+        tradeBill.paymentSource             = paymentSource;                            //银行信息
+        tradeBill.orderId                   = orderId;                                  //订单信息
         tradeBill.amount = tradeBill.balancePaymentAmount
                 .add(tradeBill.ebankPaymentAmount)
-                .add(tradeBill.uncashPaymentAmount);
+                .add(tradeBill.uncashPaymentAmount)
+                .add(promotionPaymentAmount);
 
         return tradeBill.save();
     }
@@ -95,6 +97,31 @@ public class TradeUtil {
                 .add(tradeBill.uncashPaymentAmount);
         tradeBill.orderId = orderId;
         
+        return tradeBill.save();
+    }
+
+    public static TradeBill createPromotionChargeTrade(Account account, BigDecimal amount, Long orderId) {
+        if (account == null) {
+            throw new IllegalArgumentException("error while create charge trade: no account specified");
+        }
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("error while create charge trade. invalid amount: " + amount);
+        }
+
+        TradeBill tradeBill = new TradeBill();
+        tradeBill.fromAccount               = AccountUtil.getPromotionAccount();
+        tradeBill.toAccount                 = account;          //收款方账户为本人
+        tradeBill.balancePaymentAmount      = BigDecimal.ZERO;  //付款方不使用余额支付
+        tradeBill.ebankPaymentAmount        = BigDecimal.ZERO;  //充值金额不使用网银支付
+        tradeBill.uncashPaymentAmount       = BigDecimal.ZERO;  //付款方不使用不可提现余额支付
+        tradeBill.promotionPaymentAmount    = amount;           //付款方全部使用活动金支付
+        tradeBill.tradeType                 = TradeType.CHARGE; //交易类型为充值
+        tradeBill.amount = tradeBill.balancePaymentAmount
+                .add(tradeBill.ebankPaymentAmount)
+                .add(tradeBill.uncashPaymentAmount)
+                .add(tradeBill.promotionPaymentAmount);
+        tradeBill.orderId = orderId;
+
         return tradeBill.save();
     }
     
@@ -238,7 +265,7 @@ public class TradeUtil {
      * @param orderId 关联的订单号
      * @return  退款交易
      */
-    public static TradeBill createRefundTrade(Account account, BigDecimal amount, Long orderId, String eCouponSn){
+    public static TradeBill createRefundTrade(Account account, BigDecimal amount, BigDecimal promotionAmount, Long orderId, String eCouponSn){
         if(account == null){
             throw new IllegalArgumentException("error while create refund trade: invalid account");
         }
@@ -252,15 +279,17 @@ public class TradeUtil {
         TradeBill tradeBill = new TradeBill();
         tradeBill.fromAccount           = AccountUtil.getPlatformIncomingAccount(); //付款方为平台收款账户
         tradeBill.toAccount             = account;                                  //收款方为指定账户
-        tradeBill.balancePaymentAmount  = amount;                                   //全部使用可提现余额来支付退款
+        tradeBill.balancePaymentAmount  = amount;                                   //使用可提现余额来支付退款的金额
         tradeBill.ebankPaymentAmount    = BigDecimal.ZERO;                          //不使用网银支付
         tradeBill.uncashPaymentAmount   = BigDecimal.ZERO;                          //不使用不可提现余额支付
+        tradeBill.promotionPaymentAmount= promotionAmount;                          //使用活动金余额来支付退款的金额
         tradeBill.tradeType             = TradeType.REFUND;                         //交易类型为退款
         tradeBill.orderId               = orderId;                                  //冗余订单ID
         tradeBill.eCouponSn             = eCouponSn;                                //冗余券编号
         tradeBill.amount = tradeBill.balancePaymentAmount
                 .add(tradeBill.ebankPaymentAmount)
-                .add(tradeBill.uncashPaymentAmount);
+                .add(tradeBill.uncashPaymentAmount)
+                .add(promotionAmount);
 
         return tradeBill.save();
     }
@@ -314,6 +343,7 @@ public class TradeUtil {
                     tradeBill.fromAccount.getId(),
                     tradeBill.balancePaymentAmount.add(tradeBill.ebankPaymentAmount).negate(),
                     tradeBill.uncashPaymentAmount.negate(),
+                    tradeBill.promotionPaymentAmount.negate(),
                     tradeBill.getId(),
                     tradeBill.tradeType,
                     AccountSequenceFlag.NOSTRO,
@@ -323,6 +353,7 @@ public class TradeUtil {
                     tradeBill.toAccount.getId(),
                     tradeBill.ebankPaymentAmount.add(tradeBill.balancePaymentAmount),
                     tradeBill.uncashPaymentAmount,
+                    tradeBill.promotionPaymentAmount,
                     tradeBill.getId(),
                     tradeBill.tradeType,
                     AccountSequenceFlag.VOSTRO,

@@ -43,7 +43,10 @@ public class TradeBill extends Model {
     public BigDecimal ebankPaymentAmount;   //网银支付金额
 
     @Column(name = "uncash_payment_amount")
-    public BigDecimal uncashPaymentAmount;  //不可提现余额支付金额
+    public BigDecimal uncashPaymentAmount;  //不可支付、不可提现余额支付金额
+
+    @Column(name = "promotion_payment_amount")
+    public BigDecimal promotionPaymentAmount;   //活动金余额支付金额
 
     @ManyToOne
     @JoinColumn(name = "payment_source")
@@ -71,6 +74,7 @@ public class TradeBill extends Model {
     	this.balancePaymentAmount = BigDecimal.ZERO;
     	this.ebankPaymentAmount = BigDecimal.ZERO;
         this.uncashPaymentAmount = BigDecimal.ZERO;
+        this.promotionPaymentAmount = BigDecimal.ZERO;
     	this.paymentSource = null;
     	this.tradeType = null;
     	this.tradeStatus = TradeStatus.UNPAID;

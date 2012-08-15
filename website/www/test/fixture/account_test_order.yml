@@ -19,6 +19,7 @@ order.Order(simple_order):
   amount: 46
   accountPay: 10
   discountPay: 36
+  promotionBalancePay: 0
   needPay: 46
   freight: 6
   payMethod: alipay

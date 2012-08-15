@@ -37,7 +37,7 @@ public class AccountUtilTest extends FunctionalTest{
 
         Boolean exception = false;
         try{
-            AccountUtil.addBalanceAndSaveSequence(null, null, null, null, TradeType.REFUND, AccountSequenceFlag.VOSTRO, "test note", null);
+            AccountUtil.addBalanceAndSaveSequence(null, null, null,null, null, TradeType.REFUND, AccountSequenceFlag.VOSTRO, "test note", null);
         }catch (RuntimeException e){
             exception = true;
         } catch (BalanceNotEnoughException e) {
@@ -50,7 +50,7 @@ public class AccountUtilTest extends FunctionalTest{
         }
         exception = false;
         try{
-            AccountUtil.addBalanceAndSaveSequence(null, null, null, new Long(1), null, null, "test note", null);
+            AccountUtil.addBalanceAndSaveSequence(null, null, null,null, new Long(1), null, null, "test note", null);
         }catch (RuntimeException e){
             exception = true;
         } catch (BalanceNotEnoughException e) {
@@ -65,7 +65,7 @@ public class AccountUtilTest extends FunctionalTest{
 
         BigDecimal augend = new BigDecimal(1);
         try {
-            AccountUtil.addBalanceAndSaveSequence(account.getId(), augend, BigDecimal.ZERO, new Long(1),
+            AccountUtil.addBalanceAndSaveSequence(account.getId(), augend, BigDecimal.ZERO, BigDecimal.ZERO, new Long(1),
                     TradeType.CHARGE, AccountSequenceFlag.VOSTRO, "test note", null);
         } catch (BalanceNotEnoughException e) {
 

@@ -425,7 +425,7 @@ public class ECoupon extends Model {
         //查找原订单信息
 
         Account account = AccountUtil.getAccount(userId, accountType);
-        TradeBill tradeBill = TradeUtil.createRefundTrade(account, eCoupon.salePrice, eCoupon.order.getId(), eCoupon.eCouponSn);
+        TradeBill tradeBill = TradeUtil.createRefundTrade(account, eCoupon.salePrice, BigDecimal.ZERO, eCoupon.order.getId(), eCoupon.eCouponSn);
 
         if (!TradeUtil.success(tradeBill, "退款成功.券号:" + eCoupon.getMaskedEcouponSn() + ",商品:" + eCoupon.goods.name)) {
             returnFlg = "{\"error\":\"refound failed\"}";
