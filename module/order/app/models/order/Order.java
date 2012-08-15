@@ -81,6 +81,9 @@ public class Order extends Model {
     @Column(name = "promotion_balance_pay")
     public BigDecimal promotionBalancePay;  //使用活动金余额付款金额
 
+    @Column(name = "refunded_promotion_amount")
+    public BigDecimal refundedPromotionAmount;  //此订单已退款的用活动金支付的金额
+
     @Column(name = "need_pay")
     public BigDecimal needPay;      //订单应付金额
 
@@ -218,6 +221,7 @@ public class Order extends Model {
         this.accountPay = BigDecimal.ZERO;
         this.discountPay = BigDecimal.ZERO;
         this.promotionBalancePay = BigDecimal.ZERO;
+        this.refundedPromotionAmount = BigDecimal.ZERO;
         this.freight = BigDecimal.ZERO;
 
         this.lockVersion = 0;

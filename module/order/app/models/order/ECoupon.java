@@ -425,11 +425,27 @@ public class ECoupon extends Model {
         //查找原订单信息
 
         Account account = AccountUtil.getAccount(userId, accountType);
-        TradeBill tradeBill = TradeUtil.createRefundTrade(account, eCoupon.salePrice, BigDecimal.ZERO, eCoupon.order.getId(), eCoupon.eCouponSn);
+        //计算需要退款的活动金金额
+        BigDecimal cashAmount = eCoupon.salePrice;
+        BigDecimal promotionAmount = BigDecimal.ZERO;
+        if (eCoupon.order.refundedPromotionAmount == null) {
+            eCoupon.order.refundedPromotionAmount = BigDecimal.ZERO;
+        }
+        if(eCoupon.order.promotionBalancePay.subtract(eCoupon.order.refundedPromotionAmount).compareTo(BigDecimal.ZERO) > 0) {
+            promotionAmount = cashAmount.min(eCoupon.order.promotionBalancePay.subtract(eCoupon.order.refundedPromotionAmount));
+            cashAmount = cashAmount.subtract(promotionAmount);
+        }
+        TradeBill tradeBill = TradeUtil.createRefundTrade(account, cashAmount, promotionAmount, eCoupon.order.getId(), eCoupon.eCouponSn);
 
         if (!TradeUtil.success(tradeBill, "退款成功.券号:" + eCoupon.getMaskedEcouponSn() + ",商品:" + eCoupon.goods.name)) {
             returnFlg = "{\"error\":\"refound failed\"}";
             return returnFlg;
+        }
+
+        //更新已退款的活动金金额
+        if (promotionAmount.compareTo(BigDecimal.ZERO) > 0) {
+            eCoupon.order.refundedPromotionAmount = eCoupon.order.refundedPromotionAmount.add(promotionAmount);
+            eCoupon.order.save();
         }
 
         //更改库存
