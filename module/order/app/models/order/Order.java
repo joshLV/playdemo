@@ -3,10 +3,7 @@ package models.order;
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
-import models.accounts.Account;
-import models.accounts.AccountType;
-import models.accounts.PaymentSource;
-import models.accounts.TradeBill;
+import models.accounts.*;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.consumer.Address;
@@ -495,25 +492,26 @@ public class Order extends Model {
         if (this.discountPay.compareTo(BigDecimal.ZERO) > 0) {
             TradeBill chargeTradeBill = TradeUtil.createChargeTrade(account, this.discountPay, paymentSource, this.getId());
             TradeUtil.success(chargeTradeBill, "充值");
-            /*
-            JPAPlugin.closeTx(false);
-            JPAPlugin.startTx(true);
-            */
             this.payRequestId = chargeTradeBill.getId();
         }
 
         //如果订单类型不是充值,那接着再支付此次订单
         if (this.orderType != OrderType.CHARGE) {
-            TradeBill tradeBill = TradeUtil.createOrderTrade(
-                    account,
-                    this.accountPay,
-                    this.discountPay,
-                    this.promotionBalancePay,
-                    BigDecimal.ZERO,
-                    PaymentSource.getBalanceSource(),
-                    this.getId());
-            TradeUtil.success(tradeBill, this.description);
-            this.payRequestId = tradeBill.getId();
+            try{
+                TradeBill tradeBill = TradeUtil.createOrderTrade(
+                        account,
+                        this.accountPay,
+                        this.discountPay,
+                        this.promotionBalancePay,
+                        BigDecimal.ZERO,
+                        PaymentSource.getBalanceSource(),
+                        this.getId());
+                TradeUtil.success(tradeBill, this.description);
+                this.payRequestId = tradeBill.getId();
+            }catch (RuntimeException e) {
+                Logger.error("", e);
+                //忽略，此时订单没有支付，但余额已经保存
+            }
         }
 
         this.status = OrderStatus.PAID;
