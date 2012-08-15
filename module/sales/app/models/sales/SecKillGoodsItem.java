@@ -1,6 +1,10 @@
 package models.sales;
 
-import play.data.validation.*;
+import play.data.binding.As;
+import play.data.validation.Max;
+import play.data.validation.MaxSize;
+import play.data.validation.Min;
+import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.view_ext.annotation.Money;
 
@@ -27,18 +31,16 @@ public class SecKillGoodsItem extends Model {
      * 秒杀开始时间
      */
     @Required
-    @InFuture
     @Column(name = "seckill_begin_at")
-    @Temporal(TemporalType.TIMESTAMP)
+    @As(lang={"*"}, value={"yyyy-MM-dd HH:mm:ss"})
     public Date secKillBeginAt;
 
     /**
      * 秒杀结束时间
      */
     @Required
-    @InFuture
     @Column(name = "seckill_end_at")
-    @Temporal(TemporalType.TIMESTAMP)
+    @As(lang={"*"}, value={"yyyy-MM-dd HH:mm:ss"})
     public Date secKillEndAt;
 
     @Required
@@ -49,6 +51,7 @@ public class SecKillGoodsItem extends Model {
     /**
      * 秒杀价格
      */
+    @Required
     @Min(0)
     @Max(999999)
     @Money
@@ -91,4 +94,19 @@ public class SecKillGoodsItem extends Model {
     @Version
     public int lockVersion;
 
+    public static void update(Long id, SecKillGoodsItem secKillGoodsItem) {
+        SecKillGoodsItem dbItem = SecKillGoodsItem.findById(id);
+        dbItem.baseSale = secKillGoodsItem.baseSale;
+        dbItem.goodsTitle = secKillGoodsItem.goodsTitle;
+        dbItem.saleCount = secKillGoodsItem.saleCount;
+        dbItem.salePrice = secKillGoodsItem.salePrice;
+        dbItem.secKillBeginAt = secKillGoodsItem.secKillBeginAt;
+        dbItem.secKillEndAt = secKillGoodsItem.secKillEndAt;
+        dbItem.virtualSale = secKillGoodsItem.virtualSale;
+        dbItem.status = secKillGoodsItem.status;
+
+
+//        dbItem.secKillGoods = secKillGoodsItem.secKillGoods;
+        dbItem.save();
+    }
 }

@@ -1,16 +1,17 @@
 package models.sales;
 
 import com.uhuila.common.util.PathUtil;
+import org.apache.commons.lang.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import play.Play;
 import play.data.validation.MaxSize;
 import play.db.jpa.Model;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
+import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.*;
 import java.util.Date;
-
-import org.apache.commons.lang.StringUtils;
+import java.util.List;
 
 /**
  * <p/>
@@ -32,6 +33,9 @@ public class SecKillGoods extends Model {
     @JoinColumn(name = "goods_id", nullable = true)
     public Goods goods;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "secKillGoods")
+    @OrderBy("id")
+    public List<SecKillGoodsItem> secKillGoodsItemList;
     /**
      * 限购数量
      */
@@ -115,5 +119,26 @@ public class SecKillGoods extends Model {
     @Transient
     public String getImageLargePath() {
         return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_LARGE);
+    }
+
+    public static JPAExtPaginator<SecKillGoods> findByCondition(SecKillGoodsCondition condition, int pageNumber, int pageSize) {
+        JPAExtPaginator<SecKillGoods> goodsPage = new JPAExtPaginator<>
+                ("SecKillGoods g", "g", SecKillGoods.class, condition.getFilter(),
+                        condition.getParamMap())
+                .orderBy("g.createdAt desc");
+        goodsPage.setPageNumber(pageNumber);
+        goodsPage.setPageSize(pageSize);
+        goodsPage.setBoundaryControlsEnabled(false);
+
+        return goodsPage;
+    }
+
+    public static void update(Long id, SecKillGoods secKillGoods) {
+        SecKillGoods dbSecKillGoods = SecKillGoods.findById(id);
+        dbSecKillGoods.limitNumber = secKillGoods.limitNumber;
+        if (secKillGoods.imagePath != null)
+            dbSecKillGoods.imagePath = secKillGoods.imagePath;
+        dbSecKillGoods.prompt = secKillGoods.prompt;
+        dbSecKillGoods.save();
     }
 }

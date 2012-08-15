@@ -653,7 +653,6 @@ public class Goods extends Model {
         updateGoods.setDiscount(goods.getDiscount());
         updateGoods.salePrice = goods.salePrice;
         updateGoods.baseSale = goods.baseSale;
-        System.out.println(goods.materialType + ">>>>>>>>>>>>>>>>>>>");
         updateGoods.materialType = goods.materialType;
         updateGoods.topCategoryId = goods.topCategoryId;
         updateGoods.categories = goods.categories;

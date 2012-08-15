@@ -8,8 +8,10 @@
 
     <permission key="GOODS_NEW" text="商品添加" roles="editor"/>
     <permission key="GOODS" text="商品管理" roles="editor,customservice"/>
-
+    <permission key="SECKILL_GOODS_NEW" text="秒杀商品添加" roles="editor"/>
+    <permission key="SECKILL_GOODS" text="秒杀商品管理" roles="editor,customservice"/>
     <permission key="Point_GOODS_NEW" text="积分商品添加" roles="editor"/>
+
     <permission key="Point_GOODS" text="积分商品管理" roles="editor,customservice"/>
 
     <permission key=" Point_GOODS_ORDER" text="积分商品订单管理" roles="customservice,account,sales"/>
@@ -76,7 +78,12 @@
             <navigation key="goods_add" action="OperateGoods.add" text="商品添加" permissions="GOODS_NEW"/>
             <navigation key="goods_index" action="OperateGoods.index" text="商品管理" permissions="GOODS"/>
         </navigation>
-
+        <navigation key="seckill_goods" text="秒杀商品">
+            <navigation key="seckill_goods_add" action="SecKillGoods.add" text="秒杀商品添加"
+                        permissions="SECKILL_GOODS_NEW"/>
+            <navigation key="seckill_goods_index" action="SecKillGoods.index" text="秒杀商品管理"
+                        permissions="SECKILL_GOODS"/>
+        </navigation>
 
     </navigation>
 

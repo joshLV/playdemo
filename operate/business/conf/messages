@@ -70,6 +70,23 @@ goods.supplier=商户
 goods.no=编号
 goods.name=名称
 
+secKillGoods.goods.id=商品ID
+secKillGoods.salePrice=秒杀价
+secKillGoods.imagePath=图片
+secKillGoods.prompt=温馨提示
+secKillGoods.limitNumber=限购数量
+
+
+secKillGoodsItem.goodsTitle=商品标题
+secKillGoodsItem.salePrice=秒杀价
+secKillGoodsItem.status=状态
+secKillGoodsItem.saleCount=售出数量
+secKillGoodsItem.baseSale=库存
+secKillGoodsItem.virtualSale=虚拟售出数量
+secKillGoodsItem.secKillAt=秒杀时间
+secKillGoodsItem.secKillBeginAt=秒杀开始时间
+secKillGoodsItem.secKillEndAt=秒杀结束时间
+
 pointGoods.ONSALE=已上架
 pointGoods.OFFSALE=已下架
 pointGoods.APPLY=申请上架

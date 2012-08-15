@@ -21,6 +21,22 @@ POST    /goods/filemanager                      UploadFiles.fileManagerJson
 GET     /goods_brands/{id}                      OperateBrands.goodsBrands
 GET     /category/sub/{id}                      Categories.showSubs
 
+#秒杀商品
+GET     /seckill_goods                          SecKillGoods.index
+GET     /seckill_goods/new                      SecKillGoods.add
+POST    /seckill_goods                          SecKillGoods.create
+GET     /seckill_goods/{id}/edit                SecKillGoods.edit
+PUT     /seckill_goods/{id}                     SecKillGoods.update
+POST    /seckill_goods/images                   UploadFiles.uploadJson
+
+GET     /seckill_goods/{seckillId}/item        SecKillGoodsItems.index
+GET     /seckill_goods/{seckillId}/new         SecKillGoodsItems.add
+POST    /seckill_goods/{seckillId}/item        SecKillGoodsItems.create
+GET     /seckill_goods/{seckillId}/item/{id}/edit           SecKillGoodsItems.edit
+PUT     /seckill_goods/{seckillId}/item/{id}                SecKillGoodsItems.update
+
+
+
 # 积分商品
 GET     /pointgoods                             OperatePointGoods.index
 GET     /pointgoods/new                         OperatePointGoods.add
