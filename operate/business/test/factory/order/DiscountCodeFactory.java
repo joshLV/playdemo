@@ -14,7 +14,7 @@ public class DiscountCodeFactory extends ModelFactory<DiscountCode> {
     @Override
     public DiscountCode define() {
         DiscountCode discountCode = new DiscountCode();
-        discountCode.discountSn = "DIST001";
+        discountCode.discountSn = "DIST1";
         discountCode.beginAt = beforeDays(new Date(), 1);
         discountCode.endAt = afterDays(new Date(), 1);
         return discountCode;
@@ -23,7 +23,7 @@ public class DiscountCodeFactory extends ModelFactory<DiscountCode> {
     @Factory(name="Unavaiable")
     public DiscountCode defineUnavaiableDiscount() {
         DiscountCode discountCode = new DiscountCode();
-        discountCode.discountSn = "DIST002";
+        discountCode.discountSn = "DIST2";
         discountCode.beginAt = beforeDays(new Date(), 3);
         discountCode.endAt = beforeDays(new Date(), 1);
         return discountCode;

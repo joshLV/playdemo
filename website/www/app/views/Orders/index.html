@@ -14,6 +14,24 @@
         <li>3. 确认付款</li>
         <li>4. 成功提交订单</li>
     </ul>
+    
+    <div class="order">
+    
+        <div class="addr1">
+            <form action="/reorders?${querystring}" method="POST" accept-charset="utf-8" enctype="application/x-www-form-urlencoded" >
+                <div class="receive-mobi1">请输入折扣码：<input type="text" name="discountSN" value="${discountSN}"/>      
+                   <input type="submit"/>
+                </div>
+                #{if discountCode != null }
+                <dl><dt>折扣码：${discountCode.discountSn}</dt>
+                    <dd class="history-mobi">
+                        <span class="mobi-item">名称：${discountCode?.title}</span>
+                    </dd>
+                </dl>
+               #{/if}              
+            </form>
+        </div>
+    </div>
 
 #{if rCartList.size()>0}
     <div class="order">
@@ -130,6 +148,7 @@
     #{/else}
 
     <input type="hidden" name="items" id="items" value="${items}" />
+    <input type="hidden" name="discountSN" id="discountSN" value="${discountSN}" />
     <input type="hidden" id="addressId" />
     #{/form}
 </div>

@@ -79,13 +79,12 @@ public class DiscountCode extends Model {
     public static void update(Long id, DiscountCode discountCodeForm) {
         DiscountCode discountCode = DiscountCode.findById(id);
         discountCode.title = discountCodeForm.title;
-        discountCode.discountSn = discountCodeForm.discountSn;
+        discountCode.discountSn = (discountCodeForm.discountSn == null ? null : discountCodeForm.discountSn.toUpperCase());
         discountCode.goods = discountCodeForm.goods;
         discountCode.discountAmount = discountCodeForm.discountAmount;
         discountCode.discountPercent = discountCodeForm.discountPercent;
         discountCode.beginAt = discountCodeForm.beginAt;
         discountCode.endAt = discountCodeForm.endAt;
-        discountCode.deleted = discountCodeForm.deleted;
         discountCode.save();
     }
 
@@ -101,5 +100,18 @@ public class DiscountCode extends Model {
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
         return page;
+    }
+    
+    /**
+     * 找到当前可用的SN.
+     * @param sn
+     * @return
+     */
+    public static DiscountCode findAvaiableSN(String sn) {
+        if (StringUtils.isEmpty(sn)) {
+            return null;
+        }
+        return DiscountCode.find("deleted=? and discountSn=? and beginAt<=? and endAt>=?", DeletedStatus.UN_DELETED,
+                sn.toUpperCase(), new Date(), new Date()).first();
     }
 }

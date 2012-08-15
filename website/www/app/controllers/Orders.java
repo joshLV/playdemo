@@ -1,26 +1,31 @@
 package controllers;
 
-import controllers.modules.website.cas.SecureCAS;
+import static play.Logger.warn;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
-import models.order.*;
+import models.order.Cart;
+import models.order.DeliveryType;
+import models.order.DiscountCode;
+import models.order.NotEnoughInventoryException;
+import models.order.Order;
+import models.order.OrderDiscount;
+import models.order.OrderItems;
 import models.sales.Goods;
 import models.sales.MaterialType;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static play.Logger.warn;
+import controllers.modules.website.cas.SecureCAS;
 
 /**
  * 用户订单确认控制器.
@@ -40,9 +45,8 @@ public class Orders extends Controller {
      */
     public static void index(List<Long> gid) {
 
-    	 
-        if (gid.size() == 0) {
-            error("no goods specified");
+        if (gid == null || gid.size() == 0) {
+            error("未选择商品!");
             return;
         }
         
@@ -56,16 +60,32 @@ public class Orders extends Controller {
             }
             items += goodsId + "-" + number + ",";
         }
+        
+        DiscountCode discountCode = getDiscountCode();
+        
+        showOrder(items, discountCode);
 
         User user = SecureCAS.getUser();
-        showOrder(items);
-
         List<String> orderItems_mobiles = OrderItems.getMobiles(user);
 
         render(user, orderItems_mobiles);
     }
 
-    private static void showOrder(String items) {
+    protected static DiscountCode getDiscountCode() {
+        // 折扣券
+        String discountSN = request.params.get("discountSN");
+        if (StringUtils.isEmpty(discountSN) && WebsiteInjector.getUserWebIdentification() != null) {
+            // 访问使用的推荐码尝试作为折扣券号
+            discountSN = WebsiteInjector.getUserWebIdentification().referCode;
+        } else {
+            renderArgs.put("discountSN", discountSN);
+        }
+        DiscountCode discountCode = DiscountCode.findAvaiableSN(discountSN);
+        renderArgs.put("discountCode", discountCode);
+        return discountCode;
+    }
+
+    private static void showOrder(String items, DiscountCode discountCode) {
         //解析提交的商品及数量
         List<Long> goodsIds = new ArrayList<>();
         Map<Long, Integer> itemsMap = new HashMap<>();
@@ -83,10 +103,10 @@ public class Orders extends Controller {
             Integer number = itemsMap.get(g.getId());
             if (g.materialType == models.sales.MaterialType.REAL) {
                 rCartList.add(new Cart(g, number));
-                rCartAmount = rCartAmount.add(g.salePrice.multiply(new BigDecimal(number.toString())));
+                rCartAmount = rCartAmount.add(Order.getDiscountGoodsAmount(g, number, discountCode));
             } else if (g.materialType == models.sales.MaterialType.ELECTRONIC) {
                 eCartList.add(new Cart(g, number));
-                eCartAmount = eCartAmount.add(g.salePrice.multiply(new BigDecimal(number.toString())));
+                eCartAmount = eCartAmount.add(Order.getDiscountGoodsAmount(g, number, discountCode));
             }
         }
 
@@ -102,9 +122,12 @@ public class Orders extends Controller {
         if (rCartList.size() > 0) {
             rCartAmount = rCartAmount.add(Order.FREIGHT);
         }
+        
+        // 整单折扣，注意只折扣电子券产品，实物券不参与折扣.
+        eCartAmount = Order.getDiscountTotalECartAmount(eCartAmount, discountCode);
+        
         BigDecimal totalAmount = eCartAmount.add(rCartAmount);
         BigDecimal goodsAmount = rCartList.size() == 0 ? eCartAmount : totalAmount.subtract(Order.FREIGHT);
-
 
         renderArgs.put("goodsAmount", goodsAmount);
         renderArgs.put("totalAmount", totalAmount);
@@ -115,6 +138,7 @@ public class Orders extends Controller {
         renderArgs.put("rCartList", rCartList);
         renderArgs.put("rCartAmount", rCartAmount);
         renderArgs.put("items", items);
+        renderArgs.put("querystring", request.querystring);
     }
 
     /**
@@ -152,12 +176,15 @@ public class Orders extends Controller {
             }
         }
 
+        DiscountCode discountCode = getDiscountCode();
+
         if (Validation.hasErrors()) {
             for (String key : validation.errorsMap().keySet()) {
                 warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
             List<String> orderItems_mobiles = OrderItems.getMobiles(user);
-            showOrder(items);
+                 
+            showOrder(items, discountCode);
             render("Orders/index.html", user, orderItems_mobiles);
         }
 
@@ -168,6 +195,7 @@ public class Orders extends Controller {
         } else if (containsReal) {
             order.deliveryType = DeliveryType.LOGISTICS;
         }
+        
         //记录来源跟踪ID
         if (WebsiteInjector.getUserWebIdentification() != null) {
             order.webIdentificationId = WebsiteInjector.getUserWebIdentification().id;
@@ -176,25 +204,60 @@ public class Orders extends Controller {
         if (defaultAddress != null) {
             order.setAddress(defaultAddress);
         }
+        order.save();  //为了保存OrderDiscount，需要先保存order.
 
         //添加订单条目
         try {
+            //计算电子商品列表和非电子商品列表
+            BigDecimal eCartAmount = BigDecimal.ZERO;
+            BigDecimal rCartAmount = BigDecimal.ZERO;
+
             for (models.sales.Goods goodsItem : goodsList) {
+                Integer number = itemsMap.get(goodsItem.getId());
+                if (goodsItem.materialType == models.sales.MaterialType.REAL) {
+                    rCartAmount = rCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
+                } else if (goodsItem.materialType == models.sales.MaterialType.ELECTRONIC) {
+                    eCartAmount = eCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
+                }        
+                OrderItems orderItem = null;
                 if (goodsItem.materialType == MaterialType.REAL) {
-                    order.addOrderItem(goodsItem, itemsMap.get(goodsItem.getId()), receiverMobile,
+                    orderItem = order.addOrderItem(goodsItem, number, receiverMobile,
                             goodsItem.salePrice, //最终成交价
-                            goodsItem.getResalerPriceOfUhuila()//一百券作为分销商的成本价
+                            goodsItem.getResalerPriceOfUhuila(), //一百券作为分销商的成本价
+                            discountCode
                     );
                 } else {
-                    order.addOrderItem(goodsItem, itemsMap.get(goodsItem.getId()), mobile,
+                    orderItem = order.addOrderItem(goodsItem, number, mobile,
                             goodsItem.salePrice, //最终成交价
-                            goodsItem.getResalerPriceOfUhuila()//一百券作为分销商的成本价
+                            goodsItem.getResalerPriceOfUhuila(), //一百券作为分销商的成本价
+                            discountCode
                     );
                 }
-
+                orderItem.save();
+                
+                // 保存商品折扣
+                if (discountCode != null && discountCode.goods != null && discountCode.goods.id == goodsItem.id) {
+                    OrderDiscount orderDiscount = new OrderDiscount();
+                    orderDiscount.discountCode = discountCode;
+                    orderDiscount.order = order;
+                    orderDiscount.orderItem = orderItem;
+                    orderDiscount.discountAmount = Order.getDiscountValueOfGoodsAmount(goodsItem, number, discountCode);
+                    orderDiscount.save();
+                }
             }
 
-
+            // 整单折扣，注意只折扣电子券产品，实物券不参与折扣.
+            if (discountCode != null && discountCode.goods == null) {
+                eCartAmount = Order.getDiscountTotalECartAmount(eCartAmount, discountCode);
+                order.amount = eCartAmount.add(rCartAmount);
+                order.needPay = order.amount;
+            
+                OrderDiscount orderDiscount = new OrderDiscount();
+                orderDiscount.discountCode = discountCode;
+                orderDiscount.order = order;
+                orderDiscount.discountAmount = Order.getDiscountValueOfTotalECartAmount(eCartAmount, discountCode);
+                orderDiscount.save();
+            }
         } catch (NotEnoughInventoryException e) {
             //todo 缺少库存
             Logger.error(e, "inventory not enough");
@@ -204,6 +267,7 @@ public class Orders extends Controller {
 
         //确认订单
         order.createAndUpdateInventory();
+        
         //删除购物车中相应物品
         Cart.delete(user, cookieValue, goodsIds);
 

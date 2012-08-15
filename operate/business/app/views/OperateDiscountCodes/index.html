@@ -16,7 +16,9 @@
             </tr>
         </table>
     </form>
-    <form class="form-horizontal" name="deletefrm" id="deletefrm">
+    <div class="alert alert-success">
+    <span>注意：折扣码也可用于作为推荐码，在网址后面加上"?tj=折扣码"，可使用户不需要手工输入折扣码</span>
+    </div>
         <table class="table table-striped table-bordered table-condensed">
             <thead>
             <tr>
@@ -42,13 +44,12 @@
                 <td>${discountCode?.beginAt?.format('yyyy-MM-dd HH:mm:ss')}
                  至${discountCode?.endAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td><a href="@{OperateDiscountCodes.edit(discountCode?.id)}">修改</a>
-                        / #{vx.deleteLink action:"discountcode", id:discountCode?.id, name:discountCode.discountSn/}
+                        / #{vx.deleteLink action:"discountcodes", id:discountCode?.id, name:discountCode.discountSn/}
                         
             </tr>
             #{/paginate.list}
             </tbody>
         </table>
-    </form>
     #{if discountCodePage.pageNumber > 1}
     <div class="pagination" align="center">
         <ul>

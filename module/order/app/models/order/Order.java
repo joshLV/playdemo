@@ -1,9 +1,30 @@
 package models.order;
 
-import cache.CacheHelper;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import models.accounts.*;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+import models.accounts.Account;
+import models.accounts.AccountType;
+import models.accounts.PaymentSource;
+import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.consumer.Address;
@@ -26,12 +47,8 @@ import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
-
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
 
 
 @Entity
@@ -290,6 +307,57 @@ public class Order extends Model {
 
 
     /**
+     * 计算单列商品应折扣的金额.
+     * @param g
+     * @param number
+     * @param discountCode
+     * @return
+     */
+    public static BigDecimal getDiscountGoodsAmount(models.sales.Goods g,
+            Integer number, DiscountCode discountCode) {
+        BigDecimal amount = g.salePrice.multiply(new BigDecimal(number.toString()));
+        BigDecimal discountValue = getDiscountValueOfGoodsAmount(g, number, discountCode);
+        return amount.subtract(discountValue);
+    }
+    public static BigDecimal getDiscountValueOfGoodsAmount(models.sales.Goods g,
+            Integer number, DiscountCode discountCode) {
+        if (discountCode == null || discountCode.goods == null || discountCode.goods.id != g.id) {
+            return BigDecimal.ZERO;
+        }
+        if (discountCode.discountAmount != null && discountCode.discountAmount.compareTo(BigDecimal.ZERO) > 0) {
+            return discountCode.discountAmount;
+        }
+        if (discountCode.discountPercent != null && discountCode.discountPercent.compareTo(BigDecimal.ZERO) > 0 && discountCode.discountPercent.compareTo(BigDecimal.ONE) < 0) {
+            BigDecimal amount = g.salePrice.multiply(new BigDecimal(number.toString()));
+            return discountCode.discountPercent.multiply(amount);
+        }
+        return BigDecimal.ZERO;
+    }
+    
+    /**
+     * 计算整单折扣。
+     * 注意：只应当用于计算电子券类的折扣，实物券不参与折扣.
+     * @param amount
+     * @param discountCode
+     * @return
+     */
+    public static BigDecimal getDiscountTotalECartAmount(BigDecimal amount, DiscountCode discountCode) {
+        return amount.subtract(getDiscountValueOfTotalECartAmount(amount, discountCode));
+    }
+    public static BigDecimal getDiscountValueOfTotalECartAmount(BigDecimal amount, DiscountCode discountCode) {
+        if (discountCode == null || discountCode.goods != null) {
+            return BigDecimal.ZERO;
+        }
+        if (discountCode.discountAmount != null && discountCode.discountAmount.compareTo(BigDecimal.ZERO) > 0) {
+            return discountCode.discountAmount;
+        }
+        if (discountCode.discountPercent != null && discountCode.discountPercent.compareTo(BigDecimal.ZERO) > 0 && discountCode.discountPercent.compareTo(BigDecimal.ONE) < 0) {
+            return discountCode.discountPercent.multiply(amount);
+        }
+        return BigDecimal.ZERO;
+    }
+
+    /**
      * 添加订单条目.
      *
      * @param goods        商品
@@ -300,14 +368,17 @@ public class Order extends Model {
      * @return 添加的订单条目
      * @throws NotEnoughInventoryException
      */
-    public OrderItems addOrderItem(Goods goods, long number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice)
+    public OrderItems addOrderItem(Goods goods, Integer number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice) throws NotEnoughInventoryException {
+         return this.addOrderItem(goods, number, mobile, salePrice, resalerPrice, null);
+    }
+    public OrderItems addOrderItem(Goods goods, Integer number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice, DiscountCode discountCode)
             throws NotEnoughInventoryException {
         OrderItems orderItems = null;
         if (number > 0 && goods != null) {
             checkInventory(goods, number);
             orderItems = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice);
             this.orderItems.add(orderItems);
-            this.amount = this.amount.add(salePrice.multiply(new BigDecimal(String.valueOf(number))));
+            this.amount = this.amount.add(getDiscountGoodsAmount(goods, number, discountCode)); //计算折扣价
             this.needPay = this.amount;
         }
         return orderItems;

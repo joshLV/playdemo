@@ -196,12 +196,12 @@ PUT     /questions/{id}/hide                    OperateQuestions.hide
 PUT     /questions/{id}/show                    OperateQuestions.show
 
 #折扣券管理
-GET     /discountcode                              OperateDiscountCodes.index
-POST    /discountcode                              OperateDiscountCodes.create
-DELETE  /discountcode/{id}                         OperateDiscountCodes.delete
-GET     /discountcode/{id}/edit                    OperateDiscountCodes.edit
-PUT     /discountcode/{id}                         OperateDiscountCodes.update
-GET     /discountcode/{id}/show                    OperateDiscountCodes.show
+GET     /discountcodes                              OperateDiscountCodes.index
+POST    /discountcodes                              OperateDiscountCodes.create
+DELETE  /discountcodes/{id}                         OperateDiscountCodes.delete
+GET     /discountcodes/{id}/edit                    OperateDiscountCodes.edit
+PUT     /discountcodes/{id}                         OperateDiscountCodes.update
+GET     /discountcodes/{id}/show                    OperateDiscountCodes.show
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

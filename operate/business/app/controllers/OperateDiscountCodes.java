@@ -56,6 +56,7 @@ public class OperateDiscountCodes extends Controller {
             render("OperateDiscountCodes/add.html", supplierList);
         }
         discountCode.deleted = DeletedStatus.UN_DELETED;
+        discountCode.discountSn = (discountCode.discountSn == null ? null : discountCode.discountSn.toUpperCase());
         discountCode.create();
     
         index();
