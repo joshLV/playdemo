@@ -62,8 +62,6 @@ PUT     /pointgoods_orders/{id}/sendGoods                  OperatePointGoodsOrde
 GET     /pointgoods_order_excel                            OperatePointGoodsOrders.orderExcelOut
 
 
-
-
 GET     /shops                                  OperateShops.index
 GET     /shops/new                              OperateShops.add
 POST    /shops                                  OperateShops.create
@@ -193,8 +191,17 @@ GET     /questions                              OperateQuestions.index
 DELETE  /questions/{id}                         OperateQuestions.delete
 GET     /questions/{id}/edit                    OperateQuestions.edit
 POST    /questions/{id}                         OperateQuestions.update
-PUT     /questions/{id}/hide                  OperateQuestions.hide
-PUT     /questions/{id}/show                OperateQuestions.show
+PUT     /questions/{id}/hide                    OperateQuestions.hide
+PUT     /questions/{id}/show                    OperateQuestions.show
+
+#折扣券管理
+GET     /discountcode                              OperateDiscountCodes.index
+POST    /discountcode                              OperateDiscountCodes.create
+DELETE  /discountcode/{id}                         OperateDiscountCodes.delete
+GET     /discountcode/{id}/edit                    OperateDiscountCodes.edit
+PUT     /discountcode/{id}                         OperateDiscountCodes.update
+GET     /discountcode/{id}/show                    OperateDiscountCodes.show
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

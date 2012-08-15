@@ -410,3 +410,14 @@ userInfo.position4=高层管理者
 userInfo.position5=私营老板/个体户
 userInfo.positionnull=
 userInfo.position6=其他
+
+
+#折扣券管理
+discountCode.title=折扣标题
+discountCode.discountSn=折扣码
+discountCode.goods.id=折扣商品ID
+discountCode.discountAmount=折扣金额
+discountCode.discountPercent=折扣比率
+discountCode.dateTimeScope=折扣使用时间
+
+# END

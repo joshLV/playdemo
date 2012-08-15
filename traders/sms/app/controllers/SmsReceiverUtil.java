@@ -130,7 +130,7 @@ public class SmsReceiverUtil {
                 sendSmsToConsumer("【券市场】券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：400-6262-166",
                         mobile, code);
             } else {
-                sendSmsToConsumer("【券市场】店员工号无效，请核实工号是否正确!如有疑问请致电：400-6262-166", mobile, code);
+                sendSmsToConsumer("【券市场】券号无法验证，请确认是否使用您购买时的手机号发送验证短信。如有疑问请致电：4006262166", mobile, code);
             }
             return ("Not Found the coupon");
 

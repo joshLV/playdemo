@@ -1,0 +1,17 @@
+#{layout_operate.textField name:'discountCode.title', value:discountCode?.title, required:true/}
+#{layout_operate.textField name:'discountCode.discountSn', value:discountCode?.discountSn, required:true/}
+
+#{layout_operate.textField name:'discountCode.goods.id', value:discountCode?.goods?.id, note:'如不填则为整单折扣' /}
+
+#{layout_operate.textField name:'discountCode.discountAmount', value:discountCode?.discountAmount, note:'优先使用此项' /}
+#{layout_operate.textField name:'discountCode.discountPercent', value:discountCode?.discountPercent, note:'如没有填写折扣金额，则使用折扣比率；如填写数字0.1，则减去 金额x0.1 的费用' /}
+
+#{layout_operate.dateTimeScopeField name:'discountCode.dateTimeScope', begin:'discountCode.beginAt',end:'discountCode.endAt',
+    beginValue:discountCode?.beginAt?.format('yyyy-MM-dd HH:mm:ss'), endValue:discountCode?.endAt?.format('yyyy-MM-dd HH:mm:ss'), required:true/}
+    
+<div class="form-actions">
+    <input class="btn btn-primary" id="save" type="submit" value="保存"/>
+#{if "edit".equals(action)}
+    #{vx.cancelButton url:'/discountcode', class:'btn btn-primary'/}
+#{/if}
+</div>

@@ -1,0 +1,59 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'折扣券一览' /}
+#{include '/share/nav.html' /}
+
+<div class="body">
+    <legend>${title}</legend>
+    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateDiscountCodes.index()}" method="GET">
+        <table width="100%">
+            <tr>
+                <td width="30%">
+                   #{layout_operate.textField name:'sn', label:'折扣券号', value:discountSN /}
+                </td>
+                <td>
+                    <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <form class="form-horizontal" name="deletefrm" id="deletefrm">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+            <tr>
+                <th>&{'discountCode.title'}</th>
+                <th>&{'discountCode.discountSn'}</th>
+                <th>&{'discountCode.goods.id'}</th>
+                <th>&{'discountCode.discountAmount'}</th>
+                <th>&{'discountCode.discountPercent'}</th>
+                <th>&{'discountCode.dateTimeScope'}</th>
+                <th width="80">操 作</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            #{paginate.list items:discountCodePage, as:'discountCode'}
+            <tr>
+                <td align="center">${discountCode?.title}</td>
+                <td align="center">${discountCode?.discountSn}</td>
+                <td>${discountCode?.goods?.name}</td>
+                <td>${discountCode?.discountAmount?.formatCurrency('CNY')}</td>
+                <td>${discountCode?.discountPercent}</td>
+                <td>${discountCode?.beginAt?.format('yyyy-MM-dd HH:mm:ss')}
+                 至${discountCode?.endAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td><a href="@{OperateDiscountCodes.edit(discountCode?.id)}">修改</a>
+                        / #{vx.deleteLink action:"discountcode", id:discountCode?.id, name:discountCode.discountSn/}
+                        
+            </tr>
+            #{/paginate.list}
+            </tbody>
+        </table>
+    </form>
+    #{if discountCodePage.pageNumber > 1}
+    <div class="pagination" align="center">
+        <ul>
+        #{paginate.controls items:discountCodePage /}
+        </ul>
+    </div>
+    #{/if}
+</div>
