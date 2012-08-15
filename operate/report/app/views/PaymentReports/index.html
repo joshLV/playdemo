@@ -124,8 +124,8 @@
                 kuaiqianAmount = report.get("快钱")?:new java.math.BigDecimal("0.00")
 
                 alipay = alipay.add(alipayAmount)
-                tenpay = alipay.add(tenpayAmount)
-                kuaiqian = alipay.add(kuaiqianAmount)
+                tenpay = tenpay.add(tenpayAmount)
+                kuaiqian = kuaiqian.add(kuaiqianAmount)
                 rdate = report.get("RowKey")
                 dateUrl = baseUri + "/orders?condition.status=PAID&condition.paidAtBegin=" + rdate + "&condition.paidAtEnd=" + rdate
             }%
