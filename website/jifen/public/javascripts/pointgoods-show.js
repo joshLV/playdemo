@@ -62,12 +62,23 @@ $(function () {
     });
 
     $("#link_buy_now").click(function () {
-        var limitNumber = '${goods.limitNumber}';
+        var limitNumber = Number($("input[id^='limit_']").val());
         var number = Number($("#number").val());
         if (limitNumber > 0 && number > limitNumber) {
             $(".error").html("<strong>只能购买" + limitNumber + "个</strong>").css('color', '#F55');
             return false;
         }
+        var user = $("input[id='loginName']").val();
+        if (user != "no"){
+            var totalPoints = Number($("input[id='totalPoints']").val());
+            var price = Number($("input[id^='pointPrice']").val())
+            var payAmount = number * price;
+            if (payAmount > totalPoints){
+                $(".error").html("<strong>您没有足够的积分兑换</strong>").css('color', '#F55');
+                return false;
+            }
+        }
+
 
         $("#order_create_form").submit();
         return false;

@@ -3,6 +3,24 @@ validation.newPassword.maxSize=密码不能大于20位！
 validation.loginName=对不起，该邮箱已经存在!
 user.newPassword=密码
 
+play-paginate.first=&laquo;&nbsp;首页
+play-paginate.prev=&lsaquo;&nbsp;上一页
+play-paginate.next=下一页&nbsp;&rsaquo;
+play-paginate.last=尾页&nbsp;&raquo;
+
+validation.email=邮箱格式不对！
+validation.invalid=无效的%s!
+validation.required=请输入%s!
+validation.minSize=%s的长度至少%d位!
+validation.maxSize=%s的长度不能超过%d!
+validation.match=无效的%s!
+
+address=收货地址信息
+
+mobile=手机号
+user.loginName=邮箱
+user.mobile=手机
+
 goods.REAL=实物
 goods.ELECTRONIC=电子券
 goods.null=

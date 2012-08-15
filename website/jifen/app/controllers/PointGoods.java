@@ -6,6 +6,7 @@ import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import models.cms.CmsQuestion;
 import models.cms.GoodsType;
+import models.consumer.UserInfo;
 import models.sales.PointGoodsCondition;
 import models.sales.*;
 import org.apache.commons.lang.StringUtils;
@@ -61,11 +62,12 @@ public class PointGoods extends Controller {
      *
      * @param id 商品
      */
-    public static void show(final long id) {
+    public static void show(long id) {
         Http.Cookie idCookie = request.cookies.get("identity");
-        final String cookieValue = idCookie == null ? null : idCookie.value;
-        final Long userId = SecureCAS.getUser() == null ? null : SecureCAS
+        String cookieValue = idCookie == null ? null : idCookie.value;
+        Long userId = SecureCAS.getUser() == null ? null : SecureCAS
                 .getUser().getId();
+
 
         // 根据id 找对应商品
         models.sales.PointGoods pointGoods = models.sales.PointGoods.findById(id);
@@ -91,6 +93,13 @@ public class PointGoods extends Controller {
         response.setCookie("saw_goods_ids", sawGoodsIds);
 
         showGoods(pointGoods);
+
+        // 传递用户现有积分数
+        if (userId != null){
+            UserInfo userInfo = UserInfo.findById(userId);
+            renderArgs.put("totalPoints",userInfo.totalPoints);
+        }
+
         /*
         List<CmsQuestion> questions = CacheHelper.getCache(CacheHelper
                 .getCacheKey(models.sales.PointGoods.CACHEKEY_BASEID + id,
@@ -103,9 +112,9 @@ public class PointGoods extends Controller {
                     }
                 }); */
 
-       List<CmsQuestion> questions = CmsQuestion.findOnGoodsShow(userId,cookieValue,id,GoodsType.POINTGOODS,0,10);
-
-       renderArgs.put("questions", questions);
+        List<CmsQuestion> questions = CmsQuestion.findOnGoodsShow(userId,cookieValue,id,GoodsType.POINTGOODS,0,10);
+        // 传递积分商品咨询问题
+        renderArgs.put("questions", questions);
 
         render();
     }

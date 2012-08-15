@@ -1,0 +1,59 @@
+#{extends 'main.html' /}
+#{set title:'一百券 - 确认兑换' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/y/jifen/flowstep.css', '/y/jifen/exchange.css'] /}
+#{/set}
+#{set 'moreScripts'}
+    #{asset.js src:['/y/payment.js'] /}
+#{/set}
+
+<script>
+    $(function(){
+        var cart = $('#cart'),
+                cartBox = $('#cart .cart-box');
+
+        cart.mouseover(function(){
+            cartBox.addClass('hover');
+        })
+                .mouseout(function(){
+                    cartBox.removeClass('hover');
+                });
+    });
+</script>
+
+
+<div id="content">
+    <ul class="flowstep step2">
+        <li class="done"><a href="">1. 核对订单信息</a></li>
+        <li class="done">2. 确认兑换</li>
+        <li>3. 兑换成功</li>
+    </ul>
+
+    <div class="exchange">
+        <h3>一百券积分礼品兑换</h3>
+        <div class="detail">
+            <div class="inner">
+                <div class="left">${pointGoods.name}  <em>${number}</em> 件 </div>
+                <div class="right">兑换积分：<em>${amount}</em>分</div>
+            </div>
+        </div>
+        <ul class="integral">
+            <li>你的账户：${user.loginName}</li>
+            <li>目前积分：<span>${userInfo.totalPoints}</span>分</li>
+            <li>兑换使用积分：<span>${amount}</span>分　　您的剩余积分：<span>${userInfo.totalPoints-amount}</span>分</li>
+        </ul>
+    </div>
+    #{form @PointGoodsPaymentInfo.create(), id:'order_create_form' }
+        <div class="exchange-button">
+            <!--a class="button" href="">确认兑换</a-->
+            <input class="button" type="submit">
+        </div>
+        <input type="hidden" name="goodsId" value="${gid}">
+        <input type="hidden" name="number" value="${number}">
+        <input type="hidden" name="mobile" value="${mobile}">
+        <input type="hidden" name="remark" value="${remark}">
+    #{/form}
+</div>
+
+
+

@@ -15,8 +15,13 @@ POST    /user-question                          PointGoodsUserQuestion.add
 GET     /more-questions                         PointGoodsUserQuestion.moreQuestions
 
 # 订单
-*     /orders                                   PointGoodsOrder.index
-POST  /orders/new                               PointGoodsOrder.create
+*       /orders                                 PointGoodsOrder.index
+
+# 确认兑换信息
+POST    /payment_info/index                     PointGoodsPaymentInfo.index
+POST    /payment_info/confirm                   PointGoodsPaymentInfo.create
+GET     /payment_info/{orderNumber}             PointGoodsPaymentInfo.success
+
 
 # 地址
 GET     /orders/addresses                       Addresses.index

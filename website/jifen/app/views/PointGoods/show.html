@@ -50,6 +50,19 @@
     });
 
 </script>
+<script>
+    $(function(){
+        var cart = $('#cart'),
+                cartBox = $('#cart .cart-box');
+
+        cart.mouseover(function(){
+            cartBox.addClass('hover');
+        })
+                .mouseout(function(){
+                    cartBox.removeClass('hover');
+                });
+    });
+</script>
 #{/set}
 
 <div id="content">
@@ -67,6 +80,7 @@
             <ul id="metaBox">
                 #{if params['isSupplier']== null || !params['isSupplier']}
                     <li>积 分 价：<span class="price">&{goods.pointPrice}</span>分</li>
+                    <input type="hidden" id="pointPrice" value="${goods.pointPrice}">
                 #{/if}
                 #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
                     <li>原　　价：
@@ -117,11 +131,17 @@
                 #{elseif goods.isExpired()}
                     <span>已过期</span>
                 #{/elseif}
-                #{elseif}
+                #{else}
                     <span>已下架</span>
-                #{/elseif}
+                #{/else}
             </div>
-
+            <input type="hidden" id="totalPoints" value="${totalPoints}">
+            #{if user != null}
+                <input type="hidden" id="loginName" value="${user.loginName}">
+            #{/if}
+            #{else}
+                <input type="hidden" id="loginName" value="no">
+            #{/else}
         #{/form}
         </div>
         <!-- #property -->

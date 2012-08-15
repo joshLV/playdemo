@@ -1,0 +1,44 @@
+#{extends 'main.html' /}
+#{set title:'一百券 - 兑换成功' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/y/jifen/flowstep.css', '/y/jifen/success.css'] /}
+#{/set}
+
+<script>
+    $(function(){
+        var cart = $('#cart'),
+                cartBox = $('#cart .cart-box');
+
+        cart.mouseover(function(){
+            cartBox.addClass('hover');
+        })
+                .mouseout(function(){
+                    cartBox.removeClass('hover');
+                });
+    });
+</script>
+
+<div id="content">
+    <ul class="flowstep step3">
+        <li class="done"><a href="">1. 核对订单信息</a></li>
+        <li class="done"><a href="">2. 确认兑换</a></li>
+        <li class="done">3. 兑换成功</li>
+    </ul>
+
+    <div class="success">
+        <h3>一百券积分兑换</h3>
+        <div class="congratulation"><img src="http://img.uhcdn.com/images/y/jifen/congratulation.png" /></div>
+        <div class="btn">
+            <a class="lookup" href="">查看兑换详情</a>
+            <a class="continue" href="">继续兑换</a>
+        </div>
+        <div class="note">
+            <i>注</i>：您还可以在 “ <a href="" target="_blank">我的一百券</a> > <a herf="" target="_blank">我的积分</a> > <a href="" target="_blank">积分兑换记录</a>” 查看积分商品兑换或发送情况。<br />
+            电子券商品，只要您末进行消费，且保持一百券订单有效，我们将提供随时退款的服务。<br />
+            我们的客服电话：400-6262-166  <br />
+            我们的客服邮件：uhuila@seewi.com.cn
+        </div>
+    </div>
+
+</div>
+

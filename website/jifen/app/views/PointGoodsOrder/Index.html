@@ -7,7 +7,19 @@
     #{asset.js src:['/y/order.js'] /}
 #{/set}
 <script src="@{'/public/javascripts/confirmorder.js'}" type="text/javascript" charset="UTF-8"></script>
+<script>
+    $(function(){
+        var cart = $('#cart'),
+                cartBox = $('#cart .cart-box');
 
+        cart.mouseover(function(){
+            cartBox.addClass('hover');
+        })
+                .mouseout(function(){
+                    cartBox.removeClass('hover');
+                });
+    });
+</script>
 
 <div id="content">
     <ul class="flowstep step1">
@@ -56,7 +68,6 @@
                         </td>
                     *{#{/if}}*
                     </tr>
-                    <input type="hidden" name="rGoodsId" value="${rGoods.id}" />
                     #{/list}
                     #{set i:0} #{/set}
                 <tbody>
@@ -65,7 +76,7 @@
         </div><!-- .order -->
     #{/if}
 
-    #{form @PointGoodsOrder.create(), id:'order_create_form' }
+    #{form @PointGoodsPaymentInfo.index(), id:'order_create_form' }
     #{if eGoodsList.size()>0}
         <div class="order">
             <div class="mobi">
@@ -107,7 +118,6 @@
                         <td>${number}</td>
                         <td valign="middle">${(eGoods.pointPrice)} 分 </td>
                     </tr>
-                    <input type="hidden" name="eGoodId" value="${eGoods.id}" />
                     #{/list}
                 <tbody>
             </table>
@@ -125,7 +135,8 @@
             </div><!-- .explain -->
             <div class="totalize">
                 商品共${rGoodsList.size()+eGoodsList.size()}件，总合计：<em>${totalAmount}</em>  分
-                <a class="confirm-order" id="confirmOrder">确认下单<b></b></a>
+                <!--a class="confirm-order" id="confirmOrder">确认下单<b></b></a-->
+                <input class="confirm-order" type="submit">
             </div><!-- .totalize -->
         </div>
     #{/if}
@@ -133,8 +144,16 @@
         对不起，您的购物车内没有商品
     #{/else}
 
-    <input type="hidden" name="items" id="items" value="${items}" />
-    <input type="hidden" id="addressId" />
+    <!--设置隐藏的标签，用来传递数据-->
+    #{if rGoodsList.size() > 0}
+        <input type="hidden" name="gid" value="${rGoods.id}" />
+    #{/if}
+    #{elseif eGoodsList.size() > 0 }
+        <input type="hidden" name="gid" value="${eGoods.id}" />
+    #{/elseif}
+    <input type="hidden" name="number" value="${number}" />
+    <input type="hidden" name="addressId" />
+
     #{/form}
 
 </div>
