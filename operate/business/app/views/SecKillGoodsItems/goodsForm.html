@@ -1,29 +1,32 @@
-#{set 'moreScripts'}
-    #{get 'moreScripts'/}
-#{/set}
+#{get 'moreScripts'/}
+<div class="control-group">
+    <label class="control-label">商品名称</label>
+    <div class="controls">  ${secKillGoods?.goods?.name}</div>
+</div>
+
+<div class="control-group">
+    <label class="control-label">商品原价</label>
+    <div class="controls">${secKillGoods?.goods?.originalPrice?:"0"}元</div>
+</div>
 #{layout_operate.textField name:'secKillGoodsItem.goodsTitle', value:secKillGoodsItem?.goodsTitle, required:true/}
 #{layout_operate.textField name:'secKillGoodsItem.salePrice', value:secKillGoodsItem?.salePrice?:"0", note:'元', required:true/}
 #{layout_operate.textField name:'secKillGoodsItem.baseSale', value:secKillGoodsItem?.baseSale, note:'个', required:true/}
 #{layout_operate.textField name:'secKillGoodsItem.saleCount', value:secKillGoodsItem?.saleCount, note:'个'/}
 #{layout_operate.textField name:'secKillGoodsItem.virtualSale', value:secKillGoodsItem?.virtualSale, note:'个'/}
+#{layout_operate.textField name:'secKillGoodsItem.virtualInventory', value:secKillGoodsItem?.virtualInventory, note:'个'/}
 #{layout_operate.dateTimeScopeField name:'secKillGoodsItem.secKillAt', begin:'secKillGoodsItem.secKillBeginAt',end:'secKillGoodsItem.secKillEndAt',
 beginValue:secKillGoodsItem?.secKillBeginAt?.format('yyyy-MM-dd HH:mm:ss'), endValue:secKillGoodsItem?.secKillEndAt?.format('yyyy-MM-dd HH:mm:ss'), required:true/}
 <div class="form-actions">
     <input class="btn btn-primary" id="save" type="submit" value="保存"
            #{if "edit".equals(action) && secKillGoodsItem?.status == models.sales.SecKillGoodsStatus.ONSALE}disabled #{/if}/>
     <input class="btn btn-primary" id="onsale" type="submit" value="保存并上架"/>
-*{#{if "edit".equals(action)}}*
-    *{<input class="btn btn-primary" id="preview" type="submit" value="预览"/>}*
-*{#{/if}}*
 #{if "edit".equals(action)}
 %{
-    id = secKillGoodsItem.secKillGoods.id;
-    url="/seckill_goods/"+id+"/item";
+    url="/seckill_goods/"+seckillId+"/item";
     }%
     #{vx.cancelButton url:url, class:'btn btn-primary'/}
 #{/if}
-    <input type="hidden" id="status" name="secKillGoodsItem.status"
-           value="${secKillGoodsItem?.getStatus()?:'OFFSALE'}"/>
+    <input type="hidden" id="status" name="secKillGoodsItem.status"/>
 </div>
 <script type="text/javascript">
     $(function () {

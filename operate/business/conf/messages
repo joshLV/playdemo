@@ -74,12 +74,13 @@ secKillGoods.goods.id=商品ID
 secKillGoods.salePrice=秒杀价
 secKillGoods.imagePath=图片
 secKillGoods.prompt=温馨提示
-secKillGoods.limitNumber=限购数量
+secKillGoods.personLimitNumber=帐号限购数量
+secKillGoods.goods.originalPrice=原价
 
 secKillGoodsItem.null=
 secKillGoodsItem.ONSALE=已上架
 secKillGoodsItem.OFFSALE=已下架
-secKillGoodsItem.goodsTitle=商品标题
+secKillGoodsItem.goodsTitle=秒杀活动标题
 secKillGoodsItem.salePrice=秒杀价
 secKillGoodsItem.status=状态
 secKillGoodsItem.saleCount=售出数量
@@ -88,7 +89,7 @@ secKillGoodsItem.virtualSale=虚拟售出数量
 secKillGoodsItem.secKillAt=秒杀时间
 secKillGoodsItem.secKillBeginAt=秒杀开始时间
 secKillGoodsItem.secKillEndAt=秒杀结束时间
-
+secKillGoodsItem.virtualInventory=虚拟库存
 pointGoods.ONSALE=已上架
 pointGoods.OFFSALE=已下架
 pointGoods.APPLY=申请上架

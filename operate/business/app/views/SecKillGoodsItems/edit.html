@@ -9,6 +9,7 @@
 <div class="body">
 #{form @SecKillGoodsItems.update(secKillGoodsItem?.id,seckillId), id:'form',enctype:'multipart/form-data',
 class:"form-horizontal", method:'PUT' }
+     <input type="hidden" name="id" value="${id}">
     <legend>${title}</legend>
     #{set action:"edit"/}
     #{include '/SecKillGoodsItems/goodsForm.html'/}

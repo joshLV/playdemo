@@ -1,5 +1,5 @@
 #{extends 'layout_operate/layout.html' /}
-#{set title:'秒杀明细一览' /}
+#{set title:'秒杀活动明细一览' /}
 #{include '/share/nav.html' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/goods.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -33,10 +33,9 @@
           method="GET">
         <table width="100%">
             <tr>
-                <td width="30%">秒杀活动名称：<input type="text" name="condition.goodsTitle" class="input-medium"
-                                              value="${condition?.goodsTitle}"/>
-
-
+                <td width="30%">
+                    秒杀活动名称：<input type="text" name="condition.goodsTitle" class="input-medium"
+                                  value="${condition?.goodsTitle}"/>
                     状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：
                 #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
                     #{option ""}不限#{/option}
@@ -54,6 +53,9 @@
             <button class="btn btn-primary" type="submit">添加明细</button>
         </div>
     </form>
+    <div style="padding-bottom: 15px;">
+       以下是商品：<strong style="color: #942E8F">${secKillGoods?.goods?.name} </strong> 的秒杀活动列表
+    </div>
 #{vx.tab name:'secKillGoodsItem',enumItems: [models.sales.SecKillGoodsStatus.ONSALE,models.sales.SecKillGoodsStatus.OFFSALE],
 select:'condition_status',value:condition?.status/}
     <table class="table table-striped table-bordered table-condensed">

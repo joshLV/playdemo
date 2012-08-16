@@ -111,6 +111,7 @@ public class SecKillGoodsItem extends Model {
         dbItem.secKillEndAt = secKillGoodsItem.secKillEndAt;
         dbItem.virtualSale = secKillGoodsItem.virtualSale;
         dbItem.status = secKillGoodsItem.status;
+        dbItem.virtualInventory = secKillGoodsItem.virtualInventory;
         dbItem.save();
     }
 

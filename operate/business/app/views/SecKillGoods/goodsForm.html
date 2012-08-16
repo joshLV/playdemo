@@ -1,10 +1,7 @@
-#{set 'moreScripts'}
-    #{get 'moreScripts'/}
-#{/set}
 #{layout_operate.textField name:'secKillGoods.goods.id', value:secKillGoods?.goods?.id/}
 <div class="control-group" id="goodsName" style="padding-left:158px;color: #ff0000">${goodsName}
 </div>
-#{layout_operate.textField name:'secKillGoods.limitNumber', value:secKillGoods?.limitNumber, note:'个', required:true/}
+#{layout_operate.textField name:'secKillGoods.personLimitNumber', value:secKillGoods?.personLimitNumber, note:'个', required:true/}
 
 #{if "add".equals(action)}
     #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)', required:true/}
@@ -23,9 +20,9 @@
 
 <div class="form-actions">
     <input class="btn btn-primary" id="save" type="button" value="保存">
-#{if "edit".equals(action)}
-    <input class="btn btn-primary" id="preview" type="submit" value="预览"/>
-#{/if}
+*{#{if "edit".equals(action)}}*
+    *{<input class="btn btn-primary" id="preview" type="submit" value="预览"/>}*
+*{#{/if}}*
 #{if "edit".equals(action)}
     #{vx.cancelButton url:'/seckill_goods', class:'btn btn-primary'/}
 #{/if}

@@ -41,8 +41,8 @@ public class SecKillGoods extends Model {
      * 限购数量
      */
     @Required
-    @Column(name = "limit_number")
-    public Integer limitNumber = 0;
+    @Column(name = "person_limit_number")
+    public Integer personLimitNumber = 0;
 
     /**
      * 创建时间
@@ -137,7 +137,7 @@ public class SecKillGoods extends Model {
 
     public static void update(Long id, SecKillGoods secKillGoods) {
         SecKillGoods dbSecKillGoods = SecKillGoods.findById(id);
-        dbSecKillGoods.limitNumber = secKillGoods.limitNumber;
+        dbSecKillGoods.personLimitNumber = secKillGoods.personLimitNumber;
         if (secKillGoods.imagePath != null)
             dbSecKillGoods.imagePath = secKillGoods.imagePath;
         dbSecKillGoods.prompt = secKillGoods.prompt;

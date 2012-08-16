@@ -38,42 +38,41 @@ public class SecKillGoodsItems extends Controller {
         JPAExtPaginator<SecKillGoodsItem> secKillGoodsItems = SecKillGoodsItem.findByCondition(condition, seckillId, pageNumber,
                 PAGE_SIZE);
         secKillGoodsItems.setBoundaryControlsEnabled(true);
-
-        render(secKillGoodsItems, seckillId, condition);
+        models.sales.SecKillGoods secKillGoods = models.sales.SecKillGoods.findById(seckillId);
+        render(secKillGoodsItems, secKillGoods, seckillId, condition);
     }
 
     public static void add(Long seckillId) {
-        render(seckillId);
+        models.sales.SecKillGoods secKillGoods = models.sales.SecKillGoods.findById(seckillId);
+        render(seckillId, secKillGoods);
     }
 
     public static void create(Long seckillId, @Valid SecKillGoodsItem secKillGoodsItem) {
         if (Validation.hasErrors()) {
-            render("SecKillGoodsItems/add.html", seckillId);
+            models.sales.SecKillGoods secKillGoods = models.sales.SecKillGoods.findById(seckillId);
+            render("SecKillGoodsItems/add.html", secKillGoodsItem, secKillGoods, seckillId);
         }
 
         models.sales.SecKillGoods goods = models.sales.SecKillGoods.findById(seckillId);
         secKillGoodsItem.secKillGoods = goods;
 
-        secKillGoodsItem.status = SecKillGoodsStatus.OFFSALE;
         secKillGoodsItem.save();
 
         index(seckillId, null);
     }
 
     public static void edit(Long seckillId, Long id) {
-        System.out.println(seckillId);
         SecKillGoodsItem secKillGoodsItem
                 = SecKillGoodsItem.findById(id);
-
-        render(secKillGoodsItem, seckillId);
+        models.sales.SecKillGoods secKillGoods = models.sales.SecKillGoods.findById(seckillId);
+        render(secKillGoodsItem, seckillId, secKillGoods);
     }
 
     public static void update(Long id, Long seckillId, @Valid SecKillGoodsItem secKillGoodsItem) {
-
         checkExpireAt(secKillGoodsItem);
-
         if (Validation.hasErrors()) {
-            render("SecKillGoodsItems/edit.html", secKillGoodsItem, id);
+            models.sales.SecKillGoods secKillGoods = models.sales.SecKillGoods.findById(seckillId);
+            render("SecKillGoodsItems/edit.html", secKillGoodsItem, secKillGoods, id, seckillId);
         }
 
         SecKillGoodsItem.update(id, secKillGoodsItem);
