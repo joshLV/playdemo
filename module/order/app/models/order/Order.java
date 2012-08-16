@@ -339,7 +339,7 @@ public class Order extends Model {
             return BigDecimal.ZERO;
         }
         if (discountCode.discountAmount != null && discountCode.discountAmount.compareTo(BigDecimal.ZERO) > 0) {
-            return discountCode.discountAmount;
+            return discountCode.discountAmount.multiply(new BigDecimal(number));
         }
         if (discountCode.discountPercent != null && discountCode.discountPercent.compareTo(BigDecimal.ZERO) > 0 && discountCode.discountPercent.compareTo(BigDecimal.ONE) < 0) {
             BigDecimal amount = g.salePrice.multiply(new BigDecimal(number.toString()));
