@@ -23,6 +23,7 @@ import com.uhuila.common.util.DateUtil;
  */
 public class TelephoneVerify extends Controller {
     public static final String APP_KEY = Play.configuration.getProperty("tel_verify.app_key", "exos8BHw");
+    public static final String COUPON_DATE = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * 电话验证
@@ -79,6 +80,11 @@ public class TelephoneVerify extends Controller {
             renderText("7");//对不起，未找到此券
         }
 
+        if (!ecoupon.goods.supplierId.equals(supplierUser.supplier.getId())){
+            Logger.info("telephone verify failed: coupon not found");
+            renderText("7");//对不起，未找到此券  商户错误
+        }
+
         if (ecoupon.status == ECouponStatus.CONSUMED) {
             Logger.info("telephone verify failed: coupon consumed");
             renderText("10");//该券无法重复消费。消费时间为
@@ -86,7 +92,7 @@ public class TelephoneVerify extends Controller {
             Logger.info("telephone verify failed: coupon status invalid. %s", ecoupon.status);
             renderText("11");//对不起，该券无法消费
         } else if (ecoupon.expireAt.before(new Date())) {
-            Logger.info("telephone verify failed: coupon expired");
+            Logger.info("telephone verify failed: coupon expired. expiredAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.expireAt));
             renderText("12");//对不起，该券已过期
         } else {
             ecoupon.consumeAndPayCommission(supplierUser.shop.id, null, supplierUser, VerifyCouponType.CLERK_MESSAGE);
