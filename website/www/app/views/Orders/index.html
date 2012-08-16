@@ -7,14 +7,24 @@
     #{asset.js src:['/y/order.js'] /}
 <script type="text/javascript">
 $(function(){
-    $('#discount-btn').click(function(){
+    function reloadDiscount() {
         var val = $.trim($('#discount_sn').val());
         if (val) {
             window.location.href = '/orders?${querystring.raw()}&discountSN='+ val;
         } else {
             $('.discount-error').html('优惠码为空，请输入优惠码');
         }
+    }
+    $('#discount-btn').click(function(){
+        reloadDiscount();
     });
+    $('#discount_sn').keydown(function(e){
+        if (e.keyCode == 13) {
+            reloadDiscount();
+            return false;
+        }
+    });
+    
 });
 </script>    
 #{/set}
