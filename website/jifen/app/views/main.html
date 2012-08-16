@@ -13,7 +13,7 @@
 <body>
 <div id="topbar">
     <div id="topbar-bd">
-        <ul>
+        <ul class="site-nav">
         #{if cas?.isLogin}
             <li><a class="login" target="_blank" href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}" id="login_name">${cas.loginName}</a></li>
             <li><a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}">我的一百券</a></li>
@@ -24,9 +24,22 @@
             <!-- <li><a class="quick" href="" target="_blank">快捷登录</a></li> -->
         #{/else}
             <li><a id="favorite" class="favorite" href="">收藏一百券</a></li>
-            <li class="last"><a class="follow" id="weibo" href="http://weibo.com/uhuila1" target="_blank">关注我们</a></li>
+            <li class="last"><iframe width="63" height="24" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0" scrolling="no" border="0" src="http://widget.weibo.com/relationship/followbutton.php?language=zh_cn&width=63&height=24&uid=1642909335&style=1&btn=red&dpc=1"></iframe></li>
         </ul>
-        <div class="hotline">客服热线：<strong>400-6262-166</strong></div>
+        <div class="share">
+        <!-- Baidu Button BEGIN -->
+            <div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare">
+                <span class="bds_more">分享到：</span>
+                <a class="bds_tsina"></a>
+                <a class="bds_qzone"></a>
+                <a class="bds_tqq"></a>
+                <a class="bds_renren"></a>
+            </div>
+            <script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=763119" ></script>
+            <script type="text/javascript" id="bdshell_js"></script>
+            <script type="text/javascript">document.getElementById("bdshell_js").src = "http://share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();</script>
+        <!-- Baidu Button END -->
+        </div>
     </div>
 </div><!-- #topbar -->
 
@@ -65,7 +78,8 @@
         <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/about" target="_blank">关于我们</a> |
         <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/contact" target="_blank">联系我们</a> |
         <!--<a href="http://quanmx.com/" target="_blank">商户入驻</a> |-->
-        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/help" target="_blank">常见问题</a>
+        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/help" target="_blank">常见问题</a> |
+        <span class="">客服热线：400-6262-166</span>
     </div>
     <div class="copyright">
         Copyright © 2012 一百券YiBaiQuan.COM 版权所有 <span> 沪ICP备08114451号-4</span>
