@@ -18,6 +18,8 @@ import models.order.OrderDiscount;
 import models.order.OrderItems;
 import models.sales.Goods;
 import models.sales.MaterialType;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
@@ -37,6 +39,19 @@ import controllers.modules.website.cas.SecureCAS;
 @With({SecureCAS.class, WebsiteInjector.class})
 public class Orders extends Controller {
     public static String WWW_URL = Play.configuration.getProperty("application.baseUrl", "");
+    
+    private static String getQueryStringWithoutDdiscountSN() {
+        List<String> kvs = new ArrayList<>();
+        for (String key : request.params.all().keySet()) {
+            if (!"discountSN".equals(key)) {
+                String[] values = request.params.getAll(key);
+                for (String value : values) {
+                    kvs.add(key + "=" + value);
+                }
+            }
+        }
+        return StringUtils.join(kvs, "&");
+    }
 
     /**
      * 预览订单.
@@ -61,19 +76,29 @@ public class Orders extends Controller {
             items += goodsId + "-" + number + ",";
         }
         
+
         DiscountCode discountCode = getDiscountCode();
+        
         
         showOrder(items, discountCode);
 
         User user = SecureCAS.getUser();
         List<String> orderItems_mobiles = OrderItems.getMobiles(user);
 
+        //用于重新刷新整个页面
+        renderArgs.put("querystring", getQueryStringWithoutDdiscountSN());
+        
         render(user, orderItems_mobiles);
     }
 
     protected static DiscountCode getDiscountCode() {
         // 折扣券
         String discountSN = request.params.get("discountSN");
+        if (discountSN == null) {
+            renderArgs.put("discountErrorInfo", "");
+        } else {
+            renderArgs.put("discountErrorInfo", "无效的优惠码，请重新输入");
+        }
         if (StringUtils.isEmpty(discountSN) && WebsiteInjector.getUserWebIdentification() != null) {
             // 访问使用的推荐码尝试作为折扣券号
             discountSN = WebsiteInjector.getUserWebIdentification().referCode;
@@ -101,12 +126,14 @@ public class Orders extends Controller {
         for (models.sales.Goods g : goods) {
 
             Integer number = itemsMap.get(g.getId());
+            Cart cart = new Cart(g, number);
+            cart.rebateValue = Order.getDiscountValueOfGoodsAmount(g, number, discountCode);
             if (g.materialType == models.sales.MaterialType.REAL) {
-                rCartList.add(new Cart(g, number));
-                rCartAmount = rCartAmount.add(Order.getDiscountGoodsAmount(g, number, discountCode));
+                rCartList.add(cart);
+                rCartAmount = rCartAmount.add(cart.getLineValue());
             } else if (g.materialType == models.sales.MaterialType.ELECTRONIC) {
-                eCartList.add(new Cart(g, number));
-                eCartAmount = eCartAmount.add(Order.getDiscountGoodsAmount(g, number, discountCode));
+                eCartList.add(cart);
+                eCartAmount = eCartAmount.add(cart.getLineValue());
             }
         }
 
@@ -124,13 +151,17 @@ public class Orders extends Controller {
         }
         
         // 整单折扣，注意只折扣电子券产品，实物券不参与折扣.
-        eCartAmount = Order.getDiscountTotalECartAmount(eCartAmount, discountCode);
+        BigDecimal eCartRebate = Order.getDiscountValueOfTotalECartAmount(eCartAmount, discountCode);
+
         
-        BigDecimal totalAmount = eCartAmount.add(rCartAmount);
+        BigDecimal totalAmount = eCartAmount.add(rCartAmount);   // 总金额
+        BigDecimal needPay = totalAmount.subtract(eCartRebate);  // 应付金额
         BigDecimal goodsAmount = rCartList.size() == 0 ? eCartAmount : totalAmount.subtract(Order.FREIGHT);
 
         renderArgs.put("goodsAmount", goodsAmount);
         renderArgs.put("totalAmount", totalAmount);
+        renderArgs.put("needPay", needPay);
+        renderArgs.put("eCartRebate", eCartRebate);
         renderArgs.put("addressList", addressList);
         renderArgs.put("address", defaultAddress);
         renderArgs.put("eCartList", eCartList);
@@ -248,9 +279,9 @@ public class Orders extends Controller {
 
             // 整单折扣，注意只折扣电子券产品，实物券不参与折扣.
             if (discountCode != null && discountCode.goods == null) {
-                eCartAmount = Order.getDiscountTotalECartAmount(eCartAmount, discountCode);
+                order.rebateValue = Order.getDiscountValueOfTotalECartAmount(eCartAmount, discountCode);
                 order.amount = eCartAmount.add(rCartAmount);
-                order.needPay = order.amount;
+                order.needPay = order.amount.subtract(order.rebateValue);
             
                 OrderDiscount orderDiscount = new OrderDiscount();
                 orderDiscount.discountCode = discountCode;

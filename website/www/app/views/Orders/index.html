@@ -5,6 +5,18 @@
 #{/set}
 #{set 'moreScripts'}
     #{asset.js src:['/y/order.js'] /}
+<script type="text/javascript">
+$(function(){
+    $('#discount-btn').click(function(){
+        var val = $.trim($('#discount_sn').val());
+        if (val) {
+            window.location.href = '/orders?${querystring.raw()}&discountSN='+ val;
+        } else {
+            $('.discount-error').html('优惠码为空，请输入优惠码');
+        }
+    });
+});
+</script>    
 #{/set}
 
 <div id="content">
@@ -15,24 +27,6 @@
         <li>4. 成功提交订单</li>
     </ul>
     
-    <div class="order">
-    
-        <div class="addr1">
-            <form action="/reorders?${querystring}" method="POST" accept-charset="utf-8" enctype="application/x-www-form-urlencoded" >
-                <div class="receive-mobi1">请输入折扣码：<input type="text" name="discountSN" value="${discountSN}"/>      
-                   <input type="submit"/>
-                </div>
-                #{if discountCode != null }
-                <dl><dt>折扣码：${discountCode.discountSn}</dt>
-                    <dd class="history-mobi">
-                        <span class="mobi-item">名称：${discountCode?.title}</span>
-                    </dd>
-                </dl>
-               #{/if}              
-            </form>
-        </div>
-    </div>
-
 #{if rCartList.size()>0}
     <div class="order">
         <div class="addr" id="J_addr">
@@ -104,11 +98,11 @@
                     <th align="left">商品</th>
                     <th width="80">单价（元）</th>
                     <th width="50">数量</th>
+                    <th width="80">折扣（元）</th>
                     <th width="80">小计</th>
                 </tr>
             </thead>
             <tbody>
-                #{set j:0/}
                 #{list eCartList, as:'eCart'}
                 <tr>
                     <td style="text-align:left"><a href="/g/${eCart.goods.id}">${eCart.goods.name}</a>
@@ -118,14 +112,15 @@
                     </td>
                     <td>${eCart.goods.salePrice.formatCurrency('CNY').raw()}</td>
                     <td>${eCart.number}</td>
-                    *{#{if (++j) == 1 }}*
-                    <td valign="middle">${(eCart.number*eCart.goods.salePrice).formatCurrency('CNY').raw()}</td>
-                    *{#{/if}}*
+                    <td style="color:red">#{if eCart.rebateValue?.compareTo(BigDecimal.ZERO) > 0}${eCart.rebateValue?.negate()?.formatCurrency('CNY')}#{/if}</td>
+                    <td valign="middle">${eCart.getLineValue().formatCurrency('CNY').raw()}</td>
                 </tr>
                 #{/list}
             <tbody>
         </table>
-        <div class="subtotal" style="border-top: 1px solid #7A7F89">商品共${eCartList?.size()}件，合计：<em>${eCartAmount.formatCurrency('CNY').raw()}</em>元</div>
+        <div class="subtotal" style="border-top: 1px solid #7A7F89">       
+            商品共${eCartList?.size()}件，合计：<em>${eCartAmount.formatCurrency('CNY').raw()}</em>元
+        </div>
     </div><!-- .order -->
      #{/if}
     #{if rCartList.size() > 0 || eCartList.size() > 0}
@@ -137,9 +132,22 @@
                 <textarea class="explain-text" id="J_explainText" name="remark"></textarea>
             </div>
         </div><!-- .explain -->
-        <div class="totalize">
-            商品共${rCartList.size()+eCartList.size()}件，总合计：<em>${totalAmount.formatCurrency('CNY').raw()}</em>元
-            <button class="confirm-order" type="submit">确认下单<b></b></button>
+        <div class="bottom-right">
+            <div class="discount">
+                <div class="discount-inner">请输入优惠码：<input type="text" id="discount_sn" name="newDiscountSN" value="${discountSN}"/><button id="discount-btn" class="discount-btn" type="button">使 用</button></div>
+                #{if discountCode != null }
+                  <div class="discount-info">${discountCode?.title}</div>
+                #{/if}
+                #{else}                
+                  <div class="discount-error">${discountErrorInfo}</div>
+                #{/else}                
+            </div>
+            <div class="totalize">
+                商品共${rCartList.size()+eCartList.size()}件，总合计：<span style="color:red">${totalAmount.formatCurrency('CNY').raw()}</span>元；
+                #{if eCartRebate.compareTo(BigDecimal.ZERO) > 0}折扣：<span style="color:red">${eCartRebate?.formatCurrency('CNY')}</span>元；#{/if}
+                实际应付：<em>${needPay?.formatCurrency('CNY')}</em>元
+                <button class="confirm-order" type="submit">确认下单<b></b></button>
+            </div>
         </div><!-- .totalize -->
     </div>
     #{/if}

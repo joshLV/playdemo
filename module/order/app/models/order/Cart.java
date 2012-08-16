@@ -1,6 +1,18 @@
 package models.order;
 
-import cache.CacheHelper;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.sales.Goods;
@@ -8,9 +20,7 @@ import models.sales.GoodsStatus;
 import models.sales.MaterialType;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
-
-import javax.persistence.*;
-import java.util.*;
+import cache.CacheHelper;
 
 @Entity
 @Table(name = "cart")
@@ -38,6 +48,17 @@ public class Cart extends Model {
     @Column(name = "updated_at")
     public Date updatedAt;
 
+    @Transient
+    public BigDecimal rebateValue;
+
+    @Transient
+    public BigDecimal getLineValue() {
+        if (rebateValue == null) {
+            rebateValue = BigDecimal.ZERO;
+        }
+        return goods.salePrice.multiply(new BigDecimal(number)).subtract(rebateValue);
+    }
+    
     public Cart(Goods goods, long number) {
         this.goods = goods;
         this.number = number;

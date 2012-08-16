@@ -30,6 +30,25 @@ public class OrderItems extends Model {
 
     @Column(name = "sale_price")
     public BigDecimal salePrice;        //最终成交价,对于普通分销商来说，此成交价与以上分销商价(resalerPrice)相同；
+    
+    /**
+     * 使用折扣码后折扣的费用.
+     * 
+     */
+    @Column(name="rebate_value")
+    public BigDecimal rebateValue;
+    
+    /**
+     * 当前订单项总费用：
+     * lineValue = salePrice*buyNumber - rebateValue
+     */
+    @Transient
+    public BigDecimal getLineValue() {
+        if (rebateValue == null) {
+            rebateValue = BigDecimal.ZERO;
+        }
+        return salePrice.multiply(new BigDecimal(buyNumber)).subtract(rebateValue);
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = true)

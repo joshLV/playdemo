@@ -89,8 +89,18 @@ public class Order extends Model {
     @Column(name = "account_pay")
     public BigDecimal accountPay;   //使用余额付款金额
 
+    /**
+     * 使用折扣码后折扣的费用.
+     */
+    @Column(name="rebate_value")
+    public BigDecimal rebateValue;
+    
+    /**
+     * 使用网银付款金额
+     * discountPay = needPay - 余额支付
+     */
     @Column(name = "discount_pay")
-    public BigDecimal discountPay;  //使用网银付款金额
+    public BigDecimal discountPay;
 
     @Column(name = "promotion_balance_pay")
     public BigDecimal promotionBalancePay;  //使用活动金余额付款金额
@@ -98,8 +108,12 @@ public class Order extends Model {
     @Column(name = "refunded_promotion_amount")
     public BigDecimal refundedPromotionAmount;  //此订单已退款的用活动金支付的金额
 
+    /**
+     * 订单应付金额
+     * needPay = amount - rebateValue.
+     */
     @Column(name = "need_pay")
-    public BigDecimal needPay;      //订单应付金额
+    public BigDecimal needPay;
 
     @Column(name = "freight")
     public BigDecimal freight;      //运费
@@ -373,15 +387,16 @@ public class Order extends Model {
     }
     public OrderItems addOrderItem(Goods goods, Integer number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice, DiscountCode discountCode)
             throws NotEnoughInventoryException {
-        OrderItems orderItems = null;
+        OrderItems orderItem = null;
         if (number > 0 && goods != null) {
             checkInventory(goods, number);
-            orderItems = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice);
-            this.orderItems.add(orderItems);
-            this.amount = this.amount.add(getDiscountGoodsAmount(goods, number, discountCode)); //计算折扣价
+            orderItem = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice);
+            orderItem.rebateValue = getDiscountValueOfGoodsAmount(goods, number, discountCode);
+            this.orderItems.add(orderItem);
+            this.amount = this.amount.add(orderItem.getLineValue()); //计算折扣价
             this.needPay = this.amount;
         }
-        return orderItems;
+        return orderItem;
     }
 
     public void addFreight() {

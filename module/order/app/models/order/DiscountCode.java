@@ -70,6 +70,11 @@ public class DiscountCode extends Model {
 	@Column(name="created_at")
 	public Date createdAt;
 	
+	/**
+	 * 备注
+	 */
+	public String description;
+	
     /**
      * 逻辑删除,0:未删除，1:已删除
      */
@@ -85,6 +90,7 @@ public class DiscountCode extends Model {
         discountCode.discountPercent = discountCodeForm.discountPercent;
         discountCode.beginAt = discountCodeForm.beginAt;
         discountCode.endAt = discountCodeForm.endAt;
+        discountCode.description = discountCodeForm.description;
         discountCode.save();
     }
 
