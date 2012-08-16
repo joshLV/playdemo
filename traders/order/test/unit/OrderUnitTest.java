@@ -91,7 +91,7 @@ public class OrderUnitTest extends UnitTest {
     }
 
     @Test
-    public void testOrdersNumber() {
+    public void testOrdersNumber() throws Exception {
         String mobile = "1310000000";
         Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
         Address address = new Address();
@@ -101,21 +101,20 @@ public class OrderUnitTest extends UnitTest {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
         BigDecimal resalePrice = new BigDecimal("10.2");
         boolean isOk = false;
+        Goods oldGoods = Goods.findById(goodsId);
+        int baseSale = oldGoods.baseSale.intValue();
+        int saleCount = oldGoods.saleCount;
+        Order order = Order.createConsumeOrder(userId, AccountType.CONSUMER);
+        order.addOrderItem((Goods) Goods.findById(goodsId), 20, mobile, oldGoods.salePrice, resalePrice);
+        order.createAndUpdateInventory();
+
+        Goods goods = Goods.findById(goodsId);
+        assertEquals(baseSale - 20, goods.baseSale.intValue());
+        assertEquals(saleCount + 20, goods.saleCount);
+
         try {
-            Goods oldGoods = Goods.findById(goodsId);
-            int baseSale = oldGoods.baseSale.intValue();
-            int saleCount = oldGoods.saleCount;
-            Order order = Order.createConsumeOrder(userId, AccountType.CONSUMER);
-            order.addOrderItem((Goods) Goods.findById(goodsId), 20L, mobile, oldGoods.salePrice, resalePrice);
-            order.createAndUpdateInventory();
-
-            Goods goods = Goods.findById(goodsId);
-            assertEquals(baseSale - 20, goods.baseSale.intValue());
-            assertEquals(saleCount + 20, goods.saleCount);
-
             //异常情况
-            order.addOrderItem((Goods) Goods.findById(goodsId), 200000L, mobile, goods.salePrice, resalePrice);
-
+            order.addOrderItem((Goods) Goods.findById(goodsId), 200000, mobile, goods.salePrice, resalePrice);
         } catch (NotEnoughInventoryException e) {
             isOk = true;
         }
