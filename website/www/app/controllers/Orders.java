@@ -18,8 +18,6 @@ import models.order.OrderDiscount;
 import models.order.OrderItems;
 import models.sales.Goods;
 import models.sales.MaterialType;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
@@ -153,9 +151,11 @@ public class Orders extends Controller {
         // 整单折扣，注意只折扣电子券产品，实物券不参与折扣.
         BigDecimal eCartRebate = Order.getDiscountValueOfTotalECartAmount(eCartAmount, discountCode);
 
-        
         BigDecimal totalAmount = eCartAmount.add(rCartAmount);   // 总金额
         BigDecimal needPay = totalAmount.subtract(eCartRebate);  // 应付金额
+        if (needPay.compareTo(BigDecimal.ZERO) <= 0) {
+            needPay = BigDecimal.ZERO;
+        }
         BigDecimal goodsAmount = rCartList.size() == 0 ? eCartAmount : totalAmount.subtract(Order.FREIGHT);
 
         renderArgs.put("goodsAmount", goodsAmount);
@@ -282,6 +282,9 @@ public class Orders extends Controller {
                 order.rebateValue = Order.getDiscountValueOfTotalECartAmount(eCartAmount, discountCode);
                 order.amount = eCartAmount.add(rCartAmount);
                 order.needPay = order.amount.subtract(order.rebateValue);
+                if (order.needPay.compareTo(BigDecimal.ZERO) <= 0) {
+                    order.needPay = BigDecimal.ZERO;
+                }
             
                 OrderDiscount orderDiscount = new OrderDiscount();
                 orderDiscount.discountCode = discountCode;

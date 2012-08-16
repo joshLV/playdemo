@@ -56,7 +56,11 @@ public class Cart extends Model {
         if (rebateValue == null) {
             rebateValue = BigDecimal.ZERO;
         }
-        return goods.salePrice.multiply(new BigDecimal(number)).subtract(rebateValue);
+        BigDecimal lineValue = goods.salePrice.multiply(new BigDecimal(number)).subtract(rebateValue);
+        if (lineValue.compareTo(BigDecimal.ZERO) <= 0) {
+            return BigDecimal.ZERO;
+        }
+        return lineValue;
     }
     
     public Cart(Goods goods, long number) {
