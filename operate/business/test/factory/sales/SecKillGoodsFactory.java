@@ -17,7 +17,7 @@ public class SecKillGoodsFactory extends ModelFactory<SecKillGoods> {
     public SecKillGoods define() {
         Goods goods = FactoryBoy.create(Goods.class);
         SecKillGoods secKillGoods = new SecKillGoods();
-        secKillGoods.limitNumber = 1;
+        secKillGoods.personLimitNumber= 1;
         secKillGoods.setPrompt("wowuroqwl");
         secKillGoods.goods = goods;
         secKillGoods.imagePath = "/a.jpg";

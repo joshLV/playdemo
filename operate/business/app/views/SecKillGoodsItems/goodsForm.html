@@ -11,9 +11,9 @@
 #{layout_operate.textField name:'secKillGoodsItem.goodsTitle', value:secKillGoodsItem?.goodsTitle, required:true/}
 #{layout_operate.textField name:'secKillGoodsItem.salePrice', value:secKillGoodsItem?.salePrice?:"0", note:'元', required:true/}
 #{layout_operate.textField name:'secKillGoodsItem.baseSale', value:secKillGoodsItem?.baseSale, note:'个', required:true/}
+#{layout_operate.textField name:'secKillGoodsItem.virtualInventory', value:secKillGoodsItem?.virtualInventory, note:'个'/}
 #{layout_operate.textField name:'secKillGoodsItem.saleCount', value:secKillGoodsItem?.saleCount, note:'个'/}
 #{layout_operate.textField name:'secKillGoodsItem.virtualSale', value:secKillGoodsItem?.virtualSale, note:'个'/}
-#{layout_operate.textField name:'secKillGoodsItem.virtualInventory', value:secKillGoodsItem?.virtualInventory, note:'个'/}
 #{layout_operate.dateTimeScopeField name:'secKillGoodsItem.secKillAt', begin:'secKillGoodsItem.secKillBeginAt',end:'secKillGoodsItem.secKillEndAt',
 beginValue:secKillGoodsItem?.secKillBeginAt?.format('yyyy-MM-dd HH:mm:ss'), endValue:secKillGoodsItem?.secKillEndAt?.format('yyyy-MM-dd HH:mm:ss'), required:true/}
 <div class="form-actions">

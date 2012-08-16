@@ -32,13 +32,13 @@ public class SecKillGoodsUnitTest extends UnitTest {
     public void testUpdateSecKillGoods() {
 
         secKillGoods = FactoryBoy.create(SecKillGoods.class);
-        secKillGoods.limitNumber = 2;
+        secKillGoods.personLimitNumber = 2;
         secKillGoods.goods = FactoryBoy.create(Goods.class);
 
         secKillGoods.save();
 
         SecKillGoods secKillGoods1 = SecKillGoods.findById(secKillGoods.id);
-        assertEquals(2, secKillGoods.limitNumber.intValue());
+        assertEquals(2, secKillGoods.personLimitNumber.intValue());
     }
 
 //    @Test

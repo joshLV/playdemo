@@ -53,7 +53,7 @@ public class SecKillGoods extends Controller {
 
 
     /**
-     * 展示添加商品页面
+     * 展示添加秒杀页面
      */
     @ActiveNavigation("seckill_goods_add")
     public static void add() {

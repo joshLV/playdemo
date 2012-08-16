@@ -119,6 +119,4 @@ public class SecKillGoodsItems extends Controller {
         goods.delete();
         index(seckillId, null);
     }
-
-
 }
