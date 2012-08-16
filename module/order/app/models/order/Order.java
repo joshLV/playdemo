@@ -535,15 +535,15 @@ public class Order extends Model {
     }
 
     public void payAndSendECoupon() {
-        paid();
-        sendECoupon();
-
+        if(paid()){
+            sendECoupon();
+        }
     }
 
     /**
      * 订单已支付，修改支付状态、时间，更改库存，发送电子券密码
      */
-    public void paid() {
+    public boolean paid() {
         if (this.status != OrderStatus.UNPAID) {
             throw new RuntimeException("can not pay order:" + this.getId() + " since it's already been processed");
         }
@@ -596,6 +596,7 @@ public class Order extends Model {
                 this.payRequestId = tradeBill.getId();
             }catch (RuntimeException e) {
                 Logger.error("", e);
+                return false;
                 //忽略，此时订单没有支付，但余额已经保存
             }
         }
@@ -603,6 +604,7 @@ public class Order extends Model {
         this.status = OrderStatus.PAID;
         this.paidAt = new Date();
         this.save();
+        return true;
     }
 
     /**
