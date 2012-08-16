@@ -58,11 +58,7 @@
                 #{if account.amount.compareTo(order.needPay) < 0}
                     剩余 <strong>${order.needPay.subtract(account.amount)}</strong> 元可选择其他付款方式付款。
                 #{/if}
-            </label>*{<br/>
-            <input type="checkbox" name="usePromotionBalance" id="use_promotion_balance" />
-            <label for="use_promotion_balance">
-                用活动金抵用
-            </label>}*
+            </label>
         </div>
         <div class="confirmpay">
             <button id="confirm-pay" class="confirm-pay" type="submit"style="display:${confirmPayDisplay}"></button>

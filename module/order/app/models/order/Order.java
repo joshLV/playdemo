@@ -1018,6 +1018,11 @@ public class Order extends Model {
         }
         order.accountPay = balancePaymentAmount;
         order.discountPay = ebankPaymentAmount;
+        //计算使用活动金
+        if(account.promotionAmount.compareTo(BigDecimal.ZERO) > 0) {
+            order.promotionBalancePay = order.accountPay.min(account.promotionAmount);
+            order.accountPay = order.accountPay.subtract(order.promotionBalancePay);
+        }
 
         //创建订单交易
         PaymentSource paymentSource = PaymentSource.findByCode(paymentSourceCode);
