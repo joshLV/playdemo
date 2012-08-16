@@ -99,6 +99,7 @@
                 <input class="short-input Wdate" type="text" name="condition.createdAtEnd" value="${condition.createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})"/>
                 <button class="search-btn" id="search"> 搜　索</button>
             </div>
+            <div style="color: #ff0000">标有*的券号只限抽奖，不可用于消费</div>
             <table class="order-tab">
                 <thead>
                     <tr class="col-name">
@@ -122,7 +123,7 @@
                 <tbody>
                     <tr class="sep-row"><td colspan="7"></td></tr>
                     <tr class="order-bd">
-                        <td height="30" align="center">${coupon?.eCouponSn}</td>
+                        <td height="30" align="center">#{if row?.goods?.isLottery}<a style="color: #ff0000" href="/orders/${coupon?.order?.orderNumber}">${coupon?.getMaskedEcouponSn()}</a>#{/if}#{else}${coupon?.eCouponSn}#{/else}</td>
                         <td>
                             <a class="goods-image" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${coupon.goods.id}" target="_blank"><img src="${coupon?.goods?.imageTinyPath}"/></a>
                             <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${coupon.goods.id}" target="_blank">${coupon?.goods?.name}</a>

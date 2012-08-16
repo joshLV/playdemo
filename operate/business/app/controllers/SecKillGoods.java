@@ -84,6 +84,8 @@ public class SecKillGoods extends Controller {
     public static void update(Long id, @Valid models.sales.SecKillGoods secKillGoods, File imagePath, String imageLargePath) {
         checkImageFile(imagePath);
         if (Validation.hasErrors()) {
+            String goodsName = "商品名：" + secKillGoods.goods.name;
+            render("SecKillGoods/add.html", goodsName);
             renderArgs.put("imageLargePath", imageLargePath);
             render("SecKillGoods/edit.html", secKillGoods, id);
         }
@@ -99,7 +101,6 @@ public class SecKillGoods extends Controller {
             e.printStackTrace();
             error(e);
         }
-
         models.sales.SecKillGoods.update(id, secKillGoods);
 
         index(null);
@@ -108,7 +109,8 @@ public class SecKillGoods extends Controller {
     public static void edit(Long id) {
         models.sales.SecKillGoods secKillGoods = models.sales.SecKillGoods.findById(id);
         renderArgs.put("imageLargePath", secKillGoods.getImageLargePath());
-        render(secKillGoods, id);
+        String goodsName = "商品名：" + secKillGoods.goods.name;
+        render(secKillGoods,goodsName, id);
     }
 
     private static void checkImageFile(File imagePath) {

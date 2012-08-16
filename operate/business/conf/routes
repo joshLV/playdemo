@@ -22,6 +22,15 @@ GET     /goods_brands/{id}                      OperateBrands.goodsBrands
 GET     /category/sub/{id}                      Categories.showSubs
 
  #秒杀商品
+GET     /seckill_goods/{seckillId}/item        SecKillGoodsItems.index
+GET     /seckill_goods/{seckillId}/new         SecKillGoodsItems.add
+POST    /seckill_goods/{seckillId}/item        SecKillGoodsItems.create
+GET     /seckill_goods/{seckillId}/item/{id}/edit  SecKillGoodsItems.edit
+PUT     /seckill_goods/{seckillId}/item/{id}/onSale                 SecKillGoodsItems.onSale
+PUT     /seckill_goods/{seckillId}/item/{id}/offSale                SecKillGoodsItems.offSale
+PUT     /seckill_goods/{seckillId}/item/{id}  SecKillGoodsItems.update
+DELETE  /seckill_goods/{seckillId}/item/{id}   SecKillGoodsItems.delete
+
 GET     /seckill_goods                          SecKillGoods.index
 GET     /seckill_goods/new                      SecKillGoods.add
 POST    /seckill_goods                          SecKillGoods.create
@@ -31,14 +40,6 @@ POST    /seckill_goods/images                   UploadFiles.uploadJson
 GET     /seckill_goods/{id}/check               SecKillGoods.checkGoodsId
 DELETE  /seckill_goods/{id}                     SecKillGoods.delete
 
-GET     /seckill_goods/{seckillId}/item        SecKillGoodsItems.index
-GET     /seckill_goods/{seckillId}/new         SecKillGoodsItems.add
-POST    /seckill_goods/{seckillId}/item        SecKillGoodsItems.create
-GET     /seckill_goods/{seckillId}/item/{id}/edit  SecKillGoodsItems.edit
-PUT     /seckill_goods/{seckillId}/item/{id}/onSale                 SecKillGoodsItems.onSale
-PUT     /seckill_goods/{seckillId}/item/{id}/offSale                SecKillGoodsItems.offSale
-PUT     /seckill_goods/{seckillId}/item/{id}  SecKillGoodsItems.update
-DELETE  /seckill_goods/{seckillId}/item/{id}   SecKillGoodsItems.delete
 
 # 积分商品
 GET     /pointgoods                             OperatePointGoods.index

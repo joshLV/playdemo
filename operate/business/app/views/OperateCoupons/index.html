@@ -174,8 +174,8 @@
             <td>${coupon?.goods?.name}</td>
             <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
             <td>${coupon?.getConsumedShop()}</td>
-            <td>${coupon?.goods?.effectiveAt ?.format()} /
-            ${coupon?.goods?.expireAt?.format()}</td>
+            <td>${coupon?.effectiveAt ?.format()} /
+            ${coupon?.expireAt?.format()}</td>
             <td>${coupon?.order?.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
             <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
             <td>#{if coupon?.supplierUser?.userName!=null}${coupon?.supplierUser?.userName}#{/if}

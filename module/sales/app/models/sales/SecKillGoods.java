@@ -55,6 +55,12 @@ public class SecKillGoods extends Model {
      */
     @Column(name = "image_path")
     public String imagePath;
+    /**
+     * 温馨提示
+     */
+    @MaxSize(65000)
+    @Lob
+    private String prompt;
 
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
 
@@ -72,13 +78,6 @@ public class SecKillGoods extends Model {
                 "allowScriptAccess", "flashvars", "name", "type", "pluginspage");
     }
 
-    /**
-     * 温馨提示
-     */
-    @MaxSize(65000)
-    @Lob
-    private String prompt;
-
     public String getPrompt() {
         if (StringUtils.isBlank(prompt)) {
             return "";
@@ -87,8 +86,10 @@ public class SecKillGoods extends Model {
     }
 
     public void setPrompt(String prompt) {
+
         this.prompt = Jsoup.clean(prompt, HTML_WHITE_TAGS);
     }
+
 
     /**
      * 最小规格图片路径
@@ -137,10 +138,12 @@ public class SecKillGoods extends Model {
 
     public static void update(Long id, SecKillGoods secKillGoods) {
         SecKillGoods dbSecKillGoods = SecKillGoods.findById(id);
-        dbSecKillGoods.personLimitNumber= secKillGoods.personLimitNumber;
+        dbSecKillGoods.personLimitNumber = secKillGoods.personLimitNumber;
         if (secKillGoods.imagePath != null)
             dbSecKillGoods.imagePath = secKillGoods.imagePath;
-        dbSecKillGoods.prompt = secKillGoods.prompt;
+        dbSecKillGoods.setPrompt(secKillGoods.getPrompt());
+        System.out.println(secKillGoods.getPrompt() + ">>>>>>>>>>>");
+
         dbSecKillGoods.save();
     }
 }

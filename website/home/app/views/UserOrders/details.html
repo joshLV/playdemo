@@ -37,7 +37,8 @@
                 <td align="center" valign="middle">&{'goods.'+row.goods.materialType}</td>
                 <td align="center" valign="middle">${row.salePrice?.formatCurrency('CNY').raw()}</td>
                 <td align="center" valign="middle">${row.buyNumber}</td>
-                <td align="center" valign="middle">${row?.getWebEcouponSn()}</td>
+                <td align="center" valign="middle">${row?.getWebEcouponSn()}
+                <div style="color: #ff0000">#{if row?.goods?.isLottery}该券只限抽奖,不可消费#{/if}</div></td>
                 <td align="center" valign="middle">${row.phone}</td>
                 <td align="center" valign="middle">
                     #{if (models.order.OrderStatus.SENT.equals(row?.status) && models.sales.MaterialType.REAL.equals(row?.goods?.materialType))}
