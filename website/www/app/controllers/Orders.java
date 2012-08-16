@@ -80,7 +80,7 @@ public class Orders extends Controller {
         } else {
             renderArgs.put("discountSN", discountSN);
         }
-        DiscountCode discountCode = DiscountCode.findAvaiableSN(discountSN);
+        DiscountCode discountCode = DiscountCode.findAvailableSN(discountSN);
         renderArgs.put("discountCode", discountCode);
         return discountCode;
     }

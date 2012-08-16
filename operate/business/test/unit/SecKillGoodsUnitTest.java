@@ -2,6 +2,7 @@ package unit;
 
 
 import factory.FactoryBoy;
+import factory.SequenceCallBack;
 import models.sales.Goods;
 import models.sales.SecKillGoods;
 import org.junit.Before;
@@ -24,13 +25,30 @@ public class SecKillGoodsUnitTest extends UnitTest {
     }
 
     @Test
-    public void testFindByCondition() {
+    public void 取得所有秒杀的商品信息() {
+        secKillGoods = FactoryBoy.create(SecKillGoods.class);
+        FactoryBoy.batchCreate(5, SecKillGoods.class, new SequenceCallBack<SecKillGoods>() {
+            @Override
+            public void sequence(SecKillGoods target, int seq) {
+                target.= "TEST" + seq;
+            }
 
+        });
+        ModelPaginator discountCodePage = DiscountCode.getDiscountCodePage(0, 10, null);
+        assertEquals(1, discountCodePage.getPageCount());
+        assertEquals(6, discountCodePage.getRowCount());
+        ModelPaginator discountCodePage1 = DiscountCode.getDiscountCodePage(0, 5, null);
+        assertEquals(2, discountCodePage1.getPageCount());
+        assertEquals(6, discountCodePage1.getRowCount());
+        discountCode.deleted = DeletedStatus.DELETED;
+        discountCode.save();
+        ModelPaginator discountCodePage2 = DiscountCode.getDiscountCodePage(0, 5, null);
+        assertEquals(1, discountCodePage2.getPageCount());
+        assertEquals(5, discountCodePage2.getRowCount());
     }
 
     @Test
     public void testUpdateSecKillGoods() {
-
         secKillGoods = FactoryBoy.create(SecKillGoods.class);
         secKillGoods.personLimitNumber = 2;
         secKillGoods.goods = FactoryBoy.create(Goods.class);
