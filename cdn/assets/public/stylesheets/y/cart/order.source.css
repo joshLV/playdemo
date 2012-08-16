@@ -283,6 +283,7 @@
 }
 .totalize {
     float: right;
+    width: 600px;
 }
 .totalize em {
     color: #f50;
