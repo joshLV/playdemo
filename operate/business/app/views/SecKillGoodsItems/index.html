@@ -74,11 +74,11 @@ select:'condition_status',value:condition?.status/}
 
 
         #{paginate.list items:secKillGoodsItems,as:'item'}
-        <tr>
+        <tr class="#{if item.isExpired() || item.baseSale?.intValue() == 0}tr-offsale#{/if} transparent">
             <td>${item?.goodsTitle}</td>
             <td>${item?.salePrice?.formatCurrency('CNY')}</td>
             <td>${item?.secKillBeginAt?.format('yyyy-MM-dd HH:mm:ss')}
-                至  ${item?.secKillEndAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <br>${item?.secKillEndAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>${item?.saleCount}</td>
             <td>${item?.baseSale}</td>
             <td>${item?.virtualInventory}</td>
