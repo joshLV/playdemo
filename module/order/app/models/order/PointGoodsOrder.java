@@ -300,7 +300,8 @@ public class PointGoodsOrder extends Model {
      */
     public void cancelAndUpdateOrder() {
         //返还积分
-        long updatedPoint = totalPoint + amount;
+        Long currentTotalPoint = findUserTotalPoint(userId);
+        long updatedPoint = currentTotalPoint + amount;
         updateUserTotalPoint(userId, updatedPoint);
         this.totalPoint = findUserTotalPoint(userId);
         // 更新状态

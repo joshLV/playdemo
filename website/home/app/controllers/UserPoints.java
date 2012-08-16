@@ -67,6 +67,24 @@ public class UserPoints extends Controller{
 
     }
 
+    public static void detail(String orderNumber){
+        //加载用户账户信息
+        User user = SecureCAS.getUser();
+
+        //加载订单信息
+        PointGoodsOrder order = PointGoodsOrder.findByOrderNumber(orderNumber);
+        if (order == null){
+            error(404,"找不到该订单");
+        }
+
+        //收货信息
+        BreadcrumbList breadcrumbs = new BreadcrumbList("我的积分", "/user-point", "兑换记录", "/user-point-record",
+                "订单详情", "/user-point-record/" + orderNumber);
+        render(order, breadcrumbs);
+
+
+    }
+
 
 
 }

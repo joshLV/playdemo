@@ -1,0 +1,96 @@
+#{extends 'main.html' /}
+#{set title:'一百券 - 积分商品订单详情' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/y/user/userBase.css', '/y/user/userOrdersDetail.css'] /}
+#{/set}
+
+<div id="content">
+#{breadcrumbs/breadcrumb breadcrumbs/}
+
+    <table class="order-detail">
+        <caption>
+            <h3>订单详情</h3>
+            <span>订单号：${order?.orderNumber}</span>
+            <span>申请时间：${order.applyAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
+        #{if order.acceptAt != order.updatedAt}<span>审核时间：${order.acceptAt?.format("yyyy-MM-dd HH:mm:ss")}</span>#{/if}
+        #{if order.acceptAt == order.updatedAt}<span>审核时间：${order.updatedAt?.format("yyyy-MM-dd HH:mm:ss")}</span>#{/if}
+        </caption>
+        <thead>
+        <tr class="col-name">
+            <th>积分商品</th>
+            <th width="80">类型</th>
+            <th width="100">单价积分（分）</th>
+            <th width="60">数量</th>
+            <th width="100">收货手机</th>
+            <th width="80">物流状态</th>
+            <th width="100">总积分（分）</th>
+            <th width="80">订单状态</th>
+        </tr>
+        </thead>
+        <tbody>
+        #{set m=0/}
+        <tr class="order-bd">
+            <td align="left" valign="middle">
+                <a href="http://jifen.${play.Play.configuration.getProperty("application.baseDomain")}/pointgoods/${order.pointGoods.id}" target="_blank"><img style="float:left;margin-right:5px" src="${order.pointGoods.imageTinyPath}"/>${order.pointGoodsName}</a>
+            </td>
+            <td align="center" valign="middle">&{'goods.'+order.pointGoods.materialType}</td>
+            <td align="center" valign="middle">${order.pointPrice} 分 </td>
+            <td align="center" valign="middle">${order.buyNumber}</td>
+            <td align="center" valign="middle">${order.receiverMobile}</td>
+            <td align="center" valign="middle">
+                #{if order.sentStatus == models.order.PointGoodsOrderSentStatus?.UNSENT } 未发货 #{/if}
+                #{if order.sentStatus == models.order.PointGoodsOrderSentStatus?.SENT } 已发货 #{/if}
+            </td>
+            #{if (++m == 1) }
+                <td align="center" valign="middle" >${order?.amount} </td>
+                <td align="center" valign="middle" >
+                    #{if (order.status == models.order.PointGoodsOrderStatus.APPLY)}待审核#{/if}
+                    #{if (order.status == models.order.PointGoodsOrderStatus.ACCEPT)}审核通过#{/if}
+                    #{if (order.status == models.order.PointGoodsOrderStatus.CANCELED)}
+                        审核未通过
+                    #{/if}
+                </td>
+            #{/if}
+        </tr>
+        #{if order?.remark != null && order?.remark !=""}
+        <tr class="order-bd">
+            <td colspan="8">
+                订单留言：${order.remark}
+                <br/>
+                #{if (order.status == models.order.PointGoodsOrderStatus.CANCELED)}
+                未通过理由：${order.note}#{/if}
+            </td>
+
+        </tr>
+        #{/if}
+        </tbody>
+    </table>
+
+    <div class="totalize">
+        <span>合计：${order.amount} 分 </span>
+    </div>
+
+
+#{if order.containsRealGoods()}
+    <table class="ship-address">
+        <caption>收货信息</caption>
+        <tbody>
+        <tr>
+            <td>收 货 人：${order.receiverName}</td>
+        </tr>
+        <tr>
+            <td>地　　址：${order.receiverAddress} ${order.postcode}</td>
+        </tr>
+        <tr>
+            <td>电　　话：${order.receiverPhone}</td>
+        </tr>
+        <tr>
+            <td>手　　机：${order.receiverMobile}</td>
+        </tr>
+        <tr>
+            <td>备　　注：#{if order.sentStatus == models.order.PointGoodsOrderSentStatus.SENT}${order.note}#{/if}</td>
+        </tr>
+        </tbody>
+    </table>
+#{/if}
+</div>

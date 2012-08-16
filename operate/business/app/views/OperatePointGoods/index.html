@@ -128,9 +128,7 @@ select:'condition_status',value:condition?.status/}
             <th width="200px">&{'pointGoods.effective'}</th>
             <th width="100px">&{'pointGoods.baseSale'}</th>
             <th width="200px">&{'pointGoods.saleCount'}(件)</th>
-
             <th width="200px">&{'pointGoods.createdAt'}</th>
-
             <th width="50px">&{'pointGoods.status'}</th>
             <th width="50px">操 作</th>
 
@@ -179,39 +177,20 @@ select:'condition_status',value:condition?.status/}
                 </table>
             </td>
             <td class="amount">${pointGoods?.pointPrice} 点</td>
-
-
             <td class="amount">${pointGoods?.faceValue?.formatCurrency('CNY')}</td>
-
-
             <td>&{'goods.'+pointGoods?.materialType}</td>
-
-
             <td class="#{if pointGoods.isExpired()} tr-offsale  #{/if} transparent"> ${pointGoods?.expireAt?.format("yyyy-MM-dd hh:mm:ss")}</td>
-
-        *{<td >${pointGoods?.expireAt.format("yyyy-MM-dd hh:mm:ss")}</td>}*
-
-
             <td class="amount">${pointGoods?.baseSale}</td>
             <td class="amount">${pointGoods?.saleCount}</td>
-
             <td>${pointGoods?.createdAt.format("yyyy-MM-dd hh:mm:ss")}</td>
-
-
             <td>
-
             &{'pointGoods.'+pointGoods?.getStatus()}
-
-
-
-
-                #{if models.sales.GoodsStatus.OFFSALE.equals(pointGoods?.getStatus())}
+               #{if models.sales.GoodsStatus.OFFSALE.equals(pointGoods?.getStatus())}
                     <br/>#{vx.operateLink text:"同意上架", url:"/pointgoods/"+pointGoods?.id+"/onSale",method:"PUT"/}#{/if}
-                #{if models.sales.GoodsStatus.ONSALE.equals(pointGoods?.getStatus())}
+               #{if models.sales.GoodsStatus.ONSALE.equals(pointGoods?.getStatus())}
                     <br/>#{vx.operateLink text:"强制下架", url:"/pointgoods/"+pointGoods?.id+"/offSale",method:"PUT"/}#{/if}
             </td>
             <td>
-
                 <a href="@{OperatePointGoods.show(pointGoods.id)}">查看</a>
 
                 #{if !models.sales.GoodsStatus.APPLY.equals(pointGoods.status)}
@@ -221,7 +200,6 @@ select:'condition_status',value:condition?.status/}
                 .equals(pointGoods.status)}
                     / #{vx.deleteLink action:"pointgoods", id:pointGoods.id, name:pointGoods.name/}
                 #{/if}
-
         </tr>
         #{/paginate.list}
         </tbody>
