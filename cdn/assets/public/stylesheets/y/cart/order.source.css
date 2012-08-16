@@ -250,18 +250,21 @@
     height: 65px;
 }
 
-.totalize {
+.bottom-right {
+    float: right;
+    width: 600px;
     text-align: right;
 }
-.totalize .discount {
+.discount {
+    float: right;
     margin: 10px 0 20px;
 }
-.totalize .discount-ipt {
+.discount-ipt {
     width: 120px;
     height: 20px;
     border: 1px solid #abadb3;
 }
-.totalize .discount-btn {
+.discount-btn {
     border: 0;
     width: 57px;
     height: 25px;
@@ -269,14 +272,17 @@
     background: url(//img.uhcdn.com/images/y/cart/discount-btn.png) no-repeat 0 0;
     cursor: pointer;
 }
-.totalize .discount-error {
+.discount-error {
     color: #f00;
-    padding-right: 74px;
-    *padding-right: 71px;
 }
-.totalize .discount-info {
-    padding-right: 82px;
-    *padding-right: 79px;
+.discount-error,
+.discount-info {
+    text-align: left;
+    padding-left: 84px;
+    *padding-left: 81px;
+}
+.totalize {
+    float: right;
 }
 .totalize em {
     color: #f50;
