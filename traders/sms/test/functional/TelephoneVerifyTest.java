@@ -161,6 +161,17 @@ public class TelephoneVerifyTest extends FunctionalTest{
         supplier.status = SupplierStatus.NORMAL;
         supplier.save();
 
+        ECoupon eCoupon = ECoupon.find("byECouponSn", coupon).first();
+        Long originSupplierId = eCoupon.goods.supplierId;
+        eCoupon.goods.supplierId = originSupplierId + 1L;
+        eCoupon.goods.save();
+
+        response = GET("/tel-verify?caller=" + caller +  "&coupon=" + coupon + "&timestamp=" + timestamp + "&sign=" + sign);
+        assertContentEquals("7", response);//;对不起，券不存在
+
+        eCoupon.goods.supplierId = originSupplierId;
+        eCoupon.goods.save();
+
         Long supplierUserId = (Long) Fixtures.idCache.get("models.admin.SupplierUser-user1");
         SupplierUser supplierUser = SupplierUser.findById(supplierUserId);
         supplierUser.delete();

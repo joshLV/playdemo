@@ -81,7 +81,7 @@ public class TelephoneVerify extends Controller {
         }
 
         if (!ecoupon.goods.supplierId.equals(supplierUser.supplier.getId())){
-            Logger.info("telephone verify failed: coupon not found");
+            Logger.info("telephone verify failed: wrong supplier");
             renderText("7");//对不起，未找到此券  商户错误
         }
 
