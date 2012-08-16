@@ -440,7 +440,7 @@ public class ECoupon extends Model {
             consumedAmount = consumedAmount.add(eCoupon.salePrice);
         }
         BigDecimal usedPromotionAmount = eCoupon.order.refundedPromotionAmount.add(consumedAmount);
-        if(eCoupon.order.promotionBalancePay.compareTo(usedPromotionAmount) > 0) {
+        if(eCoupon.order.promotionBalancePay != null && eCoupon.order.promotionBalancePay.compareTo(usedPromotionAmount) > 0) {
             promotionAmount = cashAmount.min(eCoupon.order.promotionBalancePay.subtract(usedPromotionAmount));
             cashAmount = cashAmount.subtract(promotionAmount);
         }
