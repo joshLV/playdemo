@@ -137,7 +137,7 @@ public class SecKillGoods extends Model {
 
     public static void update(Long id, SecKillGoods secKillGoods) {
         SecKillGoods dbSecKillGoods = SecKillGoods.findById(id);
-        dbSecKillGoods.personLimitNumber = secKillGoods.personLimitNumber;
+        dbSecKillGoods.personLimitNumber= secKillGoods.personLimitNumber;
         if (secKillGoods.imagePath != null)
             dbSecKillGoods.imagePath = secKillGoods.imagePath;
         dbSecKillGoods.prompt = secKillGoods.prompt;

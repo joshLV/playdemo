@@ -2,10 +2,14 @@ package unit;
 
 
 import factory.FactoryBoy;
+import factory.SequenceCallBack;
+import models.order.DiscountCode;
 import models.sales.Goods;
 import models.sales.SecKillGoods;
+import models.sales.SecKillGoodsCondition;
 import org.junit.Before;
 import org.junit.Test;
+import play.modules.paginate.JPAExtPaginator;
 import play.test.UnitTest;
 
 /**
@@ -23,28 +27,24 @@ public class SecKillGoodsUnitTest extends UnitTest {
         FactoryBoy.lazyDelete();
     }
 
-//    @Test
-//    public void 取得所有秒杀的商品信息() {
-//        secKillGoods = FactoryBoy.create(SecKillGoods.class);
-//        FactoryBoy.batchCreate(5, SecKillGoods.class, new SequenceCallBack<SecKillGoods>() {
-//            @Override
-//            public void sequence(SecKillGoods target, int seq) {
-//                target.= "TEST" + seq;
-//            }
-//
-//        });
-//        ModelPaginator discountCodePage = DiscountCode.getDiscountCodePage(0, 10, null);
-//        assertEquals(1, discountCodePage.getPageCount());
-//        assertEquals(6, discountCodePage.getRowCount());
-//        ModelPaginator discountCodePage1 = DiscountCode.getDiscountCodePage(0, 5, null);
-//        assertEquals(2, discountCodePage1.getPageCount());
-//        assertEquals(6, discountCodePage1.getRowCount());
-//        discountCode.deleted = DeletedStatus.DELETED;
-//        discountCode.save();
-//        ModelPaginator discountCodePage2 = DiscountCode.getDiscountCodePage(0, 5, null);
-//        assertEquals(1, discountCodePage2.getPageCount());
-//        assertEquals(5, discountCodePage2.getRowCount());
-//    }
+    @Test
+    public void 取得所有秒杀的商品信息() {
+        secKillGoods = FactoryBoy.create(SecKillGoods.class);
+        FactoryBoy.batchCreate(5, SecKillGoods.class, new SequenceCallBack<SecKillGoods>() {
+            @Override
+            public void sequence(SecKillGoods target, int seq) {
+                target.goods.name = "TEST" + seq;
+
+            }
+
+        });
+        SecKillGoodsCondition condition = new SecKillGoodsCondition();
+        JPAExtPaginator<SecKillGoods> secKillGoods = SecKillGoods.findByCondition(condition, 0, 10);
+        assertEquals(6, secKillGoods.size());
+
+
+
+    }
 
     @Test
     public void testUpdateSecKillGoods() {
