@@ -24,7 +24,7 @@ public class SecKillGoodsItems extends Controller {
     public static int PAGE_SIZE = 15;
 
     /**
-     * 展示添加商品页面
+     * 展示添加秒杀活动页面
      */
     public static void index(Long seckillId, SecKillGoodsCondition condition) {
         String page = request.params.get("page");
@@ -57,7 +57,7 @@ public class SecKillGoodsItems extends Controller {
         secKillGoodsItem.status = SecKillGoodsStatus.OFFSALE;
         secKillGoodsItem.save();
 
-        render("SecKillGoods/index.html");
+        index(seckillId, null);
     }
 
     public static void edit(Long seckillId, Long id) {
@@ -89,9 +89,10 @@ public class SecKillGoodsItems extends Controller {
     }
 
     /**
-     * 下架商品.
+     * 下架.
      *
-     * @param id 商品ID
+     * @param id 秒杀活动ID
+     * @param id 秒杀活动子ID
      */
     public static void offSale(Long seckillId, Long id) {
         SecKillGoodsItem.updateStatus(SecKillGoodsStatus.OFFSALE, id);
@@ -99,12 +100,26 @@ public class SecKillGoodsItems extends Controller {
     }
 
     /**
-     * 上架商品.
+     * 上架.
      *
-     * @param id 商品ID
+     * @param id 秒杀活动ID
+     * @param id 秒杀活动子ID
      */
     public static void onSale(Long seckillId, Long id) {
         SecKillGoodsItem.updateStatus(SecKillGoodsStatus.ONSALE, id);
         index(seckillId, null);
     }
+
+    /**
+     * 删除指定商品
+     *
+     * @param id 商品ID
+     */
+    public static void delete(Long seckillId, Long id) {
+        SecKillGoodsItem goods = SecKillGoodsItem.findById(id);
+        goods.delete();
+        index(seckillId, null);
+    }
+
+
 }

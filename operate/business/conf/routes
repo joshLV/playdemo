@@ -29,6 +29,7 @@ GET     /seckill_goods/{id}/edit                SecKillGoods.edit
 PUT     /seckill_goods/{id}                     SecKillGoods.update
 POST    /seckill_goods/images                   UploadFiles.uploadJson
 GET     /seckill_goods/{id}/check               SecKillGoods.checkGoodsId
+DELETE  /seckill_goods/{id}                     SecKillGoods.delete
 
 GET     /seckill_goods/{seckillId}/item        SecKillGoodsItems.index
 GET     /seckill_goods/{seckillId}/new         SecKillGoodsItems.add
@@ -37,6 +38,7 @@ GET     /seckill_goods/{seckillId}/item/{id}/edit  SecKillGoodsItems.edit
 PUT     /seckill_goods/{seckillId}/item/{id}/onSale                 SecKillGoodsItems.onSale
 PUT     /seckill_goods/{seckillId}/item/{id}/offSale                SecKillGoodsItems.offSale
 PUT     /seckill_goods/{seckillId}/item/{id}  SecKillGoodsItems.update
+DELETE  /seckill_goods/{seckillId}/item/{id}   SecKillGoodsItems.delete
 
 # 积分商品
 GET     /pointgoods                             OperatePointGoods.index

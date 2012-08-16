@@ -3,6 +3,8 @@ package controllers;
 import com.uhuila.common.util.FileUploadUtil;
 import models.sales.Goods;
 import models.sales.SecKillGoodsCondition;
+import models.sales.SecKillGoodsItem;
+import models.sales.SecKillGoodsStatus;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
@@ -16,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p/>
@@ -60,7 +63,7 @@ public class SecKillGoods extends Controller {
     public static void create(@Valid models.sales.SecKillGoods secKillGoods, @Required File imagePath) {
         checkImageFile(imagePath);
         if (Validation.hasErrors()) {
-            String goodsName = "商品名："+secKillGoods.goods.name;
+            String goodsName = "商品名：" + secKillGoods.goods.name;
             render("SecKillGoods/add.html", goodsName);
         }
 
@@ -160,5 +163,25 @@ public class SecKillGoods extends Controller {
         if (goods != null) {
             renderText(goods.name);
         }
+    }
+
+    /**
+     * 删除指定商品
+     *
+     * @param id 商品ID
+     */
+    public static void delete(Long id) {
+        models.sales.SecKillGoods goods = models.sales.SecKillGoods.findById(id);
+        //还在上架的秒杀活动不可以删除
+        List<SecKillGoodsItem> items = SecKillGoodsItem.find("seckill_goods_id=?", id).fetch();
+        for (SecKillGoodsItem item : items) {
+            if (item.status == SecKillGoodsStatus.ONSALE) {
+                index(null);
+            } else {
+                item.delete();
+            }
+        }
+        goods.delete();
+        index(null);
     }
 }

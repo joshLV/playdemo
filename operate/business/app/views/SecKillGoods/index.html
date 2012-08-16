@@ -1,5 +1,5 @@
 #{extends 'layout_operate/layout.html' /}
-#{set title:'秒杀商品一览' /}
+#{set title:'秒杀活动一览' /}
 #{include '/share/nav.html' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/goods.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -57,9 +57,13 @@
             <td>${goods?.limitNumber}</td>
             <td>${goods?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
             <td>
+            %{
+                name= goods?.goods?.name+"的秒杀活动";
+                }%
                 <a href="/seckill_goods/${goods?.id}/new">明细添加</a>
-                 /<a href="/seckill_goods/${goods?.id}/item">明细查看</a>
+                /<a href="/seckill_goods/${goods?.id}/item">明细查看</a>
                 /<a href="@{SecKillGoods.edit(goods.id)}">修改</a>
+                / #{vx.deleteLink action:"/seckill_goods",id:goods?.id, name:name/}
             </td>
         </tr>
         #{/paginate.list}
