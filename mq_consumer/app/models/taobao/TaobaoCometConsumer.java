@@ -157,7 +157,7 @@ public class TaobaoCometConsumer extends RabbitMQConsumer<TaobaoCometMessage>{
             }
             BigDecimal resalerPrice = resalerFav.goods.getResalePrice(resalerFav.resaler.level);
             try {
-                order.addOrderItem(resalerFav.goods,tOrder.getNum(), mobile, resalerPrice, resalerPrice);
+                order.addOrderItem(resalerFav.goods,(int)(tOrder.getNum().longValue()), mobile, resalerPrice, resalerPrice);
             } catch (NotEnoughInventoryException e) {
                 Logger.error(e, "auto generate order failed: inventory not enough");
             }
