@@ -192,7 +192,7 @@ public class Orders extends Controller {
         //电子券必须校验手机号
         if (containsElectronic) {
             Validation.required("mobile", mobile);
-            Validation.match("mobile", mobile, "^1\\d{10}$");
+            Validation.match("mobile", mobile, "^1[3|4|5|8][0-9]\\d{4,8}$");
         }
 
         //实物券必须校验收货地址信息
@@ -375,4 +375,6 @@ public class Orders extends Controller {
         }
         renderJSON("0");
     }
+
+
 }

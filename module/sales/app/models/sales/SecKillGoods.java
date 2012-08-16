@@ -10,7 +10,16 @@ import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 
@@ -61,6 +70,12 @@ public class SecKillGoods extends Model {
     @MaxSize(65000)
     @Lob
     private String prompt;
+
+    /**
+     * 秒杀商品子项列表
+
+    public List<SecKillGoodsItem> items;
+     */
 
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
 

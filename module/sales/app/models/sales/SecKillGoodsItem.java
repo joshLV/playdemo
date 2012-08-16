@@ -9,9 +9,22 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Money;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
+
 
 /**
  * <p/>
@@ -23,6 +36,7 @@ import java.util.Date;
 @Table(name = "seckill_goods_item")
 public class SecKillGoodsItem extends Model {
     private static final long serialVersionUID = 9063231063912330562L;
+    private static final int MAX_SHOW_COUNT = 4;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seckill_goods_id", nullable = true)
@@ -101,6 +115,49 @@ public class SecKillGoodsItem extends Model {
     @Version
     public int lockVersion;
 
+    /**
+     * 返回当前的秒杀商品
+     *
+     * @return
+     */
+    public static SecKillGoodsItem getCurrentSecKillGoods() {
+        long count = SecKillGoodsItem.count("baseSale>0 and secKillEndAt>? and status =?", new Date(),
+                SecKillGoodsStatus.ONSALE);
+        if (count > 0) {
+            return SecKillGoodsItem.find("baseSale>0 and secKillEndAt>? and status =? order by secKillBeginAt",
+                    new Date(), SecKillGoodsStatus.ONSALE).first();
+        } else if (SecKillGoodsItem.count("baseSale>0 and status =?",
+                SecKillGoodsStatus.ONSALE) > 0) {
+            return SecKillGoodsItem.find("baseSale>0 and status =? order by secKillBeginAt",
+                    SecKillGoodsStatus.ONSALE).first();
+        } else if (SecKillGoodsItem.count("status =?",
+                SecKillGoodsStatus.ONSALE) > 0) {
+            return SecKillGoodsItem.find("status =? order by secKillBeginAt",
+                    SecKillGoodsStatus.ONSALE).first();
+        } else {
+            return SecKillGoodsItem.find("").first();
+        }
+    }
+
+    /**
+     * 返回除了给出秒杀商品的其他商品
+     *
+     * @return
+     */
+    public static List<SecKillGoodsItem> findSecKillGoods() {
+        List<SecKillGoodsItem> items = SecKillGoodsItem.find("status =? order by secKillBeginAt",
+                SecKillGoodsStatus.ONSALE).fetch(MAX_SHOW_COUNT);
+//        List<SecKillGoodsItem> resultItems = new ArrayList<>();
+//        for (SecKillGoodsItem secKillGoodsItem : items) {
+//            if (secKillGoodsItem.id.longValue() != item.id.longValue()){
+//                resultItems.add(secKillGoodsItem);
+//            }
+//        }
+//        return resultItems;
+        return items;
+    }
+
+
     public static void update(Long id, SecKillGoodsItem secKillGoodsItem) {
         SecKillGoodsItem dbItem = SecKillGoodsItem.findById(id);
         dbItem.baseSale = secKillGoodsItem.baseSale;
@@ -140,5 +197,82 @@ public class SecKillGoodsItem extends Model {
     @Transient
     public boolean isExpired() {
         return secKillEndAt != null && secKillEndAt.before(new Date());
+    }
+
+    @Transient
+    public long getTotalCount() {
+        return (virtualSale == null ? 0 : virtualSale.longValue()) + (virtualInventory == null ? 0 : virtualInventory
+                .longValue());
+    }
+
+    /**
+     * 节省多少钱
+     *
+     * @return
+     */
+    @Transient
+    public BigDecimal getSavePrice() {
+        return secKillGoods.goods.faceValue.subtract(salePrice);
+    }
+
+
+    @Column(name = "discount")
+    public BigDecimal getDiscount() {
+        BigDecimal discount;
+        if (secKillGoods.goods.faceValue != null && salePrice != null && secKillGoods.goods.faceValue.compareTo(BigDecimal.ZERO) > 0) {
+            discount = salePrice.divide(secKillGoods.goods.faceValue, 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.TEN);
+            if (discount.compareTo(BigDecimal.TEN) >= 0) {
+                discount = BigDecimal.TEN;
+            }
+        } else {
+            discount = BigDecimal.ZERO;
+        }
+        return discount;
+    }
+
+    @Transient
+    public String getDiscountExpress() {
+        BigDecimal discount = getDiscount();
+        if (discount.compareTo(BigDecimal.ZERO) == 0) {
+            return "0折";
+        }
+        if (discount.compareTo(BigDecimal.TEN) >= 0) {
+            return "无优惠";
+        }
+        if (discount.compareTo(BigDecimal.ZERO) < 0) {
+            return "";
+        }
+        DecimalFormat format = new DecimalFormat("#.#");
+        return format.format(discount.doubleValue()) + "折";
+    }
+
+    /**
+     * 随机产生一个虚拟数量.
+     *
+     * @param min
+     * @param max
+     * @param virtualInventory
+     * @param baseSale
+     * @return
+     */
+    public static long getRandomCount(int min, int max, long virtualInventory, long baseSale) {
+        long virtualCount = Math.abs(new Random().nextInt(max));
+        long permittedCount = virtualInventory - baseSale + min;
+        return (virtualCount > permittedCount) ? permittedCount : virtualCount;
+    }
+
+    /**
+     * 修改库存.
+     *
+     * @param count 本次订单的实际售出数量
+     */
+    public void updateInventory(long count) {
+        long virtualCount = getRandomCount((int) count, 6, virtualInventory.longValue(), baseSale.longValue());
+        baseSale -= count;
+        saleCount += count;
+        virtualSale = virtualSale == null ? 0 : virtualSale;
+        virtualSale += virtualCount;
+        virtualInventory -= virtualCount;
+        save();
     }
 }

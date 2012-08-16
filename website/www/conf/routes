@@ -65,6 +65,12 @@ POST     /reorders                              Orders.index
 POST    /orders/new                             Orders.create
 GET     /orders_number                          Orders.checkLimitNumber
 
+# 秒杀
+GET     /seckill-goods                          SecKillGoodsController.index
+GET     /seckill-orders                         SecKillOrders.index
+POST    /seckill-orders/new                     SecKillOrders.create
+
+
 # 地址
 GET     /orders/addresses                       Addresses.index
 POST    /orders/addresses/new                   Addresses.create

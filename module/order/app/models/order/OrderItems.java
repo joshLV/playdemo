@@ -4,10 +4,21 @@ import models.accounts.AccountType;
 import models.consumer.User;
 import models.sales.Goods;
 import models.sales.MaterialType;
+import models.sales.SecKillGoodsItem;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -63,6 +74,8 @@ public class OrderItems extends Model {
 
     @Column(name = "buy_number")
     public Long buyNumber;
+
+    public long secKillGoodsItemId;
 
     public String phone;
 
@@ -121,15 +134,13 @@ public class OrderItems extends Model {
     }
 
     /**
-     * 取出该用户购买制定商品的数量
+     * 取出该用户购买指定商品的数量
      *
      * @param user    用户
      * @param goodsId 商品ID
      * @return
      */
     public static long itemsNumber(User user, Long goodsId) {
-        long itemsNumber = 0L;
-
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE goods.id=:goodsId and " +
                 "order.userId=:userId and order.userType=:userType and status=:status");
@@ -138,6 +149,20 @@ public class OrderItems extends Model {
         q.setParameter("userType", AccountType.CONSUMER);
         q.setParameter("status", OrderStatus.PAID);
         Object result = q.getSingleResult();
+        return result == null ? 0 : (Long) result;
+    }
+
+    public static long getBoughtNumberOfSecKillGoods(User user, Long goodsId, Long secKillGoodsItemId) {
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE goods.id=:goodsId and " +
+                "order.userId=:userId and order.userType=:userType and status=:status and secKillGoodsItemId = :secKillGoodsItemId");
+        q.setParameter("goodsId", goodsId);
+        q.setParameter("userId", user.id);
+        q.setParameter("userType", AccountType.CONSUMER);
+        q.setParameter("status", OrderStatus.PAID);
+        q.setParameter("secKillGoodsItemId", secKillGoodsItemId);
+        Object result = q.getSingleResult();
+
         return result == null ? 0 : (Long) result;
     }
 
