@@ -97,7 +97,9 @@ public class PointGoodsOrderCondition {
                 paramsMap.put("status", PointGoodsOrderSentStatus.SENT);
             }
 
-            if ("UNSENT".equals(status) ) {
+            if ("UNSENT".equals(status)) {
+                sql.append(" and o.status = :orderStatus");
+                paramsMap.put("orderStatus", PointGoodsOrderStatus.ACCEPT);
                 sql.append(" and o.sentStatus = :status");
                 paramsMap.put("status", PointGoodsOrderSentStatus.UNSENT);
             }
@@ -126,8 +128,8 @@ public class PointGoodsOrderCondition {
 
         //商品名称
         if (StringUtils.isNotBlank(pointGoodsName)) {
-            sql.append(" and o.pointGoodsName =:pointGoodsName");
-            paramsMap.put("pointGoodsName", pointGoodsName.trim());
+            sql.append(" and o.pointGoodsName like :pointGoodsName");
+            paramsMap.put("pointGoodsName", "%"+pointGoodsName.trim()+"%");
         }
 
         //订单号
@@ -316,6 +318,11 @@ public class PointGoodsOrderCondition {
 
     public String getOrderByExpress() {
         String orderBySql = "o.acceptAt desc,o.applyAt desc";
+        return orderBySql;
+    }
+
+    public String getOrderByDate(){
+        String orderBySql = "o.applyAt desc";
         return orderBySql;
     }
 

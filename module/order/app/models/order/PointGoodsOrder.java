@@ -288,7 +288,7 @@ public class PointGoodsOrder extends Model {
         JPAExtPaginator<PointGoodsOrder> orderPage = new JPAExtPaginator<>
                 ("PointGoodsOrder o", "o", PointGoodsOrder.class, condition.getFilter(),
                         condition.paramsMap)
-                .orderBy(condition.getOrderByExpress());
+                .orderBy(condition.getOrderByDate());
         orderPage.setPageNumber(pageNumber);
         orderPage.setPageSize(pageSize);
         orderPage.setBoundaryControlsEnabled(true);

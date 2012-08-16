@@ -49,8 +49,8 @@ public class PointGoodsCondition implements Serializable {
     public String no;
 
 
-    public BigDecimal pointPriceBegin;
-    public BigDecimal pointPriceEnd;
+    public Long pointPriceBegin;
+    public Long pointPriceEnd;
 
     public Date createdAtBegin;
     public Date createdAtEnd;
@@ -141,8 +141,8 @@ public class PointGoodsCondition implements Serializable {
 //        }
 
         if (StringUtils.isNotBlank(name)) {
-            condBuilder.append(" and g.name =:name");
-            paramMap.put("name", name.trim());
+            condBuilder.append(" and g.name like :name");
+            paramMap.put("name", "%" + name.trim() + "%");
         }
 
 

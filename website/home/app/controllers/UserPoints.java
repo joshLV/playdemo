@@ -30,7 +30,7 @@ public class UserPoints extends Controller{
 			condition =  new UserCondition();
 		}
 		JPAExtPaginator<UserPoint>  pointList = UserPoint.findUserPoints(user, condition,pageNumber, PAGE_SIZE);
-		BreadcrumbList breadcrumbs = new BreadcrumbList("我的积分", "/userPoint");
+        BreadcrumbList breadcrumbs = new BreadcrumbList("我的积分", "#","积分明细", "/user-point");
 		List<UserPointConfig> configList = UserPointConfig.findAll();
 		renderArgs.put("createdAtBegin", condition.createdAtBegin);
 		renderArgs.put("createdAtEnd", condition.createdAtEnd);
@@ -39,13 +39,7 @@ public class UserPoints extends Controller{
 	}
 
     public static void record(PointGoodsOrderCondition condition) {
-//        User user = SecureCAS.getUser();
-//        String page = request.params.get("page");
-//        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-//        if (condition == null) {
-//            condition = new PointGoodsOrderCondition();
-//        }
-//        JPAExtPaginator<UserPoint>  pointList = UserPoint.findUserPoints(user, condition,pageNumber, PAGE_SIZE);
+
 
         if (condition == null) {
             condition = new PointGoodsOrderCondition();
@@ -59,7 +53,7 @@ public class UserPoints extends Controller{
         JPAExtPaginator<PointGoodsOrder> pointList =
                 PointGoodsOrder.query(condition, pageNumber, PAGE_SIZE);
 
-        BreadcrumbList breadcrumbs = new BreadcrumbList("我的积分", "/user-point","兑换记录", "/user-point-record");
+        BreadcrumbList breadcrumbs = new BreadcrumbList("我的积分", "#","兑换记录", "/user-point-record");
 
 
 //        List<UserPointConfig> configList = UserPointConfig.findAll();

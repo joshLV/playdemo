@@ -50,7 +50,7 @@
                 <thead>
                 <tr>
                     <th align="left">商品</th>
-                    <th width="80">单价（元）</th>
+                    <th width="80">单价（分）</th>
                     <th width="50">数量</th>
                     <th width="80">小计</th>
                 </tr>
@@ -100,7 +100,7 @@
                 <thead>
                 <tr>
                     <th align="left">商品</th>
-                    <th width="80">单价（元）</th>
+                    <th width="80">单价（分）</th>
                     <th width="50">数量</th>
                     <th width="80">小计</th>
                 </tr>
@@ -116,7 +116,7 @@
                         </td>
                         <td>${eGoods.pointPrice} 分 </td>
                         <td>${number}</td>
-                        <td valign="middle">${(eGoods.pointPrice)} 分 </td>
+                        <td valign="middle">${(eGoods.pointPrice*number)} 分 </td>
                     </tr>
                     #{/list}
                 <tbody>

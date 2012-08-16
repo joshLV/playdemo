@@ -33,6 +33,14 @@
         <form class="form-horizontal" id="couponsFrm" action="@{UserPoints.record()}" method="GET">
             <div class="search-box">
 
+                <td width="30%">商品名称：<input type="text" name="condition.pointGoodsName" class="input-medium"
+                                            value="${condition?.pointGoodsName}" id="pointGoodsName" />
+                </td>
+                &nbsp
+                <td width="30%">订单号：<input type="text" name="condition.orderNumber" class="input-medium"
+                                               value="${condition?.orderNumber}"  id="orderNumber" />
+                </td>
+                &nbsp
                 <label>申请时间：</label>
                 <input class="Wdate" type="text" name="condition.applyAtBegin" id="applyAtBegin"
                        value="${condition?.applyAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"/>
@@ -75,7 +83,7 @@
                     #{select 'condition.status', id:'condition_status', class:'deal-status', value:condition?.status}
 
                         #{option ""}处理状态#{/option}
-                        #{option "APPLY"}待发货#{/option}
+                        #{option "APPLY"}待处理#{/option}
                         #{option "CANCELED"}审核未通过#{/option}
                         #{option "SENT"}已发货 #{/option}
                         #{option "UNSENT"}未发货 #{/option}
@@ -119,11 +127,6 @@
                     </td>
                     <td>${point?.buyNumber}</td>
                     <td class="use-integral">${point?.amount}</td>
-
-
-
-
-
                     #{if models.order.PointGoodsOrderStatus.CANCELED.equals(point?.status)}
                         <td class="inprogress">审核未通过</td>
                     #{/if}
@@ -131,42 +134,13 @@
                     #{if models.order.PointGoodsOrderStatus.APPLY.equals(point?.status)}
                         <td class="todo">待处理</td>
                     #{/if}
-
-
-
                     #{if  models.order.PointGoodsOrderSentStatus.SENT.equals(point?.sentStatus)}
                         <td class="done">已发货</td>
                     #{/if}
 
-                    #{if  models.order.PointGoodsOrderStatus.ACCEPT.equals(point?.status)}
+                    #{if  (models.order.PointGoodsOrderSentStatus.UNSENT.equals(point?.sentStatus)) && (models.order.PointGoodsOrderStatus.ACCEPT.equals(point?.status))}
                         <td class="done">未发货</td>
                     #{/if}
-
-
-
-
-
-                *{#{elseif  models.order.PointGoodsOrderSentStatus.SENT.equals(pointGoodsOrder?.sentStatus)}}*
-                *{已发货}*
-                *{#{/elseif}}*
-
-                *{#{elseif  models.order.PointGoodsOrderStatus.ACCEPT.equals(pointGoodsOrder?.status)}}*
-                *{&{'pointGoodsOrder.'+ pointGoodsOrder?.status}}*
-                *{<br/>}*
-                *{未发货}*
-
-                *{#{/elseif}}*
-
-                *{#{else}}*
-
-                *{&{'pointGoodsOrder.'+ point?.status}}*
-
-                *{#{/else}}*
-
-                *{<td class="inprogress">处理中</td>}*
-                *{<td class="done">已发货</td>}*
-
-
                 </tr>
                 </tbody>
             #{/paginate.list}

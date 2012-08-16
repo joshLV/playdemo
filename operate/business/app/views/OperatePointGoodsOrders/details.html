@@ -80,13 +80,7 @@
                 #{if models.order.PointGoodsOrderStatus.CANCELED.equals(pointGoodsOrder?.status)}
                     审核未通过
                 #{/if}
-
-                *{${'pointGoodsOrder.'+ pointGoodsOrder?.status}}*
                 </td>
-                *{<td>物流方式： &{'pointGoodsOrder.'+pointGoodsOrder.deliveryType}</td>}*
-
-
-
                 <td>物流状态：
                 #{if models.order.PointGoodsOrderStatus.ACCEPT.equals(pointGoodsOrder?.status)&& models.order.PointGoodsOrderSentStatus.UNSENT.equals(pointGoodsOrder?.sentStatus)}
                 未发货
@@ -106,6 +100,7 @@
             <thead>
             <tr>
                 <th>商品名称</th>
+                <th>商品类型</th>
                 <th>原价</th>
                 <th>单价积分</th>
                 <th>数量</th>
@@ -115,34 +110,17 @@
             </tr>
             </thead>
             <tbody>
-            *{#{list items:orderItems, as:'orderItem' }}*
             <tr>
-                *{<td>${orderItem.pointGoodsOrder.pointGoodsName}</td>}*
-                *{<td>${orderItem.pointGoodsOrder.pointPrice}</td>}*
-                *{<td>${orderItem.pointGoodsOrder.buyNumber}</td>}*
-                *{<td>${orderItem.pointGoodsOrder.amount}</td>}*
-
                 <td>${pointGoodsOrder.pointGoodsName}</td>
+                <td>&{'goods.'+pointGoodsOrder.pointGoods.materialType}</td>
                 <td>${pointGoodsOrder.faceValue?.formatCurrency('CNY')}</td>
                 <td>${pointGoodsOrder.pointPrice}点</td>
                 <td>${pointGoodsOrder.buyNumber}</td>
                 <td>${pointGoodsOrder.amount}点</td>
                 <td>${pointGoodsOrder.receiverMobile}</td>
-
-                *{<td>&{'goods.'+orderItem.goods.materialType}</td>}*
-
-
             </tr>
-            *{#{/list}}*
             </tbody>
-            *{<tr>}*
-                *{<td colspan="9">商品金额： #{if orders.containsRealGoods()}}*
-                *{${orders.amount.subtract(models.order.Order.FREIGHT)}#{/if}#{else}${orders.amount}#{/else}&nbsp;元}*
-                    *{&nbsp;+ 运费：}*
-                *{#{if orders.containsRealGoods()}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else} 元 = &nbsp;总金额：}*
-                *{${orders.amount} 元 (余额支付:${orders.accountPay}元, 网银支付:${orders.discountPay}元)}*
-                *{</td>}*
-            *{</tr>}*
+
         </table>
     </ul>
 #{if pointGoodsOrder.containsRealGoods()}
@@ -154,33 +132,22 @@
                 <td>收货人： ${pointGoodsOrder?.receiverName}</td>
             </tr>
             <tr>
-                <td>地址： ${pointGoodsOrder?.receiverAddress} </td>
+                <td>地  址： ${pointGoodsOrder?.receiverAddress} </td>
             </tr>
 
             <tr>
-                <td>
-            邮编:${pointGoodsOrder?.postcode}     </td>
-            *{</tr>}*
-
-                *{<td>手机： ${pointGoodsOrder?.receiverMobile}</td>}*
-            *{</tr>}*
-
+                <td>邮  编： ${pointGoodsOrder?.postcode}     </td>
             <tr>
-                <td>手机： ${pointGoodsOrder?.receiverMobile}</td>
+                <td>手  机： ${pointGoodsOrder?.receiverMobile}</td>
             </tr>
 
             <tr>
-                <td>电话： ${pointGoodsOrder?.receiverPhone}</td>
+                <td>电  话： ${pointGoodsOrder?.receiverPhone}</td>
             </tr>
 
-            *{<tr>}*
-                *{<td>订单留言： ${pointGoodsOrder?.remark}</td>}*
-            *{</tr>}*
         </table>
     </ul>
-    *{#{if models.order.OrderStatus.PAID.equals(orders.realGoodsStatus)}}*
-        *{<a class="btn btn-primary" onclick="prepareSend(${orders.id})">发货</a><br/><br/>}*
-    *{#{/if}}*
+
 #{/if}
     <ul class="nav">
         <li class="active"><a href="#"> 订购人信息</a></li>
@@ -191,11 +158,6 @@
             <tr>
                 <td>手机： ${pointGoodsOrder.user?.mobile}</td>
             </tr>
-
-
-
-
-
             <tr>
                 <td>电话： ${pointGoodsOrder.buyerPhone}</td>
             </tr>
@@ -220,19 +182,6 @@
         </table>
     </ul>
 
-*{#{if orders.refundAt != null }}*
-    *{<ul class="nav">}*
-        *{<li class="active"><a href="#"> 退款信息</a></li>}*
-        *{<table class="table">}*
-            *{<tr>}*
-                *{<td>申请退款时间：${orders.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>}*
-            *{</tr>}*
-            *{<tr>}*
-                *{<td>退款时间： ${orders.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>}*
-            *{</tr>}*
-        *{</table>}*
-    *{</ul>}*
-*{#{/if}}*
 </div>
 
 <div class="modal" id="sendModal" style="display: none;">
