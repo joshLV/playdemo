@@ -57,44 +57,43 @@ mark { background: #ff0; }
 /** 顶通 **/
 #topbar {
     height: 25px;
+    overflow: hidden;
     line-height: 25px;
 }
 #topbar-bd {
     width: 960px;
     margin: 0 auto;
 }
-#topbar-bd li {
+#topbar-bd .site-nav li {
     float: left;
 }
-#topbar-bd a {
+#topbar-bd .site-nav li a {
     padding: 0 15px;
     color: #707070;
 }
-#topbar-bd a:hover {
+#topbar-bd .site-nav li a:hover {
     color: #f96e0f;
 }
-#topbar-bd .login,
-#topbar-bd .signup {
+#topbar-bd .site-nav .login,
+#topbar-bd .site-nav .signup {
     color: #f96e0f;
 }
-#topbar-bd .favorite {
+#topbar-bd .site-nav .favorite {
     padding-left: 25px;
 }
-#topbar-bd .follow {
-    padding-left: 25px;
-}
-#topbar-bd .first a {
+#topbar-bd .site-nav .first a {
     padding-left: 0;
 }
-#topbar-bd .last {
+#topbar-bd .site-nav .last {
     background: none;
+    padding: 1px 0 0 10px;
 }
-#topbar-bd .hotline {
+#topbar-bd .share {
     float: right;
     color: #707070;
 }
-#topbar-bd .hotline strong {
-    color: #9ac72c;
+#topbar-bd .share .bds_more {
+    line-height: 15px;
 }
 
 /** 头部 **/
@@ -287,9 +286,10 @@ mark { background: #ff0; }
     color: #909090;
     text-align: center;
 }
-.ft-nav a {
+.ft-nav a,
+.ft-nav span {
     color: #707070;
-    margin: 0 10px;
+    margin: 0 5px;
 }
 .copyright {
     color: #909090;
