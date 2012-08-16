@@ -253,6 +253,29 @@
 .totalize {
     text-align: right;
 }
+.totalize .discount {
+    margin: 10px 0 20px;
+}
+.totalize .discount-ipt {
+    width: 120px;
+    height: 20px;
+    border: 1px solid #abadb3;
+}
+.totalize .discount-btn {
+    border: 0;
+    width: 57px;
+    height: 25px;
+    margin-left: 10px;
+    background: url(../ico/discount-btn.png) no-repeat 0 0;
+}
+.totalize .discount .error {
+    color: #f00;
+    padding-right: 74px;
+    *padding-right: 71px;
+}
+.totalize .discount span {
+    color: #f50;
+}
 .totalize em {
     color: #f50;
     font-size: 24px;
