@@ -2,8 +2,14 @@ package controllers;
 
 import com.uhuila.common.util.RandomNumberUtil;
 import controllers.modules.website.cas.SecureCAS;
+import models.accounts.Account;
+import models.accounts.TradeBill;
+import models.accounts.util.AccountUtil;
+import models.accounts.util.TradeUtil;
 import models.consumer.User;
 import models.consumer.UserInfo;
+import models.sms.BindMobile;
+import models.sms.MobileBindType;
 import models.sms.SMSUtil;
 import org.apache.commons.lang.StringUtils;
 
@@ -13,8 +19,12 @@ import play.modules.breadcrumbs.BreadcrumbList;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.math.BigDecimal;
+
 @With({SecureCAS.class, WebsiteInjector.class})
 public class UserInfos extends Controller {
+    public static String BIND_MOBILE_ADD_MONEY = Play.configuration.getProperty("bind_mobile.promotion.add_money", "off");
+    public static String BIND_MOBILE_ADD_MONEY_AMOUNT = Play.configuration.getProperty("bind_mobile.promotion.add_money.amount", "0");
 
     /**
      * 用户资料页面
@@ -99,12 +109,19 @@ public class UserInfos extends Controller {
         //更新用户基本信息手机
         User user = SecureCAS.getUser();
         user.updateMobile(mobile);
+        if(BindMobile.find("byMobileAndBindType", mobile, MobileBindType.BIND_CONSUME).first() == null){
+            new BindMobile(mobile, MobileBindType.BIND_CONSUME).save();
+            if (BIND_MOBILE_ADD_MONEY.equals("on")){
+                Account account = AccountUtil.getConsumerAccount(user.getId());
+                BigDecimal promotionAmount = new BigDecimal(BIND_MOBILE_ADD_MONEY_AMOUNT);
+                TradeBill tradeBill = TradeUtil.createPromotionChargeTrade(account, promotionAmount, null);
+                TradeUtil.success(tradeBill, "绑定手机送" + promotionAmount + "元");
+            }
+        }
 
         Cache.delete("validCode_");
         Cache.delete("mobile_");
         renderJSON("0");
-
-
     }
 
 }
