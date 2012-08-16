@@ -31,27 +31,27 @@ public class DiscountCodeTest extends UnitTest {
         });
         System.out.println("dc.begin=" + dc.beginAt + ", end=" + dc.endAt );
         System.out.println("dc.sn=" + dc.discountSn + ", delete=" + dc.deleted);
-        assertNotNull(DiscountCode.findAvaiableSN("AVAIL"));
-        assertNotNull(DiscountCode.findAvaiableSN("Avail"));
+        assertNotNull(DiscountCode.findAvailableSN("AVAIL"));
+        assertNotNull(DiscountCode.findAvailableSN("Avail"));
     }
     
     
     @Test
     public void 通过已过期的SN找不到可用的折扣券() {
-        FactoryBoy.create(DiscountCode.class, "Unavaiable", new BuildCallBack<DiscountCode>() {
+        FactoryBoy.create(DiscountCode.class, "Unavailable", new BuildCallBack<DiscountCode>() {
             @Override
             public void build(DiscountCode target) {
                 target.discountSn = "UNAVI";
                 target.discountAmount = BigDecimal.TEN;
             }
         });
-        assertNull(DiscountCode.findAvaiableSN("UNAVI"));
+        assertNull(DiscountCode.findAvailableSN("UNAVI"));
     }
     
     @Test
     public void 无效的SN会找不到可用的折扣券() throws Exception {
-        assertNull(DiscountCode.findAvaiableSN("xxxxx"));
-        assertNull(DiscountCode.findAvaiableSN(null));
+        assertNull(DiscountCode.findAvailableSN("xxxxx"));
+        assertNull(DiscountCode.findAvailableSN(null));
     }
     
     @Test

@@ -107,7 +107,7 @@ public class DiscountCode extends Model {
      * @param sn
      * @return
      */
-    public static DiscountCode findAvaiableSN(String sn) {
+    public static DiscountCode findAvailableSN(String sn) {
         if (StringUtils.isEmpty(sn)) {
             return null;
         }

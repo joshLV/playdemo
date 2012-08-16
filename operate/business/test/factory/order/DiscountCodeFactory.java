@@ -1,13 +1,15 @@
 package factory.order;
 
-import static util.DateHelper.afterDays;
-import static util.DateHelper.beforeDays;
-import java.math.BigDecimal;
-import java.util.Date;
 import com.uhuila.common.constants.DeletedStatus;
-import models.order.DiscountCode;
 import factory.ModelFactory;
 import factory.annotation.Factory;
+import models.order.DiscountCode;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import static util.DateHelper.afterDays;
+import static util.DateHelper.beforeDays;
 
 public class DiscountCodeFactory extends ModelFactory<DiscountCode> {
 
@@ -25,8 +27,8 @@ public class DiscountCodeFactory extends ModelFactory<DiscountCode> {
         return discountCode;
     }
     
-    @Factory(name="Unavaiable")
-    public void defineUnavaiableDiscount(DiscountCode discountCode) {
+    @Factory(name="Unavailable")
+    public void defineUnavailableDiscount(DiscountCode discountCode) {
         discountCode.discountSn = "DIST2";
         discountCode.beginAt = beforeDays(new Date(), 3);
         discountCode.endAt = beforeDays(new Date(), 1);

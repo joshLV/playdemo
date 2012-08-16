@@ -138,11 +138,6 @@ public class SecKillGoodsItem extends Model {
      */
     @Transient
     public boolean isExpired() {
-        boolean isExpired = secKillEndAt != null && secKillEndAt.before(new Date());
-        if (isExpired) {
-            status = SecKillGoodsStatus.OFFSALE;
-            this.save();
-        }
-        return isExpired;
+        return secKillEndAt != null && secKillEndAt.before(new Date());
     }
 }
