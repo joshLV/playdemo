@@ -421,5 +421,6 @@ discountCode.goods.id=折扣商品ID
 discountCode.discountAmount=折扣金额
 discountCode.discountPercent=折扣比率
 discountCode.dateTimeScope=折扣使用时间
+discountCode.description=备注
 
 # END

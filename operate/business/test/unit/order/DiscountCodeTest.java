@@ -29,8 +29,6 @@ public class DiscountCodeTest extends UnitTest {
                 target.discountAmount = BigDecimal.TEN;
             }
         });
-        System.out.println("dc.begin=" + dc.beginAt + ", end=" + dc.endAt );
-        System.out.println("dc.sn=" + dc.discountSn + ", delete=" + dc.deleted);
         assertNotNull(DiscountCode.findAvailableSN("AVAIL"));
         assertNotNull(DiscountCode.findAvailableSN("Avail"));
     }

@@ -24,6 +24,7 @@
             <tr>
                 <th>&{'discountCode.title'}</th>
                 <th>&{'discountCode.discountSn'}</th>
+                <th>&{'discountCode.description'}</th>
                 <th>&{'discountCode.goods.id'}</th>
                 <th>&{'discountCode.discountAmount'}</th>
                 <th>&{'discountCode.discountPercent'}</th>
@@ -38,6 +39,7 @@
             <tr>
                 <td align="center">${discountCode?.title}</td>
                 <td align="center">${discountCode?.discountSn}</td>
+                <td>${discountCode?.description}</td>
                 <td>${discountCode?.goods?.name}</td>
                 <td>${discountCode?.discountAmount?.formatCurrency('CNY')}</td>
                 <td>${discountCode?.discountPercent}</td>
