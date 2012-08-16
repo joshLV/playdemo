@@ -95,7 +95,7 @@
 #full_bg {
     background-color: Gray;
     display: none;
-    z-index: 3;
+    z-index: 500;
     position: absolute;
     left: 0px;
     top: 0px;
@@ -107,7 +107,7 @@
     position: absolute;
     width: 450px;
     height: 160px;
-    z-index: 5;
+    z-index: 510;
     text-align: center;
     background-color: white;
     border: 6px solid #AAA;
@@ -117,7 +117,7 @@
     position: absolute;
     top: 3px;
     right: 5px;
-    z-index: 5;
+    z-index: 520;
     color: #666;
 }
 #payment_result .pay-tips {

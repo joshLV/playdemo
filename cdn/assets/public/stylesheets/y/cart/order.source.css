@@ -268,13 +268,14 @@
     margin-left: 10px;
     background: url(//img.uhcdn.com/images/y/cart/discount-btn.png) no-repeat 0 0;
 }
-.totalize .discount .error {
+.totalize .discount-error {
     color: #f00;
     padding-right: 74px;
     *padding-right: 71px;
 }
-.totalize .discount span {
-    color: #f50;
+.totalize .discount-info {
+    padding-right: 82px;
+    *padding-right: 79px;
 }
 .totalize em {
     color: #f50;
