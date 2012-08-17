@@ -12,7 +12,7 @@
             <h3>订单详情</h3>
             <span>订单号：${order?.orderNumber}</span>
             <span>申请时间：${order.applyAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
-        #{if order.acceptAt != order.updatedAt}<span>审核时间：${order.acceptAt?.format("yyyy-MM-dd HH:mm:ss")}</span>#{/if}
+        #{if order.acceptAt != order.updatedAt}<span>审核时间：${order.updatedAt?.format("yyyy-MM-dd HH:mm:ss")}</span>#{/if}
         #{if order.acceptAt == order.updatedAt}<span>审核时间：${order.updatedAt?.format("yyyy-MM-dd HH:mm:ss")}</span>#{/if}
         </caption>
         <thead>
