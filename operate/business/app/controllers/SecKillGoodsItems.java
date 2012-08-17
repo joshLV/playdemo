@@ -19,13 +19,14 @@ import play.mvc.With;
  * Time: 上午11:18
  */
 @With(OperateRbac.class)
-@ActiveNavigation("seckill_goods_add")
+@ActiveNavigation("seckill_goods_index")
 public class SecKillGoodsItems extends Controller {
     public static int PAGE_SIZE = 15;
 
     /**
      * 展示添加秒杀活动页面
      */
+    @ActiveNavigation("seckill_goods_index")
     public static void index(Long seckillId, SecKillGoodsCondition condition) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
@@ -42,6 +43,7 @@ public class SecKillGoodsItems extends Controller {
         render(secKillGoodsItems, secKillGoods, seckillId, condition);
     }
 
+    @ActiveNavigation("seckill_goods_add")
     public static void add(Long seckillId) {
         models.sales.SecKillGoods secKillGoods = models.sales.SecKillGoods.findById(seckillId);
         render(seckillId, secKillGoods);
