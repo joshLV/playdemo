@@ -68,9 +68,6 @@ public class UserInfoTest extends FunctionalTest {
 		Response response = POST("/userInfo/bindMobile", params);
 		assertStatus(302,response);
 
-		UserInfo userInfo= UserInfo.findById(userInfoId);
-		assertEquals("15912567896",userInfo.mobile);
-
 		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
 
 		User user= User.findById(userId);
