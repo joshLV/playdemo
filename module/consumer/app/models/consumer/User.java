@@ -104,7 +104,7 @@ public class User extends Model {
      */
     public static boolean checkMobile(String mobile) {
         //手机存在的情况
-        List<UserInfo> mList = UserInfo.find("byMobile", mobile).fetch();
+        List<User> mList = User.find("byMobile", mobile).fetch();
         return mList.size() > 0;
     }
 
@@ -183,7 +183,7 @@ public class User extends Model {
      */
     public void updateMobile(String mobile) {
         this.mobile = mobile;
-        this.userInfo.mobile = mobile;
+//        this.userInfo.mobile = mobile;
         this.userInfo.bindMobileAt = new Date();
         this.userInfo.save();
         this.save();

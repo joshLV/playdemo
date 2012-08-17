@@ -1,15 +1,8 @@
 package models.consumer;
 
 import play.db.jpa.Model;
-import play.modules.view_ext.annotation.Mobile;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
@@ -26,8 +19,8 @@ public class UserInfo extends Model {
     @Column(name = "full_name")
     public String fullName;
 
-    @Mobile
-    public String mobile;
+//    @Mobile
+//    public String mobile;
 
     /**
      * 性别 

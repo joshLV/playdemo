@@ -109,8 +109,11 @@ public class UserInfos extends Controller {
         //更新用户基本信息手机
         User user = SecureCAS.getUser();
         user.updateMobile(mobile);
-        if(BindMobile.find("byMobileAndBindType", mobile, MobileBindType.BIND_CONSUME).first() == null){
-            new BindMobile(mobile, MobileBindType.BIND_CONSUME).save();
+        if(BindMobile.find("byMobileAndBindType", mobile, MobileBindType.BIND_CONSUME).first() == null &&
+                BindMobile.find("byBindTypeAndBindInfo", MobileBindType.BIND_CONSUME, String.valueOf(user.getId())).first() == null){
+            BindMobile bindMobile =  new BindMobile(mobile, MobileBindType.BIND_CONSUME);
+            bindMobile.bindInfo = String.valueOf(user.getId());
+            bindMobile.save();
             if (BIND_MOBILE_ADD_MONEY.equals("on")){
                 Account account = AccountUtil.getConsumerAccount(user.getId());
                 BigDecimal promotionAmount = new BigDecimal(BIND_MOBILE_ADD_MONEY_AMOUNT);

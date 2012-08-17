@@ -106,7 +106,7 @@
                         #{/if} </td>
                     <td align="center"
                         class="income">#{if accountSequence.sequenceFlag == models.accounts.AccountSequenceFlag.VOSTRO}
-                        +${accountSequence.changeAmount} #{/if}</td>
+                        +${accountSequence.changeAmount.add(accountSequence.promotionChangeAmount?:java.math.BigDecimal.ZERO)} #{/if}</td>
                     <td align="center">${accountSequence?.payMethod}</td>
                 </tr>
                 </tbody>
