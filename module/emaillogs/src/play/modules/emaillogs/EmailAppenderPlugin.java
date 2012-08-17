@@ -90,6 +90,7 @@ public class EmailAppenderPlugin extends PlayPlugin{
                 //ignore
             }
         }
+        smtpAppender.activateOptions();
     }
 }
 
