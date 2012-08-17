@@ -52,17 +52,19 @@
                 </td>
             #{/if}
         </tr>
-        #{if order?.remark != null && order?.remark !=""}
+
         <tr class="order-bd">
             <td colspan="8">
-                订单留言：${order.remark}
+                #{if order?.remark != null && order?.remark !=""}
+                    <img src="/public/images/remark.png"> ${order.remark}
+                #{/if}
                 <br/>
                 #{if (order.status == models.order.PointGoodsOrderStatus.CANCELED)}
-                未通过理由：${order.note}#{/if}
+                    <img src="/public/images/note.png"> ${order.note}
+                #{/if}
             </td>
 
         </tr>
-        #{/if}
         </tbody>
     </table>
 
