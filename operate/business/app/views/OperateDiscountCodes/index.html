@@ -29,6 +29,7 @@
                 <th>&{'discountCode.discountAmount'}</th>
                 <th>&{'discountCode.discountPercent'}</th>
                 <th>&{'discountCode.dateTimeScope'}</th>
+                <th>已使用数</th>
                 <th width="80">操 作</th>
             </tr>
             </thead>
@@ -41,10 +42,11 @@
                 <td align="center">${discountCode?.discountSn}</td>
                 <td>${discountCode?.description}</td>
                 <td>${discountCode?.goods?.name}</td>
-                <td>${discountCode?.discountAmount?.formatCurrency('CNY')}</td>
-                <td>${discountCode?.discountPercent}</td>
+                <td class="amount">${discountCode?.discountAmount?.formatCurrency('CNY')}</td>
+                <td class="amount">${discountCode?.discountPercent}</td>
                 <td>${discountCode?.beginAt?.format('yyyy-MM-dd HH:mm:ss')}
                  至${discountCode?.endAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td class="amount">${discountCode?.getUsedDiscountCodeCount()}</td>
                 <td><a href="@{OperateDiscountCodes.edit(discountCode?.id)}">修改</a>
                         / #{vx.deleteLink action:"discountcodes", id:discountCode?.id, name:discountCode.discountSn/}
                         

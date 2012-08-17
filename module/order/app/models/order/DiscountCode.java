@@ -120,4 +120,8 @@ public class DiscountCode extends Model {
         return DiscountCode.find("deleted=? and discountSn=? and beginAt<=? and endAt>=?", DeletedStatus.UN_DELETED,
                 sn.toUpperCase(), new Date(), new Date()).first();
     }
+    
+    public Long getUsedDiscountCodeCount() {
+        return OrderDiscount.count("from OrderDiscount od where od.order.status=? and od.discountCode=?", OrderStatus.PAID, this);
+    }
 }

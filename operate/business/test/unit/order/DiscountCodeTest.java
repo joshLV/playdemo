@@ -3,6 +3,9 @@ package unit.order;
 import java.math.BigDecimal;
 import java.util.Date;
 import models.order.DiscountCode;
+import models.order.Order;
+import models.order.OrderDiscount;
+import models.order.OrderStatus;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.ModelPaginator;
@@ -95,5 +98,30 @@ public class DiscountCodeTest extends UnitTest {
         assertEquals(form.endAt, dc2.endAt);
         // update方法不更新删除标志
         assertEquals(DeletedStatus.UN_DELETED, dc2.deleted);
+    }
+    
+    @Test
+    public void 刚发布时此折扣码的已使用数量为0() {
+        DiscountCode discountCode = FactoryBoy.create(DiscountCode.class);
+        assertEquals(new Long(0), discountCode.getUsedDiscountCodeCount());
+    }
+    
+    @Test
+    public void 测试已使用折扣码的订单数量() {
+        final DiscountCode discountCode = FactoryBoy.create(DiscountCode.class);
+        FactoryBoy.create(OrderDiscount.class, new BuildCallBack<OrderDiscount>() {
+            @Override
+            public void build(OrderDiscount target) {
+                target.order = FactoryBoy.create(Order.class, new BuildCallBack<Order>() {
+                    @Override
+                    public void build(Order order) {
+                        order.status = OrderStatus.PAID;
+                    }
+                }); 
+                target.discountCode = discountCode;
+            }
+        });
+        
+        assertEquals(new Long(1), discountCode.getUsedDiscountCodeCount());
     }
 }
