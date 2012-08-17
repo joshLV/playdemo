@@ -29,10 +29,22 @@
                 #{/else}
             #{list brands, as:'brand'}
                 #{if brandId == brand.id}
-                    <span class="selected">${brand.name}</span>
+                    <span class="selected">
+
+                     #{if brand.name!="一百券"}
+
+
+
+                    ${brand.name}
+                     #{/if}
+
+
+                    </span>
                 #{/if}
                 #{else}
+                #{if brand.name!="一百券"}
                     <a href="/goods/list/${brand.id}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-${type}">${brand.name}</a>
+                #{/if}
                 #{/else}
             #{/list}
             </dd>

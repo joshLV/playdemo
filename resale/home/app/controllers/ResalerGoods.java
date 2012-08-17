@@ -21,6 +21,7 @@ import controllers.modules.resale.cas.SecureCAS;
 public class ResalerGoods extends Controller {
 	public static int PAGE_SIZE = 12;
 	public static int LIMIT = 8;
+    public static int MAX_LIMIT=Integer.MAX_VALUE;
 	/**
 	 * 商品列表主界面
 	 */
@@ -31,7 +32,7 @@ public class ResalerGoods extends Controller {
 		GoodsCondition goodsCond = new GoodsCondition();
 		JPAExtPaginator<models.sales.Goods> goodsList = models.sales
 				.Goods.findByResaleCondition(resaler,goodsCond,pageNumber, PAGE_SIZE);
-		List<Brand> brands = Brand.findTop(LIMIT);
+		List<Brand> brands = Brand.findTop(MAX_LIMIT);
 		renderGoodsCond(goodsCond);
 		render(goodsList,brands,resaler);
 	}
