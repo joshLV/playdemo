@@ -22,7 +22,7 @@ public class YihaodianNewOrders extends Job {
         //todo
         Resaler resaler = null;
         Goods goods = null;
-        long number = 1;
+        int number = 1;
         String mobile = "";
         String extOrderId= "";
         //todo log everything
@@ -50,7 +50,7 @@ public class YihaodianNewOrders extends Job {
         }
     }
 
-    public Order buildSeewiOrder(Resaler resaler, Goods goods, long number, String mobile) throws NotEnoughInventoryException{
+    public Order buildSeewiOrder(Resaler resaler, Goods goods, int number, String mobile) throws NotEnoughInventoryException{
         Order order = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         order.deliveryType = DeliveryType.SMS;
 

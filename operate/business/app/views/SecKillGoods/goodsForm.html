@@ -1,6 +1,11 @@
-#{layout_operate.textField name:'secKillGoods.goods.id', value:secKillGoods?.goods?.id/}
-<div class="control-group" id="goodsName" style="padding-left:158px;color: #ff0000">${goodsName}
-</div>
+#{if "add".equals(action)}
+    #{layout_operate.textField name:'secKillGoods.goods.id', value:secKillGoods?.goods?.id/}
+#{/if}
+#{else}
+    #{layout_operate.textField name:'secKillGoods.goods.id', value:secKillGoods?.goods?.id,disabled:true/}
+   <input type="hidden" name="secKillGoods.goods.id" value="${secKillGoods?.goods?.id}">
+#{/else}
+    <div class="control-group" id="goodsName" style="padding-left:158px;color: #ff0000">${goodsName}</div>
 #{layout_operate.textField name:'secKillGoods.personLimitNumber', value:secKillGoods?.personLimitNumber, note:'个', required:true/}
 
 #{if "add".equals(action)}
@@ -8,67 +13,66 @@
 #{/if}
 #{else}
     #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)'/}
-<div class="control-group">
-    <label for='levelPrices_${level}' class="control-label"> </label>
-
-    <div class="controls">(修改前)<br/><img src="${imageLargePath}"/>
-        <input type="hidden" name="imageLargePath" value="${imageLargePath}"></div>
-</div>
+    <div class="control-group">
+        <label class="control-label"></label>
+        <div class="controls">(修改前)<br/><img src="${imageLargePath}"/>
+            <input type="hidden" name="imageLargePath" value="${imageLargePath}"></div>
+    </div>
 #{/else}
 
 #{layout_operate.htmlField name:'secKillGoods.prompt', value:secKillGoods?.prompt/}
 
-<div class="form-actions">
-    <input class="btn btn-primary" id="save" type="submit" value="保存">
-*{#{if "edit".equals(action)}}*
+    <div class="form-actions">
+        <input class="btn btn-primary" id="save" type="submit" value="保存">
+    *{#{if "edit".equals(action)}}*
     *{<input class="btn btn-primary" id="preview" type="submit" value="预览"/>}*
-*{#{/if}}*
-#{if "edit".equals(action)}
-    #{vx.cancelButton url:'/seckill_goods', class:'btn btn-primary'/}
-#{/if}
-</div>
-<script type="text/javascript">
-    $(function () {
-        $("#secKillGoods_goods_id").blur(function () {
-            checkGoods(false);
-            return false;
+    *{#{/if}}*
+    #{if "edit".equals(action)}
+        #{vx.cancelButton url:'/seckill_goods', class:'btn btn-primary'/}
+    #{/if}
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $("#secKillGoods_goods_id").blur(function () {
+                checkGoods(false);
+                return false;
 
-        });
+            });
 //        $("#save").click(function () {
 //            checkGoods(true)
 //            return false;
 //        })
 
 
-    });
-
-    function checkGoods(subm) {
-        var id = $("#secKillGoods_goods_id").val();
-        if (id == '') {
-            $("#goodsName").html("请输入的商品ID！");
-            return;
-        }
-
-        $.ajax({
-            url:'/seckill_goods/' + id + '/check',
-            type:'GET',
-            datatype:'text',
-            error:function () {
-                alert('取得失败!');
-            },
-            success:function (data) {
-                if (data != null && data != '') {
-                    if (subm){
-                        alert("#")
-                        $("#form").submit();
-                    }else{
-                        $("#goodsName").html("商品名：" + data);
-                    }
-                } else {
-                    $("#goodsName").html("您输入的商品ID不存在！");
-                }
-            }
         });
 
-    }
-</script>
+        function checkGoods(subm) {
+            var id = $("#secKillGoods_goods_id").val();
+            if (id == '') {
+                $("#goodsName").html("请输入的商品ID！");
+                return;
+            }
+
+            $.ajax({
+                url:'/seckill_goods/' + id + '/check',
+                type:'GET',
+                datatype:'text',
+                error:function () {
+                    alert('取得失败!');
+                },
+                success:function (data) {
+                    if (data != null && data != '') {
+                        if (subm) {
+                            alert("#")
+                            $("#form").submit();
+                        } else {
+                            $("#goodsName").html("商品名：" + data);
+                        }
+                    } else {
+                        $("#goodsName").html("您输入的商品ID不存在！");
+                    }
+                }
+            });
+
+        }
+    </script>

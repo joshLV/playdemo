@@ -3,15 +3,11 @@ package unit;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
-import models.order.DeliveryType;
-import models.order.NotEnoughInventoryException;
-import models.order.Order;
-import models.order.OrderItems;
-import models.order.OrderStatus;
-import models.order.OrdersCondition;
+import models.order.*;
 import models.sales.Goods;
 import org.junit.Before;
 import org.junit.Test;
+import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
 
@@ -19,7 +15,6 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 
 public class OrderUnitTest extends UnitTest {
@@ -53,7 +48,7 @@ public class OrderUnitTest extends UnitTest {
         order.searchItems = "2012";
         int pageNumber = 1;
         int pageSize = 15;
-        List<Order> list = Order.query(order, supplierId, pageNumber, pageSize);
+        JPAExtPaginator<Order> list = Order.query(order, supplierId, pageNumber, pageSize);
         assertEquals(0, list.size());
 
         order = new OrdersCondition();

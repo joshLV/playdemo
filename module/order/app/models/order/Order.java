@@ -595,7 +595,7 @@ public class Order extends Model {
                 TradeUtil.success(tradeBill, this.description);
                 this.payRequestId = tradeBill.getId();
             }catch (RuntimeException e) {
-                Logger.error("", e);
+                Logger.error("can not pay", e);
                 return false;
                 //忽略，此时订单没有支付，但余额已经保存
             }
