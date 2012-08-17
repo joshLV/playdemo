@@ -58,8 +58,7 @@ public class OperateVerifyCoupons extends Controller {
 
         //根据页面录入券号查询对应信息
         ECoupon ecoupon = ECoupon.query(eCouponSn, supplierId);
-
-        if (ecoupon.operateUserId != null) {
+        if (ecoupon != null && ecoupon.operateUserId != null) {
             OperateUser operateUser = OperateUser.findById(ecoupon.operateUserId);
             ecoupon.operateUserName = operateUser.userName;
         }
