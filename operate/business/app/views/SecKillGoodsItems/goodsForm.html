@@ -6,7 +6,7 @@
 
 <div class="control-group">
     <label class="control-label">商品原价</label>
-    <div class="controls">${secKillGoods?.goods?.originalPrice?:"0"}元</div>
+    <div class="controls">${secKillGoods?.goods?.faceValue?:"0"}元</div>
 </div>
 #{layout_operate.textField name:'secKillGoodsItem.goodsTitle', value:secKillGoodsItem?.goodsTitle, required:true/}
 #{layout_operate.textField name:'secKillGoodsItem.salePrice', value:secKillGoodsItem?.salePrice?:"0", note:'元', required:true/}
