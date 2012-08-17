@@ -183,7 +183,8 @@ public class Suppliers extends Controller {
         withdrawAccount.userId = supplier.getId();
         withdrawAccount.accountType = AccountType.SUPPLIER;
         withdrawAccount.save();
-        index();
+
+        edit(supplierId);
     }
 
     public static void withdrawAccountDelete(Long id, Long supplierId) {
