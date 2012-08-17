@@ -1,7 +1,7 @@
 consumer.UserInfo(userInfo1):
  "user": "selenium"
  "fullName": ""
- "mobile": "15026666507"
+# "mobile": "15026666507"
  "birthday": "2001-01-01"
  "phone": ""
  "marryState": "0"
@@ -18,7 +18,7 @@ consumer.UserInfo(userInfo1):
 consumer.UserInfo(userInfo2):
  "user": "selenium1"
  "fullName": ""
- "mobile": "15026666506"
+# "mobile": "15026666506"
  "birthday": "2001-01-01"
  "phone": ""
  "marryState": "0"

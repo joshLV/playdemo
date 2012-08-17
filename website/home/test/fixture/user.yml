@@ -4,6 +4,7 @@ consumer.User(selenium):
  "passwordSalt": "gXP0W9"
  "lastLoginAt": "2012-02-24T15:40:07"
  "status": "NORMAL"
+ "mobile": "15026666506"
 consumer.User(selenium1):
  "loginName": "selenium1@uhuila.com"
  "password": "63dc778349e8f64e7c1c3b9370848ba1"
