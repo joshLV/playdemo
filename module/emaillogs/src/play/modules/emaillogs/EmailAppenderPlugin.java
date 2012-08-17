@@ -22,6 +22,7 @@ public class EmailAppenderPlugin extends PlayPlugin{
             if(appender != null) {
                 AsyncAppender asyncAppender = (AsyncAppender) appender;
                 asyncAppender.removeAppender("GMAIL");
+                Logger.info("EmailAppenderPlugin: remove GMAIL appender");
             }
         }
     }
@@ -30,11 +31,13 @@ public class EmailAppenderPlugin extends PlayPlugin{
     public void onApplicationStart(){
         Appender appender = org.apache.log4j.Logger.getRootLogger().getAppender("EMAIL");
         if(appender == null) {
+            Logger.info("EmailAppenderPlugin: EMAIL appender not found");
             return;
         }
         AsyncAppender asyncAppender = (AsyncAppender) appender;
         SMTPAppender smtpAppender = (SMTPAppender)asyncAppender.getAppender("GMAIL");
         if (smtpAppender == null) {
+            Logger.info("EmailAppenderPlugin: GMAIL appender not found");
             return;
         }
 
@@ -47,38 +50,42 @@ public class EmailAppenderPlugin extends PlayPlugin{
         String subject = Play.configuration.getProperty("email_log.subject", null);
         String bufferSize = Play.configuration.getProperty("email_log.buffer_size", null);
 
-
-
-
         if (applicationName != null || subject != null) {
             String subjectPrefix =  applicationName == null ? "" : ("[" + applicationName + "] ");
             subject = subject == null ? smtpAppender.getSubject() : subject;
             smtpAppender.setSubject(subjectPrefix + subject);
+            Logger.info("EmailAppenderPlugin: set GMAIL appender subject: %s", subjectPrefix + subject);
         }
 
         if (receiver != null) {
             smtpAppender.setTo(receiver);
+            Logger.info("EmailAppenderPlugin: set GMAIL appender receiver: %s", receiver);
         }
 
         if (host != null) {
             smtpAppender.setSMTPHost(host);
+            Logger.info("EmailAppenderPlugin: set GMAIL appender host: %s", host);
         }
 
         if (username != null) {
             smtpAppender.setSMTPUsername(username);
+            Logger.info("EmailAppenderPlugin: set GMAIL appender username: %s", username);
         }
 
         if (password != null) {
             smtpAppender.setSMTPPassword(password);
+            Logger.info("EmailAppenderPlugin: set GMAIL appender password: %s", password);
         }
 
         if (from != null) {
             smtpAppender.setFrom(from);
+            Logger.info("EmailAppenderPlugin: set GMAIL appender from: %s", from);
         }
 
         if (bufferSize != null) {
             try{
                 smtpAppender.setBufferSize(Integer.parseInt(bufferSize));
+                Logger.info("EmailAppenderPlugin: set GMAIL appender bufferSize: %s", bufferSize);
             }catch (NumberFormatException e) {
                 //ignore
             }
