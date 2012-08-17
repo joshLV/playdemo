@@ -157,8 +157,6 @@ public class SecKillGoods extends Model {
         if (secKillGoods.imagePath != null)
             dbSecKillGoods.imagePath = secKillGoods.imagePath;
         dbSecKillGoods.setPrompt(secKillGoods.getPrompt());
-        System.out.println(secKillGoods.getPrompt() + ">>>>>>>>>>>");
-
         dbSecKillGoods.save();
     }
 }

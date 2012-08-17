@@ -16,10 +16,10 @@
 </div>
 #{/else}
 
-#{layout_operate.htmlField name:'secKillGoods.prompt', value:secKillGoods?.prompt, uploadImgUrl:'/seckill_goods/images'/}
+#{layout_operate.htmlField name:'secKillGoods.prompt', value:secKillGoods?.prompt/}
 
 <div class="form-actions">
-    <input class="btn btn-primary" id="save" type="button" value="保存">
+    <input class="btn btn-primary" id="save" type="submit" value="保存">
 *{#{if "edit".equals(action)}}*
     *{<input class="btn btn-primary" id="preview" type="submit" value="预览"/>}*
 *{#{/if}}*
@@ -34,10 +34,10 @@
             return false;
 
         });
-        $("#save").click(function () {
-            checkGoods(true)
-            return false;
-        })
+//        $("#save").click(function () {
+//            checkGoods(true)
+//            return false;
+//        })
 
 
     });
@@ -59,6 +59,7 @@
             success:function (data) {
                 if (data != null && data != '') {
                     if (subm){
+                        alert("#")
                         $("#form").submit();
                     }else{
                         $("#goodsName").html("商品名：" + data);

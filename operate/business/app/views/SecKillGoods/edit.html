@@ -7,8 +7,7 @@
 #{/get}
 #{include '/share/nav.html' /}
 <div class="body">
-#{form @SecKillGoods.update(id), id:'form',enctype:'multipart/form-data',
-class:"form-horizontal", method:'PUT' }
+#{form @SecKillGoods.update(id), id:'form',enctype:'multipart/form-data',class:"form-horizontal", method:'PUT' }
     <legend>${title}</legend>
     #{set action:"edit"/}
     #{include '/SecKillGoods/goodsForm.html'/}
