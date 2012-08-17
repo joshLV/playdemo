@@ -23,7 +23,7 @@ public class SecKillGoodsUnitTest extends UnitTest {
 
     @Before
     public void setUp() {
-        FactoryBoy.lazyDelete();
+        FactoryBoy.delete(SecKillGoods.class);
     }
 
     @Test
