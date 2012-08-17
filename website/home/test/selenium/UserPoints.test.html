@@ -30,3 +30,10 @@ verifyTextPresent('测试积分商品1')
 
 
 #{/selenium}
+
+#{selenium 'Test UserPoints/detail.html Normal'}
+    #{include 'test/selenium/step/login.selenium' /}
+open('/user-point-record/201202220324134991598')
+verifyTitle('一百券 - 积分商品订单详情')
+verifyTextPresent('测试积分商品1')
+#{/selenium}
