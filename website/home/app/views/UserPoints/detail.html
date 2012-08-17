@@ -57,8 +57,8 @@
             <td colspan="8">
                 #{if order?.remark != null && order?.remark !=""}
                     <img src="/public/images/remark.png"> ${order.remark}
+                    <br/>
                 #{/if}
-                <br/>
                 #{if (order.status == models.order.PointGoodsOrderStatus.CANCELED)}
                     <img src="/public/images/note.png"> ${order.note}
                 #{/if}
