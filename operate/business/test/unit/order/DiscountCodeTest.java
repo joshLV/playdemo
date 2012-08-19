@@ -68,6 +68,9 @@ public class DiscountCodeTest extends UnitTest {
     @Test
     public void 列出所有可用折扣券() {
         DiscountCode discountCode = FactoryBoy.create(DiscountCode.class);
+        assertEquals(1l, DiscountCode.count());
+        System.out.println("discountCode=" + discountCode + ", sn="
+                        + discountCode.discountSn);
         FactoryBoy.batchCreate(5, DiscountCode.class,
                         new SequenceCallback<DiscountCode>() {
                             @Override
@@ -75,8 +78,6 @@ public class DiscountCodeTest extends UnitTest {
                                 target.discountSn = "TEST" + seq;
                             }
                         });
-        System.out.println("discountCode=" + discountCode + ", sn="
-                        + discountCode.discountSn);
         List<DiscountCode> list = DiscountCode.findAll();
         System.out.println("list.size=" + list.size());
         for (DiscountCode discountCode2 : list) {

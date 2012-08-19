@@ -1,9 +1,12 @@
 package factory.admin;
 
 import java.util.ArrayList;
+
 import models.admin.OperateRole;
 import models.admin.OperateUser;
+
 import com.uhuila.common.constants.DeletedStatus;
+
 import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
@@ -17,7 +20,7 @@ public class OperateUserFactory extends ModelFactory<OperateUser> {
         user.deleted = DeletedStatus.UN_DELETED;
         user.mobile = "13900118888";
         user.userName = "tom";
-        
+
         // 定义角色
         user.roles = new ArrayList<OperateRole>();
         user.roles.add(role("sales"));
@@ -28,15 +31,23 @@ public class OperateUserFactory extends ModelFactory<OperateUser> {
         return user;
     }
 
-    @Factory(name="random")
+    @Factory(name = "random")
     public void defineRandomUser(OperateUser user) {
         user.loginName = "test" + FactoryBoy.sequence(OperateUser.class);
         user.userName = "TestName" + FactoryBoy.sequence(OperateUser.class);
     }
-    
+
     public static OperateRole role(String roleName) {
         OperateRole role = OperateRole.find("byKey", roleName).first();
         System.out.println("role=" + role + ", name=" + roleName);
         return role;
+    }
+
+    @Override
+    public void delete(OperateUser user) {
+        user.roles.clear();
+        user.permissions.clear();
+        user.save();
+        user.delete();
     }
 }
