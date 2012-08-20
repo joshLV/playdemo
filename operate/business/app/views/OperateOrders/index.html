@@ -193,7 +193,7 @@ select:'condition_status',value:condition?.status/}
         <tbody>
         #{paginate.list items:orderList, as:'order'}
         <tr>
-            <td rowspan="${order.orderItems.size()}">${order.orderNumber}</td>
+            <td rowspan="${order?.orderItems?.size()}">${order.orderNumber}</td>
         *{有实物券时}*
             #{if order.realGoods.size()>0}
                 <td>
@@ -224,7 +224,7 @@ select:'condition_status',value:condition?.status/}
 
             #{else}
             *{有电子券时}*
-                #{if order.electronicGoods.size()>0}
+                #{if order.electronicGoods?.size()>0}
                     <td><img src="${order.electronicGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}">${order.electronicGoods.get(0).name}&nbsp;
                     </td>
                     <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
@@ -236,17 +236,17 @@ select:'condition_status',value:condition?.status/}
             #{/else}
 
             #{if order.userType ==models.accounts.AccountType.RESALER}
-             <td rowspan="${order.orderItems.size()}">${order?.resaler?.loginName}</td>
+             <td rowspan="${order?.orderItems?.size()}">${order?.resaler?.loginName}</td>
             #{/if}
              #{if order.userType ==models.accounts.AccountType.CONSUMER}
-              <td rowspan="${order.orderItems.size()}">${order?.user?.loginName}</td>
+              <td rowspan="${order?.orderItems?.size()}">${order?.user?.loginName}</td>
             #{/if}
-            <td rowspan="${order.orderItems.size()}">&{'order.'+order.userType}</td>
-            <td rowspan="${order.orderItems.size()}">${order.amount?.formatCurrency('CNY')}</td>
-            <td rowspan="${order.orderItems.size()}">${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-            <td rowspan="${order.orderItems.size()}">${order.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-            <td rowspan="${order.orderItems.size()}">${order.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-            <td rowspan="${order.orderItems.size()}"><a href="@{OperateOrders.details(order.id)}">查看</a></td>
+            <td rowspan="${order?.orderItems?.size()}">&{'order.'+order.userType}</td>
+            <td rowspan="${order?.orderItems?.size()}">${order.amount?.formatCurrency('CNY')}</td>
+            <td rowspan="${order?.orderItems?.size()}">${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td rowspan="${order?.orderItems?.size()}">${order.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td rowspan="${order?.orderItems?.size()}">${order.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td rowspan="${order?.orderItems?.size()}"><a href="@{OperateOrders.details(order.id)}">查看</a></td>
         </tr>
             #{set i:0/}
             #{set showRealStatus:true/}
@@ -270,7 +270,7 @@ select:'condition_status',value:condition?.status/}
             #{set j:0/}
             #{set showElectronicStatus:true/}
             #{list items:order.electronicGoods, as:'aElectronicGoods'}
-                #{if (order.realGoods.size()==0 && j>0) ||(order.realGoods.size()>0) }
+                #{if (order.realGoods?.size()==0 && j>0) ||(order.realGoods?.size()>0) }
                 <tr>
                     <td><img src="${aElectronicGoods.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}">${aElectronicGoods?.name}</td>
                     #{if showElectronicStatus && order.realGoods.size()>0}

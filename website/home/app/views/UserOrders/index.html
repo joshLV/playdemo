@@ -100,8 +100,8 @@
                         <td align="center">${rowItem.salePrice?.formatCurrency('CNY').raw()}</td>
                         <td align="center">${rowItem.buyNumber}</td>
                         #{if (++m == 1) }
-                            <td align="center" rowspan="${row.orderItems.size()}">${row.amount}</td>
-                            <td align="center" rowspan="${row.orderItems.size()}">
+                            <td align="center" rowspan="${row?.orderItems?.size()}">${row.amount}</td>
+                            <td align="center" rowspan="${row?.orderItems?.size()}">
                                 #{if (row.status == models.order.OrderStatus.SENT || row.status == models.order.OrderStatus.PAID)}
                                     <span class="order-status paid">交易成功</span>#{/if}
                                 #{else}
@@ -112,7 +112,7 @@
                                 #{/else}
                                 <a class="order-detail" href="@{UserOrders.details(row.orderNumber)}" target="_blank">订单详情</a>
                             </td>
-                            <td align="center" rowspan="${row.orderItems.size()}">
+                            <td align="center" rowspan="${row?.orderItems?.size()}">
                                 #{if (row.status == models.order.OrderStatus.PAID)}
                                     <a id="apply_${row.orderNumber}" href="/orders/refund/${row.orderNumber}">申请退款</a>
                                 #{/if}

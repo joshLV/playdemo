@@ -52,8 +52,8 @@
                         未发送#{/elseif}
                 </td>
                 #{if (++m == 1) }
-                <td align="center" valign="middle" rowspan="${orderItems.size()}">${order?.amount?.formatCurrency('CNY').raw()}<br/> (含运费)</td>
-                <td align="center" valign="middle" rowspan="${orderItems.size()}">
+                <td align="center" valign="middle" rowspan="${orderItems?.size()}">${order?.amount?.formatCurrency('CNY').raw()}<br/> (含运费)</td>
+                <td align="center" valign="middle" rowspan="${orderItems?.size()}">
                     #{if (row.status == models.order.OrderStatus.SENT)}交易成功#{/if}
                     #{else}&{'order.'+row.status}#{/else}
                 </td>
@@ -92,100 +92,3 @@
     </table>
     #{/if}
 </div>
-
-
-*{
-<div class="wrap clearfix">
-#{breadcrumbs/breadcrumb breadcrumbs/}
-    <h3 style="padding: 6px 0;font-size:16px">我的订单</h3>
-    <div class="order-info">
-        <span class="order-no">订单号：${order.orderNumber}</span>
-        <span class="order-deal">成交时间：${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
-        #{if order.paidAt !=null}<span>付款时间：${order.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</span>#{/if}
-    </div>
-    <table class="order-tab" cellpadding="0" cellspacing="0">
-        <tr class="col-name">
-            <th width="369" height="30">商品</th>
-            <th width="69">类型</th>
-            <th width="81">单价（元）</th>
-            <th width="66">数量</th>
-            <th width="118">劵号</th>
-            <th width="118">收货手机</th>
-            <th width="93">物流状态</th>
-            <th width="163">实付款（元）</th>
-            <th width="93">订单状态</th>
-        </tr>
-    #{set m=0/}
-    #{list items:orderItems, as:'row' }
-        <tr>
-            <td align="left" valign="middle">
-                <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${row.goods.id}" target="_blank">
-                    <img style="float:left;margin-right:5px" src="${row.goods.imageTinyPath}"/>${row.goods.name}
-                </a>
-            </td>
-            <td width="69" align="center" valign="middle">&{'goods.'+row.goods.materialType}</td>
-            <td width="81" align="center" valign="middle">${row.salePrice?.formatCurrency('CNY').raw()}</td>
-            <td width="66" align="center" valign="middle">${row.buyNumber}</td>
-            <td width="118" align="center" valign="middle"><span
-                    class="strong_gray">${row?.getWebEcouponSn()}</span></td>
-            <td width="66" align="center" valign="middle">${row.phone}
-            </td>
-            <td width="66" align="center" valign="middle">
-                #{if (models.order.OrderStatus.SENT.equals(row?.status) && models.sales.MaterialType.REAL.equals(row?.goods?.materialType))}
-                    已发货#{/if}
-                #{elseif (models.order.OrderStatus.PAID.equals(row?.status) && models.sales.MaterialType.ELECTRONIC.equals(row?.goods?.materialType)) }
-                    已发送#{/elseif}
-
-                #{if (models.order.OrderStatus.PAID.equals(row?.status) && models.sales.MaterialType.REAL.equals(row?.goods?.materialType))}
-                    未发货#{/if}
-                #{elseif (models.order.OrderStatus.UNPAID==row?.status && models.sales.MaterialType.ELECTRONIC==row?.goods?.materialType) }
-                    未发送#{/elseif}
-            </td>
-            #{if (++m == 1) }
-                <td rowspan="${orderItems.size()}" align="center"
-                    valign="middle">${order?.amount?.formatCurrency('CNY').raw()}<br/> (含运费)
-                </td>
-                <td rowspan="${orderItems.size()}" align="center" valign="middle">
-                  #{if (row.status == models.order.OrderStatus.SENT)}交易成功#{/if}
-                                     #{else}&{'order.'+row.status}#{/else}
-                </td>
-            #{/if}
-        </tr>
-    #{/list}
-    </table>
-<div class="wrap">
-    <div class="buttom_tab_info2">
-        商品金额：
-        <span class="font_cheng">#{if order.containsRealGoods()}${order.amount.subtract(models.order.Order.FREIGHT)}#{/if}#{else}${order.amount}#{/else}
-            元</span>
-        运费：<span class="font_cheng">#{if order.containsRealGoods()}${models.order.Order.FREIGHT}#{/if}#{else}0#{/else}
-        元</span>
-        合计：<span class="font_cheng">${order.amount}元</span>
-    </div>
-
-    <div style="clear: both"></div>
-    #{if order.containsRealGoods()}
-        <h3 style="padding: 6px 0;">收货信息</h3>
-        <table class="order-tab" cellpadding="0" cellspacing="0">
-            <tr>
-                <td width=380>收货人：${order.receiverName}</td>
-                <td width=980 height="30">地址：${order.receiverAddress}邮编：${order.postcode}</td>
-            </tr>
-            <tr>
-                <td width=380 height="30">电话：${order.receiverPhone}</td>
-                <td width=980 height="30">手机：${order.receiverMobile}</td>
-            </tr>
-            <tr>
-                <td width=380>物流公司：${order.deliveryCompany}</td>
-                <td width=980 height="30">物流单号：${order.deliveryNo}</td>
-            </tr>
-        </table>
-    #{/if}
-   </div>
-#{if order?.remark != null && order?.remark !=""}
-   <div style="clear: both;padding-top: 8px"></div>
-    订单留言：${order.remark}
-   </div>
- </div>
-#{/if}
-}*
