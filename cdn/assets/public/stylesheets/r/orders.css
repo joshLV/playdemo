@@ -10,8 +10,8 @@
 }
 .aside {
     float: left;
-    width: 129px;
-    padding: 10px;
+    width: 140px;
+    padding: 10px 4px;
 }
 .aside .menu h3 {
     font: 16px "Microsoft Yahei";
@@ -19,11 +19,25 @@
 }
 .aside .menu ul {
     border-top: 1px solid #E4E4E4;
-    padding: 10px 20px;
+    padding: 10px 0;
 }
 .aside .menu li {
-    line-height: 30px;
+    padding: 3px 0;
 }
+.aside .menu li a {
+    width: 140px;
+    height: 24px;
+    line-height: 24px;
+    text-indent: 20px;
+    display: block;
+}
+.aside .menu li .current {
+    color: #d72300;
+    font-weight: 700;
+    text-decoration: none;
+    background: url(//img.uhcdn.com/images/r/resale-left-bg.png) no-repeat 0 0;
+}
+
 .section {
     float: right;
     width: 1010px;
