@@ -2,9 +2,9 @@ package models;
 
 import models.sales.Goods;
 import models.supplier.Supplier;
+import org.apache.commons.lang.StringUtils;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
-import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.Query;
 import java.math.BigDecimal;
@@ -23,6 +23,7 @@ public class RefundReport extends Model {
     public Long buyNumber;
     public BigDecimal amount;
     public BigDecimal totalAmount;
+    public String reportDate;
 
     public RefundReport(Goods goods, BigDecimal salePrice, Long buyNumber) {
         this.goods = goods;
@@ -40,6 +41,18 @@ public class RefundReport extends Model {
         this.totalAmount = totAmount;
     }
 
+    public RefundReport(String reportDate, BigDecimal refundPrice, Long buyCount) {
+        this.amount = refundPrice;
+        this.buyNumber = buyCount;
+        this.reportDate = reportDate;
+    }
+
+    /**
+     * 取得按商品统计的退款记录
+     *
+     * @param condition
+     * @return
+     */
     public static List<RefundReport> query(RefundReportCondition condition) {
 
         String sql = "select new models.RefundReport(e.orderItems.goods,e.salePrice,count(e.orderItems.buyNumber)) from ECoupon e ";
@@ -59,6 +72,36 @@ public class RefundReport extends Model {
         return resultList;
     }
 
+    /**
+     * 取得每天有多少消费者退款的记录
+     *
+     * @param condition
+     * @return
+     */
+    public static List<RefundReport> getConsumerRefundData(RefundReportCondition condition) {
+
+        String refundAt = "str(year(e.refundAt))||'-'|| str(month(e.refundAt))||'-'|| str(day(e.refundAt)) ";
+        String sql = "select new models.RefundReport( " + refundAt + ",sum(e.refundPrice),count(e.id)) from ECoupon e ";
+        String groupBy = " group by " + refundAt;
+
+        Query query = JPA.em()
+                .createQuery(sql + condition.getFilter() + groupBy + " order by sum(e.refundPrice) desc");
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+
+        List<RefundReport> resultList = query.getResultList();
+        return resultList;
+    }
+
+
+    /**
+     * 商品退款总计
+     *
+     * @param resultList
+     * @return
+     */
     public static RefundReport summary(List<RefundReport> resultList) {
         if (resultList.size() == 0) {
             return new RefundReport(0l, BigDecimal.ZERO, BigDecimal.ZERO);
@@ -76,5 +119,27 @@ public class RefundReport extends Model {
         return new RefundReport(buyCount, amount, totAmount);
 
     }
+
+    /**
+     * 消费者退款总计
+     *
+     * @param resultList
+     * @return
+     */
+    public static RefundReport consumerSummary(List<RefundReport> resultList) {
+        if (resultList.size() == 0) {
+            return new RefundReport(0l, BigDecimal.ZERO, BigDecimal.ZERO);
+        }
+
+        long buyCount = 0l;
+        BigDecimal totAmount = BigDecimal.ZERO;
+        for (RefundReport item : resultList) {
+            buyCount += item.buyNumber;
+            totAmount = totAmount.add(item.amount == null ? new BigDecimal(0) : item.amount);
+
+        }
+        return new RefundReport(buyCount, BigDecimal.ZERO, totAmount);
+    }
+
 }
 

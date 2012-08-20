@@ -25,7 +25,6 @@ public class SecKillGoodsItemFactory extends ModelFactory<SecKillGoodsItem> {
         secKillGoodsItem.salePrice = new BigDecimal(10);
         secKillGoodsItem.secKillBeginAt = new Date();
         secKillGoodsItem.secKillEndAt = DateHelper.afterMinuts(new Date(), 10);
-        secKillGoodsItem.save();
         return secKillGoodsItem;
     }
 

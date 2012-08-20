@@ -21,7 +21,6 @@ public class SecKillGoodsFactory extends ModelFactory<SecKillGoods> {
         secKillGoods.setPrompt("wowuroqwl");
         secKillGoods.goods = goods;
         secKillGoods.imagePath = "/a.jpg";
-        secKillGoods.save();
         return secKillGoods;
     }
 }

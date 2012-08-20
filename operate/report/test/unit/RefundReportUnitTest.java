@@ -22,7 +22,6 @@ import play.test.Fixtures;
 import play.test.UnitTest;
 import play.vfs.VirtualFile;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -64,18 +63,14 @@ public class RefundReportUnitTest extends UnitTest {
         Security.setLoginUserForTest(user.loginName);
         id = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_001");
         ECoupon coupon = ECoupon.findById(id);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE));
-        coupon.refundAt = calendar.getTime();
         coupon.status = ECouponStatus.REFUND;
+        coupon.refundAt = new Date();
         coupon.save();
 
         id = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_002");
         coupon = ECoupon.findById(id);
-        calendar = Calendar.getInstance();
-        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE));
-        coupon.refundAt = calendar.getTime();
         coupon.status = ECouponStatus.REFUND;
+        coupon.refundAt = new Date();
         coupon.save();
 
         Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
@@ -88,7 +83,6 @@ public class RefundReportUnitTest extends UnitTest {
         goods.supplierId = supplierId;
         goods.save();
 
-
     }
 
     @After
@@ -98,18 +92,28 @@ public class RefundReportUnitTest extends UnitTest {
     }
 
     @Test
-    public void testIndexDefault() {
+
+    public void testGoodsRefund() {
         RefundReportCondition condition = new RefundReportCondition();
-        condition.refundAtBegin = new Date();
-        condition.refundAtEnd = new Date();
         List<RefundReport> list = RefundReport.query(condition);
-        assertEquals(0, list.size());
+        System.out.println(list.get(0).reportDate);
+        assertEquals(2, list.size());
 
         RefundReport refundReport = RefundReport.summary(list);
-        assertEquals(0, refundReport.buyNumber.intValue());
-        assertEquals(0, refundReport.amount.intValue());
+        assertEquals(2, refundReport.buyNumber.intValue());
+        assertEquals(180, refundReport.amount.intValue());
 
     }
 
+    @Test
+    public void testConsumerRefund() {
+        RefundReportCondition condition = new RefundReportCondition();
+        List<RefundReport> list = RefundReport.getConsumerRefundData(condition);
+        assertEquals(1, list.size());
 
+        RefundReport refundReport = RefundReport.consumerSummary(list);
+        assertEquals(2, refundReport.buyNumber.intValue());
+        assertEquals(160, refundReport.totalAmount.intValue());
+
+    }
 }

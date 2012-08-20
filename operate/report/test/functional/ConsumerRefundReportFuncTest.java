@@ -1,6 +1,5 @@
 package functional;
 
-import com.uhuila.common.util.DateUtil;
 import controllers.operate.cas.Security;
 import models.RefundReport;
 import models.admin.OperateRole;
@@ -18,13 +17,12 @@ import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import play.modules.paginate.ValuePaginator;
 import play.mvc.Http;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-import play.modules.paginate.ValuePaginator;
 
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -33,7 +31,7 @@ import java.util.Date;
  * Date: 12-8-8
  * Time: 下午2:30
  */
-public class RefundReportFuncTest extends FunctionalTest {
+public class ConsumerRefundReportFuncTest extends FunctionalTest {
     @Before
     public void setup() {
 
@@ -65,31 +63,16 @@ public class RefundReportFuncTest extends FunctionalTest {
         Security.setLoginUserForTest(user.loginName);
         id = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_001");
         ECoupon coupon = ECoupon.findById(id);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE));
-        coupon.refundAt = calendar.getTime();
+        coupon.refundAt = new Date();
         coupon.status = ECouponStatus.REFUND;
         coupon.save();
-
+        coupon.refresh();
         id = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_002");
         coupon = ECoupon.findById(id);
-        calendar = Calendar.getInstance();
-        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE));
-        coupon.refundAt = calendar.getTime();
+        coupon.refundAt = new Date();
         coupon.status = ECouponStatus.REFUND;
         coupon.save();
-
-        Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
-        id = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
-        Goods goods = Goods.findById(id);
-        goods.supplierId = supplierId;
-        goods.save();
-        id = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
-        goods = Goods.findById(id);
-        goods.supplierId = supplierId;
-        goods.save();
-
-
+        coupon.refresh();
     }
 
     @After
@@ -100,19 +83,14 @@ public class RefundReportFuncTest extends FunctionalTest {
 
     @Test
     public void testIndexDefault() {
-        Http.Response response = GET("/reports/refund");
-        assertIsOk(response);
-        assertNotNull(renderArgs("reportPage"));
-    }
-
-    @Test
-    public void testSearchWithRightCondition() {
-        Http.Response response = GET("/reports/refund?condition.refundAtBegin =" + DateUtil.getBeginOfDay() + "&condition.refundAtEnd =" + DateUtil.getEndOfDay(new Date()));
+        Http.Response response = GET("/reports/consumer_refund");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
         ValuePaginator<RefundReport> reportPage = (ValuePaginator<RefundReport>) renderArgs("reportPage");
-        assertEquals(2, reportPage.getRowCount());
+        assertEquals(1, reportPage.getRowCount());
+        RefundReport summary = (RefundReport) renderArgs("summary");
+        assertEquals(160, summary.totalAmount.intValue());
+        assertEquals(2, summary.buyNumber.intValue());
     }
-
 
 }

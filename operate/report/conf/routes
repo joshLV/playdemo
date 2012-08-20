@@ -19,7 +19,7 @@ GET     /webop/refcodes                         WebTrackReports.refCodes
 GET     /reports/resale                         ResaleSalesReports.index
 #退款报表
 GET     /reports/refund                         GoodsRefundReports.index
-
+GET     /reports/consumer_refund                ConsumerRefundReports.index
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

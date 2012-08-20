@@ -23,14 +23,14 @@ public class RefundReportCondition {
     private Map<String, Object> paramMap = new HashMap<>();
 
     public String getFilter() {
-        StringBuilder condBuilder = new StringBuilder(" where e.status=:status and  e.goods.isLottery=false");
+        StringBuilder condBuilder = new StringBuilder(" where e.status=:status and e.goods.isLottery=false");
         paramMap.put("status", ECouponStatus.REFUND);
         if (refundAtBegin != null) {
             condBuilder.append(" and e.refundAt >= :refundAtBegin");
             paramMap.put("refundAtBegin", refundAtBegin);
         }
         if (refundAtEnd != null) {
-            condBuilder.append(" and e.refundAt < :refundAtEnd");
+            condBuilder.append(" and e.refundAt <= :refundAtEnd");
             paramMap.put("refundAtEnd", DateUtil.getEndOfDay(refundAtEnd));
         }
         if (StringUtils.isNotBlank(goodsName)) {
@@ -42,7 +42,6 @@ public class RefundReportCondition {
             condBuilder.append(" and e.orderItems.goods.supplierId = :supplierId");
             paramMap.put("supplierId", Long.parseLong(supplierName));
         }
-        System.out.println("condBuilder.toString():" + condBuilder.toString());
         return condBuilder.toString();
     }
 
