@@ -13,6 +13,8 @@ public class FixAccounts extends Controller {
         fixOrder(4884L, BigDecimal.TEN);
         fixOrder(4898L, BigDecimal.TEN);
         fixOrder(5017L, BigDecimal.TEN);
+        
+        renderText("ok!");
     }
 
     private static void fixOrder(Long orderId, BigDecimal rebateValue) {
