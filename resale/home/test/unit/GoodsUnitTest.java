@@ -56,6 +56,6 @@ public class GoodsUnitTest extends UnitTest {
         Resaler resaler =Resaler.findById(resalerId);
         JPAExtPaginator<Goods> goodsPage = models.sales.Goods.findByResaleCondition
                 (resaler,goodsCond, 1, 50);
-        assertEquals(14, goodsPage.size());
+        assertEquals(13, goodsPage.size());
     }
 }
