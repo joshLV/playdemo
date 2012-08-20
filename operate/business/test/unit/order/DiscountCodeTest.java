@@ -31,7 +31,7 @@ public class DiscountCodeTest extends UnitTest {
 
     @Test
     public void 通过SN找到可用的折扣券() {
-        DiscountCode dc = FactoryBoy.create(DiscountCode.class,
+        FactoryBoy.create(DiscountCode.class,
                         new BuildCallback<DiscountCode>() {
                             @Override
                             public void build(DiscountCode target) {
@@ -39,9 +39,6 @@ public class DiscountCodeTest extends UnitTest {
                                 target.discountAmount = BigDecimal.TEN;
                             }
                         });
-        System.out.println("dc.begin=" + dc.beginAt + ", end=" + dc.endAt);
-        System.out.println("dc.sn=" + dc.discountSn + ", delete=" + dc.deleted);
-        System.out.println(DiscountCode.findAvailableSN("AVAIL"));
         assertNotNull(DiscountCode.findAvailableSN("AVAIL"));
         assertNotNull(DiscountCode.findAvailableSN("Avail"));
     }
