@@ -43,7 +43,7 @@ public class OrderItems extends Model {
     public BigDecimal salePrice;        //最终成交价,对于普通分销商来说，此成交价与以上分销商价(resalerPrice)相同；
     
     /**
-     * 使用折扣码后折扣的费用.
+     * 折扣掉的费用.
      * 
      */
     @Column(name="rebate_value")

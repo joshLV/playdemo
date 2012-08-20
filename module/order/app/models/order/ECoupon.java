@@ -359,7 +359,8 @@ public class ECoupon extends Model {
         }
         
         if (rebateValue != null && rebateValue.compareTo(BigDecimal.ZERO) > 0) {
-            //TradeBill rabateTrade = TradeUtil.create
+            TradeBill rabateTrade = TradeUtil.createTransferTrade(AccountUtil.getUhuilaAccount(), AccountUtil.getPlatformIncomingAccount(), rebateValue, BigDecimal.ZERO);
+            TradeUtil.success(rabateTrade, "活动折扣费" + rebateValue);
         }
     }
 

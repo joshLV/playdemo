@@ -54,7 +54,7 @@ public class Orders extends Controller {
     /**
      * 预览订单.
      *
-     * @param gid=37&gid=102&g37=2&g102=3
+     * @param gid=37&gid=102&g37=2&g102=3&discountSN=xxx
      */
     public static void index(List<Long> gid) {
 
