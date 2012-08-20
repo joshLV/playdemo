@@ -94,7 +94,9 @@ $(function(){
                 <dl><dt>历史手机：</dt>
                     <dd class="history-mobi">
                          #{list orderItems_mobiles, as:'item'}
+                            #{if item != null}
                              <span class="mobi-item">${item}</span>
+                            #{/if}
                          #{/list}
                     </dd>
                 </dl>

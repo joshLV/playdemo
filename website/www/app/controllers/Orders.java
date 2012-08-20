@@ -62,7 +62,7 @@ public class Orders extends Controller {
             error("未选择商品!");
             return;
         }
-        
+        System.out.println("gai cheng gong le");
         Map<String, String[]> params = request.params.all();
         String items = "";
         for (Long goodsId : gid) {
@@ -82,7 +82,6 @@ public class Orders extends Controller {
 
         User user = SecureCAS.getUser();
         List<String> orderItems_mobiles = OrderItems.getMobiles(user);
-
         //用于重新刷新整个页面
         renderArgs.put("querystring", getQueryStringWithoutDdiscountSN());
         
