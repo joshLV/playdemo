@@ -3,19 +3,19 @@
         <h3>用户中心</h3>
         <ul>
             <li><a href="@{ResalerCarts.index()}">下单购买</a></li>
-            <li><a class="current" href="@{ResalerOrders.index()}">我的订单</a></li>
-            <li><a href="/library">我的分销库</a></li>
-            <li><a href="/ecoupons">劵订单列表</a></li>
+            <li><a #{if request.url.equals("/orders")}   class="current" #{/if} href="@{ResalerOrders.index()}">我的订单</a></li>
+            <li ><a #{if request.url.equals("/library")}   class="current" #{/if} href="/library">我的分销库</a></li>
+            <li><a  #{if request.url.equals("/ecoupons")}   class="current" #{/if} href="/ecoupons">劵订单列表</a></li>
         </ul>
         <ul>
-            <li><a href="/resaler-info">我的资料</a></li>
-            <li><a href="/resaler/edit-password">修改密码</a></li>
+            <li><a  #{if request.url.equals("/resaler-info")}   class="current" #{/if} href="/resaler-info">我的资料</a></li>
+            <li><a  #{if request.url.equals("/resaler/edit-password")}   class="current" #{/if} href="/resaler/edit-password">修改密码</a></li>
         </ul>
         <ul>
-            <li><a href="/account_seq">账户明细</a></li>
-            <li><a href="/charge" target="_blank">账户充值</a></li>
-            <li><a href="/withdraw/apply">申请提现</a></li>
-            <li><a href="/withdraw">提现记录</a></li>
+            <li><a  #{if request.url.equals("/account_seq")}   class="current" #{/if} href="/account_seq">账户明细</a></li>
+            <li><a  #{if request.url.equals("/charge")}   class="current" #{/if} href="/charge" target="_blank">账户充值</a></li>
+            <li><a  #{if request.url.equals("/withdraw/apply")}   class="current" #{/if} href="/withdraw/apply">申请提现</a></li>
+            <li><a  #{if request.url.equals("/withdraw")}   class="current" #{/if} href="/withdraw">提现记录</a></li>
         </ul>
     </div>
 </div>
