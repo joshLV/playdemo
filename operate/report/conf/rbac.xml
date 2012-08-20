@@ -36,9 +36,10 @@
                         permissions="SALES_REPORT"/>
             <navigation key="supplier_sales_trends_reports" action="TotalSalesReports.trends" text="券消费趋势报表"
                         permissions="SALES_REPORT"/>
-            <navigation key="refund_reports" action="RefundReports.index" text="退款报表"
+            <navigation key="refund_reports" action="GoodsRefundReports.index" text="商品退款报表"
                         permissions="SALES_REPORT"/>
-
+            <navigation key="consumer_refund_reports" action="ConsumerRefundReports.index" text="消费者退款报表"
+                        permissions="SALES_REPORT"/>
         </navigation>
     </navigation>
 </application>

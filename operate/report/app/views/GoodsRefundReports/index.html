@@ -98,7 +98,7 @@
 </style>
 #{/set}
 
-<form class="well form-inline" action="@{RefundReports.index()}" method="GET" id="form"
+<form class="well form-inline" action="@{GoodsRefundReports.index()}" method="GET" id="form"
       name="form">
     商户：#{select 'condition.supplierName', class:'input-larger', value:condition?.supplierName}
     #{option ""}不限#{/option}

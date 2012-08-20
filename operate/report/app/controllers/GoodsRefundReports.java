@@ -19,7 +19,7 @@ import java.util.List;
  */
 @With(OperateRbac.class)
 @ActiveNavigation("refund_reports")
-public class RefundReports extends Controller {
+public class GoodsRefundReports extends Controller {
     private static final int PAGE_SIZE = 30;
 
     @ActiveNavigation("refund_reports")
