@@ -34,10 +34,16 @@ public class ResalerCarts extends Controller {
     public static void index() {
         Resaler resaler = SecureCAS.getResaler();
 
+
+        String goodsId = params.get("goodsId");
+
+
         List<ResalerFav> favs = ResalerFav.findAll(resaler);
 
         List<List<ResalerCart>> carts = ResalerCart.groupFindAll(resaler);
-        render(carts,favs, resaler);
+
+        render(carts,favs, resaler,goodsId);
+
     }
     
     public static void showCarts(){
@@ -136,7 +142,7 @@ public class ResalerCarts extends Controller {
             ResalerCart.delete(resaler, goods );
         }
 
-        index();
+     index();
     }
 
     /**

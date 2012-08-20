@@ -1,8 +1,10 @@
 package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 import models.resale.Resaler;
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.groovy.transform.powerassert.SourceText;
 import play.Logger;
 
 import java.io.Serializable;
@@ -41,6 +43,7 @@ public class GoodsCondition implements Serializable {
     public String name;
     public String no;
 
+
     public BigDecimal pointPriceBegin;
     public BigDecimal pointPriceEnd;
 
@@ -57,6 +60,7 @@ public class GoodsCondition implements Serializable {
     public boolean isLottery;
     public Date expireAtBegin;
     public Date expireAtEnd;
+    public Date expireAt;
 
     private Map<String, Object> paramMap = new HashMap<>();
 
@@ -397,6 +401,68 @@ public class GoodsCondition implements Serializable {
 
         return sql.toString();
     }
+
+
+    /**
+     * 分销商查询条件  过期不显示
+     *
+     * @return sql 查询条件
+     */
+    public String getResaleFilterNoExpired(Resaler resaler) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" g.deleted = :deleted");
+
+
+
+        paramMap.put("deleted", DeletedStatus.UN_DELETED);
+
+        sql.append(" and g.expireAt >=:expireAt");
+        paramMap.put("expireAt", DateUtil.getBeginOfDay());
+
+        sql.append(" and g.isLottery = false");
+        sql.append(" and g.materialType = :materialType");
+        paramMap.put("materialType", MaterialType.ELECTRONIC);
+
+        sql.append(" and g.status = :status");
+        paramMap.put("status", GoodsStatus.ONSALE);
+
+        if (brandId != 0) {
+            sql.append(" and g.brand = :brand");
+            Brand brand = new Brand();
+            brand.id = brandId;
+            paramMap.put("brand", brand);
+        }
+
+        if (priceFrom.compareTo(new BigDecimal(0)) > 0) {
+            sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.originalPrice+l.price >=:priceFrom)");
+            paramMap.put("level", resaler.level);
+            paramMap.put("priceFrom", priceFrom);
+        }
+
+        if (priceTo.compareTo(new BigDecimal(0)) > 0) {
+            sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.originalPrice+l.price <=:priceTo)");
+            paramMap.put("level", resaler.level);
+            paramMap.put("priceTo", priceTo);
+        }
+
+        if (materialType != null) {
+            sql.append(" and g.materialType = :materialType");
+            paramMap.put("materialType", materialType);
+        }
+
+//        System.out.println("aaaa>>>><<<<"+expireAt.before(new Date()));
+//
+//
+//        if (expireAt!=null&& !expireAt.before(new Date())) {
+//            sql.append(" and g.expireAt = :expireAt");
+//            paramMap.put("expireAt", expireAt);
+//        }
+
+
+        return sql.toString();
+    }
+
+
 
     @Override
     public String toString() {

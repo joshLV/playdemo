@@ -504,7 +504,7 @@ public class OperateGoods extends Controller {
      * @param ids    商品ID
      */
     private static void updateStatus(GoodsStatus status, Long... ids) {
-        System.out.println(status + "");
+        //System.out.println(status + "");
         models.sales.Goods.updateStatus(status, ids);
         if (status == GoodsStatus.OFFSALE) {
             for (Long id : ids) {

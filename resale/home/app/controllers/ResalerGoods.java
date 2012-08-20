@@ -67,6 +67,7 @@ public class ResalerGoods extends Controller {
 			notFound();
 		}
 
+
 		render(goods,resaler);
 	}
 

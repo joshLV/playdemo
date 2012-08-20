@@ -71,7 +71,7 @@
                 </li>
                 <li class="action">
                    #{if goods.isExistLibrary(resaler)}
-                       <a class="buy" href="/carts" id="link_buy_now">立即购买</a>
+                       <a class="buy" href="/carts?goodsId=${goods?.id}" id="link_buy_now">立即购买</a>
                        <span>已加入分销库</span>
                    #{/if}
                   #{else}

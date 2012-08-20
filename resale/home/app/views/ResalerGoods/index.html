@@ -147,6 +147,7 @@
     #{form @ResalerGoods.index() , id:'indexForm'}
     <ul id="lists">
     #{paginate.list items:goodsList, as:'goods'}
+       *{#{if !goods?.expireAt?.before( new java.util.Date())}}*
         <li class="clearfix">
             <div class="check">
                 #{if !goods.isExistLibrary(resaler)}
@@ -176,10 +177,14 @@
                 #{/else}
             </div>
         </li>
+       *{#{/if}}*
     #{/paginate.list}
     </ul>
    #{/form}
+
     #{paginate.controls items:goodsList /}
+
+
     <div class="pagination">
 	    <ul>
 	    </ul>

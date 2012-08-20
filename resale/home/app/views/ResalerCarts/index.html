@@ -30,13 +30,22 @@
                 #{list items:favs, as:'favItem'}
                     %{
                         radioStatus="";
+                        radioChecked="";
                         info="";
                         if (favItem.goods.baseSale <= 0){ info += "<em>已无库存</em>"; radioStatus = "disabled"}
                         if (!favItem.goods.onSale()){info += "<em>已下架</em>"; radioStatus = "disabled"}
+                        if( java.lang.String.valueOf(favItem.goods.id) == goodsId){    radioChecked="checked";
+
+                    }
                     }%
                     <li>
+                        *{var val=jQuery("#check_goods_"${favItem.goods.id}).val();}*
+                        *{jQuery}*
+
+                            *{$("check_goods_"${favItem.goods.id}).attr("checked");}*
+
                         <input type="radio" name="goodsId" value="${favItem.goods.id}"
-                               id="goods_${favItem.goods.id}" ${radioStatus.raw()} />
+                               id="goods_${favItem.goods.id}" ${radioStatus.raw()} ${radioChecked.raw()}/>
                         <label for="goods_${favItem.goods.id}">${favItem.goods.name}</label>
                         <span>${favItem.goods.getResalePrice(resaler.level)}</span>元
                     ${info.raw()}
