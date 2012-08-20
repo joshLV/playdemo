@@ -127,6 +127,9 @@ public class Supplier extends Model {
         this.id = id;
     }
 
+    public Supplier() {
+    }
+
 
     public static final String CACHEKEY = "SUPPLIER";
 

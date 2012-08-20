@@ -1,20 +1,36 @@
 package models.admin;
 
-import com.uhuila.common.constants.DeletedStatus;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-import play.Logger;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Mobile;
-
-import javax.persistence.*;
-import java.util.*;
+import com.uhuila.common.constants.DeletedStatus;
 
 @Entity
 @Table(name = "supplier_users")
@@ -211,7 +227,9 @@ public class SupplierUser extends Model {
         List params = new ArrayList();
         params.add(DeletedStatus.UN_DELETED);
         params.add(loginName);
-        params.add(new Supplier(supplierId));
+        Supplier supplier2 = new Supplier();
+        supplier2.id = supplierId;
+        params.add(supplier2);
         if (id != null) {
             sq.append("and id <> ?");
             params.add(id);
@@ -226,7 +244,7 @@ public class SupplierUser extends Model {
         params = new ArrayList();
         params.add(DeletedStatus.UN_DELETED);
         params.add(mobile);
-        params.add(new Supplier(supplierId));
+        params.add(supplier2);
         if (id != null) {
             sq.append("and id <> ?");
             params.add(id);
@@ -239,7 +257,7 @@ public class SupplierUser extends Model {
         params = new ArrayList();
         params.add(DeletedStatus.UN_DELETED);
         params.add(jobNumber);
-        params.add(new Supplier(supplierId));
+        params.add(supplier2);
         if (id != null) {
             sq.append("and id <> ?");
             params.add(id);
