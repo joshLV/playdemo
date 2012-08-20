@@ -58,6 +58,14 @@ public class ECoupon extends Model {
 
     @Column(name = "sale_price")
     public BigDecimal salePrice;        //最终成交价,对于普通分销商来说，此成交价与以上分销商价(resalerPrice)相同；
+    
+    /**
+     * 折扣掉的费用.
+     * 
+     */
+    @Column(name="rebate_value")
+    public BigDecimal rebateValue;
+    
     // ====  价格列表  ====
 
     @Column(name = "refund_price")
@@ -137,7 +145,8 @@ public class ECoupon extends Model {
         this.faceValue = orderItems.faceValue;
         this.originalPrice = orderItems.originalPrice;
         this.resalerPrice = orderItems.resalerPrice;
-        this.salePrice = ((orderItems.rebateValue == null) ? orderItems.salePrice : orderItems.salePrice.subtract(orderItems.rebateValue));
+        this.salePrice = orderItems.salePrice;
+        this.rebateValue = orderItems.rebateValue;
 
         this.createdAt = new Date();
         this.effectiveAt = goods.effectiveAt;
@@ -282,8 +291,9 @@ public class ECoupon extends Model {
     }
 
     public void consumeAndPayCommission(Long shopId, Long operateUserId, SupplierUser supplierUser, VerifyCouponType type) {
-        consumed(shopId, operateUserId, supplierUser, type);
-        payCommission();
+        if (consumed(shopId, operateUserId, supplierUser, type)) {
+            payCommission();
+        }
     }
 
     /**
@@ -292,9 +302,9 @@ public class ECoupon extends Model {
      *
      * @return
      */
-    private void consumed(Long shopId, Long operateUserId, SupplierUser supplierUser, VerifyCouponType type) {
+    private boolean consumed(Long shopId, Long operateUserId, SupplierUser supplierUser, VerifyCouponType type) {
         if (this.status != ECouponStatus.UNCONSUMED) {
-            return;
+            return false;
         }
 
         if (shopId != null) {
@@ -306,6 +316,7 @@ public class ECoupon extends Model {
         this.operateUserId = operateUserId != null ? operateUserId : null;
         this.verifyType = type;
         this.save();
+        return true;
     }
 
     public void payCommission() {
@@ -316,6 +327,8 @@ public class ECoupon extends Model {
         TradeUtil.success(consumeTrade, "券消费(" + order.description + ")");
 
         BigDecimal platformCommission = BigDecimal.ZERO;
+    
+            
         if (salePrice.compareTo(resalerPrice) < 0) {
             //如果成交价小于分销商成本价（这种情况只有在一百券网站上才会发生），
             //那么一百券就没有佣金，平台的佣金也变为成交价减成本价
@@ -334,6 +347,7 @@ public class ECoupon extends Model {
                 TradeUtil.success(uhuilaCommissionTrade, order.description);
             }
         }
+        
         if (platformCommission.compareTo(BigDecimal.ZERO) >= 0) {
             //给优惠券平台佣金
             TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(
@@ -342,6 +356,10 @@ public class ECoupon extends Model {
                     eCouponSn,
                     order.getId());
             TradeUtil.success(platformCommissionTrade, order.description);
+        }
+        
+        if (rebateValue != null && rebateValue.compareTo(BigDecimal.ZERO) > 0) {
+            //TradeBill rabateTrade = TradeUtil.create
         }
     }
 
