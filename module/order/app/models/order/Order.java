@@ -588,8 +588,8 @@ public class Order extends Model {
                         account,
                         this.accountPay,
                         this.discountPay,
-                        this.promotionBalancePay,
                         BigDecimal.ZERO,
+                        this.promotionBalancePay,
                         PaymentSource.getBalanceSource(),
                         this.getId());
                 TradeUtil.success(tradeBill, this.description);
@@ -1042,17 +1042,16 @@ public class Order extends Model {
         }
 
         //创建订单交易
-        PaymentSource paymentSource = PaymentSource.findByCode(paymentSourceCode);
-
-        order.payMethod = paymentSourceCode;
-
         //如果使用余额足以支付，则付款直接成功
-        if (ebankPaymentAmount.compareTo(BigDecimal.ZERO) == 0
-                && balancePaymentAmount.add(order.promotionBalancePay).compareTo(order.needPay) == 0) {
+        if (order.discountPay.compareTo(BigDecimal.ZERO) == 0
+                && order.accountPay.add(order.promotionBalancePay).compareTo(order.needPay) == 0) {
             order.payMethod = PaymentSource.getBalanceSource().code;
             order.payAndSendECoupon();
             return true;
         }
+
+        PaymentSource paymentSource = PaymentSource.findByCode(paymentSourceCode);
+        order.payMethod = paymentSourceCode;
 
         //无法确定支付渠道
         if (paymentSource == null) {
