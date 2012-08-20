@@ -137,7 +137,7 @@ public class ECoupon extends Model {
         this.faceValue = orderItems.faceValue;
         this.originalPrice = orderItems.originalPrice;
         this.resalerPrice = orderItems.resalerPrice;
-        this.salePrice = orderItems.salePrice;
+        this.salePrice = ((orderItems.rebateValue == null) ? orderItems.salePrice : orderItems.salePrice.subtract(orderItems.rebateValue));
 
         this.createdAt = new Date();
         this.effectiveAt = goods.effectiveAt;
