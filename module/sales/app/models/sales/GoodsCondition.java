@@ -1,17 +1,15 @@
 package models.sales;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import models.resale.Resaler;
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.groovy.transform.powerassert.SourceText;
-import play.Logger;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import models.resale.Resaler;
+import org.apache.commons.lang.StringUtils;
+import play.Logger;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 
 /**
  * 商品查询条件.
