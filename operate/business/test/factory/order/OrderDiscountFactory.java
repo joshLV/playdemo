@@ -16,12 +16,4 @@ public class OrderDiscountFactory extends ModelFactory<OrderDiscount> {
         return od;
     }
 
-    @Override
-    public void delete(OrderDiscount orderDiscount) {
-        orderDiscount.order = null;
-        orderDiscount.orderItem = null;
-        orderDiscount.discountCode = null;
-        orderDiscount.save();
-        orderDiscount.delete();
-    }
 }

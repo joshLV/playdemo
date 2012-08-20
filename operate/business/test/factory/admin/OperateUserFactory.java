@@ -39,15 +39,7 @@ public class OperateUserFactory extends ModelFactory<OperateUser> {
 
     public static OperateRole role(String roleName) {
         OperateRole role = OperateRole.find("byKey", roleName).first();
-        System.out.println("role=" + role + ", name=" + roleName);
         return role;
     }
 
-    @Override
-    public void delete(OperateUser user) {
-        user.roles.clear();
-        user.permissions.clear();
-        user.save();
-        user.delete();
-    }
 }

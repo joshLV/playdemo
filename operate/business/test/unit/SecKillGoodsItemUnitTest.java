@@ -28,16 +28,19 @@ public class SecKillGoodsItemUnitTest extends UnitTest {
 
     @Before
     public void setUp() {
-        FactoryBoy.lazyDelete();
+        FactoryBoy.deleteAll();
     }
 
     @Test
     public void 取得所有的秒杀活动信息() {
         secKillGoodsItem = FactoryBoy.create(SecKillGoodsItem.class);
+        System.out.println("secKillGoodsItem0=" + secKillGoodsItem.isPersistent());
         final SecKillGoods secKillGoods = FactoryBoy.create(SecKillGoods.class);
+        System.out.println("secKillGoodsItem01=" + secKillGoodsItem.isPersistent());
         final Goods goods = FactoryBoy.create(Goods.class);
         secKillGoods.goods = goods;
-
+        
+        System.out.println("secKillGoodsItem=" + secKillGoodsItem.isPersistent());
         FactoryBoy.batchCreate(5, SecKillGoodsItem.class,
                         new SequenceCallback<SecKillGoodsItem>() {
                             @Override
@@ -50,12 +53,14 @@ public class SecKillGoodsItemUnitTest extends UnitTest {
                                                 new Date(), seq);
                                 target.baseSale = 100l;
                                 target.secKillGoods = secKillGoods;
-                                target.secKillGoods.save();
+                                // target.secKillGoods.save();
                                 target.status = SecKillGoodsStatus.ONSALE;
 
                             }
                         });
 
+        System.out.println("secKillGoodsItem2=" + secKillGoodsItem.isPersistent());
+        //secKillGoodsItem = SecKillGoodsItem.findById(secKillGoodsItem.id);
         secKillGoodsItem.status = SecKillGoodsStatus.ONSALE;
         secKillGoodsItem.save();
         assertEquals(SecKillGoodsStatus.ONSALE, secKillGoodsItem.status);

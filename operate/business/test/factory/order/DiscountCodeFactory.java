@@ -38,20 +38,4 @@ public class DiscountCodeFactory extends ModelFactory<DiscountCode> {
         discountCode.endAt = beforeDays(new Date(), 1);
     }
 
-    @Override
-    public void delete(DiscountCode discountCode) {
-        discountCode.goods = null;
-        List<OrderDiscount> list = OrderDiscount.find("byDiscountCode",
-                        discountCode).fetch();
-
-        for (OrderDiscount orderDiscount : list) {
-            orderDiscount.order = null;
-            orderDiscount.orderItem = null;
-            orderDiscount.discountCode = null;
-            orderDiscount.save();
-            orderDiscount.delete();
-        }
-        discountCode.save();
-        discountCode.delete();
-    }
 }
