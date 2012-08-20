@@ -1047,7 +1047,8 @@ public class Order extends Model {
         order.payMethod = paymentSourceCode;
 
         //如果使用余额足以支付，则付款直接成功
-        if (ebankPaymentAmount.compareTo(BigDecimal.ZERO) == 0 && balancePaymentAmount.compareTo(order.needPay) == 0) {
+        if (ebankPaymentAmount.compareTo(BigDecimal.ZERO) == 0
+                && balancePaymentAmount.add(order.promotionBalancePay).compareTo(order.needPay) == 0) {
             order.payMethod = PaymentSource.getBalanceSource().code;
             order.payAndSendECoupon();
             return true;
