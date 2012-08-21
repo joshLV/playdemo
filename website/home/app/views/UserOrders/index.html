@@ -20,7 +20,12 @@
         $("#popup_close").click();
     }
 
-    function doCancel(id) {
+    function doCancel(id, ev) {
+        if ($.browser.msie) {
+            window.event.returnValue = false;
+        } else {
+            ev.preventDefault();
+        }
         $("#orderNo").val(id);
         $.common.dialog({'id':'cancel', 'title':'取消订单'});
     }
@@ -120,7 +125,7 @@
                                     <a class="order-payment" href="@{UserOrders.pay(row.orderNumber)}"></a>
                                 #{/if}
                                 #{if (row.status == models.order.OrderStatus.UNPAID)}
-                                    <a class="order-cancel" href="#" onclick="doCancel(${row.orderNumber})">取消</a>
+                                    <a class="order-cancel" href="#" onclick="doCancel(${row.orderNumber}, event)">取消</a>
                                 #{/if}
                             </td>
                         #{/if}
