@@ -869,7 +869,7 @@ public class Goods extends Model {
     public static JPAExtPaginator<Goods> findByResaleCondition(Resaler resaler,
                                                                GoodsCondition condition, int pageNumber, int pageSize) {
         JPAExtPaginator<Goods> goodsPage = new JPAExtPaginator<>
-                ("Goods g", "g", Goods.class, condition.getResaleFilterNoExpired(resaler),
+                ("Goods g", "g", Goods.class, condition.getResaleFilter(resaler),
                         condition.getParamMap())
                 .orderBy(condition.getOrderByExpress());
         goodsPage.setPageNumber(pageNumber);

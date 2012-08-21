@@ -5,6 +5,10 @@ import models.sales.SecKillGoods;
 import factory.FactoryBoy;
 import factory.ModelFactory;
 
+import java.util.Date;
+
+import static util.DateHelper.afterDays;
+
 /**
  * <p/>
  * User: yanjy
@@ -21,6 +25,7 @@ public class SecKillGoodsFactory extends ModelFactory<SecKillGoods> {
         secKillGoods.setPrompt("wowuroqwl");
         secKillGoods.goods = goods;
         secKillGoods.imagePath = "/a.jpg";
+        secKillGoods.createdAt= afterDays(new Date(), 30);
         return secKillGoods;
     }
 }

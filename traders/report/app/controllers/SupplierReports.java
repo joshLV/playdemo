@@ -81,6 +81,8 @@ public class SupplierReports extends Controller {
         }
         condition.supplier = SupplierRbac.currentUser().supplier;
 
+
+
         JPAExtPaginator<GoodsDailyReport> reportPage = GoodsDailyReport.query(condition, pageNumber, PAGE_SIZE);
 
         ReportSummary summary = GoodsDailyReport.summary(condition);
