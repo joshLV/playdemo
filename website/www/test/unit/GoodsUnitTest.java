@@ -258,7 +258,7 @@ public class GoodsUnitTest extends UnitTest {
         resaler.level = ResalerLevel.VIP1;
         GoodsCondition condition = new GoodsCondition("0-0-0");
         JPAExtPaginator<Goods> goodsList = models.sales.Goods.findByResaleCondition(resaler, condition, 1, 10);
-        assertEquals(2, goodsList.size());
+        assertEquals(17, goodsList.size());
     }
 
     @Test
