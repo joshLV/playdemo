@@ -314,4 +314,5 @@ public class SecKillGoodsItem extends Model {
         virtualInventory -= virtualCount;
         save();
     }
+
 }

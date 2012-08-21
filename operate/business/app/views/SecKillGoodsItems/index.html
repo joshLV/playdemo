@@ -77,8 +77,7 @@ select:'condition_status',value:condition?.status/}
 
         #{paginate.list items:secKillGoodsItems,as:'item'}
         <tr class="#{if item.isExpired() || item.baseSale?.intValue() == 0}tr-offsale#{/if} transparent">
-            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/g/${item?.secKillGoods?.id}" target="_blank"><img
-                    src="${item?.secKillGoods?.imageTinyPath}"/></a><a href="http://${play.Play.configuration.getProperty("www.url")}/seckill-goods"
+            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/seckill-goods"
                                                                  target="_blank">${item?.goodsTitle}
             </a></td>
             <td>${item?.salePrice?.formatCurrency('CNY')}</td>

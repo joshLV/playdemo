@@ -106,4 +106,34 @@ public class SalesOrderItemReport extends Model {
     public BigDecimal getPrice() {
         return originalAmount.divide(new BigDecimal(buyCount));
     }
+
+    /**
+     * 取得净销售的总计
+     *
+     * @param resultList
+     * @return
+     */
+    public static SalesOrderItemReport getNetSummary(List<SalesOrderItemReport> resultList) {
+        return null;
+    }
+
+    /**
+     * 取得每天商户的净销售记录
+     *
+     * @param condition
+     * @return
+     */
+    public static List<SalesOrderItemReport> getNetSales(SalesOrderItemReportCondition condition) {
+        Query query = JPA.em()
+                .createQuery(
+                        "select new models.SalesOrderItemReport(r.goods, r.salePrice,r.faceValue, sum(r.buyNumber), sum(r.salePrice*r.buyNumber))"
+                                + " from OrderItems r, Supplier s where "
+                                + condition.getFilter() + " group by r.goods, r.salePrice order by r.goods"
+                );
+
+        for (String param : condition.getParamMap().keySet()) {
+            query.setParameter(param, condition.getParamMap().get(param));
+        }
+        return query.getResultList();
+    }
 }

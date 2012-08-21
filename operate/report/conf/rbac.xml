@@ -40,6 +40,8 @@
                         permissions="SALES_REPORT"/>
             <navigation key="consumer_refund_reports" action="ConsumerRefundReports.index" text="消费者退款报表"
                         permissions="SALES_REPORT"/>
+            <navigation key="net_sales_reports" action="NetSalesReports.index" text="净销售报表"
+                        permissions="SALES_REPORT"/>
         </navigation>
     </navigation>
 </application>

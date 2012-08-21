@@ -1,21 +1,10 @@
 package controllers;
 
-import static play.Logger.warn;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
-import models.order.Cart;
-import models.order.DeliveryType;
-import models.order.DiscountCode;
-import models.order.NotEnoughInventoryException;
-import models.order.Order;
-import models.order.OrderDiscount;
-import models.order.OrderItems;
+import models.order.*;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import org.apache.commons.lang.StringUtils;
@@ -25,7 +14,14 @@ import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-import controllers.modules.website.cas.SecureCAS;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static play.Logger.warn;
 
 /**
  * 用户订单确认控制器.
@@ -62,7 +58,6 @@ public class Orders extends Controller {
             error("未选择商品!");
             return;
         }
-        System.out.println("gai cheng gong le");
         Map<String, String[]> params = request.params.all();
         String items = "";
         for (Long goodsId : gid) {

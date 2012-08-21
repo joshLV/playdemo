@@ -12,17 +12,23 @@ import utils.PaginateUtil;
 
 import java.util.List;
 
+/**
+ * <p/>
+ * User: yanjy
+ * Date: 12-8-21
+ * Time: 上午9:42
+ */
 @With(OperateRbac.class)
-public class SalesTaxReports extends Controller {
+public class NetSalesReports extends Controller {
 
     private static final int PAGE_SIZE = 30;
-    
+
     /**
      * 查询销售税务报表.
      *
      * @param condition
      */
-    @ActiveNavigation("")
+    @ActiveNavigation("net_sales_reports")
     public static void index(SalesOrderItemReportCondition condition) {
         int pageNumber = getPageNumber();
 
@@ -31,12 +37,12 @@ public class SalesTaxReports extends Controller {
         }
 
         // 查询出所有结果
-        List<SalesOrderItemReport> resultList =  SalesOrderItemReport.query(condition);
+        List<SalesOrderItemReport> resultList = SalesOrderItemReport.getNetSales(condition);
         // 分页
         ValuePaginator<SalesOrderItemReport> reportPage = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
-        
+
         // 汇总
-        SalesOrderItemReport summary = SalesOrderItemReport.summary(resultList);
+        SalesOrderItemReport summary = SalesOrderItemReport.getNetSummary(resultList);
 
         List<Supplier> supplierList = Supplier.findUnDeleted();
         render(reportPage, summary, condition, supplierList);

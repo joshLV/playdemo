@@ -1,26 +1,18 @@
 package models.order;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import cache.CacheHelper;
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.sales.Goods;
 import models.sales.GoodsStatus;
 import models.sales.MaterialType;
+import models.sales.SecKillGoodsItem;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
-import cache.CacheHelper;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Entity
 @Table(name = "cart")
@@ -33,7 +25,8 @@ public class Cart extends Model {
 
     @ManyToOne
     public Goods goods;
-
+    @ManyToOne
+    public SecKillGoodsItem secKillGoodsItem;
     public long number;
 
     @Column(name = "cookie_identity")
@@ -62,9 +55,15 @@ public class Cart extends Model {
         }
         return lineValue;
     }
-    
+
     public Cart(Goods goods, long number) {
         this.goods = goods;
+        this.number = number;
+    }
+
+    public Cart(Goods goods, long number, SecKillGoodsItem item) {
+        this.goods = goods;
+        this.secKillGoodsItem = item;
         this.number = number;
     }
 

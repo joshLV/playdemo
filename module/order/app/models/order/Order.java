@@ -538,7 +538,7 @@ public class Order extends Model {
             if (orderItem.goods.materialType == MaterialType.REAL) {
                 haveFreight = true;
             }
-            if (orderItem.goods.baseSale == 3 || orderItem.goods.baseSale == 0) {
+            if (orderItem.goods.baseSale == 10 || orderItem.goods.baseSale == 0) {
                 //发送提醒邮件
                 MailMessage mailMessage = new MailMessage();
                 mailMessage.addRecipient(EMAIL_RECEIVER);

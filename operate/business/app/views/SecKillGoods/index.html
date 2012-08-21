@@ -55,8 +55,8 @@
         #{paginate.list items:goodsPage, as:'goods'}
         <tr>
             <td>${goods?.goods?.id}</td>
-            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/g/${goods.id}?preview=true" target="_blank"><img
-                    src="${goods?.goods?.imageTinyPath}"/></a><a href="http://${play.Play.configuration.getProperty("www.url")}/g/${goods?.goods?.id}?preview=true"
+            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/seckill-goods" target="_blank"><img
+                    src="${goods?.imageTinyPath}"/></a><a href="http://${play.Play.configuration.getProperty("www.url")}/g/${goods?.goods?.id}?preview=true"
                    target="_blank">${goods?.goods?.name}
             </a></td>
             <td>${goods?.personLimitNumber}</td>
