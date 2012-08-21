@@ -243,7 +243,7 @@
     </div>
 </div>
 <!-- #footer -->
-<script>var CURRENTTIME = 1345028051, STARTTIME = '#{if !goodsItem.begin}${goodsItem.secKillBeginAt?.format('''yyyy-MM-dd HH:mm:ss''')}#{/if}#{else}${goodsItem.secKillEndAt?.format('''yyyy-MM-dd HH:mm:ss''')}#{/else}';
+<script>var CURRENTTIME = '${date}', STARTTIME = '#{if !goodsItem.begin}${goodsItem.secKillBeginAt?.format('''yyyy-MM-dd HH:mm:ss''')}#{/if}#{else}${goodsItem.secKillEndAt?.format('''yyyy-MM-dd HH:mm:ss''')}#{/else}';
 </script>
 #{asset.js src:['/u/jquery-1.7.2.min.js', '/y/base.js'] /}
 <script src="http://a.yibaiquan.com/7Xi/jquery.countdown.js"></script>

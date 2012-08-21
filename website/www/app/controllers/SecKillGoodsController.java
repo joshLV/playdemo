@@ -42,7 +42,9 @@ public class SecKillGoodsController extends Controller {
             //判断帐号限购
             exceedLimit = checkLimitNumber(user, goodsItem.secKillGoods.goods.id, goodsItem.secKillGoods.id, 1);
         }
-        render(goodsItem, secKillGoodsItems, exceedLimit);
+
+        Long date = System.currentTimeMillis() / 1000;
+        render(goodsItem, secKillGoodsItems, exceedLimit, date);
     }
 
     /**
