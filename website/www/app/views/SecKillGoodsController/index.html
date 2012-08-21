@@ -243,7 +243,7 @@
     </div>
 </div>
 <!-- #footer -->
-<script>var CURRENTTIME = '${date}', STARTTIME = '#{if !goodsItem.begin}${goodsItem.secKillBeginAt?.format('''yyyy-MM-dd HH:mm:ss''')}#{/if}#{else}${goodsItem.secKillEndAt?.format('''yyyy-MM-dd HH:mm:ss''')}#{/else}';
+<script>var STARTTIME = '#{if !goodsItem.begin}${goodsItem.secKillBeginAt?.format('''yyyy-MM-dd HH:mm:ss''')}#{/if}#{else}${goodsItem.secKillEndAt?.format('''yyyy-MM-dd HH:mm:ss''')}#{/else}';
 </script>
 #{asset.js src:['/u/jquery-1.7.2.min.js', '/y/base.js'] /}
 <script src="http://a.yibaiquan.com/7Xi/jquery.countdown.js"></script>
@@ -267,7 +267,7 @@
             },
             serverSync:function () {
                 var time = null;
-                $.ajax({url:'http://a.yibaiquan.com/7Xi/serverTime.php',
+                $.ajax({url:'/seckill-goods/time',
                     async:false, dataType:'text',
                     success:function (text) {
                         time = new Date(text);

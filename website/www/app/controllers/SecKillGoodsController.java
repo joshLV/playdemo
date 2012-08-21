@@ -12,6 +12,7 @@ import play.mvc.With;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 秒杀商品控制器.
@@ -71,4 +72,10 @@ public class SecKillGoodsController extends Controller {
         //超过限购数量,则表示已经购买过该商品
         return (limitNumber > 0 && (number > limitNumber || limitNumber <= boughtNumber));
     }
+
+    public static void time() {
+        SimpleDateFormat format = new SimpleDateFormat("MMM d,yyyy HH:mm:ss", Locale.ENGLISH);
+        renderText(format.format(new Date()));
+    }
+
 }
