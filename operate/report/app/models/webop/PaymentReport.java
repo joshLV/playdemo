@@ -44,7 +44,7 @@ public class PaymentReport {
                 .createQuery(
                         "select new models.webop.PaymentReport(s.createdAt, s.account, sum(s.changeAmount)) "
                                 + " from AccountSequence s where "
-                                + processFilter(condition) + " group by cast(s.createdAt as date) order by cast(s.createdAt as date) DESC");
+                                + processFilter(condition) + " group by cast(s.createdAt as date),s.account order by cast(s.createdAt as date) DESC");
         for (Map.Entry<String, Object> param : condition.getParams().entrySet()) {
             query.setParameter(param.getKey(), param.getValue());
         }

@@ -1,0 +1,42 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'支付渠道报表' /}
+#{set 'moreStyles'}
+    <style type="text/css">
+        .span10{
+            width:95%
+        }
+        .span2{
+            display:none
+        }
+    </style>
+#{/set}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>流水号</th>
+            <th>创建时间</th>
+            <th>订单信息</th>
+            <th>充值金额</th>
+            <th>支付渠道</th>
+        </tr>
+    </thead>
+    <tbody>
+    %{
+        total = java.math.BigDecimal.ZERO
+        opBaseUrl = play.Play.configuration.getProperty("uri.operate_business")
+    }%
+    #{list sequences, as:'accountSequence'}
+    <tr>
+        <td>${accountSequence.serialNumber}</td>
+        <td>${accountSequence.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+        <td>${accountSequence.remark}<br/>
+            订单号：<a href="${opBaseUrl}/orders/${accountSequence.orderId}" target="_blank">${accountSequence .orderNumber}</a>
+        </td>
+        <td> ${accountSequence.changeAmount?.negate().formatCurrency('CNY')}</td>
+        <td>${accountSequence.payMethod}</td>
+        %{total = total.add(accountSequence.changeAmount)}%
+    </tr>
+    #{/list}
+    <tr><td colspan="3" style="text-align:right">汇总</td><td>${total.negate().formatCurrency('CNY')}</td><td></td></tr>
+    </tbody>
+</table>

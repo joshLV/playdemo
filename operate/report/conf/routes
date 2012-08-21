@@ -9,6 +9,7 @@ GET     /reports/download/withdraw              WithdrawReports.download
 GET     /reports/purchase                       PurchaseTaxReports.index
 GET     /reports/sales                          SalesTaxReports.index
 GET     /reports/payment                        PaymentReports.index
+GET     /reports/payment-detail                 PaymentReports.detail
 GET     /reports/withdraw                       WithdrawReports.index
 
 # 网站运营报表

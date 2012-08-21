@@ -61,6 +61,18 @@
                 <td>订单状态： &{'order.'+orders.status}</td>
                 <td>物流方式： &{'order.'+orders.deliveryType}</td>
             </tr>
+            <tr>
+                <td>付款账号详情：
+                    #{if orders.userType == models.accounts.AccountType.CONSUMER}
+                        <a href="/consumers/${orders.userId}" target="_blank">&{'account.type.'+orders.userType}</a>
+                    #{/if}
+                    #{if orders.userType == models.accounts.AccountType.RESALER}
+                        <a href="/resalers/${orders.userId}/view?flag=1" target="_blank">&{'account.type.'+orders.userType}</a>
+                    #{/if}
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
         </table>
     </ul>
     <ul class="nav">

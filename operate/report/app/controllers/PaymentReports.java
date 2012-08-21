@@ -1,5 +1,6 @@
 package controllers;
 
+import models.order.Order;
 import models.webop.PaymentReport;
 import models.accounts.*;
 import operate.rbac.annotations.ActiveNavigation;
@@ -10,10 +11,8 @@ import play.mvc.With;
 import utils.CrossTableUtil;
 import utils.PaginateUtil;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import javax.persistence.Query;
+import java.util.*;
 
 /**
  * @author likang
@@ -30,7 +29,6 @@ public class PaymentReports extends Controller {
      */
     @ActiveNavigation("payment_reports")
     public static void index(AccountSequenceCondition condition) {
-        int pageNumber = getPageNumber();
         if (condition == null) {
             condition = new AccountSequenceCondition();
             condition.createdAtBegin = new Date();
@@ -51,8 +49,53 @@ public class PaymentReports extends Controller {
         render(reportPage, condition);
     }
 
-    private static int getPageNumber() {
-        String page = request.params.get("page");
-        return StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+    public static void detail(AccountSequenceCondition condition, Set<String> partners) {
+        if (condition == null) {
+            condition = new AccountSequenceCondition();
+            condition.createdAtBegin = new Date();
+            condition.createdAtEnd = new Date();
+        }
+        List<Account> accounts = new ArrayList<>();
+
+        for(String partner : partners) {
+            switch (partner){
+                case "alipay":
+                    accounts.add(PaymentReport.alipayAccount);
+                    break;
+                case "tenpay":
+                    accounts.add(PaymentReport.tenpayAccount);
+                    break;
+                case "99bill":
+                    accounts.add(PaymentReport.kuaiqianAccount);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if(accounts.size() == 0) {
+            error("no account specified");
+        }
+        condition.accounts = accounts;
+        Query  query = AccountSequence.em().createQuery("select s from AccountSequence s where " + PaymentReport.processFilter(condition));
+        for (Map.Entry<String, Object> param : condition.getParams().entrySet()) {
+            query.setParameter(param.getKey(), param.getValue());
+        }
+        List<AccountSequence> sequences = query.getResultList();
+        for(AccountSequence sequence : sequences) {
+            setOrderInfo(sequence);
+        }
+        render(sequences);
+    }
+
+    private static void setOrderInfo(AccountSequence accountSequence) {
+        if (accountSequence.orderId != null) {
+            Order order = Order.findById(accountSequence.orderId);
+            if (order != null) {
+                accountSequence.payMethod = PaymentSource.findNameByCode(order.payMethod);
+                accountSequence.orderNumber = order.orderNumber;
+                accountSequence.remark = order.description;
+            }
+        }
     }
 }

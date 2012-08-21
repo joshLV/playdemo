@@ -115,9 +115,8 @@
             alipay = new java.math.BigDecimal("0.00")
             tenpay = new java.math.BigDecimal("0.00")
             kuaiqian = new java.math.BigDecimal("0.00")
-            baseUri = play.Play.configuration.getProperty("uri.operate_business")
         }%
-        #{paginate.list items:reportPage, as:'report'}
+        #{list reportPage, as:'report'}
             %{
                 alipayAmount = report.get("支付宝")?:new java.math.BigDecimal("0.00")
                 tenpayAmount = report.get("财付通")?:new java.math.BigDecimal("0.00")
@@ -127,22 +126,26 @@
                 tenpay = tenpay.add(tenpayAmount)
                 kuaiqian = kuaiqian.add(kuaiqianAmount)
                 rdate = report.get("RowKey")
-                dateUrl = baseUri + "/orders?condition.status=PAID&condition.paidAtBegin=" + rdate + "&condition.paidAtEnd=" + rdate
+                dateUrl = "/reports/payment-detail?condition.createdAtBegin=" + rdate + "&condition.createdAtEnd=" + rdate
             }%
             <tr>
-                <td><a href="${dateUrl}" target="_blank">${rdate}</a></td>
-                <td><a href="${dateUrl}&condition.payMethod=alipay" target="_blank">${alipayAmount}</a> </td>
-                <td><a href="${dateUrl}&condition.payMethod=tenpay" target="_blank">${tenpayAmount}</a></td>
-                <td><a href="${dateUrl}&condition.payMethod=99bill" target="_blank">${kuaiqianAmount}</a></td>
-                <td>${alipayAmount.add(tenpayAmount).add(kuaiqianAmount)}</td>
+                <td>${rdate}</td>
+                <td><a href="${dateUrl}&partners=alipay" target="_blank">${alipayAmount}</a> </td>
+                <td><a href="${dateUrl}&partners=tenpay" target="_blank">${tenpayAmount}</a></td>
+                <td><a href="${dateUrl}&partners=99bill" target="_blank">${kuaiqianAmount}</a></td>
+                <td><a href="${dateUrl}&partners=alipay&partners=tenpay&partners=99bill" target="_blank">${alipayAmount.add(tenpayAmount).add(kuaiqianAmount)}</a></td>
             </tr>
-        #{/paginate.list}
+        #{/list}
             <tr>
+                %{
+                    totalBaseUrl = "/reports/payment-detail?condition.createdAtBegin=" + condition.createdAtBegin?.format() +
+                               "&condition.createdAtEnd=" + condition.createdAtEnd?.format()
+                }%
                 <td>汇总</td>
-                <td>${alipay}</td>
-                <td>${tenpay}</td>
-                <td>${kuaiqian}</td>
-                <td>${alipay.add(tenpay).add(kuaiqian)}</td>
+                <td><a href="${totalBaseUrl}&partners=alipay" target="_blank">${alipay}</a></td>
+                <td><a href="${totalBaseUrl}&partners=tenpay" target="_blank">${tenpay}</a></td>
+                <td><a href="${totalBaseUrl}&partners=99bill" target="_blank">${kuaiqian}</a></td>
+                <td><a href="${totalBaseUrl}&partners=alipay&partners=tenpay&partners=99bill" target="_blank">${alipay.add(tenpay).add(kuaiqian)}</a></td>
             </tr>
         </table>
     </div>
