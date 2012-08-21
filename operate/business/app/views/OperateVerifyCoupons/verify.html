@@ -15,8 +15,8 @@ String timeEnd = ecoupon.goods.useEndTime;}%
     商品名称: ${ecoupon.goods.title}<br/>
     消费日期：${ecoupon.consumedAt?.format('yyyy-MM-dd HH:mm:ss')}<br/>
     验证门店：${ecoupon.shop?.name}<br/>
-    验证方式：&{'coupon.'+ecoupon.verifyType}<br/>
-    验证人：&{ecoupon?.operateUserName}
+    验证方式：&{'coupon.'+ecoupon?.verifyType}<br/>
+    验证人：${ecoupon?.operateUserName}
     #{/elseif}
 
     #{elseif ecoupon.status == models.order.ECouponStatus.REFUND}
