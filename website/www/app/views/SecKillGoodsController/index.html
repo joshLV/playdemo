@@ -268,7 +268,7 @@
             timezone:+8,
             serverSync:function () {
                 var time = null;
-                $.ajax({url:'/server_time',
+                $.ajax({url:'/server_time?t='+ +new Date(),
                     async:false, dataType:'text',
                     success:function (text) {
                         time = new Date(text);
