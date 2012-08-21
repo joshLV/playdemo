@@ -1,18 +1,27 @@
 package function;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.uhuila.common.constants.DeletedStatus;
 import models.admin.OperateUser;
 import models.order.DiscountCode;
+import models.sales.Goods;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.ModelPaginator;
+import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
+import util.DateHelper;
 
 public class OperateDiscountCodesTest extends FunctionalTest {
 
@@ -72,5 +81,79 @@ public class OperateDiscountCodesTest extends FunctionalTest {
         assertNotNull(renderArgs("discountCodePage"));
         ModelPaginator discountCodePage = (ModelPaginator)renderArgs("discountCodePage");
         assertEquals(10, discountCodePage.getRowCount());
-    }    
+    }
+
+    @Test
+    public void 测试打开添加页面(){
+
+        Http.Response response = GET("/discountcodes/new");
+        assertIsOk(response);
+        assertContentMatch("添加折扣券",response);
+
+    }
+
+    @Test
+    public void 测试创建新折扣券(){
+        Goods goods = FactoryBoy.create(Goods.class);
+
+        Map<String,String> params = new HashMap<>();
+        params.put("discountCode.title","测试用折扣券");
+        params.put("discountCode.discountSn","QQ");
+        params.put("discountCode.description","描述");
+        params.put("discountCode.goods.id",goods.id.toString());
+        params.put("discountCode.discountAmount","1");
+        params.put("discountCode.beginAt","2012-08-01 17:08:59");
+        params.put("discountCode.endAt","2012-09-01 17:08:59");
+
+        Http.Response response = POST("/discountcodes",params);
+        assertStatus(302, response);
+        // 查询折扣券是否已经被保存
+        List<DiscountCode> discountCodes = DiscountCode.findAll();
+        boolean b = false;
+        for (DiscountCode discountCode : discountCodes){
+            if (discountCode.discountSn.equals("QQ")){
+                b = true;
+            }
+        }
+        assertTrue(b);
+
+    }
+
+    @Test
+    public void 测试打开指定折扣券修改页面(){
+        DiscountCode discountDode = FactoryBoy.create(DiscountCode.class);
+
+        Http.Response response = GET("/discountcodes/"+discountDode.id.toString()+"/edit");
+        assertIsOk(response);
+        assertContentMatch("修改折扣券",response);
+    }
+
+    @Test
+    public void 测试删除制定折扣券(){
+        DiscountCode discountCode = FactoryBoy.create(DiscountCode.class);
+
+        Http.Response response = DELETE("/discountcodes/"+discountCode.id.toString());
+        assertStatus(302, response);
+        discountCode.refresh();
+        assertEquals(DeletedStatus.DELETED,discountCode.deleted);
+
+    }
+
+    @Test
+    public void 测试更新指定折扣券(){
+
+        DiscountCode discountCode = FactoryBoy.create(DiscountCode.class);
+        Goods goods = FactoryBoy.create(Goods.class);
+
+        String params = "?discountCode.title=测试用折扣券&discountCode.discountSn=QQ" +
+                "&discountCode.goods.id="+goods.id.toString()+
+                "&discountCode.discountAmount=1&discountCode.beginAt=2012-08-01 17:08:59"+
+                "&discountCode.endAt=2012-09-01 17:08:59";
+
+        Http.Response response = PUT("/discountcodes/"+discountCode.id.toString(),"application/x-www-form-urlencoded", params);
+        assertStatus(302,response);
+        discountCode.refresh();
+        assertEquals("QQ",discountCode.discountSn);
+
+    }
 }

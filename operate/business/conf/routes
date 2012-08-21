@@ -200,6 +200,7 @@ PUT     /questions/{id}/show                    OperateQuestions.show
 
 #折扣券管理
 GET     /discountcodes                              OperateDiscountCodes.index
+GET     /discountcodes/new                          OperateDiscountCodes.add
 POST    /discountcodes                              OperateDiscountCodes.create
 DELETE  /discountcodes/{id}                         OperateDiscountCodes.delete
 GET     /discountcodes/{id}/edit                    OperateDiscountCodes.edit
