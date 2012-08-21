@@ -260,13 +260,17 @@
             labels:['年', '月', '周', '天', '小时', '分', '秒'],
             layout:'<span class="d">{d<}{dn}{d>}</span>天 <span class="h">{h<}{hn}{h>}</span>小时 <span class="m">{m<}{mn}{m>}</span>分 <span class="s">{s<}{sn}{s>}</span>秒',
             format:'DHMS',
+            onExpiry:function () {
+                $('.tobegin').addClass('atonce').click(function () {
+                    $('#order_form').submit();
+                });
+            },
             serverSync:function () {
                 var time = null;
                 $.ajax({url:'http://a.yibaiquan.com/7Xi/serverTime.php',
                     async:false, dataType:'text',
                     success:function (text) {
                         time = new Date(text);
-                        alert("11")
                     },
                     error:function (http, message, exc) {
                         time = new Date();

@@ -9,6 +9,8 @@ import models.sales.SecKillGoodsItem;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,8 +44,8 @@ public class SecKillGoodsController extends Controller {
             //判断帐号限购
             exceedLimit = checkLimitNumber(user, goodsItem.secKillGoods.goods.id, goodsItem.secKillGoods.id, 1);
         }
-
-        Long date = System.currentTimeMillis() / 1000;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String date = format.format(new Date());
         render(goodsItem, secKillGoodsItems, exceedLimit, date);
     }
 
