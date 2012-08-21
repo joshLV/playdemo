@@ -118,7 +118,7 @@
             resalerTotal = new java.math.BigDecimal("0")
             baseUri = play.Play.configuration.getProperty("uri.operate_business")
         }%
-        #{paginate.list items:reportPage, as:'report'}
+        #{list reportPage, as:'report'}
             %{
                 consumerAmount = report.get("CONSUMER") ?: new java.math.BigDecimal("0.00")
                 supplierAmount = report.get("SUPPLIER")?:new java.math.BigDecimal("0.00")
@@ -131,13 +131,13 @@
                 dateUrl = baseUri + "/withdraw?condition.status=SUCCESS&condition.processedAtBegin=" + rdate + "&condition.processedAtEnd=" + rdate
             }%
             <tr>
-                <td><a href="${dateUrl}" target="_blank">${rdate}</a></td>
+                <td>${rdate}</td>
                 <td><a href="${dateUrl}&condition.accountType=CONSUMER" target="_blank">${consumerAmount.negate()}</a> </td>
                 <td><a href="${dateUrl}&condition.accountType=SUPPLIER" target="_blank">${supplierAmount.negate()}</a></td>
                 <td><a href="${dateUrl}&condition.accountType=RESALER" target="_blank">${resalerAmount.negate()}</a></td>
-                <td>${consumerAmount.add(supplierAmount).add(resalerAmount).negate()}</td>
+                <td><a href="${dateUrl}" target="_blank">${consumerAmount.add(supplierAmount).add(resalerAmount).negate()}</a></td>
             </tr>
-        #{/paginate.list}
+        #{/list}
             <tr>
                 <td>汇总</td>
                 <td>${consumerTotal.negate()}</td>
