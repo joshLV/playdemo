@@ -1,26 +1,7 @@
 package models.order;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -38,6 +19,7 @@ import models.resale.util.ResaleUtil;
 import models.sales.Goods;
 import models.sales.GoodsStatistics;
 import models.sales.MaterialType;
+import models.sales.SecKillGoodsItem;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
@@ -47,8 +29,28 @@ import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
-import cache.CacheHelper;
-import com.uhuila.common.constants.DeletedStatus;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 
 @Entity
@@ -92,9 +94,9 @@ public class Order extends Model {
     /**
      * 使用折扣码后折扣的费用.
      */
-    @Column(name="rebate_value")
+    @Column(name = "rebate_value")
     public BigDecimal rebateValue;
-    
+
     /**
      * 使用网银付款金额
      * discountPay = needPay - 余额支付
@@ -322,19 +324,21 @@ public class Order extends Model {
 
     /**
      * 计算单列商品应折扣的金额.
+     *
      * @param g
      * @param number
      * @param discountCode
      * @return
      */
     public static BigDecimal getDiscountGoodsAmount(models.sales.Goods g,
-            Integer number, DiscountCode discountCode) {
+                                                    Integer number, DiscountCode discountCode) {
         BigDecimal amount = g.salePrice.multiply(new BigDecimal(number.toString()));
         BigDecimal discountValue = getDiscountValueOfGoodsAmount(g, number, discountCode);
         return amount.subtract(discountValue);
     }
+
     public static BigDecimal getDiscountValueOfGoodsAmount(models.sales.Goods g,
-            Integer number, DiscountCode discountCode) {
+                                                           Integer number, DiscountCode discountCode) {
         if (discountCode == null || discountCode.goods == null || discountCode.goods.id != g.id) {
             return BigDecimal.ZERO;
         }
@@ -347,10 +351,11 @@ public class Order extends Model {
         }
         return BigDecimal.ZERO;
     }
-    
+
     /**
      * 计算整单折扣。
      * 注意：只应当用于计算电子券类的折扣，实物券不参与折扣.
+     *
      * @param amount
      * @param discountCode
      * @return
@@ -358,6 +363,7 @@ public class Order extends Model {
     public static BigDecimal getDiscountTotalECartAmount(BigDecimal amount, DiscountCode discountCode) {
         return amount.subtract(getDiscountValueOfTotalECartAmount(amount, discountCode));
     }
+
     public static BigDecimal getDiscountValueOfTotalECartAmount(BigDecimal amount, DiscountCode discountCode) {
         if (discountCode == null || discountCode.goods != null) {
             return BigDecimal.ZERO;
@@ -383,8 +389,9 @@ public class Order extends Model {
      * @throws NotEnoughInventoryException
      */
     public OrderItems addOrderItem(Goods goods, Integer number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice) throws NotEnoughInventoryException {
-         return this.addOrderItem(goods, number, mobile, salePrice, resalerPrice, null);
+        return this.addOrderItem(goods, number, mobile, salePrice, resalerPrice, null);
     }
+
     public OrderItems addOrderItem(Goods goods, Integer number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice, DiscountCode discountCode)
             throws NotEnoughInventoryException {
         OrderItems orderItem = null;
@@ -496,8 +503,26 @@ public class Order extends Model {
             orderItem.status = OrderStatus.CANCELED;
             orderItem.goods.save();
             orderItem.save();
+            //如果是秒杀商品，做回库处理
+            cancelSecKillOrder(orderItem);
         }
         this.save();
+    }
+
+    /**
+     * 取消秒杀商品订单.
+     *
+     * @param orderItem
+     */
+    private void cancelSecKillOrder(OrderItems orderItem) {
+        if (orderItem.secKillGoodsItemId != null) {
+            SecKillGoodsItem goodsItem = SecKillGoodsItem.findById(orderItem.secKillGoodsItemId);
+            goodsItem.baseSale += orderItem.buyNumber;
+            goodsItem.saleCount -= orderItem.buyNumber;
+            goodsItem.virtualInventory += orderItem.buyNumber;
+            goodsItem.virtualSale -= orderItem.buyNumber;
+            goodsItem.save();
+        }
     }
 
 
@@ -535,7 +560,7 @@ public class Order extends Model {
     }
 
     public void payAndSendECoupon() {
-        if(paid()){
+        if (paid()) {
             sendECoupon();
         }
     }
@@ -583,7 +608,7 @@ public class Order extends Model {
 
         //如果订单类型不是充值,那接着再支付此次订单
         if (this.orderType != OrderType.CHARGE) {
-            try{
+            try {
                 TradeBill tradeBill = TradeUtil.createOrderTrade(
                         account,
                         this.accountPay,
@@ -594,7 +619,7 @@ public class Order extends Model {
                         this.getId());
                 TradeUtil.success(tradeBill, this.description);
                 this.payRequestId = tradeBill.getId();
-            }catch (RuntimeException e) {
+            } catch (RuntimeException e) {
                 Logger.error("can not pay", e);
                 return false;
                 //忽略，此时订单没有支付，但余额已经保存
@@ -1036,7 +1061,7 @@ public class Order extends Model {
         order.accountPay = balancePaymentAmount;
         order.discountPay = ebankPaymentAmount;
         //计算使用活动金
-        if(account.promotionAmount != null && account.promotionAmount.compareTo(BigDecimal.ZERO) > 0) {
+        if (account.promotionAmount != null && account.promotionAmount.compareTo(BigDecimal.ZERO) > 0) {
             order.promotionBalancePay = order.accountPay.min(account.promotionAmount);
             order.accountPay = order.accountPay.subtract(order.promotionBalancePay);
         }
