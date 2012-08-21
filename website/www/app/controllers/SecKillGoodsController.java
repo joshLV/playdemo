@@ -40,7 +40,7 @@ public class SecKillGoodsController extends Controller {
         boolean exceedLimit = false;
         if (user != null) {
             //判断帐号限购
-            exceedLimit = checkLimitNumber(user, goodsItem.secKillGoods.goods.id, goodsItem.id, goodsItem.secKillGoods.id, 1);
+            exceedLimit = checkLimitNumber(user, goodsItem.secKillGoods.goods.id, goodsItem.secKillGoods.id, 1);
         }
         render(goodsItem, secKillGoodsItems, exceedLimit);
     }
@@ -53,10 +53,10 @@ public class SecKillGoodsController extends Controller {
      * @param number  购买数量
      * @return
      */
-    public static boolean checkLimitNumber(User user, Long goodsId, long secKillGoodsItemId, Long secKillGoodsId,
+    public static boolean checkLimitNumber(User user, Long goodsId, Long secKillGoodsId,
                                            long number) {
 
-        long boughtNumber = OrderItems.getBoughtNumberOfSecKillGoods(user, goodsId, secKillGoodsItemId);
+        long boughtNumber = OrderItems.getBoughtNumberOfSecKillGoods(user, goodsId, secKillGoodsId);
         //取出商品的限购数量
         models.sales.SecKillGoods goods = SecKillGoods.findById(secKillGoodsId);
         int limitNumber = 0;

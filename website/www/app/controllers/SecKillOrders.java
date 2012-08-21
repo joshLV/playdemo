@@ -75,7 +75,7 @@ public class SecKillOrders extends Controller {
             return;
         }
         //判断帐号限购
-        boolean exceedLimit = checkLimitNumber(user, secKillGoodsItem.secKillGoods.goods.id, secKillGoodsItemId, secKillGoodsId, count);
+        boolean exceedLimit = checkLimitNumber(user, secKillGoodsItem.secKillGoods.goods.id, secKillGoodsId, count);
         if (exceedLimit) {
             //todo 页面实现限购提示
             redirect("/seckill-goods?exceedLimit=" + exceedLimit);
@@ -156,20 +156,14 @@ public class SecKillOrders extends Controller {
 
     private static void addSecKillOrderItem(Order order, SecKillGoodsItem secKillGoodsItem,
                                             long count, String receiverMobile) throws NotEnoughInventoryException {
-        if (count > 0 && secKillGoodsItem != null && secKillGoodsItem.baseSale > 0) {
-            checkInventory(secKillGoodsItem, count);
-            OrderItems orderItem = new OrderItems(order, secKillGoodsItem.secKillGoods.goods, count, receiverMobile,
-                    secKillGoodsItem.salePrice, secKillGoodsItem.salePrice);
-            orderItem.secKillGoodsItemId = secKillGoodsItem.id;
-            order.orderItems.add(orderItem);
-            order.amount = order.amount.add(secKillGoodsItem.salePrice.multiply(new BigDecimal(String.valueOf(count))));
-            order.needPay = order.amount;
+        if (count <= 0) {
+            throw new IllegalArgumentException("count:" + count);
         }
 
         checkInventory(secKillGoodsItem, count);
         OrderItems orderItem = new OrderItems(order, secKillGoodsItem.secKillGoods.goods, count, receiverMobile,
                 secKillGoodsItem.salePrice, secKillGoodsItem.salePrice);
-        orderItem.secKillGoodsItemId = secKillGoodsItem.id;
+        orderItem.secKillGoods = secKillGoodsItem.secKillGoods;
         orderItem.rebateValue = secKillGoodsItem.secKillGoods.goods.salePrice.subtract(secKillGoodsItem.salePrice);
         order.rebateValue = BigDecimal.ZERO;
         order.orderItems.add(orderItem);
@@ -192,11 +186,11 @@ public class SecKillOrders extends Controller {
      * @param number  购买数量
      * @return
      */
-    public static boolean checkLimitNumber(User user, Long goodsId, long secKillGoodsItemId, Long secKillGoodsId,
+    public static boolean checkLimitNumber(User user, Long goodsId, Long secKillGoodsId,
                                            long number) {
 
 
-        long boughtNumber = OrderItems.getBoughtNumberOfSecKillGoods(user, goodsId, secKillGoodsItemId);
+        long boughtNumber = OrderItems.getBoughtNumberOfSecKillGoods(user, goodsId, secKillGoodsId);
         //取出商品的限购数量
         models.sales.SecKillGoods goods = SecKillGoods.findById(secKillGoodsId);
         int limitNumber = 0;
@@ -215,8 +209,7 @@ public class SecKillOrders extends Controller {
             return;
         }
         //判断帐号限购
-        boolean exceedLimit = checkLimitNumber(user, goodsItem.secKillGoods.goods.id, secKillGoodsItemId, goodsItem.secKillGoods.id, 1);
-        System.out.println(exceedLimit + "exceedLimit");
+        boolean exceedLimit = checkLimitNumber(user, goodsItem.secKillGoods.goods.id, goodsItem.secKillGoods.id, 1);
         if (exceedLimit) {
             renderArgs.put("exceedLimit", exceedLimit);
         }

@@ -4,21 +4,11 @@ import models.accounts.AccountType;
 import models.consumer.User;
 import models.sales.Goods;
 import models.sales.MaterialType;
-import models.sales.SecKillGoodsItem;
+import models.sales.SecKillGoods;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -41,14 +31,13 @@ public class OrderItems extends Model {
 
     @Column(name = "sale_price")
     public BigDecimal salePrice;        //最终成交价,对于普通分销商来说，此成交价与以上分销商价(resalerPrice)相同；
-    
+
     /**
      * 折扣掉的费用.
-     * 
      */
-    @Column(name="rebate_value")
+    @Column(name = "rebate_value")
     public BigDecimal rebateValue;
-    
+
     /**
      * 当前订单项总费用：
      * lineValue = salePrice*buyNumber - rebateValue
@@ -75,8 +64,12 @@ public class OrderItems extends Model {
     @Column(name = "buy_number")
     public Long buyNumber;
 
-    @Column(name = "seckill_goods_item_id")
+    @Column(name = "seckill_goods_item_id", nullable = true)
     public Long secKillGoodsItemId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seckill_goods_id", nullable = true)
+    public SecKillGoods secKillGoods;
 
     public String phone;
 
@@ -153,15 +146,15 @@ public class OrderItems extends Model {
         return result == null ? 0 : (Long) result;
     }
 
-    public static long getBoughtNumberOfSecKillGoods(User user, Long goodsId, Long secKillGoodsItemId) {
+    public static long getBoughtNumberOfSecKillGoods(User user, Long goodsId, Long secKillGoodsId) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE goods.id=:goodsId and " +
-                "order.userId=:userId and order.userType=:userType and status=:status and secKillGoodsItemId = :secKillGoodsItemId");
+                "order.userId=:userId and order.userType=:userType and status=:status and secKillGoods.id = :secKillGoodsId");
         q.setParameter("goodsId", goodsId);
         q.setParameter("userId", user.id);
         q.setParameter("userType", AccountType.CONSUMER);
         q.setParameter("status", OrderStatus.PAID);
-        q.setParameter("secKillGoodsItemId", secKillGoodsItemId);
+        q.setParameter("secKillGoodsId", secKillGoodsId);
         Object result = q.getSingleResult();
 
         return result == null ? 0 : (Long) result;
