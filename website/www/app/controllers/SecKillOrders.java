@@ -36,6 +36,21 @@ public class SecKillOrders extends Controller {
      * 预览订单
      */
     public static void index(long secKillGoodsItemId) {
+        //解析提交的商品及数量
+        SecKillGoodsItem secKillGoodsItem = SecKillGoodsItem.findById(secKillGoodsItemId);
+
+        //检查库存
+        try {
+            checkInventory(secKillGoodsItem, 1);
+        } catch (NotEnoughInventoryException e) {
+
+            System.out.println("nnnnnnnnnnnnnnnnnnnnnn e:" + e);
+            //缺少库存
+            Logger.error(e, "Inventory not enough,goodsId:" + secKillGoodsItem.secKillGoods.goods.id);
+//            error("商品库存不足！ (" + secKillGoodsItem.secKillGoods.goods.name + ")");
+            redirect("/seckill-goods");
+        }
+
         showOrder(secKillGoodsItemId);
 
         User user = SecureCAS.getUser();
@@ -47,7 +62,7 @@ public class SecKillOrders extends Controller {
     /**
      * 创建秒杀商品的订单.
      */
-    public static void create(long secKillGoodsItemId,  String mobile, String remark) {
+    public static void create(long secKillGoodsItemId, String mobile, String remark) {
         System.out.println("secKillGoodsItemId:" + secKillGoodsItemId);
 
         long count = 1;
@@ -59,10 +74,23 @@ public class SecKillOrders extends Controller {
         //解析提交的商品及数量
         SecKillGoodsItem secKillGoodsItem = SecKillGoodsItem.findById(secKillGoodsItemId);
 
+        //检查库存
+        try {
+            checkInventory(secKillGoodsItem, count);
+        } catch (NotEnoughInventoryException e) {
+
+            System.out.println("nnnnnnnnnnnnnnnnnnnnnn e:" + e);
+            //缺少库存
+            Logger.error(e, "Inventory not enough,goodsId:" + secKillGoodsItem.secKillGoods.goods.id);
+//            error("商品库存不足！ (" + secKillGoodsItem.secKillGoods.goods.name + ")");
+            redirect("/seckill-goods");
+        }
         //判断帐号限购
         boolean exceedLimit = checkLimitNumber(user, secKillGoodsItem.secKillGoods.goods.id, secKillGoodsItemId, count);
         if (exceedLimit) {
-            render("SecKillGoods/index.html", exceedLimit);
+            //todo 页面实现限购提示
+            redirect("/seckill-goods?exceedLimit=" + exceedLimit);
+//            render("SecKillGoodsController/index.html", exceedLimit);
         }
 
         boolean isElectronic = secKillGoodsItem.secKillGoods.goods.materialType.equals(MaterialType.ELECTRONIC);
@@ -120,10 +148,13 @@ public class SecKillOrders extends Controller {
             }
 
         } catch (NotEnoughInventoryException e) {
-            //todo 缺少库存
-            Logger.error(e, "inventory not enough");
-            error("inventory not enough");
-            render("SecKillGoods/index.html");
+            //缺少库存
+            Logger.error(e, "Inventory not enough,goodsId:" + secKillGoodsItem.secKillGoods.goods.id);
+//            error("商品库存不足！ (" + secKillGoodsItem.secKillGoods.goods.name + ")");
+            redirect("/seckill-goods");
+        } catch (Exception e) {
+            //其他错误
+            redirect("/seckill-goods");
         }
         order.remark = remark;
 
@@ -138,23 +169,24 @@ public class SecKillOrders extends Controller {
 
     private static void addSecKillOrderItem(Order order, SecKillGoodsItem secKillGoodsItem,
                                             long count, String receiverMobile) throws NotEnoughInventoryException {
-        System.out.println("count:" + count);
-        System.out.println("secKillGoodsItem:" + secKillGoodsItem);
-        System.out.println("secKillGoodsItem.baseSale:" + secKillGoodsItem.baseSale);
-        if (count > 0 && secKillGoodsItem != null && secKillGoodsItem.baseSale > 0) {
-            checkInventory(secKillGoodsItem, count);
-            OrderItems orderItem = new OrderItems(order, secKillGoodsItem.secKillGoods.goods, count, receiverMobile,
-                    secKillGoodsItem.salePrice, secKillGoodsItem.salePrice);
-            orderItem.secKillGoodsItemId = secKillGoodsItem.id;
-            order.orderItems.add(orderItem);
-            order.amount = order.amount.add(secKillGoodsItem.salePrice.multiply(new BigDecimal(String.valueOf(count))));
-            order.needPay = order.amount;
+        if (count <= 0) {
+            throw new IllegalArgumentException("count:" + count);
         }
+
+        checkInventory(secKillGoodsItem, count);
+        OrderItems orderItem = new OrderItems(order, secKillGoodsItem.secKillGoods.goods, count, receiverMobile,
+                secKillGoodsItem.salePrice, secKillGoodsItem.salePrice);
+        orderItem.secKillGoodsItemId = secKillGoodsItem.id;
+        orderItem.rebateValue = secKillGoodsItem.secKillGoods.goods.salePrice.subtract(secKillGoodsItem.salePrice);
+        order.rebateValue = BigDecimal.ZERO;
+        order.orderItems.add(orderItem);
+        order.amount = order.amount.add(secKillGoodsItem.salePrice.multiply(new BigDecimal(String.valueOf(count))));
+        order.needPay = order.amount;
     }
 
     private static void checkInventory(SecKillGoodsItem secKillGoodsItem,
                                        long count) throws NotEnoughInventoryException {
-        if (secKillGoodsItem.baseSale < count) {
+        if (secKillGoodsItem.baseSale <= 0 || secKillGoodsItem.baseSale < count) {
             throw new NotEnoughInventoryException();
         }
     }
@@ -192,8 +224,6 @@ public class SecKillOrders extends Controller {
         List<Cart> rCartList = new ArrayList<>();
         BigDecimal rCartAmount = BigDecimal.ZERO;
 
-        System.out.println("secKillGoodsItemId:" + secKillGoodsItemId);
-
         models.sales.Goods g = goodsItem.secKillGoods.goods;
         g.salePrice = goodsItem.salePrice;
         if (g.materialType == models.sales.MaterialType.REAL) {
@@ -205,7 +235,7 @@ public class SecKillOrders extends Controller {
         }
 
         if (rCartList.size() == 0 && eCartList.size() == 0) {
-            error("no goods specified");
+            error("没有找到指定商品！");
             return;
         }
 

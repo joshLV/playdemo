@@ -294,7 +294,7 @@ public class Orders extends Controller {
         } catch (NotEnoughInventoryException e) {
             //todo 缺少库存
             Logger.error(e, "inventory not enough");
-            error("inventory not enough");
+            error("商品库存不足！");
         }
         order.remark = remark;
 

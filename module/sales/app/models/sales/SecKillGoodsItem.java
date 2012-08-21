@@ -121,21 +121,14 @@ public class SecKillGoodsItem extends Model {
      * @return
      */
     public static SecKillGoodsItem getCurrentSecKillGoods() {
-        long count = SecKillGoodsItem.count("baseSale>0 and secKillEndAt>? and status =?", new Date(),
+        long count = SecKillGoodsItem.count("secKillEndAt>? and status=?", new Date(),
                 SecKillGoodsStatus.ONSALE);
         if (count > 0) {
-            return SecKillGoodsItem.find("baseSale>0 and secKillEndAt>? and status =? order by secKillBeginAt",
+            return SecKillGoodsItem.find("secKillEndAt>? and status =? order by secKillBeginAt",
                     new Date(), SecKillGoodsStatus.ONSALE).first();
-        } else if (SecKillGoodsItem.count("baseSale>0 and status =?",
-                SecKillGoodsStatus.ONSALE) > 0) {
-            return SecKillGoodsItem.find("baseSale>0 and status =? order by secKillBeginAt",
-                    SecKillGoodsStatus.ONSALE).first();
-        } else if (SecKillGoodsItem.count("status =?",
-                SecKillGoodsStatus.ONSALE) > 0) {
-            return SecKillGoodsItem.find("status =? order by secKillBeginAt",
-                    SecKillGoodsStatus.ONSALE).first();
         } else {
-            return SecKillGoodsItem.find("").first();
+            List<SecKillGoodsItem> items = findSecKillGoods();
+            return items.get(items.size() - 1);
         }
     }
 
@@ -192,6 +185,8 @@ public class SecKillGoodsItem extends Model {
     }
 
     /**
+     * 是否过期.
+     *
      * @return
      */
     @Transient
@@ -247,18 +242,60 @@ public class SecKillGoodsItem extends Model {
     }
 
     /**
-     * 随机产生一个虚拟数量.
+     * 是否正在秒杀.
      *
-     * @param min
-     * @param max
-     * @param virtualInventory
-     * @param baseSale
      * @return
      */
-    public static long getRandomCount(int min, int max, long virtualInventory, long baseSale) {
-        long virtualCount = Math.abs(new Random().nextInt(max));
-        long permittedCount = virtualInventory - baseSale + min;
-        return (virtualCount > permittedCount) ? permittedCount : virtualCount;
+    @Transient
+    public boolean isBegin() {
+        final Date now = new Date();
+        return now.after(secKillBeginAt) && now
+                .before(secKillEndAt) && baseSale > 0;
+    }
+
+    /**
+     * 是否尚未开始秒杀.
+     *
+     * @return
+     */
+    @Transient
+    public boolean isFuture() {
+        final Date now = new Date();
+        return now.before(secKillBeginAt);
+    }
+
+    /**
+     * 是否秒杀结束.
+     */
+    @Transient
+    public boolean isOver() {
+        return isExpired() || baseSale <= 0;
+    }
+
+    /**
+     * 随机产生一个虚拟数量.
+     * <p/>
+     * 根据实际库存n将虚拟库存平均分为n个格子，
+     *
+     * @param count
+     * @param baseSale
+     * @param saleCount
+     * @param virtualSale
+     * @param virtualInventory 虚拟库存
+     * @param baseSale         实际库存
+     * @return
+     */
+    public static long getRandomCount(long count, long baseSale, int saleCount, long virtualSale,
+                                      long virtualInventory) {
+        if (baseSale == 1) {
+            return virtualInventory;
+        }
+        final long virtualTotal = virtualInventory + virtualSale;
+        final long average = virtualTotal / (baseSale + saleCount - 1);
+        long virtualTailCount = Math.abs(new Random().nextInt((int) average));
+        System.out.println("virtualTailCount:" + virtualTailCount);
+        virtualTailCount = virtualTailCount <= 0 ? 1 : virtualTailCount;
+        return virtualInventory - (average * (baseSale - count - 1) + virtualTailCount);
     }
 
     /**
@@ -267,7 +304,9 @@ public class SecKillGoodsItem extends Model {
      * @param count 本次订单的实际售出数量
      */
     public void updateInventory(long count) {
-        long virtualCount = getRandomCount((int) count, 6, virtualInventory.longValue(), baseSale.longValue());
+        long virtualCount = getRandomCount(count, baseSale.longValue(), saleCount,
+                virtualSale == null ? 0 : virtualSale.longValue(),
+                virtualInventory.longValue());
         baseSale -= count;
         saleCount += count;
         virtualSale = virtualSale == null ? 0 : virtualSale;

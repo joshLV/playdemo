@@ -59,15 +59,24 @@
         <a class="cart-btn" target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/carts">去结算</a>
     </div>
 </div><!-- #header -->
-
+<!-- #navbar -->
 <div id="navbar">
-    <div id="nav">
-        <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}" #{if categoryId == 0}class="curr"#{/if}>首页</a>
-        <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/1" #{if categoryId == 1}class="curr"#{/if}>餐饮美食</a>
-        <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/2" #{if categoryId == 2}class="curr"#{/if}>食品饮料</a>
-        <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/7" #{if categoryId == 7}class="curr"#{/if}>休闲娱乐</a>
-    </div>
-</div><!-- #navbar -->
+     <div id="nav">
+         <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}"
+            #{if categoryId == 0}class="curr"#{/if}>首页</a>
+         <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/1"
+            #{if categoryId == 1}class="curr"#{/if}>餐饮美食</a>
+         <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/2"
+            #{if categoryId == 2}class="curr"#{/if}>食品饮料</a>
+         <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/7"
+            #{if categoryId == 7}class="curr"#{/if}>休闲娱乐</a>
+         <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/11"
+            #{if categoryId == 11}class="curr"#{/if}>酒店旅游</a>
+         <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/13"
+            #{if categoryId == 13}class="curr"#{/if}>家居建材</a>
+     </div>
+</div>
+<!-- #navbar -->
 
 #{doLayout /}
 

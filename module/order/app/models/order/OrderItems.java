@@ -75,6 +75,7 @@ public class OrderItems extends Model {
     @Column(name = "buy_number")
     public Long buyNumber;
 
+    @Column(name = "seckill_goods_item_id")
     public Long secKillGoodsItemId;
 
     public String phone;
