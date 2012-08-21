@@ -83,8 +83,10 @@ public class SecKillGoodsItems extends Controller {
     }
 
     private static void checkExpireAt(SecKillGoodsItem goods) {
+
         if (goods.secKillBeginAt != null && goods.secKillEndAt != null && goods.secKillEndAt.before(goods.secKillBeginAt)) {
-            Validation.addError("SecKillGoodsItem.secKillAt", "validation.beforeThanEffectiveAt");
+
+            Validation.addError("secKillGoodsItem.secKillEndAt", "validation.beforeThanSecKillBeginAt");
         }
 
     }

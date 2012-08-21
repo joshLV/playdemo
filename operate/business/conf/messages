@@ -37,6 +37,7 @@ validation.moreThanFaceValue=%s不能超过原价!
 validation.lessThanOriginalPrice=%s不能低于采购价!
 validation.moreThanLastLevel=%s不能超过前一级别的VIP加价!
 validation.beforeThanEffectiveAt=%s不能早于有效期开始时间!
+validation.beforeThanSecKillBeginAt=%s不能早于秒杀开始时间!
 validation.phone=无效的电话!
 
 validation.largarThanBaseSale=%s要小于或等于库存!
