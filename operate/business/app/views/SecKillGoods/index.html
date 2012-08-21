@@ -68,7 +68,7 @@
                 <a href="/seckill_goods/${goods?.id}/new">明细添加</a>
                 /<a href="/seckill_goods/${goods?.id}/item">明细查看</a>
                 /<a href="@{SecKillGoods.edit(goods.id)}">修改</a>
-                / #{vx.deleteLink action:"/seckill_goods",id:goods?.id, name:name/}
+                *{/ #{vx.deleteLink action:"/seckill_goods",id:goods?.id, name:name/}}*
             </td>
         </tr>
         #{/paginate.list}
