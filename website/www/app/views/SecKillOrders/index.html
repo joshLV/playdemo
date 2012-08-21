@@ -72,23 +72,34 @@
     #{if eCartList.size()>0}
         <div class="order">
             <div class="mobi">
-                <div class="mobi-hd">电子凭证-收货手机</div>
-                <div class="mobi-bd">
-                    <div class="receive-mobi"><em>*</em>接收手机：<input type="text" class="mobi-num" name="mobile"
-                                                                    maxlength="11" value="${user?.mobile}"
-                                                                    id="ecart_mobile"/>
-                        <span style="display: inline;color: #ff0000;" id="limit">#{error 'mobile'/}</span></div>
-                    #{if orderItems_mobiles?.size()>0}
-                        <dl>
-                            <dt>历史手机：</dt>
-                            <dd class="history-mobi">
-                                #{list orderItems_mobiles, as:'item'}
-                                    <span class="mobi-item">${item}</span>
-                                #{/list}
-                            </dd>
-                        </dl>
+                <div class="mobi-hd" style="margin-bottom: 20px">
+                    #{if exceedLimit}
+                        <span style="color: red;display: inline;padding-left:220px">您已经够买过此商品，不能继续购买！</span>
                     #{/if}
+                    #{else}
+                        电子凭证-收货手机
+                    #{/else}
+
                 </div>
+
+                #{if !exceedLimit}
+                    <div class="mobi-bd">
+                        <div class="receive-mobi"><em>*</em>接收手机：<input type="text" class="mobi-num" name="mobile"
+                                                                        maxlength="11" value="${user?.mobile}"
+                                                                        id="ecart_mobile"/>
+                            <span style="display: inline;color: #ff0000;" id="limit">#{error 'mobile'/}</span></div>
+                        #{if orderItems_mobiles?.size()>0}
+                            <dl>
+                                <dt>历史手机：</dt>
+                                <dd class="history-mobi">
+                                    #{list orderItems_mobiles, as:'item'}
+                                        <span class="mobi-item">${item}</span>
+                                    #{/list}
+                                </dd>
+                            </dl>
+                        #{/if}
+                    </div>
+                #{/if}
             </div>
             <table class="orderlist">
                 <caption>产品清单</caption>
@@ -139,13 +150,10 @@
             </div>
             <!-- .explain -->
             <div class="totalize">
-                #{if exceedLimit}
-                    <div style="color: red">您已经够买过此商品，不能继续购买！</div>
-                #{/if}
-                #{else}
+                #{if !exceedLimit}
                     商品共${rCartList.size()+eCartList.size()}件，总合计：<em>${totalAmount.formatCurrency('CNY').raw()}</em>元
                     <button class="confirm-order" type="submit">确认下单<b></b></button>
-                #{/else}
+                #{/if}
             </div>
             <!-- .totalize -->
         </div>
