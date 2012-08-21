@@ -59,8 +59,6 @@ public class SecKillOrders extends Controller {
      * 创建秒杀商品的订单.
      */
     public static void create(long secKillGoodsItemId, long secKillGoodsId, String mobile, String remark) {
-        System.out.println("secKillGoodsItemId:" + secKillGoodsItemId);
-
         long count = 1;
         //如果订单中有电子券，则必须填写手机号
         Http.Cookie cookie = request.cookies.get("identity");
@@ -79,7 +77,6 @@ public class SecKillOrders extends Controller {
         if (exceedLimit) {
             //todo 页面实现限购提示
             redirect("/seckill-goods?exceedLimit=" + exceedLimit);
-//            render("SecKillGoodsController/index.html", exceedLimit);
         }
 
         boolean isElectronic = secKillGoodsItem.secKillGoods.goods.materialType.equals(MaterialType.ELECTRONIC);
@@ -130,7 +127,7 @@ public class SecKillOrders extends Controller {
 
         //添加订单条目
         try {
-            if (isReal) {
+            if (isElectronic) {
                 addSecKillOrderItem(order, secKillGoodsItem, count, mobile);
             } else {
                 addSecKillOrderItem(order, secKillGoodsItem, count, receiverMobile);
