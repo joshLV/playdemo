@@ -86,7 +86,7 @@ public class OperateDiscountCodesTest extends FunctionalTest {
     @Test
     public void 测试打开添加页面(){
 
-        Http.Response response = GET("/discountcodes/new");
+        Http.Response response = GET("/discountcodes/add");
         assertIsOk(response);
         assertContentMatch("添加折扣券",response);
 
