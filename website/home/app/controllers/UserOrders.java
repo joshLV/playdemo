@@ -51,8 +51,12 @@ public class UserOrders extends Controller {
 
         //加载订单信息
         Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
-
+        if (order == null) {
+            error(404, "no order!");
+            return;
+        }
         List<OrderItems> orderItems = order.orderItems;
+
         //收货信息
         BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "订单详情", "/orders/" + orderNumber);
         render(order, orderItems, breadcrumbs);
@@ -68,7 +72,10 @@ public class UserOrders extends Controller {
 
         //加载订单信息
         Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
-
+        if (order == null) {
+            error(404, "no order!");
+            return;
+        }
         List<ECoupon> eCoupons = ECoupon.findByOrder(order);
         //收货信息
         BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders", "申请退款", "/orders/refund/" + orderNumber);
@@ -100,8 +107,12 @@ public class UserOrders extends Controller {
     public static void cancelOrder(String orderNumber) {
         //加载用户账户信息
         User user = SecureCAS.getUser();
-           //加载订单信息
+        //加载订单信息
         Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
+        if (order == null) {
+            error(404, "no order!");
+            return;
+        }
         //更新订单信息
         order.cancelAndUpdateOrder();
         renderJSON("");
