@@ -105,10 +105,11 @@
                 <strong>现价￥：${goodsItem.salePrice}元</strong>
                 #{if goodsItem.isBegin()}
                     <button type="submit" #{if exceedLimit} class="tobegin gray-btn" disabled="true"#{/if}#{else}
-                            class="tobegin" #{/else}></button>
+                            class="tobegin atonce" #{/else}></button>
                 #{/if}
                 #{elseif goodsItem.isFuture()}
                     <a class="tobegin" href="#"></a>
+
                 #{/elseif}
                 #{elseif goodsItem.over}
                     <!-- 秒杀结束-->
