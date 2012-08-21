@@ -3,8 +3,12 @@ package function;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
+import models.accounts.Account;
+import models.accounts.util.AccountUtil;
 import models.admin.OperateUser;
 import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
@@ -13,6 +17,11 @@ import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -48,19 +57,72 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest  {
 
     }
 
-//    @Test
-//    public void testVerify(){
-//
-//        ECoupon eCoupon = FactoryBoy.create(ECoupon.class);
+    @Test
+    public void testVerify(){
+
+        final Goods goods = FactoryBoy.create(Goods.class);
+        final Shop shop = FactoryBoy.create(Shop.class,"SupplierId",new BuildCallback<Shop>() {
+            @Override
+            public void build(Shop target) {
+                target.supplierId = goods.supplierId;
+            }
+        });
+        ECoupon eCoupon = FactoryBoy.create(ECoupon.class,"Id", new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.shop = shop;
+                target.goods = goods;
+                target.expireAt = goods.expireAt;
+            }
+        });
 //        System.out.println(eCoupon.status);
 //        System.out.println(eCoupon.eCouponSn);
-//
-//
-//        Http.Response response = GET("/coupons/verify?supplierId="+eCoupon.shop.supplierId+"&shopId="+eCoupon.shop.id+"&eCouponSn="+eCoupon.eCouponSn);
-//        assertIsOk(response);
-//        System.out.println(response.out.toString());
-//        assertContentMatch("未消费", response);
-//
-//
-//    }
+//        System.out.println(eCoupon.expireAt);
+        Http.Response response = GET("/coupons/verify?supplierId="+eCoupon.shop.supplierId+"&shopId="+eCoupon.shop.id+"&eCouponSn="+eCoupon.eCouponSn);
+        assertIsOk(response);
+        assertContentMatch("未消费", response);
+
+    }
+
+    @Test
+    public void testUpdate(){
+        // 生产 电子券 测试数据
+        final Goods goods = FactoryBoy.create(Goods.class);
+        final Shop shop = FactoryBoy.create(Shop.class,"SupplierId",new BuildCallback<Shop>() {
+            @Override
+            public void build(Shop target) {
+                target.supplierId = goods.supplierId;
+            }
+        });
+        ECoupon eCoupon = FactoryBoy.create(ECoupon.class,"Id", new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.shop = shop;
+                target.goods = goods;
+                target.expireAt = goods.expireAt;
+                target.operateUserId = 2L;
+                target.originalPrice = new BigDecimal(100);
+                target.salePrice = new BigDecimal(100);
+                target.faceValue = new BigDecimal(150);
+            }
+        });
+        // 设置 平台付款账户 金额，已完成向商户付款
+        Account account = AccountUtil.getPlatformIncomingAccount();
+        account.amount = new BigDecimal(1000);
+        account.save();
+
+        // 将URL 参数放入Map 中
+        Map<String,String> params = new HashMap<>();
+        params.put("shopId", shop.id.toString());
+        params.put("supplierId", goods.supplierId.toString());
+        params.put("eCouponSn",eCoupon.eCouponSn.toString());
+        params.put("shopName",shop.name);
+
+        // 检测测试结果
+        Http.Response response = POST("/coupons/update",params);
+        assertIsOk(response);
+        assertContentMatch("0",response);
+//        ECoupon eCouponConsumed = ECoupon.findById(eCoupon.id);
+//        assertEquals(ECouponStatus.CONSUMED,eCouponConsumed.status);
+    }
 }

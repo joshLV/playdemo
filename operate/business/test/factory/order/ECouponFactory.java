@@ -2,11 +2,14 @@ package factory.order;
 
 import factory.FactoryBoy;
 import factory.ModelFactory;
+import factory.annotation.Factory;
 import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
 import models.sales.Shop;
+
+import javax.xml.ws.FaultAction;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,5 +32,13 @@ public class ECouponFactory extends ModelFactory<ECoupon> {
         eCoupon.save();
         return eCoupon;
 
+    }
+
+    @Factory(name = "Id")
+    public ECoupon defineWithId(ECoupon eCoupon){
+        Order order = FactoryBoy.create(Order.class);
+        OrderItems orderItems = FactoryBoy.create(OrderItems.class);
+        eCoupon.save();
+        return eCoupon;
     }
 }
