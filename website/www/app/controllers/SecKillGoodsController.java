@@ -9,10 +9,7 @@ import models.sales.SecKillGoodsItem;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * 秒杀商品控制器.
@@ -45,9 +42,7 @@ public class SecKillGoodsController extends Controller {
             //判断帐号限购
             exceedLimit = checkLimitNumber(user, goodsItem.secKillGoods.goods.id, goodsItem.secKillGoods.id, 1);
         }
-        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        String date = format.format(new Date());
-        render(goodsItem, secKillGoodsItems, exceedLimit, date);
+        render(goodsItem, secKillGoodsItems, exceedLimit);
     }
 
     /**
@@ -72,10 +67,4 @@ public class SecKillGoodsController extends Controller {
         //超过限购数量,则表示已经购买过该商品
         return (limitNumber > 0 && (number > limitNumber || limitNumber <= boughtNumber));
     }
-
-    public static void time() {
-        SimpleDateFormat format = new SimpleDateFormat("MMM d,yyyy HH:mm:ss", Locale.ENGLISH);
-        renderText(format.format(new Date()));
-    }
-
 }

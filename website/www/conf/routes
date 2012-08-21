@@ -69,7 +69,7 @@ GET     /orders_number                          Orders.checkLimitNumber
 GET     /seckill-goods                          SecKillGoodsController.index
 GET     /seckill-orders                         SecKillOrders.index
 POST    /seckill-orders/new                     SecKillOrders.create
-GET     /seckill-goods/time                     SecKillGoodsController.time
+GET     /server_time                            GetServerDate.time
 
 # 地址
 GET     /orders/addresses                       Addresses.index
