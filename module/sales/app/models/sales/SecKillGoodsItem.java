@@ -128,6 +128,9 @@ public class SecKillGoodsItem extends Model {
                     new Date(), SecKillGoodsStatus.ONSALE).first();
         } else {
             List<SecKillGoodsItem> items = findSecKillGoods();
+            if (items == null || items.size() == 0) {
+                return null;
+            }
             return items.get(items.size() - 1);
         }
     }
@@ -291,7 +294,10 @@ public class SecKillGoodsItem extends Model {
             return virtualInventory;
         }
         final long virtualTotal = virtualInventory + virtualSale;
-        final long average = virtualTotal / (baseSale + saleCount - 1);
+        long average = virtualTotal / (baseSale + saleCount - 1);
+        if (average <= 0) {
+            average = 1l;
+        }
         long virtualTailCount = Math.abs(new Random().nextInt((int) average));
         System.out.println("virtualTailCount:" + virtualTailCount);
         virtualTailCount = virtualTailCount <= 0 ? 1 : virtualTailCount;

@@ -19,7 +19,6 @@ import java.util.List;
  * Time: 11:18 AM
  */
 @With({SecureCAS.class, WebsiteInjector.class})
-@SkipCAS
 public class SecKillGoodsController extends Controller {
 
     /**
@@ -27,10 +26,13 @@ public class SecKillGoodsController extends Controller {
      * <p/>
      * 秒杀商品列表，当前正在秒杀商品详情，点击立即购买，直接下单购买.
      */
+    @SkipCAS
     public static void index() {
         //获取当前秒杀商品
         SecKillGoodsItem goodsItem = SecKillGoodsItem.getCurrentSecKillGoods();
-
+        if (goodsItem == null) {
+            redirect("/s");
+        }
         //获取其他秒杀商品
         List<SecKillGoodsItem> secKillGoodsItems = SecKillGoodsItem.findSecKillGoods();
         User user = SecureCAS.getUser();

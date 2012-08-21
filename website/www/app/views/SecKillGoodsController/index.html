@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>浪漫七夕-红玫瑰套餐大放送</title>
+    <link href="http://bdimg.share.baidu.com/static/css/bdsstyle.css?cdnversion=20120726" rel="stylesheet"
+          type="text/css">
     <link rel="stylesheet" href="http://a.yibaiquan.com/7Xi/style.css"/>
 </head>
 <body>
@@ -37,6 +39,7 @@
         </div>
     #{form @SecKillOrders.index(), id:'order_form' }
         <input type="hidden" id="secKillGoodsItemId" name="secKillGoodsItemId" value="${goodsItem?.id}"/>
+
         <div class="main">
             <div class="title">
                 <a href="">${goodsItem.goodsTitle}</a>
@@ -54,30 +57,40 @@
                     <td>&yen;${goodsItem.savePrice}</td>
                 </tr>
             </table>
-            <div class="withtime">距本次秒杀开始还有：
+            #{if !goodsItem.expired}
+                <div class="withtime">距本次秒杀#{if !goodsItem.begin}开始#{/if}#{else}结束#{/else}还有：
                     <span id="time">
                     </span>
-            </div>
+                </div>
+            #{/if}
             <div class="price">
                 <strong>现价￥：${goodsItem.salePrice}元</strong>
-                #{if new java.util.Date().after(goodsItem.secKillBeginAt) && new java.util.Date()
-                .before(goodsItem.secKillEndAt)}
-                    <button type="submit" #{if exceedLimit} class="tobegin gray-btn" disabled="true"#{/if}#{else} class="tobegin" #{/else}></button>
+                #{if goodsItem.isBegin()}
+                    <button type="submit" #{if exceedLimit} class="tobegin gray-btn" disabled="true"#{/if}#{else}
+                            class="tobegin" #{/else}></button>
                 #{/if}
-                #{else}
+                #{elseif goodsItem.isFuture()}
                     <a class="tobegin" href="#"></a>
-                #{/else}
+                #{/elseif}
+                #{elseif goodsItem.over}
+                    <!-- 秒杀结束-->
+                    <div class="seckill-over"></div>
+                    <!-- 秒杀结束 -->
+                #{/elseif}
             </div>
             <div class="bypast">
                 <del>原价${goodsItem.secKillGoods.goods.faceValue}元</del>
                 <span>还剩<i>${goodsItem.virtualInventory?:0}</i>件</span>
-               <span style="color: red">您已经够买过此商品，不能继续购买！</span>
+                #{if exceedLimit}
+                    <span style="color: red">您已经够买过此商品，不能继续购买！</span>
+                #{/if}
             </div>
             <div class="prop">商品类型：电子券 　　配送方式： 手机短信 　　券截止日期：${goodsItem.secKillGoods.goods.expireAt?.format()}</div>
-            #{if goodsItem.status==models.sales.SecKillGoodsStatus.OFFSALE || goodsItem.baseSale<=0 || new
-            java.util.Date().after(goodsItem.secKillEndAt)}
+        *{秒杀结束}*
+            #{if goodsItem.over}
                 <div class="seckill-over"></div>
             #{/if}
+        *{秒杀结束}*
         </div>
     #{/form}
     </div>
@@ -88,7 +101,7 @@
         #{set i:1/}
         #{list secKillGoodsItems, as:'secKillItem'}
             <li #{if i%2==0}class="last"#{/if}>
-                <div class="pic"><img src="${secKillItem?.secKillGoods?.imageTinyPath}" width="429" height="310"/></div>
+                <div class="pic"><img src="${secKillItem?.secKillGoods?.imageMiddlePath}" width="429" height="310"/></div>
                 <div class="meta">
                     <div class="num">本次特供：${secKillItem.totalCount}份</div>
                     <div class="date">秒杀日期：<u>${secKillItem.secKillBeginAt?.format('MM')}</u>月<u>${secKillItem
@@ -97,7 +110,7 @@
                     </div>
                     <div class="still">还　　剩：${secKillItem.virtualInventory?:0}件</div>
                 </div>
-                #{if secKillItem.expired}
+                #{if secKillItem.over}
                 *{秒杀结束}*
                     <div class="over">
                         <div class="gray"></div>
@@ -105,16 +118,35 @@
                     </div>
                 *{秒杀结束}*
                 #{/if}
+                #{elseif secKillItem.future}
+                    <div class="enter-on">
+                        <div class="gray">
+                            <div class="text">${secKillItem.secKillBeginAt?.format('MM月dd日 HH:mm:ss')}
+                                <div>正式开秒</div>
+                            </div>
+                        </div>
+                    </div>
+                #{/elseif}
             </li>
             #{set i:i+1/}
         #{/list}
         </ul>
     </div>
 
+    <!-- 温馨提示 -->
+#{if goodsItem.secKillGoods?.prompt != null}
+    <div class="warm-tips">
+        <div class="hd"><img src="http://img.uhcdn.com/images/act/7Xi/warm-tips.png"/></div>
+        <div class="bd">
+            ${goodsItem.secKillGoods.prompt.raw()}
+        </div>
+    </div>
+#{/if}
     <div class="goods-detail">
         <div class="hd"><img src="http://img.uhcdn.com/images/act/7Xi/goods-detail.png"/></div>
         <div class="bd">
-            <img src="http://img.uhcdn.com/images/act/7Xi/d1.jpg"/>
+        ${goodsItem.secKillGoods?.goods?.details?.raw()}
+        *{<img src="http://img.uhcdn.com/images/act/7Xi/d1.jpg"/>
 
             <p>十三香龙虾：精选活虾2斤，经高汤烹制后，浸入由多种香料和配辅料制作而成的十三香汤锅中。不仅味道浓郁，香气喷人，更由润滑浓稠的汤汁由舌间滑入喉口，袅袅余味，食不能罢。</p>
             <img src="http://img.uhcdn.com/images/act/7Xi/d2.jpg"/>
@@ -136,7 +168,8 @@
                     3、当餐吃不完，可打包，打包盒为2元每个；本店自制饮料2元/位可无限畅饮<br>
                     4、本券可在结账时出示，请保管好券号，如有丢失请联系客服：400-6262-166
                 </dd>
-            </dl>
+            </dl>}*
+            <div class="store-address">通河路店：宝山区通河路460号(近长江西路，地铁1号线通河新村站步行5分钟) 　　电话：021-36417215</div>
         </div>
     </div>
 
@@ -170,7 +203,8 @@
     </div>
 </div>
 <!-- #footer -->
-<script>var CURRENTTIME = 1345028051, STARTTIME = '${goodsItem.secKillBeginAt?.format('yyyy-MM-dd hh:mm:ss')}';</script>
+<script>var CURRENTTIME = 1345028051, STARTTIME = '#{if !goodsItem.begin}${goodsItem.secKillBeginAt?.format('''yyyy-MM-dd HH:mm:ss''')}#{/if}#{else}${goodsItem.secKillEndAt?.format('''yyyy-MM-dd HH:mm:ss''')}#{/else}';
+</script>
 #{asset.js src:['/u/jquery-1.7.2.min.js', '/y/base.js'] /}
 <script src="http://a.yibaiquan.com/7Xi/jquery.countdown.js"></script>
 <script>
