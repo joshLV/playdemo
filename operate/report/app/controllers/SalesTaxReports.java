@@ -22,7 +22,7 @@ public class SalesTaxReports extends Controller {
      *
      * @param condition
      */
-    @ActiveNavigation("")
+    @ActiveNavigation("sales_tax_reports")
     public static void index(SalesOrderItemReportCondition condition) {
         int pageNumber = getPageNumber();
 

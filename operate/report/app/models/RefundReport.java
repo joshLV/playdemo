@@ -25,7 +25,7 @@ public class RefundReport extends Model {
     public BigDecimal totalAmount;
     public String reportDate;
 
-    public RefundReport(Goods goods, BigDecimal salePrice, Long buyNumber) {
+    public RefundReport(Goods goods, BigDecimal salePrice, Long buyNumber,BigDecimal amount) {
         this.goods = goods;
         if (goods != null) {
             Supplier supplier = Supplier.findById(goods.supplierId);
@@ -33,6 +33,7 @@ public class RefundReport extends Model {
         }
         this.salePrice = salePrice;
         this.buyNumber = buyNumber;
+        this.amount=amount;
     }
 
     public RefundReport(long buyCount, BigDecimal amount, BigDecimal totAmount) {
@@ -55,7 +56,7 @@ public class RefundReport extends Model {
      */
     public static List<RefundReport> query(RefundReportCondition condition) {
 
-        String sql = "select new models.RefundReport(e.orderItems.goods,e.salePrice,count(e.orderItems.buyNumber)) from ECoupon e ";
+        String sql = "select new models.RefundReport(e.orderItems.goods,e.salePrice,count(e.orderItems.buyNumber),sum(e.refundPrice)) from ECoupon e ";
         String groupBy = " group by e.orderItems.goods";
 
         Query query = JPA.em()
@@ -66,9 +67,6 @@ public class RefundReport extends Model {
         }
 
         List<RefundReport> resultList = query.getResultList();
-        for (RefundReport refundReport : resultList) {
-            refundReport.amount = refundReport.salePrice.multiply(new BigDecimal(refundReport.buyNumber));
-        }
         return resultList;
     }
 
