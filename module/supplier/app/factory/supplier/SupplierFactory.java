@@ -1,4 +1,4 @@
-package factory.report;
+package factory.supplier;
 
 /**
  * <p/>

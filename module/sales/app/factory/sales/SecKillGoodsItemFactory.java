@@ -8,6 +8,8 @@ import models.sales.SecKillGoodsItem;
 import util.DateHelper;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -20,15 +22,40 @@ public class SecKillGoodsItemFactory extends ModelFactory<SecKillGoodsItem> {
 
     @Override
     public SecKillGoodsItem define() {
+        Date date = new Date();
+        Date dateAfter=DateHelper.afterMinuts(new Date(), 10);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
         SecKillGoodsItem secKillGoodsItem = new SecKillGoodsItem();
         secKillGoodsItem.virtualInventory = 1l;
         secKillGoodsItem.goodsTitle = "第一波秒杀";
         secKillGoodsItem.saleCount = 0;
         secKillGoodsItem.salePrice = new BigDecimal(10);
-        secKillGoodsItem.secKillBeginAt = new Date();
-        secKillGoodsItem.secKillEndAt = DateHelper.afterMinuts(new Date(), 10);
+        try {
+            secKillGoodsItem.secKillBeginAt = dateFormat.parse(dateFormat.format(date));
+        } catch (ParseException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+
+        try {
+            secKillGoodsItem.secKillEndAt = dateFormat.parse(dateFormat.format(dateAfter));
+
+
+        } catch (ParseException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+
         SecKillGoods goods= FactoryBoy.create(SecKillGoods.class);
         secKillGoodsItem.secKillGoods=goods;
+
+
+        secKillGoodsItem.baseSale =100l;
+
+
+
 
         return secKillGoodsItem;
     }

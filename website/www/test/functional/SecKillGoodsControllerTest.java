@@ -1,8 +1,11 @@
 package functional;
 
+import models.sales.SecKillGoodsItem;
+import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
+import factory.FactoryBoy;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,14 +16,15 @@ import play.test.FunctionalTest;
  */
 public class SecKillGoodsControllerTest extends FunctionalTest {
 
+    @Before
+    public void setUp() {
+        FactoryBoy.deleteAll();
+    }
 
     @Test
     public void testIndex() {
-
-        Http.Response response = GET("/seckill_goods/");
-        assertStatus(200, response);
-
-
+        SecKillGoodsItem item = FactoryBoy.create(SecKillGoodsItem.class);
+        Http.Response response = GET("/seckill-goods");
     }
 
 

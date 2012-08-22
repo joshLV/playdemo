@@ -29,10 +29,12 @@ public class SecKillGoodsController extends Controller {
     @SkipCAS
     public static void index() {
         //获取当前秒杀商品
+        System.out.println("aaaaaaaaaa>>>>");
         SecKillGoodsItem goodsItem = SecKillGoodsItem.getCurrentSecKillGoods();
         if (goodsItem == null) {
             redirect("/s");
         }
+        System.out.println("bbbbbb>>>>");
         //获取其他秒杀商品
         List<SecKillGoodsItem> secKillGoodsItems = SecKillGoodsItem.findSecKillGoods();
         User user = SecureCAS.getUser();
