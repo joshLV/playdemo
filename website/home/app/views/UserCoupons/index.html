@@ -154,7 +154,7 @@
                                 <input type="hidden" id="times_${coupon.id}" value="${coupon.downloadTimes}"/>
                                 <br>
                             #{/if}
-                            #{if coupon.status == models.order.ECouponStatus.UNCONSUMED && !coupon?.goods?.isLottery}
+                            #{if coupon.status == models.order.ECouponStatus.UNCONSUMED && !coupon?.goods?.isLottery && coupon?.salePrice>0}
                                 <a class="apply-refund" href="javascript:applyRefund('${coupon.id}','${coupon.salePrice}')" id="apply_${coupon.id}">申请退款</a>
                             #{/if}
                         </td>
