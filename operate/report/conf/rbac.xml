@@ -18,7 +18,7 @@
             <navigation key="purchase_tax_reports" action="PurchaseTaxReports.index" text="平台采购税务表"
                         permissions="PURCHASE_TAX_REPORT"/>
             <navigation key="sales_tax_reports" action="SalesTaxReports.index" text="平台销售税务表"
-                        permission="SALES_TAX_REPORT"/>
+                        permissions="SALES_TAX_REPORT"/>
             <navigation key="payment_reports" action="PaymentReports.index" text="支付渠道报表"
                         permissions="PAYMENT_REPORT"/>
             <navigation key="withdraw_reports" action="WithdrawReports.index" text="提现报表"

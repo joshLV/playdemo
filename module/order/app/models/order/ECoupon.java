@@ -565,9 +565,18 @@ public class ECoupon extends Model {
         return shopName;
     }
     
+    /**
+     * 判断指定时间是否是可用的验证时间范围.
+     * @param currentTime
+     * @return
+     */
     public boolean checkVerifyTimeRegion(Date currentTime) {
         if (goods.useBeginTime != null && goods.useEndTime != null) {
-            
+            SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
+            String date = dateFormat.format(currentTime);
+            if (!(date.compareTo(goods.useBeginTime) >= 0 && date.compareTo(goods.useEndTime) <= 0)) {
+                return false;
+            }
         }
         return true;
     }
@@ -577,6 +586,7 @@ public class ECoupon extends Model {
      *
      * @return 在该范围内：true
      */
+    @Deprecated
     public boolean getTimeRegion(String timeBegin, String timeEnd) {
         boolean timeFlag = false;
         if (StringUtils.isNotBlank(timeBegin) && StringUtils.isNotBlank(timeEnd)) {

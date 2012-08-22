@@ -81,13 +81,23 @@ public class SmsReceiverUtil {
                         sendSmsToClerk("【券市场】券号" + couponNumber + "已过期，无法进行消费。如有疑问请致电：400-6262-166", mobile, code);
                         return ("【券市场】券号" + couponNumber + "已过期，无法进行消费");
                     } else if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-                        ecoupon.consumeAndPayCommission(shopId, null, supplierUser, VerifyCouponType.CLERK_MESSAGE);
                         String coupon = ecoupon.getMaskedEcouponSn();
-                        coupon = coupon.substring(coupon.lastIndexOf("*") + 1);
+                        String consumerPhone = ecoupon.orderItems.phone;
+                        if (!ecoupon.checkVerifyTimeRegion(new Date())) {
+                            SimpleDateFormat dateFormat = new SimpleDateFormat(ECoupon.TIME_FORMAT);
+                            // 发给消费者
+                            sendSmsToClerk("【券市场】" + getMaskedMobile(consumerPhone) + "的" + coupon + "券只能在" + dateFormat.format(ecoupon.goods.useBeginTime)
+                                    + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费。客服4006262166",
+                                    supplierUser.mobile, code);
+                            return ("【券市场】您尾号" + getMaskedMobile(consumerPhone) + "的" + coupon + "券只能在" + dateFormat.format(ecoupon.goods.useBeginTime)
+                                    + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费");                      
+                        }
+                        
+                        ecoupon.consumeAndPayCommission(shopId, null, supplierUser, VerifyCouponType.CLERK_MESSAGE);
 
+                        coupon = coupon.substring(coupon.lastIndexOf("*") + 1);
                         String dateTime = DateUtil.getNowTime();
 
-                        String consumerPhone = ecoupon.orderItems.phone;
 
                         // 发给店员
                         sendSmsToClerk("【券市场】" + getMaskedMobile(consumerPhone) + "尾号" + coupon + "券（面值" + ecoupon
@@ -180,9 +190,19 @@ public class SmsReceiverUtil {
                 sendSmsToConsumer("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166", mobile, code);
                 return ("【券市场】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166");
             } else if (ecoupon.status == ECouponStatus.UNCONSUMED) {
-                ecoupon.consumeAndPayCommission(shopId, null, supplierUser, VerifyCouponType.CONSUMER_MESSAGE);
                 String couponLastCode = ecoupon.getLastCode(4);
                 String dateTime = DateUtil.getNowTime();
+                if (!ecoupon.checkVerifyTimeRegion(new Date())) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(ECoupon.TIME_FORMAT);
+                    // 发给消费者
+                    sendSmsToConsumer("【券市场】您尾号" + couponLastCode + "券只能在" + dateFormat.format(ecoupon.goods.useBeginTime)
+                            + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费。客服4006262166",
+                            supplierUser.mobile, code);
+                    return ("【券市场】您尾号" + couponLastCode + "券只能在" + dateFormat.format(ecoupon.goods.useBeginTime)
+                            + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费");                      
+                }
+                                
+                ecoupon.consumeAndPayCommission(shopId, null, supplierUser, VerifyCouponType.CONSUMER_MESSAGE);
 
                 // 发给店员
                 sendSmsToClerk("【券市场】" + getMaskedMobile(mobile) + "尾号" + couponLastCode + "券（面值" + ecoupon
