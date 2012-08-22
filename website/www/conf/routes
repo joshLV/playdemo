@@ -61,7 +61,7 @@ POST    /sms/send                               SMS.send
 
 # 订单
 GET     /orders                                 Orders.index
-POST     /reorders                              Orders.index
+POST    /reorders                               Orders.index
 POST    /orders/new                             Orders.create
 GET     /orders_number                          Orders.checkLimitNumber
 

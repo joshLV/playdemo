@@ -37,7 +37,7 @@ public class OrderFuncTest extends FunctionalTest {
         Fixtures.delete(Brand.class);
         Fixtures.delete(Area.class);
         Fixtures.delete(Supplier.class);
-        Fixtures.loadModels("fixture/orders.yml");
+
         Fixtures.loadModels("fixture/user.yml");
         Fixtures.loadModels("fixture/supplier_unit.yml");
         Fixtures.loadModels("fixture/areas_unit.yml");
@@ -58,13 +58,18 @@ public class OrderFuncTest extends FunctionalTest {
     public void testCreate(){
 
         Map<String,String> params =new HashMap<>();
-        String order ="101-1,";
-        params.put("items",order);
+        Long goodsId1 = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
+        Long goodsId2 = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
+        String order = goodsId1.toString()+"-3,"+goodsId2.toString()+"-2,";
+        System.out.println("items>>>>>>>>>>>>>>>"+order);
+        params.put("items", order);
         params.put("mobile","13800001111");
         params.put("remark","hehe");
 
         Http.Response response =POST("/orders/new",params);
         assertStatus(302,response);
+        System.out.println(response.out.toString());
 
     }
+
 }
