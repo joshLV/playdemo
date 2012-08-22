@@ -361,9 +361,6 @@ public class PointGoodsOrder extends Model {
         if (order.status != PointGoodsOrderStatus.APPLY) {
             throw new RuntimeException("can not deal with order:" + order.getId() + " since it's " + order.status.toString());
         } else {
-//            if (order == null) {
-//                return;
-//            }
             order.status = PointGoodsOrderStatus.ACCEPT;
             order.sentStatus = PointGoodsOrderSentStatus.UNSENT;
             order.acceptAt = new Date();
@@ -392,7 +389,6 @@ public class PointGoodsOrder extends Model {
 
             orderNew.status = PointGoodsOrderStatus.CANCELED;
             orderNew.sentStatus = PointGoodsOrderSentStatus.UNAPPROVED;
-//            order.acceptAt = new Date();
             orderNew.updatedAt = new Date();
             orderNew.note = note;
             orderNew.save();
@@ -412,7 +408,6 @@ public class PointGoodsOrder extends Model {
                 return;
             }
             orderNew.sentStatus = PointGoodsOrderSentStatus.SENT;
-//            order.acceptAt = new Date();
             orderNew.updatedAt = new Date();
             orderNew.note = note;
             orderNew.save();
