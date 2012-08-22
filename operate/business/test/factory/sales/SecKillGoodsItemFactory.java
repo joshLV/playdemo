@@ -2,11 +2,16 @@ package factory.sales;
 
 import factory.ModelFactory;
 import factory.annotation.Factory;
+import models.sales.SecKillGoods;
 import models.sales.SecKillGoodsItem;
 import util.DateHelper;
 
+import factory.FactoryBoy;
+import factory.ModelFactory;
+
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p/>
@@ -25,6 +30,9 @@ public class SecKillGoodsItemFactory extends ModelFactory<SecKillGoodsItem> {
         secKillGoodsItem.salePrice = new BigDecimal(10);
         secKillGoodsItem.secKillBeginAt = new Date();
         secKillGoodsItem.secKillEndAt = DateHelper.afterMinuts(new Date(), 10);
+        SecKillGoods goods= FactoryBoy.create(SecKillGoods.class);
+        secKillGoodsItem.secKillGoods=goods;
+
         return secKillGoodsItem;
     }
 

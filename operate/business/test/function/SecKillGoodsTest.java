@@ -107,7 +107,7 @@ public class SecKillGoodsTest extends FunctionalTest {
     @Test
     public void testUpdate() {
 
-        final SecKillGoods goods = FactoryBoy.create(SecKillGoods.class);
+        SecKillGoods goods = FactoryBoy.create(SecKillGoods.class);
 
         Http.Response response = PUT("/seckill_goods/" + goods.id, "text/html", "");
 

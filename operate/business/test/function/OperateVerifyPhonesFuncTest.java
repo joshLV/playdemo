@@ -201,4 +201,6 @@ public class OperateVerifyPhonesFuncTest extends FunctionalTest {
         assertEquals("02100000000",newSupplierUser.loginName);
 
     }
+
+
 }

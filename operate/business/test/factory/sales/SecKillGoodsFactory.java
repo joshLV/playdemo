@@ -4,6 +4,7 @@ import models.sales.Goods;
 import models.sales.SecKillGoods;
 import factory.FactoryBoy;
 import factory.ModelFactory;
+import models.sales.SecKillGoodsItem;
 
 import java.util.Date;
 
@@ -26,6 +27,9 @@ public class SecKillGoodsFactory extends ModelFactory<SecKillGoods> {
         secKillGoods.goods = goods;
         secKillGoods.imagePath = "/a.jpg";
         secKillGoods.createdAt= afterDays(new Date(), 30);
+
+
+
         return secKillGoods;
     }
 }

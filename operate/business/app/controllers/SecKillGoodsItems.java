@@ -6,8 +6,8 @@ import models.sales.SecKillGoodsStatus;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.binding.As;
-import play.data.validation.Valid;
-import play.data.validation.Validation;
+import play.data.validation.*;
+import play.data.validation.Error;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -50,11 +50,14 @@ public class SecKillGoodsItems extends Controller {
     }
 
     public static void create(Long seckillId, @Valid SecKillGoodsItem secKillGoodsItem) {
+
+
         if (Validation.hasErrors()) {
             models.sales.SecKillGoods secKillGoods = models.sales.SecKillGoods.findById(seckillId);
             render("SecKillGoodsItems/add.html", secKillGoodsItem, secKillGoods, seckillId);
         }
 
+        System.out.println("ccccccccc<<<???");
         models.sales.SecKillGoods goods = models.sales.SecKillGoods.findById(seckillId);
         secKillGoodsItem.secKillGoods = goods;
 
@@ -72,6 +75,10 @@ public class SecKillGoodsItems extends Controller {
 
     public static void update(Long id, Long seckillId, @Valid SecKillGoodsItem secKillGoodsItem) {
         checkExpireAt(secKillGoodsItem);
+
+
+
+
         if (Validation.hasErrors()) {
             models.sales.SecKillGoods secKillGoods = models.sales.SecKillGoods.findById(seckillId);
             render("SecKillGoodsItems/edit.html", secKillGoodsItem, secKillGoods, id, seckillId);
