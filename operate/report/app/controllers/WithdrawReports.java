@@ -5,13 +5,10 @@ import models.accounts.TradeType;
 import models.webop.WithdrawReport;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
-import play.modules.paginate.ValuePaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 import utils.CrossTableUtil;
-import utils.PaginateUtil;
 
-import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +36,6 @@ public class WithdrawReports extends Controller {
         }
         condition.tradeType = TradeType.WITHDRAW;
         List<Map<String, Object>> reportPage = getReport(condition);
-//        List<Map<String, Object>> report = getReport(condition);
-        // 分页
-//        ValuePaginator<Map<String, Object>> reportPage = PaginateUtil.wrapValuePaginator(report, pageNumber, PAGE_SIZE);
         render(reportPage, condition);
     }
 
