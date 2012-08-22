@@ -6,6 +6,7 @@ require:
     - play1 -> appconfiguration 0.1
     - play1 -> rabbitmq 0.3
     - play1 -> app-version 0.1
+    - play1 -> factory-boy 0.1
     - org.apache.httpcomponents -> httpclient 4.1.3
     - org.json -> json 20090211
     - com.taobao -> taobao-top 20120405
