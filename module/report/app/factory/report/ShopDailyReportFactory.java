@@ -18,10 +18,10 @@ public class ShopDailyReportFactory extends ModelFactory<ShopDailyReport> {
     @Override
     public ShopDailyReport define() {
         ShopDailyReport report = new ShopDailyReport();
-       Shop shop=FactoryBoy.create(Shop.class);
-        report.shop=shop;
-        report.buyCount = (long)20.4;
-        report.orderCount = (long)5;
+        Shop shop = FactoryBoy.create(Shop.class);
+        report.shop = shop;
+        report.buyCount = (long) 20.4;
+        report.orderCount = (long) 5;
         report.originalAmount = BigDecimal.valueOf(100);
         return report;
 
