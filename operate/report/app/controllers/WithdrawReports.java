@@ -19,8 +19,6 @@ import java.util.Map;
  */
 @With(OperateRbac.class)
 public class WithdrawReports extends Controller {
-    private static final int PAGE_SIZE = 20;
-
     /**
      * 查询分销商资金明细.
      *
@@ -28,7 +26,6 @@ public class WithdrawReports extends Controller {
      */
     @ActiveNavigation("withdraw_reports")
     public static void index(AccountSequenceCondition condition) {
-        int pageNumber = getPageNumber();
         if (condition == null) {
             condition = new AccountSequenceCondition();
             condition.createdAtBegin = new Date();
@@ -57,14 +54,7 @@ public class WithdrawReports extends Controller {
     }
 
     public static List<Map<String, Object>> getReport(AccountSequenceCondition condition) {
-
         List<WithdrawReport> resultList = WithdrawReport.queryWithdrawReport(condition);
-
         return  CrossTableUtil.generateCrossTable(resultList, WithdrawReport.converter);
-    }
-
-    private static int getPageNumber() {
-        String page = request.params.get("page");
-        return StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
     }
 }

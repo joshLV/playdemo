@@ -20,8 +20,6 @@ import java.util.*;
  */
 @With(OperateRbac.class)
 public class PaymentReports extends Controller {
-    private static final int PAGE_SIZE = 20;
-
     /**
      * 查询分销商资金明细.
      *
@@ -43,9 +41,6 @@ public class PaymentReports extends Controller {
         List<PaymentReport> resultList = PaymentReport.queryPaymentReport(condition);
 
         List<Map<String, Object>>  reportPage = CrossTableUtil.generateCrossTable(resultList, PaymentReport.converter);
-//        List<Map<String, Object>>  report = CrossTableUtil.generateCrossTable(resultList, PaymentReport.converter);
-        // 分页
-//        ValuePaginator<Map<String, Object>> reportPage = PaginateUtil.wrapValuePaginator(report, pageNumber, PAGE_SIZE);
         render(reportPage, condition);
     }
 
