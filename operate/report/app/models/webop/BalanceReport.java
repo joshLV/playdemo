@@ -3,7 +3,7 @@ package models.webop;
 import com.uhuila.common.util.DateUtil;
 import models.accounts.Account;
 import models.accounts.AccountSequenceCondition;
-import models.accounts.AccountType;
+import models.accounts.TradeType;
 import models.accounts.util.AccountUtil;
 import play.db.jpa.JPA;
 import utils.CrossTableConverter;
@@ -19,16 +19,18 @@ import java.util.Map;
  * @author likang
  *         Date: 12-8-7
  */
-public class WithdrawReport {
+public class BalanceReport {
 
     public Date reportDate;
-    public AccountType accountType;
-    public BigDecimal amount;
+    public TradeType tradeType;
+    public BigDecimal[] amounts;//amounts[0]:changeAmount; amounts[1]:promotionChangeAmount;
 
-    public WithdrawReport(Date reportDate, AccountType accountType, BigDecimal amount) {
+    public BalanceReport(Date reportDate, TradeType tradeType, BigDecimal changeAmount, BigDecimal promotionChangeAmount) {
         this.reportDate = reportDate;
-        this.accountType = accountType;
-        this.amount = amount;
+        this.tradeType = tradeType;
+        this.amounts = new BigDecimal[2];
+        this.amounts[0] = changeAmount;
+        this.amounts[1] = promotionChangeAmount;
     }
 
     /**
@@ -36,12 +38,12 @@ public class WithdrawReport {
      * @param condition
      * @return
      */
-    public static List<WithdrawReport> queryWithdrawReport(AccountSequenceCondition condition) {
+    public static List<BalanceReport> queryWithdrawReport(AccountSequenceCondition condition) {
         Query query = JPA.em()
                 .createQuery(
-                        "select new models.webop.WithdrawReport(s.createdAt, s.account.accountType, sum(s.changeAmount)) "
+                        "select new models.webop.BalanceReport(s.createdAt, s.tradeType, sum(s.changeAmount), sum(s.promotionChangeAmount)) "
                                 + " from AccountSequence s where "
-                                + processFilter(condition) + " group by cast(s.createdAt as date),s.account.accountType order by cast(s.createdAt as date) DESC");
+                                + processFilter(condition) + " group by cast(s.createdAt as date),s.tradeType order by cast(s.createdAt as date) DESC");
         for (Map.Entry<String, Object> param : condition.getParams().entrySet()) {
             query.setParameter(param.getKey(), param.getValue());
         }
@@ -49,9 +51,7 @@ public class WithdrawReport {
     }
 
     public static String processFilter(AccountSequenceCondition condition){
-        Account platformWithdrawAccount = AccountUtil.getPlatformWithdrawAccount();
-        StringBuilder filter = new StringBuilder("s.account != :pAccount ");
-        condition.params.put("pAccount", platformWithdrawAccount);
+        StringBuilder filter = new StringBuilder("1=1");
 
         if (condition.createdAtBegin != null) {
             filter.append(" and s.createdAt >= :createdAtBegin");
@@ -62,33 +62,34 @@ public class WithdrawReport {
             condition.params.put("createdAtEnd", DateUtil.getEndOfDay(condition.createdAtEnd));
         }
 
-        if (condition.tradeType != null) {
-            filter.append(" and s.tradeType = :tradeType");
-            condition.params.put("tradeType", condition.tradeType);
+        if (condition.accountTypes != null && condition.accountTypes.size() > 0) {
+            filter.append(" and s.account.accountType in :accountTypes");
+            condition.params.put("accountTypes", condition.accountTypes);
         }
         return filter.toString();
     }
 
-    public static CrossTableConverter<WithdrawReport, BigDecimal> converter = new CrossTableConverter<WithdrawReport, BigDecimal>() {
+    public static CrossTableConverter<BalanceReport, BigDecimal[]> converter = new CrossTableConverter<BalanceReport, BigDecimal[]>() {
         @Override
-        public String getRowKey(WithdrawReport target) {
+        public String getRowKey(BalanceReport target) {
             return new SimpleDateFormat("yyyy-MM-dd").format(target.reportDate);
         }
 
         @Override
-        public String getColumnKey(WithdrawReport target) {
-            return target.accountType.toString();
+        public String getColumnKey(BalanceReport target) {
+            return target.tradeType.toString();
         }
 
         @Override
-        public BigDecimal addValue(WithdrawReport target, BigDecimal oldValue) {
-            if (target.amount == null) {
+        public BigDecimal[] addValue(BalanceReport target, BigDecimal[] oldValue) {
+            if (target.amounts == null) {
                 return oldValue;
             }
             if (oldValue != null) {
-                return oldValue.add(target.amount);
+                target.amounts[0] = target.amounts[0].add(oldValue[0]);
+                target.amounts[1] = target.amounts[1].add(oldValue[1]);
             }
-            return target.amount;
+            return target.amounts;
         }
     };
 

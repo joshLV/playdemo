@@ -21,6 +21,7 @@ public class AccountSequenceCondition implements Serializable {
     public Account account;
     public List<Account> accounts;
     public AccountType accountType;
+    public List<AccountType> accountTypes;
     public AccountSequenceFlag sequenceFlag;    //账务变动方向：来账，往账
     public TradeType tradeType;    //资金变动类型
     public Date createdAtBegin;

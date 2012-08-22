@@ -1,0 +1,154 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'余额报表' /}
+#{include '/share/nav.html' /}
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+<script type="text/javascript" charset="utf-8">
+    $(function () {
+
+        $("[start]").each(function () {
+            $(this).click(function () {
+                if ($(this).parent().attr("class") == 'active') {
+                    return false;
+                }
+                var tomorrow = new Date();
+                var startDay = new Date();
+
+                tomorrow.setDate(tomorrow.getDate() + 1)
+
+                var interval = $(this).attr("start");
+                var sig = interval.charAt(interval.length - 1);
+                var count = parseInt(interval.substring(0, interval.length - 1));
+                if (sig == 'd') {
+                    startDay.setDate(startDay.getDate() - count);
+                } else if (sig == 'm') {
+                    startDay.setMonth(startDay.getMonth() - count);
+                } else if (sig == 'y') {
+                    startDay.setFullYear(startDay.getFullYear() - count);
+                }
+
+                $("#condition_begin").val(startDay.getFullYear() + "-" + (startDay.getMonth() + 1) + "-" + startDay.getDate());
+                $("#condition_end").val(tomorrow.getFullYear() + "-" + (tomorrow.getMonth() + 1) + "-" + tomorrow.getDate());
+                $("#condition_interval").val(interval);
+                $("#form").submit();
+                return false;
+            });
+        });
+
+    });
+</script>
+#{/set}
+
+#{set 'moreStyles'}
+<style type="text/css">
+    .form-inline ul {
+        display: inline-block;
+        margin-bottom: -15px;
+    }
+
+    .nav-tabs {
+        margin-bottom: 0px;
+    }
+
+    .tab-content {
+        clear: both;
+    }
+
+    .tab-content .binary {
+        width: 40%;
+        float: left;
+        text-align: center;
+        margin: 5px 1%;
+    }
+
+    .seq {
+        margin-top: -1px;
+    }
+
+    .alert {
+        margin-bottom: 0px;
+    }
+
+    .seq thead tr :first {
+        background-color: #f5f5f5;
+    }
+
+    footer {
+        margin-top: 20px;
+    }
+    .table th, .table td {
+        text-align: center;
+    }
+</style>
+#{/set}
+
+<div class="body">
+    <form class="well form-inline" action="@{BalanceReports.index()}" method="GET" id="form" name="form">
+        起止日期
+        <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
+               onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtBegin?.format()}"> -
+        <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
+               onfocus="WdatePicker({readOnly:true})" value="${condition.createdAtEnd?.format()}">
+        <button type="submit" class="btn btn-primary">搜索</button>
+        <ul class="nav nav-pills">
+            <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">今天</a></li>
+            <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
+            <li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>
+            <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
+            <li #{if condition.interval=='1y'} class="active" #{/if}  ><a start="1y" href="#">1年内</a></li>
+        </ul>
+        <input type="hidden" id="condition_interval" name="condition.interval"/>
+    </form>
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#">统计金额</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <table class="table table-striped seq">
+            <tr>
+                <th>时间</th>
+                <th>充值<br/>总/可提现/不可提现</th>
+                <th>提现</th>
+                <th>支付<br/>总/可提现/不可提现</th>
+                <th>交易退款<br/>总/可提现/不可提现</th>
+                <th>转账</th>
+                <th>结余</th>
+            </tr>
+        %{
+            zero = new java.math.BigDecimal("0.00")
+            consumerTotal = new java.math.BigDecimal("0")
+            supplierTotal = new java.math.BigDecimal("0")
+            resalerTotal = new java.math.BigDecimal("0")
+            baseUri = play.Play.configuration.getProperty("uri.operate_business")
+
+        }%
+        #{list reportPage, as:'report'}
+            %{
+                chargeAmount = report.get("CHARGE")?: [zero,zero]
+                withdrawAmount = report.get("WITHDRAW")?: [zero,zero]
+                payAmount = report.get("PAY")?: [zero,zero]
+                refundAmount = report.get("REFUND")?:[zero,zero]
+                transferAmount = report.get("TRANSFER")?:[zero,zero]
+            }%
+            <tr>
+                <td>${report.get("RowKey")}</td>
+                <td>${chargeAmount[0]?:zero.add(chargeAmount[1]?:zero)} / ${chargeAmount[0]?:zero} / ${chargeAmount[1]?:zero}</td>
+                <td>${withdrawAmount[0]?:zero}</td>
+                <td>${payAmount[0]?:zero.add(payAmount[1]?:zero)} / ${payAmount[0]?:zero} / ${payAmount[1]?:zero}</td>
+                <td>${refundAmount[0]?:zero.add(refundAmount[1]?:zero)} / ${refundAmount[0]?:zero} / ${refundAmount[1]?:zero}</td>
+                <td>${transferAmount[0]?:zero}</td>
+                <td></td>
+            </tr>
+        #{/list}
+            <tr>
+                <td>汇总</td>
+                <td>${consumerTotal.negate()}</td>
+                <td>${supplierTotal.negate()}</td>
+                <td>${resalerTotal.negate()}</td>
+                <td>${consumerTotal.add(supplierTotal).add(resalerTotal).negate()}</td>
+            </tr>
+        </table>
+    </div>
+</div>
