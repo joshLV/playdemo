@@ -1,4 +1,4 @@
-package factory.admin;
+package factory.supplier;
 
 import com.uhuila.common.constants.DeletedStatus;
 import factory.FactoryBoy;
