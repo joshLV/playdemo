@@ -2,7 +2,6 @@ package models.order;
 
 import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
-import models.consumer.User;
 import models.resale.Resaler;
 import models.sales.Brand;
 import models.supplier.Supplier;
@@ -133,7 +132,7 @@ public class CouponsCondition implements Serializable {
             paramMap.put("phone", "%" + searchItems + "%");
         }
         if (brandId != 0) {
-            sql.append("and e.orderItems.goods.brand =:brand)");
+            sql.append(" and e.orderItems.goods.brand =:brand)");
             Brand brand = new Brand();
             brand.id = brandId;
             paramMap.put("brand", brand);

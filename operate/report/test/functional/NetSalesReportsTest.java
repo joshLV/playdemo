@@ -16,7 +16,7 @@ import models.sales.Category;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.supplier.Supplier;
-import navigation.RbacLoader;
+import operate.rbac.RbacLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -2,9 +2,9 @@ package factory.sales;
 
 import factory.FactoryBoy;
 import factory.ModelFactory;
+import factory.annotation.Factory;
 import models.sales.Goods;
 import models.supplier.Supplier;
-import org.hamcrest.Factory;
 
 import java.math.BigDecimal;
 import java.util.Date;
