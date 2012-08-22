@@ -5,6 +5,8 @@ import models.SalesOrderItemReport;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.admin.SupplierUser;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
 import models.report.DetailDailyReport;
@@ -25,13 +27,16 @@ import play.test.Fixtures;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * <p/>
  * User: yanjy
  * Date: 12-8-22
  * Time: 下午3:18
  */
-public class NetSalesReportsTest extends FunctionalTest{
+public class NetSalesReportsTest extends FunctionalTest {
 
     @Before
     public void setup() {
@@ -50,6 +55,7 @@ public class NetSalesReportsTest extends FunctionalTest{
         Fixtures.delete(Brand.class);
         Fixtures.delete(Supplier.class);
         Fixtures.delete(SupplierUser.class);
+        Fixtures.delete(ECoupon.class);
         Fixtures.loadModels("fixture/suppliers_unit.yml");
         Fixtures.loadModels("fixture/categories_unit.yml");
         Fixtures.loadModels("fixture/brands_unit.yml");
@@ -58,14 +64,49 @@ public class NetSalesReportsTest extends FunctionalTest{
         Fixtures.loadModels("fixture/orders.yml");
         Fixtures.loadModels("fixture/detail_daily_reports.yml");
         Fixtures.loadModels("fixture/ecoupon.yml");
-
+        Fixtures.loadModels("fixture/user.yml");
+        Fixtures.loadModels("fixture/resaler.yml");
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
 
+
+        List<OrderItems> list = OrderItems.findAll();
+        for (OrderItems item : list) {
+            item.createdAt = new Date();
+            item.save();
+        }
+        List<Order> orderList = Order.findAll();
+        for (Order order : orderList) {
+            order.paidAt = new Date();
+            order.save();
+        }
         Long id = (Long) Fixtures.idCache.get("models.admin.OperateUser-user1");
         OperateUser user = OperateUser.findById(id);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
+        id = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_001");
+        ECoupon coupon = ECoupon.findById(id);
+
+        coupon.refundAt = new Date();
+        coupon.status = ECouponStatus.REFUND;
+        coupon.save();
+
+        id = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_002");
+        coupon = ECoupon.findById(id);
+
+        coupon.refundAt = new Date();
+        coupon.status = ECouponStatus.REFUND;
+        coupon.save();
+
+        Long supplierId = (Long) Fixtures.idCache.get("models.supplier.Supplier-Supplier1");
+        id = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
+        Goods goods = Goods.findById(id);
+        goods.supplierId = supplierId;
+        goods.save();
+        id = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
+        goods = Goods.findById(id);
+        goods.supplierId = supplierId;
+        goods.save();
     }
 
     @After
@@ -76,18 +117,14 @@ public class NetSalesReportsTest extends FunctionalTest{
 
     @Test
     public void testDefaultIndex() {
-        Http.Response response = GET("/reports/sales");
+        Http.Response response = GET("/reports/net_sales");
         assertIsOk(response);
         assertNotNull(renderArgs("reportPage"));
-    }
-
-    // 测试不完整，没有得到数据，没执行到 summary（）
-    @Test
-    public void testSearchWithRightCondition(){
-        Http.Response response = GET("/reports/sales?condition.supplier.id=0&condition.goodsLike=哈根达斯&condition.createdAtBegin=2012-02-01&condition.createdAtEnd=2012-08-02&condition.interval=");
-        assertIsOk(response);
-        assertNotNull(renderArgs("reportPage"));
-        play.modules.paginate.ValuePaginator<SalesOrderItemReport> reportPage = (play.modules.paginate.ValuePaginator<SalesOrderItemReport>)renderArgs("reportPage");
+        play.modules.paginate.ValuePaginator<SalesOrderItemReport> reportPage = (play.modules.paginate.ValuePaginator<SalesOrderItemReport>) renderArgs("reportPage");
         assertNotNull(reportPage);
+        SalesOrderItemReport summary = (SalesOrderItemReport) renderArgs("summary");
+        assertEquals(20, summary.salesAmount.intValue());
+        assertEquals(160, summary.refundAmount.intValue());
+        assertEquals(-140, summary.netSalesAmount.intValue());
     }
 }

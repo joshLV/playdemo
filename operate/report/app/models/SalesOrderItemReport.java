@@ -79,6 +79,12 @@ public class SalesOrderItemReport extends Model {
         this.salesAmount = amount;
     }
 
+    public SalesOrderItemReport(BigDecimal amount, Long supplierId) {
+        Supplier supplier = Supplier.findById(supplierId);
+        this.supplier = supplier;
+        this.salesAmount = amount;
+    }
+
     public SalesOrderItemReport(BigDecimal salesAmount, BigDecimal refundAmount, BigDecimal netSalesAmount) {
         this.salesAmount = salesAmount;
         this.netSalesAmount = netSalesAmount;
@@ -161,11 +167,9 @@ public class SalesOrderItemReport extends Model {
         }
         List<SalesOrderItemReport> salesList = query.getResultList();
 
-
         //取得退款的数据
-        String sql = "select new models.SalesOrderItemReport(e.orderItems.goods,sum(e.refundPrice)) from ECoupon e ";
+        String sql = "select new models.SalesOrderItemReport(sum(e.refundPrice),e.orderItems.goods.supplierId) from ECoupon e ";
         String groupBy = " group by e.orderItems.goods.supplierId";
-
 
         query = JPA.em()
                 .createQuery(sql + condition.getRefundFilter() + groupBy + " order by sum(e.refundPrice) desc");
@@ -180,8 +184,8 @@ public class SalesOrderItemReport extends Model {
             for (SalesOrderItemReport refund : refundList) {
                 if (sales.supplier.id == refund.supplier.id) {
                     sales.refundAmount = refund.salesAmount == null ? BigDecimal.ZERO : refund.salesAmount;
-                    sales.netSalesAmount = sales.salesAmount.subtract(refund.salesAmount == null ?BigDecimal.ZERO:
-                    refund.salesAmount);
+                    sales.netSalesAmount = sales.salesAmount.subtract(refund.salesAmount == null ? BigDecimal.ZERO :
+                            refund.salesAmount);
                 }
             }
         }
