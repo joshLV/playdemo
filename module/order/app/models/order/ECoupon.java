@@ -1,7 +1,27 @@
 package models.order;
 
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.RandomNumberUtil;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
@@ -17,11 +37,8 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
-
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.RandomNumberUtil;
 
 @Entity
 @Table(name = "e_coupon")
@@ -546,6 +563,13 @@ public class ECoupon extends Model {
             shopName = sp.name;
         }
         return shopName;
+    }
+    
+    public boolean checkVerifyTimeRegion(Date currentTime) {
+        if (goods.useBeginTime != null && goods.useEndTime != null) {
+            
+        }
+        return true;
     }
 
     /**
