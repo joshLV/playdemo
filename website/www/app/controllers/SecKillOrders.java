@@ -59,7 +59,6 @@ public class SecKillOrders extends Controller {
     /**
      * 创建秒杀商品的订单.
      */
-    @NoTransaction
     public static void create(long secKillGoodsItemId, long secKillGoodsId, String mobile, String remark) {
         long count = 1;
         //如果订单中有电子券，则必须填写手机号
