@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import models.cms.Block;
 import models.cms.BlockType;
 import models.cms.CmsQuestion;
@@ -247,8 +248,8 @@ public class Goods extends Controller {
 
         // 网友推荐商品
         List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(
-                CacheHelper.getCacheKey(new String[] {models.sales.Goods.CACHEKEY, 
-                                    models.sales.Goods.CACHEKEY_BASEID + goods.id},
+                CacheHelper.getCacheKey(new String[]{models.sales.Goods.CACHEKEY,
+                        models.sales.Goods.CACHEKEY_BASEID + goods.id},
                         "SHOW_TOP5RECOMMEND"),
                 new CacheCallBack<List<models.sales.Goods>>() {
                     @Override
@@ -370,7 +371,7 @@ public class Goods extends Controller {
                 return GoodsStatistics.find("goodsId", goodsId).first();
             }
         });
-        renderJSON(statistics.summaryCount.toString());
+        renderJSON(statistics == null ? "0" : statistics.summaryCount.toString());
     }
 
     /**
