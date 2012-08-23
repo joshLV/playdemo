@@ -11,6 +11,7 @@ import models.order.OrderItems;
 import models.payment.PaymentFlow;
 import models.payment.PaymentJournal;
 import models.payment.PaymentUtil;
+import models.sales.SecKillGoods;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -49,6 +50,13 @@ public class PaymentInfo extends Controller {
     public static void confirm(String orderNumber, boolean useBalance, String paymentSourceCode) {
         User user = SecureCAS.getUser();
         Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
+
+        for (OrderItems orderItem : order.orderItems) {
+            boolean exceedLimit = checkLimitNumber(user, orderItem.goods.id, orderItem.secKillGoods.id, 1);
+            if (exceedLimit) {
+                redirect("/seckill-goods");
+            }
+        }
         if (order == null) {
             error(500, "no such order");
         }
@@ -59,10 +67,34 @@ public class PaymentInfo extends Controller {
             PaymentSource paymentSource = PaymentSource.findByCode(order.payMethod);
             //近日成交商品
             List<models.sales.Goods> recentGoodsList = models.sales.Goods.findTradeRecently(5);
-            render(order, paymentSource,recentGoodsList);
+            render(order, paymentSource, recentGoodsList);
         } else {
             error(500, "can no confirm the payment info");
         }
+    }
+
+    /**
+     * 计算会员订单明细中已购买的商品
+     *
+     * @param user    用户ID
+     * @param goodsId 商品ID
+     * @param number  购买数量
+     * @return
+     */
+    public static boolean checkLimitNumber(User user, Long goodsId, Long secKillGoodsId,
+                                           long number) {
+
+
+        long boughtNumber = OrderItems.getBoughtNumberOfSecKillGoods(user, goodsId, secKillGoodsId);
+        //取出商品的限购数量
+        models.sales.SecKillGoods goods = SecKillGoods.findById(secKillGoodsId);
+        int limitNumber = 0;
+        if (goods.personLimitNumber != null) {
+            limitNumber = goods.personLimitNumber;
+        }
+
+        //超过限购数量,则表示已经购买过该商品
+        return (limitNumber > 0 && (number > limitNumber || limitNumber <= boughtNumber));
     }
 
     /**

@@ -1,29 +1,24 @@
 package controllers;
 
-import static play.Logger.warn;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.EntityTransaction;
+import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
-import models.order.Cart;
-import models.order.DeliveryType;
-import models.order.NotEnoughInventoryException;
-import models.order.Order;
-import models.order.OrderItems;
+import models.order.*;
 import models.sales.MaterialType;
 import models.sales.SecKillGoods;
 import models.sales.SecKillGoodsItem;
 import play.Logger;
 import play.data.validation.Validation;
-import play.db.jpa.JPA;
-import play.db.jpa.NoTransaction;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-import controllers.modules.website.cas.SecureCAS;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import static play.Logger.warn;
 
 /**
  * 秒杀商品订单.
@@ -76,6 +71,7 @@ public class SecKillOrders extends Controller {
         
         //判断帐号限购
         boolean exceedLimit = checkLimitNumber(user, secKillGoodsItem.secKillGoods.goods.id, secKillGoodsId, count);
+        System.out.println(exceedLimit+">>>>>>>>>>>>>>>>");
         if (exceedLimit) {
             //todo 页面实现限购提示
             redirect("/seckill-goods?exceedLimit=" + exceedLimit);
