@@ -51,9 +51,11 @@ public class PaymentInfo extends Controller {
         Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
 
         for (OrderItems orderItem : order.orderItems) {
-            boolean exceedLimit = OrderItems.checkLimitNumber(user, orderItem.goods.id, orderItem.secKillGoods.id, 1);
-            if (exceedLimit) {
-                redirect("/seckill-goods");
+            if (orderItem.secKillGoods != null) {
+                boolean exceedLimit = OrderItems.checkLimitNumber(user, orderItem.goods.id, orderItem.secKillGoods.id, 1);
+                if (exceedLimit) {
+                    redirect("/seckill-goods");
+                }
             }
         }
         if (order == null) {
