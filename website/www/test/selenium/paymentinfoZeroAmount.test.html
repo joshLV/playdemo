@@ -25,8 +25,8 @@ order.save()
 }%
 
 
-*{#{selenium "测试支付0元"}}*
-    *{#{include 'test/selenium/step/login.selenium' /}}*
+#{selenium "测试支付0元"}
+    #{include 'test/selenium/step/login.selenium' /}
 	*{openAndWait('/payment_info/${order.orderNumber}')}*
     *{assertTitle('一百券 - 确认付款')}*
     *{verifyNotVisible('id=other-pay')}*
@@ -35,7 +35,7 @@ order.save()
     *{verifyTextPresent('恭喜您付款成功')}*
     *{openAndWait('/payment_info/${order.orderNumber}')}*
     *{verifyTextPresent('已被处理')}*
-*{#{/selenium}}*
+#{/selenium}
 
 
 

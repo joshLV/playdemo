@@ -31,8 +31,8 @@ load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_uni
 }%
 
 
-*{#{selenium "测试全部使用余额支付"}}*
-    *{#{include 'test/selenium/step/login.selenium' /}}*
+#{selenium "测试全部使用余额支付"}
+    #{include 'test/selenium/step/login.selenium' /}
 	*{open('/payment_info/${order.orderNumber}')}*
     *{assertTitle('一百券 - 确认付款')}*
     *{verifyTextPresent('总金额 ' + ${order.needPay})}*
@@ -48,5 +48,5 @@ load:['fixture/categories_unit.yml','fixture/areas_unit.yml','fixture/brands_uni
     *{verifyTextPresent('恭喜您付款成功')}*
     *{openAndWait('/payment_info/${order.orderNumber}')}*
     *{verifyTextPresent('已被处理')}*
-*{#{/selenium}}*
+#{/selenium}
 
