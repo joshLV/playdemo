@@ -50,7 +50,8 @@
 <div id="content">
     <div class="seckill-goods">
         <div class="side">
-            <span style="color:red">秒杀小技巧：点击<a href="http://home.yibaiquan.com/user-edit">绑定手机</a>后有助于更快抢购</span>
+            <div class="seckill-tips"><span>秒杀小技巧:</span> 点击<a href="http://home.yibaiquan.com/user-edit">绑定手机</a>后有助于更快抢购
+            </div>
             <img src="${goodsItem?.secKillGoods?.goods?.imageMiddlePath}" width="340" height="260"/>
 
             <div class="share">
@@ -78,7 +79,7 @@
         </div>
     #{form @SecKillOrders.index(), id:'order_form' }
         <input type="hidden" id="secKillGoodsItemId" name="secKillGoodsItemId" value="${goodsItem?.id}"/>
-        
+
         <div class="main">
             <div class="title">
                 <a href="">${goodsItem.goodsTitle}</a>
@@ -269,7 +270,7 @@
             timezone:+8,
             serverSync:function () {
                 var time = null;
-                $.ajax({url:'/server_time?t='+ +new Date(),
+                $.ajax({url:'/server_time?t=' + +new Date(),
                     async:false, dataType:'text',
                     success:function (text) {
                         time = new Date(text);
