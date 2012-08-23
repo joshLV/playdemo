@@ -51,10 +51,12 @@ public class OrderResult extends Controller {
             }
         }
         User user = SecureCAS.getUser();
+        PaymentJournal.saveUrlReturnJournal(orderNumber, params.all(), result, success);
+        
         Order order = Order.findOneByUser(orderNumber, user.getId(), AccountType.CONSUMER);
         //近日成交商品
         List<models.sales.Goods> recentGoodsList = models.sales.Goods.findTradeRecently(5);
-        PaymentJournal.saveUrlReturnJournal(orderNumber, params.all(), result, success);
+        
         renderTemplate("OrderResult/index.html", errorMessage,order, orderNumber, recentGoodsList);
     }
 }

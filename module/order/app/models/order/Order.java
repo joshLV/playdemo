@@ -531,10 +531,12 @@ public class Order extends Model {
         save();
         boolean haveFreight = false;
         for (OrderItems orderItem : orderItems) {
+            // fix: org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: models.sales.GoodsLevelPrice
+            // Goods goods = Goods.findById(orderItem.goods.id);
             orderItem.goods.baseSale -= orderItem.buyNumber;
             orderItem.goods.saleCount += orderItem.buyNumber;
             orderItem.goods.save();
-            orderItem.save();
+            // orderItem.save();
             if (orderItem.goods.materialType == MaterialType.REAL) {
                 haveFreight = true;
             }

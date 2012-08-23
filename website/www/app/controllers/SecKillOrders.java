@@ -135,10 +135,11 @@ public class SecKillOrders extends Controller {
 
         } catch (NotEnoughInventoryException e) {
             //缺少库存
-            Logger.error(e, "Inventory not enough,goodsId:" + secKillGoodsItem.secKillGoods.goods.id);
+            Logger.info(e, "Inventory not enough,goodsId:" + secKillGoodsItem.secKillGoods.goods.id);
             redirect("/seckill-goods");
         } catch (Exception e) {
             //其他错误
+            Logger.info(e, "出现其它错误, goodsId:" + secKillGoodsItem.secKillGoods.goods.id);
             redirect("/seckill-goods");
         }
         order.remark = remark;

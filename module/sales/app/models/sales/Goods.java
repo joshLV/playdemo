@@ -91,7 +91,7 @@ public class Goods extends Model {
     @Column(name = "sale_price")
     public BigDecimal salePrice;
 
-    @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, fetch = FetchType.LAZY,
+    @OneToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY,
             mappedBy = "goods")
     @OrderBy("level")
     public List<GoodsLevelPrice> levelPrices;

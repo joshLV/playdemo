@@ -3,6 +3,7 @@ package unit;
 import models.sales.Goods;
 import models.sales.GoodsStatistics;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.test.Fixtures;
 import play.test.UnitTest;
@@ -13,6 +14,7 @@ import play.test.UnitTest;
  * Date: 12-7-4
  * Time: 下午4:58
  */
+@Ignore
 public class GoodsStatisticsUnitTest extends UnitTest {
 
     @Before
