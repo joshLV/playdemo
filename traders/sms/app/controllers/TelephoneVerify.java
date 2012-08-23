@@ -82,7 +82,7 @@ public class TelephoneVerify extends Controller {
 
         if (!ecoupon.goods.supplierId.equals(supplierUser.supplier.getId())){
             Logger.info("telephone verify failed: wrong supplier");
-            renderText("7");//对不起，未找到此券  商户错误
+            renderText("7");//对不起，未找到此券  商户错误 todo
         }
 
         if (ecoupon.status == ECouponStatus.CONSUMED) {
@@ -91,9 +91,15 @@ public class TelephoneVerify extends Controller {
         } else if (ecoupon.status != ECouponStatus.UNCONSUMED) {
             Logger.info("telephone verify failed: coupon status invalid. %s", ecoupon.status);
             renderText("11");//对不起，该券无法消费
-        } else if (ecoupon.expireAt.before(new Date())) {
+        } else if (ecoupon.expireAt != null && ecoupon.expireAt.before(new Date())) {
             Logger.info("telephone verify failed: coupon expired. expiredAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.expireAt));
             renderText("12");//对不起，该券已过期
+        } else if (ecoupon.effectiveAt != null && ecoupon.effectiveAt.after(new Date()))  {
+            Logger.info("telephone verify failed: coupon not been activated. effectiveAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.effectiveAt));
+            renderText("11");//对不起，该券无法消费  todo 对不起，该券未到生效时间
+        } else if (!ecoupon.checkVerifyTimeRegion(new Date())){
+            Logger.info("telephone verify failed: coupon not been activated. effectiveAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.effectiveAt));
+            renderText("11");//对不起，该券无法消费  todo 对不起，该券在该时段无法消费
         } else {
             ecoupon.consumeAndPayCommission(supplierUser.shop.id, null, supplierUser, VerifyCouponType.CLERK_MESSAGE);
             String eCouponNumber = ecoupon.getMaskedEcouponSn();

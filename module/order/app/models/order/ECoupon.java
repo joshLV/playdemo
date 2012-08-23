@@ -94,6 +94,12 @@ public class ECoupon extends Model {
     @Column(name = "effective_at")
     public Date effectiveAt;
 
+    @Column(name = "use_begin_time")
+    public String useBeginTime;
+
+    @Column(name = "use_end_time")
+    public String useEndTime;
+
     @Column(name = "expire_at")
     public Date expireAt;
 
@@ -168,6 +174,8 @@ public class ECoupon extends Model {
         this.createdAt = new Date();
         this.effectiveAt = goods.effectiveAt;
         this.expireAt = goods.expireAt;
+        this.useBeginTime = goods.useBeginTime;
+        this.useEndTime = goods.useEndTime;
 
         this.consumedAt = null;
         this.refundAt = null;
@@ -571,10 +579,10 @@ public class ECoupon extends Model {
      * @return
      */
     public boolean checkVerifyTimeRegion(Date currentTime) {
-        if (goods.useBeginTime != null && goods.useEndTime != null) {
+        if (this.useBeginTime != null && this.useEndTime != null) {
             SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
             String date = dateFormat.format(currentTime);
-            if (!(date.compareTo(goods.useBeginTime) >= 0 && date.compareTo(goods.useEndTime) <= 0)) {
+            if (!(date.compareTo(this.useBeginTime) >= 0 && date.compareTo(this.useEndTime) <= 0)) {
                 return false;
             }
         }
