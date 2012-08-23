@@ -4,7 +4,6 @@ import controllers.modules.website.cas.SecureCAS;
 import controllers.modules.website.cas.annotations.SkipCAS;
 import models.consumer.User;
 import models.order.OrderItems;
-import models.sales.SecKillGoods;
 import models.sales.SecKillGoodsItem;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -40,32 +39,9 @@ public class SecKillGoodsController extends Controller {
         boolean exceedLimit = false;
         if (user != null) {
             //判断帐号限购
-            exceedLimit = checkLimitNumber(user, goodsItem.secKillGoods.goods.id, goodsItem.secKillGoods.id, 1);
+            exceedLimit = OrderItems.checkLimitNumber(user, goodsItem.secKillGoods.goods.id, goodsItem.secKillGoods.id, 1);
         }
 
         render(goodsItem, secKillGoodsItems, exceedLimit);
-    }
-
-    /**
-     * 计算会员订单明细中已购买的商品
-     *
-     * @param user    用户ID
-     * @param goodsId 商品ID
-     * @param number  购买数量
-     * @return
-     */
-    public static boolean checkLimitNumber(User user, Long goodsId, Long secKillGoodsId,
-                                           long number) {
-
-        long boughtNumber = OrderItems.getBoughtNumberOfSecKillGoods(user, goodsId, secKillGoodsId);
-        //取出商品的限购数量
-        models.sales.SecKillGoods goods = SecKillGoods.findById(secKillGoodsId);
-        int limitNumber = 0;
-        if (goods.personLimitNumber != null) {
-            limitNumber = goods.personLimitNumber;
-        }
-
-        //超过限购数量,则表示已经购买过该商品
-        return (limitNumber > 0 && (number > limitNumber || limitNumber <= boughtNumber));
     }
 }

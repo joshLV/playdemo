@@ -213,4 +213,27 @@ public class OrderItems extends Model {
         List<String> mobileList = query.getResultList();
         return mobileList;
     }
+
+    /**
+     * 计算会员订单明细中已购买的商品
+     *
+     * @param user    用户ID
+     * @param goodsId 商品ID
+     * @param number  购买数量
+     * @return
+     */
+    public static boolean checkLimitNumber(User user, Long goodsId, Long secKillGoodsId,
+                                           long number) {
+
+        long boughtNumber = OrderItems.getBoughtNumberOfSecKillGoods(user, goodsId, secKillGoodsId);
+        //取出商品的限购数量
+        models.sales.SecKillGoods goods = SecKillGoods.findById(secKillGoodsId);
+        int limitNumber = 0;
+        if (goods.personLimitNumber != null) {
+            limitNumber = goods.personLimitNumber;
+        }
+
+        //超过限购数量,则表示已经购买过该商品
+        return (limitNumber > 0 && (number > limitNumber || limitNumber <= boughtNumber));
+    }
 }

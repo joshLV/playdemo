@@ -6,7 +6,6 @@ import models.consumer.Address;
 import models.consumer.User;
 import models.order.*;
 import models.sales.MaterialType;
-import models.sales.SecKillGoods;
 import models.sales.SecKillGoodsItem;
 import play.Logger;
 import play.data.validation.Validation;
@@ -68,15 +67,13 @@ public class SecKillOrders extends Controller {
             error("no secKillGoods specified");
             return;
         }
-        
+
         //判断帐号限购
-        boolean exceedLimit = checkLimitNumber(user, secKillGoodsItem.secKillGoods.goods.id, secKillGoodsId, count);
-        System.out.println(exceedLimit+">>>>>>>>>>>>>>>>");
+        boolean exceedLimit = OrderItems.checkLimitNumber(user, secKillGoodsItem.secKillGoods.goods.id, secKillGoodsId, count);
         if (exceedLimit) {
             //todo 页面实现限购提示
             redirect("/seckill-goods?exceedLimit=" + exceedLimit);
         }
-
 
         boolean isElectronic = secKillGoodsItem.secKillGoods.goods.materialType.equals(MaterialType.ELECTRONIC);
         boolean isReal = secKillGoodsItem.secKillGoods.goods.materialType.equals(MaterialType.REAL);
@@ -133,9 +130,9 @@ public class SecKillOrders extends Controller {
     }
 
     private static Order doCreateSecKillOrder(String mobile, String remark,
-            long count, User user, SecKillGoodsItem secKillGoodsItem,
-            boolean isElectronic, boolean isReal, Address defaultAddress,
-            String receiverMobile) throws NotEnoughInventoryException {
+                                              long count, User user, SecKillGoodsItem secKillGoodsItem,
+                                              boolean isElectronic, boolean isReal, Address defaultAddress,
+                                              String receiverMobile) throws NotEnoughInventoryException {
         //创建订单
         Order order = Order.createConsumeOrder(user.getId(), AccountType.CONSUMER);
         if (isElectronic) {
@@ -192,30 +189,6 @@ public class SecKillOrders extends Controller {
         }
     }
 
-    /**
-     * 计算会员订单明细中已购买的商品
-     *
-     * @param user    用户ID
-     * @param goodsId 商品ID
-     * @param number  购买数量
-     * @return
-     */
-    public static boolean checkLimitNumber(User user, Long goodsId, Long secKillGoodsId,
-                                           long number) {
-
-
-        long boughtNumber = OrderItems.getBoughtNumberOfSecKillGoods(user, goodsId, secKillGoodsId);
-        //取出商品的限购数量
-        models.sales.SecKillGoods goods = SecKillGoods.findById(secKillGoodsId);
-        int limitNumber = 0;
-        if (goods.personLimitNumber != null) {
-            limitNumber = goods.personLimitNumber;
-        }
-
-        //超过限购数量,则表示已经购买过该商品
-        return (limitNumber > 0 && (number > limitNumber || limitNumber <= boughtNumber));
-    }
-
     private static void showOrder(User user, long secKillGoodsItemId) {
         SecKillGoodsItem goodsItem = SecKillGoodsItem.findById(secKillGoodsItemId);
         if (goodsItem == null) {
@@ -223,7 +196,7 @@ public class SecKillOrders extends Controller {
             return;
         }
         //判断帐号限购
-        boolean exceedLimit = checkLimitNumber(user, goodsItem.secKillGoods.goods.id, goodsItem.secKillGoods.id, 1);
+        boolean exceedLimit = OrderItems.checkLimitNumber(user, goodsItem.secKillGoods.goods.id, goodsItem.secKillGoods.id, 1);
         if (exceedLimit) {
             renderArgs.put("exceedLimit", exceedLimit);
         }
