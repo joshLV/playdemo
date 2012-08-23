@@ -1,6 +1,10 @@
 package controllers;
 
-import controllers.modules.website.cas.SecureCAS;
+import static play.Logger.warn;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.EntityTransaction;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
@@ -14,15 +18,12 @@ import models.sales.SecKillGoods;
 import models.sales.SecKillGoodsItem;
 import play.Logger;
 import play.data.validation.Validation;
+import play.db.jpa.JPA;
+import play.db.jpa.NoTransaction;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import static play.Logger.warn;
+import controllers.modules.website.cas.SecureCAS;
 
 /**
  * 秒杀商品订单.
@@ -58,6 +59,7 @@ public class SecKillOrders extends Controller {
     /**
      * 创建秒杀商品的订单.
      */
+    @NoTransaction
     public static void create(long secKillGoodsItemId, long secKillGoodsId, String mobile, String remark) {
         long count = 1;
         //如果订单中有电子券，则必须填写手机号
@@ -72,12 +74,14 @@ public class SecKillOrders extends Controller {
             error("no secKillGoods specified");
             return;
         }
+        
         //判断帐号限购
         boolean exceedLimit = checkLimitNumber(user, secKillGoodsItem.secKillGoods.goods.id, secKillGoodsId, count);
         if (exceedLimit) {
             //todo 页面实现限购提示
             redirect("/seckill-goods?exceedLimit=" + exceedLimit);
         }
+
 
         boolean isElectronic = secKillGoodsItem.secKillGoods.goods.materialType.equals(MaterialType.ELECTRONIC);
         boolean isReal = secKillGoodsItem.secKillGoods.goods.materialType.equals(MaterialType.REAL);
@@ -147,10 +151,16 @@ public class SecKillOrders extends Controller {
 //        //确认订单.并修改库存
         order.createAndUpdateInventory();
         //扣除秒杀的库存
-        secKillGoodsItem.updateInventory(count);
+        secKillGoodsItem.updateInventory(count);        
+        
+        EntityTransaction transaction = JPA.em().getTransaction();
+        transaction.begin();
+
+        transaction.commit();
 
         redirect("/payment_info/" + order.orderNumber);
     }
+
 
     private static void addSecKillOrderItem(Order order, SecKillGoodsItem secKillGoodsItem,
                                             long count, String receiverMobile) throws NotEnoughInventoryException {
