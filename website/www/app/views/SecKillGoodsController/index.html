@@ -91,9 +91,9 @@
                     <th>节省</th>
                 </tr>
                 <tr>
-                    <td>&yen;${goodsItem.secKillGoods.goods.faceValue}</td>
-                    <td>${goodsItem.discountExpress}</td>
-                    <td>&yen;${goodsItem.savePrice}</td>
+                    <td>&yen;${goodsItem?.secKillGoods?.goods?.faceValue}</td>
+                    <td>${goodsItem?.discountExpress}</td>
+                    <td>&yen;${goodsItem?.savePrice}</td>
                 </tr>
             </table>
             #{if !goodsItem.expired}
@@ -119,7 +119,7 @@
                 #{/elseif}
             </div>
             <div class="bypast">
-                <del>原价${goodsItem.secKillGoods.goods.faceValue}元</del>
+                <del>原价${goodsItem?.secKillGoods?.goods?.faceValue}元</del>
                 <span>还剩<i>${goodsItem.virtualInventory?:0}</i>件</span>
                 #{if exceedLimit}
                     <span style="color: red">您已经够买过此商品，不能继续购买！</span>
