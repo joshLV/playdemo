@@ -118,19 +118,40 @@
             </tr>
         %{
             zero = new java.math.BigDecimal("0.00")
-            consumerTotal = new java.math.BigDecimal("0")
-            supplierTotal = new java.math.BigDecimal("0")
-            resalerTotal = new java.math.BigDecimal("0")
-            baseUri = play.Play.configuration.getProperty("uri.operate_business")
+            caT = caA = caB = zero
+            waT = waA = waB = zero
+            paT = paA = paB = zero
+            raT = raA = raB = zero
+            taT = taA = taB = zero
 
+            baseUri = play.Play.configuration.getProperty("uri.operate_business")
         }%
         #{list reportPage, as:'report'}
             %{
                 chargeAmount = report.get("CHARGE")?: [zero,zero]
+                caA = caA.add(chargeAmount[0]?:zero)
+                caB = caB.add(chargeAmount[1]?:zero)
+                caT = caA.add(caB)
+
                 withdrawAmount = report.get("WITHDRAW")?: [zero,zero]
+                waA = waA.add(withdrawAmount[0]?:zero)
+                waB = waB.add(withdrawAmount[1]?:zero)
+                waT = waA.add(waB)
+
                 payAmount = report.get("PAY")?: [zero,zero]
+                paA = paA.add(payAmount[0]?:zero)
+                paB = paB.add(payAmount[1]?:zero)
+                paT = paA.add(paB)
+
                 refundAmount = report.get("REFUND")?:[zero,zero]
+                raA = raA.add(refundAmount[0]?:zero)
+                raB = raB.add(refundAmount[1]?:zero)
+                raT = raA.add(raB)
+
                 transferAmount = report.get("TRANSFER")?:[zero,zero]
+                taA = taA.add(transferAmount[0]?:zero)
+                taB = taB.add(transferAmount[1]?:zero)
+                taT = taA.add(taB)
             }%
             <tr>
                 <td>${report.get("RowKey")}</td>
@@ -139,15 +160,27 @@
                 <td>${payAmount[0]?:zero.add(payAmount[1]?:zero)} / ${payAmount[0]?:zero} / ${payAmount[1]?:zero}</td>
                 <td>${refundAmount[0]?:zero.add(refundAmount[1]?:zero)} / ${refundAmount[0]?:zero} / ${refundAmount[1]?:zero}</td>
                 <td>${transferAmount[0]?:zero}</td>
-                <td></td>
+                <td>${chargeAmount[0]?:zero
+                .add(chargeAmount[1]?:zero)
+                .add(withdrawAmount[0]?:zero)
+                .add(withdrawAmount[1]?:zero)
+                .add(payAmount[0]?:zero)
+                .add(payAmount[1]?:zero)
+                .add(refundAmount[0]?:zero)
+                .add(refundAmount[1]?:zero)
+                .add(transferAmount[0]?:zero)
+                .add(transferAmount[1]?:zero)
+                }</td>
             </tr>
         #{/list}
             <tr>
                 <td>汇总</td>
-                <td>${consumerTotal.negate()}</td>
-                <td>${supplierTotal.negate()}</td>
-                <td>${resalerTotal.negate()}</td>
-                <td>${consumerTotal.add(supplierTotal).add(resalerTotal).negate()}</td>
+                <td>${caT} / ${caA} / ${caB}</td>
+                <td>${waA}</td>
+                <td>${paT} / ${paA} / ${paB}</td>
+                <td>${raT} / ${raA} / ${raB}</td>
+                <td>${taA}</td>
+                <td>${caT.add(waT).add(paT).add(raT).add(taT)}</td>
             </tr>
         </table>
     </div>
