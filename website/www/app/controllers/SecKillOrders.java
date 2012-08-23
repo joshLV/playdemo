@@ -45,7 +45,7 @@ public class SecKillOrders extends Controller {
             checkInventory(secKillGoodsItem, 1);
         } catch (NotEnoughInventoryException e) {
             //缺少库存
-            Logger.error(e, "Inventory not enough,goodsId:" + secKillGoodsItem.secKillGoods.goods.id);
+            Logger.info(e, "Inventory not enough,goodsId:" + secKillGoodsItem.secKillGoods.goods.id);
             redirect("/seckill-goods");
         }
 
