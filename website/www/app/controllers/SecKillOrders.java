@@ -112,27 +112,23 @@ public class SecKillOrders extends Controller {
             render("SecKillOrders/index.html", user, orderItemsMobiles);
         }
 
-        EntityTransaction transaction = JPA.em().getTransaction();
         Order order = null;
 
-        for (int i = 0; i<5; i++) {
-            try {
-                order = doCreateSecKillOrder(mobile, remark, count, user,
-                        secKillGoodsItem, isElectronic, isReal, defaultAddress,
-                        receiverMobile);        
-                transaction.commit();
-            } catch (NotEnoughInventoryException e) {
-                //缺少库存
-                transaction.rollback();
-                Logger.info(e, "Inventory not enough,goodsId:" + secKillGoodsItem.secKillGoods.goods.id);
-                redirect("/seckill-goods");
-            } catch (Exception e) {
-                Logger.info(e, "出现异常，事务回滚");
-                transaction.rollback();
-                continue;
-            }
-            break;
+        try {
+            order = doCreateSecKillOrder(mobile, remark, count, user,
+                    secKillGoodsItem, isElectronic, isReal, defaultAddress,
+                    receiverMobile);
+
+        } catch (NotEnoughInventoryException e) {
+            // 缺少库存
+            Logger.info(e, "Inventory not enough,goodsId:"
+                    + secKillGoodsItem.secKillGoods.goods.id);
+            redirect("/seckill-goods");
+        } catch (Exception e) {
+            Logger.error(e, "出现异常，事务回滚");
+            redirect("/seckill-goods");
         }
+
         if (order == null) {
             Logger.error("没有建立订单，这是不可能出现的，请检查代码");
             redirect("/seckill-goods");
