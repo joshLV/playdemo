@@ -38,10 +38,16 @@ public class SecKillGoodsController extends Controller {
         User user = SecureCAS.getUser();
         //判断帐号限购
         boolean exceedLimit = false;
+        System.out.println("cccc>>>>");
         if (user != null) {
             //判断帐号限购
             exceedLimit = checkLimitNumber(user, goodsItem.secKillGoods.goods.id, goodsItem.secKillGoods.id, 1);
         }
+
+        System.out.println("dddd>>>>"+secKillGoodsItems);
+        System.out.println("dddd>>>>"+exceedLimit);
+
+
         render(goodsItem, secKillGoodsItems, exceedLimit);
     }
 

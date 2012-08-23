@@ -63,7 +63,6 @@ public class OperateVerifyPhonesFuncTest extends FunctionalTest {
                         target.mobile = "1351111000"+seq;
                     }
                 });
-
         Http.Response response = GET("/verify-tel?supplierId="+supplier.id);
         assertIsOk(response);
         assertContentType("text/html", response);

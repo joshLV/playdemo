@@ -5,6 +5,7 @@ import factory.ModelFactory;
 import models.sales.Goods;
 import models.sales.SecKillGoods;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import static util.DateHelper.afterDays;
@@ -26,7 +27,7 @@ public class SecKillGoodsFactory extends ModelFactory<SecKillGoods> {
         secKillGoods.goods = goods;
         secKillGoods.imagePath = "/a.jpg";
         secKillGoods.createdAt= afterDays(new Date(), 30);
-
+        secKillGoods.goods.faceValue=new BigDecimal(10);
 
 
         return secKillGoods;

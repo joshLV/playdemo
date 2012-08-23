@@ -73,7 +73,12 @@ public class SecKillGoodsItemsTest extends FunctionalTest {
 
     @Test
     public void testCreateError() {
-        SecKillGoodsItem item = FactoryBoy.create(SecKillGoodsItem.class);
+
+
+
+        SecKillGoodsItem item = FactoryBoy.create(SecKillGoodsItem.class, "error");
+
+
         Map<String, String> itemParams = new HashMap<>();
         itemParams.put("secKillGoodsItem.virtualInventory", item.virtualInventory.toString());
         itemParams.put("secKillGoodsItem.goodsTitle", item.goodsTitle);
@@ -133,7 +138,7 @@ public class SecKillGoodsItemsTest extends FunctionalTest {
 
     @Test
     public void testUpdateError() {
-        SecKillGoodsItem item = FactoryBoy.create(SecKillGoodsItem.class);
+        SecKillGoodsItem item = FactoryBoy.create(SecKillGoodsItem.class, "error");
         SecKillGoods goods= FactoryBoy.create(SecKillGoods.class);
         String itemParams = "secKillGoodsItem.virtualInventory="+item.virtualInventory.toString()
                 +"&secKillGoodsItem.goodsTitle=" + item.goodsTitle+"&secKillGoodsItem.saleCount="

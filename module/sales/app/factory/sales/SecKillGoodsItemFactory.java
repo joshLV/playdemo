@@ -60,6 +60,8 @@ public class SecKillGoodsItemFactory extends ModelFactory<SecKillGoodsItem> {
 
 
         return secKillGoodsItem;
+
+
     }
 
     @Factory(name = "expired")

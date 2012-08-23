@@ -182,7 +182,7 @@ select:'condition_status',value:condition?.status/}
             <td class="#{if pointGoods.isExpired()} tr-offsale  #{/if} transparent"> ${pointGoods?.expireAt?.format("yyyy-MM-dd hh:mm:ss")}</td>
             <td class="amount">${pointGoods?.baseSale}</td>
             <td class="amount">${pointGoods?.saleCount}</td>
-            <td>${pointGoods?.createdAt.format("yyyy-MM-dd hh:mm:ss")}</td>
+            <td>${pointGoods?.createdAt?.format("yyyy-MM-dd hh:mm:ss")}</td>
             <td>
             &{'pointGoods.'+pointGoods?.getStatus()}
                #{if models.sales.GoodsStatus.OFFSALE.equals(pointGoods?.getStatus())}

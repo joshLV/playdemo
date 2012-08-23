@@ -21,6 +21,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.supplierId = supplier.id;
         goods.salePrice = BigDecimal.TEN;
         goods.expireAt = afterDays(new Date(), 30);
+        goods.faceValue= BigDecimal.TEN;
         return goods;
     }
 

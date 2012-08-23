@@ -20,8 +20,8 @@ public class UserFactory  extends ModelFactory<User> {
     @Override
     public User define() {
         User user = new User();
-        user.loginName = "tom";
-        user.password="tom";
+        user.loginName = "selenium@uhuila.com";
+        user.password="selenium@uhuila.com";
         user.confirmPassword="tom";
         user.captcha="aa";
 

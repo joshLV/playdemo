@@ -57,7 +57,7 @@ public class SecKillGoodsItems extends Controller {
             render("SecKillGoodsItems/add.html", secKillGoodsItem, secKillGoods, seckillId);
         }
 
-        System.out.println("ccccccccc<<<???");
+
         models.sales.SecKillGoods goods = models.sales.SecKillGoods.findById(seckillId);
         secKillGoodsItem.secKillGoods = goods;
 
