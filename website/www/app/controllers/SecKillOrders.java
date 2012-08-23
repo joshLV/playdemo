@@ -113,7 +113,6 @@ public class SecKillOrders extends Controller {
         }
 
         EntityTransaction transaction = JPA.em().getTransaction();
-        transaction.begin();
         Order order = null;
 
         for (int i = 0; i<5; i++) {
