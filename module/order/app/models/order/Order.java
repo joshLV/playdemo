@@ -536,7 +536,7 @@ public class Order extends Model {
             orderItem.goods.baseSale -= orderItem.buyNumber;
             orderItem.goods.saleCount += orderItem.buyNumber;
             orderItem.goods.save();
-            // orderItem.save();
+            orderItem.save();
             if (orderItem.goods.materialType == MaterialType.REAL) {
                 haveFreight = true;
             }
