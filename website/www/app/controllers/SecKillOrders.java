@@ -113,6 +113,39 @@ public class SecKillOrders extends Controller {
             render("SecKillOrders/index.html", user, orderItemsMobiles);
         }
 
+        EntityTransaction transaction = JPA.em().getTransaction();
+        transaction.begin();
+        Order order = null;
+
+        for (int i = 0; i<5; i++) {
+            try {
+                order = doCreateSecKillOrder(mobile, remark, count, user,
+                        secKillGoodsItem, isElectronic, isReal, defaultAddress,
+                        receiverMobile);        
+                transaction.commit();
+            } catch (NotEnoughInventoryException e) {
+                //缺少库存
+                transaction.rollback();
+                Logger.info(e, "Inventory not enough,goodsId:" + secKillGoodsItem.secKillGoods.goods.id);
+                redirect("/seckill-goods");
+            } catch (Exception e) {
+                Logger.info(e, "出现异常，事务回滚");
+                transaction.rollback();
+                continue;
+            }
+            break;
+        }
+        if (order == null) {
+            Logger.error("没有建立订单，这是不可能出现的，请检查代码");
+            redirect("/seckill-goods");
+        }
+        redirect("/payment_info/" + order.orderNumber);
+    }
+
+    private static Order doCreateSecKillOrder(String mobile, String remark,
+            long count, User user, SecKillGoodsItem secKillGoodsItem,
+            boolean isElectronic, boolean isReal, Address defaultAddress,
+            String receiverMobile) throws NotEnoughInventoryException {
         //创建订单
         Order order = Order.createConsumeOrder(user.getId(), AccountType.CONSUMER);
         if (isElectronic) {
@@ -130,35 +163,18 @@ public class SecKillOrders extends Controller {
         }
 
         //添加订单条目
-        try {
-            if (isElectronic) {
-                addSecKillOrderItem(order, secKillGoodsItem, count, mobile);
-            } else {
-                addSecKillOrderItem(order, secKillGoodsItem, count, receiverMobile);
-            }
-
-        } catch (NotEnoughInventoryException e) {
-            //缺少库存
-            Logger.info(e, "Inventory not enough,goodsId:" + secKillGoodsItem.secKillGoods.goods.id);
-            redirect("/seckill-goods");
-        } catch (Exception e) {
-            //其他错误
-            Logger.info(e, "出现其它错误, goodsId:" + secKillGoodsItem.secKillGoods.goods.id);
-            redirect("/seckill-goods");
+        if (isElectronic) {
+            addSecKillOrderItem(order, secKillGoodsItem, count, mobile);
+        } else {
+            addSecKillOrderItem(order, secKillGoodsItem, count, receiverMobile);
         }
         order.remark = remark;
 
 //        //确认订单.并修改库存
         order.createAndUpdateInventory();
         //扣除秒杀的库存
-        secKillGoodsItem.updateInventory(count);        
-        
-        EntityTransaction transaction = JPA.em().getTransaction();
-        transaction.begin();
-
-        transaction.commit();
-
-        redirect("/payment_info/" + order.orderNumber);
+        secKillGoodsItem.updateInventory(count);
+        return order;
     }
 
 
