@@ -19,10 +19,10 @@
                 <li><a href="/logout">退出</a></li>
             #{/if}
             #{else}
-                <li class="first"><a class="login" id="login_name" href="/login">登录</a></li> <li><a class="signup" href="/register">注册</a></li>
+                <li class="first"><a class="login" id="login" href="/login">登录</a></li> <li><a class="signup" href="/register">注册</a></li>
                 <!-- <li><a class="quick" href="" target="_blank">快捷登录</a></li> -->
             #{/else}
-                <li><a id="favorite" class="favorite" href="">收藏一百券</a></li>
+                 <li><a id="favorite" class="favorite" href="">收藏一百券</a></li>
                 <li class="last"><iframe width="63" height="24" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0" scrolling="no" border="0" src="http://widget.weibo.com/relationship/followbutton.php?language=zh_cn&width=63&height=24&uid=2131727074&style=1&btn=red&dpc=1"></iframe></li>
         </ul>
         <div class="share">
@@ -71,6 +71,8 @@
             #{if categoryId == 11}class="curr"#{/if}>酒店旅游</a>
          <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/13"
             #{if categoryId == 13}class="curr"#{/if}>家居建材</a>
+         <a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/16"
+            #{if categoryId == 16}class="curr"#{/if}>中秋月饼</a>
      </div>
 </div>
 <!-- #navbar -->
