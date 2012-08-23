@@ -1,8 +1,6 @@
 package factory.consumer;
 
 import com.uhuila.common.constants.DeletedStatus;
-import models.admin.OperateRole;
-import models.admin.OperateUser;
 import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
