@@ -2,12 +2,14 @@ package controllers;
 
 import controllers.modules.resale.cas.SecureCAS;
 import models.accounts.AccountType;
+import models.order.DeliveryType;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.resale.Resaler;
 import models.resale.ResalerCart;
 import models.resale.ResalerFav;
 import models.sales.Goods;
+import models.sales.MaterialType;
 import play.data.validation.Required;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
@@ -64,6 +66,8 @@ public class ResalerCarts extends Controller {
         }
 
         Order order = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
+        boolean containsElectronic = false;
+        boolean containsReal = false;
         for(Object[] fav : favs){
             Goods goods = (Goods)fav[0];
             int number = (Integer)fav[1];
@@ -74,7 +78,17 @@ public class ResalerCarts extends Controller {
                     resalerPrice  // 分销商成本价
             );
             ResalerCart.delete(resaler, goods, phone);
+            if(goods.materialType.equals(MaterialType.REAL)){
+                containsReal = true;
+            }else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
+                containsElectronic = true;
+            }
 
+        }
+        if (containsElectronic) {
+            order.deliveryType = DeliveryType.SMS;
+        } else if (containsReal) {
+            order.deliveryType = DeliveryType.LOGISTICS;
         }
 
         order.createAndUpdateInventory();

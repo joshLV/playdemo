@@ -303,14 +303,14 @@ public class Orders extends Controller {
     }
 
     private static boolean containsMaterialType(List<Goods> goods, MaterialType type) {
-        boolean containsElectronic = false;
+        boolean containsMaterialType = false;
         for (Goods good : goods) {
             if (type.equals(good.materialType)) {
-                containsElectronic = true;
+                containsMaterialType = true;
                 break;
             }
         }
-        return containsElectronic;
+        return containsMaterialType;
     }
 
     private static void parseItems(String items, List<Long> goodsIds, Map<Long, Integer> itemsMap) {
