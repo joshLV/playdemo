@@ -92,8 +92,9 @@ public class SecKillOrders extends Controller {
         Address defaultAddress = null;
         String receiverMobile = "";
         if (isReal) {
+
             defaultAddress = Address.findDefault(user);
-             System.out.println(SecureCAS.getUser()+">>>>>>>>>>>>>>>"+defaultAddress);
+
             if (defaultAddress == null) {
                 Validation.addError("address", "validation.required");
             } else {
@@ -104,7 +105,7 @@ public class SecKillOrders extends Controller {
 
         for(Error error:Validation.errors())
         {
-            System.out.println("eoor>>>>>>>>>>>>>>>>");
+
             System.out.println(error.message());
         }
 
@@ -139,6 +140,7 @@ public class SecKillOrders extends Controller {
             Logger.error("没有建立订单，这是不可能出现的，请检查代码");
             redirect("/seckill-goods");
         }
+
         redirect("/payment_info/" + order.orderNumber);
     }
 

@@ -118,9 +118,7 @@ public class Address extends Model {
     }
 
     public static Address findDefault(User user) {
-        System.out.println("useruseruser"+user);
 
-        System.out.println( "findfind"+Address.find("byUserAndIsDefault", user, true).first() );
 
         return Address.find("byUserAndIsDefault", user, true).first();
     }

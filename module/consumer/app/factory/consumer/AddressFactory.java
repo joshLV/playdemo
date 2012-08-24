@@ -18,8 +18,8 @@ public class AddressFactory  extends ModelFactory<Address> {
     @Override
     public Address define() {
         Address address = new Address();
-        User user = FactoryBoy.create(User.class);
-        address.user=user;
+//        User user = FactoryBoy.create(User.class);
+//        address.user=user;
         address.province="上海市";
         address.district="市辖区";
         address.city="黄浦区";
@@ -28,7 +28,7 @@ public class AddressFactory  extends ModelFactory<Address> {
         address.address="test3";
         address.isDefault=true;
         address.name="add1";
-        System.out.println("useru11111<<<>>>>"+user);
+//        System.out.println("useru11111<<<>>>>"+user);
         return address;
     }
 }

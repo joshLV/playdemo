@@ -24,6 +24,8 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.expireAt = afterDays(new Date(), 30);
         goods.faceValue= BigDecimal.TEN;
         goods.materialType= MaterialType.REAL;
+        goods.baseSale= (long)100;
+        goods.saleCount=10;
         return goods;
     }
 

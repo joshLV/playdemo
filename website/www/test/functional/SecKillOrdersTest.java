@@ -1,6 +1,7 @@
 package functional;
 
 import controllers.modules.website.cas.Security;
+import models.consumer.Address;
 import models.consumer.User;
 import models.sales.SecKillGoodsItem;
 import org.junit.Before;
@@ -30,6 +31,10 @@ public class SecKillOrdersTest  extends FunctionalTest {
         User user = FactoryBoy.create(User.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
+
+        Address address = FactoryBoy.create(Address.class);
+        address.user=user;
+        address.save();
     }
 
 
@@ -55,7 +60,7 @@ public class SecKillOrdersTest  extends FunctionalTest {
         params.put("remark","good");
 
         Http.Response response = POST("/seckill-orders/new",params);
-        assertStatus(200, response);
+        assertStatus(302, response);
 
 
     }
