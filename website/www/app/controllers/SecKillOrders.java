@@ -8,7 +8,8 @@ import models.order.*;
 import models.sales.MaterialType;
 import models.sales.SecKillGoodsItem;
 import play.Logger;
-import play.data.validation.Validation;
+import play.data.validation.*;
+import play.data.validation.Error;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
@@ -32,10 +33,13 @@ public class SecKillOrders extends Controller {
      * 预览订单
      */
     public static void index() {
+
         Long secKillGoodsItemId = Long.parseLong(request.params.get("secKillGoodsItemId") == null ? "0" : request.params.get("secKillGoodsItemId"));
+
         SecKillGoodsItem secKillGoodsItem = SecKillGoodsItem.findById(secKillGoodsItemId);
         //检查库存
         try {
+
             checkInventory(secKillGoodsItem, 1);
         } catch (NotEnoughInventoryException e) {
             //缺少库存
@@ -88,13 +92,22 @@ public class SecKillOrders extends Controller {
         Address defaultAddress = null;
         String receiverMobile = "";
         if (isReal) {
-            defaultAddress = Address.findDefault(SecureCAS.getUser());
+            defaultAddress = Address.findDefault(user);
+             System.out.println(SecureCAS.getUser()+">>>>>>>>>>>>>>>"+defaultAddress);
             if (defaultAddress == null) {
                 Validation.addError("address", "validation.required");
             } else {
                 receiverMobile = defaultAddress.mobile;
             }
         }
+
+
+        for(Error error:Validation.errors())
+        {
+            System.out.println("eoor>>>>>>>>>>>>>>>>");
+            System.out.println(error.message());
+        }
+
 
         if (Validation.hasErrors()) {
             for (String key : validation.errorsMap().keySet()) {
@@ -184,6 +197,7 @@ public class SecKillOrders extends Controller {
 
     private static void checkInventory(SecKillGoodsItem secKillGoodsItem,
                                        long count) throws NotEnoughInventoryException {
+
         if (secKillGoodsItem.baseSale <= 0 || secKillGoodsItem.baseSale < count) {
             throw new NotEnoughInventoryException();
         }
@@ -208,11 +222,16 @@ public class SecKillOrders extends Controller {
         BigDecimal rCartAmount = BigDecimal.ZERO;
 
         models.sales.Goods g = goodsItem.secKillGoods.goods;
+
         g.salePrice = goodsItem.salePrice;
+
+
         if (g.materialType == models.sales.MaterialType.REAL) {
+
             rCartList.add(new Cart(g, 1, goodsItem));
             rCartAmount = goodsItem.salePrice;
         } else if (g.materialType == models.sales.MaterialType.ELECTRONIC) {
+
             eCartList.add(new Cart(g, 1, goodsItem));
             eCartAmount = goodsItem.salePrice;
         }

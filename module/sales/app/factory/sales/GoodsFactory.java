@@ -4,6 +4,7 @@ import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
 import models.sales.Goods;
+import models.sales.MaterialType;
 import models.supplier.Supplier;
 
 import java.math.BigDecimal;
@@ -22,6 +23,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.salePrice = BigDecimal.TEN;
         goods.expireAt = afterDays(new Date(), 30);
         goods.faceValue= BigDecimal.TEN;
+        goods.materialType= MaterialType.REAL;
         return goods;
     }
 
@@ -30,6 +32,8 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.name = "Product Name " + FactoryBoy.sequence(Goods.class);
         goods.salePrice = BigDecimal.TEN;
         goods.expireAt = afterDays(new Date(), 30);
+        goods.materialType= MaterialType.REAL;
+
         return goods;
 
     }

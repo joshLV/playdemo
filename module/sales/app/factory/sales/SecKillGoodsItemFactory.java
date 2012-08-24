@@ -81,7 +81,7 @@ public class SecKillGoodsItemFactory extends ModelFactory<SecKillGoodsItem> {
         secKillGoodsItem.secKillEndAt = DateHelper.afterMinuts(new Date(), 10);
         SecKillGoods goods= FactoryBoy.create(SecKillGoods.class);
         secKillGoodsItem.secKillGoods=goods;
-        secKillGoodsItem.baseSale =100l;
+        secKillGoodsItem.baseSale =1000l;
         secKillGoodsItem.status= SecKillGoodsStatus.ONSALE;
         return secKillGoodsItem;
     }

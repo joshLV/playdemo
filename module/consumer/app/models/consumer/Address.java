@@ -108,6 +108,7 @@ public class Address extends Model {
         return Address.find("user=? order by isDefault DESC", user).fetch();
     }
 
+
     public static void updateToUnDefault(User user) {
         List<Address> addressList = Address.find("byUserAndIsDefault", user, true).fetch();
         for (Address address : addressList) {
@@ -117,6 +118,10 @@ public class Address extends Model {
     }
 
     public static Address findDefault(User user) {
+        System.out.println("useruseruser"+user);
+
+        System.out.println( "findfind"+Address.find("byUserAndIsDefault", user, true).first() );
+
         return Address.find("byUserAndIsDefault", user, true).first();
     }
 
@@ -166,4 +171,8 @@ public class Address extends Model {
         oldAddress.province = address.province;
         oldAddress.save();
     }
-}
+
+
+    }
+
+

@@ -32,6 +32,9 @@ public class SecKillGoodsControllerTest extends FunctionalTest {
     public void testIndex() {
         SecKillGoodsItem item = FactoryBoy.create(SecKillGoodsItem.class);
         Http.Response response = GET("/seckill-goods");
+        assertStatus(200, response);
+        assertContentType("text/html", response);
+        assertContentMatch("秒杀", response);
     }
 
 

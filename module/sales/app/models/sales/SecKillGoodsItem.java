@@ -125,7 +125,7 @@ public class SecKillGoodsItem extends Model {
         long count = SecKillGoodsItem.count("secKillEndAt>? and status=?", new Date(),
                 SecKillGoodsStatus.ONSALE);
 
-        System.out.println("ddddd>>"+count);
+
         if (count > 0) {
             return SecKillGoodsItem.find("secKillEndAt>? and status =? order by secKillBeginAt",
                     new Date(), SecKillGoodsStatus.ONSALE).first();
