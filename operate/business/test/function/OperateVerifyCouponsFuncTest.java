@@ -5,12 +5,15 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
+import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.order.ECoupon;
-import models.order.ECouponStatus;
+import models.order.Order;
+import models.order.OrderItems;
+import models.sales.Brand;
+import models.sales.Category;
 import models.sales.Goods;
 import models.sales.Shop;
-import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +22,6 @@ import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,8 +36,15 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest  {
 
     @Before
     public void setUp() {
-
-        FactoryBoy.deleteAll();
+         FactoryBoy.delete(Goods.class);
+        FactoryBoy.delete(Shop.class);
+        FactoryBoy.delete(ECoupon.class);
+        FactoryBoy.delete(Order.class);
+        FactoryBoy.delete(OrderItems.class);
+        FactoryBoy.delete(OperateUser.class);
+        FactoryBoy.delete(OperateRole.class);
+        FactoryBoy.delete(Brand.class);
+        FactoryBoy.delete(Category.class);
 
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
