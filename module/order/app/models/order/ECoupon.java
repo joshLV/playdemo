@@ -22,6 +22,7 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
+
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
@@ -75,14 +76,13 @@ public class ECoupon extends Model {
 
     @Column(name = "sale_price")
     public BigDecimal salePrice;        //最终成交价,对于普通分销商来说，此成交价与以上分销商价(resalerPrice)相同；
-    
+
     /**
      * 折扣掉的费用.
-     * 
      */
-    @Column(name="rebate_value")
+    @Column(name = "rebate_value")
     public BigDecimal rebateValue;
-    
+
     // ====  价格列表  ====
 
     @Column(name = "refund_price")
@@ -352,8 +352,8 @@ public class ECoupon extends Model {
         TradeUtil.success(consumeTrade, "券消费(" + order.description + ")");
 
         BigDecimal platformCommission = BigDecimal.ZERO;
-    
-            
+
+
         if (salePrice.compareTo(resalerPrice) < 0) {
             //如果成交价小于分销商成本价（这种情况只有在一百券网站上才会发生），
             //那么一百券就没有佣金，平台的佣金也变为成交价减成本价
@@ -372,7 +372,7 @@ public class ECoupon extends Model {
                 TradeUtil.success(uhuilaCommissionTrade, order.description);
             }
         }
-        
+
         if (platformCommission.compareTo(BigDecimal.ZERO) >= 0) {
             //给优惠券平台佣金
             TradeBill platformCommissionTrade = TradeUtil.createCommissionTrade(
@@ -382,7 +382,7 @@ public class ECoupon extends Model {
                     order.getId());
             TradeUtil.success(platformCommissionTrade, order.description);
         }
-        
+
         if (rebateValue != null && rebateValue.compareTo(BigDecimal.ZERO) > 0) {
             TradeBill rabateTrade = TradeUtil.createTransferTrade(AccountUtil.getUhuilaAccount(), AccountUtil.getPlatformIncomingAccount(), rebateValue, BigDecimal.ZERO);
             rabateTrade.orderId = this.order.id;
@@ -481,11 +481,11 @@ public class ECoupon extends Model {
             eCoupon.order.refundedPromotionAmount = BigDecimal.ZERO;
         }
         List<ECoupon> eCoupons = ECoupon.find("byOrderAndStatus", eCoupon.order, ECouponStatus.CONSUMED).fetch();
-        for(ECoupon c : eCoupons){
+        for (ECoupon c : eCoupons) {
             consumedAmount = consumedAmount.add(eCoupon.salePrice);
         }
         BigDecimal usedPromotionAmount = eCoupon.order.refundedPromotionAmount.add(consumedAmount);
-        if(eCoupon.order.promotionBalancePay != null && eCoupon.order.promotionBalancePay.compareTo(usedPromotionAmount) > 0) {
+        if (eCoupon.order.promotionBalancePay != null && eCoupon.order.promotionBalancePay.compareTo(usedPromotionAmount) > 0) {
             promotionAmount = cashAmount.min(eCoupon.order.promotionBalancePay.subtract(usedPromotionAmount));
             cashAmount = cashAmount.subtract(promotionAmount);
         }
@@ -572,14 +572,15 @@ public class ECoupon extends Model {
         }
         return shopName;
     }
-    
+
     /**
      * 判断指定时间是否是可用的验证时间范围.
+     *
      * @param currentTime
      * @return
      */
     public boolean checkVerifyTimeRegion(Date currentTime) {
-        if (this.useBeginTime != null && this.useEndTime != null) {
+        if (StringUtils.isNotBlank(this.useBeginTime) && StringUtils.isNotBlank(this.useEndTime)) {
             SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
             String date = dateFormat.format(currentTime);
             if (!(date.compareTo(this.useBeginTime) >= 0 && date.compareTo(this.useEndTime) <= 0)) {

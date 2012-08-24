@@ -1,7 +1,7 @@
 #{if ecoupon == null} <font color=red>对不起，没有该券的信息!</font>#{/if}
 #{else}
-%{ String timeBegin = ecoupon.goods.useBeginTime;
-String timeEnd = ecoupon.goods.useEndTime;}%
+%{ String timeBegin = ecoupon.useBeginTime;
+String timeEnd = ecoupon.useEndTime;}%
     #{if ecoupon.isFreeze == 1 }
     <font color=red>此券已被冻结不能使用!</font>
     #{/if}
@@ -39,7 +39,7 @@ String timeEnd = ecoupon.goods.useEndTime;}%
     截止日期：${ecoupon.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
     #{/elseif}
 %{date = new java.util.Date()}%
-    #{elseif  ecoupon.checkVerifyTimeRegion(date) }
+    #{elseif  !ecoupon.checkVerifyTimeRegion(date) }
     <script type="text/javascript">
         $("#sure").attr("disabled", true);
     </script>
