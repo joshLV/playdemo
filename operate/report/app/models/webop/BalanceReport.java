@@ -41,7 +41,7 @@ public class BalanceReport {
     public static List<BalanceReport> queryWithdrawReport(AccountSequenceCondition condition) {
         Query query = JPA.em()
                 .createQuery(
-                        "select new models.webop.BalanceReport(s.createdAt, s.tradeType, sum(s.changeAmount), sum(s.promotionChangeAmount)) "
+                        "select new models.webop.BalanceReport(cast(s.createdAt as date), s.tradeType, sum(s.changeAmount), sum(s.promotionChangeAmount)) "
                                 + " from AccountSequence s where "
                                 + processFilter(condition) + " group by cast(s.createdAt as date),s.tradeType order by cast(s.createdAt as date) DESC");
         for (Map.Entry<String, Object> param : condition.getParams().entrySet()) {
@@ -55,7 +55,7 @@ public class BalanceReport {
 
         if (condition.createdAtBegin != null) {
             filter.append(" and s.createdAt >= :createdAtBegin");
-            condition.params.put("createdAtBegin", condition.createdAtBegin);
+            condition.params.put("createdAtBegin", DateUtil.getBeginOfDay(condition.createdAtBegin));
         }
         if (condition.createdAtEnd != null) {
             filter.append(" and s.createdAt <= :createdAtEnd");
