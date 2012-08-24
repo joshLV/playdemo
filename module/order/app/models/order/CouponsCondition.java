@@ -132,7 +132,7 @@ public class CouponsCondition implements Serializable {
             paramMap.put("phone", "%" + searchItems + "%");
         }
         if (brandId != 0) {
-            sql.append(" and e.orderItems.goods.brand =:brand)");
+            sql.append(" and e.orderItems.goods.brand =:brand");
             Brand brand = new Brand();
             brand.id = brandId;
             paramMap.put("brand", brand);
@@ -180,6 +180,7 @@ public class CouponsCondition implements Serializable {
                 paramMap.put("user", resaler.id);
             }
         }
+        System.out.println(sql+">>>>>>>>>>>>>>>>");
         return sql.toString();
     }
 
