@@ -291,6 +291,9 @@ mark { background: #ff0; }
     color: #707070;
     margin: 0 5px;
 }
+.ft-nav a:hover {
+    color: #E65D00;
+}
 .copyright {
     color: #909090;
     line-height: 26px;

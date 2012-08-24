@@ -135,9 +135,9 @@
 #hot-cat .bd li {
     padding: 10px 0;
 }
-#hot-cat .bd .area {
-    border-bottom: 1px solid #f4f4f4;
-}
+/* #hot-cat .bd .area { */
+    /* border-bottom: 1px solid #f4f4f4; */
+/* } */
 #hot-cat a {
     color: #434343;
 }
@@ -492,6 +492,9 @@
     color: #707070;
     white-space: nowrap;
     padding: 0 25px 0 5px;
+}
+#partner-links li a:hover {
+    color: #E65D00;
 }
 #footer {
     background-color: transparent;
