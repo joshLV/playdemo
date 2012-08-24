@@ -42,7 +42,7 @@ public class PaymentReport {
     public static List<PaymentReport> queryPaymentReport(AccountSequenceCondition condition) {
         Query query = JPA.em()
                 .createQuery(
-                        "select new models.webop.PaymentReport(s.createdAt, s.account, sum(s.changeAmount)) "
+                        "select new models.webop.PaymentReport(cast(s.createdAt as date), s.account, sum(s.changeAmount)) "
                                 + " from AccountSequence s where "
                                 + processFilter(condition) + " group by cast(s.createdAt as date),s.account order by cast(s.createdAt as date) DESC");
         for (Map.Entry<String, Object> param : condition.getParams().entrySet()) {
