@@ -28,7 +28,9 @@ public class SecKillGoodsItemUnitTest extends UnitTest {
 
     @Before
     public void setUp() {
-        FactoryBoy.deleteAll();
+        FactoryBoy.delete(Goods.class);
+        FactoryBoy.delete(SecKillGoods.class);
+        FactoryBoy.delete(SecKillGoodsItem.class);
     }
 
     @Test

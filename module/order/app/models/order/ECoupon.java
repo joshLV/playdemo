@@ -590,29 +590,6 @@ public class ECoupon extends Model {
     }
 
     /**
-     * 判断当日的时间是否在指定时间范围内
-     *
-     * @return 在该范围内：true
-     */
-    @Deprecated
-    public boolean getTimeRegion(String timeBegin, String timeEnd) {
-        boolean timeFlag = false;
-        if (StringUtils.isNotBlank(timeBegin) && StringUtils.isNotBlank(timeEnd)) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
-            String date = dateFormat.format(calendar.getTime());
-            if (date.compareTo(timeBegin) > 0 && date.compareTo(timeEnd) < 0) {
-                timeFlag = true;
-            }
-        } else {//没设定消费时间的场合
-            timeFlag = true;
-        }
-
-        return timeFlag;
-    }
-
-    /**
      * 按手机号及replyCode查出可用的ECoupon
      *
      * @param mobile    手机号
@@ -654,7 +631,6 @@ public class ECoupon extends Model {
      * 发送短信
      */
     private static void send(ECoupon eCoupon) {
-//        SMSUtil.send(eCoupon.goods.name + "券号:" + eCoupon.eCouponSn, eCoupon.orderItems.phone, eCoupon.replyCode);
         SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
         SMSUtil.send("【券市场】" + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title : (eCoupon.goods.name +
                 "[" + eCoupon.goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +

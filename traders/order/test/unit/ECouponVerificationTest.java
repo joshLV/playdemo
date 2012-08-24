@@ -25,9 +25,8 @@ public class ECouponVerificationTest extends UnitTest {
                 Date date1 = DateHelper.beforeMinuts(new Date(), 1);
                 Date date2 = DateHelper.afterMinuts(new Date(), 1);
                 SimpleDateFormat sdf = new SimpleDateFormat(ECoupon.TIME_FORMAT);
-                target.goods.useBeginTime = sdf.format(date1);
-                target.goods.useEndTime = sdf.format(date2);
-                target.goods.save();
+                target.useBeginTime = sdf.format(date1);
+                target.useEndTime = sdf.format(date2);
             }
         });
         assertTrue(ecoupon.checkVerifyTimeRegion(new Date()));
@@ -41,9 +40,8 @@ public class ECouponVerificationTest extends UnitTest {
                 Date date1 = DateHelper.beforeMinuts(new Date(), 2);
                 Date date2 = DateHelper.beforeMinuts(new Date(), 1);
                 SimpleDateFormat sdf = new SimpleDateFormat(ECoupon.TIME_FORMAT);
-                target.goods.useBeginTime = sdf.format(date1);
-                target.goods.useEndTime = sdf.format(date2);
-                target.goods.save();
+                target.useBeginTime = sdf.format(date1);
+                target.useEndTime = sdf.format(date2);
             }
         });
         assertFalse(ecoupon.checkVerifyTimeRegion(new Date()));

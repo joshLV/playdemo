@@ -38,8 +38,8 @@ String timeEnd = ecoupon.goods.useEndTime;}%
     商品名称: ${ecoupon.goods.title}<br/>
     截止日期：${ecoupon.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
     #{/elseif}
-
-    #{elseif  !ecoupon.getTimeRegion(timeBegin,timeEnd) }
+%{date = new java.util.Date()}%
+    #{elseif  ecoupon.checkVerifyTimeRegion(date) }
     <script type="text/javascript">
         $("#sure").attr("disabled", true);
     </script>

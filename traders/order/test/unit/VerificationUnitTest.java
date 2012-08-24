@@ -67,69 +67,6 @@ public class VerificationUnitTest extends UnitTest {
         RbacLoader.init(file);
     }
 
-    /**
-     * 测试用户中心券列表
-     */
-    @Test
-    public void testGetTimeRegion() {
-
-        SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
-        Date d = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(d);
-        calendar.add(calendar.HOUR, -1);
-
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.setTime(d);
-        calendar1.add(calendar1.HOUR, 1);
-        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
-        ECoupon eCoupon = ECoupon.findById(id);
-        String timeBegin = time.format(calendar.getTime());
-        String timeEnd = time.format(calendar1.getTime());
-        boolean timeFlag = eCoupon.getTimeRegion(timeBegin, timeEnd);
-        assertTrue(timeFlag);
-
-        Calendar calendar3 = Calendar.getInstance();
-        calendar3.setTime(d);
-        calendar3.add(calendar3.HOUR, 1);
-
-        Calendar calendar4 = Calendar.getInstance();
-        calendar4.setTime(d);
-        calendar4.add(calendar4.HOUR, 3);
-
-        timeBegin = time.format(calendar3.getTime());
-        timeEnd = time.format(calendar4.getTime());
-        timeFlag = eCoupon.getTimeRegion(timeBegin, timeEnd);
-        assertFalse(timeFlag);
-
-
-        Calendar calendar5 = Calendar.getInstance();
-        calendar5.setTime(d);
-        calendar5.add(calendar5.DAY_OF_MONTH, 1);
-
-        calendar4 = Calendar.getInstance();
-        calendar4.setTime(d);
-        calendar4.add(calendar4.HOUR, 3);
-
-        timeBegin = time.format(calendar5.getTime());
-        timeEnd = time.format(calendar4.getTime());
-        timeFlag = eCoupon.getTimeRegion(timeBegin, timeEnd);
-        assertFalse(timeFlag);
-
-        Calendar calendar6 = Calendar.getInstance();
-        calendar6.setTime(d);
-        calendar6.add(calendar5.DAY_OF_MONTH, -1);
-
-        calendar4 = Calendar.getInstance();
-        calendar4.setTime(d);
-        calendar4.add(calendar4.HOUR, 3);
-
-        timeBegin = time.format(calendar5.getTime());
-        timeEnd = time.format(calendar4.getTime());
-        timeFlag = eCoupon.getTimeRegion(timeBegin, timeEnd);
-        assertFalse(timeFlag);
-    }
-
     @Test
     public void testUpdate() {
         String eCouponSn = "1234567002";
