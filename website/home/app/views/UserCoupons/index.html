@@ -106,7 +106,7 @@
                         <th width="80">劵号</th>
                         <th>商品名称</th>
                         <th width="80">订单号</th>
-                        <th width="100">截止日期</th>
+                        <th width="200">有效日期</th>
                         <th width="80">消费时间</th>
                         <th width="80">
                             #{select 'condition.status', id:'status', value:condition?.status}
@@ -130,7 +130,10 @@
                         </td>
                         <td align="center">${coupon.order.orderNumber}</td>
                         <td align="center">
-                            ${coupon?.expireAt?.format()}<br>
+                            ${coupon?.effectiveAt?.format()} - ${coupon?.expireAt?.format()}<br/>
+                            #{if coupon?.useBeginTime || coupon?.useEndTime}
+                                有效时段： ${coupon?.useBeginTime} - ${coupon?.useEndTime} <br/>
+                            #{/if}
                                 #{if coupon?.getExpiredAt() >0 && coupon.status == models.order.ECouponStatus.UNCONSUMED}
                                 <span class="remain-days">还有${coupon?.getExpiredAt()}天到期</span>
                                 #{/if}
