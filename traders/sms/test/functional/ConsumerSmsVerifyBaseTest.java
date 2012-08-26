@@ -111,7 +111,8 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         
         
         Goods goods = Goods.findById(goodsId);
-        goods.supplierId = kfcId;
+        goods.supplierId = supplierKFC.id;
+        goods.groupCode = "group1";
         goods.save();
 
         Long kfc1Id = (Long) Fixtures.idCache.get("models.supplier.Supplier-kfc1");
@@ -139,6 +140,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         Long  goods2Id = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
         Goods goods2 = Goods.findById(goods2Id);
         goods2.supplierId = supplierKFC.id;
+        goods2.groupCode = "group1";
         goods2.save();
         
         Long brandId = (Long) play.test.Fixtures.idCache.get("models.sales.Brand-Brand_2");
@@ -167,7 +169,6 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
      * @param sendMessage
      */
     public void testNormalConsumerCheck(MessageSender messageSender) {
-
         assertEquals(supplierKFC.id, kfcClerk.supplier.id);
         assertEquals(ecouponKFC.goods.supplierId, kfcClerk.supplier.id);
         
@@ -199,7 +200,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         Http.Response response = messageSender.doMessageSend(ecouponKFC, "abc", null);
         assertEquals("Unsupport Message", response.out.toString());
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertSMSContentMatch("【券市场】券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：400-6262-166",
+        assertSMSContentMatch("【券市场】不支持的命令，券验证请回复店员数字工号；或店员数字工号\\*验证金额，如299412\\*200",
                 msg.getContent());      
     }
 

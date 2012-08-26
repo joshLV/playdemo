@@ -6,7 +6,7 @@ import org.junit.Test;
 import play.Logger;
 import play.mvc.Http.Response;
 
-public class Tui3ConsumerVerifyTest extends ConsumerSmsVerifyBaseTest {
+public class Tui3ConsumerVerifyTest extends EnsmsConsumerVerifyTest {
 
     @Before
     public void setup() {
@@ -49,47 +49,4 @@ public class Tui3ConsumerVerifyTest extends ConsumerSmsVerifyBaseTest {
         };
     }
     
-    @Test
-    public void 正常消费者验证过程() {
-        testNormalConsumerCheck(getTheMessageSender());
-    }
-    
-    /**
-     * 消息应当是数字开头
-     */
-    @Test
-    public void 消费者发送错误格式短信() {
-        testInvalidFormatMessage(getTheMessageSender());
-        // TODO: 错误格式提示要和店员的不同
-    }
-    
-    @Test
-    public void 发送不存在的店员工号() {
-        testNotExistsJobNumber(getTheMessageSender());
-    }
-    
-    @Test
-    public void 无效的商户代码() {
-        testInvalidSupplier(getTheMessageSender());
-    }
-
-    @Test
-    public void 商户被冻结() {
-        testLockedSupplier(getTheMessageSender());
-    }    
-    
-    @Test
-    public void 不是当前商户所发行的券() {
-        testTheGoodsFromOtherSupplier(getTheMessageSender());
-    }
-    
-    @Test
-    public void 券已经被消费() {
-        testConsumeredECoupon(getTheMessageSender());
-    }
-    
-    @Test
-    public void 券已经过期() {
-        testExpiredECoupon(getTheMessageSender());
-    }
 }

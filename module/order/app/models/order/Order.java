@@ -652,11 +652,12 @@ public class Order extends Model {
             //如果是电子券
             if (MaterialType.ELECTRONIC.equals(goods.materialType)) {
                 List<String> couponCodes = new ArrayList<>();
+                SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
                     if (!Play.runingInTestMode() && (goods.isLottery == null || !goods.isLottery)) {
-                        SMSUtil.send("【券市场】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name + "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
+                        SMSUtil.send("【券市场】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name + 
+                        		"[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
                                 "截止" + dateFormat.format(eCoupon.expireAt) + "客服4006262166",
                                 orderItem.phone, eCoupon.replyCode);
                     }

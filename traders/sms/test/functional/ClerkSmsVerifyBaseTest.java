@@ -189,7 +189,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         assertContentEquals("【券市场】您输入的券号" + couponNumber + "不存在，请确认！", response);
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertSMSContentMatch("【券市场】您输入的券号" + couponNumber + "不存在，请与消费者确认，如有疑问请致电：400-6262-166",
+        assertSMSContentMatch("【券市场】您输入的券号" + couponNumber + "不存在，请与顾客确认，如有疑问请致电：400-6262-166",
                 msg.getContent());        
     }
 

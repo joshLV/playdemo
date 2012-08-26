@@ -1,16 +1,18 @@
 package models.order;
 
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import play.db.jpa.Model;
 
 @Entity
-@Table(name="order_discounts")
+@Table(name = "order_discounts")
 public class OrderDiscount extends Model {
 
     private static final long serialVersionUID = 9821912330652L;
@@ -30,12 +32,10 @@ public class OrderDiscount extends Model {
     public Order order;
 
     /**
-     * 如果在单个订单项目上折扣，这里记录订单项目.
-     * 如果是整个订单上折扣，这个字段为空.
+     * 如果在单个订单项目上折扣，这里记录订单项目. 如果是整个订单上折扣，这个字段为空.
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id", nullable = true)
     public OrderItems orderItem;
-    
-    
+
 }

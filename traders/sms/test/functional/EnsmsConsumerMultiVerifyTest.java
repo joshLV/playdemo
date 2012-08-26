@@ -1,12 +1,14 @@
 package functional;
 
 import models.order.ECoupon;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.Logger;
 import play.mvc.Http.Response;
 
-public class EnsmsConsumerVerifyTest extends ConsumerSmsVerifyBaseTest {
+public class EnsmsConsumerMultiVerifyTest extends ConsumerSmsMultiVerifyBaseTest {
 
     @Before
     public void setup() {
@@ -51,10 +53,15 @@ public class EnsmsConsumerVerifyTest extends ConsumerSmsVerifyBaseTest {
     }
     
     @Test
-    public void 正常消费者验证过程() {
-        testNormalConsumerCheck(getTheMessageSender());
+    public void 正常消费者一次验证2张券() {
+        testNormalConsumerCheckAllEcoupon(getTheMessageSender());
     }
-    
+
+    @Test
+    public void 正常消费者2张券但验证其中1张券() {
+        testNormalConsumerCheckOneEcoupon(getTheMessageSender());
+    }
+        
     /**
      * 消息应当是数字开头
      */

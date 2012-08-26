@@ -330,7 +330,7 @@ public class SupplierUser extends Model {
      * @return
      */
     public static boolean checkMobile(String mobile) {
-        SupplierUser supplierUser = SupplierUser.find("mobile = ?", mobile).first();
+        SupplierUser supplierUser = SupplierUser.find("mobile = ? and deleted = ?", mobile, DeletedStatus.UN_DELETED).first();
         if (supplierUser != null) {
             return true;
         }
