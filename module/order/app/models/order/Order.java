@@ -1046,7 +1046,7 @@ public class Order extends Model {
             Logger.error("payment_notify:支付金额非法:订单:" + orderNumber + ";支付金额:" + fee);
             return false;
         }
-
+        
         order.payAndSendECoupon();
         return true;
     }
