@@ -1,7 +1,6 @@
 package unit;
 
 import java.util.List;
-
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.admin.SupplierRole;
@@ -15,10 +14,9 @@ import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
 import models.supplier.Supplier;
-
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-
 import play.Play;
 import play.test.Fixtures;
 import play.test.UnitTest;
@@ -29,6 +27,7 @@ import play.test.UnitTest;
  * @author 唐力群
  * 
  */
+@Ignore
 public class ECouponSmsMergeTest extends UnitTest {
     /**
      * 有分组代码的商品.
