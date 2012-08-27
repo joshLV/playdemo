@@ -6,6 +6,7 @@ import models.admin.SupplierUser;
 import models.sales.Shop;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.Fixtures;
@@ -30,6 +31,7 @@ import factory.FactoryBoy;
  * Time: 上午11:20
  * To change this template use File | Settings | File Templates.
  */
+@Ignore
 public class SupplierReportsTest extends FunctionalTest {
 
     @Before

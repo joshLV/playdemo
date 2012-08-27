@@ -1,17 +1,16 @@
 package functional;
 
+import controllers.supplier.cas.Security;
+import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
-import play.test.FunctionalTest;
-import org.junit.Before;
-import factory.FactoryBoy;
-import play.vfs.VirtualFile;
 import navigation.RbacLoader;
-import controllers.supplier.cas.Security;
-import org.junit.Test;
-import play.mvc.Http;
+import org.junit.Before;
+import org.junit.Ignore;
+import play.test.FunctionalTest;
+import play.vfs.VirtualFile;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -23,6 +22,7 @@ import java.util.Date;
  * Time: 下午4:35
  * To change this template use File | Settings | File Templates.
  */
+@Ignore
 public class SupplierTotalSalesReportsFuncTest extends FunctionalTest {
 
     @Before
