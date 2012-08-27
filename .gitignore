@@ -1,0 +1,10 @@
+*.log
+*.class
+*.jar
+eclipse
+.settings
+.project
+.classpath
+*.ipr
+*.imr
+*.iml
