@@ -48,5 +48,7 @@ supplier/sms/tmp/
 website/home/modules/
 website/home/tmp/
 website/www/modules/
+website/jifen/modules/
 website/www/tmp/
+website/jifen/tmp/
 
