@@ -74,8 +74,11 @@ public class SecKillOrders extends Controller {
 
         //判断帐号限购
         boolean exceedLimit = OrderItems.checkLimitNumber(user, secKillGoodsItem.secKillGoods.goods.id, secKillGoodsId, count);
+
+
         if (exceedLimit) {
             //todo 页面实现限购提示
+
             redirect("/seckill-goods?exceedLimit=" + exceedLimit);
         }
 
@@ -84,6 +87,7 @@ public class SecKillOrders extends Controller {
 
         //电子券必须校验手机号
         if (isElectronic) {
+
             Validation.required("mobile", mobile);
             Validation.match("mobile", mobile, "^1[3|4|5|8][0-9]\\d{4,8}$");
         }

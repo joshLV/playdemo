@@ -2,10 +2,16 @@ package factory.consumer;
 
 import factory.FactoryBoy;
 import factory.ModelFactory;
+import factory.annotation.Factory;
 import models.consumer.Address;
 import models.consumer.User;
 import models.sales.Goods;
 import models.sales.SecKillGoods;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import static util.DateHelper.afterDays;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,5 +36,22 @@ public class AddressFactory  extends ModelFactory<Address> {
         address.name="add1";
 //        System.out.println("useru11111<<<>>>>"+user);
         return address;
+    }
+
+
+    @Factory(name = "notDefault")
+    public Address defineWithNotDefault(Address address){
+        address = new Address();
+        address.province="上海市";
+        address.district="市辖区";
+        address.city="黄浦区";
+        address.postcode="123456";
+        address.mobile="13764081569";
+        address.address="test3";
+        address.isDefault=false;
+        address.name="add1";
+
+        return address;
+
     }
 }

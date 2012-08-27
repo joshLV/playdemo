@@ -2,7 +2,9 @@ package factory.sales;
 
 import factory.FactoryBoy;
 import factory.ModelFactory;
+import factory.annotation.Factory;
 import models.sales.Goods;
+import models.sales.MaterialType;
 import models.sales.SecKillGoods;
 
 import java.math.BigDecimal;
@@ -31,5 +33,21 @@ public class SecKillGoodsFactory extends ModelFactory<SecKillGoods> {
 
 
         return secKillGoods;
+    }
+
+
+    @Factory(name = "exceedLimit")
+    public SecKillGoods defineWithExceedLimit(SecKillGoods secKillGoods){
+        Goods goods = FactoryBoy.create(Goods.class);
+        secKillGoods = new SecKillGoods();
+        secKillGoods.personLimitNumber= 1;
+        secKillGoods.setPrompt("wowuroqwl");
+        secKillGoods.goods = goods;
+        secKillGoods.imagePath = "/a.jpg";
+        secKillGoods.createdAt= afterDays(new Date(), 30);
+        secKillGoods.goods.faceValue=new BigDecimal(10);
+
+        return secKillGoods;
+
     }
 }

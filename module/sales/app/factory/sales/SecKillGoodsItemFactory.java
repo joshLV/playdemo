@@ -86,4 +86,22 @@ public class SecKillGoodsItemFactory extends ModelFactory<SecKillGoodsItem> {
         return secKillGoodsItem;
     }
 
+
+
+
+    @Factory(name = "noInventory")
+    public SecKillGoodsItem defineWithNoInventory(SecKillGoodsItem secKillGoodsItem) {
+        secKillGoodsItem.virtualInventory = 1l;
+        secKillGoodsItem.goodsTitle = "第一波秒杀";
+        secKillGoodsItem.saleCount = 0;
+        secKillGoodsItem.salePrice = new BigDecimal(10);
+        secKillGoodsItem.secKillBeginAt = new Date();
+        secKillGoodsItem.secKillEndAt = DateHelper.afterMinuts(new Date(), 10);
+        SecKillGoods goods= FactoryBoy.create(SecKillGoods.class);
+        secKillGoodsItem.secKillGoods=goods;
+        secKillGoodsItem.baseSale =-90l;
+        secKillGoodsItem.status= SecKillGoodsStatus.ONSALE;
+        return secKillGoodsItem;
+    }
+
 }
