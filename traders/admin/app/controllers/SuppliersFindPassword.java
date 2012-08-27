@@ -71,8 +71,6 @@ public class SuppliersFindPassword  extends Controller {
 	 */
 	public static void resetPassword() {
          Object mobile = Cache.get("mobile_");
-        System.out.println("11111111111");
-		//String mobile = request.params.get("mobile");
 		SupplierUser supplierUser= SupplierUser.find("mobile", mobile).first();
 		Cache.set("setMobile", mobile,"30mn");
 		render(mobile,supplierUser);
@@ -85,7 +83,6 @@ public class SuppliersFindPassword  extends Controller {
 	 */
 	public static void updatePassword(Long supplierUserId, String mobile, String password, String confirmPassword) {
         Object objMobile = Cache.get("mobile_");
-        System.out.println(objMobile+">>>>>>>>>>>>"+mobile);
         if (!mobile.equals(objMobile)) {
             renderJSON("-1");
         }
