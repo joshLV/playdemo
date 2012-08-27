@@ -73,7 +73,7 @@ if passed_test_count == 0 or failed_test_count > 0
   exit(1)
 end
 
-# system("find . -name \"[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*\" -exec rm \"{}\" \\;");
+system("find . -name \"[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*\" -exec rm \"{}\" \\;");
 
 # package
 #build.time=2012-03-12 12:31:59
