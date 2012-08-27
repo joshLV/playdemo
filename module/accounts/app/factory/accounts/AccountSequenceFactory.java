@@ -7,7 +7,6 @@ import models.accounts.Account;
 import models.accounts.AccountSequence;
 import models.accounts.AccountSequenceFlag;
 import models.accounts.TradeType;
-import models.consumer.User;
 
 import java.math.BigDecimal;
 
@@ -21,14 +20,14 @@ import java.math.BigDecimal;
 public class AccountSequenceFactory extends ModelFactory<AccountSequence> {
 
     @Override
-    public AccountSequence define(){
+    public AccountSequence define() {
         Account account = FactoryBoy.create(Account.class);
-        User user = FactoryBoy.create(User.class);
-        account.uid = user.id;
+//        User user = FactoryBoy.create(User.class);
+//        account.uid = user.id;
 
         AccountSequence accountSequence = new AccountSequence(account, AccountSequenceFlag.VOSTRO, TradeType.PAY,
-                new BigDecimal(100),new BigDecimal(0),
-                new BigDecimal(100),new BigDecimal(0), new BigDecimal(0), 10l);
+                new BigDecimal(100), new BigDecimal(0),
+                new BigDecimal(100), new BigDecimal(0), new BigDecimal(0), 10l);
         return accountSequence;
 
     }
