@@ -4,8 +4,12 @@ import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
 import models.accounts.Account;
+import models.accounts.AccountCreditable;
+import models.accounts.AccountStatus;
 import models.accounts.AccountType;
-import models.consumer.User;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,8 +22,13 @@ public class AccountFactory extends ModelFactory<Account> {
 
     @Override
     public Account define(){
-        User user = FactoryBoy.create(User.class);
-        Account account = new Account(user.id, AccountType.CONSUMER);
+        Account account = new Account();
+        account.accountType = AccountType.CONSUMER;
+        account.amount = new BigDecimal(0);
+        account.uncashAmount = new BigDecimal(0);
+        account.status = AccountStatus.NORMAL;
+        account.createdAt = new Date();
+        account.creditable = AccountCreditable.NO;
         return account;
     }
 }

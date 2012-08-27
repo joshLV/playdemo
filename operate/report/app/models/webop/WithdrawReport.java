@@ -39,7 +39,7 @@ public class WithdrawReport {
     public static List<WithdrawReport> queryWithdrawReport(AccountSequenceCondition condition) {
         Query query = JPA.em()
                 .createQuery(
-                        "select new models.webop.WithdrawReport(s.createdAt, s.account.accountType, sum(s.changeAmount)) "
+                        "select new models.webop.WithdrawReport(cast(s.createdAt as date), s.account.accountType, sum(s.changeAmount)) "
                                 + " from AccountSequence s where "
                                 + processFilter(condition) + " group by cast(s.createdAt as date),s.account.accountType order by cast(s.createdAt as date) DESC");
         for (Map.Entry<String, Object> param : condition.getParams().entrySet()) {
