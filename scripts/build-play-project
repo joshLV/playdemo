@@ -12,7 +12,11 @@ test_failed_regex = /FAILED/
 test_error_regex = /ERROR/
 
 play_home="/app/play-1.2.4/"
-# play_home = ""
+
+unless Dir.exists?(play_home)
+  play_home = ""
+end
+
 dir = ARGV[0]
 
 if ARGV.size() < 1
@@ -26,26 +30,6 @@ require 'pathname'
 current_dir = Pathname.new(File.dirname(__FILE__)).parent.realpath
 
 puts current_dir
-
-app_dirs = [
-            'website/www',
-            'website/home',
-            'traders/sales',
-            'traders/order',
-            'traders/home',
-            'traders/sms',
-            'traders/admin',
-            'cdn/image-server',
-            'cdn/assets',
-            'operate/admin',
-            'operate/business',
-            'resale/home'
-           ]
-
-# 用于保证不会因为目录不存在而找不到dependency
-app_dirs.each do |dd|
-  system "mkdir -p #{current_dir}/#{dd}"
-end
 
 failed_result = []
 passed_test_count = 0
@@ -89,6 +73,7 @@ if passed_test_count == 0 or failed_test_count > 0
   exit(1)
 end
 
+# system("find . -name \"[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*\" -exec rm \"{}\" \\;");
 
 # package
 #build.time=2012-03-12 12:31:59
@@ -96,7 +81,7 @@ end
 #revision=512
 cmd =<<END
   cd #{current_dir}/#{dir}
-  find . -name "[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*" -exec rm "{}" \;
+  find . -name "[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*" -exec rm "{}" \\;
   #{play_home}play clean
   #{play_home}play deps --forProd --forceCopy --%prod
   rm -f conf/version.conf

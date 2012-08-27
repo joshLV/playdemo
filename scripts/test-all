@@ -10,19 +10,19 @@ test_failed_regex = /FAILED/
 test_error_regex = /ERROR/
 
 require 'pathname'
-current_dir = Pathname.new(File.dirname(__FILE__)).realpath
+current_dir = Pathname.new(File.dirname(__FILE__)).parent.realpath
 
 puts current_dir
 failed_result = []
 app_dirs = [
             'website/www',
             'website/home',
-            'traders/sales',
-            'traders/order',
-            'traders/home',
-            'traders/admin',
-            'traders/sms',
-            'traders/report',
+            'supplier/sales',
+            'supplier/order',
+            'supplier/home',
+            'supplier/admin',
+            'supplier/sms',
+            'supplier/report',
             'cdn/image-server',
             'cdn/assets',
             'mq_consumer',

@@ -1,6 +1,7 @@
 *.log
 *.class
 *.jar
+*.pyc
 eclipse
 .settings
 .project
@@ -8,8 +9,14 @@ eclipse
 *.ipr
 *.imr
 *.iml
+logs
+test-result
+
+# selenium
+[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*
 
 cdn/assets/modules/
+cdn/assets/tmp/
 cdn/image-server/modules/
 cdn/image-server/tmp/
 module/base_rbac/commands.pyc
@@ -42,4 +49,3 @@ website/home/tmp/
 website/www/modules/
 website/www/tmp/
 
-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*
