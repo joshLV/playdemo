@@ -107,8 +107,7 @@ public class SecKillOrders extends Controller {
         }
 
 
-        for(Error error:Validation.errors())
-        {
+        for (Error error : Validation.errors()) {
 
             System.out.println(error.message());
         }
@@ -194,6 +193,7 @@ public class SecKillOrders extends Controller {
         OrderItems orderItem = new OrderItems(order, secKillGoodsItem.secKillGoods.goods, count, receiverMobile,
                 secKillGoodsItem.salePrice, secKillGoodsItem.salePrice);
         orderItem.secKillGoods = secKillGoodsItem.secKillGoods;
+        orderItem.secKillGoodsItemId = secKillGoodsItem.id;
         orderItem.rebateValue = secKillGoodsItem.secKillGoods.goods.salePrice.subtract(secKillGoodsItem.salePrice);
         order.rebateValue = BigDecimal.ZERO;
         order.orderItems.add(orderItem);

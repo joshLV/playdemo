@@ -32,7 +32,7 @@
                     <td align="center">
                         #{if coupon.status == models.order.ECouponStatus.UNCONSUMED }
                             <input class="select-item" type="checkbox" id="check_coupon_${coupon.id}"
-                                   value="${coupon.id}" name="couponIds" #{if coupon?.salePrice <=0}disabled="true" #{/if}/>
+                                   value="${coupon.id}" name="couponIds" #{if coupon?.salePrice <=0 || ( coupon?.orderItems?.secKillGoods!=null )}disabled="true" #{/if}/>
                         #{/if}
                     </td>
                     <td align="left" valign="middle">${coupon.goods.name}</td>
@@ -121,53 +121,3 @@
         });
     });
 </script>
-
-*{
-<div class="wrap clearfix">
-#{breadcrumbs/breadcrumb breadcrumbs/}
-    <h3 style="padding:10px 0 5px;font-size:16px;">申请退款</h3>
-    <div class="order-info">
-        <span class="order-no">订单号：${order.orderNumber}</span>
-        <span class="order-deal">成交时间：${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
-        <span class="order-paytime">付款时间：${order.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
-        <span>订单状态：&{'order.'+order.status}</span>
-    </div>
-    <form action="/orders/batch-refund" method="post">
-    <table class="order-tab" cellpadding="0" cellspacing="0">
-        <thead>
-            <tr class="col-name">
-                <th width="70">&nbsp;</th>
-                <th width="340"><span class="th_shop_text">商品</span></th>
-                <th width="169"><span class="th_shop_text">收货手机</span></th>
-                <th width="69">单价（元）</th>
-                <th width="163">券号</th>
-                <th width="193">券状态</th>
-            </tr>
-        </thead>
-        <tbody>
-        #{list items:eCoupons, as:'coupon' }
-            <tr>
-                <td>
-                   #{if coupon.status == models.order.ECouponStatus.UNCONSUMED }
-                   <input type="checkbox" id="check_coupon_${coupon.id}" value="${coupon.id}" name="couponIds"/>
-                   #{/if}
-                </td>
-                <td align="center" valign="middle">${coupon.goods.name}</td>
-                <td width="69" align="center" valign="middle">${coupon.orderItems.phone}</td>
-                <td width="69" align="center" valign="middle">${coupon.salePrice?.formatCurrency('CNY').raw()}</td>
-                <td align="center" valign="middle">${coupon?.eCouponSn}</td>
-                <td align="center" valign="middle">&{'coupon.'+coupon.status}</td>
-            </tr>
-        #{/list }
-        </tbody>
-    </table>
-    <div class="btn-box">
-        <label><input class="th_one_input" type="checkbox" name="select_all_checkbox" />全选</label>
-        <input type="submit" id="refund" value="申请退款">
-        <input type="hidden" value="${order.orderNumber}" name="orderNumber">
-    </div>
-    </form>
-</div>
-<br/>
-<br/>
-}*
