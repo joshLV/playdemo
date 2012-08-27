@@ -1,32 +1,27 @@
-package unit;
+package functional;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
 import models.accounts.AccountSequence;
-import models.accounts.AccountSequenceCondition;
-import models.accounts.AccountType;
 import models.admin.OperateUser;
 import models.consumer.User;
-import models.webop.WithdrawReport;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import play.test.UnitTest;
+import play.mvc.Http;
+import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
  * User: hejun
  * Date: 12-8-27
- * Time: 上午11:51
+ * Time: 下午1:50
  * To change this template use File | Settings | File Templates.
  */
-public class WithdrawReportUnitTest extends UnitTest {
+public class WithdrawReportsFuncTest extends FunctionalTest {
 
     @Before
     public void setUp() {
@@ -52,24 +47,29 @@ public class WithdrawReportUnitTest extends UnitTest {
     }
 
     @Test
-    public void testInit() {
-        WithdrawReport withdrawReport = new WithdrawReport(new Date(), AccountType.CONSUMER, new BigDecimal(100));
-        assertNotNull(withdrawReport);
-        assertEquals(new BigDecimal(100), withdrawReport.amount);
+    public void testIndex(){
+
+        Http.Response response = GET("/reports/withdraw?condition.createdAtBegin=2012-01-01&condition.createdAtEnd=2099-08-24&condition.interval=");
+        assertIsOk(response);
+        assertNotNull(renderArgs("reportPage"));
+
     }
 
     @Test
-    public void testQueryWithdrawReport() {
-        AccountSequenceCondition condition = new AccountSequenceCondition();
-        condition.createdAtBegin =  new Date(System.currentTimeMillis() - 6000000);
-        condition.createdAtEnd =  new Date(System.currentTimeMillis() + 6000000);
-
-        List<WithdrawReport> withdrawReports = WithdrawReport.queryWithdrawReport(condition);
-        assertNotNull(withdrawReports);
-        assertEquals(1,withdrawReports.size());
-
-
+    public void testIndexWithNull(){
+        Http.Response response = GET("/reports/withdraw");
+        assertIsOk(response);
+        assertNotNull(renderArgs("reportPage"));
     }
 
+    @Ignore
+    @Test
+    public void testDownload(){
+
+        Http.Response response = GET("/reports/download/withdraw?condition.createdAtBegin=2012-01-01&condition.createdAtEnd=2099-08-24&condition.interval=");
+        assertIsOk(response);
+        assertEquals("text/csv", response.contentType);
+
+    }
 
 }
