@@ -129,9 +129,9 @@
                     <table>
                         <tbody>
                         <tr>
-                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/g/${goods.id}?preview=true" target="_blank"><img
+                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/g/${goods.id}?preview=true"><img
                                     src="${goods?.imageTinyPath}"/></a></td>
-                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/g/${goods.id}?preview=true" target="_blank">${goods?.name}
+                            <td><a href="http://${play.Play.configuration.getProperty("www.url")}/g/${goods.id}?preview=true">${goods?.name}
                            </a>
                             #{if goods.priority != null && goods.priority >0}
                               &nbsp;<span style="color: #ff0000;">&{'goods.priority'}:${goods.priority}</span>#{/if}
