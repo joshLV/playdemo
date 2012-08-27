@@ -41,12 +41,12 @@ public class SupplierTotalSalesReportsFuncTest extends FunctionalTest {
         Security.setLoginUserForTest(user.loginName);
 
         // 初始化数据
-        FactoryBoy.batchCreate(10, ECoupon.class,new SequenceCallback<ECoupon>() {
+        FactoryBoy.batchCreate(10, ECoupon.class, new SequenceCallback<ECoupon>() {
             @Override
             public void sequence(ECoupon target, int seq) {
                 target.isFreeze = 0;
                 target.status = ECouponStatus.CONSUMED;
-                target.eCouponSn = "1000"+seq;
+                target.eCouponSn = "1000" + seq;
                 target.supplierUser = user;
                 target.faceValue = new BigDecimal(100);
                 target.originalPrice = new BigDecimal(80);
