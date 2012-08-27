@@ -152,6 +152,7 @@ public class OperateDiscountCodesTest extends FunctionalTest {
 
         Http.Response response = PUT("/discountcodes/"+discountCode.id.toString(),"application/x-www-form-urlencoded", params);
         assertStatus(302,response);
+        discountCode = DiscountCode.findById(discountCode.id);
         discountCode.refresh();
         assertEquals("QQ",discountCode.discountSn);
 
