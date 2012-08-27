@@ -5,6 +5,7 @@
 #注册
 GET     /register                               Register.index
 POST    /register                               Register.create
+POST    /register/checkLoginName                Register.checkLoginName
 GET     /captcha                                Register.captcha
 
 GET     /forget-password                        FindPassword.index
@@ -105,7 +106,7 @@ GET     /public/                                staticDir:public
 *        /                                      module:website_cas
 
 # Catch all
-*       /{controller}/{action}                  {controller}.{action}
+# *       /{controller}/{action}                  {controller}.{action}
 
 
 
