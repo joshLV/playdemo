@@ -35,6 +35,7 @@ public class SalesOrderItemReportCondition implements Serializable {
 
     public String getFilter() {
         StringBuilder condBuilder = new StringBuilder("(r.order.status='PAID' or r.order.status='SENT') and s.id=r.goods.supplierId and r.goods.isLottery=false");
+        //condBuilder.append(" and ");
         if (createdAtBegin != null) {
             condBuilder.append(" and r.order.paidAt >= :createdAtBegin");
             paramMap.put("createdAtBegin", createdAtBegin);
