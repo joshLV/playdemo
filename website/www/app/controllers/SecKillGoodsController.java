@@ -31,6 +31,7 @@ public class SecKillGoodsController extends Controller {
         SecKillGoodsItem goodsItem = SecKillGoodsItem.getCurrentSecKillGoods();
         if (goodsItem == null) {
             redirect("/s");
+            return;
         }
         //获取其他秒杀商品
         List<SecKillGoodsItem> secKillGoodsItems = SecKillGoodsItem.findSecKillGoods();

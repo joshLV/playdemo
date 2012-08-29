@@ -1,4 +1,13 @@
 <!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>吃饱了，才有力气上学！- 一百券yibaiquan.com</title>
+    #{asset.css src:['/y/base.min.css', '/y/sprite.min.css'] /}
+    <link rel="stylesheet" href="http://a.yibaiquan.com/120901/style.css"/>
+</head>
+<body>
+<div id="page">
 <div id="topbar">
     <div id="topbar-bd">
         <ul class="site-nav">
@@ -35,51 +44,39 @@
             <!-- Baidu Button END -->
         </div>
     </div>
-</div><!-- #topbar -->
+</div>
+<!-- #topbar -->
 
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>浪漫七夕-红玫瑰套餐大放送</title>
-    <link href="http://bdimg.share.baidu.com/static/css/bdsstyle.css?cdnversion=20120726" rel="stylesheet"
-          type="text/css">
-    <link rel="stylesheet" href="http://a.yibaiquan.com/7Xi/style.css"/>
-</head>
-<body>
-<div id="header"></div>
-<div id="content">
-    <div class="seckill-goods">
+<div id="head">
+    <div class="inner"></div>
+    <a class="ybq" href="http://www.yibaiquan.com" target="_blank"></a>
+</div>
+#{form @SecKillOrders.index(), id:'order_form' }
+<input type="hidden" id="secKillGoodsItemId" name="secKillGoodsItemId" value="${goodsItem?.id}"/>
+
+<div id="main">
+    <div class="inner">
+        <div class="skill">秒杀小技巧：点击<a href="http://home.yibaiquan.com/user-edit">绑定手机</a>后有助于更快抢购</div>
+    </div>
+    <div class="seckill">
         <div class="side">
-            <div class="seckill-tips"><span>秒杀小技巧:</span> 点击<a href="http://home.yibaiquan.com/user-edit">绑定手机</a>后有助于更快抢购
-            </div>
-            <img src="${goodsItem?.secKillGoods?.goods?.imageMiddlePath}" width="340" height="260"/>
+            <img src="http://img.uhcdn.com/images/act/120901/pic.jpg" width="340" height="260"/>
 
             <div class="share">
                 <!-- Baidu Button BEGIN -->
                 <div id="bdshare" class="bdshare_t bds_tools_32 get-codes-bdshare">
-                    <a class="bds_tsina" title="分享到新浪微博" href="#"></a>
-                    <a class="bds_qzone" title="分享到QQ空间" href="#"></a>
-                    <a class="bds_renren" title="分享到人人网" href="#"></a>
-                    <a class="bds_taobao" title="分享到我的淘宝" href="#"></a>
-                    <a class="bds_kaixin001" title="分享到开心网" href="#"></a>
-                    <a class="bds_ty" title="分享到天涯社区" href="#"></a>
-                    <a class="bds_msn" title="分享到MSN" href="#"></a>
+                    <a class="bds_tsina"></a>
+                    <a class="bds_qzone"></a>
+                    <a class="bds_renren"></a>
+                    <a class="bds_taobao"></a>
+                    <a class="bds_kaixin001"></a>
+                    <a class="bds_ty"></a>
+                    <a class="bds_msn"></a>
                     <span class="bds_more">更多</span>
                 </div>
-                <script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=763119"
-                        src="http://bdimg.share.baidu.com/static/js/bds_s_v2.js?cdnversion=20120727"></script>
-                <script type="text/javascript" id="bdshell_js"
-                        src="http://share.baidu.com/static/js/shell_v2.js?cdnversion=11"></script>
-                <script type="text/javascript">
-                    document.getElementById("bdshell_js").src = "http://share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();
-                </script>
                 <!-- Baidu Button END -->
-
             </div>
         </div>
-    #{form @SecKillOrders.index(), id:'order_form' }
-        <input type="hidden" id="secKillGoodsItemId" name="secKillGoodsItemId" value="${goodsItem?.id}"/>
-
         <div class="main">
             <div class="title">
                 <a href="">${goodsItem.goodsTitle}</a>
@@ -103,6 +100,7 @@
                     </span>
                 </div>
             #{/if}
+
             <div class="price">
                 <strong>现价￥：${goodsItem.salePrice}元</strong>
                 #{if goodsItem.isBegin()}
@@ -127,127 +125,108 @@
                 #{/if}
             </div>
             <div class="prop">商品类型：电子券 　　配送方式： 手机短信 　　券截止日期：${goodsItem.secKillGoods.goods.expireAt?.format()}</div>
-        *{秒杀结束}*
-            #{if goodsItem.over}
-                <div class="seckill-over"></div>
-            #{/if}
-        *{秒杀结束}*
-        </div>
-    #{/form}
-    </div>
+    *{秒杀结束}*
+        #{if goodsItem.over}
+            <div class="seckill-over"></div>
+        #{/if}
+    *{秒杀结束}*
 
-    <div class="seckill-diary">
-        <div class="hd"><img src="http://img.uhcdn.com/images/act/7Xi/seckill-diary.png"/></div>
-        <ul>
-        #{set i:1/}
-        #{list secKillGoodsItems, as:'secKillItem'}
-            <li #{if i%2==0}class="last"#{/if}>
-                <div class="pic"><img src="${secKillItem?.secKillGoods?.imageMiddlePath}" width="429" height="310"/>
-                </div>
-                <div class="meta">
-                    <div class="num">本次特供：${secKillItem.totalCount}份</div>
-                    <div class="date">秒杀日期：<u>${secKillItem.secKillBeginAt?.format('MM')}</u>月<u>${secKillItem
-                    .secKillBeginAt?.format('dd')}</u>日<span>${secKillItem.secKillBeginAt?.format('HH')}</span>点<span>${secKillItem.secKillBeginAt?.format('mm')}</span>分<span>${secKillItem
-                    .secKillBeginAt?.format('ss')}</span>秒
-                    </div>
-                    <div class="still">还　　剩：${secKillItem.virtualInventory?:0}件</div>
-                </div>
-                #{if secKillItem.over}
-                *{秒杀结束}*
-                    <div class="over">
-                        <div class="gray"></div>
-                        <div class="icon"></div>
-                    </div>
-                *{秒杀结束}*
-                #{/if}
-                #{elseif secKillItem.future}
-                    <div class="enter-on">
-                        <div class="gray">
-                            <div class="text">${secKillItem.secKillBeginAt?.format('MM月dd日 HH:mm:ss')}
-                                <div>正式开秒</div>
-                            </div>
-                        </div>
-                    </div>
-                #{/elseif}
-            </li>
-            #{set i:i+1/}
-        #{/list}
-        </ul>
+        </div>
     </div>
 
     <!-- 温馨提示 -->
-#{if goodsItem.secKillGoods?.prompt != null}
-    <div class="warm-tips">
-        <div class="hd"><img src="http://img.uhcdn.com/images/act/7Xi/warm-tips.png"/></div>
-        <div class="bd">
-        ${goodsItem.secKillGoods.prompt.raw()}
+    #{if goodsItem.secKillGoods?.prompt != null}
+    <div class="warmtips">
+        <div class="hd"><img src="http://img.uhcdn.com/images/act/120901/warmtips.png"/></div>
+        <div class="bd">${goodsItem.secKillGoods.prompt.raw()}
         </div>
     </div>
-#{/if}
-    <div class="goods-detail">
-        <div class="hd"><img src="http://img.uhcdn.com/images/act/7Xi/goods-detail.png"/></div>
+    #{/if}
+
+    <div class="diary">
+        <div class="hd"><img src="http://img.uhcdn.com/images/act/120901/diary.png"/></div>
+        <ul>
+            #{set i:1/}
+            #{list secKillGoodsItems, as:'secKillItem'}
+                <li #{if i%2==0}class="last"#{/if}>
+                    <div class="pic"><img src="${secKillItem?.secKillGoods?.imageMiddlePath}"
+                                          width="429" height="310"></div>
+                    <div class="meta">
+                        <div class="num">本次特供：${secKillItem.totalCount}份</div>
+                        <div class="date">秒杀日期：<u>${secKillItem.secKillBeginAt?.format('MM')}</u>月<u>${secKillItem
+                    .secKillBeginAt?.format('dd')}</u>日<span>${secKillItem.secKillBeginAt?.format('HH')}</span>点<span>${secKillItem.secKillBeginAt?.format('mm')}</span>分<span>${secKillItem
+                    .secKillBeginAt?.format('ss')}</span>秒
+                        </div>
+                        <div class="still">还　　剩：${secKillItem.virtualInventory?:0}件</div>
+                    </div>
+                    #{if secKillItem.over}
+                    *{秒杀结束}*
+                        <div class="over">
+                            <div class="gray"></div>
+                            <div class="icon"></div>
+                        </div>
+                    *{秒杀结束}*
+                    #{/if}
+                    #{elseif secKillItem.future}
+                        <div class="enter-on">
+                            <div class="gray">
+                                <div class="text">${secKillItem.secKillBeginAt?.format('MM月dd日 HH:mm:ss')}
+                                    <div>正式开秒</div>
+                                </div>
+                            </div>
+                        </div>
+                    #{/elseif}
+                </li>
+                #{set i:i+1/}
+            #{/list}
+        </ul>
+    </div>
+
+    <div class="detail">
+        <div class="hd"><img src="http://img.uhcdn.com/images/act/120901/detail.png"/></div>
         <div class="bd">
-        ${goodsItem.secKillGoods?.goods?.details?.raw()}
-        *{<img src="http://img.uhcdn.com/images/act/7Xi/d1.jpg"/>
-
-            <p>十三香龙虾：精选活虾2斤，经高汤烹制后，浸入由多种香料和配辅料制作而成的十三香汤锅中。不仅味道浓郁，香气喷人，更由润滑浓稠的汤汁由舌间滑入喉口，袅袅余味，食不能罢。</p>
-            <img src="http://img.uhcdn.com/images/act/7Xi/d2.jpg"/>
-
-            <p>
-                烤鲶鱼（鱼香/豆豉）：挑选大小适中（1.8斤-2.2斤）的活鲶鱼，快刀祛鳞，细刀刨肚，从烹制开始尽显厨艺之博大精深。经过果木碳烤后，果香盘缠于鱼身间，肉质脆爽滑嫩，再放入干丝、豆豉或鱼香调味，极致美味将从您动眉到动筷，每一秒都充满期待。</p>
-            <img src="http://img.uhcdn.com/images/act/7Xi/d3.jpg"/>
-
-            <p>
-                手撕包菜：选用干净，新鲜的包菜洗净后，放入小铁锅，撒上京葱、回锅肉，淋上浓郁提味酱汁，进行高火翻炒后上桌。用底盘加液体酒精慢慢温热，味道愈发香浓诱人，在保留各食材原味上，素菜有荤味，荤菜有素香，相互交融，每一口都挑逗着味蕾，迸发出难以抑制住的那种迫切享用美食的冲动。</p>
-            <dl>
-                <dt>验证方式:</dt>
-                <dd>消费者出示券号短信——商家或店员打一百券客服电话（400-6262-166）进行验证——验证成功</dd>
-            </dl>
-            <dl>
-                <dt>温馨提示：</dt>
-                <dd>1、本券无需预约，不分先后顺序，不做区分对待，本活动限通河路店使用<br>
-                    2、本券不找零，不兑换，可以多张同时使用，不可和店内其他优惠券同时使用<br>
-                    3、当餐吃不完，可打包，打包盒为2元每个；本店自制饮料2元/位可无限畅饮<br>
-                    4、本券可在结账时出示，请保管好券号，如有丢失请联系客服：400-6262-166
-                </dd>
-            </dl>}*
+            ${goodsItem.secKillGoods?.goods?.details?.raw()}
             <div class="store-address">通河路店：宝山区通河路460号(近长江西路，地铁1号线通河新村站步行5分钟) 　　电话：021-36417215</div>
         </div>
     </div>
 
-    <div class="goods-recommend">
-        <div class="hd"><img src="http://img.uhcdn.com/images/act/7Xi/goods-recommend.png"/></div>
-        <ul class="bd">
-            <li><a href="http://www.yibaiquan.com/s/0-0-28-0-0-9-0" target="_blank"><img
-                    src="http://img.uhcdn.com/images/act/7Xi/r1.jpg" alt="有家川菜"/></a></li>
-            <li><a href="http://www.yibaiquan.com/s/0-0-32-0-0-9-0" target="_blank"><img
-                    src="http://img.uhcdn.com/images/act/7Xi/r2.jpg" alt="厚味香辣馆"/></a></li>
-            <li><a href="http://www.yibaiquan.com/s/0-0-34-0-0-9-0" target="_blank"><img
-                    src="http://img.uhcdn.com/images/act/7Xi/r3.jpg" alt="好想你枣"/></a></li>
-            <li class="last"><a href="http://www.yibaiquan.com/s/0-0-39-0-0-9-0" target="_blank"><img
-                    src="http://img.uhcdn.com/images/act/7Xi/r4.jpg" alt="大马头荼餐厅"/></a></li>
-        </ul>
+    <div class="recommend">
+        <div class="hd"><img src="http://img.uhcdn.com/images/act/120901/recommend.png"/></div>
+        <div class="bd">
+            <ul>
+                <li><a href="http://www.yibaiquan.com/s/0-0-28-0-0-9-0" target="_blank"><img
+                        src="http://img.uhcdn.com/images/act/7Xi/r1.jpg" alt="有家川菜"></a></li>
+                <li><a href="http://www.yibaiquan.com/s/0-0-32-0-0-9-0" target="_blank"><img
+                        src="http://img.uhcdn.com/images/act/7Xi/r2.jpg" alt="厚味香辣馆"></a></li>
+                <li><a href="http://www.yibaiquan.com/s/0-0-34-0-0-9-0" target="_blank"><img
+                        src="http://img.uhcdn.com/images/act/7Xi/r3.jpg" alt="好想你枣"></a></li>
+                <li class="last"><a href="http://www.yibaiquan.com/s/0-0-39-0-0-9-0" target="_blank"><img
+                        src="http://img.uhcdn.com/images/act/7Xi/r4.jpg" alt="大马头荼餐厅"></a></li>
+            </ul>
+        </div>
+        <div class="ft"><img src="http://img.uhcdn.com/images/act/120901/recommend-ft.png"/></div>
     </div>
 
 </div>
-<div id="footer">
+<!-- #main -->
+#{/form}
+
+<div id="foot">
     <div class="ft-nav">
-        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/about"
-           target="_blank">关于我们</a> |
-        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/contact" target="_blank">联系我们</a>
-        |
-        <!--<a href="http://quanmx.com/" target="_blank">商户入驻</a> |-->
-        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/help"
-           target="_blank">常见问题</a>
+        <a href="http://www.yibaiquan.com/about" target="_blank">关于我们</a> |
+        <a href="http://www.yibaiquan.com/contact" target="_blank">联系我们</a> |
+        <a href="http://www.yibaiquan.com/help" target="_blank">常见问题</a>
     </div>
     <div class="copyright">
         Copyright © 2012 一百券YiBaiQuan.COM 版权所有 <span> 沪ICP备08114451号-4</span>
     </div>
 </div>
-<!-- #footer -->
-<script>var STARTTIME = '#{if !goodsItem.begin}${goodsItem.secKillBeginAt?.format('''yyyy-MM-dd HH:mm:ss''')}#{/if}#{else}${goodsItem.secKillEndAt?.format('''yyyy-MM-dd HH:mm:ss''')}#{/else}';
-</script>
-#{asset.js src:['/u/jquery-1.7.2.min.js', '/y/base.js'] /}
+</div>
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=763119"></script>
+<script type="text/javascript" id="bdshell_js"></script>
+<script type="text/javascript">document.getElementById("bdshell_js").src = "http://share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();</script>
+<script>var STARTTIME = '2012-08-31 10:00:00';</script>
+<script language="javaScript" src="http://a.uhcdn.com/js/u/jquery-1.7.2.min.js"></script>
 <script src="http://a.yibaiquan.com/7Xi/jquery.countdown.js"></script>
 <script>
     jQuery(document).ready(function () {
