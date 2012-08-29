@@ -242,10 +242,8 @@ public class OperateGoodsTest extends FunctionalTest {
 		assertStatus(200, response); 
 		//System.out.println("aaa>>>>>"+condition.orderBy);
 		//assertEquals("g.createdAt", response.headers.get("condition.createdAt") );
-		
 
-    
-   // condition.priority == 1
+        // condition.priority == 1
     }
     
     @Ignore
@@ -260,24 +258,19 @@ public class OperateGoodsTest extends FunctionalTest {
 	Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_101");
 		Goods goods = Goods.findById(goodsId);
 		Map<String, Object> Params = new HashMap<>();
-		
-		
-		 //配置 图片 参数
-      
-        //确认正确获得图片路径
-      //  assertTrue(file.exists());
-        //files.put("imageUrl", file);
-        
-        
         File imagePath = Play.getFile("/cat.jpg");
-	
 		Params.put("goods",goods);
 		Params.put("imagePath",imagePath);
-		//Params.put("levelPrices",);
-		
-	//	Response response = POST("/goods", Params);
-		//assertStatus(200, response); 
-		
+    }
+
+    @Test
+    public void testIndexOrderBy(){
+
+        Http.Response response = GET("/?condition.supplierId=0&condition.name=&condition.no=&condition.brandId=0&condition.status=ONSALE&c" +
+                "ondition.salePriceBegin=&condition.salePriceEnd=&condition.saleCountBegin=&condition.saleCountEnd=&desc=10000000000");
+        assertIsOk(response);
+        assertNotNull(renderArgs("goodsPage"));
+        assertNotNull(renderArgs("desc"));
     }
     
     
