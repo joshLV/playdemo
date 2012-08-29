@@ -29,8 +29,14 @@ public class SalesOrderItemReport extends Model {
 
     public long orderCount;
 
+    /**
+     * 原单价
+     */
     public BigDecimal salePrice;
 
+    /**
+     * 总金额.
+     */
     public BigDecimal originalAmount;
 
     public BigDecimal tax;
@@ -95,9 +101,10 @@ public class SalesOrderItemReport extends Model {
             SalesOrderItemReportCondition condition) {
         Query query = JPA.em()
                 .createQuery(
-                        "select new models.SalesOrderItemReport(r.goods, r.salePrice,r.faceValue, sum(r.buyNumber), sum(r.salePrice*r.buyNumber))"
+                        "select new models.SalesOrderItemReport(r.goods, r.salePrice-r.rebateValue/r.buyNumber,r.faceValue, sum(r.buyNumber), "
+                                + "sum(r.salePrice*r.buyNumber-r.rebateValue))"
                                 + " from OrderItems r, Supplier s where "
-                                + condition.getFilter() + " group by r.goods, r.salePrice order by r.goods"
+                                + condition.getFilter() + " group by r.goods, r.salePrice-r.rebateValue/r.buyNumber order by r.goods"
                 );
 
         for (String param : condition.getParamMap().keySet()) {
@@ -158,7 +165,7 @@ public class SalesOrderItemReport extends Model {
     public static List<SalesOrderItemReport> getNetSales(SalesOrderItemReportCondition condition) {
         Query query = JPA.em()
                 .createQuery(
-                        "select new models.SalesOrderItemReport(r.goods, sum(r.salePrice*r.buyNumber))"
+                        "select new models.SalesOrderItemReport(r.goods, sum(r.salePrice*r.buyNumber-r.rebateValue))"
                                 + " from OrderItems r,Supplier s where "
                                 + condition.getNetSalesFilter() + " group by r.goods.supplierId order by r.goods"
                 );

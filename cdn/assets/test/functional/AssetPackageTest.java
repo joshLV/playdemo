@@ -3,7 +3,6 @@ import org.junit.*;
 import play.test.*;
 import play.mvc.*;
 import play.mvc.Http.*;
-import models.*;
 
 public class AssetPackageTest extends FunctionalTest {
 
@@ -34,7 +33,8 @@ public class AssetPackageTest extends FunctionalTest {
         assertContentMatch("b.js", response);
         assertContentMatch("c.js", response);
     }    
-  @Test
+    
+    @Test
     public void testMergeOneCssFiles() {
         Response response = GET("/css/test/a.css");
         assertIsOk(response);

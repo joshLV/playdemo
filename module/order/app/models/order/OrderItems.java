@@ -34,6 +34,7 @@ public class OrderItems extends Model {
 
     /**
      * 折扣掉的费用.
+     * 注意：这是指总共折扣掉的费用，如果购买多笔，需要计算合计折扣的费用。
      */
     @Column(name = "rebate_value")
     public BigDecimal rebateValue;
