@@ -12,6 +12,10 @@ public class PaymentNotify extends Controller {
 
     public static void notify(String shihui_partner){
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(shihui_partner);
+        if(paymentFlow == null) {
+            error("payment partner not found: " + shihui_partner);
+            return;
+        }
         Map<String, String> result = paymentFlow.notify(PaymentUtil.filterPlayParameter(params.all()));
 
         boolean success = false;

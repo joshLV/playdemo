@@ -53,6 +53,10 @@ public class Charge extends Controller{
         order.save();
 
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(paymentSource.paymentCode);
+        if(paymentFlow == null) {
+            error("payment partner not found: " + paymentSource.paymentCode);
+            return;
+        }
         String form = paymentFlow.getRequestForm(order.orderNumber, order.description,
                 order.discountPay, paymentSource.subPaymentCode, request.remoteAddress);
         PaymentJournal.savePayRequestJournal(

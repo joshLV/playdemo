@@ -22,8 +22,11 @@ public class OrderResult extends Controller {
      * @param shihui_partner 第三方支付代码
      */
     public static void urlReturn(String shihui_partner) {
-
         PaymentFlow paymentFlow = PaymentUtil.getPaymentFlow(shihui_partner);
+        if(paymentFlow == null) {
+            error("payment partner not found: " + shihui_partner);
+            return;
+        }
         Map<String, String> result = paymentFlow.urlReturn(PaymentUtil.filterPlayParameter(params.all()));
         String  errorMessage = "对不起，暂时无法读取信息，请您稍后再试";
 

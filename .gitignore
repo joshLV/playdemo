@@ -16,39 +16,8 @@ version.conf
 # selenium
 [0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*
 
-cdn/assets/modules/
-cdn/assets/tmp/
-cdn/image-server/modules/
-cdn/image-server/tmp/
-module/base_rbac/commands.pyc
-module/oauth/commands.pyc
-mq_consumer/modules/
-mq_consumer/tmp/
-operate/admin/modules/
-operate/business/modules/
-operate/business/tmp/
-operate/cms/modules/
-operate/cms/tmp/
-operate/report/modules/
-operate/report/tmp/
-resale/home/modules/
-resale/home/tmp/
-supplier/admin/modules/
-supplier/admin/tmp/
-supplier/home/modules/
-supplier/home/tmp/
-supplier/order/modules/
-supplier/order/tmp/
-supplier/report/modules/
-supplier/report/tmp/
-supplier/sales/modules/
-supplier/sales/tmp/
-supplier/sms/modules/
-supplier/sms/tmp/
-website/home/modules/
-website/home/tmp/
-website/www/modules/
-website/jifen/modules/
-website/www/tmp/
-website/jifen/tmp/
+.DS_Store
+*/*/lib
+*/*/modules
+*/*/tmp
 

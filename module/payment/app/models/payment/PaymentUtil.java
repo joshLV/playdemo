@@ -3,6 +3,7 @@ package models.payment;
 import models.payment.alipay.AliPaymentFlow;
 import models.payment.kuaiqian.KuaiqianPaymentFlow;
 import models.payment.tenpay.TenpayPaymentFlow;
+import models.payment.test.TestPaymentFlow;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,7 @@ public class PaymentUtil {
     private static PaymentFlow alipayPaymentFlow = new AliPaymentFlow();
     private static PaymentFlow tenpayPaymentFlow = new TenpayPaymentFlow();
     private static PaymentFlow kuaiqianPaymentFlow = new KuaiqianPaymentFlow();
+    private static PaymentFlow testPaymentFlow = new TestPaymentFlow();
 
     public static PaymentFlow getPaymentFlow(String partner){
         //partner必须是payment_source表中的payment_code字段中的数据
@@ -25,6 +27,9 @@ public class PaymentUtil {
                 return tenpayPaymentFlow;
             case "99bill":
                 return kuaiqianPaymentFlow;
+            case "testpay":
+                if(TestPaymentFlow.ON) { return testPaymentFlow; }
+                else { return null; }
             default:
                 return null;
         }
