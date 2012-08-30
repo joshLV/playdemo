@@ -195,16 +195,16 @@ select:'condition_status',value:condition?.status/}
         <tr>
             <td rowspan="${order?.orderItems?.size()}">${order.orderNumber}</td>
         *{有实物券时}*
-            #{if order.realGoods.size()>0}
+            #{if order.realGoods?.size()>0}
                 <td>
-                    #{if models.sales.MaterialType.ELECTRONIC.equals(order.realGoods.get(0).materialType)}
-                        <img src="${order.realGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}">${order.realGoods.get(0).name}
+                    #{if models.sales.MaterialType.ELECTRONIC.equals(order.realGoods?.get(0)?.materialType)}
+                        <img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}">${order.realGoods?.get(0)?.name}
                     #{/if}
                     #{else}
-                        <img src="${order.realGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}">${order.realGoods.get(0).name}
+                        <img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}">${order.realGoods?.get(0)?.name}
                     #{/else}
                 </td>
-                <td rowspan="${order.realGoods.size()}">
+                <td rowspan="${order.realGoods?.size()}">
                     #{if order.deliveryNo!=null}
                         <a id="sendInfo_${order.id}"
 
@@ -250,22 +250,24 @@ select:'condition_status',value:condition?.status/}
         </tr>
             #{set i:0/}
             #{set showRealStatus:true/}
-            #{list items:order.realGoods, as:'aRealGoods'}
-                #{if i>0}
-                <tr test="i=${i}">
-                    <td><img src="${order.aRealGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}">${aRealGoods.name}</td>
-                *{#{if showRealStatus}}*
-                *{<td rowspan="${order.realGoods.size()}">&{'order.'+}*
-                *{order.realGoodsStatus}#{if models.order.OrderStatus.PAID.equals(order.status)}}*
-                *{<br/><a href="#" id="linkSend">发货</a>#{/if}}*
-                *{</td>}*
-                *{#{set showRealStatus:false/}}*
-                *{#{/if}}*
-
-                </tr>
-                #{/if}
-                #{set i:i+1/}
-            #{/list}
+            #{if order.realGoods?.size()>0}
+	            #{list items:order.realGoods, as:'aRealGoods'}
+	                #{if i>0}
+	                <tr test="i=${i}">
+	                    <td><img src="${order.aRealGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}">${aRealGoods.name}</td>
+	                *{#{if showRealStatus}}*
+	                *{<td rowspan="${order.realGoods.size()}">&{'order.'+}*
+	                *{order.realGoodsStatus}#{if models.order.OrderStatus.PAID.equals(order.status)}}*
+	                *{<br/><a href="#" id="linkSend">发货</a>#{/if}}*
+	                *{</td>}*
+	                *{#{set showRealStatus:false/}}*
+	                *{#{/if}}*
+	
+	                </tr>
+	                #{/if}
+	                #{set i:i+1/}
+	            #{/list}
+            #{/if}
 
             #{set j:0/}
             #{set showElectronicStatus:true/}
@@ -273,7 +275,7 @@ select:'condition_status',value:condition?.status/}
                 #{if (order.realGoods?.size()==0 && j>0) ||(order.realGoods?.size()>0) }
                 <tr>
                     <td><img src="${aElectronicGoods.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}">${aElectronicGoods?.name}</td>
-                    #{if showElectronicStatus && order.realGoods.size()>0}
+                    #{if showElectronicStatus && order.realGoods?.size()>0}
                         <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
                         #{set showElectronicStatus:false/}
                     #{/if}
