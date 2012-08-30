@@ -63,7 +63,7 @@ public class GoodsStatistics extends Model {
     /**
      * 为避免影响秒杀活动，先关闭记录商品统计信息
      */
-    public static final boolean RECORD_STATISTICS = true;
+    public static final boolean RECORD_STATISTICS = false;
 
     @Override
     public void _save() {

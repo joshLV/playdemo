@@ -194,10 +194,10 @@ public class SecKillOrders extends Controller {
                 secKillGoodsItem.secKillGoods.goods.salePrice, secKillGoodsItem.secKillGoods.goods.salePrice);
         orderItem.secKillGoods = secKillGoodsItem.secKillGoods;
         orderItem.secKillGoodsItemId = secKillGoodsItem.id;
-        orderItem.rebateValue = secKillGoodsItem.secKillGoods.goods.salePrice.subtract(secKillGoodsItem.salePrice);
+        orderItem.rebateValue = secKillGoodsItem.secKillGoods.goods.salePrice.subtract(secKillGoodsItem.salePrice).multiply(new BigDecimal(count));
         order.rebateValue = BigDecimal.ZERO;
         order.orderItems.add(orderItem);
-        order.amount = order.amount.add(secKillGoodsItem.secKillGoods.goods.salePrice.multiply(new BigDecimal(String.valueOf(count))));
+        order.amount = order.amount.add(secKillGoodsItem.salePrice.multiply(new BigDecimal(count)));
         order.needPay = order.amount.subtract(order.rebateValue);
     }
 
