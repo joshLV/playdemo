@@ -85,9 +85,16 @@ $(function () {
             alert("请输入问题内容");
             return false;
         }
+        var mobile = $("#mobile").val();
+        var validMobile = /^(((13[0-9]{1})|(15[0-9]{1}))+\d{8})$/;
+        if (mobile != "" && !validMobile.test(mobile)){
+            alert("手机号码格式不正确");
+            return false;
+        }
+
         $.post(
             "/user-question",
-            {"content":question, "goodsId":$("#goodsId").val()},
+            {"content":question,"mobile":mobile, "goodsId":$("#goodsId").val()},
             function (data) {
                 if (data.error) {
                     $("#q-error").html(data.error).show();

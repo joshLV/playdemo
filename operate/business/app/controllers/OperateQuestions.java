@@ -2,6 +2,7 @@ package controllers;
 
 import models.admin.OperateUser;
 import models.cms.CmsQuestion;
+import models.cms.GoodsType;
 import models.cms.QuestionCondition;
 import models.sales.Goods;
 import operate.rbac.annotations.ActiveNavigation;
@@ -76,9 +77,15 @@ public class OperateQuestions extends Controller {
             question.operateUser = operateUser.userName;
         }
 
-        if (question.goodsId != null) {
-            Goods goods = Goods.findById(question.goodsId);
-            question.goodsName = goods.name;
+        if (question.goodsId != null){
+            if (question.goodsType == GoodsType.POINTGOODS){
+                models.sales.PointGoods pointGoods = models.sales.PointGoods.findById(question.goodsId);
+                question.goodsName = pointGoods.name;
+            }
+            else{
+                Goods goods = Goods.findById(question.goodsId);
+                question.goodsName = goods.name;
+            }
         }
         question.save();
     }

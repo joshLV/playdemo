@@ -30,7 +30,7 @@ public class UserQuestions extends Controller{
     private static String QUESTION_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static String[] QUESTION_MAIL_RECEIVERS = Play.configuration.getProperty("user_question.receivers","").split(",");
 
-    public static void add(String content, Long goodsId) throws ParseException{
+    public static void add(String content,String mobile, Long goodsId) throws ParseException{
         User user = SecureCAS.getUser();
         Http.Cookie cookie = request.cookies.get("identity");
         String cookieValue = cookie == null ? null : cookie.value;
@@ -58,10 +58,16 @@ public class UserQuestions extends Controller{
 
         //保存并返回提问结果
         CmsQuestion question = new CmsQuestion();
-        question.content = content;
-        question.goodsId = goodsId;
-        question.remoteIP = request.remoteAddress;
         Map<String, String> questionMap = new HashMap<>();
+        question.content = content;
+        questionMap.put("content", content);
+        if (mobile != null && mobile != ""){
+            question.mobile = mobile;
+            questionMap.put("mobile",mobile);
+        }
+        question.goodsId = goodsId;
+        question.goodsName = goods.name;
+        question.remoteIP = request.remoteAddress;
         if(user != null){
             question.userId = user.getId();
             question.userName = user.loginName;
@@ -72,8 +78,6 @@ public class UserQuestions extends Controller{
         }
         question.save();
 
-        questionMap.put("content", content);
-      
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         
         questionMap.put("date", dateFormat.format(question.createdAt));
@@ -97,6 +101,7 @@ public class UserQuestions extends Controller{
             mailMessage.putParam("date", new SimpleDateFormat(QUESTION_DATE_FORMAT).format(question.createdAt));
             mailMessage.putParam("user", questionMap.get("user"));
             mailMessage.putParam("content", question.content);
+            mailMessage.putParam("mobile", question.mobile);
             mailMessage.putParam("goods", goods.name);
             mailMessage.putParam("questionId", question.id);
             mailMessage.putParam("goodsId", goods.id);

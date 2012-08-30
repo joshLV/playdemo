@@ -23,7 +23,7 @@
                 <a href="/consumers/${question.userId}" target="_blank">${question.userName}</a>
             #{/if}
             #{else}
-                ${question?.userName}
+                ${question?.userName}: ${question?.mobile}
             #{/else}
         </div>
     </div>
@@ -42,7 +42,12 @@
     <div class="control-group">
         <label class="control-label">商品</label>
         <div class="controls">
+            #{if question?.goodsType == models.cms.GoodsType.POINTGOODS}
+            (积分商品)${question.goodsName}
+            #{/if}
+            #{else}
             <a href="/goods/${question.goodsId}" target="_blank">${question.goodsName}</a>
+            #{/else}
         </div>
     </div>
     <div class="control-group">

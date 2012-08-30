@@ -248,6 +248,10 @@
     <form id="question-form">
         <label>发表咨询：</label>
         <textarea class="con" cols="80" rows="5" id="question"></textarea>
+        #{if !cas?.isLogin}
+        <label>手机号码：</label>
+        <input type="text" id="mobile" name="mobile" maxlength="11" value="" /> 输入手机号，方便我们给您反馈信息。
+        #{/if}
         <span id="q-error" style="display: none"></span>
         <button class="submit" id="submit-question">提 交</button>
     </form>

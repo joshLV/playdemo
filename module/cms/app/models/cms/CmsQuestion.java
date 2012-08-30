@@ -21,12 +21,14 @@ public class CmsQuestion extends Model {
     private static final long serialVersionUID = 81232409113062L;
     
     public String content;
+
+    public String mobile;
+
     @Required
     public String reply;
 
     @Column(name = "user_id")
     public Long userId;
-
 
     @Enumerated(EnumType.STRING)
     @Column(name = "goods_type")
@@ -63,6 +65,7 @@ public class CmsQuestion extends Model {
 
     public CmsQuestion() {
         this.createdAt = new Date();
+        this.mobile = "";
         this.userId = null;
         this.cookieId = null;
         this.userName = null;

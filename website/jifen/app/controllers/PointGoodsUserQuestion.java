@@ -36,7 +36,7 @@ public class PointGoodsUserQuestion extends Controller {
     private static String QUESTION_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static String[] QUESTION_MAIL_RECEIVERS = Play.configuration.getProperty("user_question.receivers","").split(",");
 
-    public static void add(String content, Long goodsId) throws ParseException{
+    public static void add(String content,String mobile, Long goodsId) throws ParseException{
         User user = SecureCAS.getUser();
         Http.Cookie cookie = request.cookies.get("identity");
         String cookieValue = cookie == null ? null : cookie.value;
@@ -65,12 +65,19 @@ public class PointGoodsUserQuestion extends Controller {
 
         //保存并返回提问结果
         CmsQuestion question = new CmsQuestion();
+        Map<String, String> questionMap = new HashMap<>();
         question.content = content;
+        questionMap.put("content", content);
+        if (mobile != null && mobile != ""){
+            question.mobile = mobile;
+            questionMap.put("mobile",mobile);
+        }
         question.goodsId = goodsId;
+        question.goodsName = goods.name;
         // save goods type of point goods
         question.goodsType = GoodsType.POINTGOODS;
         question.remoteIP = request.remoteAddress;
-        Map<String, String> questionMap = new HashMap<>();
+
         if(user != null){
             question.userId = user.getId();
             question.userName = user.loginName;
@@ -80,8 +87,6 @@ public class PointGoodsUserQuestion extends Controller {
             questionMap.put("user", "游客");
         }
         question.save();
-
-        questionMap.put("content", content);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
@@ -106,9 +111,10 @@ public class PointGoodsUserQuestion extends Controller {
             mailMessage.putParam("date", new SimpleDateFormat(QUESTION_DATE_FORMAT).format(question.createdAt));
             mailMessage.putParam("user", questionMap.get("user"));
             mailMessage.putParam("content", question.content);
+            mailMessage.putParam("mobile",question.mobile);
             mailMessage.putParam("goods", goods.name);
             mailMessage.putParam("questionId", question.id);
-            mailMessage.putParam("goodsId", goods.id);
+            mailMessage.putParam("goodsId", goodsId);
             mailMessage.setTemplate("userQuestion");
             MailUtil.sendOperatorNotificationMail(mailMessage);
         }
