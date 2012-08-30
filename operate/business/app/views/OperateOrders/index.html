@@ -254,15 +254,7 @@ select:'condition_status',value:condition?.status/}
 	            #{list items:order.realGoods, as:'aRealGoods'}
 	                #{if i>0}
 	                <tr test="i=${i}">
-	                    <td><img src="${order.aRealGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}">${aRealGoods.name}</td>
-	                *{#{if showRealStatus}}*
-	                *{<td rowspan="${order.realGoods.size()}">&{'order.'+}*
-	                *{order.realGoodsStatus}#{if models.order.OrderStatus.PAID.equals(order.status)}}*
-	                *{<br/><a href="#" id="linkSend">发货</a>#{/if}}*
-	                *{</td>}*
-	                *{#{set showRealStatus:false/}}*
-	                *{#{/if}}*
-	
+	                    <td><img src="${aRealGoods?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}">${aRealGoods?.name}</td>
 	                </tr>
 	                #{/if}
 	                #{set i:i+1/}
