@@ -26,6 +26,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.materialType= MaterialType.REAL;
         goods.baseSale= (long)100;
         goods.saleCount=10;
+        goods.useWeekDay="1,2,3,4,5,6,7";
         return goods;
     }
 

@@ -39,7 +39,7 @@ type('id=goods_useBeginTime','09:00')
 type('id=goods_useEndTime','')
 type('id=goods_originalPrice','55')
 type('id=goods_salePrice','55')
-type('id=goods_baseSale','55')
+type('id=ggitoods_baseSale','55')
 type('id=goods_title','并欺凌55元')
 *{focus('id=imagePath')}*
 *{click('id=imagePath')}*
@@ -53,11 +53,6 @@ runScript('element.innerHTML  = "this is a test thread";')
 clickAndWait('id=save')
 
 verifyTextPresent('请把可用时段输入完整!')
-
-type('id=goods_useBeginTime','19:00')
-type('id=goods_useEndTime','09:00')
-clickAndWait('id=save')
-verifyTextPresent('使用结束时间要大于开始时间!')
 
 type('id=goods_useBeginTime','09:00')
 type('id=goods_useEndTime','19:00')
