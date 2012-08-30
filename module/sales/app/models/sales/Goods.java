@@ -166,7 +166,10 @@ public class Goods extends Model {
     @Column(name = "use_end_time")
     public String useEndTime;
 
-
+    @Column(name = "use_week_day")
+    public String useWeekDay;
+    @Transient
+    public String useWeekDayAll;
     /**
      * 商品标题
      */
@@ -248,12 +251,12 @@ public class Goods extends Model {
     @Column(name = "lock_version")
     @Version
     public int lockVersion;
-    
+
     /**
      * 商品分组代码.
      * 用于多个商品组合成一个商品组，同一系列的发送收货短信时，使用相同的replyCode.
      */
-    @Column(name="group_code", length=32)
+    @Column(name = "group_code", length = 32)
     public String groupCode;
 
     /**
@@ -675,15 +678,16 @@ public class Goods extends Model {
 
         updateGoods.useBeginTime = goods.useBeginTime;
         updateGoods.useEndTime = goods.useEndTime;
+        updateGoods.useWeekDay = goods.useWeekDay;
         if (!noLevelPrices) {
             for (int i = 0; i < goods.levelPrices.size(); i++) {
                 updateGoods.safeGetLevelPrices().get(i).price = goods.levelPrices.get(i).price;
             }
         }
         updateGoods.isLottery = (goods.isLottery == null) ? Boolean.FALSE : goods.isLottery;
-        
-        updateGoods.groupCode = (StringUtils.isEmpty(goods.groupCode)) ? null : goods.groupCode.trim(); 
-        
+
+        updateGoods.groupCode = (StringUtils.isEmpty(goods.groupCode)) ? null : goods.groupCode.trim();
+
         updateGoods.save();
     }
 

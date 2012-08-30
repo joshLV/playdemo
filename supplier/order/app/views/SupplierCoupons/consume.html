@@ -1,7 +1,18 @@
 #{if ecoupon == null} <font color=red>对不起，没有该券的信息!</font>#{/if}
 #{else}
-%{ String timeBegin = ecoupon.useBeginTime;
-String timeEnd = ecoupon.useEndTime;}%
+%{ String timeBegin = ecoupon.goods.useBeginTime;
+String timeEnd = ecoupon.goods.useEndTime;
+String useWeekDay=ecoupon.goods.useWeekDay;
+isWeekDayAll = false;
+
+if (useWeekDay != null && useWeekDay.length()==13) {
+
+isWeekDayAll = true;
+}
+date = new java.util.Date();
+week= ecoupon.getWeek();
+week=week.substring(0,week.length()-1);
+}%
     #{if ecoupon.isFreeze == 1 }
     <font color=red>此券已被冻结不能使用!</font>
     #{/if}
@@ -38,14 +49,13 @@ String timeEnd = ecoupon.useEndTime;}%
     商品名称: ${ecoupon.goods.title}<br/>
     截止日期：${ecoupon.expireAt?.format('yyyy-MM-dd HH:mm:ss')}
     #{/elseif}
-%{date = new java.util.Date()}%
     #{elseif  !ecoupon.checkVerifyTimeRegion(date) }
     <script type="text/javascript">
         $("#sure").attr("disabled", true);
     </script>
-    <font color=red>对不起，只能在每天${timeBegin}~${timeEnd}时间内使用该券!</font>
+     <font color=red>对不起，只能在#{if !isWeekDayAll}${week}#{/if}#{else}每天#{/else}的${timeBegin}~
+        #{if ecoupon?.checkUseBeginTimeAndUseEndTime(date)}次日#{/if}${timeEnd}时间内使用该券!</font>
     #{/elseif}
-
     #{elseif  !ecoupon.isBelongShop(shopId)}
     <script type="text/javascript">
         $("#sure").attr("disabled", true);

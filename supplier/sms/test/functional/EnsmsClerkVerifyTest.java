@@ -52,7 +52,11 @@ public class EnsmsClerkVerifyTest extends ClerkSmsVerifyBaseTest {
     public void 正常店员验证过程() {
         testNormalClerkCheck(getTheMessageSender());
     }
-    
+
+    @Test
+    public void 店员验证券不在适用范围内() {
+        testNotInVerifyTime(getTheMessageSender());
+    }
     /**
      * 消息应当以#开头
      */

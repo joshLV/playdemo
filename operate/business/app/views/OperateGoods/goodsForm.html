@@ -11,7 +11,7 @@
     value2:models.sales.MaterialType.REAL.toString(),
     value:goods?.materialType?.toString(), required:true/}
     #{layout_operate.checkboxField name:'goods.publishedPlatforms', items:models.sales.GoodsPublishedPlatformType
-.values(), value:goods?.publishedPlatforms/}
+    .values(), value:goods?.publishedPlatforms/}
 
     #{if "add".equals(action)}
         #{layout_operate.selectField name:'goods.supplierId', class:'span2', value:goods?.supplierId,
@@ -71,11 +71,35 @@
 
     #{layout_operate.textField name:'goods.limitNumber', value:goods?.limitNumber, note:'个'/}
 
+<div class="control-group">
+    <div class="control-group">
+        <label class="control-label">指定消费日
+        </label>
+
+        <div class="controls">
+            <input type="hidden" name="goods.useWeekDay" id="goods_useWeekDay" value="${goods?.useWeekDay}"/>
+
+            #{list items:1..7, as:'i'}
+                <input type="checkbox" name="useWeekDay[]" class="input-medium"
+                       value="${i}" #{if goods?.useWeekDay?.contains(String.valueOf(i))}checked#{/if}/>
+                星期#{if i==1}一&nbsp;&nbsp;#{/if}
+                #{if i==2}二&nbsp;&nbsp;#{/if}
+                #{if i==3}三&nbsp;&nbsp;#{/if}
+                #{if i==4}四&nbsp;&nbsp;#{/if}
+                #{if i==5}五&nbsp;&nbsp;#{/if}
+                #{if i==6}六&nbsp;&nbsp;#{/if}
+                #{if i==7}日&nbsp;&nbsp;#{/if}
+            #{/list}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="checkbox" name="useWeekDayAll" class="input-medium" id="selectWeekDayAll"
+                   #{if goods?.useWeekDay== null || goods?.useWeekDay?.length()==13  }checked#{/if}> 全选
+            <span class="error">#{error 'goods.useWeekDayAll' /}</span>
+        </div>
+    </div>
     #{layout_operate.timeScopeField name:'goods.useTime', begin:'goods.useBeginTime',end:'goods.useEndTime',
     beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
-     <div class="control-group">
     <label class="control-label">抽奖商品
     </label>
+
     <div class="controls">
         <input type="checkbox" name="goods.isLottery" id="isLottery" class="input-medium"
                value="${goods?.isLottery}" ${goods?.isLottery?'checked':''}/><span id="err-isLottery"></span>
@@ -109,10 +133,11 @@
     </div>
 </div>
 <div class="form-actions">
-    <input class="btn btn-primary" id="save" type="submit" value="保存"  #{if "edit".equals(action) && goods?.status == models.sales.GoodsStatus.ONSALE}disabled #{/if}/>
+    <input class="btn btn-primary" id="save" type="submit" value="保存"
+           #{if "edit".equals(action) && goods?.status == models.sales.GoodsStatus.ONSALE}disabled #{/if}/>
     <input class="btn btn-primary" id="onsale" type="submit" value="保存并上架"/>
     #{if "edit".equals(action)}
-    <input class="btn btn-primary" id="preview" type="submit" value="预览"/>
+        <input class="btn btn-primary" id="preview" type="submit" value="预览"/>
     #{/if}
     #{if "edit".equals(action)}
         #{vx.cancelButton url:'/goods', class:'btn btn-primary'/}
@@ -121,6 +146,16 @@
 </div>
 <script type="text/javascript">
     $("input[name='goods.isAllShop']:checked").val() == 'false' ? $("#shop").show() : $("#shop").hide();
+    if ($("#selectWeekDayAll").attr("checked")) {
+        $("[name='useWeekDay[]']").attr("checked", 'true');//全选
+        var week = [];
+        if ($("[name='useWeekDay[]']").attr("checked")) {
+            $("input[name='useWeekDay[]']:checked").each(function () {
+                week.push($(this).val())
+            })
+        }
+        $("#goods_useWeekDay").val(week.join(","));
+    }
 
     function showPrice(nameField) {
         var originalPrice = $("#goods_originalPrice").val() == null ? 0 : $("#goods_originalPrice").val();
@@ -171,6 +206,8 @@
                 $("#selectAll").click();
             #{/if}
         });
+
+
     });
 
     function limitMoneyFormat(obj, value) {

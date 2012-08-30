@@ -5,7 +5,6 @@
 package controllers;
 
 
-
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
@@ -73,9 +72,7 @@ public class OperateGoods extends Controller {
         if (condition.priority == 1) {
             //有优先指数，按优先指数排
             condition.orderBy = "g.priority";
-
-        }
-        else{
+        } else {
             if (condition.priority != 1 && isValidDesc(desc)){
                 //排序合法且没有优先指数，添加到condition 中
                 int index = 0;
@@ -172,12 +169,10 @@ public class OperateGoods extends Controller {
         List<Category> subCategoryList = new ArrayList<>();
         Long categoryId = 0L;
         if (categoryList.size() > 0) {
-        	//System.out.println("aaaa>>>"+goods.categories);  null
-        	
             if (goods.categories != null && goods.categories.size() > 0 && goods.categories.iterator() != null && goods.categories.iterator().hasNext()) {
                 Category category = goods.categories.iterator().next();
                 categoryId = category.id;
-            	
+
                 if ((goods.topCategoryId == null || goods.topCategoryId == 0) && category.parentCategory != null) {
                     goods.topCategoryId = category.parentCategory.id;
                 }
@@ -186,7 +181,7 @@ public class OperateGoods extends Controller {
                 goods.topCategoryId = categoryList.get(0).id;
             }
             subCategoryList = Category.findByParent(goods.topCategoryId);
-        } 
+        }
         //调试用
         for (String key : validation.errorsMap().keySet()) {
             warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
@@ -237,6 +232,8 @@ public class OperateGoods extends Controller {
         checkLevelPrice(levelPrices);
         checkShops(goods.supplierId);
 
+        checkUseWeekDay(goods);
+
         if (Validation.hasErrors()) {
             renderInit(goods);
             boolean selectAll = false;
@@ -268,6 +265,16 @@ public class OperateGoods extends Controller {
         index(null,"");
     }
 
+    private static void checkUseWeekDay(models.sales.Goods goods) {
+        if (StringUtils.isBlank(goods.useWeekDay)) {
+            Validation.addError("goods.useWeekDayAll", "validation.useWeekDay");
+            renderArgs.put("noUseWeekDayAll", "true");
+        } else if (StringUtils.isNotBlank(goods.useBeginTime) && StringUtils.isNotBlank(goods.useEndTime)
+                && goods.useBeginTime.compareTo(goods.useEndTime) > 0 && goods.useEndTime.compareTo("06:00") > 0) {
+            Validation.addError("goods.useEndTime", "validation.useEndTime");
+        }
+    }
+
     private static void checkShops(Long supplierId) {
         if (!Shop.containsShop(supplierId)) {
             Validation.addError("goods.supplierId", "validation.noShop");
@@ -294,8 +301,6 @@ public class OperateGoods extends Controller {
         if ((StringUtils.isNotBlank(goods.useBeginTime) && StringUtils.isBlank(goods.useEndTime))
                 || StringUtils.isBlank(goods.useBeginTime) && StringUtils.isNotBlank(goods.useEndTime)) {
             Validation.addError("goods.useEndTime", "validation.allRequiredUseTime");
-        } else if (StringUtils.isNotBlank(goods.useBeginTime) && StringUtils.isNotBlank(goods.useEndTime) && goods.useBeginTime.compareTo(goods.useEndTime) >= 0) {
-            Validation.addError("goods.useEndTime", "validation.beforeThanUseTime");
         }
     }
 
@@ -410,7 +415,7 @@ public class OperateGoods extends Controller {
         checkSalePrice(goods);
         checkLevelPrice(levelPrices);
         checkShops(goods.supplierId);
-
+        checkUseWeekDay(goods);
         if (Validation.hasErrors()) {
 
             renderArgs.put("imageLargePath", imageLargePath);
@@ -548,10 +553,12 @@ public class OperateGoods extends Controller {
             for (Long id : ids) {
                 models.sales.Goods goods = Goods.findById(id);
                 Supplier supplier = Supplier.findById(goods.supplierId);
-                if (supplier != null && StringUtils.isNotEmpty(supplier.email)) {
+                if (supplier != null) {
+                    String email = supplier.salesEemail;
+                    if (StringUtils.isBlank(email)) email = "bd@seewi.com.cn";
                     //发送提醒邮件
                     MailMessage mailMessage = new MailMessage();
-                    mailMessage.addRecipient(supplier.email);
+                    mailMessage.addRecipient(email);
                     mailMessage.setSubject(Play.mode.isProd() ? "商品下架" : "商品下架【测试】");
                     mailMessage.putParam("date", DateUtil.getNowTime());
                     mailMessage.putParam("supplierName", supplier.fullName);
@@ -609,6 +616,6 @@ public class OperateGoods extends Controller {
         }
         return true;
     }
-    
+
 
 }

@@ -112,6 +112,9 @@ public class Supplier extends Model {
     public String remark;
     @Email
     public String email;
+    @Email
+    @Column(name = "sales_email")
+    public String salesEmail;
     /**
      * 删除状态
      */
@@ -188,6 +191,7 @@ public class Supplier extends Model {
         sp.position = supplier.position;
         sp.userName = supplier.userName;
         sp.email = supplier.email;
+        sp.salesEmail = supplier.salesEmail;
         sp.updatedAt = new Date();
         sp.save();
     }

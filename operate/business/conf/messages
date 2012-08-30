@@ -39,15 +39,14 @@ validation.moreThanLastLevel=%s不能超过前一级别的VIP加价!
 validation.beforeThanEffectiveAt=%s不能早于有效期开始时间!
 validation.beforeThanSecKillBeginAt=%s不能早于秒杀开始时间!
 validation.phone=无效的电话!
-
+validation.useEndTime=使用结束时间要在06：00之前！
 validation.largarThanBaseSale=%s要小于或等于库存!
-
 
 validation.beforeThanUseTime=%s要大于开始时间!
 validation.allRequiredUseTime=请把可用时段输入完整!
 validation.noShop=该商户没有门店，请先为商户添加门店！
 validation.existed=%s已经存在！
-
+validation.useWeekDay=请选择%s!
 goods.materialType=券类型
 
 pointGoods.materialType=积分商品类型
@@ -70,7 +69,7 @@ goods.supplierId=商户
 goods.supplier=商户
 goods.no=编号
 goods.name=名称
-
+goods.useWeekDayAll=指定消费日期
 secKillGoods.goods.id=商品ID
 secKillGoods.salePrice=秒杀价
 secKillGoods.imagePath=图片
@@ -169,6 +168,7 @@ supplier.remark=备注
 supplier.status=状态
 supplier.position=负责人职务
 supplier.email=邮箱
+supplier.salesEmail=销售专员邮箱
 image=Logo
 supplier.mobile=负责人手机
 supplier.phone=负责人电话

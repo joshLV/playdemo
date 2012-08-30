@@ -54,7 +54,10 @@ public class EnsmsConsumerVerifyTest extends ConsumerSmsVerifyBaseTest {
     public void 正常消费者验证过程() {
         testNormalConsumerCheck(getTheMessageSender());
     }
-    
+    @Test
+    public void 消费者验证券不在适用范围内() {
+        testNotInVerifyTime(getTheMessageSender());
+    }
     /**
      * 消息应当是数字开头
      */

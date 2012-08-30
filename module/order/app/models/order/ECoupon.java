@@ -2,13 +2,7 @@ package models.order;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -63,10 +57,10 @@ public class ECoupon extends Model {
 
     static {
         String useProductSerialReplyCode = Play.configuration.getProperty(
-                        KEY_USE_PRODUCT_SERIAL_REPLYCODE,
-                        "false");
+                KEY_USE_PRODUCT_SERIAL_REPLYCODE,
+                "false");
         USE_PRODUCT_SERIAL_REPLYCODE = Boolean
-                        .parseBoolean(useProductSerialReplyCode);
+                .parseBoolean(useProductSerialReplyCode);
     }
 
     @ManyToOne
@@ -109,12 +103,6 @@ public class ECoupon extends Model {
 
     @Column(name = "effective_at")
     public Date effectiveAt;
-
-    @Column(name = "use_begin_time")
-    public String useBeginTime;
-
-    @Column(name = "use_end_time")
-    public String useEndTime;
 
     @Column(name = "expire_at")
     public Date expireAt;
@@ -190,9 +178,6 @@ public class ECoupon extends Model {
         this.createdAt = new Date();
         this.effectiveAt = goods.effectiveAt;
         this.expireAt = goods.expireAt;
-        this.useBeginTime = goods.useBeginTime;
-        this.useEndTime = goods.useEndTime;
-
         this.consumedAt = null;
         this.refundAt = null;
         this.refundPrice = new BigDecimal(0);
@@ -204,16 +189,16 @@ public class ECoupon extends Model {
         this.lockVersion = 0;
         if (USE_PRODUCT_SERIAL_REPLYCODE) {
             this.replyCode = generateAvailableReplayCode(order.userId,
-                            order.userType, goods);
+                    order.userType, goods);
         } else {
             this.replyCode = generateAvailableReplayCode(order.userId,
-                            order.userType);
+                    order.userType);
         }
     }
 
     /**
      * 生成当前用户唯一的ReplyCode，用于发送短信.
-     * 
+     *
      * @param userId
      * @param userType
      * @return
@@ -238,31 +223,30 @@ public class ECoupon extends Model {
     }
 
     private boolean isNotUniqueReplyCode(String randomNumber, long userId,
-                    AccountType userType) {
+                                         AccountType userType) {
         if ("0000".equals(randomNumber)) {
             return true;
         }
         return ECoupon.find(
-                        "from ECoupon where replyCode=? and order.userId=? and order.userType=?",
-                        randomNumber, userId, userType).fetch().size() > 0;
+                "from ECoupon where replyCode=? and order.userId=? and order.userType=?",
+                randomNumber, userId, userType).fetch().size() > 0;
     }
 
     private boolean isNotUniqueEcouponSn(String randomNumber) {
         return ECoupon.find("from ECoupon where eCouponSn=?", randomNumber)
-                        .fetch().size() > 0;
+                .fetch().size() > 0;
     }
 
     /**
      * 生成当前用户相对于商户某一系列商品的ReplyCode，用于发送短信. 即用户在一个商户购买的同一系列商品都在一个短信下.
-     * 
+     *
      * @param userId
      * @param userType
-     * @param goods
-     *            商品，通过供应商和系列号分配，如果无系列号，使用商品ID，这样同一个商品会使用相同的replyCode
+     * @param goods    商品，通过供应商和系列号分配，如果无系列号，使用商品ID，这样同一个商品会使用相同的replyCode
      * @return
      */
     private String generateAvailableReplayCode(long userId,
-                    AccountType userType, Goods goods) {
+                                               AccountType userType, Goods goods) {
         ECoupon ecoupon = getLastECoupon(userId, userType, goods);
         if (ecoupon != null) {
             return ecoupon.replyCode;
@@ -279,24 +263,22 @@ public class ECoupon extends Model {
     }
 
     private ECoupon getLastECoupon(long userId, AccountType userType,
-                    Goods goods) {
+                                   Goods goods) {
         if (goods.groupCode != null) {
             return ECoupon.find(
-                            "from ECoupon where order.userId=? and order.userType=? and goods.groupCode=?",
-                            userId, userType, goods.groupCode).first();
+                    "from ECoupon where order.userId=? and order.userType=? and goods.groupCode=?",
+                    userId, userType, goods.groupCode).first();
         }
         return ECoupon.find(
-                        "from ECoupon where order.userId=? and order.userType=? and goods.id=?",
-                        userId, userType, goods.id).first();
+                "from ECoupon where order.userId=? and order.userType=? and goods.id=?",
+                userId, userType, goods.id).first();
     }
 
     /**
      * 根据页面录入券号查询对应信息
-     * 
-     * @param eCouponSn
-     *            券号
-     * @param supplierId
-     *            商户ID
+     *
+     * @param eCouponSn  券号
+     * @param supplierId 商户ID
      * @return ECoupon 券信息
      */
     public static ECoupon query(String eCouponSn, Long supplierId) {
@@ -328,9 +310,8 @@ public class ECoupon extends Model {
 
     /**
      * 是否属于所在消费门店
-     * 
-     * @param shopId
-     *            门店ID
+     *
+     * @param shopId 门店ID
      * @return
      */
     public boolean isBelongShop(Long shopId) {
@@ -347,7 +328,7 @@ public class ECoupon extends Model {
     }
 
     public void consumeAndPayCommission(Long shopId, Long operateUserId,
-                    SupplierUser supplierUser, VerifyCouponType type) {
+                                        SupplierUser supplierUser, VerifyCouponType type) {
         if (consumed(shopId, operateUserId, supplierUser, type)) {
             payCommission();
         }
@@ -355,11 +336,11 @@ public class ECoupon extends Model {
 
     /**
      * 优惠券被消费。 修改优惠券状态、发佣金、给商户打钱
-     * 
+     *
      * @return
      */
     private boolean consumed(Long shopId, Long operateUserId,
-                    SupplierUser supplierUser, VerifyCouponType type) {
+                             SupplierUser supplierUser, VerifyCouponType type) {
         if (this.status != ECouponStatus.UNCONSUMED) {
             return false;
         }
@@ -378,11 +359,11 @@ public class ECoupon extends Model {
 
     public void payCommission() {
         Account supplierAccount = AccountUtil
-                        .getSupplierAccount(orderItems.goods.supplierId);
+                .getSupplierAccount(orderItems.goods.supplierId);
 
         // 给商户打钱
         TradeBill consumeTrade = TradeUtil.createConsumeTrade(eCouponSn,
-                        supplierAccount, originalPrice, order.getId());
+                supplierAccount, originalPrice, order.getId());
         TradeUtil.success(consumeTrade, "券消费(" + order.description + ")");
 
         BigDecimal platformCommission = BigDecimal.ZERO;
@@ -397,11 +378,11 @@ public class ECoupon extends Model {
             // 如果是在一百券网站下的单，还要给一百券佣金
             if (order.userType == AccountType.CONSUMER) {
                 TradeBill uhuilaCommissionTrade = TradeUtil
-                                .createCommissionTrade(
-                                                AccountUtil.getUhuilaAccount(),
-                                                salePrice.subtract(resalerPrice),
-                                                eCouponSn,
-                                                order.getId());
+                        .createCommissionTrade(
+                                AccountUtil.getUhuilaAccount(),
+                                salePrice.subtract(resalerPrice),
+                                eCouponSn,
+                                order.getId());
 
                 TradeUtil.success(uhuilaCommissionTrade, order.description);
             }
@@ -410,19 +391,19 @@ public class ECoupon extends Model {
         if (platformCommission.compareTo(BigDecimal.ZERO) >= 0) {
             // 给优惠券平台佣金
             TradeBill platformCommissionTrade = TradeUtil
-                            .createCommissionTrade(
-                                            AccountUtil.getPlatformCommissionAccount(),
-                                            platformCommission,
-                                            eCouponSn,
-                                            order.getId());
+                    .createCommissionTrade(
+                            AccountUtil.getPlatformCommissionAccount(),
+                            platformCommission,
+                            eCouponSn,
+                            order.getId());
             TradeUtil.success(platformCommissionTrade, order.description);
         }
 
         if (rebateValue != null && rebateValue.compareTo(BigDecimal.ZERO) > 0) {
             TradeBill rabateTrade = TradeUtil.createTransferTrade(
-                            AccountUtil.getUhuilaAccount(),
-                            AccountUtil.getPlatformIncomingAccount(),
-                            rebateValue, BigDecimal.ZERO);
+                    AccountUtil.getUhuilaAccount(),
+                    AccountUtil.getPlatformIncomingAccount(),
+                    rebateValue, BigDecimal.ZERO);
             rabateTrade.orderId = this.order.id;
             TradeUtil.success(rabateTrade, "活动折扣费" + rebateValue);
         }
@@ -430,25 +411,22 @@ public class ECoupon extends Model {
 
     /**
      * 商家券号列表
-     * 
-     * @param supplierId
-     *            商户ID
-     * @param pageNumber
-     *            页数
-     * @param pageSize
-     *            记录数
+     *
+     * @param supplierId 商户ID
+     * @param pageNumber 页数
+     * @param pageSize   记录数
      * @return ordersPage 列表信息
      */
     public static ModelPaginator<ECoupon> queryCoupons(Long supplierId,
-                    int pageNumber, int pageSize) {
+                                                       int pageNumber, int pageSize) {
         ModelPaginator ordersPage;
         if (supplierId != null) {
             ordersPage = new ModelPaginator(ECoupon.class,
-                            "goods.supplierId = ?", supplierId)
-                            .orderBy("createdAt desc");
+                    "goods.supplierId = ?", supplierId)
+                    .orderBy("createdAt desc");
         } else {
             ordersPage = new ModelPaginator(ECoupon.class)
-                            .orderBy("createdAt desc");
+                    .orderBy("createdAt desc");
         }
 
         ordersPage.setPageNumber(pageNumber);
@@ -459,22 +437,19 @@ public class ECoupon extends Model {
 
     /**
      * 券号列表
-     * 
-     * @param condition
-     *            条件
-     * @param pageNumber
-     *            页数
-     * @param pageSize
-     *            记录数
+     *
+     * @param condition  条件
+     * @param pageNumber 页数
+     * @param pageSize   记录数
      * @return couponsPage 券记录
      */
     public static JPAExtPaginator<ECoupon> query(CouponsCondition condition,
-                    int pageNumber, int pageSize) {
+                                                 int pageNumber, int pageSize) {
         JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
-                        ("ECoupon e", "e", ECoupon.class,
-                                        condition.getFilter(),
-                                        condition.getParamMap())
-                                        .orderBy("e.consumedAt desc,e.createdAt desc");
+                ("ECoupon e", "e", ECoupon.class,
+                        condition.getFilter(),
+                        condition.getParamMap())
+                .orderBy("e.consumedAt desc,e.createdAt desc");
 
         couponsPage.setPageNumber(pageNumber);
         couponsPage.setPageSize(pageSize);
@@ -483,22 +458,19 @@ public class ECoupon extends Model {
 
     /**
      * 会员中心 券号列表
-     * 
-     * @param condition
-     *            条件
-     * @param pageNumber
-     *            页数
-     * @param pageSize
-     *            记录数
+     *
+     * @param condition  条件
+     * @param pageNumber 页数
+     * @param pageSize   记录数
      * @return couponsPage 券记录
      */
     public static JPAExtPaginator<ECoupon> getUserCoupons(
-                    CouponsCondition condition, int pageNumber, int pageSize) {
+            CouponsCondition condition, int pageNumber, int pageSize) {
         JPAExtPaginator<ECoupon> couponsPage = new JPAExtPaginator<>
-                        ("ECoupon e", "e", ECoupon.class,
-                                        condition.getFilter(),
-                                        condition.getParamMap())
-                                        .orderBy("e.createdAt desc");
+                ("ECoupon e", "e", ECoupon.class,
+                        condition.getFilter(),
+                        condition.getParamMap())
+                .orderBy("e.createdAt desc");
 
         couponsPage.setPageNumber(pageNumber);
         couponsPage.setPageSize(pageSize);
@@ -507,25 +479,23 @@ public class ECoupon extends Model {
 
     /**
      * 退款
-     * 
-     * @param eCoupon
-     *            券信息
-     * @param userId
-     *            用户信息
+     *
+     * @param eCoupon 券信息
+     * @param userId  用户信息
      * @return
      */
     public static String applyRefund(ECoupon eCoupon, Long userId,
-                    AccountType accountType) {
+                                     AccountType accountType) {
         String returnFlg = "{\"error\":\"ok\"}";
 
         if (eCoupon == null || eCoupon.order.userId != userId
-                        || eCoupon.order.userType != accountType) {
+                || eCoupon.order.userType != accountType) {
             returnFlg = "{\"error\":\"no such eCoupon\"}";
             return returnFlg;
         }
 
         if (eCoupon.status == ECouponStatus.CONSUMED
-                        || eCoupon.status == ECouponStatus.REFUND) {
+                || eCoupon.status == ECouponStatus.REFUND) {
             returnFlg = "{\"error\":\"can not apply refund with this goods\"}";
             return returnFlg;
         }
@@ -543,28 +513,28 @@ public class ECoupon extends Model {
             eCoupon.order.refundedPromotionAmount = BigDecimal.ZERO;
         }
         List<ECoupon> eCoupons = ECoupon.find("byOrderAndStatus",
-                        eCoupon.order, ECouponStatus.CONSUMED).fetch();
+                eCoupon.order, ECouponStatus.CONSUMED).fetch();
         for (ECoupon c : eCoupons) {
             consumedAmount = consumedAmount.add(eCoupon.salePrice);
         }
         BigDecimal usedPromotionAmount = eCoupon.order.refundedPromotionAmount
-                        .add(consumedAmount);
+                .add(consumedAmount);
         if (eCoupon.order.promotionBalancePay != null
-                        && eCoupon.order.promotionBalancePay
-                                        .compareTo(usedPromotionAmount) > 0) {
+                && eCoupon.order.promotionBalancePay
+                .compareTo(usedPromotionAmount) > 0) {
             promotionAmount = cashAmount.min(eCoupon.order.promotionBalancePay
-                            .subtract(usedPromotionAmount));
+                    .subtract(usedPromotionAmount));
             cashAmount = cashAmount.subtract(promotionAmount);
         }
 
         // 创建退款交易
         TradeBill tradeBill = TradeUtil.createRefundTrade(account, cashAmount,
-                        promotionAmount, eCoupon.order.getId(),
-                        eCoupon.eCouponSn);
+                promotionAmount, eCoupon.order.getId(),
+                eCoupon.eCouponSn);
 
         if (!TradeUtil.success(tradeBill,
-                        "退款成功.券号:" + eCoupon.getMaskedEcouponSn() + ",商品:"
-                                        + eCoupon.goods.name)) {
+                "退款成功.券号:" + eCoupon.getMaskedEcouponSn() + ",商品:"
+                        + eCoupon.goods.name)) {
             returnFlg = "{\"error\":\"refound failed\"}";
             return returnFlg;
         }
@@ -572,7 +542,7 @@ public class ECoupon extends Model {
         // 更新已退款的活动金金额
         if (promotionAmount.compareTo(BigDecimal.ZERO) > 0) {
             eCoupon.order.refundedPromotionAmount = eCoupon.order.refundedPromotionAmount
-                            .add(promotionAmount);
+                    .add(promotionAmount);
             eCoupon.order.save();
         }
 
@@ -592,7 +562,7 @@ public class ECoupon extends Model {
 
     /**
      * 得到隐藏处理过的券号
-     * 
+     *
      * @return 券号
      */
     public String getMaskedEcouponSn() {
@@ -609,7 +579,7 @@ public class ECoupon extends Model {
 
     /**
      * 获取后n位券号.
-     * 
+     *
      * @param count
      * @return
      */
@@ -622,7 +592,7 @@ public class ECoupon extends Model {
     }
 
     public static List<ECoupon> findByUserAndIds(List<Long> ids, Long userId,
-                    AccountType accountType) {
+                                                 AccountType accountType) {
         String sql = "select e from ECoupon e where e.id in :ids and e.order.userId = :userId and e.order.userType = :userType";
         Query query = ECoupon.em().createQuery(sql);
         query.setParameter("ids", ids);
@@ -633,7 +603,7 @@ public class ECoupon extends Model {
 
     /**
      * 得到可以消费的门店
-     * 
+     *
      * @return 券号
      */
     public String getConsumedShop() {
@@ -647,43 +617,80 @@ public class ECoupon extends Model {
     }
 
     /**
-     * 判断指定时间是否是可用的验证时间范围.
-     * 
+     * 判断指定时间是否是指定消费日并且在可用的验证时间范围.
+     *
      * @param currentTime
      * @return
      */
     public boolean checkVerifyTimeRegion(Date currentTime) {
-        if (StringUtils.isNotBlank(this.useBeginTime)
-                        && StringUtils.isNotBlank(this.useEndTime)) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
-            String date = dateFormat.format(currentTime);
-            if (!(date.compareTo(this.useBeginTime) >= 0 && date
-                            .compareTo(this.useEndTime) <= 0)) {
-                return false;
+        Calendar ca = Calendar.getInstance();
+        ca.setTime(currentTime);
+        String week = String.valueOf(ca.get(Calendar.DAY_OF_WEEK) - 1);
+        String useBeginTime = this.goods.useBeginTime;
+        String useEndTime = this.goods.useEndTime;
+        //如果选择了指定日期，并且现在时间不在指定时间范围内的，返回false
+        String useWeekDay = this.goods.useWeekDay;
+        if (useWeekDay != null && useWeekDay.contains(week)) {
+            if (StringUtils.isNotBlank(useBeginTime)
+                    && StringUtils.isNotBlank(useEndTime)) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
+                String date = dateFormat.format(currentTime);
+                //在跨天的时间范围内，比如20：00~02:00
+                if (useBeginTime.compareTo(useEndTime) > 0) {
+                    return date.compareTo(useBeginTime) > 0
+                            || date.compareTo(useEndTime) < 0;
+                } else {
+                    return (date.compareTo(useBeginTime) >= 0 && date.compareTo(useEndTime) <= 0);
+                }
             }
+        } else {
+            return false;
         }
+
         return true;
+    }
+
+
+    /**
+     * 判断开始使用时间和结束时间的大小
+     *
+     * @param currentTime
+     * @return
+     */
+    public boolean checkUseBeginTimeAndUseEndTime(Date currentTime) {
+
+        String useBeginTime = this.goods.useBeginTime;
+        String useEndTime = this.goods.useEndTime;
+        SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
+        String date = dateFormat.format(currentTime);
+        //判断是否显示次日
+        if (useBeginTime.compareTo(useEndTime) < 0 && date.compareTo(useBeginTime) >= 0 && date.compareTo(useEndTime) <= 0) {
+            return false;
+
+        } else if (useBeginTime.compareTo(useEndTime) > 0) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
      * 按手机号及replyCode查出可用的ECoupon
-     * 
-     * @param mobile
-     *            手机号
-     * @param replyCode
-     *            返回码
+     *
+     * @param mobile    手机号
+     * @param replyCode 返回码
      * @return 电子券
      */
     public static List<ECoupon> findByMobileAndCode(String mobile,
-                    String replyCode) {
+                                                    String replyCode) {
         return ECoupon.find(
-                        "from ECoupon where orderItems.phone=? and replyCode=?",
-                        mobile, replyCode).fetch();
+                "from ECoupon where orderItems.phone=? and replyCode=?",
+                mobile, replyCode).fetch();
     }
 
     /**
      * 冻结此券
-     * 
+     *
      * @param id
      */
     public static void freeze(long id) {
@@ -692,7 +699,7 @@ public class ECoupon extends Model {
 
     /**
      * 解冻此券
-     * 
+     *
      * @param id
      */
     public static void unfreeze(long id) {
@@ -714,20 +721,20 @@ public class ECoupon extends Model {
     private static void send(ECoupon eCoupon) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
         SMSUtil.send("【券市场】"
-                        + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title
-                                        : (eCoupon.goods.name
-                                                        +
-                                                        "["
-                                                        + eCoupon.goods.faceValue + "元]"))
-                        + "券号" + eCoupon.eCouponSn + "," +
-                        "截止" + dateFormat.format(eCoupon.expireAt)
-                        + ",客服：4006262166",
-                        eCoupon.orderItems.phone, eCoupon.replyCode);
+                + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title
+                : (eCoupon.goods.name
+                +
+                "["
+                + eCoupon.goods.faceValue + "元]"))
+                + "券号" + eCoupon.eCouponSn + "," +
+                "截止" + dateFormat.format(eCoupon.expireAt)
+                + ",客服：4006262166",
+                eCoupon.orderItems.phone, eCoupon.replyCode);
     }
 
     /**
      * 运营后台发送短信
-     * 
+     *
      * @param id
      * @return
      */
@@ -743,7 +750,7 @@ public class ECoupon extends Model {
 
     /**
      * 会员中心发送短信
-     * 
+     *
      * @param id
      * @return
      */
@@ -751,8 +758,8 @@ public class ECoupon extends Model {
         ECoupon eCoupon = ECoupon.findById(id);
         boolean sendFlag = false;
         if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED
-                        && eCoupon.downloadTimes > 0 && eCoupon
-                        .downloadTimes < 4) {
+                && eCoupon.downloadTimes > 0 && eCoupon
+                .downloadTimes < 4) {
             send(eCoupon);
             eCoupon.downloadTimes--;
             eCoupon.save();
@@ -763,15 +770,14 @@ public class ECoupon extends Model {
 
     /**
      * 返回券的总金额.
-     * 
-     * @param condition
-     *            券查询条件
+     *
+     * @param condition 券查询条件
      * @return
      */
     public static BigDecimal sum(CouponsCondition condition) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("select sum(e.originalPrice) " +
-                        "from ECoupon e where " + condition.getFilter());
+                "from ECoupon e where " + condition.getFilter());
         for (String key : condition.getParamMap().keySet()) {
             q.setParameter(key, condition.getParamMap().get(key));
         }
@@ -779,7 +785,7 @@ public class ECoupon extends Model {
     }
 
     public static List<ECoupon> selectCheckECoupons(BigDecimal payValue,
-                    List<ECoupon> ecoupons) {
+                                                    List<ECoupon> ecoupons) {
         Collections.sort(ecoupons, new Comparator<ECoupon>() {
             @Override
             public int compare(ECoupon e1, ECoupon e2) {
@@ -803,7 +809,7 @@ public class ECoupon extends Model {
 
     /**
      * 统计券金额
-     * 
+     *
      * @param couponPage
      * @return
      */
@@ -813,7 +819,7 @@ public class ECoupon extends Model {
         for (ECoupon coupon : couponPage) {
             if (coupon.status == ECouponStatus.REFUND) {
                 amount = amount.add(coupon.refundPrice == null ? BigDecimal.ZERO
-                                : coupon.refundPrice);
+                        : coupon.refundPrice);
             } else {
                 amount = amount.add(coupon.salePrice);
             }
@@ -823,10 +829,47 @@ public class ECoupon extends Model {
 
     /**
      * 取得过期的天数
-     * 
+     *
      * @return
      */
     public Long getExpiredAt() {
         return DateUtil.diffDay(this.expireAt);
+    }
+
+    public String getWeek() {
+        String week = "";
+        String useWeekDay = this.goods.useWeekDay;
+        String[] arrWeek = StringUtils.isBlank(useWeekDay) ? null : useWeekDay.split(",");
+        String[] weekDay = {"星期一,", "星期二,", "星期三,", "星期四,", "星期五,", "星期六,", "星期日,"};
+        if (arrWeek != null) {
+            for (String day : arrWeek) {
+                week += weekDay[Integer.parseInt(day) - 1];
+            }
+        }
+        return week;
+    }
+
+    public String getCheckInfo() {
+        String info = "对不起，只能在";
+        String useWeekDay = this.goods.useWeekDay;
+        boolean isWeekDayAll = false;
+        if ((useWeekDay != null && useWeekDay.length() == 13)) {
+            isWeekDayAll = true;
+        }
+
+        String week = this.getWeek();
+        if (!isWeekDayAll) {
+            if (!"".equals(week)) week = week.substring(0, week.length() - 1);
+            info += week;
+        } else {
+            info += "每天";
+        }
+        info += "的" + this.goods.useBeginTime + "~";
+
+        if (this.checkUseBeginTimeAndUseEndTime(new Date())) {
+            info += "次日";
+        }
+        info += this.goods.useEndTime + "时间内使用该券 ! ";
+        return info;
     }
 }

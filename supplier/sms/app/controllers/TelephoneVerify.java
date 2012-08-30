@@ -1,7 +1,7 @@
 package controllers;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -12,8 +12,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 import play.Logger;
 import play.Play;
 import play.mvc.Controller;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author likang
@@ -79,8 +80,12 @@ public class TelephoneVerify extends Controller {
             Logger.info("telephone verify failed: coupon not found");
             renderText("7");//对不起，未找到此券
         }
-
-        if (!ecoupon.goods.supplierId.equals(supplierUser.supplier.getId())){
+        if (!ecoupon.checkVerifyTimeRegion(new Date())) {
+            String info = ecoupon.getCheckInfo();
+            Logger.info("telephone verify failed: %s", info);
+            renderText("11");//对不起，该券无法消费
+        }
+        if (!ecoupon.goods.supplierId.equals(supplierUser.supplier.getId())) {
             Logger.info("telephone verify failed: wrong supplier");
             renderText("7");//对不起，未找到此券  商户错误 todo
         }
@@ -94,10 +99,10 @@ public class TelephoneVerify extends Controller {
         } else if (ecoupon.expireAt != null && ecoupon.expireAt.before(new Date())) {
             Logger.info("telephone verify failed: coupon expired. expiredAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.expireAt));
             renderText("12");//对不起，该券已过期
-        } else if (ecoupon.effectiveAt != null && ecoupon.effectiveAt.after(new Date()))  {
+        } else if (ecoupon.effectiveAt != null && ecoupon.effectiveAt.after(new Date())) {
             Logger.info("telephone verify failed: coupon not been activated. effectiveAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.effectiveAt));
             renderText("11");//对不起，该券无法消费  todo 对不起，该券未到生效时间
-        } else if (!ecoupon.checkVerifyTimeRegion(new Date())){
+        } else if (!ecoupon.checkVerifyTimeRegion(new Date())) {
             Logger.info("telephone verify failed: coupon not been activated. effectiveAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.effectiveAt));
             renderText("11");//对不起，该券无法消费  todo 对不起，该券在该时段无法消费
         } else {

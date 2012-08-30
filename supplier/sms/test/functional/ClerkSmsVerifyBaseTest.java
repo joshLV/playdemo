@@ -3,6 +3,7 @@ package functional;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
+
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierRole;
@@ -38,7 +39,7 @@ import controllers.EnSmsReceivers;
  * Time: 下午2:09
  */
 public class ClerkSmsVerifyBaseTest extends FunctionalTest {
-    
+
     @Test
     public void 类型检查() {
         assertTrue(new EnSmsReceivers() instanceof Controller);
@@ -46,6 +47,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
     /**
      * 使用正则匹配结果.
+     *
      * @param pattern
      * @param content
      */
@@ -59,16 +61,18 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
     protected static void assertSMSContentLength(String content) {
         assertTrue("短信内容(" + content + ")超过67字符, size:" + content.length(), content.length() <= 67);
     }
-    
+
     /**
      * 执行特定消息发送代码的接口.
-     * @author <a href="mailto:tangliqun@uhuila.com">唐力群</a>
      *
+     * @author <a href="mailto:tangliqun@uhuila.com">唐力群</a>
      */
     public interface MessageSender {
         public Response doMessageSend(String mobile, ECoupon ecoupon);
-    };
-    
+    }
+
+    ;
+
     public interface InvalidMessageSender {
         public Response doMessageSend(String msg);
     }
@@ -128,6 +132,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
     /**
      * 测试正常验证过程
+     *
      * @param sendMessage
      */
     public void testNormalClerkCheck(MessageSender messageSender) {
@@ -157,17 +162,78 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
         // 消费者短信
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertSMSContentMatch("【券市场】您尾号" + getLastString(ecoupon.eCouponSn, 4) + "券于\\d+月\\d+日\\d+时\\d+分成功消费，门店：优惠拉。客服4006262166", 
+        assertSMSContentMatch("【券市场】您尾号" + getLastString(ecoupon.eCouponSn, 4) + "券于\\d+月\\d+日\\d+时\\d+分成功消费，门店：优惠拉。客服4006262166",
                 msg.getContent());
         // 店员短信
         msg = MockSMSProvider.getLastSMSMessage();
-        assertSMSContentMatch("【券市场】" + getBeginString(ecoupon.orderItems.phone, 3) + "\\*\\*\\*\\*\\*" + 
+        assertSMSContentMatch("【券市场】" + getBeginString(ecoupon.orderItems.phone, 3) + "\\*\\*\\*\\*\\*" +
                 getLastString(ecoupon.orderItems.phone, 3) + "尾号" + getLastString(ecoupon.eCouponSn, 4) + "券（面值" +
-                		ecoupon.faceValue + "元）于\\d+月\\d+日\\d+时\\d+分在优惠拉验证成功。客服4006262166", msg.getContent());
+                ecoupon.faceValue + "元）于\\d+月\\d+日\\d+时\\d+分在优惠拉验证成功。客服4006262166", msg.getContent());
     }
-    
+
+    /**
+     * 测试正常验证过程中不再验证时间范围内
+     *
+     * @param sendMessage
+     */
+    public void testNotInVerifyTime(MessageSender messageSender) {
+        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
+        ECoupon ecoupon = ECoupon.findById(id);
+        ecoupon.status = ECouponStatus.UNCONSUMED;
+        ecoupon.save();
+        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
+        Goods goods = Goods.findById(goodsId);
+        goods.useWeekDay = "1,2";
+        goods.useBeginTime = "10:00";
+        goods.useEndTime = "12:00";
+        goods.save();
+
+        Long supplierId = (Long) play.test.Fixtures.idCache.get("models.supplier.Supplier-kfc");
+        Supplier supplier = Supplier.findById(supplierId);
+        Long shopId = (Long) play.test.Fixtures.idCache.get("models.sales.Shop-Shop_4");
+        Shop shop = Shop.findById(shopId);
+        shop.supplierId = supplierId;
+        shop.save();
+
+        Long brandId = (Long) play.test.Fixtures.idCache.get("models.sales.Brand-Brand_2");
+        Brand brand = Brand.findById(brandId);
+        brand.supplier = supplier;
+        brand.save();
+
+        Http.Response response = messageSender.doMessageSend("15900002342", ecoupon);
+
+        assertStatus(200, response);
+
+        // 消费者短信
+        SMSMessage msg = MockSMSProvider.getLastSMSMessage();
+        assertSMSContentMatch("【券市场】对不起，只能在星期一,星期二的10:00~12:00时间内使用该券 !", msg.getContent());
+
+        goods = Goods.findById(goodsId);
+        goods.useWeekDay = "3";
+        goods.useBeginTime = "23:00";
+        goods.useEndTime = "02:00";
+        goods.save();
+        response = messageSender.doMessageSend("15900002342", ecoupon);
+
+        assertStatus(200, response);
+        msg = MockSMSProvider.getLastSMSMessage();
+        assertSMSContentMatch("【券市场】对不起，只能在星期三的23:00~次日02:00时间内使用该券 !", msg.getContent());
+
+        goods = Goods.findById(goodsId);
+        goods.useWeekDay = "1,2,3,4,5,6,7";
+        goods.useBeginTime = "08:00";
+        goods.useEndTime = "12:00";
+        goods.save();
+        response = messageSender.doMessageSend("15900002342", ecoupon);
+
+        assertStatus(200, response);
+        msg = MockSMSProvider.getLastSMSMessage();
+        assertSMSContentMatch("【券市场】对不起，只能在每天的08:00~12:00时间内使用该券 !", msg.getContent());
+    }
+
     /**
      * 券格式无效的测试
+     *
      * @param messageSender
      */
     public void testInvalidFormatMessage(InvalidMessageSender messageSender) {
@@ -175,12 +241,13 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         assertEquals("Unsupport Message", response.out.toString());
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertSMSContentMatch("【券市场】券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：400-6262-166",
-                msg.getContent());      
+                msg.getContent());
     }
 
 
     /**
      * 券不存在.
+     *
      * @param messageSender
      */
     public void testEcouponNotExists(InvalidMessageSender messageSender) {
@@ -190,11 +257,12 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertSMSContentMatch("【券市场】您输入的券号" + couponNumber + "不存在，请与顾客确认，如有疑问请致电：400-6262-166",
-                msg.getContent());        
+                msg.getContent());
     }
 
     /**
      * 商户不存在.
+     *
      * @param messageSender
      */
     public void testInvalidSupplier(MessageSender messageSender) {
@@ -210,7 +278,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertSMSContentMatch("【券市场】" + supplier.fullName + "未在券市场登记使用，如有疑问请致电：400-6262-166",
-                msg.getContent());                              
+                msg.getContent());
     }
 
     /**
@@ -230,7 +298,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertSMSContentMatch("【券市场】" + supplier.fullName + "已被券市场锁定，如有疑问请致电：400-6262-166",
-                msg.getContent());              
+                msg.getContent());
     }
 
     /**
@@ -250,7 +318,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
         Response response = messageSender.doMessageSend("15900002342", ecoupon);
         assertContentEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店", response);
-        
+
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertSMSContentLength(msg.getContent());
         assertEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166", msg.getContent());
@@ -258,6 +326,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
     /**
      * 不是商户品牌的券号
+     *
      * @param messageSender
      */
     public void testTheGoodsFromOtherSupplier(MessageSender messageSender) {
@@ -265,7 +334,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         ECoupon ecoupon = ECoupon.findById(id);
 
         Response response = messageSender.doMessageSend("15900002342", ecoupon);
-        
+
         assertContentEquals("【券市场】店员工号无效，请核实工号是否正确或是否是肯德基门店", response);
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertSMSContentLength(msg.getContent());
@@ -290,14 +359,14 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         brand.supplier = supplier;
         brand.save();
 
-        Long  goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
+        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
         Goods goods = Goods.findById(goodsId);
         goods.supplierId = supplierId;
         goods.save();
         ECoupon ecoupon = ECoupon.findById(id);
 
         assertEquals(ECouponStatus.CONSUMED, ecoupon.status);
-        
+
         Http.Response response = messageSender.doMessageSend("15800002341", ecoupon);
         assertContentEquals("【券市场】券号" + ecoupon.eCouponSn + "已消费，无法再次消费", response);
 
@@ -308,7 +377,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertSMSContentLength(msg.getContent());
         assertEquals("【券市场】158*****341尾号" + getLastString(ecoupon.eCouponSn, 4) + "券（" + ecoupon
-                                .faceValue + "元）不能重复消费，已于" + df.format(ecoupon.consumedAt) + "在优惠拉消费过", msg.getContent());
+                .faceValue + "元）不能重复消费，已于" + df.format(ecoupon.consumedAt) + "在优惠拉消费过", msg.getContent());
     }
 
     /**
@@ -331,12 +400,12 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         brand.supplier = supplier;
         brand.save();
 
-        Long  goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
+        Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_004");
         Goods goods = Goods.findById(goodsId);
         goods.supplierId = supplierId;
         goods.save();
         ECoupon ecoupon = ECoupon.findById(id);
-        ecoupon.expireAt= DateUtil.getYesterday();
+        ecoupon.expireAt = DateUtil.getYesterday();
         ecoupon.save();
 
         Http.Response response = messageSender.doMessageSend("15800002341", ecoupon);
@@ -350,6 +419,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
     /**
      * 取后length位的字符.
+     *
      * @param str
      * @param length
      * @return
@@ -357,9 +427,10 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
     protected String getLastString(String str, int length) {
         return str.substring(str.length() - length);
     }
-    
+
     /**
      * 取前length位的字符.
+     *
      * @param str
      * @param length
      * @return
@@ -367,5 +438,5 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
     protected String getBeginString(String str, int length) {
         return str.substring(0, length);
     }
-    
+
 }

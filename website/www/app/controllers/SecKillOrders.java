@@ -191,14 +191,14 @@ public class SecKillOrders extends Controller {
 
         checkInventory(secKillGoodsItem, count);
         OrderItems orderItem = new OrderItems(order, secKillGoodsItem.secKillGoods.goods, count, receiverMobile,
-                secKillGoodsItem.salePrice, secKillGoodsItem.salePrice);
+                secKillGoodsItem.secKillGoods.goods.salePrice, secKillGoodsItem.secKillGoods.goods.salePrice);
         orderItem.secKillGoods = secKillGoodsItem.secKillGoods;
         orderItem.secKillGoodsItemId = secKillGoodsItem.id;
         orderItem.rebateValue = secKillGoodsItem.secKillGoods.goods.salePrice.subtract(secKillGoodsItem.salePrice);
         order.rebateValue = BigDecimal.ZERO;
         order.orderItems.add(orderItem);
-        order.amount = order.amount.add(secKillGoodsItem.salePrice.multiply(new BigDecimal(String.valueOf(count))));
-        order.needPay = order.amount;
+        order.amount = order.amount.add(secKillGoodsItem.secKillGoods.goods.salePrice.multiply(new BigDecimal(String.valueOf(count))));
+        order.needPay = order.amount.subtract(order.rebateValue);
     }
 
     private static void checkInventory(SecKillGoodsItem secKillGoodsItem,

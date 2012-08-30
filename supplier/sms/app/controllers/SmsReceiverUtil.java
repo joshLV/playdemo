@@ -1,12 +1,8 @@
 package controllers;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.FieldCheckUtil;
 import models.admin.SupplierUser;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
@@ -17,9 +13,12 @@ import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
 import play.Logger;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.FieldCheckUtil;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SmsReceiverUtil {
 
@@ -32,7 +31,7 @@ public class SmsReceiverUtil {
      */
     private static String checkClerk(String mobile, String msg, String code) {
         String[] couponArray = msg.split("#");
-        
+
         //验证店员是否存在
         String couponNumber = "";
         Logger.info("mobile=" + mobile + ", msg=" + msg + ", code=" + code);
@@ -51,6 +50,11 @@ public class SmsReceiverUtil {
                     sendSmsToClerk("【券市场】您输入的券号" + couponNumber + "不存在，请与顾客确认，如有疑问请致电：400-6262-166", mobile, code);
                     return ("【券市场】您输入的券号" + couponNumber + "不存在，请确认！");
                 } else {
+                    if (!ecoupon.checkVerifyTimeRegion(new Date())) {
+                        String info = ecoupon.getCheckInfo();
+                        sendSmsToClerk("【券市场】" + info + ",如有疑问请致电：400-6262-166", mobile, code);
+                        return ("【券市场】" + info);
+                    }
                     Long supplierId = ecoupon.goods.supplierId;
 
                     Supplier supplier = Supplier.findById(supplierId);
@@ -96,9 +100,9 @@ public class SmsReceiverUtil {
                                     + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费。客服4006262166",
                                     supplierUser.mobile, code);
                             return ("【券市场】您尾号" + getMaskedMobile(consumerPhone) + "的" + coupon + "券只能在" + dateFormat.format(ecoupon.goods.useBeginTime)
-                                    + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费");                      
+                                    + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费");
                         }
-                        
+
                         ecoupon.consumeAndPayCommission(shopId, null, supplierUser, VerifyCouponType.CLERK_MESSAGE);
 
                         coupon = coupon.substring(coupon.lastIndexOf("*") + 1);
@@ -119,7 +123,7 @@ public class SmsReceiverUtil {
                         // 发给店员
                         resendSmsToClerk("【券市场】" + getMaskedMobile(mobile) + "尾号" + couponLastCode + "券（" + ecoupon
                                 .faceValue + "元）不能重复消费，已于" + df.format(ecoupon.consumedAt) + "在" + shopName + "消费过", supplierUser.mobile, code);
-                        
+
                         return ("【券市场】券号" + couponNumber + "已消费，无法再次消费");
                     }
                 }
@@ -150,8 +154,14 @@ public class SmsReceiverUtil {
             }
             return ("Not Found the coupon");
         }
-        
+
         ECoupon ecoupon = ecoupons.get(0);
+        if (!ecoupon.checkVerifyTimeRegion(new Date())) {
+            String info = ecoupon.getCheckInfo();
+            sendSmsToClerk("【券市场】" + info + ",如有疑问请致电：400-6262-166", mobile, code);
+            return ("【券市场】" + info);
+        }
+
         Supplier supplier = Supplier.findById(ecoupon.goods.supplierId);
 
         if (supplier == null || supplier.deleted == DeletedStatus.DELETED) {
@@ -176,24 +186,24 @@ public class SmsReceiverUtil {
 
         // 有多张券，则需要指定验证金额.
         if (ecoupons.size() > 1) {
-        	BigDecimal amount = BigDecimal.ZERO;  //总面值
-        	for (ECoupon ec : ecoupons) {
-        		amount = amount.add(ec.faceValue);
-        	}
-        	amount = amount.setScale(0, BigDecimal.ROUND_HALF_UP); //四舍五入
+            BigDecimal amount = BigDecimal.ZERO;  //总面值
+            for (ECoupon ec : ecoupons) {
+                amount = amount.add(ec.faceValue);
+            }
+            amount = amount.setScale(0, BigDecimal.ROUND_HALF_UP); //四舍五入
 
             // 发给店员
             resendSmsToClerk("【券市场】" + getMaskedMobile(mobile) +
-            		"有多张可用券，请指导顾客回复数字工号*使用金额，如\"100112*200\"", 
-            		supplierUser.mobile, code);
+                    "有多张可用券，请指导顾客回复数字工号*使用金额，如\"100112*200\"",
+                    supplierUser.mobile, code);
             // 发给消费者
             resendSmsToConsumer("【券市场】您有多张可用券(总面值" + amount +
-            		"元)，请回复店员数字工号*使用金额，如\"100112*200\"，系统自动选择合适的券验证",
-            		mobile, code);
-            
-            return ("【券市场】有多张可用券，请回复数字工号*使用金额");        	
+                    "元)，请回复店员数字工号*使用金额，如\"100112*200\"，系统自动选择合适的券验证",
+                    mobile, code);
+
+            return ("【券市场】有多张可用券，请回复数字工号*使用金额");
         }
-        
+
         boolean canNotUserInThisShop = false;
 
         String shopName = "未知";
@@ -225,9 +235,9 @@ public class SmsReceiverUtil {
                             + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费。客服4006262166",
                             supplierUser.mobile, code);
                     return ("【券市场】您尾号" + couponLastCode + "券只能在" + dateFormat.format(ecoupon.goods.useBeginTime)
-                            + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费");                      
+                            + "至" + dateFormat.format(ecoupon.goods.useEndTime) + "时间段内消费，现在不能消费");
                 }
-                                
+
                 ecoupon.consumeAndPayCommission(shopId, null, supplierUser, VerifyCouponType.CONSUMER_MESSAGE);
 
                 // 发给店员
@@ -247,7 +257,7 @@ public class SmsReceiverUtil {
                 // 发给消费者
                 resendSmsToConsumer("【券市场】您尾号" + couponLastCode + "券不能重复消费，已于" + df.format(ecoupon.consumedAt)
                         + "在" + shopName + "消费过", mobile, code);
-                
+
                 return ("【券市场】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166");
             }
         }
@@ -262,7 +272,7 @@ public class SmsReceiverUtil {
 
     private static void sendSmsToClerk(String message, String mobile, String code) {
         SMSUtil.send2(message, mobile, code);
-    }    
+    }
 
     private static void resendSmsToConsumer(String message, String mobile, String code) {
         SMSUtil.send2(message, mobile, code);
@@ -270,8 +280,8 @@ public class SmsReceiverUtil {
 
     private static void resendSmsToClerk(String message, String mobile, String code) {
         SMSUtil.send(message, mobile, code);
-    }        
-    
+    }
+
     /**
      * 处理消费者手机号
      *
@@ -286,7 +296,7 @@ public class SmsReceiverUtil {
 
 
     public static String processMessage(String mobile, String msg,
-            String code) {
+                                        String code) {
         Logger.info("LingShiSMS: mobile=" + mobile + ", msg=" + msg + ", code=" + code);
 
         // 非法手机号
@@ -294,61 +304,63 @@ public class SmsReceiverUtil {
             Logger.warn("手机号%s非法", mobile);
             return "无效的手机号" + mobile;
         }
-        
+
         String result = null;
         if (isClerkMessage(mobile, msg)) {
             // 店员验证
             result = SmsReceiverUtil.checkClerk(mobile, msg, code);
         } else if (isCoumerMessageWithAmount(msg)) {
-        	String[] msgs = msg.split("\\*");  //前面正则表达式保证了msgs两个值都是数字型
+            String[] msgs = msg.split("\\*");  //前面正则表达式保证了msgs两个值都是数字型
             // 消费者验证的情况
             result = SmsReceiverUtil.checkConsumerWithAmount(mobile, msgs[0], new BigDecimal(msgs[1]), code);
         } else if (isConsumerMessageWithoutAmount(msg)) {
             // 消费者验证的情况
             result = SmsReceiverUtil.checkConsumer(mobile, msg, code);
         } else {
-        	// 如果手机号是店员
-        	if (SupplierUser.checkMobile(mobile)) {
-	            SMSUtil.send("【券市场】券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：400-6262-166",
-	                    mobile, code);
-	            result = "Unsupport Message";
-        	} else {
-	            SMSUtil.send("【券市场】不支持的命令，券验证请回复店员数字工号；或店员数字工号*验证金额，如299412*200",
-	                    mobile, code);
-	            result = "Unsupport Message";    		
-        	}
+            // 如果手机号是店员
+            if (SupplierUser.checkMobile(mobile)) {
+                SMSUtil.send("【券市场】券号格式错误，单个发送\"#券号\"，多个发送\"#券号#券号\"，如有疑问请致电：400-6262-166",
+                        mobile, code);
+                result = "Unsupport Message";
+            } else {
+                SMSUtil.send("【券市场】不支持的命令，券验证请回复店员数字工号；或店员数字工号*验证金额，如299412*200",
+                        mobile, code);
+                result = "Unsupport Message";
+            }
         }
         return result;
     }
 
     private static String checkConsumerWithAmount(String mobile, String jobNumber,
-            BigDecimal amount, String code) {
-	    return null;
+                                                  BigDecimal amount, String code) {
+        return null;
     }
 
-	private static Pattern CONSUMER_MSG_WITH_AMOUNT = Pattern.compile("(\\d+)\\*(\\d+)");
-    
+    private static Pattern CONSUMER_MSG_WITH_AMOUNT = Pattern.compile("(\\d+)\\*(\\d+)");
+
     /**
      * 检查消息是否为消费者消息
+     *
      * @param msg
      * @return
      */
-	private static boolean isConsumerMessageWithoutAmount(String msg) {
-	    return FieldCheckUtil.isNumeric(msg);
+    private static boolean isConsumerMessageWithoutAmount(String msg) {
+        return FieldCheckUtil.isNumeric(msg);
     }
 
-	private static boolean isCoumerMessageWithAmount(String msg) {
-	    Matcher m = CONSUMER_MSG_WITH_AMOUNT.matcher(msg);
-	    
-	    return m.matches();
+    private static boolean isCoumerMessageWithAmount(String msg) {
+        Matcher m = CONSUMER_MSG_WITH_AMOUNT.matcher(msg);
+
+        return m.matches();
     }
 
     /**
      * 检查消息是否为店员消息.
+     *
      * @param msg
      * @return
      */
-	private static boolean isClerkMessage(String mobile, String msg) {
-	    return SupplierUser.checkMobile(mobile) && msg.contains("#");
+    private static boolean isClerkMessage(String mobile, String msg) {
+        return SupplierUser.checkMobile(mobile) && msg.contains("#");
     }
 }

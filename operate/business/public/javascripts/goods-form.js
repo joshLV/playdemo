@@ -48,6 +48,15 @@ $(
             $("#status").val("ONSALE");
             $("#form").attr("target", "_self");
         });
+
+        $("#selectWeekDayAll").click(function () {
+            if (this.checked) {
+                $("[name='useWeekDay[]']").attr("checked", 'true');//全选
+            } else {
+                $("[name='useWeekDay[]']").removeAttr("checked");//取消
+                $("#goods_useWeekDay").val();
+            }
+        });
         $("#preview").click(function () {
             $("#status").val("UNCREATED");
             $("#form").attr("target", "_blank");
@@ -56,14 +65,27 @@ $(
             if (this.checked) {
                 this.value = true;
                 $("#isLottery").val(true)
-                if ($("#goods_supplierId").val() !=5){
-                     $("#err-isLottery").html("抽奖商品只能选择上海视惠信息科技有限公司！").css("color","#ff0000");
-                     $("#goods_supplierId").val(5);
+                if ($("#goods_supplierId").val() != 5) {
+                    $("#err-isLottery").html("抽奖商品只能选择上海视惠信息科技有限公司！").css("color", "#ff0000");
+                    $("#goods_supplierId").val(5);
                 }
             } else {
                 $("#isLottery").val(false)
                 $("#err-isLottery").html("");
             }
         });
+
+        $("input[name='useWeekDay[]'],#selectWeekDayAll").click(
+            function () {
+                var week = [];
+                if ($(this).attr("checked")) {
+                    $("input[name='useWeekDay[]']:checked").each(function () {
+                        week.push($(this).val())
+                    })
+                }
+                $("#goods_useWeekDay").val(week.join(","));
+            }
+        )
     }
 );
+

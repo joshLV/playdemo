@@ -13,6 +13,7 @@ import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -86,7 +87,11 @@ public class OperateVerifyCoupons extends Controller {
             if (!eCoupon.isBelongShop(shopId)) {
                 renderJSON("1");
             }
-
+            //不再验证时间范围内
+            if (!eCoupon.checkVerifyTimeRegion(new Date())) {
+                String info = eCoupon.getCheckInfo();
+                renderJSON("{\"error\":\"2\",\"info\":\"" + info + "\"}");
+            }
             eCoupon.consumeAndPayCommission(shopId, OperateRbac.currentUser().id, null, VerifyCouponType.OP_VERIFY);
             String dateTime = DateUtil.getNowTime();
             String coupon = eCoupon.getLastCode(4);

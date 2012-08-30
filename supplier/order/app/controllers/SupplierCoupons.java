@@ -15,6 +15,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.Date;
 import java.util.List;
 
 @With(SupplierRbac.class)
@@ -82,6 +83,11 @@ public class SupplierCoupons extends Controller {
         if (eCoupon.status == ECouponStatus.UNCONSUMED) {
             if (!eCoupon.isBelongShop(shopId)) {
                 renderJSON("1");
+            }
+             //不再验证时间范围内
+            if (!eCoupon.checkVerifyTimeRegion(new Date())) {
+                String info = eCoupon.getCheckInfo();
+                renderJSON("{\"error\":\"2\",\"info\":\"" + info + "\"}");
             }
             eCoupon.consumeAndPayCommission(shopId, null,SupplierRbac.currentUser(), VerifyCouponType.SHOP);
             String dateTime = DateUtil.getNowTime();
