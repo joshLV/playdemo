@@ -554,7 +554,7 @@ public class OperateGoods extends Controller {
                 models.sales.Goods goods = Goods.findById(id);
                 Supplier supplier = Supplier.findById(goods.supplierId);
                 if (supplier != null) {
-                    String email = supplier.salesEemail;
+                    String email = supplier.salesEmail;
                     if (StringUtils.isBlank(email)) email = "bd@seewi.com.cn";
                     //发送提醒邮件
                     MailMessage mailMessage = new MailMessage();
