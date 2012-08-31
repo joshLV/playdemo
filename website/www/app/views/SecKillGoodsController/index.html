@@ -225,7 +225,7 @@
 <script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=763119"></script>
 <script type="text/javascript" id="bdshell_js"></script>
 <script type="text/javascript">document.getElementById("bdshell_js").src = "http://share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();</script>
-<script>var STARTTIME = '2012-08-31 10:00:00';</script>
+<script>var STARTTIME = '#{if !goodsItem.begin}${goodsItem.secKillBeginAt?.format('''yyyy-MM-dd HH:mm:ss''')}#{/if}#{else}${goodsItem.secKillEndAt?.format('''yyyy-MM-dd HH:mm:ss''')}#{/else}';</script>
 <script language="javaScript" src="http://a.uhcdn.com/js/u/jquery-1.7.2.min.js"></script>
 <script src="http://a.yibaiquan.com/7Xi/jquery.countdown.js"></script>
 <script>

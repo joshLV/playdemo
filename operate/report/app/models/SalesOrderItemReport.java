@@ -1,19 +1,18 @@
 package models;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.Query;
-import javax.persistence.Transient;
-
 import models.sales.Goods;
 import models.supplier.Supplier;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
+
+import javax.persistence.Query;
+import javax.persistence.Transient;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 销售税表.
@@ -115,7 +114,7 @@ public class SalesOrderItemReport extends Model {
             query.setParameter(param, condition.getParamMap().get(param));
         }
         List<SalesOrderItemReport> resultList = query.getResultList();
-        
+
         // 找到退款的张数和总金额，进行扣减
         Query refundQuery = JPA.em()
                 .createQuery(
@@ -133,7 +132,7 @@ public class SalesOrderItemReport extends Model {
         for (SalesOrderItemReport refoundItem : refundList) {
             map.put(getReportKey(refoundItem), refoundItem);
         }
-        
+
         for (SalesOrderItemReport salesOrderItemReport : resultList) {
             SalesOrderItemReport refundItem = map.get(getReportKey(salesOrderItemReport));
             if (refundItem != null) {
@@ -142,7 +141,7 @@ public class SalesOrderItemReport extends Model {
                 map.remove(getReportKey(salesOrderItemReport));
             }
         }
-        
+
         //出现以下情况是不可能的，必须有退款记录没有减去
         if (map.size() > 0) {
             for (SalesOrderItemReport item : map.values()) {
@@ -150,7 +149,7 @@ public class SalesOrderItemReport extends Model {
             }
             throw new RuntimeException("有退款记录没有减去！");
         }
-        
+
         return resultList;
     }
 

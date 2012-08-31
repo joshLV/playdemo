@@ -10,6 +10,7 @@ order.OrderItems(orderItems1):
   "createdAt": "2012-03-07"
   "goods": "Goods_001"
   "status": "PAID"
+  "rebateValue": "0"
 
 order.OrderItems(orderItems2):
   "order": "order2"
@@ -20,6 +21,7 @@ order.OrderItems(orderItems2):
   "createdAt": "2012-03-07"
   "goods": "Goods_002"
   "status": "PAID"
+  "rebateValue": "0"
 
 order.OrderItems(orderItems3):
   "order": "order1"
@@ -30,5 +32,4 @@ order.OrderItems(orderItems3):
   "createdAt": "2012-03-07"
   "goods": "Goods_002"
   "status": "PAID"
-
-  
+  "rebateValue": "0"

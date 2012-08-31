@@ -2,6 +2,8 @@ package functional;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 import models.accounts.Account;
@@ -181,11 +183,23 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         ECoupon ecoupon = ECoupon.findById(id);
         ecoupon.status = ECouponStatus.UNCONSUMED;
         ecoupon.save();
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+        Calendar ca = Calendar.getInstance();
+        ca.setTime(new Date());
+
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
         Goods goods = Goods.findById(goodsId);
-        goods.useWeekDay = "1,2";
-        goods.useBeginTime = "10:00";
-        goods.useEndTime = "12:00";
+        String week = "";
+        String day = "";
+        ca.add(Calendar.DAY_OF_MONTH, -1);
+        week = String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
+        ca.add(Calendar.DAY_OF_MONTH, +1);
+        week += "," + String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
+        goods.useWeekDay = week;
+        ca.set(Calendar.HOUR, 1);
+        goods.useBeginTime = df.format(ca.getTime());
+        ca.set(Calendar.HOUR, 2);
+        goods.useEndTime = df.format(ca.getTime());
         goods.save();
 
         Long supplierId = (Long) play.test.Fixtures.idCache.get("models.supplier.Supplier-kfc");
@@ -203,32 +217,39 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         Http.Response response = messageSender.doMessageSend("15900002342", ecoupon);
 
         assertStatus(200, response);
-
+        day = ecoupon.getWeek();
         // 消费者短信
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertSMSContentMatch("【券市场】对不起，只能在星期一,星期二的10:00~12:00时间内使用该券 !", msg.getContent());
+        assertSMSContentMatch("【券市场】对不起，只能在" + day.substring(0, day.length() - 1) + "的" + goods.useBeginTime + "~" + goods.useEndTime + "时间内使用该券 !", msg.getContent());
 
         goods = Goods.findById(goodsId);
-        goods.useWeekDay = "3";
-        goods.useBeginTime = "23:00";
-        goods.useEndTime = "02:00";
+        ca = Calendar.getInstance();
+        ca.add(Calendar.DAY_OF_MONTH, -3);
+        goods.useWeekDay = String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
+        ca.set(Calendar.HOUR, 23);
+        goods.useBeginTime = df.format(ca.getTime());
+        ca.set(Calendar.HOUR, 2);
+        goods.useEndTime = df.format(ca.getTime());
         goods.save();
         response = messageSender.doMessageSend("15900002342", ecoupon);
-
+        day = ecoupon.getWeek();
         assertStatus(200, response);
         msg = MockSMSProvider.getLastSMSMessage();
-        assertSMSContentMatch("【券市场】对不起，只能在星期三的23:00~次日02:00时间内使用该券 !", msg.getContent());
+        assertSMSContentMatch("【券市场】对不起，只能在" + day.substring(0, day.length() - 1) + "的" + goods.useBeginTime + "~次日" + goods.useEndTime + "时间内使用该券 !", msg.getContent());
+
 
         goods = Goods.findById(goodsId);
         goods.useWeekDay = "1,2,3,4,5,6,7";
-        goods.useBeginTime = "08:00";
-        goods.useEndTime = "12:00";
+        ca.set(Calendar.HOUR, 8);
+        goods.useBeginTime = df.format(ca.getTime());
+        ca.set(Calendar.HOUR, 9);
+        goods.useEndTime = df.format(ca.getTime());
         goods.save();
         response = messageSender.doMessageSend("15900002342", ecoupon);
 
         assertStatus(200, response);
         msg = MockSMSProvider.getLastSMSMessage();
-        assertSMSContentMatch("【券市场】对不起，只能在每天的08:00~12:00时间内使用该券 !", msg.getContent());
+        assertSMSContentMatch("【券市场】对不起，只能在每天的" + goods.useBeginTime + "~" + goods.useEndTime + "时间内使用该券 !", msg.getContent());
     }
 
     /**

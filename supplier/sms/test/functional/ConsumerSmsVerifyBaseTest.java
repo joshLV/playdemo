@@ -1,9 +1,8 @@
 package functional;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.regex.Pattern;
-
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import controllers.EnSmsReceivers;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierRole;
@@ -13,11 +12,7 @@ import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
-import models.sales.Area;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.Shop;
+import models.sales.*;
 import models.sms.MockSMSProvider;
 import models.sms.SMSMessage;
 import models.supplier.Supplier;
@@ -28,9 +23,12 @@ import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import controllers.EnSmsReceivers;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.regex.Pattern;
 
 public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
 
@@ -177,28 +175,43 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
      * @param sendMessage
      */
     public void testNotInVerifyTime(MessageSender messageSender) {
-
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+        Calendar ca = Calendar.getInstance();
+        ca.setTime(new Date());
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
         Goods goods = Goods.findById(goodsId);
-        goods.useWeekDay = "1,2";
-        goods.useBeginTime = "10:00";
-        goods.useEndTime = "12:00";
+        String week = "";
+        String day = "";
+        ca.add(Calendar.DAY_OF_MONTH, -1);
+        week = String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
+        ca.add(Calendar.DAY_OF_MONTH, +1);
+        week += "," + String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
+        goods.useWeekDay = week;
+        ca.set(Calendar.HOUR, 1);
+        goods.useBeginTime = df.format(ca.getTime());
+        ca.set(Calendar.HOUR, 2);
+        goods.useEndTime = df.format(ca.getTime());
         goods.save();
 
         Http.Response response = messageSender.doMessageSend(ecouponKFC, kfcClerk.jobNumber, null);
-
         assertStatus(200, response);
         ECoupon ecoupon = ECoupon.findById(ecouponKFC.id);
         ecoupon.refresh();
         assertEquals(ECouponStatus.UNCONSUMED, ecoupon.status);
+        day = ecoupon.getWeek();
+
         // 消费者短信
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertSMSContentMatch("【券市场】对不起，只能在星期一,星期二的10:00~12:00时间内使用该券 !", msg.getContent());
+        assertSMSContentMatch("【券市场】对不起，只能在" + day.substring(0, day.length() - 1) + "的" + goods.useBeginTime + "~" + goods.useEndTime + "时间内使用该券 !", msg.getContent());
 
         goods = Goods.findById(goodsId);
-        goods.useWeekDay = "3";
-        goods.useBeginTime = "23:00";
-        goods.useEndTime = "02:00";
+        ca = Calendar.getInstance();
+        ca.add(Calendar.DAY_OF_MONTH, -3);
+        goods.useWeekDay = String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
+        ca.set(Calendar.HOUR, 23);
+        goods.useBeginTime = df.format(ca.getTime());
+        ca.set(Calendar.HOUR, 2);
+        goods.useEndTime = df.format(ca.getTime());
         goods.save();
         goods.refresh();
 
@@ -207,14 +220,17 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         ecoupon = ECoupon.findById(ecouponKFC.id);
         ecoupon.refresh();
         assertEquals(ECouponStatus.UNCONSUMED, ecoupon.status);
+        day = ecoupon.getWeek();
         // 消费者短信
         msg = MockSMSProvider.getLastSMSMessage();
-        assertSMSContentMatch("【券市场】对不起，只能在星期三的23:00~次日02:00时间内使用该券 !", msg.getContent());
+        assertSMSContentMatch("【券市场】对不起，只能在" + day.substring(0, day.length() - 1) + "的" + goods.useBeginTime + "~次日" + goods.useEndTime + "时间内使用该券 !", msg.getContent());
 
         goods = Goods.findById(goodsId);
         goods.useWeekDay = "1,2,3,4,5,6,7";
-        goods.useBeginTime = "08:00";
-        goods.useEndTime = "12:00";
+        ca.set(Calendar.HOUR, 8);
+        goods.useBeginTime = df.format(ca.getTime());
+        ca.set(Calendar.HOUR, 9);
+        goods.useEndTime = df.format(ca.getTime());
         goods.save();
         goods.refresh();
         response = messageSender.doMessageSend(ecouponKFC, kfcClerk.jobNumber, null);
@@ -224,7 +240,7 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         assertEquals(ECouponStatus.UNCONSUMED, ecoupon.status);
         // 消费者短信
         msg = MockSMSProvider.getLastSMSMessage();
-        assertSMSContentMatch("【券市场】对不起，只能在每天的08:00~12:00时间内使用该券 !", msg.getContent());
+        assertSMSContentMatch("【券市场】对不起，只能在每天的" + goods.useBeginTime + "~" + goods.useEndTime + "时间内使用该券 !", msg.getContent());
     }
 
 
