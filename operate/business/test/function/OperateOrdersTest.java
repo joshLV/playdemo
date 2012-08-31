@@ -80,4 +80,11 @@ public class OperateOrdersTest extends FunctionalTest {
 		Response response = GET("/orders/"+id);
 		assertStatus(200, response);
 	}
+
+    @Test
+    public void testIndexWithCondition(){
+        Response response = GET("/orders?condition.createdAtBegin=&condition.createdAtEnd=&condition.paidAtBegin=&condition.paidAtEnd=&condition.brandId=0&condition.refundAtBegin=&condition.refundAtEnd=&condition.payMethod=&condition.userType=&condition.searchKey=&condition.searchItems=&condition.status=&condition.deliveryType=&desc=1000000");
+        assertIsOk(response);
+        assertNotNull(renderArgs("desc"));
+    }
 }

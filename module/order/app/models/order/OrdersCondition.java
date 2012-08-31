@@ -22,6 +22,8 @@ public class OrdersCondition {
     public Date refundAtEnd;
     public OrderStatus status;
     public String goodsName;
+    public String orderBy;
+    public String orderByType;
     public DeliveryType deliveryType;
     public String payMethod;
     public String searchKey;
@@ -204,7 +206,21 @@ public class OrdersCondition {
     }
 
     public String getOrderByExpress() {
-        String orderBySql = "o.paidAt desc,o.createdAt desc";
+        String orderBySql = "";
+        if (orderBy != null && orderBy != ""){
+            orderBySql = orderBySql + orderBy+" ";
+        }
+        else {
+            orderBySql = orderBySql + "o.paidAt ";
+        }
+
+        if (orderByType != null && orderByType != ""){
+            orderBySql = orderBySql + orderByType;
+        }
+        else {
+            orderBySql = orderBySql + "desc";
+        }
+        //orderBySql = "o.paidAt desc,o.createdAt desc";
         return orderBySql;
     }
 

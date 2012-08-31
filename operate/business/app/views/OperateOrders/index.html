@@ -58,7 +58,14 @@
 //        $("#brandId").click(function(){
 //                formSubmit();
 //        })
-    });
+
+        $('.fn-rank').click(function(ev){
+            ev.preventDefault();
+            var rankStr = $(this).attr('data-rank');
+            $('#J_rank').val(rankStr);
+            $('#frmlist').submit();
+        });
+   });
    function orderExcel() {
         $("#frmlist").attr("action", "@{OperateOrders.orderExcelOut()}");
         $("#frmlist").attr("method","get");
@@ -81,6 +88,18 @@
 <style type="text/css">
     .table td {
         vertical-align: middle;
+    }
+
+    .rank {
+    background-image: url(http://img.uhcdn.com/images/r/rank.png);
+    background-position: right 6px;
+    background-repeat: no-repeat;
+    }
+    .rank-asc {
+    background-position: right -15px;
+    }
+    .rank-desc {
+    background-position: right -36px;
     }
 </style>
 #{/set}
@@ -167,6 +186,7 @@
                     <button class="btn btn-primary" id="search" type="submit">搜索</button>
                     <button class="btn btn-primary" id="searchbtn" onclick="orderExcel()">导出报表</button>
                 </td>
+                <input type="hidden" id="J_rank" name="desc" />
             </tr>
         </table>
     </form>
@@ -179,13 +199,35 @@ select:'condition_status',value:condition?.status/}
         <tr>
             <th width="10">订单号</th>
             <th width="50">商品名称</th>
-            <th width="30">订单状态</th>
-            <th width="25">帐号</th>
-            <th width="20">来源</th>
-            <th width="30">总金额</th>
-            <th width="50">下单时间</th>
-            <th width="50">付款时间</th>
-            <th width="50">退款时间</th>
+
+            #{if desc.equals("1000000") }<th width="40px" class="rank rank-asc" ><a class="fn-rank" data-rank="2000000">订单状态</a></th>#{/if}
+            #{elseif desc.equals("2000000")}<th width="40px" class="rank rank-desc"><a class="fn-rank" data-rank="1000000">订单状态</a></th>#{/elseif}
+            #{else}<th width="40px" class="rank"><a class="fn-rank" data-rank="2000000">订单状态</a></th>#{/else}
+
+            #{if desc.equals("0100000") }<th width="25px" class="rank rank-asc" ><a class="fn-rank" data-rank="0200000">帐号</a></th>#{/if}
+            #{elseif desc.equals("0200000")}<th width="25px" class="rank rank-desc"><a class="fn-rank" data-rank="0100000">帐号</a></th>#{/elseif}
+            #{else}<th width="25px" class="rank"><a class="fn-rank" data-rank="0200000">帐号</a></th>#{/else}
+
+            #{if desc.equals("0010000") }<th width="25px" class="rank rank-asc" ><a class="fn-rank" data-rank="0020000">来源</a></th>#{/if}
+            #{elseif desc.equals("0020000")}<th width="25px" class="rank rank-desc"><a class="fn-rank" data-rank="0010000">来源</a></th>#{/elseif}
+            #{else}<th width="25px" class="rank"><a class="fn-rank" data-rank="0020000">来源</a></th>#{/else}
+
+            #{if desc.equals("0001000") }<th width="30px" class="rank rank-asc" ><a class="fn-rank" data-rank="0002000">总金额</a></th>#{/if}
+            #{elseif desc.equals("0002000")}<th width="30px" class="rank rank-desc"><a class="fn-rank" data-rank="0001000">总金额</a></th>#{/elseif}
+            #{else}<th width="30px" class="rank"><a class="fn-rank" data-rank="0002000">总金额</a></th>#{/else}
+
+            #{if desc.equals("0000100") }<th width="50px" class="rank rank-asc" ><a class="fn-rank" data-rank="0000200">下单时间</a></th>#{/if}
+            #{elseif desc.equals("0000200")}<th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="0000100">下单时间</a></th>#{/elseif}
+            #{else}<th width="50px" class="rank"><a class="fn-rank" data-rank="0000200">下单时间</a></th>#{/else}
+
+            #{if desc.equals("0000010") }<th width="50px" class="rank rank-asc" ><a class="fn-rank" data-rank="0000020">付款时间</a></th>#{/if}
+            #{elseif desc.equals("0000020")}<th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="0000010">付款时间</a></th>#{/elseif}
+            #{else}<th width="50px" class="rank"><a class="fn-rank" data-rank="0000020">付款时间</a></th>#{/else}
+
+            #{if desc.equals("0000001") }<th width="50px" class="rank rank-asc" ><a class="fn-rank" data-rank="0000002">退款时间</a></th>#{/if}
+            #{elseif desc.equals("0000002")}<th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="0000001">退款时间</a></th>#{/elseif}
+            #{else}<th width="50px" class="rank"><a class="fn-rank" data-rank="0000002">退款时间</a></th>#{/else}
+
             <th width="20">操 作</th>
         </tr>
         </thead>
@@ -198,10 +240,10 @@ select:'condition_status',value:condition?.status/}
             #{if order.realGoods?.size()>0}
                 <td>
                     #{if models.sales.MaterialType.ELECTRONIC.equals(order.realGoods?.get(0)?.materialType)}
-                        <img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}">${order.realGoods?.get(0)?.name}
+                        <img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}"><a href="http://www.yibaiquan.com/g/${order.realGoods?.get(0)?.id}" target="_blank">${order.realGoods?.get(0)?.name}</a>
                     #{/if}
                     #{else}
-                        <img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}">${order.realGoods?.get(0)?.name}
+                        <img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}"><a href="http://www.yibaiquan.com/g/${order.realGoods?.get(0)?.id}" target="_blank" >${order.realGoods?.get(0)?.name}</a>
                     #{/else}
                 </td>
                 <td rowspan="${order.realGoods?.size()}">
@@ -225,7 +267,7 @@ select:'condition_status',value:condition?.status/}
             #{else}
             *{有电子券时}*
                 #{if order.electronicGoods?.size()>0}
-                    <td><img src="${order.electronicGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}">${order.electronicGoods.get(0).name}&nbsp;
+                    <td><img src="${order.electronicGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}"><a href="http://www.yibaiquan.com/g/${order.electronicGoods.get(0).id}" target="_blank">${order.electronicGoods.get(0).name}&nbsp;</a>
                     </td>
                     <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
                 #{/if}
@@ -254,7 +296,7 @@ select:'condition_status',value:condition?.status/}
 	            #{list items:order.realGoods, as:'aRealGoods'}
 	                #{if i>0}
 	                <tr test="i=${i}">
-	                    <td><img src="${aRealGoods?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}">${aRealGoods?.name}</td>
+	                    <td><img src="${aRealGoods?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}"><a href="http://www.yibaiquan.com/g/${aRealGoods?.id}" target="_blank" >${aRealGoods?.name}</a></td>
 	                </tr>
 	                #{/if}
 	                #{set i:i+1/}
@@ -266,7 +308,7 @@ select:'condition_status',value:condition?.status/}
             #{list items:order.electronicGoods, as:'aElectronicGoods'}
                 #{if (order.realGoods?.size()==0 && j>0) ||(order.realGoods?.size()>0) }
                 <tr>
-                    <td><img src="${aElectronicGoods.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}">${aElectronicGoods?.name}</td>
+                    <td><img src="${aElectronicGoods.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}"><a href="http://www.yibaiquan.com/g/${aElectronicGoods?.id}" target="_blank" >${aElectronicGoods?.name}</a></td>
                     #{if showElectronicStatus && order.realGoods?.size()>0}
                         <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
                         #{set showElectronicStatus:false/}

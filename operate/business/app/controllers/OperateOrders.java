@@ -25,10 +25,47 @@ public class OperateOrders extends Controller {
      *
      * @param condition 页面条件信息
      */
-    public static void index(OrdersCondition condition) {
+    public static void index(OrdersCondition condition,String desc) {
         if (condition == null) {
             condition = new OrdersCondition();
         }
+        System.out.println(">>>>>>>>>>>>>>>>>"+desc);
+        // DESC 的值表示升降序，含7位，代表7个排序字段（不含订单编号,商品名称）， 1 为升序， 2 为降序， 0 为不排序
+        // 当无排序参数时，初始化 -1
+        if (desc == null){
+            desc = "-1";
+        }
+        // 获取最新的desc值
+        String[] descs = desc.split(",");
+        desc = descs[descs.length-1].trim();
+
+        if (isValidDesc(desc)){
+            //排序合法且没有优先指数，添加到condition 中
+            int index = 0;
+            // 定位排序属性
+            for (int i = 0 ; i < desc.length(); i++){
+               if (desc.charAt(i) != '0'){
+                    index = i;
+                    break;
+               }
+            }
+            String[] orderBy = {"o.status","o.userId","o.userType","o.amount","o.createdAt","o.paidAt","o.refundAt"};
+            // 添加排序属性
+            condition.orderBy = orderBy[index];
+            // 添加升降序方式
+            if (desc.charAt(index) == '1'){
+                condition.orderByType = "asc";
+            }
+            else{
+                condition.orderByType = "desc";
+            }
+
+        }
+        else{
+            // 一般排序，按创建时间
+            condition.orderBy = "o.createdAt";
+        }
+
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         JPAExtPaginator<models.order.Order> orderList = models.order.Order.query(condition, null, pageNumber, PAGE_SIZE);
@@ -36,7 +73,7 @@ public class OperateOrders extends Controller {
         BigDecimal amountSummary = Order.summary(orderList);
         List<Brand> brandList = Brand.findByOrder(null);
         renderArgs.put("brandList", brandList);
-        render(orderList, condition, amountSummary);
+        render(orderList, condition, amountSummary,desc);
 
     }
 
@@ -49,7 +86,7 @@ public class OperateOrders extends Controller {
             error(500, "can not find the order:" + id);
         }
         Order.sendRealGoodsAndPayCommissions(id, order.deliveryCompany, order.deliveryNo);
-        index(null);
+        index(null,"");
     }
 
     /**
@@ -84,5 +121,31 @@ public class OperateOrders extends Controller {
         }
         render(orderList);
 
+    }
+
+    /**
+     * 判断排序字符串的合法性
+     * @param desc 排序字符串
+     * @return
+     */
+    public static boolean isValidDesc(String desc){
+        if (desc.length() != 7){
+            return false;
+        }
+        int countZero = 0;
+        for (int i = 0; i < desc.length(); i++){
+            if (desc.charAt(i) == '0'){
+                countZero++;
+            }
+        }
+        if (countZero != 6){
+            return false;
+        }
+        for (int i = 0; i < desc.length(); i++){
+            if (desc.charAt(i) != '0' && desc.charAt(i) != '1' && desc.charAt(i) != '2'){
+                return false;
+            }
+        }
+        return true;
     }
 }
