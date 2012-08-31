@@ -138,11 +138,10 @@ public class OrderItems extends Model {
     public static long itemsNumber(User user, Long goodsId) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE goods.id=:goodsId and " +
-                "order.userId=:userId and order.userType=:userType and status=:status");
+                "order.userId=:userId and order.userType=:userType");
         q.setParameter("goodsId", goodsId);
         q.setParameter("userId", user.id);
         q.setParameter("userType", AccountType.CONSUMER);
-        q.setParameter("status", OrderStatus.PAID);
         Object result = q.getSingleResult();
         return result == null ? 0 : (Long) result;
     }
@@ -150,11 +149,10 @@ public class OrderItems extends Model {
     public static long getBoughtNumberOfSecKillGoods(User user, Long goodsId, Long secKillGoodsId) {
         EntityManager entityManager = JPA.em();
         Query q = entityManager.createQuery("SELECT sum( buyNumber ) FROM OrderItems WHERE goods.id=:goodsId and " +
-                "order.userId=:userId and order.userType=:userType and status=:status and secKillGoods.id = :secKillGoodsId");
+                "order.userId=:userId and order.userType=:userType and secKillGoods.id = :secKillGoodsId");
         q.setParameter("goodsId", goodsId);
         q.setParameter("userId", user.id);
         q.setParameter("userType", AccountType.CONSUMER);
-        q.setParameter("status", OrderStatus.PAID);
         q.setParameter("secKillGoodsId", secKillGoodsId);
         Object result = q.getSingleResult();
 
