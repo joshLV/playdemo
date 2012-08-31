@@ -656,8 +656,8 @@ public class Order extends Model {
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
                     if (!Play.runingInTestMode() && (goods.isLottery == null || !goods.isLottery)) {
-                        SMSUtil.send("【券市场】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name + 
-                        		"[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
+                        SMSUtil.send("【券市场】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
+                                "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
                                 "截止" + dateFormat.format(eCoupon.expireAt) + "客服4006262166",
                                 orderItem.phone, eCoupon.replyCode);
                     }
@@ -669,23 +669,22 @@ public class Order extends Model {
                     if (AccountType.RESALER.equals(orderItem.order.userType)) {
                         mail.addRecipient(orderItem.order.getResaler().email);
                     } else {
-                        //消费者
-                        mail.addRecipient(orderItem.order.getUser().loginName);
-                        String note = "";
-                        if (this.orderItems.size() > 1) {
-                            note = "等件";
-                        }
-                        String content = "您已成功购买" + goods.name + note + "订单号是" + this
-                                .orderNumber + "，支付金额是" + this.amount + "元。\r";
+                        String email = orderItem.order.getUser().loginName;
+                        if (StringUtils.isNotBlank(email)) {
+                            //消费者
+                            mail.addRecipient(email);
+                            String note = "";
+                            if (this.orderItems.size() > 1) {
+                                note = "等件";
+                            }
+                            String content = "您已成功购买" + goods.name + note + "订单号是" + this
+                                    .orderNumber + "，支付金额是" + this.amount + "元。\r";
 
-                        mail.putParam("full_name", content);
-//                    if (orderItem.order.getUser().userInfo == null) {
-//                        mail.setFullName(orderItem.order.getUser().loginName);
-//                    } else {
-//                        mail.setFullName(orderItem.order.getUser().userInfo.fullName);
-//                    }
+                            mail.putParam("full_name", content);
+                            MailUtil.sendCouponMail(mail);
+                        }
                     }
-                    MailUtil.sendCouponMail(mail);
+
                 }
             }
             goods.save();
@@ -1046,7 +1045,7 @@ public class Order extends Model {
             Logger.error("payment_notify:支付金额非法:订单:" + orderNumber + ";支付金额:" + fee);
             return false;
         }
-        
+
         order.payAndSendECoupon();
         return true;
     }
