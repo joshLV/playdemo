@@ -131,8 +131,8 @@
                         <td align="center">${coupon.order.orderNumber}</td>
                         <td align="center">
                             ${coupon?.effectiveAt?.format()} - ${coupon?.expireAt?.format()}<br/>
-                            #{if coupon?.useBeginTime || coupon?.useEndTime}
-                                有效时段： ${coupon?.useBeginTime} - ${coupon?.useEndTime} <br/>
+                            #{if coupon?.goods?.useBeginTime || coupon?.goods?.useEndTime}
+                                有效时段： ${coupon?.goods?.useBeginTime} - ${coupon?.goods?.useEndTime} <br/>
                             #{/if}
                                 #{if coupon?.getExpiredAt() >0 && coupon.status == models.order.ECouponStatus.UNCONSUMED}
                                 <span class="remain-days">还有${coupon?.getExpiredAt()}天到期</span>

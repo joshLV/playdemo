@@ -23,7 +23,8 @@ sales.Goods(Goods_001):
  "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_2]
- 
+ "useWeekDay": "1,2,3,4,5,6,7"
+
 sales.Goods(Goods_002):
  "no": "002"
  "name": "哈根达斯200元抵用券"
@@ -49,6 +50,7 @@ sales.Goods(Goods_002):
  "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_2]
+ "useWeekDay": "1,2,3,4,5,6,7"
 
 sales.Goods(Goods_003):
  "no": "003"
@@ -74,6 +76,7 @@ sales.Goods(Goods_003):
  "materialType": "ELECTRONIC"
  "isAllShop": false
  "shops": [Shop_4, Shop_5]
+ "useWeekDay": "1,2,3,4,5,6,7"
 
 sales.Goods(Goods_004):
  "no": "004"
@@ -100,6 +103,7 @@ sales.Goods(Goods_004):
  "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_2]
+ "useWeekDay": "1,2,3,4,5,6,7"
 
 sales.Goods(Goods_005):
  "no": "005"
@@ -125,6 +129,7 @@ sales.Goods(Goods_005):
  "materialType": "ELECTRONIC"
  "isAllShop": false
  "shops": [Shop_4, Shop_5]
+ "useWeekDay": "1,2,3,4,5,6,7"
 
 sales.Goods(Goods_002):
  "no": "002"
@@ -151,6 +156,7 @@ sales.Goods(Goods_002):
  "isAllShop": false
  "shops": [Shop_4, Shop_5]
  "categories": [Category_2]
+ "useWeekDay": "1,2,3,4,5,6,7"
 
 sales.Goods(Goods_006):
  "no": "006"
@@ -176,3 +182,4 @@ sales.Goods(Goods_006):
  "materialType": "ELECTRONIC"
  "isAllShop": false
  "shops": [Shop_4, Shop_5]
+ "useWeekDay": "1,2,3,4,5,6,7"
