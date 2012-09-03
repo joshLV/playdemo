@@ -1,16 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- | deployerConfigContext.xml centralizes into one file some of the declarative configuration that | all CAS deployers
-    will need to modify. | | This file declares some of the Spring-managed JavaBeans that make up a CAS deployment. | The beans
-    declared in this file are instantiated at context initialization time by the Spring | ContextLoaderListener declared in web.xml.
-    It finds this file because this | file is among those declared in the context parameter "contextConfigLocation". | | By far
-    the most common change you will need to make in this file is to change the last bean | declaration to replace the default
-    SimpleTestUsernamePasswordAuthenticationHandler with | one implementing your approach for authenticating usernames and passwords.
-    + -->
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:p="http://www.springframework.org/schema/p" xmlns:sec="http://www.springframework.org/schema/security"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
-<!-- 
+<!--
+	| deployerConfigContext.xml centralizes into one file some of the declarative configuration that
+	| all CAS deployers will need to modify.
+	|
+	| This file declares some of the Spring-managed JavaBeans that make up a CAS deployment.
+	| The beans declared in this file are instantiated at context initialization time by the Spring
+	| ContextLoaderListener declared in web.xml.  It finds this file because this
+	| file is among those declared in the context parameter "contextConfigLocation".
+	|
+	| By far the most common change you will need to make in this file is to change the last bean
+	| declaration to replace the default SimpleTestUsernamePasswordAuthenticationHandler with
+	| one implementing your approach for authenticating usernames and passwords.
+	+-->
+
+<!--
+  ~ Licensed to Jasig under one or more contributor license
+  ~ agreements. See the NOTICE file distributed with this work
+  ~ for additional information regarding copyright ownership.
+  ~ Jasig licenses this file to you under the Apache License,
+  ~ Version 2.0 (the "License"); you may not use this file
+  ~ except in compliance with the License.  You may obtain a
+  ~ copy of the License at the following location:
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+    <!--
     <bean id="propertyConfigurer" 
       class="com.uhuila.utils.SmartPropertyPlaceholderConfigurer">
         <property name="smartLocationFileName" value="website-cas.properties" />
@@ -38,37 +66,39 @@
         </property>
 
         <property name="maxActive">
-          <value>50</value>
+            <value>50</value>
         </property>
         <property name="maxIdle">
-          <value>10</value>
+            <value>10</value>
         </property>
         <property name="maxWait">
-          <value>10000</value>
+            <value>10000</value>
         </property>
         <property name="timeBetweenEvictionRunsMillis">
-          <value>3600000</value><!--1 hours-->
+            <value>3600000</value>
+            <!--1 hours-->
         </property>
         <property name="testWhileIdle">
-          <value>true</value>
+            <value>true</value>
         </property>
         <property name="validationQuery">
-          <value>select 1 from dual</value>
+            <value>select 1 from dual</value>
         </property>
     </bean>
 
-    <bean id = "jdbcTemplate"
-         class = "org.springframework.jdbc.core.JdbcTemplate">
-         <property name = "dataSource" ref="dataSource"/>
+    <bean id="jdbcTemplate"
+          class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean  id="usernameLengthAuthnHandler"  class = "org.jasig.cas.userauthentication.UsernameLengthAuthnHandler">
-         <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    <bean id="usernameLengthAuthnHandler" class="org.jasig.cas.userauthentication.UsernameLengthAuthnHandler">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
 
 
-    <bean id="md5PasswordEncoder" class="org.jasig.cas.authentication.handler.DefaultPasswordEncoder" p:characterEncoding="UTF-8" >
-        <constructor-arg index="0" value="MD5" />
+    <bean id="md5PasswordEncoder" class="org.jasig.cas.authentication.handler.DefaultPasswordEncoder"
+          p:characterEncoding="UTF-8">
+        <constructor-arg index="0" value="MD5"/>
     </bean>
 
     <!-- | This bean declares our AuthenticationManager. The CentralAuthenticationService service bean | declared in applicationContext.xml
@@ -76,7 +106,8 @@
         the default AuthenticationManager | implementation and so do not need to change the class of this bean. We include the whole
         | AuthenticationManager here in the userConfigContext.xml so that you can see the things you will | need to change in context.
         + -->
-    <bean id="authenticationManager" class="org.jasig.cas.authentication.AuthenticationManagerImpl">
+    <bean id="authenticationManager"
+          class="org.jasig.cas.authentication.AuthenticationManagerImpl">
         <!-- | This is the List of CredentialToPrincipalResolvers that identify what Principal is trying to authenticate.
             | The AuthenticationManagerImpl considers them in order, finding a CredentialToPrincipalResolver which | supports the presented
             credentials. | | AuthenticationManagerImpl uses these resolvers for two purposes. First, it uses them to identify the Principal
@@ -86,6 +117,14 @@
             | using. | | Second, AuthenticationManagerImpl uses these resolvers to identify a service requesting a proxy granting ticket.
             | In the default configuration, it is the HttpBasedServiceCredentialsToPrincipalResolver that serves this purpose. | You
             will need to change this list if you are identifying services by something more or other than their callback URL. + -->
+        <property name="authenticationMetaDataPopulators">
+            <list>
+                <bean class="org.jasig.cas.extension.clearpass.CacheCredentialsMetaDataPopulator">
+                    <constructor-arg index="0" ref="credentialsCache" />
+                </bean>
+            </list>
+        </property>
+
         <property name="credentialsToPrincipalResolvers">
             <list>
                 <!-- | UsernamePasswordCredentialsToPrincipalResolver supports the UsernamePasswordCredentials that we use
@@ -94,22 +133,21 @@
                     this bean declaration (or add additional declarations) to declare a CredentialsToPrincipalResolver that supports the | Credentials
                     you are using. + -->
                 <bean class="org.jasig.cas.support.oauth.authentication.principal.OAuthCredentialsToPrincipalResolver"/>
-                <bean class="org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver" />
+                <bean class="org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver"/>
                 <!-- | HttpBasedServiceCredentialsToPrincipalResolver supports HttpBasedCredentials. It supports the CAS
                     2.0 approach of | authenticating services by SSL callback, extracting the callback URL from the Credentials and representing
                     it as a | SimpleService identified by that callback URL. | | If you are representing services by something more or other
                     than an HTTPS URL whereat they are able to | receive a proxy callback, you will need to change this bean declaration (or
                     add additional declarations). + -->
-                <bean class="org.jasig.cas.authentication.principal.HttpBasedServiceCredentialsToPrincipalResolver" />
+                <bean class="org.jasig.cas.authentication.principal.HttpBasedServiceCredentialsToPrincipalResolver"/>
             </list>
         </property>
 
 
-
         <!-- | Whereas CredentialsToPrincipalResolvers identify who it is some Credentials might authenticate, | AuthenticationHandlers
-            actually authenticate credentials. Here we declare the AuthenticationHandlers that | authenticate the Principals that the
-            CredentialsToPrincipalResolvers identified. CAS will try these handlers in turn | until it finds one that both supports the
-            Credentials presented and succeeds in authenticating. + -->
+ actually authenticate credentials. Here we declare the AuthenticationHandlers that | authenticate the Principals that the
+ CredentialsToPrincipalResolvers identified. CAS will try these handlers in turn | until it finds one that both supports the
+ Credentials presented and succeeds in authenticating. + -->
         <property name="authenticationHandlers">
             <!--
             <list>
@@ -121,29 +159,27 @@
             </list>
             -->
             <list>
-              <bean class="org.jasig.cas.authentication.handler.support.HttpBasedServiceCredentialsAuthenticationHandler" p:httpClient-ref="httpClient" />
-                  <!-- 会员登录验证
-              <bean class = "org.jasig.cas.userauthentication.UsernameLengthAuthnHandler">
-                   <property name="jdbcTemplate" ref="jdbcTemplate"/>
-              </bean> -->
-              <ref bean="usernameLengthAuthnHandler"/>
-             </list>
+                <bean class="org.jasig.cas.authentication.handler.support.HttpBasedServiceCredentialsAuthenticationHandler"
+                      p:httpClient-ref="httpClient"/>
+                <!-- 会员登录验证
+               <bean class = "org.jasig.cas.userauthentication.UsernameLengthAuthnHandler">
+                    <property name="jdbcTemplate" ref="jdbcTemplate"/>
+               </bean> -->
+                <ref bean="usernameLengthAuthnHandler"/>
 
-        </property>
-
-        <!--Oauth-->
-        <property name="authenticationHandlers">
-            <list>
+                <!--
+                        | This is the authentication handler that authenticates services by means of callback via SSL, thereby validating
+                        | a server side SSL certificate.
+                        +-->
                 <bean class="org.jasig.cas.support.oauth.authentication.handler.support.OAuthAuthenticationHandler">
                     <property name="providers">
                         <list>
-                            <ref bean="sinaWeibo" />
+                            <ref bean="sinaWeibo"/>
                         </list>
                     </property>
                 </bean>
             </list>
         </property>
-
 
 
     </bean>
@@ -155,26 +191,29 @@
     <!-- <sec:user name="@@THIS SHOULD BE REPLACED@@" password="notused" authorities="ROLE_ADMIN" /> -->
 
     <sec:user-service id="userDetailsService">
-        <sec:user name="@@THIS SHOULD BE REPLACED@@" password="notused" authorities="ROLE_ADMIN" />
+        <sec:user name="@@THIS SHOULD BE REPLACED@@" password="notused" authorities="ROLE_ADMIN"/>
     </sec:user-service>
 
-    <!-- Bean that defines the attributes that a service may return. This example uses the Stub/Mock version. A real implementation
-        may go against a database or LDAP server. The id should remain "attributeRepository" though. -->
-    <bean id="attributeRepository" class="org.jasig.services.persondir.support.StubPersonAttributeDao">
+    <!--
+     Bean that defines the attributes that a service may return.  This example uses the Stub/Mock version.  A real implementation
+     may go against a database or LDAP server.  The id should remain "attributeRepository" though.
+      -->
+    <bean id="attributeRepository"
+          class="org.jasig.services.persondir.support.StubPersonAttributeDao">
         <property name="backingMap">
             <map>
-                <entry key="uid" value="uid" />
-                <entry key="eduPersonAffiliation" value="eduPersonAffiliation" />
-                <entry key="groupMembership" value="groupMembership" />
+                <entry key="uid" value="uid"/>
+                <entry key="eduPersonAffiliation" value="eduPersonAffiliation"/>
+                <entry key="groupMembership" value="groupMembership"/>
             </map>
         </property>
     </bean>
 
 
     <bean id="sinaWeibo" class="com.uhuila.website.cas.sinaweibo.SinaWeiboProvider">
-        <property name="key" value="1107020725" />
-        <property name="secret" value="d7feada14c897b0d35e97819acd0d50a" />
-        <property name="callbackUrl" value="https://localhost:9001/login" />
+        <property name="key" value="1107020725"/>
+        <property name="secret" value="d7feada14c897b0d35e97819acd0d50a"/>
+        <property name="callbackUrl" value="https://localhost:9001/login"/>
     </bean>
 
     <!-- Sample, in-memory data store for the ServiceRegistry. A real implementation would probably want to replace this
@@ -182,63 +221,96 @@
     <bean id="serviceRegistryDao" class="org.jasig.cas.services.InMemoryServiceRegistryDaoImpl">
         <property name="registeredServices">
             <list>
-                <bean class="org.jasig.cas.services.RegisteredServiceImpl">
+                <bean class="org.jasig.cas.services.RegexRegisteredService">
                     <property name="id" value="0" />
-                    <property name="name" value="HTTP" />
-                    <property name="description" value="Only Allows HTTP Urls" />
-                    <property name="serviceId" value="http://**" />
+                    <property name="name" value="HTTP and IMAP" />
+                    <property name="description" value="Allows HTTP(S) and IMAP(S) protocols" />
+                    <property name="serviceId" value="^(https?|imaps?)://.*" />
                     <property name="evaluationOrder" value="10000001" />
                 </bean>
-
-                <bean class="org.jasig.cas.services.RegisteredServiceImpl">
+                <!--
+                Use the following definition instead of the above to further restrict access
+                to services within your domain (including subdomains).
+                Note that example.com must be replaced with the domain you wish to permit.
+                -->
+                <!--
+                <bean class="org.jasig.cas.services.RegexRegisteredService">
                     <property name="id" value="1" />
-                    <property name="name" value="HTTPS" />
-                    <property name="description" value="Only Allows HTTPS Urls" />
-                    <property name="serviceId" value="https://**" />
-                    <property name="evaluationOrder" value="10000002" />
+                    <property name="name" value="HTTP and IMAP on example.com" />
+                    <property name="description" value="Allows HTTP(S) and IMAP(S) protocols on example.com" />
+                    <property name="serviceId" value="^(https?|imaps?)://([A-Za-z0-9_-]+\.)*example\.com/.*" />
+                    <property name="evaluationOrder" value="0" />
+                </bean>
+                -->
+
+                <bean class="org.jasig.cas.services.RegisteredServiceImpl">
+                    <property name="id" value="0"/>
+                    <property name="name" value="HTTP"/>
+                    <property name="description" value="Only Allows HTTP Urls"/>
+                    <property name="serviceId" value="http://**"/>
+                    <property name="evaluationOrder" value="10000001"/>
                 </bean>
 
                 <bean class="org.jasig.cas.services.RegisteredServiceImpl">
-                    <property name="id" value="2" />
-                    <property name="name" value="IMAPS" />
-                    <property name="description" value="Only Allows HTTPS Urls" />
-                    <property name="serviceId" value="imaps://**" />
-                    <property name="evaluationOrder" value="10000003" />
+                    <property name="id" value="1"/>
+                    <property name="name" value="HTTPS"/>
+                    <property name="description" value="Only Allows HTTPS Urls"/>
+                    <property name="serviceId" value="https://**"/>
+                    <property name="evaluationOrder" value="10000002"/>
                 </bean>
 
                 <bean class="org.jasig.cas.services.RegisteredServiceImpl">
-                    <property name="id" value="3" />
-                    <property name="name" value="IMAP" />
-                    <property name="description" value="Only Allows IMAP Urls" />
-                    <property name="serviceId" value="imap://**" />
-                    <property name="evaluationOrder" value="10000004" />
-                </bean>
-
-                <!--sina weibo oauth-->
-                <bean class="org.jasig.cas.services.RegisteredServiceImpl">
-                    <property name="id" value="0" />
-                    <property name="name" value="HTTP" />
-                    <property name="description" value="oauth wrapper callback url" />
-                    <property name="serviceId" value="http://mycasserverwithoauthwrapper/oauth2.0/callbackAuthorize" />
+                    <property name="id" value="2"/>
+                    <property name="name" value="IMAPS"/>
+                    <property name="description" value="Only Allows HTTPS Urls"/>
+                    <property name="serviceId" value="imaps://**"/>
+                    <property name="evaluationOrder" value="10000003"/>
                 </bean>
 
                 <bean class="org.jasig.cas.services.RegisteredServiceImpl">
-                    <property name="id" value="1" />
-                    <property name="name" value="1107020725" />
-                    <property name="description" value="d7feada14c897b0d35e97819acd0d50a" />
-                    <property name="serviceId" value="http://localhost:9001/login" />
+                    <property name="id" value="3"/>
+                    <property name="name" value="IMAP"/>
+                    <property name="description" value="Only Allows IMAP Urls"/>
+                    <property name="serviceId" value="imap://**"/>
+                    <property name="evaluationOrder" value="10000004"/>
                 </bean>
 
+                <bean class="org.jasig.cas.services.RegisteredServiceImpl">
+                    <property name="id" value="1"/>
+                    <property name="name" value="1107020725"/>
+                    <property name="description" value="d7feada14c897b0d35e97819acd0d50a"/>
+                    <property name="serviceId" value="http://localhost:9001/login"/>
+                </bean>
 
 
             </list>
         </property>
         <property name="authenticationMetaDataPopulators">
             <list>
-                <bean class="org.jasig.cas.support.oauth.authentication.OAuthAuthenticationMetaDataPopulator" />
+                <bean class="org.jasig.cas.support.oauth.authentication.OAuthAuthenticationMetaDataPopulator"/>
             </list>
         </property>
     </bean>
 
-    <bean id="auditTrailManager" class="com.github.inspektr.audit.support.Slf4jLoggingAuditTrailManager" />
+    <bean id="auditTrailManager" class="com.github.inspektr.audit.support.Slf4jLoggingAuditTrailManager"/>
+
+    <bean id="healthCheckMonitor" class="org.jasig.cas.monitor.HealthCheckMonitor">
+        <property name="monitors">
+            <list>
+                <bean class="org.jasig.cas.monitor.MemoryMonitor"
+                      p:freeMemoryWarnThreshold="10"/>
+                <!--
+                  NOTE
+                  The following ticket registries support SessionMonitor:
+                    * DefaultTicketRegistry
+                    * JpaTicketRegistry
+                  Remove this monitor if you use an unsupported registry.
+                -->
+                <bean class="org.jasig.cas.monitor.SessionMonitor"
+                      p:ticketRegistry-ref="ticketRegistry"
+                      p:serviceTicketCountWarnThreshold="5000"
+                      p:sessionCountWarnThreshold="100000"/>
+            </list>
+        </property>
+    </bean>
 </beans>
