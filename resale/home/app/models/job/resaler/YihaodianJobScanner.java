@@ -1,9 +1,6 @@
 package models.job.resaler;
 
-import models.yihaodian.YihaodianJobUtil;
-import models.yihaodian.YihaodianOrder;
 import play.db.jpa.JPA;
-import play.jobs.Every;
 import play.jobs.Job;
 
 import javax.persistence.Query;

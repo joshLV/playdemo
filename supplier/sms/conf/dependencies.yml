@@ -25,6 +25,7 @@ require:
     - emaillogs -> emaillogs
     - view_ext -> view_ext
     - cache_helper -> cache_helper
+    - com.yihaodian -> yhdclient 1.0
 
 repositories:
     - mavenRepository:
@@ -33,6 +34,7 @@ repositories:
         contains:
             - com.uhuila.utils -> *
             - org.jsoup -> *
+            - com.yihaodian -> *
         m2compatible: true
 
     - play1ContributedModules:

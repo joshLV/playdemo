@@ -6,8 +6,6 @@ import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.resale.Resaler;
 import models.sales.Goods;
-import models.yihaodian.YihaodianJobUtil;
-import models.yihaodian.YihaodianOrder;
 import play.jobs.Job;
 
 import java.math.BigDecimal;
