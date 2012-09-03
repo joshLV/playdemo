@@ -50,7 +50,7 @@ public class SecureCAS extends Controller {
         if (cookieId == null) {
             Logger.debug("[SecureCAS]: set a new cookie identity");
             String baseDomain = Play.configuration.getProperty("application.baseDomain");
-            if (request.host == null || request.host.indexOf(baseDomain) == -1) {
+            if (request.host == null || !request.host.contains(baseDomain)) {
                 response.setCookie("identity", session.getId(), "365d");
             } else {
                 response.setCookie("identity", session.getId(), "." + baseDomain, "/", 360000, false);
@@ -162,6 +162,7 @@ public class SecureCAS extends Controller {
             if (user == null) {
                 Logger.error("CAS check failed! username=(" + casUser.getUsername() + ")");
                 fail();
+                return;
             }
             user.loginIp = request.remoteAddress;
             user.save();
@@ -238,7 +239,7 @@ public class SecureCAS extends Controller {
                 ) {
             Logger.debug("[SecureCAS]: user is not authenticated");
             // we put into cache the url we come from
-            Cache.add("url_" + session.getId(), request.method == "GET" ? request.url : "/", "10min");
+            Cache.add("url_" + session.getId(), request.method.equals("GET") ? request.url : "/", "10min");
 
             // we redirect the user to the cas login page
             String casLoginUrl = CASUtils.getCasLoginUrl(true);

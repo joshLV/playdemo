@@ -105,6 +105,8 @@
                 <prop key="/403.html">passThroughController</prop>
                 
                 <prop key="/captcha">captchaImageCreateController</prop>
+                <!--oauth-->
+                <prop key="/oauth2.0/*">oauth20WrapperController</prop>
 			</props>
 		</property>
 		<property
@@ -275,5 +277,24 @@
      
     <bean id="captchaImageCreateController"  class="org.jasig.cas.captcha.CaptchaImageCreateController">
        <property name="jcaptchaService" ref="jcaptchaService"/>
-    </bean>            
+    </bean>
+
+
+    <!--oauth-->
+    <bean id="oauthAction" class="org.jasig.cas.support.oauth.web.flow.OAuthAction"
+          p:centralAuthenticationService-ref="centralAuthenticationService"  >
+        <property name="providers">
+            <list>
+                <ref bean="sinaWeibo" />
+            </list>
+        </property>
+    </bean>
+
+    <bean
+            id="oauth20WrapperController"
+            class="org.jasig.cas.support.oauth.web.OAuth20WrapperController"
+            p:loginUrl="http://mycasserverwithoauthwrapper/login"
+            p:servicesManager-ref="servicesManager"
+            p:ticketRegistry-ref="ticketRegistry"
+            p:timeout="7200" />
 </beans>

@@ -111,6 +111,15 @@
         <transition to="postRedirectDecision" />
     </action-state>
 
+
+    <!--oauth-->
+    <action-state id="oauthAction">
+        <evaluate expression="oauthAction" />
+        <transition on="success" to="sendTicketGrantingTicket" />
+        <transition on="error" to="ticketGrantingTicketExistsCheck" />
+    </action-state>
+
+
     <decision-state id="postRedirectDecision">
         <if test="requestScope.response.responseType.name() eq 'POST'" then="postView" else="redirectView" />
     </decision-state>

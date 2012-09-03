@@ -93,6 +93,7 @@
                     changed your LoginFormAction to use credentials other than UsernamePasswordCredentials then you will also | need to change
                     this bean declaration (or add additional declarations) to declare a CredentialsToPrincipalResolver that supports the | Credentials
                     you are using. + -->
+                <bean class="org.jasig.cas.support.oauth.authentication.principal.OAuthCredentialsToPrincipalResolver"/>
                 <bean class="org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver" />
                 <!-- | HttpBasedServiceCredentialsToPrincipalResolver supports HttpBasedCredentials. It supports the CAS
                     2.0 approach of | authenticating services by SSL callback, extracting the callback URL from the Credentials and representing
@@ -130,6 +131,19 @@
 
         </property>
 
+        <!--Oauth-->
+        <property name="authenticationHandlers">
+            <list>
+                <bean class="org.jasig.cas.support.oauth.authentication.handler.support.OAuthAuthenticationHandler">
+                    <property name="providers">
+                        <list>
+                            <ref bean="sinaWeibo" />
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
 
 
     </bean>
@@ -154,6 +168,13 @@
                 <entry key="groupMembership" value="groupMembership" />
             </map>
         </property>
+    </bean>
+
+
+    <bean id="sinaWeibo" class="com.uhuila.website.cas.sinaweibo.SinaWeiboProvider">
+        <property name="key" value="1107020725" />
+        <property name="secret" value="d7feada14c897b0d35e97819acd0d50a" />
+        <property name="callbackUrl" value="https://localhost:9001/login" />
     </bean>
 
     <!-- Sample, in-memory data store for the ServiceRegistry. A real implementation would probably want to replace this
@@ -192,6 +213,29 @@
                     <property name="serviceId" value="imap://**" />
                     <property name="evaluationOrder" value="10000004" />
                 </bean>
+
+                <!--sina weibo oauth-->
+                <bean class="org.jasig.cas.services.RegisteredServiceImpl">
+                    <property name="id" value="0" />
+                    <property name="name" value="HTTP" />
+                    <property name="description" value="oauth wrapper callback url" />
+                    <property name="serviceId" value="http://mycasserverwithoauthwrapper/oauth2.0/callbackAuthorize" />
+                </bean>
+
+                <bean class="org.jasig.cas.services.RegisteredServiceImpl">
+                    <property name="id" value="1" />
+                    <property name="name" value="1107020725" />
+                    <property name="description" value="d7feada14c897b0d35e97819acd0d50a" />
+                    <property name="serviceId" value="http://localhost:9001/login" />
+                </bean>
+
+
+
+            </list>
+        </property>
+        <property name="authenticationMetaDataPopulators">
+            <list>
+                <bean class="org.jasig.cas.support.oauth.authentication.OAuthAuthenticationMetaDataPopulator" />
             </list>
         </property>
     </bean>
