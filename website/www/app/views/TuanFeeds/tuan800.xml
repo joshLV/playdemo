@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<urlset>
+#{list goodsList, as:'goods'}
+	<url>
+		<loc>http://www.yibaiquan.com/g/${goods.id}</loc>
+		<data>
+			<display>
+				<website>一百券</website>
+				<!-- 站点名称［选填］ -->
+				<identifier>${goods.id}</identifier>
+				<!-- 站点团购信息 永久唯一ID ,字符串,这个ID是您网站内部的ID,保证历史上每个团购都有不同的 ID, 并且每个团购ID不变,即使url变化,比如直接用数据库中的id,或者进行一些处理［选填］ -->
+				<siteurl>http://www.yibaiquan.com</siteurl>
+				<!-- 团购首页地址［必填］ -->
+				<city>上海</city>
+				<!-- 城市名称（城市名称不需要附带省、市、区、县等字，如果是全国范围请指明：全国,并且在title中加入“全国” 二字） [必填］ -->
+				<title>${goods.name}</title>
+				<!-- 团购标题［必填］如果该团购属于全国范围，请在标题中注明全国字样 -->
+				<shortTitle>${goods.title}</shortTitle>
+				<!-- 团购短标题［选填］ -->
+				<image>${goods.imageMiddlePath}</image>
+				<!-- 团购图片url［必填］ -->
+				<tag>#{list goods.getCategories(), as:'category'}${category.name}#{/list}</tag>
+				<!-- 标签，从食品饮料，化妆品，家居用品，服装鞋袜，配件饰品，孕婴儿童，其他网购，游乐游艺，运动健身，摄影写真， 电影票，温泉洗浴，养生按摩，健康护理，赛事演出，聚会欢畅，数码家电，美容塑形，其他娱乐，教育培训，报刊杂志，地方菜系， 
+					海鲜，蛋糕甜品，日韩亚系，西餐国际，火锅烧烤，快餐休闲，旅游，酒店，车房，其他生活，自助，门票郊游，文体户外，其他， 0元抽奖 里选择，可多选，用','(半角逗号)分开 
+					[必填] -->
+				<startTime>${goods.firstOnSaleAt == null ? goods.effectiveAt?.format("yyyy-MM-dd HH:mm:ss") : goods.firstOnSaleAt?.format("yyyy-MM-dd HH:mm:ss")}</startTime>
+				<!-- 团购开始时间，可以使用上面时间格式或者将上面时间转成秒数格式 1281974400 , 如使用秒数格式，请测试 2010-08-17 
+					00:00:00 转换后应该为 1281974400［必填］ -->
+				<endTime>${goods.expireAt?.format("yyyy-MM-dd HH:mm:ss")}</endTime>
+				<!-- 团购结束时间,可以使用上面时间格式或者将上面时间转成秒数格式 1282060800 , 如使用秒数格式，请测试 2010-08-18 
+					00:00:00 转换后应该为 1282060800［必填］ -->
+				<value>${goods.faceValue}</value>
+				<!-- 商品原价［必填］ -->
+				<price>${goods.salePrice}</price>
+				<!-- 商品现价［必填］ -->
+				<rebate>${goods.discountExpress1}</rebate>
+				<!-- 商品折扣 [必填] -->
+				<bought>${goods.saleCount + goods.baseSale}</bought>
+				<!-- 已购买人数［必填］ -->
+
+				<minQuota>1</minQuota>
+				<!-- 最少购买人数 , 有多少人参加团购才会成功的人数［选填］ -->
+				<post>no</post>
+				<!-- yes/no 是否为邮寄 [选填］ -->
+				<soldOut>no</soldOut>
+				<!-- yes/no 是否已卖光 [选填］ -->
+				<priority>${goods_index}</priority>
+				<!-- 如果同时发布多个团购 用0-99数字表示团购的优先级数字越小优先级越高 团购排序，会根据优先级由高到低进行 [选填] -->
+				<tip><![CDATA[${goods?.prompt?.raw()}]]></tip>
+				<!-- 重要提示信息 如果填写请认真如实填写［选填］ -->
+			</display>
+			<!--为了更好展示您团购的信息，请尽量填写以下内容 -->
+			<merchantEndTime>2010-11-13 23:59:59</merchantEndTime>
+			<!-- 团购有效期结束时间 ［选填］ -->
+			<shops>
+            #{if goods.getShopList()?.size() >0}
+                #{list goods.getShopList(), as:'shop'}
+				<shop>
+					<name>${shop.name}</name>  <!-- 商家名称 [选埴] -->
+					<tel>${shop.phone}</tel>  <!-- 联系电话 [选填] -->
+					<addr>${shop.address}</addr>    <!-- 地址信息 [选填] -->
+				</shop>
+                #{/list}
+            #{/if}			
+			</shops>
+		</data>
+	</url>
+#{/list}
+</urlset>

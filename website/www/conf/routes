@@ -96,6 +96,10 @@ GET     /votes                                  Votes.index
 POST    /votes                                  Votes.update
 GET     /votes/view                             Votes.viewAnswer
 GET     /is_voted                               Votes.isVoted
+
+# 团购导航
+GET     /feed/tuan800                           TuanFeeds.tuan800(format:'xml')
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

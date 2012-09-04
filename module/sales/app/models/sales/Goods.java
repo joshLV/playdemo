@@ -1195,5 +1195,12 @@ public class Goods extends Model {
         }
         return statistics.summaryCount;
     }
+    
+    
+    @Transient
+    public Set<Category> getCategories() {
+        Goods g = Goods.findById(this.id);
+        return g.categories;
+    }
 
 }
