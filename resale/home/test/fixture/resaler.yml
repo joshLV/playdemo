@@ -14,7 +14,7 @@ resale.Resaler(Resaler_1):
  "status": "APPROVED"
  "loginIp": "127.0.0.1"
  "createdAt": "2012-03-21T16:23:22"
- "level": "VIP1"
+ "level": "NORMAL"
 
 resale.Resaler(Resaler_2):
  "accountType": "CONSUMER"
@@ -32,7 +32,7 @@ resale.Resaler(Resaler_2):
  "status": "APPROVED"
  "loginIp": "127.0.0.1"
  "createdAt": "2012-03-21T15:48:28"
- "level": "VIP1"
+ "level": "NORMAL"
 
 resale.Resaler(Resaler_3):
  "loginName": "1"
@@ -42,4 +42,4 @@ resale.Resaler(Resaler_3):
  "lastLoginAt": "2012-03-21T11:37:46"
  "status": "APPROVED"
  "loginIp": "127.0.0.1"
- "level": "VIP1"
+ "level": "NORMAL"

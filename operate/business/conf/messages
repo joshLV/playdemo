@@ -41,7 +41,7 @@ validation.beforeThanSecKillBeginAt=%s不能早于秒杀开始时间!
 validation.phone=无效的电话!
 validation.useEndTime=使用结束时间要在06：00之前！
 validation.largarThanBaseSale=%s要小于或等于库存!
-
+validation.moreThanPromoterPrice=%s不能大于推荐者返利
 validation.beforeThanUseTime=%s要大于开始时间!
 validation.allRequiredUseTime=请把可用时段输入完整!
 validation.noShop=该商户没有门店，请先为商户添加门店！
@@ -123,6 +123,8 @@ goods.expireAt=到期时间
 goods.faceValue=原价
 goods.originalPrice=采购价
 goods.salePrice=销售价
+goods.promoterPrice=推荐者返利
+goods.invitedUserPrice=受邀者返利
 goods.baseSale=库存
 goods.imagePath=图片
 goods.image_upload_failed=图片上传失败

@@ -24,9 +24,9 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User extends Model {
-    
+
     private static final long serialVersionUID = 812320609113062L;
-    
+
     @Column(name = "email")
     @Required
     @Email
@@ -84,6 +84,12 @@ public class User extends Model {
     public Date sendMailAt;
 
     /**
+     * 用户唯一的推荐码
+     */
+    @Column(name = "promoter_code")
+    public String promoterCode;
+
+    /**
      * 判断用户名是否唯一
      *
      * @param loginName 用户名
@@ -106,6 +112,16 @@ public class User extends Model {
         //手机存在的情况
         List<User> mList = User.find("byMobile", mobile).fetch();
         return mList.size() > 0;
+    }
+
+    /**
+     * 根据推荐码用户是否存在
+     *
+     * @param promoterCode 推荐码
+     */
+    public static User getUserByPromoterCode(String promoterCode) {
+        //推荐码存在的情况
+        return User.find("byPromoterCode", promoterCode).first();
     }
 
     /**

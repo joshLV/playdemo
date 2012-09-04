@@ -16,10 +16,7 @@ import play.mvc.Http;
 import play.mvc.With;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static play.Logger.warn;
 
@@ -33,11 +30,12 @@ import static play.Logger.warn;
 @With({SecureCAS.class, WebsiteInjector.class})
 public class Orders extends Controller {
     public static String WWW_URL = Play.configuration.getProperty("application.baseUrl", "");
-    
+    public static final String PROMOTER_COOKIE = "promoter_track";
+
     private static String getQueryStringWithoutDdiscountSN() {
         List<String> kvs = new ArrayList<>();
         for (String key : request.params.all().keySet()) {
-            if (!"discountSN".equals(key)) {
+            if (!"discountSN".equals(key) && !"body".equals(key)) {
                 String[] values = request.params.getAll(key);
                 for (String value : values) {
                     kvs.add(key + "=" + value);
@@ -51,6 +49,7 @@ public class Orders extends Controller {
      * 预览订单.
      *
      * @param gid=37&gid=102&g37=2&g102=3&discountSN=xxx
+     *
      */
     public static void index(List<Long> gid) {
 
@@ -68,29 +67,35 @@ public class Orders extends Controller {
             }
             items += goodsId + "-" + number + ",";
         }
-        
 
         DiscountCode discountCode = getDiscountCode();
-        
-        
+
         showOrder(items, discountCode);
 
         User user = SecureCAS.getUser();
         List<String> orderItems_mobiles = OrderItems.getMobiles(user);
         //用于重新刷新整个页面
         renderArgs.put("querystring", getQueryStringWithoutDdiscountSN());
-        
         render(user, orderItems_mobiles);
     }
 
     protected static DiscountCode getDiscountCode() {
+
+        //这里用于判断是否是通过推荐过来的用户，是则取得推荐码
+        Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
+        if (cookie != null) {
+            renderArgs.put("userPromoterCode", cookie.value);
+        }
+
         // 折扣券
         String discountSN = request.params.get("discountSN");
+
         if (discountSN == null) {
             renderArgs.put("discountErrorInfo", "");
         } else {
             renderArgs.put("discountErrorInfo", "无效的优惠码，请重新输入");
         }
+
         if (StringUtils.isEmpty(discountSN) && WebsiteInjector.getUserWebIdentification() != null) {
             // 访问使用的推荐码尝试作为折扣券号
             discountSN = WebsiteInjector.getUserWebIdentification().referCode;
@@ -99,7 +104,9 @@ public class Orders extends Controller {
         }
         DiscountCode discountCode = DiscountCode.findAvailableSN(discountSN);
         renderArgs.put("discountCode", discountCode);
+
         return discountCode;
+
     }
 
     private static void showOrder(String items, DiscountCode discountCode) {
@@ -141,7 +148,7 @@ public class Orders extends Controller {
         if (rCartList.size() > 0) {
             rCartAmount = rCartAmount.add(Order.FREIGHT);
         }
-        
+
         // 整单折扣，注意只折扣电子券产品，实物券不参与折扣.
         BigDecimal eCartRebate = Order.getDiscountValueOfTotalECartAmount(eCartAmount, discountCode);
 
@@ -208,7 +215,7 @@ public class Orders extends Controller {
                 warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
             }
             List<String> orderItems_mobiles = OrderItems.getMobiles(user);
-                 
+
             showOrder(items, discountCode);
             render("Orders/index.html", user, orderItems_mobiles);
         }
@@ -220,7 +227,7 @@ public class Orders extends Controller {
         } else if (containsReal) {
             order.deliveryType = DeliveryType.LOGISTICS;
         }
-        
+
         //记录来源跟踪ID
         if (WebsiteInjector.getUserWebIdentification() != null) {
             order.webIdentificationId = WebsiteInjector.getUserWebIdentification().id;
@@ -243,7 +250,7 @@ public class Orders extends Controller {
                     rCartAmount = rCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
                 } else if (goodsItem.materialType == models.sales.MaterialType.ELECTRONIC) {
                     eCartAmount = eCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
-                }        
+                }
                 OrderItems orderItem = null;
                 if (goodsItem.materialType == MaterialType.REAL) {
                     orderItem = order.addOrderItem(goodsItem, number, receiverMobile,
@@ -259,7 +266,7 @@ public class Orders extends Controller {
                     );
                 }
                 orderItem.save();
-                
+
                 // 保存商品折扣
                 if (discountCode != null && discountCode.goods != null && discountCode.goods.id == goodsItem.id) {
                     OrderDiscount orderDiscount = new OrderDiscount();
@@ -279,13 +286,29 @@ public class Orders extends Controller {
                 if (order.needPay.compareTo(BigDecimal.ZERO) <= 0) {
                     order.needPay = BigDecimal.ZERO;
                 }
-            
+
                 OrderDiscount orderDiscount = new OrderDiscount();
                 orderDiscount.discountCode = discountCode;
                 orderDiscount.order = order;
                 orderDiscount.discountAmount = Order.getDiscountValueOfTotalECartAmount(eCartAmount, discountCode);
                 orderDiscount.save();
             }
+            //取得cookie中的推荐码
+            cookie = request.cookies.get(PROMOTER_COOKIE);
+            PromoteRebate promoteRebate = null;
+            if (cookie != null) {
+                User promoterUser = User.getUserByPromoterCode(cookie.value);
+                if (promoterUser != null) {
+                    promoteRebate = new PromoteRebate();
+                    promoteRebate.promoteUser = promoterUser;
+                    promoteRebate.invitedUser = user;
+                    promoteRebate.order = order;
+                    promoteRebate.createdAt = new Date();
+                    promoteRebate.status = RebateStatus.UN_CONSUMED;
+                    promoteRebate.save();
+                }
+            }
+
         } catch (NotEnoughInventoryException e) {
             //todo 缺少库存
             Logger.error(e, "inventory not enough");
@@ -295,7 +318,8 @@ public class Orders extends Controller {
 
         //确认订单
         order.createAndUpdateInventory();
-        
+
+
         //删除购物车中相应物品
         Cart.delete(user, cookieValue, goodsIds);
 
@@ -369,6 +393,4 @@ public class Orders extends Controller {
         }
         renderJSON("0");
     }
-
-
 }

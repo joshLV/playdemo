@@ -6,7 +6,7 @@ load:['fixture/resaler.yml'] /}
     open('/resaler-info')
     verifyTitle('分销商 - 我的资料')
     verifyTextPresent('tom')
-    verifyTextPresent('VIP1')
+    verifyTextPresent('普通会员')
     type('id=mobile','asdas')
     type('id=email','3@qq.com')
     clickAndWait('id=submit')
@@ -14,8 +14,6 @@ load:['fixture/resaler.yml'] /}
     
     open('/resaler-info')
     verifyTitle('分销商 - 我的资料')
-    verifyTextPresent('tom')
-    verifyTextPresent('VIP1')
     verifyValue('id=mobile','13213123121')
     verifyValue('id=email','2@qq.com')
     verifyValue('id=userName','yanjy')

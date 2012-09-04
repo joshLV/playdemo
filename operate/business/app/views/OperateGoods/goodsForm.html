@@ -66,9 +66,38 @@
     </div>
         #{set i++/}
     #{/list}
+*{#{layout_operate.textField name:'goods.promoterPrice', value:goods?.promoterPrice?:"0", note:'元', required:true/}}*
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>&{'goods.promoterPrice'}</label>
 
+    <div class="controls">
+        <input type="text" id='goods_promoterPrice' name="goods.promoterPrice" class="input-xlarge"
+               value="${goods?.promoterPrice?:0}" onfocus="showAddedRebate();limitMoneyFormat(this,this.value)"
+               onkeyup="showAddedRebate();limitMoneyFormat(this,this.value)"
+               onkeydown="showAddedRebate();limitMoneyFormat(this,this.value)"
+               onchange="showAddedRebate();limitMoneyFormat(this,this.value)"/>% <span
+            style="color: blue; ">返利为</span><span style="color: red; "
+                                                  id="promoterPrice">0</span><span
+            style="color: blue; ">元</span>
+        <span class="error">#{error 'goods.promoterPrice'/}</span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>&{'goods.invitedUserPrice'}</label>
+
+    <div class="controls">
+        <input type="text" id='goods_invitedUserPrice' name="goods.invitedUserPrice" class="input-xlarge"
+               value="${goods?.invitedUserPrice?:0}" onfocus="showAddedRebate();limitMoneyFormat(this,this.value)"
+               onkeyup="showAddedRebate();limitMoneyFormat(this,this.value)"
+               onkeydown="showAddedRebate();limitMoneyFormat(this,this.value)"
+               onchange="showAddedRebate();limitMoneyFormat(this,this.value)"/>% <span
+            style="color: blue; ">返利为</span><span style="color: red; "
+                                                  id="invitedPrice">0</span><span
+            style="color: blue; ">元</span>
+        <span class="error">#{error 'goods.invitedUserPrice'/}</span>
+    </div>
+</div>
     #{layout_operate.textField name:'goods.baseSale', value:goods?.baseSale, note:'件', required:true/}
-
     #{layout_operate.textField name:'goods.limitNumber', value:goods?.limitNumber, note:'个'/}
 
 <div class="control-group">
@@ -175,6 +204,18 @@
 
     showAddedPrice();
 
+    showAddedRebate();
+    function showAddedRebate() {
+        var goods_salePrice = $("#goods_salePrice").val() == null ? 0 : $("#goods_salePrice").val();
+        var goods_promoterPrice = parseFloat($('#goods_promoterPrice').val());
+        goods_promoterPrice = goods_promoterPrice == null || goods_promoterPrice.toString() == 'NaN' ? 0 : goods_promoterPrice;
+        $("#promoterPrice").html((goods_salePrice * goods_promoterPrice * 0.01).toFixed(2));
+
+        var goods_invitedPrice = parseFloat($('#goods_invitedUserPrice').val());
+        goods_invitedPrice = goods_invitedPrice == null || goods_invitedPrice.toString() == 'NaN' ? 0 : goods_invitedPrice;
+        $("#invitedPrice").html((goods_salePrice * goods_invitedPrice * 0.01).toFixed(2));
+    }
+
     $(function () {
 
         $("#goods_faceValue").keyup(function () {
@@ -183,6 +224,7 @@
 
         $("#goods_salePrice").keyup(function () {
             limitMoneyFormat(this, $("#goods_salePrice").val());
+            showAddedRebate();
         })
 
         $("#goods_originalPrice").keyup(function () {
@@ -206,8 +248,6 @@
                 $("#selectAll").click();
             #{/if}
         });
-
-
     });
 
     function limitMoneyFormat(obj, value) {

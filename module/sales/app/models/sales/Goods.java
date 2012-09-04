@@ -96,6 +96,23 @@ public class Goods extends Model {
     @OrderBy("level")
     public List<GoodsLevelPrice> levelPrices;
 
+    /**
+     * 给推荐者的返利金额
+     */
+    @Column(name = "promoter_rice")
+    @Min(0)
+    @Max(5)
+    @Money
+    public BigDecimal promoterPrice;
+    /**
+     * 给受邀者的返利金额
+     */
+    @Column(name = "invited_user_price")
+    @Min(0)
+    @Max(5)
+    @Money
+    public BigDecimal invitedUserPrice;
+
     //  ======  价格列表结束 ==========
 
     /**
@@ -502,13 +519,6 @@ public class Goods extends Model {
                 levelPrices.add(levelPrice);
             }
         }
-//        else {
-//            for (GoodsLevelPrice levelPrice : levelPrices) {
-//                if (levelPrice.price == null) {
-//                    levelPrice.price = BigDecimal.ZERO;
-//                }
-//            }
-//        }
 
         if (levelPrices.size() < ResalerLevel.values().length) {
             int zeroLevelCount = ResalerLevel.values().length - levelPrices.size();
@@ -558,9 +568,6 @@ public class Goods extends Model {
     }
 
     public String getPrompt() {
-        /*if (id!= null && id.intValue() == 110) {
-            System.out.println("get prompt:" + prompt);
-        }*/
         if (StringUtils.isBlank(prompt)) {
             return "";
         }
@@ -568,9 +575,6 @@ public class Goods extends Model {
     }
 
     public void setPrompt(String prompt) {
-        /*if (id!= null && id.intValue() == 110) {
-            System.out.println("set prompt:" + prompt);
-        }*/
         this.prompt = Jsoup.clean(prompt, HTML_WHITE_TAGS);
     }
 
@@ -654,6 +658,8 @@ public class Goods extends Model {
         updateGoods.setDiscount(goods.getDiscount());
         updateGoods.salePrice = goods.salePrice;
         updateGoods.baseSale = goods.baseSale;
+        updateGoods.promoterPrice = goods.promoterPrice;
+        updateGoods.invitedUserPrice = goods.invitedUserPrice;
         updateGoods.materialType = goods.materialType;
         updateGoods.topCategoryId = goods.topCategoryId;
         updateGoods.categories = goods.categories;
@@ -912,7 +918,7 @@ public class Goods extends Model {
     }
 
     public BigDecimal getResalerPriceOfUhuila() {
-        return getResalePrice(ResalerLevel.VIP3);
+        return getResalePrice(ResalerLevel.NORMAL);
     }
 
     /**

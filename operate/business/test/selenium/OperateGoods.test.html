@@ -117,23 +117,27 @@ type('id=goods_originalPrice','555')
 type('id=goods_salePrice','55')
 type('id=goods_baseSale','55')
 type('id=levelPrices_NORMAL','1')
-type('id=levelPrices_VIP1','2')
-type('id=levelPrices_VIP2','3')
-type('id=levelPrices_VIP3','4')
+*{type('id=levelPrices_VIP1','2')}*
+*{type('id=levelPrices_VIP2','3')}*
+*{type('id=levelPrices_VIP3','4')}*
 
 runScript('var element= window.document.getElementsByTagName("iframe")[1];')
 runScript('idocument = element.contentDocument;')
 runScript('element=idocument.getElementsByTagName("body")[0];')
 runScript('element.innerHTML  = "this is a test thread";')
+type('id=goods_salePrice','15')
+type('id=goods_promoterPrice','4')
+type('id=goods_invitedUserPrice','5')
 clickAndWait('id=save')
 verifyTitle('添加商品')
 verifyTextPresent('到期时间不能早于有效期开始时间!')
 verifyTextPresent('无效的图片!')
 verifyTextPresent('采购价不能超过原价!')
 verifyTextPresent('销售价不能低于采购价!')
-verifyTextPresent('VIP1加价不能超过前一级别的VIP加价!')
-verifyTextPresent('VIP2加价不能超过前一级别的VIP加价!')
-verifyTextPresent('VIP3加价不能超过前一级别的VIP加价!')
+verifyTextPresent('受邀者返利不能大于推荐者返利')
+*{verifyTextPresent('VIP1加价不能超过前一级别的VIP加价!')}*
+*{verifyTextPresent('VIP2加价不能超过前一级别的VIP加价!')}*
+*{verifyTextPresent('VIP3加价不能超过前一级别的VIP加价!')}*
 
 #{/selenium}
 

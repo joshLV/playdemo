@@ -82,7 +82,6 @@ public class OperateCoupons extends Controller {
         if (condition == null) {
             condition = new CouponsCondition();
         }
-        String page = request.params.get("page");
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "券列表_" + System.currentTimeMillis() + ".xls");
         JPAExtPaginator<ECoupon> couponsList = ECoupon.query(condition, 1, PAGE_SIZE);

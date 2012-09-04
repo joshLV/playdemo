@@ -6,13 +6,14 @@ import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.sales.*;
 import operate.rbac.RbacLoader;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import play.Play;
 import play.mvc.Http;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
-import org.junit.*;
 import play.vfs.VirtualFile;
-import unit.BrandUnitTest;
 
 import java.util.HashMap;
 import java.util.List;
@@ -71,23 +72,23 @@ public class OperateBrandsModificationTest extends FunctionalTest {
     // 测试能否进入品牌页面
     @Test
     public void testBrandsDisplay() {
-        Http.Response response = GET("/brands" );
+        Http.Response response = GET("/brands");
         assertIsOk(response);
         assertContentType("text/html", response);
     }
 
     // 测试能否进入品牌编辑状态
     @Test
-    public void testBrandsModificationRequest(){
+    public void testBrandsModificationRequest() {
         Long brandId = (Long) Fixtures.idCache.get("models.sales.Brand-Brand_1");
-        Http.Response response = GET("/brands/"+brandId+"/edit");
+        Http.Response response = GET("/brands/" + brandId + "/edit");
         assertIsOk(response);
-        assertContentMatch("修改品牌",response);
+        assertContentMatch("修改品牌", response);
     }
 
     // 测试能否修改商品信息
     @Test
-    public void testBrandsModification(){
+    public void testBrandsModification() {
         Long brandId = (Long) Fixtures.idCache.get("models.sales.Brand-Brand_1");
         Brand brand = Brand.findById(brandId);
         brand.save();
@@ -97,17 +98,17 @@ public class OperateBrandsModificationTest extends FunctionalTest {
         assertContentType("text/html", response);
         assertCharset(Play.defaultWebEncoding, response);
 
-        String params = "brand.name=test&brand.displayOrder=0&brand.supplier=Supplier1&brand.logo="+
-                        brand.logo+"&brand.deleted="+brand.deleted+"brand.introduce=0";
+        String params = "brand.name=test&brand.displayOrder=0&brand.supplier=Supplier1&brand.logo=" +
+                brand.logo + "&brand.deleted=" + brand.deleted + "brand.introduce=0";
 
-        response = PUT("/brands/" +brandId, "application/x-www-form-urlencoded", params);
+        response = PUT("/brands/" + brandId, "application/x-www-form-urlencoded", params);
         assertStatus(200, response);
-        assertContentMatch("test",response);
+        assertContentMatch("test", response);
     }
 
     // 测试能否删除品牌信息
     @Test
-    public void testBrandsDeletion(){
+    public void testBrandsDeletion() {
         Long brandId = (Long) Fixtures.idCache.get("models.sales.Brand-Brand_1");
 
         Http.Response response = DELETE("/brands/" + brandId);
@@ -127,6 +128,9 @@ public class OperateBrandsModificationTest extends FunctionalTest {
         goodsParams.put("goods.status", GoodsStatus.ONSALE.toString());
         goodsParams.put("goods.prompt", "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
         goodsParams.put("goods.details", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        goodsParams.put("goods.useWeekDay", "1,2,3,4,5,6,7");
+        goodsParams.put("goods.promoterPrice", "2");
+        goodsParams.put("goods.invitedUserPrice", "1");
 //        goodsParams.put("goods.imagePath", "/opt/3.jpg");
         goodsParams.put("goods.deleted", DeletedStatus.DELETED.toString());
         goodsParams.put("goods.createdBy", "yanjy");

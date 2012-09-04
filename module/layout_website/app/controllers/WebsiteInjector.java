@@ -1,10 +1,8 @@
 package controllers;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import controllers.modules.website.cas.SecureCAS;
 import models.consumer.User;
 import models.consumer.UserWebIdentification;
 import models.order.Cart;
@@ -13,15 +11,21 @@ import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Http.Header;
-import cache.CacheCallBack;
-import cache.CacheHelper;
-import controllers.modules.website.cas.SecureCAS;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WebsiteInjector extends Controller {
 
     private static String baseDomain = play.Play.configuration.getProperty("application.baseDomain");
 
     public static final String WEB_TRACK_COOKIE = "ybq_track";
+
+    public static final String PROMOTER_COOKIE = "promoter_track";
 
     private static final Pattern hostPattern = Pattern.compile("(https?://)?([^/]*)(/?.*)");
 
@@ -31,18 +35,20 @@ public class WebsiteInjector extends Controller {
     public static void injectCarts() {
         final User user = SecureCAS.getUser();
         injectWebIdentification(user);
-        
+        //推荐时记录cookie
+        injectPromoterCookier();
+
         Http.Cookie cookie = request.cookies.get("identity");
         final String cookieValue = cookie == null ? null : cookie.value;
 
         List<Cart> carts = Cart.findAll(user, cookieValue);
-                
-                /* CacheHelper.getCache(Cart.getCartCacheKey(user, cookieValue), new CacheCallBack<List<Cart>>() {
-            @Override
-            public List<Cart> loadData() {
-                return Cart.findAll(user, cookieValue);
-            }
-        }); */
+
+        /* CacheHelper.getCache(Cart.getCartCacheKey(user, cookieValue), new CacheCallBack<List<Cart>>() {
+           @Override
+           public List<Cart> loadData() {
+               return Cart.findAll(user, cookieValue);
+           }
+       }); */
 
         int count = 0;
         for (Cart cart : carts) {
@@ -51,6 +57,16 @@ public class WebsiteInjector extends Controller {
 
         renderArgs.put("carts", carts);
         renderArgs.put("count", count);
+    }
+
+    private static void injectPromoterCookier() {
+        Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
+        if (cookie == null) {
+            String referCode = request.params.get("tj");
+            if (StringUtils.isNotBlank(referCode)) {
+                response.setCookie(PROMOTER_COOKIE, referCode, "1d");
+            }
+        }
     }
 
     protected static void injectWebIdentification(final User user) {
@@ -85,6 +101,7 @@ public class WebsiteInjector extends Controller {
 
     /**
      * 基于用户信息和cookie值创建或更新userWebIdentification
+     *
      * @param user
      * @param identificationValue
      * @return
@@ -121,6 +138,7 @@ public class WebsiteInjector extends Controller {
 
     /**
      * 从URL中匹配出主机名.
+     *
      * @param referer
      * @return
      */

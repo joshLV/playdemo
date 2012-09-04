@@ -14,7 +14,6 @@ import models.resale.ResalerLevel;
 import models.sales.*;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.binding.As;
@@ -28,10 +27,11 @@ import play.mvc.With;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
-import static play.Logger.configuredManually;
-import static play.Logger.forceJuli;
 import static play.Logger.warn;
 
 /**
@@ -51,7 +51,7 @@ public class OperateGoods extends Controller {
      * 展示商品一览页面
      */
     @ActiveNavigation("goods_index")
-    public static void index(models.sales.GoodsCondition condition,String desc) {
+    public static void index(models.sales.GoodsCondition condition, String desc) {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
@@ -62,40 +62,38 @@ public class OperateGoods extends Controller {
 
         // DESC 的值表示升降序，含11位，代表11个排序字段， 1 为升序， 2 为降序， 0 为不排序
         // 当无排序参数时，初始化 -1
-        if (desc == null){
+        if (desc == null) {
             desc = "-1";
         }
         // 获取最新的desc值
         String[] descs = desc.split(",");
-        desc = descs[descs.length-1].trim();
+        desc = descs[descs.length - 1].trim();
 
         if (condition.priority == 1) {
             //有优先指数，按优先指数排
             condition.orderBy = "g.priority";
         } else {
-            if (condition.priority != 1 && isValidDesc(desc)){
+            if (condition.priority != 1 && isValidDesc(desc)) {
                 //排序合法且没有优先指数，添加到condition 中
                 int index = 0;
                 // 定位排序属性
-                for (int i = 0 ; i < desc.length(); i++){
-                    if (desc.charAt(i) != '0'){
+                for (int i = 0; i < desc.length(); i++) {
+                    if (desc.charAt(i) != '0') {
                         index = i;
                         break;
                     }
                 }
-                String[] orderBy = {"g.supplierId","g.no","g.name","g.faceValue","g.originalPrice","g.salePrice","g.baseSale","g.saleCount","g.firstOnSaleAt","g.updatedAt","g.materialType"};
+                String[] orderBy = {"g.supplierId", "g.no", "g.name", "g.faceValue", "g.originalPrice", "g.salePrice", "g.baseSale", "g.saleCount", "g.firstOnSaleAt", "g.updatedAt", "g.materialType"};
                 // 添加排序属性
                 condition.orderBy = orderBy[index];
                 // 添加升降序方式
-                if (desc.charAt(index) == '1'){
+                if (desc.charAt(index) == '1') {
                     condition.orderByType = "ASC";
-                }
-                else{
+                } else {
                     condition.orderByType = "DESC";
                 }
 
-            }
-            else{
+            } else {
                 // 一般排序，按创建时间
                 condition.orderBy = "g.createdAt";
             }
@@ -201,10 +199,10 @@ public class OperateGoods extends Controller {
      * 展示添加商品页面
      */
 
-    private static void preview(Long goodsId, Goods goods, File imagePath) {
+    private static void preview(Long goodsId, models.sales.Goods goods, File imagePath) {
         String cacheId = "0";
         try {
-            cacheId = Goods.preview(goodsId, goods, imagePath, UploadFiles.ROOT_PATH);
+            cacheId = models.sales.Goods.preview(goodsId, goods, imagePath, UploadFiles.ROOT_PATH);
         } catch (IOException e) {
             e.printStackTrace();
             error(500, "goods.image_upload_failed");
@@ -231,7 +229,6 @@ public class OperateGoods extends Controller {
         checkSalePrice(goods);
         checkLevelPrice(levelPrices);
         checkShops(goods.supplierId);
-
         checkUseWeekDay(goods);
 
         if (Validation.hasErrors()) {
@@ -262,7 +259,7 @@ public class OperateGoods extends Controller {
         }
         goods.save();
 
-        index(null,"");
+        index(null, "");
     }
 
     private static void checkUseWeekDay(models.sales.Goods goods) {
@@ -281,7 +278,7 @@ public class OperateGoods extends Controller {
         }
     }
 
-    private static void checkSalePrice(Goods goods) {
+    private static void checkSalePrice(models.sales.Goods goods) {
         if (goods.salePrice == null) {
             Validation.addError("goods.salePrice", "validation.required");
         }
@@ -291,9 +288,13 @@ public class OperateGoods extends Controller {
         if (goods.salePrice != null && goods.originalPrice != null && goods.salePrice.compareTo(goods.originalPrice) < 0) {
             Validation.addError("goods.salePrice", "validation.lessThanOriginalPrice");
         }
+        if (goods.promoterPrice != null && goods.invitedUserPrice != null &&
+                goods.promoterPrice.compareTo(goods.invitedUserPrice) < 0) {
+            Validation.addError("goods.invitedUserPrice", "validation.moreThanPromoterPrice");
+        }
     }
 
-    private static void checkExpireAt(Goods goods) {
+    private static void checkExpireAt(models.sales.Goods goods) {
         if (goods.effectiveAt != null && goods.expireAt != null && goods.expireAt.before(goods.effectiveAt)) {
             Validation.addError("goods.expireAt", "validation.beforeThanEffectiveAt");
         }
@@ -379,7 +380,7 @@ public class OperateGoods extends Controller {
         renderArgs.put("shopList", shopList);
     }
 
-    private static void renderSupplierList(Goods goods) {
+    private static void renderSupplierList(models.sales.Goods goods) {
         List<Supplier> supplierList = Supplier.findUnDeleted();
         Supplier supplier = goods.getSupplier();
         if (supplier != null) {
@@ -440,7 +441,7 @@ public class OperateGoods extends Controller {
         String supplierUser = OperateRbac.currentUser().loginName;
 
         try {
-            Goods oldGoods = Goods.findById(id);
+            models.sales.Goods oldGoods = models.sales.Goods.findById(id);
             String oldImagePath = oldGoods == null ? null : oldGoods.imagePath;
             String image = uploadImagePath(imagePath, id, oldImagePath);
             if (StringUtils.isNotEmpty(image)) {
@@ -452,9 +453,9 @@ public class OperateGoods extends Controller {
         }
 
         goods.updatedBy = supplierUser;
-        Goods.update(id, goods, false);
+        models.sales.Goods.update(id, goods, false);
 
-        index(null,"");
+        index(null, "");
     }
 
     private static void checkLevelPrice(BigDecimal[] prices) {
@@ -486,7 +487,7 @@ public class OperateGoods extends Controller {
     public static void onSale(@As(",") Long... id) {
 
         for (Long goodsId : id) {
-            models.sales.Goods goods = Goods.findById(goodsId);
+            models.sales.Goods goods = models.sales.Goods.findById(goodsId);
             if (goods != null) {
                 checkSalePrice(goods);
                 checkLevelPrice(goods.getLevelPriceArray());
@@ -531,13 +532,13 @@ public class OperateGoods extends Controller {
      *
      * @param id 商品ID
      */
-    public static void priority(Long id, Goods goods) {
+    public static void priority(Long id, models.sales.Goods goods) {
         models.sales.Goods updateGoods = models.sales.Goods.findById(id);
         updateGoods.keywords = goods.keywords;
         updateGoods.priority = goods.priority;
         updateGoods.save();
 
-        index(null,"");
+        index(null, "");
     }
 
     /**
@@ -551,7 +552,7 @@ public class OperateGoods extends Controller {
         models.sales.Goods.updateStatus(status, ids);
         if (status == GoodsStatus.OFFSALE) {
             for (Long id : ids) {
-                models.sales.Goods goods = Goods.findById(id);
+                models.sales.Goods goods = models.sales.Goods.findById(id);
                 Supplier supplier = Supplier.findById(goods.supplierId);
                 if (supplier != null) {
                     String email = supplier.salesEmail;
@@ -569,7 +570,7 @@ public class OperateGoods extends Controller {
                 }
             }
         }
-        index(null,"");
+        index(null, "");
     }
 
 
@@ -580,37 +581,38 @@ public class OperateGoods extends Controller {
      */
     public static void delete(@As(",") Long... id) {
         for (Long goodsId : id) {        //已上架的商品不可以删除
-            Goods goods = Goods.findById(goodsId);
+            models.sales.Goods goods = models.sales.Goods.findById(goodsId);
             warn("goods.status:" + goods.status);
             if (GoodsStatus.ONSALE.equals(goods.status)) {
-                index(null,"");
+                index(null, "");
             }
         }
         models.sales.Goods.delete(id);
 
-        index(null,"");
+        index(null, "");
     }
 
     /**
      * 判断排序字符串的合法性
+     *
      * @param desc 排序字符串
      * @return
      */
-    public static boolean isValidDesc(String desc){
-        if (desc.length() != 11){
+    public static boolean isValidDesc(String desc) {
+        if (desc.length() != 11) {
             return false;
         }
         int countZero = 0;
-        for (int i = 0; i < desc.length(); i++){
-            if (desc.charAt(i) == '0'){
+        for (int i = 0; i < desc.length(); i++) {
+            if (desc.charAt(i) == '0') {
                 countZero++;
             }
         }
-        if (countZero != 10){
+        if (countZero != 10) {
             return false;
         }
-        for (int i = 0; i < desc.length(); i++){
-            if (desc.charAt(i) != '0' && desc.charAt(i) != '1' && desc.charAt(i) != '2'){
+        for (int i = 0; i < desc.length(); i++) {
+            if (desc.charAt(i) != '0' && desc.charAt(i) != '1' && desc.charAt(i) != '2') {
                 return false;
             }
         }

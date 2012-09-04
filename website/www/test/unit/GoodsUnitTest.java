@@ -255,7 +255,7 @@ public class GoodsUnitTest extends UnitTest {
     @Test
     public void testFindByResaleCondition() {
         Resaler resaler = new Resaler();
-        resaler.level = ResalerLevel.VIP1;
+        resaler.level = ResalerLevel.NORMAL;
         GoodsCondition condition = new GoodsCondition("0-0-0");
         JPAExtPaginator<Goods> goodsList = models.sales.Goods.findByResaleCondition(resaler, condition, 1, 10);
         assertEquals(17, goodsList.size());
@@ -268,12 +268,6 @@ public class GoodsUnitTest extends UnitTest {
         goods.originalPrice = BigDecimal.ONE;
         BigDecimal resalePrice = goods.getResalePrice(models.resale.ResalerLevel.NORMAL);
         assertEquals(BigDecimal.ONE, resalePrice);
-        BigDecimal[] prices = new BigDecimal[4];
-        prices[0] = BigDecimal.ONE;
-        prices[1] = BigDecimal.ONE;
-        prices[2] = BigDecimal.ONE;
-        goods.setLevelPrices(prices);
-        assertEquals(2, goods.getResalePrice(ResalerLevel.VIP1).intValue());
     }
 
     @Test

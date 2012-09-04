@@ -24,9 +24,8 @@ $(function(){
             return false;
         }
     });
-    
 });
-</script>    
+</script>
 #{/set}
 
 <div id="content">
@@ -36,7 +35,7 @@ $(function(){
         <li>3. 确认付款</li>
         <li>4. 成功提交订单</li>
     </ul>
-    
+
 #{if rCartList.size()>0}
     <div class="order">
         <div class="addr" id="J_addr">
@@ -130,7 +129,7 @@ $(function(){
                 #{/list}
             <tbody>
         </table>
-        <div class="subtotal" style="border-top: 1px solid #7A7F89">       
+        <div class="subtotal" style="border-top: 1px solid #7A7F89">
             商品共${eCartList?.size()}件，合计：<em>${eCartAmount.formatCurrency('CNY').raw()}</em>元
         </div>
     </div><!-- .order -->
@@ -144,16 +143,22 @@ $(function(){
                 <textarea class="explain-text" id="J_explainText" name="remark"></textarea>
             </div>
         </div><!-- .explain -->
+
         <div class="bottom-right">
+            #{if userPromoterCode == null}
             <div class="discount">
-                <div class="discount-inner">请输入优惠码：<input type="text" id="discount_sn" name="newDiscountSN" value="${discountSN}"/><button id="discount-btn" class="discount-btn" type="button">使 用</button></div>
+                <div class="discount-inner">请输入优惠码：
+                    <input type="text" id="discount_sn" name="newDiscountSN" value="${discountSN}"/>
+                    <button id="discount-btn" class="discount-btn" type="button">使 用</button>
+                </div>
                 #{if discountCode != null }
-                  <div class="discount-info">${discountCode?.title}</div>
+                    <div class="discount-info">${discountCode?.title}</div>
                 #{/if}
-                #{else}                
-                  <div class="discount-error">${discountErrorInfo}</div>
-                #{/else}                
+                #{else}
+                    <div class="discount-error">${discountErrorInfo}</div>
+                #{/else}
             </div>
+            #{/if}
             <div class="totalize">
                 商品共${rCartList.size()+eCartList.size()}件，总合计：<span style="color:red">${totalAmount.formatCurrency('CNY').raw()}</span>元；
                 #{if eCartRebate.compareTo(BigDecimal.ZERO) > 0}折扣：<span style="color:red">${eCartRebate?.formatCurrency('CNY')}</span>元；#{/if}
