@@ -29,9 +29,9 @@ import java.util.List;
 public class Home extends Controller {
 
     public static void index(final long categoryId) {
-        CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPS"),
+        CacheHelper.preRead(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPS12"),
                 CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECENTS"),
-                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS"),
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS2"),
                 CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_DISTRICTS"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SAILY_SPEC"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SLIDES"),
@@ -46,7 +46,7 @@ public class Home extends Controller {
         );
 
         //精选商品        
-        List<models.sales.Goods> goodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPS"), new CacheCallBack<List<models.sales.Goods>>() {
+        List<models.sales.Goods> goodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_TOPS12"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
                 return getTopGoods(categoryId);
@@ -70,10 +70,10 @@ public class Home extends Controller {
         });
 
         //网友推荐商品
-        List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS"), new CacheCallBack<List<models.sales.Goods>>() {
+        List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_RECOMMENDS2"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
-                return models.sales.Goods.findTopRecommend(3);
+                return models.sales.Goods.findTopRecommend(5);
             }
         });
 
@@ -197,9 +197,9 @@ public class Home extends Controller {
     private static List<models.sales.Goods> getTopGoods(long categoryId) {
         List<models.sales.Goods> goodsList;
         if (categoryId == 0) {
-            goodsList = models.sales.Goods.findTop(6);
+            goodsList = models.sales.Goods.findTop(12);
         } else {
-            goodsList = models.sales.Goods.findTopByCategory(categoryId, 6);
+            goodsList = models.sales.Goods.findTopByCategory(categoryId, 12);
         }
         return goodsList;
     }
