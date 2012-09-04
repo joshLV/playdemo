@@ -1,0 +1,315 @@
+/** 主体 **/
+#content {
+    width: 960px;
+    margin: 0 auto;
+}
+#section {
+    width: 750px;
+    float: left;
+}
+#sidebar {
+    width: 200px;
+    float: right;
+}
+#content .hd {
+    margin-top: 10px;
+    color: #f97311;
+    text-indent: 12px;
+    font-weight: 700;
+    line-height: 32px;
+    border: 1px solid #e8e8e8;
+    border-top: 3px solid #f97311;
+}
+#content .more {
+    float: right;
+    width: 64px;
+    height: 32px;
+    *margin-top: -33px;
+    *margin-right: 1px;
+}
+#hot-cat {
+    line-height: 28px;
+}
+#hot-cat .bd {
+    padding: 1px 12px 0;
+    border: solid #e8e8e8;
+    border-width: 0 1px 1px;
+}
+#hot-cat .bd li {
+    padding: 5px 0;
+    border-bottom: 1px solid #f4f4f4;
+}
+#hot-cat .bd .brand {
+    border-bottom: 0;
+}
+#hot-cat a {
+    color: #434343;
+}
+#hot-cat .curr,
+#hot-cat a:hover {
+    color: #f97311;
+}
+.cat-kind {
+    width: 85px;
+    float: left;
+    color: #9ac82b;
+    font-weight: 700;
+}
+.cat-list {
+    margin-left: 85px;
+}
+.cat-list a {
+    margin-right: 15px;
+    white-space: nowrap;
+}
+
+#filter {
+    margin-top: 10px;
+    border-bottom: 2px solid #f50;
+}
+#filter ul {
+    float: left;
+    width: 500px;
+}
+#filter li {
+    float: left;
+    margin-right: -1px;
+    padding: 4px 15px;
+    border: 1px solid #d8d8d8;
+    border-bottom: 0;
+}
+#filter li.curr {
+    padding: 4px 20px;
+    border: 1px solid #f60;
+    border-bottom: 0;
+    background: #f60;
+}
+#filter li.curr a {
+    color: #fff;
+    font-weight: 700;
+}
+#filter a {
+    color: #707070;
+}
+#filter a:hover {
+    text-decoration: none;
+}
+#filter form {
+    float: right;
+    line-height: 27px;
+}
+#filter input {
+    *float: left;
+    position: relative;
+    top: 2px;
+    _top: 4px;
+    margin: 0 3px 0 12px;
+}
+#filter label {
+    *float: left;
+}
+
+#listview li {
+    float: left;
+    padding: 20px 21px 20px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+#listview li.last {
+    padding-right: 0;
+}
+#listview .image {
+    width: 234px;
+    height: 178px;
+    font-size: 0;
+    border: 1px solid #f4f4f4;
+}
+#listview .image a {
+    font-size: 0;
+}
+#listview .tags {
+    overflow: hidden;
+    width: 236px;
+    height: 28px;
+}
+#listview .title {
+    overflow: hidden;
+    width: 236px;
+    height: 44px;
+}
+#listview .title a {
+    color: #434343;
+    line-height: 22px;
+}
+#listview .title a:hover {
+    color: #e65d00;
+}
+#listview .price {
+    color: #7d7d7d;
+    line-height: 28px;
+}
+#listview .price del {
+    width: 100px;
+    display: inline-block;
+}
+#listview .price b {
+    color: #f00;
+    font: 700 16px arial;
+}
+#listview .qtype {
+    color: #b7b7b7;
+    padding-left: 20px;
+}
+
+#popular .bd {
+    padding: 0 12px;
+    border: solid #e8e8e8;
+    border-width: 0 1px;
+}
+#popular li {
+    padding: 10px 0 10px;
+    border-bottom: 1px dashed #e2e2e2;
+}
+#popular .index {
+    position: relative;
+    height: 30px;
+    margin-bottom: 3px;
+    background-color: #eee;
+}
+#popular .index span {
+    display: block;
+    float: left;
+    width: 112px;
+    line-height: 30px;
+    padding-left: 24px;
+    color: #9c9c9c;
+}
+#popular .index em {
+    color: #9ac82b;
+    font-weight: 700;
+}
+#popular .index a {
+    position: absolute;
+    right: -2px;
+    float: right;
+    width: 38px;
+    color: #fff;
+    text-indent: 10px;
+    text-decoration: none;
+    line-height: 30px;
+    *line-height: 34px;
+}
+#popular .index .index-tips {
+    position: absolute;
+    top: 28px;
+    right: 0;
+    width: 110px;
+    height: 30px;
+}
+#popular .index .index-close {
+    position: absolute;
+    top: 8px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    cursor: pointer;
+}
+#popular .image {
+    width: 172px;
+    height: 132px;
+    font-size: 0;
+    border: 1px solid #f4f4f4;
+}
+#popular .image a {
+    font-size: 0;
+}
+#popular .title {
+    overflow: hidden;
+    width: 174px;
+    height: 44px;
+}
+#popular .title a {
+    color: #707070;
+    line-height: 22px;
+}
+#popular .title a:hover {
+    color: #e65d00;
+}
+#popular .attri {
+    color: #707070;
+    height: 22px;
+}
+#popular .attri del {
+    float: left;
+    width: 100px;
+    display: inline-block;
+}
+.attri .coupon {
+    float: right;
+    *line-height: 21px;
+    _line-height: 20px;
+    padding-left: 20px;
+}
+#popular .price {
+    color: #707070;
+    line-height: 22px;
+}
+#popular .price b {
+    color: #f00;
+    font: 700 16px arial;
+}
+#popular .ft {
+    padding: 5px 1px 1px;
+    border: solid #e8e8e8;
+    border-width: 0 1px 1px;
+}
+#popular .ft a {
+    display: block;
+    line-height: 32px;
+    text-indent: -9999px;
+}
+
+#cooperation .bd {
+    padding: 5px 10px;
+    border: solid #e8e8e8;
+    border-width: 0 1px 1px;
+}
+#cooperation li {
+    padding: 10px 0;
+    border-top: 1px dashed #e2e2e2;
+}
+#cooperation li.first {
+    border-top: 0;
+}
+#cooperation li a {
+    margin: 10px 0;
+    border: 1px solid #f3f3f3;
+}
+
+.pagination-container {
+    text-align: center;
+    margin: 10px 0;
+}
+.pagination {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+.pagination li {
+    float: left;
+}
+.pagination a {
+    float: left;
+    margin-left: 8px;
+    padding: 1px 7px;
+    color: #a5a5a5;
+    border: 1px solid #d8d8d8;
+}
+.pagination a:hover {
+    text-decoration: none;
+}
+.pagination .active {
+    color: #F8F8F8;
+    font-weight: 700;
+    background-color: #9ac82b;
+    border: 1px solid #9ac82b;
+}

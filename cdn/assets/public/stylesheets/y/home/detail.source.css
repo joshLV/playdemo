@@ -1,0 +1,447 @@
+#content {
+    width: 960px;
+    margin: 10px auto;
+}
+#content h1 {
+    font-size: 16px;
+    line-height: 48px;
+}
+#gallery {
+    float: left;
+    width: 340px;
+    height: 260px;
+    overflow: hidden;
+    padding: 10px;
+    margin-right: 20px;
+    border: 1px solid #e4e4e4;
+}
+
+#leftBox {
+    float: left;
+    position: relative;
+    z-index: 60;
+}
+#property {
+    float: left;
+    width: 378px;
+    padding-top: 8px;
+}
+#property li {
+    color: #7d7d7d;
+    line-height: 30px;
+}
+#property .price {
+    color: #f00;
+    font: 700 24px arial;
+}
+#property del {
+    font-family: arial;
+}
+#property .discount {
+    color: #fa7512;
+    font-weight: 700;
+}
+#amount {
+    position: relative;
+    width: 61px;
+    _width: 62px;
+    height: 24px;
+    _margin-right: 4px;
+    display: inline-block;
+}
+#amount .amount-ipt {
+    width: 36px;
+    height: 16px;
+    padding: 2px;
+    color: #fa7512;
+    font-weight: 700;
+    border: 1px solid #b7b7b7;
+}
+#amount .increase-btn {
+    position: absolute;
+    top: 4px;
+    top: 3px\9;
+    *top: 4px;
+    _top: 1px;
+    right: 0;
+    width: 18px;
+    height: 10px;
+    overflow: hidden;
+    display: inline-block;
+    cursor: pointer;
+}
+#amount .decrease-btn {
+    position: absolute;
+    top: 16px;
+    top: 15px\9;
+    *top: 16px;
+    _top: 13px;
+    right: 0;
+    width: 18px;
+    height: 10px;
+    overflow: hidden;
+    display: inline-block;
+    cursor: pointer;
+}
+#btnBox {
+    position: relative;
+    margin-top: 16px;
+}
+#btnBox .nowBuy,
+#btnBox .addCart {
+    position: relative;
+    text-align: center;
+    display: inline-block;
+    width: 127px;
+    height: 39px;
+}
+#btnBox .nowBuy {
+    width: 157px;
+}
+#btnBox .nowBuy b,
+#btnBox .addCart b {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 127px;
+    height: 39px;
+    cursor: pointer;
+}
+#btnBox .nowBuy b {
+    width: 137px;
+}
+.addCart-tips {
+    position: absolute;
+    top: -60px;
+    left: 50px;
+    z-index: 100;
+    width: 220px;
+    padding: 35px 25px 55px 105px;
+    line-height: 24px;
+    border: 1px solid #f97311;
+    background-color: #fff;
+}
+.addCart-tips .addCart-icon {
+    position: absolute;
+    top: 45px;
+    left: 35px;
+    width: 45px;
+    height: 45px;
+    display: block;
+}
+.addCart-tips h4 {
+    color: #99CC33;
+    font-size: 14px;
+}
+.addCart-tips p {
+    margin-bottom: 15px;
+}
+.addCart-tips strong {
+    color: #F50;
+    font-size: 14px;
+    padding: 0 3px;
+}
+.addCart-tips em {
+    color: #F50;
+    padding: 0 3px;
+}
+.addCart-tips .view-carts {
+    position: relative;
+    padding: 5px 10px;
+    color: #FFF;
+}
+.addCart-tips .view-carts b {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 128px;
+    height: 36px;
+    cursor: pointer;
+}
+.addCart-tips .close-tips {
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    padding-left: 12px;
+    color: #999;
+    line-height: 21px\9;  /* for IE9 all */
+    line-height: 22px\9\0; /* for IE9 only */
+}
+.addCart-tips .close-tips:hover {
+    text-decoration: none;
+}
+
+#diagram {
+    margin: 25px 0 20px;
+}
+#diagram .tips {
+    padding: 5px 0 0 20px;
+    color: #6e9c00;
+}
+
+#bizinfo {
+    float: right;
+    width: 200px;
+    position: relative;
+    z-index: 50;
+}
+#bizinfo h3 {
+    margin-bottom: 5px;
+}
+#bizinfo .index {
+    margin: 10px 0;
+    position: relative;
+    height: 30px;
+    margin-bottom: 3px;
+    background-color: #eee;
+}
+#bizinfo .index span {
+    display: block;
+    float: left;
+    width: 112px;
+    line-height: 30px;
+    padding-left: 24px;
+    color: #9c9c9c;
+}
+#bizinfo .index em {
+    color: #9ac82b;
+    font-weight: 700;
+}
+#bizinfo .index a {
+    position: absolute;
+    right: -2px;
+    float: right;
+    width: 38px;
+    color: #fff;
+    text-indent: 10px;
+    text-decoration: none;
+    line-height: 30px;
+    *line-height: 34px;
+}
+#bizinfo .index .index-tips {
+    position: absolute;
+    top: 28px;
+    right: 0;
+    width: 110px;
+    height: 30px;
+}
+#bizinfo .index .index-close {
+    position: absolute;
+    top: 8px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    cursor: pointer;
+}
+#bizinfo .bdshare {
+    margin: 10px 0;
+    height: 27px;
+}
+#bizinfo .qvalue {
+    margin: 10px 0;
+    padding: 5px 0;
+    color: #7d7d7d;
+    border: dashed #e2e2e2;
+    border-width: 1px 0;
+}
+#bizinfo .qvalue em {
+    color: #fa7512;
+    font-weight: 700;
+}
+
+#content .hd {
+    margin-top: 10px;
+    color: #f97311;
+    text-indent: 12px;
+    font-weight: 700;
+    line-height: 32px;
+    border: 1px solid #e8e8e8;
+    border-top: 3px solid #f97311;
+}
+#recommend ul {
+    padding: 0 1px;
+}
+#recommend li {
+    float: left;
+    height: 225px;
+    padding: 15px 22px 15px 0;
+}
+#recommend li.last {
+    padding-right: 0;
+}
+#recommend .image {
+    border: 1px solid #f4f4f4;
+    font-size: 0;
+}
+#recommend .image a {
+    font-size: 0;
+}
+#recommend .title {
+    overflow: hidden;
+    width: 174px;
+    height: 44px;
+}
+#recommend .title a {
+    color: #707070;
+    line-height: 22px;
+}
+#recommend .title a:hover {
+    color: #e65d00;
+}
+#recommend .attri {
+    color: #707070;
+    overflow: hidden;
+    width: 174px;
+    height: 22px;
+}
+#recommend .attri del {
+    float: left;
+    width: 100px;
+    display: inline-block;
+}
+.attri .coupon {
+    float: right;
+    *line-height: 21px;
+    _line-height: 20px;
+    padding-left: 20px;
+}
+#recommend .price {
+    color: #7d7d7d;
+    line-height: 22px;
+}
+#recommend .price b {
+    color: #f00;
+    font: 700 16px arial;
+}
+
+#tabbar {
+    margin-top: 15px;
+    border-bottom: 2px solid #f50;
+}
+#tabbar ul {
+    float: left;
+    width: 500px;
+}
+#tabbar li {
+    float: left;
+    margin-right: -1px;
+    padding: 8px 25px;
+    color: #434343;
+    font-size: 14px;
+    font-weight: 700;
+    border: 1px solid #d8d8d8;
+    border-bottom: 0;
+    cursor: pointer;
+}
+#tabbar li.curr {
+    padding: 8px 30px;
+    border: 1px solid #f60;
+    border-bottom: 0;
+    color: #fff;
+    background: #f60;
+}
+
+#consult .hd {
+    text-indent: 0;
+}
+#consult .hd b {
+    padding: 1px 0 1px 32px;
+}
+#consult .hd a {
+    float: right;
+    color: #fff;
+    padding: 0 10px;
+    margin: 2px 15px 0 0;
+    *margin-top: -31px;
+    line-height: 28px;
+    background-color: #9ac82b;
+}
+#consult dl {
+    padding: 0 0 0 86px;
+}
+#consult dt {
+    margin-left: -86px;
+    _margin-left: -43px;
+    width: 68px;
+    float: left;
+    padding-left: 18px;
+    font-weight: 700;
+}
+#consult dd {
+    color: #7d7d7d;
+}
+#consult dd .date {
+    color: #bebebe;
+    display: block;
+    padding: 5px 0;
+}
+#consult .question {
+    margin: 12px 0 5px;
+}
+#consult .question dt {
+    color: #9ac82b;
+}
+#consult .answer {
+    margin-left: 86px;
+    padding-top: 1px;
+    border-top: 1px dashed #e7e7e7;
+}
+#consult .answer dl {
+    padding: 5px 0 8px 92px;
+    background-color: #f2f2f2;
+}
+#consult .answer dt {
+    color: #f97311;
+}
+#question-form {
+    margin: 10px 0;
+    padding: 20px 100px;
+    background-color: #f2f2f2;
+}
+#question-form label {
+    float: left;
+    color: #999;
+}
+#question-form textarea {
+    width: 650px;
+    height: 160px;
+}
+#question-form .submit {
+    display: block;
+    padding: 3px 20px;
+    margin: 8px 0 0 60px;
+    color: #fff;
+    font-weight: 700;
+    border: 0;
+    border-radius: 3px;
+    background-color: #9ac82b;
+}
+
+.pagination-container {
+    text-align: right;
+    margin: 10px 0;
+}
+.pagination {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+.pagination li {
+    float: left;
+}
+.pagination a {
+    float: left;
+    margin-left: 8px;
+    padding: 1px 7px;
+    color: #a5a5a5;
+    border: 1px solid #d8d8d8;
+}
+.pagination a:hover {
+    text-decoration: none;
+}
+.pagination .active {
+    color: #F8F8F8;
+    font-weight: 700;
+    background-color: #9ac82b;
+    border: 1px solid #9ac82b;
+}
