@@ -85,6 +85,7 @@ public class Orders extends Controller {
         //这里用于判断是否是通过推荐过来的用户，是则取得推荐码
         Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
         if (cookie != null) {
+            System.out.println(cookie.value+">>>>>>>>>>>>>");
             renderArgs.put("userPromoterCode", cookie.value);
         }
 
