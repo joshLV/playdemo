@@ -29,6 +29,10 @@ public class Application extends Controller {
         render();
     }
 
+    public static void rebate() {
+        render();
+    }
+
     public static void contact() {
         render();
     }

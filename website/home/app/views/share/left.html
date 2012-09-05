@@ -27,7 +27,7 @@
         </ul>
         <h3 #{if request.url.contains("/rebate")}class="active"#{/if}>推荐返利</h3>
         <ul>
-            <li><a #{if request.url.contains("/rebate-share")}class="current"#{/if} href="/rebate-share">» 分享返利</a></li>
+            <li><a #{if request.url.equals("/rebate")}class="current"#{/if} href="/rebate">» 分享返利</a></li>
             <li><a href="/rebate-rank">» 返利排名</a></li>
             <li><a href="/rebate-account">» 返利收支明细</a></li>
             <li><a href="/rebate-help">» 返利帮助</a></li>

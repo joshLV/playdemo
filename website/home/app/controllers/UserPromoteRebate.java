@@ -62,7 +62,5 @@ public class UserPromoteRebate extends Controller {
         render(user, promoteRebate, boughtAmount, consumedAmount, accountList);
     }
 
-    public static void help() {
-        render();
-    }
+
 }

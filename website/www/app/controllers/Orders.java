@@ -83,6 +83,7 @@ public class Orders extends Controller {
         //这里用于判断是否是通过推荐过来的用户，是则取得推荐码
         Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
         if (cookie != null) {
+            System.out.println(cookie.value+">>>>>>>>>>>>>");
             renderArgs.put("userPromoterCode", cookie.value);
         }
 
@@ -319,10 +320,10 @@ public class Orders extends Controller {
                     order.promoteUserId = promoterUser.id;
                     order.rebateValue = Order.getPromoteRebateOfTotalECartAmount(eCartAmount, order);
                     order.amount = eCartAmount.add(rCartAmount);
-                    order.needPay = order.amount.subtract(order.rebateValue);
-                    if (order.needPay.compareTo(BigDecimal.ZERO) <= 0) {
-                        order.needPay = BigDecimal.ZERO;
-                    }
+//                    order.needPay = order.amount;
+//                    if (order.needPay.compareTo(BigDecimal.ZERO) <= 0) {
+//                        order.needPay = BigDecimal.ZERO;
+//                    }
                     //如果通过注册的，则更新推荐关系
                     PromoteRebate promoteRebate = PromoteRebate.find("promoteUser=? and invitedUser=? and registerFlag=true", promoterUser, user).first();
                     if (promoteRebate != null) {

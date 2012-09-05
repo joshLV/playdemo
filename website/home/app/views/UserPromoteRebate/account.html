@@ -5,6 +5,7 @@
 #{/set}
 #{set 'moreScripts'}
     #{asset.js src:['/js/u/jquery-1.7.2.min.js', 'js/zClip/jquery.zclip.min.js'] /}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 <div id="content" class="clearfix">
 #{include "share/left.html"/}
@@ -18,33 +19,35 @@
                 　　推荐消费：<span>${consumedAmount?.formatCurrency("CNY")}</span>元
                 　　已经获得返利：<span>${promoteRebate?.haveGotAmount?.formatCurrency("CNY")}</span>元
             </div>
-            <button class="exchange-btn"></button>
             <h3 style="font-size:14px;margin-top:30px">成功推荐明细</h3>
-
-            <div class="search-box">
-                <label>操作类型：</label>
-                <select name="condition.sequenceFlag" size="1" id="sequenceFlag" class="sequence-flag">
-                    <option value="">不限</option>
-                    <option value="VOSTRO">收入</option>
-                    <option value="NOSTRO">支出</option>
-                </select>
-                <label>成交时间：</label>
-                <input class="Wdate" type="text" name="condition.createdAtBegin" id="createdAtBegin" value=""
-                       onfocus="WdatePicker({readOnly:true})"/>
-                -
-                <input class="Wdate" type="text" id="createdAtEnd" name="condition.createdAtEnd" value=""
-                       onfocus="WdatePicker({readOnly:true})"/>
-                <button class="search-btn" id="search"> 搜　索</button>
-            </div>
+            <form class="form-horizontal" id="accountForm" action="@{UserPromoteRebate.account()}" method="GET">
+                <div class="search-box">
+                    <label>操作类型：</label>
+                    <select name="condition.status" size="1" id="status" class="sequence-flag">
+                        <option value="">不限</option>
+                        <option value="ALREADY_REBATE">预计可得返利</option>
+                        <option value="UN_CONSUMED">已得返利</option>
+                    </select>
+                    <label>成交时间：</label>
+                    <input class="Wdate" type="text" name="condition.createdAtBegin" id="createdAtBegin"
+                           value="${condition?.createdAtBegin?.format()}"
+                           onfocus="WdatePicker({readOnly:true})"/>
+                    -
+                    <input class="Wdate" type="text" id="createdAtEnd" name="condition.createdAtEnd"
+                           value="${condition?.createdAtEnd?.format()}"
+                           onfocus="WdatePicker({readOnly:true})"/>
+                    <button class="search-btn" id="search"> 搜　索</button>
+                </div>
+            </form>
 
             <table class="order-tab">
                 <thead>
                 <tr class="col-name">
                     <th width="150">日期</th>
-                    <th width="150">会员</th>
+                    <th width="180">被推荐人</th>
                     <th>状态</th>
-                    <th>支出</th>
-                    <th>收入</th>
+                    <th>预计可得返利</th>
+                    <th>已得返利</th>
                 </tr>
                 </thead>
             #{paginate.list items:accountList, as:'rebate'}

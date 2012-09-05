@@ -43,7 +43,7 @@ GET     /user-point                                   UserPoints.index
 GET     /user-point-record                            UserPoints.record
 GET     /user-point-record/{orderNumber}              UserPoints.detail
 #推荐返利
-GET     /rebate-share                                 UserPromoteRebate.index
+GET     /rebate                                       UserPromoteRebate.index
 GET     /rebate-account                               UserPromoteRebate.account
 GET     /rebate-rank                                  UserPromoteRebate.rank
 GET     /rebate-help                                  UserPromoteRebate.help
