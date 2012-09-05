@@ -46,7 +46,7 @@
 
     <permission key="QUESTION" text="咨询管理" roles="customservice,editor"/>
     <permission key="DISCOUNT_CODE" text="折扣券管理" roles="customservice,editor"/>
-
+    <permission key="crm_app" text="CRM" roles="customservice,editor"/>
 
     <navigation key="supplier_app" text="商户管理" action="Suppliers.index" display-order="20">
         <navigation key="suppliers" text="商户" permissions="SUPPLIERS_NEW,SUPPLIERS">
@@ -90,9 +90,16 @@
 
     </navigation>
 
+
     <navigation key="consumers_app" text="用户管理" action="OperateConsumers.index" display-order="40">
         <navigation key="consumers" text="用户">
             <navigation key="consumers_index" action="OperateConsumers.index" text="用户管理" permissions="CONSUMERS"/>
+        </navigation>
+    </navigation>
+
+    <navigation key="crm_app" text="CRM" action="OperateCRM.index" display-order="120">
+        <navigation key="crm_app_users" text="用户管理">
+            <navigation key="crm_app_consumers" action="OperateCRM.index" text="消费者管理" permissions="CONSUMERS"/>
         </navigation>
     </navigation>
 
@@ -151,12 +158,13 @@
             <navigation key="send_sms" action="SendSMS.index" text="发送优惠券" permission="PROMOTION_LIST"/>
         </navigation>
         <navigation key="discountcode" text="折扣券管理">
-            <navigation key="discountcode_add" action="OperateDiscountCodes.add" text="新增折扣券" permission="DISCOUNT_CODE"/>
+            <navigation key="discountcode_add" action="OperateDiscountCodes.add" text="新增折扣券"
+                        permission="DISCOUNT_CODE"/>
             <navigation key="discountcode_index" action="OperateDiscountCodes.index" text="折扣券管理"
                         permissions="DISCOUNT_CODE"/>
-        </navigation>        
+        </navigation>
     </navigation>
-    
+
     <navigation key="question_manage" text="咨询管理" action="OperateQuestions.index" display-order="110">
         <navigation key="question" text="咨询管理" permission="QUESTION">
             <navigation key="questions_index" action="OperateQuestions.index" text="咨询管理" permission="QUESTION"/>

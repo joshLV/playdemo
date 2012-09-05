@@ -666,6 +666,9 @@ public class ECoupon extends Model {
         return sn.toString();
     }
 
+
+
+
     /**
      * 获取后n位券号.
      *

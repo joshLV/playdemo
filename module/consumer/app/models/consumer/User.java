@@ -70,6 +70,7 @@ public class User extends Model {
     public String captcha;
 
     @Column(name = "password_salt")
+
     public String passwordSalt;
 
     @Column(name = "last_login_at")
@@ -183,7 +184,6 @@ public class User extends Model {
     public static User findByLoginName(String loginName) {
         return User.find("byLoginName", loginName).first();
     }
-
     /**
      * 修改密码
      *
@@ -353,4 +353,17 @@ public class User extends Model {
         }
 
     }
+
+    //不可提现余额
+    public BigDecimal promotionAmountMoney() {
+        Account account = Account.find("byUidAndAccountType", this.id, AccountType.CONSUMER).first();
+
+        if (account == null) {
+            return new BigDecimal(0);
+        }
+        BigDecimal promotionAmount = account.promotionAmount;
+        return promotionAmount;
+
+    }
+
 }

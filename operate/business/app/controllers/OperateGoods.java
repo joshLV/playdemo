@@ -208,6 +208,7 @@ public class OperateGoods extends Controller {
             error(500, "goods.image_upload_failed");
         }
         cacheId = play.cache.Cache.get(cacheId.toString()).toString();
+
         redirect("http://" + WWW_URL + "/g/" + cacheId + "?preview=true");
     }
 

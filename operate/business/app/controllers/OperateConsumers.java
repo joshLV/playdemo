@@ -30,6 +30,8 @@ public class OperateConsumers extends Controller {
         }
         JPAExtPaginator<User> users = User.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
+
+
         render(users, condition);
     }
 

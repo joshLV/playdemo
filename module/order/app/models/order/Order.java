@@ -732,6 +732,8 @@ public class Order extends Model {
         return resaler;
     }
 
+
+
     /**
      * 会员中心订单查询
      *
@@ -754,6 +756,19 @@ public class Order extends Model {
         orderPage.setPageSize(pageSize);
         return orderPage;
     }
+
+    public static List<Order> findUserListOrders(User user) {
+        if (user == null) {
+            user = new User();
+        }
+        List<Order> orderList = null;
+        Order order=null;
+        if  (order.getUser()==user)
+        return orderList;
+        else
+            return null;
+    }
+
 
     /**
      * 分销商订单查询
@@ -1136,6 +1151,7 @@ public class Order extends Model {
         return amount;
     }
 
+<<<<<<< HEAD
     /**
      * 计算一笔订单所产生的返利金额
      *
@@ -1221,5 +1237,10 @@ public class Order extends Model {
         //默认给被推荐人1%，如果商品没设置返利
         BigDecimal invitedUserPrice = goods.invitedUserPrice == null || goods.invitedUserPrice.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ONE : goods.invitedUserPrice;
         return goods.salePrice.multiply(invitedUserPrice).multiply(new BigDecimal(number)).multiply(new BigDecimal(0.01));
+    }
+
+    public User getUserInfo() {
+        User user = this.getUser();
+        return user;
     }
 }

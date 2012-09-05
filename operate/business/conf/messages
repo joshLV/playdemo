@@ -214,6 +214,22 @@ order.PAID=已付款
 order.CANCELED=交易关闭
 order.SENT=已发货
 
+#咨询
+consult.ORDERCONSULT=订购咨询
+consult.REFUND=退款
+consult.VERIFYERROR=验证错误
+consult.WEBSITEBROKEN=网站报修
+consult.QUESTIION=商户疑问
+consult.FEEDBACK=投诉反馈
+consult.consultType=咨询类型
+
+validation.text=请输入咨询内容
+consult.text=咨询内容
+
+
+
+
+
 #订单支付方式
 order.payMethod.null=未选择
 order.payMethod.alipay=支付宝

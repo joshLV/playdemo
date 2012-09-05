@@ -1,0 +1,676 @@
+#{extends 'layout_operate/crm_layout.html' /}
+#{set title:'消费者信息管理系统' /}
+*{#{include '/share/nav.html' /}}*
+#{set 'moreScripts'}
+
+#{/set}
+#{set 'moreStyles'}
+<style type="text/css">
+    .table-striped tbody .tr-offsale {
+        color: #A0A0A0;
+    }
+
+    .table-striped tbody tr.transparent td td {
+        border-left: 0px;
+        background: transparent;
+    }
+
+    .expired {
+        color: #ffbe28;
+        font-weight: bold;
+    }
+
+    .zeroBaseSale {
+        color: #942e8f;
+        font-weight: bold;
+    }
+
+    .rank {
+        background-image: url(http://img.uhcdn.com/images/r/rank.png);
+        background-position: right 6px;
+        background-repeat: no-repeat;
+    }
+
+    .rank-asc {
+        background-position: right -15px;
+    }
+
+    .rank-desc {
+        background-position: right -36px;
+    }
+
+    .span7 {
+        margin-left: 0px;
+    }
+
+</style>
+#{/set}
+
+<div class="body">
+<div class="span7">
+
+*{<form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.index()}" method="GET">}*
+*{<table>}*
+*{<tr>}*
+*{<td>手机号或邮箱： <input type="text" name="condition.searchUser" class="input-medium"}*
+*{value="${condition?.searchUser}"/></td>}*
+
+
+*{<td>订单号或券号尾4位： <input type="text" name="condition.searchOrderCoupon" class="input-medium"}*
+*{value="${condition?.searchOrderCoupon}"/></td>}*
+*{<td>}*
+*{<button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>}*
+*{</td>}*
+
+
+*{</tr>}*
+
+
+*{</table>}*
+
+
+*{<form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.index()}" method="GET">}*
+
+*{手机号或邮箱： <input type="text" name="condition.searchUser" class="input-medium"}*
+*{value="${condition?.searchUser}"/>}*
+*{<button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>}*
+*{</form>}*
+*{<span> <form class="form-horizontal" name="frmlist2" id="frmlist2" action="@{OperateCRM.index()}" method="GET">}*
+*{订单号或券号尾4位： <input type="text" name="condition.searchOrderCoupon" class="input-medium"}*
+*{value="${condition?.searchOrderCoupon}"/>}*
+
+*{<button class="btn btn-primary" id="searchbtn2" type="submit">搜索</button>}*
+*{</form>   </span>}*
+
+<table>
+
+    <tr>
+        <td>
+            <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.index()}" method="GET">
+
+
+                手机号或邮箱： <input type="text" name="condition.searchUser" class="input-medium"
+
+                              #{if phone!=null}
+                    value="${phone}"
+                    #{/if}
+                    #{else}
+                               value="${condition?.searchUser}"
+                    #{/else}/>
+                <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
+            </form>
+        </td>
+        <td>
+            <form class="form-horizontal" name="frmlist2" id="frmlist2" action="@{OperateCRM.index()}" method="GET">
+                订单号或券号尾4位： <input type="text" name="condition.searchOrderCoupon" class="input-medium"
+                                  value="${condition?.searchOrderCoupon}"/>
+
+                <button class="btn btn-primary" id="searchbtn2" type="submit">搜索</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+#{if user!=null}
+
+
+<ul class="nav">
+
+    <table class="table table-bordered" style="margin-bottom: 18px;" width="0">
+
+        <tr>
+            <td width="20%">客 户姓 名：${user?.userInfo?.fullName}</td>
+            <td width="20%"> 手 机：${user?.mobile} </td>
+            <td width="20%"> 邮 箱: ${user?.loginName}</td>
+            <td width="20%"> 性别：
+
+                #{if user!=null}
+                ${(user?.userInfo?.userSex==1 || user?.userInfo?.userSex==0) ?'男':'女'}
+                #{/if}
+                #{else}
+                #{/else}
+
+
+            </td>
+        </tr>
+        <tr>
+            <td width="20%"> 可提现余额： ${user?.AccountMoney()?.formatCurrency('CNY')}</td>
+            <td width="20%"> 不可提现余额： ${user?.promotionAmountMoney()?.formatCurrency('CNY')}</td>
+            <td width="20%">积分： ${user?.userInfo?.totalPoints}</td>
+            <td width="20%">地址： ${address?.address}</td>
+        </tr>
+    </table>
+</ul>
+#{/if}
+#{else}
+没有用户记录
+#{/else}
+
+
+
+
+<table width="50%">
+    <tr>
+
+    </tr>
+</table>
+
+*{订单}*
+#{if orderList!=null && orderList.size() > 0}
+<table class="table table-striped table-bordered table-condensed">
+    <thead>
+
+
+    <tr>
+        <th width="10">订单号</th>
+        <th width="50">商品名称</th>
+        <th width="30">订单状态</th>
+        <th width="30">总金额</th>
+        <th width="50">下单时间</th>
+
+
+    </tr>
+    </thead>
+
+    <tbody>
+
+
+        #{list items: orderList, as:'order'}
+
+
+        <tr>
+
+
+            <td rowspan="${order?.orderItems?.size()}"><a href="@{OperateOrders.details(order?.id)}"
+                                                          target="_blank">${order.orderNumber}</td>
+        *{有实物券时}*
+            #{if order.realGoods?.size()>0}
+                <td>
+                    #{if models.sales.MaterialType.ELECTRONIC.equals(order.realGoods?.get(0)?.materialType)}
+                    *{<img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}">}*
+                    ${order.realGoods?.get(0)?.name}
+                    #{/if}
+                        #{else}
+                *{<img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}">}*
+                ${order.realGoods?.get(0)?.name}
+                #{/else}
+                </td>
+                <td rowspan="${order.realGoods?.size()}">
+                    #{if order.deliveryNo!=null}
+                        <a id="sendInfo_${order.id}"
+
+                           href="#" class="label label-info"
+                           rel="popover"
+                           data-content="运单号: ${order.deliveryNo}"
+                           data-original-title="物流公司: ${order.deliveryCompany}"
+                           onmouseover="$('#sendInfo_${order.id}').popover();">
+                        &{'order.'+ order.realGoodsStatus}</a>
+                    #{/if}
+                    #{else}&{'order.'+order.realGoodsStatus}#{/else}
+                    #{if models.order.OrderStatus.PAID.equals(order.realGoodsStatus)}
+                        <br/><a href="#" id="linkSend_${order.id}" onclick="prepareSend(${order.id})">发货</a>
+                    #{/if}
+                </td>
+            #{/if}
+
+            #{else}
+            *{有电子券时}*
+                #{if order.electronicGoods?.size()>0}
+                    <td>
+                    *{<img src="${order.electronicGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}">}*
+                    ${order.electronicGoods.get(0).name}&nbsp;
+                    </td>
+                    <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
+                #{/if}
+                #{else}
+                    <td>&nbsp;</td>
+                    <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
+                #{/else}
+            #{/else}
+
+
+
+            <td rowspan="${order?.orderItems?.size()}">${order.amount?.formatCurrency('CNY')}</td>
+            <td rowspan="${order?.orderItems?.size()}">${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+
+        *{<td rowspan="${order?.orderItems?.size()}"><a href="@{OperateOrders.details(order.id)}">查看</a></td>}*
+        </tr>
+
+            #{set i:0/}
+            #{set showRealStatus:true/}
+            #{if order.realGoods?.size()>0}
+                #{list items:order.realGoods, as:'aRealGoods'}
+                    #{if i>0}
+                    <tr test="i=${i}">
+                        <td><img src="${aRealGoods?.imageTinyPath}"><img
+                                src="@@{'/public/images/real-goods.png'}">${aRealGoods?.name}</td>
+                    </tr>
+                    #{/if}
+                    #{set i:i+1/}
+                #{/list}
+            #{/if}
+
+            #{set j:0/}
+            #{set showElectronicStatus:true/}
+            #{list items:order.electronicGoods, as:'aElectronicGoods'}
+                #{if (order.realGoods?.size()==0 && j>0) ||(order.realGoods?.size()>0) }
+                <tr>
+                    <td><img src="${aElectronicGoods.imageTinyPath}"><img
+                            src="@@{'/public/images/electronic-goods.png'}">${aElectronicGoods?.name}</td>
+                    #{if showElectronicStatus && order.realGoods?.size()>0}
+                        <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
+                        #{set showElectronicStatus:false/}
+                    #{/if}
+                </tr>
+
+                #{/if}
+                #{set j:j+1/}
+            #{/list}
+
+        #{/list}
+    </tbody>
+
+</table>
+
+#{if  orderListSize >5}
+<a href="orders?condition.searchKey=ORDER_NUMBER&condition.searchItems=${moreSearch}"
+   target="_blank" style="float:right"> more</a>
+#{/if}
+#{/if}
+
+#{else}
+没有订单信息
+#{/else}
+
+
+
+
+
+
+
+
+*{券}*
+#{if eCoupons!=null  && eCoupons.size() > 0}
+<table class="table table-striped table-bordered table-condensed">
+    <thead>
+    <tr>
+
+        <th width="10px">订单号</th>
+        <th width="8px">手机</th>
+        <th width="8px">券尾号</th>
+    *{<th width="90px">商品名称</th>}*
+        <th width="30px">单价</th>
+        <th width="50px">消费门店</th>
+
+        <th width="50px">付款时间</th>
+        <th width="50px">消费时间</th>
+    *{<th width="30px">店员</th>}*
+    *{<th width="60px">代理验证员</th>}*
+
+
+        <th width="20px">状态</th>
+    *{<th width="50px">操作</th>}*
+    </tr>
+    </thead>
+
+    <tbody>
+        #{list items:eCoupons, as:'coupon' }
+
+        <tr>
+
+
+            <td><a href="@{OperateOrders.details(coupon?.order?.id)}"
+                   target="_blank"  #{if coupon?.status==models.order.ECouponStatus.REFUND}
+
+
+                   style="color:red"
+
+                #{/if}>
+
+            ${coupon?.order?.orderNumber}</a></abbr></td>
+
+
+            <td  #{if coupon?.status==models.order.ECouponStatus.REFUND || phone.equals(coupon?.orderItems?.phone)}
+
+
+                    style="color:red"
+
+            #{/if}>${coupon?.orderItems?.phone}</td>
+
+        %{
+            len=coupon.eCouponSn.length();
+            }%
+
+            <td  #{if coupon?.status==models.order.ECouponStatus.REFUND}
+
+
+                    style="color:red"
+
+            #{/if}>${n}${coupon?.eCouponSn.substring(len - 4)}</td>
+        *{<td>${coupon?.orderItems?.phone}</td>}*
+        *{<td>${coupon?.goods?.name}</td>}*
+            <td  #{if coupon?.status==models.order.ECouponStatus.REFUND}
+
+
+                    style="color:red"
+
+            #{/if}>${coupon?.salePrice?.formatCurrency('CNY')}</td>
+            <td  #{if coupon?.status==models.order.ECouponStatus.REFUND}
+
+
+                    style="color:red"
+
+            #{/if}>${coupon?.getConsumedShop()}</td>
+        *{<td>${coupon?.effectiveAt ?.format()} /}*
+            *{${coupon?.expireAt?.format()}</td>}*
+            <td>
+                <a id="cancelInfo_${coupon.id}"
+                   href="#" class="label label-info"
+                   rel="popover"
+                   data-content=" ${coupon?.order?.paidAt?.format("yyyy-MM-dd HH:mm:ss")} "
+                   data-original-title="精确时间:"
+                   onmouseover="$('#cancelInfo_${coupon.id}').popover();"  #{if coupon?.status==models.order.ECouponStatus.REFUND}
+
+
+                   style="color:red"
+
+                #{/if}>
+                ${coupon?.order?.paidAt?.format("MM-dd HH:mm")}
+
+                </a></td>
+        *{#{if models.order.PointGoodsOrderStatus.CANCELED.equals(pointGoodsOrder?.status)}}*
+
+        *{#{/if}}*
+        *{${coupon?.expireAt?.format()}</td>}*
+            <td>
+                <a id="cancelInfo_${coupon.id}"
+                   href="#" class="label label-info"
+                   rel="popover"
+                   data-content=" ${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")} "
+                   data-original-title="精确时间:"
+                   onmouseover="$('#cancelInfo_${coupon.id}').popover();"  #{if coupon?.status==models.order.ECouponStatus.REFUND}
+
+
+                   style="color:red"
+
+                #{/if}>
+                ${coupon?.consumedAt?.format("MM-dd HH:mm")}
+
+                </a></td>
+
+
+        *{<td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>}*
+        *{<td>#{if coupon?.supplierUser?.userName!=null}${coupon?.supplierUser?.userName}#{/if}}*
+        *{#{if coupon?.supplierUser?.jobNumber!=null}(工号: ${coupon?.supplierUser?.jobNumber})#{/if}</td>}*
+
+            <td  #{if coupon?.status==models.order.ECouponStatus.REFUND}
+
+
+                    style="color:red"
+
+            #{/if}>&{'coupon.'+coupon?.status}
+            </td>
+        *{<td>#{if  models.order.ECouponStatus.UNCONSUMED == coupon.status }}*
+        *{#{if coupon.isFreeze == 0}}*
+        *{#{vx.operateLink name:"freeze_"+coupon.id,text:"冻结",url:"/coupons/"+coupon.id+"/freeze",confirm:true, targetName:coupon?.getMaskedEcouponSn(),method:"PUT"/}}*
+        *{#{if !coupon?.goods?.isLottery}}*
+        *{<a href="javascript:sendMessage(${coupon.id})">发送短信</a>#{/if}}*
+        *{#{/if}}*
+        *{#{else} #{vx.operateLink name:"unfreeze_"+coupon.id,text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}#{/else}}*
+        *{#{/if}}*
+
+        *{</td>}*
+        </tr>
+
+        *{@{OperateOrders.details(coupon?.order?.id)}}*
+
+
+
+
+        #{/list}
+
+
+
+
+
+    </tbody>
+
+</table>
+
+#{if eCouponsSize>5}
+
+<a href="coupons?condition.searchKey=COUPON&condition.searchItems=${moreSearch}"
+
+target="_blank" style="float:right"> more</a>
+
+#{/if}
+*{action", "/crm/" + id+"?x-http-method-override=DELETE" );}*
+
+*{<a href="/orders"}*
+*{target="_blank" style="float:right"> more</a>}*
+
+#{/if}
+
+
+
+#{else}
+没有券记录
+#{/else}
+
+
+*{</form>}*
+</div>
+
+<div class="span5">
+
+
+*{<form class="well form-inline" name="frmlist2" id="frmlist2" method="GET">}*
+#{form @OperateCRM.save(), id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
+
+
+*{#{layout_operate.selectField name:'consult.consultType', value:consult?.consultType, error:'consult.consultType',}*
+*{class:'span2'}}*
+*{#{option models.sales.ConsultType.ORDERCONSULT }&{'consult.ORDERCONSULT'}#{/option}}*
+*{#{option models.sales.ConsultType.REFUND}&{'consult.REFUND'}#{/option}}*
+*{#{option models.sales.ConsultType.VERIFYERROR}&{'consult.VERIFYERROR'}#{/option}}*
+*{#{option models.sales.ConsultType.WEBSITEBROKEN}&{'consult.WEBSITEBROKEN'}#{/option}}*
+*{#{option models.sales.ConsultType.QUESTIION}&{'consult.QUESTIION'}#{/option}}*
+*{#{option models.sales.ConsultType.FEEDBACK}&{'consult.FEEDBACK'}#{/option}}*
+*{#{/layout_operate.selectField}}*
+
+
+    <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
+
+
+    咨询类型
+
+*{#{select 'consult.type', id:'consult_type', class:'input-small',value:consult?.consultType }}*
+
+    #{select 'consult.consultType', value:consult?.consultType, id:'consult_type',class:'span4'}
+
+        #{option models.sales.ConsultType.ORDERCONSULT }&{'consult.ORDERCONSULT'}#{/option}
+        #{option models.sales.ConsultType.REFUND}&{'consult.REFUND'}#{/option}
+        #{option models.sales.ConsultType.VERIFYERROR}&{'consult.VERIFYERROR'}#{/option}
+        #{option models.sales.ConsultType.WEBSITEBROKEN}&{'consult.WEBSITEBROKEN'}#{/option}
+        #{option models.sales.ConsultType.QUESTIION}&{'consult.QUESTIION'}#{/option}
+        #{option models.sales.ConsultType.FEEDBACK}&{'consult.FEEDBACK'}#{/option}
+    #{/select}
+
+    <textarea rows="3" cols="20"  required="required" name="consult.text" id="consult_text" value="${consult?.text}">
+
+    </textarea>
+
+
+    <div class="error">#{error 'consult.text' /}</div>
+
+    <input class="btn btn-primary" id="save" type="submit" value="保存"/>
+
+
+
+
+
+    #{list items: consultContent, as:'consult'}
+    *{<ul>}*
+
+    *{<li>}*
+
+        <div>
+            <hr size="1" noshade="noshade" style="border:1px #cccccc dotted;">
+        ${consult?.phone} &nbsp;
+            <span style="color:red">  &{'consult.'+consult?.consultType}   </span> :      ${consult?.text}
+
+            <br>
+        ${consult?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}
+        *{${consult?.info}}*
+        ${consult?.createdBy}
+        *{<button class="btn btn-primary" style="float:right" id="deletebtn" type="button">删除</button>}*
+
+        *{<button class="btn btn-primary" style="float:right" id="deletebtn4" type="submit"}*
+        *{onclick="prepareSendEdit('${consult.id}')}*
+        *{"}*
+        *{>修改</button>}*
+
+
+
+        *{href="/crm/" + id + "/edit""}*
+
+              #{if currentOperator.equals(consult.createdBy)}
+
+
+                                 <a id="edit" type="submit" href="/crm/${consult?.id}/edit"
+                   target="_blank" style="float:right">&nbsp;修改 </a>
+            *{<a href="@{OperateCRM.edit(consult.id)}">修改</a>}*
+
+
+            *{<button class="btn btn-primary" style="float:right" id="deletebtn2" type="submit"}*
+            *{onclick="prepareSend('${consult.id}')}*
+            *{"}*
+            *{>删除</button>}*
+
+                *{<a id="edit" type="submit" href="@{OperateCRM.delete(consult.id)}"}*
+                   *{style="float:right">删除&nbsp; |</a>}*
+              <span style="float:right">
+                  #{vx.deleteLink id:consult?.id, name:consult?.id, action:"/crm"/} |
+              </span>
+        </div>
+
+          #{/if}
+    *{</li>}*
+
+    *{</ul>}*
+    #{/list}
+
+
+
+
+*{<table class="table table-striped table-bordered table-condensed">}*
+
+
+*{<tr>}*
+*{<th width="10">日期</th>}*
+*{<th width="50">咨询类型</th>}*
+*{<th width="30">内容</th>}*
+*{<th width="30">记录人</th>}*
+*{<th width="30">操作</th>}*
+
+*{</tr>}*
+*{</thead>}*
+
+
+
+
+
+*{<tbody>}*
+
+*{#{list items: consultContent, as:'consult'}}*
+*{<tr>}*
+*{<td>}*
+*{${consult?.createdAt}}*
+
+*{</td>}*
+
+*{<td>&{'consult.'+consult?.consultType}</td>}*
+
+*{<td>}*
+*{${consult?.text}}*
+*{</td>}*
+
+*{<td>}*
+*{${consult?.createdBy}}*
+*{</td>}*
+*{<td>}*
+*{<button class="btn btn-primary" id="deletebtn" type="button">删除</button>}*
+*{</td>}*
+*{</tr>}*
+
+
+*{#{/list}}*
+*{</tbody>}*
+
+
+*{</table>}*
+#{/form}
+
+
+</div>
+</div>
+
+
+<script type="text/javascript">
+    function prepareSend(id) {
+        $("#form").attr("action", "/crm/" + id);
+
+    }
+
+    function prepareSendEdit(id) {
+        $("#form").attr("action", "/crm/" + id + "/edit");
+        $("#form").attr("method", "GET");
+    }
+
+    $(function () {
+        var checkedcnt = 0;
+        $("#deletebtn").click(function () {
+
+            $("#form").attr("action", "/crm/" + id + "?x-http-method-override=DELETE");
+            $("#form").attr("method", "POST");
+
+
+//            var checkedGoods = [];
+//            $("input[name='id']").each(function () {
+//                if (this.checked) {
+//                    checkedcnt++;
+//                    checkedGoods.push($(this).attr("value"));
+//                }
+//            });
+//
+//            if (checkedcnt == 0) {
+//                alert("请至少选择一条数据！");
+//            } else {
+//                if (confirm("您确定要删除吗？")) {
+//                    var url = "/crm/" + java.join(",") + "?x-http-method-override=DELETE";
+//                    $("#deletefrm").attr("method", "POST");
+//                    $("#deletefrm").attr("action", url);
+//                    $("#deletefrm").submit();
+//                }
+//            }
+
+
+            var msg = "确认删除记录吗？";
+            if (confirm(msg) == true) {
+
+                return true;
+            }
+            else {
+                return false;
+            }
+
+        });
+
+    });
+
+
+</script>

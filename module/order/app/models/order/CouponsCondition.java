@@ -180,7 +180,6 @@ public class CouponsCondition implements Serializable {
                 paramMap.put("user", resaler.id);
             }
         }
-        System.out.println(sql+">>>>>>>>>>>>>>>>");
         return sql.toString();
     }
 
