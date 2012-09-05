@@ -159,11 +159,11 @@
     white-space: nowrap;
 }
 
-#bargain {
-    height: 730px;
-    *height: 721px;
-    overflow: hidden;
-}
+/* #bargain { */
+    /* height: 1417px; */
+    /* *height: 1416px; */
+    /* overflow: hidden; */
+/* } */
 #bargain li {
     position: relative;
     float: left;
@@ -172,6 +172,9 @@
 }
 #bargain li.last {
     padding-right: 0;
+}
+#bargain li.none {
+  border-bottom: 0;
 }
 #bargain .image {
     width: 234px;

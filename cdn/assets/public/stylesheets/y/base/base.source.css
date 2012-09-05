@@ -377,7 +377,7 @@ mark { background: #ff0; }
     line-height: 0;
     border-left: 6px dashed transparent;
     border-right: 6px dashed transparent;
-    border-bottom: 6px solid white;
+    border-bottom: 6px solid #fffcf1;
 }
 #rebate a:hover {
     direction: ltr;
