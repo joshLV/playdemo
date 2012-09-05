@@ -345,7 +345,7 @@ public class Order extends Model {
 
     public static BigDecimal getDiscountValueOfGoodsAmount(models.sales.Goods g,
                                                            Integer number, DiscountCode discountCode) {
-        if (discountCode == null || discountCode.goods == null || discountCode.goods.id != g.id) {
+        if (discountCode == null || discountCode.goods == null || !discountCode.goods.id.equals(g.id)) {
             return BigDecimal.ZERO;
         }
         if (discountCode.discountAmount != null && discountCode.discountAmount.compareTo(BigDecimal.ZERO) > 0) {

@@ -1,4 +1,4 @@
-package models.job.yihaodian;
+package models.yihaodian;
 
 import org.dom4j.Element;
 import play.db.jpa.Model;
@@ -25,7 +25,7 @@ public class OrderItem extends Model {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = true)
-    public Order order;
+    public YihaodianOrder order;
 
     @Column(name = "product_c_name")
     public String productCName; //铲平名称
@@ -72,24 +72,25 @@ public class OrderItem extends Model {
         @Override
         public OrderItem parse(Element node) {
             OrderItem orderItem = new OrderItem();
-            orderItem.orderItemId = Long.parseLong(node.elementText("id"));
-//            orderItem.order = Order.find("byOrderId", node.elementText("orderId")).first();
-            orderItem.productCName = node.elementText("productCName");
-            orderItem.orderItemAmount = new BigDecimal(node.elementText("orderItemAmount"));
-            orderItem.orderItemNum = Integer.parseInt(node.elementText("orderItemNum"));
-            orderItem.orderItemPrice = new BigDecimal(node.elementText("orderItemPrice"));
-            orderItem.originalPrice = new BigDecimal(node.elementText("originalPrice"));
-            orderItem.taxRate = new BigDecimal(node.elementText("taxRate"));
-            orderItem.productId = Long.parseLong(node.elementText("productId"));
-            orderItem.itemLeaf = Integer.parseInt(node.elementText("isItemLeaf"));
-            orderItem.merchantId = Long.parseLong(node.elementText("merchantId"));
-            orderItem.promoteType = Integer.parseInt(node.elementText("promoteType"));
-            orderItem.outerId = node.elementText("outerId");
+            orderItem.orderItemId = Long.parseLong(node.elementTextTrim("id"));
+            orderItem.productCName = node.elementTextTrim("productCName");
+            orderItem.orderItemAmount = new BigDecimal(node.elementTextTrim("orderItemAmount"));
+            orderItem.orderItemNum = Integer.parseInt(node.elementTextTrim("orderItemNum"));
+            orderItem.orderItemPrice = new BigDecimal(node.elementTextTrim("orderItemPrice"));
+            orderItem.originalPrice = new BigDecimal(node.elementTextTrim("originalPrice"));
+            orderItem.taxRate = new BigDecimal(node.elementTextTrim("taxRate"));
+            orderItem.productId = Long.parseLong(node.elementTextTrim("productId"));
+            orderItem.itemLeaf = Integer.parseInt(node.elementTextTrim("isItemLeaf"));
+            orderItem.merchantId = Long.parseLong(node.elementTextTrim("merchantId"));
+            orderItem.promoteType = Integer.parseInt(node.elementTextTrim("promoteType"));
+            orderItem.outerId = node.elementTextTrim("outerId");
 
             try{
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                orderItem.processFinishDate = simpleDateFormat.parse(node.elementText("processFinishDate"));
-                orderItem.updateTime = simpleDateFormat.parse(node.elementText("updateTime"));
+                if(node.elementText("processFinishDate") != null){
+                    orderItem.processFinishDate = simpleDateFormat.parse(node.elementTextTrim("processFinishDate"));
+                }
+                orderItem.updateTime = simpleDateFormat.parse(node.elementTextTrim("updateTime"));
             }catch (ParseException e){/* */}
 
             return orderItem;

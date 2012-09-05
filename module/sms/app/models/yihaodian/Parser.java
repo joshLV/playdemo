@@ -1,4 +1,4 @@
-package models.job.yihaodian;
+package models.yihaodian;
 
 import org.dom4j.Element;
 

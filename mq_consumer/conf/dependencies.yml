@@ -26,6 +26,8 @@ require:
     - org.jsoup -> jsoup 1.6.1
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
+    - com.yihaodian -> yhdclient 1.0
+    - commons-httpclient -> commons-httpclient 3.1
 
 repositories:
     - mavenRepository:
@@ -36,6 +38,7 @@ repositories:
             - com.taobao -> *
             - com.uhuila.utils -> *
             - org.jsoup -> *
+            - com.yihaodian -> *
         m2compatible: true
 
     - customModules:

@@ -1,4 +1,4 @@
-package models.job.yihaodian;
+package models.yihaodian;
 
 /**
  * @author likang

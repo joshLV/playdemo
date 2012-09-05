@@ -115,7 +115,7 @@ public class OrdersCondition {
                 sql.append(" and o.userId = :user");
                 paramsMap.put("user", user.getId());
             }
-            Resaler resaler = Resaler.findOneLoginName(searchItems.trim());
+            Resaler resaler = Resaler.findOneByLoginName(searchItems.trim());
             if (resaler != null) {
                 sql.append(" and o.userId = :user");
                 paramsMap.put("user", resaler.id);

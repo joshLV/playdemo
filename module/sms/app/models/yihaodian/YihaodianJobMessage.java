@@ -8,22 +8,22 @@ import java.io.Serializable;
 public class YihaodianJobMessage implements Serializable {
     private static final long serialVersionUID = -8579949259782101651L;
 
-    private Long yihaodianOrderId;
+    private Long orderId;
 
-    public YihaodianJobMessage(Long yihaodianOrderId){
-        this.yihaodianOrderId = yihaodianOrderId;
+    public YihaodianJobMessage(Long orderId){
+        this.orderId = orderId;
     }
 
-    public Long getYihaodianOrderId() {
-        return yihaodianOrderId;
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public void setYihaodianOrderId(Long yihaodianOrderId) {
-        this.yihaodianOrderId = yihaodianOrderId;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     @Override
     public String toString(){
-        return "yihaodian job orderId: " + yihaodianOrderId;
+        return "yihaodian job orderCode: " + orderId;
     }
 }

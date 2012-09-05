@@ -1,71 +1,133 @@
 package models.yihaodian;
 
+import models.accounts.AccountType;
+import models.accounts.PaymentSource;
+import models.order.DeliveryType;
+import models.order.NotEnoughInventoryException;
+import models.order.OrderItems;
+import models.resale.Resaler;
+import models.sales.Goods;
+import models.sales.MaterialType;
+import org.dom4j.DocumentException;
 import play.Logger;
-import play.libs.WS;
+import play.Play;
+import play.db.jpa.JPA;
+import play.jobs.OnApplicationStart;
 import play.modules.rabbitmq.consumer.RabbitMQConsumer;
+
+import javax.persistence.LockModeType;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author likang
  */
+@OnApplicationStart(async = true)
 public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
+    public static String YHD_LOGIN_NAME = Play.configuration.getProperty("yihaodian.resaler_login_name", "yihaodian");
+    public static String DELIVERY_SUPPLIER = Play.configuration.getProperty("yihaodian.delivery_supplier");
+
     @Override
     protected void consume(YihaodianJobMessage message) {
-        YihaodianOrder yihaodianOrder = YihaodianOrder.findById(message.getYihaodianOrderId());
+        YihaodianOrder yihaodianOrder = YihaodianOrder.find("byOrderId", message.getOrderId()).first();
         if(yihaodianOrder == null){
-            Logger.error("order not found: %s", message.getYihaodianOrderId());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                return;
+            }
+            yihaodianOrder = YihaodianOrder.find("byOrderId", message.getOrderId()).first();
+            if (yihaodianOrder == null) {
+                Logger.error("order not found: %s", message.getOrderId());
+                return;
+            }
+        }
+
+        if(yihaodianOrder.jobFlag == JobFlag.SEND_SYNCED){
             return;
         }
+        JPA.em().refresh(yihaodianOrder, LockModeType.PESSIMISTIC_WRITE);
+        if(yihaodianOrder.jobFlag == JobFlag.SEND_COPY){
+            if( buildUhuilaOrder(yihaodianOrder)){
+                yihaodianOrder.jobFlag = JobFlag.SEND_DONE;
+                yihaodianOrder.save();
 
-        String actions = yihaodianOrder.pendingActions;
-        if(actions == null || actions.trim().equals("")){
-            return;
+                YihaodianJobMessage syncMessage = new YihaodianJobMessage(yihaodianOrder.orderId);
+                YihaodianQueueUtil.addJob(syncMessage);
+            }
+        }else if(yihaodianOrder.jobFlag == JobFlag.SEND_DONE){
+            if( syncWithYihaodian(yihaodianOrder)){
+                yihaodianOrder.jobFlag = JobFlag.SEND_SYNCED;
+                yihaodianOrder.save();
+            }
         }
-
-        int commaIndex = yihaodianOrder.pendingActions.indexOf(",");
-        int nextIndex = commaIndex + 1;
-        if(commaIndex == -1){
-            commaIndex = yihaodianOrder.pendingActions.length();
-            nextIndex = commaIndex;
-        }
-        String action = yihaodianOrder.pendingActions.substring(0, commaIndex);
-
-        switch (action){
-            case "mark_send":
-                markSend(yihaodianOrder);
-                break;
-            case "mark_consumed":
-                markConsumed(yihaodianOrder);
-                break;
-            case "mark_refunded":
-                markRefunded(yihaodianOrder);
-                break;
-            default:
-                Logger.error("unknown action: %s of order: %s", action, message.getYihaodianOrderId());
-        }
-
-        yihaodianOrder.pendingActions = yihaodianOrder.pendingActions.substring(nextIndex);
-        yihaodianOrder.save();
     }
 
-    private void markSend(YihaodianOrder yihaodianOrder){
-        WS.WSRequest request = WS.url("http://yihaodian.com");
-        //todo
-        //request.setParameter("a", "a");
-        WS.HttpResponse response = request.get();
+    private boolean syncWithYihaodian(YihaodianOrder yihaodianOrder) {
+        Map<String, String> params = new HashMap<>();
+        params.put("orderCode", yihaodianOrder.orderCode);
+        params.put("deliverySupplierId", DELIVERY_SUPPLIER);//测试公司
+        params.put("expressNbr", yihaodianOrder.orderCode);
+
+        String responseXml = Util.sendRequest(params, "hd.logistics.order.shipments.update");
+        Logger.info("hd.logistics.order.shipments.update %s", responseXml);
+        if (responseXml != null) {
+            Response<UpdateResult> res = new Response<>();
+            res.parseXml(responseXml, "updateCount", false, UpdateResult.parser);
+            if(res.getErrorCount() == 0){
+                return true;
+            }
+        }
+        return false;
     }
 
-    private void markConsumed(YihaodianOrder yihaodianOrder){
-        WS.WSRequest request = WS.url("http://yihaodian.com");
-        //todo
-        //request.setParameter("a", "a");
-        WS.HttpResponse response = request.get();
-    }
+    private boolean buildUhuilaOrder(YihaodianOrder order) {
+        Resaler resaler = Resaler.findOneByLoginName(YHD_LOGIN_NAME);
+        if (resaler == null){
+            Logger.error("can not find the resaler by login name: %s", YHD_LOGIN_NAME);
+            return false;
+        }
+        models.order.Order uhuilaOrder = models.order.Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
+        boolean containsElectronic = false;
+        boolean containsReal = false;
+        try {
+            for (OrderItem orderItem : order.orderItems){
+                Goods goods = Goods.find("byNo", orderItem.outerId).first();
+                if(goods == null){
+                    Logger.info("goods not found: %s", orderItem.outerId );
+                    return false;
+                }
 
-    private void markRefunded(YihaodianOrder yihaodianOrder){
-        WS.WSRequest request = WS.url("http://yihaodian.com");
-        //todo
-        //request.setParameter("a", "a");
-        WS.HttpResponse response = request.get();
+                OrderItems uhuilaOrderItem  = uhuilaOrder.addOrderItem(
+                        goods,
+                        orderItem.orderItemNum,
+                        order.goodReceiverMobile,
+                        goods.salePrice, //最终成交价
+                        goods.salePrice
+                );
+                uhuilaOrderItem.save();
+                if(goods.materialType.equals(MaterialType.REAL)){
+                    containsReal = true;
+                }else if (goods.materialType.equals(MaterialType.ELECTRONIC)) {
+                    containsElectronic = true;
+                }
+            }
+        } catch (NotEnoughInventoryException e) {
+            return false;
+        }
+        if (containsElectronic) {
+            uhuilaOrder.deliveryType = DeliveryType.SMS;
+        } else if (containsReal) {
+            uhuilaOrder.deliveryType = DeliveryType.LOGISTICS;
+        }
+
+        uhuilaOrder.createAndUpdateInventory();
+        uhuilaOrder.accountPay = uhuilaOrder.needPay;
+        uhuilaOrder.discountPay = BigDecimal.ZERO;
+        uhuilaOrder.payMethod = PaymentSource.getBalanceSource().code;
+        uhuilaOrder.payAndSendECoupon();
+        return true;
     }
 
     @Override
@@ -75,6 +137,6 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
 
     @Override
     protected String queue() {
-        return YihaodianJobUtil.QUEUE_NAME;
+        return YihaodianQueueUtil.QUEUE_NAME;
     }
 }

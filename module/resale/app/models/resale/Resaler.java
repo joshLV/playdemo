@@ -248,11 +248,7 @@ public class Resaler extends Model {
         updResaler.save();
     }
 
-    public static Resaler findByLoginName(String loginName) {
-        return Resaler.find("byLoginName", loginName).first();
-    }
-
-    public static Resaler findOneLoginName(String loginName) {
+    public static Resaler findOneByLoginName(String loginName) {
         return find("loginName = ?", loginName.trim()).first();
     }
 }

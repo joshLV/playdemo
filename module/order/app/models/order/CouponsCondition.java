@@ -174,7 +174,7 @@ public class CouponsCondition implements Serializable {
 
         //按照帐号检索
         if (userName != null) {
-            Resaler resaler = Resaler.findOneLoginName(userName.trim());
+            Resaler resaler = Resaler.findOneByLoginName(userName.trim());
             if (resaler != null) {
                 sql.append(" and e.order.userId = :user");
                 paramMap.put("user", resaler.id);

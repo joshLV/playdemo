@@ -1,4 +1,4 @@
-package models.job.yihaodian;
+package models.yihaodian;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -29,11 +29,22 @@ public class Response<V> {
     /**
      * 解析一号店返回的XML
      * @param xml   一号店的返回内容
-     * @throws DocumentException
      */
-    public void parseXml(String xml, String contentNodeName, boolean isList, Parser<V> parser) throws DocumentException {
+    public void parseXml(String xml, String contentNodeName, boolean isList, Parser<V> parser){
         Document document = null;
-        document = DocumentHelper.parseText(xml);
+
+        try{
+            document = DocumentHelper.parseText(xml);
+        }catch (DocumentException e){
+            errorCount = 1;
+            ErrorInfo errorInfo = new ErrorInfo();
+            errorInfo.errorCode = "0";
+            errorInfo.errorDes = "parse xml error";
+            errorInfo.pkInfo = "";
+            errors.add(errorInfo);
+            return;
+        }
+
         Element root = document.getRootElement();
 
         //解析 errorCount
@@ -41,7 +52,9 @@ public class Response<V> {
         //解析 totalCount
         totalCount = parseIntValue(root, "totalCount");
         //解析错误信息
-        parseErrors(root);
+        if(errorCount > 0) {
+            parseErrors(root);
+        }
         //解析内容
         parseContent(root, contentNodeName, isList, parser);
     }

@@ -1,12 +1,14 @@
 package models.job.yihaodian.listener;
 
-import models.job.yihaodian.Order;
-import models.job.yihaodian.OrderItem;
-import models.job.yihaodian.Response;
-import models.job.yihaodian.Util;
+import models.yihaodian.YihaodianOrder;
+import models.yihaodian.OrderItem;
+import models.yihaodian.Response;
+import models.yihaodian.Util;
 import models.yihaodian.YihaodianJobMessage;
 import models.yihaodian.YihaodianQueueUtil;
 import org.dom4j.DocumentException;
+import play.Logger;
+import play.jobs.Every;
 import play.jobs.Job;
 
 import java.text.SimpleDateFormat;
@@ -19,33 +21,40 @@ import java.util.*;
  *
  * Date: 12-8-29
  */
+@Every("1mn")
 public class OrderListener extends Job{
     private static String ORDER_DATE = "yyyy-MM-dd HH:mm:ss";
 
     @Override
     public void doJob(){
+        Logger.info("start yihaodian job");
         //从一号店拉取订单列表
-        List<Order> orders = newOrders();
+        List<YihaodianOrder> orders = newOrders();
         if (orders != null && orders.size() > 0) {
             //筛选出我们没有处理过的
             StringBuilder orderCodes = new StringBuilder();
-            for(Order order : orders){
-                if(Order.find("byOrderId", order.orderId).first() == null){
+            for(YihaodianOrder order : orders){
+                if(YihaodianOrder.find("byOrderId", order.orderId).first() == null){
+                    order.save();
                     orderCodes.append(order.orderCode).append(",");
+                }else {
+                    //发送消息队列
+                    YihaodianJobMessage message = new YihaodianJobMessage(order.orderId);
+                    YihaodianQueueUtil.addJob(message);
                 }
             }
 
             //拉取订单的全部信息
-            List<Order> fullOrders = fullOrders(orderCodes.toString());
+            List<YihaodianOrder> fullOrders = fullOrders(orderCodes.toString());
             if(fullOrders != null && fullOrders.size() > 0) {
-                for(Order order: fullOrders) {
+                for(YihaodianOrder order: fullOrders) {
                     order.save();
                     for(OrderItem orderItem : order.orderItems) {
                         orderItem.order = order;
                         orderItem.save();
                     }
                     //发送消息队列
-                    YihaodianJobMessage message = new YihaodianJobMessage(order.getId());
+                    YihaodianJobMessage message = new YihaodianJobMessage(order.orderId);
                     YihaodianQueueUtil.addJob(message);
                 }
             }
@@ -57,7 +66,7 @@ public class OrderListener extends Job{
      *
      * @return 已付款未发货的订单摘要
      */
-    public List<Order> newOrders(){
+    public List<YihaodianOrder> newOrders(){
         Date end = new Date(System.currentTimeMillis() + 600000);//当前时间往后10分钟
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(end);
@@ -66,18 +75,17 @@ public class OrderListener extends Job{
 
 
         Map<String, String> params = new HashMap<>();
-        params.put("orderStatusList", "ORDER_WAIT_SEND");//按已付款的状态查询
-        params.put("dateType", "2");//按付款时间查询
+        params.put("orderStatusList", "ORDER_WAIT_SEND");//按已付款的状态和申退款的状态查询
+        params.put("dateType", "1");//按付款时间查询
         params.put("startTime", new SimpleDateFormat(ORDER_DATE).format(start));
         params.put("endTime", new SimpleDateFormat(ORDER_DATE).format(end));
         String responseXml = Util.sendRequest(params, "yhd.orders.get");
+        Logger.info("yhd.orders.get: %s", responseXml);
         if(responseXml != null) {
-            Response<Order> res = new Response<>();
-            try {
-                res.parseXml(responseXml, "orderList", true, Order.parser);
+            Response<YihaodianOrder> res = new Response<>();
+            res.parseXml(responseXml, "orderList", true, YihaodianOrder.parser);
+            if(res.getErrorCount() == 0){
                 return res.getVs();
-            } catch (DocumentException e) {
-                //
             }
         }
         return null;
@@ -90,18 +98,17 @@ public class OrderListener extends Job{
      * @param orderCodes 订单编号列表，以逗号分隔
      * @return 订单的详细信息
      */
-    public List<Order> fullOrders(String orderCodes){
+    public List<YihaodianOrder> fullOrders(String orderCodes){
         Map<String, String> params = new HashMap<>();
         params.put("orderCodeList", orderCodes);
 
         String responseXml = Util.sendRequest(params, "yhd.orders.detail.get");
-        if (responseXml == null) {
-            Response<Order> res = new Response<>();
-            try{
-                res.parseXml(responseXml, "orderInfoList", true, Order.fullParser);
+        Logger.info("yhd.orders.detail.get: %s", responseXml);
+        if (responseXml != null) {
+            Response<YihaodianOrder> res = new Response<>();
+            res.parseXml(responseXml, "orderInfoList", true, YihaodianOrder.fullParser);
+            if(res.getErrorCount() == 0){
                 return res.getVs();
-            } catch (DocumentException e) {
-                //
             }
         }
         return null;
