@@ -98,6 +98,12 @@ public class Order extends Model {
     public BigDecimal rebateValue;
 
     /**
+     * 推荐者ID
+     */
+    @Column(name = "promote_user_id", nullable = true)
+    public Long promoteUserId;
+
+    /**
      * 使用网银付款金额
      * discountPay = needPay - 余额支付
      */
@@ -378,6 +384,25 @@ public class Order extends Model {
     }
 
     /**
+     * 计算订单中受邀者应得的返利
+     *
+     * @param amount
+     * @param order
+     * @return
+     */
+    public static BigDecimal getPromoteRebateOfTotalECartAmount(BigDecimal amount, Order order) {
+        BigDecimal rebatePrice = BigDecimal.ZERO;
+        BigDecimal invitedUserPrice;
+        for (OrderItems item : order.orderItems) {
+            invitedUserPrice = item.goods.invitedUserPrice == null ? BigDecimal.ZERO : item.goods.invitedUserPrice;
+            if (invitedUserPrice.compareTo(new BigDecimal(5)) <= 0) {
+                rebatePrice = rebatePrice.add(item.goods.salePrice.multiply(invitedUserPrice).multiply(new BigDecimal(0.01)));
+            }
+        }
+        return rebatePrice;
+    }
+
+    /**
      * 添加订单条目.
      *
      * @param goods        商品
@@ -389,16 +414,21 @@ public class Order extends Model {
      * @throws NotEnoughInventoryException
      */
     public OrderItems addOrderItem(Goods goods, Integer number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice) throws NotEnoughInventoryException {
-        return this.addOrderItem(goods, number, mobile, salePrice, resalerPrice, null);
+        return this.addOrderItem(goods, number, mobile, salePrice, resalerPrice, null, null);
     }
 
-    public OrderItems addOrderItem(Goods goods, Integer number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice, DiscountCode discountCode)
+    public OrderItems addOrderItem(Goods goods, Integer number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice, DiscountCode discountCode, String cookieValue)
             throws NotEnoughInventoryException {
         OrderItems orderItem = null;
         if (number > 0 && goods != null) {
             checkInventory(goods, number);
             orderItem = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice);
-            orderItem.rebateValue = getDiscountValueOfGoodsAmount(goods, number, discountCode);
+            //通过推荐购买的情况
+            if (!"".equals(cookieValue)) {
+                orderItem.rebateValue = getPromoteRebateOfGoodsAmount(goods, number);
+            } else {//用优惠码的情况
+                orderItem.rebateValue = getDiscountValueOfGoodsAmount(goods, number, discountCode);
+            }
             this.orderItems.add(orderItem);
             this.amount = this.amount.add(orderItem.getLineValue()); //计算折扣价
             this.needPay = this.amount;
@@ -1103,5 +1133,60 @@ public class Order extends Model {
             amount = amount.add(order.amount);
         }
         return amount;
+    }
+
+    /**
+     * 计算一笔订单所产生的返利金额
+     *
+     * @return
+     */
+    public static BigDecimal getPromoteRebateAmount(Order order) {
+        BigDecimal amount = BigDecimal.ZERO;
+        BigDecimal promoterPrice;
+        for (OrderItems item : order.orderItems) {
+            promoterPrice = item.goods.promoterPrice == null ? BigDecimal.ZERO : item.goods.promoterPrice;
+            amount = amount.add(item.goods.salePrice.multiply(promoterPrice).multiply(new BigDecimal(0.01)));
+        }
+
+        return amount;
+    }
+
+    /**
+     * 计算推荐者推荐购物的金额
+     *
+     * @return
+     */
+    public static BigDecimal getBoughtPromoteRebateAmount(Long promoteUserId) {
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("SELECT sum( o.amount ) FROM Order o,PromoteRebate p WHERE p.order=o and" +
+                " o.promoteUserId=:promoteUserId and p.status=:p_status");
+        q.setParameter("promoteUserId", promoteUserId);
+        q.setParameter("p_status", RebateStatus.UN_CONSUMED);
+        Object result = q.getSingleResult();
+        return result == null ? BigDecimal.ZERO : (BigDecimal) result;
+    }
+
+    /**
+     * 计算返利后的差价
+     *
+     * @param goods
+     * @param number
+     * @return
+     */
+    public static BigDecimal getPromoteRebateOfTotalGoodsAmount(Goods goods, Integer number) {
+        BigDecimal amount = goods.salePrice.multiply(new BigDecimal(number.toString()));
+        return amount.subtract(getPromoteRebateOfGoodsAmount(goods, number));
+    }
+
+    /**
+     * 计算每件商品的返利金额
+     *
+     * @param goods
+     * @param number
+     * @return
+     */
+    public static BigDecimal getPromoteRebateOfGoodsAmount(Goods goods, Integer number) {
+        BigDecimal invitedUserPrice = goods.invitedUserPrice == null ? BigDecimal.ZERO : goods.invitedUserPrice;
+        return goods.salePrice.multiply(invitedUserPrice).multiply(new BigDecimal(number)).multiply(new BigDecimal(0.01));
     }
 }

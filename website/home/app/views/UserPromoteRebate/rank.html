@@ -1,0 +1,31 @@
+#{extends 'main.html' /}
+#{set title:'一百券 - 返利排名' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/y/user/userBase.css', '/y/user/userRebate.css'] /}
+#{/set}
+#{set 'moreScripts'}
+    #{asset.js src:['/js/u/jquery-1.7.2.min.js', 'js/zClip/jquery.zclip.min.js'] /}
+#{/set}
+<div id="content" class="clearfix">
+#{include "share/left.html"/}
+    <div class="section">
+        <div class="crumbs">您的位置：<a href="/">首页</a> > <a href="">我的订单</a></div>
+        <div class="rebate-share">
+
+            <div class="user-account">账户：<strong>yanbao@uhuila.com</strong></div>
+            <div class="rebate-info">推荐购物：<span>500</span>元 　　预期可得返利：<span>150</span>元 　　推荐消费：<span>230</span>元
+                　　推已经获得返利：<span>120</span>元
+            </div>
+            <button class="exchange-btn"></button>
+            <h3 style="font-size:14px;margin-top:30px">成功推荐排名</h3>
+            <ul class="rebate-rank">
+                <li class="rank-1">第1名：<span>***td@yibaiquan.com</span> 推荐成功<em>39</em>次，已经获得返利<em>4900</em>元；</li>
+                <li class="rank-2">第2名：<span>***td@yibaiquan.com</span> 推荐成功<em>39</em>次，已经获得返利<em>4900</em>元；</li>
+                <li class="rank-3">第3名：<span>***td@yibaiquan.com</span> 推荐成功<em>39</em>次，已经获得返利<em>4900</em>元；</li>
+                <li class="rank-4">第4名：<span>***td@yibaiquan.com</span> 推荐成功<em>39</em>次，已经获得返利<em>4900</em>元；</li>
+                <li class="rank-5">第5名：<span>***td@yibaiquan.com</span> 推荐成功<em>39</em>次，已经获得返利<em>4900</em>元；</li>
+            </ul>
+            <div class="curr-rank">您当前排名：第20名, 推荐成功<em>50</em>次, 已经获得返利<em>500</em>元；</div>
+        </div>
+    </div>
+</div>

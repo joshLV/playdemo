@@ -23,6 +23,7 @@ import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.admin.SupplierUser;
+import models.consumer.User;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.sms.SMSUtil;
@@ -354,6 +355,14 @@ public class ECoupon extends Model {
         this.operateUserId = operateUserId != null ? operateUserId : null;
         this.verifyType = type;
         this.save();
+        if (this.order != null && this.order.promoteUserId != null) {
+            User promoteUser = User.findById(this.order.promoteUserId);
+            User invitedUser = User.findById(this.order.userId);
+            PromoteRebate promoteRebate = PromoteRebate.find("promoteUser=? and invitedUser=? and order =?", promoteUser, invitedUser, this.order).first();
+            promoteRebate.status = RebateStatus.ALREADY_REBATE;
+            promoteRebate.rebateAt = new Date();
+            promoteRebate.save();
+        }
         return true;
     }
 
@@ -406,6 +415,23 @@ public class ECoupon extends Model {
                     rebateValue, BigDecimal.ZERO);
             rabateTrade.orderId = this.order.id;
             TradeUtil.success(rabateTrade, "活动折扣费" + rebateValue);
+        }
+
+        //给推荐人返利金额
+        if (this.order != null && this.order.promoteUserId != null) {
+            User promoteUser = User.findById(this.order.promoteUserId);
+            User invitedUser = User.findById(this.order.userId);
+            PromoteRebate promoteRebate = PromoteRebate.find("promoteUser=? and invitedUser=? and order =?", promoteUser, invitedUser, this.order).first();
+            if (promoteRebate.rebateAmount != null) {
+                System.out.println("++++++++++++++++++++++=="+promoteRebate.rebateAmount);
+                TradeBill rabateTrade = TradeUtil.createTransferTrade(
+                        AccountUtil.getUhuilaAccount(),
+                        AccountUtil.getPlatformIncomingAccount(),
+                        promoteRebate.rebateAmount, BigDecimal.ZERO);
+                rabateTrade.orderId = this.order.id;
+                TradeUtil.success(rabateTrade, "推荐获得的返利" + promoteRebate.rebateAmount);
+            }
+
         }
     }
 
@@ -849,6 +875,11 @@ public class ECoupon extends Model {
         return week;
     }
 
+    /**
+     * 拼接验证消息
+     *
+     * @return
+     */
     public String getCheckInfo() {
         String info = "对不起，只能在";
         String useWeekDay = this.goods.useWeekDay;
@@ -871,5 +902,22 @@ public class ECoupon extends Model {
         }
         info += this.goods.useEndTime + "时间内使用该券 ! ";
         return info;
+    }
+
+    /**
+     * 取得推荐购买并消费额的金额
+     *
+     * @param promoteUserId
+     * @return
+     */
+    public static BigDecimal getConsumedPromoteRebateAmount(Long promoteUserId) {
+        EntityManager entityManager = JPA.em();
+        Query q = entityManager.createQuery("SELECT sum( e.salePrice ) FROM ECoupon e,Order o,PromoteRebate p" +
+                " WHERE e.order=o and p.order=o and e.status=:status and o.promoteUserId=:promoteUserId and p.status=:p_status");
+        q.setParameter("status", ECouponStatus.CONSUMED);
+        q.setParameter("promoteUserId", promoteUserId);
+        q.setParameter("p_status", RebateStatus.ALREADY_REBATE);
+        Object result = q.getSingleResult();
+        return result == null ? BigDecimal.ZERO : (BigDecimal) result;
     }
 }

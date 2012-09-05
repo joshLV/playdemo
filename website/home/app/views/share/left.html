@@ -5,7 +5,7 @@
             我的商城</h3>
         <ul>
             <li><a #{if request.url.contains("/orders")||request.url.equals("/")}class="current"#{/if}
-                  href="@{UserOrders.index()}">» 我的订单</a></li>
+                   href="@{UserOrders.index()}">» 我的订单</a></li>
             <li><a #{if request.url.contains("/coupons")}class="current"#{/if} href="@{UserCoupons.index()}">» 我的券</a>
             </li>
         </ul>
@@ -22,15 +22,22 @@
         <h3 #{if request.url.contains("/user-point")}class="active"#{/if}>我的积分</h3>
         <ul>
             <li><a #{if request.url.equals("/user-point")}class="current"#{/if} href="/user-point">» 积分明细</a></li>
-            <li><a #{if request.url.contains("/user-point-record")}class="current"#{/if} href="/user-point-record">» 兑换记录</a></li>
+            <li><a #{if request.url.contains("/user-point-record")}class="current"#{/if} href="/user-point-record">»
+                兑换记录</a></li>
         </ul>
-
+        <h3 #{if request.url.contains("/rebate")}class="active"#{/if}>推荐返利</h3>
+        <ul>
+            <li><a #{if request.url.contains("/rebate-share")}class="current"#{/if} href="/rebate-share">» 分享返利</a></li>
+            <li><a href="/rebate-rank">» 返利排名</a></li>
+            <li><a href="/rebate-account">» 返利收支明细</a></li>
+            <li><a href="/rebate-help">» 返利帮助</a></li>
+        </ul>
         <h3
         #{if request.url.contains("/user-info")||request.url.equals("/user/edit-password")||request.url.contains("/user-edit")||request.url.equals("/addresses")}class="active"#{/if}>
             资料管理</h3>
         <ul>
             <li><a #{if request.url.contains("/user-info")|| request.url.contains("/user-edit") }class="current"#{/if}
-                  href="/user-info">» 我的资料</a></li>
+                   href="/user-info">» 我的资料</a></li>
             <li><a #{if request.url.contains("/user/edit-password")}class="current"#{/if} href="/user/edit-password">»
                 修改密码</a></li>
             <li><a #{if request.url.contains("/addresses")}class="current"#{/if} href="/addresses">» 收货地址</a></li>

@@ -3,15 +3,17 @@ package controllers;
 import cache.CacheCallBack;
 import cache.CacheHelper;
 import controllers.modules.website.cas.SecureCAS;
+import models.accounts.AccountType;
 import models.consumer.User;
 import models.consumer.UserWebIdentification;
 import models.order.Cart;
+import models.order.Order;
+import org.apache.commons.lang.StringUtils;
 import play.mvc.After;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Http.Header;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -36,7 +38,7 @@ public class WebsiteInjector extends Controller {
         final User user = SecureCAS.getUser();
         injectWebIdentification(user);
         //推荐时记录cookie
-        injectPromoterCookier();
+        injectPromoterCookier(user);
 
         Http.Cookie cookie = request.cookies.get("identity");
         final String cookieValue = cookie == null ? null : cookie.value;
@@ -59,12 +61,20 @@ public class WebsiteInjector extends Controller {
         renderArgs.put("count", count);
     }
 
-    private static void injectPromoterCookier() {
+    private static void injectPromoterCookier(User user) {
         Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
         if (cookie == null) {
             String referCode = request.params.get("tj");
             if (StringUtils.isNotBlank(referCode)) {
                 response.setCookie(PROMOTER_COOKIE, referCode, "1d");
+            }
+            //判断是否通过注册产生的推荐
+            if (user != null && user.promoteUserId != null) {
+                User promoteUser = User.findById(user.promoteUserId);
+                Order order = Order.find("userId=? and userType=?", user.id, AccountType.CONSUMER).first();
+                //是推荐的并且第一次下单 购买，才写入cookie
+                if (promoteUser != null && order == null)
+                    response.setCookie(PROMOTER_COOKIE, promoteUser.promoterCode);
             }
         }
     }

@@ -117,3 +117,6 @@ accountSequence.RECEIVE=收款
 accountSequence.FREEZE=冻结
 accountSequence.CANCEL=交易取消
 accountSequence.UNFREEZE=取消冻结
+
+rebate.ALREADY_REBATE=已返利
+rebate.UN_CONSUMED=下单未消费

@@ -1,22 +1,21 @@
 package controllers;
 
+import com.uhuila.common.constants.DataConstants;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.consumer.UserWebIdentification;
-
+import models.order.PromoteRebate;
 import org.apache.commons.lang.StringUtils;
-
 import play.cache.Cache;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.libs.Codec;
 import play.libs.Images;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.With;
 
-import com.uhuila.common.constants.DataConstants;
-
-import controllers.modules.website.cas.annotations.SkipCAS;
+import java.math.BigDecimal;
 
 /**
  * 前台注册用户
@@ -26,7 +25,7 @@ import controllers.modules.website.cas.annotations.SkipCAS;
 @With(WebsiteInjector.class)
 public class Register extends Controller {
 
-    public static final String SESSION_USER_KEY = "website_login";
+    public static final String PROMOTER_COOKIE = "promoter_track";
 
     /**
      * 注册页面
@@ -45,22 +44,22 @@ public class Register extends Controller {
         if (Validation.hasError("user.mobile")
                 && Validation.hasError("user")) {
             Validation.clear();
-          
-            
+
+
         }
 
-        if(User.checkLoginName(user.loginName)){
+        if (User.checkLoginName(user.loginName)) {
             Validation.addError("user.loginName", "validation.loginName");
         }
         if (!user.password.equals(user.confirmPassword)) {
             Validation.addError("user.confirmPassword", "validation.confirmPassword");
         }
-        
+
         if (!"dev".equals(play.Play.configuration.get("application.mode"))) {
-        	
+
             if (StringUtils.isNotEmpty(user.captcha) && !user.captcha.toUpperCase().equals(Cache.get(params.get("randomID")))) {
                 Validation.addError("user.captcha", "validation.captcha");
-              
+
             }
         }
 
@@ -71,21 +70,28 @@ public class Register extends Controller {
         //用户创建
         user.create();
         user.userInfo = new UserInfo(user);
+        //取得cookie中的推荐码
+        Http.Cookie tj_cookie = request.cookies.get(PROMOTER_COOKIE);
+        if (tj_cookie != null) {
+            //记录推荐人和被推荐人的关系
+            User promoterUser = User.getUserByPromoterCode(tj_cookie.value);
+            new PromoteRebate(promoterUser, user, null, BigDecimal.ZERO,true).save();
+            user.promoteUserId = promoterUser.id;
+        }
         user.save();
-        
-        
+
+
         if (WebsiteInjector.getUserWebIdentification() != null) {
             UserWebIdentification uwi = UserWebIdentification.findById(WebsiteInjector.getUserWebIdentification().id);
             if (uwi.registerCount == null) {
-            	uwi.registerCount = 0;
-            } 
+                uwi.registerCount = 0;
+            }
             uwi.registerCount += 1;
             uwi.save();
-           
+
         }
-        
-        // session.put(SESSION_USER_KEY, user.loginName);
-        renderArgs.put("count",0);
+
+        renderArgs.put("count", 0);
         render("Register/registerSuccess.html", user);
     }
 

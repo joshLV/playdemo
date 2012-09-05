@@ -1,5 +1,6 @@
 package models.consumer;
 
+import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.mail.MailMessage;
@@ -88,6 +89,11 @@ public class User extends Model {
      */
     @Column(name = "promoter_code")
     public String promoterCode;
+    /**
+     * 推荐者ID
+     */
+    @Column(name = "promote_user_id", nullable = true)
+    public Long promoteUserId;
 
     /**
      * 判断用户名是否唯一
@@ -121,7 +127,7 @@ public class User extends Model {
      */
     public static User getUserByPromoterCode(String promoterCode) {
         //推荐码存在的情况
-        return User.find("byPromoterCode", promoterCode).first();
+        return User.find("byPromoterCode", promoterCode.toLowerCase()).first();
     }
 
     /**
@@ -199,7 +205,6 @@ public class User extends Model {
      */
     public void updateMobile(String mobile) {
         this.mobile = mobile;
-//        this.userInfo.mobile = mobile;
         this.userInfo.bindMobileAt = new Date();
         this.userInfo.save();
         this.save();
@@ -292,5 +297,20 @@ public class User extends Model {
         }
         BigDecimal amount = account.amount;
         return amount;
+    }
+
+    /**
+     * 产生唯一的推荐码
+     */
+    public void generatePromoterCode() {
+        String promoteCode = this.promoterCode;
+        if (StringUtils.isBlank(promoteCode)) {
+            do {
+                promoteCode = RandomNumberUtil.generateRandomNumber(6);
+            } while (User.getUserByPromoterCode(promoteCode) != null);
+            this.promoterCode = promoteCode.toLowerCase().trim();
+            this.save();
+        }
+
     }
 }

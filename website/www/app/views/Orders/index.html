@@ -77,7 +77,7 @@ $(function(){
             <tbody>
         </table>
         <div class="freight" style="border-top: 1px solid #7A7F89">运费：${models.order.Order.FREIGHT.formatCurrency('CNY').raw()}元</div>
-        <div class="subtotal">商品共${rCartList?.size()}件，合计：<em>${rCartAmount}</em>元</div>
+        <div class="subtotal">商品共${rCartList?.size()}件，合计：<em>${rCartAmount?.formatCurrency("CNY")}</em>元</div>
     </div><!-- .order -->
 #{/if}
 

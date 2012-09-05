@@ -1,0 +1,72 @@
+#{extends 'main.html' /}
+#{set title:'一百券 - 返利收支明细' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/y/user/userBase.css', '/y/user/userRebate.css'] /}
+#{/set}
+#{set 'moreScripts'}
+    #{asset.js src:['/js/u/jquery-1.7.2.min.js', 'js/zClip/jquery.zclip.min.js'] /}
+#{/set}
+<div id="content" class="clearfix">
+#{include "share/left.html"/}
+    <div class="section">
+        <div class="crumbs">您的位置：<a href="/">首页</a> > <a href="">我的订单</a></div>
+        <div class="rebate-share">
+
+            <div class="user-account">账户：<strong>${user?.loginName}</strong></div>
+            <div class="rebate-info">推荐购物：<span>${boughtAmount?.formatCurrency("CNY")}</span>元
+                　　预期可得返利：<span>${promoteRebate?.willGetAmount?.formatCurrency("CNY")}</span>元
+                　　推荐消费：<span>${consumedAmount?.formatCurrency("CNY")}</span>元
+                　　已经获得返利：<span>${promoteRebate?.haveGotAmount?.formatCurrency("CNY")}</span>元
+            </div>
+            <button class="exchange-btn"></button>
+            <h3 style="font-size:14px;margin-top:30px">成功推荐明细</h3>
+
+            <div class="search-box">
+                <label>操作类型：</label>
+                <select name="condition.sequenceFlag" size="1" id="sequenceFlag" class="sequence-flag">
+                    <option value="">不限</option>
+                    <option value="VOSTRO">收入</option>
+                    <option value="NOSTRO">支出</option>
+                </select>
+                <label>成交时间：</label>
+                <input class="Wdate" type="text" name="condition.createdAtBegin" id="createdAtBegin" value=""
+                       onfocus="WdatePicker({readOnly:true})"/>
+                -
+                <input class="Wdate" type="text" id="createdAtEnd" name="condition.createdAtEnd" value=""
+                       onfocus="WdatePicker({readOnly:true})"/>
+                <button class="search-btn" id="search"> 搜　索</button>
+            </div>
+
+            <table class="order-tab">
+                <thead>
+                <tr class="col-name">
+                    <th width="150">日期</th>
+                    <th width="150">会员</th>
+                    <th>状态</th>
+                    <th>支出</th>
+                    <th>收入</th>
+                </tr>
+                </thead>
+            #{paginate.list items:accountList, as:'rebate'}
+                <tbody>
+                <tr class="sep-row">
+                    <td colspan="5"></td>
+                </tr>
+                <tr class="order-bd">
+                    <td>${rebate?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+                    <td>${rebate?.invitedUser?.loginName}</td>
+                    <td>&{'rebate.'+rebate?.status}</td>
+                    <td>#{if rebate.status ==models.order.RebateStatus.UN_CONSUMED }${rebate?.rebateAmount?.formatCurrency("CNY")}#{/if}</td>
+                    <td>#{if rebate.status ==models.order.RebateStatus.ALREADY_REBATE }${rebate?.rebateAmount?.formatCurrency("CNY")}#{/if}</td>
+                </tr>
+                </tbody>
+            #{/paginate.list}
+            </table>
+
+            <div class="pagination">
+                <ul>#{paginate.controls items:accountList/}</ul>
+            </div>
+        </div>
+    </div>
+
+</div>

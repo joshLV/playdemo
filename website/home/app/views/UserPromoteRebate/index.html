@@ -1,0 +1,79 @@
+#{extends 'main.html' /}
+#{set title:'一百券 - 分享返利' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/y/user/userBase.css', '/y/user/userRebate.css'] /}
+
+#{/set}
+#{set 'moreScripts'}
+    #{asset.js src:['/js/u/jquery-1.7.2.min.js', 'js/zClip/jquery.zclip.min.js'] /}
+#{/set}
+<div id="content" class="clearfix">
+#{include "share/left.html"/}
+    <div class="section">
+        <div class="crumbs">您的位置：<a href="/">首页</a> > <a href="">我的订单</a></div>
+        <div class="rebate-share">
+            <div class="user-account">账户：<strong>${user?.loginName}</strong></div>
+            <div class="rebate-info">推荐购物：<span>${boughtAmount?.formatCurrency("CNY")}</span>元
+                　　预期可得返利：<span>${promoteRebate?.willGetAmount?.formatCurrency("CNY")}</span>元
+                　　推荐消费：<span>${consumedAmount?.formatCurrency("CNY")}</span>元
+                　　已经获得返利：<span>${promoteRebate?.haveGotAmount?.formatCurrency("CNY")}</span>元
+            </div>
+            <button class="exchange-btn"></button>
+            <div class="recommend-share">推荐分享</div>
+            <div class="recommend-linkbox">
+                <p class="link">6月3日前邀请好友，可自动免费无上限扩容，还能天天抢iPad！另有收纳箱、充值卡等海量好礼等你拿！活动链接：
+                    <a target="_blank"
+                       href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}?tj=${user?.promoterCode}"
+                       id="J_linkHref">http://www.${play.Play.configuration.getProperty("application.baseDomain")}
+                        ?tj=${user?.promoterCode}</a> 快快邀请好友吧
+                </p>
+
+                <div class="method">
+                    方法一：<a class="weibo" target="_blank"
+                           href="http://service.weibo.com/share/share.php?url=http%3A%2F%2Flocalhost%3A9002%2Frebate-share&appkey=&title=推荐好友，拿返利&pic=&ralateUid=&language="><i></i>分享到新浪微博</a>
+                </div>
+                <div class="method">
+                    方法二：<a class="copy" id="copy" href="javascript:void(0);">复制链接</a> 复制链接分享给我的QQ好友
+                </div>
+            </div>
+            <p style="color:#f00;font-size:14px;">参加有奖推荐返利活动，精美礼品等你拿！</p>
+
+            <p>邀请身边的朋友，每成功邀请一位好友消费即可获得消费额的500%的返现哦；如果你是推荐大人，还有机会赢取精美礼品或者等价现金哦</p>
+            <a style="color:#2c90e8;text-decoration:underline;" href="/rebate-help">查看返利规则</a>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('a#copy').zclip({
+            path:'http://img.uhcdn.com/images/y/user/ZeroClipboard.swf',
+            copy:$('#J_linkHref').text(),
+            afterCopy:function () {
+                if ($('#copy-tips').length == 0) {
+                    $('body').append('<div id="copy-tips">复制到剪切板了，粘贴给您的朋友吧</div>')
+                    $('#copy-tips').css({
+                        'position':'absolute',
+                        'top':$(window).height() / 2 + $(document).scrollTop() + 'px',
+                        'left':$(window).width() / 2 - 100 + 'px',
+                        'padding':'20px 30px',
+                        'width':'200px',
+                        'border':'1px solid #ace500',
+                        'background-color':'#f2f9dd',
+                        'z-index':'9999'
+                    });
+                    var timer = setTimeout(function () {
+                        $('#copy-tips').hide();
+                    }, 3000);
+                } else {
+                    $('#copy-tips').show();
+                    clearInterval(timer);
+                    var timer = setTimeout(function () {
+                        $('#copy-tips').hide();
+                    }, 3000);
+                }
+            }
+        });
+    });
+</script>
+
+

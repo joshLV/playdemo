@@ -80,7 +80,6 @@ public class Orders extends Controller {
     }
 
     protected static DiscountCode getDiscountCode() {
-
         //这里用于判断是否是通过推荐过来的用户，是则取得推荐码
         Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
         if (cookie != null) {
@@ -126,7 +125,14 @@ public class Orders extends Controller {
 
             Integer number = itemsMap.get(g.getId());
             Cart cart = new Cart(g, number);
-            cart.rebateValue = Order.getDiscountValueOfGoodsAmount(g, number, discountCode);
+            //这里用于判断是否是通过推荐过来的用户
+            Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
+            if (cookie != null) {
+                System.out.println("+++++++++++++="+cookie.value);
+                cart.rebateValue = Order.getPromoteRebateOfGoodsAmount(g, number);
+            } else {
+                cart.rebateValue = Order.getDiscountValueOfGoodsAmount(g, number, discountCode);
+            }
             if (g.materialType == models.sales.MaterialType.REAL) {
                 rCartList.add(cart);
                 rCartAmount = rCartAmount.add(cart.getLineValue());
@@ -243,26 +249,38 @@ public class Orders extends Controller {
             //计算电子商品列表和非电子商品列表
             BigDecimal eCartAmount = BigDecimal.ZERO;
             BigDecimal rCartAmount = BigDecimal.ZERO;
-
+            //取得cookie中的推荐码
+            Http.Cookie tj_cookie = request.cookies.get(PROMOTER_COOKIE);
             for (models.sales.Goods goodsItem : goodsList) {
                 Integer number = itemsMap.get(goodsItem.getId());
+                String tj_cookieValue = tj_cookie == null ? "" : tj_cookie.value;
+
                 if (goodsItem.materialType == models.sales.MaterialType.REAL) {
-                    rCartAmount = rCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
+                    if ("".equals(tj_cookieValue)) {
+                        rCartAmount = rCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
+                    } else {
+                        rCartAmount = rCartAmount.add(Order.getPromoteRebateOfTotalGoodsAmount(goodsItem, number));
+                    }
                 } else if (goodsItem.materialType == models.sales.MaterialType.ELECTRONIC) {
-                    eCartAmount = eCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
+                    if ("".equals(tj_cookieValue)) {
+                        eCartAmount = eCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
+                    } else {
+                        eCartAmount = eCartAmount.add(Order.getPromoteRebateOfTotalGoodsAmount(goodsItem, number));
+                    }
                 }
                 OrderItems orderItem = null;
+
                 if (goodsItem.materialType == MaterialType.REAL) {
                     orderItem = order.addOrderItem(goodsItem, number, receiverMobile,
                             goodsItem.salePrice, //最终成交价
                             goodsItem.getResalerPriceOfUhuila(), //一百券作为分销商的成本价
-                            discountCode
+                            discountCode, tj_cookieValue
                     );
                 } else {
                     orderItem = order.addOrderItem(goodsItem, number, mobile,
                             goodsItem.salePrice, //最终成交价
                             goodsItem.getResalerPriceOfUhuila(), //一百券作为分销商的成本价
-                            discountCode
+                            discountCode, tj_cookieValue
                     );
                 }
                 orderItem.save();
@@ -293,19 +311,29 @@ public class Orders extends Controller {
                 orderDiscount.discountAmount = Order.getDiscountValueOfTotalECartAmount(eCartAmount, discountCode);
                 orderDiscount.save();
             }
-            //取得cookie中的推荐码
-            cookie = request.cookies.get(PROMOTER_COOKIE);
-            PromoteRebate promoteRebate = null;
-            if (cookie != null) {
-                User promoterUser = User.getUserByPromoterCode(cookie.value);
-                if (promoterUser != null) {
-                    promoteRebate = new PromoteRebate();
-                    promoteRebate.promoteUser = promoterUser;
-                    promoteRebate.invitedUser = user;
-                    promoteRebate.order = order;
-                    promoteRebate.createdAt = new Date();
-                    promoteRebate.status = RebateStatus.UN_CONSUMED;
-                    promoteRebate.save();
+            //判断cookie中的推荐码是否存在; 只折扣电子券产品，实物券不参与折扣.
+            if (tj_cookie != null) {
+                User promoterUser = User.getUserByPromoterCode(tj_cookie.value);
+                if (promoterUser != user) {
+                    //保存推荐人的用户ID
+                    order.promoteUserId = promoterUser.id;
+                    order.rebateValue = Order.getPromoteRebateOfTotalECartAmount(eCartAmount, order);
+                    order.amount = eCartAmount.add(rCartAmount);
+                    order.needPay = order.amount.subtract(order.rebateValue);
+                    if (order.needPay.compareTo(BigDecimal.ZERO) <= 0) {
+                        order.needPay = BigDecimal.ZERO;
+                    }
+                    //如果通过注册的，则更新推荐关系
+                    PromoteRebate promoteRebate = PromoteRebate.find("promoteUser=? and invitedUser=? and registerFlag=true", promoterUser, user).first();
+                    if (promoteRebate != null) {
+                        promoteRebate.order = order;
+                        promoteRebate.rebateAmount = Order.getPromoteRebateAmount(order);
+                        promoteRebate.save();
+                        response.removeCookie(PROMOTER_COOKIE);
+                    } else {
+                        //记录推荐人和被推荐人的关系
+                        new PromoteRebate(promoterUser, user, order, Order.getPromoteRebateAmount(order), false).save();
+                    }
                 }
             }
 
@@ -322,6 +350,7 @@ public class Orders extends Controller {
 
         //删除购物车中相应物品
         Cart.delete(user, cookieValue, goodsIds);
+
 
         redirect("/payment_info/" + order.orderNumber);
     }

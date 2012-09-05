@@ -17,11 +17,12 @@
         <thead>
             <tr class="col-name">
                 <th>商品</th>
-                <th width="80">类型</th>
-                <th width="100">单价（元）</th>
-                <th width="60">数量</th>
+                <th width="60">类型</th>
+                <th width="90">单价（元）</th>
+                <th width="40">数量</th>
                 <th width="100">券号</th>
                 <th width="100">收货手机</th>
+                <th width="60">折扣券</th>
                 <th width="80">物流状态</th>
                 <th width="100">实付款（元）</th>
                 <th width="80">订单状态</th>
@@ -40,6 +41,7 @@
                 <td align="center" valign="middle">${row?.getWebEcouponSn()}
                 <div style="color: #ff0000">#{if row?.goods?.isLottery}该券只限抽奖,不可消费#{/if}</div></td>
                 <td align="center" valign="middle">${row.phone}</td>
+                <td align="center" valign="middle" style="color: #ff0000">${row?.rebateValue?.formatCurrency("CNY")}</td>
                 <td align="center" valign="middle">
                     #{if (models.order.OrderStatus.SENT.equals(row?.status) && models.sales.MaterialType.REAL.equals(row?.goods?.materialType))}
                         已发货#{/if}
