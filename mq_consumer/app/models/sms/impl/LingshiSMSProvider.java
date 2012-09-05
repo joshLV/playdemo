@@ -6,18 +6,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import models.sms.SMSException;
 import models.sms.SMSMessage;
 import models.sms.SMSProvider;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.HttpParams;
+
 import play.Logger;
 import play.Play;
 
@@ -56,7 +61,9 @@ public class LingshiSMSProvider implements SMSProvider {
         String url = SEND_URL.replace(":sms_info", URLEncodedUtils.format(qparams, "GBK"));
 
         //准备http请求
-        AbstractHttpClient httpclient = new DefaultHttpClient();
+        DefaultHttpClient httpclient = new DefaultHttpClient();
+        httpclient.getParams().setIntParameter("http.socket.timeout", 15000);
+        
         HttpGet httpget = new HttpGet(url);
         HttpResponse response = null;
 
