@@ -64,9 +64,7 @@ public class OrderItem extends Model {
     public Date updateTime;
 
     @Column(name = "outer_id")
-    public String outerId;
-
-
+    public Long outerId;
 
     public static Parser<OrderItem> parser = new Parser<OrderItem>() {
         @Override
@@ -83,7 +81,7 @@ public class OrderItem extends Model {
             orderItem.itemLeaf = Integer.parseInt(node.elementTextTrim("isItemLeaf"));
             orderItem.merchantId = Long.parseLong(node.elementTextTrim("merchantId"));
             orderItem.promoteType = Integer.parseInt(node.elementTextTrim("promoteType"));
-            orderItem.outerId = node.elementTextTrim("outerId");
+            orderItem.outerId = Long.parseLong(node.elementTextTrim("outerId"));
 
             try{
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

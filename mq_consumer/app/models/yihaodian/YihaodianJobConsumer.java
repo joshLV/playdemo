@@ -93,7 +93,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
         boolean containsReal = false;
         try {
             for (OrderItem orderItem : order.orderItems){
-                Goods goods = Goods.find("byNo", orderItem.outerId).first();
+                Goods goods = Goods.find("byId", orderItem.outerId).first();
                 if(goods == null){
                     Logger.info("goods not found: %s", orderItem.outerId );
                     return false;
@@ -127,6 +127,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
         uhuilaOrder.discountPay = BigDecimal.ZERO;
         uhuilaOrder.payMethod = PaymentSource.getBalanceSource().code;
         uhuilaOrder.payAndSendECoupon();
+        uhuilaOrder.save();
         return true;
     }
 
