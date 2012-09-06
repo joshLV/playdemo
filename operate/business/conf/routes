@@ -21,6 +21,11 @@ POST    /goods/filemanager                      UploadFiles.fileManagerJson
 GET     /goods_brands/{id}                      OperateBrands.goodsBrands
 GET     /category/sub/{id}                      Categories.showSubs
 
+
+# 发送优惠券
+GET     /send_sms                                       SendSMS.index
+
+
  #秒杀商品
 GET     /seckill_goods/{seckillId}/item        SecKillGoodsItems.index
 GET     /seckill_goods/{seckillId}/new         SecKillGoodsItems.add
@@ -64,6 +69,7 @@ GET     /pointgoods_orders/{id}                            OperatePointGoodsOrde
 PUT     /pointgoods_orders/{id}/send                       OperatePointGoodsOrders.send
 PUT     /pointgoods_orders/{id}/sendGoods                  OperatePointGoodsOrders.sendGoods
 GET     /pointgoods_order_excel                            OperatePointGoodsOrders.orderExcelOut
+
 
 
 GET     /shops                                  OperateShops.index

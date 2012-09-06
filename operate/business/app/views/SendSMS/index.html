@@ -1,0 +1,84 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'发送优惠券' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{set 'moreStyles'}
+<style type="text/css">
+</style>
+#{/set}
+
+<div class="body">
+    <legend>${title}</legend>
+    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{SendSMS.index()}" method="GET">
+        <table width="100%">
+            <tr>
+                <td width="30%">任务号：<input type="text" name="condition.taskNo" class="input-medium"
+                                           value="${condition?.taskNo}"/></td>
+
+                </td>
+                <td>
+                    <button class="btn btn-primary" id="searchbtn" type="submit">查询</button>
+                </td>
+                <td>
+                    <button class="btn btn-primary" id="searchbtn2" type="submit">新建发送</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+
+    <form class="form-horizontal" id="stateForm" method="POST">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+            <tr>
+                <!--    <th>帐户类型</th>-->
+                <th>任务号</th>
+                <th>手机</th>
+                <th>券号</th>
+                <th>短信内容</th>
+                <th>发送时间</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            #{paginate.list items:sms, as:'sms'}
+            <tr>
+                <!--  <td>&{'resaler.'+resaler.accountType}</td> -->
+                <td>${sms.taskNo}</td>
+                <td>${sms.mobile}</td>
+                <td>${sms.eCouponSn}</td>
+                <td>${sms.text}</td>
+
+                <td>${sms?.sendAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+
+            </tr>
+            #{/paginate.list}
+            </tbody>
+        </table>
+    </form>
+    <div class="pagination" align="center">
+        <ul>#{paginate.controls items:sms /}
+        </ul>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $("#onsales").click(function () {
+
+                    var url = "/send_sms/" + checkedGoods.join(",") + "/onSale?x-http-method-override=PUT";
+                    $("#deletefrm").attr("method", "POST");
+                    $("#deletefrm").attr("action", url);
+                    $("#deletefrm").submit();
+                }
+        );
+
+    });
+
+</script>
+

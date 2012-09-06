@@ -42,6 +42,8 @@
     <permission key="BRANDS" text="品牌管理" roles="editor,sales"/>
     <permission key="CONSUMERS" text="用户管理" roles="customservice,sales"/>
     <permission key="PROMOTION_LIST" text="活动管理" roles="customservice,editor"/>
+    <permission key="send_sms" text="发送优惠券" roles="customservice,editor"/>
+
     <permission key="QUESTION" text="咨询管理" roles="customservice,editor"/>
     <permission key="DISCOUNT_CODE" text="折扣券管理" roles="customservice,editor"/>
 
@@ -146,6 +148,7 @@
             <navigation key="promotion_list" action="Promotions.index" text="活动列表" permission="PROMOTION_LIST"/>
             <navigation key="winning_index" action="OperateConsumersWinningInfo.index" text="用户参加有奖问答管理"
                         permissions="PROMOTION_LIST"/>
+            <navigation key="send_sms" action="SendSMS.index" text="发送优惠券" permission="PROMOTION_LIST"/>
         </navigation>
         <navigation key="discountcode" text="折扣券管理">
             <navigation key="discountcode_add" action="OperateDiscountCodes.add" text="新增折扣券" permission="DISCOUNT_CODE"/>
