@@ -345,7 +345,6 @@ public class ECoupon extends Model {
         if (this.status != ECouponStatus.UNCONSUMED) {
             return false;
         }
-
         if (shopId != null) {
             this.shop = Shop.findById(shopId);
         }
@@ -421,12 +420,16 @@ public class ECoupon extends Model {
         if (this.order != null && this.order.promoteUserId != null) {
             User promoteUser = User.findById(this.order.promoteUserId);
             User invitedUser = User.findById(this.order.userId);
+            if (promoteUser == null || invitedUser == null) {
+                throw new IllegalArgumentException("promoteUser or invitedUser is not existed");
+            }
+
             PromoteRebate promoteRebate = PromoteRebate.find("promoteUser=? and invitedUser=? and order =?", promoteUser, invitedUser, this.order).first();
             if (promoteRebate.rebateAmount != null) {
-                System.out.println("++++++++++++++++++++++=="+promoteRebate.rebateAmount);
+                Account account = AccountUtil.getConsumerAccount(promoteUser.getId());
                 TradeBill rabateTrade = TradeUtil.createTransferTrade(
                         AccountUtil.getUhuilaAccount(),
-                        AccountUtil.getPlatformIncomingAccount(),
+                        account,
                         promoteRebate.rebateAmount, BigDecimal.ZERO);
                 rabateTrade.orderId = this.order.id;
                 TradeUtil.success(rabateTrade, "推荐获得的返利" + promoteRebate.rebateAmount);

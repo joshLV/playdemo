@@ -28,9 +28,9 @@
         <h3 #{if request.url.contains("/rebate")}class="active"#{/if}>推荐返利</h3>
         <ul>
             <li><a #{if request.url.equals("/rebate")}class="current"#{/if} href="/rebate">» 分享返利</a></li>
-            <li><a href="/rebate-rank">» 返利排名</a></li>
-            <li><a href="/rebate-account">» 返利收支明细</a></li>
-            <li><a href="/rebate-help">» 返利帮助</a></li>
+            <li><a #{if request.url.equals("/rebate-rank")}class="current"#{/if}href="/rebate-rank">» 返利排名</a></li>
+            <li><a #{if request.url.equals("/rebate-account")}class="current"#{/if}href="/rebate-account">» 返利明细</a>
+            </li>
         </ul>
         <h3
         #{if request.url.contains("/user-info")||request.url.equals("/user/edit-password")||request.url.contains("/user-edit")||request.url.equals("/addresses")}class="active"#{/if}>

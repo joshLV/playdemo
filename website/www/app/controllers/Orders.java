@@ -80,15 +80,13 @@ public class Orders extends Controller {
     }
 
     protected static DiscountCode getDiscountCode() {
+        // 折扣券
+        String discountSN = request.params.get("discountSN");
         //这里用于判断是否是通过推荐过来的用户，是则取得推荐码
         Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
         if (cookie != null) {
-            System.out.println(cookie.value+">>>>>>>>>>>>>");
             renderArgs.put("userPromoterCode", cookie.value);
         }
-
-        // 折扣券
-        String discountSN = request.params.get("discountSN");
 
         if (discountSN == null) {
             renderArgs.put("discountErrorInfo", "");
@@ -129,7 +127,6 @@ public class Orders extends Controller {
             //这里用于判断是否是通过推荐过来的用户
             Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
             if (cookie != null) {
-                System.out.println("+++++++++++++="+cookie.value);
                 cart.rebateValue = Order.getPromoteRebateOfGoodsAmount(g, number);
             } else {
                 cart.rebateValue = Order.getDiscountValueOfGoodsAmount(g, number, discountCode);

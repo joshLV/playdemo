@@ -1,6 +1,7 @@
 package models.order;
 
 import models.consumer.User;
+import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
@@ -73,6 +74,11 @@ public class PromoteRebate extends Model {
      * 用户来源 true：注册用户
      */
     public Boolean registerFlag = false;
+    /**
+     * 推荐次数
+     */
+    @Transient
+    public long promoteTimes;
 
     /**
      * @param promoteUser
@@ -93,6 +99,13 @@ public class PromoteRebate extends Model {
     public PromoteRebate(BigDecimal willGetAmount, BigDecimal haveGotAmount) {
         this.willGetAmount = willGetAmount;
         this.haveGotAmount = haveGotAmount;
+    }
+
+    public PromoteRebate(User promoteUser, BigDecimal rebateAmount, long promoteTimes) {
+        this.rebateAmount = rebateAmount;
+        this.promoteUser = promoteUser;
+        this.promoteTimes = promoteTimes;
+
     }
 
     /**
@@ -124,5 +137,31 @@ public class PromoteRebate extends Model {
         orderPage.setPageNumber(pageNumber);
         orderPage.setPageSize(pageSize);
         return orderPage;
+    }
+
+    public static List<PromoteRebate> findRank() {
+        Query query = JPA.em()
+                .createQuery(
+                        "select new models.order.PromoteRebate(p.promoteUser,sum(p.rebateAmount),count(p.id)) "
+                                + " from PromoteRebate p where p.status=:status " +
+                                " group by p.promoteUser.id order by sum(p.rebateAmount) desc");
+        query.setParameter("status", RebateStatus.ALREADY_REBATE);
+        List<PromoteRebate> rankList = query.getResultList();
+
+        return rankList;
+    }
+
+    public static PromoteRebate rank(User user, List<PromoteRebate> resultList) {
+        if (resultList.size() == 0) {
+            return null;
+        }
+        PromoteRebate p = null;
+        for (PromoteRebate promoteRebate : resultList) {
+            if (promoteRebate.promoteUser == user) {
+                p = promoteRebate;
+                break;
+            }
+        }
+        return p;
     }
 }

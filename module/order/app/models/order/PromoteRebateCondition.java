@@ -20,7 +20,7 @@ public class PromoteRebateCondition {
     public Map<String, Object> params = new HashMap<>();
 
     public String getFilter(User user) {
-        StringBuilder filter = new StringBuilder("1=1");
+        StringBuilder filter = new StringBuilder("1=1 and rebateAmount > 0");
 
         if (user != null) {
             filter.append(" and promoteUser=:promoteUser");
