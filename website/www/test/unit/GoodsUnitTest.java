@@ -215,18 +215,13 @@ public class GoodsUnitTest extends UnitTest {
     @Test
     public void testSetLevelPrices() {
         models.sales.Goods goods = new Goods();
-        BigDecimal[] prices = new BigDecimal[3];
+        BigDecimal[] prices = new BigDecimal[1];
         goods.originalPrice = BigDecimal.TEN;
         prices[0] = BigDecimal.ONE;
-        prices[1] = BigDecimal.ONE;
-        prices[2] = BigDecimal.ONE;
         goods.setLevelPrices(prices);
         List<GoodsLevelPrice> priceList = goods.safeGetLevelPrices();
-        assertEquals(4, priceList.size());
+        assertEquals(1, priceList.size());
         assertEquals(1, priceList.get(0).price.intValue());
-        assertEquals(1, priceList.get(1).price.intValue());
-        assertEquals(1, priceList.get(2).price.intValue());
-        assertEquals(0, priceList.get(3).price.intValue());
     }
 
     @Test
@@ -288,11 +283,9 @@ public class GoodsUnitTest extends UnitTest {
     public void testGetLevelPriceArray() {
         models.sales.Goods goods = new Goods();
         BigDecimal[] prices = goods.getLevelPriceArray();
+        assertEquals(1, prices.length);
         assertEquals(ResalerLevel.values().length, prices.length);
         assertEquals(0, prices[0].intValue());
-        assertEquals(0, prices[1].intValue());
-        assertEquals(0, prices[2].intValue());
-        assertEquals(0, prices[3].intValue());
 
         GoodsLevelPrice priceObj = new GoodsLevelPrice(goods, ResalerLevel.NORMAL, BigDecimal.TEN);
         List<GoodsLevelPrice> priceList = new ArrayList<>();
@@ -300,9 +293,6 @@ public class GoodsUnitTest extends UnitTest {
         goods.setLevelPrices(priceList);
         BigDecimal[] updatedPrices = goods.getLevelPriceArray();
         assertEquals(10, updatedPrices[0].intValue());
-        assertEquals(0, updatedPrices[1].intValue());
-        assertEquals(0, updatedPrices[2].intValue());
-        assertEquals(0, updatedPrices[3].intValue());
     }
 
     @Test
