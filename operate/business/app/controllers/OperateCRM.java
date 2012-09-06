@@ -78,10 +78,10 @@ public class OperateCRM extends Controller {
             List<ECoupon> eCoupons = models.sales.Consult.findCouponByCondition(condition);
             Logger.debug("a4");
 
-//            long orderListSize = models.sales.Consult.findOrderByConditionSize(condition);
-//            long eCouponsSize = models.sales.Consult.findCouponByConditionSize(condition);
-//            , orderListSize, eCouponsSize
-            render(user, orderList, address, condition, eCoupons, consultContent, phone, currentOperator, moreSearch);
+            long orderListSize = models.sales.Consult.findOrderByConditionSize(condition);
+            long eCouponsSize = models.sales.Consult.findCouponByConditionSize(condition);
+
+            render(user, orderList, address, condition, eCoupons, consultContent, phone, currentOperator, moreSearch, orderListSize, eCouponsSize);
         }
 
 
@@ -116,12 +116,12 @@ public class OperateCRM extends Controller {
                 List<ECoupon> eCoupons = models.sales.Consult.findCouponByCondition(condition);
 
 
-//                long orderListSize = models.sales.Consult.findOrderByConditionSize(condition);
-//                long eCouponsSize = models.sales.Consult.findCouponByConditionSize(condition);
+                long orderListSize = models.sales.Consult.findOrderByConditionSize(condition);
+                long eCouponsSize = models.sales.Consult.findCouponByConditionSize(condition);
 
                 render("OperateCRM/index.html", consult, consultContent,
                         currentOperator, phone, user, orderList,
-                        address, condition, eCoupons
+                        address, condition, eCoupons  , orderListSize, eCouponsSize
                        );
 
             }

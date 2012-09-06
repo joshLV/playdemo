@@ -49,38 +49,7 @@
 <div class="body">
 <div class="span7">
 
-*{<form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.index()}" method="GET">}*
-*{<table>}*
-*{<tr>}*
-*{<td>手机号或邮箱： <input type="text" name="condition.searchUser" class="input-medium"}*
-*{value="${condition?.searchUser}"/></td>}*
 
-
-*{<td>订单号或券号尾4位： <input type="text" name="condition.searchOrderCoupon" class="input-medium"}*
-*{value="${condition?.searchOrderCoupon}"/></td>}*
-*{<td>}*
-*{<button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>}*
-*{</td>}*
-
-
-*{</tr>}*
-
-
-*{</table>}*
-
-
-*{<form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.index()}" method="GET">}*
-
-*{手机号或邮箱： <input type="text" name="condition.searchUser" class="input-medium"}*
-*{value="${condition?.searchUser}"/>}*
-*{<button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>}*
-*{</form>}*
-*{<span> <form class="form-horizontal" name="frmlist2" id="frmlist2" action="@{OperateCRM.index()}" method="GET">}*
-*{订单号或券号尾4位： <input type="text" name="condition.searchOrderCoupon" class="input-medium"}*
-*{value="${condition?.searchOrderCoupon}"/>}*
-
-*{<button class="btn btn-primary" id="searchbtn2" type="submit">搜索</button>}*
-*{</form>   </span>}*
 
 <table>
 
@@ -302,18 +271,17 @@
         <th width="10px">订单号</th>
         <th width="8px">手机</th>
         <th width="8px">券尾号</th>
-    *{<th width="90px">商品名称</th>}*
+
         <th width="30px">单价</th>
         <th width="50px">消费门店</th>
 
         <th width="50px">付款时间</th>
         <th width="50px">消费时间</th>
-    *{<th width="30px">店员</th>}*
-    *{<th width="60px">代理验证员</th>}*
+
 
 
         <th width="20px">状态</th>
-    *{<th width="50px">操作</th>}*
+
     </tr>
     </thead>
 
@@ -351,8 +319,7 @@
                     style="color:red"
 
             #{/if}>${n}${coupon?.eCouponSn.substring(len - 4)}</td>
-        *{<td>${coupon?.orderItems?.phone}</td>}*
-        *{<td>${coupon?.goods?.name}</td>}*
+
             <td  #{if coupon?.status==models.order.ECouponStatus.REFUND}
 
 
@@ -365,8 +332,7 @@
                     style="color:red"
 
             #{/if}>${coupon?.getConsumedShop()}</td>
-        *{<td>${coupon?.effectiveAt ?.format()} /}*
-            *{${coupon?.expireAt?.format()}</td>}*
+
             <td>
                 <a id="cancelInfo_${coupon.id}"
                    href="#" class="label label-info"
@@ -382,10 +348,7 @@
                 ${coupon?.order?.paidAt?.format("MM-dd HH:mm")}
 
                 </a></td>
-        *{#{if models.order.PointGoodsOrderStatus.CANCELED.equals(pointGoodsOrder?.status)}}*
 
-        *{#{/if}}*
-        *{${coupon?.expireAt?.format()}</td>}*
             <td>
                 <a id="cancelInfo_${coupon.id}"
                    href="#" class="label label-info"
@@ -402,11 +365,6 @@
 
                 </a></td>
 
-
-        *{<td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>}*
-        *{<td>#{if coupon?.supplierUser?.userName!=null}${coupon?.supplierUser?.userName}#{/if}}*
-        *{#{if coupon?.supplierUser?.jobNumber!=null}(工号: ${coupon?.supplierUser?.jobNumber})#{/if}</td>}*
-
             <td  #{if coupon?.status==models.order.ECouponStatus.REFUND}
 
 
@@ -414,22 +372,8 @@
 
             #{/if}>&{'coupon.'+coupon?.status}
             </td>
-        *{<td>#{if  models.order.ECouponStatus.UNCONSUMED == coupon.status }}*
-        *{#{if coupon.isFreeze == 0}}*
-        *{#{vx.operateLink name:"freeze_"+coupon.id,text:"冻结",url:"/coupons/"+coupon.id+"/freeze",confirm:true, targetName:coupon?.getMaskedEcouponSn(),method:"PUT"/}}*
-        *{#{if !coupon?.goods?.isLottery}}*
-        *{<a href="javascript:sendMessage(${coupon.id})">发送短信</a>#{/if}}*
-        *{#{/if}}*
-        *{#{else} #{vx.operateLink name:"unfreeze_"+coupon.id,text:"解冻", url:"/coupons/"+coupon.id+"/unfreeze", method:"PUT"/}#{/else}}*
-        *{#{/if}}*
 
-        *{</td>}*
         </tr>
-
-        *{@{OperateOrders.details(coupon?.order?.id)}}*
-
-
-
 
         #{/list}
 
@@ -448,10 +392,7 @@
 target="_blank" style="float:right"> more</a>
 
 #{/if}
-*{action", "/crm/" + id+"?x-http-method-override=DELETE" );}*
 
-*{<a href="/orders"}*
-*{target="_blank" style="float:right"> more</a>}*
 
 #{/if}
 
@@ -462,25 +403,15 @@ target="_blank" style="float:right"> more</a>
 #{/else}
 
 
-*{</form>}*
 </div>
 
 <div class="span5">
 
 
-*{<form class="well form-inline" name="frmlist2" id="frmlist2" method="GET">}*
+
 #{form @OperateCRM.save(), id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
 
 
-*{#{layout_operate.selectField name:'consult.consultType', value:consult?.consultType, error:'consult.consultType',}*
-*{class:'span2'}}*
-*{#{option models.sales.ConsultType.ORDERCONSULT }&{'consult.ORDERCONSULT'}#{/option}}*
-*{#{option models.sales.ConsultType.REFUND}&{'consult.REFUND'}#{/option}}*
-*{#{option models.sales.ConsultType.VERIFYERROR}&{'consult.VERIFYERROR'}#{/option}}*
-*{#{option models.sales.ConsultType.WEBSITEBROKEN}&{'consult.WEBSITEBROKEN'}#{/option}}*
-*{#{option models.sales.ConsultType.QUESTIION}&{'consult.QUESTIION'}#{/option}}*
-*{#{option models.sales.ConsultType.FEEDBACK}&{'consult.FEEDBACK'}#{/option}}*
-*{#{/layout_operate.selectField}}*
 
 
     <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
@@ -488,7 +419,7 @@ target="_blank" style="float:right"> more</a>
 
     咨询类型
 
-*{#{select 'consult.type', id:'consult_type', class:'input-small',value:consult?.consultType }}*
+
 
     #{select 'consult.consultType', value:consult?.consultType, id:'consult_type',class:'span4'}
 
@@ -514,9 +445,7 @@ target="_blank" style="float:right"> more</a>
 
 
     #{list items: consultContent, as:'consult'}
-    *{<ul>}*
 
-    *{<li>}*
 
         <div>
             <hr size="1" noshade="noshade" style="border:1px #cccccc dotted;">
@@ -525,94 +454,30 @@ target="_blank" style="float:right"> more</a>
 
             <br>
         ${consult?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}
-        *{${consult?.info}}*
+
         ${consult?.createdBy}
-        *{<button class="btn btn-primary" style="float:right" id="deletebtn" type="button">删除</button>}*
-
-        *{<button class="btn btn-primary" style="float:right" id="deletebtn4" type="submit"}*
-        *{onclick="prepareSendEdit('${consult.id}')}*
-        *{"}*
-        *{>修改</button>}*
 
 
 
-        *{href="/crm/" + id + "/edit""}*
+
+
 
               #{if currentOperator.equals(consult.createdBy)}
 
 
                                  <a id="edit" type="submit" href="/crm/${consult?.id}/edit"
                    target="_blank" style="float:right">&nbsp;修改 </a>
-            *{<a href="@{OperateCRM.edit(consult.id)}">修改</a>}*
 
-
-            *{<button class="btn btn-primary" style="float:right" id="deletebtn2" type="submit"}*
-            *{onclick="prepareSend('${consult.id}')}*
-            *{"}*
-            *{>删除</button>}*
-
-                *{<a id="edit" type="submit" href="@{OperateCRM.delete(consult.id)}"}*
-                   *{style="float:right">删除&nbsp; |</a>}*
               <span style="float:right">
                   #{vx.deleteLink id:consult?.id, name:consult?.id, action:"/crm"/} |
               </span>
         </div>
 
           #{/if}
-    *{</li>}*
 
-    *{</ul>}*
     #{/list}
 
 
-
-
-*{<table class="table table-striped table-bordered table-condensed">}*
-
-
-*{<tr>}*
-*{<th width="10">日期</th>}*
-*{<th width="50">咨询类型</th>}*
-*{<th width="30">内容</th>}*
-*{<th width="30">记录人</th>}*
-*{<th width="30">操作</th>}*
-
-*{</tr>}*
-*{</thead>}*
-
-
-
-
-
-*{<tbody>}*
-
-*{#{list items: consultContent, as:'consult'}}*
-*{<tr>}*
-*{<td>}*
-*{${consult?.createdAt}}*
-
-*{</td>}*
-
-*{<td>&{'consult.'+consult?.consultType}</td>}*
-
-*{<td>}*
-*{${consult?.text}}*
-*{</td>}*
-
-*{<td>}*
-*{${consult?.createdBy}}*
-*{</td>}*
-*{<td>}*
-*{<button class="btn btn-primary" id="deletebtn" type="button">删除</button>}*
-*{</td>}*
-*{</tr>}*
-
-
-*{#{/list}}*
-*{</tbody>}*
-
-
-*{</table>}*
 #{/form}
 
 
@@ -638,25 +503,6 @@ target="_blank" style="float:right"> more</a>
             $("#form").attr("action", "/crm/" + id + "?x-http-method-override=DELETE");
             $("#form").attr("method", "POST");
 
-
-//            var checkedGoods = [];
-//            $("input[name='id']").each(function () {
-//                if (this.checked) {
-//                    checkedcnt++;
-//                    checkedGoods.push($(this).attr("value"));
-//                }
-//            });
-//
-//            if (checkedcnt == 0) {
-//                alert("请至少选择一条数据！");
-//            } else {
-//                if (confirm("您确定要删除吗？")) {
-//                    var url = "/crm/" + java.join(",") + "?x-http-method-override=DELETE";
-//                    $("#deletefrm").attr("method", "POST");
-//                    $("#deletefrm").attr("action", url);
-//                    $("#deletefrm").submit();
-//                }
-//            }
 
 
             var msg = "确认删除记录吗？";
