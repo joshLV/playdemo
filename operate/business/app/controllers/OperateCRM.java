@@ -64,15 +64,17 @@ public class OperateCRM extends Controller {
             moreSearch = condition.searchOrderCoupon;
         else if (StringUtils.isNotBlank(condition.searchUser))
             moreSearch = condition.searchUser;
-                                     ei
+
         if (StringUtils.isNotBlank(condition.searchUser) || StringUtils.isNotBlank(condition.searchOrderCoupon)) {
 
             User user = models.sales.Consult.findUserByCondition(condition);
-            Logger.debug("a1");
+
             Address address = models.sales.Consult.findAddressByCondition(condition);
-            Logger.debug("a2");
+
             List<Order> orderList = models.sales.Consult.findOrderByCondition(condition);
             Logger.debug("a3");
+
+
             List<ECoupon> eCoupons = models.sales.Consult.findCouponByCondition(condition);
             Logger.debug("a4");
 

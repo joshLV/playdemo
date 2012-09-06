@@ -123,7 +123,24 @@ public class Consult extends Model {
                     "  or e.order.buyerMobile = ?)" +
                     "  or e.orderItems.phone = ?)"         ,
                     "%" + condition.searchOrderCoupon, condition.searchOrderCoupon,
-                    condition.searchUser, condition.searchUser, condition.searchUser, condition.searchUser,condition.searchUser).fetch(5);
+                    condition.searchUser,
+                    condition.searchUser, condition.searchUser, condition.searchUser,condition.searchUser).fetch(5);
+
+//        List<ECoupon> eCoupons = ECoupon.find("select distinct e from ECoupon e, User u, OrderItems oi where " +
+//                "e.order.userId = u.id and e.order=oi.order " +
+//                "and ( " +
+//                "  e.eCouponSn like ? " +
+//                "  or e.order.orderNumber=? " +
+//                "  or u.mobile=? " +
+//                "  or u.loginName=? " +
+//                "  or e.order.receiverMobile=? " +
+//                "  or e.order.buyerMobile = ?)" +
+//                "  or oi.phone = ?)"         ,
+//                "%" + condition.searchOrderCoupon, condition.searchOrderCoupon,
+//                condition.searchUser,
+//                condition.searchUser, condition.searchUser, condition.searchUser,condition.searchUser).fetch(5);
+
+
             return eCoupons;
 
 
