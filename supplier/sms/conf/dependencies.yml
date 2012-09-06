@@ -25,9 +25,9 @@ require:
     - emaillogs -> emaillogs
     - view_ext -> view_ext
     - cache_helper -> cache_helper
+    - yihaodian -> yihaodian
     - com.yihaodian -> yhdclient 1.0
     - commons-httpclient -> commons-httpclient 3.1
-    </dependency>
 
 repositories:
     - mavenRepository:
@@ -63,3 +63,4 @@ repositories:
             - emaillogs -> *
             - asset_package -> *
             - cache_helper -> *
+            - yihaodian -> *

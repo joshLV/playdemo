@@ -26,6 +26,7 @@ require:
     - org.jsoup -> jsoup 1.6.1
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
+    - yihaodian -> yihaodian
     - com.yihaodian -> yhdclient 1.0
     - commons-httpclient -> commons-httpclient 3.1
 
@@ -58,6 +59,7 @@ repositories:
             - supplier -> *
             - cache_helper -> *
             - emaillogs -> *
+            - yihaodian -> *
 
     - play1ContributedModules:
         type: http
