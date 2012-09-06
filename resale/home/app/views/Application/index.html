@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>券市场 - 生活消费券分销平台</title>
+    <link rel="shortcut icon" href="#{asset.url href:'/images/r/favicon.ico'/}" type="image/x-icon" />
+    #{asset.css src:['/r/base.css', '/r/index.css'] /}
+</head>
+<div id="header" class="index clearfix">
+    <div class="inner">
+        <h1 id="logo"><img src="http://img.uhcdn.com/images/r/logo.png" alt="100券" /></h1>
+        <ul id="menu">
+            <li><a class="current" href="/">首　页</a></li>
+            <li><a href="/goods">商品库</a></li>
+            <li><a href="/library">我的分销库</a></li>
+        </ul>
+    </div>
+</div>
+<div id="banner">
+    <div class="inner"></div>
+</div>
+<div id="content" class="clearfix">
+    <div class="section">
+        <div class="whyjoin">
+            <h3><img src="http://img.uhcdn.com/images/r/why.png" /></h3>
+            <ol>
+                <li class="reason1">每年仅算节日券销售就达数百亿，市场规模大。</li>
+                <li class="reason2">一线品牌商户入驻，产品服务质量有保障。</li>
+                <li class="reason3">生活消费券涉及餐饮、娱乐、教育等，品种多且利润高。</li>
+                <li class="reason4">您只管销售，我们负责发货和售后，您省时省力。</li>
+            </ol>
+        </div>
+        <div class="partner">
+            <h3><img src="http://img.uhcdn.com/images/r/partner.png" /></h3>
+            <ul class="clearfix">
+                <li><img src="http://img.uhcdn.com/images/r/exp.png" /></li>
+                <li><img src="http://img.uhcdn.com/images/r/exp2.png" /></li>
+                <li><img src="http://img.uhcdn.com/images/r/exp3.png" /></li>
+                <li><img src="http://img.uhcdn.com/images/r/exp4.png" /></li>
+                <li><img src="http://img.uhcdn.com/images/r/exp2.png" /></li>
+            </ul>
+        </div>
+    </div>
+    <div class="aside">
+        #{if cas?.isLogin}
+            <div class="fastnav">
+                <div class="userinfo">
+                    <a href="/orders">${cas.username}</a>
+                    <a href="/logout">退出</a>
+                </div>
+                <ul class="clearfix">
+                    <li><a href="/library">我的分销库</a></li>
+                    <li><a href="/ecoupons">券订单列表</a></li>
+                    <li><a href="/account_seq">账户明细</a></li>
+                </ul>
+            </div>
+        #{/if}
+        #{else}
+        <div class="guide">
+                <a class="joinus" href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}/register"><img src="http://img.uhcdn.com/images/r/joinus.png" /></a>
+                <a class="login" href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}/goods"><img src="http://img.uhcdn.com/images/r/login.png" /></a>
+        </div>
+        #{/else}
+        <div class="salemode">
+            <h3><img src="http://img.uhcdn.com/images/r/salemode.png" /></h3>
+            <ul>
+                <li>› <a href="/solution#taobao">淘宝商及其他C2C商户代销方案</a></li>
+                <li>› <a href="/solution#bigb2c">大型B2C网站代销方案</a></li>
+                <!-- <li>› <a href="">团购网站代销方案</a></li> -->
+                <li>› <a href="/solution#other">其他网站及企业个人代销方案</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="footer">
+    <div class="copyright">版权所有：上海视惠信息科技有限公司 ©2012 quanFX.COM  沪ICP备08114451号-4</div>
+</div>
+</body>
+</html>
