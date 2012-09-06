@@ -13,7 +13,7 @@ public class ControllerInstancesTest extends UnitTest{
     @Test
     public void controllerInstancesTest(){
         assertTrue(new Addresses() instanceof Controller);
-        assertTrue(new Application() instanceof Controller);
+        assertTrue(new WEBApplication() instanceof Controller);
         assertTrue(new Areas() instanceof Controller);
         assertTrue(new Carts() instanceof Controller);
         assertTrue(new FindPassword() instanceof Controller);
