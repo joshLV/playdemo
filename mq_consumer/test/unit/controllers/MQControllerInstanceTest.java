@@ -1,6 +1,6 @@
 package unit.controllers;
 
-import controllers.WEBApplication;
+import controllers.Application;
 import org.junit.Test;
 import play.mvc.Controller;
 import play.test.UnitTest;
@@ -11,6 +11,6 @@ import play.test.UnitTest;
 public class MQControllerInstanceTest extends UnitTest{
     @Test
     public void controllerInstanceTest(){
-        assertTrue(new WEBApplication() instanceof Controller);
+        assertTrue(new Application() instanceof Controller);
     }
 }
