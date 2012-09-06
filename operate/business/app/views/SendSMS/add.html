@@ -1,0 +1,122 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'发送优惠券' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{set 'moreStyles'}
+<style type="text/css">
+</style>
+#{/set}
+
+
+<div class="body">
+    <legend>${title}</legend>
+    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{SendSMS.create()}" method="GET">
+        <table width="100%">
+            <tr>
+                <td width="30%">
+                    <span style="color:red">*</span>
+
+
+
+                    任务号：<input type="text" name="taskTempNo" class="input-medium"
+                               value="${taskTempNo}" onkeyup="checknum(this)"/>  (只能输入字母或数字)
+                *{#{layout_operate.textField name:'sms.taskNo', value:sms?.taskNo/}}*
+                    <div class="error">#{error 'taskTempNo' /}</div>
+                </td>
+
+
+
+            </tr>
+
+            <tr>
+                <td>
+                    <br>
+                    <span style="color:red">*</span>手机号
+                    <br>
+                    <textarea rows="6" cols="30" required="required" name="tempMobile" id="tempMobile"
+                              value="${tempMobile}">  ${tempMobile}
+
+                    </textarea>
+                    <div class="error">#{error 'tempMobile' /}</div>
+
+
+                </td>
+                <td class="span5">
+                    <br>
+                    <span style="color:red">*</span> 优惠券
+                    <br>
+                    <textarea rows="6" cols="30" required="required" name="tempECouponSn" id="tempECouponSn"
+                              value="${tempECouponSn}"> ${tempECouponSn}
+
+                    </textarea>
+                    <div class="error">#{error 'tempECouponSn' /}</div>
+
+
+                </td>
+
+            </tr>
+
+            <tr>
+                <td>
+                    <br>
+                    <span style="color:red">*</span> 短信内容
+                    <br>
+
+                    <textarea rows="6" cols="100" required="required" name="tempText" id="tempText"
+                              value="${tempText}"> ${tempText}
+
+                    </textarea>
+
+                    <div class="error">#{error 'tempText' /}</div>
+                *{#{layout_operate.textareaField name:'sms.text', value:sms?.text/}}*
+                </td>
+
+
+            </tr>
+
+            <tr>
+                <td>
+                    <br>
+                    <button class="btn btn-primary" id="searchbtn" type="submit">提交</button>
+                </td>
+            </tr>
+
+
+        </table>
+    </form>
+
+
+</div>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $("#searchbtn2").click(function () {
+
+                    var url = "/send_sms/" + checkedGoods.join(",") + "/onSale?x-http-method-override=PUT";
+                    $("#deletefrm").attr("method", "POST");
+                    $("#deletefrm").attr("action", url);
+                    $("#deletefrm").submit();
+                }
+        );
+
+    });
+
+
+    var   re=/^[A-Za-z0-9]*$/;
+    var   str='';
+    function   checknum(obj)
+    {
+        if(re.test(obj.value)==false){
+            obj.value=str;
+            alert("只能输入字母或数字");
+        } else {
+            str=obj.value;
+        }
+    }
+
+
+</script>

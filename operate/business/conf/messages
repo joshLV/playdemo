@@ -60,6 +60,21 @@ pointGoods.materialType_2=实物
 pointGoods.ELECTRONIC=电子券
 pointGoods.REAL=实物
 
+
+
+
+
+sms.taskNo=任务号
+sms.mobile=手机号
+sms.eCouponSn=券号
+sms.text=短信内容
+
+
+taskTempNo=任务号
+tempMobile=手机号
+tempECouponSn=券号
+tempText=短信内容
+
 goods.publishedPlatforms=可发布到
 goods.publishedPlatforms_TAOBAO=淘宝网
 goods.publishedPlatforms_YIHAODIAN=一号店

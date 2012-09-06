@@ -1,5 +1,5 @@
 #{extends 'layout_operate/layout.html' /}
-#{set title:'发送优惠券' /}
+#{set title:'发送前确认' /}
 #{include '/share/nav.html' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
@@ -11,31 +11,28 @@
 
 <div class="body">
     <legend>${title}</legend>
-    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{SendSMS.index()}" method="GET">
-        <table width="100%">
-            <tr>
-                <td width="30%">
+    *{<form class="form-horizontal" name="frmlist" id="frmlist" action="@{SendSMS.index()}" method="GET">}*
+        *{<table width="100%">}*
+            *{<tr>}*
+                *{<td width="30%">任务号：<input type="text" name="condition.taskNo" class="input-medium"}*
+                                           *{value="${condition?.taskNo}"/></td>}*
 
-
-                    任务号：<input type="text" name="condition.taskNo" class="input-medium"
-                                           value="${condition?.taskNo}"/></td>
-
-                </td>
-                <td>
-                    <button class="btn btn-primary" id="searchbtn" type="submit">查询</button>
-                </td>
-                <td>
+                *{</td>}*
+                *{<td>}*
+                    *{<button class="btn btn-primary" id="searchbtn" type="submit">查询</button>}*
+                *{</td>}*
+                *{<td>}*
                 *{onclick="prepareSendEdit('${consult.id}')}*
                 *{<button class="btn btn-primary" id="searchbtn2" type="submit"}*
                 *{onclick="prepareSend()">新建发送</button>}*
 
-                    <a href="/send_sms/new" class="btn btn-primary" id="searchbtn2" type="submit"
-                       >新建发送</a>
+                    *{<a href="/send_sms/new" class="btn btn-primary" id="searchbtn2" type="submit"}*
+                            *{>新建发送</a>}*
 
-                </td>
-            </tr>
-        </table>
-    </form>
+                *{</td>}*
+            *{</tr>}*
+        *{</table>}*
+    *{</form>}*
 
 
     <form class="form-horizontal" id="stateForm" method="POST">
@@ -71,6 +68,10 @@
     <div class="pagination" align="center">
         <ul>#{paginate.controls items:sms /}
         </ul>
+    </div>
+    <div>
+
+        <button class="btn btn-primary" id="searchbtn" type="submit">发送短信</button>
     </div>
 </div>
 

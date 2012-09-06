@@ -21,8 +21,8 @@ import java.util.Date;
  */
 
 @Entity
-@Table(name = "send_sms")
-public class SendSMS extends Model {
+@Table(name = "send_sms_info")
+public class SendSMSInfo extends Model {
 
     /**
      * 任务号
@@ -49,7 +49,7 @@ public class SendSMS extends Model {
     @MinSize(7)
     @MaxSize(65000)
     @Lob
-    private String text;
+    public String text;
 
 
     /**
@@ -57,6 +57,20 @@ public class SendSMS extends Model {
      */
     @Column(name = "send_at")
     public Date sendAt;
+
+    /**
+     * 创建时间
+     */
+    @Column(name = "created_at")
+    public Date createdAt;
+
+
+    @Override
+    public boolean create() {
+
+        createdAt = new Date();
+        return super.create();
+    }
 
 
 }
