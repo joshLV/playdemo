@@ -1,25 +1,25 @@
 #{extends 'main.html' /}
-#{set title:'一百券-' + condsTitle + ',网上消费券首选门户,消费券,代金券,优惠券,美食券,电子券,提货券' /} 
+#{set title:'一百券-' + condsTitle + ',网上消费券首选门户,消费券,代金券,优惠券,美食券,电子券,提货券' /}
 #{set 'metaContent'}
     <meta name="Description" content="一百券-${condsTitle},消费券,代金券,优惠券,美食券,电子券,提货券">
     <meta name="Keywords" content="上海优惠券,${condsTitle},消费券,代金券,优惠券,美食券,电子券,优惠上海,提货券">
-#{/set} 
-#{set 'moreStyles'} 
+#{/set}
+#{set 'moreStyles'}
     #{asset.css src:['/y/list.min.css'] /}
 #{/set}
 #{set 'moreScripts'}
 <script type="text/javascript">
    $(function() {
-		$("#dz").click(function() {
-			window.location.href="/s/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-1";
-		});
-		$("#st").click(function() {
-			window.location.href = "/s/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-0";
-		});
-		$("#qb").click(function() {
-			window.location.href = "/s/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}";
-		});
-	});
+                $("#dz").click(function() {
+                        window.location.href="/s/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-1";
+                });
+                $("#st").click(function() {
+                        window.location.href = "/s/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}-0";
+                });
+                $("#qb").click(function() {
+                        window.location.href = "/s/${categoryId}-${searchAreaId}-${brandId}-${priceFrom}-${priceTo}-${orderBy}-${orderByType}";
+                });
+        });
 </script>
 
 
@@ -54,7 +54,7 @@
                         #{/list}
                     </div>
                 </li>
-                <!-- 
+                <!--
                 <li class="zone clearfix">
                     <div class="cat-kind">商圈：
                         #{if "0".equals(areaId)}<a class="curr">全部</a>#{/if}
@@ -153,7 +153,7 @@
     </div>
 
     <!-- #section -->
-    
+
      <div id="sidebar">
         <div id="popular">
             <div class="hd">人气商品<!--<a class="more" href="/s" target="_blank"></a>--></div>
@@ -189,9 +189,10 @@
         </div><!-- #cooperation -->
     </div><!-- #sidebar -->
 </div><!-- #content -->
- 
 
+<!--
 <div id="rebate">
     <a class="rebate-text" id="J_rebateText" href="">推荐返利<div class="rebate-tips" id="J_rebateTips"><span><b></b><s></s>推荐朋友便可以获得返利哦！详情请点击进入查看。</span></div></a>
     <a class="rebate-close" id="J_rebateClose" href="#" hidefocus="true"></a>
 </div>
+-->
