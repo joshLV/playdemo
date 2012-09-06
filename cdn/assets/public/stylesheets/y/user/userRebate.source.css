@@ -14,17 +14,17 @@
 .rebate-info span {
     color: #f00;
 }
-.exchange-btn {
-    margin-left: 20px;
-    border: 0;
-    width: 86px;
-    height: 30px;
-    background: url(//img.uhcdn.com/images/y/user/exchange-btn.png) no-repeat 0 0;
-}
+/* .exchange-btn { */
+    /* margin-left: 20px; */
+    /* border: 0; */
+    /* width: 86px; */
+    /* height: 30px; */
+    /* background: url(//img.uhcdn.com/images/y/user/exchange-btn.png) no-repeat 0 0; */
+/* } */
 .recommend-share {
     color: #fff;
     padding: 5px 8px;
-    margin: 20px 0 10px;
+    margin: 10px 0;
     background-color: #adadad;
 }
 .recommend-linkbox {
