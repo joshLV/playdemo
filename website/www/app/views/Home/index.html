@@ -109,10 +109,10 @@
                #{set altTitle: helper.Title.getDetailTitle(aGoods) /}
                 #{set i:1/}
                 #{if i%3==0}
-                <li class="last">
+                <li class="last #{if i > 9}none#{/if}">
                 #{/if}
                 #{else}
-                <li>
+                <li class="#{if i > 9}none#{/if}">
                 #{/else}
                 <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageMiddlePath}"
                                                                                   alt="${altTitle}" width="234" height="178" /></a></div>
