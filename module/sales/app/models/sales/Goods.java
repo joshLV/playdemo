@@ -99,7 +99,7 @@ public class Goods extends Model {
     /**
      * 给推荐者的返利金额
      */
-    @Column(name = "promoter_rice")
+    @Column(name = "promoter_price")
     @Min(0)
     @Max(5)
     @Money

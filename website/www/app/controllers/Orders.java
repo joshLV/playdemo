@@ -318,10 +318,6 @@ public class Orders extends Controller {
                     order.promoteUserId = promoterUser.id;
                     order.rebateValue = Order.getPromoteRebateOfTotalECartAmount(eCartAmount, order);
                     order.amount = eCartAmount.add(rCartAmount);
-//                    order.needPay = order.amount;
-//                    if (order.needPay.compareTo(BigDecimal.ZERO) <= 0) {
-//                        order.needPay = BigDecimal.ZERO;
-//                    }
                     //如果通过注册的，则更新推荐关系
                     PromoteRebate promoteRebate = PromoteRebate.find("promoteUser=? and invitedUser=? and registerFlag=true", promoterUser, user).first();
                     if (promoteRebate != null) {

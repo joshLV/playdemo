@@ -396,6 +396,10 @@ public class Order extends Model {
         for (OrderItems item : order.orderItems) {
             invitedUserPrice = item.goods.invitedUserPrice == null ? BigDecimal.ZERO : item.goods.invitedUserPrice;
             if (invitedUserPrice.compareTo(new BigDecimal(5)) <= 0) {
+                //如果没设置被推荐的返利，默认给1%
+                if (invitedUserPrice == null || invitedUserPrice.compareTo(BigDecimal.ZERO) == 0) {
+                    invitedUserPrice = BigDecimal.ONE;
+                }
                 rebatePrice = rebatePrice.add(item.goods.salePrice.multiply(invitedUserPrice).multiply(new BigDecimal(0.01)));
             }
         }
@@ -1144,7 +1148,8 @@ public class Order extends Model {
         BigDecimal amount = BigDecimal.ZERO;
         BigDecimal promoterPrice;
         for (OrderItems item : order.orderItems) {
-            promoterPrice = item.goods.promoterPrice == null ? BigDecimal.ZERO : item.goods.promoterPrice;
+            //默认给推荐人2%，如果商品没设置返利
+            promoterPrice = item.goods.promoterPrice == null || item.goods.promoterPrice.compareTo(BigDecimal.ZERO) == 0 ? new BigDecimal(2) : item.goods.promoterPrice;
             amount = amount.add(item.goods.salePrice.multiply(promoterPrice).multiply(new BigDecimal(0.01)));
         }
 
@@ -1186,7 +1191,8 @@ public class Order extends Model {
      * @return
      */
     public static BigDecimal getPromoteRebateOfGoodsAmount(Goods goods, Integer number) {
-        BigDecimal invitedUserPrice = goods.invitedUserPrice == null ? BigDecimal.ZERO : goods.invitedUserPrice;
+        //默认给被推荐人1%，如果商品没设置返利
+        BigDecimal invitedUserPrice = goods.invitedUserPrice == null || goods.invitedUserPrice.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ONE : goods.invitedUserPrice;
         return goods.salePrice.multiply(invitedUserPrice).multiply(new BigDecimal(number)).multiply(new BigDecimal(0.01));
     }
 }
