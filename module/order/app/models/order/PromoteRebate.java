@@ -41,6 +41,13 @@ public class PromoteRebate extends Model {
     public Order order;
 
     /**
+     * 券关联
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coupon_id", nullable = true)
+    public ECoupon coupon;
+
+    /**
      * 推荐状态
      */
     @Enumerated(EnumType.STRING)

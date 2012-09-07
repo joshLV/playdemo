@@ -20,6 +20,7 @@
                 　　已经获得返利：<span>${promoteRebate?.haveGotAmount?.formatCurrency("CNY")}</span>元
             </div>
             <h3 style="font-size:14px;margin-top:30px">成功推荐明细</h3>
+
             <form class="form-horizontal" id="accountForm" action="@{UserPromoteRebate.account()}" method="GET">
                 <div class="search-box">
                     <label>操作类型：</label>
@@ -60,7 +61,8 @@
                     <td>${rebate?.invitedUser?.loginName}</td>
                     <td>&{'rebate.'+rebate?.status}</td>
                     <td>#{if rebate.status ==models.order.RebateStatus.UN_CONSUMED }${rebate?.rebateAmount?.formatCurrency("CNY")}#{/if}</td>
-                    <td>#{if rebate.status ==models.order.RebateStatus.ALREADY_REBATE }${rebate?.rebateAmount?.formatCurrency("CNY")}#{/if}</td>
+                    <td>#{if rebate.status ==models.order.RebateStatus.ALREADY_REBATE }${rebate?.rebateAmount?.formatCurrency("CNY")}#{/if}
+                    #{if rebate.status ==models.order.RebateStatus.PART_REBATE }${rebate?.rebateAmount?.formatCurrency("CNY")}#{/if}</td>
                 </tr>
                 </tbody>
             #{/paginate.list}

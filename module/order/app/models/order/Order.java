@@ -23,6 +23,7 @@ import models.sales.SecKillGoodsItem;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
+import org.h2.util.New;
 import org.hibernate.annotations.Index;
 import play.Logger;
 import play.Play;
@@ -386,11 +387,10 @@ public class Order extends Model {
     /**
      * 计算订单中受邀者应得的返利
      *
-     * @param amount
      * @param order
      * @return
      */
-    public static BigDecimal getPromoteRebateOfTotalECartAmount(BigDecimal amount, Order order) {
+    public static BigDecimal getPromoteRebateOfTotalECartAmount(Order order) {
         BigDecimal rebatePrice = BigDecimal.ZERO;
         BigDecimal invitedUserPrice;
         for (OrderItems item : order.orderItems) {
@@ -400,7 +400,7 @@ public class Order extends Model {
                 if (invitedUserPrice == null || invitedUserPrice.compareTo(BigDecimal.ZERO) == 0) {
                     invitedUserPrice = BigDecimal.ONE;
                 }
-                rebatePrice = rebatePrice.add(item.goods.salePrice.multiply(invitedUserPrice).multiply(new BigDecimal(0.01)));
+                rebatePrice = rebatePrice.add(item.goods.salePrice.multiply(invitedUserPrice).multiply(new BigDecimal(0.01))).multiply(new BigDecimal(item.buyNumber));
             }
         }
         return rebatePrice;
@@ -418,19 +418,21 @@ public class Order extends Model {
      * @throws NotEnoughInventoryException
      */
     public OrderItems addOrderItem(Goods goods, Integer number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice) throws NotEnoughInventoryException {
-        return this.addOrderItem(goods, number, mobile, salePrice, resalerPrice, null, null);
+        return this.addOrderItem(goods, number, mobile, salePrice, resalerPrice, null, false);
     }
 
-    public OrderItems addOrderItem(Goods goods, Integer number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice, DiscountCode discountCode, String cookieValue)
+    public OrderItems addOrderItem(Goods goods, Integer number, String mobile, BigDecimal salePrice, BigDecimal resalerPrice,
+                                   DiscountCode discountCode, boolean isPromoteFlag)
             throws NotEnoughInventoryException {
         OrderItems orderItem = null;
         if (number > 0 && goods != null) {
             checkInventory(goods, number);
             orderItem = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice);
             //通过推荐购买的情况
-            if (cookieValue != null && !"".equals(cookieValue)) {
+            if (isPromoteFlag) {
                 orderItem.rebateValue = getPromoteRebateOfGoodsAmount(goods, number);
-            } else {//用优惠码的情况
+            } else {
+                //用优惠码的情况
                 orderItem.rebateValue = getDiscountValueOfGoodsAmount(goods, number, discountCode);
             }
             this.orderItems.add(orderItem);
@@ -1154,7 +1156,7 @@ public class Order extends Model {
         for (OrderItems item : order.orderItems) {
             //默认给推荐人2%，如果商品没设置返利
             promoterPrice = item.goods.promoterPrice == null || item.goods.promoterPrice.compareTo(BigDecimal.ZERO) == 0 ? new BigDecimal(2) : item.goods.promoterPrice;
-            amount = amount.add(item.goods.salePrice.multiply(promoterPrice).multiply(new BigDecimal(0.01)));
+            amount = amount.add(item.goods.salePrice.multiply(promoterPrice).multiply(new BigDecimal(0.01))).multiply(new BigDecimal(item.buyNumber));
         }
 
         return amount;

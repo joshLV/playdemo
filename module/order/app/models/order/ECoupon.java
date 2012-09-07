@@ -93,7 +93,11 @@ public class ECoupon extends Model {
      */
     @Column(name = "rebate_value")
     public BigDecimal rebateValue;
-
+    /**
+     * 给推荐人返利费用.
+     */
+    @Column(name = "promoter_rebate_value")
+    public BigDecimal promoterRebateValue;
     // ==== 价格列表 ====
 
     @Column(name = "refund_price")
@@ -174,8 +178,13 @@ public class ECoupon extends Model {
         this.originalPrice = orderItems.originalPrice;
         this.resalerPrice = orderItems.resalerPrice;
         this.salePrice = orderItems.salePrice;
-        this.rebateValue = orderItems.rebateValue;
-
+        if (order.promoteUserId != null) {
+            this.rebateValue = getLineRebateValue();
+            //记录给推荐人的返利，每个券占用的返利
+            this.promoterRebateValue = getLinePromoterRebateValue();
+        } else {
+            this.rebateValue = orderItems.rebateValue;
+        }
         this.createdAt = new Date();
         this.effectiveAt = goods.effectiveAt;
         this.expireAt = goods.expireAt;
@@ -195,6 +204,30 @@ public class ECoupon extends Model {
             this.replyCode = generateAvailableReplayCode(order.userId,
                     order.userType);
         }
+    }
+
+    private BigDecimal getLineRebateValue() {
+        BigDecimal amount = BigDecimal.ZERO;
+        BigDecimal invitedRebatePrice;
+        for (OrderItems item : order.orderItems) {
+            //如果商品没设置返利,默认给推荐人1%
+            invitedRebatePrice = item.goods.invitedUserPrice == null || item.goods.invitedUserPrice.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ONE : item.goods.invitedUserPrice;
+            amount = amount.add(item.goods.salePrice.multiply(invitedRebatePrice).multiply(new BigDecimal(0.01)));
+        }
+
+        return amount;
+    }
+
+    private BigDecimal getLinePromoterRebateValue() {
+        BigDecimal amount = BigDecimal.ZERO;
+        BigDecimal promoterPrice;
+        for (OrderItems item : order.orderItems) {
+            //如果商品没设置返利,默认给推荐人2%
+            promoterPrice = item.goods.promoterPrice == null || item.goods.promoterPrice.compareTo(BigDecimal.ZERO) == 0 ? new BigDecimal(2) : item.goods.promoterPrice;
+            amount = amount.add(item.goods.salePrice.multiply(promoterPrice).multiply(new BigDecimal(0.01)));
+        }
+
+        return amount;
     }
 
     /**
@@ -355,10 +388,13 @@ public class ECoupon extends Model {
         this.verifyType = type;
         this.save();
         if (this.order != null && this.order.promoteUserId != null) {
-            User promoteUser = User.findById(this.order.promoteUserId);
             User invitedUser = User.findById(this.order.userId);
-            PromoteRebate promoteRebate = PromoteRebate.find("promoteUser=? and invitedUser=? and order =?", promoteUser, invitedUser, this.order).first();
-            promoteRebate.status = RebateStatus.ALREADY_REBATE;
+            PromoteRebate promoteRebate = PromoteRebate.find("invitedUser=? and order =?", invitedUser, this.order).first();
+            if (promoteRebate.rebateAmount.compareTo(this.promoterRebateValue)>0){
+                promoteRebate.status = RebateStatus.PART_REBATE;
+            } else {
+                promoteRebate.status = RebateStatus.ALREADY_REBATE;
+            }
             promoteRebate.rebateAt = new Date();
             promoteRebate.save();
         }
@@ -424,15 +460,15 @@ public class ECoupon extends Model {
                 throw new IllegalArgumentException("promoteUser or invitedUser is not existed");
             }
 
-            PromoteRebate promoteRebate = PromoteRebate.find("promoteUser=? and invitedUser=? and order =?", promoteUser, invitedUser, this.order).first();
-            if (promoteRebate.rebateAmount != null) {
+            PromoteRebate promoteRebate = PromoteRebate.find("invitedUser=? and order =?", invitedUser, this.order).first();
+            if (promoteRebate != null) {
                 Account account = AccountUtil.getConsumerAccount(promoteUser.getId());
                 TradeBill rabateTrade = TradeUtil.createTransferTrade(
                         AccountUtil.getUhuilaAccount(),
                         account,
-                        promoteRebate.rebateAmount, BigDecimal.ZERO);
+                        promoterRebateValue, BigDecimal.ZERO);
                 rabateTrade.orderId = this.order.id;
-                TradeUtil.success(rabateTrade, "推荐获得的返利" + promoteRebate.rebateAmount);
+                TradeUtil.success(rabateTrade, "推荐获得的返利" + rebateValue);
             }
 
         }

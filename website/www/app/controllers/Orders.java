@@ -80,21 +80,23 @@ public class Orders extends Controller {
     }
 
     protected static DiscountCode getDiscountCode() {
+
         // 折扣券
         String discountSN = request.params.get("discountSN");
-        //这里用于判断是否是通过推荐过来的用户，是则取得推荐码
-        Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
-        if (cookie != null) {
-            System.out.println(cookie.value+">>>>>>>>>>>>>");
-            renderArgs.put("userPromoterCode", cookie.value);
-        }
 
         if (discountSN == null) {
             renderArgs.put("discountErrorInfo", "");
         } else {
-            renderArgs.put("discountErrorInfo", "无效的优惠码，请重新输入");
+            if (User.getUserByPromoterCode(discountSN) == null) {
+                renderArgs.put("discountErrorInfo", "无效的优惠码，请重新输入");
+            }
         }
 
+        //这里用于判断是否是通过推荐过来的用户，是则取得推荐码
+        Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
+        if (cookie != null) {
+            renderArgs.put("userPromoterCode", cookie.value);
+        }
         if (StringUtils.isEmpty(discountSN) && WebsiteInjector.getUserWebIdentification() != null) {
             // 访问使用的推荐码尝试作为折扣券号
             discountSN = WebsiteInjector.getUserWebIdentification().referCode;
@@ -119,19 +121,28 @@ public class Orders extends Controller {
         BigDecimal eCartAmount = BigDecimal.ZERO;
         List<Cart> rCartList = new ArrayList<>();
         BigDecimal rCartAmount = BigDecimal.ZERO;
-
         List<models.sales.Goods> goods = models.sales.Goods.findInIdList(goodsIds);
         for (models.sales.Goods g : goods) {
 
             Integer number = itemsMap.get(g.getId());
             Cart cart = new Cart(g, number);
             //这里用于判断是否是通过推荐过来的用户
+            String discountSN = request.params.get("discountSN");
+            boolean isInputCode = false;
+            User user = SecureCAS.getUser();
+            User promoteUser = null;
+            if (discountSN != null)
+                promoteUser = User.getUserByPromoterCode(discountSN);
+            //推荐人不能是自己
+            if (user != promoteUser && promoteUser != null)
+                isInputCode = true;
             Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
-            if (cookie != null) {
+            if (cookie != null || isInputCode) {
                 cart.rebateValue = Order.getPromoteRebateOfGoodsAmount(g, number);
             } else {
                 cart.rebateValue = Order.getDiscountValueOfGoodsAmount(g, number, discountCode);
             }
+
             if (g.materialType == models.sales.MaterialType.REAL) {
                 rCartList.add(cart);
                 rCartAmount = rCartAmount.add(cart.getLineValue());
@@ -250,21 +261,31 @@ public class Orders extends Controller {
             BigDecimal rCartAmount = BigDecimal.ZERO;
             //取得cookie中的推荐码
             Http.Cookie tj_cookie = request.cookies.get(PROMOTER_COOKIE);
+            String tj_cookieValue = tj_cookie == null ? "" : tj_cookie.value;
+            String discountSN = request.params.get("discountSN");
+            Boolean isInputCode = false;
+            User promoteUser = null;
+            if (discountSN != null) promoteUser = User.getUserByPromoterCode(discountSN);
+            //推荐人不能是自己
+            if (user != promoteUser && promoteUser != null) isInputCode = true;
+            //推荐标志【有推荐cookie或者手动输入推荐码】
+            boolean isPromoteFlag = false;
+            if (!"".equals(tj_cookieValue) || isInputCode) isPromoteFlag = true;
+
             for (models.sales.Goods goodsItem : goodsList) {
                 Integer number = itemsMap.get(goodsItem.getId());
-                String tj_cookieValue = tj_cookie == null ? "" : tj_cookie.value;
-
                 if (goodsItem.materialType == models.sales.MaterialType.REAL) {
-                    if ("".equals(tj_cookieValue)) {
-                        rCartAmount = rCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
-                    } else {
+                    if (isPromoteFlag) {
                         rCartAmount = rCartAmount.add(Order.getPromoteRebateOfTotalGoodsAmount(goodsItem, number));
+                    } else {
+                        rCartAmount = rCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
+
                     }
                 } else if (goodsItem.materialType == models.sales.MaterialType.ELECTRONIC) {
-                    if ("".equals(tj_cookieValue)) {
-                        eCartAmount = eCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
-                    } else {
+                    if (isPromoteFlag) {
                         eCartAmount = eCartAmount.add(Order.getPromoteRebateOfTotalGoodsAmount(goodsItem, number));
+                    } else {
+                        eCartAmount = eCartAmount.add(Order.getDiscountGoodsAmount(goodsItem, number, discountCode));
                     }
                 }
                 OrderItems orderItem = null;
@@ -273,13 +294,13 @@ public class Orders extends Controller {
                     orderItem = order.addOrderItem(goodsItem, number, receiverMobile,
                             goodsItem.salePrice, //最终成交价
                             goodsItem.getResalerPriceOfUhuila(), //一百券作为分销商的成本价
-                            discountCode, tj_cookieValue
+                            discountCode, isPromoteFlag
                     );
                 } else {
                     orderItem = order.addOrderItem(goodsItem, number, mobile,
                             goodsItem.salePrice, //最终成交价
                             goodsItem.getResalerPriceOfUhuila(), //一百券作为分销商的成本价
-                            discountCode, tj_cookieValue
+                            discountCode, isPromoteFlag
                     );
                 }
                 orderItem.save();
@@ -310,21 +331,22 @@ public class Orders extends Controller {
                 orderDiscount.discountAmount = Order.getDiscountValueOfTotalECartAmount(eCartAmount, discountCode);
                 orderDiscount.save();
             }
-            //判断cookie中的推荐码是否存在; 只折扣电子券产品，实物券不参与折扣.
-            if (tj_cookie != null) {
-                User promoterUser = User.getUserByPromoterCode(tj_cookie.value);
+            //判断cookie中的推荐码是否存在;
+            if (isPromoteFlag) {
+                if ("".equals(tj_cookieValue)) tj_cookieValue = discountSN;
+                User promoterUser = User.getUserByPromoterCode(tj_cookieValue);
                 if (promoterUser != user) {
                     //保存推荐人的用户ID
                     order.promoteUserId = promoterUser.id;
-                    order.rebateValue = Order.getPromoteRebateOfTotalECartAmount(eCartAmount, order);
+                    order.rebateValue = Order.getPromoteRebateOfTotalECartAmount(order);
                     order.amount = eCartAmount.add(rCartAmount);
                     //如果通过注册的，则更新推荐关系
                     PromoteRebate promoteRebate = PromoteRebate.find("promoteUser=? and invitedUser=? and registerFlag=true", promoterUser, user).first();
                     if (promoteRebate != null) {
+                        promoteRebate.promoteUser = promoterUser;
                         promoteRebate.order = order;
                         promoteRebate.rebateAmount = Order.getPromoteRebateAmount(order);
                         promoteRebate.save();
-                        response.removeCookie(PROMOTER_COOKIE);
                     } else {
                         //记录推荐人和被推荐人的关系
                         new PromoteRebate(promoterUser, user, order, Order.getPromoteRebateAmount(order), false).save();
@@ -342,10 +364,8 @@ public class Orders extends Controller {
         //确认订单
         order.createAndUpdateInventory();
 
-
         //删除购物车中相应物品
         Cart.delete(user, cookieValue, goodsIds);
-
 
         redirect("/payment_info/" + order.orderNumber);
     }

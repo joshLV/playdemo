@@ -8,6 +8,7 @@ package models.order;
  */
 public enum RebateStatus {
     ALREADY_REBATE,//已返利
-    UN_CONSUMED //下单未消费
+    UN_CONSUMED, //下单未消费
+    PART_REBATE//部分已返利
 
 }
