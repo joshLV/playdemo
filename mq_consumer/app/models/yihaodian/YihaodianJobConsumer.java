@@ -77,14 +77,10 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
 
         boolean rollBack = false;
         try {
-            // work with your models
             JPA.em().flush();
         } catch (RuntimeException e) {
             rollBack = true;
-            // throw exception to prevent msg ACK, need to refine error handling :)
-
             //不抛异常 不让mq重试
-//            throw e;
         } finally {
             JPAPlugin.closeTx(rollBack);
         }
@@ -133,8 +129,8 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                         goods,
                         orderItem.orderItemNum,
                         order.goodReceiverMobile,
-                        goods.salePrice, //最终成交价
-                        goods.salePrice
+                        orderItem.orderItemPrice,
+                        orderItem.orderItemPrice
                 );
                 uhuilaOrderItem.save();
                 if(goods.materialType.equals(MaterialType.REAL)){
