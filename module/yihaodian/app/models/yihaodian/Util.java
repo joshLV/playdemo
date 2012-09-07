@@ -31,8 +31,6 @@ public class Util {
 
     private static Map<String, String> sysParams(){
         Map<String, String> paramMap = new HashMap<>();
-        Logger.info("checkt_code: %s", CHECK_CODE );
-        Logger.info("merchant_id: %s", MERCHANT_ID );
         // 系统级参数设置（必须）
         paramMap.put("checkCode", CHECK_CODE);
         paramMap.put("merchantId", MERCHANT_ID);

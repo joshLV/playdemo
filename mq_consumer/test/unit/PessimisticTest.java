@@ -2,6 +2,7 @@ package unit;
 
 import models.PessimisticModel;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.db.jpa.JPA;
 import play.db.jpa.JPAPlugin;
@@ -13,6 +14,7 @@ import javax.persistence.*;
  * @author likang
  *         Date: 12-9-4
  */
+@Ignore
 public class PessimisticTest extends UnitTest{
     @Test
     public void testPessimistic(){
