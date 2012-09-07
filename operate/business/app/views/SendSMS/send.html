@@ -11,68 +11,68 @@
 
 <div class="body">
     <legend>${title}</legend>
-    *{<form class="form-horizontal" name="frmlist" id="frmlist" action="@{SendSMS.index()}" method="GET">}*
-        *{<table width="100%">}*
-            *{<tr>}*
-                *{<td width="30%">任务号：<input type="text" name="condition.taskNo" class="input-medium"}*
-                                           *{value="${condition?.taskNo}"/></td>}*
+*{<form class="form-horizontal" name="frmlist" id="frmlist" action="@{SendSMS.index()}" method="GET">}*
+*{<table width="100%">}*
+*{<tr>}*
+*{<td width="30%">任务号：<input type="text" name="condition.taskNo" class="input-medium"}*
+*{value="${condition?.taskNo}"/></td>}*
 
-                *{</td>}*
-                *{<td>}*
-                    *{<button class="btn btn-primary" id="searchbtn" type="submit">查询</button>}*
-                *{</td>}*
-                *{<td>}*
-                *{onclick="prepareSendEdit('${consult.id}')}*
-                *{<button class="btn btn-primary" id="searchbtn2" type="submit"}*
-                *{onclick="prepareSend()">新建发送</button>}*
+*{</td>}*
+*{<td>}*
+*{<button class="btn btn-primary" id="searchbtn" type="submit">查询</button>}*
+*{</td>}*
+*{<td>}*
+*{onclick="prepareSendEdit('${consult.id}')}*
+*{<button class="btn btn-primary" id="searchbtn2" type="submit"}*
+*{onclick="prepareSend()">新建发送</button>}*
 
-                    *{<a href="/send_sms/new" class="btn btn-primary" id="searchbtn2" type="submit"}*
-                            *{>新建发送</a>}*
+*{<a href="/send_sms/new" class="btn btn-primary" id="searchbtn2" type="submit"}*
+*{>新建发送</a>}*
 
-                *{</td>}*
-            *{</tr>}*
-        *{</table>}*
-    *{</form>}*
+*{</td>}*
+*{</tr>}*
+*{</table>}*
+*{</form>}*
 
 
-    <form class="form-horizontal" id="stateForm" method="POST">
-        <table class="table table-striped table-bordered table-condensed">
-            <thead>
-            <tr>
+    <form action="@{SendSMS.sucSend()}" class="form-horizontal" id="stateForm" method="GET">
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+        <tr>
 
-                <th>任务号</th>
-                <th>手机</th>
-                <th>券号</th>
-                <th>短信内容</th>
-                <th>发送时间</th>
-            </tr>
-            </thead>
+            <th>任务号</th>
+            <th>手机</th>
+            <th>券号</th>
+            <th>短信内容</th>
+            <th>发送时间</th>
+        </tr>
+        </thead>
 
-            <tbody>
+        <tbody>
 
-            #{paginate.list items:sms, as:'sms'}
-            <tr>
-                <!--  <td>&{'resaler.'+resaler.accountType}</td> -->
-                <td>${sms.taskNo}</td>
-                <td>${sms.mobile}</td>
-                <td>${sms.eCouponSn}</td>
-                <td>${sms.text}</td>
+        #{list items:smsList, as:'sms'}
+        <tr>
 
-                <td>${sms?.sendAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>${sms.taskNo}</td>
+            <td>${sms.mobile}</td>
+            <td>${sms.eCouponSn}</td>
+            <td>${sms.text}</td>
 
-            </tr>
-            #{/paginate.list}
-            </tbody>
-        </table>
-    </form>
-    <div class="pagination" align="center">
-        <ul>#{paginate.controls items:sms /}
-        </ul>
-    </div>
+            <td>${sms?.sendAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+
+        </tr>
+        #{/list}
+        </tbody>
+    </table>
     <div>
-
         <button class="btn btn-primary" id="searchbtn" type="submit">发送短信</button>
     </div>
+    </form>
+*{<div class="pagination" align="center">}*
+*{<ul>#{paginate.controls items:smsList /}}*
+*{</ul>}*
+*{</div>}*
+
 </div>
 
 <script type="text/javascript">

@@ -53,9 +53,9 @@
 
             <tbody>
 
-            #{paginate.list items:sms, as:'sms'}
+            #{paginate.list items:smsList, as:'sms'}
             <tr>
-                <!--  <td>&{'resaler.'+resaler.accountType}</td> -->
+
                 <td>${sms.taskNo}</td>
                 <td>${sms.mobile}</td>
                 <td>${sms.eCouponSn}</td>
@@ -69,7 +69,7 @@
         </table>
     </form>
     <div class="pagination" align="center">
-        <ul>#{paginate.controls items:sms /}
+        <ul>#{paginate.controls items:smsList /}
         </ul>
     </div>
 </div>

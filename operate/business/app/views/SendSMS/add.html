@@ -36,7 +36,7 @@
                     <span style="color:red">*</span>手机号
                     <br>
                     <textarea rows="6" cols="30" required="required" name="tempMobile" id="tempMobile"
-                              value="${tempMobile}">  ${tempMobile}
+                              value="${tempMobile?.escape()?.raw()}">  ${tempMobile?.escape()?.raw()}
 
                     </textarea>
                     <div class="error">#{error 'tempMobile' /}</div>
@@ -48,7 +48,7 @@
                     <span style="color:red">*</span> 优惠券
                     <br>
                     <textarea rows="6" cols="30" required="required" name="tempECouponSn" id="tempECouponSn"
-                              value="${tempECouponSn}"> ${tempECouponSn}
+                              value="${tempECouponSn?.escape()?.raw()}"> ${tempECouponSn?.escape()?.raw()}
 
                     </textarea>
                     <div class="error">#{error 'tempECouponSn' /}</div>
@@ -68,6 +68,9 @@
                               value="${tempText}"> ${tempText}
 
                     </textarea>
+
+                    <br>
+                    注:使用$coupon作为具体券号的代替
 
                     <div class="error">#{error 'tempText' /}</div>
                 *{#{layout_operate.textareaField name:'sms.text', value:sms?.text/}}*

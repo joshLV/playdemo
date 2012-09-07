@@ -1,15 +1,14 @@
 package models.sales;
 
+import com.uhuila.common.constants.DeletedStatus;
 import play.data.validation.MaxSize;
 import play.data.validation.MinSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Mobile;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -64,13 +63,33 @@ public class SendSMSInfo extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
+    /**
+     * 逻辑删除,0:未删除，1:已删除
+     */
+    @Enumerated(EnumType.ORDINAL)
+    public DeletedStatus deleted;
 
-    @Override
-    public boolean create() {
+//    @Override
+//    public boolean create() {
+//
+//        createdAt = new Date();
+//        return super.create();
+//    }
 
-        createdAt = new Date();
-        return super.create();
+
+    public static JPAExtPaginator<SendSMSInfo> findByCondition(SendSMSInfoCondition condition,
+                                                         int pageNumber, int pageSize) {
+
+        JPAExtPaginator<SendSMSInfo> smsList = new JPAExtPaginator<>
+                ("SendSMSInfo s", "s", SendSMSInfo.class, condition.getFilter(),
+                        condition.getParamMap())
+                .orderBy(condition.getOrderByExpress());
+        smsList.setPageNumber(pageNumber);
+        smsList.setPageSize(pageSize);
+        smsList.setBoundaryControlsEnabled(false);
+        return smsList;
     }
+
 
 
 }
