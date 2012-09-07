@@ -428,7 +428,7 @@ public class Order extends Model {
             checkInventory(goods, number);
             orderItem = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice);
             //通过推荐购买的情况
-            if (!"".equals(cookieValue)) {
+            if (cookieValue != null && !"".equals(cookieValue)) {
                 orderItem.rebateValue = getPromoteRebateOfGoodsAmount(goods, number);
             } else {//用优惠码的情况
                 orderItem.rebateValue = getDiscountValueOfGoodsAmount(goods, number, discountCode);
