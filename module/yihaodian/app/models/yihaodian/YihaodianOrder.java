@@ -25,7 +25,8 @@ public class YihaodianOrder extends Model{
     @Column(name = "order_code", unique = true)
     public String orderCode;            //订单编码
 
-    @Column(name = "status")
+    @Column(name = "order_status")
+    @Enumerated(EnumType.STRING)
     public OrderStatus orderStatus;
 
     @Column(name = "order_amount")

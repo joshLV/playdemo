@@ -8,6 +8,7 @@ import models.yihaodian.YihaodianJobMessage;
 import models.yihaodian.YihaodianQueueUtil;
 import org.dom4j.DocumentException;
 import play.Logger;
+import play.Play;
 import play.jobs.Every;
 import play.jobs.Job;
 
@@ -24,9 +25,13 @@ import java.util.*;
 @Every("1mn")
 public class OrderListener extends Job{
     private static String ORDER_DATE = "yyyy-MM-dd HH:mm:ss";
+    public static final boolean ON = Play.configuration.getProperty("yihaodian.listener", "off").toLowerCase().equals("on");
 
     @Override
     public void doJob(){
+        if (!ON){
+            return;
+        }
         Logger.info("start yihaodian job");
         //从一号店拉取订单列表
         List<YihaodianOrder> orders = newOrders();
@@ -75,7 +80,7 @@ public class OrderListener extends Job{
 
 
         Map<String, String> params = new HashMap<>();
-        params.put("orderStatusList", "ORDER_WAIT_SEND");//按已付款的状态和申退款的状态查询
+        params.put("orderStatusList", "ORDER_WAIT_SEND,ORDER_PAYED");//按已付款的状态查询
         params.put("dateType", "1");//按付款时间查询
         params.put("startTime", new SimpleDateFormat(ORDER_DATE).format(start));
         params.put("endTime", new SimpleDateFormat(ORDER_DATE).format(end));

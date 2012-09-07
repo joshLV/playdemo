@@ -12,10 +12,13 @@ import org.dom4j.DocumentException;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
+import play.db.jpa.JPAPlugin;
 import play.jobs.OnApplicationStart;
 import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 
 import javax.persistence.LockModeType;
+import javax.persistence.LockTimeoutException;
+import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,11 +33,14 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
 
     @Override
     protected void consume(YihaodianJobMessage message) {
+        //开启事务管理
+        JPAPlugin.startTx(false);
         YihaodianOrder yihaodianOrder = YihaodianOrder.find("byOrderId", message.getOrderId()).first();
         if(yihaodianOrder == null){
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
+                Logger.info("can not sleep");
                 return;
             }
             yihaodianOrder = YihaodianOrder.find("byOrderId", message.getOrderId()).first();
@@ -45,9 +51,15 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
         }
 
         if(yihaodianOrder.jobFlag == JobFlag.SEND_SYNCED){
+            Logger.info("job synced");
             return;
         }
-        JPA.em().refresh(yihaodianOrder, LockModeType.PESSIMISTIC_WRITE);
+        try{
+            YihaodianOrder.em().refresh(yihaodianOrder, LockModeType.PESSIMISTIC_WRITE);
+        }catch (PersistenceException e){
+            //拿不到锁就放弃
+            return;
+        }
         if(yihaodianOrder.jobFlag == JobFlag.SEND_COPY){
             if( buildUhuilaOrder(yihaodianOrder)){
                 yihaodianOrder.jobFlag = JobFlag.SEND_DONE;
@@ -61,6 +73,20 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                 yihaodianOrder.jobFlag = JobFlag.SEND_SYNCED;
                 yihaodianOrder.save();
             }
+        }
+
+        boolean rollBack = false;
+        try {
+            // work with your models
+            JPA.em().flush();
+        } catch (RuntimeException e) {
+            rollBack = true;
+            // throw exception to prevent msg ACK, need to refine error handling :)
+
+            //不抛异常 不让mq重试
+//            throw e;
+        } finally {
+            JPAPlugin.closeTx(rollBack);
         }
     }
 
@@ -77,18 +103,22 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
             res.parseXml(responseXml, "updateCount", false, UpdateResult.parser);
             if(res.getErrorCount() == 0){
                 return true;
+            }else {
+                Logger.info("sync With yihaodian error");
             }
         }
         return false;
     }
 
     private boolean buildUhuilaOrder(YihaodianOrder order) {
+        Logger.info("build uhuila order");
         Resaler resaler = Resaler.findOneByLoginName(YHD_LOGIN_NAME);
         if (resaler == null){
             Logger.error("can not find the resaler by login name: %s", YHD_LOGIN_NAME);
             return false;
         }
         models.order.Order uhuilaOrder = models.order.Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
+        uhuilaOrder.save();
         boolean containsElectronic = false;
         boolean containsReal = false;
         try {
@@ -114,6 +144,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                 }
             }
         } catch (NotEnoughInventoryException e) {
+            Logger.info("enventory not enough");
             return false;
         }
         if (containsElectronic) {

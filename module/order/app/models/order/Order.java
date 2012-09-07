@@ -726,9 +726,12 @@ public class Order extends Model {
     }
 
 
+    @Transient
     private User user;
+    @Transient
     private Resaler resaler;
 
+    @Transient
     public User getUser() {
         if (user == null) {
             user = User.findById(userId);
@@ -736,6 +739,7 @@ public class Order extends Model {
         return user;
     }
 
+    @Transient
     public Resaler getResaler() {
         if (resaler == null) {
             resaler = Resaler.findById(userId);
