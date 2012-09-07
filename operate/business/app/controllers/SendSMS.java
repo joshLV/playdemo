@@ -2,6 +2,7 @@ package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.sales.*;
+import models.sms.SMSUtil;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;
@@ -26,34 +27,11 @@ import java.util.regex.Pattern;
 @ActiveNavigation("send_sms")
 public class SendSMS extends Controller {
     public static int PAGE_SIZE = 15;
-    /**
-     * 任务号
-     */
-    public String taskTempNo;
-
-    /**
-     * 手机
-     */
-    public String tempMobile;
-
-    /**
-     * 券号
-     */
-
-    public String tempECouponSn;
-
-    /**
-     * 短信内容
-     */
-//    @Lob
-    public String tempText;
-
 
     public static void index(models.sales.SendSMSInfoCondition condition) {
 
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-//        System.out.println("pagepage"+pageNumber);
         if (condition == null) {
             condition = new SendSMSInfoCondition();
         }
@@ -86,8 +64,7 @@ public class SendSMS extends Controller {
             Validation.addError("tempText", "validation.required");
 
         if (!StringUtils.isBlank(taskTempNo)
-                && SendSMSInfo.count("deleted=? and taskNo=? ", DeletedStatus.UN_DELETED,taskTempNo)!=0)
-        {
+                && SendSMSInfo.count("deleted=? and taskNo=? ", DeletedStatus.UN_DELETED, taskTempNo) != 0) {
             Validation.addError("taskTempNo", "validation.existed");
         }
 
@@ -95,19 +72,16 @@ public class SendSMS extends Controller {
             render("SendSMS/add.html", taskTempNo, tempMobile, tempECouponSn, tempText);
         }
 
-        //用Pattern的split()方法把字符串按"/"分割
-        Pattern p = Pattern.compile("[/]+");
+
+        Pattern p = Pattern.compile("[,\\s]+");
 
 
         String[] mobileResult = p.split(tempMobile);
         String[] ECouponSnResult = p.split(tempECouponSn);
 
-//        System.out.println("lengthlength"+mobileResult.length);
-
         int length = mobileResult.length >= ECouponSnResult.length ? ECouponSnResult.length : mobileResult.length;
 
-//        System.out.println("mobilelength"+mobileResult.length );
-//        System.out.println("ecouponlength"+ECouponSnResult.length );
+
         for (int i = 0; i < length; i++) {
             sms = new SendSMSInfo();
 
@@ -115,54 +89,37 @@ public class SendSMS extends Controller {
             Pattern pattern = Pattern.compile(regular);
             sms.mobile = mobileResult[i];
             sms.eCouponSn = ECouponSnResult[i];
-//            sms.mobile = sms.mobile.replace('-', ' ').replace(':', ' ').replaceAll(" ", "");
-//            sms.eCouponSn = sms.eCouponSn.replace('-', ' ').replace(':', ' ').replaceAll(" ", "");
-//           sms.mobile=deleteExtraSpace(sms.mobile);
-//            sms.eCouponSn=deleteExtraSpace(sms.eCouponSn);
+
             sms.mobile = sms.mobile.replaceAll("\\s*", "");
             sms.eCouponSn = sms.eCouponSn.replaceAll("\\s*", "");
 
-//
-            System.out.println("****************");
-            System.out.println();
-            System.out.println("mobile" + sms.mobile);
-//            System.out.println("hihihi");
-            System.out.println("coupon" + sms.eCouponSn);
             Matcher m = p.matcher(sms.mobile);
-//            System.out.println("resultresult" + m);
-            //sms.mobile.length() != 11
-            if (sms.mobile.length() == 11) {
-//              System.out.println("mobilemobile"+deleteExtraSpace(sms.mobile));
 
-                //删除开始和结尾处的空格，并将中间的多个连续的空格合并成一个
-                System.out.println("4");
-//                System.out.println("truein");
-//                System.out.println("ecouponecoupon" + sms.eCouponSn);
+            if (sms.mobile.length() == 11) {
+
+
                 if (sms.eCouponSn.length() <= 5) {
-//                    System.out.println("continuecontiune");
-                    System.out.println("1");
+
                     continue;
                 }
-//                System.out.println("hihi");
-//                System.out.println("mobilemobile"+sms.mobile);
+
                 Matcher matcher = pattern.matcher(sms.mobile);
-//                System.out.println("nonomobilemobile" + sms.mobile);
+
                 if (!matcher.matches()) {
-//                    System.out.println("mobilemobile" + sms.mobile);
-                    System.out.println("2");
+
                     continue;
                 }
                 sms.taskNo = taskTempNo;
 
-                // $coupon  ${coupon}
-                sms.text = tempText.replaceAll("\\$\\{coupon\\}",sms.eCouponSn);
+
+                sms.text = tempText.replaceAll("\\$\\{coupon\\}", sms.eCouponSn);
 
                 sms.createdAt = new Date();
                 sms.deleted = DeletedStatus.UN_DELETED;
-                System.out.println("good");
+
                 sms.save();
             } else {
-                System.out.println("3");
+
                 continue;
             }
 
@@ -170,20 +127,31 @@ public class SendSMS extends Controller {
         }
 
 
-        send(sms);
+        send(sms, taskTempNo);
     }
 
-    public static void send(SendSMSInfo sms) {
+    public static void send(SendSMSInfo sms, String taskTempNo) {
 
-        List<SendSMSInfo> smsList = SendSMSInfo.find("deleted=? and taskNo=? order by createdAt desc", DeletedStatus.UN_DELETED,sms.taskNo).fetch();
+        List<SendSMSInfo> smsList = SendSMSInfo.find("deleted=? and taskNo=? order by createdAt desc", DeletedStatus.UN_DELETED, sms.taskNo).fetch();
 
-        render(smsList);
+        render(smsList, taskTempNo);
     }
 
-    public static void sucSend(SendSMSInfo sms) {
 
+    public static void sucSend(String taskTempNo) {
 
+        System.out.println("sms.taskNo" + taskTempNo);
+        List<SendSMSInfo> smsList = SendSMSInfo.find("deleted=? and taskNo=?", DeletedStatus.UN_DELETED, taskTempNo).fetch();
+        System.out.println("smsList" + smsList);
+        for (SendSMSInfo s : smsList)
 
+        {
+            System.out.println("send");
+
+            s.sendAt = new Date();
+            SMSUtil.send(s.text, s.mobile);
+            s.save();
+        }
         index(null);
     }
 

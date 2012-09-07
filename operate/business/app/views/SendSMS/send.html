@@ -11,35 +11,11 @@
 
 <div class="body">
     <legend>${title}</legend>
-*{<form class="form-horizontal" name="frmlist" id="frmlist" action="@{SendSMS.index()}" method="GET">}*
-*{<table width="100%">}*
-*{<tr>}*
-*{<td width="30%">任务号：<input type="text" name="condition.taskNo" class="input-medium"}*
-*{value="${condition?.taskNo}"/></td>}*
-
-*{</td>}*
-*{<td>}*
-*{<button class="btn btn-primary" id="searchbtn" type="submit">查询</button>}*
-*{</td>}*
-*{<td>}*
-*{onclick="prepareSendEdit('${consult.id}')}*
-*{<button class="btn btn-primary" id="searchbtn2" type="submit"}*
-*{onclick="prepareSend()">新建发送</button>}*
-
-*{<a href="/send_sms/new" class="btn btn-primary" id="searchbtn2" type="submit"}*
-*{>新建发送</a>}*
-
-*{</td>}*
-*{</tr>}*
-*{</table>}*
-*{</form>}*
 
 
-    <form action="@{SendSMS.sucSend()}" class="form-horizontal" id="stateForm" method="GET">
     <table class="table table-striped table-bordered table-condensed">
         <thead>
         <tr>
-
             <th>任务号</th>
             <th>手机</th>
             <th>券号</th>
@@ -53,6 +29,7 @@
         #{list items:smsList, as:'sms'}
         <tr>
 
+
             <td>${sms.taskNo}</td>
             <td>${sms.mobile}</td>
             <td>${sms.eCouponSn}</td>
@@ -64,14 +41,17 @@
         #{/list}
         </tbody>
     </table>
-    <div>
-        <button class="btn btn-primary" id="searchbtn" type="submit">发送短信</button>
-    </div>
+
+    <form action="@{SendSMS.sucSend()}" class="form-horizontal" id="stateForm">
+
+        <input type="hidden" id="taskTempNo" name="taskTempNo" value="${taskTempNo}"/>
+
+        <div>
+            <button class="btn btn-primary" id="searchbtn" type="submit">发送短信</button>
+        </div>
+
     </form>
-*{<div class="pagination" align="center">}*
-*{<ul>#{paginate.controls items:smsList /}}*
-*{</ul>}*
-*{</div>}*
+
 
 </div>
 
@@ -92,9 +72,7 @@
 
     function prepareSend() {
         $("#searchbtn2").attr("action", "/send_sms/add");
-//        $('#sendModal').modal('show');
-//        $("#goods_priority").val(priority);
-//        $("#goods_keywords").val(keywords);
+
     }
 
 </script>

@@ -19,13 +19,11 @@
                     <span style="color:red">*</span>
 
 
-
                     任务号：<input type="text" name="taskTempNo" class="input-medium"
-                               value="${taskTempNo}" onkeyup="checknum(this)"/>  (只能输入字母或数字)
-                *{#{layout_operate.textField name:'sms.taskNo', value:sms?.taskNo/}}*
+                               value="${taskTempNo}" onkeyup="checknum(this)"/> (只能输入字母或数字)
+
                     <div class="error">#{error 'taskTempNo' /}</div>
                 </td>
-
 
 
             </tr>
@@ -36,9 +34,8 @@
                     <span style="color:red">*</span>手机号
                     <br>
                     <textarea rows="6" cols="30" required="required" name="tempMobile" id="tempMobile"
-                              value="${tempMobile?.escape()?.raw()}">  ${tempMobile?.escape()?.raw()}
+                            >${tempMobile?.escape()?.raw()}</textarea>
 
-                    </textarea>
                     <div class="error">#{error 'tempMobile' /}</div>
 
 
@@ -48,9 +45,8 @@
                     <span style="color:red">*</span> 优惠券
                     <br>
                     <textarea rows="6" cols="30" required="required" name="tempECouponSn" id="tempECouponSn"
-                              value="${tempECouponSn?.escape()?.raw()}"> ${tempECouponSn?.escape()?.raw()}
+                              value="${tempECouponSn?.escape()?.raw()}">${tempECouponSn?.escape()?.raw()}</textarea>
 
-                    </textarea>
                     <div class="error">#{error 'tempECouponSn' /}</div>
 
 
@@ -66,14 +62,14 @@
 
                     <textarea rows="6" cols="100" required="required" name="tempText" id="tempText"
                               value="${tempText}"> ${tempText}
-
                     </textarea>
 
                     <br>
-                    注:使用$coupon作为具体券号的代替
+
+                    注:使用 ${'${coupon}'}作为具体券号的代替
 
                     <div class="error">#{error 'tempText' /}</div>
-                *{#{layout_operate.textareaField name:'sms.text', value:sms?.text/}}*
+
                 </td>
 
 
@@ -109,15 +105,14 @@
     });
 
 
-    var   re=/^[A-Za-z0-9]*$/;
-    var   str='';
-    function   checknum(obj)
-    {
-        if(re.test(obj.value)==false){
-            obj.value=str;
+    var re = /^[A-Za-z0-9]*$/;
+    var str = '';
+    function checknum(obj) {
+        if (re.test(obj.value) == false) {
+            obj.value = str;
             alert("只能输入字母或数字");
         } else {
-            str=obj.value;
+            str = obj.value;
         }
     }
 

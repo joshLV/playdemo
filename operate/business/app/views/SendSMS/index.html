@@ -25,9 +25,7 @@
                     <button class="btn btn-primary" id="searchbtn" type="submit">查询</button>
                 </td>
                 <td>
-                *{onclick="prepareSendEdit('${consult.id}')}*
-                *{<button class="btn btn-primary" id="searchbtn2" type="submit"}*
-                *{onclick="prepareSend()">新建发送</button>}*
+
 
                     <a href="/send_sms/new" class="btn btn-primary" id="searchbtn2" type="submit"
                        >新建发送</a>
@@ -91,9 +89,7 @@
 
     function prepareSend() {
         $("#searchbtn2").attr("action", "/send_sms/add");
-//        $('#sendModal').modal('show');
-//        $("#goods_priority").val(priority);
-//        $("#goods_keywords").val(keywords);
+
     }
 
 </script>
