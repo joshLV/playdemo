@@ -4,6 +4,7 @@ import models.MQTestConsumer;
 import models.MQTestJournal;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 import play.Logger;
 import play.modules.rabbitmq.producer.RabbitMQPublisher;
 import play.test.Fixtures;
@@ -23,6 +24,8 @@ public class MQTest extends FunctionalTest{
     public void setup(){
         Fixtures.delete(MQTestJournal.class);
     }
+
+    @Ignore
     @Test
     public void consumeTest() throws InterruptedException {
         int count = 100;
