@@ -80,7 +80,7 @@ public class OrderListener extends Job{
 
 
         Map<String, String> params = new HashMap<>();
-        params.put("orderStatusList", "ORDER_WAIT_SEND,ORDER_PAYED");//按已付款的状态查询
+        params.put("orderStatusList", "ORDER_WAIT_SEND");//按已付款的状态查询
         params.put("dateType", "1");//按付款时间查询
         params.put("startTime", new SimpleDateFormat(ORDER_DATE).format(start));
         params.put("endTime", new SimpleDateFormat(ORDER_DATE).format(end));
