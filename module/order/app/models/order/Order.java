@@ -227,6 +227,14 @@ public class Order extends Model {
         CacheHelper.delete(CACHEKEY);
         CacheHelper.delete(CACHEKEY + this.id);
         CacheHelper.delete(CACHEKEY_BASEUSERID + this.userId);
+        
+        // 更新对应商品库存
+        if (this.orderItems != null) {
+        	for (OrderItems item : this.orderItems) {
+        		item.goods.refreshSaleCount();
+        	}
+        }
+        
         super._save();
     }
 

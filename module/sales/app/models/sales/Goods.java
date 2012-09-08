@@ -38,6 +38,11 @@ import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.PathUtil;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
+
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.order.OrderItems;
+import models.order.OrderStatus;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.supplier.Supplier;
@@ -277,7 +282,7 @@ public class Goods extends Model {
     @Column(name = "sale_count")
     public int saleCount;
     /**
-     * 售出基数
+     * 剩余商品数量，需要去掉.
      */
     @Required
     @Min(0)
@@ -370,6 +375,17 @@ public class Goods extends Model {
      * 收藏指数.
      */
     public Integer favorite = 0;
+
+    // 以下定义用于查询条件
+    @Transient
+    public String salePriceBegin;
+    @Transient
+    public String salePriceEnd;
+    @Transient
+    public int saleCountBegin = -1;
+    @Transient
+    public int saleCountEnd = -1;
+
     @Transient
     public GoodsStatistics statistics;
 
@@ -629,6 +645,39 @@ public class Goods extends Model {
     }
 
     /**
+     * 得到当前库存数量.
+     */
+    @Transient
+    public Long getCurrentBaseSale() {
+    	return this.baseSale - getCurrentSaleCount();
+    }
+    
+    /**
+     * 得到当前销售数量.
+     */
+    @Transient
+    public Long getCurrentSaleCount() {
+    	return CacheHelper.getCache(Goods.CACHEKEY_SALECOUNT + this.id, new CacheCallBack<Long>() {
+			@Override
+			public Long loadData() {
+				// 先找出OrderItems中的已销售数量
+				long orderItemsBuyCount = OrderItems.count("goods.id=? and order.status != ?", id, OrderStatus.CANCELED);
+				// 减去已退款的数量
+				long ecouponRefundCount = ECoupon.count("goods.id=? and status=?", id, ECouponStatus.REFUND);
+				
+				return orderItemsBuyCount - ecouponRefundCount;
+			}
+		});
+    }
+    
+    /**
+     * 删除旧缓存以更新显示销售数量.
+     */
+    public void refreshSaleCount() {
+    	CacheHelper.delete(Goods.CACHEKEY_SALECOUNT + this.id);
+    }
+
+    /**
      * 获取商品允许发布的电子商务平T台.
      *
      * @return
@@ -693,7 +742,7 @@ public class Goods extends Model {
         resaleAddPrice = salePrice.compareTo(originalPrice) > 0 ? salePrice.subtract(originalPrice) : BigDecimal.ZERO;
         return super.create();
     }
-
+    
     public static void update(Long id, Goods goods, boolean noLevelPrices) {
         models.sales.Goods updateGoods = models.sales.Goods.findById(id);
         if (updateGoods == null) {
@@ -751,12 +800,15 @@ public class Goods extends Model {
     public static final String CACHEKEY = "SALES_GOODS";
 
     public static final String CACHEKEY_BASEID = "SALES_GOODS_ID";
+    
+    public static final String CACHEKEY_SALECOUNT = "SALES_GOODS_COUNT";
 
     @Override
     public void _save() {
         if (!this.skipUpdateCache) {
             CacheHelper.delete(CACHEKEY);
             CacheHelper.delete(CACHEKEY + this.id);
+            CacheHelper.delete(CACHEKEY_SALECOUNT + this.id);
             CacheHelper.delete(CACHEKEY_BASEID + this.id);
         }
         super._save();
@@ -767,6 +819,7 @@ public class Goods extends Model {
         CacheHelper.delete(CACHEKEY);
         CacheHelper.delete(CACHEKEY + this.id);
         CacheHelper.delete(CACHEKEY_BASEID + this.id);
+        CacheHelper.delete(CACHEKEY_SALECOUNT + this.id);
         super._delete();
     }
 

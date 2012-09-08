@@ -9,6 +9,7 @@ eclipse
 .classpath
 *.ipr
 *.imr
+*.iws
 *.iml
 logs
 test-result
