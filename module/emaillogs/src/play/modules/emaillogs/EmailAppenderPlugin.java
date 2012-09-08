@@ -49,6 +49,7 @@ public class EmailAppenderPlugin extends PlayPlugin{
         String from = Play.configuration.getProperty("email_log.from", null);
         String subject = Play.configuration.getProperty("email_log.subject", null);
         String bufferSize = Play.configuration.getProperty("email_log.buffer_size", null);
+        String protocol = Play.configuration.getProperty("email_log.protocol", null);
 
         if (applicationName != null || subject != null) {
             String subjectPrefix =  applicationName == null ? "" : ("[" + applicationName + "] ");
@@ -89,6 +90,11 @@ public class EmailAppenderPlugin extends PlayPlugin{
             }catch (NumberFormatException e) {
                 //ignore
             }
+        }
+
+        if (protocol != null) {
+            smtpAppender.setSMTPProtocol(protocol);
+            Logger.info("EmailAppenderPlugin: set GMAIL appender protocol: %s", protocol);
         }
         smtpAppender.activateOptions();
     }

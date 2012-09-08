@@ -97,41 +97,53 @@
         <span class="error">#{error 'goods.invitedUserPrice'/}</span>
     </div>
 </div>
-    #{layout_operate.textField name:'goods.baseSale', value:goods?.baseSale, note:'件', required:true/}
-    #{layout_operate.textField name:'goods.limitNumber', value:goods?.limitNumber, note:'个'/}
+#{layout_operate.textField name:'goods.baseSale', value:goods?.baseSale, note:'件', required:true/}
+#{layout_operate.textField name:'goods.limitNumber', value:goods?.limitNumber, note:'个'/}
 
 <div class="control-group">
-    <div class="control-group">
-        <label class="control-label">指定消费日
-        </label>
+    <label class="control-label">指定消费日
+    </label>
 
-        <div class="controls">
-            <input type="hidden" name="goods.useWeekDay" id="goods_useWeekDay" value="${goods?.useWeekDay}"/>
+    <div class="controls">
+        <input type="hidden" name="goods.useWeekDay" id="goods_useWeekDay" value="${goods?.useWeekDay}"/>
 
-            #{list items:1..7, as:'i'}
-                <input type="checkbox" name="useWeekDay[]" class="input-medium"
-                       value="${i}" #{if goods?.useWeekDay?.contains(String.valueOf(i))}checked#{/if}/>
-                星期#{if i==1}一&nbsp;&nbsp;#{/if}
-                #{if i==2}二&nbsp;&nbsp;#{/if}
-                #{if i==3}三&nbsp;&nbsp;#{/if}
-                #{if i==4}四&nbsp;&nbsp;#{/if}
-                #{if i==5}五&nbsp;&nbsp;#{/if}
-                #{if i==6}六&nbsp;&nbsp;#{/if}
-                #{if i==7}日&nbsp;&nbsp;#{/if}
-            #{/list}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="checkbox" name="useWeekDayAll" class="input-medium" id="selectWeekDayAll"
-                   #{if goods?.useWeekDay== null || goods?.useWeekDay?.length()==13  }checked#{/if}> 全选
-            <span class="error">#{error 'goods.useWeekDayAll' /}</span>
-        </div>
+        #{list items:1..7, as:'i'}
+            <input type="checkbox" name="useWeekDay[]" class="input-medium"
+                   value="${i}" #{if goods?.useWeekDay?.contains(String.valueOf(i))}checked#{/if}/>
+            星期#{if i==1}一&nbsp;&nbsp;#{/if}
+            #{if i==2}二&nbsp;&nbsp;#{/if}
+            #{if i==3}三&nbsp;&nbsp;#{/if}
+            #{if i==4}四&nbsp;&nbsp;#{/if}
+            #{if i==5}五&nbsp;&nbsp;#{/if}
+            #{if i==6}六&nbsp;&nbsp;#{/if}
+            #{if i==7}日&nbsp;&nbsp;#{/if}
+        #{/list}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="checkbox" name="useWeekDayAll" class="input-medium" id="selectWeekDayAll"
+               #{if goods?.useWeekDay== null || goods?.useWeekDay?.length()==13  }checked#{/if}> 全选
+        <span class="error">#{error 'goods.useWeekDayAll' /}</span>
     </div>
-    #{layout_operate.timeScopeField name:'goods.useTime', begin:'goods.useBeginTime',end:'goods.useEndTime',
-    beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
+</div>
+#{layout_operate.timeScopeField name:'goods.useTime', begin:'goods.useBeginTime',end:'goods.useEndTime',
+beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
+<div class="control-group">
     <label class="control-label">抽奖商品
     </label>
 
     <div class="controls">
         <input type="checkbox" name="goods.isLottery" id="isLottery" class="input-medium"
                value="${goods?.isLottery}" ${goods?.isLottery?'checked':''}/><span id="err-isLottery"></span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">券类型
+    </label>
+    <div class="controls">
+        <label class="radio inline">
+            <input type="radio" name="goods.couponType" value="GENERATE" #{if goods.couponType == null || goods.couponType ==  models.sales.GoodsCouponType.GENERATE} checked #{/if}> 自动生成
+        </label>
+        <label class="radio inline">
+            <input type="radio" name="goods.couponType" value="IMPORT" #{if goods.couponType ==  models.sales.GoodsCouponType.IMPORT} checked #{/if} /> 导入
+        </label>
     </div>
 </div>
     #{if "add".equals(action)}

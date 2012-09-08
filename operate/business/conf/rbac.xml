@@ -101,6 +101,7 @@
         <navigation key="coupon_app" text="消费券">
             <navigation key="coupons_index" action="OperateCoupons.index" text="消费券管理" permissions="COUPONS"/>
             <navigation key="verify_index" action="OperateVerifyCoupons.index" text=" 验证消费券" permissions="COUPONS"/>
+            <navigation key="pre_coupons" action="ImportCoupons.index" text="预购券管理" permission="COUPONS"/>
         </navigation>
     </navigation>
 

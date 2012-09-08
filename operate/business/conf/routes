@@ -135,6 +135,10 @@ GET     /coupons/index                          OperateVerifyCoupons.index
 GET     /coupons/verify                         OperateVerifyCoupons.verify
 POST     /coupons/update                         OperateVerifyCoupons.update
 
+# 预购券管理
+GET     /import-coupons                         ImportCoupons.index
+POST    /import-coupons                         ImportCoupons.upload
+
 GET     /shops                                  OperateShops.index
 GET     /shops/new                              OperateShops.add
 POST    /shops                                  OperateShops.create
