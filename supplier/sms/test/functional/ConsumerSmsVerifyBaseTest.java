@@ -187,9 +187,9 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         ca.add(Calendar.DAY_OF_MONTH, +1);
         week += "," + String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
         goods.useWeekDay = week;
-        ca.set(Calendar.HOUR, 1);
+        ca.set(Calendar.HOUR_OF_DAY, 1);
         goods.useBeginTime = df.format(ca.getTime());
-        ca.set(Calendar.HOUR, 2);
+        ca.set(Calendar.HOUR_OF_DAY, 2);
         goods.useEndTime = df.format(ca.getTime());
         goods.save();
 
@@ -208,9 +208,9 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
         ca = Calendar.getInstance();
         ca.add(Calendar.DAY_OF_MONTH, -3);
         goods.useWeekDay = String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
-        ca.set(Calendar.HOUR, 23);
+        ca.set(Calendar.HOUR_OF_DAY, 23);
         goods.useBeginTime = df.format(ca.getTime());
-        ca.set(Calendar.HOUR, 2);
+        ca.set(Calendar.HOUR_OF_DAY, 2);
         goods.useEndTime = df.format(ca.getTime());
         goods.save();
         goods.refresh();
@@ -227,9 +227,9 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
 
         goods = Goods.findById(goodsId);
         goods.useWeekDay = "1,2,3,4,5,6,7";
-        ca.set(Calendar.HOUR, 8);
+        ca.set(Calendar.HOUR_OF_DAY, 8);
         goods.useBeginTime = df.format(ca.getTime());
-        ca.set(Calendar.HOUR, 9);
+        ca.set(Calendar.HOUR_OF_DAY, 9);
         goods.useEndTime = df.format(ca.getTime());
         goods.save();
         goods.refresh();

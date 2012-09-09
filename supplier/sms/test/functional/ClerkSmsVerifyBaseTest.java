@@ -192,15 +192,16 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         String week = "";
         String day = "";
         ca.add(Calendar.DAY_OF_MONTH, -1);
-        week = String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
+        week = String.valueOf(getWeek(ca.get(Calendar.DAY_OF_WEEK)));
         ca.add(Calendar.DAY_OF_MONTH, +1);
-        week += "," + String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
+        week += "," + String.valueOf(getWeek(ca.get(Calendar.DAY_OF_WEEK)));
         goods.useWeekDay = week;
-        ca.set(Calendar.HOUR, 1);
+        ca.set(Calendar.HOUR_OF_DAY, 1);
         goods.useBeginTime = df.format(ca.getTime());
-        ca.set(Calendar.HOUR, 2);
+        ca.set(Calendar.HOUR_OF_DAY, 2);
         goods.useEndTime = df.format(ca.getTime());
         goods.save();
+        goods.refresh();
 
         Long supplierId = (Long) play.test.Fixtures.idCache.get("models.supplier.Supplier-kfc");
         Supplier supplier = Supplier.findById(supplierId);
@@ -225,10 +226,10 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         goods = Goods.findById(goodsId);
         ca = Calendar.getInstance();
         ca.add(Calendar.DAY_OF_MONTH, -3);
-        goods.useWeekDay = String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
-        ca.set(Calendar.HOUR, 23);
+        goods.useWeekDay = String.valueOf(getWeek(ca.get(Calendar.DAY_OF_WEEK)));
+        ca.set(Calendar.HOUR_OF_DAY, 23);
         goods.useBeginTime = df.format(ca.getTime());
-        ca.set(Calendar.HOUR, 2);
+        ca.set(Calendar.HOUR_OF_DAY, 2);
         goods.useEndTime = df.format(ca.getTime());
         goods.save();
         response = messageSender.doMessageSend("15900002342", ecoupon);
@@ -240,9 +241,9 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
 
         goods = Goods.findById(goodsId);
         goods.useWeekDay = "1,2,3,4,5,6,7";
-        ca.set(Calendar.HOUR, 8);
+        ca.set(Calendar.HOUR_OF_DAY, 8);
         goods.useBeginTime = df.format(ca.getTime());
-        ca.set(Calendar.HOUR, 9);
+        ca.set(Calendar.HOUR_OF_DAY, 9);
         goods.useEndTime = df.format(ca.getTime());
         goods.save();
         response = messageSender.doMessageSend("15900002342", ecoupon);
@@ -250,6 +251,16 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         assertStatus(200, response);
         msg = MockSMSProvider.getLastSMSMessage();
         assertSMSContentMatch("【券市场】对不起，只能在每天的" + goods.useBeginTime + "~" + goods.useEndTime + "时间内使用该券 !", msg.getContent());
+    }
+
+    private int getWeek(int w){
+        if (w == 1){
+            return 7;
+        }else if(w >1 && w < 8){
+            return w -1;
+        }else {
+            return -1;
+        }
     }
 
     /**
