@@ -654,7 +654,9 @@ public class ECoupon extends Model {
     public boolean checkVerifyTimeRegion(Date currentTime) {
         Calendar ca = Calendar.getInstance();
         ca.setTime(currentTime);
-        String week = String.valueOf(ca.get(Calendar.DAY_OF_WEEK) - 1);
+        int w = ca.get(Calendar.DAY_OF_WEEK);
+        if (w == 1) w =7; else w = w-1;
+        String week = String.valueOf(w);
         String useBeginTime = this.goods.useBeginTime;
         String useEndTime = this.goods.useEndTime;
         //如果选择了指定日期，并且现在时间不在指定时间范围内的，返回false
