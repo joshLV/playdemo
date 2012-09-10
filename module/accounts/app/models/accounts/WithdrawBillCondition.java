@@ -1,6 +1,7 @@
 package models.accounts;
 
 import com.uhuila.common.util.DateUtil;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -9,7 +10,7 @@ import java.util.Map;
 
 /**
  * @author likang
- * Date: 12-5-9
+ *         Date: 12-5-9
  */
 public class WithdrawBillCondition implements Serializable {
     public Account account;
@@ -21,20 +22,24 @@ public class WithdrawBillCondition implements Serializable {
     public Date processedAtBegin;
     public Date processedAtEnd;
 
+    public String searchUser;
+
+
     public String interval;
 
     private Map<String, Object> params = new HashMap<>();
-    public String getFilter(){
+
+    public String getFilter() {
         StringBuilder filter = new StringBuilder("1=1");
-        if(status != null){
+        if (status != null) {
             filter.append(" and status = :status");
             params.put("status", status);
         }
-        if(account != null){
+        if (account != null) {
             filter.append(" and account = :account");
             params.put("account", account);
         }
-        if(accountType != null){
+        if (accountType != null) {
             filter.append(" and account.accountType = :accountType");
             params.put("accountType", accountType);
         }
@@ -54,6 +59,37 @@ public class WithdrawBillCondition implements Serializable {
             filter.append(" and processedAt <= :processedAtEnd");
             params.put("processedAtEnd", DateUtil.getEndOfDay(processedAtEnd));
         }
+
+
+        if (StringUtils.isNotBlank(searchUser)) {
+            filter.append(" and applier in (select loginName from User u where u.mobile=:searchUser) ");
+            params.put("searchUser", searchUser);
+        }
+
+
+        if (StringUtils.isNotBlank(searchUser)) {
+            filter.append(" or applier in (select loginName from User u where u.loginName=:searchUser)");
+            params.put("searchUser", searchUser);
+        }
+
+        if (StringUtils.isNotBlank(searchUser)) {
+            filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.receiverMobile=:searchUser)");
+            params.put("searchUser", searchUser);
+        }
+
+
+        if (StringUtils.isNotBlank(searchUser)) {
+            filter.append(" or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.buyerMobile=:searchUser)");
+            params.put("searchUser", searchUser);
+        }
+
+        if (StringUtils.isNotBlank(searchUser)) {
+            filter.append("or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.id in (select oi.order.id from o.orderItems oi where oi.phone =:searchUser)))");
+            params.put("searchUser", searchUser);
+        }
+
+
+
 
         return filter.toString();
     }

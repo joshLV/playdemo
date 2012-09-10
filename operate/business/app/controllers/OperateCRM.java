@@ -46,6 +46,7 @@ public class OperateCRM extends Controller {
 
         String phone = request.params.get("phone");
         String moreSearch = "";
+
         List<TelephoneMessage> consultContent = TelephoneMessage.find("deleted=? order by createdAt desc", DeletedStatus.UN_DELETED).fetch();
 
         String currentOperator = OperateRbac.currentUser().loginName;
@@ -83,6 +84,8 @@ public class OperateCRM extends Controller {
             long eCouponsSize = models.sales.Consult.findCouponByConditionSize(condition);
             long withdrawBillSize = models.sales.Consult.findBillByConditionSize(condition);
 
+
+
             render(user, orderList, address, condition, eCoupons, consultContent, phone, currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill,withdrawBillSize);
         }
 
@@ -96,6 +99,7 @@ public class OperateCRM extends Controller {
         String getPhone = request.params.get("phone");
         CRMCondition condition = new CRMCondition();
         String phone = getPhone;
+
 
         if (StringUtils.isBlank(consult.text))
             Validation.addError("consult.text", "validation.required");
@@ -121,6 +125,7 @@ public class OperateCRM extends Controller {
                 long orderListSize = models.sales.Consult.findOrderByConditionSize(condition);
                 long eCouponsSize = models.sales.Consult.findCouponByConditionSize(condition);
                 long withdrawBillSize = models.sales.Consult.findBillByConditionSize(condition);
+
 
                 render("OperateCRM/index.html", consult, consultContent,
                         currentOperator, phone, user, orderList,

@@ -17,7 +17,7 @@ import java.util.List;
  * 审批提现申请
  *
  * @author likang
- * Date: 12-5-7
+ *         Date: 12-5-7
  */
 
 @With(OperateRbac.class)
@@ -25,40 +25,42 @@ import java.util.List;
 public class WithdrawApproval extends Controller {
     private static final int PAGE_SIZE = 20;
 
-    public static void index(WithdrawBillCondition condition){
+    public static void index(WithdrawBillCondition condition) {
         String page = request.params.get("page");
-        int pageNumber =  StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-        if(condition == null){
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        if (condition == null) {
             condition = new WithdrawBillCondition();
         }
+
 
         JPAExtPaginator<WithdrawBill> billPage = WithdrawBill.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
 
+
         render(billPage, condition);
     }
 
-    public static void detail(Long id){
+    public static void detail(Long id) {
         WithdrawBill bill = WithdrawBill.findById(id);
-        if (bill == null){
+        if (bill == null) {
             error("withdraw bill not found");
         }
         render(bill);
     }
 
-    public static void approve(Long id, String action, BigDecimal fee, String comment){
+    public static void approve(Long id, String action, BigDecimal fee, String comment) {
         WithdrawBill bill = WithdrawBill.findById(id);
-        if(bill == null || bill.status != WithdrawBillStatus.APPLIED){
+        if (bill == null || bill.status != WithdrawBillStatus.APPLIED) {
             error("cannot find the withdraw bill or the bill is processed");
             return;
         }
-        if (action.equals("agree")){
-            if(fee == null || fee.compareTo(BigDecimal.ZERO) < 0){
+        if (action.equals("agree")) {
+            if (fee == null || fee.compareTo(BigDecimal.ZERO) < 0) {
                 error("invalid fee");
                 return;
             }
             bill.agree(fee, comment);
-        }else if(action.equals("reject")){
+        } else if (action.equals("reject")) {
             bill.reject(comment);
         }
         index(null);

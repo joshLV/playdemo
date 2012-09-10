@@ -105,12 +105,21 @@
 
     <label class="control-label">账户类型</label>
 
+
     #{select 'condition.accountType',id:'condition_account_type',value:condition?.accountType}
     #{option ""}全部#{/option}
     #{option "CONSUMER"}&{'account.type.CONSUMER'}#{/option}
     #{option "SUPPLIER"}&{'account.type.SUPPLIER'}#{/option}
     #{option "RESALER"}&{'account.type.RESALER'}#{/option}
     #{/select}
+
+    <label class="control-label"> 手机或帐号</label>
+
+    <input type="text" name="condition.searchUser" class="input-medium"
+           value="${condition?.searchUser}"/>
+
+
+
     <button type="submit" class="btn btn-primary">搜索</button>
     <ul class="nav nav-pills">
         <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">今天</a></li>
@@ -141,7 +150,7 @@
             <th>审批时间</th>
             <th>操作</th>
         </tr>
-        #{paginate.list items:withdrawBill, as:'withdrawBill'}
+        #{paginate.list items:billPage, as:'withdrawBill'}
             <tr>
                 <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>&{'account.type.' + withdrawBill.account.accountType}</td>
