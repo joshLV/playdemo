@@ -1,5 +1,7 @@
 package models.sales;
 
+import com.uhuila.common.util.DateUtil;
+import models.accounts.WithdrawBill;
 import models.consumer.Address;
 import models.consumer.CRMCondition;
 import models.consumer.User;
@@ -24,13 +26,12 @@ import java.util.List;
 public class Consult extends Model {
 
 
-
     public static User findUserByCondition(CRMCondition condition) {
 
-        OrdersCondition orderCondition=new OrdersCondition();
-            //查询用户信息
-            User user = User.find("mobile=? or loginName=?", condition.searchUser, condition.searchUser).first();
-            return user;
+        OrdersCondition orderCondition = new OrdersCondition();
+        //查询用户信息
+        User user = User.find("mobile=? or loginName=?", condition.searchUser, condition.searchUser).first();
+        return user;
 
 
     }
@@ -50,22 +51,25 @@ public class Consult extends Model {
     public static List<Order> findOrderByCondition(CRMCondition condition) {
         //  查询订单信息
 
-            List<Order> orderList = Order.find("select distinct o from Order o, User u where " +
-                    "o.userId=u.id and o.userType = models.accounts.AccountType.CONSUMER and" +
-                    "(o.orderNumber=? or u.mobile=? or u.loginName=? or o.receiverMobile=? or o.buyerMobile = ?)",
-                    condition.searchOrderCoupon, condition.searchUser,
-                    condition.searchUser, condition.searchUser, condition.searchUser).fetch(5);
-            return orderList;
+        List<Order> orderList = Order.find("select distinct o from Order o, User u where " +
+                "o.userId=u.id and o.userType = models.accounts.AccountType.CONSUMER and" +
+                "(o.orderNumber=? or u.mobile=? or u.loginName=? or o.receiverMobile=? or o.buyerMobile = ?"
+                + "or o.id in (select oi.order.id from o.orderItems oi where oi.phone =?))",
+                condition.searchOrderCoupon, condition.searchUser,
+                condition.searchUser, condition.searchUser, condition.searchUser, condition.searchUser).fetch(5);
+        return orderList;
 
     }
 
     public static long findOrderByConditionSize(CRMCondition condition) {
 
-        return Order.count(" from Order o, User u where " +
-                "o.userId=u.id and o.userType = models.accounts.AccountType.CONSUMER and " +
-                "(o.orderNumber=? or u.mobile=? or u.loginName=? or o.receiverMobile=? or o.buyerMobile = ?)",
+
+        return Order.count("from Order o, User u where " +
+                "o.userId=u.id and o.userType = models.accounts.AccountType.CONSUMER and" +
+                "(o.orderNumber=? or u.mobile=? or u.loginName=? or o.receiverMobile=? or o.buyerMobile = ?"
+                + "or o.id in (select oi.order.id from o.orderItems oi where oi.phone =?))",
                 condition.searchOrderCoupon, condition.searchUser,
-                condition.searchUser, condition.searchUser, condition.searchUser);
+                condition.searchUser, condition.searchUser, condition.searchUser, condition.searchUser);
     }
 
     public static long findCouponByConditionSize(CRMCondition condition) {
@@ -79,11 +83,11 @@ public class Consult extends Model {
                 "  or u.mobile=? " +
                 "  or u.loginName=? " +
                 "  or e.order.receiverMobile=? " +
-                "  or e.order.buyerMobile = ?"+
+                "  or e.order.buyerMobile = ?" +
                 "  or e.orderItems.phone = ?)",
                 "%" + condition.searchOrderCoupon, condition.searchOrderCoupon,
-                condition.searchUser, condition.searchUser, condition.searchUser, condition.searchUser,condition.searchUser);
-
+                condition.searchUser,
+                condition.searchUser, condition.searchUser, condition.searchUser, condition.searchUser);
 
     }
 
@@ -100,15 +104,34 @@ public class Consult extends Model {
                 "  or u.loginName=? " +
                 "  or e.order.receiverMobile=? " +
                 "  or e.order.buyerMobile = ?" +
-                "  or e.orderItems.phone = ?)"         ,
+                "  or e.orderItems.phone = ?)",
                 "%" + condition.searchOrderCoupon, condition.searchOrderCoupon,
                 condition.searchUser,
-                condition.searchUser, condition.searchUser, condition.searchUser,condition.searchUser).fetch(5);
+                condition.searchUser, condition.searchUser, condition.searchUser, condition.searchUser).fetch(5);
 
 
+        return eCoupons;
 
-            return eCoupons;
 
+    }
+
+
+    public static List<WithdrawBill> findBillByCondition(CRMCondition condition) {
+        List<WithdrawBill> withdrawBill = WithdrawBill.find(
+                "account.accountType= models.accounts.AccountType.CONSUMER"
+                        + " and applier in (select loginName from User u where u.loginName=?"
+                        + "or applier in (select loginName from User u where u.mobile=?))", condition.searchUser, condition.searchUser
+        ).fetch();
+
+
+        return withdrawBill;
+    }
+
+    public static long findBillByConditionSize(CRMCondition condition) {
+        return WithdrawBill.count("account.accountType= models.accounts.AccountType.CONSUMER"
+                + " and applier in (select loginName from User u where u.loginName=?"
+                + "or applier in (select loginName from User u where u.mobile=?))", condition.searchUser, condition.searchUser
+        );
 
     }
 

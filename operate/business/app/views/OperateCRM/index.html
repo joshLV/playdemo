@@ -50,7 +50,6 @@
 <div class="span7">
 
 
-
 <table>
 
     <tr>
@@ -60,12 +59,12 @@
 
                 手机号或邮箱： <input type="text" name="condition.searchUser" class="input-medium"
 
-                              #{if phone!=null}
-                    value="${phone}"
-                    #{/if}
-                    #{else}
+            #{if phone!=null}
+                               value="${phone}"
+            #{/if}
+            #{else}
                                value="${condition?.searchUser}"
-                    #{/else}/>
+            #{/else}/>
                 <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
             </form>
         </td>
@@ -244,11 +243,12 @@
     </tbody>
 
 </table>
-
-#{if  orderListSize >5}
-<a href="orders?condition.searchKey=ORDER_NUMBER&condition.searchItems=${moreSearch}"
-   target="_blank" style="float:right"> more</a>
-#{/if}
+<div>
+    #{if  orderListSize >5}
+        <a href="orders?condition.searchKey=ORDER_NUMBER&condition.searchItems=${moreSearch}"
+           target="_blank" style="float:right; font-size:larger"> more</a>
+    #{/if}
+</div>
 #{/if}
 
 #{else}
@@ -277,7 +277,6 @@
 
         <th width="50px">付款时间</th>
         <th width="50px">消费时间</th>
-
 
 
         <th width="20px">状态</th>
@@ -385,13 +384,13 @@
 
 </table>
 
-#{if eCouponsSize>5}
+    #{if eCouponsSize>5}
 
-<a href="coupons?condition.searchKey=COUPON&condition.searchItems=${moreSearch}"
+    <a href="coupons?condition.searchKey=COUPON&condition.searchItems=${moreSearch}"
 
-target="_blank" style="float:right"> more</a>
+       target="_blank" style="float:right; font-size:larger"> more</a>
 
-#{/if}
+    #{/if}
 
 
 #{/if}
@@ -402,8 +401,32 @@ target="_blank" style="float:right"> more</a>
 没有券记录
 #{/else}
 
-
+#{if withdrawBill!=null&& withdrawBill.size() > 0}
+<div>
+    <table class="table ">
+        <tr>
+            <th>申请时间</th>
+            <th>申请金额</th>
+            <th>申请状态</th>
+            <th>审批时间</th>
+            <th>操作</th>
+        </tr>
+        #{list items:withdrawBill, as:'withdrawBill'}
+            <tr>
+                <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>${withdrawBill.amount.formatCurrency('CNY')}</td>
+                <td>&{'withdraw.' + withdrawBill.status}</td>
+                <td>${withdrawBill.processedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+                <td>
+                    <a href="/withdraw/detail/${withdrawBill.id}" target="_blank" > 查看详情 </a>
+                </td>
+            </tr>
+        #{/list}
+    </table>
 </div>
+#{/if}
+</div>
+
 
 <div class="span5">
 
@@ -431,7 +454,7 @@ target="_blank" style="float:right"> more</a>
         #{option models.sales.ConsultType.FEEDBACK}&{'consult.FEEDBACK'}#{/option}
     #{/select}
 
-    <textarea rows="3" cols="20"  required="required" name="consult.text" id="consult_text" value="${consult?.text}">
+    <textarea rows="3" cols="20" required="required" name="consult.text" id="consult_text" value="${consult?.text}">
 
     </textarea>
 
@@ -447,33 +470,28 @@ target="_blank" style="float:right"> more</a>
     #{list items: consultContent, as:'consult'}
 
 
-        <div>
-            <hr size="1" noshade="noshade" style="border:1px #cccccc dotted;">
-        ${consult?.phone} &nbsp;
-            <span style="color:red">  &{'consult.'+consult?.consultType}   </span> :      ${consult?.text}
+    <div>
+        <hr size="1" noshade="noshade" style="border:1px #cccccc dotted;">
+    ${consult?.phone} &nbsp;
+        <span style="color:red">  &{'consult.'+consult?.consultType}   </span> :      ${consult?.text}
 
-            <br>
-        ${consult?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}
+        <br>
+    ${consult?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}
 
-        ${consult?.createdBy}
+    ${consult?.createdBy}
 
-
-
-
+        #{if currentOperator.equals(consult.createdBy)}
 
 
-              #{if currentOperator.equals(consult.createdBy)}
-
-
-                                 <a id="edit" type="submit" href="/crm/${consult?.id}/edit"
-                   target="_blank" style="float:right">&nbsp;修改 </a>
+            <a id="edit" type="submit" href="/crm/${consult?.id}/edit"
+               target="_blank" style="float:right">&nbsp;修改 </a>
 
               <span style="float:right">
                   #{vx.deleteLink id:consult?.id, name:consult?.id, action:"/crm"/} |
               </span>
         </div>
 
-          #{/if}
+        #{/if}
 
     #{/list}
 
@@ -502,7 +520,6 @@ target="_blank" style="float:right"> more</a>
 
             $("#form").attr("action", "/crm/" + id + "?x-http-method-override=DELETE");
             $("#form").attr("method", "POST");
-
 
 
             var msg = "确认删除记录吗？";

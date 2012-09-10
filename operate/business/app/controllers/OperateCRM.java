@@ -2,6 +2,7 @@ package controllers;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.AccountType;
+import models.accounts.WithdrawBill;
 import models.consumer.Address;
 import models.consumer.CRMCondition;
 import models.consumer.User;
@@ -56,7 +57,6 @@ public class OperateCRM extends Controller {
         }
 
 
-
         if (phone != null)
             condition.searchUser = phone;
 
@@ -72,16 +72,18 @@ public class OperateCRM extends Controller {
             Address address = models.sales.Consult.findAddressByCondition(condition);
 
             List<Order> orderList = models.sales.Consult.findOrderByCondition(condition);
-            Logger.debug("a3");
 
 
             List<ECoupon> eCoupons = models.sales.Consult.findCouponByCondition(condition);
-            Logger.debug("a4");
+
+            List<WithdrawBill> withdrawBill = models.sales.Consult.findBillByCondition(condition);
+
 
             long orderListSize = models.sales.Consult.findOrderByConditionSize(condition);
             long eCouponsSize = models.sales.Consult.findCouponByConditionSize(condition);
+            long withdrawBillSize = models.sales.Consult.findBillByConditionSize(condition);
 
-            render(user, orderList, address, condition, eCoupons, consultContent, phone, currentOperator, moreSearch, orderListSize, eCouponsSize);
+            render(user, orderList, address, condition, eCoupons, consultContent, phone, currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill,withdrawBillSize);
         }
 
 
@@ -114,15 +116,16 @@ public class OperateCRM extends Controller {
                 Address address = models.sales.Consult.findAddressByCondition(condition);
                 List<Order> orderList = models.sales.Consult.findOrderByCondition(condition);
                 List<ECoupon> eCoupons = models.sales.Consult.findCouponByCondition(condition);
-
+                List<WithdrawBill> withdrawBill = models.sales.Consult.findBillByCondition(condition);
 
                 long orderListSize = models.sales.Consult.findOrderByConditionSize(condition);
                 long eCouponsSize = models.sales.Consult.findCouponByConditionSize(condition);
+                long withdrawBillSize = models.sales.Consult.findBillByConditionSize(condition);
 
                 render("OperateCRM/index.html", consult, consultContent,
                         currentOperator, phone, user, orderList,
-                        address, condition, eCoupons  , orderListSize, eCouponsSize
-                       );
+                        address, condition, eCoupons, orderListSize, eCouponsSize, withdrawBill,withdrawBillSize
+                );
 
             }
             render("OperateCRM/index.html", consult, consultContent, currentOperator, phone, condition);

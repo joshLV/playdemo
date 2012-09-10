@@ -141,7 +141,7 @@
             <th>审批时间</th>
             <th>操作</th>
         </tr>
-        #{paginate.list items:billPage, as:'withdrawBill'}
+        #{paginate.list items:withdrawBill, as:'withdrawBill'}
             <tr>
                 <td>${withdrawBill.appliedAt.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>&{'account.type.' + withdrawBill.account.accountType}</td>
