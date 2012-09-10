@@ -11,21 +11,21 @@ public class Tui3ClerkVerifyTest extends ClerkSmsVerifyBaseTest {
     public void setup() {
         setupTestData();
     }
-    
+
     /**
      * 正常发送券对象的类
      */
     protected MessageSender getTheMessageSender() {
         return new MessageSender() {
-             @Override 
-             public Response doMessageSend(String mobile, ECoupon ecoupon) {
-                 String message = "do=sms&mobile=" + mobile + "&content=#"
-                         + ecoupon.eCouponSn
-                         + "&ext="
-                         + ecoupon.replyCode;
-                 return GET("/tui3?"
-                         + message);
-             }
+            @Override
+            public Response doMessageSend(String mobile, ECoupon ecoupon) {
+                String message = "do=sms&mobile=" + mobile + "&content=#"
+                        + ecoupon.eCouponSn
+                        + "&ext="
+                        + ecoupon.replyCode;
+                return GET("/tui3?"
+                        + message);
+            }
         };
     }
 
@@ -41,12 +41,12 @@ public class Tui3ClerkVerifyTest extends ClerkSmsVerifyBaseTest {
             }
         };
     }
-    
+
     @Test
     public void 正常店员验证过程() {
         testNormalClerkCheck(getTheMessageSender());
     }
-    
+
     /**
      * 消息应当以#开头
      */
@@ -54,12 +54,12 @@ public class Tui3ClerkVerifyTest extends ClerkSmsVerifyBaseTest {
     public void 店员发送错误格式短信() {
         testInvalidFormatMessage(getInvalidMessageSender());
     }
-    
+
     @Test
     public void 店员发送不存在的券号() {
         testEcouponNotExists(getInvalidMessageSender());
     }
-    
+
     @Test
     public void 无效的商户代码() {
         testInvalidSupplier(getTheMessageSender());
@@ -68,18 +68,23 @@ public class Tui3ClerkVerifyTest extends ClerkSmsVerifyBaseTest {
     @Test
     public void 商户被冻结() {
         testLockedSupplier(getTheMessageSender());
-    }    
-    
+    }
+
     @Test
     public void 不是当前商户所发行的券() {
         testTheGoodsFromOtherSupplier(getTheMessageSender());
     }
-    
+
     @Test
     public void 券已经被消费() {
         testConsumeredECoupon(getTheMessageSender());
     }
-    
+
+    @Test
+    public void 券已经被冻结() {
+        testFreezedECoupon(getTheMessageSender());
+    }
+
     @Test
     public void 券已经过期() {
         testExpiredECoupon(getTheMessageSender());

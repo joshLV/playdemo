@@ -50,6 +50,10 @@ public class SmsReceiverUtil {
                     sendSmsToClerk("【券市场】您输入的券号" + couponNumber + "不存在，请与顾客确认，如有疑问请致电：400-6262-166", mobile, code);
                     return ("【券市场】您输入的券号" + couponNumber + "不存在，请确认！");
                 } else {
+                    if (ecoupon.isFreeze == 1) {
+                        sendSmsToClerk("【券市场】该券已被冻结,如有疑问请致电：400-6262-166", mobile, code);
+                        return ("【券市场】该券已被冻结");
+                    }
                     if (!ecoupon.checkVerifyTimeRegion(new Date())) {
                         String info = ecoupon.getCheckInfo();
                         sendSmsToClerk("【券市场】" + info + ",如有疑问请致电：400-6262-166", mobile, code);
@@ -156,6 +160,10 @@ public class SmsReceiverUtil {
         }
 
         ECoupon ecoupon = ecoupons.get(0);
+        if (ecoupon.isFreeze == 1) {
+            sendSmsToClerk("【券市场】该券已被冻结,如有疑问请致电：400-6262-166", mobile, code);
+            return ("【券市场】该券已被冻结");
+        }
         if (!ecoupon.checkVerifyTimeRegion(new Date())) {
             String info = ecoupon.getCheckInfo();
             sendSmsToClerk("【券市场】" + info + ",如有疑问请致电：400-6262-166", mobile, code);

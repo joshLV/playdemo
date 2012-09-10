@@ -386,6 +386,25 @@ public class ConsumerSmsVerifyBaseTest extends FunctionalTest {
     }
 
     /**
+     * 券冻结的测试
+     *
+     * @param messageSender
+     */
+    public void testFreezedECoupon(MessageSender messageSender) {
+        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon5");
+        ECoupon ecoupon = ECoupon.findById(id);
+        ecoupon.isFreeze = 1;
+        ecoupon.save();
+
+        Response response = messageSender.doMessageSend(ecoupon, kfcClerk.jobNumber, null);
+        assertContentEquals("【券市场】该券已被冻结", response);
+
+        SMSMessage msg = MockSMSProvider.getLastSMSMessage();
+        assertSMSContentLength(msg.getContent());
+        assertEquals("【券市场】该券已被冻结,如有疑问请致电：400-6262-166", msg.getContent());
+    }
+
+    /**
      * 测试券过期的情况
      */
     public void testExpiredECoupon(MessageSender messageSender) {

@@ -1,11 +1,8 @@
 package functional;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.regex.Pattern;
-
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import controllers.EnSmsReceivers;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierRole;
@@ -15,11 +12,7 @@ import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
-import models.sales.Area;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.Shop;
+import models.sales.*;
 import models.sms.MockSMSProvider;
 import models.sms.SMSMessage;
 import models.supplier.Supplier;
@@ -30,9 +23,12 @@ import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import controllers.EnSmsReceivers;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
  * <p/>
@@ -226,7 +222,7 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
         goods = Goods.findById(goodsId);
         ca = Calendar.getInstance();
         ca.add(Calendar.DAY_OF_MONTH, -3);
-        goods.useWeekDay = String.valueOf(getWeek(ca.get(Calendar.DAY_OF_WEEK)));
+        goods.useWeekDay = String.valueOf(ca.get(Calendar.DAY_OF_WEEK));
         ca.set(Calendar.HOUR_OF_DAY, 23);
         goods.useBeginTime = df.format(ca.getTime());
         ca.set(Calendar.HOUR_OF_DAY, 2);
@@ -276,6 +272,23 @@ public class ClerkSmsVerifyBaseTest extends FunctionalTest {
                 msg.getContent());
     }
 
+    /**
+     * 券冻结的测试
+     *
+     * @param messageSender
+     */
+    public void testFreezedECoupon(MessageSender messageSender) {
+        Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon3");
+        ECoupon ecoupon = ECoupon.findById(id);
+        ecoupon.isFreeze = 1;
+        ecoupon.save();
+        Response response = messageSender.doMessageSend("15900002342", ecoupon);
+        assertContentEquals("【券市场】该券已被冻结", response);
+
+        SMSMessage msg = MockSMSProvider.getLastSMSMessage();
+        assertSMSContentLength(msg.getContent());
+        assertEquals("【券市场】该券已被冻结,如有疑问请致电：400-6262-166", msg.getContent());
+    }
 
     /**
      * 券不存在.

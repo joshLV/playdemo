@@ -17,7 +17,8 @@ $(function () {
             shopName = $("#shopId option:selected").text();
         }
 
-        $("#showinfo").load("/coupons/query?shopId=" + shopId + "&eCouponSn=" + eCouponSn, function (data) {});
+        $("#showinfo").load("/coupons/query?shopId=" + shopId + "&eCouponSn=" + eCouponSn, function (data) {
+        });
 
     });
 
@@ -45,8 +46,12 @@ $(function () {
                     $("#checksn").html("<font color=red>该券消费成功！</font>");
                     $("#statusw").html('券状态:已消费');
                     $("#sure").attr("disabled", false);
-                 } else if (data == '1') {
-                     $("#statusw").html('<font color=red>对不起，该券不能在此门店使用!</font>');
+                } else if (data == '1') {
+                    $("#statusw").html('<font color=red>对不起，该券不能在此门店使用!</font>');
+                } else if (data.error == '2') {
+                    $("#statusw").html('<font color=red>' + data.info + '</font>');
+                } else if (data == '3') {
+                    $("#statusw").html('<font color=red>对不起，该券已冻结！</font>');
                 } else if (data == 'err') {
                     alert("消费失败！");
                 } else {

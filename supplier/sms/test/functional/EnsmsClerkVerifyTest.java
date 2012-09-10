@@ -89,7 +89,11 @@ public class EnsmsClerkVerifyTest extends ClerkSmsVerifyBaseTest {
     public void 券已经被消费() {
         testConsumeredECoupon(getTheMessageSender());
     }
-    
+
+    @Test
+    public void 券已经被冻结() {
+        testFreezedECoupon(getTheMessageSender());
+    }
     @Test
     public void 券已经过期() {
         testExpiredECoupon(getTheMessageSender());

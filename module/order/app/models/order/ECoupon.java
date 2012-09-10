@@ -390,7 +390,7 @@ public class ECoupon extends Model {
         if (this.order != null && this.order.promoteUserId != null) {
             User invitedUser = User.findById(this.order.userId);
             PromoteRebate promoteRebate = PromoteRebate.find("invitedUser=? and order =?", invitedUser, this.order).first();
-            if (promoteRebate.rebateAmount.compareTo(this.promoterRebateValue)>0){
+            if (promoteRebate.rebateAmount.compareTo(this.promoterRebateValue) > 0) {
                 promoteRebate.status = RebateStatus.PART_REBATE;
             } else {
                 promoteRebate.status = RebateStatus.ALREADY_REBATE;
@@ -692,26 +692,29 @@ public class ECoupon extends Model {
         ca.setTime(currentTime);
         int w = ca.get(Calendar.DAY_OF_WEEK);
         if (w == 1) w =7; else w = w-1;
-        String week = String.valueOf(w);
         String useBeginTime = this.goods.useBeginTime;
         String useEndTime = this.goods.useEndTime;
         //如果选择了指定日期，并且现在时间不在指定时间范围内的，返回false
         String useWeekDay = this.goods.useWeekDay;
-        if (useWeekDay != null && useWeekDay.contains(week)) {
-            if (StringUtils.isNotBlank(useBeginTime)
-                    && StringUtils.isNotBlank(useEndTime)) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
-                String date = dateFormat.format(currentTime);
-                //在跨天的时间范围内，比如20：00~02:00
-                if (useBeginTime.compareTo(useEndTime) > 0) {
-                    return date.compareTo(useBeginTime) > 0
-                            || date.compareTo(useEndTime) < 0;
-                } else {
-                    return (date.compareTo(useBeginTime) >= 0 && date.compareTo(useEndTime) <= 0);
+        if (useWeekDay != null && !"".equals(useWeekDay)) {
+            //在指定日期范围内
+            if (useWeekDay.contains(String.valueOf(w))) {
+                if (StringUtils.isNotBlank(useBeginTime)
+                        && StringUtils.isNotBlank(useEndTime)) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
+                    String date = dateFormat.format(currentTime);
+                    //在跨天的时间范围内，比如20：00~02:00
+                    if (useBeginTime.compareTo(useEndTime) > 0) {
+                        return date.compareTo(useBeginTime) > 0
+                                || date.compareTo(useEndTime) < 0;
+                    } else {
+                        return (date.compareTo(useBeginTime) >= 0 && date.compareTo(useEndTime) <= 0);
+                    }
                 }
+            } else {
+                //不包含指定日期
+                return false;
             }
-        } else {
-            return false;
         }
 
         return true;

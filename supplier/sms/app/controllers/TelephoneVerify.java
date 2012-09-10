@@ -80,6 +80,10 @@ public class TelephoneVerify extends Controller {
             Logger.info("telephone verify failed: coupon not found");
             renderText("7");//对不起，未找到此券
         }
+        if (ecoupon.isFreeze == 1) {
+            Logger.info("telephone verify failed: coupon is freeze");
+            renderText("11");//对不起，该券无法消费
+        }
         if (!ecoupon.checkVerifyTimeRegion(new Date())) {
             String info = ecoupon.getCheckInfo();
             Logger.info("telephone verify failed: %s", info);

@@ -101,4 +101,5 @@ public class EnsmsConsumerMultiVerifyTest extends ConsumerSmsMultiVerifyBaseTest
     public void 券已经过期() {
         testExpiredECoupon(getTheMessageSender());
     }
+
 }

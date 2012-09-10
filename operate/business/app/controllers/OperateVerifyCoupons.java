@@ -83,7 +83,12 @@ public class OperateVerifyCoupons extends Controller {
         if (eCoupon == null) {
             renderJSON("err");
         }
+
         if (eCoupon.status == ECouponStatus.UNCONSUMED) {
+            //冻结的券
+            if (eCoupon.isFreeze == 1) {
+                renderJSON("3");
+            }
             if (!eCoupon.isBelongShop(shopId)) {
                 renderJSON("1");
             }

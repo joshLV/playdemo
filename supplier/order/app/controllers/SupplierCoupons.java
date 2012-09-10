@@ -81,15 +81,19 @@ public class SupplierCoupons extends Controller {
             renderJSON("err");
         }
         if (eCoupon.status == ECouponStatus.UNCONSUMED) {
+            //冻结的券
+            if (eCoupon.isFreeze == 1) {
+                renderJSON("3");
+            }
             if (!eCoupon.isBelongShop(shopId)) {
                 renderJSON("1");
             }
-             //不再验证时间范围内
+            //不再验证时间范围内
             if (!eCoupon.checkVerifyTimeRegion(new Date())) {
                 String info = eCoupon.getCheckInfo();
                 renderJSON("{\"error\":\"2\",\"info\":\"" + info + "\"}");
             }
-            eCoupon.consumeAndPayCommission(shopId, null,SupplierRbac.currentUser(), VerifyCouponType.SHOP);
+            eCoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP);
             String dateTime = DateUtil.getNowTime();
             String coupon = eCoupon.getLastCode(4);
 
