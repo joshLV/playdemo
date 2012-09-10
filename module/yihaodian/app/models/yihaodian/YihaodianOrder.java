@@ -165,9 +165,9 @@ public class YihaodianOrder extends Model{
             order.orderAmount = new BigDecimal(baseInfoNode.elementTextTrim("orderAmount"));
             order.productAmount = new BigDecimal(baseInfoNode.elementTextTrim("productAmount"));
             order.orderDeliveryFee = new BigDecimal(baseInfoNode.elementTextTrim("orderDeliveryFee"));
-            order.orderNeedInvoice = Integer.parseInt(node.elementTextTrim("orderNeedInvoice"));
-            order.orderCreateTime = parseDate(node.elementTextTrim("orderCreateTime"));
-            order.updateTime = parseDate(node.elementTextTrim("updateTime"));
+            order.orderNeedInvoice = Integer.parseInt(baseInfoNode.elementTextTrim("orderNeedInvoice"));
+            order.orderCreateTime = parseDate(baseInfoNode.elementTextTrim("orderCreateTime"));
+            order.updateTime = parseDate(baseInfoNode.elementTextTrim("updateTime"));
 
             order.deliverySupplierId = Integer.parseInt(baseInfoNode.elementTextTrim("eliverySupplierId"));
             order.deliveryDate = parseDate(baseInfoNode.elementTextTrim("deliveryDate"));
