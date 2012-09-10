@@ -390,11 +390,14 @@ public class ECoupon extends Model {
         if (this.order != null && this.order.promoteUserId != null) {
             User invitedUser = User.findById(this.order.userId);
             PromoteRebate promoteRebate = PromoteRebate.find("invitedUser=? and order =?", invitedUser, this.order).first();
-            if (promoteRebate.rebateAmount.compareTo(this.promoterRebateValue) > 0) {
+            //消费的时候更新返利表已经返利的金额字段
+            promoteRebate.partAmount = promoteRebate.partAmount.add(promoterRebateValue);
+            if (promoteRebate.rebateAmount.compareTo(promoteRebate.partAmount) > 0) {
                 promoteRebate.status = RebateStatus.PART_REBATE;
             } else {
                 promoteRebate.status = RebateStatus.ALREADY_REBATE;
             }
+
             promoteRebate.rebateAt = new Date();
             promoteRebate.save();
         }
@@ -571,16 +574,20 @@ public class ECoupon extends Model {
         // 计算方法：本订单中，抛开已消费的和已经退款过的活动金，先退活动金
         // 例如，订单金额100，用活动金支付40，用余额支付60，若此时退款，则首先退到活动金中。
         // 如果已经消费了20， 那仍然首先退到活动金，但是最多退40-20=20元，也就是说，视用户消费时首先消费的是活动金
-        BigDecimal cashAmount = eCoupon.salePrice;
+
         BigDecimal promotionAmount = BigDecimal.ZERO;
         BigDecimal consumedAmount = BigDecimal.ZERO;
+
+        //退款金额为该券金额减去折扣金额
+        BigDecimal cashAmount = getLintRefundPrice(eCoupon);
+
         if (eCoupon.order.refundedPromotionAmount == null) {
             eCoupon.order.refundedPromotionAmount = BigDecimal.ZERO;
         }
         List<ECoupon> eCoupons = ECoupon.find("byOrderAndStatus",
                 eCoupon.order, ECouponStatus.CONSUMED).fetch();
         for (ECoupon c : eCoupons) {
-            consumedAmount = consumedAmount.add(eCoupon.salePrice);
+            consumedAmount = consumedAmount.add(c.salePrice);
         }
         BigDecimal usedPromotionAmount = eCoupon.order.refundedPromotionAmount
                 .add(consumedAmount);
@@ -619,10 +626,21 @@ public class ECoupon extends Model {
         // 更改订单状态
         eCoupon.status = ECouponStatus.REFUND;
         eCoupon.refundAt = new Date();
-        eCoupon.refundPrice = eCoupon.salePrice;
+        eCoupon.refundPrice = cashAmount;
         eCoupon.save();
 
         return returnFlg;
+    }
+
+    private static BigDecimal getLintRefundPrice(ECoupon coupon) {
+        BigDecimal refundPrice = coupon.salePrice;
+        //折扣金额
+        BigDecimal rebateValue = coupon.rebateValue;
+        rebateValue = rebateValue == null ? BigDecimal.ZERO : rebateValue;
+        if (refundPrice.compareTo(rebateValue) > 0) {
+            refundPrice = refundPrice.subtract(rebateValue);
+        }
+        return refundPrice;
     }
 
     /**
@@ -691,7 +709,8 @@ public class ECoupon extends Model {
         Calendar ca = Calendar.getInstance();
         ca.setTime(currentTime);
         int w = ca.get(Calendar.DAY_OF_WEEK);
-        if (w == 1) w =7; else w = w-1;
+        if (w == 1) w = 7;
+        else w = w - 1;
         String useBeginTime = this.goods.useBeginTime;
         String useEndTime = this.goods.useEndTime;
         //如果选择了指定日期，并且现在时间不在指定时间范围内的，返回false

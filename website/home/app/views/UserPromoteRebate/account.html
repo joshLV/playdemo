@@ -60,9 +60,13 @@
                     <td>${rebate?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
                     <td>${rebate?.invitedUser?.loginName}</td>
                     <td>&{'rebate.'+rebate?.status}</td>
-                    <td>#{if rebate.status ==models.order.RebateStatus.UN_CONSUMED }${rebate?.rebateAmount?.formatCurrency("CNY")}#{/if}</td>
+                    <td>#{if rebate.status ==models.order.RebateStatus.UN_CONSUMED }${rebate?.rebateAmount?.formatCurrency("CNY")}#{/if}
+                       #{if rebate.status ==models.order.RebateStatus.PART_REBATE }${(rebate?.rebateAmount?.subtract(rebate?.partAmount))?.formatCurrency("CNY")}#{/if}
+                    </td>
                     <td>#{if rebate.status ==models.order.RebateStatus.ALREADY_REBATE }${rebate?.rebateAmount?.formatCurrency("CNY")}#{/if}
-                    #{if rebate.status ==models.order.RebateStatus.PART_REBATE }${rebate?.rebateAmount?.formatCurrency("CNY")}#{/if}</td>
+                    #{if rebate.status ==models.order.RebateStatus.PART_REBATE }${rebate?.partAmount?.formatCurrency("CNY")}#{/if}
+
+                    </td>
                 </tr>
                 </tbody>
             #{/paginate.list}

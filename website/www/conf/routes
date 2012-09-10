@@ -22,12 +22,12 @@ POST    /reset-password                         FindPassword.updatePassword
 # Home page
 GET     /                                       Home.index
 GET     /{<[0-9]+>categoryId}                   Home.index
-GET     /about                                  WebApplication.about
-GET     /contact                                WebApplication.contact
-GET     /help                                   WebApplication.help
-GET     /service                                WebApplication.service
-GET     /topic/{id}                             WebApplication.topic
-GET     /rebate_help                            WebApplication.rebate
+GET     /about                                  WEBApplication.about
+GET     /contact                                WEBApplication.contact
+GET     /help                                   WEBApplication.help
+GET     /service                                WEBApplication.service
+GET     /topic/{id}                             WEBApplication.topic
+GET     /rebate_help                            WEBApplication.rebate
 
 GET     /s                                      Goods.index
 GET     /s/{condition}                          Goods.list

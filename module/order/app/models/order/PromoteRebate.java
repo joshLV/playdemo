@@ -59,6 +59,12 @@ public class PromoteRebate extends Model {
     @Column(name = "rebate_amount")
     public BigDecimal rebateAmount;
     /**
+     * 部分返利金额
+     */
+    @Column(name = "part_amount")
+    public BigDecimal partAmount = BigDecimal.ZERO;
+
+    /**
      * 预期可得返利
      */
     @Transient
@@ -128,13 +134,24 @@ public class PromoteRebate extends Model {
         for (PromoteRebate rebate : promoteRebates) {
             if (rebate.status == RebateStatus.UN_CONSUMED)
                 willGetAmount = willGetAmount.add(rebate.rebateAmount == null ? BigDecimal.ZERO : rebate.rebateAmount);
-            else
+            else if (rebate.status == RebateStatus.PART_REBATE) {
+                willGetAmount = willGetAmount.add(rebate.rebateAmount == null ? BigDecimal.ZERO : rebate.rebateAmount.subtract(rebate.partAmount));
+                haveGotAmount = haveGotAmount.add(rebate.partAmount == null ? BigDecimal.ZERO : rebate.partAmount);
+            } else if (rebate.status == RebateStatus.ALREADY_REBATE)
                 haveGotAmount = haveGotAmount.add(rebate.rebateAmount == null ? BigDecimal.ZERO : rebate.rebateAmount);
         }
 
         return new PromoteRebate(willGetAmount, haveGotAmount);
     }
 
+    /**
+     * 取得返利明细
+     * @param user
+     * @param condition
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
     public static JPAExtPaginator<PromoteRebate> findAccounts(User user, PromoteRebateCondition condition, int pageNumber, int pageSize) {
         JPAExtPaginator<PromoteRebate> orderPage = new JPAExtPaginator<>
                 ("PromoteRebate p", "p", PromoteRebate.class, condition.getFilter(user),
@@ -142,9 +159,14 @@ public class PromoteRebate extends Model {
                 .orderBy("p.createdAt desc");
         orderPage.setPageNumber(pageNumber);
         orderPage.setPageSize(pageSize);
+
         return orderPage;
     }
 
+    /**
+     * 取得排名的记录
+     * @return
+     */
     public static List<PromoteRebate> findRank() {
         Query query = JPA.em()
                 .createQuery(
