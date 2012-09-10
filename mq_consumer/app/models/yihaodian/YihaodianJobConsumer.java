@@ -42,17 +42,20 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 Logger.info("can not sleep");
+                JPAPlugin.closeTx(true);
                 return;
             }
             yihaodianOrder = YihaodianOrder.find("byOrderId", message.getOrderId()).first();
             if (yihaodianOrder == null) {
                 Logger.error("order not found: %s", message.getOrderId());
+                JPAPlugin.closeTx(true);
                 return;
             }
         }
 
         if(yihaodianOrder.jobFlag == JobFlag.SEND_SYNCED){
             Logger.info("job synced");
+            JPAPlugin.closeTx(true);
             return;
         }
         try{
@@ -60,6 +63,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
         }catch (PersistenceException e){
             //拿不到锁就放弃
             Logger.info("can not lock yihaodian order %s", yihaodianOrder.orderCode);
+            JPAPlugin.closeTx(true);
             return;
         }
         if(yihaodianOrder.jobFlag == JobFlag.SEND_COPY){
