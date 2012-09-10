@@ -91,9 +91,12 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
         params.put("orderCode", yihaodianOrder.orderCode);
         params.put("deliverySupplierId", DELIVERY_SUPPLIER);//测试公司
         params.put("expressNbr", yihaodianOrder.orderCode);
+        Logger.info("yhd.logistics.order.shipments.update orderCode %s", params.get("orderCode"));
+        Logger.info("yhd.logistics.order.shipments.update deliverySupplierId %s", params.get("deliverySupplierId"));
+        Logger.info("yhd.logistics.order.shipments.update expressNbr", params.get("expressNbr"));
 
-        String responseXml = Util.sendRequest(params, "hd.logistics.order.shipments.update");
-        Logger.info("hd.logistics.order.shipments.update %s", responseXml);
+        String responseXml = Util.sendRequest(params, "yhd.logistics.order.shipments.update");
+        Logger.info("yhd.logistics.order.shipments.update response %s", responseXml);
         if (responseXml != null) {
             Response<UpdateResult> res = new Response<>();
             res.parseXml(responseXml, "updateCount", false, UpdateResult.parser);

@@ -84,8 +84,14 @@ public class OrderListener extends Job{
         params.put("dateType", "1");//按付款时间查询
         params.put("startTime", new SimpleDateFormat(ORDER_DATE).format(start));
         params.put("endTime", new SimpleDateFormat(ORDER_DATE).format(end));
+        Logger.info("yhd.orders.get orderStatusList %s", params.get("orderStatusList"));
+        Logger.info("yhd.orders.get dateType %s", params.get("dateType"));
+        Logger.info("yhd.orders.get startTime %s", params.get("startTime"));
+        Logger.info("yhd.orders.get endTime %s", params.get("endTime"));
+
         String responseXml = Util.sendRequest(params, "yhd.orders.get");
-        Logger.info("yhd.orders.get: %s", responseXml);
+
+        Logger.info("yhd.orders.get response %s", responseXml);
         if(responseXml != null) {
             Response<YihaodianOrder> res = new Response<>();
             res.parseXml(responseXml, "orderList", true, YihaodianOrder.parser);
