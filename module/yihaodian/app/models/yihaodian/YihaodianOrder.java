@@ -169,7 +169,7 @@ public class YihaodianOrder extends Model{
             order.orderCreateTime = parseDate(baseInfoNode.elementTextTrim("orderCreateTime"));
             order.updateTime = parseDate(baseInfoNode.elementTextTrim("updateTime"));
 
-            order.deliverySupplierId = Integer.parseInt(baseInfoNode.elementTextTrim("eliverySupplierId"));
+            order.deliverySupplierId = Integer.parseInt(baseInfoNode.elementTextTrim("deliverySupplierId"));
             order.deliveryDate = parseDate(baseInfoNode.elementTextTrim("deliveryDate"));
             order.expressNbr = baseInfoNode.elementTextTrim("merchantExpressNbr");
             order.receiveDate = parseDate(baseInfoNode.elementTextTrim("receiveDate"));
