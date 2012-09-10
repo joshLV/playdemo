@@ -235,6 +235,30 @@ public class ECoupon extends Model {
                     order.userType);
         }
     }
+    
+    
+    /**
+     * 券修改时更新库存。
+     */
+    @Override
+	public void _save() {
+		this.goods.refreshSaleCount();
+		super._save();
+	}
+
+
+
+	private BigDecimal getLineRebateValue() {
+        BigDecimal amount = BigDecimal.ZERO;
+        BigDecimal invitedRebatePrice;
+        for (OrderItems item : order.orderItems) {
+            //如果商品没设置返利,默认给推荐人1%
+            invitedRebatePrice = item.goods.invitedUserPrice == null || item.goods.invitedUserPrice.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ONE : item.goods.invitedUserPrice;
+            amount = amount.add(item.goods.salePrice.multiply(invitedRebatePrice).multiply(new BigDecimal(0.01)));
+        }
+
+        return amount;
+    }
 
     private BigDecimal getLinePromoterRebateValue() {
         //如果商品没设置返利,默认给推荐人2%
