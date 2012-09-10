@@ -54,8 +54,7 @@
 
     <tr>
         <td>
-            <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.index()}" method="GET">
-
+            <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.index(phone)}" method="GET">
 
                 手机号或邮箱： <input type="text" name="condition.searchUser" class="input-medium"
 
@@ -69,10 +68,9 @@
             </form>
         </td>
         <td>
-            <form class="form-horizontal" name="frmlist2" id="frmlist2" action="@{OperateCRM.index()}" method="GET">
+            <form class="form-horizontal" name="frmlist2" id="frmlist2" action="@{OperateCRM.index(phone)}" method="GET">
                 订单号或券号尾4位： <input type="text" name="condition.searchOrderCoupon" class="input-medium"
                                   value="${condition?.searchOrderCoupon}"/>
-
                 <button class="btn btn-primary" id="searchbtn2" type="submit">搜索</button>
             </form>
         </td>
@@ -244,7 +242,7 @@
 </table>
 <div>
     #{if  orderListSize >5}
-        <a href="orders?condition.searchKey=ORDER_NUMBER&condition.searchItems=${moreSearch}"
+        <a href="/orders?condition.searchKey=ORDER_NUMBER&condition.searchItems=${moreSearch}"
            target="_blank" style="float:right; font-size:larger"> more</a>
     #{/if}
 </div>
@@ -256,11 +254,6 @@
 
 
 
-
-
-
-
-
 *{券}*
 #{if eCoupons!=null  && eCoupons.size() > 0}
 <table class="table table-striped table-bordered table-condensed">
@@ -269,17 +262,11 @@
         <th width="8px">券尾号</th>
         <th width="10px">券订单号</th>
         <th width="8px">手机</th>
-
-
         <th width="30px">单价</th>
         <th width="50px">消费门店</th>
-
         <th width="50px">付款时间</th>
         <th width="50px">消费时间</th>
-
-
         <th width="20px">状态</th>
-
     </tr>
     </thead>
 
@@ -297,7 +284,7 @@
 
                     style="color:red"
 
-            #{/if}>${n}${coupon?.eCouponSn.substring(len - 4)}</td>
+            #{/if}>${coupon?.eCouponSn.substring(len - 4)}</td>
             <td><a href="@{OperateOrders.details(coupon?.order?.id)}"
                    target="_blank"  #{if coupon?.status==models.order.ECouponStatus.REFUND}
 
@@ -315,7 +302,6 @@
                     style="color:red"
 
             #{/if}>${coupon?.orderItems?.phone}</td>
-
 
 
             <td  #{if coupon?.status==models.order.ECouponStatus.REFUND}
@@ -385,7 +371,7 @@
 
     #{if eCouponsSize>5}
 
-    <a href="coupons?condition.searchKey=COUPON&condition.searchItems=${moreSearch}"
+    <a href="/coupons?condition.searchKey=COUPON&condition.searchItems=${moreSearch}"
 
        target="_blank" style="float:right; font-size:larger"> more</a>
 
@@ -445,19 +431,9 @@
 
 
 #{form @OperateCRM.save(), id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
-
-
-
-
     <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
-
-
     咨询类型
-
-
-
     #{select 'consult.consultType', value:consult?.consultType, id:'consult_type',class:'span4'}
-
         #{option models.sales.ConsultType.ORDERCONSULT }&{'consult.ORDERCONSULT'}#{/option}
         #{option models.sales.ConsultType.REFUND}&{'consult.REFUND'}#{/option}
         #{option models.sales.ConsultType.VERIFYERROR}&{'consult.VERIFYERROR'}#{/option}
@@ -470,37 +446,39 @@
 
     </textarea>
 
-
     <div class="error">#{error 'consult.text' /}</div>
 
-    <input class="btn btn-primary" id="save" type="submit" value="保存"/>
+
+    <input class="btn btn-primary" id="save" type="submit" #{if !org.apache.commons.lang.StringUtils.isNotBlank(phone)}
+           disabled="disabled" #{/if}value="保存"/>
 
     #{list items: consultContent, as:'consult'}
 
+        #{if consult?.phone==phone}
 
-    <div>
-        <hr size="1" noshade="noshade" style="border:1px #cccccc dotted;">
-    ${consult?.phone} &nbsp;
-        <span style="color:red">  &{'consult.'+consult?.consultType}   </span> :      ${consult?.text}
+        <div>
+            <hr size="1" noshade="noshade" style="border:1px #cccccc dotted;">
+        ${consult?.phone} &nbsp;
+            <span style="color:red">  &{'consult.'+consult?.consultType}   </span> :      ${consult?.text}
 
-        <br>
-    ${consult?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}
+            <br>
+        ${consult?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}
 
-    ${consult?.createdBy}
+        ${consult?.createdBy}
 
-        #{if currentOperator.equals(consult.createdBy)}
+            #{if currentOperator.equals(consult.createdBy)}
 
 
-            <a id="edit" type="submit" href="/crm/${consult?.id}/edit"
-               target="_blank" style="float:right">&nbsp;修改 </a>
+                <a id="edit" type="submit" href="/crm/${consult?.id}/edit"
+                   target="_blank" style="float:right">&nbsp;修改 </a>
 
               <span style="float:right">
                   #{vx.deleteLink id:consult?.id, name:consult?.id, action:"/crm"/} |
               </span>
-        </div>
+            </div>
 
+            #{/if}
         #{/if}
-
     #{/list}
 
 
@@ -508,6 +486,7 @@
 
 
 </div>
+
 </div>
 
 

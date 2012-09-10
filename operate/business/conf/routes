@@ -47,10 +47,10 @@ GET     /seckill_goods/{id}/check               SecKillGoods.checkGoodsId
 DELETE  /seckill_goods/{id}                     SecKillGoods.delete
 
 
-GET     /crm                                    OperateCRM.index
+GET     /callcenter/phone/{phone}                  OperateCRM.index
 GET     /crm/{id}/edit                          OperateCRM.edit
 DELETE  /crm/{id}                               OperateCRM.delete
-# PUT     /crm/{id}                               OperateCRM.save
+# PUT     /crm/{id}                             OperateCRM.save
 PUT     /crm/{id}                               OperateCRM.update
 
 

@@ -42,9 +42,9 @@ import static play.Logger.warn;
 public class OperateCRM extends Controller {
 
 
-    public static void index(CRMCondition condition) {
+    public static void index(String phone, CRMCondition condition) {
 
-        String phone = request.params.get("phone");
+
         String moreSearch = "";
 
         List<TelephoneMessage> consultContent = TelephoneMessage.find("deleted=? order by createdAt desc", DeletedStatus.UN_DELETED).fetch();
@@ -95,10 +95,10 @@ public class OperateCRM extends Controller {
     }
 
 
-    public static void save(TelephoneMessage consult, User user) {
-        String getPhone = request.params.get("phone");
+    public static void save(TelephoneMessage consult, User user,String phone) {
+
         CRMCondition condition = new CRMCondition();
-        String phone = getPhone;
+
 
 
         if (StringUtils.isBlank(consult.text))
@@ -139,11 +139,11 @@ public class OperateCRM extends Controller {
         consult.deleted = DeletedStatus.UN_DELETED;
         consult.createdBy = OperateRbac.currentUser().loginName;
 
-        consult.phone = getPhone;
+        consult.phone = phone;
         consult.create();
         consult.save();
 
-        index(null);
+        index(phone,null);
 
 
     }
@@ -154,14 +154,14 @@ public class OperateCRM extends Controller {
      *
      * @param id 商品ID
      */
-    public static void delete(Long id) {
+    public static void delete(Long id,String phone) {
 
         TelephoneMessage consult = TelephoneMessage.findById(id);
 
 
         models.sales.TelephoneMessage.delete(id);
 
-        index(null);
+        index(phone, null);
     }
 
     public static void edit(Long id) {
@@ -171,7 +171,7 @@ public class OperateCRM extends Controller {
     }
 
 
-    public static void update(Long id, @Valid models.sales.TelephoneMessage consult) {
+    public static void update(Long id, @Valid models.sales.TelephoneMessage consult,String phone) {
 
 
         TelephoneMessage oldConsult = TelephoneMessage.findById(id);
@@ -186,7 +186,7 @@ public class OperateCRM extends Controller {
         }
         TelephoneMessage.update(id, consult);
 
-        index(null);
+        index(phone, null);
     }
 
 
