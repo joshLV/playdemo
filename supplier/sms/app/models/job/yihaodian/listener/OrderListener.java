@@ -40,7 +40,6 @@ public class OrderListener extends Job{
             StringBuilder orderCodes = new StringBuilder();
             for(YihaodianOrder order : orders){
                 if(YihaodianOrder.find("byOrderId", order.orderId).first() == null){
-                    order.save();
                     orderCodes.append(order.orderCode).append(",");
                 }else {
                     //发送消息队列
@@ -49,18 +48,20 @@ public class OrderListener extends Job{
                 }
             }
 
-            //拉取订单的全部信息
-            List<YihaodianOrder> fullOrders = fullOrders(orderCodes.toString());
-            if(fullOrders != null && fullOrders.size() > 0) {
-                for(YihaodianOrder order: fullOrders) {
-                    order.save();
-                    for(OrderItem orderItem : order.orderItems) {
-                        orderItem.order = order;
-                        orderItem.save();
+            if(orderCodes.length() > 0){
+                //拉取订单的全部信息
+                List<YihaodianOrder> fullOrders = fullOrders(orderCodes.toString());
+                if(fullOrders != null && fullOrders.size() > 0) {
+                    for(YihaodianOrder order: fullOrders) {
+                        order.save();
+                        for(OrderItem orderItem : order.orderItems) {
+                            orderItem.order = order;
+                            orderItem.save();
+                        }
+                        //发送消息队列
+                        YihaodianJobMessage message = new YihaodianJobMessage(order.orderId);
+                        YihaodianQueueUtil.addJob(message);
                     }
-                    //发送消息队列
-                    YihaodianJobMessage message = new YihaodianJobMessage(order.orderId);
-                    YihaodianQueueUtil.addJob(message);
                 }
             }
         }
@@ -112,9 +113,10 @@ public class OrderListener extends Job{
     public List<YihaodianOrder> fullOrders(String orderCodes){
         Map<String, String> params = new HashMap<>();
         params.put("orderCodeList", orderCodes);
+        Logger.info("yhd.orders.detail.get orderCodeList %s", params.get("orderCodeList"));
 
         String responseXml = Util.sendRequest(params, "yhd.orders.detail.get");
-        Logger.info("yhd.orders.detail.get: %s", responseXml);
+        Logger.info("yhd.orders.detail.get response %s", responseXml);
         if (responseXml != null) {
             Response<YihaodianOrder> res = new Response<>();
             res.parseXml(responseXml, "orderInfoList", true, YihaodianOrder.fullParser);

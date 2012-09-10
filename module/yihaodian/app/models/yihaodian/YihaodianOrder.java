@@ -69,6 +69,19 @@ public class YihaodianOrder extends Model{
     }
 
     //---------- 补充信息 -----
+
+    @Column(name = "express_nbr")
+    public String expressNbr;
+
+    @Column(name = "delivery_supplier_id")
+    public Integer deliverySupplierId;
+
+    @Column(name = "delivery_date")
+    public Date deliveryDate;
+
+    @Column(name = "receive_date")
+    public Date receiveDate;
+
     @Column(name = "good_receiver_name")
     public String goodReceiverName;
 
@@ -126,11 +139,9 @@ public class YihaodianOrder extends Model{
             order.productAmount = new BigDecimal(node.elementTextTrim("productAmount"));
             order.orderDeliveryFee = new BigDecimal(node.elementTextTrim("orderDeliveryFee"));
             order.orderNeedInvoice = Integer.parseInt(node.elementTextTrim("orderNeedInvoice"));
-            try{
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                order.orderCreateTime = simpleDateFormat.parse(node.elementTextTrim("orderCreateTime"));
-                order.updateTime = simpleDateFormat.parse(node.elementTextTrim("updateTime"));
-            }catch (ParseException e){/* pass */ }
+
+            order.orderCreateTime = parseDate(node.elementTextTrim("orderCreateTime"));
+            order.updateTime = parseDate(node.elementTextTrim("updateTime"));
 
             return order;
         }
@@ -146,12 +157,22 @@ public class YihaodianOrder extends Model{
                 Logger.info("can not get node: orderDetail");
                 return null;
             }
-            String orderCode = baseInfoNode.elementTextTrim("orderCode");
-            YihaodianOrder order = YihaodianOrder.find("byOrderCode", orderCode).first();
-            if(order == null){
-                Logger.info("can not find order: %s", orderCode);
-                return null;
-            }
+
+            YihaodianOrder order = new YihaodianOrder();
+            order.orderId = Long.parseLong(baseInfoNode.elementTextTrim("orderId"));
+            order.orderCode = baseInfoNode.elementTextTrim("orderCode");
+            order.orderStatus = OrderStatus.valueOf(baseInfoNode.elementTextTrim("orderStatus"));
+            order.orderAmount = new BigDecimal(baseInfoNode.elementTextTrim("orderAmount"));
+            order.productAmount = new BigDecimal(baseInfoNode.elementTextTrim("productAmount"));
+            order.orderDeliveryFee = new BigDecimal(baseInfoNode.elementTextTrim("orderDeliveryFee"));
+            order.orderNeedInvoice = Integer.parseInt(node.elementTextTrim("orderNeedInvoice"));
+            order.orderCreateTime = parseDate(node.elementTextTrim("orderCreateTime"));
+            order.updateTime = parseDate(node.elementTextTrim("updateTime"));
+
+            order.deliverySupplierId = Integer.parseInt(baseInfoNode.elementTextTrim("eliverySupplierId"));
+            order.deliveryDate = parseDate(baseInfoNode.elementTextTrim("deliveryDate"));
+            order.expressNbr = baseInfoNode.elementTextTrim("merchantExpressNbr");
+            order.receiveDate = parseDate(baseInfoNode.elementTextTrim("receiveDate"));
             order.deliveryMethodType = Integer.parseInt(baseInfoNode.elementTextTrim("deliveryMethodType"));
             order.goodReceiverAddress = baseInfoNode.elementTextTrim("goodReceiverAddress");
             order.goodReceiverCity = baseInfoNode.elementTextTrim("goodReceiverCity");
@@ -166,23 +187,33 @@ public class YihaodianOrder extends Model{
             order.payServiceType = Integer.parseInt(baseInfoNode.elementTextTrim("payServiceType"));
             order.recompensPoints = Float.parseFloat(baseInfoNode.elementTextTrim("recompensPoints"));
 
-            try{
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                order.createPayTime = simpleDateFormat.parse(baseInfoNode.elementTextTrim("orderCreatePayTime"));
-                order.paymentConfirmDate = simpleDateFormat.parse(baseInfoNode.elementTextTrim("orderPaymentConfirmDate"));
-            }catch (ParseException e){/* pass */ }
-
+            order.createPayTime = parseDate(baseInfoNode.elementTextTrim("orderCreatePayTime"));
+            order.paymentConfirmDate = parseDate(baseInfoNode.elementTextTrim("orderPaymentConfirmDate"));
 
             //解析订单条目信息
             Element orderItemsNode = node.element("orderItemList");
-            if (orderItemsNode == null){
-                return null;
+            if (orderItemsNode != null){
+                for(Object o : orderItemsNode.elements()){
+                    OrderItem orderItem = OrderItem.parser.parse((Element)o);
+                    if(orderItem != null){
+                        order.orderItems.add(orderItem);
+                    }
+                }
             }
-            for(Object o : orderItemsNode.elements()){
-                OrderItem orderItem = OrderItem.parser.parse((Element)o);
-                order.orderItems.add(orderItem);
-            }
+
             return order;
         }
     };
+
+    private static Date parseDate(String date){
+        if(date == null || "".equals(date.trim())){
+            return null;
+        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try{
+            return simpleDateFormat.parse(date);
+        }catch (ParseException e){
+            return null;
+        }
+    }
 }

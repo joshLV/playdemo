@@ -21,6 +21,7 @@ import javax.persistence.LockTimeoutException;
 import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,6 +59,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
             YihaodianOrder.em().refresh(yihaodianOrder, LockModeType.PESSIMISTIC_WRITE);
         }catch (PersistenceException e){
             //拿不到锁就放弃
+            Logger.info("can not lock yihaodian order %s", yihaodianOrder.orderCode);
             return;
         }
         if(yihaodianOrder.jobFlag == JobFlag.SEND_COPY){
@@ -80,6 +82,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
             JPA.em().flush();
         } catch (RuntimeException e) {
             rollBack = true;
+            Logger.info("update yihaodian order status failed, will roll bace", e);
             //不抛异常 不让mq重试
         } finally {
             JPAPlugin.closeTx(rollBack);
@@ -104,6 +107,34 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
                 return true;
             }else {
                 Logger.info("sync With yihaodian error");
+                return checkYihaodianSent(yihaodianOrder);
+            }
+        }
+        return false;
+    }
+
+    private boolean checkYihaodianSent(YihaodianOrder yihaodianOrder) {
+        Logger.info("start check yihaodian sent %s" , yihaodianOrder.orderCode);
+        Map<String, String> params = new HashMap<>();
+        params.put("orderCodeList", yihaodianOrder.orderCode);
+        Logger.info("yhd.orders.detail.get orderCodeList %s", params.get("orderCodeList"));
+
+        String responseXml = Util.sendRequest(params, "yhd.orders.detail.get");
+        Logger.info("yhd.orders.detail.get response %s", responseXml);
+        if (responseXml != null) {
+            Response<YihaodianOrder> res = new Response<>();
+            res.parseXml(responseXml, "orderInfoList", true, YihaodianOrder.fullParser);
+            if(res.getErrorCount() == 0){
+                List<YihaodianOrder> orders = res.getVs();
+                if (orders.size() > 0){
+                    YihaodianOrder order = orders.get(0);
+                    if (order.orderStatus != OrderStatus.ORDER_PAYED
+                            && order.orderStatus != OrderStatus.ORDER_WAIT_PAY
+                            && order.orderStatus != OrderStatus.ORDER_CANCEL) {
+                        //只要不是待付款、已付款或取消状态状态，就说明我们已经以某种渠道发过货了
+                        return true;
+                    }
+                }
             }
         }
         return false;

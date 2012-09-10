@@ -103,6 +103,9 @@
             <navigation key="verify_index" action="OperateVerifyCoupons.index" text=" 验证消费券" permissions="COUPONS"/>
             <navigation key="pre_coupons" action="ImportCoupons.index" text="预购券管理" permission="COUPONS"/>
         </navigation>
+        <navigation key="yihaodian_api" text="一号店">
+            <navigation key="yihaodian_api_index" action="YihaodianAPI.index" text="API" permission="ORDERS"/>
+        </navigation>
     </navigation>
 
     <navigation key="resale_app" text="分销商管理" action="Resalers.index" display-order="70" permissions="RESALERS">
