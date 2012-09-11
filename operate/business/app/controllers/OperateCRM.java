@@ -7,8 +7,9 @@ import models.consumer.CRMCondition;
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.Order;
-import models.sales.CallBind;
-import models.sales.TelephoneMessage;
+import models.sales.ConsultCondition;
+import models.sales.ConsultRecord;
+import models.sales.MemberCallBind;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Valid;
@@ -35,8 +36,8 @@ public class OperateCRM extends Controller {
         User user = null;
         Address address = null;
 
-        CallBind bind = new CallBind();
-        List<User> userList = User.find("id in (select c.userId from CallBind c where c.phone=?)", phone).fetch();
+        MemberCallBind bind = new MemberCallBind();
+        List<User> userList = User.find("id in (select c.userId from MemberCallBind c where c.phone=?)", phone).fetch();
 
         if (userList == null || userList.size() <= 0) {
             userList = User.find("mobile=?", phone).fetch();
@@ -59,7 +60,7 @@ public class OperateCRM extends Controller {
 
         String moreSearch = "";
 
-        List<TelephoneMessage> consultContent = TelephoneMessage.find("deleted=? order by createdAt desc", DeletedStatus.UN_DELETED).fetch();
+        List<ConsultRecord> consultContent = ConsultRecord.find("deleted=? order by createdAt desc", DeletedStatus.UN_DELETED).fetch();
 
         String currentOperator = OperateRbac.currentUser().loginName;
 
@@ -67,7 +68,7 @@ public class OperateCRM extends Controller {
         if (condition == null) {
             condition = new CRMCondition();
             user = userList.get(0);
-            address = models.sales.Consult.findAddressByCondition(user);
+            address = ConsultCondition.findAddressByCondition(user);
             condition.userId = userList.get(0).getId();
 //            user = User.find("id=?", condition.userId).first();
         } else {
@@ -76,7 +77,7 @@ public class OperateCRM extends Controller {
             user = User.find("id=?", userId).first();
             if (user == null)
                 user = User.find("id=?", condition.userId).first();
-            address = models.sales.Consult.findAddressByCondition(user);
+            address = ConsultCondition.findAddressByCondition(user);
         }
 
 
@@ -91,18 +92,18 @@ public class OperateCRM extends Controller {
 //        if (StringUtils.isNotBlank(condition.searchUser) || StringUtils.isNotBlank(condition.searchOrderCoupon)) {
 
 
-//        Address address = models.sales.Consult.findAddressByCondition(condition);
+//        Address address = models.sales.ConsultCondition.findAddressByCondition(condition);
 
-        List<Order> orderList = models.sales.Consult.findOrderByCondition(condition);
+        List<Order> orderList = ConsultCondition.findOrderByCondition(condition);
 
-        List<ECoupon> eCoupons = models.sales.Consult.findCouponByCondition(condition);
+        List<ECoupon> eCoupons = ConsultCondition.findCouponByCondition(condition);
 
-        List<WithdrawBill> withdrawBill = models.sales.Consult.findBillByCondition(condition);
+        List<WithdrawBill> withdrawBill = ConsultCondition.findBillByCondition(condition);
 
 
-        long orderListSize = models.sales.Consult.findOrderByConditionSize(condition);
-        long eCouponsSize = models.sales.Consult.findCouponByConditionSize(condition);
-        long withdrawBillSize = models.sales.Consult.findBillByConditionSize(condition);
+        long orderListSize = ConsultCondition.findOrderByConditionSize(condition);
+        long eCouponsSize = ConsultCondition.findCouponByConditionSize(condition);
+        long withdrawBillSize = ConsultCondition.findBillByConditionSize(condition);
 
         //address  user
 
@@ -118,7 +119,7 @@ public class OperateCRM extends Controller {
 //    name = "user" value = "19"
 //    name = "user.id"
     //Long userId
-    public static void save(TelephoneMessage consult,Long userId, String phone) {
+    public static void save(ConsultRecord consult,User user, String phone) {
 
         CRMCondition condition = new CRMCondition();
 
@@ -126,26 +127,25 @@ public class OperateCRM extends Controller {
             Validation.addError("consult.text", "validation.required");
 
         if (Validation.hasErrors()) {
-
 //            if (phone != null)
 //                condition.searchUser = phone;
 
 
             String currentOperator = OperateRbac.currentUser().loginName;
 
-            List<TelephoneMessage> consultContent = TelephoneMessage.find("deleted=? order by createdAt desc", DeletedStatus.UN_DELETED).fetch();
+            List<ConsultRecord> consultContent = ConsultRecord.find("deleted=? order by createdAt desc", DeletedStatus.UN_DELETED).fetch();
 
             if (StringUtils.isNotBlank(condition.searchUser) || StringUtils.isNotBlank(condition.searchOrderCoupon)) {
 
-                User user = User.find("id=?", userId).first();
-                Address address = models.sales.Consult.findAddressByCondition(user);
-                List<Order> orderList = models.sales.Consult.findOrderByCondition(condition);
-                List<ECoupon> eCoupons = models.sales.Consult.findCouponByCondition(condition);
-                List<WithdrawBill> withdrawBill = models.sales.Consult.findBillByCondition(condition);
+                user = User.find("id=?", user.id).first();
+                Address address = ConsultCondition.findAddressByCondition(user);
+                List<Order> orderList = ConsultCondition.findOrderByCondition(condition);
+                List<ECoupon> eCoupons = ConsultCondition.findCouponByCondition(condition);
+                List<WithdrawBill> withdrawBill = ConsultCondition.findBillByCondition(condition);
 
-                long orderListSize = models.sales.Consult.findOrderByConditionSize(condition);
-                long eCouponsSize = models.sales.Consult.findCouponByConditionSize(condition);
-                long withdrawBillSize = models.sales.Consult.findBillByConditionSize(condition);
+                long orderListSize = ConsultCondition.findOrderByConditionSize(condition);
+                long eCouponsSize = ConsultCondition.findCouponByConditionSize(condition);
+                long withdrawBillSize = ConsultCondition.findBillByConditionSize(condition);
 
                 //address user
                 render("OperateCRM/index.html", user, address, consult, consultContent,
@@ -161,14 +161,14 @@ public class OperateCRM extends Controller {
         consult.createdBy = OperateRbac.currentUser().loginName;
         consult.userType = models.accounts.AccountType.CONSUMER;
 
-        consult.userId = userId;
+        consult.userId = user.id;
         consult.phone = phone;
+        consult.loginName=user.loginName;
 
         consult.create();
         consult.save();
 
         index(phone, null, null);
-
 
     }
 
@@ -180,25 +180,25 @@ public class OperateCRM extends Controller {
      */
     public static void delete(Long id, String phone) {
 
-        TelephoneMessage consult = TelephoneMessage.findById(id);
+        ConsultRecord consult = ConsultRecord.findById(id);
 
 
-        models.sales.TelephoneMessage.delete(id);
+        ConsultRecord.delete(id);
 
         index(phone, null, null);
     }
 
     public static void edit(Long id) {
 
-        models.sales.TelephoneMessage consult = models.sales.TelephoneMessage.findById(id);
+        ConsultRecord consult = ConsultRecord.findById(id);
         render(consult, id);
     }
 
 
-    public static void update(Long id, @Valid models.sales.TelephoneMessage consult, String phone) {
+    public static void update(Long id, @Valid ConsultRecord consult, String phone) {
 
 
-        TelephoneMessage oldConsult = TelephoneMessage.findById(id);
+        ConsultRecord oldConsult = ConsultRecord.findById(id);
 
 
         if (StringUtils.isBlank(consult.text))
@@ -208,7 +208,7 @@ public class OperateCRM extends Controller {
 
             render("OperateCRM/edit.html", consult, id);
         }
-        TelephoneMessage.update(id, consult);
+        ConsultRecord.update(id, consult);
 
         index(phone, null, null);
     }

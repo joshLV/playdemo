@@ -23,7 +23,7 @@ import java.util.List;
  */
 
 
-public class Consult extends Model {
+public class ConsultCondition extends Model {
 
 
 //    public static User findUserByCondition(CRMCondition condition) {

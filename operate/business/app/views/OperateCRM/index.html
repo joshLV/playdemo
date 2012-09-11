@@ -454,10 +454,10 @@
     <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
 
     #{if user!=null}
-        <input type="hidden" type="text" name="userId" id="user" value="${user.id}"/>
+        <input type="hidden" type="text" name="user.id" id="user" value="${user.id}"/>
     #{/if}
 
-    <input type="hidden" type="text" name="user" id="user" value="${user}"/>
+    *{<input type="hidden" type="text" name="user" id="user" value="${user}"/>}*
 
     咨询类型
     #{select 'consult.consultType', value:consult?.consultType, id:'consult_type',class:'span4'}

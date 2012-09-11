@@ -18,7 +18,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "call_bind")
-public class CallBind extends Model {
+public class MemberCallBind extends Model {
 
     @Column(name = "email")
     @Required

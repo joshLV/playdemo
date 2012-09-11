@@ -1,16 +1,11 @@
 package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
 import models.accounts.AccountType;
-import models.order.ECouponStatus;
-import org.apache.commons.lang.StringUtils;
 import play.data.validation.Email;
 import play.data.validation.MaxSize;
-import play.data.validation.MinSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
-import play.modules.view_ext.annotation.Mobile;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -24,7 +19,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "telephone_message")
-public class TelephoneMessage extends Model {
+public class ConsultRecord extends Model {
 
 
     /**
@@ -82,7 +77,7 @@ public class TelephoneMessage extends Model {
 
 //    public static void delete(Long... ids) {
 //        for (Long id : ids) {
-//            models.sales.TelephoneMessage consult = models.sales.TelephoneMessage.findById(id);
+//            models.sales.ConsultRecord consult = models.sales.ConsultRecord.findById(id);
 //            if (consult != null) {
 //                consult.deleted = DeletedStatus.DELETED;
 //                consult.save();
@@ -93,7 +88,7 @@ public class TelephoneMessage extends Model {
 
     public static void delete(Long id) {
 
-        models.sales.TelephoneMessage consult = models.sales.TelephoneMessage.findById(id);
+        ConsultRecord consult = ConsultRecord.findById(id);
         if (consult != null) {
             consult.deleted = DeletedStatus.DELETED;
             consult.save();
@@ -102,8 +97,8 @@ public class TelephoneMessage extends Model {
     }
 
 
-    public static void update(Long id, TelephoneMessage consult) {
-        TelephoneMessage updateConsult = TelephoneMessage.findById(id);
+    public static void update(Long id, ConsultRecord consult) {
+        ConsultRecord updateConsult = ConsultRecord.findById(id);
         if (updateConsult == null) {
             return;
         }
