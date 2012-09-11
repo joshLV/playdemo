@@ -696,7 +696,7 @@ public class Order extends Model {
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
                     if (!Play.runingInTestMode() && (goods.isLottery == null || !goods.isLottery)) {
-                        SMSUtil.send("【券市场】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
+                        SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
                                 "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
                                 "截止" + dateFormat.format(eCoupon.expireAt) + "客服4006262166",
                                 orderItem.phone, eCoupon.replyCode);

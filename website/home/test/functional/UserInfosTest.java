@@ -111,8 +111,8 @@ public class UserInfosTest extends FunctionalTest {
     public void testSendValidCode() {
         //验证手机发送的验证码
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertNotNull("【券市场】您的验证码是123456, 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码", msg);
-        assertEquals("【券市场】您的验证码是123456, 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码", msg.getContent());
+        assertNotNull("【一百券】您的验证码是123456, 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码", msg);
+        assertEquals("【一百券】您的验证码是123456, 请将该号码输入后即可验证成功。如非本人操作，请及时修改密码", msg.getContent());
 
     }
 

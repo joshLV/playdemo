@@ -790,7 +790,7 @@ public class ECoupon extends Model {
      */
     private static void send(ECoupon eCoupon) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
-        SMSUtil.send("【券市场】"
+        SMSUtil.send("【一百券】"
                 + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title
                 : (eCoupon.goods.name
                 +

@@ -84,21 +84,21 @@ public class ExpiredCouponUnitTest extends UnitTest {
 
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
-        assertNotNull("【券市场】您的测试商品5，将要过期，请注意消费截止日期。", msg);
-        assertEquals("【券市场】您的测试商品5，将要过期，请注意消费截止日期。", msg.getContent());
+        assertNotNull("【一百券】您的测试商品5，将要过期，请注意消费截止日期。", msg);
+        assertEquals("【一百券】您的测试商品5，将要过期，请注意消费截止日期。", msg.getContent());
 
         msg = MockSMSProvider.getLastSMSMessage();
-        assertNotNull("【券市场】您的测试商品4，将要过期，请注意消费截止日期。", msg);
-        assertEquals("【券市场】您的测试商品4，将要过期，请注意消费截止日期。", msg.getContent());
+        assertNotNull("【一百券】您的测试商品4，将要过期，请注意消费截止日期。", msg);
+        assertEquals("【一百券】您的测试商品4，将要过期，请注意消费截止日期。", msg.getContent());
 
 
         msg = MockSMSProvider.getLastSMSMessage();
-        assertNotNull("【券市场】您的测试商品2，将要过期，请注意消费截止日期。", msg);
-        assertEquals("【券市场】您的测试商品2，将要过期，请注意消费截止日期。", msg.getContent());
+        assertNotNull("【一百券】您的测试商品2，将要过期，请注意消费截止日期。", msg);
+        assertEquals("【一百券】您的测试商品2，将要过期，请注意消费截止日期。", msg.getContent());
 
         msg = MockSMSProvider.getLastSMSMessage();
-        assertNotNull("【券市场】您的测试商品1，将要过期，请注意消费截止日期。", msg);
-        assertEquals("【券市场】您的测试商品1，将要过期，请注意消费截止日期。", msg.getContent());
+        assertNotNull("【一百券】您的测试商品1，将要过期，请注意消费截止日期。", msg);
+        assertEquals("【一百券】您的测试商品1，将要过期，请注意消费截止日期。", msg.getContent());
 
         job.doJob();
 
