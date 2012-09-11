@@ -58,65 +58,33 @@
 
                 手机号或邮箱： <input type="text" name="condition.searchUser" class="input-medium"
 
+
             #{if phone!=null}
                                value="${phone}"
             #{/if}
             #{else}
                                value="${condition?.searchUser}"
             #{/else}/>
+
+            #{if user!=null}
+                <input type="hidden" type="text" name="userId" id="user2" value="${user.id}"/>
+            #{/if}
                 <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
             </form>
         </td>
         <td>
-            <form class="form-horizontal" name="frmlist2" id="frmlist2" action="@{OperateCRM.index(phone)}" method="GET">
+            <form class="form-horizontal" name="frmlist2" id="frmlist2" action="@{OperateCRM.index(phone)}"
+                  method="GET">
                 订单号或券号尾4位： <input type="text" name="condition.searchOrderCoupon" class="input-medium"
                                   value="${condition?.searchOrderCoupon}"/>
+            #{if user!=null}
+                <input type="hidden" type="text" name="userId" id="user4" value="${user.id}"/>
+            #{/if}
                 <button class="btn btn-primary" id="searchbtn2" type="submit">搜索</button>
             </form>
         </td>
     </tr>
 </table>
-
-
-
-
-
-#{if user!=null}
-
-
-<ul class="nav">
-
-    <table class="table table-bordered" style="margin-bottom: 18px;" width="0">
-
-        <tr>
-            <td width="20%">客 户姓 名：${user?.userInfo?.fullName}</td>
-            <td width="20%"> 手 机：${user?.mobile} </td>
-            <td width="20%"> 邮 箱: ${user?.loginName}</td>
-            <td width="20%"> 性别：
-
-                #{if user!=null}
-                ${(user?.userInfo?.userSex==1 || user?.userInfo?.userSex==0) ?'男':'女'}
-                #{/if}
-                #{else}
-                #{/else}
-
-
-            </td>
-        </tr>
-        <tr>
-            <td width="20%"> 可提现余额： ${user?.AccountMoney()?.formatCurrency('CNY')}</td>
-            <td width="20%"> 不可提现余额： ${user?.promotionAmountMoney()?.formatCurrency('CNY')}</td>
-            <td width="20%">积分： ${user?.userInfo?.totalPoints}</td>
-            <td width="20%">地址： ${address?.address}</td>
-        </tr>
-    </table>
-</ul>
-#{/if}
-#{else}
-没有用户记录
-#{/else}
-
-
 
 
 <table width="50%">
@@ -240,10 +208,10 @@
     </tbody>
 
 </table>
-<div>
+<div style="text-align: right; margin-top:-15px;">
     #{if  orderListSize >5}
         <a href="/orders?condition.searchKey=ORDER_NUMBER&condition.searchItems=${moreSearch}"
-           target="_blank" style="float:right; font-size:larger"> more</a>
+           target="_blank" style="font-size:large"> more</a>
     #{/if}
 </div>
 #{/if}
@@ -280,7 +248,6 @@
             }%
 
             <td  #{if coupon?.status==models.order.ECouponStatus.REFUND}
-
 
                     style="color:red"
 
@@ -368,15 +335,15 @@
     </tbody>
 
 </table>
-
+<div style="text-align: right; margin-top:-15px;">
     #{if eCouponsSize>5}
 
-    <a href="/coupons?condition.searchKey=COUPON&condition.searchItems=${moreSearch}"
+        <a href="/coupons?condition.searchKey=COUPON&condition.searchItems=${moreSearch}"
 
-       target="_blank" style="float:right; font-size:larger"> more</a>
+           target="_blank" style="float:right; font-size:larger;"> more</a>
 
     #{/if}
-
+</div>
 
 #{/if}
 
@@ -409,18 +376,18 @@
         #{/list}
     </table>
 </div>
-
+<div style="text-align: right; margin-top:-15px;">
     #{if withdrawBillSize>5}
 
 
 
-    <a href="withdraw?condition.searchUser=${condition.searchUser}"
+        <a href="withdraw?condition.searchUser=${condition.searchUser}"
 
-       target="_blank" style="float:right; font-size:larger"> more</a>
+           target="_blank" style="float:right; font-size:larger;"> more</a>
 
 
     #{/if}
-
+</div>
 #{/if}
 
 </div>
@@ -428,10 +395,70 @@
 
 <div class="span5">
 
+#{if userList!=null&& userList.size() > 0}
+
+     <form id="form">
+    切换用户
+
+    #{select 'condition.userId', id:userId, class:'select', value:condition?.userId, onchange:"refresh('${phone}')"}
+
+        #{list items:userList, as:'userList'}
+            #{option userList?.id}
+                #{if userList.loginName!=null}
+                    邮箱${userList?.loginName }
+                #{/if}
+                #{if userList.mobile!=null}
+                    手机${userList?.mobile}
+                    uid${userList?.id}
+                #{/if}
+            #{/option}
+        #{/list}
+    #{/select}
+     </form>
+    <ul class="nav">
+
+
+        <table class="table table-bordered" style="margin-bottom: 18px;" width="0">
+
+            <tr>
+                <td width="20%">客 户姓 名：${user?.userInfo?.fullName}</td>
+                <td width="20%"> 手 机：${user?.mobile} </td>
+                <td width="20%"> 邮 箱: ${user?.loginName}</td>
+                <td width="20%"> 性别：
+
+                    #{if user!=null}
+                    ${(user?.userInfo?.userSex==1 || user?.userInfo?.userSex==0) ?'男':'女'}
+                    #{/if}
+                    #{else}
+                    #{/else}
+
+
+                </td>
+            </tr>
+            <tr>
+                <td width="20%"> 可提现余额： ${user?.AccountMoney()?.formatCurrency('CNY')}</td>
+                <td width="20%"> 不可提现余额： ${user?.promotionAmountMoney()?.formatCurrency('CNY')}</td>
+                <td width="20%">积分： ${user?.userInfo?.totalPoints}</td>
+                <td width="20%">地址： ${address?.address}</td>
+            </tr>
+        </table>
+    </ul>
+
+#{/if}
+#{else}
+    没有用户记录
+#{/else}
 
 
 #{form @OperateCRM.save(), id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
     <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
+
+    #{if user!=null}
+        <input type="hidden" type="text" name="userId" id="user" value="${user.id}"/>
+    #{/if}
+
+    <input type="hidden" type="text" name="user" id="user" value="${user}"/>
+
     咨询类型
     #{select 'consult.consultType', value:consult?.consultType, id:'consult_type',class:'span4'}
         #{option models.sales.ConsultType.ORDERCONSULT }&{'consult.ORDERCONSULT'}#{/option}
@@ -459,6 +486,8 @@
         <div>
             <hr size="1" noshade="noshade" style="border:1px #cccccc dotted;">
         ${consult?.phone} &nbsp;
+
+        ${consult?.loginName}  &nbsp; ${consult?.userType}
             <span style="color:red">  &{'consult.'+consult?.consultType}   </span> :      ${consult?.text}
 
             <br>
@@ -466,18 +495,18 @@
 
         ${consult?.createdBy}
 
-            #{if currentOperator.equals(consult.createdBy)}
+        *{#{if currentOperator.equals(consult.createdBy)}}*
 
 
-                <a id="edit" type="submit" href="/crm/${consult?.id}/edit"
-                   target="_blank" style="float:right">&nbsp;修改 </a>
+        *{<a id="edit" type="submit" href="/crm/${consult?.id}/edit"}*
+        *{target="_blank" style="float:right">&nbsp;修改 </a>}*
 
-              <span style="float:right">
-                  #{vx.deleteLink id:consult?.id, name:consult?.id, action:"/crm"/} |
-              </span>
-            </div>
+        *{<span style="float:right">}*
+        *{#{vx.deleteLink id:consult?.id, name:consult?.id, action:"/crm"/} |}*
+        *{</span>}*
+        *{</div>}*
 
-            #{/if}
+        *{#{/if}}*
         #{/if}
     #{/list}
 
@@ -522,5 +551,11 @@
 
     });
 
+    function refresh(phone) {
+        var url = "/callcenter/phone/" + phone  ;
+        $("#form").attr("method", "GET");
+        $("#form").attr("action", url);
+        $("#form").submit();
+    }
 
 </script>

@@ -26,19 +26,29 @@ import java.util.List;
 public class Consult extends Model {
 
 
-    public static User findUserByCondition(CRMCondition condition) {
+//    public static User findUserByCondition(CRMCondition condition) {
+//
+//        OrdersCondition orderCondition = new OrdersCondition();
+//        //查询用户信息
+//        User user = User.find("mobile=? or loginName=?", condition.searchUser, condition.searchUser).first();
+//        return user;
+//
+//
+//    }
 
-        OrdersCondition orderCondition = new OrdersCondition();
-        //查询用户信息
-        User user = User.find("mobile=? or loginName=?", condition.searchUser, condition.searchUser).first();
-        return user;
 
+//    public static Address findAddressByCondition(CRMCondition condition) {
+//        User user = findUserByCondition(condition);
+//        if (user != null) {
+//            Address address = Address.findDefault(user);
+//            return address;
+//        }
+//        return null;
+//
+//    }
 
-    }
+    public static Address findAddressByCondition(User user) {
 
-
-    public static Address findAddressByCondition(CRMCondition condition) {
-        User user = findUserByCondition(condition);
         if (user != null) {
             Address address = Address.findDefault(user);
             return address;
@@ -54,12 +64,15 @@ public class Consult extends Model {
         List<Order> orderList = Order.find("select distinct o from Order o, User u where " +
                 "o.userId=u.id and o.userType = models.accounts.AccountType.CONSUMER and" +
                 "(o.orderNumber=? or u.mobile=? or u.loginName=? or o.receiverMobile=? or o.buyerMobile = ?"
-                + "or o.id in (select oi.order.id from o.orderItems oi where oi.phone =?))",
+                + "or o.id in (select oi.order.id from o.orderItems oi where oi.phone =?)"
+                + "or u.id=?)",
                 condition.searchOrderCoupon, condition.searchUser,
-                condition.searchUser, condition.searchUser, condition.searchUser, condition.searchUser).fetch(5);
+                condition.searchUser, condition.searchUser, condition.searchUser, condition.searchUser, condition.userId).fetch(5);
+
         return orderList;
 
     }
+
 
     public static long findOrderByConditionSize(CRMCondition condition) {
 
@@ -104,10 +117,11 @@ public class Consult extends Model {
                 "  or u.loginName=? " +
                 "  or e.order.receiverMobile=? " +
                 "  or e.order.buyerMobile = ?" +
-                "  or e.orderItems.phone = ?)",
+                "  or e.orderItems.phone = ?" +
+                "  or u.id=?)",
                 "%" + condition.searchOrderCoupon, condition.searchOrderCoupon,
                 condition.searchUser,
-                condition.searchUser, condition.searchUser, condition.searchUser, condition.searchUser).fetch(5);
+                condition.searchUser, condition.searchUser, condition.searchUser, condition.searchUser, condition.userId).fetch(5);
 
 
         return eCoupons;
@@ -123,9 +137,10 @@ public class Consult extends Model {
                         + "or applier in (select loginName from User u where u.mobile=?)"
                         + "or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.receiverMobile=?)"
                         + "or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.buyerMobile=?)"
-                        + "or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.id in (select oi.order.id from o.orderItems oi where oi.phone =?)))",
+                        + "or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.id in (select oi.order.id from o.orderItems oi where oi.phone =?))"
+                        + "or applier in (select loginName from User u where u.id=?))",
                 condition.searchUser, condition.searchUser,
-                condition.searchUser, condition.searchUser, condition.searchUser
+                condition.searchUser, condition.searchUser, condition.searchUser, condition.userId
 
         ).fetch(5);
 

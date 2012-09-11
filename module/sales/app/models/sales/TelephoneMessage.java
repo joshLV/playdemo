@@ -2,8 +2,10 @@ package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
+import models.accounts.AccountType;
 import models.order.ECouponStatus;
 import org.apache.commons.lang.StringUtils;
+import play.data.validation.Email;
 import play.data.validation.MaxSize;
 import play.data.validation.MinSize;
 import play.data.validation.Required;
@@ -66,6 +68,17 @@ public class TelephoneMessage extends Model {
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
 
+    @Column(name = "user_id")
+    public long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_type")
+    public AccountType userType;            //用户类型，个人/分销商
+
+    @Column(name = "email")
+    @Required
+    @Email
+    public String loginName;
 
 //    public static void delete(Long... ids) {
 //        for (Long id : ids) {
