@@ -1,5 +1,6 @@
 package models.order;
 
+import com.uhuila.common.util.DateUtil;
 import models.consumer.User;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
@@ -39,13 +40,6 @@ public class PromoteRebate extends Model {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = true)
     public Order order;
-
-    /**
-     * 券关联
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_id", nullable = true)
-    public ECoupon coupon;
 
     /**
      * 推荐状态
@@ -146,6 +140,7 @@ public class PromoteRebate extends Model {
 
     /**
      * 取得返利明细
+     *
      * @param user
      * @param condition
      * @param pageNumber
@@ -165,16 +160,25 @@ public class PromoteRebate extends Model {
 
     /**
      * 取得排名的记录
+     *
      * @return
      */
     public static List<PromoteRebate> findRank() {
         Query query = JPA.em()
                 .createQuery(
-                        "select new models.order.PromoteRebate(p.promoteUser,sum(p.rebateAmount),count(p.id)) "
-                                + " from PromoteRebate p where p.status=:status " +
-                                " group by p.promoteUser.id order by sum(p.rebateAmount) desc");
+                        "select new models.order.PromoteRebate(p.promoteUser,sum(e.promoterRebateValue),count(distinct p.id)) "
+                                + " from PromoteRebate p,ECoupon e where p.order=e.order and e.status=:e_status " +
+                                "and e.consumedAt>=:consumedBeginAt and e.consumedAt<=:consumedEndAt" +
+                                " and p.status=:status or p.status=:status1  " +
+                                " group by p.promoteUser.id order by sum(e.promoterRebateValue) desc");
+        query.setParameter("e_status", ECouponStatus.CONSUMED);
+        query.setParameter("consumedBeginAt", DateUtil.getMonthFirstDay());
+        query.setParameter("consumedEndAt", DateUtil.getMonthLastDay());
         query.setParameter("status", RebateStatus.ALREADY_REBATE);
+        query.setParameter("status1", RebateStatus.PART_REBATE);
+
         List<PromoteRebate> rankList = query.getResultList();
+
 
         return rankList;
     }

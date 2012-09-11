@@ -89,12 +89,38 @@ public class DateUtil {
     }
 
     /**
+     * 得到本月的第一天
+     *
+     * @return
+     */
+    public static Date getMonthFirstDay() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, calendar
+                .getActualMinimum(Calendar.DAY_OF_MONTH));
+
+        return calendar.getTime();
+    }
+
+    /**
+     * 得到本月的最后一天
+     *
+     * @return
+     */
+    public static Date getMonthLastDay() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, calendar
+                .getActualMaximum(Calendar.DAY_OF_MONTH));
+        return calendar.getTime();
+    }
+
+    /**
      * 判断是否还有7天到期
      *
      * @param date 截止日期
      * @return true false
      * @throws ParseException
      */
+
     public static boolean getDiffDate(Date date) {
         long dateRange = diffDay(date);
         if (dateRange == 7) {

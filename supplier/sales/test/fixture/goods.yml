@@ -6,8 +6,8 @@ sales.Goods(Goods1):
  name: 测试商品1
  supplierId: 1
  imagePath: /0/0/114/origin.jpg
- expiredBeginOn: 2012-02-28
- expiredEndOn: 2092-02-29
+ "effectiveAt": "2012-02-28T14:41:33"
+ "expireAt": "2092-02-28T14:41:33"
  originalPrice: 100
  salePrice: 10
  prompt: test
@@ -21,14 +21,15 @@ sales.Goods(Goods1):
  materialType: ELECTRONIC
  brand: Brand_1
  isAllShop: true
+ categories: [Category_2]
 
 sales.Goods(Goods2):
  no: 002
  name: 测试商品2
  supplierId: 1
  imagePath: /0/0/112/origin.jpg
- expiredBeginOn: 2012-02-28
- expiredEndOn: 2092-02-29
+ "effectiveAt": "2012-02-28T14:41:33"
+ "expireAt": "2092-02-28T14:41:33"
  originalPrice: 100
  salePrice: 10
  prompt: test1
@@ -42,3 +43,4 @@ sales.Goods(Goods2):
  materialType: ELECTRONIC
  brand: Brand_2
  isAllShop: true
+ categories: [Category_2]

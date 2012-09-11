@@ -172,7 +172,6 @@ public class SupplierGoods extends Controller {
 
         goods.setLevelPrices(levelPrices);
 
-        System.out.println("goods.useBeginTime==================" + goods.useBeginTime);
         checkExpireAt(goods);
         checkOriginalPrice(goods);
         for (String key : validation.errorsMap().keySet()) {

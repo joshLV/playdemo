@@ -23,35 +23,17 @@ import models.sales.SecKillGoodsItem;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
-import org.h2.util.New;
-import org.hibernate.annotations.Index;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 
 @Entity
@@ -198,7 +180,6 @@ public class Order extends Model {
     @Column(name = "delivery_company")
     public String deliveryCompany;
 
-    @Index(name = "ext_request_sn")
     @Column(name = "ext_request_sn")
     public String extRequestSN;
 
@@ -382,28 +363,6 @@ public class Order extends Model {
             return discountCode.discountPercent.multiply(amount);
         }
         return BigDecimal.ZERO;
-    }
-
-    /**
-     * 计算订单中受邀者应得的返利
-     *
-     * @param order
-     * @return
-     */
-    public static BigDecimal getPromoteRebateOfTotalECartAmount(Order order) {
-        BigDecimal rebatePrice = BigDecimal.ZERO;
-        BigDecimal invitedUserPrice;
-        for (OrderItems item : order.orderItems) {
-            invitedUserPrice = item.goods.invitedUserPrice == null ? BigDecimal.ZERO : item.goods.invitedUserPrice;
-            if (invitedUserPrice.compareTo(new BigDecimal(5)) <= 0) {
-                //如果没设置被推荐的返利，默认给1%
-                if (invitedUserPrice == null || invitedUserPrice.compareTo(BigDecimal.ZERO) == 0) {
-                    invitedUserPrice = BigDecimal.ONE;
-                }
-                rebatePrice = rebatePrice.add(item.goods.salePrice.multiply(invitedUserPrice).multiply(new BigDecimal(0.01))).multiply(new BigDecimal(item.buyNumber));
-            }
-        }
-        return rebatePrice;
     }
 
     /**
@@ -1155,15 +1114,43 @@ public class Order extends Model {
      * @return
      */
     public static BigDecimal getPromoteRebateAmount(Order order) {
-        BigDecimal amount = BigDecimal.ZERO;
         BigDecimal promoterPrice;
+        BigDecimal addAmount = BigDecimal.ZERO;
         for (OrderItems item : order.orderItems) {
+            BigDecimal amount = BigDecimal.ZERO;
             //默认给推荐人2%，如果商品没设置返利
             promoterPrice = item.goods.promoterPrice == null || item.goods.promoterPrice.compareTo(BigDecimal.ZERO) == 0 ? new BigDecimal(2) : item.goods.promoterPrice;
-            amount = amount.add(item.goods.salePrice.multiply(promoterPrice).multiply(new BigDecimal(0.01))).multiply(new BigDecimal(item.buyNumber));
+            amount = amount.add(item.goods.salePrice.multiply(promoterPrice)).multiply(new BigDecimal(0.01));
+            amount = amount.setScale(2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(item.buyNumber));
+            addAmount = addAmount.add(amount);
         }
 
-        return amount;
+        return addAmount;
+    }
+
+    /**
+     * 计算订单中受邀者应得的返利
+     *
+     * @param order
+     * @return
+     */
+    public static BigDecimal getPromoteRebateOfTotalECartAmount(Order order) {
+        BigDecimal addAmount = BigDecimal.ZERO;
+        BigDecimal invitedUserPrice;
+        for (OrderItems item : order.orderItems) {
+            BigDecimal rebatePrice = BigDecimal.ZERO;
+            invitedUserPrice = item.goods.invitedUserPrice == null ? BigDecimal.ZERO : item.goods.invitedUserPrice;
+            if (invitedUserPrice.compareTo(new BigDecimal(5)) <= 0) {
+                //如果没设置被推荐的返利，默认给1%
+                if (invitedUserPrice == null || invitedUserPrice.compareTo(BigDecimal.ZERO) == 0) {
+                    invitedUserPrice = BigDecimal.ONE;
+                }
+                rebatePrice = rebatePrice.add(item.goods.salePrice.multiply(invitedUserPrice)).multiply(new BigDecimal(0.01));
+                rebatePrice = rebatePrice.setScale(2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(item.buyNumber));
+                addAmount = addAmount.add(rebatePrice);
+            }
+        }
+        return addAmount;
     }
 
     /**
