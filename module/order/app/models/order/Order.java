@@ -598,6 +598,10 @@ public class Order extends Model {
     }
 
     public void payAndSendECoupon() {
+        if(this.status == OrderStatus.PAID){
+            return;
+        }
+
         if (paid()) {
             sendECoupon();
         }
