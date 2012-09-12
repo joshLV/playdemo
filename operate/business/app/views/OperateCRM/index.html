@@ -119,7 +119,25 @@
 
 
             <td rowspan="${order?.orderItems?.size()}"><a href="@{OperateOrders.details(order?.id)}"
-                                                          target="_blank">${order.orderNumber}</td>
+                                                          target="_blank">${order.orderNumber}
+
+                *{<a href="memberCallBind.html" onclick="openwin('${phone}')">open</a>}*
+
+
+            </td>
+
+            <div>
+                <!-- 定义一个button，点击显示dialog -->
+                <input type="button" value="我要登录" id="show"/>
+            </div>
+            <!-- 作为dialog的div -->
+            <div id="dialog" class="flora"></div>
+            <!--这边为什么要定义class=”flora”呢？class是指定dialog的css,因为在jqueryUI的css样式都是使用class来作为选择器-->
+
+
+
+        *{<div id="dialog" title="basic dialog"><p>这是一个采用默认样式的对话框</p></div>}*
+        *{<input type="button" value="打开" onclick="dialog();"/>}*
         *{有实物券时}*
             #{if order.realGoods?.size()>0}
                 <td>
@@ -397,24 +415,24 @@
 
 #{if userList!=null&& userList.size() > 0}
 
-     <form id="form">
-    切换用户
+    <form id="form">
+        切换用户
 
-    #{select 'condition.userId', id:userId, class:'select', value:condition?.userId, onchange:"refresh('${phone}')"}
+        #{select 'condition.userId', id:userId, class:'select', value:condition?.userId, onchange:"refresh('${phone}')"}
 
-        #{list items:userList, as:'userList'}
-            #{option userList?.id}
-                #{if userList.loginName!=null}
-                    邮箱${userList?.loginName }
-                #{/if}
-                #{if userList.mobile!=null}
-                    手机${userList?.mobile}
-                    uid${userList?.id}
-                #{/if}
-            #{/option}
-        #{/list}
-    #{/select}
-     </form>
+            #{list items:userList, as:'userList'}
+                #{option userList?.id}
+                    #{if userList.loginName!=null}
+                        邮箱${userList?.loginName }
+                    #{/if}
+                    #{if userList.mobile!=null}
+                        手机${userList?.mobile}
+                        uid${userList?.id}
+                    #{/if}
+                #{/option}
+            #{/list}
+        #{/select}
+    </form>
     <ul class="nav">
 
 
@@ -457,7 +475,7 @@
         <input type="hidden" type="text" name="user.id" id="user" value="${user.id}"/>
     #{/if}
 
-    *{<input type="hidden" type="text" name="user" id="user" value="${user}"/>}*
+*{<input type="hidden" type="text" name="user" id="user" value="${user}"/>}*
 
     咨询类型
     #{select 'consult.consultType', value:consult?.consultType, id:'consult_type',class:'span4'}
@@ -481,33 +499,35 @@
 
     #{list items: consultContent, as:'consult'}
 
-        #{if consult?.phone==phone}
+    *{#{if consult?.phone==phone}}*
 
-        <div>
-            <hr size="1" noshade="noshade" style="border:1px #cccccc dotted;">
-        ${consult?.phone} &nbsp;
+    <div>
+        <hr size="1" noshade="noshade" style="border:1px #cccccc dotted;">
+    ${consult?.phone} &nbsp;
 
-        ${consult?.loginName}  &nbsp; ${consult?.userType}
-            <span style="color:red">  &{'consult.'+consult?.consultType}   </span> :      ${consult?.text}
+    ${consult?.loginName}  &nbsp;
+    &{'account.type.' + consult.userType}
 
-            <br>
-        ${consult?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}
+        <span style="color:red">  &{'consult.'+consult?.consultType}   </span> :      ${consult?.text}
 
-        ${consult?.createdBy}
+        <br>
+    ${consult?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}
 
-        *{#{if currentOperator.equals(consult.createdBy)}}*
+    ${consult?.createdBy}
+
+    *{#{if currentOperator.equals(consult.createdBy)}}*
 
 
-        *{<a id="edit" type="submit" href="/crm/${consult?.id}/edit"}*
-        *{target="_blank" style="float:right">&nbsp;修改 </a>}*
+    *{<a id="edit" type="submit" href="/crm/${consult?.id}/edit"}*
+    *{target="_blank" style="float:right">&nbsp;修改 </a>}*
 
-        *{<span style="float:right">}*
-        *{#{vx.deleteLink id:consult?.id, name:consult?.id, action:"/crm"/} |}*
-        *{</span>}*
-        *{</div>}*
+    *{<span style="float:right">}*
+    *{#{vx.deleteLink id:consult?.id, name:consult?.id, action:"/crm"/} |}*
+    *{</span>}*
+    *{</div>}*
 
-        *{#{/if}}*
-        #{/if}
+    *{#{/if}}*
+    *{#{/if}}*
     #{/list}
 
 
@@ -520,6 +540,23 @@
 
 
 <script type="text/javascript">
+
+    $(document).ready(function(){
+         $("#show").click(function(){//选中button,并监听click事件
+                 //点击button，选中div并作为dialog显示，只需要调用dialog()
+                    $("#dialog").dialog();
+              });
+         });
+
+
+
+
+
+
+    $(function () {
+        $("#dialog").dialog();
+    });
+
     function prepareSend(id) {
         $("#form").attr("action", "/crm/" + id);
 
@@ -552,10 +589,16 @@
     });
 
     function refresh(phone) {
-        var url = "/callcenter/phone/" + phone  ;
+        var url = "/callcenter/phone/" + phone;
         $("#form").attr("method", "GET");
         $("#form").attr("action", url);
         $("#form").submit();
     }
+
+
+    //    function openwin() {
+    //    　　window.open("memberCallBind.html", "", "width=50,height=50");
+    //　　
+    //    }
 
 </script>

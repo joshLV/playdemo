@@ -60,7 +60,7 @@ public class OperateCRM extends Controller {
 
         String moreSearch = "";
 
-        List<ConsultRecord> consultContent = ConsultRecord.find("deleted=? order by createdAt desc", DeletedStatus.UN_DELETED).fetch();
+        List<ConsultRecord> consultContent = ConsultRecord.find("deleted=? and phone=? order by createdAt desc", DeletedStatus.UN_DELETED, phone).fetch();
 
         String currentOperator = OperateRbac.currentUser().loginName;
 
@@ -119,7 +119,7 @@ public class OperateCRM extends Controller {
 //    name = "user" value = "19"
 //    name = "user.id"
     //Long userId
-    public static void save(ConsultRecord consult,User user, String phone) {
+    public static void save(ConsultRecord consult, User user, String phone) {
 
         CRMCondition condition = new CRMCondition();
 
@@ -163,7 +163,7 @@ public class OperateCRM extends Controller {
 
         consult.userId = user.id;
         consult.phone = phone;
-        consult.loginName=user.loginName;
+        consult.loginName = user.loginName;
 
         consult.create();
         consult.save();
