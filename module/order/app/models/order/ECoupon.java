@@ -100,6 +100,10 @@ public class ECoupon extends Model {
     public BigDecimal promoterRebateValue;
     // ==== 价格列表 ====
 
+    @Column(name = "create_type")
+    @Enumerated(EnumType.STRING)
+    public ECouponCreateType createType;
+
     @Column(name = "refund_price")
     public BigDecimal refundPrice;
 
@@ -170,7 +174,11 @@ public class ECoupon extends Model {
     @Transient
     public String operateUserName;
 
-    public ECoupon(Order order, Goods goods, OrderItems orderItems) {
+    public ECoupon(Order order, Goods goods, OrderItems orderItems){
+        this(order, goods, orderItems, null);
+    }
+
+    public ECoupon(Order order, Goods goods, OrderItems orderItems, String couponSn) {
         this.order = order;
         this.goods = goods;
 
@@ -190,7 +198,13 @@ public class ECoupon extends Model {
         this.refundAt = null;
         this.refundPrice = new BigDecimal(0);
         this.status = ECouponStatus.UNCONSUMED;
-        this.eCouponSn = generateAvailableEcouponSn();
+        if(couponSn == null) {
+            this.eCouponSn = generateAvailableEcouponSn();
+            this.createType = ECouponCreateType.GENERATE;
+        }else {
+            this.eCouponSn = couponSn;
+            this.createType = ECouponCreateType.IMPORT;
+        }
         this.orderItems = orderItems;
         this.downloadTimes = 3;
         this.isFreeze = 0;

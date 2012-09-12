@@ -15,7 +15,7 @@ public class RandomNumberUtil {
     public static String generateSerialNumber(int length) {
         char[] charsArray = chars.toCharArray();
         Random random = new Random(System.currentTimeMillis());
-        StringBuffer sb = new StringBuffer(length);
+        StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
             sb.append(charsArray[random.nextInt(charsArray.length)]);
         }

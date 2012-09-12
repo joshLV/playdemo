@@ -7,13 +7,11 @@ import java.util.Date;
 
 /**
  * @author likang
- *         Date: 12-9-8
+ *         Date: 12-9-11
  */
 @Entity
-@Table(name = "imported_coupons",
-        uniqueConstraints = {
-                @UniqueConstraint( columnNames = {"goods_id", "coupon"})})
-public class ImportedCoupon extends Model {
+@Table(name = "imported_coupon_temp")
+public class ImportedCouponTemp extends Model {
     @ManyToOne
     @JoinColumn(name = "goods_id")
     public Goods goods;
@@ -32,13 +30,13 @@ public class ImportedCoupon extends Model {
     @Column(name = "imported_at")
     public Date importedAt;
 
-    public ImportedCoupon(){
+    public ImportedCouponTemp(){
         this.status = ImportedCouponStatus.UNUSED;
         this.importedAt = new Date();
         this.lockVersion = 1;
     }
 
-    public ImportedCoupon(Goods goods, String coupon){
+    public ImportedCouponTemp(Goods goods, String coupon){
         this();
         this.goods = goods;
         this.coupon = coupon;
