@@ -47,7 +47,22 @@
         <input type="hidden" id="taskTempNo" name="taskTempNo" value="${taskTempNo}"/>
 
         <div>
-            <button class="btn btn-primary" id="searchbtn" type="submit">立即发送短信</button>
+        %{
+
+            }%
+
+            <button class="btn btn-primary" id="sendsmsinstantly" name="timer" type="submit" >立即发送短信</button>
+        </div>
+        <br>
+
+        <div>
+
+            <input type="text" id="scheduledTime" name="scheduledTime"
+                   value="${scheduledTime?.format()}"
+                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+                   class="input-medium Wdate"/>
+            <button class="btn btn-primary" id="sendsmstimer" name="timer" type="submit" >定时发送短信</button>
+
         </div>
 
     </form>
@@ -68,12 +83,27 @@
                 }
         );
 
+        $("#sendsmsinstantly").click(function () {
+            this.value="0";
+        }
+
+        );
+
+
+        $("#sendsmstimer").click(function () {
+                    this.value="1";
+                }
+
+        );
+
+
+
     });
 
     function prepareSend() {
         $("#searchbtn2").attr("action", "/send_sms/add");
-
     }
+
 
 </script>
 

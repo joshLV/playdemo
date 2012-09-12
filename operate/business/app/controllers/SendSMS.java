@@ -10,6 +10,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,7 +47,6 @@ public class SendSMS extends Controller {
         render();
     }
 
-
     public static void create(String taskTempNo, String tempMobile, String tempECouponSn, String tempText) {
         SendSMSInfo sms = new SendSMSInfo();
 
@@ -80,6 +80,8 @@ public class SendSMS extends Controller {
 
         int length = mobileResult.length >= ECouponSnResult.length ? ECouponSnResult.length : mobileResult.length;
 
+        SendSMSTask smsTask = new SendSMSTask();
+        smsTask.taskNo = taskTempNo;
 
         for (int i = 0; i < length; i++) {
             sms = new SendSMSInfo();
@@ -110,13 +112,14 @@ public class SendSMS extends Controller {
                 }
                 sms.taskNo = taskTempNo;
 
-
                 sms.text = tempText.replaceAll("\\$\\{coupon\\}", sms.eCouponSn);
 
                 sms.createdAt = new Date();
                 sms.deleted = DeletedStatus.UN_DELETED;
 
                 sms.save();
+
+
             } else {
 
                 continue;
@@ -125,7 +128,12 @@ public class SendSMS extends Controller {
 
         }
 
-
+        List<SendSMSInfo> smsList = SendSMSInfo.find("deleted=? and taskNo=?", DeletedStatus.UN_DELETED, taskTempNo).fetch();
+        smsTask.unfinished = (long) smsList.size();
+        smsTask.finished = 0L;
+        smsTask.total = smsTask.unfinished + smsTask.finished;
+        smsTask.deleted = DeletedStatus.UN_DELETED;
+        smsTask.save();
         send(sms, taskTempNo);
     }
 
@@ -137,27 +145,46 @@ public class SendSMS extends Controller {
     }
 
 
-
-    public static void sucSend(final String taskTempNo) {
-
-        System.out.println("count执行了-->hhhhhhhhhhhh"); // 1次
-        System.out.println("sms.taskNo" + taskTempNo);
-        List<SendSMSInfo> smsList = SendSMSInfo.find("deleted=? and taskNo=?", DeletedStatus.UN_DELETED, taskTempNo).fetch();
-        System.out.println("smsList" + smsList);
-        for (SendSMSInfo s : smsList) {
-            System.out.println("send");
-
-            s.sendAt = new Date();
-//            SMSUtil.send(s.text, s.mobile);
-            s.save();
+    public static void sucSend(final String taskTempNo, String scheduledTime, String timer) {
+        SendSMSTask smsTask = SendSMSTask.find("deleted=? and taskNo=? ", DeletedStatus.UN_DELETED, taskTempNo).first();
+        System.out.println("timertimer"+timer);
+            //timer == "0"
+        if (timer.indexOf("0")!=-1) {
+            System.out.println("instantly");
+            Date now = new Date();
+            Date date = new Date(now.getTime() + 1000);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String scheduledTimeInstantly = sdf.format(date);
+            smsTask.scheduledTime = scheduledTimeInstantly;
+            smsTask.save();
         }
+        if (timer.indexOf("1")!=-1) {
+            smsTask.scheduledTime = scheduledTime;
+            smsTask.save();
+        }
+//        System.out.println("timertimertimer" + timer);
+//        Date   date   =   Calendar.getInstance().getTime();
+//        SimpleDateFormat sdf   =   new   SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
+//        String   currentTime   =   sdf.format(date);
+//        Date now = new Date();
+//        Date   date1   =   new Date(now.getTime() + 1000);
+//        SimpleDateFormat sdf1   =   new   SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
+//        String   scheduledTime2   =   sdf.format(date1);
+//        System.out.println("currentTimecurrentTime"+currentTime);
+//        System.out.println("scheduledTime2scheduledTime2"+scheduledTime2);
+
+
+//        System.out.println("scheduledtimescheduledtime" + scheduledTime);
+//        List<SendSMSInfo> smsList = SendSMSInfo.find("deleted=? and taskNo=?", DeletedStatus.UN_DELETED, taskTempNo).fetch();
+//
+//        for (SendSMSInfo s : smsList) {
+//            System.out.println("send");
+//
+//            s.sendAt = new Date();
+////            SMSUtil.send(s.text, s.mobile);
+//            s.save();
+//        }
         index(null);
-
-    }
-
-    public static void SMSScheduler(String scheduledTime)
-    {
-
 
     }
 

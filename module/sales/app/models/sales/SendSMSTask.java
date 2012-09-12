@@ -1,10 +1,9 @@
 package models.sales;
 
+import com.uhuila.common.constants.DeletedStatus;
 import play.db.jpa.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -27,9 +26,30 @@ public class SendSMSTask  extends Model {
      * 计划发送时间
      */
     @Column(name = "scheduled_time")
-    public Date scheduledTime;
+    public String scheduledTime;
 
+    /**
+     * 已完成
+     */
+    @Column(name = "finished")
+    public Long finished;
 
+    /**
+     * 未完成
+     */
+    @Column(name = "unfinished")
+    public Long unfinished;
 
+    /**
+     * 总任务数
+     */
+    @Column(name = "total")
+    public Long total;
+
+    /**
+     * 逻辑删除,0:未删除，1:已删除
+     */
+    @Enumerated(EnumType.ORDINAL)
+    public DeletedStatus deleted;
 
 }
