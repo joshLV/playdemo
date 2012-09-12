@@ -10,8 +10,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -138,21 +137,28 @@ public class SendSMS extends Controller {
     }
 
 
-    public static void sucSend(String taskTempNo) {
 
+    public static void sucSend(final String taskTempNo) {
+
+        System.out.println("count执行了-->hhhhhhhhhhhh"); // 1次
         System.out.println("sms.taskNo" + taskTempNo);
         List<SendSMSInfo> smsList = SendSMSInfo.find("deleted=? and taskNo=?", DeletedStatus.UN_DELETED, taskTempNo).fetch();
         System.out.println("smsList" + smsList);
-        for (SendSMSInfo s : smsList)
-
-        {
+        for (SendSMSInfo s : smsList) {
             System.out.println("send");
 
             s.sendAt = new Date();
-            SMSUtil.send(s.text, s.mobile);
+//            SMSUtil.send(s.text, s.mobile);
             s.save();
         }
         index(null);
+
+    }
+
+    public static void SMSScheduler(String scheduledTime)
+    {
+
+
     }
 
 
