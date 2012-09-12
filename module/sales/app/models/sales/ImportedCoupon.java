@@ -10,9 +10,9 @@ import java.util.Date;
  *         Date: 12-9-8
  */
 @Entity
-@Table(name = "imported_coupons",
+@Table(name = "imported_coupons")/*,
         uniqueConstraints = {
-                @UniqueConstraint( columnNames = {"goods_id", "coupon"})})
+                @UniqueConstraint( columnNames = {"goods_id", "coupon"})})*/
 public class ImportedCoupon extends Model {
     @ManyToOne
     @JoinColumn(name = "goods_id")

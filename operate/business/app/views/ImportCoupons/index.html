@@ -5,7 +5,13 @@
 
 #{if goodsList?.size() > 0 }
     <legend>${title}</legend>
-    <div class="alert">${errmsg}</div>
+    #{if errmsg}
+        <div class="alert">
+            错误信息：${errmsg}<br/>
+            上传文件中的重复项：${d1}<br/>
+            上传的与原有的券相重复的项:${d2}
+        </div>
+    #{/if}
     #{form @ImportCoupons.upload(), method:'POST', class:'well form-horizontal', enctype:'multipart/form-data'}
         <div class="control-group">
             <label class="control-label" >选择商品</label>

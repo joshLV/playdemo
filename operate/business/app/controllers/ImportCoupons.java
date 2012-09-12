@@ -2,6 +2,7 @@ package controllers;
 
 import models.sales.*;
 import operate.rbac.annotations.ActiveNavigation;
+import org.apache.commons.lang.StringUtils;
 import play.db.jpa.JPA;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -9,6 +10,7 @@ import play.mvc.With;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,22 +21,22 @@ import java.util.List;
 @ActiveNavigation("pre_coupons")
 public class ImportCoupons extends Controller{
     @ActiveNavigation("pre_coupons")
-    public static void index(String errmsg){
+    public static void index(String errmsg, String d1, String d2){
         List<models.sales.Goods> goodsList = models.sales.Goods.find("byCouponType",GoodsCouponType.IMPORT).fetch();
-        render(goodsList, errmsg);
+        render(goodsList, errmsg, d1, d2);
     }
 
     public static void upload(Long goodsId, String action, File couponfile){
         if(goodsId == null){
-            index("请选择商品");
+            index("请选择商品", null, null);
         }else if( action == null || (!action.equals("append") && !action.equals("overwrite"))){
-            index("请选择上传方式");
+            index("请选择上传方式", null, null);
         }else if(couponfile == null){
-            index("请选择上传文件");
+            index("请选择上传文件", null, null);
         }
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
         if(goods == null){
-            index("您选择的商品不存在");
+            index("您选择的商品不存在", null, null);
             return;
         }
         if("overwrite".equals(action)){
@@ -58,16 +60,17 @@ public class ImportCoupons extends Controller{
                 }
             }
         } catch (IOException e) {
-            index("读取文本文件失败");
+            index("读取文本文件失败", null, null);
         }
 
         int duplicateCount = 0;
         //找出并删除导入的数据中的重复记录
-        Query query = JPA.em().createNativeQuery("select i.coupon from (select coupon from imported_coupons_temp where goods_id = ?) i group by i.coupon having count(i.coupon) > 1");
+        Query query = JPA.em().createNativeQuery("select i.coupon from (select coupon from imported_coupons_temp where goods_id = ?) i " +
+                "group by i.coupon having count(i.coupon) > 1");
         query.setParameter(1, goodsId);
-        List<String> duplicateCoupons =query.getResultList();
-        if(duplicateCoupons != null && duplicateCoupons.size() > 0){
-            for(String coupon: duplicateCoupons){
+        List<String> duplicateCouponsInTemp =query.getResultList();
+        if(duplicateCouponsInTemp != null && duplicateCouponsInTemp.size() > 0){
+            for(String coupon: duplicateCouponsInTemp){
                 List<ImportedCouponTemp> couponTemps = ImportedCouponTemp.find("byGoodsAndCoupon", goods, coupon).fetch();
                 if(couponTemps.size()> 1){
                     for (int i = 1; i < couponTemps.size(); i++){
@@ -79,17 +82,31 @@ public class ImportCoupons extends Controller{
         }
 
         //找出并删除导入的数据中与已有的数据相比重复的部分
-        query = JPA.em().createQuery("select it.coupon from importedCouponsTemp it, importedCoupons i " +
+        query = JPA.em().createQuery("select it from ImportedCouponTemp it, ImportedCoupon i " +
                 "where it.goods = :goods and it.goods = i.goods and it.coupon = i.coupon");
         query.setParameter("goods", goods);
-        List<String> c = query.getResultList();
+        List<ImportedCouponTemp> duplicateWithIC  = query.getResultList();
+        List<String> duplicateCouponsWithIC = new ArrayList<>();
+        for(ImportedCouponTemp ict : duplicateWithIC){
+            duplicateCouponsWithIC.add(ict.coupon);
+            duplicateCount += 1;
+            ict.delete();
+        }
 
-        query = JPA.em().createQuery("select ");
+        //将临时表中所有数据导入到正式表中，并把临时表清空
+        List<ImportedCouponTemp> allInTemp = ImportedCouponTemp.findAll();
+        insertCount = 0;
+        for(ImportedCouponTemp ict : allInTemp){
+            new ImportedCoupon(goods, ict.coupon).save();
+            insertCount += 1;
+            if (insertCount % 20 == 0){
+                JPA.em().flush();
+            }
+        }
+        ImportedCouponTemp.deleteAll();
 
-
-
-        goods.baseSale += insertCount - duplicateCount;
+        goods.baseSale += insertCount;
         goods.save();
-        index(null);
+        index("无", StringUtils.join(duplicateCouponsInTemp,","),StringUtils.join(duplicateCouponsWithIC, ","));
     }
 }

@@ -8,6 +8,7 @@ import models.accounts.PaymentSource;
 import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
+import models.admin.SupplierUser;
 import models.consumer.Address;
 import models.consumer.User;
 import models.consumer.UserInfo;
@@ -16,10 +17,7 @@ import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.resale.Resaler;
 import models.resale.util.ResaleUtil;
-import models.sales.Goods;
-import models.sales.GoodsStatistics;
-import models.sales.MaterialType;
-import models.sales.SecKillGoodsItem;
+import models.sales.*;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
@@ -655,7 +653,27 @@ public class Order extends Model {
                 List<String> couponCodes = new ArrayList<>();
                 SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
                 for (int i = 0; i < orderItem.buyNumber; i++) {
-                    ECoupon eCoupon = new ECoupon(this, goods, orderItem).save();
+                    ECoupon eCoupon = null;
+                    //支持导入券号
+                    if (goods.couponType == GoodsCouponType.IMPORT){
+                        ImportedCoupon importedCoupon = ImportedCoupon.find("byGoodsAndStatus", goods, ImportedCouponStatus.UNUSED).first();
+                        if(importedCoupon == null){
+                            throw new RuntimeException("can not find an imported coupon of goods " + goods.getId());
+                        }else {
+                            eCoupon = new ECoupon(this, goods, orderItem, importedCoupon.coupon).save();
+                            Supplier supplier = Supplier.findById(goods.supplierId);
+                            SupplierUser supplierUser = SupplierUser.find("bySupplier", supplier).first();
+                            if(supplierUser == null){
+                                throw new RuntimeException("can not find a supplierUser of goods " + goods.getId());
+                            }
+                            eCoupon.consumeAndPayCommission(supplierUser.shop.id, null, supplierUser, VerifyCouponType.IMPORT_VERIFY);
+                            eCoupon.save();
+                            importedCoupon.status = ImportedCouponStatus.USED;
+                            importedCoupon.save();
+                        }
+                    }else {
+                        eCoupon = new ECoupon(this, goods, orderItem).save();
+                    }
                     if (!Play.runingInTestMode() && (goods.isLottery == null || !goods.isLottery)) {
                         SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
                                 "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
