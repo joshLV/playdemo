@@ -169,11 +169,18 @@ public class YihaodianOrder extends Model{
             order.orderCreateTime = parseDate(baseInfoNode.elementTextTrim("orderCreateTime"));
             order.updateTime = parseDate(baseInfoNode.elementTextTrim("updateTime"));
 
-            order.deliverySupplierId = Integer.parseInt(baseInfoNode.elementTextTrim("deliverySupplierId"));
+            String nodeText = baseInfoNode.elementTextTrim("deliverySupplierId");
+            if (nodeText != null && !nodeText.trim().equals("")){
+                order.deliverySupplierId = Integer.parseInt(nodeText);
+            }
             order.deliveryDate = parseDate(baseInfoNode.elementTextTrim("deliveryDate"));
             order.expressNbr = baseInfoNode.elementTextTrim("merchantExpressNbr");
             order.receiveDate = parseDate(baseInfoNode.elementTextTrim("receiveDate"));
-            order.deliveryMethodType = Integer.parseInt(baseInfoNode.elementTextTrim("deliveryMethodType"));
+            nodeText = baseInfoNode.elementTextTrim("deliveryMethodType");
+            if (nodeText != null && !nodeText.trim().equals("")){
+                order.deliveryMethodType = Integer.parseInt(nodeText);
+            }
+
             order.goodReceiverAddress = baseInfoNode.elementTextTrim("goodReceiverAddress");
             order.goodReceiverCity = baseInfoNode.elementTextTrim("goodReceiverCity");
             order.goodReceiverCountry = baseInfoNode.elementTextTrim("goodReceiverCounty");
