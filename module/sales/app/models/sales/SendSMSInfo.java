@@ -24,7 +24,7 @@ import java.util.Date;
 public class SendSMSInfo extends Model {
 
     /**
-     * 任务号
+     * 任务名称
      */
     @Column(name = "task_no")
     public String taskNo;

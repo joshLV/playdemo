@@ -1,0 +1,46 @@
+#{extends 'layout_operate/layout.html' /}
+#{set title:'发送优惠券' /}
+#{include '/share/nav.html' /}
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
+#{/set}
+#{set 'moreStyles'}
+<style type="text/css">
+</style>
+#{/set}
+
+<div class="body">
+
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+        <tr>
+
+            <th>任务名称</th>
+            <th>手机</th>
+            <th>券号</th>
+            <th>短信内容</th>
+            <th>发送时间</th>
+            <th>创建时间</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        #{paginate.list items:smsList, as:'sms'}
+        <tr>
+            <td>${sms.taskNo}</td>
+            <td>${sms.mobile}</td>
+            <td>${sms.eCouponSn}</td>
+            <td>${sms.text}</td>
+            <td>${sms?.sendAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>${sms?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+
+        </tr>
+        #{/paginate.list}
+        </tbody>
+    </table>
+    <div class="pagination" align="center">
+        <ul>#{paginate.controls items:smsList /}
+        </ul>
+    </div>
+</div>

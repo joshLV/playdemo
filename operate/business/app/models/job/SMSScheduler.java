@@ -3,6 +3,7 @@ package models.job;
 import com.uhuila.common.constants.DeletedStatus;
 import models.sales.SendSMSInfo;
 import models.sales.SendSMSTask;
+import models.sms.SMSUtil;
 import org.apache.commons.lang.StringUtils;
 import play.jobs.Every;
 import play.jobs.Job;
@@ -35,19 +36,18 @@ public class SMSScheduler extends Job {
             String currentTime = sdf.format(date);
 
             if (st.finished != st.total && compare_date(currentTime, st.scheduledTime) == 1) {
-                System.out.println("ininininini111111111");
                 List<SendSMSInfo> smsList = SendSMSInfo.find("deleted=? and taskNo=?", DeletedStatus.UN_DELETED, st.taskNo).fetch();
                 for (SendSMSInfo s : smsList) {
-                    System.out.println("ininininini2222222222");
-                    // if (!StringUtils.isBlank(s.sendAt.toString()))
                     if (s.sendAt == null) {
-                        System.out.println("ininininini33333333");
-                        System.out.println("send" + st.scheduledTime);
-                        st.finished = st.finished - 1L;
-                        st.unfinished = st.unfinished + 1L;
+
+                        st.finished = st.finished + 1L;
+                        st.unfinished = st.unfinished - 1L;
+                        System.out.println("st.finished" + st.finished);
+                        System.out.println("st.unfinished" + st.unfinished);
                         s.sendAt = new Date();
-//            SMSUtil.send(s.text, s.mobile);
+                        SMSUtil.send(s.text, s.mobile);
                         s.save();
+                        st.save();
                     }
                 }
             }

@@ -43,9 +43,6 @@ public class SendSMSInfoCondition implements Serializable {
     }
 
        public String getOrderByExpress() {
-//        String orderType = StringUtils.isBlank(orderByType) ? "DESC" : orderByType;
-//        return StringUtils.isBlank(orderBy) ? "g.createdAt DESC" : orderBy + " " + orderType;
-
 
         return "s.createdAt DESC";
     }
@@ -54,28 +51,6 @@ public class SendSMSInfoCondition implements Serializable {
         return paramMap;
     }
 
-
-    private static String getOrderBy(int orderById) {
-        String orderBy;
-        switch (orderById) {
-            case 1:
-                orderBy = "g.saleCount";
-                break;
-            case 2:
-                orderBy = "g.salePrice";
-                break;
-            case 3:
-                orderBy = "g.discount";
-                break;
-            case 4:
-                orderBy = "g.materialType, g.createdAt"; //电子券优化显示
-                break;
-            default:
-                orderBy = "g.materialType, g.recommend"; //电子券优化显示
-                break;
-        }
-        return orderBy;
-    }
 
         // + ",sendAt:" + sendAt
 

@@ -16,7 +16,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "send_sms_task")
-public class SendSMSTask  extends Model {
+public class SendSMSTask extends Model {
     /**
      * 任务号
      */
@@ -59,7 +59,6 @@ public class SendSMSTask  extends Model {
      */
     @Column(name = "created_at")
     public Date createdAt;
-
 
 
     public static JPAExtPaginator<SendSMSTask> findByCondition(SendSMSTaskCondition condition,

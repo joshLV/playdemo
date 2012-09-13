@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 public class SendSMS extends Controller {
     public static int PAGE_SIZE = 15;
 
-    public static void index(models.sales.SendSMSTaskCondition condition) {
+    public static void index(SendSMSTaskCondition condition) {
 
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
@@ -41,6 +41,18 @@ public class SendSMS extends Controller {
         smsTaskList.setBoundaryControlsEnabled(true);
 
         render(smsTaskList);
+    }
+
+
+    public static void details(String taskNo) {
+        String page = request.params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        SendSMSInfoCondition condition = new SendSMSInfoCondition();
+        condition.taskNo = taskNo;
+
+        JPAExtPaginator<models.sales.SendSMSInfo> smsList = SendSMSInfo.findByCondition(condition, pageNumber,
+                PAGE_SIZE);
+        render(smsList);
     }
 
     public static void add() {
@@ -131,16 +143,18 @@ public class SendSMS extends Controller {
         List<SendSMSInfo> smsList = SendSMSInfo.find("deleted=? and taskNo=?", DeletedStatus.UN_DELETED, taskTempNo).fetch();
         smsTask.unfinished = (long) smsList.size();
         smsTask.finished = 0L;
+
         smsTask.total = smsTask.unfinished + smsTask.finished;
         smsTask.deleted = DeletedStatus.UN_DELETED;
         smsTask.createdAt = new Date();
         smsTask.save();
-        send(sms, taskTempNo);
+
+        send(taskTempNo);
     }
 
-    public static void send(SendSMSInfo sms, String taskTempNo) {
+    public static void send(String taskTempNo) {
 
-        List<SendSMSInfo> smsList = SendSMSInfo.find("deleted=? and taskNo=? order by createdAt desc", DeletedStatus.UN_DELETED, sms.taskNo).fetch();
+        List<SendSMSInfo> smsList = SendSMSInfo.find("deleted=? and taskNo=? order by createdAt desc", DeletedStatus.UN_DELETED, taskTempNo).fetch();
 
         render(smsList, taskTempNo);
     }
@@ -148,8 +162,8 @@ public class SendSMS extends Controller {
 
     public static void sucSend(final String taskTempNo, String scheduledTime, String timer) {
         SendSMSTask smsTask = SendSMSTask.find("deleted=? and taskNo=? ", DeletedStatus.UN_DELETED, taskTempNo).first();
-        System.out.println("timertimer" + timer);
-        //timer == "0"
+
+        //timer equals "0"
         if (timer.indexOf("0") != -1) {
             System.out.println("instantly");
             Date now = new Date();
@@ -158,6 +172,7 @@ public class SendSMS extends Controller {
             String scheduledTimeInstantly = sdf.format(date);
             smsTask.scheduledTime = scheduledTimeInstantly;
             smsTask.save();
+
         }
         if (timer.indexOf("1") != -1) {
             if (!StringUtils.isBlank(scheduledTime)) {
@@ -165,32 +180,10 @@ public class SendSMS extends Controller {
                 smsTask.save();
             }
         }
-//        System.out.println("timertimertimer" + timer);
-//        Date   date   =   Calendar.getInstance().getTime();
-//        SimpleDateFormat sdf   =   new   SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
-//        String   currentTime   =   sdf.format(date);
-//        Date now = new Date();
-//        Date   date1   =   new Date(now.getTime() + 1000);
-//        SimpleDateFormat sdf1   =   new   SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
-//        String   scheduledTime2   =   sdf.format(date1);
-//        System.out.println("currentTimecurrentTime"+currentTime);
-//        System.out.println("scheduledTime2scheduledTime2"+scheduledTime2);
 
-
-//        System.out.println("scheduledtimescheduledtime" + scheduledTime);
-//        List<SendSMSInfo> smsList = SendSMSInfo.find("deleted=? and taskNo=?", DeletedStatus.UN_DELETED, taskTempNo).fetch();
-//
-//        for (SendSMSInfo s : smsList) {
-//            System.out.println("send");
-//
-//            s.sendAt = new Date();
-////            SMSUtil.send(s.text, s.mobile);
-//            s.save();
-//        }
         index(null);
 
     }
-
 
     //删除开始和结尾处的空格
     public static String deleteExtraSpace(String str) {

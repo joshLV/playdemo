@@ -17,7 +17,7 @@
                 <td width="30%">
 
 
-                    任务号：<input type="text" name="condition.taskNo" class="input-medium"
+                    任务名称：<input type="text" name="condition.taskNo" class="input-medium"
                                            value="${condition?.taskNo}"/></td>
 
                 </td>
@@ -41,7 +41,7 @@
             <thead>
             <tr>
 
-                <th>任务号</th>
+                <th>任务名称</th>
                 <th>计划发送时间</th>
                 <th>已完成</th>
                 <th>未完成</th>
@@ -55,7 +55,7 @@
             #{paginate.list items:smsTaskList, as:'smsTask'}
             <tr>
 
-                <td>${smsTask.taskNo}</td>
+                <td><a href="@{SendSMS.details(smsTask.taskNo)}">${smsTask.taskNo}</a></td>
                 <td>${smsTask.scheduledTime}</td>
                 <td>${smsTask.finished}</td>
                 <td>${smsTask.unfinished}</td>
