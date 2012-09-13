@@ -5,10 +5,11 @@
 # Home page
 GET     /                                       Application.index
 
-# API
+# 一号店API
 *       /api/order/create                       OrderAPI.createOrder
 *       /api/order/refund                       OrderAPI.refund
 *       /api/order/resend                       OrderAPI.resend
+#当当API
 
 # 一号店
 *       /api/v1/yhd/gb/order-inform             YHDGroupBuy.orderInform
