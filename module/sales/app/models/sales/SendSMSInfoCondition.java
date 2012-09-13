@@ -16,10 +16,9 @@ import java.util.Map;
  */
 public class SendSMSInfoCondition implements Serializable {
 
-
     public String eCouponSn;
     public String mobile;
-    //    public Date sendAt;
+    //  public Date sendAt;
     public String taskNo;
     public String text;
 
@@ -43,7 +42,7 @@ public class SendSMSInfoCondition implements Serializable {
         return condBuilder.toString();
     }
 
-    public String getOrderByExpress() {
+       public String getOrderByExpress() {
 //        String orderType = StringUtils.isBlank(orderByType) ? "DESC" : orderByType;
 //        return StringUtils.isBlank(orderBy) ? "g.createdAt DESC" : orderBy + " " + orderType;
 

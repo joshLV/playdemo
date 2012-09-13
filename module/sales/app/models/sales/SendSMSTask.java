@@ -2,6 +2,7 @@ package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
 import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -52,4 +53,26 @@ public class SendSMSTask  extends Model {
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
 
+
+    /**
+     * 创建时间
+     */
+    @Column(name = "created_at")
+    public Date createdAt;
+
+
+
+    public static JPAExtPaginator<SendSMSTask> findByCondition(SendSMSTaskCondition condition,
+                                                               int pageNumber, int pageSize) {
+
+        JPAExtPaginator<SendSMSTask> smsTaskList = new JPAExtPaginator<>
+                ("SendSMSTask st", "st", SendSMSTask.class, condition.getFilter(),
+                        condition.getParamMap())
+                .orderBy(condition.getOrderByExpress());
+        smsTaskList.setPageNumber(pageNumber);
+        smsTaskList.setPageSize(pageSize);
+        smsTaskList.setBoundaryControlsEnabled(false);
+        return smsTaskList;
+
+    }
 }

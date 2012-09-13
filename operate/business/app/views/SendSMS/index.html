@@ -42,24 +42,25 @@
             <tr>
 
                 <th>任务号</th>
-                <th>手机</th>
-                <th>券号</th>
-                <th>短信内容</th>
-                <th>发送时间</th>
+                <th>计划发送时间</th>
+                <th>已完成</th>
+                <th>未完成</th>
+                <th>总任务数</th>
+                <th>创建时间</th>
             </tr>
             </thead>
 
             <tbody>
 
-            #{paginate.list items:smsList, as:'sms'}
+            #{paginate.list items:smsTaskList, as:'smsTask'}
             <tr>
 
-                <td>${sms.taskNo}</td>
-                <td>${sms.mobile}</td>
-                <td>${sms.eCouponSn}</td>
-                <td>${sms.text}</td>
-
-                <td>${sms?.sendAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+                <td>${smsTask.taskNo}</td>
+                <td>${smsTask.scheduledTime}</td>
+                <td>${smsTask.finished}</td>
+                <td>${smsTask.unfinished}</td>
+                <td>${smsTask.total}</td>
+                <td>${smsTask?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
 
             </tr>
             #{/paginate.list}
@@ -67,7 +68,7 @@
         </table>
     </form>
     <div class="pagination" align="center">
-        <ul>#{paginate.controls items:smsList /}
+        <ul>#{paginate.controls items:smsTaskList /}
         </ul>
     </div>
 </div>

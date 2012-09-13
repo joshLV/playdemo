@@ -43,8 +43,8 @@ public class SMSScheduler extends Job {
                     if (s.sendAt == null) {
                         System.out.println("ininininini33333333");
                         System.out.println("send" + st.scheduledTime);
-                        st.finished = st.finished - (long)1;
-                        st.unfinished = st.unfinished + (long)1;
+                        st.finished = st.finished - 1L;
+                        st.unfinished = st.unfinished + 1L;
                         s.sendAt = new Date();
 //            SMSUtil.send(s.text, s.mobile);
                         s.save();

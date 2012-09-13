@@ -28,19 +28,19 @@ import java.util.regex.Pattern;
 public class SendSMS extends Controller {
     public static int PAGE_SIZE = 15;
 
-    public static void index(models.sales.SendSMSInfoCondition condition) {
+    public static void index(models.sales.SendSMSTaskCondition condition) {
 
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         if (condition == null) {
-            condition = new SendSMSInfoCondition();
+            condition = new SendSMSTaskCondition();
         }
 
-        JPAExtPaginator<models.sales.SendSMSInfo> smsList = models.sales.SendSMSInfo.findByCondition(condition, pageNumber,
+        JPAExtPaginator<models.sales.SendSMSTask> smsTaskList = SendSMSTask.findByCondition(condition, pageNumber,
                 PAGE_SIZE);
-        smsList.setBoundaryControlsEnabled(true);
+        smsTaskList.setBoundaryControlsEnabled(true);
 
-        render(smsList);
+        render(smsTaskList);
     }
 
     public static void add() {
@@ -133,6 +133,7 @@ public class SendSMS extends Controller {
         smsTask.finished = 0L;
         smsTask.total = smsTask.unfinished + smsTask.finished;
         smsTask.deleted = DeletedStatus.UN_DELETED;
+        smsTask.createdAt = new Date();
         smsTask.save();
         send(sms, taskTempNo);
     }
@@ -147,9 +148,9 @@ public class SendSMS extends Controller {
 
     public static void sucSend(final String taskTempNo, String scheduledTime, String timer) {
         SendSMSTask smsTask = SendSMSTask.find("deleted=? and taskNo=? ", DeletedStatus.UN_DELETED, taskTempNo).first();
-        System.out.println("timertimer"+timer);
-            //timer == "0"
-        if (timer.indexOf("0")!=-1) {
+        System.out.println("timertimer" + timer);
+        //timer == "0"
+        if (timer.indexOf("0") != -1) {
             System.out.println("instantly");
             Date now = new Date();
             Date date = new Date(now.getTime() + 1000);
@@ -158,9 +159,11 @@ public class SendSMS extends Controller {
             smsTask.scheduledTime = scheduledTimeInstantly;
             smsTask.save();
         }
-        if (timer.indexOf("1")!=-1) {
-            smsTask.scheduledTime = scheduledTime;
-            smsTask.save();
+        if (timer.indexOf("1") != -1) {
+            if (!StringUtils.isBlank(scheduledTime)) {
+                smsTask.scheduledTime = scheduledTime;
+                smsTask.save();
+            }
         }
 //        System.out.println("timertimertimer" + timer);
 //        Date   date   =   Calendar.getInstance().getTime();
