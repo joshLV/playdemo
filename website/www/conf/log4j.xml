@@ -36,7 +36,7 @@
     </appender>
 
     <logger name="play">
-        <level value="INFO" />
+        <level value="DEBUG" />
     </logger>
 
     <root>

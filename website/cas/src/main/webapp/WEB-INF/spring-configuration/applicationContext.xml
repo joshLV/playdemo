@@ -29,6 +29,101 @@
         know what you're doing!
     </description>
 
+    <!--<bean id="facebook1" class="org.scribe.up.provider.impl.FacebookProvider">-->
+        <!--<property name="key" value="153186971478756" />-->
+        <!--<property name="secret" value="4e72f0233e6b4594e49ca5eaa59660a4" />-->
+        <!--<property name="callbackUrl" value="http://localhost:8080/cas/login" />-->
+        <!--<property name="scope" value="email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_work_history,user_website,user_photos,user_events" />-->
+        <!--<property name="friendsReturned" value="true" />-->
+        <!--<property name="moviesReturned" value="true" />-->
+        <!--<property name="musicReturned" value="true" />-->
+        <!--<property name="booksReturned" value="true" />-->
+        <!--<property name="likesReturned" value="true" />-->
+        <!--<property name="albumsReturned" value="true" />-->
+        <!--<property name="eventsReturned" value="true" />-->
+    <!--</bean>-->
+
+    <bean id="twitter1" class="org.scribe.up.provider.impl.TwitterProvider">
+        <property name="key" value="OPEWaSoTuAe49K4dSoRvNw" />
+        <property name="secret" value="aKmvleltXAmLKcnlMgzRjTsCnhV3QVMVDh153xJttCo" />
+        <property name="callbackUrl" value="http://localhost:8080/cas/login" />
+    </bean>
+
+    <bean id="google1" class="org.scribe.up.provider.impl.GoogleProvider">
+        <property name="key" value="anonymous" />
+        <property name="secret" value="anonymous" />
+        <property name="callbackUrl" value="http://localhost:8080/cas/login" />
+    </bean>
+
+    <bean id="yahoo1" class="org.scribe.up.provider.impl.YahooProvider">
+        <property name="key" value="dj0yJmk9MzhNZWFkeXQxN09GJmQ9WVdrOVRrbzNVVVJMTkdrbWNHbzlNVGc0TURNek5EVTJNZy0tJnM9Y29uc3VtZXJzZWNyZXQmeD1lNw--" />
+        <property name="secret" value="2f3146ac90d60b9f79125b1167437b6c64657a0b" />
+        <property name="callbackUrl" value="http://localhost:8080/cas/login" />
+    </bean>
+
+    <bean id="linkedin1" class="org.scribe.up.provider.impl.LinkedInProvider">
+        <property name="key" value="yf7sgiahy7o6" />
+        <property name="secret" value="rDvaZb3veq2x1Pgi" />
+        <property name="callbackUrl" value="http://localhost:8080/cas/login" />
+    </bean>
+
+    <bean id="github1" class="org.scribe.up.provider.impl.GitHubProvider">
+        <property name="key" value="bb7977b9e7f892c115c3" />
+        <property name="secret" value="15a6f06329945e1ac5b6f715dcae5314bf88b005" />
+        <property name="callbackUrl" value="http://localhost:8080/cas/login" />
+    </bean>
+
+    <bean id="live1" class="org.scribe.up.provider.impl.WindowsLiveProvider">
+        <property name="key" value="00000000440BCAA1" />
+        <property name="secret" value="dTZRQNbev04Uod4PWMJ-OWSgc3U5ztWd" />
+        <property name="callbackUrl" value="http://casdemo.localhost.com:8080/cas/login" />
+    </bean>
+
+    <bean id="wordpress1" class="org.scribe.up.provider.impl.WordPressProvider">
+        <property name="key" value="251" />
+        <property name="secret" value="6QCZZBhbokJ2YWfbK2F9vBgvGthtKijwaMRP8x57NWjPW2CXFsJJukt2RWvhlKaQ" />
+        <property name="callbackUrl" value="http://localhost:8080/cas/login" />
+    </bean>
+
+
+    <!--oauth-->
+    <bean id="sinaWeibo" class="com.uhuila.website.cas.oauth.sinaweibo.SinaWeiboProvider">
+        <property name="key" value="1107020725"/>
+        <property name="secret" value="d7feada14c897b0d35e97819acd0d50a"/>
+        <property name="callbackUrl" value="http://cas.yibaiquan.com:8080/website-cas/oauth2.0/login"/>
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+    <bean id="qQ" class="com.uhuila.website.cas.oauth.qq.QQProvider">
+        <property name="key" value="100659104"/>
+        <property name="secret" value="d9ef677f9adfa79240343a3fe9624d66"/>
+        <property name="callbackUrl" value="http://cas.yibaiquan.com:8080/website-cas/oauth2.0/login"/>
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+    <bean id="renRen" class="com.uhuila.website.cas.oauth.renren.RenRenProvider">
+        <property name="key" value="210266"/>
+        <property name="secret" value="20fbd127dc154bd48296e05bace79dc1"/>
+        <property name="callbackUrl" value="http://cas.yibaiquan.com:8080/website-cas/oauth2.0/login"/>
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="oauthProviders" class="org.jasig.cas.support.oauth.provider.OAuthProviders">
+        <property name="providers">
+            <list>
+                <ref bean="sinaWeibo" />
+                <ref bean="qQ" />
+                <ref bean="renRen" />
+                <!--<ref bean="facebook1" />-->
+                <ref bean="twitter1" />
+                <ref bean="google1" />
+                <ref bean="yahoo1" />
+                <ref bean="linkedin1" />
+                <ref bean="github1" />
+                <ref bean="live1" />
+                <ref bean="wordpress1" />
+            </list>
+        </property>
+    </bean>
+
     <!--
       Including this aspectj-autoproxy element will cause spring to automatically
       create proxies around any beans defined in this file that match the pointcuts
@@ -47,8 +142,7 @@
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
           p:basename="messages"/>
 
-    <bean
-            id="servicesManager"
+    <bean id="servicesManager"
             class="org.jasig.cas.services.DefaultServicesManagerImpl">
         <constructor-arg index="0" ref="serviceRegistryDao"/>
     </bean>
@@ -105,4 +199,5 @@
 
     <!-- The scheduler bean wires up any triggers that define scheduled tasks -->
     <bean id="scheduler" class="org.jasig.cas.util.AutowiringSchedulerFactoryBean"/>
+
 </beans>

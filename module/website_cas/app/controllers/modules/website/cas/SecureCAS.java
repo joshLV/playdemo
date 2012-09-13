@@ -17,6 +17,7 @@
 package controllers.modules.website.cas;
 
 import controllers.modules.website.cas.annotations.SkipCAS;
+import models.consumer.OpenIdSource;
 import models.consumer.User;
 import models.consumer.UserLoginHistory;
 import org.apache.commons.lang.StringUtils;
@@ -47,6 +48,9 @@ public class SecureCAS extends Controller {
     public static void addTrace() {
         Logger.debug("[SecureCAS]: check cookie identity");
         Http.Cookie cookieId = request.cookies.get("identity");
+
+        Logger.debug("cookieId:" + cookieId);
+
         if (cookieId == null) {
             Logger.debug("[SecureCAS]: set a new cookie identity");
             String baseDomain = Play.configuration.getProperty("application.baseDomain");
@@ -64,25 +68,76 @@ public class SecureCAS extends Controller {
         Cas cas = new Cas();
         if (user != null) {
             cas.isLogin = true;
-            cas.loginName = user.loginName;
+            if (user.loginName != null) {
+                cas.loginName = user.loginName;
+            } else {
+                cas.loginName = user.getOpenIdExpress();
+            }
+
             cas.user = user;
         }
         renderArgs.put("cas", cas);
     }
 
+    /**
+     * oauth用户的样例: UserProfile#SinaWeibo:1802362721
+     *
+     * @return
+     */
     public static User getUser() {
-        String username = session.get(SESSION_USER_KEY);
-        if (StringUtils.isEmpty(username)) {
+        String userIdentity = session.get(SESSION_USER_KEY);
+        if (StringUtils.isEmpty(userIdentity)) {
             return null;
         }
-        if (Cache.get(SESSION_USER_KEY + username) == null) {
+        if (Cache.get(SESSION_USER_KEY + userIdentity) == null) {
             return null;
         }
-        User u = User.find("byLoginName", username).first();
+
+        User u = User.find("byLoginName", userIdentity).first();
         if (u == null) {
-            u = User.find("byMobile", username).first();
+            u = User.find("byMobile", userIdentity).first();
+            if (u == null) {
+                //猜测是oauth用户
+                OpenIdSource openIdSource = getOpenIdSourceFromUserIdentity(userIdentity);
+                if (openIdSource != null && !openIdSource.name().equals("0")) {
+                    String openId = getOpenIdFromUserIdentity(userIdentity);
+
+                    System.out.println("openId:" + openId);
+                    System.out.println("openIdSource.value():" + openIdSource.name());
+
+                    u = User.find("byOpenIdSourceAndOpenId", openIdSource, openId).first();
+                }
+            }
         }
+
         return u;
+    }
+
+    private static String getOpenIdFromUserIdentity(String userIdentity) {
+        final int location = userIdentity.indexOf(':');
+        if (location < 0) {
+            return null;
+        }
+
+//        System.out.println("==============userIdentity.substring(location + 1):" + userIdentity.substring(location +
+//                1));
+        return userIdentity.substring(location + 1);
+    }
+
+    private static OpenIdSource getOpenIdSourceFromUserIdentity(String userIdentity) {
+        final int location = userIdentity.indexOf(':');
+        if (location < 0) {
+            return null;
+        }
+//        System.out.println("===============userIdentity.substring(\"UserProfile#\".length(), " +
+//                "location):" + userIdentity.substring("UserProfile#".length(), location));
+        OpenIdSource openIdSource = null;
+        try {
+            openIdSource = OpenIdSource.valueOf(userIdentity.substring("UserProfile#".length(), location));
+        } catch (Exception e) {
+            //ignore
+        }
+        return openIdSource;
     }
 
     /**
@@ -144,15 +199,20 @@ public class SecureCAS extends Controller {
         Boolean isAuthenticated = Boolean.FALSE;
         String ticket = params.get("ticket");
         CASUser casUser = null;
+
+        Logger.debug("              ticket:" + ticket);
         if (ticket != null) {
             Logger.debug("[SecureCAS]: Try to validate ticket " + ticket);
             casUser = CASUtils.valideCasTicket(ticket);
             if (casUser != null) {
                 isAuthenticated = Boolean.TRUE;
+
+                System.out.println("====   casUser.getUsername():" + casUser.getUsername());
                 session.put(SESSION_USER_KEY, casUser.getUsername());
                 Cache.add(SESSION_USER_KEY + casUser.getUsername(), Boolean.TRUE);
                 // we invoke the implementation of onAuthenticate
                 Security.invoke("onAuthenticated", casUser);
+
             }
         }
 
@@ -219,13 +279,13 @@ public class SecureCAS extends Controller {
     @Before(unless = {"login", "logout", "fail", "authenticate", "pgtCallBack"})
     public static void filter() throws Throwable {
         Logger.debug("[SecureCAS]: CAS Filter for URL -> " + request.url + ", test=" + Security.isTestLogined());
-        
+
         // 测试用，见 @Security.setLoginUserForTest说明
         if (Security.isTestLogined()) {
-        	Logger.debug("set test user %s", Security.getLoginUserForTest());
+            Logger.debug("set test user %s", Security.getLoginUserForTest());
             session.put(SESSION_USER_KEY, Security.getLoginUserForTest());
         }
-        
+
         Logger.debug("session contains=" + session.contains(SESSION_USER_KEY) + ", value=" + session.get(SESSION_USER_KEY));
         if (skipCAS()) {
             Logger.debug("[SecureCAS]: Skip the CAS.");

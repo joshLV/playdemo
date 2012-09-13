@@ -32,7 +32,6 @@ public class UsernameLengthAuthnHandler extends AbstractUsernamePasswordAuthenti
         String username = Credentials.getUsername();
         String password = Credentials.getPassword();
 
-        System.out.println("================  " + username + " ================");
         if (log.isDebugEnabled()) {
             log.debug("email=" + username);
         }

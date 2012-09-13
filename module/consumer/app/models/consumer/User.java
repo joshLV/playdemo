@@ -17,7 +17,15 @@ import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Mobile;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -38,8 +46,12 @@ public class User extends Model {
     /**
      * 第三方登录帐号的来源系统
      */
-    @Column(name = "openid_source")
-    public String openIdSource;
+    @Column(name = "open_id_source")
+    @Enumerated(EnumType.STRING)
+    public OpenIdSource openIdSource;
+
+    @Column(name = "open_id")
+    public String openId;
 
     @Column(name = "encrypted_password")
     @Required
@@ -128,6 +140,17 @@ public class User extends Model {
     public static User getUserByPromoterCode(String promoterCode) {
         //推荐码存在的情况
         return User.find("byPromoterCode", promoterCode.toLowerCase()).first();
+    }
+
+    /**
+     * 判断第三方登录帐号是否存在
+     *
+     * @param openIdSource 第三方登录的应用
+     * @param openId       第三方应用的ID
+     * @return 第三方登录帐号是否存在
+     */
+    public static boolean checkOpenId(String openIdSource, String openId) {
+        return User.count("byOpenIdSourceAndOpenId", openIdSource, openId) > 0;
     }
 
     /**
@@ -295,8 +318,25 @@ public class User extends Model {
         if (account == null) {
             return new BigDecimal(0);
         }
-        BigDecimal amount = account.amount;
-        return amount;
+        return account.amount;
+    }
+
+    @Transient
+    public String getOpenIdExpress() {
+        return getOpenIdSourceExpress() + openId;
+    }
+
+    private String getOpenIdSourceExpress() {
+        switch (openIdSource) {
+            case SinaWeibo:
+                return "新浪微博用户";
+            case QQ:
+                return "QQ用户";
+            case RenRen:
+                return "人人用户";
+            default:
+                return "第三方用户";
+        }
     }
 
     /**

@@ -274,9 +274,13 @@
             <input type="hidden" name="execution" value="${flowExecutionKey}"/>
             <input type="hidden" name="_eventId" value="submit"/>
             <button type="submit" id="submit" tabindex="6"> 登 录</button>
-            <a
-                    href="https://graph.renren.com/oauth/authorize?client_id=210266&response_type=code&redirect_uri=http://www.yibaiquan.com/s/1&display=page">人人网登录</a>
-            <a href="${SinaWeiboProviderUrl}">用新浪微博登录</a>
+            <div id="open-auth">快捷登录： <a class="id-qq" href="${QQProviderUrl}">QQ</a> <span>|</span>
+                <%--https://graph.renren.com/oauth/authorize?client_id=210266&response_type=code&redirect_uri=http://www.yibaiquan.com/s/1&display=page--%>
+                <a class="id-renren"
+                   target="_blank"
+                   href="${RenRenProviderUrl}">人人网</a> <span>|</span>
+                <a class="id-weibo" target="_blank" id="sinaweiboAuthorizationUrl"
+                   href="${SinaWeiboProviderUrl}">新浪微博</a></div>
         </form:form>
         <div class="guide">
             <h5>还不是一百券用户？</h5>

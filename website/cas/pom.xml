@@ -54,7 +54,7 @@
             <artifactId>cas-server-support-jdbc</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+ 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>

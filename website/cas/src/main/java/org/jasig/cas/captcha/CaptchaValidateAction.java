@@ -16,7 +16,7 @@ public final class CaptchaValidateAction extends AbstractAction {
  
       if(captcha_response != null){
          String id = WebUtils.getHttpServletRequest(context).getSession().getId();
-         System.out.println("sessionid=" + id);
+         System.out.println("===============sessionid=" + id);
          if(id != null){
             try {
                valid = jcaptchaService.validateResponseForID(id.toUpperCase(), captcha_response.toUpperCase()).booleanValue();
