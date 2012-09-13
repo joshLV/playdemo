@@ -346,6 +346,7 @@ public class Orders extends Controller {
                         promoteRebate.promoteUser = promoterUser;
                         promoteRebate.order = order;
                         promoteRebate.rebateAmount = Order.getPromoteRebateAmount(order);
+                        promoteRebate.registerFlag = false;
                         promoteRebate.save();
                     } else {
                         //记录推荐人和被推荐人的关系

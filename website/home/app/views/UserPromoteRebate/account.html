@@ -15,9 +15,9 @@
 
             <div class="user-account">账户：<strong>${user?.loginName}</strong></div>
             <div class="rebate-info">推荐购物：<span>${boughtAmount?.formatCurrency("CNY")}</span>元
-                　　预期可得返利：<span>${promoteRebate?.willGetAmount?.formatCurrency("CNY")}</span>元
+                　　待返利：<span>${promoteRebate?.willGetAmount?.formatCurrency("CNY")}</span>元
                 　　推荐消费：<span>${consumedAmount?.formatCurrency("CNY")}</span>元
-                　　已经获得返利：<span>${promoteRebate?.haveGotAmount?.formatCurrency("CNY")}</span>元
+                　　已得返利：<span>${promoteRebate?.haveGotAmount?.formatCurrency("CNY")}</span>元
             </div>
             <h3 style="font-size:14px;margin-top:30px">成功推荐明细</h3>
 
@@ -26,7 +26,7 @@
                     <label>操作类型：</label>
                     <select name="condition.status" size="1" id="status" class="sequence-flag">
                         <option value="">不限</option>
-                        <option value="ALREADY_REBATE">预计可得返利</option>
+                        <option value="ALREADY_REBATE">待返利</option>
                         <option value="UN_CONSUMED">已得返利</option>
                     </select>
                     <label>成交时间：</label>
@@ -47,7 +47,7 @@
                     <th width="150">日期</th>
                     <th width="180">被推荐人</th>
                     <th>状态</th>
-                    <th>预计可得返利</th>
+                    <th>待返利</th>
                     <th>已得返利</th>
                 </tr>
                 </thead>

@@ -23,6 +23,7 @@ import models.sales.SecKillGoodsItem;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.Index;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -180,6 +181,7 @@ public class Order extends Model {
     @Column(name = "delivery_company")
     public String deliveryCompany;
 
+    @Index(name = "ext_request_sn")
     @Column(name = "ext_request_sn")
     public String extRequestSN;
 

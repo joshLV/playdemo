@@ -12,29 +12,34 @@
         <div class="crumbs">您的位置：<a href="/">首页</a> > 返利排名</div>
         <div class="rebate-share">
 
-            *{<div class="user-account">账户：<strong>${user?.loginName}</strong></div>}*
-            *{<div class="rebate-info">推荐购物：<span>${boughtAmount?.formatCurrency("CNY")}</span>元}*
-                *{　　预期可得返利：<span>${promoteRebate?.willGetAmount?.formatCurrency("CNY")}</span>元}*
-                *{　　推荐消费：<span>${consumedAmount?.formatCurrency("CNY")}</span>元}*
-                *{　　已经获得返利：<span>${promoteRebate?.haveGotAmount?.formatCurrency("CNY")}</span>元}*
-            *{</div>}*
+        *{<div class="user-account">账户：<strong>${user?.loginName}</strong></div>}*
+        *{<div class="rebate-info">推荐购物：<span>${boughtAmount?.formatCurrency("CNY")}</span>元}*
+        *{　　预期可得返利：<span>${promoteRebate?.willGetAmount?.formatCurrency("CNY")}</span>元}*
+        *{　　推荐消费：<span>${consumedAmount?.formatCurrency("CNY")}</span>元}*
+        *{　　已经获得返利：<span>${promoteRebate?.haveGotAmount?.formatCurrency("CNY")}</span>元}*
+        *{</div>}*
             <h3 style="font-size:14px;margin-top:30px">成功推荐排名</h3>
             <ul class="rebate-rank">
             #{set i:1/}
 
-             #{set m:0/}
+            #{set m:0/}
             #{paginate.list items:rankList, as:'rank'}
                 #{if user?.id==rank?.promoteUser?.id} #{set m:i/}   #{/if}
                 <li class="rank-${i}">第${i}名：<span>${rank?.promoteUser?.loginName}</span>
                     推荐成功<em>${rank?.promoteTimes}</em>次，
-                    已经获得返利<em>${rank?.rebateAmount}</em>元
+                    已得返利<em>${rank?.rebateAmount}</em>元
                 </li>
                 #{set i:i+1/}
             #{/paginate.list}
             </ul>
+        #{if m>0}
             <div class="curr-rank">您当前排名：第${m}名, 推荐成功<em>${summary?.promoteTimes}</em>次,
-                已经获得返利<em>${summary?.rebateAmount}</em>元
+                已得返利<em>${summary?.rebateAmount}</em>元
             </div>
+        #{/if}
+        #{else}
+            <div class="curr-rank">您还没进入排名哦！赶快加油购买喽！</div>
+        #{/else}
         </div>
     </div>
 </div>
