@@ -1,6 +1,7 @@
 package models.dangdang;
 
 
+import models.order.ECoupon;
 import models.sales.Goods;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -26,7 +27,6 @@ public class DangDangApiUtil {
     private static final String SIGN_METHOD = "1";
 
 
-
     public static final String SYNC_URL = "http://tuanapi.dangdang.com/team_inter_api/public/push_team_stock.php";
 
     /**
@@ -43,7 +43,35 @@ public class DangDangApiUtil {
         //todo 返回结果处理
     }
 
+    /**
+     * 查询当前券是否已在当当上退款了.
+     *
+     * @param eCoupon
+     * @return
+     */
+    public static boolean isRefund(ECoupon eCoupon) {
+        //todo
+        return false;
+    }
 
+    /**
+     * 通知当当当前的券已经使用.
+     *
+     * @param eCoupon
+     */
+    public static void notifyVerified(ECoupon eCoupon) {
+        //todo
+    }
+
+    /**
+     * 发送券号短信.
+     *
+     * @param data xml格式
+     *
+     */
+    public static void sendSMS(String data) {
+
+    }
 
     /**
      * 发送http请求，并返回xml
