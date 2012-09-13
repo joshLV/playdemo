@@ -30,7 +30,8 @@ public class DangDangApiUtil {
     public static final String SYNC_URL = "http://tuanapi.dangdang.com/team_inter_api/public/push_team_stock.php";
 
     /**
-     * 返回一百券系统中商品总销量
+     * 返回一百券系统中商品总销量.
+     * 调用当当的API
      *
      * @return
      */
