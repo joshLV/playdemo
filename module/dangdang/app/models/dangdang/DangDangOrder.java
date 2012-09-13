@@ -6,14 +6,18 @@ package models.dangdang;
 
 import models.order.Order;
 
-public class DangDangOrder{
+public class DangDangOrder {
 
     public Order order;
-    
-    public void handleOrder(){
+
+    /**
+     * 处理当当过来的订单.
+     */
+    public void handleOrder() {
         createAndUpdateInventory();
         payAndSendECoupon();
     }
+
     public void createAndUpdateInventory() {
     }
 
