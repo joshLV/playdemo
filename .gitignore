@@ -17,6 +17,8 @@ version.conf
 # selenium
 [0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*
 
+.idea/
+module/dangdang/documentation/
 .DS_Store
 */*/core
 */*/target
