@@ -67,12 +67,18 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
             return;
         }
         if(yihaodianOrder.jobFlag == JobFlag.SEND_COPY){
-            if( buildUhuilaOrder(yihaodianOrder)){
-                yihaodianOrder.jobFlag = JobFlag.SEND_DONE;
-                yihaodianOrder.save();
+            //等20分钟再发货
+            if(yihaodianOrder.createdAt.getTime() < (System.currentTimeMillis() - 1200000)){
+                //如果用户没有取消订单再发货
+                if(checkYihaodianUnCanceled(yihaodianOrder)){
+                    if( buildUhuilaOrder(yihaodianOrder)){
+                        yihaodianOrder.jobFlag = JobFlag.SEND_DONE;
+                        yihaodianOrder.save();
 
-                YihaodianJobMessage syncMessage = new YihaodianJobMessage(yihaodianOrder.orderId);
-                YihaodianQueueUtil.addJob(syncMessage);
+                        YihaodianJobMessage syncMessage = new YihaodianJobMessage(yihaodianOrder.orderId);
+                        YihaodianQueueUtil.addJob(syncMessage);
+                    }
+                }
             }
         }else if(yihaodianOrder.jobFlag == JobFlag.SEND_DONE){
             if( syncWithYihaodian(yihaodianOrder)){
@@ -112,6 +118,31 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
             }else {
                 Logger.info("sync With yihaodian error");
                 return checkYihaodianSent(yihaodianOrder);
+            }
+        }
+        return false;
+    }
+
+    private boolean checkYihaodianUnCanceled(YihaodianOrder yihaodianOrder){
+        Logger.info("start check yihaodian sent %s" , yihaodianOrder.orderCode);
+        Map<String, String> params = new HashMap<>();
+        params.put("orderCodeList", yihaodianOrder.orderCode);
+        Logger.info("yhd.orders.detail.get orderCodeList %s", params.get("orderCodeList"));
+
+        String responseXml = Util.sendRequest(params, "yhd.orders.detail.get");
+        Logger.info("yhd.orders.detail.get response %s", responseXml);
+        if (responseXml != null) {
+            Response<YihaodianOrder> res = new Response<>();
+            res.parseXml(responseXml, "orderInfoList", true, YihaodianOrder.fullParser);
+            if(res.getErrorCount() == 0){
+                List<YihaodianOrder> orders = res.getVs();
+                if (orders.size() > 0){
+                    YihaodianOrder order = orders.get(0);
+                    if (order.orderStatus != OrderStatus.ORDER_CANCEL) {
+                        //只要不是取消状态状态，就说明用户没有取消
+                        return true;
+                    }
+                }
             }
         }
         return false;
