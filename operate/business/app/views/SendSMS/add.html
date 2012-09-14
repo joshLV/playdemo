@@ -33,10 +33,7 @@
                     <br>
                     <span style="color:red">*</span>手机号
                     <br>
-                    <textarea rows="6" cols="30" required="required" name="tempMobile" id="tempMobile"
-                            >${tempMobile?.escape()?.raw()}</textarea>
-
-                    <div class="error">#{error 'tempMobile' /}</div>
+                    <textarea rows="6" cols="30" required="required" name="tempMobile" id="tempMobile">${tempMobile?.escape()?.raw()}</textarea><div class="error">#{error 'tempMobile' /}</div>
 
 
                 </td>
@@ -44,9 +41,7 @@
                     <br>
                     <span style="color:red">*</span> 优惠券
                     <br>
-                    <textarea rows="6" cols="30" required="required" name="tempECouponSn" id="tempECouponSn"
-                              value="${tempECouponSn?.escape()?.raw()}">${tempECouponSn?.escape()?.raw()}</textarea>
-
+                    <textarea rows="6" cols="30" required="required" name="tempECouponSn" id="tempECouponSn" value="${tempECouponSn?.escape()?.raw()}">${tempECouponSn?.escape()?.raw()}</textarea>
                     <div class="error">#{error 'tempECouponSn' /}</div>
 
 
@@ -60,9 +55,7 @@
                     <span style="color:red">*</span> 短信内容
                     <br>
 
-                    <textarea rows="6" cols="100" required="required" name="tempText" id="tempText"
-                              value="${tempText}"> ${tempText}
-                    </textarea>
+                    <textarea rows="6" cols="100" required="required" name="tempText" id="tempText" value="${tempText}">${tempText}</textarea>
 
                     <br>
 

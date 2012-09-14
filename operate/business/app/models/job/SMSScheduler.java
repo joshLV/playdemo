@@ -39,7 +39,7 @@ public class SMSScheduler extends Job {
                 List<SendSMSInfo> smsList = SendSMSInfo.find("deleted=? and taskNo=?", DeletedStatus.UN_DELETED, st.taskNo).fetch();
                 for (SendSMSInfo s : smsList) {
                     if (s.sendAt == null) {
-
+                        System.out.println("asdfasdfasdfasdf");
                         st.finished = st.finished + 1L;
                         st.unfinished = st.unfinished - 1L;
                         System.out.println("st.finished" + st.finished);
