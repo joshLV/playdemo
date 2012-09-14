@@ -1,4 +1,4 @@
-package models.api.order;
+package models.yihaodian.groupbuy;
 
 import play.db.jpa.Model;
 
@@ -60,7 +60,7 @@ public class YHDGroupBuyOrder extends Model {
     public Date createdAt;
 
     public YHDGroupBuyOrder(){
-        this.status = YHDGroupBuyOrderStatus.CREATED;
+        this.status = YHDGroupBuyOrderStatus.ORDER_COPY;
         this.lockVersion = 0;
         this.createdAt = new Date();
     }

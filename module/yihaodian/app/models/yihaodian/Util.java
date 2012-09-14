@@ -17,6 +17,12 @@ public class Util {
     public static String MERCHANT_ID = Play.configuration.getProperty("yihaodian.merchant_id");
     public static String SECRET_KEY = Play.configuration.getProperty("yihaodian.secret_key");
 
+    public static String ERP = "self";
+    public static String ERP_VERSION = "1.0";
+    public static String FORMAT = "xml";
+    public static String VERSION = "1.0";
+
+
     public static String sendRequest(Map<String,String> appParams, String method){
         // 系统级参数设置
         Map<String, String> params = sysParams();

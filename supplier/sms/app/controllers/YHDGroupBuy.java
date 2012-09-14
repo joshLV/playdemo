@@ -2,13 +2,19 @@ package controllers;
 
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
-import models.api.order.YHDGroupBuyOrder;
-import models.api.order.YHDGroupBuyOrderStatus;
+import models.yihaodian.Util;
+import models.yihaodian.groupbuy.YHDGroupBuyOrder;
+import models.yihaodian.groupbuy.YHDGroupBuyOrderStatus;
 import models.order.*;
 import models.resale.Resaler;
 import models.sales.MaterialType;
-import models.yihaodian.OrderItem;
 import models.sales.Goods;
+import models.yihaodian.groupbuy.YHDGroupBuyUtil;
+import models.yihaodian.groupbuy.response.VoucherInfo;
+import models.yihaodian.groupbuy.response.VoucherInfoResponse;
+import models.yihaodian.groupbuy.response.YHDErrorInfo;
+import models.yihaodian.groupbuy.response.YHDErrorResponse;
+import org.jsoup.helper.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import play.Logger;
@@ -21,9 +27,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author likang
@@ -33,52 +42,120 @@ public class YHDGroupBuy extends Controller{
     public static String YHD_LOGIN_NAME = Play.configuration.getProperty("yihaodian.resaler_login_name", "yihaodian");
     public static String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
 
-    public static void inform(String orderCode, Long productId, Integer productNum, BigDecimal orderAmount,
-                              Date createTime, Date paidTime, String userPhone, BigDecimal productPrice,
-                              Long groupId, String outerGroupId) {
-        int errorCount = 0;
-        if(orderCode == null){ errorCount += 1; }
-        if(productNum == null) { errorCount += 1; }
-        if(userPhone == null || userPhone.trim().equals("")) { errorCount += 1; }
-        if(productPrice == null) { errorCount += 1; }
-        if(outerGroupId == null) { errorCount += 1; }
-        if(errorCount > 0){
-            renderXml(informResult(errorCount, 0));
-            return;
+
+    /**
+     * 一号店API入口
+     */
+    public static void index(){
+        TreeMap<String, String> params = YHDGroupBuyUtil.filterPlayParams(request.params.all());
+        //检查系统参数
+        YHDErrorResponse errorResponse = YHDGroupBuyUtil.checkParamBlank(params, true,
+                "checkCode", "merchantId", "sign", "erp", "erpVer", "format", "ver", "method");
+        if(errorResponse.errorCount > 0){
+            renderJSON(errorResponse);
         }
-        YHDGroupBuyOrder yhdGroupBuyOrder = new YHDGroupBuyOrder();
-        yhdGroupBuyOrder.orderCode = orderCode;
-        yhdGroupBuyOrder.productId = productId;
-        yhdGroupBuyOrder.productNum = productNum;
-        yhdGroupBuyOrder.orderAmount = orderAmount;
-        yhdGroupBuyOrder.createTime = createTime;
-        yhdGroupBuyOrder.paidTime = paidTime;
-        yhdGroupBuyOrder.userPhone = userPhone;
-        yhdGroupBuyOrder.productPrice = productPrice;
-        yhdGroupBuyOrder.groupId = groupId;
-        yhdGroupBuyOrder.outerGroupId = outerGroupId;
-        yhdGroupBuyOrder.save();
-        JPA.em().flush();
+        //检查参数签名
+        String mySign = YHDGroupBuyUtil.md5Signature(params, Util.SECRET_KEY);
+        if(!mySign.equals(params.get("sign"))){
+            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "sign不匹配", ""));
+            renderJSON(errorResponse);
+        }
+        String method = params.get("method");
+        if("yhd.group.buy.order.inform".equals(method)){
+            inform(params);
+        }
+
+    }
+
+    /**
+     * 接收一号店的新订单通知
+     *
+     * @param params 一号店通知的参数
+     */
+    private static void inform(Map<String, String> params) {
+        YHDErrorResponse errorResponse = YHDGroupBuyUtil.checkParamBlank(params, false, "orderCode", "productId", "productNum",
+                "orderAmount", "createTime", "paidTime", "userPhone", "productPrice", "groupId", "outerGroupId");
+        if(errorResponse.errorCount > 0){
+            renderJSON(errorResponse);
+        }
+        String orderCode = params.get("orderCode");
+        YHDGroupBuyOrder yhdGroupBuyOrder = YHDGroupBuyOrder.find("byOrderCode").first();
+
+        VoucherInfoResponse voucherInfoResponse = new VoucherInfoResponse();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+
+        //如果找不到该orderCode的订单，说明还没有新建，则新建一个
+        if(yhdGroupBuyOrder == null){
+            Date createTime = null, paidTime = null;
+            try{
+                createTime =  dateFormat.parse(params.get("createTime"));
+                paidTime = dateFormat.parse(params.get("paidTime"));
+            }catch (ParseException e ){
+                errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "日期解析错误", ""));
+            }
+
+            if(errorResponse.errorCount > 0) {
+                renderJSON(errorResponse);
+            }
+
+            yhdGroupBuyOrder = new YHDGroupBuyOrder();
+            yhdGroupBuyOrder.orderCode = orderCode;
+            yhdGroupBuyOrder.productId = Long.parseLong(params.get("productId"));
+            yhdGroupBuyOrder.productNum = Integer.parseInt(params.get("productNum"));
+            yhdGroupBuyOrder.orderAmount = new BigDecimal(params.get("orderAmount"));
+            yhdGroupBuyOrder.createTime = createTime;
+            yhdGroupBuyOrder.paidTime = paidTime;
+            yhdGroupBuyOrder.userPhone = params.get("userPhone");
+            yhdGroupBuyOrder.productPrice = new BigDecimal(params.get("productPrice"));
+            yhdGroupBuyOrder.groupId = Long.parseLong(params.get("groupId"));
+            yhdGroupBuyOrder.outerGroupId = params.get("outerGroupId");
+            yhdGroupBuyOrder.save();
+            try{
+                // 将订单写入数据库
+                JPA.em().flush();
+            }catch (Exception e){
+                // 如果写入失败，说明 已经存在一个相同的orderCode 的订单，则放弃
+                renderJSON(voucherInfoResponse);
+                return;
+            }
+        }
 
         try{
             JPA.em().refresh(yhdGroupBuyOrder, LockModeType.PESSIMISTIC_WRITE);
         }catch (PersistenceException e){
             //没拿到锁 放弃
-            renderXml(informResult(1, 0));
+            renderJSON(voucherInfoResponse);
             return;
         }
 
         Order ybqOrder = createYbqOrder(yhdGroupBuyOrder);
         if(ybqOrder != null){
-            yhdGroupBuyOrder.status = YHDGroupBuyOrderStatus.PROCESSED;
+            yhdGroupBuyOrder.status = YHDGroupBuyOrderStatus.ORDER_DONE;
             yhdGroupBuyOrder.ybqOrderId = ybqOrder.getId();
             yhdGroupBuyOrder.save();
+
+            List<ECoupon> coupons = ECoupon.find("byOrder", ybqOrder).fetch();
+            for(ECoupon coupon : coupons) {
+                VoucherInfo voucherInfo = new VoucherInfo();
+                voucherInfo.issueTime = dateFormat.format(new Date());
+                voucherInfo.voucherCode = coupon.eCouponSn;
+                if(coupon.effectiveAt != null){
+                    voucherInfo.voucherStartTime = dateFormat.format(coupon.effectiveAt);
+                }else {
+                    voucherInfo.voucherStartTime = dateFormat.format(coupon.expireAt);
+                }
+                voucherInfo.voucherEndTime = dateFormat.format(coupon.expireAt);
+                voucherInfo.voucherCount = 1;
+                voucherInfoResponse.add(voucherInfo);
+            }
         }
-        renderXml(informResult(0, 1));
+        renderJSON(voucherInfoResponse);
     }
 
+
+
     // 创建一百券订单
-    public static Order createYbqOrder(YHDGroupBuyOrder yhdGroupBuyOrder) {
+    private static Order createYbqOrder(YHDGroupBuyOrder yhdGroupBuyOrder) {
         Resaler resaler = Resaler.findOneByLoginName(YHD_LOGIN_NAME);
         if (resaler == null){
             Logger.error("can not find the resaler by login name: %s", YHD_LOGIN_NAME);
@@ -118,110 +195,6 @@ public class YHDGroupBuy extends Controller{
 
         return ybqOrder;
     }
-
-    private static Document informResult(int errorCount, int updateCount){
-        Document doc = makeDocument();
-        Element rootElement = doc.createElement("response");
-        doc.appendChild(rootElement);
-
-        Element errorCountNode = doc.createElement("errorCount");
-        errorCountNode.appendChild(doc.createTextNode(String.valueOf(errorCount)));
-        rootElement.appendChild(errorCountNode);
-
-        Element updateCountNode = doc.createElement("updateCount");
-        updateCountNode.appendChild(doc.createTextNode(String.valueOf(updateCount)));
-        rootElement.appendChild(updateCountNode);
-        return doc;
-    }
-
-    private static Document makeDocument(){
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = null;
-        try {
-            docBuilder = docFactory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            return null;
-        }
-        return docBuilder.newDocument();
-    }
-
-    public static void voucherInfo(String orderCode, String partnerOrderCode){
-        YHDGroupBuyOrder yhdGroupBuyOrder = YHDGroupBuyOrder.find("byOrderCode").first();
-        if(yhdGroupBuyOrder == null){
-
-            return;
-        }
-        Order ybqOrder = Order.findById(yhdGroupBuyOrder.ybqOrderId);
-        if(ybqOrder == null){
-
-            return;
-        }
-        Document doc = makeDocument();
-        Element root = doc.createElement("response");
-        doc.appendChild(root);
-
-        Element errorCountNode = doc.createElement("errorCount");
-        errorCountNode.appendChild(doc.createTextNode(String.valueOf(0)));
-        root.appendChild(errorCountNode);
-
-        Element totalCountNode = doc.createElement("totalCount");
-        totalCountNode.appendChild(doc.createTextNode(String.valueOf(ybqOrder.orderItems.size())));
-        root.appendChild(totalCountNode);
-
-        Element voucherInfoListNode = doc.createElement("voucherInfoList");
-        root.appendChild(voucherInfoListNode);
-
-        SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
-
-        List<ECoupon> coupons = ECoupon.find("byOrder", ybqOrder).fetch();
-
-
-        for(ECoupon coupon : coupons){
-            Element voucherInfoNode = doc.createElement("voucherInfo");
-
-            Element issueTimeNode = doc.createElement("issueTime");
-            issueTimeNode.appendChild(doc.createTextNode(format.format(coupon.createdAt)));
-            voucherInfoNode.appendChild(issueTimeNode);
-
-            Element voucherCodeNode = doc.createElement("voucherCode");
-            voucherCodeNode.appendChild(doc.createTextNode(coupon.eCouponSn));
-            voucherInfoNode.appendChild(voucherCodeNode);
-
-            Element voucherCountNode = doc.createElement("voucherCount");
-            voucherCountNode.appendChild(doc.createTextNode("1"));
-            voucherInfoNode.appendChild(voucherCountNode);
-
-            Element voucherStartTimeNode = doc.createElement("voucherStartTime");
-            if(coupon.effectiveAt == null){
-                coupon.effectiveAt = new Date();
-            }
-            voucherStartTimeNode.appendChild(doc.createTextNode(format.format(coupon.effectiveAt)));
-            voucherInfoNode.appendChild(voucherStartTimeNode);
-
-            Element voucherEndTimeNode = doc.createElement("voucherEndTime");
-        }
-
-    }
-
-    private class Response{
-        private int errorCount;
-        private int totalCount;
-        private List<VoucherInfo> voucherInfoList;
-
-        public Response(){}
-    }
-
-    private class VoucherInfo{
-        private String issueTime;
-        private String voucherCode;
-        private int voucherCount;
-        private String voucherEndTime;
-        private String voucherStartTIme;
-
-        public VoucherInfo(){}
-    }
-
-
 }
 
 
