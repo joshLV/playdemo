@@ -9,6 +9,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.dom4j.Element;
 
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
@@ -35,6 +36,7 @@ public class DangDangApiUtil {
 
     public static final String SN_QUERY_URL = "http://tuanapi.dangdang.com/team_open/query_consume_code.php";
     public static final String SYNC_URL = "http://tuanapi.dangdang.com/team_inter_api/public/push_team_stock.php";
+    private static final String QUERY_CONSUME_CODE_URL = "http://tuanapi.dangdang.com/team_open/query_consume_code.php";
 
     /**
      * 返回一百券系统中商品总销量.
@@ -58,8 +60,14 @@ public class DangDangApiUtil {
      * @return
      */
     public static boolean isRefund(ECoupon eCoupon) {
-
-
+        DDOrderItem ddOrderOrderItem = DDOrderItem.findByOrder(eCoupon.orderItems);
+        if (ddOrderOrderItem == null) {
+            return false;
+        }
+        String data = String.format("data<row><ddgid>%s</ddgid><type>%s</type><code>%s</code></row></data>",
+                ddOrderOrderItem.ddgid, 1, eCoupon.eCouponSn);
+        Response response = DangDangApiUtil.access(QUERY_CONSUME_CODE_URL, data, "query_consume_code");
+        //todo  返回结果处理
         return false;
     }
 
@@ -79,20 +87,37 @@ public class DangDangApiUtil {
      */
     public static String sendSMS(String data) {
 
-        Response<DDOrder> res = new Response<>();
-        res.parseXml(data, "order", true, DDOrder.parser);
+        Response<DDECoupon> res = new Response<>();
+        // 订单摘要解析器
+        Parser<DDECoupon> parser = new Parser<DDECoupon>() {
+            @Override
+            public DDECoupon parse(Element node) {
+                DDECoupon eCoupon = new DDECoupon();
+                eCoupon.orderId = Long.parseLong(node.elementTextTrim("order_id"));
+                eCoupon.ddgid = Long.parseLong(node.elementTextTrim("ddgid"));
+                eCoupon.spgid = Long.parseLong(node.elementTextTrim("spgid"));
+                eCoupon.userCode = node.elementTextTrim("user_code");
+                eCoupon.receiveMobile = node.elementTextTrim("receiveMobile");
+
+                eCoupon.consumeId = node.elementTextTrim("consumeId");
+
+                return eCoupon;
+            }
+        };
+
+        res.parseXml(data, "order", true, parser);
 
         StringBuilder xmlData = new StringBuilder("<resultObject><ver><![CDATA[%s]]</ver><spgid><![CDATA[%s]]></spgid>");
 
-        List<DDOrder> orderList = res.getVs();
+        List<DDECoupon> eCouponList = res.getVs();
         String xml = "";
-        for (DDOrder order : orderList) {
-            Order yibaiquanOrder = Order.find("dd_order_id=? and userId=? and userType=?", order.orderId, AccountType.RESALER, Long.parseLong(order.userCode)).first();
-            if (yibaiquanOrder == null) {
+        for (DDECoupon eCoupon : eCouponList) {
+            Order ybqOrder = Order.find("dd_order_id=? and userId=? and userType=?", eCoupon.orderId, AccountType.RESALER, Long.parseLong(eCoupon.userCode)).first();
+            if (ybqOrder == null) {
                 xmlData.append("<error_code>1001</error_code>");
                 xmlData.append("<desc>没找到对应的订单</desc>");
             } else {
-                ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and phone=?", yibaiquanOrder, order.consumeId, order.receiveMobile).first();
+                ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and phone=?", ybqOrder, eCoupon.consumeId, eCoupon.receiveMobile).first();
                 if (coupon == null) {
                     xmlData.append("<error_code>1005</error_code>");
                     xmlData.append("<desc>没找到对应的券号</desc>");
@@ -106,7 +131,7 @@ public class DangDangApiUtil {
                         xmlData.append("<error_code>0</error_code>");
                         xmlData.append("<desc>success</desc>");
                         xmlData.append("<data><consume_id><![CDATA[%s]]</consume_id><order_id><![CDATA[%s]]</order_id><send_status><![CDATA[%s]]</status></data>");
-                        xml = String.format(xmlData.toString(), VER, SPID, order.consumeId, order.orderId, yibaiquanOrder.orderNumber);
+                        xml = String.format(xmlData.toString(), VER, SPID, eCoupon.consumeId, eCoupon.orderId, ybqOrder.orderNumber);
                     }
                 }
             }

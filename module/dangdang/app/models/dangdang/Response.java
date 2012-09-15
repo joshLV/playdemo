@@ -143,5 +143,4 @@ public class Response<V> implements Serializable {
             errors.add(errorInfo);
         }
     }
-
 }

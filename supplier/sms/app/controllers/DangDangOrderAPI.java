@@ -26,6 +26,8 @@ import java.util.TreeMap;
  * Time: 下午3:59
  */
 public class DangDangOrderAPI extends Controller {
+    public static final String app_key = "";
+
 
     public static void createOrder(String sign) {
 
@@ -42,16 +44,16 @@ public class DangDangOrderAPI extends Controller {
         //检查参数
         if (isBlank(params.get("user_mobile")) || isBlank(user_id)) {
             Logger.error("invalid userInfo: %s", user_id);
-            render("");
+            render(""); //todo
         }
         String kx_order_id = params.get("kx_order_id");
         if (isBlank(kx_order_id)) {
             Logger.error("invalid kx_order_id: %s", kx_order_id);
-            render();
+            render(); //todo
         }
         if (isBlank(sign)) {
             Logger.error("invalid sign: %s", sign);
-            render();
+            render(); //todo
         }
 
         //校验参数
@@ -72,7 +74,6 @@ public class DangDangOrderAPI extends Controller {
         }
 
 
-        String app_key = "";//todo
         //定位请求者
         Resaler resaler = Resaler.find("byKey", app_key).first();
         if (resaler == null || resaler.status != ResalerStatus.APPROVED) {
@@ -110,7 +111,6 @@ public class DangDangOrderAPI extends Controller {
         }
 
         order.remark = express_memo;
-        order.ddOrder = ddOrder;
         order.createAndUpdateInventory();
         order.payAndSendECoupon();
         render(order, id, kx_order_id);

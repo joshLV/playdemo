@@ -5,16 +5,17 @@
 package models.dangdang;
 
 import models.order.NotEnoughInventoryException;
+import models.order.Order;
 import models.sales.Goods;
-import org.dom4j.Element;
 import play.db.jpa.Model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -47,19 +48,17 @@ public class DDOrder extends Model {
     public List<DDOrderItem> orderItems;
     @Column(name = "user_id")
     public String userCode;
-    /**
-     * 当当团购编号
-     */
-    @Transient
-    public Long ddgid;
-    @Transient
-    public Long spgid;//来源网站团购编号
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ybq_order_id", nullable = true)
+    public Order ybqOrder;
 
     @Column(name = "consume_id")
     public String consumeId;//消费权唯一的标志
     @Column(name = "receive_mobile_tel")
     public String receiveMobile;//团购顾客手机
+    
+    
 
 
     public DDOrder(Long orderId, BigDecimal orderAmount, BigDecimal amount, Long userId) {
@@ -109,21 +108,7 @@ public class DDOrder extends Model {
     }
 
 
-    // 订单摘要解析器
-    public static Parser<DDOrder> parser = new Parser<DDOrder>() {
-        @Override
-        public DDOrder parse(Element node) {
-            DDOrder order = new DDOrder();
-            order.orderId = Long.parseLong(node.elementTextTrim("order_id"));
-            order.ddgid = Long.parseLong(node.elementTextTrim("ddgid"));
-            order.spgid = Long.parseLong(node.elementTextTrim("spgid"));
-            order.userCode = node.elementTextTrim("user_code");
-            order.receiveMobile = node.elementTextTrim("receiveMobile");
-
-            order.consumeId = node.elementTextTrim("consumeId");
-
-            return order;
-        }
-    };
-
+    public static DDOrder findByOrder(Order order) {
+        return find("byYbqOrder",order).first();
+    }
 }
