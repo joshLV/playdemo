@@ -1,4 +1,4 @@
-package dangdang;
+package models.dangdang;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;

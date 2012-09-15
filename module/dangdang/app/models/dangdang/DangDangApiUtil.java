@@ -1,8 +1,7 @@
-package dangdang;
+package models.dangdang;
 
 
 import models.accounts.AccountType;
-import models.dangdang.*;
 import models.order.ECoupon;
 import models.order.Order;
 import models.sales.Goods;
@@ -13,7 +12,11 @@ import sun.net.www.http.HttpClient;
 
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * 当当API工具类.
@@ -122,7 +125,7 @@ public class DangDangApiUtil {
      * @param apiName
      * @return
      */
-    public static models.dangdang.Response access(String url, String data, String apiName) {
+    public static Response access(String url, String data, String apiName) {
         //构造HttpClient的实例
         HttpClient httpClient = new HttpClient();
         //创建GET方法的实例

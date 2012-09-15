@@ -1,4 +1,4 @@
-package dangdang;
+package models.dangdang;
 
 import models.sales.Goods;
 import play.db.jpa.Model;

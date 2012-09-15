@@ -2,14 +2,19 @@
  * Copyright 2012 uhuila.com, Inc. All rights reserved.
  * uhuila.com PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
-package dangdang;
+package models.dangdang;
 
 import models.order.NotEnoughInventoryException;
 import models.sales.Goods;
 import org.dom4j.Element;
 import play.db.jpa.Model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
