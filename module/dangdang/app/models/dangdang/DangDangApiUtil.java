@@ -6,9 +6,9 @@ import models.order.ECoupon;
 import models.order.Order;
 import models.sales.Goods;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
-import sun.net.www.http.HttpClient;
 
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;

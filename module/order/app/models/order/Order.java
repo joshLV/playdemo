@@ -2,7 +2,7 @@ package models.order;
 
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
-import dangdang.DDOrder;
+import models.dangdang.DDOrder;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;

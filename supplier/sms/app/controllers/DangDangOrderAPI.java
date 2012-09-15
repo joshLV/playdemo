@@ -1,7 +1,7 @@
 package controllers;
 
-import dangdang.DDOrder;
-import dangdang.DangDangApiUtil;
+import models.dangdang.DDOrder;
+import models.dangdang.DangDangApiUtil;
 import models.accounts.AccountType;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;

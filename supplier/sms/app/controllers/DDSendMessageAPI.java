@@ -1,6 +1,6 @@
 package controllers;
 
-import dangdang.DangDangApiUtil;
+import models.dangdang.DangDangApiUtil;
 import play.mvc.Controller;
 
 import java.util.Map;
