@@ -66,6 +66,9 @@ public class DDOrderItem extends Model {
         this.createdAt = new Date();
     }
 
+    public DDOrderItem() {
+    }
+
     /**
      * 当前订单项总费用：
      * lineValue = orderItemPrice*orderItemNum

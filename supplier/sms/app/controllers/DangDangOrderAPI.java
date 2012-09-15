@@ -1,14 +1,16 @@
 package controllers;
 
+import models.accounts.AccountType;
 import models.dangdang.DDOrder;
 import models.dangdang.DangDangApiUtil;
-import models.accounts.AccountType;
+import models.dangdang.ErrorCode;
+import models.dangdang.ErrorInfo;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
-import models.resale.ResalerLevel;
-import models.sales.Goods;
 import models.resale.Resaler;
+import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
+import models.sales.Goods;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.mvc.Controller;
@@ -29,7 +31,7 @@ public class DangDangOrderAPI extends Controller {
     public static final String app_key = "";
 
 
-    public static void createOrder(String sign) {
+    public static void order(String sign) {
 
         //取得参数信息 必填信息
         Map<String, String> params = DangDangApiUtil.filterPlayParameter(request.params.all());
@@ -41,19 +43,27 @@ public class DangDangOrderAPI extends Controller {
         String express_memo = params.get("express_memo");
 
         String user_id = params.get("user_id");
+        ErrorInfo errorInfo = new ErrorInfo();
         //检查参数
         if (isBlank(params.get("user_mobile")) || isBlank(user_id)) {
             Logger.error("invalid userInfo: %s", user_id);
-            render(""); //todo
+            errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
+            errorInfo.errorDes = "用户不存在！";
+            render(errorInfo);
         }
         String kx_order_id = params.get("kx_order_id");
         if (isBlank(kx_order_id)) {
             Logger.error("invalid kx_order_id: %s", kx_order_id);
-            render(); //todo
+            errorInfo.errorCode = ErrorCode.ORDER_NOT_EXITED;
+            errorInfo.errorDes = "订单不存在！";
+            render(errorInfo);
+
         }
         if (isBlank(sign)) {
             Logger.error("invalid sign: %s", sign);
-            render(); //todo
+            errorInfo.errorCode = ErrorCode.VERIFY_FAILD;
+            errorInfo.errorDes = "sign验证失败！";
+            render(errorInfo);
         }
 
         //校验参数
@@ -61,7 +71,9 @@ public class DangDangOrderAPI extends Controller {
         veryParams.put("kx_order_id", kx_order_id);
         if (!DangDangApiUtil.validSign(veryParams, "", "", sign)) {
             Logger.error("wrong sign: ", sign);
-            render("");
+            errorInfo.errorCode = ErrorCode.VERIFY_FAILD;
+            errorInfo.errorDes = "sign验证失败！";
+            render(errorInfo);
         }
         Order order = null;
         //如果已经存在订单，则不处理，直接返回xml
@@ -78,7 +90,9 @@ public class DangDangOrderAPI extends Controller {
         Resaler resaler = Resaler.find("byKey", app_key).first();
         if (resaler == null || resaler.status != ResalerStatus.APPROVED) {
             Logger.error("unavailable app_key: ", app_key);
-            render("");//todo
+            errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
+            errorInfo.errorDes = "用户不存在！";
+            render(errorInfo);
         }
         //产生DD订单
         ddOrder = new DDOrder(Long.parseLong(kx_order_id), new BigDecimal(all_amount), new BigDecimal(amount), resaler.id).save();
@@ -86,7 +100,9 @@ public class DangDangOrderAPI extends Controller {
         try {
             JPA.em().flush();
         } catch (Exception e) {
-            render();
+            errorInfo.errorCode = ErrorCode.ORDER_EXITED;
+            errorInfo.errorDes = "订单已存在！";
+            render(errorInfo);
         }
 
         JPA.em().refresh(ddOrder, LockModeType.PESSIMISTIC_WRITE);
@@ -106,6 +122,9 @@ public class DangDangOrderAPI extends Controller {
                     order.addOrderItem(goods, Integer.parseInt(arrGoodsItem[1]), user_mobile, resalerPrice, resalerPrice);
                 } catch (NotEnoughInventoryException e) {
                     Logger.info("inventory not enough");
+                    errorInfo.errorCode = ErrorCode.INVENTORY_NOT_ENOUGH;
+                    errorInfo.errorDes = "库存不足！";
+                    render(errorInfo);
                 }
             }
         }

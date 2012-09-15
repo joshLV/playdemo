@@ -115,6 +115,8 @@ public class DangDangApiUtil {
 
         res.parseXml(data, "order", true, parser);
 
+//        JSONResponse.setSysParams();
+
         StringBuilder xmlData = new StringBuilder("<resultObject><ver><![CDATA[%s]]</ver><spgid><![CDATA[%s]]></spgid>");
 
         List<DDECoupon> eCouponList = res.getVs();
@@ -149,6 +151,8 @@ public class DangDangApiUtil {
         return xml;
 
     }
+
+
 
     /**
      * 发送http请求，并返回xml

@@ -74,9 +74,8 @@ public class Response<V> implements Serializable {
         } catch (DocumentException e) {
             errorCount = 1;
             ErrorInfo errorInfo = new ErrorInfo();
-            errorInfo.errorCode = "0";
+            errorInfo.errorCode = ErrorCode.NO_DATA_NODE;
             errorInfo.errorDes = "parse xml error";
-            errorInfo.pkInfo = "";
             errors.add(errorInfo);
             return;
         }

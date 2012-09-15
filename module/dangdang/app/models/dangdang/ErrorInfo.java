@@ -1,5 +1,8 @@
 package models.dangdang;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
 /**
  * <p/>
  * User: yanjy
@@ -7,7 +10,9 @@ package models.dangdang;
  * Time: 上午11:54
  */
 public class ErrorInfo {
-    public String errorCode;
+    @Enumerated(EnumType.STRING)
+    public ErrorCode errorCode;
     public String errorDes;
-    public String pkInfo;
+    public String spid;
+    public String ver;
 }
