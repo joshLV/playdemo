@@ -2,6 +2,7 @@ package models.order;
 
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
+import dangdang.DDOrder;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
@@ -183,6 +184,9 @@ public class Order extends Model {
     @Column(name = "ext_request_sn")
     public String extRequestSN;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dd_order_id", nullable = true)
+    public DDOrder ddOrder;
     /**
      * 支付方式名称
      */
@@ -557,7 +561,7 @@ public class Order extends Model {
     }
 
     public void payAndSendECoupon() {
-        if(this.status == OrderStatus.PAID){
+        if (this.status == OrderStatus.PAID) {
             return;
         }
 

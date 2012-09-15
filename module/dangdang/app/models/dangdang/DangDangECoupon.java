@@ -1,4 +1,4 @@
-package models.dangdang;
+package dangdang;
 
 import models.order.ECoupon;
 import play.db.jpa.Model;

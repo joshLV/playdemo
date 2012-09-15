@@ -1,15 +1,19 @@
-package models.dangdang;
+package dangdang;
 
 
+import models.accounts.AccountType;
+import models.dangdang.*;
 import models.order.ECoupon;
+import models.order.Order;
 import models.sales.Goods;
-import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
+import sun.net.www.http.HttpClient;
 
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 /**
  * 当当API工具类.
@@ -26,7 +30,7 @@ public class DangDangApiUtil {
     private static final String SECRET_KEY = "";
     private static final String SIGN_METHOD = "1";
 
-
+    public static final String SN_QUERY_URL = "http://tuanapi.dangdang.com/team_open/query_consume_code.php";
     public static final String SYNC_URL = "http://tuanapi.dangdang.com/team_inter_api/public/push_team_stock.php";
 
     /**
@@ -51,7 +55,8 @@ public class DangDangApiUtil {
      * @return
      */
     public static boolean isRefund(ECoupon eCoupon) {
-        //todo
+
+
         return false;
     }
 
@@ -68,9 +73,44 @@ public class DangDangApiUtil {
      * 发送券号短信.
      *
      * @param data xml格式
-     *
      */
-    public static void sendSMS(String data) {
+    public static String sendSMS(String data) {
+
+        Response<DDOrder> res = new Response<>();
+        res.parseXml(data, "order", true, DDOrder.parser);
+
+        StringBuilder xmlData = new StringBuilder("<resultObject><ver><![CDATA[%s]]</ver><spgid><![CDATA[%s]]></spgid>");
+
+        List<DDOrder> orderList = res.getVs();
+        String xml = "";
+        for (DDOrder order : orderList) {
+            Order yibaiquanOrder = Order.find("dd_order_id=? and userId=? and userType=?", order.orderId, AccountType.RESALER, Long.parseLong(order.userCode)).first();
+            if (yibaiquanOrder == null) {
+                xmlData.append("<error_code>1001</error_code>");
+                xmlData.append("<desc>没找到对应的订单</desc>");
+            } else {
+                ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and phone=?", yibaiquanOrder, order.consumeId, order.receiveMobile).first();
+                if (coupon == null) {
+                    xmlData.append("<error_code>1005</error_code>");
+                    xmlData.append("<desc>没找到对应的券号</desc>");
+                } else {
+                    //最多发送三次短信，发送失败，则返回0
+                    if (!ECoupon.sendUserMessage(coupon.id)) {
+                        xmlData.append("<error_code>1006</error_code>");
+                        xmlData.append("<desc>短信发送失败</desc>");
+                    } else {
+                        //发送成功
+                        xmlData.append("<error_code>0</error_code>");
+                        xmlData.append("<desc>success</desc>");
+                        xmlData.append("<data><consume_id><![CDATA[%s]]</consume_id><order_id><![CDATA[%s]]</order_id><send_status><![CDATA[%s]]</status></data>");
+                        xml = String.format(xmlData.toString(), VER, SPID, order.consumeId, order.orderId, yibaiquanOrder.orderNumber);
+                    }
+                }
+            }
+        }
+
+        xmlData.append("</resultObject>");
+        return xml;
 
     }
 
@@ -82,7 +122,7 @@ public class DangDangApiUtil {
      * @param apiName
      * @return
      */
-    public static Response access(String url, String data, String apiName) {
+    public static models.dangdang.Response access(String url, String data, String apiName) {
         //构造HttpClient的实例
         HttpClient httpClient = new HttpClient();
         //创建GET方法的实例
@@ -111,7 +151,7 @@ public class DangDangApiUtil {
         return null;
     }
 
-    private static String getSign(String data, String time, String apiName) {
+    public static String getSign(String data, String time, String apiName) {
         byte[] result;
         String tt = " ";
         try {
@@ -130,13 +170,53 @@ public class DangDangApiUtil {
 
     }
 
-/*
-    public static String inputStream2String(InputStream is) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        int i = -1;
-        while ((i = is.read()) != -1) {
-            baos.write(i);
+    /**
+     * 验证订单的签名sign
+     *
+     * @param params
+     * @param appKey
+     * @param appSecretKey
+     * @param sign
+     * @return
+     */
+    public static boolean validSign(SortedMap<String, String> params, String appKey, String appSecretKey, String sign) {
+        params.put("app_key", appKey);
+        StringBuilder signStr = new StringBuilder();
+        for (SortedMap.Entry<String, String> entry : params.entrySet()) {
+            signStr.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
-        return baos.toString();
-    }*/
+        signStr.append("app_secret_key=").append(appSecretKey);
+        return DigestUtils.md5Hex(signStr.toString()).equals(sign);
+    }
+
+    /**
+     * 获取参数信息
+     *
+     * @param params
+     * @return
+     */
+    public static Map<String, String> filterPlayParameter(Map<String, String[]> params) {
+        Map<String, String> result = new HashMap<>();
+        for (Map.Entry<String, String[]> entry : params.entrySet()) {
+            if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
+                continue;
+            }
+            if (entry.getValue() == null) {
+                result.put(entry.getKey(), "");
+            } else {
+                result.put(entry.getKey(), entry.getValue()[0]);
+            }
+        }
+        return result;
+    }
+
+/*
+public static String inputStream2String(InputStream is) throws IOException {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    int i = -1;
+    while ((i = is.read()) != -1) {
+        baos.write(i);
+    }
+    return baos.toString();
+}*/
 }

@@ -1,7 +1,7 @@
 package models.job.dangdang.listener;
 
 import com.uhuila.common.constants.DeletedStatus;
-import models.dangdang.DangDangGoods;
+import dangdang.DangDangApiUtil;
 import models.sales.Goods;
 import models.sales.GoodsStatus;
 import play.Logger;
@@ -27,7 +27,7 @@ public class DDSyncSellGoodsCountJob extends Job {
                 DeletedStatus.UN_DELETED, GoodsStatus.ONSALE).fetch();
         for (Goods goods : goodsList) {
             //更新当当商品的售出数量
-            DangDangGoods.syncSellCount(goods);
+            DangDangApiUtil.syncSellCount(goods);
         }
     }
 }

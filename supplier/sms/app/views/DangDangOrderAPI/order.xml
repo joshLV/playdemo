@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<orders>
+    <order>
+        <id>${id}</id>
+        <order_id>${order?.orderNumber}</order_id>
+        <kx_order_id>${kx_order_id}</kx_order_id>
+        <deal_type_name>code_mine</deal_type_name>
+        <partner_result>
+            #{list order?.eCoupons, as:'coupon'}
+            <code_mine>
+                <sn>${coupon?.eCouponSn}</sn>
+                <code_type>0</code_type>
+                <verify></verify>
+                <explain></explain>
+                <expire_date>${coupon?.expireAt?.format("yyyy-MM-dd HH:mm:ss")}</expire_date>
+            </code_mine>
+            #{/list}
+        </partner_result>
+    </order>
+</orders>

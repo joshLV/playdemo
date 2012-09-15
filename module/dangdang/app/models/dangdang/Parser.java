@@ -1,4 +1,4 @@
-package models.dangdang;
+package dangdang;
 
 import org.dom4j.Element;
 /**
