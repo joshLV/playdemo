@@ -34,9 +34,9 @@ public class DangDangApiUtil {
     private static final String SECRET_KEY = "";
     private static final String SIGN_METHOD = "1";
 
-    public static final String SN_QUERY_URL = "http://tuanapi.dangdang.com/team_open/query_consume_code.php";
-    public static final String SYNC_URL = "http://tuanapi.dangdang.com/team_inter_api/public/push_team_stock.php";
+    private static final String SYNC_URL = "http://tuanapi.dangdang.com/team_inter_api/public/push_team_stock.php";
     private static final String QUERY_CONSUME_CODE_URL = "http://tuanapi.dangdang.com/team_open/query_consume_code.php";
+    private static final String VERIFY_CONSUME_URL = "http://tuanapi.dangdang.com/team_open/verify_consume.php";
 
     /**
      * 返回一百券系统中商品总销量.
@@ -64,7 +64,7 @@ public class DangDangApiUtil {
         if (ddOrderOrderItem == null) {
             return false;
         }
-        String data = String.format("data<row><ddgid>%s</ddgid><type>%s</type><code>%s</code></row></data>",
+        String data = String.format("<data><row><ddgid>%s</ddgid><type>%s</type><code>%s</code></row></data>",
                 ddOrderOrderItem.ddgid, 1, eCoupon.eCouponSn);
         Response response = DangDangApiUtil.access(QUERY_CONSUME_CODE_URL, data, "query_consume_code");
         //todo  返回结果处理
@@ -77,7 +77,15 @@ public class DangDangApiUtil {
      * @param eCoupon
      */
     public static void notifyVerified(ECoupon eCoupon) {
-        //todo
+        DDOrderItem ddOrderOrderItem = DDOrderItem.findByOrder(eCoupon.orderItems);
+        if (ddOrderOrderItem == null) {
+            return;
+        }
+        String data = String.format("<data><row><ddgid>%s</ddgid><consume_code>%s</consume_code><verifycode>%s" +
+                "</verifycode></row></data>",
+                ddOrderOrderItem.ddgid, eCoupon.eCouponSn, eCoupon.eCouponSn);
+        Response response = DangDangApiUtil.access(VERIFY_CONSUME_URL, data, "verify_consume");
+        //todo  返回结果处理
     }
 
     /**
