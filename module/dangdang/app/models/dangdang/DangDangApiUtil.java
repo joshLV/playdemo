@@ -93,7 +93,7 @@ public class DangDangApiUtil {
      *
      * @param data xml格式
      */
-    public static String sendSMS(String data) {
+    public static Response sendSMS(String data) {
 
         Response<DDECoupon> res = new Response<>();
         // 订单摘要解析器
@@ -106,7 +106,6 @@ public class DangDangApiUtil {
                 eCoupon.spgid = Long.parseLong(node.elementTextTrim("spgid"));
                 eCoupon.userCode = node.elementTextTrim("user_code");
                 eCoupon.receiveMobile = node.elementTextTrim("receiveMobile");
-
                 eCoupon.consumeId = node.elementTextTrim("consumeId");
 
                 return eCoupon;
@@ -114,44 +113,39 @@ public class DangDangApiUtil {
         };
 
         res.parseXml(data, "order", true, parser);
-
-//        JSONResponse.setSysParams();
-
-        StringBuilder xmlData = new StringBuilder("<resultObject><ver><![CDATA[%s]]</ver><spgid><![CDATA[%s]]></spgid>");
-
+        res.ver = VER;
+        res.spid = SPID;
         List<DDECoupon> eCouponList = res.getVs();
-        String xml = "";
         for (DDECoupon eCoupon : eCouponList) {
             Order ybqOrder = Order.find("dd_order_id=? and userId=? and userType=?", eCoupon.orderId, AccountType.RESALER, Long.parseLong(eCoupon.userCode)).first();
             if (ybqOrder == null) {
-                xmlData.append("<error_code>1001</error_code>");
-                xmlData.append("<desc>没找到对应的订单</desc>");
+                res.errorCode = ErrorCode.ORDER_NOT_EXITED.getValue();
+                res.desc = "没找到对应的订单";
             } else {
                 ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and phone=?", ybqOrder, eCoupon.consumeId, eCoupon.receiveMobile).first();
                 if (coupon == null) {
-                    xmlData.append("<error_code>1005</error_code>");
-                    xmlData.append("<desc>没找到对应的券号</desc>");
+                    res.errorCode = ErrorCode.COUPON_SN_NOT_EXISTED.getValue();
+                    res.desc = "没找到对应的券号";
                 } else {
                     //最多发送三次短信，发送失败，则返回0
                     if (!ECoupon.sendUserMessage(coupon.id)) {
-                        xmlData.append("<error_code>1006</error_code>");
-                        xmlData.append("<desc>短信发送失败</desc>");
+                        res.errorCode = ErrorCode.MESSAGE_SEND_FAILED.getValue();
+                        res.desc = "短信发送失败";
                     } else {
                         //发送成功
-                        xmlData.append("<error_code>0</error_code>");
-                        xmlData.append("<desc>success</desc>");
-                        xmlData.append("<data><consume_id><![CDATA[%s]]</consume_id><order_id><![CDATA[%s]]</order_id><send_status><![CDATA[%s]]</status></data>");
-                        xml = String.format(xmlData.toString(), VER, SPID, eCoupon.consumeId, eCoupon.orderId, ybqOrder.orderNumber);
+                        res.errorCode = ErrorCode.SUCCESS.getValue();
+                        res.desc = "success";
+                        res.consumeId = coupon.eCouponSn;
+                        res.ddOrderId = eCoupon.orderId;
+                        res.ybqOrderId = coupon.order.orderNumber;
                     }
                 }
             }
         }
 
-        xmlData.append("</resultObject>");
-        return xml;
+        return res;
 
     }
-
 
 
     /**
@@ -220,7 +214,6 @@ public class DangDangApiUtil {
      * @return
      */
     public static boolean validSign(SortedMap<String, String> params, String appKey, String appSecretKey, String sign) {
-        params.put("app_key", appKey);
         StringBuilder signStr = new StringBuilder();
         for (SortedMap.Entry<String, String> entry : params.entrySet()) {
             signStr.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
@@ -249,14 +242,4 @@ public class DangDangApiUtil {
         }
         return result;
     }
-
-/*
-public static String inputStream2String(InputStream is) throws IOException {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    int i = -1;
-    while ((i = is.read()) != -1) {
-        baos.write(i);
-    }
-    return baos.toString();
-}*/
 }

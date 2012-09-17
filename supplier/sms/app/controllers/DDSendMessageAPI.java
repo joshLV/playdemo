@@ -1,6 +1,8 @@
 package controllers;
 
 import models.dangdang.DangDangApiUtil;
+import models.dangdang.ErrorCode;
+import models.dangdang.Response;
 import play.mvc.Controller;
 
 import java.util.Map;
@@ -12,6 +14,8 @@ import java.util.Map;
  * Time: 下午5:02
  */
 public class DDSendMessageAPI extends Controller {
+    public static String SPID = "";//todo
+    public static String VER = "1.0";//todo
 
     public static void sendMessage() {
         Map<String, String[]> params = request.params.all();
@@ -22,10 +26,15 @@ public class DDSendMessageAPI extends Controller {
         String apiName = params.get("apiName")[0] == null ? "" : params.get("apiName")[0].toString();
         if (sign.equals(DangDangApiUtil.getSign(data, time, apiName))) {
             //当当调用接口
-            String xml = DangDangApiUtil.sendSMS(data);
-            renderXml(xml);
+            Response response = DangDangApiUtil.sendSMS(data);
+            render(response);
         } else {
-            renderXml("");
+            Response response = new Response();
+            response.spid = SPID;
+            response.ver = VER;
+            response.errorCode = ErrorCode.VERIFY_FAILED.getValue();
+            response.desc = "验证sign失败！";
+            render(response);
         }
     }
 

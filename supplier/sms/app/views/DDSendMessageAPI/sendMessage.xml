@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resultObject>
+    <ver>${response?.ver}</ver>
+    <spid>${response?.spid</spid>
+    <error_code>${response?.errorCode}</error_code>
+    <desc>
+        <![CDATA[ ${response?.desc} ]]>
+    </desc>
+    <data>
+        <consume_id>${response?.consumeId}</consume_id>
+        <order_id>${response?.ddOrderId}</>
+        <send_staus>${response?.ybqOrderId}</send_staus>
+    </data>
+</resultObject>
+

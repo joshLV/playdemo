@@ -16,11 +16,14 @@ import java.util.List;
  */
 public class Response<V> implements Serializable {
 
-    private String statusCode;
-    private String errorCode;
-    private String desc;
-    private String spid;
-    private String ver;
+    public String statusCode;
+    public int errorCode;
+    public String desc;
+    public String spid;
+    public String ver;
+    public String consumeId;
+    public Long ddOrderId;
+    public String ybqOrderId;
     private int errorCount;
     private List<V> vs;
     private List<ErrorInfo> errors;
@@ -35,10 +38,6 @@ public class Response<V> implements Serializable {
 
     public String getStatusCode() {
         return statusCode;
-    }
-
-    public String getErrorCode() {
-        return errorCode;
     }
 
     public String getDesc() {

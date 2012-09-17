@@ -10,8 +10,8 @@ GET     /                                       Application.index
 *       /api/order/refund                       OrderAPI.refund
 *       /api/order/resend                       OrderAPI.resend
 #当当API
-POST    /ddApi/coupon/send                      DDSendMessageAPI.sendMessage
-POST    /aaApi/order/create                     DangDangOrderAPI.createOrder
+POST    /ddApi/coupon/send                      DDSendMessageAPI.sendMessage(format:'xml')
+POST    /ddApi/order/create                     DangDangOrderAPI.order(format:'xml')
 
 # 一号店
 *       /api/v1/yhd/gb/order-inform             YHDGroupBuy.orderInform

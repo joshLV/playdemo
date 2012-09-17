@@ -23,8 +23,6 @@ import java.util.Date;
 @Entity
 @Table(name = "dd_order_item")
 public class DDOrderItem extends Model {
-    @Column(name = "order_item_id")
-    public Long ybqOrderItemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dd_order_id", nullable = true)
@@ -55,7 +53,7 @@ public class DDOrderItem extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
-    public DDOrderItem(DDOrder order, Goods goods, Integer buyNumber, String phone, BigDecimal salePrice) {
+    public DDOrderItem(DDOrder order, Goods goods, Integer buyNumber, String phone, BigDecimal salePrice, OrderItems ybqOrderItem) {
         this.order = order;
         this.goodsName = goods.name;
         this.originalPrice = goods.originalPrice;
@@ -64,6 +62,7 @@ public class DDOrderItem extends Model {
         this.orderItemNum = buyNumber;
         this.phone = phone;
         this.createdAt = new Date();
+        this.ybqOrderItems = ybqOrderItem;
     }
 
     public DDOrderItem() {
@@ -72,7 +71,8 @@ public class DDOrderItem extends Model {
     /**
      * 当前订单项总费用：
      * lineValue = orderItemPrice*orderItemNum
-     * @return  订单项总费用
+     *
+     * @return 订单项总费用
      */
     @Transient
     public BigDecimal getLineValue() {
