@@ -9,15 +9,13 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
+import play.Play;
 
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
+import java.util.*;
 
 /**
  * 当当API工具类.
@@ -27,12 +25,15 @@ import java.util.SortedMap;
  * Time: 2:02 PM
  */
 public class DangDangApiUtil {
-    private static final String SPID = "1";
+
     private static final String MD5 = "MD5";
     private static final String VER = "1.0";
     private static final String XML = "XML";
-    private static final String SECRET_KEY = "";
     private static final String SIGN_METHOD = "1";
+
+    private static final String SECRET_KEY = Play.configuration.getProperty("dangdang.secret_key", "x8765d9yj72wevshn");
+    private static final String SPID = Play.configuration.getProperty("dangdang.spid", "3000003");
+
 
     private static final String SYNC_URL = "http://tuanapi.dangdang.com/team_inter_api/public/push_team_stock.php";
     private static final String QUERY_CONSUME_CODE_URL = "http://tuanapi.dangdang.com/team_open/query_consume_code.php";
@@ -95,7 +96,8 @@ public class DangDangApiUtil {
      */
     public static Response sendSMS(String data) {
 
-        Response<DDECoupon> res = new Response<>();
+        Request<DDECoupon> request = new Request<>();
+
         // 订单摘要解析器
         Parser<DDECoupon> parser = new Parser<DDECoupon>() {
             @Override
@@ -111,38 +113,46 @@ public class DangDangApiUtil {
                 return eCoupon;
             }
         };
+        Response res = new Response();
 
-        res.parseXml(data, "order", true, parser);
         res.ver = VER;
         res.spid = SPID;
-        List<DDECoupon> eCouponList = res.getVs();
-        for (DDECoupon eCoupon : eCouponList) {
-            Order ybqOrder = Order.find("dd_order_id=? and userId=? and userType=?", eCoupon.orderId, AccountType.RESALER, Long.parseLong(eCoupon.userCode)).first();
-            if (ybqOrder == null) {
-                res.errorCode = ErrorCode.ORDER_NOT_EXITED.getValue();
-                res.desc = "没找到对应的订单";
-            } else {
+
+        try {
+            request.parseXml(data, "order", true, parser);
+            List<DDECoupon> eCouponList = request.getNodeList();
+            for (DDECoupon eCoupon : eCouponList) {
+                Order ybqOrder = Order.find("dd_order_id=? and userId=? and userType=?", eCoupon.orderId, AccountType.RESALER, Long.parseLong(eCoupon.userCode)).first();
+                if (ybqOrder == null) {
+                    res.errorCode = ErrorCode.ORDER_NOT_EXITED.getValue();
+                    res.desc = "没找到对应的订单";
+                    break;
+                }
                 ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and phone=?", ybqOrder, eCoupon.consumeId, eCoupon.receiveMobile).first();
                 if (coupon == null) {
                     res.errorCode = ErrorCode.COUPON_SN_NOT_EXISTED.getValue();
                     res.desc = "没找到对应的券号";
-                } else {
-                    //最多发送三次短信，发送失败，则返回0
-                    if (!ECoupon.sendUserMessage(coupon.id)) {
-                        res.errorCode = ErrorCode.MESSAGE_SEND_FAILED.getValue();
-                        res.desc = "短信发送失败";
-                    } else {
-                        //发送成功
-                        res.errorCode = ErrorCode.SUCCESS.getValue();
-                        res.desc = "success";
-                        res.consumeId = coupon.eCouponSn;
-                        res.ddOrderId = eCoupon.orderId;
-                        res.ybqOrderId = coupon.order.orderNumber;
-                    }
+                    break;
                 }
-            }
-        }
+                //最多发送三次短信，发送失败，则返回0
+                if (!ECoupon.sendUserMessage(coupon.id)) {
+                    res.errorCode = ErrorCode.MESSAGE_SEND_FAILED.getValue();
+                    res.desc = "短信发送失败";
+                    break;
+                }
 
+                //发送成功
+                res.errorCode = ErrorCode.SUCCESS.getValue();
+                res.desc = "success";
+                res.consumeId = coupon.eCouponSn;
+                res.ddOrderId = eCoupon.orderId;
+                res.ybqOrderId = coupon.order.orderNumber;
+            }
+
+        } catch (DocumentException e) {
+            res.errorCode = ErrorCode.PARSE_XML_FAILED.getValue();
+            res.desc = "xml解析错误";
+        }
         return res;
 
     }
