@@ -2,11 +2,13 @@ package functional;
 
 import models.order.ECoupon;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.Logger;
 import play.mvc.Http.Response;
 
-public class Tui3ConsumerVerifyTest extends EnsmsConsumerVerifyTest {
+@Ignore
+public class Tui3ConsumerVerifyTest extends ConsumerSmsVerifyBaseTest {
 
     @Before
     public void setup() {
@@ -48,5 +50,57 @@ public class Tui3ConsumerVerifyTest extends EnsmsConsumerVerifyTest {
             }
         };
     }
-    
+
+    @Test
+    public void 正常消费者验证过程() {
+        testNormalConsumerCheck(getTheMessageSender());
+    }
+
+    @Test
+    public void 消费者验证券不在适用范围内() {
+        testNotInVerifyTime(getTheMessageSender());
+    }
+
+    /**
+     * 消息应当是数字开头
+     */
+    @Test
+    public void 消费者发送错误格式短信() {
+        testInvalidFormatMessage(getTheMessageSender());
+    }
+
+    @Test
+    public void 发送不存在的店员工号() {
+        testNotExistsJobNumber(getTheMessageSender());
+    }
+
+    @Test
+    public void 无效的商户代码() {
+        testInvalidSupplier(getTheMessageSender());
+    }
+
+    @Test
+    public void 商户被冻结() {
+        testLockedSupplier(getTheMessageSender());
+    }
+
+    @Test
+    public void 不是当前商户所发行的券() {
+        testTheGoodsFromOtherSupplier(getTheMessageSender());
+    }
+
+    @Test
+    public void 券已经被消费() {
+        testConsumeredECoupon(getTheMessageSender());
+    }
+
+    @Test
+    public void 券已经被冻结() {
+        testFreezedECoupon(getTheMessageSender());
+    }
+
+    @Test
+    public void 券已经过期() {
+        testExpiredECoupon(getTheMessageSender());
+    }
 }
