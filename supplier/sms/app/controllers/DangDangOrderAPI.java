@@ -13,6 +13,7 @@ import models.resale.Resaler;
 import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.mvc.Controller;
@@ -47,25 +48,25 @@ public class DangDangOrderAPI extends Controller {
         String user_id = params.get("user_id");
         ErrorInfo errorInfo = new ErrorInfo();
         //检查参数
-        if (isBlank(params.get("user_mobile")) || isBlank(user_id)) {
+        if (StringUtils.isBlank(params.get("user_mobile")) || StringUtils.isBlank(user_id)) {
             Logger.error("invalid userInfo: %s", user_id);
             errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
             errorInfo.errorDes = "用户不存在！";
             render("/DangDangOrderAPI/error.xml", errorInfo);
         }
         String kx_order_id = params.get("kx_order_id");
-        if (isBlank(kx_order_id)) {
+        if (StringUtils.isBlank(kx_order_id)) {
             Logger.error("invalid kx_order_id: %s", kx_order_id);
             errorInfo.errorCode = ErrorCode.ORDER_NOT_EXITED;
             errorInfo.errorDes = "订单不存在！";
-            render("/DangDangOrderAPI/error.xml",errorInfo);
+            render("/DangDangOrderAPI/error.xml", errorInfo);
 
         }
-        if (isBlank(sign)) {
+        if (StringUtils.isBlank(sign)) {
             Logger.error("invalid sign: %s", sign);
             errorInfo.errorCode = ErrorCode.VERIFY_FAILED;
             errorInfo.errorDes = "sign验证失败！";
-            render("/DangDangOrderAPI/error.xml",errorInfo);
+            render("/DangDangOrderAPI/error.xml", errorInfo);
         }
 
         //校验参数
@@ -75,7 +76,7 @@ public class DangDangOrderAPI extends Controller {
             Logger.error("wrong sign: ", sign);
             errorInfo.errorCode = ErrorCode.VERIFY_FAILED;
             errorInfo.errorDes = "sign验证失败！";
-            render("/DangDangOrderAPI/error.xml",errorInfo);
+            render("/DangDangOrderAPI/error.xml", errorInfo);
         }
         Order order = null;
         //如果已经存在订单，则不处理，直接返回xml
@@ -93,7 +94,7 @@ public class DangDangOrderAPI extends Controller {
             Logger.error("unavailable app_key: ", app_key);
             errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
             errorInfo.errorDes = "用户不存在！";
-            render("/DangDangOrderAPI/error.xml",errorInfo);
+            render("/DangDangOrderAPI/error.xml", errorInfo);
         }
         //产生DD订单
         ddOrder = new DDOrder(Long.parseLong(kx_order_id), new BigDecimal(all_amount), new BigDecimal(amount), resaler.id).save();
@@ -103,7 +104,7 @@ public class DangDangOrderAPI extends Controller {
         } catch (Exception e) {
             errorInfo.errorCode = ErrorCode.ORDER_EXITED;
             errorInfo.errorDes = "订单已存在！";
-            render("/DangDangOrderAPI/error.xml",errorInfo);
+            render("/DangDangOrderAPI/error.xml", errorInfo);
         }
 
         JPA.em().refresh(ddOrder, LockModeType.PESSIMISTIC_WRITE);
@@ -146,9 +147,5 @@ public class DangDangOrderAPI extends Controller {
         ddOrder.createAndUpdateInventory();
 
         render(order, id, kx_order_id);
-    }
-
-    private static boolean isBlank(String str) {
-        return str == null || str.trim().equals("");
     }
 }

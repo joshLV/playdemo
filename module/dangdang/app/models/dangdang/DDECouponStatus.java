@@ -8,7 +8,8 @@ package models.dangdang;
  * Time: 1:20 PM
  */
 public enum DDECouponStatus {
-   UNUSED(0),USED(1),REFUNDED(30),USE_REFUNDED(40);
+    UNUSED(0), USED(1), REFUNDED(30), USE_REFUNDED(40);
+
     private int status;
 
 
@@ -17,4 +18,18 @@ public enum DDECouponStatus {
     }
 
 
+    public static DDECouponStatus getStatus(int status) {
+        switch (status) {
+            case 0:
+                return UNUSED;
+            case 1:
+                return USED;
+            case 30:
+                return REFUNDED;
+            case 40:
+                return USE_REFUNDED;
+            default:
+                return UNUSED;
+        }
+    }
 }

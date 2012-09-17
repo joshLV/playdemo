@@ -1,9 +1,6 @@
 package models.dangdang;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
+import org.dom4j.*;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -17,7 +14,6 @@ import java.util.Map;
  */
 public class Response implements Serializable {
 
-    public String statusCode;
     public ErrorCode errorCode;
     public String desc;
     public String spid;
@@ -51,7 +47,10 @@ public class Response implements Serializable {
         spid = root.elementText("spid");
         errorCode = ErrorCode.getErrorCode(Integer.parseInt(root.elementTextTrim("error_code")));
         desc = root.elementText("desc");
-        data = root.element("data");
+        CDATA dataValue = (CDATA) root.getData();
+        if (dataValue != null) {
+            data = dataValue.getDocument().getRootElement();
+        }
     }
 
     /**

@@ -32,7 +32,7 @@ public class DDSendMessageAPI extends Controller {
             Response response = new Response();
             response.spid = SPID;
             response.ver = VER;
-            response.errorCode = ErrorCode.VERIFY_FAILED.getValue();
+            response.errorCode = ErrorCode.VERIFY_FAILED;
             response.desc = "验证sign失败！";
             render(response);
         }

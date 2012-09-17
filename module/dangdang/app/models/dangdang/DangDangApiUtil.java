@@ -45,26 +45,24 @@ public class DangDangApiUtil {
      *
      * @return
      */
-    public static void syncSellCount(Goods goods) {
-        int sellCount = goods.saleCount;
-
+    public static void syncSellCount(Goods goods) throws DangDangApiInvokeException {
         String data = String.format("<data><row><spgid><![CDATA[%s]]></spgid><sellcount><![CDATA[%s]]></sellcount" +
-                "></row></data>", goods.id, sellCount);
-        try {
-            Response response = DangDangApiUtil.access(SYNC_URL, data, "push_team_stock");
-            //todo 返回结果处理
-        } catch (DangDangException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                "></row></data>", goods.id, goods.saleCount);
+        Response response = DangDangApiUtil.access(SYNC_URL, data, "push_team_stock");
+
+        if (!response.success()) {
+            throw new DangDangApiInvokeException("[DangDang API] invoke syncSellCount error(goodsId:" + goods.id + "):" + response.desc);
         }
     }
 
     /**
      * 查询当前券是否已在当当上退款了.
+     * 调用当当的API
      *
      * @param eCoupon
      * @return
      */
-    public static boolean isRefund(ECoupon eCoupon) throws DangDangException {
+    public static boolean isRefund(ECoupon eCoupon) throws DangDangApiInvokeException {
         DDOrderItem ddOrderOrderItem = DDOrderItem.findByOrder(eCoupon.orderItems);
         if (ddOrderOrderItem == null) {
             return false;
@@ -72,24 +70,27 @@ public class DangDangApiUtil {
         String data = String.format("<data><row><ddgid>%s</ddgid><type>%s</type><code>%s</code></row></data>",
                 ddOrderOrderItem.ddgid, 1, eCoupon.eCouponSn);
         Response response = DangDangApiUtil.access(QUERY_CONSUME_CODE_URL, data, "query_consume_code");
+
         if (!response.success()) {
-            throw new DangDangException(response.desc);
+            throw new DangDangApiInvokeException("[DangDang API] invoke isRefund error(eCouponId:" + eCoupon.id + "):" + response.desc);
         }
+
         DDECouponStatus status = getStatus(response.data);
         return status.equals(DDECouponStatus.REFUNDED);
     }
 
     private static DDECouponStatus getStatus(Element data) {
-        return data.elementText()
-
+        String state = data.elementText("state");
+        return DDECouponStatus.getStatus(Integer.parseInt(state));
     }
 
     /**
      * 通知当当当前的券已经使用.
+     * 调用当当的API
      *
      * @param eCoupon
      */
-    public static void notifyVerified(ECoupon eCoupon) {
+    public static void notifyVerified(ECoupon eCoupon) throws DangDangApiInvokeException {
         DDOrderItem ddOrderOrderItem = DDOrderItem.findByOrder(eCoupon.orderItems);
         if (ddOrderOrderItem == null) {
             return;
@@ -97,16 +98,16 @@ public class DangDangApiUtil {
         String data = String.format("<data><row><ddgid>%s</ddgid><consume_code>%s</consume_code><verifycode>%s" +
                 "</verifycode></row></data>",
                 ddOrderOrderItem.ddgid, eCoupon.eCouponSn, eCoupon.eCouponSn);
-        try {
-            Response response = DangDangApiUtil.access(VERIFY_CONSUME_URL, data, "verify_consume");
-            //todo  返回结果处理
-        } catch (DangDangException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        Response response = DangDangApiUtil.access(VERIFY_CONSUME_URL, data, "verify_consume");
+
+        if (!response.success()) {
+            throw new DangDangApiInvokeException("[DangDang API] invoke isRefund error(eCouponId:" + eCoupon.id + "):" + response.desc);
         }
     }
 
     /**
      * 发送券号短信.
+     * 当当调用的API
      *
      * @param data xml格式
      */
@@ -176,13 +177,14 @@ public class DangDangApiUtil {
 
     /**
      * 发送http请求，并返回xml
+     * 调用当当的API
      *
      * @param url
      * @param data
      * @param apiName
      * @return
      */
-    public static Response access(String url, String data, String apiName) throws DangDangException{
+    public static Response access(String url, String data, String apiName) throws DangDangApiInvokeException {
         //构造HttpClient的实例
         HttpClient httpClient = new HttpClient();
         //创建GET方法的实例
@@ -206,7 +208,7 @@ public class DangDangApiUtil {
                 return new Response(postMethod.getResponseBodyAsString());
             }
         } catch (Exception e) {
-            throw new DangDangException(e.getMessage());
+            throw new DangDangApiInvokeException(e.getMessage());
         }
         return null;
     }
@@ -218,8 +220,8 @@ public class DangDangApiUtil {
             MessageDigest alg = java.security.MessageDigest.getInstance(MD5);
             alg.update((SPID + apiName + VER + data + SECRET_KEY + time).getBytes());
             result = alg.digest();
-            for (int i = 0; i < result.length; i++) {
-                tt += (char) result[i];
+            for (byte aResult : result) {
+                tt += (char) aResult;
             }
 
             return tt;
