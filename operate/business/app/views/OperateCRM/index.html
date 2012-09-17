@@ -261,7 +261,9 @@
                     style="color:red"
 
             #{/if}>${coupon?.eCouponSn.substring(len - 4)}
+
                 <a href="javascript:void(openW('/crm/bind?phone=${phone}&couponId=${coupon.id}&userId=${coupon.order.userId}'))">Bind</a></td>
+
             <td><a href="@{OperateOrders.details(coupon?.order?.id)}"
                    target="_blank"  #{if coupon?.status==models.order.ECouponStatus.REFUND}
 

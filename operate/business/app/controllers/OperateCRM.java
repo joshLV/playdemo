@@ -69,9 +69,11 @@ public class OperateCRM extends Controller {
 //        System.out.println("uid"+condition.userId);
         if (condition == null) {
             condition = new CRMCondition();
-            user = userList.get(0);
-            address = ConsultCondition.findAddressByCondition(user);
-            condition.userId = userList.get(0).getId();
+            if (userList.size() > 0) {
+                user = userList.get(0);
+                address = ConsultCondition.findAddressByCondition(user);
+                condition.userId = userList.get(0).getId();
+            }
 //            user = User.find("id=?", condition.userId).first();
         } else {
 
@@ -230,12 +232,13 @@ public class OperateCRM extends Controller {
     }
 
     public static void saveBind(String phone, Long couponId, Long userId) {
-        CouponCallBind couponBind=new CouponCallBind();
+        CouponCallBind couponBind = new CouponCallBind();
         ECoupon coupon = ECoupon.find("id=?", couponId).first();
-        couponBind.eCouponSn=coupon.eCouponSn;
-        couponBind.phone=phone;
-        couponBind.userId=userId;
+        couponBind.eCouponSn = coupon.eCouponSn;
+        couponBind.phone = phone;
+        couponBind.userId = userId;
         couponBind.save();
+        render();
 
     }
 
