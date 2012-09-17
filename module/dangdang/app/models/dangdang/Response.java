@@ -136,9 +136,8 @@ public class Response<V> implements Serializable {
         for (Object o : errorInfoElement.elements()) {
             Element e = (Element) o;
             ErrorInfo errorInfo = new ErrorInfo();
-            errorInfo.errorCode = e.elementText("errorCode");
+            errorInfo.errorCode = ErrorCode.getErrorCode(Integer.parseInt(e.elementText("errorCode")));
             errorInfo.errorDes = e.elementText("errorDes");
-            errorInfo.pkInfo = e.elementText("pkInfo");
             errors.add(errorInfo);
         }
     }
