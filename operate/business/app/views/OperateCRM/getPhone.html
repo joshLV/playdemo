@@ -1,0 +1,9 @@
+#{extends 'layout_operate/crm_layout.html' /}
+#{set title:'客服电话' /}
+<div class="body">
+    <form action="@{OperateCRM.jumpIndex()}" class="well form-inline" name="frmlist" id="frmlist" method="GET">
+        请输入电话号码:
+        <input type="text" name="phone" id="phone"/>
+        <button class="btn btn-primary" id="searchbtn" type="submit">确认</button>
+    </form>
+</div>

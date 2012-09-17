@@ -121,23 +121,14 @@
             <td rowspan="${order?.orderItems?.size()}"><a href="@{OperateOrders.details(order?.id)}"
                                                           target="_blank">${order.orderNumber}
 
-                *{<a href="memberCallBind.html" onclick="openwin('${phone}')">open</a>}*
-
+            *{<a href="memberCallBind.html" onclick="openwin('${phone}')">open</a>}*
 
             </td>
 
-            <div>
-                <!-- 定义一个button，点击显示dialog -->
-                <input type="button" value="我要登录" id="show"/>
-            </div>
-            <!-- 作为dialog的div -->
-            <div id="dialog" class="flora"></div>
-            <!--这边为什么要定义class=”flora”呢？class是指定dialog的css,因为在jqueryUI的css样式都是使用class来作为选择器-->
 
 
 
-        *{<div id="dialog" title="basic dialog"><p>这是一个采用默认样式的对话框</p></div>}*
-        *{<input type="button" value="打开" onclick="dialog();"/>}*
+
         *{有实物券时}*
             #{if order.realGoods?.size()>0}
                 <td>
@@ -269,7 +260,8 @@
 
                     style="color:red"
 
-            #{/if}>${coupon?.eCouponSn.substring(len - 4)}</td>
+            #{/if}>${coupon?.eCouponSn.substring(len - 4)}
+                <a href="javascript:void(openW('/crm/bind?phone=${phone}&couponId=${coupon.id}&userId=${coupon.order.userId}'))">Bind</a></td>
             <td><a href="@{OperateOrders.details(coupon?.order?.id)}"
                    target="_blank"  #{if coupon?.status==models.order.ECouponStatus.REFUND}
 
@@ -541,16 +533,12 @@
 
 <script type="text/javascript">
 
-    $(document).ready(function(){
-         $("#show").click(function(){//选中button,并监听click事件
-                 //点击button，选中div并作为dialog显示，只需要调用dialog()
-                    $("#dialog").dialog();
-              });
-         });
-
-
-
-
+    $(document).ready(function () {
+        $("#show").click(function () {//选中button,并监听click事件
+            //点击button，选中div并作为dialog显示，只需要调用dialog()
+            $("#dialog").dialog();
+        });
+    });
 
 
     $(function () {
@@ -601,4 +589,11 @@
     //　　
     //    }
 
+</script>
+
+
+<script>
+    function openW(v) {
+        window.open(v, '', 'width=200,height=200,left=200,top=200,status=no,scrollbars=no,menubar=no,toolbar=no,resizable=no,location=no');
+    }
 </script>

@@ -9,6 +9,7 @@ import models.order.ECoupon;
 import models.order.Order;
 import models.sales.ConsultCondition;
 import models.sales.ConsultRecord;
+import models.sales.CouponCallBind;
 import models.sales.MemberCallBind;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -35,6 +36,7 @@ public class OperateCRM extends Controller {
     public static void index(String phone, CRMCondition condition, Long userId) {
         User user = null;
         Address address = null;
+
 
         MemberCallBind bind = new MemberCallBind();
         List<User> userList = User.find("id in (select c.userId from MemberCallBind c where c.phone=?)", phone).fetch();
@@ -100,6 +102,7 @@ public class OperateCRM extends Controller {
 
         List<WithdrawBill> withdrawBill = ConsultCondition.findBillByCondition(condition);
 
+        String loginName = User.find("id=?", userId).first();
 
         long orderListSize = ConsultCondition.findOrderByConditionSize(condition);
         long eCouponsSize = ConsultCondition.findCouponByConditionSize(condition);
@@ -211,6 +214,29 @@ public class OperateCRM extends Controller {
         ConsultRecord.update(id, consult);
 
         index(phone, null, null);
+    }
+
+    public static void getPhone() {
+        render();
+    }
+
+    public static void jumpIndex(String phone) {
+        index(phone, null, null);
+    }
+
+    public static void bind(String phone, Long couponId, Long userId) {
+        ECoupon coupon = ECoupon.find("id=?", couponId).first();
+        render(phone, coupon, userId);
+    }
+
+    public static void saveBind(String phone, Long couponId, Long userId) {
+        CouponCallBind couponBind=new CouponCallBind();
+        ECoupon coupon = ECoupon.find("id=?", couponId).first();
+        couponBind.eCouponSn=coupon.eCouponSn;
+        couponBind.phone=phone;
+        couponBind.userId=userId;
+        couponBind.save();
+
     }
 
 

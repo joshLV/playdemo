@@ -1,0 +1,80 @@
+#{extends 'layout_operate/crm_layout.html' /}
+#{include 'share/nav.html' /}
+#{set title:'券号和来电绑定' /}
+
+<div class="body">
+
+
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+        <tr>
+
+            <th width="10px">订单号</th>
+            <th width="8px">手机</th>
+            <th width="8px">券号</th>
+            <th width="90px">商品名称</th>
+            <th width="30px">单价</th>
+            <th width="50px">消费门店</th>
+            <th width="30px">有效期</th>
+            <th width="50px">付款时间</th>
+            <th width="50px">消费时间</th>
+            <th width="30px">店员</th>
+            <th width="60px">代理验证员</th>
+            <th width="40px">验证方式</th>
+            <th width="50px">退款时间</th>
+            <th width="50px">退款金额</th>
+            <th width="20px">状态</th>
+
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr>
+            <td><a href="@{OperateOrders.details(coupon?.order?.id)}">${coupon?.order?.orderNumber}</a></abbr></td>
+            <td>${coupon?.orderItems?.phone}</td>
+            <td>${n}${coupon?.getMaskedEcouponSn()}</td>
+        *{<td>${coupon?.orderItems?.phone}</td>}*
+            <td>${coupon?.goods?.name}</td>
+            <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
+            <td>${coupon?.getConsumedShop()}</td>
+            <td>${coupon?.effectiveAt ?.format()} /
+            ${coupon?.expireAt?.format()}</td>
+            <td>${coupon?.order?.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>${coupon?.consumedAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>#{if coupon?.supplierUser?.userName!=null}${coupon?.supplierUser?.userName}#{/if}
+            #{if coupon?.supplierUser?.jobNumber!=null}(工号: ${coupon?.supplierUser?.jobNumber})#{/if}</td>
+            <td>${coupon?.operateUserName}</td>
+            <td>&{'coupon.'+coupon?.verifyType}</td>
+            <td>${coupon?.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>${coupon?.refundPrice}</td>
+            <td>&{'coupon.'+coupon?.status}</td>
+
+        </tr>
+
+
+        </tbody>
+    </table>
+
+
+    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.saveBind()}" method="GET">
+        <center>
+            <table>
+                <tr>
+                    <input type="hidden" type="text" name="eCouponSn" id="eCouponSn" value="${eCouponSn}"/>
+                    <input type="hidden" type="text" name="userId" id="userId" value="${userId}"/>
+                    <td> 券号：${coupon?.eCouponSn}  </td>
+                </tr>
+                <tr>
+                    <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
+                    <td> 来电号码：${phone}</td>
+                </tr>
+
+
+                <tr>
+                    <td><input class="btn btn-primary" id="save" type="submit" value="绑定"/></td>
+                </tr>
+            </table>
+        </center>
+    </form>
+</div>
