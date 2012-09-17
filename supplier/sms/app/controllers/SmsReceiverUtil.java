@@ -305,7 +305,7 @@ public class SmsReceiverUtil {
 
     public static String processMessage(String mobile, String msg,
                                         String code) {
-        Logger.info("LingShiSMS: mobile=" + mobile + ", msg=" + msg + ", code=" + code);
+        Logger.info("SmsReceiverUtil: mobile=" + mobile + ", msg=" + msg + ", code=" + code);
 
         // 非法手机号
         if (mobile == null || mobile.length() < 10) {
