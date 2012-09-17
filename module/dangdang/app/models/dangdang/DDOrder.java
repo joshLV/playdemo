@@ -8,6 +8,7 @@ import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
+import models.sales.MaterialType;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
@@ -29,9 +30,7 @@ public class DDOrder extends Model {
     @Column(name = "express_fee")
     public BigDecimal expressFee; //运费
 
-
-    @Column(name = "update_time")
-    public Date updateTime;             //更新时间
+    public DDOrderStatus status;
 
     @Column(name = "created_at")
     public Date createdAt;
@@ -45,17 +44,17 @@ public class DDOrder extends Model {
     @JoinColumn(name = "ybq_order_id", nullable = true)
     public Order ybqOrder;
 
-    @Column(name = "consume_id")
-    public String consumeId;//消费权唯一的标志
     @Column(name = "receive_mobile_tel")
     public String receiveMobile;//团购顾客手机
 
 
-    public DDOrder(Long orderId, BigDecimal orderAmount, BigDecimal amount, Long userId) {
+    public DDOrder(Long orderId, BigDecimal orderAmount, BigDecimal amount, BigDecimal expressFee, Long userId) {
         this.orderAmount = orderAmount;
         this.amount = amount;
+        this.expressFee = expressFee;
         this.orderId = orderId;
         this.userCode = String.valueOf(userId);
+        this.status = DDOrderStatus.ORDER_ACCEPT;
         this.createdAt = new Date();
     }
 
@@ -65,7 +64,7 @@ public class DDOrder extends Model {
         DDOrderItem orderItem = null;
         if (number > 0 && goods != null) {
             checkInventory(goods, number);
-            orderItem = new DDOrderItem(this, goods, number, mobile, salePrice,ybqOrderItem);
+            orderItem = new DDOrderItem(this, goods, number, mobile, salePrice, ybqOrderItem);
             //通过推荐购买的情况
             this.orderItems.add(orderItem);
             this.amount = this.amount.add(orderItem.getLineValue()); //计算折扣价
@@ -82,23 +81,14 @@ public class DDOrder extends Model {
     public DDOrder() {
     }
 
-    /**
-     * 处理当当过来的订单.
-     */
-    public void handleOrder() {
-        createAndUpdateInventory();
-        payAndSendECoupon();
-    }
 
     public void createAndUpdateInventory() {
+        //处理完毕
+        this.status = DDOrderStatus.ORDER_FINISH;
         save();
         for (DDOrderItem orderItem : orderItems) {
             orderItem.save();
         }
-    }
-
-    public void payAndSendECoupon() {
-
     }
 
 

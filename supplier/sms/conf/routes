@@ -11,7 +11,7 @@ GET     /                                       Application.index
 *       /api/order/resend                       OrderAPI.resend
 #当当API
 POST    /ddApi/coupon/send                      DDSendMessageAPI.sendMessage(format:'xml')
-POST    /ddApi/order/create                     DangDangOrderAPI.order(format:'xml')
+POST    /ddApi/order/create                     DDOrderAPI.order(format:'xml')
 
 # 一号店
 *       /api/v1/yhd/gb/order-inform             YHDGroupBuy.orderInform

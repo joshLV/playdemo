@@ -8,7 +8,6 @@ import org.dom4j.Element;
 import java.util.List;
 
 /**
- * TODO.
  * <p/>
  * User: sujie
  * Date: 9/17/12
@@ -26,28 +25,18 @@ public class Request<V> {
      *
      * @param xml
      */
-    public void parseXml(String xml, String contentNodeName, boolean isList, Parser<V> parser) throws DocumentException {
+    public void parseXml(String xml, String contentNodeName, Parser<V> parser) throws DocumentException {
         Document document = DocumentHelper.parseText(xml);
 
         Element root = document.getRootElement();
 
         //解析内容
-        parseContent(root, contentNodeName, isList, parser);
-    }
-
-    private void parseContent(Element root, String contentNodeName, boolean isList, Parser<V> parser) {
         Element node = root.element(contentNodeName);
         if (node == null) {
             return;
         }
         //解析对象
-        if (isList) {
-            for (Object o : node.elements()) {
-                parseOneContent((Element) o, parser);
-            }
-        } else {
-            parseOneContent(node, parser);
-        }
+        parseOneContent(node, parser);
     }
 
     private void parseOneContent(Element e, Parser<V> parser) {

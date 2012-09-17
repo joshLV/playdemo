@@ -3,6 +3,7 @@ package controllers;
 import models.dangdang.DDAPIUtil;
 import models.dangdang.ErrorCode;
 import models.dangdang.Response;
+import play.Play;
 import play.mvc.Controller;
 
 import java.util.Map;
@@ -14,17 +15,18 @@ import java.util.Map;
  * Time: 下午5:02
  */
 public class DDSendMessageAPI extends Controller {
-    public static String SPID = "";//todo
-    public static String VER = "1.0";//todo
+    private static final String VER = Play.configuration.getProperty("dangdang.version");
+    private static final String SPID = Play.configuration.getProperty("dangdang.spid", "3000003");
+    private static final String API_NAME = "send_msg";
 
     public static void sendMessage() {
-        Map<String, String[]> params = request.params.all();
+        //取得参数信息 必填信息
+        Map<String, String> params = DDAPIUtil.filterPlayParameter(request.params.all());
         //取得参数信息
-        String sign = params.get("sign")[0] == null ? "" : params.get("sign")[0].toString();
-        String data = params.get("data")[0] == null ? "" : params.get("data")[0].toString();
-        String time = params.get("time")[0] == null ? "" : params.get("time")[0].toString();
-        String apiName = params.get("apiName")[0] == null ? "" : params.get("apiName")[0].toString();
-        if (sign.equals(DDAPIUtil.getSign(data, time, apiName))) {
+        String sign = params.get("sign");
+        String data = params.get("data");
+        String time = params.get("time");
+        if (sign.equals(DDAPIUtil.getSign(data, time, API_NAME))) {
             //当当调用接口
             Response response = DDAPIUtil.sendSMS(data);
             render(response);

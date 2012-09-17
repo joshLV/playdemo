@@ -55,6 +55,7 @@ public class DDOrderItem extends Model {
 
     public DDOrderItem(DDOrder order, Goods goods, Integer buyNumber, String phone, BigDecimal salePrice, OrderItems ybqOrderItem) {
         this.order = order;
+        this.spgid = goods.id;
         this.goodsName = goods.name;
         this.originalPrice = goods.originalPrice;
         this.orderItemPrice = salePrice;

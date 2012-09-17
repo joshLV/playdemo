@@ -6,6 +6,7 @@ import models.dangdang.DDOrder;
 import models.dangdang.DDAPIUtil;
 import models.dangdang.ErrorCode;
 import models.dangdang.ErrorInfo;
+import models.dangdang.*;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderItems;
@@ -30,12 +31,8 @@ import java.util.TreeMap;
  * Date: 12-9-13
  * Time: 下午3:59
  */
-public class DangDangOrderAPI extends Controller {
-    public static final String app_key = "";
-
-
+public class DDOrderAPI extends Controller {
     public static void order(String sign) {
-
         //取得参数信息 必填信息
         Map<String, String> params = DDAPIUtil.filterPlayParameter(request.params.all());
         String id = params.get("id");
@@ -44,7 +41,7 @@ public class DangDangOrderAPI extends Controller {
         String user_mobile = params.get("user_mobile");
         String options = params.get("options");
         String express_memo = params.get("express_memo");
-
+        String express_fee = params.get("express_fee");
         String user_id = params.get("user_id");
         ErrorInfo errorInfo = new ErrorInfo();
         //检查参数
@@ -72,7 +69,7 @@ public class DangDangOrderAPI extends Controller {
         //校验参数
         SortedMap<String, String> veryParams = new TreeMap<>();
         veryParams.put("kx_order_id", kx_order_id);
-        if (!DDAPIUtil.validSign(veryParams, "", "", sign)) {
+        if (!DDAPIUtil.validSign(veryParams, sign)) {
             Logger.error("wrong sign: ", sign);
             errorInfo.errorCode = ErrorCode.VERIFY_FAILED;
             errorInfo.errorDes = "sign验证失败！";
@@ -89,15 +86,14 @@ public class DangDangOrderAPI extends Controller {
         }
 
         //定位请求者
-        Resaler resaler = Resaler.find("byKey", app_key).first();
+        Resaler resaler = Resaler.findOneByLoginName("dangdang");
         if (resaler == null || resaler.status != ResalerStatus.APPROVED) {
-            Logger.error("unavailable app_key: ", app_key);
             errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
             errorInfo.errorDes = "用户不存在！";
             render("/DangDangOrderAPI/error.xml", errorInfo);
         }
         //产生DD订单
-        ddOrder = new DDOrder(Long.parseLong(kx_order_id), new BigDecimal(all_amount), new BigDecimal(amount), resaler.id).save();
+        ddOrder = new DDOrder(Long.parseLong(kx_order_id), new BigDecimal(all_amount), new BigDecimal(amount), new BigDecimal(express_fee), resaler.id).save();
 
         try {
             JPA.em().flush();
@@ -133,13 +129,13 @@ public class DangDangOrderAPI extends Controller {
             }
         }
 
-
         order.remark = express_memo;
         order.createAndUpdateInventory();
         order.accountPay = order.needPay;
         order.discountPay = BigDecimal.ZERO;
         order.payMethod = PaymentSource.getBalanceSource().code;
         order.payAndSendECoupon();
+        ddOrder.status = DDOrderStatus.ORDER_SEND;
         order.save();
 
         //设置当当订单中的一百券订单

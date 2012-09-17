@@ -27,17 +27,14 @@ import java.util.*;
 public class DDAPIUtil {
 
     private static final String MD5 = "MD5";
-    private static final String VER = "1.0";
     private static final String XML = "XML";
     private static final String SIGN_METHOD = "1";
-
+    private static final String VER = Play.configuration.getProperty("dangdang.version");
     private static final String SECRET_KEY = Play.configuration.getProperty("dangdang.secret_key", "x8765d9yj72wevshn");
     private static final String SPID = Play.configuration.getProperty("dangdang.spid", "3000003");
-
-
-    private static final String SYNC_URL = "http://tuanapi.dangdang.com/team_inter_api/public/push_team_stock.php";
-    private static final String QUERY_CONSUME_CODE_URL = "http://tuanapi.dangdang.com/team_open/query_consume_code.php";
-    private static final String VERIFY_CONSUME_URL = "http://tuanapi.dangdang.com/team_open/verify_consume.php";
+    private static final String SYNC_URL = Play.configuration.getProperty("dangdang.sync_url");
+    private static final String QUERY_CONSUME_CODE_URL = Play.configuration.getProperty("dangdang.sync_url");
+    private static final String VERIFY_CONSUME_URL = Play.configuration.getProperty("dangdang.sync_url");
 
     /**
      * 返回一百券系统中商品总销量.
@@ -115,7 +112,7 @@ public class DDAPIUtil {
 
         Request<DDECoupon> request = new Request<>();
 
-        // 订单摘要解析器
+        // 券摘要解析器
         Parser<DDECoupon> parser = new Parser<DDECoupon>() {
             @Override
             public DDECoupon parse(Element node) {
@@ -126,17 +123,15 @@ public class DDAPIUtil {
                 eCoupon.userCode = node.elementTextTrim("user_code");
                 eCoupon.receiveMobile = node.elementTextTrim("receiveMobile");
                 eCoupon.consumeId = node.elementTextTrim("consumeId");
-
                 return eCoupon;
             }
         };
         Response response = new Response();
-
         response.ver = VER;
         response.spid = SPID;
 
         try {
-            request.parseXml(data, "order", true, parser);
+            request.parseXml(data, "order", parser);
             List<DDECoupon> eCouponList = request.getNodeList();
             for (DDECoupon eCoupon : eCouponList) {
                 Order ybqOrder = Order.find("dd_order_id=? and userId=? and userType=?", eCoupon.orderId, AccountType.RESALER, Long.parseLong(eCoupon.userCode)).first();
@@ -236,17 +231,18 @@ public class DDAPIUtil {
      * 验证订单的签名sign
      *
      * @param params
-     * @param appKey
-     * @param appSecretKey
      * @param sign
      * @return
      */
-    public static boolean validSign(SortedMap<String, String> params, String appKey, String appSecretKey, String sign) {
+    public static boolean validSign(SortedMap<String, String> params, String sign) {
         StringBuilder signStr = new StringBuilder();
         for (SortedMap.Entry<String, String> entry : params.entrySet()) {
+            if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
+                continue;
+            }
             signStr.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
-        signStr.append("app_secret_key=").append(appSecretKey);
+        signStr.append("secret_key=").append(SECRET_KEY);
         return DigestUtils.md5Hex(signStr.toString()).equals(sign);
     }
 
