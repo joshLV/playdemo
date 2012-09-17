@@ -62,7 +62,7 @@ public class Order extends Model {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     public List<ECoupon> eCoupons;
 
-    @Column(name = "order_no")
+    @Column(name = "order_no", unique = true)
     public String orderNumber;
 
     @Enumerated(EnumType.STRING)

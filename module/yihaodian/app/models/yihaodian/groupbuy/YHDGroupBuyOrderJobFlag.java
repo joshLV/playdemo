@@ -4,7 +4,7 @@ package models.yihaodian.groupbuy;
  * @author likang
  *         Date: 12-9-12
  */
-public enum YHDGroupBuyOrderStatus {
+public enum YHDGroupBuyOrderJobFlag {
     ORDER_COPY,         // 从一号店获知订单信息
     ORDER_DONE,         // 已发货
     ORDER_SYNCED,       // 已通知一号店发货完成

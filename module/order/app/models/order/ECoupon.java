@@ -72,7 +72,7 @@ public class ECoupon extends Model {
     public OrderItems orderItems;
 
     @Required
-    @Column(name = "e_coupon_sn")
+    @Column(name = "e_coupon_sn", unique = true)
     public String eCouponSn;
 
     // ==== 价格列表 ====

@@ -56,7 +56,9 @@ public class Response<V> {
             parseErrors(root);
         }
         //解析内容
-        parseContent(root, contentNodeName, isList, parser);
+        if(contentNodeName != null && !contentNodeName.equals("")){
+            parseContent(root, contentNodeName, isList, parser);
+        }
     }
 
     private void parseContent(Element root, String contentNodeName, boolean isList, Parser<V> parser) {

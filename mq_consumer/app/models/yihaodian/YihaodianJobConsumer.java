@@ -92,7 +92,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
             JPA.em().flush();
         } catch (RuntimeException e) {
             rollBack = true;
-            Logger.info("update yihaodian order status failed, will roll bace", e);
+            Logger.info("update yihaodian order status failed, will roll back", e);
             //不抛异常 不让mq重试
         } finally {
             JPAPlugin.closeTx(rollBack);

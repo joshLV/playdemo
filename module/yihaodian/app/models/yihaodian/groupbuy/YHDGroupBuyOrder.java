@@ -50,7 +50,7 @@ public class YHDGroupBuyOrder extends Model {
     public String outerGroupId;
 
     @Column(name = "status")
-    public YHDGroupBuyOrderStatus status;
+    public YHDGroupBuyOrderJobFlag jobFlag;
 
     @Version
     @Column(name = "lock_version")
@@ -60,7 +60,7 @@ public class YHDGroupBuyOrder extends Model {
     public Date createdAt;
 
     public YHDGroupBuyOrder(){
-        this.status = YHDGroupBuyOrderStatus.ORDER_COPY;
+        this.jobFlag = YHDGroupBuyOrderJobFlag.ORDER_COPY;
         this.lockVersion = 0;
         this.createdAt = new Date();
     }
