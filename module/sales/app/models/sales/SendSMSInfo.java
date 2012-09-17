@@ -69,6 +69,13 @@ public class SendSMSInfo extends Model {
     @Enumerated(EnumType.ORDINAL)
     public DeletedStatus deleted;
 
+    /**
+     * 乐观锁
+     */
+    @Column(name = "lock_version")
+    @Version
+    public int lockVersion;
+
 //    @Override
 //    public boolean create() {
 //

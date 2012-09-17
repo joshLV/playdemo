@@ -10,6 +10,7 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -160,23 +161,23 @@ public class SendSMS extends Controller {
     }
 
 
-    public static void sucSend(final String taskTempNo, String scheduledTime, String timer) {
+    public static void sucSend(final String taskTempNo, String scheduledTime, String timer) throws ParseException {
         SendSMSTask smsTask = SendSMSTask.find("deleted=? and taskNo=? ", DeletedStatus.UN_DELETED, taskTempNo).first();
 
         //timer equals "0"
         if (timer.indexOf("0") != -1) {
             System.out.println("instantly");
             Date now = new Date();
-            Date date = new Date(now.getTime() + 1000);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String scheduledTimeInstantly = sdf.format(date);
-            smsTask.scheduledTime = scheduledTimeInstantly;
+
+            smsTask.scheduledTime = new Date(now.getTime() + 1000);
+            System.out.println("dfasdfasdfasdf"+  smsTask.scheduledTime);
             smsTask.save();
 
         }
         if (timer.indexOf("1") != -1) {
             if (!StringUtils.isBlank(scheduledTime)) {
-                smsTask.scheduledTime = scheduledTime;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                smsTask.scheduledTime =sdf.parse(scheduledTime);
                 smsTask.save();
             }
         }

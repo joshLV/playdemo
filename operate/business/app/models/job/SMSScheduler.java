@@ -10,6 +10,7 @@ import play.jobs.Job;
 import play.jobs.OnApplicationStart;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -26,54 +27,36 @@ import java.util.List;
 @Every("1mn")
 public class SMSScheduler extends Job {
     @Override
-    public void doJob() {
+    public void doJob() throws ParseException {
         List<SendSMSTask> smsTaskList = SendSMSTask.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
         for (SendSMSTask st : smsTaskList) {
+            Date currentDate = new Date();
+//            System.out.println("st.scheduledTime"+st.scheduledTime);
+//            System.out.println("currentDate"+currentDate);
 
-
-            Date date = new Date(new Date().getTime());
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String currentTime = sdf.format(date);
-
-            if (st.finished != st.total && compare_date(currentTime, st.scheduledTime) == 1) {
-                List<SendSMSInfo> smsList = SendSMSInfo.find("deleted=? and taskNo=?", DeletedStatus.UN_DELETED, st.taskNo).fetch();
+            if (st.finished != st.total && st.scheduledTime != null && st.scheduledTime.before(currentDate)) {
+                List<SendSMSInfo> smsList = SendSMSInfo.find("sendAt=null and deleted=? and taskNo=? ", DeletedStatus.UN_DELETED, st.taskNo).fetch();
                 for (SendSMSInfo s : smsList) {
-                    if (s.sendAt == null) {
+                    try {
+//                        if (s.sendAt == null) {
                         System.out.println("asdfasdfasdfasdf");
                         st.finished = st.finished + 1L;
                         st.unfinished = st.unfinished - 1L;
                         System.out.println("st.finished" + st.finished);
                         System.out.println("st.unfinished" + st.unfinished);
                         s.sendAt = new Date();
-                        SMSUtil.send(s.text, s.mobile);
+                        //                        SMSUtil.send(s.text, s.mobile);
                         s.save();
                         st.save();
+//                        }
+                    } catch (Exception e) {
+                        break;
                     }
                 }
             }
 
         }
 
-    }
-
-    public static int compare_date(String DATE1, String DATE2) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            Date dt1 = df.parse(DATE1);
-            Date dt2 = df.parse(DATE2);
-            if (dt1.getTime() > dt2.getTime()) {
-                System.out.println("dt1 在dt2前");
-                return 1;
-            } else if (dt1.getTime() < dt2.getTime()) {
-                System.out.println("dt1在dt2后");
-                return -1;
-            } else {
-                return 0;
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        return 0;
     }
 
 

@@ -27,7 +27,7 @@ public class SendSMSTask extends Model {
      * 计划发送时间
      */
     @Column(name = "scheduled_time")
-    public String scheduledTime;
+    public Date scheduledTime;
 
     /**
      * 已完成
