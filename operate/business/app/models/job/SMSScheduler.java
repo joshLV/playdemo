@@ -45,7 +45,7 @@ public class SMSScheduler extends Job {
                         System.out.println("st.finished" + st.finished);
                         System.out.println("st.unfinished" + st.unfinished);
                         s.sendAt = new Date();
-                        //                        SMSUtil.send(s.text, s.mobile);
+                        SMSUtil.send(s.text, s.mobile);
                         s.save();
                         st.save();
 //                        }
