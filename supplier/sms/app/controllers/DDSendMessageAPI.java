@@ -1,6 +1,6 @@
 package controllers;
 
-import models.dangdang.DangDangApiUtil;
+import models.dangdang.DDAPIUtil;
 import models.dangdang.ErrorCode;
 import models.dangdang.Response;
 import play.mvc.Controller;
@@ -24,9 +24,9 @@ public class DDSendMessageAPI extends Controller {
         String data = params.get("data")[0] == null ? "" : params.get("data")[0].toString();
         String time = params.get("time")[0] == null ? "" : params.get("time")[0].toString();
         String apiName = params.get("apiName")[0] == null ? "" : params.get("apiName")[0].toString();
-        if (sign.equals(DangDangApiUtil.getSign(data, time, apiName))) {
+        if (sign.equals(DDAPIUtil.getSign(data, time, apiName))) {
             //当当调用接口
-            Response response = DangDangApiUtil.sendSMS(data);
+            Response response = DDAPIUtil.sendSMS(data);
             render(response);
         } else {
             Response response = new Response();

@@ -7,13 +7,13 @@ package models.dangdang;
  * Date: 9/17/12
  * Time: 1:40 PM
  */
-public class DangDangApiInvokeException extends Exception{
+public class DDAPIInvokeException extends Exception{
     /**
      * Constructs a new exception with {@code null} as its detail message.
      * The cause is not initialized, and may subsequently be initialized by a
      * call to {@link #initCause}.
      */
-    public DangDangApiInvokeException() {
+    public DDAPIInvokeException() {
     }
 
     /**
@@ -24,7 +24,7 @@ public class DangDangApiInvokeException extends Exception{
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public DangDangApiInvokeException(String message) {
+    public DDAPIInvokeException(String message) {
         super(message);
     }
 
@@ -42,7 +42,7 @@ public class DangDangApiInvokeException extends Exception{
      *                unknown.)
      * @since 1.4
      */
-    public DangDangApiInvokeException(String message, Throwable cause) {
+    public DDAPIInvokeException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -60,7 +60,7 @@ public class DangDangApiInvokeException extends Exception{
      *              unknown.)
      * @since 1.4
      */
-    public DangDangApiInvokeException(Throwable cause) {
+    public DDAPIInvokeException(Throwable cause) {
         super(cause);
     }
 
@@ -78,7 +78,7 @@ public class DangDangApiInvokeException extends Exception{
      *                           be writable
      * @since 1.7
      */
-    public DangDangApiInvokeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public DDAPIInvokeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

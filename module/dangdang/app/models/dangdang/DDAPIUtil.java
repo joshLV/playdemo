@@ -24,7 +24,7 @@ import java.util.*;
  * Date: 9/13/12
  * Time: 2:02 PM
  */
-public class DangDangApiUtil {
+public class DDAPIUtil {
 
     private static final String MD5 = "MD5";
     private static final String VER = "1.0";
@@ -45,13 +45,13 @@ public class DangDangApiUtil {
      *
      * @return
      */
-    public static void syncSellCount(Goods goods) throws DangDangApiInvokeException {
+    public static void syncSellCount(Goods goods) throws DDAPIInvokeException {
         String data = String.format("<data><row><spgid><![CDATA[%s]]></spgid><sellcount><![CDATA[%s]]></sellcount" +
                 "></row></data>", goods.id, goods.saleCount);
-        Response response = DangDangApiUtil.access(SYNC_URL, data, "push_team_stock");
+        Response response = DDAPIUtil.access(SYNC_URL, data, "push_team_stock");
 
         if (!response.success()) {
-            throw new DangDangApiInvokeException("[DangDang API] invoke syncSellCount error(goodsId:" + goods.id + "):" + response.desc);
+            throw new DDAPIInvokeException("[DangDang API] invoke syncSellCount error(goodsId:" + goods.id + "):" + response.desc);
         }
     }
 
@@ -62,17 +62,17 @@ public class DangDangApiUtil {
      * @param eCoupon
      * @return
      */
-    public static boolean isRefund(ECoupon eCoupon) throws DangDangApiInvokeException {
+    public static boolean isRefund(ECoupon eCoupon) throws DDAPIInvokeException {
         DDOrderItem ddOrderOrderItem = DDOrderItem.findByOrder(eCoupon.orderItems);
         if (ddOrderOrderItem == null) {
             return false;
         }
         String data = String.format("<data><row><ddgid>%s</ddgid><type>%s</type><code>%s</code></row></data>",
                 ddOrderOrderItem.ddgid, 1, eCoupon.eCouponSn);
-        Response response = DangDangApiUtil.access(QUERY_CONSUME_CODE_URL, data, "query_consume_code");
+        Response response = DDAPIUtil.access(QUERY_CONSUME_CODE_URL, data, "query_consume_code");
 
         if (!response.success()) {
-            throw new DangDangApiInvokeException("[DangDang API] invoke isRefund error(eCouponId:" + eCoupon.id + "):" + response.desc);
+            throw new DDAPIInvokeException("[DangDang API] invoke isRefund error(eCouponId:" + eCoupon.id + "):" + response.desc);
         }
 
         DDECouponStatus status = getStatus(response.data);
@@ -90,7 +90,7 @@ public class DangDangApiUtil {
      *
      * @param eCoupon
      */
-    public static void notifyVerified(ECoupon eCoupon) throws DangDangApiInvokeException {
+    public static void notifyVerified(ECoupon eCoupon) throws DDAPIInvokeException {
         DDOrderItem ddOrderOrderItem = DDOrderItem.findByOrder(eCoupon.orderItems);
         if (ddOrderOrderItem == null) {
             return;
@@ -98,10 +98,10 @@ public class DangDangApiUtil {
         String data = String.format("<data><row><ddgid>%s</ddgid><consume_code>%s</consume_code><verifycode>%s" +
                 "</verifycode></row></data>",
                 ddOrderOrderItem.ddgid, eCoupon.eCouponSn, eCoupon.eCouponSn);
-        Response response = DangDangApiUtil.access(VERIFY_CONSUME_URL, data, "verify_consume");
+        Response response = DDAPIUtil.access(VERIFY_CONSUME_URL, data, "verify_consume");
 
         if (!response.success()) {
-            throw new DangDangApiInvokeException("[DangDang API] invoke isRefund error(eCouponId:" + eCoupon.id + "):" + response.desc);
+            throw new DDAPIInvokeException("[DangDang API] invoke isRefund error(eCouponId:" + eCoupon.id + "):" + response.desc);
         }
     }
 
@@ -184,7 +184,7 @@ public class DangDangApiUtil {
      * @param apiName
      * @return
      */
-    public static Response access(String url, String data, String apiName) throws DangDangApiInvokeException {
+    public static Response access(String url, String data, String apiName) throws DDAPIInvokeException {
         //构造HttpClient的实例
         HttpClient httpClient = new HttpClient();
         //创建GET方法的实例
@@ -208,7 +208,7 @@ public class DangDangApiUtil {
                 return new Response(postMethod.getResponseBodyAsString());
             }
         } catch (Exception e) {
-            throw new DangDangApiInvokeException(e.getMessage());
+            throw new DDAPIInvokeException(e.getMessage());
         }
         return null;
     }

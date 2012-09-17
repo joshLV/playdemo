@@ -3,7 +3,7 @@ package controllers;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.dangdang.DDOrder;
-import models.dangdang.DangDangApiUtil;
+import models.dangdang.DDAPIUtil;
 import models.dangdang.ErrorCode;
 import models.dangdang.ErrorInfo;
 import models.order.NotEnoughInventoryException;
@@ -37,7 +37,7 @@ public class DangDangOrderAPI extends Controller {
     public static void order(String sign) {
 
         //取得参数信息 必填信息
-        Map<String, String> params = DangDangApiUtil.filterPlayParameter(request.params.all());
+        Map<String, String> params = DDAPIUtil.filterPlayParameter(request.params.all());
         String id = params.get("id");
         String all_amount = params.get("all_amount");
         String amount = params.get("amount");
@@ -72,7 +72,7 @@ public class DangDangOrderAPI extends Controller {
         //校验参数
         SortedMap<String, String> veryParams = new TreeMap<>();
         veryParams.put("kx_order_id", kx_order_id);
-        if (!DangDangApiUtil.validSign(veryParams, "", "", sign)) {
+        if (!DDAPIUtil.validSign(veryParams, "", "", sign)) {
             Logger.error("wrong sign: ", sign);
             errorInfo.errorCode = ErrorCode.VERIFY_FAILED;
             errorInfo.errorDes = "sign验证失败！";
