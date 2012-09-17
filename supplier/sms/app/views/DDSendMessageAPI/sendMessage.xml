@@ -7,9 +7,11 @@
         <![CDATA[ ${response?.desc} ]]>
     </desc>
     <data>
-        <consume_id>${response?.consumeId}</consume_id>
-        <order_id>${response?.ddOrderId}</>
-        <send_staus>${response?.ybqOrderId}</send_staus>
+        <![CDATA[<data>
+        <consume_id>${response?.getAttribute("consumeId")}</consume_id>
+        <order_id>${response?.getAttribute("ddOrderId")}</>
+        <send_status>${response?.getAttribute("ybqOrderId")}</send_status>
+        </data>]]>
     </data>
 </resultObject>
 

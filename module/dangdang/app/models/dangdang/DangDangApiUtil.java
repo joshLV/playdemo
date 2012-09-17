@@ -50,8 +50,12 @@ public class DangDangApiUtil {
 
         String data = String.format("<data><row><spgid><![CDATA[%s]]></spgid><sellcount><![CDATA[%s]]></sellcount" +
                 "></row></data>", goods.id, sellCount);
-        Response response = DangDangApiUtil.access(SYNC_URL, data, "push_team_stock");
-        //todo 返回结果处理
+        try {
+            Response response = DangDangApiUtil.access(SYNC_URL, data, "push_team_stock");
+            //todo 返回结果处理
+        } catch (DangDangException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     /**
@@ -60,7 +64,7 @@ public class DangDangApiUtil {
      * @param eCoupon
      * @return
      */
-    public static boolean isRefund(ECoupon eCoupon) {
+    public static boolean isRefund(ECoupon eCoupon) throws DangDangException {
         DDOrderItem ddOrderOrderItem = DDOrderItem.findByOrder(eCoupon.orderItems);
         if (ddOrderOrderItem == null) {
             return false;
@@ -68,8 +72,16 @@ public class DangDangApiUtil {
         String data = String.format("<data><row><ddgid>%s</ddgid><type>%s</type><code>%s</code></row></data>",
                 ddOrderOrderItem.ddgid, 1, eCoupon.eCouponSn);
         Response response = DangDangApiUtil.access(QUERY_CONSUME_CODE_URL, data, "query_consume_code");
-        //todo  返回结果处理
-        return false;
+        if (!response.success()) {
+            throw new DangDangException(response.desc);
+        }
+        DDECouponStatus status = getStatus(response.data);
+        return status.equals(DDECouponStatus.REFUNDED);
+    }
+
+    private static DDECouponStatus getStatus(Element data) {
+        return data.elementText()
+
     }
 
     /**
@@ -85,8 +97,12 @@ public class DangDangApiUtil {
         String data = String.format("<data><row><ddgid>%s</ddgid><consume_code>%s</consume_code><verifycode>%s" +
                 "</verifycode></row></data>",
                 ddOrderOrderItem.ddgid, eCoupon.eCouponSn, eCoupon.eCouponSn);
-        Response response = DangDangApiUtil.access(VERIFY_CONSUME_URL, data, "verify_consume");
-        //todo  返回结果处理
+        try {
+            Response response = DangDangApiUtil.access(VERIFY_CONSUME_URL, data, "verify_consume");
+            //todo  返回结果处理
+        } catch (DangDangException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     /**
@@ -113,10 +129,10 @@ public class DangDangApiUtil {
                 return eCoupon;
             }
         };
-        Response res = new Response();
+        Response response = new Response();
 
-        res.ver = VER;
-        res.spid = SPID;
+        response.ver = VER;
+        response.spid = SPID;
 
         try {
             request.parseXml(data, "order", true, parser);
@@ -124,36 +140,36 @@ public class DangDangApiUtil {
             for (DDECoupon eCoupon : eCouponList) {
                 Order ybqOrder = Order.find("dd_order_id=? and userId=? and userType=?", eCoupon.orderId, AccountType.RESALER, Long.parseLong(eCoupon.userCode)).first();
                 if (ybqOrder == null) {
-                    res.errorCode = ErrorCode.ORDER_NOT_EXITED.getValue();
-                    res.desc = "没找到对应的订单";
+                    response.errorCode = ErrorCode.ORDER_NOT_EXITED;
+                    response.desc = "没找到对应的订单";
                     break;
                 }
                 ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and phone=?", ybqOrder, eCoupon.consumeId, eCoupon.receiveMobile).first();
                 if (coupon == null) {
-                    res.errorCode = ErrorCode.COUPON_SN_NOT_EXISTED.getValue();
-                    res.desc = "没找到对应的券号";
+                    response.errorCode = ErrorCode.COUPON_SN_NOT_EXISTED;
+                    response.desc = "没找到对应的券号";
                     break;
                 }
                 //最多发送三次短信，发送失败，则返回0
                 if (!ECoupon.sendUserMessage(coupon.id)) {
-                    res.errorCode = ErrorCode.MESSAGE_SEND_FAILED.getValue();
-                    res.desc = "短信发送失败";
+                    response.errorCode = ErrorCode.MESSAGE_SEND_FAILED;
+                    response.desc = "短信发送失败";
                     break;
                 }
 
                 //发送成功
-                res.errorCode = ErrorCode.SUCCESS.getValue();
-                res.desc = "success";
-                res.consumeId = coupon.eCouponSn;
-                res.ddOrderId = eCoupon.orderId;
-                res.ybqOrderId = coupon.order.orderNumber;
+                response.errorCode = ErrorCode.SUCCESS;
+                response.desc = "success";
+                response.addAttribute("consumeId", coupon.eCouponSn);
+                response.addAttribute("ddOrderId", eCoupon.orderId);
+                response.addAttribute("ybqOrderId", coupon.order.orderNumber);
             }
 
         } catch (DocumentException e) {
-            res.errorCode = ErrorCode.PARSE_XML_FAILED.getValue();
-            res.desc = "xml解析错误";
+            response.errorCode = ErrorCode.PARSE_XML_FAILED;
+            response.desc = "xml解析错误";
         }
-        return res;
+        return response;
 
     }
 
@@ -166,7 +182,7 @@ public class DangDangApiUtil {
      * @param apiName
      * @return
      */
-    public static Response access(String url, String data, String apiName) {
+    public static Response access(String url, String data, String apiName) throws DangDangException{
         //构造HttpClient的实例
         HttpClient httpClient = new HttpClient();
         //创建GET方法的实例
@@ -190,7 +206,7 @@ public class DangDangApiUtil {
                 return new Response(postMethod.getResponseBodyAsString());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new DangDangException(e.getMessage());
         }
         return null;
     }
