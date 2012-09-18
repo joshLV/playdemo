@@ -1,14 +1,16 @@
 package controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.yihaodian.Util;
-import models.yihaodian.groupbuy.YHDGroupBuyOrder;
-import models.yihaodian.groupbuy.YHDGroupBuyOrderJobFlag;
 import models.order.*;
 import models.resale.Resaler;
 import models.sales.MaterialType;
 import models.sales.Goods;
+import models.yihaodian.groupbuy.YHDGroupBuyOrder;
 import models.yihaodian.groupbuy.YHDGroupBuyUtil;
 import models.yihaodian.groupbuy.response.*;
 import play.Logger;
@@ -33,7 +35,6 @@ public class YHDGroupBuy extends Controller{
     public static String YHD_LOGIN_NAME = Play.configuration.getProperty("yihaodian.resaler_login_name", "yihaodian");
     public static String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
 
-
     /**
      * 一号店API入口
      */
@@ -51,6 +52,7 @@ public class YHDGroupBuy extends Controller{
             errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "sign不匹配", ""));
             renderJSON(errorResponse);
         }
+        params.put("sign", sign);//将sign重新塞回去
         String method = params.get("method");
         if("yhd.group.buy.order.inform".equals(method)){
             orderInform(params);
@@ -71,71 +73,55 @@ public class YHDGroupBuy extends Controller{
         if(errorResponse.errorCount > 0){
             renderJSON(errorResponse);
         }
-        String orderCode = params.get("orderCode");
-        YHDGroupBuyOrder yhdGroupBuyOrder = YHDGroupBuyOrder.find("byOrderCode").first();
-
+        YHDGroupBuyOrder yhdGroupBuyOrder =  null;
         OrderInformResponse orderInformResponse = new OrderInformResponse();
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
 
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
+                OuterOrderPartner.YHD, params.get("orderCode")).first();
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个
-        if(yhdGroupBuyOrder == null){
-            Date createTime = null, paidTime = null;
-            try{
-                createTime =  dateFormat.parse(params.get("createTime"));
-                paidTime = dateFormat.parse(params.get("paidTime"));
-            }catch (ParseException e ){
-                errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "日期解析错误", ""));
-            }
-
-            if(errorResponse.errorCount > 0) {
-                renderJSON(errorResponse);
-            }
-
-            yhdGroupBuyOrder = new YHDGroupBuyOrder();
-            yhdGroupBuyOrder.orderCode = orderCode;
-            yhdGroupBuyOrder.productId = Long.parseLong(params.get("productId"));
-            yhdGroupBuyOrder.productNum = Integer.parseInt(params.get("productNum"));
-            yhdGroupBuyOrder.orderAmount = new BigDecimal(params.get("orderAmount"));
-            yhdGroupBuyOrder.createTime = createTime;
-            yhdGroupBuyOrder.paidTime = paidTime;
-            yhdGroupBuyOrder.userPhone = params.get("userPhone");
-            yhdGroupBuyOrder.productPrice = new BigDecimal(params.get("productPrice"));
-            yhdGroupBuyOrder.groupId = Long.parseLong(params.get("groupId"));
-            yhdGroupBuyOrder.outerGroupId = params.get("outerGroupId");
-            yhdGroupBuyOrder.save();
-            try{
-                // 将订单写入数据库
+        if(outerOrder == null){
+            outerOrder = new OuterOrder();
+            outerOrder.partner = OuterOrderPartner.YHD;
+            outerOrder.status = OuterOrderStatus.ORDER_COPY;
+            outerOrder.message = gson.toJson(params);
+            try{ // 将订单写入数据库
                 JPA.em().flush();
-                render();
-            }catch (Exception e){
-                // 如果写入失败，说明 已经存在一个相同的orderCode 的订单，则放弃
+            }catch (Exception e){ // 如果写入失败，说明 已经存在一个相同的orderCode 的订单，则放弃
                 renderJSON(orderInformResponse);
-                return;
             }
+        }
+
+        try{// 解析参数为对象
+            yhdGroupBuyOrder = gson.fromJson(outerOrder.message, YHDGroupBuyOrder.class);
+        }catch (JsonParseException e ){
+            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "参数解析错误", ""));
+        }
+        if(errorResponse.errorCount > 0) {
+            renderJSON(errorResponse);
         }
 
         try{
             // 尝试申请一个行锁
-            JPA.em().refresh(yhdGroupBuyOrder, LockModeType.PESSIMISTIC_WRITE);
+            JPA.em().refresh(outerOrder, LockModeType.PESSIMISTIC_WRITE);
         }catch (PersistenceException e){
             //没拿到锁 放弃
             renderJSON(orderInformResponse);
             return;
         }
-        if (yhdGroupBuyOrder.jobFlag == YHDGroupBuyOrderJobFlag.ORDER_COPY){
+        if (outerOrder.status == OuterOrderStatus.ORDER_COPY){
             Order ybqOrder = createYbqOrder(yhdGroupBuyOrder);
             if(ybqOrder != null){
-                yhdGroupBuyOrder.jobFlag = YHDGroupBuyOrderJobFlag.ORDER_DONE;
-                yhdGroupBuyOrder.ybqOrderId = ybqOrder.getId();
-                yhdGroupBuyOrder.save();
+                outerOrder.status = OuterOrderStatus.ORDER_DONE;
+                outerOrder.ybqOrder = ybqOrder;
+                outerOrder.save();
                 List<ECoupon> coupons = ECoupon.find("byOrder", ybqOrder).fetch();
                 orderInformResponse.updateCount = coupons.size();
             }
-        }else if(yhdGroupBuyOrder.jobFlag == YHDGroupBuyOrderJobFlag.ORDER_DONE){
+        }else if(outerOrder.status == OuterOrderStatus.ORDER_DONE){
             orderInformResponse.updateCount = yhdGroupBuyOrder.productNum;
         }
         renderJSON(orderInformResponse);
-
     }
 
     /**
@@ -147,21 +133,18 @@ public class YHDGroupBuy extends Controller{
         if(errorResponse.errorCount > 0){
             renderJSON(errorResponse);
         }
-        YHDGroupBuyOrder yhdGroupBuyOrder = YHDGroupBuyOrder.find("byOrderCode", params.get("orderCode")).first();
-        if(yhdGroupBuyOrder == null){
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
+                OuterOrderPartner.YHD, params.get("orderCode")).first();
+        if(outerOrder == null || outerOrder.ybqOrder == null){
             errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.get.vouchers_not_found", "消费券列表信息不存在,请检查 orderCode", ""));
             renderJSON(errorResponse);
             return;
         }
-        Order ybqOrder = Order.find("byOrderNumber", params.get("partnerOrderCode")).first();
-        if(ybqOrder == null || !ybqOrder.getId().equals(yhdGroupBuyOrder.ybqOrderId)){
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.get.vouchers_not_found", "消费券列表信息不存在,请检查 partnerOrderCode", ""));
-            renderJSON(errorResponse);
-            return;
-        }
+
         VoucherInfoResponse voucherInfoResponse = new VoucherInfoResponse();
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-        List<ECoupon> coupons = ECoupon.find("byOrder", ybqOrder).fetch();
+
+        List<ECoupon> coupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
         for(ECoupon coupon : coupons) {
             VoucherInfo voucherInfo = new VoucherInfo();
             voucherInfo.issueTime = dateFormat.format(new Date());
@@ -186,20 +169,16 @@ public class YHDGroupBuy extends Controller{
             renderJSON(errorResponse);
         }
 
-        YHDGroupBuyOrder yhdGroupBuyOrder = YHDGroupBuyOrder.find("byOrderCode", params.get("orderCode")).first();
-        if(yhdGroupBuyOrder == null){
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
+                OuterOrderPartner.YHD, params.get("orderCode")).first();
+        if(outerOrder == null || outerOrder.ybqOrder == null){
             errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.get.vouchers_not_found", "消费券列表信息不存在,请检查 orderCode", ""));
             renderJSON(errorResponse);
             return;
         }
-        Order ybqOrder = Order.find("byOrderNumber", params.get("partnerOrderCode")).first();
-        if(ybqOrder == null || !ybqOrder.getId().equals(yhdGroupBuyOrder.ybqOrderId)){
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.get.vouchers_not_found", "消费券列表信息不存在,请检查 partnerOrderCode", ""));
-            renderJSON(errorResponse);
-            return;
-        }
+
         VoucherResendResponse voucherResendResponse = new VoucherResendResponse();
-        ECoupon eCoupon = ECoupon.find("byOrderAndECouponSn", ybqOrder, params.get("voucherCode")).first();
+        ECoupon eCoupon = ECoupon.find("byOrderAndECouponSn", outerOrder.ybqOrder, params.get("voucherCode")).first();
         if(eCoupon == null){
             renderJSON(voucherResendResponse);
             return;

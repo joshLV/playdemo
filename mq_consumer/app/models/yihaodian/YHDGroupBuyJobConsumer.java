@@ -1,16 +1,16 @@
 package models.yihaodian;
 
 import models.order.Order;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
+import models.order.OuterOrderStatus;
 import models.yihaodian.groupbuy.YHDGroupBuyOrder;
-import models.yihaodian.groupbuy.YHDGroupBuyOrderJobFlag;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.JPAPlugin;
 import play.jobs.OnApplicationStart;
 import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 
-import javax.persistence.LockModeType;
-import javax.persistence.PersistenceException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,15 +27,17 @@ public class YHDGroupBuyJobConsumer extends RabbitMQConsumer<YHDGroupBuyMessage>
     protected void consume(YHDGroupBuyMessage message) {
         //开启事务管理
         JPAPlugin.startTx(false);
-        YHDGroupBuyOrder yhdGroupBuyOrder = YHDGroupBuyOrder.find("byOrderCode",message.getOrderCode()).first();
-        if(yhdGroupBuyOrder == null){
+
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
+                OuterOrderPartner.YHD,message.getOrderCode()).first();
+        if(outerOrder == null || outerOrder.ybqOrder == null){
             JPAPlugin.closeTx(true);
             return;
         }
-        if(yhdGroupBuyOrder.jobFlag == YHDGroupBuyOrderJobFlag.ORDER_DONE){
-            if(syncOrderDone(yhdGroupBuyOrder)){
-                yhdGroupBuyOrder.jobFlag = YHDGroupBuyOrderJobFlag.ORDER_SYNCED;
-                yhdGroupBuyOrder.save();
+        if(outerOrder.status == OuterOrderStatus.ORDER_DONE){
+            if(syncOrderDone(outerOrder)){
+                outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
+                outerOrder.save();
             }
         }
 
@@ -51,18 +53,14 @@ public class YHDGroupBuyJobConsumer extends RabbitMQConsumer<YHDGroupBuyMessage>
         }
     }
 
-    private boolean syncOrderDone(YHDGroupBuyOrder yhdGroupBuyOrder) {
-        Order ybqOrder = Order.findById(yhdGroupBuyOrder.ybqOrderId);
-        if(ybqOrder == null){
-            return false;
-        }
+    private boolean syncOrderDone(OuterOrder outerOrder) {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         Map<String, String> params = new HashMap<>();
-        params.put("orderCode", yhdGroupBuyOrder.orderCode);
-        params.put("partnerOrderCode", ybqOrder.orderNumber);//测试公司
-        params.put("orderAmount", ybqOrder.amount.toString());
-        params.put("orderCreateTime", dateFormat.format(ybqOrder.createdAt));
+        params.put("orderCode", outerOrder.orderNumber);
+        params.put("partnerOrderCode", outerOrder.ybqOrder.orderNumber);
+        params.put("orderAmount", outerOrder.ybqOrder.amount.toString());
+        params.put("orderCreateTime", dateFormat.format(outerOrder.ybqOrder.createdAt));
         Logger.info("yhd.group.buy.order.verify orderCode %s", params.get("orderCode"));
         Logger.info("yhd.group.buy.order.verify partnerOrderCode %s", params.get("partnerOrderCode"));
         Logger.info("yhd.group.buy.order.verify orderAmount %s", params.get("orderAmount"));

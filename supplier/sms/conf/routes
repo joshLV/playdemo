@@ -9,6 +9,7 @@ GET     /                                       Application.index
 *       /api/order/create                       OrderAPI.createOrder
 *       /api/order/refund                       OrderAPI.refund
 *       /api/order/resend                       OrderAPI.resend
+*    /api/1/yhd/gb                           YHDGroupBuy.index
 
 # 北京ensms接收接口
 GET     /getsms                                 EnSmsReceivers.getSms

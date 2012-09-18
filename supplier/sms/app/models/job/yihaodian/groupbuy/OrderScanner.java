@@ -3,7 +3,6 @@ package models.job.yihaodian.groupbuy;
 import models.yihaodian.YHDGroupBuyMessage;
 import models.yihaodian.YihaodianQueueUtil;
 import models.yihaodian.groupbuy.YHDGroupBuyOrder;
-import models.yihaodian.groupbuy.YHDGroupBuyOrderJobFlag;
 import play.jobs.Every;
 import play.jobs.Job;
 
