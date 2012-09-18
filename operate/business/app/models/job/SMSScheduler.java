@@ -31,19 +31,17 @@ public class SMSScheduler extends Job {
         List<SendSMSTask> smsTaskList = SendSMSTask.find("deleted=?", DeletedStatus.UN_DELETED).fetch();
         for (SendSMSTask st : smsTaskList) {
             Date currentDate = new Date();
-//            System.out.println("st.scheduledTime"+st.scheduledTime);
-//            System.out.println("currentDate"+currentDate);
+pop
 
             if (st.finished != st.total && st.scheduledTime != null && st.scheduledTime.before(currentDate)) {
                 List<SendSMSInfo> smsList = SendSMSInfo.find("sendAt=null and deleted=? and taskNo=? ", DeletedStatus.UN_DELETED, st.taskNo).fetch();
                 for (SendSMSInfo s : smsList) {
                     try {
 //                        if (s.sendAt == null) {
-                        System.out.println("asdfasdfasdfasdf");
+
                         st.finished = st.finished + 1L;
                         st.unfinished = st.unfinished - 1L;
-                        System.out.println("st.finished" + st.finished);
-                        System.out.println("st.unfinished" + st.unfinished);
+
                         s.sendAt = new Date();
                         SMSUtil.send(s.text, s.mobile);
                         s.save();
