@@ -69,7 +69,7 @@ public class ZtSMSProvider implements SMSProvider {
         HttpResponse response = null;
 
         System.out.println("url=" + url + "++++++++++++++++");
-        Logger.info("************ LingshiSMS: request url:"  + url + "*************");
+        Logger.info("************ ZTSms: request url:"  + url + "*************");
 
         try {
             response = httpclient.execute(httpget);

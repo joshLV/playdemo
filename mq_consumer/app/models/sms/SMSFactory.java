@@ -5,6 +5,7 @@ import models.sms.impl.C123HttpSMSProvider;
 import models.sms.impl.HaduoHttpSMSProvider;
 import models.sms.impl.LingshiSMSProvider;
 import models.sms.impl.Tui3SMSProvider;
+import models.sms.impl.ZtSMSProvider;
 
 /**
  * 短信提供商工厂类.
@@ -20,6 +21,8 @@ public class SMSFactory {
             smsProvider = new Tui3SMSProvider();
         } else if ("ensms".equalsIgnoreCase(sysType)) {
             smsProvider = new BjenSMSProvider();
+        } else if ("ztsms".endsWith(sysType)) {
+            smsProvider = new ZtSMSProvider();
         } else if ("c123".endsWith(sysType)) {
             smsProvider = new C123HttpSMSProvider();
         } else if ("haduo".endsWith(sysType)) {
