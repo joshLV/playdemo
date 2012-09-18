@@ -199,6 +199,7 @@ public class DDAPIUtil {
             //执行postMethod
             int statusCode = httpClient.executeMethod(postMethod); // HttpClient对于要求接受后继服务的请求，象POST和PUT等不能自动处理转发
             // 301或者302
+            Logger.debug("Invoke DangDang API:" + "url[" + url + "],data[" + data + "],apiName[" + apiName + "]");
             if (statusCode == HttpStatus.SC_MOVED_PERMANENTLY || statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
                 //从头中取出转向的地址
                 return new Response(postMethod.getResponseBodyAsString());
