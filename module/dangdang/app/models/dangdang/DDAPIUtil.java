@@ -235,7 +235,7 @@ public class DDAPIUtil {
      * @param sign
      * @return
      */
-    public static boolean validSign(SortedMap<String, String> params, String sign) {
+    public static boolean validSign(Map<String, String> params, String sign) {
         StringBuilder signStr = new StringBuilder();
         for (SortedMap.Entry<String, String> entry : params.entrySet()) {
             if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
@@ -244,7 +244,7 @@ public class DDAPIUtil {
             signStr.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
         signStr.append("secret_key=").append(SECRET_KEY);
-        Logger.info("MD5加密的sign==="+DigestUtils.md5Hex(signStr.toString()));
+        Logger.info("MD5加密的sign===" + DigestUtils.md5Hex(signStr.toString()));
         return DigestUtils.md5Hex(signStr.toString()).equals(sign);
     }
 

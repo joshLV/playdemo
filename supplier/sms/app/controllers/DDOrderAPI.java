@@ -2,10 +2,6 @@ package controllers;
 
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
-import models.dangdang.DDOrder;
-import models.dangdang.DDAPIUtil;
-import models.dangdang.ErrorCode;
-import models.dangdang.ErrorInfo;
 import models.dangdang.*;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
@@ -22,8 +18,6 @@ import play.mvc.Controller;
 import javax.persistence.LockModeType;
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 /**
  * <p/>
@@ -43,38 +37,40 @@ public class DDOrderAPI extends Controller {
         String express_memo = params.get("express_memo");
         String express_fee = params.get("express_fee");
         String user_id = params.get("user_id");
+        String kx_order_id = params.get("kx_order_id");
+
         ErrorInfo errorInfo = new ErrorInfo();
         //检查参数
         if (StringUtils.isBlank(params.get("user_mobile")) || StringUtils.isBlank(user_id)) {
             Logger.error("invalid userInfo: %s", user_id);
             errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
             errorInfo.errorDes = "用户不存在！";
+            Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
             render("/DDOrderAPI/error.xml", errorInfo);
         }
-        String kx_order_id = params.get("kx_order_id");
+
         if (StringUtils.isBlank(kx_order_id)) {
             Logger.error("invalid kx_order_id: %s", kx_order_id);
             errorInfo.errorCode = ErrorCode.ORDER_NOT_EXITED;
             errorInfo.errorDes = "订单不存在！";
+            Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
             render("/DDOrderAPI/error.xml", errorInfo);
 
         }
         if (StringUtils.isBlank(sign)) {
             Logger.error("invalid sign: %s", sign);
             errorInfo.errorCode = ErrorCode.VERIFY_FAILED;
-            errorInfo.errorDes = "sign验证失败！";
+            errorInfo.errorDes = "sign不存在！";
+            Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
             render("/DDOrderAPI/error.xml", errorInfo);
         }
 
         //校验参数
-        SortedMap<String, String> veryParams = new TreeMap<>();
-        veryParams.put("kx_order_id", kx_order_id);
-        if (!DDAPIUtil.validSign(veryParams, sign)) {
-            Logger.error("wrong sign: ", sign);
+        if (!DDAPIUtil.validSign(params, sign)) {
             errorInfo.errorCode = ErrorCode.VERIFY_FAILED;
             errorInfo.errorDes = "sign验证失败！";
+            Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
             render("/DDOrderAPI/error.xml", errorInfo);
-            Logger.info(">>>>>>>>>>>>>>>.");
         }
         Order order = null;
         //如果已经存在订单，则不处理，直接返回xml
@@ -91,6 +87,7 @@ public class DDOrderAPI extends Controller {
         if (resaler == null || resaler.status != ResalerStatus.APPROVED) {
             errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
             errorInfo.errorDes = "用户不存在！";
+            Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
             render("/DDOrderAPI/error.xml", errorInfo);
         }
         //产生DD订单
