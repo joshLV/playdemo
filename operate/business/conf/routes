@@ -46,15 +46,16 @@ POST    /seckill_goods/images                   UploadFiles.uploadJson
 GET     /seckill_goods/{id}/check               SecKillGoods.checkGoodsId
 DELETE  /seckill_goods/{id}                     SecKillGoods.delete
 
-
-GET     /callcenter/phone/{phone}               OperateCRM.index
-GET     /callcenter/phone                       OperateCRM.getPhone
-GET     /crm/{id}/edit                          OperateCRM.edit
-GET     /crm/bind                               OperateCRM.bind
-GET     /crm/save_bind                          OperateCRM.saveBind
-DELETE  /crm/{id}                               OperateCRM.delete
-# PUT    /crm/{id}                              OperateCRM.save
-PUT     /crm/{id}                               OperateCRM.update
+GET     /callcenter/phone                                         OperateCRM.getPhone
+GET     /callcenter/phone/{phone}/record/{consultId}              OperateCRM.index
+GET     /crm/{id}/edit                                            OperateCRM.edit
+GET     /crm/bind                                                 OperateCRM.bind
+GET     /crm/save_bind                                            OperateCRM.saveBind
+GET     /callcenter/phone/{phone}                                 OperateCRM.finish
+DELETE  /crm/{id}                                                 OperateCRM.delete
+GET  /callcenter/phone/abandon/{consultId}                        OperateCRM.abandon
+PUT     /callcenter/phone/{phone}/record/{consultId}/save         OperateCRM.tempSave
+PUT     /crm/{id}                                                 OperateCRM.update
 
 
 # 积分商品

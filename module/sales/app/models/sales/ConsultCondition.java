@@ -118,16 +118,39 @@ public class ConsultCondition extends Model {
                 "  or e.order.receiverMobile=? " +
                 "  or e.order.buyerMobile = ?" +
                 "  or e.orderItems.phone = ?" +
-                "  or u.id=?)",
+                "  or u.id=? or e.id in (select c.couponId from CouponCallBind c where c.phone=?) )",
                 "%" + condition.searchOrderCoupon, condition.searchOrderCoupon,
                 condition.searchUser,
-                condition.searchUser, condition.searchUser, condition.searchUser, condition.searchUser, condition.userId).fetch(5);
-
+                condition.searchUser, condition.searchUser, condition.searchUser, condition.searchUser, condition.userId, condition.searchUser).fetch(5);
 
         return eCoupons;
 
 
     }
+
+//    public static List<ECoupon> findCouponByCondition(CRMCondition condition) {
+//        //  查询券信息       and o.userType = models.accounts.AccountType.CONSUMER
+//
+//        List<ECoupon> eCoupons = ECoupon.find("select distinct e from ECoupon e, User u, CouponCallBind c where " +
+//                "e.order.userId = u.id " +
+//                "and ( " +
+//                "  e.eCouponSn like ? " +
+//                "  or e.order.orderNumber=? " +
+//                "  or u.mobile=? " +
+//                "  or u.loginName=? " +
+//                "  or e.order.receiverMobile=? " +
+//                "  or e.order.buyerMobile = ?" +
+//                "  or e.orderItems.phone = ?" +
+//                "  or u.id=? or (c.couponId=e.id and c.phone=?))",
+//                "%" + condition.searchOrderCoupon, condition.searchOrderCoupon,
+//                condition.searchUser,
+//                condition.searchUser, condition.searchUser, condition.searchUser, condition.searchUser, condition.userId, condition.searchUser).fetch(5);
+//
+//
+//        return eCoupons;
+//
+//
+//    }
 
 
     public static List<WithdrawBill> findBillByCondition(CRMCondition condition) {

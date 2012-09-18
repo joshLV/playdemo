@@ -54,12 +54,13 @@
 
     <tr>
         <td>
-            <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.index(phone)}" method="GET">
-
+            <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.index()}" method="GET">
+                <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
+                <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
                 手机号或邮箱： <input type="text" name="condition.searchUser" class="input-medium"
 
 
-            #{if phone!=null}
+            #{if phone!=null && times==1}
                                value="${phone}"
             #{/if}
             #{else}
@@ -75,6 +76,8 @@
         <td>
             <form class="form-horizontal" name="frmlist2" id="frmlist2" action="@{OperateCRM.index(phone)}"
                   method="GET">
+                <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
+                <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
                 订单号或券号尾4位： <input type="text" name="condition.searchOrderCoupon" class="input-medium"
                                   value="${condition?.searchOrderCoupon}"/>
             #{if user!=null}
@@ -262,7 +265,8 @@
 
             #{/if}>${coupon?.eCouponSn.substring(len - 4)}
 
-                <a href="javascript:void(openW('/crm/bind?phone=${phone}&couponId=${coupon.id}&userId=${coupon.order.userId}'))">Bind</a></td>
+                <a href="javascript:void(openW('/crm/bind?phone=${phone}&couponId=${coupon.id}&userId=${coupon.order.userId}'))">Bind</a>
+            </td>
 
             <td><a href="@{OperateOrders.details(coupon?.order?.id)}"
                    target="_blank"  #{if coupon?.status==models.order.ECouponStatus.REFUND}
@@ -462,8 +466,9 @@
 #{/else}
 
 
-#{form @OperateCRM.save(), id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
+#{form @OperateCRM.tempSave(cousultId), method: 'PUT',id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
     <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
+    <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
 
     #{if user!=null}
         <input type="hidden" type="text" name="user.id" id="user" value="${user.id}"/>
@@ -489,7 +494,16 @@
 
 
     <input class="btn btn-primary" id="save" type="submit" #{if !org.apache.commons.lang.StringUtils.isNotBlank(phone)}
-           disabled="disabled" #{/if}value="保存"/>
+           disabled="disabled" #{/if}value="临时保存"/>
+
+    *{<input class="btn btn-primary" id="finish"}*
+           *{type="submit" value="结束会话"/>}*
+    <button class="btn btn-primary" id="finish" type="button">结束会话</button>
+
+    *{<input class="btn btn-primary" id="abandon"}*
+           *{type="submit" #{if !org.apache.commons.lang.StringUtils.isNotBlank(phone)}}*
+           *{disabled="disabled" #{/if}value="放弃"/>}*
+    <a class="btn btn-primary" id="abandon"  onclick="abandon('${consultId}')" type="button">放弃</a>
 
     #{list items: consultContent, as:'consult'}
 
@@ -552,6 +566,11 @@
 
     }
 
+    function finish(phone) {
+        $("#form").attr("action", "/callcenter/phone/" + phone);
+
+    }
+
     function prepareSendEdit(id) {
         $("#form").attr("action", "/crm/" + id + "/edit");
         $("#form").attr("method", "GET");
@@ -584,6 +603,25 @@
         $("#form").attr("action", url);
         $("#form").submit();
     }
+
+    function abandon(consultId) {
+        var url = "/callcenter/phone/abandon/" + consultId;
+        $("#form").attr("method", "GET");
+        $("#form").attr("action", url);
+        $("#form").submit();
+    }
+
+
+
+    $("#finish").click(function () {
+        var url = "/callcenter/phone";
+        $("#form").attr("method", "GET");
+        $("#form").attr("action", url);
+        $("#form").submit();
+
+    });
+
+
 
 
     //    function openwin() {

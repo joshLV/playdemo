@@ -26,4 +26,8 @@ public class CouponCallBind  extends Model {
 
     @Column(name = "user_id")
     public long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
+
+    @Column(name = "coupon_id")
+    public long couponId;
+
 }

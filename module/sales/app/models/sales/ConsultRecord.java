@@ -18,7 +18,7 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@Table(name = "telephone_message")
+@Table(name = "consult_record")
 public class ConsultRecord extends Model {
 
 
@@ -74,6 +74,8 @@ public class ConsultRecord extends Model {
     @Required
     @Email
     public String loginName;
+
+
 
 //    public static void delete(Long... ids) {
 //        for (Long id : ids) {
