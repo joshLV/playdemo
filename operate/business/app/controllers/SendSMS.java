@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 @With(OperateRbac.class)
 @ActiveNavigation("send_sms")
 public class SendSMS extends Controller {
-    public static int PAGE_SIZE = 15;
+    public static int PAGE_SIZE = 100;
 
     public static void index(SendSMSTaskCondition condition) {
 

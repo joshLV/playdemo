@@ -15,12 +15,11 @@
         <thead>
         <tr>
 
-            <th>任务名称</th>
+            <th>序号</th>
             <th>手机</th>
-            <th>券号</th>
             <th>短信内容</th>
+            <th>状态</th>
             <th>发送时间</th>
-            <th>创建时间</th>
         </tr>
         </thead>
 
@@ -28,14 +27,23 @@
 
         #{paginate.list items:smsList, as:'sms'}
         <tr>
-            <td>${sms.taskNo}</td>
+            #{set i:1/}
+            <td>${i}</td>
             <td>${sms.mobile}</td>
-            <td>${sms.eCouponSn}</td>
             <td>${sms.text}</td>
-            <td>${sms?.sendAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-            <td>${sms?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>
+                #{if sms.sendAt!=null}
+                    发送成功
+                #{/if}
+                #{if sms.sendAt==null}
+                    未成功
+                #{/if}
+
+           </td>
+            <td> ${sms?.sendAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
 
         </tr>
+            #{set i++/}
         #{/paginate.list}
         </tbody>
     </table>
