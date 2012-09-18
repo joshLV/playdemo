@@ -14,13 +14,6 @@
 .rebate-info span {
     color: #f00;
 }
-/* .exchange-btn { */
-    /* margin-left: 20px; */
-    /* border: 0; */
-    /* width: 86px; */
-    /* height: 30px; */
-    /* background: url(//img.uhcdn.com/images/y/user/exchange-btn.png) no-repeat 0 0; */
-/* } */
 .recommend-share {
     color: #fff;
     padding: 5px 8px;
@@ -31,23 +24,24 @@
     position: relative;
     padding: 15px 20px;
     margin-bottom: 10px;
+    line-height: 26px;
     border: 1px solid #ffc49b;
     background-color: #ffffe6;
 }
-.recommend-linkbox .link {
-    padding: 15px;
-    border: 1px solid #b0aaaa;
-    border-radius: 3px;
-    background-color: #fff;
+.recommend-linkbox .captive-link {
+    padding: 10px 0;
 }
-.recommend-linkbox .link a {
-    color: #2a80cc;
+.recommend-linkbox .link-href {
+    width: 260px;
+    height: 23px;
+    font-weight: 700;
+    padding: 0 2px;
+    margin-right: 10px;
 }
-.recommend-linkbox .method {
-    margin: 8px 0;
-}
-.recommend-linkbox .method a {
+.recommend-linkbox .copy,
+.recommend-linkbox .weibo {
     padding: 3px 10px 4px;
+    margin: 0 5px 0 0;
     display: inline-block;
     border: 1px solid #b0aaaa;
     border-radius: 3px;
@@ -148,7 +142,7 @@
     background-position: 0 -170px;
 }
 .curr-rank {
-    width: 340px;
+    width: 450px;
     padding: 5px 5px 5px 35px;;
     margin: 0 0 0 25px;
     border: 1px solid #ff9f5c;
