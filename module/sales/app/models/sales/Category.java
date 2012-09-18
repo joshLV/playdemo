@@ -45,7 +45,9 @@ public class Category extends Model {
      */
     @Column(name="keywords")
     public String keywords;
-
+    
+    public String tuan800name;
+    
     /**
      * 所属分类Id
      */
