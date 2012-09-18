@@ -486,9 +486,7 @@
         #{option models.sales.ConsultType.FEEDBACK}&{'consult.FEEDBACK'}#{/option}
     #{/select}
 
-    <textarea rows="3" cols="20" required="required" name="consult.text" id="consult_text" value="${consult?.text}">
-
-    </textarea>
+    <textarea rows="3" cols="20" required="required" name="consult.text" id="consult_text" value="${consult?.text}">${consult?.text}</textarea>
 
     <div class="error">#{error 'consult.text' /}</div>
 
@@ -498,7 +496,7 @@
 
     *{<input class="btn btn-primary" id="finish"}*
            *{type="submit" value="结束会话"/>}*
-    <button class="btn btn-primary" id="finish" type="button">结束会话</button>
+    <a class="btn btn-primary" id="finish"  type="button">结束会话</a>
 
     *{<input class="btn btn-primary" id="abandon"}*
            *{type="submit" #{if !org.apache.commons.lang.StringUtils.isNotBlank(phone)}}*
