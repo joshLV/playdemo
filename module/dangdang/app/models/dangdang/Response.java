@@ -47,10 +47,7 @@ public class Response implements Serializable {
         spid = root.elementText("spid");
         errorCode = ErrorCode.getErrorCode(Integer.parseInt(root.elementTextTrim("error_code")));
         desc = root.elementText("desc");
-        CDATA dataValue = (CDATA) root.getData();
-        if (dataValue != null) {
-            data = dataValue.getDocument().getRootElement();
-        }
+        data = root.element("data");
     }
 
     /**

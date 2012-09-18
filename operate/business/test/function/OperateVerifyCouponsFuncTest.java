@@ -32,11 +32,11 @@ import java.util.Map;
  * Time: 下午4:12
  * To change this template use File | Settings | File Templates.
  */
-public class OperateVerifyCouponsFuncTest extends FunctionalTest  {
+public class OperateVerifyCouponsFuncTest extends FunctionalTest {
 
     @Before
     public void setUp() {
-         FactoryBoy.delete(Goods.class);
+        FactoryBoy.delete(Goods.class);
         FactoryBoy.delete(Shop.class);
         FactoryBoy.delete(ECoupon.class);
         FactoryBoy.delete(Order.class);
@@ -56,7 +56,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest  {
     }
 
     @Test
-    public void testIndex(){
+    public void testIndex() {
 
         Http.Response response = GET("/coupons/index");
         assertIsOk(response);
@@ -67,16 +67,16 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest  {
     }
 
     @Test
-    public void testVerify(){
+    public void testVerify() {
 
         final Goods goods = FactoryBoy.create(Goods.class);
-        final Shop shop = FactoryBoy.create(Shop.class,"SupplierId",new BuildCallback<Shop>() {
+        final Shop shop = FactoryBoy.create(Shop.class, "SupplierId", new BuildCallback<Shop>() {
             @Override
             public void build(Shop target) {
                 target.supplierId = goods.supplierId;
             }
         });
-        ECoupon eCoupon = FactoryBoy.create(ECoupon.class,"Id", new BuildCallback<ECoupon>() {
+        ECoupon eCoupon = FactoryBoy.create(ECoupon.class, "Id", new BuildCallback<ECoupon>() {
             @Override
             public void build(ECoupon target) {
                 target.shop = shop;
@@ -87,23 +87,23 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest  {
 //        System.out.println(eCoupon.status);
 //        System.out.println(eCoupon.eCouponSn);
 //        System.out.println(eCoupon.expireAt);
-        Http.Response response = GET("/coupons/verify?supplierId="+eCoupon.shop.supplierId+"&shopId="+eCoupon.shop.id+"&eCouponSn="+eCoupon.eCouponSn);
+        Http.Response response = GET("/coupons/verify?supplierId=" + eCoupon.shop.supplierId + "&shopId=" + eCoupon.shop.id + "&eCouponSn=" + eCoupon.eCouponSn);
         assertIsOk(response);
         assertContentMatch("未消费", response);
 
     }
 
     @Test
-    public void testUpdate(){
+    public void testUpdate() {
         // 生产 电子券 测试数据
         final Goods goods = FactoryBoy.create(Goods.class);
-        final Shop shop = FactoryBoy.create(Shop.class,"SupplierId",new BuildCallback<Shop>() {
+        final Shop shop = FactoryBoy.create(Shop.class, "SupplierId", new BuildCallback<Shop>() {
             @Override
             public void build(Shop target) {
                 target.supplierId = goods.supplierId;
             }
         });
-        ECoupon eCoupon = FactoryBoy.create(ECoupon.class,"Id", new BuildCallback<ECoupon>() {
+        ECoupon eCoupon = FactoryBoy.create(ECoupon.class, "Id", new BuildCallback<ECoupon>() {
             @Override
             public void build(ECoupon target) {
                 target.shop = shop;
@@ -121,16 +121,16 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest  {
         account.save();
 
         // 将URL 参数放入Map 中
-        Map<String,String> params = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
         params.put("shopId", shop.id.toString());
         params.put("supplierId", goods.supplierId.toString());
-        params.put("eCouponSn",eCoupon.eCouponSn.toString());
-        params.put("shopName",shop.name);
+        params.put("eCouponSn", eCoupon.eCouponSn.toString());
+        params.put("shopName", shop.name);
 
         // 检测测试结果
-        Http.Response response = POST("/coupons/update",params);
+        Http.Response response = POST("/coupons/update", params);
         assertIsOk(response);
-        assertContentMatch("0",response);
+        assertContentMatch("0", response);
 //        ECoupon eCouponConsumed = ECoupon.findById(eCoupon.id);
 //        assertEquals(ECouponStatus.CONSUMED,eCouponConsumed.status);
     }

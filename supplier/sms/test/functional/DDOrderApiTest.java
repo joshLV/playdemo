@@ -40,7 +40,5 @@ public class DDOrderApiTest extends FunctionalTest {
 
         Http.Response response = POST("/ddApi/order/create", params);
         assertStatus(302, response);
-
-
     }
 }

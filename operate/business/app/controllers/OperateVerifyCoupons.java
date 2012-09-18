@@ -2,6 +2,8 @@ package controllers;
 
 import com.uhuila.common.util.DateUtil;
 import models.admin.OperateUser;
+import models.dangdang.DDAPIInvokeException;
+import models.dangdang.DDAPIUtil;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
@@ -9,6 +11,7 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
+import play.Logger;
 import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -97,11 +100,29 @@ public class OperateVerifyCoupons extends Controller {
                 String info = eCoupon.getCheckInfo();
                 renderJSON("{\"error\":\"2\",\"info\":\"" + info + "\"}");
             }
+            //判断是否当当订单产生的券
+            try {
+                if (DDAPIUtil.isRefund(eCoupon)) {//如果券在当当上已经退款，则不允许券的消费。
+                    renderJSON("4");
+                }
+            } catch (DDAPIInvokeException e) {
+                //当当接口调用失败，目前仅记录日志。不阻止券的消费。以便保证用户体验。
+                Logger.error(e.getMessage(), e);
+            }
+
             eCoupon.consumeAndPayCommission(shopId, OperateRbac.currentUser().id, null, VerifyCouponType.OP_VERIFY);
-            String dateTime = DateUtil.getNowTime();
-            String coupon = eCoupon.getLastCode(4);
+
+            //通知当当该券已经使用
+            try {
+                DDAPIUtil.notifyVerified(eCoupon);
+            } catch (DDAPIInvokeException e) {
+                //当当接口调用失败，目前仅记录日志。不阻止券的消费。以便保证用户体验。
+                Logger.error(e.getMessage(), e);
+            }
 
             // 发给消费者
+            String dateTime = DateUtil.getNowTime();
+            String coupon = eCoupon.getLastCode(4);
             SMSUtil.send("【一百券】您尾号" + coupon + "券于" + dateTime
                     + "成功消费，门店：" + shopName + "。客服4006262166", eCoupon.orderItems.phone, eCoupon.replyCode);
         } else {
