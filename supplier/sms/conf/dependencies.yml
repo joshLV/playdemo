@@ -26,6 +26,7 @@ require:
     - view_ext -> view_ext
     - cache_helper -> cache_helper
     - yihaodian -> yihaodian
+    - dangdang -> dangdang
     - com.yihaodian -> yhdclient 1.0
     - commons-lang -> commons-lang 2.6
     - commons-httpclient -> commons-httpclient 3.1
@@ -66,3 +67,4 @@ repositories:
             - asset_package -> *
             - cache_helper -> *
             - yihaodian -> *
+            - dangdang -> *

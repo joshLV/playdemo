@@ -8,7 +8,6 @@ import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
-import models.sales.MaterialType;
 import play.db.jpa.Model;
 
 import javax.persistence.*;

@@ -11,6 +11,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
+import play.Logger;
 import play.Play;
 
 import java.security.MessageDigest;
@@ -243,6 +244,7 @@ public class DDAPIUtil {
             signStr.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
         signStr.append("secret_key=").append(SECRET_KEY);
+        Logger.info("MD5加密的sign==="+DigestUtils.md5Hex(signStr.toString()));
         return DigestUtils.md5Hex(signStr.toString()).equals(sign);
     }
 

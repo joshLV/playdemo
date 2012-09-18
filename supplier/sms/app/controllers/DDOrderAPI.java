@@ -49,21 +49,21 @@ public class DDOrderAPI extends Controller {
             Logger.error("invalid userInfo: %s", user_id);
             errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
             errorInfo.errorDes = "用户不存在！";
-            render("/DangDangOrderAPI/error.xml", errorInfo);
+            render("/DDOrderAPI/error.xml", errorInfo);
         }
         String kx_order_id = params.get("kx_order_id");
         if (StringUtils.isBlank(kx_order_id)) {
             Logger.error("invalid kx_order_id: %s", kx_order_id);
             errorInfo.errorCode = ErrorCode.ORDER_NOT_EXITED;
             errorInfo.errorDes = "订单不存在！";
-            render("/DangDangOrderAPI/error.xml", errorInfo);
+            render("/DDOrderAPI/error.xml", errorInfo);
 
         }
         if (StringUtils.isBlank(sign)) {
             Logger.error("invalid sign: %s", sign);
             errorInfo.errorCode = ErrorCode.VERIFY_FAILED;
             errorInfo.errorDes = "sign验证失败！";
-            render("/DangDangOrderAPI/error.xml", errorInfo);
+            render("/DDOrderAPI/error.xml", errorInfo);
         }
 
         //校验参数
@@ -73,11 +73,12 @@ public class DDOrderAPI extends Controller {
             Logger.error("wrong sign: ", sign);
             errorInfo.errorCode = ErrorCode.VERIFY_FAILED;
             errorInfo.errorDes = "sign验证失败！";
-            render("/DangDangOrderAPI/error.xml", errorInfo);
+            render("/DDOrderAPI/error.xml", errorInfo);
+            Logger.info(">>>>>>>>>>>>>>>.");
         }
         Order order = null;
         //如果已经存在订单，则不处理，直接返回xml
-        DDOrder ddOrder = DDOrder.find("orderId=?", kx_order_id).first();
+        DDOrder ddOrder = DDOrder.find("orderId=?", Long.valueOf(kx_order_id)).first();
         if (ddOrder != null) {
             order = Order.find("ddOrder=?", ddOrder).first();
             if (order != null) {
@@ -90,7 +91,7 @@ public class DDOrderAPI extends Controller {
         if (resaler == null || resaler.status != ResalerStatus.APPROVED) {
             errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
             errorInfo.errorDes = "用户不存在！";
-            render("/DangDangOrderAPI/error.xml", errorInfo);
+            render("/DDOrderAPI/error.xml", errorInfo);
         }
         //产生DD订单
         ddOrder = new DDOrder(Long.parseLong(kx_order_id), new BigDecimal(all_amount), new BigDecimal(amount), new BigDecimal(express_fee), resaler.id).save();
@@ -100,7 +101,7 @@ public class DDOrderAPI extends Controller {
         } catch (Exception e) {
             errorInfo.errorCode = ErrorCode.ORDER_EXITED;
             errorInfo.errorDes = "订单已存在！";
-            render("/DangDangOrderAPI/error.xml", errorInfo);
+            render("/DDOrderAPI/error.xml", errorInfo);
         }
 
         JPA.em().refresh(ddOrder, LockModeType.PESSIMISTIC_WRITE);
@@ -141,7 +142,7 @@ public class DDOrderAPI extends Controller {
         //设置当当订单中的一百券订单
         ddOrder.ybqOrder = order;
         ddOrder.createAndUpdateInventory();
-
+        Logger.info(">>>>>>>>>>>>>>>.");
         render(order, id, kx_order_id);
     }
 }

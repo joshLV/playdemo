@@ -1,9 +1,6 @@
 package models.job.dangdang.listener;
 
-import models.dangdang.DDOrder;
-import models.dangdang.DDOrderJobConsumer;
-import models.dangdang.DDOrderQueueUtil;
-import models.dangdang.DDOrderStatus;
+import models.dangdang.*;
 import play.jobs.Every;
 import play.jobs.Job;
 
@@ -20,7 +17,7 @@ public class DDOrderScanner extends Job {
         List<DDOrder> orders = DDOrder.find("status = ? or status= ?",
                 DDOrderStatus.ORDER_ACCEPT, DDOrderStatus.ORDER_SEND).fetch();
         for (DDOrder order : orders) {
-            DDOrderJobConsumer message = new DDOrderJobConsumer(order.orderId);
+            DDOrderJobMessage message = new DDOrderJobMessage(order.orderId);
             DDOrderQueueUtil.addJob(message);
         }
     }
