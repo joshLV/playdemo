@@ -1,11 +1,10 @@
 package models.sales;
 
+import models.order.Order;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,7 +15,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "coupon_call_bind")
-public class CouponCallBind  extends Model {
+public class CouponCallBind extends Model {
 
     @Required
     @Column(name = "e_coupon_sn")
@@ -29,5 +28,13 @@ public class CouponCallBind  extends Model {
 
     @Column(name = "coupon_id")
     public long couponId;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "consult_record_id", nullable = true)
+//    public ConsultRecord consultRecord;
+
+    @ManyToOne
+    @JoinColumn(name = "consult_record")
+    public ConsultRecord consultRecord;
 
 }

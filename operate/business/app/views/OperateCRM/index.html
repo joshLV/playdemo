@@ -268,7 +268,7 @@
 
             #{/if}>${coupon?.eCouponSn.substring(len - 4)}
 
-                <a href="javascript:void(openW('/crm/bind?phone=${phone}&couponId=${coupon.id}&userId=${coupon.order.userId}'))">Bind</a>
+                <a href="javascript:void(openW('/crm/bind?phone=${phone}&couponId=${coupon.id}&userId=${coupon.order.userId}&consultId=${consultId}'))">Bind</a>
             </td>
 
             <td><a href="@{OperateOrders.details(coupon?.order?.id)}"
@@ -526,6 +526,17 @@
 
         <span style="color:red">  &{'consult.'+consult?.consultType}   </span> :      ${consult?.text}
 
+
+    *{${consult.couponCallBindList}}*
+        #{if consult.couponCallBindList.size()>0}
+            <br>
+            相关券咨询：
+            #{list items:  consult.couponCallBindList, as:'bind'}
+                <a href="/crm/bindCouponDetails?phone=${phone}&couponId=${coupon.id}&userId=${coupon.order.userId}&consultId=${consultId}"
+                   target="_blank">   ${bind?.eCouponSn}  </a>
+                &nbsp;
+            #{/list}
+        #{/if}
         <br>
     ${consult?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}
 

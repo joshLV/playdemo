@@ -31,8 +31,7 @@
         <tbody>
 
         <tr>
-            <td><a href="@{OperateOrders.details(coupon?.order?.id)}"
-                   target="_blank">${coupon?.order?.orderNumber}</a></abbr></td>
+            <td><a href="@{OperateOrders.details(coupon?.order?.id)}" target="_blank">${coupon?.order?.orderNumber}</a></abbr></td>
             <td>${coupon?.orderItems?.phone}</td>
             <td>${n}${coupon?.getMaskedEcouponSn()}</td>
         *{<td>${coupon?.orderItems?.phone}</td>}*
@@ -56,27 +55,4 @@
 
         </tbody>
     </table>
-
-
-    <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.saveBind()}" method="GET">
-        <center>
-            <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
-            <table>
-                <tr>
-                    <input type="hidden" type="text" name="couponId" id="couponId" value="${coupon.id}"/>
-                    <input type="hidden" type="text" name="userId" id="userId" value="${userId}"/>
-                    <td> 券号：${coupon?.eCouponSn}  </td>
-                </tr>
-                <tr>
-                    <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
-                    <td> 来电号码：${phone}</td>
-                </tr>
-
-
-                <tr>
-                    <td><input class="btn btn-primary" id="save" type="submit" value="绑定"/></td>
-                </tr>
-            </table>
-        </center>
-    </form>
-</div>
+    </div>

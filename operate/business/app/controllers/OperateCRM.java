@@ -15,6 +15,7 @@ import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -121,10 +122,10 @@ public class OperateCRM extends Controller {
 
         //address  user
         times++;
-        if(condition.searchUser==null)
-        userId=user.id;
-        System.out.println("userId"+userId);
-        System.out.println("user"+user);
+        if (condition.searchUser == null)
+            userId = user.id;
+//        System.out.println("userId"+userId);
+//        System.out.println("user"+user);
 //        System.out.println("userIdindex"+userId);
         render(userId, address, user, userList, orderList, condition, eCoupons, consultContent, phone, currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill, withdrawBillSize, consultId, consult);
 //        }
@@ -357,19 +358,37 @@ public class OperateCRM extends Controller {
         index(phone, null, null, consultId, consultStatus);
     }
 
-    public static void bind(String phone, Long couponId, Long userId) {
+    public static void bind(String phone, Long couponId, Long userId, Long consultId) {
+//        System.out.println("consultId"+consultId);
         ECoupon coupon = ECoupon.find("id=?", couponId).first();
-        render(phone, coupon, userId);
+
+        render(phone, coupon, userId, consultId);
     }
 
-    public static void saveBind(String phone, Long couponId, Long userId) {
+    public static void saveBind(String phone, Long couponId, Long userId, Long consultId) {
+//        System.out.println("consultId" + consultId);
         CouponCallBind couponBind = new CouponCallBind();
         ECoupon coupon = ECoupon.find("id=?", couponId).first();
+
+
         couponBind.eCouponSn = coupon.eCouponSn;
         couponBind.phone = phone;
         couponBind.userId = userId;
         couponBind.couponId = coupon.id;
         couponBind.save();
+        couponBind = CouponCallBind.find("couponId=?", couponId).first();
+
+        ConsultRecord consult = ConsultRecord.find("id=?", consultId).first();
+        if (consult.couponCallBindList == null) {
+            consult.couponCallBindList = new ArrayList<>();
+        }
+//        consult.couponCallBindList.add(couponBind);
+
+        consult.couponCallBindList.add(couponBind);
+        consult.save();
+        System.out.println("couponBind" + couponBind);
+        System.out.println("consult" + consult.couponCallBindList);
+
         render();
 
     }
@@ -388,6 +407,10 @@ public class OperateCRM extends Controller {
         }
         //String consultStatus="tempSave";
         getPhone();
+    }
+    public static void bindCouponDetails(String phone, Long couponId, Long userId, Long consultId){
+        ECoupon coupon = ECoupon.find("id=?", couponId).first();
+        render(phone, coupon, userId, consultId);
     }
 
 

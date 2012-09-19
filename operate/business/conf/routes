@@ -57,6 +57,7 @@ GET     /callcenter/phone/{phone}                                 OperateCRM.fin
 DELETE  /crm/{id}                                                 OperateCRM.delete
 GET     /callcenter/phone/abandon/{consultId}                     OperateCRM.abandon
 PUT     /crm/{id}                                                 OperateCRM.update
+GET     /crm/bindCouponDetails                                           OperateCRM.bindCouponDetails
 
 
 # 积分商品

@@ -2,6 +2,7 @@ package models.sales;
 
 import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.AccountType;
+import models.order.ECoupon;
 import play.data.validation.Email;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
@@ -9,6 +10,7 @@ import play.db.jpa.Model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -66,6 +68,14 @@ public class ConsultRecord extends Model {
     @Column(name = "user_id")
     public long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
 
+
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "consultRecord")
+//    public List<CouponCallBind> couponCallBindList;
+//
+    @OneToMany
+    @JoinColumn(name ="coupon_call_bind_list")
+    public List<CouponCallBind> couponCallBindList;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type")
     public AccountType userType;            //用户类型，个人/分销商
@@ -74,7 +84,6 @@ public class ConsultRecord extends Model {
     @Required
     @Email
     public String loginName;
-
 
 
 //    public static void delete(Long... ids) {
@@ -104,7 +113,7 @@ public class ConsultRecord extends Model {
         if (updateConsult == null) {
             return;
         }
-        updateConsult.updatedAt=new Date();
+        updateConsult.updatedAt = new Date();
         updateConsult.consultType = consult.consultType;
         updateConsult.text = consult.text;
 
