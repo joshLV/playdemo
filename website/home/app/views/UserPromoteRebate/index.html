@@ -22,12 +22,12 @@
             <div class="recommend-linkbox">
                 推广期间内，通过您的专属链接推荐好友注册购买，您和您的好友都能收到我们的奖励，月度推荐达人还能获得额外丰厚大奖！<br>
                 <div class="captive-link">
-                您的专属推荐链接：<input id="J_linkHref" class="link-href" type="text" value="http://www.${play.Play.configuration.getProperty("application.baseDomain")}?tj=${user?.promoterCode}" /><a class="copy" id="copy" href="javascript:void(0);">复制链接</a> <a class="weibo" target="_blank" href="http://service.weibo.com/share/share.php?url=http%3A%2F%2Flocalhost%3A9002%2Frebate-share&appkey=&title=物价飞涨，工资跑不过CPI？口袋里的钞票能买的东西越来越少？赶紧学学我的省钱绝招吧，吃喝玩乐、家居旅游，一百券一站搞定，省钱又省力！戳这里注册 http://www.${play.Play.configuration.getProperty("application.baseDomain")}?tj=${user?.promoterCode} 还能折上再减1%，跟我一起来拯救钱包吧！&pic=&ralateUid=&language="><i></i>分享到新浪微博</a> </div>
+                您的专属推荐链接：<input id="J_linkHref" class="link-href" type="text" value="http://www.${play.Play.configuration.getProperty("application.baseDomain")}?tj=${user?.promoterCode}" /><a class="copy" id="copy" href="javascript:void(0);">复制链接</a> <a class="weibo" target="_blank" href="http://service.weibo.com/share/share.php?url=&appkey=&title=物价飞涨，工资跑不过CPI？口袋里的钞票能买的东西越来越少？赶紧学学我的省钱绝招吧，吃喝玩乐、家居旅游，一百券一站搞定，省钱又省力！戳这里注册 http://www.${play.Play.configuration.getProperty("application.baseDomain")}?tj=${user?.promoterCode} 还能折上再减1%，跟我一起来拯救钱包吧！&pic=&ralateUid=&language="><i></i>分享到新浪微博</a> </div>
                 当您的好友通过您的推荐链接注册为一百券的新用户：<br>
                  (1) 24小时内购买的订单全部立减1%，同时订单金额的2%返利到您的账户;<br>
                  (2) 24小时内未购买，则之后购买的首笔订单订单立减1%，同时订单金额的2%返利到您的账户;<br>
-                您的好友已经是一百券的老用户了？不要紧，好友下单时填写您的专属优惠码hdd8s3，双方同样享受返利奖励哦！<br>
-                每个月通过推荐好友获得返利金额最多的前三名用户还将获得一百券的额外奖励，相应排名可点击“我的一百券-返利排名”查看。<br>
+                 您的好友已经是一百券的老用户了？不要紧，好友下单时填写您的专属优惠码 <span style="color:#F97311;font-size:14px">${user?.promoterCode}</span>，双方同样享受返利奖励哦！<br>
+                每个月通过推荐好友获得返利金额最多的前三名用户还将获得一百券的额外奖励，相应排名可点击“<a style="color:#F97311" href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}/rebate-rank">我的一百券-返利排名</a>”查看。<br>
             </div>
         </div>
     </div>
@@ -46,6 +46,7 @@
                         'left':$(window).width() / 2 - 100 + 'px',
                         'padding':'20px 30px',
                         'width':'200px',
+                        'box-shadow': '0 1px 3px #badb23',
                         'border':'1px solid #ace500',
                         'background-color':'#f2f9dd',
                         'z-index':'9999'
