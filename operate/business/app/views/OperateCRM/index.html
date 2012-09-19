@@ -642,7 +642,7 @@ aaaaa${phone}
             id = "";
 
         $("#form").attr("action", "/callcenter/phone/" + phone + "/record/" + consultId + "/save" + "?consultId=" + consultId
-                + "&consult.consultType=" + consultType + "&userId=" + id);
+                + "&consult.consultType=" + consultType + "&userId=" + id+"&consult.text"+text);
         $("#form").attr("method", "POST");
         $("#form").submit();
 
