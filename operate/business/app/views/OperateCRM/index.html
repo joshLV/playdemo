@@ -564,10 +564,7 @@
 
     }
 
-    function finish(phone) {
-        $("#form").attr("action", "/callcenter/phone/" + phone);
 
-    }
 
     function prepareSendEdit(id) {
         $("#form").attr("action", "/crm/" + id + "/edit");
@@ -612,9 +609,20 @@
 
 
     $("#finish").click(function () {
-        var url = "/callcenter/phone";
-        $("#form").attr("method", "GET");
-        $("#form").attr("action", url);
+        var phone = $("#phone").val();
+        var consultId = $("#consultId").val();
+        var text= $("#consult_text").val();
+        var consultType= $("#consult_type").val();
+        var id= $("#userId").val();
+        if(id==undefined)
+        id="";
+
+
+        $("#form").attr("action", "/callcenter/phone/save"+"?consultId="+consultId+"&consult.phone="+phone
+        +"&consult.text="+text+"&consult.consultType="+consultType+"&user.id="+id+"&phone="+phone);
+        $("#form").attr("method", "POST");
+        alert("consultType"+consultType);
+        alert("id"+id);
         $("#form").submit();
 
     });
