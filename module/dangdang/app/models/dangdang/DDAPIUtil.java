@@ -193,7 +193,7 @@ public class DDAPIUtil {
         postMethod.addParameter("sign_method", SIGN_METHOD);
         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         postMethod.addParameter("call_time", time);
-        postMethod.addParameter("request", request);
+        postMethod.addParameter("data", request);
         String sign = getSign(request, time, apiName);
         Logger.info("\nsign   ====" + sign);
         postMethod.addParameter("sign", sign);
@@ -212,7 +212,12 @@ public class DDAPIUtil {
     }
 
     public static String getSign(String data, String time, String apiName) {
-        return DigestUtils.md5Hex((SPID + apiName + VER + data + SECRET_KEY + time));
+
+        final String unsignedData = SPID + apiName + VER + data + SECRET_KEY + time;
+        System.out.println("\nunsignedData   ====              [" + unsignedData+"]");
+        final String signed = DigestUtils.md5Hex(unsignedData);
+        System.out.println("\nsigned   ====            [" + signed+"]");
+        return signed;
     }
 
     /**

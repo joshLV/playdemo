@@ -10,6 +10,7 @@ package models.dangdang;
 public enum ErrorCode {
 
     SUCCESS(0),
+    SIGN_ERROR(1000),//签名错误
     VERIFY_FAILED(1001),//验证失败
     ORDER_NOT_EXITED(1002),//订单不存在
     USER_NOT_EXITED(1003), //用户不存在
@@ -34,6 +35,8 @@ public enum ErrorCode {
         switch (code) {
             case 0:
                 return SUCCESS;
+            case 1000:
+                return SIGN_ERROR;
             case 1001:
                 return VERIFY_FAILED;
             case 1002:

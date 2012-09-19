@@ -29,6 +29,9 @@ import java.util.List;
 @Table(name = "resaler")
 public class Resaler extends Model {
 
+
+    private static final long serialVersionUID = 16323229113062L;
+
     /**
      * 分销商账户类型
      */

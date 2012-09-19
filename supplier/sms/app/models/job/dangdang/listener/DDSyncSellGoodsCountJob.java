@@ -23,15 +23,15 @@ import java.util.List;
  * Date: 12-9-13
  * Time: 下午2:31
  */
-@Every("30s")
+@Every("10s")
 public class DDSyncSellGoodsCountJob extends Job {
     public static String DD_LOGIN_NAME = Play.configuration.getProperty("dangdang.resaler_login_name", "dangdang");
 
     @Override
     public void doJob() {
-        Logger.info("\n--------------Start syncSellCount job");
+        Logger.info("\n--------------Start syncSellCount job----");
         //定位请求者
-        Resaler resaler = Resaler.find("loginName=? and status=?", DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
+        models.resale.Resaler resaler = models.resale.Resaler.find("loginName=? and status='APPROVED'", DD_LOGIN_NAME).first();
         if (resaler == null) {
             Logger.error("dangdang resaler is not existed!");
             return;
