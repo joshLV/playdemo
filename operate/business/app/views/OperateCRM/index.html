@@ -57,6 +57,8 @@
             <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.index()}" method="GET">
                 <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
                 <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
+                <input type="hidden" type="text" name="userId" id="userIdSearch1" value="${userId}"/>
+
                 手机号或邮箱： <input type="text" name="condition.searchUser" class="input-medium"
 
 
@@ -68,7 +70,7 @@
             #{/else}/>
 
             #{if user!=null}
-                <input type="hidden" type="text" name="userId" id="user2" value="${user.id}"/>
+                <input type="hidden" type="text" name="userIdNew" id="user2" value="${user.id}"/>
             #{/if}
                 <button class="btn btn-primary" id="searchbtn" type="submit">搜索</button>
             </form>
@@ -78,10 +80,11 @@
                   method="GET">
                 <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
                 <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
+                <input type="hidden" type="text" name="userId" id="userIdSearch2" value="${userId}"/>
                 订单号或券号尾4位： <input type="text" name="condition.searchOrderCoupon" class="input-medium"
                                   value="${condition?.searchOrderCoupon}"/>
             #{if user!=null}
-                <input type="hidden" type="text" name="userId" id="user4" value="${user.id}"/>
+                <input type="hidden" type="text" name="userIdNew" id="user4" value="${user.id}"/>
             #{/if}
                 <button class="btn btn-primary" id="searchbtn2" type="submit">搜索</button>
             </form>
@@ -411,25 +414,27 @@
 
 <div class="span5">
 
-#{if userList!=null&& userList.size() > 0}
+#{if userList!=null && userList.size() > 0 && user!=null}
 
     <form id="form">
-        切换用户
 
-        #{select 'condition.userId', id:userId, class:'select', value:condition?.userId, onchange:"refresh('${phone}')"}
+        #{if userList.size()>1}
+            切换用户
+            #{select 'condition.userId', id:userId, class:'select', value:condition?.userId, onchange:"refresh('${phone}','${consultId}')"}
 
-            #{list items:userList, as:'userList'}
-                #{option userList?.id}
-                    #{if userList.loginName!=null}
-                        邮箱${userList?.loginName }
-                    #{/if}
-                    #{if userList.mobile!=null}
-                        手机${userList?.mobile}
-                        uid${userList?.id}
-                    #{/if}
-                #{/option}
-            #{/list}
-        #{/select}
+                #{list items:userList, as:'userList'}
+                    #{option userList?.id}
+                        #{if userList.loginName!=null}
+                            邮箱${userList?.loginName }
+                        #{/if}
+                        #{if userList.mobile!=null}
+                            手机${userList?.mobile}
+                            uid${userList?.id}
+                        #{/if}
+                    #{/option}
+                #{/list}
+            #{/select}
+        #{/if}
     </form>
     <ul class="nav">
 
@@ -466,9 +471,13 @@
 #{/else}
 
 
-#{form @OperateCRM.tempSave(cousultId), method: 'PUT',id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
+#{form @OperateCRM.tempSave(), method: 'POST',id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
     <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
     <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
+    <input type="hidden" type="text" name="userId" id="consultUserId" value="${condition.userId}"/>
+    <input type="hidden" type="text" name="consultStatus" id="consultStatus" value="${consultStatus}"/>
+
+${condition.userId}
 
     #{if user!=null}
         <input type="hidden" type="text" name="user.id" id="user" value="${user.id}"/>
@@ -485,8 +494,9 @@
         #{option models.sales.ConsultType.QUESTIION}&{'consult.QUESTIION'}#{/option}
         #{option models.sales.ConsultType.FEEDBACK}&{'consult.FEEDBACK'}#{/option}
     #{/select}
-
-    <textarea rows="3" cols="20" required="required" name="consult.text" id="consult_text" value="${consult?.text}">${consult?.text}</textarea>
+*{required="required"}*
+    <textarea rows="3" cols="20" name="consult.text" id="consult_text"
+              value="${consult?.text}">${consult?.text}</textarea>
 
     <div class="error">#{error 'consult.text' /}</div>
 
@@ -494,14 +504,14 @@
     <input class="btn btn-primary" id="save" type="submit" #{if !org.apache.commons.lang.StringUtils.isNotBlank(phone)}
            disabled="disabled" #{/if}value="临时保存"/>
 
-    *{<input class="btn btn-primary" id="finish"}*
-           *{type="submit" value="结束会话"/>}*
-    <a class="btn btn-primary" id="finish"  type="button">结束会话</a>
+*{<input class="btn btn-primary" id="finish"}*
+*{type="submit" value="结束会话"/>}*
+    <a class="btn btn-primary" id="finish" type="button">结束会话</a>
 
-    *{<input class="btn btn-primary" id="abandon"}*
-           *{type="submit" #{if !org.apache.commons.lang.StringUtils.isNotBlank(phone)}}*
-           *{disabled="disabled" #{/if}value="放弃"/>}*
-    <a class="btn btn-primary" id="abandon"  onclick="abandon('${consultId}')" type="button">放弃</a>
+*{<input class="btn btn-primary" id="abandon"}*
+*{type="submit" #{if !org.apache.commons.lang.StringUtils.isNotBlank(phone)}}*
+*{disabled="disabled" #{/if}value="放弃"/>}*
+    <a class="btn btn-primary" id="abandon" onclick="abandon('${consultId}')" type="button">放弃</a>
 
     #{list items: consultContent, as:'consult'}
 
@@ -565,7 +575,6 @@
     }
 
 
-
     function prepareSendEdit(id) {
         $("#form").attr("action", "/crm/" + id + "/edit");
         $("#form").attr("method", "GET");
@@ -592,8 +601,8 @@
 
     });
 
-    function refresh(phone) {
-        var url = "/callcenter/phone/" + phone;
+    function refresh(phone, consultId) {
+        var url = "/callcenter/phone/" + phone + "/record/" + consultId;
         $("#form").attr("method", "GET");
         $("#form").attr("action", url);
         $("#form").submit();
@@ -607,27 +616,23 @@
     }
 
 
-
     $("#finish").click(function () {
         var phone = $("#phone").val();
         var consultId = $("#consultId").val();
-        var text= $("#consult_text").val();
-        var consultType= $("#consult_type").val();
-        var id= $("#userId").val();
-        if(id==undefined)
-        id="";
+        var text = $("#consult_text").val();
+        var consultType = $("#consult_type").val();
+        var id = $("#consultUserId").val();
+
+        if (id == undefined)
+            id = "";
 
 
-        $("#form").attr("action", "/callcenter/phone/save"+"?consultId="+consultId+"&consult.phone="+phone
-        +"&consult.text="+text+"&consult.consultType="+consultType+"&user.id="+id+"&phone="+phone);
+        $("#form").attr("action", "/callcenter/phone/" + phone + "/record/" + consultId + "/save" + "?consultId=" + consultId + "&consult.phone=" + phone
+                + "&consult.text=" + text + "&consult.consultType=" + consultType + "&userId=" + id);
         $("#form").attr("method", "POST");
-        alert("consultType"+consultType);
-        alert("id"+id);
         $("#form").submit();
 
     });
-
-
 
 
     //    function openwin() {

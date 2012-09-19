@@ -17,7 +17,7 @@ import javax.persistence.Table;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@Table(name = "call_bind")
+@Table(name = "member_call_bind")
 public class MemberCallBind extends Model {
 
     @Column(name = "email")

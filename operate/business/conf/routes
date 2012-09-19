@@ -50,12 +50,12 @@ GET     /callcenter/phone                                         OperateCRM.get
 GET     /callcenter/phone/{phone}/record/{consultId}              OperateCRM.index
 GET     /crm/{id}/edit                                            OperateCRM.edit
 GET     /crm/bind                                                 OperateCRM.bind
-POST     /callcenter/phone/save         OperateCRM.save
+POST     /callcenter/phone/{phone}/record/{consultId}/tempSave    OperateCRM.tempSave
+POST     /callcenter/phone/{phone}/record/{consultId}/save        OperateCRM.save
 GET     /crm/save_bind                                            OperateCRM.saveBind
 GET     /callcenter/phone/{phone}                                 OperateCRM.finish
 DELETE  /crm/{id}                                                 OperateCRM.delete
-GET     /callcenter/phone/abandon/{consultId}                        OperateCRM.abandon
-PUT     /callcenter/phone/{phone}/record/{consultId}/tempSave     OperateCRM.tempSave
+GET     /callcenter/phone/abandon/{consultId}                     OperateCRM.abandon
 PUT     /crm/{id}                                                 OperateCRM.update
 
 
