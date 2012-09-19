@@ -1,7 +1,9 @@
 package models.job.dangdang.listener;
 
-import models.dangdang.*;
-import play.jobs.Every;
+import models.dangdang.DDOrder;
+import models.dangdang.DDOrderJobMessage;
+import models.dangdang.DDOrderQueueUtil;
+import models.dangdang.DDOrderStatus;
 import play.jobs.Job;
 
 import java.util.List;
@@ -10,7 +12,7 @@ import java.util.List;
  * @author yanjy
  *         Date: 12-9-17
  */
-@Every("1mn")
+//@Every("1mn")
 public class DDOrderScanner extends Job {
     @Override
     public void doJob() {

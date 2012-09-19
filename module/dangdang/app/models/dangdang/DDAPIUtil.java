@@ -14,7 +14,6 @@ import org.dom4j.Element;
 import play.Logger;
 import play.Play;
 
-import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -26,9 +25,7 @@ import java.util.*;
  * Time: 2:02 PM
  */
 public class DDAPIUtil {
-
-    private static final String MD5 = "MD5";
-    private static final String XML = "XML";
+    private static final String XML = "xml";
     private static final String SIGN_METHOD = "1";
     private static final String VER = Play.configuration.getProperty("dangdang.version");
     private static final String SECRET_KEY = Play.configuration.getProperty("dangdang.secret_key", "x8765d9yj72wevshn");
@@ -46,11 +43,12 @@ public class DDAPIUtil {
     public static void syncSellCount(Goods goods) throws DDAPIInvokeException {
         String data = String.format("<data><row><spgid><![CDATA[%s]]></spgid><sellcount><![CDATA[%s]]></sellcount" +
                 "></row></data>", goods.id, goods.saleCount);
+        System.out.println("data===="+data);
         Response response = DDAPIUtil.access(SYNC_URL, data, "push_team_stock");
-
         if (!response.success()) {
             throw new DDAPIInvokeException("[DangDang API] invoke syncSellCount error(goodsId:" + goods.id + "):" + response.desc);
         }
+        Logger.info("[DangDang API] invoke syncSellCount is success!");
     }
 
     /**
@@ -181,6 +179,7 @@ public class DDAPIUtil {
      * @return
      */
     public static Response access(String url, String data, String apiName) throws DDAPIInvokeException {
+
         //构造HttpClient的实例
         HttpClient httpClient = new HttpClient();
         //创建GET方法的实例
@@ -194,41 +193,24 @@ public class DDAPIUtil {
         postMethod.addParameter("call_time", time);
         postMethod.addParameter("data", data);
         String sign = getSign(data, time, apiName);
+        System.out.println("sign===" + sign);
         postMethod.addParameter("sign", sign);
         try {
             //执行postMethod
             int statusCode = httpClient.executeMethod(postMethod); // HttpClient对于要求接受后继服务的请求，象POST和PUT等不能自动处理转发
-            // 301或者302
-            Logger.debug("Invoke DangDang API:" + "url[" + url + "],data[" + data + "],apiName[" + apiName + "]");
-            Logger.debug("statusCode:"+statusCode);
-            if (statusCode == HttpStatus.SC_MOVED_PERMANENTLY || statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
+            // 200
+            if (statusCode == HttpStatus.SC_OK) {
                 //从头中取出转向的地址
-
-                return new Response(postMethod.getResponseBodyAsString());
+                return new Response(postMethod.getResponseBodyAsStream());
             }
         } catch (Exception e) {
             throw new DDAPIInvokeException(e.getMessage());
         }
-        return null;
+        return new Response();
     }
 
     public static String getSign(String data, String time, String apiName) {
-        byte[] result;
-        String tt = " ";
-        try {
-            MessageDigest alg = java.security.MessageDigest.getInstance(MD5);
-            alg.update((SPID + apiName + VER + data + SECRET_KEY + time).getBytes());
-            result = alg.digest();
-            for (byte aResult : result) {
-                tt += (char) aResult;
-            }
-
-            return tt;
-
-        } catch (Exception ex) {
-            return null;
-        }
-
+        return DigestUtils.md5Hex((SPID + apiName + VER + data + SECRET_KEY + time));
     }
 
     /**

@@ -5,6 +5,7 @@ import models.consumer.User;
 import models.dangdang.ErrorCode;
 import models.dangdang.ErrorInfo;
 import models.sales.Goods;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
 import play.mvc.Before;
 import play.mvc.Http;
@@ -28,6 +29,17 @@ public class DDOrderApiTest extends FunctionalTest {
 
     @Test
     public void 测试创建订单() {
+//  '3000003'.'push_team_stock'.'1.0'.''.'2012-09-18 16:56:22'
+        String SPID = "3000003";
+        String apiName = "push_team_stock";
+
+        String VER = "1.0";
+        String data = "";
+        String SECRET_KEY = "";
+        String time = "2012-09-18 16:56:22";
+
+        System.out.println("+++++"+ DigestUtils.md5Hex((SPID + apiName + VER + data + SECRET_KEY + time)));
+
         Goods goods = FactoryBoy.create(Goods.class);
         User user = FactoryBoy.create(User.class);
         Map<String, String> params = new HashMap<>();

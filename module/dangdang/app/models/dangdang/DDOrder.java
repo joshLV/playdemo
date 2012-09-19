@@ -29,6 +29,7 @@ public class DDOrder extends Model {
     @Column(name = "express_fee")
     public BigDecimal expressFee; //运费
 
+    @Column(name = "status")
     public DDOrderStatus status;
 
     @Column(name = "created_at")

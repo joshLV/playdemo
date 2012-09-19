@@ -1,8 +1,12 @@
 package models.dangdang;
 
-import org.dom4j.*;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import play.Logger;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,14 +44,25 @@ public class Response implements Serializable {
      *
      * @param responseBodyAsString xml字符串
      */
-    public Response(String responseBodyAsString) throws DocumentException {
-        Document document = DocumentHelper.parseText(responseBodyAsString);
-        Element root = document.getRootElement();
-        ver = root.elementText("ver");
-        spid = root.elementText("spid");
-        errorCode = ErrorCode.getErrorCode(Integer.parseInt(root.elementTextTrim("error_code")));
-        desc = root.elementText("desc");
-        data = root.element("data");
+    public Response(InputStream responseBodyAsString) throws DocumentException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(responseBodyAsString));
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            String line;
+            while ((line = br.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+            Document document = DocumentHelper.parseText(stringBuilder.toString());
+            Element root = document.getRootElement();
+            ver = root.elementText("ver");
+            spid = root.elementText("spid");
+            errorCode = ErrorCode.getErrorCode(Integer.parseInt(root.elementTextTrim("error_code")));
+            desc = root.elementText("desc");
+            data = root.element("data");
+            br.close();
+        } catch (IOException e) {
+            Logger.info("xml error");
+        }
     }
 
     /**
