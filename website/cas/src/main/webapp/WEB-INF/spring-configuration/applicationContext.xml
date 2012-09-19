@@ -88,14 +88,14 @@
 
     <!--oauth-->
     <bean id="sinaWeibo" class="com.uhuila.website.cas.oauth.sinaweibo.SinaWeiboProvider">
-        <property name="key" value="1107020725"/>
-        <property name="secret" value="d7feada14c897b0d35e97819acd0d50a"/>
+        <property name="key" value="472392017"/>
+        <property name="secret" value="d7ee939f0ec2bece2f53a717066d4a81"/>
         <property name="callbackUrl" value="${cas.oauth.callbackUrl}"/>
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
     <bean id="qQ" class="com.uhuila.website.cas.oauth.qq.QQProvider">
-        <property name="key" value="100659104"/>
-        <property name="secret" value="d9ef677f9adfa79240343a3fe9624d66"/>
+        <property name="key" value="100306459"/>
+        <property name="secret" value="e4b4d5780ed2cd17706e17857147b35d"/>
         <property name="callbackUrl" value="${cas.oauth.callbackUrl}"/>
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
