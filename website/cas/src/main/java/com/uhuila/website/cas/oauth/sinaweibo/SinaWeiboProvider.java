@@ -57,7 +57,7 @@ public class SinaWeiboProvider extends AbstractOAuth20Provider {
         ArrayNode statuses = (ArrayNode) json.get("statuses");
         JsonNode userJson = statuses.get(0).get("user");
         if (userJson != null) {
-            OAuthUserProfileHelper.addIdentifier(userProfile, userJson, "id", getOpenIdSource());
+            OAuthUserProfileHelper.addIdentifier(userProfile, userJson, "idstr", getOpenIdSource());
             for (String attribute : mainAttributes.keySet()) {
                 OAuthUserProfileHelper.addAttribute(userProfile, userJson, attribute,
                         mainAttributes.get(attribute));

@@ -43,66 +43,66 @@
         <!--<property name="eventsReturned" value="true" />-->
     <!--</bean>-->
 
-    <bean id="twitter1" class="org.scribe.up.provider.impl.TwitterProvider">
-        <property name="key" value="OPEWaSoTuAe49K4dSoRvNw" />
-        <property name="secret" value="aKmvleltXAmLKcnlMgzRjTsCnhV3QVMVDh153xJttCo" />
-        <property name="callbackUrl" value="http://localhost:8080/cas/login" />
-    </bean>
+    <!--<bean id="twitter1" class="org.scribe.up.provider.impl.TwitterProvider">-->
+        <!--<property name="key" value="OPEWaSoTuAe49K4dSoRvNw" />-->
+        <!--<property name="secret" value="aKmvleltXAmLKcnlMgzRjTsCnhV3QVMVDh153xJttCo" />-->
+        <!--<property name="callbackUrl" value="http://localhost:8080/cas/login" />-->
+    <!--</bean>-->
 
-    <bean id="google1" class="org.scribe.up.provider.impl.GoogleProvider">
-        <property name="key" value="anonymous" />
-        <property name="secret" value="anonymous" />
-        <property name="callbackUrl" value="http://localhost:8080/cas/login" />
-    </bean>
+    <!--<bean id="google1" class="org.scribe.up.provider.impl.GoogleProvider">-->
+        <!--<property name="key" value="anonymous" />-->
+        <!--<property name="secret" value="anonymous" />-->
+        <!--<property name="callbackUrl" value="http://localhost:8080/cas/login" />-->
+    <!--</bean>-->
 
-    <bean id="yahoo1" class="org.scribe.up.provider.impl.YahooProvider">
-        <property name="key" value="dj0yJmk9MzhNZWFkeXQxN09GJmQ9WVdrOVRrbzNVVVJMTkdrbWNHbzlNVGc0TURNek5EVTJNZy0tJnM9Y29uc3VtZXJzZWNyZXQmeD1lNw--" />
-        <property name="secret" value="2f3146ac90d60b9f79125b1167437b6c64657a0b" />
-        <property name="callbackUrl" value="http://localhost:8080/cas/login" />
-    </bean>
+    <!--<bean id="yahoo1" class="org.scribe.up.provider.impl.YahooProvider">-->
+        <!--<property name="key" value="dj0yJmk9MzhNZWFkeXQxN09GJmQ9WVdrOVRrbzNVVVJMTkdrbWNHbzlNVGc0TURNek5EVTJNZy0tJnM9Y29uc3VtZXJzZWNyZXQmeD1lNw" />-->
+        <!--<property name="secret" value="2f3146ac90d60b9f79125b1167437b6c64657a0b" />-->
+        <!--<property name="callbackUrl" value="http://localhost:8080/cas/login" />-->
+    <!--</bean>-->
 
-    <bean id="linkedin1" class="org.scribe.up.provider.impl.LinkedInProvider">
-        <property name="key" value="yf7sgiahy7o6" />
-        <property name="secret" value="rDvaZb3veq2x1Pgi" />
-        <property name="callbackUrl" value="http://localhost:8080/cas/login" />
-    </bean>
+    <!--<bean id="linkedin1" class="org.scribe.up.provider.impl.LinkedInProvider">-->
+        <!--<property name="key" value="yf7sgiahy7o6" />-->
+        <!--<property name="secret" value="rDvaZb3veq2x1Pgi" />-->
+        <!--<property name="callbackUrl" value="http://localhost:8080/cas/login" />-->
+    <!--</bean>-->
 
-    <bean id="github1" class="org.scribe.up.provider.impl.GitHubProvider">
-        <property name="key" value="bb7977b9e7f892c115c3" />
-        <property name="secret" value="15a6f06329945e1ac5b6f715dcae5314bf88b005" />
-        <property name="callbackUrl" value="http://localhost:8080/cas/login" />
-    </bean>
+    <!--<bean id="github1" class="org.scribe.up.provider.impl.GitHubProvider">-->
+        <!--<property name="key" value="bb7977b9e7f892c115c3" />-->
+        <!--<property name="secret" value="15a6f06329945e1ac5b6f715dcae5314bf88b005" />-->
+        <!--<property name="callbackUrl" value="http://localhost:8080/cas/login" />-->
+    <!--</bean>-->
 
-    <bean id="live1" class="org.scribe.up.provider.impl.WindowsLiveProvider">
-        <property name="key" value="00000000440BCAA1" />
-        <property name="secret" value="dTZRQNbev04Uod4PWMJ-OWSgc3U5ztWd" />
-        <property name="callbackUrl" value="http://casdemo.localhost.com:8080/cas/login" />
-    </bean>
+    <!--<bean id="live1" class="org.scribe.up.provider.impl.WindowsLiveProvider">-->
+        <!--<property name="key" value="00000000440BCAA1" />-->
+        <!--<property name="secret" value="dTZRQNbev04Uod4PWMJ-OWSgc3U5ztWd" />-->
+        <!--<property name="callbackUrl" value="http://casdemo.localhost.com:8080/cas/login" />-->
+    <!--</bean>-->
 
-    <bean id="wordpress1" class="org.scribe.up.provider.impl.WordPressProvider">
-        <property name="key" value="251" />
-        <property name="secret" value="6QCZZBhbokJ2YWfbK2F9vBgvGthtKijwaMRP8x57NWjPW2CXFsJJukt2RWvhlKaQ" />
-        <property name="callbackUrl" value="http://localhost:8080/cas/login" />
-    </bean>
+    <!--<bean id="wordpress1" class="org.scribe.up.provider.impl.WordPressProvider">-->
+        <!--<property name="key" value="251" />-->
+        <!--<property name="secret" value="6QCZZBhbokJ2YWfbK2F9vBgvGthtKijwaMRP8x57NWjPW2CXFsJJukt2RWvhlKaQ" />-->
+        <!--<property name="callbackUrl" value="http://localhost:8080/cas/login" />-->
+    <!--</bean>-->
 
 
     <!--oauth-->
     <bean id="sinaWeibo" class="com.uhuila.website.cas.oauth.sinaweibo.SinaWeiboProvider">
         <property name="key" value="1107020725"/>
         <property name="secret" value="d7feada14c897b0d35e97819acd0d50a"/>
-        <property name="callbackUrl" value="http://cas.yibaiquan.com:8080/website-cas/oauth2.0/login"/>
+        <property name="callbackUrl" value="${cas.oauth.callbackUrl}"/>
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
     <bean id="qQ" class="com.uhuila.website.cas.oauth.qq.QQProvider">
         <property name="key" value="100659104"/>
         <property name="secret" value="d9ef677f9adfa79240343a3fe9624d66"/>
-        <property name="callbackUrl" value="http://cas.yibaiquan.com:8080/website-cas/oauth2.0/login"/>
+        <property name="callbackUrl" value="${cas.oauth.callbackUrl}"/>
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
     <bean id="renRen" class="com.uhuila.website.cas.oauth.renren.RenRenProvider">
         <property name="key" value="210266"/>
         <property name="secret" value="20fbd127dc154bd48296e05bace79dc1"/>
-        <property name="callbackUrl" value="http://cas.yibaiquan.com:8080/website-cas/oauth2.0/login"/>
+        <property name="callbackUrl" value="${cas.oauth.callbackUrl}"/>
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
 
@@ -113,13 +113,13 @@
                 <ref bean="qQ" />
                 <ref bean="renRen" />
                 <!--<ref bean="facebook1" />-->
-                <ref bean="twitter1" />
-                <ref bean="google1" />
-                <ref bean="yahoo1" />
-                <ref bean="linkedin1" />
-                <ref bean="github1" />
-                <ref bean="live1" />
-                <ref bean="wordpress1" />
+                <!--<ref bean="twitter1" />-->
+                <!--<ref bean="google1" />-->
+                <!--<ref bean="yahoo1" />-->
+                <!--<ref bean="linkedin1" />-->
+                <!--<ref bean="github1" />-->
+                <!--<ref bean="live1" />-->
+                <!--<ref bean="wordpress1" />-->
             </list>
         </property>
     </bean>

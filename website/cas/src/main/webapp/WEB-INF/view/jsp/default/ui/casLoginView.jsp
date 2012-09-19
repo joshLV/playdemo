@@ -17,196 +17,47 @@
     <link rel="icon" href="http://a.uhcdn.com/images/u/favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="http://a.uhcdn.com/images/u/favicon.ico" type="image/x-icon"/>
     <style>
-        body, h2, h3, p {
-            padding: 0;
-            margin: 0;
-        }
+        body, h2, h3, p { padding: 0; margin: 0; }
+        body, a, button, input { color: #3E3E3E; font: 12px/1.5 tahoma, arial, \5b8b\4f53, sans-serif; }
+        #header { width: 960px; margin: 0 auto; }
+        #header img { border: 0; }
+        .clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+        .clearfix { *+height: 1%; }
 
-        body, a, button, input {
-            color: #3E3E3E;
-            font: 12px/1.5 tahoma, arial, \5b8b\4f53, sans-serif;
-        }
+        #content { width: 960px; margin: 0 auto; padding: 25px 0 10px; }
+        .form-hd { height: 32px; color: #f97311; line-height: 32px; text-indent: 10px; font-weight: 700; background: url(//img.uhcdn.com/images/y/login.png) repeat-x 0 0; border: 1px solid #e8e8e8; border-top: 3px solid #f97311; }
+        .form-bd { padding: 35px 20px; border: solid #D1D1D1; border-width: 0 1px 1px 1px; }
+        .login { float: left; width: 420px; padding: 10px 50px 10px 70px; border-right: 1px solid #D1D1D1; }
+        .field { padding: 3px 0; }
+        .label { display: inline-block; width: 80px; text-align: right; }
+        .medium { width: 240px; height: 22px; padding: 0 2px; font-size: 12px; line-height: 22px; border: 1px solid #D1D1D1; }
+        .forget { color: #fc7410; padding-left: 5px; text-decoration: none; }
+        .error { display: block; width: 204px; height: 20px; padding-left: 52px; color: #f00; }
+        #auto { padding-left: 48px; }
+        #auto input { position: relative; top: 2px; }
+        #remember { position: relative; top: 2px; }
+        #submit { width: 127px; height: 37px; margin: 20px 0 0 52px; border: 0; color: #F8F8F8; font-size: 14px; font-weight: 700; text-indent: -9999px; background: url(//img.uhcdn.com/images/y/login.png) no-repeat 0 -33px; cursor: pointer; }
 
-        #header {
-            width: 960px;
-            margin: 0 auto;
-        }
+        .guide { float: right; width: 320px; padding-left: 40px; }
+        .guide h3 { margin: 0 0; font-size: 14px; line-height: 35px; }
+        .guide p { line-height: 20px; }
+        .regist { display: block; width: 127px; height: 39px; color: #FFF; margin-top: 20px; font-size: 14px; font-weight: 700; line-height: 39px; text-align: center; text-indent: -9999px; background: url(//img.uhcdn.com/images/y/login.png) no-repeat 0 -71px; }
+        #captchaImg { position: relative; top: 8px; }
+        #checkcode { width: 70px; }
 
-        #header img {
-            border: 0;
-        }
+        #open-auth { margin-top: 25px; }
+        #open-auth span { color: #dbdbdb; }
+        #open-auth a { color: #005aa0; text-decoration: none; display: inline-block; line-height: 16px; padding-left: 20px; margin: 0 5px; background: url(//img.uhcdn.com/images/y/user/open-auth-btn.png) no-repeat 0 0;}
+        #open-auth a.id-qq { background-position: 0 1px; }
+        #open-auth a.id-renren { background-position: 0 -31px; }
+        #open-auth a.id-weibo { background-position: 0 -65px; }
 
-        .clearfix:after {
-            content: ".";
-            display: block;
-            height: 0;
-            clear: both;
-            visibility: hidden;
-        }
-
-        .clearfix {
-            *+height:1%;
-        }
-
-        #content {
-            width: 960px;
-            margin: 0 auto;
-            padding: 25px 0 10px;
-        }
-
-        .form-hd {
-            height: 32px;
-            color: #f97311;
-            line-height: 32px;
-            text-indent: 10px;
-            font-weight: 700;
-            background: url(//img.uhcdn.com/images/y/login.png) repeat-x 0 0;
-            border: 1px solid #e8e8e8;
-            border-top: 3px solid #f97311;
-        }
-
-        .form-bd {
-            padding: 35px 20px;
-            border: solid #D1D1D1;
-            border-width: 0 1px 1px 1px;
-        }
-
-        .login {
-            float: left;
-            width: 420px;
-            padding: 10px 50px 10px 70px;
-            border-right: 1px solid #D1D1D1;
-        }
-
-        .field {
-            padding: 3px 0;
-        }
-
-        .label {
-            display: inline-block;
-            width: 80px;
-            text-align: right;
-        }
-
-        .medium {
-            width: 240px;
-            height: 22px;
-            padding: 0 2px;
-            font-size: 12px;
-            line-height: 22px;
-            border: 1px solid #D1D1D1;
-        }
-
-        .forget {
-            color: #fc7410;
-            padding-left: 5px;
-            text-decoration: none;
-        }
-
-        .error {
-            display: block;
-            width: 204px;
-            height: 20px;
-            padding-left: 52px;
-            color: #f00;
-        }
-
-        #auto {
-            padding-left: 48px;
-        }
-
-        #auto input {
-            position: relative;
-            top: 2px;
-        }
-
-        #remember {
-            position: relative;
-            top: 2px;
-        }
-
-        #submit {
-            width: 127px;
-            height: 37px;
-            margin: 20px 0 0 52px;
-            border: 0;
-            color: #F8F8F8;
-            font-size: 14px;
-            font-weight: 700;
-            text-indent: -9999px;
-            background: url(//img.uhcdn.com/images/y/login.png) no-repeat 0 -33px;
-            cursor: pointer;
-        }
-
-        .guide {
-            float: right;
-            width: 320px;
-            padding-left: 40px;
-        }
-
-        .guide h3 {
-            margin: 0 0;
-            font-size: 14px;
-            line-height: 35px;
-        }
-
-        .guide p {
-            line-height: 20px;
-        }
-
-        .regist {
-            display: block;
-            width: 127px;
-            height: 39px;
-            color: #FFF;
-            margin-top: 20px;
-            font-size: 14px;
-            font-weight: 700;
-            line-height: 39px;
-            text-align: center;
-            text-indent: -9999px;
-            background: url(//img.uhcdn.com/images/y/login.png) no-repeat 0 -71px;
-        }
-
-        #captchaImg {
-            position: relative;
-            top: 8px;
-        }
-
-        #checkcode {
-            width: 70px;
-        }
-
-        #footer {
-            padding: 10px 0 20px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .ft-nav {
-            color: #999;
-            text-align: center;
-        }
-
-        .ft-nav a {
-            color: #3E3E3E;
-            margin: 0 10px;
-            text-decoration: none
-        }
-
-        .ft-nav a:hover {
-            color: #fc7410;
-            text-decoration: none
-        }
-
-        .copyright {
-            color: #999;
-            line-height: 26px;
-        }
-
-        .copyright span {
-            margin: 0 10px;
-        }
+        #footer { padding: 10px 0 20px; margin: 0 auto; text-align: center; }
+        .ft-nav { color: #999; text-align: center; }
+        .ft-nav a { color: #3E3E3E; margin: 0 10px; text-decoration: none }
+        .ft-nav a:hover { color: #fc7410; text-decoration: none }
+        .copyright { color: #999; line-height: 26px; }
+        .copyright span { margin: 0 10px; }
     </style>
 
 </head>

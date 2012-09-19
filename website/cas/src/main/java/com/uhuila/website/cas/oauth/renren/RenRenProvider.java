@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * TODO.
+ * 人人网登录.
  * <p/>
  * User: sujie
  * Date: 9/11/12

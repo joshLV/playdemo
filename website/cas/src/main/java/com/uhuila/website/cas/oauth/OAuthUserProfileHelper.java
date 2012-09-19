@@ -4,7 +4,7 @@ import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.UserProfile;
 
 /**
- * TODO.
+ * OAuth用户信息工具类.
  * <p/>
  * User: sujie
  * Date: 9/11/12
@@ -15,8 +15,11 @@ public class OAuthUserProfileHelper {
         userProfile.addAttribute(key, value);
     }
 
-    public static void addIdentifier(UserProfile userProfile, JsonNode userJson, String propertyName,String source) {
-        userProfile.setId(source + ":" + userJson.get(propertyName).getTextValue());
+    public static void addIdentifier(UserProfile userProfile, JsonNode userJson, String propertyName, String source) {
+        final String identifier = userJson.get(propertyName).getTextValue();
+        System.out.println(">>>> OAuth Identifier:" + identifier);
+
+        userProfile.setId(source + ":" + identifier);
         addAttribute(userProfile, userJson, "source", source);
     }
 }
