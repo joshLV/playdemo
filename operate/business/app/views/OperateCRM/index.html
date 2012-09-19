@@ -246,8 +246,9 @@
         <th width="10px">券订单号</th>
         <th width="8px">手机</th>
         <th width="30px">单价</th>
-        <th width="50px">消费门店</th>
+
         <th width="50px">付款时间</th>
+        <th width="50px">消费门店</th>
         <th width="50px">消费时间</th>
         <th width="20px">状态</th>
     </tr>
@@ -296,12 +297,7 @@
                     style="color:red"
 
             #{/if}>${coupon?.salePrice?.formatCurrency('CNY')}</td>
-            <td  #{if coupon?.status==models.order.ECouponStatus.REFUND}
 
-
-                    style="color:red"
-
-            #{/if}>${coupon?.getConsumedShop()}</td>
 
             <td>
                 <a id="cancelInfo_${coupon.id}"
@@ -318,6 +314,12 @@
                 ${coupon?.order?.paidAt?.format("MM-dd HH:mm")}
 
                 </a></td>
+            <td  #{if coupon?.status==models.order.ECouponStatus.REFUND}
+
+
+                    style="color:red"
+
+            #{/if}>${coupon?.getConsumedShop()}</td>
 
             <td>
                 <a id="cancelInfo_${coupon.id}"
@@ -458,8 +460,8 @@
                 </td>
             </tr>
             <tr>
-                <td width="20%"> 可提现余额： ${user?.AccountMoney()?.formatCurrency('CNY')}</td>
-                <td width="20%"> 不可提现余额： ${user?.promotionAmountMoney()?.formatCurrency('CNY')}</td>
+                <td width="20%"> 可提现： ${user?.AccountMoney()?.formatCurrency('CNY')}</td>
+                <td width="20%"> 不可提现： ${user?.promotionAmountMoney()?.formatCurrency('CNY')}</td>
                 <td width="20%">积分： ${user?.userInfo?.totalPoints}</td>
                 <td width="20%">地址： ${address?.address}</td>
             </tr>
@@ -474,6 +476,7 @@
 
 #{form @OperateCRM.tempSave(), method: 'POST',id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
     <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
+aaaaa${phone}
     <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
     <input type="hidden" type="text" name="userId" id="consultUserId" value="${userId}"/>
     <input type="hidden" type="text" name="consultStatus" id="consultStatus" value="${consultStatus}"/>
@@ -638,9 +641,8 @@
         if (id == undefined)
             id = "";
 
-
-        $("#form").attr("action", "/callcenter/phone/" + phone + "/record/" + consultId + "/save" + "?consultId=" + consultId + "&consult.phone=" + phone
-                + "&consult.text=" + text + "&consult.consultType=" + consultType + "&userId=" + id);
+        $("#form").attr("action", "/callcenter/phone/" + phone + "/record/" + consultId + "/save" + "?consultId=" + consultId
+                + "&consult.consultType=" + consultType + "&userId=" + id);
         $("#form").attr("method", "POST");
         $("#form").submit();
 

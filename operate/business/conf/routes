@@ -47,6 +47,7 @@ GET     /seckill_goods/{id}/check               SecKillGoods.checkGoodsId
 DELETE  /seckill_goods/{id}                     SecKillGoods.delete
 
 GET     /callcenter/phone                                         OperateCRM.getPhone
+GET     /callcenter/phone/{phone}                                         OperateCRM.callCenter
 GET     /callcenter/phone/{phone}/record/{consultId}              OperateCRM.index
 GET     /crm/{id}/edit                                            OperateCRM.edit
 GET     /crm/bind                                                 OperateCRM.bind
