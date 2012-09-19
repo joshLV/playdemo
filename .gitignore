@@ -18,6 +18,7 @@ version.conf
 [0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*
 
 .DS_Store
+*/*/core
 */*/target
 */*/lib
 */*/modules
