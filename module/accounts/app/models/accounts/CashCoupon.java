@@ -10,10 +10,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.uhuila.common.constants.DeletedStatus;
-
-import models.consumer.User;
 import play.db.jpa.Model;
+
+import com.uhuila.common.constants.DeletedStatus;
 
 /**
  * 现金券
@@ -86,18 +85,5 @@ public class CashCoupon extends Model {
 	 */
     @Enumerated(EnumType.STRING)
 	public DeletedStatus deleted;
-	
-	/**
-	 * 显示时用这个方法得到用户。
-	 * 不使用关联，这个对象要相对独立.
-	 * @return
-	 */
-	public User getUser() {
-		if (userId == null) {
-			return null;
-		}
-		return User.findById(userId);
-	}
-	
 	
 }
