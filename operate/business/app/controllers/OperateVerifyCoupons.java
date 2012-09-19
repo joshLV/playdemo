@@ -82,6 +82,8 @@ public class OperateVerifyCoupons extends Controller {
         }
 
         ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
+        System.out.println("gggggggg        eCoupon.id:" + eCoupon.id);
+
         //根据页面录入券号查询对应信息,并产生消费交易记录
         if (eCoupon == null) {
             renderJSON("err");
@@ -100,11 +102,13 @@ public class OperateVerifyCoupons extends Controller {
                 String info = eCoupon.getCheckInfo();
                 renderJSON("{\"error\":\"2\",\"info\":\"" + info + "\"}");
             }
+            System.out.println("begin dangdang invoke!!!!!!!!!!!!!!!!!");
             //判断是否当当订单产生的券
             try {
                 if (DDAPIUtil.isRefund(eCoupon)) {//如果券在当当上已经退款，则不允许券的消费。
                     renderJSON("4");
                 }
+                System.out.println("dangdang invoke ok!!!!!!!!!!!!!!!!!");
             } catch (DDAPIInvokeException e) {
                 //当当接口调用失败，目前仅记录日志。不阻止券的消费。以便保证用户体验。
                 Logger.error(e.getMessage(), e);

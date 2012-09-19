@@ -81,6 +81,6 @@ public class DDOrderItem extends Model {
     }
 
     public static DDOrderItem findByOrder(OrderItems orderItems) {
-        return find("byYbpOrderItems", orderItems).first();
+        return find("byYbqOrderItems", orderItems).first();
     }
 }

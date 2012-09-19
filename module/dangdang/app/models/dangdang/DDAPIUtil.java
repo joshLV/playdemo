@@ -41,8 +41,8 @@ public class DDAPIUtil {
      * @return
      */
     public static void syncSellCount(Goods goods) throws DDAPIInvokeException {
-        String request = String.format("<request><row><spgid><![CDATA[%s]]></spgid><sellcount><![CDATA[%s]]></sellcount" +
-                "></row></request>", goods.id, goods.saleCount);
+        String request = String.format("<data><row><spgid><![CDATA[%s]]></spgid><sellcount><![CDATA[%s]]></sellcount" +
+                "></row></data>", goods.id, goods.saleCount);
         Response response = DDAPIUtil.access(SYNC_URL, request, "push_team_stock");
         if (!response.success()) {
             throw new DDAPIInvokeException("\ninvoke syncSellCount error(goodsId:" + goods.id + "):" +
@@ -61,9 +61,10 @@ public class DDAPIUtil {
     public static boolean isRefund(ECoupon eCoupon) throws DDAPIInvokeException {
         DDOrderItem ddOrderOrderItem = DDOrderItem.findByOrder(eCoupon.orderItems);
         if (ddOrderOrderItem == null) {
+            Logger.info("[DangDang isRefund API] order item not found (eCouponSn:"+eCoupon.eCouponSn+")!");
             return false;
         }
-        String data = String.format("<data><row><ddgid>%s</ddgid><type>%s</type><code>%s</code></row></data>",
+        String data = String.format("<data><row><ddgid>![CDATA[%s]]></ddgid><type>![CDATA[%s]]></type><code>![CDATA[%s]]></code></row></data>",
                 ddOrderOrderItem.ddgid, 1, eCoupon.eCouponSn);
         Response response = DDAPIUtil.access(QUERY_CONSUME_CODE_URL, data, "query_consume_code");
 
@@ -89,9 +90,10 @@ public class DDAPIUtil {
     public static void notifyVerified(ECoupon eCoupon) throws DDAPIInvokeException {
         DDOrderItem ddOrderOrderItem = DDOrderItem.findByOrder(eCoupon.orderItems);
         if (ddOrderOrderItem == null) {
+            Logger.info("[DangDang notifyVerified API] order item not found (eCouponSn:"+eCoupon.eCouponSn+")!");
             return;
         }
-        String data = String.format("<data><row><ddgid>%s</ddgid><consume_code>%s</consume_code><verifycode>%s" +
+        String data = String.format("<data><row><ddgid>![CDATA[%s]]></ddgid><consume_code>![CDATA[%s]]></consume_code><verifycode>![CDATA[%s]]>" +
                 "</verifycode></row></data>",
                 ddOrderOrderItem.ddgid, eCoupon.eCouponSn, eCoupon.eCouponSn);
         Response response = DDAPIUtil.access(VERIFY_CONSUME_URL, data, "verify_consume");
