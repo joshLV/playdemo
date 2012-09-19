@@ -474,10 +474,10 @@
 #{form @OperateCRM.tempSave(), method: 'POST',id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
     <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
     <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
-    <input type="hidden" type="text" name="userId" id="consultUserId" value="${condition.userId}"/>
+    <input type="hidden" type="text" name="userId" id="consultUserId" value="${userId}"/>
     <input type="hidden" type="text" name="consultStatus" id="consultStatus" value="${consultStatus}"/>
 
-${condition.userId}
+*{${condition.userId}}*
 
     #{if user!=null}
         <input type="hidden" type="text" name="user.id" id="user" value="${user.id}"/>
