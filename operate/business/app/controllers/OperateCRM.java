@@ -32,6 +32,7 @@ public class OperateCRM extends Controller {
 
 
     public static void index(String phone, CRMCondition condition, Long userId, Long consultId, String consultStatus) {
+
         int times = 0;
 //        System.out.println("consultStatus11111"+consultStatus);
 //        System.out.println("consultconsultconsultconsult"+consult);
@@ -127,6 +128,7 @@ public class OperateCRM extends Controller {
 //        System.out.println("userId"+userId);
 //        System.out.println("user"+user);
 //        System.out.println("userIdindex"+userId);
+        System.out.println("Index userId"+userId);
         render(userId, address, user, userList, orderList, condition, eCoupons, consultContent, phone, currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill, withdrawBillSize, consultId, consult);
 //        }
 //
@@ -220,7 +222,8 @@ public class OperateCRM extends Controller {
         consult.save();
         consultStatus = "tempSave";
 //        System.out.println("consultconsultconsultconsult"+consult);
-        index(phone, null, null, consultId, consultStatus);
+        System.out.println("tempSave userId"+userId);
+        index(phone, null, userId, consultId, consultStatus);
 
     }
 

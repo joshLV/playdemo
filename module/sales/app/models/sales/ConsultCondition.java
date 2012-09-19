@@ -97,10 +97,11 @@ public class ConsultCondition extends Model {
                 "  or u.loginName=? " +
                 "  or e.order.receiverMobile=? " +
                 "  or e.order.buyerMobile = ?" +
-                "  or e.orderItems.phone = ?)",
+                "  or e.orderItems.phone = ?" +
+                "  or u.id=? or e.id in (select c.couponId from CouponCallBind c where c.phone=?) )",
                 "%" + condition.searchOrderCoupon, condition.searchOrderCoupon,
                 condition.searchUser,
-                condition.searchUser, condition.searchUser, condition.searchUser, condition.searchUser);
+                condition.searchUser, condition.searchUser, condition.searchUser, condition.searchUser, condition.userId, condition.searchUser);
 
     }
 

@@ -420,7 +420,8 @@
 
         #{if userList.size()>1}
             切换用户
-            #{select 'condition.userId', id:userId, class:'select', value:condition?.userId, onchange:"refresh('${phone}','${consultId}')"}
+            *{value: condition?.userId  }*
+            #{select 'condition.userId', id:userId, class:'select', value:userId, onchange:"refresh('${phone}','${consultId}')"}
 
                 #{list items:userList, as:'userList'}
                     #{option userList?.id}
