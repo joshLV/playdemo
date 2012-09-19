@@ -338,7 +338,8 @@ public class Orders extends Controller {
                 if (promoterUser != user) {
                     //保存推荐人的用户ID
                     order.promoteUserId = promoterUser.id;
-                    order.rebateValue = Order.getPromoteRebateOfTotalECartAmount(order);
+                    // 不需要有rebateValue
+                    // order.rebateValue = Order.getPromoteRebateOfTotalECartAmount(order);
                     order.amount = eCartAmount.add(rCartAmount);
                     //如果通过注册的，则更新推荐关系
                     PromoteRebate promoteRebate = PromoteRebate.find("promoteUser=? and invitedUser=? and registerFlag=true", promoterUser, user).first();

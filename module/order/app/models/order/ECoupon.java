@@ -179,12 +179,10 @@ public class ECoupon extends Model {
         this.resalerPrice = orderItems.resalerPrice;
         this.salePrice = orderItems.salePrice;
         if (order.promoteUserId != null) {
-            this.rebateValue = getLineRebateValue();
             //记录给推荐人的返利，每个券占用的返利
             this.promoterRebateValue = getLinePromoterRebateValue();
-        } else {
-            this.rebateValue = orderItems.rebateValue;
         }
+        this.rebateValue = orderItems.rebateValue;
         this.createdAt = new Date();
         this.effectiveAt = goods.effectiveAt;
         this.expireAt = goods.expireAt;
@@ -206,28 +204,10 @@ public class ECoupon extends Model {
         }
     }
 
-    private BigDecimal getLineRebateValue() {
-        BigDecimal amount = BigDecimal.ZERO;
-        BigDecimal invitedRebatePrice;
-        for (OrderItems item : order.orderItems) {
-            //如果商品没设置返利,默认给推荐人1%
-            invitedRebatePrice = item.goods.invitedUserPrice == null || item.goods.invitedUserPrice.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ONE : item.goods.invitedUserPrice;
-            amount = amount.add(item.goods.salePrice.multiply(invitedRebatePrice).multiply(new BigDecimal(0.01)));
-        }
-
-        return amount;
-    }
-
     private BigDecimal getLinePromoterRebateValue() {
-        BigDecimal amount = BigDecimal.ZERO;
-        BigDecimal promoterPrice;
-        for (OrderItems item : order.orderItems) {
-            //如果商品没设置返利,默认给推荐人2%
-            promoterPrice = item.goods.promoterPrice == null || item.goods.promoterPrice.compareTo(BigDecimal.ZERO) == 0 ? new BigDecimal(2) : item.goods.promoterPrice;
-            amount = amount.add(item.goods.salePrice.multiply(promoterPrice).multiply(new BigDecimal(0.01)));
-        }
-
-        return amount;
+    	//如果商品没设置返利,默认给推荐人2%
+    	BigDecimal promoterPrice = this.goods.promoterPrice == null || this.goods.promoterPrice.compareTo(BigDecimal.ZERO) == 0 ? new BigDecimal(2) : this.goods.promoterPrice;
+    	return this.goods.salePrice.multiply(promoterPrice).multiply(new BigDecimal(0.01));
     }
 
     /**

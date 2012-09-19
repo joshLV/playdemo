@@ -864,6 +864,10 @@ public class Order extends Model {
     @Transient
     private List<Goods> electronicGoods = new ArrayList<>();
 
+    /**
+     * 得到订单的所有实体券
+     * @return
+     */
     @Transient
     public List<Goods> getRealGoods() {
         if (realGoods.size() > 0) {
@@ -877,6 +881,10 @@ public class Order extends Model {
         return realGoods;
     }
 
+    /**
+     * 得到订单的所有电子券
+     * @return
+     */
     @Transient
     public List<Goods> getElectronicGoods() {
         if (electronicGoods.size() > 0) {
@@ -1133,10 +1141,12 @@ public class Order extends Model {
     /**
      * 计算订单中受邀者应得的返利
      *
+     * FIXME: 这个方法不需要的。
      * @param order
      * @return
      */
-    public static BigDecimal getPromoteRebateOfTotalECartAmount(Order order) {
+    @Deprecated
+    public static BigDecimal getPromoteRebateOfTotalECartAmount_todelete(Order order) {
         BigDecimal addAmount = BigDecimal.ZERO;
         BigDecimal invitedUserPrice;
         for (OrderItems item : order.orderItems) {

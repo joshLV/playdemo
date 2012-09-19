@@ -46,8 +46,10 @@
                 <tr class="col-name">
                     <th width="150">日期</th>
                     <th width="180">被推荐人</th>
+                    <th>订单号</th>
+                    <th>订单总金额</th>
                     <th>状态</th>
-                    <th>待返利</th>
+                    <th>总返利金额</th>
                     <th>已得返利</th>
                 </tr>
                 </thead>
@@ -59,13 +61,12 @@
                 <tr class="order-bd">
                     <td>${rebate?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
                     <td>${rebate?.invitedUser?.loginName}</td>
+                    <td>${rebate?.order?.orderNumber}</td>
+                    <td>${rebate?.order?.amount}</td>
                     <td>&{'rebate.'+rebate?.status}</td>
-                    <td>#{if rebate.status ==models.order.RebateStatus.UN_CONSUMED }${rebate?.rebateAmount?.formatCurrency("CNY")}#{/if}
-                       #{if rebate.status ==models.order.RebateStatus.PART_REBATE }${(rebate?.rebateAmount?.subtract(rebate?.partAmount))?.formatCurrency("CNY")}#{/if}
-                    </td>
+                    <td>${rebate?.rebateAmount?.formatCurrency("CNY")}</td>
                     <td>#{if rebate.status ==models.order.RebateStatus.ALREADY_REBATE }${rebate?.rebateAmount?.formatCurrency("CNY")}#{/if}
                     #{if rebate.status ==models.order.RebateStatus.PART_REBATE }${rebate?.partAmount?.formatCurrency("CNY")}#{/if}
-
                     </td>
                 </tr>
                 </tbody>
