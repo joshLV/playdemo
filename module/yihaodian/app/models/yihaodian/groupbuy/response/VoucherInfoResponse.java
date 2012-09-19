@@ -10,16 +10,16 @@ import java.util.List;
 public class VoucherInfoResponse {
     private int errorCount;
     private int totalCount;
-    private List<VoucherInfo> voucherInfoList;
+    private VoucherInfoList voucherInfoList;
 
     public VoucherInfoResponse(){
         errorCount = 0;
         totalCount = 0;
-        voucherInfoList = new ArrayList<>();
+        voucherInfoList = new VoucherInfoList();
     }
 
     public void add(VoucherInfo voucherInfo) {
         totalCount += 1;
-        voucherInfoList.add(voucherInfo);
+        voucherInfoList.addVoucher(voucherInfo);
     }
 }

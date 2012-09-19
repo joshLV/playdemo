@@ -9,14 +9,16 @@ import java.util.List;
  */
 public class YHDErrorResponse {
     public int errorCount;
-    public List<YHDErrorInfo> errInfoList;
+    public int totalCount;
+    public YHDErrorInfoList errInfoList;
     public YHDErrorResponse(){
         errorCount = 0;
-        errInfoList = new ArrayList<>();
+        totalCount = 0;
+        errInfoList = new YHDErrorInfoList();
     }
 
     public void addErrorInfo(YHDErrorInfo errorInfo) {
         errorCount += 1;
-        errInfoList.add(errorInfo);
+        errInfoList.addError(errorInfo);
     }
 }

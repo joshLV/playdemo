@@ -1,5 +1,6 @@
 package models.yihaodian.groupbuy;
 
+import models.yihaodian.Util;
 import models.yihaodian.groupbuy.response.YHDErrorInfo;
 import models.yihaodian.groupbuy.response.YHDErrorResponse;
 import org.jsoup.helper.StringUtil;
@@ -71,10 +72,10 @@ public class YHDGroupBuyUtil {
         TreeMap<String, String> result = new TreeMap<>();
 
         for (Map.Entry<String, String[]> entry : params.entrySet()){
-            if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())){
+            if ("body".equals(entry.getKey())){
                 continue;
             }
-            if(entry.getValue() != null && entry.getValue().length > 1){
+            if(entry.getValue() != null && entry.getValue().length > 0){
                 result.put(entry.getKey(), entry.getValue()[0]);
             }else {
                 result.put(entry.getKey(), "");
@@ -83,18 +84,25 @@ public class YHDGroupBuyUtil {
         return result;
     }
 
-    public static YHDErrorResponse checkParamBlank(Map<String, String> params, boolean isSystemParam, String... keys){
-        String errorInfoPrefix = "系统参数";
-        if (!isSystemParam){
-            errorInfoPrefix = "应用参数";
-        }
+    public static YHDErrorResponse checkParam(TreeMap<String, String> params, String... keys){
         YHDErrorResponse errorResponse = new YHDErrorResponse();
         for (String key : keys){
             if(StringUtil.isBlank(params.get(key))){
                 errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_missing",
-                        errorInfoPrefix + key +  "不能为空", ""));
+                        "参数 " + key +  " 不能为空", null));
             }
         }
+        if(errorResponse.errorCount > 0){
+            return errorResponse;
+        }
+
+        String sign = params.remove("sign");
+        //检查参数签名
+        String mySign = YHDGroupBuyUtil.md5Signature(params, Util.SECRET_KEY);
+        if(!mySign.equals(sign)){
+            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "sign不匹配", null));
+        }
+        params.put("sign", sign);//将sign重新塞回去以供保存
         return errorResponse;
     }
 }

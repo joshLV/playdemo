@@ -1,5 +1,7 @@
 package models.job.yihaodian.groupbuy;
 
+import models.order.OuterOrder;
+import models.order.OuterOrderStatus;
 import models.yihaodian.YHDGroupBuyMessage;
 import models.yihaodian.YihaodianQueueUtil;
 import models.yihaodian.groupbuy.YHDGroupBuyOrder;
@@ -16,10 +18,11 @@ import java.util.List;
 public class OrderScanner extends Job{
     @Override
     public void doJob() {
-        List<YHDGroupBuyOrder> orders = YHDGroupBuyOrder.find("jobFlag = ? or jobFlag = ?",
-                YHDGroupBuyOrderJobFlag.ORDER_DONE, YHDGroupBuyOrderJobFlag.REFUND_DONE).fetch();
-        for (YHDGroupBuyOrder order : orders){
-            YHDGroupBuyMessage message = new YHDGroupBuyMessage(order.orderCode);
+        List<OuterOrder> orders = OuterOrder.find("status = ? or status = ?",
+                OuterOrderStatus.ORDER_DONE,
+                OuterOrderStatus.REFUND_DONE).fetch();
+        for (OuterOrder order : orders){
+            YHDGroupBuyMessage message = new YHDGroupBuyMessage(order.orderNumber);
             YihaodianQueueUtil.addGroupBuyJob(message);
         }
     }

@@ -801,8 +801,11 @@ public class ECoupon extends Model {
     /**
      * 发送短信
      */
-    private static void send(ECoupon eCoupon) {
+    public static void send(ECoupon eCoupon, String phone) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
+        if (phone == null){
+            phone = eCoupon.orderItems.phone;
+        }
         SMSUtil.send("【一百券】"
                 + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title
                 : (eCoupon.goods.name
@@ -812,7 +815,7 @@ public class ECoupon extends Model {
                 + "券号" + eCoupon.eCouponSn + "," +
                 "截止" + dateFormat.format(eCoupon.expireAt)
                 + ",客服：4006262166",
-                eCoupon.orderItems.phone, eCoupon.replyCode);
+                phone, eCoupon.replyCode);
     }
 
     /**
@@ -825,7 +828,7 @@ public class ECoupon extends Model {
         ECoupon eCoupon = ECoupon.findById(id);
         boolean sendFalg = false;
         if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED) {
-            send(eCoupon);
+            send(eCoupon, null);
             sendFalg = true;
         }
         return sendFalg;
@@ -843,7 +846,7 @@ public class ECoupon extends Model {
         if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED
                 && eCoupon.downloadTimes > 0 && eCoupon
                 .downloadTimes < 4) {
-            send(eCoupon);
+            send(eCoupon, null);
             eCoupon.downloadTimes--;
             eCoupon.save();
             sendFlag = true;

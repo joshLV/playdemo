@@ -16,7 +16,7 @@ public class YHDGroupBuyOrder{
     public Date createTime;
     public Date paidTime;
     public String userPhone;
-    public BigDecimal productPrice;
+    public BigDecimal productPrize;
     public Long groupId;
     public String outerGroupId;
     public int lockVersion;
