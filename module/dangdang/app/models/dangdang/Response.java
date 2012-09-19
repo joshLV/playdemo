@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 当当发送过来的响应包.
  * <p/>
  * User: sujie
  * Date: 9/13/12
@@ -46,13 +47,14 @@ public class Response implements Serializable {
      */
     public Response(InputStream responseBodyAsString) throws DocumentException {
         BufferedReader br = new BufferedReader(new InputStreamReader(responseBodyAsString));
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder responseStr = new StringBuilder();
         try {
             String line;
             while ((line = br.readLine()) != null) {
-                stringBuilder.append(line);
+                responseStr.append(line);
             }
-            Document document = DocumentHelper.parseText(stringBuilder.toString());
+            Logger.info("\nResponse====" +responseStr.toString());
+            Document document = DocumentHelper.parseText(responseStr.toString());
             Element root = document.getRootElement();
             ver = root.elementText("ver");
             spid = root.elementText("spid");

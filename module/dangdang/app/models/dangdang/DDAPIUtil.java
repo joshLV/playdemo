@@ -41,14 +41,14 @@ public class DDAPIUtil {
      * @return
      */
     public static void syncSellCount(Goods goods) throws DDAPIInvokeException {
-        String data = String.format("<data><row><spgid><![CDATA[%s]]></spgid><sellcount><![CDATA[%s]]></sellcount" +
-                "></row></data>", goods.id, goods.saleCount);
-        System.out.println("data===="+data);
-        Response response = DDAPIUtil.access(SYNC_URL, data, "push_team_stock");
+        String request = String.format("<request><row><spgid><![CDATA[%s]]></spgid><sellcount><![CDATA[%s]]></sellcount" +
+                "></row></request>", goods.id, goods.saleCount);
+        Response response = DDAPIUtil.access(SYNC_URL, request, "push_team_stock");
         if (!response.success()) {
-            throw new DDAPIInvokeException("[DangDang API] invoke syncSellCount error(goodsId:" + goods.id + "):" + response.desc);
+            throw new DDAPIInvokeException("\ninvoke syncSellCount error(goodsId:" + goods.id + "):" +
+                    "error_code:" + response.errorCode.getValue() + ",desc:" + response.desc);
         }
-        Logger.info("[DangDang API] invoke syncSellCount is success!");
+        Logger.info("[DangDang API] invoke syncSellCount success!");
     }
 
     /**
@@ -174,11 +174,12 @@ public class DDAPIUtil {
      * 调用当当的API
      *
      * @param url
-     * @param data
+     * @param request
      * @param apiName
      * @return
      */
-    public static Response access(String url, String data, String apiName) throws DDAPIInvokeException {
+    public static Response access(String url, String request, String apiName) throws DDAPIInvokeException {
+        Logger.info("\nRequest====" + request);
 
         //构造HttpClient的实例
         HttpClient httpClient = new HttpClient();
@@ -191,9 +192,9 @@ public class DDAPIUtil {
         postMethod.addParameter("sign_method", SIGN_METHOD);
         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         postMethod.addParameter("call_time", time);
-        postMethod.addParameter("data", data);
-        String sign = getSign(data, time, apiName);
-        System.out.println("sign===" + sign);
+        postMethod.addParameter("request", request);
+        String sign = getSign(request, time, apiName);
+        Logger.info("\nsign   ====" + sign);
         postMethod.addParameter("sign", sign);
         try {
             //执行postMethod

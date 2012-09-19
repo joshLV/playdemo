@@ -23,13 +23,13 @@ import java.util.List;
  * Date: 12-9-13
  * Time: 下午2:31
  */
-@Every("3h")
+@Every("30s")
 public class DDSyncSellGoodsCountJob extends Job {
     public static String DD_LOGIN_NAME = Play.configuration.getProperty("dangdang.resaler_login_name", "dangdang");
 
     @Override
     public void doJob() {
-        Logger.info("start syncSellCount job");
+        Logger.info("\n--------------Start syncSellCount job");
         //定位请求者
         Resaler resaler = Resaler.find("loginName=? and status=?", DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
         if (resaler == null) {
@@ -53,5 +53,6 @@ public class DDSyncSellGoodsCountJob extends Job {
                 Logger.error(e.getMessage());
             }
         }
+        Logger.info("\n--------------End syncSellCount job.");
     }
 }

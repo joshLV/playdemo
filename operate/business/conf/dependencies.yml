@@ -31,6 +31,7 @@ require:
     - emaillogs -> emaillogs
     - report -> report
     - yihaodian -> yihaodian
+    - dangdang -> dangdang
     - com.yihaodian -> yhdclient 1.0
     - commons-httpclient -> commons-httpclient 3.1
 
@@ -72,4 +73,5 @@ repositories:
             - emaillogs -> *
             - report -> *
             - yihaodian -> *
+            - dangdang -> *
 
