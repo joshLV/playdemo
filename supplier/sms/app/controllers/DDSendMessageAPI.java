@@ -1,5 +1,6 @@
 package controllers;
 
+import models.dangdang.DDAPIInvokeException;
 import models.dangdang.DDAPIUtil;
 import models.dangdang.ErrorCode;
 import models.dangdang.Response;
@@ -28,7 +29,16 @@ public class DDSendMessageAPI extends Controller {
         String time = params.get("time");
         if (sign.equals(DDAPIUtil.getSign(data, time, API_NAME))) {
             //当当调用接口
-            Response response = DDAPIUtil.sendSMS(data);
+            Response response;
+            try {
+                response = DDAPIUtil.sendSMS(data);
+            } catch (DDAPIInvokeException e) {
+                response = new Response();
+                response.spid = SPID;
+                response.ver = VER;
+                response.errorCode = ErrorCode.PARSE_XML_FAILED;
+                response.desc = "解析请求参数失败！";
+            }
             render(response);
         } else {
             Response response = new Response();

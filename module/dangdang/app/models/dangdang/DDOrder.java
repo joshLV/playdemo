@@ -62,11 +62,13 @@ public class DDOrder extends Model {
     public DDOrderItem addOrderItem(Goods goods, Integer number, String mobile, BigDecimal salePrice, OrderItems ybqOrderItem)
             throws NotEnoughInventoryException {
         DDOrderItem orderItem = null;
+        System.out.println("ybqOrderItem.buyNumber" + ybqOrderItem.buyNumber);
         if (number > 0 && goods != null) {
             checkInventory(goods, number);
             orderItem = new DDOrderItem(this, goods, number, mobile, salePrice, ybqOrderItem);
             //通过推荐购买的情况
             this.orderItems.add(orderItem);
+            System.out.println("&&&&&&&&&&&&&"+this.orderItems.size());
             this.amount = this.amount.add(orderItem.getLineValue()); //计算折扣价
         }
         return orderItem;
@@ -83,9 +85,12 @@ public class DDOrder extends Model {
 
 
     public void createAndUpdateInventory() {
+
         //处理完毕
         this.status = DDOrderStatus.ORDER_FINISH;
         save();
+
+        System.out.println("createAndUpdateInventory"+this.orderItems.size());
         for (DDOrderItem orderItem : orderItems) {
             orderItem.save();
         }

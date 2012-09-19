@@ -45,7 +45,7 @@ public class Response implements Serializable {
      *
      * @param responseBodyAsString xml字符串
      */
-    public Response(InputStream responseBodyAsString) throws DocumentException {
+    public Response(InputStream responseBodyAsString) throws DocumentException, IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(responseBodyAsString));
         StringBuilder responseStr = new StringBuilder();
         try {
@@ -53,7 +53,7 @@ public class Response implements Serializable {
             while ((line = br.readLine()) != null) {
                 responseStr.append(line);
             }
-            Logger.info("\nResponse====" +responseStr.toString());
+            Logger.info("\nResponse====" + responseStr.toString());
             Document document = DocumentHelper.parseText(responseStr.toString());
             Element root = document.getRootElement();
             ver = root.elementText("ver");
@@ -65,6 +65,7 @@ public class Response implements Serializable {
         } catch (IOException e) {
             Logger.info("xml error");
         }
+
     }
 
     /**

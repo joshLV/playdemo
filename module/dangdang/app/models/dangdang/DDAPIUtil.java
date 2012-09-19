@@ -9,13 +9,15 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import play.Logger;
 import play.Play;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * 当当API工具类.
@@ -109,62 +111,59 @@ public class DDAPIUtil {
      *
      * @param data xml格式
      */
-    public static Response sendSMS(String data) {
-
-        Request<DDECoupon> request = new Request<>();
-
-        // 券摘要解析器
-        Parser<DDECoupon> parser = new Parser<DDECoupon>() {
-            @Override
-            public DDECoupon parse(Element node) {
-                DDECoupon eCoupon = new DDECoupon();
-                eCoupon.orderId = Long.parseLong(node.elementTextTrim("order_id"));
-                eCoupon.ddgid = Long.parseLong(node.elementTextTrim("ddgid"));
-                eCoupon.spgid = Long.parseLong(node.elementTextTrim("spgid"));
-                eCoupon.userCode = node.elementTextTrim("user_code");
-                eCoupon.receiveMobile = node.elementTextTrim("receiveMobile");
-                eCoupon.consumeId = node.elementTextTrim("consumeId");
-                return eCoupon;
-            }
-        };
+    public static Response sendSMS(String data) throws DDAPIInvokeException {
         Response response = new Response();
         response.ver = VER;
         response.spid = SPID;
-
         try {
-            request.parseXml(data, "order", parser);
-            List<DDECoupon> eCouponList = request.getNodeList();
-            for (DDECoupon eCoupon : eCouponList) {
-                Order ybqOrder = Order.find("dd_order_id=? and userId=? and userType=?", eCoupon.orderId, AccountType.RESALER, Long.parseLong(eCoupon.userCode)).first();
-                if (ybqOrder == null) {
-                    response.errorCode = ErrorCode.ORDER_NOT_EXITED;
-                    response.desc = "没找到对应的订单";
-                    break;
-                }
-                ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and phone=?", ybqOrder, eCoupon.consumeId, eCoupon.receiveMobile).first();
-                if (coupon == null) {
-                    response.errorCode = ErrorCode.COUPON_SN_NOT_EXISTED;
-                    response.desc = "没找到对应的券号";
-                    break;
-                }
-                //最多发送三次短信，发送失败，则返回0
-                if (!ECoupon.sendUserMessage(coupon.id)) {
-                    response.errorCode = ErrorCode.MESSAGE_SEND_FAILED;
-                    response.desc = "短信发送失败";
-                    break;
-                }
+            Request<DDECoupon> request = new Request<>();
+            request.parse(data);
+            //取得data节点中的数据信息
+            Map<String, String> dataMap = request.getParams();
+            Long orderId = Long.parseLong(dataMap.get("order_id"));
+            Long ddgid = Long.parseLong(dataMap.get("ddgid"));
+            Long spgid = Long.parseLong(dataMap.get("spgid"));
+            String userCode = dataMap.get("user_code");
+            String receiveMobile = dataMap.get("receiveMobile");
+            String consumeId = dataMap.get("consumeId");
 
-                //发送成功
-                response.errorCode = ErrorCode.SUCCESS;
-                response.desc = "success";
-                response.addAttribute("consumeId", coupon.eCouponSn);
-                response.addAttribute("ddOrderId", eCoupon.orderId);
-                response.addAttribute("ybqOrderId", coupon.order.orderNumber);
+            //根据当当订单编号，查询订单是否存在
+            DDOrder ddOrder = DDOrder.find("orderId=?", ddgid).first();
+            if (ddOrder == null || ddOrder.ybqOrder == null) {
+                response.errorCode = ErrorCode.ORDER_NOT_EXITED;
+                response.desc = "没找到对应的订单";
+                return response;
             }
 
-        } catch (DocumentException e) {
-            response.errorCode = ErrorCode.PARSE_XML_FAILED;
-            response.desc = "xml解析错误";
+            Order ybqOrder = Order.find("orderNumber= ? and userId=? and userType=?", ddOrder.ybqOrder.orderNumber, Long.parseLong(userCode), AccountType.RESALER).first();
+            if (ybqOrder == null) {
+                response.errorCode = ErrorCode.ORDER_NOT_EXITED;
+                response.desc = "没找到对应的订单";
+                return response;
+            }
+            Goods goods = Goods.findById(spgid);
+            ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and phone=? and goods=?", ybqOrder, consumeId, receiveMobile, goods).first();
+            if (coupon == null) {
+                response.errorCode = ErrorCode.COUPON_SN_NOT_EXISTED;
+                response.desc = "没找到对应的券号";
+                return response;
+            }
+            //最多发送三次短信，发送失败，则返回0
+            if (!ECoupon.sendUserMessage(coupon.id)) {
+                response.errorCode = ErrorCode.MESSAGE_SEND_FAILED;
+                response.desc = "短信发送失败";
+                return response;
+            }
+
+            //发送成功
+            response.errorCode = ErrorCode.SUCCESS;
+            response.desc = "success";
+            response.addAttribute("consumeId", coupon.eCouponSn);
+            response.addAttribute("ddOrderId", orderId);
+            response.addAttribute("ybqOrderId", coupon.order.orderNumber);
+
+        } catch (Exception e) {
+            throw new DDAPIInvokeException(e.getMessage());
         }
         return response;
 
@@ -229,10 +228,11 @@ public class DDAPIUtil {
             if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
                 continue;
             }
+            System.out.println(entry.getKey()+"------------------"+entry.getValue());
             signStr.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
         signStr.append("secret_key=").append(SECRET_KEY);
-        Logger.info("MD5加密的sign===" + DigestUtils.md5Hex(signStr.toString()));
+        System.out.println(">>>>>>>>"+DigestUtils.md5Hex(signStr.toString()));
         return DigestUtils.md5Hex(signStr.toString()).equals(sign);
     }
 

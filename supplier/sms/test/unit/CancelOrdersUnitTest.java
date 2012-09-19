@@ -1,7 +1,7 @@
 package unit;
 
 import models.consumer.User;
-import models.job.CancleUnPaidOrderJob;
+import models.job.CancelUnPaidOrderJob;
 import models.order.CancelUnpaidOrders;
 import models.order.Order;
 import models.order.OrderItems;
@@ -58,7 +58,7 @@ public class CancelOrdersUnitTest extends UnitTest {
         int count = CancelUnpaidOrders.findAll().size();
         assertEquals(0, count);
 
-        CancleUnPaidOrderJob job = new CancleUnPaidOrderJob();
+        CancelUnPaidOrderJob job = new CancelUnPaidOrderJob();
         job.doJob();
 
         count = CancelUnpaidOrders.findAll().size();
