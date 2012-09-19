@@ -56,7 +56,7 @@ public class YHDGroupBuy extends Controller{
         Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
 
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
-                OuterOrderPartner.YHD, params.get("orderCode").trim()).first();
+                OuterOrderPartner.YHD, params.get("orderCode")).first();
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个
         if(outerOrder == null){
             outerOrder = new OuterOrder();
@@ -82,8 +82,8 @@ public class YHDGroupBuy extends Controller{
             errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "购买数量不能小于0", null));
         }
         //检查价格
-        if(yhdGroupBuyOrder.productPrize.compareTo(new BigDecimal("0.1")) < 0){
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "商品价格不能小于0.1元", null));
+        if(yhdGroupBuyOrder.productPrize.compareTo(BigDecimal.ZERO) < 0){
+            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "商品价格不能小于0元", null));
         }
         //检查订单金额
         if(yhdGroupBuyOrder.productPrize.multiply(new BigDecimal(yhdGroupBuyOrder.productNum))
@@ -91,9 +91,7 @@ public class YHDGroupBuy extends Controller{
             errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "订单金额不一致", null));
         }
         //检查手机号
-        Pattern pattern = Pattern.compile(PHONE_REGEX);
-        Matcher matcher = pattern.matcher(yhdGroupBuyOrder.userPhone);
-        if(!matcher.matches()){
+        if(!checkPhone(yhdGroupBuyOrder.userPhone)){
             errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "手机号码无效", null));
         }
         if(errorResponse.errorCount > 0){
@@ -108,11 +106,16 @@ public class YHDGroupBuy extends Controller{
             renderJSON(new YHDResponse(orderInformResponse));
             return;
         }
+        //保存订单编号
+        if(outerOrder.orderNumber == null){
+            outerOrder.orderNumber = yhdGroupBuyOrder.orderCode;
+            outerOrder.save();
+        }
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY){
             Order ybqOrder = createYbqOrder(yhdGroupBuyOrder, errorResponse);
             if(errorResponse.errorCount > 0){
                 renderJSON(new YHDResponse(orderInformResponse));
-            }else  if(ybqOrder != null){
+            }else if(ybqOrder != null){
                 outerOrder.status = OuterOrderStatus.ORDER_DONE;
                 outerOrder.ybqOrder = ybqOrder;
                 outerOrder.save();
@@ -135,10 +138,10 @@ public class YHDGroupBuy extends Controller{
         }
 
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
-                OuterOrderPartner.YHD, params.get("orderCode").trim()).first();
+                OuterOrderPartner.YHD, params.get("orderCode")).first();
         if(outerOrder == null || outerOrder.ybqOrder == null){
             errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.get.vouchers_not_found", "订单不存在,请检查 orderCode", null));
-        }else if(!outerOrder.ybqOrder.orderNumber.equals(params.get("partnerOrderCode").trim())){
+        }else if(!outerOrder.ybqOrder.orderNumber.equals(params.get("partnerOrderCode"))){
             errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.get.vouchers_not_found", "订单关联错误,请检查 partnerOrderCode", null));
         }
         if(errorResponse.errorCount > 0){
@@ -177,19 +180,19 @@ public class YHDGroupBuy extends Controller{
         }
 
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
-                OuterOrderPartner.YHD, params.get("orderCode").trim()).first();
+                OuterOrderPartner.YHD, params.get("orderCode")).first();
         ECoupon eCoupon = null;
         //检查订单存在与否
         if(outerOrder == null || outerOrder.ybqOrder == null){
             errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "订单不存在,请检查 orderCode", null));
-        }else if(!outerOrder.ybqOrder.orderNumber.equals(params.get("partnerOrderCode").trim())){
+        }else if(!outerOrder.ybqOrder.orderNumber.equals(params.get("partnerOrderCode"))){
             errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "订单关联错误,请检查 partnerOrderCode", null));
         }
         //检查请求时间
         if(errorResponse.errorCount == 0){
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
             try{
-                Date date = dateFormat.parse(params.get("requestTime").trim());
+                Date date = dateFormat.parse(params.get("requestTime"));
                 if(Math.abs(date.getTime() - System.currentTimeMillis()) > 600000){
                     errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.resend.time_invalid", "请求时间误差大于10分钟", null));
                 }
@@ -199,7 +202,7 @@ public class YHDGroupBuy extends Controller{
         }
         //检查券存在与否
         if(errorResponse.errorCount == 0){
-            eCoupon = ECoupon.find("byOrderAndECouponSn", outerOrder.ybqOrder, params.get("voucherCode").trim()).first();
+            eCoupon = ECoupon.find("byOrderAndECouponSn", outerOrder.ybqOrder, params.get("voucherCode")).first();
             if(eCoupon == null) {
                 errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "消费券不存在", null));
             }
@@ -212,9 +215,7 @@ public class YHDGroupBuy extends Controller{
         }
         // 检查手机号
         if(errorResponse.errorCount == 0){
-            Pattern pattern = Pattern.compile(PHONE_REGEX);
-            Matcher matcher = pattern.matcher(params.get("receiveMobile").trim());
-            if(!matcher.matches()){
+            if(!checkPhone(params.get("receiveMobile"))){
                 errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "手机号码错误", null));
             }
         }
@@ -227,7 +228,7 @@ public class YHDGroupBuy extends Controller{
 
         eCoupon.downloadTimes = eCoupon.downloadTimes + 1;
         eCoupon.save();
-//        ECoupon.send(eCoupon, params.get("receiveMobile").trim());
+//        ECoupon.send(eCoupon, params.get("receiveMobile"));
 
         voucherResendResponse.totalCount = 1;
         renderJSON(new YHDResponse(voucherResendResponse));
@@ -289,6 +290,15 @@ public class YHDGroupBuy extends Controller{
         ybqOrder.save();
 
         return ybqOrder;
+    }
+
+    private static boolean checkPhone(String phone){
+        if(phone == null){
+            return false;
+        }
+        Pattern pattern = Pattern.compile(PHONE_REGEX);
+        Matcher matcher = pattern.matcher(phone);
+        return matcher.matches();
     }
 }
 

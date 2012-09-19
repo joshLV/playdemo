@@ -103,6 +103,10 @@ public class YHDGroupBuyUtil {
             errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "sign不匹配", null));
         }
         params.put("sign", sign);//将sign重新塞回去以供保存
+        //对一号店的参数进行trim
+        for(Map.Entry<String, String> entry : params.entrySet()){
+            params.put(entry.getKey(), entry.getValue().trim());
+        }
         return errorResponse;
     }
 }
