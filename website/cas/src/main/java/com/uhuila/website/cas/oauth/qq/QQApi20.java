@@ -14,8 +14,9 @@ import org.scribe.utils.OAuthEncoder;
  * Time: 1:57 PM
  */
 public class QQApi20 extends DefaultApi20 {
-    private static final String AUTHORIZE_URL = "https://open.t.qq" +
-            ".com/cgi-bin/oauth2/authorize?client_id=%s&response_type=code&redirect_uri=%s";
+    private static final String AUTHORIZE_URL = "https://graph.qq.com/oauth2.0/authorize?client_id=%s&response_type=code&redirect_uri=%s";
+//    "https://open.t.qq" +
+//            ".com/cgi-bin/oauth2/authorize?client_id=%s&response_type=code&redirect_uri=%s";
     @Override
     public Verb getAccessTokenVerb() {
         return Verb.POST;
@@ -34,7 +35,8 @@ public class QQApi20 extends DefaultApi20 {
 
     @Override
     public String getAccessTokenEndpoint() {
-        return "https://open.t.qq.com/cgi-bin/oauth2/access_token?grant_type=authorization_code";
+        return "https://graph.qq.com/oauth2.0/token?grant_type=authorization_code";
+//        return "https://open.t.qq.com/cgi-bin/oauth2/access_token?grant_type=authorization_code";
     }
 
     @Override

@@ -11,7 +11,7 @@ import org.scribe.up.profile.UserProfile;
  * Time: 9:27 AM
  */
 public class OAuthUserProfileHelper {
-    public static void addAttribute(UserProfile userProfile, JsonNode json, String key, Object value) {
+    public static void addAttribute(UserProfile userProfile, String key, Object value) {
         userProfile.addAttribute(key, value);
     }
 
@@ -20,6 +20,11 @@ public class OAuthUserProfileHelper {
         System.out.println(">>>> OAuth Identifier:" + identifier);
 
         userProfile.setId(source + ":" + identifier);
-        addAttribute(userProfile, userJson, "source", source);
+        addAttribute(userProfile, "source", source);
+    }
+    
+    public static void addIdentifier(UserProfile userProfile, String id, String source){
+        userProfile.setId(source+":"+id);
+        addAttribute(userProfile,"source",source);
     }
 }
