@@ -1,0 +1,23 @@
+#{extends 'main.html' /}
+#{set title:'现金券' /}
+#{set 'moreStyles'}
+    #{asset.css src:['/y/user/userBase.css', '/y/user/userWithdraw.css'] /}
+#{/set}
+
+<div id="content" class="clearfix">
+    #{include "share/left.html"/}
+    <div class="section">
+        #{breadcrumbs/breadcrumb breadcrumbs/}
+        #{if errMsg}
+            <label class="error">${errMsg}</label>
+        #{/if}
+
+        #{form @CashCoupons.charge(), method:'POST', class:''}
+        <label>请输入券号</label>
+        <input type="text" name="couponCode">
+        <button type="submit">充值</button>
+        #{/form}
+    </div>
+</div>
+
+

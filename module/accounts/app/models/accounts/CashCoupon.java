@@ -76,7 +76,7 @@ public class CashCoupon extends Model {
 	
 	@Version
 	@Column(name="lock_version")
-	public int lockVersion = 0;
+	public int lockVersion;
 	
 	/**
 	 * 充值时间
@@ -88,7 +88,12 @@ public class CashCoupon extends Model {
 	 * 删除状态。
 	 * 没有被充值的记录才可被删除，删除后不可再被使用.
 	 */
-    @Enumerated(EnumType.STRING)
+    @Enumerated
 	public DeletedStatus deleted;
+
+    public CashCoupon(){
+        lockVersion = 0;
+        deleted = DeletedStatus.UN_DELETED;
+    }
 	
 }

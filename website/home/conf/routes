@@ -54,6 +54,10 @@ GET     /withdraw/detail/{id}                           UserWithdraw.detail
 GET     /withdraw/apply                                 UserWithdraw.apply
 POST    /withdraw/apply                                 UserWithdraw.create
 
+# 现金券
+GET     /cash-coupon                                    CashCoupons.index
+POST    /cash-coupon                                    CashCoupons.charge
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
