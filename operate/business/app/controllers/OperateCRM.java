@@ -16,6 +16,7 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -137,13 +138,14 @@ public class OperateCRM extends Controller {
 //        System.out.println("Index userId" + userId);
 
         List<User> searchUserList = ConsultCondition.findSearchUserByCondition(condition);
-        List<Address> addressList=new ArrayList<>();
-        for(User u:searchUserList){
-            addressList.add(ConsultCondition.findAddressByCondition(u));
-        }
-        System.out.println("phonephonephoneindex"+phone);
+        HashMap addressMap=new HashMap();
 
-        render(addressList,searchUserList,userId, address, user, userList, orderList, condition, eCoupons, consultContent, phone, currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill, withdrawBillSize, consultId, consult);
+        for(User u:searchUserList){
+            addressMap.put(u.id,ConsultCondition.findAddressByCondition(u));
+        }
+//        System.out.println("phonephonephoneindex"+phone);
+
+        render(addressMap,searchUserList,userId, address, user, userList, orderList, condition, eCoupons, consultContent, phone, currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill, withdrawBillSize, consultId, consult);
 //        }
 //
 //

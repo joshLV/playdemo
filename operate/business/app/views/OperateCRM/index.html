@@ -113,6 +113,8 @@
     *{#{list items: searchUserList,addressList, as:'searchUser','addressList'}}*
         #{set j:0/}
         #{list items: searchUserList, as:'searchUser'}
+            #{set i:1/}
+            #{set i=1/}
         <tr>
             <td>${searchUser?.userInfo?.fullName}</td>
             <td>${searchUser?.mobile} </td>
@@ -127,33 +129,33 @@
             <td>${searchUser?.AccountMoney()?.formatCurrency('CNY')}</td>
             <td>${searchUser?.promotionAmountMoney()?.formatCurrency('CNY')}</td>
             <td>${searchUser?.userInfo?.totalPoints}</td>
-
             <td>
             *{#{list items: addressList, as:'addressList'}}*
 
-            ${addressList?.get(j)?.address}
-
-
+            *{${addressList?.get(j)?.address}}*
+                ${addressMap?.get(searchUser.id)}
             </td>
-
             <td>
-                #{set i:1/}
                 #{list items: userList, as:'boundUser'}
                 *{ttttt    ${boundUser.id}}*
                 *{ssss     ${searchUser.id}}*
+
                     #{if boundUser.id!=searchUser.id}
                         #{set i++/}
                     #{/if}
+                *{iii${i}}*
                 #{/list}
                 #{if i!=userList.size()}
-                    <a href="javascript:void(openW('/crm/bind_search_user?phone=${phone}&userId=${searchUser.id}&loginName=${searchUser.loginName}'))">Bind</a>
+                *{phone       ${phone}}*
+                *{searchUser.id   ${searchUser.id}}*
+                *{loginName       ${searchUser.loginName}}*
+                    <a id="bindRefresh" href="javascript:void(openW('/crm/bind_search_user?phone=${phone}&userId=${searchUser.id}&loginName=${searchUser.loginName}'))">Bind</a>
                 #{/if}
 
 
             </td>
         </tr>
             #{set j++/}
-
         #{/list}
     *{#{/list}}*
     </tbody>
@@ -336,7 +338,9 @@
 
             #{/if}>${coupon?.eCouponSn.substring(len - 4)}
 
-                <a href="javascript:void(openW('/crm/bind?phone=${phone}&couponId=${coupon.id}&userId=${coupon.order.userId}&consultId=${consultId}'))">Bind</a>
+                <a  type="button" href="javascript:void(openW('/crm/bind?phone=${phone}&couponId=${coupon.id}&userId=${coupon.order.userId}&consultId=${consultId}'))">Bind</a>
+
+
             </td>
 
             <td><a href="@{OperateOrders.details(coupon?.order?.id)}"
@@ -698,8 +702,8 @@
     }
 
 
-    $("#finish").click(function () {
 
+    $("#finish").click(function () {
         var phone = $("#phone").val();
         var consultId = $("#consultId").val();
         var text = $("#consult_text").val();
@@ -733,6 +737,11 @@
 
     });
 
+    $("#bindRefresh").click(function () {
+        alert("dfsdfsd");
+        window.location.reload();
+    });
+
 
     //    function openwin() {
     //    　　window.open("memberCallBind.html", "", "width=50,height=50");
@@ -746,4 +755,6 @@
     function openW(v) {
         window.open(v, '', 'width=200,height=200,left=200,top=200,status=no,scrollbars=no,menubar=no,toolbar=no,resizable=no,location=no');
     }
+
+
 </script>

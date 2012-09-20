@@ -66,7 +66,7 @@ public class ConsultRecord extends Model {
     public DeletedStatus deleted;
 
     @Column(name = "user_id")
-    public long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
+    public Long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
 
 
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "consultRecord")
