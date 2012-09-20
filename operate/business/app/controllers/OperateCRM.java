@@ -134,9 +134,10 @@ public class OperateCRM extends Controller {
 //        System.out.println("userIdindex"+userId);
 //        System.out.println("Index userId" + userId);
 
-        List<User> searchUserList = ConsultCondition.findSearchUserByConditionSize(condition);
+        List<User> searchUserList = ConsultCondition.findSearchUserByCondition(condition);
 
 
+        System.out.println("phonephonephoneindex"+phone);
 
         render(searchUserList,userId, address, user, userList, orderList, condition, eCoupons, consultContent, phone, currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill, withdrawBillSize, consultId, consult);
 //        }
@@ -151,7 +152,8 @@ public class OperateCRM extends Controller {
 //    name = "user.id"
     //Long userId
     public static void tempSave(Long consultId, ConsultRecord consult, User user, String phone, Long userId, String consultStatus) {
-//        System.out.println("consultId" + consultId);
+        System.out.println("tempSave phone" + phone);
+        System.out.println("tempSave consultId" + consultId);
 //        System.out.println("userId"+userId);
 //        System.out.println("consultStatus"+consultStatus);
 //        System.out.println("userId"+userId);
@@ -237,10 +239,11 @@ public class OperateCRM extends Controller {
     }
 
     public static void save(Long consultId, ConsultRecord consult, User user, String phone, Long userId, String consultStatus) {
+        System.out.println("phone"+phone);
         String tempPhone = consult.phone;
         String tempText = consult.text;
         ConsultType tempConsultType = consult.consultType;
-        System.out.println("phone"+phone);
+
         System.out.println("consultId"+consultId);
 //        consult = ConsultRecord.findById(consultId);
         consult.text = tempText;

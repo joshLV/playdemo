@@ -129,13 +129,16 @@ public class ConsultCondition extends Model {
 
     }
 
-    public static List<User> findSearchUserByConditionSize(CRMCondition condition) {
+    public static List<User> findSearchUserByCondition(CRMCondition condition) {
 
 
         List<User> searchUserList = User.find("mobile=? or loginName=? "
-                +"or id in (select o.userId from Order o, ECoupon e where e.eCouponSn=? and e.order=o)"
+                +"or id in (select o.userId from Order o, ECoupon e where e.eCouponSn like ? and e.order=o)"
                 +"or id in (select o.userId from Order o where o.orderNumber=?))",condition.searchUser,condition.searchUser, "%" + condition.searchOrderCoupon,condition.searchOrderCoupon
         ).fetch();
+
+
+
         return searchUserList;
 
     }

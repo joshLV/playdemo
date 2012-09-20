@@ -49,10 +49,10 @@ DELETE  /seckill_goods/{id}                     SecKillGoods.delete
 GET     /callcenter/phone                                         OperateCRM.getPhone
 GET     /callcenter/phone/{phone}                                 OperateCRM.callCenter
 GET     /callcenter/phone/{phone}/record/{consultId}              OperateCRM.index
+POST     /callcenter/phone/record/save                             OperateCRM.save
 GET     /crm/{id}/edit                                            OperateCRM.edit
 GET     /crm/bind                                                 OperateCRM.bind
 POST     /callcenter/phone/{phone}/record/{consultId}/tempSave    OperateCRM.tempSave
-GET     /callcenter/phone/record/save                             OperateCRM.save
 GET     /crm/save_bind                                            OperateCRM.saveBind
 GET     /callcenter/phone/{phone}                                 OperateCRM.finish
 DELETE  /crm/{id}                                                 OperateCRM.delete

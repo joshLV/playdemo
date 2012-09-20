@@ -113,24 +113,23 @@
     #{list items: searchUserList, as:'searchUser'}
 
     <tr>
-        <td width="20%">${searchUser?.userInfo?.fullName}</td>
-        <td width="20%">${searchUser?.mobile} </td>
-        <td width="20%">${searchUser?.loginName}</td>
-        <td width="20%">
+        <td>${searchUser?.userInfo?.fullName}</td>
+        <td>${searchUser?.mobile} </td>
+        <td>${searchUser?.loginName}</td>
+        <td>
             #{if searchUser!=null}
             ${(searchUser?.userInfo?.userSex==1 || searchUser?.userInfo?.userSex==0) ?'男':'女'}
             #{/if}
             #{else}
-            #{/else}
-
-
+        #{/else}
         </td>
-
-        <td width="20%">${searchUser?.AccountMoney()?.formatCurrency('CNY')}</td>
-        <td width="20%">${searchUser?.promotionAmountMoney()?.formatCurrency('CNY')}</td>
-        <td width="20%">${searchUser?.userInfo?.totalPoints}</td>
-        <td width="20%">${address?.address}</td>
-        <td>  <a href="javascript:void(openW('/crm/bind_search_user?phone=${phone}&userId=${searchUser.id}&loginName=${searchUser.loginName}'))">Bind</a></td>
+        <td>${searchUser?.AccountMoney()?.formatCurrency('CNY')}</td>
+        <td>${searchUser?.promotionAmountMoney()?.formatCurrency('CNY')}</td>
+        <td>${searchUser?.userInfo?.totalPoints}</td>
+        <td>${address?.address}</td>
+        <td>
+            <a href="javascript:void(openW('/crm/bind_search_user?phone=${phone}&userId=${searchUser.id}&loginName=${searchUser.loginName}'))">Bind</a>
+        </td>
     </tr>
 
     #{/list}
@@ -519,7 +518,7 @@
 
 #{form @OperateCRM.tempSave(), method: 'POST',id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
     <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
-*{aaaaa${phone}}*
+    *{aaaaa${phone}}*
     <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
     <input type="hidden" type="text" name="userId" id="consultUserId" value="${userId}"/>
     <input type="hidden" type="text" name="consultStatus" id="consultStatus" value="${consultStatus}"/>
@@ -532,7 +531,7 @@
 
 *{<input type="hidden" type="text" name="user" id="user" value="${user}"/>}*
 
-    150咨询类型
+    咨询类型
     #{select 'consult.consultType', value:consult?.consultType, id:'consult_type',class:'span4'}
         #{option models.sales.ConsultType.ORDERCONSULT }&{'consult.ORDERCONSULT'}#{/option}
         #{option models.sales.ConsultType.REFUND}&{'consult.REFUND'}#{/option}
@@ -675,18 +674,36 @@
 
 
     $("#finish").click(function () {
+
         var phone = $("#phone").val();
         var consultId = $("#consultId").val();
         var text = $("#consult_text").val();
         var consultType = $("#consult_type").val();
-        var id = $("#consultUserId").val();
+//        var id = $("#consultUserId").val();
+//
+//        if (id == undefined)
+//            id = "";
 
-        if (id == undefined)
-            id = "";
+//      var phone = $("#phone").val();
+        //?phone="+phone
 
-        $("#form").attr("action", "/callcenter/phone/record/save" + "?consult.consultType=" + consultType + "&userId=" + id + "&consult.text" + text);
+        var userId = $("#user2").val();
+//       alert("userId"+userId);
+
+        if (userId  == undefined)
+            $("#form").attr("action", "/callcenter/phone/record/save");
+
+
+        if (userId!= undefined)
+            $("#form").attr("action", "/callcenter/phone/record/save?phone=" + phone + "&consultId=" + consultId+"&userId="+userId
+            +"&consult.text="+text+"&consult.consultType="+consultType);
+
+
+//        $("#form").attr("action", "@OperateCRM.save()");
+
+//        + "?consult.consultType=" + consultType + "&userId=" + id + "&consult.text" + text
 //        +"&phone"+phone+"&consultId"+consultId
-        $("#form").attr("method", "GET");
+        $("#form").attr("method", "POST");
         $("#form").submit();
 
     });
