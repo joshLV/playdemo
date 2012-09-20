@@ -93,6 +93,49 @@
 </table>
 
 
+<table class="table table-striped table-bordered table-condensed">
+
+    <thead>
+
+    <tr>
+        <th width="10">姓名</th>
+        <th width="50">手 机</th>
+        <th width="30">邮箱</th>
+        <th width="30">性别</th>
+        <th width="50">可提现</th>
+        <th width="50">不可提现</th>
+        <th width="50">积分</th>
+        <th width="50">地址</th>
+        <th width="50">操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    #{list items: searchUserList, as:'searchUser'}
+
+    <tr>
+        <td width="20%">${searchUser?.userInfo?.fullName}</td>
+        <td width="20%">${searchUser?.mobile} </td>
+        <td width="20%">${searchUser?.loginName}</td>
+        <td width="20%">
+            #{if searchUser!=null}
+            ${(searchUser?.userInfo?.userSex==1 || searchUser?.userInfo?.userSex==0) ?'男':'女'}
+            #{/if}
+            #{else}
+            #{/else}
+
+
+        </td>
+
+        <td width="20%">${searchUser?.AccountMoney()?.formatCurrency('CNY')}</td>
+        <td width="20%">${searchUser?.promotionAmountMoney()?.formatCurrency('CNY')}</td>
+        <td width="20%">${searchUser?.userInfo?.totalPoints}</td>
+        <td width="20%">${address?.address}</td>
+        <td>  <a href="javascript:void(openW('/crm/bind_search_user?phone=${phone}&userId=${searchUser.id}&loginName=${searchUser.loginName}'))">Bind</a></td>
+    </tr>
+
+    #{/list}
+    </tbody>
+</table>
 <table width="50%">
     <tr>
 
@@ -422,7 +465,7 @@
 
         #{if userList.size()>1}
             切换用户
-            *{value: condition?.userId  }*
+        *{value: condition?.userId  }*
             #{select 'condition.userId', id:userId, class:'select', value:userId, onchange:"refresh('${phone}','${consultId}')"}
 
                 #{list items:userList, as:'userList'}
@@ -489,7 +532,7 @@
 
 *{<input type="hidden" type="text" name="user" id="user" value="${user}"/>}*
 
-    咨询类型
+    150咨询类型
     #{select 'consult.consultType', value:consult?.consultType, id:'consult_type',class:'span4'}
         #{option models.sales.ConsultType.ORDERCONSULT }&{'consult.ORDERCONSULT'}#{/option}
         #{option models.sales.ConsultType.REFUND}&{'consult.REFUND'}#{/option}
@@ -641,7 +684,8 @@
         if (id == undefined)
             id = "";
 
-        $("#form").attr("action", "/callcenter/phone/record/save"+ "?consult.consultType=" + consultType + "&userId=" + id+"&consult.text"+text);
+        $("#form").attr("action", "/callcenter/phone/record/save" + "?consult.consultType=" + consultType + "&userId=" + id + "&consult.text" + text);
+//        +"&phone"+phone+"&consultId"+consultId
         $("#form").attr("method", "GET");
         $("#form").submit();
 

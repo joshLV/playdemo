@@ -133,7 +133,12 @@ public class OperateCRM extends Controller {
 //        System.out.println("user"+user);
 //        System.out.println("userIdindex"+userId);
 //        System.out.println("Index userId" + userId);
-        render(userId, address, user, userList, orderList, condition, eCoupons, consultContent, phone, currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill, withdrawBillSize, consultId, consult);
+
+        List<User> searchUserList = ConsultCondition.findSearchUserByConditionSize(condition);
+
+
+
+        render(searchUserList,userId, address, user, userList, orderList, condition, eCoupons, consultContent, phone, currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill, withdrawBillSize, consultId, consult);
 //        }
 //
 //
@@ -235,7 +240,9 @@ public class OperateCRM extends Controller {
         String tempPhone = consult.phone;
         String tempText = consult.text;
         ConsultType tempConsultType = consult.consultType;
-        consult = ConsultRecord.findById(consultId);
+        System.out.println("phone"+phone);
+        System.out.println("consultId"+consultId);
+//        consult = ConsultRecord.findById(consultId);
         consult.text = tempText;
         consult.phone = tempPhone;
         consult.consultType = tempConsultType;
@@ -293,6 +300,7 @@ public class OperateCRM extends Controller {
 
 //            System.out.println("consultStatus"+consultStatus);
             consultContent = null;
+
             render("OperateCRM/index.html", userId, orderList, eCoupons, withdrawBill, orderListSize, eCouponsSize, withdrawBillSize, consultStatus, consult, consultContent, currentOperator, phone, condition, consultId, userList, user);
         }
 
@@ -426,6 +434,17 @@ public class OperateCRM extends Controller {
     public static void callCenter(String phone) {
         jumpIndex(phone);
 
+    }
+
+    public static void bindSearchUser(String phone,Long userId) {
+
+        MemberCallBind bind = new MemberCallBind();
+        User user=User.findById(userId);
+        bind.phone=phone;
+        bind.userId=userId;
+        bind.loginName=user.loginName;
+        bind.save();
+        render();
     }
 
 
