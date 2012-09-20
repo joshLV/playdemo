@@ -140,18 +140,18 @@ public class RenRenProvider extends AbstractOAuth20Provider {
         if (userJson != null) {
             OAuthUserProfileHelper.addIdentifier(userProfile, userJson, "id", getOpenIdSource());
             for (String attribute : mainAttributes.keySet()) {
-                OAuthUserProfileHelper.addAttribute(userProfile, userJson, attribute,
+                OAuthUserProfileHelper.addAttribute(userProfile, attribute,
                         mainAttributes.get(attribute));
             }
         }
         JsonNode subJson = userJson.get("id");
         if (subJson != null) {
             OAuthUserProfileHelper
-                    .addAttribute(userProfile, json, "uid", subJson.getIntValue());
+                    .addAttribute(userProfile, "uid", subJson.getIntValue());
         }
         subJson = userJson.get("domain");
         if (subJson != null) {
-            OAuthUserProfileHelper.addAttribute(userProfile, json, "username",
+            OAuthUserProfileHelper.addAttribute(userProfile, "username",
                     subJson.getTextValue());
         }
 
