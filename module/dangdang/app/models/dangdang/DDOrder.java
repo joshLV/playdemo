@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "dangdang_order")
+@Table(name = "dd_order")
 public class DDOrder extends Model {
     @Column(name = "kx_order_id", unique = true)
     public Long orderId;                // 当当订单编号
@@ -29,6 +29,7 @@ public class DDOrder extends Model {
     @Column(name = "express_fee")
     public BigDecimal expressFee; //运费
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     public DDOrderStatus status;
 
