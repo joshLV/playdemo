@@ -51,6 +51,7 @@ public class YHDGroupBuy extends Controller{
             renderJSON(new YHDResponse(errorResponse));
         }
 
+
         YHDGroupBuyOrder yhdGroupBuyOrder =  null;
         OrderInformResponse orderInformResponse = new OrderInformResponse();
         Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
@@ -69,6 +70,8 @@ public class YHDGroupBuy extends Controller{
             }catch (Exception e){ // 如果写入失败，说明 已经存在一个相同的orderCode 的订单，则放弃
                 renderJSON(new YHDResponse(orderInformResponse));
             }
+        }else {
+            outerOrder.message = gson.toJson(params);
         }
 
         try{// 解析参数为对象
@@ -77,6 +80,8 @@ public class YHDGroupBuy extends Controller{
             errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "参数解析错误", null));
             renderJSON(new YHDResponse(errorResponse));
         }
+        outerOrder.orderNumber = yhdGroupBuyOrder.orderCode;
+        outerOrder.save();
         //检查订单数量
         if(yhdGroupBuyOrder.productNum <= 0){
             errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "购买数量不能小于0", null));
@@ -114,15 +119,17 @@ public class YHDGroupBuy extends Controller{
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY){
             Order ybqOrder = createYbqOrder(yhdGroupBuyOrder, errorResponse);
             if(errorResponse.errorCount > 0){
-                renderJSON(new YHDResponse(orderInformResponse));
+                renderJSON(new YHDResponse(errorResponse));
             }else if(ybqOrder != null){
                 outerOrder.status = OuterOrderStatus.ORDER_DONE;
                 outerOrder.ybqOrder = ybqOrder;
                 outerOrder.save();
                 orderInformResponse.updateCount = 1;
             }
-        }else if(outerOrder.status == OuterOrderStatus.ORDER_DONE){
-            orderInformResponse.updateCount = 1;
+        }else if(outerOrder.status != OuterOrderStatus.ORDER_CANCELED){
+            //目前（12-09-20）情况下，如果订单不是order_copy或者order_canceled 那么其他状态应该都返回给一号店失败（他们要求的）
+            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.error", "订单已存在,重复的订单请求", null));
+            renderJSON(new YHDResponse(errorResponse));
         }
         renderJSON(new YHDResponse(orderInformResponse));
     }
@@ -257,7 +264,15 @@ public class YHDGroupBuy extends Controller{
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
         ybqOrder.save();
         try {
-            Goods goods = Goods.find("byId", Long.parseLong(yhdGroupBuyOrder.outerGroupId)).first();
+            Long goodsId = null;
+            try{
+                goodsId = Long.parseLong(yhdGroupBuyOrder.outerGroupId);
+            }catch (NumberFormatException e){
+                Logger.info("goodsId is not long: %s", yhdGroupBuyOrder.outerGroupId );
+                errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.error", "找不到商品,请检查 outerGroupId", null));
+                return null;
+            }
+            Goods goods = Goods.find("byId", goodsId).first();
             if(goods == null){
                 Logger.info("goods not found: %s", yhdGroupBuyOrder.outerGroupId );
                 errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.error", "找不到商品,请检查 outerGroupId", null));
