@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * TODO.
+ * QQ登录.
  * <p/>
  * User: sujie
  * Date: 9/11/12
@@ -43,7 +43,7 @@ public class QQProvider extends AbstractOAuth20Provider {
     }
 
 
-//
+    //
 //    /**
 //     * 在使用oauth协议登录前设置应用的初始来源页面.
 //     *
@@ -121,11 +121,12 @@ public class QQProvider extends AbstractOAuth20Provider {
     @Override
     protected UserProfile extractOAuthUserProfile(String body) {
         UserProfile userProfile = new UserProfile();
-        int idIndex = body.indexOf("openid=")+7;
-        String id = body.substring(idIndex);
-        OAuthUserProfileHelper.addIdentifier(userProfile,id,getOpenIdSource());
+        int idIndex = body.indexOf("\"openid\":\"") + 10;
+        String id = body.substring(idIndex, body.lastIndexOf("\"}"));
+        System.out.println("id:" + id);
+        OAuthUserProfileHelper.addIdentifier(userProfile, id, getOpenIdSource());
+        OAuthUserProfileHelper.addAttribute(userProfile, "uid", id);
 
-//        JsonNode json = JsonHelper.getFirstNode(body);
 //        JsonNode userJson = json.get("data");
 //        if (userJson != null) {
 //            OAuthUserProfileHelper.addIdentifier(userProfile, userJson, "nick", getOpenIdSource());

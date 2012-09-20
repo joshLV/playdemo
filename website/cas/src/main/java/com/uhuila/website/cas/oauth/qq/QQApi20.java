@@ -2,7 +2,6 @@ package com.uhuila.website.cas.oauth.qq;
 
 import org.scribe.builder.api.DefaultApi20;
 import org.scribe.model.OAuthConfig;
-import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 import org.scribe.utils.OAuthEncoder;
 
@@ -17,10 +16,12 @@ public class QQApi20 extends DefaultApi20 {
     private static final String AUTHORIZE_URL = "https://graph.qq.com/oauth2.0/authorize?client_id=%s&response_type=code&redirect_uri=%s";
 //    "https://open.t.qq" +
 //            ".com/cgi-bin/oauth2/authorize?client_id=%s&response_type=code&redirect_uri=%s";
+/*
     @Override
     public Verb getAccessTokenVerb() {
         return Verb.POST;
     }
+*/
 
     /**
      * Returns the access token extractor.
