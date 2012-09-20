@@ -52,13 +52,13 @@ GET     /callcenter/phone/{phone}/record/{consultId}              OperateCRM.ind
 GET     /crm/{id}/edit                                            OperateCRM.edit
 GET     /crm/bind                                                 OperateCRM.bind
 POST     /callcenter/phone/{phone}/record/{consultId}/tempSave    OperateCRM.tempSave
-POST     /callcenter/phone/{phone}/record/{consultId}/save        OperateCRM.save
+GET     /callcenter/phone/record/save                 OperateCRM.save
 GET     /crm/save_bind                                            OperateCRM.saveBind
 GET     /callcenter/phone/{phone}                                 OperateCRM.finish
 DELETE  /crm/{id}                                                 OperateCRM.delete
 GET     /callcenter/phone/abandon/{consultId}                     OperateCRM.abandon
 PUT     /crm/{id}                                                 OperateCRM.update
-GET     /crm/bindCouponDetails                                           OperateCRM.bindCouponDetails
+GET     /crm/bindCouponDetails                                    OperateCRM.bindCouponDetails
 
 
 # 积分商品

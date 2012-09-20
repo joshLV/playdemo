@@ -476,7 +476,7 @@
 
 #{form @OperateCRM.tempSave(), method: 'POST',id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
     <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
-aaaaa${phone}
+*{aaaaa${phone}}*
     <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
     <input type="hidden" type="text" name="userId" id="consultUserId" value="${userId}"/>
     <input type="hidden" type="text" name="consultStatus" id="consultStatus" value="${consultStatus}"/>
@@ -641,9 +641,8 @@ aaaaa${phone}
         if (id == undefined)
             id = "";
 
-        $("#form").attr("action", "/callcenter/phone/" + phone + "/record/" + consultId + "/save" + "?consultId=" + consultId
-                + "&consult.consultType=" + consultType + "&userId=" + id+"&consult.text"+text);
-        $("#form").attr("method", "POST");
+        $("#form").attr("action", "/callcenter/phone/record/save"+ "?consult.consultType=" + consultType + "&userId=" + id+"&consult.text"+text);
+        $("#form").attr("method", "GET");
         $("#form").submit();
 
     });
