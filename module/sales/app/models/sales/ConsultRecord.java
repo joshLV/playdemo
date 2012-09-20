@@ -23,7 +23,6 @@ import java.util.List;
 @Table(name = "consult_record")
 public class ConsultRecord extends Model {
 
-
     /**
      * 创建时间
      */

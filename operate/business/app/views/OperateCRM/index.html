@@ -133,7 +133,7 @@
             *{#{list items: addressList, as:'addressList'}}*
 
             *{${addressList?.get(j)?.address}}*
-                ${addressMap?.get(searchUser.id)}
+                ${addressMap?.get(searchUser.id)?.address}
             </td>
             <td>
                 #{list items: userList, as:'boundUser'}
@@ -149,7 +149,7 @@
                 *{phone       ${phone}}*
                 *{searchUser.id   ${searchUser.id}}*
                 *{loginName       ${searchUser.loginName}}*
-                    <a id="bindRefresh" href="javascript:void(openW('/crm/bind_search_user?phone=${phone}&userId=${searchUser.id}&loginName=${searchUser.loginName}'))">Bind</a>
+                    <a  href="javascript:void(openW('/crm/bind_search_user?phone=${phone}&userId=${searchUser.id}&loginName=${searchUser.loginName}'))">Bind</a>
                 #{/if}
 
 
@@ -737,10 +737,7 @@
 
     });
 
-    $("#bindRefresh").click(function () {
-        alert("dfsdfsd");
-        window.location.reload();
-    });
+
 
 
     //    function openwin() {

@@ -34,7 +34,7 @@ public class OperateCRM extends Controller {
 
     public static void index(String phone, CRMCondition condition, Long userId, Long consultId, String consultStatus) {
 //        System.out.println("Index phone"+phone);
-    int times = 0;
+        int times = 0;
 //        System.out.println("consultStatus11111"+consultStatus);
 //        System.out.println("consultconsultconsultconsult"+consult);
         User user = null;
@@ -130,27 +130,21 @@ public class OperateCRM extends Controller {
 
         //address  user
         times++;
-        if (condition.searchUser == null && user != null)
+        if (condition.searchUser == null && user != null) {
             userId = user.id;
-//        System.out.println("userId"+userId);
-//        System.out.println("user"+user);
-//        System.out.println("userIdindex"+userId);
-//        System.out.println("Index userId" + userId);
+        }
+
 
         List<User> searchUserList = ConsultCondition.findSearchUserByCondition(condition);
-        HashMap addressMap=new HashMap();
+        HashMap<Long, Address> addressMap = new HashMap();
 
-        for(User u:searchUserList){
-            addressMap.put(u.id,ConsultCondition.findAddressByCondition(u));
+        for (User u : searchUserList) {
+            addressMap.put(u.id, ConsultCondition.findAddressByCondition(u));
         }
-//        System.out.println("phonephonephoneindex"+phone);
 
-        render(addressMap,searchUserList,userId, address, user, userList, orderList, condition, eCoupons, consultContent, phone, currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill, withdrawBillSize, consultId, consult);
-//        }
-//
-//
-//        render(userList, consultContent, phone, currentOperator, moreSearch);
 
+        render(addressMap, searchUserList, userId, address, user, userList, orderList, condition, eCoupons, consultContent, phone,
+                currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill, withdrawBillSize, consultId, consult);
     }
 
     //User user
@@ -245,12 +239,12 @@ public class OperateCRM extends Controller {
     }
 
     public static void save(Long consultId, ConsultRecord consult, User user, String phone, Long userId, String consultStatus) {
-        System.out.println("phone"+phone);
+        System.out.println("phone" + phone);
         String tempPhone = consult.phone;
         String tempText = consult.text;
         ConsultType tempConsultType = consult.consultType;
 
-        System.out.println("consultId"+consultId);
+        System.out.println("consultId" + consultId);
 //        consult = ConsultRecord.findById(consultId);
         consult.text = tempText;
         consult.phone = tempPhone;
@@ -445,13 +439,13 @@ public class OperateCRM extends Controller {
 
     }
 
-    public static void bindSearchUser(String phone,Long userId) {
+    public static void bindSearchUser(String phone, Long userId) {
 
         MemberCallBind bind = new MemberCallBind();
-        User user=User.findById(userId);
-        bind.phone=phone;
-        bind.userId=userId;
-        bind.loginName=user.loginName;
+        User user = User.findById(userId);
+        bind.phone = phone;
+        bind.userId = userId;
+        bind.loginName = user.loginName;
         bind.save();
         render();
     }
