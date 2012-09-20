@@ -110,8 +110,8 @@
     </tr>
     </thead>
     <tbody>
+    *{#{list items: searchUserList,addressList, as:'searchUser','addressList'}}*
     #{list items: searchUserList, as:'searchUser'}
-
     <tr>
         <td>${searchUser?.userInfo?.fullName}</td>
         <td>${searchUser?.mobile} </td>
@@ -126,11 +126,26 @@
         <td>${searchUser?.AccountMoney()?.formatCurrency('CNY')}</td>
         <td>${searchUser?.promotionAmountMoney()?.formatCurrency('CNY')}</td>
         <td>${searchUser?.userInfo?.totalPoints}</td>
-        <td>${address?.address}</td>
+
         <td>
-            <a href="javascript:void(openW('/crm/bind_search_user?phone=${phone}&userId=${searchUser.id}&loginName=${searchUser.loginName}'))">Bind</a>
+        #{list items: addressList, as:'addressList'}
+            ${addressList?.address}
+
+
+        </td>
+
+        <td>
+            #{list items: userList, as:'boundUser'}
+                ttttt    ${boundUser.id}
+                ssss     ${searchUser.id}
+                #{if boundUser.id!=searchUser.id}
+                    <a href="javascript:void(openW('/crm/bind_search_user?phone=${phone}&userId=${searchUser.id}&loginName=${searchUser.loginName}'))">Bind</a>
+                #{/if}
+            #{/list}
+        #{/list}
         </td>
     </tr>
+
 
     #{/list}
     </tbody>
@@ -518,7 +533,7 @@
 
 #{form @OperateCRM.tempSave(), method: 'POST',id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
     <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
-    *{aaaaa${phone}}*
+*{aaaaa${phone}}*
     <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
     <input type="hidden" type="text" name="userId" id="consultUserId" value="${userId}"/>
     <input type="hidden" type="text" name="consultStatus" id="consultStatus" value="${consultStatus}"/>
@@ -690,13 +705,13 @@
         var userId = $("#user2").val();
 //       alert("userId"+userId);
 
-        if (userId  == undefined)
+        if (userId == undefined)
             $("#form").attr("action", "/callcenter/phone/record/save");
 
 
-        if (userId!= undefined)
-            $("#form").attr("action", "/callcenter/phone/record/save?phone=" + phone + "&consultId=" + consultId+"&userId="+userId
-            +"&consult.text="+text+"&consult.consultType="+consultType);
+        if (userId != undefined)
+            $("#form").attr("action", "/callcenter/phone/record/save?phone=" + phone + "&consultId=" + consultId + "&userId=" + userId
+                    + "&consult.text=" + text + "&consult.consultType=" + consultType);
 
 
 //        $("#form").attr("action", "@OperateCRM.save()");

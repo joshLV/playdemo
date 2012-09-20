@@ -45,6 +45,8 @@ public class OperateCRM extends Controller {
 
         List<User> userList = User.find("id in (select c.userId from MemberCallBind c where c.phone=?)", phone).fetch();
 //        System.out.println("userListuserList" + userList);
+
+
         if (userList == null || userList.size() <= 0) {
             userList = User.find("mobile=?", phone).fetch();
 
@@ -135,11 +137,13 @@ public class OperateCRM extends Controller {
 //        System.out.println("Index userId" + userId);
 
         List<User> searchUserList = ConsultCondition.findSearchUserByCondition(condition);
-
-
+        List<Address> addressList=new ArrayList<>();
+        for(User u:searchUserList){
+            addressList.add(ConsultCondition.findAddressByCondition(u));
+        }
         System.out.println("phonephonephoneindex"+phone);
 
-        render(searchUserList,userId, address, user, userList, orderList, condition, eCoupons, consultContent, phone, currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill, withdrawBillSize, consultId, consult);
+        render(addressList,searchUserList,userId, address, user, userList, orderList, condition, eCoupons, consultContent, phone, currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill, withdrawBillSize, consultId, consult);
 //        }
 //
 //
