@@ -29,12 +29,12 @@ import java.util.SortedMap;
 public class DDAPIUtil {
     private static final String XML = "xml";
     private static final String SIGN_METHOD = "1";
-    private static final String VER = Play.configuration.getProperty("dangdang.version","1.0");
+    private static final String VER = Play.configuration.getProperty("dangdang.version", "1.0");
     private static final String SECRET_KEY = Play.configuration.getProperty("dangdang.secret_key", "x8765d9yj72wevshn");
     private static final String SPID = Play.configuration.getProperty("dangdang.spid", "3000003");
-    private static final String SYNC_URL = Play.configuration.getProperty("dangdang.sync_url","http://tuanapi.dangdang.com/team_inter_api/public/push_team_stock.php");
-    private static final String QUERY_CONSUME_CODE_URL = Play.configuration.getProperty("dangdang.sync_url","http://tuanapi.dangdang.com/team_open/query_consume_code.php");
-    private static final String VERIFY_CONSUME_URL = Play.configuration.getProperty("dangdang.sync_url","http://tuanapi.dangdang.com/team_open/verify_consume.php");
+    private static final String SYNC_URL = Play.configuration.getProperty("dangdang.sync_url", "http://tuanapi.dangdang.com/team_open/public/push_team_stock.php");
+    private static final String QUERY_CONSUME_CODE_URL = Play.configuration.getProperty("dangdang.query_consume_code_url", "http://tuanapi.dangdang.com/team_open/public/query_consume_code.php");
+    private static final String VERIFY_CONSUME_URL = Play.configuration.getProperty("dangdang.verify_consume_url", "http://tuanapi.dangdang.com/team_open/public/verify_consume.php");
 
     /**
      * 返回一百券系统中商品总销量.
@@ -63,13 +63,13 @@ public class DDAPIUtil {
     public static boolean isRefund(ECoupon eCoupon) throws DDAPIInvokeException {
         DDOrderItem ddOrderOrderItem = DDOrderItem.findByOrder(eCoupon.orderItems);
         if (ddOrderOrderItem == null) {
-            Logger.info("[DangDang isRefund API] order item not found (eCouponSn:"+eCoupon.eCouponSn+")!");
+            Logger.info("[DangDang isRefund API] order item not found (eCouponSn:" + eCoupon.eCouponSn + ")!");
             return false;
         }
         String data = String.format("<data><row><ddgid><![CDATA[%s]]></ddgid><type><![CDATA[%s]]></type><code><![CDATA[%s]]></code></row></data>",
                 ddOrderOrderItem.ddgid, 1, eCoupon.eCouponSn);
 
-        Logger.info("QUERY_CONSUME_CODE_URL     ====="+QUERY_CONSUME_CODE_URL);
+        Logger.info("QUERY_CONSUME_CODE_URL     =====" + QUERY_CONSUME_CODE_URL);
         Response response = DDAPIUtil.access(QUERY_CONSUME_CODE_URL, data, "query_consume_code");
 
         if (!response.success()) {
@@ -94,13 +94,13 @@ public class DDAPIUtil {
     public static void notifyVerified(ECoupon eCoupon) throws DDAPIInvokeException {
         DDOrderItem ddOrderOrderItem = DDOrderItem.findByOrder(eCoupon.orderItems);
         if (ddOrderOrderItem == null) {
-            Logger.info("[DangDang notifyVerified API] order item not found (eCouponSn:"+eCoupon.eCouponSn+")!");
+            Logger.info("[DangDang notifyVerified API] order item not found (eCouponSn:" + eCoupon.eCouponSn + ")!");
             return;
         }
         String data = String.format("<data><row><ddgid><![CDATA[%s]]></ddgid><consume_code><![CDATA[%s]]></consume_code><verifycode><![CDATA[%s]]>" +
                 "</verifycode></row></data>",
                 ddOrderOrderItem.ddgid, eCoupon.eCouponSn, eCoupon.eCouponSn);
-        Logger.info("VERIFY_CONSUME_URL     ====="+VERIFY_CONSUME_URL);
+        Logger.info("VERIFY_CONSUME_URL     =====" + VERIFY_CONSUME_URL);
         Response response = DDAPIUtil.access(VERIFY_CONSUME_URL, data, "verify_consume");
 
         if (!response.success()) {
@@ -203,6 +203,7 @@ public class DDAPIUtil {
         try {
             //执行postMethod
             int statusCode = httpClient.executeMethod(postMethod); // HttpClient对于要求接受后继服务的请求，象POST和PUT等不能自动处理转发
+            Logger.info("http response code    =============================" + statusCode);
             // 200
             if (statusCode == HttpStatus.SC_OK) {
                 //从头中取出转向的地址
@@ -217,9 +218,9 @@ public class DDAPIUtil {
     public static String getSign(String data, String time, String apiName) {
 
         final String unsignedData = SPID + apiName + VER + data + SECRET_KEY + time;
-        System.out.println("\nunsignedData   ====              [" + unsignedData+"]");
+        System.out.println("\nunsignedData   ====              [" + unsignedData + "]");
         final String signed = DigestUtils.md5Hex(unsignedData);
-        System.out.println("\nsigned   ====            [" + signed+"]");
+        System.out.println("\nsigned   ====            [" + signed + "]");
         return signed;
     }
 
@@ -236,11 +237,11 @@ public class DDAPIUtil {
             if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
                 continue;
             }
-            System.out.println(entry.getKey()+"------------------"+entry.getValue());
+            System.out.println(entry.getKey() + "------------------" + entry.getValue());
             signStr.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
         signStr.append("secret_key=").append(SECRET_KEY);
-        System.out.println(">>>>>>>>"+DigestUtils.md5Hex(signStr.toString()));
+        System.out.println(">>>>>>>>" + DigestUtils.md5Hex(signStr.toString()));
         return DigestUtils.md5Hex(signStr.toString()).equals(sign);
     }
 

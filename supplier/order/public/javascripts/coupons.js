@@ -52,6 +52,8 @@ $(function () {
                     $("#statusw").html('<font color=red>' + data.info + '</font>');
                 } else if (data == '3') {
                     $("#statusw").html('<font color=red>对不起，该券已冻结！</font>');
+                } else if (data == '4') {
+                    $("#statusw").html('<font color=red>对不起，该券已退款！</font>');
                 } else if (data == 'err') {
                     alert("消费失败！");
                 } else {

@@ -110,7 +110,13 @@ public class TelephoneVerify extends Controller {
             Logger.info("telephone verify failed: coupon not been activated. effectiveAt: %s", new SimpleDateFormat(COUPON_DATE).format(ecoupon.effectiveAt));
             renderText("11");//对不起，该券无法消费  todo 对不起，该券在该时段无法消费
         } else {
-            ecoupon.consumeAndPayCommission(supplierUser.shop.id, null, supplierUser, VerifyCouponType.CLERK_MESSAGE);
+
+            if (!ecoupon.consumeAndPayCommission(supplierUser.shop.id, null, supplierUser, VerifyCouponType.CLERK_MESSAGE)){
+                Logger.info("telephone verify failed: coupon has been refunded");
+                renderText("11");//对不起，该券已退款
+            }
+
+
             String eCouponNumber = ecoupon.getMaskedEcouponSn();
             eCouponNumber = eCouponNumber.substring(eCouponNumber.lastIndexOf("*") + 1);
 

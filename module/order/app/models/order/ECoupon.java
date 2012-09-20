@@ -1,22 +1,7 @@
 package models.order;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.RandomNumberUtil;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.accounts.TradeBill;
@@ -24,12 +9,13 @@ import models.accounts.util.AccountUtil;
 import models.accounts.util.TradeUtil;
 import models.admin.SupplierUser;
 import models.consumer.User;
+import models.dangdang.DDAPIInvokeException;
+import models.dangdang.DDAPIUtil;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.sms.SMSUtil;
-
 import org.apache.commons.lang.StringUtils;
-
+import play.Logger;
 import play.Play;
 import play.data.validation.Required;
 import play.db.jpa.JPA;
@@ -37,8 +23,10 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
 
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.RandomNumberUtil;
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Entity
 @Table(name = "e_coupon")
@@ -355,11 +343,35 @@ public class ECoupon extends Model {
         return true;
     }
 
-    public void consumeAndPayCommission(Long shopId, Long operateUserId,
+    public boolean consumeAndPayCommission(Long shopId, Long operateUserId,
                                         SupplierUser supplierUser, VerifyCouponType type) {
+
+        //===================判断是否当当订单产生的券
+        try {
+            if (DDAPIUtil.isRefund(this)) {//如果券在当当上已经退款，则不允许券的消费。
+                return false;
+            }
+        } catch (DDAPIInvokeException e) {
+            //当当接口调用失败，目前仅记录日志。不阻止券的消费。以便保证用户体验。
+            Logger.error(e.getMessage(), e);
+        }
+
+        //===================券消费处理开始=====================================
         if (consumed(shopId, operateUserId, supplierUser, type)) {
             payCommission();
         }
+        //===================券消费处理完毕=====================================
+
+
+        //====================通知当当该券已经使用
+        try {
+            DDAPIUtil.notifyVerified(this);
+        } catch (DDAPIInvokeException e) {
+            //当当接口调用失败，目前仅记录日志。不阻止券的消费。以便保证用户体验。
+            Logger.error(e.getMessage(), e);
+        }
+        return true;
+
     }
 
     /**
