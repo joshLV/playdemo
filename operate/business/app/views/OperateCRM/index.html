@@ -92,7 +92,7 @@
     </tr>
 </table>
 
-
+#{if searchUserList!=null && searchUserList.size()>0}
 <table class="table table-striped table-bordered table-condensed">
 
     <thead>
@@ -111,45 +111,55 @@
     </thead>
     <tbody>
     *{#{list items: searchUserList,addressList, as:'searchUser','addressList'}}*
-    #{list items: searchUserList, as:'searchUser'}
-    <tr>
-        <td>${searchUser?.userInfo?.fullName}</td>
-        <td>${searchUser?.mobile} </td>
-        <td>${searchUser?.loginName}</td>
-        <td>
-            #{if searchUser!=null}
-            ${(searchUser?.userInfo?.userSex==1 || searchUser?.userInfo?.userSex==0) ?'男':'女'}
-            #{/if}
+        #{set j:0/}
+        #{list items: searchUserList, as:'searchUser'}
+        <tr>
+            <td>${searchUser?.userInfo?.fullName}</td>
+            <td>${searchUser?.mobile} </td>
+            <td>${searchUser?.loginName}</td>
+            <td>
+                #{if searchUser!=null}
+                ${(searchUser?.userInfo?.userSex==1 || searchUser?.userInfo?.userSex==0) ?'男':'女'}
+                #{/if}
             #{else}
-        #{/else}
-        </td>
-        <td>${searchUser?.AccountMoney()?.formatCurrency('CNY')}</td>
-        <td>${searchUser?.promotionAmountMoney()?.formatCurrency('CNY')}</td>
-        <td>${searchUser?.userInfo?.totalPoints}</td>
+            #{/else}
+            </td>
+            <td>${searchUser?.AccountMoney()?.formatCurrency('CNY')}</td>
+            <td>${searchUser?.promotionAmountMoney()?.formatCurrency('CNY')}</td>
+            <td>${searchUser?.userInfo?.totalPoints}</td>
 
-        <td>
-        #{list items: addressList, as:'addressList'}
-            ${addressList?.address}
+            <td>
+            *{#{list items: addressList, as:'addressList'}}*
+
+            ${addressList?.get(j)?.address}
 
 
-        </td>
+            </td>
 
-        <td>
-            #{list items: userList, as:'boundUser'}
-                ttttt    ${boundUser.id}
-                ssss     ${searchUser.id}
-                #{if boundUser.id!=searchUser.id}
+            <td>
+                #{set i:1/}
+                #{list items: userList, as:'boundUser'}
+                *{ttttt    ${boundUser.id}}*
+                *{ssss     ${searchUser.id}}*
+                    #{if boundUser.id!=searchUser.id}
+                        #{set i++/}
+                    #{/if}
+                #{/list}
+                #{if i!=userList.size()}
                     <a href="javascript:void(openW('/crm/bind_search_user?phone=${phone}&userId=${searchUser.id}&loginName=${searchUser.loginName}'))">Bind</a>
                 #{/if}
-            #{/list}
+
+
+            </td>
+        </tr>
+            #{set j++/}
+
         #{/list}
-        </td>
-    </tr>
-
-
-    #{/list}
+    *{#{/list}}*
     </tbody>
 </table>
+
+#{/if}
 <table width="50%">
     <tr>
 
