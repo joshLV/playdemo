@@ -278,6 +278,11 @@ public class YHDGroupBuy extends Controller{
                 errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.error", "找不到商品,请检查 outerGroupId", null));
                 return null;
             }
+            if(goods.originalPrice.compareTo(yhdGroupBuyOrder.productPrize) >= 0){
+                Logger.info("invalid yhd productPrice: %s", yhdGroupBuyOrder.productPrize );
+                errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.error", "商品价格不合法，拒绝订单", null));
+                return null;
+            }
 
             OrderItems uhuilaOrderItem  = ybqOrder.addOrderItem(
                     goods,
