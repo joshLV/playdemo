@@ -169,7 +169,7 @@ public class PromoteRebate extends Model {
                         "select new models.order.PromoteRebate(p.promoteUser,sum(e.promoterRebateValue),count(distinct p.id)) "
                                 + " from PromoteRebate p,ECoupon e where p.order=e.order and e.status=:e_status " +
                                 "and e.consumedAt>=:consumedBeginAt and e.consumedAt<=:consumedEndAt" +
-                                " and p.status=:status or p.status=:status1  " +
+                                " and (p.status=:status or p.status=:status1)  " +
                                 " group by p.promoteUser.id order by sum(e.promoterRebateValue) desc");
         query.setParameter("e_status", ECouponStatus.CONSUMED);
         query.setParameter("consumedBeginAt", DateUtil.getMonthFirstDay());

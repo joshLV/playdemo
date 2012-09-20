@@ -9,6 +9,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 
 import play.db.jpa.Model;
 
@@ -72,6 +73,10 @@ public class CashCoupon extends Model {
 	 * 创建者ID，为运营后台登录ID.
 	 */
 	public Long operaterId;
+	
+	@Version
+	@Column(name="lock_version")
+	public int lockVersion = 0;
 	
 	/**
 	 * 充值时间
