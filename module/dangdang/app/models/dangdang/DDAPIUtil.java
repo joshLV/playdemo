@@ -116,7 +116,7 @@ public class DDAPIUtil {
         response.ver = VER;
         response.spid = SPID;
         try {
-            Request<DDECoupon> request = new Request<>();
+            Request request = new Request();
             request.parse(data);
             //取得data节点中的数据信息
             Map<String, String> dataMap = request.getParams();

@@ -13,7 +13,7 @@ import java.util.Map;
  * Date: 9/17/12
  * Time: 12:48 PM
  */
-public class Request<V> {
+public class Request {
     /**
      * 当当请求我们接口传来的参数
      */
