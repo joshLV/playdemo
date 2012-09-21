@@ -71,7 +71,8 @@ public class SecureCAS extends Controller {
             if (user.loginName != null) {
                 cas.loginName = user.loginName;
             } else {
-                cas.loginName = user.getOpenIdExpress();
+                int showLimit = 10;
+                cas.loginName = user.getOpenIdExpress().length() > showLimit ? user.getOpenIdExpress().substring(0, showLimit) + "..." : user.getOpenIdExpress();
             }
 
             cas.user = user;

@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
  * @author likang
  * Date: 12-7-30
  */
-@OnApplicationStart(async = true)
 @On("0 0 9 * * ?")
 public class SendShopDailyReportJob extends Job{
     private static final String MOBILE_PATTERN = "^1\\d{10}$";
