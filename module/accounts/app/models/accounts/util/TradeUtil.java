@@ -269,9 +269,16 @@ public class TradeUtil {
         if(account == null){
             throw new IllegalArgumentException("error while create refund trade: invalid account");
         }
-        if(amount == null || amount.compareTo(BigDecimal.ZERO) <= 0){
+        if(amount == null || amount.compareTo(BigDecimal.ZERO) < 0){
             throw new IllegalArgumentException("error while create refund trade. invalid amount: " + amount);
         }
+        if(promotionAmount == null || amount.compareTo(BigDecimal.ZERO) < 0){
+            throw new IllegalArgumentException("error while create refund trade. invalid promotionAmount: " + promotionAmount);
+        }
+        if(promotionAmount.compareTo(BigDecimal.ZERO) == 0 && amount.compareTo(BigDecimal.ZERO) == 0){
+            throw new IllegalArgumentException("error while create refund trade. both of amount and promotionAmount are ZERO ");
+        }
+
         if(orderId == null){
             throw new IllegalArgumentException("error while create refund trade: invalid orderId");
         }
