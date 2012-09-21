@@ -31,7 +31,6 @@ public class DDOrder extends Model {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    @Enumerated(EnumType.STRING)
     public DDOrderStatus status;
 
     @Column(name = "created_at")

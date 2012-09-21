@@ -36,6 +36,7 @@ require:
     - cms -> cms
     - emaillogs -> emaillogs
     - cache_helper -> cache_helper
+    - dangdang -> dangdang
 
 repositories:
 
@@ -75,3 +76,4 @@ repositories:
             - cms -> *
             - emaillogs -> *
             - cache_helper -> *
+            - dangdang -> *
