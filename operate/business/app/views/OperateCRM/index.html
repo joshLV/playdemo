@@ -54,7 +54,7 @@
 
     <tr>
         <td>
-            <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.index()}" method="GET">
+            <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.jumpIndex(phone)}" method="GET">
                 <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
                 <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
                 <input type="hidden" type="text" name="userId" id="userIdSearch1" value="${userId}"/>
@@ -76,7 +76,7 @@
             </form>
         </td>
         <td>
-            <form class="form-horizontal" name="frmlist2" id="frmlist2" action="@{OperateCRM.index(phone)}"
+            <form class="form-horizontal" name="frmlist2" id="frmlist2" action="@{OperateCRM.jumpIndex(phone)}"
                   method="GET">
                 <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
                 <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
@@ -146,10 +146,9 @@
                 *{iii${i}}*
                 #{/list}
                 #{if i!=userList.size()}
-                *{phone       ${phone}}*
-                *{searchUser.id   ${searchUser.id}}*
+                *{phone       ${phone}}*               *{searchUser.id   ${searchUser.id}}*
                 *{loginName       ${searchUser.loginName}}*
-                    <a  href="javascript:void(openW('/crm/bind_search_user?phone=${phone}&userId=${searchUser.id}&loginName=${searchUser.loginName}'))">Bind</a>
+                    <a href="javascript:void(openW('/crm/bind_search_user?phone=${phone}&userId=${searchUser.id}&loginName=${searchUser.loginName}'))">绑定</a>
                 #{/if}
 
 
@@ -295,7 +294,7 @@
 <div style="text-align: right; margin-top:-15px;">
     #{if  orderListSize >5}
         <a href="/orders?condition.searchKey=ORDER_NUMBER&condition.searchItems=${moreSearch}"
-           target="_blank" style="font-size:large"> more</a>
+           target="_blank" style="font-size:large"> 更多</a>
     #{/if}
 </div>
 #{/if}
@@ -338,7 +337,8 @@
 
             #{/if}>${coupon?.eCouponSn.substring(len - 4)}
 
-                <a  type="button" href="javascript:void(openW('/crm/bind?phone=${phone}&couponId=${coupon.id}&userId=${coupon.order.userId}&consultId=${consultId}'))">Bind</a>
+                <a type="button"
+                   href="javascript:void(openW('/crm/bind?phone=${phone}&couponId=${coupon.id}&userId=${coupon.order.userId}&consultId=${consultId}'))">绑定</a>
 
 
             </td>
@@ -432,7 +432,7 @@
 
         <a href="/coupons?condition.searchKey=COUPON&condition.searchItems=${moreSearch}"
 
-           target="_blank" style="float:right; font-size:larger;"> more</a>
+           target="_blank" style="float:right; font-size:larger;"> 更多</a>
 
     #{/if}
 </div>
@@ -581,6 +581,7 @@
 
 *{<input class="btn btn-primary" id="finish"}*
 *{type="submit" value="结束会话"/>}*
+*{finish ${consultId}}*
     <a class="btn btn-primary" id="finish" type="button">结束会话</a>
 
 *{<input class="btn btn-primary" id="abandon"}*
@@ -702,7 +703,6 @@
     }
 
 
-
     $("#finish").click(function () {
         var phone = $("#phone").val();
         var consultId = $("#consultId").val();
@@ -736,8 +736,6 @@
         $("#form").submit();
 
     });
-
-
 
 
     //    function openwin() {
