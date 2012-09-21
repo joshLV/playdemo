@@ -1097,22 +1097,24 @@ public class Order extends Model {
     }
 
     public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance, String paymentSourceCode) {
+        //有些账号还没有promotionAmount
+        if (account.promotionAmount == null){
+            account.promotionAmount = BigDecimal.ZERO;
+        }
         //计算使用余额支付和使用银行卡支付的金额
         BigDecimal balancePaymentAmount = BigDecimal.ZERO;
         BigDecimal ebankPaymentAmount = BigDecimal.ZERO;
+        //先计算总余额支付和银行卡支付
         if (useBalance && order.orderType == OrderType.CONSUME) {
-            balancePaymentAmount = account.amount.min(order.needPay);
+            balancePaymentAmount = account.amount.add(account.promotionAmount).min(order.needPay);
             ebankPaymentAmount = order.needPay.subtract(balancePaymentAmount);
         } else {
             ebankPaymentAmount = order.needPay;
         }
-        order.accountPay = balancePaymentAmount;
+        //余额支付中再分一下可提现和不可提现支付
+        order.accountPay = balancePaymentAmount.subtract(account.promotionAmount.min(balancePaymentAmount));
+        order.promotionBalancePay = balancePaymentAmount.subtract(order.accountPay);
         order.discountPay = ebankPaymentAmount;
-        //计算使用活动金
-        if (account.promotionAmount != null && account.promotionAmount.compareTo(BigDecimal.ZERO) > 0) {
-            order.promotionBalancePay = order.accountPay.min(account.promotionAmount);
-            order.accountPay = order.accountPay.subtract(order.promotionBalancePay);
-        }
 
         //创建订单交易
         //如果使用余额足以支付，则付款直接成功
