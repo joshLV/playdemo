@@ -1151,7 +1151,6 @@ public class Order extends Model {
         return amount;
     }
 
-<<<<<<< HEAD
     /**
      * 计算一笔订单所产生的返利金额
      *
