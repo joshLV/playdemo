@@ -23,6 +23,7 @@ require:
     - consumer -> consumer
     - view_ext -> view_ext
     - supplier -> supplier
+    - dangdang -> dangdang
     - org.jsoup -> jsoup 1.6.1
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
@@ -60,6 +61,7 @@ repositories:
             - cache_helper -> *
             - emaillogs -> *
             - yihaodian -> *
+            - dangdang -> *
 
     - play1ContributedModules:
         type: http
