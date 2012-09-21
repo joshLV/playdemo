@@ -31,6 +31,8 @@ public class DDSendMessageAPI extends Controller {
         String data = StringUtils.trimToEmpty(params.get("data"));
         String time = StringUtils.trimToEmpty(params.get("call_time"));
         String verifySign = DDAPIUtil.getSign(data, time, API_NAME);
+        System.out.println(sign + "[sign]");
+        System.out.println(verifySign + "[verifySign]");
         if (StringUtils.isBlank(sign) || !sign.equals(verifySign)) {
             Logger.info("[DDSendMessageAPI] sign failed ");
             Response response = new Response();
@@ -53,6 +55,7 @@ public class DDSendMessageAPI extends Controller {
             response.errorCode = ErrorCode.PARSE_XML_FAILED;
             response.desc = "xml解析失败！";
         }
+
         Logger.info("[DDSendMessageAPI] end!");
         render(response);
     }

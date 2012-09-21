@@ -7,6 +7,8 @@ import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.Order;
+import models.order.OrderItems;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +32,10 @@ public class UserCouponsFuncTest extends FunctionalTest {
     @Before
     public void setup() {
         Fixtures.delete(User.class);
+        Fixtures.delete(Order.class);
+        Fixtures.delete(OrderItems.class);
+
+        Fixtures.delete(ECoupon.class);
 
         //Fixtures.loadModels("fixture/user.yml", "fixture/userInfo.yml");
         Fixtures.loadModels("fixture/user.yml");
@@ -45,7 +51,7 @@ public class UserCouponsFuncTest extends FunctionalTest {
         Fixtures.loadModels("fixture/orderItems.yml");
         Fixtures.loadModels("fixture/ecoupon.yml");
 
-        Long userId= (Long) Fixtures.idCache.get("models.consumer.User-selenium");
+        Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
         User user = User.findById(userId);
 
         //设置测试登录的用户名
@@ -59,7 +65,7 @@ public class UserCouponsFuncTest extends FunctionalTest {
     }
 
     @Test
-    public void testApplyRefund(){
+    public void testApplyRefund() {
         // 设置总账户中的余额
         Account account = AccountUtil.getPlatformIncomingAccount();
         account.amount = new BigDecimal("100000000");
@@ -75,10 +81,10 @@ public class UserCouponsFuncTest extends FunctionalTest {
         eCoupon.order.save();
 
 
-        Map<String,String> params = new HashMap<>();
-        params.put("applyNote","我要退款");
+        Map<String, String> params = new HashMap<>();
+        params.put("applyNote", "我要退款");
 
-        Http.Response response = POST("/coupons/refund/"+id,params);
+        Http.Response response = POST("/coupons/refund/" + id, params);
         assertIsOk(response);
         eCoupon = ECoupon.findById(id);
         eCoupon.refresh();
@@ -86,9 +92,9 @@ public class UserCouponsFuncTest extends FunctionalTest {
     }
 
     @Test
-    public void testSendMessage(){
+    public void testSendMessage() {
         long id = (Long) Fixtures.idCache.get("models.order.ECoupon-ecoupon_001");
-        Http.Response response = GET("/coupons-message/"+id+"/send");
+        Http.Response response = GET("/coupons-message/" + id + "/send");
         assertIsOk(response);
     }
 

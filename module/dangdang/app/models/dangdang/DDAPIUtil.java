@@ -121,7 +121,7 @@ public class DDAPIUtil {
      * @param data xml格式
      */
     public static Response sendSMS(String data) throws DDAPIInvokeException {
-        Logger.info("[DDSendMessageAPI] sendMsg begin]"+data);
+        Logger.info("[DDSendMessageAPI] sendMsg begin]" + data);
         Response response = new Response();
         response.ver = VER;
         response.spid = SPID;
@@ -144,12 +144,14 @@ public class DDAPIUtil {
             if (outerOrder == null || outerOrder.ybqOrder == null) {
                 response.errorCode = ErrorCode.ORDER_NOT_EXITED;
                 response.desc = "没找到对应的当当订单!";
+                Logger.error("[DDSendMessageAPI]" + response.desc);
                 return response;
             }
             Resaler resaler = Resaler.find("loginName=? and status=?", DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
             if (resaler == null) {
                 response.errorCode = ErrorCode.USER_NOT_EXITED;
                 response.desc = "当当用户不存在！";
+                Logger.error("[DDSendMessageAPI]" + response.desc);
                 return response;
             }
 
@@ -157,6 +159,7 @@ public class DDAPIUtil {
             if (ybqOrder == null) {
                 response.errorCode = ErrorCode.ORDER_NOT_EXITED;
                 response.desc = "没找到对应的订单";
+                Logger.error("[DDSendMessageAPI]" + response.desc);
                 return response;
             }
 
@@ -165,12 +168,14 @@ public class DDAPIUtil {
             if (coupon == null) {
                 response.errorCode = ErrorCode.COUPON_SN_NOT_EXISTED;
                 response.desc = "没找到对应的券号";
+                Logger.error("[DDSendMessageAPI]" + response.desc);
                 return response;
             }
             //最多发送三次短信，发送失败，则返回0
             if (!ECoupon.sendUserMessage(coupon.id)) {
                 response.errorCode = ErrorCode.MESSAGE_SEND_FAILED;
-                response.desc = "短信发送失败";
+                response.desc = "短信发送失败(消费者只有三次发送短信的机会！)";
+                Logger.error("[DDSendMessageAPI]" + response.desc);
                 return response;
             }
 

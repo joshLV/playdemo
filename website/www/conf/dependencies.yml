@@ -37,7 +37,7 @@ require:
     - emaillogs -> emaillogs
     - cache_helper -> cache_helper
     - dangdang -> dangdang
-
+    - commons-httpclient -> commons-httpclient 3.1
 repositories:
 
     - mavenRepository:
@@ -46,6 +46,7 @@ repositories:
         contains:
             - com.uhuila.utils -> *
             - commons-lang -> *
+            - commons-httpclient -> *
             - org.jsoup -> *
         m2compatible: true
 

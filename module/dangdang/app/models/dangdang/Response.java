@@ -75,7 +75,7 @@ public class Response implements Serializable {
      * @return
      */
     public boolean success() {
-        return errorCode!= null && errorCode.equals(ErrorCode.SUCCESS);
+        return errorCode != null && errorCode.equals(ErrorCode.SUCCESS);
     }
 
     public void addAttribute(String key, Object value) {

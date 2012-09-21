@@ -197,15 +197,21 @@ public class PromoteRebate extends Model {
         return p;
     }
 
+    /**
+     * 得到部分隐藏的用户名
+     * @return
+     */
     public String getMaskedLoginName() {
         StringBuilder sn = new StringBuilder();
         String loginName = this.invitedUser.loginName;
         int len = loginName.length();
         if (len > 5) {
-            for (int i = 2; i < len - 5; i++) {
+            sn.append(loginName.substring(0,1));
+            System.out.println(sn);
+            for (int i = 0; i < 3; i++) {
                 sn.append("*");
             }
-            sn.append(loginName.substring(len - 5, len));
+            sn.append(loginName.substring(4));
         }
         return sn.toString();
     }

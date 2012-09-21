@@ -854,6 +854,7 @@ public class ECoupon extends Model {
      */
     public static boolean sendUserMessage(long id) {
         ECoupon eCoupon = ECoupon.findById(id);
+
         boolean sendFlag = false;
         if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED
                 && eCoupon.downloadTimes > 0 && eCoupon

@@ -60,7 +60,7 @@ order.ECoupon(coupon2):
   "expireAt": "2092-03-30T00:00:00"
 order.ECoupon(coupon3):
   "order": "order1"
-  "eCouponSn": "1234567002"
+  "eCouponSn": "1234567003"
   "faceValue": "10.0"
   "originalPrice": "10.0"
   "resalerPrice": "11.0"
