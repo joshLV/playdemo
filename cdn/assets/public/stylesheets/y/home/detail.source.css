@@ -340,6 +340,9 @@
     color: #fff;
     background: #f60;
 }
+.tab-item {
+  clear: both;
+}
 
 #consult .hd {
     text-indent: 0;
