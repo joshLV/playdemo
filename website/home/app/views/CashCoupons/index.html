@@ -14,7 +14,11 @@
 
         #{form @CashCoupons.charge(), method:'POST', class:''}
         <label>请输入券号</label>
-        <input type="text" name="couponCode">
+        <input type="text" name="couponCode"><br/>
+        <label>验证码</label>
+        <input type="text" name="code">
+        <input type="hidden" name="randomID" value="${randomID}">
+        <img src="@{CaptchaProvider.captcha(randomID)}" alt="验证码">
         <button type="submit">充值</button>
         #{/form}
     </div>
