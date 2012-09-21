@@ -27,13 +27,14 @@ require:
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
     - dangdang -> dangdang
-
+    - commons-httpclient -> commons-httpclient 3.1
 repositories:
     - mavenRepository:
         type:       iBiblio
         root:       "http://dev.uhuila.cn/nexus/content/groups/public"
         contains:
             - com.uhuila.utils -> *
+            - commons-httpclient -> *
             - org.jsoup -> *
         m2compatible: true
 
