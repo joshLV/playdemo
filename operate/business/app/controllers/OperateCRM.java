@@ -34,6 +34,12 @@ public class OperateCRM extends Controller {
 
     public static void index(String phone, CRMCondition condition, Long userId, Long consultId, String consultStatus) {
 //        System.out.println("Index phone"+phone);
+
+        if (condition != null)
+            userId = condition.userId;
+//        System.out.println("userId" + userId);
+
+
         int times = 0;
 //        System.out.println("consultStatus11111"+consultStatus);
 //        System.out.println("consultconsultconsultconsult"+consult);
@@ -159,6 +165,8 @@ public class OperateCRM extends Controller {
 //        System.out.println("userId"+userId);
 //        System.out.println("consultStatus"+consultStatus);
 //        System.out.println("userId"+userId);
+//        System.out.println("tempsave userId"+userId);
+//        System.out.println("user  id"+user.id);
         String tempPhone = consult.phone;
         String tempText = consult.text;
         ConsultType tempConsultType = consult.consultType;
@@ -248,7 +256,11 @@ public class OperateCRM extends Controller {
 //        System.out.println("phone"+phone);
 //        System.out.println("qqqqqqq");
 //        System.out.println("consult.phone" + consult.phone);
-        System.out.println("consultId" + consultId);
+//        System.out.println("save userId" + userId);
+
+            user = User.findById(userId);
+//        System.out.println("user  id" + user.id);
+//        System.out.println("consultId" + consultId);
 
         String tempText = consult.text;
         ConsultType tempConsultType = consult.consultType;

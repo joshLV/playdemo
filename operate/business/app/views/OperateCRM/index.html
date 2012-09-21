@@ -590,7 +590,7 @@
     <a class="btn btn-primary" id="abandon" onclick="abandon('${consultId}')" type="button">放弃</a>
 
     #{list items: consultContent, as:'consult'}
-
+    #{if consult.userId==userId}
     *{#{if consult?.phone==phone}}*
 
     <div>
@@ -631,6 +631,7 @@
 
     *{#{/if}}*
     *{#{/if}}*
+    #{/if}
     #{/list}
 
 
