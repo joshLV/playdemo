@@ -59,7 +59,7 @@ public class ZtSMSProvider implements SMSProvider {
         */
         qparams.add(new BasicNameValuePair("content", message.getContent()));
         qparams.add(new BasicNameValuePair("mobile", phoneArgs));
-        String url = SEND_URL.replace(":sms_info", URLEncodedUtils.format(qparams, "GBK"));
+        String url = SEND_URL.replace(":sms_info", URLEncodedUtils.format(qparams, "UTF-8"));
 
         //准备http请求
         DefaultHttpClient httpclient = new DefaultHttpClient();
