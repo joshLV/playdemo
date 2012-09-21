@@ -9,7 +9,6 @@ import org.scribe.up.session.UserSession;
 import org.scribe.utils.OAuthEncoder;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.net.URLEncoder;
 import java.util.Map;
 
 
@@ -55,7 +54,7 @@ public abstract class AbstractOAuth20Provider extends BaseOAuth20Provider {
     public OAuthCredential extractCredentialFromParameters(UserSession session, Map<String, String[]> parameters) {
         String[] state = parameters.get("state");
         for (String key : parameters.keySet()) {
-            System.out.println("????????????????????    " + key + ":" + parameters.get(key));
+            System.out.println("????????????????????    " + key + ":" + parameters.get(key).toString());
         }
         if (state == null) {
             state = parameters.get("service");
