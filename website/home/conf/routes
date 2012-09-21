@@ -29,7 +29,7 @@ POST     /user-info                                    UserInfos.update
 GET      /user-edit                                     UserInfos.edit
 
 POST     /user-info/send                               UserInfos.sendValidCode
-GET      /user-sequences                               Usersequences.index
+GET      /user-sequences                               UserSequences.index
 #收货地址
 GET     /addresses                                    UserAddresses.index
 POST    /addresses                                    UserAddresses.create
@@ -58,7 +58,8 @@ POST    /withdraw/apply                                 UserWithdraw.create
 
 # 现金券
 GET     /cash-coupon                                    CashCoupons.index
-POST    /cash-coupon                                    CashCoupons.charge
+POST    /cash-coupon/verify                             CashCoupons.verify
+POST    /cash-coupon/use                                CashCoupons.useCoupon
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
