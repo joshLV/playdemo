@@ -22,7 +22,7 @@ import java.util.*;
  *
  * Date: 12-8-29
  */
-//@Every("1mn")
+@Every("1mn")
 public class OrderListener extends Job{
     private static String ORDER_DATE = "yyyy-MM-dd HH:mm:ss";
     public static final boolean ON = Play.configuration.getProperty("yihaodian.listener", "off").toLowerCase().equals("on");

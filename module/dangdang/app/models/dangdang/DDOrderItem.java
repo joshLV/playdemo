@@ -53,8 +53,9 @@ public class DDOrderItem extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
-    public DDOrderItem(DDOrder order, Goods goods, Integer buyNumber, String phone, BigDecimal salePrice, OrderItems ybqOrderItem) {
+    public DDOrderItem(DDOrder order, Long ddgid, Goods goods, Integer buyNumber, String phone, BigDecimal salePrice, OrderItems ybqOrderItem) {
         this.order = order;
+        this.ddgid = ddgid;
         this.spgid = goods.id;
         this.goodsName = goods.name;
         this.originalPrice = goods.originalPrice;

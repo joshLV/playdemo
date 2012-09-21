@@ -4,6 +4,8 @@ package models.dangdang;
 import models.accounts.AccountType;
 import models.order.ECoupon;
 import models.order.Order;
+import models.resale.Resaler;
+import models.resale.ResalerStatus;
 import models.sales.Goods;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.httpclient.HttpClient;
@@ -13,11 +15,9 @@ import org.dom4j.Element;
 import play.Logger;
 import play.Play;
 
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedMap;
+import java.util.*;
 
 /**
  * 当当API工具类.
@@ -35,6 +35,7 @@ public class DDAPIUtil {
     private static final String SYNC_URL = Play.configuration.getProperty("dangdang.sync_url", "http://tuanapi.dangdang.com/team_open/public/push_team_stock.php");
     private static final String QUERY_CONSUME_CODE_URL = Play.configuration.getProperty("dangdang.query_consume_code_url", "http://tuanapi.dangdang.com/team_open/public/query_consume_code.php");
     private static final String VERIFY_CONSUME_URL = Play.configuration.getProperty("dangdang.verify_consume_url", "http://tuanapi.dangdang.com/team_open/public/verify_consume.php");
+    public static final String DD_LOGIN_NAME = Play.configuration.getProperty("dangdang.resaler_login_name", "dangdang");
 
     /**
      * 返回一百券系统中商品总销量.
@@ -115,6 +116,7 @@ public class DDAPIUtil {
      * @param data xml格式
      */
     public static Response sendSMS(String data) throws DDAPIInvokeException {
+        Logger.info("[DDSendMessageAPI] sendMsg begin]");
         Response response = new Response();
         response.ver = VER;
         response.spid = SPID;
@@ -122,30 +124,42 @@ public class DDAPIUtil {
             Request request = new Request();
             request.parse(data);
             //取得data节点中的数据信息
-            Map<String, String> dataMap = request.getParams();
+            Map<String, String> dataMap = request.params;
             Long orderId = Long.parseLong(dataMap.get("order_id"));
+
             Long ddgid = Long.parseLong(dataMap.get("ddgid"));
             Long spgid = Long.parseLong(dataMap.get("spgid"));
-            String userCode = dataMap.get("user_code");
-            String receiveMobile = dataMap.get("receiveMobile");
-            String consumeId = dataMap.get("consumeId");
 
+            String userCode = dataMap.get("user_code");
+            String receiveMobile = dataMap.get("receiver_mobile_tel");
+            String consumeId = dataMap.get("consume_id");
+//            spgid = Long.valueOf("271");
+//            userCode = "9";
+            Logger.info("/n  orderId=" + orderId + "&ddgid=" + ddgid + "&spgid=" + spgid + "&userCode=" + userCode + "&=receiveMobile" + receiveMobile + "&=consumeId" + consumeId);
             //根据当当订单编号，查询订单是否存在
-            DDOrder ddOrder = DDOrder.find("orderId=?", ddgid).first();
+            DDOrder ddOrder = DDOrder.find("orderId=?", orderId).first();
+
             if (ddOrder == null || ddOrder.ybqOrder == null) {
                 response.errorCode = ErrorCode.ORDER_NOT_EXITED;
-                response.desc = "没找到对应的订单";
+                response.desc = "没找到对应的当当订单";
+                return response;
+            }
+            Resaler resaler = Resaler.find("loginName=? and status=?", DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
+            if (resaler == null) {
+                response.errorCode = ErrorCode.USER_NOT_EXITED;
+                response.desc = "当当用户不存在！";
                 return response;
             }
 
-            Order ybqOrder = Order.find("orderNumber= ? and userId=? and userType=?", ddOrder.ybqOrder.orderNumber, Long.parseLong(userCode), AccountType.RESALER).first();
+            Order ybqOrder = Order.find("orderNumber= ? and userId=? and userType=?", ddOrder.ybqOrder.orderNumber, resaler.id, AccountType.RESALER).first();
             if (ybqOrder == null) {
                 response.errorCode = ErrorCode.ORDER_NOT_EXITED;
                 response.desc = "没找到对应的订单";
                 return response;
             }
+
             Goods goods = Goods.findById(spgid);
-            ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and phone=? and goods=?", ybqOrder, consumeId, receiveMobile, goods).first();
+            ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and goods=?", ybqOrder, consumeId, goods).first();
             if (coupon == null) {
                 response.errorCode = ErrorCode.COUPON_SN_NOT_EXISTED;
                 response.desc = "没找到对应的券号";
@@ -165,8 +179,9 @@ public class DDAPIUtil {
             response.addAttribute("ddOrderId", orderId);
             response.addAttribute("ybqOrderId", coupon.order.orderNumber);
 
+            System.out.println(response.errorCode + ">>>>>>>>>>>>>");
         } catch (Exception e) {
-            throw new DDAPIInvokeException(e.getMessage());
+            throw new DDAPIInvokeException("[DangDang API] invoke send message error");
         }
         return response;
 
@@ -198,7 +213,6 @@ public class DDAPIUtil {
         postMethod.addParameter("call_time", time);
         postMethod.addParameter("data", request);
         String sign = getSign(request, time, apiName);
-        Logger.info("\nsign   ====" + sign);
         postMethod.addParameter("sign", sign);
         try {
             //执行postMethod
@@ -216,7 +230,6 @@ public class DDAPIUtil {
     }
 
     public static String getSign(String data, String time, String apiName) {
-
         final String unsignedData = SPID + apiName + VER + data + SECRET_KEY + time;
         System.out.println("\nunsignedData   ====              [" + unsignedData + "]");
         final String signed = DigestUtils.md5Hex(unsignedData);
@@ -231,18 +244,19 @@ public class DDAPIUtil {
      * @param sign
      * @return
      */
-    public static boolean validSign(Map<String, String> params, String sign) {
+    public static boolean validSign(SortedMap<String, String> params, String sign) {
         StringBuilder signStr = new StringBuilder();
-        for (SortedMap.Entry<String, String> entry : params.entrySet()) {
+        for (Map.Entry<String, String> entry : params.entrySet()) {
             if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
                 continue;
             }
             System.out.println(entry.getKey() + "------------------" + entry.getValue());
-            signStr.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+            signStr.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue())).append("&");
         }
+
         signStr.append("secret_key=").append(SECRET_KEY);
-        System.out.println(">>>>>>>>" + DigestUtils.md5Hex(signStr.toString()));
         return DigestUtils.md5Hex(signStr.toString()).equals(sign);
+
     }
 
     /**
@@ -251,12 +265,13 @@ public class DDAPIUtil {
      * @param params
      * @return
      */
-    public static Map<String, String> filterPlayParameter(Map<String, String[]> params) {
-        Map<String, String> result = new HashMap<>();
+    public static SortedMap<String, String> filterPlayParameter(Map<String, String[]> params) {
+        SortedMap<String, String> result = new TreeMap<>();
         for (Map.Entry<String, String[]> entry : params.entrySet()) {
-            if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
+            if ("body".equals(entry.getKey()) || "format".equals(entry.getKey())) {
                 continue;
             }
+            System.out.println(entry.getKey() + "【----】" + entry.getValue()[0]);
             if (entry.getValue() == null) {
                 result.put(entry.getKey(), "");
             } else {

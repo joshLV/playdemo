@@ -58,7 +58,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
 //        params.put("options", goods.id + ":" + "1");
 //        String sign = getSign(params);
 //        params.put("sign", sign);
-//        Http.Response response = POST("/ddApi/order/create", params);
+//        Http.Response response = POST("/ddApi/order", params);
 //        assertStatus(200, response);
 //        Order order = (Order) renderArgs("order");
 //        String id = (String) renderArgs("id");

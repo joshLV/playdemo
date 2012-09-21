@@ -3,6 +3,7 @@ package controllers;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.dangdang.*;
+import models.order.ECoupon;
 import models.order.NotEnoughInventoryException;
 import models.order.Order;
 import models.order.OrderItems;
@@ -18,7 +19,8 @@ import play.mvc.Controller;
 
 import javax.persistence.LockModeType;
 import java.math.BigDecimal;
-import java.util.Map;
+import java.util.List;
+import java.util.SortedMap;
 
 /**
  * <p/>
@@ -29,25 +31,25 @@ import java.util.Map;
 public class DDOrderAPI extends Controller {
     public static String DD_LOGIN_NAME = Play.configuration.getProperty("dangdang.resaler_login_name", "dangdang");
 
-    public static void order(String sign) {
+    public static void order() {
+        Logger.info("[DDOrderAPI] begin ");
         //取得参数信息 必填信息
-        Map<String, String> params = DDAPIUtil.filterPlayParameter(request.params.all());
-        String id = params.get("id");
-        String all_amount = params.get("all_amount");
-        String amount = params.get("amount");
-        String user_mobile = params.get("user_mobile");
-        String options = params.get("options");
-        String express_memo = params.get("express_memo");
-        String express_fee = params.get("express_fee");
-        String user_id = params.get("user_id");
-        String kx_order_id = params.get("kx_order_id");
-
+        SortedMap<String, String> params = DDAPIUtil.filterPlayParameter(request.params.all());
+        Long ddgid = Long.valueOf(params.get("id"));
+        String all_amount = StringUtils.isBlank(params.get("all_amount")) ? "0" : StringUtils.trimToEmpty(params.get("all_amount"));
+        String amount = StringUtils.isBlank(params.get("amount")) ? "0" : StringUtils.trimToEmpty(params.get("amount"));
+        String user_mobile = StringUtils.trimToEmpty(params.get("user_mobile"));
+        String options = StringUtils.trimToEmpty(params.get("options"));
+        String express_memo = StringUtils.trimToEmpty(params.get("express_memo"));
+        String express_fee = StringUtils.trimToEmpty(params.get("express_fee"));
+        String user_id = StringUtils.trimToEmpty(params.get("user_id"));
+        String kx_order_id = StringUtils.trimToEmpty(params.get("kx_order_id"));
+        String sign = StringUtils.trimToEmpty(params.get("sign")).toLowerCase();
         ErrorInfo errorInfo = new ErrorInfo();
         //检查参数
-        if (StringUtils.isBlank(params.get("user_mobile")) || StringUtils.isBlank(user_id)) {
-            Logger.error("invalid userInfo: %s", user_id);
+        if (StringUtils.isBlank(user_mobile) || StringUtils.isBlank(user_id)) {
             errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
-            errorInfo.errorDes = "用户不存在！";
+            errorInfo.errorDes = "用户或手机不存在！";
             Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
             render("/DDOrderAPI/error.xml", errorInfo);
         }
@@ -58,18 +60,10 @@ public class DDOrderAPI extends Controller {
             errorInfo.errorDes = "订单不存在！";
             Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
             render("/DDOrderAPI/error.xml", errorInfo);
-
-        }
-        if (StringUtils.isBlank(sign)) {
-            Logger.error("invalid sign: %s", sign);
-            errorInfo.errorCode = ErrorCode.VERIFY_FAILED;
-            errorInfo.errorDes = "sign不存在！";
-            Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
-            render("/DDOrderAPI/error.xml", errorInfo);
         }
 
         //校验参数
-        if (!DDAPIUtil.validSign(params, sign)) {
+        if (StringUtils.isBlank(sign) || !DDAPIUtil.validSign(params, sign)) {
             errorInfo.errorCode = ErrorCode.VERIFY_FAILED;
             errorInfo.errorDes = "sign验证失败！";
             Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
@@ -78,9 +72,9 @@ public class DDOrderAPI extends Controller {
 
         //定位请求者
         Resaler resaler = Resaler.find("loginName=? and status=?", DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
-        if (resaler == null || resaler.status != ResalerStatus.APPROVED) {
+        if (resaler == null) {
             errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
-            errorInfo.errorDes = "用户不存在！";
+            errorInfo.errorDes = "当当分销商用户不存在！";
             Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
             render("/DDOrderAPI/error.xml", errorInfo);
         }
@@ -91,7 +85,9 @@ public class DDOrderAPI extends Controller {
         if (ddOrder != null && ddOrder.ybqOrder != null) {
             order = Order.findOneByUser(ddOrder.ybqOrder.orderNumber, resaler.id, AccountType.RESALER);
             if (order != null) {
-                render(order, id, kx_order_id);
+                Logger.info("[DDOrderAPI] order has existed,and render xml");
+                List<ECoupon> eCouponList = order.eCoupons;
+                render(order, ddgid, kx_order_id, eCouponList);
             }
         }
         //产生DD订单
@@ -105,7 +101,6 @@ public class DDOrderAPI extends Controller {
         }
 
         JPA.em().refresh(ddOrder, LockModeType.PESSIMISTIC_WRITE);
-
         order = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
 
         //分解有几个商品，每个商品购买的数量
@@ -135,25 +130,15 @@ public class DDOrderAPI extends Controller {
         order.discountPay = BigDecimal.ZERO;
         order.payMethod = PaymentSource.getBalanceSource().code;
         order.payAndSendECoupon();
-        ddOrder.status = DDOrderStatus.ORDER_SEND;
-        order.save();
         //设置当当订单中的一百券订单
         ddOrder.ybqOrder = order;
         for (OrderItems ybqItem : order.orderItems) {
             //创建当当的订单Items
-            try {
-                ddOrder.addOrderItem(ybqItem.goods, Integer.parseInt(arrGoodsItem[1]), user_mobile, ybqItem.resalerPrice, ybqItem);
-                ddOrder.save();
-            } catch (NotEnoughInventoryException e) {
-                Logger.info("inventory not enough");
-                errorInfo.errorCode = ErrorCode.INVENTORY_NOT_ENOUGH;
-                errorInfo.errorDes = "库存不足！";
-                render(errorInfo);
-            }
+            ddOrder.addOrderItem(ybqItem.goods, ddgid, Integer.parseInt(arrGoodsItem[1]), user_mobile, ybqItem.resalerPrice, ybqItem).save();
         }
-
-        ddOrder.createAndUpdateInventory();
-
-        render(order, id, kx_order_id);
+        ddOrder.status = DDOrderStatus.ORDER_FINISH;
+        ddOrder.save();
+        Logger.info("/n [DDOrderAPI] begin ");
+        render(order, ddgid, kx_order_id);
     }
 }

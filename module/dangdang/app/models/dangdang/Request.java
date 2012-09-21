@@ -5,6 +5,8 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -17,28 +19,31 @@ public class Request {
     /**
      * 当当请求我们接口传来的参数
      */
-    public static Map<String, String> params;
-    private String requestBodyAsString;
+    public Map<String, String> params = new HashMap<>();
+
 
     /**
      * 解析data节点的数据
      *
      * @param requestBodyAsString
-     * @throws DocumentException
+     * @throws org.dom4j.DocumentException
      */
     public void parse(String requestBodyAsString) throws DocumentException {
-        Document document = DocumentHelper.parseText(requestBodyAsString);
-        Element root = document.getRootElement();
-        params.put("orderId", root.elementText("order_id"));
-        params.put("ddgid", root.elementText("ddgid"));
-        params.put("spgid", root.elementText("spgid"));
-        params.put("userCode", root.elementText("user_code"));
-        params.put("receiveMobile", root.elementText("receiveMobile"));
-        params.put("consumeId", root.elementText("consumeId"));
-    }
 
-    public Map<String, String> getParams() {
-        return params;
+        Document document = DocumentHelper.parseText(requestBodyAsString);
+
+        Element root = document.getRootElement();
+        Iterator iter = root.elementIterator("order"); // 获取根节点下的子节点order
+        // 遍历order节点
+        while (iter.hasNext()) {
+            Element recordEle = (Element) iter.next();
+            params.put("order_id", recordEle.elementText("order_id"));
+            params.put("ddgid", recordEle.elementText("ddgid"));
+            params.put("spgid", recordEle.elementText("spgid"));
+            params.put("user_code", recordEle.elementText("user_code"));
+            params.put("receiver_mobile_tel", recordEle.elementText("receiver_mobile_tel"));
+            params.put("consume_id", recordEle.elementText("consume_id"));
+        }
     }
 
 }

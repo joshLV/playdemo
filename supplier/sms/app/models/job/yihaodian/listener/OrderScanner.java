@@ -4,6 +4,7 @@ import models.yihaodian.JobFlag;
 import models.yihaodian.YihaodianJobMessage;
 import models.yihaodian.YihaodianOrder;
 import models.yihaodian.YihaodianQueueUtil;
+import play.jobs.Every;
 import play.jobs.Job;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * @author likang
  *         Date: 12-9-7
  */
-//@Every("1mn")
+@Every("1mn")
 public class OrderScanner extends Job {
     @Override
     public void doJob() {

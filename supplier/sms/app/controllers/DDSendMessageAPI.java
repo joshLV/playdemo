@@ -4,8 +4,10 @@ import models.dangdang.DDAPIInvokeException;
 import models.dangdang.DDAPIUtil;
 import models.dangdang.ErrorCode;
 import models.dangdang.Response;
+import play.Logger;
 import play.Play;
 import play.mvc.Controller;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.Map;
 
@@ -21,26 +23,18 @@ public class DDSendMessageAPI extends Controller {
     private static final String API_NAME = "send_msg";
 
     public static void sendMessage() {
+        Logger.info("[DDSendMessageAPI] begin ");
         //取得参数信息 必填信息
         Map<String, String> params = DDAPIUtil.filterPlayParameter(request.params.all());
         //取得参数信息
-        String sign = params.get("sign");
-        String data = params.get("data");
-        String time = params.get("time");
-        if (sign.equals(DDAPIUtil.getSign(data, time, API_NAME))) {
-            //当当调用接口
-            Response response;
-            try {
-                response = DDAPIUtil.sendSMS(data);
-            } catch (DDAPIInvokeException e) {
-                response = new Response();
-                response.spid = SPID;
-                response.ver = VER;
-                response.errorCode = ErrorCode.PARSE_XML_FAILED;
-                response.desc = "解析请求参数失败！";
-            }
-            render(response);
-        } else {
+        String sign = StringUtils.trimToEmpty(params.get("sign")).toLowerCase();
+        String data = StringUtils.trimToEmpty(params.get("data"));
+        String time = StringUtils.trimToEmpty(params.get("call_time"));
+        System.out.println("params.sign====" + sign.toLowerCase());
+        String verifySign = DDAPIUtil.getSign(data, time, API_NAME);
+        System.out.println("verifySign====" + verifySign);
+        if (StringUtils.isBlank(sign) || !sign.equals(verifySign)) {
+            Logger.info("[DDSendMessageAPI] sign failed ");
             Response response = new Response();
             response.spid = SPID;
             response.ver = VER;
@@ -48,6 +42,20 @@ public class DDSendMessageAPI extends Controller {
             response.desc = "验证sign失败！";
             render(response);
         }
-    }
 
+        //当当调用接口
+        Response response;
+        try {
+            response = DDAPIUtil.sendSMS(data);
+        } catch (DDAPIInvokeException e) {
+            Logger.error("[DDSendMessageAPI]" + e.getMessage());
+            response = new Response();
+            response.spid = SPID;
+            response.ver = VER;
+            response.errorCode = ErrorCode.PARSE_XML_FAILED;
+            response.desc = "解析请求参数失败！";
+        }
+        Logger.info("[DDSendMessageAPI] end!");
+        render(response);
+    }
 }
