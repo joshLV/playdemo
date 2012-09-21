@@ -111,7 +111,7 @@
     </tr>
     </thead>
     <tbody>
-    *{#{list items: searchUserList,addressList, as:'searchUser','addressList'}}*
+
         #{set j:0/}
         #{list items: searchUserList, as:'searchUser'}
             #{set i:1/}
@@ -131,24 +131,19 @@
             <td>${searchUser?.promotionAmountMoney()?.formatCurrency('CNY')}</td>
             <td>${searchUser?.userInfo?.totalPoints}</td>
             <td>
-            *{#{list items: addressList, as:'addressList'}}*
 
-            *{${addressList?.get(j)?.address}}*
-                ${addressMap?.get(searchUser.id)?.address}
+            ${addressMap?.get(searchUser.id)?.address}
             </td>
             <td>
                 #{list items: userList, as:'boundUser'}
-                *{ttttt    ${boundUser.id}}*
-                *{ssss     ${searchUser.id}}*
 
                     #{if boundUser.id!=searchUser.id}
                         #{set i++/}
                     #{/if}
-                *{iii${i}}*
+
                 #{/list}
                 #{if i!=userList.size()}
-                *{phone       ${phone}}*               *{searchUser.id   ${searchUser.id}}*
-                *{loginName       ${searchUser.loginName}}*
+
                     <a href="javascript:void(openW('/crm/bind_search_user?phone=${phone}&userId=${searchUser.id}&loginName=${searchUser.loginName}'))">绑定</a>
                 #{/if}
 
@@ -157,7 +152,7 @@
         </tr>
             #{set j++/}
         #{/list}
-    *{#{/list}}*
+
     </tbody>
 </table>
 
@@ -191,28 +186,18 @@
 
 
         <tr>
-
-
             <td rowspan="${order?.orderItems?.size()}"><a href="@{OperateOrders.details(order?.id)}"
                                                           target="_blank">${order.orderNumber}
 
-            *{<a href="memberCallBind.html" onclick="openwin('${phone}')">open</a>}*
-
             </td>
-
-
-
-
 
         *{有实物券时}*
             #{if order.realGoods?.size()>0}
                 <td>
                     #{if models.sales.MaterialType.ELECTRONIC.equals(order.realGoods?.get(0)?.materialType)}
-                    *{<img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}">}*
                     ${order.realGoods?.get(0)?.name}
                     #{/if}
                         #{else}
-                *{<img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}">}*
                 ${order.realGoods?.get(0)?.name}
                 #{/else}
                 </td>
@@ -238,7 +223,6 @@
             *{有电子券时}*
                 #{if order.electronicGoods?.size()>0}
                     <td>
-                    *{<img src="${order.electronicGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}">}*
                     ${order.electronicGoods.get(0).name}&nbsp;
                     </td>
                     <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
@@ -249,12 +233,9 @@
                 #{/else}
             #{/else}
 
-
-
             <td rowspan="${order?.orderItems?.size()}">${order.amount?.formatCurrency('CNY')}</td>
             <td rowspan="${order?.orderItems?.size()}">${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
 
-        *{<td rowspan="${order?.orderItems?.size()}"><a href="@{OperateOrders.details(order.id)}">查看</a></td>}*
         </tr>
 
             #{set i:0/}
@@ -263,8 +244,6 @@
                 #{list items:order.realGoods, as:'aRealGoods'}
                     #{if i>0}
                     <tr test="i=${i}">
-                    *{<td><img src="${aRealGoods?.imageTinyPath}"><img}*
-                                *{src="@@{'/public/images/real-goods.png'}">${aRealGoods?.name}</td>}*
                     </tr>
                     #{/if}
                     #{set i:i+1/}
@@ -276,8 +255,6 @@
             #{list items:order.electronicGoods, as:'aElectronicGoods'}
                 #{if (order.realGoods?.size()==0 && j>0) ||(order.realGoods?.size()>0) }
                 <tr>
-                *{<td><img src="${aElectronicGoods.imageTinyPath}"><img}*
-                *{src="@@{'/public/images/electronic-goods.png'}">${aElectronicGoods?.name}</td>}*
                     #{if showElectronicStatus && order.realGoods?.size()>0}
                         <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
                         #{set showElectronicStatus:false/}
@@ -303,8 +280,6 @@
 #{else}
 没有订单信息
 #{/else}
-
-
 
 *{券}*
 
@@ -347,14 +322,9 @@
 
                 #{/list}
                 #{if i==0}
-
-                *{#{if bind.consultId!=consultId && coupon.id!=bind.couponId}}*
-
                     consult.text${consult?.text}
                     <a type="submit"
                        href="javascript:void(openW('/crm/bind?phone=${phone}&consult.text=${consult?.text}&couponId=${coupon.id}&userId=${coupon.order.userId}&consultId=${consultId}'))">绑定</a>
-                *{#{/if}}*
-
                 #{/if}
 
 
@@ -507,7 +477,6 @@
 
         #{if userList.size()>1}
             切换用户
-        *{value: condition?.userId  }*
             #{select 'condition.userId', id:userId, class:'select', value:userId, onchange:"refresh('${phone}','${consultId}')"}
 
                 #{list items:userList, as:'userList'}
@@ -561,18 +530,17 @@
 
 #{form @OperateCRM.tempSave(), method: 'POST',id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
     <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
-*{aaaaa${phone}}*
     <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
+    consultId :       ${consultId}
     <input type="hidden" type="text" name="userId" id="consultUserId" value="${userId}"/>
     <input type="hidden" type="text" name="consultStatus" id="consultStatus" value="${consultStatus}"/>
+    <input type="hidden" name="condition.searchUser" class="input-medium" value="${condition?.searchUser}"
+    <input type="hidden" name="condition.searchOrderCoupon" class="input-medium" value="${condition?.searchOrderCoupon}"/>
 
-*{${condition.userId}}*
 
     #{if user!=null}
         <input type="hidden" type="text" name="user.id" id="user" value="${user.id}"/>
     #{/if}
-
-*{<input type="hidden" type="text" name="user" id="user" value="${user}"/>}*
 
     咨询类型
     #{select 'consult.consultType', value:consult?.consultType, id:'consult_type',class:'span4'}
@@ -583,7 +551,7 @@
         #{option models.sales.ConsultType.QUESTIION}&{'consult.QUESTIION'}#{/option}
         #{option models.sales.ConsultType.FEEDBACK}&{'consult.FEEDBACK'}#{/option}
     #{/select}
-*{required="required"}*
+
     <textarea rows="3" cols="20" name="consult.text" id="consult_text"
               value="${consult?.text}">${consult?.text}</textarea>
 
@@ -593,19 +561,13 @@
     <input class="btn btn-primary" id="save" type="submit" #{if !org.apache.commons.lang.StringUtils.isNotBlank(phone)}
            disabled="disabled" #{/if}value="临时保存"/>
 
-*{<input class="btn btn-primary" id="finish"}*
-*{type="submit" value="结束会话"/>}*
-*{finish ${consultId}}*
     <a class="btn btn-primary" id="finish" type="button">结束会话</a>
 
-*{<input class="btn btn-primary" id="abandon"}*
-*{type="submit" #{if !org.apache.commons.lang.StringUtils.isNotBlank(phone)}}*
-*{disabled="disabled" #{/if}value="放弃"/>}*
     <a class="btn btn-primary" id="abandon" onclick="abandon('${consultId}')" type="button">放弃</a>
 
     #{list items: consultContent, as:'consult'}
         #{if consult.userId==userId}
-        *{#{if consult?.phone==phone}}*
+
 
         <div>
             <hr size="1" noshade="noshade" style="border:1px #cccccc dotted;">
@@ -616,8 +578,6 @@
 
             <span style="color:red">  &{'consult.'+consult?.consultType}   </span> :      ${consult?.text}
 
-
-        *{${consult.couponCallBindList}}*
             #{if consult.couponCallBindList.size()>0}
                 <br>
                 相关券咨询：
@@ -632,19 +592,6 @@
 
         ${consult?.createdBy}
 
-        *{#{if currentOperator.equals(consult.createdBy)}}*
-
-
-        *{<a id="edit" type="submit" href="/crm/${consult?.id}/edit"}*
-        *{target="_blank" style="float:right">&nbsp;修改 </a>}*
-
-        *{<span style="float:right">}*
-        *{#{vx.deleteLink id:consult?.id, name:consult?.id, action:"/crm"/} |}*
-        *{</span>}*
-        *{</div>}*
-
-        *{#{/if}}*
-        *{#{/if}}*
         #{/if}
     #{/list}
 
@@ -719,10 +666,10 @@
 
 
     $("#finish").click(function () {
-        var phone = $("#phone").val();
-        var consultId = $("#consultId").val();
-        var text = $("#consult_text").val();
-        var consultType = $("#consult_type").val();
+//        var phone = $("#phone").val();
+//        var consultId = $("#consultId").val();
+//        var text = $("#consult_text").val();
+//        var consultType = $("#consult_type").val();
 //        var id = $("#consultUserId").val();
 //
 //        if (id == undefined)
@@ -735,13 +682,13 @@
 //       alert("userId"+userId);
 
         if (userId == undefined)
-            $("#form").attr("action", "/callcenter/phone/record/save");
+        $("#form").attr("action", "/callcenter/phone/record/save");
 
 
         if (userId != undefined)
             $("#form").attr("action", "/callcenter/phone/record/save?phone=" + phone + "&consultId=" + consultId + "&userId=" + userId
                     + "&consult.text=" + text + "&consult.consultType=" + consultType);
-
+//
 
 //        $("#form").attr("action", "@OperateCRM.save()");
 
@@ -752,12 +699,6 @@
 
     });
 
-
-    //    function openwin() {
-    //    　　window.open("memberCallBind.html", "", "width=50,height=50");
-    //　　
-    //    }
-
 </script>
 
 
@@ -765,6 +706,5 @@
     function openW(v) {
         window.open(v, '', 'width=200,height=200,left=200,top=200,status=no,scrollbars=no,menubar=no,toolbar=no,resizable=no,location=no');
     }
-
 
 </script>
