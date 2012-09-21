@@ -8,9 +8,16 @@
 <center>
     绑定成功
     <FORM>
-        <INPUT TYPE='BUTTON' VALUE='关闭' onClick='window.close()'>
+        <INPUT onclick="bindRefresh()" TYPE='BUTTON' VALUE='关闭' onClick='window.close()'>
     </FORM>
 </center>
 
 </body>
 </html>
+
+<script>
+    function bindRefresh() {
+        window.opener.location.reload();
+        window.close();
+    }
+</script>

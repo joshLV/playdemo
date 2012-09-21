@@ -37,4 +37,7 @@ public class CouponCallBind extends Model {
     @JoinColumn(name = "consult_record")
     public ConsultRecord consultRecord;
 
+    @Column(name = "consult_id")
+    public long consultId;
+
 }

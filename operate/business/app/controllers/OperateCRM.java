@@ -34,9 +34,14 @@ public class OperateCRM extends Controller {
 
     public static void index(String phone, CRMCondition condition, Long userId, Long consultId, String consultStatus) {
 //        System.out.println("Index phone"+phone);
+//        if (userId == null)
+//            if (condition != null)
+//                if (condition.userId != null)
+//                    userId = condition.userId;
 
         if (condition != null)
-            userId = condition.userId;
+            if (condition.userId != null)
+                userId = condition.userId;
 //        System.out.println("userId" + userId);
 
 
@@ -97,6 +102,7 @@ public class OperateCRM extends Controller {
         } else {
 
 //            user = User.find("id=?", condition.userId).first();
+//            System.out.println("userId" + userId);
             if (userId != null)
                 user = User.find("id=?", userId).first();
             if (user == null) {
@@ -121,12 +127,18 @@ public class OperateCRM extends Controller {
 
 
 //        Address address = models.sales.ConsultCondition.findAddressByCondition(condition);
+        if (condition.searchUser == null)
+            if (phone != null)
+                condition.searchUser = phone;
 
+
+        System.out.println("condition.phone" + condition.searchUser);
         List<Order> orderList = ConsultCondition.findOrderByCondition(condition);
 
         List<ECoupon> eCoupons = ConsultCondition.findCouponByCondition(condition);
 
         List<WithdrawBill> withdrawBill = ConsultCondition.findBillByCondition(condition);
+//        System.out.println("userId" + userId);
 //        System.out.println("userId" + userId);
         if (userId != null) {
             user = User.find("id=?", userId).first();
@@ -150,8 +162,13 @@ public class OperateCRM extends Controller {
             addressMap.put(u.id, ConsultCondition.findAddressByCondition(u));
         }
 
-        System.out.println("userList" + userList);
-        render(addressMap, searchUserList, userId, address, user, userList, orderList, condition, eCoupons, consultContent, phone,
+//        System.out.println("userList" + userList);
+        List<CouponCallBind> couponCallBindList = CouponCallBind.findAll();
+
+        if (userId != null)
+            condition.userId = userId;
+
+        render(couponCallBindList, addressMap, searchUserList, userId, address, user, userList, orderList, condition, eCoupons, consultContent, phone,
                 currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill, withdrawBillSize, consultId, consult);
     }
 
@@ -170,7 +187,8 @@ public class OperateCRM extends Controller {
         String tempPhone = consult.phone;
         String tempText = consult.text;
         ConsultType tempConsultType = consult.consultType;
-        consult = ConsultRecord.findById(consultId);
+        if (consultId != null)
+            consult = ConsultRecord.findById(consultId);
         if (consult != null) {
             consult.text = tempText;
             consult.phone = tempPhone;
@@ -208,16 +226,18 @@ public class OperateCRM extends Controller {
 
 //                redirect("/callcenter/phone/" + phone + "/record/" + consultId);
                 user = User.find("id=?", userId).first();
-                List<User> userList = User.find("id=?", userId).fetch();
-
+//                List<User> userList = User.find("id=?", userId).fetch();
+                List<User> userList = User.find("id in (select c.userId from MemberCallBind c where c.phone=?)", phone).fetch();
+                List<CouponCallBind> couponCallBindList = CouponCallBind.findAll();
 //                System.out.println("user11111" + user);
-                render("OperateCRM/index.html", consult, consultContent, user, currentOperator, phone, userList, condition, consultId);
+                render("OperateCRM/index.html", couponCallBindList, consult, consultContent, user, currentOperator, phone, userList, condition, consultId);
 
 
             }
             // index(phone,null,user.id.toString(),consultId,null);
             user = User.find("id=?", userId).first();
-            List<User> userList = User.find("id=?", userId).fetch();
+//            List<User> userList = User.find("id=?", userId).fetch();
+            List<User> userList = User.find("id in (select c.userId from MemberCallBind c where c.phone=?)", phone).fetch();
             consultStatus = "tempSave";
             condition.userId = userId;
             List<Order> orderList = ConsultCondition.findOrderByCondition(condition);
@@ -230,7 +250,8 @@ public class OperateCRM extends Controller {
 
 //            System.out.println("consultStatus"+consultStatus);
             consultContent = null;
-            render("OperateCRM/index.html", userId, orderList, eCoupons, withdrawBill, orderListSize, eCouponsSize, withdrawBillSize, consultStatus, consult, consultContent, currentOperator, phone, condition, consultId, userList, user);
+            List<CouponCallBind> couponCallBindList = CouponCallBind.findAll();
+            render("OperateCRM/index.html", couponCallBindList, userId, orderList, eCoupons, withdrawBill, orderListSize, eCouponsSize, withdrawBillSize, consultStatus, consult, consultContent, currentOperator, phone, condition, consultId, userList, user);
         }
         if (consult != null) {
             consult.deleted = DeletedStatus.UN_DELETED;
@@ -258,7 +279,7 @@ public class OperateCRM extends Controller {
 //        System.out.println("consult.phone" + consult.phone);
 //        System.out.println("save userId" + userId);
 
-            user = User.findById(userId);
+        user = User.findById(userId);
 //        System.out.println("user  id" + user.id);
 //        System.out.println("consultId" + consultId);
 
@@ -294,7 +315,8 @@ public class OperateCRM extends Controller {
                 long eCouponsSize = ConsultCondition.findCouponByConditionSize(condition);
                 long withdrawBillSize = ConsultCondition.findBillByConditionSize(condition);
                 user = User.find("id=?", userId).first();
-                List<User> userList = User.find("id=?", userId).fetch();
+//                List<User> userList = User.find("id=?", userId).fetch();
+                List<User> userList = User.find("id in (select c.userId from MemberCallBind c where c.phone=?)", phone).fetch();
                 //address user
 //                render("OpeateCRM/index.html", user, address, consult, consultContent,
 //                        currentOperator, phone, orderList,
@@ -302,12 +324,14 @@ public class OperateCRM extends Controller {
 //                );
 //                System.out.println("qqqqqqqqqq");
 //                redirect("/callcenter/phone/" + phone + "/record/" + consultId);
-                render("OperateCRM/index.html", consult, consultContent, user, currentOperator, phone, userList, condition, consultId);
+                List<CouponCallBind> couponCallBindList = CouponCallBind.findAll();
+                render("OperateCRM/index.html", couponCallBindList, consult, consultContent, user, currentOperator, phone, userList, condition, consultId);
             }
             // index(phone,null,user.id.toString(),consultId,null);
 
             user = User.find("id=?", userId).first();
-            List<User> userList = User.find("id=?", userId).fetch();
+//            List<User> userList = User.find("id=?", userId).fetch();
+            List<User> userList = User.find("id in (select c.userId from MemberCallBind c where c.phone=?)", phone).fetch();
             condition.userId = userId;
             List<Order> orderList = ConsultCondition.findOrderByCondition(condition);
             List<ECoupon> eCoupons = ConsultCondition.findCouponByCondition(condition);
@@ -317,8 +341,8 @@ public class OperateCRM extends Controller {
             long eCouponsSize = ConsultCondition.findCouponByConditionSize(condition);
             long withdrawBillSize = ConsultCondition.findBillByConditionSize(condition);
 //            System.out.println("user11111" + user);
-
-            render("OperateCRM/index.html", consult, userId, orderList, eCoupons, withdrawBill, orderListSize, eCouponsSize, withdrawBillSize, consult, consultContent, user, currentOperator, phone, userList, condition, consultId);
+            List<CouponCallBind> couponCallBindList = CouponCallBind.findAll();
+            render("OperateCRM/index.html", couponCallBindList, consult, userId, orderList, eCoupons, withdrawBill, orderListSize, eCouponsSize, withdrawBillSize, consult, consultContent, user, currentOperator, phone, userList, condition, consultId);
 
 //            index(phone,null,userId,consultId,consultStatus);
 //            index(phone,null,null,consultId,null);
@@ -397,28 +421,28 @@ public class OperateCRM extends Controller {
         index(phone, condition, userId, consultId, consultStatus);
     }
 
-    public static void bind(String phone, Long couponId, Long userId, Long consultId) {
+    public static void bind(String phone, Long couponId, Long userId, Long consultId, ConsultRecord consult) {
 //        System.out.println("consultId"+consultId);
         ECoupon coupon = ECoupon.find("id=?", couponId).first();
 
-        render(phone, coupon, userId, consultId);
+        render(phone, coupon, userId, consultId, consult);
     }
 
-    public static void saveBind(String phone, Long couponId, Long userId, Long consultId) {
+    public static void saveBind(String phone, Long couponId, Long userId, Long consultId, ConsultRecord consult) {
 //        System.out.println("consultId" + consultId);
         CouponCallBind couponBind = new CouponCallBind();
         ECoupon coupon = ECoupon.find("id=?", couponId).first();
-
 
         couponBind.eCouponSn = coupon.eCouponSn;
         couponBind.phone = phone;
         couponBind.userId = userId;
         couponBind.couponId = coupon.id;
+        couponBind.consultId = consultId;
         couponBind.save();
         couponBind = CouponCallBind.find("couponId=?", couponId).first();
 
-        ConsultRecord consult = ConsultRecord.find("id=?", consultId).first();
-        System.out.println("consultId" + consultId);
+        consult = ConsultRecord.find("id=?", consultId).first();
+//        System.out.println("consultId" + consultId);
         if (consult != null) {
             if (consult.couponCallBindList == null) {
                 consult.couponCallBindList = new ArrayList<>();
@@ -431,7 +455,7 @@ public class OperateCRM extends Controller {
 //        System.out.println("couponBind" + couponBind);
 //        System.out.println("consult" + consult.couponCallBindList);
 
-        render();
+        render(consult);
 
     }
 
