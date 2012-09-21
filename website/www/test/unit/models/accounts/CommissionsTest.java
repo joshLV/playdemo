@@ -39,6 +39,7 @@ public class CommissionsTest extends UnitTest{
         Fixtures.delete(Account.class);
         Fixtures.delete(AccountSequence.class);
         Fixtures.delete(TradeBill.class);
+        Fixtures.delete(ECoupon.class);
         Fixtures.loadModels("fixture/payment_source.yml", "fixture/account_test_order.yml");
 
         Account account = getConsumerAccount();

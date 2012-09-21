@@ -3,31 +3,26 @@
  */
 package functional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import controllers.modules.website.cas.Security;
 import models.accounts.Account;
 import models.consumer.User;
 import models.order.Cart;
+import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
 import models.sales.Shop;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import play.modules.paginate.ValuePaginator;
-import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.Security;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author wangjia
@@ -38,17 +33,18 @@ public class CartsTest  extends FunctionalTest {
 	@Before
 	@SuppressWarnings("unchecked")
 	public void setup() {
-		Fixtures.delete(User.class);
 		Fixtures.delete(Cart.class);
-	
-		Fixtures.delete(Category.class);
-		Fixtures.delete(Shop.class);
-		Fixtures.delete(Brand.class);
+
+        Fixtures.delete(ECoupon.class);
 		Fixtures.delete(OrderItems.class);
-		Fixtures.delete(Goods.class);
 		Fixtures.delete(Order.class);
+        Fixtures.delete(Goods.class);
+        Fixtures.delete(Category.class);
+        Fixtures.delete(Shop.class);
+        Fixtures.delete(Brand.class);
 		Fixtures.delete(Account.class);
-		
+        Fixtures.delete(User.class);
+
 		Fixtures.loadModels("fixture/user.yml");
 		Fixtures.loadModels("fixture/categories_unit.yml");
 		Fixtures.loadModels("fixture/shops_unit.yml");

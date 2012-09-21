@@ -1,6 +1,6 @@
 models.order.PointGoodsOrder(order1):
   "userId": "user"
-  "orderNumber": "1213231412"
+  "orderNumber": "1213221412"
   "status": "APPLY"
   "buyNumber": "1"
   "pointGoods": "pointgoods1"

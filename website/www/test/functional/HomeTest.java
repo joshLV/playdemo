@@ -1,5 +1,7 @@
 package functional;
 
+import models.order.Order;
+import models.order.OrderItems;
 import models.sales.Goods;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +13,8 @@ public class HomeTest extends FunctionalTest {
 
     @Before
     public void setup() {
+        Fixtures.delete(OrderItems.class);
+        Fixtures.delete(Order.class);
         Fixtures.delete(Goods.class);
         Fixtures.loadModels("fixture/goods.yml");
     }

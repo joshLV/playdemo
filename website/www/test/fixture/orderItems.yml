@@ -3,7 +3,7 @@
 order.Order(order2):
   "user": "user"
   "supplier_id": 1
-  "orderNumber": "201202220324134991598"
+  "orderNumber": "201202220324134001598"
   "status": "PAID"
   "amount": "0"
   "accountPay": "0"
@@ -25,7 +25,7 @@ order.Order(order2):
 order.Order(order3):
   "user": "user"
   "supplier_id": 1
-  "orderNumber": "201202220324134991598"
+  "orderNumber": "201202220324134001599"
   "status": "PAID"
   "amount": "0"
   "accountPay": "0"
@@ -161,9 +161,9 @@ order.ECoupon(coupon6):
   "goods": "goods5"
   "orderItems": "orderItems5"
   
-order.ECoupon(coupon6):
+order.ECoupon(coupon7):
   "order": "order3"
-  "eCouponSn": "12345670026"
+  "eCouponSn": "12345670027"
   "faceValue": "10.0"
   "originalPrice": "10.0"
   "refundPrice": "1.0"

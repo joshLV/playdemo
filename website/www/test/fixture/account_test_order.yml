@@ -47,7 +47,7 @@ order.ECoupon(coupon):
   order: simple_order
   orderItems: order_item_e
   goods: goods_e
-  eCouponSn: 1234567001
+  eCouponSn: 1234566001
   faceValue: 15
   originalPrice: 5
   resalerPrice: 8

@@ -74,6 +74,7 @@ sales.Goods(goods6):
   expireAt: 2092-02-02
   limitNumber: 1
   "imagePath": "/0/0/133/origin.jpg"
+
 order.Order(order10):
   "user": "user"
   "supplier_id": 1

@@ -127,8 +127,8 @@
             <button type="submit" id="submit" tabindex="6"> 登 录</button>
             <div id="open-auth">快捷登录： <a class="id-qq" href="${QQProviderUrl}">QQ</a> <span>|</span>
                 <%--https://graph.renren.com/oauth/authorize?client_id=210266&response_type=code&redirect_uri=http://www.yibaiquan.com/s/1&display=page--%>
-                <a class="id-renren"
-                   href="${RenRenProviderUrl}">人人网</a> <span>|</span>
+                <%--<a class="id-renren"--%>
+                   <%--href="${RenRenProviderUrl}">人人网</a> <span>|</span>--%>
                 <a class="id-weibo" id="sinaweiboAuthorizationUrl"
                    href="${SinaWeiboProviderUrl}">新浪微博</a></div>
         </form:form>

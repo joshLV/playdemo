@@ -21,6 +21,7 @@ public class OrderUnitTest extends UnitTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        Fixtures.delete(ECoupon.class);
         Fixtures.delete(models.order.OrderItems.class);
         Fixtures.delete(models.order.Order.class);
         Fixtures.delete(models.sales.Goods.class);

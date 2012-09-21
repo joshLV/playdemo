@@ -55,6 +55,7 @@ public class SalesTaxReportsFuncTest extends FunctionalTest{
         Fixtures.delete(Supplier.class);
         Fixtures.delete(SupplierUser.class);
         Fixtures.delete(UserWebIdentification.class);
+        Fixtures.delete(ECoupon.class);
         Fixtures.loadModels("fixture/suppliers_unit.yml");
         Fixtures.loadModels("fixture/categories_unit.yml");
         Fixtures.loadModels("fixture/brands_unit.yml");

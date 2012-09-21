@@ -1,7 +1,11 @@
 package unit.models.accounts;
 
-import models.accounts.*;
+import models.accounts.Account;
+import models.accounts.AccountSequence;
+import models.accounts.AccountType;
+import models.accounts.TradeBill;
 import models.accounts.util.AccountUtil;
+import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
@@ -35,6 +39,7 @@ public class OrderConsumeTest extends UnitTest{
         Fixtures.delete(Account.class);
         Fixtures.delete(AccountSequence.class);
         Fixtures.delete(TradeBill.class);
+        Fixtures.delete(ECoupon.class);
         Fixtures.loadModels("fixture/payment_source.yml", "fixture/account_test_order.yml");
         Account account = getAccount();
         account.amount = BALANCE;

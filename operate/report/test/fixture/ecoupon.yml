@@ -19,7 +19,7 @@ models.order.ECoupon(ecoupon_002):
  "order": "order2"
  "goods": "Goods_002"
  "orderItems": "orderItems2"
- "eCouponSn": "123456789"
+ "eCouponSn": "123456788"
  "downloadTimes": "1"
  "faceValue": "100"
  "originalPrice": "50"

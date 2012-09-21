@@ -3,23 +3,22 @@
  */
 package functional;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import controllers.modules.website.cas.Security;
 import models.cms.CmsQuestion;
 import models.consumer.User;
 import models.consumer.UserInfo;
+import models.order.ECoupon;
+import models.order.Order;
 import models.sales.Goods;
-
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
 import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
-import controllers.modules.website.cas.Security;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author wangjia
@@ -33,6 +32,8 @@ public class UserQuestionsTest extends FunctionalTest {
 		Fixtures.delete(UserInfo.class);
 		Fixtures.delete(Goods.class);
 		Fixtures.delete(CmsQuestion.class);
+		Fixtures.delete(Order.class);
+		Fixtures.delete(ECoupon.class);
 		Fixtures.loadModels("fixture/goods.yml");
 		Fixtures.loadModels("fixture/user.yml");
 		Fixtures.loadModels("fixture/user_question.yml");
