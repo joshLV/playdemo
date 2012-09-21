@@ -10,7 +10,7 @@ import play.test.UnitTest;
 public class OperateCMSControllerInstanceTest extends UnitTest{
     @Test
     public void controllerInstanceTest(){
-        assertTrue(new SmsApplication() instanceof Controller);
+        assertTrue(new Application() instanceof Controller);
         assertTrue(new CmsBlocks() instanceof Controller);
         assertTrue(new OperateTopics() instanceof Controller);
     }

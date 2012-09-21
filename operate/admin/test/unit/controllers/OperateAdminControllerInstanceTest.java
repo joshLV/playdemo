@@ -11,7 +11,7 @@ import play.test.UnitTest;
 public class OperateAdminControllerInstanceTest extends UnitTest{
     @Test
     public void controllerInstanceTest(){
-        assertTrue(new SmsApplication() instanceof Controller);
+        assertTrue(new Application() instanceof Controller);
         assertTrue(new OperateUsers() instanceof Controller);
         assertTrue(new OperateUsersPassword() instanceof Controller);
         assertTrue(new OperateUsersProfiles() instanceof Controller);
