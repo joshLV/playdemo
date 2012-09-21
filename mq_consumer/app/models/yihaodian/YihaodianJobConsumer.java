@@ -67,8 +67,8 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
             return;
         }
         if(yihaodianOrder.jobFlag == JobFlag.SEND_COPY){
-            //等20分钟再发货
-            if(yihaodianOrder.createdAt.getTime() < (System.currentTimeMillis() - 1200000)){
+            //等 1 分钟再发货
+            if(yihaodianOrder.createdAt.getTime() < (System.currentTimeMillis() - 60000)){
                 //如果用户没有取消订单再发货
                 if(checkYihaodianUnCanceled(yihaodianOrder)){
                     if( buildUhuilaOrder(yihaodianOrder)){
