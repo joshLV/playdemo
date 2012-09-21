@@ -272,7 +272,7 @@
 <div style="text-align: right; margin-top:-15px;">
     #{if  orderListSize >5}
         <a href="/orders?condition.searchKey=ORDER_NUMBER&condition.searchItems=${moreSearch}"
-           target="_blank" style="font-size:large"> 更多</a>
+           target="_blank" style="font-size:15px"> 更多</a>
     #{/if}
 </div>
 #{/if}
@@ -322,9 +322,9 @@
 
                 #{/list}
                 #{if i==0}
-                    consult.text${consult?.text}
+                *{consult.text${consult?.text}}*
                     <a type="submit"
-                       href="javascript:void(openW('/crm/bind?phone=${phone}&consult.text=${consult?.text}&couponId=${coupon.id}&userId=${coupon.order.userId}&consultId=${consultId}'))">绑定</a>
+                       href="javascript:void(openW('/crm/bind?phone=${phone}&consult.text=${consult?.text}&couponId=${coupon.id}&userId=${coupon.order.userId}&consultId=${consultId}&condition.searchUser=${condition.searchUser}&condition.searchOrderCoupon=${condition.searchOrderCoupon}'))">绑定</a>
                 #{/if}
 
 
@@ -528,14 +528,14 @@
 #{/else}
 
 
-#{form @OperateCRM.tempSave(), method: 'POST',id:'form',enctype:'multipart/form-data',class:"form-horizontal" }
+#{form @OperateCRM.tempSave(), method: 'POST',id:'form1',enctype:'multipart/form-data',class:"form-horizontal" }
     <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
     <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
-    consultId :       ${consultId}
+
     <input type="hidden" type="text" name="userId" id="consultUserId" value="${userId}"/>
-    <input type="hidden" type="text" name="consultStatus" id="consultStatus" value="${consultStatus}"/>
     <input type="hidden" name="condition.searchUser" class="input-medium" value="${condition?.searchUser}"
-    <input type="hidden" name="condition.searchOrderCoupon" class="input-medium" value="${condition?.searchOrderCoupon}"/>
+    <input type="hidden" name="condition.searchOrderCoupon" class="input-medium"
+           value="${condition?.searchOrderCoupon}"/>
 
 
     #{if user!=null}
@@ -566,33 +566,32 @@
     <a class="btn btn-primary" id="abandon" onclick="abandon('${consultId}')" type="button">放弃</a>
 
     #{list items: consultContent, as:'consult'}
-        #{if consult.userId==userId}
 
 
-        <div>
-            <hr size="1" noshade="noshade" style="border:1px #cccccc dotted;">
-        ${consult?.phone} &nbsp;
+    <div>
+        <hr size="1" noshade="noshade" style="border:1px #cccccc dotted;">
+    ${consult?.phone} &nbsp;
 
-        ${consult?.loginName}  &nbsp;
-        &{'account.type.' + consult.userType}
+    ${consult?.loginName}  &nbsp;
+    &{'account.type.' + consult.userType}
 
-            <span style="color:red">  &{'consult.'+consult?.consultType}   </span> :      ${consult?.text}
+        <span style="color:red">  &{'consult.'+consult?.consultType}   </span> :      ${consult?.text}
 
-            #{if consult.couponCallBindList.size()>0}
-                <br>
-                相关券咨询：
-                #{list items:  consult.couponCallBindList, as:'bind'}
-                    <a href="/crm/bindCouponDetails?phone=${phone}&couponId=${coupon.id}&userId=${coupon.order.userId}&consultId=${consultId}"
-                       target="_blank">   ${bind?.eCouponSn}  </a>
-                    &nbsp;
-                #{/list}
-            #{/if}
+        #{if consult.couponCallBindList.size()>0}
             <br>
-        ${consult?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}
-
-        ${consult?.createdBy}
-
+            相关券咨询：
+            #{list items:  consult.couponCallBindList, as:'bind'}
+                <a href="/crm/bindCouponDetails?phone=${phone}&couponId=${coupon.id}&userId=${coupon.order.userId}&consultId=${consultId}"
+                   target="_blank">   ${bind?.eCouponSn}  </a>
+                &nbsp;
+            #{/list}
         #{/if}
+        <br>
+    ${consult?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}
+
+    ${consult?.createdBy}
+
+
     #{/list}
 
 
@@ -666,36 +665,11 @@
 
 
     $("#finish").click(function () {
-//        var phone = $("#phone").val();
-//        var consultId = $("#consultId").val();
-//        var text = $("#consult_text").val();
-//        var consultType = $("#consult_type").val();
-//        var id = $("#consultUserId").val();
-//
-//        if (id == undefined)
-//            id = "";
 
-//      var phone = $("#phone").val();
-        //?phone="+phone
+        $("#form1").attr("action", "/callcenter/phone/record/save");
 
-        var userId = $("#user2").val();
-//       alert("userId"+userId);
-
-        if (userId == undefined)
-        $("#form").attr("action", "/callcenter/phone/record/save");
-
-
-        if (userId != undefined)
-            $("#form").attr("action", "/callcenter/phone/record/save?phone=" + phone + "&consultId=" + consultId + "&userId=" + userId
-                    + "&consult.text=" + text + "&consult.consultType=" + consultType);
-//
-
-//        $("#form").attr("action", "@OperateCRM.save()");
-
-//        + "?consult.consultType=" + consultType + "&userId=" + id + "&consult.text" + text
-//        +"&phone"+phone+"&consultId"+consultId
-        $("#form").attr("method", "POST");
-        $("#form").submit();
+        $("#form1").attr("method", "POST");
+        $("#form1").submit();
 
     });
 

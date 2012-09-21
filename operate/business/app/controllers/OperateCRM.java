@@ -32,7 +32,7 @@ import java.util.List;
 public class OperateCRM extends Controller {
 
 
-    public static void index(String phone, CRMCondition condition, Long userId, Long consultId, String consultStatus) {
+    public static void index(String phone, CRMCondition condition, Long userId, Long consultId, ConsultRecord consult) {
 
         if (condition != null)
             if (condition.userId != null)
@@ -43,7 +43,6 @@ public class OperateCRM extends Controller {
         User user = null;
         Address address = null;
         String loginName = null;
-        ConsultRecord consult = null;
 
         MemberCallBind bind = new MemberCallBind();
 
@@ -64,19 +63,6 @@ public class OperateCRM extends Controller {
 
         }
 
-
-        String moreSearch = "";
-        List<ConsultRecord> consultContent = null;
-
-        consultContent = ConsultRecord.find("deleted=? and phone=? and text!=null order by createdAt desc", DeletedStatus.UN_DELETED, phone).fetch();
-        if (StringUtils.isNotBlank(consultStatus)) {
-            if (consultStatus.equals("finish"))
-                consultContent = ConsultRecord.find("deleted=? and phone=? and text!=null order by createdAt desc", DeletedStatus.UN_DELETED, phone).fetch();
-            if (consultStatus.equals("tempSave")) {
-                consultContent = null;
-                consult = ConsultRecord.find("id=?", consultId).first();
-            }
-        }
         String currentOperator = OperateRbac.currentUser().loginName;
 
         if (condition == null) {
@@ -102,6 +88,7 @@ public class OperateCRM extends Controller {
         }
 
 
+        String moreSearch = null;
         if (StringUtils.isNotBlank(condition.searchOrderCoupon))
             moreSearch = condition.searchOrderCoupon;
         else if (StringUtils.isNotBlank(condition.searchUser))
@@ -150,13 +137,31 @@ public class OperateCRM extends Controller {
         if (userId != null)
             condition.userId = userId;
 
+
+        List<ConsultRecord> consultContent = null;
+        String hqlConsult = "deleted=? and text!=null and ((phone=? and userId is null) ";
+        if (user != null) {
+            hqlConsult += " or (userId=" + user.id + "))";
+
+        }
+        if (user == null)
+            hqlConsult += ")";
+
+        if (consultId != null) {
+            hqlConsult += " and id != " + consultId;
+        }
+
+
+        consultContent = ConsultRecord.find(hqlConsult + " order by createdAt desc", DeletedStatus.UN_DELETED, phone).fetch();
+
+
         render(couponCallBindList, addressMap, searchUserList, userId, address, user, userList, orderList, condition, eCoupons, consultContent, phone,
                 currentOperator, moreSearch, orderListSize, eCouponsSize, withdrawBill, withdrawBillSize, consultId, consult);
     }
 
 
-    public static void tempSave(CRMCondition condition, Long consultId, ConsultRecord consult, User user, String phone, Long userId, String consultStatus) {
-        System.out.println("condition" + condition.searchUser);
+    public static void tempSave(CRMCondition condition, Long consultId, ConsultRecord consult, User user, String phone, Long userId) {
+        System.out.println("condition"+condition);
         String tempPhone = consult.phone;
         String tempText = consult.text;
         ConsultType tempConsultType = consult.consultType;
@@ -167,7 +172,7 @@ public class OperateCRM extends Controller {
             consult.phone = tempPhone;
             consult.consultType = tempConsultType;
         }
-//        CRMCondition condition = new CRMCondition();
+
         if (consult != null)
             if (StringUtils.isBlank(consult.text))
                 Validation.addError("consult.text", "validation.required");
@@ -176,8 +181,24 @@ public class OperateCRM extends Controller {
 
             String currentOperator = OperateRbac.currentUser().loginName;
 
-            List<ConsultRecord> consultContent = ConsultRecord.find("deleted=? and text!=null order by createdAt desc", DeletedStatus.UN_DELETED).fetch();
+            List<ConsultRecord> consultContent = null;
+            String hqlConsult = "deleted=? and text!=null and ((phone=? and userId is null) ";
+            if (user != null) {
+                hqlConsult += " or (userId=" + user.id + "))";
 
+            }
+
+            if (user == null)
+                hqlConsult += ")";
+
+            if (consultId != null) {
+                hqlConsult += " and id != " + consultId;
+            }
+
+
+            consultContent = ConsultRecord.find(hqlConsult + " order by createdAt desc", DeletedStatus.UN_DELETED, phone).fetch();
+
+            if(condition!=null)
             if (StringUtils.isNotBlank(condition.searchUser) || StringUtils.isNotBlank(condition.searchOrderCoupon)) {
                 if (user != null) {
                     user = User.find("id=?", user.id).first();
@@ -208,7 +229,7 @@ public class OperateCRM extends Controller {
                 user = User.find("id=?", userId).first();
 
             List<User> userList = User.find("id in (select c.userId from MemberCallBind c where c.phone=?)", phone).fetch();
-            consultStatus = "tempSave";
+
             if (userId != null)
                 condition.userId = userId;
             List<Order> orderList = ConsultCondition.findOrderByCondition(condition);
@@ -219,9 +240,9 @@ public class OperateCRM extends Controller {
             long eCouponsSize = ConsultCondition.findCouponByConditionSize(condition);
             long withdrawBillSize = ConsultCondition.findBillByConditionSize(condition);
 
-            consultContent = null;
+
             List<CouponCallBind> couponCallBindList = CouponCallBind.findAll();
-            render("OperateCRM/index.html", couponCallBindList, userId, orderList, eCoupons, withdrawBill, orderListSize, eCouponsSize, withdrawBillSize, consultStatus, consult, consultContent, currentOperator, phone, condition, consultId, userList, user);
+            render("OperateCRM/index.html", couponCallBindList, userId, orderList, eCoupons, withdrawBill, orderListSize, eCouponsSize, withdrawBillSize, consult, consultContent, currentOperator, phone, condition, consultId, userList, user);
         }
         if (consult != null) {
             consult.deleted = DeletedStatus.UN_DELETED;
@@ -237,15 +258,14 @@ public class OperateCRM extends Controller {
             consult.create();
             consult.save();
         }
-        consultStatus = "tempSave";
 
-        index(phone, null, userId, consultId, consultStatus);
+
+        index(phone, null, userId, consultId, consult);
 
     }
 
-    public static void save(Long consultId, ConsultRecord consult, User user, String phone, Long userId, String consultStatus) {
+    public static void save(CRMCondition condition, Long consultId, ConsultRecord consult, User user, String phone, Long userId) {
 
-        System.out.println("save userId" + userId);
 
         if (userId != null)
             user = User.findById(userId);
@@ -257,7 +277,7 @@ public class OperateCRM extends Controller {
         consult.text = tempText;
 
         consult.consultType = tempConsultType;
-        CRMCondition condition = new CRMCondition();
+
 
         if (StringUtils.isBlank(consult.text))
             Validation.addError("consult.text", "validation.required");
@@ -267,14 +287,34 @@ public class OperateCRM extends Controller {
 
             String currentOperator = OperateRbac.currentUser().loginName;
 
-            List<ConsultRecord> consultContent = ConsultRecord.find("deleted=? and text!=null order by createdAt desc", DeletedStatus.UN_DELETED).fetch();
+//            List<ConsultRecord> consultContent = ConsultRecord.find("deleted=? and text!=null order by createdAt desc", DeletedStatus.UN_DELETED).fetch();
+            List<ConsultRecord> consultContent = null;
+            String hqlConsult = "deleted=? and text!=null and ((phone=? and userId is null) ";
+            if (user != null) {
+                hqlConsult += " or (userId=" + user.id + "))";
 
+            }
+
+            if (user == null)
+                hqlConsult += ")";
+
+            if (consultId != null) {
+                hqlConsult += " and id != " + consultId;
+            }
+
+
+            consultContent = ConsultRecord.find(hqlConsult + " order by createdAt desc", DeletedStatus.UN_DELETED, phone).fetch();
+
+            if(condition!=null)
             if (StringUtils.isNotBlank(condition.searchUser) || StringUtils.isNotBlank(condition.searchOrderCoupon)) {
 
                 user = User.find("id=?", user.id).first();
                 Address address = ConsultCondition.findAddressByCondition(user);
                 List<Order> orderList = ConsultCondition.findOrderByCondition(condition);
+
+
                 List<ECoupon> eCoupons = ConsultCondition.findCouponByCondition(condition);
+
                 List<WithdrawBill> withdrawBill = ConsultCondition.findBillByCondition(condition);
 
                 long orderListSize = ConsultCondition.findOrderByConditionSize(condition);
@@ -287,7 +327,7 @@ public class OperateCRM extends Controller {
 
 
                 List<CouponCallBind> couponCallBindList = CouponCallBind.findAll();
-                render("OperateCRM/index.html", couponCallBindList, consult, consultContent, user, currentOperator, phone, userList, condition, consultId);
+                render("OperateCRM/index.html", eCoupons, withdrawBillSize, orderListSize, eCouponsSize, withdrawBill, orderList, couponCallBindList, consult, consultContent, user, currentOperator, phone, userList, condition, consultId);
             }
 
             if (userId != null)
@@ -322,7 +362,6 @@ public class OperateCRM extends Controller {
 
         consult.create();
         consult.save();
-        consultStatus = "finish";
 
 
         getPhone();
@@ -375,19 +414,19 @@ public class OperateCRM extends Controller {
     }
 
 
-    public static void jumpIndex(String phone, CRMCondition condition, Long userId, Long consultId, String consultStatus) {
+    public static void jumpIndex(String phone, CRMCondition condition, Long userId, Long consultId) {
         ConsultRecord consult = new ConsultRecord();
         consult.deleted = DeletedStatus.UN_DELETED;
         consult.save();
         consultId = consult.id;
-        consultStatus = "finish";
-        index(phone, condition, userId, consultId, consultStatus);
+
+        index(phone, condition, userId, consultId, null);
     }
 
-    public static void bind(String phone, Long couponId, Long userId, Long consultId, ConsultRecord consult) {
+    public static void bind(CRMCondition condition,String phone, Long couponId, Long userId, Long consultId, ConsultRecord consult) {
         ECoupon coupon = ECoupon.find("id=?", couponId).first();
-
-        render(phone, coupon, userId, consultId, consult);
+        System.out.println("condition"+condition);
+        render(condition,phone, coupon, userId, consultId, consult);
     }
 
     public static void saveBind(String phone, Long couponId, Long userId, Long consultId, ConsultRecord consult) {
@@ -435,7 +474,7 @@ public class OperateCRM extends Controller {
     }
 
     public static void callCenter(String phone) {
-        jumpIndex(phone, null, null, null, null);
+        jumpIndex(phone, null, null, null);
 
     }
 
