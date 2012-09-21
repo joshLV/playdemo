@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <orders>
     <order>
-        <id>${id}</id><!--当当网团购单唯一标识ID-->
+        <id>${ddgid}</id><!--当当网团购单唯一标识ID-->
         <order_id>${order?.id}</order_id><!--一百券订单ID-->
         <kx_order_id>${kx_order_id}</kx_order_id><!--当当订单ID-->
         <deal_type_name>code_mine</deal_type_name><!--当当 业务类型-->

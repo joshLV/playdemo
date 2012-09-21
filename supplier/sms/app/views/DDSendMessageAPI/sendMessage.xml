@@ -6,9 +6,11 @@
     <desc>
         <![CDATA[ ${response?.desc} ]]>
     </desc>
+    #{if response.getAttribute("consumeId") != null }
     <data>
         <consume_id><![CDATA[ ${response?.getAttribute("consumeId")} ]]></consume_id>
         <order_id><![CDATA[ ${response?.getAttribute("ddOrderId")} ]]></order_id>
         <send_status><![CDATA[ ${response?.getAttribute("ybqOrderId")} ]]></send_status>
     </data>
+    #{/if}
 </resultObject>

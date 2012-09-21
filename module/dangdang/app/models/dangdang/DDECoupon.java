@@ -10,9 +10,5 @@ package models.dangdang;
 public class DDECoupon {
     public Long orderId;
     public Long ddgid;
-    public Long spgid;
-    public String userCode;
-    public String receiveMobile;
-    public String consumeId;
 
 }

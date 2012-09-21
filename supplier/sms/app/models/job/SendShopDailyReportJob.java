@@ -5,18 +5,14 @@ import models.sales.Shop;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
-import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.db.DB;
 import play.jobs.Job;
 import play.jobs.On;
-import play.jobs.OnApplicationStart;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.regex.Pattern;
 
 /**

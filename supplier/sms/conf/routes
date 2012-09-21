@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                                       Application.index
+GET     /                                       SmsApplication.index
 
 # 一号店API
 *       /api/order/create                       OrderAPI.createOrder

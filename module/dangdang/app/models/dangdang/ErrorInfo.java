@@ -15,4 +15,5 @@ public class ErrorInfo {
     public String errorDes;
     public String spid;
     public String ver;
+
 }

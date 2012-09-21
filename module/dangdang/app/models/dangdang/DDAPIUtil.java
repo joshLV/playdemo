@@ -4,6 +4,8 @@ package models.dangdang;
 import models.accounts.AccountType;
 import models.order.ECoupon;
 import models.order.Order;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
@@ -17,7 +19,10 @@ import play.Play;
 
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * 当当API工具类.
@@ -68,7 +73,7 @@ public class DDAPIUtil {
             return false;
         }
         String data = String.format("<data><row><ddgid><![CDATA[%s]]></ddgid><type><![CDATA[%s]]></type><code><![CDATA[%s]]></code></row></data>",
-                ddOrderOrderItem.ddgid, 1, eCoupon.eCouponSn);
+                ddOrderOrderItem.ddGoodsId, 1, eCoupon.eCouponSn);
 
         Logger.info("QUERY_CONSUME_CODE_URL     =====" + QUERY_CONSUME_CODE_URL);
         Response response = DDAPIUtil.access(QUERY_CONSUME_CODE_URL, data, "query_consume_code");
@@ -100,7 +105,7 @@ public class DDAPIUtil {
         }
         String data = String.format("<data><row><ddgid><![CDATA[%s]]></ddgid><consume_code><![CDATA[%s]]></consume_code><verifycode><![CDATA[%s]]>" +
                 "</verifycode></row></data>",
-                ddOrderOrderItem.ddgid, eCoupon.eCouponSn, eCoupon.eCouponSn);
+                ddOrderOrderItem.ddGoodsId, eCoupon.eCouponSn, eCoupon.eCouponSn);
         Logger.info("VERIFY_CONSUME_URL     =====" + VERIFY_CONSUME_URL);
         Response response = DDAPIUtil.access(VERIFY_CONSUME_URL, data, "verify_consume");
 
@@ -116,7 +121,7 @@ public class DDAPIUtil {
      * @param data xml格式
      */
     public static Response sendSMS(String data) throws DDAPIInvokeException {
-        Logger.info("[DDSendMessageAPI] sendMsg begin]");
+        Logger.info("[DDSendMessageAPI] sendMsg begin]"+data);
         Response response = new Response();
         response.ver = VER;
         response.spid = SPID;
@@ -125,23 +130,20 @@ public class DDAPIUtil {
             request.parse(data);
             //取得data节点中的数据信息
             Map<String, String> dataMap = request.params;
-            Long orderId = Long.parseLong(dataMap.get("order_id"));
-
+            String orderId = dataMap.get("order_id");
             Long ddgid = Long.parseLong(dataMap.get("ddgid"));
             Long spgid = Long.parseLong(dataMap.get("spgid"));
-
             String userCode = dataMap.get("user_code");
             String receiveMobile = dataMap.get("receiver_mobile_tel");
             String consumeId = dataMap.get("consume_id");
-//            spgid = Long.valueOf("271");
-//            userCode = "9";
-            Logger.info("/n  orderId=" + orderId + "&ddgid=" + ddgid + "&spgid=" + spgid + "&userCode=" + userCode + "&=receiveMobile" + receiveMobile + "&=consumeId" + consumeId);
-            //根据当当订单编号，查询订单是否存在
-            DDOrder ddOrder = DDOrder.find("orderId=?", orderId).first();
+            Logger.info("\n  orderId=" + orderId + "&ddgid=" + ddgid + "&spgid=" + spgid + "&userCode=" + userCode + "&=receiveMobile" + receiveMobile + "&=consumeId" + consumeId);
 
-            if (ddOrder == null || ddOrder.ybqOrder == null) {
+            //根据当当订单编号，查询订单是否存在
+            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
+                    OuterOrderPartner.DD, orderId).first();
+            if (outerOrder == null || outerOrder.ybqOrder == null) {
                 response.errorCode = ErrorCode.ORDER_NOT_EXITED;
-                response.desc = "没找到对应的当当订单";
+                response.desc = "没找到对应的当当订单!";
                 return response;
             }
             Resaler resaler = Resaler.find("loginName=? and status=?", DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
@@ -151,7 +153,7 @@ public class DDAPIUtil {
                 return response;
             }
 
-            Order ybqOrder = Order.find("orderNumber= ? and userId=? and userType=?", ddOrder.ybqOrder.orderNumber, resaler.id, AccountType.RESALER).first();
+            Order ybqOrder = Order.find("orderNumber= ? and userId=? and userType=?", outerOrder.ybqOrder.orderNumber, resaler.id, AccountType.RESALER).first();
             if (ybqOrder == null) {
                 response.errorCode = ErrorCode.ORDER_NOT_EXITED;
                 response.desc = "没找到对应的订单";
@@ -178,8 +180,6 @@ public class DDAPIUtil {
             response.addAttribute("consumeId", coupon.eCouponSn);
             response.addAttribute("ddOrderId", orderId);
             response.addAttribute("ybqOrderId", coupon.order.orderNumber);
-
-            System.out.println(response.errorCode + ">>>>>>>>>>>>>");
         } catch (Exception e) {
             throw new DDAPIInvokeException("[DangDang API] invoke send message error");
         }
@@ -254,7 +254,7 @@ public class DDAPIUtil {
             signStr.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue())).append("&");
         }
 
-        signStr.append("secret_key=").append(SECRET_KEY);
+        signStr.append("sn=").append(SECRET_KEY);
         return DigestUtils.md5Hex(signStr.toString()).equals(sign);
 
     }
@@ -271,7 +271,6 @@ public class DDAPIUtil {
             if ("body".equals(entry.getKey()) || "format".equals(entry.getKey())) {
                 continue;
             }
-            System.out.println(entry.getKey() + "【----】" + entry.getValue()[0]);
             if (entry.getValue() == null) {
                 result.put(entry.getKey(), "");
             } else {

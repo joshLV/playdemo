@@ -24,61 +24,29 @@ import java.util.Date;
 @Table(name = "dd_order_item")
 public class DDOrderItem extends Model {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dd_order_id", nullable = true)
-    public DDOrder order;
+    @Column(name = "dd_order_id", nullable = true)
+    public Long ddOrderId;
 
-    public Long ddgid;  //当当团购编号，即当当的商品id
+    @Column(name = "dd_goods_id")
+    public String ddGoodsId;  //当当团购编号，即当当的商品id
 
-    public Long spgid;  //来源网站团购编号,即一百券的商品id
+    public Long goodsId;  //来源网站团购编号,即一百券的商品id
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ybq_order_items_id", nullable = true)
     public OrderItems ybqOrderItems;
-
-    @Column(name = "goods_name")
-    public String goodsName; //商品名称
-
-    @Column(name = "order_item_num")
-    public Integer orderItemNum;
-
-    @Column(name = "order_item_price")
-    public BigDecimal orderItemPrice;
-
-    @Column(name = "original_price")
-    public BigDecimal originalPrice;
-    @Column(name = "phone")
-    public String phone;
-
     @Column(name = "created_at")
     public Date createdAt;
 
-    public DDOrderItem(DDOrder order, Long ddgid, Goods goods, Integer buyNumber, String phone, BigDecimal salePrice, OrderItems ybqOrderItem) {
-        this.order = order;
-        this.ddgid = ddgid;
-        this.spgid = goods.id;
-        this.goodsName = goods.name;
-        this.originalPrice = goods.originalPrice;
-        this.orderItemPrice = salePrice;
-        this.goodsName = goods.name;
-        this.orderItemNum = buyNumber;
-        this.phone = phone;
+    public DDOrderItem(Long orderId, String ddgid, Goods goods, OrderItems ybqOrderItem) {
+        this.ddOrderId = orderId;
+        this.ddGoodsId = ddgid;
+        this.goodsId = goods.id;
         this.createdAt = new Date();
         this.ybqOrderItems = ybqOrderItem;
     }
 
     public DDOrderItem() {
-    }
-
-    /**
-     * 当前订单项总费用：
-     * lineValue = orderItemPrice*orderItemNum
-     *
-     * @return 订单项总费用
-     */
-    @Transient
-    public BigDecimal getLineValue() {
-        return orderItemPrice.multiply(new BigDecimal(orderItemNum));
     }
 
     public static DDOrderItem findByOrder(OrderItems orderItems) {

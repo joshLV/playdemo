@@ -60,7 +60,7 @@
                 </tr>
                 <tr class="order-bd">
                     <td>${rebate?.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-                    <td>${rebate?.invitedUser?.loginName}</td>
+                    <td>${rebate?.getMaskedLoginName()}</td>
                     <td>${rebate?.order?.orderNumber}</td>
                     <td>${rebate?.order?.amount}</td>
                     <td>&{'rebate.'+rebate?.status}</td>

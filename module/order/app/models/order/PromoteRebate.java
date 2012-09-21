@@ -196,4 +196,17 @@ public class PromoteRebate extends Model {
         }
         return p;
     }
+
+    public String getMaskedLoginName() {
+        StringBuilder sn = new StringBuilder();
+        String loginName = this.invitedUser.loginName;
+        int len = loginName.length();
+        if (len > 5) {
+            for (int i = 2; i < len - 5; i++) {
+                sn.append("*");
+            }
+            sn.append(loginName.substring(len - 5, len));
+        }
+        return sn.toString();
+    }
 }

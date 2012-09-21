@@ -5,25 +5,27 @@ import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.AccountType;
 import models.consumer.User;
-import models.dangdang.DDOrder;
 import models.dangdang.ErrorCode;
 import models.dangdang.ErrorInfo;
 import models.order.Order;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsLevelPrice;
 import models.sales.MaterialType;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Before;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * <p/>
@@ -38,18 +40,20 @@ public class DDOrderApiTest extends FunctionalTest {
 
     }
 
+
     @Test
     public void 测试创建订单参数有问题的情况() {
 //  '3000003'.'push_team_stock'.'1.0'.''.'2012-09-18 16:56:22'
-        String SPID = "3000003";
-        String apiName = "send_msg";
-        String VER = "1.0";
-        String data="<data><order><order_id><![CDATA[4668536249]]></order_id><ddgid><![CDATA[1800003230]]></ddgid><spgid><![CDATA[84173]]></spgid><user_code><![CDATA[91533219]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[572467747723]]></consume_id></order></data>";
-        String SECRET_KEY = "x8765d9yj72wevshn";
+//        String SPID = "3000003";
+//        String apiName = "send_msg";
+//        String VER = "1.0";
+//        String data="<data><order><order_id><![CDATA[4668536249]]></order_id><ddgid><![CDATA[1800003230]]></ddgid><spgid><![CDATA[84173]]></spgid><user_code><![CDATA[91533219]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[572467747723]]></consume_id></order></data>";
+//        String SECRET_KEY = "x8765d9yj72wevshn";
         String time = "1348123759";
-//
-        System.out.println("+++++>"+ DigestUtils.md5Hex((SPID + apiName + VER + data + SECRET_KEY + time)));
-
+////
+        String s = "all_amount=&amount=&commission_used=0&ctime=1348205004&deal_type_name=code_mine&express_fee=0&id=272&kx_order_id=123456212&options=272%3A3&pay_order_id=123&tcash=0&user_id=8912E83C6C949BB5B96135854807F421&user_mobile=13587469824&sn=x8765d9yj72wevshn";
+//        System.out.println("+++++>"+ DigestUtils.md5Hex((SPID + apiName + VER + data + SECRET_KEY + time)));
+        System.out.println("+++++>" + DigestUtils.md5Hex(s + time));
         Goods goods = FactoryBoy.create(Goods.class);
         User user = FactoryBoy.create(User.class);
         Map<String, String> params = new HashMap<>();
@@ -58,7 +62,7 @@ public class DDOrderApiTest extends FunctionalTest {
         Http.Response response = POST("/api/v1/dangdang/order", params);
         assertStatus(200, response);
         ErrorInfo error = (ErrorInfo) renderArgs("errorInfo");
-        assertEquals("用户不存在！", error.errorDes);
+        assertEquals("用户或手机不存在！", error.errorDes);
         assertEquals(ErrorCode.USER_NOT_EXITED, error.errorCode);
 
 
@@ -76,9 +80,8 @@ public class DDOrderApiTest extends FunctionalTest {
         response = POST("/api/v1/dangdang/order", params);
         assertStatus(200, response);
         error = (ErrorInfo) renderArgs("errorInfo");
-        assertEquals("sign不存在！", error.errorDes);
+        assertEquals("sign验证失败！", error.errorDes);
         assertEquals(ErrorCode.VERIFY_FAILED, error.errorCode);
-
 
         params.put("sign", "f3f4688c1cfe1cc709ffd29cde340413");
         params.put("ctime", String.valueOf(System.currentTimeMillis() / 1000));
@@ -90,7 +93,6 @@ public class DDOrderApiTest extends FunctionalTest {
         assertEquals(ErrorCode.VERIFY_FAILED, error.errorCode);
     }
 
-    @Ignore
     @Test
     public void 测试创建订单() {
         Goods goods = FactoryBoy.create(Goods.class);
@@ -107,7 +109,7 @@ public class DDOrderApiTest extends FunctionalTest {
         account.amount = BigDecimal.ONE;
         account.save();
 
-        Map<String, String> params = new HashMap<>();
+        SortedMap<String, String> params = new TreeMap<>();
         params.put("tcash", "0");
         params.put("express_fee", "0");
         params.put("commission_used", "0");
@@ -122,29 +124,32 @@ public class DDOrderApiTest extends FunctionalTest {
         params.put("user_id", resaler.id.toString());
         params.put("options", goods.id + ":" + "1");
         String sign = getSign(params);
+
         params.put("sign", sign);
         Http.Response response = POST("/api/v1/dangdang/order", params);
         assertStatus(200, response);
         Order order = (Order) renderArgs("order");
-        String id = (String) renderArgs("id");
+        String id = (String) renderArgs("ddgid");
         String kx_order_id = (String) renderArgs("kx_order_id");
         assertEquals("abcde", id);
         assertEquals("12345678", kx_order_id);
 
         assertNotNull(order);
-        DDOrder ddOrder = DDOrder.find("orderId=?", Long.valueOf(kx_order_id)).first();
-        assertEquals(order.orderNumber, ddOrder.ybqOrder.orderNumber);
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
+                OuterOrderPartner.DD, kx_order_id).first();
+        System.out.println(outerOrder + "outerOrder");
+        assertEquals(order.orderNumber, outerOrder.ybqOrder.orderNumber);
     }
 
-    private String getSign(Map<String, String> params) {
+    private String getSign(SortedMap<String, String> params) {
         StringBuilder signStr = new StringBuilder();
-        for (SortedMap.Entry<String, String> entry : params.entrySet()) {
-            if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            if ("body".equals(entry.getKey()) || "format".equals(entry.getKey())) {
                 continue;
             }
-            signStr.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+            signStr.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue())).append("&");
         }
-        signStr.append("secret_key=").append("x8765d9yj72wevshn");
+        signStr.append("sn=").append("x8765d9yj72wevshn");
         return DigestUtils.md5Hex(signStr.toString());
     }
 }

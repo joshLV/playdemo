@@ -10,17 +10,18 @@ package models.dangdang;
 public enum ErrorCode {
 
     SUCCESS(0),
+
     SIGN_ERROR(1000),//签名错误
     VERIFY_FAILED(1001),//验证失败
-    ORDER_NOT_EXITED(1002),//订单不存在
-    USER_NOT_EXITED(1003), //用户不存在
+    USER_NOT_EXITED(1003), //用户不存在,可能是source_id或spgid输入错误（对于一百券则是传入的用户不存在或者没有对应的分销商）
     NO_DATA_NODE(1004),//没有数据节点
-    ORDER_EXITED(1005),//订单已存在
-    PARSE_XML_FAILED(1006),//解析失败
 
-    INVENTORY_NOT_ENOUGH(1007),//库存不足
-    COUPON_SN_NOT_EXISTED(1008),//券号不存在
-    MESSAGE_SEND_FAILED(1009);//短信发送失败
+    ORDER_NOT_EXITED(9001),//订单不存在
+    ORDER_EXCEPTION(9002),//订单异常
+    PARSE_XML_FAILED(9003),//xml解析失败
+    INVENTORY_NOT_ENOUGH(9004),//库存不足
+    COUPON_SN_NOT_EXISTED(9005),//券号不存在
+    MESSAGE_SEND_FAILED(9006);//短信发送失败
     private int value;
 
     ErrorCode(int value) {
@@ -39,18 +40,22 @@ public enum ErrorCode {
                 return SIGN_ERROR;
             case 1001:
                 return VERIFY_FAILED;
-            case 1002:
-                return ORDER_NOT_EXITED;
             case 1003:
                 return USER_NOT_EXITED;
             case 1004:
                 return NO_DATA_NODE;
-            case 1005:
-                return ORDER_EXITED;
-            case 1006:
+            case 9001:
+                return ORDER_NOT_EXITED;
+            case 9002:
+                return ORDER_EXCEPTION;
+            case 9003:
                 return PARSE_XML_FAILED;
-            case 1007:
+            case 9004:
                 return INVENTORY_NOT_ENOUGH;
+            case 9005:
+                return COUPON_SN_NOT_EXISTED;
+            case 9006:
+                return MESSAGE_SEND_FAILED;
             default:
                 return VERIFY_FAILED;
         }
