@@ -1,23 +1,30 @@
 package unit;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
+
 import models.accounts.AccountType;
 import models.job.ExpiredCouponNotice;
 import models.order.ECoupon;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.SentCouponMessage;
-import models.sales.*;
+import models.sales.Area;
+import models.sales.Brand;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.Shop;
 import models.sms.MockSMSProvider;
 import models.sms.SMSMessage;
+
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
 import play.test.Fixtures;
 import play.test.UnitTest;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
 
 /**
  * TODO.

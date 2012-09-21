@@ -23,7 +23,7 @@ order.OrderItems(orderItems2):
 
 order.ECoupon(coupon1):
   "order": "order1"
-  "eCouponSn": "1234567001"
+  "eCouponSn": "1253678001"
   "originalPrice": "1.0"
   "faceValue": "10.0"
   "resalerPrice": "1.0"
@@ -40,7 +40,7 @@ order.ECoupon(coupon1):
 
 order.ECoupon(coupon2):
   "order": "order1"
-  "eCouponSn": "1234567002"
+  "eCouponSn": "1253678002"
   "originalPrice": "1.0"
   "faceValue": "10.0"
   "resalerPrice": "1.0"
@@ -59,7 +59,7 @@ order.ECoupon(coupon2):
   
 order.ECoupon(coupon3):
   "order": "order1"
-  "eCouponSn": "1234567003"
+  "eCouponSn": "1253678003"
   "originalPrice": "1.0"
   "faceValue": "10.0"
   "resalerPrice": "1.0"
@@ -75,7 +75,7 @@ order.ECoupon(coupon3):
   
 order.ECoupon(coupon4):
   "order": "order1"
-  "eCouponSn": "1234567004"
+  "eCouponSn": "1253678004"
   "originalPrice": "1.0"
   "faceValue": "10.0"
   "resalerPrice": "1.0"
@@ -93,7 +93,7 @@ order.ECoupon(coupon4):
 
 order.ECoupon(coupon5):
   "order": "order1"
-  "eCouponSn": "1234567005"
+  "eCouponSn": "1253678005"
   "originalPrice": "1.0"
   "faceValue": "10.0"
   "resalerPrice": "1.0"

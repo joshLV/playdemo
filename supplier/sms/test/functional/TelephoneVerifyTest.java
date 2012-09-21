@@ -95,7 +95,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
     @Test
     public void testParams(){
         String caller = "1";
-        String coupon = "1234567001";
+        String coupon = "1253678001";
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -144,7 +144,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         supplier.save();
 
         String caller = "1";
-        String coupon = "1234567001";
+        String coupon = "1253678001";
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -186,7 +186,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         ECoupon eCoupon = ECoupon.findById(couponId);
 
         String caller = "1";
-        String coupon = "1234567001";
+        String coupon = "1253678001";
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -215,7 +215,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void testFaceValueParams(){
-        String coupon = "1234567001";
+        String coupon = "1253678001";
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -243,7 +243,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         long couponId = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
         ECoupon eCoupon = ECoupon.findById(couponId);
 
-        String coupon = "1234567001";
+        String coupon = "1253678001";
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -253,7 +253,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
 
     @Test
     public void testConsumedAtParams(){
-        String coupon = "1234567001";
+        String coupon = "1253678001";
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 
@@ -281,7 +281,7 @@ public class TelephoneVerifyTest extends FunctionalTest{
         long couponId = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
         ECoupon eCoupon = ECoupon.findById(couponId);
 
-        String coupon = "1234567001";
+        String coupon = "1253678001";
         Long timestamp = System.currentTimeMillis()/1000;
         String sign = getSign(timestamp);
 

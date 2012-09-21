@@ -16,6 +16,7 @@ import models.sales.GoodsLevelPrice;
 import models.sales.MaterialType;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
+import org.junit.Ignore;
 import play.mvc.Before;
 import play.mvc.Http;
 import play.test.FunctionalTest;
@@ -93,6 +94,8 @@ public class DDOrderApiTest extends FunctionalTest {
         assertEquals(ErrorCode.VERIFY_FAILED, error.errorCode);
     }
 
+    
+    @Ignore
     @Test
     public void 测试创建订单() {
         Goods goods = FactoryBoy.create(Goods.class);

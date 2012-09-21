@@ -3,6 +3,7 @@ package unit;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
 import models.admin.SupplierRole;
@@ -16,7 +17,10 @@ import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
 import models.supplier.Supplier;
+
+import org.junit.Ignore;
 import org.junit.Test;
+
 import play.test.Fixtures;
 import play.test.UnitTest;
 
