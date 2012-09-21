@@ -188,7 +188,10 @@ public class SecureCAS extends Controller {
      * @throws Throwable
      */
     public static void fail() throws Throwable {
-        forbidden();
+        // forbidden();
+        // 如果失败，直接到logout先
+        String casLogoutUrl = CASUtils.getCasLogoutUrl();
+        redirect(casLogoutUrl);
     }
 
     /**
