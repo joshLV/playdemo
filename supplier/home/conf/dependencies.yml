@@ -26,6 +26,7 @@ require:
     - view_ext -> view_ext
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
+    - dangdang -> dangdang
 
 repositories:
     - mavenRepository:
@@ -61,3 +62,4 @@ repositories:
             - asset_package -> *
             - cms -> *
             - emaillogs -> *
+            - dangdang -> *

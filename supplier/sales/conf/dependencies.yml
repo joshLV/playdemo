@@ -27,6 +27,7 @@ require:
     - cms -> cms
     - emaillogs -> emaillogs
     - cache_helper -> cache_helper
+    - dangdang -> dangdang
 
 repositories:
     - mavenRepository:
@@ -63,3 +64,4 @@ repositories:
             - asset_package -> *
             - emaillogs -> *
             - cache_helper -> *
+            - dangdang -> *

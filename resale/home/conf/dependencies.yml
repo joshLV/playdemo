@@ -31,6 +31,7 @@ require:
     - oauth -> oauth
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
+    - dangdang -> dangdang
 
 repositories:
     - mavenRepository:
@@ -72,3 +73,4 @@ repositories:
             - oauth -> *
             - cache_helper -> *
             - emaillogs -> *
+            - dangdang -> *
