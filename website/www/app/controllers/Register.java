@@ -75,7 +75,7 @@ public class Register extends Controller {
         if (tj_cookie != null) {
             //记录推荐人和被推荐人的关系
             User promoterUser = User.getUserByPromoterCode(tj_cookie.value);
-            if (promoterUser == null) {
+            if (promoterUser != null) {
                 new PromoteRebate(promoterUser, user, null, BigDecimal.ZERO,true).save();
                 user.promoteUserId = promoterUser.id;
             }
