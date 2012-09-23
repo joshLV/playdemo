@@ -128,16 +128,17 @@ public class Orders extends Controller {
             Cart cart = new Cart(g, number);
             //这里用于判断是否是通过推荐过来的用户
             String discountSN = request.params.get("discountSN");
-            boolean isInputCode = false;
+            boolean isUsePromote = false;
             User user = SecureCAS.getUser();
             User promoteUser = null;
             if (discountSN != null)
                 promoteUser = User.getUserByPromoterCode(discountSN);
             //推荐人不能是自己
-            if (user != promoteUser && promoteUser != null)
-                isInputCode = true;
+            if (user != promoteUser && promoteUser != null) {
+                isUsePromote = true;
+            }
             Http.Cookie cookie = request.cookies.get(PROMOTER_COOKIE);
-            if (cookie != null || isInputCode) {
+            if (cookie != null && isUsePromote) {
                 cart.rebateValue = Order.getPromoteRebateOfGoodsAmount(g, number);
             } else {
                 cart.rebateValue = Order.getDiscountValueOfGoodsAmount(g, number, discountCode);
@@ -270,7 +271,7 @@ public class Orders extends Controller {
             if (user != promoteUser && promoteUser != null) isInputCode = true;
             //推荐标志【有推荐cookie或者手动输入推荐码】
             boolean isPromoteFlag = false;
-            if (!"".equals(tj_cookieValue) || isInputCode) isPromoteFlag = true;
+            if (!"".equals(tj_cookieValue) && isInputCode) isPromoteFlag = true;
 
             for (models.sales.Goods goodsItem : goodsList) {
                 Integer number = itemsMap.get(goodsItem.getId());
@@ -335,7 +336,7 @@ public class Orders extends Controller {
             if (isPromoteFlag) {
                 if ("".equals(tj_cookieValue)) tj_cookieValue = discountSN;
                 User promoterUser = User.getUserByPromoterCode(tj_cookieValue);
-                if (promoterUser != user) {
+                if (promoterUser != null && promoterUser != user) {
                     //保存推荐人的用户ID
                     order.promoteUserId = promoterUser.id;
                     // 不需要有rebateValue
