@@ -144,7 +144,7 @@
                 #{/list}
                 #{if i!=userList.size()}
 
-                    <a href="javascript:void(openW('/crm/bind_search_user?phone=${phone}&userId=${searchUser.id}&loginName=${searchUser.loginName}'))">绑定</a>
+                    <a href="javascript:openW('/crm/bind_search_user?phone=${phone}&userId=${searchUser.id}&loginName=${searchUser.loginName}')">绑定</a>
                 #{/if}
 
 
@@ -323,8 +323,10 @@
                 #{/list}
                 #{if i==0}
                 *{consult.text${consult?.text}}*
+                condition.searchUser :${ condition.searchUser}
+                condition.searchOrderCoupon:${condition.searchOrderCoupon}
                     <a type="submit"
-                       href="javascript:void(openW('/crm/bind?phone=${phone}&consult.text=${consult?.text}&couponId=${coupon.id}&userId=${coupon.order.userId}&consultId=${consultId}&condition.searchUser=${condition.searchUser}&condition.searchOrderCoupon=${condition.searchOrderCoupon}'))">绑定</a>
+           href="javascript:void(openW('/crm/bind?phone=${phone}&consult.text=${consult?.text}&couponId=${coupon.id}&userId=${coupon.order.userId}&consultId=${consultId}&condition.searchUser=${condition.searchUser}&condition.searchOrderCoupon=${condition.searchOrderCoupon}'))">绑定</a>
                 #{/if}
 
 
@@ -495,7 +497,6 @@
     </form>
     <ul class="nav">
 
-
         <table class="table table-bordered" style="margin-bottom: 18px;" width="0">
 
             <tr>
@@ -550,6 +551,9 @@
         #{option models.sales.ConsultType.WEBSITEBROKEN}&{'consult.WEBSITEBROKEN'}#{/option}
         #{option models.sales.ConsultType.QUESTIION}&{'consult.QUESTIION'}#{/option}
         #{option models.sales.ConsultType.FEEDBACK}&{'consult.FEEDBACK'}#{/option}
+        #{option models.sales.ConsultType.COMPLAINT}&{'consult.COMPLAINT'}#{/option}
+
+
     #{/select}
 
     <textarea rows="3" cols="20" name="consult.text" id="consult_text"

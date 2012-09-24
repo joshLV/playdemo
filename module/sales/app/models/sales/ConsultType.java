@@ -13,7 +13,8 @@ public enum ConsultType {
       VERIFYERROR,    //验证错误
       WEBSITEBROKEN,  //网站报修
       QUESTIION,        //商户疑问
-      FEEDBACK,        //投诉反馈
+      FEEDBACK,        //意见反馈
+      COMPLAINT        //投诉反馈
 }
 
 

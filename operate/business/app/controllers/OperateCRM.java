@@ -219,7 +219,6 @@ public class OperateCRM extends Controller {
                 List<User> userList = User.find("id in (select c.userId from MemberCallBind c where c.phone=?)", phone).fetch();
                 List<CouponCallBind> couponCallBindList = CouponCallBind.findAll();
 
-
                 render("OperateCRM/index.html", withdrawBillSize, orderListSize, eCouponsSize, withdrawBill, orderList, couponCallBindList, eCoupons, consult, consultContent, user, currentOperator, phone, userList, condition, consultId);
 
 
@@ -425,7 +424,7 @@ public class OperateCRM extends Controller {
 
     public static void bind(CRMCondition condition,String phone, Long couponId, Long userId, Long consultId, ConsultRecord consult) {
         ECoupon coupon = ECoupon.find("id=?", couponId).first();
-        System.out.println("condition"+condition);
+        System.out.println("condition"+condition.searchUser);
         render(condition,phone, coupon, userId, consultId, consult);
     }
 
