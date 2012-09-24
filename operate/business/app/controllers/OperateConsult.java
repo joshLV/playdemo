@@ -28,12 +28,9 @@ public class OperateConsult extends Controller {
 
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-//        JPAExtPaginator<ConsultRecord> orderList = models.sales.ConsultRecord.query(condition, null, pageNumber, PAGE_SIZE);
-//
-//        BigDecimal amountSummary = Order.summary(orderList);
-//        List<Brand> brandList = Brand.findByOrder(null);
-//        renderArgs.put("brandList", brandList);
-        render();
+        JPAExtPaginator<ConsultRecord> consultList = models.sales.ConsultRecord.query(condition, null, pageNumber, PAGE_SIZE);
+
+        render(consultList);
 
     }
 }

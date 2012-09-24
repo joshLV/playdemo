@@ -3,10 +3,12 @@ package models.sales;
 import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.AccountType;
 import models.order.ECoupon;
+import models.order.OrdersCondition;
 import play.data.validation.Email;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -117,6 +119,18 @@ public class ConsultRecord extends Model {
         updateConsult.text = consult.text;
 
         updateConsult.save();
+    }
+
+
+    public static JPAExtPaginator<ConsultRecord> query(ConsultResultCondition condition, Long supplierId, int pageNumber, int pageSize) {
+        JPAExtPaginator<ConsultRecord> orderPage = new JPAExtPaginator<>
+                ("ConsultRecord c", "c", ConsultRecord.class, condition.getFilter(),
+                        condition.paramsMap)
+                .orderBy(condition.getOrderByExpress());
+        orderPage.setPageNumber(pageNumber);
+        orderPage.setPageSize(pageSize);
+        orderPage.setBoundaryControlsEnabled(true);
+        return orderPage;
     }
 
     //=================================================== 数据库操作 ====================================================
