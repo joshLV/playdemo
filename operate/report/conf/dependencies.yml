@@ -13,6 +13,7 @@ require:
     - layout_operate -> layout_operate
     - view_ext -> view_ext
     - commons-lang -> commons-lang 2.6
+    - commons-httpclient -> commons-httpclient 3.1
     - sales -> sales
     - supplier -> supplier
     - paginate_ext -> paginate_ext
@@ -37,6 +38,7 @@ repositories:
         contains:
             - com.uhuila.utils -> *
             - commons-lang -> *
+            - commons-httpclient -> *
             - org.jsoup -> *
         m2compatible: true
 

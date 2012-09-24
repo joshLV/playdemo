@@ -13,6 +13,7 @@ require:
     - layout_trader -> layout_trader
     - view_ext -> view_ext
     - commons-lang -> commons-lang 2.6
+    - commons-httpclient -> commons-httpclient 3.1
     - sales -> sales
     - resale -> resale
     - supplier -> supplier
@@ -29,7 +30,6 @@ require:
     - emaillogs -> emaillogs
     - cache_helper -> cache_helper
     - dangdang -> dangdang
-    - commons-httpclient -> commons-httpclient 3.1
 
 repositories:
     - mavenRepository:
