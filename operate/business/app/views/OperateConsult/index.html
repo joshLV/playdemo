@@ -4,56 +4,53 @@
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <div class="body">
 
-    <form class="form-horizontal" name="frmlist" id="frmlist" method="GET">
-        <table width="80%">
-            <tr>
-                <td>手机号: <input type="text" name="condition.phone" class="input-medium"
-                                value="${condition?.phone}"/></td>
-                <td>咨询类型:
+    <form class="well form-inline" name="frmlist" id="frmlist" method="GET">
 
-                #{select 'condition.consultType', id:'condition_consultType', class:'input-small', value:condition?.consultType}
-                    #{option ""}不限#{/option}
-                    #{option "ORDERCONSULT"}&{'consult.ORDERCONSULT'}#{/option}
-                    #{option "REFUND"}&{'consult.REFUND'}#{/option}
-                    #{option "VERIFYERROR"}&{'consult.VERIFYERROR'}#{/option}
-                    #{option "WEBSITEBROKEN"}&{'consult.WEBSITEBROKEN'}#{/option}
-                    #{option "QUESTIION"}&{'consult.QUESTIION'}#{/option}
-                    #{option "FEEDBACK"}&{'consult.FEEDBACK'}#{/option}
-                    #{option "COMPLAINT"}&{'consult.COMPLAINT'}#{/option}
+        手机号: <input type="text" name="condition.phone" class="input-medium"
+                    value="${condition?.phone}"/>
+        咨询类型:
 
-
-                #{/select}
-
-                </td>
-
-                <td>咨询内容:<input type="text" name="condition.text" class="input-medium"
-                                value="${condition?.text}"/></td>
-                <td>日期:
-
-                    <input type="text" id="createdAtBegin" name="condition.createdAtBegin"
-                           value="${condition?.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"
-                           class="input-medium Wdate"/>至
+    #{select 'condition.consultType', id:'condition_consultType', class:'input-small', value:condition?.consultType}
+        #{option ""}不限#{/option}
+        #{option "ORDERCONSULT"}&{'consult.ORDERCONSULT'}#{/option}
+        #{option "REFUND"}&{'consult.REFUND'}#{/option}
+        #{option "VERIFYERROR"}&{'consult.VERIFYERROR'}#{/option}
+        #{option "WEBSITEBROKEN"}&{'consult.WEBSITEBROKEN'}#{/option}
+        #{option "QUESTIION"}&{'consult.QUESTIION'}#{/option}
+        #{option "FEEDBACK"}&{'consult.FEEDBACK'}#{/option}
+        #{option "COMPLAINT"}&{'consult.COMPLAINT'}#{/option}
 
 
-                    <input type="text" id="createdAtEnd"
-                           name="condition.createdAtEnd"
-                           value="${condition?.createdAtEnd?.format()}"
-                           onfocus="WdatePicker({readOnly:true})"
-                           class="input-medium Wdate"/>
+    #{/select}
 
 
-                </td>
-                <td>操作人:<input type="text" name="condition.createdBy" class="input-medium"
-                               value="${condition?.createdBy}"/></td>
+
+        咨询内容:<input type="text" name="condition.text" class="input-medium"
+                    value="${condition?.text}"/>
+        日期:
+
+        <input type="text" id="createdAtBegin" name="condition.createdAtBegin"
+               value="${condition?.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"
+               class="input-medium Wdate"/>至
 
 
-                <td>
-                    <button class="btn btn-primary" id="search" type="submit">搜索</button>
-                    <button class="btn btn-primary" id="searchbtn" onclick="orderExcel()">导出报表</button>
-                </td>
+        <input type="text" id="createdAtEnd"
+               name="condition.createdAtEnd"
+               value="${condition?.createdAtEnd?.format()}"
+               onfocus="WdatePicker({readOnly:true})"
+               class="input-medium Wdate"/>
 
-            </tr>
-        </table>
+
+        操作人:<input type="text" name="condition.createdBy" class="input-medium"
+                   value="${condition?.createdBy}"/></td>
+
+
+        <br>
+        <br>
+        <button class="btn btn-primary" id="search" type="submit">搜索</button>
+        <button class="btn btn-primary" id="searchbtn" onclick="orderExcel()">导出报表</button>
+
+
     </form>
 
 
