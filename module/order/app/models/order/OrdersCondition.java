@@ -28,6 +28,7 @@ public class OrdersCondition {
     public String payMethod;
     public String searchKey;
     public String searchItems;
+    public String allSearch;
     public boolean isLottery;
     public AccountType userType;
     public long brandId = 0;
@@ -122,6 +123,38 @@ public class OrdersCondition {
             }
         }
 
+        //CRM  查询订单
+        if (StringUtils.isNotBlank(allSearch)) {
+
+
+            sql.append(" and o.userType = models.accounts.AccountType.CONSUMER");
+
+
+            sql.append(" and o.orderNumber = :allSearch");
+            paramsMap.put("allSearch", allSearch);
+
+            sql.append(" or o.receiverMobile =:allSearch");
+            paramsMap.put("allSearch", allSearch);
+
+            sql.append(" or o.receiverMobile =:allSearch");
+            paramsMap.put("allSearch", allSearch);
+
+            sql.append(" or o.buyerMobile =:allSearch");
+            paramsMap.put("allSearch", allSearch);
+
+            sql.append(" or  o.id in (select oi.order.id from o.orderItems oi where oi.phone =:allSearch)");
+            paramsMap.put("allSearch", allSearch);
+
+            sql.append(" or o.userId in (select u.id from User u where o.userId = u.id and u.loginName=:allSearch )");
+            paramsMap.put("allSearch", allSearch);
+
+
+            sql.append(" or o.userId in (select u.id from User u where o.userId = u.id and u.mobile=:allSearch )");
+            paramsMap.put("allSearch", allSearch);
+
+
+        }
+
         //按照手机检索
         if (QueryType.MOBILE.toString().equals(searchKey) && StringUtils.isNotEmpty(searchItems)) {
             sql.append(" and o.id in (select o.id from o.orderItems oi where oi.phone =:phone)");
@@ -207,17 +240,15 @@ public class OrdersCondition {
 
     public String getOrderByExpress() {
         String orderBySql = "";
-        if (orderBy != null && orderBy != ""){
-            orderBySql = orderBySql + orderBy+" ";
-        }
-        else {
+        if (orderBy != null && orderBy != "") {
+            orderBySql = orderBySql + orderBy + " ";
+        } else {
             orderBySql = orderBySql + "o.paidAt ";
         }
 
-        if (orderByType != null && orderByType != ""){
+        if (orderByType != null && orderByType != "") {
             orderBySql = orderBySql + orderByType;
-        }
-        else {
+        } else {
             orderBySql = orderBySql + "desc";
         }
         //orderBySql = "o.paidAt desc,o.createdAt desc";

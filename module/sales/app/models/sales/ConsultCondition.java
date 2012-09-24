@@ -111,7 +111,7 @@ public class ConsultCondition extends Model {
 
         List<ECoupon> eCoupons = ECoupon.find("select distinct e from ECoupon e, User u where " +
                 "e.order.userId = u.id " +
-                "and ( " +
+                "and  e.order.userType = models.accounts.AccountType.CONSUMER and ( " +
                 "  e.eCouponSn like ? " +
                 "  or e.order.orderNumber=? " +
                 "  or u.mobile=? " +

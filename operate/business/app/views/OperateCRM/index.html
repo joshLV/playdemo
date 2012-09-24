@@ -54,7 +54,7 @@
 
     <tr>
         <td>
-            <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.jumpIndex(phone)}"
+            <form class="form-horizontal" name="frmlist" id="frmlist" action="@{OperateCRM.jumpPrevIndex()}"
                   method="GET">
                 <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
                 <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
@@ -77,7 +77,7 @@
             </form>
         </td>
         <td>
-            <form class="form-horizontal" name="frmlist2" id="frmlist2" action="@{OperateCRM.jumpIndex(phone)}"
+            <form class="form-horizontal" name="frmlist2" id="frmlist2" action="@{OperateCRM.jumpPrevIndex()}"
                   method="GET">
                 <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
                 <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
@@ -271,7 +271,7 @@
 </table>
 <div style="text-align: right; margin-top:-15px;">
     #{if  orderListSize >5}
-        <a href="/orders?condition.searchKey=ORDER_NUMBER&condition.searchItems=${moreSearch}"
+        <a href="/orders?condition.allSearch=${moreSearch}"
            target="_blank" style="font-size:15px"> 更多</a>
     #{/if}
 </div>
@@ -416,7 +416,7 @@
 <div style="text-align: right; margin-top:-15px;">
     #{if eCouponsSize>5}
 
-        <a href="/coupons?condition.searchKey=COUPON&condition.searchItems=${moreSearch}"
+        <a href="/coupons?condition.allSearch=${moreSearch}"
 
            target="_blank" style="float:right; font-size:larger;"> 更多</a>
 

@@ -46,6 +46,8 @@ POST    /seckill_goods/images                   UploadFiles.uploadJson
 GET     /seckill_goods/{id}/check               SecKillGoods.checkGoodsId
 DELETE  /seckill_goods/{id}                     SecKillGoods.delete
 
+
+
 GET     /callcenter/phone                                         OperateCRM.getPhone
 GET     /callcenter/phone/{phone}                                 OperateCRM.callCenter
 GET     /callcenter/phone/{phone}/record/{consultId}              OperateCRM.index
@@ -60,6 +62,9 @@ GET     /callcenter/phone/abandon/{consultId}                     OperateCRM.aba
 PUT     /crm/{id}                                                 OperateCRM.update
 GET     /crm/bindCouponDetails                                    OperateCRM.bindCouponDetails
 GET     /crm/bind_search_user                                     OperateCRM.bindSearchUser
+GET     /callcenter/phone/consult_excel                           OperateCRM.consultExcelOut
+
+GET     /callcenter/search              OperateConsult.index
 
 
 

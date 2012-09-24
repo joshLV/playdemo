@@ -1,0 +1,23 @@
+#{extends 'layout_operate/crm_layout.html' /}
+#{set title:'消费者信息管理系统查询' /}
+<div class="body">
+
+    <form class="form-horizontal" name="frmlist" id="frmlist" method="GET">
+        <table width="80%">
+            <tr>
+                <td>手机号: <input type="text" name="condition.phone" class="input-medium"
+                                value="${condition?.phone}"/></td>
+                <td>咨询类型:
+                </td>
+            </tr>
+            <tr>
+                <td>咨询内容:<input type="text" name="condition.content" class="input-medium"
+                                value="${condition?.content}"/></td>
+                <td>日期: </td>
+                <td>操作人:<input type="text" name="condition.operator" class="input-medium"
+                               value="${condition?.operator}"/></td>
+            </tr>
+        </table>
+    </form>
+
+</div>

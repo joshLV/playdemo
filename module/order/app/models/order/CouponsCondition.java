@@ -30,6 +30,7 @@ public class CouponsCondition implements Serializable {
     public String goodsName;
     public String orderNumber;
     public String phone;
+    public String allSearch;
     public Long userId;
     public AccountType accountType;
     public Supplier supplier;
@@ -44,6 +45,7 @@ public class CouponsCondition implements Serializable {
     public Date paidAtBegin;
     public Date paidAtEnd;
     public String userName;
+
 
     public String getOrderByExpress() {
         return "e.createdAt desc";
@@ -127,10 +129,48 @@ public class CouponsCondition implements Serializable {
             paramMap.put("eCouponSn", "%" + searchItems + "%");
         }
 
+
         if (QueryType.MOBILE.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
             sql.append(" and e.orderItems.phone like :phone");
             paramMap.put("phone", "%" + searchItems + "%");
         }
+
+
+        //CRM  查询券
+        if (StringUtils.isNotBlank(allSearch)) {
+
+            sql.append(" and  e.order.userType = models.accounts.AccountType.CONSUMER");
+
+            sql.append(" and  e.order.orderNumber like :allSearch");
+            paramMap.put("allSearch", "%" + allSearch + "%");
+
+            sql.append(" or  e.eCouponSn like :allSearch");
+            paramMap.put("allSearch", "%" + allSearch);
+
+            sql.append(" or e.orderItems.phone =:allSearch");
+            paramMap.put("allSearch", allSearch );
+
+            sql.append(" or e.id in (select c.couponId from CouponCallBind c where c.phone=:allSearch)");
+            paramMap.put("allSearch", allSearch);
+
+            sql.append(" or e.order.buyerMobile = :allSearch");
+            paramMap.put("allSearch", allSearch);
+
+            sql.append(" or e.order.receiverMobile=:allSearch");
+            paramMap.put("allSearch", allSearch);
+
+            sql.append(" or e.order.userId in (select u.id from User u where e.order.userId = u.id and u.mobile=:allSearch )");
+            paramMap.put("allSearch", allSearch);
+
+            sql.append(" or e.order.userId in (select u.id from User u where e.order.userId = u.id and u.loginName=:allSearch )");
+            paramMap.put("allSearch", allSearch);
+
+
+        }
+
+
+
+
         if (brandId != 0) {
             sql.append(" and e.orderItems.goods.brand =:brand");
             Brand brand = new Brand();
