@@ -70,11 +70,14 @@ public class DDOrderAPI extends Controller {
 
         //定位请求者
         Resaler resaler = Resaler.find("loginName=? and status=?", DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
+        Long resalerId = null;
         if (resaler == null) {
             errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
             errorInfo.errorDes = "当当分销商用户不存在！";
             Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
             render("/DDOrderAPI/error.xml", errorInfo);
+        } else {
+            resalerId = resaler.id;
         }
 
         Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
@@ -82,7 +85,7 @@ public class DDOrderAPI extends Controller {
                 OuterOrderPartner.DD, kx_order_id).first();
         //outerOrder是否存在的标志
         Boolean isExited = true;
-        Order order = null;
+        Order order;
 
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个
         if (outerOrder == null) {
@@ -100,9 +103,10 @@ public class DDOrderAPI extends Controller {
             }
         }
 
+
         //如果已经存在订单，则不处理，直接返回xml
         if (isExited) {
-            order = Order.findOneByUser(outerOrder.ybqOrder.orderNumber, resaler.id, AccountType.RESALER);
+            order = Order.findOneByUser(outerOrder.ybqOrder.orderNumber, resalerId, AccountType.RESALER);
             if (order != null) {
                 Logger.info("[DDOrderAPI] order has existed,and render xml");
                 List<ECoupon> eCouponList = ECoupon.findByOrder(order);
@@ -111,11 +115,11 @@ public class DDOrderAPI extends Controller {
         }
 
 
-        order = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
+        order = Order.createConsumeOrder(resalerId, AccountType.RESALER);
         //分解有几个商品，每个商品购买的数量
         String[] arrGoods = options.split(",");
 
-        String[] arrGoodsItem = null;
+        String[] arrGoodsItem;
         for (String goodsItem : arrGoods) {
             arrGoodsItem = goodsItem.split(":");
             if (arrGoodsItem != null) {

@@ -148,12 +148,14 @@ public class DDAPIUtil {
                 return response;
             }
             Resaler resaler = Resaler.find("loginName=? and status=?", DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
+
             if (resaler == null) {
                 response.errorCode = ErrorCode.USER_NOT_EXITED;
                 response.desc = "当当用户不存在！";
                 Logger.error("[DDSendMessageAPI]" + response.desc);
                 return response;
             }
+
 
             Order ybqOrder = Order.find("orderNumber= ? and userId=? and userType=?", outerOrder.ybqOrder.orderNumber, resaler.id, AccountType.RESALER).first();
             if (ybqOrder == null) {
@@ -260,6 +262,7 @@ public class DDAPIUtil {
         }
 
         signStr.append("sn=").append(SECRET_KEY);
+        System.out.println(">>>>>>>>>."+DigestUtils.md5Hex(signStr.toString()));
         return DigestUtils.md5Hex(signStr.toString()).equals(sign);
 
     }

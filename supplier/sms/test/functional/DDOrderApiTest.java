@@ -7,6 +7,7 @@ import models.accounts.AccountType;
 import models.consumer.User;
 import models.dangdang.ErrorCode;
 import models.dangdang.ErrorInfo;
+import models.order.ECoupon;
 import models.order.Order;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
@@ -15,18 +16,15 @@ import models.sales.Goods;
 import models.sales.GoodsLevelPrice;
 import models.sales.MaterialType;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 import play.mvc.Before;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 
 import java.math.BigDecimal;
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * <p/>
@@ -52,9 +50,9 @@ public class DDOrderApiTest extends FunctionalTest {
 //        String SECRET_KEY = "x8765d9yj72wevshn";
         String time = "1348123759";
 ////
-        String s = "all_amount=&amount=&commission_used=0&ctime=1348205004&deal_type_name=code_mine&express_fee=0&id=272&kx_order_id=123456212&options=272%3A3&pay_order_id=123&tcash=0&user_id=8912E83C6C949BB5B96135854807F421&user_mobile=13587469824&sn=x8765d9yj72wevshn";
+//        String s = "all_amount=&amount=&commission_used=0&ctime=1348205004&deal_type_name=code_mine&express_fee=0&id=272&kx_order_id=123456212&options=272%3A3&pay_order_id=123&tcash=0&user_id=8912E83C6C949BB5B96135854807F421&user_mobile=13587469824&sn=x8765d9yj72wevshn";
 //        System.out.println("+++++>"+ DigestUtils.md5Hex((SPID + apiName + VER + data + SECRET_KEY + time)));
-        System.out.println("+++++>" + DigestUtils.md5Hex(s + time));
+//        System.out.println("+++++>" + DigestUtils.md5Hex(s + time));
         Goods goods = FactoryBoy.create(Goods.class);
         User user = FactoryBoy.create(User.class);
         Map<String, String> params = new HashMap<>();
@@ -84,7 +82,7 @@ public class DDOrderApiTest extends FunctionalTest {
         assertEquals("sign验证失败！", error.errorDes);
         assertEquals(ErrorCode.VERIFY_FAILED, error.errorCode);
 
-        params.put("sign", "f3f4688c1cfe1cc709ffd29cde340413");
+        params.put("sign", "beefdebebef85f55ecba47d54d8308e8");
         params.put("ctime", String.valueOf(System.currentTimeMillis() / 1000));
         response = POST("/api/v1/dangdang/order", params);
         assertStatus(200, response);
@@ -94,7 +92,7 @@ public class DDOrderApiTest extends FunctionalTest {
         assertEquals(ErrorCode.VERIFY_FAILED, error.errorCode);
     }
 
-    
+
     @Ignore
     @Test
     public void 测试创建订单() {
@@ -142,6 +140,9 @@ public class DDOrderApiTest extends FunctionalTest {
                 OuterOrderPartner.DD, kx_order_id).first();
         System.out.println(outerOrder + "outerOrder");
         assertEquals(order.orderNumber, outerOrder.ybqOrder.orderNumber);
+         List<ECoupon> eCouponList = ECoupon.findByOrder(order);
+        assertEquals(1, eCouponList.size());
+
     }
 
     private String getSign(SortedMap<String, String> params) {

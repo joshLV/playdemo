@@ -39,7 +39,7 @@ public class DDSendMessageAPI extends Controller {
             response.spid = SPID;
             response.ver = VER;
             response.errorCode = ErrorCode.VERIFY_FAILED;
-            response.desc = "验证sign失败！";
+            response.desc = "sign验证失败！";
             render(response);
         }
 

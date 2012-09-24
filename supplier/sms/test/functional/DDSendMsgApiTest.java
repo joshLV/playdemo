@@ -2,18 +2,22 @@ package functional;
 
 import factory.FactoryBoy;
 import models.accounts.AccountType;
+import models.dangdang.DDAPIUtil;
+import models.dangdang.ErrorCode;
+import models.dangdang.Response;
+import models.order.ECoupon;
 import models.order.Order;
+import models.order.OuterOrder;
 import models.resale.Resaler;
+import models.resale.ResalerStatus;
 import models.sales.Goods;
-import models.sales.MaterialType;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Before;
+import play.mvc.Http;
 import play.test.FunctionalTest;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedMap;
 
 /**
  * <p/>
@@ -28,56 +32,120 @@ public class DDSendMsgApiTest extends FunctionalTest {
 
     }
 
-    @Ignore
     @Test
     public void 测试发送短信() {
-        Goods goods = FactoryBoy.create(Goods.class);
-        goods.materialType = MaterialType.ELECTRONIC;
-        goods.save();
         Resaler resaler = FactoryBoy.create(Resaler.class);
         Order order = FactoryBoy.create(Order.class);
         order.userId = resaler.id;
         order.userType = AccountType.RESALER;
         order.save();
-//        DDOrder ddOrder = FactoryBoy.create(DDOrder.class);
-//        ECoupon coupon = FactoryBoy.create(ECoupon.class);
+        String data = "<data><order><order_id><![CDATA[12345678]]></order_id><ddgid><![CDATA[1]]></ddgid><spgid><![CDATA[1]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
 
-//        Map<String, String> params = new HashMap<>();
-//        params.put("tcash", "0");
-//        params.put("express_fee", "0");
-//        params.put("commission_used", "0");
-//        params.put("kx_order_id", "12345678");
-//        params.put("format", "xml");
-//        params.put("all_amount", "10.0");
-//        params.put("deal_type_name", "code_mine");
-//        params.put("ctime", "1284863557");
-//        params.put("id", "abcde");
-//        params.put("amount", "10.0");
-//        params.put("user_mobile", "13764081569");
-//        params.put("user_id", resaler.id.toString());
-//        params.put("options", goods.id + ":" + "1");
-//        String sign = getSign(params);
-//        params.put("sign", sign);
-//        Http.Response response = POST("/ddApi/order", params);
-//        assertStatus(200, response);
-//        Order order = (Order) renderArgs("order");
-//        String id = (String) renderArgs("id");
-//        String kx_order_id = (String) renderArgs("kx_order_id");
-//        assertEquals("abcde", id);
-//        assertEquals("12345678", kx_order_id);
 
+        Map<String, String> params = new HashMap<>();
+        params.put("data", data);
+        params.put("call_time", "1348217629");
+        params.put("sign", "");
+        Http.Response response = POST("/api/v1/dangdang/send-msg", params);
+        assertStatus(200, response);
+        Response res = (Response) renderArgs("response");
+        assertEquals("sign验证失败！", res.desc);
+        assertEquals(ErrorCode.VERIFY_FAILED, res.errorCode);
+
+        params.put("sign", "beefdebebef85f55ecba47d54d8308e8");
+        response = POST("/api/v1/dangdang/send-msg", params);
+        assertStatus(200, response);
+        res = (Response) renderArgs("response");
+        assertEquals("sign验证失败！", res.desc);
+        assertEquals(ErrorCode.VERIFY_FAILED, res.errorCode);
+
+
+        params.put("data", data.replace("<order>", "order1"));
+        params.put("sign", "f7032ef81047b3a2fcee60b6656f04ae");
+        response = POST("/api/v1/dangdang/send-msg", params);
+        assertStatus(200, response);
+        res = (Response) renderArgs("response");
+        assertEquals("xml解析失败！", res.desc);
+        assertEquals(ErrorCode.PARSE_XML_FAILED, res.errorCode);
+
+        OuterOrder outerOrder = FactoryBoy.create(OuterOrder.class);
+        Goods g = FactoryBoy.create(Goods.class);
+        data = "<data><order><order_id><![CDATA[12345678]]></order_id><ddgid><![CDATA[" + g.id + "]]></ddgid><spgid><![CDATA[" + g.id + "]]></spgid><user_code><![CDATA[159300520]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[0159300520]]></consume_id></order></data>";
+        String sign = DDAPIUtil.getSign(data, "1348217629", "send_msg");
+        params.put("data", data);
+        params.put("sign", sign);
+        response = POST("/api/v1/dangdang/send-msg", params);
+        assertStatus(200, response);
+        res = (Response) renderArgs("response");
+        assertEquals("没找到对应的当当订单!", res.desc);
+        assertEquals(ErrorCode.ORDER_NOT_EXITED, res.errorCode);
+
+
+        outerOrder.ybqOrder = order;
+        outerOrder.save();
+        resaler.status = ResalerStatus.FREEZE;
+        resaler.save();
+        params.put("data", data);
+        params.put("sign", sign);
+        response = POST("/api/v1/dangdang/send-msg", params);
+        assertStatus(200, response);
+        res = (Response) renderArgs("response");
+        assertEquals("当当用户不存在！", res.desc);
+        assertEquals(ErrorCode.USER_NOT_EXITED, res.errorCode);
+
+        resaler.status = ResalerStatus.APPROVED;
+        resaler.save();
+        order.userId = 9999l;
+        order.save();
+        params.put("data", data);
+        params.put("sign", sign);
+        response = POST("/api/v1/dangdang/send-msg", params);
+        assertStatus(200, response);
+        res = (Response) renderArgs("response");
+        assertEquals("没找到对应的订单", res.desc);
+        assertEquals(ErrorCode.ORDER_NOT_EXITED, res.errorCode);
+
+
+        order.orderNumber = "987654321";
+        order.userId = resaler.id;
+        order.userType = AccountType.RESALER;
+        order.save();
+        params.put("data", data);
+        params.put("sign", sign);
+        response = POST("/api/v1/dangdang/send-msg", params);
+        assertStatus(200, response);
+        res = (Response) renderArgs("response");
+        assertEquals("没找到对应的券号", res.desc);
+        assertEquals(ErrorCode.COUPON_SN_NOT_EXISTED, res.errorCode);
+
+
+        ECoupon coupon = FactoryBoy.create(ECoupon.class);
+        coupon.goods = g;
+        coupon.order = order;
+        coupon.eCouponSn = "0159300520";
+        coupon.save();
+
+        response = POST("/api/v1/dangdang/send-msg", params);
+        assertStatus(200, response);
+        res = (Response) renderArgs("response");
+        assertEquals("success", res.desc);
+        assertEquals(ErrorCode.SUCCESS, res.errorCode);
+        assertEquals("0159300520", res.getAttribute("consumeId"));
+        assertEquals("12345678", res.getAttribute("ddOrderId"));
+        assertEquals("987654321", res.getAttribute("ybqOrderId"));
+
+        response = POST("/api/v1/dangdang/send-msg", params);
+        assertStatus(200, response);
+
+        response = POST("/api/v1/dangdang/send-msg", params);
+        assertStatus(200, response);
+
+        response = POST("/api/v1/dangdang/send-msg", params);
+        assertStatus(200, response);
+        res = (Response) renderArgs("response");
+        assertEquals("短信发送失败(消费者只有三次发送短信的机会！)", res.desc);
+        assertEquals(ErrorCode.MESSAGE_SEND_FAILED, res.errorCode);
 
     }
 
-    private String getSign(Map<String, String> params) {
-        StringBuilder signStr = new StringBuilder();
-        for (SortedMap.Entry<String, String> entry : params.entrySet()) {
-            if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
-                continue;
-            }
-            signStr.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
-        }
-        signStr.append("secret_key=").append("x8765d9yj72wevshn");
-        return DigestUtils.md5Hex(signStr.toString());
-    }
 }
