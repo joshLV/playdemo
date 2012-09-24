@@ -91,7 +91,7 @@ public class PGPaymentInfoFuncTest extends FunctionalTest {
 
     @Test
     public void testSuccess(){
-        Http.Response response = GET("/payment_info/1213231412");
+        Http.Response response = GET("/payment_info/1213221412");
         assertIsOk(response);
         assertContentMatch("我的积分",response);
     }
