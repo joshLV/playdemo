@@ -7,6 +7,8 @@ import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.BaseOAuth20Provider;
 import org.scribe.up.session.UserSession;
 import org.scribe.utils.OAuthEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.net.URLDecoder;
@@ -23,6 +25,7 @@ import java.util.Map;
  * Time: 9:29 AM
  */
 public abstract class AbstractOAuth20Provider extends BaseOAuth20Provider {
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractOAuth20Provider.class);
 
     /**
      * 在使用oauth协议登录前设置应用的初始来源页面.
@@ -38,7 +41,7 @@ public abstract class AbstractOAuth20Provider extends BaseOAuth20Provider {
 
 
         final String url = authorizationUrl + "&state=" + session.getAttribute(OAuthConstants.SERVICE);
-        System.out.println("!!!!AbstractOAuth20Provider!!!!    getAuthorizationUrl:" + url);
+        logger.debug("!!!!AbstractOAuth20Provider!!!!    getAuthorizationUrl:" + url);
 
         return url;
     }
@@ -102,8 +105,7 @@ public abstract class AbstractOAuth20Provider extends BaseOAuth20Provider {
         if (count <= 0) {
             final String sql = "insert into users(created_at,open_id_source,open_id,status) values(current_timestamp,'" +
                     user.openIdSource + "','" + user.openId + "','NORMAL')";
-
-            System.out.println("[[[[[[[[[[[[[[[sql:" + sql);
+            logger.debug("sql:" + sql);
             getJdbcTemplate().update(sql);
         }
 //        getJdbcTemplate().update(sql, new PreparedStatementSetter() {
