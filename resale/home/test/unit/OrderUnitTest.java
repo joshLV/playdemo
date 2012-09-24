@@ -1,35 +1,27 @@
 package unit;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
+import models.order.ECoupon;
+import models.order.Order;
+import models.order.OrderStatus;
+import models.order.OrdersCondition;
+import models.resale.Resaler;
+import models.sales.*;
+import org.junit.Before;
+import org.junit.Test;
+import play.modules.paginate.JPAExtPaginator;
+import play.test.Fixtures;
+import play.test.UnitTest;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
-import models.order.Order;
-import models.order.OrderStatus;
-import models.order.OrdersCondition;
-import models.resale.Resaler;
-import models.sales.Area;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.GoodsLevelPrice;
-import models.sales.Shop;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import play.modules.paginate.JPAExtPaginator;
-import play.test.Fixtures;
-import play.test.UnitTest;
-
 public class OrderUnitTest extends UnitTest {
 	@Before
 	@SuppressWarnings("unchecked")
 	public void setup() {
+		Fixtures.delete(ECoupon.class);
 		Fixtures.delete(Shop.class);
 		Fixtures.delete(Goods.class);
 		Fixtures.delete(Category.class);
