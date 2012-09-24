@@ -323,10 +323,10 @@
                 #{/list}
                 #{if i==0}
                 *{consult.text${consult?.text}}*
-                condition.searchUser :${ condition.searchUser}
-                condition.searchOrderCoupon:${condition.searchOrderCoupon}
+                *{condition.searchUser :${ condition.searchUser}}*
+                *{condition.searchOrderCoupon:${condition.searchOrderCoupon}}*
                     <a type="submit"
-           href="javascript:void(openW('/crm/bind?phone=${phone}&consult.text=${consult?.text}&couponId=${coupon.id}&userId=${coupon.order.userId}&consultId=${consultId}&condition.searchUser=${condition.searchUser}&condition.searchOrderCoupon=${condition.searchOrderCoupon}'))">绑定</a>
+                       href="javascript:void(openW('/crm/bind?phone=${phone}&consult.text=${consult?.text}&couponId=${coupon.id}&userId=${coupon.order.userId}&consultId=${consultId}&condition.searchUser=${condition.searchUser}&condition.searchOrderCoupon=${condition.searchOrderCoupon}'))">绑定</a>
                 #{/if}
 
 
@@ -529,7 +529,9 @@
 #{/else}
 
 
+
 #{form @OperateCRM.tempSave(), method: 'POST',id:'form1',enctype:'multipart/form-data',class:"form-horizontal" }
+
     <input type="hidden" type="text" name="phone" id="phone" value="${phone}"/>
     <input type="hidden" type="text" name="consultId" id="consultId" value="${consultId}"/>
 
@@ -557,11 +559,15 @@
     #{/select}
 
     <textarea rows="3" cols="20" name="consult.text" id="consult_text"
-              value="${consult?.text}">${consult?.text}</textarea>
+              value="${flash.consult?.text}">${flash.consult?.text}</textarea>
 
-    <div class="error">#{error 'consult.text' /}</div>
+    #{ifErrors}
+        <br> <span style=color:red>请输入咨询内容</span>
+    #{/ifErrors}
 
+*{<div class="error">#{error 'consult.text' /}</div>}*
 
+    <br>
     <input class="btn btn-primary" id="save" type="submit" #{if !org.apache.commons.lang.StringUtils.isNotBlank(phone)}
            disabled="disabled" #{/if}value="临时保存"/>
 
