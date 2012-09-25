@@ -96,6 +96,7 @@ import javax.persistence.Version;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
