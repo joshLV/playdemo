@@ -87,7 +87,7 @@ cmd =<<END
   rm -f conf/version.conf
   echo "build.time=#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}" >> conf/version.conf
   echo "version=$BUILD_VERSION" >> conf/version.conf
-  echo "revision=$GIT_COMMIT" >> conf/version.conf
+  echo "revision=$GIT_COMMIT@GIT_BRANCH" >> conf/version.conf
 END
 POpen4::popen4(cmd) do |stdout, stderr, stdin|
   stdout.each do |line|
