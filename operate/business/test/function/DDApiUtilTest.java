@@ -1,5 +1,8 @@
 package function;
 
+import factory.FactoryBoy;
+import org.junit.Test;
+import play.mvc.Before;
 import play.test.FunctionalTest;
 
 /**
@@ -10,6 +13,14 @@ import play.test.FunctionalTest;
  * Time: 2:58 PM
  */
 public class DDApiUtilTest extends FunctionalTest{
+    @Before
+    public void setup() {
+        FactoryBoy.lazyDelete();
+    }
 
+    @Test
+    public void tesSyncSellCount() {
+        
+    }
 
 }
