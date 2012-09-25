@@ -280,8 +280,9 @@ public class Goods extends Model {
     /**
      * 售出数量
      */
-    @Column(name = "sale_count")
-    public int saleCount;
+    //@Column(name = "sale_count")
+    // public int saleCount;
+    
     /**
      * 剩余商品数量，需要去掉.
      */
@@ -611,7 +612,7 @@ public class Goods extends Model {
      * 得到当前库存数量.
      */
     @Transient
-    public Long getCurrentBaseSale() {
+    public Long getCurrentStocks() {
     	return this.baseSale - getCurrentSaleCount();
     }
     
@@ -691,7 +692,6 @@ public class Goods extends Model {
     @Override
     public boolean create() {
         deleted = DeletedStatus.UN_DELETED;
-        saleCount = 0;
         incomeGoodsCount = 0L;
         createdAt = new Date();
         if (isAllShop) {

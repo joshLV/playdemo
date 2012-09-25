@@ -702,8 +702,6 @@ public class ECoupon extends Model {
         new CouponHistory(eCoupon, userName, "券退款", eCoupon.status, ECouponStatus.REFUND, null).save();
 
         // 更改库存
-        eCoupon.goods.baseSale += 1;
-        eCoupon.goods.saleCount -= 1;
         eCoupon.goods.save();
 
         // 更改订单状态

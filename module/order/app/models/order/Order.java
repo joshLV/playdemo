@@ -525,10 +525,8 @@ public class Order extends Model {
         this.status = OrderStatus.CANCELED;
         this.updatedAt = new Date();
         for (OrderItems orderItem : this.orderItems) {
-            orderItem.goods.baseSale += orderItem.buyNumber;
-            orderItem.goods.saleCount -= orderItem.buyNumber;
             orderItem.status = OrderStatus.CANCELED;
-            orderItem.goods.save();
+            //orderItem.goods.save(); 之前更新库存，现在不再需要
             orderItem.save();
             //如果是秒杀商品，做回库处理
             cancelSecKillOrder(orderItem);
@@ -560,9 +558,11 @@ public class Order extends Model {
         for (OrderItems orderItem : orderItems) {
             // fix: org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: models.sales.GoodsLevelPrice
             // Goods goods = Goods.findById(orderItem.goods.id);
+        	/*
             orderItem.goods.baseSale -= orderItem.buyNumber;
             orderItem.goods.saleCount += orderItem.buyNumber;
             orderItem.goods.save();
+            */
             orderItem.save();
             if (orderItem.goods.materialType == MaterialType.REAL) {
                 haveFreight = true;
