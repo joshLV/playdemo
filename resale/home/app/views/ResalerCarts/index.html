@@ -47,7 +47,7 @@
                         <input type="radio" name="goodsId" value="${favItem.goods.id}"
                                id="goods_${favItem.goods.id}" ${radioStatus.raw()} ${radioChecked.raw()}/>
                         <label for="goods_${favItem.goods.id}">${favItem.goods.name}</label>
-                        <span>${favItem.goods.getResalePrice(resaler.level)}</span>元
+                        <span>${favItem.goods.getResalePrice()}</span>元
                     ${info.raw()}
                     </li>
                 #{/list}
@@ -101,7 +101,7 @@
                     <td><span id="phone_${cartItem.goods.id}">${cartItem.phone}</span></td>
                     <td>${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
                     <td class="price"
-                        id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level)}</td>
+                        id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice()}</td>
                     <td>
                         <a href="#" class="reduce_box" iden="${cartItem.goods.id}" phone="${cartItem.phone}">
                             <img src="@{'/public/images/sub_anniu.jpg'}" id="inc_sub_${cartItem.goods.id}-${cartItem.phone}"/>
@@ -114,7 +114,7 @@
                         </a>
                     </td>
                     <td class="amount">
-                        <span id="subtotal_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level).multiply(cartItem.number)}</span>
+                        <span id="subtotal_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice().multiply(cartItem.number)}</span>
                     </td>
                     <td>
                         <form method="POST" action="/carts/form-delete">

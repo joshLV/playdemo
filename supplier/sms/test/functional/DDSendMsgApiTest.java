@@ -132,7 +132,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
         assertEquals(ErrorCode.SUCCESS, res.errorCode);
         assertEquals("0159300520", res.getAttribute("consumeId"));
         assertEquals("12345678", res.getAttribute("ddOrderId"));
-        assertEquals("987654321", res.getAttribute("ybqOrderId"));
+        assertEquals(order.id, res.getAttribute("ybqOrderId"));
 
         response = POST("/api/v1/dangdang/send-msg", params);
         assertStatus(200, response);

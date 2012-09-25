@@ -1,32 +1,19 @@
 package models.consumer;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import models.order.PointGoodsOrder;
 import org.apache.commons.lang.StringUtils;
-
-import com.uhuila.common.util.DateUtil;
-
-import models.accounts.AccountType;
-import models.order.Order;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
+
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "user_points")
 public class UserPoint extends Model {
     
     private static final long serialVersionUID = 182320609113062L;
-    
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id", nullable = true)
 	public PointGoodsOrder order;

@@ -52,13 +52,13 @@
 
                 <td><span id="phone_${cartItem.goods.id}">${cartItem.phone}</span></td>
                 <td>${cartItem.goods.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
-                <td class="price" id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level)}</td>
+                <td class="price" id="price_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice()}</td>
                 <td>
                     <input class="num-input" type="hidden" value="${cartItem.number}" id="num_${cartItem.goods.id}-${cartItem.phone}" />
                     ${cartItem.number}
                 </td>
                 <td class="amount">
-                    <span id="subtotal_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice(resaler.level).multiply(cartItem.number)}</span>
+                    <span id="subtotal_${cartItem.goods.id}-${cartItem.phone}">${cartItem.goods.getResalePrice().multiply(cartItem.number)}</span>
                 </td>
             </tr>
                 #{/list}
