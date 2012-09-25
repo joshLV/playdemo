@@ -20,6 +20,7 @@ require:
     - org.jsoup -> jsoup 1.6.1
     - commons-lang -> commons-lang 2.6
     - resale -> resale
+    - cms -> cms
     - sms -> sms
     - accounts -> accounts
     - consumer -> consumer
@@ -55,6 +56,7 @@ repositories:
             - view_ext -> *
             - sales -> *
             - resale -> *
+            - cms -> *
             - sms -> *
             - accounts -> *
             - consumer -> *

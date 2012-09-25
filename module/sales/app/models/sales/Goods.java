@@ -6,6 +6,7 @@ package models.sales;
 
 import cache.CacheCallBack;
 import cache.CacheHelper;
+import com.jamonapi.utils.FileUtils;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
@@ -14,17 +15,11 @@ import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.resale.ResalerLevel;
 import models.supplier.Supplier;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import play.Play;
-import play.data.validation.InFuture;
-import play.data.validation.Max;
-import play.data.validation.MaxSize;
-import play.data.validation.Min;
-import play.data.validation.MinSize;
-import play.data.validation.Required;
+import play.data.validation.*;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
@@ -35,14 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "goods")
