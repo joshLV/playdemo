@@ -48,7 +48,7 @@
         <th>卡密</th>
         <th>创建时间</th>
         <th>创建者</th>
-        <th>状态</th>
+        <th>状态/操作</th>
     </tr>
     #{paginate.list items:couponPage, as:'coupon'}
     <tr>
@@ -59,8 +59,14 @@
         <td>${coupon.createdAt.format('yyyy-MM-dd HH:mm:ss')}</td>
         <td>${coupon.operatorName}</td>
         <td>
-            #{if coupon.userId || coupon.chargedAt} <span class="label label-important">已消费</span> #{/if}
-            #{else}<span class="label label-success">未消费</span>#{/else}
+            #{if coupon.userId || coupon.chargedAt} <span class="label label-important">已使用</span> #{/if}
+            #{else}<span class="label label-success">未使用</span>#{/else}
+            #{if coupon.deleted == com.uhuila.common.constants.DeletedStatus.DELETED }
+                <span class="label label-important">已删除</span>
+            #{/if}
+            #{else}
+                <a href="@{OperatorCashCoupons.index()}?action=delete&delete_id=${coupon.id}" class="label">删除</a>
+            #{/else}
         </td>
     </tr>
     #{/paginate.list}

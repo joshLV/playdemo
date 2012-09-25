@@ -1,5 +1,6 @@
 package controllers;
 
+import com.uhuila.common.constants.DeletedStatus;
 import models.accounts.CashCoupon;
 import models.accounts.CashCouponCondition;
 import models.admin.OperateUser;
@@ -34,6 +35,20 @@ public class OperatorCashCoupons extends Controller{
         if (condition == null){
             condition = new CashCouponCondition();
         }
+        if("delete".equals(request.params.get("action"))){
+            String deleteIdStr = request.params.get("delete_id");
+            if(!StringUtils.isBlank(deleteIdStr)){
+                CashCoupon coupon = CashCoupon.findById(Long.parseLong(deleteIdStr));
+                if (coupon != null){
+                    coupon.deleted = DeletedStatus.DELETED;
+                    coupon.save();
+                    renderArgs.put("page", pageNumber);
+                    index(null);
+                }
+            }
+        }
+
+
         JPAExtPaginator<CashCoupon> couponPage = CashCoupon.findByCondition(condition,
                 pageNumber, PAGE_SIZE);
 
