@@ -173,7 +173,9 @@ GET     /import-coupons                         ImportCoupons.index
 POST    /import-coupons                         ImportCoupons.upload
 
 # 生成现金券
-GET     /cash-coupon-generator                  CashCouponGenerator.index
+GET     /cash-coupon                            OperatorCashCoupons.index
+GET     /cash-coupon/generate                   OperatorCashCoupons.generator
+POST    /cash-coupon/generate                   OperatorCashCoupons.generate
 
 GET     /shops                                  OperateShops.index
 GET     /shops/new                              OperateShops.add

@@ -1,8 +1,11 @@
 package controllers;
 
 import models.accounts.CashCoupon;
+import models.accounts.CashCouponCondition;
 import models.admin.OperateUser;
 import operate.rbac.annotations.ActiveNavigation;
+import org.apache.commons.lang.StringUtils;
+import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -16,14 +19,23 @@ import java.util.Random;
  *         Date: 12-9-25
  */
 @With(OperateRbac.class)
-@ActiveNavigation("cash_coupon_generator")
-public class CashCouponGenerator extends Controller{
+@ActiveNavigation("cash_coupon")
+public class OperatorCashCoupons extends Controller{
     private static final String DECIMAL_FORMAT = "00000";
+    private static final int PAGE_SIZE = 20;
 
-    @ActiveNavigation("cash_coupon_generator")
-    public static void index(){
-        List<CashCoupon> coupons = CashCoupon.findAll();
-        for(CashCoupon coupon: coupons) {
+    @ActiveNavigation("cash_coupon_index")
+    public static void index(CashCouponCondition condition){
+        String page = request.params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+
+        if (condition == null){
+            condition = new CashCouponCondition();
+        }
+        JPAExtPaginator<CashCoupon> couponPage = CashCoupon.findByCondition(condition,
+                pageNumber, PAGE_SIZE);
+
+        for(CashCoupon coupon: couponPage) {
             if(coupon.operatorId != null) {
                 OperateUser user = OperateUser.findById(coupon.operatorId);
                 if (user != null) {
@@ -31,7 +43,12 @@ public class CashCouponGenerator extends Controller{
                 }
             }
         }
-        render(coupons);
+        render(couponPage, condition);
+    }
+
+    @ActiveNavigation(("cash_coupon_generator"))
+    public static void generator(){
+        render();
     }
 
     @ActiveNavigation("cash_coupon_generator")
@@ -52,6 +69,6 @@ public class CashCouponGenerator extends Controller{
             cashCoupon.operatorId = OperateRbac.currentUser().getId();
             cashCoupon.save();
         }
-        index();
+        index(null);
     }
 }

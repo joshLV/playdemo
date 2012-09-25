@@ -14,6 +14,7 @@ import javax.persistence.Version;
 import play.db.jpa.Model;
 
 import com.uhuila.common.constants.DeletedStatus;
+import play.modules.paginate.JPAExtPaginator;
 
 /**
  * 现金券
@@ -100,5 +101,16 @@ public class CashCoupon extends Model {
         deleted = DeletedStatus.UN_DELETED;
         createdAt = new Date();
     }
-	
+
+    public static JPAExtPaginator<CashCoupon> findByCondition(
+            CashCouponCondition condition, int pageNumber, int pageSize) {
+        JPAExtPaginator<CashCoupon> page = new JPAExtPaginator<>(
+                null, null, CashCoupon.class, condition.getFilter(), condition.getParams());
+
+        page.orderBy("createdAt DESC");
+        page.setPageNumber(pageNumber);
+        page.setPageSize(pageSize);
+        return page;
+    }
+
 }
