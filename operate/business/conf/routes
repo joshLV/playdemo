@@ -64,7 +64,9 @@ GET     /crm/bindCouponDetails                                    OperateCRM.bin
 GET     /crm/bind_search_user                                     OperateCRM.bindSearchUser
 GET     /callcenter/phone/consult_excel                           OperateCRM.consultExcelOut
 
-GET     /callcenter/search              OperateConsult.index
+GET     /callcenter/search                            OperateConsult.index
+GET     /consult_excel_out                            OperateConsult.consultExcelOut
+
 
 
 

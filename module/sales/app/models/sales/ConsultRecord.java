@@ -30,6 +30,10 @@ public class ConsultRecord extends Model {
      */
     @Column(name = "created_at")
     public Date createdAt;
+
+    @Transient
+    public String createdAtInfo;
+
     /**
      * 创建人
      */
@@ -48,6 +52,10 @@ public class ConsultRecord extends Model {
     @Column(name = "consult_type")
     @Enumerated(EnumType.STRING)
     public ConsultType consultType;
+
+
+    @Transient
+    public String consultTypeInfo;
 
     /**
      * 内容

@@ -47,8 +47,8 @@
 
         <br>
         <br>
-        <button class="btn btn-primary" id="search" type="submit">搜索</button>
-        <button class="btn btn-primary" id="searchbtn" onclick="orderExcel()">导出报表</button>
+        <button class="btn btn-primary" id="search" onclick="consultIndex()">搜索</button>
+        <button class="btn btn-primary" id="searchbtn" onclick="consultExcel()">导出报表</button>
 
 
     </form>
@@ -91,3 +91,21 @@
     </div>
 
 </div>
+
+<script type="text/javascript">
+    function consultExcel() {
+        $("#frmlist").attr("action", "@{OperateConsult.consultExcelOut()}");
+        $("#frmlist").attr("method", "get");
+        $("#frmlist").submit();
+    }
+    ;
+
+    function consultIndex() {
+        $("#frmlist").attr("action", "@{OperateConsult.index()}");
+        $("#frmlist").attr("method", "get");
+        $("#frmlist").submit();
+    }
+    ;
+
+
+</script>
