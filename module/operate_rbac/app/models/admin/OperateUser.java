@@ -10,9 +10,11 @@ import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
-import play.mvc.Http.Request;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import java.beans.Transient;
 import java.util.*;
 
 @Entity

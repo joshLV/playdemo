@@ -5,7 +5,7 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.PathUtil;
 import models.admin.SupplierUser;
 import models.sales.Brand;
-import org.apache.commons.lang.StringUtils;
+import net.sf.oval.internal.util.StringUtils;
 import play.Play;
 import play.data.validation.*;
 import play.db.jpa.Model;

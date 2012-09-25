@@ -36,6 +36,11 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.constants.ImageSize;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.FileUploadUtil;
+import com.uhuila.common.util.PathUtil;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.supplier.Supplier;
@@ -64,6 +69,9 @@ import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.PathUtil;
 //import models.resale.ResalerLevel;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "goods")
