@@ -174,7 +174,7 @@ POST    /import-coupons                         ImportCoupons.upload
 
 # 生成现金券
 GET     /cash-coupon                            OperatorCashCoupons.index
-GET     /cash-coupon/generate                   OperatorCashCoupons.generator
+GET     /cash-coupon/generator                  OperatorCashCoupons.generator
 POST    /cash-coupon/generate                   OperatorCashCoupons.generate
 
 GET     /shops                                  OperateShops.index

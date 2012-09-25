@@ -10,9 +10,11 @@ import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 /**
  * @author likang
@@ -47,12 +49,31 @@ public class OperatorCashCoupons extends Controller{
     }
 
     @ActiveNavigation(("cash_coupon_generator"))
-    public static void generator(){
-        render();
+    public static void generator(String err){
+        render(err);
     }
 
     @ActiveNavigation("cash_coupon_generator")
     public static void generate(BigDecimal faceValue, int count, String name, String prefix){
+        Pattern pattern = Pattern.compile("^[a-zA-Z][a-zA-Z0-9]{0,9}$");
+        if(name == null || name.trim().equals("")){
+            generator("券名称不能为空");
+        }else if ( prefix == null || !pattern.matcher(prefix).matches()){
+            generator("卡号前缀不符合规范");
+        }else if (faceValue == null
+                || faceValue.compareTo(BigDecimal.ONE) < 0
+                || faceValue.compareTo(new BigDecimal("10000")) > 0
+                || faceValue.setScale(0, RoundingMode.FLOOR).compareTo(faceValue) != 0){
+            generator("面值不符合要求");
+        }else if(count < 1 || count > 9999 ){
+            generator("数量不符合要求");
+        }else {
+            CashCoupon coupon = CashCoupon.find("bySerialNo",
+                    prefix + new DecimalFormat("00000").format(1)).first();
+            if (coupon != null){
+                generator("卡号前缀已存在");
+            }
+        }
         Random random = new Random();
         DecimalFormat decimalFormat = new DecimalFormat(DECIMAL_FORMAT);
 
