@@ -17,6 +17,7 @@ public class PromoteRebateCondition {
     public RebateStatus status;
     public Date createdAtBegin;
     public Date createdAtEnd;
+    public String interval = "-1d";
     public Map<String, Object> params = new HashMap<>();
 
     public String getFilter(User user) {
@@ -37,6 +38,22 @@ public class PromoteRebateCondition {
         if (status != null) {
             filter.append(" and status = :status");
             params.put("status", status);
+        }
+        return filter.toString();
+    }
+
+    public String getFilter() {
+        StringBuilder filter = new StringBuilder("where p.order=e.order and e.status=:e_status and (p.status=:status or p.status=:status1) ");
+        params.put("e_status", ECouponStatus.CONSUMED);
+        params.put("status", RebateStatus.ALREADY_REBATE);
+        params.put("status1", RebateStatus.PART_REBATE);
+        if (createdAtBegin != null) {
+            filter.append(" and e.consumedAt >= :createdAtBegin");
+            params.put("createdAtBegin", createdAtBegin);
+        }
+        if (createdAtEnd != null) {
+            filter.append(" and e.consumedAt <= :createdAtEnd");
+            params.put("createdAtEnd", DateUtil.getEndOfDay(createdAtEnd));
         }
         return filter.toString();
     }

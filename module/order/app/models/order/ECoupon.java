@@ -162,7 +162,7 @@ public class ECoupon extends Model {
     @Transient
     public String operateUserName;
 
-    public ECoupon(Order order, Goods goods, OrderItems orderItems){
+    public ECoupon(Order order, Goods goods, OrderItems orderItems) {
         this(order, goods, orderItems, null);
     }
 
@@ -186,10 +186,10 @@ public class ECoupon extends Model {
         this.refundAt = null;
         this.refundPrice = new BigDecimal(0);
         this.status = ECouponStatus.UNCONSUMED;
-        if(couponSn == null) {
+        if (couponSn == null) {
             this.eCouponSn = generateAvailableEcouponSn();
             this.createType = ECouponCreateType.GENERATE;
-        }else {
+        } else {
             this.eCouponSn = couponSn;
             this.createType = ECouponCreateType.IMPORT;
         }
@@ -207,9 +207,9 @@ public class ECoupon extends Model {
     }
 
     private BigDecimal getLinePromoterRebateValue() {
-    	//如果商品没设置返利,默认给推荐人2%
-    	BigDecimal promoterPrice = this.goods.promoterPrice == null || this.goods.promoterPrice.compareTo(BigDecimal.ZERO) == 0 ? new BigDecimal(2) : this.goods.promoterPrice;
-    	return this.goods.salePrice.multiply(promoterPrice).multiply(new BigDecimal(0.01));
+        //如果商品没设置返利,默认给推荐人2%
+        BigDecimal promoterPrice = this.goods.promoterPrice == null || this.goods.promoterPrice.compareTo(BigDecimal.ZERO) == 0 ? new BigDecimal(2) : this.goods.promoterPrice;
+        return this.goods.salePrice.multiply(promoterPrice).multiply(new BigDecimal(0.01));
     }
 
     /**
@@ -344,7 +344,7 @@ public class ECoupon extends Model {
     }
 
     public boolean consumeAndPayCommission(Long shopId, Long operateUserId,
-                                        SupplierUser supplierUser, VerifyCouponType type) {
+                                           SupplierUser supplierUser, VerifyCouponType type) {
 
         //===================判断是否当当订单产生的券
         try {
@@ -667,8 +667,6 @@ public class ECoupon extends Model {
     }
 
 
-
-
     /**
      * 获取后n位券号.
      *
@@ -818,7 +816,7 @@ public class ECoupon extends Model {
      */
     public static void send(ECoupon eCoupon, String phone) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
-        if (phone == null){
+        if (StringUtils.isBlank(phone)) {
             phone = eCoupon.orderItems.phone;
         }
         SMSUtil.send("【一百券】"
@@ -847,6 +845,28 @@ public class ECoupon extends Model {
             sendFalg = true;
         }
         return sendFalg;
+    }
+
+    /**
+     * 当当重发短信
+     *
+     * @param id
+     * @param phone
+     * @return
+     */
+    public static boolean sendUserMessage(long id, String phone) {
+        ECoupon eCoupon = ECoupon.findById(id);
+
+        boolean sendFlag = false;
+        if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED
+                && eCoupon.downloadTimes > 0 && eCoupon
+                .downloadTimes < 4) {
+            send(eCoupon, phone);
+            eCoupon.downloadTimes--;
+            eCoupon.save();
+            sendFlag = true;
+        }
+        return sendFlag;
     }
 
     /**

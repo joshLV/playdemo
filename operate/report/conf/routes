@@ -22,6 +22,8 @@ GET     /reports/resale                         ResaleSalesReports.index
 GET     /reports/refund                         GoodsRefundReports.index
 GET     /reports/consumer_refund                ConsumerRefundReports.index
 
+#返利排名报表
+GET     /reports/rank                           RebateRankReports.index
 #净销售报表
 GET     /reports/net_sales                       NetSalesReports.index
 # Ignore favicon requests

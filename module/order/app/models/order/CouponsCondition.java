@@ -211,7 +211,6 @@ public class CouponsCondition implements Serializable {
             sql.append(" and e.orderItems.goods.supplierId = :supplierId");
             paramMap.put("supplierId", supplier.id);
         }
-
         //按照帐号检索
         if (userName != null) {
             Resaler resaler = Resaler.findOneByLoginName(userName.trim());

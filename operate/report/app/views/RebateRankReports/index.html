@@ -96,18 +96,13 @@
     }
 </style>
 #{/set}
-<form class="well form-inline" action="@{ResaleSalesReports.index()}" method="GET" id="form"
+<form class="well form-inline" action="@{RebateRankReports.index()}" method="GET" id="form"
       name="form">
-    渠道来源：#{select 'condition.accountType', class:'input-small', value:condition?.accountType}
-    #{option "null"}不限#{/option}
-    #{option "CONSUMER"}&{'report.CONSUMER'}#{/option}
-    #{option "RESALER"}&{'report.RESALER'}#{/option}
-#{/select}
     起止日期
-    <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.paidAtBegin"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.Begin?.format()}"> -
-    <input type="text" id="condition_end" class="input-medium Wdate" name="condition.paidAtEnd"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.paidAtEnd?.format()}">
+    <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.createdAtBegin"
+           onfocus="WdatePicker({readOnly:true})" value="${condition?.createdAtBegin?.format()}"> -
+    <input type="text" id="condition_end" class="input-medium Wdate" name="condition.createdAtEnd"
+           onfocus="WdatePicker({readOnly:true})" value="${condition?.createdAtEnd?.format()}">
 
     <button type="submit" class="btn btn-primary" id="search">搜索</button>
     <ul class="nav nav-pills">
@@ -121,6 +116,9 @@
     <input type="hidden" id="condition_interval" name="condition.interval"/>
 </form>
 
+<div class="alert alert-success">
+    <span>在此期间 共推荐：<b>${summary?.promoteTimes}</b>次,总返利金额：<b>${summary?.rebateAmount}</b>元</span>
+</div>
 <table class="table table-striped table-bordered table-condensed">
     <thead>
     <th width="10px">排名</th>
@@ -134,12 +132,8 @@
         #{set i:i+1/}
         <td>${i}</td>
         <td>${report?.promoteUser?.loginName}</td>
-        <td>
-            <a href="/reports/sales?condition.createdAtBegin=${condition?.createdAtBegin?.format()}&condition.createdAtEnd=${condition?.createdAtEnd?.format()}&condition.supplier.id=${report?.supplier?.id}"
-               target="_blank">${report?.promoteTimes}</a></td>
-        <td>
-            <a href="/reports/refund?condition.refundAtBegin=${condition?.createdAtBegin?.format()}&condition.refundAtEnd=${condition?.createdAtEnd?.format()}&condition.supplierName=${report?.supplier?.id}"
-               target="_blank">${(report?.haveGotAmount?:0).formatCurrency('CNY')}</a></td>
+        <td>${report?.promoteTimes}</td>
+        <td>${(report?.rebateAmount?:0).formatCurrency('CNY')}</td>
     </tr>
 #{/paginate.list}
 </table>

@@ -21,7 +21,8 @@ import java.util.List;
  * Date: 12-9-13
  * Time: 下午2:31
  */
-@Every("3h")
+@Every("5mn")
+//@Every("3h")
 public class DDSyncSellGoodsCountJob extends Job {
     public static String DD_LOGIN_NAME = Play.configuration.getProperty("dangdang.resaler_login_name", "dangdang");
 

@@ -2,10 +2,7 @@ package models.dangdang;
 
 
 import models.accounts.AccountType;
-import models.order.ECoupon;
-import models.order.Order;
-import models.order.OuterOrder;
-import models.order.OuterOrderPartner;
+import models.order.*;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
@@ -173,8 +170,9 @@ public class DDAPIUtil {
                 Logger.error("[DDSendMessageAPI]" + response.desc);
                 return response;
             }
+
             //最多发送三次短信，发送失败，则返回0
-            if (!ECoupon.sendUserMessage(coupon.id)) {
+            if (!ECoupon.sendUserMessage(coupon.id, receiveMobile)) {
                 response.errorCode = ErrorCode.MESSAGE_SEND_FAILED;
                 response.desc = "短信发送失败(消费者只有三次发送短信的机会！)";
                 Logger.error("[DDSendMessageAPI]" + response.desc);
@@ -186,7 +184,7 @@ public class DDAPIUtil {
             response.desc = "success";
             response.addAttribute("consumeId", coupon.eCouponSn);
             response.addAttribute("ddOrderId", orderId);
-            response.addAttribute("ybqOrderId", coupon.order.orderNumber);
+            response.addAttribute("ybqOrderId", coupon.order.id);
         } catch (Exception e) {
             throw new DDAPIInvokeException("[DangDang API] invoke send message error");
         }
@@ -262,7 +260,7 @@ public class DDAPIUtil {
         }
 
         signStr.append("sn=").append(SECRET_KEY);
-        System.out.println(">>>>>>>>>."+DigestUtils.md5Hex(signStr.toString()));
+        System.out.println(">>>>>>>>>." + DigestUtils.md5Hex(signStr.toString()));
         return DigestUtils.md5Hex(signStr.toString()).equals(sign);
 
     }

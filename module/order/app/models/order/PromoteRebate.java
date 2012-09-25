@@ -163,6 +163,27 @@ public class PromoteRebate extends Model {
      *
      * @return
      */
+    public static List<PromoteRebate> findRank(PromoteRebateCondition condition) {
+        Query query = JPA.em()
+                .createQuery(
+                        "select new models.order.PromoteRebate(p.promoteUser,sum(e.promoterRebateValue),count(distinct p.id)) "
+                                + " from PromoteRebate p,ECoupon e " + condition.getFilter() +
+                                " group by p.promoteUser.id order by sum(e.promoterRebateValue) desc");
+        for (String param : condition.getParams().keySet()) {
+            query.setParameter(param, condition.getParams().get(param));
+        }
+        List<PromoteRebate> rankList = query.getResultList();
+               for (PromoteRebate p:rankList){
+            System.out.println(p.rebateAmount);
+        }
+        return rankList;
+    }
+
+    /**
+     * 取得排名的记录
+     *
+     * @return
+     */
     public static List<PromoteRebate> findRank() {
         Query query = JPA.em()
                 .createQuery(
@@ -197,8 +218,23 @@ public class PromoteRebate extends Model {
         return p;
     }
 
+    public static PromoteRebate allRank(List<PromoteRebate> resultList) {
+        if (resultList.size() == 0) {
+            return null;
+        }
+        Long times = 0l;
+        BigDecimal rebateAmount = BigDecimal.ZERO;
+
+        for (PromoteRebate promoteRebate : resultList) {
+            rebateAmount = rebateAmount.add(promoteRebate.rebateAmount == null ? BigDecimal.ZERO : promoteRebate.rebateAmount);
+            times += promoteRebate.promoteTimes;
+        }
+        return new PromoteRebate(null, rebateAmount, times);
+    }
+
     /**
      * 得到部分隐藏的用户名
+     *
      * @return
      */
     public String getMaskedLoginName() {
@@ -206,7 +242,7 @@ public class PromoteRebate extends Model {
         String loginName = this.invitedUser.loginName;
         int len = loginName.length();
         if (len > 5) {
-            sn.append(loginName.substring(0,1));
+            sn.append(loginName.substring(0, 1));
             System.out.println(sn);
             for (int i = 0; i < 3; i++) {
                 sn.append("*");

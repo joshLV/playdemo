@@ -31,6 +31,8 @@
                         permissions="WEB_TRACKS_REPORT"/>
             <navigation key="web_tj_reort" action="WebTrackReports.refcodes" text="推荐码转化"
                         permissions="WEB_TRACKS_REPORT"/>
+            <navigation key="rank_reports" action="RebateRankReports.index" text="推荐返利排名"
+                        permissions="WEB_TRACKS_REPORT"/>
         </navigation>
         <navigation key="sales_report_app" text="销售报表">
             <navigation key="resale_sales_reports" action="ResaleSalesReports.index" text="渠道销售汇总"

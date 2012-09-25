@@ -30,11 +30,15 @@ public class RebateRankReports extends Controller {
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
         // 查询出所有结果
-        List<PromoteRebate> resultList = PromoteRebate.findRank();
+        List<PromoteRebate> resultList = PromoteRebate.findRank(condition);
+
         // 分页
         ValuePaginator<PromoteRebate> rankList = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
 
         PromoteRebate summary = PromoteRebate.allRank(resultList);
-        render(rankList, summary);
+
+        System.out.println(summary.promoteTimes + ";;;;;;;;;;;;;;;;;");
+
+        render(rankList, summary, condition);
     }
 }

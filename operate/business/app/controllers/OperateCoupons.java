@@ -78,7 +78,6 @@ public class OperateCoupons extends Controller {
     }
 
     public static void couponExcelOut(CouponsCondition condition) {
-
         if (condition == null) {
             condition = new CouponsCondition();
         }
