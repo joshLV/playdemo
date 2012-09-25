@@ -155,7 +155,7 @@ public class TaobaoCometConsumer extends RabbitMQConsumer<TaobaoCometMessage>{
             if(resalerFav == null){
                 continue;
             }
-            BigDecimal resalerPrice = resalerFav.goods.getResalePrice(resalerFav.resaler.level);
+            BigDecimal resalerPrice = resalerFav.goods.getResalePrice();
             try {
                 order.addOrderItem(resalerFav.goods,(int)(tOrder.getNum().longValue()), mobile, resalerPrice, resalerPrice);
             } catch (NotEnoughInventoryException e) {

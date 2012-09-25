@@ -111,7 +111,7 @@ public class TaobaoAPIClient extends Controller{
         for(Shop shop : goods.shops){
             desc.append(shop.name + "," + shop.address + "<br/>");
         }
-        BigDecimal price = goods.getResalePrice(resaler.level);
+        BigDecimal price = goods.getResalePrice();
         if(pricemakupRate != null){
             price = price.multiply(new BigDecimal(pricemakupRate).add(BigDecimal.ONE));
         }else if(pricemakup != null){

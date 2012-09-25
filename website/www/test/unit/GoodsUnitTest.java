@@ -1,6 +1,11 @@
 package unit;
 
-import com.uhuila.common.constants.DeletedStatus;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import models.order.Order;
 import models.order.OrderItems;
 import models.resale.Resaler;
@@ -16,19 +21,17 @@ import models.sales.GoodsStatus;
 import models.sales.GoodsUnPublishedPlatform;
 import models.sales.Shop;
 import models.supplier.Supplier;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
 import play.cache.Cache;
 import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import com.uhuila.common.constants.DeletedStatus;
 
 /**
  * 商品Model的单元测试.
@@ -213,18 +216,6 @@ public class GoodsUnitTest extends UnitTest {
     }
 
     @Test
-    public void testSetLevelPrices() {
-        models.sales.Goods goods = new Goods();
-        BigDecimal[] prices = new BigDecimal[1];
-        goods.originalPrice = BigDecimal.TEN;
-        prices[0] = BigDecimal.ONE;
-        goods.setLevelPrices(prices);
-        List<GoodsLevelPrice> priceList = goods.safeGetLevelPrices();
-        assertEquals(1, priceList.size());
-        assertEquals(1, priceList.get(0).price.intValue());
-    }
-
-    @Test
     public void testCreate() {
         models.sales.Goods goods = new Goods();
         goods.no = "11";
@@ -261,7 +252,7 @@ public class GoodsUnitTest extends UnitTest {
         models.sales.Goods goods = new Goods();
         goods.faceValue = BigDecimal.TEN;
         goods.originalPrice = BigDecimal.ONE;
-        BigDecimal resalePrice = goods.getResalePrice(models.resale.ResalerLevel.NORMAL);
+        BigDecimal resalePrice = goods.getResalePrice();
         assertEquals(BigDecimal.ONE, resalePrice);
     }
 
@@ -277,22 +268,6 @@ public class GoodsUnitTest extends UnitTest {
         assertEquals(goods.imagePath, cacheGoods.imagePath);
         assertEquals("abcd", cacheGoods.name);
         assertEquals(99, cacheGoods.salePrice.longValue());
-    }
-
-    @Test
-    public void testGetLevelPriceArray() {
-        models.sales.Goods goods = new Goods();
-        BigDecimal[] prices = goods.getLevelPriceArray();
-        assertEquals(1, prices.length);
-        assertEquals(ResalerLevel.values().length, prices.length);
-        assertEquals(0, prices[0].intValue());
-
-        GoodsLevelPrice priceObj = new GoodsLevelPrice(goods, ResalerLevel.NORMAL, BigDecimal.TEN);
-        List<GoodsLevelPrice> priceList = new ArrayList<>();
-        priceList.add(priceObj);
-        goods.setLevelPrices(priceList);
-        BigDecimal[] updatedPrices = goods.getLevelPriceArray();
-        assertEquals(10, updatedPrices[0].intValue());
     }
 
     @Test

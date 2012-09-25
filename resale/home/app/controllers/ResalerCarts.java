@@ -72,7 +72,7 @@ public class ResalerCarts extends Controller {
             Goods goods = (Goods)fav[0];
             int number = (Integer)fav[1];
             String phone = (String)fav[2];
-            BigDecimal resalerPrice = goods.getResalePrice(resaler.level);
+            BigDecimal resalerPrice = goods.getResalePrice();
             order.addOrderItem(goods, number, phone,
                     resalerPrice, // 分销商成本价即成交价
                     resalerPrice  // 分销商成本价

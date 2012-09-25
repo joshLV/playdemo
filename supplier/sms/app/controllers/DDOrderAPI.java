@@ -125,7 +125,7 @@ public class DDOrderAPI extends Controller {
             arrGoodsItem = goodsItem.split(":");
             if (arrGoodsItem != null) {
                 Goods goods = Goods.findById(Long.parseLong(arrGoodsItem[0]));
-                BigDecimal resalerPrice = goods.getResalePrice(ResalerLevel.NORMAL);
+                BigDecimal resalerPrice = goods.getResalePrice();
                 try {
                     //创建一百券订单Items
                     order.addOrderItem(goods, Integer.parseInt(arrGoodsItem[1]), user_mobile, resalerPrice, resalerPrice);
