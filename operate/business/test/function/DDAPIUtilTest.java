@@ -29,7 +29,7 @@ public class DDAPIUtilTest extends FunctionalTest {
         try {
             DDAPIUtil.syncSellCount(goods);
         } catch (DDAPIInvokeException e) {
-            assert false;
+            fail();
         }
     }
 
@@ -40,7 +40,7 @@ public class DDAPIUtilTest extends FunctionalTest {
             boolean isRefund = DDAPIUtil.isRefund(ecoupon);
             assertFalse(isRefund);
         } catch (DDAPIInvokeException e) {
-            assert false;
+            fail();
         }
     }
 
@@ -50,7 +50,7 @@ public class DDAPIUtilTest extends FunctionalTest {
         try {
             DDAPIUtil.notifyVerified(ecoupon);
         } catch (DDAPIInvokeException e) {
-            assert false;
+            fail();
         }
     }
 
