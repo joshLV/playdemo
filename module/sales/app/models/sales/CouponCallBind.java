@@ -24,10 +24,10 @@ public class CouponCallBind extends Model {
     public String phone;
 
     @Column(name = "user_id")
-    public long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
+    public Long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
 
     @Column(name = "coupon_id")
-    public long couponId;
+    public Long couponId;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "consult_record_id", nullable = true)
@@ -38,6 +38,6 @@ public class CouponCallBind extends Model {
     public ConsultRecord consultRecord;
 
     @Column(name = "consult_id")
-    public long consultId;
+    public Long consultId;
 
 }

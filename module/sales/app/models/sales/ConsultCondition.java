@@ -168,7 +168,7 @@ public class ConsultCondition extends Model {
     public static List<WithdrawBill> findBillByCondition(CRMCondition condition) {
         List<WithdrawBill> withdrawBill = WithdrawBill.find(
                 "account.accountType= models.accounts.AccountType.CONSUMER"
-                        + " and applier in (select loginName from User u where u.loginName=?"
+                        + " and (applier in (select loginName from User u where u.loginName=?)"
                         + "or applier in (select loginName from User u where u.mobile=?)"
                         + "or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.receiverMobile=?)"
                         + "or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.buyerMobile=?)"
@@ -186,11 +186,12 @@ public class ConsultCondition extends Model {
     public static long findBillByConditionSize(CRMCondition condition) {
         return WithdrawBill.count(
                 "account.accountType= models.accounts.AccountType.CONSUMER"
-                        + " and applier in (select loginName from User u where u.loginName=?"
+                        + " and (applier in (select loginName from User u where u.loginName=?)"
                         + "or applier in (select loginName from User u where u.mobile=?)"
                         + "or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.receiverMobile=?)"
                         + "or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.buyerMobile=?)"
-                        + "or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.id in (select oi.order.id from o.orderItems oi where oi.phone =?)))",
+                        + "or applier in (select u.loginName from Order o, User u where o.userId=u.id and " +
+                                                   "o.id in (select oi.order.id from o.orderItems oi where oi.phone =?)))",
                 condition.searchUser, condition.searchUser,
                 condition.searchUser, condition.searchUser, condition.searchUser
         );

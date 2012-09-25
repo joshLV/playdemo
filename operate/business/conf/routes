@@ -47,11 +47,12 @@ GET     /seckill_goods/{id}/check               SecKillGoods.checkGoodsId
 DELETE  /seckill_goods/{id}                     SecKillGoods.delete
 
 
-
+GET     /callcenter/phone/jump_index                              OperateCRM.jumpIndex
+GET     /callcenter/phone/jump_prev_index                         OperateCRM.jumpPrevIndex
 GET     /callcenter/phone                                         OperateCRM.getPhone
 GET     /callcenter/phone/{phone}                                 OperateCRM.callCenter
 GET     /callcenter/phone/{phone}/record/{consultId}              OperateCRM.index
-POST     /callcenter/phone/record/save                             OperateCRM.save
+POST     /callcenter/phone/record/save                            OperateCRM.save
 GET     /crm/{id}/edit                                            OperateCRM.edit
 GET     /crm/bind                                                 OperateCRM.bind
 POST     /callcenter/phone/{phone}/record/{consultId}/tempSave    OperateCRM.tempSave
@@ -63,6 +64,8 @@ PUT     /crm/{id}                                                 OperateCRM.upd
 GET     /crm/bindCouponDetails                                    OperateCRM.bindCouponDetails
 GET     /crm/bind_search_user                                     OperateCRM.bindSearchUser
 GET     /callcenter/phone/consult_excel                           OperateCRM.consultExcelOut
+
+
 
 GET     /callcenter/search                            OperateConsult.index
 GET     /consult_excel_out                            OperateConsult.consultExcelOut
@@ -163,7 +166,7 @@ GET     /coupon_excel                           OperateCoupons.couponExcelOut
 #验证消费券
 GET     /coupons/index                          OperateVerifyCoupons.index
 GET     /coupons/verify                         OperateVerifyCoupons.verify
-POST     /coupons/update                         OperateVerifyCoupons.update
+POST    /coupons/update                         OperateVerifyCoupons.update
 
 # 预购券管理
 GET     /import-coupons                         ImportCoupons.index

@@ -24,6 +24,7 @@ public class UserFactory  extends ModelFactory<User> {
         user.password="selenium@uhuila.com";
         user.confirmPassword="selenium@uhuila.com";
         user.captcha="aa";
+        user.mobile="15026682165";
         return user;
     }
 
