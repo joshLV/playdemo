@@ -49,7 +49,7 @@ public class DDAPIUtil {
      */
     public static void syncSellCount(Goods goods) throws DDAPIInvokeException {
         String request = String.format("<data><row><spgid><![CDATA[%s]]></spgid><sellcount><![CDATA[%s]]></sellcount" +
-                "></row></data>", goods.id, goods.saleCount);
+                "></row></data>", goods.id, goods.getCurrentSaleCount());
         Response response = DDAPIUtil.access(SYNC_URL, request, "push_team_stock");
         if (!response.success()) {
             throw new DDAPIInvokeException("\ninvoke syncSellCount error(goodsId:" + goods.id + "):" +

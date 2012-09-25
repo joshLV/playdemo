@@ -32,7 +32,7 @@ public class GoodsSaleCountTest extends UnitTest {
 		order.save();
 		
 		assertEquals(new Long(1), goods.getCurrentSaleCount());
-		assertEquals(new Long(19), goods.getCurrentBaseSale());
+		assertEquals(new Long(19), goods.getCurrentStocks());
 		
 		// 取消订单后库存释放
 		assertEquals(1, order.orderItems.size());
@@ -40,7 +40,7 @@ public class GoodsSaleCountTest extends UnitTest {
 		order.save();
 
 		assertEquals(new Long(0), goods.getCurrentSaleCount());
-		assertEquals(new Long(20), goods.getCurrentBaseSale());
+		assertEquals(new Long(20), goods.getCurrentStocks());
 	}
 
 	@Test
@@ -59,13 +59,13 @@ public class GoodsSaleCountTest extends UnitTest {
 		order.save();
 		
 		assertEquals(new Long(1), goods.getCurrentSaleCount());
-		assertEquals(new Long(19), goods.getCurrentBaseSale());
+		assertEquals(new Long(19), goods.getCurrentStocks());
 		
 		// 券退款后库存释放
 		ecoupon.status = ECouponStatus.REFUND;
 		ecoupon.save();
 
 		assertEquals(new Long(0), goods.getCurrentSaleCount());
-		assertEquals(new Long(20), goods.getCurrentBaseSale());
+		assertEquals(new Long(20), goods.getCurrentStocks());
 	}
 }
