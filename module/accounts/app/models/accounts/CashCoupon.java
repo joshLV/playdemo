@@ -40,7 +40,7 @@ public class CashCoupon extends Model {
 	 *      DecimalFormat myFormatter = new DecimalFormat("00000");
      *      String serialNo = prefix + myFormatter.format(22);
 	 */
-	@Column(name="serial_no")
+	@Column(name="serial_no", unique = true)
 	public String serialNo;
 	
 	@Transient
@@ -72,7 +72,11 @@ public class CashCoupon extends Model {
 	/**
 	 * 创建者ID，为运营后台登录ID.
 	 */
-	public Long operaterId;
+    @Column(name = "operator_id")
+	public Long operatorId;
+
+    @Transient
+    public String operatorName;
 	
 	@Version
 	@Column(name="lock_version")
@@ -81,7 +85,7 @@ public class CashCoupon extends Model {
 	/**
 	 * 充值时间
 	 */
-	@Column(name="chargedAt")
+	@Column(name="charged_at")
 	public Date chargedAt;
 
 	/**
@@ -94,6 +98,7 @@ public class CashCoupon extends Model {
     public CashCoupon(){
         lockVersion = 0;
         deleted = DeletedStatus.UN_DELETED;
+        createdAt = new Date();
     }
 	
 }

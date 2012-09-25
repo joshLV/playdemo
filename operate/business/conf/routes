@@ -167,6 +167,9 @@ POST     /coupons/update                         OperateVerifyCoupons.update
 GET     /import-coupons                         ImportCoupons.index
 POST    /import-coupons                         ImportCoupons.upload
 
+# 生成现金券
+GET     /cash-coupon-generator                  CashCouponGenerator.index
+
 GET     /shops                                  OperateShops.index
 GET     /shops/new                              OperateShops.add
 POST    /shops                                  OperateShops.create

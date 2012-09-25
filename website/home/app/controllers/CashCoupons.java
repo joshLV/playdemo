@@ -47,7 +47,7 @@ public class CashCoupons extends Controller{
             coupon = CashCoupon.find("byChargeCode", couponCode).first();
             if (coupon == null){
                 errMsg = "现金券充值密码输入错误";
-            }else if(coupon.chargedAt != null){
+            }else if(coupon.chargedAt != null || coupon.userId != null){
                 errMsg = "该现金券已被使用";
             }else if(coupon.deleted == DeletedStatus.DELETED){
                 errMsg = "该券无法使用";
@@ -78,8 +78,8 @@ public class CashCoupons extends Controller{
             errMsg = "验证失败";
         }
         CashCoupon coupon = CashCoupon.findById((Long)Cache.get(ridB));
-        if(coupon == null){
-            errMsg = "验证失败，现金券不存在";
+        if(coupon == null || coupon.chargedAt != null || coupon.userId != null){
+            errMsg = "验证失败";
         }else {
             suc = "充值成功";
             coupon.chargedAt = new Date();

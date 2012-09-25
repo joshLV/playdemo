@@ -43,6 +43,7 @@
     <permission key="CONSUMERS" text="用户管理" roles="customservice,sales"/>
     <permission key="PROMOTION_LIST" text="活动管理" roles="customservice,editor"/>
     <permission key="send_sms" text="发送优惠券" roles="customservice,editor"/>
+    <permission key="SYSTEM" text="系统" roles="admin"/>
 
     <permission key="QUESTION" text="咨询管理" roles="customservice,editor"/>
     <permission key="DISCOUNT_CODE" text="折扣券管理" roles="customservice,editor"/>
@@ -111,6 +112,7 @@
             <navigation key="coupons_index" action="OperateCoupons.index" text="消费券管理" permissions="COUPONS"/>
             <navigation key="verify_index" action="OperateVerifyCoupons.index" text=" 验证消费券" permissions="COUPONS"/>
             <navigation key="pre_coupons" action="ImportCoupons.index" text="预购券管理" permission="COUPONS"/>
+            <navigation key="cash_coupon_generator" action="CashCouponGenerator.index" text="生成现金券" permission="SYSTEM"/>
         </navigation>
         <navigation key="yihaodian_api" text="一号店">
             <navigation key="yihaodian_api_index" action="YihaodianAPI.index" text="API" permission="ORDERS"/>

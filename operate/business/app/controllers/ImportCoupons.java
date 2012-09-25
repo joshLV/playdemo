@@ -26,6 +26,7 @@ public class ImportCoupons extends Controller{
         render(goodsList, errmsg, d1, d2);
     }
 
+    @ActiveNavigation("pre_coupons")
     public static void upload(Long goodsId, String action, File couponfile){
         if(goodsId == null){
             index("请选择商品", null, null);
