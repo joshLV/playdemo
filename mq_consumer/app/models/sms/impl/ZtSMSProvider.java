@@ -48,7 +48,7 @@ public class ZtSMSProvider implements SMSProvider {
         qparams.add(new BasicNameValuePair("username", USERNAME));
         qparams.add(new BasicNameValuePair("password", PASSWORD));
         qparams.add(new BasicNameValuePair("xh", message.getCode()));
-        qparams.add(new BasicNameValuePair("productid", "156041"));
+        qparams.add(new BasicNameValuePair("productid", "887361"));
         /*
         try {
             qparams.add(new BasicNameValuePair("Content", URLEncoder.encode(message.getContent(), "GBK")));
