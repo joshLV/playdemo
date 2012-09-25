@@ -55,7 +55,6 @@ public class OperateDiscountCodesTest extends FunctionalTest {
 
         assertIsOk(response);
         assertContentType("text/html", response);
-
         assertNull(renderArgs("discountSN"));
         assertNotNull(renderArgs("discountCodePage"));
     }
