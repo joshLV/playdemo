@@ -25,6 +25,7 @@ public class DDAPIUtilTest extends FunctionalTest {
     @Test
     public void tesSyncSellCount() {
         Goods goods = FactoryBoy.create(Goods.class);
+
         try {
             DDAPIUtil.syncSellCount(goods);
         } catch (DDAPIInvokeException e) {
