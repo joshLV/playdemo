@@ -4,33 +4,66 @@
  */
 package models.sales;
 
-import cache.CacheCallBack;
-import cache.CacheHelper;
-import org.apache.commons.io.FileUtils;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.FileUploadUtil;
-import com.uhuila.common.util.PathUtil;
-import models.resale.Resaler;
-import models.resale.ResalerFav;
-//import models.resale.ResalerLevel;
-import models.supplier.Supplier;
-import org.apache.commons.lang.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
-import play.Play;
-import play.data.validation.*;
-import play.db.jpa.JPA;
-import play.db.jpa.Model;
-import play.modules.paginate.JPAExtPaginator;
-import play.modules.view_ext.annotation.Money;
-
-import javax.persistence.*;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+
+import models.resale.Resaler;
+import models.resale.ResalerFav;
+import models.supplier.Supplier;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
+
+import play.Play;
+import play.data.validation.InFuture;
+import play.data.validation.Max;
+import play.data.validation.MaxSize;
+import play.data.validation.Min;
+import play.data.validation.MinSize;
+import play.data.validation.Required;
+import play.db.jpa.JPA;
+import play.db.jpa.Model;
+import play.modules.paginate.JPAExtPaginator;
+import play.modules.view_ext.annotation.Money;
+import cache.CacheCallBack;
+import cache.CacheHelper;
+
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.FileUploadUtil;
+import com.uhuila.common.util.PathUtil;
+//import models.resale.ResalerLevel;
 
 @Entity
 @Table(name = "goods")
@@ -1055,8 +1088,21 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findNewGoods(int limit) {
-        return Goods.find("status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by createdAt DESC",
-                GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit);
+    	// 找出5倍需要的商品，然后手工过滤
+        List<Goods> allGoods = Goods.find("status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by createdAt DESC",
+                GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit * 5);
+        Set<Long> supplierSet = new HashSet<>();
+        List<Goods> goods = new ArrayList<>();
+        for (Goods g : allGoods) {
+        	if (!supplierSet.contains(g.supplierId)) {
+        		goods.add(g);
+        		supplierSet.add(g.supplierId);
+        	}
+        	if (goods.size() == limit) {
+        		break;
+        	}
+        }
+        return goods;
     }
 
     /**
