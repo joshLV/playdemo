@@ -27,7 +27,6 @@ public class OperateConsult extends Controller {
     public static int PAGE_SIZE = 15;
 
     public static void index(ConsultResultCondition condition) {
-        System.out.println("condition" + condition);
         if (condition == null) {
             condition = new ConsultResultCondition();
         }

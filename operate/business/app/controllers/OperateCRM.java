@@ -308,9 +308,6 @@ public class OperateCRM extends Controller {
         ECoupon coupon = ECoupon.find("id=?", couponId).first();
         couponBind.eCouponSn = coupon.eCouponSn;
         couponBind.phone = phone;
-
-        System.out.println("couponBind="+couponBind);
-        System.out.println("userId="+userId);
         couponBind.userId = userId;
         couponBind.couponId = coupon.id;
         couponBind.consultId = consultId;
