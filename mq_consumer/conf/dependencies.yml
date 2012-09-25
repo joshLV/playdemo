@@ -28,6 +28,7 @@ require:
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
     - yihaodian -> yihaodian
+    - dangdang -> dangdang
     - com.yihaodian -> yhdclient 1.0
     - commons-httpclient -> commons-httpclient 3.1
 
