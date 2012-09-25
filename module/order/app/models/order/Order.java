@@ -655,15 +655,15 @@ public class Order extends Model {
                 for (int i = 0; i < orderItem.buyNumber; i++) {
                     ECoupon eCoupon = null;
                     //支持导入券号
-                    if (goods.couponType == GoodsCouponType.IMPORT){
+                    if (goods.couponType == GoodsCouponType.IMPORT) {
                         ImportedCoupon importedCoupon = ImportedCoupon.find("byGoodsAndStatus", goods, ImportedCouponStatus.UNUSED).first();
-                        if(importedCoupon == null){
+                        if (importedCoupon == null) {
                             throw new RuntimeException("can not find an imported coupon of goods " + goods.getId());
-                        }else {
+                        } else {
                             eCoupon = new ECoupon(this, goods, orderItem, importedCoupon.coupon).save();
                             Supplier supplier = Supplier.findById(goods.supplierId);
                             SupplierUser supplierUser = SupplierUser.find("bySupplier", supplier).first();
-                            if(supplierUser == null){
+                            if (supplierUser == null) {
                                 throw new RuntimeException("can not find a supplierUser of goods " + goods.getId());
                             }
                             eCoupon.consumeAndPayCommission(supplierUser.shop.id, null, supplierUser, VerifyCouponType.IMPORT_VERIFY);
@@ -671,7 +671,7 @@ public class Order extends Model {
                             importedCoupon.status = ImportedCouponStatus.USED;
                             importedCoupon.save();
                         }
-                    }else {
+                    } else {
                         eCoupon = new ECoupon(this, goods, orderItem).save();
                     }
                     if (!Play.runingInTestMode() && (goods.isLottery == null || !goods.isLottery)) {
@@ -733,7 +733,6 @@ public class Order extends Model {
     }
 
 
-
     /**
      * 会员中心订单查询
      *
@@ -762,9 +761,9 @@ public class Order extends Model {
             user = new User();
         }
         List<Order> orderList = null;
-        Order order=null;
-        if  (order.getUser()==user)
-        return orderList;
+        Order order = null;
+        if (order.getUser() == user)
+            return orderList;
         else
             return null;
     }
@@ -899,6 +898,7 @@ public class Order extends Model {
 
     /**
      * 得到订单的所有实体券
+     *
      * @return
      */
     @Transient
@@ -916,6 +916,7 @@ public class Order extends Model {
 
     /**
      * 得到订单的所有电子券
+     *
      * @return
      */
     @Transient
@@ -1098,7 +1099,7 @@ public class Order extends Model {
 
     public static boolean confirmPaymentInfo(Order order, Account account, boolean useBalance, String paymentSourceCode) {
         //有些账号还没有promotionAmount
-        if (account.promotionAmount == null){
+        if (account.promotionAmount == null) {
             account.promotionAmount = BigDecimal.ZERO;
         }
         //计算使用余额支付和使用银行卡支付的金额
@@ -1164,7 +1165,7 @@ public class Order extends Model {
         for (OrderItems item : order.orderItems) {
             BigDecimal amount = BigDecimal.ZERO;
             //默认给推荐人2%，如果商品没设置返利
-            promoterPrice = item.goods.promoterPrice == null || item.goods.promoterPrice.compareTo(BigDecimal.ZERO) == 0 ? new BigDecimal(2) : item.goods.promoterPrice;
+            promoterPrice = item.goods.promoterPrice == null ? new BigDecimal(2) : item.goods.promoterPrice;
             amount = amount.add(item.goods.salePrice.multiply(promoterPrice)).multiply(new BigDecimal(0.01));
             amount = amount.setScale(2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(item.buyNumber));
             addAmount = addAmount.add(amount);
@@ -1175,8 +1176,9 @@ public class Order extends Model {
 
     /**
      * 计算订单中受邀者应得的返利
-     *
+     * <p/>
      * FIXME: 这个方法不需要的。
+     *
      * @param order
      * @return
      */
@@ -1186,12 +1188,9 @@ public class Order extends Model {
         BigDecimal invitedUserPrice;
         for (OrderItems item : order.orderItems) {
             BigDecimal rebatePrice = BigDecimal.ZERO;
-            invitedUserPrice = item.goods.invitedUserPrice == null ? BigDecimal.ZERO : item.goods.invitedUserPrice;
-            if (invitedUserPrice.compareTo(new BigDecimal(5)) <= 0) {
-                //如果没设置被推荐的返利，默认给1%
-                if (invitedUserPrice == null || invitedUserPrice.compareTo(BigDecimal.ZERO) == 0) {
-                    invitedUserPrice = BigDecimal.ONE;
-                }
+            //如果没设置被推荐的返利，默认给1%
+            invitedUserPrice = item.goods.invitedUserPrice == null ? BigDecimal.ONE : item.goods.invitedUserPrice;
+            if (invitedUserPrice.compareTo(BigDecimal.ZERO) > 0 && invitedUserPrice.compareTo(new BigDecimal(5)) <= 0) {
                 rebatePrice = rebatePrice.add(item.goods.salePrice.multiply(invitedUserPrice)).multiply(new BigDecimal(0.01));
                 rebatePrice = rebatePrice.setScale(2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(item.buyNumber));
                 addAmount = addAmount.add(rebatePrice);

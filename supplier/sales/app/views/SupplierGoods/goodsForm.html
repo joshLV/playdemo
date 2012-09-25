@@ -82,6 +82,7 @@ beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
 #{/if}
     <input type="hidden" id="status" name="goods.status" value="${goods?.status?:'OFFSALE'}"/>
     <input type="hidden" name="goods.title" value="${goods?.title?:'未设置'}"/>
+    <input type="hidden" name="goods.resaleAddPrice" value="${goods?.resaleAddPrice}"/>
     <input type="hidden" name="goods.materialType" value="${goods?.materialType}"/>
 </div>
 <script type="text/javascript">

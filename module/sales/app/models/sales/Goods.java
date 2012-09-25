@@ -13,7 +13,7 @@ import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.PathUtil;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
-import models.resale.ResalerLevel;
+//import models.resale.ResalerLevel;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
@@ -79,11 +79,15 @@ public class Goods extends Model {
     @Column(name = "sale_price")
     public BigDecimal salePrice;
 
-    @OneToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY,
-            mappedBy = "goods")
-    @OrderBy("level")
-    public List<GoodsLevelPrice> levelPrices;
-
+    /**
+     * 分销渠道加价
+     */
+    @Min(0)
+    @Max(999999)
+    @Money
+    @Required
+    @Column(name = "resale_price")
+    public BigDecimal resaleAddPrice;
     /**
      * 给推荐者的返利金额
      */
@@ -475,52 +479,6 @@ public class Goods extends Model {
         return format.format(discount.doubleValue());
     }
 
-    public void setLevelPrices(List<GoodsLevelPrice> levelPrices) {
-        this.levelPrices = levelPrices;
-        safeSetLevelPrices();
-    }
-
-    public void setLevelPrices(BigDecimal[] prices) {
-        if (prices == null || prices.length == 0) {
-            return;
-        }
-        safeSetLevelPrices();
-        for (int i = 0; i < prices.length; i++) {
-            levelPrices.get(i).price = prices[i];
-        }
-    }
-
-    /**
-     * 不同分销商等级所对应的价格, 此方法可确保返回的价格数量与分销等级的数量相同
-     */
-    public List<GoodsLevelPrice> safeGetLevelPrices() {
-        if (levelPrices != null && levelPrices.size() == ResalerLevel.values().length) {
-            return levelPrices;
-        }
-        safeSetLevelPrices();
-        return levelPrices;
-    }
-
-    private void safeSetLevelPrices() {
-        if (levelPrices == null) {
-            levelPrices = new ArrayList<>();
-        }
-        if (levelPrices.size() == 0) {
-            for (ResalerLevel level : ResalerLevel.values()) {
-                GoodsLevelPrice levelPrice = new GoodsLevelPrice(this, level, BigDecimal.ZERO);
-                levelPrices.add(levelPrice);
-            }
-        }
-
-        if (levelPrices.size() < ResalerLevel.values().length) {
-            int zeroLevelCount = ResalerLevel.values().length - levelPrices.size();
-            int originalSize = levelPrices.size();
-            for (int i = 0; i < zeroLevelCount; i++) {
-                levelPrices.add(new GoodsLevelPrice(this, ResalerLevel.values()[i + originalSize], BigDecimal.ZERO));
-            }
-        }
-    }
-
     /**
      * 最小规格图片路径
      */
@@ -655,6 +613,7 @@ public class Goods extends Model {
         updateGoods.materialType = goods.materialType;
         updateGoods.topCategoryId = goods.topCategoryId;
         updateGoods.categories = goods.categories;
+        updateGoods.resaleAddPrice = goods.resaleAddPrice;
         updateGoods.setPrompt(goods.getPrompt());
         updateGoods.setDetails(goods.getDetails());
         updateGoods.updatedAt = new Date();
@@ -678,11 +637,7 @@ public class Goods extends Model {
         updateGoods.useBeginTime = goods.useBeginTime;
         updateGoods.useEndTime = goods.useEndTime;
         updateGoods.useWeekDay = goods.useWeekDay;
-        if (!noLevelPrices) {
-            for (int i = 0; i < goods.levelPrices.size(); i++) {
-                updateGoods.safeGetLevelPrices().get(i).price = goods.levelPrices.get(i).price;
-            }
-        }
+
         updateGoods.isLottery = (goods.isLottery == null) ? Boolean.FALSE : goods.isLottery;
 
         updateGoods.groupCode = (StringUtils.isEmpty(goods.groupCode)) ? null : goods.groupCode.trim();
@@ -892,26 +847,18 @@ public class Goods extends Model {
     }
 
     /**
-     * 根据分销商等级和商品ID计算分销商现价
+     * 根据分销商等级和商品ID计算分销商现价     *
      *
-     * @param level 等级
      * @return resalePrice 分销商现价
      */
     @Transient
-    public BigDecimal getResalePrice(ResalerLevel level) {
-        BigDecimal resalePrice = faceValue;
-
-        for (GoodsLevelPrice goodsLevelPrice : safeGetLevelPrices()) {
-            if (goodsLevelPrice.level == level) {
-                resalePrice = originalPrice.add(goodsLevelPrice.price);
-                break;
-            }
-        }
+    public BigDecimal getResalePrice() {
+        BigDecimal resalePrice = originalPrice.add(this.resaleAddPrice == null ? BigDecimal.ZERO : this.resaleAddPrice);
         return resalePrice;
     }
 
     public BigDecimal getResalerPriceOfUhuila() {
-        return getResalePrice(ResalerLevel.NORMAL);
+        return getResalePrice();
     }
 
     /**
@@ -933,32 +880,6 @@ public class Goods extends Model {
 
 
         return isExist;
-    }
-
-    public void setLevelPrices(BigDecimal[] prices, Long id) {
-        if (prices == null || prices.length == 0) {
-            return;
-        }
-        safeGetLevelPrices();
-        for (int i = 0; i < prices.length; i++) {
-            this.id = id;
-            levelPrices.get(i).price = prices[i];
-        }
-    }
-
-    public BigDecimal[] getLevelPriceArray() {
-        BigDecimal[] prices = new BigDecimal[ResalerLevel.values().length];
-        if (levelPrices == null || levelPrices.size() == 0) {
-            Arrays.fill(prices, BigDecimal.ZERO);
-            return prices;
-        }
-
-        List<GoodsLevelPrice> levelPriceList = safeGetLevelPrices();
-        for (int i = 0; i < levelPriceList.size(); i++) {
-            GoodsLevelPrice levelPrice = levelPriceList.get(i);
-            prices[i] = (levelPrice == null || levelPrice.price == null) ? BigDecimal.ZERO : levelPrice.price;
-        }
-        return prices;
     }
 
     public Collection<Shop> getShopList() {
@@ -1194,11 +1115,11 @@ public class Goods extends Model {
         }
         return statistics.summaryCount;
     }
-    
+
     public Set<Category> getCategories() {
-    	if (this.id == null) {
-    		return this.categories;
-    	}
+        if (this.id == null) {
+            return this.categories;
+        }
         Goods g = Goods.findById(this.id);
         return g.categories;
     }

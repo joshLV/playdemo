@@ -77,14 +77,11 @@
             <div class="controls">${goods?.salePrice?.formatCurrency('CNY')}
             </div>
         </div>
-    #{list items:goods?.levelPrices, as: 'level'}
         <div class="control-group">
-            <label class="control-label">&{'goods.levelPrice.'+level?.level}</label>
-
-            <div class="controls">${level.price?.formatCurrency('CNY')}
+            <label class="control-label">&{'goods.resaleAddPrice'}</label>
+            <div class="controls">${goods?.resaleAddPrice?.formatCurrency('CNY')}
             </div>
         </div>
-    #{/list}
         <div class="control-group">
             <label class="control-label">&{'goods.baseSale'}</label>
 

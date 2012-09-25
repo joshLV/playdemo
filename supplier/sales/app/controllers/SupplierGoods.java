@@ -5,14 +5,8 @@
 package controllers;
 
 import com.uhuila.common.util.FileUploadUtil;
-import models.resale.ResalerLevel;
-import models.sales.Brand;
-import models.sales.Category;
+import models.sales.*;
 import models.sales.Goods;
-import models.sales.GoodsCondition;
-import models.sales.GoodsStatus;
-import models.sales.MaterialType;
-import models.sales.Shop;
 import models.supplier.Supplier;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -33,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.math.BigDecimal.ZERO;
 import static play.Logger.warn;
 
 /**
@@ -95,9 +88,6 @@ public class SupplierGoods extends Controller {
     private static void renderInit(models.sales.Goods goods) {
         if (goods == null) {
             goods = new models.sales.Goods();
-            BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
-            Arrays.fill(levelPrices, ZERO);
-            goods.setLevelPrices(levelPrices);
             goods.materialType = MaterialType.ELECTRONIC;
         }
         if (goods.isAllShop != null) {
@@ -170,7 +160,7 @@ public class SupplierGoods extends Controller {
 
         checkImageFile(imagePath);
 
-        goods.setLevelPrices(levelPrices);
+//        goods.setLevelPrices(levelPrices);
 
         checkExpireAt(goods);
         checkOriginalPrice(goods);
@@ -296,15 +286,13 @@ public class SupplierGoods extends Controller {
     /**
      * 更新指定商品信息
      */
-    public static void update(Long id, @Valid models.sales.Goods goods, File imagePath, BigDecimal[] levelPrices,
+    public static void update(Long id, @Valid models.sales.Goods goods, File imagePath,
                               String imageLargePath) {
         Long supplierId = SupplierRbac.currentUser().supplier.id;
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
         }
         checkImageFile(imagePath);
-
-        goods.setLevelPrices(levelPrices, id);
 
         checkExpireAt(goods);
         checkOriginalPrice(goods);

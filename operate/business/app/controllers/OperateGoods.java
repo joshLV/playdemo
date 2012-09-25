@@ -134,7 +134,7 @@ public class OperateGoods extends Controller {
             goods = new models.sales.Goods();
             BigDecimal[] levelPrices = new BigDecimal[ResalerLevel.values().length];
             Arrays.fill(levelPrices, null);
-            goods.setLevelPrices(levelPrices);
+//            goods.setLevelPrices(levelPrices);
             goods.materialType = MaterialType.ELECTRONIC;
             goods.unPublishedPlatforms = new HashSet<>();
             if (supplierList != null && supplierList.size() > 0) {
@@ -220,15 +220,11 @@ public class OperateGoods extends Controller {
      * @param goods
      */
     @ActiveNavigation("goods_add")
-    public static void create(@Valid models.sales.Goods goods, @Required File imagePath, BigDecimal[] levelPrices) {
+    public static void create(@Valid models.sales.Goods goods, @Required File imagePath) {
 
         checkImageFile(imagePath);
-
-        goods.setLevelPrices(levelPrices);
-
         checkExpireAt(goods);
         checkSalePrice(goods);
-        checkLevelPrice(levelPrices);
         checkShops(goods.supplierId);
         checkUseWeekDay(goods);
 
@@ -403,23 +399,18 @@ public class OperateGoods extends Controller {
     /**
      * 更新指定商品信息
      */
-    public static void update(Long id, @Valid models.sales.Goods goods, File imagePath, BigDecimal[] levelPrices,
-                              String imageLargePath) {
+    public static void update(Long id, @Valid final models.sales.Goods goods, File imagePath, String imageLargePath) {
+
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
         }
 
-
         checkImageFile(imagePath);
-
         checkExpireAt(goods);
-        goods.setLevelPrices(levelPrices, id);
         checkSalePrice(goods);
-        checkLevelPrice(levelPrices);
         checkShops(goods.supplierId);
         checkUseWeekDay(goods);
         if (Validation.hasErrors()) {
-
             renderArgs.put("imageLargePath", imageLargePath);
             renderInit(goods);
 
@@ -452,31 +443,10 @@ public class OperateGoods extends Controller {
             e.printStackTrace();
             error(e);
         }
-
         goods.updatedBy = supplierUser;
         models.sales.Goods.update(id, goods, false);
 
         index(null, "");
-    }
-
-    private static void checkLevelPrice(BigDecimal[] prices) {
-        if (prices == null) {
-            for (ResalerLevel level : ResalerLevel.values()) {
-                Validation.addError("goods.levelPrice." + level, "validation.required");
-            }
-            return;
-        }
-        //检查各个级别的价格，要求必须级别越高加价越低。
-        for (int i = 0; i < prices.length; i++) {
-            BigDecimal price = prices[i];
-            if (price == null) {
-                Validation.addError("goods.levelPrice." + ResalerLevel.values()[i], "validation.required");
-            } else if (price.compareTo(BigDecimal.ZERO) < 0) {
-                Validation.addError("goods.levelPrice." + ResalerLevel.values()[i], "validation.min", "0");
-            } else if (price.compareTo(prices[(i > 0 ? i - 1 : 0)]) > 0) {
-                Validation.addError("goods.levelPrice." + ResalerLevel.values()[i], "validation.moreThanLastLevel");
-            }
-        }
     }
 
     /**
@@ -491,7 +461,6 @@ public class OperateGoods extends Controller {
             models.sales.Goods goods = models.sales.Goods.findById(goodsId);
             if (goods != null) {
                 checkSalePrice(goods);
-                checkLevelPrice(goods.getLevelPriceArray());
                 checkShops(goods.supplierId);
             }
 

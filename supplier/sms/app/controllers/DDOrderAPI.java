@@ -94,6 +94,7 @@ public class DDOrderAPI extends Controller {
             outerOrder.orderNumber = kx_order_id;
             outerOrder.partner = OuterOrderPartner.DD;
             outerOrder.message = gson.toJson(params);
+            outerOrder.status = OuterOrderStatus.ORDER_COPY;
             outerOrder.save();
             try { // 将订单写入数据库
                 JPA.em().flush();
@@ -151,6 +152,7 @@ public class DDOrderAPI extends Controller {
                 new DDOrderItem(Long.valueOf(kx_order_id), ddgid, ybqItem.goods, ybqItem).save();
             }
         }
+        outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
         outerOrder.save();
         List<ECoupon> eCouponList = ECoupon.findByOrder(order);
         Logger.info("\n [DDOrderAPI] end ");
@@ -158,115 +160,3 @@ public class DDOrderAPI extends Controller {
     }
 }
 
-//
-//    public static void order1() {
-//        Logger.info("[DDOrderAPI] begin ");
-//        //取得参数信息 必填信息
-//        SortedMap<String, String> params = DDAPIUtil.filterPlayParameter(request.params.all());
-//        Long ddgid = Long.valueOf(params.get("id"));
-//        String all_amount = StringUtils.isBlank(params.get("all_amount")) ? "0" : StringUtils.trimToEmpty(params.get("all_amount"));
-//        String amount = StringUtils.isBlank(params.get("amount")) ? "0" : StringUtils.trimToEmpty(params.get("amount"));
-//        String user_mobile = StringUtils.trimToEmpty(params.get("user_mobile"));
-//        String options = StringUtils.trimToEmpty(params.get("options"));
-//        String express_memo = StringUtils.trimToEmpty(params.get("express_memo"));
-//        String express_fee = StringUtils.trimToEmpty(params.get("express_fee"));
-//        String user_id = StringUtils.trimToEmpty(params.get("user_id"));
-//        String kx_order_id = StringUtils.trimToEmpty(params.get("kx_order_id"));
-//        String sign = StringUtils.trimToEmpty(params.get("sign")).toLowerCase();
-//        ErrorInfo errorInfo = new ErrorInfo();
-//        //检查参数
-//        if (StringUtils.isBlank(user_mobile) || StringUtils.isBlank(user_id)) {
-//            errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
-//            errorInfo.errorDes = "用户或手机不存在！";
-//            Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
-//            render("/DDOrderAPI/error.xml", errorInfo);
-//        }
-//
-//        if (StringUtils.isBlank(kx_order_id)) {
-//            Logger.error("invalid kx_order_id: %s", kx_order_id);
-//            errorInfo.errorCode = ErrorCode.ORDER_NOT_EXITED;
-//            errorInfo.errorDes = "订单不存在！";
-//            Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
-//            render("/DDOrderAPI/error.xml", errorInfo);
-//        }
-//
-//        //校验参数
-//        if (StringUtils.isBlank(sign) || !DDAPIUtil.validSign(params, sign)) {
-//            errorInfo.errorCode = ErrorCode.VERIFY_FAILED;
-//            errorInfo.errorDes = "sign验证失败！";
-//            Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
-//            render("/DDOrderAPI/error.xml", errorInfo);
-//        }
-//
-//        //定位请求者
-//        Resaler resaler = Resaler.find("loginName=? and status=?", DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
-//        if (resaler == null) {
-//            errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
-//            errorInfo.errorDes = "当当分销商用户不存在！";
-//            Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
-//            render("/DDOrderAPI/error.xml", errorInfo);
-//        }
-//
-//        Order order = null;
-//        //如果已经存在订单，则不处理，直接返回xml
-//        DDOrder ddOrder = DDOrder.find("orderId=?", Long.valueOf(kx_order_id)).first();
-//        if (ddOrder != null && ddOrder.ybqOrder != null) {
-//            order = Order.findOneByUser(ddOrder.ybqOrder.orderNumber, resaler.id, AccountType.RESALER);
-//            if (order != null) {
-//                Logger.info("[DDOrderAPI] order has existed,and render xml");
-//                List<ECoupon> eCouponList = order.eCoupons;
-//                render(order, ddgid, kx_order_id, eCouponList);
-//            }
-//        }
-//        //产生DD订单
-//        ddOrder = new DDOrder(Long.parseLong(kx_order_id), new BigDecimal(all_amount), new BigDecimal(amount), new BigDecimal(express_fee), resaler.id).save();
-//        try {
-//            JPA.em().flush();
-//        } catch (Exception e) {
-//            errorInfo.errorCode = ErrorCode.ORDER_EXCEPTION;
-//            errorInfo.errorDes = "订单处理异常！";
-//            render("/DDOrderAPI/error.xml", errorInfo);
-//        }
-//
-//        JPA.em().refresh(ddOrder, LockModeType.PESSIMISTIC_WRITE);
-//        order = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
-//
-//        //分解有几个商品，每个商品购买的数量
-//        String[] arrGoods = options.split(",");
-//
-//        String[] arrGoodsItem = null;
-//        for (String goodsItem : arrGoods) {
-//            arrGoodsItem = goodsItem.split(":");
-//            if (arrGoodsItem != null) {
-//                Goods goods = Goods.findById(Long.parseLong(arrGoodsItem[0]));
-//                BigDecimal resalerPrice = goods.getResalePrice(ResalerLevel.NORMAL);
-//                try {
-//                    //创建一百券订单Items
-//                    order.addOrderItem(goods, Integer.parseInt(arrGoodsItem[1]), user_mobile, resalerPrice, resalerPrice);
-//                } catch (NotEnoughInventoryException e) {
-//                    Logger.info("inventory not enough");
-//                    errorInfo.errorCode = ErrorCode.INVENTORY_NOT_ENOUGH;
-//                    errorInfo.errorDes = "库存不足！";
-//                    render(errorInfo);
-//                }
-//            }
-//        }
-//
-//        order.remark = express_memo;
-//        order.createAndUpdateInventory();
-//        order.accountPay = order.needPay;
-//        order.discountPay = BigDecimal.ZERO;
-//        order.payMethod = PaymentSource.getBalanceSource().code;
-//        order.payAndSendECoupon();
-//        //设置当当订单中的一百券订单
-//        ddOrder.ybqOrder = order;
-//        for (OrderItems ybqItem : order.orderItems) {
-//            //创建当当的订单Items
-//            ddOrder.addOrderItem(ybqItem.goods, ddgid, ybqItem.buyNumber.intValue(), user_mobile, ybqItem.resalerPrice, ybqItem).save();
-//        }
-//        ddOrder.status = DDOrderStatus.ORDER_FINISH;
-//        ddOrder.save();
-//        Logger.info("/n [DDOrderAPI] begin ");
-//        render(order, ddgid, kx_order_id);
-//    }
-//}

@@ -43,36 +43,27 @@
     #{layout_operate.textField name:'goods.faceValue', value:goods?.faceValue?:"0", note:'元', required:true/}
     #{layout_operate.textField name:'goods.originalPrice', value:goods?.originalPrice?:"0",note:'元', required:true/}
     #{layout_operate.textField name:'goods.salePrice', value:goods?.salePrice?:"0", note:'元', required:true/}
-    #{set i:0/}
-    #{list items:models.resale.ResalerLevel.values(), as: 'level'}
-    <div class="control-group">
-        <label for='levelPrices_${level}' class="control-label">
-            <span style="color: red; ">*</span>&{'goods.levelPrice.'+models.resale.ResalerLevel.values()[i]}</label>
+<div class="control-group">
+    <label class="control-label"><span style="color: red; ">*</span>&{'goods.resaleAddPrice'}</label>
 
-        <div class="controls">
-            <input type="text" id='levelPrices_${level}' name="levelPrices" class="input-xlarge"
-                   value="${goods?.levelPrices?goods.levelPrices.price[i]:''}"
-                   onfocus="showPrice(this);limitMoneyFormat(this,this.value)"
-                   onkeyup="showPrice(this);limitMoneyFormat(this,this.value)"
-                   onkeydown="showPrice(this);limitMoneyFormat(this,this.value)"
-                   onchange="showPrice(this);limitMoneyFormat(this,this.value)"/>元 <span
-                style="color: blue; ">加价后为</span><span style="color: red; "
-                                                       id="realPrice_levelPrices_${level}">0</span><span
-                style="color: blue; ">元</span>
-            #{field 'goods.levelPrice.'+level}
-                <span class="error">#{error field?.name/}</span>
-            #{/field}
-        </div>
+    <div class="controls">
+        <input type="text" id='goods_resaleAddPrice' name="goods.resaleAddPrice" class="input-xlarge"
+               value="${goods?.resaleAddPrice?:'0'}" onfocus="showPrice();limitMoneyFormat(this,this.value)"
+               onkeyup="showPrice();limitMoneyFormat(this,this.value)"
+               onkeydown="showPrice();limitMoneyFormat(this,this.value)"
+               onchange="showPrice();limitMoneyFormat(this,this.value)"/>% <span
+            style="color: blue; ">加价后为</span><span style="color: red; "
+                                                   id="resaleAddPrice">0</span><span
+            style="color: blue; ">元</span>
+        <span class="error">#{error 'goods.resaleAddPrice'/}</span>
     </div>
-        #{set i++/}
-    #{/list}
-*{#{layout_operate.textField name:'goods.promoterPrice', value:goods?.promoterPrice?:"0", note:'元', required:true/}}*
+</div>
 <div class="control-group">
     <label class="control-label"><span style="color: red; ">*</span>&{'goods.promoterPrice'}</label>
 
     <div class="controls">
         <input type="text" id='goods_promoterPrice' name="goods.promoterPrice" class="input-xlarge"
-               value="${goods?.promoterPrice?:0}" onfocus="showAddedRebate();limitMoneyFormat(this,this.value)"
+               value="${goods?.promoterPrice}" onfocus="showAddedRebate();limitMoneyFormat(this,this.value)"
                onkeyup="showAddedRebate();limitMoneyFormat(this,this.value)"
                onkeydown="showAddedRebate();limitMoneyFormat(this,this.value)"
                onchange="showAddedRebate();limitMoneyFormat(this,this.value)"/>% <span
@@ -87,7 +78,7 @@
 
     <div class="controls">
         <input type="text" id='goods_invitedUserPrice' name="goods.invitedUserPrice" class="input-xlarge"
-               value="${goods?.invitedUserPrice?:0}" onfocus="showAddedRebate();limitMoneyFormat(this,this.value)"
+               value="${goods?.invitedUserPrice}" onfocus="showAddedRebate();limitMoneyFormat(this,this.value)"
                onkeyup="showAddedRebate();limitMoneyFormat(this,this.value)"
                onkeydown="showAddedRebate();limitMoneyFormat(this,this.value)"
                onchange="showAddedRebate();limitMoneyFormat(this,this.value)"/>% <span
@@ -97,8 +88,8 @@
         <span class="error">#{error 'goods.invitedUserPrice'/}</span>
     </div>
 </div>
-#{layout_operate.textField name:'goods.baseSale', value:goods?.baseSale, note:'件', required:true/}
-#{layout_operate.textField name:'goods.limitNumber', value:goods?.limitNumber, note:'个'/}
+    #{layout_operate.textField name:'goods.baseSale', value:goods?.baseSale, note:'件', required:true/}
+    #{layout_operate.textField name:'goods.limitNumber', value:goods?.limitNumber, note:'个'/}
 
 <div class="control-group">
     <label class="control-label">指定消费日
@@ -123,8 +114,8 @@
         <span class="error">#{error 'goods.useWeekDayAll' /}</span>
     </div>
 </div>
-#{layout_operate.timeScopeField name:'goods.useTime', begin:'goods.useBeginTime',end:'goods.useEndTime',
-beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
+    #{layout_operate.timeScopeField name:'goods.useTime', begin:'goods.useBeginTime',end:'goods.useEndTime',
+    beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
 <div class="control-group">
     <label class="control-label">抽奖商品
     </label>
@@ -137,12 +128,16 @@ beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
 <div class="control-group">
     <label class="control-label">券类型
     </label>
+
     <div class="controls">
         <label class="radio inline">
-            <input type="radio" name="goods.couponType" value="GENERATE" #{if goods.couponType == null || goods.couponType ==  models.sales.GoodsCouponType.GENERATE} checked #{/if}> 自动生成
+            <input type="radio" name="goods.couponType"
+                   value="GENERATE" #{if goods.couponType == null || goods.couponType ==  models.sales.GoodsCouponType.GENERATE}
+                   checked #{/if}> 自动生成
         </label>
         <label class="radio inline">
-            <input type="radio" name="goods.couponType" value="IMPORT" #{if goods.couponType ==  models.sales.GoodsCouponType.IMPORT} checked #{/if} /> 导入
+            <input type="radio" name="goods.couponType"
+                   value="IMPORT" #{if goods.couponType ==  models.sales.GoodsCouponType.IMPORT} checked #{/if} /> 导入
         </label>
     </div>
 </div>
@@ -198,23 +193,14 @@ beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
         $("#goods_useWeekDay").val(week.join(","));
     }
 
-    function showPrice(nameField) {
+    function showPrice() {
         var originalPrice = $("#goods_originalPrice").val() == null ? 0 : $("#goods_originalPrice").val();
-        var price = parseFloat($(nameField).val()) + parseFloat(originalPrice);
+        var price = parseFloat($("#goods_resaleAddPrice").val()) + parseFloat(originalPrice);
         price = (price == null || price.toString() == "NaN") ? 0 : price;
-        $("#realPrice_" + nameField.id).html(price.toFixed(2));
+        $("#resaleAddPrice").html(price.toFixed(2));
     }
 
-    function showAddedPrice() {
-        var originalPrice = $("#goods_originalPrice").val() == null ? 0 : $("#goods_originalPrice").val();
-        #{list items:models.resale.ResalerLevel.values(), as: 'level'}
-            var price = parseFloat($('#levelPrices_${level}').val()) + parseFloat(originalPrice);
-            price = (price == null || price.toString() == "NaN") ? 0 : price;
-            $("#realPrice_levelPrices_${level}").html(price.toFixed(2));
-        #{/list}
-    }
-
-    showAddedPrice();
+    showPrice();
 
     showAddedRebate();
     function showAddedRebate() {
