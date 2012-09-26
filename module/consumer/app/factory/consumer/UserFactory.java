@@ -4,6 +4,7 @@ import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
 import models.consumer.User;
+import models.consumer.UserInfo;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,6 +25,7 @@ public class UserFactory extends ModelFactory<User> {
         user.mobile = "15026682165";
         user.promoterCode = "qweu2a";
 
+        user.userInfo=FactoryBoy.last(UserInfo.class);
         return user;
     }
 

@@ -1,6 +1,8 @@
 package unit;
 
+import factory.FactoryBoy;
 import models.consumer.User;
+import models.consumer.UserInfo;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,10 +12,14 @@ import play.test.UnitTest;
 import java.util.List;
 
 public class RegisterUnitTest extends UnitTest {
-	@Before
+    User user;
+    UserInfo userInfo;
+    @Before
 	public void setup() {
-		Fixtures.delete(User.class);
-		Fixtures.loadModels("fixture/user.yml");
+        FactoryBoy.delete(User.class);
+        FactoryBoy.delete(UserInfo.class);
+        userInfo=FactoryBoy.create(UserInfo.class);
+        user = FactoryBoy.create(User.class);
 	}
 
 	@Test
@@ -21,16 +27,15 @@ public class RegisterUnitTest extends UnitTest {
 		User user = new User();
 		user.loginName = "11@qq.com";
 		user.create();
-
 		List<User> list = User.findAll(); 
-		assertEquals(4, list.size());  
+		assertEquals(2, list.size());
 	}  
 
 
 	//测试是否存在用户名和手机
 	@Test
 	public void testCheckValue(){
-		 boolean returnFlag = User.checkLoginName("11@qq.com");
+		boolean returnFlag = User.checkLoginName("11@qq.com");
 		assertFalse(returnFlag);
 
 		returnFlag = User.checkLoginName("selenium@uhuila.com");
@@ -39,12 +44,11 @@ public class RegisterUnitTest extends UnitTest {
 
 	@Test
 	public void testUpdatePassword(){
-		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
+		Long userId = user.id;
 		User user = new User();
 		user.password="654321";
 		User newUser = User.findById(userId);
 		user.updatePassword(newUser, user);
-		
 		User newUser1 = User.findById(userId);
 		String password = DigestUtils.md5Hex("654321"+newUser1.passwordSalt);
 		assertEquals(password,newUser1.password);
@@ -52,7 +56,7 @@ public class RegisterUnitTest extends UnitTest {
 	
 	@Test
 	public void testUpdateMobile(){
-		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
+        Long userId = user.id;
 		User user = User.findById(userId);
 		String mobile = "13518096999";
 		user.updateMobile(mobile);
