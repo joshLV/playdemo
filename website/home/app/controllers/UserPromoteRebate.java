@@ -44,7 +44,6 @@ public class UserPromoteRebate extends Controller {
      * 返利排名
      */
     public static void rank() {
-
         User user = SecureCAS.getUser();
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
@@ -52,8 +51,9 @@ public class UserPromoteRebate extends Controller {
         List<PromoteRebate> resultList = PromoteRebate.findRank();
         // 分页
         ValuePaginator<PromoteRebate> rankList = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
-
+        System.out.println(rankList.size()+">>>>>>>>>");
         PromoteRebate summary = PromoteRebate.rank(user, resultList);
+
         render(user, rankList, summary);
     }
 
