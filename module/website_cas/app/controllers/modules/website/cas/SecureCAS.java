@@ -68,13 +68,7 @@ public class SecureCAS extends Controller {
         Cas cas = new Cas();
         if (user != null) {
             cas.isLogin = true;
-            if (user.loginName != null) {
-                cas.loginName = user.loginName;
-            } else {
-                int showLimit = 10;
-                cas.loginName = user.getOpenIdExpress().length() > showLimit ? user.getOpenIdExpress().substring(0, showLimit) + "..." : user.getOpenIdExpress();
-            }
-
+            cas.loginName = user.getShowName();
             cas.user = user;
         }
         renderArgs.put("cas", cas);
@@ -103,8 +97,8 @@ public class SecureCAS extends Controller {
                 if (openIdSource != null && !openIdSource.name().equals("0")) {
                     String openId = getOpenIdFromUserIdentity(userIdentity);
 
-                    System.out.println("openId:" + openId);
-                    System.out.println("openIdSource.value():" + openIdSource.name());
+                    Logger.debug("openId:" + openId);
+                    Logger.debug("openIdSource.value():" + openIdSource.name());
 
                     u = User.find("byOpenIdSourceAndOpenId", openIdSource, openId).first();
                 }

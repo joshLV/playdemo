@@ -184,6 +184,7 @@ public class User extends Model {
     public static User findByLoginName(String loginName) {
         return User.find("byLoginName", loginName).first();
     }
+
     /**
      * 修改密码
      *
@@ -321,10 +322,12 @@ public class User extends Model {
         return account.amount;
     }
 
+    public static final int SHOW_NAME_LIMIT = 10;
+
     @Transient
-    public String getShowName(){
-        if (StringUtils.isBlank(loginName)){
-            return getOpenIdExpress();
+    public String getShowName() {
+        if (StringUtils.isBlank(loginName)) {
+            return getOpenIdExpress().length() > SHOW_NAME_LIMIT ? getOpenIdExpress().substring(0, SHOW_NAME_LIMIT) + "..." : getOpenIdExpress();
         }
         return loginName;
     }
