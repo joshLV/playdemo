@@ -10,16 +10,21 @@ import models.order.OrderStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import play.modules.breadcrumbs.BreadcrumbList;
 import play.mvc.Http;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
- * Created with IntelliJ IDEA.
+ * 用户订单功能测试.
+ *
  * User: Juno
  * Date: 12-7-30
  * Time: 下午4:37
- * To change this template use File | Settings | File Templates.
  */
 public class UserOrdersFuncTest extends FunctionalTest {
 
@@ -61,9 +66,38 @@ public class UserOrdersFuncTest extends FunctionalTest {
         assertStatus(302, response);
     }
 
-    //@Test TODO 功能不可用
-    public void testBatchRefund() {
+    /**
+     * 测试显示退款信息页面.
+     */
+    @Test
+    public void testRefund() {
+        long id = (Long) Fixtures.idCache.get("models.order.Order-order1");
+        Order order = Order.findById(id);
+        Http.Response response = GET("/orders/refund/" + order.orderNumber);
+        assertStatus(302, response);
 
+        Order resultOrder = (Order) renderArgs("order");
+        assertEquals(order.orderNumber, resultOrder.orderNumber);
+        List<ECoupon> eCoupons = (List<ECoupon>) renderArgs("eCoupons");
+        assertEquals(1, eCoupons.size());
+        BreadcrumbList breadcrumbs = (BreadcrumbList) renderArgs("breadcrumbs");
+        assertNotNull(breadcrumbs);
+    }
+
+    /**
+     * 测试退款功能.
+     */
+    @Test
+    public void testBatchRefund() {
+        long id = (Long) Fixtures.idCache.get("models.order.Order-order1");
+        Order order = Order.findById(id);
+        long couponId = (Long) Fixtures.idCache.get("models.order.Order-order1");
+        String couponIds = String.valueOf(couponId);
+        Map<String,String> args = new HashMap<>();
+        args.put("orderNumber", order.orderNumber);
+        args.put("couponIds",couponIds);
+        //todo
+        POST("/orders/batch-refund", args);
     }
 
     @Test
@@ -80,6 +114,5 @@ public class UserOrdersFuncTest extends FunctionalTest {
         Order updatedOrder = Order.findById(id);
         updatedOrder.refresh();
         assertEquals(OrderStatus.CANCELED, updatedOrder.status);
-
     }
 }

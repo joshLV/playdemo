@@ -23,10 +23,28 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "e_coupon")
@@ -346,7 +364,7 @@ public class ECoupon extends Model {
     public boolean consumeAndPayCommission(Long shopId, Long operateUserId,
                                            SupplierUser supplierUser, VerifyCouponType type) {
 
-        //===================判断是否当当订单产生的券
+        //===================判断是否当当订单产生的券=============================
         try {
             if (DDAPIUtil.isRefund(this)) {//如果券在当当上已经退款，则不允许券的消费。
                 return false;
@@ -354,6 +372,7 @@ public class ECoupon extends Model {
         } catch (DDAPIInvokeException e) {
             //当当接口调用失败，目前仅记录日志。不阻止券的消费。以便保证用户体验。
             Logger.error(e.getMessage(), e);
+            return false;
         }
 
         //===================券消费处理开始=====================================
@@ -363,13 +382,8 @@ public class ECoupon extends Model {
         //===================券消费处理完毕=====================================
 
 
-        //====================通知当当该券已经使用
-        try {
-            DDAPIUtil.notifyVerified(this);
-        } catch (DDAPIInvokeException e) {
-            //当当接口调用失败，目前仅记录日志。不阻止券的消费。以便保证用户体验。
-            Logger.error(e.getMessage(), e);
-        }
+        //=========通知当当该券已经使用,如果通知失败会记录到表dd_failure_log中======
+        DDAPIUtil.notifyVerified(this);
         return true;
 
     }

@@ -16,6 +16,7 @@ public enum ErrorCode {
     USER_NOT_EXITED(1003), //用户不存在,可能是source_id或spgid输入错误（对于一百券则是传入的用户不存在或者没有对应的分销商）
     NO_DATA_NODE(1004),//没有数据节点
 
+    ECOUPON_NOT_EXITED(3003),//序列号或验证码不存在
     ORDER_NOT_EXITED(9001),//订单不存在
     ORDER_EXCEPTION(9002),//订单异常
     PARSE_XML_FAILED(9003),//xml解析失败
@@ -44,6 +45,8 @@ public enum ErrorCode {
                 return USER_NOT_EXITED;
             case 1004:
                 return NO_DATA_NODE;
+            case 3003:
+                return ECOUPON_NOT_EXITED;
             case 9001:
                 return ORDER_NOT_EXITED;
             case 9002:

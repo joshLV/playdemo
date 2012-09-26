@@ -2,7 +2,10 @@ package models.dangdang;
 
 
 import models.accounts.AccountType;
-import models.order.*;
+import models.order.ECoupon;
+import models.order.Order;
+import models.order.OuterOrder;
+import models.order.OuterOrderPartner;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
@@ -79,10 +82,13 @@ public class DDAPIUtil {
         }
 
         DDECouponStatus status = getStatus(response.data);
-        return status.equals(DDECouponStatus.REFUNDED);
+        return status.equals(DDECouponStatus.CANCEL);
     }
 
     private static DDECouponStatus getStatus(Element data) {
+        if (data == null) {
+            return null;
+        }
         String state = data.elementText("state");
         return DDECouponStatus.getStatus(Integer.parseInt(state));
     }
@@ -93,7 +99,7 @@ public class DDAPIUtil {
      *
      * @param eCoupon
      */
-    public static void notifyVerified(ECoupon eCoupon) throws DDAPIInvokeException {
+    public static void notifyVerified(ECoupon eCoupon) {
         DDOrderItem ddOrderOrderItem = DDOrderItem.findByOrder(eCoupon.orderItems);
         if (ddOrderOrderItem == null) {
             Logger.info("[DangDang notifyVerified API] order item not found (eCouponSn:" + eCoupon.eCouponSn + ")!");
@@ -102,11 +108,27 @@ public class DDAPIUtil {
         String data = String.format("<data><row><ddgid><![CDATA[%s]]></ddgid><consume_code><![CDATA[%s]]></consume_code><verifycode><![CDATA[%s]]>" +
                 "</verifycode></row></data>",
                 ddOrderOrderItem.ddGoodsId, eCoupon.eCouponSn, eCoupon.eCouponSn);
-        Response response = DDAPIUtil.access(VERIFY_CONSUME_URL, data, "verify_consume");
+        Response response = null;
+        try {
+            response = DDAPIUtil.access(VERIFY_CONSUME_URL, data, "verify_consume");
+        } catch (DDAPIInvokeException e) {
+            Logger.error("[DangDang API] invoke isRefund error(eCouponId:" + eCoupon.id + "):" + response.desc);
+            logFailure(new DDFailureLog(eCoupon, response));
+            return;
+        }
 
         if (!response.success()) {
-            throw new DDAPIInvokeException("[DangDang API] invoke isRefund error(eCouponId:" + eCoupon.id + "):" + response.desc);
+            Logger.error("[DangDang API] invoke isRefund error(eCouponId:" + eCoupon.id + "):" + response.desc);
+            logFailure(new DDFailureLog(eCoupon, response));
         }
+    }
+
+    /**
+     * 记录当当接口调用失败日志.
+     */
+    private static void logFailure(DDFailureLog log) {
+        System.out.println("!!!!!!!log Failure:log.eCouponId:" + log.eCouponId);
+        log.save();
     }
 
     /**
