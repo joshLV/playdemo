@@ -23,6 +23,7 @@ public class UserFactory extends ModelFactory<User> {
         user.captcha = "aa";
         user.mobile = "15026682165";
         user.promoterCode = "qweu2a";
+
         return user;
     }
 
@@ -32,5 +33,10 @@ public class UserFactory extends ModelFactory<User> {
         user.password = "TestName" + FactoryBoy.sequence(User.class);
     }
 
+    @Factory(name = "loginName")
+    public User defineLoginNameUser(User user) {
+        user.loginName = "11@qq.com";
+        return user;
+    }
 
 }
