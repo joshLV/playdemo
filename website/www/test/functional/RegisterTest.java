@@ -28,24 +28,16 @@ public class RegisterTest extends FunctionalTest {
 
     @Before
     public void setUp() {
-        FactoryBoy.lazyDelete();
+//        FactoryBoy.lazyDelete();
+        FactoryBoy.delete(User.class);
+        FactoryBoy.delete(UserInfo.class);
+//        FactoryBoy.deleteAll();
         user = FactoryBoy.create(User.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
 
-
-
     }
 
-//    @Before
-//	public void setup() {
-//
-//
-//		Fixtures.delete(User.class);
-//		Fixtures.delete(UserInfo.class);
-//		Fixtures.loadModels("fixture/user.yml");
-//
-//	}
 
     @Test
     public void testIndex() {
@@ -58,25 +50,21 @@ public class RegisterTest extends FunctionalTest {
     public void testCreate_tj_cookieNull() {
         List old = User.findAll();
         int count = old.size();
-
-        Map<String, String> loginUserParams = new HashMap<String, String>();
+        Map<String, String> loginUserParams = new HashMap<String,String>();
         loginUserParams.put("user.loginName", "11@qq.com");
         loginUserParams.put("user.password", "123456");
         loginUserParams.put("user.confirmPassword", "123456");
         loginUserParams.put("user.captcha", "A2WQ");
         loginUserParams.put("randomID", "RANDOMID");
-        loginUserParams.put("promoter_track", "123");
-        Cache.set("RANDOMID", "A2WQ", "30mn");
-
+        Cache.set("RANDOMID", "A2WQ","30mn");
         Response response = POST("/register", loginUserParams);
-
-        assertStatus(200, response);
+        assertStatus(200,response);
         List newList = User.findAll();
-        assertEquals(count + 1, newList.size());
+        assertEquals(count+1,newList.size());
     }
 
     @Test
-    public void testCreate() {
+    public void testCreate_PromoterUserNull() {
         List old = User.findAll();
         int count = old.size();
 
@@ -95,39 +83,46 @@ public class RegisterTest extends FunctionalTest {
         passCookie.put("promoter_track",newCookie);
         Http.Request request= FunctionalTest.newRequest();
         request.cookies =passCookie;
-        //new HashMap<String, File>()
-        Response  response = POST(request,"/register", loginUserParams,null);
+
+        Response  response = POST(request,"/register", loginUserParams,new HashMap<String, File>());
 
         assertStatus(200, response);
         List newList = User.findAll();
         assertEquals(count + 1, newList.size());
-//        System.out.println("user.promoterCode>>"+user.promoterCode);
-//        user.promoterCode="123";
-//        System.out.println("user.promoterCode>>"+user.promoterCode);
-//        user.save();
-//        response = POST(request,"/register", loginUserParams,new HashMap<String, File>());
-//
-//        assertStatus(200, response);
-//        newList = User.findAll();
-//        assertEquals(count + 1, newList.size());
 
-        response = POST("/register", loginUserParams,new HashMap<String, File>());
+		List userInfos = UserInfo.findAll();
+		assertEquals(1,userInfos.size());
 
 
-//		List userInfos = UserInfo.findAll();
-//		//assertEquals(1,userInfos.size());
-//		assertEquals(2,userInfos.size());
-//
-//		loginUserParams.put("user.loginName", "11@qq.com");
-//		loginUserParams.put("user.password", "123456");
-//		loginUserParams.put("user.confirmPassword", "1");
-//		loginUserParams.put("user.captcha", "A2WQ");
-//		loginUserParams.put("randomID", "RANDOMID");
-//		Cache.set("RANDOMID", "AAAA","30mn");
-//		response = POST("/register", loginUserParams);
-//		assertStatus(200,response);
+
+    }
 
 
+    @Test
+    public void testCreate_tj_cookie_PromoterUserNotNull() {
+        List old = User.findAll();
+        int count = old.size();
+        Map<String, String> loginUserParams = new HashMap<String, String>();
+        loginUserParams.put("user.loginName", "11@qq.com");
+        loginUserParams.put("user.password", "123456");
+        loginUserParams.put("user.confirmPassword", "123456");
+        loginUserParams.put("user.captcha", "A2WQ");
+        loginUserParams.put("randomID", "RANDOMID");
+        loginUserParams.put("promoter_track", "123");
+        Cache.set("RANDOMID", "A2WQ", "30mn");
+        Map<String, Http.Cookie> passCookie = new HashMap();
+        Http.Cookie newCookie=new Http.Cookie();
+        newCookie.name="promoter_track";
+        newCookie.value="123";
+        passCookie.put("promoter_track",newCookie);
+        Http.Request request= FunctionalTest.newRequest();
+        request.cookies =passCookie;
+        user.promoterCode="123";
+        user.save();
+        Response  response = POST(request,"/register", loginUserParams,new HashMap<String, File>());
+        assertStatus(200, response);
+        List newList = User.findAll();
+        assertEquals(count + 1, newList.size());
     }
 
 

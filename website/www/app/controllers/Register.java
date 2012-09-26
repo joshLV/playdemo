@@ -73,8 +73,8 @@ public class Register extends Controller {
         //取得cookie中的推荐码
         Http.Cookie tj_cookie = request.cookies.get(PROMOTER_COOKIE);
 
-        System.out.println("tj_cookie>>>"+tj_cookie);
-        System.out.println("tj_cookie.value>>>"+tj_cookie.value);
+//        System.out.println("tj_cookie>>>"+tj_cookie);
+//        System.out.println("tj_cookie.value>>>"+tj_cookie.value);
 
         if (tj_cookie != null) {
             //记录推荐人和被推荐人的关系
