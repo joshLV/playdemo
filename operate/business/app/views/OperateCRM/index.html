@@ -559,10 +559,10 @@
     #{/select}
 
     <textarea rows="3" cols="20" name="consult.text" id="consult_text"
-              value="${flash.consult?.text}">${consult?.text}</textarea>
+            >${consult?.text}</textarea>
 
     #{ifErrors}
-        <br> <span style=color:red>请输入咨询内容</span>
+        <br> <span style=color:red>请输入咨询内容 ${errors} </span>
     #{/ifErrors}
 
 *{<div class="error">#{error 'consult.text' /}</div>}*

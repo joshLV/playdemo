@@ -30,10 +30,8 @@ public class RegisterTest extends FunctionalTest {
 
     @Before
     public void setUp() {
-//        FactoryBoy.lazyDelete();
         FactoryBoy.delete(User.class);
         FactoryBoy.delete(UserInfo.class);
-//        FactoryBoy.deleteAll();
         userInfo = FactoryBoy.create(UserInfo.class);
         user = FactoryBoy.create(User.class);
         // 设置测试登录的用户名
