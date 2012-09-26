@@ -1,9 +1,12 @@
 package functional;
 
 import controllers.modules.website.cas.Security;
+import models.accounts.Account;
+import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
@@ -15,13 +18,14 @@ import play.mvc.Http;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * 用户订单功能测试.
- *
+ * <p/>
  * User: Juno
  * Date: 12-7-30
  * Time: 下午4:37
@@ -71,15 +75,22 @@ public class UserOrdersFuncTest extends FunctionalTest {
      */
     @Test
     public void testRefund() {
+        Account account = AccountUtil.getPlatformIncomingAccount();
+        account.amount = new BigDecimal("10000");
+        account.save();
+
         long id = (Long) Fixtures.idCache.get("models.order.Order-order1");
         Order order = Order.findById(id);
+        assertEquals(OrderStatus.UNPAID, order.status);
+        order.userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
+        order.save();
         Http.Response response = GET("/orders/refund/" + order.orderNumber);
-        assertStatus(302, response);
+        assertStatus(200, response);
 
         Order resultOrder = (Order) renderArgs("order");
         assertEquals(order.orderNumber, resultOrder.orderNumber);
         List<ECoupon> eCoupons = (List<ECoupon>) renderArgs("eCoupons");
-        assertEquals(1, eCoupons.size());
+        assertEquals(3, eCoupons.size());
         BreadcrumbList breadcrumbs = (BreadcrumbList) renderArgs("breadcrumbs");
         assertNotNull(breadcrumbs);
     }
@@ -91,13 +102,26 @@ public class UserOrdersFuncTest extends FunctionalTest {
     public void testBatchRefund() {
         long id = (Long) Fixtures.idCache.get("models.order.Order-order1");
         Order order = Order.findById(id);
-        long couponId = (Long) Fixtures.idCache.get("models.order.Order-order1");
+        assertEquals(OrderStatus.UNPAID, order.status);
+        order.userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
+        order.save();
+
+        long couponId = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
         String couponIds = String.valueOf(couponId);
-        Map<String,String> args = new HashMap<>();
+        Map<String, String> args = new HashMap<>();
         args.put("orderNumber", order.orderNumber);
-        args.put("couponIds",couponIds);
-        //todo
-        POST("/orders/batch-refund", args);
+        args.put("couponIds", couponIds);
+
+        Account account = AccountUtil.getPlatformIncomingAccount();
+        account.amount = new BigDecimal("10000");
+        account.save();
+        Http.Response response = POST("/orders/batch-refund", args);
+        assertStatus(302, response);
+
+        ECoupon eCoupon = ECoupon.findById(couponId);
+        assertEquals(ECouponStatus.REFUND, eCoupon.status);
+        assertNotNull(eCoupon.refundAt);
+        assertEquals(0, eCoupon.refundPrice.compareTo(eCoupon.salePrice));
     }
 
     @Test
