@@ -1,5 +1,5 @@
-#{extends 'layout_operate/crm_layout.html' /}
-
+#{extends 'layout_operate/layout.html' /}
+#{include '/share/nav.html' /}
 #{set title:'消费者信息管理系统查询' /}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <div class="body">
@@ -45,9 +45,9 @@
                    value="${condition?.createdBy}"/></td>
 
 
-        <br>
-        <br>
+        &nbsp; &nbsp; &nbsp;
         <button class="btn btn-primary" id="search" onclick="consultIndex()">搜索</button>
+        &nbsp; &nbsp; &nbsp;
         <button class="btn btn-primary" id="searchbtn" onclick="consultExcel()">导出报表</button>
 
 

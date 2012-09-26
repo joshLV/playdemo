@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 @With(OperateRbac.class)
-@ActiveNavigation("crm_app")
+@ActiveNavigation("crm_app_consumers")
 public class OperateCRM extends Controller {
 
     public static void index(String phone, CRMCondition condition, Long userId, Long consultId, ConsultRecord consult) {

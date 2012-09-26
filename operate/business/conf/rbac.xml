@@ -98,11 +98,6 @@
         </navigation>
     </navigation>
 
-    <navigation key="crm_app" text="CRM" action="OperateCRM.index" display-order="120">
-        <navigation key="crm_app_users" text="用户管理">
-            <navigation key="crm_app_consumers" action="OperateCRM.index" text="消费者管理" permissions="CONSUMERS"/>
-        </navigation>
-    </navigation>
 
     <navigation key="order_main" text="订单销售" action="OperateOrders.index" display-order="50">
         <navigation key="order_app" text="订单">
@@ -174,6 +169,13 @@
         <navigation key="question" text="咨询管理" permission="QUESTION">
             <navigation key="questions_index" action="OperateQuestions.index" text="咨询管理" permission="QUESTION"/>
         </navigation>
+
+        <navigation key="crm_app" text="CRM" permission="CONSUMERS">
+            <navigation key="crm_app_consumers" action="OperateCRM.getPhone" text="话务管理" permissions="CONSUMERS"/>
+            <navigation key="crm_search_consumers" action="OperateConsult.index" text="咨询查询" permissions="CONSUMERS"/>
+        </navigation>
+
+
     </navigation>
 
 

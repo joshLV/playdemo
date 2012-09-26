@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
  * To change this template use File | Settings | File Templates.
  */
 @With(OperateRbac.class)
-@ActiveNavigation("crm_app")
+@ActiveNavigation("crm_search_consumers")
 public class OperateConsult extends Controller {
     public static int PAGE_SIZE = 15;
 
