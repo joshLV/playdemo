@@ -36,7 +36,7 @@ public class Home extends Controller {
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SAILY_SPEC"),
                 CacheHelper.getCacheKey(Block.CACHEKEY, "WWW_SLIDES"),
                 CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_RIGHT_SLIDES"),
-                CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_NEWS2"),
+                CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_NEWS1"),
                 CacheHelper.getCacheKey(Topic.CACHEKEY, "WWW_TOPICS"),
                 CacheHelper.getCacheKey(Category.CACHEKEY, "WWW_TOPCATEGORIES"),
                 CacheHelper.getCacheKey(Area.CACHEKEY, "WWW_AREAS"),
@@ -61,7 +61,7 @@ public class Home extends Controller {
         });
 
         //新品推荐
-        List<models.sales.Goods> newGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_NEW2"), new CacheCallBack<List<models.sales.Goods>>() {
+        List<models.sales.Goods> newGoodsList = CacheHelper.getCache(CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY, "WWW_NEW1"), new CacheCallBack<List<models.sales.Goods>>() {
             @Override
             public List<models.sales.Goods> loadData() {
                 return models.sales.Goods.findNewGoods(8);
