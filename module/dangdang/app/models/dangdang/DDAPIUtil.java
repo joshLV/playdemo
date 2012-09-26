@@ -7,8 +7,6 @@ import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.dom4j.Element;
 import play.Logger;
@@ -38,6 +36,8 @@ public class DDAPIUtil {
     private static final String QUERY_CONSUME_CODE_URL = Play.configuration.getProperty("dangdang.query_consume_code_url", "http://tuanapi.dangdang.com/team_open/public/query_consume_code.php");
     private static final String VERIFY_CONSUME_URL = Play.configuration.getProperty("dangdang.verify_consume_url", "http://tuanapi.dangdang.com/team_open/public/verify_consume.php");
     public static final String DD_LOGIN_NAME = Play.configuration.getProperty("dangdang.resaler_login_name", "dangdang");
+
+    public static HttpProxy proxy = new SimpleHttpProxy();
 
     /**
      * 返回一百券系统中商品总销量.
@@ -72,7 +72,6 @@ public class DDAPIUtil {
         String data = String.format("<data><row><ddgid><![CDATA[%s]]></ddgid><type><![CDATA[%s]]></type><code><![CDATA[%s]]></code></row></data>",
                 ddOrderOrderItem.ddGoodsId, 1, eCoupon.eCouponSn);
 
-        Logger.info("QUERY_CONSUME_CODE_URL     =====" + QUERY_CONSUME_CODE_URL);
         Response response = DDAPIUtil.access(QUERY_CONSUME_CODE_URL, data, "query_consume_code");
 
         if (!response.success()) {
@@ -103,7 +102,6 @@ public class DDAPIUtil {
         String data = String.format("<data><row><ddgid><![CDATA[%s]]></ddgid><consume_code><![CDATA[%s]]></consume_code><verifycode><![CDATA[%s]]>" +
                 "</verifycode></row></data>",
                 ddOrderOrderItem.ddGoodsId, eCoupon.eCouponSn, eCoupon.eCouponSn);
-        Logger.info("VERIFY_CONSUME_URL     =====" + VERIFY_CONSUME_URL);
         Response response = DDAPIUtil.access(VERIFY_CONSUME_URL, data, "verify_consume");
 
         if (!response.success()) {
@@ -203,10 +201,11 @@ public class DDAPIUtil {
      * @return
      */
     public static Response access(String url, String request, String apiName) throws DDAPIInvokeException {
+
+        Logger.info("\nURL==============================" + url);
         Logger.info("\nRequest====" + request);
 
         //构造HttpClient的实例
-        HttpClient httpClient = new HttpClient();
         //创建GET方法的实例
         PostMethod postMethod = new PostMethod(url);
         //将表单的值放入postMethod中
@@ -219,19 +218,7 @@ public class DDAPIUtil {
         postMethod.addParameter("data", request);
         String sign = getSign(request, time, apiName);
         postMethod.addParameter("sign", sign);
-        try {
-            //执行postMethod
-            int statusCode = httpClient.executeMethod(postMethod); // HttpClient对于要求接受后继服务的请求，象POST和PUT等不能自动处理转发
-            Logger.info("http response code    =============================" + statusCode);
-            // 200
-            if (statusCode == HttpStatus.SC_OK) {
-                //从头中取出转向的地址
-                return new Response(postMethod.getResponseBodyAsStream());
-            }
-        } catch (Exception e) {
-            throw new DDAPIInvokeException(e.getMessage());
-        }
-        return new Response();
+        return proxy.accessHttp(postMethod);
     }
 
     public static String getSign(String data, String time, String apiName) {

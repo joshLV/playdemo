@@ -322,6 +322,14 @@ public class User extends Model {
     }
 
     @Transient
+    public String getShowName(){
+        if (StringUtils.isBlank(loginName)){
+            return getOpenIdExpress();
+        }
+        return loginName;
+    }
+
+    @Transient
     public String getOpenIdExpress() {
         return getOpenIdSourceExpress() + openId;
     }
@@ -333,7 +341,7 @@ public class User extends Model {
             case QQ:
                 return "QQ用户";
             case RenRen:
-                return "人人用户";
+                return "人人网用户";
             default:
                 return "第三方用户";
         }

@@ -9,7 +9,7 @@
     <div class="section">
         #{breadcrumbs/breadcrumb breadcrumbs/}
         <div class="user-account">
-            账户：<strong>${user?.loginName}</strong> 可提现账户余额：<span>${account.amount}</span>元 不可提现账户余额：<span>${account.promotionAmount?:"0.00"}</span>元
+            账户：<strong>${user?.showName}</strong> 可提现账户余额：<span>${account.amount}</span>元 不可提现账户余额：<span>${account.promotionAmount?:"0.00"}</span>元
         </div>
 
         #{if action=="verify"}

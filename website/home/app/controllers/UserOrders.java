@@ -64,7 +64,7 @@ public class UserOrders extends Controller {
 
 
     /**
-     * 订单详情
+     * 申请退款
      */
     public static void refund(String orderNumber) {
         //加载用户账户信息

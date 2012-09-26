@@ -10,7 +10,7 @@ long time = System.currentTimeMillis();
     type('id=confirmPassword','123456')
     type('id=captcha','zuet')
     clickAndWait('id=register_submit')
-    verifyTitle('注册成功页面')
+    verifyTitle('注册成功')
 
     openAndWait('/@cas/login?service=/authenticate&gateway=true')
     assertTitle('CAS Mock Server - Login')

@@ -12,7 +12,7 @@
         <div class="crumbs">您的位置：<a href="/">首页</a> > 返利排名</div>
         <div class="rebate-share">
 
-        *{<div class="user-account">账户：<strong>${user?.loginName}</strong></div>}*
+        *{<div class="user-account">账户：<strong>${user?.showName}</strong></div>}*
         *{<div class="rebate-info">推荐购物：<span>${boughtAmount?.formatCurrency("CNY")}</span>元}*
         *{　　预期可得返利：<span>${promoteRebate?.willGetAmount?.formatCurrency("CNY")}</span>元}*
         *{　　推荐消费：<span>${consumedAmount?.formatCurrency("CNY")}</span>元}*
@@ -25,7 +25,7 @@
             #{set m:0/}
             #{paginate.list items:rankList, as:'rank'}
                 #{if user?.id==rank?.promoteUser?.id} #{set m:i/}   #{/if}
-                <li class="rank-${i}">第${i}名：<span>${rank?.promoteUser?.loginName}</span>
+                <li class="rank-${i}">第${i}名：<span>${rank?.promoteUser?.showName}</span>
                     推荐成功<em>${rank?.promoteTimes}</em>次，
                     已得返利<em>${rank?.rebateAmount}</em>元
                 </li>
