@@ -92,7 +92,7 @@ cmd =<<END
   cd #{current_dir}/#{dir}
   find . -name "[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*" -exec rm "{}" \\;
   #{play_home}play clean -Divy.home=#{ivy_cache}
-  #{play_home}play deps --forProd --forceCopy --%prod -Divy.home=#{ivy_cache}
+  #{play_home}play deps -Divy.home=#{ivy_cache} --forProd --forceCopy --%prod
   rm -f conf/version.conf
   echo "build.time=#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}" >> conf/version.conf
   echo "version=$BUILD_VERSION" >> conf/version.conf
