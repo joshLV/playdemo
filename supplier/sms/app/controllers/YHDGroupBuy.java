@@ -51,7 +51,6 @@ public class YHDGroupBuy extends Controller{
             renderJSON(new YHDResponse(errorResponse));
         }
 
-
         YHDGroupBuyOrder yhdGroupBuyOrder =  null;
         OrderInformResponse orderInformResponse = new OrderInformResponse();
         Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
@@ -127,7 +126,7 @@ public class YHDGroupBuy extends Controller{
                 orderInformResponse.updateCount = 1;
             }
         }else if(outerOrder.status != OuterOrderStatus.ORDER_CANCELED){
-            //目前（12-09-20）情况下，如果订单不是order_copy或者order_canceled 那么其他状态应该都返回给一号店失败（他们要求的）
+            //目前（12-09-20）一号店要求，如果订单不是order_copy或者order_canceled 那么其他状态应该都返回给一号店失败
             errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.error", "订单已存在,重复的订单请求", null));
             renderJSON(new YHDResponse(errorResponse));
         }
@@ -216,7 +215,7 @@ public class YHDGroupBuy extends Controller{
         }
         // 检查券的发送次数
         if(errorResponse.errorCount == 0){
-            if(eCoupon.downloadTimes >= 3){
+            if(eCoupon.downloadTimes <= 0){
                 errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "券发送次数已经到达3次上限", null));
             }
         }
@@ -233,9 +232,9 @@ public class YHDGroupBuy extends Controller{
 
         VoucherResendResponse voucherResendResponse = new VoucherResendResponse();
 
-        eCoupon.downloadTimes = eCoupon.downloadTimes + 1;
+        eCoupon.downloadTimes = eCoupon.downloadTimes - 1;
         eCoupon.save();
-//        ECoupon.send(eCoupon, params.get("receiveMobile"));
+        ECoupon.send(eCoupon, params.get("receiveMobile"));
 
         voucherResendResponse.totalCount = 1;
         renderJSON(new YHDResponse(voucherResendResponse));
@@ -278,7 +277,7 @@ public class YHDGroupBuy extends Controller{
                 errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.error", "找不到商品,请检查 outerGroupId", null));
                 return null;
             }
-            if(goods.originalPrice.compareTo(yhdGroupBuyOrder.productPrize) >= 0){
+            if(goods.originalPrice.compareTo(yhdGroupBuyOrder.productPrize) > 0){
                 Logger.info("invalid yhd productPrice: %s", yhdGroupBuyOrder.productPrize );
                 errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.error", "商品价格不合法，拒绝订单", null));
                 return null;

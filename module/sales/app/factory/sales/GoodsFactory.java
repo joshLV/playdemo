@@ -24,10 +24,10 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.expireAt = afterDays(new Date(), 30);
         goods.faceValue = BigDecimal.TEN;
         goods.materialType = MaterialType.REAL;
-        goods.baseSale = (long) 100;
+        goods.baseSale = 100L;
         goods.saleCount = 10;
         goods.useWeekDay = "1,2,3,4,5,6,7";
-        goods.originalPrice = new BigDecimal(20);
+        goods.originalPrice = new BigDecimal("5");
         return goods;
     }
 
@@ -41,7 +41,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.expireAt = afterDays(new Date(), 30);
         goods.faceValue = BigDecimal.TEN;
         goods.materialType = MaterialType.REAL;
-        goods.baseSale = (long) -9;
+        goods.baseSale = -9L;
         goods.saleCount = 10;
         return goods;
 

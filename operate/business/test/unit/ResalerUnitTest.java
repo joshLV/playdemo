@@ -1,16 +1,11 @@
 package unit;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import models.resale.ResalerCreditable;
 import models.resale.*;
-import models.supplier.Supplier;
-import models.supplier.SupplierStatus;
 
 import org.junit.Test;
 
 import play.modules.paginate.JPAExtPaginator;
-import play.mvc.Http.Response;
 import play.test.Fixtures;
 import play.test.UnitTest;
 

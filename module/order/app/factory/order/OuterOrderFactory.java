@@ -1,8 +1,12 @@
 package factory.order;
 
+import factory.FactoryBoy;
 import factory.ModelFactory;
+import factory.annotation.Factory;
+import models.order.Order;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
+import models.order.OuterOrderStatus;
 
 import java.util.Date;
 
@@ -17,12 +21,9 @@ public class OuterOrderFactory extends ModelFactory<OuterOrder> {
     public OuterOrder define() {
         OuterOrder order = new OuterOrder();
         order.orderNumber = "12345678";
-        order.lockVersion = 0;
         order.message = "";
         order.partner = OuterOrderPartner.DD;
-        order.createdAt = new Date();
+        order.status = OuterOrderStatus.ORDER_COPY;
         return order;
     }
-
-
 }

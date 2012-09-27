@@ -20,6 +20,7 @@ require:
     - resale -> resale
     - accounts -> accounts
     - org.jsoup -> jsoup 1.6.1
+    - org.json -> json 20090211
     - sms -> sms
     - cms -> cms
     - emaillogs -> emaillogs
@@ -39,6 +40,7 @@ repositories:
             - commons-lang -> *
             - com.uhuila.utils -> *
             - org.jsoup -> *
+            - org.json -> *
             - com.yihaodian -> *
         m2compatible: true
 

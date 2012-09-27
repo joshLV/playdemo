@@ -101,7 +101,7 @@ public class OperatorCashCoupons extends Controller{
             cashCoupon.chargeCode = chargeCode;
             cashCoupon.faceValue = faceValue;
             cashCoupon.name = name;
-            cashCoupon.serialNo = prefix + decimalFormat.format(i);
+            cashCoupon.serialNo = prefix + decimalFormat.format(i + 1);
             cashCoupon.operatorId = OperateRbac.currentUser().getId();
             cashCoupon.save();
         }

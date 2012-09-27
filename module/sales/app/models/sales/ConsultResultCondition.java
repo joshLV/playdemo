@@ -16,7 +16,7 @@ import java.util.Map;
  * Time: 下午12:41
  * To change this template use File | Settings | File Templates.
  */
-public class ConsultResultCondition extends Model {
+public class ConsultResultCondition {
     public Map<String, Object> paramsMap = new HashMap<>();
     public Date createdAtBegin;
     public Date createdAtEnd;

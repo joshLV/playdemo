@@ -1,6 +1,5 @@
 package controllers;
 
-import models.accounts.WithdrawBill;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.resale.Resaler;
@@ -9,7 +8,6 @@ import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
 import models.sms.SMSUtil;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.Valid;
 import play.data.validation.Validation;

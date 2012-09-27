@@ -1,11 +1,11 @@
 package controllers;
 
+import models.resale.ResalerCreditable;
 import models.resale.*;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
-import play.mvc.Scope;
 import play.mvc.With;
 
 @With(OperateRbac.class)

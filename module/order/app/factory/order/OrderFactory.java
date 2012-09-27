@@ -12,6 +12,7 @@ public class OrderFactory extends ModelFactory<Order> {
     @Override
     public Order define() {
         Order order = new Order();
+        order.orderNumber = "abc";
         order.accountEmail = "test@test.com";
         order.accountPay = BigDecimal.ZERO;
         order.amount = BigDecimal.ZERO;
