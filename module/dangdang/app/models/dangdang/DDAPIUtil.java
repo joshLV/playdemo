@@ -210,13 +210,6 @@ public class DDAPIUtil {
             System.out.println("[DDSendMessageAPI]" + response.desc);
             return response;
         }
-        //券已冻结
-        if (coupon.isFreeze == 1) {
-            response.errorCode = ErrorCode.COUPON_CONSUMED;
-            response.desc = "对不起该券已被冻结，不能重发短信！";
-            System.out.println("[DDSendMessageAPI]" + response.desc);
-            return response;
-        }
         //券已过期
         if (coupon.expireAt.before(new Date())) {
             response.errorCode = ErrorCode.COUPON_EXPIRED;

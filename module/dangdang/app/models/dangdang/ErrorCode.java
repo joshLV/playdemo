@@ -25,8 +25,7 @@ public enum ErrorCode {
     MESSAGE_SEND_FAILED(9006),//短信发送失败
     COUPON_CONSUMED(9007),//券已消费
     COUPON_REFUND(9008),//券已退款
-    COUPON_FREEZE(9009),//券已冻结
-    COUPON_EXPIRED(90010);//券已过期
+    COUPON_EXPIRED(9009);//券已过期
 
     private int value;
 
@@ -69,8 +68,6 @@ public enum ErrorCode {
             case 9008:
                 return COUPON_REFUND;
             case 9009:
-                return COUPON_FREEZE;
-            case 90010:
                 return COUPON_EXPIRED;
             default:
                 return VERIFY_FAILED;
