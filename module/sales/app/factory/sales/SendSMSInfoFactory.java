@@ -24,6 +24,7 @@ public class SendSMSInfoFactory extends ModelFactory<SendSMSInfo> {
         smsInfo.sendAt=new Date();
         smsInfo.createdAt=new Date();
         smsInfo.deleted= DeletedStatus.UN_DELETED;
+        smsInfo.lockVersion=0;
         return smsInfo;
     }
 }
