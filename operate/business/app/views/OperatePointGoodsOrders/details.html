@@ -153,7 +153,7 @@
         <li class="active"><a href="#"> 订购人信息</a></li>
         <table class="table table-bordered table-striped">
             <tr>
-                <td>帐号： ${pointGoodsOrder.user?.loginName}</td>
+                <td>帐号： ${pointGoodsOrder.user?.loginName?:pointGoodsOrder.user?.openIdExpress}</td>
             </tr>
             <tr>
                 <td>手机： ${pointGoodsOrder.user?.mobile}</td>

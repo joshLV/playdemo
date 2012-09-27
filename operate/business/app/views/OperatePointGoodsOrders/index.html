@@ -442,7 +442,7 @@ models.order.PointGoodsOrderStatus.CANCELED],  select:'condition_status',value:c
         <td>${pointGoodsOrder?.pointGoodsName}</td>
 
     *{帐号}*
-        <td>${pointGoodsOrder?.user?.loginName}</td>
+        <td>${pointGoodsOrder?.user?.loginName?:pointGoodsOrder.user?.openIdExpress}</td>
     *{单价积分}*
         <td>${pointGoodsOrder?.pointPrice}点</td>
     *{数量}*

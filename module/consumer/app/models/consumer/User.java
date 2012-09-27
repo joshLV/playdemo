@@ -108,6 +108,7 @@ public class User extends Model {
     @Column(name = "promote_user_id", nullable = true)
     public Long promoteUserId;
 
+
     /**
      * 判断用户名是否唯一
      *
@@ -182,6 +183,9 @@ public class User extends Model {
     }
 
     public static User findByLoginName(String loginName) {
+        if (User.isOpenIdExpress(loginName)) {
+            return User.find("byOpenIdSourceAndOpenId", User.getOpenSourceFromName(loginName), User.getOpenIdFromName(loginName)).first();
+        }
         return User.find("byLoginName", loginName).first();
     }
 
@@ -337,16 +341,24 @@ public class User extends Model {
         return getOpenIdSourceExpress() + openId;
     }
 
+    public static final String SOURCE_SINA_WEIBO = "新浪微博用户";
+    public static final String SOURCE_QQ = "QQ用户";
+    public static final String SOURCE_RENREN = "人人网用户";
+    public static final String SOURCE_OTHERS = "第三方用户";
+
     private String getOpenIdSourceExpress() {
+        if (openIdSource == null) {
+            return "";
+        }
         switch (openIdSource) {
             case SinaWeibo:
-                return "新浪微博用户";
+                return SOURCE_SINA_WEIBO;
             case QQ:
-                return "QQ用户";
+                return SOURCE_QQ;
             case RenRen:
-                return "人人网用户";
+                return SOURCE_RENREN;
             default:
-                return "第三方用户";
+                return SOURCE_OTHERS;
         }
     }
 
@@ -377,4 +389,49 @@ public class User extends Model {
 
     }
 
+    /**
+     * 根据用户名字判断是否第三方登录用户.
+     */
+    public static boolean isOpenIdExpress(String name) {
+        return name.startsWith(SOURCE_SINA_WEIBO) || name.startsWith(SOURCE_QQ) || name.startsWith(SOURCE_RENREN) ||
+                name.startsWith(SOURCE_OTHERS) || name.contains("用户");
+    }
+
+    /**
+     * 根据给出的第三方登录名字返回第三方.
+     *
+     * @param name
+     * @return
+     */
+    public static OpenIdSource getOpenSourceFromName(String name) {
+        if (StringUtils.isBlank(name)) {
+            return null;
+        }
+        if (name.startsWith(SOURCE_SINA_WEIBO)) {
+            return OpenIdSource.SinaWeibo;
+        } else if (name.startsWith(SOURCE_RENREN)) {
+            return OpenIdSource.RenRen;
+        } else if (name.startsWith(SOURCE_QQ)) {
+            return OpenIdSource.QQ;
+        }
+        return null;
+    }
+
+    /**
+     * 根据给出的第三方登录名字返回第三方登录ID.
+     *
+     * @param name
+     * @return
+     */
+    public static String getOpenIdFromName(String name) {
+        String openId = "";
+        int start = name.indexOf("用户");
+        if (start >= 0) {
+            openId = name.substring(start + 2, name.length());
+        }
+        if (openId.endsWith("...")) {
+            openId = openId.substring(0, openId.indexOf("..."));
+        }
+        return openId;
+    }
 }

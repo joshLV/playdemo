@@ -12,7 +12,7 @@
         <div class="control-group">
             <label class="control-label">&{'user.loginName'}</label>
 
-            <div class="controls">${user?.loginName}</div>
+            <div class="controls">${user?.loginName?:user?.openIdExpress}</div>
         </div>
         <div class="control-group">
             <label class="control-label">&{'user.amount'}</label>

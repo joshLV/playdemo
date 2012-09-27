@@ -56,8 +56,17 @@ public class UserCondition {
         }
 
         if (StringUtils.isNotBlank(loginName)) {
-            sql.append(" and u.loginName like :loginName");
-            paramsMap.put("loginName", "%" + loginName.trim() + "%");
+            String name = loginName.trim();
+            if (User.isOpenIdExpress(name)){
+                OpenIdSource source = User.getOpenSourceFromName(name);
+                name = User.getOpenIdFromName(name);
+                sql.append(" and (u.loginName like :loginName or (u.openIdSource =:openIdSource and u.openId like :loginName))");
+                paramsMap.put("openIdSource",source);
+                paramsMap.put("name",name);
+            }else{
+                sql.append(" and (u.loginName like :loginName )");
+                paramsMap.put("loginName", "%" + name + "%");
+            }
         }
         if (StringUtils.isNotBlank(mobile)) {
             sql.append(" and u.mobile = :mobile");

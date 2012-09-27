@@ -156,7 +156,7 @@
             <tbody>
             #{paginate.list items:users, as:'user'}
             <tr>
-                <td>${user?.loginName}</td>
+                <td>${user?.loginName?:user?.openIdExpress}</td>
                 <td>${user?.mobile}</td>
                 <td>${user?.lastLoginAt}</td>
                 <td>${user?.loginIp}</td>
@@ -179,10 +179,6 @@
     <div class="pagination" align="center">
         <ul>
         #{paginate.controls items:users /}
-
-
         </ul>
-
-
     </div>
 </div>

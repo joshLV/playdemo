@@ -1,6 +1,7 @@
 package unit;
 
 import models.accounts.Account;
+import models.consumer.OpenIdSource;
 import models.consumer.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
@@ -44,14 +45,42 @@ public class UserUnitTest extends UnitTest {
         account.save();
 
 
-        User upduser = User.findById(userId);
-        BigDecimal amount = upduser.AccountMoney();
+        User updatedUser = User.findById(userId);
+        BigDecimal amount = updatedUser.AccountMoney();
         assertEquals(String.valueOf(1000.02), amount.toString());
 
         userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium1");
-        upduser = User.findById(userId);
-        amount = upduser.AccountMoney();
+        updatedUser = User.findById(userId);
+        amount = updatedUser.AccountMoney();
         assertEquals(new BigDecimal(0), amount);
+    }
+
+    @Test
+    public void testIsOpenIdExpress() {
+        assertTrue(User.isOpenIdExpress("QQ用户abc"));
+        assertTrue(User.isOpenIdExpress("新浪微博用户abc"));
+        assertTrue(User.isOpenIdExpress("人人网用户abc"));
+        assertTrue(User.isOpenIdExpress("第三方用户abc"));
+        assertTrue(User.isOpenIdExpress("用户abc..."));
+    }
+
+
+    @Test
+    public void testGetOpenIdFromName() {
+        assertEquals("abc", User.getOpenIdFromName("新浪微博用户abc"));
+        assertEquals("abc", User.getOpenIdFromName("QQ用户abc..."));
+        assertEquals("abc", User.getOpenIdFromName("人人网用户abc..."));
+        assertEquals("abc", User.getOpenIdFromName("第三方用户abc..."));
+        assertEquals("abc", User.getOpenIdFromName("用户abc..."));
+    }
+
+    @Test
+    public void testGetOpenIdSourceFromName() {
+        assertEquals(OpenIdSource.SinaWeibo, User.getOpenSourceFromName("新浪微博用户ab..."));
+        assertEquals(OpenIdSource.RenRen, User.getOpenSourceFromName("人人网用户abc..."));
+        assertEquals(OpenIdSource.QQ, User.getOpenSourceFromName("QQ用户abc..."));
+        assertNull(User.getOpenSourceFromName("用户abc..."));
+        assertNull(User.getOpenSourceFromName(null));
     }
 
 }

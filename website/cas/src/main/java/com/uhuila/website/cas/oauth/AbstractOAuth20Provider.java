@@ -73,7 +73,7 @@ public abstract class AbstractOAuth20Provider extends BaseOAuth20Provider {
             logger.debug("verifier : {}", verifier);
             return new OAuthCredential(null, null, verifier, getType(), parameters);
         } else {
-            logger.error("No credential found");
+            logger.debug("No credential found");
             return null;
         }
     }

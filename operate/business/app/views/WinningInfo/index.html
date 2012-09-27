@@ -52,7 +52,7 @@
             <tbody>
             #{paginate.list items:votePage, as:'user'}
             <tr>
-                <td>${user?.user?.loginName}</td>
+                <td>${user?.user?.loginName?:user?.user?.openIdExpress}</td>
                 <td>${user?.user?.userInfo?.fullName}</td>
                 <td>${user?.mobile}</td>
                 <td>${user?.vote.content}</td>

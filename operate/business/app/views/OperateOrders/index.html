@@ -281,7 +281,7 @@ select:'condition_status',value:condition?.status/}
              <td rowspan="${order?.orderItems?.size()}">${order?.resaler?.loginName}</td>
             #{/if}
              #{if order.userType ==models.accounts.AccountType.CONSUMER}
-              <td rowspan="${order?.orderItems?.size()}">${order?.user?.loginName}</td>
+              <td rowspan="${order?.orderItems?.size()}">${order?.user?.loginName?:order?.user?.openIdExpress}</td>
             #{/if}
             <td rowspan="${order?.orderItems?.size()}">&{'order.'+order.userType}</td>
             <td rowspan="${order?.orderItems?.size()}">${order.amount?.formatCurrency('CNY')}</td>
