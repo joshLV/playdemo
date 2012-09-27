@@ -25,7 +25,11 @@ GET     /category/sub/{id}                      Categories.showSubs
 # 发送优惠券
 GET     /send_sms                                       SendSMS.index
 GET     /send_sms/new                                   SendSMS.add
-GET     /send_sms/{id}                            SendSMS.details
+GET     /send_sms/{id}                                  SendSMS.details
+GET     /send_sms/create                                SendSMS.create
+GET     /send_sms/send                                  SendSMS.send
+GET     /send_sms/suc_send                               SendSMS.sucSend
+
 
  #秒杀商品
 GET     /seckill_goods/{seckillId}/item        SecKillGoodsItems.index

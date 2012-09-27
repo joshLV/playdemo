@@ -186,40 +186,6 @@ public class SendSMS extends Controller {
 
     }
 
-    //删除开始和结尾处的空格
-    public static String deleteExtraSpace(String str) {
-        if (str == null) {
-            return null;
-        }
-        if (str.length() == 0 || str.equals(" ")) {
-            return new String();
-        }
-        char[] oldStr = str.toCharArray();
-        int len = str.length();
-        char[] tmpStr = new char[len];
-        boolean keepSpace = false;
-        int j = 0;//the index of new string
-        for (int i = 0; i < len; i++) {
-            char tmpChar = oldStr[i];
-            if (oldStr[i] != ' ') {
-                tmpStr[j++] = tmpChar;
-                keepSpace = true;
-            } else if (keepSpace) {
-                tmpStr[j++] = tmpChar;
-                keepSpace = false;
-            }
-        }
 
-        //unlike c/c++,no "\0" at the end of a string. So,do the copy again...
-        int newLen = j;
-        if (tmpStr[j - 1] == ' ') {
-            newLen--;
-        }
-        char[] newStr = new char[newLen];
-        for (int i = 0; i < newLen; i++) {
-            newStr[i] = tmpStr[i];
-        }
-        return new String(newStr);
-    }
 
 }
