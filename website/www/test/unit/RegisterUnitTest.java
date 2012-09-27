@@ -12,8 +12,9 @@ import play.test.UnitTest;
 import java.util.List;
 
 public class RegisterUnitTest extends UnitTest {
-    User user;
     UserInfo userInfo;
+    User user;
+
     @Before
 	public void setup() {
         FactoryBoy.delete(User.class);

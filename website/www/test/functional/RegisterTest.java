@@ -24,6 +24,7 @@ import play.test.Fixtures;
 import play.test.FunctionalTest;
 
 public class RegisterTest extends FunctionalTest {
+    UserInfo userInfo;
     User user;
 
     @Before
@@ -32,6 +33,7 @@ public class RegisterTest extends FunctionalTest {
         FactoryBoy.delete(User.class);
         FactoryBoy.delete(UserInfo.class);
 //        FactoryBoy.deleteAll();
+        userInfo=FactoryBoy.create(UserInfo.class);
         user = FactoryBoy.create(User.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
@@ -87,7 +89,7 @@ public class RegisterTest extends FunctionalTest {
         List newList = User.findAll();
         assertEquals(count + 1, newList.size());
 		List userInfos = UserInfo.findAll();
-		assertEquals(1,userInfos.size());
+		assertEquals(2,userInfos.size());
 
     }
 
