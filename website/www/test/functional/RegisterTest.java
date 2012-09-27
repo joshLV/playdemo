@@ -67,7 +67,6 @@ public class RegisterTest extends FunctionalTest {
     public void testCreate_PromoterUserNull() {
         List old = User.findAll();
         int count = old.size();
-
         Map<String, String> loginUserParams = new HashMap<String, String>();
         loginUserParams.put("user.loginName", "11@qq.com");
         loginUserParams.put("user.password", "123456");
@@ -83,17 +82,12 @@ public class RegisterTest extends FunctionalTest {
         passCookie.put("promoter_track",newCookie);
         Http.Request request= FunctionalTest.newRequest();
         request.cookies =passCookie;
-
         Response  response = POST(request,"/register", loginUserParams,new HashMap<String, File>());
-
         assertStatus(200, response);
         List newList = User.findAll();
         assertEquals(count + 1, newList.size());
-
 		List userInfos = UserInfo.findAll();
 		assertEquals(1,userInfos.size());
-
-
 
     }
 
@@ -139,11 +133,9 @@ public class RegisterTest extends FunctionalTest {
 
     @Test
     public void testCreateUserError() {
-//    	Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
         Long userId = user.id;
         User user = User.findById(userId);
-
-        User user1 = FactoryBoy.create(User.class, "loginName");
+         User user1 = FactoryBoy.create(User.class, "loginName");
         //mobile error,loginName existed ,user's captcha empty,user's password not equal user's confirmpassword
         Map<String, String> userParams = new HashMap<String, String>();
         userParams.put("user.mobile", "123");
@@ -153,14 +145,8 @@ public class RegisterTest extends FunctionalTest {
 //		userParams.put("user.captcha", "A2WQ");
         userParams.put("randomID", "RANDOMID");
         Cache.set("RANDOMID", "A2WQ", "30mn");
-        //user.mobile="123";
-        //user.save();
-        //System.out.println(user.mobile);
-
         Response response = POST("/register", userParams);
         assertEquals(0, Validation.errors().size());
-
-
     }
 
     @Test
