@@ -12,9 +12,14 @@ test_failed_regex = /FAILED/
 test_error_regex = /ERROR/
 
 play_home="/app/play-1.2.4/"
+ivy_cache="$WORKSPACE/.ivy2/cache"
 
 unless Dir.exists?(play_home)
   play_home = ""
+end
+
+unless Dir.exists?(ivy_cache)
+  ivy_cache="~/.ivy2/cache"
 end
 
 dir = ARGV[0]
@@ -38,8 +43,8 @@ failed_test_count = 0
 # Dir.chdir("#{current_dir}/#{dir}")
 cmd =<<END
         cd #{current_dir}/#{dir}
-        #{play_home}play deps --sync --clearcache
-        #{play_home}play auto-test --deps
+        #{play_home}play deps -Divy.default.ivy.user.dir=#{ivy_cache} --sync --clearcache
+        #{play_home}play auto-test -Divy.default.ivy.user.dir=#{ivy_cache} --deps
 END
 POpen4::popen4(cmd) do |stdout, stderr, stdin|
   stdout.each do |line|
@@ -82,12 +87,12 @@ system("find . -name \"[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*\" -exec
 cmd =<<END
   cd #{current_dir}/#{dir}
   find . -name "[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*" -exec rm "{}" \\;
-  #{play_home}play clean
-  #{play_home}play deps --forProd --forceCopy --%prod
+  #{play_home}play clean -Divy.default.ivy.user.dir=#{ivy_cache}
+  #{play_home}play deps --forProd --forceCopy --%prod -Divy.default.ivy.user.dir=#{ivy_cache}
   rm -f conf/version.conf
   echo "build.time=#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}" >> conf/version.conf
   echo "version=$BUILD_VERSION" >> conf/version.conf
-  echo "revision=$GIT_COMMIT@GIT_BRANCH" >> conf/version.conf
+  echo "revision=$GIT_COMMIT@$GIT_BRANCH" >> conf/version.conf
 END
 POpen4::popen4(cmd) do |stdout, stderr, stdin|
   stdout.each do |line|
