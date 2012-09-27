@@ -31,6 +31,8 @@ public class DDOrderItem extends Model {
     public String ddGoodsId;  //当当团购编号，即当当的商品id
 
     public Long goodsId;  //来源网站团购编号,即一百券的商品id
+    @Column(name = "buy_number")
+    public Long buyNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ybq_order_items_id", nullable = true)
@@ -38,10 +40,11 @@ public class DDOrderItem extends Model {
     @Column(name = "created_at")
     public Date createdAt;
 
-    public DDOrderItem(Long orderId, String ddgid, Goods goods, OrderItems ybqOrderItem) {
+    public DDOrderItem(Long orderId, String ddgid, Goods goods, Long buyNumber, OrderItems ybqOrderItem) {
         this.ddOrderId = orderId;
         this.ddGoodsId = ddgid;
         this.goodsId = goods.id;
+        this.buyNumber = buyNumber;
         this.createdAt = new Date();
         this.ybqOrderItems = ybqOrderItem;
     }

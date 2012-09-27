@@ -1,13 +1,12 @@
 package controllers;
 
-import models.dangdang.DDAPIInvokeException;
 import models.dangdang.DDAPIUtil;
 import models.dangdang.ErrorCode;
 import models.dangdang.Response;
+import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.Play;
 import play.mvc.Controller;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.Map;
 
@@ -44,18 +43,7 @@ public class DDSendMessageAPI extends Controller {
         }
 
         //当当调用接口
-        Response response;
-        try {
-            response = DDAPIUtil.sendSMS(data);
-        } catch (DDAPIInvokeException e) {
-            Logger.error("[DDSendMessageAPI]" + e.getMessage());
-            response = new Response();
-            response.spid = SPID;
-            response.ver = VER;
-            response.errorCode = ErrorCode.PARSE_XML_FAILED;
-            response.desc = "xml解析失败！";
-        }
-
+        Response response = DDAPIUtil.sendSMS(data);
         Logger.info("[DDSendMessageAPI] end!");
         render(response);
     }

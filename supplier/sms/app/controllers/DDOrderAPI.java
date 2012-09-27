@@ -10,7 +10,6 @@ import models.dangdang.ErrorCode;
 import models.dangdang.ErrorInfo;
 import models.order.*;
 import models.resale.Resaler;
-import models.resale.ResalerLevel;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
@@ -37,7 +36,8 @@ public class DDOrderAPI extends Controller {
         Logger.info("[DDOrderAPI] begin ");
         //取得参数信息 必填信息
         SortedMap<String, String> params = DDAPIUtil.filterPlayParameter(request.params.all());
-        String ddgid = StringUtils.trimToEmpty(params.get("id"));
+        String id = StringUtils.trimToEmpty(params.get("id")); // 一百券的商品ID
+        String ddgid = StringUtils.trimToEmpty(params.get("team_id"));//当当商品编号（对应一百券的商品ID）
         String user_mobile = StringUtils.trimToEmpty(params.get("user_mobile"));
         String options = StringUtils.trimToEmpty(params.get("options"));
         String express_memo = StringUtils.trimToEmpty(params.get("express_memo"));
@@ -104,7 +104,6 @@ public class DDOrderAPI extends Controller {
             }
         }
 
-
         //如果已经存在订单，则不处理，直接返回xml
         if (isExited) {
             order = Order.findOneByUser(outerOrder.ybqOrder.orderNumber, resalerId, AccountType.RESALER);
@@ -114,7 +113,6 @@ public class DDOrderAPI extends Controller {
                 render(order, ddgid, kx_order_id, eCouponList);
             }
         }
-
 
         order = Order.createConsumeOrder(resalerId, AccountType.RESALER);
         //分解有几个商品，每个商品购买的数量
@@ -149,14 +147,14 @@ public class DDOrderAPI extends Controller {
         for (OrderItems ybqItem : order.orderItems) {
             Integer number = ybqItem.buyNumber.intValue();
             if (number > 0 && ybqItem.goods != null) {
-                new DDOrderItem(Long.valueOf(kx_order_id), ddgid, ybqItem.goods, ybqItem).save();
+                new DDOrderItem(Long.valueOf(kx_order_id), ddgid, ybqItem.goods, ybqItem.buyNumber, ybqItem).save();
             }
         }
         outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
         outerOrder.save();
         List<ECoupon> eCouponList = ECoupon.findByOrder(order);
         Logger.info("\n [DDOrderAPI] end ");
-        render(order, ddgid, kx_order_id, eCouponList);
+        render(order, id, kx_order_id, eCouponList);
     }
 }
 

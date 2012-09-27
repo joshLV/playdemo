@@ -1,15 +1,16 @@
 package models.sales;
 
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import models.resale.Resaler;
+import org.apache.commons.lang.StringUtils;
+import play.Logger;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import models.resale.Resaler;
-import org.apache.commons.lang.StringUtils;
-import play.Logger;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
 
 /**
  * 商品查询条件.
@@ -381,14 +382,12 @@ public class GoodsCondition implements Serializable {
         }
 
         if (priceFrom.compareTo(new BigDecimal(0)) > 0) {
-            sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.originalPrice+l.price >=:priceFrom)");
-            paramMap.put("level", resaler.level);
+            sql.append(" and (g.originalPrice + g.resaleAddPrice) >=:priceFrom");
             paramMap.put("priceFrom", priceFrom);
         }
 
         if (priceTo.compareTo(new BigDecimal(0)) > 0) {
-            sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.originalPrice+l.price <=:priceTo)");
-            paramMap.put("level", resaler.level);
+            sql.append(" and (g.originalPrice+g.resaleAddPrice) <=:priceTo");
             paramMap.put("priceTo", priceTo);
         }
 
@@ -411,7 +410,6 @@ public class GoodsCondition implements Serializable {
         sql.append(" g.deleted = :deleted");
 
 
-
         paramMap.put("deleted", DeletedStatus.UN_DELETED);
 
         sql.append(" and g.expireAt >=:expireAt");
@@ -432,14 +430,12 @@ public class GoodsCondition implements Serializable {
         }
 
         if (priceFrom.compareTo(new BigDecimal(0)) > 0) {
-            sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.originalPrice+l.price >=:priceFrom)");
-            paramMap.put("level", resaler.level);
+            sql.append(" and (g.originalPrice+g.resaleAddPrice) <=:priceFrom");
             paramMap.put("priceFrom", priceFrom);
         }
 
         if (priceTo.compareTo(new BigDecimal(0)) > 0) {
-            sql.append(" and g.id in (select g.id from g.levelPrices l where l.level=:level and g.originalPrice+l.price <=:priceTo)");
-            paramMap.put("level", resaler.level);
+            sql.append(" and (g.originalPrice+g.resaleAddPrice) <=:priceTo");
             paramMap.put("priceTo", priceTo);
         }
 
@@ -459,7 +455,6 @@ public class GoodsCondition implements Serializable {
 
         return sql.toString();
     }
-
 
 
     @Override

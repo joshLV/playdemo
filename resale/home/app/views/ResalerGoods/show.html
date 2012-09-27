@@ -58,7 +58,7 @@
             <h3>${goods.name}</h3>
             <div class="photo"><img src="${goods.imageLargePath}" width="280" height="168"/></div>
             <ul class="property">
-                <li class="price">采 购 价：<span>&yen;${goods.getResalePrice(resaler.level)}</span></li>
+                <li class="price">采 购 价：<span>&yen;${goods.getResalePrice()}</span></li>
                 <li class="cost">市 场 价：
                     <del>&yen;${goods.faceValue}</del>
                 </li>
@@ -227,7 +227,7 @@
                         <div class="right_shangpin_two">
                             折扣：${goods.discountExpress.yesno(goods.discountExpress+'折','无优惠')}</div>
                         <div class="right_shangpin_three">现价：<span
-                                class="font_red font_size18">${goods.getResalePrice(resaler.level)}</span>元
+                                class="font_red font_size18">${goods.getResalePrice()}</span>元
                         </div>
                         <div class="right_shangpin_two">有效期：<span
                                 class="right_shangpin_two">${goods.effectiveAt?.format()} 至 ${goods.expireAt?.format()}</span>

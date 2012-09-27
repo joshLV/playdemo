@@ -27,9 +27,11 @@ public class UserPromoteRebate extends Controller {
     public static int PAGE_SIZE = 15;
 
     public static void index() {
+
         User user = SecureCAS.getUser();
         //产生推荐码
         user.generatePromoterCode();
+        System.out.println(">>>>>>>>>>>."+user.promoterCode);
         //取得推荐产生的返利金额
         PromoteRebate promoteRebate = PromoteRebate.getRebateAmount(user);
         //取得推荐购买金额
@@ -51,7 +53,6 @@ public class UserPromoteRebate extends Controller {
         List<PromoteRebate> resultList = PromoteRebate.findRank();
         // 分页
         ValuePaginator<PromoteRebate> rankList = PaginateUtil.wrapValuePaginator(resultList, pageNumber, PAGE_SIZE);
-        System.out.println(rankList.size()+">>>>>>>>>");
         PromoteRebate summary = PromoteRebate.rank(user, resultList);
 
         render(user, rankList, summary);

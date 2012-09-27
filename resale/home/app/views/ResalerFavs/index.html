@@ -92,7 +92,7 @@
                     </td>
                     <td>${favItem.goods?.materialType == models.sales.MaterialType.ELECTRONIC ? '电子券' : '实物'}</td>
                     <td>${favItem.goods?.faceValue?.formatCurrency('CNY').raw()}</td>
-                    <td id="price_${favItem.goods.id}">${favItem.goods.getResalePrice(resaler.level)}</td>
+                    <td id="price_${favItem.goods.id}">${favItem.goods.getResalePrice()}</td>
                     <td>&{'goods.'+favItem.goods?.status}</td>
                     <td class="action">
                         <a href="#" id="del_${favItem.id}" name="${favItem.goods.id}" class="delete_gift">删除</a>

@@ -29,11 +29,11 @@ public class Request {
      * @throws org.dom4j.DocumentException
      */
     public void parse(String requestBodyAsString) throws DocumentException {
-
         Document document = DocumentHelper.parseText(requestBodyAsString);
 
         Element root = document.getRootElement();
-        Iterator iter = root.elementIterator("order"); // 获取根节点下的子节点order
+        // 获取根节点下的子节点order
+        Iterator iter = root.elementIterator("order");
         // 遍历order节点
         while (iter.hasNext()) {
             Element recordEle = (Element) iter.next();

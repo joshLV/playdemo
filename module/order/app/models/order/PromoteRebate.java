@@ -122,6 +122,7 @@ public class PromoteRebate extends Model {
      * @return
      */
     public static PromoteRebate getRebateAmount(User user) {
+        System.out.println(user+"******");
         List<PromoteRebate> promoteRebates = PromoteRebate.find("promoteUser = ?", user).fetch();
         BigDecimal willGetAmount = BigDecimal.ZERO;
         BigDecimal haveGotAmount = BigDecimal.ZERO;

@@ -137,77 +137,84 @@ public class DDAPIUtil {
      *
      * @param data xml格式
      */
-    public static Response sendSMS(String data) throws DDAPIInvokeException {
+    public static Response sendSMS(String data) {
         Logger.info("[DDSendMessageAPI] sendMsg begin]" + data);
         Response response = new Response();
+        Request request = new Request();
         response.ver = VER;
         response.spid = SPID;
         try {
-            Request request = new Request();
             request.parse(data);
-            //取得data节点中的数据信息
-            Map<String, String> dataMap = request.params;
-            String orderId = dataMap.get("order_id");
-            Long ddgid = Long.parseLong(dataMap.get("ddgid"));
-            Long spgid = Long.parseLong(dataMap.get("spgid"));
-            String userCode = dataMap.get("user_code");
-            String receiveMobile = dataMap.get("receiver_mobile_tel");
-            String consumeId = dataMap.get("consume_id");
-            Logger.info("\n  orderId=" + orderId + "&ddgid=" + ddgid + "&spgid=" + spgid + "&userCode=" + userCode + "&=receiveMobile" + receiveMobile + "&=consumeId" + consumeId);
-
-            //根据当当订单编号，查询订单是否存在
-            OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
-                    OuterOrderPartner.DD, orderId).first();
-            if (outerOrder == null || outerOrder.ybqOrder == null) {
-                response.errorCode = ErrorCode.ORDER_NOT_EXITED;
-                response.desc = "没找到对应的当当订单!";
-                Logger.error("[DDSendMessageAPI]" + response.desc);
-                return response;
-            }
-            Resaler resaler = Resaler.find("loginName=? and status=?", DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
-
-            if (resaler == null) {
-                response.errorCode = ErrorCode.USER_NOT_EXITED;
-                response.desc = "当当用户不存在！";
-                Logger.error("[DDSendMessageAPI]" + response.desc);
-                return response;
-            }
-
-
-            Order ybqOrder = Order.find("orderNumber= ? and userId=? and userType=?", outerOrder.ybqOrder.orderNumber, resaler.id, AccountType.RESALER).first();
-            if (ybqOrder == null) {
-                response.errorCode = ErrorCode.ORDER_NOT_EXITED;
-                response.desc = "没找到对应的订单";
-                Logger.error("[DDSendMessageAPI]" + response.desc);
-                return response;
-            }
-
-            Goods goods = Goods.findById(spgid);
-            ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and goods=?", ybqOrder, consumeId, goods).first();
-            if (coupon == null) {
-                response.errorCode = ErrorCode.COUPON_SN_NOT_EXISTED;
-                response.desc = "没找到对应的券号";
-                Logger.error("[DDSendMessageAPI]" + response.desc);
-                return response;
-            }
-
-            //最多发送三次短信，发送失败，则返回0
-            if (!ECoupon.sendUserMessage(coupon.id, receiveMobile)) {
-                response.errorCode = ErrorCode.MESSAGE_SEND_FAILED;
-                response.desc = "短信发送失败(消费者只有三次发送短信的机会！)";
-                Logger.error("[DDSendMessageAPI]" + response.desc);
-                return response;
-            }
-
-            //发送成功
-            response.errorCode = ErrorCode.SUCCESS;
-            response.desc = "success";
-            response.addAttribute("consumeId", coupon.eCouponSn);
-            response.addAttribute("ddOrderId", orderId);
-            response.addAttribute("ybqOrderId", coupon.order.id);
         } catch (Exception e) {
-            throw new DDAPIInvokeException("[DangDang API] invoke send message error");
+            Logger.error("[DDSendMessageAPI]" + e.getMessage());
+            response = new Response();
+            response.spid = SPID;
+            response.ver = VER;
+            response.errorCode = ErrorCode.PARSE_XML_FAILED;
+            response.desc = "xml解析失败！";
+            return response;
         }
+        //取得data节点中的数据信息
+        Map<String, String> dataMap = request.params;
+        String orderId = dataMap.get("order_id");
+        Long ddgid = Long.parseLong(dataMap.get("ddgid"));
+        Long spgid = Long.parseLong(dataMap.get("spgid"));
+        String userCode = dataMap.get("user_code");
+        String receiveMobile = dataMap.get("receiver_mobile_tel");
+        String consumeId = dataMap.get("consume_id");
+        Logger.info("\n  orderId=" + orderId + "&ddgid=" + ddgid + "&spgid=" + spgid + "&userCode=" + userCode + "&=receiveMobile" + receiveMobile + "&=consumeId" + consumeId);
+
+        //根据当当订单编号，查询订单是否存在
+        OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
+                OuterOrderPartner.DD, orderId).first();
+        if (outerOrder == null || outerOrder.ybqOrder == null) {
+            response.errorCode = ErrorCode.ORDER_NOT_EXITED;
+            response.desc = "没找到对应的当当订单!";
+            Logger.error("[DDSendMessageAPI]" + response.desc);
+            return response;
+        }
+        Resaler resaler = Resaler.find("loginName=? and status=?", DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
+
+        if (resaler == null) {
+            response.errorCode = ErrorCode.USER_NOT_EXITED;
+            response.desc = "当当用户不存在！";
+            Logger.error("[DDSendMessageAPI]" + response.desc);
+            return response;
+        }
+
+
+        Order ybqOrder = Order.find("orderNumber= ? and userId=? and userType=?", outerOrder.ybqOrder.orderNumber, resaler.id, AccountType.RESALER).first();
+        if (ybqOrder == null) {
+            response.errorCode = ErrorCode.ORDER_NOT_EXITED;
+            response.desc = "没找到对应的订单";
+            Logger.error("[DDSendMessageAPI]" + response.desc);
+            return response;
+        }
+
+        Goods goods = Goods.findById(spgid);
+        ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and goods=?", ybqOrder, consumeId, goods).first();
+        if (coupon == null) {
+            response.errorCode = ErrorCode.COUPON_SN_NOT_EXISTED;
+            response.desc = "没找到对应的券号";
+            Logger.error("[DDSendMessageAPI]" + response.desc);
+            return response;
+        }
+
+        //最多发送三次短信，发送失败，则返回0
+        if (!ECoupon.sendUserMessage(coupon.id, receiveMobile)) {
+            response.errorCode = ErrorCode.MESSAGE_SEND_FAILED;
+            response.desc = "短信发送失败(消费者只有三次发送短信的机会！)";
+            Logger.error("[DDSendMessageAPI]" + response.desc);
+            return response;
+        }
+
+        //发送成功
+        response.errorCode = ErrorCode.SUCCESS;
+        response.desc = "success";
+        response.addAttribute("consumeId", coupon.eCouponSn);
+        response.addAttribute("ddOrderId", orderId);
+        response.addAttribute("ybqOrderId", coupon.order.id);
+
         return response;
 
     }
