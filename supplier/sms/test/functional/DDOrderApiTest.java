@@ -5,6 +5,7 @@ import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.AccountType;
 import models.consumer.User;
+import models.consumer.UserInfo;
 import models.dangdang.ErrorCode;
 import models.dangdang.ErrorInfo;
 import models.order.ECoupon;
@@ -54,6 +55,7 @@ public class DDOrderApiTest extends FunctionalTest {
 //        System.out.println("+++++>"+ DigestUtils.md5Hex((SPID + apiName + VER + data + SECRET_KEY + time)));
 //        System.out.println("+++++>" + DigestUtils.md5Hex(s + time));
         Goods goods = FactoryBoy.create(Goods.class);
+        UserInfo userInfo = FactoryBoy.create(UserInfo.class);
         User user = FactoryBoy.create(User.class);
         Map<String, String> params = new HashMap<>();
         params.put("id", "abcde");
@@ -140,7 +142,7 @@ public class DDOrderApiTest extends FunctionalTest {
                 OuterOrderPartner.DD, kx_order_id).first();
         System.out.println(outerOrder + "outerOrder");
         assertEquals(order.orderNumber, outerOrder.ybqOrder.orderNumber);
-         List<ECoupon> eCouponList = ECoupon.findByOrder(order);
+        List<ECoupon> eCouponList = ECoupon.findByOrder(order);
         assertEquals(1, eCouponList.size());
 
     }

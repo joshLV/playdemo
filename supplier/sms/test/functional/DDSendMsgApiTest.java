@@ -102,7 +102,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
         response = POST("/api/v1/dangdang/send-msg", params);
         assertStatus(200, response);
         res = (Response) renderArgs("response");
-        assertEquals("没找到对应的订单", res.desc);
+        assertEquals("没找到对应的订单!", res.desc);
         assertEquals(ErrorCode.ORDER_NOT_EXITED, res.errorCode);
 
 
@@ -115,7 +115,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
         response = POST("/api/v1/dangdang/send-msg", params);
         assertStatus(200, response);
         res = (Response) renderArgs("response");
-        assertEquals("没找到对应的券号", res.desc);
+        assertEquals("没找到对应的券号!", res.desc);
         assertEquals(ErrorCode.COUPON_SN_NOT_EXISTED, res.errorCode);
 
 
@@ -143,7 +143,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
         response = POST("/api/v1/dangdang/send-msg", params);
         assertStatus(200, response);
         res = (Response) renderArgs("response");
-        assertEquals("短信发送失败(消费者只有三次发送短信的机会！)", res.desc);
+        assertEquals("重发短信超过三次！", res.desc);
         assertEquals(ErrorCode.MESSAGE_SEND_FAILED, res.errorCode);
 
     }
