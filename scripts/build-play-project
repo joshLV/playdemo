@@ -11,16 +11,19 @@ test_passed_regex = /PASSED/
 test_failed_regex = /FAILED/
 test_error_regex = /ERROR/
 
+puts ENV['WORKSPACE']
 play_home="/app/play-1.2.4/"
-ivy_cache="$WORKSPACE/.ivy2/cache"
+ivy_cache="#{ENV['WORKSPACE']}/.ivy2"
 
 unless Dir.exists?(play_home)
   play_home = ""
 end
 
-unless Dir.exists?(ivy_cache)
-  ivy_cache="~/.ivy2/cache"
+unless Dir.exists?(ENV['WORKSPACE'])
+  ivy_cache="~/.ivy2"
 end
+
+puts "ivy cache=#{ivy_cache}"
 
 dir = ARGV[0]
 
@@ -43,9 +46,10 @@ failed_test_count = 0
 # Dir.chdir("#{current_dir}/#{dir}")
 cmd =<<END
         cd #{current_dir}/#{dir}
-        #{play_home}play deps -Divy.default.ivy.user.dir=#{ivy_cache} --sync --clearcache
-        #{play_home}play auto-test -Divy.default.ivy.user.dir=#{ivy_cache} --deps
+        #{play_home}play deps -Divy.home=#{ivy_cache} --sync --clearcache
+        #{play_home}play auto-test -Divy.home=#{ivy_cache} --deps
 END
+puts cmd
 POpen4::popen4(cmd) do |stdout, stderr, stdin|
   stdout.each do |line|
     if line =~ test_passed_regex
@@ -87,8 +91,8 @@ system("find . -name \"[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*\" -exec
 cmd =<<END
   cd #{current_dir}/#{dir}
   find . -name "[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*" -exec rm "{}" \\;
-  #{play_home}play clean -Divy.default.ivy.user.dir=#{ivy_cache}
-  #{play_home}play deps --forProd --forceCopy --%prod -Divy.default.ivy.user.dir=#{ivy_cache}
+  #{play_home}play clean -Divy.home=#{ivy_cache}
+  #{play_home}play deps --forProd --forceCopy --%prod -Divy.home=#{ivy_cache}
   rm -f conf/version.conf
   echo "build.time=#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}" >> conf/version.conf
   echo "version=$BUILD_VERSION" >> conf/version.conf
