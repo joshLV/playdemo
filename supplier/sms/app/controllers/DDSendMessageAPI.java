@@ -4,7 +4,6 @@ import models.dangdang.DDAPIUtil;
 import models.dangdang.ErrorCode;
 import models.dangdang.Response;
 import org.apache.commons.lang.StringUtils;
-import play.Logger;
 import play.Play;
 import play.mvc.Controller;
 
@@ -22,7 +21,7 @@ public class DDSendMessageAPI extends Controller {
     private static final String API_NAME = "send_msg";
 
     public static void sendMessage() {
-        Logger.info("[DDSendMessageAPI] begin ");
+        System.out.println("[DDSendMessageAPI] begin ");
         //取得参数信息 必填信息
         Map<String, String> params = DDAPIUtil.filterPlayParameter(request.params.all());
         //取得参数信息
@@ -33,7 +32,7 @@ public class DDSendMessageAPI extends Controller {
         System.out.println(sign + "[sign]");
         System.out.println(verifySign + "[verifySign]");
         if (StringUtils.isBlank(sign) || !sign.equals(verifySign)) {
-            Logger.info("[DDSendMessageAPI] sign failed ");
+            System.out.println("[DDSendMessageAPI] sign failed ");
             Response response = new Response();
             response.spid = SPID;
             response.ver = VER;
@@ -44,7 +43,7 @@ public class DDSendMessageAPI extends Controller {
 
         //当当调用接口
         Response response = DDAPIUtil.sendSMS(data);
-        Logger.info("[DDSendMessageAPI] end!");
+        System.out.println("[DDSendMessageAPI] end!"+response.desc);
         render(response);
     }
 }

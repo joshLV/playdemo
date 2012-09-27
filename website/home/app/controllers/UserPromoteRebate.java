@@ -31,7 +31,6 @@ public class UserPromoteRebate extends Controller {
         User user = SecureCAS.getUser();
         //产生推荐码
         user.generatePromoterCode();
-        System.out.println(">>>>>>>>>>>."+user.promoterCode);
         //取得推荐产生的返利金额
         PromoteRebate promoteRebate = PromoteRebate.getRebateAmount(user);
         //取得推荐购买金额

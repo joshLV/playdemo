@@ -34,7 +34,6 @@ public class UserPromoteRebateFuncTest extends FunctionalTest {
         FactoryBoy.create(PromoteRebate.class);
         FactoryBoy.create(OrderItems.class);
         user = FactoryBoy.create(User.class);
-        System.out.println(user+"%%%%%%%");
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
     }

@@ -13,7 +13,6 @@ import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
-import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
 import play.mvc.Controller;
@@ -29,11 +28,11 @@ import java.util.SortedMap;
  * Time: 下午3:59
  */
 public class DDOrderAPI extends Controller {
-    public static String DD_LOGIN_NAME = Play.configuration.getProperty("dangdang.resaler_login_name", "dangdang");
-    public static String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
+    public static final String DD_LOGIN_NAME = Play.configuration.getProperty("dangdang.resaler_login_name", "dangdang");
+    public static final String DATE_FORMAT = "yyy-MM-dd HH:mm:ss";
 
     public static void order() {
-        Logger.info("[DDOrderAPI] begin ");
+        System.out.println("[DDOrderAPI] begin ");
         //取得参数信息 必填信息
         SortedMap<String, String> params = DDAPIUtil.filterPlayParameter(request.params.all());
         String id = StringUtils.trimToEmpty(params.get("id")); // 一百券的商品ID
@@ -49,22 +48,18 @@ public class DDOrderAPI extends Controller {
         if (StringUtils.isBlank(user_mobile) || StringUtils.isBlank(user_id)) {
             errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
             errorInfo.errorDes = "用户或手机不存在！";
-            Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
             render("/DDOrderAPI/error.xml", errorInfo);
         }
 
         if (StringUtils.isBlank(kx_order_id)) {
-            Logger.error("invalid kx_order_id: %s", kx_order_id);
             errorInfo.errorCode = ErrorCode.ORDER_NOT_EXITED;
             errorInfo.errorDes = "订单不存在！";
-            Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
             render("/DDOrderAPI/error.xml", errorInfo);
         }
         //校验参数
         if (StringUtils.isBlank(sign) || !DDAPIUtil.validSign(params, sign)) {
             errorInfo.errorCode = ErrorCode.VERIFY_FAILED;
             errorInfo.errorDes = "sign验证失败！";
-            Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
             render("/DDOrderAPI/error.xml", errorInfo);
         }
 
@@ -74,7 +69,6 @@ public class DDOrderAPI extends Controller {
         if (resaler == null) {
             errorInfo.errorCode = ErrorCode.USER_NOT_EXITED;
             errorInfo.errorDes = "当当分销商用户不存在！";
-            Logger.error("errorInfo.errorDes: " + errorInfo.errorDes);
             render("/DDOrderAPI/error.xml", errorInfo);
         } else {
             resalerId = resaler.id;
@@ -108,9 +102,9 @@ public class DDOrderAPI extends Controller {
         if (isExited) {
             order = Order.findOneByUser(outerOrder.ybqOrder.orderNumber, resalerId, AccountType.RESALER);
             if (order != null) {
-                Logger.info("[DDOrderAPI] order has existed,and render xml");
+                System.out.println("[DDOrderAPI] order has existed,and render xml");
                 List<ECoupon> eCouponList = ECoupon.findByOrder(order);
-                render(order, ddgid, kx_order_id, eCouponList);
+                render(order, id, kx_order_id, eCouponList);
             }
         }
 
@@ -128,7 +122,7 @@ public class DDOrderAPI extends Controller {
                     //创建一百券订单Items
                     order.addOrderItem(goods, Integer.parseInt(arrGoodsItem[1]), user_mobile, resalerPrice, resalerPrice);
                 } catch (NotEnoughInventoryException e) {
-                    Logger.info("inventory not enough");
+                    System.out.println("inventory not enough");
                     errorInfo.errorCode = ErrorCode.INVENTORY_NOT_ENOUGH;
                     errorInfo.errorDes = "库存不足！";
                     render(errorInfo);
@@ -153,7 +147,7 @@ public class DDOrderAPI extends Controller {
         outerOrder.status = OuterOrderStatus.ORDER_SYNCED;
         outerOrder.save();
         List<ECoupon> eCouponList = ECoupon.findByOrder(order);
-        Logger.info("\n [DDOrderAPI] end ");
+        System.out.println("\n [DDOrderAPI] end ");
         render(order, id, kx_order_id, eCouponList);
     }
 }

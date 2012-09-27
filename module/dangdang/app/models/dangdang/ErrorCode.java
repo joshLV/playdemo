@@ -22,7 +22,12 @@ public enum ErrorCode {
     PARSE_XML_FAILED(9003),//xml解析失败
     INVENTORY_NOT_ENOUGH(9004),//库存不足
     COUPON_SN_NOT_EXISTED(9005),//券号不存在
-    MESSAGE_SEND_FAILED(9006);//短信发送失败
+    MESSAGE_SEND_FAILED(9006),//短信发送失败
+    COUPON_CONSUMED(9007),//券已消费
+    COUPON_REFUND(9008),//券已退款
+    COUPON_FREEZE(9009),//券已冻结
+    COUPON_EXPIRED(90010);//券已过期
+
     private int value;
 
     ErrorCode(int value) {
@@ -59,6 +64,14 @@ public enum ErrorCode {
                 return COUPON_SN_NOT_EXISTED;
             case 9006:
                 return MESSAGE_SEND_FAILED;
+            case 9007:
+                return COUPON_CONSUMED;
+            case 9008:
+                return COUPON_REFUND;
+            case 9009:
+                return COUPON_FREEZE;
+            case 90010:
+                return COUPON_EXPIRED;
             default:
                 return VERIFY_FAILED;
         }

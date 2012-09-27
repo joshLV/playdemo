@@ -2,10 +2,7 @@ package models.dangdang;
 
 
 import models.accounts.AccountType;
-import models.order.ECoupon;
-import models.order.Order;
-import models.order.OuterOrder;
-import models.order.OuterOrderPartner;
+import models.order.*;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
@@ -112,13 +109,13 @@ public class DDAPIUtil {
         try {
             response = DDAPIUtil.access(VERIFY_CONSUME_URL, data, "verify_consume");
         } catch (DDAPIInvokeException e) {
-            Logger.error("[DangDang API] invoke isRefund error(eCouponId:" + eCoupon.id + "):" + response.desc);
+            Logger.info("[DangDang API] invoke isRefund error(eCouponId:" + eCoupon.id + "):" + response.desc);
             logFailure(new DDFailureLog(eCoupon, response));
             return;
         }
 
         if (!response.success()) {
-            Logger.error("[DangDang API] invoke isRefund error(eCouponId:" + eCoupon.id + "):" + response.desc);
+            Logger.info("[DangDang API] invoke isRefund error(eCouponId:" + eCoupon.id + "):" + response.desc);
             logFailure(new DDFailureLog(eCoupon, response));
         }
     }
@@ -138,7 +135,7 @@ public class DDAPIUtil {
      * @param data xml格式
      */
     public static Response sendSMS(String data) {
-        Logger.info("[DDSendMessageAPI] sendMsg begin]" + data);
+        System.out.println("[DDSendMessageAPI] sendMsg begin]" + data);
         Response response = new Response();
         Request request = new Request();
         response.ver = VER;
@@ -146,7 +143,7 @@ public class DDAPIUtil {
         try {
             request.parse(data);
         } catch (Exception e) {
-            Logger.error("[DDSendMessageAPI]" + e.getMessage());
+            System.out.println("[DDSendMessageAPI]" + e.getMessage());
             response = new Response();
             response.spid = SPID;
             response.ver = VER;
@@ -170,7 +167,7 @@ public class DDAPIUtil {
         if (outerOrder == null || outerOrder.ybqOrder == null) {
             response.errorCode = ErrorCode.ORDER_NOT_EXITED;
             response.desc = "没找到对应的当当订单!";
-            Logger.error("[DDSendMessageAPI]" + response.desc);
+            System.out.println("[DDSendMessageAPI]" + response.desc);
             return response;
         }
         Resaler resaler = Resaler.find("loginName=? and status=?", DD_LOGIN_NAME, ResalerStatus.APPROVED).first();
@@ -178,7 +175,7 @@ public class DDAPIUtil {
         if (resaler == null) {
             response.errorCode = ErrorCode.USER_NOT_EXITED;
             response.desc = "当当用户不存在！";
-            Logger.error("[DDSendMessageAPI]" + response.desc);
+            System.out.println("[DDSendMessageAPI]" + response.desc);
             return response;
         }
 
@@ -186,8 +183,8 @@ public class DDAPIUtil {
         Order ybqOrder = Order.find("orderNumber= ? and userId=? and userType=?", outerOrder.ybqOrder.orderNumber, resaler.id, AccountType.RESALER).first();
         if (ybqOrder == null) {
             response.errorCode = ErrorCode.ORDER_NOT_EXITED;
-            response.desc = "没找到对应的订单";
-            Logger.error("[DDSendMessageAPI]" + response.desc);
+            response.desc = "没找到对应的订单!";
+            System.out.println("[DDSendMessageAPI]" + response.desc);
             return response;
         }
 
@@ -195,16 +192,51 @@ public class DDAPIUtil {
         ECoupon coupon = ECoupon.find("order=? and eCouponSn=? and goods=?", ybqOrder, consumeId, goods).first();
         if (coupon == null) {
             response.errorCode = ErrorCode.COUPON_SN_NOT_EXISTED;
-            response.desc = "没找到对应的券号";
-            Logger.error("[DDSendMessageAPI]" + response.desc);
+            response.desc = "没找到对应的券号!";
+            System.out.println("[DDSendMessageAPI]" + response.desc);
+            return response;
+        }
+        //券已消费
+        if (coupon.status == ECouponStatus.CONSUMED) {
+            response.errorCode = ErrorCode.COUPON_CONSUMED;
+            response.desc = "对不起该券已消费，不能重发短信！";
+            System.out.println("[DDSendMessageAPI]" + response.desc);
+            return response;
+        }
+        //券已退款
+        if (coupon.status == ECouponStatus.REFUND) {
+            response.errorCode = ErrorCode.COUPON_REFUND;
+            response.desc = "对不起该券已退款，不能重发短信！";
+            System.out.println("[DDSendMessageAPI]" + response.desc);
+            return response;
+        }
+        //券已冻结
+        if (coupon.isFreeze == 1) {
+            response.errorCode = ErrorCode.COUPON_CONSUMED;
+            response.desc = "对不起该券已被冻结，不能重发短信！";
+            System.out.println("[DDSendMessageAPI]" + response.desc);
+            return response;
+        }
+        //券已过期
+        if (coupon.expireAt.before(new Date())) {
+            response.errorCode = ErrorCode.COUPON_EXPIRED;
+            response.desc = "对不起该券已过期，不能重发短信！";
+            System.out.println("[DDSendMessageAPI]" + response.desc);
+            return response;
+        }
+        //最多发送三次短信
+        if (coupon.downloadTimes == 0) {
+            response.errorCode = ErrorCode.MESSAGE_SEND_FAILED;
+            response.desc = "重发短信超过三次！";
+            System.out.println("[DDSendMessageAPI]" + response.desc);
             return response;
         }
 
-        //最多发送三次短信，发送失败，则返回0
+        //发送失败，则返回0
         if (!ECoupon.sendUserMessage(coupon.id, receiveMobile)) {
             response.errorCode = ErrorCode.MESSAGE_SEND_FAILED;
-            response.desc = "短信发送失败(消费者只有三次发送短信的机会！)";
-            Logger.error("[DDSendMessageAPI]" + response.desc);
+            response.desc = "短信发送失败!";
+            System.out.println("[DDSendMessageAPI]" + response.desc);
             return response;
         }
 
@@ -293,6 +325,7 @@ public class DDAPIUtil {
             if ("body".equals(entry.getKey()) || "format".equals(entry.getKey())) {
                 continue;
             }
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>");
             if (entry.getValue() == null) {
                 result.put(entry.getKey(), "");
             } else {
