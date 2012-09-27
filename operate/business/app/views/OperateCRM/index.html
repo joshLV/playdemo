@@ -555,19 +555,30 @@
     <textarea rows="3" cols="20" name="consult.text" id="consult_text"
             >${consult?.text}</textarea>
 
+*{#{ifErrors}}*
+*{<br>}*
+*{${errors[0]}}*
+*{<br>}*
+*{${errors[1]}}*
+*{<br>}*
+*{${errors}}*
+*{#{errors}}*
+*{1>> ${errors.contains("请输入")}}*
+*{<br>}*
+*{2>>${errors.contains("couponCallBindList")}}*
+*{#{if errors.indexOf("请输入!")!=-1 && errors.indexOf("无效的couponCallBindList!")==-1 }}*
+*{<span style=color:red> 请输入咨询内容</span>}*
+*{#{/if}}*
+*{#{/errors}}*
+*{#{/ifErrors}}*
+
+
     #{ifErrors}
-        <br>
-    ${errors[0]}
-        <br>
-    ${errors[1]}
-        #{errors}
-            #{if errors[0].equals("请输入!")}
-                <span style=color:red> 请输入咨询内容</span>
-            #{/if}
-        #{/errors}
+        <span style=color:red>   <br>
+        ${errors}</span>
     #{/ifErrors}
 
-*{<div class="error">#{error 'consult.text' /}</div>}*
+    <div class="error">#{error 'consult.text' /}</div>
 
     <br>
     <input class="btn btn-primary" id="save" type="submit" #{if !org.apache.commons.lang.StringUtils.isNotBlank(phone)}

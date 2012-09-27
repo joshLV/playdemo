@@ -53,7 +53,6 @@ public class ConsultRecord extends Model {
     @Enumerated(EnumType.STRING)
     public ConsultType consultType;
 
-
     @Transient
     public String consultTypeInfo;
 
@@ -64,7 +63,6 @@ public class ConsultRecord extends Model {
     @MaxSize(65000)
     @Lob
     public String text;
-
 
     public String phone;
 
@@ -81,6 +79,9 @@ public class ConsultRecord extends Model {
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "consultRecord")
 //    public List<CouponCallBind> couponCallBindList;
 //
+
+
+
     @OneToMany
     @JoinColumn(name ="coupon_call_bind_list")
     public List<CouponCallBind> couponCallBindList;
