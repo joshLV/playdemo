@@ -28,7 +28,7 @@ public class UserInfoFactory extends ModelFactory<UserInfo> {
         userInfo.industry="";
         userInfo.otherInfo="";
         userInfo.createdAt=new Date();
-        userInfo.totalPoints=(long)100;
+        userInfo.totalPoints=100L;
 
         return userInfo;
     }
