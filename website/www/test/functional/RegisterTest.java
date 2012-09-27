@@ -13,6 +13,7 @@ import models.consumer.User;
 import models.consumer.UserInfo;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import play.Play;
@@ -39,7 +40,6 @@ public class RegisterTest extends FunctionalTest {
         Security.setLoginUserForTest(user.loginName);
 
     }
-
 
     @Test
     public void testIndex() {
@@ -93,7 +93,6 @@ public class RegisterTest extends FunctionalTest {
 
     }
 
-
     @Test
     public void testCreate_tj_cookie_PromoterUserNotNull() {
         List old = User.findAll();
@@ -121,16 +120,26 @@ public class RegisterTest extends FunctionalTest {
         assertEquals(count + 1, newList.size());
     }
 
-
-
     @Test
-    public void testCheckLoginName() {
+    public void testCheckLoginNameNotExist() {
         Map<String, String> loginUserParams = new HashMap<String, String>();
-        loginUserParams.put("user.loginName", "11@qq.com");
-        loginUserParams.put("user.mobile", "1313112112");
+        loginUserParams.put("loginName", "11@qq.com");
+        loginUserParams.put("mobile", "1313112112");
         Response response = POST("/register/checkLoginName", loginUserParams);
         assertStatus(200, response);
         assertCharset(Play.defaultWebEncoding, response);
+        assertContentMatch("0", response);
+    }
+
+    @Test
+    public void testCheckLoginNameExist() {
+        Map<String, String> loginUserParams = new HashMap<String, String>();
+        loginUserParams.put("loginName", "selenium@uhuila.com");
+        loginUserParams.put("mobile", "15026682165");
+        Response response = POST("/register/checkLoginName", loginUserParams);
+        assertStatus(200, response);
+        assertCharset(Play.defaultWebEncoding, response);
+        assertContentMatch("1", response);
     }
 
     @Test
