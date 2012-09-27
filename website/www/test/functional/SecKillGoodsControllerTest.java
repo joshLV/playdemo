@@ -2,6 +2,7 @@ package functional;
 
 import controllers.modules.website.cas.Security;
 import models.consumer.User;
+import models.consumer.UserInfo;
 import models.sales.SecKillGoodsItem;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class SecKillGoodsControllerTest extends FunctionalTest {
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
-
+        UserInfo userInfo=FactoryBoy.create(UserInfo.class);
         User user = FactoryBoy.create(User.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);

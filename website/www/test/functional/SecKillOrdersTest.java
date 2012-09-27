@@ -5,6 +5,7 @@ import factory.callback.SequenceCallback;
 import models.accounts.AccountType;
 import models.consumer.Address;
 import models.consumer.User;
+import models.consumer.UserInfo;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
@@ -33,11 +34,13 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class SecKillOrdersTest  extends FunctionalTest {
-       User user;
+    UserInfo userInfo;
+    User user;
     Address address;
     @Before
     public void setUp() {
         FactoryBoy.deleteAll();
+        userInfo = FactoryBoy.create(UserInfo.class);
         user= FactoryBoy.create(User.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);

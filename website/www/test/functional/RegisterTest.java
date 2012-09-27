@@ -34,7 +34,7 @@ public class RegisterTest extends FunctionalTest {
         FactoryBoy.delete(User.class);
         FactoryBoy.delete(UserInfo.class);
 //        FactoryBoy.deleteAll();
-        userInfo=FactoryBoy.create(UserInfo.class);
+        userInfo = FactoryBoy.create(UserInfo.class);
         user = FactoryBoy.create(User.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
@@ -52,17 +52,17 @@ public class RegisterTest extends FunctionalTest {
     public void testCreate_tj_cookieNull() {
         List old = User.findAll();
         int count = old.size();
-        Map<String, String> loginUserParams = new HashMap<String,String>();
+        Map<String, String> loginUserParams = new HashMap<String, String>();
         loginUserParams.put("user.loginName", "11@qq.com");
         loginUserParams.put("user.password", "123456");
         loginUserParams.put("user.confirmPassword", "123456");
         loginUserParams.put("user.captcha", "A2WQ");
         loginUserParams.put("randomID", "RANDOMID");
-        Cache.set("RANDOMID", "A2WQ","30mn");
+        Cache.set("RANDOMID", "A2WQ", "30mn");
         Response response = POST("/register", loginUserParams);
-        assertStatus(200,response);
+        assertStatus(200, response);
         List newList = User.findAll();
-        assertEquals(count+1,newList.size());
+        assertEquals(count + 1, newList.size());
     }
 
     @Test
@@ -78,18 +78,18 @@ public class RegisterTest extends FunctionalTest {
         loginUserParams.put("promoter_track", "123");
         Cache.set("RANDOMID", "A2WQ", "30mn");
         Map<String, Http.Cookie> passCookie = new HashMap();
-        Http.Cookie newCookie=new Http.Cookie();
-        newCookie.name="promoter_track";
-        newCookie.value="123";
-        passCookie.put("promoter_track",newCookie);
-        Http.Request request= FunctionalTest.newRequest();
-        request.cookies =passCookie;
-        Response  response = POST(request,"/register", loginUserParams,new HashMap<String, File>());
+        Http.Cookie newCookie = new Http.Cookie();
+        newCookie.name = "promoter_track";
+        newCookie.value = "123";
+        passCookie.put("promoter_track", newCookie);
+        Http.Request request = FunctionalTest.newRequest();
+        request.cookies = passCookie;
+        Response response = POST(request, "/register", loginUserParams, new HashMap<String, File>());
         assertStatus(200, response);
         List newList = User.findAll();
         assertEquals(count + 1, newList.size());
-		List userInfos = UserInfo.findAll();
-		assertEquals(2,userInfos.size());
+        List userInfos = UserInfo.findAll();
+        assertEquals(2, userInfos.size());
 
     }
 
@@ -106,15 +106,15 @@ public class RegisterTest extends FunctionalTest {
         loginUserParams.put("promoter_track", "123");
         Cache.set("RANDOMID", "A2WQ", "30mn");
         Map<String, Http.Cookie> passCookie = new HashMap();
-        Http.Cookie newCookie=new Http.Cookie();
-        newCookie.name="promoter_track";
-        newCookie.value="123";
-        passCookie.put("promoter_track",newCookie);
-        Http.Request request= FunctionalTest.newRequest();
-        request.cookies =passCookie;
-        user.promoterCode="123";
+        Http.Cookie newCookie = new Http.Cookie();
+        newCookie.name = "promoter_track";
+        newCookie.value = "123";
+        passCookie.put("promoter_track", newCookie);
+        Http.Request request = FunctionalTest.newRequest();
+        request.cookies = passCookie;
+        user.promoterCode = "123";
         user.save();
-        Response  response = POST(request,"/register", loginUserParams,new HashMap<String, File>());
+        Response response = POST(request, "/register", loginUserParams, new HashMap<String, File>());
         assertStatus(200, response);
         List newList = User.findAll();
         assertEquals(count + 1, newList.size());
@@ -146,7 +146,7 @@ public class RegisterTest extends FunctionalTest {
     public void testCreateUserError() {
         Long userId = user.id;
         User user = User.findById(userId);
-         User user1 = FactoryBoy.create(User.class, "loginName");
+        User user1 = FactoryBoy.create(User.class, "loginName");
         //mobile error,loginName existed ,user's captcha empty,user's password not equal user's confirmpassword
         Map<String, String> userParams = new HashMap<String, String>();
         userParams.put("user.mobile", "123");
@@ -164,7 +164,19 @@ public class RegisterTest extends FunctionalTest {
     public void testCaptcha() {
         Response response = GET("/captcha");
         assertStatus(200, response);
+    }
 
+    @Test
+    public void testCreateUserLoginNameError() {
+        Map<String, String> userParams = new HashMap<String, String>();
+        userParams.put("user.mobile", "123");
+        userParams.put("user.password", "123456");
+        userParams.put("user.confirmPassword", "1234567");
+//		userParams.put("user.captcha", "A2WQ");
+        userParams.put("randomID", "RANDOMID");
+        Cache.set("RANDOMID", "A2WQ", "30mn");
+        Response response = POST("/register", userParams);
+        assertEquals(0, Validation.errors().size());
     }
 
 
