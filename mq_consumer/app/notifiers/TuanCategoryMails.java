@@ -1,6 +1,7 @@
 package notifiers;
 
 import models.mail.MailMessage;
+import play.Play;
 import play.mvc.Mailer;
 
 /**
@@ -14,7 +15,7 @@ public class TuanCategoryMails extends Mailer {
     public static void notify(MailMessage message) {
         setSubject(message.getSubject());
         addRecipient(message.getRecipients().toArray(new String[message.getRecipients().size()]));
-        setFrom("yibaiquan <noreplay@uhuila.com>");
+        setFrom(Play.configuration.getProperty("mail.smtp.user"));
         send(message);
     }
 }

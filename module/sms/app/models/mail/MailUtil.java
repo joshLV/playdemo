@@ -10,6 +10,7 @@ public class MailUtil {
     public static final String OPERATOR_NOTIFICATION = Play.mode.isProd() ? "operator_notification" : "operator_notification_dev";
     public static final String GOODS_OFF_SALES_NOTIFY = Play.mode.isProd() ? "goods_off_sales_notify" : "goods_off_sales_dev";
     public static final String FINANCE_NOTIFICATION = Play.mode.isProd() ? "finance_notification" : "finance_notification_dev";
+    public static final String TUAN_CATEGORY_NOTIFY = Play.mode.isProd() ? "tuan_notification" : "tuan_notification_dev";
 
     private MailUtil() {
     }
@@ -36,6 +37,10 @@ public class MailUtil {
 
     public static void sendMail(MailMessage message) {
         RabbitMQPublisher.publish(GOODS_OFF_SALES_NOTIFY, message);
+    }
+
+    public static void sendTuanCategoryMail(MailMessage message) {
+        RabbitMQPublisher.publish(TUAN_CATEGORY_NOTIFY, message);
     }
 
 }
