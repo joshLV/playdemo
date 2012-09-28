@@ -42,6 +42,8 @@ import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
 import com.uhuila.common.util.PathUtil;
+import models.mail.MailMessage;
+import models.mail.MailUtil;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.supplier.Supplier;
@@ -60,6 +62,7 @@ import play.data.validation.MinSize;
 import play.data.validation.Required;
 import play.db.jpa.JPA;
 import play.db.jpa.Model;
+import play.i18n.Messages;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Money;
 import cache.CacheCallBack;
@@ -759,6 +762,34 @@ public class Goods extends Model {
                 new Date()).fetch(limit);
     }
 
+    public static List<Goods> findTuanTop(int limit,String tuan) {
+        // 找出需要的商品，然后手工过滤
+        List<Goods> goods = new ArrayList<>();
+        List<Goods> allGoods = Goods.find("status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by createdAt DESC",
+                GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit * 5);
+        String[] mailCategoriesId = new String[limit * 5];
+        int i = 0;
+        for (Goods g : allGoods) {
+            if (g.categories != null && g.categories.size() > 0 && g.categories.iterator() != null && g.categories.iterator().hasNext()) {
+                {
+                    Category category = g.categories.iterator().next();
+                    if (Messages.get(tuan+"." + category.id).contains("tuan360")) {
+                        {
+                            mailCategoriesId[i] = category.id.toString();
+                        }
+                    } else {
+                        goods.add(g);
+                    }
+                    if (goods.size() == limit) {
+                        break;
+                    }
+                }
+            }
+        }
+        return goods;
+    }
+
+
     /**
      * 根据商品分类和数量取出指定数量的商品.
      *
@@ -777,6 +808,9 @@ public class Goods extends Model {
         q.setMaxResults(limit);
         return q.getResultList();
     }
+
+
+
 
     public static List<Goods> findInIdList(List<Long> goodsIds) {
         if (goodsIds == null || goodsIds.size() == 0) {
@@ -1129,19 +1163,19 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findNewGoods(int limit) {
-    	// 找出5倍需要的商品，然后手工过滤
+        // 找出5倍需要的商品，然后手工过滤
         List<Goods> allGoods = Goods.find("status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by createdAt DESC",
                 GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit * 5);
         Set<Long> supplierSet = new HashSet<>();
         List<Goods> goods = new ArrayList<>();
         for (Goods g : allGoods) {
-        	if (!supplierSet.contains(g.supplierId)) {
-        		goods.add(g);
-        		supplierSet.add(g.supplierId);
-        	}
-        	if (goods.size() == limit) {
-        		break;
-        	}
+            if (!supplierSet.contains(g.supplierId)) {
+                goods.add(g);
+                supplierSet.add(g.supplierId);
+            }
+            if (goods.size() == limit) {
+                break;
+            }
         }
         return goods;
     }
