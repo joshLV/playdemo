@@ -26,7 +26,7 @@ public class TuanFeeds extends Controller {
         List<models.sales.Goods> goodsList = new ArrayList<>();
         if (categoryId == 0) {
             allGoods = models.sales.Goods.findTop(6 * 5);
-            Long[] mailCategoriesId = new Long[6 * 5];
+            String[] mailCategoriesId = new String[6 * 5];
             int i = 0;
             for (models.sales.Goods g : allGoods) {
                 if (g.categories != null && g.categories.size() > 0 && g.categories.iterator() != null && g.categories.iterator().hasNext()) {
@@ -34,7 +34,7 @@ public class TuanFeeds extends Controller {
                         Category category = g.categories.iterator().next();
                         if (Messages.get(tuan + "." + category.id).contains(tuan)) {
                             {
-                                mailCategoriesId[i++] = category.id;
+                                mailCategoriesId[i++] = category.name;
                             }
                         } else {
                             goodsList.add(g);
@@ -47,7 +47,7 @@ public class TuanFeeds extends Controller {
             }
         } else {
             allGoods = models.sales.Goods.findTopByCategory(categoryId, 6 * 5);
-            Long[] mailCategoriesId = new Long[6 * 5];
+            String[] mailCategoriesId = new String[6 * 5];
             int i = 0;
             for (models.sales.Goods g : allGoods) {
                 if (g.categories != null && g.categories.size() > 0 && g.categories.iterator() != null && g.categories.iterator().hasNext()) {
@@ -55,7 +55,7 @@ public class TuanFeeds extends Controller {
                         Category category = g.categories.iterator().next();
                         if (Messages.get(tuan + "." + category.id).contains(tuan)) {
                             {
-                                mailCategoriesId[i++] = category.id;
+                                mailCategoriesId[i++] = category.name;
                             }
                         } else {
                             goodsList.add(g);

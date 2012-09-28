@@ -33,4 +33,9 @@ public class MailUtil {
     public static void sendFinanceNotificationMail(MailMessage message) {
         RabbitMQPublisher.publish(FINANCE_NOTIFICATION, message);
     }
+
+    public static void sendMail(MailMessage message) {
+        RabbitMQPublisher.publish(GOODS_OFF_SALES_NOTIFY, message);
+    }
+
 }
