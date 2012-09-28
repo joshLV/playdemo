@@ -3,7 +3,14 @@
 <head>[一百券] ${message.getParam("tuanName")}</head>
 
 <p>
-${message.getParam("categoryName")} 没有收录到 ${message.getParam("tuanName")}的分类中，请尽快处理！
+<ul>
+#{list items:mailCategoryList, as:'category'}
+
+<li>${category?.id} :  ${category?.name}</li>
+
+#{/list}
+</ul>
+    以上条目没有收录到 ${message.getParam("tuanName")}的分类中，请尽快处理！
     <br/></br>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----一百券
 </p>
