@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+    <apiversion>3.0</apiversion>
+    <!-- api的版本,如果无特殊要求,无需更改-->
+    <site_name>一百券</site_name>
+    <!-- 网站名称，[必填]-->
+    <!-- [注意]-开发接口前必读，请完全按照以下规范来撰写，请勿自己定义节点名称-->
+
+    <goodsdata>
+        #{list goodsList, as:'goods'}
+        <goods id="1">
+            <!-- API的id排序，以1.2.3.4排列，非团购网站产品id，id=1，默认为主推商品。[必填]-->
+            <pid>${goods.id}</pid>
+            <!-- 商品的唯一id,相当于主键，[必填]-->
+
+            <city_name>上海</city_name>
+            <!--城市名称（城市名称不需要附带省、市、区、县等字，如果是全国范围，则填写：全国 ,[必填]-->
+
+            <site_url>http://www.yibaiquan.com?tj=tuan360-${goods.id}</site_url>
+            <!-- 网站站点地址，[必填]-->
+
+            <title>${goods.title}</title>
+            <!-- 商品的短标题，20个汉字以内，[必填]-->
+
+            <goods_url>http://www.yibaiquan.com/g/${goods.id}?tj=tuan360-${goods.id}</goods_url>
+            <!-- 商品地址，[必填]-->
+
+            <desc>${goods?.details}</desc>
+            <!-- 商品描述，为网站商品完整描述，[必填]-->
+
+            <class>#{list goods.getCategories(), as:'category'}#{if category.name} #{/if} #{/list}</class>
+            <!-- 商品类别，必须从下列分类中的选择一个：“餐饮美食 、休闲娱乐、 美容保健 、精品购物 、优惠券票、其他” ，不得自主填写类别，[必填]-->
+            <!-- 增加分类旨在为用户提供更好的团购体验，团购商品无分类的合作伙伴，请想办法提供精确的分类，分类错误的，将无法抓取接口数据-->
+            <img_url>${goods.imageMiddlePath}</img_url>
+            <!-- 商品头图，为了使页面效果更美观，现规定图片格式为.jpg，尺寸为270*160像素（或等比值），图片请勿描边，避免上传大图，[必填]-->
+
+            <original_price>${goods.faceValue}</original_price>
+            <!-- 原价，浮点型，单位：元，[必填]-->
+
+            <sale_price>${goods.salePrice}</sale_price>
+            <!-- 售价，浮点型，单位：元，[必填]-->
+
+            <sale_rate>${goods.discountExpress1}</sale_rate>
+            <!-- 折扣，浮点型，单位：元，[必填]-->
+
+            <sales_num>${goods.saleCount + goods.baseSale}</sales_num>
+            <!-- 购买人数，[必填]-->
+
+            <start_time>
+                ${goods.firstOnSaleAt == null ? goods.effectiveAt?.format("yyyy-MM-dd HH:mm:ss") : goods.firstOnSaleAt?.format("yyyy-MM-dd HH:mm:ss")}
+            </start_time>
+            <!-- 团购开始时间，日期，格式为：YYYYMMDDHHMMSS，[必填]-->
+
+            <close_time>${goods.expireAt?.format("yyyy-MM-dd HH:mm:ss")}</close_time>
+            <!-- 团购结束时间，日期，格式为：YYYYMMDDHHMMSS，[必填]-->
+
+            <!-- 以下信息为团购商家信息，商家地址目前只支持一个地址，请合作伙伴自主选择，各节点中请勿出现标签，换行符等，若团购商品为邮购类，相关项可为空，非邮购类则为必填-->
+
+            #{if goods.getShopList()?.size() >0}
+            #{set i:1/}
+            #{set i=1/}
+            #{list goods.getShopList(), as:'shop'}
+            #{if i==1}
+            <merchant_name>${shop.name}</merchant_name>
+            <!-- 商家名称，若团购商品为邮购类，可为空[必填] -->
+
+            <merchant_tel>${shop.phone}</merchant_tel>
+            <!-- 联系电话， [必填] -->
+            #{/if}
+            #{set i++/}
+            #{/list}
+
+            #{/if}
+
+            <merchants>
+                <!-- 多商铺信息[必填] -->
+                #{if goods.getShopList()?.size() >0}
+                #{list goods.getShopList(), as:'shop'}
+                <merchant>
+                    <name>${shop.name}</name>
+                    <!-- 商家名称，若团购商品为邮购类，可为空[必填] -->
+
+                    <addr>${shop.address}</addr>
+                    <!-- 若团购商品为邮购类，可为空，[选填] -->
+
+                    <tel>${shop.phone}</tel>
+                    <!-- 联系电话， [必填] -->
+                </merchant>
+                #{/list}
+                #{/if}
+                <!--第二个商家 -->
+            </merchants>
+            <!--为保证兼容性，之前商家字段：merchant_name、merchant_tel、merchant_addr、hot_area、longitude、latitude、照常填写。在新增的merchants字段里把所有的商家信息都再填写一次（包括单店铺和多店铺） -->
+
+        </goods>
+        #{/list}
+    </goodsdata>
+</data>
