@@ -45,7 +45,7 @@ public class FindPassword extends Controller {
         boolean isExisted = false;
         
         if (StringUtils.isNotEmpty(from) && from.indexOf("@") != -1) {
-            isExisted = User.isExisted(from);
+            isExisted = User.checkAndSendEmail(from);
         } else {
         	
             isExisted = User.checkMobile(from);

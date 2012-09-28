@@ -28,7 +28,7 @@
             <desc>${goods?.details}</desc>
             <!-- 商品描述，为网站商品完整描述，[必填]-->
 
-            <class>#{list goods.getCategories(), as:'category'}#{if category.name} #{/if} #{/list}</class>
+            <class>#{list goods.getCategories(), as:'category'}  &{'tuan360category.'+category?.id} #{/list}</class>
             <!-- 商品类别，必须从下列分类中的选择一个：“餐饮美食 、休闲娱乐、 美容保健 、精品购物 、优惠券票、其他” ，不得自主填写类别，[必填]-->
             <!-- 增加分类旨在为用户提供更好的团购体验，团购商品无分类的合作伙伴，请想办法提供精确的分类，分类错误的，将无法抓取接口数据-->
             <img_url>${goods.imageMiddlePath}</img_url>

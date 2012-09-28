@@ -20,7 +20,7 @@ public class FindPasswordUnitTest extends UnitTest {
 		Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user_test1");
 		User user= User.findById(userId);
 		String loginName ="selenium1@uhuila.com";
-		boolean  isExisted= user.isExisted(loginName);
+		boolean  isExisted= user.checkAndSendEmail(loginName);
 		assertTrue(isExisted);
 	}
 	

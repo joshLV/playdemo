@@ -160,7 +160,7 @@ public class User extends Model {
      * @param loginName 用户名
      * @return 用户名是否存在
      */
-    public static boolean isExisted(String loginName) {
+    public static boolean checkAndSendEmail(String loginName) {
         boolean isExisted = false;
         User user = findByLoginName(loginName);
         //用户名存在的情况
