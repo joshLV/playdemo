@@ -166,7 +166,7 @@ public class User extends Model {
         //用户名存在的情况
         if (user != null) {
             isExisted = true;
-            String token = user.id + loginName;
+            String token = user.id + loginName + System.currentTimeMillis();
             token = DigestUtils.md5Hex(token);
             user.passwordToken = token;
             user.sendMailAt = new Date();
