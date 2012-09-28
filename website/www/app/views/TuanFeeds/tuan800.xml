@@ -2,14 +2,14 @@
 <urlset>
 #{list goodsList, as:'goods'}
 	<url>
-		<loc>http://www.yibaiquan.com/g/${goods.id}</loc>
+		<loc>http://www.yibaiquan.com/g/${goods.id}?tj=tuan800-${goods.id}</loc>
 		<data>
 			<display>
 				<website>一百券</website>
 				<!-- 站点名称［选填］ -->
 				<identifier>${goods.id}</identifier>
 				<!-- 站点团购信息 永久唯一ID ,字符串,这个ID是您网站内部的ID,保证历史上每个团购都有不同的 ID, 并且每个团购ID不变,即使url变化,比如直接用数据库中的id,或者进行一些处理［选填］ -->
-				<siteurl>http://www.yibaiquan.com</siteurl>
+				<siteurl>http://www.yibaiquan.com?tj=tuan800-${goods.id}</siteurl>
 				<!-- 团购首页地址［必填］ -->
 				<city>上海</city>
 				<!-- 城市名称（城市名称不需要附带省、市、区、县等字，如果是全国范围请指明：全国,并且在title中加入“全国” 二字） [必填］ -->
