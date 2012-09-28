@@ -19,7 +19,7 @@
 				<!-- 团购短标题［选填］ -->
 				<image>${goods.imageMiddlePath}</image>
 				<!-- 团购图片url［必填］ -->
-				<tag>#{list goods.getCategories(), as:'category'}${category.tuan800name == null ? category.name : category.tuan800name}${category_isLast ?'':',' }#{/list}</tag>
+				<tag>#{list goods.getCategories(), as:'category'} &{'tuan800category.'+category?.id} ${category_isLast ?'':',' }#{/list}</tag>
 				<!-- 标签，从食品饮料，化妆品，家居用品，服装鞋袜，配件饰品，孕婴儿童，其他网购，游乐游艺，运动健身，摄影写真， 电影票，温泉洗浴，养生按摩，健康护理，赛事演出，聚会欢畅，数码家电，美容塑形，其他娱乐，教育培训，报刊杂志，地方菜系， 
 					海鲜，蛋糕甜品，日韩亚系，西餐国际，火锅烧烤，快餐休闲，旅游，酒店，车房，其他生活，自助，门票郊游，文体户外，其他， 0元抽奖 里选择，可多选，用','(半角逗号)分开 
 					[必填] -->
