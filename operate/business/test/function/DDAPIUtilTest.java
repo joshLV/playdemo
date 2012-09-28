@@ -207,5 +207,4 @@ public class DDAPIUtilTest extends FunctionalTest {
         assertEquals(ErrorCode.ECOUPON_NOT_EXITED, failureLog.errorCode);
         assertEquals(ecoupon.order.id, failureLog.orderId);
     }
-
 }

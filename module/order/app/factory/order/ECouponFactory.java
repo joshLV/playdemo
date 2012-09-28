@@ -20,7 +20,7 @@ public class ECouponFactory extends ModelFactory<ECoupon> {
 
     @Override
     public ECoupon define(){
-        Order order = FactoryBoy.create(Order.class);
+        Order order = FactoryBoy.last(Order.class);
         OrderItems orderItems = FactoryBoy.create(OrderItems.class);
         Shop shop = FactoryBoy.create(Shop.class);
         Goods goods = FactoryBoy.create(Goods.class);

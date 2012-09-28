@@ -875,12 +875,16 @@ public class ECoupon extends Model {
         if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED
                 && eCoupon.downloadTimes > 0 && eCoupon
                 .downloadTimes < 4) {
-            send(eCoupon, phone);
-            eCoupon.downloadTimes--;
-            eCoupon.save();
+            sendUserMessageWithoutCheck(phone, eCoupon);
             sendFlag = true;
         }
         return sendFlag;
+    }
+
+    public static void sendUserMessageWithoutCheck(String phone, ECoupon eCoupon) {
+        send(eCoupon, phone);
+        eCoupon.downloadTimes--;
+        eCoupon.save();
     }
 
     /**
@@ -896,9 +900,7 @@ public class ECoupon extends Model {
         if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED
                 && eCoupon.downloadTimes > 0 && eCoupon
                 .downloadTimes < 4) {
-            send(eCoupon, null);
-            eCoupon.downloadTimes--;
-            eCoupon.save();
+            sendUserMessageWithoutCheck(null, eCoupon);
             sendFlag = true;
         }
         return sendFlag;
