@@ -13,7 +13,7 @@
         </div>
 
         #{if action=="verify"}
-            #{form @CashCoupons.verify(), method:'POST', class:'recharge-form'}
+            #{form @UserCashCoupons.verify(), method:'POST', class:'recharge-form'}
                 #{if suc}
                     <div class="item item-success"> ${suc} </div>
                 #{/if}
@@ -41,7 +41,7 @@
             #{/form}
         #{/if}
         #{elseif action=="use"}
-            #{form @CashCoupons.useCoupon(), method:'POST', class:'recharge-form'}
+            #{form @UserCashCoupons.useCoupon(), method:'POST', class:'recharge-form'}
                 <div class="item">
                     名 称：${coupon?.name}<br>
                     金 额：<em class="cash">${coupon?.faceValue}</em>元

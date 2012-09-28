@@ -21,7 +21,7 @@ import java.util.Date;
  *         Date: 12-9-20
  */
 @With({SecureCAS.class, WebsiteInjector.class})
-public class CashCoupons extends Controller{
+public class UserCashCoupons extends Controller{
     public static void index(){
         BreadcrumbList breadcrumbs = new BreadcrumbList("现金券充值", "/cash-coupon");
         User user = SecureCAS.getUser();
@@ -47,6 +47,8 @@ public class CashCoupons extends Controller{
             coupon = CashCoupon.find("byChargeCode", couponCode).first();
             if (coupon == null){
                 errMsg = "现金券充值密码输入错误";
+            }else if (CashCoupon.find("byUserIdAndName", user.getId(), coupon.name).first() != null ){
+                errMsg = "您已经领取过一次【" + coupon.name + "】";
             }else if(coupon.chargedAt != null || coupon.userId != null){
                 errMsg = "该现金券已被使用";
             }else if(coupon.deleted == DeletedStatus.DELETED){
@@ -63,7 +65,7 @@ public class CashCoupons extends Controller{
         Cache.delete(randomID);
         randomID = Codec.UUID();
         BreadcrumbList breadcrumbs = new BreadcrumbList("现金券充值", "/cash-coupon");
-        render("CashCoupons/index.html",randomID, errMsg,
+        render("UserCashCoupons/index.html",randomID, errMsg,
                 breadcrumbs, user, account, action, coupon, ridA, ridB, couponCode);
     }
 
@@ -92,7 +94,7 @@ public class CashCoupons extends Controller{
         Cache.delete(ridB);
         String randomID = Codec.UUID();
         BreadcrumbList breadcrumbs = new BreadcrumbList("现金券充值", "/cash-coupon");
-        render("CashCoupons/index.html",randomID, suc, errMsg, breadcrumbs, user, account, action);
+        render("UserCashCoupons/index.html",randomID, suc, errMsg, breadcrumbs, user, account, action);
     }
 
 }
