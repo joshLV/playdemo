@@ -76,19 +76,20 @@ public class UserCashCoupons extends Controller{
         String suc = null;
         String action = "verify";
 
-        if(Cache.get(ridA) == null || Cache.get(ridB) == null || !Cache.get(ridA).equals(ridB)){
+        if(Cache.get(ridA) == null || Cache.get(ridB) == null || !((String)Cache.get(ridA)).equals(ridB)){
             errMsg = "验证失败";
-        }
-        CashCoupon coupon = CashCoupon.findById((Long)Cache.get(ridB));
-        if(coupon == null || coupon.chargedAt != null || coupon.userId != null){
-            errMsg = "验证失败";
-        }else {
-            suc = "充值成功";
-            coupon.chargedAt = new Date();
-            coupon.userId = user.getId();
-            coupon.save();
-            TradeBill tradeBill = TradeUtil.createPromotionChargeTrade(account, coupon.faceValue, null);
-            TradeUtil.success(tradeBill, "代金券: " + coupon.name + " 充值" + coupon.faceValue + "元");
+        }else{
+            CashCoupon coupon = CashCoupon.findById((Long)Cache.get(ridB));
+            if(coupon == null || coupon.chargedAt != null || coupon.userId != null){
+                errMsg = "验证失败";
+            }else {
+                suc = "充值成功";
+                coupon.chargedAt = new Date();
+                coupon.userId = user.getId();
+                coupon.save();
+                TradeBill tradeBill = TradeUtil.createPromotionChargeTrade(account, coupon.faceValue, null);
+                TradeUtil.success(tradeBill, "代金券: " + coupon.name + " 充值" + coupon.faceValue + "元");
+            }
         }
         Cache.delete(ridA);
         Cache.delete(ridB);
