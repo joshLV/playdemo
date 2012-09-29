@@ -261,6 +261,7 @@ public class Goods extends Controller {
         
         String tjUrl = "http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/g/" + goods.id;
         if (user != null) {
+        	user.generatePromoterCode();
         	tjUrl += "?tj=" + user.promoterCode;
         } else {
         	tjUrl += "?tj=gshare";
