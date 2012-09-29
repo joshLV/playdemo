@@ -1,16 +1,13 @@
 package function;
 
-import models.consumer.User;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import models.admin.OperateUser;
+import models.consumer.User;
 import models.order.ECoupon;
-import models.order.Order;
-import models.order.OrderItems;
 import models.sales.ConsultRecord;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
@@ -24,10 +21,9 @@ import java.util.Map;
  * User: wangjia
  * Date: 12-9-25
  * Time: 下午3:06
- * To change this template use File | Settings | File Templates.
  */
 public class OperateCRMTest extends FunctionalTest {
-
+    User user1;
     @Before
     public void setUp() {
 
@@ -41,7 +37,7 @@ public class OperateCRMTest extends FunctionalTest {
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
 
-
+        user1 = FactoryBoy.lastOrCreate(User.class);
     }
 
     @Test
@@ -53,7 +49,6 @@ public class OperateCRMTest extends FunctionalTest {
 
     @Test
     public void indexConditionNullTest() {
-        User user1 = FactoryBoy.create(User.class);
         String phone = "15026682165";
         String record = "1028";
         Http.Response response = GET("/callcenter/phone/" + phone + "/record/" + record);
@@ -62,7 +57,6 @@ public class OperateCRMTest extends FunctionalTest {
 
     @Test
     public void indexConditionNotNullTest() {
-        User user1 = FactoryBoy.create(User.class);
         String phone = "15026682165";
         String record = "1028";
         Http.Response response = GET("/callcenter/phone/" + phone + "/record/" + record + "?condition.userId=" + user1.id);
@@ -71,7 +65,6 @@ public class OperateCRMTest extends FunctionalTest {
 
     @Test
     public void indexSearchOrderCouponTest() {
-        User user1 = FactoryBoy.create(User.class);
         String phone = "15026682165";
         String record = "1028";
         Http.Response response = GET("/callcenter/phone/" + phone + "/record/" + record + "?condition.searchOrderCoupon=" + "456" + "&condition.userId=" + user1.id);
@@ -101,7 +94,6 @@ public class OperateCRMTest extends FunctionalTest {
 
     @Test
     public void tempSaveErrorConditionNotNullTest() {
-        User user1 = FactoryBoy.create(User.class);
         ConsultRecord consult = FactoryBoy.create(ConsultRecord.class);
         Map<String, String> params = new HashMap<>();
         params.put("consultId", consult.id.toString());
@@ -197,7 +189,6 @@ public class OperateCRMTest extends FunctionalTest {
 
     @Test
     public void bindSearchUserTest() {
-        User user1 = FactoryBoy.create(User.class);
         Http.Response response = GET("/crm/bind_search_user?userId=" + user1.id);
         assertStatus(200, response);
     }

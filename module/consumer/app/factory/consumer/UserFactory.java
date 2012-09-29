@@ -25,7 +25,7 @@ public class UserFactory extends ModelFactory<User> {
         user.mobile = "15026682165";
         user.promoterCode = "qweu2a";
 
-        user.userInfo=FactoryBoy.last(UserInfo.class);
+        user.userInfo = FactoryBoy.lastOrCreate(UserInfo.class);
         return user;
     }
 
@@ -40,8 +40,6 @@ public class UserFactory extends ModelFactory<User> {
         user.loginName = "11@qq.com";
         return user;
     }
-
-
 
 
 }

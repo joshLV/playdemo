@@ -17,7 +17,6 @@ import play.test.UnitTest;
  * User: hejun
  * Date: 12-8-21
  * Time: 上午9:16
- * To change this template use File | Settings | File Templates.
  */
 public class ECouponUnitFactoryTest extends UnitTest {
 
