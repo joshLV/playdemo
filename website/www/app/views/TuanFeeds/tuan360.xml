@@ -8,7 +8,7 @@
 
     <goodsdata>
         #{list goodsList, as:'goods'}
-        <goods id="1">
+        <goods id="${goods_index}">
             <!-- API的id排序，以1.2.3.4排列，非团购网站产品id，id=1，默认为主推商品。[必填]-->
             <pid>${goods.id}</pid>
             <!-- 商品的唯一id,相当于主键，[必填]-->
@@ -25,7 +25,7 @@
             <goods_url>http://www.yibaiquan.com/g/${goods.id}?tj=tuan360-${goods.id}</goods_url>
             <!-- 商品地址，[必填]-->
 
-            <desc>${goods?.details}</desc>
+            <desc><![CDATA[${goods?.details?.raw()}]]></desc>
             <!-- 商品描述，为网站商品完整描述，[必填]-->
 
             <class>#{list goods.getCategories(), as:'category'}  &{'tuan360category.'+category?.id} #{/list}</class>
@@ -57,18 +57,12 @@
             <!-- 以下信息为团购商家信息，商家地址目前只支持一个地址，请合作伙伴自主选择，各节点中请勿出现标签，换行符等，若团购商品为邮购类，相关项可为空，非邮购类则为必填-->
 
             #{if goods.getShopList()?.size() >0}
-            #{set i:1/}
-            #{set i=1/}
-            #{list goods.getShopList(), as:'shop'}
-            #{if i==1}
-            <merchant_name>${shop.name}</merchant_name>
+
+            <merchant_name>${goods.getShopList().iterator().next().name}</merchant_name>
             <!-- 商家名称，若团购商品为邮购类，可为空[必填] -->
 
-            <merchant_tel>${shop.phone}</merchant_tel>
+            <merchant_tel>${goods.getShopList().iterator().next().phone}</merchant_tel>
             <!-- 联系电话， [必填] -->
-            #{/if}
-            #{set i++/}
-            #{/list}
 
             #{/if}
 

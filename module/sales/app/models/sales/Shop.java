@@ -14,6 +14,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -26,7 +27,7 @@ import com.uhuila.common.constants.DeletedStatus;
 public class Shop extends Model {
 
     private static final long serialVersionUID = 36632320609113062L;
-    
+
     @Column(name = "supplier_id")
     public long supplierId;
 
@@ -93,10 +94,10 @@ public class Shop extends Model {
     public String districtId;
 
 
-    public static final String CACHEKEY = "SHOP";    
-    
+    public static final String CACHEKEY = "SHOP";
+
     public static final String CACHEKEY_SUPPLIERID = "SHOP_SUPPLIER_ID";
-    
+
     @Override
     public void _save() {
         CacheHelper.delete(CACHEKEY);
@@ -104,15 +105,15 @@ public class Shop extends Model {
         CacheHelper.delete(CACHEKEY_SUPPLIERID + this.supplierId);
         super._save();
     }
-    
+
     @Override
     public void _delete() {
         CacheHelper.delete(CACHEKEY);
-        CacheHelper.delete(CACHEKEY + this.id);        
+        CacheHelper.delete(CACHEKEY + this.id);
         CacheHelper.delete(CACHEKEY_SUPPLIERID + this.supplierId);
         super._delete();
     }
-    
+
     /**
      * 读取某商户的全部门店记录
      *
@@ -169,4 +170,13 @@ public class Shop extends Model {
         return false;
     }
 
+    public String getAreaName() {
+        String areaName;
+        Area area = Area.findById(areaId);
+        if (area == null)
+            return "";
+        else
+            areaName = area.name;
+        return areaName;
+    }
 }

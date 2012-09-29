@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<urlset>
+
+    #{list goodsList, as:'goods'}
+    <url>
+        <loc>http://www.yibaiquan.com/g/${goods.id}?tj=tuanbaidu-${goods.id}</loc>
+        <waploc></waploc>
+        <data>
+            <display>
+                <website>一百券</website>
+                <siteurl>http://www.yibaiquan.com?tj=tuanbaidu-${goods.id}</siteurl>
+                <city>上海</city>
+                <category>#{list goods.getCategories(), as:'category'}&{'tuanBaiduCategory1.'+category?.id}#{/list}
+                </category>
+                <subcategory>#{list goods.getCategories(), as:'category'}&{'tuanBaiduCategory2.'+category?.id}#{/list}</subcategory>
+                <characteristic></characteristic>
+                <destination></destination>
+                <thrcategory></thrcategory>
+                <dpshopid></dpshopid>
+
+                #{if goods.getShopList()?.size() >0}
+                <address>${goods.getShopList().iterator().next().address}</address>
+                <range>${goods.getShopList().iterator().next().getAreaName()}</range>
+                <major>#{if goods_index==1} 1 #{/if} #{else}0#{/else}</major>
+                <title>${goods.name}</title>
+                <image>${goods.imageMiddlePath}</image>
+                <startTime>
+                    ${goods.firstOnSaleAt == null ? goods.effectiveAt?.format("yyyy-MM-dd HH:mm:ss") : goods.firstOnSaleAt?.format("yyyy-MM-dd HH:mm:ss")}
+                </startTime>
+                <endTime>${goods.expireAt?.format("yyyy-MM-dd HH:mm:ss")}</endTime>
+                <value>${goods.faceValue}</value>
+                <price>${goods.salePrice}</price>
+                <rebate>${goods.discountExpress1}</rebate>
+                <bought>${goods.saleCount + goods.baseSale}</bought>
+                <name>${goods.title}</name>
+                <seller>${goods.getSupplierName()}${goods.getShopList().iterator().next().name}</seller>
+                <phone>${goods.getShopList().iterator().next().phone}</phone>
+                <coords></coords>
+                #{/if}
+            </display>
+        </data>
+    </url>
+
+    #{/list}
+</urlset>

@@ -762,7 +762,7 @@ public class Goods extends Model {
                 new Date()).fetch(limit);
     }
 
-    public static List<Goods> findTuanTop(int limit,String tuan) {
+    public static List<Goods> findTuanTop(int limit, String tuan) {
         // 找出需要的商品，然后手工过滤
         List<Goods> goods = new ArrayList<>();
         List<Goods> allGoods = Goods.find("status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by createdAt DESC",
@@ -773,7 +773,7 @@ public class Goods extends Model {
             if (g.categories != null && g.categories.size() > 0 && g.categories.iterator() != null && g.categories.iterator().hasNext()) {
                 {
                     Category category = g.categories.iterator().next();
-                    if (Messages.get(tuan+"." + category.id).contains("tuan360")) {
+                    if (Messages.get(tuan + "." + category.id).contains("tuan360")) {
                         {
                             mailCategoriesId[i] = category.id.toString();
                         }
@@ -808,8 +808,6 @@ public class Goods extends Model {
         q.setMaxResults(limit);
         return q.getResultList();
     }
-
-
 
 
     public static List<Goods> findInIdList(List<Long> goodsIds) {
@@ -1243,6 +1241,17 @@ public class Goods extends Model {
         }
         Goods g = Goods.findById(this.id);
         return g.categories;
+    }
+
+    public String getSupplierName() {
+        String supplierName;
+        Supplier supplier = getSupplier();
+        if (supplier == null)
+            return "";
+        else
+            supplierName = supplier.otherName == null ? supplier.fullName : supplier.otherName;
+        return supplierName;
+
     }
 
 }

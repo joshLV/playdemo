@@ -25,6 +25,12 @@ public class TuanFeeds extends Controller {
         render(goodsList);
     }
 
+    public static void tuanBaidu(final long categoryId) {
+        getTopGoods(categoryId, "tuanBaiduCategory1", "百度团【一级分类】", 6);
+        List<models.sales.Goods> goodsList = getTopGoods(categoryId, "tuanBaiduCategory2", "百度团【二级分类】", 6);
+        render(goodsList);
+    }
+
     private static List<models.sales.Goods> getTopGoods(final long categoryId, final String tuanCategory, final String tuanNane, int limit) {
         List<models.sales.Goods> allGoods = null;
 

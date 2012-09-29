@@ -3,12 +3,15 @@ package factory.sales;
 import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
+import models.sales.Category;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.supplier.Supplier;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import static util.DateHelper.afterDays;
 
@@ -28,6 +31,8 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.saleCount = 10;
         goods.useWeekDay = "1,2,3,4,5,6,7";
         goods.originalPrice = new BigDecimal("5");
+        goods.categories = new HashSet<>();
+        goods.categories.add(FactoryBoy.last(Category.class));
         return goods;
     }
 
