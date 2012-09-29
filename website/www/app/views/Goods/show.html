@@ -49,6 +49,15 @@
         }
     });
 
+    $('#qq').click(function(e) {
+            e.preventDefault();
+            $('#share-im').slideToggle(100);
+    });
+
+    $('#share-url').click(function(){
+        $(this).select();
+    });
+
 </script>
 #{/set}
 
@@ -146,52 +155,21 @@
                 <b class="index-tips" style="display:none"><s class="index-close" title="关闭"></s></b>
             </div>
             <div class="qvalue">${goods.brand?.introduce?.raw()}</div>
-            <div class="bdshare clearfix">
-                *{<!-- Baidu Button BEGIN -->}*
-                *{<div id="bdshare" class="bdshare_t bds_tools_32 get-codes-bdshare">}*
-                    *{<a class="bds_tsina"></a>}*
-                    *{<a class="bds_qzone"></a>}*
-                    *{<a class="bds_renren"></a>}*
-                    *{<a class="bds_kaixin001"></a>}*
-                    *{<a class="bds_taobao"></a>}*
-                    *{<a class="bds_tqq"></a>}*
-                    *{<a class="bds_douban"></a>}*
-                    *{<a class="bds_msn"></a>}*
-                    *{<a class="bds_baidu"></a>}*
-                    *{<span class="bds_more">更多</span>}*
-                *{</div>}*
-                *{<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=763119" ></script>}*
-                *{<script type="text/javascript" id="bdshell_js"></script>}*
-                *{<script type="text/javascript">}*
-                    *{document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();}*
-                *{</script>}*
-                *{<!-- Baidu Button END -->}*
-            </div>
         </div>
         <!-- #bizinfo -->
     </div>
-
-    <!-- Baidu Button BEGIN -->
-    <div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare">
-        <span class="bds_more">分享到：</span>
-        <a class="bds_tsina"></a>
-        <a class="bds_qzone"></a>
-        <a class="bds_renren"></a>
-        <a class="bds_kaixin001"></a>
-        <a class="bds_taobao"></a>
-        <a class="bds_tqq"></a>
-        <a class="bds_douban"></a>
-        <a class="bds_msn"></a>
-        <a class="bds_baidu"></a>
-    </div>
-    <div style="clear:both"></div>
-    <!-- <script type="text/javascript" id="bdshare_js" data="type=tools&mini=1&uid=763119" ></script> -->
-    <!-- <script type="text/javascript" id="bdshell_js"></script> -->
-    <!-- <script type="text/javascript"> -->
-        <!-- document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours(); -->
-*{//    </script>}*
-    <!-- Baidu Button END -->
     <!-- #summary -->
+
+    <div id="share" class="clearfix"> 
+        <span>分享得返利：</span>
+        <a class="qq" id="qq" href=""></a>
+        <a class="weibo" href="http://service.weibo.com/share/share.php?url=&amp;appkey=&amp;title=物价飞涨，工资跑不过CPI？口袋里的钞票能买的东西越来越少？赶紧学学我的省钱绝招吧，吃喝玩乐、家居旅游，一百券一站搞定，省钱又省力！戳这里注册 http://www.yibaiquan.com?tj=0ff60b 还能折上再减1%，跟我一起来拯救钱包吧！&amp;pic=&amp;ralateUid=&amp;language=" target="_blank"></a>
+        <a class="qzone" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http%3A%2F%2F127.0.0.1%2Fyome%2F%3Fpage%3Dhome%2Fdetail%23763119-qzone-1-45561-7196b72fb4cbce07def00d6cb135c557&title=%E4%B8%80%E7%99%BE%E5%88%B8&desc=&summary=&site=" target="_blank"></a>
+        <a class="tqq" href="http://share.v.t.qq.com/index.php?c=share&a=index&url=http%3A%2F%2F127.0.0.1%2Fyome%2F%3Fpage%3Dhome%2Fdetail%23763119-tqq-1-73410-735db08e24ad481a3b3b6588e1710d0d&title=%E4%B8%80%E7%99%BE%E5%88%B8&appkey=801cf76d3cfc44ada52ec13114e84a96" target="_blank"></a>
+        <a class="renren" href="http://widget.renren.com/dialog/share?resourceUrl=http%3A%2F%2F127.0.0.1%2Fyome%2F%3Fpage%3Dhome%2Fdetail%23763119-renren-1-74560-e1859317d45191941ae20620b0ad541a&srcUrl=http%3A%2F%2F127.0.0.1%2Fyome%2F%3Fpage%3Dhome%2Fdetail%23763119-renren-1-74560-e1859317d45191941ae20620b0ad541a&title=%E4%B8%80%E7%99%BE%E5%88%B8&description=" target="_blank"></a>
+    </div>
+    <div id="share-im"><label for="share-url">复制链接分享给站外好友：</label><input type="text" id="share-url" class="input" value="http://www.yibaiquan.com/detail/12" readonly /></div>
+
 #{if goods.materialType == models.sales.MaterialType.ELECTRONIC}
     <div id="diagram">
         <img src="http://img.uhcdn.com/images/y/diagram.png" alt="消费流程示意图" width="960" height="37"/>
