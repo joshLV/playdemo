@@ -32,7 +32,7 @@ public class Orders extends Controller {
     public static String WWW_URL = Play.configuration.getProperty("application.baseUrl", "");
     public static final String PROMOTER_COOKIE = "promoter_track";
 
-    private static String getQueryStringWithoutDdiscountSN() {
+    private static String getQueryStringWithoutDiscountSN() {
         List<String> kvs = new ArrayList<>();
         for (String key : request.params.all().keySet()) {
             if (!"discountSN".equals(key) && !"body".equals(key)) {
@@ -74,8 +74,8 @@ public class Orders extends Controller {
 
         User user = SecureCAS.getUser();
         List<String> orderItems_mobiles = OrderItems.getMobiles(user);
+        renderArgs.put("querystring", getQueryStringWithoutDiscountSN());
         //用于重新刷新整个页面
-        renderArgs.put("querystring", getQueryStringWithoutDdiscountSN());
         render(user, orderItems_mobiles);
     }
 
@@ -425,6 +425,7 @@ public class Orders extends Controller {
         User user = SecureCAS.getUser();
         String[] itemSplits = items.split(",");
         for (String split : itemSplits) {
+            System.out.println("split:" + split);
             String[] goodsItem = split.split("-");
             if (goodsItem.length == 2) {
                 Integer number = Integer.parseInt(goodsItem[1]);

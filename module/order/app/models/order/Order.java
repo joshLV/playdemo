@@ -17,7 +17,13 @@ import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.resale.Resaler;
 import models.resale.util.ResaleUtil;
-import models.sales.*;
+import models.sales.Goods;
+import models.sales.GoodsCouponType;
+import models.sales.GoodsStatistics;
+import models.sales.ImportedCoupon;
+import models.sales.ImportedCouponStatus;
+import models.sales.MaterialType;
+import models.sales.SecKillGoodsItem;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
@@ -28,11 +34,27 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 
 @Entity
@@ -747,12 +769,14 @@ public class Order extends Model {
         if (user == null) {
             user = new User();
         }
+
         JPAExtPaginator<Order> orderPage = new JPAExtPaginator<>
                 ("Order o", "o", Order.class, condition.getFilter(user),
                         condition.paramsMap)
                 .orderBy(condition.getUserOrderByExpress());
         orderPage.setPageNumber(pageNumber);
         orderPage.setPageSize(pageSize);
+        System.out.println("orderPage.size():" + orderPage.size());
         return orderPage;
     }
 

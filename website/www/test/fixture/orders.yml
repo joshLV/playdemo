@@ -57,6 +57,7 @@ order.Order(order_unpaid):
   "payMethod": "alipay"
   "payRequestId": "0"
   "orderType": "CONSUME"
+  "userType": "CONSUMER"
 
 order.OrderItems(order_unpaid_items_1):
   "order": "order_unpaid"

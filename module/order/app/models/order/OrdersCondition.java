@@ -173,8 +173,8 @@ public class OrdersCondition {
         sql.append(" o.deleted = :deleted");
         paramsMap.put("deleted", DeletedStatus.UN_DELETED);
         if (user != null) {
-            sql.append(" and o.userId = :user and o.userType = :userType");
-            paramsMap.put("user", user.getId());
+            sql.append(" and o.userId = :userId and o.userType = :userType");
+            paramsMap.put("userId", user.getId());
             paramsMap.put("userType", AccountType.CONSUMER);
         }
         if (createdAtBegin != null) {

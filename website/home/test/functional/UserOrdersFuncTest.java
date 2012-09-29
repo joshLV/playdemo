@@ -2,6 +2,7 @@ package functional;
 
 import controllers.modules.website.cas.Security;
 import models.accounts.Account;
+import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import models.consumer.User;
 import models.consumer.UserInfo;
@@ -10,6 +11,7 @@ import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
 import models.order.OrderStatus;
+import models.order.OrdersCondition;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +34,8 @@ import java.util.Map;
  */
 public class UserOrdersFuncTest extends FunctionalTest {
 
+    User user;
+
     @Before
     public void setup() {
         Fixtures.delete(User.class);
@@ -50,7 +54,7 @@ public class UserOrdersFuncTest extends FunctionalTest {
         Fixtures.loadModels("fixture/orderItems.yml");
 
         Long userId = (Long) Fixtures.idCache.get("models.consumer.User-selenium");
-        User user = User.findById(userId);
+        user = User.findById(userId);
 
         //设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
@@ -61,6 +65,30 @@ public class UserOrdersFuncTest extends FunctionalTest {
         // 清除登录Mock
         Security.cleanLoginUserForTest();
     }
+
+    @Test
+    public void testIndex() {
+        List<Order> orders = Order.findAll();
+        for (Order order : orders) {
+            order.userId = user.id;
+            order.userType = AccountType.CONSUMER;
+            order.save();
+        }
+
+        Http.Response response = GET("/orders");
+        assertStatus(200, response);
+
+        List<Order> orderList = (List<Order>) renderArgs("orderList");
+        final BreadcrumbList breadcrumbs = (BreadcrumbList) renderArgs("breadcrumbs");
+        final OrdersCondition condition = (OrdersCondition) renderArgs("condition");
+        assertEquals(3, orderList.size());
+        assertEquals(user.id, ((User) renderArgs("user")).id);
+        assertEquals(1, breadcrumbs.size());
+        assertEquals("我的订单", breadcrumbs.get(0).desc);
+        assertEquals("/orders", breadcrumbs.get(0).url);
+        assertNotNull(condition);
+    }
+
 
     @Test
     public void testPay() {

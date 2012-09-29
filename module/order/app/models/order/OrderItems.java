@@ -209,8 +209,7 @@ public class OrderItems extends Model {
         query.setParameter("userType", AccountType.CONSUMER);
         query.setFirstResult(0);
         query.setMaxResults(10);
-        List<String> mobileList = query.getResultList();
-        return mobileList;
+        return query.getResultList();
     }
 
     /**

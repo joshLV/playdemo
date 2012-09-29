@@ -29,6 +29,7 @@ public class UserOrders extends Controller {
         if (condition == null) {
             condition = new OrdersCondition();
         }
+
         JPAExtPaginator<models.order.Order> orderList = Order.findUserOrders(user, condition, pageNumber, PAGE_SIZE);
 
         BreadcrumbList breadcrumbs = new BreadcrumbList("我的订单", "/orders");
