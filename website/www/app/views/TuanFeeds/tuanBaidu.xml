@@ -17,7 +17,6 @@
                 <destination></destination>
                 <thrcategory></thrcategory>
                 <dpshopid></dpshopid>
-
                 #{if goods.getShopList()?.size() >0}
                 <address>${goods.getShopList().iterator().next().address}</address>
                 <range>${goods.getShopList().iterator().next().getAreaName()}</range>

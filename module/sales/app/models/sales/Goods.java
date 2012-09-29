@@ -998,6 +998,7 @@ public class Goods extends Model {
             });
         }
         final long goodsId = this.id;
+
         return CacheHelper.getCache(CacheHelper.getCacheKey(Goods.CACHEKEY_BASEID + goodsId, "GOODS_SHOPS"), new CacheCallBack<Set<Shop>>() {
             @Override
             public Set<Shop> loadData() {

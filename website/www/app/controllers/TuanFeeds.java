@@ -55,6 +55,7 @@ public class TuanFeeds extends Controller {
             if (g.categories != null && g.categories.size() > 0 && g.categories.iterator() != null && g.categories.iterator().hasNext()) {
                 {
                     Category category = g.categories.iterator().next();
+                    System.out.println(">>>>"+Messages.get(tuanCategory + "." + category.id));
                     if (Messages.get(tuanCategory + "." + category.id).contains(tuanCategory)) {
                         {
                             mailCategoryList.add(category);
@@ -68,8 +69,8 @@ public class TuanFeeds extends Controller {
                 }
             }
         }
-
         if (mailCategoryList.size() > 0) {
+            System.out.println("inii");
             //发送提醒邮件
             MailMessage mailMessage = new MailMessage();
             mailMessage.addRecipient("dev@uhuila.com");

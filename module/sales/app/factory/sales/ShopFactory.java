@@ -23,7 +23,8 @@ public class ShopFactory extends ModelFactory<Shop> {
     public Shop define() {
 
         Shop shop = new Shop();
-        Supplier supplier = FactoryBoy.create(Supplier.class);
+        Supplier supplier = FactoryBoy.last(Supplier.class);
+        shop.deleted=DeletedStatus.UN_DELETED;
         shop.supplierId = supplier.id;
         shop.address="宛平南路2号";
         shop.phone="02100000";
