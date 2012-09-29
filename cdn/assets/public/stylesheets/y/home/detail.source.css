@@ -172,7 +172,7 @@
 }
 
 #diagram {
-    margin: 25px 0 20px;
+    margin: 15px 0 20px;
 }
 #diagram .tips {
     padding: 5px 0 0 20px;
@@ -233,10 +233,6 @@
     height: 8px;
     cursor: pointer;
 }
-#bizinfo .bdshare {
-    margin: 10px 0;
-    height: 27px;
-}
 #bizinfo .qvalue {
     margin: 10px 0;
     padding: 5px 0;
@@ -247,6 +243,50 @@
 #bizinfo .qvalue em {
     color: #fa7512;
     font-weight: 700;
+}
+#share {
+    margin-top: 5px;
+}
+#share span {
+    float: left;
+    line-height: 16px;
+}
+#share a {
+    float: left;
+    width: 16px;
+    height: 16px;
+    display: block;
+    margin-right: 8px;
+    background: url(//img.uhcdn.com/images/y/share-sprite.png) no-repeat 0 0;
+}
+#share a.qq {
+    background-position: 0 0;
+}
+#share a.weibo {
+    background-position: -16px 0;
+}
+#share a.qzone {
+    background-position: -32px 0;
+}
+#share a.tqq {
+    background-position: -48px 0;
+}
+#share a.renren {
+    background-position: -64px 0;
+}
+#share-im {
+    display: none;
+    margin: 8px 0;
+}
+#share-im label {
+    line-height: 16px;
+}
+#share-im input {
+    width: 280px;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 1px;
+    border: 1px solid #e3e3e3;
 }
 
 #content .hd {
