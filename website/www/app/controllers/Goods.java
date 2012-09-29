@@ -258,6 +258,16 @@ public class Goods extends Controller {
                     }
                 });
         GoodsStatistics.addVisitorCount(goods.id);
+        
+        String tjUrl = "http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/g/" + goods.id;
+        if (user != null) {
+        	tjUrl += "?tj=" + user.promoterCode;
+        } else {
+        	tjUrl += "?tj=gshare";
+        }
+        
+        renderArgs.put("tjUrl", tjUrl);
+
         renderArgs.put("goods", goods);
         renderArgs.put("shops", goods.getShopList());
         renderArgs.put("breadcrumbs", breadcrumbs);
