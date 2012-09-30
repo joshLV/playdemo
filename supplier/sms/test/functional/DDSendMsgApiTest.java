@@ -1,7 +1,9 @@
 package functional;
 
-import com.uhuila.common.util.DateUtil;
-import factory.FactoryBoy;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import models.accounts.AccountType;
 import models.dangdang.DDAPIUtil;
 import models.dangdang.ErrorCode;
@@ -13,13 +15,17 @@ import models.order.OuterOrder;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import play.mvc.Http;
 import play.test.FunctionalTest;
+import util.DateHelper;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.uhuila.common.util.DateUtil;
+
+import factory.FactoryBoy;
 
 /**
  * <p/>
@@ -67,7 +73,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
 
     @Test
     public void 测试发送短信_正常情况() {
-        coupon.expireAt = DateUtil.getMonthLastDay();
+        coupon.expireAt = DateHelper.afterDays(new Date(), 1);
         coupon.save();
 
         Map<String, String> params = new HashMap<>();
@@ -248,7 +254,7 @@ public class DDSendMsgApiTest extends FunctionalTest {
 
     @Test
     public void 测试发送短信_券已发送短信三次() {
-        coupon.expireAt = DateUtil.getMonthLastDay();
+        coupon.expireAt = DateHelper.afterDays(new Date(), 1);
         coupon.save();
 
         Map<String, String> params = new HashMap<>();
