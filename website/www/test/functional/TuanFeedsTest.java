@@ -17,6 +17,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import play.i18n.Messages;
 import play.mvc.Http;
+import play.test.Fixtures;
 import play.test.FunctionalTest;
 
 import java.util.List;
@@ -52,7 +53,8 @@ public class TuanFeedsTest extends FunctionalTest {
 
     @Test
     public void testTuan800() {
-        Messages.formatString("餐饮美食", "tuan800category." + category.id);
+        System.out.println("category.id>>>>>"+category.id);
+        Messages.defaults.put("tuan800category." + category.id,"餐饮美食");
         Http.Response response = GET("/feed/tuan800");
         assertStatus(200, response);
         assertContentMatch("Product Name", response);
@@ -60,16 +62,17 @@ public class TuanFeedsTest extends FunctionalTest {
 
     @Test
     public void testTuan360() {
-        Messages.formatString("餐饮美食", "tuan360category." + goods.getCategories().iterator().next().id);
+        Messages.defaults.put("tuan360category." + goods.getCategories().iterator().next().id,"餐饮美食");
         Http.Response response = GET("/feed/tuan360");
         assertStatus(200, response);
         assertContentMatch("Product Title", response);
     }
 
+
     @Test
     public void testTuanBaidu() {
-        Messages.formatString("餐饮美食", "tuanBaiduCategory1." + goods.getCategories().iterator().next().id);
-        Messages.formatString("地方菜", "tuanBaiduCategory2." + goods.getCategories().iterator().next().id);
+        Messages.defaults.put("tuanBaiduCategory1." + goods.getCategories().iterator().next().id,"餐饮美食");
+        Messages.defaults.put("tuanBaiduCategory2." + goods.getCategories().iterator().next().id,"地方菜");
         Http.Response response = GET("/feed/tuanBaidu");
         assertStatus(200, response);
         assertContentMatch("Product Name", response);

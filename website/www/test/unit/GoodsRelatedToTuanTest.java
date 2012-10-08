@@ -65,7 +65,7 @@ public class GoodsRelatedToTuanTest extends UnitTest {
                         target.title = "Title" + seq;
                     }
                 });
-        List<Goods> goodsList = Goods.getTopGoods(category.id, "tuanCategoryTest", "团Test", 6);
+        List<Goods> goodsList = Goods.getTopGoods(category.id, "tuanCategoryTest", "tuanTest", 6);
         assertEquals(0, goodsList.size());
     }
 }

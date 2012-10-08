@@ -31,5 +31,4 @@ public class TuanFeeds extends Controller {
         render(goodsList);
     }
 
-
 }

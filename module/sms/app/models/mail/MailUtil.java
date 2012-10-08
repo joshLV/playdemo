@@ -16,31 +16,45 @@ public class MailUtil {
     }
 
     public static void sendCouponMail(MailMessage message) {
+        if (!Play.runingInTestMode()) {
         RabbitMQPublisher.publish(COUPON_MAIL_QUEUE_NAME, message);
+        }
     }
 
     public static void sendFindPasswordMail(MailMessage message) {
+        if (!Play.runingInTestMode()) {
         RabbitMQPublisher.publish(FIND_PWD_MAIL_QUEUE_NAME, message);
+        }
     }
 
     public static void sendOperatorNotificationMail(MailMessage message) {
+        if (!Play.runingInTestMode()) {
         RabbitMQPublisher.publish(OPERATOR_NOTIFICATION, message);
+        }
     }
 
     public static void sendGoodsOffSalesMail(MailMessage message) {
+        if (!Play.runingInTestMode()) {
         RabbitMQPublisher.publish(GOODS_OFF_SALES_NOTIFY, message);
+        }
     }
 
     public static void sendFinanceNotificationMail(MailMessage message) {
+        if (!Play.runingInTestMode()) {
         RabbitMQPublisher.publish(FINANCE_NOTIFICATION, message);
+        }
     }
 
     public static void sendMail(MailMessage message) {
+        if (!Play.runingInTestMode()) {
         RabbitMQPublisher.publish(GOODS_OFF_SALES_NOTIFY, message);
+        }
     }
 
     public static void sendTuanCategoryMail(MailMessage message) {
+        if (!Play.runingInTestMode()) {
         RabbitMQPublisher.publish(TUAN_CATEGORY_NOTIFY, message);
+        }
     }
 
 }
