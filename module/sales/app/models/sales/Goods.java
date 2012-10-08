@@ -1247,17 +1247,13 @@ public class Goods extends Model {
     public static List<models.sales.Goods> filterTopGoods(List<models.sales.Goods> allGoods, final String tuanCategory, final String tuanNane, int limit) {
         List<models.sales.Goods> goodsList = new ArrayList<>();
         List<Category> noMessage = new ArrayList<Category>();
-        System.out.println("mailCategoryList1"+noMessage);
         int i = 0;
         for (models.sales.Goods g : allGoods) {
             if (g.categories != null && g.categories.size() > 0
                     && g.categories.iterator() != null && g.categories.iterator().hasNext()) {
 
                 Category category = g.categories.iterator().next();
-                System.out.println("tuanCategory>>>>" + tuanCategory);
-                System.out.println("Messages>>>"+Messages.get(tuanCategory + "." + category.id));
                 if (Messages.get(tuanCategory + "." + category.id).contains(tuanCategory)) {
-                    System.out.println("tuanCategory" + tuanCategory);
                     noMessage.add(category);
                 } else {
                     goodsList.add(g);
@@ -1268,7 +1264,6 @@ public class Goods extends Model {
             }
         }
         if (noMessage.size() > 0 && noMessage!=null) {
-            System.out.println("inii");
             //发送提醒邮件
             MailMessage mailMessage = new MailMessage();
             mailMessage.addRecipient("dev@uhuila.com");
