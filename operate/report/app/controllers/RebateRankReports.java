@@ -37,8 +37,6 @@ public class RebateRankReports extends Controller {
 
         PromoteRebate summary = PromoteRebate.allRank(resultList);
 
-        System.out.println(summary.promoteTimes + ";;;;;;;;;;;;;;;;;");
-
         render(rankList, summary, condition);
     }
 }
