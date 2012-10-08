@@ -21,7 +21,6 @@ import java.util.List;
  * Date: 12-9-13
  * Time: 下午2:31
  */
-//@Every("5mn")
 @Every("3h")
 public class DDSyncSellGoodsCountJob extends Job {
     public static String DD_LOGIN_NAME = Play.configuration.getProperty("dangdang.resaler_login_name", "dangdang");
@@ -32,7 +31,7 @@ public class DDSyncSellGoodsCountJob extends Job {
         //定位请求者
         models.resale.Resaler resaler = models.resale.Resaler.find("loginName=? and status='APPROVED'", DD_LOGIN_NAME).first();
         if (resaler == null) {
-            Logger.error("dangdang resaler is not existed!");
+            Logger.info("dangdang resaler is not existed!");
             return;
         }
         //取得dangdang分销商商品库中在售的商品（不包含抽奖商品）
@@ -49,7 +48,7 @@ public class DDSyncSellGoodsCountJob extends Job {
                 DDAPIUtil.syncSellCount(resalerGoods.goods);
             } catch (DDAPIInvokeException e) {
                 //调用出错后打印错误日志
-                Logger.error(e.getMessage());
+                Logger.info(e.getMessage());
             }
         }
         Logger.info("\n--------------End syncSellCount job.");

@@ -17,7 +17,6 @@ import models.sales.Goods;
 import models.sales.GoodsLevelPrice;
 import models.sales.MaterialType;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Before;
 import play.mvc.Http;
@@ -43,17 +42,6 @@ public class DDOrderApiTest extends FunctionalTest {
 
     @Test
     public void 测试创建订单参数有问题的情况() {
-//  '3000003'.'push_team_stock'.'1.0'.''.'2012-09-18 16:56:22'
-//        String SPID = "3000003";
-//        String apiName = "send_msg";
-//        String VER = "1.0";
-//        String data="<data><order><order_id><![CDATA[4668536249]]></order_id><ddgid><![CDATA[1800003230]]></ddgid><spgid><![CDATA[84173]]></spgid><user_code><![CDATA[91533219]]></user_code><receiver_mobile_tel><![CDATA[13111111111]]></receiver_mobile_tel><consume_id><![CDATA[572467747723]]></consume_id></order></data>";
-//        String SECRET_KEY = "x8765d9yj72wevshn";
-        String time = "1348123759";
-////
-//        String s = "all_amount=&amount=&commission_used=0&ctime=1348205004&deal_type_name=code_mine&express_fee=0&id=272&kx_order_id=123456212&options=272%3A3&pay_order_id=123&tcash=0&user_id=8912E83C6C949BB5B96135854807F421&user_mobile=13587469824&sn=x8765d9yj72wevshn";
-//        System.out.println("+++++>"+ DigestUtils.md5Hex((SPID + apiName + VER + data + SECRET_KEY + time)));
-//        System.out.println("+++++>" + DigestUtils.md5Hex(s + time));
         Goods goods = FactoryBoy.create(Goods.class);
         UserInfo userInfo = FactoryBoy.create(UserInfo.class);
         User user = FactoryBoy.create(User.class);
@@ -95,7 +83,6 @@ public class DDOrderApiTest extends FunctionalTest {
     }
 
 
-    @Ignore
     @Test
     public void 测试创建订单() {
         Goods goods = FactoryBoy.create(Goods.class);
@@ -132,7 +119,7 @@ public class DDOrderApiTest extends FunctionalTest {
         Http.Response response = POST("/api/v1/dangdang/order", params);
         assertStatus(200, response);
         Order order = (Order) renderArgs("order");
-        String id = (String) renderArgs("ddgid");
+        String id = (String) renderArgs("id");
         String kx_order_id = (String) renderArgs("kx_order_id");
         assertEquals("abcde", id);
         assertEquals("12345678", kx_order_id);
