@@ -38,6 +38,9 @@ public class UserFactory extends ModelFactory<User> {
     @Factory(name = "loginName")
     public User defineLoginNameUser(User user) {
         user.loginName = "11@qq.com";
+        user.promoterCode = "wr211a";
+        user.password = "11@qq.com";
+         user.mobile = "15026682168";
         return user;
     }
 

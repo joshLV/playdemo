@@ -1,9 +1,7 @@
 package factory.order;
 
-import factory.FactoryBoy;
 import factory.ModelFactory;
-import models.consumer.User;
-import models.order.Order;
+import factory.annotation.Factory;
 import models.order.PromoteRebate;
 import models.order.RebateStatus;
 
@@ -19,13 +17,29 @@ import java.util.Date;
 public class PromoteRebateFactory extends ModelFactory<PromoteRebate> {
     @Override
     public PromoteRebate define() {
-        User user = FactoryBoy.create(User.class);
-        User invitedUser = FactoryBoy.create(User.class);
-        Order order = FactoryBoy.create(Order.class);
-        PromoteRebate rebate = new PromoteRebate(user, invitedUser, order, BigDecimal.TEN, false);
+        PromoteRebate rebate = new PromoteRebate(null, null, null, BigDecimal.TEN, false);
         rebate.partAmount = BigDecimal.ONE;
         rebate.createdAt = new Date();
-        rebate.status= RebateStatus.ALREADY_REBATE;
+        rebate.status = RebateStatus.ALREADY_REBATE;
         return rebate;
     }
+
+    @Factory(name = "UN_CONSUMED")
+    public PromoteRebate defineWithUnConsumed(PromoteRebate promoteRebate) {
+        promoteRebate.status = RebateStatus.UN_CONSUMED;
+        promoteRebate.rebateAmount = new BigDecimal(2.5);
+
+        return promoteRebate;
+
+    }
+
+    @Factory(name = "PART_REBATE")
+    public PromoteRebate defineWithPartRebate(PromoteRebate promoteRebate) {
+        promoteRebate.status = RebateStatus.PART_REBATE;
+        promoteRebate.rebateAmount = new BigDecimal(3.5);
+
+        return promoteRebate;
+
+    }
+
 }

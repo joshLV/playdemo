@@ -122,14 +122,13 @@ public class PromoteRebate extends Model {
      * @return
      */
     public static PromoteRebate getRebateAmount(User user) {
-        System.out.println(user+"******");
         List<PromoteRebate> promoteRebates = PromoteRebate.find("promoteUser = ?", user).fetch();
         BigDecimal willGetAmount = BigDecimal.ZERO;
         BigDecimal haveGotAmount = BigDecimal.ZERO;
         for (PromoteRebate rebate : promoteRebates) {
-            if (rebate.status == RebateStatus.UN_CONSUMED)
+            if (rebate.status == RebateStatus.UN_CONSUMED) {
                 willGetAmount = willGetAmount.add(rebate.rebateAmount == null ? BigDecimal.ZERO : rebate.rebateAmount);
-            else if (rebate.status == RebateStatus.PART_REBATE) {
+            } else if (rebate.status == RebateStatus.PART_REBATE) {
                 willGetAmount = willGetAmount.add(rebate.rebateAmount == null ? BigDecimal.ZERO : rebate.rebateAmount.subtract(rebate.partAmount));
                 haveGotAmount = haveGotAmount.add(rebate.partAmount == null ? BigDecimal.ZERO : rebate.partAmount);
             } else if (rebate.status == RebateStatus.ALREADY_REBATE)
@@ -174,9 +173,6 @@ public class PromoteRebate extends Model {
             query.setParameter(param, condition.getParams().get(param));
         }
         List<PromoteRebate> rankList = query.getResultList();
-               for (PromoteRebate p:rankList){
-            System.out.println(p.rebateAmount);
-        }
         return rankList;
     }
 
@@ -244,7 +240,6 @@ public class PromoteRebate extends Model {
         int len = loginName.length();
         if (len > 5) {
             sn.append(loginName.substring(0, 1));
-            System.out.println(sn);
             for (int i = 0; i < 3; i++) {
                 sn.append("*");
             }

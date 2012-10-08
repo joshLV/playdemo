@@ -79,7 +79,6 @@ public class OperateVerifyCoupons extends Controller {
         }
 
         ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
-        System.out.println("gggggggg        eCoupon.id:" + eCoupon.id);
 
         //根据页面录入券号查询对应信息,并产生消费交易记录
         if (eCoupon == null) {

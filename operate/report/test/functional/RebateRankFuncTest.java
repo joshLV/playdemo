@@ -2,9 +2,12 @@ package functional;
 
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
+import factory.callback.BuildCallback;
 import models.admin.OperateUser;
+import models.consumer.User;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
+import models.order.Order;
 import models.order.PromoteRebate;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
@@ -24,6 +27,10 @@ import java.util.Date;
  * Time: 下午4:15
  */
 public class RebateRankFuncTest extends FunctionalTest {
+    User promoteUser;
+    User inviteUser;
+    PromoteRebate promoteRebate;
+
     @Before
     public void setUp() {
 
@@ -32,15 +39,30 @@ public class RebateRankFuncTest extends FunctionalTest {
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
 
+
         OperateUser user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
+        promoteUser = FactoryBoy.create(User.class);
+        inviteUser = FactoryBoy.create(User.class, "loginName", new BuildCallback<User>() {
+            @Override
+            public void build(User target) {
+            }
+        });
+
+        Order order = FactoryBoy.create(Order.class);
+        promoteRebate = FactoryBoy.create(PromoteRebate.class);
+        promoteRebate.rebateAmount = new BigDecimal(30);
+        promoteRebate.promoteUser = promoteUser;
+        promoteRebate.invitedUser = inviteUser;
+        promoteRebate.promoteTimes=4l;
+        promoteRebate.order = order;
+        promoteRebate.save();
     }
 
 
     @Test
     public void testIndex() {
-        PromoteRebate promoteRebate = FactoryBoy.create(PromoteRebate.class);
         ECoupon coupon = FactoryBoy.create(ECoupon.class);
         coupon.status = ECouponStatus.CONSUMED;
         coupon.consumedAt = new Date();

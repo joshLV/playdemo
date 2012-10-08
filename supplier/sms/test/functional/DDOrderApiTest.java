@@ -4,7 +4,6 @@ import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.AccountType;
-import models.consumer.User;
 import models.consumer.UserInfo;
 import models.dangdang.ErrorCode;
 import models.dangdang.ErrorInfo;
@@ -33,18 +32,18 @@ import java.util.*;
  * Time: 下午2:23
  */
 public class DDOrderApiTest extends FunctionalTest {
+    Goods goods;
+
     @Before
     public void setup() {
         FactoryBoy.lazyDelete();
 
+        System.out.println(goods + "*******");
+        UserInfo userInfo = FactoryBoy.create(UserInfo.class);
     }
 
-
     @Test
-    public void 测试创建订单参数有问题的情况() {
-        Goods goods = FactoryBoy.create(Goods.class);
-        UserInfo userInfo = FactoryBoy.create(UserInfo.class);
-        User user = FactoryBoy.create(User.class);
+    public void 测试创建当当订单_用户不存在() {
         Map<String, String> params = new HashMap<>();
         params.put("id", "abcde");
         params.put("deal_type_name", "code_mine");
@@ -53,22 +52,35 @@ public class DDOrderApiTest extends FunctionalTest {
         ErrorInfo error = (ErrorInfo) renderArgs("errorInfo");
         assertEquals("用户或手机不存在！", error.errorDes);
         assertEquals(ErrorCode.USER_NOT_EXITED, error.errorCode);
+    }
 
-
-        params.put("user_id", user.id.toString());
+    @Test
+    public void 测试创建当当订单_订单不存在() {
+        Map<String, String> params = new HashMap<>();
+        params.put("id", "abcde");
+        params.put("deal_type_name", "code_mine");
+        params.put("user_id", "asdf");
         params.put("user_mobile", "code_mine");
-        response = POST("/api/v1/dangdang/order", params);
+        Http.Response response = POST("/api/v1/dangdang/order", params);
         assertStatus(200, response);
-        error = (ErrorInfo) renderArgs("errorInfo");
+        ErrorInfo error = (ErrorInfo) renderArgs("errorInfo");
         assertEquals("订单不存在！", error.errorDes);
         assertEquals(ErrorCode.ORDER_NOT_EXITED, error.errorCode);
+    }
 
-
+    @Test
+    public void 测试创建当当订单_验证失败() {
+        Map<String, String> params = new HashMap<>();
+        goods = FactoryBoy.create(Goods.class);
+        params.put("id", "abcde");
+        params.put("deal_type_name", "code_mine");
+        params.put("user_id", "asdf");
+        params.put("user_mobile", "code_mine");
         params.put("kx_order_id", "12345678");
         params.put("options", goods.id + ":" + "1");
-        response = POST("/api/v1/dangdang/order", params);
+        Http.Response response = POST("/api/v1/dangdang/order", params);
         assertStatus(200, response);
-        error = (ErrorInfo) renderArgs("errorInfo");
+        ErrorInfo error = (ErrorInfo) renderArgs("errorInfo");
         assertEquals("sign验证失败！", error.errorDes);
         assertEquals(ErrorCode.VERIFY_FAILED, error.errorCode);
 
@@ -85,7 +97,7 @@ public class DDOrderApiTest extends FunctionalTest {
 
     @Test
     public void 测试创建订单() {
-        Goods goods = FactoryBoy.create(Goods.class);
+        goods = FactoryBoy.create(Goods.class);
         goods.materialType = MaterialType.ELECTRONIC;
         goods.save();
         Resaler resaler = FactoryBoy.create(Resaler.class);
@@ -131,7 +143,6 @@ public class DDOrderApiTest extends FunctionalTest {
         assertEquals(order.orderNumber, outerOrder.ybqOrder.orderNumber);
         List<ECoupon> eCouponList = ECoupon.findByOrder(order);
         assertEquals(1, eCouponList.size());
-
     }
 
     private String getSign(SortedMap<String, String> params) {
