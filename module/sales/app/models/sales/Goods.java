@@ -762,33 +762,6 @@ public class Goods extends Model {
                 new Date()).fetch(limit);
     }
 
-    public static List<Goods> findTuanTop(int limit, String tuan) {
-        // 找出需要的商品，然后手工过滤
-        List<Goods> goods = new ArrayList<>();
-        List<Goods> allGoods = Goods.find("status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by createdAt DESC",
-                GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit * 5);
-        String[] mailCategoriesId = new String[limit * 5];
-        int i = 0;
-        for (Goods g : allGoods) {
-            if (g.categories != null && g.categories.size() > 0 && g.categories.iterator() != null && g.categories.iterator().hasNext()) {
-                {
-                    Category category = g.categories.iterator().next();
-                    if (Messages.get(tuan + "." + category.id).contains("tuan360")) {
-                        {
-                            mailCategoriesId[i] = category.id.toString();
-                        }
-                    } else {
-                        goods.add(g);
-                    }
-                    if (goods.size() == limit) {
-                        break;
-                    }
-                }
-            }
-        }
-        return goods;
-    }
-
 
     /**
      * 根据商品分类和数量取出指定数量的商品.
@@ -1253,6 +1226,56 @@ public class Goods extends Model {
             supplierName = supplier.otherName == null ? supplier.fullName : supplier.otherName;
         return supplierName;
 
+    }
+
+
+    public static List<models.sales.Goods> getTopGoods(final long categoryId, final String tuanCategory, final String tuanNane, int limit) {
+        List<models.sales.Goods> allGoods = null;
+
+        List<models.sales.Goods> goodsList = new ArrayList<>();
+        if (categoryId == 0) {
+            allGoods = models.sales.Goods.findTop(limit * 5);
+            goodsList = filterTopGoods(allGoods, tuanCategory, tuanNane, limit);
+
+        } else {
+            allGoods = models.sales.Goods.findTopByCategory(categoryId, limit * 5);
+            goodsList = filterTopGoods(allGoods, tuanCategory, tuanNane, limit);
+        }
+        return goodsList;
+    }
+
+    public static List<models.sales.Goods> filterTopGoods(List<models.sales.Goods> allGoods, final String tuanCategory, final String tuanNane, int limit) {
+        List<models.sales.Goods> goodsList = new ArrayList<>();
+        List<Category> mailCategoryList = new ArrayList<Category>();
+        int i = 0;
+        for (models.sales.Goods g : allGoods) {
+            if (g.categories != null && g.categories.size() > 0 && g.categories.iterator() != null && g.categories.iterator().hasNext()) {
+                {
+                    Category category = g.categories.iterator().next();
+                    if (Messages.get(tuanCategory + "." + category.id).contains(tuanCategory)) {
+                        {
+                            mailCategoryList.add(category);
+                        }
+                    } else {
+                        goodsList.add(g);
+                    }
+                    if (goodsList.size() == limit) {
+                        break;
+                    }
+                }
+            }
+        }
+        if (mailCategoryList.size() > 0) {
+            System.out.println("inii");
+            //发送提醒邮件
+            MailMessage mailMessage = new MailMessage();
+            mailMessage.addRecipient("dev@uhuila.com");
+            mailMessage.setSubject(Play.mode.isProd() ? tuanNane + "收录分类" : tuanNane + "收录分类【测试】");
+            mailMessage.putParam("tuanName", tuanNane);
+            mailMessage.putParam("mailCategoryList", mailCategoryList);
+            MailUtil.sendTuanCategoryMail(mailMessage);
+        }
+        return goodsList;
     }
 
 }

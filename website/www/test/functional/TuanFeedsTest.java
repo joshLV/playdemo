@@ -1,5 +1,6 @@
 package functional;
 
+import controllers.TuanFeeds;
 import controllers.modules.website.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
@@ -18,6 +19,7 @@ import play.i18n.Messages;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -48,7 +50,6 @@ public class TuanFeedsTest extends FunctionalTest {
         Security.setLoginUserForTest(user.loginName);
     }
 
-    @Ignore
     @Test
     public void testTuan800() {
         Messages.formatString("餐饮美食", "tuan800category." + category.id);
@@ -57,7 +58,6 @@ public class TuanFeedsTest extends FunctionalTest {
         assertContentMatch("Product Name", response);
     }
 
-    @Ignore
     @Test
     public void testTuan360() {
         Messages.formatString("餐饮美食", "tuan360category." + goods.getCategories().iterator().next().id);
@@ -66,41 +66,12 @@ public class TuanFeedsTest extends FunctionalTest {
         assertContentMatch("Product Title", response);
     }
 
-    @Ignore
     @Test
     public void testTuanBaidu() {
         Messages.formatString("餐饮美食", "tuanBaiduCategory1." + goods.getCategories().iterator().next().id);
         Messages.formatString("地方菜", "tuanBaiduCategory2." + goods.getCategories().iterator().next().id);
         Http.Response response = GET("/feed/tuanBaidu");
         assertStatus(200, response);
-        assertContentMatch("Product Name", response);
-    }
-
-    @Test
-    public void testTuan800SendMail() {
-//        category = FactoryBoy.create(Category.class);
-
-        FactoryBoy.batchCreate(2, Category.class,
-                new SequenceCallback<Category>() {
-                    @Override
-                    public void sequence(Category target, int seq) {
-                        target.name = "饮食" + seq;
-                    }
-                });
-
-        FactoryBoy.batchCreate(1, Goods.class,
-                new SequenceCallback<Goods>() {
-                    @Override
-                    public void sequence(Goods target, int seq) {
-                        target.name = "Product" + seq;
-                        target.title = "Title" + seq;
-                    }
-                });
-
-//        Messages.formatString("餐饮美食", "tuan800category." + category.id);
-        Http.Response response = GET("/feed/tuan800");
-        assertStatus(200, response);
-//        System.out.println(getContent(response));
         assertContentMatch("Product Name", response);
     }
 

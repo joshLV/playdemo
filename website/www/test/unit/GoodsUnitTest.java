@@ -318,4 +318,7 @@ public class GoodsUnitTest extends UnitTest {
                 .fetch();
         assertEquals(0, unPublishedPlatforms.size());
     }
+
+
+
 }
