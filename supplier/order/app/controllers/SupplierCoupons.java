@@ -6,15 +6,19 @@ import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
+import models.sales.ConsultRecord;
+import models.sales.ConsultResultCondition;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import navigation.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.Validation;
+import play.i18n.Messages;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -93,7 +97,7 @@ public class SupplierCoupons extends Controller {
                 String info = eCoupon.getCheckInfo();
                 renderJSON("{\"error\":\"2\",\"info\":\"" + info + "\"}");
             }
-            if(!eCoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)){
+            if (!eCoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
                 renderJSON("4");
             }
             String dateTime = DateUtil.getNowTime();
@@ -125,5 +129,19 @@ public class SupplierCoupons extends Controller {
 
         JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
         render(couponPage, condition);
+    }
+
+    public static void couponExcelOut(CouponsCondition condition) {
+        String page = request.params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+        if (condition == null) {
+            condition = new CouponsCondition();
+        }
+        condition.supplier = SupplierRbac.currentUser().supplier;
+        request.format = "xls";
+        renderArgs.put("__FILE_NAME__", "券内容列表_" + System.currentTimeMillis() + ".xls");
+        JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
+        render(couponPage, condition);
+
     }
 }
