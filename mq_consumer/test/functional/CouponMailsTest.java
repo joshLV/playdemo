@@ -38,7 +38,7 @@ public class CouponMailsTest extends FunctionalTest {
 //        assertTrue("邮件中必须出现fulcoupon2", mailBody.indexOf(coupon2) > 0);
     }
 
-    @Test
+    //@Test
     public void testCouponMailSendByMQ() throws Exception {
         Long time = System.currentTimeMillis() + 2;
         String email = "test" + time + "@uhuila.com";
