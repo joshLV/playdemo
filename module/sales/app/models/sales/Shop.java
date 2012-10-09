@@ -1,10 +1,12 @@
 package models.sales;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
+import org.apache.commons.lang.StringUtils;
+import play.data.validation.Required;
+import play.db.jpa.Model;
+import play.modules.paginate.ModelPaginator;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,13 +16,12 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.apache.commons.lang.StringUtils;
-import play.data.validation.Required;
-import play.db.jpa.Model;
-import play.modules.paginate.ModelPaginator;
-import cache.CacheHelper;
-import com.uhuila.common.constants.DeletedStatus;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "shops")
@@ -49,9 +50,9 @@ public class Shop extends Model {
     @Column(name = "is_close")
     public String isClose;
 
-    public float latitude;
+    public BigDecimal latitude;  //纬度
 
-    public float longitude;
+    public BigDecimal longitude; //经度
 
     @Column(name = "created_at")
     public Date createdAt;

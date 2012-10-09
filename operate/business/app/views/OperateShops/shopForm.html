@@ -16,6 +16,28 @@
 #{layout_operate.selectField name:'shop.areaId', class:'span2', value:shop?.areaId, error:'shop.areaId',list:areas/}
 #{layout_operate.textField name:'shop.name', class:'span2', value:shop?.name, required:true/}
 #{layout_operate.textField name:'shop.address', value:shop?.address, required:true/}
+#{layout_operate.textField name:'shop.longitude', value:shop?.longitude/}
+#{layout_operate.textField name:'shop.latitude', value:shop?.latitude/}
+<script type="text/javascript"
+        src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbnBNu40y5eXnL8jOey4lbS3P1vQ_HR5E&sensor=true">
+</script>
+<script type="text/javascript">
+    function initialize() {
+        var mapOptions = {
+            center:new google.maps.LatLng(-34.397, 150.644),
+            zoom:8,
+            mapTypeId:google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map"),
+                mapOptions);
+    }
+</script>
+<div class="control-group">
+#{layout_operate.labelText name:'shop.map', required:_required/}
+    <!--定义显示地图的层-->
+    <div id="map" style="width: 600px; height: 400px"></div>
+</div>
+
 #{layout_operate.textField name:'shop.phone', value:shop?.phone/}
 #{layout_operate.textField name:'shop.managerMobiles', value:shop?.managerMobiles/}
 <p class="controls">以半角逗号','分割，每日给这些手机号发送前一天的经营报表</p>

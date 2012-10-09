@@ -1,0 +1,28 @@
+*{地图标签}*
+*{label:     文本框的标签（选填）}*
+*{name:      文本框的名称}*
+*{value:     文本框中的值}*
+*{note:      文本框后的说明文字（选填）}*
+*{required:  文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+*{disabled:  是否不可修改（选填，默认是可以修改状态，即false）}*
+<!--引入Google Maps JS文件，此处key=sujie@uhuila.com申请到的key-->
+<script type="text/javascript"
+        src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbnBNu40y5eXnL8jOey4lbS3P1vQ_HR5E&sensor=TRUE">
+</script>
+<script type="text/javascript">
+    function initialize() {
+        var mapOptions = {
+            center:new google.maps.LatLng(-34.397, 150.644),
+            zoom:8,
+            mapTypeId:google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map"),
+                mapOptions);
+    }
+</script>
+<div class="control-group">
+#{layout_operate.labelText name:_label?:_name, required:_required/}
+    <!--定义显示地图的层-->
+    <div id="map" style="width: 600px; height: 400px"></div>
+</div>
+

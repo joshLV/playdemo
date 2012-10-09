@@ -2,48 +2,55 @@ package factory.sales;
 
 import static util.DateHelper.t;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import models.sales.Shop;
-import models.supplier.Supplier;
-
-import com.uhuila.common.constants.DeletedStatus;
-
-import factory.FactoryBoy;
-import factory.ModelFactory;
-import factory.annotation.Factory;
-
+/**
+ * Created with IntelliJ IDEA.
+ * User: hejun
+ * Date: 12-8-20
+ * Time: 下午5:26
+ */
 public class ShopFactory extends ModelFactory<Shop> {
 
-	@Override
-	public Shop define() {
-		Shop shop = new Shop();
-		Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
-		shop.deleted = DeletedStatus.UN_DELETED;
-		shop.supplierId = supplier.id;
-		shop.address = "宛平南路2号";
-		shop.phone = "02100000";
-		shop.latitude = 0.0f;
-		shop.longitude = 0.0f;
-		shop.createdAt = t("2012-02-29 16:33:18");
-		shop.updatedAt = t("2012-02-29 16:44:33");
+    @Override
+    public Shop define() {
 
-		shop.areaId = "021";
-		shop.name = "shop0";
-		shop.deleted = DeletedStatus.UN_DELETED;
-		shop.lockVersion = 0;
-		return shop;
-	}
+        Shop shop = new Shop();
+        Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
+        shop.deleted=DeletedStatus.UN_DELETED;
+        shop.supplierId = supplier.id;
+        shop.address="宛平南路2号";
+        shop.phone="02100000";
+        shop.latitude=new BigDecimal(120.12888);
+        shop.longitude=new BigDecimal(120.12888);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            shop.createdAt =  dateFormat.parse("2012-02-29 16:33:18");
+        } catch (ParseException e) {
+            //ignore
+        }
 
-	@Factory(name = "SupplierId")
-	public Shop defineWithSupplierId(Shop shop) {
+        try {
+            shop.updatedAt =  dateFormat.parse("2012-02-29 16:44:33");
+        } catch (ParseException e) {
+            //ignore
+        }
 
-		shop.areaId = "021";
-		shop.name = "shop0";
-		shop.deleted = DeletedStatus.UN_DELETED;
+        shop.areaId = "021";
+        shop.name = "shop0";
+        shop.deleted = DeletedStatus.UN_DELETED;
+        shop.lockVersion=0;
+        return shop;
+    }
 
-		return shop;
+    @Factory(name = "SupplierId")
+    public Shop defineWithSupplierId(Shop shop){
+        shop.areaId = "021";
+        shop.name = "shop0";
+        shop.deleted = DeletedStatus.UN_DELETED;
 
-	}
+        return shop;
+    }
 }
