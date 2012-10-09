@@ -1,6 +1,7 @@
 package functional;
 
 import controllers.modules.website.cas.Security;
+import factory.FactoryBoy;
 import models.consumer.User;
 import models.order.Order;
 import models.order.OrderItems;
@@ -33,6 +34,7 @@ public class OrderFuncTest extends FunctionalTest {
 
     @Before
     public void setup() {
+        FactoryBoy.lazyDelete();
         Fixtures.delete(Order.class);
         Fixtures.delete(User.class);
         Fixtures.delete(Goods.class);
@@ -58,6 +60,9 @@ public class OrderFuncTest extends FunctionalTest {
         Long userId = (Long) Fixtures.idCache.get("models.consumer.User-user");
         user = User.findById(userId);
 
+
+        user = FactoryBoy.create(User.class);
+        // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
     }
 
@@ -69,6 +74,15 @@ public class OrderFuncTest extends FunctionalTest {
 
     @Test
     public void testIndex_有参数() {
+//        Goods goodsA = FactoryBoy.create(Goods.class);
+//        OrderItems orderItem = FactoryBoy.create(OrderItems.class);
+//        orderItem.order.userId = user.id;
+//        orderItem.order.save();
+//        Goods goodsB = FactoryBoy.create(Goods.class);
+//        orderItem = FactoryBoy.create(OrderItems.class);
+//        orderItem.order.userId = user.id;
+//        orderItem.save();
+
         Long goodsId1 = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
         Long goodsId2 = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_002");
         Long orderId = (Long) Fixtures.idCache.get("models.order.Order-order_unpaid");
@@ -77,6 +91,7 @@ public class OrderFuncTest extends FunctionalTest {
         order.save();
 
         Http.Response response = GET("/orders?gid=" + goodsId1 + "&g" + goodsId1 + "=1&gid=" + goodsId2 + "&g" + goodsId2 + "=1");
+//        Http.Response response = GET("/orders?gid=" + goodsA.id + "&g" + goodsA.id + "=1&gid=" + goodsB.id + "&g" + goodsB.id + "=1");
         assertStatus(200, response);
 
         String querystring = (String) renderArgs("querystring");

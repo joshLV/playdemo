@@ -122,9 +122,11 @@ public class Orders extends Controller {
         List<Cart> rCartList = new ArrayList<>();
         BigDecimal rCartAmount = BigDecimal.ZERO;
         List<models.sales.Goods> goods = models.sales.Goods.findInIdList(goodsIds);
+        System.out.println("goods.size():" + goods.size());
         for (models.sales.Goods g : goods) {
 
             Integer number = itemsMap.get(g.getId());
+
             Cart cart = new Cart(g, number);
             //这里用于判断是否是通过推荐过来的用户
             String discountSN = request.params.get("discountSN");
@@ -388,11 +390,13 @@ public class Orders extends Controller {
         User user = SecureCAS.getUser();
         String[] itemSplits = items.split(",");
         for (String split : itemSplits) {
+
             String[] goodsItem = split.split("-");
             if (goodsItem.length == 2) {
                 Integer number = Integer.parseInt(goodsItem[1]);
                 if (number > 0) {
                     Long goodsId = Long.parseLong(goodsItem[0]);
+                    System.out.println("goodsId:" + goodsId);
                     Long boughtNumber = OrderItems.itemsNumber(user, goodsId);
                     boolean isBuyFlag = Order.checkLimitNumber(user, goodsId, boughtNumber, number);
                     if (isBuyFlag) {
