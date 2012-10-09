@@ -144,6 +144,16 @@ public class ECoupon extends Model {
     @Enumerated(EnumType.STRING)
     public VerifyCouponType verifyType;
 
+
+    @Transient
+    public String verifyTypeInfo;
+
+    @Transient
+    public String staff;
+
+    @Transient
+    public String refundPriceInfo;
+
     @Column(name = "verify_tel")
     public String verifyTel;
     /**

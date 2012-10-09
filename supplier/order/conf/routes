@@ -9,7 +9,6 @@ GET     /orders/{orderNumber}                   SupplierOrders.details
 # 券列表
 GET     /coupons                                SupplierCoupons.index
 
-GET     /coupon_excel_out                       SupplierCoupons.couponExcelOut
 
 #验证电子券页面
 GET     /coupons/verify                         SupplierCoupons.verify
@@ -17,6 +16,8 @@ GET     /coupons/verify                         SupplierCoupons.verify
 GET    /coupons/query                           SupplierCoupons.query
 #更新电子券状态及产生交易
 POST    /coupons/update                         SupplierCoupons.update
+
+GET     /coupon-excel-out                       SupplierCoupons.couponExcelOut
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

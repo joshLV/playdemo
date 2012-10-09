@@ -141,7 +141,18 @@ public class SupplierCoupons extends Controller {
         request.format = "xls";
         renderArgs.put("__FILE_NAME__", "券内容列表_" + System.currentTimeMillis() + ".xls");
         JPAExtPaginator<ECoupon> couponPage = ECoupon.query(condition, pageNumber, PAGE_SIZE);
+        for (ECoupon coupon : couponPage) {
+            String staff = "";
+            coupon.verifyTypeInfo = Messages.get("coupon." + coupon.verifyType);
+            coupon.statusInfo = Messages.get("coupon." + coupon.status);
+            if (coupon.supplierUser != null) {
+                if (StringUtils.isNotBlank(coupon.supplierUser.userName))
+                    staff = coupon.supplierUser.userName;
+                if (StringUtils.isNotBlank(coupon.supplierUser.jobNumber))
+                    staff += "(工号:" + coupon.supplierUser.jobNumber + ")";
+            }
+            coupon.staff = staff;
+        }
         render(couponPage, condition);
-
     }
 }

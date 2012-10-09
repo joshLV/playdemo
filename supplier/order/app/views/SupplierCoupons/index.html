@@ -10,19 +10,20 @@
         <table>
             <tbody>
             <tr>
-                 <td>关&nbsp;&nbsp;键&nbsp;&nbsp;字
+                <td>关&nbsp;&nbsp;键&nbsp;&nbsp;字
                 #{select 'condition.searchKey', class:'input-medium', value:condition?.searchKey}
                     #{option ""}不限#{/option}
                     #{option "GOODS_NAME"}&{'queryType.GOODS_NAME'}#{/option}
                     #{option "ORDER_NUMBER"}&{'queryType.ORDER_NUMBER'}#{/option}
                     #{option "CLERK_JOB_NUMBER"}&{'queryType.CLERK_JOB_NUMBER'}#{/option}
                     #{option "SHOP_NAME"}&{'queryType.SHOP_NAME'}#{/option}
-                    *{#{option "MOBILE"}&{'queryType.MOBILE'}#{/option}}*
+                *{#{option "MOBILE"}&{'queryType.MOBILE'}#{/option}}*
                     #{option "COUPON"}&{'queryType.COUPON'}#{/option}
                 #{/select} &nbsp; &nbsp;
-                <input type="text" name="condition.searchItems" value="${condition?.searchItems}" class="input-medium"/></td>
+                    <input type="text" name="condition.searchItems" value="${condition?.searchItems}"
+                           class="input-medium"/></td>
                 <td>
-                验证方式
+                    验证方式
                 #{select 'condition.verifyType', id:'condition_verifyType', class:'input-medium', value:condition?.verifyType}
                     #{option ""}不限#{/option}
                     #{option "CLERK_MESSAGE"}&{'coupon.CLERK_MESSAGE'}#{/option}
@@ -31,7 +32,7 @@
                     #{option "TELEPHONE"}&{'coupon.TELEPHONE'}#{/option}
                     #{option "OP_VERIFY"}&{'coupon.OP_VERIFY'}#{/option}
                 #{/select}
-               &nbsp;&nbsp;状态
+                    &nbsp;&nbsp;状态
                 #{select 'condition.status', id:'condition_status', class:'input-small', value:condition?.status}
                     #{option ""}不限#{/option}
                     #{option "UNCONSUMED"}&{'coupon.UNCONSUMED'}#{/option}
@@ -57,7 +58,8 @@
                            onfocus="WdatePicker({readOnly:true})" value="${condition.refundAtEnd?.format()}">
                 </td>
                 <td>
-                    <button type="submit" class="btn btn-primary" id="search">搜索</button>
+                *{<button type="submit" class="btn btn-primary" id="search">搜索</button>}*
+                    <button class="btn btn-primary" id="search" onclick="couponIndex()">搜索</button>
                     <button class="btn btn-primary" id="searchbtn" onclick="couponExcel()">导出报表</button>
                 </td>
             </tr>
@@ -66,9 +68,9 @@
 
 
     </form>
-    *{<div style="margin-bottom: 12px">}*
-        *{<button class="btn btn-primary" type="button">导出报表</button>}*
-    *{</div>}*
+*{<div style="margin-bottom: 12px">}*
+*{<button class="btn btn-primary" type="button">导出报表</button>}*
+*{</div>}*
 
 #{vx.tab name:'coupon',enumItems: models.order.ECouponStatus.values(),select:'condition_status',value:condition?.status/}
 
@@ -95,7 +97,8 @@
         #{paginate.list items:couponPage, as:'coupon'}
         <tr>
 
-           <td><a href="@{SupplierOrders.details(coupon?.order?.orderNumber)}">${coupon?.order?.orderNumber}</a></abbr></td>
+            <td><a href="@{SupplierOrders.details(coupon?.order?.orderNumber)}">${coupon?.order?.orderNumber}</a></abbr>
+            </td>
             <td>${coupon?.getMaskedEcouponSn()}</td>
             <td>${coupon?.goods?.name}</td>
             <td>${coupon?.salePrice?.formatCurrency('CNY')}</td>
@@ -123,9 +126,18 @@
 </div>
 
 <script type="text/javascript">
+    function couponIndex() {
+        $("#frmlist").attr("action", "@{SupplierCoupons.index()}");
+        $("#frmlist").attr("method", "get");
+        $("#frmlist").submit();
+    }
+    ;
+
     function couponExcel() {
         $("#frmlist").attr("action", "@{SupplierCoupons.couponExcelOut()}");
         $("#frmlist").attr("method", "get");
         $("#frmlist").submit();
-    };
+    }
+    ;
+
 </script>
