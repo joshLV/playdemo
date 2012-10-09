@@ -9,15 +9,19 @@ GET     /                                       SmsApplication.index
 *       /api/order/create                       OrderAPI.createOrder
 *       /api/order/refund                       OrderAPI.refund
 *       /api/order/resend                       OrderAPI.resend
-#当当API
+# 当当API
 *       /api/v1/dangdang/send-msg               DDSendMessageAPI.sendMessage(format:'xml')
 *       /api/v1/dangdang/order                  DDOrderAPI.order(format:'xml')
 
-# 一号店
+# 一号店API
 *       /api/v1/yhd/gb/order-inform             YHDGroupBuy.orderInform
 *       /api/v1/yhd/gb/vouchers-get             YHDGroupBuy.vouchersGet
 *       /api/v1/yhd/gb/voucher-resend           YHDGroupBuy.voucherResend
 *       /api/v1/yhd/gb/refund-request           YHDGroupBuy.refundRequest
+
+# 京东API
+*       /api/v1/jd/gb/send-order                JDGroupBuy.sendOrder(format:'xml')
+*       /api/v1/jd/gb/send-order-refund         JDGroupBuy.sendOrderRefund(format:'xml')
 
 # 北京ensms接收接口
 GET     /getsms                                 EnSmsReceivers.getSms

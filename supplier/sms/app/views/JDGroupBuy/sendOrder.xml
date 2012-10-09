@@ -1,0 +1,23 @@
+#{extends 'JDGroupBuy/main.xml' /}
+#{set 'data'}
+    <Message xmlns="http://tuan.360buy.com/SendOrderResponse">
+        *{ 京东团购ID [必填] }*
+        <JdTeamId>12232</JdTeamId>
+        *{ 合作伙伴团购ID [必填] }*
+        <VenderTeamId>343234</VenderTeamId>
+        *{ 购买数量(目前合作伙伴提供团购项目在各个平台销售数量总和) [必填] }*
+        <SellCount>100</SellCount>
+        *{ 合作伙伴方订单ID [必填] }*
+        <VenderOrderId>${doesNotExists}</VenderOrderId>
+        *{ 合作方优惠券信息 若上报团购中 CouponGrantMode选择2或者3（发放合作方的优惠券），则此节点为必填。
+            若CouponBindMode选择2（一个优惠券对应多份产品），则Coupons节点下所有Coupon中的CouponId是相同的，且数量等于购买数量 }*
+        <Coupons>
+            <Coupon>
+                *{ 券号 }*
+                <CouponId>xxxxxxxxxx</CouponId>
+                *{ 密码 }*
+                <CouponPwd>xxxxxx</CouponPwd>
+            </Coupon>
+        </Coupons>
+    </Message>
+#{/set}
