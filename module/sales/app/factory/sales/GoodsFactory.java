@@ -4,13 +4,16 @@ import com.uhuila.common.constants.DeletedStatus;
 import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
-import models.sales.*;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.GoodsStatus;
+import models.sales.MaterialType;
+import models.sales.Shop;
 import models.supplier.Supplier;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Set;
 
 import static util.DateHelper.afterDays;
 
@@ -36,8 +39,8 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.originalPrice = new BigDecimal("5");
         goods.categories = new HashSet<>();
         goods.shops = new HashSet<>();
-        goods.categories.add(FactoryBoy.last(Category.class));
-        goods.shops.add(FactoryBoy.last(Shop.class));
+        goods.categories.add(FactoryBoy.lastOrCreate(Category.class));
+        goods.shops.add(FactoryBoy.lastOrCreate(Shop.class));
         return goods;
     }
     
