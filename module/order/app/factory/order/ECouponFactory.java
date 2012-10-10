@@ -21,7 +21,7 @@ public class ECouponFactory extends ModelFactory<ECoupon> {
     @Override
     public ECoupon define(){
         Order order = FactoryBoy.lastOrCreate(Order.class);
-        OrderItems orderItems = FactoryBoy.create(OrderItems.class);
+        OrderItems orderItems = FactoryBoy.lastOrCreate(OrderItems.class);
         Shop shop = FactoryBoy.lastOrCreate(Shop.class);
         Goods goods = FactoryBoy.lastOrCreate(Goods.class);
         ECoupon eCoupon = new ECoupon(order,goods,orderItems);

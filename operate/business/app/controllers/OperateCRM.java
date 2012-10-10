@@ -199,6 +199,7 @@ public class OperateCRM extends Controller {
     public static void jumpIndex(String phone, CRMCondition condition, Long userId, Long consultId) {
         ConsultRecord consult = new ConsultRecord();
         consult.deleted = DeletedStatus.UN_DELETED;
+
         consult.save();
         consultId = consult.id;
         index(phone, condition, userId, consultId, null);
@@ -250,6 +251,9 @@ public class OperateCRM extends Controller {
     }
 
     public static void callCenter(String phone) {
+        if (phone == null) {
+            phone = params.get("callNo");
+        }
         jumpIndex(phone, null, null, null);
     }
 
