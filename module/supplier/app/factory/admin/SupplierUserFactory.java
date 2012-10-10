@@ -21,7 +21,7 @@ public class SupplierUserFactory extends ModelFactory<SupplierUser> {
     public SupplierUser define(){
         SupplierUser supplierUser = new SupplierUser();
         Shop shop = FactoryBoy.create(Shop.class);
-        Supplier supplier = FactoryBoy.create(Supplier.class);
+        Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
         supplierUser.shop = shop;
         supplierUser.supplier = supplier;
         supplierUser.deleted = DeletedStatus.UN_DELETED;

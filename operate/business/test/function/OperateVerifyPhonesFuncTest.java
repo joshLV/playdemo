@@ -122,8 +122,9 @@ public class OperateVerifyPhonesFuncTest extends FunctionalTest {
 
     @Test
     public void testDelete(){
-        SupplierUser supplierUser = FactoryBoy.create(SupplierUser.class);
         final Supplier supplier = FactoryBoy.create(Supplier.class);
+        SupplierUser supplierUser = FactoryBoy.create(SupplierUser.class);
+
         final Shop shop = FactoryBoy.create(Shop.class,"SupplierId", new BuildCallback<Shop>() {
             @Override
             public void build(Shop target) {
