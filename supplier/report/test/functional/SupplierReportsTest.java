@@ -21,64 +21,31 @@ import factory.callback.SequenceCallback;
 import factory.callback.BuildCallback;
 import factory.FactoryBoy;
 
-
-
-
-/**
- * Created with IntelliJ IDEA.
- * User: wangjia
- * Date: 12-8-20
- * Time: 上午11:20
- * To change this template use File | Settings | File Templates.
- */
-@Ignore
 public class SupplierReportsTest extends FunctionalTest {
 
-    @Before
-    public void setUp() {
+	@Before
+	public void setUp() {
 
-        FactoryBoy.deleteAll();
+		FactoryBoy.deleteAll();
 
-        // 重新加载配置文件
-        VirtualFile file = VirtualFile.open("conf/rbac.xml");
-        RbacLoader.init(file);
+		// 重新加载配置文件
+		VirtualFile file = VirtualFile.open("conf/rbac.xml");
+		RbacLoader.init(file);
 
+		SupplierUser user = FactoryBoy.create(SupplierUser.class);
+		// 设置测试登录的用户名
+		Security.setLoginUserForTest(user.loginName);
 
+	}
 
-        SupplierUser user = FactoryBoy.create(SupplierUser.class);
-        // 设置测试登录的用户名
-        Security.setLoginUserForTest(user.loginName);
+	@Test
+	public void testShowShopReport() {
 
-//        FactoryBoy.batchCreate(10, ShopDailyReport.class,
-//                new SequenceCallback<ShopDailyReport>() {
-//                    @Override
-//                    public void sequence(ShopDailyReport target, int seq) {
-//                        target.shop.name = "TEST" + seq;
-//                        target.shop.save();
-//                        target.buyCount = (long)20.4;
-//                        target.orderCount = (long)5;
-//                        target.originalAmount = BigDecimal.TEN.add(new BigDecimal(seq));
-//                    }
-//                }
-//        );
+		Http.Response response = GET("/reports/shop");
 
-    }
+		assertStatus(200, response);
+		assertContentMatch("门店报表", response);
 
-
-    @Test
-    public void testShowShopReport() {
-
-        Http.Response response = GET("/reports/shop");
-
-        assertStatus(302, response);
-        System.out.println("sdfsdfs<<>>>>"+getContent(response));
-        assertContentMatch("门店报表",response);
-
-    }
-
-
-
-
-
+	}
 
 }

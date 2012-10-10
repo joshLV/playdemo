@@ -83,8 +83,8 @@ public class SupplierRbac extends Controller {
         String userName = getDomainUserName(session.get(SESSION_USER_KEY));
         String subDomain = CASUtils.getSubDomain();
 
-        Logger.info(" currentUser = " + userName + ", domain=" + subDomain);
-        Logger.info(" === username=" + userName + ", cache=" + Cache.get(SESSION_USER_KEY + userName));             
+        Logger.info(" currentUser = " + userName + ", domain=" + subDomain 
+        		+ ", cache=" + Cache.get(SESSION_USER_KEY + userName));             
 
         SupplierUser user = null;
         // 检查权限
@@ -108,7 +108,7 @@ public class SupplierRbac extends Controller {
         }
 
         if (user == null) {
-            Logger.debug("[SupplierRbac]: user is not authenticated");
+            Logger.info("[SupplierRbac]: user is not authenticated");
             // we put into cache the url we come from
             Cache.add("url_" + session.getId(), request.method == "GET" ? request.url : "/", "10min");
 

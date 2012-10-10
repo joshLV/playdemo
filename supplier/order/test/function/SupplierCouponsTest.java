@@ -64,7 +64,7 @@ public class SupplierCouponsTest extends FunctionalTest {
     public void indexTest() {
         Http.Response response = GET("/coupons");
         System.out.println(">>>>>>>" + getContent(response));
-//        assertStatus(200, response);
+        assertStatus(200, response);
     }
 
     @Ignore

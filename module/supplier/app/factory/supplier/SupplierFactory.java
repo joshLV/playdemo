@@ -33,7 +33,7 @@ public class SupplierFactory extends ModelFactory<Supplier> {
         Supplier supplier = new Supplier();
         supplier.fullName = "Supplier0";
         supplier.deleted = DeletedStatus.UN_DELETED;
-        supplier.domainName = "test";
+        supplier.domainName = "localhost";
         supplier.loginName = "tom";
         supplier.status=  SupplierStatus.NORMAL;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
