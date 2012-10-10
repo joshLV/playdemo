@@ -56,8 +56,8 @@ DELETE  /seckill_goods/{id}                     SecKillGoods.delete
 GET     /callcenter/phone/jump_index                              OperateCRM.jumpIndex
 GET     /callcenter/phone/jump_prev_index                         OperateCRM.jumpPrevIndex
 GET     /callcenter/phone                                         OperateCRM.getPhone
-GET     /callcenter/phone/{phone}                                 OperateCRM.callCenter
 GET     /callcenter/phone/incoming                                OperateCRM.callCenter
+GET     /callcenter/phone/{phone}                                 OperateCRM.callCenter
 GET     /callcenter/phone/{phone}/record/{consultId}              OperateCRM.index
 POST     /callcenter/phone/record/save                            OperateCRM.save
 GET     /crm/{id}/edit                                            OperateCRM.edit
