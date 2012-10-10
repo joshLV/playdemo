@@ -1,10 +1,8 @@
 package models.yihaodian;
 
-import models.order.Order;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
-import models.yihaodian.groupbuy.YHDGroupBuyOrder;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.JPAPlugin;

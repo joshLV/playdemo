@@ -8,7 +8,6 @@ import models.order.OrderItems;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.MaterialType;
-import org.dom4j.DocumentException;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -17,7 +16,6 @@ import play.jobs.OnApplicationStart;
 import play.modules.rabbitmq.consumer.RabbitMQConsumer;
 
 import javax.persistence.LockModeType;
-import javax.persistence.LockTimeoutException;
 import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -70,18 +68,24 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
             //等 1 分钟再发货
             if(yihaodianOrder.createdAt.getTime() < (System.currentTimeMillis() - 60000)){
                 //如果用户没有取消订单再发货
-                if(checkYihaodianUnCanceled(yihaodianOrder)){
-                    if( buildUhuilaOrder(yihaodianOrder)){
-                        yihaodianOrder.jobFlag = JobFlag.SEND_DONE;
+                //首先刷新最新的订单
+                YihaodianOrder refreshOrder = refreshYihaodianOrder(yihaodianOrder);
+                if(refreshOrder != null){
+                    if (refreshOrder.orderStatus != OrderStatus.ORDER_CANCEL) {
+                        if( buildUhuilaOrder(yihaodianOrder)){
+                            yihaodianOrder.jobFlag = JobFlag.SEND_DONE;
+                            yihaodianOrder.save();
+                            YihaodianJobMessage syncMessage = new YihaodianJobMessage(yihaodianOrder.orderId);
+                            YihaodianQueueUtil.addJob(syncMessage);
+                        }
+                    }else {
+                        yihaodianOrder.jobFlag = JobFlag.CANCEL_SYNCED;
                         yihaodianOrder.save();
-
-                        YihaodianJobMessage syncMessage = new YihaodianJobMessage(yihaodianOrder.orderId);
-                        YihaodianQueueUtil.addJob(syncMessage);
                     }
                 }
             }
         }else if(yihaodianOrder.jobFlag == JobFlag.SEND_DONE){
-            if( syncWithYihaodian(yihaodianOrder)){
+            if(syncWithYihaodian(yihaodianOrder)){
                 yihaodianOrder.jobFlag = JobFlag.SEND_SYNCED;
                 yihaodianOrder.save();
             }
@@ -123,7 +127,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
         return false;
     }
 
-    private boolean checkYihaodianUnCanceled(YihaodianOrder yihaodianOrder){
+    private YihaodianOrder refreshYihaodianOrder(YihaodianOrder yihaodianOrder){
         Logger.info("start check yihaodian sent %s" , yihaodianOrder.orderCode);
         Map<String, String> params = new HashMap<>();
         params.put("orderCodeList", yihaodianOrder.orderCode);
@@ -137,15 +141,11 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
             if(res.getErrorCount() == 0){
                 List<YihaodianOrder> orders = res.getVs();
                 if (orders.size() > 0){
-                    YihaodianOrder order = orders.get(0);
-                    if (order.orderStatus != OrderStatus.ORDER_CANCEL) {
-                        //只要不是取消状态状态，就说明用户没有取消
-                        return true;
-                    }
+                    return orders.get(0);
                 }
             }
         }
-        return false;
+        return null;
     }
 
     private boolean checkYihaodianSent(YihaodianOrder yihaodianOrder) {
