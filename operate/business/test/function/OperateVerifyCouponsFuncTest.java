@@ -5,12 +5,13 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.util.AccountUtil;
-import models.admin.OperateRole;
 import models.admin.OperateUser;
 import models.consumer.User;
 import models.consumer.UserInfo;
 import models.order.*;
-import models.sales.*;
+import models.sales.Goods;
+import models.sales.MaterialType;
+import models.sales.Shop;
 import operate.rbac.RbacLoader;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,16 +37,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
 
     @Before
     public void setUp() {
-        FactoryBoy.delete(Goods.class);
-        FactoryBoy.delete(Shop.class);
-        FactoryBoy.delete(ECoupon.class);
-        FactoryBoy.delete(Order.class);
-        FactoryBoy.delete(OrderItems.class);
-        FactoryBoy.delete(OperateUser.class);
-        FactoryBoy.delete(OperateRole.class);
-        FactoryBoy.delete(Brand.class);
-        FactoryBoy.delete(Category.class);
-
+        FactoryBoy.lazyDelete();
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
@@ -162,7 +154,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         });
 
         goods.materialType = MaterialType.ELECTRONIC;
-        goods.salePrice = new BigDecimal(128.9);
+        goods.salePrice = new BigDecimal(30);
         goods.shops.add(shop);
         goods.save();
         final Order order = FactoryBoy.create(Order.class);
@@ -187,10 +179,11 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
                 target.expireAt = goods.expireAt;
                 target.operateUserId = 2L;
                 target.originalPrice = new BigDecimal(100);
-                target.salePrice = new BigDecimal(128.9);
+                target.salePrice = new BigDecimal(30);
                 target.status = ECouponStatus.UNCONSUMED;
+                target.rebateValue = new BigDecimal("3");
                 target.order = order;
-                target.promoterRebateValue = new BigDecimal(2.5);
+                target.promoterRebateValue = new BigDecimal(6);
             }
         });
 

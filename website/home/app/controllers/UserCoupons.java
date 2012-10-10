@@ -5,11 +5,14 @@ import models.accounts.AccountType;
 import models.consumer.User;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
+import models.sales.Shop;
 import org.apache.commons.lang.StringUtils;
 import play.modules.breadcrumbs.BreadcrumbList;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
+
+import java.util.List;
 
 @With({SecureCAS.class, WebsiteInjector.class})
 public class UserCoupons extends Controller {
@@ -60,5 +63,10 @@ public class UserCoupons extends Controller {
     public static void sendMessage(long id) {
         boolean sendFalg = ECoupon.sendUserMessage(id);
         renderJSON(sendFalg ? "0" : "1");
+    }
+
+    public static void showGoodsShops(Long supplierId) {
+        List<Shop> shopList = Shop.findShopBySupplier(supplierId);
+        render(shopList);
     }
 }
