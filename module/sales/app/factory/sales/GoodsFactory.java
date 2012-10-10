@@ -46,6 +46,14 @@ public class GoodsFactory extends ModelFactory<Goods> {
     
     @Factory(name = "noInventory")
     public void defineWithNoInventory(Goods goods) {
+        goods = new Goods();
+        Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
+        goods.name = "Product Name " + FactoryBoy.sequence(Goods.class);
+        goods.supplierId = supplier.id;
+        goods.salePrice = BigDecimal.TEN;
+        goods.expireAt = afterDays(new Date(), 30);
+        goods.faceValue = BigDecimal.TEN;
+        goods.materialType = MaterialType.REAL;
         goods.baseSale = -9L;
     }
 

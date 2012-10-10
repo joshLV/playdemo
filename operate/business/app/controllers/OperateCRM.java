@@ -196,10 +196,16 @@ public class OperateCRM extends Controller {
         render();
     }
 
-    public static void jumpIndex(String phone, CRMCondition condition, Long userId, Long consultId) {
+    public static void jumpIndex(String phone, CRMCondition condition, Long userId, Long consultId, String callNo, String calledNo, String agentName, String ivrkey, String callsheetId, String province, String city) {
         ConsultRecord consult = new ConsultRecord();
         consult.deleted = DeletedStatus.UN_DELETED;
-
+        consult.callNo = callNo;
+        consult.calledNo = calledNo;
+        consult.agentName = agentName;
+        consult.ivrkey = ivrkey;
+        consult.callsheetId = callsheetId;
+        consult.province = province;
+        consult.city = city;
         consult.save();
         consultId = consult.id;
         index(phone, condition, userId, consultId, null);
@@ -254,7 +260,16 @@ public class OperateCRM extends Controller {
         if (phone == null) {
             phone = params.get("callNo");
         }
-        jumpIndex(phone, null, null, null);
+
+        String callNo = params.get("callNo");
+        String calledNo = params.get("calledNo");
+        String agentName = params.get("agentName");
+        String ivrkey = params.get("ivrkey");
+        String callsheetId = params.get("callsheetId");
+        String province = params.get("province");
+        String city = params.get("city");
+
+        jumpIndex(phone, null, null, null, callNo, calledNo, agentName, ivrkey, callsheetId, province, city);
     }
 
     public static void bindSearchUser(String phone, Long userId) {

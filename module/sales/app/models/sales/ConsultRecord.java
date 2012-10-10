@@ -34,17 +34,14 @@ public class ConsultRecord extends Model {
     @Transient
     public String createdAtInfo;
 
-    /**
-     * 创建人
-     */
-    @Column(name = "created_by")
-    public String createdBy;
+
 
     /**
      * 更新时间
      */
     @Column(name = "updated_at")
     public Date updatedAt;
+
 
     /**
      * 咨询类型
@@ -75,6 +72,26 @@ public class ConsultRecord extends Model {
     @Column(name = "user_id")
     public Long userId;                     //下单用户ID，可能是一百券用户，也可能是分销商
 
+    @Column(name = "call_no")
+    public String callNo;
+
+    @Column(name = "called_no")
+    public String calledNo;
+
+    @Column(name = "agent_name")
+    public String agentName;
+
+    public String ivrkey;
+
+    @Column(name = "call_sheet_id")
+    public String callsheetId;
+
+    public String province;
+
+    public String city;
+
+    @Column(name = "created_by")
+    public String createdBy;
 
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "consultRecord")
 //    public List<CouponCallBind> couponCallBindList;
