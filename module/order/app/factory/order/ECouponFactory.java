@@ -9,6 +9,8 @@ import models.order.OrderItems;
 import models.sales.Goods;
 import models.sales.Shop;
 
+import java.math.BigDecimal;
+
 /**
  * Created with IntelliJ IDEA.
  * User: hejun
@@ -19,19 +21,19 @@ import models.sales.Shop;
 public class ECouponFactory extends ModelFactory<ECoupon> {
 
     @Override
-    public ECoupon define(){
+    public ECoupon define() {
         Order order = FactoryBoy.lastOrCreate(Order.class);
         OrderItems orderItems = FactoryBoy.lastOrCreate(OrderItems.class);
         Shop shop = FactoryBoy.lastOrCreate(Shop.class);
         Goods goods = FactoryBoy.lastOrCreate(Goods.class);
-        ECoupon eCoupon = new ECoupon(order,goods,orderItems);
+        ECoupon eCoupon = new ECoupon(order, goods, orderItems);
         eCoupon.shop = shop;
         return eCoupon;
 
     }
 
     @Factory(name = "Id")
-    public ECoupon defineWithId(ECoupon eCoupon){
+    public ECoupon defineWithId(ECoupon eCoupon) {
         eCoupon.order = FactoryBoy.lastOrCreate(Order.class);
         eCoupon.orderItems = FactoryBoy.lastOrCreate(OrderItems.class);
         return eCoupon;

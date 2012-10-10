@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * 账户资金变动流水工具.
  *
  * @author likang
- * Date: 12-3-7
+ *         Date: 12-3-7
  */
 
 public class AccountUtil {
@@ -17,32 +17,32 @@ public class AccountUtil {
     public static final String PARTNER_99BILL = "99bill";
     public static final String PARTNER_TESTPAY = "testpay";
 
-    public static Account getUhuilaAccount(){
+    public static Account getUhuilaAccount() {
         return getAccount(Account.UHUILA_COMMISSION, AccountType.PLATFORM);
     }
 
-    public static Account getPlatformIncomingAccount(){
+    public static Account getPlatformIncomingAccount() {
         return getAccount(Account.PLATFORM_INCOMING, AccountType.PLATFORM);
     }
 
-    public static Account getPlatformCommissionAccount(){
+    public static Account getPlatformCommissionAccount() {
         return getAccount(Account.PLATFORM_COMMISSION, AccountType.PLATFORM);
     }
 
-    public static Account getPlatformWithdrawAccount(){
+    public static Account getPlatformWithdrawAccount() {
         return getAccount(Account.PLATFORM_WITHDRAW, AccountType.PLATFORM);
     }
 
-    public static Account getFinancingIncomingAccount(){
+    public static Account getFinancingIncomingAccount() {
         return getCreditableAccount(Account.FINANCING_INCOMING, AccountType.PLATFORM);
     }
 
-    public static Account getPromotionAccount(){
+    public static Account getPromotionAccount() {
         return getCreditableAccount(Account.PROMOTION, AccountType.PLATFORM);
     }
 
-    public static Account getPaymentPartnerAccount(String partner){
-        switch (partner){
+    public static Account getPaymentPartnerAccount(String partner) {
+        switch (partner) {
             case PARTNER_ALIPAY:
                 return getCreditableAccount(Account.PARTNER_ALIPAY, AccountType.PLATFORM);
             case PARTNER_TENPAY:
@@ -56,20 +56,20 @@ public class AccountUtil {
         }
     }
 
-    public static boolean accountExist(long uid, AccountType type){
+    public static boolean accountExist(long uid, AccountType type) {
         return Account.find("byUidAndAccountType", uid, type).first() != null;
     }
 
 
-    public static Account getConsumerAccount(long uid){
+    public static Account getConsumerAccount(long uid) {
         return getAccount(uid, AccountType.CONSUMER, false);
     }
 
-    public static Account getResalerAccount(long uid){
+    public static Account getResalerAccount(long uid) {
         return getAccount(uid, AccountType.RESALER, false);
     }
 
-    public static Account getSupplierAccount(long uid){
+    public static Account getSupplierAccount(long uid) {
         return getAccount(uid, AccountType.SUPPLIER, false);
     }
 
@@ -77,11 +77,11 @@ public class AccountUtil {
      * 获取不可欠款账户,若不存在则新建
      * 当账户余额小于0时,将抛出BalanceNotEnoughException
      *
-     * @param uid 用户ID
+     * @param uid  用户ID
      * @param type 用户类型
      * @return 不可欠款账户
      */
-    public static Account getAccount(long uid, AccountType type){
+    public static Account getAccount(long uid, AccountType type) {
         return getAccount(uid, type, false);
     }
 
@@ -89,22 +89,22 @@ public class AccountUtil {
      * 获取可欠款账户,若不存在则新建
      * 账户余额可以小于0
      *
-     * @param uid 用户ID
+     * @param uid  用户ID
      * @param type 用户类型
      * @return 可欠款账户
      */
-    public static Account getCreditableAccount(long uid, AccountType type){
+    public static Account getCreditableAccount(long uid, AccountType type) {
         return getAccount(uid, type, true);
     }
 
-    public static Account getAccount(long uid, AccountType type, boolean creditable){
+    public static Account getAccount(long uid, AccountType type, boolean creditable) {
         Account account = Account.find("byUidAndAccountType", uid, type).first();
-        if(account == null){
-            synchronized(Account.class){
+        if (account == null) {
+            synchronized (Account.class) {
                 account = Account.find("byUidAndAccountType", uid, type).first();
-                if(account == null){
+                if (account == null) {
                     account = new Account(uid, type);
-                    if(creditable){
+                    if (creditable) {
                         account.creditable = AccountCreditable.YES;
                     }
                     return account.save();
@@ -119,8 +119,8 @@ public class AccountUtil {
      * 变更账户余额，同时不保存凭证相关信息.
      */
     public static Account addBalanceWithoutSavingSequence(Long accountId, BigDecimal cashAugend,
-                BigDecimal uncashAugend, BigDecimal promotionAugend, Long billId, String note, Long orderId)
-            throws BalanceNotEnoughException,AccountNotFoundException{
+                                                          BigDecimal uncashAugend, BigDecimal promotionAugend, Long billId, String note, Long orderId)
+            throws BalanceNotEnoughException, AccountNotFoundException {
         return addBalance(accountId, cashAugend, uncashAugend, promotionAugend, billId, null, null, note, orderId, false);
     }
 
@@ -129,34 +129,34 @@ public class AccountUtil {
      * 变更账户余额，同时保存凭证相关信息.
      */
     public static Account addBalanceAndSaveSequence(Long accountId, BigDecimal cashAugend, BigDecimal uncashAugend, BigDecimal promotionAugend,
-                Long billId, TradeType tradeType, AccountSequenceFlag sequenceFlag, String note, Long orderId)
-            throws BalanceNotEnoughException,AccountNotFoundException{
+                                                    Long billId, TradeType tradeType, AccountSequenceFlag sequenceFlag, String note, Long orderId)
+            throws BalanceNotEnoughException, AccountNotFoundException {
         return addBalance(accountId, cashAugend, uncashAugend, promotionAugend, billId, tradeType, sequenceFlag, note, orderId, true);
     }
 
     /**
      * 变更账户余额，同时根据需要保存凭证相关信息.
      *
-     * @param accountId     需要变更的账户ID
-     * @param cashAugend    可提现金额变更额度
-     * @param uncashAugend  不可提现金额变更额度
-     * @param billId        关联的交易ID
-     * @param tradeType     交易类型
-     * @param sequenceFlag  账户资金变动类型,进账or出账
-     * @param note          变动备注
-     * @param orderId       冗余订单ID
-     * @param saveSequence  是否保存账户变更记录
-     * @return              变更后的账户
+     * @param accountId    需要变更的账户ID
+     * @param cashAugend   可提现金额变更额度
+     * @param uncashAugend 不可提现金额变更额度
+     * @param billId       关联的交易ID
+     * @param tradeType    交易类型
+     * @param sequenceFlag 账户资金变动类型,进账or出账
+     * @param note         变动备注
+     * @param orderId      冗余订单ID
+     * @param saveSequence 是否保存账户变更记录
+     * @return 变更后的账户
      */
     private static Account addBalance(Long accountId, BigDecimal cashAugend, BigDecimal uncashAugend, BigDecimal promotionAugend, Long billId,
-                TradeType tradeType, AccountSequenceFlag sequenceFlag, String note, Long orderId, boolean saveSequence)
-            throws BalanceNotEnoughException,AccountNotFoundException{
+                                      TradeType tradeType, AccountSequenceFlag sequenceFlag, String note, Long orderId, boolean saveSequence)
+            throws BalanceNotEnoughException, AccountNotFoundException {
 
         if (cashAugend == null || uncashAugend == null || promotionAugend == null) {
             throw new IllegalArgumentException("invalid augend while adding balance");
         }
         Account account = Account.findById(accountId);
-        if(account == null){
+        if (account == null) {
             throw new AccountNotFoundException("can not find the specified account:" + accountId);
         }
 
@@ -170,37 +170,36 @@ public class AccountUtil {
             account.promotionAmount = BigDecimal.ZERO;
         }
 
-        if(billId == null || ( saveSequence && (tradeType== null || sequenceFlag == null))){
+        if (billId == null || (saveSequence && (tradeType == null || sequenceFlag == null))) {
             throw new IllegalArgumentException("error while add balance to account: miss parameter");
         }
-
-        if (account.amount.add(cashAugend).compareTo(BigDecimal.ZERO) >= 0 || account.isCreditable()){
+        if (account.amount.add(cashAugend).compareTo(BigDecimal.ZERO) >= 0 || account.isCreditable()) {
             account.amount = account.amount.add(cashAugend);
-        }else {
+        } else {
             throw new BalanceNotEnoughException("error while add cash to account: balance not enough");
         }
-        if (account.uncashAmount.add(uncashAugend).compareTo(BigDecimal.ZERO) >= 0 || account.isCreditable()){
+        if (account.uncashAmount.add(uncashAugend).compareTo(BigDecimal.ZERO) >= 0 || account.isCreditable()) {
             account.uncashAmount = account.uncashAmount.add(uncashAugend);
-        }else {
+        } else {
             throw new BalanceNotEnoughException("error while add uncashAmount to account: balance not enough");
         }
 
         if (account.promotionAmount.add(promotionAugend).compareTo(BigDecimal.ZERO) >= 0 || account.isCreditable()) {
             account.promotionAmount = account.promotionAmount.add(promotionAugend);
-        }else {
+        } else {
             throw new BalanceNotEnoughException("error while add promotionAmount to account: balance not enough");
         }
 
         account.save();
-        if(saveSequence){
+        if (saveSequence) {
             accountChanged(account, cashAugend.add(uncashAugend), promotionAugend, billId, tradeType, sequenceFlag, note, orderId);
         }
         return account;
     }
 
     private static void accountChanged(Account account, BigDecimal amount, BigDecimal promotionAmount, Long billId,
-            TradeType tradeType, AccountSequenceFlag sequenceFlag, String note, Long orderId){
-        if(account == null){
+                                       TradeType tradeType, AccountSequenceFlag sequenceFlag, String note, Long orderId) {
+        if (account == null) {
             throw new IllegalArgumentException("accountChanged: account can not be null");
         }
         //保存账户变动信息
@@ -218,5 +217,5 @@ public class AccountUtil {
         accountSequence.orderId = orderId;
         accountSequence.save();                                     //保存账户变动信息
     }
-    
+
 }

@@ -43,6 +43,8 @@ public class SupplierCoupons extends Controller {
             render(shopList, supplierUser);
         } else {
             Shop shop = supplierUser.shop;
+
+            //根据页面录入券号查询对应信息
             render(shop, supplierUser);
         }
     }

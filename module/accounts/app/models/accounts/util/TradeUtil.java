@@ -356,6 +356,7 @@ public class TradeUtil {
                     AccountSequenceFlag.NOSTRO,
                     note,
                     tradeBill.orderId);
+
             AccountUtil.addBalanceAndSaveSequence(
                     tradeBill.toAccount.getId(),
                     tradeBill.ebankPaymentAmount.add(tradeBill.balancePaymentAmount),

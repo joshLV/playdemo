@@ -21,7 +21,7 @@ import java.util.Date;
 public class AccountFactory extends ModelFactory<Account> {
 
     @Override
-    public Account define(){
+    public Account define() {
         Account account = new Account();
         account.accountType = AccountType.CONSUMER;
         account.amount = new BigDecimal(0);
@@ -31,4 +31,12 @@ public class AccountFactory extends ModelFactory<Account> {
         account.creditable = AccountCreditable.NO;
         return account;
     }
+
+    @Factory(name = "balanceAccount")
+    public void defineWithBalanceAccount(Account account) {
+        account.accountType = AccountType.PLATFORM;
+        account.uid=Account.PLATFORM_INCOMING;
+        account.amount=BigDecimal.TEN;
+    }
+
 }
