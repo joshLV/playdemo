@@ -52,10 +52,10 @@ week=week.substring(0,week.length()-1);
     #{/elseif}
     #{elseif  !ecoupon.checkVerifyTimeRegion(date) }
     <script type="text/javascript">
-        $("#sure").attr("disabled", true);
+        $("#sure").attr("disabled", false);
     </script>
-    <font color=red>对不起，只能在#{if !isWeekDayAll}${week}#{/if}#{else}每天#{/else}的${timeBegin}~
-        #{if ecoupon?.checkUseBeginTimeAndUseEndTime(date)}次日#{/if}${timeEnd}时间内使用该券!</font>
+    <font color=red>注意：该券只能在#{if !isWeekDayAll}${week}#{/if}#{else}每天#{/else}的${timeBegin}~
+        #{if ecoupon?.checkUseBeginTimeAndUseEndTime(date)}次日#{/if}${timeEnd}时间内使用!</font>
     #{/elseif}
     #{elseif  !ecoupon.isBelongShop(shopId)}
     <script type="text/javascript">

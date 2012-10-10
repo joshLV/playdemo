@@ -1194,7 +1194,6 @@ public class Order extends Model {
             amount = amount.setScale(2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(item.buyNumber));
             addAmount = addAmount.add(amount);
         }
-
         return addAmount;
     }
 

@@ -236,7 +236,7 @@ public class ECoupon extends Model {
 
     private BigDecimal getLinePromoterRebateValue() {
         //如果商品没设置返利,默认给推荐人2%
-        BigDecimal promoterPrice = this.goods.promoterPrice == null || this.goods.promoterPrice.compareTo(BigDecimal.ZERO) == 0 ? new BigDecimal(2) : this.goods.promoterPrice;
+        BigDecimal promoterPrice = this.goods.promoterPrice == null ? new BigDecimal(2) : this.goods.promoterPrice;
         return this.goods.salePrice.multiply(promoterPrice).multiply(new BigDecimal(0.01));
     }
 
@@ -390,7 +390,6 @@ public class ECoupon extends Model {
             payCommission();
         }
         //===================券消费处理完毕=====================================
-
 
         //=========通知当当该券已经使用,如果通知失败会记录到表dd_failure_log中======
         DDAPIUtil.notifyVerified(this);

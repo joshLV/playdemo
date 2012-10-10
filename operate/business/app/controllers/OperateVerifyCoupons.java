@@ -13,7 +13,6 @@ import play.data.validation.Validation;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -79,26 +78,26 @@ public class OperateVerifyCoupons extends Controller {
         }
 
         ECoupon eCoupon = ECoupon.query(eCouponSn, supplierId);
-
         //根据页面录入券号查询对应信息,并产生消费交易记录
         if (eCoupon == null) {
             renderJSON("err");
         }
 
         if (eCoupon.status == ECouponStatus.UNCONSUMED) {
+
             //冻结的券
             if (eCoupon.isFreeze == 1) {
                 renderJSON("3");
             }
+            System.out.println(shopId+"......."+!eCoupon.isBelongShop(shopId));
             if (!eCoupon.isBelongShop(shopId)) {
                 renderJSON("1");
             }
-            //不再验证时间范围内
-            if (!eCoupon.checkVerifyTimeRegion(new Date())) {
-                String info = eCoupon.getCheckInfo();
-                renderJSON("{\"error\":\"2\",\"info\":\"" + info + "\"}");
-            }
-
+//            //不再验证时间范围内 -------运营后台验证的时候去掉该验证，只进行提示
+//            if (!eCoupon.checkVerifyTimeRegion(new Date())) {
+//                String info = eCoupon.getCheckInfo();
+//                renderJSON("{\"error\":\"2\",\"info\":\"" + info + "\"}");
+//            }
             if (!eCoupon.consumeAndPayCommission(shopId, OperateRbac.currentUser().id, null, VerifyCouponType.OP_VERIFY)) {
                 renderJSON("4");
             }
