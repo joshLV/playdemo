@@ -4,6 +4,8 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.accounts.Account;
+import models.accounts.AccountCreditable;
+import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import models.admin.OperateUser;
 import models.consumer.User;
@@ -48,6 +50,11 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         FactoryBoy.delete(PromoteRebate.class);
         FactoryBoy.create(UserInfo.class);
         promoteUser = FactoryBoy.create(User.class);
+        
+        // 一百券佣金账户必须设置为可以赊账
+        Account uhlAccount = AccountUtil.getUhuilaAccount();
+        uhlAccount.creditable = AccountCreditable.YES;
+        uhlAccount.save();
     }
 
     @Test
