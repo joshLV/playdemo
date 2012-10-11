@@ -11,7 +11,7 @@ import play.Logger;
  * @author likang
  * Date: 12-9-28
  */
-public class JDRequest<T extends JDMessage> {
+public class JDRest<T extends JDMessage> {
     public String  version;
     public Long    venderId;
     public String  venderKey;

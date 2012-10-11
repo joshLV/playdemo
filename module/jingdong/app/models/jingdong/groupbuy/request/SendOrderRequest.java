@@ -1,5 +1,6 @@
-package models.jingdong.groupbuy;
+package models.jingdong.groupbuy.request;
 
+import models.jingdong.groupbuy.JDMessage;
 import org.dom4j.Element;
 
 import java.math.BigDecimal;
@@ -11,7 +12,7 @@ import java.util.List;
  * @author likang
  *         Date: 12-10-7
  */
-public class SendOrder implements JDMessage{
+public class SendOrderRequest implements JDMessage {
     public Long jdTeamId;       //京东团购ID
     public Long venderTeamId;   //合作伙伴团购ID
     public String mobile;       //手机
@@ -21,9 +22,9 @@ public class SendOrder implements JDMessage{
     public BigDecimal origin;   //订单总额
     public Long jdOrderId;      //京东订单ID
     public Date payTime;        //付款时间
-    List<Coupon> coupons;       //券信息
+    List<CouponRequest> coupons;       //券信息
 
-    public SendOrder(){
+    public SendOrderRequest(){
         coupons = new ArrayList<>();
     }
 
@@ -38,8 +39,8 @@ public class SendOrder implements JDMessage{
         origin = new BigDecimal(root.elementTextTrim("Origin")).divide(new BigDecimal("100"));
         jdOrderId = Long.parseLong(root.elementTextTrim("JdOrderId"));
         payTime = new Date(Long.parseLong(root.elementTextTrim("PayTime")));
-        for(Element element : (List<Element>)root.elements("Coupon")){
-            Coupon coupon = new Coupon();
+        for(Element element : (List<Element>)root.elements("Coupons")){
+            CouponRequest coupon = new CouponRequest();
             coupon.couponId = element.elementTextTrim("CouponId");
             coupon.couponPwd = element.elementTextTrim("CouponPwd");
             coupons.add(coupon);
