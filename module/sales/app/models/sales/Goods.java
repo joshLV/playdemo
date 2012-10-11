@@ -717,6 +717,54 @@ public class Goods extends Model {
         updateGoods.groupCode = (StringUtils.isEmpty(goods.groupCode)) ? null : goods.groupCode.trim();
 
         updateGoods.save();
+
+        models.sales.GoodsHistory goodsHistory = new GoodsHistory();
+
+        if (goodsHistory == null) {
+            return;
+        }
+        goodsHistory.goodsId = goods.id;
+        goodsHistory.name = goods.name;
+        goodsHistory.no = goods.no;
+        goodsHistory.effectiveAt = goods.effectiveAt;
+        goodsHistory.expireAt = DateUtil.getEndOfDay(goods.expireAt);
+        goodsHistory.faceValue = goods.faceValue;
+        goodsHistory.originalPrice = goods.originalPrice;
+        goods.discount = null;
+        goodsHistory.setDiscount(goods.getDiscount());
+        goodsHistory.salePrice = goods.salePrice;
+        goodsHistory.baseSale = goods.baseSale;
+        goodsHistory.promoterPrice = goods.promoterPrice;
+        goodsHistory.invitedUserPrice = goods.invitedUserPrice;
+        goodsHistory.materialType = goods.materialType;
+        goodsHistory.topCategoryId = goods.topCategoryId;
+        goodsHistory.categories = goods.categories;
+        goodsHistory.resaleAddPrice = goods.resaleAddPrice;
+        goodsHistory.setPrompt(goods.getPrompt());
+        goodsHistory.setDetails(goods.getDetails());
+        goodsHistory.updatedAt = new Date();
+        goodsHistory.updatedBy = goods.updatedBy;
+        goodsHistory.brand = goods.brand;
+        goodsHistory.isAllShop = goods.isAllShop;
+        goodsHistory.status = goods.status;
+        goodsHistory.keywords = goods.keywords;
+        goodsHistory.limitNumber = goods.limitNumber;
+        goodsHistory.couponType = goods.couponType;
+        if (!StringUtils.isEmpty(goods.imagePath)) {
+            goodsHistory.imagePath = goods.imagePath;
+        }
+        if (goods.supplierId != null) {
+            goodsHistory.supplierId = goods.supplierId;
+        }
+        goodsHistory.shops = goods.shops;
+        goodsHistory.title = goods.title;
+        goodsHistory.setPublishedPlatforms(goods.getPublishedPlatforms(), goods);
+        goodsHistory.useBeginTime = goods.useBeginTime;
+        goodsHistory.useEndTime = goods.useEndTime;
+        goodsHistory.useWeekDay = goods.useWeekDay;
+        goodsHistory.isLottery = (goods.isLottery == null) ? Boolean.FALSE : goods.isLottery;
+        goodsHistory.groupCode = (StringUtils.isEmpty(goods.groupCode)) ? null : goods.groupCode.trim();
+        goodsHistory.save();
     }
 
 

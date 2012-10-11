@@ -396,6 +396,15 @@ public class OperateGoods extends Controller {
         renderTemplate("OperateGoods/show.html", goods);
     }
 
+    public static void showHistory(Long id) {
+        String page = request.params.get("page");
+        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
+
+
+    }
+
+
+
     /**
      * 更新指定商品信息
      */
