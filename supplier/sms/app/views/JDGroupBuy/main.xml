@@ -13,9 +13,13 @@
     *{ 响应信息 }*
     <ResultMessage>${resultMessage}</ResultMessage>
     *{ 提交数据 }*
-    <Data>
-        #{if resultCode == '200'}
-            #{get 'data'/}
+    #{if resultCode == 200}
+        #{if encrypt == 'true'}
+            <Data>${models.jingdong.JDGroupBuyUtil.encryptMessage(data)}</Data>
         #{/if}
-    </Data>
+        #{else}
+            <Data>${data}</Data>
+        #{/else}
+    #{/if}
+    #{else} <Data/> #{/else}
 </Response>

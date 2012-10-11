@@ -1,5 +1,6 @@
 package models.jingdong.groupbuy;
 
+import models.jingdong.JDGroupBuyUtil;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -19,6 +20,7 @@ public class JDRequest<T extends JDMessage> {
     public T       data;
 
     public boolean parse(String xml, T d){
+        Logger.info("jingdong request:" + xml);
         Document document = null;
         try{
             document = DocumentHelper.parseText(xml);
@@ -37,7 +39,8 @@ public class JDRequest<T extends JDMessage> {
         Element messageElement = null;
         if(encrypt){
             //解析加密字符串
-            String encryptedMessage = root.elementTextTrim("Data");
+            String rawMessage = root.elementTextTrim("Data");
+            String encryptedMessage = JDGroupBuyUtil.decryptMessage(rawMessage);
             Document encryptedMessageDocument = null;
             try{
                 encryptedMessageDocument = DocumentHelper.parseText(encryptedMessage);
@@ -53,6 +56,6 @@ public class JDRequest<T extends JDMessage> {
             }
         }
         data = d;
-        return messageElement != null && data.parse(null);
+        return messageElement != null && data.parse(messageElement);
     }
 }

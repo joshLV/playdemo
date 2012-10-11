@@ -12,16 +12,16 @@ import java.util.List;
  *         Date: 12-10-7
  */
 public class SendOrder implements JDMessage{
-    public Integer jdTeamId;
-    public Integer venderTeamId;
-    public String mobile;
-    public Date orderDate;
-    public BigDecimal teamPrice;
-    public Integer count;
-    public BigDecimal origin;
-    public Long jdOrderId;
-    public Date payTime;
-    List<Coupon> coupons;
+    public Long jdTeamId;       //京东团购ID
+    public Long venderTeamId;   //合作伙伴团购ID
+    public String mobile;       //手机
+    public Date orderDate;      //下单时间
+    public BigDecimal teamPrice;//购买价
+    public Integer count;       //订购数量
+    public BigDecimal origin;   //订单总额
+    public Long jdOrderId;      //京东订单ID
+    public Date payTime;        //付款时间
+    List<Coupon> coupons;       //券信息
 
     public SendOrder(){
         coupons = new ArrayList<>();
@@ -29,8 +29,8 @@ public class SendOrder implements JDMessage{
 
     @Override
     public boolean parse(Element root) {
-        jdTeamId = Integer.parseInt(root.elementTextTrim("JdTeamId"));
-        venderTeamId = Integer.parseInt(root.elementTextTrim("VenderTeamId"));
+        jdTeamId = Long.parseLong(root.elementTextTrim("JdTeamId"));
+        venderTeamId = Long.parseLong(root.elementTextTrim("VenderTeamId"));
         mobile = root.elementTextTrim("Mobile");
         orderDate = new Date(Long.parseLong(root.elementTextTrim("OrderDate")));
         teamPrice = new BigDecimal(root.elementTextTrim("TeamPrice")).divide(new BigDecimal("100"));
@@ -44,6 +44,6 @@ public class SendOrder implements JDMessage{
             coupon.couponPwd = element.elementTextTrim("CouponPwd");
             coupons.add(coupon);
         }
-        return false;
+        return true;
     }
 }
