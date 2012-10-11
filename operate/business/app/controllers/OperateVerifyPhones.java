@@ -73,15 +73,15 @@ public class OperateVerifyPhones extends Controller {
      */
     @ActiveNavigation("supplierVerifyPhones_add")
     public static void create(SupplierUser supplierUser) {
-        if(supplierUser.loginName == null || supplierUser.loginName.trim().equals("")){
+        if (supplierUser.loginName == null || supplierUser.loginName.trim().equals("")) {
             Validation.addError("supplierUser.loginName", "请输入电话号码");
-        }else {
+        } else {
             supplierUser.loginName = supplierUser.loginName.trim();
-            if(SupplierUser.find("byLoginName", supplierUser.loginName).fetch().size() != 0){
+            if (SupplierUser.find("byLoginName", supplierUser.loginName).fetch().size() != 0) {
                 Validation.addError("supplierUser.loginName", "该电话号码已存在");
             }
         }
-        if(supplierUser.shop == null) {
+        if (supplierUser.shop == null) {
             Validation.addError("supplierUser.shop.id", "请选择门店");
         }
         if (Validation.hasErrors()) {
@@ -117,19 +117,19 @@ public class OperateVerifyPhones extends Controller {
     /**
      * 操作员信息修改
      *
-     * @param id           ID
-     * @param loginName    电话号码
+     * @param id        ID
+     * @param loginName 电话号码
      */
     public static void update(Long id, String loginName, Long shopId) {
-        SupplierUser  supplierUser = SupplierUser.findById(id);
+        SupplierUser supplierUser = SupplierUser.findById(id);
         if (supplierUser == null) {
             Validation.addError("supplierUser.loginName", "该记录不存在");
-        }else {
-            if (loginName == null || loginName.trim().equals("")){
+        } else {
+            if (loginName == null || loginName.trim().equals("")) {
                 Validation.addError("supplierUser.loginName", "请输入电话号码");
-            }else {
+            } else {
                 loginName = loginName.trim();
-                if (!supplierUser.loginName.equals(loginName) && SupplierUser.find("byLoginName", loginName).fetch().size() != 0){
+                if (!supplierUser.loginName.equals(loginName) && SupplierUser.find("byLoginName", loginName).fetch().size() != 0) {
                     Validation.addError("supplierUser.loginName", "该电话号码已存在");
                 }
             }
@@ -138,8 +138,8 @@ public class OperateVerifyPhones extends Controller {
         Shop shop = Shop.findById(shopId);
         if (shop == null) {
             Validation.addError("supplierUser.shop", "无效的门店");
-        }else {
-            if (supplierUser!= null && shop.supplierId != supplierUser.supplier.id ){
+        } else {
+            if (supplierUser != null && shop.supplierId != supplierUser.supplier.id) {
                 Validation.addError("supplierUser.shop", "无效的门店");
             }
         }

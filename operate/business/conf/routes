@@ -117,6 +117,7 @@ GET     /shops/{supplierId}/showSupplierShops   OperateShops.showSupplierShops
 GET     /suppliers                              Suppliers.index
 GET     /suppliers/new                          Suppliers.add
 POST    /suppliers                              Suppliers.create
+GET     /suppliers/export-material              Suppliers.exportMaterial
 GET     /suppliers/{id}/edit                    Suppliers.edit
 PUT     /suppliers/{id}                         Suppliers.update
 PUT     /suppliers/{id}/freeze                  Suppliers.freeze

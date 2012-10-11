@@ -355,7 +355,7 @@ public class ConsumerSmsMultiVerifyBaseTest extends FunctionalTest {
         kfc.save();
 
         Response response = messageSender.doMessageSend(ecouponKFC2,
-                        kfcClerk.jobNumber + "*20", null);
+                kfcClerk.jobNumber + "*20", null);
         assertContentEquals("【一百券】" + kfc.fullName + "未在一百券登记使用", response);
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
@@ -379,7 +379,7 @@ public class ConsumerSmsMultiVerifyBaseTest extends FunctionalTest {
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertSMSContentMatch("【一百券】" + kfc.fullName
-                        + "已被一百券锁定，请致电400-6262-166咨询",
+                        + "已被一百券锁定，请致电4g00-6262-166咨询",
                         msg.getContent());
     }
 

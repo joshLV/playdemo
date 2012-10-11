@@ -6,6 +6,8 @@ import models.accounts.AccountType;
 import models.accounts.WithdrawAccount;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
+import models.admin.SupplierUserType;
+import models.consumer.User;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
@@ -13,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import play.Play;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
+import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
@@ -196,7 +199,7 @@ public class Suppliers extends Controller {
     }
 
     public static void update(Long id, @Valid Supplier supplier, File image, @Valid SupplierUser admin, Long adminId) {
-         Supplier oldSupplier = Supplier.findById(id);
+        Supplier oldSupplier = Supplier.findById(id);
         if (StringUtils.isNotBlank(supplier.domainName) && !oldSupplier.domainName.equals(supplier.domainName)) {
             checkItems(supplier);
         }
@@ -234,4 +237,18 @@ public class Suppliers extends Controller {
         Supplier.delete(id);
         index();
     }
+
+    public static void exportMaterial(long supplierId, String supplierDomainName) {
+        JPAExtPaginator<SupplierUser> supplierUsersPage = SupplierUser
+                .getSupplierUserList(SupplierUserType.ANDROID, null, null, null,
+                        supplierId, 1,
+                        1);
+        JPAExtPaginator<SupplierUser> supplierUsers = SupplierUser
+                .getSupplierUserList(null, null, null,
+                        supplierId, 1,
+                        1);
+        render(supplierUsersPage, supplierDomainName, supplierUsers);
+    }
+
+
 }
