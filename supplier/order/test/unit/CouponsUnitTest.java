@@ -1,13 +1,10 @@
 package unit;
 
+import factory.FactoryBoy;
 import models.accounts.Account;
 import models.accounts.AccountType;
 import models.consumer.User;
-import models.order.CouponsCondition;
-import models.order.ECoupon;
-import models.order.ECouponStatus;
-import models.order.Order;
-import models.order.OrderItems;
+import models.order.*;
 import models.sales.Area;
 import models.sales.Brand;
 import models.sales.Category;
@@ -26,6 +23,7 @@ import java.util.List;
 public class CouponsUnitTest extends UnitTest {
     @Before
     public void setup() {
+        FactoryBoy.delete(CouponHistory.class);
         Fixtures.delete(Category.class);
         Fixtures.delete(Brand.class);
         Fixtures.delete(Area.class);
@@ -100,18 +98,24 @@ public class CouponsUnitTest extends UnitTest {
     @Test
     public void testFreeze() {
         Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon1");
-        ECoupon.freeze(id);
+        ECoupon.freeze(id, null);
         ECoupon eCoupon = ECoupon.findById(id);
         assertEquals(1, eCoupon.isFreeze);
+        assertEquals(1, CouponHistory.count());
+        List<CouponHistory> historyList = CouponHistory.findAll();
+        assertEquals("冻结券号", historyList.get(0).remark);
     }
 
 
     @Test
     public void testUnFreeze() {
         Long id = (Long) Fixtures.idCache.get("models.order.ECoupon-coupon2");
-        ECoupon.unfreeze(id);
+        ECoupon.unfreeze(id, null);
         ECoupon eCoupon = ECoupon.findById(id);
         assertEquals(0, eCoupon.isFreeze);
+        assertEquals(1, CouponHistory.count());
+        List<CouponHistory> historyList = CouponHistory.findAll();
+        assertEquals("解冻券号", historyList.get(0).remark);
     }
 
     @Test
