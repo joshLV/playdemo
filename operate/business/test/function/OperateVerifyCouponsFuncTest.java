@@ -50,11 +50,6 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         FactoryBoy.delete(PromoteRebate.class);
         FactoryBoy.create(UserInfo.class);
         promoteUser = FactoryBoy.create(User.class);
-        
-        // 一百券佣金账户必须设置为可以赊账
-        Account uhlAccount = AccountUtil.getUhuilaAccount();
-        uhlAccount.creditable = AccountCreditable.YES;
-        uhlAccount.save();
     }
 
     @Test

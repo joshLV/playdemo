@@ -18,7 +18,7 @@ public class AccountUtil {
     public static final String PARTNER_TESTPAY = "testpay";
 
     public static Account getUhuilaAccount() {
-        return getAccount(Account.UHUILA_COMMISSION, AccountType.PLATFORM);
+        return getCreditableAccount(Account.UHUILA_COMMISSION, AccountType.PLATFORM);
     }
 
     public static Account getPlatformIncomingAccount() {
