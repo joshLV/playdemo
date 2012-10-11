@@ -14,7 +14,6 @@ import factory.annotation.Factory;
 import models.sales.Shop;
 import models.supplier.Supplier;
 
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
