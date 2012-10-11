@@ -1,7 +1,10 @@
 package unit;
 
 import com.uhuila.common.constants.DeletedStatus;
-import models.sales.*;
+import factory.FactoryBoy;
+import models.sales.Area;
+import models.sales.Shop;
+import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.ModelPaginator;
 import play.test.Fixtures;
@@ -10,12 +13,17 @@ import play.test.UnitTest;
 import java.util.List;
 
 public class ShopUnitTest extends UnitTest {
-    @org.junit.Before
+    Shop shop;
+    @Before
     public void setup() {
         Fixtures.delete(Shop.class);
         Fixtures.delete(Area.class);
         Fixtures.loadModels("fixture/areas_unit.yml");
         Fixtures.loadModels("fixture/shops_unit.yml");
+
+        FactoryBoy.lazyDelete();
+        shop = FactoryBoy.create(Shop.class);
+
     }
 
     @Test
@@ -50,5 +58,47 @@ public class ShopUnitTest extends UnitTest {
 
         Shop shop = Shop.findById(shopId);
         assertEquals(DeletedStatus.DELETED, shop.deleted);
+    }
+
+
+    @Test
+    public void testHasMap() {
+        assertTrue(shop.hasMap());
+    }
+
+    @Test
+    public void testHasMap_经度为零() {
+        shop.longitude="0";
+        assertFalse(shop.hasMap());
+    }
+
+    @Test
+    public void testHasMap_纬度为零() {
+        shop.latitude = "0";
+        assertFalse(shop.hasMap());
+    }
+
+    @Test
+    public void testHasMap_经度为00() {
+        shop.longitude = "0.0";
+        assertFalse(shop.hasMap());
+    }
+
+    @Test
+    public void testHasMap_纬度为00() {
+        shop.longitude = "0.0";
+        assertFalse(shop.hasMap());
+    }
+
+    @Test
+    public void testHasMap_经度为空() {
+        shop.longitude = null;
+        assertFalse(shop.hasMap());
+    }
+
+    @Test
+    public void testHasMap_纬度为空() {
+        shop.longitude = null;
+        assertFalse(shop.hasMap());
     }
 }

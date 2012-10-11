@@ -134,6 +134,8 @@ public class OperateShops extends Controller {
         sp.phone = shop.phone;
         sp.managerMobiles = shop.managerMobiles;
         sp.updatedAt = new Date();
+        sp.longitude = shop.longitude;
+        sp.latitude = shop.latitude;
         sp.save();
         index(null);
     }

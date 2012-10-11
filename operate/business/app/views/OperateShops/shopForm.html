@@ -16,28 +16,107 @@
 #{layout_operate.selectField name:'shop.areaId', class:'span2', value:shop?.areaId, error:'shop.areaId',list:areas/}
 #{layout_operate.textField name:'shop.name', class:'span2', value:shop?.name, required:true/}
 #{layout_operate.textField name:'shop.address', value:shop?.address, required:true/}
-#{layout_operate.textField name:'shop.longitude', value:shop?.longitude/}
-#{layout_operate.textField name:'shop.latitude', value:shop?.latitude/}
+<!------------------------ 地图 --------------------->
 <script type="text/javascript"
-        src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCbnBNu40y5eXnL8jOey4lbS3P1vQ_HR5E&sensor=true">
+        src="http://maps.googleapis.com/maps/api/js?e&language=zh-CN&region=GB&key=AIzaSyCbnBNu40y5eXnL8jOey4lbS3P1vQ_HR5E&sensor=false">
 </script>
 <script type="text/javascript">
+    //门店位置
+    var shopLocation = new google.maps.LatLng(${shop?.latitude?:0},${shop?.longitude?:0});
+    //已设置过的所有标记
+    var markers = [];
+    var geocoder = new google.maps.Geocoder();
+    var map;
+
+    function parseAddress() {
+        var address = $("#shop_address").val();
+        geocoder.geocode({ 'address':address}, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+
+                shopLocation = results[0].geometry.location; //根据地址查询到的经纬度位置信息
+                map.setCenter(shopLocation);
+                for (i in markers) {
+                    markers[i].setMap(null);
+                }
+                var marker = new google.maps.Marker({
+                    map:map,
+                    position:shopLocation
+                });
+                markers.push(marker);
+                $("#shop_longitude").val(shopLocation.lng());
+                $("#shop_latitude").val(shopLocation.lat());
+            }
+        });
+    }
     function initialize() {
+        //地址解析
+        if ($("#shop_longitude").val() == "0" ||$("#shop_latitude").val() == "0" || $("#shop_longitude").val() == "" || $("#shop_latitude").val() == "") {
+            parseAddress();
+        }
+        //地图属性设置
         var mapOptions = {
-            center:new google.maps.LatLng(-34.397, 150.644),
-            zoom:8,
+            center:shopLocation,
+            zoom:13, //要加载的地图的缩放级别
+            zoomControl:true,
+            panControl:false,
+            scaleControl:false,
+            overviewMapControl:false,
+            streetViewControl:false,
+            mapTypeControl:false,
             mapTypeId:google.maps.MapTypeId.ROADMAP
         };
-        var map = new google.maps.Map(document.getElementById("map"),
+        //初始化地图
+        map = new google.maps.Map(document.getElementById("map"),
                 mapOptions);
+        //标记门店位置
+        if (shopLocation.lng() != 0 && shopLocation.lat() != 0) {
+            var marker = new google.maps.Marker({
+                position:shopLocation,
+                map:map,
+                title:"${shop?.name}: \r\n${shop?.address}"
+            });
+            markers.push(marker);
+        }
+
+
+        //点击地图上任意位置时，改变地图标记位置，同时修改经纬度
+        google.maps.event.addListener(map, 'click', function (event) {
+            for (i in markers) {
+                markers[i].setMap(null);
+            }
+
+            marker = new google.maps.Marker({
+                position:event.latLng,
+                map:map
+            });
+            markers.push(marker);
+
+            var center = marker.getPosition();
+            $("#shop_longitude").val(center.lng());
+            $("#shop_latitude").val(center.lat());
+        });
     }
 </script>
 <div class="control-group">
-#{layout_operate.labelText name:'shop.map', required:_required/}
     <!--定义显示地图的层-->
-    <div id="map" style="width: 600px; height: 400px"></div>
-</div>
+    <div class="controls">
+        <div id="map" style="width: 540px; height: 360px"></div>
+        经度: <input type="text" id="shop_longitude" name="shop.longitude" class="input-middle" readonly="true"
+                   value="${shop?.longitude}">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        纬度: <input type="text" id="shop_latitude" name="shop.latitude" class="input-middle" readonly="true"
+                   value="${shop?.latitude}">
+    </div>
+    <script type="text/javascript">
+        initialize();
+        $(function () {
 
+            $("#shop_address").blur(function () {
+                parseAddress();
+            });
+        });
+    </script>
+</div>
 #{layout_operate.textField name:'shop.phone', value:shop?.phone/}
 #{layout_operate.textField name:'shop.managerMobiles', value:shop?.managerMobiles/}
 <p class="controls">以半角逗号','分割，每日给这些手机号发送前一天的经营报表</p>

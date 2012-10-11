@@ -2,7 +2,6 @@ package factory.sales;
 
 import static util.DateHelper.t;
 
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -21,19 +20,19 @@ public class ShopFactory extends ModelFactory<Shop> {
         Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
         shop.deleted=DeletedStatus.UN_DELETED;
         shop.supplierId = supplier.id;
-        shop.address="宛平南路2号";
-        shop.phone="02100000";
-        shop.latitude=new BigDecimal(120.12888);
-        shop.longitude=new BigDecimal(120.12888);
+        shop.address = "宛平南路2号";
+        shop.phone = "02100000";
+        shop.latitude = "121.12888";
+        shop.longitude = "31.12888";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
-            shop.createdAt =  dateFormat.parse("2012-02-29 16:33:18");
+            shop.createdAt = dateFormat.parse("2012-02-29 16:33:18");
         } catch (ParseException e) {
             //ignore
         }
 
         try {
-            shop.updatedAt =  dateFormat.parse("2012-02-29 16:44:33");
+            shop.updatedAt = dateFormat.parse("2012-02-29 16:44:33");
         } catch (ParseException e) {
             //ignore
         }
@@ -41,12 +40,12 @@ public class ShopFactory extends ModelFactory<Shop> {
         shop.areaId = "021";
         shop.name = "shop0";
         shop.deleted = DeletedStatus.UN_DELETED;
-        shop.lockVersion=0;
+        shop.lockVersion = 0;
         return shop;
     }
 
     @Factory(name = "SupplierId")
-    public Shop defineWithSupplierId(Shop shop){
+    public Shop defineWithSupplierId(Shop shop) {
         shop.areaId = "021";
         shop.name = "shop0";
         shop.deleted = DeletedStatus.UN_DELETED;

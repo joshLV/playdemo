@@ -16,7 +16,6 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -50,9 +49,11 @@ public class Shop extends Model {
     @Column(name = "is_close")
     public String isClose;
 
-    public BigDecimal latitude;  //纬度
+    @Column(name = "lat")
+    public String latitude = "0";  //纬度
 
-    public BigDecimal longitude; //经度
+    @Column(name = "lng")
+    public String longitude = "0"; //经度
 
     @Column(name = "created_at")
     public Date createdAt;
@@ -113,6 +114,12 @@ public class Shop extends Model {
         CacheHelper.delete(CACHEKEY + this.id);
         CacheHelper.delete(CACHEKEY_SUPPLIERID + this.supplierId);
         super._delete();
+    }
+
+
+    public boolean hasMap() {
+        return !(StringUtils.isBlank(latitude) || StringUtils.isBlank(longitude) || latitude.equals("0")
+                || longitude.equals("0") || latitude.equals("0.0") || longitude.equals("0.0"));
     }
 
     /**

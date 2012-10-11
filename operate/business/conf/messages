@@ -179,6 +179,7 @@ shop.cityId=城市
 shop.longitude=经度
 shop.latitude=纬度
 shop.map=地图
+shop.managerMobiles=经理手机
 
 supplier.NORMAL=正常
 supplier.FREEZE=冻结
