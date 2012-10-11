@@ -5,7 +5,6 @@ import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
-import models.accounts.AccountType;
 import models.accounts.util.AccountUtil;
 import models.admin.OperateUser;
 import models.consumer.User;
@@ -23,6 +22,7 @@ import play.vfs.VirtualFile;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,6 +50,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         FactoryBoy.delete(PromoteRebate.class);
         FactoryBoy.create(UserInfo.class);
         promoteUser = FactoryBoy.create(User.class);
+
     }
 
     @Test
@@ -81,9 +82,6 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
                 target.expireAt = goods.expireAt;
             }
         });
-//        System.out.println(eCoupon.status);
-//        System.out.println(eCoupon.eCouponSn);
-//        System.out.println(eCoupon.expireAt);
         Http.Response response = GET("/coupons/verify?supplierId=" + eCoupon.shop.supplierId + "&shopId=" + eCoupon.shop.id + "&eCouponSn=" + eCoupon.eCouponSn);
         assertIsOk(response);
         ECoupon coupon = (ECoupon) (renderArgs("ecoupon"));
@@ -134,6 +132,10 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         eCoupon.refresh();
         ECoupon eCouponConsumed = ECoupon.findById(eCoupon.id);
         assertEquals(ECouponStatus.CONSUMED, eCouponConsumed.status);
+
+        assertEquals(1, CouponHistory.count());
+        List<CouponHistory> historyList = CouponHistory.findAll();
+        assertEquals("消费", historyList.get(0).remark);
     }
 
     @Test

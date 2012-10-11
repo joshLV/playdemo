@@ -89,7 +89,6 @@ public class OperateVerifyCoupons extends Controller {
             if (eCoupon.isFreeze == 1) {
                 renderJSON("3");
             }
-            System.out.println(shopId+"......."+!eCoupon.isBelongShop(shopId));
             if (!eCoupon.isBelongShop(shopId)) {
                 renderJSON("1");
             }

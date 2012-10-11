@@ -5,10 +5,7 @@ import factory.FactoryBoy;
 import factory.callback.SequenceCallback;
 import models.admin.OperateRole;
 import models.admin.OperateUser;
-import models.order.ECoupon;
-import models.order.ECouponStatus;
-import models.order.Order;
-import models.order.OrderItems;
+import models.order.*;
 import models.sales.Brand;
 import models.sales.Category;
 import models.sales.Goods;
@@ -20,6 +17,8 @@ import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: hejun
@@ -28,6 +27,7 @@ import play.vfs.VirtualFile;
  * To change this template use File | Settings | File Templates.
  */
 public class OperateCouponsFuncTest extends FunctionalTest {
+    OperateUser user;
 
     @Before
     public void setUp() {
@@ -41,12 +41,12 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         FactoryBoy.delete(OperateRole.class);
         FactoryBoy.delete(Brand.class);
         FactoryBoy.delete(Category.class);
-
+        FactoryBoy.delete(CouponHistory.class);
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
 
-        OperateUser user = FactoryBoy.create(OperateUser.class);
+        user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
 
@@ -69,7 +69,6 @@ public class OperateCouponsFuncTest extends FunctionalTest {
 
     @Test
     public void testIndex() {
-        System.out.println("ECoupon size -------------- " + ECoupon.findAll().size());
         Http.Response response = GET("/coupons");
         assertIsOk(response);
         assertContentMatch("券号列表", response);
@@ -78,10 +77,27 @@ public class OperateCouponsFuncTest extends FunctionalTest {
     @Test
     public void testIndexWithCondition() {
         String condition = "?condition.status=UNCONSUMED";
-
         Http.Response response = GET("/coupons" + condition);
         assertIsOk(response);
         assertNotNull(renderArgs("couponPage"));
+        boolean hasRight = (Boolean) renderArgs("hasRight");
+        assertTrue(hasRight);
+    }
+
+    @Test
+    public void testIndexWithoutRight() {
+        String condition = "?condition.status=UNCONSUMED";
+        user.roles.remove(role("manager"));
+        user.save();
+        Http.Response response = GET("/coupons" + condition);
+        assertIsOk(response);
+        boolean hasRight = (Boolean) renderArgs("hasRight");
+        assertFalse(hasRight);
+    }
+
+    private static OperateRole role(String roleName) {
+        OperateRole role = OperateRole.find("byKey", roleName).first();
+        return role;
     }
 
     @Test
@@ -93,6 +109,9 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         assertStatus(302, response);
         eCoupon.refresh();
         assertEquals(1, eCoupon.isFreeze);
+        assertEquals(1, CouponHistory.count());
+        List<CouponHistory> historyList = CouponHistory.findAll();
+        assertEquals("冻结券号", historyList.get(0).remark);
     }
 
     @Test
@@ -104,6 +123,9 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         assertStatus(302, response);
         eCoupon.refresh();
         assertEquals(0, eCoupon.isFreeze);
+        assertEquals(1, CouponHistory.count());
+        List<CouponHistory> historyList = CouponHistory.findAll();
+        assertEquals("解冻券号", historyList.get(0).remark);
     }
 
     @Test
@@ -113,14 +135,29 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         eCoupon.save();
         Http.Response response = GET("/coupons-message/" + eCoupon.id.toString() + "/send");
         assertIsOk(response);
+        assertEquals(1, CouponHistory.count());
+        List<CouponHistory> historyList = CouponHistory.findAll();
+        assertEquals("重发短信", historyList.get(0).remark);
+
+    }
+
+    @Test
+    public void testCouponHistory() {
+        ECoupon eCoupon = FactoryBoy.create(ECoupon.class);
+        CouponHistory history = FactoryBoy.create(CouponHistory.class);
+        history.couponSn = eCoupon.eCouponSn;
+        history.save();
+        Http.Response response = GET("/coupon_history?couponSn=" + eCoupon.eCouponSn);
+        assertIsOk(response);
+        assertNotNull(renderArgs("couponList"));
+        List<CouponHistory> historyList = (List) renderArgs("couponList");
+        assertEquals("产生券号", historyList.get(0).remark);
     }
 
     @Test
     public void testExcelOut() {
-
         Http.Response response = GET("/coupon_excel");
         assertIsOk(response);
         assertNotNull(renderArgs("couponsList"));
-
     }
 }

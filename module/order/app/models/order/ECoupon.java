@@ -23,28 +23,10 @@ import play.db.jpa.Model;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.paginate.ModelPaginator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 @Table(name = "e_coupon")
@@ -412,8 +394,15 @@ public class ECoupon extends Model {
         }
         this.status = ECouponStatus.CONSUMED;
         this.consumedAt = new Date();
-        this.supplierUser = supplierUser != null ? supplierUser : null;
-        this.operateUserId = operateUserId != null ? operateUserId : null;
+        String operator = "";
+        if (supplierUser != null) {
+            this.supplierUser = supplierUser;
+            operator = supplierUser.loginName;
+        }
+        if (operateUserId != null) {
+            this.operateUserId = operateUserId;
+            operator = "操作员ID:"+operateUserId.toString();
+        }
         this.verifyType = type;
         this.save();
         if (this.order != null && this.order.promoteUserId != null) {
@@ -430,6 +419,8 @@ public class ECoupon extends Model {
             promoteRebate.rebateAt = new Date();
             promoteRebate.save();
         }
+        //记录券历史信息
+        new CouponHistory(eCouponSn, operator, "消费", ECouponStatus.UNCONSUMED, ECouponStatus.CONSUMED, type).save();
         return true;
     }
 
@@ -647,6 +638,10 @@ public class ECoupon extends Model {
             eCoupon.order.save();
         }
 
+        //记录券历史信息
+        User user = User.findById(userId);
+        new CouponHistory(eCoupon.eCouponSn, user.getShowName(), "券退款", eCoupon.status, ECouponStatus.REFUND, null).save();
+
         // 更改库存
         eCoupon.goods.baseSale += 1;
         eCoupon.goods.saleCount -= 1;
@@ -812,8 +807,8 @@ public class ECoupon extends Model {
      *
      * @param id
      */
-    public static void freeze(long id) {
-        update(id, 1);
+    public static void freeze(long id, String userName) {
+        update(id, 1, userName);
     }
 
     /**
@@ -821,15 +816,18 @@ public class ECoupon extends Model {
      *
      * @param id
      */
-    public static void unfreeze(long id) {
-        update(id, 0);
+    public static void unfreeze(long id, String userName) {
+        update(id, 0, userName);
     }
 
     /**
      * 更新券是否冻结
      */
-    private static void update(long id, Integer isFreeze) {
+    private static void update(long id, Integer isFreeze, String userName) {
+
         ECoupon eCoupon = ECoupon.findById(id);
+        //记录券历史信息
+        new CouponHistory(eCoupon.eCouponSn, userName, isFreeze == 0 ? "解冻券号" : "冻结券号", eCoupon.status, eCoupon.status, null).save();
         eCoupon.isFreeze = isFreeze;
         eCoupon.save();
     }

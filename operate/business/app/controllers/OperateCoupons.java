@@ -1,12 +1,11 @@
 package controllers;
 
 import models.admin.OperateUser;
-import models.order.CouponsCondition;
-import models.order.ECoupon;
-import models.order.ECouponStatus;
-import models.order.VerifyCouponType;
+import models.order.*;
 import models.sales.Brand;
+import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
+import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
@@ -29,7 +28,6 @@ public class OperateCoupons extends Controller {
         if (condition == null) {
             condition = new CouponsCondition();
         }
-
         String page = request.params.get("page");
         int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
 
@@ -43,7 +41,10 @@ public class OperateCoupons extends Controller {
         List<Brand> brandList = Brand.findByOrder(null);
         renderArgs.put("brandList", brandList);
         BigDecimal amountSummary = ECoupon.summary(couponPage);
-        render(couponPage, condition, amountSummary);
+
+        //判断角色是否有解冻券号的权限
+        boolean hasRight = ContextedPermission.hasPermission("COUPON_UNFREEZE");
+        render(couponPage, condition, amountSummary, hasRight);
     }
 
     /**
@@ -52,7 +53,7 @@ public class OperateCoupons extends Controller {
      * @param id
      */
     public static void freeze(long id) {
-        ECoupon.freeze(id);
+        ECoupon.freeze(id, OperateRbac.currentUser().userName);
         index(null);
     }
 
@@ -61,11 +62,19 @@ public class OperateCoupons extends Controller {
      *
      * @param id
      */
+    @Right("manager")
     public static void unfreeze(long id) {
-        ECoupon.unfreeze(id);
+        ECoupon.unfreeze(id, OperateRbac.currentUser().userName);
         index(null);
     }
 
+    /**
+     * 券号列表
+     */
+    public static void couponHistory(String couponSn) {
+        List<CouponHistory> couponList = CouponHistory.find("couponSn=?", couponSn).fetch();
+        render("OperateCoupons/history.html", couponSn, couponList);
+    }
 
     /**
      * 重发短信
@@ -74,6 +83,8 @@ public class OperateCoupons extends Controller {
      */
     public static void sendMessage(long id) {
         boolean sendFalg = ECoupon.sendMessage(id);
+        ECoupon eCoupon = ECoupon.findById(id);
+        new CouponHistory(eCoupon.eCouponSn, OperateRbac.currentUser().userName, "重发短信", eCoupon.status, eCoupon.status, null).save();
         renderJSON(sendFalg ? "0" : "1");
     }
 

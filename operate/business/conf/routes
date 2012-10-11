@@ -168,6 +168,7 @@ PUT     /coupons/{id}/freeze                    OperateCoupons.freeze
 PUT     /coupons/{id}/unfreeze                  OperateCoupons.unfreeze
 GET     /coupons-message/{id}/send              OperateCoupons.sendMessage
 GET     /coupon_excel                           OperateCoupons.couponExcelOut
+GET     /coupon_history                         OperateCoupons.couponHistory
 
 #验证消费券
 GET     /coupons/index                          OperateVerifyCoupons.index

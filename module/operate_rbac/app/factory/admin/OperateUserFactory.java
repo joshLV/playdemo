@@ -27,6 +27,7 @@ public class OperateUserFactory extends ModelFactory<OperateUser> {
         user.roles.add(role("editor"));
         user.roles.add(role("admin"));
         user.roles.add(role("webop"));
+        user.roles.add(role("manager"));
         return user;
     }
 

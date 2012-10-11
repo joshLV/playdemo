@@ -3,6 +3,7 @@ package controllers;
 import controllers.modules.website.cas.SecureCAS;
 import models.accounts.AccountType;
 import models.consumer.User;
+import models.order.CouponHistory;
 import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.sales.Shop;
@@ -61,7 +62,10 @@ public class UserCoupons extends Controller {
      * @param id
      */
     public static void sendMessage(long id) {
+        User user = SecureCAS.getUser();
+        ECoupon eCoupon = ECoupon.findById(id);
         boolean sendFalg = ECoupon.sendUserMessage(id);
+        new CouponHistory(eCoupon.eCouponSn, user.getShowName(), "重发短信", eCoupon.status, eCoupon.status, null).save();
         renderJSON(sendFalg ? "0" : "1");
     }
 

@@ -5,13 +5,13 @@
     <role key="customservice" text="客服人员"/>
     <role key="account" text="财务人员"/>
     <role key="sales" text="商务销售"/>
-
+    <role key="manager" text="经理"/>
     <permission key="GOODS_NEW" text="商品添加" roles="editor"/>
     <permission key="GOODS" text="商品管理" roles="editor,customservice"/>
     <permission key="SECKILL_GOODS_NEW" text="秒杀活动添加" roles="editor"/>
     <permission key="SECKILL_GOODS" text="秒杀活动管理" roles="editor,customservice"/>
     <permission key="Point_GOODS_NEW" text="积分商品添加" roles="editor"/>
-
+    <permission key="COUPON_UNFREEZE" text="解冻券号" roles="manager"/>
     <permission key="Point_GOODS" text="积分商品管理" roles="editor,customservice"/>
 
     <permission key=" Point_GOODS_ORDER" text="积分商品订单管理" roles="customservice,account,sales"/>
@@ -109,8 +109,10 @@
             <navigation key="pre_coupons" action="ImportCoupons.index" text="预购券管理" permissions="COUPONS"/>
         </navigation>
         <navigation key="cash_coupon" text="现金券">
-            <navigation key="cash_coupon_index" action="OperatorCashCoupons.index" text="现金券管理" permissions="CASH_COUPON"/>
-            <navigation key="cash_coupon_generator" action="OperatorCashCoupons.generator" text="现金券生成" permissions="CASH_COUPON"/>
+            <navigation key="cash_coupon_index" action="OperatorCashCoupons.index" text="现金券管理"
+                        permissions="CASH_COUPON"/>
+            <navigation key="cash_coupon_generator" action="OperatorCashCoupons.generator" text="现金券生成"
+                        permissions="CASH_COUPON"/>
         </navigation>
         <navigation key="yihaodian_api" text="一号店">
             <navigation key="yihaodian_api_index" action="YihaodianAPI.index" text="API" permissions="ORDERS"/>

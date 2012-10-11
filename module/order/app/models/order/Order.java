@@ -696,6 +696,9 @@ public class Order extends Model {
                     } else {
                         eCoupon = new ECoupon(this, goods, orderItem).save();
                     }
+                    //记录券历史信息
+                    new CouponHistory(eCoupon.eCouponSn, null, "产生券号", ECouponStatus.UNCONSUMED, ECouponStatus.UNCONSUMED, null).save();
+
                     if (!Play.runingInTestMode() && (goods.isLottery == null || !goods.isLottery)) {
                         SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +
                                 "[" + goods.faceValue + "元]")) + "券号" + eCoupon.eCouponSn + "," +
