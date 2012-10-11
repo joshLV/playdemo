@@ -1,79 +1,88 @@
 #{extends 'layout_operate/export_material_layout.html' /}
-#{set title:'商品一览' /}
+#{set title:'视惠电子券业务受理流程指导' /}
 #{include '/share/nav.html' /}
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/goods.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 #{set 'moreStyles'}
 <style type="text/css">
-
-    .body {
-        margin: 0px 200px 0px 200px;
-        width: 580px;
+    body {
+        color: #4E4E4E;
+        font: 12px/1.5 tahoma, arial, \5b8b\4f53, sans-serif;
     }
 
-    .margin-bottom {
-        margin-bottom: 20px;
+    #page {
+        width: 768px;
+        margin: 0 auto;
     }
 
-    .heading1 {
-        margin-left: 20px;
-        margin-top: 100px
+    h1, h2, h3 {
+        color: #333;
     }
 
-    .heading2 {
-        margin: 100px 0px 100px 70px;
+    h1 {
+        font-size: 28px;
+        text-align: center;
     }
 
-    .text {
-        margin-left: 150px;
-        padding-botton: 50px;
+    h2 {
+        margin: 20px 0 5px;
     }
 
-    .text-level1 {
-        margin-left: 30px;
-
+    h3 {
+        margin: 8px 0 3px;
     }
 
-    .text-level2 {
-        margin-left: 50px
+    p {
+        margin: 5px 0;
     }
 
-    .highlight-underline {
-        text-decoration: underline;
-        text-decoration-color: red;
-        color: red;
+    table {
+        width: 100%;
+        border-collapse: collapse;
     }
 
-    .highlight {
-        color: red;
+    th, td {
+        padding: 5px 15px;
+        text-align: center;
     }
 
+    dt {
+        font-weight: 700;
+    }
 
+    dd {
+        margin: 0;
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        padding-left: 20px;
+        list-style: none;
+    }
+
+    li span {
+        float: left;
+        margin-left: -20px;
+    }
 </style>
 #{/set}
 
-<div class="body">
-    <center>
-        <h2>视惠电子券业务受理流程指导</h2>
-    </center>
-    <b class="heading1">1． 消费认证步骤</b>
-    <br>
-    <b class="heading2">1) 电话验证：</b>
-    拨打400-6262-166 听到语音提示后按“9”号键电子券验证，
-    <span class="text">输入电子券编号即可，按“#”结束（按*重新输入）    </span>
-    <br>
-    <b class="text">确认电话是否可以验证：</b>
-    商户可自行拨打400-6262-166
-    <br>
-    <span class="text">按9号键，随意输入号码，如提示券号不存在说明该号码已    </span>
-    <br>
-    <span class="text">绑定，如提示：“商户不存在”则该号码未绑定，可及时联系   </span>
-    <br>
-    <span class="text">客服进行绑定。</span>
-    <br> <br>
 
-    <table class="table table-striped table-bordered table-condensed">
+<div id="page">
+    <h1>视惠电子券业务受理流程指导</h1>
+
+    <h2>一、消费认证步骤</h2>
+
+    <h3>1. 电话认证</h3>
+
+    <p>拨打400-6262-166 听到语音提示后按“9”号键电子券验证，输入电子券编号即可，按“#”结束（按*重新输入）<br/>
+        <strong>确认电话是否可以验证：</strong> 商户可自行拨打400-6262-166按9号键，随意输入号码，如提示券号不存在说明该号码已绑定，如提示：“商户不存在”则该号码未绑定，可及时联系客服进行绑定。</p>
+    <table border="1" cellpadding="0" cellspacing="0">
         <thead>
         <tr>
             <th width="300px">已绑定电话</th>
@@ -91,13 +100,9 @@
         #{/list}
         </tbody>
     </table>
-    <br><br><br>
-    <b class="heading2">2) 电脑验证： </b>
-    登陆域名地址：${supplierDomainName}.quanmx.com
-    <br><br>
-    <span class="text">
+    <h3>2. 电脑验证</h3>
 
-    管理员帐号：
+    <p>登陆域名地址：${supplierDomainName}.quanmx.com　　　　管理员帐号：
     #{list items:supplierUsers, as:'row1'}
 
         #{if row1.shop==null}
@@ -107,9 +112,9 @@
         #{/if}
 
     #{/list}
-        </span>
-    <br><br>
-    <table class="table table-striped table-bordered table-condensed">
+        　　　密码：<u>123456</u>
+    </p>
+    <table border="1" cellpadding="0" cellspacing="0">
         <thead>
         <tr>
             <th width="300px">分店帐号</th>
@@ -129,30 +134,50 @@
         #{/list}
         </tbody>
     </table>
-    <br> <br>
-    <span class="text">  统一密码：</span>
-    <span class="highlight-underline"><b>123456</b></span>
-    <br> <br>
-    &nbsp;&nbsp;&nbsp;
-    <span class="heading2 highlight"> <b>简单操作：</b>  点击券管理→点击验证券→选择门店→输入10位数券号</span>
-    <br>
-    <b class="heading1"> 2． 短信通知内容（短信模板） </b>
-    <br>
-    <span class="text-level1"> 购买成功短信：（格式：商品名称 + 券号 + 有效期截至日期）</span>
-    <br>
-    <span class="text-level2">【一百券】 *******100元现金券**店通用！凭本券可到*****当做100元现</span>
-    <br>
-    <span class="text-level2"> 金使用！（商品名称）券号：325*****52  有效期：20**-**-**   如有疑问 </span>
-    <br>
-    <span class="text-level2">请致电：400-6262-166 </span>
-    <br>
-    <b class="heading1">3． 纸质“一百券”卡片使用</b>
-    <br>
-    <span class="text-level1">为方便商户能够收集券号并做好对账，我司制作了“一百券”小卡片做记录，主要是用</span>
-    <br>
-    <span class="text-level1" style="padding-left:-20px;">来记录客户的券编号。 </span>
+    <p>统一密码：<u style="color:red">123456</u></p>
 
+    <p style="color:red">简单操作：点击券管理→点击验证券→选择门店→输入10位数券号</p>
 
+    <h2>二、短信通知内容（短信模板）</h2>
+
+    <p><strong>购买成功短信：</strong>（格式：商品名称 + 券号 + 有效期截至日期）【一百券】
+        *******100元现金券**店通用！凭本券可到*****当做100元现金使用！（商品名称）券号：325*****52 有效期：20**-**-** 如有疑问请致电：400-6262-166</p>
+
+    <h2>三、纸质“一百券”卡片使用</h2>
+
+    <p>为方便商户能够收集券号并做好对账，我司制作了“一百券”小卡片做记录，主要是用来记录客户的券编号。</p>
+
+    <h2>FAQ</h2>
+    <dl>
+        <dt>Q: 如何区别哪些是视惠电子消费券？</dt>
+        <dd>A: 凡经视惠平台支持的电子消费券，短信首均以【一百券】开头。</dd>
+    </dl>
+    <dl>
+        <dt>Q: 如恰巧三种验证方式都失败怎么办？</dt>
+        <dd>A: 如遇此情况，为避免客户长时间等待而引起客户不满，可由客户致电100券客服，核对相关信息后由客服进行网上验证。</dd>
+    </dl>
+    <dl>
+        <dt>Q: 当客户已收到验证成功的短信提示，而服务员没有收到短信提示的时候该如何处理？</dt>
+        <dd>A:
+            首先第一时间联系400-6262-166服务热线确认电子券是否验证成功。如客服热线无法接通（21:00以后）可向客户查询手机验证成功短信，确认是否是该店该时段验证，如确实验证成功，可让客户现行离开，避免客户抱怨投诉。
+        </dd>
+    </dl>
+
+    <h2>财务操作说明</h2>
+    <ul>
+        <li><span>1）</span>
+            财务可根据商户实际需求确认对账时间，进行对账。<br/>
+            点击报表→总销售报表→选定起止时间→核对
+        </li>
+        <li><span>2）</span>
+            财务可根据商户自身确定提现，并可查询明细。<br/>
+            点击财务管理→账户提现→申请提现<br/>
+            点击财务管理→账户明细→选择起止时间→核对<br/>
+        </li>
+    </ul>
+    <p><img src="http://img.uhcdn.com/images/act/print.png"/></p>
 </div>
+
+
 
 

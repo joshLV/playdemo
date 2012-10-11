@@ -6,6 +6,7 @@ import factory.ModelFactory;
 import factory.annotation.Factory;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
+import models.admin.SupplierUserType;
 import models.sales.Shop;
 import models.supplier.Supplier;
 
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 public class SupplierUserFactory extends ModelFactory<SupplierUser> {
 
     @Override
-    public SupplierUser define(){
+    public SupplierUser define() {
         SupplierUser supplierUser = new SupplierUser();
         Shop shop = FactoryBoy.lastOrCreate(Shop.class);
         Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
@@ -31,6 +32,7 @@ public class SupplierUserFactory extends ModelFactory<SupplierUser> {
         supplierUser.mobile = "13700001111";
         supplierUser.loginName = "02188888888";
         supplierUser.jobNumber = "001";
+        supplierUser.supplierUserType = SupplierUserType.ANDROID;
 
         // 定义角色
         supplierUser.roles = new ArrayList<SupplierRole>();
@@ -46,8 +48,8 @@ public class SupplierUserFactory extends ModelFactory<SupplierUser> {
     }
 
 
-    @Factory(name="Id")
-    public SupplierUser defineWithId(SupplierUser supplierUser){
+    @Factory(name = "Id")
+    public SupplierUser defineWithId(SupplierUser supplierUser) {
 
         supplierUser.deleted = DeletedStatus.UN_DELETED;
         supplierUser.mobile = "13700001111";

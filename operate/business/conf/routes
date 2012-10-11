@@ -114,6 +114,7 @@ DELETE  /shops/{id}                             OperateShops.delete
 GET     /shops/area                             OperateShops.showAreas
 GET     /shops/{supplierId}/showGoodsShops      OperateShops.showGoodsShops
 GET     /shops/{supplierId}/showSupplierShops   OperateShops.showSupplierShops
+
 GET     /suppliers                              Suppliers.index
 GET     /suppliers/new                          Suppliers.add
 POST    /suppliers                              Suppliers.create
@@ -123,6 +124,7 @@ PUT     /suppliers/{id}                         Suppliers.update
 PUT     /suppliers/{id}/freeze                  Suppliers.freeze
 PUT     /suppliers/{id}/unfreeze                Suppliers.unfreeze
 DELETE  /suppliers/{id}                         Suppliers.delete
+
 #商户操作员管理
 GET     /users                                  OperateSupplierUsers.index
 GET     /users/new                              OperateSupplierUsers.add
@@ -194,11 +196,13 @@ DELETE  /shops/{id}                             OperateShops.delete
 GET     /shops/area                             OperateShops.showAreas
 GET     /shops/{supplierId}/showGoodsShops      OperateShops.showGoodsShops
 GET     /shops/{supplierId}/showSupplierShops   OperateShops.showSupplierShops
+
 GET     /suppliers                              Suppliers.index
 GET     /suppliers/new                          Suppliers.add
 POST    /suppliers                              Suppliers.create
 GET     /suppliers/{id}/edit                    Suppliers.edit
 PUT     /suppliers/{id}                         Suppliers.update
+
 # 品牌管理
 GET     /brands                                 OperateBrands.index
 GET     /brands/new                             OperateBrands.add
