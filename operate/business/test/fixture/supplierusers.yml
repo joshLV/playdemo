@@ -95,6 +95,7 @@ admin.OperateUser(user3):
  - "customservice"
  - "editor"
  - "account"
+ - "manager"
 
 admin.OperateUser(test):
  "loginName": "test"

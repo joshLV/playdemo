@@ -38,6 +38,14 @@ admin.OperateRole(customservice):
  "createdAt": "2012-03-12T11:14:56"
  "updatedAt": "2012-03-12T17:45:09"
 
+admin.OperateRole(manager):
+ "text": "经理"
+ "key": "manager"
+ "loadVersion": "1331545508967"
+ "lockVersion": "0"
+ "createdAt": "2012-03-12T11:14:56"
+ "updatedAt": "2012-03-12T17:45:09"
+
 admin.OperateRole(account):
  "text": "财务"
  "key": "account"
