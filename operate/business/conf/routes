@@ -7,6 +7,7 @@ GET     /                                       OperateGoods.index
 GET     /goods                                  OperateGoods.index
 GET     /goods/new                              OperateGoods.add
 POST    /goods                                  OperateGoods.create
+GET     /goods-history                          OperateGoods.showHistory
 GET     /goods/{id}/edit                        OperateGoods.edit
 GET     /goods/{id}/copy                        OperateGoods.copy
 GET     /goods/{id}                             OperateGoods.show

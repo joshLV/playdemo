@@ -1,5 +1,12 @@
 package models.sales;
 
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
+import com.uhuila.common.util.PathUtil;
+import org.apache.commons.lang.StringUtils;
+import play.Play;
 import play.data.validation.*;
 import play.db.jpa.Model;
 import play.modules.view_ext.annotation.Money;
@@ -8,10 +15,8 @@ import org.jsoup.safety.Whitelist;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.text.DecimalFormat;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,6 +29,20 @@ import java.util.Set;
 @Entity
 @Table(name = "goods_history")
 public class GoodsHistory extends Model {
+    private static final long serialVersionUID = 7063232063912330652L;
+    public static final String PREVIEW_IMG_ROOT = "/9999/9999/9999/";
+    public static final String IMAGE_TINY = "60x46_nw";
+    public static final String IMAGE_SMALL = "172x132";
+    public static final String IMAGE_MIDDLE = "234x178";
+    public static final String IMAGE_LARGE = "340x260";
+    public static final String IMAGE_LOGO = "300x180_nw";
+    public static final String IMAGE_SLIDE = "nw";
+    public static final String IMAGE_ORIGINAL = "nw";
+    public static final String IMAGE_DEFAULT = "";
+
+    public static final String IMAGE_SERVER = Play.configuration.getProperty
+            ("image.server", "img0.uhcdn.com");
+
 
     /**
      * 所属商品ID
@@ -164,8 +183,6 @@ public class GoodsHistory extends Model {
     @JoinColumn(name = "brand_id")
     public Brand brand;
 
-    @Column(name = "is_all_shop")
-    public Boolean isAllShop = true;
 
     /**
      * 商品状态,
@@ -248,6 +265,10 @@ public class GoodsHistory extends Model {
     @Lob
     private String details;
 
+    @Column(name = "is_all_shop")
+    public Boolean isAllShop = true;
+
+
     public final static Whitelist HTML_WHITE_TAGS = Whitelist.relaxed();
 
     /**
@@ -256,6 +277,47 @@ public class GoodsHistory extends Model {
      */
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "goods")
     public Set<GoodsUnPublishedPlatform> unPublishedPlatforms;
+
+    /**
+     * 大规格图片路径
+     */
+    @Transient
+    public String getImageLargePath() {
+        return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_LARGE);
+    }
+
+    @Column(name = "discount")
+    public BigDecimal getDiscount() {
+        if (discount != null && discount.compareTo(BigDecimal.ZERO) > 0) {
+            return discount;
+        }
+        if (faceValue != null && salePrice != null && faceValue.compareTo(BigDecimal.ZERO) > 0) {
+            this.discount = salePrice.divide(faceValue, 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.TEN);
+            if (this.discount.compareTo(BigDecimal.TEN) >= 0) {
+                this.discount = BigDecimal.TEN;
+            }
+        } else {
+            this.discount = BigDecimal.ZERO;
+        }
+        return discount;
+    }
+
+    @Transient
+    public String getDiscountExpress() {
+        BigDecimal discount = getDiscount();
+        if (discount.compareTo(BigDecimal.ZERO) == 0) {
+            return "0折";
+        }
+        if (discount.compareTo(BigDecimal.TEN) >= 0) {
+            return "无优惠";
+        }
+        if (discount.compareTo(BigDecimal.ZERO) < 0) {
+            return "";
+
+        }
+        DecimalFormat format = new DecimalFormat("#.#");
+        return format.format(discount.doubleValue()) + "折";
+    }
 
     public void setDiscount(BigDecimal discount) {
         if (discount != null && discount.compareTo(BigDecimal.ZERO) >= 0 && discount.compareTo(BigDecimal.TEN) <= 0) {
@@ -297,4 +359,106 @@ public class GoodsHistory extends Model {
             }
         }
     }
+
+    public Collection<Shop> getShopList() {
+        if (isAllShop) {
+            return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId, "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {
+                @Override
+                public List<Shop> loadData() {
+                    return Shop.findShopBySupplier(supplierId);
+                }
+            });
+        }
+        final long goodsId = this.id;
+
+        return CacheHelper.getCache(CacheHelper.getCacheKey(Goods.CACHEKEY_BASEID + goodsId, "GOODS_SHOPS"), new CacheCallBack<Set<Shop>>() {
+            @Override
+            public Set<Shop> loadData() {
+                Goods goods1 = Goods.findById(goodsId);
+                if (goods1.shops.size() == 0) {
+                    return new HashSet<Shop>();
+                }
+                return goods1.shops;
+            }
+        });
+    }
+
+    public Long summaryCount() {
+        final Long goodsId = this.id;
+        GoodsStatistics statistics = CacheHelper.getCache(CacheHelper.getCacheKey(GoodsStatistics.CACHEKEY_GOODSID + goodsId, "GOODSSTATS"), new CacheCallBack<GoodsStatistics>() {
+            @Override
+            public GoodsStatistics loadData() {
+                return GoodsStatistics.find("goodsId", goodsId).first();
+            }
+        });
+        if (statistics == null) {
+            return 0l;
+        }
+        return statistics.summaryCount;
+    }
+
+    public boolean onSale() {
+        return (GoodsStatus.ONSALE.equals(status) && expireAt.after(new Date()) &&
+                baseSale > 0);
+    }
+
+    public GoodsStatus getStatus() {
+        if (status != null && GoodsStatus.ONSALE.equals(status) &&
+                (expireAt != null && expireAt.before(new Date())) || (baseSale != null && baseSale <= 0)) {
+            status = GoodsStatus.OFFSALE;
+        }
+        return status;
+    }
+
+    public static void update(Long id, Goods goods, Long goodsId, boolean noLevelPrices) {
+        models.sales.GoodsHistory goodsHistory = new GoodsHistory();
+        if (goodsHistory.unPublishedPlatforms == null) {
+            goodsHistory.unPublishedPlatforms = new HashSet<>();
+        }
+        goodsHistory.goodsId = goodsId;
+        goodsHistory.name = goods.name;
+        goodsHistory.no = goods.no;
+        goodsHistory.effectiveAt = goods.effectiveAt;
+        goodsHistory.expireAt = DateUtil.getEndOfDay(goods.expireAt);
+        goodsHistory.faceValue = goods.faceValue;
+        goodsHistory.originalPrice = goods.originalPrice;
+        goods.initDiscount(null);
+        goodsHistory.setDiscount(goods.getDiscount());
+        goodsHistory.salePrice = goods.salePrice;
+        goodsHistory.baseSale = goods.baseSale;
+        goodsHistory.promoterPrice = goods.promoterPrice;
+        goodsHistory.invitedUserPrice = goods.invitedUserPrice;
+        goodsHistory.materialType = goods.materialType;
+        goodsHistory.topCategoryId = goods.topCategoryId;
+        goodsHistory.categories = goods.categories;
+        goodsHistory.resaleAddPrice = goods.resaleAddPrice;
+        goodsHistory.setPrompt(goods.getPrompt());
+        goodsHistory.setDetails(goods.getDetails());
+        goodsHistory.updatedAt = new Date();
+        goodsHistory.updatedBy = goods.updatedBy;
+        goodsHistory.brand = goods.brand;
+        goodsHistory.isAllShop = goods.isAllShop;
+        goodsHistory.status = goods.status;
+        goodsHistory.keywords = goods.keywords;
+        goodsHistory.limitNumber = goods.limitNumber;
+        goodsHistory.couponType = goods.couponType;
+        if (!StringUtils.isEmpty(goods.imagePath)) {
+            goodsHistory.imagePath = goods.imagePath;
+        }
+        if (goods.supplierId != null) {
+            goodsHistory.supplierId = goods.supplierId;
+        }
+        goodsHistory.shops = goods.shops;
+        goodsHistory.title = goods.title;
+        goodsHistory.setPublishedPlatforms(goods.getPublishedPlatforms(), goods);
+        goodsHistory.useBeginTime = goods.useBeginTime;
+        goodsHistory.useEndTime = goods.useEndTime;
+        goodsHistory.useWeekDay = goods.useWeekDay;
+        goodsHistory.isLottery = (goods.isLottery == null) ? Boolean.FALSE : goods.isLottery;
+        goodsHistory.groupCode = (StringUtils.isEmpty(goods.groupCode)) ? null : goods.groupCode.trim();
+        goodsHistory.updatedBy = goods.updatedBy;
+        goodsHistory.save();
+    }
+
+
 }

@@ -4,6 +4,7 @@ import cache.CacheCallBack;
 import cache.CacheHelper;
 import models.sales.Category;
 import models.sales.Goods;
+import models.sales.GoodsHistory;
 import org.apache.commons.lang.StringUtils;
 import play.Play;
 
@@ -35,6 +36,11 @@ public class Title {
         return title;
     }
 
+    public static String getDetailTitle(GoodsHistory goodsHistory) {
+        models.sales.Goods goods = models.sales.Goods.findById(goodsHistory.goodsId);
+        return getDetailTitle(goods);
+    }
+
     /**
      * 详细页关键词
      *
@@ -56,6 +62,12 @@ public class Title {
         String keyWords = StringUtils.trimToEmpty(keywordsMap.get("goodsKeywords"));
         return "优惠券,优惠券网,代金券," + keyWords;
     }
+
+    public static String getDetailKeyWords(GoodsHistory goodsHistory) {
+        models.sales.Goods goods = models.sales.Goods.findById(goodsHistory.goodsId);
+        return getDetailKeyWords(goods);
+    }
+
 
     /**
      * 关键字

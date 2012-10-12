@@ -32,6 +32,7 @@ GET     /rebate_help                            WEBApplication.rebate
 GET     /s                                      Goods.index
 GET     /s/{condition}                          Goods.list
 GET     /g/{id}                                 Goods.show
+GET     /gh/{id}                                Goods.showHistory
 
 GET     /goods                                  Goods.index
 GET     /goods/list/{condition}                 Goods.list

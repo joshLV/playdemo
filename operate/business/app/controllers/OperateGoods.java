@@ -199,6 +199,9 @@ public class OperateGoods extends Controller {
      * 展示添加商品页面
      */
 
+
+
+
     private static void preview(Long goodsId, models.sales.Goods goods, File imagePath) {
         String cacheId = "0";
         try {
@@ -255,6 +258,7 @@ public class OperateGoods extends Controller {
             error(500, "goods.image_upload_failed");
         }
         goods.save();
+        GoodsHistory.update(goods.id, goods, goods.id, false);
 
         index(null, "");
     }
@@ -397,12 +401,18 @@ public class OperateGoods extends Controller {
     }
 
     public static void showHistory(Long id) {
-        String page = request.params.get("page");
-        int pageNumber = StringUtils.isEmpty(page) ? 1 : Integer.parseInt(page);
-
-
+        String supplierName = "";
+        String goodsNo = "";
+        String goodsName = "";
+        List<GoodsHistory> goodsHistoryList = GoodsHistory.find("goodsId=?", id).fetch();
+        if (goodsHistoryList.size() > 0 && goodsHistoryList != null) {
+            models.sales.Goods goods = models.sales.Goods.findById(id);
+            goodsNo = goods.no;
+            supplierName = goods.getSupplier().fullName;
+            goodsName = goods.name;
+        }
+        render(goodsHistoryList, supplierName, goodsNo, goodsName);
     }
-
 
 
     /**
@@ -454,7 +464,7 @@ public class OperateGoods extends Controller {
         }
         goods.updatedBy = supplierUser;
         models.sales.Goods.update(id, goods, false);
-
+        GoodsHistory.update(goods.id, goods, id, false);
         index(null, "");
     }
 

@@ -19,6 +19,12 @@ public class OrderItems extends Model {
 
     private static final long serialVersionUID = 16323208753562L;
 
+    /**
+     * 所属商品历史ID
+     */
+    @Column(name = "goods_history_id")
+    public Long goodsHistoryId;
+
     // ====  价格列表  ====
     @Column(name = "face_value")
     public BigDecimal faceValue;        //商品面值、市场价

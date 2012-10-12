@@ -1,7 +1,7 @@
 #{extends 'main.html' /}
 #{set title: helper.Title.getDetailTitle(goods) /}
 #{set 'metaContent'}
- #{set detailKeywords: helper.Title.getDetailKeyWords(goods) /}
+    #{set detailKeywords: helper.Title.getDetailKeyWords(goods) /}
 <meta name="Description" content="一百券-${goods.brand?.name} ${goods.name},${detailKeywords}消费券,代金券,优惠券,美食券,电子券,提货券">
 <meta name="Keywords" content="${detailKeywords}">
 #{/set}
@@ -9,12 +9,12 @@
     #{asset.css src:['/y/home/detail.css']/}
 #{/set}
 #{set 'moreScripts'}
- <script src="@{'/public/javascripts/goods-show.js'}" type="text/javascript" charset="UTF-8"></script>
+<script src="@{'/public/javascripts/goods-show.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript">
-        //直接在文本框里输入购买数量
+    //直接在文本框里输入购买数量
     $("#number").blur(function () {
         try {
-            var goods_id=$("#goodsId").val();
+            var goods_id = $("#goodsId").val();
             var limitNumber = '${goods.limitNumber}';
             var boughtNumber = '${boughtNumber}';
             var number = Number($(this).val())
@@ -28,12 +28,12 @@
                 return false;
             }
 
-            if (limitNumber >0 && number > limitNumber) {
-                $(this).val(limitNumber-boughtNumber);
+            if (limitNumber > 0 && number > limitNumber) {
+                $(this).val(limitNumber - boughtNumber);
                 $("#last_num_" + goods_id).val(limitNumber - boughtNumber);
                 return false;
             }
-            if (limitNumber>0 && (limitNumber > boughtNumber) && number > (limitNumber - boughtNumber)) {
+            if (limitNumber > 0 && (limitNumber > boughtNumber) && number > (limitNumber - boughtNumber)) {
                 $(this).val(limitNumber - boughtNumber);
                 $("#last_num_" + goods_id).val(limitNumber - boughtNumber);
                 return false;
@@ -42,19 +42,19 @@
                 $(this).val(stock)
                 $("#stock_hit").css("display", "inline")
             }
-             $("#last_num_" + goods_id).val($(this).val())
+            $("#last_num_" + goods_id).val($(this).val())
             ;
         } catch (e) {
             $(this).val(1);
         }
     });
 
-    $('#qq').click(function(e) {
+    $('#qq').click(function (e) {
         e.preventDefault();
         $('#share-im').slideToggle(100);
     });
 
-    $('#share-url').click(function(){
+    $('#share-url').click(function () {
         $(this).select();
     });
 
@@ -62,10 +62,10 @@
 #{/set}
 
 <div id="content">
-    <h1>${goods.name}</h1>
+<h1>${goods.name}</h1>
 
-    <div id="summary" class="clearfix">
-        <div id="leftBox"><!-- 此div为了规避.qvalu元素中最后一个文字被复制的问题 by Junyi -->
+<div id="summary" class="clearfix">
+    <div id="leftBox"><!-- 此div为了规避.qvalu元素中最后一个文字被复制的问题 by Junyi -->
         <div id="gallery">
             <img src="${goods.imageLargePath}" alt="${title}"/>
 
@@ -74,17 +74,17 @@
         <div id="property">
         #{form @Orders.index(), id:'order_create_form' }
             <ul id="metaBox">
-            #{if params['isSupplier']== null || !params['isSupplier']}
-                <li>现　　价：<span class="price">&yen;${goods.salePrice}</span></li>
-            #{/if}
-            #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
-                <li>原　　价：
-                    <del>&yen;${goods.faceValue}</del>
-                </li>
                 #{if params['isSupplier']== null || !params['isSupplier']}
-                    <li>折　　扣：<em class="discount">${goods.discountExpress}</em></li>
+                    <li>现　　价：<span class="price">&yen;${goods.salePrice}</span></li>
                 #{/if}
-            #{/if}
+                #{if models.sales.GoodsStatus.ONSALE.equals(goods.status)}
+                    <li>原　　价：
+                        <del>&yen;${goods.faceValue}</del>
+                    </li>
+                    #{if params['isSupplier']== null || !params['isSupplier']}
+                        <li>折　　扣：<em class="discount">${goods.discountExpress}</em></li>
+                    #{/if}
+                #{/if}
                 <li>商品类型：&{'goods.'+goods.materialType}</li>
                 <li>配送方式：#{if models.sales.MaterialType.ELECTRONIC.equals(goods.materialType)}
                     手机短信#{/if}#{else}快递 (运费：${models.order.Order.FREIGHT} 元)#{/else}</li>
@@ -99,12 +99,13 @@
                         <input type="hidden" value="${goods.limitNumber}" id="limit_${goods.id}">
                     </span> 件
                     <span id="stock_hit" style="display:none;color:#f50">库存${goods.baseSale}件</span>
-                #{if goods.limitNumber > 0}
-                    <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
-                    #{if goods.limitNumber-boughtNumber > 0}
-                        <span class="buy_info">#{if user !=null}您还可以购买${goods.limitNumber-boughtNumber}件#{/if}</span>
+                    #{if goods.limitNumber > 0}
+                        <span id="limitNumber" style="color:#f50">限购${goods.limitNumber}件</span>
+                        #{if goods.limitNumber-boughtNumber > 0}
+                            <span class="buy_info">#{if user !=null}您还可以购买${goods.limitNumber-boughtNumber}
+                                件#{/if}</span>
+                        #{/if}
                     #{/if}
-                #{/if}
                     <span class="error">#{error 'number' /}</span>
                     <input type="hidden" id="stock" value="${goods.baseSale}">
                     <input type="hidden" id="boughtNumber" value="${boughtNumber}">
@@ -113,29 +114,31 @@
             </ul>
 
             <input type="hidden" id="goodsId" name="gid" value="${goods.id}">
-            <div id="btnBox">
-            #{if goods.onSale()}
-                #{if !bought}
-                    <a href="#" id="link_buy_now" class="nowBuy">立即购买<b></b></a>
-                    #{if !goods?.isLottery}
-                    <a id="link_add_cart" href="#" class="addCart">加入购物车<b></b></a>
-                    #{/if}
-                #{/if}
-                #{else}
-                    <strong style="color: red">您已经购买过此商品！</strong>
-                #{/else}
 
-                <div id="add_cart_result" class="addCart-tips" style="display: none;">
-                    <span class="addCart-icon"></span>
-                    <h4>已成功添加到购物车</h4>
-                    <p>购物车共有<em id="result-count"></em>件，总计<strong id="result-amount"></strong>元</p>
-                    <a class="view-carts" href="/carts">查看购物车<b></b></a>
-                    <a class="close-tips" id="J_closeTips" href="#">关闭</a>
-                </div>
-            #{/if}
-            #{elseif params['isSupplier']== null || !params['isSupplier']}
-                <span>已下架</span>
-            #{/elseif}
+            <div id="btnBox">
+                #{if goods.onSale()}
+                    #{if !bought}
+                        <a href="#" id="link_buy_now" class="nowBuy">立即购买<b></b></a>
+                        #{if !goods?.isLottery}
+                            <a id="link_add_cart" href="#" class="addCart">加入购物车<b></b></a>
+                        #{/if}
+                    #{/if}
+                    #{else}
+                        <strong style="color: red">您已经购买过此商品！</strong>
+                    #{/else}
+
+                    <div id="add_cart_result" class="addCart-tips" style="display: none;">
+                        <span class="addCart-icon"></span>
+                        <h4>已成功添加到购物车</h4>
+
+                        <p>购物车共有<em id="result-count"></em>件，总计<strong id="result-amount"></strong>元</p>
+                        <a class="view-carts" href="/carts">查看购物车<b></b></a>
+                        <a class="close-tips" id="J_closeTips" href="#">关闭</a>
+                    </div>
+                #{/if}
+                #{elseif params['isSupplier']== null || !params['isSupplier']}
+                    <span>已下架</span>
+                #{/elseif}
             </div>
 
 
@@ -143,154 +146,173 @@
         #{/form}
         </div>
         <!-- #property -->
-        </div>
-
-
-        <div id="bizinfo">
-            <h3>消费券提供商：</h3>
-            <a href="/s/0-0-${goods?.brand?.id}-0-0-9-0"><img src="${goods?.brand?.showLogo}" width="200" alt="${goods?.brand?.name}"/></a>
-            <div class="index">
-                <span>人气指数：<em id="summary_${goods.id}">${goods.summaryCount()}</em></span>
-                <a href="#" class="index-btn" data-goodsid="${goods.id}">支持</a>
-                <b class="index-tips" style="display:none"><s class="index-close" title="关闭"></s></b>
-            </div>
-            <div class="qvalue">${goods.brand?.introduce?.raw()}</div>
-        </div>
-        <!-- #bizinfo -->
     </div>
-    <!-- #summary -->
 
-    <div id="share" class="clearfix"> 
-        <span>#{if cas?.isLogin}分享得返利：#{/if}#{else}分享到：#{/else}</span>
-        <a class="qq" id="qq" href=""></a>
-        <a class="weibo" href="http://service.weibo.com/share/share.php?url=${tjUrl.urlEncode()}&amp;appkey=&amp;title=我刚刚在@一百券网 上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！地址: &amp;pic=&amp;ralateUid=&amp;language=" target="_blank"></a>
-        <a class="qzone" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=${goods.name}&desc=我刚刚在一百券网上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！&url=${tjUrl.urlEncode()}" target="_blank"></a>
-        <a class="tqq" href="http://share.v.t.qq.com/index.php?c=share&a=index&url=${tjUrl.urlEncode()}&title=我刚刚在一百券网上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！地址:&appkey=801cf76d3cfc44ada52ec13114e84a96" target="_blank"></a>
-        <a class="renren" href="http://widget.renren.com/dialog/share?url=${tjUrl.urlEncode()}&title=${goods.name}&description=我刚刚在一百券网上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！地址: ${tjUrl.urlEncode()}" target="_blank"></a>
+
+    <div id="bizinfo">
+        <h3>消费券提供商：</h3>
+        <a href="/s/0-0-${goods?.brand?.id}-0-0-9-0"><img src="${goods?.brand?.showLogo}" width="200"
+                                                          alt="${goods?.brand?.name}"/></a>
+
+        <div class="index">
+            <span>人气指数：<em id="summary_${goods.id}">${goods.summaryCount()}</em></span>
+            <a href="#" class="index-btn" data-goodsid="${goods.id}">支持</a>
+            <b class="index-tips" style="display:none"><s class="index-close" title="关闭"></s></b>
+        </div>
+        <div class="qvalue">${goods.brand?.introduce?.raw()}</div>
     </div>
-    <div id="share-im"><label for="share-url">复制链接分享给站外好友：</label><input type="text" id="share-url" class="input" value="${tjUrl}" readonly /></div>
+    <!-- #bizinfo -->
+</div>
+<!-- #summary -->
+
+<div id="share" class="clearfix">
+    <span>#{if cas?.isLogin}分享得返利：#{/if}#{else}分享到：#{/else}</span>
+    <a class="qq" id="qq" href=""></a>
+    <a class="weibo"
+       href="http://service.weibo.com/share/share.php?url=${tjUrl.urlEncode()}&amp;appkey=&amp;title=我刚刚在@一百券网 上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！地址: &amp;pic=&amp;ralateUid=&amp;language="
+       target="_blank"></a>
+    <a class="qzone"
+       href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=${goods.name}&desc=我刚刚在一百券网上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！&url=${tjUrl.urlEncode()}"
+       target="_blank"></a>
+    <a class="tqq"
+       href="http://share.v.t.qq.com/index.php?c=share&a=index&url=${tjUrl.urlEncode()}&title=我刚刚在一百券网上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！地址:&appkey=801cf76d3cfc44ada52ec13114e84a96"
+       target="_blank"></a>
+    <a class="renren"
+       href="http://widget.renren.com/dialog/share?url=${tjUrl.urlEncode()}&title=${goods.name}&description=我刚刚在一百券网上看到这个商品：${goods.title} 价格真实惠，#{if cas?.isLogin}现在注册购买还能折上再减1％，#{/if}分享给大家看看！地址: ${tjUrl.urlEncode()}"
+       target="_blank"></a>
+</div>
+<div id="share-im"><label for="share-url">复制链接分享给站外好友：</label><input type="text" id="share-url" class="input"
+                                                                     value="${tjUrl}" readonly/></div>
 
 #{if goods.materialType == models.sales.MaterialType.ELECTRONIC}
-    <div id="diagram">
-        <img src="http://img.uhcdn.com/images/y/diagram.png" alt="消费流程示意图" width="960" height="37"/>
+<div id="diagram">
+    <img src="http://img.uhcdn.com/images/y/diagram.png" alt="消费流程示意图" width="960" height="37"/>
 
-        <p class="tips">假如您没有收到短信，您可以在“我的一百券” - “我的券”中使用“重发短信”功能。</p>
-    </div>
-    <!-- #diagram -->
+    <p class="tips">假如您没有收到短信，您可以在“我的一百券” - “我的券”中使用“重发短信”功能。</p>
+</div>
+<!-- #diagram -->
 #{/if}
-  #{if recommendGoodsList?.size()>0}
-    <div id="recommend">
-        <div class="hd">推荐商品</div>
-        <ul class="bd clearfix">
+#{if recommendGoodsList?.size()>0}
+<div id="recommend">
+    <div class="hd">推荐商品</div>
+    <ul class="bd clearfix">
         #{set i:1/}
         #{list recommendGoodsList, as:'aGoods'}
             #{set goodsAlt:helper.Title.getDetailTitle(aGoods) /}
             #{if i%5==0}
-                <li class="last">
-                #{/if}
-                #{else}
-                <li>
-                #{/else}
-                <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}" alt="${goodsAlt}"/></a></div>
-                <div class="title"><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
-                <div class="attri">
-                    <del>原价：${aGoods.faceValue}</del>
-                    <span #{if aGoods.materialType ==models.sales.MaterialType.ELECTRONIC}class="coupon" #{/if}#{else}class="coupon entity"#{/else}>&{'goods.'+aGoods.materialType}</span>
-                </div>
-                <div class="price">现价：<b>&yen;${aGoods.salePrice}</b></div>
-            </li>
-        #{set i:i+1/}
+            <li class="last">
+            #{/if}
+            #{else}
+            <li>
+            #{/else}
+            <div class="image"><a href="/g/${aGoods.id}" target="_blank"><img src="${aGoods.imageSmallPath}"
+                                                                              alt="${goodsAlt}"/></a></div>
+            <div class="title"><a href="/g/${aGoods.id}" target="_blank">${aGoods.name}</a></div>
+            <div class="attri">
+                <del>原价：${aGoods.faceValue}</del>
+                <span
+                    #{if aGoods.materialType ==models.sales.MaterialType.ELECTRONIC}class="coupon" #{/if}#{else}class="coupon entity"#{/else}>&{'goods.'+
+                    aGoods.materialType}</span>
+            </div>
+            <div class="price">现价：<b>&yen;${aGoods.salePrice}</b></div>
+        </li>
+            #{set i:i+1/}
         #{/list}
-        </ul>
-    </div>
-   #{/if}
-    <!-- #recommend -->
+    </ul>
+</div>
+#{/if}
+<!-- #recommend -->
 
-    <div id="tabbar" class="clearfix">
-        <ul>
-            <li class="curr" data-id="warmtips">温馨提示</li>
-            <li data-id="details">商品详情</li>
-            <li data-id="store">适用门店</li>
-            <li data-id="consult">购买咨询</li>
-        </ul>
-    </div>
-    <!-- #tabbar -->
+<div id="tabbar" class="clearfix">
+    <ul>
+        <li class="curr" data-id="warmtips">温馨提示</li>
+        <li data-id="details">商品详情</li>
+        <li data-id="store">适用门店</li>
+        <li data-id="consult">购买咨询</li>
+    </ul>
+</div>
+<!-- #tabbar -->
 
-    <div id="warmtips" class="tab-item">
-    #{if goods.prompt != null}
+<div id="warmtips" class="tab-item">
+#{if goods.prompt != null}
             ${goods?.prompt?.raw()}
         #{/if}
+</div>
+<div id="details" class="tab-item">
+    <div class="hd">商品详情</div>
+    <div class="bd">${goods?.details?.raw()}
     </div>
-    <div id="details" class="tab-item">
-        <div class="hd">商品详情</div>
-        <div class="bd">${goods?.details?.raw()}
-        </div>
-    </div>
-    <!-- #details -->
+</div>
+<!-- #details -->
 
-    <div id="store" class="tab-item">
-        <div class="hd">适用门店</div>
-        <div class="bd">
-            <table border="0" cellpadding="0" cellspacing="0">
-            #{if shops?.size() >0}
-                #{list shops, as:'shop'}
-                    <tr>
-                        <td width="180px" height="30" class="table_td">${shop.name}</td>
-                        <td width="380px" class="table_td">${shop.address}</td>
-                        <td width="240px" class="table_td">${shop.phone}</td>
-                    </tr>
-                #{/list}
-            #{/if}
-            </table>
-        </div>
-    </div><!-- #store -->
-
-    <div id="consult" class="tab-item">
-        <div class="hd">
-            <b>购买咨询</b>
-        #{if questions.size() == 10}
-            <a href="##question-form" id="show-more">更多>></a>
-            <input type="hidden" id="max-result" value="${questions.size() + 1}">
+<div id="store" class="tab-item">
+    <div class="hd">适用门店</div>
+    <div class="bd">
+        <table border="0" cellpadding="0" cellspacing="0">
+        #{if shops?.size() >0}
+            #{list shops, as:'shop'}
+                <tr>
+                    <td width="180px" height="30" class="table_td">${shop.name}</td>
+                    <td width="380px" class="table_td">${shop.address}</td>
+                    <td width="240px" class="table_td">${shop.phone}</td>
+                </tr>
+            #{/list}
         #{/if}
+        </table>
+    </div>
+</div>
+<!-- #store -->
+
+<div id="consult" class="tab-item">
+    <div class="hd">
+        <b>购买咨询</b>
+    #{if questions.size() == 10}
+        <a href="##question-form" id="show-more">更多>></a>
+        <input type="hidden" id="max-result" value="${questions.size() + 1}">
+    #{/if}
+    </div>
+    <div class="bd" id="q-list">
+        <input type="hidden" value="${questions.size()}" id="q-size"/> #{list items:questions, as:'question'}
+        <div class="question">
+            <dl>
+                <dt>咨询内容：</dt>
+                <dd>
+                ${question.content}<span class="date">${question?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</span>
+                </dd>
+            </dl>
         </div>
-        <div class="bd" id="q-list">
-            <input type="hidden" value="${questions.size()}" id="q-size"/> #{list items:questions, as:'question'}
-            <div class="question">
-                <dl>
-                    <dt>咨询内容：</dt>
+        <div class="answer">
+            <dl>
+                #{if question.reply != null}
+                    <dt>客服回复：</dt>
                     <dd>
-                    ${question.content}<span class="date">${question?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</span>
+                    ${question.reply}<span class="date">${question?.repliedAt?.format('yyyy-MM-dd HH:mm:ss')}</span>
                     </dd>
-                </dl>
-            </div>
-            <div class="answer">
-                <dl>
-                    #{if question.reply != null}
-                        <dt>客服回复：</dt>
-                        <dd>
-                        ${question.reply}<span class="date">${question?.repliedAt?.format('yyyy-MM-dd HH:mm:ss')}</span>
-                        </dd>
-                    #{/if} #{else}
-                    <dt>待回复,</dt>
-                    <dd>请耐心等待^_^</dd>
-                #{/else}
-                </dl>
-            </div>
-        #{/list}
+                #{/if} #{else}
+                <dt>待回复,</dt>
+                <dd>请耐心等待^_^</dd>
+            #{/else}
+            </dl>
         </div>
-        <form id="question-form">
-            <label>发表咨询：</label>
-            <textarea class="con" cols="80" rows="5" id="question"></textarea>
-            #{if !cas?.isLogin}
-            <label>手机号码：</label>
-            <input type="text" id="mobile" name="mobile" maxlength="11" value="" /> 输入手机号，方便我们给您反馈信息。
-            #{/if}
-            <span id="q-error" style="display: none"></span>
-            <button class="submit" id="submit-question">提 交</button>
-        </form>
-    </div><!-- #consult -->
+    #{/list}
+    </div>
+    <form id="question-form">
+        <label>发表咨询：</label>
+        <textarea class="con" cols="80" rows="5" id="question"></textarea>
+    #{if !cas?.isLogin}
+        <label>手机号码：</label>
+        <input type="text" id="mobile" name="mobile" maxlength="11" value=""/> 输入手机号，方便我们给您反馈信息。
+    #{/if}
+        <span id="q-error" style="display: none"></span>
+        <button class="submit" id="submit-question">提 交</button>
+    </form>
+</div>
+<!-- #consult -->
 </div><!-- #content -->
 <div id="rebate">
-    <a class="rebate-text" id="J_rebateText" target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/rebate_help">推荐返利<div class="rebate-tips" id="J_rebateTips"><span><b></b><s></s>推荐朋友便可以获得返利哦！详情请点击进入查看。</span></div></a>
+    <a class="rebate-text" id="J_rebateText" target="_blank"
+       href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/rebate_help">推荐返利
+        <div class="rebate-tips" id="J_rebateTips"><span><b></b><s></s>推荐朋友便可以获得返利哦！详情请点击进入查看。</span></div>
+    </a>
     <a class="rebate-close" id="J_rebateClose" href="#" hidefocus="true"></a>
 </div>

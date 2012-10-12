@@ -13,13 +13,7 @@ import models.consumer.User;
 import models.order.Cart;
 import models.order.Order;
 import models.order.OrderItems;
-import models.sales.Area;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.GoodsCondition;
-import models.sales.GoodsStatistics;
-import models.sales.GoodsStatisticsType;
-import models.sales.GoodsStatus;
+import models.sales.*;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 import play.modules.breadcrumbs.Breadcrumb;
@@ -258,15 +252,15 @@ public class Goods extends Controller {
                     }
                 });
         GoodsStatistics.addVisitorCount(goods.id);
-        
+
         String tjUrl = "http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/g/" + goods.id;
         if (user != null) {
-        	user.generatePromoterCode();
-        	tjUrl += "?tj=" + user.promoterCode;
+            user.generatePromoterCode();
+            tjUrl += "?tj=" + user.promoterCode;
         } else {
-        	tjUrl += "?tj=gshare";
+            tjUrl += "?tj=gshare";
         }
-        
+
         renderArgs.put("tjUrl", tjUrl);
 
         renderArgs.put("goods", goods);
@@ -274,6 +268,78 @@ public class Goods extends Controller {
         renderArgs.put("breadcrumbs", breadcrumbs);
         renderArgs.put("recommendGoodsList", recommendGoodsList);
     }
+
+
+    private static void showGoodsHistory(final GoodsHistory goodsHistory) {
+        if (goodsHistory == null) {
+            notFound();
+        }
+        // 登陆的场合，判断该会员是否已经购买过此限购商品
+        final User user = SecureCAS.getUser();
+        //该用户曾经购买该商品的数量
+        Long boughtNumber = 0l;
+        int addCartNumber = 0;
+        if (user != null) {
+            //取得已经加入购物车的数量
+            final models.sales.Goods goods = models.sales.Goods.findById(goodsHistory.goodsId);
+            addCartNumber = Cart.findAllByGoodsId(user, goods);
+            boughtNumber = OrderItems.itemsNumber(user, goods.id);
+
+            final Long finalBoughtNumber = boughtNumber;
+            Boolean isBuyFlag = CacheHelper.getCache(CacheHelper.getCacheKey(
+                    new String[]{Order.CACHEKEY_BASEUSERID + user.id,
+                            models.sales.Goods.CACHEKEY_BASEID + goods.id},
+                    "LIMITNUMBER"), new CacheCallBack<Boolean>() {
+                @Override
+                public Boolean loadData() {
+                    return Order.checkLimitNumber(user, goods.id, finalBoughtNumber, 1);
+                }
+            });
+            renderArgs.put("user", user);
+            renderArgs.put("addCartNumber", addCartNumber);
+            renderArgs.put("bought", isBuyFlag);
+        }
+        renderArgs.put("boughtNumber", boughtNumber);
+
+        final models.sales.Goods goods = models.sales.Goods.findById(goodsHistory.goodsId);
+
+        BreadcrumbList breadcrumbs = CacheHelper.getCache(
+                CacheHelper.getCacheKey(models.sales.Goods.CACHEKEY_BASEID
+                        + goods.id, "BREADCRUMBS"),
+                new CacheCallBack<BreadcrumbList>() {
+                    @Override
+                    public BreadcrumbList loadData() {
+                        return getGoodsBreadCrumbs(goods.id);
+                    }
+                });
+
+        // 网友推荐商品
+        List<models.sales.Goods> recommendGoodsList = CacheHelper.getCache(
+                CacheHelper.getCacheKey(new String[]{models.sales.Goods.CACHEKEY,
+                        models.sales.Goods.CACHEKEY_BASEID + goods.id},
+                        "SHOW_TOP5RECOMMEND"),
+                new CacheCallBack<List<models.sales.Goods>>() {
+                    @Override
+                    public List<models.sales.Goods> loadData() {
+                        return models.sales.Goods.findSupplierTopRecommend(5, goods);
+                    }
+                });
+
+        String tjUrl = "http://www." + play.Play.configuration.getProperty("application.baseDomain") + "/gh/" + goodsHistory.id;
+        if (user != null) {
+            user.generatePromoterCode();
+            tjUrl += "?tj=" + user.promoterCode;
+        } else {
+            tjUrl += "?tj=gshare";
+        }
+
+        renderArgs.put("tjUrl", tjUrl);
+        renderArgs.put("goods", goodsHistory);
+        renderArgs.put("shops", goodsHistory.getShopList());
+        renderArgs.put("breadcrumbs", breadcrumbs);
+        renderArgs.put("recommendGoodsList", recommendGoodsList);
+    }
+
 
     private static BreadcrumbList getGoodsBreadCrumbs(long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
@@ -359,6 +425,34 @@ public class Goods extends Controller {
 
         render();
     }
+
+    /**
+     * 商品历史详情.
+     *
+     * @param id 商品
+     */
+    public static void showHistory(final long id) {
+        final Long userId = SecureCAS.getUser() == null ? null : SecureCAS
+                .getUser().getId();
+        GoodsHistory goodsHistory = GoodsHistory.findById(id);
+        if (goodsHistory == null) {
+            error(404, "没有找到该商品！");
+        }
+        showGoodsHistory(goodsHistory);
+        List<CmsQuestion> questions = CacheHelper.getCache(CacheHelper
+                .getCacheKey(models.sales.Goods.CACHEKEY_BASEID + id,
+                        "QUESTION_u" + userId + "_c" + null),
+                new CacheCallBack<List<CmsQuestion>>() {
+                    @Override
+                    public List<CmsQuestion> loadData() {
+                        return CmsQuestion.findOnGoodsShow(userId, null,
+                                id, GoodsType.NORMALGOODS, 0, 10);
+                    }
+                });
+        renderArgs.put("questions", questions);
+        render("Goods/show.html");
+    }
+
 
     /**
      * 根据用户的选择，统计商品的喜欢及其他指数.
