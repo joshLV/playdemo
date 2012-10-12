@@ -89,6 +89,9 @@ public class OperateVerifyCoupons extends Controller {
             if (eCoupon.isFreeze == 1) {
                 renderJSON("3");
             }
+            if (eCoupon.isExpired()){
+                renderJSON("4");
+            }
             if (!eCoupon.isBelongShop(shopId)) {
                 renderJSON("1");
             }
@@ -98,7 +101,7 @@ public class OperateVerifyCoupons extends Controller {
 //                renderJSON("{\"error\":\"2\",\"info\":\"" + info + "\"}");
 //            }
             if (!eCoupon.consumeAndPayCommission(shopId, OperateRbac.currentUser().id, null, VerifyCouponType.OP_VERIFY)) {
-                renderJSON("4");
+                renderJSON("5");
             }
 
             // 发给消费者

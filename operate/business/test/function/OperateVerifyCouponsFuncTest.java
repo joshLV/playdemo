@@ -1,25 +1,37 @@
 package function;
 
+import com.uhuila.common.util.DateUtil;
 import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import factory.callback.BuildCallback;
 import models.accounts.Account;
-import models.accounts.AccountCreditable;
 import models.accounts.util.AccountUtil;
 import models.admin.OperateUser;
 import models.consumer.User;
 import models.consumer.UserInfo;
-import models.order.*;
+import models.dangdang.DDAPIInvokeException;
+import models.dangdang.DDAPIUtil;
+import models.dangdang.DDOrderItem;
+import models.dangdang.HttpProxy;
+import models.dangdang.Response;
+import models.order.CouponHistory;
+import models.order.ECoupon;
+import models.order.ECouponStatus;
+import models.order.Order;
+import models.order.PromoteRebate;
+import models.order.RebateStatus;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sales.Shop;
 import operate.rbac.RbacLoader;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
+import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +48,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
     PromoteRebate promoteRebate;
     User promoteUser;
     User inviteUser;
+    Goods goods;
 
     @Before
     public void setUp() {
@@ -50,6 +63,8 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         FactoryBoy.delete(PromoteRebate.class);
         FactoryBoy.create(UserInfo.class);
         promoteUser = FactoryBoy.create(User.class);
+        goods = FactoryBoy.create(Goods.class);
+
 
     }
 
@@ -67,7 +82,6 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
     @Test
     public void testVerify() {
 
-        final Goods goods = FactoryBoy.create(Goods.class);
         final Shop shop = FactoryBoy.create(Shop.class, "SupplierId", new BuildCallback<Shop>() {
             @Override
             public void build(Shop target) {
@@ -92,8 +106,6 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
     @Test
     public void testUpdate() {
         // 生产 电子券 测试数据
-        final Goods goods = FactoryBoy.create(Goods.class);
-
         final Shop shop = FactoryBoy.create(Shop.class, "SupplierId", new BuildCallback<Shop>() {
             @Override
             public void build(Shop target) {
@@ -127,15 +139,118 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         params.put("shopName", shop.name);
 
         // 检测测试结果
+        long count = CouponHistory.count();
         Http.Response response = POST("/coupons/update", params);
         assertIsOk(response);
         eCoupon.refresh();
         ECoupon eCouponConsumed = ECoupon.findById(eCoupon.id);
         assertEquals(ECouponStatus.CONSUMED, eCouponConsumed.status);
 
-        assertEquals(1, CouponHistory.count());
+        assertEquals(count+1, CouponHistory.count());
         List<CouponHistory> historyList = CouponHistory.findAll();
         assertEquals("消费", historyList.get(0).remark);
+    }
+
+    @Test
+    public void testUpdate_测试券过期情况() {
+        // 生产 电子券 测试数据
+        final Shop shop = FactoryBoy.create(Shop.class, "SupplierId", new BuildCallback<Shop>() {
+            @Override
+            public void build(Shop target) {
+                target.supplierId = goods.supplierId;
+            }
+        });
+        ECoupon eCoupon = FactoryBoy.create(ECoupon.class, "Id", new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.shop = shop;
+                target.goods = goods;
+                target.expireAt = DateUtil.getYesterday();
+                target.operateUserId = 2L;
+                target.originalPrice = new BigDecimal(100);
+                target.salePrice = new BigDecimal(100);
+                target.faceValue = new BigDecimal(150);
+            }
+        });
+
+        // 设置 平台付款账户 金额，已完成向商户付款
+        Account account = AccountUtil.getPlatformIncomingAccount();
+        account.amount = new BigDecimal(1000);
+        account.save();
+        goods.shops.add(shop);
+        goods.save();
+        // 将URL 参数放入Map 中
+        Map<String, String> params = new HashMap<>();
+        params.put("shopId", shop.id.toString());
+        params.put("supplierId", goods.supplierId.toString());
+        params.put("eCouponSn", eCoupon.eCouponSn.toString());
+        params.put("shopName", shop.name);
+
+        // 检测测试结果
+        Http.Response response = POST("/coupons/update", params);
+        assertIsOk(response);
+        assertEquals("4", response.out.toString());
+    }
+
+    @Test
+    public void testUpdate_测试当当券已退款的情况() {
+        // 生产 电子券 测试数据
+        final Shop shop = FactoryBoy.create(Shop.class, "SupplierId", new BuildCallback<Shop>() {
+            @Override
+            public void build(Shop target) {
+                target.supplierId = goods.supplierId;
+            }
+        });
+        ECoupon eCoupon = FactoryBoy.create(ECoupon.class, "Id", new BuildCallback<ECoupon>() {
+            @Override
+            public void build(ECoupon target) {
+                target.shop = shop;
+                target.goods = goods;
+                target.expireAt = goods.expireAt;
+                target.operateUserId = 2L;
+                target.originalPrice = new BigDecimal(100);
+                target.salePrice = new BigDecimal(100);
+                target.faceValue = new BigDecimal(150);
+            }
+        });
+        DDOrderItem item = FactoryBoy.create(DDOrderItem.class);
+        item.ybqOrderItems = eCoupon.orderItems;
+        item.save();
+
+        DDAPIUtil.proxy = new HttpProxy() {
+            @Override
+            public Response accessHttp(PostMethod postMethod) throws DDAPIInvokeException {
+                String data = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" +
+                        "<resultObject><status_code>0</status_code><error_code>0</error_code>" +
+                        "<desc><![CDATA[成功]]></desc><spid>3000003</spid><ver>1.0</ver>" +
+                        "<data><ddgid>256</ddgid><spgid>256</spgid><state>2</state></data></resultObject>";
+                Response response = new Response();
+                try {
+                    response = new Response(new ByteArrayInputStream(data.getBytes()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return response;
+            }
+        };
+
+        // 设置 平台付款账户 金额，已完成向商户付款
+        Account account = AccountUtil.getPlatformIncomingAccount();
+        account.amount = new BigDecimal(1000);
+        account.save();
+        goods.shops.add(shop);
+        goods.save();
+        // 将URL 参数放入Map 中
+        Map<String, String> params = new HashMap<>();
+        params.put("shopId", shop.id.toString());
+        params.put("supplierId", goods.supplierId.toString());
+        params.put("eCouponSn", eCoupon.eCouponSn.toString());
+        params.put("shopName", shop.name);
+
+        // 检测测试结果
+        Http.Response response = POST("/coupons/update", params);
+        assertIsOk(response);
+        assertEquals("5", response.out.toString());
     }
 
     @Test

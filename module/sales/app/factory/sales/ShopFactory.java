@@ -1,13 +1,6 @@
 package factory.sales;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
-import models.sales.Shop;
-import models.supplier.Supplier;
-
 import com.uhuila.common.constants.DeletedStatus;
-
 import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;

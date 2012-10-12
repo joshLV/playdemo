@@ -136,6 +136,14 @@ public class ECoupon extends Model {
     @Transient
     public String refundPriceInfo;
 
+    /**
+     * @return
+     */
+    @Transient
+    public boolean isExpired() {
+        return expireAt != null && expireAt.before(new Date());
+    }
+
     @Column(name = "verify_tel")
     public String verifyTel;
     /**

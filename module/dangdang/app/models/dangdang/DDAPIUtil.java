@@ -83,7 +83,7 @@ public class DDAPIUtil {
         }
 
         DDECouponStatus status = getStatus(response.data);
-        return status.equals(DDECouponStatus.CANCEL);
+        return !status.equals(DDECouponStatus.UNUSED);
     }
 
     private static DDECouponStatus getStatus(Element data) {
