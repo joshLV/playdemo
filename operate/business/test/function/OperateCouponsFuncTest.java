@@ -110,7 +110,7 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         eCoupon.refresh();
         assertEquals(1, eCoupon.isFreeze);
         assertEquals(1, CouponHistory.count());
-        CouponHistory historyList = CouponHistory.find("couponSn=? order by createdAt desc", eCoupon.eCouponSn).first();
+        CouponHistory historyList = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
         assertEquals("冻结券号", historyList.remark);
     }
 
@@ -125,7 +125,7 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         assertEquals(0, eCoupon.isFreeze);
         assertEquals(1, CouponHistory.count());
 
-        CouponHistory historyList = CouponHistory.find("couponSn=? order by createdAt desc", eCoupon.eCouponSn).first();
+        CouponHistory historyList = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
         assertEquals("解冻券号", historyList.remark);
     }
 
@@ -137,7 +137,7 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         Http.Response response = GET("/coupons-message/" + eCoupon.id.toString() + "/send");
         assertIsOk(response);
         assertEquals(1, CouponHistory.count());
-        CouponHistory historyList = CouponHistory.find("couponSn=? order by createdAt desc", eCoupon.eCouponSn).first();
+        CouponHistory historyList = CouponHistory.find("coupon=? order by createdAt desc", eCoupon).first();
         assertEquals("重发短信", historyList.remark);
 
     }
@@ -146,7 +146,7 @@ public class OperateCouponsFuncTest extends FunctionalTest {
     public void testCouponHistory() {
         ECoupon eCoupon = FactoryBoy.create(ECoupon.class);
         CouponHistory history = FactoryBoy.create(CouponHistory.class);
-        history.couponSn = eCoupon.eCouponSn;
+        history.coupon = eCoupon;
         history.save();
         Http.Response response = GET("/coupon_history?couponSn=" + eCoupon.eCouponSn);
         assertIsOk(response);

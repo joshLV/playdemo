@@ -134,8 +134,7 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         eCoupon.refresh();
         ECoupon eCouponConsumed = ECoupon.findById(eCoupon.id);
         assertEquals(ECouponStatus.CONSUMED, eCouponConsumed.status);
-        assertEquals(1, CouponHistory.count());
-        CouponHistory historyList = CouponHistory.find("couponSn=? order by createdAt desc", eCouponConsumed.eCouponSn).first();
+        CouponHistory historyList = CouponHistory.find("coupon=? order by createdAt desc", eCouponConsumed).first();
         assertEquals("消费", historyList.remark);
     }
 

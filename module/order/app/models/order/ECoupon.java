@@ -428,7 +428,7 @@ public class ECoupon extends Model {
             promoteRebate.save();
         }
         //记录券历史信息
-        new CouponHistory(eCouponSn, operator, "消费", ECouponStatus.UNCONSUMED, ECouponStatus.CONSUMED, type).save();
+        new CouponHistory(this, operator, "消费", ECouponStatus.UNCONSUMED, ECouponStatus.CONSUMED, type).save();
         return true;
     }
 
@@ -648,7 +648,7 @@ public class ECoupon extends Model {
 
         //记录券历史信息
         User user = User.findById(userId);
-        new CouponHistory(eCoupon.eCouponSn, user.getShowName(), "券退款", eCoupon.status, ECouponStatus.REFUND, null).save();
+        new CouponHistory(eCoupon, user.getShowName(), "券退款", eCoupon.status, ECouponStatus.REFUND, null).save();
 
         // 更改库存
         eCoupon.goods.baseSale += 1;
@@ -835,7 +835,7 @@ public class ECoupon extends Model {
 
         ECoupon eCoupon = ECoupon.findById(id);
         //记录券历史信息
-        new CouponHistory(eCoupon.eCouponSn, userName, isFreeze == 0 ? "解冻券号" : "冻结券号", eCoupon.status, eCoupon.status, null).save();
+        new CouponHistory(eCoupon, userName, isFreeze == 0 ? "解冻券号" : "冻结券号", eCoupon.status, eCoupon.status, null).save();
         eCoupon.isFreeze = isFreeze;
         eCoupon.save();
     }

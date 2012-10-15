@@ -697,7 +697,7 @@ public class Order extends Model {
                         eCoupon = new ECoupon(this, goods, orderItem).save();
                     }
                     //记录券历史信息
-                    new CouponHistory(eCoupon.eCouponSn, AccountType.RESALER.equals(orderItem.order.userType) ? "分销商："+orderItem.order.getResaler().loginName :"消费者:"+ orderItem.order.getUser().getShowName(), "产生券号", ECouponStatus.UNCONSUMED, ECouponStatus.UNCONSUMED, null).save();
+                    new CouponHistory(eCoupon, AccountType.RESALER.equals(orderItem.order.userType) ? "分销商：" + orderItem.order.getResaler().loginName : "消费者:" + orderItem.order.getUser().getShowName(), "产生券号", ECouponStatus.UNCONSUMED, ECouponStatus.UNCONSUMED, null).save();
 
                     if (!Play.runingInTestMode() && (goods.isLottery == null || !goods.isLottery)) {
                         SMSUtil.send("【一百券】" + (StringUtils.isNotEmpty(goods.title) ? goods.title : (goods.name +

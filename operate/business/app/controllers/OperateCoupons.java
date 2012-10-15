@@ -72,7 +72,12 @@ public class OperateCoupons extends Controller {
      * 券号列表
      */
     public static void couponHistory(String couponSn) {
-        List<CouponHistory> couponList = CouponHistory.find("couponSn=?", couponSn).fetch();
+        ECoupon coupon = ECoupon.find("eCouponSn=?", couponSn).first();
+        if (coupon == null) {
+            return;
+        }
+
+        List<CouponHistory> couponList = CouponHistory.find("coupon=?", coupon).fetch();
         render("OperateCoupons/history.html", couponSn, couponList);
     }
 
@@ -84,7 +89,7 @@ public class OperateCoupons extends Controller {
     public static void sendMessage(long id) {
         boolean sendFalg = ECoupon.sendMessage(id);
         ECoupon eCoupon = ECoupon.findById(id);
-        new CouponHistory(eCoupon.eCouponSn, OperateRbac.currentUser().userName, "重发短信", eCoupon.status, eCoupon.status, null).save();
+        new CouponHistory(eCoupon, OperateRbac.currentUser().userName, "重发短信", eCoupon.status, eCoupon.status, null).save();
         renderJSON(sendFalg ? "0" : "1");
     }
 

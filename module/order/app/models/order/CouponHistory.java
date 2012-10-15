@@ -14,8 +14,9 @@ import java.util.Date;
 @Entity
 @Table(name = "coupon_history")
 public class CouponHistory extends Model {
-    @Column(name = "coupon_sn")
-    public String couponSn;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coupon_id", nullable = false)
+    public ECoupon coupon;
 
     @Column(name = "created_at")
     public Date createdAt;
@@ -41,8 +42,8 @@ public class CouponHistory extends Model {
     @Enumerated(EnumType.STRING)
     public ECouponStatus toStatus;
 
-    public CouponHistory(String couponSn, String operator, String remark, ECouponStatus fromStatus, ECouponStatus toStatus,VerifyCouponType verifyType) {
-        this.couponSn = couponSn;
+    public CouponHistory(ECoupon coupon, String operator, String remark, ECouponStatus fromStatus, ECouponStatus toStatus, VerifyCouponType verifyType) {
+        this.coupon = coupon;
         this.operator = operator;
         this.remark = remark;
         this.fromStatus = fromStatus;
