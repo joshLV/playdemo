@@ -9,15 +9,11 @@ package factory.supplier;
 
 import com.uhuila.common.constants.DeletedStatus;
 import factory.ModelFactory;
-import models.sales.SecKillGoodsItem;
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
-import util.DateHelper;
 
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,10 +31,11 @@ public class SupplierFactory extends ModelFactory<Supplier> {
         supplier.deleted = DeletedStatus.UN_DELETED;
         supplier.domainName = "localhost";
         supplier.loginName = "tom";
-        supplier.status=  SupplierStatus.NORMAL;
+        supplier.status = SupplierStatus.NORMAL;
+        supplier.otherName = "supplier";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
-            supplier.createdAt =  dateFormat.parse("2012-02-29 16:33:18");
+            supplier.createdAt = dateFormat.parse("2012-02-29 16:33:18");
         } catch (ParseException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

@@ -1,45 +1,51 @@
 package models.totalsales;
 
+import com.uhuila.common.util.DateUtil;
+import models.order.ECouponStatus;
+import org.apache.commons.lang.StringUtils;
+import play.Logger;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
-import play.Logger;
-import com.uhuila.common.util.DateUtil;
 
 /**
- * 销售汇总查询条件. 
+ * 销售汇总查询条件.
+ *
  * @author <a href="mailto:tangliqun@uhuila.com">唐力群</a>
  */
 public class TotalSalesCondition {
-    
+
     public static final int BY_SUPPLIER = 0;
     public static final int BY_SHOP = 1;
     public static final int BY_GOODS = 2;
     public static final int BY_VERIFY_TYPE = 3;
-    
+
     public int type = BY_SUPPLIER;
-    
+
+    public String shopBeginHour;
+    public String shopEndHour;
+
     /**
      * 商户.
      */
     public Long supplierId;
-    
+
     /**
      * 商品.
      */
     public Long goodsId;
-    
+
     /**
      * 门店.
      */
     public Long shopId;
-    
+
     /**
      * 开始时间.
      */
     public Date beginAt = DateUtil.getYesterday();
-    
+
     /**
      * 结束时间.
      */
@@ -49,18 +55,22 @@ public class TotalSalesCondition {
     public String orderBy = "e.createdAt";
     public String orderByType = "DESC";
     public String interval = "0d";
-    
+
     private Map<String, Object> paramMap = new HashMap<>();
 
     public String getFilter() {
-        StringBuilder condBuilder = new StringBuilder("e.status='CONSUMED'"); //只统计已经消费的
+        StringBuilder condBuilder = new StringBuilder("e.status=:status"); //只统计已经消费的
+        paramMap.put("status", ECouponStatus.CONSUMED);
         if (beginAt != null) {
+            Date beginDate = DateUtil.stringToDate(DateUtil.dateToString(beginAt) + (StringUtils.isBlank(shopBeginHour) ? " 00:00" : " " + shopBeginHour));
             condBuilder.append(" and e.consumedAt >= :beginAt");
-            paramMap.put("beginAt", beginAt);
+            paramMap.put("beginAt", beginDate);
         }
+
         if (endAt != null) {
+            Date endDate = DateUtil.stringToDate(DateUtil.dateToString(endAt) + (StringUtils.isBlank(shopEndHour) ? " 23:59" : " " + shopEndHour));
             condBuilder.append(" and e.consumedAt < :endAt");
-            paramMap.put("endAt", DateUtil.getEndOfDay(endAt));
+            paramMap.put("endAt", endDate);
         }
 
         if (supplierId != null && supplierId != 0) {
@@ -72,12 +82,12 @@ public class TotalSalesCondition {
             condBuilder.append(" and e.goods.id = :goodsId");
             paramMap.put("goodsId", goodsId);
         }
-        
+
         if (shopId != null && shopId != 0) {
             condBuilder.append(" and e.shop.id = :shopId");
             paramMap.put("shopId", shopId);
         }
-        
+
         Logger.info("TotalSalesCondition condition:" + condBuilder.toString());
         return condBuilder.toString();
     }
@@ -93,7 +103,7 @@ public class TotalSalesCondition {
     }
 
     public String getKeyColumn() {
-        switch(type) {
+        switch (type) {
             case BY_SUPPLIER:
                 return "e.goods.supplierId";
             case BY_SHOP:
@@ -107,7 +117,7 @@ public class TotalSalesCondition {
     }
 
     public String getKeyIdColumn() {
-        switch(type) {
+        switch (type) {
             case BY_SUPPLIER:
                 return "e.goods.supplierId";
             case BY_SHOP:
@@ -119,10 +129,10 @@ public class TotalSalesCondition {
         }
         return "e.goods.supplierId";
     }
-    
+
     public String getGroupBy() {
         StringBuilder sb = new StringBuilder();
-        switch(type) {
+        switch (type) {
             case BY_SUPPLIER:
                 return "e.goods.supplierId";
             case BY_SHOP:
@@ -132,12 +142,12 @@ public class TotalSalesCondition {
             case BY_VERIFY_TYPE:
                 return "e.verifyType";
         }
-        return "e.goods.supplierId";        
+        return "e.goods.supplierId";
     }
-    
+
 
     public boolean needQueryTrends() {
-        switch(type) {
+        switch (type) {
             case BY_SUPPLIER:
                 return supplierId != null && supplierId > 0l;
             case BY_SHOP:
@@ -147,9 +157,9 @@ public class TotalSalesCondition {
         }
         return false;
     }
-    
+
     public boolean needQueryRatios() {
-        switch(type) {
+        switch (type) {
             case BY_SUPPLIER:
                 return true;
             case BY_SHOP:

@@ -7,7 +7,6 @@ import models.accounts.WithdrawAccount;
 import models.admin.SupplierRole;
 import models.admin.SupplierUser;
 import models.admin.SupplierUserType;
-import models.consumer.User;
 import models.sms.SMSUtil;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
@@ -42,8 +41,9 @@ public class Suppliers extends Controller {
     public static final String BASE_DOMAIN = Play.configuration.getProperty("application.baseDomain");
 
     public static void index() {
-        List<Supplier> suppliers = Supplier.findUnDeleted();
-        render(suppliers);
+        String otherName = request.params.get("otherName");
+        List<Supplier> suppliers = Supplier.findByCondition(otherName);
+        render(suppliers,otherName);
     }
 
     @ActiveNavigation("suppliers_add")
@@ -217,8 +217,6 @@ public class Suppliers extends Controller {
         Supplier.update(id, supplier);
         if (adminId == null) {
             admin.create(id);
-        } else {
-            SupplierUser.update(adminId, admin);
         }
         index();
     }

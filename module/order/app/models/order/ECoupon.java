@@ -11,6 +11,7 @@ import models.admin.SupplierUser;
 import models.consumer.User;
 import models.dangdang.DDAPIInvokeException;
 import models.dangdang.DDAPIUtil;
+import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.sms.SMSUtil;
@@ -409,7 +410,7 @@ public class ECoupon extends Model {
         }
         if (operateUserId != null) {
             this.operateUserId = operateUserId;
-            operator = "操作员ID:"+operateUserId.toString();
+            operator = "操作员ID:" + operateUserId.toString();
         }
         this.verifyType = type;
         this.save();
@@ -646,9 +647,17 @@ public class ECoupon extends Model {
             eCoupon.order.save();
         }
 
+        String userName = "";
+        if (AccountType.RESALER == accountType) {
+            Resaler resaler = Resaler.findById(userId);
+            userName = "分销商:" + resaler != null ? resaler.loginName : "";
+        }
+        if (AccountType.CONSUMER == accountType) {
+            User user = User.findById(userId);
+            userName = "消费者"+user.getShowName();
+        }
         //记录券历史信息
-        User user = User.findById(userId);
-        new CouponHistory(eCoupon, user.getShowName(), "券退款", eCoupon.status, ECouponStatus.REFUND, null).save();
+        new CouponHistory(eCoupon, userName, "券退款", eCoupon.status, ECouponStatus.REFUND, null).save();
 
         // 更改库存
         eCoupon.goods.baseSale += 1;

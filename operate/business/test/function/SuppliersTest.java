@@ -4,11 +4,9 @@ import controllers.operate.cas.Security;
 import factory.FactoryBoy;
 import models.admin.OperateUser;
 import models.admin.SupplierUser;
-import models.admin.SupplierUserType;
 import models.supplier.Supplier;
 import operate.rbac.RbacLoader;
 import org.junit.Test;
-import play.Play;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Http;
 import play.test.FunctionalTest;
@@ -53,6 +51,15 @@ public class SuppliersTest extends FunctionalTest {
         assertEquals(supplier.fullName, supplierList.get(0).fullName);
     }
 
+    @Test
+    public void testIndexByCondition() {
+        Http.Response response = GET("/suppliers?otherName=supplier");
+        assertStatus(200, response);
+        List<Supplier> supplierList = (List<Supplier>) renderArgs("suppliers");
+        assertNotNull(supplierList);
+        assertEquals(1, supplierList.size());
+        assertEquals("supplier", supplierList.get(0).otherName);
+    }
     @Test
     public void testExportMaterial() {
         Http.Response response = GET("/suppliers/export-material?supplierId=" + supplier.id + "&supplierDomainName=" + supplier.domainName);

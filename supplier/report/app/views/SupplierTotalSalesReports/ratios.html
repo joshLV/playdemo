@@ -3,11 +3,11 @@
 #{include '/share/nav.html' /}
 
 #{set 'moreScripts'}
-#{asset.js src:['/charts/highcharts.js', '/charts/modules/exporting.js'] /}
+    #{asset.js src:['/charts/highcharts.js', '/charts/modules/exporting.js'] /}
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 <script type="text/javascript" charset="utf-8">
     $(function () {
-        $("#supplierId,#ctype").change(function() {
+        $("#supplierId,#ctype").change(function () {
             $("#search_form").submit();
         });
         $("[start]").each(function () {
@@ -40,50 +40,52 @@
                 return false;
             });
         });
-#{if totalSales?.size() > 0}        
-        var chart2;
-        $(document).ready(function() {
-        	chart2 = new Highcharts.Chart({
-        		chart: {
-        			renderTo: 'chart2',
-        			plotBackgroundColor: null,
-        			plotBorderWidth: null,
-        			plotShadow: false
-        		},
-        		title: {
-        			text: '收款金额占比图'
-        		},
-        		tooltip: {
-        			formatter: function() {
-        				return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.percentage, 2) +' %';
-        			}
-        		},
-        		plotOptions: {
-        			pie: {
-        				allowPointSelect: true,
-        				cursor: 'pointer',
-        				dataLabels: {
-        					enabled: true,
-        					color: '#000000',
-        					connectorColor: '#000000',
-        					formatter: function() {
-        						return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.percentage, 2) +' %';
-        					}
-        				}
-        			}
-        		},
-        		series: [{
-        			type: 'pie',
-        			name: 'Browser share',
-        			data: [
-                #{list items:totalSales, as:'item'}        			       
-        				['${item.key}', ${item.sumOriginValue}]${item_isLast ? '' : ','}
-        	    #{/list}
-        			]
-        		}]
-        	});
-        });        
-#{/if}       
+        #{if totalSales?.size() > 0}
+            var chart2;
+            $(document).ready(function () {
+                chart2 = new Highcharts.Chart({
+                    chart:{
+                        renderTo:'chart2',
+                        plotBackgroundColor:null,
+                        plotBorderWidth:null,
+                        plotShadow:false
+                    },
+                    title:{
+                        text:'收款金额占比图'
+                    },
+                    tooltip:{
+                        formatter:function () {
+                            return '<b>' + this.point.name + '</b>: ' + Highcharts.numberFormat(this.percentage, 2) + ' %';
+                        }
+                    },
+                    plotOptions:{
+                        pie:{
+                            allowPointSelect:true,
+                            cursor:'pointer',
+                            dataLabels:{
+                                enabled:true,
+                                color:'#000000',
+                                connectorColor:'#000000',
+                                formatter:function () {
+                                    return '<b>' + this.point.name + '</b>: ' + Highcharts.numberFormat(this.percentage, 2) + ' %';
+                                }
+                            }
+                        }
+                    },
+                    series:[
+                        {
+                            type:'pie',
+                            name:'Browser share',
+                            data:[
+                                #{list items:totalSales, as:'item'}
+                                    ['${item.key}', ${item.sumOriginValue}]${item_isLast ? '' : ','}
+                                #{/list}
+                            ]
+                        }
+                    ]
+                });
+            });
+        #{/if}
     });
 </script>
 #{/set}
@@ -133,36 +135,40 @@
 
 <form class="well form-inline" action="@{SupplierTotalSalesReports.ratios()}" method="GET" id="search_form"
       name="search_form">
-  <div class="form-inline">
-    报表类型：
+    <div class="form-inline">
+        报表类型：
     #{select 'condition.type', id:"ctype", class:'select', value:condition?.type}
         #{option "1"}门店报表#{/option}
         #{option "2"}商品报表#{/option}
-    #{/select}      
-    
-    #{if suppliers != null && (condition?.type == 1 || condition?.type == 2) }
-    #{select 'condition.supplierId', id:"supplierId", class:'select', value:condition?.supplierId}
-        #{option ""}请选择商户#{/option}
-        #{list items:suppliers, as:'supplier'}
-            #{option supplier?.id}${supplier?.fullName}#{/option}
-        #{/list}
     #{/select}
-    #{/if}
-    起止日期
-    <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.beginAt"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.beginAt?.format()}"> -
-    <input type="text" id="condition_end" class="input-medium Wdate" name="condition.endAt"
-           onfocus="WdatePicker({readOnly:true})" value="${condition.endAt?.format()}">
 
-    <button type="submit" class="btn btn-primary" id="search">搜索</button>
-    <ul class="nav nav-pills">
-        <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">昨天</a></li>
-        <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
-        <li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>
-        <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
-    </ul>
-    <input type="hidden" id="condition_interval" name="condition.interval"/>
-   </div>
+    #{if suppliers != null && (condition?.type == 1 || condition?.type == 2) }
+        #{select 'condition.supplierId', id:"supplierId", class:'select', value:condition?.supplierId}
+            #{option ""}请选择商户#{/option}
+            #{list items:suppliers, as:'supplier'}
+                #{option supplier?.id}${supplier?.fullName}#{/option}
+            #{/list}
+        #{/select}
+    #{/if}
+        起止日期
+        <input type="text" id="condition_begin" class="input-medium Wdate" name="condition.beginAt"
+               onfocus="WdatePicker({readOnly:true})" value="${condition.beginAt?.format()}"> -
+        <input type="text" id="condition_end" class="input-medium Wdate" name="condition.endAt"
+               onfocus="WdatePicker({readOnly:true})" value="${condition.endAt?.format()}">
+
+        <button type="submit" class="btn btn-primary" id="search">搜索</button>
+        <ul class="nav nav-pills">
+            <li #{if condition.interval=='0d'} class="active" #{/if}  ><a start="0d" href="#">昨天</a></li>
+            <li #{if condition.interval=='7d'} class="active" #{/if}  ><a start="7d" href="#">最近7天</a></li>
+            <li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>
+            <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
+        </ul>
+        <ul>营业时间 ${condition?.shopBeginHour=="" ? "00:00":condition?.shopBeginHour}～
+        ${condition?.shopEndHour=="" ? "23:59":condition?.shopEndHour}</ul>
+        <input type="hidden" id="condition_interval" name="condition.interval"/>
+        <input type="hidden" value="${condition?.shopBeginHour}" name="condition.shopBeginHour"/>
+        <input type="hidden" value="${condition?.shopEndHour}" name="condition.shopEndHour"/>
+    </div>
 </form>
 
 *{<ul class="nav nav-tabs">}*
@@ -172,64 +178,67 @@
 
 <div class="tabbable" style="margin-bottom: 18px;">
     <ul class="nav nav-tabs">
-      <li class="active"><a href="#tab1" data-toggle="tab">数据</a></li>
-      <li class=""><a href="#tab3" data-toggle="tab">收款金额占比图</a></li>
+        <li class="active"><a href="#tab1" data-toggle="tab">数据</a></li>
+        <li class=""><a href="#tab3" data-toggle="tab">收款金额占比图</a></li>
     </ul>
     <div class="tab-content" style="padding-bottom: 9px; border-bottom: 1px solid #ddd;">
-      <div class="tab-pane active" id="tab1">
-        <table class="table table-striped table-bordered table-condensed">
-            <thead>
+        <div class="tab-pane active" id="tab1">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
                 <th>&{'totalsales.trends.key.' + condition.type}</th>
                 <th>验证笔数</th>
                 <th>总面值金额</th>
                 <th>总收款金额</th>
-            </thead>
-        #{set i:0/}
-        #{paginate.list items:reportPage, as:'report'}
-            <tr>
-                <td>${report?.key}</td>
-                <td class="amount">
-                  <a href="@{SupplierTotalSalesReports.list()}?condition.type=${condition.type}&condition.beginAt=${condition.beginAt?.format("yyyy-MM-dd")}&condition.endAt=${condition.endAt?.format("yyyy-MM-dd")}#{if condition.type == 0}&condition.supplierId=${report?.keyId}#{/if}#{if condition.type == 1}&condition.shopId=${report?.keyId}#{/if}#{if condition.type == 2}&condition.goodsId=${report?.keyId}#{/if}" target="_blank">
-                    ${report?.checkedCount}
-                  </a>
-                </td>
-                <td class="amount">
-                  <a href="@{SupplierTotalSalesReports.list()}?condition.type=${condition.type}&condition.beginAt=${condition.beginAt?.format("yyyy-MM-dd")}&condition.endAt=${condition.endAt?.format("yyyy-MM-dd")}#{if condition.type == 0}&condition.supplierId=${report?.keyId}#{/if}#{if condition.type == 1}&condition.shopId=${report?.keyId}#{/if}#{if condition.type == 2}&condition.goodsId=${report?.keyId}#{/if}" target="_blank">
-                    ${report?.sumFaceValue?.formatCurrency('CNY')}
-                  </a>
-                </td>
-                <td class="amount">
-                  <a href="@{SupplierTotalSalesReports.list()}?condition.type=${condition.type}&condition.beginAt=${condition.beginAt?.format("yyyy-MM-dd")}&condition.endAt=${condition.endAt?.format("yyyy-MM-dd")}#{if condition.type == 0}&condition.supplierId=${report?.keyId}#{/if}#{if condition.type == 1}&condition.shopId=${report?.keyId}#{/if}#{if condition.type == 2}&condition.goodsId=${report?.keyId}#{/if}" target="_blank">
-                    ${report?.sumOriginValue?.formatCurrency('CNY')}
-                  </a>
-                </td>
-            </tr>
-        #{/paginate.list}
-            <tfoot>
+                </thead>
+            #{set i:0/}
+            #{paginate.list items:reportPage, as:'report'}
+                <tr>
+                    <td>${report?.key}</td>
+                    <td class="amount">
+                        <a href="@{SupplierTotalSalesReports.list()}?condition.type=${condition.type}&condition.beginAt=${condition.beginAt?.format("yyyy-MM-dd")}&condition.endAt=${condition.endAt?.format("yyyy-MM-dd")}#{if condition.type == 0}&condition.supplierId=${report?.keyId}#{/if}#{if condition.type == 1}&condition.shopId=${report?.keyId}#{/if}#{if condition.type == 2}&condition.goodsId=${report?.keyId}#{/if}"
+                           target="_blank">
+                        ${report?.checkedCount}
+                        </a>
+                    </td>
+                    <td class="amount">
+                        <a href="@{SupplierTotalSalesReports.list()}?condition.type=${condition.type}&condition.beginAt=${condition.beginAt?.format("yyyy-MM-dd")}&condition.endAt=${condition.endAt?.format("yyyy-MM-dd")}#{if condition.type == 0}&condition.supplierId=${report?.keyId}#{/if}#{if condition.type == 1}&condition.shopId=${report?.keyId}#{/if}#{if condition.type == 2}&condition.goodsId=${report?.keyId}#{/if}"
+                           target="_blank">
+                        ${report?.sumFaceValue?.formatCurrency('CNY')}
+                        </a>
+                    </td>
+                    <td class="amount">
+                        <a href="@{SupplierTotalSalesReports.list()}?condition.type=${condition.type}&condition.beginAt=${condition.beginAt?.format("yyyy-MM-dd")}&condition.endAt=${condition.endAt?.format("yyyy-MM-dd")}#{if condition.type == 0}&condition.supplierId=${report?.keyId}#{/if}#{if condition.type == 1}&condition.shopId=${report?.keyId}#{/if}#{if condition.type == 2}&condition.goodsId=${report?.keyId}#{/if}"
+                           target="_blank">
+                        ${report?.sumOriginValue?.formatCurrency('CNY')}
+                        </a>
+                    </td>
+                </tr>
+            #{/paginate.list}
+                <tfoot>
                 <tr>
                     <td class="amount">汇总</td>
                     <td class="amount">
-                        ${summary?.checkedCount}
+                    ${summary?.checkedCount}
                     </td>
                     <td class="amount">
-                        ${summary?.sumFaceValue?.formatCurrency('CNY')}
+                    ${summary?.sumFaceValue?.formatCurrency('CNY')}
                     </td>
                     <td class="amount">
-                        ${summary?.sumOriginValue?.formatCurrency('CNY')}
+                    ${summary?.sumOriginValue?.formatCurrency('CNY')}
                     </td>
-                </tr>            
-            </tfoot>        
-        </table>
+                </tr>
+                </tfoot>
+            </table>
         #{if reportPage?.getPageCount() > 1}
-        <div class="pagination">
-            <ul>
-            #{paginate.controls items:reportPage /}
-            </ul>
+            <div class="pagination">
+                <ul>
+                    #{paginate.controls items:reportPage /}
+                </ul>
+            </div>
+        #{/if}
         </div>
-        #{/if}        
-      </div>
-      <div class="tab-pane" id="tab3">
-        <div id="chart2" class="span12" style="height: 500px"></div>
-      </div>
+        <div class="tab-pane" id="tab3">
+            <div id="chart2" class="span12" style="height: 500px"></div>
+        </div>
     </div>
 </div>

@@ -15,6 +15,7 @@ import java.util.Date;
 public class DateUtil {
     public static SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
     public static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    public static SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public static Date getEndOfDay(Date day) {
         if (day == null) {
@@ -158,4 +159,30 @@ public class DateUtil {
         return dateRange / time;
     }
 
+
+    /**
+     * 日期转化成字符串
+     *
+     * @param date
+     * @return
+     */
+    public static String dateToString(Date date) {
+        return format.format(date);
+    }
+
+    /**
+     * 字符串转化成日期
+     *
+     * @param sdate
+     * @return
+     */
+    public static Date stringToDate(String sdate) {
+        Date date = null;
+        try {
+            date = formatDate.parse(sdate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
 }

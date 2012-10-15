@@ -1,25 +1,6 @@
 package models.admin;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import com.uhuila.common.constants.DeletedStatus;
 import models.sales.Shop;
 import models.supplier.Supplier;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -30,7 +11,9 @@ import play.db.jpa.Model;
 import play.libs.Images;
 import play.modules.paginate.JPAExtPaginator;
 import play.modules.view_ext.annotation.Mobile;
-import com.uhuila.common.constants.DeletedStatus;
+
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
 @Table(name = "supplier_users")

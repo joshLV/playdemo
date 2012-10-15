@@ -1,18 +1,13 @@
 package models.totalsales;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.persistence.Query;
 import models.order.ECoupon;
 import models.supplier.Supplier;
 import play.db.jpa.JPA;
+
+import javax.persistence.Query;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class TotalSalesReport {
 
@@ -102,7 +97,7 @@ public class TotalSalesReport {
         for (String param : condition.getParamMap().keySet()) {
             query.setParameter(param, condition.getParamMap().get(param));
         }
-        return query.getResultList();        
+        return query.getResultList();
     }
 
     /**
@@ -205,9 +200,10 @@ public class TotalSalesReport {
     
     public static List<String> generateDateList(TotalSalesCondition condition) {
         Date date = condition.beginAt;
+        System.out.println(date+"-----------");
         SimpleDateFormat df = new SimpleDateFormat("yyyy-M-dd");
         List<String> dateList = new ArrayList<>();
-        long oneDay = 1000l * 60 * 60 * 24;
+        long oneDay = 1000L * 60 * 60 * 24;
         do {
             dateList.add(df.format(date));
             date = new Date(date.getTime() + oneDay);
