@@ -33,7 +33,7 @@
         #{list items:orderItems, as:'row' }
             <tr class="order-bd">
                 <td align="left" valign="middle">
-                    <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/g/${row.goods.id}" target="_blank"><img style="float:left;margin-right:5px" src="${row.goods.imageTinyPath}"/>${row.goods.name}</a>
+                    <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/gh/${row.goodsHistoryId}" target="_blank"><img style="float:left;margin-right:5px" src="${row.goods.imageTinyPath}"/>${row.goods.name}</a>
                 </td>
                 <td align="center" valign="middle">&{'goods.'+row.goods.materialType}</td>
                 <td align="center" valign="middle">${row.salePrice?.formatCurrency('CNY').raw()}</td>

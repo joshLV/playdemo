@@ -3,6 +3,7 @@ package models.order;
 import models.accounts.AccountType;
 import models.consumer.User;
 import models.sales.Goods;
+import models.sales.GoodsHistory;
 import models.sales.MaterialType;
 import models.sales.SecKillGoods;
 import play.db.jpa.JPA;
@@ -97,6 +98,7 @@ public class OrderItems extends Model {
     public OrderItems(Order order, Goods goods, long buyNumber, String phone, BigDecimal salePrice, BigDecimal resalerPrice) {
         this.order = order;
         this.goods = goods;
+        this.goodsHistoryId = getLastHistoryId(goods.id);
         this.faceValue = goods.faceValue;
         this.originalPrice = goods.originalPrice;
         this.salePrice = salePrice;
@@ -108,6 +110,10 @@ public class OrderItems extends Model {
         this.createdAt = new Date();
     }
 
+    public static long getLastHistoryId(Long goodsId) {
+        GoodsHistory goodsHistory = GoodsHistory.find("goodsId=? order by id desc", goodsId).first();
+        return goodsHistory.id;
+    }
 
     public static long itemsNumber(Order order) {
         long itemsNumber = 0L;

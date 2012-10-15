@@ -100,7 +100,7 @@ public class GoodsHistory extends Model {
     @Column(name = "original_price")
     public BigDecimal originalPrice;
 
-    private BigDecimal discount;
+    public BigDecimal discount;
 
     /**
      * 运营人员填写的一百券网站价格
@@ -151,7 +151,7 @@ public class GoodsHistory extends Model {
     public Long topCategoryId;
 
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinTable(name = "goods_categories", inverseJoinColumns = @JoinColumn(name
+    @JoinTable(name = "goods_history_categories", inverseJoinColumns = @JoinColumn(name
             = "category_id"), joinColumns = @JoinColumn(name = "goods_id"))
     @Required
     public Set<Category> categories;
@@ -167,16 +167,23 @@ public class GoodsHistory extends Model {
     public BigDecimal resaleAddPrice;
 
     /**
-     * 修改时间
+     * 创建时间
      */
-    @Column(name = "updated_at")
-    public Date updatedAt;
+    @Column(name = "created_at")
+    public Date createdAt;
 
     /**
      * 修改人
      */
-    @Column(name = "updated_by")
-    public String updatedBy;
+    @Column(name = "created_by")
+    public String createdBy;
+
+
+    /**
+     * 来自于 运营后台 or 商户后台
+     */
+    @Column(name = "created_from")
+    public String createdFrom;
 
     @Required
     @ManyToOne
@@ -219,7 +226,7 @@ public class GoodsHistory extends Model {
     public Long supplierId;
 
     @ManyToMany(cascade = CascadeType.REFRESH)
-    @JoinTable(name = "goods_shops", inverseJoinColumns = @JoinColumn(name
+    @JoinTable(name = "goods_history_shops", inverseJoinColumns = @JoinColumn(name
             = "shop_id"), joinColumns = @JoinColumn(name = "goods_id"))
     public Set<Shop> shops;
 
@@ -257,13 +264,13 @@ public class GoodsHistory extends Model {
      */
     @MaxSize(65000)
     @Lob
-    private String prompt;
+    public String prompt;
 
     @Required
     @MinSize(7)
     @MaxSize(65000)
     @Lob
-    private String details;
+    public String details;
 
     @Column(name = "is_all_shop")
     public Boolean isAllShop = true;
@@ -322,9 +329,9 @@ public class GoodsHistory extends Model {
     public void setDiscount(BigDecimal discount) {
         if (discount != null && discount.compareTo(BigDecimal.ZERO) >= 0 && discount.compareTo(BigDecimal.TEN) <= 0) {
             this.discount = discount;
-        } else if (discount.compareTo(BigDecimal.ZERO) < 0) {
+        } else if (discount != null && discount.compareTo(BigDecimal.ZERO) < 0) {
             this.discount = BigDecimal.ZERO;
-        } else if (discount.compareTo(BigDecimal.TEN) > 0) {
+        } else if (discount != null && discount.compareTo(BigDecimal.TEN) > 0) {
             this.discount = BigDecimal.TEN;
         }
     }
@@ -408,56 +415,6 @@ public class GoodsHistory extends Model {
             status = GoodsStatus.OFFSALE;
         }
         return status;
-    }
-
-    public static void update(Long id, Goods goods, Long goodsId, boolean noLevelPrices) {
-        models.sales.GoodsHistory goodsHistory = new GoodsHistory();
-        if (goodsHistory.unPublishedPlatforms == null) {
-            goodsHistory.unPublishedPlatforms = new HashSet<>();
-        }
-        goodsHistory.goodsId = goodsId;
-        goodsHistory.name = goods.name;
-        goodsHistory.no = goods.no;
-        goodsHistory.effectiveAt = goods.effectiveAt;
-        goodsHistory.expireAt = DateUtil.getEndOfDay(goods.expireAt);
-        goodsHistory.faceValue = goods.faceValue;
-        goodsHistory.originalPrice = goods.originalPrice;
-        goods.initDiscount(null);
-        goodsHistory.setDiscount(goods.getDiscount());
-        goodsHistory.salePrice = goods.salePrice;
-        goodsHistory.baseSale = goods.baseSale;
-        goodsHistory.promoterPrice = goods.promoterPrice;
-        goodsHistory.invitedUserPrice = goods.invitedUserPrice;
-        goodsHistory.materialType = goods.materialType;
-        goodsHistory.topCategoryId = goods.topCategoryId;
-        goodsHistory.categories = goods.categories;
-        goodsHistory.resaleAddPrice = goods.resaleAddPrice;
-        goodsHistory.setPrompt(goods.getPrompt());
-        goodsHistory.setDetails(goods.getDetails());
-        goodsHistory.updatedAt = new Date();
-        goodsHistory.updatedBy = goods.updatedBy;
-        goodsHistory.brand = goods.brand;
-        goodsHistory.isAllShop = goods.isAllShop;
-        goodsHistory.status = goods.status;
-        goodsHistory.keywords = goods.keywords;
-        goodsHistory.limitNumber = goods.limitNumber;
-        goodsHistory.couponType = goods.couponType;
-        if (!StringUtils.isEmpty(goods.imagePath)) {
-            goodsHistory.imagePath = goods.imagePath;
-        }
-        if (goods.supplierId != null) {
-            goodsHistory.supplierId = goods.supplierId;
-        }
-        goodsHistory.shops = goods.shops;
-        goodsHistory.title = goods.title;
-        goodsHistory.setPublishedPlatforms(goods.getPublishedPlatforms(), goods);
-        goodsHistory.useBeginTime = goods.useBeginTime;
-        goodsHistory.useEndTime = goods.useEndTime;
-        goodsHistory.useWeekDay = goods.useWeekDay;
-        goodsHistory.isLottery = (goods.isLottery == null) ? Boolean.FALSE : goods.isLottery;
-        goodsHistory.groupCode = (StringUtils.isEmpty(goods.groupCode)) ? null : goods.groupCode.trim();
-        goodsHistory.updatedBy = goods.updatedBy;
-        goodsHistory.save();
     }
 
 

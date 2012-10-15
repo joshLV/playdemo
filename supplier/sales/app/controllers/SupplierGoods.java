@@ -296,7 +296,7 @@ public class SupplierGoods extends Controller {
 
         checkExpireAt(goods);
         checkOriginalPrice(goods);
-          for (String key : validation.errorsMap().keySet()) {
+        for (String key : validation.errorsMap().keySet()) {
             warn("validation.errorsMap().get(" + key + "):" + validation.errorsMap().get(key));
         }
         if (Validation.hasErrors()) {
@@ -327,6 +327,9 @@ public class SupplierGoods extends Controller {
 
         goods.updatedBy = supplierUser;
         Goods.update(id, goods, true);
+        Goods goodsItem = models.sales.Goods.findById(id);
+        String createdFrom = "Sp";
+        goodsItem.createHistory(createdFrom);
         index(null);
     }
 
@@ -382,7 +385,11 @@ public class SupplierGoods extends Controller {
      */
     private static void updateStatus(GoodsStatus status, Long... ids) {
         models.sales.Goods.updateStatus(status, ids);
-
+        for (int i = 0; i < ids.length; i++) {
+            Goods goodsItem = models.sales.Goods.findById(ids[i]);
+            String createdFrom = "Sp";
+            goodsItem.createHistory(createdFrom);
+        }
         index(null);
     }
 

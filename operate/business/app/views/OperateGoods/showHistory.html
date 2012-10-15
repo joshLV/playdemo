@@ -30,15 +30,13 @@
         <tbody>
         #{list items:goodsHistoryList, as:'goods'}
         <tr>
-            <td>${goods?.updatedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
-            <td>${goods?.updatedBy}</td>
+            <td>${goods?.createdAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
+            <td>${goods?.createdBy}&nbsp;&nbsp;(&nbsp;${goods?.createdFrom}&nbsp;)</td>
             <td>${goods?.faceValue?.formatCurrency('CNY')}</td>
             <td>${goods?.originalPrice?.formatCurrency('CNY')}</td>
             <td>${goods?.salePrice?.formatCurrency('CNY')}</td>
             <td>&{'goods.'+goods?.getStatus()}</td>
-        *{<td><a href="@{OperateGoods.jumpToPreview(goods.id,goods,goods.imagePath)}" target="_blank">预览</a></td>}*
-        *{<td><a href=" http://www.yibaiquan.com/gh/${goods.id}" target="_blank"/>预览</td>}*
-            <td><a href="http://localhost:9001/gh/${goods.id}" target="_blank"/>预览</td>
+            <td><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/gh/${goods.id}" target="_blank"/>预览</td>
         #{/list}
         </tbody>
     </table>

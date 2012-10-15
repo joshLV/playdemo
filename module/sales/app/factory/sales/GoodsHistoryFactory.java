@@ -22,24 +22,26 @@ import static util.DateHelper.afterDays;
 public class GoodsHistoryFactory extends ModelFactory<GoodsHistory> {
     @Override
     public GoodsHistory define() {
-        GoodsHistory goods = new GoodsHistory();
+        GoodsHistory goodsHistory = new GoodsHistory();
         Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
-        goods.name = "Product Name " + FactoryBoy.sequence(Goods.class);
-        goods.title = "Product Title" + FactoryBoy.sequence(Goods.class);
-        goods.status = GoodsStatus.ONSALE;
-        goods.isAllShop = false;
-        goods.supplierId = supplier.id;
-        goods.salePrice = BigDecimal.TEN;
-        goods.expireAt = afterDays(new Date(), 30);
-        goods.faceValue = BigDecimal.TEN;
-        goods.materialType = MaterialType.REAL;
-        goods.baseSale = 100L;
-        goods.useWeekDay = "1,2,3,4,5,6,7";
-        goods.originalPrice = new BigDecimal("5");
-        goods.categories = new HashSet<>();
-        goods.shops = new HashSet<>();
-        goods.categories.add(FactoryBoy.lastOrCreate(Category.class));
-        goods.shops.add(FactoryBoy.lastOrCreate(Shop.class));
-        return goods;
+        Goods goods = FactoryBoy.lastOrCreate(Goods.class);
+        goodsHistory.goodsId = goods.id;
+        goodsHistory.name = "Product Name " + FactoryBoy.sequence(Goods.class);
+        goodsHistory.title = "Product Title" + FactoryBoy.sequence(Goods.class);
+        goodsHistory.status = GoodsStatus.ONSALE;
+        goodsHistory.isAllShop = false;
+        goodsHistory.supplierId = supplier.id;
+        goodsHistory.salePrice = BigDecimal.TEN;
+        goodsHistory.expireAt = afterDays(new Date(), 30);
+        goodsHistory.faceValue = BigDecimal.TEN;
+        goodsHistory.materialType = MaterialType.REAL;
+        goodsHistory.baseSale = 100L;
+        goodsHistory.useWeekDay = "1,2,3,4,5,6,7";
+        goodsHistory.originalPrice = new BigDecimal("5");
+        goodsHistory.categories = new HashSet<>();
+        goodsHistory.shops = new HashSet<>();
+        goodsHistory.categories.add(FactoryBoy.lastOrCreate(Category.class));
+        goodsHistory.shops.add(FactoryBoy.lastOrCreate(Shop.class));
+        return goodsHistory;
     }
 }

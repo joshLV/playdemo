@@ -12,6 +12,7 @@ import models.mail.MailMessage;
 import models.mail.MailUtil;
 import models.resale.ResalerLevel;
 import models.sales.*;
+import models.sales.Goods;
 import models.supplier.Supplier;
 import operate.rbac.annotations.ActiveNavigation;
 import org.apache.commons.lang.StringUtils;
@@ -200,8 +201,6 @@ public class OperateGoods extends Controller {
      */
 
 
-
-
     private static void preview(Long goodsId, models.sales.Goods goods, File imagePath) {
         String cacheId = "0";
         try {
@@ -224,7 +223,6 @@ public class OperateGoods extends Controller {
      */
     @ActiveNavigation("goods_add")
     public static void create(@Valid models.sales.Goods goods, @Required File imagePath) {
-
         checkImageFile(imagePath);
         checkExpireAt(goods);
         checkSalePrice(goods);
@@ -258,8 +256,8 @@ public class OperateGoods extends Controller {
             error(500, "goods.image_upload_failed");
         }
         goods.save();
-        GoodsHistory.update(goods.id, goods, goods.id, false);
-
+        String createdFrom = "Op";
+        goods.createHistory(createdFrom);
         index(null, "");
     }
 
@@ -400,6 +398,10 @@ public class OperateGoods extends Controller {
         renderTemplate("OperateGoods/show.html", goods);
     }
 
+    /**
+     * GET /goods/{goods_id}/histories
+     * @param id
+     */
     public static void showHistory(Long id) {
         String supplierName = "";
         String goodsNo = "";
@@ -419,7 +421,6 @@ public class OperateGoods extends Controller {
      * 更新指定商品信息
      */
     public static void update(Long id, @Valid final models.sales.Goods goods, File imagePath, String imageLargePath) {
-
         if (goods.isAllShop && goods.shops != null) {
             goods.shops = null;
         }
@@ -464,7 +465,9 @@ public class OperateGoods extends Controller {
         }
         goods.updatedBy = supplierUser;
         models.sales.Goods.update(id, goods, false);
-        GoodsHistory.update(goods.id, goods, id, false);
+        Goods goodsItem = models.sales.Goods.findById(id);
+        String createdFrom = "Op";
+        goodsItem.createHistory(createdFrom);
         index(null, "");
     }
 
@@ -475,7 +478,6 @@ public class OperateGoods extends Controller {
      * @param id 商品ID
      */
     public static void onSale(@As(",") Long... id) {
-
         for (Long goodsId : id) {
             models.sales.Goods goods = models.sales.Goods.findById(goodsId);
             if (goods != null) {
@@ -525,8 +527,9 @@ public class OperateGoods extends Controller {
         models.sales.Goods updateGoods = models.sales.Goods.findById(id);
         updateGoods.keywords = goods.keywords;
         updateGoods.priority = goods.priority;
+        String createdFrom = "Op";
+        updateGoods.createHistory(createdFrom);
         updateGoods.save();
-
         index(null, "");
     }
 
@@ -558,6 +561,12 @@ public class OperateGoods extends Controller {
                     MailUtil.sendGoodsOffSalesMail(mailMessage);
                 }
             }
+        }
+
+        for (int i = 0; i < ids.length; i++) {
+            Goods goodsItem = models.sales.Goods.findById(ids[i]);
+            String createdFrom = "Op";
+            goodsItem.createHistory(createdFrom);
         }
         index(null, "");
     }

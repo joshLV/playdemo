@@ -12,6 +12,8 @@ import play.mvc.Http;
 import play.test.FunctionalTest;
 import play.vfs.VirtualFile;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: wangjia
@@ -20,7 +22,8 @@ import play.vfs.VirtualFile;
  * To change this template use File | Settings | File Templates.
  */
 public class OperateGoodsShowHistoryTest extends FunctionalTest {
-    Goods goodsHistory;
+    Goods goods;
+    GoodsHistory goodsHistory;
 
     @Before
     public void setUp() {
@@ -31,12 +34,16 @@ public class OperateGoodsShowHistoryTest extends FunctionalTest {
         OperateUser user = FactoryBoy.create(OperateUser.class);
         // 设置测试登录的用户名
         Security.setLoginUserForTest(user.loginName);
-        goodsHistory = FactoryBoy.create(Goods.class);
+        goods = FactoryBoy.create(Goods.class);
+        goodsHistory = FactoryBoy.create(GoodsHistory.class);
     }
 
     @Test
     public void testShowHistory() {
-        Http.Response response = GET("/goods-history?id=" + goodsHistory.id);
-
+        Http.Response response = GET("/goods/" + goods.id + "/histories");
+        List<GoodsHistory> goodsHistoryList = (List<GoodsHistory>) renderArgs("goodsHistoryList");
+        assertStatus(200, response);
+        assertEquals(1, goodsHistoryList.size());
+        assertEquals(goods.id, goodsHistoryList.get(0).goodsId);
     }
 }

@@ -672,7 +672,6 @@ public class Goods extends Model {
             return;
         }
         updateGoods.name = goods.name;
-
         updateGoods.no = goods.no;
         updateGoods.effectiveAt = goods.effectiveAt;
         updateGoods.expireAt = DateUtil.getEndOfDay(goods.expireAt);
@@ -1277,4 +1276,50 @@ public class Goods extends Model {
         discount = value;
     }
 
+    public void createHistory(String createdFrom) {
+        models.sales.GoodsHistory goodsHistory = new GoodsHistory();
+        if (goodsHistory.unPublishedPlatforms == null) {
+            goodsHistory.unPublishedPlatforms = new HashSet<>();
+        }
+        goodsHistory.createdFrom = createdFrom;
+        goodsHistory.goodsId = this.id;
+        goodsHistory.name = this.name;
+        goodsHistory.no = this.no;
+        goodsHistory.effectiveAt = this.effectiveAt;
+        goodsHistory.expireAt = this.expireAt;
+        goodsHistory.faceValue = this.faceValue;
+        goodsHistory.originalPrice = this.originalPrice;
+        goodsHistory.discount = this.discount;
+        goodsHistory.salePrice = this.salePrice;
+        goodsHistory.baseSale = this.baseSale;
+        goodsHistory.promoterPrice = this.promoterPrice;
+        goodsHistory.invitedUserPrice = this.invitedUserPrice;
+        goodsHistory.materialType = this.materialType;
+        goodsHistory.topCategoryId = this.topCategoryId;
+        goodsHistory.categories = new HashSet<>();
+        goodsHistory.categories.addAll(this.categories);
+        goodsHistory.resaleAddPrice = this.resaleAddPrice;
+        goodsHistory.prompt = this.prompt;
+        goodsHistory.details = this.details;
+        goodsHistory.createdAt = new Date();
+        goodsHistory.createdBy = this.createdBy;
+        goodsHistory.brand = this.brand;
+        goodsHistory.isAllShop = this.isAllShop;
+        goodsHistory.status = this.status;
+        goodsHistory.keywords = this.keywords;
+        goodsHistory.limitNumber = this.limitNumber;
+        goodsHistory.couponType = this.couponType;
+        goodsHistory.imagePath = this.imagePath;
+        goodsHistory.supplierId = this.supplierId;
+        goodsHistory.shops = new HashSet<>();
+        goodsHistory.shops.addAll(this.shops);
+        goodsHistory.title = this.title;
+        goodsHistory.unPublishedPlatforms.addAll(this.unPublishedPlatforms);
+        goodsHistory.useBeginTime = this.useBeginTime;
+        goodsHistory.useEndTime = this.useEndTime;
+        goodsHistory.useWeekDay = this.useWeekDay;
+        goodsHistory.isLottery = this.isLottery;
+        goodsHistory.groupCode = this.groupCode;
+        goodsHistory.save();
+    }
 }

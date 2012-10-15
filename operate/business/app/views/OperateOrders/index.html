@@ -52,32 +52,33 @@
             }
             $("#frmlist").submit();
         });
-           $("#search").click(function () {
-                formSubmit();
+        $("#search").click(function () {
+            formSubmit();
         });
 //        $("#brandId").click(function(){
 //                formSubmit();
 //        })
 
-        $('.fn-rank').click(function(ev){
+        $('.fn-rank').click(function (ev) {
             ev.preventDefault();
             var rankStr = $(this).attr('data-rank');
             $('#J_rank').val(rankStr);
             $('#frmlist').submit();
         });
-   });
-   function orderExcel() {
+    });
+    function orderExcel() {
         $("#frmlist").attr("action", "@{OperateOrders.orderExcelOut()}");
-        $("#frmlist").attr("method","get");
+        $("#frmlist").attr("method", "get");
         $("#frmlist").submit();
-    };
+    }
+    ;
 
     function changeList(status) {
         $("#condition_status").val(status);
         formSubmit();
     }
 
-    function formSubmit(){
+    function formSubmit() {
         $("#frmlist").attr("method", "get");
         $("#frmlist").attr("action", "@{OperateOrders.index()}");
         $("#frmlist").submit();
@@ -91,241 +92,278 @@
     }
 
     .rank {
-    background-image: url(http://img.uhcdn.com/images/r/rank.png);
-    background-position: right 6px;
-    background-repeat: no-repeat;
+        background-image: url(http://img.uhcdn.com/images/r/rank.png);
+        background-position: right 6px;
+        background-repeat: no-repeat;
     }
+
     .rank-asc {
-    background-position: right -15px;
+        background-position: right -15px;
     }
+
     .rank-desc {
-    background-position: right -36px;
+        background-position: right -36px;
     }
 </style>
 #{/set}
 <div class="body">
-    <legend>商品订单</legend>
-    <form class="form-horizontal" name="frmlist" id="frmlist" method="GET">
-        <table width="80%">
-            <tr>
-                <td>成交时间：<input type="text" id="createdAtBegin" name="condition.createdAtBegin"
-                                value="${condition.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"
-                                class="input-medium Wdate"/>至 <input type="text" id="createdAtEnd"
-                                                                     name="condition.createdAtEnd"
-                                                                     value="${condition.createdAtEnd?.format()}"
-                                                                     onfocus="WdatePicker({readOnly:true})"
-                                                                     class="input-medium Wdate"/></td>
-                 <td>付款时间：<input type="text" id="paidAtBegin" name="condition.paidAtBegin"
-                                value="${condition.paidAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"
-                                class="input-medium Wdate"/>至 <input type="text" id="paidAtEnd"
-                                                                     name="condition.paidAtEnd"
-                                                                     value="${condition.paidAtEnd?.format()}"
-                                                                     onfocus="WdatePicker({readOnly:true})"
-                                                                     class="input-medium Wdate"/></td>
-                <td>
-                 品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
-                 #{select 'condition.brandId', id:'brandId', class:'input-medium', value:condition?.brandId}
-                     #{option "0"}不限#{/option}
-                     #{list items:brandList, as:'brand'}
-                         #{option brand?.id}${brand?.name}#{/option}
-                 #{/list}
-                 #{/select}
+<legend>商品订单</legend>
+<form class="form-horizontal" name="frmlist" id="frmlist" method="GET">
+    <table width="80%">
+        <tr>
+            <td>成交时间：<input type="text" id="createdAtBegin" name="condition.createdAtBegin"
+                            value="${condition.createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"
+                            class="input-medium Wdate"/>至 <input type="text" id="createdAtEnd"
+                                                                 name="condition.createdAtEnd"
+                                                                 value="${condition.createdAtEnd?.format()}"
+                                                                 onfocus="WdatePicker({readOnly:true})"
+                                                                 class="input-medium Wdate"/></td>
+            <td>付款时间：<input type="text" id="paidAtBegin" name="condition.paidAtBegin"
+                            value="${condition.paidAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"
+                            class="input-medium Wdate"/>至 <input type="text" id="paidAtEnd"
+                                                                 name="condition.paidAtEnd"
+                                                                 value="${condition.paidAtEnd?.format()}"
+                                                                 onfocus="WdatePicker({readOnly:true})"
+                                                                 class="input-medium Wdate"/></td>
+            <td>
+                品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌：
+            #{select 'condition.brandId', id:'brandId', class:'input-medium', value:condition?.brandId}
+                #{option "0"}不限#{/option}
+                #{list items:brandList, as:'brand'}
+                    #{option brand?.id}${brand?.name}#{/option}
+                #{/list}
+            #{/select}
 
-                </td>
-            </tr>
-            <tr>
-                <td>退款时间：<input type="text" name="condition.refundAtBegin" value="${condition.refundAtBegin?.format()}"
-                                onfocus="WdatePicker({readOnly:true})"
-                                class="input-medium Wdate"/>至 <input type="text" name="condition.refundAtEnd"
-                                                                     value="${condition.refundAtEnd?.format()}"
-                                                                     onfocus="WdatePicker({readOnly:true})"
-                                                                     class="input-medium Wdate"/></td>
-                <td>支付方式：#{select 'condition.payMethod', class:'input-medium', value:condition.payMethod}
-                    #{option ""}不限#{/option}
-                    #{option "alipay"}支付宝#{/option}
-                    #{option "tenpay"}财付通#{/option}
-                    #{option "99bill"}快钱#{/option}
-                    #{option "balance"}余额#{/option}
-                #{/select}
-                  &nbsp;&nbsp;&nbsp;订单来源：#{select 'condition.userType', class:'input-small', value:condition.userType}
-                    #{option ""}不限#{/option}
-                    #{option "CONSUMER"}&{'order.CONSUMER'}#{/option}
-                    #{option "RESALER"}&{'order.RESALER'}#{/option}
-                #{/select}
-                </td>
-            </tr>
-            <tr>
-                <td>关&nbsp;键&nbsp;字：
-                #{select 'condition.searchKey', class:'input-medium', value:condition.searchKey}
-                    #{option ""}不限#{/option}
-                    #{option "GOODS_NAME"}&{'queryType.GOODS_NAME'}#{/option}
-                    #{option "ORDER_NUMBER"}&{'queryType.ORDER_NUMBER'}#{/option}
-                    #{option "LOGIN_NAME"}&{'queryType.LOGIN_NAME'}#{/option}
-                    #{option "MOBILE"}&{'queryType.MOBILE'}#{/option}
-                #{/select}
+            </td>
+        </tr>
+        <tr>
+            <td>退款时间：<input type="text" name="condition.refundAtBegin" value="${condition.refundAtBegin?.format()}"
+                            onfocus="WdatePicker({readOnly:true})"
+                            class="input-medium Wdate"/>至 <input type="text" name="condition.refundAtEnd"
+                                                                 value="${condition.refundAtEnd?.format()}"
+                                                                 onfocus="WdatePicker({readOnly:true})"
+                                                                 class="input-medium Wdate"/></td>
+            <td>支付方式：#{select 'condition.payMethod', class:'input-medium', value:condition.payMethod}
+                #{option ""}不限#{/option}
+                #{option "alipay"}支付宝#{/option}
+                #{option "tenpay"}财付通#{/option}
+                #{option "99bill"}快钱#{/option}
+                #{option "balance"}余额#{/option}
+            #{/select}
+                &nbsp;&nbsp;&nbsp;订单来源：#{select 'condition.userType', class:'input-small', value:condition.userType}
+                #{option ""}不限#{/option}
+                #{option "CONSUMER"}&{'order.CONSUMER'}#{/option}
+                #{option "RESALER"}&{'order.RESALER'}#{/option}
+            #{/select}
+            </td>
+        </tr>
+        <tr>
+            <td>关&nbsp;键&nbsp;字：
+            #{select 'condition.searchKey', class:'input-medium', value:condition.searchKey}
+                #{option ""}不限#{/option}
+                #{option "GOODS_NAME"}&{'queryType.GOODS_NAME'}#{/option}
+                #{option "ORDER_NUMBER"}&{'queryType.ORDER_NUMBER'}#{/option}
+                #{option "LOGIN_NAME"}&{'queryType.LOGIN_NAME'}#{/option}
+                #{option "MOBILE"}&{'queryType.MOBILE'}#{/option}
+            #{/select}
 
-                    <input type="text" name="condition.searchItems" value="${condition.searchItems}"
-                           class="input-larger"/></td>
-                <td>订单状态：
-                #{select 'condition.status', id:'condition_status', class:'input-medium', value:condition.status}
-                    #{option ""}不限#{/option}
-                    #{option "UNPAID"}&{'order.UNPAID'}#{/option}
-                    #{option "PAID"}&{'order.PAID'}#{/option}
-                    #{option "CANCELED"}&{'order.CANCELED'}#{/option}
-                    #{option "SENT"}&{'order.SENT'}#{/option}
-                #{/select}
-                    &nbsp;&nbsp;&nbsp;物流方式：
-                #{select 'condition.deliveryType', class:'input-small', value:condition.deliveryType}
-                    #{option ""}不限#{/option}
-                    #{option models.order.DeliveryType.SMS}无物流#{/option}
-                    #{option models.order.DeliveryType.LOGISTICS}有物流#{/option}
-                #{/select}
-                    &nbsp;&nbsp;&nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery" class="input-medium"
-                                value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
-                <td>
-                    <button class="btn btn-primary" id="search" type="submit">搜索</button>
-                    <button class="btn btn-primary" id="searchbtn" onclick="orderExcel()">导出报表</button>
-                </td>
-                <input type="hidden" id="J_rank" name="desc" />
-            </tr>
-        </table>
-    </form>
-    <div style="color:#0082CA;padding-bottom: 15px"> 总计：${orderList.size()} 条记录&nbsp;&nbsp;&nbsp;总金额：${amountSummary?.formatCurrency('CNY')}</div>
+                <input type="text" name="condition.searchItems" value="${condition.searchItems}"
+                       class="input-larger"/></td>
+            <td>订单状态：
+            #{select 'condition.status', id:'condition_status', class:'input-medium', value:condition.status}
+                #{option ""}不限#{/option}
+                #{option "UNPAID"}&{'order.UNPAID'}#{/option}
+                #{option "PAID"}&{'order.PAID'}#{/option}
+                #{option "CANCELED"}&{'order.CANCELED'}#{/option}
+                #{option "SENT"}&{'order.SENT'}#{/option}
+            #{/select}
+                &nbsp;&nbsp;&nbsp;物流方式：
+            #{select 'condition.deliveryType', class:'input-small', value:condition.deliveryType}
+                #{option ""}不限#{/option}
+                #{option models.order.DeliveryType.SMS}无物流#{/option}
+                #{option models.order.DeliveryType.LOGISTICS}有物流#{/option}
+            #{/select}
+                &nbsp;&nbsp;&nbsp;抽奖商品：<input type="checkbox" name="condition.isLottery" id="isLottery"
+                                              class="input-medium"
+                                              value="${condition?.isLottery}" ${condition?.isLottery ?'checked':''}/>
+            <td>
+                <button class="btn btn-primary" id="search" type="submit">搜索</button>
+                <button class="btn btn-primary" id="searchbtn" onclick="orderExcel()">导出报表</button>
+            </td>
+            <input type="hidden" id="J_rank" name="desc"/>
+        </tr>
+    </table>
+</form>
+<div style="color:#0082CA;padding-bottom: 15px"> 总计：${orderList.size()}
+    条记录&nbsp;&nbsp;&nbsp;总金额：${amountSummary?.formatCurrency('CNY')}</div>
 #{vx.other_tab name:'order',enumItems: models.order.OrderStatus.values(),
 select:'condition_status',value:condition?.status/}
 
-    <table class="table table-striped table-bordered table-condensed">
-        <thead>
-        <tr>
-            <th width="10">订单号</th>
-            <th width="50">商品名称</th>
+<table class="table table-striped table-bordered table-condensed">
+    <thead>
+    <tr>
+        <th width="10">订单号</th>
+        <th width="50">商品名称</th>
 
-            #{if desc.equals("1000000") }<th width="40px" class="rank rank-asc" ><a class="fn-rank" data-rank="2000000">订单状态</a></th>#{/if}
-            #{elseif desc.equals("2000000")}<th width="40px" class="rank rank-desc"><a class="fn-rank" data-rank="1000000">订单状态</a></th>#{/elseif}
-            #{else}<th width="40px" class="rank"><a class="fn-rank" data-rank="2000000">订单状态</a></th>#{/else}
+    #{if desc.equals("1000000") }
+        <th width="40px" class="rank rank-asc"><a class="fn-rank" data-rank="2000000">订单状态</a></th>#{/if}
+    #{elseif desc.equals("2000000")}
+        <th width="40px" class="rank rank-desc"><a class="fn-rank" data-rank="1000000">订单状态</a></th>#{/elseif}
+    #{else}
+        <th width="40px" class="rank"><a class="fn-rank" data-rank="2000000">订单状态</a></th>#{/else}
 
-            #{if desc.equals("0100000") }<th width="25px" class="rank rank-asc" ><a class="fn-rank" data-rank="0200000">帐号</a></th>#{/if}
-            #{elseif desc.equals("0200000")}<th width="25px" class="rank rank-desc"><a class="fn-rank" data-rank="0100000">帐号</a></th>#{/elseif}
-            #{else}<th width="25px" class="rank"><a class="fn-rank" data-rank="0200000">帐号</a></th>#{/else}
+    #{if desc.equals("0100000") }
+        <th width="25px" class="rank rank-asc"><a class="fn-rank" data-rank="0200000">帐号</a></th>#{/if}
+    #{elseif desc.equals("0200000")}
+        <th width="25px" class="rank rank-desc"><a class="fn-rank" data-rank="0100000">帐号</a></th>#{/elseif}
+    #{else}
+        <th width="25px" class="rank"><a class="fn-rank" data-rank="0200000">帐号</a></th>#{/else}
 
-            #{if desc.equals("0010000") }<th width="25px" class="rank rank-asc" ><a class="fn-rank" data-rank="0020000">来源</a></th>#{/if}
-            #{elseif desc.equals("0020000")}<th width="25px" class="rank rank-desc"><a class="fn-rank" data-rank="0010000">来源</a></th>#{/elseif}
-            #{else}<th width="25px" class="rank"><a class="fn-rank" data-rank="0020000">来源</a></th>#{/else}
+    #{if desc.equals("0010000") }
+        <th width="25px" class="rank rank-asc"><a class="fn-rank" data-rank="0020000">来源</a></th>#{/if}
+    #{elseif desc.equals("0020000")}
+        <th width="25px" class="rank rank-desc"><a class="fn-rank" data-rank="0010000">来源</a></th>#{/elseif}
+    #{else}
+        <th width="25px" class="rank"><a class="fn-rank" data-rank="0020000">来源</a></th>#{/else}
 
-            #{if desc.equals("0001000") }<th width="30px" class="rank rank-asc" ><a class="fn-rank" data-rank="0002000">总金额</a></th>#{/if}
-            #{elseif desc.equals("0002000")}<th width="30px" class="rank rank-desc"><a class="fn-rank" data-rank="0001000">总金额</a></th>#{/elseif}
-            #{else}<th width="30px" class="rank"><a class="fn-rank" data-rank="0002000">总金额</a></th>#{/else}
+    #{if desc.equals("0001000") }
+        <th width="30px" class="rank rank-asc"><a class="fn-rank" data-rank="0002000">总金额</a></th>#{/if}
+    #{elseif desc.equals("0002000")}
+        <th width="30px" class="rank rank-desc"><a class="fn-rank" data-rank="0001000">总金额</a></th>#{/elseif}
+    #{else}
+        <th width="30px" class="rank"><a class="fn-rank" data-rank="0002000">总金额</a></th>#{/else}
 
-            #{if desc.equals("0000100") }<th width="50px" class="rank rank-asc" ><a class="fn-rank" data-rank="0000200">下单时间</a></th>#{/if}
-            #{elseif desc.equals("0000200")}<th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="0000100">下单时间</a></th>#{/elseif}
-            #{else}<th width="50px" class="rank"><a class="fn-rank" data-rank="0000200">下单时间</a></th>#{/else}
+    #{if desc.equals("0000100") }
+        <th width="50px" class="rank rank-asc"><a class="fn-rank" data-rank="0000200">下单时间</a></th>#{/if}
+    #{elseif desc.equals("0000200")}
+        <th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="0000100">下单时间</a></th>#{/elseif}
+    #{else}
+        <th width="50px" class="rank"><a class="fn-rank" data-rank="0000200">下单时间</a></th>#{/else}
 
-            #{if desc.equals("0000010") }<th width="50px" class="rank rank-asc" ><a class="fn-rank" data-rank="0000020">付款时间</a></th>#{/if}
-            #{elseif desc.equals("0000020")}<th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="0000010">付款时间</a></th>#{/elseif}
-            #{else}<th width="50px" class="rank"><a class="fn-rank" data-rank="0000020">付款时间</a></th>#{/else}
+    #{if desc.equals("0000010") }
+        <th width="50px" class="rank rank-asc"><a class="fn-rank" data-rank="0000020">付款时间</a></th>#{/if}
+    #{elseif desc.equals("0000020")}
+        <th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="0000010">付款时间</a></th>#{/elseif}
+    #{else}
+        <th width="50px" class="rank"><a class="fn-rank" data-rank="0000020">付款时间</a></th>#{/else}
 
-            #{if desc.equals("0000001") }<th width="50px" class="rank rank-asc" ><a class="fn-rank" data-rank="0000002">退款时间</a></th>#{/if}
-            #{elseif desc.equals("0000002")}<th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="0000001">退款时间</a></th>#{/elseif}
-            #{else}<th width="50px" class="rank"><a class="fn-rank" data-rank="0000002">退款时间</a></th>#{/else}
+    #{if desc.equals("0000001") }
+        <th width="50px" class="rank rank-asc"><a class="fn-rank" data-rank="0000002">退款时间</a></th>#{/if}
+    #{elseif desc.equals("0000002")}
+        <th width="50px" class="rank rank-desc"><a class="fn-rank" data-rank="0000001">退款时间</a></th>#{/elseif}
+    #{else}
+        <th width="50px" class="rank"><a class="fn-rank" data-rank="0000002">退款时间</a></th>#{/else}
 
-            <th width="20">操 作</th>
-        </tr>
-        </thead>
+        <th width="20">操 作</th>
+    </tr>
+    </thead>
 
-        <tbody>
-        #{paginate.list items:orderList, as:'order'}
-        <tr>
-            <td rowspan="${order?.orderItems?.size()}">${order.orderNumber}</td>
-        *{有实物券时}*
-            #{if order.realGoods?.size()>0}
-                <td>
-                    #{if models.sales.MaterialType.ELECTRONIC.equals(order.realGoods?.get(0)?.materialType)}
-                        <img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}"><a href="http://www.yibaiquan.com/g/${order.realGoods?.get(0)?.id}" target="_blank">${order.realGoods?.get(0)?.name}</a>
-                    #{/if}
-                    #{else}
-                        <img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}"><a href="http://www.yibaiquan.com/g/${order.realGoods?.get(0)?.id}" target="_blank" >${order.realGoods?.get(0)?.name}</a>
-                    #{/else}
-                </td>
-                <td rowspan="${order.realGoods?.size()}">
-                    #{if order.deliveryNo!=null}
-                        <a id="sendInfo_${order.id}"
-
-                           href="#" class="label label-info"
-                           rel="popover"
-                           data-content="运单号: ${order.deliveryNo}"
-                           data-original-title="物流公司: ${order.deliveryCompany}"
-                           onmouseover="$('#sendInfo_${order.id}').popover();">
-                        &{'order.'+ order.realGoodsStatus}</a>
-                    #{/if}
-                    #{else}&{'order.'+order.realGoodsStatus}#{/else}
-                    #{if models.order.OrderStatus.PAID.equals(order.realGoodsStatus)}
-                        <br/><a href="#" id="linkSend_${order.id}" onclick="prepareSend(${order.id})">发货</a>
-                    #{/if}
-                </td>
-            #{/if}
-
-            #{else}
-            *{有电子券时}*
-                #{if order.electronicGoods?.size()>0}
-                    <td><img src="${order.electronicGoods.get(0).imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}"><a href="http://www.yibaiquan.com/g/${order.electronicGoods.get(0).id}" target="_blank">${order.electronicGoods.get(0).name}&nbsp;</a>
-                    </td>
-                    <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
+    <tbody>
+    #{paginate.list items:orderList, as:'order'}
+    <tr>
+        <td rowspan="${order?.orderItems?.size()}">${order.orderNumber}</td>
+    *{有实物券时}*
+        #{if order.realGoods?.size()>0}
+            <td>
+                #{if models.sales.MaterialType.ELECTRONIC.equals(order.realGoods?.get(0)?.materialType)}
+                    <img src="${order.realGoods?.get(0)?.imageTinyPath}"><img
+                        src="@@{'/public/images/electronic-goods.png'}"><a
+                        href="http://www.yibaiquan.com/gh/${order.realGoods?.get(0)?.goodsHistoryId}"
+                        target="_blank">${order.realGoods?.get(0)?.name}</a>
                 #{/if}
                 #{else}
-                    <td>&nbsp;</td>
-                    <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
+                    <img src="${order.realGoods?.get(0)?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}"><a
+                        href="http://www.yibaiquan.com/gh/${order.realGoods?.get(0)?.goodsHistoryId}"
+                        target="_blank">${order.realGoods?.get(0)?.name}</a>
                 #{/else}
+            </td>
+            <td rowspan="${order.realGoods?.size()}">
+                #{if order.deliveryNo!=null}
+                    <a id="sendInfo_${order.id}"
+
+                       href="#" class="label label-info"
+                       rel="popover"
+                       data-content="运单号: ${order.deliveryNo}"
+                       data-original-title="物流公司: ${order.deliveryCompany}"
+                       onmouseover="$('#sendInfo_${order.id}').popover();">
+                    &{'order.'+ order.realGoodsStatus}</a>
+                #{/if}
+                #{else}&{'order.'+order.realGoodsStatus}#{/else}
+                #{if models.order.OrderStatus.PAID.equals(order.realGoodsStatus)}
+                    <br/><a href="#" id="linkSend_${order.id}" onclick="prepareSend(${order.id})">发货</a>
+                #{/if}
+            </td>
+        #{/if}
+
+        #{else}
+        *{有电子券时}*
+            #{if order.electronicGoods?.size()>0}
+                <td><img src="${order.electronicGoods.get(0).imageTinyPath}"><img
+                        src="@@{'/public/images/electronic-goods.png'}"><a
+                        href="http://www.yibaiquan.com/gh/${order.electronicGoods.get(0).goodsHistoryId}"
+                        target="_blank">${order.electronicGoods.get(0).name}&nbsp;</a>
+                </td>
+                <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
+            #{/if}
+            #{else}
+                <td>&nbsp;</td>
+                <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
             #{/else}
+        #{/else}
 
-            #{if order.userType ==models.accounts.AccountType.RESALER}
-             <td rowspan="${order?.orderItems?.size()}">${order?.resaler?.loginName}</td>
-            #{/if}
-             #{if order.userType ==models.accounts.AccountType.CONSUMER}
-              <td rowspan="${order?.orderItems?.size()}">${order?.user?.loginName?:order?.user?.openIdExpress}</td>
-            #{/if}
-            <td rowspan="${order?.orderItems?.size()}">&{'order.'+order.userType}</td>
-            <td rowspan="${order?.orderItems?.size()}">${order.amount?.formatCurrency('CNY')}</td>
-            <td rowspan="${order?.orderItems?.size()}">${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-            <td rowspan="${order?.orderItems?.size()}">${order.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-            <td rowspan="${order?.orderItems?.size()}">${order.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
-            <td rowspan="${order?.orderItems?.size()}"><a href="@{OperateOrders.details(order.id)}">查看</a></td>
-        </tr>
-            #{set i:0/}
-            #{set showRealStatus:true/}
-            #{if order.realGoods?.size()>0}
-	            #{list items:order.realGoods, as:'aRealGoods'}
-	                #{if i>0}
-	                <tr test="i=${i}">
-	                    <td><img src="${aRealGoods?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}"><a href="http://www.yibaiquan.com/g/${aRealGoods?.id}" target="_blank" >${aRealGoods?.name}</a></td>
-	                </tr>
-	                #{/if}
-	                #{set i:i+1/}
-	            #{/list}
-            #{/if}
-
-            #{set j:0/}
-            #{set showElectronicStatus:true/}
-            #{list items:order.electronicGoods, as:'aElectronicGoods'}
-                #{if (order.realGoods?.size()==0 && j>0) ||(order.realGoods?.size()>0) }
-                <tr>
-                    <td><img src="${aElectronicGoods.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}"><a href="http://www.yibaiquan.com/g/${aElectronicGoods?.id}" target="_blank" >${aElectronicGoods?.name}</a></td>
-                    #{if showElectronicStatus && order.realGoods?.size()>0}
-                        <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
-                        #{set showElectronicStatus:false/}
-                    #{/if}
+        #{if order.userType ==models.accounts.AccountType.RESALER}
+            <td rowspan="${order?.orderItems?.size()}">${order?.resaler?.loginName}</td>
+        #{/if}
+        #{if order.userType ==models.accounts.AccountType.CONSUMER}
+            <td rowspan="${order?.orderItems?.size()}">${order?.user?.loginName?:order?.user?.openIdExpress}</td>
+        #{/if}
+        <td rowspan="${order?.orderItems?.size()}">&{'order.'+order.userType}</td>
+        <td rowspan="${order?.orderItems?.size()}">${order.amount?.formatCurrency('CNY')}</td>
+        <td rowspan="${order?.orderItems?.size()}">${order.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+        <td rowspan="${order?.orderItems?.size()}">${order.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+        <td rowspan="${order?.orderItems?.size()}">${order.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
+        <td rowspan="${order?.orderItems?.size()}"><a href="@{OperateOrders.details(order.id)}">查看</a></td>
+    </tr>
+        #{set i:0/}
+        #{set showRealStatus:true/}
+        #{if order.realGoods?.size()>0}
+            #{list items:order.realGoods, as:'aRealGoods'}
+                #{if i>0}
+                <tr test="i=${i}">
+                    <td><img src="${aRealGoods?.imageTinyPath}"><img src="@@{'/public/images/real-goods.png'}"><a
+                            href="http://www.yibaiquan.com/gh/${aRealGoods?.goodsHistoryId}"
+                            target="_blank">${aRealGoods?.name}</a></td>
                 </tr>
                 #{/if}
-                #{set j:j+1/}
+                #{set i:i+1/}
             #{/list}
+        #{/if}
 
-        #{/paginate.list}
-        </tbody>
-    </table>
-    <div class="pagination" align="center">
-        <ul>
-        #{paginate.controls items:orderList /}
-        </ul>
-    </div>
+        #{set j:0/}
+        #{set showElectronicStatus:true/}
+        #{list items:order.electronicGoods, as:'aElectronicGoods'}
+            #{if (order.realGoods?.size()==0 && j>0) ||(order.realGoods?.size()>0) }
+            <tr>
+                <td><img src="${aElectronicGoods.imageTinyPath}"><img src="@@{'/public/images/electronic-goods.png'}"><a
+                        href="http://www.yibaiquan.com/gh/${aElectronicGoods?.goodsHistoryId}"
+                        target="_blank">${aElectronicGoods?.name}</a></td>
+                #{if showElectronicStatus && order.realGoods?.size()>0}
+                    <td rowspan="${order.electronicGoods.size()}">&{'order.'+order.electronicGoodsStatus}</td>
+                    #{set showElectronicStatus:false/}
+                #{/if}
+            </tr>
+            #{/if}
+            #{set j:j+1/}
+        #{/list}
+
+    #{/paginate.list}
+    </tbody>
+</table>
+<div class="pagination" align="center">
+    <ul>
+    #{paginate.controls items:orderList /}
+    </ul>
+</div>
 
 </div>
 
