@@ -53,7 +53,9 @@ $(function () {
                 } else if (data == '3') {
                     $("#statusw").html('<font color=red>对不起，该券已冻结！</font>');
                 } else if (data == '4') {
-                    $("#statusw").html('<font color=red>对不起，该券已退款！</font>');
+                    $("#statusw").html('<font color=red>对不起，该券已过期！</font>');
+                } else if (data == '5') {
+                    $("#statusw").html('<font color=red>对不起，该券在当当网上为失效状态，可能已过期、已使用或已退款！</font>');
                 } else if (data == 'err') {
                     alert("消费失败！");
                 } else {

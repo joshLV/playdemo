@@ -2,11 +2,7 @@ package models.dangdang;
 
 
 import models.accounts.AccountType;
-import models.order.ECoupon;
-import models.order.ECouponStatus;
-import models.order.Order;
-import models.order.OuterOrder;
-import models.order.OuterOrderPartner;
+import models.order.*;
 import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
@@ -293,7 +289,6 @@ public class DDAPIUtil {
             if ("body".equals(entry.getKey()) || "sign".equals(entry.getKey())) {
                 continue;
             }
-            System.out.println(entry.getKey() + "------------------" + entry.getValue());
             signStr.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue())).append("&");
         }
 
@@ -315,7 +310,6 @@ public class DDAPIUtil {
             if ("body".equals(entry.getKey()) || "format".equals(entry.getKey())) {
                 continue;
             }
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>");
             if (entry.getValue() == null) {
                 result.put(entry.getKey(), "");
             } else {

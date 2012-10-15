@@ -139,14 +139,14 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         params.put("shopName", shop.name);
 
         // 检测测试结果
-        long count = CouponHistory.count();
+        CouponHistory.deleteAll();
         Http.Response response = POST("/coupons/update", params);
         assertIsOk(response);
         eCoupon.refresh();
         ECoupon eCouponConsumed = ECoupon.findById(eCoupon.id);
         assertEquals(ECouponStatus.CONSUMED, eCouponConsumed.status);
-
-        assertEquals(count+1, CouponHistory.count());
+        CouponHistory.em().flush();
+        assertEquals(1, CouponHistory.count());
         List<CouponHistory> historyList = CouponHistory.findAll();
         assertEquals("消费", historyList.get(0).remark);
     }

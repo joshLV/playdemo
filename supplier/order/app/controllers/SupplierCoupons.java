@@ -6,8 +6,6 @@ import models.order.CouponsCondition;
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.VerifyCouponType;
-import models.sales.ConsultRecord;
-import models.sales.ConsultResultCondition;
 import models.sales.Shop;
 import models.sms.SMSUtil;
 import navigation.annotations.ActiveNavigation;
@@ -18,7 +16,6 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -94,13 +91,16 @@ public class SupplierCoupons extends Controller {
             if (!eCoupon.isBelongShop(shopId)) {
                 renderJSON("1");
             }
+            if (eCoupon.isExpired()) {
+                renderJSON("4");
+            }
             //不再验证时间范围内
             if (!eCoupon.checkVerifyTimeRegion(new Date())) {
                 String info = eCoupon.getCheckInfo();
                 renderJSON("{\"error\":\"2\",\"info\":\"" + info + "\"}");
             }
             if (!eCoupon.consumeAndPayCommission(shopId, null, SupplierRbac.currentUser(), VerifyCouponType.SHOP)) {
-                renderJSON("4");
+                renderJSON("5");
             }
             String dateTime = DateUtil.getNowTime();
             String coupon = eCoupon.getLastCode(4);

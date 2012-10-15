@@ -95,7 +95,7 @@ public class OperateVerifyCoupons extends Controller {
             if (!eCoupon.isBelongShop(shopId)) {
                 renderJSON("1");
             }
-//            //不再验证时间范围内 -------运营后台验证的时候去掉该验证，只进行提示
+//            //不在验证时间范围内 -------运营后台验证的时候去掉该验证，只进行提示
 //            if (!eCoupon.checkVerifyTimeRegion(new Date())) {
 //                String info = eCoupon.getCheckInfo();
 //                renderJSON("{\"error\":\"2\",\"info\":\"" + info + "\"}");
@@ -110,6 +110,7 @@ public class OperateVerifyCoupons extends Controller {
             SMSUtil.send("【一百券】您尾号" + coupon + "券于" + dateTime
                     + "成功消费，门店：" + shopName + "。客服4006262166", eCoupon.orderItems.phone, eCoupon.replyCode);
         } else {
+
             renderJSON(eCoupon.status);
         }
 
