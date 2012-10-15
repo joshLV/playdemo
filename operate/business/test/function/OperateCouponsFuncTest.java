@@ -110,8 +110,8 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         eCoupon.refresh();
         assertEquals(1, eCoupon.isFreeze);
         assertEquals(1, CouponHistory.count());
-        List<CouponHistory> historyList = CouponHistory.findAll();
-        assertEquals("冻结券号", historyList.get(0).remark);
+        CouponHistory historyList = CouponHistory.find("couponSn=? order by createdAt desc", eCoupon.eCouponSn).first();
+        assertEquals("冻结券号", historyList.remark);
     }
 
     @Test
@@ -124,8 +124,9 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         eCoupon.refresh();
         assertEquals(0, eCoupon.isFreeze);
         assertEquals(1, CouponHistory.count());
-        List<CouponHistory> historyList = CouponHistory.findAll();
-        assertEquals("解冻券号", historyList.get(0).remark);
+
+        CouponHistory historyList = CouponHistory.find("couponSn=? order by createdAt desc", eCoupon.eCouponSn).first();
+        assertEquals("解冻券号", historyList.remark);
     }
 
     @Test
@@ -136,8 +137,8 @@ public class OperateCouponsFuncTest extends FunctionalTest {
         Http.Response response = GET("/coupons-message/" + eCoupon.id.toString() + "/send");
         assertIsOk(response);
         assertEquals(1, CouponHistory.count());
-        List<CouponHistory> historyList = CouponHistory.findAll();
-        assertEquals("重发短信", historyList.get(0).remark);
+        CouponHistory historyList = CouponHistory.find("couponSn=? order by createdAt desc", eCoupon.eCouponSn).first();
+        assertEquals("重发短信", historyList.remark);
 
     }
 

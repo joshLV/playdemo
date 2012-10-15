@@ -9,17 +9,8 @@ import models.accounts.util.AccountUtil;
 import models.admin.OperateUser;
 import models.consumer.User;
 import models.consumer.UserInfo;
-import models.dangdang.DDAPIInvokeException;
-import models.dangdang.DDAPIUtil;
-import models.dangdang.DDOrderItem;
-import models.dangdang.HttpProxy;
-import models.dangdang.Response;
-import models.order.CouponHistory;
-import models.order.ECoupon;
-import models.order.ECouponStatus;
-import models.order.Order;
-import models.order.PromoteRebate;
-import models.order.RebateStatus;
+import models.dangdang.*;
+import models.order.*;
 import models.sales.Goods;
 import models.sales.MaterialType;
 import models.sales.Shop;
@@ -34,7 +25,6 @@ import play.vfs.VirtualFile;
 import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -139,16 +129,14 @@ public class OperateVerifyCouponsFuncTest extends FunctionalTest {
         params.put("shopName", shop.name);
 
         // 检测测试结果
-        CouponHistory.deleteAll();
         Http.Response response = POST("/coupons/update", params);
         assertIsOk(response);
         eCoupon.refresh();
         ECoupon eCouponConsumed = ECoupon.findById(eCoupon.id);
         assertEquals(ECouponStatus.CONSUMED, eCouponConsumed.status);
-        CouponHistory.em().flush();
         assertEquals(1, CouponHistory.count());
-        List<CouponHistory> historyList = CouponHistory.findAll();
-        assertEquals("消费", historyList.get(0).remark);
+        CouponHistory historyList = CouponHistory.find("couponSn=? order by createdAt desc", eCouponConsumed.eCouponSn).first();
+        assertEquals("消费", historyList.remark);
     }
 
     @Test
