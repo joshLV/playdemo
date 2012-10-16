@@ -85,8 +85,8 @@ public class VoteQuestion extends Model {
     }
 
     public static List<VoteQuestion> getPage(VoteType type) {
-        List<VoteQuestion> votesList = VoteQuestion.find("deleted = ? and type=? and effectiveAt >= ?" +
-                " and expireAt <=? order by expireAt desc", DeletedStatus.UN_DELETED,type, DateUtil.getBeginOfDay(),
+        List<VoteQuestion> votesList = VoteQuestion.find("deleted = ? and type=? and effectiveAt <= ?" +
+                " and expireAt >=? order by expireAt desc", DeletedStatus.UN_DELETED,type, DateUtil.getBeginOfDay(),
                 DateUtil.getEndOfDay(new Date())).fetch();
         return votesList;
     }
