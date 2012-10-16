@@ -31,4 +31,10 @@ public class TuanFeeds extends Controller {
         render(goodsList);
     }
 
+    public static void tuanLing(final long categoryId) {
+        List<models.sales.Goods> goodsList = models.sales.Goods.getTopGoods(categoryId, "tuanLingCategory", "领团", 6);
+        render(goodsList);
+    }
+
+
 }
