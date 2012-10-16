@@ -39,7 +39,7 @@ public class SendOrderRequest implements JDMessage {
         origin = new BigDecimal(root.elementTextTrim("Origin")).divide(new BigDecimal("100"));
         jdOrderId = Long.parseLong(root.elementTextTrim("JdOrderId"));
         payTime = new Date(Long.parseLong(root.elementTextTrim("PayTime")));
-        for(Element element : (List<Element>)root.elements("Coupons")){
+        for(Element element : (List<Element>)root.element("Coupons").elements()){
             CouponRequest coupon = new CouponRequest();
             coupon.couponId = element.elementTextTrim("CouponId");
             coupon.couponPwd = element.elementTextTrim("CouponPwd");

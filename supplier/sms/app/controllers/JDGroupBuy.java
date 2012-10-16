@@ -3,7 +3,7 @@ package controllers;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.jingdong.JDGroupBuyUtil;
-import models.jingdong.groupbuy.JDRest;
+import models.jingdong.groupbuy.JDResponse;
 import models.jingdong.groupbuy.request.CouponRequest;
 import models.jingdong.groupbuy.request.QueryTeamSellCountRequest;
 import models.jingdong.groupbuy.request.SendOrderRefundRequest;
@@ -53,12 +53,12 @@ public class JDGroupBuy extends Controller{
         String restXml = request.body.toString();
 
         //解析请求
-        JDRest<SendOrderRequest> sendOrderJDRest = new JDRest<>();
-        if(!sendOrderJDRest.parse(restXml, new SendOrderRequest())){
+        JDResponse<SendOrderRequest> sendOrderJDResponse = new JDResponse<>();
+        if(!sendOrderJDResponse.parse(restXml, new SendOrderRequest())){
             //解析失败
             finish(201, "parse send_order request xml error"); return;
         }
-        SendOrderRequest sendOrderRequest = sendOrderJDRest.data;
+        SendOrderRequest sendOrderRequest = sendOrderJDResponse.data;
 
         //检查并保存此新请求
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
@@ -114,11 +114,11 @@ public class JDGroupBuy extends Controller{
     public static void queryTeamSellCount(){
         String restXml = request.body.toString();
         //解析请求
-        JDRest<QueryTeamSellCountRequest> sendOrderJDRest = new JDRest<>();
-        if(!sendOrderJDRest.parse(restXml, new QueryTeamSellCountRequest())){
+        JDResponse<QueryTeamSellCountRequest> sendOrderJDResponse = new JDResponse<>();
+        if(!sendOrderJDResponse.parse(restXml, new QueryTeamSellCountRequest())){
             finish(201, "parse query_team_sell_count request xml error"); return;
         }
-        QueryTeamSellCountRequest queryTeamSellCountRequest = sendOrderJDRest.data;
+        QueryTeamSellCountRequest queryTeamSellCountRequest = sendOrderJDResponse.data;
 
         //查询商品
         models.sales.Goods goods = models.sales.Goods.findById(queryTeamSellCountRequest.venderTeamId);
@@ -140,11 +140,11 @@ public class JDGroupBuy extends Controller{
     public static void sendOrderRefund(){
         String restXml = request.body.toString();
         //解析请求
-        JDRest<SendOrderRefundRequest> sendOrderJDRest = new JDRest<>();
-        if(!sendOrderJDRest.parse(restXml, new SendOrderRefundRequest())){
+        JDResponse<SendOrderRefundRequest> sendOrderJDResponse = new JDResponse<>();
+        if(!sendOrderJDResponse.parse(restXml, new SendOrderRefundRequest())){
             finish(201, "parse query_team_sell_count request xml error"); return;
         }
-        SendOrderRefundRequest sendOrderRefundRequest = sendOrderJDRest.data;
+        SendOrderRefundRequest sendOrderRefundRequest = sendOrderJDResponse.data;
 
         //以京东分销商的身份申请退款
         Resaler resaler = Resaler.findOneByLoginName(JDGroupBuyUtil.JD_LOGIN_NAME);
@@ -225,6 +225,6 @@ public class JDGroupBuy extends Controller{
     private static void finish(int resultCode, String resultMessage){
         renderArgs.put("resultCode", resultCode);
         renderArgs.put("resultMessage", resultMessage);
-        renderTemplate("jingdong/groupbuy/main.xml");
+        renderTemplate("jingdong/groupbuy/response/main.xml");
     }
 }

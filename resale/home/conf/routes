@@ -63,6 +63,9 @@ GET     /top-oauth-callback                     TaobaoOauthCallback.index
 GET     /top-add                                TaobaoAPIClient.add
 POST    /batch-top-add                          TaobaoAPIClient.batchAdd
 
+GET     /jd-add/{goodsId}                       JingdongUploadTeam.prepare
+POST    /jd-add                                 JingdongUploadTeam.upload
+
 GET     /ecoupons                               Coupons.index
 GET     /ecoupons/refund/{id}                   Coupons.refund
 

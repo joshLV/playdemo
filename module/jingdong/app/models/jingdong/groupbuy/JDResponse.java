@@ -11,7 +11,7 @@ import play.Logger;
  * @author likang
  * Date: 12-9-28
  */
-public class JDRest<T extends JDMessage> {
+public class JDResponse<T extends JDMessage> {
     public String  version;
     public Long    venderId;
     public String  venderKey;
@@ -40,15 +40,15 @@ public class JDRest<T extends JDMessage> {
         if(encrypt){
             //解析加密字符串
             String rawMessage = root.elementTextTrim("Data");
-            String encryptedMessage = JDGroupBuyUtil.decryptMessage(rawMessage);
-            Document encryptedMessageDocument = null;
+            String decryptedMessage = JDGroupBuyUtil.decryptMessage(rawMessage);
+            Document messageDocument = null;
             try{
-                encryptedMessageDocument = DocumentHelper.parseText(encryptedMessage);
+                messageDocument = DocumentHelper.parseText(decryptedMessage);
             }catch (DocumentException e){
                 Logger.info("failed to parse encrypted message of JingDong request");
                 return false;
             }
-            messageElement = encryptedMessageDocument.getRootElement();
+            messageElement = messageDocument.getRootElement();
         } else{
             Element dataElement = root.element("Data");
             if(dataElement != null){

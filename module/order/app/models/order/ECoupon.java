@@ -12,6 +12,7 @@ import models.consumer.User;
 import models.dangdang.DDAPIInvokeException;
 import models.dangdang.DDAPIUtil;
 import models.resale.Resaler;
+import models.jingdong.JDGroupBuyUtil;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.sms.SMSUtil;
@@ -375,6 +376,13 @@ public class ECoupon extends Model {
             Logger.error(e.getMessage(), e);
             return false;
         }
+
+        if(JDGroupBuyUtil.isSaleOnJingdong(this)){
+            if(!JDGroupBuyUtil.verifyOnJingdong(this)){
+                return false;
+            }
+        }
+
 
         //===================券消费处理开始=====================================
         if (consumed(shopId, operateUserId, supplierUser, type)) {

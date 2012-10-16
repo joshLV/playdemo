@@ -23,7 +23,7 @@ public class SendOrderRefundRequest implements JDMessage{
         jdOrderId = Long.parseLong(root.elementTextTrim("JdOrderId"));
         venderOrderId = root.elementTextTrim("VenderOrderId");
 
-        for(Element element : (List<Element>)root.elements("Coupons")){
+        for(Element element : (List<Element>)root.element("Coupons").elements()){
             CouponRequest coupon = new CouponRequest();
             coupon.couponId = element.getTextTrim();
             coupons.add(coupon);

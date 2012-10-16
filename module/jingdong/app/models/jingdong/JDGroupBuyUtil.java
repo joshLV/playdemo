@@ -1,12 +1,15 @@
 package models.jingdong;
 
 import models.accounts.AccountType;
-import models.jingdong.groupbuy.JDRest;
+import models.jingdong.groupbuy.JDResponse;
+import models.jingdong.groupbuy.response.CityResponse;
+import models.jingdong.groupbuy.response.QueryCityResponse;
 import models.jingdong.groupbuy.response.VerifyCouponResponse;
 import models.order.ECoupon;
 import models.order.OuterOrder;
 import models.resale.Resaler;
 import org.apache.commons.codec.binary.Base64;
+import play.Logger;
 import play.Play;
 import play.exceptions.UnexpectedException;
 import play.libs.WS;
@@ -16,6 +19,7 @@ import play.templates.TemplateLoader;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -96,20 +100,47 @@ public class JDGroupBuyUtil {
         if(outerOrder == null){
             return false;
         }
-        Template template = TemplateLoader.load("jingdong/groupbuy/response/sendOrder.xml");
+        Template template = TemplateLoader.load("jingdong/groupbuy/request/verifyCoupon.xml");
         Map<String, Object> params = new HashMap<>();
         params.put("outerOrder", outerOrder);
         params.put("coupon", eCoupon);
-        String restRequest = template.render(params);
+        String restRequest = makeRequestRest(template.render(params));
         WS.HttpResponse response =  WS.url(url).body(restRequest).post();
 
         //解析请求
-        JDRest<VerifyCouponResponse> sendOrderJDRest = new JDRest<>();
-        if(!sendOrderJDRest.parse(response.getString(), new VerifyCouponResponse())){
+        JDResponse<VerifyCouponResponse> sendOrderJDResponse = new JDResponse<>();
+        if(!sendOrderJDResponse.parse(response.getString(), new VerifyCouponResponse())){
             return false;
         }
-        VerifyCouponResponse verifyCouponResponse = sendOrderJDRest.data;
+        VerifyCouponResponse verifyCouponResponse = sendOrderJDResponse.data;
         return verifyCouponResponse.verifyResult == 200;
+    }
+
+    public static List<CityResponse> queryCity(){
+        String url = GATEWAY_URL + "/platform/normal/queryCityList.action";
+
+        Template template = TemplateLoader.load("jingdong/groupbuy/request/uploadTeam.xml");
+        String restRequest = makeRequestRest(template.render());
+        WS.HttpResponse response = WS.url(url).body(restRequest).post();
+
+        JDResponse<QueryCityResponse> queryCityResponse = new JDResponse<>();
+        if(!queryCityResponse.parse(response.getString(), new QueryCityResponse())){
+            return null;
+        }
+        return queryCityResponse.data.cities;
+    }
+
+    private static String makeRequestRest(String data){
+        Template template = TemplateLoader.load("jingdong/groupbuy/request/main.xml");
+        Map<String, Object> params = new HashMap<>();
+        params.put("version", "1.0");
+        params.put("venderId", VENDER_ID);
+        params.put("venderKey", VENDER_KEY);
+        params.put("encrypt", "true");
+        params.put("zip", false);
+        params.put("data", data);
+
+        return template.render(params);
     }
 
 }
