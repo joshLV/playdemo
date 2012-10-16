@@ -5,6 +5,7 @@
 #{/set}
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/goods-index.js'}"></script>
+<script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 
 #{set 'navMenu'}
@@ -15,10 +16,82 @@
     <li><a href="/withdraw">账户提现</a></li>
 #{/set}
 
+        <form action="/jd-add" method="POST">
 <div id="content">
-    <ul>
+    <p>选择城市</p>
+    <div>
 #{list items:cities, as:'city'}
-    <li>${city.name}</li>
+    <input type="radio" value="${city.id}" name="cityId">${city.name}
 #{/list}
-    </ul>
+    </div>
+    <p>选择一级分类</p>
+    <div>
+        #{list items:categories, as:'category'}
+        <input type="radio" value="${category.id}" name="groupId">${category.name}
+        #{/list}
+    </div>
+
+    <p>团购标题名称  最长200个字符[必填]</p>
+    <p><input type="text" size="200" name="teamTitle" value="${goods.name}"/></p>
+
+    <p>团购主图http开头，图片尺寸为440*280，图片大小在100kb以内 必填</p>
+    <p><input type="text" name="grouponBImg" size="200" value="http://img30.360buyimg.com/tuangou/g8/M03/07/08/rBEHaFBZ_BsIAAAAAAEzf6qA84oAABa0wO6xr0AATOX366.jpg"></p>
+
+    <p>团购产品标题，最长12个字符</p>
+    <p><input type="text" name="title" value="${goods.title}" size="30"></p>
+
+    <p>团购原价</p>
+    <p><input type="text" name="marketPrice" value="${goods.originalPrice}"></p>
+
+    <p>团购现价</p>
+    <p><input type="text" name="teamPrice" value="${goods.salePrice}"></p>
+
+    <p>团购开始时间</p>
+    <p><input type="text" name="beginTime" onfocus="WdatePicker({readOnly:true})" class="Wdate" ></p>
+
+    <p>团购结束时间</p>
+    <p><input type="text" name="endTime" onfocus="WdatePicker({readOnly:true})"  class="Wdate"></p>
+
+    <p>券截止效期</p>
+    <p><input type="text" name="couponExpireTime" onfocus="WdatePicker({readOnly:true})"  class="Wdate" value="${goods.expireAt?.format()}"></p>
+
+    <p>最低成团人数 仅数字，必须大于等于1 [必填] </p>
+    <p><input type="text" name="minNumber" value="1"></p>
+    <p>商品总量上限 仅数字，必须大于等于0，0表示无上限 [必填] </p>
+    <p><input type="text" name="maxNumber" value="0"></p>
+    <p>单人购买上限 仅数字，0表示无上限，最大支持9999 [必填] </p>
+    <p><input type="text" name="perNumber" value="99"></p>
+    <p>特别提示 富文本数据[必填]  </p>
+    <textarea rows="5" cols="200" name="notice">
+        1、售后服务：请参照京东售后服务政策；
+    </textarea>
+    <p>团购简介 富文本数据[必填]  </p>
+    <textarea rows="5" cols="200" name="summary">
+        这是一个简介
+    </textarea>
+    <p>团购详情 富文本数据[必填] </p>
+    <textarea rows="5" cols="200" name="teamDetail">
+        这里是团购详情
+    </textarea>
+
+    <p>团购所在的商家信息，支持多商家，至少填写一个商家信息 </p>
+    <p>商家名称 最长40个字符 [必填] </p>
+    <p><input type="text" name="partnerName" size="40" value="${supplier.fullName}"></p>
+    <p>商家地址 最长80个字符 [必填] </p>
+    <p><input type="text" name="partnerAddress" size="80" value="请填写地址"></p>
+    <p>商家地图连接，填写地图的URL，必须以http开头。此字段可以为空。若链接过长超过100个字符请使用加密过的url短链接 此字段可以为空。 </p>
+    <p><input type="text" name="partnerMap" size="80"></p>
+    <p>商家联系人 最长30个字符 此字段可以为空。 </p>
+    <p><input type="text" name="partnerContact" size="30"></p>
+    <p>商家电话。最长40个字符 [必填] </p>
+    <p><input type="text" name="partnerTel" size="40" value="${supplier.phone}"></p>
+    <p>商家手机信息。最长12个字符，只能是数字。此字段可以为空。 </p>
+    <p><input type="text" name="partnerMobile" size="12" value="${supplier.mobile}"></p>
+    <p>商家交通信息，位置信息。最长400个字符。此字段可以为空。 </p>
+    <p><input type="text" name="partnerLocation" size="12"></p>
+
+    <input type="hidden" name="venderTeamId" value="${goods.id}">
+    <input type="submit" value="提交">
 </div>
+</form>
+

@@ -2,9 +2,7 @@ package models.jingdong;
 
 import models.accounts.AccountType;
 import models.jingdong.groupbuy.JDResponse;
-import models.jingdong.groupbuy.response.CityResponse;
-import models.jingdong.groupbuy.response.QueryCityResponse;
-import models.jingdong.groupbuy.response.VerifyCouponResponse;
+import models.jingdong.groupbuy.response.*;
 import models.order.ECoupon;
 import models.order.OuterOrder;
 import models.resale.Resaler;
@@ -119,7 +117,7 @@ public class JDGroupBuyUtil {
     public static List<CityResponse> queryCity(){
         String url = GATEWAY_URL + "/platform/normal/queryCityList.action";
 
-        Template template = TemplateLoader.load("jingdong/groupbuy/request/uploadTeam.xml");
+        Template template = TemplateLoader.load("jingdong/groupbuy/request/queryCity.xml");
         String restRequest = makeRequestRest(template.render());
         WS.HttpResponse response = WS.url(url).body(restRequest).post();
 
@@ -130,7 +128,24 @@ public class JDGroupBuyUtil {
         return queryCityResponse.data.cities;
     }
 
-    private static String makeRequestRest(String data){
+    public static List<CategoryResponse> queryCategory(Long categoryId){
+        String url = GATEWAY_URL + "/platform/normal/queryCategoryList.action";
+
+        Template template = TemplateLoader.load("jingdong/groupbuy/request/queryCategory.xml");
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("categoryId", categoryId);
+        String restRequest = makeRequestRest(template.render(params));
+        WS.HttpResponse response = WS.url(url).body(restRequest).post();
+
+        JDResponse<QueryCategoryResponse> queryCategoryResponse = new JDResponse<>();
+        if(!queryCategoryResponse.parse(response.getString(), new QueryCategoryResponse())){
+            return null;
+        }
+
+        return queryCategoryResponse.data.categories;
+    }
+
+    public static String makeRequestRest(String data){
         Template template = TemplateLoader.load("jingdong/groupbuy/request/main.xml");
         Map<String, Object> params = new HashMap<>();
         params.put("version", "1.0");

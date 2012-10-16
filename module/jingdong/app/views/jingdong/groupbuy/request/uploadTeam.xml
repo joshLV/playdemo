@@ -1,11 +1,12 @@
 <Message xmlns="http://tuan.360buy.com/UploadTeamRequest">
     *{ 合作伙伴团购产品ID [必填] }*
-    <VenderTeamId>129</VenderTeamId>
+    <VenderTeamId>${venderTeamId}</VenderTeamId>
     *{ 团购标题名称  最长200个[必填] }*
-    <TeamTitle>和“它”来个亲密接触吧！仅59元，即享原价90元的八达岭野生动物园成人票一张，可免费乘园内游览车1次。中国最大的山地野生动物园，在世界闻名的八达岭脚下，观看中国最大的非洲狮群，有珍稀的白虎等待您的光临，还等什么。 </TeamTitle>
+    <TeamTitle>${teamTitle}</TeamTitle>
     *{ 团购所在城市ID [必填] }*
-    <CityId>1</CityId>
+    <CityId>${cityId}</CityId>
     *{ 团购所属区域商圈ID列表 商圈ID总数不可超过20个(含20个) 非必填 }*
+    #{if 1==0}
     <DistrictList>
         *{ 区域  }*
         <District>
@@ -26,73 +27,68 @@
             </AreaList>
         </District>
     </DistrictList>
+    #{/if}
     *{ 团购所属一级分类ID [必填] }*
-    <GroupId>1</GroupId>
+    <GroupId>${groupId}</GroupId>
     *{ 团购所属二级分类ID列表 二级分类最多填写3个 所有二级分类ID需同属一个一级分类 非必填 }*
+    #{if 1== 0}
     <Group2List>
         <GroupId>333</GroupId>
         <GroupId>444</GroupId>
         <GroupId>555</GroupId>
     </Group2List>
+    #{/if}
     *{ 团购产品名称 最长12个字符[必填] }*
-    <Title>八达岭野生动物园实体票</Title>
+    <Title>${title}</Title>
     *{ 团购主图  此为图片链接地址http开头，图片尺寸为440*280，图片大小在100kb以内 [必填] }*
-    <GrouponBImg>http://images.tuan.360buyimg.com/static/team/2011/1102/13202204309756.jpg</GrouponBImg>
+    <GrouponBImg>${grouponBImg}</GrouponBImg>
     *{ 团购原价 仅数字，精确到分（小数点后2位），必须大于0并且大于团购现价 e.g:58元传递5800 [必填] }*
-    <MarketPrice>15800</MarketPrice>
+    <MarketPrice>${new java.math.BigDecimal(marketPrice).multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).toString()}}</MarketPrice>
     *{ 团购现价 仅数字，精确到分（小数点后2位），必须大于1000并且小于团购原价 e.g:58元传递5800 [必填] }*
-    <TeamPrice>5800</TeamPrice>
+    <TeamPrice>${new java.math.BigDecimal(teamPrice).multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).toString()}</TeamPrice>
     *{ 团购开始时间 unix时间戳 [必填] }*
-    <BeginTime>1320595200</BeginTime>
+    <BeginTime>${new java.text.SimpleDateFormat("yyyy-MM-dd").parse(beginTime).getTime()}</BeginTime>
     *{ 团购结束时间 unix时间戳 [必填] }*
-    <EndTime>1320940800</EndTime>
+    <EndTime>${new java.text.SimpleDateFormat("yyyy-MM-dd").parse(endTime).getTime()}</EndTime>
     *{ 券的有效期截至时间 unix时间戳 解析后为yyyy-MM-dd 00:00:00 E.G:2011-12-31 00:00:00 [必填] }*
-    <CouponExpireTime>1325260800</CouponExpireTime>
+    <CouponExpireTime>${new java.text.SimpleDateFormat("yyyy-MM-dd").parse(couponExpireTime).getTime()}</CouponExpireTime>
     *{ 优惠券验证模式 0 - 只根据优惠券号 1 - 优惠券+密码 3 - 订单号+密码 4 - 只根据密码 默认1 验证模式的选择和给客户发送的短信内容相关，若发放模式（CouponGrantMode）选择3，则此处验证模式选择1即可。[必填] }*
     <CouponVerifyMode>1</CouponVerifyMode>
     *{ 优惠券绑定模式 1 - 一个优惠券对应一份产品  2 - 一个优惠券对应多份产品 ，默认1 [必填] }*
     <CouponBindMode>1</CouponBindMode>
     *{ 优惠券发放模式 1 - 发放京东的优惠券(京东发放)  2 - 发放合作方的优惠券(京东发放)  3 - 发放合作方优惠券(合作方发放。注：选择3的合作伙伴必须支持短信发送调用接口)  默认1 [必填] }*
-    <CouponGrantMode>1</CouponGrantMode>
+    <CouponGrantMode>3</CouponGrantMode>
     *{ 库存模式:0:共享,1:独占 默认为0 [必填] }*
     <StockMode>0</StockMode>
     *{ 最低成团人数 仅数字，必须大于等于1 [必填] }*
-    <MinNumber>1</MinNumber>
+    <MinNumber>${minNumber}</MinNumber>
     *{ 商品总量上限 仅数字，必须大于等于0，0表示无上限 [必填] }*
-    <MaxNumber>0</MaxNumber>
+    <MaxNumber>${maxNumber}</MaxNumber>
     *{ 单人购买上限 仅数字，0表示无上限，最大支持9999 [必填] }*
-    <PerNumber>99</PerNumber>
+    <PerNumber>${perNumber}</PerNumber>
     *{ 特别提示 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]> [必填]  }*
-    <Notice>
-        <![CDATA[
-				<p>1、售后服务：请参照京东售后服务政策；</p>
-				]]>
-    </Notice>
+    <Notice> <![CDATA[ ${notice} ]]> </Notice>
     *{ 团购简介 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]>  [必填]  }*
-    <Summary></Summary>
+    <Summary><![CDATA[ ${summary} ]]></Summary>
     *{ 团购详情 富文本数据，为保证验证通过，请讲内容放到<![CDATA[]]>  [必填] }*
-    <TeamDetail>
-        <![CDATA[
-				<p>这里是团购详情</p>
-				]]>
-    </TeamDetail>
+    <TeamDetail> <![CDATA[ ${teamDetail} ]]> </TeamDetail>
     *{ 团购所在的商家信息，支持多商家，至少填写一个商家信息 }*
     <Partners>
     <Partner>
         *{ 商家名称 最长40个字符 [必填] }*
-        <Name>商家名称</Name>
+        <Name>${partnerName}</Name>
         *{ 商家地址 最长80个字符 [必填] }*
-        <Address>商家详细地址</Address>
+        <Address>${partnerAddress}</Address>
         *{ 地图连接，填写地图的URL，必须以http开头。此字段可以为空。若链接过长超过100个字符请使用加密过的url短链接 此字段可以为空。 }*
-        <Map></Map>
+        <Map>${partnerMap}</Map>
         *{ 商家联系人 最长30个字符 此字段可以为空。 }*
-        <Contact></Contact>
+        <Contact>${partnerContact}</Contact>
         *{ 商家电话。最长40个字符 [必填] }*
-        <Tel></Tel>
+        <Tel>${partnerTel}</Tel>
         *{ 商家手机信息。最长12个字符，只能是数字。此字段可以为空。 }*
-        <Mobile></Mobile>
+        <Mobile>${partnerMobile}</Mobile>
         *{ 交通信息，位置信息。最长400个字符。此字段可以为空。 }*
-        <Location></Location>
+        <Location>${partnerLocation}</Location>
     </Partner>
     </Partners>
 </Message>

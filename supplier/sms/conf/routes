@@ -22,6 +22,7 @@ GET     /                                       SmsApplication.index
 # 京东API
 *       /api/v1/jd/gb/send-order                JDGroupBuy.sendOrder(format:'xml')
 *       /api/v1/jd/gb/send-order-refund         JDGroupBuy.sendOrderRefund(format:'xml')
+*       /api/v1/jd/gb/query-team-sell-count     JDGroupBuy.queryTeamSellCount(format:'xml')
 
 # 北京ensms接收接口
 GET     /getsms                                 EnSmsReceivers.getSms

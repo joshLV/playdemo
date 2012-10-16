@@ -14,9 +14,10 @@ import play.Logger;
 public class JDResponse<T extends JDMessage> {
     public String  version;
     public Long    venderId;
-    public String  venderKey;
     public Boolean zip;
     public Boolean encrypt;
+    public String resultCode;
+    public String resultMessage;
     public T       data;
 
     public boolean parse(String xml, T d){
@@ -30,11 +31,15 @@ public class JDResponse<T extends JDMessage> {
         }
 
         Element root = document.getRootElement();
+        resultCode = root.elementTextTrim("ResultCode");
+        if (!"200".equals(resultCode)){
+            return false;
+        }
         version = root.elementTextTrim("Version");
         venderId = Long.parseLong(root.elementTextTrim("VenderId"));
-        venderKey = root.elementTextTrim("VenderKey");
         zip = Boolean.parseBoolean(root.elementTextTrim("Zip"));
         encrypt = Boolean.parseBoolean(root.elementTextTrim("Encrypt"));
+        resultMessage = root.elementTextTrim("ResultMessage");
 
         Element messageElement = null;
         if(encrypt){
