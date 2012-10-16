@@ -159,10 +159,6 @@ public class Goods extends Model {
     /**
      * 分销渠道加价
      */
-    @Min(0)
-    @Max(999999)
-    @Money
-    @Required
     @Column(name = "resale_price")
     public BigDecimal resaleAddPrice;
     /**
@@ -666,6 +662,7 @@ public class Goods extends Model {
         if (unPublishedPlatforms == null) {
             unPublishedPlatforms = new HashSet<>();
         }
+        resaleAddPrice = salePrice.compareTo(originalPrice) > 0 ? salePrice.subtract(originalPrice) : BigDecimal.ZERO;
         return super.create();
     }
 
@@ -690,7 +687,7 @@ public class Goods extends Model {
         updateGoods.materialType = goods.materialType;
         updateGoods.topCategoryId = goods.topCategoryId;
         updateGoods.categories = goods.categories;
-        updateGoods.resaleAddPrice = goods.resaleAddPrice;
+        updateGoods.resaleAddPrice = goods.salePrice.compareTo(goods.originalPrice) > 0 ? goods.salePrice.subtract(goods.originalPrice) : BigDecimal.ZERO;
         updateGoods.setPrompt(goods.getPrompt());
         updateGoods.setDetails(goods.getDetails());
         updateGoods.updatedAt = new Date();
@@ -1263,7 +1260,7 @@ public class Goods extends Model {
                 }
             }
         }
-        if (noMessage.size() > 0 && noMessage!=null) {
+        if (noMessage.size() > 0 && noMessage != null) {
             //发送提醒邮件
             MailMessage mailMessage = new MailMessage();
             mailMessage.addRecipient("dev@uhuila.com");
