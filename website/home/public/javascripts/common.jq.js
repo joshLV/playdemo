@@ -220,7 +220,8 @@ function Dialog(opts) {
 
 	$("#popupbox .uhlbox_c").html(strhtml);
 	
-	$(_popup_container).css({"height":outerHeight + 67,"width":outerWidth,"zIndex":"2000"});
+	// $(_popup_container).css({"height":outerHeight + 67,"width":outerWidth,"zIndex":"2000"});
+	$(_popup_container).css({"width":outerWidth,"zIndex":"2000"});
 	$.common.center($(_popup_container));
 	$(_popup_container).show();
 	
