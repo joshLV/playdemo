@@ -53,31 +53,45 @@
             $("#gone").hide();
             $("#send").show();
 
-            $('.select-outlet').click(function(){
+            $('.select-outlet').click(function () {
                 if ($('.select-outlet input').attr('checked') == 'checked') {
+                    $('#couponshops').load('/coupon/'+id+'/shops');
                     $('#popupbox .outlet-list').show();
                 } else {
                     $('#popupbox .outlet-list').hide();
                 }
             });
-            $('.outlet-list').delegate('input', 'click', function(e){
+            $('.outlet-list').delegate('input', 'click', function (e) {
                 var target = $(e.target);
                 if ($('.outlet-item:checked').length > 3) {
                     target.attr('checked', false);
                 }
             });
-            $('.more-outlet').click(function(){
+            $('.more-outlet').click(function () {
                 $('.outlet-list .hide').show();
                 $(this).hide();
             });
         }
     }
 
+    $("input[name='outlet-item[]']").click(
+            function () {
+                var item = [];
+                if ($(this).attr("checked")) {
+                    $("input[name='outlet-item[]']:checked").each(function () {
+                        item.push($(this).val())
+                    })
+                }
+                $("#couponshopsId").val(item.join(","));
+            }
+    )
+
     function sendMessageDialog() {
         var id = $("#id").val();
         var cnt = $("#times_" + id).val();
+        var couponshopsId =  $("#couponshopsId").val();
         $.ajax({
-            url:"/coupons-message/" + id + "/send",
+            url:"/coupons-message/" + id + "/send?couponshopsId="+couponshopsId,
             type:'GET',
             error:function () {
                 alert('发送失败!');
@@ -211,6 +225,7 @@
     </div>
 </div>
 
+
 <div id="sendMsg">
     <div id="send_dialog" class="popup-content" style="width:450px">
         <div class="faq-tips" id="send">
@@ -220,24 +235,13 @@
                     <label>手机号码：</label><span id="mobile"></span>
                 </li>
                 <li class="item">
-                    <div class="select-outlet"><input type="checkbox" id="select-outlet"> <label for="select-outlet">同时发送门店信息到手机(一次最多选三个门店)</label></div>
-                    <ul class="outlet-list clearfix">
-                        <li><input class="outlet-item" id="outlet-item1" type="checkbox"> <label for="outlet-item1">徐汇店</label></li>
-                        <li><input class="outlet-item" id="outlet-item2" type="checkbox"> <label for="outlet-item2">静安店</li>
-                        <li><input class="outlet-item" id="outlet-item3" type="checkbox"> <label for="outlet-item3">徐汇店</li>
-                        <li><input class="outlet-item" id="outlet-item4" type="checkbox"> <label for="outlet-item4">徐汇店</li>
-                        <li><input class="outlet-item" id="outlet-item5" type="checkbox"> <label for="outlet-item5">静安店</li>
-                        <li><input class="outlet-item" id="outlet-item6" type="checkbox"> <label for="outlet-item6">徐汇店</li>
-                        <li><input class="outlet-item" id="outlet-item7" type="checkbox"> <label for="outlet-item7">静安店</li>
-                        <li class="hide"><input class="outlet-item" id="outlet-item8" type="checkbox"> <label for="outlet-item8">徐汇店</li>
-                        <li class="hide"><input class="outlet-item" id="outlet-item9" type="checkbox"> <label for="outlet-item9">静安店</li>
-                        <li class="hide"><input class="outlet-item" id="outlet-item10" type="checkbox"> <label for="outlet-item10"> 徐汇店</li>
-                        <li class="hide"><input class="outlet-item" id="outlet-item11" type="checkbox"> <label for="outlet-item11">静安店</li>
-                        <li class="hide"><input class="outlet-item" id="outlet-item12" type="checkbox"> <label for="outlet-item12">徐汇店</li>
-                        <li class="hide"><input class="outlet-item" id="outlet-item13" type="checkbox"> <label for="outlet-item13">静安店</li>
-                        <li class="hide"><input class="outlet-item" id="outlet-item14" type="checkbox"> <label for="outlet-item14">徐汇店</li>
-                        <li class="hide"><input class="outlet-item" id="outlet-item15" type="checkbox"> <label for="outlet-item15">静安店</li>
-                        <li><a class="more-outlet" href="javascript:void(0)">更多>></a></li>            
+                    <div class="select-outlet"><input type="checkbox" id="select-outlet"> <label for="select-outlet">同时发送门店信息到手机(一次最多选三个门店)</label>
+                    </div>
+
+                    <ul id="couponshopsitem" class="outlet-list clearfix" name="shops">
+                        <input type="hidden" name="couponshopsId" id="couponshopsId" value="${couponshopsId}"/>
+
+                    <span id="couponshops"></span>
                     </ul>
                 </li>
                 <li class="item btn-box">
@@ -249,6 +253,7 @@
         <input type="hidden" id="id"/>
     </div>
 </div>
+
 
 <div id="refund">
     <div id="apply_dialog" class="popup-content" style="width:350px;height:100px">

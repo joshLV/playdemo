@@ -13,7 +13,9 @@ import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @With({SecureCAS.class, WebsiteInjector.class})
 public class UserCoupons extends Controller {
@@ -34,9 +36,21 @@ public class UserCoupons extends Controller {
         condition.accountType = AccountType.CONSUMER;
         JPAExtPaginator<ECoupon> couponsList = ECoupon.getUserCoupons(condition, pageNumber, PAGE_SIZE);
         BreadcrumbList breadcrumbs = new BreadcrumbList("我的券", "/coupons");
-
         render(couponsList, breadcrumbs, user, condition);
     }
+
+    public static void showCouponShops(Long id) {
+        ECoupon couponItem = null;
+        Collection<Shop> shops = null;
+        if (id != null) {
+            couponItem = ECoupon.findById(id);
+            shops = couponItem.orderItems.goods.getShopList();
+        }
+        System.out.println("couponItem>>>" + couponItem);
+        System.out.println("shop>>>" + shops);
+        render(shops);
+    }
+
 
     /**
      * 申请退款
@@ -61,10 +75,12 @@ public class UserCoupons extends Controller {
      *
      * @param id
      */
-    public static void sendMessage(long id) {
+    public static void sendMessage(long id, String couponshopsId) {
         User user = SecureCAS.getUser();
         ECoupon eCoupon = ECoupon.findById(id);
         boolean sendFalg = ECoupon.sendUserMessage(id);
+        if (StringUtils.isNotBlank(couponshopsId))
+            sendFalg = ECoupon.sendUserShopsInfoMessage(id, couponshopsId);
         new CouponHistory(eCoupon, user.getShowName(), "重发短信", eCoupon.status, eCoupon.status, null).save();
         renderJSON(sendFalg ? "0" : "1");
     }

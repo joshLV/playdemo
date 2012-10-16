@@ -12,6 +12,7 @@ POST    /orders/refund/{orderNumber}                  UserOrders.applyRefund
 GET     /orders/{orderNumber}                         UserOrders.details
 PUT     /orders/{orderNumber}/cancel                  UserOrders.cancelOrder
 GET     /coupons                                      UserCoupons.index
+GET     /coupon/{id}/shops                            UserCoupons.showCouponShops
 GET     /payment/{orderNumber}                        UserOrders.pay
 POST    /coupons/refund/{id}                          UserCoupons.applyRefund
 POST    /orders/batch-refund                          UserOrders.batchRefund

@@ -654,7 +654,7 @@ public class ECoupon extends Model {
         }
         if (AccountType.CONSUMER == accountType) {
             User user = User.findById(userId);
-            userName = "消费者"+user.getShowName();
+            userName = "消费者" + user.getShowName();
         }
         //记录券历史信息
         new CouponHistory(eCoupon, userName, "券退款", eCoupon.status, ECouponStatus.REFUND, null).save();
@@ -869,6 +869,29 @@ public class ECoupon extends Model {
                 phone, eCoupon.replyCode);
     }
 
+    public static void sendShopsInfo(ECoupon eCoupon, String phone, String couponshopsId) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
+        String c[] = couponshopsId.split(",");
+        List<Shop> shopList = null;
+        String content = "\n";
+        if (StringUtils.isBlank(phone)) {
+            phone = eCoupon.orderItems.phone;
+        }
+
+        for (int i = 0; i < c.length; i++) {
+            Shop shop = Shop.findById(c[i]);
+            shopList.add(shop);
+        }
+
+        for (Shop s : shopList) {
+            content += s.address + ":" + s.phone + "\n";
+        }
+
+        SMSUtil.send("【一百券】"
+                + content,
+                phone, eCoupon.replyCode);
+    }
+
     /**
      * 运营后台发送短信
      *
@@ -911,6 +934,13 @@ public class ECoupon extends Model {
         eCoupon.save();
     }
 
+    public static void sendUserShopsMessageWithoutCheck(String phone, ECoupon eCoupon, String couponshopsId) {
+        sendShopsInfo(eCoupon, phone, couponshopsId);
+        eCoupon.downloadTimes--;
+        eCoupon.save();
+    }
+
+
     /**
      * 会员中心发送短信
      *
@@ -925,6 +955,19 @@ public class ECoupon extends Model {
                 && eCoupon.downloadTimes > 0 && eCoupon
                 .downloadTimes < 4) {
             sendUserMessageWithoutCheck(null, eCoupon);
+            sendFlag = true;
+        }
+        return sendFlag;
+    }
+
+    public static boolean sendUserShopsInfoMessage(long id, String couponshopsId) {
+        ECoupon eCoupon = ECoupon.findById(id);
+
+        boolean sendFlag = false;
+        if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED
+                && eCoupon.downloadTimes > 0 && eCoupon
+                .downloadTimes < 4) {
+            sendUserShopsMessageWithoutCheck(null, eCoupon, couponshopsId);
             sendFlag = true;
         }
         return sendFlag;
