@@ -869,28 +869,43 @@ public class ECoupon extends Model {
                 phone, eCoupon.replyCode);
     }
 
-    public static void sendShopsInfo(ECoupon eCoupon, String phone, String couponshopsId) {
+    /**
+     * 发送短信
+     */
+    public static void sendInfo(ECoupon eCoupon, String phone, String couponshopsId) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(COUPON_EXPIRE_FORMAT);
-        String c[] = couponshopsId.split(",");
-        List<Shop> shopList = null;
-        String content = "\n";
+        List<Shop> shopList = new ArrayList<>();
+        String content = "";
         if (StringUtils.isBlank(phone)) {
             phone = eCoupon.orderItems.phone;
         }
-
-        for (int i = 0; i < c.length; i++) {
-            Shop shop = Shop.findById(c[i]);
-            shopList.add(shop);
+        if (StringUtils.isNotBlank(couponshopsId)) {
+            String c[] = couponshopsId.split(",");
+            content = ",";
+            for (int i = 0; i < c.length; i++) {
+                Shop shop = Shop.findById(Long.parseLong(c[i]));
+                shopList.add(shop);
+            }
+            for (Shop s : shopList) {
+                content += "[" + s.name + "]" + s.address + " " + s.phone + ";";
+            }
         }
-
-        for (Shop s : shopList) {
-            content += s.address + ":" + s.phone + "\n";
+        System.out.println("content>>>>" + content);
+        if (StringUtils.isBlank(phone)) {
+            phone = eCoupon.orderItems.phone;
         }
-
         SMSUtil.send("【一百券】"
-                + content,
+                + (StringUtils.isNotEmpty(eCoupon.goods.title) ? eCoupon.goods.title
+                : (eCoupon.goods.name
+                +
+                "["
+                + eCoupon.goods.faceValue + "元]"))
+                + "券号" + eCoupon.eCouponSn + "," +
+                "截止" + dateFormat.format(eCoupon.expireAt) + content
+                + ",客服：4006262166",
                 phone, eCoupon.replyCode);
     }
+
 
     /**
      * 运营后台发送短信
@@ -928,14 +943,14 @@ public class ECoupon extends Model {
         return sendFlag;
     }
 
-    public static void sendUserMessageWithoutCheck(String phone, ECoupon eCoupon) {
-        send(eCoupon, phone);
+    public static void sendUserMessageInfoWithoutCheck(String phone, ECoupon eCoupon, String couponshopsId) {
+        sendInfo(eCoupon, phone, couponshopsId);
         eCoupon.downloadTimes--;
         eCoupon.save();
     }
 
-    public static void sendUserShopsMessageWithoutCheck(String phone, ECoupon eCoupon, String couponshopsId) {
-        sendShopsInfo(eCoupon, phone, couponshopsId);
+    public static void sendUserMessageWithoutCheck(String phone, ECoupon eCoupon) {
+        send(eCoupon, phone);
         eCoupon.downloadTimes--;
         eCoupon.save();
     }
@@ -947,31 +962,18 @@ public class ECoupon extends Model {
      * @param id
      * @return
      */
-    public static boolean sendUserMessage(long id) {
+    public static boolean sendUserMessageInfo(long id, String couponshopsId) {
         ECoupon eCoupon = ECoupon.findById(id);
-
         boolean sendFlag = false;
         if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED
                 && eCoupon.downloadTimes > 0 && eCoupon
                 .downloadTimes < 4) {
-            sendUserMessageWithoutCheck(null, eCoupon);
+            sendUserMessageInfoWithoutCheck(null, eCoupon, couponshopsId);
             sendFlag = true;
         }
         return sendFlag;
     }
 
-    public static boolean sendUserShopsInfoMessage(long id, String couponshopsId) {
-        ECoupon eCoupon = ECoupon.findById(id);
-
-        boolean sendFlag = false;
-        if (eCoupon != null && eCoupon.status == ECouponStatus.UNCONSUMED
-                && eCoupon.downloadTimes > 0 && eCoupon
-                .downloadTimes < 4) {
-            sendUserShopsMessageWithoutCheck(null, eCoupon, couponshopsId);
-            sendFlag = true;
-        }
-        return sendFlag;
-    }
 
     /**
      * 返回券的总金额.

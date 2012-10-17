@@ -74,23 +74,25 @@
         }
     }
 
-    $("input[name='outlet-item[]']").click(
-            function () {
-                alert("ini");
-                var item = [];
-                if ($(this).attr("checked")) {
-                    $("input[name='outlet-item[]']:checked").each(function () {
-                        item.push($(this).val())
-                    })
-                }
-                $("#couponshopsId").val(item.join(","));
-            }
-    )
+
+//    $("input[name='outlet-item[]']").click(
+//    $("[name='aa']").click(
+//    $('input:checkbox[name=aa]').click(
+//    $("#aa").click(
+
+
+
+
 
     function sendMessageDialog() {
         var id = $("#id").val();
         var cnt = $("#times_" + id).val();
-        var couponshopsId =  $("#couponshopsId").val();
+        var item = [];
+        $("input[name='outlet-item[]']:checked").each(function () {
+                item.push($(this).val())
+            })
+        var couponshopsId=item.join(",");
+
         $.ajax({
             url:"/coupons-message/" + id + "/send?couponshopsId="+couponshopsId,
             type:'GET',
@@ -243,6 +245,11 @@
                         <input type="hidden" name="couponshopsId" id="couponshopsId" value="${couponshopsId}"/>
 
                     <span id="couponshops"></span>
+                        *{id="outlet-item1"}*
+                        *{id="aa"}*
+                        *{<li><input name="aa" id="outlet-item1" class="outlet-item"  type="checkbox"> <label for="outlet-item1">徐汇店</label></li>}*
+                        *{<li><input class="outlet-item" id="outlet-item2" type="checkbox"> <label for="outlet-item2">静安店</li>}*
+
                     </ul>
                 </li>
                 <li class="item btn-box">

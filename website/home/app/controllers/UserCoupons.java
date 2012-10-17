@@ -78,9 +78,7 @@ public class UserCoupons extends Controller {
     public static void sendMessage(long id, String couponshopsId) {
         User user = SecureCAS.getUser();
         ECoupon eCoupon = ECoupon.findById(id);
-        boolean sendFalg = ECoupon.sendUserMessage(id);
-        if (StringUtils.isNotBlank(couponshopsId))
-            sendFalg = ECoupon.sendUserShopsInfoMessage(id, couponshopsId);
+        boolean sendFalg = ECoupon.sendUserMessageInfo(id,couponshopsId);
         new CouponHistory(eCoupon, user.getShowName(), "重发短信", eCoupon.status, eCoupon.status, null).save();
         renderJSON(sendFalg ? "0" : "1");
     }
