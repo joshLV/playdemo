@@ -7,6 +7,8 @@ import models.cms.VoteQuestion;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.uhuila.common.constants.DeletedStatus;
+
 import play.modules.paginate.ModelPaginator;
 import play.test.UnitTest;
 import factory.FactoryBoy;
@@ -46,6 +48,13 @@ public class VoteQuestionTest extends UnitTest {
 	public void testGetPage1() throws Exception {
 		List<VoteQuestion> list = VoteQuestion.getPage(voteQuestion.type);
 		assertEquals(1, list.size());
+	}
+	
+	@Test
+	public void testDelete() throws Exception {
+		VoteQuestion.delete(voteQuestion.id);
+		VoteQuestion vq = VoteQuestion.findById(voteQuestion.id);
+		assertEquals(DeletedStatus.DELETED, vq.deleted);
 	}
 	
 	@Test

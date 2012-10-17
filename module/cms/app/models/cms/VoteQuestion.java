@@ -98,7 +98,6 @@ public class VoteQuestion extends Model {
      * @param vote 问卷调查内容
      */
     public static void update(Long id, VoteQuestion vote) {
-
         VoteQuestion newVote = VoteQuestion.findById(id);
         newVote.answer1 = vote.answer1;
         newVote.answer2 = vote.answer2;
@@ -110,8 +109,6 @@ public class VoteQuestion extends Model {
         newVote.type = vote.type;
         newVote.correctAnswer = vote.correctAnswer;
         newVote.save();
-        
-
     }
 
     public static void delete(Long id) {
