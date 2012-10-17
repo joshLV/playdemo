@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <urlset>
-
     #{list goodsList, as:'goods'}
     <url>
         <loc>http://www.yibaiquan.com/g/${goods.id}?tj=tuanbaidu-${goods.id}</loc>
@@ -8,7 +7,8 @@
         <data>
             <display>
                 <website>一百券</website>
-                <siteurl>http://www.yibaiquan.com?tj=tuanbaidu-${goods.id}</siteurl>
+                <siteurl>http:/800tuan
+                    /www.yibaiquan.com?tj=tuanbaidu-${goods.id}</siteurl>
                 <city>上海</city>
                 <category>#{list goods.getCategories(), as:'category'}&{'tuanBaiduCategory1.'+category?.id}#{/list}
                 </category>
@@ -39,6 +39,5 @@
             </display>
         </data>
     </url>
-
     #{/list}
 </urlset>

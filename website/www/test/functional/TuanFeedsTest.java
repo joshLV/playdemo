@@ -53,29 +53,48 @@ public class TuanFeedsTest extends FunctionalTest {
 
     @Test
     public void testTuan800() {
-        System.out.println("category.id>>>>>"+category.id);
-        Messages.defaults.put("tuan800category." + category.id,"餐饮美食");
+        Messages.defaults.put("tuan800category." + category.id, "餐饮美食");
         Http.Response response = GET("/feed/tuan800");
         assertStatus(200, response);
         assertContentMatch("Product Name", response);
+        List<models.sales.Goods> goodsList = (List<Goods>) renderArgs("goodsList");
+        assertEquals(1, goodsList.size());
+        assertEquals(goods.name, goodsList.get(0).name);
     }
 
     @Test
     public void testTuan360() {
-        Messages.defaults.put("tuan360category." + goods.getCategories().iterator().next().id,"餐饮美食");
+        Messages.defaults.put("tuan360category." + goods.getCategories().iterator().next().id, "餐饮美食");
         Http.Response response = GET("/feed/tuan360");
         assertStatus(200, response);
         assertContentMatch("Product Title", response);
+        List<models.sales.Goods> goodsList = (List<Goods>) renderArgs("goodsList");
+        assertEquals(1, goodsList.size());
+        assertEquals(goods.title, goodsList.get(0).title);
     }
 
 
     @Test
     public void testTuanBaidu() {
-        Messages.defaults.put("tuanBaiduCategory1." + goods.getCategories().iterator().next().id,"餐饮美食");
-        Messages.defaults.put("tuanBaiduCategory2." + goods.getCategories().iterator().next().id,"地方菜");
-        Http.Response response = GET("/feed/tuanBaidu");
+        Messages.defaults.put("tuanBaiduCategory1." + goods.getCategories().iterator().next().id, "餐饮美食");
+        Messages.defaults.put("tuanBaiduCategory2." + goods.getCategories().iterator().next().id, "地方菜");
+        Http.Response response = GET("/feed/tuanbaidu");
         assertStatus(200, response);
         assertContentMatch("Product Name", response);
+        List<models.sales.Goods> goodsList = (List<Goods>) renderArgs("goodsList");
+        assertEquals(1, goodsList.size());
+        assertEquals(goods.name, goodsList.get(0).name);
+    }
+
+    @Test
+    public void testTuanLing() {
+        Messages.defaults.put("tuanLingCategory." + category.id, "餐饮美食");
+        Http.Response response = GET("/feed/tuanling");
+        assertStatus(200, response);
+        assertContentMatch("Product Title", response);
+        List<models.sales.Goods> goodsList = (List<Goods>) renderArgs("goodsList");
+        assertEquals(1, goodsList.size());
+        assertEquals(goods.title, goodsList.get(0).title);
     }
 
 }

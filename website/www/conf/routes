@@ -103,7 +103,8 @@ GET     /is_voted                               Votes.isVoted
 GET     /feed/getTopGoods                       TuanFeeds.getTopGoods
 GET     /feed/tuan800                           TuanFeeds.tuan800(format:'xml')
 GET     /feed/tuan360                           TuanFeeds.tuan360(format:'xml')
-GET     /feed/tuanBaidu                         TuanFeeds.tuanBaidu(format:'xml')
+GET     /feed/tuanbaidu                         TuanFeeds.tuanBaidu(format:'xml')
+GET     /feed/tuanling                          TuanFeeds.tuanLing(format:'xml')
 
 
 # Ignore favicon requests

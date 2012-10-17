@@ -59,6 +59,12 @@
 					<name>${shop.name}</name>  <!-- 商家名称 [选埴] -->
 					<tel>${shop.phone}</tel>  <!-- 联系电话 [选填] -->
 					<addr>${shop.address}</addr>    <!-- 地址信息 [选填] -->
+                    #{if shop.longitude!="0"}
+                    <longitude>${shop.longitude}</longitude> <!-- 经度 [选填] -->
+                    #{/if}
+                    #{if shop.latitude!="0"}
+                    <latitude>${shop.latitude}</latitude>  <!-- 纬度 [选填] -->
+                    #{/if}
 				</shop>
                 #{/list}
             #{/if}			
