@@ -73,7 +73,8 @@ a.close:hover {
 }
 .popup-content .outlet-list li {
     float: left;
-    width: 90px;
+    width: 128px;
+    height: 22px;
     margin: 2px 10px 2px 0;
 }
 .popup-content .outlet-list li.hide {
