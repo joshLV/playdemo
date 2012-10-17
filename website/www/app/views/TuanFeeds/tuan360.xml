@@ -79,6 +79,17 @@
 
                     <tel>${shop.phone}</tel>
                     <!-- 联系电话， [必填] -->
+
+                    #{if shop.longitude!="0"}
+                    <lng>${shop.longitude}</lng>
+                    #{/if}
+                    <!--经度  ,[选填] -->
+
+                    #{if shop.latitude!="0"}
+                    <lat>${shop.latitude}</lat>
+                    #{/if}
+                    <!--纬度 ,[选填] -->
+
                 </merchant>
                 #{/list}
                 #{/if}

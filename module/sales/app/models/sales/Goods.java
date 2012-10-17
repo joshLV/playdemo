@@ -943,7 +943,7 @@ public class Goods extends Model {
      * @return isExist true 已经存在，false 不存在
      */
     @Transient
-    public boolean isExistLibrary(Resaler resaler) {
+    public boolean isExistLibrary(Resaler resaler) {         s
         boolean isExist = false;
         Query query = play.db.jpa.JPA.em().createQuery(
                 "select r from ResalerFav r where r.resaler = :resaler and r.goods =:goods");
