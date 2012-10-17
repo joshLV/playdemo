@@ -64,7 +64,8 @@ GET     /top-add                                TaobaoAPIClient.add
 POST    /batch-top-add                          TaobaoAPIClient.batchAdd
 
 POST    /jd-add                                 JingdongUploadTeam.upload
-GET     /jd-add/test                            JingdongUploadTeam.test
+POST    /jd-test                                JingdongUploadTeam.test
+GET     /jd-test                                JingdongUploadTeam.showTest
 GET     /jd-add/{goodsId}                       JingdongUploadTeam.prepare
 
 GET     /ecoupons                               Coupons.index

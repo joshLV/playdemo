@@ -1,6 +1,7 @@
 package models.jingdong.groupbuy;
 
 import models.jingdong.JDGroupBuyUtil;
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -11,14 +12,14 @@ import play.Logger;
  * @author likang
  * Date: 12-9-28
  */
-public class JDResponse<T extends JDMessage> {
-    public String  version;
-    public Long    venderId;
-    public Boolean zip;
-    public Boolean encrypt;
-    public String resultCode;
-    public String resultMessage;
-    public T       data;
+public class JDRest<T extends JDMessage> {
+    public String   version;
+    public Long     venderId;
+    public Boolean  zip;
+    public Boolean  encrypt;
+    public String   resultCode;
+    public String   resultMessage;
+    public T        data;
 
     public boolean parse(String xml, T d){
         Logger.info("jingdong request:" + xml);
@@ -31,21 +32,24 @@ public class JDResponse<T extends JDMessage> {
         }
 
         Element root = document.getRootElement();
-        resultCode = root.elementTextTrim("ResultCode");
-        if (!"200".equals(resultCode)){
-            return false;
-        }
         version = root.elementTextTrim("Version");
         venderId = Long.parseLong(root.elementTextTrim("VenderId"));
         zip = Boolean.parseBoolean(root.elementTextTrim("Zip"));
         encrypt = Boolean.parseBoolean(root.elementTextTrim("Encrypt"));
+
+        // 只有作为京东的响应的时候， resultCode 和 resultMessage 才有用
+        resultCode = root.elementTextTrim("ResultCode");
         resultMessage = root.elementTextTrim("ResultMessage");
+        if(StringUtils.isNotEmpty(resultCode) && !"200".equals(resultCode)){
+                return false;
+        }
 
         Element messageElement = null;
         if(encrypt){
-            //解析加密字符串
             String rawMessage = root.elementTextTrim("Data");
+            //解析加密字符串
             String decryptedMessage = JDGroupBuyUtil.decryptMessage(rawMessage);
+            Logger.info("decryptedMessage, %s", decryptedMessage);
             Document messageDocument = null;
             try{
                 messageDocument = DocumentHelper.parseText(decryptedMessage);

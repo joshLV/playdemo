@@ -1,13 +1,12 @@
 package models.jingdong;
 
 import models.accounts.AccountType;
-import models.jingdong.groupbuy.JDResponse;
+import models.jingdong.groupbuy.JDRest;
 import models.jingdong.groupbuy.response.*;
 import models.order.ECoupon;
 import models.order.OuterOrder;
 import models.resale.Resaler;
 import org.apache.commons.codec.binary.Base64;
-import play.Logger;
 import play.Play;
 import play.exceptions.UnexpectedException;
 import play.libs.WS;
@@ -83,13 +82,6 @@ public class JDGroupBuyUtil {
         }
     }
 
-    public static boolean isSaleOnJingdong(ECoupon eCoupon){
-        Resaler resaler = Resaler.findOneByLoginName(JDGroupBuyUtil.JD_LOGIN_NAME);
-        return resaler != null
-                && eCoupon.order.userId == resaler.id
-                && eCoupon.order.userType == AccountType.RESALER;
-    }
-
     public static boolean verifyOnJingdong(ECoupon eCoupon){
         String url = GATEWAY_URL + "/platform/normal/verifyCode.action";
 
@@ -106,11 +98,11 @@ public class JDGroupBuyUtil {
         WS.HttpResponse response =  WS.url(url).body(restRequest).post();
 
         //解析请求
-        JDResponse<VerifyCouponResponse> sendOrderJDResponse = new JDResponse<>();
-        if(!sendOrderJDResponse.parse(response.getString(), new VerifyCouponResponse())){
+        JDRest<VerifyCouponResponse> sendOrderJDRest = new JDRest<>();
+        if(!sendOrderJDRest.parse(response.getString(), new VerifyCouponResponse())){
             return false;
         }
-        VerifyCouponResponse verifyCouponResponse = sendOrderJDResponse.data;
+        VerifyCouponResponse verifyCouponResponse = sendOrderJDRest.data;
         return verifyCouponResponse.verifyResult == 200;
     }
 
@@ -121,11 +113,11 @@ public class JDGroupBuyUtil {
         String restRequest = makeRequestRest(template.render());
         WS.HttpResponse response = WS.url(url).body(restRequest).post();
 
-        JDResponse<QueryCityResponse> queryCityResponse = new JDResponse<>();
-        if(!queryCityResponse.parse(response.getString(), new QueryCityResponse())){
+        JDRest<QueryCityResponse> queryCityRest = new JDRest<>();
+        if(!queryCityRest.parse(response.getString(), new QueryCityResponse())){
             return null;
         }
-        return queryCityResponse.data.cities;
+        return queryCityRest.data.cities;
     }
 
     public static List<CategoryResponse> queryCategory(Long categoryId){
@@ -137,12 +129,12 @@ public class JDGroupBuyUtil {
         String restRequest = makeRequestRest(template.render(params));
         WS.HttpResponse response = WS.url(url).body(restRequest).post();
 
-        JDResponse<QueryCategoryResponse> queryCategoryResponse = new JDResponse<>();
-        if(!queryCategoryResponse.parse(response.getString(), new QueryCategoryResponse())){
+        JDRest<QueryCategoryResponse> queryCategoryRest = new JDRest<>();
+        if(!queryCategoryRest.parse(response.getString(), new QueryCategoryResponse())){
             return null;
         }
 
-        return queryCategoryResponse.data.categories;
+        return queryCategoryRest.data.categories;
     }
 
     public static String makeRequestRest(String data){

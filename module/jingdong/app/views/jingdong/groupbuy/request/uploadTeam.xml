@@ -43,15 +43,15 @@
     *{ 团购主图  此为图片链接地址http开头，图片尺寸为440*280，图片大小在100kb以内 [必填] }*
     <GrouponBImg>${grouponBImg}</GrouponBImg>
     *{ 团购原价 仅数字，精确到分（小数点后2位），必须大于0并且大于团购现价 e.g:58元传递5800 [必填] }*
-    <MarketPrice>${new java.math.BigDecimal(marketPrice).multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).toString()}}</MarketPrice>
+    <MarketPrice>${new java.math.BigDecimal(marketPrice).multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).toString()}</MarketPrice>
     *{ 团购现价 仅数字，精确到分（小数点后2位），必须大于1000并且小于团购原价 e.g:58元传递5800 [必填] }*
     <TeamPrice>${new java.math.BigDecimal(teamPrice).multiply(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).toString()}</TeamPrice>
     *{ 团购开始时间 unix时间戳 [必填] }*
-    <BeginTime>${new java.text.SimpleDateFormat("yyyy-MM-dd").parse(beginTime).getTime()}</BeginTime>
+    <BeginTime>${new java.text.SimpleDateFormat("yyyy-MM-dd").parse(beginTime).getTime()/1000}</BeginTime>
     *{ 团购结束时间 unix时间戳 [必填] }*
-    <EndTime>${new java.text.SimpleDateFormat("yyyy-MM-dd").parse(endTime).getTime()}</EndTime>
+    <EndTime>${new java.text.SimpleDateFormat("yyyy-MM-dd").parse(endTime).getTime()/1000}</EndTime>
     *{ 券的有效期截至时间 unix时间戳 解析后为yyyy-MM-dd 00:00:00 E.G:2011-12-31 00:00:00 [必填] }*
-    <CouponExpireTime>${new java.text.SimpleDateFormat("yyyy-MM-dd").parse(couponExpireTime).getTime()}</CouponExpireTime>
+    <CouponExpireTime>${new java.text.SimpleDateFormat("yyyy-MM-dd").parse(couponExpireTime).getTime()/1000}</CouponExpireTime>
     *{ 优惠券验证模式 0 - 只根据优惠券号 1 - 优惠券+密码 3 - 订单号+密码 4 - 只根据密码 默认1 验证模式的选择和给客户发送的短信内容相关，若发放模式（CouponGrantMode）选择3，则此处验证模式选择1即可。[必填] }*
     <CouponVerifyMode>1</CouponVerifyMode>
     *{ 优惠券绑定模式 1 - 一个优惠券对应一份产品  2 - 一个优惠券对应多份产品 ，默认1 [必填] }*

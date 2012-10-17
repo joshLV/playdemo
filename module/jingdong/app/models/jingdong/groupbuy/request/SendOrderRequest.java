@@ -22,7 +22,7 @@ public class SendOrderRequest implements JDMessage {
     public BigDecimal origin;   //订单总额
     public Long jdOrderId;      //京东订单ID
     public Date payTime;        //付款时间
-    List<CouponRequest> coupons;       //券信息
+    public List<CouponRequest> coupons;       //券信息
 
     public SendOrderRequest(){
         coupons = new ArrayList<>();

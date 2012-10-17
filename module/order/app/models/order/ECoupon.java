@@ -129,6 +129,15 @@ public class ECoupon extends Model {
     public VerifyCouponType verifyType;
 
 
+    @Enumerated(EnumType.STRING)
+    public ECouponPartner partner;
+
+    @Column(name = "partner_coupon_id")
+    public String partnerCouponId;
+
+    @Column(name = "partner_coupon_pwd")
+    public String partnerCouponPwd;
+
     @Transient
     public String verifyTypeInfo;
 
@@ -377,7 +386,7 @@ public class ECoupon extends Model {
             return false;
         }
 
-        if(JDGroupBuyUtil.isSaleOnJingdong(this)){
+        if(this.partner == ECouponPartner.JD){
             if(!JDGroupBuyUtil.verifyOnJingdong(this)){
                 return false;
             }

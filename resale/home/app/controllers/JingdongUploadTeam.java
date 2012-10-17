@@ -1,7 +1,7 @@
 package controllers;
 
 import models.jingdong.JDGroupBuyUtil;
-import models.jingdong.groupbuy.JDResponse;
+import models.jingdong.groupbuy.JDRest;
 import models.jingdong.groupbuy.response.CategoryResponse;
 import models.jingdong.groupbuy.response.CityResponse;
 import models.jingdong.groupbuy.response.UploadTeamResponse;
@@ -12,7 +12,6 @@ import play.mvc.Controller;
 import play.templates.Template;
 import play.templates.TemplateLoader;
 
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,27 +37,24 @@ public class JingdongUploadTeam extends Controller{
         for(Map.Entry<String, String> param : request.params.allSimple().entrySet()){
             params.put(param.getKey(), param.getValue());
         }
-        String restRequest = JDGroupBuyUtil.makeRequestRest( template.render(params));
+        String data = template.render(params);
+        Logger.info("request, %s", data);
+        String restRequest = JDGroupBuyUtil.makeRequestRest(data);
         WS.HttpResponse response = WS.url(url).body(restRequest).post();
 
-        JDResponse<UploadTeamResponse> queryCategoryResponse = new JDResponse<>();
-        if(!queryCategoryResponse.parse(response.getString(), new UploadTeamResponse())){
+        JDRest<UploadTeamResponse> uploadTeamRest = new JDRest<>();
+        if(!uploadTeamRest.parse(response.getString(), new UploadTeamResponse())){
             String error = response.getString();
             render("JingdongUploadTeam/result.html", error);
         }
-        render("JingDongUploadTeam/result.html");
+        render("JingDongUploadTeam/result.html", uploadTeamRest);
     }
 
-    public static void test(){
-        String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/uploadTeam.action";
-        Template template = TemplateLoader.load("jingdong/groupbuy/request/uploadTeam.xml");
-        String restRequest = JDGroupBuyUtil.makeRequestRest(template.render());
-        WS.HttpResponse response = WS.url(url).body(restRequest).post();
+    public static void showTest(){
+        render();
+    }
 
-        JDResponse<UploadTeamResponse> queryCategoryResponse = new JDResponse<>();
-        if(!queryCategoryResponse.parse(response.getString(), new UploadTeamResponse())){
-            error();
-        }
-        Logger.info("===== %s", queryCategoryResponse.data.jdTeamId);
+    public static void test(String data){
+        renderXml(JDGroupBuyUtil.decryptMessage(data));
     }
 }
