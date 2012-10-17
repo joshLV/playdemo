@@ -76,6 +76,7 @@
 
     $("input[name='outlet-item[]']").click(
             function () {
+                alert("ini");
                 var item = [];
                 if ($(this).attr("checked")) {
                     $("input[name='outlet-item[]']:checked").each(function () {

@@ -100,8 +100,10 @@ $.overlay = {
 	show:function(overlayCss){
 		$.overlay.hide();
 		overlayCss = $.extend({}, $.overlay.defaults,overlayCss || {});
-		var _popup_overlay = $('<div id="popup_overlay" class="popup_overlay"></div>');
-		$("body").append(_popup_overlay);
+		// var _popup_overlay = $('<div id="popup_overlay" class="popup_overlay"></div>');
+		// $("body").append(_popup_overlay);
+        $("body").append('<div id="popup_overlay" class="popup_overlay"></div>');
+        var _popup_overlay = $('popup_overlay');
 		$(_popup_overlay).css(overlayCss);
 		$.overlay.resize();
 
