@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<urlset>
+    <url>
+        <loc>http://www.yibaiquan.com/g/${goods.id}?tj=tuanling-${goods.id}</loc>
+        <!-- 页面永久唯一的URL,即团购过期,或者不是当天也可访问的URL ［必填］-->
+        <data>
+            <display>
+                <website>一百券</website>
+                <!-- 站点名称 ［选填］-->
+                <siteurl>http://www.yibaiquan.com?tj=tuanling-${goods.id}</siteurl>
+                <!-- 团购首页地址 ［必填］-->
+                <city>上海</city>
+                <!-- 城市名称（城市名称不需要附带省、市、区、县等字，如果是全国范围请指明：全国） ,必填］ -->
+                <major>#{if goods_index==1} 1 #{/if} #{else}0#{/else}</major>
+                <!-- 团购站在某个城市下的主推产品,默认0，1为主推 ,必填］ -->
+                <title>${goods.title}</title>
+                <!-- 团购标题 ［必填］ -->
+                <image>${goods.imageMiddlePath}</image>
+                <!-- 团购图片url ［必填］ -->
+                <cate>#{list goods.getCategories(), as:'category'} &{'tuanLingCategory.'+category?.id} #{/list}</cate>
+                <!-- 分类, 从餐饮美食, 休闲娱乐, 美容健身, 精品购物, 摄影写真, 优惠票券,其它 里选择一个。必填 -->
+                <startTime>
+                    ${goods.firstOnSaleAt == null ? goods.effectiveAt?.format("yyyy-MM-dd HH:mm:ss") : goods.firstOnSaleAt?.format("yyyy-MM-dd HH:mm:ss")}
+                </startTime>
+                <!-- 团购开始时间，默认使用上面秒数格式 或者将上面秒数转成时间格式 2010-12-25 00:00:00 , 如使用秒数格式， 请测试 2010-12-25 00:00:00 转换后应该为 1293235200［必填］-->
+                <endTime>${goods.expireAt?.format("yyyy-MM-dd HH:mm:ss")}</endTime>
+                <!-- 团购结束时间,默认使用上面秒数格式 或者将上面秒数转成时间格式 2010-12-26 00:00:00 , 如使用秒数格式， 请测试 2010-12-26 00:00:00 转换后应该为 1293321600［必填］［必填］-->
+                <value>${goods.faceValue}</value>
+                <!-- 商品原价 ［必填］-->
+                <price>${goods.salePrice}</price>
+                <!-- 商品现价 ［必填］-->
+                <bought>${goods.saleCount + goods.baseSale}</bought>
+                <!-- 已购买人数 ［必填］-->
+                <soldOut>no</soldOut>
+                <!-- yes/no 是否已卖光 [选填］ -->
+                <tip>
+                    <![CDATA[${goods?.prompt?.raw()}]]></tip>
+                <!-- 重要提示信息 ［选填］-->
+                <detail>
+                    <![CDATA[${goods?.details?.raw()}]]></detail>
+                <!-- 商品详细信息 ［选填］-->
+            </display>
+            <shops>
+                #{if goods.getShopList()?.size() >0}
+                #{list goods.getShopList(), as:'shop'}
+                <shop>
+                    <name>${shop.name}</name>
+                    <!-- 商家名称， 必填 -->
+                    <tel>${shop.phone}</tel>
+                    <!-- 联系电话， 选填 -->
+                    <addr>${shop.address}</addr>
+                    <!-- 地址, 选填 -->
+
+                    #{if shop.longitude!="0"}
+                    <lng>${shop.longitude}</lng>
+                    #{/if}
+
+                    <!-- 经度 ,选填-->
+                    #{if shop.latitude!="0"}
+                    <lat>${shop.latitude}</lat>
+                    #{/if}
+                    <!-- 纬度 ,选填-->
+                </shop>
+                #{/list}
+                #{/if}
+                <!-- shop 可以多个 -->
+            </shops>
+        </data>
+    </url>
+    <url>这里按照上面格式填写更多的团购信息，如果没有就不填，并且去掉这段文字外面的url标签</url>
+</urlset>
