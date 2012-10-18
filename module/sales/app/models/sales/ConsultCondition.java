@@ -23,7 +23,7 @@ import java.util.List;
  */
 
 
-public class ConsultCondition{
+public class ConsultCondition {
 
 
 //    public static User findUserByCondition(CRMCondition condition) {
@@ -62,7 +62,7 @@ public class ConsultCondition{
         //  查询订单信息
 
         List<Order> orderList = Order.find("select distinct o from Order o, User u where " +
-                "o.userId=u.id and o.userType = models.accounts.AccountType.CONSUMER and" +
+                "o.amount>0 and o.userId=u.id and o.userType = models.accounts.AccountType.CONSUMER and" +
                 "(o.orderNumber=? or u.mobile=? or u.loginName=? or o.receiverMobile=? or o.buyerMobile = ?"
                 + "or o.id in (select oi.order.id from o.orderItems oi where oi.phone =?)"
                 + "or u.id=?)",
@@ -78,7 +78,7 @@ public class ConsultCondition{
 
 
         return Order.count("from Order o, User u where " +
-                "o.userId=u.id and o.userType = models.accounts.AccountType.CONSUMER and" +
+                "o.amount>0 and o.userId=u.id and o.userType = models.accounts.AccountType.CONSUMER and" +
                 "(o.orderNumber=? or u.mobile=? or u.loginName=? or o.receiverMobile=? or o.buyerMobile = ?"
                 + "or o.id in (select oi.order.id from o.orderItems oi where oi.phone =?))",
                 condition.searchOrderCoupon, condition.searchUser,
@@ -89,7 +89,7 @@ public class ConsultCondition{
         //  查询券信息       and o.userType = models.accounts.AccountType.CONSUMER
 
         return ECoupon.count("from ECoupon e, User u where " +
-                "e.order.userId = u.id " +
+                "e.order.amount>0 and e.order.userId = u.id " +
                 "and ( " +
                 "  e.eCouponSn like ? " +
                 "  or e.order.orderNumber=? " +
@@ -110,7 +110,7 @@ public class ConsultCondition{
         //  查询券信息       and o.userType = models.accounts.AccountType.CONSUMER
 
         List<ECoupon> eCoupons = ECoupon.find("select distinct e from ECoupon e, User u where " +
-                "e.order.userId = u.id " +
+                "e.order.amount>0 and e.order.userId = u.id " +
                 "and  e.order.userType = models.accounts.AccountType.CONSUMER and ( " +
                 "  e.eCouponSn like ? " +
                 "  or e.order.orderNumber=? " +
@@ -191,7 +191,7 @@ public class ConsultCondition{
                         + "or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.receiverMobile=?)"
                         + "or applier in (select u.loginName from Order o, User u where o.userId=u.id and o.buyerMobile=?)"
                         + "or applier in (select u.loginName from Order o, User u where o.userId=u.id and " +
-                                                   "o.id in (select oi.order.id from o.orderItems oi where oi.phone =?)))",
+                        "o.id in (select oi.order.id from o.orderItems oi where oi.phone =?)))",
                 condition.searchUser, condition.searchUser,
                 condition.searchUser, condition.searchUser, condition.searchUser
         );
