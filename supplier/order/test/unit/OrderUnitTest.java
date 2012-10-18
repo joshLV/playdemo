@@ -5,6 +5,7 @@ import models.consumer.Address;
 import models.consumer.User;
 import models.order.*;
 import models.sales.Goods;
+import models.sales.GoodsHistory;
 import org.junit.Before;
 import org.junit.Test;
 import play.modules.paginate.JPAExtPaginator;
@@ -29,6 +30,7 @@ public class OrderUnitTest extends UnitTest {
         Fixtures.loadModels("fixture/goods_base.yml",
                 "fixture/user.yml",
                 "fixture/goods.yml",
+                "fixture/goodsHistory.yml",
                 "fixture/payment_source.yml",
                 "fixture/orders.yml", "fixture/orderItems.yml");
     }
@@ -95,12 +97,17 @@ public class OrderUnitTest extends UnitTest {
         address.name = " 徐家汇";
         address.postcode = "200120";
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
+        Long goodsHistoryId = (Long) Fixtures.idCache.get("models.sales.GoodsHistory-GoodsHistory_001");
         BigDecimal resalePrice = new BigDecimal("10.2");
         boolean isOk = false;
         Goods oldGoods = Goods.findById(goodsId);
         int baseSale = oldGoods.baseSale.intValue();
         int saleCount = oldGoods.saleCount;
         Order order = Order.createConsumeOrder(userId, AccountType.CONSUMER);
+        Goods goods1 = Goods.findById(goodsId);
+        GoodsHistory goodsHistory = GoodsHistory.findById(goodsHistoryId);
+        goodsHistory.goodsId = goods1.id;
+        goodsHistory.save();
         order.addOrderItem((Goods) Goods.findById(goodsId), 20, mobile, oldGoods.salePrice, resalePrice);
         order.createAndUpdateInventory();
 

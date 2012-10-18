@@ -98,7 +98,10 @@ public class OrderItems extends Model {
     public OrderItems(Order order, Goods goods, long buyNumber, String phone, BigDecimal salePrice, BigDecimal resalerPrice) {
         this.order = order;
         this.goods = goods;
+        System.out.println("inini111111");
+        System.out.println("goods.id>>>"+goods.id);
         this.goodsHistoryId = getLastHistoryId(goods.id);
+        System.out.println("inini2222");
         this.faceValue = goods.faceValue;
         this.originalPrice = goods.originalPrice;
         this.salePrice = salePrice;
@@ -112,6 +115,7 @@ public class OrderItems extends Model {
 
     public static long getLastHistoryId(Long goodsId) {
         GoodsHistory goodsHistory = GoodsHistory.find("goodsId=? order by id desc", goodsId).first();
+        System.out.println("goodsHistory>>"+goodsHistory);
         return goodsHistory.id;
     }
 

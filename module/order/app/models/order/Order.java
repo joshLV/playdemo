@@ -408,6 +408,7 @@ public class Order extends Model {
         OrderItems orderItem = null;
         if (number > 0 && goods != null) {
             checkInventory(goods, number);
+
             orderItem = new OrderItems(this, goods, number, mobile, salePrice, resalerPrice);
             //通过推荐购买的情况
             if (isPromoteFlag) {
@@ -420,6 +421,7 @@ public class Order extends Model {
             this.amount = this.amount.add(orderItem.getLineValue()); //计算折扣价
             this.needPay = this.amount;
         }
+
         return orderItem;
     }
 

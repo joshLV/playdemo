@@ -125,12 +125,13 @@ public class CouponsUnitTest extends UnitTest {
         boolean sendFlag = ECoupon.sendMessage(id);
         assertTrue(sendFlag);
 
-        ECoupon.sendUserMessage(id);
+        String phone="A3905623568";
+        ECoupon.sendUserMessage(id,phone);
         ECoupon eCoupon = ECoupon.findById(id);
         assertEquals(2, eCoupon.downloadTimes.intValue());
-        ECoupon.sendUserMessage(id);
+        ECoupon.sendUserMessage(id,phone);
         assertEquals(1, eCoupon.downloadTimes.intValue());
-        ECoupon.sendUserMessage(id);
+        ECoupon.sendUserMessage(id,phone);
         assertEquals(0, eCoupon.downloadTimes.intValue());
 
     }
