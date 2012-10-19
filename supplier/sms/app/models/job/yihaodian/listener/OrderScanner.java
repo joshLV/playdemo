@@ -1,8 +1,8 @@
 package models.job.yihaodian.listener;
 
-import models.yihaodian.JobFlag;
+import models.yihaodian.shop.JobFlag;
 import models.yihaodian.YihaodianJobMessage;
-import models.yihaodian.YihaodianOrder;
+import models.yihaodian.shop.YihaodianOrder;
 import models.yihaodian.YihaodianQueueUtil;
 import play.jobs.Every;
 import play.jobs.Job;

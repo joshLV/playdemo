@@ -1,4 +1,4 @@
-package models.jingdong;
+package models.jingdong.groupbuy;
 
 import models.accounts.AccountType;
 import models.jingdong.groupbuy.JDRest;

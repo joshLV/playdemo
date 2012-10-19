@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
-import models.yihaodian.Util;
 import models.order.*;
 import models.resale.Resaler;
 import models.sales.MaterialType;
@@ -24,7 +23,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,6 +70,7 @@ public class YHDGroupBuy extends Controller{
         }else {
             outerOrder.message = gson.toJson(params);
         }
+        Logger.info("yihaodian: %s", outerOrder.message);
 
         try{// 解析参数为对象
             yhdGroupBuyOrder = gson.fromJson(outerOrder.message, YHDGroupBuyOrder.class);
@@ -222,7 +221,7 @@ public class YHDGroupBuy extends Controller{
         // 检查手机号
         if(errorResponse.errorCount == 0){
             if(!checkPhone(params.get("receiveMobile"))){
-                errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "手机号码错误", null));
+                errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "手机号码格式错误", null));
             }
         }
 

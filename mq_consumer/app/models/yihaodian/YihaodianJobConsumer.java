@@ -8,6 +8,7 @@ import models.order.OrderItems;
 import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.MaterialType;
+import models.yihaodian.shop.*;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
@@ -112,7 +113,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
         Logger.info("yhd.logistics.order.shipments.update deliverySupplierId %s", params.get("deliverySupplierId"));
         Logger.info("yhd.logistics.order.shipments.update expressNbr", params.get("expressNbr"));
 
-        String responseXml = Util.sendRequest(params, "yhd.logistics.order.shipments.update");
+        String responseXml = YHDShopUtil.sendRequest(params, "yhd.logistics.order.shipments.update");
         Logger.info("yhd.logistics.order.shipments.update response %s", responseXml);
         if (responseXml != null) {
             Response<UpdateResult> res = new Response<>();
@@ -133,7 +134,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
         params.put("orderCodeList", yihaodianOrder.orderCode);
         Logger.info("yhd.orders.detail.get orderCodeList %s", params.get("orderCodeList"));
 
-        String responseXml = Util.sendRequest(params, "yhd.orders.detail.get");
+        String responseXml = YHDShopUtil.sendRequest(params, "yhd.orders.detail.get");
         Logger.info("yhd.orders.detail.get response %s", responseXml);
         if (responseXml != null) {
             Response<YihaodianOrder> res = new Response<>();
@@ -154,7 +155,7 @@ public class YihaodianJobConsumer extends RabbitMQConsumer<YihaodianJobMessage>{
         params.put("orderCodeList", yihaodianOrder.orderCode);
         Logger.info("yhd.orders.detail.get orderCodeList %s", params.get("orderCodeList"));
 
-        String responseXml = Util.sendRequest(params, "yhd.orders.detail.get");
+        String responseXml = YHDShopUtil.sendRequest(params, "yhd.orders.detail.get");
         Logger.info("yhd.orders.detail.get response %s", responseXml);
         if (responseXml != null) {
             Response<YihaodianOrder> res = new Response<>();

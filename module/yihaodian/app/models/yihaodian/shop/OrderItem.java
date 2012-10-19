@@ -1,4 +1,4 @@
-package models.yihaodian;
+package models.yihaodian.shop;
 
 import org.dom4j.Element;
 import play.db.jpa.Model;

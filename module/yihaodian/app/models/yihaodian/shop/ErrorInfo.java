@@ -1,4 +1,4 @@
-package models.yihaodian;
+package models.yihaodian.shop;
 
 /**
  * @author likang

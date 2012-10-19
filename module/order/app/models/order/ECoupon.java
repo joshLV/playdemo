@@ -12,7 +12,7 @@ import models.consumer.User;
 import models.dangdang.DDAPIInvokeException;
 import models.dangdang.DDAPIUtil;
 import models.resale.Resaler;
-import models.jingdong.JDGroupBuyUtil;
+import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.sales.Goods;
 import models.sales.Shop;
 import models.sms.SMSUtil;
@@ -388,6 +388,7 @@ public class ECoupon extends Model {
 
         if(this.partner == ECouponPartner.JD){
             if(!JDGroupBuyUtil.verifyOnJingdong(this)){
+                Logger.info("verify on jingdong failed");
                 return false;
             }
         }

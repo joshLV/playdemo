@@ -2,7 +2,7 @@ package controllers;
 
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
-import models.jingdong.JDGroupBuyUtil;
+import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.jingdong.groupbuy.JDRest;
 import models.jingdong.groupbuy.request.*;
 import models.order.*;
@@ -116,6 +116,7 @@ public class JDGroupBuy extends Controller{
             models.sales.Goods goods = models.sales.Goods.findById(sendOrderRequest.venderTeamId);
             Map<String, Object> params = new HashMap<>();
             params.put("sendOrderRequest", sendOrderRequest);
+            params.put("ybqOrder", outerOrder.ybqOrder);
             params.put("coupons", coupons);
             params.put("goods", goods);
             renderArgs.put("data", template.render(params));
@@ -160,11 +161,13 @@ public class JDGroupBuy extends Controller{
      * 处理退款请求
      */
     public static void sendOrderRefund(){
+        Logger.info("start jingodng send order refund");
         String restXml = IO.readContentAsString(request.body);
         //解析请求
         JDRest<SendOrderRefundRequest> sendOrderJDRest = new JDRest<>();
         if(!sendOrderJDRest.parse(restXml, new SendOrderRefundRequest())){
-            finish(201, "parse query_team_sell_count request xml error"); return;
+            Logger.info("parse sendOrderRefund xml error");
+            finish(201, "parse send_order_refund request xml error"); return;
         }
         SendOrderRefundRequest sendOrderRefundRequest = sendOrderJDRest.data;
 
@@ -193,14 +196,17 @@ public class JDGroupBuy extends Controller{
         params.put("sendOrderRefundRequest", sendOrderRefundRequest);
         params.put("coupons", refundedCoupons);
         renderArgs.put("data", template.render(params));
+        Logger.info("send order refund success");
         finish(200, "success");
     }
 
     public static void sendSms(){
+        Logger.info("start send sms on jingdong groupbuy");
         String restXml = IO.readContentAsString(request.body);
         //解析请求
         JDRest<SendSmsRequest> sendSmsRequestJDRest = new JDRest<>();
         if(!sendSmsRequestJDRest.parse(restXml, new SendSmsRequest())){
+            Logger.info("parse send_sms_request xml error");
             finish(201, "parse send_sms_request request xml error"); return;
         }
         SendSmsRequest sendSmsRequest = sendSmsRequestJDRest.data;
@@ -229,6 +235,7 @@ public class JDGroupBuy extends Controller{
         Map<String, Object> params = new HashMap<>();
         params.put("sendSmsRequest", sendSmsRequest);
         renderArgs.put("data", template.render(params));
+        Logger.info("jingdong sms send success");
         finish(200, "success");
     }
 

@@ -1,6 +1,6 @@
 package controllers;
 
-import models.yihaodian.Util;
+import models.yihaodian.shop.YHDShopUtil;
 import operate.rbac.annotations.ActiveNavigation;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -26,6 +26,6 @@ public class YihaodianAPI extends Controller{
             String[] param = line.split("::");
             params.put(param[0], param[1]);
         }
-        renderText(Util.sendRequest(params, method));
+        renderText(YHDShopUtil.sendRequest(params, method));
     }
 }

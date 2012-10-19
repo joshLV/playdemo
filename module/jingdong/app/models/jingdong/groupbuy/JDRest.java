@@ -1,6 +1,5 @@
 package models.jingdong.groupbuy;
 
-import models.jingdong.JDGroupBuyUtil;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -41,7 +40,8 @@ public class JDRest<T extends JDMessage> {
         resultCode = root.elementTextTrim("ResultCode");
         resultMessage = root.elementTextTrim("ResultMessage");
         if(StringUtils.isNotEmpty(resultCode) && !"200".equals(resultCode)){
-                return false;
+            Logger.info("resultCode is not 200");
+            return false;
         }
 
         Element messageElement = null;

@@ -1,6 +1,6 @@
 package controllers;
 
-import models.jingdong.JDGroupBuyUtil;
+import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.jingdong.groupbuy.JDRest;
 import models.jingdong.groupbuy.response.CategoryResponse;
 import models.jingdong.groupbuy.response.CityResponse;

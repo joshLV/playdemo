@@ -9,7 +9,7 @@ import models.order.*;
 import models.resale.Resaler;
 import models.resale.ResalerCreditable;
 import models.sales.Goods;
-import models.yihaodian.Util;
+import models.yihaodian.shop.YHDShopUtil;
 import models.yihaodian.groupbuy.YHDGroupBuyUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +22,6 @@ import play.test.FunctionalTest;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -275,6 +274,6 @@ public class YHDGroupBuyTest extends FunctionalTest{
 
     private void resign(TreeMap<String, String> params){
         params.remove("sign");//必须先删除 不能直接覆盖 因为下面要先算不带sign的签名
-        params.put("sign", YHDGroupBuyUtil.md5Signature(params, Util.SECRET_KEY));
+        params.put("sign", YHDGroupBuyUtil.md5Signature(params, YHDShopUtil.SECRET_KEY));
     }
 }

@@ -3,6 +3,8 @@ package models.yihaodian;
 import models.order.OuterOrder;
 import models.order.OuterOrderPartner;
 import models.order.OuterOrderStatus;
+import models.yihaodian.shop.Response;
+import models.yihaodian.shop.YHDShopUtil;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.JPAPlugin;
@@ -29,6 +31,7 @@ public class YHDGroupBuyJobConsumer extends RabbitMQConsumer<YHDGroupBuyMessage>
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
                 OuterOrderPartner.YHD,message.getOrderCode()).first();
         if(outerOrder == null || outerOrder.ybqOrder == null){
+            Logger.info("can not find outerOrder: %s", message.getOrderCode());
             JPAPlugin.closeTx(true);
             return;
         }
@@ -64,7 +67,7 @@ public class YHDGroupBuyJobConsumer extends RabbitMQConsumer<YHDGroupBuyMessage>
         Logger.info("yhd.group.buy.order.verify orderAmount %s", params.get("orderAmount"));
         Logger.info("yhd.group.buy.order.verify orderCreateTime %s", params.get("orderCreateTime"));
 
-        String responseXml = Util.sendRequest(params, "yhd.group.buy.order.verify");
+        String responseXml = YHDShopUtil.sendRequest(params, "yhd.group.buy.order.verify");
         Logger.info("yhd.group.buy.order.verify response %s", responseXml);
         if (responseXml != null) {
             Response res = new Response();

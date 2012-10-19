@@ -1,4 +1,4 @@
-package models.yihaodian;
+package models.yihaodian.shop;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
