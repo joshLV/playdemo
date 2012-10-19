@@ -37,7 +37,9 @@ require:
     - emaillogs -> emaillogs
     - cache_helper -> cache_helper
     - dangdang -> dangdang
+    - jingdong -> jingdong
     - commons-httpclient -> commons-httpclient 3.1
+
 repositories:
 
     - mavenRepository:
@@ -78,3 +80,4 @@ repositories:
             - emaillogs -> *
             - cache_helper -> *
             - dangdang -> *
+            - jingdong -> *

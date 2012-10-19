@@ -29,6 +29,7 @@ require:
     - asset_package -> asset_package
     - emaillogs -> emaillogs
     - dangdang -> dangdang
+    - jingdong -> jingdong
     - commons-httpclient -> commons-httpclient 3.1
 
 repositories:
@@ -68,3 +69,4 @@ repositories:
             - cache_helper -> *
             - emaillogs -> *
             - dangdang -> *
+            - jingdong -> *

@@ -30,6 +30,7 @@ require:
     - cache_helper -> cache_helper
     - emaillogs -> emaillogs
     - dangdang -> dangdang
+    - jingdong -> jingdong
 
 repositories:
     - mavenRepository:
@@ -69,4 +70,4 @@ repositories:
             - cache_helper -> *
             - emaillogs -> *
             - dangdang -> *
-
+            - jingdong -> *

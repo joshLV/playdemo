@@ -31,6 +31,7 @@ require:
     - emaillogs -> emaillogs
     - cache_helper -> cache_helper
     - dangdang -> dangdang
+    - jingdong -> jingdong
 
 repositories:
 
@@ -71,3 +72,4 @@ repositories:
             - emaillogs -> *
             - cache_helper -> *
             - dangdang -> *
+            - jingdong -> *
