@@ -135,14 +135,14 @@ public class SupplierUnitTest extends UnitTest {
         SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
         Date date = new Date();
-        Date beginDate = Supplier.getShopHour(date, "08:00", false);
+        Date beginDate = Supplier.getShopHour(date, "22:00", false);
         Date endDate = Supplier.getShopHour(date, "22:00", true);
-        assertEquals((DateUtil.dateToString(date) + " 08:00"), formatDate.format(beginDate));
-        assertEquals(DateUtil.dateToString(date) + " 22:00", formatDate.format(endDate));
+        assertEquals((DateUtil.dateToString(date, 0) + " 22:00"), formatDate.format(beginDate));
+        assertEquals(DateUtil.dateToString(date, 1) + " 22:00", formatDate.format(endDate));
         beginDate = Supplier.getShopHour(date, "", false);
         endDate = Supplier.getShopHour(date, "", true);
-        assertEquals(DateUtil.dateToString(date) + " 00:00", formatDate.format(beginDate));
-        assertEquals(DateUtil.dateToString(date) + " 23:59", formatDate.format(endDate));
+        assertEquals(DateUtil.dateToString(date, 0) + " 23:59", formatDate.format(beginDate));
+        assertEquals(DateUtil.dateToString(date, 1) + " 23:59", formatDate.format(endDate));
     }
 
 }

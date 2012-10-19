@@ -279,10 +279,9 @@ public class Supplier extends Model {
      * @return
      */
     public static Date getShopHour(Date condionDate, String shopHour, boolean hourFlag) {
-        String time = BEGIN_TIME;
+        String time = END_TIME;
         int days = 0;
         if (hourFlag) {
-            time = END_TIME;
             days = 1;
         }
         return DateUtil.stringToDate(DateUtil.dateToString(condionDate, days) + (StringUtils.isBlank(shopHour) ? time : " " + shopHour));
