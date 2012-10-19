@@ -1,6 +1,7 @@
 package function;
 
 import factory.FactoryBoy;
+import factory.sales.GoodsHistoryFactory;
 import models.dangdang.DDAPIInvokeException;
 import models.dangdang.DDAPIUtil;
 import models.dangdang.DDFailureLog;
@@ -10,6 +11,7 @@ import models.dangdang.HttpProxy;
 import models.dangdang.Response;
 import models.order.ECoupon;
 import models.sales.Goods;
+import models.sales.GoodsHistory;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.junit.Test;
 import play.mvc.Before;
@@ -25,9 +27,14 @@ import java.io.ByteArrayInputStream;
  * Time: 2:58 PM
  */
 public class DDAPIUtilTest extends FunctionalTest {
+    GoodsHistory goodsHistory;
+    Goods goods;
+
     @Before
     public void setup() {
         FactoryBoy.lazyDelete();
+        goods = FactoryBoy.create(Goods.class);
+        goodsHistory = FactoryBoy.create(GoodsHistory.class);
     }
 
     @Test

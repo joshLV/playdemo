@@ -18,8 +18,8 @@ import java.util.Date;
 public class DDOrderItemFactory extends ModelFactory<DDOrderItem> {
     @Override
     public DDOrderItem define() {
-        OrderItems orderItems = FactoryBoy.create(OrderItems.class);
-        Goods goods = FactoryBoy.create(Goods.class);
+        OrderItems orderItems = FactoryBoy.lastOrCreate(OrderItems.class);
+        Goods goods = FactoryBoy.lastOrCreate(Goods.class);
         DDOrderItem item = new DDOrderItem();
         item.ybqOrderItems = orderItems;
         item.createdAt = new Date();
