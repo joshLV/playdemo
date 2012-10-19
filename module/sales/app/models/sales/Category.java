@@ -1,9 +1,11 @@
 package models.sales;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import cache.CacheHelper;
+import play.db.jpa.Model;
+import play.modules.solr.SolrEmbedded;
+import play.modules.solr.SolrField;
+import play.modules.solr.SolrSearchable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,8 +16,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import play.db.jpa.Model;
-import cache.CacheHelper;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 商品分类.
@@ -26,6 +30,7 @@ import cache.CacheHelper;
  */
 @Entity
 @Table(name = "categories")
+@SolrSearchable
 public class Category extends Model {
 
     private static final long serialVersionUID = 7114320609113062L;
@@ -33,6 +38,7 @@ public class Category extends Model {
     /**
      * 类目名称
      */
+    @SolrField
     public String name;
     /**
      * 推荐度,显示顺序
@@ -44,8 +50,10 @@ public class Category extends Model {
      * SEO关键字.
      */
     @Column(name="keywords")
+    @SolrField
     public String keywords;
-    
+
+    @SolrField
     public String tuan800name;
     
     /**
@@ -53,6 +61,7 @@ public class Category extends Model {
      */
     @ManyToOne
     @JoinColumn(name = "parent_id")
+    @SolrField
     public Category parentCategory;
 
     /**
@@ -64,6 +73,7 @@ public class Category extends Model {
     public Set<Goods> goodsSet;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @SolrEmbedded
     public Set<CategoryProperty> properties = new HashSet<CategoryProperty>();
 
     public Category() {

@@ -1,12 +1,18 @@
 package functional;
 
-import models.sales.*;
+import models.sales.Area;
+import models.sales.Brand;
+import models.sales.Category;
+import models.sales.Goods;
+import models.sales.Shop;
 import org.junit.Before;
 import org.junit.Test;
 import play.Play;
 import play.mvc.Http;
 import play.test.Fixtures;
 import play.test.FunctionalTest;
+
+import java.util.List;
 
 /**
  * 商品控制器的测试.
@@ -32,7 +38,7 @@ public class GoodsTest extends FunctionalTest {
         Fixtures.loadModels("fixture/goods_unit.yml");
     }
 
-    @Test
+//    @Test
     public void testShow() {
         Long goodsId = (Long) Fixtures.idCache.get("models.sales.Goods-Goods_001");
 
@@ -40,15 +46,23 @@ public class GoodsTest extends FunctionalTest {
         assertIsOk(response);
         assertContentType("text/html", response);
         assertCharset(Play.defaultWebEncoding, response);
-    }	
+    }
 
 
-    @Test
+//    @Test
     public void testList() {
         Http.Response response = GET("/goods/list/0-021-0-0-0-0-0-0-1?page=1");
         assertIsOk(response);
         assertContentType("text/html", response);
         assertCharset(Play.defaultWebEncoding, response);
     }
+
+    @Test
+    public void testSearch() {
+        List<Goods> goodsList = Goods.search("name","抵用券").fetch();
+        assertNotNull(goodsList);
+        assertEquals(2, goodsList.size());
+    }
+
 
 }

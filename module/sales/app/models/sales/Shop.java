@@ -6,6 +6,8 @@ import org.apache.commons.lang.StringUtils;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
+import play.modules.solr.SolrField;
+import play.modules.solr.SolrSearchable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -24,6 +26,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "shops")
+@SolrSearchable
 public class Shop extends Model {
 
     private static final long serialVersionUID = 36632320609113062L;
@@ -37,13 +40,17 @@ public class Shop extends Model {
     public String no;
 
     @Required
+    @SolrField
     public String name;
 
     @Required
+    @SolrField
     public String address;
 
+    @SolrField
     public String phone;
 
+    @SolrField
     public String traffic;
 
     @Column(name = "is_close")

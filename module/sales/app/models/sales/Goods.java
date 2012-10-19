@@ -4,43 +4,12 @@
  */
 package models.sales;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
 import cache.CacheCallBack;
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
 import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.FileUploadUtil;
+import com.uhuila.common.util.HtmlUtil;
 import com.uhuila.common.util.PathUtil;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
@@ -52,12 +21,13 @@ import models.order.OrderStatus;
 import models.resale.Resaler;
 import models.resale.ResalerFav;
 import models.supplier.Supplier;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
-
 import play.Play;
 import play.data.validation.InFuture;
 import play.data.validation.Max;
@@ -69,18 +39,13 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.i18n.Messages;
 import play.modules.paginate.JPAExtPaginator;
+import play.modules.paginate.ValuePaginator;
+import play.modules.solr.Solr;
+import play.modules.solr.SolrEmbedded;
+import play.modules.solr.SolrField;
+import play.modules.solr.SolrSearchable;
 import play.modules.view_ext.annotation.Money;
-import cache.CacheCallBack;
-import cache.CacheHelper;
 
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.DateUtil;
-import com.uhuila.common.util.FileUploadUtil;
-import com.uhuila.common.util.PathUtil;
-//import models.resale.ResalerLevel;
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -94,7 +59,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -106,7 +70,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -114,8 +77,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+//import models.resale.ResalerLevel;
+
 @Entity
 @Table(name = "goods")
+@SolrSearchable
 public class Goods extends Model {
     private static final long serialVersionUID = 7063232063912330652L;
 
@@ -139,6 +105,7 @@ public class Goods extends Model {
     @Max(999999)
     @Money
     @Column(name = "face_value")
+    @SolrField
     public BigDecimal faceValue;
 
     /**
@@ -149,6 +116,7 @@ public class Goods extends Model {
     @Max(999999)
     @Money
     @Column(name = "original_price")
+    @SolrField
     public BigDecimal originalPrice;
 
 
@@ -159,6 +127,7 @@ public class Goods extends Model {
     @Max(999999)
     @Money
     @Column(name = "sale_price")
+    @SolrField
     public BigDecimal salePrice;
 
     /**
@@ -173,6 +142,7 @@ public class Goods extends Model {
     @Min(0)
     @Max(5)
     @Money
+    @SolrField
     public BigDecimal promoterPrice;
     /**
      * 给受邀者的返利金额
@@ -181,6 +151,7 @@ public class Goods extends Model {
     @Min(0)
     @Max(5)
     @Money
+    @SolrField
     public BigDecimal invitedUserPrice;
 
     //  ======  价格列表结束 ==========
@@ -189,12 +160,14 @@ public class Goods extends Model {
      * 商品编号
      */
     @MaxSize(30)
+    @SolrField
     public String no;
     /**
      * 商品名称
      */
     @Required
     @MaxSize(60)
+    @SolrField
     public String name;
 
     /**
@@ -202,6 +175,7 @@ public class Goods extends Model {
      */
     @Required
     @MaxSize(60)
+    @SolrField
     public String title;
     /**
      * 所属商户ID
@@ -218,6 +192,7 @@ public class Goods extends Model {
     @JoinTable(name = "goods_categories", inverseJoinColumns = @JoinColumn(name
             = "category_id"), joinColumns = @JoinColumn(name = "goods_id"))
     @Required
+    @SolrEmbedded
     public Set<Category> categories;
 
     /**
@@ -230,6 +205,7 @@ public class Goods extends Model {
      * 进货量
      */
     @Column(name = "income_goods_count")
+    @SolrField
     public Long incomeGoodsCount;
     /**
      * 券有效开始日
@@ -237,6 +213,7 @@ public class Goods extends Model {
     @Required
     @Column(name = "effective_at")
     @Temporal(TemporalType.TIMESTAMP)
+    @SolrField
     public Date effectiveAt;
     /**
      * 券有效结束日
@@ -245,15 +222,19 @@ public class Goods extends Model {
     @InFuture
     @Column(name = "expire_at")
     @Temporal(TemporalType.TIMESTAMP)
+    @SolrField
     public Date expireAt;
 
     @Column(name = "use_begin_time")
+    @SolrField
     public String useBeginTime;
 
     @Column(name = "use_end_time")
+    @SolrField
     public String useEndTime;
 
     @Column(name = "use_week_day")
+    @SolrField
     public String useWeekDay;
     @Transient
     public String useWeekDayAll;
@@ -261,7 +242,6 @@ public class Goods extends Model {
      * 商品标题
      */
     //    public String title;
-
     private BigDecimal discount;
 
     @Required
@@ -280,9 +260,10 @@ public class Goods extends Model {
     /**
      * 售出数量
      */
-    //@Column(name = "sale_count")
-    // public int saleCount;
-    
+    @Column(name = "sale_count")
+    @SolrField
+    public int saleCount;
+
     /**
      * 剩余商品数量，需要去掉.
      */
@@ -290,6 +271,7 @@ public class Goods extends Model {
     @Min(0)
     @Max(999999)
     @Column(name = "base_sale")
+    @SolrField
     public Long baseSale;
     /**
      * 商品状态,
@@ -300,38 +282,45 @@ public class Goods extends Model {
      * 创建来源
      */
     @Column(name = "created_from")
+    @SolrField
     public String createdFrom;
     /**
      * 创建时间
      */
     @Column(name = "created_at")
+    @SolrField
     public Date createdAt;
     /**
      * 创建人
      */
     @Column(name = "created_by")
+    @SolrField
     public String createdBy;
 
     /**
      * 最早上架时间
      */
     @Column(name = "first_onsale_at")
+    @SolrField
     public Date firstOnSaleAt;
 
     /**
      * 修改时间
      */
     @Column(name = "updated_at")
+    @SolrField
     public Date updatedAt;
     /**
      * 修改人
      */
     @Column(name = "updated_by")
+    @SolrField
     public String updatedBy;
     /**
      * 逻辑删除,0:未删除，1:已删除
      */
     @Enumerated(EnumType.ORDINAL)
+    @SolrField
     public DeletedStatus deleted;
     /**
      * 乐观锁
@@ -345,37 +334,44 @@ public class Goods extends Model {
      * 用于多个商品组合成一个商品组，同一系列的发送收货短信时，使用相同的replyCode.
      */
     @Column(name = "group_code", length = 32)
+    @SolrField
     public String groupCode;
 
     /**
      * 手工排序
      */
     @Column(name = "display_order")
+    @SolrField
     public String displayOrder;
 
     @Required
     @ManyToOne
     @JoinColumn(name = "brand_id")
+    @SolrEmbedded
     public Brand brand;
 
     /**
      * 限购数量
      */
     @Column(name = "limit_number")
+    @SolrField
     public Integer limitNumber = 0;
 
     /**
      * 推荐指数.
      */
+    @SolrField
     public Integer recommend = 0;
 
     /**
      * 优先指数.
      */
+    @SolrField
     public Integer priority = 0;
     /**
      * 收藏指数.
      */
+    @SolrField
     public Integer favorite = 0;
 
 
@@ -396,16 +392,19 @@ public class Goods extends Model {
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "material_type")
+    @SolrField
     public MaterialType materialType;
 
     /**
      * SEO关键字.
      */
     @Column(name = "keywords")
+    @SolrField
     public String keywords;
 
     @Column(name = "coupon_type")
     @Enumerated(EnumType.STRING)
+    @SolrField
     public GoodsCouponType couponType;
 
     /**
@@ -413,6 +412,7 @@ public class Goods extends Model {
      * 设置后将不允许自动发布到这些电子商务网站上
      */
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "goods")
+    @SolrEmbedded
     public Set<GoodsUnPublishedPlatform> unPublishedPlatforms;
 
     public static final String IMAGE_SERVER = Play.configuration.getProperty
@@ -442,6 +442,7 @@ public class Goods extends Model {
      * @return
      */
     @Transient
+    @SolrEmbedded
     public Supplier getSupplier() {
         if (supplierId == null) {
             return null;
@@ -464,6 +465,7 @@ public class Goods extends Model {
      * 是否抽奖商品
      */
     @Column(name = "is_lottery")
+    @SolrField
     public Boolean isLottery = Boolean.FALSE;
 
     @Transient
@@ -479,6 +481,7 @@ public class Goods extends Model {
      * @return
      */
     @Transient
+    @SolrField
     public BigDecimal getSavePrice() {
         return originalPrice.remainder(salePrice);
     }
@@ -493,6 +496,12 @@ public class Goods extends Model {
             return "";
         }
         return Jsoup.clean(details, HTML_WHITE_TAGS);
+    }
+
+    @Transient
+    @SolrField
+    public String getDetailContent() {
+        return HtmlUtil.html2text(getDetails());
     }
 
     public void setDetails(String details) {
@@ -510,6 +519,7 @@ public class Goods extends Model {
     }
 
     @Column(name = "discount")
+    @SolrField
     public BigDecimal getDiscount() {
         if (discount != null && discount.compareTo(BigDecimal.ZERO) > 0) {
             return discount;
@@ -604,6 +614,12 @@ public class Goods extends Model {
         return Jsoup.clean(prompt, HTML_WHITE_TAGS);
     }
 
+    @Transient
+    @SolrField
+    public String getPromptContent() {
+        return HtmlUtil.html2text(getPrompt());
+    }
+
     public void setPrompt(String prompt) {
         this.prompt = Jsoup.clean(prompt, HTML_WHITE_TAGS);
     }
@@ -670,6 +686,7 @@ public class Goods extends Model {
         return false;
     }
 
+    @SolrField
     public GoodsStatus getStatus() {
         if (status != null && GoodsStatus.ONSALE.equals(status) &&
                 (expireAt != null && expireAt.before(new Date())) || (baseSale != null && baseSale <= 0)) {
@@ -682,6 +699,7 @@ public class Goods extends Model {
      * @return
      */
     @Transient
+    @SolrField
     public boolean isExpired() {
         return expireAt != null && expireAt.before(new Date());
     }
@@ -1001,6 +1019,7 @@ public class Goods extends Model {
         return isExist;
     }
 
+//    @SolrEmbedded
     public Collection<Shop> getShopList() {
         if (isAllShop) {
             return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId, "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {
@@ -1367,4 +1386,33 @@ public class Goods extends Model {
         goodsHistory.groupCode = this.groupCode;
         goodsHistory.save();
     }
+
+    //------------------------------------------- 使用solr服务进行搜索的方法 (Begin) --------------------------------------
+
+    /**
+     * todo
+     * 搜索
+     *
+     * @param condition  查询条件
+     * @param pageNumber 页数
+     * @param pageSize   记录数
+     * @return
+     */
+    public static ValuePaginator<Goods> search(GoodsCondition condition, int pageNumber, int pageSize) {
+        QueryResponse response = Solr.query("");
+        SolrDocumentList documentList = response.getResults();
+        List<Goods> goodsList = new ArrayList<>(documentList.size());
+        for (SolrDocument document : documentList) {
+            Goods goods = new Goods();
+//            document.
+        }
+
+        ValuePaginator<Goods> goodsPage = new ValuePaginator<>(goodsList);
+        goodsPage.setPageNumber(pageNumber);
+        goodsPage.setPageSize(pageSize);
+        goodsPage.setBoundaryControlsEnabled(false);
+        return goodsPage;
+    }
+    //------------------------------------------- 使用solr服务进行搜索的方法 (End) ----------------------------------------
+
 }

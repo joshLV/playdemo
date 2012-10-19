@@ -1,15 +1,8 @@
 package models.sales;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
+import cache.CacheHelper;
+import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.PathUtil;
 import models.supplier.Supplier;
 import play.Play;
 import play.data.validation.MaxSize;
@@ -17,12 +10,22 @@ import play.data.validation.Min;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 import play.modules.paginate.ModelPaginator;
-import cache.CacheHelper;
-import com.uhuila.common.constants.DeletedStatus;
-import com.uhuila.common.util.PathUtil;
+import play.modules.solr.SolrField;
+import play.modules.solr.SolrSearchable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "brands")
+@SolrSearchable
 public class Brand extends Model {
 
     private static final long serialVersionUID = 7063232060911301L;
@@ -37,7 +40,9 @@ public class Brand extends Model {
 
     @Required
     @MaxSize(20)
+    @SolrField
     public String name;
+
     public String logo;
     @ManyToOne
     public Supplier supplier;
@@ -50,12 +55,15 @@ public class Brand extends Model {
 //    @Time
 //    public String closeAt;     //营业时间下班时间
     @MaxSize(4000)
+    @SolrField
     public String introduce;     //特色产品介绍
 
     @Enumerated(EnumType.ORDINAL)
+    @SolrField
     public DeletedStatus deleted;
     
     @Column(name="is_hot")
+    @SolrField
     public Boolean isHot;
 
     public static final String CACHEKEY = "BRAND";

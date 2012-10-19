@@ -1,6 +1,8 @@
 package models.sales;
 
 import play.db.jpa.Model;
+import play.modules.solr.SolrField;
+import play.modules.solr.SolrSearchable;
 
 import javax.persistence.*;
 
@@ -13,6 +15,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "category_properties")
+@SolrSearchable
 public class CategoryProperty extends Model {
     
     private static final long serialVersionUID = 7063981609113062L;
@@ -20,15 +23,18 @@ public class CategoryProperty extends Model {
     /**
      * 属性名.
      */
+    @SolrField
     public String name;
     /**
      * 文本值.
      */
     @Enumerated(EnumType.STRING)
+    @SolrField
     public CategoryPropertyType type;
     /**
      * 图片
      */
+    @SolrField
     public String value;
     /**
      * 所属类目
