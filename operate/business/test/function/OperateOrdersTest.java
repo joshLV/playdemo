@@ -43,7 +43,7 @@ public class OperateOrdersTest extends FunctionalTest {
         Fixtures.loadModels("fixture/goods_unit.yml");
         Fixtures.loadModels("fixture/orders.yml");
         Fixtures.loadModels("fixture/orderItems.yml");
-        Fixtures.loadModels("fixture/goodsHistory.yml");
+
         // 重新加载配置文件
         VirtualFile file = VirtualFile.open("conf/rbac.xml");
         RbacLoader.init(file);
