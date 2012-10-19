@@ -135,6 +135,11 @@ public class CouponsCondition implements Serializable {
             paramMap.put("phone", "%" + searchItems + "%");
         }
 
+        if (QueryType.UID.toString().equals(searchKey) && StringUtils.isNotBlank(searchItems)) {
+            sql.append(" and e.order.userId = :uid");
+            paramMap.put("uid", Long.parseLong(searchItems));
+        }
+
 
         //CRM  查询券
         if (StringUtils.isNotBlank(allSearch)) {
@@ -148,7 +153,7 @@ public class CouponsCondition implements Serializable {
             paramMap.put("allSearch", "%" + allSearch);
 
             sql.append(" or e.orderItems.phone =:allSearch");
-            paramMap.put("allSearch", allSearch );
+            paramMap.put("allSearch", allSearch);
 
             sql.append(" or e.id in (select c.couponId from CouponCallBind c where c.phone=:allSearch)");
             paramMap.put("allSearch", allSearch);
@@ -167,8 +172,6 @@ public class CouponsCondition implements Serializable {
 
 
         }
-
-
 
 
         if (brandId != 0) {

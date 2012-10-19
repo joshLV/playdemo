@@ -43,16 +43,19 @@ public class WithdrawApproval extends Controller {
     public static void detail(Long id, Long uid) {
         WithdrawBill bill = WithdrawBill.findById(id);
         List<WithdrawBill> withdrawBillList = WithdrawBill.find("status=? and applier=?", WithdrawBillStatus.SUCCESS, bill.applier).fetch();
-        BigDecimal sum = BigDecimal.ZERO;
+        BigDecimal temp = BigDecimal.ZERO;
+        Double sum = 0d;
+        String supplierFullName = "";
         for (WithdrawBill b : withdrawBillList) {
-            sum.add(b.amount);
+            sum += temp.add(b.amount).doubleValue();
         }
         if (bill == null) {
             error("withdraw bill not found");
         }
-        Supplier supplier = Supplier.findById(uid);
-        String supplierFullName = supplier.fullName;
-        System.out.println("supplierFullName>>>>"+supplierFullName);
+        if (bill.account.accountType == AccountType.SUPPLIER) {
+            Supplier supplier = Supplier.findById(uid);
+            supplierFullName = supplier.fullName;
+        }
         render(bill, uid, sum, supplierFullName);
     }
 
