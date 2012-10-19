@@ -133,9 +133,6 @@ public class Supplier extends Model {
         this.id = id;
     }
 
-    @Column(name = "shop_begin_hour")
-    public String shopBeginHour;
-
     @Column(name = "shop_end_hour")
     public String shopEndHour;
 
@@ -201,7 +198,6 @@ public class Supplier extends Model {
         sp.userName = supplier.userName;
         sp.email = supplier.email;
         sp.salesEmail = supplier.salesEmail;
-        sp.shopBeginHour = supplier.shopBeginHour;
         sp.shopEndHour = supplier.shopEndHour;
         sp.updatedAt = new Date();
         sp.save();

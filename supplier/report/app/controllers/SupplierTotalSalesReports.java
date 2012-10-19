@@ -94,7 +94,6 @@ public class SupplierTotalSalesReports extends Controller {
         Supplier supplier = Supplier.findById(SupplierRbac.currentUser().supplier.id);
         condition.supplierId = supplier.id;
         condition.shopEndHour = supplier.shopEndHour;
-        condition.shopBeginHour = supplier.shopBeginHour;
         renderArgs.put("condition", condition);
         if (condition.supplierId != null && condition.supplierId > 0l) {
             List<Shop> shops = Shop.findShopBySupplier(condition.supplierId);
