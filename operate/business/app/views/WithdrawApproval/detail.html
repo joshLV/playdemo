@@ -32,17 +32,15 @@
         <div class="control-group">
             <label class="control-label">申 请 者</label>
             <label class="control-value">${bill?.applier}
-            *{http://${play.Play.configuration.getProperty("www.url")}}*   &nbsp;&nbsp; (&nbsp;uid:${uid}&nbsp;) &nbsp;&nbsp;
+            &nbsp;&nbsp; (&nbsp;uid:${uid}&nbsp;) &nbsp;&nbsp;
             #{if  bill.account.accountType==models.accounts.AccountType.CONSUMER }
-                <a href="http://localhost:9303/coupons?condition.searchKey=UID&condition.searchItems=${uid}&condition.status=REFUND"
+                <a href="/coupons?condition.searchKey=UID&condition.searchItems=${uid}&condition.status=REFUND"
                    target="_blank">查看相关券</a>
             #{/if}
-            *{http://${play.Play.configuration.getProperty("www.url")}}*
             #{if  bill.account.accountType==models.accounts.AccountType.SUPPLIER }
-                <a href="http://localhost:9303/reports/supplier?condition.accountName=${supplierFullName}&condition.tradeType=PURCHASE_COSTING"
+                <a href="/reports/supplier?condition.accountName=${supplierFullName}&condition.tradeType=PURCHASE_COSTING"
                    target="_blank">账户资金明细</a>
             #{/if}
-
             </label>
         </div>
         <div class="control-group">

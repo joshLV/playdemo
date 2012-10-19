@@ -61,11 +61,10 @@ public class OperateOrdersTest extends FunctionalTest {
     }
 
 	@Test
-	public void testIndex() {
+  	public void testIndex() {
 		Response response = GET("/orders");
 		assertStatus(200, response);
 	}
-
 
     @Test
     public void testCoupons() {

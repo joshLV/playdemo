@@ -289,7 +289,7 @@ select:'condition_status',value:condition?.status/}
         <td rowspan="${order?.orderItems?.size()}">${order.paidAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
         <td rowspan="${order?.orderItems?.size()}">${order.refundAt?.format("yyyy-MM-dd HH:mm:ss")}</td>
         <td rowspan="${order?.orderItems?.size()}"><a href="@{OperateOrders.details(order.id)}">查看</a></td>
-    </tr>   http://localhost:7303/@tests
+    </tr>
         #{set i:0/}
         #{set showRealStatus:true/}
         #{if order.realGoods?.size()>0}
