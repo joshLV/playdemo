@@ -8,7 +8,7 @@ require:
     - play1 -> paginate head
     - play1 -> app-version 0.1
     - play1 -> rabbitmq 0.3
-    - play1 -> factory-boy 0.1
+    - play1 -> factory-boy 1.0
     - layout_trader -> layout_trader
     - paginate_ext -> paginate_ext
     - supplier -> supplier
