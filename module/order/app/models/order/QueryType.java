@@ -14,6 +14,6 @@ public enum QueryType {
     CLERK_JOB_NUMBER,//店员工号
     SHOP_NAME,//消费门店
     COUPON,
-    ALLPHONE  //按手机号码搜索
-
+    ALLPHONE,  //按手机号码搜索
+    UID       //按用户Id搜索
 }

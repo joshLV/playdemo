@@ -229,6 +229,7 @@ GET     /financing_incoming_add                 FinancingIncomingNote.add
 # 提现管理
 GET     /withdraw                               WithdrawApproval.index
 GET     /withdraw/detail/{id}                   WithdrawApproval.detail
+GET     /withdraw/{id}/detail                   WithdrawApproval.detail
 POST    /withdraw/approve                       WithdrawApproval.approve
 
 # 用户管理

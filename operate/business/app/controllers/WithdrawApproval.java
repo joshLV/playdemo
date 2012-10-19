@@ -40,12 +40,20 @@ public class WithdrawApproval extends Controller {
         render(billPage, condition);
     }
 
-    public static void detail(Long id) {
+    public static void detail(Long id, Long uid) {
         WithdrawBill bill = WithdrawBill.findById(id);
+        List<WithdrawBill> withdrawBillList = WithdrawBill.find("status=? and applier=?", WithdrawBillStatus.SUCCESS, bill.applier).fetch();
+        BigDecimal sum = BigDecimal.ZERO;
+        for (WithdrawBill b : withdrawBillList) {
+            sum.add(b.amount);
+        }
         if (bill == null) {
             error("withdraw bill not found");
         }
-        render(bill);
+        Supplier supplier = Supplier.findById(uid);
+        String supplierFullName = supplier.fullName;
+        System.out.println("supplierFullName>>>>"+supplierFullName);
+        render(bill, uid, sum, supplierFullName);
     }
 
     public static void approve(Long id, String action, BigDecimal fee, String comment) {

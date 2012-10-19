@@ -159,7 +159,7 @@
                 <td>&{'withdraw.' + withdrawBill.status}</td>
                 <td>${withdrawBill.processedAt?.format('yyyy-MM-dd HH:mm:ss')}</td>
                 <td>
-                    <a href="/withdraw/detail/${withdrawBill.id}"> 查看详情 </a>
+                    <a href="/withdraw/${withdrawBill.id}/detail?uid=${withdrawBill.account.uid}">查看详情 </a>
                 </td>
             </tr>
         #{/paginate.list}

@@ -62,6 +62,7 @@ public class OperateOrdersTest extends FunctionalTest {
 		Security.cleanLoginUserForTest();
 	}
 
+<<<<<<< Updated upstream
 	@Test
 	public void testIndex() {
 		Response response = GET("/orders");
@@ -73,6 +74,13 @@ public class OperateOrdersTest extends FunctionalTest {
 		Response response = GET("/coupons");
 		assertStatus(200, response);
 	}
+=======
+    @Test
+    public void testIndex() {
+        Response response = GET("/orders");
+        assertStatus(200, response);
+    }
+>>>>>>> Stashed changes
 
 	@Test
 	public void testDetails() {

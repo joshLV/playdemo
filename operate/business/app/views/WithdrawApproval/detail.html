@@ -3,14 +3,16 @@
 #{include '/share/nav.html' /}
 #{set 'moreStyles'}
 <style type="text/css">
-    .control-label{
+    .control-label {
         font-weight: bold;
     }
-    .control-value{
+
+    .control-value {
         line-height: 28px;
         margin-left: 160px;
     }
-    .form-horizontal .control-group{
+
+    .form-horizontal .control-group {
         margin-bottom: 4px;
     }
 </style>
@@ -25,15 +27,31 @@
         </div>
         <div class="control-group">
             <label class="control-label">账户类型</label>
-            <label class="control-value"> &{'account.type.' + bill.account.accountType}</label>
+            <label class="control-value"> &{'account.type.' + bill.account.accountType} </label>
         </div>
         <div class="control-group">
             <label class="control-label">申 请 者</label>
-            <label class="control-value">${bill?.applier}</label>
+            <label class="control-value">${bill?.applier}
+            *{http://${play.Play.configuration.getProperty("www.url")}}*   &nbsp;&nbsp; (&nbsp;uid:${uid}&nbsp;) &nbsp;&nbsp;
+            #{if  bill.account.accountType==models.accounts.AccountType.CONSUMER }
+                <a href="http://localhost:9303/coupons?condition.searchKey=UID&condition.searchItems=${uid}&condition.status=REFUND"
+                   target="_blank">查看相关券</a>
+            #{/if}
+            *{http://${play.Play.configuration.getProperty("www.url")}}*   &nbsp;&nbsp; (&nbsp;uid:${uid}&nbsp;) &nbsp;&nbsp;
+            #{if  bill.account.accountType==models.accounts.AccountType.SUPPLIER }
+                <a href="http://localhost:9303/reports/supplier?condition.accountName=${}&condition.tradeType=PURCHASE_COSTING"
+                   target="_blank">查看相关券</a>
+            #{/if}
+
+            </label>
         </div>
         <div class="control-group">
             <label class="control-label">申请金额</label>
             <label class="control-value">${bill?.amount.formatCurrency('CNY')}</label>
+        </div>
+        <div class="control-group">
+            <label class="control-label">已通过提现金额 </label>
+            <label class="control-value">${sum.formatCurrency('CNY')}</label>
         </div>
         <div class="control-group">
             <label class="control-label">所在城市</label>
@@ -64,13 +82,13 @@
             <label class="control-value">${bill.fee?.formatCurrency('CNY')}</label>
         </div>
         <div class="form-actions">
-            #{if bill.status == models.accounts.WithdrawBillStatus.APPLIED}
-                <a data-toggle="modal" href="#agree-modal" class="btn btn-primary">通过</a>
-                <a data-toggle="modal" href="#reject-modal" class="btn btn-danger">拒绝</a>
-            #{/if}
-            #{else}
-                <a href="/withdraw" class="btn btn-primary">返回</a>
-            #{/else}
+        #{if bill.status == models.accounts.WithdrawBillStatus.APPLIED}
+            <a data-toggle="modal" href="#agree-modal" class="btn btn-primary">通过</a>
+            <a data-toggle="modal" href="#reject-modal" class="btn btn-danger">拒绝</a>
+        #{/if}
+        #{else}
+            <a href="/withdraw" class="btn btn-primary">返回</a>
+        #{/else}
         </div>
     </div>
 
@@ -81,30 +99,32 @@
         <h3>同意提现申请</h3>
     </div>
 
-    #{form @WithdrawApproval.approve(), class:'form-horizontal'}
-        <div class="modal-body">
-            <fieldset>
-                <div class="control-group">
-                    <label class="control-label" for="agree-fee">手续费</label>
-                    <div class="controls">
-                        <input type="text" class="input-xlarge" id="agree-fee" name="fee" value="0">元
-                    </div>
+#{form @WithdrawApproval.approve(), class:'form-horizontal'}
+    <div class="modal-body">
+        <fieldset>
+            <div class="control-group">
+                <label class="control-label" for="agree-fee">手续费</label>
+
+                <div class="controls">
+                    <input type="text" class="input-xlarge" id="agree-fee" name="fee" value="0">元
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="agree-comment">备注</label>
-                    <div class="controls">
-                        <textarea rows="3" class="input-xlarge" id="agree-comment" name="comment">无</textarea>
-                    </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="agree-comment">备注</label>
+
+                <div class="controls">
+                    <textarea rows="3" class="input-xlarge" id="agree-comment" name="comment">无</textarea>
                 </div>
-            </fieldset>
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="btn" data-dismiss="modal">关闭</a>
-            <input type="hidden" name="id" value="${bill.id}">
-            <input type="hidden" name="action" value="agree">
-            <button class="btn btn-primary" type="submit">通过</button>
-        </div>
-    #{/form}
+            </div>
+        </fieldset>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">关闭</a>
+        <input type="hidden" name="id" value="${bill.id}">
+        <input type="hidden" name="action" value="agree">
+        <button class="btn btn-primary" type="submit">通过</button>
+    </div>
+#{/form}
 </div>
 <div id="reject-modal" class="modal hide">
     <div class="modal-header">
@@ -112,13 +132,14 @@
         <h3>拒绝提现申请</h3>
     </div>
 
-    #{form @WithdrawApproval.approve(), class:'form-horizontal'}
+#{form @WithdrawApproval.approve(), class:'form-horizontal'}
     <div class="modal-body">
         <fieldset>
             <div class="control-group">
                 <label class="control-label" for="reject-comment">拒绝理由</label>
+
                 <div class="controls">
-                    <textarea rows="3" class="input-xlarge" id="reject-comment" name="comment" >请输入拒绝理由</textarea>
+                    <textarea rows="3" class="input-xlarge" id="reject-comment" name="comment">请输入拒绝理由</textarea>
                 </div>
             </div>
         </fieldset>
@@ -129,5 +150,5 @@
         <input type="hidden" name="action" value="reject">
         <button class="btn btn-danger" type="submit">拒绝</button>
     </div>
-    #{/form}
+#{/form}
 </div>
