@@ -110,7 +110,7 @@ public class OrderItems extends Model {
         this.createdAt = new Date();
     }
 
-    public static long getLastHistoryId(Long goodsId) {
+    public static Long getLastHistoryId(Long goodsId) {
         GoodsHistory goodsHistory = GoodsHistory.find("goodsId=? order by id desc", goodsId).first();
         return goodsHistory == null ? null : goodsHistory.id;
     }
