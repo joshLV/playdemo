@@ -4,63 +4,68 @@
     #{asset.css src:['/r/base.css', '/r/orders.css'] /}
 
 <style>
-#full_bg{
-    background-color: Gray;
-    display:none;
-    z-index:3;
-    position:absolute;
-    left:0px;
-    top:0px;
-    filter:Alpha(Opacity=30); /* IE */
-    -moz-opacity:0.4; /* Moz + FF */
-    opacity: 0.4;
-}
-#payment_result {
-    position:absolute;
-    width:400px;
-    height:200px;
-    background:white;
-    display: none;
-    z-index: 5;
-}
+    #full_bg {
+        background-color: Gray;
+        display: none;
+        z-index: 3;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        filter: Alpha(Opacity = 30); /* IE */
+        -moz-opacity: 0.4; /* Moz + FF */
+        opacity: 0.4;
+    }
+
+    #payment_result {
+        position: absolute;
+        width: 400px;
+        height: 200px;
+        background: white;
+        display: none;
+        z-index: 5;
+    }
 </style>
-#{/set} 
+#{/set}
 #{set 'moreScripts'}
 <script src="@@{'/public/javascripts/resaler_fav.js'}"></script>
 <script src="@{'/public/javascripts/My97DatePicker/WdatePicker.js'}" type="text/javascript" charset="UTF-8"></script>
 #{/set}
 
 #{set 'navMenu'}
-    <li><a href="/">首　页</a></li>
-    <li><a href="/goods">商品库</a></li>
-    <li><a  class="current" href="/library">我的分销库</a></li>
-    <li><a href="/charge">账户充值</a></li>
-    <li><a href="/withdraw">账户提现</a></li>
+<li><a href="/">首　页</a></li>
+<li><a href="/goods">商品库</a></li>
+<li><a class="current" href="/library">我的分销库</a></li>
+<li><a href="/charge">账户充值</a></li>
+<li><a href="/withdraw">账户提现</a></li>
 #{/set}
 
 <div id="full_bg"></div>
 <div id="payment_result">
     <div style="text-align:center;">
         <a href="#" onclick="close_result_dialog();">关闭</a><br/><br/>
+
         <form method="post" action="/batch-top-add" id="batch_upload_form">
-        按百分比加价：<input type="text" name="pricemakupRate" size="2"/>%<br/>
-        加固定额度：<input type="text" name="pricemakup" size="5"/>元<br/>
-        <input type="hidden" name="goodsIds" id="batch_upload_goodsids"/>
-        <input type="submit" value="上传" id="batch_upload_btn" >
+            按百分比加价：<input type="text" name="pricemakupRate" size="2"/>%<br/>
+            加固定额度：<input type="text" name="pricemakup" size="5"/>元<br/>
+            <input type="hidden" name="goodsIds" id="batch_upload_goodsids"/>
+            <input type="submit" value="上传" id="batch_upload_btn">
         </form>
     </div>
 </div>
 
 <div id="content">
-    #{breadcrumbs/breadcrumb breadcrumbs/}
+#{breadcrumbs/breadcrumb breadcrumbs/}
     <div class="main clearfix">
-        #{include "share/left.html"/}
+    #{include "share/left.html"/}
         <div class="section">
             <h3>分销库</h3>
+
             <form class="form-horizontal" id="orderForm" action="@{ResalerFavs.index()}" method="GET">
                 <span class="label">加入时间：</span>
-                <input class="short-input Wdate" type="text" name="createdAtBegin" id="createdAtBegin"  value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})" /> -
-                <input class="short-input Wdate" type="text" name="createdAtEnd"  id="createdAtEnd" value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})" />
+                <input class="short-input Wdate" type="text" name="createdAtBegin" id="createdAtBegin"
+                       value="${createdAtBegin?.format()}" onfocus="WdatePicker({readOnly:true})"/> -
+                <input class="short-input Wdate" type="text" name="createdAtEnd" id="createdAtEnd"
+                       value="${createdAtEnd?.format()}" onfocus="WdatePicker({readOnly:true})"/>
                 <span class="label">商品名称：</span>
                 <input class="medium-input" type="text" id="goodsName" name="goodsName" value="${goodsName}"/>
                 <button type="submit" class="search-btn" id="search">搜素</button>
@@ -77,12 +82,16 @@
                 </tr>
                 </thead>
 
-                #{list items:favs, as:'favItem'}
+            #{list items:favs, as:'favItem'}
                 <tbody>
-                <tr class="sep-row" id="row_sep_${favItem.goods.id}"><td colspan="6"></td></tr>
+                <tr class="sep-row" id="row_sep_${favItem.goods.id}">
+                    <td colspan="6"></td>
+                </tr>
                 <tr class="order-hd" id="row_hd_${favItem.goods.id}">
                     <td colspan="6">
-                        <input type="checkbox" id="check_goods_${favItem.goods.id}" />
+                         #{if favItem.partner!=models.order.OuterOrderPartner.DD}
+                             <input type="checkbox" id="check_goods_${favItem.goods.id}"/>
+                         #{/if}
                         <span>成交时间：${favItem.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
                     </td>
                 </tr>
@@ -96,37 +105,46 @@
                     <td>&{'goods.'+favItem.goods?.status}</td>
                     <td class="action">
                         <a href="#" id="del_${favItem.id}" name="${favItem.goods.id}" class="delete_gift">删除</a>
-                          #{if favItem.goods.status== models.sales.GoodsStatus.ONSALE }
+                        #{if favItem.goods.status== models.sales.GoodsStatus.ONSALE }
 
-                        #{if favItem.taobaoItemId}
-                           | <a href="/top-add?goodsId=${favItem.goods.id}">重新发布到淘宝</a>
-                        #{/if}
-                       #{else}
-                            #{if favItem.goods.canPublishTo(models.sales.GoodsPublishedPlatformType.TAOBAO)}
-                            | <a href="/top-add?goodsId=${favItem.goods.id}">发布到淘宝</a>
+                            #{if favItem.taobaoItemId}
+                                | <a href="/top-add?goodsId=${favItem.goods.id}">重新发布到淘宝</a>
                             #{/if}
-                       #{/else}
+                            #{else}
+                                #{if favItem.goods.canPublishTo(models.sales.GoodsPublishedPlatformType.TAOBAO)}
+                                    | <a href="/top-add?goodsId=${favItem.goods.id}">发布到淘宝</a>
+                                #{/if}
+                            #{/else}
+
                         #{/if}
+                        #{if favItem.partner!=models.order.OuterOrderPartner.DD}
+                            <a href="#" goodsId="${favItem.goods.id}" class="push_dd">发布到当当</a>
+                        #{/if}
+                        #{else}
+                            已发布在当当
+                        #{/else}
                     </td>
                 </tr>
                 </tbody>
-                #{/list}
-                #{if favs.size() == 0}
+            #{/list}
+            #{if favs.size() == 0}
                 <tr>
                     <td colspan="6" style="text-align: center; padding: 10px 0">您还没有添加商品哦，再逛逛吧:)</td>
                 </tr>
-                #{/if}
+            #{/if}
                 <tfoot>
-                <tr class="sep-row"><td colspan="6"></td></tr>
+                <tr class="sep-row">
+                    <td colspan="6"></td>
+                </tr>
                 <tr class="order-ft">
                     <td colspan="6">
-                        <input type="checkbox" id="uuuu" value="" name="select_all_checkbox" /> 全选
+                        <input type="checkbox" id="uuuu" value="" name="select_all_checkbox"/> 全选
                         <a href="#" id="batch_delete">批量删除</a>
                         <!--<a href="#" id="batch_upload_show">批量发布到淘宝</a>-->
+                        <a href="#" id="batch_add_dd">批量发布到当当</a><span id="error-info" style="color: #ff0000"></span>
                     </td>
                 </tr>
                 </tfoot>
-
             </table>
         </div>
     </div>

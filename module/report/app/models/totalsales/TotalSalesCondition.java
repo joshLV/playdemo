@@ -2,6 +2,7 @@ package models.totalsales;
 
 import com.uhuila.common.util.DateUtil;
 import models.order.ECouponStatus;
+import models.supplier.Supplier;
 import org.apache.commons.lang.StringUtils;
 import play.Logger;
 
@@ -62,14 +63,16 @@ public class TotalSalesCondition {
         StringBuilder condBuilder = new StringBuilder("e.status=:status"); //只统计已经消费的
         paramMap.put("status", ECouponStatus.CONSUMED);
         if (beginAt != null) {
-            Date beginDate = DateUtil.stringToDate(DateUtil.dateToString(beginAt) + (StringUtils.isBlank(shopBeginHour) ? " 00:00" : " " + shopBeginHour));
-            condBuilder.append(" and e.consumedAt >= :beginAt");
+            Date beginDate = Supplier.getShopHour(beginAt, shopEndHour, false);
+            condBuilder.append(" and e.consumedAt > :beginAt");
+            System.out.println(beginDate + "----------");
             paramMap.put("beginAt", beginDate);
         }
 
         if (endAt != null) {
-            Date endDate = DateUtil.stringToDate(DateUtil.dateToString(endAt) + (StringUtils.isBlank(shopEndHour) ? " 23:59" : " " + shopEndHour));
-            condBuilder.append(" and e.consumedAt < :endAt");
+            Date endDate = Supplier.getShopHour(endAt, shopEndHour, true);
+            System.out.println(endDate + "----------");
+            condBuilder.append(" and e.consumedAt <= :endAt");
             paramMap.put("endAt", endDate);
         }
 

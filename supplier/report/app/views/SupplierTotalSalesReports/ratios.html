@@ -163,10 +163,8 @@
             <li #{if condition.interval=='1m'} class="active" #{/if}  ><a start="1m" href="#">1个月</a></li>
             <li #{if condition.interval=='3m'} class="active" #{/if}  ><a start="3m" href="#">3个月</a></li>
         </ul>
-        <ul>营业时间 ${condition?.shopBeginHour=="" ? "00:00":condition?.shopBeginHour}～
-        ${condition?.shopEndHour=="" ? "23:59":condition?.shopEndHour}</ul>
+        <ul>截止营业时间至 ${condition?.shopEndHour=="" ? "23:59":condition?.shopEndHour}</ul>
         <input type="hidden" id="condition_interval" name="condition.interval"/>
-        <input type="hidden" value="${condition?.shopBeginHour}" name="condition.shopBeginHour"/>
         <input type="hidden" value="${condition?.shopEndHour}" name="condition.shopEndHour"/>
     </div>
 </form>

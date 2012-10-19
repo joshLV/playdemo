@@ -13,6 +13,7 @@ import models.resale.Resaler;
 import models.resale.ResalerStatus;
 import models.sales.Goods;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
 import play.mvc.Controller;
@@ -42,6 +43,7 @@ public class DDOrderAPI extends Controller {
         String express_memo = StringUtils.trimToEmpty(params.get("express_memo"));
         String user_id = StringUtils.trimToEmpty(params.get("user_id"));
         String kx_order_id = StringUtils.trimToEmpty(params.get("kx_order_id"));
+        BigDecimal amount = new BigDecimal(StringUtils.trimToEmpty(params.get("amount")));
         String sign = StringUtils.trimToEmpty(params.get("sign")).toLowerCase();
         ErrorInfo errorInfo = new ErrorInfo();
         //检查参数
@@ -108,16 +110,23 @@ public class DDOrderAPI extends Controller {
             }
         }
 
+
         order = Order.createConsumeOrder(resalerId, AccountType.RESALER);
         //分解有几个商品，每个商品购买的数量
         String[] arrGoods = options.split(",");
 
+        BigDecimal ybqPrice = BigDecimal.ZERO;
         String[] arrGoodsItem;
         for (String goodsItem : arrGoods) {
             arrGoodsItem = goodsItem.split(":");
             if (arrGoodsItem != null) {
                 Goods goods = Goods.findById(Long.parseLong(arrGoodsItem[0]));
                 BigDecimal resalerPrice = goods.getResalePrice();
+                ybqPrice = ybqPrice.add(resalerPrice.multiply(new BigDecimal(arrGoodsItem[1])));
+                if (amount.compareTo(ybqPrice) != 0) {
+                    resalerPrice = amount;
+                    Logger.error("当当订单金额不一致！");
+                }
                 try {
                     //创建一百券订单Items
                     order.addOrderItem(goods, Integer.parseInt(arrGoodsItem[1]), user_mobile, resalerPrice, resalerPrice);

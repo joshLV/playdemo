@@ -187,4 +187,29 @@ public class Shop extends Model {
             areaName = area.name;
         return areaName;
     }
+
+    public String getAreaName(String areaId, int flag) {
+        String areaName = "";
+        Area area = Area.find("id=?", areaId).first();
+        Area townArea = Area.find("id=?", area.parent.id).first();
+        Area cityArea = Area.find("id=?", townArea.parent.id).first();
+        if (area == null) return areaName;
+        switch (flag) {
+            //商圈名称
+            case 0:
+                areaName = area.name;
+                break;
+            //区域名称
+            case 1:
+                areaName = townArea.name;
+                break;
+            //城市名称
+            case 2:
+                areaName = cityArea.name;
+                break;
+            default:
+                areaName = area.name;
+        }
+        return areaName;
+    }
 }

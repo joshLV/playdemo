@@ -2,6 +2,7 @@ package models.supplier;
 
 import cache.CacheHelper;
 import com.uhuila.common.constants.DeletedStatus;
+import com.uhuila.common.util.DateUtil;
 import com.uhuila.common.util.PathUtil;
 import models.admin.SupplierUser;
 import models.sales.Brand;
@@ -35,7 +36,8 @@ public class Supplier extends Model {
     public static final String IMAGE_SLIDE = "nw";
     public static final String IMAGE_ORIGINAL = "nw";
     public static final String IMAGE_DEFAULT = "";
-
+    public static final String BEGIN_TIME = " 00:00";
+    public static final String END_TIME = " 23:59";
     /**
      * 域名
      */
@@ -270,5 +272,23 @@ public class Supplier extends Model {
 
     public static boolean existDomainName(String domainName) {
         return find("domainName=? and deleted=?", domainName, DeletedStatus.UN_DELETED).first() != null;
+    }
+
+    /**
+     * 检查是否有营业时间
+     *
+     * @param condionDate 传入的时间
+     * @param shopHour    营业时间
+     * @param hourFlag
+     * @return
+     */
+    public static Date getShopHour(Date condionDate, String shopHour, boolean hourFlag) {
+        String time = BEGIN_TIME;
+        int days = 0;
+        if (hourFlag) {
+            time = END_TIME;
+            days = 1;
+        }
+        return DateUtil.stringToDate(DateUtil.dateToString(condionDate, days) + (StringUtils.isBlank(shopHour) ? time : " " + shopHour));
     }
 }

@@ -1,7 +1,9 @@
 package models.resale;
 
 import com.uhuila.common.util.DateUtil;
+import models.order.OuterOrderPartner;
 import models.sales.Goods;
+import models.sales.GoodsStatus;
 import models.sales.MaterialType;
 import org.apache.commons.lang.StringUtils;
 import play.db.jpa.JPA;
@@ -31,6 +33,10 @@ public class ResalerFav extends Model {
     @Column(name = "taobao_item_id")
     public Long taobaoItemId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "partner")
+    public OuterOrderPartner partner;      //合作伙伴
+
     public ResalerFav(Resaler resaler, Goods goods) {
         this.resaler = resaler;
         this.goods = goods;
@@ -58,6 +64,12 @@ public class ResalerFav extends Model {
 
         sql.append(" and f.goods.materialType = :materialType");
         paramsMap.put("materialType", MaterialType.ELECTRONIC);
+
+        sql.append(" and f.goods.status = :status");
+        paramsMap.put("status", GoodsStatus.ONSALE);
+
+        sql.append(" and f.goods.expireAt >= :expireAt");
+        paramsMap.put("expireAt",new Date());
 
         if (resaler != null) {
             sql.append(" and f.resaler = :resaler");

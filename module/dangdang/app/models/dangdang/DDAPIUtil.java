@@ -8,6 +8,7 @@ import models.resale.ResalerStatus;
 import models.sales.Goods;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.dom4j.Element;
 import play.Logger;
 import play.Play;
@@ -36,6 +37,8 @@ public class DDAPIUtil {
     private static final String QUERY_CONSUME_CODE_URL = Play.configuration.getProperty("dangdang.query_consume_code_url", "http://tuanapi.dangdang.com/team_open/public/query_consume_code.php");
     private static final String VERIFY_CONSUME_URL = Play.configuration.getProperty("dangdang.verify_consume_url", "http://tuanapi.dangdang.com/team_open/public/verify_consume.php");
     public static final String DD_LOGIN_NAME = Play.configuration.getProperty("dangdang.resaler_login_name", "dangdang");
+    private static final String PUSH_PARTNER_TEAMS = Play.configuration.getProperty("dangdang.push_partner_teams", "http://tuanapi.dangdang.com/team_inter_api/public/push_partner_teams.php");
+
 
     public static HttpProxy proxy = new SimpleHttpProxy();
 
@@ -226,7 +229,7 @@ public class DDAPIUtil {
         }
 
         //发送短信并返回成功
-        ECoupon.sendUserMessageWithoutCheck(receiveMobile,coupon);
+        ECoupon.sendUserMessageWithoutCheck(receiveMobile, coupon);
         response.errorCode = ErrorCode.SUCCESS;
         response.desc = "success";
         response.addAttribute("consumeId", coupon.eCouponSn);
@@ -265,6 +268,12 @@ public class DDAPIUtil {
         postMethod.addParameter("data", request);
         String sign = getSign(request, time, apiName);
         postMethod.addParameter("sign", sign);
+        postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, "utf-8");
+//        try {
+//            postMethod.setRequestEntity(new StringRequestEntity(XML, "text/xml", "utf-8"));
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }
         return proxy.accessHttp(postMethod);
     }
 
@@ -317,5 +326,21 @@ public class DDAPIUtil {
             }
         }
         return result;
+    }
+
+    /**
+     * 发布商品
+     *
+     * @param goodsId      商品ID
+     * @param requestItems
+     * @throws DDAPIInvokeException
+     */
+    public static boolean pushGoods(Long goodsId, String requestItems) throws DDAPIInvokeException {
+        Response response = DDAPIUtil.access(PUSH_PARTNER_TEAMS, requestItems, "push_partner_teams");
+        if (!response.success()) {
+            throw new DDAPIInvokeException("\n invoke push goods error(goodsId:" + goodsId + "):" +
+                    "error_code:" + response.errorCode.getValue() + ",desc:" + response.desc);
+        }
+        return response.errorCode == ErrorCode.SUCCESS;
     }
 }

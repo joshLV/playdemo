@@ -20,8 +20,15 @@ note:'.quanmx.com (只能是字母、数字、下划线，且长度限定在3-20
 <input type="hidden" name="admin.mobile" value="${admin?.mobile}">
 <input type="hidden" name="admin.jobNumber" value="${admin?.jobNumber}">
 #{/else}
- #{layout_operate.timeScope2Field name:'supplier.shopHour', begin:'supplier.shopBeginHour',end:'supplier.shopEndHour',
-    beginValue:supplier?.shopBeginHour, endValue:supplier?.shopEndHour/}
+<div class="control-group">
+  <label class="control-label"></span>&{'supplier.shopHour'}</label>
+  <div class="controls">
+               <input type="text" class="input-medium Wdate" id="supplier_shopHour" name="supplier.shopEndHour" value="${supplier?.shopEndHour}"
+                      onfocus="WdatePicker({dateFmt:'HH:mm',minDate:'00:00',maxDate:'23:59'})"/>
+  </div>
+ </div>
+ *{#{layout_operate.timeScope2Field name:'supplier.shopHour', begin:'supplier.shopBeginHour',end:'supplier.shopEndHour',}*
+    *{beginValue:supplier?.shopBeginHour, endValue:supplier?.shopEndHour/}}*
 *{#{if "edit".equals(action)}#{layout_operate.passwordField name:'admin.encryptedPassword', value:""/}#{/if}
 #{else}#{layout_operate.passwordField name:'admin.encryptedPassword', value:"",required:true/}#{/else}}*
 *{#{layout_operate.passwordField name:'admin.encryptedPassword1', value="", required:true/}}*

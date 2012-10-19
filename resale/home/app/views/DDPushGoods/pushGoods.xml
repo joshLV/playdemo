@@ -1,0 +1,69 @@
+<data>
+    <spgid><![CDATA[${goods?.id}]]></spgid>
+    <source_product_ids><![CDATA[${goods?.id}]]></source_product_ids>
+    <team_title><![CDATA[${goods?.title?.raw()}]]></team_title>
+    <team_summary><![CDATA[${goods?.name?.raw()}]]></team_summary>
+    <team_type><![CDATA[1]]></team_type>
+    <category_name1><![CDATA[&{'ddcategory.'+goods.topCategoryId}]]></category_name1>
+    <category_name2><![CDATA[]]></category_name2>
+    <city_name><![CDATA[上海市]]></city_name>
+    <town_name><![CDATA[]]></town_name>
+    <zone_name><![CDATA[]]></zone_name>
+    <shop_guid><![CDATA[]]></shop_guid>
+    <service_shop_guid><![CDATA[]]></service_shop_guid>
+    <service_shop_info>
+        <vendor_detail>
+            <vendor_num>${goods?.getShopList()?.size()}</vendor_num>
+            <type>0</type>
+            <vendor_list>
+                #{list goods?.getShopList(),as:'shop'}
+                <vendor_info>
+                    <vendor_branch_name><![CDATA[${shop?.name?.raw()}]]></vendor_branch_name>
+                    <address><![CDATA[${shop?.address?.raw()}]]></address>
+                    <city><![CDATA[${shop?.getAreaName(shop?.areaId,2)?.raw()}]]></city>
+                    <town><![CDATA[${shop?.getAreaName(shop?.areaId,1)?.raw()}]]></town>
+                    <zone><![CDATA[${shop?.getAreaName(shop?.areaId,0)?.raw()}]]></zone>
+                    <map_url>
+                        <![CDATA[]]></map_url>
+                    <tel><![CDATA[${shop?.phone}]]></tel>
+                    <bus><![CDATA[]]></bus>
+                    <busi_time><![CDATA[]]></busi_time>
+                    <notes><![CDATA[]]></notes>
+                </vendor_info>
+                #{/list}
+            </vendor_list>
+        </vendor_detail>
+    </service_shop_info>
+    <start_date><![CDATA[${goods?.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}]]></start_date>
+    <end_date><![CDATA[${goods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}]]></end_date>
+    <original_price><![CDATA[${goods?.originalPrice}]]></original_price>
+    <sale_price><![CDATA[${goods?.salePrice}]]></sale_price>
+    <team_max_num><![CDATA[${goods?.baseSale}]]></team_max_num>
+    <team_min_num><![CDATA[1]]></team_min_num>
+    <source_sale_num><![CDATA[${goods?.saleCount}]]></source_sale_num>
+    <virtual_num><![CDATA[]]></virtual_num>
+    <limit_max_num><![CDATA[${(goods?.limitNumber == null || goods.limitNumber == 0) ? "9999" : goods?.limitNumber}]]></limit_max_num>
+    <limit_once_min><![CDATA[1]]></limit_once_min>
+    <limit_once_max><![CDATA[99999]]></limit_once_max>
+    <delivery_type><![CDATA[1]]></delivery_type>
+    <buy_times><![CDATA[9999]]></buy_times>
+    <refund_type><![CDATA[1]]></refund_type>
+    <auto_refund_flag><![CDATA[0]]></auto_refund_flag>
+    <effect_start_date><![CDATA[${goods?.effectiveAt?.format('yyyy-MM-dd HH:mm:ss')}]]></effect_start_date>
+    <effect_end_date><![CDATA[${goods?.expireAt?.format('yyyy-MM-dd HH:mm:ss')}]]></effect_end_date>
+    <src_image><![CDATA[${goods?.imageLargePath}]]></src_image>
+    <src_image1><![CDATA[]]></src_image1>
+    <src_image2><![CDATA[]]></src_image2>
+    <src_image3><![CDATA[]]></src_image3>
+    <detail>
+        <![CDATA[${goods?.details?.raw()}]]></detail>
+    <display_status><![CDATA[0]]></display_status>
+    <sort_order><![CDATA[]]></sort_order>
+    <sms_help><![CDATA[${goods?.title?.raw()}]]></sms_help>
+    %{ title= "【" + (goods.brand == null ? "一百券" : goods.brand.name) + "】" + goods.name + "-优惠券,优惠券网,代金券" +
+    (goods.keywords == null ? "" : ("【" + goods.keywords + "】"))}%
+    <seo_title><![CDATA[${title?.raw()}]]></seo_title>
+    <seo_keyword><![CDATA[${goods?.keywords?.raw()}]]></seo_keyword>
+    <seo_description><![CDATA[${title?.raw()}]]></seo_description>
+    <special_tips><![CDATA[]]></special_tips>
+</data>
