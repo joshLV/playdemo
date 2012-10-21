@@ -1,11 +1,8 @@
 package factory.sales;
-import factory.FactoryBoy;
 import models.sales.Brand;
-import models.sales.Category;
+import models.supplier.Supplier;
+import factory.FactoryBoy;
 import factory.ModelFactory;
-import models.sales.Area;
-import models.sales.Goods;
-import models.sales.SecKillGoods;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,8 +14,8 @@ import models.sales.SecKillGoods;
 public class BrandFactory  extends ModelFactory<Brand> {
     @Override
     public Brand define() {
-
         Brand brand = new Brand();
+        brand.supplier = FactoryBoy.lastOrCreate(Supplier.class);
         brand.name = "来一份";
         brand.displayOrder=100;
         return brand;

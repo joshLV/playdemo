@@ -24,10 +24,10 @@ public class SupplierUserFactory extends ModelFactory<SupplierUser> {
     @Override
     public SupplierUser define() {
         SupplierUser supplierUser = new SupplierUser();
-        Shop shop = FactoryBoy.lastOrCreate(Shop.class);
-        Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
-        supplierUser.shop = shop;
-        supplierUser.supplier = supplier;
+
+        supplierUser.supplier = FactoryBoy.lastOrCreate(Supplier.class);
+        supplierUser.shop = FactoryBoy.lastOrCreate(Shop.class);
+        
         supplierUser.deleted = DeletedStatus.UN_DELETED;
         supplierUser.mobile = "13700001111";
         supplierUser.loginName = "02188888888";
@@ -50,12 +50,11 @@ public class SupplierUserFactory extends ModelFactory<SupplierUser> {
 
     @Factory(name = "Id")
     public SupplierUser defineWithId(SupplierUser supplierUser) {
-
         supplierUser.deleted = DeletedStatus.UN_DELETED;
         supplierUser.mobile = "13700001111";
         supplierUser.loginName = "02188888888";
         supplierUser.jobNumber = "001";
         return supplierUser;
-
     }
+    
 }

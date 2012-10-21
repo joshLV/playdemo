@@ -29,9 +29,9 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.deleted = DeletedStatus.UN_DELETED;
         goods.isAllShop = false;
         goods.supplierId = supplier.id;
-        goods.salePrice = BigDecimal.TEN;
+        goods.salePrice = new BigDecimal("8.5");
         goods.expireAt = afterDays(new Date(), 30);
-        goods.faceValue = BigDecimal.TEN;
+        goods.faceValue = new BigDecimal("10.00");
         goods.materialType = MaterialType.REAL;
         goods.baseSale = 100L;
         goods.saleCount = 10;

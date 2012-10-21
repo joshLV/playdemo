@@ -10,6 +10,8 @@ import models.supplier.Supplier;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import util.DateHelper;
+
 /**
  * Created with IntelliJ IDEA.
  * User: hejun
@@ -20,7 +22,6 @@ public class ShopFactory extends ModelFactory<Shop> {
 
     @Override
     public Shop define() {
-
         Shop shop = new Shop();
         Supplier supplier = FactoryBoy.lastOrCreate(Supplier.class);
         shop.deleted = DeletedStatus.UN_DELETED;
@@ -29,21 +30,10 @@ public class ShopFactory extends ModelFactory<Shop> {
         shop.phone = "02100000";
         shop.latitude = "121.12888";
         shop.longitude = "31.12888";
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            shop.createdAt = dateFormat.parse("2012-02-29 16:33:18");
-        } catch (ParseException e) {
-            //ignore
-        }
-
-        try {
-            shop.updatedAt = dateFormat.parse("2012-02-29 16:44:33");
-        } catch (ParseException e) {
-            //ignore
-        }
-
+        shop.createdAt = DateHelper.beforeDays(20);
+        shop.updatedAt = DateHelper.beforeDays(15);
         shop.areaId = "021";
-        shop.name = "shop0";
+        shop.name = "测试店";
         shop.deleted = DeletedStatus.UN_DELETED;
         shop.lockVersion = 0;
         return shop;

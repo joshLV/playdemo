@@ -1,6 +1,13 @@
 package functional;
 
-import factory.FactoryBoy;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import models.accounts.Account;
 import models.accounts.AccountCreditable;
 import models.accounts.AccountType;
@@ -15,15 +22,14 @@ import models.resale.Resaler;
 import models.sales.Goods;
 import models.sales.GoodsLevelPrice;
 import models.sales.MaterialType;
+
 import org.apache.commons.codec.digest.DigestUtils;
+import org.junit.Before;
 import org.junit.Test;
-import play.mvc.Before;
+
 import play.mvc.Http;
 import play.test.FunctionalTest;
-
-import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.util.*;
+import factory.FactoryBoy;
 
 /**
  * <p/>
@@ -36,7 +42,7 @@ public class DDOrderApiTest extends FunctionalTest {
 
     @Before
     public void setup() {
-        FactoryBoy.lazyDelete();
+        FactoryBoy.deleteAll();
 
         System.out.println(goods + "*******");
         UserInfo userInfo = FactoryBoy.create(UserInfo.class);

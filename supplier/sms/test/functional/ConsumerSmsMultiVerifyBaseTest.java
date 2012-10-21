@@ -99,6 +99,7 @@ public class ConsumerSmsMultiVerifyBaseTest extends FunctionalTest {
         Play.configuration.setProperty(
                         ECoupon.KEY_USE_PRODUCT_SERIAL_REPLYCODE, "true");
 
+        
         Fixtures.delete(Category.class);
         Fixtures.delete(Brand.class);
         Fixtures.delete(Area.class);
@@ -336,7 +337,7 @@ public class ConsumerSmsMultiVerifyBaseTest extends FunctionalTest {
         // 消费者短信
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertSMSContentMatch("【一百券】店员工号无效，请核实工号是否正确或是否是"
-                        + supplierKFC.fullName + "门店。如有疑问请致电：400-6262-166",
+                        + supplierKFC.fullName + "门店。如有疑问请致电：4006262166",
                         msg.getContent());
 
         ECoupon ecoupon = ECoupon.findById(ecouponKFC2.id);
@@ -360,7 +361,7 @@ public class ConsumerSmsMultiVerifyBaseTest extends FunctionalTest {
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertSMSContentMatch("【一百券】" + kfc.fullName
-                        + "未在一百券登记使用，请致电400-6262-166咨询",
+                        + "未在一百券登记使用，请致电4006262166咨询",
                         msg.getContent());
     }
 
@@ -398,7 +399,7 @@ public class ConsumerSmsMultiVerifyBaseTest extends FunctionalTest {
         assertContentEquals("【一百券】店员工号无效，请核实工号是否正确或是否是肯德基门店", response);
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertSMSContentLength(msg.getContent());
-        assertEquals("【一百券】店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：400-6262-166",
+        assertEquals("【一百券】店员工号无效，请核实工号是否正确或是否是肯德基门店。如有疑问请致电：4006262166",
                         msg.getContent());
     }
 
@@ -418,7 +419,7 @@ public class ConsumerSmsMultiVerifyBaseTest extends FunctionalTest {
         assertStatus(200, response);
 
         SimpleDateFormat df = new SimpleDateFormat("MM-dd HH:mm");
-        assertContentEquals("【一百券】您的券号已消费，无法再次消费。如有疑问请致电：400-6262-166",
+        assertContentEquals("【一百券】您的券号已消费，无法再次消费。如有疑问请致电：4006262166",
                         response);
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
@@ -447,12 +448,12 @@ public class ConsumerSmsMultiVerifyBaseTest extends FunctionalTest {
         Http.Response response = messageSender.doMessageSend(ecouponKFC2,
                         kfcClerk.jobNumber + "*20", null);
 
-        assertContentEquals("【一百券】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166",
+        assertContentEquals("【一百券】您的券号已过期，无法进行消费。如有疑问请致电：4006262166",
                         response);
 
         SMSMessage msg = MockSMSProvider.getLastSMSMessage();
         assertSMSContentLength(msg.getContent());
-        assertEquals("【一百券】您的券号已过期，无法进行消费。如有疑问请致电：400-6262-166",
+        assertEquals("【一百券】您的券号已过期，无法进行消费。如有疑问请致电：4006262166",
                         msg.getContent());
     }
 

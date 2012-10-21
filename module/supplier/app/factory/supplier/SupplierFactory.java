@@ -7,13 +7,17 @@ package factory.supplier;
  * Time: 下午4:46
  */
 
-import com.uhuila.common.constants.DeletedStatus;
-import factory.ModelFactory;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import models.supplier.Supplier;
 import models.supplier.SupplierStatus;
+import util.DateHelper;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import com.uhuila.common.constants.DeletedStatus;
+
+import factory.ModelFactory;
+import factory.annotation.Factory;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,18 +34,16 @@ public class SupplierFactory extends ModelFactory<Supplier> {
         supplier.fullName = "Supplier0";
         supplier.deleted = DeletedStatus.UN_DELETED;
         supplier.domainName = "localhost";
-        supplier.loginName = "tom";
         supplier.status = SupplierStatus.NORMAL;
         supplier.otherName = "supplier";
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            supplier.createdAt = dateFormat.parse("2012-02-29 16:33:18");
-        } catch (ParseException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        supplier.createdAt = DateHelper.beforeDays(new Date(), 30);
         return supplier;
     }
 
+    @Factory(name="KFC")
+    public void defineKFC(Supplier supplier) {
+    	supplier.fullName = "肯德基";
+    }
 }
 
 

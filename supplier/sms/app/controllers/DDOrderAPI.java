@@ -43,7 +43,10 @@ public class DDOrderAPI extends Controller {
         String express_memo = StringUtils.trimToEmpty(params.get("express_memo"));
         String user_id = StringUtils.trimToEmpty(params.get("user_id"));
         String kx_order_id = StringUtils.trimToEmpty(params.get("kx_order_id"));
-        BigDecimal amount = new BigDecimal(StringUtils.trimToEmpty(params.get("amount")));
+        BigDecimal amount = BigDecimal.ZERO;
+        if (!StringUtils.isBlank(params.get("amount"))) {
+           amount = new BigDecimal(StringUtils.trimToEmpty(params.get("amount")));
+        }
         String sign = StringUtils.trimToEmpty(params.get("sign")).toLowerCase();
         ErrorInfo errorInfo = new ErrorInfo();
         //检查参数
