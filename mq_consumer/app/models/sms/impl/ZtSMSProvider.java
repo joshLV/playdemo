@@ -82,11 +82,11 @@ public class ZtSMSProvider implements SMSProvider {
                 Matcher m = RESULTCODE_PATTERN.matcher(result);
                 if (m.find()) {
                     //发送成功
+                	httpget.abort();
                     resultCode = 1;
-                    httpget.abort();
                 } else {
                     //发送失败
-                    httpget.abort();
+                	httpget.abort();
                     throw new SMSException(-103, "发送助通短信不成功:" + result);
                 }
             } else {
@@ -98,6 +98,8 @@ public class ZtSMSProvider implements SMSProvider {
             e.printStackTrace();
             //http请求失败
             throw new SMSException(-105, e);
+        } finally {
+        	httpclient.getConnectionManager().shutdown();
         }
         return resultCode;
     }

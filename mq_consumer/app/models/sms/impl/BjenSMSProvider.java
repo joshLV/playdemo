@@ -84,6 +84,8 @@ public class BjenSMSProvider implements SMSProvider {
             e.printStackTrace();
             //http请求失败
             throw new SMSException(-105, e);
+        } finally {
+        	httpclient.getConnectionManager().shutdown();
         }
         return resultCode;
     }
