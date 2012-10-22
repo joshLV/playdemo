@@ -1311,8 +1311,10 @@ public class Goods extends Model {
         goodsHistory.couponType = this.couponType;
         goodsHistory.imagePath = this.imagePath;
         goodsHistory.supplierId = this.supplierId;
-        goodsHistory.shops = new HashSet<>();
-        goodsHistory.shops.addAll(this.shops);
+        if (this.shops != null) {
+        	goodsHistory.shops = new HashSet<>();
+            goodsHistory.shops.addAll(this.shops);
+        }
         goodsHistory.title = this.title;
         goodsHistory.unPublishedPlatforms.addAll(this.unPublishedPlatforms);
         goodsHistory.useBeginTime = this.useBeginTime;
