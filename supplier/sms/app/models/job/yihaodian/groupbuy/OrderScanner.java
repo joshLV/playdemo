@@ -4,7 +4,6 @@ import models.order.OuterOrder;
 import models.order.OuterOrderStatus;
 import models.yihaodian.YHDGroupBuyMessage;
 import models.yihaodian.YihaodianQueueUtil;
-import models.yihaodian.groupbuy.YHDGroupBuyOrder;
 import play.jobs.Every;
 import play.jobs.Job;
 

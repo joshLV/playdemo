@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author likang
@@ -57,6 +59,26 @@ public class JDGroupBuy extends Controller{
             finish(201, "parse send_order request xml error"); return;
         }
         SendOrderRequest sendOrderRequest = sendOrderJDRest.data;
+
+        //检查购买数量
+        if(sendOrderRequest.count <= 0){
+            Logger.info("the buy number must be a positive one");
+            finish(202, "the buy number must be a positive one"); return;
+        }
+
+        //检查订单总额是否匹配
+        if(sendOrderRequest.teamPrice
+                .multiply(new BigDecimal(sendOrderRequest.count))
+                .compareTo(sendOrderRequest.origin) != 0){
+            Logger.info("the total amount does not match the team price and count");
+            finish(202, "the total amount does not match the team price and count"); return;
+        }
+
+        //检查手机号
+        if(!checkPhone(sendOrderRequest.mobile)){
+            Logger.info("invalid mobile");
+            finish(203, "invalid mobile");
+        }
 
         //检查并保存此新请求
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderId",
@@ -126,7 +148,7 @@ public class JDGroupBuy extends Controller{
             finish(200, "success");
         }else {
             Logger.info("order status is not ORDER_DONE, instead it's %s", outerOrder.status);
-            finish(208, "order processed failed");
+            finish(208, "the order has been processed");
         }
     }
 
@@ -139,6 +161,7 @@ public class JDGroupBuy extends Controller{
         //解析请求
         JDRest<QueryTeamSellCountRequest> sendOrderJDRest = new JDRest<>();
         if(!sendOrderJDRest.parse(restXml, new QueryTeamSellCountRequest())){
+            Logger.info("parse query_team_sell_count xml error");
             finish(201, "parse query_team_sell_count request xml error"); return;
         }
         QueryTeamSellCountRequest queryTeamSellCountRequest = sendOrderJDRest.data;
@@ -146,6 +169,7 @@ public class JDGroupBuy extends Controller{
         //查询商品
         models.sales.Goods goods = models.sales.Goods.findById(queryTeamSellCountRequest.venderTeamId);
         if(goods == null){
+            Logger.info("goods not found");
             finish(202, "goods not found"); return;
         }
 
@@ -154,6 +178,7 @@ public class JDGroupBuy extends Controller{
         Map<String, Object> params = new HashMap<>();
         params.put("goods", goods);
         renderArgs.put("data", template.render(params));
+        Logger.info("queryTeamSellCount success");
         finish(200, "success");
     }
 
@@ -210,6 +235,11 @@ public class JDGroupBuy extends Controller{
             finish(201, "parse send_sms_request request xml error"); return;
         }
         SendSmsRequest sendSmsRequest = sendSmsRequestJDRest.data;
+
+        if(!checkPhone(sendSmsRequest.mobile)){
+            Logger.info("invalid mobile");
+            finish(203, "invalid mobile");
+        }
 
         //重发短信
         ECoupon coupon = ECoupon.find("byECouponSnAndPartnerAndPartnerCouponId",
@@ -292,5 +322,14 @@ public class JDGroupBuy extends Controller{
         renderArgs.put("resultCode", resultCode);
         renderArgs.put("resultMessage", resultMessage);
         renderTemplate("jingdong/groupbuy/response/main.xml");
+    }
+
+    private static boolean checkPhone(String phone){
+        if(phone == null){
+            return false;
+        }
+        Pattern pattern = Pattern.compile(PHONE_REGEX);
+        Matcher matcher = pattern.matcher(phone);
+        return matcher.matches();
     }
 }

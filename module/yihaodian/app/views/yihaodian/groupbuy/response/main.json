@@ -1,0 +1,21 @@
+{
+    "response": {
+        "errorCount": ${errorInfoList.size()},
+        "totalCount": ${totalCount},
+        #{if errorInfoList.size() > 0}
+"errInfoList": {
+            "errDetailInfo": [
+            #{list items:errorInfoList, as:'errInfo'}
+    {
+                    "errorCode": "${errInfo.errorCode}",
+                    "errorDes": "${errInfo.errorDes}",
+                    "pkInfo": "${errInfo.pkInfo}"
+                },
+            #{/list}
+]
+        }
+        #{/if} #{else}
+            ${data?.raw()}
+        #{/else}
+}
+}

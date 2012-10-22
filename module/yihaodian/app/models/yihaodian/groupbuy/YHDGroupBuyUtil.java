@@ -2,10 +2,11 @@ package models.yihaodian.groupbuy;
 
 import models.yihaodian.shop.YHDShopUtil;
 import models.yihaodian.groupbuy.response.YHDErrorInfo;
-import models.yihaodian.groupbuy.response.YHDErrorResponse;
 import org.jsoup.helper.StringUtil;
 
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -67,45 +68,41 @@ public class YHDGroupBuyUtil {
         return orgin;
     }
 
-    public static TreeMap<String, String> filterPlayParams(Map<String, String[]> params){
+    public static TreeMap<String, String> filterPlayParams(Map<String, String> params){
         TreeMap<String, String> result = new TreeMap<>();
 
-        for (Map.Entry<String, String[]> entry : params.entrySet()){
+        for (Map.Entry<String, String> entry : params.entrySet()){
             if ("body".equals(entry.getKey())){
                 continue;
             }
-            if(entry.getValue() != null && entry.getValue().length > 0){
-                result.put(entry.getKey(), entry.getValue()[0]);
-            }else {
-                result.put(entry.getKey(), "");
-            }
+            result.put(entry.getKey(), entry.getValue());
         }
         return result;
     }
 
-    public static YHDErrorResponse checkParam(TreeMap<String, String> params, String... keys){
-        YHDErrorResponse errorResponse = new YHDErrorResponse();
+    public static List<YHDErrorInfo> checkParam(TreeMap<String, String> params, String... keys){
+        List<YHDErrorInfo> errorInfoList = new ArrayList<>();
         for (String key : keys){
             if(StringUtil.isBlank(params.get(key))){
-                errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_missing",
+                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.param_missing",
                         "参数 " + key +  " 不能为空", null));
             }
         }
-        if(errorResponse.errorCount > 0){
-            return errorResponse;
+        if(errorInfoList.size() > 0){
+            return errorInfoList;
         }
 
         String sign = params.remove("sign");
         //检查参数签名
         String mySign = YHDGroupBuyUtil.md5Signature(params, YHDShopUtil.SECRET_KEY);
         if(!mySign.equals(sign)){
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "sign不匹配", null));
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "sign不匹配", null));
         }
         params.put("sign", sign);//将sign重新塞回去以供保存
         //对一号店的参数进行trim
         for(Map.Entry<String, String> entry : params.entrySet()){
             params.put(entry.getKey(), entry.getValue().trim());
         }
-        return errorResponse;
+        return errorInfoList;
     }
 }

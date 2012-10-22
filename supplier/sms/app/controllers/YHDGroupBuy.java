@@ -9,21 +9,21 @@ import models.order.*;
 import models.resale.Resaler;
 import models.sales.MaterialType;
 import models.sales.Goods;
-import models.yihaodian.groupbuy.YHDGroupBuyOrder;
 import models.yihaodian.groupbuy.YHDGroupBuyUtil;
 import models.yihaodian.groupbuy.response.*;
 import play.Logger;
 import play.Play;
 import play.db.jpa.JPA;
 import play.mvc.Controller;
+import play.templates.Template;
+import play.templates.TemplateLoader;
+
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,22 +39,22 @@ public class YHDGroupBuy extends Controller{
 
     /**
      * 接收一号店的新订单通知
-     *
      */
-    public static void orderInform() {
-        TreeMap<String, String> params = YHDGroupBuyUtil.filterPlayParams(request.params.all());
-        YHDErrorResponse errorResponse = YHDGroupBuyUtil.checkParam(params, "sign", "orderCode", "productId", "productNum",
+    public static void orderInform(String orderCode, Long productId, Integer productNum, BigDecimal orderAmount,
+                                   Date createTime, Date paidTime, String userPhone, BigDecimal productPrize,
+                                   Long groupId, String outerGroupId) {
+        TreeMap<String, String> params = YHDGroupBuyUtil.filterPlayParams(request.params.allSimple());
+        List<YHDErrorInfo> errorInfoList = YHDGroupBuyUtil.checkParam(params, "sign", "orderCode", "productId", "productNum",
                 "orderAmount", "createTime", "paidTime", "userPhone", "productPrize", "groupId", "outerGroupId");
-        if(errorResponse.errorCount > 0){
-            renderJSON(new YHDResponse(errorResponse));
+        int totalCount = 0;
+        if(errorInfoList.size() > 0){
+            finish(errorInfoList, totalCount);
         }
 
-        YHDGroupBuyOrder yhdGroupBuyOrder =  null;
-        OrderInformResponse orderInformResponse = new OrderInformResponse();
         Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
 
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
-                OuterOrderPartner.YHD, params.get("orderCode")).first();
+                OuterOrderPartner.YHD, orderCode).first();
         //如果找不到该orderCode的订单，说明还没有新建，则新建一个
         if(outerOrder == null){
             outerOrder = new OuterOrder();
@@ -65,40 +65,34 @@ public class YHDGroupBuy extends Controller{
             try{ // 将订单写入数据库
                 JPA.em().flush();
             }catch (Exception e){ // 如果写入失败，说明 已经存在一个相同的orderCode 的订单，则放弃
-                renderJSON(new YHDResponse(orderInformResponse));
+                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "重复的请求", null));
+                finish(errorInfoList, totalCount);
             }
         }else {
             outerOrder.message = gson.toJson(params);
         }
         Logger.info("yihaodian: %s", outerOrder.message);
 
-        try{// 解析参数为对象
-            yhdGroupBuyOrder = gson.fromJson(outerOrder.message, YHDGroupBuyOrder.class);
-        }catch (JsonParseException e ){
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "参数解析错误", null));
-            renderJSON(new YHDResponse(errorResponse));
-        }
-        outerOrder.orderNumber = yhdGroupBuyOrder.orderCode;
+        outerOrder.orderNumber = orderCode;
         outerOrder.save();
         //检查订单数量
-        if(yhdGroupBuyOrder.productNum <= 0){
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "购买数量不能小于0", null));
+        if(productNum <= 0){
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "购买数量不能小于0", null));
         }
         //检查价格
-        if(yhdGroupBuyOrder.productPrize.compareTo(BigDecimal.ZERO) < 0){
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "商品价格不能小于0元", null));
+        if(productPrize.compareTo(BigDecimal.ZERO) < 0){
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "商品价格不能小于0元", null));
         }
         //检查订单金额
-        if(yhdGroupBuyOrder.productPrize.multiply(new BigDecimal(yhdGroupBuyOrder.productNum))
-                .compareTo(yhdGroupBuyOrder.orderAmount) != 0){
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "订单金额不一致", null));
+        if(productPrize.multiply(new BigDecimal(productNum)).compareTo(orderAmount) != 0){
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "订单金额不一致", null));
         }
         //检查手机号
-        if(!checkPhone(yhdGroupBuyOrder.userPhone)){
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "手机号码无效", null));
+        if(!checkPhone(userPhone)){
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.param_invalid", "手机号码无效", null));
         }
-        if(errorResponse.errorCount > 0){
-            renderJSON(new YHDResponse(errorResponse));
+        if(errorInfoList.size() > 0){
+            finish(errorInfoList, totalCount);
         }
 
         try{
@@ -106,82 +100,76 @@ public class YHDGroupBuy extends Controller{
             JPA.em().refresh(outerOrder, LockModeType.PESSIMISTIC_WRITE);
         }catch (PersistenceException e){
             //没拿到锁 放弃
-            renderJSON(new YHDResponse(orderInformResponse));
-            return;
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "重复的请求", null));
+            finish(errorInfoList, totalCount); return;
         }
         //保存订单编号
         if(outerOrder.orderNumber == null){
-            outerOrder.orderNumber = yhdGroupBuyOrder.orderCode;
+            outerOrder.orderNumber = orderCode;
             outerOrder.save();
         }
         if (outerOrder.status == OuterOrderStatus.ORDER_COPY){
-            Order ybqOrder = createYbqOrder(yhdGroupBuyOrder, errorResponse);
-            if(errorResponse.errorCount > 0){
-                renderJSON(new YHDResponse(errorResponse));
+            Order ybqOrder = createYbqOrder(outerGroupId, productPrize, productNum, userPhone, errorInfoList);
+            if(errorInfoList.size() > 0){
+                finish(errorInfoList, totalCount);
             }else if(ybqOrder != null){
                 outerOrder.status = OuterOrderStatus.ORDER_DONE;
                 outerOrder.ybqOrder = ybqOrder;
                 outerOrder.save();
-                orderInformResponse.updateCount = 1;
+                renderArgs.put("data", "\"updateCount\": 1");
+                totalCount = 1;
+                finish(errorInfoList, totalCount);
             }
         }else if(outerOrder.status != OuterOrderStatus.ORDER_CANCELED){
             //目前（12-09-20）一号店要求，如果订单不是order_copy或者order_canceled 那么其他状态应该都返回给一号店失败
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.error", "订单已存在,重复的订单请求", null));
-            renderJSON(new YHDResponse(errorResponse));
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "订单已存在,重复的订单请求", null));
+            finish(errorInfoList, totalCount);
         }
-        renderJSON(new YHDResponse(orderInformResponse));
     }
 
     /**
      * 处理一号店的查询消费券请求
      */
     public static void vouchersGet() {
-        TreeMap<String, String> params = YHDGroupBuyUtil.filterPlayParams(request.params.all());
-        YHDErrorResponse errorResponse = YHDGroupBuyUtil.checkParam(params, "sign", "orderCode", "partnerOrderCode");
-        if(errorResponse.errorCount > 0){
-            renderJSON(new YHDResponse(errorResponse));
+        TreeMap<String, String> params = YHDGroupBuyUtil.filterPlayParams(request.params.allSimple());
+        List<YHDErrorInfo> errorInfoList = YHDGroupBuyUtil.checkParam(params, "sign", "orderCode", "partnerOrderCode");
+        int totalCount = 0;
+        if(errorInfoList.size() > 0){
+            finish(errorInfoList, totalCount);
         }
 
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
                 OuterOrderPartner.YHD, params.get("orderCode")).first();
         if(outerOrder == null || outerOrder.ybqOrder == null){
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.get.vouchers_not_found", "订单不存在,请检查 orderCode", null));
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.get.vouchers_not_found", "订单不存在,请检查 orderCode", null));
+            return;
         }else if(!outerOrder.ybqOrder.orderNumber.equals(params.get("partnerOrderCode"))){
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.get.vouchers_not_found", "订单关联错误,请检查 partnerOrderCode", null));
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.get.vouchers_not_found", "订单关联错误,请检查 partnerOrderCode", null));
         }
-        if(errorResponse.errorCount > 0){
-            renderJSON(new YHDResponse(errorResponse));
+        if(errorInfoList.size() > 0){
+            finish(errorInfoList, totalCount);
         }
-
-        VoucherInfoResponse voucherInfoResponse = new VoucherInfoResponse();
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
         List<ECoupon> coupons = ECoupon.find("byOrder", outerOrder.ybqOrder).fetch();
-        for(ECoupon coupon : coupons) {
-            VoucherInfo voucherInfo = new VoucherInfo();
-            voucherInfo.issueTime = dateFormat.format(new Date());
-            voucherInfo.voucherCode = coupon.eCouponSn;
-            if(coupon.effectiveAt != null){
-                voucherInfo.voucherStartTime = dateFormat.format(coupon.effectiveAt);
-            }else {
-                voucherInfo.voucherStartTime = dateFormat.format(coupon.expireAt);
-            }
-            voucherInfo.voucherEndTime = dateFormat.format(coupon.expireAt);
-            voucherInfo.voucherCount = 1;
-            voucherInfoResponse.add(voucherInfo);
-        }
-        renderJSON(new YHDResponse(voucherInfoResponse));
+        Template template = TemplateLoader.load("yihaodian/groupbuy/response/vouchersGet.json");
+        Map<String, Object> templateParams = new HashMap<>();
+        templateParams.put("coupons", coupons);
+        renderArgs.put("data", template.render(templateParams));
+
+        totalCount = coupons.size();
+        finish(errorInfoList, totalCount);
     }
 
     /**
      * 消费券重新发送
      */
     public static void voucherResend() {
-        TreeMap<String, String> params = YHDGroupBuyUtil.filterPlayParams(request.params.all());
-        YHDErrorResponse errorResponse = YHDGroupBuyUtil.checkParam(params, "sign", "orderCode", "partnerOrderCode",
+        TreeMap<String, String> params = YHDGroupBuyUtil.filterPlayParams(request.params.allSimple());
+        List<YHDErrorInfo> errorInfoList = YHDGroupBuyUtil.checkParam(params, "sign", "orderCode", "partnerOrderCode",
                 "voucherCode", "receiveMobile", "requestTime");
-        if(errorResponse.errorCount > 0){
-            renderJSON(new YHDResponse(errorResponse));
+        int totalCount = 0;
+        if(errorInfoList.size() > 0){
+            finish(errorInfoList, totalCount);
         }
 
         OuterOrder outerOrder = OuterOrder.find("byPartnerAndOrderNumber",
@@ -189,74 +177,70 @@ public class YHDGroupBuy extends Controller{
         ECoupon eCoupon = null;
         //检查订单存在与否
         if(outerOrder == null || outerOrder.ybqOrder == null){
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "订单不存在,请检查 orderCode", null));
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "订单不存在,请检查 orderCode", null));
         }else if(!outerOrder.ybqOrder.orderNumber.equals(params.get("partnerOrderCode"))){
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "订单关联错误,请检查 partnerOrderCode", null));
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "订单关联错误,请检查 partnerOrderCode", null));
         }
         //检查请求时间
-        if(errorResponse.errorCount == 0){
+        if(errorInfoList.size() == 0){
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
             try{
                 Date date = dateFormat.parse(params.get("requestTime"));
                 if(Math.abs(date.getTime() - System.currentTimeMillis()) > 600000){
-                    errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.resend.time_invalid", "请求时间误差大于10分钟", null));
+                    errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.resend.time_invalid", "请求时间误差大于10分钟", null));
                 }
             }catch (ParseException e){
-                errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.resend.time_invalid", "请求时间格式有误,请检查 requestTime", null));
+                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.resend.time_invalid", "请求时间格式有误,请检查 requestTime", null));
             }
         }
         //检查券存在与否
-        if(errorResponse.errorCount == 0){
+        if(errorInfoList.size() == 0){
             eCoupon = ECoupon.find("byOrderAndECouponSn", outerOrder.ybqOrder, params.get("voucherCode")).first();
             if(eCoupon == null) {
-                errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "消费券不存在", null));
+                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "消费券不存在", null));
             }
         }
         // 检查券的发送次数
-        if(errorResponse.errorCount == 0){
+        if(errorInfoList.size() == 0){
             if(eCoupon.downloadTimes <= 0){
-                errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "券发送次数已经到达3次上限", null));
+                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "券发送次数已经到达3次上限", null));
             }
         }
         // 检查手机号
-        if(errorResponse.errorCount == 0){
+        if(errorInfoList.size() == 0){
             if(!checkPhone(params.get("receiveMobile"))){
-                errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "手机号码格式错误", null));
+                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.resend.error", "手机号码格式错误", null));
             }
         }
 
-        if(errorResponse.errorCount > 0){
-            renderJSON(new YHDResponse(errorResponse));
+        if(errorInfoList.size() > 0){
+            finish(errorInfoList, totalCount);
         }
-
-        VoucherResendResponse voucherResendResponse = new VoucherResendResponse();
 
         eCoupon.downloadTimes = eCoupon.downloadTimes - 1;
         eCoupon.save();
         ECoupon.send(eCoupon, params.get("receiveMobile"));
 
-        voucherResendResponse.totalCount = 1;
-        renderJSON(new YHDResponse(voucherResendResponse));
+        totalCount = 1;
+        finish(errorInfoList, totalCount);
     }
 
     /**
      * 消费券退款
      */
     private static void voucherRefund() {
-        TreeMap<String, String> params = YHDGroupBuyUtil.filterPlayParams(request.params.all());
-        YHDErrorResponse errorResponse = YHDGroupBuyUtil.checkParam(params, "sign", "orderCode", "partnerOrderCode",
+        TreeMap<String, String> params = YHDGroupBuyUtil.filterPlayParams(request.params.allSimple());
+        List<YHDErrorInfo> errorInfoList = YHDGroupBuyUtil.checkParam(params, "sign", "orderCode", "partnerOrderCode",
                 "voucherCode", "receiveMobile", "requestTime");
-        if(errorResponse.errorCount > 0){
-            renderJSON(new YHDResponse(errorResponse));
-        }
     }
 
     // 创建一百券订单
-    private static Order createYbqOrder(YHDGroupBuyOrder yhdGroupBuyOrder, YHDErrorResponse errorResponse) {
+    private static Order createYbqOrder(String outerGroupId, BigDecimal productPrize,
+                                        Integer productNum, String userPhone, List<YHDErrorInfo> errorInfoList) {
         Resaler resaler = Resaler.findOneByLoginName(YHD_LOGIN_NAME);
         if (resaler == null){
             Logger.error("can not find the resaler by login name: %s", YHD_LOGIN_NAME);
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.error", "合作伙伴：一号店 不存在", null));
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "合作伙伴：一号店 不存在", null));
             return null;
         }
         Order ybqOrder = Order.createConsumeOrder(resaler.getId(), AccountType.RESALER);
@@ -264,30 +248,26 @@ public class YHDGroupBuy extends Controller{
         try {
             Long goodsId = null;
             try{
-                goodsId = Long.parseLong(yhdGroupBuyOrder.outerGroupId);
+                goodsId = Long.parseLong(outerGroupId);
             }catch (NumberFormatException e){
-                Logger.info("goodsId is not long: %s", yhdGroupBuyOrder.outerGroupId );
-                errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.error", "找不到商品,请检查 outerGroupId", null));
+                Logger.info("goodsId is not long: %s", outerGroupId );
+                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "找不到商品,请检查 outerGroupId", null));
                 return null;
             }
             Goods goods = Goods.find("byId", goodsId).first();
             if(goods == null){
-                Logger.info("goods not found: %s", yhdGroupBuyOrder.outerGroupId );
-                errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.error", "找不到商品,请检查 outerGroupId", null));
+                Logger.info("goods not found: %s", outerGroupId );
+                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "找不到商品,请检查 outerGroupId", null));
                 return null;
             }
-            if(goods.originalPrice.compareTo(yhdGroupBuyOrder.productPrize) > 0){
-                Logger.info("invalid yhd productPrice: %s", yhdGroupBuyOrder.productPrize );
-                errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.error", "商品价格不合法，拒绝订单", null));
+            if(goods.originalPrice.compareTo(productPrize) > 0){
+                Logger.info("invalid yhd productPrice: %s", productPrize );
+                errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "商品价格不合法，拒绝订单", null));
                 return null;
             }
 
             OrderItems uhuilaOrderItem  = ybqOrder.addOrderItem(
-                    goods,
-                    yhdGroupBuyOrder.productNum,
-                    yhdGroupBuyOrder.userPhone,
-                    yhdGroupBuyOrder.productPrize,
-                    yhdGroupBuyOrder.productPrize );
+                    goods, productNum, userPhone, productPrize, productPrize );
             uhuilaOrderItem.save();
             if(goods.materialType.equals(MaterialType.REAL)){
                 ybqOrder.deliveryType = DeliveryType.SMS;
@@ -296,7 +276,7 @@ public class YHDGroupBuy extends Controller{
             }
         } catch (NotEnoughInventoryException e) {
             Logger.info("enventory not enough");
-            errorResponse.addErrorInfo(new YHDErrorInfo("yhd.group.buy.order.inform.error", "库存不足", null));
+            errorInfoList.add(new YHDErrorInfo("yhd.group.buy.order.inform.error", "库存不足", null));
             return null;
         }
 
@@ -308,6 +288,12 @@ public class YHDGroupBuy extends Controller{
         ybqOrder.save();
 
         return ybqOrder;
+    }
+
+    private static void finish(List<YHDErrorInfo> errorInfoList, int totalCount){
+        renderArgs.put("errorInfoList", errorInfoList);
+        renderArgs.put("totalCount", totalCount);
+        renderTemplate("yihaodian/groupbuy/response/main.json");
     }
 
     private static boolean checkPhone(String phone){
