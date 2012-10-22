@@ -640,7 +640,7 @@ public class Goods extends Model {
                 publishedPlatforms.add(type);
             }
         }
-//        System.out.println("get-----goods????publishedPlatforms" + publishedPlatforms);
+        System.out.println("getPublishedPlatforms>>>" + publishedPlatforms.size());
         return publishedPlatforms;
     }
 
@@ -734,6 +734,7 @@ public class Goods extends Model {
         updateGoods.shops = goods.shops;
         updateGoods.title = goods.title;
         updateGoods.setPublishedPlatforms(goods.getPublishedPlatforms());
+        System.out.println("updategoodsun>>>" + updateGoods.unPublishedPlatforms.size());
         updateGoods.useBeginTime = goods.useBeginTime;
         updateGoods.useEndTime = goods.useEndTime;
         updateGoods.useWeekDay = goods.useWeekDay;

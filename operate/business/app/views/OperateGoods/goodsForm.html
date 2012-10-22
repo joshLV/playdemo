@@ -12,6 +12,13 @@
     value:goods?.materialType?.toString(), required:true/}
     #{layout_operate.checkboxField name:'goods.publishedPlatforms', items:models.sales.GoodsPublishedPlatformType
     .values(), value:goods?.publishedPlatforms/}
+
+     aaaaa   ${goods?.unPublishedPlatforms.size()} kkkkkk ${goods?.publishedPlatforms.size()}
+<br>
+    #{list items:goods?.unPublishedPlatforms, as:'p' }
+       ppppppppp${p}
+    #{/list}
+
     #{if "add".equals(action)}
         #{layout_operate.selectField name:'goods.supplierId', class:'span2', value:goods?.supplierId,
         error:'goods.supplierId'}

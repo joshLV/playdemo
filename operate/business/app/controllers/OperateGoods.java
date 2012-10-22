@@ -193,6 +193,7 @@ public class OperateGoods extends Controller {
 
         renderArgs.put("shopIds", shopIds);
         renderArgs.put("isAllShop", goods.isAllShop);
+        System.out.println("goods.un>>>"+goods.unPublishedPlatforms.size());
         renderArgs.put("goods", goods);
     }
 
@@ -355,8 +356,10 @@ public class OperateGoods extends Controller {
      */
     public static void edit2(Long id) {
         models.sales.Goods goods = models.sales.Goods.findById(id);
+
         checkShops(goods.supplierId);
         renderInit(goods);
+        System.out.println("goods>?>>>>"+goods.unPublishedPlatforms.size());
         renderArgs.put("imageLargePath", goods.getImageLargePath());
         render(id);
 
