@@ -1315,6 +1315,7 @@ public class Goods extends Model {
         if (goodsHistory.unPublishedPlatforms == null) {
             goodsHistory.unPublishedPlatforms = new HashSet<>();
         }
+        goodsHistory.unPublishedPlatforms.addAll(this.unPublishedPlatforms);
         goodsHistory.createdFrom = createdFrom;
         goodsHistory.goodsId = this.id;
         goodsHistory.name = this.name;

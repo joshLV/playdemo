@@ -347,29 +347,6 @@ public class GoodsHistory extends Model {
         this.details = Jsoup.clean(details, HTML_WHITE_TAGS);
     }
 
-    public void setPublishedPlatforms(List<GoodsPublishedPlatformType> publishedPlatforms, Goods goods) {
-        if (unPublishedPlatforms == null) {
-            unPublishedPlatforms = new HashSet<>();
-        } else {
-            unPublishedPlatforms.clear();
-        }
-
-        if (publishedPlatforms == null || publishedPlatforms.size() == 0) {
-            for (GoodsPublishedPlatformType type : GoodsPublishedPlatformType.values()) {
-                final GoodsUnPublishedPlatform goodsUnPublishedPlatform = new GoodsUnPublishedPlatform(goods, type);
-                unPublishedPlatforms.add(goodsUnPublishedPlatform);
-            }
-            return;
-        }
-
-        for (GoodsPublishedPlatformType type : GoodsPublishedPlatformType.values()) {
-            if (!publishedPlatforms.contains(type)) {
-                final GoodsUnPublishedPlatform goodsUnPublishedPlatform = new GoodsUnPublishedPlatform(goods, type);
-                unPublishedPlatforms.add(goodsUnPublishedPlatform);
-            }
-        }
-    }
-
     public Collection<Shop> getShopList() {
         if (isAllShop) {
             return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId, "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {

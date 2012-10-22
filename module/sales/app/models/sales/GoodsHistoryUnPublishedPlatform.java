@@ -21,12 +21,12 @@ public class GoodsHistoryUnPublishedPlatform extends Model {
     public GoodsHistory goodsHistory;
 
     @Enumerated(EnumType.STRING)
-    public GoodsPublishedPlatformType type;
+    public GoodsHistoryPublishedPlatformType type;
 
     public GoodsHistoryUnPublishedPlatform() {
     }
 
-    public GoodsHistoryUnPublishedPlatform(GoodsHistory goodsHistory, GoodsPublishedPlatformType type) {
+    public GoodsHistoryUnPublishedPlatform(GoodsHistory goodsHistory, GoodsHistoryPublishedPlatformType type) {
         this.goodsHistory = goodsHistory;
         this.type = type;
     }
