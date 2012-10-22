@@ -30,9 +30,11 @@ verifyTextPresent('京东商城200元京券')
 
 open('/library')
 
+*{
 click('id=del_${play.test.Fixtures.idCache.get("models.resale.ResalerFav-ResalerFavs3")}')
 verifyTextPresent('京东商城50元京券')
 verifyTextPresent('京东商城200元京券')
+}*
 
 *{click('id=check_goods_${play.test.Fixtures.idCache.get("models.sales.Goods-Goods_003")}')}*
 *{click('id=batch_delete')}*
