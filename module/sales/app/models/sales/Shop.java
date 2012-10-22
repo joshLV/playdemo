@@ -212,4 +212,28 @@ public class Shop extends Model {
         }
         return areaName;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Shop shop = (Shop) o;
+
+        if (address != null ? !address.equals(shop.address) : shop.address != null) return false;
+        if (id != null ? !id.equals(shop.id) : shop.id != null) return false;
+        if (name != null ? !name.equals(shop.name) : shop.name != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (address != null ? address.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        return result;
+    }
 }

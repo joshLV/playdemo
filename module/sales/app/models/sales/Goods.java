@@ -394,7 +394,8 @@ public class Goods extends Model {
      * 不允许发布的电子商务网站.
      * 设置后将不允许自动发布到这些电子商务网站上
      */
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "goods")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true,
+            fetch = FetchType.LAZY, mappedBy = "goods")
     public Set<GoodsUnPublishedPlatform> unPublishedPlatforms;
 
     public static final String IMAGE_SERVER = Play.configuration.getProperty
@@ -1191,11 +1192,12 @@ public class Goods extends Model {
     public void setPublishedPlatforms(List<GoodsPublishedPlatformType> publishedPlatforms) {
         if (unPublishedPlatforms == null) {
             unPublishedPlatforms = new HashSet<>();
+            System.out.println("is null");
         } else {
             if (unPublishedPlatforms.size() > 0) {
                 unPublishedPlatforms.clear();
             }
-            System.out.println("inini");
+            System.out.println("inini22");
         }
 
         System.out.println("-----goods--unPublishedPlatforms.size>>>" + unPublishedPlatforms.size());
@@ -1367,5 +1369,29 @@ public class Goods extends Model {
         goodsHistory.isLottery = this.isLottery;
         goodsHistory.groupCode = this.groupCode;
         goodsHistory.save();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Goods goods = (Goods) o;
+
+        if (id != goods.id) return false;
+        if (name != null ? !name.equals(goods.name) : goods.name != null) return false;
+        if (title != null ? !title.equals(goods.title) : goods.title != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        return result;
     }
 }
