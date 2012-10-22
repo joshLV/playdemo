@@ -9,6 +9,8 @@ import models.consumer.UserWebIdentification;
 import models.order.Cart;
 import models.order.Order;
 import org.apache.commons.lang.StringUtils;
+
+import play.cache.Cache;
 import play.mvc.After;
 import play.mvc.Before;
 import play.mvc.Controller;
@@ -45,6 +47,7 @@ public class WebsiteInjector extends Controller {
 
         List<Cart> carts = Cart.findAll(user, cookieValue);
 
+        // FIXME: 因为购物车经常出现不同步，先不缓存；但总要使用缓存
         /* CacheHelper.getCache(Cart.getCartCacheKey(user, cookieValue), new CacheCallBack<List<Cart>>() {
            @Override
            public List<Cart> loadData() {
@@ -91,6 +94,7 @@ public class WebsiteInjector extends Controller {
 
         final String identificationValue = cookieValue;
         final Long userId = user != null ? user.getId() : 0l;
+        System.out.println("处理webidentitfication......");
         UserWebIdentification identification = CacheHelper.getCache("WEBIDENTI_" + identificationValue + "_" + userId, new CacheCallBack<UserWebIdentification>() {
             @Override
             public UserWebIdentification loadData() {
@@ -119,7 +123,26 @@ public class WebsiteInjector extends Controller {
     private static UserWebIdentification findUserWebIdentification(
             final User user, final String identificationValue) {
         UserWebIdentification uwi = UserWebIdentification.findOne(identificationValue);
+
+        System.out.println("find on db: uwi=" + uwi);
         if (uwi == null) {
+        	// 为避免大量爬虫产生的记录，这里：
+            // 如果没有保存过，尝试从Cache找一下，如果找到，让mq可以进行保存操作。        	
+        	System.out.println("没有找到，尝试从cache中查询: key=(" + UserWebIdentification.MQ_KEY + identificationValue + ")");
+        	uwi = (UserWebIdentification) Cache.get(UserWebIdentification.MQ_KEY + identificationValue);
+        	System.out.println("from cache: uwi=" + uwi);
+        	if (uwi != null) {
+        		System.out.println("通知保存");
+        		uwi.notifyMQSave();
+        	}
+        } else {
+        	System.out.println("找到了，保存一下，加入用户名信息");
+            uwi.user = user;
+            uwi.save();
+        }
+        
+        if (uwi == null) {
+        	// 第一次产生标识对象
             uwi = new UserWebIdentification();
             uwi.cookieId = identificationValue;
             uwi.user = user;
@@ -138,11 +161,11 @@ public class WebsiteInjector extends Controller {
             if (headerAgent != null) {
                 uwi.userAgent = headerAgent.value();
             }
-            uwi.save();
-        } else {
-            uwi.user = user;
-            uwi.save();
+            System.out.println("发送到MQ");
+            uwi.sendToCacheOrSave();
+            return null; //避免缓存
         }
+        System.out.println("无动作，继续中。。。");
         return uwi;
     }
 

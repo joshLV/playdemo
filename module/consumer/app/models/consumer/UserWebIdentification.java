@@ -1,6 +1,7 @@
 package models.consumer;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,13 +9,21 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import models.sms.MockSMSProvider;
+import models.sms.SMSMessage;
+import play.Play;
+import play.cache.Cache;
 import play.db.jpa.Model;
+import play.modules.rabbitmq.producer.RabbitMQPublisher;
 
 @Entity
 @Table(name="user_web_identifications")
 public class UserWebIdentification extends Model {
 
     private static final long serialVersionUID = 18232060911893921L;
+    
+    public static final String MQ_KEY = "USER_WEBIDENTIFICATION";
 
     @Column(name="cookie_id")
     public String cookieId;
@@ -73,11 +82,33 @@ public class UserWebIdentification extends Model {
     public BigDecimal payAmount;
 
     /**
-     * 按用户id和cookie值找到跟踪的值.
+     * 按cookie值找到跟踪的值.
      * @param cookieValue
      * @return
      */
     public static UserWebIdentification findOne(String cookieValue) {
         return UserWebIdentification.find("cookieId=?", cookieValue).first();
     }
+    
+    /**
+     * 把当前对象放到Cache中，同时发到MQ中，由MQ执行插入到数据库的操作.
+     */
+	public void sendToCacheOrSave() {			
+		System.out.println("1cachevalue:" + Cache.get(MQ_KEY + this.cookieId));
+		if (Play.runingInTestMode()) {
+			System.out.println("test mode, save direct");
+			save();
+		} else {
+			System.out.println("2.加入到cache:(" + MQ_KEY + this.cookieId + ")");
+			Cache.add(MQ_KEY + this.cookieId, this, "300mn");
+			
+			System.out.println("cachevalue:" + Cache.get(MQ_KEY + this.cookieId));
+		}
+    }
+	
+	public void notifyMQSave() {
+		if (!Play.runingInTestMode()) {
+			RabbitMQPublisher.publish(MQ_KEY, this.cookieId);
+		}
+	}
 }
