@@ -118,9 +118,6 @@
                             <a href="#" goodsId="${favItem.goods.id}" class="push_dd">发布到当当</a>
                             #{if favItem.partner==models.order.OuterOrderPartner.DD}<span style="display:block;color: #ff0000;">(已发布在当当)</span> #{/if}
                         #{/if}
-                        #{else}
-                            已发布在当当
-                        #{/else}
                         #{if resaler.loginName == 'jingdong'}
                             <a href="/jd-add/${favItem.goods.id}" >发布到京东</a>
                         #{/if}
