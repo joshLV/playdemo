@@ -123,6 +123,9 @@
                         #{else}
                             已发布在当当
                         #{/else}
+                        #{if resaler.loginName == 'jingdong'}
+                            <a href="/jd-add/${favItem.goods.id}" >发布到京东</a>
+                        #{/if}
                     </td>
                 </tr>
                 </tbody>

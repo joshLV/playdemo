@@ -1,14 +1,17 @@
 package controllers;
 
+import controllers.modules.resale.cas.SecureCAS;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.jingdong.groupbuy.JDRest;
 import models.jingdong.groupbuy.response.CategoryResponse;
 import models.jingdong.groupbuy.response.CityResponse;
 import models.jingdong.groupbuy.response.UploadTeamResponse;
+import models.resale.Resaler;
 import models.supplier.Supplier;
 import play.Logger;
 import play.libs.WS;
 import play.mvc.Controller;
+import play.mvc.With;
 import play.templates.Template;
 import play.templates.TemplateLoader;
 
@@ -20,8 +23,14 @@ import java.util.Map;
  * @author likang
  *         Date: 12-10-16
  */
+@With(SecureCAS.class)
 public class JingdongUploadTeam extends Controller{
+    private static String JD_LOGIN_NAME = "jingdong";
     public static void prepare(Long goodsId){
+        Resaler resaler = SecureCAS.getResaler();
+        if(!JD_LOGIN_NAME.equals(resaler.loginName)){
+            error("there is nothing you can do");
+        }
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
         Supplier supplier = Supplier.findById(goods.supplierId);
         List<CityResponse> cities = JDGroupBuyUtil.queryCity();
@@ -31,6 +40,11 @@ public class JingdongUploadTeam extends Controller{
     }
 
     public static void upload(){
+        Resaler resaler = SecureCAS.getResaler();
+        if(!JD_LOGIN_NAME.equals(resaler.loginName)){
+            error("there is nothing you can do");
+        }
+
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/uploadTeam.action";
         Template template = TemplateLoader.load("jingdong/groupbuy/request/uploadTeam.xml");
         Map<String, Object> params = new HashMap<>();
