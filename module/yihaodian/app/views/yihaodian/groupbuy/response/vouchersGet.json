@@ -1,0 +1,13 @@
+"voucherInfoList": {
+    "voucherInfo": [
+    #{list items:coupons, as:'coupon'}
+    {
+        "voucherCode": "${coupon.eCouponSn}",
+        "issueTime": "${(new java.util.Date()).format('yyyy-MM-dd HH:mm:ss')}",
+        "voucherStartTime": "${coupon.effectiveAt.format('yyyy-MM-dd HH:mm:ss')}",
+        "voucherEndTime": "${coupon.expireAt.format('yyyy-MM-dd HH:mm:ss')}",
+        "voucherCount":1
+    },
+    #{/list}
+    ]
+}
