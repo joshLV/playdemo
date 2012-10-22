@@ -94,15 +94,10 @@ public class UserWebIdentification extends Model {
      * 把当前对象放到Cache中，同时发到MQ中，由MQ执行插入到数据库的操作.
      */
 	public void sendToCacheOrSave() {			
-		System.out.println("1cachevalue:" + Cache.get(MQ_KEY + this.cookieId));
 		if (Play.runingInTestMode()) {
-			System.out.println("test mode, save direct");
 			save();
 		} else {
-			System.out.println("2.加入到cache:(" + MQ_KEY + this.cookieId + ")");
 			Cache.add(MQ_KEY + this.cookieId, this, "300mn");
-			
-			System.out.println("cachevalue:" + Cache.get(MQ_KEY + this.cookieId));
 		}
     }
 	

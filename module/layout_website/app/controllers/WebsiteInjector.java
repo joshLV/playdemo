@@ -125,19 +125,14 @@ public class WebsiteInjector extends Controller {
             final User user, final String identificationValue) {
         UserWebIdentification uwi = UserWebIdentification.findOne(identificationValue);
 
-        System.out.println("find on db: uwi=" + uwi);
         if (uwi == null) {
         	// 为避免大量爬虫产生的记录，这里：
             // 如果没有保存过，尝试从Cache找一下，如果找到，让mq可以进行保存操作。        	
-        	System.out.println("没有找到，尝试从cache中查询: key=(" + UserWebIdentification.MQ_KEY + identificationValue + ")");
         	uwi = (UserWebIdentification) Cache.get(UserWebIdentification.MQ_KEY + identificationValue);
-        	System.out.println("from cache: uwi=" + uwi);
         	if (uwi != null) {
-        		System.out.println("通知保存");
         		uwi.notifyMQSave();
         	}
         } else {
-        	System.out.println("找到了，保存一下，加入用户名信息");
             uwi.user = user;
             uwi.save();
         }
@@ -162,11 +157,9 @@ public class WebsiteInjector extends Controller {
             if (headerAgent != null) {
                 uwi.userAgent = headerAgent.value();
             }
-            System.out.println("发送到MQ");
             uwi.sendToCacheOrSave();
             return null; //避免缓存
         }
-        System.out.println("无动作，继续中。。。");
         return uwi;
     }
 
