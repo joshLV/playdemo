@@ -10,6 +10,7 @@ import models.order.Cart;
 import models.order.Order;
 import org.apache.commons.lang.StringUtils;
 
+import play.Play;
 import play.cache.Cache;
 import play.mvc.After;
 import play.mvc.Before;
@@ -87,7 +88,7 @@ public class WebsiteInjector extends Controller {
         String cookieValue = null;
         if (cookie == null) {
             cookieValue = UUID.randomUUID().toString();
-            response.setCookie(WEB_TRACK_COOKIE, cookieValue, baseDomain, "/", -1, false);
+            response.setCookie(WEB_TRACK_COOKIE, cookieValue, (Play.mode == Play.Mode.DEV) ? request.domain : baseDomain, "/", -1, false);
         } else {
             cookieValue = cookie.value;
         }
