@@ -58,8 +58,7 @@ public class JingdongUploadTeam extends Controller{
 
         JDRest<UploadTeamResponse> uploadTeamRest = new JDRest<>();
         if(!uploadTeamRest.parse(response.getString(), new UploadTeamResponse())){
-            String error = response.getString();
-            render("JingdongUploadTeam/result.html", error);
+            render("JingdongUploadTeam/result.html", uploadTeamRest);
         }
         render("JingDongUploadTeam/result.html", uploadTeamRest);
     }

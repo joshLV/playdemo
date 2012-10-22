@@ -16,10 +16,12 @@
 #{/set}
 
 <div id="content">
-    #{if error}
-        ${error}
+    #{if uploadTeamRest.resultCode != '200'}
+        发生错误,请尝试刷新重试，或返回上一页修改数据后重试<br/><br/>
+
+    错误简介： &{'jingdong.api.groupbuy.upload.' + uploadTeamRest.resultCode} <br/>
     #{/if}
     #{else}
-        成功 ${uploadTeamRest.data.jdTeamId}
+        成功 ，京东商品号为${uploadTeamRest.data.jdTeamId}
     #{/else}
 </div>
