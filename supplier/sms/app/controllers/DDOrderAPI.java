@@ -44,7 +44,7 @@ public class DDOrderAPI extends Controller {
         String user_id = StringUtils.trimToEmpty(params.get("user_id"));
         String kx_order_id = StringUtils.trimToEmpty(params.get("kx_order_id"));
         BigDecimal amount = BigDecimal.ZERO;
-        if (!StringUtils.isBlank(params.get("amount"))) {
+        if (StringUtils.isNotBlank(params.get("amount"))) {
            amount = new BigDecimal(StringUtils.trimToEmpty(params.get("amount")));
         }
         String sign = StringUtils.trimToEmpty(params.get("sign")).toLowerCase();
@@ -126,9 +126,9 @@ public class DDOrderAPI extends Controller {
                 Goods goods = Goods.findById(Long.parseLong(arrGoodsItem[0]));
                 BigDecimal resalerPrice = goods.getResalePrice();
                 ybqPrice = ybqPrice.add(resalerPrice.multiply(new BigDecimal(arrGoodsItem[1])));
-                if (amount.compareTo(ybqPrice) != 0) {
+                if (ybqPrice.compareTo(amount) != 0) {
                     resalerPrice = amount;
-                    Logger.error("当当订单金额不一致！");
+                    Logger.error("当当订单金额不一致！当当amount="+amount+",ybqPrice="+ybqPrice);
                 }
                 try {
                     //创建一百券订单Items

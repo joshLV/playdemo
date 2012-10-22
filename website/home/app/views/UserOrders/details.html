@@ -33,7 +33,7 @@
         #{list items:orderItems, as:'row' }
             <tr class="order-bd">
                 <td align="left" valign="middle">
-                #{if row.goodsHistoryId? != null}  
+                #{if row?.goodsHistoryId != null}
                     <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/gh/${row.goodsHistoryId}" target="_blank"><img style="float:left;margin-right:5px" src="${row.goods.imageTinyPath}"/>${row.goods.name}</a>
                 #{/if}
                 #{else}

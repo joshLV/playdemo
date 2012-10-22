@@ -1,37 +1,25 @@
 package unit;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
+import com.uhuila.common.constants.DeletedStatus;
 import models.order.Order;
 import models.order.OrderItems;
 import models.resale.Resaler;
 import models.resale.ResalerLevel;
-import models.sales.Area;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.GoodsCondition;
-import models.sales.GoodsLevelPrice;
-import models.sales.GoodsPublishedPlatformType;
-import models.sales.GoodsStatus;
-import models.sales.GoodsUnPublishedPlatform;
-import models.sales.Shop;
+import models.sales.*;
 import models.supplier.Supplier;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import play.cache.Cache;
 import play.modules.paginate.JPAExtPaginator;
 import play.test.Fixtures;
 import play.test.UnitTest;
 
-import com.uhuila.common.constants.DeletedStatus;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 商品Model的单元测试.
@@ -221,6 +209,8 @@ public class GoodsUnitTest extends UnitTest {
         goods.no = "11";
         goods.name = "test111";
         goods.faceValue = new BigDecimal(200);
+        goods.salePrice=BigDecimal.TEN;
+        goods.originalPrice=BigDecimal.ONE;
         goods.create();
     }
 

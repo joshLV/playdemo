@@ -1,26 +1,19 @@
 package unit;
 
+import models.resale.Resaler;
+import models.resale.ResalerFav;
+import models.sales.*;
+import org.junit.Before;
+import org.junit.Test;
+import play.test.Fixtures;
+import play.test.UnitTest;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import models.resale.Resaler;
-import models.resale.ResalerFav;
-import models.sales.Area;
-import models.sales.Brand;
-import models.sales.Category;
-import models.sales.Goods;
-import models.sales.Shop;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import play.test.Fixtures;
-import play.test.UnitTest;
 public class ResalerFavUnitTest extends UnitTest {
 
 	@Before
@@ -87,7 +80,7 @@ public class ResalerFavUnitTest extends UnitTest {
 
 		List<ResalerFav> favList = ResalerFav.findFavs(resaler,createdAtBegin,createdAtEnd,goodsName);
 
-		assertEquals(4, favList.size());
+		assertEquals(3, favList.size());
 	}
 
 	@Test
