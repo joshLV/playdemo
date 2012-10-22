@@ -35,7 +35,7 @@ public class ShopUnitTest extends UnitTest {
     @Test
     public void testQuery() {
         Shop condition = new Shop();
-        condition.name = "shop";
+//        condition.name = "shop";
         condition.address = "宛平南路2号";
         condition.supplierId = shop.supplierId;
         ModelPaginator<Shop> shops = Shop.query(condition, 1, 10);

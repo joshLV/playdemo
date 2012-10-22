@@ -89,9 +89,7 @@
                 </tr>
                 <tr class="order-hd" id="row_hd_${favItem.goods.id}">
                     <td colspan="6">
-                         #{if favItem.partner!=models.order.OuterOrderPartner.DD}
-                             <input type="checkbox" id="check_goods_${favItem.goods.id}"/>
-                         #{/if}
+                        <input type="checkbox" id="check_goods_${favItem.goods.id}"/>
                         <span>成交时间：${favItem.createdAt?.format("yyyy-MM-dd HH:mm:ss")}</span>
                     </td>
                 </tr>
@@ -115,10 +113,10 @@
                                     | <a href="/top-add?goodsId=${favItem.goods.id}">发布到淘宝</a>
                                 #{/if}
                             #{/else}
-
                         #{/if}
-                        #{if favItem.partner!=models.order.OuterOrderPartner.DD}
+                        #{if resaler.loginName=='dangdang'}
                             <a href="#" goodsId="${favItem.goods.id}" class="push_dd">发布到当当</a>
+                            #{if favItem.partner==models.order.OuterOrderPartner.DD}<span style="display:block;color: #ff0000;">(已发布在当当)</span> #{/if}
                         #{/if}
                         #{else}
                             已发布在当当
@@ -144,7 +142,9 @@
                         <input type="checkbox" id="uuuu" value="" name="select_all_checkbox"/> 全选
                         <a href="#" id="batch_delete">批量删除</a>
                         <!--<a href="#" id="batch_upload_show">批量发布到淘宝</a>-->
+                    #{if resaler?.loginName=='dangdang'}
                         <a href="#" id="batch_add_dd">批量发布到当当</a><span id="error-info" style="color: #ff0000"></span>
+                    #{/if}
                     </td>
                 </tr>
                 </tfoot>

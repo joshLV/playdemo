@@ -35,6 +35,9 @@ public class DDAPIPushGoods extends Controller {
     public static void batchAdd(@As(",") List<Long> goodsIds) {
 
         Resaler user = SecureCAS.getResaler();
+        if (!"dangdang".equals(user.loginName)) {
+            error("user is not dangdang resaler");
+        }
         String failGoods = "";
         boolean pushFlag = false;
         for (Long goodsId : goodsIds) {

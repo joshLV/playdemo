@@ -101,7 +101,7 @@
                 </td>
                 <td><a href="@{SupplierGoods.show(goods.id)}">查看</a>
                     #{if !models.sales.GoodsStatus.ONSALE.equals(goods?.status) && !models.sales.GoodsStatus.APPLY
-                .equals(goods?.status)}/ <a href="@{0.edit(goods?.id)}">修改</a>
+                .equals(goods?.status)}/ <a href="@{SupplierGoods.edit(goods?.id)}">修改</a>
                         / #{vx.deleteLink action:"goods", id:goods?.id, name:goods?.name/}#{/if}
                 </td>
             </tr>
