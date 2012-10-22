@@ -281,12 +281,9 @@ public class GoodsHistory extends Model {
     /**
      * 不允许发布的电子商务网站.
      * 设置后将不允许自动发布到这些电子商务网站上
-     * 
-     * 先不保存这一历史
      */
-    //@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "goods")
-    @Transient
-    public Set<GoodsUnPublishedPlatform> unPublishedPlatforms;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "goodshistory")
+    public Set<GoodsHistoryUnPublishedPlatform> unPublishedPlatforms;
 
     /**
      * 大规格图片路径
@@ -396,6 +393,5 @@ public class GoodsHistory extends Model {
         }
         return status;
     }
-
 
 }

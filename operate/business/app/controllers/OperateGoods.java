@@ -478,6 +478,7 @@ public class OperateGoods extends Controller {
         models.sales.Goods.update(id, goods, false);
         Goods goodsItem = models.sales.Goods.findById(id);
         String createdFrom = "Op";
+//        System.out.println("goodsItemunPublishedPlatforms>>>"+goodsItem.unPublishedPlatforms);
         goodsItem.createHistory(createdFrom);
         index(null, "");
     }

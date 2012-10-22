@@ -18,16 +18,16 @@ public class GoodsHistoryUnPublishedPlatform extends Model {
     private static final long serialVersionUID = 20611810609113062L;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    public GoodsHistory goodsHistory;
+    public GoodsHistory goodshistory;
 
     @Enumerated(EnumType.STRING)
-    public GoodsHistoryPublishedPlatformType type;
+    public GoodsPublishedPlatformType type;
 
     public GoodsHistoryUnPublishedPlatform() {
     }
 
-    public GoodsHistoryUnPublishedPlatform(GoodsHistory goodsHistory, GoodsHistoryPublishedPlatformType type) {
-        this.goodsHistory = goodsHistory;
+    public GoodsHistoryUnPublishedPlatform(GoodsHistory goodsHistory, GoodsPublishedPlatformType type) {
+        this.goodshistory = goodsHistory;
         this.type = type;
     }
 }

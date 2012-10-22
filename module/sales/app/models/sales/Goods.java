@@ -8,13 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -101,7 +95,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -647,6 +640,7 @@ public class Goods extends Model {
                 publishedPlatforms.add(type);
             }
         }
+//        System.out.println("get-----goods????publishedPlatforms" + publishedPlatforms);
         return publishedPlatforms;
     }
 
@@ -740,7 +734,6 @@ public class Goods extends Model {
         updateGoods.shops = goods.shops;
         updateGoods.title = goods.title;
         updateGoods.setPublishedPlatforms(goods.getPublishedPlatforms());
-
         updateGoods.useBeginTime = goods.useBeginTime;
         updateGoods.useEndTime = goods.useEndTime;
         updateGoods.useWeekDay = goods.useWeekDay;
@@ -1198,9 +1191,14 @@ public class Goods extends Model {
         if (unPublishedPlatforms == null) {
             unPublishedPlatforms = new HashSet<>();
         } else {
-            unPublishedPlatforms.clear();
+            if (unPublishedPlatforms.size() > 0) {
+                unPublishedPlatforms.clear();
+            }
+            System.out.println("inini");
         }
 
+        System.out.println("-----goods--unPublishedPlatforms.size>>>" + unPublishedPlatforms.size());
+//        System.out.println("-----goods--unPublishedPlatforms.>>>" + unPublishedPlatforms);
         if (publishedPlatforms == null || publishedPlatforms.size() == 0) {
             for (GoodsPublishedPlatformType type : GoodsPublishedPlatformType.values()) {
                 final GoodsUnPublishedPlatform goodsUnPublishedPlatform = new GoodsUnPublishedPlatform(this, type);
@@ -1213,6 +1211,7 @@ public class Goods extends Model {
             if (!publishedPlatforms.contains(type)) {
                 final GoodsUnPublishedPlatform goodsUnPublishedPlatform = new GoodsUnPublishedPlatform(this, type);
                 unPublishedPlatforms.add(goodsUnPublishedPlatform);
+                System.out.println("goods-3---goodsUnPublishedPlatform---size" + unPublishedPlatforms.size());
             }
         }
     }
@@ -1312,10 +1311,19 @@ public class Goods extends Model {
 
     public void createHistory(String createdFrom) {
         models.sales.GoodsHistory goodsHistory = new GoodsHistory();
+
         if (goodsHistory.unPublishedPlatforms == null) {
             goodsHistory.unPublishedPlatforms = new HashSet<>();
         }
-        goodsHistory.unPublishedPlatforms.addAll(this.unPublishedPlatforms);
+
+        for (GoodsPublishedPlatformType type : GoodsPublishedPlatformType.values()) {
+            if (!this.unPublishedPlatforms.contains(type)) {
+                final GoodsHistoryUnPublishedPlatform goodsHistoryUnPublishedPlatform = new GoodsHistoryUnPublishedPlatform(goodsHistory, type);
+                goodsHistory.unPublishedPlatforms.add(goodsHistoryUnPublishedPlatform);
+            }
+        }
+
+
         goodsHistory.createdFrom = createdFrom;
         goodsHistory.goodsId = this.id;
         goodsHistory.name = this.name;
@@ -1346,12 +1354,12 @@ public class Goods extends Model {
         goodsHistory.couponType = this.couponType;
         goodsHistory.imagePath = this.imagePath;
         goodsHistory.supplierId = this.supplierId;
-        if (this.shops != null) {
-            goodsHistory.shops = new HashSet<>();
+        goodsHistory.shops = new HashSet<>();
+        if (this.shops != null)
             goodsHistory.shops.addAll(this.shops);
-        }
+        else
+            goodsHistory.shops = null;
         goodsHistory.title = this.title;
-        goodsHistory.unPublishedPlatforms.addAll(this.unPublishedPlatforms);
         goodsHistory.useBeginTime = this.useBeginTime;
         goodsHistory.useEndTime = this.useEndTime;
         goodsHistory.useWeekDay = this.useWeekDay;
