@@ -77,6 +77,14 @@
     <p>团购详情 富文本数据<b>[必填]</b> </p>
     <textarea rows="5" cols="200" name="teamDetail">${goods.details.raw()} ${goods.prompt.raw()} </textarea>
 
+    <b>
+    #{list items:shops, as:'shop'}
+        #{if shop.phone == null || shop.phone.equalsTrim("")}
+        ${shop.name} 门店缺少电话信息,要先去运营后台补充一下
+        #{/if}
+    #{/list}
+    </b>
+
     <input type="hidden" name="venderTeamId" value="${goods.id}">
     <input type="submit" value="提交">
 </div>

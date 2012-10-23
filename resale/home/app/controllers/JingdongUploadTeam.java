@@ -32,6 +32,7 @@ public class JingdongUploadTeam extends Controller{
             error("there is nothing you can do");
         }
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
+        List<Shop> shops = Shop.find("bySupplierId", goods.supplierId).fetch();
         Supplier supplier = Supplier.findById(goods.supplierId);
         List<IdNameResponse> cities = JDGroupBuyUtil.queryCity();
         IdNameResponse city = null;
@@ -45,7 +46,7 @@ public class JingdongUploadTeam extends Controller{
         }
         List<IdNameResponse> categories = JDGroupBuyUtil.queryCategory(0L);
 
-        render(goods, supplier, city, categories);
+        render(goods, supplier, city, categories, shops);
     }
 
     public static void upload(){
