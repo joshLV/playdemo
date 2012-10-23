@@ -42,6 +42,7 @@ public class FileUploadUtil {
         String targetFileName = needNewName ? generateUniqueId() + extension : imageFile.getName();
 
         String targetFilePath = storePath + targetFileName;
+        sout
         if (new File(targetFilePath).exists()) {
             deleteExtImages(storePath, EXT_IMAGE_ROOT);
             new File(targetFilePath).delete();

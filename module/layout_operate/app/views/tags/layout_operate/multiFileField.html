@@ -1,0 +1,62 @@
+*{文件上传框}*
+*{name:      文本框的名称}*
+*{_required: 文字标签前面是否要加必填项标志（选填，默认不标识必填项）}*
+#{field _name}
+<div class="control-group">
+    #{layout_operate.labelText name:_name, required:_required/}
+
+    <div class="controls">
+         <input type="button" id="J_selectImage" value="批量上传"/>
+        <span style="color: red" id="note_${_id?:field.id}">${_note}</span>
+    </div>
+    #{ifError field.name}
+    <div class="controls"><span class="error">${field.error.raw()}</span></div>
+    #{/ifError}
+    <div class="controls"><div class="image-view" id="J_imageView"></div></div>
+</div>
+ <script type="text/javascript">
+    $(function () {
+       KindEditor.ready(function (K) {
+            var editor = K.editor({
+                allowFileManager:true,
+                uploadJson:'${_uploadImgUrl}'
+            });
+            K('#J_selectImage').click(function () {
+                editor.loadPlugin('multiimage', function () {
+                    editor.plugin.multiImageDialog({
+                        clickFn:function (urlList) {
+                            var div = K('#J_imageView');
+//                            div.html('');
+                            K.each(urlList, function (i, data) {
+                                div.append('<img src="' + data.url + '">');
+                            });
+                            editor.hideDialog();
+                        }
+                    });
+                });
+            });
+        });
+    });
+
+</script>
+#{/field}
+<style>
+    .image-view li {
+        list-style: none;
+        float: left;
+        width: 234px;
+        margin-right: 10px;
+        boder: 1px solid #ccc;
+    }
+    .image-view .action {
+        padding: 5px 0;
+    }
+    .image-view .set-main {
+        float: left;
+    }
+    .image-view .close {
+        float: right;
+    }
+</style>
+*{<input type="file" id="imagePath" name="imagePath" class="input-file">}*
+*{<span style="color: red" id="note_imagePath">图片尺寸：(340*260像素)</span>}*

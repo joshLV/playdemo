@@ -56,7 +56,7 @@
     <src_image2><![CDATA[]]></src_image2>
     <src_image3><![CDATA[]]></src_image3>
     <detail>
-        <![CDATA[${goods?.details?.raw()}]]></detail>
+        <![CDATA[${goods?.prompt?.raw()}${goods?.details?.raw()}]]></detail>
     <display_status><![CDATA[0]]></display_status>
     <sort_order><![CDATA[]]></sort_order>
     <sms_help><![CDATA[${goods?.title?.raw()}]]></sms_help>

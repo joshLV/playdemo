@@ -273,6 +273,12 @@ public class Goods extends Model {
     private String prompt;
 
     /**
+     * 商品展示
+     */
+    @MaxSize(65000)
+    @Lob
+    private String exhibition;
+    /**
      * 售出数量
      */
     @Column(name = "sale_count")
@@ -371,16 +377,6 @@ public class Goods extends Model {
      * 收藏指数.
      */
     public Integer favorite = 0;
-
-
-    @Transient
-    public String salePriceBegin;
-    @Transient
-    public String salePriceEnd;
-    @Transient
-    public int saleCountBegin = -1;
-    @Transient
-    public int saleCountEnd = -1;
     @Transient
     public GoodsStatistics statistics;
 
@@ -458,6 +454,11 @@ public class Goods extends Model {
      */
     @Column(name = "is_lottery")
     public Boolean isLottery = Boolean.FALSE;
+    /**
+     * 是否预约商品
+     */
+    @Column(name = "is_order")
+    public Boolean isOrder = Boolean.FALSE;
 
     /**
      * 是否隐藏上架
@@ -471,6 +472,10 @@ public class Goods extends Model {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
     public List<ResalerFav> resalerFavs;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "goods_id")
+    public List<GoodsImages> goodsImagesList;
 
     /**
      * 节省金额.
@@ -596,6 +601,17 @@ public class Goods extends Model {
         return PathUtil.getImageUrl(IMAGE_SERVER, imagePath, IMAGE_ORIGINAL);
     }
 
+    public String getExhibition() {
+        if (StringUtils.isBlank(exhibition)) {
+            return "";
+        }
+        return Jsoup.clean(exhibition, HTML_WHITE_TAGS);
+    }
+
+    public void setExhibition(String exhibition) {
+        this.exhibition = Jsoup.clean(exhibition, HTML_WHITE_TAGS);
+    }
+
     public String getPrompt() {
         if (StringUtils.isBlank(prompt)) {
             return "";
@@ -706,6 +722,7 @@ public class Goods extends Model {
         updateGoods.resaleAddPrice = goods.salePrice.compareTo(goods.originalPrice) > 0 ? goods.salePrice.subtract(goods.originalPrice) : BigDecimal.ZERO;
         updateGoods.setPrompt(goods.getPrompt());
         updateGoods.setDetails(goods.getDetails());
+        updateGoods.setExhibition(goods.getExhibition());
         updateGoods.updatedAt = new Date();
         updateGoods.updatedBy = goods.updatedBy;
         updateGoods.brand = goods.brand;
@@ -728,11 +745,10 @@ public class Goods extends Model {
         updateGoods.useEndTime = goods.useEndTime;
         updateGoods.useWeekDay = goods.useWeekDay;
 
+        updateGoods.isOrder = (goods.isOrder == null) ? Boolean.FALSE : goods.isOrder;
         updateGoods.isLottery = (goods.isLottery == null) ? Boolean.FALSE : goods.isLottery;
         updateGoods.isHideOnsale = (goods.isHideOnsale == null) ? Boolean.FALSE : goods.isHideOnsale;
-
         updateGoods.groupCode = (StringUtils.isEmpty(goods.groupCode)) ? null : goods.groupCode.trim();
-
         updateGoods.save();
 
     }

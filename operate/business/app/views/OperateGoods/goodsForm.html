@@ -115,6 +115,14 @@
     beginValue:goods?.useBeginTime, endValue:goods?.useEndTime/}
 
 <div class="control-group">
+    <label class="control-label">是否预约商品</label>
+
+    <div class="controls">
+        <input type="checkbox" name="goods.isOrder" id="isOrder" class="input-medium"
+               value="${goods?.isOrder}" ${goods?.isOrder?'checked':''}/><span id="err-isOrder"></span>
+    </div>
+</div>
+<div class="control-group">
     <label class="control-label">券类型
     </label>
 
@@ -130,18 +138,47 @@
         </label>
     </div>
 </div>
+*{#{if "add".equals(action)}}*
+*{#{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)', required:true/}}*
+*{#{/if}}*
+*{#{else}}*
+*{#{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)'/}}*
+*{<div class="control-group">}*
+*{<label for='levelPrices_${level}' class="control-label"> </label>}*
+
+*{<div class="controls">(修改前)<br/><img src="${imageLargePath}"/>}*
+*{<input type="hidden" name="imageLargePath" value="${imageLargePath}"></div>}*
+*{</div>}*
+*{#{/else}}*
+
     #{if "add".equals(action)}
-        #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)', required:true/}
+        #{layout_operate.multiFileField name:'imagePath',note:'图片尺寸：(340*260像素)', required:true, uploadImgUrl:'/goods_images'/}
     #{/if}
     #{else}
         #{layout_operate.fileField name:'imagePath',note:'图片尺寸：(340*260像素)'/}
     <div class="control-group">
-        <label for='levelPrices_${level}' class="control-label"> </label>
-
-        <div class="controls">(修改前)<br/><img src="${imageLargePath}"/>
+        <div class="controls">
+            (修改前)<br/><img src="${imageLargePath}"/>
             <input type="hidden" name="imageLargePath" value="${imageLargePath}"></div>
     </div>
+    %{
+    //imageUrl ="/goods_images?goodsId="+id;
+    imageUrl ="/goods/images";
+    }%
+    #{layout_operate.multiFileField name:'multiImage',note:'图片尺寸：(340*260像素)', required:true, uploadImgUrl:imageUrl/}
+    *{<div class="controls">}*
+        *{<ul class="image-view" id="J_imageView">}*
+            *{#{list goods?.goodsImagesList,as:'image'}}*
+                *{<li>}*
+                    *{<div class="action"><a class="set-main btn" href="">首页展示</a><a class="close btn" href="#">X</a></div>}*
+                    *{<img src="${image?.imageMiddlePath}"/>}*
+                *{</li>}*
+            *{#{/list}}*
+        *{</ul>}*
+    *{</div>}*
     #{/else}
+
+    #{layout_operate.htmlField name:'goods.exhibition', value:goods?.exhibition, uploadImgUrl:'/goods/images'/}
     #{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images'/}
     #{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}
     #{layout_operate.radioField name:'goods.isAllShop', value:isAllShop?:false, required:true/}
@@ -169,6 +206,27 @@
     #{/if}
     <input type="hidden" id="status" name="goods.status" value="${goods?.getStatus()?:'OFFSALE'}"/>
 </div>
+<style>
+    .image-view li {
+        list-style: none;
+        float: left;
+        width: 234px;
+        margin-right: 3px;
+        boder: 1px solid #ccc;
+    }
+
+    .image-view .action {
+        padding: 5px 0;
+    }
+
+    .image-view .set-main {
+        float: left;
+    }
+
+    .image-view .close {
+        float: right;
+    }
+</style>
 <script type="text/javascript">
     $("input[name='goods.isAllShop']:checked").val() == 'false' ? $("#shop").show() : $("#shop").hide();
     if ($("#selectWeekDayAll").attr("checked")) {
@@ -181,15 +239,6 @@
         }
         $("#goods_useWeekDay").val(week.join(","));
     }
-
-    function showPrice() {
-        var originalPrice = $("#goods_originalPrice").val() == null ? 0 : $("#goods_originalPrice").val();
-        var price = parseFloat($("#goods_resaleAddPrice").val()) + parseFloat(originalPrice);
-        price = (price == null || price.toString() == "NaN") ? 0 : price;
-        $("#resaleAddPrice").html(price.toFixed(2));
-    }
-
-    showPrice();
 
     showAddedRebate();
     function showAddedRebate() {
@@ -204,7 +253,6 @@
     }
 
     $(function () {
-
         $("#goods_faceValue").keyup(function () {
             limitMoneyFormat(this, $("#goods_faceValue").val());
         })
@@ -214,21 +262,6 @@
             showAddedRebate();
         })
 
-        $("#goods_originalPrice").keyup(function () {
-            limitMoneyFormat(this, $("#goods_originalPrice").val());
-            showAddedPrice();
-        })
-        $("#goods_originalPrice").keydown(function () {
-            limitMoneyFormat(this, $("#goods_originalPrice").val());
-            showAddedPrice();
-        })
-        $("#goods_originalPrice").change(function () {
-            showAddedPrice();
-        })
-        $("#goods_originalPrice").focus(function () {
-            limitMoneyFormat(this, $("#goods_originalPrice").val());
-            showAddedPrice();
-        })
         $("#goods_isAllShop_2").click(function () {
             $("#shop").show();//显示门店列表
             #{if "edit".equals(action)}

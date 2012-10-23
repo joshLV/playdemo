@@ -6,6 +6,7 @@
  * Time: 7:00 PM
  */
 
+
 $(
     function () {
         $("#goods_supplierId").change(function () {
@@ -80,6 +81,13 @@ $(
                 $("#isHideOnsale").val(true)
             } else {
                 $("#isHideOnsale").val(false)
+            }
+        });
+        $("#isOrder").click(function () {
+            if (this.checked) {
+                $("#isOrder").val(true)
+            } else {
+                $("#isOrder").val(false)
             }
         });
         $("input[name='useWeekDay[]'],#selectWeekDayAll").click(
