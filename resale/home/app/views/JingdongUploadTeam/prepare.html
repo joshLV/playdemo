@@ -34,6 +34,14 @@
         #{/list}
     </div>
     <p>选择商圈</p>
+    #{if unknownAreas?.size() > 0}
+    <div >
+        <span style="color:red">该商品所属的以下商圈尚未自动匹配成功，请手动选取</span>
+        #{list items:unknownAreas, as:'area'}
+        ${area},
+        #{/list}
+    </div>
+    #{/if}
     <div>
         #{list items:districts, as:'district'}
         <span style="color:blue">${district.name} | </span>

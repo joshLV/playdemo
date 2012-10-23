@@ -45,6 +45,11 @@ public class JingdongUploadTeam extends Controller{
                 city = c;
             }
         }
+        List<String> areaNames = new ArrayList<>();
+        for(Shop shop : shops) {
+            areaNames.add(shop.getAreaName());
+        }
+
         //查询区域
         if(city != null){
             List<IdNameResponse> districts = cacheDistricts(city.id);
@@ -52,10 +57,20 @@ public class JingdongUploadTeam extends Controller{
             //查询商圈
             Map<Long, List<IdNameResponse>> areas = cacheAreas(city.id);
             renderArgs.put("ares", areas);
-        }
-        List<String> areaNames = new ArrayList<>();
-        for(Shop shop : shops) {
-            areaNames.add(shop.getAreaName());
+
+            List<String> unknownAreas = new ArrayList<>();
+            unknownAreas.addAll(areaNames);
+            for(List<IdNameResponse> areaList : areas.values()){
+                if(areaList == null){
+                    continue;
+                }
+                for(IdNameResponse area: areaList){
+                    if(areaNames.contains(area.name)){
+                        unknownAreas.remove(area.name);
+                    }
+                }
+            }
+            renderArgs.put("unknownAreas", unknownAreas);
         }
 
         //查询一级分类
