@@ -1,16 +1,11 @@
 package factory.order;
 
-<<<<<<< HEAD
+import factory.FactoryBoy;
+import factory.ModelFactory;
 import models.consumer.User;
-=======
-import java.util.ArrayList;
-
->>>>>>> REEB-957 实现Goods上得到库存的方法并缓存
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
-import factory.FactoryBoy;
-import factory.ModelFactory;
 
 public class OrderItemsFactory extends ModelFactory<OrderItems> {
 

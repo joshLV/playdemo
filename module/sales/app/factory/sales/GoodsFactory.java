@@ -55,13 +55,7 @@ public class GoodsFactory extends ModelFactory<Goods> {
         goods.expireAt = afterDays(new Date(), 30);
         goods.faceValue = BigDecimal.TEN;
         goods.materialType = MaterialType.REAL;
-<<<<<<< HEAD
         goods.baseSale = -9L;
-=======
-        goods.baseSale = (long) -9;
-        return goods;
-
->>>>>>> 源代码中去掉saleCount，目前考虑如果处理按销量排序的问题
     }
 
     @Factory(name = "SupplierId")

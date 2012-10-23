@@ -1,8 +1,6 @@
 package models.sales;
 
 import play.db.jpa.Model;
-import play.modules.solr.SolrField;
-import play.modules.solr.SolrSearchable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -20,7 +18,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "goods_unpublished_platform")
-@SolrSearchable
 public class GoodsUnPublishedPlatform extends Model {
 
     private static final long serialVersionUID = 20611810609113062L;
@@ -29,7 +26,6 @@ public class GoodsUnPublishedPlatform extends Model {
     public Goods goods;
 
     @Enumerated(EnumType.STRING)
-    @SolrField
     public GoodsPublishedPlatformType type;
 
     public GoodsUnPublishedPlatform() {

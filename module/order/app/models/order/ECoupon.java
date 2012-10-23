@@ -702,14 +702,15 @@ public class ECoupon extends Model {
         //记录券历史信息
         new CouponHistory(eCoupon, userName, "券退款", eCoupon.status, ECouponStatus.REFUND, null).save();
 
-        // 更改库存
-        eCoupon.goods.save();
 
         // 更改订单状态
         eCoupon.status = ECouponStatus.REFUND;
         eCoupon.refundAt = new Date();
         eCoupon.refundPrice = cashAmount;
         eCoupon.save();
+
+        // 更改搜索服务中的库存
+        eCoupon.goods.save();
 
         return returnFlg;
     }
