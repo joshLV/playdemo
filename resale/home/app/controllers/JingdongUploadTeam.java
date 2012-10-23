@@ -6,6 +6,7 @@ import models.jingdong.groupbuy.JDRest;
 import models.jingdong.groupbuy.response.IdNameResponse;
 import models.jingdong.groupbuy.response.UploadTeamResponse;
 import models.resale.Resaler;
+import models.sales.Shop;
 import models.supplier.Supplier;
 import play.Logger;
 import play.libs.WS;
@@ -53,12 +54,19 @@ public class JingdongUploadTeam extends Controller{
             error("there is nothing you can do");
         }
 
+        models.sales.Goods goods = models.sales.Goods.findById(Long.parseLong(params.get("venderTeamId")));
+        if(goods == null){
+            error("goods not found: " + params.get("venderTeamId"));return;
+        }
+        List<Shop> shops = Shop.find("bySupplierId", goods.supplierId).fetch();
+
         String url = JDGroupBuyUtil.GATEWAY_URL + "/platform/normal/uploadTeam.action";
         Template template = TemplateLoader.load("jingdong/groupbuy/request/uploadTeam.xml");
         Map<String, Object> params = new HashMap<>();
         for(Map.Entry<String, String> param : request.params.allSimple().entrySet()){
             params.put(param.getKey(), param.getValue());
         }
+        params.put("shops", shops);
         String data = template.render(params);
         Logger.info("request, %s", data);
         String restRequest = JDGroupBuyUtil.makeRequestRest(data);

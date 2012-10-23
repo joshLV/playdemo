@@ -77,22 +77,6 @@
     <p>团购详情 富文本数据<b>[必填]</b> </p>
     <textarea rows="5" cols="200" name="teamDetail">${goods.details.raw()} ${goods.prompt.raw()} </textarea>
 
-    <p>团购所在的商家信息，支持多商家，至少填写一个商家信息 </p>
-    <p>商家名称 最长40个字符 <b>[必填]</b> </p>
-    <p><input type="text" name="partnerName" size="40" value="${supplier.fullName}"></p>
-    <p>商家地址 最长80个字符 <b>[必填]</b> </p>
-    <p><input type="text" name="partnerAddress" size="80" ></p>
-    <p>商家地图连接，填写地图的URL，必须以http开头。此字段可以为空。若链接过长超过100个字符请使用加密过的url短链接 此字段可以为空。 </p>
-    <p><input type="text" name="partnerMap" size="80"></p>
-    <p>商家联系人 最长30个字符 此字段可以为空。 </p>
-    <p><input type="text" name="partnerContact" size="30"></p>
-    <p>商家电话。最长40个字符 <b>[必填]</b> </p>
-    <p><input type="text" name="partnerTel" size="40" value="${supplier.phone}"></p>
-    <p>商家手机信息。最长12个字符，只能是数字。此字段可以为空。 </p>
-    <p><input type="text" name="partnerMobile" size="12" value="${supplier.mobile}"></p>
-    <p>商家交通信息，位置信息。最长400个字符。此字段可以为空。 </p>
-    <p><input type="text" name="partnerLocation" size="12"></p>
-
     <input type="hidden" name="venderTeamId" value="${goods.id}">
     <input type="submit" value="提交">
 </div>
