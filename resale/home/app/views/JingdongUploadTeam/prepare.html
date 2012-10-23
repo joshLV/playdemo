@@ -79,7 +79,7 @@
 
     <b>
     #{list items:shops, as:'shop'}
-        #{if shop.phone == null || shop.phone.equalsTrim("")}
+        #{if !shop.phone}
         ${shop.name} 门店缺少电话信息,要先去运营后台补充一下
         #{/if}
     #{/list}
