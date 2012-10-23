@@ -2,7 +2,6 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParseException;
 import models.accounts.AccountType;
 import models.accounts.PaymentSource;
 import models.order.*;
@@ -142,7 +141,6 @@ public class YHDGroupBuy extends Controller{
                 OuterOrderPartner.YHD, params.get("orderCode")).first();
         if(outerOrder == null || outerOrder.ybqOrder == null){
             errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.get.vouchers_not_found", "订单不存在,请检查 orderCode", null));
-            return;
         }else if(!outerOrder.ybqOrder.orderNumber.equals(params.get("partnerOrderCode"))){
             errorInfoList.add(new YHDErrorInfo("yhd.group.buy.vouchers.get.vouchers_not_found", "订单关联错误,请检查 partnerOrderCode", null));
         }
