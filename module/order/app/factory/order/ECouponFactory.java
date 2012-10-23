@@ -4,6 +4,7 @@ import factory.FactoryBoy;
 import factory.ModelFactory;
 import factory.annotation.Factory;
 import models.order.ECoupon;
+import models.order.ECouponStatus;
 import models.order.Order;
 import models.order.OrderItems;
 import models.sales.Goods;
@@ -29,7 +30,6 @@ public class ECouponFactory extends ModelFactory<ECoupon> {
         ECoupon eCoupon = new ECoupon(order, goods, orderItems);
         eCoupon.shop = shop;
         return eCoupon;
-
     }
 
     @Factory(name = "Id")

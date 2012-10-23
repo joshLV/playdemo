@@ -72,7 +72,6 @@ public class BatchFreezeCoupons extends Controller {
             if (tempCoupon != null) {
                 unUsedCouponsList.add(tempCoupon);
                 sumUnUsed += tempUnUsed.add(tempCoupon.salePrice).doubleValue();
-
                 continue;
             }
 
@@ -96,6 +95,7 @@ public class BatchFreezeCoupons extends Controller {
             sumUnUsed += tempUnUsed.add(tempCoupon.salePrice).doubleValue();
             ECoupon.freeze(Long.parseLong(c[i]), OperateRbac.currentUser().userName);
         }
+
         render(unUsedCouponsList, sumUnUsed);
     }
 }
