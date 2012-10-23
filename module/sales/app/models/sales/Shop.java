@@ -98,9 +98,11 @@ public class Shop extends Model {
     public String supplierName;
 
     @Transient
+    @SolrField
     public String cityId;
 
     @Transient
+    @SolrField
     public String districtId;
 
 
