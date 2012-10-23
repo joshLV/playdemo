@@ -32,7 +32,7 @@ public class DDAPIUtilTest extends FunctionalTest {
 
     @Before
     public void setup() {
-        FactoryBoy.lazyDelete();
+        FactoryBoy.deleteAll();
         goods = FactoryBoy.create(Goods.class);
         goodsHistory = FactoryBoy.create(GoodsHistory.class);
     }
