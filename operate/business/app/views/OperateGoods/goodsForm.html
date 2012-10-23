@@ -12,13 +12,6 @@
     value:goods?.materialType?.toString(), required:true/}
     #{layout_operate.checkboxField name:'goods.publishedPlatforms', items:models.sales.GoodsPublishedPlatformType
     .values(), value:goods?.publishedPlatforms/}
-
-     aaaaa   ${goods?.unPublishedPlatforms.size()} kkkkkk ${goods?.publishedPlatforms.size()}
-<br>
-    #{list items:goods?.unPublishedPlatforms, as:'p' }
-       ppppppppp${p}
-    #{/list}
-
     #{if "add".equals(action)}
         #{layout_operate.selectField name:'goods.supplierId', class:'span2', value:goods?.supplierId,
         error:'goods.supplierId'}
@@ -160,6 +153,7 @@
     #{layout_operate.htmlField name:'goods.prompt', value:goods?.prompt, uploadImgUrl:'/goods/images'/}
     #{layout_operate.htmlField name:'goods.details', value:goods?.details, uploadImgUrl:'/goods/images', required:true/}
     #{layout_operate.radioField name:'goods.isAllShop', value:isAllShop?:false, required:true/}
+oooooooo${goods.isAllShop}
 
     #{layout_operate.textField name:'goods.keywords', value:goods?.keywords /}
 

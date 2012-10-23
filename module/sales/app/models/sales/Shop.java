@@ -85,7 +85,6 @@ public class Shop extends Model {
     @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = "shops", fetch = FetchType.LAZY)
     public Set<Goods> goods = new HashSet<>();
 
-
     @Transient
     public String supplierName;
 
