@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>#{get 'title' /}</title>
+#{get 'metaContent'/}
+    <link rel="stylesheet" href="http://192.168.18.242/yome/base/src/base.css" />
+    <link rel="stylesheet" href="http://192.168.18.242/yome/base/src/sprite.css" />
+
+
+*{#{asset.css src:['/y/base/base.css', '/y/base/sprite.css'] /}}*
+    <link rel="shortcut icon" href="#{asset.url href:'/images/y/favicon.ico'/}" type="image/x-icon" />
+#{get 'moreStyles' /}
+*{#{asset.js src:['/u/jquery-1.7.2.min.js', '/y/base/base.js'] /}}*
+#{asset.js src:['/u/jquery-1.7.2.min.js'] /}
+    <script src="http://a.uhcdn.com/js/u/slides.min.js"></script>
+    <script src="http://192.168.18.242/yome/home/src/home.js"></script>
+    <script src="http://192.168.18.242/yome/base/src/base.js"></script>
+
+</head>
+<body class="home">
+<div id="topbar">
+    <div id="topbar-bd">
+        <ul class="site-nav">
+        #{if cas?.isLogin}
+            <li><a class="login" target="_blank" href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}" id="login_name">${cas.loginName}</a></li>
+            <li><a href="http://home.${play.Play.configuration.getProperty("application.baseDomain")}">我的一百券</a></li>
+            <li><a href="/logout">退出</a></li>
+        #{/if}
+        #{else}
+            <li class="first"><a class="login" id="login" href="/login">登录</a></li> <li><a class="signup" href="/register">注册</a></li>
+            <!-- <li><a class="quick" href="" target="_blank">快捷登录</a></li> -->
+        #{/else}
+            <li><a class="quick" href="" target="_blank">快捷登录</a></li>
+            <li><a id="favorite" class="favorite" href="">收藏一百券</a></li>
+            <li class="last"><iframe width="63" height="24" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0" scrolling="no" border="0" src="http://widget.weibo.com/relationship/followbutton.php?language=zh_cn&width=63&height=24&uid=1642909335&style=1&btn=red&dpc=1"></iframe></li>
+        </ul>
+        <div class="hot-line">客服热线：<span>400-6262-166</span></div>
+    </div>
+</div><!-- #topbar -->
+
+<div id="header" class="clearfix">
+    <div id="logo"><a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/"><img src="http://img.uhcdn.com/images/y/logo.png" width="180" height="96" /></a></div>
+    <div id="search">
+        <form action="" method="get" target="_self">
+            <div class="text"><input type="text" name="s" accesskey="s" autofocus="true" autocomplete="off" x-webkit-speech="" x-webkit-grammar="builtin:translate"></div>
+            <button type="submit"> 搜 索 </button>
+        </form>
+        <div class="hotword"><a href="">火锅</a> <a href="">川菜</a> <a href="">美容</a> <a href="">小吃</a> <a href="">西餐</a></div>
+    </div>
+    <div id="cart">
+        <div class="cart-box">
+            <div class="cart-box-hd clearfix">
+                <span class="cart-icon">购物车</span>
+                <span class="cart-num">有(<em>${count}</em>)件商品</span>
+                <b class="arrow"></b>
+            </div>
+            <div class="cart-box-bd">
+                <ul>
+                    <li class="carts-item clearfix">
+                        <a class="goods-img" href=""><img src="//img0.uhcdn.com/p/0/0/33/2012061404233949588_tiny.jpg" width="48" /></a>
+                        <a class="goods-name" href="">购厚味150元VIP卡,即送50元哈根达斯券</a>
+                        <span class="goods-price">120.00</span>
+                        <span class="goods-del" title="删除"></span>
+                    </li>
+                    <li class="carts-item clearfix">
+                        <a class="goods-img" href=""><img src="//img0.uhcdn.com/p/0/0/33/2012061404233949588_tiny.jpg" width="48" /></a>
+                        <a class="goods-name" href="">购厚味150元VIP卡,即送50元哈根达斯券</a>
+                        <span class="goods-price">120.00</span>
+                        <span class="goods-del" title="删除"></span>
+                    </li>
+                </ul>
+                <div class="emptycart">你的购物车里没有任何商品。</div>
+                <div class="totalcart">共<em>0</em>件商品，共计<em>0.00</em>元 <a href="">购买</a></div>
+            </div>
+        </div>
+        <a class="cart-btn" href="" target="_blank">去结算</a>
+    </div>
+</div><!-- #header -->
+
+
+*{<div id="navbar">}*
+    *{<div id="nav">}*
+        *{<a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}"}*
+           *{#{if categoryId == 0}class="curr"#{/if}>首页</a>}*
+        *{<a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/1"}*
+           *{#{if categoryId == 1}class="curr"#{/if}>餐饮美食</a>}*
+        *{<a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/2"}*
+           *{#{if categoryId == 2}class="curr"#{/if}>食品饮料</a>}*
+        *{<a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/7"}*
+           *{#{if categoryId == 7}class="curr"#{/if}>休闲娱乐</a>}*
+        *{<a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/11"}*
+           *{#{if categoryId == 11}class="curr"#{/if}>酒店旅游</a>}*
+        *{<a target="_blank" href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/s/13"}*
+           *{#{if categoryId == 13}class="curr"#{/if}>家居建材</a>}*
+    *{</div>}*
+*{</div><!-- #navbar -->}*
+
+#{doLayout /}
+
+<div id="footer">
+    <div class="ft-nav">
+        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/about" target="_blank">关于我们</a> |
+        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/contact" target="_blank">联系我们</a> |
+        <!--<a href="http://quanmx.com/" target="_blank">商户入驻</a> |-->
+        <a href="http://www.${play.Play.configuration.getProperty("application.baseDomain")}/help" target="_blank">常见问题</a> |
+        <span class="">客服热线：400-6262-166</span>
+
+    </div>
+    <div class="copyright">
+        Copyright © 2012 一百券YiBaiQuan.COM 版权所有 <span> 沪ICP备08114451号-4</span>
+    </div>
+</div><!-- #footer -->
+
+*{#{get 'moreScripts' /}}*
+
+</body>
+</html>

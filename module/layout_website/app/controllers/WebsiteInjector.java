@@ -94,7 +94,7 @@ public class WebsiteInjector extends Controller {
         }
 
         final String identificationValue = cookieValue;
-        final Long userId = user != null ? user.getId() : 0l;
+        final Long userId = (user != null) ? user.getId() : 0l;
 
         UserWebIdentification identification = CacheHelper.getCache("WEBIDENTI_" + identificationValue + "_" + userId, new CacheCallBack<UserWebIdentification>() {
             @Override

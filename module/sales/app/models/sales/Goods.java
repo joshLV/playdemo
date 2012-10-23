@@ -48,9 +48,8 @@ import models.resale.ResalerFav;
 import models.supplier.Supplier;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import play.Play;
@@ -64,7 +63,6 @@ import play.db.jpa.JPA;
 import play.db.jpa.Model;
 import play.i18n.Messages;
 import play.modules.paginate.JPAExtPaginator;
-import play.modules.paginate.ValuePaginator;
 import play.modules.solr.Solr;
 import play.modules.solr.SolrEmbedded;
 import play.modules.solr.SolrField;
@@ -249,6 +247,29 @@ public class Goods extends Model {
     @Column(name = "income_goods_count")
     @SolrField
     public Long incomeGoodsCount;
+
+    //=======================================  时间字段 ==================================
+
+    /**
+     * 最早上架时间
+     */
+    @Column(name = "first_onsale_at")
+    @SolrField
+    public Date firstOnSaleAt;
+    /**
+     * 创建时间
+     */
+    @Column(name = "created_at")
+    @SolrField
+    public Date createdAt;
+
+    /**
+     * 修改时间
+     */
+    @Column(name = "updated_at")
+    @SolrField
+    public Date updatedAt;
+
     /**
      * 券有效开始日
      */
@@ -280,10 +301,8 @@ public class Goods extends Model {
     public String useWeekDay;
     @Transient
     public String useWeekDayAll;
-    /**
-     * 商品标题
-     */
-    //    public String title;
+
+
     private BigDecimal discount;
 
     @Required
@@ -338,31 +357,11 @@ public class Goods extends Model {
     @SolrField
     public String createdFrom;
     /**
-     * 创建时间
-     */
-    @Column(name = "created_at")
-    @SolrField
-    public Date createdAt;
-    /**
      * 创建人
      */
     @Column(name = "created_by")
     @SolrField
     public String createdBy;
-
-    /**
-     * 最早上架时间
-     */
-    @Column(name = "first_onsale_at")
-    @SolrField
-    public Date firstOnSaleAt;
-
-    /**
-     * 修改时间
-     */
-    @Column(name = "updated_at")
-    @SolrField
-    public Date updatedAt;
     /**
      * 修改人
      */
@@ -1131,7 +1130,7 @@ public class Goods extends Model {
         return isExist;
     }
 
-    @SolrEmbedded
+    @SolrField
     public Collection<Shop> getShopList() {
         if (isAllShop) {
             return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId, "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {
@@ -1545,37 +1544,73 @@ public class Goods extends Model {
 
     /**
      * 搜索
+     * 按关键词直接搜索时调用
      *
      * @param keywords   查询条件
      * @param pageNumber 页数
      * @param pageSize   记录数
      * @return
      */
-    public static ValuePaginator<Goods> search(String keywords, int pageNumber, int pageSize) {
-        List<Goods> goodsList = new ArrayList<>();
-        ValuePaginator<Goods> goodsPage = new ValuePaginator<>(goodsList);
-
-        QueryResponse response = Solr.queryFullText(keywords, pageNumber, pageSize,
-                "id", "goods.name_s", "goods.salePrice_c", "goods.virtualSaleCount_l");
-        if (response == null) {
-            return goodsPage;
-        }
-        SolrDocumentList documentList = response.getResults();
-        for (SolrDocument document : documentList) {
-            Goods goods = new Goods();
-            goods.name = (String) document.getFieldValue("goods.name_s");
-            goods.originalPrice = (BigDecimal) document.getFieldValue("goods.originalPrice_c");
-            goods.salePrice = (BigDecimal) document.getFieldValue("goods.salePrice_c");
-            goods.setVirtualSaleCount((Long) document.getFieldValue("goods.virtualSaleCount_l"));
-        }
-
-        goodsPage.setPageNumber(pageNumber);
-        goodsPage.setPageSize(pageSize);
-        goodsPage.setBoundaryControlsEnabled(false);
-        return goodsPage;
+    public static QueryResponse search(String keywords, int pageNumber, int pageSize) {
+        return search(keywords, null, null, null, null, "goods.firstOnSaleAt_d", false, pageNumber, pageSize);
     }
 
-    private void setVirtualSaleCount(Long count) {
+    /**
+     * 搜索.
+     * 按关键词搜索时按指定字段排序时调用
+     *
+     * @param keywords   查询条件
+     * @param pageNumber 页数
+     * @param pageSize   记录数
+     * @return
+     */
+    public static QueryResponse search(String keywords, String orderBy, boolean isAsc, int pageNumber, int pageSize) {
+        return search(keywords, null, null, null, null, orderBy, isAsc, pageNumber, pageSize);
+    }
+
+    /**
+     * 前端按条件搜索.
+     *
+     * @param keywords
+     * @param parentCategoryId
+     * @param categoryId
+     * @param districtId
+     * @param areaId
+     * @param orderBy
+     * @param isAsc
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    public static QueryResponse search(String keywords, Long parentCategoryId, Long categoryId, Long districtId,
+                                       Long areaId, String orderBy, boolean isAsc, int pageNumber, int pageSize) {
+        StringBuilder q = new StringBuilder("goods.deleted_s:\"com.uhuila.common.constants.DeletedStatus:UN_DELETED\" AND goods.expired_b:false");
+        if (StringUtils.isNotBlank(keywords)) {
+            q.append(" AND text:" + keywords);
+        }
+        if (categoryId != null) {
+            q.append(" AND categoryId_l:" + categoryId);
+        }
+        if (districtId != null) {
+            q.append(" AND districtId_l:" + categoryId);
+        }
+        if (parentCategoryId != null) {
+            q.append(" AND parentCategoryId_l:" + parentCategoryId);
+        }
+        if (areaId != null) {
+            q.append(" AND areaId_l:" + areaId);
+        }
+        SolrQuery query = new SolrQuery(q.toString());
+        query.setFields("id", "goods.name_s", "goods.salePrice_c", "goods.originalPrice_c", "goods.virtualSaleCount_l");
+        query.setSortField(orderBy, isAsc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
+        query.setFacet(true).addFacetField("category.id_s", "category.parentCategory_s", "brand.id_s", "shop.districtId_s", "shop.areaId_s");
+        query.setHighlight(true);
+        query.setStart(pageNumber * pageSize - pageSize);
+        query.setTermsLimit(pageSize);
+        return Solr.query(query);
+    }
+
+    public void setVirtualSaleCount(Long count) {
         this.virtualSaleCount = count;
     }
     //------------------------------------------- 使用solr服务进行搜索的方法 (End) ----------------------------------------

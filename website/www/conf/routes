@@ -20,8 +20,8 @@ POST    /reset-password                         FindPassword.updatePassword
 
 
 # Home page
-GET     /                                       Home.index
-GET     /{<[0-9]+>categoryId}                   Home.index
+GET     /                                       Home2.index
+GET     /{<[0-9]+>categoryId}                   Home2.index
 GET     /about                                  WEBApplication.about
 GET     /contact                                WEBApplication.contact
 GET     /help                                   WEBApplication.help
@@ -29,17 +29,17 @@ GET     /service                                WEBApplication.service
 GET     /topic/{id}                             WEBApplication.topic
 GET     /rebate_help                            WEBApplication.rebate
 
-GET     /s                                      Goods.index
-GET     /s/{condition}                          Goods.list
-GET     /g/{id}                                 Goods.show
-GET     /gh/{id}                                Goods.showHistory
+GET     /s                                      Goods2.index
+GET     /s/{condition}                          Goods2.list
+GET     /g/{id}                                 Goods2.show
+GET     /gh/{id}                                Goods2.showHistory
 
-GET     /goods                                  Goods.index
-GET     /goods/list/{condition}                 Goods.list
+GET     /goods                                  Goods2.index
+GET     /goods/list/{condition}                 Goods2.list
 
-GET     /goods/{id}                             Goods.show
-GET     /goods/{uuid}/preview                   Goods.preview
-POST    /goods/statistics                       Goods.statistics
+GET     /goods/{id}                             Goods2.show
+GET     /goods/{uuid}/preview                   Goods2.preview
+POST    /goods/statistics                       Goods2.statistics
 
 POST    /user-question                          UserQuestions.add
 GET     /more-questions                         UserQuestions.moreQuestions
