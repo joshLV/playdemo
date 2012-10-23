@@ -3,8 +3,7 @@ package controllers;
 import controllers.modules.resale.cas.SecureCAS;
 import models.jingdong.groupbuy.JDGroupBuyUtil;
 import models.jingdong.groupbuy.JDRest;
-import models.jingdong.groupbuy.response.CategoryResponse;
-import models.jingdong.groupbuy.response.CityResponse;
+import models.jingdong.groupbuy.response.IdNameResponse;
 import models.jingdong.groupbuy.response.UploadTeamResponse;
 import models.resale.Resaler;
 import models.supplier.Supplier;
@@ -33,10 +32,19 @@ public class JingdongUploadTeam extends Controller{
         }
         models.sales.Goods goods = models.sales.Goods.findById(goodsId);
         Supplier supplier = Supplier.findById(goods.supplierId);
-        List<CityResponse> cities = JDGroupBuyUtil.queryCity();
-        List<CategoryResponse> categories = JDGroupBuyUtil.queryCategory(0L);
+        List<IdNameResponse> cities = JDGroupBuyUtil.queryCity();
+        IdNameResponse city = null;
+        for(IdNameResponse c : cities){
+            if(c.name.equals("上海")){
+                city = c;
+            }
+        }
+        if(city != null){
+            renderArgs.put("districts",JDGroupBuyUtil.queryDistrict(city.id));
+        }
+        List<IdNameResponse> categories = JDGroupBuyUtil.queryCategory(0L);
 
-        render(goods, supplier, cities, categories);
+        render(goods, supplier, city, categories);
     }
 
     public static void upload(){
@@ -60,7 +68,7 @@ public class JingdongUploadTeam extends Controller{
         if(!uploadTeamRest.parse(response.getString(), new UploadTeamResponse())){
             render("JingdongUploadTeam/result.html", uploadTeamRest);
         }
-        render("JingDongUploadTeam/result.html", uploadTeamRest);
+        render("JingdongUploadTeam/result.html", uploadTeamRest);
     }
 
     public static void showTest(){

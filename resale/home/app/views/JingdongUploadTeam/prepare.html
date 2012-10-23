@@ -19,20 +19,24 @@
     <li><a href="/withdraw">账户提现</a></li>
 #{/set}
 
-#{if cities?.size() > 0 && categories?.size() > 0}
+#{if city && categories?.size() > 0}
 
 <form action="/jd-add" method="POST">
 <div id="content">
     <p>选择城市<b>[必填]</b></p>
     <div>
-#{list items:cities, as:'city'}
-    <input type="radio" value="${city.id}" name="cityId">${city.name}
-#{/list}
+        <input type="radio" value="${city.id}" name="cityId" checked>${city.name}
     </div>
     <p>选择一级分类<b>[必填]</b></p>
     <div>
         #{list items:categories, as:'category'}
-        <input type="radio" value="${category.id}" name="groupId">${category.name}
+        <input type="radio" value="${category.id}" name="groupId" #{if category_index == 1}checked#{/if}>${category.name}
+        #{/list}
+    </div>
+    <p>选择商圈</p>
+    <div>
+        #{list items:districts, as:'district'}
+        <input type="radio" value="${district.id}" name="districtId" #{if district_index == 1}checked#{/if}>${district.name}
         #{/list}
     </div>
 
@@ -67,11 +71,11 @@
     <p>单人购买上限 仅数字，0表示无上限，最大支持9999 <b>[必填]</b> </p>
     <p><input type="text" name="perNumber" value="99"></p>
     <p>特别提示 富文本数据<b>[必填]</b>  </p>
-    <textarea rows="5" cols="200" name="notice">${goods.prompt}</textarea>
+    <textarea rows="5" cols="200" name="notice"></textarea>
     <p>团购简介 富文本数据<b>[必填]</b>  </p>
-    <textarea rows="5" cols="200" name="summary">${goods.title}</textarea>
+    <textarea rows="5" cols="200" name="summary">${goods.title.raw()}</textarea>
     <p>团购详情 富文本数据<b>[必填]</b> </p>
-    <textarea rows="5" cols="200" name="teamDetail">${goods.details.raw()}</textarea>
+    <textarea rows="5" cols="200" name="teamDetail">${goods.details.raw()} ${goods.prompt.raw()} </textarea>
 
     <p>团购所在的商家信息，支持多商家，至少填写一个商家信息 </p>
     <p>商家名称 最长40个字符 <b>[必填]</b> </p>

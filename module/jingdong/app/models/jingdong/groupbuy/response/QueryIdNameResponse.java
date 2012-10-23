@@ -10,18 +10,20 @@ import java.util.List;
  * @author likang
  *         Date: 12-10-16
  */
-public class QueryCategoryResponse implements JDMessage{
-    public List<CategoryResponse> categories;
-    public QueryCategoryResponse(){
-        categories = new ArrayList<>();
+public class QueryIdNameResponse implements JDMessage{
+    public List<IdNameResponse> idNameList;
+    public String elementName;
+    public QueryIdNameResponse(String elementName){
+        idNameList = new ArrayList<>();
+        this.elementName = elementName;
     }
     @Override
     public boolean parse(Element root) {
-        for(Element element : (List<Element>)root.element("Categories").elements()){
-            CategoryResponse category = new CategoryResponse();
+        for(Element element : (List<Element>)root.element(elementName).elements()){
+            IdNameResponse category = new IdNameResponse();
             category.id = Long.parseLong(element.elementTextTrim("Id"));
             category.name = element.elementTextTrim("Name");
-            categories.add(category);
+            idNameList.add(category);
         }
         return true;
     }
