@@ -57,6 +57,7 @@ public class GoodsCondition implements Serializable {
     public long baseSaleEnd = -1;
     public int priority;
     public boolean isLottery;
+    public boolean isHideOnsale;
     public Date expireAtBegin;
     public Date expireAtEnd;
     public Date expireAt;
@@ -125,15 +126,18 @@ public class GoodsCondition implements Serializable {
 
     public String getFilter() {
         StringBuilder condBuilder = new StringBuilder();
-        condBuilder.append(" g.deleted = :deleted and g.status != :notMatchStatus");
+        condBuilder.append(" g.deleted = :deleted and g.status != :notMatchStatus ");
         paramMap.put("deleted", DeletedStatus.UN_DELETED);
         paramMap.put("notMatchStatus", GoodsStatus.UNCREATED);
-
         if (isValidAreaId(searchAreaId)) {
             condBuilder.append(" and ((g.isAllShop = true and g.supplierId in (select g.supplierId from Shop gs " +
                     "where gs.supplierId = g.supplierId and gs.areaId like :areaId)) or ( g.isAllShop = false and" +
                     " g.id in (select g.id from g.shops s where s.areaId like :areaId)))");
             paramMap.put("areaId", searchAreaId + "%");
+        }
+        if (!isHideOnsale) {
+            condBuilder.append(" and isHideOnsale = :isHideOnsale");
+            paramMap.put("isHideOnsale", isHideOnsale);
         }
         if (supplierId != 0) {
             condBuilder.append(" and g.supplierId = :supplierId");

@@ -1,10 +1,9 @@
 package controllers;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import cache.CacheCallBack;
+import cache.CacheHelper;
+import controllers.modules.website.cas.SecureCAS;
+import controllers.modules.website.cas.annotations.SkipCAS;
 import models.cms.Block;
 import models.cms.BlockType;
 import models.cms.CmsQuestion;
@@ -24,10 +23,11 @@ import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.With;
-import cache.CacheCallBack;
-import cache.CacheHelper;
-import controllers.modules.website.cas.SecureCAS;
-import controllers.modules.website.cas.annotations.SkipCAS;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 商品控制器.
@@ -98,6 +98,7 @@ public class Goods extends Controller {
 
             final GoodsCondition goodsCond = new GoodsCondition(condition);
             goodsCond.status = GoodsStatus.ONSALE;
+            goodsCond.isHideOnsale = false;
             goodsCond.baseSaleBegin = 1;
             goodsCond.expireAtBegin = new Date();
 

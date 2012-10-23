@@ -75,6 +75,13 @@ $(
             }
         });
 
+        $("#isHideOnsale").click(function () {
+            if (this.checked) {
+                $("#isHideOnsale").val(true)
+            } else {
+                $("#isHideOnsale").val(false)
+            }
+        });
         $("input[name='useWeekDay[]'],#selectWeekDayAll").click(
             function () {
                 var week = [];

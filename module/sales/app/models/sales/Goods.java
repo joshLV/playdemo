@@ -459,6 +459,12 @@ public class Goods extends Model {
     @Column(name = "is_lottery")
     public Boolean isLottery = Boolean.FALSE;
 
+    /**
+     * 是否隐藏上架
+     */
+    @Column(name = "is_hide_onsale")
+    public Boolean isHideOnsale = Boolean.FALSE;
+
     @Transient
     public boolean skipUpdateCache = false;
 
@@ -712,6 +718,7 @@ public class Goods extends Model {
         updateGoods.useWeekDay = goods.useWeekDay;
 
         updateGoods.isLottery = (goods.isLottery == null) ? Boolean.FALSE : goods.isLottery;
+        updateGoods.isHideOnsale = (goods.isHideOnsale == null) ? Boolean.FALSE : goods.isHideOnsale;
 
         updateGoods.groupCode = (StringUtils.isEmpty(goods.groupCode)) ? null : goods.groupCode.trim();
 
@@ -753,7 +760,7 @@ public class Goods extends Model {
      * @return
      */
     public static List<Goods> findTop(int limit) {
-        return find("status=? and deleted=? and baseSale >=1 and expireAt > ? order by priority DESC,createdAt DESC",
+        return find("status=? and deleted=? and baseSale >=1 and isHideOnsale is false and expireAt > ? order by priority DESC,createdAt DESC",
                 GoodsStatus.ONSALE,
                 DeletedStatus.UN_DELETED,
                 new Date()).fetch(limit);
@@ -768,7 +775,7 @@ public class Goods extends Model {
      */
     public static List<Goods> findTopByCategory(long categoryId, int limit) {
         EntityManager entityManager = JPA.em();
-        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted " +
+        Query q = entityManager.createQuery("select g from Goods g where g.status=:status and g.deleted=:deleted and isHideOnsale=false " +
                 "and g.baseSale >= 1 and g.expireAt > :now and g.id in (select g.id from g.categories c where c.id = :categoryId) " +
                 "order by priority DESC,createdAt DESC");
         q.setParameter("status", GoodsStatus.ONSALE);
@@ -1033,7 +1040,7 @@ public class Goods extends Model {
      */
     public static List<Goods> findTopRecommend(int limit) {
         String sql = "select g from Goods g,GoodsStatistics s  where g.id =s.goodsId " +
-                " and g.status =:status and g.deleted =:deleted and g.expireAt >:expireAt and g.baseSale>=1 and g.isLottery is false order by s.summaryCount desc";
+                " and g.status =:status and g.deleted =:deleted and g.expireAt >:expireAt and g.baseSale>=1 and g.isHideOnsale is false and g.isLottery is false order by s.summaryCount desc";
         Query query = Goods.em().createQuery(sql);
         query.setParameter("status", GoodsStatus.ONSALE);
         query.setParameter("deleted", DeletedStatus.UN_DELETED);
@@ -1133,7 +1140,7 @@ public class Goods extends Model {
      */
     public static List<Goods> findNewGoods(int limit) {
         // 找出5倍需要的商品，然后手工过滤
-        List<Goods> allGoods = Goods.find("status = ? and deleted = ? and baseSale >= 1 and expireAt > ? order by createdAt DESC",
+        List<Goods> allGoods = Goods.find("status = ? and deleted = ? and baseSale >= 1 and isHideOnsale=false and expireAt > ? order by createdAt DESC",
                 GoodsStatus.ONSALE, DeletedStatus.UN_DELETED, new Date()).fetch(limit * 5);
         Set<Long> supplierSet = new HashSet<>();
         List<Goods> goods = new ArrayList<>();
@@ -1312,7 +1319,7 @@ public class Goods extends Model {
         goodsHistory.imagePath = this.imagePath;
         goodsHistory.supplierId = this.supplierId;
         if (this.shops != null) {
-        	goodsHistory.shops = new HashSet<>();
+            goodsHistory.shops = new HashSet<>();
             goodsHistory.shops.addAll(this.shops);
         }
         goodsHistory.title = this.title;
