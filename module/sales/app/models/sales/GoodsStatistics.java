@@ -2,6 +2,8 @@ package models.sales;
 
 import cache.CacheHelper;
 import play.db.jpa.Model;
+import play.modules.solr.SolrField;
+import play.modules.solr.SolrSearchable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +16,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "goods_statistics")
+@SolrSearchable
 public class GoodsStatistics extends Model {
     private static final long serialVersionUID = 7063132063912120652L;
 
@@ -22,26 +25,31 @@ public class GoodsStatistics extends Model {
      * 浏览指数
      */
     @Column(name = "visitor_count")
+    @SolrField
     public Integer visitorCount;
     /**
      * 购买指数
      */
     @Column(name = "buy_count")
+    @SolrField
     public Integer buyCount;
     /**
      * 喜欢指数
      */
     @Column(name = "like_count")
+    @SolrField
     public Integer likeCount;
     /**
      * 加入购物车指数
      */
     @Column(name = "cart_count")
+    @SolrField
     public Integer cartCount;
     /**
      * 总指数
      */
     @Column(name = "summary_count")
+    @SolrField
     public Long summaryCount;
 
     @Transient

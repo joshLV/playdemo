@@ -13,7 +13,6 @@ import com.uhuila.common.util.HtmlUtil;
 import com.uhuila.common.util.PathUtil;
 import models.mail.MailMessage;
 import models.mail.MailUtil;
-
 import models.order.ECoupon;
 import models.order.ECouponStatus;
 import models.order.OrderItems;
@@ -157,6 +156,23 @@ public class Goods extends Model {
     //  ======  价格列表结束 ==========
 
     /**
+     * 累积进货量
+     * <p/>
+     * 通过管理界面增加进货量后得到累计进货量，只会越来越大，因为是累计的
+     */
+    public Long cumulativeStocks;
+
+    /**
+     * 虚拟销量基数
+     * <p/>
+     * 通过管理界面设置
+     * 用户前端网站显示的销量是virtualBaseSaleCount+realSaleCount
+     */
+    @Column(name = "virtual_base_sale_count")
+    public Long virtualBaseSaleCount;
+
+
+    /**
      * 商品编号
      */
     @MaxSize(30)
@@ -259,19 +275,24 @@ public class Goods extends Model {
 
     /**
      * 售出数量
+     * <p/>
+     * 已作废
      */
+    @Deprecated
     @Column(name = "sale_count")
     @SolrField
     public int saleCount;
 
     /**
      * 剩余商品数量，需要去掉.
+     * <p/>
+     * 已作废
      */
+    @Deprecated
     @Required
     @Min(0)
     @Max(999999)
     @Column(name = "base_sale")
-    @SolrField
     public Long baseSale;
     /**
      * 商品状态,
@@ -374,7 +395,6 @@ public class Goods extends Model {
     @SolrField
     public Integer favorite = 0;
 
-
     // 以下定义用于查询条件
     @Transient
     public String salePriceBegin;
@@ -385,6 +405,7 @@ public class Goods extends Model {
     @Transient
     public int saleCountEnd = -1;
     @Transient
+    @SolrEmbedded
     public GoodsStatistics statistics;
 
     /**
@@ -412,7 +433,6 @@ public class Goods extends Model {
      * 设置后将不允许自动发布到这些电子商务网站上
      */
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "goods")
-    @SolrEmbedded
     public Set<GoodsUnPublishedPlatform> unPublishedPlatforms;
 
     public static final String IMAGE_SERVER = Play.configuration.getProperty
@@ -623,38 +643,51 @@ public class Goods extends Model {
     public void setPrompt(String prompt) {
         this.prompt = Jsoup.clean(prompt, HTML_WHITE_TAGS);
     }
-    
+
     /**
-     * 得到当前库存数量.
+     * 得到实际的库存数量.
      */
     @Transient
-    public Long getCurrentStocks() {
-    	return this.baseSale - getCurrentSaleCount();
+    public Long getRealStocks() {
+        return this.cumulativeStocks - getRealSaleCount();
     }
-    
+
+    @Transient
+    private Long virtualSaleCount;
+
+    @Transient
+    @SolrField
+    public Long getVirtualSaleCount() {
+        if (virtualSaleCount != null && virtualSaleCount > 0) {
+            return virtualSaleCount;
+        }
+        virtualSaleCount = getRealSaleCount() + virtualBaseSaleCount;
+        return virtualSaleCount;
+    }
+
     /**
-     * 得到当前销售数量.
+     * 得到当前实际的销售数量.
      */
     @Transient
-    public Long getCurrentSaleCount() {
-    	return CacheHelper.getCache(Goods.CACHEKEY_SALECOUNT + this.id, new CacheCallBack<Long>() {
-			@Override
-			public Long loadData() {
-				// 先找出OrderItems中的已销售数量
-				long orderItemsBuyCount = OrderItems.count("goods.id=? and order.status != ?", id, OrderStatus.CANCELED);
-				// 减去已退款的数量
-				long ecouponRefundCount = ECoupon.count("goods.id=? and status=?", id, ECouponStatus.REFUND);
-				
-				return orderItemsBuyCount - ecouponRefundCount;
-			}
-		});
+    public Long getRealSaleCount() {
+        return CacheHelper.getCache(Goods.CACHEKEY_SALECOUNT + this.id, new CacheCallBack<Long>() {
+            @Override
+            public Long loadData() {
+                // 先找出OrderItems中的已销售数量
+                long orderItemsBuyCount = OrderItems.count("goods.id=? and order.status != ?", id, OrderStatus.CANCELED);
+                // 减去已退款的数量
+                long ecouponRefundCount = ECoupon.count("goods.id=? and status=?", id, ECouponStatus.REFUND);
+
+                return orderItemsBuyCount - ecouponRefundCount;
+            }
+        });
     }
-    
+
     /**
      * 删除旧缓存以更新显示销售数量.
      */
     public void refreshSaleCount() {
-    	CacheHelper.delete(Goods.CACHEKEY_SALECOUNT + this.id);
+        CacheHelper.delete(Goods.CACHEKEY_SALECOUNT + this.id);
     }
 
     /**
@@ -671,6 +704,13 @@ public class Goods extends Model {
             }
         }
         return publishedPlatforms;
+    }
+
+    @Transient
+    @SolrField
+    public String getPublishedPlatformList() {
+        List<GoodsPublishedPlatformType> platformTypeList = getPublishedPlatforms();
+        return StringUtils.join(platformTypeList, " ");
     }
 
     public boolean containsUnPublishedPlatform(GoodsPublishedPlatformType type) {
@@ -722,7 +762,7 @@ public class Goods extends Model {
         resaleAddPrice = salePrice.compareTo(originalPrice) > 0 ? salePrice.subtract(originalPrice) : BigDecimal.ZERO;
         return super.create();
     }
-    
+
     public static void update(Long id, Goods goods, boolean noLevelPrices) {
         models.sales.Goods updateGoods = models.sales.Goods.findById(id);
         if (updateGoods == null) {
@@ -780,7 +820,7 @@ public class Goods extends Model {
     public static final String CACHEKEY = "SALES_GOODS";
 
     public static final String CACHEKEY_BASEID = "SALES_GOODS_ID";
-    
+
     public static final String CACHEKEY_SALECOUNT = "SALES_GOODS_COUNT";
 
     @Override
@@ -1019,7 +1059,7 @@ public class Goods extends Model {
         return isExist;
     }
 
-//    @SolrEmbedded
+    @SolrEmbedded
     public Collection<Shop> getShopList() {
         if (isAllShop) {
             return CacheHelper.getCache(CacheHelper.getCacheKey(Shop.CACHEKEY_SUPPLIERID + this.supplierId, "GOODS_SHOP_LIST"), new CacheCallBack<List<Shop>>() {
@@ -1374,7 +1414,7 @@ public class Goods extends Model {
         goodsHistory.imagePath = this.imagePath;
         goodsHistory.supplierId = this.supplierId;
         if (this.shops != null) {
-        	goodsHistory.shops = new HashSet<>();
+            goodsHistory.shops = new HashSet<>();
             goodsHistory.shops.addAll(this.shops);
         }
         goodsHistory.title = this.title;
@@ -1390,28 +1430,39 @@ public class Goods extends Model {
     //------------------------------------------- 使用solr服务进行搜索的方法 (Begin) --------------------------------------
 
     /**
-     * todo
      * 搜索
      *
-     * @param condition  查询条件
+     * @param keywords   查询条件
      * @param pageNumber 页数
      * @param pageSize   记录数
      * @return
      */
-    public static ValuePaginator<Goods> search(GoodsCondition condition, int pageNumber, int pageSize) {
-        QueryResponse response = Solr.query("");
+    public static ValuePaginator<Goods> search(String keywords, int pageNumber, int pageSize) {
+        List<Goods> goodsList = new ArrayList<>();
+        ValuePaginator<Goods> goodsPage = new ValuePaginator<>(goodsList);
+
+        QueryResponse response = Solr.queryFullText(keywords, pageNumber, pageSize,
+                "id", "goods.name_s", "goods.salePrice_c", "goods.virtualSaleCount_l");
+        if (response == null) {
+            return goodsPage;
+        }
         SolrDocumentList documentList = response.getResults();
-        List<Goods> goodsList = new ArrayList<>(documentList.size());
         for (SolrDocument document : documentList) {
             Goods goods = new Goods();
-//            document.
+            goods.name = (String) document.getFieldValue("goods.name_s");
+            goods.originalPrice = (BigDecimal) document.getFieldValue("goods.originalPrice_c");
+            goods.salePrice = (BigDecimal) document.getFieldValue("goods.salePrice_c");
+            goods.setVirtualSaleCount((Long) document.getFieldValue("goods.virtualSaleCount_l"));
         }
 
-        ValuePaginator<Goods> goodsPage = new ValuePaginator<>(goodsList);
         goodsPage.setPageNumber(pageNumber);
         goodsPage.setPageSize(pageSize);
         goodsPage.setBoundaryControlsEnabled(false);
         return goodsPage;
+    }
+
+    private void setVirtualSaleCount(Long count) {
+        this.virtualSaleCount = count;
     }
     //------------------------------------------- 使用solr服务进行搜索的方法 (End) ----------------------------------------
 

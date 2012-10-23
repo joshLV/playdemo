@@ -53,8 +53,8 @@ public class CancelOrdersUnitTest extends UnitTest {
 
         Long id = (Long) Fixtures.idCache.get("models.sales.Goods-goods1");
         Goods goods = Goods.findById(id);
-        assertEquals(new Long(1000), goods.getCurrentStocks());
-        assertEquals(new Long(100l), goods.getCurrentSaleCount());
+        assertEquals(new Long(1000), goods.getRealStocks());
+        assertEquals(new Long(100l), goods.getRealSaleCount());
         int count = CancelUnpaidOrders.findAll().size();
         assertEquals(0, count);
 
@@ -64,15 +64,15 @@ public class CancelOrdersUnitTest extends UnitTest {
         count = CancelUnpaidOrders.findAll().size();
         assertEquals(3, count);
         goods = Goods.findById(id);
-        assertEquals(new Long(1004), goods.getCurrentStocks());
-        assertEquals(new Long(96), goods.getCurrentSaleCount());
+        assertEquals(new Long(1004), goods.getRealStocks());
+        assertEquals(new Long(96), goods.getRealSaleCount());
 
 
         job.doJob();
         count = CancelUnpaidOrders.findAll().size();
         assertEquals(3, count);
-        assertEquals(new Long(1004), goods.getCurrentStocks());
-        assertEquals(new Long(96), goods.getCurrentSaleCount());
+        assertEquals(new Long(1004), goods.getRealStocks());
+        assertEquals(new Long(96), goods.getRealSaleCount());
     }
 }
 

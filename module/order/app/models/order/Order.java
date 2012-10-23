@@ -525,9 +525,12 @@ public class Order extends Model {
         this.status = OrderStatus.CANCELED;
         this.updatedAt = new Date();
         for (OrderItems orderItem : this.orderItems) {
+
             orderItem.status = OrderStatus.CANCELED;
-            //orderItem.goods.save(); 之前更新库存，现在不再需要
             orderItem.save();
+            //触发一下goods的save,使得goods的销量在搜索服务器中得以更新
+            orderItem.goods.save();
+
             //如果是秒杀商品，做回库处理
             cancelSecKillOrder(orderItem);
         }
@@ -564,6 +567,10 @@ public class Order extends Model {
             orderItem.goods.save();
             */
             orderItem.save();
+
+            //更新搜索服务器中的商品库存
+            orderItem.goods.save();
+
             if (orderItem.goods.materialType == MaterialType.REAL) {
                 haveFreight = true;
             }

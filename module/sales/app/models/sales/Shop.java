@@ -35,6 +35,7 @@ public class Shop extends Model {
     public long supplierId;
 
     @Column(name = "area_id")
+    @SolrField
     public String areaId;
 
     public String no;
@@ -185,6 +186,8 @@ public class Shop extends Model {
         return false;
     }
 
+    @Transient
+    @SolrField
     public String getAreaName() {
         String areaName;
         Area area = Area.findById(areaId);

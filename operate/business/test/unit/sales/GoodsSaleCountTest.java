@@ -31,16 +31,16 @@ public class GoodsSaleCountTest extends UnitTest {
 		order.status = OrderStatus.PAID;
 		order.save();
 		
-		assertEquals(new Long(1), goods.getCurrentSaleCount());
-		assertEquals(new Long(19), goods.getCurrentStocks());
+		assertEquals(new Long(1), goods.getRealSaleCount());
+		assertEquals(new Long(19), goods.getRealStocks());
 		
 		// 取消订单后库存释放
 		assertEquals(1, order.orderItems.size());
 		order.status = OrderStatus.CANCELED;
 		order.save();
 
-		assertEquals(new Long(0), goods.getCurrentSaleCount());
-		assertEquals(new Long(20), goods.getCurrentStocks());
+		assertEquals(new Long(0), goods.getRealSaleCount());
+		assertEquals(new Long(20), goods.getRealStocks());
 	}
 
 	@Test
@@ -58,14 +58,14 @@ public class GoodsSaleCountTest extends UnitTest {
 		order.status = OrderStatus.PAID;
 		order.save();
 		
-		assertEquals(new Long(1), goods.getCurrentSaleCount());
-		assertEquals(new Long(19), goods.getCurrentStocks());
+		assertEquals(new Long(1), goods.getRealSaleCount());
+		assertEquals(new Long(19), goods.getRealStocks());
 		
 		// 券退款后库存释放
 		ecoupon.status = ECouponStatus.REFUND;
 		ecoupon.save();
 
-		assertEquals(new Long(0), goods.getCurrentSaleCount());
-		assertEquals(new Long(20), goods.getCurrentStocks());
+		assertEquals(new Long(0), goods.getRealSaleCount());
+		assertEquals(new Long(20), goods.getRealStocks());
 	}
 }

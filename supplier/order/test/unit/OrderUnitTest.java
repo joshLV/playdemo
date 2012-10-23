@@ -101,8 +101,8 @@ public class OrderUnitTest extends UnitTest {
         BigDecimal resalePrice = new BigDecimal("10.2");
         boolean isOk = false;
         Goods oldGoods = Goods.findById(goodsId);
-        long baseSale = oldGoods.getCurrentStocks();
-        long saleCount = oldGoods.getCurrentSaleCount();
+        long baseSale = oldGoods.getRealStocks();
+        long saleCount = oldGoods.getRealSaleCount();
         Order order = Order.createConsumeOrder(userId, AccountType.CONSUMER);
         Goods goods1 = Goods.findById(goodsId);
         GoodsHistory goodsHistory = GoodsHistory.findById(goodsHistoryId);
@@ -112,8 +112,8 @@ public class OrderUnitTest extends UnitTest {
         order.createAndUpdateInventory();
 
         Goods goods = Goods.findById(goodsId);
-        assertEquals(new Long(baseSale - 20), goods.getCurrentStocks());
-        assertEquals(new Long(saleCount + 20), goods.getCurrentSaleCount());
+        assertEquals(new Long(baseSale - 20), goods.getRealStocks());
+        assertEquals(new Long(saleCount + 20), goods.getRealSaleCount());
 
         try {
             //异常情况
