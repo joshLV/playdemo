@@ -6,28 +6,22 @@
     *{ 团购所在城市ID [必填] }*
     <CityId>${cityId}</CityId>
     *{ 团购所属区域商圈ID列表 商圈ID总数不可超过20个(含20个) 非必填 }*
-    #{if 1==0}
     <DistrictList>
+        #{list items:areaMap.entrySet(), as:'entry'}
         *{ 区域  }*
         <District>
             *{ 区域ID 区域ID不可跨城市 所有区域ID需要同属一个城市下 }*
-            <DistrictId>1</DistrictId>
+            <DistrictId>${entry.getKey()}</DistrictId>
             *{ 区域下商圈ID列表 }*
             <AreaList>
                 *{ 商圈ID 此节点下商圈ID需同属一个区域ID }*
-                <AreaId>110</AreaId>
-                <AreaId>111</AreaId>
+                #{list items:entry.getValue(), as:'areaId'}
+                <AreaId>${areaId}</AreaId>
+                #{/list}
             </AreaList>
         </District>
-        <District>
-            <DistrictId>2</DistrictId>
-            <AreaList>
-                <AreaId>210</AreaId>
-                <AreaId>211</AreaId>
-            </AreaList>
-        </District>
+        #{/list}
     </DistrictList>
-    #{/if}
     *{ 团购所属一级分类ID [必填] }*
     <GroupId>${groupId}</GroupId>
     *{ 团购所属二级分类ID列表 二级分类最多填写3个 所有二级分类ID需同属一个一级分类 非必填 }*

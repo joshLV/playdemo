@@ -36,7 +36,11 @@
     <p>选择商圈</p>
     <div>
         #{list items:districts, as:'district'}
-        <input type="radio" value="${district.id}" name="districtId" #{if district_index == 1}checked#{/if}>${district.name}
+        <span style="color:blue">${district.name} | </span>
+        #{list items:ares.get(district.id), as:'area'}
+            <input type="checkbox" value="${district.id}-${area.id}" name="areas" #{if areaNames.contains(area.name)} checked #{/if} >${area.name}
+        #{/list}
+        <br/>
         #{/list}
     </div>
 
@@ -80,7 +84,7 @@
     <b>
     #{list items:shops, as:'shop'}
         #{if !shop.phone}
-        ${shop.name} 门店缺少电话信息,要先去运营后台补充一下
+        ${shop.name} 门店缺少电话信息,要先去运营后台补充一下<br/>
         #{/if}
     #{/list}
     </b>
