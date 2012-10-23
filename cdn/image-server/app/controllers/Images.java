@@ -104,9 +104,9 @@ public class Images extends Controller {
         }
 
         //检查是否指定了不需要水印，默认图片无需加水印
-        if(waterPattern.matcher(imageName).matches() || !originImageExist){
+        //if(waterPattern.matcher(imageName).matches() || !originImageExist){
             noWatermark = true;
-        }
+        //}
 
         defaultTargetImageName.append(".png");
         if(!originImageExist){
