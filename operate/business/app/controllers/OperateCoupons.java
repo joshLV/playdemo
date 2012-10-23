@@ -7,12 +7,14 @@ import operate.rbac.ContextedPermission;
 import operate.rbac.annotations.ActiveNavigation;
 import operate.rbac.annotations.Right;
 import org.apache.commons.lang.StringUtils;
+import play.data.validation.Validation;
 import play.modules.paginate.JPAExtPaginator;
 import play.mvc.Controller;
 import play.mvc.With;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @With(OperateRbac.class)
 @ActiveNavigation("coupons_index")
@@ -138,4 +140,7 @@ public class OperateCoupons extends Controller {
         render(couponsList);
 
     }
+
+
+
 }

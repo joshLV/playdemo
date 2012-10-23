@@ -75,6 +75,8 @@ tempMobile=手机号
 tempECouponSn=券号
 tempText=短信内容
 
+couponsFreezed=券号
+
 goods.publishedPlatforms=可发布到
 goods.publishedPlatforms_TAOBAO=淘宝网
 goods.publishedPlatforms_YIHAODIAN=一号店

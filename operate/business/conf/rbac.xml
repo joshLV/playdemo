@@ -107,6 +107,7 @@
             <navigation key="coupons_index" action="OperateCoupons.index" text="消费券管理" permissions="COUPONS"/>
             <navigation key="verify_index" action="OperateVerifyCoupons.index" text=" 验证消费券" permissions="COUPONS"/>
             <navigation key="pre_coupons" action="ImportCoupons.index" text="预购券管理" permissions="COUPONS"/>
+            <navigation key="freeze_coupons" action="BatchFreezeCoupons.index" text="批量冻结券号" permissions="COUPONS"/>
         </navigation>
         <navigation key="cash_coupon" text="现金券">
             <navigation key="cash_coupon_index" action="OperatorCashCoupons.index" text="现金券管理"
