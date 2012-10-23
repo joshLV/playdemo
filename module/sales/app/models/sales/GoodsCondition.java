@@ -136,7 +136,7 @@ public class GoodsCondition implements Serializable {
             paramMap.put("areaId", searchAreaId + "%");
         }
         if (!isHideOnsale) {
-            condBuilder.append(" and isHideOnsale = :isHideOnsale");
+            condBuilder.append(" and g.isHideOnsale = :isHideOnsale");
             paramMap.put("isHideOnsale", isHideOnsale);
         }
         if (supplierId != 0) {
