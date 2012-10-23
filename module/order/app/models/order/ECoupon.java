@@ -45,6 +45,7 @@ public class ECoupon extends Model {
     public Order order;
 
     public static final boolean USE_PRODUCT_SERIAL_REPLYCODE;
+    public static final String ECOUPON_REFUND_OK = "{\"error\":\"ok\"}";
 
     static {
         String useProductSerialReplyCode = Play.configuration.getProperty(
@@ -601,7 +602,7 @@ public class ECoupon extends Model {
      */
     public static String applyRefund(ECoupon eCoupon, Long userId,
                                      AccountType accountType) {
-        String returnFlg = "{\"error\":\"ok\"}";
+        String returnFlg = ECOUPON_REFUND_OK;
 
         if (eCoupon == null || eCoupon.order.userId != userId
                 || eCoupon.order.userType != accountType) {

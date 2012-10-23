@@ -203,13 +203,21 @@ public class JDGroupBuy extends Controller{
             finish(202, "can not find the jingdong resaler");return;
         }
 
+        Order order = Order.find("byOrderNumber", sendOrderRefundRequest.venderOrderId).first();
+        if(order == null){
+            Logger.error("can not find the ybq_order: %s", sendOrderRefundRequest.venderOrderId);
+            finish(203, "can not find ybq_order: " + sendOrderRefundRequest.venderOrderId);return;
+        }
+
         //处理退款
         List<CouponRequest> refundedCoupons = new ArrayList<>();
         for (CouponRequest coupon: sendOrderRefundRequest.coupons){
-            ECoupon eCoupon = ECoupon.find("byECouponSn", coupon.couponId).first();
-            if(eCoupon != null && eCoupon.order.orderNumber.equals(sendOrderRefundRequest.venderOrderId)){
+            ECoupon eCoupon = ECoupon.find("byOrderAndPartnerAndPartnerCouponId",
+                    order, ECouponPartner.JD, coupon.couponId).first();
+            if(eCoupon != null){
                 String ret = ECoupon.applyRefund(eCoupon, resaler.getId(), AccountType.RESALER);
-                if(ret.equals("{\"error\":\"ok\"}")){
+                if(ret.equals(ECoupon.ECOUPON_REFUND_OK)){
+                    Logger.info("jingdong refund ok, ybq couponId: %s", eCoupon.getId());
                     refundedCoupons.add(coupon);
                 }
             }
